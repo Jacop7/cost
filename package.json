@@ -1,0 +1,25 @@
+{
+  "name": "sikjae-platform",
+  "version": "0.1.0",
+  "private": true,
+  "description": "식자재 원가 계산 및 발주 관리 앱 — 데이터 플랫폼 (Expo + Supabase 모노레포)",
+  "packageManager": "pnpm@9.12.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "mobile": "pnpm --filter @sikjae/mobile",
+    "db": "pnpm --filter @sikjae/db",
+    "core": "pnpm --filter @sikjae/core",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test",
+    "lint": "pnpm -r lint",
+    "db:start": "pnpm --filter @sikjae/db start",
+    "db:reset": "pnpm --filter @sikjae/db reset",
+    "db:types": "pnpm --filter @sikjae/db gen:types"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3",
+    "prettier": "^3.3.3"
+  }
+}

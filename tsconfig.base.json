@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "lib": ["ESNext"],
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "paths": {
+      "@sikjae/types": ["./packages/types/src/index.ts"],
+      "@sikjae/types/*": ["./packages/types/src/*"],
+      "@sikjae/core": ["./packages/core/src/index.ts"],
+      "@sikjae/core/*": ["./packages/core/src/*"]
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pip show *)",
+      "Bash(cd \"c:\\\\프로젝트\\\\식자재관리앱\" && ls -la 2>&1 | head -50; echo \"===GIT ROOT===\"; cd .. && ls -la 2>&1 | head -50)",
+      "Read(//c/프로젝트/**)"
+    ]
+  }
+}
