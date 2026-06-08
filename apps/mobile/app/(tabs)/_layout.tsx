@@ -1,24 +1,37 @@
+import { Platform } from 'react-native';
 import { Tabs } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Icon, IconName } from '@/components/kit/Icon';
 import { T } from '@/theme/tokens';
 
 /**
  * 하단 네비게이션 4탭 — 프로토타입 kit.jsx TabBar 순서: 식재료·레시피·발주·MY.
- * 활성 시 fill 아이콘 + 블루. 라우트 폴더명은 유지하되 표시 순서는 아래 선언 순서로 확정.
+ * 콤팩트 고정 높이(캐치테이블 스타일). 웹은 안전영역 패딩을 넣지 않아 브라우저 하단바에 잘리지 않음.
  */
 const tabIcon =
   (name: IconName) =>
   ({ color, focused }: { color: string; focused: boolean }) =>
-    <Icon name={name} size={26} color={color} fill={focused} sw={1.8} />;
+    <Icon name={name} size={24} color={color} fill={focused} sw={1.8} />;
 
 export default function TabsLayout() {
+  const insets = useSafeAreaInsets();
+  // 웹: 하단 패딩 0으로 라벨 공간 확보(패딩을 키우면 라벨이 숨겨짐). 총 높이 60.
+  const bottomPad = Platform.OS === 'web' ? 0 : insets.bottom;
+
   return (
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: T.blue,
         tabBarInactiveTintColor: '#B0B8C1',
-        tabBarLabelStyle: { fontSize: 11, fontWeight: '700' },
-        tabBarStyle: { backgroundColor: 'rgba(255,255,255,0.96)', borderTopColor: T.line2 },
+        tabBarLabelStyle: { fontSize: 10, fontWeight: '700' },
+        tabBarStyle: {
+          backgroundColor: '#FFFFFF',
+          borderTopColor: T.line2,
+          borderTopWidth: 1,
+          height: 60 + bottomPad,
+          paddingTop: 2,
+          paddingBottom: bottomPad,
+        },
         headerShown: false,
       }}
     >
