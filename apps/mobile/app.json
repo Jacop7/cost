@@ -1,0 +1,16 @@
+{
+  "expo": {
+    "name": "식자재 관리",
+    "slug": "sikjae",
+    "scheme": "sikjae",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "plugins": ["expo-router", "expo-secure-store"],
+    "ios": { "supportsTablet": false, "bundleIdentifier": "co.smartolive.sikjae" },
+    "android": { "package": "co.smartolive.sikjae" },
+    "web": { "bundler": "metro", "output": "single" },
+    "experiments": { "typedRoutes": true }
+  }
+}
