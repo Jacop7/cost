@@ -4,6 +4,7 @@
  */
 import { useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
+import { type Href, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Badge, Card, Chip, FAB, Icon, ScrollTabs, Sheet, StatusBadge } from '@/components/kit';
 import { T } from '@/theme/tokens';
@@ -12,7 +13,7 @@ import { CATEGORIES, DEMO_INGREDIENTS, IngCardData, perLabel } from '../demoData
 type SortKey = 'urgent' | 'recent' | 'priceLow' | 'priceHigh';
 const SORTS: { key: SortKey; label: string }[] = [
   { key: 'urgent', label: '소진 임박순' },
-  { key: 'recent', label: '최신 등록순' },
+  { key: 'recent', label: '최근 입고순' },
   { key: 'priceLow', label: '단가 낮은순' },
   { key: 'priceHigh', label: '단가 높은순' },
 ];
@@ -53,6 +54,7 @@ function IngCard({ g }: { g: IngCardData }) {
 
 export default function IngredientsListScreen() {
   const insets = useSafeAreaInsets();
+  const router = useRouter();
   const [cat, setCat] = useState(0);
   const [sort, setSort] = useState<SortKey>('urgent');
   const [sortOpen, setSortOpen] = useState(false);
@@ -73,6 +75,13 @@ export default function IngredientsListScreen() {
     }
   });
   const sortLabel = SORTS.find((s) => s.key === sort)!.label;
+
+  // 카테고리 필터 — 탭 라벨(·/공백/괄호)과 데이터(-)를 정규화해 매칭. cat===0 은 '전체'.
+  const norm = (s: string) => s.replace(/[·\s()\-]/g, '');
+  const visibleIngredients =
+    cat === 0
+      ? sortedIngredients
+      : sortedIngredients.filter((g) => norm(g.cat) === norm(CATEGORIES[cat]!));
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
@@ -105,26 +114,32 @@ export default function IngredientsListScreen() {
       </View>
 
       {/* 정렬 필터 — 탭 아래 */}
-      <View style={{ paddingHorizontal: 16, paddingTop: 12, flexDirection: 'row' }}>
+      <View style={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: 8, flexDirection: 'row' }}>
         <Chip active tone="blue" onPress={() => setSortOpen(true)}>{`${sortLabel} ▾`}</Chip>
       </View>
 
-      {/* 소진 임박 알림 — 필터 아래 */}
-      <View style={{ paddingHorizontal: 16, paddingTop: 12 }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: T.redTint, borderWidth: 1, borderColor: T.red, borderRadius: 10, paddingVertical: 10, paddingHorizontal: 12 }}>
-          <Icon name="warn" size={16} color={T.red} />
-          <Text style={{ flex: 1, fontSize: 14.5, fontWeight: '700', color: T.red }}>소진 임박 1 — {urgentNames}</Text>
-        </View>
-      </View>
-
-      {/* 카드 리스트 */}
-      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: 104, gap: 10 }}>
-        {sortedIngredients.map((g) => (
-          <IngCard key={g.id} g={g} />
-        ))}
+      {/* 카드 리스트 — 소진 임박 알림을 리스트 최상단에 넣어 함께 스크롤 */}
+      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 0, paddingBottom: 104, gap: 10, flexGrow: 1 }}>
+        {visibleIngredients.length === 0 ? (
+          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingVertical: 80 }}>
+            <Text style={{ fontSize: 15, color: T.ter }}>등록된 식자재가 없습니다.</Text>
+          </View>
+        ) : (
+          <>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: T.redTint, borderWidth: 1, borderColor: T.red, borderRadius: 10, paddingVertical: 10, paddingHorizontal: 12 }}>
+              <Icon name="warn" size={16} color={T.red} />
+              <Text style={{ flex: 1, fontSize: 14.5, fontWeight: '700', color: T.red }}>소진 임박 1 — {urgentNames}</Text>
+            </View>
+            {visibleIngredients.map((g) => (
+              <Pressable key={g.id} onPress={() => router.push(`/ingredients/${g.id}` as Href)}>
+                <IngCard g={g} />
+              </Pressable>
+            ))}
+          </>
+        )}
       </ScrollView>
 
-      <FAB label="추가" bottom={24} />
+      <FAB label="추가" bottom={24} onPress={() => router.push('/ingredients/add' as Href)} />
 
       {/* 정렬 선택 시트 */}
       <Sheet visible={sortOpen} onClose={() => setSortOpen(false)} title="정렬" height={320}>
