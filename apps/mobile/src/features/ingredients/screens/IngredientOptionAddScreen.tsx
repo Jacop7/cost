@@ -14,10 +14,13 @@ const NUM = { fontVariant: ['tabular-nums' as const] };
 const LOSS = 15; // 공통 로스율(%)
 const BUY = round(rawUnitPrice(5200, 1000), 2); // 환산 단가(구매가) 5.2원/g
 const REAL = round(previewBaseUnitPrice(5200, 1000, LOSS / 100), 2); // 실사용 단가 6.12원/g
-const AVG_BUY = 3.9; // 평균 구매가
-const AVG_REAL = round(AVG_BUY / (1 - LOSS / 100), 2); // 평균 실사용 4.59
-const DIFF_BUY = round((BUY / AVG_BUY - 1) * 100); // ▲33%
-const DIFF_REAL = round((REAL / AVG_REAL - 1) * 100); // ▲33%
+
+// 주문 단가 비교(데모) — 지금 입력 중인 옵션(현재)과 같은 식재료의 직전 주문(최근)을 비교.
+//  실제 단계에서는 매칭된 식재료의 최근 입고/주문 이력에서 가져옵니다.
+const ORDER_COMPARE = [
+  { tag: '현재', name: '곰곰 깐대파 1kg', vendor: '쿠팡', brand: '곰곰', per: `${BUY}원/g`, current: true },
+  { tag: '최근', name: '미령 1kg', vendor: '쿠팡', brand: '농산랜드', per: '4.8원/g', current: false },
+];
 
 export default function IngredientOptionAddScreen() {
   const router = useRouter();
@@ -96,24 +99,35 @@ export default function IngredientOptionAddScreen() {
           </Text>
         </View>
 
-        {/* 환산 단가 비교 (구매가 / 실사용) */}
-        <View style={{ backgroundColor: T.blueTint, borderRadius: 12, paddingVertical: 13, paddingHorizontal: 15, gap: 10 }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Text style={{ flex: 1, fontSize: 13.5, fontWeight: '700', color: T.sub }}>
-              환산 단가 <Text style={{ fontSize: 12, fontWeight: '600', color: T.sub2 }}>(구매가)</Text>
+        {/* 환산 단가 (구매가 / 실사용) — 한 줄에 나란히 */}
+        <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: T.blueTint, borderWidth: 1, borderColor: T.blue, borderRadius: 12, paddingVertical: 14, paddingHorizontal: 16 }}>
+          <View style={{ flex: 1 }}>
+            <Text style={{ fontSize: 12.5, fontWeight: '700', color: T.sub }}>
+              환산 단가 <Text style={{ fontSize: 11.5, fontWeight: '600', color: T.sub2 }}>(구매가)</Text>
             </Text>
-            <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink, marginRight: 8 }, NUM]}>{BUY}원/g</Text>
-            <Text style={{ fontSize: 12, fontWeight: '600', color: T.sub2, marginRight: 6 }}>평균 {AVG_BUY} 대비</Text>
-            <Badge tone="red" sm>{`▲${DIFF_BUY}%`}</Badge>
+            <Text style={[{ fontSize: 18, fontWeight: '800', color: T.ink, marginTop: 3 }, NUM]}>{BUY}원/g</Text>
           </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Text style={{ flex: 1, fontSize: 13.5, fontWeight: '700', color: T.blue }}>
-              실사용 단가 <Text style={{ fontSize: 12, fontWeight: '600', color: T.blue }}>(로스 반영)</Text>
+          <View style={{ width: 1, alignSelf: 'stretch', backgroundColor: T.blue, opacity: 0.18, marginHorizontal: 14 }} />
+          <View style={{ flex: 1 }}>
+            <Text style={{ fontSize: 12.5, fontWeight: '700', color: T.blue }}>
+              실사용 단가 <Text style={{ fontSize: 11.5, fontWeight: '600', color: T.blue }}>(로스 반영)</Text>
             </Text>
-            <Text style={[{ fontSize: 18, fontWeight: '800', color: T.blue, marginRight: 8 }, NUM]}>{REAL}원/g</Text>
-            <Text style={{ fontSize: 12, fontWeight: '600', color: T.sub2, marginRight: 6 }}>평균 {AVG_REAL} 대비</Text>
-            <Badge tone="red" sm>{`▲${DIFF_REAL}%`}</Badge>
+            <Text style={[{ fontSize: 21, fontWeight: '800', color: T.blue, marginTop: 3 }, NUM]}>{REAL}원/g</Text>
           </View>
+        </View>
+
+        {/* 주문 단가 비교 — 별도 박스 (현재 / 최근) */}
+        <View style={{ marginTop: 12, backgroundColor: T.surface, borderWidth: 1, borderColor: T.line, borderRadius: 12, paddingVertical: 13, paddingHorizontal: 15 }}>
+          <Text style={{ fontSize: 13, fontWeight: '700', color: T.sub, marginBottom: 4 }}>주문 단가 비교</Text>
+          {ORDER_COMPARE.map((o, i) => (
+            <View key={i} style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 9, borderTopWidth: i === 0 ? 0 : 1, borderTopColor: T.line2 }}>
+              <Badge tone={o.current ? 'blue' : 'neutral'} sm>{o.tag}</Badge>
+              <Text numberOfLines={1} style={{ flex: 1, fontSize: 13.5, fontWeight: '600', color: o.current ? T.ink : T.sub2 }}>
+                {o.name} · {o.vendor} · {o.brand}
+              </Text>
+              <Text style={[{ fontSize: 14, fontWeight: '700', color: o.current ? T.blue : T.ink }, NUM]}>{o.per}</Text>
+            </View>
+          ))}
         </View>
       </ScrollView>
 
