@@ -4,12 +4,14 @@
  * ⚠ 현재는 디자인 프로토타입(정적 입력). 실제 입력/저장은 데이터 연결 단계에서 TextInput·RPC로.
  */
 import { Pressable, ScrollView, Text, View } from 'react-native';
-import { useRouter } from 'expo-router';
+import { type Href, useRouter } from 'expo-router';
 import { AppHeader, Badge, Button, Field, Icon, Input, Select } from '@/components/kit';
-import { previewBaseUnitPrice, round } from '@sikjae/core';
+import { previewBaseUnitPrice, rawUnitPrice, round } from '@sikjae/core';
 import { T } from '@/theme/tokens';
 
-const PREVIEW = round(previewBaseUnitPrice(4000, 1000, 0.15), 2); // 4.71
+const NUM = { fontVariant: ['tabular-nums' as const] };
+const RAW = round(rawUnitPrice(4000, 1000), 2); // 구매가 단가 4원/g
+const PREVIEW = round(previewBaseUnitPrice(4000, 1000, 0.15), 2); // 실사용 단가 4.71원/g
 
 const DEMO_OPTIONS = [
   { name: '대파(흙대파) 1kg', vendor: '○○청과몰', per: '4.0원/g', best: true },
@@ -45,13 +47,29 @@ export default function IngredientAddScreen() {
         </Field>
 
         {/* 단가 미리보기 */}
-        <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: T.blueTint, borderWidth: 1, borderColor: T.blue, borderRadius: 12, paddingVertical: 14, paddingHorizontal: 16, marginBottom: 18 }}>
-          <Icon name="info" size={18} color={T.blue} />
-          <Text style={{ flex: 1, fontSize: 13.5, fontWeight: '700', color: T.sub, marginLeft: 8 }}>단가 미리보기 (로스 15% 반영)</Text>
-          <Text style={[{ fontSize: 19, fontWeight: '800', color: T.blue }, { fontVariant: ['tabular-nums' as const] }]}>
-            {PREVIEW}
-            <Text style={{ fontSize: 13 }}>원/g</Text>
-          </Text>
+        <View style={{ backgroundColor: T.blueTint, borderWidth: 1, borderColor: T.blue, borderRadius: 12, paddingVertical: 14, paddingHorizontal: 16, marginBottom: 18 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 12 }}>
+            <Icon name="info" size={17} color={T.blue} />
+            <Text style={{ fontSize: 13.5, fontWeight: '700', color: T.blue }}>단가 미리보기</Text>
+          </View>
+          {/* 구매가 단가 */}
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
+            <Text style={{ flex: 1, fontSize: 13.5, fontWeight: '600', color: T.sub2 }}>구매가 단가</Text>
+            <Text style={[{ fontSize: 15, fontWeight: '700', color: T.ink }, NUM]}>
+              {RAW}
+              <Text style={{ fontSize: 12, color: T.sub2 }}>원/g</Text>
+            </Text>
+          </View>
+          {/* 실사용 단가 */}
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Text style={{ flex: 1, fontSize: 13.5, fontWeight: '700', color: T.blue }}>
+              실사용 단가 <Text style={{ fontSize: 12, fontWeight: '600', color: T.blue }}>(로스 15% 반영)</Text>
+            </Text>
+            <Text style={[{ fontSize: 19, fontWeight: '800', color: T.blue }, NUM]}>
+              {PREVIEW}
+              <Text style={{ fontSize: 13 }}>원/g</Text>
+            </Text>
+          </View>
         </View>
 
         <Field label="로스율 (선택)">
@@ -91,16 +109,10 @@ export default function IngredientAddScreen() {
               </View>
             ))}
           </View>
-          <Pressable style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5, paddingVertical: 13, borderRadius: 12, borderWidth: 1, borderColor: T.blue, backgroundColor: T.blueTint }}>
+          <Pressable onPress={() => router.push('/ingredients/option' as Href)} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5, paddingVertical: 13, borderRadius: 12, borderWidth: 1, borderColor: T.blue, backgroundColor: T.blueTint }}>
             <Icon name="plus" size={18} color={T.blue} sw={2.2} />
-            <Text style={{ fontSize: 14.5, fontWeight: '700', color: T.blue }}>구매 옵션·링크 추가</Text>
+            <Text style={{ fontSize: 14.5, fontWeight: '700', color: T.blue }}>구매 링크 · 옵션 추가</Text>
           </Pressable>
-          <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, marginTop: 9 }}>
-            <Icon name="info" size={14} color={T.ter} />
-            <Text style={{ flex: 1, fontSize: 12, color: T.ter, lineHeight: 17 }}>
-              링크를 붙여넣으면 상품 정보를 자동으로 가져와요. 발주할 때 최저가를 비교할 수 있어요.
-            </Text>
-          </View>
         </View>
       </ScrollView>
 

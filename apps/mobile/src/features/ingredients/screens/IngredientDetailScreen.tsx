@@ -62,7 +62,7 @@ export default function IngredientDetailScreen() {
         {/* 이름 · 메모 */}
         <Card pad={16}>
           <Badge tone="neutral">{g.cat}</Badge>
-          <Text style={{ fontSize: 24, fontWeight: '800', letterSpacing: -0.5, color: T.ink, marginTop: 10 }}>{g.name}</Text>
+          <Text style={{ fontSize: 23, fontWeight: '800', letterSpacing: -0.5, color: T.ink, marginTop: 10 }}>{g.name}</Text>
           {g.memo ? (
             <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 8, marginTop: 13, paddingTop: 13, borderTopWidth: 1, borderTopColor: T.line2 }}>
               <View style={{ width: 30, height: 30, borderRadius: 9, backgroundColor: T.amberTint, alignItems: 'center', justifyContent: 'center' }}>
@@ -81,10 +81,10 @@ export default function IngredientDetailScreen() {
           <View style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
             <View style={{ flex: 1 }}>
               <StatusBadge status={g.soon ? 'out' : g.status} />
-              <Text style={{ fontSize: 25, fontWeight: '800', letterSpacing: -0.6, color: T.ink, marginTop: 8 }}>
+              <Text style={{ fontSize: 23, fontWeight: '800', letterSpacing: -0.6, color: T.ink, marginTop: 8 }}>
                 미개봉 {g.sealed} · 개봉 {g.opened}
               </Text>
-              <Text style={{ fontSize: 14, color: T.sub2, marginTop: 4 }}>
+              <Text style={{ fontSize: 14, color: T.ink, marginTop: 4 }}>
                 총 {total}개 · 개당 {perLabel(g.unit, g.per)}
               </Text>
               <View style={{ flexDirection: 'row', gap: 6, marginTop: 16 }}>
