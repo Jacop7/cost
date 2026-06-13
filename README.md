@@ -9,9 +9,10 @@
 
 | 영역 | 선택 | 이유 |
 |---|---|---|
-| 프론트 | **Expo (React Native)** | 모바일 4탭 앱, 푸시·카메라(OCR) 네이티브 지원 |
+| 프론트 | **Expo SDK 54** (React 19 · RN 0.81 · expo-router 6) | 모바일 4탭 앱, 푸시·카메라(OCR) 네이티브 지원 |
 | 백엔드 | **Supabase** (Postgres + RLS + Edge Functions) | 관계형 ERD, 행 단위 보안(RLS), E1~E7 전파를 트랜잭션 RPC로 |
-| 구조 | **pnpm 모노레포** | 계산 로직·타입을 앱/DB가 공유 |
+| 구조 | **pnpm 모노레포** (`node-linker=hoisted`) | 계산 로직·타입을 앱/DB가 공유. RN/Metro 호환 위해 hoisted |
+| 디자인 | **kit 디자인 시스템** (Toss/Cashnote 스타일) | primary=블루 `#3182F6`, 상태=여유(초록)/소진임박(빨강), 비용=그레이 |
 
 ## 디렉토리
 
@@ -38,12 +39,34 @@
 ## 시작하기
 
 ```bash
-pnpm install
+pnpm install         # node-linker=hoisted (.npmrc) — RN/Metro 호환
 pnpm db:start        # 로컬 Supabase 기동 (Docker 필요)
 pnpm db:reset        # 스키마 + 시드 적용
 pnpm db:types        # DB → packages/types 타입 생성
-pnpm mobile start    # Expo 개발 서버
+
+# 앱 개발 서버 (apps/mobile)
+pnpm mobile start              # Metro (QR → Expo Go)
+cd apps/mobile && npx expo start --tunnel   # IP 무관 터널(외부 접속·Expo Go)
+cd apps/mobile && npx expo start --web      # 웹 브라우저 미리보기
 ```
+
+> 참고
+> - Expo Go는 **SDK 54** 앱이어야 한다(프로젝트도 SDK 54).
+> - Node 24 + Expo CLI 의존성 검사 버그(undici)로 죽으면 `EXPO_OFFLINE=1`로 우회(단, 오프라인은 localhost 바인딩이라 폰 접속엔 터널/LAN 사용).
+
+## 현재 구현 상태 (UI)
+
+식재료(ING) 탭 위주로 화면 구현 중. 하단 탭 순서: **식재료 · 레시피 · 발주 · MY**.
+
+| 화면 | 상태 |
+|---|---|
+| ING-01 식재료 리스트 (검색·카테고리 필터·정렬·소진임박 알림) | ✅ |
+| ING-02 식재료 상세 (잔여·기준단가·최근 주문내역·구매옵션) | ✅ |
+| ING-03 식재료 추가 (등록 폼·단가 미리보기) | ✅ |
+| ING-05 구매 링크·옵션 추가 (URL 추출·환산단가 비교) | ✅ |
+| 레시피·발주·MY 탭 | 빈 상태(스캐폴드) |
+
+데이터는 현재 데모(`apps/mobile/src/features/*/demoData.ts`). Supabase 연동(쿼리·E1~E7 RPC)은 다음 단계.
 
 ## MVP 범위
 
