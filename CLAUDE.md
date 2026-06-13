@@ -21,6 +21,17 @@ Expo(RN) + Supabase 모노레포. 모든 데이터가 기록·전파되어 추�
 - 전파 이벤트 E1~E7은 `packages/db/sql/rpc/`에 1파일씩, `packages/core/src/propagation/`에 순수 로직 미러.
 - 새 파생값 공식은 반드시 `packages/core`에 추가하고 검산 테스트 동반.
 
+## 프론트엔드(앱) 규칙
+- **스택**: Expo **SDK 54** (React 19 · RN 0.81 · expo-router 6). pnpm + 루트 `.npmrc`의 `node-linker=hoisted` 필수(RN/Metro 호환).
+- **디자인 원천**: ver.2 프로토타입 `kit.jsx`(Toss/Cashnote 스타일)를 RN으로 이식 → `apps/mobile/src/components/kit`. primary=블루 `#3182F6`, 상태=여유(초록)/소진임박(빨강), 비용=그레이. 토큰은 `src/theme/tokens.ts`(`T`·`STATUS`). 새 UI는 kit 재사용.
+- **하단 탭 순서**: 식재료 · 레시피 · 발주 · MY. 각 탭은 폴더+`_layout.tsx`(Stack)로 둬야 라우트명이 매칭됨(없으면 탭바 깨짐).
+- 화면은 자체 `AppHeader`를 그리므로 Tabs/Stack 헤더는 숨김.
+- 데이터는 현재 `features/*/demoData.ts`(임시). 실데이터·전파는 `src/lib/supabase.ts`의 `rpc.*` + react-query 무효화로 연결 예정.
+
+## dev 실행
+- `cd apps/mobile && npx expo start --tunnel` (IP 변동·외부 접속 대응, Expo Go SDK 54). `--web`은 브라우저 미리보기.
+- Node 24 + Expo CLI undici 버그로 시작 시 죽으면 `EXPO_OFFLINE=1` 우회(오프라인은 localhost 바인딩이라 폰은 터널/LAN).
+
 ## 작업 시
 - 한국어로 응답. 코드 주석/식별자는 영문 snake_case(DB)·camelCase(TS), 도메인 용어는 한글 주석 허용.
 - 스키마 변경 시: migration 추가 → `pnpm db:types`로 타입 재생성 → core/앱 동기.
