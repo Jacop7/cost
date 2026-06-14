@@ -15,11 +15,12 @@ const LOSS = 15; // 공통 로스율(%)
 const BUY = round(rawUnitPrice(5200, 1000), 2); // 환산 단가(구매가) 5.2원/g
 const REAL = round(previewBaseUnitPrice(5200, 1000, LOSS / 100), 2); // 실사용 단가 6.12원/g
 
-// 주문 단가 비교(데모) — 지금 입력 중인 옵션(현재)과 같은 식재료의 직전 주문(최근)을 비교.
+// 최근 주문 단가 비교(데모) — 직전 주문(최근)과 지금 입력 중인 옵션(현재)을 로스율 반영 실사용 단가로 비교.
+//  buy=환산 단가(구매가), loss=로스율(%). 실사용 단가는 buy / (1 - loss/100) 로 산출.
 //  실제 단계에서는 매칭된 식재료의 최근 입고/주문 이력에서 가져옵니다.
 const ORDER_COMPARE = [
-  { tag: '현재', name: '곰곰 깐대파 1kg', vendor: '쿠팡', brand: '곰곰', per: `${BUY}원/g`, current: true },
-  { tag: '최근', name: '미령 1kg', vendor: '쿠팡', brand: '농산랜드', per: '4.8원/g', current: false },
+  { tag: '최근', name: '미령 1kg', vendor: '쿠팡', brand: '농산랜드', buy: 4.8, loss: 15, current: false },
+  { tag: '현재', name: '곰곰 깐대파 1kg', vendor: '쿠팡', brand: '곰곰', buy: BUY, loss: LOSS, current: true },
 ];
 
 export default function IngredientOptionAddScreen() {
@@ -86,17 +87,11 @@ export default function IngredientOptionAddScreen() {
         <View style={{ marginTop: 2, marginBottom: 12 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Text style={{ fontSize: 15, fontWeight: '700', color: T.ink }}>로스율</Text>
-            <View style={{ marginLeft: 6 }}>
-              <Badge tone="neutral" sm>{`자동·공통 ${LOSS}%`}</Badge>
-            </View>
             <View style={{ flex: 1 }} />
-            <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>
-              {LOSS} <Text style={{ fontSize: 13, fontWeight: '600', color: T.sub2 }}>%</Text>
+            <Text style={[{ fontSize: 16, fontWeight: '800', color: T.blue }, NUM]}>
+              {LOSS}<Text style={{ fontSize: 13, fontWeight: '700' }}>%</Text> <Text style={{ fontSize: 13, fontWeight: '700' }}>적용중</Text>
             </Text>
           </View>
-          <Text style={{ fontSize: 12.5, color: T.ter, marginTop: 6, lineHeight: 18 }}>
-            식재료 공통 로스율을 따라가요. 공통 값을 바꾸면 자동으로 갱신됩니다.
-          </Text>
         </View>
 
         {/* 환산 단가 (구매가 / 실사용) — 한 줄에 나란히 */}
@@ -116,18 +111,26 @@ export default function IngredientOptionAddScreen() {
           </View>
         </View>
 
-        {/* 주문 단가 비교 — 별도 박스 (현재 / 최근) */}
+        {/* 최근 주문 단가 비교 — 별도 박스 (최근 / 현재, 로스율 반영 실사용 단가) */}
         <View style={{ marginTop: 12, backgroundColor: T.surface, borderWidth: 1, borderColor: T.line, borderRadius: 12, paddingVertical: 13, paddingHorizontal: 15 }}>
-          <Text style={{ fontSize: 13, fontWeight: '700', color: T.sub, marginBottom: 4 }}>주문 단가 비교</Text>
-          {ORDER_COMPARE.map((o, i) => (
-            <View key={i} style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 9, borderTopWidth: i === 0 ? 0 : 1, borderTopColor: T.line2 }}>
-              <Badge tone={o.current ? 'blue' : 'neutral'} sm>{o.tag}</Badge>
-              <Text numberOfLines={1} style={{ flex: 1, fontSize: 13.5, fontWeight: '600', color: o.current ? T.ink : T.sub2 }}>
-                {o.name} · {o.vendor} · {o.brand}
-              </Text>
-              <Text style={[{ fontSize: 14, fontWeight: '700', color: o.current ? T.blue : T.ink }, NUM]}>{o.per}</Text>
-            </View>
-          ))}
+          <Text style={{ fontSize: 13, fontWeight: '700', color: T.sub, marginBottom: 4 }}>최근 주문 단가 비교</Text>
+          {ORDER_COMPARE.map((o, i) => {
+            const real = round(o.buy / (1 - o.loss / 100), 2); // 로스율 반영 실사용 단가
+            return (
+              <View key={i} style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 9, borderTopWidth: i === 0 ? 0 : 1, borderTopColor: T.line2 }}>
+                <View>
+                  <Badge tone={o.current ? 'blue' : 'neutral'} sm>{o.tag}</Badge>
+                </View>
+                <Text numberOfLines={1} style={{ flex: 1, fontSize: 13.5, fontWeight: '600', color: o.current ? T.ink : T.sub2 }}>
+                  {o.name} · {o.vendor} · {o.brand}
+                </Text>
+                <View style={{ alignItems: 'flex-end' }}>
+                  <Text style={[{ fontSize: 14.5, fontWeight: '800', color: o.current ? T.blue : T.ink }, NUM]}>{real}원/g</Text>
+                  <Text style={{ fontSize: 11.5, fontWeight: '600', color: T.ter, marginTop: 1 }}>로스율 {o.loss}% 반영</Text>
+                </View>
+              </View>
+            );
+          })}
         </View>
       </ScrollView>
 
@@ -136,9 +139,6 @@ export default function IngredientOptionAddScreen() {
         <Button kind="primary" size="lg" full onPress={() => router.back()}>
           옵션 등록
         </Button>
-        <Text style={{ textAlign: 'center', fontSize: 12, color: T.ter, marginTop: 11, lineHeight: 17 }}>
-          자동 추출이 안 되면 같은 칸을 직접 입력. 등록된 옵션은 발주 완료 등록에서 고르면 자동으로 채워집니다.
-        </Text>
       </View>
     </View>
   );
