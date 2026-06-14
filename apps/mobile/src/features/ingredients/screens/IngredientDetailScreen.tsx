@@ -9,6 +9,8 @@ import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { AppHeader, Badge, Card, Icon, PeriodChip, StatusBadge } from '@/components/kit';
 import { T, won } from '@/theme/tokens';
 import { DETAIL_EXTRAS, getIngredient, perLabel } from '../demoData';
+import { StockAdjustSheet } from './StockAdjustSheet';
+import { MemoEditSheet } from './MemoEditSheet';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 
@@ -18,6 +20,9 @@ export default function IngredientDetailScreen() {
   const g = getIngredient(id);
   const extra = id ? DETAIL_EXTRAS[id] : undefined;
   const [showAllOrders, setShowAllOrders] = useState(false);
+  const [adjustOpen, setAdjustOpen] = useState(false);
+  const [memoOpen, setMemoOpen] = useState(false);
+  const [memo, setMemo] = useState(g?.memo ?? '');
 
   if (!g) {
     return (
@@ -51,10 +56,10 @@ export default function IngredientDetailScreen() {
         title="식재료"
         onBack={() => router.back()}
         right={
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 3, paddingHorizontal: 8, paddingVertical: 8 }}>
-            <Icon name="edit" size={19} color={T.ink2} />
+          <Pressable onPress={() => router.push(`/ingredients/edit?id=${g.id}` as Href)} hitSlop={6} style={{ flexDirection: 'row', alignItems: 'center', gap: 3, paddingHorizontal: 8, paddingVertical: 8 }}>
+            <Icon name="edit" size={19} color={T.ink2} fill />
             <Text style={{ color: T.ink2, fontSize: 16, fontWeight: '700' }}>수정</Text>
-          </View>
+          </Pressable>
         }
       />
 
@@ -63,16 +68,20 @@ export default function IngredientDetailScreen() {
         <Card pad={16}>
           <Badge tone="neutral">{g.cat}</Badge>
           <Text style={{ fontSize: 23, fontWeight: '800', letterSpacing: -0.5, color: T.ink, marginTop: 10 }}>{g.name}</Text>
-          {g.memo ? (
-            <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 8, marginTop: 13, paddingTop: 13, borderTopWidth: 1, borderTopColor: T.line2 }}>
-              <View style={{ width: 30, height: 30, borderRadius: 9, backgroundColor: T.amberTint, alignItems: 'center', justifyContent: 'center' }}>
-                <Icon name="note" size={17} color={T.amberText} />
+          {memo ? (
+            <Pressable onPress={() => setMemoOpen(true)} style={{ marginTop: 13, paddingTop: 13, borderTopWidth: 1, borderTopColor: T.line2 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                  <Icon name="note" size={16} color={T.amberText} />
+                  <Text style={{ fontSize: 13, fontWeight: '700', color: T.ter }}>메모</Text>
+                </View>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                  <Icon name="edit" size={16} color={T.sub} fill />
+                  <Text style={{ fontSize: 15, fontWeight: '700', color: T.sub }}>수정</Text>
+                </View>
               </View>
-              <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: 13, fontWeight: '700', color: T.ter, marginBottom: 2 }}>메모</Text>
-                <Text style={{ fontSize: 14.5, fontWeight: '600', color: T.ink2, lineHeight: 19 }}>{g.memo}</Text>
-              </View>
-            </View>
+              <Text style={{ fontSize: 14.5, fontWeight: '600', color: T.ink2, lineHeight: 21 }}>{memo}</Text>
+            </Pressable>
           ) : null}
         </Card>
 
@@ -92,9 +101,9 @@ export default function IngredientDetailScreen() {
                 {g.minOrder != null ? <Badge tone="neutral" sm>{`최소발주 ${g.minOrder}개`}</Badge> : null}
               </View>
             </View>
-            <Pressable onPress={() => router.push(`/ingredients/adjust?id=${g.id}` as Href)} hitSlop={8} style={{ flexDirection: 'row', alignItems: 'center', gap: 1 }}>
-              <Text style={{ color: T.sub, fontSize: 15, fontWeight: '700' }}>재고 수정</Text>
-              <Icon name="chevron" size={17} color={T.ter} />
+            <Pressable onPress={() => setAdjustOpen(true)} hitSlop={8} style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+              <Icon name="edit" size={16} color={T.sub} fill />
+              <Text style={{ color: T.sub, fontSize: 15, fontWeight: '700' }}>수정</Text>
             </Pressable>
           </View>
         </Card>
@@ -200,6 +209,17 @@ export default function IngredientDetailScreen() {
           </Card>
         ) : null}
       </ScrollView>
+
+      {/* ING-04 재고 수정 — 바텀시트 */}
+      <StockAdjustSheet visible={adjustOpen} ingredientId={g.id} onClose={() => setAdjustOpen(false)} />
+
+      {/* 메모 편집 — 바텀시트 */}
+      <MemoEditSheet
+        visible={memoOpen}
+        value={memo}
+        onClose={() => setMemoOpen(false)}
+        onSave={(next) => { setMemo(next); setMemoOpen(false); }}
+      />
     </View>
   );
 }

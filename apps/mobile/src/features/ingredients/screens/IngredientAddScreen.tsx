@@ -42,7 +42,7 @@ export default function IngredientAddScreen() {
             </View>
           </View>
         </Field>
-        <Field label="구매 가격 (선택)">
+        <Field label="구매 가격" req>
           <Input value="4,000" suffix="원 / 1개" mono />
         </Field>
 
@@ -72,17 +72,17 @@ export default function IngredientAddScreen() {
           </View>
         </View>
 
-        <Field label="로스율 (선택)">
+        <Field label="로스율" req>
           <Input value="15" suffix="%" mono />
         </Field>
         <View style={{ flexDirection: 'row', gap: 10 }}>
           <View style={{ flex: 1 }}>
-            <Field label="안전재고">
+            <Field label="안전재고" req>
               <Input value="2" suffix="개" mono />
             </Field>
           </View>
           <View style={{ flex: 1 }}>
-            <Field label="최소 발주">
+            <Field label="최소 발주" req>
               <Input value="1" suffix="개" mono />
             </Field>
           </View>
