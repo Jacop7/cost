@@ -33,7 +33,9 @@ export function Icon({ name, size = 24, color = T.ink, sw = 1.9, fill = false }:
       case 'minus': return <Path d="M5 12h14" {...p} />;
       case 'search': return <G {...p}><Circle cx={11} cy={11} r={7} /><Path d="M20 20l-3.2-3.2" /></G>;
       case 'close': return <Path d="M6 6l12 12M18 6L6 18" {...p} />;
-      case 'edit': return <G {...p}><Path d="M4 20h4L19 9l-4-4L4 16v4z" /><Path d="M14 6l4 4" /></G>;
+      case 'edit': return fill
+        ? <Path fill={color} d="M15.9 3.9L5.9 13.9 4.5 19.5l5.6-1.4 10-9.9A3 3 0 0 0 15.9 3.9z" />
+        : <Path {...p} d="M15.9 3.9L5.9 13.9 4.5 19.5l5.6-1.4 10-9.9A3 3 0 0 0 15.9 3.9z" />;
       case 'check': return <Path d="M5 12.5l5 5 9-11" {...p} />;
       case 'sort': return <G {...p}><Path d="M7 4v16M7 20l-3-3M7 4l3 3" /><Path d="M17 20V4M17 4l3 3M17 20l-3-3" opacity={0.5} /></G>;
       case 'bell': return <G {...p}><Path d="M6 9a6 6 0 1112 0c0 5 2 6 2 6H4s2-1 2-6z" /><Path d="M10 20a2 2 0 004 0" /></G>;

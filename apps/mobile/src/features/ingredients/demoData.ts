@@ -94,6 +94,104 @@ export const DETAIL_EXTRAS: Record<string, DetailExtra> = {
       { name: '대파 2kg 박스, 7,600원', vendor: '□□상회', per: 3.8, best: true },
     ],
   },
+
+  // 돼지고기 앞다리 (원/g · 5kg 단위)
+  'ING-0003': {
+    trend: [{ v: 11.0 }, { v: 11.4 }, { v: 11.8 }, { v: 12.0 }, { v: 12.4 }, { v: 12.6 }, { v: 13.0, big: true }],
+    trendChange: '▲ 4.8% 상승',
+    purchases: [
+      { date: '06-04', vendor: '대성축산', each: '5kg', unitWon: 65000, qtyN: 1, per: 13.0 },
+      { date: '05-22', vendor: '미트뱅크', each: '5kg', unitWon: 62000, qtyN: 1, per: 12.4 },
+      { date: '05-10', vendor: '대성축산', each: '5kg', unitWon: 60000, qtyN: 2, per: 12.0 },
+      { date: '04-30', vendor: '한돈유통', each: '5kg', unitWon: 55000, qtyN: 1, per: 11.0 },
+    ],
+    options: [
+      { name: '앞다리살 5kg 냉장', vendor: '대성축산', per: 13.0, high: true },
+      { name: '앞다리살 5kg 냉동', vendor: '미트뱅크', per: 11.0, best: true },
+      { name: '앞다리살 3kg', vendor: '한돈몰', per: 12.0 },
+    ],
+  },
+
+  // 양파 (원/g · 1.2kg 단위)
+  'ING-0007': {
+    trend: [{ v: 1.8 }, { v: 1.9 }, { v: 1.95 }, { v: 2.0 }, { v: 2.05 }, { v: 2.1, big: true }],
+    trendChange: '▲ 5.0% 상승',
+    purchases: [
+      { date: '05-31', vendor: '대림유통', each: '1.2kg', unitWon: 2520, qtyN: 3, per: 2.1 },
+      { date: '05-20', vendor: '○○청과', each: '1.2kg', unitWon: 2400, qtyN: 2, per: 2.0 },
+      { date: '05-08', vendor: '농산랜드', each: '1.2kg', unitWon: 2160, qtyN: 2, per: 1.8 },
+      { date: '04-27', vendor: '□□상회', each: '1.2kg', unitWon: 2760, qtyN: 1, per: 2.3 },
+    ],
+    options: [
+      { name: '양파 1.2kg', vendor: '대림유통', per: 2.1 },
+      { name: '양파 3kg 박스', vendor: '농산랜드', per: 1.8, best: true },
+      { name: '깐양파 1kg', vendor: '쿠팡', per: 2.3, high: true },
+    ],
+  },
+
+  // 다진마늘 (원/g · 1kg 단위)
+  'ING-0021': {
+    trend: [{ v: 8.2 }, { v: 8.3 }, { v: 8.5 }, { v: 8.6 }, { v: 8.9 }, { v: 8.5, big: true }],
+    trendChange: '▲ 1.2% 상승',
+    purchases: [
+      { date: '05-27', vendor: '□□상회', each: '1kg', unitWon: 8500, qtyN: 1, per: 8.5 },
+      { date: '05-15', vendor: '양념마을', each: '1kg', unitWon: 8200, qtyN: 2, per: 8.2 },
+      { date: '05-02', vendor: '□□상회', each: '1kg', unitWon: 8900, qtyN: 1, per: 8.9 },
+    ],
+    options: [
+      { name: '다진마늘 1kg', vendor: '□□상회', per: 8.5 },
+      { name: '다진마늘 3kg', vendor: '양념마을', per: 8.2, best: true },
+      { name: '깐마늘 1kg', vendor: '쿠팡', per: 8.9, high: true },
+    ],
+  },
+
+  // 식용유 (원/ml · 18L 단위)
+  'ING-0015': {
+    trend: [{ v: 2.4 }, { v: 2.45 }, { v: 2.5 }, { v: 2.55 }, { v: 2.6 }, { v: 2.5, big: true }],
+    trendChange: '▲ 0.8% 상승',
+    purchases: [
+      { date: '05-20', vendor: '대림유통', each: '18L', unitWon: 45000, qtyN: 2, per: 2.5 },
+      { date: '05-05', vendor: '식자재마트', each: '18L', unitWon: 43200, qtyN: 1, per: 2.4 },
+      { date: '04-20', vendor: '대림유통', each: '18L', unitWon: 46800, qtyN: 1, per: 2.6 },
+    ],
+    options: [
+      { name: '식용유 18L', vendor: '대림유통', per: 2.5 },
+      { name: '카놀라유 18L', vendor: '식자재마트', per: 2.4, best: true },
+      { name: '콩기름 18L', vendor: '쿠팡', per: 2.6, high: true },
+    ],
+  },
+
+  // 계란 (원/개 · 30구 단위)
+  'ING-0001': {
+    trend: [{ v: 210 }, { v: 213 }, { v: 216 }, { v: 220 }, { v: 225 }, { v: 220, big: true }],
+    trendChange: '▲ 2.3% 상승',
+    purchases: [
+      { date: '06-02', vendor: '대성축산', each: '30구', unitWon: 6600, qtyN: 3, per: 220 },
+      { date: '05-22', vendor: '양계직판', each: '30구', unitWon: 6300, qtyN: 2, per: 210 },
+      { date: '05-10', vendor: '대성축산', each: '30구', unitWon: 6900, qtyN: 1, per: 230 },
+    ],
+    options: [
+      { name: '계란 30구', vendor: '대성축산', per: 220 },
+      { name: '특란 30구', vendor: '양계직판', per: 210, best: true },
+      { name: '계란 15구', vendor: '마트', per: 230, high: true },
+    ],
+  },
+
+  // 두부 (원/모 · 1모 단위)
+  'ING-0030': {
+    trend: [{ v: 1050 }, { v: 1070 }, { v: 1090 }, { v: 1100 }, { v: 1150 }, { v: 1100, big: true }],
+    trendChange: '▲ 1.9% 상승',
+    purchases: [
+      { date: '06-03', vendor: '○○청과', each: '1모', unitWon: 1100, qtyN: 4, per: 1100 },
+      { date: '05-24', vendor: '두부공방', each: '1모', unitWon: 1050, qtyN: 6, per: 1050 },
+      { date: '05-12', vendor: '○○청과', each: '1모', unitWon: 1150, qtyN: 2, per: 1150 },
+    ],
+    options: [
+      { name: '국산콩 두부 1모', vendor: '○○청과', per: 1100 },
+      { name: '두부 1모', vendor: '두부공방', per: 1050, best: true },
+      { name: '유기농 두부 1모', vendor: '쿠팡', per: 1150, high: true },
+    ],
+  },
 };
 
 export const won = (n: number): string => Math.round(n).toLocaleString('ko-KR');
