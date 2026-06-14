@@ -5,7 +5,7 @@
  */
 import { useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { AppHeader, Badge, Card, Icon, PeriodChip, StatusBadge } from '@/components/kit';
 import { T, won } from '@/theme/tokens';
 import { DETAIL_EXTRAS, getIngredient, perLabel } from '../demoData';
@@ -92,10 +92,10 @@ export default function IngredientDetailScreen() {
                 {g.minOrder != null ? <Badge tone="neutral" sm>{`최소발주 ${g.minOrder}개`}</Badge> : null}
               </View>
             </View>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 1 }}>
+            <Pressable onPress={() => router.push(`/ingredients/adjust?id=${g.id}` as Href)} hitSlop={8} style={{ flexDirection: 'row', alignItems: 'center', gap: 1 }}>
               <Text style={{ color: T.sub, fontSize: 15, fontWeight: '700' }}>재고 수정</Text>
               <Icon name="chevron" size={17} color={T.ter} />
-            </View>
+            </Pressable>
           </View>
         </Card>
 
