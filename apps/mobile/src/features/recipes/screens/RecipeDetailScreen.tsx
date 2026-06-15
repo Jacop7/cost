@@ -5,7 +5,7 @@
  */
 import { useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { AppHeader, Badge, Card, Donut, Icon } from '@/components/kit';
 import { recommendedPrice, round } from '@sikjae/core';
 import { T, won } from '@/theme/tokens';
@@ -172,7 +172,15 @@ export default function RecipeDetailScreen() {
 
         {/* 고정 지출 항목별 */}
         <Card pad={16}>
-          <Text style={{ fontSize: 15, fontWeight: '800', color: '#5B6573', marginBottom: 8 }}>고정 지출</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
+            <Text style={{ fontSize: 15, fontWeight: '800', color: '#5B6573' }}>고정 지출</Text>
+            <Text style={{ fontSize: 12, color: T.ter, fontWeight: '600', marginLeft: 6 }}>(개당 환산)</Text>
+            <View style={{ flex: 1 }} />
+            <Pressable onPress={() => router.push('/recipes/fixed-cost' as Href)} style={{ flexDirection: 'row', alignItems: 'center', gap: 1 }}>
+              <Text style={{ fontSize: 13, fontWeight: '700', color: T.sub }}>자세히 보기</Text>
+              <Icon name="chevron" size={15} color={T.ter} />
+            </Pressable>
+          </View>
           {FIXED_ITEMS.map((f, i) => (
             <View key={i} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 8, borderBottomWidth: i < FIXED_ITEMS.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
               <Text style={{ flex: 1, fontSize: 14, fontWeight: '600', color: T.ink2 }}>{f.name}</Text>
