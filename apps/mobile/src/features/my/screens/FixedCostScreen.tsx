@@ -4,7 +4,7 @@
  * ⚠ 디자인 프로토타입(정적). 실제 입력/저장(E4)은 데이터 연결 단계에서.
  */
 import { ScrollView, Text, View } from 'react-native';
-import { useRouter } from 'expo-router';
+import { type Href, useRouter } from 'expo-router';
 import { AppHeader, Badge, Button, Card, Icon } from '@/components/kit';
 import { T, won } from '@/theme/tokens';
 
@@ -128,8 +128,8 @@ export default function FixedCostScreen() {
           <Text style={[{ fontSize: 18, fontWeight: '800', color: T.ink, marginRight: 8 }, NUM]}>{won(TOTAL)}원</Text>
           <Badge tone="blue" sm>{(RATE * 100).toFixed(1)}%</Badge>
         </View>
-        <Button kind="primary" size="lg" full onPress={() => router.back()}>
-          저장 · 전 레시피 반영
+        <Button kind="primary" size="lg" full onPress={() => router.push('/recipes/fixed-cost-edit' as Href)}>
+          수정
         </Button>
       </View>
     </View>
