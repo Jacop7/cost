@@ -125,11 +125,7 @@ export default function RecipeDetailScreen() {
         {/* 재료 */}
         {lines.length > 0 ? (
           <Card pad={16}>
-            <View style={{ flexDirection: 'row', alignItems: 'baseline', marginBottom: 4 }}>
-              <Text style={{ fontSize: 15, fontWeight: '800', color: '#5B6573' }}>재료 <Text style={{ fontSize: 13, fontWeight: '600', color: T.sub2 }}>(1개 기준)</Text></Text>
-              <View style={{ flex: 1 }} />
-              <Text style={{ fontSize: 12, color: T.ter, fontWeight: '600' }}>(1회 생산량 : {won(r.servings)}개)</Text>
-            </View>
+            <Text style={{ fontSize: 15, fontWeight: '800', color: '#5B6573', marginBottom: 4 }}>재료</Text>
             {lines.map((l, i) => (
               <View key={i} style={{ paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
