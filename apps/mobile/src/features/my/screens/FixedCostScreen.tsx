@@ -3,7 +3,7 @@
  * 월 선택 · 총매출 · 인건비 · 플랫폼/포장/배달/광고 항목별(소계) · 공통 지출 합계(고정지출률) · 저장(→ E4 전 레시피 반영).
  * ⚠ 디자인 프로토타입(정적). 실제 입력/저장(E4)은 데이터 연결 단계에서.
  */
-import { Pressable, ScrollView, Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { AppHeader, Badge, Button, Card, Icon } from '@/components/kit';
 import { T, won } from '@/theme/tokens';
@@ -77,22 +77,20 @@ function SummaryRow({ label, value }: { label: string; value: number }) {
 function Section({ s }: { s: CostSection }) {
   return (
     <Card pad={0} style={{ overflow: 'hidden' }}>
-      <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 15, paddingTop: 14, paddingBottom: 10 }}>
-        <Text style={{ flex: 1, fontSize: 15.5, fontWeight: '800', color: T.ink }}>{s.title}</Text>
-        <Badge tone="blue" sm>{s.tag}</Badge>
+      <View style={{ paddingHorizontal: 15, paddingTop: 14, paddingBottom: 10 }}>
+        <Text style={{ fontSize: 15.5, fontWeight: '800', color: T.ink }}>{s.title}</Text>
       </View>
       {s.rows.map((r, i) => (
         <View key={i} style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 15, paddingVertical: 11, borderTopWidth: 1, borderTopColor: T.line2 }}>
-          <View style={{ flex: 1 }}>
-            <Text style={{ fontSize: 14.5, fontWeight: '700', color: T.ink }}>{r.name}</Text>
-            {r.desc ? <Text style={{ fontSize: 12, color: T.ter, marginTop: 2 }}>{r.desc}</Text> : null}
-          </View>
+          <Text style={{ flex: 1, fontSize: 14.5, fontWeight: '700', color: T.ink }}>{r.name}</Text>
           <Text style={[{ fontSize: 15, fontWeight: '700', color: T.ink }, NUM]}>{won(r.amt)}</Text>
+          <Text style={[{ fontSize: 12.5, fontWeight: '600', color: T.ter, width: 54, textAlign: 'right' }, NUM]}>{((r.amt / REVENUE) * 100).toFixed(1)}%</Text>
         </View>
       ))}
       <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 15, paddingVertical: 12, backgroundColor: T.surface2 }}>
         <Text style={{ flex: 1, fontSize: 13.5, fontWeight: '800', color: T.sub }}>소계</Text>
         <Text style={[{ fontSize: 15, fontWeight: '800', color: T.ink }, NUM]}>{won(subtotal(s))}원</Text>
+        <Text style={[{ fontSize: 12.5, fontWeight: '700', color: T.sub2, width: 54, textAlign: 'right' }, NUM]}>{((subtotal(s) / REVENUE) * 100).toFixed(1)}%</Text>
       </View>
     </Card>
   );
@@ -103,22 +101,11 @@ export default function FixedCostScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
-      <AppHeader
-        title="고정 지출"
-        onBack={() => router.back()}
-        right={
-          <Button kind="tint" size="sm" icon="history" iconRight>
-            전월 복사
-          </Button>
-        }
-      />
+      <AppHeader title="고정 지출" onBack={() => router.back()} />
 
       <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 4, paddingBottom: 24, gap: 11 }}>
-        {/* 월 선택 */}
-        <Pressable style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 4, paddingVertical: 2 }}>
-          <Text style={{ fontSize: 18, fontWeight: '800', color: T.ink }}>2026년 6월</Text>
-          <Icon name="chevronDown" size={18} color={T.ter} />
-        </Pressable>
+        {/* 기준 */}
+        <Text style={{ fontSize: 18, fontWeight: '800', color: T.ink, paddingHorizontal: 4, paddingVertical: 2 }}>평균 3개월 기준</Text>
 
         <SummaryRow label="총 월매출" value={REVENUE} />
 
