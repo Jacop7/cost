@@ -5,7 +5,7 @@
  */
 import { useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
-import { useRouter } from 'expo-router';
+import { type Href, useRouter } from 'expo-router';
 import { AppHeader, Badge, Button, Field, Icon, Input } from '@/components/kit';
 import { recommendedPrice, round } from '@sikjae/core';
 import { T, won } from '@/theme/tokens';
@@ -91,7 +91,7 @@ export default function RecipeAddScreen() {
               </View>
             </View>
           ))}
-          <Pressable style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5, marginTop: 10, paddingVertical: 12, borderRadius: 12, borderWidth: 1, borderColor: T.blue, backgroundColor: T.blueTint }}>
+          <Pressable onPress={() => router.push('/recipes/ingredient-search' as Href)} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5, marginTop: 10, paddingVertical: 12, borderRadius: 12, borderWidth: 1, borderColor: T.blue, backgroundColor: T.blueTint }}>
             <Icon name="search" size={17} color={T.blue} />
             <Text style={{ fontSize: 14.5, fontWeight: '700', color: T.blue }}>재료 검색 · 담기</Text>
           </Pressable>
