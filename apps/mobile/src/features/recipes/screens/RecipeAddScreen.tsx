@@ -6,7 +6,7 @@
 import { useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
-import { AppHeader, Badge, Button, Field, Icon, Input } from '@/components/kit';
+import { AppHeader, Badge, Button, Field, Icon, Input, Select, Sheet } from '@/components/kit';
 import { recommendedPrice, round } from '@sikjae/core';
 import { T, won } from '@/theme/tokens';
 import { FIXED_ITEMS, getRecipe, pct, RECIPE_DETAILS } from '../demoData';
@@ -22,11 +22,17 @@ export default function RecipeAddScreen() {
   const router = useRouter();
   const [view, setView] = useState<'one' | 'month'>('one'); // 1개 / 월 평균
   const m = view === 'one' ? 1 : R.salesVolume;
+  const [extras, setExtras] = useState(() => D.extras.map((e) => ({ ...e })));
+  const addExtra = () => setExtras((prev) => [...prev, { name: '', amount: 0 }]);
+  const removeExtra = (i: number) => setExtras((prev) => prev.filter((_, j) => j !== i));
+  const [lineItems, setLineItems] = useState(() => D.lines.map((l) => ({ ...l })));
+  const [editIdx, setEditIdx] = useState<number | null>(null);
+  const removeLine = (i: number) => setLineItems((prev) => prev.filter((_, j) => j !== i));
 
-  const lines = D.lines.map((l) => ({ ...l, cost: round(l.qty * l.unitPrice) }));
+  const lines = lineItems.map((l) => ({ ...l, cost: round(l.qty * l.unitPrice) }));
   const price = R.price;
   const material = lines.reduce((s, l) => s + l.cost, 0);
-  const extra = D.extras.reduce((s, e) => s + e.amount, 0);
+  const extra = extras.reduce((s, e) => s + e.amount, 0);
   const tax = round((price * 10) / 110);
   const fixed = round(R.fixedRate * price);
   const profit = price - tax - material - fixed - extra;
@@ -76,7 +82,7 @@ export default function RecipeAddScreen() {
             <View style={{ width: 26 }} />
           </View>
           {lines.map((l, i) => (
-            <View key={i} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 9, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
+            <Pressable key={i} onPress={() => setEditIdx(i)} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 9, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
               <Text style={{ flex: 1, fontSize: 14.5, fontWeight: '700', color: T.ink }}>{l.name}</Text>
               <View style={{ width: 80, alignItems: 'flex-end' }}>
                 <Text style={[{ fontSize: 14, fontWeight: '800', color: T.ink }, NUM]}>{won(l.cost * R.servings)}원</Text>
@@ -87,9 +93,9 @@ export default function RecipeAddScreen() {
                 <Text style={[{ fontSize: 11.5, color: T.ter, fontWeight: '600', marginTop: 1 }, NUM]}>{l.qty}{l.unit}</Text>
               </View>
               <View style={{ width: 26, alignItems: 'flex-end' }}>
-                <Icon name="close" size={16} color={T.ter} />
+                <Icon name="chevron" size={18} color="#C5CCD3" />
               </View>
-            </View>
+            </Pressable>
           ))}
           <Pressable onPress={() => router.push('/recipes/ingredient-search' as Href)} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5, marginTop: 10, paddingVertical: 12, borderRadius: 12, borderWidth: 1, borderColor: T.blue, backgroundColor: T.blueTint }}>
             <Icon name="search" size={17} color={T.blue} />
@@ -104,27 +110,37 @@ export default function RecipeAddScreen() {
             <Text style={{ fontSize: 15, fontWeight: '800', color: '#5B6573' }}>추가 지출</Text>
             <Text style={{ fontSize: 12, color: T.ter, fontWeight: '600' }}>(이 메뉴에만 추가되는 지출)</Text>
           </View>
-          {D.extras.map((e, i) => (
-            <View key={i} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 6 }}>
-              <Text style={{ flex: 1, fontSize: 14, fontWeight: '600', color: T.ink2 }}>{e.name}</Text>
-              <Text style={[{ fontSize: 14, fontWeight: '700', color: T.ink }, NUM]}>{won(e.amount)}원</Text>
-              <View style={{ marginLeft: 10 }}>
-                <Icon name="close" size={16} color={T.ter} />
+          <View style={{ gap: 8 }}>
+            {extras.map((e, i) => (
+              <View key={i} style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                <View style={{ flex: 1 }}>
+                  <Input value={e.name} placeholder="지출명" />
+                </View>
+                <View style={{ width: 132 }}>
+                  <Input value={e.amount > 0 ? won(e.amount) : ''} placeholder="금액" mono />
+                </View>
+                <Pressable hitSlop={6} onPress={() => removeExtra(i)}>
+                  <Icon name="close" size={18} color={T.ter} />
+                </Pressable>
               </View>
-            </View>
-          ))}
-          <Pressable style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5, marginTop: 10, paddingVertical: 12, borderRadius: 12, borderWidth: 1, borderColor: T.blue, backgroundColor: T.blueTint }}>
+            ))}
+          </View>
+          <Pressable onPress={addExtra} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5, marginTop: 10, paddingVertical: 12, borderRadius: 12, borderWidth: 1, borderColor: T.blue, borderStyle: 'dashed', backgroundColor: T.blueTint }}>
             <Icon name="plus" size={17} color={T.blue} sw={2.2} />
-            <Text style={{ fontSize: 14.5, fontWeight: '700', color: T.blue }}>추가 지출 추가</Text>
+            <Text style={{ fontSize: 14.5, fontWeight: '700', color: T.blue }}>추가</Text>
           </Pressable>
           <Text style={{ fontSize: 12, color: T.ter, marginTop: 8, lineHeight: 17 }}>포장·배달 등 고정 지출에 이미 포함된 비용은 중복 입력하지 마세요.</Text>
         </View>
 
         {/* 고정 지출 (자동·읽기전용) */}
         <View style={{ backgroundColor: T.surface, borderRadius: 16, padding: 16 }}>
-          <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 6, marginBottom: 8 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
             <Text style={{ fontSize: 15, fontWeight: '800', color: '#5B6573' }}>고정 지출</Text>
-            <Badge tone="neutral" sm>자동</Badge>
+            <View style={{ flex: 1 }} />
+            <Pressable onPress={() => router.push('/recipes/fixed-cost' as Href)} style={{ flexDirection: 'row', alignItems: 'center', gap: 1 }}>
+              <Text style={{ fontSize: 13, fontWeight: '700', color: T.sub }}>자세히 보기</Text>
+              <Icon name="chevron" size={15} color={T.ter} />
+            </Pressable>
           </View>
           {FIXED_ITEMS.map((f, i) => (
             <View key={i} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 8, borderBottomWidth: i < FIXED_ITEMS.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
@@ -206,6 +222,52 @@ export default function RecipeAddScreen() {
           저장
         </Button>
       </View>
+
+      {/* 재료 사용량 입력/수정 시트 */}
+      <Sheet visible={editIdx != null} onClose={() => setEditIdx(null)} title={editIdx != null ? lineItems[editIdx]?.name : undefined} height={440}>
+        {editIdx != null && lineItems[editIdx]
+          ? (() => {
+              const l = lineItems[editIdx];
+              const batchQty = l.qty * R.servings;
+              const batchCost = round(l.unitPrice * batchQty);
+              const per = round(batchCost / R.servings);
+              return (
+                <View>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-start', gap: 5, backgroundColor: T.blueTint, borderRadius: 999, paddingVertical: 6, paddingHorizontal: 11, marginTop: 2, marginBottom: 14 }}>
+                    <Icon name="box" size={15} color={T.blue} />
+                    <Text style={{ fontSize: 13, fontWeight: '700', color: T.blue }}>{R.servings}개 생산량을 입력하세요. (1회 생산량)</Text>
+                  </View>
+                  <View style={{ flexDirection: 'row', gap: 8 }}>
+                    <View style={{ flex: 1, borderWidth: 1.5, borderColor: T.blue, borderRadius: 12, backgroundColor: T.surface, paddingVertical: 13, paddingHorizontal: 16 }}>
+                      <Text style={[{ fontSize: 20, fontWeight: '700', color: T.ink }, NUM]}>{won(batchQty)}</Text>
+                    </View>
+                    <View style={{ width: 96 }}>
+                      <Select value={l.unit} />
+                    </View>
+                  </View>
+                  <View style={{ flexDirection: 'row', gap: 10, marginTop: 12 }}>
+                    <View style={{ flex: 1, backgroundColor: T.surface2, borderRadius: 12, paddingVertical: 14, paddingHorizontal: 15 }}>
+                      <Text style={{ fontSize: 12.5, fontWeight: '700', color: T.sub2 }}>{R.servings}개 기준</Text>
+                      <Text style={[{ fontSize: 18, fontWeight: '800', color: T.ink, marginTop: 4 }, NUM]}>{won(batchCost)}<Text style={{ fontSize: 13, fontWeight: '700' }}>원</Text></Text>
+                    </View>
+                    <View style={{ flex: 1, backgroundColor: T.blueTint, borderRadius: 12, paddingVertical: 14, paddingHorizontal: 15 }}>
+                      <Text style={{ fontSize: 12.5, fontWeight: '700', color: T.blue }}>1개당</Text>
+                      <Text style={[{ fontSize: 18, fontWeight: '800', color: T.blue, marginTop: 4 }, NUM]}>{won(per)}<Text style={{ fontSize: 13, fontWeight: '700' }}>원</Text></Text>
+                    </View>
+                  </View>
+                  <View style={{ flexDirection: 'row', gap: 10, marginTop: 20 }}>
+                    <Button kind="danger" size="lg" onPress={() => { removeLine(editIdx); setEditIdx(null); }} style={{ flex: 1 }}>
+                      삭제
+                    </Button>
+                    <Button kind="primary" size="lg" onPress={() => setEditIdx(null)} style={{ flex: 1.6 }}>
+                      담기
+                    </Button>
+                  </View>
+                </View>
+              );
+            })()
+          : null}
+      </Sheet>
     </View>
   );
 }

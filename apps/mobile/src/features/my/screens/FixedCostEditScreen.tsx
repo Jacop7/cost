@@ -22,6 +22,15 @@ const SECTIONS: { title: string; rows: { name: string; amt: number }[] }[] = [
 export default function FixedCostEditScreen() {
   const router = useRouter();
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [sections, setSections] = useState(() =>
+    SECTIONS.map((s) => ({ title: s.title, rows: s.rows.map((r) => ({ ...r })) })),
+  );
+  const addRow = (si: number) =>
+    setSections((prev) => prev.map((s, i) => (i === si ? { ...s, rows: [...s.rows, { name: '', amt: 0 }] } : s)));
+  const removeRow = (si: number, ri: number) =>
+    setSections((prev) => prev.map((s, i) => (i === si ? { ...s, rows: s.rows.filter((_, j) => j !== ri) } : s)));
+  const addSection = () => setSections((prev) => [...prev, { title: '', rows: [{ name: '', amt: 0 }] }]);
+  const removeSection = (si: number) => setSections((prev) => prev.filter((_, i) => i !== si));
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
@@ -31,39 +40,53 @@ export default function FixedCostEditScreen() {
         {/* 총 월매출 */}
         <View style={{ backgroundColor: T.surface, borderRadius: 16, padding: 16 }}>
           <Field label="총 월매출" req>
-            <Input value={won(REVENUE)} suffix="원" mono />
+            <Input value={won(REVENUE)} mono />
           </Field>
         </View>
 
         {/* 항목별 카드 */}
-        {SECTIONS.map((s, si) => (
+        {sections.map((s, si) => (
           <View key={si} style={{ backgroundColor: T.surface, borderRadius: 16, padding: 16 }}>
-            {/* 타이틀 입력 */}
-            <Input value={s.title} />
+            {/* 타이틀 입력 + 카드 삭제 */}
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+              <View style={{ flex: 1 }}>
+                <Input value={s.title} placeholder="항목 제목" />
+              </View>
+              <Pressable hitSlop={6} onPress={() => removeSection(si)}>
+                <Icon name="close" size={18} color={T.ter} />
+              </Pressable>
+            </View>
+            {/* 구분선 */}
+            <View style={{ height: 1, backgroundColor: T.line2, marginTop: 12, marginBottom: 12 }} />
             {/* 항목 행 */}
-            <View style={{ gap: 8, marginTop: 10 }}>
+            <View style={{ gap: 8 }}>
               {s.rows.map((r, i) => (
                 <View key={i} style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
                   <View style={{ flex: 1 }}>
-                    <Input value={r.name} />
+                    <Input value={r.name} placeholder="항목명 입력" />
                   </View>
                   <View style={{ width: 132 }}>
-                    <Input value={won(r.amt)} suffix="원" mono />
+                    <Input value={r.amt > 0 ? won(r.amt) : ''} placeholder="금액" mono />
                   </View>
-                  <Pressable hitSlop={6}>
+                  <Pressable hitSlop={6} onPress={() => removeRow(si, i)}>
                     <Icon name="close" size={18} color={T.ter} />
                   </Pressable>
                 </View>
               ))}
             </View>
             {/* 항목 추가 */}
-            <Pressable style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 10, paddingVertical: 11, paddingHorizontal: 12, borderRadius: 12, borderWidth: 1, borderColor: T.blue, borderStyle: 'dashed', backgroundColor: T.blueTint }}>
+            <Pressable onPress={() => addRow(si)} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5, marginTop: 10, paddingVertical: 11, paddingHorizontal: 12, borderRadius: 12, borderWidth: 1, borderColor: T.blue, borderStyle: 'dashed', backgroundColor: T.blueTint }}>
               <Icon name="plus" size={17} color={T.blue} sw={2.2} />
-              <Text style={{ flex: 1, fontSize: 14, fontWeight: '600', color: T.ter }}>항목명 입력</Text>
               <Text style={{ fontSize: 14, fontWeight: '700', color: T.blue }}>추가</Text>
             </Pressable>
           </View>
         ))}
+
+        {/* 새 항목(카드) 추가 */}
+        <Pressable onPress={addSection} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5, paddingVertical: 14, borderRadius: 16, borderWidth: 1.5, borderColor: T.line, borderStyle: 'dashed', backgroundColor: T.surface }}>
+          <Icon name="plus" size={18} color={T.sub} sw={2.2} />
+          <Text style={{ fontSize: 14.5, fontWeight: '700', color: T.sub }}>새 항목 추가</Text>
+        </Pressable>
       </ScrollView>
 
       {/* 하단 저장 */}
