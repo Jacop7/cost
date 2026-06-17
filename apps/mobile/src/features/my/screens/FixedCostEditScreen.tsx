@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { Modal, Pressable, ScrollView, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { AppHeader, Button, Field, Icon, Input } from '@/components/kit';
-import { T, won } from '@/theme/tokens';
+import { cardShadow, T, won } from '@/theme/tokens';
 
 const REVENUE = 28_500_000;
 
@@ -38,7 +38,7 @@ export default function FixedCostEditScreen() {
 
       <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 4, paddingBottom: 24, gap: 11 }}>
         {/* 총 월매출 */}
-        <View style={{ backgroundColor: T.surface, borderRadius: 16, padding: 16 }}>
+        <View style={{ backgroundColor: T.surface, borderRadius: 16, padding: 16, borderWidth: 1, borderColor: T.line, ...cardShadow }}>
           <Field label="총 월매출" req>
             <Input value={won(REVENUE)} mono />
           </Field>
@@ -46,7 +46,7 @@ export default function FixedCostEditScreen() {
 
         {/* 항목별 카드 */}
         {sections.map((s, si) => (
-          <View key={si} style={{ backgroundColor: T.surface, borderRadius: 16, padding: 16 }}>
+          <View key={si} style={{ backgroundColor: T.surface, borderRadius: 16, padding: 16, borderWidth: 1, borderColor: T.line, ...cardShadow }}>
             {/* 타이틀 입력 + 카드 삭제 */}
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
               <View style={{ flex: 1 }}>

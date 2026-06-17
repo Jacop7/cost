@@ -8,7 +8,7 @@ import { Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
 import { AppHeader, Badge, Button, Field, Icon, Input, Select, Sheet } from '@/components/kit';
 import { recommendedPrice, round } from '@sikjae/core';
-import { T, won } from '@/theme/tokens';
+import { cardShadow, T, won } from '@/theme/tokens';
 import { FIXED_ITEMS, getRecipe, pct, RECIPE_DETAILS } from '../demoData';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
@@ -47,7 +47,7 @@ export default function RecipeAddScreen() {
 
       <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 4, paddingBottom: 24, gap: 11 }}>
         {/* 기본 정보 */}
-        <View style={{ backgroundColor: T.surface, borderRadius: 16, padding: 16 }}>
+        <View style={{ backgroundColor: T.surface, borderRadius: 16, padding: 16, borderWidth: 1, borderColor: T.line, ...cardShadow }}>
           <Field label="메뉴명" req>
             <Input value="제육볶음" />
           </Field>
@@ -72,7 +72,7 @@ export default function RecipeAddScreen() {
         </View>
 
         {/* 재료 — 검색·담기 */}
-        <View style={{ backgroundColor: T.surface, borderRadius: 16, padding: 16 }}>
+        <View style={{ backgroundColor: T.surface, borderRadius: 16, padding: 16, borderWidth: 1, borderColor: T.line, ...cardShadow }}>
           <Text style={{ fontSize: 15, fontWeight: '800', color: '#5B6573', marginBottom: 4 }}>재료</Text>
           {/* 표 헤더 */}
           <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: 8, borderBottomWidth: 1, borderBottomColor: T.line }}>
@@ -105,7 +105,7 @@ export default function RecipeAddScreen() {
         </View>
 
         {/* 추가 지출 */}
-        <View style={{ backgroundColor: T.surface, borderRadius: 16, padding: 16 }}>
+        <View style={{ backgroundColor: T.surface, borderRadius: 16, padding: 16, borderWidth: 1, borderColor: T.line, ...cardShadow }}>
           <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 6, marginBottom: 8 }}>
             <Text style={{ fontSize: 15, fontWeight: '800', color: '#5B6573' }}>추가 지출</Text>
             <Text style={{ fontSize: 12, color: T.ter, fontWeight: '600' }}>(이 메뉴에만 추가되는 지출)</Text>
@@ -133,7 +133,7 @@ export default function RecipeAddScreen() {
         </View>
 
         {/* 고정 지출 (자동·읽기전용) */}
-        <View style={{ backgroundColor: T.surface, borderRadius: 16, padding: 16 }}>
+        <View style={{ backgroundColor: T.surface, borderRadius: 16, padding: 16, borderWidth: 1, borderColor: T.line, ...cardShadow }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
             <Text style={{ fontSize: 15, fontWeight: '800', color: '#5B6573' }}>고정 지출</Text>
             <View style={{ flex: 1 }} />
@@ -157,7 +157,7 @@ export default function RecipeAddScreen() {
         </View>
 
         {/* 손익 미리보기 */}
-        <View style={{ backgroundColor: T.surface, borderRadius: 16, padding: 16 }}>
+        <View style={{ backgroundColor: T.surface, borderRadius: 16, padding: 16, borderWidth: 1, borderColor: T.line, ...cardShadow }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 6 }}>
             <Text style={{ flex: 1, fontSize: 15, fontWeight: '800', color: '#5B6573' }}>손익 미리보기</Text>
             <View style={{ flexDirection: 'row', backgroundColor: '#E8EBEE', borderRadius: 9, padding: 3 }}>
