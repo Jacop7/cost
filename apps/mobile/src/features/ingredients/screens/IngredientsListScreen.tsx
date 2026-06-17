@@ -85,25 +85,12 @@ export default function IngredientsListScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
-      {/* 헤더 */}
+      {/* 헤더 — 타이틀(좌) + 검색 아이콘(우) */}
       <View style={{ paddingTop: insets.top, backgroundColor: T.bg }}>
-        {/* 검색 바 — 구글 킵 '메모 검색' 스타일 (검색 아이콘 + placeholder) */}
-        <View style={{ paddingHorizontal: 16, paddingTop: 8, paddingBottom: 20 }}>
-          <Pressable
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              gap: 8,
-              backgroundColor: T.surface,
-              borderWidth: 1,
-              borderColor: T.line,
-              borderRadius: 12,
-              paddingVertical: 12,
-              paddingHorizontal: 14,
-            }}
-          >
-            <Icon name="search" size={20} color={T.ter} />
-            <Text style={{ fontSize: 15, color: T.ter, fontWeight: '500' }}>식자재 검색</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 20, paddingRight: 12, paddingTop: 6, paddingBottom: 12 }}>
+          <Text style={{ flex: 1, fontSize: 24, fontWeight: '800', color: T.ink, letterSpacing: -0.6 }}>식재료</Text>
+          <Pressable style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}>
+            <Icon name="search" size={23} color={T.ink2} />
           </Pressable>
         </View>
       </View>
