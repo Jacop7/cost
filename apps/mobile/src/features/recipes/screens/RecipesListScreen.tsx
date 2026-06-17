@@ -40,7 +40,6 @@ function RecipeCard({ r }: { r: RecipeCardData }) {
   const p = recipeProfit(r);
   const stopped = r.status === 'stopped';
   const warn = !stopped && p.belowTarget;
-  const profitColor = stopped ? T.ter : warn ? T.red : T.green;
 
   return (
     <Card pad={0} style={{ overflow: 'hidden', opacity: stopped ? 0.6 : 1 }}>
@@ -60,17 +59,17 @@ function RecipeCard({ r }: { r: RecipeCardData }) {
         {/* 판매가 */}
         <View style={{ flexDirection: 'row', alignItems: 'baseline', marginTop: 10 }}>
           <Text style={{ fontSize: 13.5, fontWeight: '700', color: T.sub }}>판매가 </Text>
-          <Text style={[{ fontSize: 15, fontWeight: '700', color: T.ink2 }, NUM]}>{won(r.price)}원</Text>
+          <Text style={[{ fontSize: 15, fontWeight: '700', color: T.sub2 }, NUM]}>{won(r.price)}원</Text>
         </View>
 
         {/* 순이익(원·%) · 재료 원가율(원·%) */}
         <View style={{ flexDirection: 'row', alignItems: 'baseline', flexWrap: 'wrap', marginTop: 6 }}>
           <Text style={{ fontSize: 13.5, fontWeight: '700', color: T.sub }}>순이익 </Text>
-          <Text style={[{ fontSize: 16, fontWeight: '800', color: profitColor }, NUM]}>{won(p.profit)}원 </Text>
-          <Text style={[{ fontSize: 13.5, fontWeight: '700', color: profitColor }, NUM]}>{pct(p.profitRate)}%</Text>
+          <Text style={[{ fontSize: 15, fontWeight: '800', color: T.ink }, NUM]}>{won(p.profit)}원 </Text>
+          <Text style={[{ fontSize: 13.5, fontWeight: '700', color: T.ink }, NUM]}>{pct(p.profitRate)}%</Text>
           <Text style={{ fontSize: 13, color: T.ter, marginHorizontal: 7 }}>·</Text>
-          <Text style={{ fontSize: 13.5, fontWeight: '700', color: T.sub }}>재료 원가율 </Text>
-          <Text style={[{ fontSize: 14, fontWeight: '700', color: T.ink2 }, NUM]}>{won(r.materialPerServing)}원 </Text>
+          <Text style={{ fontSize: 13.5, fontWeight: '700', color: T.sub }}>재료비 </Text>
+          <Text style={[{ fontSize: 15, fontWeight: '700', color: T.sub2 }, NUM]}>{won(r.materialPerServing)}원 </Text>
           <Text style={[{ fontSize: 13.5, fontWeight: '600', color: T.sub2 }, NUM]}>{pct(p.materialRate)}%</Text>
         </View>
 
@@ -129,18 +128,21 @@ export default function RecipesListScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
-      {/* 헤더 — 검색 바 */}
+      {/* 헤더 — 타이틀(좌) + 검색 아이콘(우) */}
       <View style={{ paddingTop: insets.top, backgroundColor: T.bg }}>
-        <View style={{ paddingHorizontal: 16, paddingTop: 8, paddingBottom: 12 }}>
-          <Pressable style={{ flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: T.surface, borderWidth: 1, borderColor: T.line, borderRadius: 12, paddingVertical: 12, paddingHorizontal: 14 }}>
-            <Icon name="search" size={20} color={T.ter} />
-            <Text style={{ fontSize: 15, color: T.ter, fontWeight: '500' }}>메뉴 검색</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 20, paddingRight: 12, paddingTop: 6, paddingBottom: 12 }}>
+          <Text style={{ flex: 1, fontSize: 24, fontWeight: '800', color: T.ink, letterSpacing: -0.6 }}>레시피</Text>
+          <Pressable style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}>
+            <Icon name="search" size={23} color={T.ink2} />
           </Pressable>
         </View>
       </View>
 
+      {/* 헤더-필터 구분선 */}
+      <View style={{ height: 1, backgroundColor: '#D1D6DB' }} />
+
       {/* 필터 행 — 정렬 + 판매상태 */}
-      <View style={{ paddingHorizontal: 16, paddingBottom: 10, flexDirection: 'row', gap: 8 }}>
+      <View style={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: 10, flexDirection: 'row', gap: 8 }}>
         <Chip active tone="blue" onPress={() => setSortOpen(true)}>{`${sortLabel} ▾`}</Chip>
         <Chip active={statusFilter !== 'all'} tone="blue" onPress={() => setStatusOpen(true)}>{`${statusLabel} ▾`}</Chip>
         <Chip active={targetFilter !== 'all'} tone="blue" onPress={() => setTargetOpen(true)}>{`${targetLabel} ▾`}</Chip>

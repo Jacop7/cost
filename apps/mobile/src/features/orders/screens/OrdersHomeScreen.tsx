@@ -6,9 +6,9 @@
 import { useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Badge, Button, Card, Icon } from '@/components/kit';
+import { Badge, Button, Card, Icon, Sheet } from '@/components/kit';
 import { T, won } from '@/theme/tokens';
-import { Candidate, CANDIDATES, DONE, Waiting, WAITING } from '../demoData';
+import { Candidate, CANDIDATES, Done, DONE, Waiting, WAITING } from '../demoData';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 
@@ -21,7 +21,7 @@ function ReasonBadge({ c }: { c: Candidate }) {
   );
 }
 
-function CandidateCard({ c }: { c: Candidate }) {
+function CandidateCard({ c, onOrder, onDone }: { c: Candidate; onOrder: () => void; onDone: () => void }) {
   return (
     <Card pad={0} style={{ overflow: 'hidden' }}>
       <View style={{ paddingVertical: 13, paddingHorizontal: 15 }}>
@@ -38,7 +38,7 @@ function CandidateCard({ c }: { c: Candidate }) {
         <View style={{ flexDirection: 'row', gap: 8, marginVertical: 11 }}>
           <View style={{ flex: 1, paddingVertical: 9, paddingHorizontal: 12, backgroundColor: T.surface2, borderRadius: 10 }}>
             <Text style={{ fontSize: 12, fontWeight: '700', color: T.sub }}>권장 발주</Text>
-            <Text style={[{ fontSize: 15, fontWeight: '800', color: T.green, marginTop: 3 }, NUM]}>{c.rec}</Text>
+            <Text style={[{ fontSize: 15, fontWeight: '800', color: T.ink, marginTop: 3 }, NUM]}>{c.rec}</Text>
           </View>
           <View style={{ flex: 1, paddingVertical: 9, paddingHorizontal: 12, backgroundColor: T.surface2, borderRadius: 10 }}>
             <Text style={{ fontSize: 12, fontWeight: '700', color: T.sub }}>현재 재고</Text>
@@ -56,8 +56,8 @@ function CandidateCard({ c }: { c: Candidate }) {
           </View>
         ) : null}
         <View style={{ flexDirection: 'row', gap: 8, marginTop: 12 }}>
-          <Button kind="tint" size="sm" icon="link" style={{ flex: 1 }}>주문하기</Button>
-          <Button kind="primary" size="sm" style={{ flex: 1 }}>발주 완료</Button>
+          <Button kind="tint" size="sm" icon="link" style={{ flex: 1 }} onPress={onOrder}>주문하기</Button>
+          <Button kind="primary" size="sm" style={{ flex: 1 }} onPress={onDone}>발주 완료</Button>
         </View>
       </View>
     </Card>
@@ -91,15 +91,30 @@ function WaitingCard({ w }: { w: Waiting }) {
   );
 }
 
-const TABS = [
-  { label: '발주 후보', count: CANDIDATES.length },
-  { label: '입고 예정', count: WAITING.length },
-  { label: '입고 완료', count: undefined },
-];
+function DoneCard({ d }: { d: Done }) {
+  return (
+    <Card pad={0} style={{ overflow: 'hidden' }}>
+      <View style={{ paddingVertical: 13, paddingHorizontal: 15 }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+          <Badge tone="green" sm solid>입고완료</Badge>
+          <Text style={{ fontSize: 17, fontWeight: '800', letterSpacing: -0.3, color: T.ink }}>{d.name}</Text>
+        </View>
+        <Text style={{ fontSize: 14.5, fontWeight: '700', color: T.ink2, marginTop: 9 }}>{d.date} 입고</Text>
+        <Text style={[{ fontSize: 13.5, fontWeight: '600', color: T.sub, marginTop: 7 }, NUM]}>
+          {d.vendor} · {won(d.amt)}원
+        </Text>
+      </View>
+    </Card>
+  );
+}
+
+const TABS = ['발주 후보', '입고 예정', '입고 완료'];
 
 export default function OrdersHomeScreen() {
   const insets = useSafeAreaInsets();
   const [tab, setTab] = useState(0);
+  const [orderSel, setOrderSel] = useState<Candidate | null>(null);
+  const [doneSel, setDoneSel] = useState<Candidate | null>(null);
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
@@ -107,11 +122,11 @@ export default function OrdersHomeScreen() {
       <View style={{ paddingTop: insets.top, backgroundColor: T.bg }}>
         <View style={{ flexDirection: 'row', alignItems: 'flex-start', paddingLeft: 20, paddingRight: 12, paddingTop: 6, paddingBottom: 12 }}>
           <View style={{ flex: 1 }}>
-            <Text style={{ fontSize: 26, fontWeight: '800', color: T.ink, letterSpacing: -0.6 }}>발주 현황</Text>
-            <Text style={{ marginTop: 4, fontSize: 13.5, color: T.sub2, fontWeight: '500' }}>
-              오늘 사야 할 {CANDIDATES.length}건 · 입고 예정 {WAITING.length}건
-            </Text>
+            <Text style={{ fontSize: 24, fontWeight: '800', color: T.ink, letterSpacing: -0.6 }}>발주 현황</Text>
           </View>
+          <Pressable style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}>
+            <Icon name="search" size={23} color={T.ink2} />
+          </Pressable>
           <Pressable style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}>
             <Icon name="bell" size={24} color={T.ink2} />
             <View style={{ position: 'absolute', top: 9, right: 10, width: 7, height: 7, borderRadius: 4, backgroundColor: T.red, borderWidth: 1.5, borderColor: '#fff' }} />
@@ -119,15 +134,15 @@ export default function OrdersHomeScreen() {
         </View>
       </View>
 
-      {/* 세그먼트 탭 */}
-      <View style={{ paddingHorizontal: 16, paddingBottom: 10 }}>
-        <View style={{ flexDirection: 'row', gap: 6, padding: 5, backgroundColor: '#E8EBEE', borderRadius: 13 }}>
+      {/* 탭 — 밑줄형, 좌측 정렬 */}
+      <View style={{ borderBottomWidth: 1, borderBottomColor: '#D1D6DB', marginBottom: 4 }}>
+        <View style={{ flexDirection: 'row', gap: 22, paddingHorizontal: 20 }}>
           {TABS.map((t, i) => {
             const on = tab === i;
             return (
-              <Pressable key={i} onPress={() => setTab(i)} style={{ flex: 1, alignItems: 'center', justifyContent: 'center', flexDirection: 'row', gap: 5, paddingVertical: 9, borderRadius: 9, backgroundColor: on ? T.surface : 'transparent' }}>
-                <Text style={{ fontSize: 14, fontWeight: on ? '700' : '600', color: on ? T.ink : T.ter }}>{t.label}</Text>
-                {t.count != null ? <Text style={{ fontSize: 12, fontWeight: '700', color: on ? T.blue : T.ter }}>{t.count}</Text> : null}
+              <Pressable key={i} onPress={() => setTab(i)} style={{ paddingBottom: 11 }}>
+                <Text style={{ fontSize: 16, fontWeight: on ? '700' : '600', color: on ? T.ink : T.ter }}>{t}</Text>
+                {on ? <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 2.5, backgroundColor: T.ink, borderRadius: 2 }} /> : null}
               </Pressable>
             );
           })}
@@ -138,9 +153,8 @@ export default function OrdersHomeScreen() {
       <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 4, paddingBottom: 104, gap: 11, flexGrow: 1 }}>
         {tab === 0 ? (
           <>
-            <Text style={{ fontSize: 13, fontWeight: '600', color: T.sub2 }}>안전재고·소진 자동 분류</Text>
             {CANDIDATES.map((c, i) => (
-              <CandidateCard key={i} c={c} />
+              <CandidateCard key={i} c={c} onOrder={() => setOrderSel(c)} onDone={() => setDoneSel(c)} />
             ))}
           </>
         ) : tab === 1 ? (
@@ -153,29 +167,64 @@ export default function OrdersHomeScreen() {
             </Text>
           </>
         ) : DONE.length > 0 ? (
-          DONE.map((d, i) => (
-            <Card key={i} pad={14}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                <View style={{ width: 40, height: 40, borderRadius: 11, backgroundColor: T.greenTint, alignItems: 'center', justifyContent: 'center' }}>
-                  <Icon name="check" size={22} color={T.green} sw={2.4} />
-                </View>
-                <View style={{ flex: 1 }}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                    <Text style={{ fontSize: 15.5, fontWeight: '800', color: T.ink }}>{d.name}</Text>
-                    <Text style={{ fontSize: 13, fontWeight: '600', color: T.sub2 }}>· {d.qty}</Text>
-                  </View>
-                  <Text style={[{ fontSize: 12.5, color: T.ter, marginTop: 3 }, NUM]}>{d.vendor} · {won(d.amt)}원</Text>
-                </View>
-                <Text style={[{ fontSize: 12, color: T.ter, fontWeight: '600' }, NUM]}>입고 {d.date}</Text>
-              </View>
-            </Card>
-          ))
+          DONE.map((d, i) => <DoneCard key={i} d={d} />)
         ) : (
           <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingVertical: 80 }}>
             <Text style={{ fontSize: 15, color: T.ter }}>입고 완료 내역이 없어요</Text>
           </View>
         )}
       </ScrollView>
+
+      {/* 주문하기 — 구매 링크·옵션 시트 (ORD-05) */}
+      <Sheet
+        visible={orderSel != null}
+        onClose={() => setOrderSel(null)}
+        title="구매 링크 · 옵션"
+        sub={orderSel ? `${orderSel.name} · 등록된 구매처에서 주문하세요` : undefined}
+        height={460}
+      >
+        {orderSel ? (
+          <View style={{ gap: 10 }}>
+            {orderSel.options.map((o, i) => (
+              <View key={i} style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 13, paddingHorizontal: 14, backgroundColor: T.surface2, borderRadius: 12 }}>
+                <View style={{ flex: 1 }}>
+                  <Text style={[{ fontSize: 14.5, fontWeight: '700', color: T.ink }, NUM]}>{o.name} · {o.vol} · {won(o.amt)}원</Text>
+                  <Text style={[{ fontSize: 12.5, color: T.ter, marginTop: 3 }, NUM]}>{o.vendor} · {o.per}</Text>
+                </View>
+                <Button kind="tint" size="sm" icon="link">주문</Button>
+              </View>
+            ))}
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 4 }}>
+              <Icon name="info" size={15} color={T.ter} />
+              <Text style={{ fontSize: 12, color: T.ter }}>링크는 식재료 상세에서 추가·관리할 수 있어요</Text>
+            </View>
+          </View>
+        ) : null}
+      </Sheet>
+
+      {/* 발주 완료 — 구매처 선택 시트 (ORD-06) */}
+      <Sheet
+        visible={doneSel != null}
+        onClose={() => setDoneSel(null)}
+        title="발주 완료"
+        sub={doneSel ? `${doneSel.name} · 어디서 샀는지 선택하세요` : undefined}
+        height={480}
+      >
+        {doneSel ? (
+          <View style={{ gap: 10 }}>
+            {doneSel.options.map((o, i) => (
+              <Pressable key={i} onPress={() => setDoneSel(null)} style={{ paddingVertical: 13, paddingHorizontal: 14, backgroundColor: T.surface, borderWidth: 1, borderColor: T.line, borderRadius: 12 }}>
+                <Text style={[{ fontSize: 14.5, fontWeight: '700', color: T.ink }, NUM]}>{o.name} · {o.vol} · {won(o.amt)}원</Text>
+                <Text style={[{ fontSize: 12.5, color: T.ter, marginTop: 3 }, NUM]}>{o.vendor} · {o.per}</Text>
+              </Pressable>
+            ))}
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 4 }}>
+              <Icon name="info" size={15} color={T.ter} />
+              <Text style={{ fontSize: 12, color: T.ter }}>링크는 식재료 상세에서 추가·관리할 수 있어요</Text>
+            </View>
+          </View>
+        ) : null}
+      </Sheet>
     </View>
   );
 }
