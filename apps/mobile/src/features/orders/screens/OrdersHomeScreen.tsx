@@ -5,10 +5,11 @@
  */
 import { useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
+import { type Href, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Badge, Button, Card, Icon, Sheet } from '@/components/kit';
 import { T, won } from '@/theme/tokens';
-import { Candidate, CANDIDATES, Done, DONE, Waiting, WAITING } from '../demoData';
+import { Candidate, CANDIDATES, Done, DONE, OrderOption, Waiting, WAITING } from '../demoData';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 
@@ -112,9 +113,19 @@ const TABS = ['발주 후보', '입고 예정', '입고 완료'];
 
 export default function OrdersHomeScreen() {
   const insets = useSafeAreaInsets();
+  const router = useRouter();
   const [tab, setTab] = useState(0);
   const [orderSel, setOrderSel] = useState<Candidate | null>(null);
   const [doneSel, setDoneSel] = useState<Candidate | null>(null);
+
+  // 발주 완료 등록(ORD-02)으로 이동 — 선택한 식재료·구매 옵션을 전달.
+  const goComplete = (c: Candidate, o: OrderOption) => {
+    setDoneSel(null);
+    router.push({
+      pathname: '/orders/complete',
+      params: { name: c.name, vendor: o.vendor, product: o.name, amt: String(o.amt), per: o.per, vol: o.vol, qty: c.rec },
+    } as Href);
+  };
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
@@ -213,9 +224,12 @@ export default function OrdersHomeScreen() {
         {doneSel ? (
           <View style={{ gap: 10 }}>
             {doneSel.options.map((o, i) => (
-              <Pressable key={i} onPress={() => setDoneSel(null)} style={{ paddingVertical: 13, paddingHorizontal: 14, backgroundColor: T.surface, borderWidth: 1, borderColor: T.line, borderRadius: 12 }}>
-                <Text style={[{ fontSize: 14.5, fontWeight: '700', color: T.ink }, NUM]}>{o.name} · {o.vol} · {won(o.amt)}원</Text>
-                <Text style={[{ fontSize: 12.5, color: T.ter, marginTop: 3 }, NUM]}>{o.vendor} · {o.per}</Text>
+              <Pressable key={i} onPress={() => goComplete(doneSel, o)} style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 13, paddingHorizontal: 14, backgroundColor: T.surface, borderWidth: 1, borderColor: T.line, borderRadius: 12 }}>
+                <View style={{ flex: 1 }}>
+                  <Text style={[{ fontSize: 14.5, fontWeight: '700', color: T.ink }, NUM]}>{o.name} · {o.vol} · {won(o.amt)}원</Text>
+                  <Text style={[{ fontSize: 12.5, color: T.ter, marginTop: 3 }, NUM]}>{o.vendor} · {o.per}</Text>
+                </View>
+                <Icon name="chevron" size={18} color="#C5CCD3" />
               </Pressable>
             ))}
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 4 }}>
