@@ -27,6 +27,9 @@ Expo(RN) + Supabase 모노레포. 모든 데이터가 기록·전파되어 추�
 - **하단 탭 순서**: 식재료 · 레시피 · 발주 · MY. 각 탭은 폴더+`_layout.tsx`(Stack)로 둬야 라우트명이 매칭됨(없으면 탭바 깨짐).
 - 화면은 자체 `AppHeader`를 그리므로 Tabs/Stack 헤더는 숨김.
 - 데이터는 현재 `features/*/demoData.ts`(임시). 실데이터·전파는 `src/lib/supabase.ts`의 `rpc.*` + react-query 무효화로 연결 예정.
+- **표기 규칙**: 화면 노출 단위는 kg·g·ml + 개수(개/모)만. 망·통·박스·판 등 구매단위 라벨은 표기에서 빼고 상품명/거래처로 분리. 구매 옵션은 `식재료명 · 용량 · 금액 / 구매처 · 단가`. 재고 상태는 여유/소진 임박 2단계.
+- **공통 헤더**: 리스트는 타이틀(24·800, 좌) + 검색/알림 아이콘(우), 그 아래 밑줄형 탭(좌측 정렬, 구분선 `#D1D6DB`). 카드는 `border + cardShadow`.
+- 구현 화면 인벤토리·플로우는 `apps/mobile/src/features/README.md` 단일 출처로 갱신.
 
 ## dev 실행
 - `cd apps/mobile && npx expo start --tunnel` (IP 변동·외부 접속 대응, Expo Go SDK 54). `--web`은 브라우저 미리보기.

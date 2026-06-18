@@ -12,7 +12,6 @@ import { T, won } from '@/theme/tokens';
 import { FIXED_ITEMS, getRecipe, pct, RECIPE_DETAILS } from '../demoData';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
-const PROFIT = T.amber; // 순이익 강조색(주황)
 
 function InfoRow({ label, value }: { label: string; value: string }) {
   return (
@@ -52,11 +51,13 @@ export default function RecipeDetailScreen() {
   const profitRate = profit / price;
   const stopped = r.status === 'stopped';
   const warn = !stopped && profitRate < r.target;
+  // 순이익 강조색 — 리스트와 동일 2단계: 목표 미달=빨강 / 목표 달성=초록
+  const PROFIT = warn ? T.red : T.green;
   const recRaw = recommendedPrice(material + extra, r.fixedRate, r.target);
   const recommended = recRaw == null ? null : Math.round(recRaw / 100) * 100;
   const m = view === 'one' ? 1 : r.salesVolume; // 금액 배수(월 평균)
 
-  // 도넛 — 판매가 구성. 순이익=주황, 비용=그레이 진하기.
+  // 도넛 — 판매가 구성. 순이익=상태색(미달 빨강/달성 초록), 비용=그레이 진하기.
   const breakdown = [
     { label: '재료', amt: material, color: '#8B95A1' },
     { label: '추가 지출', amt: extra, color: '#CDD3DA' },

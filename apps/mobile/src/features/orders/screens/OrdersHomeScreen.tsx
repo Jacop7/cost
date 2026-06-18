@@ -1,6 +1,7 @@
 /**
  * ORD-01 발주 현황 홈 (③ 3장) — 프로토타입 ScreenORD01 을 kit 컴포넌트로 RN 이식.
- * 3탭: 발주 후보(안전재고·소진 자동 분류) / 도착 대기(입고 확정) / 입고 완료.
+ * 3탭: 발주 후보(안전재고·소진 자동 분류) / 입고 예정 / 입고 완료.
+ * 후보 → 주문하기(구매 옵션 시트) / 발주 완료(구매처 선택 → ORD-02 발주 완료 등록).
  * ⚠ 디자인 프로토타입(정적 데모). 발주 등록(E7)·입고 확정(E1)은 데이터 연결 단계에서.
  */
 import { useState } from 'react';
@@ -191,7 +192,6 @@ export default function OrdersHomeScreen() {
         visible={orderSel != null}
         onClose={() => setOrderSel(null)}
         title="구매 링크 · 옵션"
-        sub={orderSel ? `${orderSel.name} · 등록된 구매처에서 주문하세요` : undefined}
         height={460}
       >
         {orderSel ? (
