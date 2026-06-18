@@ -107,7 +107,7 @@ export default function RecipeAddScreen() {
         {/* 추가 지출 */}
         <View style={{ backgroundColor: T.surface, borderRadius: 16, padding: 16, borderWidth: 1, borderColor: T.line, ...cardShadow }}>
           <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 6, marginBottom: 8 }}>
-            <Text style={{ fontSize: 15, fontWeight: '800', color: '#5B6573' }}>추가 지출</Text>
+            <Text style={{ fontSize: 15, fontWeight: '800', color: '#5B6573' }}>부자재</Text>
             <Text style={{ fontSize: 12, color: T.ter, fontWeight: '600' }}>(이 메뉴에만 추가되는 지출)</Text>
           </View>
           <View style={{ gap: 8 }}>
@@ -138,8 +138,8 @@ export default function RecipeAddScreen() {
             <Text style={{ fontSize: 15, fontWeight: '800', color: '#5B6573' }}>고정 지출</Text>
             <View style={{ flex: 1 }} />
             <Pressable onPress={() => router.push('/recipes/fixed-cost' as Href)} style={{ flexDirection: 'row', alignItems: 'center', gap: 1 }}>
-              <Text style={{ fontSize: 13, fontWeight: '700', color: T.sub }}>자세히 보기</Text>
-              <Icon name="chevron" size={15} color={T.ter} />
+              <Text style={{ fontSize: 13, fontWeight: '700', color: T.blue }}>자세히 보기</Text>
+              <Icon name="chevron" size={15} color={T.blue} />
             </Pressable>
           </View>
           {FIXED_ITEMS.map((f, i) => (
@@ -185,7 +185,7 @@ export default function RecipeAddScreen() {
             { label: '세금', amt: tax },
             { label: '재료 원가', amt: material },
             { label: '고정 지출', amt: fixed },
-            { label: '추가 지출', amt: extra },
+            { label: '부자재', amt: extra },
           ].map((c) => (
             <View key={c.label} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
               <Text style={{ flex: 1, fontSize: 14, fontWeight: '600', color: T.ink2 }}>

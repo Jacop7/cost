@@ -10,27 +10,30 @@ import { AppHeader, Button, Field, Icon, Input } from '@/components/kit';
 import { cardShadow, T, won } from '@/theme/tokens';
 
 const REVENUE = 28_500_000;
+const CHANNELS = ['매장', '배달', '포장'];
 
-const SECTIONS: { title: string; rows: { name: string; amt: number }[] }[] = [
-  { title: '인건비', rows: [{ name: '월 인건비', amt: 4_800_000 }] },
-  { title: '플랫폼 수수료', rows: [{ name: '배민', amt: 1_650_000 }, { name: '쿠팡이츠', amt: 960_000 }] },
-  { title: '포장비', rows: [{ name: '중대용기', amt: 225_000 }, { name: '소용기', amt: 155_000 }] },
-  { title: '배달/배송 (대행)', rows: [{ name: '바로고', amt: 540_000 }] },
-  { title: '광고/홍보', rows: [{ name: '인스타 광고', amt: 253_000 }] },
+const SECTIONS: { title: string; channels: string[]; rows: { name: string; amt: number }[] }[] = [
+  { title: '인건비', channels: ['매장', '배달', '포장'], rows: [{ name: '월 인건비', amt: 4_800_000 }] },
+  { title: '플랫폼 수수료', channels: ['배달'], rows: [{ name: '배민', amt: 1_650_000 }, { name: '쿠팡이츠', amt: 960_000 }] },
+  { title: '포장비', channels: ['배달', '포장'], rows: [{ name: '중대용기', amt: 225_000 }, { name: '소용기', amt: 155_000 }] },
+  { title: '배달/배송 (대행)', channels: ['배달'], rows: [{ name: '바로고', amt: 540_000 }] },
+  { title: '광고/홍보', channels: ['매장', '배달', '포장'], rows: [{ name: '인스타 광고', amt: 253_000 }] },
 ];
 
 export default function FixedCostEditScreen() {
   const router = useRouter();
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [sections, setSections] = useState(() =>
-    SECTIONS.map((s) => ({ title: s.title, rows: s.rows.map((r) => ({ ...r })) })),
+    SECTIONS.map((s) => ({ title: s.title, channels: [...s.channels], rows: s.rows.map((r) => ({ ...r })) })),
   );
   const addRow = (si: number) =>
     setSections((prev) => prev.map((s, i) => (i === si ? { ...s, rows: [...s.rows, { name: '', amt: 0 }] } : s)));
   const removeRow = (si: number, ri: number) =>
     setSections((prev) => prev.map((s, i) => (i === si ? { ...s, rows: s.rows.filter((_, j) => j !== ri) } : s)));
-  const addSection = () => setSections((prev) => [...prev, { title: '', rows: [{ name: '', amt: 0 }] }]);
+  const addSection = () => setSections((prev) => [...prev, { title: '', channels: [], rows: [{ name: '', amt: 0 }] }]);
   const removeSection = (si: number) => setSections((prev) => prev.filter((_, i) => i !== si));
+  const toggleChannel = (si: number, ch: string) =>
+    setSections((prev) => prev.map((s, i) => (i === si ? { ...s, channels: s.channels.includes(ch) ? s.channels.filter((c) => c !== ch) : [...s.channels, ch] } : s)));
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
@@ -55,6 +58,19 @@ export default function FixedCostEditScreen() {
               <Pressable hitSlop={6} onPress={() => removeSection(si)}>
                 <Icon name="close" size={18} color={T.ter} />
               </Pressable>
+            </View>
+            {/* 적용 채널 */}
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7, marginTop: 10 }}>
+              <Text style={{ fontSize: 12.5, fontWeight: '700', color: T.sub2 }}>적용 채널</Text>
+              {CHANNELS.map((ch) => {
+                const on = s.channels.includes(ch);
+                return (
+                  <Pressable key={ch} onPress={() => toggleChannel(si, ch)} style={{ flexDirection: 'row', alignItems: 'center', gap: 3, paddingVertical: 5, paddingHorizontal: 10, borderRadius: 999, borderWidth: 1, borderColor: on ? T.blue : T.line, backgroundColor: on ? T.blueTint : T.surface }}>
+                    {on ? <Icon name="check" size={12} color={T.blue} sw={2.6} /> : null}
+                    <Text style={{ fontSize: 12.5, fontWeight: '700', color: on ? T.blue : T.sub }}>{ch}</Text>
+                  </Pressable>
+                );
+              })}
             </View>
             {/* 구분선 */}
             <View style={{ height: 1, backgroundColor: T.line2, marginTop: 12, marginBottom: 12 }} />

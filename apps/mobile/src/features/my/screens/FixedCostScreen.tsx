@@ -14,47 +14,20 @@ const REVENUE = 28_500_000;
 
 interface CostRow {
   name: string;
-  desc?: string;
   amt: number;
 }
 interface CostSection {
   title: string;
-  tag: string;
+  channels: string[]; // 적용 채널 (매장·배달·포장)
   rows: CostRow[];
 }
 
 const SECTIONS: CostSection[] = [
-  {
-    title: '인건비',
-    tag: '총액 입력',
-    rows: [{ name: '월 인건비', desc: '정직원 · 아르바이트 합계', amt: 4_800_000 }],
-  },
-  {
-    title: '플랫폼 수수료',
-    tag: '플랫폼별 입력',
-    rows: [
-      { name: '배민', desc: '중개 6.8 · 결제 3.0% · 배달비 420건', amt: 1_650_000 },
-      { name: '쿠팡이츠', desc: '중개 9.8 · 결제 3.0% · 배달비 총액', amt: 960_000 },
-    ],
-  },
-  {
-    title: '포장비',
-    tag: '규격별 입력',
-    rows: [
-      { name: '중대용기', desc: '450원 × 500개', amt: 225_000 },
-      { name: '소용기', desc: '500원 × 310개', amt: 155_000 },
-    ],
-  },
-  {
-    title: '배달/배송 (대행)',
-    tag: '업체별 입력',
-    rows: [{ name: '바로고', desc: '180건 × 3,000원', amt: 540_000 }],
-  },
-  {
-    title: '광고/홍보',
-    tag: '채널별 입력',
-    rows: [{ name: '인스타 광고', desc: '월 정액', amt: 253_000 }],
-  },
+  { title: '인건비', channels: ['매장', '배달', '포장'], rows: [{ name: '월 인건비', amt: 4_800_000 }] },
+  { title: '플랫폼 수수료', channels: ['배달'], rows: [{ name: '배민', amt: 1_650_000 }, { name: '쿠팡이츠', amt: 960_000 }] },
+  { title: '포장비', channels: ['배달', '포장'], rows: [{ name: '중대용기', amt: 225_000 }, { name: '소용기', amt: 155_000 }] },
+  { title: '배달/배송 (대행)', channels: ['배달'], rows: [{ name: '바로고', amt: 540_000 }] },
+  { title: '광고/홍보', channels: ['매장', '배달', '포장'], rows: [{ name: '인스타 광고', amt: 253_000 }] },
 ];
 
 const subtotal = (s: CostSection) => s.rows.reduce((sum, r) => sum + r.amt, 0);
@@ -77,8 +50,9 @@ function SummaryRow({ label, value }: { label: string; value: number }) {
 function Section({ s }: { s: CostSection }) {
   return (
     <Card pad={0} style={{ overflow: 'hidden' }}>
-      <View style={{ paddingHorizontal: 15, paddingTop: 14, paddingBottom: 10 }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7, paddingHorizontal: 15, paddingTop: 14, paddingBottom: 10 }}>
         <Text style={{ fontSize: 15.5, fontWeight: '800', color: T.ink }}>{s.title}</Text>
+        <Badge tone="blue" sm>{`✓ ${s.channels.join(' · ')}`}</Badge>
       </View>
       {s.rows.map((r, i) => (
         <View key={i} style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 15, paddingVertical: 11, borderTopWidth: 1, borderTopColor: T.line2 }}>
