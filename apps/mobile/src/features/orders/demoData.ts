@@ -49,7 +49,7 @@ export const CANDIDATES: Candidate[] = [
     ],
   },
   {
-    name: '다진마늘', reason: 'out', reasonLabel: '곧 소진', rec: '2', remain: '개봉 1 (거의 빔)', recent: '□□상회 8,500원 (5/27)',
+    name: '다진마늘', reason: 'out', reasonLabel: '곧 소진', rec: '2', remain: '개봉 1', recent: '□□상회 8,500원 (5/27)',
     options: [
       { name: '다진마늘', vol: '1kg', amt: 8500, vendor: '□□상회', per: '8.5원/g' },
       { name: '다진마늘', vol: '3kg', amt: 24600, vendor: '양념마을', per: '8.2원/g' },

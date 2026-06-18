@@ -14,14 +14,12 @@ import { DEMO_INGREDIENTS, IngCardData, perLabel } from '../../ingredients/demoD
 const NUM = { fontVariant: ['tabular-nums' as const] };
 const SERVINGS = 10; // 이 메뉴 기준 인분(데모)
 
-// 상태 뱃지 — 충분(초록)/부족(앰버)/곧 소진(빨강). 솔리드.
+// 상태 뱃지 — 여유(초록)/소진 임박(빨강) 2단계. 솔리드.
 function StatusTag({ g }: { g: IngCardData }) {
   const conf =
-    g.soon || g.status === 'out'
-      ? { label: '곧 소진', c: T.red }
-      : g.status === 'low'
-        ? { label: '부족', c: T.amber }
-        : { label: '충분', c: T.green };
+    g.soon || g.status === 'out' || g.status === 'low'
+      ? { label: '소진 임박', c: T.red }
+      : { label: '여유', c: T.green };
   return (
     <View style={{ backgroundColor: conf.c, paddingHorizontal: 7, paddingVertical: 4, borderRadius: 7 }}>
       <Text style={{ color: '#fff', fontWeight: '700', fontSize: 11 }}>{conf.label}</Text>

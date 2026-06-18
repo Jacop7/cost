@@ -13,7 +13,7 @@ const NUM = { fontVariant: ['tabular-nums' as const] };
 const ARRIVALS = ['오늘', '내일', '모레', '날짜'];
 const WEEK = ['일', '월', '화', '수', '목', '금', '토'];
 const DAYS = Array.from({ length: 30 }, (_, i) => i + 1); // 2026년 6월(데모)
-const TODAY_DAY = 5;
+const TODAY_DAY = 18;
 
 function ItemRow({ label, value, last }: { label: string; value: string; last?: boolean }) {
   return (
@@ -34,7 +34,7 @@ export default function OrderCompleteScreen() {
   const [arrival, setArrival] = useState(1); // 기본: 내일
   const [autoIn, setAutoIn] = useState(true);
   const [calOpen, setCalOpen] = useState(false); // 날짜 달력 펼침
-  const [selDay, setSelDay] = useState(9); // 선택한 날짜(6월 N일)
+  const [selDay, setSelDay] = useState(TODAY_DAY); // 선택한 날짜(6월 N일) — 기본 오늘
 
   const amtN = Number(amt) || 0;
   const qtyN = Number(qty) || 1;
@@ -96,7 +96,7 @@ export default function OrderCompleteScreen() {
             const on = arrival === i;
             return (
               <Pressable key={i} onPress={() => { setArrival(i); setCalOpen(i === 3); }} style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingVertical: 12, borderRadius: 11, backgroundColor: on ? T.blue : T.surface, borderWidth: on ? 0 : 1, borderColor: T.line }}>
-                <Text style={{ fontSize: 14.5, fontWeight: '700', color: on ? '#fff' : T.sub }}>{i === 3 && calOpen ? `${a} ⌃` : a}</Text>
+                <Text style={{ fontSize: 14.5, fontWeight: '700', color: on ? '#fff' : T.sub }}>{a}</Text>
               </Pressable>
             );
           })}
@@ -131,15 +131,10 @@ export default function OrderCompleteScreen() {
                 );
               })}
             </View>
-            {/* 취소 · 선택 */}
-            <View style={{ flexDirection: 'row', gap: 9, marginTop: 12 }}>
-              <Button kind="gray" size="md" onPress={() => { setCalOpen(false); setArrival(1); }} style={{ flex: 1 }}>
-                취소
-              </Button>
-              <Button kind="primary" size="md" onPress={() => setCalOpen(false)} style={{ flex: 1.4 }}>
-                {`6월 ${selDay}일 선택`}
-              </Button>
-            </View>
+            {/* 선택 확정 */}
+            <Pressable onPress={() => setCalOpen(false)} style={{ marginTop: 12, alignItems: 'center', justifyContent: 'center', paddingVertical: 13, borderRadius: 11, backgroundColor: T.blueTint }}>
+              <Text style={{ fontSize: 15, fontWeight: '700', color: T.blue }}>{`6월 ${selDay}일`}</Text>
+            </Pressable>
           </View>
         ) : null}
 
