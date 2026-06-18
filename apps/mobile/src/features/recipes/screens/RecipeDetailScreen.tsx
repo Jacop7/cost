@@ -60,7 +60,7 @@ export default function RecipeDetailScreen() {
   // 도넛 — 판매가 구성. 순이익=상태색(미달 빨강/달성 초록), 비용=그레이 진하기.
   const breakdown = [
     { label: '재료', amt: material, color: '#8B95A1' },
-    { label: '추가 지출', amt: extra, color: '#CDD3DA' },
+    { label: '부자재', amt: extra, color: '#CDD3DA' },
     { label: '고정 지출', amt: fixed, color: '#5B6573' },
     { label: '세금', amt: tax, color: '#B0B8C1' },
     { label: '순이익', amt: profit, color: PROFIT },
@@ -151,7 +151,7 @@ export default function RecipeDetailScreen() {
         {/* 추가 지출 */}
         <Card pad={16}>
           <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 6, marginBottom: 8 }}>
-            <Text style={{ fontSize: 15, fontWeight: '800', color: '#5B6573' }}>추가 지출</Text>
+            <Text style={{ fontSize: 15, fontWeight: '800', color: '#5B6573' }}>부자재</Text>
             <Text style={{ fontSize: 12, color: T.ter, fontWeight: '600' }}>(이 메뉴에만 추가되는 지출)</Text>
           </View>
           {detail && detail.extras.length > 0 ? (
@@ -163,7 +163,7 @@ export default function RecipeDetailScreen() {
               </View>
             ))
           ) : (
-            <Text style={{ fontSize: 13, color: T.ter, paddingVertical: 4 }}>등록된 추가 지출이 없습니다.</Text>
+            <Text style={{ fontSize: 13, color: T.ter, paddingVertical: 4 }}>등록된 부자재가 없습니다.</Text>
           )}
         </Card>
 
@@ -174,8 +174,8 @@ export default function RecipeDetailScreen() {
             <Text style={{ fontSize: 12, color: T.ter, fontWeight: '600', marginLeft: 6 }}>(개당 환산)</Text>
             <View style={{ flex: 1 }} />
             <Pressable onPress={() => router.push('/recipes/fixed-cost' as Href)} style={{ flexDirection: 'row', alignItems: 'center', gap: 1 }}>
-              <Text style={{ fontSize: 13, fontWeight: '700', color: T.sub }}>자세히 보기</Text>
-              <Icon name="chevron" size={15} color={T.ter} />
+              <Text style={{ fontSize: 13, fontWeight: '700', color: T.blue }}>자세히 보기</Text>
+              <Icon name="chevron" size={15} color={T.blue} />
             </Pressable>
           </View>
           {FIXED_ITEMS.map((f, i) => (
@@ -238,7 +238,7 @@ export default function RecipeDetailScreen() {
             { label: '세금', amt: tax },
             { label: '재료 원가', amt: material },
             { label: '고정 지출', amt: fixed },
-            ...(extra > 0 ? [{ label: '추가 지출', amt: extra }] : []),
+            ...(extra > 0 ? [{ label: '부자재', amt: extra }] : []),
           ].map((c) => (
             <View key={c.label} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
               <Text style={{ flex: 1, fontSize: 14, fontWeight: '600', color: T.ink2 }}>
