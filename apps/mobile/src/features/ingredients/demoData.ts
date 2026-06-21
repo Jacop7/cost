@@ -36,7 +36,7 @@ export const DEMO_INGREDIENTS: IngCardData[] = [
   { id: 'ING-0021', name: '다진마늘', cat: '소스-유지류-장류', status: 'out', unit: 'g', per: 1000, sealed: 0, opened: 1, soon: true, price: 8.5, priceUnit: '원/g', last: '05-27', avg: 8.5, low: 8.2, high: 8.9, loss: 0, lossReal: 0, safe: 2, minOrder: 1, vendor: '□□상회', memo: '곧 소진 — 발주 필요' },
   { id: 'ING-0015', name: '식용유', cat: '소스-유지류-장류', status: 'ok', unit: 'ml', per: 18000, sealed: 2, opened: 1, soon: false, price: 2.5, priceUnit: '원/ml', last: '05-20', avg: 2.5, low: 2.4, high: 2.6, loss: 0, lossReal: 0, safe: 1, minOrder: 1, vendor: '대림유통' },
   { id: 'ING-0001', name: '계란', cat: '축산-계란', status: 'ok', unit: '개', per: 30, sealed: 3, opened: 1, soon: false, price: 220, priceUnit: '원/개', last: '06-02', avg: 220, low: 210, high: 230, loss: 0, lossReal: 0, safe: 2, minOrder: 1, vendor: '대성축산' },
-  { id: 'ING-0030', name: '두부', cat: '두부-발효식품', status: 'low', unit: '개', per: 1, sealed: 4, opened: 0, soon: false, price: 1100, priceUnit: '원/모', last: '06-03', avg: 1100, low: 1050, high: 1150, loss: 0, lossReal: 0, safe: 6, minOrder: 1, vendor: '○○청과' },
+  { id: 'ING-0030', name: '두부', cat: '두부-발효식품', status: 'low', unit: '개', per: 1, sealed: 4, opened: 0, soon: false, price: 1100, priceUnit: '원/개', last: '06-03', avg: 1100, low: 1050, high: 1150, loss: 0, lossReal: 0, safe: 6, minOrder: 1, vendor: '○○청과' },
 ];
 
 export const CATEGORIES = [
@@ -161,35 +161,35 @@ export const DETAIL_EXTRAS: Record<string, DetailExtra> = {
     ],
   },
 
-  // 계란 (원/개 · 30구 단위)
+  // 계란 (원/개 · 30개 단위)
   'ING-0001': {
     trend: [{ v: 210 }, { v: 213 }, { v: 216 }, { v: 220 }, { v: 225 }, { v: 220, big: true }],
     trendChange: '▲ 2.3% 상승',
     purchases: [
-      { date: '06-02', vendor: '대성축산', each: '30구', unitWon: 6600, qtyN: 3, per: 220 },
-      { date: '05-22', vendor: '양계직판', each: '30구', unitWon: 6300, qtyN: 2, per: 210 },
-      { date: '05-10', vendor: '대성축산', each: '30구', unitWon: 6900, qtyN: 1, per: 230 },
+      { date: '06-02', vendor: '대성축산', each: '30개', unitWon: 6600, qtyN: 3, per: 220 },
+      { date: '05-22', vendor: '양계직판', each: '30개', unitWon: 6300, qtyN: 2, per: 210 },
+      { date: '05-10', vendor: '대성축산', each: '30개', unitWon: 6900, qtyN: 1, per: 230 },
     ],
     options: [
-      { name: '계란 30구', vendor: '대성축산', per: 220 },
-      { name: '특란 30구', vendor: '양계직판', per: 210, best: true },
-      { name: '계란 15구', vendor: '마트', per: 230, high: true },
+      { name: '계란 30개', vendor: '대성축산', per: 220 },
+      { name: '특란 30개', vendor: '양계직판', per: 210, best: true },
+      { name: '계란 15개', vendor: '마트', per: 230, high: true },
     ],
   },
 
-  // 두부 (원/모 · 1모 단위)
+  // 두부 (원/개 · 1개 단위)
   'ING-0030': {
     trend: [{ v: 1050 }, { v: 1070 }, { v: 1090 }, { v: 1100 }, { v: 1150 }, { v: 1100, big: true }],
     trendChange: '▲ 1.9% 상승',
     purchases: [
-      { date: '06-03', vendor: '○○청과', each: '1모', unitWon: 1100, qtyN: 4, per: 1100 },
-      { date: '05-24', vendor: '두부공방', each: '1모', unitWon: 1050, qtyN: 6, per: 1050 },
-      { date: '05-12', vendor: '○○청과', each: '1모', unitWon: 1150, qtyN: 2, per: 1150 },
+      { date: '06-03', vendor: '○○청과', each: '1개', unitWon: 1100, qtyN: 4, per: 1100 },
+      { date: '05-24', vendor: '두부공방', each: '1개', unitWon: 1050, qtyN: 6, per: 1050 },
+      { date: '05-12', vendor: '○○청과', each: '1개', unitWon: 1150, qtyN: 2, per: 1150 },
     ],
     options: [
-      { name: '국산콩 두부 1모', vendor: '○○청과', per: 1100 },
-      { name: '두부 1모', vendor: '두부공방', per: 1050, best: true },
-      { name: '유기농 두부 1모', vendor: '쿠팡', per: 1150, high: true },
+      { name: '국산콩 두부 1개', vendor: '○○청과', per: 1100 },
+      { name: '두부 1개', vendor: '두부공방', per: 1050, best: true },
+      { name: '유기농 두부 1개', vendor: '쿠팡', per: 1150, high: true },
     ],
   },
 };
