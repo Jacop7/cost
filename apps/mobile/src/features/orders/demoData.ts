@@ -13,7 +13,7 @@ export interface Candidate {
   name: string;
   reason: 'out' | 'low' | 'recipe';
   reasonLabel: string;
-  rec: string; // 권장 발주 (예: '3망')
+  rec: string; // 권장 발주 (예: '3개')
   remain: string; // 현재 재고
   recent: string; // 최근 주문
   hint?: string; // 절약 힌트
@@ -65,8 +65,8 @@ export const CANDIDATES: Candidate[] = [
   {
     name: '두부', reason: 'low', reasonLabel: '안전재고 미달', rec: '2', remain: '미개봉 4', recent: '○○청과 11,000원 (6/03)',
     options: [
-      { name: '두부', vol: '10모', amt: 11000, vendor: '○○청과', per: '1,100원/모' },
-      { name: '두부', vol: '1모', amt: 1200, vendor: '쿠팡', per: '1,200원/모' },
+      { name: '두부', vol: '10개', amt: 11000, vendor: '○○청과', per: '1,100원/개' },
+      { name: '두부', vol: '1개', amt: 1200, vendor: '쿠팡', per: '1,200원/개' },
     ],
   },
 ];
