@@ -1,83 +1,65 @@
 /**
- * 발주(ORD) 데모 데이터 — 프로토타입 data.jsx 발췌. ⚠ 임시(Supabase 연동 전).
+ * 발주(ORD) 데모 데이터 — 프로토타입(발주 현황 페이지 정리본) 이식. ⚠ 임시(Supabase 연동 전).
  */
 export interface OrderOption {
   name: string; // 상품명
-  vol: string; // 용량 (예: '1통(1kg)')
-  amt: number; // 금액
   vendor: string;
-  per: string; // 환산 단가 라벨 (예: '2.1원/g')
+  brand: string;
+  amt: number; // 금액(원)
+  vol: number; // 용량(g/ml, 1개 기준)
+  per: number; // 환산 단가(원/g)
+  badge: 'high' | 'low' | null;
 }
 
 export interface Candidate {
   name: string;
   reason: 'out' | 'low' | 'recipe';
   reasonLabel: string;
-  rec: string; // 권장 발주 (예: '3개')
-  remain: string; // 현재 재고
-  recent: string; // 최근 주문
-  hint?: string; // 절약 힌트
-  calcNote?: string; // 레시피 계산 사유
-  options: OrderOption[]; // 구매 링크·옵션
+  remain: string; // 현재 재고 (예: '1.2kg (안전 3kg)')
+  rec: number; // 권장 발주량
+  recUnit: string; // 권장 단위
+  recent: string; // 최근 주문 한 줄
 }
 
 export interface Waiting {
   name: string;
-  vendor: string;
-  brand?: string;
-  qty: string;
-  amt: number;
-  due: string;
-  late?: boolean;
+  buy: string; // 구매처·상품·수량·금액 한 줄
+  due: string; // 도착 예정/지연
+  late: boolean;
 }
 
 export interface Done {
   name: string;
-  vendor: string;
-  qty: string;
-  amt: number;
-  date: string;
+  due: string; // 입고 완료 (날짜)
+  buy: string; // 구매 내역 한 줄
+  per: string; // 입고 단가
 }
 
+// 대파 구매 옵션·링크 (주문하기 / 발주완료 시트 공용)
+export const OPTIONS: OrderOption[] = [
+  { name: '대파(흙대파) 1kg', vendor: '○○청과몰', brand: '-', amt: 4000, vol: 1000, per: 4.0, badge: null },
+  { name: '깐대파 1kg', vendor: '쿠팡', brand: '곰곰', amt: 5200, vol: 1000, per: 5.2, badge: 'high' },
+  { name: '대파 2kg 박스', vendor: '□□상회', brand: '-', amt: 7600, vol: 2000, per: 3.8, badge: 'low' },
+];
+
 export const CANDIDATES: Candidate[] = [
-  {
-    name: '양파', reason: 'low', reasonLabel: '안전재고 미달', rec: '3', remain: '미개봉 0 · 개봉 1', recent: '대림유통 2,520원 (5/31)',
-    options: [
-      { name: '양파', vol: '1.2kg', amt: 2520, vendor: '대림유통', per: '2.1원/g' },
-      { name: '양파', vol: '3kg', amt: 5400, vendor: '농산랜드', per: '1.8원/g' },
-      { name: '깐양파', vol: '1kg', amt: 2300, vendor: '쿠팡', per: '2.3원/g' },
-    ],
-  },
-  {
-    name: '다진마늘', reason: 'out', reasonLabel: '곧 소진', rec: '2', remain: '개봉 1', recent: '□□상회 8,500원 (5/27)',
-    options: [
-      { name: '다진마늘', vol: '1kg', amt: 8500, vendor: '□□상회', per: '8.5원/g' },
-      { name: '다진마늘', vol: '3kg', amt: 24600, vendor: '양념마을', per: '8.2원/g' },
-    ],
-  },
-  {
-    name: '돼지고기 앞다리', reason: 'out', reasonLabel: '곧 소진', rec: '1', remain: '미개봉 1 · 개봉 1', recent: '대성축산 65,000원 (6/04)',
-    options: [
-      { name: '앞다리살 냉장', vol: '5kg', amt: 65000, vendor: '대성축산', per: '13원/g' },
-      { name: '앞다리살 냉동', vol: '5kg', amt: 55000, vendor: '미트뱅크', per: '11원/g' },
-    ],
-  },
-  {
-    name: '두부', reason: 'low', reasonLabel: '안전재고 미달', rec: '2', remain: '미개봉 4', recent: '○○청과 11,000원 (6/03)',
-    options: [
-      { name: '두부', vol: '10개', amt: 11000, vendor: '○○청과', per: '1,100원/개' },
-      { name: '두부', vol: '1개', amt: 1200, vendor: '쿠팡', per: '1,200원/개' },
-    ],
-  },
+  { name: '양파', reason: 'low', reasonLabel: '안전재고 미달', remain: '1.2kg (안전 3kg)', rec: 3.6, recUnit: 'kg', recent: '대림유통, 양파 1.2kg, 2개 5,040원 (5/31)' },
+  { name: '다진마늘', reason: 'out', reasonLabel: '곧 소진', remain: '200g (안전 1kg)', rec: 1000, recUnit: 'g', recent: '□□상회, 다진마늘 1kg, 1개 8,500원 (5/27)' },
+  { name: '돼지고기 앞다리', reason: 'out', reasonLabel: '곧 소진', remain: '2kg (안전 5kg)', rec: 5, recUnit: 'kg', recent: '대성축산, 돼지고기 앞다리 5kg, 1개 65,000원 (6/04)' },
+  { name: '두부', reason: 'low', reasonLabel: '안전재고 미달', remain: '4개 (안전 6개)', rec: 2, recUnit: '개', recent: '○○청과, 두부 10개, 1개 11,000원 (6/03)' },
+  { name: '식용유', reason: 'low', reasonLabel: '안전재고 미달', remain: '3L (안전 18L)', rec: 18, recUnit: 'L', recent: '쿠팡, 식용유 18L, 1개 45,000원 (5/20)' },
 ];
 
 export const WAITING: Waiting[] = [
-  { name: '대파', vendor: '○○청과', qty: '2', amt: 8000, due: '내일 (06-06)', late: false },
-  { name: '양파', vendor: '대림유통', qty: '3', amt: 7560, due: '오늘 (06-05)', late: false },
-  { name: '식용유', vendor: '대림유통', brand: '해표', qty: '1', amt: 45000, due: '지연 (06-03)', late: true },
+  { name: '대파', buy: '○○청과, 대파 1개, 2개 8,000원', due: '2일 후 도착 (06/08)', late: false },
+  { name: '계란', buy: '대성축산, 계란 30개, 3개 19,800원', due: '내일 도착 (06/07)', late: false },
+  { name: '두부', buy: '○○청과, 두부 10개, 2개 22,000원', due: '오늘 도착 (06/06)', late: false },
+  { name: '식용유', buy: '대림유통, 식용유 18L, 1개 45,000원', due: '1일 지연 (06/05)', late: true },
 ];
 
 export const DONE: Done[] = [
-  { name: '돼지고기 앞다리', vendor: '대성축산', qty: '1', amt: 65000, date: '06-04' },
-  { name: '계란', vendor: '대성축산', qty: '3', amt: 19800, date: '06-02' },
+  { name: '돼지고기 앞다리', due: '입고 완료 (06/04)', buy: '대성축산, 돼지고기 앞다리 5kg, 1개 65,000원', per: '13.0원/g' },
+  { name: '청양고추', due: '입고 완료 (06/01)', buy: '대림유통, 청양고추 500g, 1개 4,900원', per: '9.8원/g' },
+  { name: '두부', due: '입고 완료 (06/03)', buy: '○○청과, 두부 10개, 2개 22,000원', per: '1,100원/개' },
+  { name: '대파', due: '입고 완료 (05/28)', buy: '대림유통, 대파 1개, 3개 10,800원', per: '3.6원/g' },
 ];
