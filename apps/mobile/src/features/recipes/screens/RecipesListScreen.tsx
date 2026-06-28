@@ -58,26 +58,26 @@ function RecipeCard({ r }: { r: RecipeCardData }) {
 
         {/* 판매가 */}
         <View style={{ flexDirection: 'row', alignItems: 'baseline', marginTop: 10 }}>
-          <Text style={{ fontSize: 13.5, fontWeight: '700', color: T.sub }}>판매가 </Text>
-          <Text style={[{ fontSize: 15, fontWeight: '700', color: T.sub2 }, NUM]}>{won(r.price)}원</Text>
+          <Text style={{ fontSize: 16, fontWeight: '700', color: T.sub }}>판매가 </Text>
+          <Text style={[{ fontSize: 16, fontWeight: '700', color: T.sub2 }, NUM]}>{won(r.price)}원</Text>
         </View>
 
         {/* 순이익(원·%) · 재료 원가율(원·%) */}
         <View style={{ flexDirection: 'row', alignItems: 'baseline', flexWrap: 'wrap', marginTop: 6 }}>
-          <Text style={{ fontSize: 13.5, fontWeight: '700', color: T.sub }}>순이익 </Text>
-          <Text style={[{ fontSize: 15, fontWeight: '800', color: T.ink }, NUM]}>{won(p.profit)}원 </Text>
-          <Text style={[{ fontSize: 13.5, fontWeight: '700', color: T.ink }, NUM]}>{pct(p.profitRate)}%</Text>
-          <Text style={{ fontSize: 13, color: T.ter, marginHorizontal: 7 }}>·</Text>
-          <Text style={{ fontSize: 13.5, fontWeight: '700', color: T.sub }}>재료비 </Text>
-          <Text style={[{ fontSize: 15, fontWeight: '700', color: T.sub2 }, NUM]}>{won(r.materialPerServing)}원 </Text>
-          <Text style={[{ fontSize: 13.5, fontWeight: '600', color: T.sub2 }, NUM]}>{pct(p.materialRate)}%</Text>
+          <Text style={{ fontSize: 16, fontWeight: '700', color: T.sub }}>순이익 </Text>
+          <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{won(p.profit)}원 </Text>
+          <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{pct(p.profitRate)}%</Text>
+          <Text style={{ fontSize: 16, color: T.ter, marginHorizontal: 7 }}>·</Text>
+          <Text style={{ fontSize: 16, fontWeight: '700', color: T.sub }}>재료비 </Text>
+          <Text style={[{ fontSize: 16, fontWeight: '700', color: T.sub2 }, NUM]}>{won(r.materialPerServing)}원 </Text>
+          <Text style={[{ fontSize: 16, fontWeight: '600', color: T.sub2 }, NUM]}>{pct(p.materialRate)}%</Text>
         </View>
 
         {/* 목표 미달 → 권장가 힌트 */}
         {warn && p.recommended != null ? (
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5, marginTop: 9, backgroundColor: T.line2, borderRadius: 9, paddingVertical: 8, paddingHorizontal: 11 }}>
             <Icon name="up" size={15} color={T.ink} sw={2.2} />
-            <Text style={{ fontSize: 13, fontWeight: '600', color: T.sub }}>
+            <Text style={{ fontSize: 16, fontWeight: '600', color: T.sub }}>
               목표 판매가 <Text style={[{ fontWeight: '800', color: T.ink }, NUM]}>{won(p.recommended)}원 {pct(r.target)}%</Text>
             </Text>
           </View>
@@ -131,7 +131,7 @@ export default function RecipesListScreen() {
       {/* 헤더 — 타이틀(좌) + 검색 아이콘(우) */}
       <View style={{ paddingTop: insets.top, backgroundColor: T.bg }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 20, paddingRight: 12, paddingTop: 6, paddingBottom: 12 }}>
-          <Text style={{ flex: 1, fontSize: 24, fontWeight: '800', color: T.ink, letterSpacing: -0.6 }}>레시피</Text>
+          <Text style={{ flex: 1, fontSize: 22, fontWeight: '800', color: T.ink, letterSpacing: -0.6 }}>레시피</Text>
           <Pressable style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}>
             <Icon name="search" size={23} color={T.ink2} />
           </Pressable>
@@ -149,17 +149,17 @@ export default function RecipesListScreen() {
       </View>
 
       {/* 카드 리스트 */}
-      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 104, gap: 10, flexGrow: 1 }}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 104, gap: 10, flexGrow: 1 }}>
         {sorted.length === 0 ? (
           <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingVertical: 80 }}>
-            <Text style={{ fontSize: 15, color: T.ter }}>등록된 메뉴가 없습니다.</Text>
+            <Text style={{ fontSize: 16, color: T.ter }}>등록된 메뉴가 없습니다.</Text>
           </View>
         ) : (
           <>
             {belowList.length > 0 ? (
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: T.redTint, borderWidth: 1, borderColor: T.red, borderRadius: 10, paddingVertical: 10, paddingHorizontal: 12 }}>
                 <Icon name="warn" size={16} color={T.red} />
-                <Text style={{ flex: 1, fontSize: 14, fontWeight: '700', color: T.red }} numberOfLines={1}>
+                <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: T.red }} numberOfLines={1}>
                   목표 미달 {belowList.length} — {belowList.map((r) => r.name).join(', ')}
                 </Text>
               </View>

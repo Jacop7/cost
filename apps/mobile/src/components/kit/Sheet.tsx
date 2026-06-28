@@ -6,7 +6,7 @@ import { ReactElement, ReactNode } from 'react';
 import { Modal, Pressable, ScrollView, Text, View } from 'react-native';
 import { T } from '@/theme/tokens';
 
-export function Sheet({ visible, onClose, children, title, sub, height, headerRight }: {
+export function Sheet({ visible, onClose, children, title, sub, height, headerRight, scroll = true }: {
   visible: boolean;
   onClose: () => void;
   children: ReactNode;
@@ -14,6 +14,7 @@ export function Sheet({ visible, onClose, children, title, sub, height, headerRi
   sub?: string;
   height?: number | string;
   headerRight?: ReactElement;
+  scroll?: boolean; // false면 스크롤 없이 flex 컨테이너 (자체 레이아웃·하단 고정 버튼용)
 }) {
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
@@ -25,13 +26,17 @@ export function Sheet({ visible, onClose, children, title, sub, height, headerRi
         {title ? (
           <View style={{ flexDirection: 'row', alignItems: 'flex-start', paddingHorizontal: 20, paddingTop: 12 }}>
             <View style={{ flex: 1 }}>
-              <Text style={{ fontSize: 21, fontWeight: '800', color: T.ink, letterSpacing: -0.4 }}>{title}</Text>
-              {sub ? <Text style={{ fontSize: 14, color: T.sub2, marginTop: 3, fontWeight: '500' }}>{sub}</Text> : null}
+              <Text style={{ fontSize: 20, fontWeight: '800', color: T.ink, letterSpacing: -0.4 }}>{title}</Text>
+              {sub ? <Text style={{ fontSize: 16, color: T.sub2, marginTop: 3, fontWeight: '500' }}>{sub}</Text> : null}
             </View>
             {headerRight}
           </View>
         ) : null}
-        <ScrollView contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 14, paddingBottom: 40 }}>{children}</ScrollView>
+        {scroll ? (
+          <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 14, paddingBottom: 40 }}>{children}</ScrollView>
+        ) : (
+          <View style={{ flex: 1, paddingTop: 14 }}>{children}</View>
+        )}
       </View>
     </Modal>
   );

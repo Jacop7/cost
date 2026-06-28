@@ -1,144 +1,232 @@
-/**
- * ING 식재료 수정 — ING-03 추가 폼을 기반으로, 상세(ING-02) 데이터를 프리필한 수정 화면.
- * 이름·카테고리·개당용량·구매가격·로스율·안전재고/최소발주·구매옵션 + 단가 미리보기 + 저장/삭제.
- * ⚠ 현재는 디자인 프로토타입(정적 입력). 실제 수정/저장·삭제는 데이터 연결 단계에서 TextInput·RPC로.
- */
-import { Pressable, ScrollView, Text, View } from 'react-native';
-import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
-import { AppHeader, Badge, Button, Field, Icon, Input, Select } from '@/components/kit';
-import { round } from '@sikjae/core';
-import { T, won } from '@/theme/tokens';
-import { DETAIL_EXTRAS, getIngredient } from '../demoData';
+// IngredientEditScreen.tsx — ING-04 식재료 수정 (ScreenING03)
+import React, { useState } from 'react';
+import { View, Text, ScrollView, Pressable } from 'react-native';
+import { useRouter, useLocalSearchParams } from 'expo-router';
+import { previewBaseUnitPrice, rawUnitPrice, round } from '@sikjae/core';
+import { AppHeader, Field, Input, Select, Button, Icon } from '../../../components/kit';
+import { T, tnum } from '../../../theme/tokens';
+import { optionsFor } from '../demoData';
+import { safeBack } from '@/lib/nav';
+import { clampByUnit, clampDecimals } from '@/lib/num';
+import { useIngredients } from '../store';
+import { UnitPickerSheet } from '../components/UnitPickerSheet';
+import { CategoryPickerSheet } from '../components/CategoryPickerSheet';
 
-const NUM = { fontVariant: ['tabular-nums' as const] };
+type LossMode = 'pct' | 'qty';
 
-export default function IngredientEditScreen() {
+const num = (s: string) => {
+  const n = parseFloat(s.replace(/,/g, ''));
+  return isNaN(n) ? 0 : n;
+};
+const baseUnitOf = (u: string): 'g' | 'ml' | '개' => (u === 'kg' || u === 'g' ? 'g' : u === 'L' || u === 'ml' ? 'ml' : '개');
+// 기준단위 → 편집 표기단위(큰 단위 우선).
+const dispUnitOf = (base: 'g' | 'ml' | '개', per: number) => (base === '개' ? '개' : per >= 1000 ? (base === 'ml' ? 'L' : 'kg') : base);
+
+export function IngredientEditScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
-  const g = getIngredient(id);
-  const extra = id ? DETAIL_EXTRAS[id] : undefined;
+  const items = useIngredients((s) => s.items);
+  const update = useIngredients((s) => s.update);
+  const remove = useIngredients((s) => s.remove);
+  const g = (items.find((x) => x.id === id) || items[0])!;
 
-  if (!g) {
-    return (
-      <View style={{ flex: 1, backgroundColor: T.bg }}>
-        <AppHeader title="식재료 수정" onBack={() => router.back()} />
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-          <Text style={{ color: T.ter }}>식재료를 찾을 수 없습니다.</Text>
-        </View>
-      </View>
-    );
-  }
+  const initUnit = dispUnitOf(g.unit, g.per);
+  const initFactor = initUnit === 'kg' || initUnit === 'L' ? 1000 : 1;
+  const initRaw = round(g.price * (1 - g.loss / 100), 2); // 로스 반영 전 단가
+  const opts = optionsFor(g.name);
 
-  const loss = g.loss ?? 0;
-  const real = g.price; // 기준 단가(로스 반영) = 실사용 단가
-  const raw = round(real * (1 - loss / 100), 2); // 구매가 단가(로스 0) 역산
-  const recent = extra?.purchases[0]; // 최근 구매 한 건(구매가 프리필)
+  const [lossMode, setLossMode] = useState<LossMode>('pct');
+  const [unit, setUnit] = useState(initUnit);
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const [catOpen, setCatOpen] = useState(false);
+
+  const [name, setName] = useState(g.name);
+  const [cat, setCat] = useState(g.cat);
+  const [vol, setVol] = useState(clampByUnit(String(round(g.per / initFactor, 3)), initUnit));
+  const [boxQty, setBoxQty] = useState(String(g.per));
+  const [price, setPrice] = useState(String(Math.round(initRaw * g.per)));
+  const [lossVal, setLossVal] = useState(String(g.loss));
+  const [safe, setSafe] = useState(String(g.safe));
+  const [minOrder, setMinOrder] = useState('1');
+
+  const isMeasure = !(unit === '박스' || unit === '개');
+  const base = baseUnitOf(unit);
+  const perBase = unit === '박스' ? num(boxQty) : isMeasure ? num(vol) * (unit === 'kg' || unit === 'L' ? 1000 : 1) : num(vol);
+  const lossPct = lossMode === 'pct' ? num(lossVal) : isMeasure ? (num(lossVal) / 1000) * 100 : (num(lossVal) / 30) * 100;
+  const rawPer = perBase > 0 ? round(rawUnitPrice(num(price), perBase), 2) : 0;
+  const realPer = perBase > 0 ? round(previewBaseUnitPrice(num(price), perBase, lossPct / 100), 2) : 0;
+  const boxEach = unit === '박스' && num(boxQty) > 0 ? round(num(price) / num(boxQty), 2) : 0;
+
+  const onSave = () => {
+    update(g.id, {
+      name: name.trim() || g.name,
+      cat,
+      unit: base,
+      per: perBase > 0 ? perBase : g.per,
+      priceUnit: `원/${base}`,
+      price: realPer || g.price,
+      loss: Math.round(lossPct),
+      lossReal: round(lossPct, 1),
+      safe: num(safe),
+      avg: rawPer || g.avg,
+      low: rawPer || g.low,
+      high: rawPer || g.high,
+      recent: rawPer || g.recent,
+    });
+    safeBack();
+  };
+  const onDelete = () => {
+    remove(g.id);
+    router.replace('/ingredients'); // 삭제된 상세로 돌아가지 않도록 목록으로
+  };
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
-      <AppHeader title="식재료 수정" onBack={() => router.back()} />
+      <AppHeader title="식재료 수정" onBack={() => safeBack()} />
+      <ScrollView contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 4, paddingBottom: 24 }} showsVerticalScrollIndicator={false}>
+        <Field label="식재료명" req><Input value={name} onChangeText={setName} /></Field>
+        <Field label="카테고리" req><Select value={cat} onPress={() => setCatOpen(true)} /></Field>
 
-      <ScrollView contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 4, paddingBottom: 24 }}>
-        <Field label="식재료명" req>
-          <Input value={g.name} />
-        </Field>
-        <Field label="카테고리" req>
-          <Select value={g.cat} />
-        </Field>
-        <Field label="개당 용량" req hint="kg·L 입력 시 자동 환산 · '개'는 포장당 개수">
+        <Field label="용량" req hint="kg·L 입력 시 자동 환산 · '개'는 포장당 개수">
           <View style={{ flexDirection: 'row', gap: 10 }}>
-            <View style={{ flex: 2 }}>
-              <Input value={won(g.per)} mono />
-            </View>
-            <View style={{ flex: 1 }}>
-              <Select value={g.unit} />
-            </View>
+            <View style={{ flex: 2 }}><Input value={vol} onChangeText={(t) => setVol(clampByUnit(t, unit))} mono keyboardType="decimal-pad" /></View>
+            <Pressable
+              onPress={() => setPickerOpen(true)}
+              style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: T.surface, borderWidth: 1, borderColor: T.line, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 13 }}
+            >
+              <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.ink }}>{unit}</Text>
+              <Icon name="chevronDown" size={18} color={T.ter} />
+            </Pressable>
           </View>
         </Field>
-        <Field label="구매 가격" req>
-          <Input value={recent ? won(recent.unitWon) : ''} placeholder="최근 구매가" suffix={recent ? `원 / ${recent.each}` : '원'} mono />
+
+        {unit === '박스' ? (
+          <Field label="박스당 수량" req><Input value={boxQty} onChangeText={(t) => setBoxQty(clampDecimals(t, 0))} suffix="개" mono keyboardType="number-pad" /></Field>
+        ) : null}
+
+        <Field label="구매 가격" req><Input value={price} onChangeText={(t) => setPrice(clampDecimals(t, 0))} suffix="원" mono keyboardType="number-pad" /></Field>
+
+        <Field
+          label="로스율"
+          req
+          right={
+            <View style={{ flexDirection: 'row', gap: 3, padding: 3, backgroundColor: '#E8EBEE', borderRadius: 9 }}>
+              {(['pct', 'qty'] as LossMode[]).map((k) => {
+                const on = lossMode === k;
+                return (
+                  <Pressable key={k} onPress={() => setLossMode(k)} style={{ paddingVertical: 5, paddingHorizontal: 13, borderRadius: 7, backgroundColor: on ? '#fff' : 'transparent', shadowColor: '#000', shadowOpacity: on ? 0.1 : 0, shadowRadius: 2, shadowOffset: { width: 0, height: 1 }, elevation: on ? 1 : 0 }}>
+                    <Text style={{ fontSize: 13, fontWeight: '700', color: on ? T.ink : T.sub2 }}>{k === 'pct' ? '%' : '수량'}</Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+          }
+        >
+          {lossMode === 'pct' ? (
+            <Input value={lossVal} onChangeText={(t) => setLossVal(clampDecimals(t, 1))} suffix="%" mono keyboardType="number-pad" />
+          ) : (
+            <View>
+              <Input value={lossVal} onChangeText={(t) => setLossVal(clampByUnit(t, unit))} suffix={'/ ' + (isMeasure ? '1,000' + unit : '30개') + ' 중'} mono keyboardType="number-pad" />
+              <View style={{ backgroundColor: T.blueTint, borderWidth: 1, borderColor: T.blue, borderRadius: 10, paddingVertical: 11, paddingHorizontal: 14, marginTop: 9 }}>
+                <Text style={{ fontSize: 16, fontWeight: '700', color: T.blue }}>로스율 <Text style={{ fontWeight: '800' }}>{round(lossPct, 1)}%</Text></Text>
+              </View>
+            </View>
+          )}
         </Field>
 
         {/* 단가 미리보기 */}
         <View style={{ backgroundColor: T.blueTint, borderWidth: 1, borderColor: T.blue, borderRadius: 12, paddingVertical: 14, paddingHorizontal: 16, marginBottom: 18 }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 12 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 11 }}>
             <Icon name="info" size={17} color={T.blue} />
-            <Text style={{ fontSize: 13.5, fontWeight: '700', color: T.blue }}>단가 미리보기</Text>
+            <Text style={{ fontSize: 16, fontWeight: '700', color: T.blue }}>단가 미리보기</Text>
           </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
-            <Text style={{ flex: 1, fontSize: 13.5, fontWeight: '600', color: T.sub2 }}>구매가 단가</Text>
-            <Text style={[{ fontSize: 15, fontWeight: '700', color: T.ink }, NUM]}>
-              {raw}
-              <Text style={{ fontSize: 12, color: T.sub2 }}>{g.priceUnit}</Text>
-            </Text>
-          </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Text style={{ flex: 1, fontSize: 13.5, fontWeight: '700', color: T.blue }}>
-              실사용 단가 <Text style={{ fontSize: 12, fontWeight: '600', color: T.blue }}>(로스 {loss}% 반영)</Text>
-            </Text>
-            <Text style={[{ fontSize: 19, fontWeight: '800', color: T.blue }, NUM]}>
-              {real}
-              <Text style={{ fontSize: 13 }}>{g.priceUnit}</Text>
-            </Text>
-          </View>
+          {unit === '박스' ? (
+            <>
+              <PreviewRow label="박스 단가" value={String(num(price))} unit="원/박스" />
+              <PreviewRow label="낱개 단가" hint={`(${num(price)} ÷ ${num(boxQty) || 0})`} value={String(boxEach)} unit="원/개" />
+              <PreviewFinal lossPct={round(lossPct, 1)} value={String(realPer)} unit="원/개" />
+            </>
+          ) : (
+            <>
+              <PreviewRow label="구매가 단가" value={String(rawPer)} unit={`원/${base}`} />
+              <PreviewFinal lossPct={round(lossPct, 1)} value={String(realPer)} unit={`원/${base}`} />
+            </>
+          )}
         </View>
 
-        <Field label="로스율" req>
-          <Input value={String(loss)} suffix="%" mono />
-        </Field>
         <View style={{ flexDirection: 'row', gap: 10 }}>
-          <View style={{ flex: 1 }}>
-            <Field label="안전재고" req>
-              <Input value={g.safe != null ? String(g.safe) : ''} placeholder="0" suffix="개" mono />
-            </Field>
-          </View>
-          <View style={{ flex: 1 }}>
-            <Field label="최소 발주" req>
-              <Input value={g.minOrder != null ? String(g.minOrder) : ''} placeholder="0" suffix="개" mono />
-            </Field>
-          </View>
+          <View style={{ flex: 1 }}><Field label="안전재고" req><Input value={safe} onChangeText={(t) => setSafe(clampByUnit(t, unit))} suffix={unit} mono keyboardType="decimal-pad" /></Field></View>
+          <View style={{ flex: 1 }}><Field label="최소 발주" req><Input value={minOrder} onChangeText={(t) => setMinOrder(clampByUnit(t, unit))} suffix={unit} mono keyboardType="decimal-pad" /></Field></View>
         </View>
 
         {/* 구매 링크 · 옵션 */}
         <View style={{ marginTop: 4 }}>
-          <Text style={{ fontSize: 13.5, fontWeight: '700', color: T.sub, marginBottom: 8 }}>
+          <Text style={{ fontSize: 16, fontWeight: '700', color: T.sub, marginBottom: 8 }}>
             구매 링크 · 옵션 <Text style={{ color: T.ter, fontWeight: '600' }}>(선택)</Text>
           </Text>
-          {extra && extra.options.length > 0 ? (
-            <View style={{ gap: 8, marginBottom: 10 }}>
-              {extra.options.map((o, i) => (
-                <View key={i} style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 11, paddingHorizontal: 13, backgroundColor: T.surface2, borderRadius: 11 }}>
-                  <Icon name="link" size={17} color={T.blue} />
-                  <View style={{ flex: 1 }}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                      <Text style={{ fontSize: 13.5, fontWeight: '700', color: T.ink }}>{o.name}</Text>
-                      {o.best ? <Badge tone="green" sm>최저가</Badge> : null}
-                      {o.high ? <Badge tone="red" sm>▲33%</Badge> : null}
-                    </View>
-                    <Text style={[{ fontSize: 12, color: T.ter, marginTop: 2 }, NUM]}>{o.vendor} · {o.per}{g.priceUnit}</Text>
-                  </View>
-                  <Icon name="close" size={16} color={T.ter} />
+          <View style={{ gap: 8, marginBottom: 10 }}>
+            {opts.map((o, i) => (
+              <Pressable key={i} onPress={() => router.push(`/ingredients/option?mode=edit&oi=${i}&base=${g.unit}&recent=${g.recent}&rvendor=${encodeURIComponent(g.vendor)}&rname=${encodeURIComponent(g.name)}`)} style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 11, paddingHorizontal: 13, backgroundColor: T.surface2, borderRadius: 11 }}>
+                <Icon name="link" size={17} color={T.blue} />
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>{o.name}, {o.price}</Text>
+                  <Text style={{ fontSize: 14, color: T.ter, marginTop: 2 }}>{o.vendor} · {o.per}원/{g.unit}</Text>
                 </View>
-              ))}
-            </View>
-          ) : null}
-          <Pressable onPress={() => router.push('/ingredients/option' as Href)} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5, paddingVertical: 13, borderRadius: 12, borderWidth: 1, borderColor: T.blue, backgroundColor: T.blueTint }}>
+                <Icon name="chevron" size={18} color="#C5CCD3" />
+              </Pressable>
+            ))}
+          </View>
+          <Pressable onPress={() => router.push(`/ingredients/option?mode=add&base=${g.unit}&recent=${g.recent}&rvendor=${encodeURIComponent(g.vendor)}&rname=${encodeURIComponent(g.name)}`)} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5, paddingVertical: 13, borderRadius: 12, borderWidth: 1, borderColor: T.blue, backgroundColor: T.blueTint }}>
             <Icon name="plus" size={18} color={T.blue} sw={2.2} />
-            <Text style={{ fontSize: 14.5, fontWeight: '700', color: T.blue }}>구매 링크 · 옵션 추가</Text>
+            <Text style={{ fontSize: 16, fontWeight: '700', color: T.blue }}>구매 링크 · 옵션 추가</Text>
           </Pressable>
         </View>
-
       </ScrollView>
 
-      {/* 하단 — 좌측 삭제 · 우측 저장 */}
-      <View style={{ flexDirection: 'row', gap: 9, paddingHorizontal: 20, paddingTop: 12, paddingBottom: 30, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
-        <Button kind="danger" size="lg" onPress={() => router.back()} style={{ flex: 1 }}>
-          삭제
-        </Button>
-        <Button kind="primary" size="lg" onPress={() => router.back()} style={{ flex: 2 }}>
-          저장
-        </Button>
+      <View style={{ flexDirection: 'row', gap: 10, paddingHorizontal: 20, paddingTop: 12, paddingBottom: 30, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
+        <Button kind="danger" size="lg" style={{ flex: 1 }} onPress={onDelete}>삭제</Button>
+        <Button kind="primary" size="lg" style={{ flex: 2 }} onPress={onSave}>저장</Button>
       </View>
+
+      <UnitPickerSheet
+        visible={pickerOpen}
+        unit={unit}
+        onSelect={(u) => {
+          setUnit(u);
+          setVol((p) => clampByUnit(p, u));
+          setSafe((p) => clampByUnit(p, u));
+          setMinOrder((p) => clampByUnit(p, u));
+        }}
+        onClose={() => setPickerOpen(false)}
+        base={g.unit}
+      />
+      <CategoryPickerSheet visible={catOpen} value={cat} onSelect={setCat} onClose={() => setCatOpen(false)} />
+    </View>
+  );
+}
+
+function PreviewRow({ label, hint, value, unit }: { label: string; hint?: string; value: string; unit: string }) {
+  return (
+    <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 7 }}>
+      <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.sub2 }}>
+        {label} {hint ? <Text style={{ color: T.ter }}>{hint}</Text> : null}
+      </Text>
+      <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, tnum]}>
+        {value}<Text style={{ fontSize: 16, color: T.sub2 }}>{unit}</Text>
+      </Text>
+    </View>
+  );
+}
+
+function PreviewFinal({ lossPct, value, unit }: { lossPct: number; value: string; unit: string }) {
+  return (
+    <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 8, borderTopWidth: 1, borderTopColor: 'rgba(49,130,246,0.2)' }}>
+      <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: T.blue }}>
+        실사용 단가 <Text style={{ fontWeight: '600' }}>(로스 {lossPct}% 반영)</Text>
+      </Text>
+      <Text style={[{ fontSize: 18, fontWeight: '800', color: T.blue }, tnum]}>
+        {value}<Text style={{ fontSize: 16 }}>{unit}</Text>
+      </Text>
     </View>
   );
 }

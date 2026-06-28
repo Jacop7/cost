@@ -23,7 +23,7 @@ export default function TabsLayout() {
       screenOptions={{
         tabBarActiveTintColor: T.blue,
         tabBarInactiveTintColor: '#B0B8C1',
-        tabBarLabelStyle: { fontSize: 10, fontWeight: '700' },
+        tabBarLabelStyle: { fontSize: 12.5, fontWeight: '700' },
         tabBarStyle: {
           backgroundColor: '#FFFFFF',
           borderTopColor: T.line2,

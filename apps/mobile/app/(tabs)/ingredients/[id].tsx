@@ -1,1 +1,2 @@
-export { default } from '@/features/ingredients/screens/IngredientDetailScreen';
+import { IngredientDetailScreen } from '../../../src/features/ingredients';
+export default IngredientDetailScreen;

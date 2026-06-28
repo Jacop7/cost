@@ -42,9 +42,15 @@ export const FONT = {
   num: ['tabular-nums'] as const,
 };
 
+/** 재고 상태 키 — 여유(ok) / 안전재고 미달(low) / 소진 임박(out). */
+export type StatusKey = 'ok' | 'low' | 'out';
+
+/** 숫자 정렬용 tabular-nums 스타일 (kit tnum). */
+export const tnum = { fontVariant: ['tabular-nums'] } as { fontVariant: ('tabular-nums')[] };
+
 /** 재고 상태색 — 2단계: 여유 / 소진 임박. ('부족' 단계 제거, 기존 부족은 여유로 흡수) */
 export const STATUS: Record<
-  'ok' | 'low' | 'out',
+  StatusKey,
   { label: string; fg: string; bg: string; bar: string }
 > = {
   ok: { label: '여유', fg: T.green, bg: T.greenTint, bar: T.green },

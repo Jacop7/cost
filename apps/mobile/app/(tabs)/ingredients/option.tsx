@@ -1,1 +1,2 @@
-export { default } from '@/features/ingredients/screens/IngredientOptionAddScreen';
+import { PurchaseOptionScreen } from '../../../src/features/ingredients';
+export default PurchaseOptionScreen;

@@ -1,6 +1,6 @@
 /**
  * AppHeader — kit.jsx 헤더 이식. 프로토타입의 paddingTop:50(노치) 은
- * RN useSafeAreaInsets().top 으로 대체. large=대형 타이틀(리스트 상단).
+ * RN useSafeAreaInsets().top 으로 대체. (대형 타이틀이 필요한 리스트는 자체 헤더 사용)
  */
 import { ReactNode } from 'react';
 import { Pressable, Text, View } from 'react-native';
@@ -8,12 +8,10 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Icon } from './Icon';
 import { T } from '@/theme/tokens';
 
-export function AppHeader({ title, large, onBack, right, sub, bg = T.bg }: {
+export function AppHeader({ title, onBack, right, bg = T.bg }: {
   title: string;
-  large?: boolean;
   onBack?: () => void;
   right?: ReactNode;
-  sub?: string;
   bg?: string;
 }) {
   const insets = useSafeAreaInsets();
@@ -27,15 +25,9 @@ export function AppHeader({ title, large, onBack, right, sub, bg = T.bg }: {
         ) : (
           <View style={{ width: 12 }} />
         )}
-        {!large ? <Text style={{ flex: 1, fontSize: 19, fontWeight: '700', color: T.ink, letterSpacing: -0.3 }}>{title}</Text> : <View style={{ flex: 1 }} />}
+        <Text style={{ flex: 1, fontSize: 18, fontWeight: '700', color: T.ink, letterSpacing: -0.3 }}>{title}</Text>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 2, paddingRight: 6 }}>{right}</View>
       </View>
-      {large ? (
-        <View style={{ paddingHorizontal: 20, paddingTop: 2, paddingBottom: 12 }}>
-          <Text style={{ fontSize: 27, fontWeight: '800', color: T.ink, letterSpacing: -0.6 }}>{title}</Text>
-          {sub ? <Text style={{ marginTop: 4, fontSize: 14.5, color: T.sub2, fontWeight: '500' }}>{sub}</Text> : null}
-        </View>
-      ) : null}
     </View>
   );
 }

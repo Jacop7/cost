@@ -31,9 +31,9 @@ export function MemoEditSheet({ visible, value, maxLength = 100, onClose, onSave
         autoFocus
         placeholder="메모를 입력하세요"
         placeholderTextColor={T.ter}
-        style={{ backgroundColor: T.surface2, borderRadius: 12, padding: 14, fontSize: 15, lineHeight: 22, color: T.ink, minHeight: 100, textAlignVertical: 'top' }}
+        style={{ backgroundColor: T.surface2, borderRadius: 12, padding: 14, fontSize: 16, lineHeight: 22, color: T.ink, minHeight: 100, textAlignVertical: 'top' }}
       />
-      <Text style={{ textAlign: 'right', fontSize: 12, color: T.ter, marginTop: 8 }}>
+      <Text style={{ textAlign: 'right', fontSize: 13, color: T.ter, marginTop: 8 }}>
         {draft.length} / {maxLength}
       </Text>
 
