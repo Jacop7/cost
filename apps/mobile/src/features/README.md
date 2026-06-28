@@ -10,13 +10,15 @@
 
 | 모듈 | 화면 ID | 이름 | 라우트 / 파일 | 상태 |
 |---|---|---|---|---|
-| `ingredients` | ING-01 | 식재료 리스트 (카테고리 필터·정렬·소진임박 알림) | `ingredients/index` | ✅ |
-| `ingredients` | ING-02 | 식재료 상세 (잔여·기준단가·최근 주문내역·구매옵션) | `ingredients/[id]` | ✅ |
-| `ingredients` | ING-03 | 식재료 추가 (등록 폼·단가 미리보기) | `ingredients/add` | ✅ |
-| `ingredients` | ING-04 | 재고 수정 (미개봉/개봉·완전소진·폐기) → **E2/E5** | `StockAdjustSheet`(시트) | ✅ |
-| `ingredients` | ING-05 | 구매 링크·옵션 추가 (URL 추출·환산단가 비교) | `ingredients/option` | ✅ |
-| `ingredients` | — | 식재료 수정 | `ingredients/edit` (`IngredientEditScreen`) | ✅ |
-| `ingredients` | — | 메모 수정 | `MemoEditSheet`(시트) | ✅ |
+| `ingredients` | ING-01 | 식재료 리스트 (카테고리 스트립·정렬·소진임박 알림·FAB) | `ingredients/index` (`IngredientListScreen`) | ✅ |
+| `ingredients` | ING-02 | 식재료 추가 (등록 폼·단위 시트·단가 미리보기) | `ingredients/add` (`IngredientAddScreen`) | ✅ |
+| `ingredients` | ING-03 | 식재료 상세 (잔여·기준단가·재고 변동·구매옵션·수정 액션시트) | `ingredients/[id]` (`IngredientDetailScreen`) | ✅ |
+| `ingredients` | ING-04 | 식재료 수정 (용량/로스율/안전·최소발주·옵션) | `ingredients/edit/[id]` (`IngredientEditScreen`) | ✅ |
+| `ingredients` | ING-05 | 재고 수정 (수량 조정·완전 소진·폐기) → **E2/E5** | `StockEditSheet`(시트) | ✅ |
+| `ingredients` | ING-06 | 구매 링크·옵션 수정 (URL·환산단가·최근 비교) | `ingredients/option` (`PurchaseOptionScreen`) | ✅ |
+| `ingredients` | ING-07 | 재고 내역 (변동 원장·기간 필터) | `ingredients/history/[id]` (`StockHistoryScreen`) | ✅ |
+| `ingredients` | ING-08 | 조회 설정 (기간·유형·정렬 필터) | `HistoryFilterSheet`(시트) | ✅ |
+| `ingredients` | — | 메모 수정 (멀티라인·글자수) | `MemoEditSheet`(시트) | ✅ |
 | `recipes` | RCP-01 | 레시피 리스트 (정렬·판매상태/목표 필터) | `recipes/index` | ✅ |
 | `recipes` | RCP-02 | 레시피 상세 (도넛·손익·재료·고정지출) | `recipes/[id]` | ✅ |
 | `recipes` | RCP-03 | 레시피 추가/수정 → **E3** | `recipes/add` | ✅ |
@@ -35,7 +37,7 @@
 
 ## 주요 화면 플로우 (수집 → 등록 → 노출)
 
-- **식재료**: 리스트(검색·카테고리·정렬) → 카드 탭 **상세** → [수정]=편집/[메모]=메모시트/[재고 수정]=재고시트. FAB **추가** → 등록 폼(단가 미리보기) → 구매 링크·옵션 추가.
+- **식재료**: 리스트(카테고리·정렬·소진임박) → 카드 탭 **상세** → [수정] 액션시트=식재료 수정/재고 수정(시트)/메모 수정. 상세 **자세히 보기** → 재고 내역(원장·조회 설정 시트). FAB **추가** → 등록 폼(단위 시트·단가 미리보기) → 구매 링크·옵션 수정.
 - **레시피**: 리스트 → 카드 탭 **상세**(도넛·손익) → [수정]. 추가 화면에서 **재료 검색·담기**(검색→카드 탭→사용량 입력 시트: 삭제/담기), **추가 지출** 편집행, **고정 지출 자세히 보기** → 자세히 → [수정].
 - **발주**: 발주 후보 카드 → **주문하기**(구매 옵션 시트, 외부 주문) / **발주 완료**(구매처 선택 시트 → **발주 완료 등록 ORD-02**, 도착 예정일 달력) → 입고 예정 → **입고 완료**.
 

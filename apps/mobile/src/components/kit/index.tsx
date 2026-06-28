@@ -4,7 +4,7 @@
  * backdropFilter blur→반투명 배경, fontVariantNumeric→fontVariant.
  */
 import { ReactNode } from 'react';
-import { Pressable, ScrollView, StyleProp, Text, TextStyle, View, ViewStyle } from 'react-native';
+import { KeyboardTypeOptions, Pressable, ScrollView, StyleProp, Text, TextInput, TextStyle, View, ViewStyle } from 'react-native';
 import { Icon, IconName } from './Icon';
 import { cardShadow, FONT, STATUS, T, won } from '@/theme/tokens';
 
@@ -99,7 +99,7 @@ export function Button({ children, kind = 'primary', size = 'md', full, icon, ic
 export function Chip({ children, active, tone, onPress }: { children: ReactNode; active?: boolean; tone?: 'blue'; onPress?: () => void }) {
   return (
     <Pressable onPress={onPress} style={{ flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: 7, paddingHorizontal: 12, borderRadius: 999, backgroundColor: active ? T.ink : tone === 'blue' ? T.blueTint : T.surface, borderWidth: active ? 0 : 1, borderColor: T.line }}>
-      <Text style={{ fontSize: 14, fontWeight: '600', color: active ? '#fff' : tone === 'blue' ? T.blue : T.sub }}>{children}</Text>
+      <Text style={{ fontSize: 16, fontWeight: '600', color: active ? '#fff' : tone === 'blue' ? T.blue : T.sub }}>{children}</Text>
     </Pressable>
   );
 }
@@ -116,7 +116,7 @@ export function Stepper({ value, unit, onChange }: { value: number; unit?: strin
       {btn('minus', -1)}
       <View style={{ minWidth: 56, alignItems: 'center', flexDirection: 'row', justifyContent: 'center' }}>
         <Text style={[{ fontSize: 18, fontWeight: '800', color: T.ink }, NUM]}>{value}</Text>
-        {unit ? <Text style={{ fontSize: 14, fontWeight: '600', color: T.sub2, marginLeft: 1 }}>{unit}</Text> : null}
+        {unit ? <Text style={{ fontSize: 16, fontWeight: '600', color: T.sub2, marginLeft: 1 }}>{unit}</Text> : null}
       </View>
       {btn('plus', 1)}
     </View>
@@ -138,26 +138,47 @@ export function Field({ label, children, hint, req, right }: { label: string; ch
   return (
     <View style={{ marginBottom: 18 }}>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5, marginBottom: 8 }}>
-        <Text style={{ fontSize: 14.5, fontWeight: '700', color: T.sub }}>
+        <Text style={{ fontSize: 16, fontWeight: '700', color: T.sub }}>
           {label}
           {req ? <Text style={{ color: T.blue }}> *</Text> : null}
         </Text>
         {right}
       </View>
       {children}
-      {hint ? <Text style={{ fontSize: 13, color: T.ter, marginTop: 6, lineHeight: 17 }}>{hint}</Text> : null}
+      {hint ? <Text style={{ fontSize: 16, color: T.ter, marginTop: 6, lineHeight: 17 }}>{hint}</Text> : null}
     </View>
   );
 }
 
-export function Input({ value, placeholder, suffix, prefix, mono, right }: { value?: string; placeholder?: string; suffix?: string; prefix?: string; mono?: boolean; right?: ReactNode }) {
+export function Input({ value, placeholder, suffix, prefix, mono, right, onChangeText, keyboardType }: { value?: string; placeholder?: string; suffix?: string; prefix?: string; mono?: boolean; right?: ReactNode; onChangeText?: (t: string) => void; keyboardType?: KeyboardTypeOptions }) {
   const empty = value == null || value === '';
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: T.surface, borderWidth: 1, borderColor: T.line, borderRadius: 12, paddingVertical: 13, paddingHorizontal: 14 }}>
       {prefix ? <Text style={{ fontSize: 16, color: T.ter, fontWeight: '600' }}>{prefix}</Text> : null}
-      <Text style={[{ flex: 1, fontSize: 16.5, fontWeight: '600', color: empty ? T.ter : T.ink }, mono ? NUM : null]}>{empty ? placeholder : value}</Text>
-      {suffix ? <Text style={{ fontSize: 15, color: T.sub2, fontWeight: '600' }}>{suffix}</Text> : null}
+      {onChangeText ? (
+        <TextInput
+          style={[{ flex: 1, minWidth: 0, fontSize: 16, fontWeight: '600', color: T.ink, padding: 0 }, mono ? NUM : null]}
+          value={value}
+          placeholder={placeholder}
+          placeholderTextColor={T.ter}
+          onChangeText={onChangeText}
+          keyboardType={keyboardType}
+        />
+      ) : (
+        <Text numberOfLines={1} style={[{ flex: 1, minWidth: 0, fontSize: 16, fontWeight: '600', color: empty ? T.ter : T.ink }, mono ? NUM : null]}>{empty ? placeholder : value}</Text>
+      )}
+      {suffix ? <Text style={{ fontSize: 16, color: T.sub2, fontWeight: '600', flexShrink: 0 }}>{suffix}</Text> : null}
       {right}
+    </View>
+  );
+}
+
+/** 페이지 컨테이너 — header(상단) + 본문. 탭바는 expo-router Tabs가 제공. */
+export function ScreenShell({ children, header }: { children: ReactNode; header?: ReactNode }) {
+  return (
+    <View style={{ flex: 1, backgroundColor: T.bg }}>
+      {header}
+      <View style={{ flex: 1 }}>{children}</View>
     </View>
   );
 }
@@ -166,28 +187,8 @@ export function Select({ value, placeholder, onPress }: { value?: string; placeh
   const empty = value == null || value === '';
   return (
     <Pressable onPress={onPress} style={{ flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: T.surface, borderWidth: 1, borderColor: T.line, borderRadius: 12, paddingVertical: 13, paddingHorizontal: 14 }}>
-      <Text style={{ flex: 1, fontSize: 16.5, fontWeight: '600', color: empty ? T.ter : T.ink }}>{empty ? placeholder : value}</Text>
+      <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: empty ? T.ter : T.ink }}>{empty ? placeholder : value}</Text>
       <Icon name="chevronDown" size={18} color={T.ter} />
-    </Pressable>
-  );
-}
-
-// ── 리스트 행 ─────────────────────────────────────────────────
-export function Row({ icon, iconBg, title, sub, right, rightSub, chevron, last, onPress }: { icon?: ReactNode; iconBg?: string; title: string; sub?: string; right?: string; rightSub?: string; chevron?: boolean; last?: boolean; onPress?: () => void }) {
-  return (
-    <Pressable onPress={onPress} style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 15, borderBottomWidth: last ? 0 : 1, borderBottomColor: T.line2 }}>
-      {icon ? <View style={{ width: 38, height: 38, borderRadius: 11, backgroundColor: iconBg || T.blueTint, alignItems: 'center', justifyContent: 'center' }}>{icon}</View> : null}
-      <View style={{ flex: 1, minWidth: 0 }}>
-        <Text style={{ fontSize: 16.5, fontWeight: '600', color: T.ink, letterSpacing: -0.2 }}>{title}</Text>
-        {sub ? <Text style={{ fontSize: 14, color: T.ter, marginTop: 2 }}>{sub}</Text> : null}
-      </View>
-      {right || rightSub ? (
-        <View style={{ alignItems: 'flex-end' }}>
-          {right ? <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{right}</Text> : null}
-          {rightSub ? <Text style={{ fontSize: 13.5, color: T.ter, marginTop: 2 }}>{rightSub}</Text> : null}
-        </View>
-      ) : null}
-      {chevron ? <Icon name="chevron" size={18} color="#C5CCD3" /> : null}
     </Pressable>
   );
 }
@@ -206,9 +207,9 @@ export function PLRow({ label, amt, pct, kind = 'cost', detail, bold }: { label:
         <Text style={[{ fontSize: bold ? 17 : 15, fontWeight: bold ? '800' : '700', color: valColor }, NUM]}>
           {sign}
           {won(amt)}
-          <Text style={{ fontSize: 13, fontWeight: '600' }}>원</Text>
+          <Text style={{ fontSize: 16, fontWeight: '600' }}>원</Text>
         </Text>
-        <Text style={[{ fontSize: 13, fontWeight: '600', color: T.ter }, NUM]}>{pct}%</Text>
+        <Text style={[{ fontSize: 16, fontWeight: '600', color: T.ter }, NUM]}>{pct}%</Text>
       </View>
     </View>
   );
@@ -222,8 +223,8 @@ export function SegTabs({ tabs, active = 0, onChange }: { tabs: { label: string;
         const on = active === i;
         return (
           <Pressable key={i} onPress={() => onChange?.(i)} style={[{ flex: 1, alignItems: 'center', justifyContent: 'center', flexDirection: 'row', gap: 5, paddingVertical: 9, borderRadius: 9, backgroundColor: on ? T.surface : 'transparent' }, on ? cardShadow : null]}>
-            <Text style={{ fontSize: 15, fontWeight: on ? '700' : '600', color: on ? T.ink : T.ter }}>{t.label}</Text>
-            {t.count != null ? <Text style={{ fontSize: 13, fontWeight: '700', color: on ? T.blue : T.ter }}>{t.count}</Text> : null}
+            <Text style={{ fontSize: 16, fontWeight: on ? '700' : '600', color: on ? T.ink : T.ter }}>{t.label}</Text>
+            {t.count != null ? <Text style={{ fontSize: 16, fontWeight: '700', color: on ? T.blue : T.ter }}>{t.count}</Text> : null}
           </Pressable>
         );
       })}
@@ -248,22 +249,11 @@ export function ScrollTabs({ tabs, active = 0, onChange }: { tabs: string[]; act
   );
 }
 
-// ── 대시보드 통계 pill ────────────────────────────────────────
-export function Stat({ label, value, tone }: { label: string; value: string | number; tone?: 'ok' | 'low' | 'out' | 'blue' | 'neutral' }) {
-  const c = { ok: T.green, low: T.amberText, out: T.red, blue: T.blue, neutral: T.ink }[tone || 'neutral'];
-  return (
-    <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 5 }}>
-      <Text style={[{ fontSize: 19, fontWeight: '800', color: c }, NUM]}>{value}</Text>
-      <Text style={{ fontSize: 13.5, fontWeight: '600', color: T.ter }}>{label}</Text>
-    </View>
-  );
-}
-
 // ── 기간 칩 (최근 3개월 ▾) ─────────────────────────────────────
 export function PeriodChip({ value = '최근 3개월', onPress }: { value?: string; onPress?: () => void }) {
   return (
     <Pressable onPress={onPress} style={{ flexDirection: 'row', alignItems: 'center', gap: 2, paddingVertical: 5, paddingLeft: 11, paddingRight: 9, borderRadius: 999, backgroundColor: T.line2 }}>
-      <Text style={{ color: T.sub, fontSize: 13, fontWeight: '700' }}>{value}</Text>
+      <Text style={{ color: T.sub, fontSize: 16, fontWeight: '700' }}>{value}</Text>
       <Icon name="chevronDown" size={14} color={T.ter} />
     </Pressable>
   );

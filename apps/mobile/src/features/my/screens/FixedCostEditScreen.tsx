@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { Modal, Pressable, ScrollView, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { AppHeader, Button, Field, Icon, Input } from '@/components/kit';
+import { safeBack } from '@/lib/nav';
 import { cardShadow, T, won } from '@/theme/tokens';
 
 const REVENUE = 28_500_000;
@@ -37,9 +38,9 @@ export default function FixedCostEditScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
-      <AppHeader title="고정 지출 수정" onBack={() => router.back()} />
+      <AppHeader title="고정 지출 수정" onBack={() => safeBack('/recipes/fixed-cost')} />
 
-      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 4, paddingBottom: 24, gap: 11 }}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 4, paddingBottom: 24, gap: 11 }}>
         {/* 총 월매출 */}
         <View style={{ backgroundColor: T.surface, borderRadius: 16, padding: 16, borderWidth: 1, borderColor: T.line, ...cardShadow }}>
           <Field label="총 월매출" req>
@@ -93,7 +94,7 @@ export default function FixedCostEditScreen() {
             {/* 항목 추가 */}
             <Pressable onPress={() => addRow(si)} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5, marginTop: 10, paddingVertical: 11, paddingHorizontal: 12, borderRadius: 12, borderWidth: 1, borderColor: T.blue, borderStyle: 'dashed', backgroundColor: T.blueTint }}>
               <Icon name="plus" size={17} color={T.blue} sw={2.2} />
-              <Text style={{ fontSize: 14, fontWeight: '700', color: T.blue }}>추가</Text>
+              <Text style={{ fontSize: 16, fontWeight: '700', color: T.blue }}>추가</Text>
             </Pressable>
           </View>
         ))}
@@ -101,7 +102,7 @@ export default function FixedCostEditScreen() {
         {/* 새 항목(카드) 추가 */}
         <Pressable onPress={addSection} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5, paddingVertical: 14, borderRadius: 16, borderWidth: 1.5, borderColor: T.line, borderStyle: 'dashed', backgroundColor: T.surface }}>
           <Icon name="plus" size={18} color={T.sub} sw={2.2} />
-          <Text style={{ fontSize: 14.5, fontWeight: '700', color: T.sub }}>새 항목 추가</Text>
+          <Text style={{ fontSize: 16, fontWeight: '700', color: T.sub }}>새 항목 추가</Text>
         </Pressable>
       </ScrollView>
 
@@ -117,17 +118,17 @@ export default function FixedCostEditScreen() {
         <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.42)', alignItems: 'center', justifyContent: 'center', paddingHorizontal: 32 }}>
           <View style={{ width: '100%', maxWidth: 340, backgroundColor: T.surface, borderRadius: 18, paddingTop: 24, paddingHorizontal: 20, paddingBottom: 14 }}>
             <View style={{ alignItems: 'center', gap: 8 }}>
-              <Text style={{ fontSize: 17.5, fontWeight: '800', color: T.ink, textAlign: 'center' }}>레시피를 저장하시겠습니까?</Text>
-              <Text style={{ fontSize: 14, color: T.sub, textAlign: 'center', lineHeight: 20 }}>
+              <Text style={{ fontSize: 17, fontWeight: '800', color: T.ink, textAlign: 'center' }}>레시피를 저장하시겠습니까?</Text>
+              <Text style={{ fontSize: 16, color: T.sub, textAlign: 'center', lineHeight: 20 }}>
                 레시피 저장 시 전 레시피에 반영됩니다.
               </Text>
             </View>
             <View style={{ flexDirection: 'row', gap: 9, marginTop: 18 }}>
               <Pressable onPress={() => setConfirmOpen(false)} style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingVertical: 14, borderRadius: 12, backgroundColor: T.line2 }}>
-                <Text style={{ fontSize: 15.5, fontWeight: '700', color: T.ink2 }}>아니오</Text>
+                <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink2 }}>아니오</Text>
               </Pressable>
-              <Pressable onPress={() => { setConfirmOpen(false); router.back(); }} style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingVertical: 14, borderRadius: 12, backgroundColor: T.blue }}>
-                <Text style={{ fontSize: 15.5, fontWeight: '700', color: '#fff' }}>예</Text>
+              <Pressable onPress={() => { setConfirmOpen(false); safeBack('/recipes/fixed-cost'); }} style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingVertical: 14, borderRadius: 12, backgroundColor: T.blue }}>
+                <Text style={{ fontSize: 16, fontWeight: '700', color: '#fff' }}>예</Text>
               </Pressable>
             </View>
           </View>
