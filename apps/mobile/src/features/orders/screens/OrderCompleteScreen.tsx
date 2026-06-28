@@ -206,7 +206,7 @@ export default function OrderCompleteScreen() {
             const on = i === optIdx;
             return (
               <Pressable key={i} onPress={() => { setOptIdx(i); setOptOpen(false); }} style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 13, paddingHorizontal: 14, borderRadius: 12, borderWidth: 1, borderColor: on ? T.blue : T.line, backgroundColor: on ? T.blueTint : T.surface }}>
-                <Icon name="check" size={18} color={on ? T.blue : '#DDE2E7'} sw={2.4} />
+                <Icon name="check" size={18} color={on ? T.blue : T.line} sw={2.4} />
                 <View style={{ flex: 1 }}>
                   <Text numberOfLines={1} style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>{o.name}, {won(o.amt)}원</Text>
                   <Text numberOfLines={1} style={[{ fontSize: 14, color: T.sub2, marginTop: 3 }, NUM]}>{o.vendor} · {o.per}원/{o.unit}</Text>

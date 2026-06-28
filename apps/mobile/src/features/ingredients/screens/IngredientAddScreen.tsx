@@ -107,7 +107,7 @@ export function IngredientAddScreen() {
           label="로스율"
           req
           right={
-            <View style={{ flexDirection: 'row', gap: 3, padding: 3, backgroundColor: '#E8EBEE', borderRadius: 9 }}>
+            <View style={{ flexDirection: 'row', gap: 3, padding: 3, backgroundColor: T.line, borderRadius: 9 }}>
               {(['pct', 'qty'] as LossMode[]).map((k) => {
                 const on = lossMode === k;
                 return (

@@ -42,7 +42,7 @@ export function IngredientListScreen() {
         </View>
       }
     >
-      <View style={{ borderBottomWidth: 1, borderBottomColor: '#D1D6DB' }}>
+      <View style={{ borderBottomWidth: 1, borderBottomColor: T.line3 }}>
         <ScrollTabs tabs={listCategories} active={cat} onChange={setCat} />
       </View>
       <View style={{ paddingHorizontal: 20, paddingTop: 12, paddingBottom: 10 }}>

@@ -88,7 +88,7 @@ export function StockEditSheet({
     <Sheet visible={visible} onClose={onClose} title={name ? `${name} 재고 수정` : '재고 수정'} scroll={false}>
       <View>
         {/* 탭 (언더라인) — 전체폭 밑줄·좌측 시작 (식재료/발주현황 동일) */}
-        <View style={{ borderBottomWidth: 1, borderBottomColor: '#D1D6DB', marginTop: 6 }}>
+        <View style={{ borderBottomWidth: 1, borderBottomColor: T.line3, marginTop: 6 }}>
           <View style={{ flexDirection: 'row', gap: 22, paddingHorizontal: 20 }}>
             {TABS.map(([id, label]) => {
               const on = tab === id;
@@ -109,7 +109,7 @@ export function StockEditSheet({
             <>
               <Text style={{ fontSize: 16, fontWeight: '700', color: T.sub, marginBottom: 7 }}>수량</Text>
               <InputBox value={adjVal} onChange={(t) => setAdjVal(clampByUnit(t, dispUnit))} accent={T.blue} />
-              <Band bg={diffDisp === 0 ? undefined : diffDisp < 0 ? '#FEF5F5' : '#F1FBF6'}>
+              <Band bg={diffDisp === 0 ? undefined : diffDisp < 0 ? T.redTint : T.greenTint}>
                 {diffDisp === 0 ? (
                   <Text style={{ fontSize: 16, fontWeight: '800', color: T.sub }}>변동 없음</Text>
                 ) : (

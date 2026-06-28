@@ -110,7 +110,7 @@ export function IngredientEditScreen() {
           label="로스율"
           req
           right={
-            <View style={{ flexDirection: 'row', gap: 3, padding: 3, backgroundColor: '#E8EBEE', borderRadius: 9 }}>
+            <View style={{ flexDirection: 'row', gap: 3, padding: 3, backgroundColor: T.line, borderRadius: 9 }}>
               {(['pct', 'qty'] as LossMode[]).map((k) => {
                 const on = lossMode === k;
                 return (
@@ -172,7 +172,7 @@ export function IngredientEditScreen() {
                   <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>{o.name}, {o.price}</Text>
                   <Text style={{ fontSize: 14, color: T.ter, marginTop: 2 }}>{o.vendor} · {o.per}원/{g.unit}</Text>
                 </View>
-                <Icon name="chevron" size={18} color="#C5CCD3" />
+                <Icon name="chevron" size={18} color={T.chevron} />
               </Pressable>
             ))}
           </View>

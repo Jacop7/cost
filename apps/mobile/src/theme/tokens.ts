@@ -12,7 +12,6 @@ export const T = {
   blue: '#3182F6',
   bluePressed: '#2272EB',
   blueTint: '#EBF3FE',
-  blueTint2: '#F4F8FF',
   // text
   ink: '#191F28',
   ink2: '#333D4B',
@@ -31,8 +30,9 @@ export const T = {
   redTint: '#FEECEC',
   // 부족 상태 텍스트는 가독성 위해 진한 주황 사용(프로토타입 동일)
   amberText: '#E07A00',
-  // cost gray
-  cost: '#8B95A1',
+  // 인라인 통합 — 반복 사용되던 색을 토큰화
+  line3: '#D1D6DB', // 밑줄형 탭/헤더 하단 구분선
+  chevron: '#C5CCD3', // 리스트 chevron 아이콘
 } as const;
 
 /** 폰트 — 프로토타입은 Pretendard. RN에서는 expo-font 로 번들 후 fontFamily 지정. */

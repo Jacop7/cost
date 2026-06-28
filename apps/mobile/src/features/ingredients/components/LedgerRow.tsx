@@ -53,7 +53,7 @@ export function LedgerRow({
         <Text style={[{ fontSize: 16, fontWeight: '800', color: up ? T.blue : T.red }, tnum]}>{dNum}<Text style={{ fontWeight: '400' }}>{dUnit}</Text></Text>
         <Text style={[{ fontSize: 14, color: T.ter, marginTop: 3 }, tnum]}>{bal}</Text>
       </View>
-      <Icon name="chevron" size={16} color="#C5CCD3" />
+      <Icon name="chevron" size={16} color={T.chevron} />
     </Pressable>
   );
 }

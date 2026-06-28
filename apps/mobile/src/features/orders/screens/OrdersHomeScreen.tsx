@@ -181,7 +181,7 @@ export default function OrdersHomeScreen() {
       </View>
 
       {/* 탭 — 밑줄형 */}
-      <View style={{ borderBottomWidth: 1, borderBottomColor: '#D1D6DB', marginBottom: 8 }}>
+      <View style={{ borderBottomWidth: 1, borderBottomColor: T.line3, marginBottom: 8 }}>
         <View style={{ flexDirection: 'row', gap: 22, paddingHorizontal: 20 }}>
           {TABS.map((t, i) => {
             const on = tab === i;
@@ -246,7 +246,7 @@ export default function OrdersHomeScreen() {
         <View style={{ gap: 10 }}>
           {(selCand ? optionsFor(selCand.name) : []).map((o, i) => (
             <Pressable key={i} onPress={() => { const n = selCand!.name; setSheet(null); router.push(`/orders/complete?ingredient=${encodeURIComponent(n)}&opt=${i}` as Href); }}>
-              <OptionRow o={o} line leading={<Icon name="check" size={18} color="#DDE2E7" sw={2.4} />} />
+              <OptionRow o={o} line leading={<Icon name="check" size={18} color={T.line} sw={2.4} />} />
             </Pressable>
           ))}
         </View>

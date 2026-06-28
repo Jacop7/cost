@@ -196,7 +196,7 @@ export function Select({ value, placeholder, onPress }: { value?: string; placeh
 // ── 손익표 행 ─────────────────────────────────────────────────
 export function PLRow({ label, amt, pct, kind = 'cost', detail, bold }: { label: string; amt: number; pct: number | string; kind?: 'sales' | 'cost' | 'profit'; detail?: string; bold?: boolean }) {
   const sign = kind === 'cost' ? '−' : '';
-  const valColor = kind === 'profit' ? T.green : kind === 'cost' ? T.cost : T.ink;
+  const valColor = kind === 'profit' ? T.green : kind === 'cost' ? T.ter : T.ink;
   return (
     <View style={{ flexDirection: 'row', alignItems: 'flex-start', paddingVertical: 11, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
       <View style={{ flex: 1 }}>
@@ -218,7 +218,7 @@ export function PLRow({ label, amt, pct, kind = 'cost', detail, bold }: { label:
 // ── 세그먼트 탭 (후보/대기/완료) ───────────────────────────────
 export function SegTabs({ tabs, active = 0, onChange }: { tabs: { label: string; count?: number }[]; active?: number; onChange?: (i: number) => void }) {
   return (
-    <View style={{ flexDirection: 'row', gap: 6, padding: 5, backgroundColor: '#E8EBEE', borderRadius: 13 }}>
+    <View style={{ flexDirection: 'row', gap: 6, padding: 5, backgroundColor: T.line, borderRadius: 13 }}>
       {tabs.map((t, i) => {
         const on = active === i;
         return (
