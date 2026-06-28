@@ -139,7 +139,7 @@ export default function RecipesListScreen() {
       </View>
 
       {/* 헤더-필터 구분선 */}
-      <View style={{ height: 1, backgroundColor: '#D1D6DB' }} />
+      <View style={{ height: 1, backgroundColor: T.line3 }} />
 
       {/* 필터 행 — 정렬 + 판매상태 */}
       <View style={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: 10, flexDirection: 'row', gap: 8 }}>

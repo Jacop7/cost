@@ -77,7 +77,7 @@ export function IngredientDetailScreen() {
           <Text style={{ fontSize: 20, fontWeight: '800', letterSpacing: -0.5, color: T.ink }}>{g.name}</Text>
           <View style={{ marginTop: 13, paddingTop: 13, borderTopWidth: 1, borderTopColor: T.line2 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5, marginBottom: 6 }}>
-              <Icon name="note" size={16} color="#E07A00" />
+              <Icon name="note" size={16} color={T.amberText} />
               <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub }}>메모</Text>
             </View>
             <Text style={{ fontSize: 16, fontWeight: '600', color: g.memo ? T.ink2 : T.ter, lineHeight: 22 }}>
@@ -160,7 +160,7 @@ export function IngredientDetailScreen() {
                   <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>{o.name}, {o.price}</Text>
                   <Text style={[{ fontSize: 14, color: T.ink, marginTop: 2 }, tnum]}>{o.vendor} · {o.per}원/{g.unit}</Text>
                 </View>
-                <Icon name="chevron" size={16} color="#C5CCD3" />
+                <Icon name="chevron" size={16} color={T.chevron} />
               </View>
             ))}
           </View>
@@ -172,9 +172,9 @@ export function IngredientDetailScreen() {
         <Pressable onPress={() => setMenuOpen(false)} style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.4)' }}>
           <Pressable onPress={() => {}} style={{ backgroundColor: '#fff', borderTopLeftRadius: 20, borderTopRightRadius: 20, paddingHorizontal: 12, paddingTop: 10, paddingBottom: 16 }}>
             <View style={{ alignItems: 'center', paddingBottom: 14 }}>
-              <View style={{ width: 40, height: 5, borderRadius: 3, backgroundColor: '#D7DADE' }} />
+              <View style={{ width: 40, height: 5, borderRadius: 3, backgroundColor: T.line }} />
             </View>
-            <View style={{ backgroundColor: '#F2F3F5', borderRadius: 14, overflow: 'hidden', marginBottom: 9 }}>
+            <View style={{ backgroundColor: T.surface2, borderRadius: 14, overflow: 'hidden', marginBottom: 9 }}>
               {menuItems.map((m, i) => (
                 <Pressable
                   key={i}
@@ -182,13 +182,13 @@ export function IngredientDetailScreen() {
                     setMenuOpen(false);
                     m.onPress();
                   }}
-                  style={{ paddingVertical: 20, alignItems: 'center', borderTopWidth: i > 0 ? 1 : 0, borderTopColor: '#E3E5E8' }}
+                  style={{ paddingVertical: 20, alignItems: 'center', borderTopWidth: i > 0 ? 1 : 0, borderTopColor: T.line }}
                 >
                   <Text style={{ fontSize: 16, fontWeight: '500', color: T.ink }}>{m.label}</Text>
                 </Pressable>
               ))}
             </View>
-            <Pressable onPress={() => setMenuOpen(false)} style={{ paddingVertical: 20, borderRadius: 14, backgroundColor: '#F2F3F5', alignItems: 'center' }}>
+            <Pressable onPress={() => setMenuOpen(false)} style={{ paddingVertical: 20, borderRadius: 14, backgroundColor: T.surface2, alignItems: 'center' }}>
               <Text style={{ fontSize: 16, fontWeight: '500', color: T.ink }}>닫기</Text>
             </Pressable>
           </Pressable>

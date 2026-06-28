@@ -13,7 +13,6 @@ import { cardShadow, T, won } from '@/theme/tokens';
 import { FIXED_ITEMS, getRecipe, pct, RECIPE_DETAILS } from '../demoData';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
-const PROFIT = T.amber;
 
 // 제육볶음(RCP-0007) 프리필 — 손익 미리보기 실시간 계산 예시.
 const R = getRecipe('RCP-0007')!;
@@ -39,6 +38,8 @@ export default function RecipeAddScreen() {
   const profit = price - tax - material - fixed - extra;
   const profitRate = profit / price;
   const warn = profitRate < R.target;
+  // 순이익 강조색 — 상세와 동일: 목표 미달=빨강 / 달성=초록
+  const PROFIT = warn ? T.red : T.green;
   const recRaw = recommendedPrice(material + extra, R.fixedRate, R.target);
   const recommended = recRaw == null ? null : Math.round(recRaw / 100) * 100;
 
@@ -74,7 +75,7 @@ export default function RecipeAddScreen() {
 
         {/* 재료 — 검색·담기 */}
         <View style={{ backgroundColor: T.surface, borderRadius: 16, padding: 16, borderWidth: 1, borderColor: T.line, ...cardShadow }}>
-          <Text style={{ fontSize: 16, fontWeight: '800', color: '#5B6573', marginBottom: 4 }}>재료</Text>
+          <Text style={{ fontSize: 16, fontWeight: '800', color: T.sub, marginBottom: 4 }}>재료</Text>
           {/* 표 헤더 */}
           <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: 8, borderBottomWidth: 1, borderBottomColor: T.line }}>
             <Text style={{ flex: 1, fontSize: 14, color: T.ter, fontWeight: '700' }}>재료명</Text>
@@ -94,7 +95,7 @@ export default function RecipeAddScreen() {
                 <Text style={[{ fontSize: 14, color: T.ter, fontWeight: '600', marginTop: 1 }, NUM]}>{l.qty}{l.unit}</Text>
               </View>
               <View style={{ width: 26, alignItems: 'flex-end' }}>
-                <Icon name="chevron" size={18} color="#C5CCD3" />
+                <Icon name="chevron" size={18} color={T.chevron} />
               </View>
             </Pressable>
           ))}
@@ -108,7 +109,7 @@ export default function RecipeAddScreen() {
         {/* 추가 지출 */}
         <View style={{ backgroundColor: T.surface, borderRadius: 16, padding: 16, borderWidth: 1, borderColor: T.line, ...cardShadow }}>
           <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 6, marginBottom: 8 }}>
-            <Text style={{ fontSize: 16, fontWeight: '800', color: '#5B6573' }}>부자재</Text>
+            <Text style={{ fontSize: 16, fontWeight: '800', color: T.sub }}>부자재</Text>
             <Text style={{ fontSize: 14, color: T.ter, fontWeight: '600' }}>(이 메뉴에만 추가되는 지출)</Text>
           </View>
           <View style={{ gap: 8 }}>
@@ -136,7 +137,7 @@ export default function RecipeAddScreen() {
         {/* 고정 지출 (자동·읽기전용) */}
         <View style={{ backgroundColor: T.surface, borderRadius: 16, padding: 16, borderWidth: 1, borderColor: T.line, ...cardShadow }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
-            <Text style={{ fontSize: 16, fontWeight: '800', color: '#5B6573' }}>고정 지출</Text>
+            <Text style={{ fontSize: 16, fontWeight: '800', color: T.sub }}>고정 지출</Text>
             <View style={{ flex: 1 }} />
             <Pressable onPress={() => router.push('/recipes/fixed-cost' as Href)} style={{ flexDirection: 'row', alignItems: 'center', gap: 1 }}>
               <Text style={{ fontSize: 16, fontWeight: '700', color: T.blue }}>자세히 보기</Text>
@@ -160,8 +161,8 @@ export default function RecipeAddScreen() {
         {/* 손익 미리보기 */}
         <View style={{ backgroundColor: T.surface, borderRadius: 16, padding: 16, borderWidth: 1, borderColor: T.line, ...cardShadow }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 6 }}>
-            <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: '#5B6573' }}>손익 미리보기</Text>
-            <View style={{ flexDirection: 'row', backgroundColor: '#E8EBEE', borderRadius: 9, padding: 3 }}>
+            <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.sub }}>손익 미리보기</Text>
+            <View style={{ flexDirection: 'row', backgroundColor: T.line, borderRadius: 9, padding: 3 }}>
               {([['one', '1개'], ['month', '월 평균']] as const).map(([k, label]) => (
                 <Pressable key={k} onPress={() => setView(k)} style={{ paddingVertical: 6, paddingHorizontal: 12, borderRadius: 7, backgroundColor: view === k ? T.surface : 'transparent' }}>
                   <Text style={{ fontSize: 16, fontWeight: view === k ? '700' : '600', color: view === k ? T.ink : T.ter }}>{label}</Text>
@@ -192,7 +193,7 @@ export default function RecipeAddScreen() {
               <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.ink2 }}>
                 <Text style={{ color: T.ter }}>(−) </Text>{c.label}
               </Text>
-              <Text style={[{ fontSize: 16, fontWeight: '700', color: T.cost }, NUM]}>{won(c.amt * m)}원</Text>
+              <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ter }, NUM]}>{won(c.amt * m)}원</Text>
               <Text style={[{ fontSize: 14, fontWeight: '600', color: T.ter, width: 46, textAlign: 'right' }, NUM]}>{pct(c.amt / price)}%</Text>
             </View>
           ))}

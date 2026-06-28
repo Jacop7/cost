@@ -46,7 +46,7 @@ function IngRow({ g, onPress }: { g: IngCardData; onPress: () => void }) {
               기준 단가 <Text style={{ fontWeight: '700', color: T.ink }}>{g.price}{g.priceUnit}</Text>
             </Text>
           </View>
-          <Icon name="chevron" size={18} color="#C5CCD3" />
+          <Icon name="chevron" size={18} color={T.chevron} />
         </View>
       </Card>
     </Pressable>
