@@ -114,7 +114,7 @@ export function IngredientEditScreen() {
               {(['pct', 'qty'] as LossMode[]).map((k) => {
                 const on = lossMode === k;
                 return (
-                  <Pressable key={k} onPress={() => setLossMode(k)} style={{ paddingVertical: 5, paddingHorizontal: 13, borderRadius: 7, backgroundColor: on ? '#fff' : 'transparent', shadowColor: '#000', shadowOpacity: on ? 0.1 : 0, shadowRadius: 2, shadowOffset: { width: 0, height: 1 }, elevation: on ? 1 : 0 }}>
+                  <Pressable key={k} onPress={() => setLossMode(k)} style={{ paddingVertical: 5, paddingHorizontal: 13, borderRadius: 7, backgroundColor: on ? T.surface : 'transparent', shadowColor: '#000', shadowOpacity: on ? 0.1 : 0, shadowRadius: 2, shadowOffset: { width: 0, height: 1 }, elevation: on ? 1 : 0 }}>
                     <Text style={{ fontSize: 13, fontWeight: '700', color: on ? T.ink : T.sub2 }}>{k === 'pct' ? '%' : '수량'}</Text>
                   </Pressable>
                 );
@@ -172,7 +172,7 @@ export function IngredientEditScreen() {
                   <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>{o.name}, {o.price}</Text>
                   <Text style={{ fontSize: 14, color: T.ter, marginTop: 2 }}>{o.vendor} · {o.per}원/{g.unit}</Text>
                 </View>
-                <Icon name="chevron" size={18} color={T.chevron} />
+                <Icon name="chevron" size={18} color={T.line3} />
               </Pressable>
             ))}
           </View>
@@ -220,7 +220,7 @@ function PreviewRow({ label, hint, value, unit }: { label: string; hint?: string
 
 function PreviewFinal({ lossPct, value, unit }: { lossPct: number; value: string; unit: string }) {
   return (
-    <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 8, borderTopWidth: 1, borderTopColor: 'rgba(49,130,246,0.2)' }}>
+    <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 8, borderTopWidth: 1, borderTopColor: T.blueLine }}>
       <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: T.blue }}>
         실사용 단가 <Text style={{ fontWeight: '600' }}>(로스 {lossPct}% 반영)</Text>
       </Text>

@@ -23,7 +23,7 @@ function StatusTag({ g }: { g: IngCardData }) {
       : { label: '여유', c: T.green };
   return (
     <View style={{ backgroundColor: conf.c, paddingHorizontal: 7, paddingVertical: 4, borderRadius: 7 }}>
-      <Text style={{ color: '#fff', fontWeight: '700', fontSize: 14 }}>{conf.label}</Text>
+      <Text style={{ color: T.onColor, fontWeight: '700', fontSize: 14 }}>{conf.label}</Text>
     </View>
   );
 }
@@ -40,13 +40,13 @@ function IngRow({ g, onPress }: { g: IngCardData; onPress: () => void }) {
               <Badge tone="neutral" sm>{g.cat}</Badge>
             </View>
             <Text style={[{ fontSize: 16, fontWeight: '600', color: T.ink2, marginTop: 7 }, NUM]}>
-              미개봉 {g.sealed} · 개봉 {g.opened} <Text style={{ color: T.ter, fontWeight: '500' }}>(개당 {perLabel(g.unit, g.per)})</Text>
+              미개봉 {g.sealed} · 개봉 {g.opened} <Text style={{ color: T.ter, fontWeight: '600' }}>(개당 {perLabel(g.unit, g.per)})</Text>
             </Text>
             <Text style={[{ fontSize: 16, color: T.sub2, marginTop: 3 }, NUM]}>
               기준 단가 <Text style={{ fontWeight: '700', color: T.ink }}>{g.price}{g.priceUnit}</Text>
             </Text>
           </View>
-          <Icon name="chevron" size={18} color={T.chevron} />
+          <Icon name="chevron" size={18} color={T.line3} />
         </View>
       </Card>
     </Pressable>
@@ -74,7 +74,7 @@ export default function RecipeIngredientSearchScreen() {
       <View style={{ paddingHorizontal: 16, paddingTop: 2, paddingBottom: 12 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: T.surface, borderWidth: 1, borderColor: T.line, borderRadius: 12, paddingVertical: 12, paddingHorizontal: 14 }}>
           <Icon name="search" size={20} color={T.ter} />
-          <Text style={{ flex: 1, fontSize: 16, fontWeight: '500', color: T.ter }}>식재료 이름으로 검색</Text>
+          <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.ter }}>식재료 이름으로 검색</Text>
         </View>
       </View>
 

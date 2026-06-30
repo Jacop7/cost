@@ -50,10 +50,10 @@ export function LedgerRow({
         <Text style={{ fontSize: 14, color: T.ink, marginTop: 3 }}>{memo}</Text>
       </View>
       <View style={{ alignItems: 'flex-end' }}>
-        <Text style={[{ fontSize: 16, fontWeight: '800', color: up ? T.blue : T.red }, tnum]}>{dNum}<Text style={{ fontWeight: '400' }}>{dUnit}</Text></Text>
+        <Text style={[{ fontSize: 16, fontWeight: '800', color: up ? T.blue : T.red }, tnum]}>{dNum}<Text style={{ fontWeight: '600' }}>{dUnit}</Text></Text>
         <Text style={[{ fontSize: 14, color: T.ter, marginTop: 3 }, tnum]}>{bal}</Text>
       </View>
-      <Icon name="chevron" size={16} color={T.chevron} />
+      <Icon name="chevron" size={16} color={T.line3} />
     </Pressable>
   );
 }

@@ -38,7 +38,7 @@ function CandidateCard({ c, onOrder, onComplete }: { c: Candidate; onOrder: () =
       <View style={{ padding: 14 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7 }}>
           <Badge tone={reasonTone(c.reason)} solid sm>{c.reasonLabel}</Badge>
-          <Text numberOfLines={1} style={{ fontSize: 17, fontWeight: '800', letterSpacing: -0.3, color: T.ink }}>{c.name}</Text>
+          <Text numberOfLines={1} style={{ fontSize: 18, fontWeight: '800', letterSpacing: -0.3, color: T.ink }}>{c.name}</Text>
         </View>
 
         <View style={{ flexDirection: 'row', gap: 8, marginTop: 11, marginBottom: 10 }}>
@@ -54,7 +54,7 @@ function CandidateCard({ c, onOrder, onComplete }: { c: Candidate; onOrder: () =
 
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
           <Badge tone="neutral" sm>최근 주문</Badge>
-          <Text numberOfLines={1} style={{ flex: 1, fontSize: 14, fontWeight: '500', color: T.sub2 }}>{c.recent}</Text>
+          <Text numberOfLines={1} style={{ flex: 1, fontSize: 14, fontWeight: '600', color: T.sub2 }}>{c.recent}</Text>
         </View>
 
         <View style={{ flexDirection: 'row', gap: 8, marginTop: 12 }}>
@@ -74,7 +74,7 @@ function WaitingCard({ w, today, onReceive, onEdit }: { w: Waiting; today: Date;
       <View style={{ padding: 14 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
           <Badge tone={late ? 'red' : 'blue'} solid sm>{late ? '입고지연' : '입고예정'}</Badge>
-          <Text numberOfLines={1} style={{ fontSize: 17, fontWeight: '800', letterSpacing: -0.3, color: T.ink }}>{w.name}</Text>
+          <Text numberOfLines={1} style={{ fontSize: 18, fontWeight: '800', letterSpacing: -0.3, color: T.ink }}>{w.name}</Text>
         </View>
         <Text style={{ fontSize: 16, fontWeight: '700', color: late ? T.red : T.ink2, marginTop: 9 }}>{waitingDue(w.dueOffset, today)}</Text>
         <Text style={[{ fontSize: 16, fontWeight: '600', color: T.sub, marginTop: 7 }, NUM]}>{w.buy}</Text>
@@ -94,7 +94,7 @@ function DoneCard({ d, today, onCancel, onEdit }: { d: Done; today: Date; onCanc
       <View style={{ padding: 14 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
           <Badge tone="green" solid sm>입고 완료</Badge>
-          <Text numberOfLines={1} style={{ fontSize: 17, fontWeight: '800', letterSpacing: -0.3, color: T.ink }}>{d.name}</Text>
+          <Text numberOfLines={1} style={{ fontSize: 18, fontWeight: '800', letterSpacing: -0.3, color: T.ink }}>{d.name}</Text>
         </View>
         <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink2, marginTop: 9 }}>{doneDue(d.agoOffset, today)}</Text>
         <Text style={[{ fontSize: 16, fontWeight: '600', color: T.sub, marginTop: 7 }, NUM]}>{d.buy}</Text>
@@ -175,7 +175,7 @@ export default function OrdersHomeScreen() {
           ) : null}
           <Pressable style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}>
             <Icon name="bell" size={24} color={T.ink2} />
-            {tab === 0 ? <View style={{ position: 'absolute', top: 9, right: 10, width: 7, height: 7, borderRadius: 4, backgroundColor: T.red, borderWidth: 1.5, borderColor: '#fff' }} /> : null}
+            {tab === 0 ? <View style={{ position: 'absolute', top: 9, right: 10, width: 7, height: 7, borderRadius: 4, backgroundColor: T.red, borderWidth: 1.5, borderColor: T.surface }} /> : null}
           </Pressable>
         </View>
       </View>
@@ -275,10 +275,10 @@ export default function OrdersHomeScreen() {
 
       {/* 입고 취소 확인 다이얼로그 */}
       <Modal visible={cancelIdx != null} transparent animationType="fade" onRequestClose={() => setCancelIdx(null)}>
-        <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.42)', alignItems: 'center', justifyContent: 'center', paddingHorizontal: 32 }}>
+        <View style={{ flex: 1, backgroundColor: T.scrim, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 32 }}>
           <View style={{ width: '100%', maxWidth: 340, backgroundColor: T.surface, borderRadius: 18, paddingTop: 24, paddingHorizontal: 20, paddingBottom: 14 }}>
             <View style={{ alignItems: 'center', gap: 8 }}>
-              <Text style={{ fontSize: 17, fontWeight: '800', color: T.ink, textAlign: 'center' }}>입고를 취소하시겠습니까?</Text>
+              <Text style={{ fontSize: 18, fontWeight: '800', color: T.ink, textAlign: 'center' }}>입고를 취소하시겠습니까?</Text>
               <Text style={{ fontSize: 16, color: T.sub, textAlign: 'center', lineHeight: 20 }}>
                 재고·구매 이력 반영도 함께 되돌아갑니다.
               </Text>
@@ -288,7 +288,7 @@ export default function OrdersHomeScreen() {
                 <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink2 }}>아니오</Text>
               </Pressable>
               <Pressable onPress={() => { setDone((prev) => prev.filter((_, j) => j !== cancelIdx)); setCancelIdx(null); }} style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingVertical: 14, borderRadius: 12, backgroundColor: T.red }}>
-                <Text style={{ fontSize: 16, fontWeight: '700', color: '#fff' }}>입고 취소</Text>
+                <Text style={{ fontSize: 16, fontWeight: '700', color: T.onColor }}>입고 취소</Text>
               </Pressable>
             </View>
           </View>

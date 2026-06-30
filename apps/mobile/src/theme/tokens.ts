@@ -12,6 +12,11 @@ export const T = {
   blue: '#3182F6',
   bluePressed: '#2272EB',
   blueTint: '#EBF3FE',
+  blueLine: 'rgba(49,130,246,0.2)', // 파랑 강조 구분선(편집·구매옵션·발주완료)
+  // 컬러 배경 위 글자·아이콘(반전) — 흰 surface와 의미 분리
+  onColor: '#FFFFFF',
+  // 모달·시트 딤 배경(스크림)
+  scrim: 'rgba(0,0,0,0.42)',
   // text
   ink: '#191F28',
   ink2: '#333D4B',
@@ -24,15 +29,14 @@ export const T = {
   // status
   green: '#15B374',
   greenTint: '#E7F7F0',
-  amber: '#FF8A00',
   amberTint: '#FFF4E5',
   red: '#F04452',
   redTint: '#FEECEC',
   // 부족 상태 텍스트는 가독성 위해 진한 주황 사용(프로토타입 동일)
   amberText: '#E07A00',
   // 인라인 통합 — 반복 사용되던 색을 토큰화
-  line3: '#D1D6DB', // 밑줄형 탭/헤더 하단 구분선
-  chevron: '#C5CCD3', // 리스트 chevron 아이콘
+  line3: '#D1D6DB', // 밑줄형 탭/헤더 하단 구분선 · chevron 아이콘 (grey300)
+  gray400: '#B0B8C1', // Toss grey400 — 차트(세금) 등 옅은 회색 단계
 } as const;
 
 /** 폰트 — 프로토타입은 Pretendard. RN에서는 expo-font 로 번들 후 fontFamily 지정. */
@@ -41,6 +45,20 @@ export const FONT = {
   // RN tabular-nums: style={{ fontVariant: NUM }}
   num: ['tabular-nums'] as const,
 };
+
+/**
+ * 타입 스케일 — 크기 6단계(22·20·18·16·14·13) · 굵기 3단계(800·700·600)로 일원화.
+ * 신규 UI는 인라인 fontSize/fontWeight 대신 이 토큰 사용(기존 화면은 점진 치환).
+ */
+export const TYPE = {
+  display: { fontSize: 22, fontWeight: '800' }, // 큰 숫자·금액 강조
+  title: { fontSize: 20, fontWeight: '800' }, // 화면·시트 제목, 항목명
+  header: { fontSize: 18, fontWeight: '700' }, // 앱 헤더·섹션 헤더
+  body: { fontSize: 16, fontWeight: '700' }, // 본문 기본(행 제목·값)
+  bodyWeak: { fontSize: 16, fontWeight: '600' }, // 본문 보조
+  caption: { fontSize: 14, fontWeight: '600' }, // 라벨·캡션
+  captionSm: { fontSize: 13, fontWeight: '600' }, // 칩·탭 라벨
+} as const;
 
 /** 재고 상태 키 — 여유(ok) / 안전재고 미달(low) / 소진 임박(out). */
 export type StatusKey = 'ok' | 'low' | 'out';

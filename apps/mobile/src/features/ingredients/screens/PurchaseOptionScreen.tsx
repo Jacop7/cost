@@ -215,7 +215,7 @@ function Row({ label, hint, value, unit }: { label: string; hint?: string; value
 
 function Final({ lossPct, value, unit }: { lossPct: number; value: string; unit: string }) {
   return (
-    <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 8, borderTopWidth: 1, borderTopColor: 'rgba(49,130,246,0.2)' }}>
+    <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 8, borderTopWidth: 1, borderTopColor: T.blueLine }}>
       <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: T.blue }}>
         실사용 단가 <Text style={{ fontWeight: '600' }}>(로스 {lossPct}% 반영)</Text>
       </Text>

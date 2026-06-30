@@ -62,13 +62,13 @@ export default function FixedCostEditScreen() {
             </View>
             {/* 적용 채널 */}
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7, marginTop: 10 }}>
-              <Text style={{ fontSize: 12.5, fontWeight: '700', color: T.sub2 }}>적용 채널</Text>
+              <Text style={{ fontSize: 13, fontWeight: '700', color: T.sub2 }}>적용 채널</Text>
               {CHANNELS.map((ch) => {
                 const on = s.channels.includes(ch);
                 return (
                   <Pressable key={ch} onPress={() => toggleChannel(si, ch)} style={{ flexDirection: 'row', alignItems: 'center', gap: 3, paddingVertical: 5, paddingHorizontal: 10, borderRadius: 999, borderWidth: 1, borderColor: on ? T.blue : T.line, backgroundColor: on ? T.blueTint : T.surface }}>
                     {on ? <Icon name="check" size={12} color={T.blue} sw={2.6} /> : null}
-                    <Text style={{ fontSize: 12.5, fontWeight: '700', color: on ? T.blue : T.sub }}>{ch}</Text>
+                    <Text style={{ fontSize: 13, fontWeight: '700', color: on ? T.blue : T.sub }}>{ch}</Text>
                   </Pressable>
                 );
               })}
@@ -115,10 +115,10 @@ export default function FixedCostEditScreen() {
 
       {/* 저장 확인 다이얼로그 */}
       <Modal visible={confirmOpen} transparent animationType="fade" onRequestClose={() => setConfirmOpen(false)}>
-        <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.42)', alignItems: 'center', justifyContent: 'center', paddingHorizontal: 32 }}>
+        <View style={{ flex: 1, backgroundColor: T.scrim, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 32 }}>
           <View style={{ width: '100%', maxWidth: 340, backgroundColor: T.surface, borderRadius: 18, paddingTop: 24, paddingHorizontal: 20, paddingBottom: 14 }}>
             <View style={{ alignItems: 'center', gap: 8 }}>
-              <Text style={{ fontSize: 17, fontWeight: '800', color: T.ink, textAlign: 'center' }}>레시피를 저장하시겠습니까?</Text>
+              <Text style={{ fontSize: 18, fontWeight: '800', color: T.ink, textAlign: 'center' }}>레시피를 저장하시겠습니까?</Text>
               <Text style={{ fontSize: 16, color: T.sub, textAlign: 'center', lineHeight: 20 }}>
                 레시피 저장 시 전 레시피에 반영됩니다.
               </Text>
@@ -128,7 +128,7 @@ export default function FixedCostEditScreen() {
                 <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink2 }}>아니오</Text>
               </Pressable>
               <Pressable onPress={() => { setConfirmOpen(false); safeBack('/recipes/fixed-cost'); }} style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingVertical: 14, borderRadius: 12, backgroundColor: T.blue }}>
-                <Text style={{ fontSize: 16, fontWeight: '700', color: '#fff' }}>예</Text>
+                <Text style={{ fontSize: 16, fontWeight: '700', color: T.onColor }}>예</Text>
               </Pressable>
             </View>
           </View>

@@ -61,9 +61,9 @@ export default function RecipeDetailScreen() {
   // 도넛 — 판매가 구성. 순이익=상태색(미달 빨강/달성 초록), 비용=그레이 진하기.
   const breakdown = [
     { label: '재료', amt: material, color: T.ter },
-    { label: '부자재', amt: extra, color: '#CDD3DA' },
+    { label: '부자재', amt: extra, color: T.line3 },
     { label: '고정 지출', amt: fixed, color: T.sub },
-    { label: '세금', amt: tax, color: '#B0B8C1' },
+    { label: '세금', amt: tax, color: T.gray400 },
     { label: '순이익', amt: profit, color: PROFIT },
   ].filter((s) => s.amt > 0);
   const segments = breakdown.map((b) => ({ label: b.label, value: (b.amt / price) * 100, color: b.color }));

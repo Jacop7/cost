@@ -36,7 +36,7 @@ export function IngredientListScreen() {
             </Pressable>
             <Pressable style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}>
               <Icon name="bell" size={24} color={T.ink2} />
-              <View style={{ position: 'absolute', top: 9, right: 10, width: 7, height: 7, borderRadius: 4, backgroundColor: T.red, borderWidth: 1.5, borderColor: '#fff' }} />
+              <View style={{ position: 'absolute', top: 9, right: 10, width: 7, height: 7, borderRadius: 4, backgroundColor: T.red, borderWidth: 1.5, borderColor: T.surface }} />
             </Pressable>
           </View>
         </View>

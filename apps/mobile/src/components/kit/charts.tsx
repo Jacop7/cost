@@ -43,7 +43,7 @@ export function Donut({ segments, size = 150, thick = 22, centerTop, centerMain,
         })}
       </Svg>
       <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, alignItems: 'center', justifyContent: 'center' }}>
-        {centerTop ? <Txt style={{ fontSize: 12.5, fontWeight: '700', color: T.ter }}>{centerTop}</Txt> : null}
+        {centerTop ? <Txt style={{ fontSize: 13, fontWeight: '700', color: T.ter }}>{centerTop}</Txt> : null}
         <Txt num style={{ fontSize: mainSize, fontWeight: '800', color: mainColor || T.green, letterSpacing: -0.5 }}>{centerMain}</Txt>
         {centerSub ? <Txt style={{ fontSize: 16, fontWeight: '600', color: T.sub2 }}>{centerSub}</Txt> : null}
       </View>
