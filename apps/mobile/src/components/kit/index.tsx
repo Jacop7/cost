@@ -30,7 +30,7 @@ export function StatusBadge({ status, sm }: { status: 'ok' | 'low' | 'out'; sm?:
   const s = STATUS[status];
   return (
     <View style={{ alignSelf: 'flex-start', backgroundColor: s.bar, paddingHorizontal: sm ? 7 : 9, paddingVertical: sm ? 4 : 5, borderRadius: 7 }}>
-      <Text style={{ color: '#fff', fontWeight: '700', fontSize: sm ? 12 : 13 }}>{s.label}</Text>
+      <Text style={{ color: T.onColor, fontWeight: '700', fontSize: sm ? 12 : 13 }}>{s.label}</Text>
     </View>
   );
 }
@@ -48,7 +48,7 @@ export function Badge({ children, tone = 'neutral', sm, solid }: { children: Rea
   const c = tones[tone];
   return (
     <View style={{ alignSelf: 'flex-start', backgroundColor: solid ? c.fg : c.bg, borderWidth: c.border ? 1 : 0, borderColor: c.border, paddingHorizontal: sm ? 6 : 8, paddingVertical: sm ? 3 : 4, borderRadius: 6 }}>
-      <Text style={{ color: solid ? '#fff' : c.fg, fontWeight: '600', fontSize: sm ? 12 : 13 }}>{children}</Text>
+      <Text style={{ color: solid ? T.onColor : c.fg, fontWeight: '600', fontSize: sm ? 12 : 13 }}>{children}</Text>
     </View>
   );
 }
@@ -67,7 +67,7 @@ type Kind = 'primary' | 'tint' | 'gray' | 'ghost' | 'danger';
 type Size = 'sm' | 'md' | 'lg';
 export function Button({ children, kind = 'primary', size = 'md', full, icon, iconRight, onPress, style }: { children: ReactNode; kind?: Kind; size?: Size; full?: boolean; icon?: IconName; iconRight?: boolean; onPress?: () => void; style?: StyleProp<ViewStyle> }) {
   const kinds: Record<Kind, { bg: string; fg: string; border?: string }> = {
-    primary: { bg: T.blue, fg: '#fff' },
+    primary: { bg: T.blue, fg: T.onColor },
     tint: { bg: T.blueTint, fg: T.blue },
     gray: { bg: T.line2, fg: T.ink2 },
     ghost: { bg: 'transparent', fg: T.sub, border: T.line },
@@ -99,7 +99,7 @@ export function Button({ children, kind = 'primary', size = 'md', full, icon, ic
 export function Chip({ children, active, tone, onPress }: { children: ReactNode; active?: boolean; tone?: 'blue'; onPress?: () => void }) {
   return (
     <Pressable onPress={onPress} style={{ flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: 7, paddingHorizontal: 12, borderRadius: 999, backgroundColor: active ? T.ink : tone === 'blue' ? T.blueTint : T.surface, borderWidth: active ? 0 : 1, borderColor: T.line }}>
-      <Text style={{ fontSize: 16, fontWeight: '600', color: active ? '#fff' : tone === 'blue' ? T.blue : T.sub }}>{children}</Text>
+      <Text style={{ fontSize: 16, fontWeight: '600', color: active ? T.onColor : tone === 'blue' ? T.blue : T.sub }}>{children}</Text>
     </Pressable>
   );
 }
@@ -127,8 +127,8 @@ export function Stepper({ value, unit, onChange }: { value: number; unit?: strin
 export function FAB({ label = '추가', icon = 'plus', bottom = 24, onPress }: { label?: string; icon?: IconName; bottom?: number; onPress?: () => void }) {
   return (
     <Pressable onPress={onPress} style={{ position: 'absolute', right: 18, bottom, zIndex: 30, flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: T.blue, paddingVertical: 14, paddingLeft: 15, paddingRight: 18, borderRadius: 999, shadowColor: T.blue, shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.45, shadowRadius: 20, elevation: 6 }}>
-      <Icon name={icon} size={22} color="#fff" sw={2.4} />
-      <Text style={{ color: '#fff', fontWeight: '700', fontSize: 16 }}>{label}</Text>
+      <Icon name={icon} size={22} color={T.onColor} sw={2.4} />
+      <Text style={{ color: T.onColor, fontWeight: '700', fontSize: 16 }}>{label}</Text>
     </Pressable>
   );
 }
@@ -201,7 +201,7 @@ export function PLRow({ label, amt, pct, kind = 'cost', detail, bold }: { label:
     <View style={{ flexDirection: 'row', alignItems: 'flex-start', paddingVertical: 11, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
       <View style={{ flex: 1 }}>
         <Text style={{ fontSize: bold ? 15.5 : 14.5, fontWeight: bold ? '800' : '600', color: kind === 'profit' ? T.green : T.ink2 }}>{label}</Text>
-        {detail ? <Text style={{ fontSize: 12.5, color: T.ter, marginTop: 3, lineHeight: 16 }}>{detail}</Text> : null}
+        {detail ? <Text style={{ fontSize: 13, color: T.ter, marginTop: 3, lineHeight: 16 }}>{detail}</Text> : null}
       </View>
       <View style={{ alignItems: 'flex-end', minWidth: 96 }}>
         <Text style={[{ fontSize: bold ? 17 : 15, fontWeight: bold ? '800' : '700', color: valColor }, NUM]}>

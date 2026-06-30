@@ -95,7 +95,7 @@ export default function RecipeAddScreen() {
                 <Text style={[{ fontSize: 14, color: T.ter, fontWeight: '600', marginTop: 1 }, NUM]}>{l.qty}{l.unit}</Text>
               </View>
               <View style={{ width: 26, alignItems: 'flex-end' }}>
-                <Icon name="chevron" size={18} color={T.chevron} />
+                <Icon name="chevron" size={18} color={T.line3} />
               </View>
             </Pressable>
           ))}

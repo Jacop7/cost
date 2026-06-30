@@ -100,7 +100,7 @@ export default function OrderCompleteScreen() {
 
         {/* 총금액 · 구매가/실사용 단가 */}
         <View style={{ backgroundColor: T.blueTint, borderWidth: 1, borderColor: T.blue, borderRadius: 12, paddingVertical: 14, paddingHorizontal: 16, marginBottom: 18 }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10, paddingBottom: 10, borderBottomWidth: 1, borderBottomColor: 'rgba(49,130,246,0.2)' }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10, paddingBottom: 10, borderBottomWidth: 1, borderBottomColor: T.blueLine }}>
             <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: T.blue }}>총금액</Text>
             <Text style={[{ fontSize: 18, fontWeight: '800', color: T.blue }, NUM]}>{won(total)}<Text style={{ fontSize: 16 }}>원</Text></Text>
           </View>
@@ -134,7 +134,7 @@ export default function OrderCompleteScreen() {
                 const on = i === dateIdx;
                 return (
                   <Pressable key={i} onPress={() => { setDateIdx(i); if (i === 3) openCal(); else setCalOpen(false); }} style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingVertical: 12, borderRadius: 11, backgroundColor: on ? T.blue : T.surface, borderWidth: on ? 0 : 1, borderColor: T.line }}>
-                    <Text style={{ fontSize: 16, fontWeight: '700', color: on ? '#fff' : T.sub }}>{c}</Text>
+                    <Text style={{ fontSize: 16, fontWeight: '700', color: on ? T.onColor : T.sub }}>{c}</Text>
                   </Pressable>
                 );
               })}
@@ -172,7 +172,7 @@ export default function OrderCompleteScreen() {
                 return (
                   <Pressable key={d} onPress={() => setSelDate(cur)} style={{ width: `${100 / 7}%`, alignItems: 'center', paddingVertical: 4 }}>
                     <View style={{ width: 32, height: 32, borderRadius: 16, alignItems: 'center', justifyContent: 'center', backgroundColor: sel ? T.blue : 'transparent' }}>
-                      <Text style={[{ fontSize: 16, fontWeight: sel ? '800' : '600', color: sel ? '#fff' : T.ink }, NUM]}>{d}</Text>
+                      <Text style={[{ fontSize: 16, fontWeight: sel ? '800' : '600', color: sel ? T.onColor : T.ink }, NUM]}>{d}</Text>
                     </View>
                     {isToday ? <Text style={{ fontSize: 14, fontWeight: '600', color: sel ? T.blue : T.ter, marginTop: 1 }}>오늘</Text> : <View style={{ height: 11 }} />}
                   </Pressable>
@@ -186,7 +186,7 @@ export default function OrderCompleteScreen() {
         {/* 자동 입고 */}
         <Pressable onPress={() => setAutoIn((v) => !v)} style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
           <View style={{ width: 22, height: 22, borderRadius: 7, backgroundColor: autoIn ? T.blue : T.surface, borderWidth: autoIn ? 0 : 1.5, borderColor: T.line, alignItems: 'center', justifyContent: 'center' }}>
-            {autoIn ? <Icon name="check" size={15} color="#fff" sw={2.6} /> : null}
+            {autoIn ? <Icon name="check" size={15} color={T.onColor} sw={2.6} /> : null}
           </View>
           <Text style={{ fontSize: 16, fontWeight: '600', color: T.ink2 }}>도착일 다음날 자동 입고 처리</Text>
         </Pressable>

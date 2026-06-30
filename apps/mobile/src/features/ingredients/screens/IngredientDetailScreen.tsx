@@ -107,7 +107,7 @@ export function IngredientDetailScreen() {
           <View style={{ paddingHorizontal: 16, paddingTop: 14, paddingBottom: 16 }}>
             <View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between' }}>
               <View>
-                <Text style={{ fontSize: 14, color: T.ter, fontWeight: '400' }}>로스 반영</Text>
+                <Text style={{ fontSize: 14, color: T.ter, fontWeight: '600' }}>로스 반영</Text>
                 <Text style={[{ fontSize: 22, fontWeight: '800', color: T.blue, marginTop: 2 }, tnum]}>
                   {g.price}<Text style={{ fontSize: 14 }}>원/{g.unit}</Text>
                 </Text>
@@ -125,7 +125,7 @@ export function IngredientDetailScreen() {
                     {val}<Text style={{ fontSize: 14, fontWeight: '600', color: T.sub2 }}>원/{g.unit}</Text>
                   </Text>
                   <View style={{ flex: 1 }} />
-                  <Text style={{ fontSize: 14, color: T.ter, fontWeight: '400' }}>{ven}</Text>
+                  <Text style={{ fontSize: 14, color: T.ter, fontWeight: '600' }}>{ven}</Text>
                 </View>
               ))}
             </View>
@@ -160,7 +160,7 @@ export function IngredientDetailScreen() {
                   <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>{o.name}, {o.price}</Text>
                   <Text style={[{ fontSize: 14, color: T.ink, marginTop: 2 }, tnum]}>{o.vendor} · {o.per}원/{g.unit}</Text>
                 </View>
-                <Icon name="chevron" size={16} color={T.chevron} />
+                <Icon name="chevron" size={16} color={T.line3} />
               </View>
             ))}
           </View>
@@ -169,8 +169,8 @@ export function IngredientDetailScreen() {
 
       {/* 수정 액션 메뉴 (iOS 스타일 액션시트) */}
       <Modal visible={menuOpen} transparent animationType="fade" onRequestClose={() => setMenuOpen(false)} statusBarTranslucent>
-        <Pressable onPress={() => setMenuOpen(false)} style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.4)' }}>
-          <Pressable onPress={() => {}} style={{ backgroundColor: '#fff', borderTopLeftRadius: 20, borderTopRightRadius: 20, paddingHorizontal: 12, paddingTop: 10, paddingBottom: 16 }}>
+        <Pressable onPress={() => setMenuOpen(false)} style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: T.scrim }}>
+          <Pressable onPress={() => {}} style={{ backgroundColor: T.surface, borderTopLeftRadius: 20, borderTopRightRadius: 20, paddingHorizontal: 12, paddingTop: 10, paddingBottom: 16 }}>
             <View style={{ alignItems: 'center', paddingBottom: 14 }}>
               <View style={{ width: 40, height: 5, borderRadius: 3, backgroundColor: T.line }} />
             </View>
@@ -184,12 +184,12 @@ export function IngredientDetailScreen() {
                   }}
                   style={{ paddingVertical: 20, alignItems: 'center', borderTopWidth: i > 0 ? 1 : 0, borderTopColor: T.line }}
                 >
-                  <Text style={{ fontSize: 16, fontWeight: '500', color: T.ink }}>{m.label}</Text>
+                  <Text style={{ fontSize: 16, fontWeight: '600', color: T.ink }}>{m.label}</Text>
                 </Pressable>
               ))}
             </View>
             <Pressable onPress={() => setMenuOpen(false)} style={{ paddingVertical: 20, borderRadius: 14, backgroundColor: T.surface2, alignItems: 'center' }}>
-              <Text style={{ fontSize: 16, fontWeight: '500', color: T.ink }}>닫기</Text>
+              <Text style={{ fontSize: 16, fontWeight: '600', color: T.ink }}>닫기</Text>
             </Pressable>
           </Pressable>
         </Pressable>

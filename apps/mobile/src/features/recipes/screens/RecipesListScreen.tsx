@@ -53,7 +53,7 @@ function RecipeCard({ r }: { r: RecipeCardData }) {
           ) : (
             <Badge tone="green" sm solid>목표 달성</Badge>
           )}
-          <Text style={{ fontSize: 17, fontWeight: '800', letterSpacing: -0.3, color: T.ink }}>{r.name}</Text>
+          <Text style={{ fontSize: 18, fontWeight: '800', letterSpacing: -0.3, color: T.ink }}>{r.name}</Text>
         </View>
 
         {/* 판매가 */}

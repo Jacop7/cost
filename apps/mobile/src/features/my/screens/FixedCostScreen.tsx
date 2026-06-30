@@ -59,13 +59,13 @@ function Section({ s }: { s: CostSection }) {
         <View key={i} style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 15, paddingVertical: 11, borderTopWidth: 1, borderTopColor: T.line2 }}>
           <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: T.ink }}>{r.name}</Text>
           <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{won(r.amt)}</Text>
-          <Text style={[{ fontSize: 12.5, fontWeight: '600', color: T.ter, width: 54, textAlign: 'right' }, NUM]}>{((r.amt / REVENUE) * 100).toFixed(1)}%</Text>
+          <Text style={[{ fontSize: 13, fontWeight: '600', color: T.ter, width: 54, textAlign: 'right' }, NUM]}>{((r.amt / REVENUE) * 100).toFixed(1)}%</Text>
         </View>
       ))}
       <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 15, paddingVertical: 12, backgroundColor: T.surface2 }}>
         <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.sub }}>소계</Text>
         <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{won(subtotal(s))}원</Text>
-        <Text style={[{ fontSize: 12.5, fontWeight: '700', color: T.sub2, width: 54, textAlign: 'right' }, NUM]}>{((subtotal(s) / REVENUE) * 100).toFixed(1)}%</Text>
+        <Text style={[{ fontSize: 13, fontWeight: '700', color: T.sub2, width: 54, textAlign: 'right' }, NUM]}>{((subtotal(s) / REVENUE) * 100).toFixed(1)}%</Text>
       </View>
     </Card>
   );
