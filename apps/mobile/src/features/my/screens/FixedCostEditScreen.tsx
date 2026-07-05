@@ -9,6 +9,7 @@ import { useRouter } from 'expo-router';
 import { AppHeader, Button, Field, Icon, Input } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { cardShadow, T, won } from '@/theme/tokens';
+import { ChannelWeightSheet } from '../components/ChannelWeightSheet';
 
 const REVENUE = 28_500_000;
 const CHANNELS = ['매장', '배달', '포장'];
@@ -24,6 +25,7 @@ const SECTIONS: { title: string; channels: string[]; rows: { name: string; amt: 
 export default function FixedCostEditScreen() {
   const router = useRouter();
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [weightSi, setWeightSi] = useState<number | null>(null); // 채널·비중 시트 대상 섹션
   const [sections, setSections] = useState(() =>
     SECTIONS.map((s) => ({ title: s.title, channels: [...s.channels], rows: s.rows.map((r) => ({ ...r })) })),
   );
@@ -72,6 +74,12 @@ export default function FixedCostEditScreen() {
                   </Pressable>
                 );
               })}
+              {s.channels.length > 0 ? (
+                <Pressable onPress={() => setWeightSi(si)} hitSlop={4} style={{ marginLeft: 'auto', flexDirection: 'row', alignItems: 'center', gap: 3, paddingVertical: 5, paddingHorizontal: 10, borderRadius: 999, backgroundColor: T.line2 }}>
+                  <Icon name="swap" size={13} color={T.sub} sw={2.2} />
+                  <Text style={{ fontSize: 12.5, fontWeight: '700', color: T.sub }}>비중</Text>
+                </Pressable>
+              ) : null}
             </View>
             {/* 구분선 */}
             <View style={{ height: 1, backgroundColor: T.line2, marginTop: 12, marginBottom: 12 }} />
@@ -134,6 +142,13 @@ export default function FixedCostEditScreen() {
           </View>
         </View>
       </Modal>
+
+      {/* RCP-15 적용 채널·비중 시트 */}
+      <ChannelWeightSheet
+        visible={weightSi != null}
+        onClose={() => setWeightSi(null)}
+        channels={weightSi != null ? sections[weightSi]?.channels ?? [] : []}
+      />
     </View>
   );
 }

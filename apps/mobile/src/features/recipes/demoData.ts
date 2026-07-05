@@ -18,17 +18,18 @@ export interface RecipeCardData {
   target: number; // 목표 순이익률(0~1)
   salesVolume: number; // 월 평균 판매량(개/월)
   status: 'selling' | 'stopped';
+  cat?: string; // 레시피 카테고리(찌개·전골 등)
 }
 
 /** 고정지출률 31.3% (검산 — 12,000원 기준 고정 ≈ 3,760원). */
 export const FIXED_RATE = 0.3133;
 
 export const DEMO_RECIPES: RecipeCardData[] = [
-  { id: 'RCP-0007', name: '제육볶음', price: 12000, servings: 10, taxMode: 'included', materialPerServing: 2835, extraPerServing: 300, fixedRate: FIXED_RATE, target: 0.4, salesVolume: 300, status: 'selling' },
-  { id: 'RCP-0012', name: '된장찌개', price: 8000, servings: 4, taxMode: 'included', materialPerServing: 2894, extraPerServing: 250, fixedRate: FIXED_RATE, target: 0.4, salesVolume: 200, status: 'selling' },
-  { id: 'RCP-0004', name: '김치찌개', price: 9000, servings: 4, taxMode: 'included', materialPerServing: 3000, extraPerServing: 250, fixedRate: FIXED_RATE, target: 0.4, salesVolume: 180, status: 'selling' },
-  { id: 'RCP-0019', name: '계란말이', price: 6000, servings: 2, taxMode: 'included', materialPerServing: 900, extraPerServing: 150, fixedRate: FIXED_RATE, target: 0.4, salesVolume: 120, status: 'selling' },
-  { id: 'RCP-0023', name: '비빔밥', price: 9500, servings: 1, taxMode: 'included', materialPerServing: 3500, extraPerServing: 200, fixedRate: FIXED_RATE, target: 0.4, salesVolume: 0, status: 'stopped' },
+  { id: 'RCP-0007', name: '제육볶음', price: 12000, servings: 10, taxMode: 'included', materialPerServing: 2835, extraPerServing: 300, fixedRate: FIXED_RATE, target: 0.4, salesVolume: 300, status: 'selling', cat: '볶음' },
+  { id: 'RCP-0012', name: '된장찌개', price: 8000, servings: 4, taxMode: 'included', materialPerServing: 2894, extraPerServing: 250, fixedRate: FIXED_RATE, target: 0.4, salesVolume: 200, status: 'selling', cat: '찌개·전골' },
+  { id: 'RCP-0004', name: '김치찌개', price: 9000, servings: 4, taxMode: 'included', materialPerServing: 3000, extraPerServing: 250, fixedRate: FIXED_RATE, target: 0.4, salesVolume: 180, status: 'selling', cat: '찌개·전골' },
+  { id: 'RCP-0019', name: '계란말이', price: 6000, servings: 2, taxMode: 'included', materialPerServing: 900, extraPerServing: 150, fixedRate: FIXED_RATE, target: 0.4, salesVolume: 120, status: 'selling', cat: '사이드' },
+  { id: 'RCP-0023', name: '비빔밥', price: 9500, servings: 1, taxMode: 'included', materialPerServing: 3500, extraPerServing: 200, fixedRate: FIXED_RATE, target: 0.4, salesVolume: 0, status: 'stopped', cat: '덮밥·볶음밥' },
 ];
 
 export interface RecipeProfit {
@@ -143,3 +144,24 @@ export const RECIPE_DETAILS: Record<string, RecipeDetail> = {
 };
 
 export const getRecipe = (id?: string) => DEMO_RECIPES.find((r) => r.id === id);
+
+// ── 부자재 마스터(데모) — RCP-11 검색 · RCP-13 관리 공용 ────────────
+/** 부자재 = 메뉴별 정액 소모품(소스팩·용기·호일 등). 기준단가는 개당(원). */
+export interface MaterialData {
+  name: string;
+  cat: string; // 부자재 카테고리
+  price: number; // 개당 기준단가(원)
+  unit: string; // 개 등
+  stock?: string; // 재고 표기(데모)
+}
+export const DEMO_MATERIALS: MaterialData[] = [
+  { name: '제육볶음 전용 소스팩', cat: '소스·양념', price: 200, unit: '개', stock: '48개' },
+  { name: '돈까스 소스 (개별포장)', cat: '소스·양념', price: 300, unit: '개', stock: '60개' },
+  { name: '비빔밥 고추장팩', cat: '소스·양념', price: 120, unit: '개', stock: '120개' },
+  { name: '계란말이 고명용 김', cat: '건어물', price: 50, unit: '개', stock: '200개' },
+  { name: '라면 사리면 토핑', cat: '면류', price: 100, unit: '개', stock: '85개' },
+  { name: '미니 불판 호일', cat: '소모품', price: 250, unit: '개', stock: '40개' },
+];
+
+/** 레시피 카테고리 마스터(데모) — RCP-12 카테고리 설정 초기값. */
+export const RECIPE_CATS = ['찌개·전골', '덮밥·볶음밥', '볶음', '구이', '튀김', '면류', '분식', '사이드', '음료'];

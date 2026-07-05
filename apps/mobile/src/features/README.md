@@ -23,9 +23,16 @@
 | `recipes` | RCP-02 | 레시피 상세 (도넛·손익·재료·고정지출) | `recipes/[id]` | ✅ |
 | `recipes` | RCP-03 | 레시피 추가/수정 → **E3** | `recipes/add` | ✅ |
 | `recipes` | RCP-09 | 식재료 검색·담기 + 사용량 입력 시트 | `recipes/ingredient-search` | ✅ |
+| `recipes` | RCP-11 | 부자재 검색·담기 | `recipes/material-search` (`MaterialSearchScreen`) | ✅ |
+| `recipes` | RCP-13 | 부자재 관리 (+ RCP-14 부자재 수정 시트) | `recipes/materials` (`MaterialManageScreen`) | ✅ |
+| `recipes` | RCP-07 | 평균 판매량 입력 (기간·환산·배분비율) | `recipes/avg-sales` (`AvgSalesScreen`) | ✅ |
+| `recipes` | RCP-10 | 순이익률 변동 추이 (기간별 라인·min/max) | `recipes/profit-trend` (`ProfitTrendScreen`) | ✅ |
+| `recipes` | RCP-16 | 손익 변동 상세 (원장 → 손익표 시트) | `recipes/profit-history` (`ProfitHistoryScreen`) | ✅ |
+| `recipes` | RCP-12 | 레시피 카테고리 설정 (추가·수정·삭제) | `recipes/category` (`CategoryScreen`) | ✅ |
 | `recipes`→`my` | MY-02 | 고정 지출 자세히 (자세히 보기 진입) | `recipes/fixed-cost` (`my/FixedCostScreen`) | ✅ |
 | `recipes`→`my` | MY-02 | 고정 지출 수정 (항목/카드 추가·삭제) → **E4** | `recipes/fixed-cost-edit` (`my/FixedCostEditScreen`) | ✅ |
-| `recipes` | RCP-05 | 판매가 시뮬레이션 (2차) | — | ⬜ |
+| `recipes` | RCP-05 | 판매가 시뮬레이션 (상세 내 시트·슬라이더 라이브 재계산) | `recipes/PriceSimSheet`(시트) | ✅ |
+| `recipes`→`my` | RCP-15 | 적용 채널·비중 (고정지출 수정 내 시트·슬라이더·합계 검증) | `my/ChannelWeightSheet`(시트) | ✅ |
 | `orders` | ORD-01 | 발주 현황 (발주 후보/입고 예정/입고 완료) | `orders/index` | ✅ |
 | `orders` | ORD-05 | 주문하기 — 구매 링크·옵션 시트 | (OrdersHome 내 시트) | ✅ |
 | `orders` | ORD-06 | 발주 완료 — 구매처 선택 시트 | (OrdersHome 내 시트) | ✅ |
