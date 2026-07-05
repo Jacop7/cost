@@ -10,7 +10,7 @@ export type IconName =
   | 'edit' | 'check' | 'sort' | 'bell' | 'warn' | 'up' | 'down' | 'box'
   | 'clipboard' | 'receipt' | 'user' | 'truck' | 'link' | 'camera' | 'calendar'
   | 'cart' | 'trend' | 'won' | 'history' | 'tag' | 'swap' | 'grid' | 'ruler'
-  | 'store' | 'info' | 'arrowRight' | 'download' | 'note';
+  | 'store' | 'info' | 'arrowRight' | 'download' | 'note' | 'grip';
 
 interface Props {
   name: IconName;
@@ -71,6 +71,7 @@ export function Icon({ name, size = 24, color = T.ink, sw = 1.9, fill = false }:
       case 'arrowRight': return <Path d="M5 12h14M13 6l6 6-6 6" {...p} />;
       case 'download': return <G {...p}><Path d="M12 4v11M12 15l-4-4M12 15l4-4M5 19h14" /></G>;
       case 'note': return <G {...p}><Path d="M5 4.5h14v10l-4.5 4.5H5v-14z" /><Path d="M19 14.5h-4.5v4.5" /><Path d="M8.5 9h7M8.5 12.5h4" /></G>;
+      case 'grip': return <G fill={color} stroke="none"><Circle cx={9} cy={6} r={1.5} /><Circle cx={9} cy={12} r={1.5} /><Circle cx={9} cy={18} r={1.5} /><Circle cx={15} cy={6} r={1.5} /><Circle cx={15} cy={12} r={1.5} /><Circle cx={15} cy={18} r={1.5} /></G>;
       default: return null;
     }
   })();

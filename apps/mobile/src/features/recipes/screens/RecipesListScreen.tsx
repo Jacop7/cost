@@ -132,6 +132,9 @@ export default function RecipesListScreen() {
       <View style={{ paddingTop: insets.top, backgroundColor: T.bg }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 20, paddingRight: 12, paddingTop: 6, paddingBottom: 12 }}>
           <Text style={{ flex: 1, fontSize: 22, fontWeight: '800', color: T.ink, letterSpacing: -0.6 }}>레시피</Text>
+          <Pressable onPress={() => router.push('/recipes/category' as Href)} style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}>
+            <Icon name="tag" size={22} color={T.ink2} />
+          </Pressable>
           <Pressable style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}>
             <Icon name="search" size={23} color={T.ink2} />
           </Pressable>

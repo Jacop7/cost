@@ -13,6 +13,7 @@ export { Icon };
 export type { IconName } from './Icon';
 export { AppHeader } from './AppHeader';
 export { Sheet } from './Sheet';
+export { Slider } from './Slider';
 export { Donut, TrendChart } from './charts';
 export type { DonutSeg, TrendPoint } from './charts';
 
@@ -150,14 +151,17 @@ export function Field({ label, children, hint, req, right }: { label: string; ch
   );
 }
 
-export function Input({ value, placeholder, suffix, prefix, mono, right, onChangeText, keyboardType }: { value?: string; placeholder?: string; suffix?: string; prefix?: string; mono?: boolean; right?: ReactNode; onChangeText?: (t: string) => void; keyboardType?: KeyboardTypeOptions }) {
+// `mono` prop 유지(호출부 호환)하되 tabular-nums는 적용하지 않음.
+// Pretendard 미번들 환경에서 tabular-nums가 숫자를 작고 얇은 대체 글꼴로 렌더 → 한글 라벨과 크기·굵기 불일치.
+// 입력칸은 값이 하나뿐이라 자릿수 정렬이 필요 없으므로 한글과 동일 글꼴로 렌더한다.
+export function Input({ value, placeholder, suffix, prefix, mono: _mono, right, onChangeText, keyboardType }: { value?: string; placeholder?: string; suffix?: string; prefix?: string; mono?: boolean; right?: ReactNode; onChangeText?: (t: string) => void; keyboardType?: KeyboardTypeOptions }) {
   const empty = value == null || value === '';
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: T.surface, borderWidth: 1, borderColor: T.line, borderRadius: 12, paddingVertical: 13, paddingHorizontal: 14 }}>
       {prefix ? <Text style={{ fontSize: 16, color: T.ter, fontWeight: '600' }}>{prefix}</Text> : null}
       {onChangeText ? (
         <TextInput
-          style={[{ flex: 1, minWidth: 0, fontSize: 16, fontWeight: '600', color: T.ink, padding: 0 }, mono ? NUM : null]}
+          style={{ flex: 1, minWidth: 0, fontSize: 16, fontWeight: '600', color: T.ink, padding: 0 }}
           value={value}
           placeholder={placeholder}
           placeholderTextColor={T.ter}
@@ -165,7 +169,7 @@ export function Input({ value, placeholder, suffix, prefix, mono, right, onChang
           keyboardType={keyboardType}
         />
       ) : (
-        <Text numberOfLines={1} style={[{ flex: 1, minWidth: 0, fontSize: 16, fontWeight: '600', color: empty ? T.ter : T.ink }, mono ? NUM : null]}>{empty ? placeholder : value}</Text>
+        <Text numberOfLines={1} style={{ flex: 1, minWidth: 0, fontSize: 16, fontWeight: '600', color: empty ? T.ter : T.ink }}>{empty ? placeholder : value}</Text>
       )}
       {suffix ? <Text style={{ fontSize: 16, color: T.sub2, fontWeight: '600', flexShrink: 0 }}>{suffix}</Text> : null}
       {right}

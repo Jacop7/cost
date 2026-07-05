@@ -59,7 +59,9 @@ export default function RecipeAddScreen() {
           <View style={{ flexDirection: 'row', gap: 10 }}>
             <View style={{ flex: 1 }}>
               <Field label="월 평균 판매량" right={<Icon name="info" size={14} color={T.ter} />}>
-                <Input value="300" suffix="개" mono />
+                <Pressable onPress={() => router.push('/recipes/avg-sales' as Href)}>
+                  <Input value="300" suffix="개" mono right={<Icon name="chevron" size={16} color={T.line3} />} />
+                </Pressable>
               </Field>
             </View>
             <View style={{ flex: 1 }}>
