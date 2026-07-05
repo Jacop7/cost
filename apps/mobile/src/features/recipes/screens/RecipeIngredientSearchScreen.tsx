@@ -1,52 +1,53 @@
 /**
- * RCP-09 식재료 검색 + RCP-08 사용량 입력 — 레시피에 담을 식재료 검색·담기.
- * 식재료 리스트(ING-01) 카드 스타일. 카드 탭 → 사용량 입력 바텀시트 → 담기.
+ * RCP-05/09 식재료 검색 (+ RCP-08 사용량 입력) — 레시피에 담을 식재료 검색·담기.
+ * 프로토타입(zip) 디자인: 카테고리 탭 + "설정에서 추가" 배너 + 카드(여유/곧소진·총량·단가).
+ * 카드 탭 → 사용량 입력 바텀시트 → 담기.
  * ⚠ 디자인 프로토타입(정적 검색·데모 계산). 실제 담기/저장은 데이터 연결 단계에서.
  */
 import { useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
-import { useRouter } from 'expo-router';
-import { AppHeader, Badge, Button, Card, Icon, Select, Sheet } from '@/components/kit';
+import { AppHeader, Badge, Button, Card, Icon, ScrollTabs, Select, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { round } from '@sikjae/core';
 import { T, won } from '@/theme/tokens';
-import { DEMO_INGREDIENTS, IngCardData, perLabel } from '../../ingredients/demoData';
+import { DEMO_INGREDIENTS, IngCardData } from '../../ingredients/demoData';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 const SERVINGS = 10; // 이 메뉴 기준 인분(데모)
 
-// 상태 뱃지 — 여유(초록)/소진 임박(빨강) 2단계. 솔리드.
-function StatusTag({ g }: { g: IngCardData }) {
-  const conf =
-    g.soon || g.status === 'out' || g.status === 'low'
-      ? { label: '소진 임박', c: T.red }
-      : { label: '여유', c: T.green };
-  return (
-    <View style={{ backgroundColor: conf.c, paddingHorizontal: 7, paddingVertical: 4, borderRadius: 7 }}>
-      <Text style={{ color: T.onColor, fontWeight: '700', fontSize: 14 }}>{conf.label}</Text>
-    </View>
-  );
+// 식재료 카테고리 (상단 스크롤 탭) — 데모: 시각 선택만.
+const CATS = ['전체', '축산·계란', '수산·해조류', '농산 (신선)', '곡물·견과·분말', '유제품', '냉동식품', '소스·유지류·장류', '향신료·허브', '음료·주류', '상온가공·건식', '두부·발효식품', '베이커리'];
+
+// 총 보유량 + 구매단위 단가 — 프로토타입 환산 규칙(개→개/박스, g·ml→kg·L).
+function stockLine(g: IngCardData): { total: string; price: string } {
+  const count = g.sealed + g.opened;
+  const big = g.unit === 'ml' ? 'L' : 'kg';
+  if (g.unit === '개') {
+    const total = g.per > 1 ? `총 ${count}박스 · ${won(count * g.per)}개` : `총 ${count}개`;
+    return { total, price: `${won(Math.round(g.price))}원/개` };
+  }
+  const amt = count * g.per;
+  const total = `총 ${amt >= 1000 ? `${amt / 1000}${big}` : `${amt}${g.unit}`}`;
+  const price = g.per >= 1000 ? `${won(Math.round(g.price * 1000))}원/${big}` : `${won(Math.round(g.price * 10) / 10)}원/${g.unit}`;
+  return { total, price };
 }
 
 function IngRow({ g, onPress }: { g: IngCardData; onPress: () => void }) {
+  const line = stockLine(g);
   return (
     <Pressable onPress={onPress}>
       <Card pad={0} style={{ overflow: 'hidden' }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 13, paddingHorizontal: 15 }}>
-          <View style={{ flex: 1 }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 11, paddingVertical: 13, paddingHorizontal: 15 }}>
+          <View style={{ flex: 1, minWidth: 0 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-              <StatusTag g={g} />
-              <Text style={{ fontSize: 16, fontWeight: '800', letterSpacing: -0.3, color: T.ink }}>{g.name}</Text>
+              {g.soon ? <Badge tone="red" solid sm>곧 소진</Badge> : <Badge tone="green" solid sm>여유</Badge>}
+              <Text style={{ fontSize: 16, fontWeight: '800', letterSpacing: -0.3, color: T.ink }} numberOfLines={1}>{g.name}</Text>
               <Badge tone="neutral" sm>{g.cat}</Badge>
             </View>
-            <Text style={[{ fontSize: 16, fontWeight: '600', color: T.ink2, marginTop: 7 }, NUM]}>
-              미개봉 {g.sealed} · 개봉 {g.opened} <Text style={{ color: T.ter, fontWeight: '600' }}>(개당 {perLabel(g.unit, g.per)})</Text>
-            </Text>
-            <Text style={[{ fontSize: 16, color: T.sub2, marginTop: 3 }, NUM]}>
-              기준 단가 <Text style={{ fontWeight: '700', color: T.ink }}>{g.price}{g.priceUnit}</Text>
-            </Text>
+            <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink, marginTop: 8 }, NUM]}>{line.total}</Text>
+            <Text style={[{ fontSize: 14, fontWeight: '700', color: T.sub2, marginTop: 4 }, NUM]}>{line.price}</Text>
           </View>
-          <Icon name="chevron" size={18} color={T.line3} />
+          <Icon name="chevron" size={20} color={T.line3} />
         </View>
       </Card>
     </Pressable>
@@ -54,9 +55,9 @@ function IngRow({ g, onPress }: { g: IngCardData; onPress: () => void }) {
 }
 
 export default function RecipeIngredientSearchScreen() {
-  const router = useRouter();
   const [sel, setSel] = useState<IngCardData | null>(null);
   const [qty, setQty] = useState(0);
+  const [cat, setCat] = useState(0);
 
   const open = (g: IngCardData) => {
     setSel(g);
@@ -78,11 +79,19 @@ export default function RecipeIngredientSearchScreen() {
         </View>
       </View>
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 32, gap: 9 }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 2 }}>
-          <Text style={{ fontSize: 16, fontWeight: '600', color: T.sub2 }}>등록된 식재료 {DEMO_INGREDIENTS.length}</Text>
-          <Text style={{ fontSize: 16, fontWeight: '700', color: T.blue }}>+ 새 식재료 등록</Text>
-        </View>
+      {/* 카테고리 스크롤 탭 */}
+      <View style={{ borderBottomWidth: 1, borderBottomColor: T.line3 }}>
+        <ScrollTabs tabs={CATS} active={cat} onChange={setCat} />
+      </View>
+
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: 32, gap: 10 }}>
+        {/* 설정 안내 배너 */}
+        <Pressable style={{ flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: T.blueTint, borderWidth: 1, borderColor: T.blue, borderRadius: 12, paddingVertical: 12, paddingHorizontal: 14 }}>
+          <Text style={{ flex: 1, fontSize: 14, fontWeight: '700', color: T.blue }}>식재료 추가 및 수정은 설정 페이지에서 진행해 주세요</Text>
+          <Icon name="chevron" size={17} color={T.blue} />
+        </Pressable>
+
+        <Text style={{ fontSize: 14, fontWeight: '600', color: T.sub2 }}>등록된 식재료 {DEMO_INGREDIENTS.length}</Text>
 
         {DEMO_INGREDIENTS.map((g) => (
           <IngRow key={g.id} g={g} onPress={() => open(g)} />
