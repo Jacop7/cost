@@ -1,15 +1,15 @@
 /**
- * RCP-03 레시피 추가 (② 4.3) — 레시피 상세(RCP-02) 레이아웃 기준의 입력 폼.
- * 메뉴명·기준인분·판매가·부가세·목표·월평균판매량 + 재료(검색·담기) + 추가지출 + 고정지출(읽기전용) + 손익 미리보기 + 저장.
- * ⚠ 현재는 디자인 프로토타입(정적 입력·제육볶음 프리필). 실제 입력/계산/저장은 데이터 연결 단계에서 TextInput·RPC(E3)로.
+ * RCP-03 레시피 추가/수정 (② 4.3) — 프로토타입 레이아웃 그대로 이식.
+ * 기본정보(+정보 툴팁) · 재료(10/1개 탭) · 부자재(10/1개 탭) · 고정지출(10/1개 탭) · 손익 미리보기(10/1/월).
+ * ⚠ 디자인 프로토타입(정적·제육볶음 프리필). 실제 입력/계산/저장(E3)은 데이터 연결 단계에서.
  */
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
-import { AppHeader, Badge, Button, Field, Icon, Input, Select, Sheet } from '@/components/kit';
+import { AppHeader, Badge, Button, Card, Field, Icon, Input, Select } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { recommendedPrice, round } from '@sikjae/core';
-import { cardShadow, T, won } from '@/theme/tokens';
+import { T, won } from '@/theme/tokens';
 import { FIXED_ITEMS, getRecipe, pct, RECIPE_DETAILS } from '../demoData';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
@@ -18,18 +18,62 @@ const NUM = { fontVariant: ['tabular-nums' as const] };
 const R = getRecipe('RCP-0007')!;
 const D = RECIPE_DETAILS['RCP-0007']!;
 
+// 섹션 카드 헤더 — 회색(surface2) 바.
+function SecHead({ title, sub }: { title: string; sub?: string }) {
+  return (
+    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 13, paddingHorizontal: 15, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
+      <Text style={{ fontSize: 16, fontWeight: '800', color: T.sub }}>{title}</Text>
+      {sub ? <Text style={{ fontSize: 14, color: T.ter, fontWeight: '600' }}>{sub}</Text> : null}
+    </View>
+  );
+}
+
+// 필드 우측 정보(?) 버튼.
+function InfoBtn({ active, onPress }: { active: boolean; onPress: () => void }) {
+  return (
+    <Pressable onPress={onPress} hitSlop={6} style={{ padding: 2 }}>
+      <Icon name="info" size={14} color={active ? T.blue : T.ter} />
+    </Pressable>
+  );
+}
+
+type CostMode = 'ten' | 'one';
+type PlMode = 'ten' | 'one' | 'month';
+
+// 기준 밑줄 탭 (10개/1개[/월평균]).
+function ModeTabs<T2 extends string>({ tabs, value, onChange }: { tabs: [T2, string][]; value: T2; onChange: (v: T2) => void }) {
+  return (
+    <View style={{ flexDirection: 'row', gap: 22, paddingHorizontal: 15, backgroundColor: T.surface, borderBottomWidth: 1, borderBottomColor: T.line }}>
+      {tabs.map(([k, label]) => {
+        const on = value === k;
+        return (
+          <Pressable key={k} onPress={() => onChange(k)} style={{ paddingTop: 13, paddingBottom: 11 }}>
+            <Text style={{ fontSize: 16, fontWeight: on ? '700' : '600', color: on ? T.ink : T.ter }}>{label}</Text>
+            {on ? <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 2.5, backgroundColor: T.ink, borderRadius: 2 }} /> : null}
+          </Pressable>
+        );
+      })}
+    </View>
+  );
+}
+
+function Footer({ children }: { children: ReactNode }) {
+  return (
+    <View style={{ paddingVertical: 12, paddingHorizontal: 15, backgroundColor: T.surface2, borderTopWidth: 1, borderTopColor: T.line2 }}>
+      <Text style={{ fontSize: 14, color: T.ter, lineHeight: 20 }}>{children}</Text>
+    </View>
+  );
+}
+
 export default function RecipeAddScreen() {
   const router = useRouter();
-  const [view, setView] = useState<'one' | 'month'>('one'); // 1개 / 월 평균
-  const m = view === 'one' ? 1 : R.salesVolume;
+  const [info, setInfo] = useState<'sales' | 'target' | null>(null);
+  const [costMode, setCostMode] = useState<CostMode>('ten');
+  const [plMode, setPlMode] = useState<PlMode>('one');
   const [extras, setExtras] = useState(() => D.extras.map((e) => ({ ...e })));
-  const addExtra = () => setExtras((prev) => [...prev, { name: '', amount: 0 }]);
   const removeExtra = (i: number) => setExtras((prev) => prev.filter((_, j) => j !== i));
-  const [lineItems, setLineItems] = useState(() => D.lines.map((l) => ({ ...l })));
-  const [editIdx, setEditIdx] = useState<number | null>(null);
-  const removeLine = (i: number) => setLineItems((prev) => prev.filter((_, j) => j !== i));
 
-  const lines = lineItems.map((l) => ({ ...l, cost: round(l.qty * l.unitPrice) }));
+  const lines = D.lines.map((l) => ({ ...l, cost: round(l.qty * l.unitPrice) }));
   const price = R.price;
   const material = lines.reduce((s, l) => s + l.cost, 0);
   const extra = extras.reduce((s, e) => s + e.amount, 0);
@@ -38,240 +82,209 @@ export default function RecipeAddScreen() {
   const profit = price - tax - material - fixed - extra;
   const profitRate = profit / price;
   const warn = profitRate < R.target;
-  // 순이익 강조색 — 상세와 동일: 목표 미달=빨강 / 달성=초록
   const PROFIT = warn ? T.red : T.green;
   const recRaw = recommendedPrice(material + extra, R.fixedRate, R.target);
   const recommended = recRaw == null ? null : Math.round(recRaw / 100) * 100;
+
+  const cm = costMode === 'ten' ? 10 : 1; // 재료·부자재·고정 표시 배수
+  const m = plMode === 'ten' ? 10 : plMode === 'month' ? R.salesVolume : 1; // 손익 배수
+  const wm = (v: number) => `${won(v * m)}원`;
+
+  const costTabs: [CostMode, string][] = [['ten', '10개 기준'], ['one', '1개 기준']];
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <AppHeader title="레시피 추가" onBack={() => safeBack('/recipes')} />
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 4, paddingBottom: 24, gap: 11 }}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 4, paddingBottom: 24 }}>
         {/* 기본 정보 */}
-        <View style={{ backgroundColor: T.surface, borderRadius: 16, padding: 16, borderWidth: 1, borderColor: T.line, ...cardShadow }}>
-          <Field label="메뉴명" req>
-            <Input value="제육볶음" />
-          </Field>
-          <Field label="판매가" req>
-            <Input value="12,000" suffix="원" mono />
-          </Field>
+        <View style={{ marginBottom: 14 }}>
+          <Field label="메뉴명" req><Input value="제육볶음" /></Field>
+          <Field label="카테고리" req><Select value="볶음" /></Field>
+          <Field label="판매가" req><Input value="12,000" suffix="원" mono /></Field>
           <View style={{ flexDirection: 'row', gap: 10 }}>
             <View style={{ flex: 1 }}>
-              <Field label="월 평균 판매량" right={<Icon name="info" size={14} color={T.ter} />}>
+              <Field label="월 평균 판매량" right={<InfoBtn active={info === 'sales'} onPress={() => setInfo((v) => (v === 'sales' ? null : 'sales'))} />}>
                 <Pressable onPress={() => router.push('/recipes/avg-sales' as Href)}>
                   <Input value="300" suffix="개" mono right={<Icon name="chevron" size={16} color={T.line3} />} />
                 </Pressable>
               </Field>
             </View>
             <View style={{ flex: 1 }}>
-              <Field label="1회 생산량" right={<Icon name="info" size={14} color={T.ter} />}>
-                <Input value={String(R.servings)} suffix="개" mono />
-              </Field>
+              <Field label="1회 생산량"><Input value="10" suffix="개" mono /></Field>
             </View>
           </View>
-          <Field label="목표 순이익률" right={<Icon name="info" size={14} color={T.ter} />}>
-            <Input value="40" suffix="%" mono />
-          </Field>
+          <View style={{ marginBottom: -4 }}>
+            <Field label="목표 순이익률" right={<InfoBtn active={info === 'target'} onPress={() => setInfo((v) => (v === 'target' ? null : 'target'))} />}>
+              <Input value="40" suffix="%" mono />
+            </Field>
+          </View>
         </View>
 
-        {/* 재료 — 검색·담기 */}
-        <View style={{ backgroundColor: T.surface, borderRadius: 16, padding: 16, borderWidth: 1, borderColor: T.line, ...cardShadow }}>
-          <Text style={{ fontSize: 16, fontWeight: '800', color: T.sub, marginBottom: 4 }}>재료</Text>
-          {/* 표 헤더 */}
-          <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: 8, borderBottomWidth: 1, borderBottomColor: T.line }}>
-            <Text style={{ flex: 1, fontSize: 14, color: T.ter, fontWeight: '700' }}>재료명</Text>
-            <Text style={{ width: 80, fontSize: 14, color: T.ter, fontWeight: '700', textAlign: 'right' }}>{won(R.servings)}개</Text>
-            <Text style={{ width: 70, fontSize: 14, color: T.ter, fontWeight: '700', textAlign: 'right' }}>1개</Text>
-            <View style={{ width: 26 }} />
+        {/* 정보 툴팁 */}
+        {info ? (
+          <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, marginTop: -8, marginBottom: 18, paddingVertical: 10, paddingHorizontal: 12, backgroundColor: T.blueTint, borderRadius: 10 }}>
+            <Icon name="info" size={15} color={T.blue} />
+            <Text style={{ flex: 1, fontSize: 14, color: T.sub, fontWeight: '600', lineHeight: 21 }}>
+              {info === 'sales'
+                ? '한 달 평균 판매 수량이에요. 이 값으로 고정 지출을 메뉴별로 나눠 1개당 원가에 반영해요. 많이 팔수록 1개가 떠안는 고정비가 줄어 순이익률이 올라가요.'
+                : '이 메뉴에서 남기고 싶은 순이익 비율이에요. 현재 순이익률이 목표보다 낮으면 권장 판매가를 알려드려요.'}
+            </Text>
           </View>
-          {lines.map((l, i) => (
-            <Pressable key={i} onPress={() => setEditIdx(i)} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 9, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
-              <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: T.ink }}>{l.name}</Text>
-              <View style={{ width: 80, alignItems: 'flex-end' }}>
-                <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{won(l.cost * R.servings)}원</Text>
-                <Text style={[{ fontSize: 14, color: T.ter, fontWeight: '600', marginTop: 1 }, NUM]}>{won(l.qty * R.servings)}{l.unit}</Text>
-              </View>
-              <View style={{ width: 70, alignItems: 'flex-end' }}>
-                <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{won(l.cost)}원</Text>
-                <Text style={[{ fontSize: 14, color: T.ter, fontWeight: '600', marginTop: 1 }, NUM]}>{l.qty}{l.unit}</Text>
-              </View>
-              <View style={{ width: 26, alignItems: 'flex-end' }}>
-                <Icon name="chevron" size={18} color={T.line3} />
-              </View>
+        ) : null}
+
+        {/* 재료 */}
+        <Card pad={0} style={{ overflow: 'hidden' }}>
+          <SecHead title="재료" />
+          <ModeTabs tabs={costTabs} value={costMode} onChange={setCostMode} />
+          <View style={{ paddingHorizontal: 15, paddingTop: 4, paddingBottom: 15 }}>
+            {lines.map((l, i) => (
+              <Pressable key={i} onPress={() => router.push('/recipes/ingredient-search' as Href)} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
+                <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: T.ink }}>{l.name}</Text>
+                <View style={{ alignItems: 'flex-end', marginRight: 4 }}>
+                  <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{won(l.cost * cm)}원</Text>
+                  <Text style={[{ fontSize: 14, color: T.ter, marginTop: 1 }, NUM]}>{won(l.qty * cm)}{l.unit}</Text>
+                </View>
+                <Icon name="chevron" size={15} color={T.line3} />
+              </Pressable>
+            ))}
+            <Pressable onPress={() => router.push('/recipes/ingredient-search' as Href)} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, marginTop: 12, paddingVertical: 13, borderRadius: 12, borderWidth: 1, borderColor: T.blue, backgroundColor: T.blueTint }}>
+              <Icon name="search" size={17} color={T.blue} sw={2.1} />
+              <Text style={{ fontSize: 16, fontWeight: '700', color: T.blue }}>재료 검색</Text>
             </Pressable>
-          ))}
-          <Pressable onPress={() => router.push('/recipes/ingredient-search' as Href)} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5, marginTop: 10, paddingVertical: 12, borderRadius: 12, borderWidth: 1, borderColor: T.blue, backgroundColor: T.blueTint }}>
-            <Icon name="search" size={17} color={T.blue} />
-            <Text style={{ fontSize: 16, fontWeight: '700', color: T.blue }}>재료 검색 · 담기</Text>
-          </Pressable>
-          <Text style={{ fontSize: 14, color: T.ter, marginTop: 8 }}>식재료는 검색해서만 추가됩니다(단가 자동 연동). 컵·스푼 입력 시 ml로 자동 환산.</Text>
-        </View>
-
-        {/* 추가 지출 */}
-        <View style={{ backgroundColor: T.surface, borderRadius: 16, padding: 16, borderWidth: 1, borderColor: T.line, ...cardShadow }}>
-          <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 6, marginBottom: 8 }}>
-            <Text style={{ fontSize: 16, fontWeight: '800', color: T.sub }}>부자재</Text>
-            <Text style={{ fontSize: 14, color: T.ter, fontWeight: '600' }}>(이 메뉴에만 추가되는 지출)</Text>
           </View>
-          <View style={{ gap: 8 }}>
+          <Footer>식재료는 검색해서만 추가됩니다(단가 자동 연동). 컵·스푼 입력 시 ml로 자동 환산.</Footer>
+        </Card>
+
+        <View style={{ height: 9 }} />
+
+        {/* 부자재 */}
+        <Card onLine pad={0} style={{ overflow: 'hidden' }}>
+          <SecHead title="부자재" sub="(이 메뉴에만 들어가는 부자재)" />
+          <ModeTabs tabs={costTabs} value={costMode} onChange={setCostMode} />
+          <View style={{ paddingHorizontal: 15, paddingVertical: 13 }}>
             {extras.map((e, i) => (
-              <View key={i} style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+              <View key={i} style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 9, borderBottomWidth: i < extras.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
                 <View style={{ flex: 1 }}>
-                  <Input value={e.name} placeholder="지출명" />
+                  <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>{e.name || '부자재'}</Text>
+                  <Text style={[{ fontSize: 14, color: T.ter, marginTop: 2 }, NUM]}>개당 {won(e.amount)}원</Text>
                 </View>
-                <View style={{ width: 132 }}>
-                  <Input value={e.amount > 0 ? won(e.amount) : ''} placeholder="금액" mono />
-                </View>
-                <Pressable hitSlop={6} onPress={() => removeExtra(i)}>
+                <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{won(e.amount * cm)}원</Text>
+                <Pressable onPress={() => removeExtra(i)} hitSlop={6} style={{ width: 28, alignItems: 'flex-end' }}>
                   <Icon name="close" size={18} color={T.ter} />
                 </Pressable>
               </View>
             ))}
-          </View>
-          <Pressable onPress={addExtra} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5, marginTop: 10, paddingVertical: 12, borderRadius: 12, borderWidth: 1, borderColor: T.blue, borderStyle: 'dashed', backgroundColor: T.blueTint }}>
-            <Icon name="plus" size={17} color={T.blue} sw={2.2} />
-            <Text style={{ fontSize: 16, fontWeight: '700', color: T.blue }}>추가</Text>
-          </Pressable>
-          <Text style={{ fontSize: 14, color: T.ter, marginTop: 8, lineHeight: 17 }}>포장·배달 등 고정 지출에 이미 포함된 비용은 중복 입력하지 마세요.</Text>
-        </View>
-
-        {/* 고정 지출 (자동·읽기전용) */}
-        <View style={{ backgroundColor: T.surface, borderRadius: 16, padding: 16, borderWidth: 1, borderColor: T.line, ...cardShadow }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
-            <Text style={{ fontSize: 16, fontWeight: '800', color: T.sub }}>고정 지출</Text>
-            <View style={{ flex: 1 }} />
-            <Pressable onPress={() => router.push('/recipes/fixed-cost' as Href)} style={{ flexDirection: 'row', alignItems: 'center', gap: 1 }}>
-              <Text style={{ fontSize: 16, fontWeight: '700', color: T.blue }}>자세히 보기</Text>
-              <Icon name="chevron" size={15} color={T.blue} />
+            <Pressable onPress={() => router.push('/recipes/material-search' as Href)} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, marginTop: extras.length ? 10 : 0, paddingVertical: 13, borderRadius: 12, borderWidth: 1, borderColor: T.blue, backgroundColor: T.blueTint }}>
+              <Icon name="search" size={17} color={T.blue} sw={2.1} />
+              <Text style={{ fontSize: 16, fontWeight: '700', color: T.blue }}>부자재 검색</Text>
             </Pressable>
           </View>
-          {FIXED_ITEMS.map((f, i) => (
-            <View key={i} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 8, borderBottomWidth: i < FIXED_ITEMS.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
-              <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.ink2 }}>{f.name}</Text>
-              <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{won(round(f.rate * price))}원</Text>
-              <Text style={[{ fontSize: 14, color: T.ter, fontWeight: '600', width: 48, textAlign: 'right' }, NUM]}>{pct(f.rate)}%</Text>
+          <Footer>부자재 마스터에서 검색해 담고 개당 수량만 입력하면 단가가 자동 연동됩니다.</Footer>
+        </Card>
+
+        <Text style={{ fontSize: 14, color: T.ter, lineHeight: 20, marginTop: 9, marginBottom: 16, paddingHorizontal: 2 }}>포장·배달 등 고정 지출에 이미 포함된 비용은 중복 입력하지 마세요.</Text>
+
+        {/* 고정 지출 */}
+        <Card onLine pad={0} style={{ overflow: 'hidden' }}>
+          <SecHead title="고정 지출" sub="(개당 환산)" />
+          <ModeTabs tabs={costTabs} value={costMode} onChange={setCostMode} />
+          <View style={{ paddingHorizontal: 15, paddingTop: 4, paddingBottom: 15 }}>
+            {FIXED_ITEMS.map((f, i) => (
+              <View key={i} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 8, borderBottomWidth: i < FIXED_ITEMS.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
+                <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.ink2 }}>{f.name}</Text>
+                <View style={{ alignItems: 'flex-end', marginRight: 6 }}>
+                  <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{won(round(f.rate * price) * cm)}원</Text>
+                  <Text style={[{ fontSize: 14, color: T.ter, fontWeight: '600', marginTop: 2 }, NUM]}>{pct(f.rate)}%</Text>
+                </View>
+              </View>
+            ))}
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, paddingTop: 10, borderTopWidth: 1, borderTopColor: T.line }}>
+              <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.ink2 }}>소계</Text>
+              <View style={{ alignItems: 'flex-end', marginRight: 6 }}>
+                <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{won(fixed * cm)}원</Text>
+                <Text style={[{ fontSize: 14, fontWeight: '700', color: T.sub2, marginTop: 2 }, NUM]}>{pct(R.fixedRate)}%</Text>
+              </View>
             </View>
-          ))}
-          <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, paddingTop: 10, borderTopWidth: 1, borderTopColor: T.line }}>
-            <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.ink2 }}>소계</Text>
-            <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{won(fixed)}원</Text>
-            <Text style={[{ fontSize: 14, color: T.sub2, fontWeight: '700', width: 48, textAlign: 'right' }, NUM]}>{pct(R.fixedRate)}%</Text>
+            <Text style={{ fontSize: 14, color: T.ter, lineHeight: 20, marginTop: 10 }}>월 고정비(임대료·인건비 등)를 메뉴 1개당 얼마씩 부담해야 하는지 판매량 기준으로 나누어 계산한 금액입니다.</Text>
           </View>
-        </View>
+          <Pressable onPress={() => router.push('/recipes/fixed-cost' as Href)} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 2, paddingVertical: 13, borderTopWidth: 1, borderTopColor: T.line2, backgroundColor: T.surface2 }}>
+            <Text style={{ fontSize: 16, fontWeight: '700', color: T.sub }}>자세히 보기</Text>
+            <Icon name="chevron" size={16} color={T.ter} />
+          </Pressable>
+        </Card>
+
+        <View style={{ height: 14 }} />
 
         {/* 손익 미리보기 */}
-        <View style={{ backgroundColor: T.surface, borderRadius: 16, padding: 16, borderWidth: 1, borderColor: T.line, ...cardShadow }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 6 }}>
-            <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.sub }}>손익 미리보기</Text>
-            <View style={{ flexDirection: 'row', backgroundColor: T.line, borderRadius: 9, padding: 3 }}>
-              {([['one', '1개'], ['month', '월 평균']] as const).map(([k, label]) => (
-                <Pressable key={k} onPress={() => setView(k)} style={{ paddingVertical: 6, paddingHorizontal: 12, borderRadius: 7, backgroundColor: view === k ? T.surface : 'transparent' }}>
-                  <Text style={{ fontSize: 16, fontWeight: view === k ? '700' : '600', color: view === k ? T.ink : T.ter }}>{label}</Text>
-                </Pressable>
-              ))}
-            </View>
-          </View>
-
-          {/* 판매량 */}
-          <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
-            <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.sub }}>판매량</Text>
-            <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{won(m)}개</Text>
-            <Text style={{ fontSize: 14, color: T.ter, width: 46, textAlign: 'right' }}>—</Text>
-          </View>
-          {/* 판매가 */}
-          <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
-            <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.ink }}>판매가</Text>
-            <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{won(price * m)}원</Text>
-            <Text style={[{ fontSize: 14, fontWeight: '600', color: T.ter, width: 46, textAlign: 'right' }, NUM]}>100%</Text>
-          </View>
-          {[
-            { label: '세금', amt: tax },
-            { label: '재료 원가', amt: material },
-            { label: '고정 지출', amt: fixed },
-            { label: '부자재', amt: extra },
-          ].map((c) => (
-            <View key={c.label} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
-              <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.ink2 }}>
-                <Text style={{ color: T.ter }}>(−) </Text>{c.label}
-              </Text>
-              <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ter }, NUM]}>{won(c.amt * m)}원</Text>
-              <Text style={[{ fontSize: 14, fontWeight: '600', color: T.ter, width: 46, textAlign: 'right' }, NUM]}>{pct(c.amt / price)}%</Text>
-            </View>
-          ))}
-          <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12, borderBottomWidth: warn && recommended != null ? 1 : 0, borderBottomColor: T.line2 }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, flex: 1 }}>
-              <Text style={{ fontSize: 16, fontWeight: '800', color: PROFIT }}>순이익</Text>
-              {warn ? <Badge tone="red" sm solid>목표 미달</Badge> : null}
-            </View>
-            <Text style={[{ fontSize: 16, fontWeight: '800', color: PROFIT }, NUM]}>{won(profit * m)}원</Text>
-            <Text style={[{ fontSize: 14, fontWeight: '700', color: PROFIT, width: 46, textAlign: 'right' }, NUM]}>{pct(profitRate)}%</Text>
-          </View>
-          {warn && recommended != null ? (
-            <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 12 }}>
-              <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: 16, fontWeight: '700', color: T.sub }}>{view === 'month' ? '목표 순이익' : '권장 판매가'}</Text>
-                <Text style={{ fontSize: 14, color: T.ter, marginTop: 1 }}>{pct(R.target)}% 기준</Text>
+        <Card onLine pad={0} style={{ overflow: 'hidden' }}>
+          <SecHead title="손익 미리보기" sub="판매가 대비 %" />
+          <ModeTabs tabs={[['ten', '10개 기준'], ['one', '1개 기준'], ['month', '월평균 기준']]} value={plMode} onChange={setPlMode} />
+          <View style={{ paddingHorizontal: 15, paddingTop: 4, paddingBottom: 15 }}>
+            {/* 판매량 — 우측: 값(위) / 보조(아래) */}
+            <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
+              <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.sub }}>판매량</Text>
+              <View style={{ alignItems: 'flex-end' }}>
+                <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{plMode === 'month' ? `월 ${won(R.salesVolume)}개` : `${m}개`}</Text>
+                <Text style={{ fontSize: 14, fontWeight: '600', color: T.ter, marginTop: 2 }}>-</Text>
               </View>
-              <Text style={[{ fontSize: 16, fontWeight: '800', color: T.blue }, NUM]}>{won(recommended * m)}원</Text>
-              <Text style={[{ fontSize: 14, fontWeight: '700', color: T.blue, width: 46, textAlign: 'right' }, NUM]}>{pct(R.target)}%</Text>
             </View>
-          ) : null}
-        </View>
+            {/* 판매가 — 우측: 금액(위) / % (아래) */}
+            <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
+              <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.ink }}>판매가</Text>
+              <View style={{ alignItems: 'flex-end' }}>
+                <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{wm(price)}</Text>
+                <Text style={[{ fontSize: 14, fontWeight: '600', color: T.ter, marginTop: 2 }, NUM]}>100%</Text>
+              </View>
+            </View>
+            {/* 비용 행 — 우측: 금액(위) / % (아래) */}
+            {[
+              { label: '세금', amt: tax },
+              { label: '재료 원가', amt: material },
+              { label: '고정 지출', amt: fixed },
+              ...(extra > 0 ? [{ label: `부자재${extras.length > 1 ? ` (${extras.length}건)` : ''}`, amt: extra }] : []),
+            ].map((c) => (
+              <View key={c.label} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 9, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
+                <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.sub }}>
+                  <Text style={{ color: T.ter }}>(−) </Text>{c.label}
+                </Text>
+                <View style={{ alignItems: 'flex-end' }}>
+                  <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ter }, NUM]}>{wm(c.amt)}</Text>
+                  <Text style={[{ fontSize: 14, fontWeight: '600', color: T.ter, marginTop: 2 }, NUM]}>{pct(c.amt / price)}%</Text>
+                </View>
+              </View>
+            ))}
+            {/* 순이익 — 우측: 금액(위) / % (아래) */}
+            <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 12 }}>
+              <Text style={{ fontSize: 16, fontWeight: '800', color: T.ink }}>순이익</Text>
+              <View style={{ marginLeft: 7 }}>{warn ? <Badge tone="red" sm solid>목표 미달</Badge> : <Badge tone="green" sm solid>목표 달성</Badge>}</View>
+              <View style={{ flex: 1 }} />
+              <View style={{ alignItems: 'flex-end' }}>
+                <Text style={[{ fontSize: 16, fontWeight: '800', color: PROFIT }, NUM]}>{wm(profit)}</Text>
+                <Text style={[{ fontSize: 14, fontWeight: '800', color: PROFIT, marginTop: 2 }, NUM]}>{pct(profitRate)}%</Text>
+              </View>
+            </View>
+            {/* 권장 판매가 — 우측: 금액(위) / % (아래) */}
+            {warn && recommended != null ? (
+              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 11, paddingTop: 11, borderTopWidth: 1, borderTopColor: T.line }}>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink2 }}>권장 판매가</Text>
+                  <Text style={{ fontSize: 14, color: T.ter, marginTop: 1 }}>목표 {pct(R.target)}% 기준</Text>
+                </View>
+                <View style={{ alignItems: 'flex-end' }}>
+                  <Text style={[{ fontSize: 16, fontWeight: '800', color: T.blue }, NUM]}>{won(recommended)}원</Text>
+                  <Text style={[{ fontSize: 14, fontWeight: '700', color: T.blue, marginTop: 2 }, NUM]}>{pct(R.target)}%</Text>
+                </View>
+              </View>
+            ) : null}
+          </View>
+        </Card>
       </ScrollView>
 
       {/* 하단 저장 */}
-      <View style={{ paddingHorizontal: 20, paddingTop: 12, paddingBottom: 30, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
-        <Button kind="primary" size="lg" full onPress={() => safeBack('/recipes')}>
-          저장
-        </Button>
+      <View style={{ paddingHorizontal: 20, paddingTop: 11, paddingBottom: 28, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
+        <Button kind="primary" size="lg" full onPress={() => safeBack('/recipes')}>저장</Button>
       </View>
-
-      {/* 재료 사용량 입력/수정 시트 */}
-      <Sheet visible={editIdx != null} onClose={() => setEditIdx(null)} title={editIdx != null ? lineItems[editIdx]?.name : undefined} height={440}>
-        {editIdx != null && lineItems[editIdx]
-          ? (() => {
-              const l = lineItems[editIdx];
-              const batchQty = l.qty * R.servings;
-              const batchCost = round(l.unitPrice * batchQty);
-              const per = round(batchCost / R.servings);
-              return (
-                <View>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-start', gap: 5, backgroundColor: T.blueTint, borderRadius: 999, paddingVertical: 6, paddingHorizontal: 11, marginTop: 2, marginBottom: 14 }}>
-                    <Icon name="box" size={15} color={T.blue} />
-                    <Text style={{ fontSize: 16, fontWeight: '700', color: T.blue }}>{R.servings}개 생산량을 입력하세요. (1회 생산량)</Text>
-                  </View>
-                  <View style={{ flexDirection: 'row', gap: 8 }}>
-                    <View style={{ flex: 1, borderWidth: 1.5, borderColor: T.blue, borderRadius: 12, backgroundColor: T.surface, paddingVertical: 13, paddingHorizontal: 16 }}>
-                      <Text style={[{ fontSize: 18, fontWeight: '700', color: T.ink }, NUM]}>{won(batchQty)}</Text>
-                    </View>
-                    <View style={{ width: 96 }}>
-                      <Select value={l.unit} />
-                    </View>
-                  </View>
-                  <View style={{ flexDirection: 'row', gap: 10, marginTop: 12 }}>
-                    <View style={{ flex: 1, backgroundColor: T.surface2, borderRadius: 12, paddingVertical: 14, paddingHorizontal: 15 }}>
-                      <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub2 }}>{R.servings}개 기준</Text>
-                      <Text style={[{ fontSize: 18, fontWeight: '800', color: T.ink, marginTop: 4 }, NUM]}>{won(batchCost)}<Text style={{ fontSize: 16, fontWeight: '700' }}>원</Text></Text>
-                    </View>
-                    <View style={{ flex: 1, backgroundColor: T.blueTint, borderRadius: 12, paddingVertical: 14, paddingHorizontal: 15 }}>
-                      <Text style={{ fontSize: 14, fontWeight: '700', color: T.blue }}>1개당</Text>
-                      <Text style={[{ fontSize: 18, fontWeight: '800', color: T.blue, marginTop: 4 }, NUM]}>{won(per)}<Text style={{ fontSize: 16, fontWeight: '700' }}>원</Text></Text>
-                    </View>
-                  </View>
-                  <View style={{ flexDirection: 'row', gap: 10, marginTop: 20 }}>
-                    <Button kind="danger" size="lg" onPress={() => { removeLine(editIdx); setEditIdx(null); }} style={{ flex: 1 }}>
-                      삭제
-                    </Button>
-                    <Button kind="primary" size="lg" onPress={() => setEditIdx(null)} style={{ flex: 1.6 }}>
-                      담기
-                    </Button>
-                  </View>
-                </View>
-              );
-            })()
-          : null}
-      </Sheet>
     </View>
   );
 }
