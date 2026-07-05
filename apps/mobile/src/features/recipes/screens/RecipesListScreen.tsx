@@ -8,11 +8,14 @@ import { useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Badge, Card, Chip, FAB, Icon, Sheet } from '@/components/kit';
+import { Badge, Card, Chip, FAB, Icon, ScrollTabs, Sheet } from '@/components/kit';
 import { T, won } from '@/theme/tokens';
 import { DEMO_RECIPES, pct, RecipeCardData, recipeProfit } from '../demoData';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
+
+// 레시피 카테고리 (RCP-01 상단 스크롤 탭) — 데모: 시각 선택만.
+const CATS = ['전체', '찌개·전골', '덮밥·볶음밥', '볶음', '구이', '튀김', '면류', '분식', '사이드', '음료'];
 
 type SortKey = 'rateLow' | 'rateHigh' | 'priceHigh' | 'priceLow';
 const SORTS: { key: SortKey; label: string }[] = [
@@ -40,48 +43,43 @@ function RecipeCard({ r }: { r: RecipeCardData }) {
   const p = recipeProfit(r);
   const stopped = r.status === 'stopped';
   const warn = !stopped && p.belowTarget;
+  const rateColor = warn ? T.red : T.green;
 
   return (
-    <Card pad={0} style={{ overflow: 'hidden', opacity: stopped ? 0.6 : 1 }}>
-      <View style={{ paddingVertical: 13, paddingHorizontal: 15 }}>
+    <Card pad={0} style={{ overflow: 'hidden', opacity: stopped ? 0.55 : 1 }}>
+      <View style={{ paddingVertical: 15, paddingHorizontal: 16 }}>
         {/* 상태 뱃지 + 메뉴명 */}
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7 }}>
-          {stopped ? (
-            <Badge tone="neutral" sm solid>판매중지</Badge>
-          ) : warn ? (
-            <Badge tone="red" sm solid>▼ 목표 미달</Badge>
-          ) : (
-            <Badge tone="green" sm solid>목표 달성</Badge>
-          )}
-          <Text style={{ fontSize: 18, fontWeight: '800', letterSpacing: -0.3, color: T.ink }}>{r.name}</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7, marginBottom: 12 }}>
+          {warn ? <Badge tone="red" solid sm>목표 미달</Badge> : <Badge tone="green" solid sm>목표 달성</Badge>}
+          <Text style={{ fontSize: 16, fontWeight: '800', letterSpacing: -0.3, color: T.ink }} numberOfLines={1}>{r.name}</Text>
+          {stopped ? <Badge tone="neutral" sm>판매중지</Badge> : null}
         </View>
 
         {/* 판매가 */}
-        <View style={{ flexDirection: 'row', alignItems: 'baseline', marginTop: 10 }}>
-          <Text style={{ fontSize: 16, fontWeight: '700', color: T.sub }}>판매가 </Text>
-          <Text style={[{ fontSize: 16, fontWeight: '700', color: T.sub2 }, NUM]}>{won(r.price)}원</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 9 }}>
+          <Text style={{ flex: 1, fontSize: 14, fontWeight: '700', color: T.sub }}>판매가</Text>
+          <Text style={[{ fontSize: 14, fontWeight: '800', color: T.ink }, NUM]}>{won(r.price)}원</Text>
         </View>
 
-        {/* 순이익(원·%) · 재료 원가율(원·%) */}
-        <View style={{ flexDirection: 'row', alignItems: 'baseline', flexWrap: 'wrap', marginTop: 6 }}>
-          <Text style={{ fontSize: 16, fontWeight: '700', color: T.sub }}>순이익 </Text>
-          <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{won(p.profit)}원 </Text>
-          <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{pct(p.profitRate)}%</Text>
-          <Text style={{ fontSize: 16, color: T.ter, marginHorizontal: 7 }}>·</Text>
-          <Text style={{ fontSize: 16, fontWeight: '700', color: T.sub }}>재료비 </Text>
-          <Text style={[{ fontSize: 16, fontWeight: '700', color: T.sub2 }, NUM]}>{won(r.materialPerServing)}원 </Text>
-          <Text style={[{ fontSize: 16, fontWeight: '600', color: T.sub2 }, NUM]}>{pct(p.materialRate)}%</Text>
+        {/* 순이익 */}
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 9 }}>
+          <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub }}>순이익</Text>
+          {!stopped ? (
+            <View style={{ marginLeft: 6, paddingVertical: 2, paddingHorizontal: 7, borderRadius: 6, backgroundColor: T.line2 }}>
+              <Text style={[{ fontSize: 14, fontWeight: '700', color: T.sub }, NUM]}>목표 {pct(r.target)}%</Text>
+            </View>
+          ) : null}
+          <View style={{ flex: 1 }} />
+          <Text style={[{ fontSize: 14, fontWeight: '800', color: rateColor, marginRight: 8 }, NUM]}>{pct(p.profitRate)}%</Text>
+          <Text style={[{ fontSize: 14, fontWeight: '800', color: T.ink }, NUM]}>{won(p.profit)}원</Text>
         </View>
 
-        {/* 목표 미달 → 권장가 힌트 */}
-        {warn && p.recommended != null ? (
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5, marginTop: 9, backgroundColor: T.line2, borderRadius: 9, paddingVertical: 8, paddingHorizontal: 11 }}>
-            <Icon name="up" size={15} color={T.ink} sw={2.2} />
-            <Text style={{ fontSize: 16, fontWeight: '600', color: T.sub }}>
-              목표 판매가 <Text style={[{ fontWeight: '800', color: T.ink }, NUM]}>{won(p.recommended)}원 {pct(r.target)}%</Text>
-            </Text>
-          </View>
-        ) : null}
+        {/* 재료비 */}
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <Text style={{ flex: 1, fontSize: 14, fontWeight: '700', color: T.sub }}>재료비</Text>
+          <Text style={[{ fontSize: 14, fontWeight: '700', color: T.sub2, marginRight: 8 }, NUM]}>{pct(p.materialRate)}%</Text>
+          <Text style={[{ fontSize: 14, fontWeight: '800', color: T.ink }, NUM]}>{won(r.materialPerServing)}원</Text>
+        </View>
       </View>
     </Card>
   );
@@ -96,6 +94,7 @@ export default function RecipesListScreen() {
   const [statusOpen, setStatusOpen] = useState(false);
   const [targetFilter, setTargetFilter] = useState<TargetKey>('all');
   const [targetOpen, setTargetOpen] = useState(false);
+  const [cat, setCat] = useState(0);
 
   // 판매 상태 + 목표 필터.
   const filtered = DEMO_RECIPES.filter((r) => {
@@ -132,17 +131,21 @@ export default function RecipesListScreen() {
       <View style={{ paddingTop: insets.top, backgroundColor: T.bg }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 20, paddingRight: 12, paddingTop: 6, paddingBottom: 12 }}>
           <Text style={{ flex: 1, fontSize: 22, fontWeight: '800', color: T.ink, letterSpacing: -0.6 }}>레시피</Text>
-          <Pressable onPress={() => router.push('/recipes/category' as Href)} style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}>
-            <Icon name="tag" size={22} color={T.ink2} />
-          </Pressable>
           <Pressable style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}>
             <Icon name="search" size={23} color={T.ink2} />
           </Pressable>
         </View>
       </View>
 
-      {/* 헤더-필터 구분선 */}
-      <View style={{ height: 1, backgroundColor: T.line3 }} />
+      {/* 카테고리 스크롤 탭 + 편집 진입 */}
+      <View style={{ flexDirection: 'row', alignItems: 'center', borderBottomWidth: 1, borderBottomColor: T.line3 }}>
+        <View style={{ flex: 1, minWidth: 0 }}>
+          <ScrollTabs tabs={CATS} active={cat} onChange={setCat} />
+        </View>
+        <Pressable onPress={() => router.push('/recipes/category' as Href)} hitSlop={6} style={{ paddingLeft: 12, paddingRight: 16, paddingBottom: 11 }}>
+          <Icon name="edit" size={18} color={T.ter} sw={2} />
+        </Pressable>
+      </View>
 
       {/* 필터 행 — 정렬 + 판매상태 */}
       <View style={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: 10, flexDirection: 'row', gap: 8 }}>
