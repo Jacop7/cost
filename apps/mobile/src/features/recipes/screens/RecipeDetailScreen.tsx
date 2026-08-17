@@ -309,17 +309,9 @@ export default function RecipeDetailScreen() {
 
         {/* 손익 변동 */}
         <Card pad={0} style={{ overflow: 'hidden' }}>
-          <SecHead
-            title="손익 변동"
-            right={
-              <Pressable onPress={() => router.push('/recipes/profit-trend' as Href)} hitSlop={6} style={{ flexDirection: 'row', alignItems: 'center', gap: 1 }}>
-                <Text style={{ fontSize: 14, fontWeight: '700', color: T.blue }}>추이</Text>
-                <Icon name="chevron" size={14} color={T.blue} />
-              </Pressable>
-            }
-          />
+          <SecHead title="손익 변동" />
           {PRICE_HISTORY.map((h, i) => (
-            <Pressable key={i} onPress={() => router.push('/recipes/profit-history' as Href)} style={{ flexDirection: 'row', alignItems: 'center', gap: 11, paddingVertical: 12, paddingHorizontal: 15, borderBottomWidth: i < PRICE_HISTORY.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
+            <Pressable key={i} onPress={() => router.push('/recipes/profit-history' as Href)} style={{ flexDirection: 'row', alignItems: 'center', gap: 11, paddingVertical: 12, paddingHorizontal: 15, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
               <View style={{ flex: 1 }}>
                 <Text style={[{ fontSize: 14, color: T.ter, fontWeight: '600' }, NUM]}>{h.date}</Text>
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 5 }}>
@@ -331,6 +323,11 @@ export default function RecipeDetailScreen() {
               <Icon name="chevron" size={16} color={T.line3} />
             </Pressable>
           ))}
+          {/* 자세히 보기 → 손익 변동 상세 */}
+          <Pressable onPress={() => router.push('/recipes/profit-history' as Href)} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 2, paddingVertical: 13, backgroundColor: T.surface2 }}>
+            <Text style={{ fontSize: 16, fontWeight: '700', color: T.sub }}>자세히 보기</Text>
+            <Icon name="chevron" size={16} color={T.ter} />
+          </Pressable>
         </Card>
       </ScrollView>
 
