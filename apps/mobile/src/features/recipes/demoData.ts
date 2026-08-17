@@ -165,3 +165,6 @@ export const DEMO_MATERIALS: MaterialData[] = [
 
 /** 레시피 카테고리 마스터(데모) — RCP-12 카테고리 설정 초기값. */
 export const RECIPE_CATS = ['찌개·전골', '덮밥·볶음밥', '볶음', '구이', '튀김', '면류', '분식', '사이드', '음료'];
+
+/** 부자재 카테고리 마스터(데모) — 부자재 카테고리 편집 초기값. */
+export const MATERIAL_CATS = ['소스·양념', '건어물', '면류', '소모품', '기타'];
