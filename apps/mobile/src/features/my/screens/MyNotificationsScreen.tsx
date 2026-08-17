@@ -11,7 +11,7 @@ import { MY_NOTIFICATIONS } from '../demoData';
 function Toggle({ on, onPress }: { on: boolean; onPress: () => void }) {
   return (
     <Pressable onPress={onPress} style={{ width: 50, height: 30, borderRadius: 15, backgroundColor: on ? T.blue : '#D5DAE0', justifyContent: 'center' }}>
-      <View style={{ position: 'absolute', left: on ? 23 : 3, width: 24, height: 24, borderRadius: 12, backgroundColor: '#fff', shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.2, shadowRadius: 3, elevation: 2 }} />
+      <View style={{ position: 'absolute', left: on ? 23 : 3, width: 24, height: 24, borderRadius: 12, backgroundColor: T.onColor, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.2, shadowRadius: 3, elevation: 2 }} />
     </Pressable>
   );
 }
