@@ -13,7 +13,7 @@ const CW = Dimensions.get('window').width - 68; // 스크롤 16*2 + 카드 pad 1
 export default function MyReportScreen() {
   const c = MY_COMMON;
   const legend: [string, string, string, string][] = [
-    ['순이익', won(c.netProfit), '39.9%', '#15B374'],
+    ['순이익', won(c.netProfit), '39.9%', T.green],
     ['고정 지출', won(c.total), '31.3%', '#7A8694'],
     ['재료비', won(c.material), '28.8%', '#A4AEB8'],
   ];
