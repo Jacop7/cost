@@ -13,14 +13,14 @@ const NUM = { fontVariant: ['tabular-nums' as const] };
 
 interface MenuItem { icon: IconName; bg: string; fg: string; t: string; d: string; route: Href | null; }
 const SECTIONS: MenuItem[] = [
-  { icon: 'won', bg: '#EBF3FE', fg: '#3182F6', t: '고정 지출 (월)', d: '인건비·수수료·포장 등 → 고정지출률', route: '/recipes/fixed-cost' as Href },
-  { icon: 'trend', bg: '#E7F7F0', fg: '#15B374', t: '월 손익 리포트', d: '매출 − 고정 − 재료비', route: '/my/report' as Href },
+  { icon: 'won', bg: T.blueTint, fg: T.blue, t: '고정 지출 (월)', d: '인건비·수수료·포장 등 → 고정지출률', route: '/recipes/fixed-cost' as Href },
+  { icon: 'trend', bg: T.greenTint, fg: T.green, t: '월 손익 리포트', d: '매출 − 고정 − 재료비', route: '/my/report' as Href },
   { icon: 'grid', bg: '#F0EDFB', fg: '#7C5CE0', t: '카테고리 관리', d: '식재료 · 레시피 · 부자재 분류', route: '/my/categories' as Href },
   { icon: 'ruler', bg: '#FEF1E6', fg: '#E08A2B', t: '단위 설정', d: '미터법 (기본)', route: '/my/units' as Href },
   { icon: 'store', bg: '#EAF6F0', fg: '#179E6B', t: '구매처·브랜드', d: '이름변경 · 병합 · 숨김', route: '/my/vendors' as Href },
-  { icon: 'tag', bg: '#FDEEF0', fg: '#F04452', t: '목표 순이익률 기본값', d: '40%', route: null },
+  { icon: 'tag', bg: '#FDEEF0', fg: T.red, t: '목표 순이익률 기본값', d: '40%', route: null },
   { icon: 'bell', bg: '#FFF5E0', fg: '#D99A1C', t: '알림 설정', d: '4종 · 3개 켜짐', route: '/my/notifications' as Href },
-  { icon: 'clipboard', bg: '#EEF1F4', fg: '#4E5968', t: '관리', d: '식재료 · 레시피 · 부자재 관리', route: '/my/manage' as Href },
+  { icon: 'clipboard', bg: '#EEF1F4', fg: T.sub, t: '관리', d: '식재료 · 레시피 · 부자재 관리', route: '/my/manage' as Href },
 ];
 
 export default function MyHomeScreen() {
@@ -35,7 +35,7 @@ export default function MyHomeScreen() {
       <View style={{ paddingTop: insets.top, backgroundColor: T.bg }}>
         <View style={{ paddingLeft: 20, paddingRight: 16, paddingTop: 8, paddingBottom: 12 }}>
           <Text style={{ fontSize: 22, fontWeight: '800', color: T.ink, letterSpacing: -0.6 }}>마이페이지</Text>
-          <Text style={{ fontSize: 14, color: T.sub2, marginTop: 3, fontWeight: '500' }}>기준값과 월 경영 데이터를 관리해요</Text>
+          <Text style={{ fontSize: 14, color: T.sub2, marginTop: 3, fontWeight: '600' }}>기준값과 월 경영 데이터를 관리해요</Text>
         </View>
       </View>
 

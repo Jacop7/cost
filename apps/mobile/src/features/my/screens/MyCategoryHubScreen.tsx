@@ -12,7 +12,7 @@ import { MY_CATEGORIES } from '../demoData';
 
 interface Item { icon: IconName; bg: string; fg: string; t: string; count: number; route: Href; }
 const ITEMS: Item[] = [
-  { icon: 'box', bg: '#EBF3FE', fg: '#3182F6', t: '식재료 카테고리', count: MY_CATEGORIES.length, route: '/my/category' as Href },
+  { icon: 'box', bg: T.blueTint, fg: T.blue, t: '식재료 카테고리', count: MY_CATEGORIES.length, route: '/my/category' as Href },
   { icon: 'receipt', bg: '#F0EDFB', fg: '#7C5CE0', t: '레시피 카테고리', count: RECIPE_CATS.length, route: '/recipes/category' as Href },
   { icon: 'box', bg: '#EAF6F0', fg: '#179E6B', t: '부자재 카테고리', count: MATERIAL_CATS.length, route: '/recipes/material-category' as Href },
 ];
