@@ -1,229 +1,293 @@
-// PurchaseOptionScreen.tsx — ING-06 구매 링크 · 옵션 추가/수정 (ScreenING05)
-// mode=add: 빈 폼 · [닫기/추가] / mode=edit: 누른 옵션 프리필 · [삭제/수정]
-import React, { useState } from 'react';
-import { View, Text, ScrollView, Pressable, TextInput } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
-import * as Clipboard from 'expo-clipboard';
-import { displayToBase, isDisplayUnit, previewBaseUnitPrice, rawUnitPrice, round, roundOrNull } from '@sikjae/core';
-import { AppHeader, Field, Input, Button, Card, Badge, Icon } from '../../../components/kit';
-import { T, tnum, won } from '../../../theme/tokens';
+/**
+ * ING-05 구매 링크 · 옵션 — 같은 재료를 어디서 얼마에 살 수 있는지.
+ *
+ * 이전 구현은 추가·수정·삭제 버튼이 셋 다 `safeBack()` 만 했다. 화면은 있는데 저장이 없었다.
+ * 지금은 서버에 저장되고, 발주 화면이 이 값을 그대로 가져다 쓴다.
+ *
+ * ⚠ 절대원칙 2: 구매 옵션은 **가격 후보**일 뿐 기준단가를 바꾸지 않는다.
+ *   기준단가는 실제 입고(E1) 이력의 가중평균이다.
+ */
+import { useEffect, useMemo, useState } from 'react';
+import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { AppHeader, Badge, Button, Card, Field, Icon, Input, QueryState, Select } from '../../../components/kit';
+import { T, tnum } from '../../../theme/tokens';
+import { displayToBase, formatQuantity, formatUnitPrice, isDisplayUnit } from '@sikjae/core';
 import { safeBack } from '@/lib/nav';
-import { clampByUnit, clampDecimals, dash } from '@/lib/num';
-import { optionsFor } from '../demoData';
+import { clampByUnit, clampDecimals } from '@/lib/num';
 import { UnitPickerSheet } from '../components/UnitPickerSheet';
+import { VendorPickerSheet } from '../components/VendorPickerSheet';
+import { dispUnit } from '../ledger';
+import { useDeletePurchaseOption, useIngredientDetail, useSavePurchaseOption } from '../hooks';
 
-const LOSS_PCT = 15;
 const num = (s: string) => {
   const n = parseFloat(s.replace(/,/g, ''));
-  return isNaN(n) ? 0 : n;
-};
-const baseUnitOf = (u: string): 'g' | 'ml' | '개' => (u === 'kg' || u === 'g' ? 'g' : u === 'L' || u === 'ml' ? 'ml' : '개');
-
-// URL 도메인 → 구매처(쇼핑몰) 추정. 상품명·금액 자동 추출은 서버 스크래핑(백엔드 단계) 필요.
-const VENDOR_MAP: [RegExp, string][] = [
-  [/coupang/i, '쿠팡'],
-  [/(smartstore|shopping\.naver|naver)/i, '네이버'],
-  [/kurly/i, '마켓컬리'],
-  [/emart/i, '이마트몰'],
-  [/gmarket/i, 'G마켓'],
-  [/11st/i, '11번가'],
-  [/ssg/i, 'SSG'],
-  [/auction/i, '옥션'],
-  [/lotteon/i, '롯데온'],
-  [/homeplus/i, '홈플러스'],
-];
-const inferVendor = (u: string): string => {
-  for (const [re, v] of VENDOR_MAP) if (re.test(u)) return v;
-  const m = u.match(/^https?:\/\/(?:www\.)?([^/?#]+)/i);
-  return m?.[1] ?? '';
+  return Number.isNaN(n) ? 0 : n;
 };
 
 export function PurchaseOptionScreen() {
-  const { mode, base: baseParam, recent, rvendor, rname, oi } = useLocalSearchParams<{ mode?: string; base?: string; recent?: string; rvendor?: string; rname?: string; oi?: string }>();
-  const isEdit = mode === 'edit';
-  const lockBase = baseParam === 'g' || baseParam === 'ml' || baseParam === '개' ? baseParam : undefined;
+  const router = useRouter();
+  const params = useLocalSearchParams<{ ingredient?: string; option?: string }>();
+  const ingredientId = params.ingredient;
 
-  // 수정 모드: 누른 옵션을 프리필 / 추가 모드: 빈 폼.
-  const editOpt = isEdit && rname ? optionsFor(rname)[Number(oi) || 0] : undefined;
-  const parsedVol = editOpt ? editOpt.vol.match(/^([\d.]+)\s*(kg|g|L|ml|개|박스)/) : null;
-  const initUnit = parsedVol?.[2] ?? (lockBase === 'ml' ? 'L' : lockBase === '개' ? '개' : 'kg');
+  const detail = useIngredientDetail(ingredientId);
+  const saveOption = useSavePurchaseOption();
+  const deleteOption = useDeletePurchaseOption(ingredientId ?? '');
 
-  const [unit, setUnit] = useState(initUnit);
-  const [pickerOpen, setPickerOpen] = useState(false);
+  const g = detail.data;
+  const base = g ? dispUnit(g.baseUnit) : 'g';
 
+  const [editingId, setEditingId] = useState<string | null>(params.option ?? null);
+  const [formOpen, setFormOpen] = useState(Boolean(params.option));
+
+  const [name, setName] = useState('');
+  const [vendorId, setVendorId] = useState<string | null>(null);
+  const [vendorName, setVendorName] = useState<string | null>(null);
+  const [vol, setVol] = useState('');
+  const [unit, setUnit] = useState<string>(base);
+  const [amount, setAmount] = useState('');
   const [url, setUrl] = useState('');
-  const [name, setName] = useState(editOpt?.name ?? '');
-  const [vendor, setVendor] = useState(editOpt?.vendor ?? '');
-  const [vol, setVol] = useState(parsedVol?.[1] ?? '');
-  const [boxQty, setBoxQty] = useState('');
-  const [price, setPrice] = useState(editOpt ? String(parseInt(editOpt.price.replace(/[^\d]/g, ''), 10) || '') : '');
+  const [vendorOpen, setVendorOpen] = useState(false);
+  const [unitOpen, setUnitOpen] = useState(false);
 
-  const isMeasure = !(unit === '박스' || unit === '개');
-  const base = baseUnitOf(unit);
-  // 환산은 @sikjae/core displayToBase 한 곳에서만 한다(절대원칙 1 — 저장 직전 1회 환산).
-  const perBase = unit === '박스' ? num(boxQty) : isDisplayUnit(unit) ? displayToBase(num(vol), unit) : num(vol);
-  // 산출 불가는 null 유지(@sikjae/core 경계 계약) — 표시는 '-'.
-  const rawPer = roundOrNull(rawUnitPrice(num(price), perBase), 2);
-  const realPer = roundOrNull(previewBaseUnitPrice(num(price), perBase, LOSS_PCT / 100), 2);
-  const boxEach = unit === '박스' && num(boxQty) > 0 ? round(num(price) / num(boxQty), 2) : 0;
+  // 기준단위가 정해지면 입력 단위 기본값도 그걸로 맞춘다.
+  useEffect(() => { if (g) setUnit((u) => (u === 'g' && base !== 'g' ? base : u)); }, [g, base]);
 
-  // URL 입력/붙여넣기 → 구매처 자동 추정(구매처 비어있을 때만).
-  const handleUrl = (text: string) => {
-    setUrl(text);
-    const v = inferVendor(text.trim());
-    if (v && vendor.trim() === '') setVendor(v);
-  };
+  const editing = useMemo(() => g?.options.find((o) => o.id === editingId) ?? null, [g, editingId]);
 
-  const onPaste = async () => {
-    // 웹은 브라우저 클립보드 권한이 필요 — 거부/미지원 시 무시(직접 붙여넣기 가능).
-    try {
-      const pasted = await Clipboard.getStringAsync();
-      if (pasted) handleUrl(pasted.trim());
-    } catch {
-      // no-op
+  // 수정 진입 — 서버 값으로 폼을 채운다.
+  useEffect(() => {
+    if (!formOpen) return;
+    if (editing) {
+      setName(editing.name);
+      setVendorId(editing.vendorId);
+      setVendorName(editing.vendorName);
+      setVol(String(editing.volume));
+      setUnit(base);
+      setAmount(String(editing.amount));
+      setUrl(editing.url ?? '');
     }
+  }, [formOpen, editing, base]);
+
+  const openNew = () => {
+    setEditingId(null);
+    setName('');
+    setVendorId(null);
+    setVendorName(null);
+    setVol('');
+    setUnit(base);
+    setAmount('');
+    setUrl('');
+    setFormOpen(true);
   };
 
-  // 최근(수정 진입 시 식재료의 최근 단가) vs 현재(입력) 비교.
-  const compare: [string, string, string, 'neutral' | 'blue'][] = [];
-  if (recent) {
-    compare.push(['최근', `${rname ?? '최근 입고'}`, `${rvendor ?? ''}${rvendor ? ' · ' : ''}${recent}원/${base}`, 'neutral']);
+  // 입력 단위(kg·L)를 기준단위로 환산한다 — 저장 직전 한 번(절대원칙 1).
+  const volBase = isDisplayUnit(unit) ? displayToBase(num(vol), unit) : num(vol);
+  const unitPrice = volBase > 0 ? num(amount) / volBase : null;
+
+  const nameError = name.trim() === '' ? '옵션 이름을 입력해 주세요' : undefined;
+  const volError = volBase <= 0 ? '용량은 0보다 커야 해요' : undefined;
+  const amountError = num(amount) <= 0 ? '금액을 입력해 주세요' : undefined;
+  const canSave = !nameError && !volError && !amountError && Boolean(ingredientId);
+
+  const onSave = () => {
+    if (!canSave || !ingredientId) return;
+    saveOption.mutate(
+      {
+        id: editingId ?? undefined,
+        ingredientId,
+        name: name.trim(),
+        vendorId,
+        volume: volBase,
+        amount: num(amount),
+        url: url.trim() || null,
+      },
+      {
+        onSuccess: () => setFormOpen(false),
+        onError: (e) => Alert.alert('저장하지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'),
+      },
+    );
+  };
+
+  const confirmDelete = (id: string, label: string) => {
+    Alert.alert(`${label} 삭제`, '이 구매 옵션만 지워지고 입고 기록은 남아요.', [
+      { text: '취소', style: 'cancel' },
+      {
+        text: '삭제',
+        style: 'destructive',
+        onPress: () =>
+          deleteOption.mutate(id, {
+            onSuccess: () => { if (editingId === id) setFormOpen(false); },
+            onError: (e) => Alert.alert('삭제하지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'),
+          }),
+      },
+    ]);
+  };
+
+  // 최저·최고 단가 표시 — 어느 옵션이 유리한지 한눈에 보이게.
+  const perOf = (volume: number, amt: number) => (volume > 0 ? amt / volume : Infinity);
+  const pers = (g?.options ?? []).map((o) => perOf(o.volume, o.amount));
+  const lowest = pers.length > 0 ? Math.min(...pers) : null;
+  const highest = pers.length > 1 ? Math.max(...pers) : null;
+
+  if (!ingredientId) {
+    return (
+      <View style={{ flex: 1, backgroundColor: T.bg }}>
+        <AppHeader title="구매 링크 · 옵션" onBack={() => safeBack('/ingredients')} />
+        <View style={{ paddingVertical: 48, paddingHorizontal: 32, alignItems: 'center', gap: 10 }}>
+          <Text style={{ fontSize: 16, fontWeight: '800', color: T.ink, textAlign: 'center' }}>식재료를 먼저 저장해 주세요</Text>
+          <Text style={{ fontSize: 14, color: T.sub2, textAlign: 'center', lineHeight: 20 }}>
+            구매 옵션은 식재료에 붙는 정보라 식재료가 있어야 등록할 수 있어요.
+          </Text>
+          <Button kind="primary" size="md" onPress={() => safeBack('/ingredients')}>돌아가기</Button>
+        </View>
+      </View>
+    );
   }
-  compare.push([
-    '현재',
-    name || num(price) > 0 ? `${name || '신규 옵션'} · ${vol || boxQty || '-'}${unit} · ${won(num(price))}원` : '입력하면 표시돼요',
-    `${vendor || '-'} · ${dash(rawPer)}원/${base}`,
-    'blue',
-  ]);
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
-      <AppHeader title={isEdit ? '구매 링크 · 옵션 수정' : '구매 링크 · 옵션 추가'} onBack={() => safeBack()} />
-      <ScrollView contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 4, paddingBottom: 20 }} showsVerticalScrollIndicator={false}>
-        {/* URL 붙여넣기 */}
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: T.surface, borderWidth: 1, borderColor: T.line, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 13, marginBottom: 18 }}>
-          <Icon name="link" size={18} color={T.ter} />
-          <TextInput
-            style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.ink, padding: 0 }}
-            value={url}
-            onChangeText={handleUrl}
-            placeholder="상품 URL 붙여넣기"
-            placeholderTextColor={T.ter}
-            autoCapitalize="none"
-            keyboardType="url"
-          />
-          <Pressable hitSlop={8} onPress={onPaste}>
-            <Text style={{ fontSize: 16, fontWeight: '700', color: T.blue }}>붙여넣기</Text>
-          </Pressable>
-        </View>
+      <AppHeader
+        title={formOpen ? (editingId ? '구매 옵션 수정' : '구매 옵션 추가') : '구매 링크 · 옵션'}
+        onBack={() => (formOpen ? setFormOpen(false) : safeBack(`/ingredients/${ingredientId}`))}
+      />
 
-        <Field label="구매 식재료명"><Input value={name} onChangeText={setName} placeholder="예) 곰곰 깐대파" /></Field>
-        <Field label="구매처"><Input value={vendor} onChangeText={setVendor} placeholder="예) 쿠팡" /></Field>
-
-        <Field label="용량">
-          <View style={{ flexDirection: 'row', gap: 8 }}>
-            <View style={{ flex: 2 }}><Input value={vol} onChangeText={(t) => setVol(clampByUnit(t, unit))} placeholder="0" mono keyboardType="decimal-pad" /></View>
-            <Pressable
-              onPress={() => setPickerOpen(true)}
-              style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: T.surface, borderWidth: 1, borderColor: T.line, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 13 }}
-            >
-              <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.ink }}>{unit}</Text>
-              <Icon name="chevronDown" size={18} color={T.ter} />
-            </Pressable>
-          </View>
-        </Field>
-
-        {unit === '박스' ? (
-          <Field label="박스당 수량"><Input value={boxQty} onChangeText={(t) => setBoxQty(clampDecimals(t, 0))} placeholder="0" suffix="개" mono keyboardType="number-pad" /></Field>
-        ) : null}
-
-        <Field label="금액"><Input value={price} onChangeText={(t) => setPrice(clampDecimals(t, 0))} placeholder="0" suffix="원" mono keyboardType="number-pad" /></Field>
-
-        {/* 단가 미리보기 */}
-        <View style={{ backgroundColor: T.blueTint, borderWidth: 1, borderColor: T.blue, borderRadius: 12, paddingVertical: 14, paddingHorizontal: 16, marginBottom: 16 }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 11 }}>
-            <Icon name="info" size={17} color={T.blue} />
-            <Text style={{ fontSize: 16, fontWeight: '700', color: T.blue }}>단가 미리보기</Text>
-          </View>
-          {unit === '박스' ? (
-            <>
-              <Row label="박스 단가" value={String(num(price))} unit="원/박스" />
-              <Row label="낱개 단가" hint={`(${num(price)} ÷ ${num(boxQty) || 0})`} value={String(boxEach)} unit="원/개" />
-              <Final lossPct={LOSS_PCT} value={dash(realPer)} unit="원/개" />
-            </>
-          ) : (
-            <>
-              <Row label="환산 단가 (구매가)" value={dash(rawPer)} unit={`원/${base}`} />
-              <Final lossPct={LOSS_PCT} value={dash(realPer)} unit={`원/${base}`} />
-            </>
-          )}
-        </View>
-
-        {/* 최근 주문 단가 비교 */}
-        <Card onLine pad={14} shadow={false}>
-          <Text style={{ fontSize: 16, fontWeight: '800', color: T.ink, marginBottom: 10 }}>최근 주문 단가 비교</Text>
-          {compare.map(([tag, label, sub, tone], i) => (
-            <View key={i} style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 8, paddingVertical: 7 }}>
-              <Badge tone={tone} sm>{tag}</Badge>
-              <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>{label}</Text>
-                <Text style={{ fontSize: 14, color: T.ter, marginTop: 2 }}>{sub}</Text>
-              </View>
-            </View>
-          ))}
-        </Card>
-      </ScrollView>
-
-      <View style={{ flexDirection: 'row', gap: 10, paddingHorizontal: 20, paddingTop: 12, paddingBottom: 30, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
-        {isEdit ? (
+      <QueryState
+        isLoading={detail.isLoading}
+        error={detail.error}
+        isEmpty={detail.isFetched && !g}
+        onRetry={() => void detail.refetch()}
+        emptyTitle="식재료를 찾을 수 없어요"
+      >
+        {formOpen ? (
           <>
-            <Button kind="danger" size="lg" style={{ flex: 1 }} onPress={() => safeBack()}>삭제</Button>
-            <Button kind="primary" size="lg" style={{ flex: 2 }} onPress={() => safeBack()}>수정</Button>
+            <ScrollView contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 4, paddingBottom: 24 }} showsVerticalScrollIndicator={false}>
+              <Field label="옵션 이름" req error={name !== '' ? nameError : undefined}>
+                <Input value={name} onChangeText={setName} placeholder="예) 대파 1kg 박스" error={name !== '' && Boolean(nameError)} accessibilityLabel="옵션 이름" />
+              </Field>
+
+              <Field label="구매처">
+                <Select value={vendorName ?? ''} placeholder="지정 안 함" onPress={() => setVendorOpen(true)} />
+              </Field>
+
+              <Field label="용량" req error={vol !== '' ? volError : undefined} hint="kg·L 입력 시 자동 환산">
+                <View style={{ flexDirection: 'row', gap: 10 }}>
+                  <View style={{ flex: 2 }}>
+                    <Input value={vol} onChangeText={(t) => setVol(clampByUnit(t, unit))} placeholder="0" mono keyboardType="decimal-pad" error={vol !== '' && Boolean(volError)} accessibilityLabel="용량" />
+                  </View>
+                  <Pressable
+                    onPress={() => setUnitOpen(true)}
+                    accessibilityRole="button" accessibilityLabel={`단위 ${unit} 변경`}
+                    style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: T.surface, borderWidth: 1, borderColor: T.line, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 13 }}
+                  >
+                    <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.ink }}>{unit}</Text>
+                    <Icon name="chevronDown" size={18} color={T.ter} />
+                  </Pressable>
+                </View>
+              </Field>
+
+              <Field label="금액" req error={amount !== '' ? amountError : undefined}>
+                <Input value={amount} onChangeText={(t) => setAmount(clampDecimals(t, 0))} placeholder="0" suffix="원" mono keyboardType="number-pad" error={amount !== '' && Boolean(amountError)} accessibilityLabel="금액" />
+              </Field>
+
+              <Field label="구매 링크 (선택)">
+                <Input value={url} onChangeText={setUrl} placeholder="https://" accessibilityLabel="구매 링크" />
+              </Field>
+
+              {unitPrice !== null && Number.isFinite(unitPrice) ? (
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 13, paddingHorizontal: 14, borderRadius: 12, backgroundColor: T.blueTint }}>
+                  <Icon name="info" size={15} color={T.blue} />
+                  <Text style={{ flex: 1, fontSize: 14, color: T.sub2, lineHeight: 20 }}>
+                    이 옵션의 단가는 {formatUnitPrice(unitPrice, base)} 예요. 기준단가는 실제 입고 기록으로만 바뀌어요.
+                  </Text>
+                </View>
+              ) : null}
+
+              {editingId ? (
+                <Pressable
+                  onPress={() => confirmDelete(editingId, name || '이 옵션')}
+                  accessibilityRole="button" accessibilityLabel="구매 옵션 삭제"
+                  style={{ marginTop: 18, paddingVertical: 14, alignItems: 'center', borderRadius: 12, borderWidth: 1, borderColor: T.line }}
+                >
+                  <Text style={{ fontSize: 16, fontWeight: '700', color: T.red }}>삭제</Text>
+                </Pressable>
+              ) : null}
+            </ScrollView>
+
+            <View style={{ paddingHorizontal: 20, paddingTop: 12, paddingBottom: 30, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
+              <Button kind="primary" size="lg" full disabled={!canSave} loading={saveOption.isPending} onPress={onSave}>
+                {editingId ? '저장' : '추가'}
+              </Button>
+            </View>
           </>
         ) : (
           <>
-            <Button kind="gray" size="lg" style={{ flex: 1 }} onPress={() => safeBack()}>닫기</Button>
-            <Button kind="primary" size="lg" style={{ flex: 2 }} onPress={() => safeBack()}>추가</Button>
+            <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 4, paddingBottom: 24, gap: 11 }} showsVerticalScrollIndicator={false}>
+              <Text style={{ fontSize: 14, color: T.sub2, fontWeight: '600', marginHorizontal: 6 }}>
+                {g?.name} · 기준단위 {base}
+              </Text>
+
+              {(g?.options.length ?? 0) === 0 ? (
+                <View style={{ paddingVertical: 40, alignItems: 'center', gap: 8 }}>
+                  <Text style={{ fontSize: 16, color: T.ter }}>등록된 구매 옵션이 없어요</Text>
+                  <Text style={{ fontSize: 14, color: T.ter, textAlign: 'center' }}>자주 사는 곳과 용량·가격을 등록해 두면 발주가 빨라져요</Text>
+                </View>
+              ) : (
+                <Card pad={0} style={{ overflow: 'hidden' }}>
+                  {g!.options.map((o, i) => {
+                    const per = perOf(o.volume, o.amount);
+                    const isLow = lowest !== null && per === lowest && g!.options.length > 1;
+                    const isHigh = highest !== null && per === highest && g!.options.length > 1;
+                    return (
+                      <Pressable
+                        key={o.id}
+                        onPress={() => { setEditingId(o.id); setFormOpen(true); }}
+                        accessibilityRole="button" accessibilityLabel={`${o.name} 수정`}
+                        style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 13, paddingHorizontal: 15, borderBottomWidth: i < g!.options.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}
+                      >
+                        <View style={{ flex: 1, minWidth: 0 }}>
+                          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                            <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }} numberOfLines={1}>{o.name}</Text>
+                            {isLow ? <Badge tone="green" sm>최저</Badge> : null}
+                            {isHigh ? <Badge tone="red" sm>최고</Badge> : null}
+                          </View>
+                          <Text style={[{ fontSize: 14, color: T.sub2, marginTop: 3 }, tnum]}>
+                            {formatQuantity(o.volume, base)} · {o.amount.toLocaleString('ko-KR')}원
+                          </Text>
+                          <Text style={[{ fontSize: 14, color: T.ter, marginTop: 2 }, tnum]}>
+                            {o.vendorName ?? '거래처 미지정'} · {formatUnitPrice(per, base)}
+                          </Text>
+                        </View>
+                        {o.url ? <Icon name="link" size={16} color={T.ter} /> : null}
+                        <Icon name="chevron" size={16} color={T.line3} />
+                      </Pressable>
+                    );
+                  })}
+                </Card>
+              )}
+
+              <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, paddingVertical: 12, paddingHorizontal: 14, borderRadius: 12, backgroundColor: T.surface2 }}>
+                <Icon name="info" size={15} color={T.sub2} />
+                <Text style={{ flex: 1, fontSize: 14, color: T.sub2, lineHeight: 20 }}>
+                  구매 옵션은 가격 후보예요. 기준단가는 실제 입고 기록의 가중평균으로만 바뀌어요.
+                </Text>
+              </View>
+            </ScrollView>
+
+            <View style={{ paddingHorizontal: 20, paddingTop: 12, paddingBottom: 30, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
+              <Button kind="primary" size="lg" full onPress={openNew}>구매 옵션 추가</Button>
+            </View>
           </>
         )}
-      </View>
+      </QueryState>
 
-      <UnitPickerSheet
-        visible={pickerOpen}
-        unit={unit}
-        onSelect={(u) => {
-          setUnit(u);
-          setVol((p) => clampByUnit(p, u));
-        }}
-        onClose={() => setPickerOpen(false)}
-        base={lockBase}
+      <VendorPickerSheet
+        visible={vendorOpen}
+        value={vendorId}
+        onSelect={(vid, vname) => { setVendorId(vid); setVendorName(vname); }}
+        onClose={() => setVendorOpen(false)}
       />
-    </View>
-  );
-}
-
-function Row({ label, hint, value, unit }: { label: string; hint?: string; value: string; unit: string }) {
-  return (
-    <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 7 }}>
-      <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.sub2 }}>
-        {label} {hint ? <Text style={{ color: T.ter }}>{hint}</Text> : null}
-      </Text>
-      <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, tnum]}>
-        {value}<Text style={{ fontSize: 13, color: T.sub2 }}>{unit}</Text>
-      </Text>
-    </View>
-  );
-}
-
-function Final({ lossPct, value, unit }: { lossPct: number; value: string; unit: string }) {
-  return (
-    <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 8, borderTopWidth: 1, borderTopColor: T.blueLine }}>
-      <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: T.blue }}>
-        실사용 단가 <Text style={{ fontWeight: '600' }}>(로스 {lossPct}% 반영)</Text>
-      </Text>
-      <Text style={[{ fontSize: 18, fontWeight: '800', color: T.blue }, tnum]}>
-        {value}<Text style={{ fontSize: 16 }}>{unit}</Text>
-      </Text>
+      <UnitPickerSheet visible={unitOpen} unit={unit} onSelect={(u) => { setUnit(u); setVol((p) => clampByUnit(p, u)); }} onClose={() => setUnitOpen(false)} />
     </View>
   );
 }

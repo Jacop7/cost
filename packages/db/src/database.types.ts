@@ -43,6 +43,7 @@ export type Database = {
           created_at: string
           default_loss_rate: number
           id: string
+          kind: Database["public"]["Enums"]["category_kind"]
           name: string
           sort_order: number
           store_id: string
@@ -51,6 +52,7 @@ export type Database = {
           created_at?: string
           default_loss_rate?: number
           id?: string
+          kind?: Database["public"]["Enums"]["category_kind"]
           name: string
           sort_order?: number
           store_id: string
@@ -59,6 +61,7 @@ export type Database = {
           created_at?: string
           default_loss_rate?: number
           id?: string
+          kind?: Database["public"]["Enums"]["category_kind"]
           name?: string
           sort_order?: number
           store_id?: string
@@ -314,8 +317,10 @@ export type Database = {
           occurred_at: string
           order_record_id: string | null
           sales_item_id: string | null
+          seq: number
           store_id: string
           type: Database["public"]["Enums"]["inventory_event_type"]
+          unit_normalized: boolean
           volume_delta: number | null
         }
         Insert: {
@@ -327,8 +332,10 @@ export type Database = {
           occurred_at?: string
           order_record_id?: string | null
           sales_item_id?: string | null
+          seq?: number
           store_id: string
           type: Database["public"]["Enums"]["inventory_event_type"]
+          unit_normalized?: boolean
           volume_delta?: number | null
         }
         Update: {
@@ -340,8 +347,10 @@ export type Database = {
           occurred_at?: string
           order_record_id?: string | null
           sales_item_id?: string | null
+          seq?: number
           store_id?: string
           type?: Database["public"]["Enums"]["inventory_event_type"]
+          unit_normalized?: boolean
           volume_delta?: number | null
         }
         Relationships: [
@@ -416,6 +425,60 @@ export type Database = {
           },
           {
             foreignKeyName: "inventory_states_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      materials: {
+        Row: {
+          active: boolean
+          category_id: string | null
+          created_at: string
+          id: string
+          memo: string | null
+          name: string
+          store_id: string
+          unit_cost: number
+          unit_label: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          category_id?: string | null
+          created_at?: string
+          id?: string
+          memo?: string | null
+          name: string
+          store_id: string
+          unit_cost?: number
+          unit_label?: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          category_id?: string | null
+          created_at?: string
+          id?: string
+          memo?: string | null
+          name?: string
+          store_id?: string
+          unit_cost?: number
+          unit_label?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "materials_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "materials_store_id_fkey"
             columns: ["store_id"]
             isOneToOne: false
             referencedRelation: "stores"
@@ -802,25 +865,38 @@ export type Database = {
         Row: {
           amount_per_serving: number
           id: string
+          material_id: string | null
           name: string
+          qty: number
           recipe_id: string
           store_id: string
         }
         Insert: {
           amount_per_serving?: number
           id?: string
+          material_id?: string | null
           name: string
+          qty?: number
           recipe_id: string
           store_id: string
         }
         Update: {
           amount_per_serving?: number
           id?: string
+          material_id?: string | null
           name?: string
+          qty?: number
           recipe_id?: string
           store_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "recipe_extra_costs_material_id_fkey"
+            columns: ["material_id"]
+            isOneToOne: false
+            referencedRelation: "materials"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "recipe_extra_costs_recipe_id_fkey"
             columns: ["recipe_id"]
@@ -898,6 +974,7 @@ export type Database = {
           active: boolean
           avg_monthly_sales: number | null
           base_servings: number
+          category_id: string | null
           created_at: string
           id: string
           name: string
@@ -912,6 +989,7 @@ export type Database = {
           active?: boolean
           avg_monthly_sales?: number | null
           base_servings?: number
+          category_id?: string | null
           created_at?: string
           id?: string
           name: string
@@ -926,6 +1004,7 @@ export type Database = {
           active?: boolean
           avg_monthly_sales?: number | null
           base_servings?: number
+          category_id?: string | null
           created_at?: string
           id?: string
           name?: string
@@ -937,6 +1016,13 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "recipes_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "recipes_store_id_fkey"
             columns: ["store_id"]
@@ -1152,6 +1238,12 @@ export type Database = {
         }
         Returns: undefined
       }
+      deactivate_material: {
+        Args: {
+          p_id: string
+        }
+        Returns: undefined
+      }
       deactivate_recipe: {
         Args: {
           p_recipe: string
@@ -1239,8 +1331,11 @@ export type Database = {
           p_sealed: number
           p_opened: number
           p_soon: boolean
+          p_opened_remain?: number
+          p_note?: string
+          p_occurred_at?: string
         }
-        Returns: undefined
+        Returns: Json
       }
       e6_recipe_calc: {
         Args: {
@@ -1363,6 +1458,8 @@ export type Database = {
           target_profit_rate: number
           avg_monthly_sales: number
           active: boolean
+          category_id: string
+          category_name: string
           material_cost: number
           extra_cost: number
           tax: number
@@ -1510,6 +1607,13 @@ export type Database = {
         }
         Returns: string
       }
+      save_material: {
+        Args: {
+          p_store: string
+          p_payload: Json
+        }
+        Returns: string
+      }
       save_purchase_option: {
         Args: {
           p_store: string
@@ -1567,6 +1671,7 @@ export type Database = {
           count_delta: number
           volume_delta: number
           note: string
+          balance: number
         }[]
       }
       stock_total_base: {
@@ -1580,6 +1685,7 @@ export type Database = {
       base_unit: "g" | "ml" | "ea"
       candidate_reason: "safety_stock" | "soon_out" | "recipe" | "manual"
       candidate_status: "pending" | "ordered" | "excluded"
+      category_kind: "ingredient" | "recipe" | "material"
       fixed_cost_mode: "total" | "detail"
       inventory_event_type:
         | "inbound"

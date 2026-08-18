@@ -5,12 +5,10 @@ import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ScreenShell, ScrollTabs, Icon, FAB, SearchBar, SortChip, SortSheet, QueryState, type SortOption } from '../../../components/kit';
 import { T } from '../../../theme/tokens';
-import { listCategories } from '../demoData';
 import { useIngredientList, type IngredientRow } from '../hooks';
+import { useSettingsLists } from '@/features/my/hooks';
 import { IngCard } from '../components/IngCard';
 
-// 카테고리 표기 차이(공백·· vs -) 정규화 후 비교.
-const normCat = (s: string) => s.replace(/[\s·\-()]/g, '');
 // 추천순: 소진 임박 → 안전재고 미달 → 여유.
 // 안전재고는 **개수** 기준이므로 개당 용량을 곱해 총량(기준단위)과 단위를 맞춘다.
 const belowSafety = (g: IngredientRow) => g.stockTotal < g.safetyStock * g.perVolume;
@@ -41,16 +39,20 @@ export function IngredientListScreen() {
   // 실데이터. 로딩·오류·빈 상태는 QueryState 가 구분해 그린다(가이드 §9.8).
   const { data, isLoading, error, refetch } = useIngredientList();
   const items = data ?? [];
+  // 탭은 **등록된 카테고리**에서 만든다. 고정 배열을 쓰면 새 카테고리의 식재료가
+  // 어느 탭에도 안 잡혀 목록에서 사라진다.
+  const lists = useSettingsLists();
+  const tabs = useMemo(() => ['전체', ...(lists.data?.categories.map((c) => c.name) ?? [])], [lists.data]);
   const [cat, setCat] = useState(0);
   const [searching, setSearching] = useState(false);
   const [query, setQuery] = useState('');
   const [sort, setSort] = useState<SortKey>('recommended');
   const [sortOpen, setSortOpen] = useState(false);
 
-  const selCat = listCategories[cat] ?? '전체';
+  const selCat = tabs[cat] ?? '전체';
 
   const sorted = useMemo(() => {
-    const byCat = cat === 0 ? items : items.filter((g) => normCat(g.categoryName ?? '') === normCat(selCat));
+    const byCat = cat === 0 ? items : items.filter((g) => (g.categoryName ?? '') === selCat);
     const byQuery = byCat.filter((g) => matches(g, query));
     const list = [...byQuery];
     switch (sort) {
@@ -104,7 +106,7 @@ export function IngredientListScreen() {
       }
     >
       <View style={{ borderBottomWidth: 1, borderBottomColor: T.line3 }}>
-        <ScrollTabs tabs={listCategories} active={cat} onChange={setCat} />
+        <ScrollTabs tabs={tabs} active={cat} onChange={setCat} />
       </View>
       <View style={{ paddingHorizontal: 20, paddingTop: 12, paddingBottom: 10 }}>
         <SortChip label={sortLabel} onPress={() => setSortOpen(true)} />

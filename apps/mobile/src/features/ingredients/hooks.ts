@@ -14,6 +14,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { invalidate, invalidateOn, qk } from '@/lib/queryClient';
 import { supabase } from '@/lib/supabase';
 import { useStoreId } from '@/lib/SessionProvider';
+import { asJson } from '@/lib/json';
 
 export type BaseUnit = 'g' | 'ml' | 'ea';
 
@@ -47,7 +48,21 @@ export interface PurchaseOption {
   name: string;
   volume: number;
   amount: number;
+  vendorId: string | null;
   vendorName: string | null;
+}
+
+/** 상세 화면의 '구매 이력' — 발주 기록 최근 20건. */
+export interface PurchaseRecord {
+  id: string;
+  orderedAt: string;
+  status: 'ordered' | 'partial' | 'received' | 'canceled';
+  volume: number;
+  amount: number;
+  qty: number;
+  receivedQty: number;
+  vendorName: string | null;
+  unitPrice: number | null;
 }
 
 export interface IngredientDetail extends IngredientRow {
@@ -60,15 +75,19 @@ export interface IngredientDetail extends IngredientRow {
   purchase: { avg: number | null; low: number | null; high: number | null; count: number };
   priceTrends: { date: string; price: number }[];
   options: PurchaseOption[];
+  orders: PurchaseRecord[];
 }
 
 export interface LedgerEntry {
   id: string;
   date: string;
   type: 'inbound' | 'consume' | 'discard' | 'stocktake' | 'adjust';
-  countDelta: number | null;
+  /** 재고 증감 — **기준단위**. 종류와 무관하게 같은 단위다(0034). */
+  countDelta: number;
   volumeDelta: number | null;
   note: string | null;
+  /** 그 사건 직후 잔량. 서버가 누적해서 준다 — 앱이 종류별 분기를 알 필요가 없다. */
+  balance: number;
 }
 
 function toRow(r: Record<string, unknown>): IngredientRow {
@@ -141,7 +160,19 @@ export function useIngredientDetail(id: string | undefined) {
           name: String(o.name),
           volume: num(o.volume),
           amount: num(o.amount),
+          vendorId: str(o.vendor_id),
           vendorName: str(o.vendor_name),
+        })),
+        orders: ((r.orders ?? []) as Record<string, unknown>[]).map((o) => ({
+          id: String(o.id),
+          orderedAt: String(o.ordered_at),
+          status: o.status as PurchaseRecord['status'],
+          volume: num(o.volume),
+          amount: num(o.amount),
+          qty: num(o.qty),
+          receivedQty: num(o.received_qty),
+          vendorName: str(o.vendor_name),
+          unitPrice: numOrNull(o.unit_price),
         })),
       };
     },
@@ -164,9 +195,10 @@ export function useStockHistory(id: string | undefined, range?: { from?: string;
         id: String(e.id),
         date: String(e.occurred_on),
         type: e.type as LedgerEntry['type'],
-        countDelta: numOrNull(e.count_delta),
+        countDelta: num(e.count_delta),
         volumeDelta: numOrNull(e.volume_delta),
         note: str(e.note),
+        balance: num(e.balance),
       }));
     },
   });
@@ -193,7 +225,7 @@ export function useSaveIngredient() {
     mutationFn: async (input: IngredientInput): Promise<string> => {
       const { data, error } = await supabase.rpc('save_ingredient', {
         p_store: storeId,
-        p_payload: {
+        p_payload: asJson({
           id: input.id ?? '',
           name: input.name,
           category_id: input.categoryId ?? '',
@@ -204,7 +236,7 @@ export function useSaveIngredient() {
           min_order_qty: input.minOrderQty,
           default_vendor_id: input.defaultVendorId ?? '',
           memo: input.memo ?? '',
-        },
+        }),
       });
       if (error) throw new Error(error.message);
       return String(data);
@@ -243,7 +275,7 @@ export function useSavePurchaseOption() {
     mutationFn: async (input: PurchaseOptionInput) => {
       const { error } = await supabase.rpc('save_purchase_option', {
         p_store: storeId,
-        p_payload: {
+        p_payload: asJson({
           id: input.id ?? '',
           ingredient_id: input.ingredientId,
           purchase_name: input.name,
@@ -251,7 +283,7 @@ export function useSavePurchaseOption() {
           volume: input.volume,
           amount: input.amount,
           url: input.url ?? '',
-        },
+        }),
       });
       if (error) throw new Error(error.message);
     },
@@ -286,6 +318,8 @@ export function useStockChange() {
       value: number;
       perVolume: number;
       soonOut?: boolean;
+      /** 원장에 남길 사유. 비워두면 서버가 기본 문구를 쓴다. */
+      reason?: string;
     }) => {
       if (input.kind === 'waste') {
         // E2 는 "남은 양"을 받아 폐기량을 역산한다.
@@ -296,7 +330,7 @@ export function useStockChange() {
         if (error) throw new Error(error.message);
         return;
       }
-      // E5 는 미개봉 개수 + 개봉 여부로 받는다. 총량을 개당 용량으로 쪼개 넘긴다.
+      // E5 는 미개봉 개수 + 개봉분 잔량으로 받는다. 총량을 개당 용량으로 쪼개 넘긴다.
       const target = input.kind === 'out' ? 0 : input.value;
       const per = input.perVolume > 0 ? input.perVolume : 1;
       const sealed = Math.floor(target / per);
@@ -306,6 +340,8 @@ export function useStockChange() {
         p_sealed: sealed,
         p_opened: remain > 0 ? 1 : 0,
         p_soon: input.kind === 'out' ? true : Boolean(input.soonOut),
+        p_opened_remain: remain,
+        p_note: input.reason,
       });
       if (error) throw new Error(error.message);
     },

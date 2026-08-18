@@ -70,6 +70,11 @@ declare
   i_kimchi uuid; i_tofu uuid; i_egg uuid; i_gochu uuid; i_doenjang uuid;
   i_gochujang uuid; i_rice uuid; i_hobak uuid; i_cheong uuid; i_oil uuid;
   i_sugar uuid; i_soy uuid; i_beef uuid; i_anchovy uuid;
+  -- 레시피 카테고리
+  rc_jjigae uuid; rc_bokkeum uuid; rc_side uuid; rc_bap uuid;
+  -- 부자재 카테고리 · 마스터
+  mc_sauce uuid; mc_pack uuid;
+  m_container uuid; m_gas uuid; m_plate uuid;
   -- 레시피
   r_jeyuk uuid; r_kimchi uuid; r_doenjang uuid; r_gyeran uuid; r_sundubu uuid;
   r_rice uuid; r_sauce uuid; r_bulgogi uuid;
@@ -109,6 +114,22 @@ begin
   c_dry       := save_category(v_store, '{"name":"상온가공-건식","sort_order":10,"default_loss_rate":0}');
   c_tofu      := save_category(v_store, '{"name":"두부-발효식품","sort_order":11,"default_loss_rate":0}');
   c_bake      := save_category(v_store, '{"name":"베이커리","sort_order":12,"default_loss_rate":0}');
+
+  -- ── 레시피 카테고리 (RCP-12) ────────────────────────────────
+  rc_jjigae  := save_category(v_store, '{"name":"찌개·전골","kind":"recipe","sort_order":1}');
+  rc_bokkeum := save_category(v_store, '{"name":"볶음·구이","kind":"recipe","sort_order":2}');
+  rc_bap     := save_category(v_store, '{"name":"밥·면","kind":"recipe","sort_order":3}');
+  rc_side    := save_category(v_store, '{"name":"사이드","kind":"recipe","sort_order":4}');
+
+  -- ── 부자재 카테고리 · 마스터 (RCP-13) ───────────────────────
+  -- 부자재 단가를 마스터에 두면 여러 메뉴가 같은 값을 쓴다.
+  -- 레시피마다 금액을 손으로 적으면 같은 포장용기가 메뉴마다 다른 값이 된다.
+  mc_sauce := save_category(v_store, '{"name":"소스·양념","kind":"material","sort_order":1}');
+  mc_pack  := save_category(v_store, '{"name":"포장·소모품","kind":"material","sort_order":2}');
+
+  m_container := save_material(v_store, jsonb_build_object('name','특수 포장용기','category_id',mc_pack, 'unit_cost',300,'unit_label','개'));
+  m_gas       := save_material(v_store, jsonb_build_object('name','뚝배기 가스비','category_id',mc_pack, 'unit_cost',120,'unit_label','회'));
+  m_plate     := save_material(v_store, jsonb_build_object('name','불판 가스비',  'category_id',mc_pack, 'unit_cost',200,'unit_label','회'));
 
   -- ── 판매 채널 (SALES) ───────────────────────────────────────
   perform save_channel(v_store, '{"code":"hall","name":"매장","fee_rate":0}');
@@ -156,17 +177,17 @@ begin
   --   → 순이익 4,014원 · 33.4% (AGENTS.md)
   r_jeyuk := save_recipe(v_store, jsonb_build_object(
     'name','제육볶음','price',12000,'tax_mode','included','base_servings',10,
-    'target_profit_rate',40,'avg_monthly_sales',300,
+    'target_profit_rate',40,'avg_monthly_sales',300,'category_id',rc_bokkeum,
     'lines', jsonb_build_array(
       jsonb_build_object('ingredient_id',i_pork,  'input_qty',2000),
       jsonb_build_object('ingredient_id',i_onion, 'input_qty', 500),
       jsonb_build_object('ingredient_id',i_pa,    'input_qty', 250),
       jsonb_build_object('ingredient_id',i_garlic,'input_qty',  14)),
-    'extras', jsonb_build_array(jsonb_build_object('name','특수 포장용기','amount',300))));
+    'extras', jsonb_build_array(jsonb_build_object('material_id',m_container,'qty',1))));
 
   r_kimchi := save_recipe(v_store, jsonb_build_object(
     'name','김치찌개','price',9000,'tax_mode','included','base_servings',10,
-    'target_profit_rate',35,'avg_monthly_sales',260,
+    'target_profit_rate',35,'avg_monthly_sales',260,'category_id',rc_jjigae,
     'lines', jsonb_build_array(
       jsonb_build_object('ingredient_id',i_kimchi,'input_qty',2500),
       jsonb_build_object('ingredient_id',i_pork,  'input_qty', 800),
@@ -176,11 +197,11 @@ begin
       jsonb_build_object('ingredient_id',i_gochu, 'input_qty',  60),
       jsonb_build_object('ingredient_id',i_gochujang,'input_qty',150),
       jsonb_build_object('ingredient_id',i_cheong, 'input_qty', 100)),
-    'extras', jsonb_build_array(jsonb_build_object('name','뚝배기 가스비','amount',120))));
+    'extras', jsonb_build_array(jsonb_build_object('material_id',m_gas,'qty',1))));
 
   r_doenjang := save_recipe(v_store, jsonb_build_object(
     'name','된장찌개','price',8000,'tax_mode','included','base_servings',10,
-    'target_profit_rate',35,'avg_monthly_sales',210,
+    'target_profit_rate',35,'avg_monthly_sales',210,'category_id',rc_jjigae,
     'lines', jsonb_build_array(
       jsonb_build_object('ingredient_id',i_doenjang,'input_qty',450),
       jsonb_build_object('ingredient_id',i_tofu,    'input_qty',  5),
@@ -189,11 +210,11 @@ begin
       jsonb_build_object('ingredient_id',i_pa,      'input_qty',150),
       jsonb_build_object('ingredient_id',i_anchovy, 'input_qty',120),
       jsonb_build_object('ingredient_id',i_garlic,  'input_qty', 20)),
-    'extras', jsonb_build_array(jsonb_build_object('name','뚝배기 가스비','amount',120))));
+    'extras', jsonb_build_array(jsonb_build_object('material_id',m_gas,'qty',1))));
 
   r_sundubu := save_recipe(v_store, jsonb_build_object(
     'name','순두부찌개','price',9000,'tax_mode','included','base_servings',10,
-    'target_profit_rate',35,'avg_monthly_sales',180,
+    'target_profit_rate',35,'avg_monthly_sales',180,'category_id',rc_jjigae,
     'lines', jsonb_build_array(
       jsonb_build_object('ingredient_id',i_tofu,   'input_qty', 10),
       jsonb_build_object('ingredient_id',i_gochu,  'input_qty', 80),
@@ -202,11 +223,11 @@ begin
       jsonb_build_object('ingredient_id',i_egg,    'input_qty', 10),
       jsonb_build_object('ingredient_id',i_anchovy,'input_qty',100),
       jsonb_build_object('ingredient_id',i_oil,    'input_qty',100)),
-    'extras', jsonb_build_array(jsonb_build_object('name','뚝배기 가스비','amount',120))));
+    'extras', jsonb_build_array(jsonb_build_object('material_id',m_gas,'qty',1))));
 
   r_gyeran := save_recipe(v_store, jsonb_build_object(
     'name','계란말이','price',7000,'tax_mode','included','base_servings',10,
-    'target_profit_rate',45,'avg_monthly_sales',150,
+    'target_profit_rate',45,'avg_monthly_sales',150,'category_id',rc_side,
     'lines', jsonb_build_array(
       jsonb_build_object('ingredient_id',i_egg,   'input_qty', 40),
       jsonb_build_object('ingredient_id',i_onion, 'input_qty',300),
@@ -215,7 +236,7 @@ begin
 
   r_rice := save_recipe(v_store, jsonb_build_object(
     'name','공기밥','price',1000,'tax_mode','included','base_servings',10,
-    'target_profit_rate',60,'avg_monthly_sales',900,
+    'target_profit_rate',60,'avg_monthly_sales',900,'category_id',rc_bap,
     'lines', jsonb_build_array(jsonb_build_object('ingredient_id',i_rice,'input_qty',1200))));
 
   -- 반제품 — 이것 자체는 팔지 않는다(active=false). 불고기가 재료로 쓴다.
@@ -233,12 +254,12 @@ begin
 
   r_bulgogi := save_recipe(v_store, jsonb_build_object(
     'name','소불고기','price',14000,'tax_mode','included','base_servings',10,
-    'target_profit_rate',35,'avg_monthly_sales',120,
+    'target_profit_rate',35,'avg_monthly_sales',120,'category_id',rc_bokkeum,
     'lines', jsonb_build_array(
       jsonb_build_object('ingredient_id',i_beef,'input_qty',1500),
       jsonb_build_object('ingredient_id',i_onion,'input_qty',600),
       jsonb_build_object('sub_recipe_id', r_sauce,'input_qty', 10)),   -- 양념장 10인분분
-    'extras', jsonb_build_array(jsonb_build_object('name','불판 가스비','amount',200))));
+    'extras', jsonb_build_array(jsonb_build_object('material_id',m_plate,'qty',1))));
 
   -- ── 고정지출 (MY-05) ────────────────────────────────────────
   -- 고정지출률 **31.3%** (3,756,000 / 12,000,000) — AGENTS.md 검산값.
