@@ -35,6 +35,11 @@ export interface RecipeRow {
   /** 0~1 비율. 화면 표기는 formatPercent 가 맡는다. */
   profitRate: number;
   materialRate: number;
+  /**
+   * 기준단가가 없어 원가에서 **빠진** 재료 줄 수.
+   * recipe_material_cost 는 단가 null 을 0 으로 넘기므로, 합계만 보면 공짜인지 빠진 건지 알 수 없다.
+   */
+  unknownCostLines: number;
 }
 
 export interface RecipeLine {
@@ -96,6 +101,7 @@ export function useRecipeList() {
         profit: num(r.profit),
         profitRate: num(r.profit_rate),
         materialRate: num(r.material_rate),
+        unknownCostLines: num(r.unknown_cost_lines),
       }));
     },
   });

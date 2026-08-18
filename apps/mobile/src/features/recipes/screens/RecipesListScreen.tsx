@@ -88,6 +88,16 @@ function RecipeCard({ r, onPress }: { r: RecipeRow; onPress: () => void }) {
             <Text style={[{ fontSize: 14, fontWeight: '700', color: T.sub2, marginRight: 8 }, NUM]}>{formatPercent(r.materialRate)}</Text>
             <Text style={[{ fontSize: 14, fontWeight: '800', color: T.ink }, NUM]}>{won(Math.round(r.materialCost))}원</Text>
           </View>
+
+          {/* 단가가 없는 재료는 원가에서 조용히 빠진다. 숨기면 순이익이 부풀려 보인다. */}
+          {r.unknownCostLines > 0 ? (
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5, marginTop: 9, paddingVertical: 8, paddingHorizontal: 10, borderRadius: 8, backgroundColor: T.amberTint }}>
+              <Icon name="warn" size={14} color={T.amberText} />
+              <Text style={{ flex: 1, fontSize: 14, fontWeight: '600', color: T.amberText }}>
+                단가 없는 재료 {r.unknownCostLines}개가 원가에서 빠져 있어요
+              </Text>
+            </View>
+          ) : null}
         </View>
       </Card>
     </Pressable>

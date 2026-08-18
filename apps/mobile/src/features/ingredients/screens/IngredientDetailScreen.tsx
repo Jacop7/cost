@@ -377,7 +377,14 @@ export function IngredientDetailScreen() {
                   reason: change.reason,
                 },
                 {
-                  onSuccess: () => setStockOpen(false),
+                  onSuccess: (res) => {
+                    setStockOpen(false);
+                    // 버릴 게 없으면 서버가 아무 일도 하지 않는다. 조용히 넘기면
+                    // 사장님은 폐기가 기록된 줄 안다.
+                    if (res?.skipped) {
+                      Alert.alert('기록하지 않았어요', '남은 양이 지금 재고와 같거나 더 많아 버린 양이 0이에요.');
+                    }
+                  },
                   onError: (e) => Alert.alert('저장하지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'),
                 },
               );

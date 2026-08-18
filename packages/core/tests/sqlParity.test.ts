@@ -36,15 +36,16 @@ import {
  * 나왔다(CV-8). 0010 이 core 와 같은 계약으로 맞췄다.
  */
 function sqlBaseUnitPrice(
-  purchases: { amount: number; volume: number; qty: number }[],
+  purchases: { amount: number; volume: number; receivedQty: number }[],
   lossPercent: number,
 ): number | null {
   let num = 0;
   let den = 0;
   for (const p of purchases) {
     if (p.volume === 0) continue; // nullif(volume,0) → null → sum 에서 제외
-    num += (p.amount / p.volume) * p.qty;
-    den += p.qty;
+    // ⚠ 가중치는 **실입고량**이다(0038). 발주량을 쓰면 아직 안 온 물량이 평균을 끈다.
+    num += (p.amount / p.volume) * p.receivedQty;
+    den += p.receivedQty;
   }
   if (den === 0) return null;
   const avg = num / den;
@@ -54,10 +55,49 @@ function sqlBaseUnitPrice(
 }
 
 /** SQL `real_loss_rate`: 누적폐기 / 누적구매 × 100. 구매 <= 0 이면 null. **%로 반환**한다. */
-function sqlRealLossRatePercent(discarded: number, purchased: number): number | null {
+/**
+ * SQL `real_loss_rate(uuid)` — **0038 판** 기준.
+ *
+ *   v_events = 되돌려지지 않은 discard 이벤트 **건수**
+ *   if v_events = 0 then return null            ← 0011: 측정 없음을 0% 로 단정하지 않는다
+ *   v_purchase = Σ(volume × received_qty)       ← 0038: 발주량이 아니라 실입고량
+ *   if v_purchase <= 0 then return null
+ *   v_rate = v_discard / v_purchase × 100
+ *   if v_rate >= 100 then return null           ← 0038: 산 것보다 많이 버릴 수는 없다
+ *
+ * ⚠ 이 미러는 예전에 v_events 가드가 없어 **0011 이 고친 버그를 그대로 인코딩**하고 있었다.
+ *   그래서 "폐기 0건인데 0% 를 반환한다"는 회귀를 잡지 못했다.
+ */
+function sqlRealLossRatePercent(
+  discardEvents: number[],
+  purchases: { volume: number; receivedQty: number }[],
+): number | null {
+  const live = discardEvents.filter((v) => v > 0);
+  if (live.length === 0) return null;
+  const purchased = purchases.reduce((a, p) => a + p.volume * p.receivedQty, 0);
   if (purchased <= 0) return null;
-  return (discarded / purchased) * 100;
+  const rate = (live.reduce((a, v) => a + v, 0) / purchased) * 100;
+  if (rate >= 100) return null;
+  return rate;
 }
+
+/**
+ * SQL `base_unit_price` 의 로스율 선택 규칙(0038 기준):
+ *   v_loss = coalesce(real_loss_rate(id), ingredients.loss_rate)
+ * 실측이 있으면 **추정을 대체한다**. 이 규칙은 core 에 미러가 없어 앱 미리보기와 서버가
+ * 갈릴 수 있다 — 로스율 설계 재검토가 끝나면 core 로 옮겨야 한다.
+ */
+function sqlEffectiveLossPercent(realPercent: number | null, estimatedPercent: number): number {
+  return realPercent ?? estimatedPercent;
+}
+
+/**
+ * core `weightedAvgUnitPrice` 는 가중치를 `qty` 라는 이름으로 받는다.
+ * SQL 에서 그 가중치는 **received_qty**(실입고량)다 — 앱은 반드시 실입고량을 넣어야 한다.
+ * 발주량을 넣으면 아직 도착하지 않은 물량이 평균을 끌어 서버와 값이 갈린다.
+ */
+const forCore = (ps: { amount: number; volume: number; receivedQty: number }[]) =>
+  ps.map((p) => ({ amount: p.amount, volume: p.volume, qty: p.receivedQty }));
 
 /** SQL `fixed_cost_rate`: 고정합계 / 매출. 매출 null 이거나 <= 0 이면 null. */
 function sqlFixedCostRate(fixedTotal: number, revenue: number): number | null {
@@ -98,36 +138,36 @@ function sqlRecomputeRecipe(input: {
 
 describe('base_unit_price — core ↔ SQL', () => {
   const purchases = [
-    { amount: 4000, volume: 1000, qty: 2 },
-    { amount: 3600, volume: 1000, qty: 3 },
-    { amount: 4200, volume: 1000, qty: 1 },
+    { amount: 4000, volume: 1000, receivedQty: 2 },
+    { amount: 3600, volume: 1000, receivedQty: 3 },
+    { amount: 4200, volume: 1000, receivedQty: 1 },
   ];
 
   it('정상 이력 + 로스 15% 에서 같은 값', () => {
-    const core = baseUnitPrice(weightedAvgUnitPrice(purchases), 0.15);
+    const core = baseUnitPrice(weightedAvgUnitPrice(forCore(purchases)), 0.15);
     const sql = sqlBaseUnitPrice(purchases, 15);
     expect(core).not.toBeNull();
     expect(core!).toBeCloseTo(sql!, 10);
   });
 
   it('검산 — 대파 단일 구매 4,000원/1,000g, 로스 15% → 4.71', () => {
-    const one = [{ amount: 4000, volume: 1000, qty: 1 }];
-    expect(baseUnitPrice(weightedAvgUnitPrice(one), 0.15)!).toBeCloseTo(sqlBaseUnitPrice(one, 15)!, 10);
+    const one = [{ amount: 4000, volume: 1000, receivedQty: 1 }];
+    expect(baseUnitPrice(weightedAvgUnitPrice(forCore(one)), 0.15)!).toBeCloseTo(sqlBaseUnitPrice(one, 15)!, 10);
     expect(Math.round(sqlBaseUnitPrice(one, 15)! * 100) / 100).toBe(4.71);
   });
 
   it('용량 0 인 이력은 양쪽 모두 평균에서 제외한다', () => {
     const mixed = [
-      { amount: 4000, volume: 1000, qty: 2 },
-      { amount: 3600, volume: 0, qty: 3 }, // 오염 행
+      { amount: 4000, volume: 1000, receivedQty: 2 },
+      { amount: 3600, volume: 0, receivedQty: 3 }, // 오염 행
     ];
-    expect(weightedAvgUnitPrice(mixed)).toBe(4);
+    expect(weightedAvgUnitPrice(forCore(mixed))).toBe(4);
     expect(sqlBaseUnitPrice(mixed, 0)).toBe(4);
   });
 
   it('로스율 100% 는 양쪽 모두 null (분모 0)', () => {
-    const one = [{ amount: 4000, volume: 1000, qty: 1 }];
-    expect(baseUnitPrice(weightedAvgUnitPrice(one), 1)).toBeNull();
+    const one = [{ amount: 4000, volume: 1000, receivedQty: 1 }];
+    expect(baseUnitPrice(weightedAvgUnitPrice(forCore(one)), 1)).toBeNull();
     expect(sqlBaseUnitPrice(one, 100)).toBeNull();
   });
 
@@ -146,22 +186,24 @@ describe('base_unit_price — core ↔ SQL', () => {
    * 그래서 함수 안에도 같은 가드를 둔다(방어를 한 겹만 두지 않는다).
    */
   it('로스율 100% 초과 — core·SQL 모두 null (CV-8 해소)', () => {
-    const one = [{ amount: 4000, volume: 1000, qty: 1 }];
+    const one = [{ amount: 4000, volume: 1000, receivedQty: 1 }];
     expect(baseUnitPrice(weightedAvgUnitPrice(one), 1.2)).toBeNull();
     expect(sqlBaseUnitPrice(one, 120)).toBeNull();
   });
 
   it('로스율 음수 — core·SQL 모두 null', () => {
-    const one = [{ amount: 4000, volume: 1000, qty: 1 }];
+    const one = [{ amount: 4000, volume: 1000, receivedQty: 1 }];
     expect(baseUnitPrice(weightedAvgUnitPrice(one), -0.1)).toBeNull();
     expect(sqlBaseUnitPrice(one, -10)).toBeNull();
   });
 });
 
 describe('real_loss_rate — 단위 차이를 명시한다', () => {
+  const buy1kg = [{ volume: 1000, receivedQty: 1 }];
+
   it('core 는 0~1 비율, SQL 은 % — 정확히 100배 차이', () => {
     const core = realLossRate(150, 1000);
-    const sql = sqlRealLossRatePercent(150, 1000);
+    const sql = sqlRealLossRatePercent([150], buy1kg);
     expect(core).toBe(0.15);
     expect(sql).toBe(15);
     expect(sql!).toBeCloseTo(core! * 100, 10);
@@ -169,17 +211,70 @@ describe('real_loss_rate — 단위 차이를 명시한다', () => {
 
   it('구매 0 이면 양쪽 모두 null', () => {
     expect(realLossRate(150, 0)).toBeNull();
-    expect(sqlRealLossRatePercent(150, 0)).toBeNull();
+    expect(sqlRealLossRatePercent([150], [{ volume: 1000, receivedQty: 0 }])).toBeNull();
   });
 
   it('base_unit_price 가 SQL 에서 %를 100으로 나눠 쓰므로 최종값은 일치한다', () => {
-    const one = [{ amount: 4000, volume: 1000, qty: 1 }];
+    const one = [{ amount: 4000, volume: 1000, receivedQty: 1 }];
     const lossRatio = realLossRate(150, 1000)!; // 0.15
-    const lossPct = sqlRealLossRatePercent(150, 1000)!; // 15
-    expect(baseUnitPrice(weightedAvgUnitPrice(one), lossRatio)!).toBeCloseTo(
+    const lossPct = sqlRealLossRatePercent([150], buy1kg)!; // 15
+    expect(baseUnitPrice(weightedAvgUnitPrice(forCore(one)), lossRatio)!).toBeCloseTo(
       sqlBaseUnitPrice(one, lossPct)!,
       10,
     );
+  });
+
+  // ── 0011 · 0038 회귀 (예전 미러에는 이 가드가 없어 버그를 못 잡았다) ──
+
+  it('폐기 기록이 0건이면 null — 0% 로 단정하지 않는다 (0011)', () => {
+    expect(sqlRealLossRatePercent([], buy1kg)).toBeNull();
+  });
+
+  it('폐기량 0 인 유령 이벤트는 측정으로 치지 않는다 (0038-A)', () => {
+    // e2_discard 가 "버릴 게 없는데" 만들던 0g 행. 이게 측정으로 잡히면
+    // 사장님이 넣은 추정 로스율이 통째로 0% 로 덮인다.
+    expect(sqlRealLossRatePercent([0], buy1kg)).toBeNull();
+    expect(sqlRealLossRatePercent([0, 0], buy1kg)).toBeNull();
+  });
+
+  it('산 것보다 많이 버리면 측정 실패(null) — 원가 0원으로 무너지지 않게 (0038-E)', () => {
+    expect(sqlRealLossRatePercent([1000], buy1kg)).toBeNull();  // 100%
+    expect(sqlRealLossRatePercent([1600], buy1kg)).toBeNull();  // 160%
+    expect(sqlRealLossRatePercent([999], buy1kg)).toBeCloseTo(99.9, 10); // 경계 바로 아래는 유효
+  });
+
+  it('분모는 실입고량 — 발주만 하고 안 온 물량은 세지 않는다 (0038-D)', () => {
+    // 2개 발주 중 1개만 도착. 분모는 1,000g 이어야 한다(2,000g 이 아니라).
+    const partial = [{ volume: 1000, receivedQty: 1 }];
+    expect(sqlRealLossRatePercent([150], partial)).toBe(15);
+  });
+});
+
+describe('로스율 선택 규칙 — 실측이 추정을 대체한다', () => {
+  const one = [{ amount: 4000, volume: 1000, receivedQty: 1 }];
+
+  it('실측이 없으면 추정(사용자 입력)을 쓴다 — 대파 4.7059', () => {
+    const loss = sqlEffectiveLossPercent(null, 15);
+    expect(loss).toBe(15);
+    expect(Math.round(sqlBaseUnitPrice(one, loss)! * 10000) / 10000).toBe(4.7059);
+  });
+
+  it('실측이 있으면 추정을 대체한다 — 실측이 작으면 단가가 내려간다', () => {
+    // 사용자가 지적한 현상: 폐기를 기록했는데 단가가 오히려 내려간다.
+    // 폐기 자체는 단가를 올리지만(분모 1-loss), 대체 규칙 탓에 15% -> 4% 로 떨어져서다.
+    const loss = sqlEffectiveLossPercent(4, 15);
+    expect(loss).toBe(4);
+    const lower = sqlBaseUnitPrice(one, loss)!;
+    const higher = sqlBaseUnitPrice(one, 15)!;
+    expect(lower).toBeLessThan(higher);
+    expect(Math.round(lower * 10000) / 10000).toBe(4.1667);
+  });
+
+  it('로스율 자체는 커질수록 단가를 올린다 (단조 증가)', () => {
+    const prices = [0, 5, 15, 30, 50].map((p) => sqlBaseUnitPrice(one, p)!);
+    for (let i = 1; i < prices.length; i += 1) {
+      expect(prices[i]!).toBeGreaterThan(prices[i - 1]!);
+    }
   });
 });
 
