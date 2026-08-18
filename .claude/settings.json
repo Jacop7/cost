@@ -3,7 +3,29 @@
     "allow": [
       "Bash(pip show *)",
       "Bash(cd \"c:\\\\프로젝트\\\\식자재관리앱\" && ls -la 2>&1 | head -50; echo \"===GIT ROOT===\"; cd .. && ls -la 2>&1 | head -50)",
-      "Read(//c/프로젝트/**)"
+      "Read(//c/프로젝트/**)",
+      "Bash(corepack pnpm *)",
+      "Bash(tee /tmp/expo-run.log)",
+      "Bash(curl -s http://127.0.0.1:4040/api/tunnels)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "PowerShell(Get-Process ngrok -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue; Get-NetTCPConnection -LocalPort 8081 -State Listen -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -Unique | ForEach-Object { Stop-Process -Id $_ -Force -ErrorAction SilentlyContinue }; Start-Sleep -Milliseconds 600; if \\(Get-NetTCPConnection -LocalPort 8081 -State Listen -ErrorAction SilentlyContinue\\) { \"8081 busy\" } else { \"8081 free\" })",
+      "Bash(tee /tmp/expo-tunnel3.log)",
+      "Bash(tee /tmp/expo-dev4.log)",
+      "Bash(tee /tmp/expo-tun5.log)",
+      "Bash(tee /tmp/expo-dev6.log)",
+      "Bash(tee /tmp/expo-dev7.log)",
+      "PowerShell(Get-Process ngrok -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue; Get-NetTCPConnection -LocalPort 8081 -State Listen -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -Unique | ForEach-Object { Stop-Process -Id $_ -Force -ErrorAction SilentlyContinue }; Start-Sleep -Milliseconds 600; \"ok\")",
+      "Bash(tee /tmp/expo-dev8.log)",
+      "Bash(curl -s -o /dev/null -w \"8081 HTTP %{http_code}\\\\n\" http://localhost:8081)",
+      "PowerShell(Get-Process ngrok -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue; Get-NetTCPConnection -LocalPort 8081 -State Listen -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -Unique | ForEach-Object { Stop-Process -Id $_ -Force -ErrorAction SilentlyContinue }; Start-Sleep -Milliseconds 500; \"ok\")",
+      "Bash(tee /tmp/expo-dev9.log)",
+      "Bash(unzip -l \"C:/Users/jacop/Downloads/식재료 잔여 복사 요청.zip\")",
+      "Bash(rm -rf ing_zip)",
+      "Bash(mkdir -p ing_zip)",
+      "Bash(unzip -o \"C:/Users/jacop/Downloads/식재료 잔여 복사 요청.zip\" -d ing_zip)",
+      "Bash(echo \"exit: $?\")"
     ]
   }
 }

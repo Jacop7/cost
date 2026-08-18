@@ -19,7 +19,15 @@ export function AppHeader({ title, onBack, right, bg = T.bg }: {
     <View style={{ backgroundColor: bg, paddingTop: insets.top }}>
       <View style={{ flexDirection: 'row', alignItems: 'center', minHeight: 52, paddingLeft: 4, paddingRight: 8 }}>
         {onBack ? (
-          <Pressable onPress={onBack} style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}>
+          // 아이콘만 있는 버튼이라 라벨이 없으면 스크린리더가 읽을 것이 없다(가이드 §9.6-4).
+          // 실제 터치 영역은 40×40 이라 hitSlop 2 를 더해 최소 44×44 를 채운다(§9.6-1).
+          <Pressable
+            onPress={onBack}
+            accessibilityRole="button"
+            accessibilityLabel="뒤로 가기"
+            hitSlop={2}
+            style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}
+          >
             <Icon name="back" size={26} color={T.ink} sw={2.1} />
           </Pressable>
         ) : (

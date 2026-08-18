@@ -70,7 +70,7 @@ export default function RecipeDetailScreen() {
       <View style={{ flex: 1, backgroundColor: T.bg }}>
         <AppHeader title="레시피" onBack={() => safeBack('/recipes')} />
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-          <Text style={{ color: T.ter }}>메뉴를 찾을 수 없습니다.</Text>
+          <Text style={{ color: T.ter }}>메뉴를 찾을 수 없어요</Text>
         </View>
       </View>
     );
@@ -200,7 +200,7 @@ export default function RecipeDetailScreen() {
                 </View>
               ))
             ) : (
-              <Text style={{ fontSize: 16, color: T.ter, paddingVertical: 9 }}>등록된 부자재가 없습니다.</Text>
+              <Text style={{ fontSize: 16, color: T.ter, paddingVertical: 9 }}>등록된 부자재가 없어요</Text>
             )}
           </View>
         </Card>
@@ -226,7 +226,7 @@ export default function RecipeDetailScreen() {
                 <Text style={[{ fontSize: 14, fontWeight: '700', color: T.sub2, marginTop: 2 }, NUM]}>{pct(r.fixedRate)}%</Text>
               </View>
             </View>
-            <Text style={{ fontSize: 14, color: T.ter, lineHeight: 20, marginTop: 10 }}>월 고정비(임대료·인건비 등)를 메뉴 1개당 얼마씩 부담해야 하는지 판매량 기준으로 나누어 계산한 금액입니다.</Text>
+            <Text style={{ fontSize: 14, color: T.ter, lineHeight: 20, marginTop: 10 }}>월 고정비(임대료·인건비 등)를 메뉴 1개당 얼마씩 부담해야 하는지 판매량 기준으로 나눠 계산한 금액이에요.</Text>
           </View>
           <Pressable onPress={() => router.push('/recipes/fixed-cost' as Href)} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 2, paddingVertical: 13, borderTopWidth: 1, borderTopColor: T.line2, backgroundColor: T.surface2 }}>
             <Text style={{ fontSize: 16, fontWeight: '700', color: T.sub }}>자세히 보기</Text>

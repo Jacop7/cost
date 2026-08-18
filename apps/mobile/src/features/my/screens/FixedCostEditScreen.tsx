@@ -43,7 +43,7 @@ export default function FixedCostEditScreen() {
   const removeSection = (si: number) => setSections((prev) => prev.filter((_, i) => i !== si));
 
   const XBtn = ({ onPress }: { onPress: () => void }) => (
-    <Pressable onPress={onPress} hitSlop={6} style={{ width: 40, alignItems: 'center', justifyContent: 'center' }}>
+    <Pressable onPress={onPress} hitSlop={6} style={{ width: 40, alignItems: 'center', justifyContent: 'center' }} accessibilityRole="button" accessibilityLabel="항목 삭제">
       <Icon name="close" size={18} color={T.ter} />
     </Pressable>
   );
@@ -124,15 +124,29 @@ export default function FixedCostEditScreen() {
         <View style={{ flex: 1, backgroundColor: T.scrim, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 32 }}>
           <View style={{ width: '100%', maxWidth: 340, backgroundColor: T.surface, borderRadius: 18, paddingTop: 24, paddingHorizontal: 20, paddingBottom: 14 }}>
             <View style={{ alignItems: 'center', gap: 8 }}>
+              {/* 질문은 다이얼로그라 '~하시겠습니까?', 부연 안내는 '~해요' 체(가이드 §9.2). */}
               <Text style={{ fontSize: 18, fontWeight: '800', color: T.ink, textAlign: 'center' }}>고정 지출을 저장하시겠습니까?</Text>
-              <Text style={{ fontSize: 16, color: T.sub, textAlign: 'center', lineHeight: 22 }}>저장 시 전 레시피의 고정지출률에 반영됩니다.</Text>
+              {/* 광범위하게 전파되는 작업이라 영향 범위를 구체적으로 밝힌다(§9.9). E4 는 같은 매장의
+                  전 레시피 손익과 월 손익을 함께 다시 계산한다. */}
+              <Text style={{ fontSize: 16, color: T.sub, textAlign: 'center', lineHeight: 22 }}>
+                이번 달 고정지출률이 바뀌면서 등록된 모든 메뉴의 순이익과 월 손익이 다시 계산돼요.
+              </Text>
             </View>
+            {/* 버튼은 행동형으로 쓴다(§9.2). '예/아니오'는 무엇이 일어나는지 드러내지 않는다. */}
             <View style={{ flexDirection: 'row', gap: 9, marginTop: 18 }}>
-              <Pressable onPress={() => setConfirmOpen(false)} style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingVertical: 14, borderRadius: 12, backgroundColor: T.line2 }}>
-                <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink2 }}>아니오</Text>
+              <Pressable
+                onPress={() => setConfirmOpen(false)}
+                accessibilityRole="button"
+                style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingVertical: 14, borderRadius: 12, backgroundColor: T.line2 }}
+              >
+                <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink2 }}>취소</Text>
               </Pressable>
-              <Pressable onPress={() => { setConfirmOpen(false); safeBack('/recipes/fixed-cost'); }} style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingVertical: 14, borderRadius: 12, backgroundColor: T.blue }}>
-                <Text style={{ fontSize: 16, fontWeight: '700', color: T.onColor }}>예</Text>
+              <Pressable
+                onPress={() => { setConfirmOpen(false); safeBack('/recipes/fixed-cost'); }}
+                accessibilityRole="button"
+                style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingVertical: 14, borderRadius: 12, backgroundColor: T.blue }}
+              >
+                <Text style={{ fontSize: 16, fontWeight: '700', color: T.onColor }}>저장</Text>
               </Pressable>
             </View>
           </View>

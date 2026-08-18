@@ -3,7 +3,8 @@
 탭별 feature 모듈. 각 모듈은 `screens/`(화면·시트) · `demoData.ts`(임시 데이터)로 구성하고, 추후 `hooks/`(쿼리·뮤테이션)을 더한다.
 공통 UI 킷은 `src/components/kit`, 계산은 `@sikjae/core`, 데이터 계약은 `@sikjae/types`.
 
-하단 탭 순서: **식재료(ING) · 레시피(RCP) · 발주(ORD) · MY**.
+하단 탭 순서: **식재료(ING) · 레시피(RCP) · 발주(ORD) · 매출관리(SALES) · MY** — 5탭.
+(AGENTS.md 는 4탭으로 적혀 있으나 매출관리 탭이 추가되어 실제 구현은 5탭이다. `app/(tabs)/_layout.tsx` 가 실물.)
 공통 헤더 패턴: 리스트 화면은 **타이틀(좌, 24·800) + 검색/알림 아이콘(우)**, 그 아래 **밑줄형 탭/카테고리 스트립**(좌측 정렬, 하단 구분선 `#D1D6DB`).
 
 ## 화면 인벤토리 — ✅ 구현 / ⬜ 미구현
@@ -39,10 +40,28 @@
 | `orders` | ORD-02 | 발주 완료 등록 (도착 예정일 달력) → **E7** | `orders/complete` (`OrderCompleteScreen`) | ✅ |
 | `orders` | ORD-03 | 입고 확정 → **E1** | — (입고 완료 버튼 자리만) | ⬜ |
 | `orders` | ORD-04 | 레시피 계산기 → **E6** (2차) | — | ⬜ |
-| `my` | MY-01 | 마이페이지 홈 | `my/index` | ⬜(스캐폴드) |
-| `my` | MY-03·05~06 | 카테고리·구매처·알림 | — | ⬜ |
+| `my` | MY-01 | 마이페이지 홈 (사업장 + 설정 메뉴) | `my/index` (`MyHomeScreen`) | ✅ |
+| `my` | MY-03 | 카테고리 관리 허브 | `my/categories` (`MyCategoryHubScreen`) | ✅ |
+| `my` | MY-03 | 카테고리 편집 | `my/category` (`MyCategoryScreen`) | ✅ |
+| `my` | MY-05 | 구매처·브랜드 | `my/vendors` (`MyVendorsScreen`) | ✅ |
+| `my` | MY-06 | 알림 설정 | `my/notifications` (`MyNotificationsScreen`) | ✅ |
+| `recipes` | RCP-12b | 부자재 카테고리 | `recipes/material-category` (`MaterialCategoryScreen`) | ✅ |
+| `sales` | SALES-01 | 매출관리 홈 (일일 판매 입력) | `sales/index` (`SalesHomeScreen`) | ✅ |
+| `sales` | SALES-02 | 매출 분석 (기간 선택·캘린더·손익) | `sales/analytics` (`SalesAnalyticsScreen`) | ✅ |
+| `sales` | SALES-03 | 일 손익 상세 | `sales/day-detail` (`SalesDayDetailScreen`) | ✅ |
+| `sales` | SALES-04 | 일 손익 전체 | `sales/day` (`SalesDayFullScreen`) | ✅ |
+| `sales` | SALES-05 | 매출 상세 | `sales/revenue` (`SalesRevenueScreen`) | ✅ |
+| `sales` | SALES-08 | 메뉴별 손익 | `sales/menu` (`SalesMenuDetailScreen`) | ✅ |
+| `sales` | SALES-18 | 채널별 손익 | `sales/channel` (`SalesChannelScreen`) | ✅ |
+| `sales` | SALES-11 | 재료 원가 상세 | `sales/material` (`SalesMaterialScreen`) | ✅ |
+| `sales` | SALES-12 | 부자재 상세 | `sales/extra` (`SalesExtraScreen`) | ✅ |
+| `sales` | SALES-13 | 고정 지출 상세 | `sales/fixed` (`SalesFixedScreen`) | ✅ |
+| `sales` | SALES-14 | 추가 지출 | `sales/expense` (`SalesExpenseScreen`) | ✅ |
 | `my` | MY-04 | 단위 설정 (단위 시스템·조리컵/스푼·묶음 단위·**단가 표기 자릿수**) | `my/units` (`MyUnitsScreen`) | ✅ |
 | `my` | MY-08 | 언어·통화 설정 (로케일 → 통화·구분자·소수점·금액 자릿수) | `my/language` (`MyLanguageScreen`) | ✅ |
+
+> ⚠ 위 ✅ 는 **UI 구현 완료**를 뜻한다. 데이터는 대부분 `demoData.ts` 이며 Supabase 연동은 진행 중이다.
+> 완료 게이트(실데이터 연결 + 전파 + 재조회)를 통과한 화면만 별도로 표기한다.
 
 ## 주요 화면 플로우 (수집 → 등록 → 노출)
 

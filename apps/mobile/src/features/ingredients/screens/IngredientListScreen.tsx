@@ -1,29 +1,76 @@
 // IngredientListScreen.tsx — ING-01 식재료 리스트
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { View, Text, ScrollView, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { ScreenShell, ScrollTabs, Icon, FAB } from '../../../components/kit';
+import { ScreenShell, ScrollTabs, Icon, FAB, SearchBar, SortChip, SortSheet, QueryState, type SortOption } from '../../../components/kit';
 import { T } from '../../../theme/tokens';
 import { listCategories } from '../demoData';
-import { useIngredients } from '../store';
+import { useIngredientList, type IngredientRow } from '../hooks';
 import { IngCard } from '../components/IngCard';
 
 // 카테고리 표기 차이(공백·· vs -) 정규화 후 비교.
 const normCat = (s: string) => s.replace(/[\s·\-()]/g, '');
-// 추천순: 소진임박/소진 → 안전재고 미달 → 여유 순.
-const rank = (g: { soon: boolean; status: string }) => (g.soon || g.status === 'out' ? 0 : g.status === 'low' ? 1 : 2);
+// 추천순: 소진 임박 → 안전재고 미달 → 여유.
+// 안전재고는 **개수** 기준이므로 개당 용량을 곱해 총량(기준단위)과 단위를 맞춘다.
+const belowSafety = (g: IngredientRow) => g.stockTotal < g.safetyStock * g.perVolume;
+const rank = (g: IngredientRow) => (g.soonOut ? 0 : belowSafety(g) ? 1 : 2);
+
+type SortKey = 'recommended' | 'name' | 'stockLow' | 'priceHigh';
+
+const SORTS: readonly SortOption<SortKey>[] = [
+  { key: 'recommended', label: '추천순', hint: '소진 임박 → 안전재고 미달 → 여유' },
+  { key: 'stockLow', label: '잔여 적은 순', hint: '지금 남은 양이 적은 것부터' },
+  { key: 'priceHigh', label: '단가 높은 순', hint: '기준단가(원/최소단위) 기준' },
+  { key: 'name', label: '이름순', hint: '가나다순' },
+];
+
+/** 검색어 매칭 — 이름·카테고리·구매처를 함께 본다. 공백은 무시해 "대 파"도 찾히게 한다. */
+const squash = (s: string) => s.replace(/\s+/g, '').toLowerCase();
+function matches(g: IngredientRow, q: string): boolean {
+  const n = squash(q);
+  if (n === '') return true;
+  return squash(g.name).includes(n)
+    || squash(g.categoryName ?? '').includes(n)
+    || squash(g.vendorName ?? '').includes(n);
+}
 
 export function IngredientListScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const items = useIngredients((s) => s.items);
+  // 실데이터. 로딩·오류·빈 상태는 QueryState 가 구분해 그린다(가이드 §9.8).
+  const { data, isLoading, error, refetch } = useIngredientList();
+  const items = data ?? [];
   const [cat, setCat] = useState(0);
+  const [searching, setSearching] = useState(false);
+  const [query, setQuery] = useState('');
+  const [sort, setSort] = useState<SortKey>('recommended');
+  const [sortOpen, setSortOpen] = useState(false);
 
   const selCat = listCategories[cat] ?? '전체';
-  const filtered = cat === 0 ? items : items.filter((g) => normCat(g.cat) === normCat(selCat));
-  const sorted = [...filtered].sort((a, b) => rank(a) - rank(b));
-  const soonList = filtered.filter((g) => g.soon || g.status === 'out');
+
+  const sorted = useMemo(() => {
+    const byCat = cat === 0 ? items : items.filter((g) => normCat(g.categoryName ?? '') === normCat(selCat));
+    const byQuery = byCat.filter((g) => matches(g, query));
+    const list = [...byQuery];
+    switch (sort) {
+      case 'name':
+        return list.sort((a, b) => a.name.localeCompare(b.name, 'ko'));
+      case 'stockLow':
+        return list.sort((a, b) => a.stockTotal - b.stockTotal);
+      case 'priceHigh':
+        // 산출 불가(null)는 맨 뒤로 — 0원으로 취급해 위로 올리면 잘못된 신호를 준다.
+        return list.sort((a, b) => (b.basePrice ?? -1) - (a.basePrice ?? -1));
+      default:
+        return list.sort((a, b) => rank(a) - rank(b));
+    }
+  }, [items, cat, selCat, query, sort]);
+
+  const soonList = sorted.filter((g) => g.soonOut);
+  const sortLabel = SORTS.find((s) => s.key === sort)?.label ?? '추천순';
+  const isSearch = searching && query.trim() !== '';
+
+  const closeSearch = () => { setSearching(false); setQuery(''); };
 
   return (
     <ScreenShell
@@ -31,14 +78,28 @@ export function IngredientListScreen() {
         <View style={{ paddingTop: insets.top, backgroundColor: T.bg }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 20, paddingRight: 12, paddingTop: 6, paddingBottom: 12 }}>
             <Text style={{ flex: 1, fontSize: 22, fontWeight: '800', color: T.ink, letterSpacing: -0.6 }}>식재료</Text>
-            <Pressable style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}>
-              <Icon name="search" size={23} color={T.ink2} />
+            <Pressable
+              onPress={() => setSearching((v) => !v)}
+              accessibilityRole="button"
+              accessibilityLabel="검색"
+              accessibilityState={{ selected: searching }}
+              style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}
+            >
+              <Icon name="search" size={23} color={searching ? T.blue : T.ink2} />
             </Pressable>
-            <Pressable style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}>
+            <Pressable
+              onPress={() => router.push('/my/notifications')}
+              accessibilityRole="button"
+              accessibilityLabel="알림"
+              style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}
+            >
               <Icon name="bell" size={24} color={T.ink2} />
               <View style={{ position: 'absolute', top: 9, right: 10, width: 7, height: 7, borderRadius: 4, backgroundColor: T.red, borderWidth: 1.5, borderColor: T.surface }} />
             </Pressable>
           </View>
+          {searching ? (
+            <SearchBar value={query} onChange={setQuery} placeholder="식재료·카테고리·구매처 검색" onClose={closeSearch} />
+          ) : null}
         </View>
       }
     >
@@ -46,23 +107,7 @@ export function IngredientListScreen() {
         <ScrollTabs tabs={listCategories} active={cat} onChange={setCat} />
       </View>
       <View style={{ paddingHorizontal: 20, paddingTop: 12, paddingBottom: 10 }}>
-        <Pressable
-          style={{
-            alignSelf: 'flex-start',
-            flexDirection: 'row',
-            alignItems: 'center',
-            gap: 5,
-            paddingVertical: 8,
-            paddingHorizontal: 14,
-            borderRadius: 999,
-            borderWidth: 1,
-            borderColor: T.line,
-            backgroundColor: T.surface,
-          }}
-        >
-          <Text style={{ fontSize: 16, fontWeight: '600', color: T.ink2 }}>추천순</Text>
-          <Icon name="chevronDown" size={15} color={T.sub2} />
-        </Pressable>
+        <SortChip label={sortLabel} onPress={() => setSortOpen(true)} />
       </View>
       <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 104, gap: 10 }} showsVerticalScrollIndicator={false}>
         {soonList.length > 0 ? (
@@ -85,15 +130,22 @@ export function IngredientListScreen() {
             </Text>
           </View>
         ) : null}
-        {sorted.length === 0 ? (
-          <View style={{ paddingVertical: 48, alignItems: 'center' }}>
-            <Text style={{ fontSize: 16, color: T.ter }}>해당 카테고리의 식재료가 없어요</Text>
-          </View>
-        ) : (
-          sorted.map((g) => <IngCard key={g.id} g={g} onPress={() => router.push(`/ingredients/${g.id}`)} />)
-        )}
+        {/* 로딩·오류·빈 상태를 뭉뚱그리지 않는다. 통신 실패를 빈 목록으로 그리면
+            사장님이 "정말 없다"고 오해한다(가이드 §9.8). */}
+        <QueryState
+          isLoading={isLoading}
+          error={error}
+          isEmpty={sorted.length === 0}
+          onRetry={() => void refetch()}
+          emptyTitle={isSearch ? `'${query.trim()}' 검색 결과가 없어요` : '해당 카테고리의 식재료가 없어요'}
+          emptyHint={isSearch ? '다른 이름이나 구매처로 찾아보세요' : '아래 버튼으로 식재료를 추가해 보세요'}
+        >
+          {sorted.map((g) => <IngCard key={g.id} g={g} onPress={() => router.push(`/ingredients/${g.id}`)} />)}
+        </QueryState>
       </ScrollView>
       <FAB label="식재료 추가" onPress={() => router.push('/ingredients/add')} />
+
+      <SortSheet visible={sortOpen} options={SORTS} value={sort} onSelect={setSort} onClose={() => setSortOpen(false)} />
     </ScreenShell>
   );
 }

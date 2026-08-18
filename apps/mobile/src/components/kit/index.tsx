@@ -3,8 +3,8 @@
  * 웹 전용 속성은 RN 등가로 변환: whiteSpace→numberOfLines, boxShadow→cardShadow,
  * backdropFilter blur→반투명 배경, fontVariantNumeric→fontVariant.
  */
-import { ReactNode } from 'react';
-import { KeyboardTypeOptions, Pressable, ScrollView, StyleProp, Text, TextInput, TextStyle, View, ViewStyle } from 'react-native';
+import { ReactNode, useState } from 'react';
+import { ActivityIndicator, KeyboardTypeOptions, Pressable, ScrollView, StyleProp, StyleSheet, Text, TextInput, TextInputProps, TextStyle, View, ViewStyle } from 'react-native';
 import { Icon, IconName } from './Icon';
 import { cardShadow, FONT, STATUS, T, won } from '@/theme/tokens';
 
@@ -13,6 +13,10 @@ export { Icon };
 export type { IconName } from './Icon';
 export { AppHeader } from './AppHeader';
 export { Sheet } from './Sheet';
+export { SearchBar } from './SearchBar';
+export { QueryState } from './QueryState';
+export { SortChip, SortSheet } from './SortSheet';
+export type { SortOption } from './SortSheet';
 export { Slider } from './Slider';
 export { Donut, TrendChart } from './charts';
 export type { DonutSeg, TrendPoint } from './charts';
@@ -81,7 +85,37 @@ export function Notice({ children, style }: { children: ReactNode; style?: Style
 // ── 버튼 ──────────────────────────────────────────────────────
 type Kind = 'primary' | 'tint' | 'gray' | 'ghost' | 'danger';
 type Size = 'sm' | 'md' | 'lg';
-export function Button({ children, kind = 'primary', size = 'md', full, icon, iconRight, onPress, style }: { children: ReactNode; kind?: Kind; size?: Size; full?: boolean; icon?: IconName; iconRight?: boolean; onPress?: () => void; style?: StyleProp<ViewStyle> }) {
+
+/**
+ * Button — 상태 계약(가이드 §9.7): Default / Pressed / Disabled / Loading.
+ *
+ * 데이터를 바꾸는 버튼(E1~E7·저장·삭제)은 탭 즉시 `loading` 으로 전환해 중복 제출을 막는다.
+ * 단, debounce 만으로 데이터 무결성을 보장하지 않는다 — 서버 멱등성(예: E1 의 idempotency key)과
+ * 함께 써야 한다. 여기서 막는 것은 "사용자 눈에 보이는 연타"까지다.
+ *
+ * `loading` 중에도 **버튼 너비가 변하지 않게** 라벨을 자리에 두고 투명하게 만든 뒤 spinner 를 겹친다.
+ * 너비가 출렁이면 옆 버튼 위치가 밀려 오터치가 난다.
+ */
+export function Button({
+  children, kind = 'primary', size = 'md', full, icon, iconRight, onPress, style,
+  disabled = false, loading = false, accessibilityLabel, accessibilityHint,
+}: {
+  children: ReactNode;
+  kind?: Kind;
+  size?: Size;
+  full?: boolean;
+  icon?: IconName;
+  iconRight?: boolean;
+  onPress?: () => void;
+  style?: StyleProp<ViewStyle>;
+  /** 조건 미충족으로 실행할 수 없는 상태. 터치가 차단되고 접근성에도 전달된다. */
+  disabled?: boolean;
+  /** 제출 진행 중. 터치가 차단되고 spinner 가 표시된다. */
+  loading?: boolean;
+  /** 아이콘만 있는 버튼은 필수 — 스크린리더가 행동을 읽을 수 있어야 한다. */
+  accessibilityLabel?: string;
+  accessibilityHint?: string;
+}) {
   const kinds: Record<Kind, { bg: string; fg: string; border?: string }> = {
     primary: { bg: T.blue, fg: T.onColor },
     tint: { bg: T.blueTint, fg: T.blue },
@@ -96,17 +130,49 @@ export function Button({ children, kind = 'primary', size = 'md', full, icon, ic
     lg: { pv: 16, ph: 18, fs: 17, r: 14 },
   };
   const s = sizes[size];
-  const iconEl = icon ? <Icon name={icon} size={s.fs + 3} color={c.fg} sw={2} /> : null;
+  // 진행 중에도 눌린 것처럼 보이면 안 되므로 두 상태를 함께 잠근다.
+  const blocked = disabled || loading;
+  const iconEl = icon && !loading ? <Icon name={icon} size={s.fs + 3} color={c.fg} sw={2} /> : null;
+
   return (
     <Pressable
-      onPress={onPress}
+      onPress={blocked ? undefined : onPress}
+      disabled={blocked}
+      accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel}
+      accessibilityHint={accessibilityHint}
+      accessibilityState={{ disabled: blocked, busy: loading }}
       style={({ pressed }) => [
-        { flexDirection: iconRight ? 'row-reverse' : 'row', alignItems: 'center', justifyContent: 'center', gap: 6, alignSelf: full ? 'stretch' : 'flex-start', backgroundColor: kind === 'primary' && pressed ? T.bluePressed : c.bg, borderWidth: c.border ? 1 : 0, borderColor: c.border, paddingVertical: s.pv, paddingHorizontal: s.ph, borderRadius: s.r, opacity: pressed && kind !== 'primary' ? 0.85 : 1 },
+        {
+          flexDirection: iconRight ? 'row-reverse' : 'row',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 6,
+          alignSelf: full ? 'stretch' : 'flex-start',
+          backgroundColor: kind === 'primary' && pressed && !blocked ? T.bluePressed : c.bg,
+          borderWidth: c.border ? 1 : 0,
+          borderColor: c.border,
+          paddingVertical: s.pv,
+          paddingHorizontal: s.ph,
+          borderRadius: s.r,
+          // 비활성은 색만이 아니라 접근성 state 로도 전달된다(색만으로 상태를 알리지 않는다).
+          opacity: disabled ? 0.4 : pressed && kind !== 'primary' ? 0.85 : 1,
+        },
         style,
       ]}
     >
       {iconEl}
-      <Text style={{ color: c.fg, fontSize: s.fs, fontWeight: '700', letterSpacing: -0.2 }}>{children}</Text>
+      {/* 라벨은 자리를 유지한 채 투명해지고, spinner 가 그 위에 겹친다 → 너비 불변 */}
+      <Text style={{ color: c.fg, fontSize: s.fs, fontWeight: '700', letterSpacing: -0.2, opacity: loading ? 0 : 1 }}>
+        {children}
+      </Text>
+      {loading ? (
+        <View style={StyleSheet.absoluteFillObject} pointerEvents="none">
+          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+            <ActivityIndicator size="small" color={c.fg} />
+          </View>
+        </View>
+      ) : null}
     </Pressable>
   );
 }
@@ -114,27 +180,41 @@ export function Button({ children, kind = 'primary', size = 'md', full, icon, ic
 // ── 칩 ────────────────────────────────────────────────────────
 export function Chip({ children, active, tone, onPress }: { children: ReactNode; active?: boolean; tone?: 'blue'; onPress?: () => void }) {
   return (
-    <Pressable onPress={onPress} style={{ flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: 7, paddingHorizontal: 12, borderRadius: 999, backgroundColor: active ? T.ink : tone === 'blue' ? T.blueTint : T.surface, borderWidth: active ? 0 : 1, borderColor: T.line }}>
+    <Pressable
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityState={{ selected: !!active }}
+      hitSlop={6}
+      style={{ flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: 7, paddingHorizontal: 12, borderRadius: 999, backgroundColor: active ? T.ink : tone === 'blue' ? T.blueTint : T.surface, borderWidth: active ? 0 : 1, borderColor: T.line }}
+    >
       <Text style={{ fontSize: 16, fontWeight: '600', color: active ? T.onColor : tone === 'blue' ? T.blue : T.sub }}>{children}</Text>
     </Pressable>
   );
 }
 
 // ── 스테퍼 ────────────────────────────────────────────────────
-export function Stepper({ value, unit, onChange }: { value: number; unit?: string; onChange?: (v: number) => void }) {
-  const btn = (ic: IconName, delta: number) => (
-    <Pressable onPress={() => onChange?.(value + delta)} style={{ width: 34, height: 34, borderRadius: 9, backgroundColor: T.line2, alignItems: 'center', justifyContent: 'center' }}>
+export function Stepper({ value, unit, onChange, label }: { value: number; unit?: string; onChange?: (v: number) => void; label?: string }) {
+  // 34×34 버튼이라 hitSlop 5 를 더해 최소 44×44 터치 영역을 채운다(가이드 §9.6-1·2).
+  // 아이콘만 있으므로 무엇이 늘고 주는지 라벨로 알린다.
+  const btn = (ic: IconName, delta: number, action: string) => (
+    <Pressable
+      onPress={() => onChange?.(value + delta)}
+      accessibilityRole="button"
+      accessibilityLabel={label ? `${label} ${action}` : action}
+      hitSlop={5}
+      style={{ width: 34, height: 34, borderRadius: 9, backgroundColor: T.line2, alignItems: 'center', justifyContent: 'center' }}
+    >
       <Icon name={ic} size={18} color={T.sub} sw={2.2} />
     </Pressable>
   );
   return (
-    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-      {btn('minus', -1)}
+    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }} accessibilityRole="adjustable" accessibilityValue={{ now: value, text: `${value}${unit ?? ''}` }}>
+      {btn('minus', -1, '줄이기')}
       <View style={{ minWidth: 56, alignItems: 'center', flexDirection: 'row', justifyContent: 'center' }}>
         <Text style={[{ fontSize: 18, fontWeight: '800', color: T.ink }, NUM]}>{value}</Text>
         {unit ? <Text style={{ fontSize: 16, fontWeight: '600', color: T.sub2, marginLeft: 1 }}>{unit}</Text> : null}
       </View>
-      {btn('plus', 1)}
+      {btn('plus', 1, '늘리기')}
     </View>
   );
 }
@@ -142,7 +222,12 @@ export function Stepper({ value, unit, onChange }: { value: number; unit?: strin
 // ── FAB ───────────────────────────────────────────────────────
 export function FAB({ label = '추가', icon = 'plus', bottom = 24, onPress }: { label?: string; icon?: IconName; bottom?: number; onPress?: () => void }) {
   return (
-    <Pressable onPress={onPress} style={{ position: 'absolute', right: 18, bottom, zIndex: 30, flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: T.blue, paddingVertical: 14, paddingLeft: 15, paddingRight: 18, borderRadius: 999, shadowColor: T.blue, shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.45, shadowRadius: 20, elevation: 6 }}>
+    <Pressable
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      style={{ position: 'absolute', right: 18, bottom, zIndex: 30, flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: T.blue, paddingVertical: 14, paddingLeft: 15, paddingRight: 18, borderRadius: 999, shadowColor: T.blue, shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.45, shadowRadius: 20, elevation: 6 }}
+    >
       <Icon name={icon} size={22} color={T.onColor} sw={2.4} />
       <Text style={{ color: T.onColor, fontWeight: '700', fontSize: 16 }}>{label}</Text>
     </Pressable>
@@ -150,7 +235,12 @@ export function FAB({ label = '추가', icon = 'plus', bottom = 24, onPress }: {
 }
 
 // ── 폼 필드 ───────────────────────────────────────────────────
-export function Field({ label, children, hint, req, right }: { label: string; children: ReactNode; hint?: string; req?: boolean; right?: ReactNode }) {
+/**
+ * Field — 라벨 + 입력 + 안내/오류. 오류 메시지는 **필드 가까이** 둔다(가이드 §9.10-7).
+ * `error` 가 있으면 hint 대신 오류를 보여준다. 둘을 동시에 띄우면 무엇을 고쳐야 하는지 흐려진다.
+ * 오류는 색뿐 아니라 텍스트로도 전달된다(§9.12-3) — 색각 이상에서도 읽혀야 한다.
+ */
+export function Field({ label, children, hint, req, right, error }: { label: string; children: ReactNode; hint?: string; req?: boolean; right?: ReactNode; error?: string }) {
   return (
     <View style={{ marginBottom: 18 }}>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5, marginBottom: 8 }}>
@@ -161,7 +251,11 @@ export function Field({ label, children, hint, req, right }: { label: string; ch
         {right}
       </View>
       {children}
-      {hint ? <Text style={{ fontSize: 16, color: T.ter, marginTop: 6, lineHeight: 17 }}>{hint}</Text> : null}
+      {error ? (
+        <Text accessibilityRole="alert" style={{ fontSize: 16, color: T.red, marginTop: 6, lineHeight: 20, fontWeight: '600' }}>{error}</Text>
+      ) : hint ? (
+        <Text style={{ fontSize: 16, color: T.ter, marginTop: 6, lineHeight: 17 }}>{hint}</Text>
+      ) : null}
     </View>
   );
 }
@@ -169,19 +263,61 @@ export function Field({ label, children, hint, req, right }: { label: string; ch
 // `mono` prop 유지(호출부 호환)하되 tabular-nums는 적용하지 않음.
 // Pretendard 미번들 환경에서 tabular-nums가 숫자를 작고 얇은 대체 글꼴로 렌더 → 한글 라벨과 크기·굵기 불일치.
 // 입력칸은 값이 하나뿐이라 자릿수 정렬이 필요 없으므로 한글과 동일 글꼴로 렌더한다.
-export function Input({ value, placeholder, suffix, prefix, mono: _mono, right, onChangeText, keyboardType }: { value?: string; placeholder?: string; suffix?: string; prefix?: string; mono?: boolean; right?: ReactNode; onChangeText?: (t: string) => void; keyboardType?: KeyboardTypeOptions }) {
+export function Input({
+  value, placeholder, suffix, prefix, mono: _mono, right, onChangeText, keyboardType,
+  error = false, disabled = false, accessibilityLabel, onBlur, onFocus, maxLength, returnKeyType, onSubmitEditing,
+}: {
+  value?: string;
+  placeholder?: string;
+  suffix?: string;
+  prefix?: string;
+  mono?: boolean;
+  right?: ReactNode;
+  onChangeText?: (t: string) => void;
+  keyboardType?: KeyboardTypeOptions;
+  /** 검증 실패 상태. 테두리를 붉게 바꾼다. 메시지는 Field 의 `error` 로 함께 전달할 것. */
+  error?: boolean;
+  /** 입력 불가. 편집이 차단되고 접근성 state 로도 전달된다. */
+  disabled?: boolean;
+  /** 라벨이 시각적으로만 붙어 있을 때 스크린리더가 읽을 이름. */
+  accessibilityLabel?: string;
+  onBlur?: () => void;
+  onFocus?: () => void;
+  maxLength?: number;
+  returnKeyType?: TextInputProps['returnKeyType'];
+  onSubmitEditing?: () => void;
+}) {
   const empty = value == null || value === '';
+  const [focused, setFocused] = useState(false);
+  // 상태 우선순위: 오류 > 포커스 > 기본. 오류를 포커스가 가리면 사용자가 원인을 못 찾는다.
+  const borderColor = error ? T.red : focused ? T.blue : T.line;
   return (
-    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: T.surface, borderWidth: 1, borderColor: T.line, borderRadius: 12, paddingVertical: 13, paddingHorizontal: 14 }}>
+    <View
+      style={{
+        flexDirection: 'row', alignItems: 'center', gap: 8,
+        backgroundColor: disabled ? T.surface2 : T.surface,
+        borderWidth: error || focused ? 1.5 : 1,
+        borderColor,
+        borderRadius: 12, paddingVertical: 13, paddingHorizontal: 14,
+      }}
+    >
       {prefix ? <Text style={{ fontSize: 16, color: T.ter, fontWeight: '600' }}>{prefix}</Text> : null}
       {onChangeText ? (
         <TextInput
-          style={{ flex: 1, minWidth: 0, fontSize: 16, fontWeight: '600', color: T.ink, padding: 0 }}
+          style={{ flex: 1, minWidth: 0, fontSize: 16, fontWeight: '600', color: disabled ? T.ter : T.ink, padding: 0 }}
           value={value}
           placeholder={placeholder}
           placeholderTextColor={T.ter}
           onChangeText={onChangeText}
           keyboardType={keyboardType}
+          editable={!disabled}
+          maxLength={maxLength}
+          returnKeyType={returnKeyType}
+          onSubmitEditing={onSubmitEditing}
+          accessibilityLabel={accessibilityLabel}
+          accessibilityState={{ disabled }}
+          onFocus={() => { setFocused(true); onFocus?.(); }}
+          onBlur={() => { setFocused(false); onBlur?.(); }}
         />
       ) : (
         <Text numberOfLines={1} style={{ flex: 1, minWidth: 0, fontSize: 16, fontWeight: '600', color: empty ? T.ter : T.ink }}>{empty ? placeholder : value}</Text>

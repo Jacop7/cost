@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git -C \"c:/Users/jacop/project/jyshin/식자재관리앱\" remote -v)"
+    ]
+  }
+}

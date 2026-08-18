@@ -1,5 +1,6 @@
 // demoData.ts — 식재료(잔여) 정적 데모 데이터 (data.jsx에서 이식)
 // 추후 Supabase rpc.* + react-query 무효화로 교체 예정.
+import { formatQuantity } from '@sikjae/core';
 import type {
   Ingredient,
   PurchaseOption,
@@ -181,9 +182,11 @@ export const DEMO_INGREDIENTS: IngCardData[] = ingredients.map((g) => ({
   memo: g.memo,
 }));
 
-/** 개당 용량 라벨 — 프로토타입 카드 로직(g·ml·개). */
+/**
+ * 개당 용량 라벨 — 규칙은 `@sikjae/core` formatQuantity 단일 출처.
+ * 이 값은 **상품 스펙**이라 반올림하면 다른 상품이 된다(1.234kg 들이 ≠ 1.2kg 들이).
+ * 그래서 재고 잔량(`fmtStock`, 소수 1자리)과 달리 소수 3자리로 1g 단위까지 정확히 표기한다.
+ */
 export function perLabel(unit: '개' | 'g' | 'ml', per: number): string {
-  if (unit === '개') return `${per}개`;
-  if (per >= 1000) return `${per / 1000}${unit === 'ml' ? 'L' : 'kg'}`;
-  return `${per}${unit}`;
+  return formatQuantity(per, unit, { maxDigits: 3 });
 }

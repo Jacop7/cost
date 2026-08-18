@@ -3,6 +3,8 @@
  * Toss/Cashnote 스타일: primary=블루, 순이익·충분=초록, 부족=앰버, 소진임박=레드, 비용=그레이.
  */
 
+import { formatNumber, getLocale } from '@sikjae/core';
+
 export const T = {
   // surfaces
   bg: '#F2F4F6',
@@ -89,6 +91,18 @@ export const cardShadow = {
   elevation: 1,
 } as const;
 
-/** 원화 포맷 (kit won). */
-export const won = (n: number): string =>
-  (n < 0 ? '-' : '') + Math.abs(Math.round(n)).toLocaleString('ko-KR');
+/**
+ * 금액 표기 (kit won) — 통화기호 없이 숫자만. 호출부가 뒤에 '원'을 붙인다.
+ *
+ * 서식 규칙은 `@sikjae/core` locale.ts 단일 출처를 쓴다. `toLocaleString('ko-KR')` 은
+ * Hermes 의 Intl 구현에 의존해 기기마다 결과가 달라질 수 있는데, 금액은 기기와 무관해야 한다.
+ *
+ * ⚠ 지금은 **'ko' 고정**이다. 언어·통화 설정(MY-08)의 선택값을 여기 연결하면 앱 전체 금액 표기가
+ *   바뀌지만, 실제 언어 전환은 아직 활성화하지 않기로 했으므로 연결하지 않는다.
+ *   연결 시점에는 화면 재렌더 경로(스토어 구독)도 함께 설계해야 한다 — 모듈 값만 바꾸면 이미 그려진
+ *   화면이 갱신되지 않는다.
+ */
+export const won = (n: number): string => {
+  const L = getLocale('ko');
+  return formatNumber(n, { digits: L.moneyDigits, group: L.group, decimal: L.decimal });
+};

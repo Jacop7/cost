@@ -8,7 +8,7 @@ import { useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Badge, Card, Chip, FAB, Icon, ScrollTabs, Sheet } from '@/components/kit';
+import { Badge, Card, Chip, FAB, Icon, ScrollTabs, SearchBar, Sheet } from '@/components/kit';
 import { T, won } from '@/theme/tokens';
 import { DEMO_RECIPES, pct, RecipeCardData, recipeProfit } from '../demoData';
 
@@ -16,6 +16,14 @@ const NUM = { fontVariant: ['tabular-nums' as const] };
 
 // 레시피 카테고리 (RCP-01 상단 스크롤 탭) — 데모: 시각 선택만.
 const CATS = ['전체', '찌개·전골', '덮밥·볶음밥', '볶음', '구이', '튀김', '면류', '분식', '사이드', '음료'];
+
+/** 검색어 매칭 — 메뉴명·카테고리. 공백은 무시해 "제육 볶음"도 찾히게 한다. */
+const squash = (s: string) => s.replace(/\s+/g, '').toLowerCase();
+function matchesQuery(r: RecipeCardData, q: string): boolean {
+  const n = squash(q);
+  if (n === '') return true;
+  return squash(r.name).includes(n) || squash(r.cat ?? '').includes(n);
+}
 
 type SortKey = 'rateLow' | 'rateHigh' | 'priceHigh' | 'priceLow';
 const SORTS: { key: SortKey; label: string }[] = [
@@ -95,11 +103,17 @@ export default function RecipesListScreen() {
   const [targetFilter, setTargetFilter] = useState<TargetKey>('all');
   const [targetOpen, setTargetOpen] = useState(false);
   const [cat, setCat] = useState(0);
+  const [searching, setSearching] = useState(false);
+  const [query, setQuery] = useState('');
 
-  // 판매 상태 + 목표 필터.
+  // 카테고리 + 판매 상태 + 목표 + 검색어.
+  // (카테고리 탭은 state 만 있고 실제 필터에 쓰이지 않아 장식이었다 — 여기서 연결한다.)
+  const selCat = CATS[cat] ?? '전체';
   const filtered = DEMO_RECIPES.filter((r) => {
+    if (cat !== 0 && r.cat !== selCat) return false;
     if (statusFilter !== 'all' && r.status !== statusFilter) return false;
     if (targetFilter !== 'all' && recipeProfit(r).belowTarget !== (targetFilter === 'below')) return false;
+    if (!matchesQuery(r, query)) return false;
     return true;
   });
   const statusLabel = statusFilter === 'all' ? '판매상태' : STATUS_OPTS.find((s) => s.key === statusFilter)!.label;
@@ -131,10 +145,24 @@ export default function RecipesListScreen() {
       <View style={{ paddingTop: insets.top, backgroundColor: T.bg }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 20, paddingRight: 12, paddingTop: 6, paddingBottom: 12 }}>
           <Text style={{ flex: 1, fontSize: 22, fontWeight: '800', color: T.ink, letterSpacing: -0.6 }}>레시피</Text>
-          <Pressable style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}>
-            <Icon name="search" size={23} color={T.ink2} />
+          <Pressable
+            onPress={() => setSearching((v) => !v)}
+            accessibilityRole="button"
+            accessibilityLabel="검색"
+            accessibilityState={{ selected: searching }}
+            style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}
+          >
+            <Icon name="search" size={23} color={searching ? T.blue : T.ink2} />
           </Pressable>
         </View>
+        {searching ? (
+          <SearchBar
+            value={query}
+            onChange={setQuery}
+            placeholder="메뉴명·카테고리 검색"
+            onClose={() => { setSearching(false); setQuery(''); }}
+          />
+        ) : null}
       </View>
 
       {/* 카테고리 스크롤 탭 + 편집 진입 */}
@@ -142,7 +170,7 @@ export default function RecipesListScreen() {
         <View style={{ flex: 1, minWidth: 0 }}>
           <ScrollTabs tabs={CATS} active={cat} onChange={setCat} />
         </View>
-        <Pressable onPress={() => router.push('/recipes/category' as Href)} hitSlop={6} style={{ paddingLeft: 12, paddingRight: 16, paddingBottom: 11 }}>
+        <Pressable onPress={() => router.push('/recipes/category' as Href)} hitSlop={6} style={{ paddingLeft: 12, paddingRight: 16, paddingBottom: 11 }} accessibilityRole="button" accessibilityLabel="카테고리 설정">
           <Icon name="edit" size={18} color={T.ter} sw={2} />
         </Pressable>
       </View>
@@ -158,7 +186,9 @@ export default function RecipesListScreen() {
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 104, gap: 10, flexGrow: 1 }}>
         {sorted.length === 0 ? (
           <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingVertical: 80 }}>
-            <Text style={{ fontSize: 16, color: T.ter }}>등록된 메뉴가 없습니다.</Text>
+            <Text style={{ fontSize: 16, color: T.ter }}>
+              {query.trim() !== '' ? `'${query.trim()}' 검색 결과가 없어요` : '조건에 맞는 메뉴가 없어요'}
+            </Text>
           </View>
         ) : (
           <>

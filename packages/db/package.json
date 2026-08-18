@@ -2,6 +2,8 @@
   "name": "@sikjae/db",
   "version": "0.1.0",
   "private": true,
+  "main": "./src/database.types.ts",
+  "types": "./src/database.types.ts",
   "scripts": {
     "start": "supabase start",
     "stop": "supabase stop",

@@ -58,10 +58,10 @@ export default function MaterialCategoryScreen() {
                   <>
                     <Icon name="grip" size={20} color={T.line3} />
                     <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.ink }}>{c}</Text>
-                    <Pressable onPress={() => startEdit(i)} hitSlop={4} style={{ width: 34, height: 34, alignItems: 'center', justifyContent: 'center' }}>
+                    <Pressable onPress={() => startEdit(i)} hitSlop={4} style={{ width: 34, height: 34, alignItems: 'center', justifyContent: 'center' }} accessibilityRole="button" accessibilityLabel="카테고리 수정">
                       <Icon name="edit" size={18} color={T.ter} sw={2} />
                     </Pressable>
-                    <Pressable onPress={() => remove(i)} hitSlop={4} style={{ width: 34, height: 34, alignItems: 'center', justifyContent: 'center' }}>
+                    <Pressable onPress={() => remove(i)} hitSlop={4} style={{ width: 34, height: 34, alignItems: 'center', justifyContent: 'center' }} accessibilityRole="button" accessibilityLabel="카테고리 삭제">
                       <Icon name="close" size={19} color={T.ter} />
                     </Pressable>
                   </>

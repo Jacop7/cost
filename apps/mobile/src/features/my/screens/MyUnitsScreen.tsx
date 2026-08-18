@@ -169,10 +169,10 @@ export default function MyUnitsScreen() {
                   <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>{u.name}</Text>
                   <Text style={{ fontSize: 14, color: T.sub2, marginTop: 3, fontWeight: '600' }}>{u.per}{u.base}들이</Text>
                 </View>
-                <Pressable onPress={() => openEdit(i)} hitSlop={4} style={{ width: 34, height: 34, alignItems: 'center', justifyContent: 'center' }}>
+                <Pressable onPress={() => openEdit(i)} hitSlop={4} style={{ width: 34, height: 34, alignItems: 'center', justifyContent: 'center' }} accessibilityRole="button" accessibilityLabel="묶음 단위 수정">
                   <Icon name="edit" size={18} color={T.ter} sw={2} />
                 </Pressable>
-                <Pressable onPress={() => removePkg(i)} hitSlop={4} style={{ width: 34, height: 34, alignItems: 'center', justifyContent: 'center' }}>
+                <Pressable onPress={() => removePkg(i)} hitSlop={4} style={{ width: 34, height: 34, alignItems: 'center', justifyContent: 'center' }} accessibilityRole="button" accessibilityLabel="묶음 단위 삭제">
                   <Icon name="close" size={19} color={T.ter} />
                 </Pressable>
               </View>

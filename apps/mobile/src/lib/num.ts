@@ -20,3 +20,10 @@ export function clampDecimals(text: string, decimals: number): string {
 
 /** 단위 기준으로 소수점 정리. */
 export const clampByUnit = (text: string, unit: string): string => clampDecimals(text, unitDecimals(unit));
+
+/**
+ * 산출 불가(null)를 화면 표기로 바꾼다.
+ * `@sikjae/core` 의 단가 계산은 용량 0·로스율 100% 이상 같은 경계에서 null 을 돌려준다(불변식 6).
+ * 이때 0 으로 그리면 "0원 단가"라는 거짓 정보가 되므로 '-' 로 비워 둔다.
+ */
+export const dash = (v: number | null | undefined): string => (v == null ? '-' : String(v));

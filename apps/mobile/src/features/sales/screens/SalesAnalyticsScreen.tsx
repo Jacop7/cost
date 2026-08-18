@@ -58,7 +58,7 @@ export default function SalesAnalyticsScreen() {
         title="매출 분석"
         onBack={() => safeBack('/sales' as Href)}
         right={
-          <Pressable hitSlop={6} style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}>
+          <Pressable hitSlop={6} style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }} accessibilityRole="button" accessibilityLabel="내보내기">
             <Icon name="download" size={22} color={T.ink2} />
           </Pressable>
         }
