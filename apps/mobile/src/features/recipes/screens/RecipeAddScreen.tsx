@@ -31,7 +31,7 @@ function SecHead({ title, sub }: { title: string; sub?: string }) {
 // 필드 우측 정보(?) 버튼.
 function InfoBtn({ active, onPress }: { active: boolean; onPress: () => void }) {
   return (
-    <Pressable onPress={onPress} hitSlop={6} style={{ padding: 2 }}>
+    <Pressable onPress={onPress} hitSlop={6} style={{ padding: 2 }} accessibilityRole="button" accessibilityLabel="설명 보기">
       <Icon name="info" size={14} color={active ? T.blue : T.ter} />
     </Pressable>
   );
@@ -105,7 +105,7 @@ export default function RecipeAddScreen() {
           <View style={{ flexDirection: 'row', gap: 10 }}>
             <View style={{ flex: 1 }}>
               <Field label="월 평균 판매량" right={<InfoBtn active={info === 'sales'} onPress={() => setInfo((v) => (v === 'sales' ? null : 'sales'))} />}>
-                <Pressable onPress={() => router.push('/recipes/avg-sales' as Href)}>
+                <Pressable onPress={() => router.push('/recipes/avg-sales' as Href)} accessibilityRole="button" accessibilityLabel="사용량 입력">
                   <Input value="300" suffix="개" mono right={<Icon name="chevron" size={16} color={T.line3} />} />
                 </Pressable>
               </Field>
@@ -170,7 +170,7 @@ export default function RecipeAddScreen() {
                   <Text style={[{ fontSize: 14, color: T.ter, marginTop: 2 }, NUM]}>개당 {won(e.amount)}원</Text>
                 </View>
                 <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{won(e.amount * cm)}원</Text>
-                <Pressable onPress={() => removeExtra(i)} hitSlop={6} style={{ width: 28, alignItems: 'flex-end' }}>
+                <Pressable onPress={() => removeExtra(i)} hitSlop={6} style={{ width: 28, alignItems: 'flex-end' }} accessibilityRole="button" accessibilityLabel="추가 지출 삭제">
                   <Icon name="close" size={18} color={T.ter} />
                 </Pressable>
               </View>
@@ -206,7 +206,7 @@ export default function RecipeAddScreen() {
                 <Text style={[{ fontSize: 14, fontWeight: '700', color: T.sub2, marginTop: 2 }, NUM]}>{pct(R.fixedRate)}%</Text>
               </View>
             </View>
-            <Text style={{ fontSize: 14, color: T.ter, lineHeight: 20, marginTop: 10 }}>월 고정비(임대료·인건비 등)를 메뉴 1개당 얼마씩 부담해야 하는지 판매량 기준으로 나누어 계산한 금액입니다.</Text>
+            <Text style={{ fontSize: 14, color: T.ter, lineHeight: 20, marginTop: 10 }}>월 고정비(임대료·인건비 등)를 메뉴 1개당 얼마씩 부담해야 하는지 판매량 기준으로 나눠 계산한 금액이에요.</Text>
           </View>
           <Pressable onPress={() => router.push('/recipes/fixed-cost' as Href)} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 2, paddingVertical: 13, borderTopWidth: 1, borderTopColor: T.line2, backgroundColor: T.surface2 }}>
             <Text style={{ fontSize: 16, fontWeight: '700', color: T.sub }}>자세히 보기</Text>

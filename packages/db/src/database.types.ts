@@ -1,8 +1,1643 @@
-/**
- * 자동 생성 자리표시자. 로컬 Supabase 기동 후 실제 타입을 생성한다:
- *
- *   pnpm db:types     # supabase gen types typescript --local > src/database.types.ts
- *
- * 생성 전까지는 앱에서 @sikjae/types 의 도메인 타입을 사용.
- */
-export type Database = unknown;
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[]
+
+export type Database = {
+  public: {
+    Tables: {
+      brands: {
+        Row: {
+          hidden: boolean
+          id: string
+          name: string
+          store_id: string
+        }
+        Insert: {
+          hidden?: boolean
+          id?: string
+          name: string
+          store_id: string
+        }
+        Update: {
+          hidden?: boolean
+          id?: string
+          name?: string
+          store_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "brands_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      categories: {
+        Row: {
+          created_at: string
+          default_loss_rate: number
+          id: string
+          name: string
+          sort_order: number
+          store_id: string
+        }
+        Insert: {
+          created_at?: string
+          default_loss_rate?: number
+          id?: string
+          name: string
+          sort_order?: number
+          store_id: string
+        }
+        Update: {
+          created_at?: string
+          default_loss_rate?: number
+          id?: string
+          name?: string
+          sort_order?: number
+          store_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "categories_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      daily_sales: {
+        Row: {
+          created_at: string
+          daily_extra: number
+          etc_revenue: number
+          id: string
+          note: string | null
+          sale_date: string
+          store_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          daily_extra?: number
+          etc_revenue?: number
+          id?: string
+          note?: string | null
+          sale_date: string
+          store_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          daily_extra?: number
+          etc_revenue?: number
+          id?: string
+          note?: string | null
+          sale_date?: string
+          store_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "daily_sales_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      daily_sales_items: {
+        Row: {
+          created_at: string
+          daily_sales_id: string
+          id: string
+          menu_name: string
+          qty_delivery: number
+          qty_hall: number
+          qty_takeout: number
+          recipe_id: string | null
+          store_id: string
+          tax_mode: Database["public"]["Enums"]["tax_mode"] | null
+          unit_extra_cost: number | null
+          unit_material_cost: number | null
+          unit_price: number
+        }
+        Insert: {
+          created_at?: string
+          daily_sales_id: string
+          id?: string
+          menu_name: string
+          qty_delivery?: number
+          qty_hall?: number
+          qty_takeout?: number
+          recipe_id?: string | null
+          store_id: string
+          tax_mode?: Database["public"]["Enums"]["tax_mode"] | null
+          unit_extra_cost?: number | null
+          unit_material_cost?: number | null
+          unit_price: number
+        }
+        Update: {
+          created_at?: string
+          daily_sales_id?: string
+          id?: string
+          menu_name?: string
+          qty_delivery?: number
+          qty_hall?: number
+          qty_takeout?: number
+          recipe_id?: string | null
+          store_id?: string
+          tax_mode?: Database["public"]["Enums"]["tax_mode"] | null
+          unit_extra_cost?: number | null
+          unit_material_cost?: number | null
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "daily_sales_items_daily_sales_id_fkey"
+            columns: ["daily_sales_id"]
+            isOneToOne: false
+            referencedRelation: "daily_sales"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "daily_sales_items_recipe_id_fk"
+            columns: ["recipe_id"]
+            isOneToOne: false
+            referencedRelation: "recipes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "daily_sales_items_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fixed_costs_monthly: {
+        Row: {
+          id: string
+          items: Json
+          month: string
+          store_id: string
+          total_revenue: number
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          items?: Json
+          month: string
+          store_id: string
+          total_revenue?: number
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          items?: Json
+          month?: string
+          store_id?: string
+          total_revenue?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fixed_costs_monthly_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ingredients: {
+        Row: {
+          active: boolean
+          base_unit: Database["public"]["Enums"]["base_unit"]
+          category_id: string | null
+          created_at: string
+          default_vendor_id: string | null
+          id: string
+          loss_rate: number
+          memo: string | null
+          min_order_qty: number
+          name: string
+          per_volume: number
+          purchase_unit_label: string | null
+          safety_stock: number
+          store_id: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          base_unit: Database["public"]["Enums"]["base_unit"]
+          category_id?: string | null
+          created_at?: string
+          default_vendor_id?: string | null
+          id?: string
+          loss_rate?: number
+          memo?: string | null
+          min_order_qty?: number
+          name: string
+          per_volume: number
+          purchase_unit_label?: string | null
+          safety_stock?: number
+          store_id: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          base_unit?: Database["public"]["Enums"]["base_unit"]
+          category_id?: string | null
+          created_at?: string
+          default_vendor_id?: string | null
+          id?: string
+          loss_rate?: number
+          memo?: string | null
+          min_order_qty?: number
+          name?: string
+          per_volume?: number
+          purchase_unit_label?: string | null
+          safety_stock?: number
+          store_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ingredients_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ingredients_default_vendor_id_fkey"
+            columns: ["default_vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ingredients_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      inventory_events: {
+        Row: {
+          count_delta: number | null
+          id: string
+          idempotency_key: string | null
+          ingredient_id: string
+          note: string | null
+          occurred_at: string
+          order_record_id: string | null
+          sales_item_id: string | null
+          store_id: string
+          type: Database["public"]["Enums"]["inventory_event_type"]
+          volume_delta: number | null
+        }
+        Insert: {
+          count_delta?: number | null
+          id?: string
+          idempotency_key?: string | null
+          ingredient_id: string
+          note?: string | null
+          occurred_at?: string
+          order_record_id?: string | null
+          sales_item_id?: string | null
+          store_id: string
+          type: Database["public"]["Enums"]["inventory_event_type"]
+          volume_delta?: number | null
+        }
+        Update: {
+          count_delta?: number | null
+          id?: string
+          idempotency_key?: string | null
+          ingredient_id?: string
+          note?: string | null
+          occurred_at?: string
+          order_record_id?: string | null
+          sales_item_id?: string | null
+          store_id?: string
+          type?: Database["public"]["Enums"]["inventory_event_type"]
+          volume_delta?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventory_events_ingredient_id_fk"
+            columns: ["ingredient_id"]
+            isOneToOne: false
+            referencedRelation: "ingredients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_events_order_fk"
+            columns: ["order_record_id"]
+            isOneToOne: false
+            referencedRelation: "order_records"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_events_sales_item_id_fk"
+            columns: ["sales_item_id"]
+            isOneToOne: false
+            referencedRelation: "daily_sales_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_events_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      inventory_states: {
+        Row: {
+          ingredient_id: string
+          last_inbound_at: string | null
+          opened_count: number
+          opened_remain: number | null
+          sealed_count: number
+          soon_out: boolean
+          store_id: string
+          updated_at: string
+        }
+        Insert: {
+          ingredient_id: string
+          last_inbound_at?: string | null
+          opened_count?: number
+          opened_remain?: number | null
+          sealed_count?: number
+          soon_out?: boolean
+          store_id: string
+          updated_at?: string
+        }
+        Update: {
+          ingredient_id?: string
+          last_inbound_at?: string | null
+          opened_count?: number
+          opened_remain?: number | null
+          sealed_count?: number
+          soon_out?: boolean
+          store_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventory_states_ingredient_id_fkey"
+            columns: ["ingredient_id"]
+            isOneToOne: true
+            referencedRelation: "ingredients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_states_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      monthly_pl: {
+        Row: {
+          fixed_cost: number
+          material_cost: number
+          month: string
+          profit: number
+          profit_rate: number
+          revenue: number
+          store_id: string
+          updated_at: string
+        }
+        Insert: {
+          fixed_cost?: number
+          material_cost?: number
+          month: string
+          profit?: number
+          profit_rate?: number
+          revenue?: number
+          store_id: string
+          updated_at?: string
+        }
+        Update: {
+          fixed_cost?: number
+          material_cost?: number
+          month?: string
+          profit?: number
+          profit_rate?: number
+          revenue?: number
+          store_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "monthly_pl_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      order_candidates: {
+        Row: {
+          id: string
+          ingredient_id: string
+          reasons: Database["public"]["Enums"]["candidate_reason"][]
+          recommended_qty: number
+          status: Database["public"]["Enums"]["candidate_status"]
+          store_id: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          ingredient_id: string
+          reasons?: Database["public"]["Enums"]["candidate_reason"][]
+          recommended_qty?: number
+          status?: Database["public"]["Enums"]["candidate_status"]
+          store_id: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          ingredient_id?: string
+          reasons?: Database["public"]["Enums"]["candidate_reason"][]
+          recommended_qty?: number
+          status?: Database["public"]["Enums"]["candidate_status"]
+          store_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_candidates_ingredient_id_fkey"
+            columns: ["ingredient_id"]
+            isOneToOne: false
+            referencedRelation: "ingredients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_candidates_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      order_records: {
+        Row: {
+          amount: number
+          brand_id: string | null
+          created_at: string
+          expected_at: string | null
+          id: string
+          ingredient_id: string
+          ordered_at: string
+          qty: number
+          received_qty: number
+          source: Database["public"]["Enums"]["order_source"]
+          status: Database["public"]["Enums"]["order_status"]
+          store_id: string
+          vendor_id: string | null
+          volume: number
+        }
+        Insert: {
+          amount: number
+          brand_id?: string | null
+          created_at?: string
+          expected_at?: string | null
+          id?: string
+          ingredient_id: string
+          ordered_at?: string
+          qty: number
+          received_qty?: number
+          source?: Database["public"]["Enums"]["order_source"]
+          status?: Database["public"]["Enums"]["order_status"]
+          store_id: string
+          vendor_id?: string | null
+          volume: number
+        }
+        Update: {
+          amount?: number
+          brand_id?: string | null
+          created_at?: string
+          expected_at?: string | null
+          id?: string
+          ingredient_id?: string
+          ordered_at?: string
+          qty?: number
+          received_qty?: number
+          source?: Database["public"]["Enums"]["order_source"]
+          status?: Database["public"]["Enums"]["order_status"]
+          store_id?: string
+          vendor_id?: string | null
+          volume?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_records_brand_id_fkey"
+            columns: ["brand_id"]
+            isOneToOne: false
+            referencedRelation: "brands"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_records_ingredient_id_fk"
+            columns: ["ingredient_id"]
+            isOneToOne: false
+            referencedRelation: "ingredients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_records_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_records_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      price_trends: {
+        Row: {
+          created_at: string
+          id: string
+          ingredient_id: string
+          order_record_id: string | null
+          store_id: string
+          trend_date: string
+          unit_price: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          ingredient_id: string
+          order_record_id?: string | null
+          store_id: string
+          trend_date: string
+          unit_price: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          ingredient_id?: string
+          order_record_id?: string | null
+          store_id?: string
+          trend_date?: string
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "price_trends_ingredient_id_fk"
+            columns: ["ingredient_id"]
+            isOneToOne: false
+            referencedRelation: "ingredients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "price_trends_order_record_id_fkey"
+            columns: ["order_record_id"]
+            isOneToOne: false
+            referencedRelation: "order_records"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "price_trends_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profit_trends: {
+        Row: {
+          cause: Database["public"]["Enums"]["trend_cause"]
+          created_at: string
+          id: string
+          material_rate: number
+          profit_rate: number
+          recipe_id: string
+          store_id: string
+          trend_date: string
+        }
+        Insert: {
+          cause: Database["public"]["Enums"]["trend_cause"]
+          created_at?: string
+          id?: string
+          material_rate: number
+          profit_rate: number
+          recipe_id: string
+          store_id: string
+          trend_date: string
+        }
+        Update: {
+          cause?: Database["public"]["Enums"]["trend_cause"]
+          created_at?: string
+          id?: string
+          material_rate?: number
+          profit_rate?: number
+          recipe_id?: string
+          store_id?: string
+          trend_date?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profit_trends_recipe_id_fk"
+            columns: ["recipe_id"]
+            isOneToOne: false
+            referencedRelation: "recipes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profit_trends_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      purchase_options: {
+        Row: {
+          amount: number
+          brand_id: string | null
+          created_at: string
+          hidden: boolean
+          id: string
+          ingredient_id: string
+          purchase_name: string
+          store_id: string
+          url: string | null
+          vendor_id: string | null
+          volume: number
+        }
+        Insert: {
+          amount: number
+          brand_id?: string | null
+          created_at?: string
+          hidden?: boolean
+          id?: string
+          ingredient_id: string
+          purchase_name: string
+          store_id: string
+          url?: string | null
+          vendor_id?: string | null
+          volume: number
+        }
+        Update: {
+          amount?: number
+          brand_id?: string | null
+          created_at?: string
+          hidden?: boolean
+          id?: string
+          ingredient_id?: string
+          purchase_name?: string
+          store_id?: string
+          url?: string | null
+          vendor_id?: string | null
+          volume?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchase_options_brand_id_fkey"
+            columns: ["brand_id"]
+            isOneToOne: false
+            referencedRelation: "brands"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchase_options_ingredient_id_fk"
+            columns: ["ingredient_id"]
+            isOneToOne: false
+            referencedRelation: "ingredients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchase_options_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchase_options_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      recipe_calc_runs: {
+        Row: {
+          id: string
+          items: Json
+          period_from: string
+          period_to: string
+          ran_at: string
+          result: Json
+          store_id: string
+        }
+        Insert: {
+          id?: string
+          items: Json
+          period_from: string
+          period_to: string
+          ran_at?: string
+          result: Json
+          store_id: string
+        }
+        Update: {
+          id?: string
+          items?: Json
+          period_from?: string
+          period_to?: string
+          ran_at?: string
+          result?: Json
+          store_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recipe_calc_runs_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      recipe_extra_costs: {
+        Row: {
+          amount_per_serving: number
+          id: string
+          name: string
+          recipe_id: string
+          store_id: string
+        }
+        Insert: {
+          amount_per_serving?: number
+          id?: string
+          name: string
+          recipe_id: string
+          store_id: string
+        }
+        Update: {
+          amount_per_serving?: number
+          id?: string
+          name?: string
+          recipe_id?: string
+          store_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recipe_extra_costs_recipe_id_fkey"
+            columns: ["recipe_id"]
+            isOneToOne: false
+            referencedRelation: "recipes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "recipe_extra_costs_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      recipe_lines: {
+        Row: {
+          id: string
+          ingredient_id: string | null
+          input_qty: number
+          recipe_id: string
+          store_id: string
+          sub_recipe_id: string | null
+        }
+        Insert: {
+          id?: string
+          ingredient_id?: string | null
+          input_qty: number
+          recipe_id: string
+          store_id: string
+          sub_recipe_id?: string | null
+        }
+        Update: {
+          id?: string
+          ingredient_id?: string | null
+          input_qty?: number
+          recipe_id?: string
+          store_id?: string
+          sub_recipe_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recipe_lines_ingredient_id_fkey"
+            columns: ["ingredient_id"]
+            isOneToOne: false
+            referencedRelation: "ingredients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "recipe_lines_recipe_id_fkey"
+            columns: ["recipe_id"]
+            isOneToOne: false
+            referencedRelation: "recipes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "recipe_lines_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "recipe_lines_sub_recipe_id_fkey"
+            columns: ["sub_recipe_id"]
+            isOneToOne: false
+            referencedRelation: "recipes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      recipes: {
+        Row: {
+          active: boolean
+          avg_monthly_sales: number | null
+          base_servings: number
+          created_at: string
+          id: string
+          name: string
+          price: number
+          store_id: string
+          target_profit_rate: number
+          tax_items: string[]
+          tax_mode: Database["public"]["Enums"]["tax_mode"]
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          avg_monthly_sales?: number | null
+          base_servings?: number
+          created_at?: string
+          id?: string
+          name: string
+          price?: number
+          store_id: string
+          target_profit_rate?: number
+          tax_items?: string[]
+          tax_mode?: Database["public"]["Enums"]["tax_mode"]
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          avg_monthly_sales?: number | null
+          base_servings?: number
+          created_at?: string
+          id?: string
+          name?: string
+          price?: number
+          store_id?: string
+          target_profit_rate?: number
+          tax_items?: string[]
+          tax_mode?: Database["public"]["Enums"]["tax_mode"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recipes_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sales_channels: {
+        Row: {
+          active: boolean
+          code: string
+          created_at: string
+          fee_note: string | null
+          fee_rate: number
+          id: string
+          name: string
+          retired_at: string | null
+          sort_order: number
+          store_id: string
+        }
+        Insert: {
+          active?: boolean
+          code: string
+          created_at?: string
+          fee_note?: string | null
+          fee_rate?: number
+          id?: string
+          name: string
+          retired_at?: string | null
+          sort_order?: number
+          store_id: string
+        }
+        Update: {
+          active?: boolean
+          code?: string
+          created_at?: string
+          fee_note?: string | null
+          fee_rate?: number
+          id?: string
+          name?: string
+          retired_at?: string | null
+          sort_order?: number
+          store_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_channels_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      settings: {
+        Row: {
+          alert_inbound_delay: boolean
+          alert_morning_summary: boolean
+          alert_price_spike: boolean
+          alert_target_miss: boolean
+          cup_volume: number
+          currency: string
+          default_target_profit_rate: number
+          locale: string
+          money_digits: number
+          quantity_digits: number
+          store_id: string
+          unit_price_digits: number
+          unit_system: string
+          updated_at: string
+        }
+        Insert: {
+          alert_inbound_delay?: boolean
+          alert_morning_summary?: boolean
+          alert_price_spike?: boolean
+          alert_target_miss?: boolean
+          cup_volume?: number
+          currency?: string
+          default_target_profit_rate?: number
+          locale?: string
+          money_digits?: number
+          quantity_digits?: number
+          store_id: string
+          unit_price_digits?: number
+          unit_system?: string
+          updated_at?: string
+        }
+        Update: {
+          alert_inbound_delay?: boolean
+          alert_morning_summary?: boolean
+          alert_price_spike?: boolean
+          alert_target_miss?: boolean
+          cup_volume?: number
+          currency?: string
+          default_target_profit_rate?: number
+          locale?: string
+          money_digits?: number
+          quantity_digits?: number
+          store_id?: string
+          unit_price_digits?: number
+          unit_system?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "settings_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: true
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      stores: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          owner_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          owner_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          owner_id?: string
+        }
+        Relationships: []
+      }
+      vendors: {
+        Row: {
+          hidden: boolean
+          id: string
+          name: string
+          store_id: string
+        }
+        Insert: {
+          hidden?: boolean
+          id?: string
+          name: string
+          store_id: string
+        }
+        Update: {
+          hidden?: boolean
+          id?: string
+          name?: string
+          store_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendors_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      assert_my_store: {
+        Args: {
+          p_store: string
+        }
+        Returns: undefined
+      }
+      assert_no_rpc_overloads: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
+      base_unit_price: {
+        Args: {
+          p_ingredient: string
+        }
+        Returns: number
+      }
+      business_day: {
+        Args: {
+          p_at?: string
+        }
+        Returns: string
+      }
+      business_month: {
+        Args: {
+          p_at?: string
+        }
+        Returns: string
+      }
+      business_tz: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
+      consume_stock: {
+        Args: {
+          p_ingredient: string
+          p_amount: number
+        }
+        Returns: number
+      }
+      deactivate_ingredient: {
+        Args: {
+          p_ingredient: string
+        }
+        Returns: undefined
+      }
+      deactivate_recipe: {
+        Args: {
+          p_recipe: string
+        }
+        Returns: undefined
+      }
+      delete_category: {
+        Args: {
+          p_id: string
+        }
+        Returns: undefined
+      }
+      delete_purchase_option: {
+        Args: {
+          p_id: string
+        }
+        Returns: undefined
+      }
+      delete_vendor: {
+        Args: {
+          p_id: string
+        }
+        Returns: undefined
+      }
+      e1_confirm_inbound: {
+        Args: {
+          p_order: string
+          p_actual_qty?: number
+          p_idempotency_key?: string
+          p_occurred_at?: string
+        }
+        Returns: Json
+      }
+      e10_sale_recorded: {
+        Args: {
+          p_store: string
+          p_date: string
+          p_recipe: string
+          p_qty_hall?: number
+          p_qty_delivery?: number
+          p_qty_takeout?: number
+        }
+        Returns: Json
+      }
+      e11_inbound_reverted: {
+        Args: {
+          p_order: string
+          p_reason?: string
+        }
+        Returns: Json
+      }
+      e12_order_canceled: {
+        Args: {
+          p_order: string
+          p_reason?: string
+        }
+        Returns: Json
+      }
+      e2_discard: {
+        Args: {
+          p_ingredient: string
+          p_remain_volume: number
+          p_occurred_at?: string
+        }
+        Returns: undefined
+      }
+      e3_recipe_saved: {
+        Args: {
+          p_recipe: string
+          p_occurred_at?: string
+        }
+        Returns: undefined
+      }
+      e4_fixed_cost_saved: {
+        Args: {
+          p_store: string
+          p_month: string
+        }
+        Returns: Json
+      }
+      e5_stock_adjusted: {
+        Args: {
+          p_ingredient: string
+          p_sealed: number
+          p_opened: number
+          p_soon: boolean
+        }
+        Returns: undefined
+      }
+      e6_recipe_calc: {
+        Args: {
+          p_store: string
+          p_from: string
+          p_to: string
+          p_items: Json
+          p_result: Json
+        }
+        Returns: string
+      }
+      e7_place_order: {
+        Args: {
+          p_store: string
+          p_ingredient: string
+          p_vendor: string
+          p_brand: string
+          p_volume: number
+          p_amount: number
+          p_qty: number
+          p_expected: string
+          p_source?: Database["public"]["Enums"]["order_source"]
+        }
+        Returns: string
+      }
+      e8_sales_consumed: {
+        Args: {
+          p_sales_item: string
+        }
+        Returns: Json
+      }
+      e9_sales_reverted: {
+        Args: {
+          p_sales_item: string
+        }
+        Returns: Json
+      }
+      fixed_cost_rate: {
+        Args: {
+          p_store: string
+          p_month: string
+        }
+        Returns: number
+      }
+      get_settings: {
+        Args: {
+          p_store: string
+        }
+        Returns: Json
+      }
+      ingredient_detail: {
+        Args: {
+          p_ingredient: string
+        }
+        Returns: Json
+      }
+      ingredient_list: {
+        Args: {
+          p_store: string
+        }
+        Returns: {
+          id: string
+          name: string
+          category_name: string
+          base_unit: Database["public"]["Enums"]["base_unit"]
+          per_volume: number
+          loss_rate: number
+          safety_stock: number
+          vendor_name: string
+          memo: string
+          stock_total: number
+          base_price: number
+          soon_out: boolean
+          last_inbound_at: string
+        }[]
+      }
+      my_store_ids: {
+        Args: Record<PropertyKey, never>
+        Returns: string[]
+      }
+      order_board: {
+        Args: {
+          p_store: string
+        }
+        Returns: Json
+      }
+      real_loss_rate: {
+        Args: {
+          p_ingredient: string
+        }
+        Returns: number
+      }
+      recipe_detail: {
+        Args: {
+          p_recipe: string
+        }
+        Returns: Json
+      }
+      recipe_ingredient_needs: {
+        Args: {
+          p_recipe: string
+          p_servings: number
+          p_depth?: number
+        }
+        Returns: {
+          ingredient_id: string
+          amount: number
+        }[]
+      }
+      recipe_list: {
+        Args: {
+          p_store: string
+        }
+        Returns: {
+          id: string
+          name: string
+          price: number
+          tax_mode: Database["public"]["Enums"]["tax_mode"]
+          base_servings: number
+          target_profit_rate: number
+          avg_monthly_sales: number
+          active: boolean
+          material_cost: number
+          extra_cost: number
+          tax: number
+          fixed_cost: number
+          profit: number
+          profit_rate: number
+          material_rate: number
+        }[]
+      }
+      recipe_material_cost: {
+        Args: {
+          p_recipe: string
+          p_depth?: number
+        }
+        Returns: number
+      }
+      recompute_recipe: {
+        Args: {
+          p_recipe: string
+          p_cause: Database["public"]["Enums"]["trend_cause"]
+          p_occurred_at?: string
+        }
+        Returns: undefined
+      }
+      reconcile_sales_consumption: {
+        Args: {
+          p_sales_item: string
+          p_zero?: boolean
+        }
+        Returns: Json
+      }
+      refresh_order_candidate: {
+        Args: {
+          p_ingredient: string
+        }
+        Returns: undefined
+      }
+      reorder_categories: {
+        Args: {
+          p_store: string
+          p_ids: string[]
+        }
+        Returns: undefined
+      }
+      restore_stock: {
+        Args: {
+          p_ingredient: string
+          p_amount: number
+        }
+        Returns: number
+      }
+      retire_channel: {
+        Args: {
+          p_id: string
+        }
+        Returns: undefined
+      }
+      sales_day: {
+        Args: {
+          p_store: string
+          p_date: string
+        }
+        Returns: Json
+      }
+      sales_summary: {
+        Args: {
+          p_store: string
+          p_from: string
+          p_to: string
+        }
+        Returns: Json
+      }
+      save_category: {
+        Args: {
+          p_store: string
+          p_payload: Json
+        }
+        Returns: string
+      }
+      save_channel: {
+        Args: {
+          p_store: string
+          p_payload: Json
+        }
+        Returns: string
+      }
+      save_fixed_costs: {
+        Args: {
+          p_store: string
+          p_month: string
+          p_total_revenue: number
+          p_items: Json
+        }
+        Returns: Json
+      }
+      save_ingredient: {
+        Args: {
+          p_store: string
+          p_payload: Json
+        }
+        Returns: string
+      }
+      save_purchase_option: {
+        Args: {
+          p_store: string
+          p_payload: Json
+        }
+        Returns: string
+      }
+      save_recipe: {
+        Args: {
+          p_store: string
+          p_payload: Json
+        }
+        Returns: string
+      }
+      save_sale: {
+        Args: {
+          p_store: string
+          p_date: string
+          p_items: Json
+          p_etc_revenue?: number
+          p_daily_extra?: number
+        }
+        Returns: Json
+      }
+      save_settings: {
+        Args: {
+          p_store: string
+          p_payload: Json
+        }
+        Returns: Json
+      }
+      save_vendor: {
+        Args: {
+          p_store: string
+          p_payload: Json
+        }
+        Returns: string
+      }
+      settings_lists: {
+        Args: {
+          p_store: string
+        }
+        Returns: Json
+      }
+      stock_history: {
+        Args: {
+          p_ingredient: string
+          p_from?: string
+          p_to?: string
+        }
+        Returns: {
+          id: string
+          occurred_on: string
+          type: Database["public"]["Enums"]["inventory_event_type"]
+          count_delta: number
+          volume_delta: number
+          note: string
+        }[]
+      }
+      stock_total_base: {
+        Args: {
+          p_ingredient: string
+        }
+        Returns: number
+      }
+    }
+    Enums: {
+      base_unit: "g" | "ml" | "ea"
+      candidate_reason: "safety_stock" | "soon_out" | "recipe" | "manual"
+      candidate_status: "pending" | "ordered" | "excluded"
+      fixed_cost_mode: "total" | "detail"
+      inventory_event_type:
+        | "inbound"
+        | "consume"
+        | "discard"
+        | "stocktake"
+        | "adjust"
+      order_source: "manual" | "ocr" | "option" | "recipe"
+      order_status: "ordered" | "partial" | "received" | "canceled"
+      stock_badge: "ok" | "low" | "out"
+      tax_mode: "included" | "separate" | "exempt"
+      trend_cause: "material" | "recipe" | "fixed"
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
+}
+
+type PublicSchema = Database[Extract<keyof Database, "public">]
+
+export type Tables<
+  PublicTableNameOrOptions extends
+    | keyof (PublicSchema["Tables"] & PublicSchema["Views"])
+    | { schema: keyof Database },
+  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
+    ? keyof (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
+        Database[PublicTableNameOrOptions["schema"]]["Views"])
+    : never = never,
+> = PublicTableNameOrOptions extends { schema: keyof Database }
+  ? (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
+      Database[PublicTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+      Row: infer R
+    }
+    ? R
+    : never
+  : PublicTableNameOrOptions extends keyof (PublicSchema["Tables"] &
+        PublicSchema["Views"])
+    ? (PublicSchema["Tables"] &
+        PublicSchema["Views"])[PublicTableNameOrOptions] extends {
+        Row: infer R
+      }
+      ? R
+      : never
+    : never
+
+export type TablesInsert<
+  PublicTableNameOrOptions extends
+    | keyof PublicSchema["Tables"]
+    | { schema: keyof Database },
+  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
+    ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = PublicTableNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Insert: infer I
+    }
+    ? I
+    : never
+  : PublicTableNameOrOptions extends keyof PublicSchema["Tables"]
+    ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
+        Insert: infer I
+      }
+      ? I
+      : never
+    : never
+
+export type TablesUpdate<
+  PublicTableNameOrOptions extends
+    | keyof PublicSchema["Tables"]
+    | { schema: keyof Database },
+  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
+    ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = PublicTableNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Update: infer U
+    }
+    ? U
+    : never
+  : PublicTableNameOrOptions extends keyof PublicSchema["Tables"]
+    ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
+        Update: infer U
+      }
+      ? U
+      : never
+    : never
+
+export type Enums<
+  PublicEnumNameOrOptions extends
+    | keyof PublicSchema["Enums"]
+    | { schema: keyof Database },
+  EnumName extends PublicEnumNameOrOptions extends { schema: keyof Database }
+    ? keyof Database[PublicEnumNameOrOptions["schema"]]["Enums"]
+    : never = never,
+> = PublicEnumNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
+    ? PublicSchema["Enums"][PublicEnumNameOrOptions]
+    : never
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof PublicSchema["CompositeTypes"]
+    | { schema: keyof Database },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof Database
+  }
+    ? keyof Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never = never,
+> = PublicCompositeTypeNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof PublicSchema["CompositeTypes"]
+    ? PublicSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+    : never
+

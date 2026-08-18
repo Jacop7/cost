@@ -125,7 +125,8 @@ describe('통화기호 부착', () => {
 describe('검산 기준값이 서식을 통과해도 유지된다', () => {
   it('대파 4,000원/1,000g, 로스 15% → 4.71원/g', () => {
     const p = previewBaseUnitPrice(4000, 1000, 0.15);
-    expect(formatUnitPrice(p, 'g', 'ko')).toBe('4.71원/g');
+    expect(p).not.toBeNull();
+    expect(formatUnitPrice(p!, 'g', 'ko')).toBe('4.71원/g');
   });
 
   it('같은 단가가 미국 로케일에서는 4자리로 보인다', () => {
@@ -135,10 +136,11 @@ describe('검산 기준값이 서식을 통과해도 유지된다', () => {
 
   it('단가 자릿수를 사용자가 0~4 로 덮어쓸 수 있다', () => {
     const p = previewBaseUnitPrice(4000, 1000, 0.15); // 4.70588…
-    expect(formatUnitPrice(p, 'g', 'ko', 0)).toBe('5원/g');
-    expect(formatUnitPrice(p, 'g', 'ko', 1)).toBe('4.7원/g');
-    expect(formatUnitPrice(p, 'g', 'ko', 2)).toBe('4.71원/g');
-    expect(formatUnitPrice(p, 'g', 'ko', 4)).toBe('4.7059원/g');
+    expect(p).not.toBeNull();
+    expect(formatUnitPrice(p!, 'g', 'ko', 0)).toBe('5원/g');
+    expect(formatUnitPrice(p!, 'g', 'ko', 1)).toBe('4.7원/g');
+    expect(formatUnitPrice(p!, 'g', 'ko', 2)).toBe('4.71원/g');
+    expect(formatUnitPrice(p!, 'g', 'ko', 4)).toBe('4.7059원/g');
   });
 
   it('제육볶음 순이익 4,014원 · 33.4%', () => {

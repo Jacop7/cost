@@ -13,6 +13,9 @@
       "@/*": [
         "./src/*"
       ],
+      "@sikjae/db": [
+        "../../packages/db/src/database.types.ts"
+      ],
       "@sikjae/types": [
         "../../packages/types/src/index.ts"
       ],

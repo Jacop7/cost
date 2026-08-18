@@ -8,7 +8,7 @@ import { useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { AppHeader, Badge, Button, Card, Icon, ScrollTabs, Select, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { round } from '@sikjae/core';
+import { formatQuantity, round } from '@sikjae/core';
 import { T, won } from '@/theme/tokens';
 import { DEMO_INGREDIENTS, IngCardData } from '../../ingredients/demoData';
 
@@ -27,7 +27,8 @@ function stockLine(g: IngCardData): { total: string; price: string } {
     return { total, price: `${won(Math.round(g.price))}원/개` };
   }
   const amt = count * g.per;
-  const total = `총 ${amt >= 1000 ? `${amt / 1000}${big}` : `${amt}${g.unit}`}`;
+  // 표기 규칙은 @sikjae/core formatQuantity 단일 출처. 총 보유량은 대략값이면 되므로 기본 정밀도.
+  const total = `총 ${formatQuantity(amt, g.unit)}`;
   const price = g.per >= 1000 ? `${won(Math.round(g.price * 1000))}원/${big}` : `${won(Math.round(g.price * 10) / 10)}원/${g.unit}`;
   return { total, price };
 }
@@ -111,7 +112,7 @@ export default function RecipeIngredientSearchScreen() {
             {/* 수량 + 단위 */}
             <View style={{ flexDirection: 'row', gap: 8 }}>
               <View style={{ flex: 1, borderWidth: 1.5, borderColor: T.blue, borderRadius: 12, backgroundColor: T.surface, paddingVertical: 13, paddingHorizontal: 16 }}>
-                <Text style={[{ fontSize: 18, fontWeight: '700', color: T.ink }, NUM]}>{qty.toLocaleString('ko-KR')}</Text>
+                <Text style={[{ fontSize: 18, fontWeight: '700', color: T.ink }, NUM]}>{won(qty)}</Text>
               </View>
               <View style={{ width: 96 }}>
                 <Select value={sel.unit} />

@@ -3,6 +3,7 @@ import { useFonts } from 'expo-font';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { queryClient } from '@/lib/queryClient';
+import { SessionGate } from '@/lib/SessionProvider';
 import { getFontAssets, initTextDirection, patchTextFonts } from '@/theme/fonts';
 
 // 전역 폰트 적용(Text/TextInput 렌더 주입) + 로케일 방향 — 모듈 로드 시 1회.
@@ -20,9 +21,13 @@ export default function RootLayout() {
   return (
     <QueryClientProvider client={queryClient}>
       <SafeAreaProvider>
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="(tabs)" />
-        </Stack>
+        {/* 세션이 준비되기 전에는 화면을 그리지 않는다. RLS 때문에 로그인 없이는 어떤 행도 안 보이는데,
+            그 상태를 "데이터 없음"으로 그리면 사장님이 원인을 오해한다(가이드 §9.8). */}
+        <SessionGate>
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="(tabs)" />
+          </Stack>
+        </SessionGate>
       </SafeAreaProvider>
     </QueryClientProvider>
   );

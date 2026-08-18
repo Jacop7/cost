@@ -52,10 +52,10 @@ export default function MaterialManageScreen() {
                   기준 단가 <Text style={{ color: T.ink, fontWeight: '700' }}>{won(m.price)}원/{m.unit}</Text>
                 </Text>
               </View>
-              <Pressable onPress={() => setEdit(m)} hitSlop={4} style={{ width: 34, height: 34, alignItems: 'center', justifyContent: 'center' }}>
+              <Pressable onPress={() => setEdit(m)} hitSlop={4} style={{ width: 34, height: 34, alignItems: 'center', justifyContent: 'center' }} accessibilityRole="button" accessibilityLabel="부자재 수정">
                 <Icon name="edit" size={18} color={T.ter} sw={2} />
               </Pressable>
-              <Pressable onPress={() => remove(i)} hitSlop={4} style={{ width: 34, height: 34, alignItems: 'center', justifyContent: 'center' }}>
+              <Pressable onPress={() => remove(i)} hitSlop={4} style={{ width: 34, height: 34, alignItems: 'center', justifyContent: 'center' }} accessibilityRole="button" accessibilityLabel="부자재 삭제">
                 <Icon name="close" size={19} color={T.ter} />
               </Pressable>
             </View>

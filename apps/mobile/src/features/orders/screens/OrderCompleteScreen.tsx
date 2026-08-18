@@ -9,7 +9,8 @@ import { Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { AppHeader, Button, Card, Field, Icon, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { previewBaseUnitPrice, rawUnitPrice, round } from '@sikjae/core';
+import { dash } from '@/lib/num';
+import { previewBaseUnitPrice, rawUnitPrice, roundOrNull } from '@sikjae/core';
 import { T, won } from '@/theme/tokens';
 import { optionsFor } from '../demoData';
 
@@ -51,8 +52,9 @@ export default function OrderCompleteScreen() {
   const firstDow = new Date(calYear, calM, 1).getDay();
   const numDays = new Date(calYear, calM + 1, 0).getDate();
   const openCal = () => { setCalYM(startOfMonth(selDate)); setCalOpen(true); };
-  const raw = round(rawUnitPrice(sel.amt, sel.vol), 2); // 구매가 단가
-  const real = round(previewBaseUnitPrice(sel.amt, sel.vol, LOSS / 100), 2); // 실사용 단가
+  // 가드 없이 호출하던 자리 — 용량 0이면 Infinity 가 화면에 그대로 찍혔다. 이제 null 로 막고 '-' 표기.
+  const raw = roundOrNull(rawUnitPrice(sel.amt, sel.vol), 2); // 구매가 단가
+  const real = roundOrNull(previewBaseUnitPrice(sel.amt, sel.vol, LOSS / 100), 2); // 실사용 단가
   const itemRows: [string, string][] = [
     ['식재료', INGREDIENT],
     ['구매처', sel.vendor],
@@ -63,7 +65,8 @@ export default function OrderCompleteScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
-      <AppHeader title={isReceive ? '입고 수정' : isEdit ? '발주 수정' : '발주완료'} onBack={() => safeBack('/orders')} />
+      {/* 표준 용어 '발주 완료' — 띄어쓰기 포함 고정(가이드 §9.2). 하단 버튼 라벨과도 같아야 한다. */}
+      <AppHeader title={isReceive ? '입고 수정' : isEdit ? '발주 수정' : '발주 완료'} onBack={() => safeBack('/orders')} />
 
       <ScrollView contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 4, paddingBottom: 24 }} showsVerticalScrollIndicator={false}>
         {/* 품목 정보 */}
@@ -106,11 +109,11 @@ export default function OrderCompleteScreen() {
           </View>
           <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
             <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.sub2 }}>구매가 단가</Text>
-            <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{raw}원/{sel.unit}</Text>
+            <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{dash(raw)}원/{sel.unit}</Text>
           </View>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: T.blue }}>실사용 단가 <Text style={{ fontSize: 16, fontWeight: '600', color: T.blue }}>(로스 {LOSS}% 반영)</Text></Text>
-            <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{real}원/{sel.unit}</Text>
+            <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{dash(real)}원/{sel.unit}</Text>
           </View>
         </View>
 
@@ -152,9 +155,9 @@ export default function OrderCompleteScreen() {
         {calOpen ? (
           <View style={{ marginBottom: 16, backgroundColor: T.surface, borderWidth: 1, borderColor: T.blue, borderRadius: 12, padding: 14 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-              <Pressable hitSlop={8} onPress={() => setCalYM(new Date(calYear, calM - 1, 1))}><Icon name="back" size={18} color={T.sub} sw={2.2} /></Pressable>
+              <Pressable hitSlop={8} onPress={() => setCalYM(new Date(calYear, calM - 1, 1))} accessibilityRole="button" accessibilityLabel="이전 달"><Icon name="back" size={18} color={T.sub} sw={2.2} /></Pressable>
               <Text style={{ fontSize: 16, fontWeight: '800', color: T.ink }}>{calYear}년 {calM + 1}월</Text>
-              <Pressable hitSlop={8} onPress={() => setCalYM(new Date(calYear, calM + 1, 1))}><Icon name="chevron" size={18} color={T.sub} sw={2.2} /></Pressable>
+              <Pressable hitSlop={8} onPress={() => setCalYM(new Date(calYear, calM + 1, 1))} accessibilityRole="button" accessibilityLabel="다음 달"><Icon name="chevron" size={18} color={T.sub} sw={2.2} /></Pressable>
             </View>
             <View style={{ flexDirection: 'row', marginBottom: 4 }}>
               {WEEK.map((w, i) => (

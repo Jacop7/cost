@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
-import { previewBaseUnitPrice, rawUnitPrice, round } from '@sikjae/core';
+import { displayToBase, formatQuantity, isDisplayUnit, previewBaseUnitPrice, rawUnitPrice, round, roundOrNull } from '@sikjae/core';
 import { AppHeader, Field, Input, Select, Button, Icon } from '../../../components/kit';
 import { T } from '../../../theme/tokens';
 import { UnitPickerSheet } from '../components/UnitPickerSheet';
@@ -39,13 +39,18 @@ export function IngredientAddScreen() {
   const isMeasure = !(unit === '박스' || unit === '개');
 
   // 개당 용량(기준단위) · 로스율(%) · 단가.
-  const perBase = unit === '박스' ? num(boxQty) : isMeasure ? num(vol) * (unit === 'kg' || unit === 'L' ? 1000 : 1) : num(vol);
+  // 환산은 @sikjae/core displayToBase 한 곳에서만 한다(절대원칙 1 — 저장 직전 1회 환산).
+  const perBase = unit === '박스' ? num(boxQty) : isDisplayUnit(unit) ? displayToBase(num(vol), unit) : num(vol);
   const lossPct = lossMode === 'pct' ? num(lossVal) : isMeasure ? (num(lossVal) / 1000) * 100 : (num(lossVal) / 30) * 100;
   const base = baseUnitOf(unit);
-  const rawPer = perBase > 0 ? round(rawUnitPrice(num(price), perBase), 2) : 0;
-  const realPer = perBase > 0 ? round(previewBaseUnitPrice(num(price), perBase, lossPct / 100), 2) : 0;
+  // 산출 불가(용량 0·로스율 100% 이상)는 null 로 유지한다. 0원으로 위장하면 원가가 0이 되어
+  // 순이익이 과대 계상되고 그대로 저장된다(@sikjae/core 경계 계약).
+  const rawPer = roundOrNull(rawUnitPrice(num(price), perBase), 2);
+  const realPer = roundOrNull(previewBaseUnitPrice(num(price), perBase, lossPct / 100), 2);
 
-  const canSave = name.trim() !== '' && cat !== '' && perBase > 0 && num(price) > 0;
+  // 단가를 산출하지 못하면 저장할 수 없다 — 오염된 단가가 DB로 들어가는 것을 막는다.
+  const canSave =
+    name.trim() !== '' && cat !== '' && perBase > 0 && num(price) > 0 && realPer !== null && rawPer !== null;
 
   const onAdd = () => {
     if (!canSave) return;
@@ -55,21 +60,22 @@ export function IngredientAddScreen() {
       status: 'ok',
       unit: base,
       per: perBase,
-      perLabel: `${num(vol) || num(boxQty)}${unit}`,
+      // 저장값(기준단위)에서 표기를 만든다. 입력 문자열을 그대로 붙이면 환산 전 값이 라벨로 남는다.
+      perLabel: unit === '박스' ? `${num(boxQty)}개` : formatQuantity(perBase, base, { maxDigits: 3 }),
       sealed: 1,
       opened: 0,
       soon: false,
       safe: num(safe),
-      price: realPer,
+      price: realPer ?? 0,
       priceUnit: `원/${base}`,
       loss: Math.round(lossPct),
       lossReal: round(lossPct, 1),
       last: '—',
       vendor: '',
-      avg: rawPer,
-      low: rawPer,
-      high: rawPer,
-      recent: rawPer,
+      avg: rawPer ?? 0,
+      low: rawPer ?? 0,
+      high: rawPer ?? 0,
+      recent: rawPer ?? 0,
       memo: '',
       warn: false,
       stock: perBase,
@@ -143,7 +149,8 @@ export function IngredientAddScreen() {
       </ScrollView>
 
       <View style={{ paddingHorizontal: 20, paddingTop: 12, paddingBottom: 30, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
-        <Button kind={canSave ? 'primary' : 'gray'} size="lg" full onPress={onAdd}>추가</Button>
+        {/* 색만 바꾸던 자리 — 실제로 터치가 차단되고 접근성에도 비활성이 전달되도록 disabled 를 쓴다. */}
+        <Button kind="primary" size="lg" full disabled={!canSave} onPress={onAdd}>추가</Button>
       </View>
 
       <UnitPickerSheet

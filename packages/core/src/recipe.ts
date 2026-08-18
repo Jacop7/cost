@@ -5,12 +5,21 @@
  * 권장 판매가 = (재료+추가) ÷ (1 − 1/11 − 고정지출률 − 목표).
  */
 import type { TaxMode } from '@sikjae/types';
+import { isNonNegativeFinite, isPositiveFinite } from './guards';
 
-/** 1인분 소요량 = 입력량(N인분) ÷ N. */
-export const perServingQty = (inputQty: number, servings: number): number => inputQty / servings;
+/**
+ * 1인분 소요량 = 입력량(N인분) ÷ N.
+ * 인분이 0 이하이거나 입력량이 음수·비유한이면 산출 불가(null) — Infinity 로 전파시키지 않는다.
+ */
+export function perServingQty(inputQty: number, servings: number): number | null {
+  if (!isNonNegativeFinite(inputQty)) return null;
+  if (!isPositiveFinite(servings)) return null;
+  return inputQty / servings;
+}
 
 /** 세금액 — 부가세 포함: 판매가 × 10/110, 별도/면세: 0(별도는 외부 부과, 면세 없음). */
 export function taxAmount(price: number, mode: TaxMode): number {
+  if (!isNonNegativeFinite(price)) return 0; // 음수·비유한 판매가에서 음수 세금을 만들지 않는다
   return mode === 'included' ? (price * 10) / 110 : 0;
 }
 
@@ -48,21 +57,34 @@ export function materialCost(lines: RecipeLineInput[], servings: number): {
   let cost = 0;
   let hasMissingPrice = false;
   for (const l of lines) {
-    if (l.baseUnitPrice == null) {
+    // 단가 미입력은 잠정(0원 취급) — SQL 의 coalesce(base_unit_price, 0) 와 같은 값이 된다.
+    if (l.baseUnitPrice == null || !isNonNegativeFinite(l.baseUnitPrice)) {
       hasMissingPrice = true;
       continue;
     }
-    cost += perServingQty(l.inputQty, servings) * l.baseUnitPrice;
+    // 입력량·인분이 오염되면 그 라인을 원가에 더하지 않고 잠정으로 표시한다.
+    // (음수 입력량을 더하면 원가가 깎여 순이익이 과대 계상된다.)
+    const per = perServingQty(l.inputQty, servings);
+    if (per === null) {
+      hasMissingPrice = true;
+      continue;
+    }
+    cost += per * l.baseUnitPrice;
   }
   return { cost, hasMissingPrice };
 }
 
 /** 손익 계산 (② 3장). 검산: 제육 → profit 4014, rate 0.334. */
 export function computeProfit(input: ProfitInput): ProfitResult {
-  const { price, servings, taxMode, lines, extraPerServing } = input;
+  const { servings, taxMode, lines } = input;
+  // 음수·비유한 판매가는 0으로 정규화한다. 음수 매출은 도메인상 존재하지 않고,
+  // 그대로 흘리면 세금·고정지출·순이익률이 전부 뒤집힌다.
+  const price = isNonNegativeFinite(input.price) ? input.price : 0;
+  const extraPerServing = isNonNegativeFinite(input.extraPerServing) ? input.extraPerServing : 0;
+  const rawFixedRate = input.fixedRate ?? 0;
+  const fixedRate = isNonNegativeFinite(rawFixedRate) ? rawFixedRate : 0;
   const tax = taxAmount(price, taxMode);
   const mat = materialCost(lines, servings);
-  const fixedRate = input.fixedRate ?? 0;
   const fixedCost = fixedRate * price;
   const profit = price - tax - mat.cost - extraPerServing - fixedCost;
   return {

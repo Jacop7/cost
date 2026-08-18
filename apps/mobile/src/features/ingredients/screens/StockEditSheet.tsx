@@ -15,6 +15,62 @@ const TABS: [TabId, string][] = [
 
 const round2 = (n: number) => Math.round(n * 100) / 100;
 
+/**
+ * 재고 변경 1건. **어떤 종류의 변경인지**가 반드시 함께 나가야 한다.
+ *
+ * 수량만 넘기면 상위가 "얼마로 바뀌었는지"만 알고 **왜 바뀌었는지**를 모른다.
+ * 그런데 절대원칙 2 에 따라 조정(E5)·폐기(E2)는 서로 다른 RPC 이고, 폐기는 실측 로스율에
+ * 누적되어 기준단가까지 바꾼다. 유형을 잃으면 폐기가 단순 조정으로 기록돼 로스율이 영원히 0 이 된다.
+ */
+export interface StockChange {
+  /** 'adj' 수량 조정(E5) · 'out' 완전 소진(E5) · 'waste' 폐기(E2) */
+  kind: TabId;
+  /** 변경 후 재고(기준단위 g/ml/개) */
+  nextStock: number;
+  /** 폐기 수량(기준단위). kind='waste' 일 때만 의미가 있다 — E2 는 폐기량을 받는다. */
+  wasteAmount: number;
+  /** 사용자가 적은 사유. 재고 이벤트 note 로 남는다. */
+  reason: string;
+}
+
+/**
+ * 수량 입력칸 — **모듈 스코프에 둬야 한다.**
+ *
+ * 컴포넌트 본문 안에서 화살표 함수로 선언하면 렌더마다 새 함수 참조가 만들어지고,
+ * React 는 elementType 을 참조 동일성으로 비교하므로 **다른 컴포넌트로 보고 언마운트→리마운트**한다.
+ * 안의 TextInput 이 매 글자마다 파괴·재생성되어 네이티브 포커스가 풀리고 키보드가 닫힌다.
+ * (입력값 자체는 부모 state 라 남지만, 한 글자 칠 때마다 칸을 다시 눌러야 해 사실상 입력이 안 된다.)
+ */
+function InputBox({ value, onChange, accent, unit }: {
+  value: string;
+  onChange?: (t: string) => void;
+  accent: string;
+  unit: string;
+}) {
+  return (
+    <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 13, paddingHorizontal: 15, borderWidth: 1.5, borderColor: accent, borderRadius: 12, backgroundColor: T.surface }}>
+      <TextInput
+        style={[{ flex: 1, minWidth: 0, fontSize: 16, fontWeight: '700', color: T.ink, padding: 0 }, tnum]}
+        value={value}
+        onChangeText={onChange}
+        editable={!!onChange}
+        keyboardType="decimal-pad"
+        placeholder="0"
+        placeholderTextColor={T.ter}
+        accessibilityLabel={`수량 (${unit})`}
+      />
+      <Text style={{ fontSize: 16, fontWeight: '600', color: T.sub2 }}>{unit}</Text>
+    </View>
+  );
+}
+
+/** 계산 결과 띠 — 상태를 갖지 않지만 같은 이유로 모듈 스코프에 둔다. */
+function Band({ children, bg }: { children: React.ReactNode; bg?: string }) {
+  return (
+    <View style={{ marginTop: 9, paddingVertical: 13, paddingHorizontal: 15, borderRadius: 12, backgroundColor: bg || T.surface2, alignItems: 'center' }}>{children}</View>
+  );
+}
+
 export function StockEditSheet({
   visible,
   onClose,
@@ -28,7 +84,7 @@ export function StockEditSheet({
   name?: string;
   unit: '개' | 'g' | 'ml';
   stock: number; // 기준단위 현재 재고
-  onApply: (nextStock: number) => void;
+  onApply: (next: StockChange) => void;
 }) {
   const isCount = unit === '개';
   const dispUnit = isCount ? '개' : unit === 'ml' ? 'L' : 'kg';
@@ -65,25 +121,6 @@ export function StockEditSheet({
   const afterWaste = Math.max(0, stock - wasteBase);
   const nextStock = tab === 'adj' ? nextAdj : tab === 'out' ? 0 : afterWaste;
 
-  const InputBox = ({ value, onChange, accent }: { value: string; onChange?: (t: string) => void; accent: string }) => (
-    <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 13, paddingHorizontal: 15, borderWidth: 1.5, borderColor: accent, borderRadius: 12, backgroundColor: T.surface }}>
-      <TextInput
-        style={[{ flex: 1, minWidth: 0, fontSize: 16, fontWeight: '700', color: T.ink, padding: 0 }, tnum]}
-        value={value}
-        onChangeText={onChange}
-        editable={!!onChange}
-        keyboardType="decimal-pad"
-        placeholder="0"
-        placeholderTextColor={T.ter}
-      />
-      <Text style={{ fontSize: 16, fontWeight: '600', color: T.sub2 }}>{dispUnit}</Text>
-    </View>
-  );
-
-  const Band = ({ children, bg }: { children: React.ReactNode; bg?: string }) => (
-    <View style={{ marginTop: 9, paddingVertical: 13, paddingHorizontal: 15, borderRadius: 12, backgroundColor: bg || T.surface2, alignItems: 'center' }}>{children}</View>
-  );
-
   return (
     <Sheet visible={visible} onClose={onClose} title={name ? `${name} 재고 수정` : '재고 수정'} scroll={false}>
       <View>
@@ -108,7 +145,7 @@ export function StockEditSheet({
           {tab === 'adj' ? (
             <>
               <Text style={{ fontSize: 16, fontWeight: '700', color: T.sub, marginBottom: 7 }}>수량</Text>
-              <InputBox value={adjVal} onChange={(t) => setAdjVal(clampByUnit(t, dispUnit))} accent={T.blue} />
+              <InputBox unit={dispUnit} value={adjVal} onChange={(t) => setAdjVal(clampByUnit(t, dispUnit))} accent={T.blue} />
               <Band bg={diffDisp === 0 ? undefined : diffDisp < 0 ? T.redTint : T.greenTint}>
                 {diffDisp === 0 ? (
                   <Text style={{ fontSize: 16, fontWeight: '800', color: T.sub }}>변동 없음</Text>
@@ -134,7 +171,7 @@ export function StockEditSheet({
           {tab === 'waste' ? (
             <>
               <Text style={{ fontSize: 16, fontWeight: '700', color: T.sub, marginBottom: 7 }}>폐기 수량</Text>
-              <InputBox value={wasteVal} onChange={(t) => setWasteVal(clampByUnit(t, dispUnit))} accent={T.red} />
+              <InputBox unit={dispUnit} value={wasteVal} onChange={(t) => setWasteVal(clampByUnit(t, dispUnit))} accent={T.red} />
               <Band>
                 <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink2 }, tnum]}>
                   폐기 후 재고 <Text style={{ fontWeight: '800' }}>{round2(afterWaste / factor)}{dispUnit}</Text>
@@ -155,7 +192,7 @@ export function StockEditSheet({
 
         <View style={{ flexDirection: 'row', gap: 10, paddingHorizontal: 20, paddingTop: 12, paddingBottom: 26, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
           <Button kind="gray" size="lg" style={{ flex: 1 }} onPress={onClose}>취소</Button>
-          <Button kind={tab === 'waste' ? 'danger' : 'primary'} size="lg" style={{ flex: 1.3 }} onPress={() => onApply(nextStock)}>{action}</Button>
+          <Button kind={tab === 'waste' ? 'danger' : 'primary'} size="lg" style={{ flex: 1.3 }} onPress={() => onApply({ kind: tab, nextStock, wasteAmount: tab === 'waste' ? wasteBase : 0, reason: reason.trim() })}>{action}</Button>
         </View>
       </View>
     </Sheet>

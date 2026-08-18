@@ -14,7 +14,7 @@ export default function MyCategoryScreen() {
         title="카테고리 관리"
         onBack={() => safeBack('/my')}
         right={
-          <Pressable hitSlop={6} style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}>
+          <Pressable hitSlop={6} style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }} accessibilityRole="button" accessibilityLabel="카테고리 추가">
             <Icon name="plus" size={24} color={T.blue} />
           </Pressable>
         }

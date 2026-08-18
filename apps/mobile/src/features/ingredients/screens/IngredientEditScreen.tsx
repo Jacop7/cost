@@ -2,12 +2,12 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, Pressable } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import { previewBaseUnitPrice, rawUnitPrice, round } from '@sikjae/core';
+import { displayToBase, isDisplayUnit, previewBaseUnitPrice, rawUnitPrice, round, roundOrNull } from '@sikjae/core';
 import { AppHeader, Field, Input, Select, Button, Icon } from '../../../components/kit';
 import { T, tnum } from '../../../theme/tokens';
 import { optionsFor } from '../demoData';
 import { safeBack } from '@/lib/nav';
-import { clampByUnit, clampDecimals } from '@/lib/num';
+import { clampByUnit, clampDecimals, dash } from '@/lib/num';
 import { useIngredients } from '../store';
 import { UnitPickerSheet } from '../components/UnitPickerSheet';
 import { CategoryPickerSheet } from '../components/CategoryPickerSheet';
@@ -31,7 +31,8 @@ export function IngredientEditScreen() {
   const g = (items.find((x) => x.id === id) || items[0])!;
 
   const initUnit = dispUnitOf(g.unit, g.per);
-  const initFactor = initUnit === 'kg' || initUnit === 'L' ? 1000 : 1;
+  // 역방향 환산(저장 최소단위 → 편집 표기 단위). displayToBase 의 배수와 같은 값을 써야 왕복이 맞는다.
+  const initFactor = isDisplayUnit(initUnit) ? displayToBase(1, initUnit) : 1;
   const initRaw = round(g.price * (1 - g.loss / 100), 2); // 로스 반영 전 단가
   const opts = optionsFor(g.name);
 
@@ -51,10 +52,12 @@ export function IngredientEditScreen() {
 
   const isMeasure = !(unit === '박스' || unit === '개');
   const base = baseUnitOf(unit);
-  const perBase = unit === '박스' ? num(boxQty) : isMeasure ? num(vol) * (unit === 'kg' || unit === 'L' ? 1000 : 1) : num(vol);
+  // 환산은 @sikjae/core displayToBase 한 곳에서만 한다(절대원칙 1 — 저장 직전 1회 환산).
+  const perBase = unit === '박스' ? num(boxQty) : isDisplayUnit(unit) ? displayToBase(num(vol), unit) : num(vol);
   const lossPct = lossMode === 'pct' ? num(lossVal) : isMeasure ? (num(lossVal) / 1000) * 100 : (num(lossVal) / 30) * 100;
-  const rawPer = perBase > 0 ? round(rawUnitPrice(num(price), perBase), 2) : 0;
-  const realPer = perBase > 0 ? round(previewBaseUnitPrice(num(price), perBase, lossPct / 100), 2) : 0;
+  // 산출 불가는 null 유지(@sikjae/core 경계 계약). 저장 시 기존 값을 지키고 표시는 '-'.
+  const rawPer = roundOrNull(rawUnitPrice(num(price), perBase), 2);
+  const realPer = roundOrNull(previewBaseUnitPrice(num(price), perBase, lossPct / 100), 2);
   const boxEach = unit === '박스' && num(boxQty) > 0 ? round(num(price) / num(boxQty), 2) : 0;
 
   const onSave = () => {
@@ -64,14 +67,14 @@ export function IngredientEditScreen() {
       unit: base,
       per: perBase > 0 ? perBase : g.per,
       priceUnit: `원/${base}`,
-      price: realPer || g.price,
+      price: realPer ?? g.price,
       loss: Math.round(lossPct),
       lossReal: round(lossPct, 1),
       safe: num(safe),
-      avg: rawPer || g.avg,
-      low: rawPer || g.low,
-      high: rawPer || g.high,
-      recent: rawPer || g.recent,
+      avg: rawPer ?? g.avg,
+      low: rawPer ?? g.low,
+      high: rawPer ?? g.high,
+      recent: rawPer ?? g.recent,
     });
     safeBack();
   };
@@ -144,12 +147,12 @@ export function IngredientEditScreen() {
             <>
               <PreviewRow label="박스 단가" value={String(num(price))} unit="원/박스" />
               <PreviewRow label="낱개 단가" hint={`(${num(price)} ÷ ${num(boxQty) || 0})`} value={String(boxEach)} unit="원/개" />
-              <PreviewFinal lossPct={round(lossPct, 1)} value={String(realPer)} unit="원/개" />
+              <PreviewFinal lossPct={round(lossPct, 1)} value={dash(realPer)} unit="원/개" />
             </>
           ) : (
             <>
-              <PreviewRow label="구매가 단가" value={String(rawPer)} unit={`원/${base}`} />
-              <PreviewFinal lossPct={round(lossPct, 1)} value={String(realPer)} unit={`원/${base}`} />
+              <PreviewRow label="구매가 단가" value={dash(rawPer)} unit={`원/${base}`} />
+              <PreviewFinal lossPct={round(lossPct, 1)} value={dash(realPer)} unit={`원/${base}`} />
             </>
           )}
         </View>

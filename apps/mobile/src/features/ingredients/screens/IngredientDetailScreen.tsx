@@ -33,7 +33,7 @@ export function IngredientDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const items = useIngredients((s) => s.items);
   const setMemo = useIngredients((s) => s.setMemo);
-  const setStock = useIngredients((s) => s.setStock);
+  const applyStockChange = useIngredients((s) => s.applyStockChange);
   const g = (items.find((x) => x.id === id) || items[0])!;
   const opts = optionsFor(g.name);
   // 현재 재고 표기 — 숫자/단위 분리(단위는 700).
@@ -201,8 +201,10 @@ export function IngredientDetailScreen() {
         name={g.name}
         unit={g.unit}
         stock={g.stock}
-        onApply={(next) => {
-          setStock(g.id, next);
+        onApply={(change) => {
+          // 수량만 덮어쓰지 않고 **원장에 이력을 남긴다**. 조정(E5)과 폐기(E2)는 서로 다른 사건이고,
+          // 폐기는 실측 로스율에 누적되어 기준단가까지 바꾼다.
+          applyStockChange(g.id, change);
           setStockOpen(false);
         }}
       />

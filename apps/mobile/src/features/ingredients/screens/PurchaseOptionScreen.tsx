@@ -4,11 +4,11 @@ import React, { useState } from 'react';
 import { View, Text, ScrollView, Pressable, TextInput } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import * as Clipboard from 'expo-clipboard';
-import { previewBaseUnitPrice, rawUnitPrice, round } from '@sikjae/core';
+import { displayToBase, isDisplayUnit, previewBaseUnitPrice, rawUnitPrice, round, roundOrNull } from '@sikjae/core';
 import { AppHeader, Field, Input, Button, Card, Badge, Icon } from '../../../components/kit';
-import { T, tnum } from '../../../theme/tokens';
+import { T, tnum, won } from '../../../theme/tokens';
 import { safeBack } from '@/lib/nav';
-import { clampByUnit, clampDecimals } from '@/lib/num';
+import { clampByUnit, clampDecimals, dash } from '@/lib/num';
 import { optionsFor } from '../demoData';
 import { UnitPickerSheet } from '../components/UnitPickerSheet';
 
@@ -60,9 +60,11 @@ export function PurchaseOptionScreen() {
 
   const isMeasure = !(unit === '박스' || unit === '개');
   const base = baseUnitOf(unit);
-  const perBase = unit === '박스' ? num(boxQty) : isMeasure ? num(vol) * (unit === 'kg' || unit === 'L' ? 1000 : 1) : num(vol);
-  const rawPer = perBase > 0 ? round(rawUnitPrice(num(price), perBase), 2) : 0;
-  const realPer = perBase > 0 ? round(previewBaseUnitPrice(num(price), perBase, LOSS_PCT / 100), 2) : 0;
+  // 환산은 @sikjae/core displayToBase 한 곳에서만 한다(절대원칙 1 — 저장 직전 1회 환산).
+  const perBase = unit === '박스' ? num(boxQty) : isDisplayUnit(unit) ? displayToBase(num(vol), unit) : num(vol);
+  // 산출 불가는 null 유지(@sikjae/core 경계 계약) — 표시는 '-'.
+  const rawPer = roundOrNull(rawUnitPrice(num(price), perBase), 2);
+  const realPer = roundOrNull(previewBaseUnitPrice(num(price), perBase, LOSS_PCT / 100), 2);
   const boxEach = unit === '박스' && num(boxQty) > 0 ? round(num(price) / num(boxQty), 2) : 0;
 
   // URL 입력/붙여넣기 → 구매처 자동 추정(구매처 비어있을 때만).
@@ -89,8 +91,8 @@ export function PurchaseOptionScreen() {
   }
   compare.push([
     '현재',
-    name || num(price) > 0 ? `${name || '신규 옵션'} · ${vol || boxQty || '-'}${unit} · ${num(price).toLocaleString('ko-KR')}원` : '입력하면 표시돼요',
-    `${vendor || '-'} · ${rawPer}원/${base}`,
+    name || num(price) > 0 ? `${name || '신규 옵션'} · ${vol || boxQty || '-'}${unit} · ${won(num(price))}원` : '입력하면 표시돼요',
+    `${vendor || '-'} · ${dash(rawPer)}원/${base}`,
     'blue',
   ]);
 
@@ -147,12 +149,12 @@ export function PurchaseOptionScreen() {
             <>
               <Row label="박스 단가" value={String(num(price))} unit="원/박스" />
               <Row label="낱개 단가" hint={`(${num(price)} ÷ ${num(boxQty) || 0})`} value={String(boxEach)} unit="원/개" />
-              <Final lossPct={LOSS_PCT} value={String(realPer)} unit="원/개" />
+              <Final lossPct={LOSS_PCT} value={dash(realPer)} unit="원/개" />
             </>
           ) : (
             <>
-              <Row label="환산 단가 (구매가)" value={String(rawPer)} unit={`원/${base}`} />
-              <Final lossPct={LOSS_PCT} value={String(realPer)} unit={`원/${base}`} />
+              <Row label="환산 단가 (구매가)" value={dash(rawPer)} unit={`원/${base}`} />
+              <Final lossPct={LOSS_PCT} value={dash(realPer)} unit={`원/${base}`} />
             </>
           )}
         </View>

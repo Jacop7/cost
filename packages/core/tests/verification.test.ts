@@ -19,7 +19,9 @@ import {
 
 describe('단가 (① 3.5, A-02)', () => {
   it('대파 4,000원/1,000g, 로스 15% → 4.71원/g', () => {
-    expect(round(previewBaseUnitPrice(4000, 1000, 0.15), 2)).toBe(4.71);
+    const p = previewBaseUnitPrice(4000, 1000, 0.15);
+    expect(p).not.toBeNull(); // 산출 불가(null)가 아니어야 한다 — 경계 계약은 boundary.test.ts
+    expect(round(p!, 2)).toBe(4.71);
   });
 
   it('수량 가중 평균 (대파 구매이력)', () => {

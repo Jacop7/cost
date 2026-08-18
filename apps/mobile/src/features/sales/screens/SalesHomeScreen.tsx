@@ -15,8 +15,14 @@ const NUM = { fontVariant: ['tabular-nums' as const] };
 
 // − N + 스테퍼 (프로토타입 SaleStepper)
 function SaleStepper({ value }: { value: number }) {
+  // 34×34 라 hitSlop 5 를 더해 최소 44×44 를 채운다(가이드 §9.6-1). 아이콘만 있으므로 라벨 필수(§9.6-4).
   const Btn = ({ ic, on }: { ic: 'minus' | 'plus'; on?: boolean }) => (
-    <Pressable style={{ width: 34, height: 34, borderRadius: 9, backgroundColor: on ? T.blue : T.line2, alignItems: 'center', justifyContent: 'center' }}>
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={ic === 'plus' ? '판매량 늘리기' : '판매량 줄이기'}
+      hitSlop={5}
+      style={{ width: 34, height: 34, borderRadius: 9, backgroundColor: on ? T.blue : T.line2, alignItems: 'center', justifyContent: 'center' }}
+    >
       <Icon name={ic} size={18} color={on ? T.onColor : T.sub} sw={2.4} />
     </Pressable>
   );
@@ -45,7 +51,7 @@ export default function SalesHomeScreen() {
       <View style={{ paddingTop: insets.top, backgroundColor: T.bg }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 20, paddingRight: 12, paddingTop: 6, paddingBottom: 12 }}>
           <Text style={{ flex: 1, fontSize: 22, fontWeight: '800', color: T.ink, letterSpacing: -0.6 }}>매출관리</Text>
-          <Pressable onPress={() => router.push('/sales/analytics' as Href)} style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}>
+          <Pressable onPress={() => router.push('/sales/analytics' as Href)} style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }} accessibilityRole="button" accessibilityLabel="매출 분석">
             <Icon name="calendar" size={23} color={T.ink2} />
           </Pressable>
         </View>
