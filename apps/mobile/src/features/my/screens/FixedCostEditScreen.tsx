@@ -13,7 +13,8 @@ import { safeBack } from '@/lib/nav';
 import { formatPercent, currentBusinessMonth } from '@sikjae/core';
 import { T, won } from '@/theme/tokens';
 import { clampDecimals } from '@/lib/num';
-import { useFixedCosts, useSaveFixedCosts, type ChannelWeights, type FixedCostItem } from '../hooks';
+import { useFixedCosts, useRevenueCheck, useSaveFixedCosts, type ChannelWeights, type FixedCostItem } from '../hooks';
+import { RevenueGapCard } from '../components/RevenueGapCard';
 import { ChannelWeightSheet } from '../components/ChannelWeightSheet';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
@@ -41,6 +42,7 @@ export default function FixedCostEditScreen() {
   const month = params.month ?? currentBusinessMonth();
 
   const fixed = useFixedCosts(month);
+  const check = useRevenueCheck(month);
   const save = useSaveFixedCosts();
 
   const [revenue, setRevenue] = useState('');
@@ -147,6 +149,11 @@ export default function FixedCostEditScreen() {
               />
             </Field>
           </Card>
+
+          {/* 실제 매출과 비교 — 채우기는 사장님이 누를 때만 반영된다(자동 덮어쓰기 금지). */}
+          {check.data ? (
+            <RevenueGapCard check={check.data} onApply={(next) => setRevenue(String(next))} />
+          ) : null}
 
           {items.map((it, si) => (
             <Card key={`${it.key}-${si}`} pad={0} style={{ overflow: 'hidden' }}>

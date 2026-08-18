@@ -385,3 +385,58 @@ export function useChannelFixed(from: string, to: string, enabled = true) {
     },
   });
 }
+
+/**
+ * 수기 월매출(고정지출률 분모)과 실제 매출의 괴리 (M-030).
+ *
+ * 총 월매출은 수기 입력이 설계 의도다(레시피 v3 §111). 그래서 자동으로 덮어쓰지 않고
+ * **얼마나 어긋났는지만** 보여준다. 그 숫자가 전 메뉴 순이익에 곱해지므로,
+ * 어긋난 걸 모르면 모든 메뉴 손익이 조용히 틀어진다.
+ */
+export interface RevenueCheck {
+  month: string;
+  daysElapsed: number;
+  daysTotal: number;
+  /** 진행 중인 달이면 true — 월 환산이 추정치임을 화면이 밝혀야 한다. */
+  inProgress: boolean;
+  /** 사장님이 적은 값. 안 적었으면 null(0원 매출과 구분한다). */
+  manualRevenue: number | null;
+  fixedTotal: number | null;
+  actualRevenue: number;
+  /** 진행 중인 달은 일할 환산, 끝난 달은 실적 그대로. 경과 0일이면 null. */
+  projectedRevenue: number | null;
+  /** (월 환산 ÷ 수기) − 1, %. 둘 중 하나라도 없으면 null. */
+  gapPct: number | null;
+  rateManual: number | null;
+  rateProjected: number | null;
+  hasSales: boolean;
+}
+
+export function useRevenueCheck(month: string = currentBusinessMonth()) {
+  const storeId = useStoreId();
+  return useQuery({
+    queryKey: [...qk.fixedCosts(month), 'revenue-check'],
+    queryFn: async (): Promise<RevenueCheck> => {
+      const { data, error } = await supabase.rpc('fixed_cost_revenue_check', {
+        p_store: storeId,
+        p_month: month,
+      });
+      if (error) throw new Error(error.message);
+      const r = (data ?? {}) as unknown as Record<string, unknown>;
+      return {
+        month: String(r.month ?? month),
+        daysElapsed: num(r.days_elapsed),
+        daysTotal: num(r.days_total),
+        inProgress: Boolean(r.in_progress),
+        manualRevenue: r.manual_revenue == null ? null : num(r.manual_revenue),
+        fixedTotal: r.fixed_total == null ? null : num(r.fixed_total),
+        actualRevenue: num(r.actual_revenue),
+        projectedRevenue: r.projected_revenue == null ? null : num(r.projected_revenue),
+        gapPct: r.gap_pct == null ? null : num(r.gap_pct),
+        rateManual: r.rate_manual == null ? null : num(r.rate_manual),
+        rateProjected: r.rate_projected == null ? null : num(r.rate_projected),
+        hasSales: Boolean(r.has_sales),
+      };
+    },
+  });
+}

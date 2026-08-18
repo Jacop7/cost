@@ -12,7 +12,8 @@ import { safeBack } from '@/lib/nav';
 import { formatPercent } from '@sikjae/core';
 import { T, won } from '@/theme/tokens';
 import { currentBusinessMonth } from '@sikjae/core';
-import { useFixedCosts } from '../hooks';
+import { useFixedCosts, useRevenueCheck } from '../hooks';
+import { RevenueGapCard } from '../components/RevenueGapCard';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 
@@ -37,6 +38,8 @@ export default function FixedCostScreen() {
   const months = recentMonths();
   const [month, setMonth] = useState(months[0]!);
   const fixed = useFixedCosts(month);
+  // 적어둔 월매출이 전 메뉴 순이익에 곱해진다 — 실제와 얼마나 벌어졌는지 함께 보여준다(M-030).
+  const check = useRevenueCheck(month);
 
   const items = fixed.data?.items ?? [];
   const revenue = fixed.data?.totalRevenue ?? 0;
@@ -72,6 +75,8 @@ export default function FixedCostScreen() {
               <Text style={{ fontSize: 14, fontWeight: '600', color: T.sub2, marginLeft: 4 }}>원</Text>
             </View>
           </Card>
+
+          {check.data ? <RevenueGapCard check={check.data} /> : null}
 
           {items.map((it) => (
             <Card key={it.key} pad={0} style={{ overflow: 'hidden' }}>
