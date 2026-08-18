@@ -5,7 +5,7 @@
  * 입고·소진·폐기·실사의 부호 규칙을 앱도 알아야 하고, 그 규칙이 두 벌이 된다.
  */
 import { useMemo, useState } from 'react';
-import { Pressable, ScrollView, Text, View } from 'react-native';
+import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Card, Icon, QueryState } from '../../../components/kit';
 import { T, tnum } from '../../../theme/tokens';
@@ -14,7 +14,7 @@ import { safeBack } from '@/lib/nav';
 import { LedgerRow } from '../components/LedgerRow';
 import { HistoryFilterSheet, periodRange, type HistoryFilter } from './HistoryFilterSheet';
 import { dispUnit, toLedgerView, type LedgerType } from '../ledger';
-import { useIngredientDetail, useStockHistory, type LedgerEntry } from '../hooks';
+import { useIngredientDetail, useRevertDiscard, useStockHistory, type LedgerEntry } from '../hooks';
 
 /** 유형 칩 → 원장 종류. '조정'은 실사(E5)와 판매 취소 보정을 함께 본다. */
 const KIND_TYPES: Record<string, LedgerType[] | null> = {
@@ -34,6 +34,30 @@ export function StockHistoryScreen() {
 
   const detail = useIngredientDetail(id);
   const history = useStockHistory(id, periodRange(filter.period));
+  const revertDiscard = useRevertDiscard(id ?? '');
+
+  /**
+   * 폐기 취소 — 오입력한 폐기 하나가 기준단가를 영구히 바꿔버리는 걸 되돌린다.
+   * 폐기는 실측 로스율의 분자라, 잘못 넣으면 그 재료를 쓰는 모든 메뉴 원가가 틀어진다.
+   */
+  const confirmRevert = (e: LedgerEntry) => {
+    if (e.type !== 'discard' || e.reverted) return;
+    Alert.alert(
+      '폐기 취소',
+      `${formatQuantity(Math.abs(e.countDelta), unit)} 폐기를 되돌려요. 재고와 기준단가가 폐기 전으로 돌아가고, 이 재료를 쓰는 메뉴 원가도 함께 바뀝니다.`,
+      [
+        { text: '닫기', style: 'cancel' },
+        {
+          text: '폐기 취소',
+          style: 'destructive',
+          onPress: () => revertDiscard.mutate(
+            { eventId: e.id },
+            { onError: (err) => Alert.alert('되돌리지 못했어요', err instanceof Error ? err.message : '잠시 후 다시 시도해 주세요') },
+          ),
+        },
+      ],
+    );
+  };
 
   const g = detail.data;
   const unit = g ? dispUnit(g.baseUnit) : 'g';
@@ -135,17 +159,19 @@ export function StockHistoryScreen() {
               <Card pad={0} style={{ overflow: 'hidden' }}>
                 {list.map((e, i) => {
                   const v = toLedgerView(e, g?.baseUnit ?? 'g');
+                  const canRevert = e.type === 'discard' && !e.reverted;
                   return (
                     <LedgerRow
                       key={v.id}
                       date={v.date}
-                      act={v.label}
-                      memo={v.memo}
+                      act={e.reverted ? `${v.label} (취소됨)` : v.label}
+                      memo={canRevert ? '탭하면 폐기를 되돌려요' : v.memo}
                       delta={v.delta}
                       bal={v.balance}
                       up={v.up}
                       px={15}
                       last={i === list.length - 1}
+                      onPress={canRevert ? () => confirmRevert(e) : undefined}
                     />
                   );
                 })}

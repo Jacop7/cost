@@ -88,6 +88,8 @@ export interface LedgerEntry {
   note: string | null;
   /** 그 사건 직후 잔량. 서버가 누적해서 준다 — 앱이 종류별 분기를 알 필요가 없다. */
   balance: number;
+  /** 이미 되돌려진 폐기인가. 되돌린 폐기는 실측 로스율에서 빠진다. */
+  reverted: boolean;
 }
 
 function toRow(r: Record<string, unknown>): IngredientRow {
@@ -199,6 +201,7 @@ export function useStockHistory(id: string | undefined, range?: { from?: string;
         volumeDelta: numOrNull(e.volume_delta),
         note: str(e.note),
         balance: num(e.balance),
+        reverted: Boolean(e.reverted),
       }));
     },
   });
@@ -302,6 +305,13 @@ export function useDeletePurchaseOption(ingredientId: string) {
   });
 }
 
+/** 폐기 결과 — 버릴 게 없으면 서버가 아무 일도 하지 않고 skipped 로 알린다. */
+export interface DiscardResult {
+  discarded: number;
+  skipped: boolean;
+  unitPrice: number | null;
+}
+
 /**
  * 재고 수정 — 조정(E5) / 완전 소진(E5) / 폐기(E2).
  *
@@ -323,12 +333,17 @@ export function useStockChange() {
     }) => {
       if (input.kind === 'waste') {
         // E2 는 "남은 양"을 받아 폐기량을 역산한다.
-        const { error } = await supabase.rpc('e2_discard', {
+        const { data, error } = await supabase.rpc('e2_discard', {
           p_ingredient: input.ingredientId,
           p_remain_volume: input.value,
         });
         if (error) throw new Error(error.message);
-        return;
+        const r = (data ?? {}) as unknown as Record<string, unknown>;
+        return {
+          discarded: num(r.discarded),
+          skipped: Boolean(r.skipped),
+          unitPrice: numOrNull(r.unit_price),
+        } satisfies DiscardResult;
       }
       // E5 는 미개봉 개수 + 개봉분 잔량으로 받는다. 총량을 개당 용량으로 쪼개 넘긴다.
       const target = input.kind === 'out' ? 0 : input.value;
@@ -347,5 +362,27 @@ export function useStockChange() {
     },
     onSuccess: (_r, input) =>
       invalidate(qc, input.kind === 'waste' ? invalidateOn.e2(input.ingredientId) : invalidateOn.e5(input.ingredientId)),
+  });
+}
+
+/**
+ * 폐기 취소 (E2 되돌리기).
+ *
+ * 오입력한 폐기 하나가 그 식재료의 기준단가를 **영구히** 바꿔버리는 걸 막는다.
+ * 원장은 지우지 않고 반대 이벤트를 쌓아 상쇄한다 — 되돌린 폐기는 실측 로스율에서 빠진다.
+ */
+export function useRevertDiscard(ingredientId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (input: { eventId: string; reason?: string }) => {
+      const { data, error } = await supabase.rpc('e2_discard_reverted', {
+        p_event: input.eventId,
+        p_reason: input.reason,
+      });
+      if (error) throw new Error(error.message);
+      const r = (data ?? {}) as unknown as Record<string, unknown>;
+      return { alreadyReverted: Boolean(r.already_reverted), restored: num(r.restored) };
+    },
+    onSuccess: () => invalidate(qc, invalidateOn.e2(ingredientId)),
   });
 }

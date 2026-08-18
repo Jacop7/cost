@@ -316,6 +316,7 @@ export type Database = {
           note: string | null
           occurred_at: string
           order_record_id: string | null
+          reverses_event_id: string | null
           sales_item_id: string | null
           seq: number
           store_id: string
@@ -331,6 +332,7 @@ export type Database = {
           note?: string | null
           occurred_at?: string
           order_record_id?: string | null
+          reverses_event_id?: string | null
           sales_item_id?: string | null
           seq?: number
           store_id: string
@@ -346,6 +348,7 @@ export type Database = {
           note?: string | null
           occurred_at?: string
           order_record_id?: string | null
+          reverses_event_id?: string | null
           sales_item_id?: string | null
           seq?: number
           store_id?: string
@@ -366,6 +369,13 @@ export type Database = {
             columns: ["order_record_id"]
             isOneToOne: false
             referencedRelation: "order_records"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_events_reverses_event_id_fkey"
+            columns: ["reverses_event_id"]
+            isOneToOne: false
+            referencedRelation: "inventory_events"
             referencedColumns: ["id"]
           },
           {
@@ -1309,7 +1319,14 @@ export type Database = {
           p_remain_volume: number
           p_occurred_at?: string
         }
-        Returns: undefined
+        Returns: Json
+      }
+      e2_discard_reverted: {
+        Args: {
+          p_event: string
+          p_reason?: string
+        }
+        Returns: Json
       }
       e3_recipe_saved: {
         Args: {
@@ -1467,6 +1484,7 @@ export type Database = {
           profit: number
           profit_rate: number
           material_rate: number
+          unknown_cost_lines: number
         }[]
       }
       recipe_material_cost: {
@@ -1680,6 +1698,7 @@ export type Database = {
           volume_delta: number
           note: string
           balance: number
+          reverted: boolean
         }[]
       }
       stock_total_base: {
