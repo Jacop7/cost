@@ -38,12 +38,31 @@ function SecHead({ title, sub, right }: { title: string; sub?: string; right?: R
   );
 }
 
+// 기준 밑줄 탭 (10개 / 1개) — 재료·부자재·고정·세금 표시 배수 전환.
+function CostTabs({ value, onChange }: { value: 'ten' | 'one'; onChange: (v: 'ten' | 'one') => void }) {
+  const tabs: ['ten' | 'one', string][] = [['ten', '10개 기준'], ['one', '1개 기준']];
+  return (
+    <View style={{ flexDirection: 'row', gap: 22, paddingHorizontal: 15, backgroundColor: T.surface, borderBottomWidth: 1, borderBottomColor: T.line }}>
+      {tabs.map(([k, label]) => {
+        const on = value === k;
+        return (
+          <Pressable key={k} onPress={() => onChange(k)} style={{ paddingTop: 13, paddingBottom: 11 }}>
+            <Text style={{ fontSize: 16, fontWeight: on ? '700' : '600', color: on ? T.ink : T.ter }}>{label}</Text>
+            {on ? <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 2.5, backgroundColor: T.ink, borderRadius: 2 }} /> : null}
+          </Pressable>
+        );
+      })}
+    </View>
+  );
+}
+
 export default function RecipeDetailScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
   const r = getRecipe(id);
   const detail = id ? RECIPE_DETAILS[id] : undefined;
-  const [view, setView] = useState<'one' | 'month'>('one'); // 1개 / 월 평균 토글
+  const [costMode, setCostMode] = useState<'ten' | 'one'>('one'); // 재료·부자재·고정·세금 표시 기준(10개/1개)
+  const [view, setView] = useState<'ten' | 'one' | 'month'>('one'); // 손익: 10개 / 1개 / 월평균
   const [simOpen, setSimOpen] = useState(false); // 판매가 시뮬레이션 시트
 
   if (!r) {
@@ -73,7 +92,8 @@ export default function RecipeDetailScreen() {
   const PROFIT = warn ? T.red : T.green;
   const recRaw = recommendedPrice(material + extra, r.fixedRate, r.target);
   const recommended = recRaw == null ? null : Math.round(recRaw / 100) * 100;
-  const m = view === 'one' ? 1 : r.salesVolume; // 금액 배수(월 평균)
+  const cm = costMode === 'ten' ? 10 : 1; // 재료·부자재·고정·세금 표시 배수
+  const m = view === 'ten' ? 10 : view === 'one' ? 1 : r.salesVolume; // 손익 배수(10개/1개/월평균)
   const wm = (v: number) => `${won(v * m)}원`;
 
   // 도넛 — 판매가 구성. 순이익=상태색(미달 빨강/달성 초록), 비용=그레이 진하기.
@@ -139,6 +159,7 @@ export default function RecipeDetailScreen() {
         {lines.length > 0 ? (
           <Card pad={0} style={{ overflow: 'hidden' }}>
             <SecHead title="재료" />
+            <CostTabs value={costMode} onChange={setCostMode} />
             <View style={{ paddingHorizontal: 15, paddingTop: 4, paddingBottom: 15 }}>
               {lines.map((l, i) => (
                 <View key={i} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10, borderBottomWidth: i < lines.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
@@ -147,15 +168,15 @@ export default function RecipeDetailScreen() {
                     <Text style={[{ fontSize: 14, color: T.ter, marginTop: 2 }, NUM]}>{l.unitPrice}원/{l.unit}</Text>
                   </View>
                   <View style={{ alignItems: 'flex-end' }}>
-                    <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{won(l.cost)}원</Text>
-                    <Text style={[{ fontSize: 14, color: T.ter, marginTop: 2 }, NUM]}>{l.qty}{l.unit} / {pct(l.cost / price)}%</Text>
+                    <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{won(l.cost * cm)}원</Text>
+                    <Text style={[{ fontSize: 14, color: T.ter, marginTop: 2 }, NUM]}>{won(l.qty * cm)}{l.unit} / {pct(l.cost / price)}%</Text>
                   </View>
                 </View>
               ))}
               <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, paddingTop: 10, borderTopWidth: 1, borderTopColor: T.line }}>
                 <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.ink2 }}>소계</Text>
                 <View style={{ alignItems: 'flex-end' }}>
-                  <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{won(material)}원</Text>
+                  <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{won(material * cm)}원</Text>
                   <Text style={[{ fontSize: 14, fontWeight: '700', color: T.sub2, marginTop: 2 }, NUM]}>{pct(material / price)}%</Text>
                 </View>
               </View>
@@ -166,13 +187,14 @@ export default function RecipeDetailScreen() {
         {/* 부자재 */}
         <Card pad={0} style={{ overflow: 'hidden' }}>
           <SecHead title="부자재" sub="(이 메뉴에만 들어가는 부자재)" />
+          <CostTabs value={costMode} onChange={setCostMode} />
           <View style={{ paddingHorizontal: 15, paddingVertical: 4 }}>
             {extras.length > 0 ? (
               extras.map((e, i) => (
                 <View key={i} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 9 }}>
                   <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.ink2 }}>{e.name}</Text>
                   <View style={{ alignItems: 'flex-end' }}>
-                    <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{won(e.amount)}원</Text>
+                    <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{won(e.amount * cm)}원</Text>
                     <Text style={[{ fontSize: 14, fontWeight: '600', color: T.ter, marginTop: 2 }, NUM]}>{pct(e.amount / price)}%</Text>
                   </View>
                 </View>
@@ -186,12 +208,13 @@ export default function RecipeDetailScreen() {
         {/* 고정 지출 */}
         <Card pad={0} style={{ overflow: 'hidden' }}>
           <SecHead title="고정 지출" sub="(개당 환산)" />
+          <CostTabs value={costMode} onChange={setCostMode} />
           <View style={{ paddingHorizontal: 15, paddingTop: 4, paddingBottom: 15 }}>
             {FIXED_ITEMS.map((f, i) => (
               <View key={i} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 8, borderBottomWidth: i < FIXED_ITEMS.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
                 <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.ink2 }}>{f.name}</Text>
                 <View style={{ alignItems: 'flex-end' }}>
-                  <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{won(round(f.rate * price))}원</Text>
+                  <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{won(round(f.rate * price) * cm)}원</Text>
                   <Text style={[{ fontSize: 14, color: T.ter, fontWeight: '600', marginTop: 2 }, NUM]}>{pct(f.rate)}%</Text>
                 </View>
               </View>
@@ -199,7 +222,7 @@ export default function RecipeDetailScreen() {
             <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, paddingTop: 10, borderTopWidth: 1, borderTopColor: T.line }}>
               <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.ink2 }}>소계</Text>
               <View style={{ alignItems: 'flex-end' }}>
-                <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{won(fixed)}원</Text>
+                <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{won(fixed * cm)}원</Text>
                 <Text style={[{ fontSize: 14, fontWeight: '700', color: T.sub2, marginTop: 2 }, NUM]}>{pct(r.fixedRate)}%</Text>
               </View>
             </View>
@@ -214,10 +237,11 @@ export default function RecipeDetailScreen() {
         {/* 세금 */}
         <Card pad={0} style={{ overflow: 'hidden' }}>
           <SecHead title="세금" />
+          <CostTabs value={costMode} onChange={setCostMode} />
           <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 13, paddingHorizontal: 15 }}>
             <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.ink2 }}>부가세</Text>
             <View style={{ alignItems: 'flex-end' }}>
-              <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{won(tax)}원</Text>
+              <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{won(tax * cm)}원</Text>
               <Text style={[{ fontSize: 14, color: T.ter, fontWeight: '600', marginTop: 2 }, NUM]}>{pct(tax / price)}%</Text>
             </View>
           </View>
@@ -228,7 +252,7 @@ export default function RecipeDetailScreen() {
           <SecHead title="손익 미리보기" sub="판매가 대비 %" />
           {/* 밑줄 탭 */}
           <View style={{ flexDirection: 'row', gap: 22, paddingHorizontal: 15, backgroundColor: T.surface, borderBottomWidth: 1, borderBottomColor: T.line }}>
-            {([['one', '1개 기준'], ['month', '월평균 기준']] as const).map(([k, label]) => {
+            {([['ten', '10개 기준'], ['one', '1개 기준'], ['month', '월평균 기준']] as const).map(([k, label]) => {
               const on = view === k;
               return (
                 <Pressable key={k} onPress={() => setView(k)} style={{ paddingTop: 13, paddingBottom: 11 }}>
@@ -243,7 +267,7 @@ export default function RecipeDetailScreen() {
             <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
               <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.sub }}>판매량</Text>
               <View style={{ alignItems: 'flex-end' }}>
-                <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{view === 'month' ? `월 ${won(r.salesVolume)}개` : '1개'}</Text>
+                <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{view === 'month' ? `월 ${won(r.salesVolume)}개` : view === 'ten' ? '10개' : '1개'}</Text>
                 <Text style={{ fontSize: 14, fontWeight: '600', color: T.ter, marginTop: 2 }}>-</Text>
               </View>
             </View>

@@ -1,11 +1,11 @@
 /**
  * MY-04 단위 설정 — 단위 시스템(미터법·미국식·영국식) 선택 → 무게/부피 단위·환산·조리컵 기본값 반영.
- * 조리컵은 사용자 설정, 스푼(큰15·작은5ml)·개·박스는 공통. 내부 저장은 항상 g·ml·개.
+ * 조리컵·스푼·묶음단위(박스·판 등)는 사용자 설정. '개'가 기본(최소) 단위. 내부 저장은 항상 g·ml·개.
  * ⚠ 디자인 프로토타입(로컬 상태·데모).
  */
 import { useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
-import { AppHeader, Badge, Card, Icon, Input } from '@/components/kit';
+import { AppHeader, Button, Card, Field, Icon, Input, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { T } from '@/theme/tokens';
 
@@ -44,12 +44,21 @@ export default function MyUnitsScreen() {
 
   const selectSys = (i: number) => { setSysIdx(i); setCup(String(SYSTEMS[i]!.cup)); };
 
-  // 개수 단위 — '개'가 기본(하위), 박스·판·망 등은 상위 포장단위(1 묶음 = N개). 무게 g→kg, 부피 ml→L 와 동일 상하위.
-  const [pkg, setPkg] = useState<{ name: string; per: string }[]>([{ name: '박스', per: '30' }]);
-  const setPkgName = (i: number, v: string) => setPkg((xs) => xs.map((u, k) => (k === i ? { ...u, name: v } : u)));
-  const setPkgPer = (i: number, v: string) => setPkg((xs) => xs.map((u, k) => (k === i ? { ...u, per: v.replace(/[^0-9]/g, '') } : u)));
+  // 개수 단위 — 낱개(개·모·마리 등) 위에 박스·판 등 묶음(1 묶음 = per × base). 편집은 시트에서 폼으로.
+  const [pkg, setPkg] = useState<{ name: string; per: string; base: string }[]>([{ name: '박스', per: '30', base: '개' }]);
+  const [edit, setEdit] = useState<{ i: number; name: string; per: string; base: string } | null>(null); // 편집 시트(i<0=신규)
   const removePkg = (i: number) => setPkg((xs) => xs.filter((_, k) => k !== i));
-  const addPkg = () => setPkg((xs) => [...xs, { name: '', per: '' }]);
+  const openAdd = () => setEdit({ i: -1, name: '', per: '', base: '개' });
+  const openEdit = (i: number) => { const u = pkg[i]!; setEdit({ i, name: u.name, per: u.per, base: u.base }); };
+  const saveEdit = () => {
+    if (!edit) return;
+    const name = edit.name.trim();
+    const per = edit.per.trim();
+    const base = edit.base.trim() || '개';
+    if (!name || !per) return;
+    setPkg((xs) => (edit.i < 0 ? [...xs, { name, per, base }] : xs.map((u, k) => (k === edit.i ? { name, per, base } : u))));
+    setEdit(null);
+  };
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
@@ -108,42 +117,64 @@ export default function MyUnitsScreen() {
           </View>
         </Card>
 
-        {/* 개수 단위 — 개(기본/하위) + 상위 포장단위(1 박스 = N개). g→kg·ml→L 와 같은 상하위 */}
-        <Text style={{ fontSize: 14, fontWeight: '700', color: T.ter, marginHorizontal: 4, marginBottom: 8 }}>개수 단위</Text>
+        {/* 개수 단위 — '개'가 기본(최소) 단위. 박스·판 등 자주 쓰는 묶음 단위 등록(리스트 + 편집 시트). */}
+        <Text style={{ fontSize: 14, fontWeight: '700', color: T.ter, marginHorizontal: 4, marginBottom: 6 }}>개수 단위</Text>
+        <Text style={{ fontSize: 14, color: T.ter, marginHorizontal: 4, marginBottom: 8, lineHeight: 20 }}>
+          기본 단위는 <Text style={{ fontWeight: '700', color: T.sub }}>개</Text>예요. 박스·판처럼 자주 쓰는 묶음 단위를 등록해두면 식재료 등록할 때 골라 쓸 수 있어요.
+        </Text>
         <Card pad={0} style={{ overflow: 'hidden' }}>
-          {/* 기본(하위) 단위 */}
-          <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 13, paddingHorizontal: 15, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
-            <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: T.ink }}>개</Text>
-            <Text style={{ fontSize: 14, color: T.ter, marginRight: 8 }}>기본 단위 (하위)</Text>
-            <Badge tone="neutral" sm>기본</Badge>
-          </View>
-          {/* 상위 포장단위 헤더 */}
-          <View style={{ paddingVertical: 11, paddingHorizontal: 15, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
-            <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub }}>상위 포장단위 · 1 묶음당 개수</Text>
-          </View>
-          {/* 상위 단위 행 (1 [이름] = [N]개) */}
-          {pkg.map((u, i) => (
-            <View key={i} style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 10, paddingLeft: 15, paddingRight: 8, borderBottomWidth: i < pkg.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
-              <Text style={{ fontSize: 16, fontWeight: '700', color: T.sub2 }}>1</Text>
-              <View style={{ flex: 1.4 }}><Input value={u.name} placeholder="예: 박스·판·망" onChangeText={(v) => setPkgName(i, v)} /></View>
-              <Text style={{ fontSize: 16, fontWeight: '700', color: T.sub2 }}>=</Text>
-              <View style={{ width: 92 }}><Input value={u.per} suffix="개" mono keyboardType="number-pad" onChangeText={(v) => setPkgPer(i, v)} /></View>
-              <Pressable onPress={() => removePkg(i)} hitSlop={4} style={{ width: 32, height: 34, alignItems: 'center', justifyContent: 'center' }}>
-                <Icon name="close" size={19} color={T.ter} />
-              </Pressable>
+          {pkg.length === 0 ? (
+            <View style={{ paddingVertical: 20, paddingHorizontal: 15, alignItems: 'center' }}>
+              <Text style={{ fontSize: 14, color: T.ter }}>등록된 묶음 단위가 없어요.</Text>
             </View>
-          ))}
+          ) : (
+            pkg.map((u, i) => (
+              <View key={i} style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 12, paddingLeft: 15, paddingRight: 10, borderBottomWidth: i < pkg.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
+                <View style={{ flex: 1, minWidth: 0 }}>
+                  <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>{u.name}</Text>
+                  <Text style={{ fontSize: 14, color: T.sub2, marginTop: 3, fontWeight: '600' }}>{u.per}{u.base}들이</Text>
+                </View>
+                <Pressable onPress={() => openEdit(i)} hitSlop={4} style={{ width: 34, height: 34, alignItems: 'center', justifyContent: 'center' }}>
+                  <Icon name="edit" size={18} color={T.ter} sw={2} />
+                </Pressable>
+                <Pressable onPress={() => removePkg(i)} hitSlop={4} style={{ width: 34, height: 34, alignItems: 'center', justifyContent: 'center' }}>
+                  <Icon name="close" size={19} color={T.ter} />
+                </Pressable>
+              </View>
+            ))
+          )}
         </Card>
-        <Pressable onPress={addPkg} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5, paddingVertical: 14, marginTop: 12, borderRadius: 12, borderWidth: 1, borderStyle: 'dashed', borderColor: T.blue, backgroundColor: T.blueTint }}>
+        <Pressable onPress={openAdd} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5, paddingVertical: 14, marginTop: 12, borderRadius: 12, borderWidth: 1, borderStyle: 'dashed', borderColor: T.blue, backgroundColor: T.blueTint }}>
           <Icon name="plus" size={17} color={T.blue} sw={2.2} />
-          <Text style={{ fontSize: 14, fontWeight: '700', color: T.blue }}>포장단위 추가</Text>
+          <Text style={{ fontSize: 14, fontWeight: '700', color: T.blue }}>묶음 단위 추가</Text>
         </Pressable>
 
         <View style={{ flexDirection: 'row', gap: 7, marginHorizontal: 4, marginTop: 16, alignItems: 'flex-start' }}>
           <Icon name="info" size={15} color={T.ter} />
-          <Text style={{ flex: 1, fontSize: 14, color: T.ter, lineHeight: 20 }}>박스·판·망은 '개'의 상위 단위예요(1 박스 = N 개). 여기 값은 기본이고, 품목마다 다르면 등록 시 개별 지정할 수 있어요. 내부 저장은 항상 g·ml·개.</Text>
+          <Text style={{ flex: 1, fontSize: 14, color: T.ter, lineHeight: 20 }}>여기 값은 기본이에요. 품목마다 묶음 수량이 다르면 등록할 때 개별 지정할 수 있어요. 내부 저장은 항상 g·ml·개.</Text>
         </View>
       </ScrollView>
+
+      {/* 묶음 단위 추가·수정 시트 */}
+      <Sheet visible={edit != null} onClose={() => setEdit(null)} title={edit && edit.i < 0 ? '묶음 단위 추가' : '묶음 단위 수정'} sub="박스·판처럼 여러 개를 묶는 단위예요" height={380}>
+        {edit ? (
+          <View>
+            <Field label="단위 이름" req>
+              <Input value={edit.name} placeholder="예: 박스·판·망" onChangeText={(v) => setEdit({ ...edit, name: v })} />
+            </Field>
+            <Field label="1묶음 수량" req hint="한 묶음에 든 개수와 낱개 단위명(개·모·마리·장 등)">
+              <View style={{ flexDirection: 'row', gap: 10 }}>
+                <View style={{ flex: 2 }}><Input value={edit.per} placeholder="0" mono keyboardType="number-pad" onChangeText={(v) => setEdit({ ...edit, per: v.replace(/[^0-9]/g, '') })} /></View>
+                <View style={{ flex: 1 }}><Input value={edit.base} placeholder="개" onChangeText={(v) => setEdit({ ...edit, base: v })} /></View>
+              </View>
+            </Field>
+            <View style={{ flexDirection: 'row', gap: 9, marginTop: 8 }}>
+              <View style={{ flex: 1 }}><Button kind="ghost" size="lg" full onPress={() => setEdit(null)}>취소</Button></View>
+              <View style={{ flex: 2 }}><Button kind="primary" size="lg" full onPress={saveEdit}>저장</Button></View>
+            </View>
+          </View>
+        ) : null}
+      </Sheet>
     </View>
   );
 }
