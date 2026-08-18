@@ -137,7 +137,7 @@ export function useSalesDay(date: string) {
   });
 }
 
-export interface RangeDay { date: string; revenue: number; qty: number; material: number }
+export interface RangeDay { date: string; revenue: number; qty: number; material: number; profit: number }
 export interface RangeMenu {
   recipeId: string | null;
   menuName: string;
@@ -151,7 +151,17 @@ export interface RangeMenu {
   unitMaterialCost: number;
   material: number;
 }
-export interface RangeChannel { code: string; name: string; feeRate: number; amount: number }
+export interface RangeChannel {
+  code: string;
+  name: string;
+  feeRate: number;
+  amount: number;
+  qty: number;
+  /** 채널별 수량이 있으므로 배분이 아니라 정확히 나뉜 값. */
+  material: number;
+  fee: number;
+  tax: number;
+}
 
 export interface SalesRange {
   from: string;
@@ -176,7 +186,8 @@ export function useSalesRange(from: string, to: string, enabled = true) {
         from, to,
         summary: parseSummary(r.summary),
         daily: ((r.daily ?? []) as Record<string, unknown>[]).map((d) => ({
-          date: String(d.date), revenue: num(d.revenue), qty: num(d.qty), material: num(d.material),
+          date: String(d.date), revenue: num(d.revenue), qty: num(d.qty),
+          material: num(d.material), profit: num(d.profit),
         })),
         menu: ((r.menu ?? []) as Record<string, unknown>[]).map((m) => ({
           recipeId: str(m.recipe_id),
@@ -192,7 +203,9 @@ export function useSalesRange(from: string, to: string, enabled = true) {
           material: num(m.material),
         })),
         channels: ((r.channels ?? []) as Record<string, unknown>[]).map((c) => ({
-          code: String(c.code), name: String(c.name), feeRate: num(c.fee_rate), amount: num(c.amount),
+          code: String(c.code), name: String(c.name), feeRate: num(c.fee_rate),
+          amount: num(c.amount), qty: num(c.qty), material: num(c.material),
+          fee: num(c.fee), tax: num(c.tax),
         })),
       };
     },
@@ -252,5 +265,113 @@ export function useSaveSale() {
       return out;
     },
     onSuccess: (_r, input) => invalidate(qc, [...invalidateOn.e10(), qk.salesDay(input.date)]),
+  });
+}
+
+// ── 지출 내역 되짚기 (SALES-13/15/17) ─────────────────────────
+// 합계만 보여주면 사장님은 확인할 방법이 없다. 내역은 이미 원장에 있으므로 되읽어 온다.
+
+export interface MaterialUsageMenu { menuName: string; qty: number; amount: number }
+export interface MaterialUsageItem {
+  ingredientId: string;
+  name: string;
+  baseUnit: 'g' | 'ml' | 'ea';
+  qty: number;
+  unitPrice: number | null;
+  amount: number;
+  menus: MaterialUsageMenu[];
+}
+
+export function useMaterialUsage(from: string, to: string, enabled = true) {
+  const storeId = useStoreId();
+  return useQuery({
+    queryKey: [...qk.salesRange(from, to), 'material'],
+    enabled: enabled && Boolean(from) && Boolean(to),
+    queryFn: async (): Promise<{ total: number; items: MaterialUsageItem[] }> => {
+      const { data, error } = await supabase.rpc('sales_material_usage', { p_store: storeId, p_from: from, p_to: to });
+      if (error) throw new Error(error.message);
+      const r = (data ?? {}) as unknown as Record<string, unknown>;
+      return {
+        total: num(r.total),
+        items: ((r.items ?? []) as Record<string, unknown>[]).map((i) => ({
+          ingredientId: String(i.ingredient_id),
+          name: String(i.name),
+          baseUnit: i.base_unit as 'g' | 'ml' | 'ea',
+          qty: num(i.qty),
+          unitPrice: numOrNull(i.unit_price),
+          amount: num(i.amount),
+          menus: ((i.menus ?? []) as Record<string, unknown>[]).map((m) => ({
+            menuName: String(m.menu_name), qty: num(m.qty), amount: num(m.amount),
+          })),
+        })),
+      };
+    },
+  });
+}
+
+export interface ExtraUsageItem {
+  name: string;
+  qty: number;
+  amount: number;
+  menus: { menuName: string; qty: number; unit: number; amount: number }[];
+}
+
+export function useExtraUsage(from: string, to: string, enabled = true) {
+  const storeId = useStoreId();
+  return useQuery({
+    queryKey: [...qk.salesRange(from, to), 'extra'],
+    enabled: enabled && Boolean(from) && Boolean(to),
+    queryFn: async (): Promise<{ total: number; items: ExtraUsageItem[] }> => {
+      const { data, error } = await supabase.rpc('sales_extra_usage', { p_store: storeId, p_from: from, p_to: to });
+      if (error) throw new Error(error.message);
+      const r = (data ?? {}) as unknown as Record<string, unknown>;
+      return {
+        total: num(r.total),
+        items: ((r.items ?? []) as Record<string, unknown>[]).map((i) => ({
+          name: String(i.name),
+          qty: num(i.qty),
+          amount: num(i.amount),
+          menus: ((i.menus ?? []) as Record<string, unknown>[]).map((m) => ({
+            menuName: String(m.menu_name), qty: num(m.qty), unit: num(m.unit), amount: num(m.amount),
+          })),
+        })),
+      };
+    },
+  });
+}
+
+export interface FixedBreakdownItem {
+  key: string;
+  monthTotal: number;
+  amount: number;
+  lines: { name: string; amount: number }[];
+}
+
+export function useFixedBreakdown(from: string, to: string, enabled = true) {
+  const storeId = useStoreId();
+  return useQuery({
+    queryKey: [...qk.salesRange(from, to), 'fixed'],
+    enabled: enabled && Boolean(from) && Boolean(to),
+    queryFn: async (): Promise<{
+      month: string; rate: number | null; provisional: boolean; total: number; items: FixedBreakdownItem[];
+    }> => {
+      const { data, error } = await supabase.rpc('sales_fixed_breakdown', { p_store: storeId, p_from: from, p_to: to });
+      if (error) throw new Error(error.message);
+      const r = (data ?? {}) as unknown as Record<string, unknown>;
+      return {
+        month: String(r.month ?? ''),
+        rate: numOrNull(r.rate),
+        provisional: Boolean(r.provisional),
+        total: num(r.total),
+        items: ((r.items ?? []) as Record<string, unknown>[]).map((i) => ({
+          key: String(i.key),
+          monthTotal: num(i.month_total),
+          amount: num(i.amount),
+          lines: ((i.lines ?? []) as Record<string, unknown>[]).map((l) => ({
+            name: String(l.name ?? ''), amount: num(l.amount),
+          })),
+        })),
+      };
+    },
   });
 }
