@@ -9,6 +9,7 @@
  *       두 곳의 공식이 어긋나면 안 된다 — 공식 변경 시 양쪽 동시 수정.
  */
 export * from './round';
+export * from './locale';
 export * from './units';
 export * from './pricing';
 export * from './inventory';
