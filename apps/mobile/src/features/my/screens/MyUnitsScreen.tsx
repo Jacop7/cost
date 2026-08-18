@@ -5,9 +5,14 @@
  */
 import { useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
-import { AppHeader, Button, Card, Field, Icon, Input, Sheet } from '@/components/kit';
+import { UNIT_PRICE_DIGIT_OPTIONS, formatUnitPrice, getLocale, unitPriceDigits } from '@sikjae/core';
+import { AppHeader, Button, Card, Field, Icon, Input, Notice, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { T } from '@/theme/tokens';
+import { useSettings, useUnitDigits } from '../store';
+
+/** 자릿수 견본에 쓰는 실값 — 대파 4,000원/1,000g · 로스 15% → 4.7058…원/g (검산 기준값). */
+const DEMO_UNIT_PRICE = 4000 / 1000 / (1 - 0.15);
 
 interface UnitSystem {
   name: string;
@@ -36,6 +41,14 @@ function DetailRow({ label, value, conv, last }: { label: string; value: string;
 }
 
 export default function MyUnitsScreen() {
+  // 단가 자릿수 — 로케일 기본값(금액+2)을 따르되 사용자가 덮어쓸 수 있다.
+  // 기본값과 같은 값을 고르면 override 를 지워(null) 언어를 바꿔도 새 기본값을 따라가게 한다.
+  const locale = useSettings((s) => s.locale);
+  const setUnitDigits = useSettings((s) => s.setUnitDigits);
+  const digits = useUnitDigits();
+  const defaultDigits = unitPriceDigits(locale);
+  const L = getLocale(locale);
+
   const [sysIdx, setSysIdx] = useState(0);
   const sys = SYSTEMS[sysIdx]!;
   const [cup, setCup] = useState<string>(String(sys.cup)); // 1컵 ml (사용자 입력)
@@ -117,11 +130,33 @@ export default function MyUnitsScreen() {
           </View>
         </Card>
 
+        {/* 단가 표기 자릿수 — 이 화면에서 유일하게 "취향"이 갈리는 값.
+            구분자·통화·금액 자릿수는 사실이라 언어·통화(MY-08)가 정하고, 여기선 단가만 고른다. */}
+        <Text style={{ fontSize: 14, fontWeight: '700', color: T.ter, marginHorizontal: 4, marginBottom: 6 }}>단가 표기 자릿수</Text>
+        <Notice style={{ marginBottom: 10 }}>식재료 단가·원가가 이 자릿수로 보여요. 표기만 바뀌고 저장·계산은 원래 값 그대로예요.</Notice>
+        <Card pad={0} style={{ overflow: 'hidden', marginBottom: 16 }}>
+          {UNIT_PRICE_DIGIT_OPTIONS.map((d, i) => {
+            const on = d === digits;
+            const isDefault = d === defaultDigits;
+            // 서식 견본 라벨 — 소수점 문자는 로케일을 따른다(독일이면 0,00).
+            const pattern = d === 0 ? '0' : '0' + L.decimal + '0'.repeat(d);
+            return (
+              <Pressable
+                key={d}
+                onPress={() => setUnitDigits(isDefault ? null : d)}
+                style={{ flexDirection: 'row', alignItems: 'center', padding: 15, borderBottomWidth: i < UNIT_PRICE_DIGIT_OPTIONS.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}
+              >
+                <Text style={[{ width: 74, fontSize: 16, fontWeight: '600', color: T.sub }, { fontVariant: ['tabular-nums'] }]}>{pattern}</Text>
+                <Text style={[{ flex: 1, minWidth: 0, fontSize: 16, fontWeight: '700', color: T.ink }, { fontVariant: ['tabular-nums'] }]}>{formatUnitPrice(DEMO_UNIT_PRICE, 'g', locale, d)}</Text>
+                <View style={{ width: 24, height: 24, borderRadius: 12, borderWidth: on ? 7 : 2, borderColor: on ? T.blue : T.line, marginLeft: 12 }} />
+              </Pressable>
+            );
+          })}
+        </Card>
+
         {/* 개수 단위 — '개'가 기본(최소) 단위. 박스·판 등 자주 쓰는 묶음 단위 등록(리스트 + 편집 시트). */}
         <Text style={{ fontSize: 14, fontWeight: '700', color: T.ter, marginHorizontal: 4, marginBottom: 6 }}>개수 단위</Text>
-        <Text style={{ fontSize: 14, color: T.ter, marginHorizontal: 4, marginBottom: 8, lineHeight: 20 }}>
-          기본 단위는 <Text style={{ fontWeight: '700', color: T.sub }}>개</Text>예요. 박스·판처럼 자주 쓰는 묶음 단위를 등록해두면 식재료 등록할 때 골라 쓸 수 있어요.
-        </Text>
+        <Notice style={{ marginBottom: 10 }}>기본 단위는 개예요. 박스·판처럼 자주 쓰는 묶음 단위를 등록해두면 식재료 등록할 때 골라 쓸 수 있어요.</Notice>
         <Card pad={0} style={{ overflow: 'hidden' }}>
           {pkg.length === 0 ? (
             <View style={{ paddingVertical: 20, paddingHorizontal: 15, alignItems: 'center' }}>

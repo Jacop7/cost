@@ -10,7 +10,8 @@ export type IconName =
   | 'edit' | 'check' | 'sort' | 'bell' | 'warn' | 'up' | 'down' | 'box'
   | 'clipboard' | 'receipt' | 'user' | 'truck' | 'link' | 'camera' | 'calendar'
   | 'cart' | 'trend' | 'won' | 'history' | 'tag' | 'swap' | 'grid' | 'ruler'
-  | 'store' | 'info' | 'arrowRight' | 'download' | 'note' | 'grip' | 'bars';
+  | 'store' | 'info' | 'arrowRight' | 'download' | 'note' | 'grip' | 'bars'
+  | 'globe';
 
 interface Props {
   name: IconName;
@@ -73,6 +74,7 @@ export function Icon({ name, size = 24, color = T.ink, sw = 1.9, fill = false }:
       case 'note': return <G {...p}><Path d="M5 4.5h14v10l-4.5 4.5H5v-14z" /><Path d="M19 14.5h-4.5v4.5" /><Path d="M8.5 9h7M8.5 12.5h4" /></G>;
       case 'grip': return <G fill={color} stroke="none"><Circle cx={9} cy={6} r={1.5} /><Circle cx={9} cy={12} r={1.5} /><Circle cx={9} cy={18} r={1.5} /><Circle cx={15} cy={6} r={1.5} /><Circle cx={15} cy={12} r={1.5} /><Circle cx={15} cy={18} r={1.5} /></G>;
       case 'bars': return <G fill={color} stroke="none"><Rect x={4} y={12} width={4} height={8} rx={1} /><Rect x={10} y={7} width={4} height={13} rx={1} /><Rect x={16} y={4} width={4} height={16} rx={1} /></G>;
+      case 'globe': return <G {...p}><Circle cx={12} cy={12} r={8.5} /><Path d="M3.5 12h17" /><Path d="M12 3.5c2.2 2.4 3.3 5.3 3.3 8.5S14.2 18.1 12 20.5c-2.2-2.4-3.3-5.3-3.3-8.5S9.8 5.9 12 3.5z" /></G>;
       default: return null;
     }
   })();

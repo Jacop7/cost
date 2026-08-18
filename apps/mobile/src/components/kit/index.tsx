@@ -63,6 +63,21 @@ export function Card({ children, style, pad = 16, onLine, shadow = true }: { chi
   );
 }
 
+/**
+ * Notice — 파랑 톤 안내 배너. 원 안 i 아이콘 + 문구, 화살표 없음(눌러서 이동하지 않는 정보 전달용).
+ * 섹션 설명을 회색 본문으로 흘리는 대신 이 배너로 묶어 "읽어야 하는 안내" 임을 드러낸다.
+ * 탭하면 이동하는 링크형 배너는 별개다(그쪽은 chevron 을 단다).
+ */
+export function Notice({ children, style }: { children: ReactNode; style?: StyleProp<ViewStyle> }) {
+  return (
+    <View style={[{ flexDirection: 'row', alignItems: 'flex-start', gap: 8, backgroundColor: T.blueTint, borderWidth: 1, borderColor: T.blue, borderRadius: 12, paddingVertical: 12, paddingHorizontal: 14 }, style]}>
+      {/* 아이콘은 첫 줄 중앙에 맞춘다 — 여러 줄 문구에서 위로 뜨지 않게 */}
+      <View style={{ marginTop: 1 }}><Icon name="info" size={17} color={T.blue} /></View>
+      <Text style={{ flex: 1, fontSize: 14, fontWeight: '700', color: T.blue, lineHeight: 20 }}>{children}</Text>
+    </View>
+  );
+}
+
 // ── 버튼 ──────────────────────────────────────────────────────
 type Kind = 'primary' | 'tint' | 'gray' | 'ghost' | 'danger';
 type Size = 'sm' | 'md' | 'lg';
