@@ -11,16 +11,23 @@
  *   조회 시 서버에서 받아온다(절대원칙 3).
  */
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { qk } from '@/lib/queryClient';
+import { invalidate, invalidateOn, qk } from '@/lib/queryClient';
 import { supabase } from '@/lib/supabase';
 import { useStoreId } from '@/lib/SessionProvider';
+
+export type BaseUnit = 'g' | 'ml' | 'ea';
+
+/** null 을 0 으로 바꾸지 않는다 — "산출 불가"와 "0원"은 다른 뜻이다. */
+const num = (v: unknown): number => Number(v ?? 0);
+const numOrNull = (v: unknown): number | null => (v === null || v === undefined ? null : Number(v));
+const str = (v: unknown): string | null => (v === null || v === undefined ? null : String(v));
 
 /** 목록 카드가 필요한 만큼만. 화면이 쓰지 않는 컬럼까지 끌어오지 않는다. */
 export interface IngredientRow {
   id: string;
   name: string;
   categoryName: string | null;
-  baseUnit: 'g' | 'ml' | 'ea';
+  baseUnit: BaseUnit;
   perVolume: number;
   lossRate: number;
   safetyStock: number;
@@ -34,11 +41,59 @@ export interface IngredientRow {
   lastInboundAt: string | null;
 }
 
+export interface PurchaseOption {
+  id: string;
+  url: string | null;
+  name: string;
+  volume: number;
+  amount: number;
+  vendorName: string | null;
+}
+
+export interface IngredientDetail extends IngredientRow {
+  categoryId: string | null;
+  minOrderQty: number;
+  /** 실측 로스율(%). 폐기 기록이 없으면 null — 0% 로 단정하지 않는다. */
+  realLossRate: number | null;
+  sealedCount: number;
+  openedRemain: number;
+  purchase: { avg: number | null; low: number | null; high: number | null; count: number };
+  priceTrends: { date: string; price: number }[];
+  options: PurchaseOption[];
+}
+
+export interface LedgerEntry {
+  id: string;
+  date: string;
+  type: 'inbound' | 'consume' | 'discard' | 'stocktake' | 'adjust';
+  countDelta: number | null;
+  volumeDelta: number | null;
+  note: string | null;
+}
+
+function toRow(r: Record<string, unknown>): IngredientRow {
+  return {
+    id: String(r.id),
+    name: String(r.name),
+    categoryName: str(r.category_name),
+    baseUnit: r.base_unit as BaseUnit,
+    perVolume: num(r.per_volume),
+    lossRate: num(r.loss_rate),
+    safetyStock: num(r.safety_stock),
+    vendorName: str(r.vendor_name),
+    memo: str(r.memo),
+    stockTotal: num(r.stock_total),
+    basePrice: numOrNull(r.base_price),
+    soonOut: Boolean(r.soon_out),
+    lastInboundAt: str(r.last_inbound_at),
+  };
+}
+
 /**
  * 목록 조회.
  *
  * 재고 총량·기준단가는 **서버 함수**라 일반 select 로는 못 가져온다.
- * 한 건씩 RPC 를 부르면 N+1 이 되므로 목록 전용 함수를 쓴다(아래 마이그레이션에서 제공).
+ * 한 건씩 RPC 를 부르면 N+1 이 되므로 목록 전용 함수를 쓴다.
  */
 export function useIngredientList() {
   const storeId = useStoreId();
@@ -47,24 +102,171 @@ export function useIngredientList() {
     queryFn: async (): Promise<IngredientRow[]> => {
       const { data, error } = await supabase.rpc('ingredient_list', { p_store: storeId });
       if (error) throw new Error(error.message);
-      const rows = (data ?? []) as Array<Record<string, unknown>>;
-      return rows.map((r) => ({
-        id: String(r.id),
-        name: String(r.name),
-        categoryName: (r.category_name as string | null) ?? null,
-        baseUnit: r.base_unit as 'g' | 'ml' | 'ea',
-        perVolume: Number(r.per_volume ?? 0),
-        lossRate: Number(r.loss_rate ?? 0),
-        safetyStock: Number(r.safety_stock ?? 0),
-        vendorName: (r.vendor_name as string | null) ?? null,
-        memo: (r.memo as string | null) ?? null,
-        stockTotal: Number(r.stock_total ?? 0),
-        // null 을 0 으로 바꾸지 않는다 — "산출 불가"와 "0원"은 다른 뜻이다.
-        basePrice: r.base_price === null || r.base_price === undefined ? null : Number(r.base_price),
-        soonOut: Boolean(r.soon_out),
-        lastInboundAt: (r.last_inbound_at as string | null) ?? null,
+      return ((data ?? []) as Record<string, unknown>[]).map(toRow);
+    },
+  });
+}
+
+/** 상세 (ING-03) — 구매 이력 요약·단가 추이·구매 옵션까지 한 번에. */
+export function useIngredientDetail(id: string | undefined) {
+  return useQuery({
+    queryKey: qk.ingredient(id ?? ''),
+    enabled: Boolean(id),
+    queryFn: async (): Promise<IngredientDetail | null> => {
+      const { data, error } = await supabase.rpc('ingredient_detail', { p_ingredient: id as string });
+      if (error) throw new Error(error.message);
+      if (!data) return null;
+      const r = data as unknown as Record<string, unknown>;
+      const pu = (r.purchase ?? {}) as Record<string, unknown>;
+      return {
+        ...toRow(r),
+        categoryId: str(r.category_id),
+        minOrderQty: num(r.min_order_qty),
+        realLossRate: numOrNull(r.real_loss_rate),
+        sealedCount: num(r.sealed_count),
+        openedRemain: num(r.opened_remain),
+        purchase: {
+          avg: numOrNull(pu.avg),
+          low: numOrNull(pu.low),
+          high: numOrNull(pu.high),
+          count: num(pu.count),
+        },
+        priceTrends: ((r.price_trends ?? []) as Record<string, unknown>[]).map((t) => ({
+          date: String(t.date),
+          price: num(t.price),
+        })),
+        options: ((r.options ?? []) as Record<string, unknown>[]).map((o) => ({
+          id: String(o.id),
+          url: str(o.url),
+          name: String(o.name),
+          volume: num(o.volume),
+          amount: num(o.amount),
+          vendorName: str(o.vendor_name),
+        })),
+      };
+    },
+  });
+}
+
+/** 재고 변동 원장 (ING-07). */
+export function useStockHistory(id: string | undefined, range?: { from?: string; to?: string }) {
+  return useQuery({
+    queryKey: [...qk.stockHistory(id ?? ''), range?.from ?? '', range?.to ?? ''],
+    enabled: Boolean(id),
+    queryFn: async (): Promise<LedgerEntry[]> => {
+      const { data, error } = await supabase.rpc('stock_history', {
+        p_ingredient: id as string,
+        p_from: range?.from,
+        p_to: range?.to,
+      });
+      if (error) throw new Error(error.message);
+      return ((data ?? []) as Record<string, unknown>[]).map((e) => ({
+        id: String(e.id),
+        date: String(e.occurred_on),
+        type: e.type as LedgerEntry['type'],
+        countDelta: numOrNull(e.count_delta),
+        volumeDelta: numOrNull(e.volume_delta),
+        note: str(e.note),
       }));
     },
+  });
+}
+
+export interface IngredientInput {
+  id?: string;
+  name: string;
+  categoryId: string | null;
+  baseUnit: BaseUnit;
+  perVolume: number;
+  lossRate: number;
+  safetyStock: number;
+  minOrderQty: number;
+  defaultVendorId: string | null;
+  memo: string | null;
+}
+
+/** 등록·수정 (ING-02 / ING-04). 저장 한 번이 서버 트랜잭션 하나다. */
+export function useSaveIngredient() {
+  const qc = useQueryClient();
+  const storeId = useStoreId();
+  return useMutation({
+    mutationFn: async (input: IngredientInput): Promise<string> => {
+      const { data, error } = await supabase.rpc('save_ingredient', {
+        p_store: storeId,
+        p_payload: {
+          id: input.id ?? '',
+          name: input.name,
+          category_id: input.categoryId ?? '',
+          base_unit: input.baseUnit,
+          per_volume: input.perVolume,
+          loss_rate: input.lossRate,
+          safety_stock: input.safetyStock,
+          min_order_qty: input.minOrderQty,
+          default_vendor_id: input.defaultVendorId ?? '',
+          memo: input.memo ?? '',
+        },
+      });
+      if (error) throw new Error(error.message);
+      return String(data);
+    },
+    onSuccess: (id) => invalidate(qc, invalidateOn.ingredientSaved(id)),
+  });
+}
+
+/** 삭제 = 비활성화. 과거 입고·판매 기록은 그대로 남는다(원장 보존). */
+export function useDeactivateIngredient() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.rpc('deactivate_ingredient', { p_ingredient: id });
+      if (error) throw new Error(error.message);
+    },
+    onSuccess: () => invalidate(qc, invalidateOn.ingredientSaved()),
+  });
+}
+
+export interface PurchaseOptionInput {
+  id?: string;
+  ingredientId: string;
+  name: string;
+  vendorId: string | null;
+  volume: number;
+  amount: number;
+  url: string | null;
+}
+
+/** 구매 옵션 등록·수정 (ING-05). */
+export function useSavePurchaseOption() {
+  const qc = useQueryClient();
+  const storeId = useStoreId();
+  return useMutation({
+    mutationFn: async (input: PurchaseOptionInput) => {
+      const { error } = await supabase.rpc('save_purchase_option', {
+        p_store: storeId,
+        p_payload: {
+          id: input.id ?? '',
+          ingredient_id: input.ingredientId,
+          purchase_name: input.name,
+          vendor_id: input.vendorId ?? '',
+          volume: input.volume,
+          amount: input.amount,
+          url: input.url ?? '',
+        },
+      });
+      if (error) throw new Error(error.message);
+    },
+    onSuccess: (_r, input) => invalidate(qc, [qk.ingredient(input.ingredientId)]),
+  });
+}
+
+export function useDeletePurchaseOption(ingredientId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.rpc('delete_purchase_option', { p_id: id });
+      if (error) throw new Error(error.message);
+    },
+    onSuccess: () => invalidate(qc, [qk.ingredient(ingredientId)]),
   });
 }
 
@@ -83,7 +285,7 @@ export function useStockChange() {
       /** 조정·소진: 변경 후 총량(기준단위). 폐기: 남은 양(기준단위). */
       value: number;
       perVolume: number;
-      reason: string;
+      soonOut?: boolean;
     }) => {
       if (input.kind === 'waste') {
         // E2 는 "남은 양"을 받아 폐기량을 역산한다.
@@ -94,23 +296,20 @@ export function useStockChange() {
         if (error) throw new Error(error.message);
         return;
       }
-      // E5 는 미개봉 개수 단위로 받는다. 총량을 개당 용량으로 나눠 넘긴다.
+      // E5 는 미개봉 개수 + 개봉 여부로 받는다. 총량을 개당 용량으로 쪼개 넘긴다.
       const target = input.kind === 'out' ? 0 : input.value;
-      const sealed = input.perVolume > 0 ? Math.floor(target / input.perVolume) : 0;
+      const per = input.perVolume > 0 ? input.perVolume : 1;
+      const sealed = Math.floor(target / per);
+      const remain = target - sealed * per;
       const { error } = await supabase.rpc('e5_stock_adjusted', {
         p_ingredient: input.ingredientId,
         p_sealed: sealed,
-        p_opened: 0,
-        p_soon: false,
+        p_opened: remain > 0 ? 1 : 0,
+        p_soon: input.kind === 'out' ? true : Boolean(input.soonOut),
       });
       if (error) throw new Error(error.message);
     },
-    onSuccess: (_r, input) => {
-      // 전파 계약대로 무효화한다(가이드 §8.2). 목록·상세·이력·후보가 함께 갱신돼야 한다.
-      void qc.invalidateQueries({ queryKey: qk.ingredients });
-      void qc.invalidateQueries({ queryKey: qk.ingredient(input.ingredientId) });
-      void qc.invalidateQueries({ queryKey: qk.candidates });
-      void qc.invalidateQueries({ queryKey: qk.recipes });
-    },
+    onSuccess: (_r, input) =>
+      invalidate(qc, input.kind === 'waste' ? invalidateOn.e2(input.ingredientId) : invalidateOn.e5(input.ingredientId)),
   });
 }

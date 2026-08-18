@@ -77,7 +77,9 @@ export type Database = {
         Row: {
           created_at: string
           daily_extra: number
+          etc_items: Json
           etc_revenue: number
+          extra_items: Json
           id: string
           note: string | null
           sale_date: string
@@ -87,7 +89,9 @@ export type Database = {
         Insert: {
           created_at?: string
           daily_extra?: number
+          etc_items?: Json
           etc_revenue?: number
+          extra_items?: Json
           id?: string
           note?: string | null
           sale_date: string
@@ -97,7 +101,9 @@ export type Database = {
         Update: {
           created_at?: string
           daily_extra?: number
+          etc_items?: Json
           etc_revenue?: number
+          extra_items?: Json
           id?: string
           note?: string | null
           sale_date?: string
@@ -123,6 +129,7 @@ export type Database = {
           qty_delivery: number
           qty_hall: number
           qty_takeout: number
+          qty_waste: number
           recipe_id: string | null
           store_id: string
           tax_mode: Database["public"]["Enums"]["tax_mode"] | null
@@ -138,6 +145,7 @@ export type Database = {
           qty_delivery?: number
           qty_hall?: number
           qty_takeout?: number
+          qty_waste?: number
           recipe_id?: string | null
           store_id: string
           tax_mode?: Database["public"]["Enums"]["tax_mode"] | null
@@ -153,6 +161,7 @@ export type Database = {
           qty_delivery?: number
           qty_hall?: number
           qty_takeout?: number
+          qty_waste?: number
           recipe_id?: string | null
           store_id?: string
           tax_mode?: Database["public"]["Enums"]["tax_mode"] | null
@@ -1184,6 +1193,7 @@ export type Database = {
           p_qty_hall?: number
           p_qty_delivery?: number
           p_qty_takeout?: number
+          p_qty_waste?: number
         }
         Returns: Json
       }
@@ -1369,6 +1379,19 @@ export type Database = {
         }
         Returns: number
       }
+      recipe_pick_list: {
+        Args: {
+          p_store: string
+          p_exclude?: string
+        }
+        Returns: {
+          id: string
+          name: string
+          base_servings: number
+          unit_cost: number
+          active: boolean
+        }[]
+      }
       recompute_recipe: {
         Args: {
           p_recipe: string
@@ -1414,6 +1437,38 @@ export type Database = {
         Args: {
           p_store: string
           p_date: string
+        }
+        Returns: Json
+      }
+      sales_extra_usage: {
+        Args: {
+          p_store: string
+          p_from: string
+          p_to: string
+        }
+        Returns: Json
+      }
+      sales_fixed_breakdown: {
+        Args: {
+          p_store: string
+          p_from: string
+          p_to: string
+        }
+        Returns: Json
+      }
+      sales_material_usage: {
+        Args: {
+          p_store: string
+          p_from: string
+          p_to: string
+        }
+        Returns: Json
+      }
+      sales_range: {
+        Args: {
+          p_store: string
+          p_from: string
+          p_to: string
         }
         Returns: Json
       }
@@ -1474,8 +1529,8 @@ export type Database = {
           p_store: string
           p_date: string
           p_items: Json
-          p_etc_revenue?: number
-          p_daily_extra?: number
+          p_etc_items?: Json
+          p_extra_items?: Json
         }
         Returns: Json
       }
