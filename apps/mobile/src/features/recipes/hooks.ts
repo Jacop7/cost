@@ -20,6 +20,9 @@ export interface RecipeRow {
   id: string;
   name: string;
   price: number;
+  active: boolean;
+  categoryId: string | null;
+  categoryName: string | null;
   taxMode: TaxMode;
   baseServings: number;
   targetProfitRate: number;
@@ -52,6 +55,9 @@ export interface RecipeDetail {
   id: string;
   name: string;
   price: number;
+  active: boolean;
+  /** 최근 30일 판매 실적 — 레시피 화면에서 매출 탭으로 건너가지 않게. */
+  sales30d: { qty: number; revenue: number; waste: number };
   taxMode: TaxMode;
   baseServings: number;
   targetProfitRate: number;
@@ -59,8 +65,9 @@ export interface RecipeDetail {
   materialCost: number;
   extraCost: number;
   fixedRate: number;
+  categoryId: string | null;
   lines: RecipeLine[];
-  extras: { id: string; name: string; amount: number }[];
+  extras: { id: string; name: string; amount: number; materialId: string | null; qty: number }[];
   profitTrends: { date: string; profitRate: number; materialRate: number; cause: 'material' | 'recipe' | 'fixed' }[];
 }
 
@@ -75,6 +82,9 @@ export function useRecipeList() {
         id: String(r.id),
         name: String(r.name),
         price: num(r.price),
+        active: r.active !== false,
+        categoryId: str(r.category_id),
+        categoryName: str(r.category_name),
         taxMode: r.tax_mode as TaxMode,
         baseServings: num(r.base_servings),
         targetProfitRate: num(r.target_profit_rate),
@@ -104,6 +114,12 @@ export function useRecipeDetail(id: string | undefined) {
         id: String(r.id),
         name: String(r.name),
         price: num(r.price),
+        active: r.active !== false,
+        sales30d: {
+          qty: num((r.sales_30d as Record<string, unknown> | null)?.qty),
+          revenue: num((r.sales_30d as Record<string, unknown> | null)?.revenue),
+          waste: num((r.sales_30d as Record<string, unknown> | null)?.waste),
+        },
         taxMode: r.tax_mode as TaxMode,
         baseServings: num(r.base_servings),
         targetProfitRate: num(r.target_profit_rate),
@@ -111,6 +127,7 @@ export function useRecipeDetail(id: string | undefined) {
         materialCost: num(r.material_cost),
         extraCost: num(r.extra_cost),
         fixedRate: num(r.fixed_rate),
+        categoryId: str(r.category_id),
         lines: ((r.lines ?? []) as Record<string, unknown>[]).map((l) => ({
           id: String(l.id),
           ingredientId: str(l.ingredient_id),
@@ -125,6 +142,8 @@ export function useRecipeDetail(id: string | undefined) {
           id: String(e.id),
           name: String(e.name),
           amount: num(e.amount),
+          materialId: str(e.material_id),
+          qty: num(e.qty) || 1,
         })),
         profitTrends: ((r.profit_trends ?? []) as Record<string, unknown>[]).map((t) => ({
           date: String(t.date),
@@ -141,13 +160,16 @@ export interface RecipeInput {
   id?: string;
   name: string;
   price: number;
+  categoryId?: string | null;
+  active?: boolean;
   taxMode: TaxMode;
   baseServings: number;
   targetProfitRate: number;
   avgMonthlySales: number | null;
   /** 보내면 **전량 교체**된다. 헤더만 고칠 때는 생략한다. */
   lines?: { ingredientId?: string | null; subRecipeId?: string | null; inputQty: number }[];
-  extras?: { name: string; amount: number }[];
+  /** 부자재 마스터를 가리키면 금액은 서버가 마스터 단가 × 수량으로 계산한다. */
+  extras?: { materialId?: string | null; name?: string; amount?: number; qty?: number }[];
 }
 
 export function useSaveRecipe() {
@@ -164,6 +186,8 @@ export function useSaveRecipe() {
         target_profit_rate: input.targetProfitRate,
         avg_monthly_sales: input.avgMonthlySales ?? '',
       };
+      if (input.categoryId !== undefined) payload.category_id = input.categoryId ?? '';
+      if (input.active !== undefined) payload.active = input.active;
       if (input.lines) {
         payload.lines = input.lines.map((l) => ({
           ingredient_id: l.ingredientId ?? '',
@@ -172,7 +196,12 @@ export function useSaveRecipe() {
         }));
       }
       if (input.extras) {
-        payload.extras = input.extras.map((e) => ({ name: e.name, amount: e.amount }));
+        payload.extras = input.extras.map((e) => ({
+          material_id: e.materialId ?? '',
+          name: e.name ?? '',
+          amount: e.amount ?? 0,
+          qty: e.qty ?? 1,
+        }));
       }
       const { data, error } = await supabase.rpc('save_recipe', { p_store: storeId, p_payload: asJson(payload) });
       if (error) throw new Error(error.message);
@@ -190,5 +219,27 @@ export function useDeactivateRecipe() {
       if (error) throw new Error(error.message);
     },
     onSuccess: (_r, id) => invalidate(qc, invalidateOn.e3(id)),
+  });
+}
+
+/** 반제품 후보 — 레시피 재료로 넣을 수 있는 다른 메뉴(자기 자신 제외). */
+export function useRecipePickList(excludeId?: string) {
+  const storeId = useStoreId();
+  return useQuery({
+    queryKey: [...qk.recipes, 'pick', excludeId ?? ''],
+    queryFn: async (): Promise<{ id: string; name: string; baseServings: number; unitCost: number; active: boolean }[]> => {
+      const { data, error } = await supabase.rpc('recipe_pick_list', {
+        p_store: storeId,
+        p_exclude: excludeId,
+      });
+      if (error) throw new Error(error.message);
+      return ((data ?? []) as Record<string, unknown>[]).map((r) => ({
+        id: String(r.id),
+        name: String(r.name),
+        baseServings: num(r.base_servings),
+        unitCost: num(r.unit_cost),
+        active: r.active !== false,
+      }));
+    },
   });
 }

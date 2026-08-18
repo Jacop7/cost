@@ -1,6 +1,6 @@
 /**
  * MY-01 마이페이지 홈 — 사업장 + 설정 메뉴.
- * ⚠ 디자인 프로토타입(정적·데모). 실데이터/저장은 데이터 연결 단계에서.
+ * 설명줄은 실제 저장값을 보여준다. 고정 문구를 두면 설정을 바꿔도 그대로라 반영 여부를 알 수 없다.
  */
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
@@ -9,25 +9,42 @@ import { getLocale } from '@sikjae/core';
 import { Card, Icon, IconName } from '@/components/kit';
 import { T } from '@/theme/tokens';
 import { useSettings, useUnitDigits } from '../store';
+import { useSettingsLists, useStoreName, useStoreSettings } from '../hooks';
 
 interface MenuItem { icon: IconName; bg: string; fg: string; t: string; d: string; route: Href | null; }
 /** 언어·통화·단위는 현재 선택값을 설명줄에 보여야 해서 함수로 둔다(나머지는 정적). */
-const sections = (localeDesc: string, unitDesc: string): MenuItem[] => [
+const sections = (d: {
+  locale: string; unit: string; category: string; vendor: string; alert: string;
+}): MenuItem[] => [
   { icon: 'won', bg: T.blueTint, fg: T.blue, t: '고정 지출 (월)', d: '인건비·수수료·포장 등 → 고정지출률', route: '/recipes/fixed-cost' as Href },
-  { icon: 'grid', bg: '#F0EDFB', fg: '#7C5CE0', t: '카테고리 관리', d: '식재료 · 레시피 · 부자재 분류', route: '/my/categories' as Href },
-  { icon: 'globe', bg: '#E8F1FB', fg: '#2E6FD0', t: '언어 · 통화', d: localeDesc, route: '/my/language' as Href },
-  { icon: 'ruler', bg: '#FEF1E6', fg: '#E08A2B', t: '단위 설정', d: unitDesc, route: '/my/units' as Href },
-  { icon: 'store', bg: '#EAF6F0', fg: '#179E6B', t: '구매처·브랜드', d: '이름변경 · 병합 · 숨김', route: '/my/vendors' as Href },
-  { icon: 'bell', bg: '#FFF5E0', fg: '#D99A1C', t: '알림 설정', d: '4종 · 3개 켜짐', route: '/my/notifications' as Href },
+  { icon: 'grid', bg: '#F0EDFB', fg: '#7C5CE0', t: '카테고리 관리', d: d.category, route: '/my/categories' as Href },
+  { icon: 'globe', bg: '#E8F1FB', fg: '#2E6FD0', t: '언어 · 통화', d: d.locale, route: '/my/language' as Href },
+  { icon: 'ruler', bg: '#FEF1E6', fg: '#E08A2B', t: '단위 설정', d: d.unit, route: '/my/units' as Href },
+  { icon: 'store', bg: '#EAF6F0', fg: '#179E6B', t: '구매처', d: d.vendor, route: '/my/vendors' as Href },
+  { icon: 'bell', bg: '#FFF5E0', fg: '#D99A1C', t: '알림 설정', d: d.alert, route: '/my/notifications' as Href },
 ];
 
 export default function MyHomeScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const go = (r: Href | null) => r && router.push(r);
-  const L = getLocale(useSettings((s) => s.locale));
+  const L = getLocale(useSettings().locale);
   const unitDigits = useUnitDigits();
-  const SECTIONS = sections(`${L.label} · ${L.currencyName} (${L.currency})`, `미터법 · 단가 소수 ${unitDigits}자리`);
+  const lists = useSettingsLists();
+  const settings = useStoreSettings();
+  const storeName = useStoreName();
+
+  const alertOn = settings.data
+    ? [settings.data.alertMorningSummary, settings.data.alertInboundDelay, settings.data.alertPriceSpike, settings.data.alertTargetMiss].filter(Boolean).length
+    : 0;
+
+  const SECTIONS = sections({
+    locale: `${L.label} · ${L.currencyName} (${L.currency})`,
+    unit: `미터법 · 단가 소수 ${unitDigits}자리`,
+    category: `식재료 ${lists.data?.categories.length ?? 0} · 레시피 ${lists.data?.recipeCategories.length ?? 0} · 부자재 ${lists.data?.materials.length ?? 0}`,
+    vendor: `${lists.data?.vendors.length ?? 0}곳 등록`,
+    alert: `4종 · ${alertOn}개 켜짐`,
+  });
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
@@ -46,16 +63,15 @@ export default function MyHomeScreen() {
             <Icon name="store" size={24} color={T.onColor} />
           </View>
           <View style={{ flex: 1 }}>
-            <Text style={{ fontSize: 18, fontWeight: '800', color: T.ink }}>한끼 백반</Text>
-            <Text style={{ fontSize: 14, color: T.ter, marginTop: 2 }}>일반 식당 · 미터법</Text>
+            <Text style={{ fontSize: 18, fontWeight: '800', color: T.ink }}>{storeName.data ?? '매장'}</Text>
+            <Text style={{ fontSize: 14, color: T.ter, marginTop: 2 }}>{L.label} · 미터법</Text>
           </View>
-          <Icon name="chevron" size={18} color={T.line3} />
         </Card>
 
         {/* 메뉴 */}
         <Card pad={0} style={{ overflow: 'hidden' }}>
           {SECTIONS.map((s, i) => (
-            <Pressable key={s.t} onPress={() => go(s.route)} style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 13, paddingHorizontal: 15, borderBottomWidth: i < SECTIONS.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
+            <Pressable key={s.t} onPress={() => go(s.route)} accessibilityRole="button" accessibilityLabel={s.t} style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 13, paddingHorizontal: 15, borderBottomWidth: i < SECTIONS.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
               <View style={{ width: 38, height: 38, borderRadius: 11, backgroundColor: s.bg, alignItems: 'center', justifyContent: 'center' }}>
                 <Icon name={s.icon} size={20} color={s.fg} />
               </View>

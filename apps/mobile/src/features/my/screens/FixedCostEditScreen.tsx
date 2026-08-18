@@ -1,164 +1,271 @@
 /**
- * MY-02 고정 지출 수정 — '자세히 보기(FixedCostScreen)'의 [수정]에서 진입. zip 프로토타입(RCP-09) 디자인.
- * 총 월매출 · 항목별(회색 헤더: 제목 입력 + 적용 채널 비중 칩 → 탭 시 채널·비중 시트) · 항목명/금액 입력 · 추가/삭제 → 저장(→ E4).
- * ⚠ 디자인 프로토타입(정적 입력). 실제 입력/저장(E4)은 데이터 연결 단계에서.
+ * MY-05 고정 지출 수정 — 월 매출과 항목을 입력하고 저장하면 E4 가 돈다.
+ *
+ * 저장 한 번이 **모든 메뉴의 손익**을 다시 계산한다(고정지출률이 바뀌므로).
+ * 이전 구현은 입력칸 4개가 `onChangeText` 없이 값만 그려 타이핑이 되지 않았고,
+ * 저장 버튼은 화면만 닫았다. 여기서는 실제로 입력되고 저장된다.
  */
-import { useState } from 'react';
-import { Modal, Pressable, ScrollView, Text, View } from 'react-native';
-import { useRouter } from 'expo-router';
-import { AppHeader, Button, Icon, Input } from '@/components/kit';
+import { useEffect, useState } from 'react';
+import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
+import { useLocalSearchParams } from 'expo-router';
+import { AppHeader, Button, Card, Field, Icon, Input, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { cardShadow, T, won } from '@/theme/tokens';
+import { formatPercent, currentBusinessMonth } from '@sikjae/core';
+import { T, won } from '@/theme/tokens';
+import { clampDecimals } from '@/lib/num';
+import { useFixedCosts, useSaveFixedCosts, type ChannelWeights, type FixedCostItem } from '../hooks';
 import { ChannelWeightSheet } from '../components/ChannelWeightSheet';
 
-const REVENUE = 28_500_000;
-const CHANNELS = ['매장', '배달', '포장'];
+const NUM = { fontVariant: ['tabular-nums' as const] };
 
-interface Section {
-  title: string;
-  channels: string[];
-  weights: Record<string, number>;
-  rows: { name: string; amt: number }[];
-}
-const SECTIONS: Section[] = [
-  { title: '인건비', channels: ['매장', '배달', '포장'], weights: { 매장: 30, 배달: 50, 포장: 20 }, rows: [{ name: '월 인건비', amt: 4_800_000 }] },
-  { title: '플랫폼 수수료', channels: ['배달'], weights: { 배달: 100 }, rows: [{ name: '배민', amt: 1_650_000 }, { name: '쿠팡이츠', amt: 960_000 }] },
-  { title: '포장비', channels: ['배달', '포장'], weights: { 배달: 70, 포장: 30 }, rows: [{ name: '중대용기', amt: 225_000 }, { name: '소용기', amt: 155_000 }] },
-  { title: '배달/배송 (대행)', channels: ['배달'], weights: { 배달: 100 }, rows: [{ name: '바로고', amt: 540_000 }] },
-  { title: '광고/홍보', channels: ['매장', '배달', '포장'], weights: { 매장: 30, 배달: 50, 포장: 20 }, rows: [{ name: '인스타 광고', amt: 253_000 }] },
-];
+const LABEL: Record<string, string> = {
+  labor: '인건비', rent: '임대료', utility: '공과금', commission: '플랫폼 수수료',
+  packing: '포장비', delivery: '배달/배송', ads: '광고/홍보', etc: '기타',
+};
+/** 처음 등록할 때 보여줄 기본 항목. 빈 화면보다 채워진 틀이 입력을 시작하게 한다. */
+const DEFAULT_KEYS = ['labor', 'rent', 'utility', 'commission', 'packing', 'delivery', 'ads'];
+
+/** 채널 코드 -> 표기. 시트와 같은 문구를 써야 한 화면에서 두 이름이 보이지 않는다. */
+const CH_LABEL: Record<string, string> = { hall: '매장', delivery: '배달', takeout: '포장' };
+
+const num = (s: string) => {
+  const n = parseFloat(String(s).replace(/,/g, ''));
+  return Number.isNaN(n) ? 0 : n;
+};
+
+interface DraftLine { name: string; amount: string }
+interface DraftItem { key: string; label: string; mode: 'total' | 'detail'; total: string; lines: DraftLine[]; weights: ChannelWeights | null }
 
 export default function FixedCostEditScreen() {
-  const router = useRouter();
-  const [confirmOpen, setConfirmOpen] = useState(false);
-  const [weightSi, setWeightSi] = useState<number | null>(null); // 채널·비중 시트 대상 섹션
-  const [sections, setSections] = useState<Section[]>(() =>
-    SECTIONS.map((s) => ({ title: s.title, channels: [...s.channels], weights: { ...s.weights }, rows: s.rows.map((r) => ({ ...r })) })),
-  );
-  const addRow = (si: number) =>
-    setSections((prev) => prev.map((s, i) => (i === si ? { ...s, rows: [...s.rows, { name: '', amt: 0 }] } : s)));
-  const removeRow = (si: number, ri: number) =>
-    setSections((prev) => prev.map((s, i) => (i === si ? { ...s, rows: s.rows.filter((_, j) => j !== ri) } : s)));
-  const addSection = () => setSections((prev) => [...prev, { title: '', channels: [], weights: {}, rows: [{ name: '', amt: 0 }] }]);
-  const removeSection = (si: number) => setSections((prev) => prev.filter((_, i) => i !== si));
+  const params = useLocalSearchParams<{ month?: string }>();
+  const month = params.month ?? currentBusinessMonth();
 
-  const XBtn = ({ onPress }: { onPress: () => void }) => (
-    <Pressable onPress={onPress} hitSlop={6} style={{ width: 40, alignItems: 'center', justifyContent: 'center' }} accessibilityRole="button" accessibilityLabel="항목 삭제">
-      <Icon name="close" size={18} color={T.ter} />
-    </Pressable>
-  );
+  const fixed = useFixedCosts(month);
+  const save = useSaveFixedCosts();
+
+  const [revenue, setRevenue] = useState('');
+  const [items, setItems] = useState<DraftItem[]>([]);
+  const [loaded, setLoaded] = useState(false);
+  const [weightFor, setWeightFor] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (loaded || fixed.isLoading) return;
+    const d = fixed.data;
+    setRevenue(d && d.totalRevenue > 0 ? String(d.totalRevenue) : '');
+    const existing = d?.items ?? [];
+    const base: DraftItem[] = existing.length > 0
+      ? existing.map((i) => ({
+          key: i.key,
+          label: LABEL[i.key] ?? i.key,
+          mode: i.mode,
+          total: String(i.total),
+          lines: i.lines.map((l) => ({ name: l.name, amount: String(l.amount) })),
+          weights: i.weights,
+        }))
+      : DEFAULT_KEYS.map((k) => ({ key: k, label: LABEL[k] ?? k, mode: 'total' as const, total: '', lines: [], weights: null }));
+    setItems(base);
+    setLoaded(true);
+  }, [fixed.data, fixed.isLoading, loaded]);
+
+  const itemTotal = (it: DraftItem) =>
+    it.mode === 'detail' ? it.lines.reduce((a, l) => a + num(l.amount), 0) : num(it.total);
+
+  const sum = items.reduce((a, i) => a + itemTotal(i), 0);
+  const rev = num(revenue);
+  const rate = rev > 0 ? sum / rev : null;
+
+  const patchItem = (index: number, next: Partial<DraftItem>) =>
+    setItems((xs) => xs.map((it, i) => (i === index ? { ...it, ...next } : it)));
+
+  const addLine = (index: number) =>
+    setItems((xs) => xs.map((it, i) => (i === index ? { ...it, mode: 'detail', lines: [...it.lines, { name: '', amount: '' }] } : it)));
+
+  const patchLine = (index: number, li: number, next: Partial<DraftLine>) =>
+    setItems((xs) => xs.map((it, i) => (i === index ? { ...it, lines: it.lines.map((l, j) => (j === li ? { ...l, ...next } : l)) } : it)));
+
+  const removeLine = (index: number, li: number) =>
+    setItems((xs) => xs.map((it, i) => {
+      if (i !== index) return it;
+      const lines = it.lines.filter((_, j) => j !== li);
+      return { ...it, lines, mode: lines.length === 0 ? 'total' : 'detail' };
+    }));
+
+  const addItem = () =>
+    setItems((xs) => [...xs, { key: `etc_${xs.length}`, label: '', mode: 'total', total: '', lines: [], weights: null }]);
+
+  const removeItem = (index: number) => setItems((xs) => xs.filter((_, i) => i !== index));
+
+  const revenueError = revenue !== '' && rev <= 0 ? '월 매출은 0보다 커야 해요' : undefined;
+  const canSave = rev > 0 && !save.isPending;
+
+  const onSave = () => {
+    if (!canSave) return;
+    const payload: FixedCostItem[] = items
+      .filter((it) => itemTotal(it) > 0)
+      .map((it) => ({
+        key: it.key,
+        mode: it.mode,
+        total: itemTotal(it),
+        lines: it.lines
+          .filter((l) => num(l.amount) > 0)
+          .map((l) => ({ name: l.name.trim() || '항목', amount: num(l.amount) })),
+        weights: it.weights,
+      }));
+
+    save.mutate(
+      { month, totalRevenue: rev, items: payload },
+      {
+        onSuccess: () => safeBack('/recipes/fixed-cost'),
+        onError: (e) => Alert.alert('저장하지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'),
+      },
+    );
+  };
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
-      <AppHeader title="고정 지출 수정" onBack={() => safeBack('/recipes/fixed-cost')} />
+      <AppHeader title={`${Number(month.slice(5))}월 고정 지출 수정`} onBack={() => safeBack('/recipes/fixed-cost')} />
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 4, paddingBottom: 24, gap: 12 }}>
-        {/* 총 월매출 */}
-        <View style={{ backgroundColor: T.surface, borderRadius: 16, padding: 16, ...cardShadow }}>
-          <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub, marginBottom: 8 }}>
-            총 월매출 <Text style={{ color: T.blue }}>*</Text>
-          </Text>
-          <Input value={won(REVENUE)} mono />
-        </View>
+      <QueryState
+        isLoading={fixed.isLoading}
+        error={fixed.error}
+        isEmpty={false}
+        onRetry={() => void fixed.refetch()}
+        emptyTitle=""
+      >
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 4, paddingBottom: 24, gap: 12 }}>
+          <Card pad={16}>
+            <Field label="총 월매출" req error={revenueError} hint="고정지출률의 분모예요">
+              <Input
+                value={revenue}
+                onChangeText={(t) => setRevenue(clampDecimals(t, 0))}
+                placeholder="0"
+                suffix="원"
+                mono
+                keyboardType="number-pad"
+                error={Boolean(revenueError)}
+                accessibilityLabel="총 월매출"
+              />
+            </Field>
+          </Card>
 
-        {/* 항목별 카드 */}
-        {sections.map((s, si) => (
-          <View key={si} style={{ backgroundColor: T.surface, borderRadius: 16, overflow: 'hidden', ...cardShadow }}>
-            {/* 회색 헤더 — 제목 입력 + 적용 채널(비중 칩, 탭 → 시트) */}
-            <View style={{ backgroundColor: T.surface2, padding: 14 }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 11 }}>
+          {items.map((it, si) => (
+            <Card key={`${it.key}-${si}`} pad={0} style={{ overflow: 'hidden' }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 12, paddingHorizontal: 14, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
                 <View style={{ flex: 1 }}>
-                  <Input value={s.title} placeholder="항목 제목" />
+                  {LABEL[it.key] ? (
+                    <Text style={{ fontSize: 16, fontWeight: '800', color: T.sub }}>{LABEL[it.key]}</Text>
+                  ) : (
+                    <Input value={it.label} onChangeText={(t) => patchItem(si, { label: t })} placeholder="항목 이름" accessibilityLabel="항목 이름" />
+                  )}
                 </View>
-                <XBtn onPress={() => removeSection(si)} />
+                <Text style={[{ fontSize: 14, fontWeight: '700', color: T.sub2 }, NUM]}>
+                  {rev > 0 ? `${((itemTotal(it) / rev) * 100).toFixed(1)}%` : '—'}
+                </Text>
+                <Pressable onPress={() => removeItem(si)} hitSlop={6} accessibilityRole="button" accessibilityLabel={`${LABEL[it.key] ?? it.label} 삭제`} style={{ width: 32, alignItems: 'center' }}>
+                  <Icon name="close" size={18} color={T.ter} />
+                </Pressable>
               </View>
-              <Pressable onPress={() => setWeightSi(si)} style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 8 }}>
-                <Text style={{ fontSize: 13, fontWeight: '700', color: T.sub2, paddingTop: 5 }}>적용 채널</Text>
-                <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-                  {CHANNELS.map((c) => {
-                    const on = s.channels.includes(c);
-                    return (
-                      <View key={c} style={{ paddingVertical: 4, paddingHorizontal: 10, borderRadius: 999, borderWidth: 1, borderColor: on ? T.blue : T.line, backgroundColor: on ? T.blueTint : T.surface }}>
-                        <Text style={[{ fontSize: 13, fontWeight: '700', color: on ? T.blue : T.ter }, { fontVariant: ['tabular-nums'] }]}>{c} {on ? s.weights[c] ?? 0 : 0}%</Text>
+
+              <View style={{ padding: 14, gap: 9 }}>
+                {/* 채널 배분 — 수수료는 배달에만 드는 식으로 항목마다 다르다. */}
+                <Pressable
+                  onPress={() => setWeightFor(si)}
+                  accessibilityRole="button"
+                  accessibilityLabel={`${LABEL[it.key] ?? it.label} 채널 비중`}
+                  style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 9, paddingHorizontal: 12, borderRadius: 10, backgroundColor: T.surface2 }}
+                >
+                  <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub2 }}>채널 배분</Text>
+                  <Text style={{ flex: 1, fontSize: 14, fontWeight: '700', color: it.weights ? T.blue : T.ter }} numberOfLines={1}>
+                    {it.weights
+                      ? Object.entries(it.weights).filter(([, v]) => v > 0).map(([k, v]) => `${CH_LABEL[k] ?? k} ${v}%`).join(' · ')
+                      : '매출 비중으로 자동'}
+                  </Text>
+                  <Icon name="chevron" size={15} color={T.line3} />
+                </Pressable>
+                {it.mode === 'total' ? (
+                  <Input
+                    value={it.total}
+                    onChangeText={(t) => patchItem(si, { total: clampDecimals(t, 0) })}
+                    placeholder="0"
+                    suffix="원"
+                    mono
+                    keyboardType="number-pad"
+                    accessibilityLabel={`${LABEL[it.key] ?? it.label} 금액`}
+                  />
+                ) : (
+                  it.lines.map((l, li) => (
+                    <View key={li} style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                      <View style={{ flex: 1.4 }}>
+                        <Input value={l.name} onChangeText={(t) => patchLine(si, li, { name: t })} placeholder="항목명" accessibilityLabel="세부 항목명" />
                       </View>
-                    );
-                  })}
-                </View>
-              </Pressable>
-            </View>
-            {/* 항목 행 */}
-            <View style={{ padding: 14 }}>
-              {s.rows.map((r, i) => (
-                <View key={i} style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 9 }}>
-                  <View style={{ flex: 1.4 }}>
-                    <Input value={r.name} placeholder="항목명 입력" />
+                      <View style={{ flex: 1 }}>
+                        <Input value={l.amount} onChangeText={(t) => patchLine(si, li, { amount: clampDecimals(t, 0) })} placeholder="금액" suffix="원" mono keyboardType="number-pad" accessibilityLabel="세부 항목 금액" />
+                      </View>
+                      <Pressable onPress={() => removeLine(si, li)} hitSlop={6} accessibilityRole="button" accessibilityLabel="세부 항목 삭제" style={{ width: 32, alignItems: 'center' }}>
+                        <Icon name="close" size={18} color={T.ter} />
+                      </Pressable>
+                    </View>
+                  ))
+                )}
+
+                <Pressable
+                  onPress={() => addLine(si)}
+                  accessibilityRole="button" accessibilityLabel="세부 항목 추가"
+                  style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5, paddingVertical: 11, borderRadius: 10, borderWidth: 1, borderStyle: 'dashed', borderColor: T.line }}
+                >
+                  <Icon name="plus" size={16} color={T.sub2} sw={2.2} />
+                  <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub2 }}>세부 항목 추가</Text>
+                </Pressable>
+
+                {it.mode === 'detail' ? (
+                  <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 6 }}>
+                    <Text style={{ flex: 1, fontSize: 14, fontWeight: '700', color: T.sub2 }}>소계</Text>
+                    <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{won(itemTotal(it))}원</Text>
                   </View>
-                  <View style={{ flex: 1 }}>
-                    <Input value={r.amt > 0 ? won(r.amt) : ''} placeholder="금액" suffix="원" mono />
-                  </View>
-                  <XBtn onPress={() => removeRow(si, i)} />
-                </View>
-              ))}
-              <Pressable onPress={() => addRow(si)} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 4, paddingVertical: 12, borderRadius: 12, borderWidth: 1, borderStyle: 'dashed', borderColor: T.blue, backgroundColor: T.blueTint }}>
-                <Icon name="plus" size={17} color={T.blue} sw={2.2} />
-                <Text style={{ fontSize: 14, fontWeight: '700', color: T.blue }}>추가</Text>
-              </Pressable>
-            </View>
+                ) : null}
+              </View>
+            </Card>
+          ))}
+
+          <Pressable
+            onPress={addItem}
+            accessibilityRole="button" accessibilityLabel="항목 추가"
+            style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5, paddingVertical: 15, borderRadius: 12, borderWidth: 1, borderStyle: 'dashed', borderColor: T.blue, backgroundColor: T.blueTint }}
+          >
+            <Icon name="plus" size={18} color={T.blue} sw={2.2} />
+            <Text style={{ fontSize: 14, fontWeight: '700', color: T.blue }}>항목 추가</Text>
+          </Pressable>
+
+          <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, paddingVertical: 12, paddingHorizontal: 14, borderRadius: 12, backgroundColor: T.amberTint }}>
+            <Icon name="info" size={15} color={T.amberText} />
+            <Text style={{ flex: 1, fontSize: 14, color: T.amberText, lineHeight: 20 }}>
+              저장하면 이 달 <Text style={{ fontWeight: '700' }}>모든 메뉴의 손익</Text>이 다시 계산돼요.
+            </Text>
           </View>
-        ))}
+        </ScrollView>
+      </QueryState>
 
-        {/* 새 항목(카드) 추가 */}
-        <Pressable onPress={addSection} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 4, paddingVertical: 14, borderRadius: 12, borderWidth: 1, borderStyle: 'dashed', borderColor: T.line3 }}>
-          <Icon name="plus" size={17} color={T.sub2} sw={2.2} />
-          <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub2 }}>새 항목 추가</Text>
-        </Pressable>
-      </ScrollView>
-
-      {/* 하단 저장 */}
-      <View style={{ paddingHorizontal: 20, paddingTop: 12, paddingBottom: 30, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
-        <Button kind="primary" size="lg" full onPress={() => setConfirmOpen(true)}>저장</Button>
-      </View>
-
-      {/* 저장 확인 다이얼로그 */}
-      <Modal visible={confirmOpen} transparent animationType="fade" onRequestClose={() => setConfirmOpen(false)}>
-        <View style={{ flex: 1, backgroundColor: T.scrim, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 32 }}>
-          <View style={{ width: '100%', maxWidth: 340, backgroundColor: T.surface, borderRadius: 18, paddingTop: 24, paddingHorizontal: 20, paddingBottom: 14 }}>
-            <View style={{ alignItems: 'center', gap: 8 }}>
-              {/* 질문은 다이얼로그라 '~하시겠습니까?', 부연 안내는 '~해요' 체(가이드 §9.2). */}
-              <Text style={{ fontSize: 18, fontWeight: '800', color: T.ink, textAlign: 'center' }}>고정 지출을 저장하시겠습니까?</Text>
-              {/* 광범위하게 전파되는 작업이라 영향 범위를 구체적으로 밝힌다(§9.9). E4 는 같은 매장의
-                  전 레시피 손익과 월 손익을 함께 다시 계산한다. */}
-              <Text style={{ fontSize: 16, color: T.sub, textAlign: 'center', lineHeight: 22 }}>
-                이번 달 고정지출률이 바뀌면서 등록된 모든 메뉴의 순이익과 월 손익이 다시 계산돼요.
-              </Text>
-            </View>
-            {/* 버튼은 행동형으로 쓴다(§9.2). '예/아니오'는 무엇이 일어나는지 드러내지 않는다. */}
-            <View style={{ flexDirection: 'row', gap: 9, marginTop: 18 }}>
-              <Pressable
-                onPress={() => setConfirmOpen(false)}
-                accessibilityRole="button"
-                style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingVertical: 14, borderRadius: 12, backgroundColor: T.line2 }}
-              >
-                <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink2 }}>취소</Text>
-              </Pressable>
-              <Pressable
-                onPress={() => { setConfirmOpen(false); safeBack('/recipes/fixed-cost'); }}
-                accessibilityRole="button"
-                style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingVertical: 14, borderRadius: 12, backgroundColor: T.blue }}
-              >
-                <Text style={{ fontSize: 16, fontWeight: '700', color: T.onColor }}>저장</Text>
-              </Pressable>
-            </View>
-          </View>
-        </View>
-      </Modal>
-
-      {/* RCP-15 적용 채널·비중 시트 */}
       <ChannelWeightSheet
-        visible={weightSi != null}
-        onClose={() => setWeightSi(null)}
-        channels={weightSi != null ? sections[weightSi]?.channels ?? [] : []}
+        visible={weightFor !== null}
+        onClose={() => setWeightFor(null)}
+        title={weightFor !== null ? (LABEL[items[weightFor]?.key ?? ''] ?? items[weightFor]?.label) : undefined}
+        value={weightFor !== null ? (items[weightFor]?.weights ?? null) : null}
+        onApply={(next) => {
+          if (weightFor !== null) patchItem(weightFor, { weights: next });
+          setWeightFor(null);
+        }}
       />
+
+      <View style={{ paddingHorizontal: 20, paddingTop: 11, paddingBottom: 30, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 11 }}>
+          <Text style={{ flex: 1, fontSize: 14, fontWeight: '600', color: T.sub2 }}>고정지출률</Text>
+          <Text style={[{ fontSize: 18, fontWeight: '800', color: T.ink, marginRight: 8 }, NUM]}>{won(sum)}원</Text>
+          <Text style={[{ fontSize: 16, fontWeight: '800', color: rate === null ? T.ter : T.blue }, NUM]}>
+            {rate === null ? '—' : formatPercent(rate)}
+          </Text>
+        </View>
+        <Button kind="primary" size="lg" full disabled={!canSave} loading={save.isPending} onPress={onSave}>저장</Button>
+      </View>
     </View>
   );
 }
