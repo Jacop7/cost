@@ -1397,6 +1397,13 @@ export type Database = {
         }
         Returns: number
       }
+      fixed_cost_revenue_check: {
+        Args: {
+          p_store: string
+          p_month: string
+        }
+        Returns: Json
+      }
       get_settings: {
         Args: {
           p_store: string
