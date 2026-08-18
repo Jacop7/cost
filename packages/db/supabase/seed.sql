@@ -327,7 +327,9 @@ begin
       jsonb_build_object('recipe_id', r_jeyuk,
         'qty_hall',     round(9 * v_w + (v_seq % 4)),
         'qty_delivery', round(5 * v_w + (v_seq % 3)),
-        'qty_takeout',  round(2 * v_w)),
+        'qty_takeout',  round(2 * v_w),
+        -- 조리 폐기 — 미리 볶아뒀다가 못 판 분량. 재료는 나갔고 매출은 0.
+        'qty_waste',    case when v_seq % 6 = 0 then 2 else 0 end),
       jsonb_build_object('recipe_id', r_kimchi,
         'qty_hall',     round(8 * v_w + (v_seq % 3)),
         'qty_delivery', round(3 * v_w),
@@ -352,9 +354,14 @@ begin
         'qty_hall',     round(22 * v_w),
         'qty_delivery', round(9 * v_w),
         'qty_takeout',  round(3 * v_w))),
-      -- 기타 매출(음료 등) · 당일 추가 지출
-      round(28000 * v_w),
-      case when d % 7 = 1 then 45000 else 0 end);
+      -- 기타 매출 — 레시피에 없는 음료. 재료 차감 없이 매출에만 더해진다.
+      jsonb_build_array(
+        jsonb_build_object('name','음료(캔)', 'price',2000,'qty', round(7 * v_w)),
+        jsonb_build_object('name','소주·맥주','price',5000,'qty', round(3 * v_w))),
+      -- 당일 일회성 지출 — 고정지출에는 들어가지 않는다.
+      case when d % 7 = 1
+        then jsonb_build_array(jsonb_build_object('name','얼음·소모품','amount',45000,'memo','주 1회 구매'))
+        else '[]'::jsonb end);
 
     -- ── 폐기 (E2) — 주 1회 상하는 채소 ──────────────────────
     -- 폐기가 있어야 실측 로스율이 잡히고, 기준단가가 추정 로스율에서 실측으로 넘어간다.
