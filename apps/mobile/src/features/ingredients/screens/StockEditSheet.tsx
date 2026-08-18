@@ -78,6 +78,7 @@ export function StockEditSheet({
   unit,
   stock,
   onApply,
+  saving = false,
 }: {
   visible: boolean;
   onClose: () => void;
@@ -85,6 +86,8 @@ export function StockEditSheet({
   unit: '개' | 'g' | 'ml';
   stock: number; // 기준단위 현재 재고
   onApply: (next: StockChange) => void;
+  /** 서버 저장 중. 버튼이 두 번 눌려 이벤트가 두 번 기록되는 것을 막는다. */
+  saving?: boolean;
 }) {
   const isCount = unit === '개';
   const dispUnit = isCount ? '개' : unit === 'ml' ? 'L' : 'kg';
@@ -131,7 +134,14 @@ export function StockEditSheet({
               const on = tab === id;
               const accent = id === 'waste' ? T.red : T.ink;
               return (
-                <Pressable key={id} onPress={() => setTab(id)} style={{ paddingBottom: 11 }}>
+                <Pressable
+                  key={id}
+                  onPress={() => setTab(id)}
+                  accessibilityRole="tab"
+                  accessibilityLabel={label}
+                  accessibilityState={{ selected: on }}
+                  style={{ paddingBottom: 11 }}
+                >
                   <Text style={{ fontSize: 16, fontWeight: on ? '700' : '600', color: on ? accent : T.ter }}>{label}</Text>
                   {on ? <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 2.5, backgroundColor: accent, borderRadius: 2 }} /> : null}
                 </Pressable>
@@ -191,8 +201,15 @@ export function StockEditSheet({
         </View>
 
         <View style={{ flexDirection: 'row', gap: 10, paddingHorizontal: 20, paddingTop: 12, paddingBottom: 26, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
-          <Button kind="gray" size="lg" style={{ flex: 1 }} onPress={onClose}>취소</Button>
-          <Button kind={tab === 'waste' ? 'danger' : 'primary'} size="lg" style={{ flex: 1.3 }} onPress={() => onApply({ kind: tab, nextStock, wasteAmount: tab === 'waste' ? wasteBase : 0, reason: reason.trim() })}>{action}</Button>
+          <Button kind="gray" size="lg" style={{ flex: 1 }} disabled={saving} onPress={onClose}>취소</Button>
+          <Button
+            kind={tab === 'waste' ? 'danger' : 'primary'}
+            size="lg"
+            style={{ flex: 1.3 }}
+            loading={saving}
+            disabled={tab === 'waste' && wasteBase <= 0}
+            onPress={() => onApply({ kind: tab, nextStock, wasteAmount: tab === 'waste' ? wasteBase : 0, reason: reason.trim() })}
+          >{action}</Button>
         </View>
       </View>
     </Sheet>

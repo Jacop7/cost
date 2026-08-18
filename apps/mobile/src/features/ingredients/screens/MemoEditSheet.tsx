@@ -1,16 +1,18 @@
 /**
  * ING-02 메모 편집 — 바텀시트 팝업. 상세 메모 카드의 '수정'에서 호출.
- * TextInput(멀티라인) · 글자수 카운트 · 취소/완료. ⚠ 프로토타입: 저장은 상위 로컬 상태에만 반영.
+ * TextInput(멀티라인) · 글자수 카운트 · 취소/완료. 저장은 상위가 서버로 보낸다.
  */
 import { useEffect, useState } from 'react';
 import { Text, TextInput, View } from 'react-native';
 import { Button, Sheet } from '@/components/kit';
 import { T } from '@/theme/tokens';
 
-export function MemoEditSheet({ visible, value, maxLength = 100, onClose, onSave }: {
+export function MemoEditSheet({ visible, value, maxLength = 100, saving = false, onClose, onSave }: {
   visible: boolean;
   value: string;
   maxLength?: number;
+  /** 서버 저장 중. 완료 버튼이 두 번 눌리지 않게 한다. */
+  saving?: boolean;
   onClose: () => void;
   onSave: (next: string) => void;
 }) {
@@ -38,10 +40,10 @@ export function MemoEditSheet({ visible, value, maxLength = 100, onClose, onSave
       </Text>
 
       <View style={{ flexDirection: 'row', gap: 9, marginTop: 16 }}>
-        <Button kind="gray" size="lg" onPress={onClose} style={{ flex: 1 }}>
+        <Button kind="gray" size="lg" disabled={saving} onPress={onClose} style={{ flex: 1 }}>
           취소
         </Button>
-        <Button kind="primary" size="lg" onPress={() => onSave(draft.trim())} style={{ flex: 1.4 }}>
+        <Button kind="primary" size="lg" loading={saving} onPress={() => onSave(draft.trim())} style={{ flex: 1.4 }}>
           완료
         </Button>
       </View>
