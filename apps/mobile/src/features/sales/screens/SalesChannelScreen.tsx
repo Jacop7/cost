@@ -11,6 +11,7 @@ import { AppHeader, Card, Icon, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { T, won } from '@/theme/tokens';
 import { useSalesRange } from '../hooks';
+import { useChannelFixed } from '@/features/my/hooks';
 import { rangeLabel, todayBusiness } from '../period';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
@@ -23,6 +24,8 @@ export default function SalesChannelScreen() {
   const to = params.to ?? params.date ?? today;
 
   const range = useSalesRange(from, to);
+  // 고정지출은 항목마다 드는 채널이 다르다(수수료는 배달에만). 서버가 비중대로 나눠 준다.
+  const chFixed = useChannelFixed(from, to);
   const s = range.data?.summary;
   const channels = (range.data?.channels ?? []).filter((c) => c.amount > 0);
   const menuRevenue = channels.reduce((a, c) => a + c.amount, 0);
@@ -45,7 +48,8 @@ export default function SalesChannelScreen() {
             // 기타 매출은 채널이 없으므로 분모에서 뺀다.
             const share = menuRevenue > 0 ? c.amount / menuRevenue : 0;
             const waste = (s?.wasteLoss ?? 0) * share;
-            const fixed = (s?.fixedCost ?? 0) * share;
+            // 비중 설정이 있으면 그 값, 없으면 서버가 매출 비중으로 계산한 값이 온다.
+            const fixed = chFixed.data?.byChannel[c.code] ?? (s?.fixedCost ?? 0) * share;
             const daily = (s?.dailyExtra ?? 0) * share;
             const extraMat = (s?.extraMaterialCost ?? 0) * share;
             const profit = c.amount - c.material - extraMat - c.fee - c.tax - waste - fixed - daily;
@@ -60,7 +64,7 @@ export default function SalesChannelScreen() {
               ['(−) 부자재', extraMat, true],
               ['(−) 채널 수수료', c.fee, false],
               ['(−) 폐기 손실', waste, true],
-              ['(−) 고정 지출', fixed, true],
+              ['(−) 고정 지출', fixed, chFixed.data === undefined],
               ['(−) 추가 지출', daily, true],
               ['(−) 세금', c.tax, false],
             ];
@@ -116,7 +120,8 @@ export default function SalesChannelScreen() {
         <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, paddingVertical: 12, paddingHorizontal: 14, borderRadius: 12, backgroundColor: T.blueTint, borderWidth: 1, borderColor: T.blueLine }}>
           <Icon name="info" size={15} color={T.blue} />
           <Text style={{ flex: 1, fontSize: 14, color: T.blue, fontWeight: '600', lineHeight: 20 }}>
-            재료비·수수료·세금은 채널별 판매 수량에서 나온 실제값이에요. ‘배분’이 붙은 항목만 매출 비중으로 나눈 값이에요.
+            재료비·수수료·세금은 채널별 판매 수량에서 나온 실제값이에요. 고정 지출은 항목별 채널 비중대로 나뉘고,
+            비중을 정하지 않은 항목만 매출 비중으로 배분돼요.
           </Text>
         </View>
       </ScrollView>

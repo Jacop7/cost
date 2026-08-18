@@ -268,11 +268,17 @@ begin
   -- 지난달과 이번달 둘 다 넣는다. recompute_recipe 는 `business_month()`(오늘 기준)로
   -- 고정지출률을 찾으므로 과거 월만 있으면 오늘 조회가 null 이 되어 고정지출 0 으로 계산된다
   -- (실증: 33.49% 여야 할 값이 64.79% 로 나왔다).
+  -- 채널 비중(weights): 수수료·배달대행은 배달에만, 포장비는 배달·포장에만 든다.
+  -- 이걸 안 넣으면 매장이 배달 수수료를 떠안아 "매장이 적자"로 보인다.
   perform save_fixed_costs(v_store, m, 12000000, jsonb_build_array(
-      jsonb_build_object('key','labor',     'mode','total','total',2400000,'lines','[]'::jsonb),
-      jsonb_build_object('key','commission','mode','total','total', 603000,'lines','[]'::jsonb),
-      jsonb_build_object('key','packing',   'mode','total','total', 380000,'lines','[]'::jsonb),
-      jsonb_build_object('key','delivery',  'mode','total','total', 120000,'lines','[]'::jsonb),
+      jsonb_build_object('key','labor',     'mode','total','total',2400000,'lines','[]'::jsonb,
+                         'weights', jsonb_build_object('hall',30,'delivery',50,'takeout',20)),
+      jsonb_build_object('key','commission','mode','total','total', 603000,'lines','[]'::jsonb,
+                         'weights', jsonb_build_object('delivery',100)),
+      jsonb_build_object('key','packing',   'mode','total','total', 380000,'lines','[]'::jsonb,
+                         'weights', jsonb_build_object('delivery',70,'takeout',30)),
+      jsonb_build_object('key','delivery',  'mode','total','total', 120000,'lines','[]'::jsonb,
+                         'weights', jsonb_build_object('delivery',100)),
       jsonb_build_object('key','ads',       'mode','total','total', 253000,'lines','[]'::jsonb)
     ))  -- 2,400,000 + 603,000 + 380,000 + 120,000 + 253,000 = 3,756,000
   from (select distinct m from unnest(array[

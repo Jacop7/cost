@@ -1,69 +1,93 @@
 /**
- * RCP-07 평균 판매량 입력 — 메뉴 평균 판매량으로 고정지출을 1개당 원가에 배분.
- * 집계 기간(일/주/월) 선택 → 수량 입력 → 하루 환산·배분 비율 안내.
- * ⚠ 디자인 프로토타입(정적·데모 환산). 실제 반영은 데이터 연결 단계에서.
+ * RCP-07 평균 판매량 — 레시피 폼의 '월 평균 판매량'을 실제 판매 실적으로 채워준다.
+ *
+ * 사장님이 감으로 적는 대신 **최근 30일 실제 판매량**을 보여주고, 원하면 그대로 넣는다.
+ * (이전 구현은 고정 숫자와 "전체 판매의 12%" 같은 근거 없는 문구를 보여줬다.)
  */
 import { useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
-import { AppHeader, Button, Icon } from '@/components/kit';
+import { useLocalSearchParams } from 'expo-router';
+import { AppHeader, Button, Card, Icon, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { T } from '@/theme/tokens';
+import { T, won } from '@/theme/tokens';
+import { clampDecimals } from '@/lib/num';
+import { useSalesRange } from '@/features/sales/hooks';
+import { addDays, todayBusiness } from '@/features/sales/period';
+import { useRecipeDraft } from '../draftStore';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
-const PERIODS = [
-  { u: '일', ex: '하루 평균' },
-  { u: '주', ex: '일주일 평균' },
-  { u: '월', ex: '한 달 평균' },
-];
-const QUICK = ['100', '200', '300', '500'];
 
 export default function AvgSalesScreen() {
-  const [period, setPeriod] = useState(2); // 월
-  const [value, setValue] = useState('300');
+  const { recipe } = useLocalSearchParams<{ recipe?: string }>();
+  const today = todayBusiness();
+  const range = useSalesRange(addDays(today, -29), today);
 
+  const draft = useRecipeDraft((s) => s.draft);
+  const patch = useRecipeDraft((s) => s.patch);
+  const [value, setValue] = useState(draft.avgMonthlySales);
+
+  const recipeId = recipe ?? draft.id;
+  const sold = range.data?.menu.find((m) => m.recipeId === recipeId);
   const monthly = Number(value.replace(/,/g, '')) || 0;
-  const perDay = Math.round(monthly / 30);
+  const perDay = Math.round((monthly / 30) * 10) / 10;
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
-      <AppHeader title="평균 판매량" onBack={() => safeBack('/recipes')} />
+      <AppHeader title="평균 판매량" onBack={() => safeBack('/recipes/add')} />
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 6, paddingBottom: 24 }}>
         <Text style={{ fontSize: 14, color: T.sub2, fontWeight: '600', lineHeight: 21, marginBottom: 18 }}>
-          이 메뉴가 평균적으로 얼마나 팔리는지 입력하면, 고정 지출을 메뉴별로 나눠 1개 원가에 반영해요.
+          한 달에 평균 몇 개나 팔리는지 적어 주세요. 손익 미리보기의 ‘월평균 기준’ 계산에 쓰여요.
         </Text>
 
-        {/* 집계 기간 */}
-        <Text style={{ fontSize: 14, fontWeight: '700', color: T.ter, marginBottom: 8 }}>집계 기간</Text>
-        <View style={{ flexDirection: 'row', gap: 4, padding: 4, backgroundColor: T.line, borderRadius: 12, marginBottom: 20 }}>
-          {PERIODS.map((p, i) => {
-            const on = i === period;
-            return (
-              <Pressable
-                key={p.u}
-                onPress={() => setPeriod(i)}
-                style={[{ flex: 1, alignItems: 'center', paddingVertical: 11, borderRadius: 9, backgroundColor: on ? T.surface : 'transparent' }, on ? { shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.08, shadowRadius: 3, elevation: 1 } : null]}
-              >
-                <Text style={{ fontSize: 16, fontWeight: on ? '700' : '600', color: on ? T.ink : T.ter }}>{p.u}</Text>
-                <Text style={{ fontSize: 14, color: on ? T.sub2 : T.ter, marginTop: 2 }}>{p.ex}</Text>
-              </Pressable>
-            );
-          })}
-        </View>
+        {/* 실제 판매 실적 */}
+        <QueryState
+          isLoading={range.isLoading}
+          error={range.error}
+          isEmpty={false}
+          onRetry={() => void range.refetch()}
+          emptyTitle=""
+        >
+          <Card pad={16} style={{ marginBottom: 18 }}>
+            <Text style={{ fontSize: 14, fontWeight: '700', color: T.ter, marginBottom: 8 }}>최근 30일 실제 판매</Text>
+            {sold ? (
+              <>
+                <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 8 }}>
+                  <Text style={[{ fontSize: 22, fontWeight: '800', color: T.ink }, NUM]}>{sold.qty}<Text style={{ fontSize: 16 }}>개</Text></Text>
+                  <Text style={[{ fontSize: 14, color: T.sub2, fontWeight: '600' }, NUM]}>매출 {won(sold.revenue)}원</Text>
+                </View>
+                <Pressable
+                  onPress={() => setValue(String(sold.qty))}
+                  accessibilityRole="button" accessibilityLabel="실제 판매량으로 채우기"
+                  style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5, marginTop: 12, paddingVertical: 11, borderRadius: 10, borderWidth: 1, borderColor: T.blue, backgroundColor: T.blueTint }}
+                >
+                  <Icon name="check" size={16} color={T.blue} sw={2.2} />
+                  <Text style={{ fontSize: 14, fontWeight: '700', color: T.blue }}>이 값으로 채우기</Text>
+                </Pressable>
+              </>
+            ) : (
+              <Text style={{ fontSize: 16, color: T.ter }}>
+                {recipeId ? '최근 30일 판매 기록이 없어요' : '메뉴를 저장한 뒤에 실제 판매량을 볼 수 있어요'}
+              </Text>
+            )}
+          </Card>
+        </QueryState>
 
         {/* 입력 */}
-        <Text style={{ fontSize: 14, fontWeight: '700', color: T.ter, marginBottom: 8 }}>{PERIODS[period]?.ex} 판매량</Text>
+        <Text style={{ fontSize: 14, fontWeight: '700', color: T.ter, marginBottom: 8 }}>월 평균 판매량</Text>
         <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 8, backgroundColor: T.surface, borderWidth: 1, borderColor: T.blue, borderRadius: 14, paddingVertical: 18, paddingHorizontal: 18 }}>
           <Text style={[{ flex: 1, fontSize: 22, fontWeight: '800', color: T.ink, letterSpacing: -0.6 }, NUM]}>{value || '0'}</Text>
-          <Text style={{ fontSize: 18, fontWeight: '700', color: T.sub2 }}>개/{PERIODS[period]?.u}</Text>
+          <Text style={{ fontSize: 18, fontWeight: '700', color: T.sub2 }}>개/월</Text>
         </View>
         <View style={{ flexDirection: 'row', gap: 7, marginTop: 11 }}>
-          {QUICK.map((v) => {
+          {['100', '200', '300', '500'].map((v) => {
             const on = v === value;
             return (
               <Pressable
                 key={v}
                 onPress={() => setValue(v)}
+                accessibilityRole="button" accessibilityLabel={`${v}개`}
+                accessibilityState={{ selected: on }}
                 style={{ flex: 1, alignItems: 'center', paddingVertical: 10, borderRadius: 10, borderWidth: 1, borderColor: on ? T.blue : T.line, backgroundColor: on ? T.blueTint : T.surface }}
               >
                 <Text style={[{ fontSize: 14, fontWeight: '700', color: on ? T.blue : T.sub }, NUM]}>{v}</Text>
@@ -71,27 +95,34 @@ export default function AvgSalesScreen() {
             );
           })}
         </View>
+        <View style={{ flexDirection: 'row', gap: 7, marginTop: 7 }}>
+          {['-50', '-10', '+10', '+50'].map((d) => (
+            <Pressable
+              key={d}
+              onPress={() => setValue(String(Math.max(0, monthly + Number(d))))}
+              accessibilityRole="button" accessibilityLabel={`${d}개`}
+              style={{ flex: 1, alignItems: 'center', paddingVertical: 10, borderRadius: 10, borderWidth: 1, borderColor: T.line, backgroundColor: T.surface }}
+            >
+              <Text style={[{ fontSize: 14, fontWeight: '700', color: T.sub }, NUM]}>{d}</Text>
+            </Pressable>
+          ))}
+        </View>
 
-        {/* 환산 안내 */}
         <View style={{ marginTop: 20, backgroundColor: T.surface2, borderRadius: 12, paddingVertical: 14, paddingHorizontal: 16 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 4 }}>
             <Text style={{ flex: 1, fontSize: 14, color: T.sub2, fontWeight: '600' }}>하루 환산</Text>
             <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>약 {perDay}개/일</Text>
           </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 8, marginTop: 4, borderTopWidth: 1, borderTopColor: T.line2 }}>
-            <Text style={{ flex: 1, fontSize: 14, color: T.sub2, fontWeight: '600' }}>메뉴별 고정지출 배분 비율</Text>
-            <Text style={[{ fontSize: 16, fontWeight: '700', color: T.blue }, NUM]}>전체 판매의 12%</Text>
-          </View>
-        </View>
-
-        <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, marginTop: 12 }}>
-          <Icon name="info" size={15} color={T.ter} />
-          <Text style={{ flex: 1, fontSize: 14, color: T.ter, lineHeight: 20 }}>판매량이 높을수록 메뉴 1개가 떠안는 고정지출이 줄어들어 순이익률이 올라가요.</Text>
         </View>
       </ScrollView>
 
       <View style={{ paddingHorizontal: 20, paddingTop: 11, paddingBottom: 28, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
-        <Button kind="primary" size="lg" full onPress={() => safeBack('/recipes')}>적용</Button>
+        <Button
+          kind="primary" size="lg" full
+          onPress={() => { patch({ avgMonthlySales: clampDecimals(value, 0) }); safeBack('/recipes/add'); }}
+        >
+          적용
+        </Button>
       </View>
     </View>
   );

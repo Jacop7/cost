@@ -15,8 +15,11 @@ export function SearchBar({ value, onChange, placeholder, onClose, autoFocus = t
   value: string;
   onChange: (v: string) => void;
   placeholder: string;
-  /** 닫기(X). 검색 모드를 끄고 목록을 원래대로 되돌린다. */
-  onClose: () => void;
+  /**
+   * 닫기(X). 검색 모드를 끄고 목록을 원래대로 되돌린다.
+   * 검색 전용 화면(부자재 검색 등)에는 끌 모드가 없으므로 생략할 수 있다 — 그때는 X 를 감춘다.
+   */
+  onClose?: () => void;
   autoFocus?: boolean;
 }) {
   return (
@@ -34,15 +37,27 @@ export function SearchBar({ value, onChange, placeholder, onClose, autoFocus = t
           style={{ flex: 1, minWidth: 0, fontSize: 16, fontWeight: '600', color: T.ink, padding: 0 }}
         />
         {/* 34×34 이라 hitSlop 5 로 최소 44×44 를 채운다(§9.6-1). */}
-        <Pressable
-          onPress={onClose}
-          accessibilityRole="button"
-          accessibilityLabel="검색 닫기"
-          hitSlop={5}
-          style={{ width: 34, height: 34, alignItems: 'center', justifyContent: 'center' }}
-        >
-          <Icon name="close" size={18} color={T.ter} />
-        </Pressable>
+        {onClose ? (
+          <Pressable
+            onPress={onClose}
+            accessibilityRole="button"
+            accessibilityLabel="검색 닫기"
+            hitSlop={5}
+            style={{ width: 34, height: 34, alignItems: 'center', justifyContent: 'center' }}
+          >
+            <Icon name="close" size={18} color={T.ter} />
+          </Pressable>
+        ) : value !== '' ? (
+          <Pressable
+            onPress={() => onChange('')}
+            accessibilityRole="button"
+            accessibilityLabel="검색어 지우기"
+            hitSlop={5}
+            style={{ width: 34, height: 34, alignItems: 'center', justifyContent: 'center' }}
+          >
+            <Icon name="close" size={18} color={T.ter} />
+          </Pressable>
+        ) : null}
       </View>
     </View>
   );

@@ -9,10 +9,11 @@ import { UNIT_PRICE_DIGIT_OPTIONS, formatUnitPrice, getLocale, unitPriceDigits }
 import { AppHeader, Button, Card, Field, Icon, Input, Notice, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { T } from '@/theme/tokens';
-import { useSettings, useUnitDigits } from '../store';
+import { useSettings, useSettingsActions, useUnitDigits } from '../store';
 
 /** 자릿수 견본에 쓰는 실값 — 대파 4,000원/1,000g · 로스 15% → 4.7058…원/g (검산 기준값). */
-const DEMO_UNIT_PRICE = 4000 / 1000 / (1 - 0.15);
+// 표기 예시 — 대파 4,000원/1,000g, 로스 15% (AGENTS.md 검산 입력). 자릿수 차이를 눈으로 보기 위한 값이다.
+const SAMPLE_UNIT_PRICE = 4000 / 1000 / (1 - 0.15);
 
 interface UnitSystem {
   name: string;
@@ -43,8 +44,8 @@ function DetailRow({ label, value, conv, last }: { label: string; value: string;
 export default function MyUnitsScreen() {
   // 단가 자릿수 — 로케일 기본값(금액+2)을 따르되 사용자가 덮어쓸 수 있다.
   // 기본값과 같은 값을 고르면 override 를 지워(null) 언어를 바꿔도 새 기본값을 따라가게 한다.
-  const locale = useSettings((s) => s.locale);
-  const setUnitDigits = useSettings((s) => s.setUnitDigits);
+  const { locale } = useSettings();
+  const { setUnitDigits } = useSettingsActions();
   const digits = useUnitDigits();
   const defaultDigits = unitPriceDigits(locale);
   const L = getLocale(locale);
@@ -147,7 +148,7 @@ export default function MyUnitsScreen() {
                 style={{ flexDirection: 'row', alignItems: 'center', padding: 15, borderBottomWidth: i < UNIT_PRICE_DIGIT_OPTIONS.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}
               >
                 <Text style={[{ width: 74, fontSize: 16, fontWeight: '600', color: T.sub }, { fontVariant: ['tabular-nums'] }]}>{pattern}</Text>
-                <Text style={[{ flex: 1, minWidth: 0, fontSize: 16, fontWeight: '700', color: T.ink }, { fontVariant: ['tabular-nums'] }]}>{formatUnitPrice(DEMO_UNIT_PRICE, 'g', locale, d)}</Text>
+                <Text style={[{ flex: 1, minWidth: 0, fontSize: 16, fontWeight: '700', color: T.ink }, { fontVariant: ['tabular-nums'] }]}>{formatUnitPrice(SAMPLE_UNIT_PRICE, 'g', locale, d)}</Text>
                 <View style={{ width: 24, height: 24, borderRadius: 12, borderWidth: on ? 7 : 2, borderColor: on ? T.blue : T.line, marginLeft: 12 }} />
               </Pressable>
             );

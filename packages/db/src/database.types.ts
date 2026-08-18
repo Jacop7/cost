@@ -1530,6 +1530,14 @@ export type Database = {
         }
         Returns: undefined
       }
+      sales_channel_fixed: {
+        Args: {
+          p_store: string
+          p_from: string
+          p_to: string
+        }
+        Returns: Json
+      }
       sales_day: {
         Args: {
           p_store: string

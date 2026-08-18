@@ -8,7 +8,7 @@
  * 플로우: 목록에서 고름(초안) → [저장] → 확인 시트에서 "이렇게 보여요" 미리보기 → [저장] → 확정.
  *   언어는 앱 전체 숫자 표기를 한 번에 바꾸는 설정이라, 고르는 즉시 적용하지 않고 결과를 보여준 뒤 확정한다.
  *
- * ⚠ 디자인 프로토타입 — 확정값은 로컬 상태(useSettings). 영구 저장·시작 시 복원, 그리고 실제 언어 전환
+ * 확정값은 서버(settings)에 저장된다. 실제 언어 전환
  *   (UI 문구 번역·글꼴·RTL)은 아직 연결하지 않았다. 지금 확정되는 것은 숫자 서식 기준값뿐이다.
  */
 import { useState } from 'react';
@@ -26,7 +26,7 @@ import {
 import { AppHeader, Button, Card, Icon, Notice, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { T, tnum } from '@/theme/tokens';
-import { useSettings, useUnitDigits } from '../store';
+import { useSettings, useSettingsActions, useUnitDigits } from '../store';
 
 // 미리보기는 검산 기준값을 그대로 쓴다 — 사장님이 자기 화면에서 보던 숫자로 비교할 수 있게.
 const P_PRICE = 12000; // 제육볶음 판매가
@@ -60,8 +60,8 @@ function PreviewRow({ label, value, hint, last }: { label: string; value: string
 
 export default function MyLanguageScreen() {
   const insets = useSafeAreaInsets();
-  const locale = useSettings((s) => s.locale);
-  const setLocale = useSettings((s) => s.setLocale);
+  const { locale } = useSettings();
+  const { setLocale, saving } = useSettingsActions();
   const digits = useUnitDigits();
 
   const [draft, setDraft] = useState<LocaleKey>(locale); // 확정 전 선택

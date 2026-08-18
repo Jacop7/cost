@@ -330,7 +330,9 @@ export function IngredientDetailScreen() {
       {/* 수정 액션 메뉴 */}
       <Modal visible={menuOpen} transparent animationType="fade" onRequestClose={() => setMenuOpen(false)} statusBarTranslucent>
         <Pressable onPress={() => setMenuOpen(false)} accessibilityRole="button" accessibilityLabel="메뉴 닫기" style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: T.scrim }}>
-          <Pressable onPress={() => {}} style={{ backgroundColor: T.surface, borderTopLeftRadius: 20, borderTopRightRadius: 20, paddingHorizontal: 12, paddingTop: 10, paddingBottom: 16 }}>
+          {/* 시트 본문 탭이 배경까지 전달돼 닫히지 않게 여기서 삼킨다.
+              빈 onPress 를 단 Pressable 로 막으면 스크린리더가 "버튼"이라고 읽는다 — View 로 처리한다. */}
+          <View onStartShouldSetResponder={() => true} style={{ backgroundColor: T.surface, borderTopLeftRadius: 20, borderTopRightRadius: 20, paddingHorizontal: 12, paddingTop: 10, paddingBottom: 16 }}>
             <View style={{ alignItems: 'center', paddingBottom: 14 }}>
               <View style={{ width: 40, height: 5, borderRadius: 3, backgroundColor: T.line }} />
             </View>
@@ -349,7 +351,7 @@ export function IngredientDetailScreen() {
             <Pressable onPress={() => setMenuOpen(false)} accessibilityRole="button" accessibilityLabel="닫기" style={{ paddingVertical: 20, borderRadius: 14, backgroundColor: T.surface2, alignItems: 'center' }}>
               <Text style={{ fontSize: 16, fontWeight: '600', color: T.ink }}>닫기</Text>
             </Pressable>
-          </Pressable>
+          </View>
         </Pressable>
       </Modal>
 

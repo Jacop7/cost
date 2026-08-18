@@ -1,34 +1,34 @@
 /**
- * RCP-01 레시피 리스트 (② 4.1) — 프로토타입을 kit 컴포넌트로 RN 이식.
- * 카드: 메뉴명 · 판매가 · 재료 원가율 · 순이익(원·%) · 상태(정상/▼목표 미달) · 미달 시 권장가.
- * 정렬 기본 '순이익률 낮은순'(돈 안 되는 메뉴가 위로) · 검색 · 판매 상태 필터(중지 흐리게).
- * 손익은 @sikjae/core computeProfit 미리보기, 확정값은 E3 RPC(향후).
+ * RCP-01 레시피 리스트 — 메뉴별 손익 한눈에.
+ *
+ * 카드의 순이익·원가율은 **서버가 낸 값**이다(recipe_list). 앱이 다시 계산하면
+ * 매출 화면의 숫자와 어긋난다 — 같은 메뉴가 화면마다 다른 이익률로 보이게 된다.
  */
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Badge, Card, Chip, FAB, Icon, ScrollTabs, SearchBar, Sheet } from '@/components/kit';
+import { Badge, Card, Chip, FAB, Icon, QueryState, ScrollTabs, SearchBar, Sheet } from '@/components/kit';
 import { T, won } from '@/theme/tokens';
-import { DEMO_RECIPES, pct, RecipeCardData, recipeProfit } from '../demoData';
+import { formatPercent } from '@sikjae/core';
+import { useSettingsLists } from '@/features/my/hooks';
+import { useRecipeList, type RecipeRow } from '../hooks';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 
-// 레시피 카테고리 (RCP-01 상단 스크롤 탭) — 데모: 시각 선택만.
-const CATS = ['전체', '찌개·전골', '덮밥·볶음밥', '볶음', '구이', '튀김', '면류', '분식', '사이드', '음료'];
-
 /** 검색어 매칭 — 메뉴명·카테고리. 공백은 무시해 "제육 볶음"도 찾히게 한다. */
 const squash = (s: string) => s.replace(/\s+/g, '').toLowerCase();
-function matchesQuery(r: RecipeCardData, q: string): boolean {
+function matchesQuery(r: RecipeRow, q: string): boolean {
   const n = squash(q);
   if (n === '') return true;
-  return squash(r.name).includes(n) || squash(r.cat ?? '').includes(n);
+  return squash(r.name).includes(n) || squash(r.categoryName ?? '').includes(n);
 }
 
-type SortKey = 'rateLow' | 'rateHigh' | 'priceHigh' | 'priceLow';
+type SortKey = 'rateLow' | 'rateHigh' | 'priceHigh' | 'priceLow' | 'salesHigh';
 const SORTS: { key: SortKey; label: string }[] = [
   { key: 'rateLow', label: '순이익률 낮은순' },
   { key: 'rateHigh', label: '순이익률 높은순' },
+  { key: 'salesHigh', label: '판매량 많은순' },
   { key: 'priceHigh', label: '판매가 높은순' },
   { key: 'priceLow', label: '판매가 낮은순' },
 ];
@@ -47,58 +47,63 @@ const TARGET_OPTS: { key: TargetKey; label: string }[] = [
   { key: 'met', label: '목표 달성' },
 ];
 
-function RecipeCard({ r }: { r: RecipeCardData }) {
-  const p = recipeProfit(r);
-  const stopped = r.status === 'stopped';
-  const warn = !stopped && p.belowTarget;
+/** 목표 달성 여부 — 목표는 %(0~100), 실제는 비율(0~1)이라 맞춰서 비교한다. */
+const belowTarget = (r: RecipeRow) => r.profitRate * 100 < r.targetProfitRate;
+
+function RecipeCard({ r, onPress }: { r: RecipeRow; onPress: () => void }) {
+  const stopped = !r.active;
+  const warn = !stopped && belowTarget(r);
   const rateColor = warn ? T.red : T.green;
 
   return (
-    <Card pad={0} style={{ overflow: 'hidden', opacity: stopped ? 0.55 : 1 }}>
-      <View style={{ paddingVertical: 15, paddingHorizontal: 16 }}>
-        {/* 상태 뱃지 + 메뉴명 */}
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7, marginBottom: 12 }}>
-          {warn ? <Badge tone="red" solid sm>목표 미달</Badge> : <Badge tone="green" solid sm>목표 달성</Badge>}
-          <Text style={{ fontSize: 16, fontWeight: '800', letterSpacing: -0.3, color: T.ink }} numberOfLines={1}>{r.name}</Text>
-          {stopped ? <Badge tone="neutral" sm>판매중지</Badge> : null}
-        </View>
+    <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={`${r.name} 상세`}>
+      <Card pad={0} style={{ overflow: 'hidden', opacity: stopped ? 0.55 : 1 }}>
+        <View style={{ paddingVertical: 15, paddingHorizontal: 16 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7, marginBottom: 12 }}>
+            {stopped ? null : warn ? <Badge tone="red" solid sm>목표 미달</Badge> : <Badge tone="green" solid sm>목표 달성</Badge>}
+            <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', letterSpacing: -0.3, color: T.ink }} numberOfLines={1}>{r.name}</Text>
+            {stopped ? <Badge tone="neutral" sm>판매중지</Badge> : null}
+            {r.categoryName ? <Badge tone="neutral" sm>{r.categoryName}</Badge> : null}
+          </View>
 
-        {/* 판매가 */}
-        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 9 }}>
-          <Text style={{ flex: 1, fontSize: 14, fontWeight: '700', color: T.sub }}>판매가</Text>
-          <Text style={[{ fontSize: 14, fontWeight: '800', color: T.ink }, NUM]}>{won(r.price)}원</Text>
-        </View>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 9 }}>
+            <Text style={{ flex: 1, fontSize: 14, fontWeight: '700', color: T.sub }}>판매가</Text>
+            <Text style={[{ fontSize: 14, fontWeight: '800', color: T.ink }, NUM]}>{won(r.price)}원</Text>
+          </View>
 
-        {/* 순이익 */}
-        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 9 }}>
-          <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub }}>순이익</Text>
-          {!stopped ? (
-            <View style={{ marginLeft: 6, paddingVertical: 2, paddingHorizontal: 7, borderRadius: 6, backgroundColor: T.line2 }}>
-              <Text style={[{ fontSize: 14, fontWeight: '700', color: T.sub }, NUM]}>목표 {pct(r.target)}%</Text>
-            </View>
-          ) : null}
-          <View style={{ flex: 1 }} />
-          <Text style={[{ fontSize: 14, fontWeight: '800', color: rateColor, marginRight: 8 }, NUM]}>{pct(p.profitRate)}%</Text>
-          <Text style={[{ fontSize: 14, fontWeight: '800', color: T.ink }, NUM]}>{won(p.profit)}원</Text>
-        </View>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 9 }}>
+            <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub }}>순이익</Text>
+            {!stopped ? (
+              <View style={{ marginLeft: 6, paddingVertical: 2, paddingHorizontal: 7, borderRadius: 6, backgroundColor: T.line2 }}>
+                <Text style={[{ fontSize: 14, fontWeight: '700', color: T.sub }, NUM]}>목표 {r.targetProfitRate}%</Text>
+              </View>
+            ) : null}
+            <View style={{ flex: 1 }} />
+            <Text style={[{ fontSize: 14, fontWeight: '800', color: rateColor, marginRight: 8 }, NUM]}>{formatPercent(r.profitRate)}</Text>
+            <Text style={[{ fontSize: 14, fontWeight: '800', color: T.ink }, NUM]}>{won(Math.round(r.profit))}원</Text>
+          </View>
 
-        {/* 재료비 */}
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <Text style={{ flex: 1, fontSize: 14, fontWeight: '700', color: T.sub }}>재료비</Text>
-          <Text style={[{ fontSize: 14, fontWeight: '700', color: T.sub2, marginRight: 8 }, NUM]}>{pct(p.materialRate)}%</Text>
-          <Text style={[{ fontSize: 14, fontWeight: '800', color: T.ink }, NUM]}>{won(r.materialPerServing)}원</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Text style={{ flex: 1, fontSize: 14, fontWeight: '700', color: T.sub }}>재료비</Text>
+            <Text style={[{ fontSize: 14, fontWeight: '700', color: T.sub2, marginRight: 8 }, NUM]}>{formatPercent(r.materialRate)}</Text>
+            <Text style={[{ fontSize: 14, fontWeight: '800', color: T.ink }, NUM]}>{won(Math.round(r.materialCost))}원</Text>
+          </View>
         </View>
-      </View>
-    </Card>
+      </Card>
+    </Pressable>
   );
 }
 
 export default function RecipesListScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
+
+  const recipes = useRecipeList();
+  const lists = useSettingsLists();
+
   const [sort, setSort] = useState<SortKey>('rateLow');
   const [sortOpen, setSortOpen] = useState(false);
-  const [statusFilter, setStatusFilter] = useState<StatusKey>('all');
+  const [statusFilter, setStatusFilter] = useState<StatusKey>('selling');
   const [statusOpen, setStatusOpen] = useState(false);
   const [targetFilter, setTargetFilter] = useState<TargetKey>('all');
   const [targetOpen, setTargetOpen] = useState(false);
@@ -106,149 +111,130 @@ export default function RecipesListScreen() {
   const [searching, setSearching] = useState(false);
   const [query, setQuery] = useState('');
 
-  // 카테고리 + 판매 상태 + 목표 + 검색어.
-  // (카테고리 탭은 state 만 있고 실제 필터에 쓰이지 않아 장식이었다 — 여기서 연결한다.)
-  const selCat = CATS[cat] ?? '전체';
-  const filtered = DEMO_RECIPES.filter((r) => {
-    if (cat !== 0 && r.cat !== selCat) return false;
-    if (statusFilter !== 'all' && r.status !== statusFilter) return false;
-    if (targetFilter !== 'all' && recipeProfit(r).belowTarget !== (targetFilter === 'below')) return false;
-    if (!matchesQuery(r, query)) return false;
-    return true;
-  });
+  const tabs = useMemo(() => ['전체', ...(lists.data?.recipeCategories.map((c) => c.name) ?? [])], [lists.data]);
+  const selCat = tabs[cat] ?? '전체';
+
+  const filtered = useMemo(() => {
+    const rows = (recipes.data ?? []).filter((r) => {
+      if (cat !== 0 && (r.categoryName ?? '') !== selCat) return false;
+      if (statusFilter === 'selling' && !r.active) return false;
+      if (statusFilter === 'stopped' && r.active) return false;
+      if (targetFilter !== 'all' && belowTarget(r) !== (targetFilter === 'below')) return false;
+      if (!matchesQuery(r, query)) return false;
+      return true;
+    });
+    switch (sort) {
+      case 'rateHigh': return rows.sort((a, b) => b.profitRate - a.profitRate);
+      case 'priceHigh': return rows.sort((a, b) => b.price - a.price);
+      case 'priceLow': return rows.sort((a, b) => a.price - b.price);
+      case 'salesHigh': return rows.sort((a, b) => (b.avgMonthlySales ?? 0) - (a.avgMonthlySales ?? 0));
+      // 기본은 돈 안 되는 메뉴가 위로.
+      default: return rows.sort((a, b) => a.profitRate - b.profitRate);
+    }
+  }, [recipes.data, cat, selCat, statusFilter, targetFilter, query, sort]);
+
+  const sortLabel = SORTS.find((s) => s.key === sort)?.label ?? '순이익률 낮은순';
   const statusLabel = statusFilter === 'all' ? '판매상태' : STATUS_OPTS.find((s) => s.key === statusFilter)!.label;
   const targetLabel = targetFilter === 'all' ? '목표' : TARGET_OPTS.find((s) => s.key === targetFilter)!.label;
-
-  // 정렬 — 중지 메뉴는 항상 아래로.
-  const rate = (r: RecipeCardData) => recipeProfit(r).profitRate;
-  const sorted = [...filtered].sort((a, b) => {
-    if ((a.status === 'stopped') !== (b.status === 'stopped')) return a.status === 'stopped' ? 1 : -1;
-    switch (sort) {
-      case 'rateHigh':
-        return rate(b) - rate(a);
-      case 'priceHigh':
-        return b.price - a.price;
-      case 'priceLow':
-        return a.price - b.price;
-      default:
-        return rate(a) - rate(b);
-    }
-  });
-  const sortLabel = SORTS.find((s) => s.key === sort)!.label;
-
-  // 목표 미달(판매중) 메뉴 요약.
-  const belowList = DEMO_RECIPES.filter((r) => r.status === 'selling' && recipeProfit(r).belowTarget);
+  const isSearch = searching && query.trim() !== '';
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
-      {/* 헤더 — 타이틀(좌) + 검색 아이콘(우) */}
       <View style={{ paddingTop: insets.top, backgroundColor: T.bg }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 20, paddingRight: 12, paddingTop: 6, paddingBottom: 12 }}>
           <Text style={{ flex: 1, fontSize: 22, fontWeight: '800', color: T.ink, letterSpacing: -0.6 }}>레시피</Text>
           <Pressable
             onPress={() => setSearching((v) => !v)}
-            accessibilityRole="button"
-            accessibilityLabel="검색"
+            accessibilityRole="button" accessibilityLabel="검색"
             accessibilityState={{ selected: searching }}
             style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}
           >
             <Icon name="search" size={23} color={searching ? T.blue : T.ink2} />
           </Pressable>
+          <Pressable
+            onPress={() => router.push('/my/notifications' as Href)}
+            accessibilityRole="button" accessibilityLabel="알림"
+            style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}
+          >
+            <Icon name="bell" size={24} color={T.ink2} />
+          </Pressable>
         </View>
         {searching ? (
-          <SearchBar
-            value={query}
-            onChange={setQuery}
-            placeholder="메뉴명·카테고리 검색"
-            onClose={() => { setSearching(false); setQuery(''); }}
-          />
+          <SearchBar value={query} onChange={setQuery} placeholder="메뉴·카테고리 검색" onClose={() => { setSearching(false); setQuery(''); }} />
         ) : null}
       </View>
 
-      {/* 카테고리 스크롤 탭 + 편집 진입 */}
-      <View style={{ flexDirection: 'row', alignItems: 'center', borderBottomWidth: 1, borderBottomColor: T.line3 }}>
-        <View style={{ flex: 1, minWidth: 0 }}>
-          <ScrollTabs tabs={CATS} active={cat} onChange={setCat} />
-        </View>
-        <Pressable onPress={() => router.push('/recipes/category' as Href)} hitSlop={6} style={{ paddingLeft: 12, paddingRight: 16, paddingBottom: 11 }} accessibilityRole="button" accessibilityLabel="카테고리 설정">
-          <Icon name="edit" size={18} color={T.ter} sw={2} />
-        </Pressable>
+      <View style={{ borderBottomWidth: 1, borderBottomColor: T.line3 }}>
+        <ScrollTabs tabs={tabs} active={cat} onChange={setCat} />
       </View>
 
-      {/* 필터 행 — 정렬 + 판매상태 */}
-      <View style={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: 10, flexDirection: 'row', gap: 8 }}>
-        <Chip active tone="blue" onPress={() => setSortOpen(true)}>{`${sortLabel} ▾`}</Chip>
-        <Chip active={statusFilter !== 'all'} tone="blue" onPress={() => setStatusOpen(true)}>{`${statusLabel} ▾`}</Chip>
-        <Chip active={targetFilter !== 'all'} tone="blue" onPress={() => setTargetOpen(true)}>{`${targetLabel} ▾`}</Chip>
-      </View>
-
-      {/* 카드 리스트 */}
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 104, gap: 10, flexGrow: 1 }}>
-        {sorted.length === 0 ? (
-          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingVertical: 80 }}>
-            <Text style={{ fontSize: 16, color: T.ter }}>
-              {query.trim() !== '' ? `'${query.trim()}' 검색 결과가 없어요` : '조건에 맞는 메뉴가 없어요'}
-            </Text>
-          </View>
-        ) : (
-          <>
-            {belowList.length > 0 ? (
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: T.redTint, borderWidth: 1, borderColor: T.red, borderRadius: 10, paddingVertical: 10, paddingHorizontal: 12 }}>
-                <Icon name="warn" size={16} color={T.red} />
-                <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: T.red }} numberOfLines={1}>
-                  목표 미달 {belowList.length} — {belowList.map((r) => r.name).join(', ')}
-                </Text>
-              </View>
-            ) : null}
-            {sorted.map((r) => (
-              <Pressable key={r.id} onPress={() => router.push(`/recipes/${r.id}` as Href)}>
-                <RecipeCard r={r} />
-              </Pressable>
-            ))}
-          </>
-        )}
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ flexGrow: 0 }} contentContainerStyle={{ gap: 7, paddingHorizontal: 20, paddingVertical: 12 }}>
+        <Chip active onPress={() => setSortOpen(true)}>{sortLabel}</Chip>
+        <Chip active={statusFilter !== 'all'} onPress={() => setStatusOpen(true)}>{statusLabel}</Chip>
+        <Chip active={targetFilter !== 'all'} onPress={() => setTargetOpen(true)}>{targetLabel}</Chip>
       </ScrollView>
 
-      <FAB label="추가" bottom={24} onPress={() => router.push('/recipes/add' as Href)} />
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 104, gap: 10 }}>
+        <QueryState
+          isLoading={recipes.isLoading}
+          error={recipes.error}
+          isEmpty={filtered.length === 0}
+          onRetry={() => void recipes.refetch()}
+          emptyTitle={isSearch ? `'${query.trim()}' 검색 결과가 없어요` : '해당 조건의 메뉴가 없어요'}
+          emptyHint={isSearch ? '다른 이름으로 찾아보세요' : '아래 버튼으로 메뉴를 추가해 보세요'}
+        >
+          {filtered.map((r) => (
+            <RecipeCard key={r.id} r={r} onPress={() => router.push(`/recipes/${r.id}` as Href)} />
+          ))}
+        </QueryState>
+      </ScrollView>
 
-      {/* 정렬 선택 시트 */}
-      <Sheet visible={sortOpen} onClose={() => setSortOpen(false)} title="정렬" height={320}>
+      <FAB label="메뉴 추가" onPress={() => router.push('/recipes/add' as Href)} />
+
+      {/* 정렬 */}
+      <Sheet visible={sortOpen} onClose={() => setSortOpen(false)} title="정렬" height={420}>
         {SORTS.map((s) => (
           <Pressable
             key={s.key}
             onPress={() => { setSort(s.key); setSortOpen(false); }}
-            style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 15, borderBottomWidth: 1, borderBottomColor: T.line2 }}
+            accessibilityRole="button" accessibilityLabel={s.label}
+            accessibilityState={{ selected: sort === s.key }}
+            style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 15, paddingHorizontal: 4 }}
           >
-            <Text style={{ flex: 1, fontSize: 16, fontWeight: sort === s.key ? '700' : '500', color: sort === s.key ? T.blue : T.ink }}>{s.label}</Text>
-            {sort === s.key ? <Icon name="check" size={20} color={T.blue} /> : null}
+            <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: sort === s.key ? T.blue : T.ink }}>{s.label}</Text>
+            {sort === s.key ? <Icon name="check" size={18} color={T.blue} sw={2.4} /> : null}
           </Pressable>
         ))}
       </Sheet>
 
-      {/* 판매 상태 선택 시트 */}
-      <Sheet visible={statusOpen} onClose={() => setStatusOpen(false)} title="판매 상태" height={300}>
+      {/* 판매 상태 */}
+      <Sheet visible={statusOpen} onClose={() => setStatusOpen(false)} title="판매 상태" height={320}>
         {STATUS_OPTS.map((s) => (
           <Pressable
             key={s.key}
             onPress={() => { setStatusFilter(s.key); setStatusOpen(false); }}
-            style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 15, borderBottomWidth: 1, borderBottomColor: T.line2 }}
+            accessibilityRole="button" accessibilityLabel={s.label}
+            accessibilityState={{ selected: statusFilter === s.key }}
+            style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 15, paddingHorizontal: 4 }}
           >
-            <Text style={{ flex: 1, fontSize: 16, fontWeight: statusFilter === s.key ? '700' : '500', color: statusFilter === s.key ? T.blue : T.ink }}>{s.label}</Text>
-            {statusFilter === s.key ? <Icon name="check" size={20} color={T.blue} /> : null}
+            <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: statusFilter === s.key ? T.blue : T.ink }}>{s.label}</Text>
+            {statusFilter === s.key ? <Icon name="check" size={18} color={T.blue} sw={2.4} /> : null}
           </Pressable>
         ))}
       </Sheet>
 
-      {/* 목표 선택 시트 */}
-      <Sheet visible={targetOpen} onClose={() => setTargetOpen(false)} title="목표" height={300}>
+      {/* 목표 달성 여부 */}
+      <Sheet visible={targetOpen} onClose={() => setTargetOpen(false)} title="목표 달성" height={320}>
         {TARGET_OPTS.map((s) => (
           <Pressable
             key={s.key}
             onPress={() => { setTargetFilter(s.key); setTargetOpen(false); }}
-            style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 15, borderBottomWidth: 1, borderBottomColor: T.line2 }}
+            accessibilityRole="button" accessibilityLabel={s.label}
+            accessibilityState={{ selected: targetFilter === s.key }}
+            style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 15, paddingHorizontal: 4 }}
           >
-            <Text style={{ flex: 1, fontSize: 16, fontWeight: targetFilter === s.key ? '700' : '500', color: targetFilter === s.key ? T.blue : T.ink }}>{s.label}</Text>
-            {targetFilter === s.key ? <Icon name="check" size={20} color={T.blue} /> : null}
+            <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: targetFilter === s.key ? T.blue : T.ink }}>{s.label}</Text>
+            {targetFilter === s.key ? <Icon name="check" size={18} color={T.blue} sw={2.4} /> : null}
           </Pressable>
         ))}
       </Sheet>

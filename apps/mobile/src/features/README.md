@@ -1,7 +1,11 @@
 # features/ — 화면 ID ↔ 기능 모듈 매핑
 
-탭별 feature 모듈. 각 모듈은 `screens/`(화면·시트) · `demoData.ts`(임시 데이터)로 구성하고, 추후 `hooks/`(쿼리·뮤테이션)을 더한다.
+탭별 feature 모듈. 각 모듈은 `screens/`(화면·시트) + `hooks.ts`(조회·저장)로 구성한다.
+**`demoData.ts` 는 전부 제거됐다** — 모든 화면이 Supabase 실데이터를 쓴다.
 공통 UI 킷은 `src/components/kit`, 계산은 `@sikjae/core`, 데이터 계약은 `@sikjae/types`.
+
+화면은 supabase 를 직접 부르지 않는다. `features/<도메인>/hooks.ts` 가 유일한 경계이고,
+쿼리 키·무효화 규칙은 `src/lib/queryClient.ts` 의 `qk`·`invalidateOn` 이 단일 출처다.
 
 하단 탭 순서: **식재료(ING) · 레시피(RCP) · 발주(ORD) · 매출관리(SALES) · MY** — 5탭.
 (AGENTS.md 는 4탭으로 적혀 있으나 매출관리 탭이 추가되어 실제 구현은 5탭이다. `app/(tabs)/_layout.tsx` 가 실물.)
@@ -38,7 +42,8 @@
 | `orders` | ORD-05 | 주문하기 — 구매 링크·옵션 시트 | (OrdersHome 내 시트) | ✅ |
 | `orders` | ORD-06 | 발주 완료 — 구매처 선택 시트 | (OrdersHome 내 시트) | ✅ |
 | `orders` | ORD-02 | 발주 완료 등록 (도착 예정일 달력) → **E7** | `orders/complete` (`OrderCompleteScreen`) | ✅ |
-| `orders` | ORD-03 | 입고 확정 → **E1** | — (입고 완료 버튼 자리만) | ⬜ |
+| `orders` | ORD-03 | 입고 확정 (실제 수량·부분 입고·멱등키) → **E1** | (OrdersHome 내 시트) | ✅ |
+| `orders` | ORD-07 | 발주 취소 → **E12** / 입고 취소 → **E11** | (OrdersHome 카드 버튼) | ✅ |
 | `orders` | ORD-04 | 레시피 계산기 → **E6** (2차) | — | ⬜ |
 | `my` | MY-01 | 마이페이지 홈 (사업장 + 설정 메뉴) | `my/index` (`MyHomeScreen`) | ✅ |
 | `my` | MY-03 | 카테고리 관리 허브 | `my/categories` (`MyCategoryHubScreen`) | ✅ |
@@ -46,6 +51,9 @@
 | `my` | MY-05 | 구매처·브랜드 | `my/vendors` (`MyVendorsScreen`) | ✅ |
 | `my` | MY-06 | 알림 설정 | `my/notifications` (`MyNotificationsScreen`) | ✅ |
 | `recipes` | RCP-12b | 부자재 카테고리 | `recipes/material-category` (`MaterialCategoryScreen`) | ✅ |
+| `sales` | SALES-06 | 기타 매출 추가 (항목·단가·수량) | (SalesHome 내 시트) | ✅ |
+| `sales` | SALES-07 | 당일 지출 추가 (항목·금액·메모) | (SalesHome 내 시트) | ✅ |
+| `sales` | SALES-05b | 판매 수량 입력 (매장/배달/포장 + **조리 폐기**) → **E10/E8** | (SalesHome 내 시트) | ✅ |
 | `sales` | SALES-01 | 매출관리 홈 (일일 판매 입력) | `sales/index` (`SalesHomeScreen`) | ✅ |
 | `sales` | SALES-02 | 매출 분석 (기간 선택·캘린더·손익) | `sales/analytics` (`SalesAnalyticsScreen`) | ✅ |
 | `sales` | SALES-03 | 일 손익 상세 | `sales/day-detail` (`SalesDayDetailScreen`) | ✅ |
@@ -60,8 +68,8 @@
 | `my` | MY-04 | 단위 설정 (단위 시스템·조리컵/스푼·묶음 단위·**단가 표기 자릿수**) | `my/units` (`MyUnitsScreen`) | ✅ |
 | `my` | MY-08 | 언어·통화 설정 (로케일 → 통화·구분자·소수점·금액 자릿수) | `my/language` (`MyLanguageScreen`) | ✅ |
 
-> ⚠ 위 ✅ 는 **UI 구현 완료**를 뜻한다. 데이터는 대부분 `demoData.ts` 이며 Supabase 연동은 진행 중이다.
-> 완료 게이트(실데이터 연결 + 전파 + 재조회)를 통과한 화면만 별도로 표기한다.
+> 위 ✅ 는 **실데이터 연결 + 전파 + 재조회**까지 통과한 상태다(2026-08-19).
+> 남은 항목은 ORD-04 레시피 계산기(E6, 2차 범위) 하나다.
 
 ## 주요 화면 플로우 (수집 → 등록 → 노출)
 
@@ -69,10 +77,24 @@
 - **레시피**: 리스트 → 카드 탭 **상세**(도넛·손익) → [수정]. 추가 화면에서 **재료 검색·담기**(검색→카드 탭→사용량 입력 시트: 삭제/담기), **추가 지출** 편집행, **고정 지출 자세히 보기** → 자세히 → [수정].
 - **발주**: 발주 후보 카드 → **주문하기**(구매 옵션 시트, 외부 주문) / **발주 완료**(구매처 선택 시트 → **발주 완료 등록 ORD-02**, 도착 예정일 달력) → 입고 예정 → **입고 완료**.
 
-## 데이터 (현재 데모, Supabase 연동 전)
-- `ingredients/demoData.ts`: `IngCardData`(잔여·기준단가·avg/low/high·loss·safe·vendor·memo) · `DETAIL_EXTRAS`(추이·구매이력·옵션) · `getIngredient` · `perLabel`.
-- `recipes/demoData.ts`: `DEMO_RECIPES` · `RECIPE_DETAILS`(라인·추가지출) · `FIXED_ITEMS` · `recipeProfit`(손익 계산) · `pct`.
-- `orders/demoData.ts`: `CANDIDATES`(사유·권장발주·옵션) · `WAITING`(입고 예정) · `DONE`(입고 완료) · `OrderOption`.
+## 데이터 — 서버 함수가 화면 단위로 내려준다
+
+화면 한 장이 필요한 값을 **한 번의 호출**로 받는다. 파생값(재고 총량·기준단가·손익)은 전부 서버가
+정의하므로 앱이 다시 계산하지 않는다(절대원칙 3).
+
+| 훅 | 서버 함수 | 쓰는 화면 |
+|---|---|---|
+| `ingredients/hooks` | `ingredient_list` · `ingredient_detail` · `stock_history` | ING-01/03/07 |
+| `recipes/hooks` | `recipe_list` · `recipe_detail` · `recipe_pick_list` | RCP-01/02/03 |
+| `orders/hooks` | `order_board` | ORD-01 |
+| `sales/hooks` | `sales_day` · `sales_range` · `sales_material_usage` · `sales_extra_usage` · `sales_fixed_breakdown` | SALES 전부 |
+| `my/hooks` | `settings_lists` · `get_settings` · `sales_channel_fixed` | MY 전부 |
+
+저장은 하나의 함수 = 하나의 트랜잭션이다: `save_ingredient` · `save_recipe` · `save_purchase_option`
+· `save_material` · `save_category` · `save_vendor` · `save_channel` · `save_fixed_costs` · `save_sale`.
+
+**편집 중인 폼**만 클라이언트 상태로 둔다(`recipes/draftStore.ts` — 재료·부자재 검색이 별도 화면이라
+고른 결과를 폼으로 돌려줘야 한다). 저장 직후 초안은 버린다.
 
 ## 표기 규칙 (현재 반영)
 - 수량/용량 단위는 **kg·g·ml + 개수(개/모)** 만 노출(망·통·박스·판 등 구매단위 라벨은 표기에서 제거, 상품명/거래처로 분리).
@@ -84,4 +106,14 @@
   - 비율(%)은 **소수 1자리 · 절사 고정**(설정 대상 아님) — 4,014/12,000 = 33.45% → 33.4%. 반올림하면 검산 기준값과 어긋난다.
   - 서식은 표기 계층 전용. 저장은 항상 최소단위·풀정밀도이고 계산에 되돌아가지 않는다.
 
-전파 이벤트(E1~E7)는 `src/lib/supabase.ts` 의 `rpc.*` 로 호출하고, 성공 후 `qk` 키를 무효화한다(현재는 데모 데이터, 연동 예정).
+## 전파 (E1~E12)
+
+전파 이벤트는 도메인 훅이 호출하고, 성공 후 `invalidateOn` 이 정한 키를 무효화한다.
+`src/lib/supabase.ts` 에 있던 `rpc.*` 래퍼는 제거했다 — 훅과 두 갈래가 되면 무효화 규칙이 갈라진다.
+
+특히 **판매(E10)는 매출뿐 아니라 재고도 바꾼다**(E8 소진). 그래서 `invalidateOn.e10()` 은
+`sales` 와 함께 `ingredients`·`orders` 도 무효화한다. 이걸 빼면 "팔았는데 식재료 화면은 그대로"가 된다.
+
+메뉴를 팔면 서버가 레시피를 **반제품까지 재귀로 펼쳐** 식재료를 차감한다
+(`recipe_ingredient_needs`). 재고가 모자란 채로 팔렸으면 부족분을 돌려주고, 화면이 그대로 알린다 —
+판매를 막지는 않는다(이미 팔린 것이므로).
