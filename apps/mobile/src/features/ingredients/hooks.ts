@@ -6,9 +6,8 @@
  *   · 전파 후 무효화 대상이 흩어지지 않으며
  *   · 나중에 조회 방식을 바꿔도 화면을 건드리지 않는다.
  *
- * ⚠ 재고는 DB 가 **미개봉 개수 + 개봉분 잔량** 두 값으로 들고 있고, 총량은 서버 함수
- *   `stock_total_base()` 가 정의한다. 앱이 다시 계산하면 두 개의 진실이 생기므로
- *   조회 시 서버에서 받아온다(절대원칙 3).
+ * ⚠ 재고는 DB 에 기준단위(g/ml/개) 총량 하나로 저장한다. 화면은 서버의
+ *   `stock_total_base()` 값을 그대로 사용하며 다시 환산하지 않는다(절대원칙 3).
  */
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { invalidate, invalidateOn, qk } from '@/lib/queryClient';
@@ -67,8 +66,6 @@ export interface PurchaseRecord {
 export interface IngredientDetail extends IngredientRow {
   categoryId: string | null;
   minOrderQty: number;
-  sealedCount: number;
-  openedRemain: number;
   purchase: { avg: number | null; low: number | null; high: number | null; count: number };
   priceTrends: { date: string; price: number }[];
   options: PurchaseOption[];
@@ -160,8 +157,6 @@ export function useIngredientDetail(id: string | undefined) {
         ...toRow(r),
         categoryId: str(r.category_id),
         minOrderQty: num(r.min_order_qty),
-        sealedCount: num(r.sealed_count),
-        openedRemain: num(r.opened_remain),
         loss: (() => {
           const l = (r.loss ?? {}) as Record<string, unknown>;
           return {
@@ -401,7 +396,6 @@ export function useStockChange() {
       kind: 'adj' | 'out' | 'waste';
       /** 조정·소진: 변경 후 총량(기준단위). 폐기: 남은 양(기준단위). */
       value: number;
-      perVolume: number;
       soonOut?: boolean;
       /** 원장에 남길 사유. 비워두면 서버가 기본 문구를 쓴다. */
       reason?: string;
@@ -420,17 +414,11 @@ export function useStockChange() {
           unitPrice: numOrNull(r.unit_price),
         } satisfies DiscardResult;
       }
-      // E5 는 미개봉 개수 + 개봉분 잔량으로 받는다. 총량을 개당 용량으로 쪼개 넘긴다.
       const target = input.kind === 'out' ? 0 : input.value;
-      const per = input.perVolume > 0 ? input.perVolume : 1;
-      const sealed = Math.floor(target / per);
-      const remain = target - sealed * per;
       const { error } = await supabase.rpc('e5_stock_adjusted', {
         p_ingredient: input.ingredientId,
-        p_sealed: sealed,
-        p_opened: remain > 0 ? 1 : 0,
+        p_stock_total: target,
         p_soon: input.kind === 'out' ? true : Boolean(input.soonOut),
-        p_opened_remain: remain,
         p_note: input.reason,
       });
       if (error) throw new Error(error.message);

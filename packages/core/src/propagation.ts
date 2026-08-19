@@ -23,7 +23,7 @@ export const PROPAGATION: Record<PropagationEvent, EventSpec> = {
     id: 'E1',
     trigger: '입고 확정 (ORD-03)',
     steps: [
-      '재고 미개봉 +실수량',
+      '재고 총량 +입고량',
       'ING 뱃지 재판정',
       '구매 이력(=최근 주문) 추가',
       '평균·기준 단가 재계산',

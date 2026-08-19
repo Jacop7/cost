@@ -11,7 +11,6 @@ import {
   fixedCostRate,
   fixedCostPerThousand,
   stockBadge,
-  remainConverted,
   recommendedOrderQty,
   round,
   pct1,
@@ -83,34 +82,18 @@ describe('고정지출률 (④ 2, G-01)', () => {
 });
 
 describe('재고 뱃지 (① 4.7, ③ 3.4)', () => {
-  it('대파 미개봉2·개봉1, 안전2 → 충분', () => {
-    expect(
-      stockBadge({ sealedCount: 2, openedCount: 1, openedRemain: null, soonOut: false }, 2),
-    ).toBe('ok');
+  it('대파 재고 3,000g, 안전재고 2,000g → 충분', () => {
+    expect(stockBadge({ stockTotal: 3000, soonOut: false }, 2000)).toBe('ok');
   });
-  it('양파 미개봉0·개봉1, 안전3 → 부족', () => {
-    expect(
-      stockBadge({ sealedCount: 0, openedCount: 1, openedRemain: null, soonOut: false }, 3),
-    ).toBe('low');
+  it('양파 재고 1,000g, 안전재고 3,000g → 부족', () => {
+    expect(stockBadge({ stockTotal: 1000, soonOut: false }, 3000)).toBe('low');
   });
   it('다진마늘 곧소진 → 소진임박', () => {
-    expect(
-      stockBadge({ sealedCount: 0, openedCount: 1, openedRemain: null, soonOut: true }, 2),
-    ).toBe('out');
+    expect(stockBadge({ stockTotal: 1000, soonOut: true }, 2000)).toBe('out');
   });
 });
 
-describe('잔여 환산·발주 (⑤ 2.3)', () => {
-  it('잔여 환산량 = 개수 × 개당용량 (로스를 곱하지 않는다)', () => {
-    // 미개봉2 × 1000g + 개봉1(가득 1000g) = 3000
-    // 재고는 물건의 양이다. SQL stock_total_base() 와 같은 값이어야 한다.
-    const v = remainConverted(
-      { sealedCount: 2, openedCount: 1, openedRemain: null, soonOut: false },
-      1000,
-    );
-    expect(round(v)).toBe(3000);
-  });
-
+describe('재고 총량·발주 (⑤ 2.3)', () => {
   it('권장 발주 수량 = Ceil(부족 ÷ 개당용량), 최소발주 보정', () => {
     expect(recommendedOrderQty(2500, 1000, 1)).toBe(3); // ceil(2.5)=3
     expect(recommendedOrderQty(200, 1000, 2)).toBe(2); // 최소발주 2
