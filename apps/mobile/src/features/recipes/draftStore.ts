@@ -31,6 +31,12 @@ export interface DraftExtra {
   qty: number;
 }
 
+/** 입력 중인 세금 항목. 요율은 '2.5' 처럼 치는 중일 수 있어 문자열이다. */
+export interface DraftTaxItem {
+  name: string;
+  rate: string;
+}
+
 export interface RecipeDraft {
   id?: string;
   name: string;
@@ -38,6 +44,8 @@ export interface RecipeDraft {
   categoryName: string;
   price: string;
   taxMode: TaxMode;
+  /** 부가세 외 세금 항목. 요율은 입력 중이라 문자열로 든다(0052). */
+  taxItems: DraftTaxItem[];
   baseServings: string;
   avgMonthlySales: string;
   targetProfitRate: string;
@@ -53,6 +61,7 @@ export const emptyDraft = (): RecipeDraft => ({
   categoryName: '',
   price: '',
   taxMode: 'included',
+  taxItems: [],
   baseServings: '10',
   avgMonthlySales: '',
   targetProfitRate: '40',
@@ -72,6 +81,9 @@ interface DraftState {
   addExtra: (extra: DraftExtra) => void;
   updateExtra: (index: number, next: Partial<DraftExtra>) => void;
   removeExtra: (index: number) => void;
+  addTaxItem: () => void;
+  updateTaxItem: (index: number, next: Partial<DraftTaxItem>) => void;
+  removeTaxItem: (index: number) => void;
 }
 
 const sameLine = (a: DraftLine, b: DraftLine) =>
@@ -114,4 +126,15 @@ export const useRecipeDraft = create<DraftState>((set) => ({
 
   removeExtra: (index) =>
     set((s) => ({ draft: { ...s.draft, extras: s.draft.extras.filter((_, k) => k !== index) } })),
+
+  addTaxItem: () =>
+    set((s) => ({ draft: { ...s.draft, taxItems: [...s.draft.taxItems, { name: '', rate: '' }] } })),
+
+  updateTaxItem: (index, next) =>
+    set((s) => ({
+      draft: { ...s.draft, taxItems: s.draft.taxItems.map((t, k) => (k === index ? { ...t, ...next } : t)) },
+    })),
+
+  removeTaxItem: (index) =>
+    set((s) => ({ draft: { ...s.draft, taxItems: s.draft.taxItems.filter((_, k) => k !== index) } })),
 }));

@@ -4,7 +4,7 @@
  * 순이익 = 판매가 − 세금 − 재료 − 고정 − 추가.
  * 권장 판매가 = (재료+추가) ÷ (1 − 1/11 − 고정지출률 − 목표).
  */
-import type { TaxMode } from '@sikjae/types';
+import type { TaxItem, TaxMode } from '@sikjae/types';
 import { isNonNegativeFinite, isPositiveFinite } from './guards';
 
 /**
@@ -17,10 +17,43 @@ export function perServingQty(inputQty: number, servings: number): number | null
   return inputQty / servings;
 }
 
-/** 세금액 — 부가세 포함: 판매가 × 10/110, 별도/면세: 0(별도는 외부 부과, 면세 없음). */
-export function taxAmount(price: number, mode: TaxMode): number {
+/**
+ * 세금 비율(판매가 대비 0~1) = 부가세(모드) + 추가 항목(0052).
+ * 부가세 포함이면 10/110, 별도·면세는 0(별도는 외부 부과, 면세는 없음).
+ * SQL `tax_of()` 와 같은 공식이다 — 한쪽만 고치면 안 된다(절대원칙 3).
+ */
+export function taxRate(mode: TaxMode, items: readonly TaxItem[] = []): number {
+  let rate = mode === 'included' ? 10 / 110 : 0;
+  for (const i of items) {
+    // 0 이하·비유한 요율은 없는 항목으로 본다. SQL 의 `where rate > 0` 과 같다.
+    if (!isPositiveFinite(i?.rate)) continue;
+    rate += i.rate / 100;
+  }
+  return rate;
+}
+
+/** 세금액 = 판매가 × 세금 비율. */
+export function taxAmount(price: number, mode: TaxMode, items: readonly TaxItem[] = []): number {
   if (!isNonNegativeFinite(price)) return 0; // 음수·비유한 판매가에서 음수 세금을 만들지 않는다
-  return mode === 'included' ? (price * 10) / 110 : 0;
+  return price * taxRate(mode, items);
+}
+
+/** 항목별 내역 — 화면이 '(−) 세금'을 펼칠 때 쓴다. SQL `tax_breakdown()` 미러. */
+export function taxBreakdown(
+  price: number,
+  mode: TaxMode,
+  items: readonly TaxItem[] = [],
+): { name: string; rate: number; amount: number; builtin: boolean }[] {
+  const p = isNonNegativeFinite(price) ? price : 0;
+  const out: { name: string; rate: number; amount: number; builtin: boolean }[] = [];
+  if (mode === 'included') {
+    out.push({ name: '부가세', rate: (100 * 10) / 110, amount: (p * 10) / 110, builtin: true });
+  }
+  for (const i of items) {
+    if (!isPositiveFinite(i?.rate)) continue;
+    out.push({ name: i.name, rate: i.rate, amount: (p * i.rate) / 100, builtin: false });
+  }
+  return out;
 }
 
 export interface RecipeLineInput {
@@ -32,6 +65,7 @@ export interface ProfitInput {
   price: number; // 판매가
   servings: number; // 기준 인분 N
   taxMode: TaxMode;
+  taxItems?: readonly TaxItem[]; // 부가세 외 세금 항목(0052)
   lines: RecipeLineInput[];
   extraPerServing: number; // 추가 지출 합(1인분 정액)
   fixedRate: number | null; // 고정지출률(0~1). null이면 0% 잠정(A-04)
@@ -76,14 +110,14 @@ export function materialCost(lines: RecipeLineInput[], servings: number): {
 
 /** 손익 계산 (② 3장). 검산: 제육 → profit 4014, rate 0.334. */
 export function computeProfit(input: ProfitInput): ProfitResult {
-  const { servings, taxMode, lines } = input;
+  const { servings, taxMode, taxItems, lines } = input;
   // 음수·비유한 판매가는 0으로 정규화한다. 음수 매출은 도메인상 존재하지 않고,
   // 그대로 흘리면 세금·고정지출·순이익률이 전부 뒤집힌다.
   const price = isNonNegativeFinite(input.price) ? input.price : 0;
   const extraPerServing = isNonNegativeFinite(input.extraPerServing) ? input.extraPerServing : 0;
   const rawFixedRate = input.fixedRate ?? 0;
   const fixedRate = isNonNegativeFinite(rawFixedRate) ? rawFixedRate : 0;
-  const tax = taxAmount(price, taxMode);
+  const tax = taxAmount(price, taxMode, taxItems ?? []);
   const mat = materialCost(lines, servings);
   const fixedCost = fixedRate * price;
   const profit = price - tax - mat.cost - extraPerServing - fixedCost;
@@ -101,15 +135,18 @@ export function computeProfit(input: ProfitInput): ProfitResult {
 }
 
 /**
- * 권장 판매가 (② 3.6) = (재료+추가) ÷ (1 − 1/11 − 고정지출률 − 목표순이익률).
- * 부가세 포함분 1/11(=10/110). 분모 ≤ 0이면 산출 불가(null).
+ * 권장 판매가 (② 3.6) = (재료+추가) ÷ (1 − 세금비율 − 고정지출률 − 목표순이익률).
+ * 세금비율 기본값은 부가세 포함분 1/11(=10/110). 카드 수수료 같은 세금 항목이 있으면
+ * `taxRate(mode, items)` 를 넘긴다 — 안 넘기면 그만큼 권장가가 낮게 나온다(0052).
+ * 분모 ≤ 0이면 산출 불가(null).
  * 검산: 제육 (2835+300)/(1−1/11−0.313−0.40) ≈ 15,986 → 16,000
  */
 export function recommendedPrice(
   materialPlusExtra: number,
   fixedRate: number,
   targetProfitRate: number,
+  taxRatio: number = 10 / 110,
 ): number | null {
-  const denom = 1 - 1 / 11 - fixedRate - targetProfitRate;
+  const denom = 1 - taxRatio - fixedRate - targetProfitRate;
   return denom > 0 ? materialPlusExtra / denom : null;
 }

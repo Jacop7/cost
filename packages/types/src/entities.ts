@@ -14,6 +14,7 @@ import type {
   OrderRecordSource,
   OrderRecordStatus,
   StockBadge,
+  TaxItem,
   TaxMode,
 } from './enums';
 
@@ -78,13 +79,11 @@ export interface PurchaseOption {
 }
 
 // ── 재고·구매 ────────────────────────────────────────────
-/** 식재료 1:1 현재 재고 상태 (① 4.7). 개수 기반. */
+/** 식재료 1:1 현재 재고 상태. 기준단위(g/ml/개) 총량 기반. */
 export interface InventoryState {
   ingredientId: ID;
   storeId: ID;
-  sealedCount: number; // 미개봉 수
-  openedCount: 0 | 1; // 개봉 수 (0 또는 1)
-  openedRemain: number | null; // 개봉분 남은 양(기준단위, 선택)
+  stockTotal: number; // 현재 재고 총량(기준단위)
   soonOut: boolean; // 곧소진 플래그
   lastInboundAt: string | null; // 최근 입고일
 }
@@ -144,7 +143,7 @@ export interface Recipe {
   name: string;
   price: number; // 판매가
   taxMode: TaxMode;
-  taxItems: string[]; // 세금 항목(별도/면세 부가)
+  taxItems: TaxItem[]; // 부가세 외 세금 항목(판매가 대비 %) — 0052
   baseServings: number; // 기준 인분 N
   targetProfitRate: number; // 목표 순이익률 (%)
   avgMonthlySales: number | null; // 월 평균 판매량 (배분용)

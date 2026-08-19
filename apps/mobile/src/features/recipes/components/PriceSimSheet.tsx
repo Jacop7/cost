@@ -1,6 +1,8 @@
 /**
  * RCP-05 판매가 시뮬레이션 (시트) — 임시 판매가로 손익이 어떻게 바뀌는지 **여기서만** 본다.
- * 계산은 상세(RCP-02)와 동일 공식: tax=판매가×10/110, fixed=fixedRate×판매가.
+ * 계산은 상세(RCP-02)와 동일 공식: tax=판매가×세금비율, fixed=fixedRate×판매가.
+ * 세금비율은 부가세(10/110)에 사장님이 더한 세금 항목까지 합친 값이다(0052) —
+ * 부가세만 넣으면 카드 수수료가 빠져 순이익이 실제보다 높게 보인다.
  *
  * ⚠ **저장하지 않는다.** 한때 '이 판매가로 적용'이 실제 저장(E3)이었는데,
  *   슬라이더를 움직이며 눌러 보는 사이 판매가가 14,000 → 36,700 으로 바뀌고
@@ -17,7 +19,7 @@ import { T, won } from '@/theme/tokens';
 const NUM = { fontVariant: ['tabular-nums' as const] };
 
 export function PriceSimSheet({
-  visible, onClose, price, material, extra, fixedRate, target, taxIncluded = true,
+  visible, onClose, price, material, extra, fixedRate, target, taxRatio = 10 / 110,
 }: {
   visible: boolean;
   onClose: () => void;
@@ -28,7 +30,8 @@ export function PriceSimSheet({
   fixedRate: number;
   /** 0~1 비율 */
   target: number;
-  taxIncluded?: boolean;
+  /** 판매가 대비 세금 비율(0~1). 부가세 + 세금 항목(0052). */
+  taxRatio?: number;
 }) {
   const min = Math.max(100, Math.round((price * 0.75) / 100) * 100);
   const max = Math.round(((price * 5) / 3) / 100) * 100;
@@ -38,7 +41,7 @@ export function PriceSimSheet({
   useEffect(() => { if (visible) setTemp(price); }, [visible, price]);
 
   const calc = (p: number) => {
-    const tax = taxIncluded ? round((p * 10) / 110) : 0;
+    const tax = round(p * taxRatio);
     const fixed = round(fixedRate * p);
     const profit = p - tax - material - fixed - extra;
     return { tax, fixed, profit, rate: p > 0 ? profit / p : 0 };
@@ -50,7 +53,7 @@ export function PriceSimSheet({
   const diff = temp - price;
 
   // 목표 달성 권장가(100원 단위). 분모가 0 이하면 어떤 가격으로도 목표를 못 맞춘다.
-  const denom = 1 - target - fixedRate - (taxIncluded ? 10 / 110 : 0);
+  const denom = 1 - target - fixedRate - taxRatio;
   const recRaw = denom > 0 ? (material + extra) / denom : NaN;
   const rec = Number.isFinite(recRaw) && recRaw > 0 ? Math.round(recRaw / 100) * 100 : null;
 

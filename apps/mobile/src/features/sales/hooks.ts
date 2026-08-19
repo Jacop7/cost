@@ -240,6 +240,8 @@ export interface DayMenuDetail {
   taxMode: 'included' | 'separate' | 'exempt';
   price: number; materialCost: number; extraCost: number;
   fixedRate: number; fixedCost: number; tax: number; profit: number;
+  /** 그날 세금 항목별 내역(부가세 포함). 나중에 요율을 고쳐도 이건 안 움직인다(0054). */
+  taxItems: { name: string; rate: number; amount: number; builtin: boolean }[];
   lines: DayMenuLine[]; extras: DayMenuExtra[]; fixedItems: DayMenuFixedItem[];
 }
 
@@ -265,6 +267,10 @@ export function useDayMenuDetail(date: string | undefined, recipeId: string | un
         price: num(r.price), materialCost: num(r.material_cost), extraCost: num(r.extra_cost),
         fixedRate: num(r.fixed_rate), fixedCost: num(r.fixed_cost),
         tax: num(r.tax), profit: num(r.profit),
+        taxItems: arr('tax_items').map((t) => ({
+          name: String(t.name ?? ''), rate: num(t.rate), amount: num(t.amount),
+          builtin: t.builtin === true,
+        })),
         lines: arr('lines').map((l) => ({
           ingredientId: String(l.ingredient_id), name: String(l.name),
           baseUnit: (l.base_unit ?? 'g') as DayMenuLine['baseUnit'],

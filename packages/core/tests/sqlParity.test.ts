@@ -19,6 +19,8 @@ import {
   fixedCostRate,
   computeProfit,
   taxAmount,
+  taxBreakdown,
+  taxRate,
   perServingQty,
 } from '../src';
 
@@ -189,6 +191,37 @@ describe('recompute_recipe 손익 — core ↔ SQL', () => {
   it('세금 — 부가세 포함은 판매가 × 10/110', () => {
     expect(taxAmount(12000, 'included')).toBeCloseTo(sqlRecomputeRecipe(fixture).tax, 10);
     expect(taxAmount(12000, 'separate')).toBe(0);
+  });
+
+  // ⚠ SQL tax_of() 와 같은 값이어야 한다(절대원칙 3). 아래 기대값은 psql 실측이다.
+  //   select tax_of(12000,'included','[{"name":"카드 수수료","rate":2.5}]') → 1390.909…
+  it('세금 항목 — 부가세 + 판매가 대비 % 합산 (0052)', () => {
+    const items = [{ name: '카드 수수료', rate: 2.5 }];
+    expect(taxAmount(12000, 'included', items)).toBeCloseTo(1390.9090909090909, 9);
+    expect(taxAmount(12000, 'separate', items)).toBeCloseTo(300, 9);
+    expect(taxAmount(12000, 'exempt', items)).toBeCloseTo(300, 9);
+    // 항목이 비면 기존 값 그대로 — 검산 3종이 안 움직인다.
+    expect(taxAmount(12000, 'included', [])).toBeCloseTo(taxAmount(12000, 'included'), 10);
+    // 요율 0·음수는 없는 항목으로 본다 (SQL 의 where rate > 0).
+    expect(taxAmount(12000, 'included', [{ name: '없음', rate: 0 }])).toBeCloseTo(
+      taxAmount(12000, 'included'), 10);
+    expect(taxAmount(12000, 'included', [{ name: '이상', rate: -5 }])).toBeCloseTo(
+      taxAmount(12000, 'included'), 10);
+  });
+
+  it('세금 내역 — 합이 세금액과 같고 부가세가 기본 항목이다', () => {
+    const items = [{ name: '카드 수수료', rate: 2.5 }];
+    const rows = taxBreakdown(12000, 'included', items);
+    expect(rows).toHaveLength(2);
+    expect(rows[0]).toMatchObject({ name: '부가세', builtin: true });
+    expect(rows.reduce((a, r) => a + r.amount, 0)).toBeCloseTo(taxAmount(12000, 'included', items), 9);
+    // 면세면 부가세 줄이 사라지고 추가 항목만 남는다.
+    expect(taxBreakdown(12000, 'exempt', items)).toHaveLength(1);
+  });
+
+  it('세금 비율 — 권장 판매가 분모에 그대로 들어간다', () => {
+    expect(taxRate('included')).toBeCloseTo(10 / 110, 12);
+    expect(taxRate('included', [{ name: '카드 수수료', rate: 2.5 }])).toBeCloseTo(10 / 110 + 0.025, 12);
   });
 
   it('단가 null 재료 — core 는 건너뛰고 SQL 은 coalesce 0, 결과 원가는 같다', () => {

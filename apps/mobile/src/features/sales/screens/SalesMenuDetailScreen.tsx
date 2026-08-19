@@ -74,6 +74,14 @@ export default function SalesMenuDetailScreen() {
   const tax = d ? d.tax : r?.taxMode === 'included' ? (price * 10) / 110 : 0;
   const fixed = d ? d.fixedCost : (r?.fixedRate ?? 0) * price;
   const profit = price - material - extra - tax - fixed;
+  /**
+   * 세금 내역 — 그날 판매 기준이다(0054). 기간 조회처럼 그날 값이 없으면 비고,
+   * 그때는 합계 한 줄만 그린다.
+   */
+  const taxRows = d?.taxItems ?? [];
+  const taxMode = d ? d.taxMode : r?.taxMode;
+  const taxNote =
+    taxMode === 'included' ? '판매가 포함 (10/110)' : taxMode === 'separate' ? '별도' : '면세';
   const rate = price > 0 ? Math.round((profit / price) * 1000) / 10 : 0;
   const p = (v: number) => (price > 0 ? Math.round((v / price) * 1000) / 10 : 0);
   const target = r?.targetProfitRate ?? 0;
@@ -234,13 +242,21 @@ export default function SalesMenuDetailScreen() {
 
               {/* 고정 지출 · 세금 */}
               <Card pad={0} style={{ overflow: 'hidden' }}>
-                <SecHead title="고정 지출 · 세금" sub="(개당 환산)" />
+                <SecHead title="고정 지출 · 세금" sub={d ? '(개당 · 그날 기준)' : '(개당 환산)'} />
                 <View style={{ paddingHorizontal: 15, paddingBottom: 4 }}>
-                  {([
-                    ['고정 지출', fixed, `고정지출률 ${Math.round((d ? d.fixedRate : r.fixedRate ?? 0) * 1000) / 10}%`],
-                    ['부가세', tax, (d ? d.taxMode : r.taxMode) === 'included' ? '판매가 포함 (10/110)' : (d ? d.taxMode : r.taxMode) === 'separate' ? '별도' : '면세'],
-                  ] as const).map(([n, v, note], i) => (
-                    <View key={n} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 13, borderBottomWidth: i < 1 ? 1 : 0, borderBottomColor: T.line2 }}>
+                  {(taxRows.length > 0
+                    ? [
+                        ['고정 지출', fixed, `고정지출률 ${Math.round((d ? d.fixedRate : r.fixedRate ?? 0) * 1000) / 10}%`] as const,
+                        // 세금은 항목별로 편다 — 부가세만 있으면 한 줄, 카드 수수료가 있으면 두 줄.
+                        ...taxRows.map((t) =>
+                          [t.name, t.amount, `판매가의 ${Math.round(t.rate * 10) / 10}%`] as const),
+                      ]
+                    : ([
+                        ['고정 지출', fixed, `고정지출률 ${Math.round((d ? d.fixedRate : r.fixedRate ?? 0) * 1000) / 10}%`],
+                        ['세금', tax, taxNote],
+                      ] as const)
+                  ).map(([n, v, note], i, all) => (
+                    <View key={`${n}-${i}`} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 13, borderBottomWidth: i < all.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
                       <View style={{ flex: 1, minWidth: 0 }}>
                         <Text style={{ fontSize: 16, fontWeight: '600', color: T.ink2 }}>{n}</Text>
                         <Text style={{ fontSize: 14, color: T.ter, marginTop: 2 }}>{note}</Text>
