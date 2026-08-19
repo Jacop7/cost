@@ -9,7 +9,7 @@ import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { AppHeader, Badge, Card, Donut, Icon, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { formatPercent, formatQuantity, formatUnitPrice, recommendedPrice, round } from '@sikjae/core';
+import { formatPercent, formatQuantity, formatUnitPrice, recommendedPrice, round, taxAmount, taxRate } from '@sikjae/core';
 import { T, won } from '@/theme/tokens';
 import { useFixedCosts } from '@/features/my/hooks';
 import { PriceSimSheet } from '../components/PriceSimSheet';
@@ -78,12 +78,13 @@ export default function RecipeDetailScreen() {
     const price = r.price;
     const material = r.materialCost;
     const extra = r.extraCost;
-    const tax = r.taxMode === 'included' ? round((price * 10) / 110) : 0;
+    // 세금 = 부가세 + 사장님이 더한 항목(0052). 서버 tax_of() 와 같은 공식이다.
+    const tax = round(taxAmount(price, r.taxMode, r.taxItems));
     const fixed = round(r.fixedRate * price);
     const profit = price - tax - material - fixed - extra;
     const profitRate = price > 0 ? profit / price : 0;
     const target = r.targetProfitRate / 100;
-    const recRaw = recommendedPrice(material + extra, r.fixedRate, target);
+    const recRaw = recommendedPrice(material + extra, r.fixedRate, target, taxRate(r.taxMode, r.taxItems));
     return {
       price, material, extra, tax, fixed, profit, profitRate, target,
       recommended: recRaw == null ? null : Math.round(recRaw / 100) * 100,
@@ -360,16 +361,42 @@ export default function RecipeDetailScreen() {
                   </Pressable>
                 </Card>
 
-                {/* 세금 */}
+                {/* 세금 — 부가세 + 사장님이 더한 항목(0052) */}
                 <Card pad={0} style={{ overflow: 'hidden' }}>
-                  <SecHead title="세금" sub={r.taxMode === 'included' ? '(판매가 포함)' : r.taxMode === 'separate' ? '(별도)' : '(면세)'} />
+                  <SecHead
+                    title="세금"
+                    sub={r.taxMode === 'included' ? '(판매가 포함)' : r.taxMode === 'separate' ? '(별도)' : '(면세)'}
+                  />
                   <CostTabs value={costMode} onChange={setCostMode} servings={r.baseServings} />
-                  <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 13, paddingHorizontal: 15 }}>
-                    <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.ink2 }}>부가세</Text>
-                    <View style={{ alignItems: 'flex-end' }}>
-                      <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{won(Math.round(tax * cm))}원</Text>
-                      <Text style={[{ fontSize: 14, color: T.ter, fontWeight: '600', marginTop: 2 }, NUM]}>{p(tax)}</Text>
-                    </View>
+                  <View style={{ paddingHorizontal: 15, paddingTop: 4, paddingBottom: 15 }}>
+                    {r.taxBreakdown.length === 0 ? (
+                      <Text style={{ fontSize: 16, color: T.ter, paddingVertical: 13 }}>
+                        빠지는 세금이 없어요.
+                      </Text>
+                    ) : (
+                      r.taxBreakdown.map((t, i) => (
+                        <View
+                          key={`${t.name}-${i}`}
+                          style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 11, borderBottomWidth: i < r.taxBreakdown.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}
+                        >
+                          <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.ink2 }}>{t.name}</Text>
+                          <View style={{ alignItems: 'flex-end' }}>
+                            <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{won(Math.round(t.amount * cm))}원</Text>
+                            <Text style={[{ fontSize: 14, color: T.ter, fontWeight: '600', marginTop: 2 }, NUM]}>{formatPercent(t.rate / 100)}</Text>
+                          </View>
+                        </View>
+                      ))
+                    )}
+                    {/* 항목이 둘 이상일 때만 소계 — 한 줄이면 같은 숫자를 두 번 보여 주는 셈이다. */}
+                    {r.taxBreakdown.length > 1 ? (
+                      <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, paddingTop: 10, borderTopWidth: 1, borderTopColor: T.line }}>
+                        <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.ink2 }}>소계</Text>
+                        <View style={{ alignItems: 'flex-end' }}>
+                          <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{won(Math.round(tax * cm))}원</Text>
+                          <Text style={[{ fontSize: 14, fontWeight: '700', color: T.sub2, marginTop: 2 }, NUM]}>{p(tax)}</Text>
+                        </View>
+                      </View>
+                    ) : null}
                   </View>
                 </Card>
 
@@ -518,7 +545,7 @@ export default function RecipeDetailScreen() {
           extra={calc.extra}
           fixedRate={r.fixedRate}
           target={calc.target}
-          taxIncluded={r.taxMode === 'included'}
+          taxRatio={taxRate(r.taxMode, r.taxItems)}
         />
       ) : null}
     </View>

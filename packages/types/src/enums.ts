@@ -32,6 +32,16 @@ export type CandidateStatus = 'pending' | 'ordered' | 'excluded'; // 대기/주�
 /** 세금 모드 (② 2.1) — 부가세 포함/별도/면세. */
 export type TaxMode = 'included' | 'separate' | 'exempt';
 
+/**
+ * 부가세 외 세금 항목 — 카드 수수료·기타 세금 등(0052).
+ * rate 는 **판매가 대비 %**(2.5 = 2.5%). 부가세는 taxMode 가 맡는 기본 항목이라
+ * 여기에 넣지 않는다.
+ */
+export interface TaxItem {
+  name: string;
+  rate: number;
+}
+
 /** 순이익률 추이 원인 색 (⑦ 4 전파 원칙): 재료=주황, 레시피=파랑, 고정=회색. */
 export type TrendCause = 'material' | 'recipe' | 'fixed';
 

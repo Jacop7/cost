@@ -16,6 +16,32 @@ const str = (v: unknown): string | null => (v === null || v === undefined ? null
 
 export type TaxMode = 'included' | 'separate' | 'exempt';
 
+/** 부가세 외 세금 항목 — 카드 수수료 등. rate 는 판매가 대비 %(0052). */
+export interface TaxItem {
+  name: string;
+  rate: number;
+}
+
+/** '(−) 세금' 을 펼쳤을 때 보이는 한 줄. 부가세는 builtin. */
+export interface TaxRow extends TaxItem {
+  amount: number;
+  builtin: boolean;
+}
+
+const taxItems = (v: unknown): TaxItem[] =>
+  ((v ?? []) as Record<string, unknown>[]).map((i) => ({
+    name: String(i.name ?? ''),
+    rate: Number(i.rate ?? 0),
+  }));
+
+const taxRows = (v: unknown): TaxRow[] =>
+  ((v ?? []) as Record<string, unknown>[]).map((i) => ({
+    name: String(i.name ?? ''),
+    rate: Number(i.rate ?? 0),
+    amount: Number(i.amount ?? 0),
+    builtin: i.builtin === true,
+  }));
+
 export interface RecipeRow {
   id: string;
   name: string;
@@ -69,6 +95,11 @@ export interface RecipeDetail {
   /** 최근 30일 판매 실적 — 레시피 화면에서 매출 탭으로 건너가지 않게. */
   sales30d: { qty: number; revenue: number; waste: number };
   taxMode: TaxMode;
+  /** 부가세 외 세금 항목(0052). 편집 화면이 그대로 고쳐 되보낸다. */
+  taxItems: TaxItem[];
+  /** 부가세를 포함한 항목별 내역 — 손익표의 '(−) 세금' 을 펼칠 때. */
+  taxBreakdown: TaxRow[];
+  tax: number;
   baseServings: number;
   targetProfitRate: number;
   avgMonthlySales: number | null;
@@ -133,6 +164,9 @@ export function useRecipeDetail(id: string | undefined) {
           waste: num((r.sales_30d as Record<string, unknown> | null)?.waste),
         },
         taxMode: r.tax_mode as TaxMode,
+        taxItems: taxItems(r.tax_items),
+        taxBreakdown: taxRows(r.tax_breakdown),
+        tax: num(r.tax),
         baseServings: num(r.base_servings),
         targetProfitRate: num(r.target_profit_rate),
         avgMonthlySales: numOrNull(r.avg_monthly_sales),
@@ -175,6 +209,8 @@ export interface RecipeInput {
   categoryId?: string | null;
   active?: boolean;
   taxMode: TaxMode;
+  /** 보내면 **전량 교체**된다. 생략하면 서버가 기존 항목을 그대로 둔다(0055). */
+  taxItems?: TaxItem[];
   baseServings: number;
   targetProfitRate: number;
   avgMonthlySales: number | null;
@@ -198,6 +234,9 @@ export function useSaveRecipe() {
         target_profit_rate: input.targetProfitRate,
         avg_monthly_sales: input.avgMonthlySales ?? '',
       };
+      if (input.taxItems) {
+        payload.tax_items = input.taxItems.map((i) => ({ name: i.name, rate: i.rate }));
+      }
       if (input.categoryId !== undefined) payload.category_id = input.categoryId ?? '';
       if (input.active !== undefined) payload.active = input.active;
       if (input.lines) {

@@ -27,8 +27,8 @@
 | `ingredients` | ING-10 | 폐기 내역 (탭: 전체·조리 전 폐기·조리 후 폐기) | `ingredients/discards/[id]` (`DiscardHistoryScreen`) | ✅ |
 | `ingredients` | — | 메모 수정 (멀티라인·글자수) | `MemoEditSheet`(시트) | ✅ |
 | `recipes` | RCP-01 | 레시피 리스트 (정렬·판매상태/목표 필터) | `recipes/index` | ✅ |
-| `recipes` | RCP-02 | 레시피 상세 (도넛·손익·재료·고정지출) | `recipes/[id]` | ✅ |
-| `recipes` | RCP-03 | 레시피 추가/수정 → **E3** | `recipes/add` | ✅ |
+| `recipes` | RCP-02 | 레시피 상세 (도넛·손익·재료·고정지출·**세금 항목별**) | `recipes/[id]` | ✅ |
+| `recipes` | RCP-03 | 레시피 추가/수정 (세금 시트에서 **세금 항목 추가·삭제**) → **E3** | `recipes/add` | ✅ |
 | `recipes` | RCP-09 | 식재료 검색·담기 + 사용량 입력 시트 | `recipes/ingredient-search` | ✅ |
 | `recipes` | RCP-11 | 부자재 검색·담기 | `recipes/material-search` (`MaterialSearchScreen`) | ✅ |
 | `recipes` | RCP-13 | 부자재 관리 (+ RCP-14 부자재 수정 시트) | `recipes/materials` (`MaterialManageScreen`) | ✅ |
@@ -102,6 +102,7 @@
 ## 표기 규칙 (현재 반영)
 - 수량/용량 단위는 **kg·g·ml + 개수(개/모)** 만 노출(망·통·박스·판 등 구매단위 라벨은 표기에서 제거, 상품명/거래처로 분리).
 - 구매 옵션 표기: **식재료명 · 용량 · 금액 / 구매처 · 단가**.
+- 재고는 최소단위(g/ml/개)의 **총량 하나**로 저장·표시한다. 미개봉/개봉분을 별도 상태로 관리하지 않는다.
 - 재고 상태: **여유 / 소진 임박**(2단계, ING 리스트). 발주 후보는 사유(안전재고 미달·곧 소진).
 - 숫자 서식은 `@sikjae/core` 의 `locale.ts` 가 단일 출처(`formatMoney`·`formatUnitPrice`·`formatPercent`·`parseNumber`). 축이 둘로 나뉜다:
   - **로케일이 정함**(MY-08 언어·통화): 자릿수 구분자 · 소수점 문자 · 통화기호 · **금액** 소수 자릿수(원·엔·동=0, 그 외=2). 선택지가 아니라 사실이라 사용자는 언어만 고른다.
