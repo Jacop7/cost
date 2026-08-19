@@ -141,8 +141,8 @@ export default function SalesHomeScreen() {
 
   /**
    * 저장이 막힌 두 경우는 오류가 아니라 **다음에 할 일**이다.
-   *  P0003 아직 영업 전  → "오늘 영업을 시작할까요?" 를 묻고, 시작하면 그대로 이어서 저장한다.
-   *  P0004 이미 종료됨   → 영업 기록을 다시 열어야 한다고 알린다.
+   *  45001 아직 영업 전  → "오늘 영업을 시작할까요?" 를 묻고, 시작하면 그대로 이어서 저장한다.
+   *  45002 이미 종료됨   → 영업 기록을 다시 열어야 한다고 알린다.
    * 그냥 서버 문구를 띄우면 사장님은 무엇을 눌러야 할지 알 수 없다.
    */
   const onSaveError = (e: unknown, retry: () => void) => {
@@ -335,9 +335,10 @@ export default function SalesHomeScreen() {
               const total = q ? q.hall + q.delivery + q.takeout : 0;
               const b = basis.data?.get(m.id);
               // 팔 수 없는 이유. 사장님이 끈 것이 먼저다 — 그건 의도이고, 재료는 상태다.
-              // 오늘 기준에 없는 메뉴(오늘 만든 것)는 서버가 막으므로 여기서도 막는다.
+              // ⚠ 오늘 기준에 없는 메뉴는 막지 않는다(0062). 오늘 기록이 없어 움직일 숫자가
+              //   없으므로, 팔면 그 시점 값으로 오늘 기준에 더해진다.
               const stopped = !m.active;
-              const blocked = stopped ? '판매 중지' : m.blockedBy ? '재료 부족' : b && !b.inBasis ? '내일부터' : null;
+              const blocked = stopped ? '판매 중지' : m.blockedBy ? '재료 부족' : null;
               return (
                 <View key={m.id} style={{ flexDirection: 'row', alignItems: 'center', gap: 11, paddingVertical: 14, paddingHorizontal: 15, borderBottomWidth: i < list.length - 1 ? 1 : 0, borderBottomColor: T.line2, opacity: blocked ? 0.45 : 1 }}>
                   <View style={{ flex: 1, minWidth: 0 }}>
@@ -349,10 +350,8 @@ export default function SalesHomeScreen() {
                       {/* 왜 안 되는지 그 자리에서 밝힌다 — 배지만으로는 어느 재료인지 모른다. */}
                       {m.blockedBy && !stopped
                         ? `${m.blockedBy}이(가) 없어요 · 식재료에서 재고를 맞춰 주세요`
-                        : b && !b.inBasis
-                          ? '영업을 시작한 뒤 만든 메뉴예요 · 다음 영업일부터 팔 수 있어요'
-                          // ⚠ 오늘 팔면 잡히는 값이다. 현재 레시피가 아니다(0061).
-                          : `판매가 ${won(Math.round(b?.price ?? m.price))} · 재료비 ${won(Math.round(b?.materialCost ?? m.materialCost))}`}
+                        // ⚠ 오늘 팔면 잡히는 값이다. 현재 레시피가 아니다(0061).
+                        : `판매가 ${won(Math.round(b?.price ?? m.price))} · 재료비 ${won(Math.round(b?.materialCost ?? m.materialCost))}`}
                     </Text>
                     {/* 영업 중에 고친 값 — 오늘 장부에는 안 들어간다고 그 자리에서 밝힌다. */}
                     {b?.changed ? (

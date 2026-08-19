@@ -6,7 +6,7 @@
  * 레시피 화면에는 새 값이 보인다("지금 팔면 얼마 남나"는 다른 질문이라서다).
  * 고친 값은 **다음 영업일 기준**부터 매출에 들어간다.
  *
- * 그래서 매출 등록 전에 영업이 시작돼 있어야 한다. 시작 전이면 서버가 P0003 으로
+ * 그래서 매출 등록 전에 영업이 시작돼 있어야 한다. 시작 전이면 서버가 45001 으로
  * 막고, 화면은 "오늘 영업을 시작할까요?"를 먼저 묻는다.
  */
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -173,11 +173,16 @@ export function useAckAutoClose() {
   });
 }
 
-/** 서버가 "아직 영업을 시작하지 않았어요"로 막았는가(P0003). 화면이 시작을 먼저 묻는다. */
+/**
+ * 서버가 "아직 영업을 시작하지 않았어요"로 막았는가(45001). 화면이 시작을 먼저 묻는다.
+ *
+ * ⚠ 코드가 아니라 **문구**로 가려낸다. PostgREST 응답에 SQLSTATE 가 그대로 오지 않는
+ *   경우가 있어서다. 문구를 바꾸면 여기도 함께 고쳐야 한다.
+ */
 export const isNotOpenError = (e: unknown): boolean =>
   e instanceof Error && e.message.includes('아직 영업을 시작하지 않았어요');
 
-/** 서버가 "종료된 영업일"로 막았는가(P0004). 되돌리기를 권한다. */
+/** 서버가 "종료된 영업일"로 막았는가(45002). 되돌리기를 권한다. */
 export const isClosedError = (e: unknown): boolean =>
   e instanceof Error && e.message.includes('영업은 종료됐어요');
 
