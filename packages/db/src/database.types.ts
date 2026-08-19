@@ -1260,6 +1260,14 @@ export type Database = {
         }
         Returns: undefined
       }
+      add_to_day_basis: {
+        Args: {
+          p_store: string
+          p_date: string
+          p_recipe: string
+        }
+        Returns: Json
+      }
       assert_my_store: {
         Args: {
           p_store: string
@@ -1773,6 +1781,12 @@ export type Database = {
           unit_cost: number
           active: boolean
         }[]
+      }
+      recipe_snapshot_entry: {
+        Args: {
+          p_recipe: string
+        }
+        Returns: Json
       }
       recipe_tax: {
         Args: {

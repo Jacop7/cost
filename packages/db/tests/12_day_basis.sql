@@ -282,17 +282,23 @@ begin
     (e10_sale_recorded(pg_temp.store(), v_day, v_rcp, 5, 0, 0, 0)->>'unit_price')::numeric,
     (m1->>'price')::numeric, 0.0001);
 
-  -- ── 영업 중에 만든 메뉴는 오늘 팔 수 없다 ───────────────────
-  -- e10 이 막는데 카드에는 팔 수 있는 것처럼 떠 있으면 눌러 보고서야 안다.
+  -- ── 영업 중에 만든 메뉴는 팔면 오늘 기준에 **더해진다** (0062) ─
+  -- 오늘 기록이 없는 메뉴라 움직일 숫자가 없다. 막을 이유가 없었다.
   v_new := save_recipe(pg_temp.store(), jsonb_build_object(
     'name', '오늘 만든 메뉴', 'price', 5000, 'base_servings', 1));
-  perform pg_temp.ok('오늘 만든 메뉴는 오늘 기준에 없다',
+  perform pg_temp.ok('아직 오늘 기준에는 없다',
     (select (m->>'in_basis')::boolean is false
        from jsonb_array_elements(day_menu_basis(pg_temp.store(), v_day)) m
       where (m->>'recipe_id')::uuid = v_new));
-  perform pg_temp.raises('그리고 실제로 팔리지 않는다',
-    format('select e10_sale_recorded(%L, %L, %L, 1, 0, 0, 0)', pg_temp.store(), v_day, v_new),
-    '22000');
+  perform pg_temp.eq('팔면 그 시점 값으로 기록된다',
+    (e10_sale_recorded(pg_temp.store(), v_day, v_new, 1, 0, 0, 0)->>'unit_price')::numeric, 5000, 0);
+  perform pg_temp.ok('그러면서 오늘 기준에 더해진다',
+    (day_snapshot(pg_temp.store(), v_day) #> array['recipes', v_new::text]) is not null);
+  -- 더해진 뒤의 수정은 여전히 다음 영업일부터다 — 기준은 한 번 정해지면 그날 안 움직인다.
+  perform save_recipe(pg_temp.store(), jsonb_build_object(
+    'id', v_new, 'name', '오늘 만든 메뉴', 'price', 9900, 'base_servings', 1));
+  perform pg_temp.eq('더해진 뒤 고쳐도 오늘은 그대로',
+    (e10_sale_recorded(pg_temp.store(), v_day, v_new, 2, 0, 0, 0)->>'unit_price')::numeric, 5000, 0);
 end $t$;
 
 -- ════════════════════════════════════════════════════════════════
@@ -353,22 +359,21 @@ begin
     (e10_sale_recorded(pg_temp.store(), v_day, v_rcp, 1, 0, 0, 0)->>'unit_price')::numeric,
     13500, 0);
 
-  -- ── ④ 영업 시작 뒤에 만든 메뉴만 막힌다 ────────────────────
+  -- ── ④ 영업 시작 뒤에 만든 메뉴도 팔린다 — 더해질 뿐이다(0062) ─
   v_b := save_recipe(pg_temp.store(), jsonb_build_object(
     'name', '영업 중에 만든 메뉴', 'price', 5000, 'base_servings', 1));
-  perform pg_temp.ok('영업 중에 만든 메뉴는 오늘 기준에 없다',
+  perform pg_temp.ok('아직 오늘 기준에는 없다',
     (select (x->>'in_basis')::boolean is false
        from jsonb_array_elements(day_menu_basis(pg_temp.store(), v_day)) x
       where (x->>'recipe_id')::uuid = v_b));
-  perform pg_temp.raises('그래서 오늘은 팔리지 않는다',
-    format('select e10_sale_recorded(%L, %L, %L, 1, 0, 0, 0)', pg_temp.store(), v_day, v_b),
-    '22000');
+  perform pg_temp.ok('그래도 팔린다',
+    (e10_sale_recorded(pg_temp.store(), v_day, v_b, 1, 0, 0, 0)->>'added_to_basis')::boolean);
 end $t$;
 
 -- ════════════════════════════════════════════════════════════════
 -- 첫 판매가 영업 시작을 겸하는 흐름
 --
--- 화면은 P0003 을 오류로 띄우지 않고 "오늘 영업을 시작할까요?" 를 묻는다.
+-- 화면은 45001 을 오류로 띄우지 않고 "오늘 영업을 시작할까요?" 를 묻는다.
 -- 시작하면 방금 만든 메뉴까지 담긴 기준이 생기고, 그대로 이어서 저장된다.
 -- ════════════════════════════════════════════════════════════════
 
@@ -385,13 +390,77 @@ begin
     'name', '아침에 만든 메뉴', 'price', 6500, 'base_servings', 1));
 
   -- 영업 전에는 서버가 막는다 — 화면이 시작을 먼저 묻는 근거다.
-  perform pg_temp.raises('영업 전에는 P0003 으로 막는다',
+  perform pg_temp.raises('영업 전에는 45001 으로 막는다',
     format('select e10_sale_recorded(%L, %L, %L, 1, 0, 0, 0)', pg_temp.store(), v_day, v_new),
-    'P0003');
+    '45001');
 
   -- 시작하고 그대로 이어서 저장 — 두 번 누르게 하지 않는다.
   perform open_business_day(pg_temp.store());
   perform pg_temp.eq('시작 직후 그 메뉴가 바로 팔린다',
     (e10_sale_recorded(pg_temp.store(), v_day, v_new, 2, 0, 0, 0)->>'unit_price')::numeric,
     6500, 0);
+end $t$;
+
+-- ════════════════════════════════════════════════════════════════
+-- 더하기는 이미 기록된 숫자를 흔들지 않는다 (0062)
+--
+-- 스냅샷을 굳히는 이유가 그것뿐이므로, 추가가 안전한지가 이 설계의 근거다.
+-- ════════════════════════════════════════════════════════════════
+
+do $t$
+declare
+  v_day date := business_day();
+  v_rcp uuid := pg_temp.rcp('제육볶음');
+  v_off uuid := pg_temp.rcp('된장찌개');
+  v_new uuid;
+  b0 jsonb; b1 jsonb;
+  s0 jsonb; s1 jsonb;
+begin
+  -- 오늘을 영업 전으로 되돌리고, 된장찌개를 꺼 둔 채로 시작한다.
+  -- (재료가 떨어져 잠깐 꺼 두는 상황 — 이게 제일 흔하다.)
+  begin perform close_business_day(pg_temp.store()); exception when others then null; end;
+  update business_days set business_date = v_day - 405
+   where store_id = pg_temp.store() and business_date = v_day;
+  update recipes set active = false where id = v_off;
+  perform open_business_day(pg_temp.store());
+  perform pg_temp.ok('꺼 둔 메뉴는 오늘 기준에 없다',
+    (day_snapshot(pg_temp.store(), v_day) #> array['recipes', v_off::text]) is null);
+
+  perform e10_sale_recorded(pg_temp.store(), v_day, v_rcp, 10, 0, 0, 0);
+  b0 := day_menu_detail(pg_temp.store(), v_day, v_rcp);
+  s0 := sales_summary(pg_temp.store(), v_day, v_day);
+
+  -- 입고돼서 다시 켠다 → 오늘 팔 수 있어야 한다
+  update recipes set active = true where id = v_off;
+  perform pg_temp.eq('껐다 켠 메뉴가 오늘 팔린다',
+    (e10_sale_recorded(pg_temp.store(), v_day, v_off, 1, 0, 0, 0)->>'unit_price')::numeric, 8000, 0);
+
+  -- 영업 중에 만든 새 메뉴도
+  -- ⚠ 매출 증가분은 **이전 기록이 없는 메뉴**로만 잰다. e10 은 수량을 덮어쓰므로
+  --   시드에 이미 오늘 판매가 있는 메뉴로 재면 증가가 아니라 감소가 나온다.
+  s0 := sales_summary(pg_temp.store(), v_day, v_day);
+  v_new := save_recipe(pg_temp.store(), jsonb_build_object(
+    'name', '영업 중 신메뉴', 'price', 5500, 'base_servings', 1));
+  perform pg_temp.eq('영업 중에 만든 메뉴도 팔린다',
+    (e10_sale_recorded(pg_temp.store(), v_day, v_new, 2, 0, 0, 0)->>'unit_price')::numeric, 5500, 0);
+
+  -- ⚠ 핵심: 더해도 기존 항목은 그대로여야 한다
+  b1 := day_menu_detail(pg_temp.store(), v_day, v_rcp);
+  perform pg_temp.eq('기존 메뉴 판매가 그대로', (b1->>'price')::numeric, (b0->>'price')::numeric, 0.0001);
+  perform pg_temp.eq('기존 메뉴 재료비 그대로', (b1->>'material_cost')::numeric, (b0->>'material_cost')::numeric, 0.0001);
+  perform pg_temp.eq('기존 메뉴 순이익 그대로', (b1->>'profit')::numeric, (b0->>'profit')::numeric, 0.0001);
+  -- ⚠ 절대 검산값은 여기서 확인하지 않는다. 앞 블록들이 인건비를 올려 둬서
+  --   이 시점의 고정지출률이 다르다 — 검산 3종은 01_checksums 가 지킨다.
+  --   여기서 지킬 것은 "더해도 안 움직인다"는 관계다.
+
+  -- 합계는 새로 판 만큼만 늘어야 한다 (기존 기준이 흔들려서가 아니라)
+  s1 := sales_summary(pg_temp.store(), v_day, v_day);
+  perform pg_temp.eq('매출은 새로 판 만큼만 늘었다',
+    (s1->>'revenue')::numeric - (s0->>'revenue')::numeric, 5500 * 2, 0.01);
+
+  -- 종료된 날에는 더할 수 없다 — 그날 장부는 잠긴 것이다
+  perform close_business_day(pg_temp.store());
+  perform pg_temp.raises('종료된 날에는 더하지 않는다',
+    format('select add_to_day_basis(%L, %L, %L)', pg_temp.store(), v_day, pg_temp.rcp('계란말이')),
+    '45002');
 end $t$;
