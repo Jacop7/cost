@@ -8,6 +8,7 @@ import { formatQuantity, formatUnitPrice } from '@sikjae/core';
 import { safeBack } from '@/lib/nav';
 import { LedgerRow } from '../components/LedgerRow';
 import { LossCard } from '../components/LossCard';
+import { belowSafety } from '../components/IngCard';
 import { StockEditSheet } from './StockEditSheet';
 import { MemoEditSheet } from './MemoEditSheet';
 import { dispUnit, toLedgerView } from '../ledger';
@@ -91,7 +92,8 @@ export function IngredientDetailScreen() {
     { label: '식재료 삭제', danger: true, onPress: confirmDelete },
   ];
 
-  const belowSafety = g ? g.stockTotal < g.safetyStock * g.perVolume : false;
+  // 목록 카드와 **같은 함수**를 쓴다. 두 화면이 다른 기준으로 판정하면 목록과 상세가 어긋난다.
+  const low = g ? g.soonOut || g.stockTotal <= 0 || belowSafety(g) : false;
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
@@ -146,10 +148,9 @@ export function IngredientDetailScreen() {
               {/* 잔여 */}
               <Card pad={16}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                  <Badge tone={g.soonOut || g.stockTotal <= 0 ? 'red' : 'green'} solid sm>
-                    {g.soonOut || g.stockTotal <= 0 ? '소진 임박' : '여유'}
+                  <Badge tone={low ? 'red' : 'green'} solid sm>
+                    {low ? '소진 임박' : '여유'}
                   </Badge>
-                  {belowSafety ? <Icon name="warn" size={16} color={T.amberText} /> : null}
                 </View>
                 <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 8, marginTop: 8 }}>
                   <Text style={[{ fontSize: 20, fontWeight: '800', letterSpacing: -0.6, color: T.ink }, tnum]}>
@@ -165,7 +166,7 @@ export function IngredientDetailScreen() {
                   {' · '}개당 {formatQuantity(g.perVolume, unit)}
                 </Text>
                 <View style={{ marginTop: 10, flexDirection: 'row', gap: 6, flexWrap: 'wrap' }}>
-                  <Badge tone={belowSafety ? 'amber' : 'neutral'} sm>안전재고 {g.safetyStock}개</Badge>
+                  <Badge tone={g && belowSafety(g) ? 'red' : 'neutral'} sm>안전재고 {g.safetyStock}개</Badge>
                   <Badge tone="neutral" sm>최소발주 {g.minOrderQty}개</Badge>
                   {g.lastInboundAt ? <Badge tone="neutral" sm>최근입고 {g.lastInboundAt.slice(5).replace('-', '/')}</Badge> : null}
                 </View>

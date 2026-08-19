@@ -7,12 +7,11 @@ import { ScreenShell, ScrollTabs, Icon, FAB, SearchBar, SortChip, SortSheet, Que
 import { T } from '../../../theme/tokens';
 import { useIngredientList, type IngredientRow } from '../hooks';
 import { useSettingsLists } from '@/features/my/hooks';
-import { IngCard } from '../components/IngCard';
+import { IngCard, belowSafety } from '../components/IngCard';
 
-// 추천순: 소진 임박 → 안전재고 미달 → 여유.
-// 안전재고는 **개수** 기준이므로 개당 용량을 곱해 총량(기준단위)과 단위를 맞춘다.
-const belowSafety = (g: IngredientRow) => g.stockTotal < g.safetyStock * g.perVolume;
-const rank = (g: IngredientRow) => (g.soonOut ? 0 : belowSafety(g) ? 1 : 2);
+// 추천순: 완전 소진 → 안전재고 미달 → 여유.
+// 판정은 IngCard 의 belowSafety 를 **공유**한다. 두 벌이면 배지와 정렬이 갈린다.
+const rank = (g: IngredientRow) => (g.soonOut || g.stockTotal <= 0 ? 0 : belowSafety(g) ? 1 : 2);
 
 type SortKey = 'recommended' | 'name' | 'stockLow' | 'priceHigh';
 
@@ -68,7 +67,8 @@ export function IngredientListScreen() {
     }
   }, [items, cat, selCat, query, sort]);
 
-  const soonList = sorted.filter((g) => g.soonOut);
+  // 배지가 '소진 임박'이라고 쓴 것과 **같은 집합**이어야 한다.
+  const soonList = sorted.filter((g) => g.soonOut || g.stockTotal <= 0 || belowSafety(g));
   const sortLabel = SORTS.find((s) => s.key === sort)?.label ?? '추천순';
   const isSearch = searching && query.trim() !== '';
 
