@@ -8,6 +8,7 @@
  */
 import { describe, it, expect } from 'vitest';
 import {
+  stockBadge,
   rawUnitPrice,
   baseUnitPrice,
   previewBaseUnitPrice,
@@ -176,5 +177,29 @@ describe('materialCost — 라인 단위 방어', () => {
     );
     expect(r.cost).toBe(2835);
     expect(r.hasMissingPrice).toBe(true);
+  });
+});
+
+describe('stockBadge — 안전재고 미달은 여유가 아니다', () => {
+  const snap = (cnt: number) => ({ sealedCount: cnt, openedCount: 0, openedRemain: null, soonOut: false });
+
+  it('안전재고보다 적으면 부족', () => {
+    expect(stockBadge(snap(2), 5)).toBe('low');
+  });
+
+  it('안전재고와 같으면 부족 — 경계는 미달 쪽이다', () => {
+    expect(stockBadge(snap(5), 5)).toBe('low');
+  });
+
+  it('안전재고보다 많아야 충분', () => {
+    expect(stockBadge(snap(6), 5)).toBe('ok');
+  });
+
+  it('완전 소진은 부족보다 우선', () => {
+    expect(stockBadge(snap(0), 5)).toBe('out');
+  });
+
+  it('소진임박 표시는 수량과 무관하게 우선', () => {
+    expect(stockBadge({ ...snap(100), soonOut: true }, 5)).toBe('out');
   });
 });
