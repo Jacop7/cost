@@ -7,6 +7,7 @@ import { T, tnum } from '../../../theme/tokens';
 import { formatQuantity, formatUnitPrice } from '@sikjae/core';
 import { safeBack } from '@/lib/nav';
 import { LedgerRow } from '../components/LedgerRow';
+import { LossCard } from '../components/LossCard';
 import { StockEditSheet } from './StockEditSheet';
 import { MemoEditSheet } from './MemoEditSheet';
 import { dispUnit, toLedgerView } from '../ledger';
@@ -215,6 +216,9 @@ export function IngredientDetailScreen() {
                 </View>
               </Card>
 
+              {/* 로스율 — 폐기 이력 바로 위에 둔다. 숫자만 보면 어디서 나온 값인지 모른다. */}
+              <LossCard loss={g.loss} baseUnit={g.baseUnit} />
+
               {/* 재고 변동 내역 */}
               <Card pad={0} style={{ overflow: 'hidden' }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 13, paddingHorizontal: 15, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
@@ -364,8 +368,8 @@ export function IngredientDetailScreen() {
             stock={g.stockTotal}
             saving={stockChange.isPending}
             onApply={(change) => {
-              // 수량만 덮어쓰지 않고 **원장에 이력을 남긴다**. 조정(E5)과 폐기(E2)는 서로 다른 사건이고,
-              // 폐기는 실측 로스율에 누적되어 기준단가까지 바꾼다.
+              // 수량만 덮어쓰지 않고 **원장에 이력을 남긴다**. 조정(E5)과 폐기(E2)는 서로 다른 사건이다.
+              // 폐기는 기준단가를 바꾸지 않지만(0041), 로스율 표시와 월 손익의 폐기 손실에 잡힌다.
               stockChange.mutate(
                 {
                   ingredientId: g.id,

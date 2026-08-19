@@ -73,6 +73,7 @@ export interface IngredientDetail extends IngredientRow {
   priceTrends: { date: string; price: number }[];
   options: PurchaseOption[];
   orders: PurchaseRecord[];
+  loss: IngredientLoss;
 }
 
 export interface LedgerEntry {
@@ -85,8 +86,28 @@ export interface LedgerEntry {
   note: string | null;
   /** 그 사건 직후 잔량. 서버가 누적해서 준다 — 앱이 종류별 분기를 알 필요가 없다. */
   balance: number;
-  /** 이미 되돌려진 폐기인가. 되돌린 폐기는 실측 로스율에서 빠진다. */
+  /** 이미 되돌려진 폐기인가. 되돌린 폐기는 로스율 표시에서 빠진다. */
   reverted: boolean;
+  /** 조리 폐기(메뉴를 만들어 놓고 못 팔아 버린 몫)인가. 보관 폐기와 원인이 다르다(0041). */
+  waste: boolean;
+}
+
+/**
+ * 실측 로스율 — **표시 전용**(0042). 기준단가에 곱하지 않는다.
+ * 보관 폐기와 조리 폐기를 갈라서 준다. 원인이 다르면 사장님이 할 일도 다르다.
+ * 폐기 기록이 없으면 rate 는 null — 0% 로 단정하지 않는다.
+ */
+export interface IngredientLoss {
+  purchased: number;
+  storageAmount: number;
+  cookingAmount: number;
+  storageCount: number;
+  cookingCount: number;
+  totalAmount: number;
+  totalCost: number | null;
+  rate: number | null;
+  storageRate: number | null;
+  cookingRate: number | null;
 }
 
 function toRow(r: Record<string, unknown>): IngredientRow {
@@ -141,6 +162,21 @@ export function useIngredientDetail(id: string | undefined) {
         minOrderQty: num(r.min_order_qty),
         sealedCount: num(r.sealed_count),
         openedRemain: num(r.opened_remain),
+        loss: (() => {
+          const l = (r.loss ?? {}) as Record<string, unknown>;
+          return {
+            purchased: num(l.purchased),
+            storageAmount: num(l.storage_amount),
+            cookingAmount: num(l.cooking_amount),
+            storageCount: num(l.storage_count),
+            cookingCount: num(l.cooking_count),
+            totalAmount: num(l.total_amount),
+            totalCost: numOrNull(l.total_cost),
+            rate: numOrNull(l.rate),
+            storageRate: numOrNull(l.storage_rate),
+            cookingRate: numOrNull(l.cooking_rate),
+          };
+        })(),
         purchase: {
           avg: numOrNull(pu.avg),
           low: numOrNull(pu.low),
@@ -197,6 +233,7 @@ export function useStockHistory(id: string | undefined, range?: { from?: string;
         note: str(e.note),
         balance: num(e.balance),
         reverted: Boolean(e.reverted),
+        waste: Boolean(e.waste),
       }));
     },
   });

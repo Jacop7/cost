@@ -16,7 +16,13 @@ const LABEL: Record<LedgerType, string> = {
   adjust: '수량 조정',
 };
 
-export const ledgerLabel = (t: LedgerType): string => LABEL[t] ?? '변동';
+/**
+ * 같은 '폐기'라도 원인이 다르면 다르게 불러야 한다(0041).
+ *   보관 폐기 — 상해서 버렸다      → 발주량이나 보관이 문제
+ *   조리 폐기 — 만들었는데 못 팔았다 → 판매 예측이 문제
+ */
+export const ledgerLabel = (t: LedgerType, waste = false): string =>
+  t === 'discard' ? (waste ? '조리 폐기' : '보관 폐기') : (LABEL[t] ?? '변동');
 
 /** 표기 단위 — DB 의 ea 는 화면에서 '개'. */
 export const dispUnit = (u: 'g' | 'ml' | 'ea'): 'g' | 'ml' | '개' => (u === 'ea' ? '개' : u);
@@ -40,7 +46,7 @@ export function toLedgerView(e: LedgerEntry, unit: 'g' | 'ml' | 'ea'): LedgerVie
   return {
     id: e.id,
     date: e.date.slice(5).replace('-', '/'),
-    label: ledgerLabel(e.type),
+    label: ledgerLabel(e.type, e.waste),
     memo: e.note ?? '',
     // 변화가 없는 실사도 있다 — '0' 이 아니라 '변동 없음'이라고 적어야 읽힌다.
     delta: e.countDelta === 0 ? '변동 없음' : `${up ? '+' : '−'}${formatQuantity(abs, u)}`,
