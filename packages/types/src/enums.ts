@@ -24,7 +24,8 @@ export type OrderRecordStatus = 'ordered' | 'partial' | 'received' | 'canceled';
 export type OrderRecordSource = 'manual' | 'ocr' | 'option' | 'recipe';
 
 /** 발주 후보 사유 (③ 2.2) — 복수 동시 가능(합산 시 병기). */
-export type CandidateReason = 'safety_stock' | 'soon_out' | 'recipe' | 'manual';
+/** 발주 후보가 뜬 이유. 레시피 계산(ORD-04)은 1차 범위 밖이라 뺐다(0060). */
+export type CandidateReason = 'safety_stock' | 'soon_out' | 'manual';
 
 /** 발주 후보 상태. */
 export type CandidateStatus = 'pending' | 'ordered' | 'excluded'; // 대기/주문함/제외

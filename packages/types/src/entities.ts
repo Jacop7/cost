@@ -125,17 +125,6 @@ export interface OrderCandidate {
   status: CandidateStatus;
 }
 
-/** 레시피 계산 실행 (③ 2.3) — 발주 후보(사유=recipe) 산출 근거. */
-export interface RecipeCalcRun {
-  id: ID;
-  storeId: ID;
-  periodFrom: string;
-  periodTo: string;
-  items: { recipeId: ID; servings: number }[]; // 메뉴 × 인분
-  result: { ingredientId: ID; required: number; shortage: number }[];
-  ranAt: string;
-}
-
 // ── 레시피·손익 ──────────────────────────────────────────
 export interface Recipe {
   id: ID;

@@ -15,9 +15,6 @@ supabase/
 │   ├── 20260608000005_rls.sql                # 전 테이블 store_id 격리 정책
 │   ├── 20260608000006_calc_helpers.sql       # 기준단가·로스율·고정지출률·손익 재계산
 │   └── 20260608000007_rpc_propagation.sql    # E1~E7 전파 트랜잭션
-├── functions/                  # Edge Functions (2차: 알림·OCR)
-│   ├── alerts-daily/
-│   └── ocr-parse-order/
 └── seed.sql                    # 카테고리 12종 + 검산 데모
 src/
 └── database.types.ts           # `pnpm db:types` 로 생성
@@ -26,7 +23,7 @@ src/
 ## 엔터티 (17 + 파생/스냅샷)
 
 기준정보: `categories` `ingredients` `vendors` `brands` `purchase_options`
-재고·구매: `inventory_states` `inventory_events` `order_records` `order_candidates` `recipe_calc_runs` · `price_trends`(파생)
+재고·구매: `inventory_states` `inventory_events` `order_records` `order_candidates` · `price_trends`(파생)
 레시피·손익: `recipes` `recipe_lines` `recipe_extra_costs` · `profit_trends`(파생)
 월 경영: `fixed_costs_monthly` · `monthly_pl`(파생)
 설정: `settings`
@@ -40,7 +37,6 @@ src/
 | `e3_recipe_saved` | 레시피 저장 | 손익 재계산 → 파랑 점 |
 | `e4_fixed_cost_saved` | 고정지출 저장 | 률 재계산 → 전 레시피(회색 점) → 월 손익 리포트 |
 | `e5_stock_adjusted` | 재고 수정·실사 | 개수 보정 → 뱃지 → 후보 생성 |
-| `e6_recipe_calc` | 레시피 계산 | 부족분 후보 생성/합산 |
 | `e7_place_order` | 발주 등록 | 발주됨 레코드 + 후보 '주문함' (재고·단가 불변) |
 
 > 모든 RPC는 단일 트랜잭션 = 원자성. 공식은 `packages/core`와 일치해야 한다.

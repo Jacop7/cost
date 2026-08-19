@@ -46,7 +46,6 @@
 | `orders` | ORD-02 | 발주 완료 등록 (도착 예정일 달력) → **E7** | `orders/complete` (`OrderCompleteScreen`) | ✅ |
 | `orders` | ORD-03 | 입고 확정 (실제 수량·부분 입고·멱등키) → **E1** | (OrdersHome 내 시트) | ✅ |
 | `orders` | ORD-07 | 발주 취소 → **E12** / 입고 취소 → **E11** | (OrdersHome 카드 버튼) | ✅ |
-| `orders` | ORD-04 | 레시피 계산기 → **E6** (2차) | — | ⬜ |
 | `my` | MY-01 | 마이페이지 홈 (사업장 + 설정 메뉴) | `my/index` (`MyHomeScreen`) | ✅ |
 | `my` | MY-03 | 카테고리 관리 허브 | `my/categories` (`MyCategoryHubScreen`) | ✅ |
 | `my` | MY-03 | 카테고리 편집 | `my/category` (`MyCategoryScreen`) | ✅ |
@@ -62,7 +61,7 @@
 | `sales` | SALES-03 | 일 손익 상세 | `sales/day-detail` (`SalesDayDetailScreen`) | ✅ |
 | `sales` | SALES-04 | 일 손익 전체 | `sales/day` (`SalesDayFullScreen`) | ✅ |
 | `sales` | SALES-05 | 매출 상세 | `sales/revenue` (`SalesRevenueScreen`) | ✅ |
-| `sales` | SALES-08 | 메뉴별 손익 | `sales/menu` (`SalesMenuDetailScreen`) | ✅ |
+| `sales` | SALES-08 | 메뉴별 손익 (하루=그날 스냅샷 · 기간=날짜별 **합**, 판매가 여럿이면 목록) | `sales/menu` (`SalesMenuDetailScreen`) | ✅ |
 | `sales` | SALES-18 | 채널별 손익 | `sales/channel` (`SalesChannelScreen`) | ✅ |
 | `sales` | SALES-11 | 재료 원가 상세 | `sales/material` (`SalesMaterialScreen`) | ✅ |
 | `sales` | SALES-12 | 부자재 상세 | `sales/extra` (`SalesExtraScreen`) | ✅ |
@@ -73,7 +72,6 @@
 | `my` | MY-09 | 영업시간 (시작·종료·브레이크 · 영업일 경계) | `my/hours` (`MyHoursScreen`) | ✅ |
 
 > 위 ✅ 는 **실데이터 연결 + 전파 + 재조회**까지 통과한 상태다(2026-08-19).
-> 남은 항목은 ORD-04 레시피 계산기(E6, 2차 범위) 하나다.
 
 ## 주요 화면 플로우 (수집 → 등록 → 노출)
 

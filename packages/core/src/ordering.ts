@@ -17,28 +17,3 @@ export function recommendedOrderQty(
   const need = Math.ceil(shortageGross / perVolume);
   return Math.max(need, minOrderQty);
 }
-
-/**
- * 레시피 계산 역산 (E6): 메뉴×인분 → 식재료별 필요량 합산.
- * lines 는 식재료별 1인분 소요량 목록. 부족분 = 필요 − 잔여환산.
- */
-export interface RequiredLine {
-  ingredientId: string;
-  perServingQty: number; // 1인분 소요량(기준단위)
-}
-
-export function requiredByIngredient(
-  menus: { lines: RequiredLine[]; servings: number }[],
-): Map<string, number> {
-  const acc = new Map<string, number>();
-  for (const menu of menus) {
-    for (const l of menu.lines) {
-      acc.set(l.ingredientId, (acc.get(l.ingredientId) ?? 0) + l.perServingQty * menu.servings);
-    }
-  }
-  return acc;
-}
-
-/** 부족분 = max(0, 필요 − 잔여환산). */
-export const shortage = (required: number, remainConverted: number): number =>
-  Math.max(0, required - remainConverted);

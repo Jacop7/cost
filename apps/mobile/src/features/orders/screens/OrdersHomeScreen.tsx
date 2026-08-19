@@ -32,7 +32,6 @@ const squash = (s: string) => s.replace(/\s+/g, '').toLowerCase();
 const REASON_LABEL: Record<string, string> = {
   safety_stock: '안전재고 미달',
   soon_out: '소진 임박',
-  recipe: '레시피 계산',
   manual: '직접 추가',
 };
 const reasonTone = (rs: string[]): 'red' | 'amber' | 'blue' =>

@@ -8,7 +8,11 @@
  *  - 손익 영향 이벤트(E1~E4)는 순이익률 추이에 원인 색 점을 남긴다.
  */
 
-export type PropagationEvent = 'E1' | 'E2' | 'E3' | 'E4' | 'E5' | 'E6' | 'E7';
+/**
+ * 전파 이벤트. **E6 은 없다** — ORD-04 레시피 계산기는 1차 범위 밖이라 지웠다(0060).
+ * 번호는 당기지 않는다. E7 을 E6 으로 옮기면 지금까지 쓴 문서·주석·커밋의 번호가 전부 어긋난다.
+ */
+export type PropagationEvent = 'E1' | 'E2' | 'E3' | 'E4' | 'E5' | 'E7';
 
 export interface EventSpec {
   id: PropagationEvent;
@@ -67,12 +71,6 @@ export const PROPAGATION: Record<PropagationEvent, EventSpec> = {
     id: 'E5',
     trigger: '재고 수정·실사 (ING-04)',
     steps: ['개수 보정', '뱃지 재판정', '(안전재고 미달/곧소진) 발주 후보 생성'],
-    atomic: true,
-  },
-  E6: {
-    id: 'E6',
-    trigger: '레시피 계산 실행 (ORD-04)',
-    steps: ['식재료별 필요량 역산', '잔여 환산 비교', '부족분 후보 생성/합산(사유 병기)'],
     atomic: true,
   },
   E7: {
