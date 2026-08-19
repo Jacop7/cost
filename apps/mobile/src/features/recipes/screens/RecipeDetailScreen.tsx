@@ -208,7 +208,7 @@ export default function RecipeDetailScreen() {
                 {/* 판매가 구성 — 옆 카드들과 같은 헤더를 단다. 이 카드만 헤더가 없어
                     목록에서 혼자 떠 보였다. */}
                 <Card pad={0} style={{ overflow: 'hidden' }}>
-                  <SecHead title="판매가 구성" sub={`(${won(price)}원 기준)`} />
+                  <SecHead title="판매가 구성" />
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 16, padding: 16 }}>
                     <Donut segments={segments} size={112} thick={17} centerTop="순이익률" centerMain={formatPercent(profitRate)} mainSize={18} mainColor={PROFIT} />
                     <View style={{ flex: 1, gap: 3 }}>
@@ -224,6 +224,19 @@ export default function RecipeDetailScreen() {
                           </View>
                         );
                       })}
+
+                      {/*
+                        소계 — 다섯 조각의 합이 곧 판매가다. 헤더에 '(14,000원 기준)'
+                        으로 적으면 전제처럼 읽히는데, 실제로는 **결과**다.
+                        다른 카드(재료·고정 지출)도 소계를 아래에 두므로 형태도 맞는다.
+                      */}
+                      <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 7, paddingTop: 7, borderTopWidth: 1, borderTopColor: T.line }}>
+                        <Text style={{ flex: 1, fontSize: 14, fontWeight: '800', color: T.ink2 }}>소계</Text>
+                        <Text style={[{ fontSize: 14, fontWeight: '800', color: T.ink, marginRight: 8 }, NUM]}>{won(price)}원</Text>
+                        <Text style={[{ fontSize: 14, fontWeight: '700', color: T.sub2, width: 46, textAlign: 'right' }, NUM]}>
+                          {price > 0 ? '100%' : '—'}
+                        </Text>
+                      </View>
                     </View>
                   </View>
                 </Card>
