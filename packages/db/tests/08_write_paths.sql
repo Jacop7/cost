@@ -168,3 +168,43 @@ begin
              join daily_sales_items it on it.id = ev.sales_item_id
             where it.recipe_id = v_rcp));
 end $t$;
+
+-- ════════════════════════════════════════════════════════════════
+-- 0043 · 플랫폼 수수료는 **한 번만** 빠진다
+--
+-- 고정지출의 'commission' 과 채널 fee_rate 가 둘 다 손익에서 차감돼
+-- 같은 돈을 두 번 뺐다(실측 19일 503,397원). 채널 쪽을 없앴다.
+-- ════════════════════════════════════════════════════════════════
+
+do $t$
+declare j jsonb := sales_summary(pg_temp.store(), business_day() - 20, business_day());
+begin
+  -- 손익에 채널 수수료 항목이 아예 없어야 한다. 있으면 누가 되살린 것이다.
+  perform pg_temp.ok('순이익에 channel_fee 가 없다', not (j ? 'channel_fee'));
+  perform pg_temp.eq('sales_channels 에 fee_rate 컬럼 없음',
+    (select count(*) from information_schema.columns
+      where table_schema = 'public' and table_name = 'sales_channels'
+        and column_name in ('fee_rate', 'fee_note')), 0, 0);
+
+  -- 손익 항등식 — 빠지는 항목이 정확히 이것뿐이다.
+  perform pg_temp.eq('순이익 = 매출 − 재료 − 부자재 − 세금 − 폐기 − 일일추가 − 고정비',
+    (j->>'profit')::numeric,
+    (j->>'revenue')::numeric - (j->>'material_cost')::numeric
+      - (j->>'extra_material_cost')::numeric - (j->>'tax')::numeric
+      - (j->>'waste_loss')::numeric - (j->>'daily_extra')::numeric
+      - (j->>'fixed_cost')::numeric, 0.01);
+
+  -- 채널은 세 개로 고정이다 — 새로 만들 수 없어야 한다.
+  perform pg_temp.raises('채널 신규 생성은 거부',
+    format('select save_channel(%L, %L::jsonb)', pg_temp.store(),
+           '{"name":"네이버주문"}'), '22000');
+
+  -- 이름 수정은 된다.
+  declare v_ch uuid;
+  begin
+    select id into v_ch from sales_channels where store_id = pg_temp.store() and code = 'delivery';
+    perform save_channel(pg_temp.store(), jsonb_build_object('id', v_ch, 'name', '배민·쿠팡'));
+    perform pg_temp.eq_t('채널 이름 수정됨',
+      (select name from sales_channels where id = v_ch), '배민·쿠팡');
+  end;
+end $t$;

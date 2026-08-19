@@ -49,7 +49,6 @@ export default function SalesDayFullScreen() {
     ? [
         { n: '(−) 재료 원가', v: s.materialCost, sub: (material.data?.items ?? []).slice(0, 5).map((i) => [i.name, Math.round(i.amount)] as [string, number]) },
         { n: '(−) 부자재', v: s.extraMaterialCost, sub: (extra.data?.items ?? []).slice(0, 5).map((i) => [i.name, Math.round(i.amount)] as [string, number]) },
-        { n: '(−) 채널 수수료', v: s.channelFee, sub: (range.data?.channels ?? []).filter((c) => c.feeRate > 0 && c.amount > 0).map((c) => [`${c.name} ${c.feeRate}%`, Math.round((c.amount * c.feeRate) / 100)] as [string, number]) },
         { n: '(−) 폐기 손실', v: s.wasteLoss, sub: [
             ...(s.wasteIngredient > 0 ? [['식재료 폐기', Math.round(s.wasteIngredient)] as [string, number]] : []),
             ...(s.wasteMenu > 0 ? [['조리 폐기', Math.round(s.wasteMenu)] as [string, number]] : []),

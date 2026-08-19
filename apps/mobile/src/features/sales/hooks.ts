@@ -24,7 +24,6 @@ export interface SalesSummary {
   qty: number;
   materialCost: number;
   extraMaterialCost: number;
-  channelFee: number;
   tax: number;
   wasteLoss: number;
   wasteIngredient: number;
@@ -76,7 +75,6 @@ export function parseSummary(v: unknown): SalesSummary {
     qty: num(r.qty),
     materialCost: num(r.material_cost),
     extraMaterialCost: num(r.extra_material_cost),
-    channelFee: num(r.channel_fee),
     tax: num(r.tax),
     wasteLoss: num(r.waste_loss),
     wasteIngredient: num(r.waste_ingredient),
@@ -91,7 +89,7 @@ export function parseSummary(v: unknown): SalesSummary {
 
 const EMPTY_SUMMARY = (date: string): SalesSummary => ({
   from: date, to: date, days: 0, revenue: 0, etcRevenue: 0, qty: 0,
-  materialCost: 0, extraMaterialCost: 0, channelFee: 0, tax: 0,
+  materialCost: 0, extraMaterialCost: 0, tax: 0,
   wasteLoss: 0, wasteIngredient: 0, wasteMenu: 0, dailyExtra: 0,
   fixedCost: 0, fixedRate: null, fixedRateProvisional: true, profit: 0,
 });
@@ -154,12 +152,10 @@ export interface RangeMenu {
 export interface RangeChannel {
   code: string;
   name: string;
-  feeRate: number;
   amount: number;
   qty: number;
   /** 채널별 수량이 있으므로 배분이 아니라 정확히 나뉜 값. */
   material: number;
-  fee: number;
   tax: number;
 }
 
@@ -203,9 +199,9 @@ export function useSalesRange(from: string, to: string, enabled = true) {
           material: num(m.material),
         })),
         channels: ((r.channels ?? []) as Record<string, unknown>[]).map((c) => ({
-          code: String(c.code), name: String(c.name), feeRate: num(c.fee_rate),
+          code: String(c.code), name: String(c.name),
           amount: num(c.amount), qty: num(c.qty), material: num(c.material),
-          fee: num(c.fee), tax: num(c.tax),
+          tax: num(c.tax),
         })),
       };
     },

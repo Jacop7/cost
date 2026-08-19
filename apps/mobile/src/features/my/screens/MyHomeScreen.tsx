@@ -14,13 +14,14 @@ import { useSettingsLists, useStoreName, useStoreSettings } from '../hooks';
 interface MenuItem { icon: IconName; bg: string; fg: string; t: string; d: string; route: Href | null; }
 /** 언어·통화·단위는 현재 선택값을 설명줄에 보여야 해서 함수로 둔다(나머지는 정적). */
 const sections = (d: {
-  locale: string; unit: string; category: string; vendor: string; alert: string;
+  locale: string; unit: string; category: string; vendor: string; channel: string; alert: string;
 }): MenuItem[] => [
   { icon: 'won', bg: T.blueTint, fg: T.blue, t: '고정 지출 (월)', d: '인건비·수수료·포장 등 → 고정지출률', route: '/recipes/fixed-cost' as Href },
   { icon: 'grid', bg: '#F0EDFB', fg: '#7C5CE0', t: '카테고리 관리', d: d.category, route: '/my/categories' as Href },
   { icon: 'globe', bg: '#E8F1FB', fg: '#2E6FD0', t: '언어 · 통화', d: d.locale, route: '/my/language' as Href },
   { icon: 'ruler', bg: '#FEF1E6', fg: '#E08A2B', t: '단위 설정', d: d.unit, route: '/my/units' as Href },
   { icon: 'store', bg: '#EAF6F0', fg: '#179E6B', t: '구매처', d: d.vendor, route: '/my/vendors' as Href },
+  { icon: 'receipt', bg: '#FDECEF', fg: '#D94A5E', t: '판매 채널', d: d.channel, route: '/my/channels' as Href },
   { icon: 'bell', bg: '#FFF5E0', fg: '#D99A1C', t: '알림 설정', d: d.alert, route: '/my/notifications' as Href },
 ];
 
@@ -34,6 +35,12 @@ export default function MyHomeScreen() {
   const settings = useStoreSettings();
   const storeName = useStoreName();
 
+  // 수수료는 고정 지출에서 관리한다(0043). 여기서는 어떤 채널을 쓰는지만 보인다.
+  const activeChannels = (lists.data?.channels ?? []).filter((c) => c.active);
+  const channelDesc = activeChannels.length === 0
+    ? '등록된 채널 없음'
+    : activeChannels.map((c) => c.name).join(' · ');
+
   const alertOn = settings.data
     ? [settings.data.alertMorningSummary, settings.data.alertInboundDelay, settings.data.alertPriceSpike, settings.data.alertTargetMiss].filter(Boolean).length
     : 0;
@@ -43,6 +50,7 @@ export default function MyHomeScreen() {
     unit: `미터법 · 단가 소수 ${unitDigits}자리`,
     category: `식재료 ${lists.data?.categories.length ?? 0} · 레시피 ${lists.data?.recipeCategories.length ?? 0} · 부자재 ${lists.data?.materials.length ?? 0}`,
     vendor: `${lists.data?.vendors.length ?? 0}곳 등록`,
+    channel: channelDesc,
     alert: `4종 · ${alertOn}개 켜짐`,
   });
 

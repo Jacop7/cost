@@ -1044,8 +1044,6 @@ export type Database = {
           active: boolean
           code: string
           created_at: string
-          fee_note: string | null
-          fee_rate: number
           id: string
           name: string
           retired_at: string | null
@@ -1056,8 +1054,6 @@ export type Database = {
           active?: boolean
           code: string
           created_at?: string
-          fee_note?: string | null
-          fee_rate?: number
           id?: string
           name: string
           retired_at?: string | null
@@ -1068,8 +1064,6 @@ export type Database = {
           active?: boolean
           code?: string
           created_at?: string
-          fee_note?: string | null
-          fee_rate?: number
           id?: string
           name?: string
           retired_at?: string | null

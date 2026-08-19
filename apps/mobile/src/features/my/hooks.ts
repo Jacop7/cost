@@ -18,7 +18,7 @@ export type CategoryKind = 'ingredient' | 'recipe' | 'material';
 
 export interface CategoryRow { id: string; name: string; kind: CategoryKind; sortOrder: number; usedCount: number }
 export interface VendorRow { id: string; name: string; usedCount: number }
-export interface ChannelRow { id: string; code: string; name: string; feeRate: number; feeNote: string | null; active: boolean }
+export interface ChannelRow { id: string; code: string; name: string; active: boolean }
 /** 부자재 마스터 — 여러 메뉴가 같은 단가를 참조하게 한다. */
 export interface MaterialRow {
   id: string;
@@ -71,7 +71,7 @@ export function useSettingsLists() {
         })),
         channels: ((r.channels ?? []) as Record<string, unknown>[]).map((c) => ({
           id: String(c.id), code: String(c.code), name: String(c.name),
-          feeRate: num(c.fee_rate), feeNote: str(c.fee_note), active: Boolean(c.active),
+          active: Boolean(c.active),
         })),
       };
     },
@@ -152,13 +152,10 @@ export function useSaveChannel() {
   const qc = useQueryClient();
   const storeId = useStoreId();
   return useMutation({
-    mutationFn: async (input: { id?: string; code?: string; name: string; feeRate: number; feeNote?: string | null }) => {
+    mutationFn: async (input: { id: string; name: string; active?: boolean }) => {
       const { error } = await supabase.rpc('save_channel', {
         p_store: storeId,
-        p_payload: asJson({
-          id: input.id ?? '', code: input.code ?? '', name: input.name,
-          fee_rate: input.feeRate, fee_note: input.feeNote ?? '',
-        }),
+        p_payload: asJson({ id: input.id, name: input.name, active: input.active }),
       });
       if (error) throw new Error(error.message);
     },
@@ -213,6 +210,21 @@ export function useFixedCosts(month: string = currentBusinessMonth()) {
       const sum = items.reduce((a, i) => a + i.total, 0);
       return { month, totalRevenue: revenue, items, rate: revenue > 0 ? sum / revenue : null };
     },
+  });
+}
+
+/**
+ * 채널 사용 중지 — 지우지 않는다.
+ * 과거 매출이 그 채널로 기록돼 있어서, 지우면 "어디서 팔았는지 모르는 매출"이 남는다.
+ */
+export function useRetireChannel() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.rpc('retire_channel', { p_id: id });
+      if (error) throw new Error(error.message);
+    },
+    onSuccess: () => invalidate(qc, invalidateOn.settingsSaved()),
   });
 }
 
