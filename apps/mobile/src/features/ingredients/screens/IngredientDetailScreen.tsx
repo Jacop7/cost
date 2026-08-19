@@ -8,7 +8,7 @@ import { formatQuantity, formatUnitPrice } from '@sikjae/core';
 import { safeBack } from '@/lib/nav';
 import { LedgerRow } from '../components/LedgerRow';
 import { LossCard } from '../components/LossCard';
-import { belowSafety } from '../components/IngCard';
+import { belowSafety, stockLabel, stockStateOf } from '../components/IngCard';
 import { StockEditSheet } from './StockEditSheet';
 import { MemoEditSheet } from './MemoEditSheet';
 import { dispUnit, toLedgerView } from '../ledger';
@@ -93,7 +93,7 @@ export function IngredientDetailScreen() {
   ];
 
   // 목록 카드와 **같은 함수**를 쓴다. 두 화면이 다른 기준으로 판정하면 목록과 상세가 어긋난다.
-  const low = g ? g.soonOut || g.stockTotal <= 0 || belowSafety(g) : false;
+  const st = g ? stockLabel(stockStateOf(g)) : null;
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
@@ -148,9 +148,7 @@ export function IngredientDetailScreen() {
               {/* 잔여 */}
               <Card pad={16}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                  <Badge tone={low ? 'red' : 'green'} solid sm>
-                    {low ? '소진 임박' : '여유'}
-                  </Badge>
+                  {st ? <Badge tone={st.tone} solid sm>{st.label}</Badge> : null}
                 </View>
                 <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 8, marginTop: 8 }}>
                   <Text style={[{ fontSize: 20, fontWeight: '800', letterSpacing: -0.6, color: T.ink }, tnum]}>
@@ -166,7 +164,7 @@ export function IngredientDetailScreen() {
                   {' · '}개당 {formatQuantity(g.perVolume, unit)}
                 </Text>
                 <View style={{ marginTop: 10, flexDirection: 'row', gap: 6, flexWrap: 'wrap' }}>
-                  <Badge tone={g && belowSafety(g) ? 'red' : 'neutral'} sm>안전재고 {g.safetyStock}개</Badge>
+                  <Badge tone={belowSafety(g) ? 'amber' : 'neutral'} sm>안전재고 {g.safetyStock}개</Badge>
                   <Badge tone="neutral" sm>최소발주 {g.minOrderQty}개</Badge>
                   {g.lastInboundAt ? <Badge tone="neutral" sm>최근입고 {g.lastInboundAt.slice(5).replace('-', '/')}</Badge> : null}
                 </View>

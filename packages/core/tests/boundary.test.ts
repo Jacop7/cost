@@ -180,7 +180,12 @@ describe('materialCost — 라인 단위 방어', () => {
   });
 });
 
-describe('stockBadge — 안전재고 미달은 여유가 아니다', () => {
+/**
+ * 3단계여야 하는 이유를 값으로 못 박는다.
+ * 2단계로 줄이면 어느 쪽으로 흡수하든 거짓말이 된다 —
+ * '여유'로 보내면 미달을 여유라 하고, '소진 임박'으로 보내면 99% 남은 걸 임박이라 한다.
+ */
+describe('stockBadge — 부족과 소진 임박은 다른 사건이다', () => {
   const snap = (cnt: number) => ({ sealedCount: cnt, openedCount: 0, openedRemain: null, soonOut: false });
 
   it('안전재고보다 적으면 부족', () => {
@@ -201,5 +206,16 @@ describe('stockBadge — 안전재고 미달은 여유가 아니다', () => {
 
   it('소진임박 표시는 수량과 무관하게 우선', () => {
     expect(stockBadge({ ...snap(100), soonOut: true }, 5)).toBe('out');
+  });
+
+  it('안전선 바로 아래는 부족이지 소진 임박이 아니다', () => {
+    // 진간장 1,780/1,800 = 99%. 이걸 빨강으로 칠하면 빨강이 의미를 잃는다.
+    expect(stockBadge(snap(4), 5)).toBe('low');
+    expect(stockBadge(snap(4), 5)).not.toBe('out');
+  });
+
+  it('세 상태가 모두 나온다 — 2단계로 뭉치지 않는다', () => {
+    const got = new Set([stockBadge(snap(0), 5), stockBadge(snap(3), 5), stockBadge(snap(9), 5)]);
+    expect(got).toEqual(new Set(['out', 'low', 'ok']));
   });
 });
