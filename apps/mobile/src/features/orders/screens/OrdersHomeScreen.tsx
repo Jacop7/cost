@@ -266,13 +266,18 @@ export default function OrdersHomeScreen() {
             return (
               <Card key={c.ingredientId} pad={0} style={{ overflow: 'hidden' }}>
                 <View style={{ padding: 14 }}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7 }}>
+                  <Pressable
+                    onPress={() => router.push(`/ingredients/${c.ingredientId}` as Href)}
+                    accessibilityRole="button" accessibilityLabel={`${c.name} 상세`}
+                    style={{ flexDirection: 'row', alignItems: 'center', gap: 7 }}
+                  >
                     <Badge tone={reasonTone(c.reasons)} solid sm>
                       {REASON_LABEL[c.reasons[0] ?? 'manual'] ?? '발주 필요'}
                     </Badge>
                     <Text numberOfLines={1} style={{ flex: 1, fontSize: 18, fontWeight: '800', letterSpacing: -0.3, color: T.ink }}>{c.name}</Text>
                     {c.status === 'ordered' ? <Badge tone="blue" sm>발주함</Badge> : null}
-                  </View>
+                    <Icon name="chevron" size={18} color={T.ter} />
+                  </Pressable>
 
                   <View style={{ flexDirection: 'row', gap: 8, marginTop: 11, marginBottom: 10 }}>
                     <View style={{ flex: 1, paddingVertical: 9, paddingHorizontal: 12, backgroundColor: T.surface2, borderRadius: 10 }}>
@@ -290,9 +295,9 @@ export default function OrdersHomeScreen() {
                     </View>
                   </View>
 
-                  <View style={{ flexDirection: 'row', gap: 8, marginTop: 2 }}>
-                    <Button kind="tint" size="sm" full onPress={() => router.push(`/ingredients/${c.ingredientId}` as Href)} style={{ flex: 1 }}>식재료 보기</Button>
-                    <Button kind="primary" size="sm" full onPress={() => openOrder(c)} style={{ flex: 1 }}>주문하기</Button>
+                  {/* 식재료 상세는 위 제목 줄의 화살표로 간다 — 여기는 행동만 둔다. */}
+                  <View style={{ marginTop: 2 }}>
+                    <Button kind="primary" size="sm" full onPress={() => openOrder(c)}>주문하기</Button>
                   </View>
                 </View>
               </Card>
@@ -305,11 +310,16 @@ export default function OrdersHomeScreen() {
             return (
               <Card key={w.id} pad={0} style={{ overflow: 'hidden' }}>
                 <View style={{ padding: 14 }}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                  <Pressable
+                    onPress={() => router.push(`/ingredients/${w.ingredientId}` as Href)}
+                    accessibilityRole="button" accessibilityLabel={`${w.name} 상세`}
+                    style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}
+                  >
                     <Badge tone={late ? 'red' : 'blue'} solid sm>{late ? '입고지연' : '입고예정'}</Badge>
                     <Text numberOfLines={1} style={{ flex: 1, fontSize: 18, fontWeight: '800', letterSpacing: -0.3, color: T.ink }}>{w.name}</Text>
                     {partial ? <Badge tone="amber" sm>부분입고 {w.receivedQty}/{w.qty}</Badge> : null}
-                  </View>
+                    <Icon name="chevron" size={18} color={T.ter} />
+                  </Pressable>
                   <Text style={{ fontSize: 16, fontWeight: '700', color: late ? T.red : T.ink2, marginTop: 9 }}>
                     {dueLabel(w.expectedAt, today)}
                   </Text>
@@ -329,10 +339,15 @@ export default function OrdersHomeScreen() {
           {tab === 'received' ? received.map((d) => (
             <Card key={d.id} pad={0} style={{ overflow: 'hidden' }}>
               <View style={{ padding: 14 }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                <Pressable
+                  onPress={() => router.push(`/ingredients/${d.ingredientId}` as Href)}
+                  accessibilityRole="button" accessibilityLabel={`${d.name} 상세`}
+                  style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}
+                >
                   <Badge tone="green" solid sm>입고 완료</Badge>
                   <Text numberOfLines={1} style={{ flex: 1, fontSize: 18, fontWeight: '800', letterSpacing: -0.3, color: T.ink }}>{d.name}</Text>
-                </View>
+                  <Icon name="chevron" size={18} color={T.ter} />
+                </Pressable>
                 <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink2, marginTop: 9 }}>
                   입고 완료 ({Number(d.orderedAt.slice(5, 7))}/{Number(d.orderedAt.slice(8, 10))})
                 </Text>
@@ -345,9 +360,8 @@ export default function OrdersHomeScreen() {
                     {d.unitPrice === null ? '—' : `${Math.round(d.unitPrice * 100) / 100}원`}
                   </Text>
                 </View>
-                <View style={{ flexDirection: 'row', gap: 8, marginTop: 12 }}>
-                  <Button kind="danger" size="sm" full onPress={() => confirmRevert(d)} style={{ flex: 1 }}>입고 취소</Button>
-                  <Button kind="gray" size="sm" full onPress={() => router.push(`/ingredients/${d.ingredientId}` as Href)} style={{ flex: 1 }}>식재료 보기</Button>
+                <View style={{ marginTop: 12 }}>
+                  <Button kind="danger" size="sm" full onPress={() => confirmRevert(d)}>입고 취소</Button>
                 </View>
               </View>
             </Card>
