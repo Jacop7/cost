@@ -7,11 +7,11 @@ import { ScreenShell, ScrollTabs, Icon, FAB, SearchBar, SortChip, SortSheet, Que
 import { T } from '../../../theme/tokens';
 import { useIngredientList, type IngredientRow } from '../hooks';
 import { useSettingsLists } from '@/features/my/hooks';
-import { IngCard, belowSafety } from '../components/IngCard';
+import { IngCard, stockStateOf } from '../components/IngCard';
 
-// 추천순: 완전 소진 → 안전재고 미달 → 여유.
-// 판정은 IngCard 의 belowSafety 를 **공유**한다. 두 벌이면 배지와 정렬이 갈린다.
-const rank = (g: IngredientRow) => (g.soonOut || g.stockTotal <= 0 ? 0 : belowSafety(g) ? 1 : 2);
+// 추천순: 소진 임박 → 부족 → 여유. 배지와 **같은 판정**을 쓴다.
+const ORDER = { out: 0, low: 1, ok: 2 } as const;
+const rank = (g: IngredientRow) => ORDER[stockStateOf(g)];
 
 type SortKey = 'recommended' | 'name' | 'stockLow' | 'priceHigh';
 
@@ -67,8 +67,10 @@ export function IngredientListScreen() {
     }
   }, [items, cat, selCat, query, sort]);
 
-  // 배지가 '소진 임박'이라고 쓴 것과 **같은 집합**이어야 한다.
-  const soonList = sorted.filter((g) => g.soonOut || g.stockTotal <= 0 || belowSafety(g));
+  // 상단 배너는 **지금 사야 하는 것**만 센다. '부족'까지 넣으면 배너가 늘 떠 있어
+  // 아무도 안 본다. 부족은 목록에서 노란 배지로 이미 보인다.
+  const soonList = sorted.filter((g) => stockStateOf(g) === 'out');
+  const lowCount = sorted.filter((g) => stockStateOf(g) === 'low').length;
   const sortLabel = SORTS.find((s) => s.key === sort)?.label ?? '추천순';
   const isSearch = searching && query.trim() !== '';
 
@@ -127,9 +129,17 @@ export function IngredientListScreen() {
             }}
           >
             <Icon name="warn" size={16} color={T.red} />
-            <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: T.red }} numberOfLines={1}>
-              소진 임박 {soonList.length} — {soonList.map((g) => g.name).join(', ')}
-            </Text>
+            <View style={{ flex: 1, minWidth: 0 }}>
+              <Text style={{ fontSize: 16, fontWeight: '700', color: T.red }} numberOfLines={1}>
+                소진 임박 {soonList.length} — {soonList.map((g) => g.name).join(', ')}
+              </Text>
+              {/* 부족은 급하지 않다. 같은 줄에서 색만 달리해 "오늘 살 것"과 구분한다. */}
+              {lowCount > 0 ? (
+                <Text style={{ fontSize: 14, fontWeight: '600', color: T.amberText, marginTop: 2 }}>
+                  안전재고 미달 {lowCount}종은 슬슬 시켜 두세요
+                </Text>
+              ) : null}
+            </View>
           </View>
         ) : null}
         {/* 로딩·오류·빈 상태를 뭉뚱그리지 않는다. 통신 실패를 빈 목록으로 그리면

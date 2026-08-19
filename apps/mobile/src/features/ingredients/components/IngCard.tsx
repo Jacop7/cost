@@ -10,28 +10,47 @@ import type { IngredientRow } from '../hooks';
 const dispUnit = (u: IngredientRow['baseUnit']) => (u === 'ea' ? '개' : u);
 
 /**
- * 재고 상태 — 여유 / 소진 임박 2단계 (`docs/구현-변경점.md` §2).
+ * 재고 상태 — 소진 임박 / 부족 / 여유 **3단계**.
  *
- * ⚠ 흡수 방향이 거꾸로였다. 3단계(충분/부족/소진임박)를 2단계로 줄이면서 '부족'을
- *   '여유'로 흡수해, **안전재고 미달인데 '여유'** 라고 쓰고 있었다(실측 7종).
- *   애호박은 안전선 1,500g 에 재고 720g 인데 '여유 ⚠' 였다.
- *   안전재고란 "이 밑으로 내려가면 발주해야 하는 선"이므로 그 아래는 소진 임박이 맞다.
- *   '부족'은 **'소진 임박'으로** 흡수한다.
+ * ⚠ 두 번 틀렸던 자리다. 기록해 둔다.
+ *   ① 처음: 3단계를 2단계로 줄이며 '부족'을 **'여유'로** 흡수 →
+ *      안전재고 미달인데 '여유'라고 썼다(실측 7종. 애호박 720/1500).
+ *   ② 다음: 흡수 방향을 뒤집어 '부족'을 **'소진 임박'으로** 보냈다 →
+ *      진간장이 안전선의 99%(1,780/1,800) 인데 '소진 임박'이 됐다. 과장이다.
  *
- * 안전재고는 **개수** 기준이라 개당 용량을 곱해 총량과 단위를 맞춘다.
+ * 둘은 다른 사건이다.
+ *   소진 임박 — 지금 없거나 곧 없다. **오늘 사야 한다.**
+ *   부족     — 안전선 아래로 내려왔다. **슬슬 시켜야 한다.**
+ * 하나로 합치면 급한 것과 안 급한 것이 같은 색이 되어 빨강이 의미를 잃는다.
+ *
+ * 판정은 `@sikjae/core` 의 stockBadge 와 같은 규칙이다 — 서버·앱이 갈리면 안 된다.
+ * 안전재고는 **개수** 기준이라 개당 용량을 곱해 총량(기준단위)과 단위를 맞춘다.
  */
 export function belowSafety(g: { stockTotal: number; safetyStock: number; perVolume: number }): boolean {
   return g.stockTotal < g.safetyStock * g.perVolume;
 }
 
-function statusOf(g: IngredientRow): { label: string; tone: 'green' | 'red' } {
-  if (g.soonOut || g.stockTotal <= 0 || belowSafety(g)) return { label: '소진 임박', tone: 'red' };
-  return { label: '여유', tone: 'green' };
+export type StockState = 'out' | 'low' | 'ok';
+
+export function stockStateOf(g: {
+  stockTotal: number; safetyStock: number; perVolume: number; soonOut: boolean;
+}): StockState {
+  if (g.soonOut || g.stockTotal <= 0) return 'out';
+  if (belowSafety(g)) return 'low';
+  return 'ok';
 }
+
+const STATE: Record<StockState, { label: string; tone: 'green' | 'amber' | 'red' }> = {
+  out: { label: '소진 임박', tone: 'red' },
+  low: { label: '부족', tone: 'amber' },
+  ok: { label: '여유', tone: 'green' },
+};
+
+export const stockLabel = (st: StockState) => STATE[st];
 
 export function IngCard({ g, onPress }: { g: IngredientRow; onPress?: () => void }) {
   const unit = dispUnit(g.baseUnit);
-  const st = statusOf(g);
+  const st = stockLabel(stockStateOf(g));
 
   return (
     <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={`${g.name} 상세`}>
@@ -50,9 +69,9 @@ export function IngCard({ g, onPress }: { g: IngredientRow; onPress?: () => void
             <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, tnum]} numberOfLines={1}>
               총 {formatQuantity(g.stockTotal, unit)}
             </Text>
-            {/* 왜 빨간지 그 자리에서 설명한다 — 안전선을 같이 보여준다. */}
-            {belowSafety(g) ? (
-              <Text style={{ fontSize: 13, fontWeight: '700', color: T.red }}>
+            {/* 왜 노란지 그 자리에서 설명한다 — 안전선을 같이 보여준다. */}
+            {stockStateOf(g) === 'low' ? (
+              <Text style={{ fontSize: 13, fontWeight: '700', color: T.amberText }}>
                 안전 {formatQuantity(g.safetyStock * g.perVolume, unit)} 미달
               </Text>
             ) : null}
