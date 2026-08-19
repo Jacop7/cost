@@ -10,7 +10,8 @@
     "reset": "supabase db reset",
     "diff": "supabase db diff",
     "push": "supabase db push",
-    "gen:types": "supabase gen types typescript --local > src/database.types.ts"
+    "gen:types": "supabase gen types typescript --local > src/database.types.ts",
+    "test": "node tests/run.mjs"
   },
   "devDependencies": {
     "supabase": "^1.207.9"
