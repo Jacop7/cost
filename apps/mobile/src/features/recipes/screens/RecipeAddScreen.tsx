@@ -274,7 +274,6 @@ export default function RecipeAddScreen() {
                       <Pressable onPress={() => openQty(i)} accessibilityRole="button" accessibilityLabel={`${l.name} 사용량 수정`} style={{ flex: 1, minWidth: 0 }}>
                         <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }} numberOfLines={1}>
                           {l.name}
-                          {l.subRecipeId ? <Text style={{ fontSize: 14, color: T.blue, fontWeight: '700' }}> 반제품</Text> : null}
                         </Text>
                         <Text style={[{ fontSize: 14, color: T.ter, marginTop: 2 }, NUM]}>
                           {l.unitPrice === null ? '단가 산출 전' : l.unit === null ? `${won(Math.round(l.unitPrice))}원/인분` : formatUnitPrice(l.unitPrice, l.unit)}

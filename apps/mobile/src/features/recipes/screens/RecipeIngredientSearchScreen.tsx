@@ -1,5 +1,9 @@
 /**
- * RCP-10 재료 검색 — 레시피에 담을 식재료·반제품 선택.
+ * RCP-10 재료 검색 — 레시피에 담을 식재료 선택.
+ *
+ * ⚠ 한때 '반제품(메뉴)' 탭이 있었다. 다른 메뉴를 재료로 담는 기능인데,
+ *   반제품은 1차 범위 밖이다(레시피 v3 §142 "구조만 예약").
+ *   양념장처럼 만들어 쓰는 것도 1차에서는 그냥 식재료로 등록한다.
  *
  * 담으면 편집 초안(draftStore)에 들어가고 레시피 폼으로 돌아간다.
  * 같은 재료를 두 번 담으면 줄이 갈라지지 않고 사용량이 합쳐진다.
@@ -14,23 +18,19 @@ import { T, won } from '@/theme/tokens';
 import { clampDecimals } from '@/lib/num';
 import { useIngredientList } from '@/features/ingredients/hooks';
 import { dispUnit } from '@/features/ingredients/ledger';
-import { useRecipePickList } from '../hooks';
 import { useRecipeDraft, type DraftLine } from '../draftStore';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 const squash = (s: string) => s.replace(/\s+/g, '').toLowerCase();
 
-type Tab = 'ingredient' | 'subRecipe';
 
 export default function RecipeIngredientSearchScreen() {
   const { exclude } = useLocalSearchParams<{ exclude?: string }>();
 
   const ingredients = useIngredientList();
-  const recipes = useRecipePickList(exclude);
   const addLine = useRecipeDraft((s) => s.addLine);
   const draft = useRecipeDraft((s) => s.draft);
 
-  const [tab, setTab] = useState<Tab>('ingredient');
   const [query, setQuery] = useState('');
   const [pending, setPending] = useState<DraftLine | null>(null);
   const [qty, setQty] = useState('');
@@ -44,16 +44,11 @@ export default function RecipeIngredientSearchScreen() {
     );
   }, [ingredients.data, query]);
 
-  const recList = useMemo(() => {
-    const n = squash(query);
-    return (recipes.data ?? []).filter((r) => n === '' || squash(r.name).includes(n));
-  }, [recipes.data, query]);
-
   const openQty = (line: DraftLine) => {
     setPending(line);
     // 이미 담긴 재료면 현재 사용량을 보여준다.
     const cur = draft.lines.find(
-      (l) => (line.ingredientId && l.ingredientId === line.ingredientId) || (line.subRecipeId && l.subRecipeId === line.subRecipeId),
+      (l) => line.ingredientId !== null && l.ingredientId === line.ingredientId,
     );
     setQty(cur ? String(cur.inputQty) : '');
   };
@@ -71,25 +66,10 @@ export default function RecipeIngredientSearchScreen() {
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <AppHeader title="재료 검색" onBack={() => safeBack('/recipes/add')} />
 
-      <View style={{ borderBottomWidth: 1, borderBottomColor: T.line3 }}>
-        <View style={{ flexDirection: 'row', gap: 22, paddingHorizontal: 20 }}>
-          {([['ingredient', '식재료'], ['subRecipe', '반제품(메뉴)']] as const).map(([k, label]) => {
-            const on = tab === k;
-            return (
-              <Pressable key={k} onPress={() => setTab(k)} accessibilityRole="tab" accessibilityLabel={label} accessibilityState={{ selected: on }} style={{ paddingTop: 10, paddingBottom: 11 }}>
-                <Text style={{ fontSize: 16, fontWeight: on ? '700' : '600', color: on ? T.ink : T.ter }}>{label}</Text>
-                {on ? <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 2.5, backgroundColor: T.ink, borderRadius: 2 }} /> : null}
-              </Pressable>
-            );
-          })}
-        </View>
-      </View>
-
-      <SearchBar value={query} onChange={setQuery} placeholder={tab === 'ingredient' ? '식재료 이름으로 검색' : '메뉴 이름으로 검색'} />
+      <SearchBar value={query} onChange={setQuery} placeholder="식재료 이름으로 검색" />
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 32, gap: 10 }}>
-        {tab === 'ingredient' ? (
-          <QueryState
+                  <QueryState
             isLoading={ingredients.isLoading}
             error={ingredients.error}
             isEmpty={ingList.length === 0}
@@ -126,49 +106,6 @@ export default function RecipeIngredientSearchScreen() {
               );
             })}
           </QueryState>
-        ) : (
-          <QueryState
-            isLoading={recipes.isLoading}
-            error={recipes.error}
-            isEmpty={recList.length === 0}
-            onRetry={() => void recipes.refetch()}
-            emptyTitle={query ? `'${query}' 검색 결과가 없어요` : '담을 수 있는 메뉴가 없어요'}
-            emptyHint="양념장처럼 다른 메뉴에 들어가는 반제품을 먼저 만들어 주세요"
-          >
-            <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, paddingVertical: 12, paddingHorizontal: 14, borderRadius: 12, backgroundColor: T.blueTint }}>
-              <Icon name="info" size={15} color={T.blue} />
-              <Text style={{ flex: 1, fontSize: 14, color: T.sub2, lineHeight: 20 }}>
-                다른 메뉴를 재료로 담으면 그 메뉴의 1인분 원가가 그대로 반영돼요(반제품).
-              </Text>
-            </View>
-            {recList.map((r) => {
-              const already = draft.lines.some((l) => l.subRecipeId === r.id);
-              return (
-                <Pressable
-                  key={r.id}
-                  onPress={() => openQty({ ingredientId: null, subRecipeId: r.id, name: r.name, unit: null, inputQty: 0, unitPrice: r.unitCost })}
-                  accessibilityRole="button" accessibilityLabel={`${r.name} 담기`}
-                >
-                  <Card pad={0} style={{ overflow: 'hidden', opacity: r.active ? 1 : 0.6 }}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 11, paddingVertical: 13, paddingHorizontal: 15 }}>
-                      <View style={{ flex: 1, minWidth: 0 }}>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                          <Text style={{ fontSize: 16, fontWeight: '800', letterSpacing: -0.3, color: T.ink }} numberOfLines={1}>{r.name}</Text>
-                          {!r.active ? <Badge tone="neutral" sm>판매중지</Badge> : null}
-                          {already ? <Badge tone="blue" sm>담김</Badge> : null}
-                        </View>
-                        <Text style={[{ fontSize: 14, color: T.sub2, marginTop: 6, fontWeight: '600' }, NUM]}>
-                          1인분 원가 {won(Math.round(r.unitCost))}원 · 기준 {r.baseServings}인분
-                        </Text>
-                      </View>
-                      <Icon name="plus" size={20} color={T.blue} sw={2.2} />
-                    </View>
-                  </Card>
-                </Pressable>
-              );
-            })}
-          </QueryState>
-        )}
       </ScrollView>
 
       {/* 사용량 입력 */}
