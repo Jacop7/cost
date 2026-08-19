@@ -213,6 +213,51 @@ export function useIngredientDetail(id: string | undefined) {
 }
 
 /** 재고 변동 원장 (ING-07). */
+/** 구매 이력 한 건 — 그날 그 값이다. 기준단가(가중평균)와 다르다. */
+export interface PurchaseRow {
+  id: string;
+  orderedAt: string;
+  expectedAt: string | null;
+  status: 'ordered' | 'partial' | 'received' | 'canceled';
+  vendorName: string | null;
+  volume: number;
+  amount: number;
+  qty: number;
+  receivedQty: number | null;
+  unitPrice: number | null;
+}
+
+/**
+ * 구매 이력 전체 — ingredient_detail 은 20건으로 자르므로 전체 보기는 이쪽을 쓴다.
+ * 단가가 언제부터 올랐는지 보려면 잘리지 않은 목록이 필요하다.
+ */
+export function usePurchaseHistory(id: string | undefined, range?: { from?: string; to?: string }) {
+  return useQuery({
+    queryKey: [...qk.purchaseHistory(id ?? ''), range?.from ?? '', range?.to ?? ''],
+    enabled: Boolean(id),
+    queryFn: async (): Promise<PurchaseRow[]> => {
+      const { data, error } = await supabase.rpc('purchase_history', {
+        p_ingredient: id as string,
+        p_from: range?.from,
+        p_to: range?.to,
+      });
+      if (error) throw new Error(error.message);
+      return ((data ?? []) as Record<string, unknown>[]).map((r) => ({
+        id: String(r.id),
+        orderedAt: String(r.ordered_at),
+        expectedAt: str(r.expected_at),
+        status: r.status as PurchaseRow['status'],
+        vendorName: str(r.vendor_name),
+        volume: num(r.volume),
+        amount: num(r.amount),
+        qty: num(r.qty),
+        receivedQty: numOrNull(r.received_qty),
+        unitPrice: numOrNull(r.unit_price),
+      }));
+    },
+  });
+}
+
 export function useStockHistory(id: string | undefined, range?: { from?: string; to?: string }) {
   return useQuery({
     queryKey: [...qk.stockHistory(id ?? ''), range?.from ?? '', range?.to ?? ''],

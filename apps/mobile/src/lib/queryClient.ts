@@ -23,6 +23,8 @@ export const qk = {
   ingredient: (id: string) => ['ingredients', id] as const,
   /** 재고 변동 원장(ING-07). 식재료 상세와 함께 갱신돼야 한다. */
   stockHistory: (id: string) => ['ingredients', id, 'history'] as const,
+  /** 구매 이력 전체(ING-09). 입고가 확정되면 함께 갱신돼야 한다. */
+  purchaseHistory: (id: string) => ['ingredients', id, 'purchases'] as const,
 
   // ── 발주 ────────────────────────────────────────────────────
   orders: ['orders'] as const,
