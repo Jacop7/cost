@@ -69,6 +69,7 @@
 | `sales` | SALES-14 | 추가 지출 | `sales/expense` (`SalesExpenseScreen`) | ✅ |
 | `my` | MY-04 | 단위 설정 (단위 시스템·조리컵/스푼·묶음 단위·**단가 표기 자릿수**) | `my/units` (`MyUnitsScreen`) | ✅ |
 | `my` | MY-08 | 언어·통화 설정 (로케일 → 통화·구분자·소수점·금액 자릿수) | `my/language` (`MyLanguageScreen`) | ✅ |
+| `my` | MY-09 | 영업시간 (시작·종료·브레이크 · 영업일 경계) | `my/hours` (`MyHoursScreen`) | ✅ |
 
 > 위 ✅ 는 **실데이터 연결 + 전파 + 재조회**까지 통과한 상태다(2026-08-19).
 > 남은 항목은 ORD-04 레시피 계산기(E6, 2차 범위) 하나다.
