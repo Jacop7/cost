@@ -12,7 +12,7 @@
  * 조리 전·후 구분은 각 줄의 라벨이 지고, 비율 비교는 드릴다운의 탭이 진다.
  */
 import { Pressable, Text, View } from 'react-native';
-import { Card, Icon } from '@/components/kit';
+import { Badge, Card, Icon } from '@/components/kit';
 import { formatQuantity } from '@sikjae/core';
 import { T, tnum, won } from '@/theme/tokens';
 import type { IngredientLoss, LedgerEntry } from '../hooks';
@@ -59,21 +59,15 @@ export function LossCard({ loss, baseUnit, discards, unitPrice, onPress }: {
 
   return (
     <Card pad={0} style={{ overflow: 'hidden' }}>
-      {/* 헤더 — '현재 재고' 와 같은 자리에 같은 무게로 */}
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 13, paddingHorizontal: 15, backgroundColor: high ? T.amberTint : T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
-        <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: high ? T.amberText : T.sub }}>로스율</Text>
+      {/*
+        헤더 — '현재 재고' 와 **같은 배경**을 쓴다. 카드마다 배경이 다르면 한 화면에
+        나란히 놓였을 때 목록이 들썩인다. 높은 로스율은 숫자 색과 배지로만 알린다.
+      */}
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 13, paddingHorizontal: 15, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
+        <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.sub }}>로스율</Text>
+        {high ? <Badge tone="amber" sm>확인 필요</Badge> : null}
         <Text style={[{ fontSize: 16, fontWeight: '800', color: high ? T.amberText : T.ink }, NUM]}>
           {pct(loss.rate)}
-        </Text>
-      </View>
-
-      {/* 요약 한 줄 — 들어온 양 대비 버린 양과 금액 */}
-      <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 11, paddingHorizontal: 15, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
-        <Text style={{ flex: 1, fontSize: 14, color: T.ter, fontWeight: '600' }}>
-          들어온 {formatQuantity(loss.purchased, u)} 중 {formatQuantity(loss.totalAmount, u)}
-        </Text>
-        <Text style={[{ fontSize: 14, fontWeight: '800', color: T.red }, NUM]}>
-          {loss.totalCost === null ? '—' : `${won(Math.round(loss.totalCost))}원`}
         </Text>
       </View>
 
