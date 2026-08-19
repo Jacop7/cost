@@ -13,6 +13,8 @@ import { Badge, Button, Card, Field, Icon, Input, QueryState, Sheet, SortChip, S
 import { T, won } from '@/theme/tokens';
 import { useRecipeList, type RecipeRow } from '@/features/recipes/hooks';
 import { useSalesDay, useSaveSale, type EtcItem, type ExtraItem, type Shortage } from '../hooks';
+import { isClosedError, isNotOpenError, useBusinessDay, useOpenBusinessDay } from '../businessDay';
+import { BusinessDayBar } from '../components/BusinessDayBar';
 import { dayLabel, todayBusiness } from '../period';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
@@ -65,6 +67,8 @@ export default function SalesHomeScreen() {
   const day = useSalesDay(today);
   const recipes = useRecipeList();
   const saveSale = useSaveSale();
+  const bday = useBusinessDay();
+  const openDay = useOpenBusinessDay();
 
   const [sel, setSel] = useState<RecipeRow | null>(null);
   const [draft, setDraft] = useState<Qty>(ZERO);
@@ -125,6 +129,43 @@ export default function SalesHomeScreen() {
     );
   };
 
+  /**
+   * 저장이 막힌 두 경우는 오류가 아니라 **다음에 할 일**이다.
+   *  P0003 아직 영업 전  → "오늘 영업을 시작할까요?" 를 묻고, 시작하면 그대로 이어서 저장한다.
+   *  P0004 이미 종료됨   → 영업 기록을 다시 열어야 한다고 알린다.
+   * 그냥 서버 문구를 띄우면 사장님은 무엇을 눌러야 할지 알 수 없다.
+   */
+  const onSaveError = (e: unknown, retry: () => void) => {
+    if (isNotOpenError(e)) {
+      Alert.alert(
+        '오늘 영업을 시작할까요?',
+        '지금의 판매가·재료 구성·단가·부자재·고정지출·세금이 오늘 기준으로 정해져요.\n영업 중에 메뉴를 고쳐도 오늘 매출에는 반영되지 않고, 다음 영업일부터 적용돼요.',
+        [
+          { text: '취소', style: 'cancel' },
+          {
+            text: '영업 시작',
+            onPress: () =>
+              openDay.mutate(undefined, {
+                // 시작하자마자 방금 누른 판매를 이어서 저장한다 — 두 번 누르게 하지 않는다.
+                onSuccess: retry,
+                onError: (err) => Alert.alert('영업을 시작하지 못했어요', err.message),
+              }),
+          },
+        ],
+      );
+      return;
+    }
+    if (isClosedError(e)) {
+      Alert.alert(
+        '이미 종료된 영업일이에요',
+        '빠뜨린 판매를 넣으려면 위에서 영업 기록을 다시 열어 주세요.',
+        [{ text: '확인' }],
+      );
+      return;
+    }
+    Alert.alert('저장하지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요');
+  };
+
   const saveQty = () => {
     if (!sel) return;
     const items = [...soldBy.entries()]
@@ -132,13 +173,15 @@ export default function SalesHomeScreen() {
       .map(([recipeId, q]) => ({ recipeId, qtyHall: q.hall, qtyDelivery: q.delivery, qtyTakeout: q.takeout, qtyWaste: q.waste }));
     items.push({ recipeId: sel.id, qtyHall: draft.hall, qtyDelivery: draft.delivery, qtyTakeout: draft.takeout, qtyWaste: draft.waste });
 
-    saveSale.mutate(
-      { date: today, items },
-      {
-        onSuccess: (shortages) => { setSel(null); warnShortages(shortages); },
-        onError: (e) => Alert.alert('저장하지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'),
-      },
-    );
+    const run = () =>
+      saveSale.mutate(
+        { date: today, items },
+        {
+          onSuccess: (shortages) => { setSel(null); warnShortages(shortages); },
+          onError: (e) => onSaveError(e, run),
+        },
+      );
+    run();
   };
 
   const allItems = () =>
@@ -202,6 +245,9 @@ export default function SalesHomeScreen() {
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 24 }}>
+        {/* 영업 상태 — 오늘 기준값이 언제 굳는지 여기서 정해진다 */}
+        {bday.data ? <BusinessDayBar state={bday.data} /> : null}
+
         {/* 오늘 손익 히어로 */}
         <View style={{ backgroundColor: T.blue, borderRadius: 16, padding: 17, marginBottom: 11 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 11 }}>

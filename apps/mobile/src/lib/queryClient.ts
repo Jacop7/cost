@@ -39,6 +39,8 @@ export const qk = {
   salesDay: (date: string) => ['sales', 'day', date] as const,
   /** 기간 집계(sales_range). from~to 가 다르면 다른 쿼리다. */
   salesRange: (from: string, to: string) => ['sales', 'range', from, to] as const,
+  /** 영업일 상태(0057) — 영업 중/브레이크/종료. 매출 화면이 열릴 때마다 본다. */
+  businessDay: ['sales', 'business-day'] as const,
 
   // ── 설정 ────────────────────────────────────────────────────
   settings: ['settings'] as const,
@@ -80,6 +82,11 @@ export const invalidateOn = {
    * "팔았는데 식재료 화면은 그대로"가 된다 — 사용자가 실제로 지적한 연결이다.
    */
   e10: (): Key[] => [qk.sales, qk.ingredients, qk.orders],
+  /**
+   * 영업 시작·브레이크·종료: 영업일 상태와 그날 장부. 영업을 시작하면 그 시점 값으로
+   * 오늘 기준이 굳으므로(0048), 매출 화면 전체를 다시 읽어야 한다.
+   */
+  businessDay: (): Key[] => [qk.businessDay, qk.sales],
   /** 식재료 등록·수정: 로스율이 바뀌면 그 재료를 쓰는 레시피 원가가 따라 움직인다. */
   ingredientSaved: (id?: string): Key[] =>
     id ? [qk.ingredients, qk.ingredient(id), qk.recipes, qk.orders] : [qk.ingredients, qk.recipes, qk.orders],
