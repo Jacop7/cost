@@ -13,7 +13,7 @@ import { Badge, Button, Card, Field, Icon, Input, QueryState, Sheet, SortChip, S
 import { T, won } from '@/theme/tokens';
 import { useRecipeList, type RecipeRow } from '@/features/recipes/hooks';
 import { useSalesDay, useSaveSale, type EtcItem, type ExtraItem, type Shortage } from '../hooks';
-import { isClosedError, isNotOpenError, useBusinessDay, useOpenBusinessDay } from '../businessDay';
+import { isClosedError, isNotOpenError, useBusinessDay, useDayMenuBasis, useOpenBusinessDay } from '../businessDay';
 import { BusinessDayBar } from '../components/BusinessDayBar';
 import { dayLabel, todayBusiness } from '../period';
 
@@ -69,6 +69,12 @@ export default function SalesHomeScreen() {
   const saveSale = useSaveSale();
   const bday = useBusinessDay();
   const openDay = useOpenBusinessDay();
+  /**
+   * 오늘 팔면 얼마로 잡히는지(0061). 카드가 현재 레시피를 보고 있으면
+   * 판매가를 고친 순간 화면과 장부가 어긋난다 — 화면이 20,000 이라 해 놓고
+   * 12,000 이 기록되는 식이다.
+   */
+  const basis = useDayMenuBasis(today);
 
   const [sel, setSel] = useState<RecipeRow | null>(null);
   const [draft, setDraft] = useState<Qty>(ZERO);
@@ -97,11 +103,15 @@ export default function SalesHomeScreen() {
     return m;
   }, [s]);
 
+  const basisMap = basis.data;
   const list = useMemo(() => {
     const rows = [...(recipes.data ?? [])];
     switch (sort) {
       case 'name': return rows.sort((a, b) => a.name.localeCompare(b.name, 'ko'));
-      case 'profit': return rows.sort((a, b) => b.profit - a.profit);
+      // 순이익순도 오늘 기준으로 — 카드에 보이는 값과 정렬 기준이 달라지면 안 된다.
+      case 'profit':
+        return rows.sort((a, b) =>
+          (basisMap?.get(b.id)?.profit ?? b.profit) - (basisMap?.get(a.id)?.profit ?? a.profit));
       default:
         return rows.sort((a, b) => {
           const qa = soldBy.get(a.id);
@@ -111,7 +121,7 @@ export default function SalesHomeScreen() {
           return tb - ta || a.name.localeCompare(b.name, 'ko');
         });
     }
-  }, [recipes.data, sort, soldBy]);
+  }, [recipes.data, sort, soldBy, basisMap]);
 
   const openMenu = (r: RecipeRow) => {
     setSel(r);
@@ -323,9 +333,11 @@ export default function SalesHomeScreen() {
             {list.map((m, i) => {
               const q = soldBy.get(m.id);
               const total = q ? q.hall + q.delivery + q.takeout : 0;
+              const b = basis.data?.get(m.id);
               // 팔 수 없는 이유. 사장님이 끈 것이 먼저다 — 그건 의도이고, 재료는 상태다.
+              // 오늘 기준에 없는 메뉴(오늘 만든 것)는 서버가 막으므로 여기서도 막는다.
               const stopped = !m.active;
-              const blocked = stopped ? '판매 중지' : m.blockedBy ? '재료 부족' : null;
+              const blocked = stopped ? '판매 중지' : m.blockedBy ? '재료 부족' : b && !b.inBasis ? '내일부터' : null;
               return (
                 <View key={m.id} style={{ flexDirection: 'row', alignItems: 'center', gap: 11, paddingVertical: 14, paddingHorizontal: 15, borderBottomWidth: i < list.length - 1 ? 1 : 0, borderBottomColor: T.line2, opacity: blocked ? 0.45 : 1 }}>
                   <View style={{ flex: 1, minWidth: 0 }}>
@@ -337,8 +349,17 @@ export default function SalesHomeScreen() {
                       {/* 왜 안 되는지 그 자리에서 밝힌다 — 배지만으로는 어느 재료인지 모른다. */}
                       {m.blockedBy && !stopped
                         ? `${m.blockedBy}이(가) 없어요 · 식재료에서 재고를 맞춰 주세요`
-                        : `판매가 ${won(m.price)} · 재료비 ${won(Math.round(m.materialCost))}`}
+                        : b && !b.inBasis
+                          ? '영업을 시작한 뒤 만든 메뉴예요 · 다음 영업일부터 팔 수 있어요'
+                          // ⚠ 오늘 팔면 잡히는 값이다. 현재 레시피가 아니다(0061).
+                          : `판매가 ${won(Math.round(b?.price ?? m.price))} · 재료비 ${won(Math.round(b?.materialCost ?? m.materialCost))}`}
                     </Text>
+                    {/* 영업 중에 고친 값 — 오늘 장부에는 안 들어간다고 그 자리에서 밝힌다. */}
+                    {b?.changed ? (
+                      <Text style={[{ fontSize: 13, color: T.amberText, marginTop: 3, fontWeight: '600' }, NUM]}>
+                        수정한 값{b.currentPrice !== b.price ? ` (판매가 ${won(Math.round(b.currentPrice))})` : ''}은 다음 영업일부터 적용돼요
+                      </Text>
+                    ) : null}
                     <Pressable onPress={() => openMenu(m)} disabled={blocked !== null} accessibilityRole="button" accessibilityLabel={`${m.name} 판매 수량 수정`} style={{ marginTop: 6, alignSelf: 'flex-start' }} hitSlop={6}>
                       <Text style={[{ fontSize: 14, fontWeight: '700', color: total > 0 ? T.blue : T.ter }, NUM]}>
                         총 {total}개{q && q.waste > 0 ? ` · 폐기 ${q.waste}` : ''}

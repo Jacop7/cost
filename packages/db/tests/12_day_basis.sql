@@ -235,3 +235,62 @@ begin
   perform pg_temp.eq('판매가가 둘이면 목록도 둘',
     jsonb_array_length(range_menu_detail(pg_temp.store(), v_day - 6, v_day, v_rcp)->'price_points'), 2, 0);
 end $t$;
+
+-- ════════════════════════════════════════════════════════════════
+-- 판매 입력 카드도 그날 기준이다 (0061)
+--
+-- 마지막으로 남아 있던 구멍. 돈 숫자는 전부 고정했는데 **판매를 입력하는 카드**만
+-- 현재 레시피를 보고 있어서, 판매가를 고치면 카드는 20,000 을 보여 주고
+-- 장부에는 12,000 이 박혔다. 화면이 거짓말을 했다.
+-- ════════════════════════════════════════════════════════════════
+
+do $t$
+declare
+  v_rcp uuid := pg_temp.rcp('제육볶음');
+  v_day date := business_day();
+  m0    jsonb;
+  m1    jsonb;
+  v_new uuid;
+begin
+  begin perform open_business_day(pg_temp.store()); exception when others then null; end;
+
+  m0 := (select m from jsonb_array_elements(day_menu_basis(pg_temp.store(), v_day)) m
+          where (m->>'recipe_id')::uuid = v_rcp);
+  perform pg_temp.eq('카드에 보이는 판매가 = 오늘 기준', (m0->>'price')::numeric, 12000, 0);
+  perform pg_temp.eq('카드 재료비 = 오늘 기준', (m0->>'material_cost')::numeric, 2806.40, 0.01);
+  perform pg_temp.ok('오늘 팔 수 있는 메뉴다', (m0->>'in_basis')::boolean);
+
+  -- ⚠ 안 고친 메뉴로 확인한다. 앞 블록들이 제육볶음을 이미 흔들어 놨다 —
+  --   같은 트랜잭션이라 그 수정이 그대로 살아 있다.
+  perform pg_temp.ok('안 고친 메뉴에는 안내가 없다',
+    (select (m->>'changed')::boolean is false
+       from jsonb_array_elements(day_menu_basis(pg_temp.store(), v_day)) m
+      where (m->>'recipe_id')::uuid = pg_temp.rcp('공기밥')));
+
+  -- ── 영업 중에 판매가를 고친다 ───────────────────────────────
+  perform save_recipe(pg_temp.store(), jsonb_build_object(
+    'id', v_rcp, 'name', '제육볶음', 'price', 20000, 'base_servings', 10));
+
+  m1 := (select m from jsonb_array_elements(day_menu_basis(pg_temp.store(), v_day)) m
+          where (m->>'recipe_id')::uuid = v_rcp);
+  perform pg_temp.eq('카드는 여전히 오늘 기준을 보여 준다', (m1->>'price')::numeric, 12000, 0);
+  perform pg_temp.eq('고친 값도 함께 준다', (m1->>'current_price')::numeric, 20000, 0);
+  perform pg_temp.ok('달라졌다고 알린다', (m1->>'changed')::boolean);
+
+  -- ⚠ 이게 핵심이다 — 카드에 보이는 값과 **실제로 기록되는 값**이 같아야 한다.
+  perform pg_temp.eq('카드에 보이는 값 = 팔면 기록되는 값',
+    (e10_sale_recorded(pg_temp.store(), v_day, v_rcp, 5, 0, 0, 0)->>'unit_price')::numeric,
+    (m1->>'price')::numeric, 0.0001);
+
+  -- ── 영업 중에 만든 메뉴는 오늘 팔 수 없다 ───────────────────
+  -- e10 이 막는데 카드에는 팔 수 있는 것처럼 떠 있으면 눌러 보고서야 안다.
+  v_new := save_recipe(pg_temp.store(), jsonb_build_object(
+    'name', '오늘 만든 메뉴', 'price', 5000, 'base_servings', 1));
+  perform pg_temp.ok('오늘 만든 메뉴는 오늘 기준에 없다',
+    (select (m->>'in_basis')::boolean is false
+       from jsonb_array_elements(day_menu_basis(pg_temp.store(), v_day)) m
+      where (m->>'recipe_id')::uuid = v_new));
+  perform pg_temp.raises('그리고 실제로 팔리지 않는다',
+    format('select e10_sale_recorded(%L, %L, %L, 1, 0, 0, 0)', pg_temp.store(), v_day, v_new),
+    '22000');
+end $t$;
