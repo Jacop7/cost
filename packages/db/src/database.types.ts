@@ -1343,6 +1343,28 @@ export type Database = {
         }
         Returns: string
       }
+      business_day_of: {
+        Args: {
+          p_store: string
+          p_date: string
+        }
+        Returns: {
+          auto_close_ack: boolean
+          business_date: string
+          close_method:
+            | Database["public"]["Enums"]["business_close_method"]
+            | null
+          closed_at: string | null
+          created_at: string
+          id: string
+          last_activity_at: string
+          opened_at: string
+          planned_close_at: string
+          snapshot: Json
+          status: Database["public"]["Enums"]["business_day_status"]
+          store_id: string
+        }
+      }
       business_month: {
         Args: {
           p_at?: string
@@ -1393,6 +1415,26 @@ export type Database = {
           status: Database["public"]["Enums"]["business_day_status"]
           store_id: string
         }
+      }
+      day_ingredient_needs: {
+        Args: {
+          p_store: string
+          p_date: string
+          p_recipe: string
+          p_servings: number
+        }
+        Returns: {
+          ingredient_id: string
+          amount: number
+        }[]
+      }
+      day_recipe_snapshot: {
+        Args: {
+          p_store: string
+          p_date: string
+          p_recipe: string
+        }
+        Returns: Json
       }
       deactivate_ingredient: {
         Args: {

@@ -125,6 +125,14 @@ begin
   end;
 
   -- ══ 매출 등록 (SALES 폼) ═══════════════════════════════════
+  -- ⚠ 방금 만든 메뉴는 **오늘 기준(영업 시작 스냅샷)에 없다**(0050).
+  --   실제 사장님도 영업 중에 새 메뉴를 만들면 다음 영업일부터 판다.
+  --   테스트는 영업일을 닫았다 다시 열어 새 기준을 잡는다.
+  perform close_business_day(pg_temp.store());
+  perform reopen_business_day(pg_temp.store(), v_day);
+  update business_days set snapshot = build_day_snapshot(pg_temp.store())
+   where store_id = pg_temp.store() and business_date = v_day;
+
   d := save_sale(pg_temp.store(), v_day,
     jsonb_build_array(jsonb_build_object(
       'recipe_id', v_rcp, 'qty_hall', 6, 'qty_delivery', 2,
