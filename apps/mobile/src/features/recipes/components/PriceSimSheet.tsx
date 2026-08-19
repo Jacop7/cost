@@ -1,9 +1,12 @@
 /**
- * RCP-05 판매가 시뮬레이션 (시트) — 임시 판매가를 슬라이더로 바꿔 순이익을 미리 확인.
+ * RCP-05 판매가 시뮬레이션 (시트) — 임시 판매가로 손익이 어떻게 바뀌는지 **여기서만** 본다.
  * 계산은 상세(RCP-02)와 동일 공식: tax=판매가×10/110, fixed=fixedRate×판매가.
  *
- * '이 판매가로 적용'은 실제로 **저장한다**(E3). 이전에는 시트만 닫혀서
- * 사장님이 바꿨다고 생각한 값이 반영되지 않았다.
+ * ⚠ **저장하지 않는다.** 한때 '이 판매가로 적용'이 실제 저장(E3)이었는데,
+ *   슬라이더를 움직이며 눌러 보는 사이 판매가가 14,000 → 36,700 으로 바뀌고
+ *   profit_trends 에 가짜 점 3개(46.02·39.08·32.79)가 박혔다. 추이는 절대원칙 4 로
+ *   지울 수 없어 영구히 남는다. "만약 이 가격이면?" 을 보려던 것이 데이터를 바꾸면 안 된다.
+ *   판매가를 진짜 바꾸려면 메뉴 수정으로 간다 — 그게 편집이고, 이건 미리보기다.
  */
 import { useEffect, useState } from 'react';
 import { Text, View } from 'react-native';
@@ -14,8 +17,7 @@ import { T, won } from '@/theme/tokens';
 const NUM = { fontVariant: ['tabular-nums' as const] };
 
 export function PriceSimSheet({
-  visible, onClose, price, material, extra, fixedRate, target,
-  taxIncluded = true, onApply, saving = false,
+  visible, onClose, price, material, extra, fixedRate, target, taxIncluded = true,
 }: {
   visible: boolean;
   onClose: () => void;
@@ -27,8 +29,6 @@ export function PriceSimSheet({
   /** 0~1 비율 */
   target: number;
   taxIncluded?: boolean;
-  onApply?: (nextPrice: number) => void;
-  saving?: boolean;
 }) {
   const min = Math.max(100, Math.round((price * 0.75) / 100) * 100);
   const max = Math.round(((price * 5) / 3) / 100) * 100;
@@ -41,7 +41,7 @@ export function PriceSimSheet({
     const tax = taxIncluded ? round((p * 10) / 110) : 0;
     const fixed = round(fixedRate * p);
     const profit = p - tax - material - fixed - extra;
-    return { profit, rate: p > 0 ? profit / p : 0 };
+    return { tax, fixed, profit, rate: p > 0 ? profit / p : 0 };
   };
   const cur = calc(price);
   const now = calc(temp);
@@ -97,6 +97,49 @@ export function PriceSimSheet({
         </View>
       </Card>
 
+      {/*
+        임시 판매가로 다시 계산한 손익 구성 — 상세 카드와 **같은 항목·같은 순서**다.
+        카드 값을 건드리지 않고 여기서만 보여주므로, 닫으면 아무것도 바뀌지 않는다.
+        재료·부자재는 판매가와 무관하므로 금액이 그대로고 비중만 움직인다.
+      */}
+      <Card onLine pad={0} style={{ overflow: 'hidden', marginTop: 10 }}>
+        <View style={{ paddingHorizontal: 14, paddingVertical: 11 }}>
+          {([
+            ['세금', now.tax],
+            ['재료 원가', material],
+            ['고정 지출', now.fixed],
+            ['부자재', extra],
+          ] as const).map(([label, amt], i) => (
+            <View
+              key={label}
+              style={{
+                flexDirection: 'row', alignItems: 'center',
+                paddingVertical: 7,
+                borderBottomWidth: i < 3 ? 1 : 0, borderBottomColor: T.line2,
+                opacity: amt <= 0 ? 0.45 : 1,
+              }}
+            >
+              <Text style={{ flex: 1, fontSize: 14, fontWeight: '600', color: T.sub2 }}>(−) {label}</Text>
+              <Text style={[{ fontSize: 14, fontWeight: '700', color: T.ink, marginRight: 8 }, NUM]}>
+                {won(Math.round(amt))}원
+              </Text>
+              <Text style={[{ fontSize: 14, fontWeight: '600', color: T.ter, width: 46, textAlign: 'right' }, NUM]}>
+                {temp > 0 ? formatPercent(amt / temp) : '—'}
+              </Text>
+            </View>
+          ))}
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 7, paddingTop: 8, borderTopWidth: 1, borderTopColor: T.line }}>
+            <Text style={{ flex: 1, fontSize: 14, fontWeight: '800', color: T.ink2 }}>순이익</Text>
+            <Text style={[{ fontSize: 14, fontWeight: '800', color: PROFIT, marginRight: 8 }, NUM]}>
+              {won(Math.round(now.profit))}원
+            </Text>
+            <Text style={[{ fontSize: 14, fontWeight: '800', color: PROFIT, width: 46, textAlign: 'right' }, NUM]}>
+              {formatPercent(now.rate)}
+            </Text>
+          </View>
+        </View>
+      </Card>
+
       <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, marginTop: 12, paddingHorizontal: 2 }}>
         <Icon name="info" size={15} color={rec != null ? T.blue : T.amberText} />
         <Text style={[{ flex: 1, fontSize: 14, color: rec != null ? T.blue : T.amberText, fontWeight: '600', lineHeight: 20 }, NUM]}>
@@ -106,15 +149,8 @@ export function PriceSimSheet({
         </Text>
       </View>
 
-      <View style={{ marginTop: 18 }}>
-        <Button
-          kind="primary" size="lg" full
-          loading={saving}
-          disabled={!onApply || temp === price}
-          onPress={() => onApply?.(temp)}
-        >
-          {temp === price ? '판매가 변경 없음' : `${won(temp)}원으로 저장`}
-        </Button>
+      <View style={{ marginTop: 16 }}>
+        <Button kind="ghost" size="lg" full onPress={onClose}>닫기</Button>
       </View>
     </Sheet>
   );

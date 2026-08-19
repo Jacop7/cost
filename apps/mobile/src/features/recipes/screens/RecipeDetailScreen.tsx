@@ -458,10 +458,10 @@ export default function RecipeDetailScreen() {
                   <Pressable
                     onPress={() => setSimOpen(true)}
                     accessibilityRole="button" accessibilityLabel="판매가 시뮬레이션"
-                    style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5, paddingVertical: 13, borderTopWidth: 1, borderTopColor: T.line2, backgroundColor: T.surface2 }}
+                    style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, margin: 15, marginTop: 0, paddingVertical: 13, borderRadius: 12, borderWidth: 1, borderColor: T.blue, backgroundColor: T.blueTint }}
                   >
-                    <Icon name="trend" size={16} color={T.blue} sw={2.1} />
-                    <Text style={{ fontSize: 14, fontWeight: '700', color: T.blue }}>판매가 시뮬레이션</Text>
+                    <Icon name="trend" size={18} color={T.blue} sw={2.1} />
+                    <Text style={{ fontSize: 16, fontWeight: '700', color: T.blue }}>판매가 시뮬레이션</Text>
                   </Pressable>
                 </Card>
 
@@ -520,20 +520,6 @@ export default function RecipeDetailScreen() {
           fixedRate={r.fixedRate}
           target={calc.target}
           taxIncluded={r.taxMode === 'included'}
-          onApply={(next) => {
-            saveRecipe.mutate(
-              {
-                id: r.id, name: r.name, price: next, taxMode: r.taxMode,
-                baseServings: r.baseServings, targetProfitRate: r.targetProfitRate,
-                avgMonthlySales: r.avgMonthlySales,
-              },
-              {
-                onSuccess: () => setSimOpen(false),
-                onError: (e) => Alert.alert('저장하지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'),
-              },
-            );
-          }}
-          saving={saveRecipe.isPending}
         />
       ) : null}
     </View>
