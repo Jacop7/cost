@@ -1425,6 +1425,27 @@ export type Database = {
           store_id: string
         }
       }
+      day_fixed_items: {
+        Args: {
+          p_store: string
+          p_date: string
+        }
+        Returns: Json
+      }
+      day_fixed_rate: {
+        Args: {
+          p_store: string
+          p_date: string
+        }
+        Returns: number
+      }
+      day_fixed_total: {
+        Args: {
+          p_store: string
+          p_date: string
+        }
+        Returns: number
+      }
       day_ingredient_needs: {
         Args: {
           p_store: string
@@ -1452,6 +1473,28 @@ export type Database = {
           p_recipe: string
         }
         Returns: Json
+      }
+      day_revenue: {
+        Args: {
+          p_store: string
+          p_date: string
+        }
+        Returns: number
+      }
+      day_snapshot: {
+        Args: {
+          p_store: string
+          p_date: string
+        }
+        Returns: Json
+      }
+      day_unit_price: {
+        Args: {
+          p_store: string
+          p_date: string
+          p_ingredient: string
+        }
+        Returns: number
       }
       deactivate_ingredient: {
         Args: {
@@ -1693,6 +1736,15 @@ export type Database = {
           received_qty: number
           unit_price: number
         }[]
+      }
+      range_menu_detail: {
+        Args: {
+          p_store: string
+          p_from: string
+          p_to: string
+          p_recipe: string
+        }
+        Returns: Json
       }
       recipe_blocked_by: {
         Args: {

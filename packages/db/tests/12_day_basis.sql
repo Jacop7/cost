@@ -1,0 +1,237 @@
+-- ════════════════════════════════════════════════════════════════
+-- 12 · 매출 화면 전체가 그날 기준이다 (0058)
+--
+-- 사장님: "레시피에서 수정값이 매출페이지에 전부 반영되는 거지?"
+-- 재 보니 여섯 군데가 따라 움직였다. 메뉴 손익 상세만 고정돼 있고
+-- 합계·분석·되짚기는 현재 값으로 다시 계산해서, 같은 화면 안의 두 숫자가
+-- 서로 다른 말을 했다.
+--
+-- 여기서 못 박는 계약
+--   ① 판매가·재료 단가·부자재·세금 항목·고정지출을 한꺼번에 바꿔도
+--      **그날 매출 화면의 모든 숫자**가 안 움직인다
+--   ② 레시피 화면(현재값)은 **움직인다** — "지금 팔면 얼마 남나"는 다른 질문이다
+--   ③ 되짚기 재료비 합계 = 손익의 재료비. 두 화면이 같은 말을 해야 한다
+-- ════════════════════════════════════════════════════════════════
+
+do $t$
+declare
+  v_rcp uuid := pg_temp.rcp('제육볶음');
+  v_ing uuid := pg_temp.ing('돼지고기 앞다리');
+  v_ven uuid := (select id from vendors where store_id = pg_temp.store() limit 1);
+  v_day date := business_day();
+
+  -- 수정 전 / 후를 같은 이름으로 비교하려고 나란히 든다.
+  b0 jsonb; b1 jsonb;   -- 메뉴 손익 상세
+  s0 jsonb; s1 jsonb;   -- 손익 합계
+  m0 jsonb; m1 jsonb;   -- 재료 되짚기
+  e0 jsonb; e1 jsonb;   -- 부자재 되짚기
+  f0 jsonb; f1 jsonb;   -- 고정 지출 되짚기
+  r0 numeric;
+begin
+  -- 앞 파일들이 오늘을 닫아 뒀을 수 있다. 열려 있어야 판다.
+  begin perform open_business_day(pg_temp.store()); exception when others then null; end;
+  perform e10_sale_recorded(pg_temp.store(), v_day, v_rcp, 10, 0, 0, 0);
+
+  b0 := day_menu_detail(pg_temp.store(), v_day, v_rcp);
+  s0 := sales_summary(pg_temp.store(), v_day, v_day);
+  m0 := sales_material_usage(pg_temp.store(), v_day, v_day);
+  e0 := sales_extra_usage(pg_temp.store(), v_day, v_day);
+  f0 := sales_fixed_breakdown(pg_temp.store(), v_day, v_day);
+  r0 := (select material_cost from recipe_list(pg_temp.store()) where id = v_rcp);
+
+  -- ③ 두 화면이 같은 말을 하는가 — 되짚기 합계 = 손익의 재료비
+  perform pg_temp.eq('되짚기 재료비 = 손익 재료비',
+    (m0->>'total')::numeric, (s0->>'material_cost')::numeric, 0.01);
+  perform pg_temp.eq('되짚기 고정비 = 손익 고정비',
+    (f0->>'total')::numeric, (s0->>'fixed_cost')::numeric, 0.01);
+  perform pg_temp.eq('고정 항목별 합 = 고정비 합계',
+    (select coalesce(sum((i->>'amount')::numeric), 0)
+       from jsonb_array_elements(f0->'items') i),
+    (f0->>'total')::numeric, 0.01);
+
+  -- ── 마스터 데이터를 한꺼번에 흔든다 ─────────────────────────
+  -- 판매가 · 부자재 삭제 · 세금 항목 추가 · 재료 단가 급등 · 인건비 인상.
+  perform save_recipe(pg_temp.store(), jsonb_build_object(
+    'id', v_rcp, 'name', '제육볶음', 'price', 20000, 'base_servings', 10,
+    'tax_items', jsonb_build_array(jsonb_build_object('name', '카드 수수료', 'rate', 2.5)),
+    'extras', jsonb_build_array()));
+  perform e1_confirm_inbound(
+    e7_place_order(pg_temp.store(), v_ing, v_ven, null, 5000, 150000, 4, v_day), 4, 'TEST-0058');
+  perform save_fixed_costs(pg_temp.store(), business_month(), 12000000,
+    (select jsonb_agg(case when x->>'key' = 'labor'
+        then jsonb_set(jsonb_set(x, '{total}', '4000000'), '{lines}', '[]'::jsonb) || '{"mode":"total"}'::jsonb
+        else x end)
+       from fixed_costs_monthly, jsonb_array_elements(items) x
+      where store_id = pg_temp.store() and month = business_month()));
+
+  b1 := day_menu_detail(pg_temp.store(), v_day, v_rcp);
+  s1 := sales_summary(pg_temp.store(), v_day, v_day);
+  m1 := sales_material_usage(pg_temp.store(), v_day, v_day);
+  e1 := sales_extra_usage(pg_temp.store(), v_day, v_day);
+  f1 := sales_fixed_breakdown(pg_temp.store(), v_day, v_day);
+
+  -- ① 매출 화면은 전부 그대로 ─────────────────────────────────
+  perform pg_temp.eq('메뉴 손익 · 판매가',   (b1->>'price')::numeric,         (b0->>'price')::numeric, 0.0001);
+  perform pg_temp.eq('메뉴 손익 · 재료비',   (b1->>'material_cost')::numeric, (b0->>'material_cost')::numeric, 0.0001);
+  perform pg_temp.eq('메뉴 손익 · 부자재',   (b1->>'extra_cost')::numeric,    (b0->>'extra_cost')::numeric, 0.0001);
+  perform pg_temp.eq('메뉴 손익 · 고정비',   (b1->>'fixed_cost')::numeric,    (b0->>'fixed_cost')::numeric, 0.0001);
+  perform pg_temp.eq('메뉴 손익 · 세금',     (b1->>'tax')::numeric,           (b0->>'tax')::numeric, 0.0001);
+  perform pg_temp.eq('메뉴 손익 · 순이익',   (b1->>'profit')::numeric,        (b0->>'profit')::numeric, 0.0001);
+
+  perform pg_temp.eq('손익 합계 · 매출',     (s1->>'revenue')::numeric,       (s0->>'revenue')::numeric, 0.0001);
+  perform pg_temp.eq('손익 합계 · 재료비',   (s1->>'material_cost')::numeric, (s0->>'material_cost')::numeric, 0.0001);
+  perform pg_temp.eq('손익 합계 · 세금',     (s1->>'tax')::numeric,           (s0->>'tax')::numeric, 0.0001);
+  -- ⚠ 여기가 새던 자리다. 고정지출률이 현재 월 설정이라 인건비를 올리면 지난 손익이 따라 움직였다.
+  perform pg_temp.eq('손익 합계 · 고정비',   (s1->>'fixed_cost')::numeric,    (s0->>'fixed_cost')::numeric, 0.0001);
+  perform pg_temp.eq('손익 합계 · 폐기 손실', (s1->>'waste_loss')::numeric,   (s0->>'waste_loss')::numeric, 0.0001);
+  perform pg_temp.eq('손익 합계 · 순이익',   (s1->>'profit')::numeric,        (s0->>'profit')::numeric, 0.0001);
+
+  -- ⚠ 수량은 원장인데 단가만 현재 값이라 재료비 내역이 통째로 올라가던 자리다.
+  perform pg_temp.eq('되짚기 · 재료 합계',   (m1->>'total')::numeric,         (m0->>'total')::numeric, 0.0001);
+  -- ⚠ 부자재를 지우면 그날 내역에서도 사라지던 자리다.
+  perform pg_temp.eq('되짚기 · 부자재 합계', (e1->>'total')::numeric,         (e0->>'total')::numeric, 0.0001);
+  perform pg_temp.eq('지운 부자재가 그날 내역엔 남는다',
+    jsonb_array_length(e1->'items'), jsonb_array_length(e0->'items'), 0);
+  perform pg_temp.eq('되짚기 · 고정 합계',   (f1->>'total')::numeric,         (f0->>'total')::numeric, 0.0001);
+  perform pg_temp.eq('되짚기 · 고정 항목 수',
+    jsonb_array_length(f1->'items'), jsonb_array_length(f0->'items'), 0);
+  perform pg_temp.eq('인건비 항목 배분액도 그대로',
+    (select (i->>'amount')::numeric from jsonb_array_elements(f1->'items') i where i->>'key' = 'labor'),
+    (select (i->>'amount')::numeric from jsonb_array_elements(f0->'items') i where i->>'key' = 'labor'),
+    0.0001);
+
+  -- 되짚기와 손익이 여전히 같은 말을 하는가
+  perform pg_temp.eq('수정 후에도 되짚기 = 손익 (재료비)',
+    (m1->>'total')::numeric, (s1->>'material_cost')::numeric, 0.01);
+  perform pg_temp.eq('수정 후에도 되짚기 = 손익 (고정비)',
+    (f1->>'total')::numeric, (s1->>'fixed_cost')::numeric, 0.01);
+
+  -- ② 레시피 화면은 움직여야 한다 ─────────────────────────────
+  perform pg_temp.ok('레시피 현재 재료비는 올랐다',
+    (select material_cost from recipe_list(pg_temp.store()) where id = v_rcp) > r0);
+  perform pg_temp.eq('레시피 현재 판매가도 새 값',
+    (select price from recipe_list(pg_temp.store()) where id = v_rcp), 20000, 0);
+  perform pg_temp.eq('레시피 현재 세금도 새 항목 포함',
+    recipe_tax(v_rcp), 20000 * 10 / 110.0 + 20000 * 0.025, 0.01);
+
+  -- ③ 다음 영업일 기준에는 새 값이 들어간다 ───────────────────
+  perform pg_temp.eq('다음 영업일 기준 판매가',
+    (build_day_snapshot(pg_temp.store()) #>> array['recipes', v_rcp::text, 'price'])::numeric, 20000, 0);
+  perform pg_temp.ok('다음 영업일 기준 고정지출률도 새 값',
+    (build_day_snapshot(pg_temp.store())->>'fixed_rate')::numeric
+      > (s0->>'fixed_rate')::numeric);
+end $t$;
+
+-- ════════════════════════════════════════════════════════════════
+-- 폐기 손실도 버린 날 단가다
+--
+-- 재료값이 오를 때마다 지난달 폐기 손실이 같이 오르면 안 된다.
+-- ════════════════════════════════════════════════════════════════
+
+do $t$
+declare
+  v_ing  uuid := pg_temp.ing('대파');
+  v_ven  uuid := (select id from vendors where store_id = pg_temp.store() limit 1);
+  v_day  date := business_day();
+  v_rem  numeric;
+  w0     numeric;
+  w1     numeric;
+begin
+  begin perform open_business_day(pg_temp.store()); exception when others then null; end;
+
+  -- 대파를 조금 버린다. e2_discard 의 2번째 인자는 **남은 양**이다.
+  v_rem := stock_total_base(v_ing);
+  perform e2_discard(v_ing, greatest(v_rem - 100, 0));
+
+  w0 := (sales_summary(pg_temp.store(), v_day, v_day)->>'waste_ingredient')::numeric;
+  perform pg_temp.ok('버린 만큼 손실이 잡힌다', w0 > 0);
+
+  -- 대파 값을 두 배 넘게 올린다.
+  perform e1_confirm_inbound(
+    e7_place_order(pg_temp.store(), v_ing, v_ven, null, 1000, 12000, 5, v_day), 5, 'TEST-0058-WASTE');
+  perform pg_temp.ok('현재 단가는 올랐다', base_unit_price(v_ing) > 4.0);
+
+  w1 := (sales_summary(pg_temp.store(), v_day, v_day)->>'waste_ingredient')::numeric;
+  perform pg_temp.eq('폐기 손실은 버린 날 단가 그대로', w1, w0, 0.0001);
+end $t$;
+
+-- ════════════════════════════════════════════════════════════════
+-- 기간 메뉴 손익 — 날짜별 기준의 합이다 (0059)
+--
+-- 사장님: "9,300 · 9,800 · 12,000 · 9,800 … 이걸 어떻게 보여줘?"
+--         "합계해서 보여준다고 해둬 — 어떤 합도 보여줘야 하잖아."
+-- 평균이 아니라 합이다. 개당은 합 나누기 수량이고, 판매가가 여럿이면 그대로 늘어놓는다.
+-- ════════════════════════════════════════════════════════════════
+
+do $t$
+declare
+  v_rcp uuid := pg_temp.rcp('제육볶음');
+  v_day date := business_day();
+  g0    jsonb;
+  g1    jsonb;
+  b     jsonb;
+begin
+  begin perform open_business_day(pg_temp.store()); exception when others then null; end;
+  perform e10_sale_recorded(pg_temp.store(), v_day, v_rcp, 10, 0, 0, 0);
+
+  -- ── 하루짜리 기간 = 그날 값 ─────────────────────────────────
+  -- 두 함수가 같은 하루를 다르게 말하면 화면이 어느 쪽을 믿어야 할지 알 수 없다.
+  b  := day_menu_detail(pg_temp.store(), v_day, v_rcp);
+  g0 := range_menu_detail(pg_temp.store(), v_day, v_day, v_rcp);
+
+  perform pg_temp.eq('기간(하루) 개당 판매가 = 그날 값',
+    (g0->>'unit_price')::numeric, (b->>'price')::numeric, 0.0001);
+  perform pg_temp.eq('기간(하루) 개당 재료비 = 그날 값',
+    (g0->>'unit_material_cost')::numeric, (b->>'material_cost')::numeric, 0.0001);
+  perform pg_temp.eq('기간(하루) 개당 부자재 = 그날 값',
+    (g0->>'unit_extra_cost')::numeric, (b->>'extra_cost')::numeric, 0.0001);
+  perform pg_temp.eq('기간(하루) 개당 고정비 = 그날 값',
+    (g0->>'unit_fixed_cost')::numeric, (b->>'fixed_cost')::numeric, 0.0001);
+  perform pg_temp.eq('기간(하루) 개당 세금 = 그날 값',
+    (g0->>'unit_tax')::numeric, (b->>'tax')::numeric, 0.0001);
+  perform pg_temp.eq('기간(하루) 개당 순이익 = 그날 값',
+    (g0->>'unit_profit')::numeric, (b->>'profit')::numeric, 0.0001);
+  perform pg_temp.eq('제육 검산값 그대로', (g0->>'unit_profit')::numeric, 4046.69, 0.01);
+
+  -- 합 = 개당 × 수량
+  perform pg_temp.eq('재료비 합 = 개당 × 수량',
+    (g0->>'material_cost')::numeric,
+    (g0->>'unit_material_cost')::numeric * (g0->>'qty')::numeric, 0.01);
+  perform pg_temp.eq('판매가가 한 가지면 목록도 하나',
+    jsonb_array_length(g0->'price_points'), 1, 0);
+
+  -- ── 마스터를 흔들어도 기간 값은 그대로 ──────────────────────
+  perform save_recipe(pg_temp.store(), jsonb_build_object(
+    'id', v_rcp, 'name', '제육볶음', 'price', 20000, 'base_servings', 10,
+    'extras', jsonb_build_array()));
+  perform e1_confirm_inbound(
+    e7_place_order(pg_temp.store(), pg_temp.ing('돼지고기 앞다리'),
+      (select id from vendors where store_id = pg_temp.store() limit 1),
+      null, 5000, 150000, 4, v_day), 4, 'TEST-0059');
+
+  g1 := range_menu_detail(pg_temp.store(), v_day - 6, v_day, v_rcp);
+  perform pg_temp.ok('기간 조회에 여러 날이 담긴다', (g1->>'days')::int > 1);
+
+  -- 같은 기간을 다시 물어도 값이 같아야 한다 — 현재 레시피를 안 읽는다는 뜻이다.
+  perform pg_temp.eq('수정해도 기간 재료비 그대로',
+    (range_menu_detail(pg_temp.store(), v_day - 6, v_day, v_rcp)->>'material_cost')::numeric,
+    (g1->>'material_cost')::numeric, 0.0001);
+  perform pg_temp.eq('수정해도 기간 개당 판매가 그대로',
+    (range_menu_detail(pg_temp.store(), v_day - 6, v_day, v_rcp)->>'unit_price')::numeric,
+    (g1->>'unit_price')::numeric, 0.0001);
+  perform pg_temp.ok('지운 부자재도 기간 내역에 남는다',
+    jsonb_array_length(g1->'extras') > 0);
+  perform pg_temp.ok('고정지출 항목별 배분이 있다',
+    jsonb_array_length(g1->'fixed_items') > 0);
+  perform pg_temp.eq('고정 항목 합 = 기간 고정비',
+    (select coalesce(sum((i->>'amount')::numeric), 0) from jsonb_array_elements(g1->'fixed_items') i),
+    (g1->>'fixed_cost')::numeric, 0.01);
+
+  -- 판매가가 여러 가지면 그대로 늘어놓는다 (평균으로 뭉개지 않는다).
+  update daily_sales_items it set unit_price = 9300
+    from daily_sales ds
+   where ds.id = it.daily_sales_id and ds.store_id = pg_temp.store()
+     and ds.sale_date = v_day - 3 and it.recipe_id = v_rcp;
+  perform pg_temp.eq('판매가가 둘이면 목록도 둘',
+    jsonb_array_length(range_menu_detail(pg_temp.store(), v_day - 6, v_day, v_rcp)->'price_points'), 2, 0);
+end $t$;

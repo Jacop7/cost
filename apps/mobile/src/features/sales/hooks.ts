@@ -283,6 +283,79 @@ export function useDayMenuDetail(date: string | undefined, recipeId: string | un
   });
 }
 
+/**
+ * 기간 메뉴 손익 — 날마다 그날 기준으로 계산해 **합산**한 값이다(0059).
+ *
+ * 사장님: "a재료 값을 10번 수정했어. 합계해서 보여준다고 해둬 — 어떤 합도 보여줘야 하잖아."
+ * 그래서 평균이 아니라 합이다. 개당 값은 합 나누기 수량이라 '기간 평균'이라 부른다.
+ */
+export interface RangeMenuDetail {
+  sold: boolean;
+  name: string;
+  days: number;
+  qty: number; qtyWaste: number; qtyHall: number; qtyDelivery: number; qtyTakeout: number;
+  /** 기간 합계 */
+  revenue: number; materialCost: number; wasteMenu: number;
+  extraCost: number; fixedCost: number; tax: number; profit: number;
+  /** 개당(= 합 나누기 수량). 기간 중 값이 바뀌었으면 한 숫자로 말할 수 없다. */
+  unitPrice: number; unitMaterialCost: number; unitExtraCost: number;
+  unitFixedCost: number; unitTax: number; unitProfit: number;
+  /** 기간에 판매가가 몇 가지였나. 하나뿐이면 길이 1. */
+  pricePoints: { price: number; qty: number; days: number; from: string; to: string }[];
+  lines: DayMenuLine[];
+  extras: DayMenuExtra[];
+  fixedItems: DayMenuFixedItem[];
+}
+
+export function useRangeMenuDetail(from: string | undefined, to: string | undefined, recipeId: string | undefined) {
+  const storeId = useStoreId();
+  return useQuery({
+    queryKey: [...qk.salesRange(from ?? '', to ?? ''), 'menu', recipeId ?? ''],
+    enabled: Boolean(storeId && from && to && recipeId),
+    queryFn: async (): Promise<RangeMenuDetail> => {
+      const { data, error } = await supabase.rpc('range_menu_detail', {
+        p_store: storeId, p_from: from as string, p_to: to as string, p_recipe: recipeId as string,
+      });
+      if (error) throw new Error(error.message);
+      const r = (data ?? {}) as unknown as Record<string, unknown>;
+      const arr = (k: string) => (r[k] ?? []) as Record<string, unknown>[];
+      const qty = num(r.qty);
+      return {
+        sold: Boolean(r.sold),
+        name: String(r.name ?? ''),
+        days: num(r.days),
+        qty, qtyWaste: num(r.qty_waste),
+        qtyHall: num(r.qty_hall), qtyDelivery: num(r.qty_delivery), qtyTakeout: num(r.qty_takeout),
+        revenue: num(r.revenue), materialCost: num(r.material_cost), wasteMenu: num(r.waste_menu),
+        extraCost: num(r.extra_cost), fixedCost: num(r.fixed_cost),
+        tax: num(r.tax), profit: num(r.profit),
+        unitPrice: num(r.unit_price), unitMaterialCost: num(r.unit_material_cost),
+        unitExtraCost: num(r.unit_extra_cost), unitFixedCost: num(r.unit_fixed_cost),
+        unitTax: num(r.unit_tax), unitProfit: num(r.unit_profit),
+        pricePoints: arr('price_points').map((x) => ({
+          price: num(x.price), qty: num(x.qty), days: num(x.days),
+          from: String(x.from), to: String(x.to),
+        })),
+        lines: arr('lines').map((l) => ({
+          ingredientId: String(l.ingredient_id), name: String(l.name),
+          baseUnit: (l.base_unit ?? 'g') as DayMenuLine['baseUnit'],
+          perServing: num(l.per_serving), unitPrice: numOrNull(l.unit_price), amount: num(l.amount),
+        })),
+        // 부자재 금액은 기간 합이다. 화면은 1인분 기준으로 그리므로 개당으로 환산한다.
+        extras: arr('extras').map((e) => ({
+          name: String(e.name), qty: num(e.qty),
+          amount: qty > 0 ? num(e.amount) / qty : 0,
+        })),
+        fixedItems: arr('fixed_items').map((i) => ({
+          key: String(i.key),
+          amount: qty > 0 ? num(i.amount) / qty : 0,
+          rate: num(r.unit_price) > 0 && qty > 0 ? num(i.amount) / qty / num(r.unit_price) : 0,
+        })),
+      };
+    },
+  });
+}
+
 export function useSaveSale() {
   const qc = useQueryClient();
   const storeId = useStoreId();
