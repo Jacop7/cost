@@ -20,7 +20,8 @@ Expo(RN) + Supabase 모노레포. 모든 데이터가 기록·전파되어 추�
 
 ## 디렉토리 규칙
 - 화면 ID 체계 유지: `ORD-`(발주) `ING-`(식재료) `RCP-`(레시피) `MY-`(마이페이지)
-- 전파 이벤트 E1~E7은 `packages/db/sql/rpc/`에 1파일씩, `packages/core/src/propagation/`에 순수 로직 미러.
+- 전파 이벤트는 `packages/db/sql/rpc/`에 1파일씩, `packages/core/src/propagation/`에 순수 로직 미러.
+  **E6 은 없다** — ORD-04 레시피 계산기는 1차 범위 밖이라 제거했다(0060). 번호는 당기지 않는다.
 - 새 파생값 공식은 반드시 `packages/core`에 추가하고 검산 테스트 동반.
 
 ## 프론트엔드(앱) 규칙

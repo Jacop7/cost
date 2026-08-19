@@ -916,44 +916,6 @@ export type Database = {
           },
         ]
       }
-      recipe_calc_runs: {
-        Row: {
-          id: string
-          items: Json
-          period_from: string
-          period_to: string
-          ran_at: string
-          result: Json
-          store_id: string
-        }
-        Insert: {
-          id?: string
-          items: Json
-          period_from: string
-          period_to: string
-          ran_at?: string
-          result: Json
-          store_id: string
-        }
-        Update: {
-          id?: string
-          items?: Json
-          period_from?: string
-          period_to?: string
-          ran_at?: string
-          result?: Json
-          store_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "recipe_calc_runs_store_id_fkey"
-            columns: ["store_id"]
-            isOneToOne: false
-            referencedRelation: "stores"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       recipe_extra_costs: {
         Row: {
           amount_per_serving: number
@@ -1606,16 +1568,6 @@ export type Database = {
         }
         Returns: Json
       }
-      e6_recipe_calc: {
-        Args: {
-          p_store: string
-          p_from: string
-          p_to: string
-          p_items: Json
-          p_result: Json
-        }
-        Returns: string
-      }
       e7_place_order: {
         Args: {
           p_store: string
@@ -2083,7 +2035,7 @@ export type Database = {
       base_unit: "g" | "ml" | "ea"
       business_close_method: "manual" | "auto"
       business_day_status: "open" | "break" | "closed"
-      candidate_reason: "safety_stock" | "soon_out" | "recipe" | "manual"
+      candidate_reason: "safety_stock" | "soon_out" | "manual"
       candidate_status: "pending" | "ordered" | "excluded"
       category_kind: "ingredient" | "recipe" | "material"
       fixed_cost_mode: "total" | "detail"

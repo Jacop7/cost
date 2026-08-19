@@ -13,7 +13,14 @@ const num = (v: unknown): number => Number(v ?? 0);
 const numOrNull = (v: unknown): number | null => (v === null || v === undefined ? null : Number(v));
 const str = (v: unknown): string | null => (v === null || v === undefined ? null : String(v));
 
-export type CandidateReason = 'safety_stock' | 'soon_out' | 'recipe' | 'manual';
+export type CandidateReason = 'safety_stock' | 'soon_out' | 'manual';
+
+const normalizeReasons = (reasons: unknown): CandidateReason[] => {
+  const raw = Array.isArray(reasons) ? reasons : [];
+  return raw.filter(
+    (r): r is CandidateReason => r === 'safety_stock' || r === 'soon_out' || r === 'manual',
+  );
+};
 
 export interface OrderCandidate {
   ingredientId: string;
@@ -76,7 +83,7 @@ export function useOrderBoard() {
         candidates: ((r.candidates ?? []) as Record<string, unknown>[]).map((c) => ({
           ingredientId: String(c.ingredient_id),
           name: String(c.name),
-          reasons: (c.reasons ?? []) as CandidateReason[],
+          reasons: normalizeReasons(c.reasons),
           recommendedQty: num(c.recommended_qty),
           status: (c.status as OrderCandidate['status']) ?? 'pending',
           stockTotal: num(c.stock_total),
