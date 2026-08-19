@@ -45,6 +45,8 @@ export function IngredientDetailScreen() {
   const g = detail.data;
   const unit = g ? dispUnit(g.baseUnit) : 'g';
   const recent = history.data?.slice(0, 4) ?? [];
+  /** 로스율 카드가 쓸 폐기 줄. 재고 변동 내역과 같은 원장에서 온다. */
+  const discards = (history.data ?? []).filter((e) => e.type === 'discard');
 
   const saveMemo = (memo: string) => {
     if (!g) return;
@@ -220,6 +222,8 @@ export function IngredientDetailScreen() {
               <LossCard
                 loss={g.loss}
                 baseUnit={g.baseUnit}
+                discards={discards}
+                unitPrice={g.basePrice}
                 onPress={() => router.push(`/ingredients/discards/${g.id}`)}
               />
 
