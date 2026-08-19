@@ -448,16 +448,22 @@ export default function RecipeDetailScreen() {
                       </View>
                     ) : null}
                   </View>
-                </Card>
 
-                <Pressable
-                  onPress={() => setSimOpen(true)}
-                  accessibilityRole="button" accessibilityLabel="판매가 시뮬레이션"
-                  style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, paddingVertical: 13, borderRadius: 12, borderWidth: 1, borderColor: T.blue, backgroundColor: T.blueTint }}
-                >
-                  <Icon name="trend" size={18} color={T.blue} sw={2.1} />
-                  <Text style={{ fontSize: 16, fontWeight: '700', color: T.blue }}>판매가 시뮬레이션</Text>
-                </Pressable>
+                  {/*
+                    판매가 시뮬레이션 — 카드 **안**의 하단 액션으로 둔다.
+                    카드 밖에 떠 있으면 무엇에 대한 시뮬레이션인지 끊겨 보인다.
+                    여기서 바꿔 볼 값(판매가)의 결과가 바로 위에 있으니 붙어 있어야 한다.
+                    다른 카드의 '자세히 보기'와 같은 자리·같은 형태다.
+                  */}
+                  <Pressable
+                    onPress={() => setSimOpen(true)}
+                    accessibilityRole="button" accessibilityLabel="판매가 시뮬레이션"
+                    style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5, paddingVertical: 13, borderTopWidth: 1, borderTopColor: T.line2, backgroundColor: T.surface2 }}
+                  >
+                    <Icon name="trend" size={16} color={T.blue} sw={2.1} />
+                    <Text style={{ fontSize: 14, fontWeight: '700', color: T.blue }}>판매가 시뮬레이션</Text>
+                  </Pressable>
+                </Card>
 
                 {/* 손익 변동 — profit_trends 스냅샷 */}
                 <Card pad={0} style={{ overflow: 'hidden' }}>
