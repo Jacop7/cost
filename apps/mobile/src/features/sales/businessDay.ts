@@ -188,3 +188,69 @@ export function hhmm(iso: string | null): string {
   if (Number.isNaN(d.getTime())) return '';
   return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
 }
+
+/**
+ * 판매 입력 카드가 쓰는 **오늘 기준** 메뉴 값(0061).
+ *
+ * 여기가 마지막으로 남아 있던 구멍이었다. 돈 숫자는 전부 그날 기준으로 고정했는데
+ * 판매를 입력하는 카드만 현재 레시피를 보고 있어서, 판매가를 고치면 카드는 새 값을
+ * 보여 주고 장부에는 옛 값이 박혔다. 화면이 거짓말을 한 셈이다.
+ *
+ * 영업 전이면 스냅샷이 없고, 그때는 지금 값이 곧 오늘 값이 된다.
+ */
+export interface DayMenuBasis {
+  recipeId: string;
+  name: string;
+  /** 오늘 팔면 이 값으로 잡힌다. */
+  price: number;
+  materialCost: number;
+  extraCost: number;
+  tax: number;
+  fixedCost: number;
+  profit: number;
+  /** 지금 레시피 값. 달라졌으면 화면이 "내일부터"라고 알린다. */
+  currentPrice: number;
+  currentMaterialCost: number;
+  currentProfit: number;
+  changed: boolean;
+  /** 오늘 기준에 없는 메뉴 — 오늘 만든 메뉴다. 서버가 판매를 막는다. */
+  inBasis: boolean;
+  active: boolean;
+  blockedBy: string | null;
+}
+
+export function useDayMenuBasis(date: string | undefined) {
+  const storeId = useStoreId();
+  return useQuery({
+    queryKey: [...qk.businessDay, 'menus', date ?? ''],
+    enabled: Boolean(storeId && date),
+    queryFn: async (): Promise<Map<string, DayMenuBasis>> => {
+      const { data, error } = await supabase.rpc('day_menu_basis', {
+        p_store: storeId, p_date: date as string,
+      });
+      if (error) throw new Error(error.message);
+      const rows = (data ?? []) as unknown as Record<string, unknown>[];
+      const m = new Map<string, DayMenuBasis>();
+      for (const r of rows) {
+        m.set(String(r.recipe_id), {
+          recipeId: String(r.recipe_id),
+          name: String(r.name ?? ''),
+          price: Number(r.price ?? 0),
+          materialCost: Number(r.material_cost ?? 0),
+          extraCost: Number(r.extra_cost ?? 0),
+          tax: Number(r.tax ?? 0),
+          fixedCost: Number(r.fixed_cost ?? 0),
+          profit: Number(r.profit ?? 0),
+          currentPrice: Number(r.current_price ?? 0),
+          currentMaterialCost: Number(r.current_material_cost ?? 0),
+          currentProfit: Number(r.current_profit ?? 0),
+          changed: r.changed === true,
+          inBasis: r.in_basis !== false,
+          active: r.active !== false,
+          blockedBy: r.blocked_by === null || r.blocked_by === undefined ? null : String(r.blocked_by),
+        });
+      }
+      return m;
+    },
+  });
+}
