@@ -20,6 +20,9 @@ packages/db/supabase/.temp/
 **/.env
 **/.env.local
 **/.env.*.local
+# 백업본도 실제 키를 담는다. .env.example 만 예외로 추적한다.
+**/.env.*
+!**/.env.example
 
 # editor / os
 .DS_Store
