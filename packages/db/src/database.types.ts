@@ -1086,11 +1086,15 @@ export type Database = {
           alert_morning_summary: boolean
           alert_price_spike: boolean
           alert_target_miss: boolean
+          break_end: string | null
+          break_start: string | null
+          close_time: string
           cup_volume: number
           currency: string
           default_target_profit_rate: number
           locale: string
           money_digits: number
+          open_time: string
           quantity_digits: number
           store_id: string
           unit_price_digits: number
@@ -1102,11 +1106,15 @@ export type Database = {
           alert_morning_summary?: boolean
           alert_price_spike?: boolean
           alert_target_miss?: boolean
+          break_end?: string | null
+          break_start?: string | null
+          close_time?: string
           cup_volume?: number
           currency?: string
           default_target_profit_rate?: number
           locale?: string
           money_digits?: number
+          open_time?: string
           quantity_digits?: number
           store_id: string
           unit_price_digits?: number
@@ -1118,11 +1126,15 @@ export type Database = {
           alert_morning_summary?: boolean
           alert_price_spike?: boolean
           alert_target_miss?: boolean
+          break_end?: string | null
+          break_start?: string | null
+          close_time?: string
           cup_volume?: number
           currency?: string
           default_target_profit_rate?: number
           locale?: string
           money_digits?: number
+          open_time?: string
           quantity_digits?: number
           store_id?: string
           unit_price_digits?: number
@@ -1209,6 +1221,10 @@ export type Database = {
           p_ingredient: string
         }
         Returns: number
+      }
+      business_cutoff: {
+        Args: Record<PropertyKey, never>
+        Returns: unknown
       }
       business_day: {
         Args: {
@@ -1693,7 +1709,7 @@ export type Database = {
           p_store: string
           p_payload: Json
         }
-        Returns: Json
+        Returns: undefined
       }
       save_vendor: {
         Args: {

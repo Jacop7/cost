@@ -266,6 +266,17 @@ export interface StoreSettings {
   alertInboundDelay: boolean;
   alertPriceSpike: boolean;
   alertTargetMiss: boolean;
+  /** 영업 시작 시각 'HH:MM'. */
+  openTime: string;
+  /** 영업 종료 시각 'HH:MM'. 시작보다 이르면 자정을 넘는 영업이다. */
+  closeTime: string;
+  /** 브레이크 타임(선택). 없으면 null. */
+  breakStart: string | null;
+  breakEnd: string | null;
+  /** 자정을 넘는 영업인가 — 서버가 판단해서 준다. */
+  overnight: boolean;
+  /** 총 영업 시간(분). 10:00~02:00 이면 960. */
+  openMinutes: number;
 }
 
 export function useStoreSettings() {
@@ -289,6 +300,12 @@ export function useStoreSettings() {
         alertInboundDelay: Boolean(r.alert_inbound_delay),
         alertPriceSpike: Boolean(r.alert_price_spike),
         alertTargetMiss: Boolean(r.alert_target_miss),
+        openTime: String(r.open_time ?? '11:00'),
+        closeTime: String(r.close_time ?? '22:00'),
+        breakStart: str(r.break_start),
+        breakEnd: str(r.break_end),
+        overnight: Boolean(r.overnight),
+        openMinutes: num(r.open_minutes),
       };
     },
   });
@@ -312,6 +329,11 @@ export function useSaveSettings() {
       if (input.alertInboundDelay !== undefined) payload.alert_inbound_delay = input.alertInboundDelay;
       if (input.alertPriceSpike !== undefined) payload.alert_price_spike = input.alertPriceSpike;
       if (input.alertTargetMiss !== undefined) payload.alert_target_miss = input.alertTargetMiss;
+      if (input.openTime !== undefined) payload.open_time = input.openTime;
+      if (input.closeTime !== undefined) payload.close_time = input.closeTime;
+      // 브레이크는 지우는 것도 뜻이 있다 — undefined 가 아니면 null 이라도 보낸다.
+      if (input.breakStart !== undefined) payload.break_start = input.breakStart ?? '';
+      if (input.breakEnd !== undefined) payload.break_end = input.breakEnd ?? '';
 
       const { error } = await supabase.rpc('save_settings', { p_store: storeId, p_payload: asJson(payload) });
       if (error) throw new Error(error.message);
