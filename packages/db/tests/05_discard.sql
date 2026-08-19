@@ -111,10 +111,24 @@ begin
 
   -- ── 손익에서 ①과 ②가 겹치지 않는다 ─────────────────────────
   -- 조리 폐기는 daily_sales_items 에서 금액으로 잡히므로, 원장에서 또 더하면 두 번 센다.
-  declare j jsonb := sales_summary(pg_temp.store(), v_day, v_day);
+  declare
+    j        jsonb := sales_summary(pg_temp.store(), v_day, v_day);
+    v_direct numeric;
   begin
-    perform pg_temp.eq('식재료 폐기에 조리 폐기가 섞이지 않음',
-      (j->>'waste_ingredient')::numeric, 0, 0.01);
+    -- ⚠ "0 이어야 한다"고 쓰면 안 된다. 사장님이 오늘 다른 재료를 폐기했으면
+    --   그것도 정당하게 잡히기 때문이다(실제로 그래서 한 번 깨졌다).
+    --   계약은 "**직접 폐기만** 들어간다" 이므로 원장에서 같은 규칙으로 세어 맞춘다.
+    select coalesce(sum(ev.volume_delta * coalesce(base_unit_price(ev.ingredient_id), 0)), 0)
+      into v_direct
+      from inventory_events ev
+     where ev.store_id = pg_temp.store()
+       and ev.type = 'discard'
+       and ev.sales_item_id is null          -- 조리 후 폐기 제외
+       and not exists (select 1 from inventory_events r where r.reverses_event_id = ev.id)
+       and (ev.occurred_at at time zone business_tz())::date = v_day;
+
+    perform pg_temp.eq('식재료 폐기 = 직접 폐기만 (조리 폐기 안 섞임)',
+      (j->>'waste_ingredient')::numeric, v_direct, 0.01);
     perform pg_temp.ok('조리 폐기는 waste_menu 로 잡힌다', (j->>'waste_menu')::numeric > 0);
     perform pg_temp.eq('폐기 손실 합계 = 식재료 + 조리',
       (j->>'waste_loss')::numeric,
