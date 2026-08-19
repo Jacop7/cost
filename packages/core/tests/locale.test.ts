@@ -4,7 +4,7 @@
  *
  * 두 축을 나눠 잠근다.
  *   1) 로케일 표 자체 — 금액 / 단가 표기 (설계 표의 3·4열)
- *   2) 검산 기준값이 서식을 통과해도 유지되는지 — 4.71원/g · 4,014원 · 33.4% · 31.3%
+ *   2) 검산 기준값이 서식을 통과해도 유지되는지 — 4.00원/g · 4,046.69원 · 33.72% · 31.3%
  */
 import { describe, it, expect } from 'vitest';
 import {
@@ -145,18 +145,22 @@ describe('검산 기준값이 서식을 통과해도 유지된다', () => {
     expect(formatUnitPrice(p!, 'g', 'ko', 4)).toBe('4.7059원/g');
   });
 
-  it('제육볶음 순이익 4,014원 · 33.4%', () => {
+  it('제육볶음 순이익 4,046.69원 · 33.72%', () => {
     const r = computeProfit({
       price: 12000,
       servings: 10,
       taxMode: 'included',
       extraPerServing: 300,
-      fixedRate: 0.3133,
-      lines: [{ inputQty: 10, baseUnitPrice: 2835 }],
+      fixedRate: 0.313,
+      lines: [{ inputQty: 10, baseUnitPrice: 2806.4 }],
     });
-    expect(formatMoney(r.profit, 'ko')).toBe('4,014원');
-    // 33.45% 경계 — 절사라 33.4%. 반올림이면 33.5% 가 되어 기준값과 어긋난다.
-    expect(formatPercent(r.profitRate)).toBe('33.4%');
+    expect(formatMoney(r.profit, 'ko')).toBe('4,047원');
+    expect(formatPercent(r.profitRate)).toBe('33.7%');
+  });
+
+  it('비율은 절사다 — 33.45% 는 33.5% 가 아니라 33.4%', () => {
+    // 반올림이면 경계에서 한 눈금 올라가 서버 값과 어긋난다. 경계를 따로 못 박는다.
+    expect(formatPercent(0.3345)).toBe('33.4%');
   });
 
   it('고정지출률 31.3% — 부동소수 오차로 31.2% 가 되지 않는다', () => {

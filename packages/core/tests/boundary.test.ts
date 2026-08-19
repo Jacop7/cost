@@ -110,8 +110,8 @@ describe('computeProfit — 인분·판매가 경계', () => {
     servings: 10,
     taxMode: 'included' as const,
     extraPerServing: 300,
-    fixedRate: 0.3133,
-    lines: [{ inputQty: 10, baseUnitPrice: 2835 }],
+    fixedRate: 0.313,
+    lines: [{ inputQty: 10, baseUnitPrice: 2806.4 }],
   };
 
   it('인분 0이면 재료비가 Infinity가 되지 않는다', () => {
@@ -146,10 +146,10 @@ describe('computeProfit — 인분·판매가 경계', () => {
     expect(r.profitRate).toBe(0);
   });
 
-  it('검산 기준값은 유지된다 — 제육볶음 4,014원 · 33.4%', () => {
+  it('검산 기준값은 유지된다 — 제육볶음 4,046.69원 · 33.72%', () => {
     const r = computeProfit(base);
-    expect(Math.round(r.profit)).toBe(4014);
-    expect(r.profitRate).toBeCloseTo(0.334, 2);
+    expect(r.profit).toBeCloseTo(4046.69, 2);
+    expect(r.profitRate).toBeCloseTo(0.3372, 4);
   });
 });
 

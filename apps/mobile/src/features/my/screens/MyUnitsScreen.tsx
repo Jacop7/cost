@@ -11,9 +11,12 @@ import { safeBack } from '@/lib/nav';
 import { T } from '@/theme/tokens';
 import { useSettings, useSettingsActions, useUnitDigits } from '../store';
 
-/** 자릿수 견본에 쓰는 실값 — 대파 4,000원/1,000g · 로스 15% → 4.7058…원/g (검산 기준값). */
-// 표기 예시 — 대파 4,000원/1,000g, 로스 15% (AGENTS.md 검산 입력). 자릿수 차이를 눈으로 보기 위한 값이다.
-const SAMPLE_UNIT_PRICE = 4000 / 1000 / (1 - 0.15);
+/**
+ * 자릿수 견본에 쓰는 실값 — 4,000원에 850g 이 들어온 경우 → 4.7058…원/g.
+ * 나누어떨어지지 않는 값이라야 소수 자릿수 차이가 눈에 보인다.
+ * (0041 이후 단가는 매입액 ÷ 실입고량 그대로다 — 로스로 나누지 않는다.)
+ */
+const SAMPLE_UNIT_PRICE = 4000 / 850;
 
 interface UnitSystem {
   name: string;

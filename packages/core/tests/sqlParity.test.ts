@@ -155,12 +155,12 @@ describe('recompute_recipe 손익 — core ↔ SQL', () => {
     price: 12000,
     baseServings: 10,
     taxIncluded: true,
-    lines: [{ inputQty: 10, baseUnitPrice: 2835 }],
+    lines: [{ inputQty: 10, baseUnitPrice: 2806.4 }],
     extraPerServing: 300,
-    fixedRate: 0.3133,
+    fixedRate: 0.313,
   };
 
-  it('제육볶음 검산 — 순이익 4,014원이 양쪽에서 같다', () => {
+  it('제육볶음 검산 — 순이익 4,046.69원이 양쪽에서 같다', () => {
     const sql = sqlRecomputeRecipe(fixture);
     const core = computeProfit({
       price: fixture.price,
@@ -174,7 +174,7 @@ describe('recompute_recipe 손익 — core ↔ SQL', () => {
     expect(core.tax).toBeCloseTo(sql.tax, 10);
     expect(core.fixedCost).toBeCloseTo(sql.fixed, 10);
     expect(core.profit).toBeCloseTo(sql.profit, 10);
-    expect(Math.round(core.profit)).toBe(4014);
+    expect(core.profit).toBeCloseTo(4046.69, 2);
   });
 
   it('순이익률 — core 는 비율(0~1), SQL 은 % 2자리 반올림', () => {
@@ -196,7 +196,7 @@ describe('recompute_recipe 손익 — core ↔ SQL', () => {
       ...fixture,
       lines: [
         { inputQty: 10, baseUnitPrice: null },
-        { inputQty: 10, baseUnitPrice: 2835 },
+        { inputQty: 10, baseUnitPrice: 2806.4 },
       ],
     };
     const sql = sqlRecomputeRecipe(withNull);
