@@ -206,3 +206,37 @@ begin
   perform pg_temp.ok('ingredient_detail 에 loss 가 들어 있다',
     ingredient_detail(v_daepa) ? 'loss');
 end $t$;
+
+-- ════════════════════════════════════════════════════════════════
+-- 0044 · 폐기 내역·구매 이력 전체 보기
+-- ════════════════════════════════════════════════════════════════
+
+do $t$
+declare
+  v_daepa uuid := pg_temp.ing('대파');
+  v_all   int;
+  v_det   int;
+begin
+  -- ── 구매 이력은 잘리지 않는다 ────────────────────────────────
+  -- ingredient_detail 은 화면 요약용이라 20건으로 자른다. 단가가 언제부터
+  -- 올랐는지 보려면 전체가 필요하다.
+  select count(*) into v_all from purchase_history(v_daepa);
+  select jsonb_array_length(ingredient_detail(v_daepa)->'orders') into v_det;
+  perform pg_temp.ok('구매 이력 전체 >= 상세 요약', v_all >= v_det);
+  perform pg_temp.eq('구매 이력 건수 = order_records 건수',
+    v_all, (select count(*) from order_records where ingredient_id = v_daepa), 0);
+
+  -- 이 건의 단가는 **그날 그 값**이다 — 기준단가(가중평균)와 다른 개념이다.
+  perform pg_temp.ok('건별 단가 = 금액 ÷ 용량',
+    not exists (
+      select 1 from purchase_history(v_daepa) p
+       where p.volume > 0
+         and abs(p.unit_price - p.amount / p.volume) > 0.0001));
+
+  -- ── 폐기 내역이 두 종류로 갈린다 ─────────────────────────────
+  -- 화면 탭(전체 / 조리 전 / 조리 후)이 이 구분 위에 선다.
+  perform pg_temp.ok('stock_history 로 조리 전/후를 가를 수 있다',
+    (select count(*) from stock_history(v_daepa) where type = 'discard') =
+    (select count(*) from stock_history(v_daepa) where type = 'discard' and waste)
+    + (select count(*) from stock_history(v_daepa) where type = 'discard' and not waste));
+end $t$;

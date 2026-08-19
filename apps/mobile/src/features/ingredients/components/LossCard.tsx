@@ -8,7 +8,7 @@
  * 보관 폐기와 조리 폐기를 갈라서 보여준다. 한 숫자로 뭉치면
  * 발주를 줄여야 하는 건지 덜 만들어야 하는 건지 알 수 없다.
  */
-import { Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import { Card, Icon } from '@/components/kit';
 import { formatQuantity } from '@sikjae/core';
 import { T, won } from '@/theme/tokens';
@@ -22,7 +22,12 @@ const WATCH = 10;
 
 const pct = (v: number) => `${Math.round(v * 10) / 10}%`;
 
-export function LossCard({ loss, baseUnit }: { loss: IngredientLoss; baseUnit: 'g' | 'ml' | 'ea' }) {
+export function LossCard({ loss, baseUnit, onPress }: {
+  loss: IngredientLoss;
+  baseUnit: 'g' | 'ml' | 'ea';
+  /** 폐기 내역으로 들어가기. 없으면 카드가 눌리지 않는다. */
+  onPress?: () => void;
+}) {
   const u = dispUnit(baseUnit);
 
   // 폐기 기록이 없으면 0% 라고 쓰지 않는다 — "안 버렸다"와 "아직 모른다"는 다르다.
@@ -43,26 +48,33 @@ export function LossCard({ loss, baseUnit }: { loss: IngredientLoss; baseUnit: '
 
   return (
     <Card pad={0} style={{ overflow: 'hidden' }}>
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 13, paddingHorizontal: 15, backgroundColor: high ? T.amberTint : T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
+      <Pressable
+        onPress={onPress}
+        disabled={!onPress}
+        accessibilityRole={onPress ? 'button' : undefined}
+        accessibilityLabel={onPress ? '폐기 내역 보기' : undefined}
+        style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 13, paddingHorizontal: 15, backgroundColor: high ? T.amberTint : T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}
+      >
         <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: high ? T.amberText : T.sub }}>로스율</Text>
         <Text style={[{ fontSize: 18, fontWeight: '800', color: high ? T.amberText : T.ink }, NUM]}>
           {pct(loss.rate)}
         </Text>
-      </View>
+        {onPress ? <Icon name="chevron" size={17} color={T.ter} /> : null}
+      </Pressable>
 
       <View style={{ paddingHorizontal: 15, paddingVertical: 12, gap: 9 }}>
         {loss.storageRate !== null ? (
           <Row
-            label="보관 폐기"
-            hint="상해서 버린 몫"
+            label="조리 전 폐기"
+            hint="쓰기도 전에 상한 몫"
             value={pct(loss.storageRate)}
             sub={`${formatQuantity(loss.storageAmount, u)} · ${loss.storageCount}건`}
           />
         ) : null}
         {loss.cookingRate !== null ? (
           <Row
-            label="조리 폐기"
-            hint="만들었는데 못 판 몫"
+            label="조리 후 폐기"
+            hint="만들어 놓고 못 판 몫"
             value={pct(loss.cookingRate)}
             sub={`${formatQuantity(loss.cookingAmount, u)} · ${loss.cookingCount}건`}
           />

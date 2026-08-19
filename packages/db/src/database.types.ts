@@ -1442,6 +1442,25 @@ export type Database = {
         }
         Returns: Json
       }
+      purchase_history: {
+        Args: {
+          p_ingredient: string
+          p_from?: string
+          p_to?: string
+        }
+        Returns: {
+          id: string
+          ordered_at: string
+          expected_at: string
+          status: Database["public"]["Enums"]["order_status"]
+          vendor_name: string
+          volume: number
+          amount: number
+          qty: number
+          received_qty: number
+          unit_price: number
+        }[]
+      }
       recipe_detail: {
         Args: {
           p_recipe: string

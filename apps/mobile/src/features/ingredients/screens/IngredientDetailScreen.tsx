@@ -217,7 +217,11 @@ export function IngredientDetailScreen() {
               </Card>
 
               {/* 로스율 — 폐기 이력 바로 위에 둔다. 숫자만 보면 어디서 나온 값인지 모른다. */}
-              <LossCard loss={g.loss} baseUnit={g.baseUnit} />
+              <LossCard
+                loss={g.loss}
+                baseUnit={g.baseUnit}
+                onPress={() => router.push(`/ingredients/discards/${g.id}`)}
+              />
 
               {/* 재고 변동 내역 */}
               <Card pad={0} style={{ overflow: 'hidden' }}>
@@ -323,6 +327,14 @@ export function IngredientDetailScreen() {
                       </View>
                     ))}
                   </View>
+                  <Pressable
+                    onPress={() => router.push(`/ingredients/purchases/${g.id}`)}
+                    accessibilityRole="button" accessibilityLabel="구매 이력 전체 보기"
+                    style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 2, paddingVertical: 13, borderTopWidth: 1, borderTopColor: T.line2, backgroundColor: T.surface2 }}
+                  >
+                    <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub }}>자세히 보기</Text>
+                    <Icon name="chevron" size={16} color={T.ter} />
+                  </Pressable>
                 </Card>
               ) : null}
             </>
