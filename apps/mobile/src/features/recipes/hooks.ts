@@ -40,6 +40,11 @@ export interface RecipeRow {
    * recipe_material_cost 는 단가 null 을 0 으로 넘기므로, 합계만 보면 공짜인지 빠진 건지 알 수 없다.
    */
   unknownCostLines: number;
+  /**
+   * 재고가 0 이라 이 메뉴를 못 만들게 하는 재료 이름. null 이면 만들 수 있다.
+   * 서버가 판정한다(recipe_blocked_by) — 화면과 서버가 다른 기준을 쓰면 안 된다.
+   */
+  blockedBy: string | null;
 }
 
 export interface RecipeLine {
@@ -102,6 +107,7 @@ export function useRecipeList() {
         profitRate: num(r.profit_rate),
         materialRate: num(r.material_rate),
         unknownCostLines: num(r.unknown_cost_lines),
+        blockedBy: str(r.blocked_by),
       }));
     },
   });
