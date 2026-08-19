@@ -53,12 +53,11 @@ export function MenuProfitSheet({ sel, summary, periodLabel, from, to, onClose }
         const material = sel.material;
 
         // 배분값 — 메뉴 하나에 귀속되지 않는 비용.
-        const mFee = summary.channelFee * share;
         const mWaste = summary.wasteLoss * share;
         const mFixed = summary.fixedCost * share;
         const mDaily = summary.dailyExtra * share;
         const mTax = summary.tax * share;
-        const mProfit = revenue - material - mFee - mWaste - mFixed - mDaily - mTax;
+        const mProfit = revenue - material - mWaste - mFixed - mDaily - mTax;
 
         const p = (v: number) => (revenue > 0 ? Math.round((v / revenue) * 1000) / 10 : 0);
         const met = p(mProfit) >= TARGET_RATE;
@@ -67,7 +66,6 @@ export function MenuProfitSheet({ sel, summary, periodLabel, from, to, onClose }
         // [라벨, 금액, 배분값인가]
         const mCosts: [string, number, boolean][] = [
           ['(−) 재료 원가', material, false],
-          ['(−) 채널 수수료', mFee, true],
           ['(−) 폐기 손실', mWaste, true],
           ['(−) 고정 지출', mFixed, true],
           ['(−) 추가 지출', mDaily, true],

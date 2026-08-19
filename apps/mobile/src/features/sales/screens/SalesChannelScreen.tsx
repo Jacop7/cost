@@ -52,7 +52,7 @@ export default function SalesChannelScreen() {
             const fixed = chFixed.data?.byChannel[c.code] ?? (s?.fixedCost ?? 0) * share;
             const daily = (s?.dailyExtra ?? 0) * share;
             const extraMat = (s?.extraMaterialCost ?? 0) * share;
-            const profit = c.amount - c.material - extraMat - c.fee - c.tax - waste - fixed - daily;
+            const profit = c.amount - c.material - extraMat - c.tax - waste - fixed - daily;
             const rate = c.amount > 0 ? Math.round((profit / c.amount) * 1000) / 10 : 0;
             const neg = profit < 0;
             const PR = neg ? T.red : T.green;
@@ -62,7 +62,6 @@ export default function SalesChannelScreen() {
             const costs: [string, number, boolean][] = [
               ['(−) 재료 원가', c.material, false],
               ['(−) 부자재', extraMat, true],
-              ['(−) 채널 수수료', c.fee, false],
               ['(−) 폐기 손실', waste, true],
               ['(−) 고정 지출', fixed, chFixed.data === undefined],
               ['(−) 추가 지출', daily, true],
@@ -74,9 +73,6 @@ export default function SalesChannelScreen() {
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 13, paddingHorizontal: 15, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
                   <View style={{ width: 10, height: 10, borderRadius: 3, backgroundColor: COLOR[c.code] ?? T.sub2 }} />
                   <Text style={{ fontSize: 16, fontWeight: '800', color: T.sub }}>{c.name}</Text>
-                  {c.feeRate > 0 ? (
-                    <Text style={[{ fontSize: 14, fontWeight: '700', color: T.amberText }, NUM]}>수수료 {c.feeRate}%</Text>
-                  ) : null}
                   <View style={{ flex: 1 }} />
                   <Text style={{ fontSize: 14, fontWeight: '600', color: T.ter }}>매출 대비 %</Text>
                 </View>

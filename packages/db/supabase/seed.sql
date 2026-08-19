@@ -270,16 +270,34 @@ begin
   -- (실증: 33.49% 여야 할 값이 64.79% 로 나왔다).
   -- 채널 비중(weights): 수수료·배달대행은 배달에만, 포장비는 배달·포장에만 든다.
   -- 이걸 안 넣으면 매장이 배달 수수료를 떠안아 "매장이 적자"로 보인다.
+  -- 합계만 넣으면 화면이 "합계 입력 2,400,000원" 한 줄로 끝나 무엇으로 이뤄진
+  -- 금액인지 알 수 없다. 실제 사장님은 급여 명세와 정산서를 보고 적으므로
+  -- **세부 내역**으로 넣는다. 소계는 그대로여야 한다 — 31.30% 검산값이 걸려 있다.
   perform save_fixed_costs(v_store, m, 12000000, jsonb_build_array(
-      jsonb_build_object('key','labor',     'mode','total','total',2400000,'lines','[]'::jsonb,
+      jsonb_build_object('key','labor', 'mode','detail','total',2400000,
+                         'lines', jsonb_build_array(
+                           jsonb_build_object('name','주방 이모 (월급)','amount',1700000),
+                           jsonb_build_object('name','홀 아르바이트','amount',700000)),
                          'weights', jsonb_build_object('hall',30,'delivery',50,'takeout',20)),
-      jsonb_build_object('key','commission','mode','total','total', 603000,'lines','[]'::jsonb,
+      jsonb_build_object('key','commission','mode','detail','total',603000,
+                         'lines', jsonb_build_array(
+                           jsonb_build_object('name','배달앱 중개 수수료','amount',380000),
+                           jsonb_build_object('name','카드·간편결제 수수료','amount',133000),
+                           jsonb_build_object('name','포장 주문 중개','amount',90000)),
                          'weights', jsonb_build_object('delivery',100)),
-      jsonb_build_object('key','packing',   'mode','total','total', 380000,'lines','[]'::jsonb,
+      jsonb_build_object('key','packing','mode','detail','total',380000,
+                         'lines', jsonb_build_array(
+                           jsonb_build_object('name','포장 용기','amount',260000),
+                           jsonb_build_object('name','비닐봉투·수저세트','amount',120000)),
                          'weights', jsonb_build_object('delivery',70,'takeout',30)),
-      jsonb_build_object('key','delivery',  'mode','total','total', 120000,'lines','[]'::jsonb,
+      jsonb_build_object('key','delivery','mode','detail','total',120000,
+                         'lines', jsonb_build_array(
+                           jsonb_build_object('name','배달대행 월정액','amount',120000)),
                          'weights', jsonb_build_object('delivery',100)),
-      jsonb_build_object('key','ads',       'mode','total','total', 253000,'lines','[]'::jsonb)
+      jsonb_build_object('key','ads','mode','detail','total',253000,
+                         'lines', jsonb_build_array(
+                           jsonb_build_object('name','배달앱 광고','amount',180000),
+                           jsonb_build_object('name','전단·SNS','amount',73000)))
     ))  -- 2,400,000 + 603,000 + 380,000 + 120,000 + 253,000 = 3,756,000
   from (select distinct m from unnest(array[
           to_char((business_day() - 30)::date, 'YYYY-MM'),
