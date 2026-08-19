@@ -148,14 +148,21 @@ export default function RecipeDetailScreen() {
             const wm = (v: number) => `${won(Math.round(v * m))}원`;
             const p = (v: number) => (price > 0 ? formatPercent(v / price) : '0.0%');
 
+            // 판매가 1,000원이 어디로 가는지 — 다섯 조각의 합이 곧 판매가다.
+            // ⚠ 0원이어도 범례에서 지우지 않는다. 메뉴마다 항목 수가 달라지면
+            //   같은 자리에서 다른 것을 읽게 되고, "부자재가 왜 없지?" 가 된다.
+            //   도넛만 0을 걸러낸다 — 0인 조각은 그릴 수 없다.
             const breakdown = [
               { label: '재료', amt: material, color: T.ter },
               { label: '부자재', amt: extra, color: T.line3 },
               { label: '고정 지출', amt: fixed, color: T.sub },
               { label: '세금', amt: tax, color: T.gray400 },
               { label: '순이익', amt: profit, color: PROFIT },
-            ].filter((s) => s.amt > 0);
-            const segments = breakdown.map((b) => ({ label: b.label, value: (b.amt / price) * 100, color: b.color }));
+            ];
+            const segments = breakdown
+              .filter((s) => s.amt > 0)
+              // 판매가 0(반제품)이면 비중을 낼 수 없다 — 0 으로 두어 도넛을 비운다.
+              .map((b) => ({ label: b.label, value: price > 0 ? (b.amt / price) * 100 : 0, color: b.color }));
 
             // 고정지출 항목별 배분 — 월 합계 대비 비중으로 나눈다.
             const fixedSum = (fixedCosts.data?.items ?? []).reduce((a, i) => a + i.total, 0);
@@ -198,15 +205,18 @@ export default function RecipeDetailScreen() {
                   </Pressable>
                 </Card>
 
-                {/* 도넛 — 판매가 구성 */}
-                <Card pad={16}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 16 }}>
+                {/* 판매가 구성 — 옆 카드들과 같은 헤더를 단다. 이 카드만 헤더가 없어
+                    목록에서 혼자 떠 보였다. */}
+                <Card pad={0} style={{ overflow: 'hidden' }}>
+                  <SecHead title="판매가 구성" sub={`(${won(price)}원 기준)`} />
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 16, padding: 16 }}>
                     <Donut segments={segments} size={112} thick={17} centerTop="순이익률" centerMain={formatPercent(profitRate)} mainSize={18} mainColor={PROFIT} />
                     <View style={{ flex: 1, gap: 3 }}>
                       {breakdown.map((b) => {
                         const accent = b.label === '순이익';
+                        const zero = b.amt <= 0;
                         return (
-                          <View key={b.label} style={{ flexDirection: 'row', alignItems: 'center', gap: 7 }}>
+                          <View key={b.label} style={{ flexDirection: 'row', alignItems: 'center', gap: 7, opacity: zero ? 0.45 : 1 }}>
                             <View style={{ width: 9, height: 9, borderRadius: 3, backgroundColor: b.color }} />
                             <Text style={{ flex: 1, fontSize: 14, fontWeight: accent ? '800' : '600', color: accent ? PROFIT : T.sub2 }}>{b.label}</Text>
                             <Text style={[{ fontSize: 14, fontWeight: '800', color: accent ? PROFIT : T.ink, marginRight: 8 }, NUM]}>{won(Math.round(b.amt))}원</Text>
