@@ -313,54 +313,54 @@ begin
     -- ── 입고 (E7 발주 → E1 입고 확정) ───────────────────────
     -- 첫날은 개업 재고를 크게 채우고, 이후 3일마다 보충한다.
     if v_seq = 1 then
-      o := e7_place_order(v_store, i_pork,      vd_chuk,   null, 5000, 65000, 4, v_day); perform e1_confirm_inbound(o, 4, 'S1-PORK',   v_day);
-      o := e7_place_order(v_store, i_pa,        vd_nong,   null, 1000,  4000, 4, v_day); perform e1_confirm_inbound(o, 4, 'S1-PA',     v_day);
-      o := e7_place_order(v_store, i_onion,     vd_nong,   null, 1200,  2268, 6, v_day); perform e1_confirm_inbound(o, 6, 'S1-ONION',  v_day);
-      o := e7_place_order(v_store, i_garlic,    vd_online, null, 1000,  8500, 2, v_day); perform e1_confirm_inbound(o, 2, 'S1-GARLIC', v_day);
-      o := e7_place_order(v_store, i_kimchi,    vd_online, null,10000, 32000, 3, v_day); perform e1_confirm_inbound(o, 3, 'S1-KIMCHI', v_day);
-      o := e7_place_order(v_store, i_tofu,      vd_mart,   null,    1,  1800,60, v_day); perform e1_confirm_inbound(o,60, 'S1-TOFU',   v_day);
-      o := e7_place_order(v_store, i_egg,       vd_mart,   null,   30,  8700, 4, v_day); perform e1_confirm_inbound(o, 4, 'S1-EGG',    v_day);
-      o := e7_place_order(v_store, i_gochu,     vd_online, null, 1000, 28000, 2, v_day); perform e1_confirm_inbound(o, 2, 'S1-GOCHU',  v_day);
-      o := e7_place_order(v_store, i_doenjang,  vd_online, null, 3000, 12000, 1, v_day); perform e1_confirm_inbound(o, 1, 'S1-DEN',    v_day);
-      o := e7_place_order(v_store, i_gochujang, vd_online, null, 3000, 15000, 2, v_day); perform e1_confirm_inbound(o, 2, 'S1-GOJ',    v_day);
-      o := e7_place_order(v_store, i_rice,      vd_online, null,10000, 32000, 4, v_day); perform e1_confirm_inbound(o, 4, 'S1-RICE',   v_day);
-      o := e7_place_order(v_store, i_hobak,     vd_nong,   null,  300,  1500,12, v_day); perform e1_confirm_inbound(o,12, 'S1-HOBAK',  v_day);
-      o := e7_place_order(v_store, i_cheong,    vd_nong,   null,  200,  2000, 6, v_day); perform e1_confirm_inbound(o, 6, 'S1-CHEONG', v_day);
-      o := e7_place_order(v_store, i_oil,       vd_online, null, 1800,  6500, 2, v_day); perform e1_confirm_inbound(o, 2, 'S1-OIL',    v_day);
-      o := e7_place_order(v_store, i_sugar,     vd_online, null, 3000,  5400, 1, v_day); perform e1_confirm_inbound(o, 1, 'S1-SUGAR',  v_day);
-      o := e7_place_order(v_store, i_soy,       vd_online, null, 1800,  7200, 2, v_day); perform e1_confirm_inbound(o, 2, 'S1-SOY',    v_day);
-      o := e7_place_order(v_store, i_beef,      vd_chuk,   null, 1000, 28000, 4, v_day); perform e1_confirm_inbound(o, 4, 'S1-BEEF',   v_day);
-      o := e7_place_order(v_store, i_anchovy,   vd_online, null,  500,  9800, 4, v_day); perform e1_confirm_inbound(o, 4, 'S1-ANCH',   v_day);
+      o := e7_place_order(v_store, i_pork,      vd_chuk,   null, 5000, 65000, 4, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 4, 'S1-PORK',   v_day);
+      o := e7_place_order(v_store, i_pa,        vd_nong,   null, 1000,  4000, 4, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 4, 'S1-PA',     v_day);
+      o := e7_place_order(v_store, i_onion,     vd_nong,   null, 1200,  2268, 6, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 6, 'S1-ONION',  v_day);
+      o := e7_place_order(v_store, i_garlic,    vd_online, null, 1000,  8500, 2, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 2, 'S1-GARLIC', v_day);
+      o := e7_place_order(v_store, i_kimchi,    vd_online, null,10000, 32000, 3, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 3, 'S1-KIMCHI', v_day);
+      o := e7_place_order(v_store, i_tofu,      vd_mart,   null,    1,  1800,60, v_day, 'manual', v_day); perform e1_confirm_inbound(o,60, 'S1-TOFU',   v_day);
+      o := e7_place_order(v_store, i_egg,       vd_mart,   null,   30,  8700, 4, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 4, 'S1-EGG',    v_day);
+      o := e7_place_order(v_store, i_gochu,     vd_online, null, 1000, 28000, 2, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 2, 'S1-GOCHU',  v_day);
+      o := e7_place_order(v_store, i_doenjang,  vd_online, null, 3000, 12000, 1, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 1, 'S1-DEN',    v_day);
+      o := e7_place_order(v_store, i_gochujang, vd_online, null, 3000, 15000, 2, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 2, 'S1-GOJ',    v_day);
+      o := e7_place_order(v_store, i_rice,      vd_online, null,10000, 32000, 4, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 4, 'S1-RICE',   v_day);
+      o := e7_place_order(v_store, i_hobak,     vd_nong,   null,  300,  1500,12, v_day, 'manual', v_day); perform e1_confirm_inbound(o,12, 'S1-HOBAK',  v_day);
+      o := e7_place_order(v_store, i_cheong,    vd_nong,   null,  200,  2000, 6, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 6, 'S1-CHEONG', v_day);
+      o := e7_place_order(v_store, i_oil,       vd_online, null, 1800,  6500, 2, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 2, 'S1-OIL',    v_day);
+      o := e7_place_order(v_store, i_sugar,     vd_online, null, 3000,  5400, 1, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 1, 'S1-SUGAR',  v_day);
+      o := e7_place_order(v_store, i_soy,       vd_online, null, 1800,  7200, 2, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 2, 'S1-SOY',    v_day);
+      o := e7_place_order(v_store, i_beef,      vd_chuk,   null, 1000, 28000, 4, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 4, 'S1-BEEF',   v_day);
+      o := e7_place_order(v_store, i_anchovy,   vd_online, null,  500,  9800, 4, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 4, 'S1-ANCH',   v_day);
 
     elsif d % 3 = 0 then
       -- 정기 보충. 검산 4종은 **같은 단가**로만 재입고한다(계약 단가).
-      o := e7_place_order(v_store, i_pork,   vd_chuk,   null, 5000, 65000, 3, v_day); perform e1_confirm_inbound(o, 3, 'S'||v_seq||'-PORK',  v_day);
-      o := e7_place_order(v_store, i_pa,     vd_nong,   null, 1000,  4000, 3, v_day); perform e1_confirm_inbound(o, 3, 'S'||v_seq||'-PA',    v_day);
-      o := e7_place_order(v_store, i_onion,  vd_nong,   null, 1200,  2268, 4, v_day); perform e1_confirm_inbound(o, 4, 'S'||v_seq||'-ONION', v_day);
+      o := e7_place_order(v_store, i_pork,   vd_chuk,   null, 5000, 65000, 3, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 3, 'S'||v_seq||'-PORK',  v_day);
+      o := e7_place_order(v_store, i_pa,     vd_nong,   null, 1000,  4000, 3, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 3, 'S'||v_seq||'-PA',    v_day);
+      o := e7_place_order(v_store, i_onion,  vd_nong,   null, 1200,  2268, 4, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 4, 'S'||v_seq||'-ONION', v_day);
 
       -- 나머지는 시세를 탄다 — 단가 추이 그래프가 실제로 움직이도록.
-      o := e7_place_order(v_store, i_tofu,   vd_mart,   null,    1, 1800 + (v_seq % 4) * 50, 50, v_day);
+      o := e7_place_order(v_store, i_tofu,   vd_mart,   null,    1, 1800 + (v_seq % 4) * 50, 50, v_day, 'manual', v_day);
       perform e1_confirm_inbound(o, 50, 'S'||v_seq||'-TOFU', v_day);
-      o := e7_place_order(v_store, i_hobak,  vd_nong,   null,  300, 1500 + (v_seq % 5) * 180, 4, v_day);
+      o := e7_place_order(v_store, i_hobak,  vd_nong,   null,  300, 1500 + (v_seq % 5) * 180, 4, v_day, 'manual', v_day);
       perform e1_confirm_inbound(o, 4, 'S'||v_seq||'-HOBAK', v_day);
-      o := e7_place_order(v_store, i_egg,    vd_mart,   null,   30, 8700 + (v_seq % 3) * 400, 3, v_day);
+      o := e7_place_order(v_store, i_egg,    vd_mart,   null,   30, 8700 + (v_seq % 3) * 400, 3, v_day, 'manual', v_day);
       perform e1_confirm_inbound(o, 3, 'S'||v_seq||'-EGG', v_day);
-      o := e7_place_order(v_store, i_kimchi, vd_online, null,10000, 32000 + (v_seq % 4) * 1500, 1, v_day);
+      o := e7_place_order(v_store, i_kimchi, vd_online, null,10000, 32000 + (v_seq % 4) * 1500, 1, v_day, 'manual', v_day);
       perform e1_confirm_inbound(o, 1, 'S'||v_seq||'-KIMCHI', v_day);
-      o := e7_place_order(v_store, i_beef,   vd_chuk,   null, 1000, 28000 + (v_seq % 6) * 900, 2, v_day);
+      o := e7_place_order(v_store, i_beef,   vd_chuk,   null, 1000, 28000 + (v_seq % 6) * 900, 2, v_day, 'manual', v_day);
       perform e1_confirm_inbound(o, 2, 'S'||v_seq||'-BEEF', v_day);
 
     elsif d % 7 = 2 then
       -- 주 1회 소모품
-      o := e7_place_order(v_store, i_rice,      vd_online, null,10000, 32000, 2, v_day); perform e1_confirm_inbound(o, 2, 'S'||v_seq||'-RICE',   v_day);
-      o := e7_place_order(v_store, i_oil,       vd_online, null, 1800,  6500, 1, v_day); perform e1_confirm_inbound(o, 1, 'S'||v_seq||'-OIL',    v_day);
-      o := e7_place_order(v_store, i_cheong,    vd_nong,   null,  200,  2000, 4, v_day); perform e1_confirm_inbound(o, 4, 'S'||v_seq||'-CHEONG', v_day);
-      o := e7_place_order(v_store, i_anchovy,   vd_online, null,  500,  9800, 2, v_day); perform e1_confirm_inbound(o, 2, 'S'||v_seq||'-ANCH',   v_day);
-      o := e7_place_order(v_store, i_garlic,    vd_online, null, 1000,  8500, 1, v_day); perform e1_confirm_inbound(o, 1, 'S'||v_seq||'-GARLIC', v_day);
+      o := e7_place_order(v_store, i_rice,      vd_online, null,10000, 32000, 2, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 2, 'S'||v_seq||'-RICE',   v_day);
+      o := e7_place_order(v_store, i_oil,       vd_online, null, 1800,  6500, 1, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 1, 'S'||v_seq||'-OIL',    v_day);
+      o := e7_place_order(v_store, i_cheong,    vd_nong,   null,  200,  2000, 4, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 4, 'S'||v_seq||'-CHEONG', v_day);
+      o := e7_place_order(v_store, i_anchovy,   vd_online, null,  500,  9800, 2, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 2, 'S'||v_seq||'-ANCH',   v_day);
+      o := e7_place_order(v_store, i_garlic,    vd_online, null, 1000,  8500, 1, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 1, 'S'||v_seq||'-GARLIC', v_day);
       -- 장류는 3일 보충에 넣으면 금방 넘친다. 주 1회가 실제 발주 주기에 가깝다.
-      o := e7_place_order(v_store, i_gochu,     vd_online, null, 1000, 28000, 1, v_day); perform e1_confirm_inbound(o, 1, 'S'||v_seq||'-GOCHU',  v_day);
-      o := e7_place_order(v_store, i_doenjang,  vd_online, null, 3000, 12000, 1, v_day); perform e1_confirm_inbound(o, 1, 'S'||v_seq||'-DEN',    v_day);
-      o := e7_place_order(v_store, i_gochujang, vd_online, null, 3000, 15000, 1, v_day); perform e1_confirm_inbound(o, 1, 'S'||v_seq||'-GOJ',    v_day);
+      o := e7_place_order(v_store, i_gochu,     vd_online, null, 1000, 28000, 1, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 1, 'S'||v_seq||'-GOCHU',  v_day);
+      o := e7_place_order(v_store, i_doenjang,  vd_online, null, 3000, 12000, 1, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 1, 'S'||v_seq||'-DEN',    v_day);
+      o := e7_place_order(v_store, i_gochujang, vd_online, null, 3000, 15000, 1, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 1, 'S'||v_seq||'-GOJ',    v_day);
     end if;
 
     -- ── 판매 (E10 → E8 소진) ────────────────────────────────
@@ -423,9 +423,9 @@ begin
 
   -- ── 진행 중인 발주 (ORD 대기 탭) ────────────────────────────
   -- 아직 도착하지 않은 주문이 있어야 "입고 대기" 탭이 빈 화면이 아니다.
-  o := e7_place_order(v_store, i_pork,  vd_chuk,   null, 5000, 65000, 2, business_day() + 1);
-  o := e7_place_order(v_store, i_kimchi,vd_online, null,10000, 33500, 2, business_day() + 2);
-  o := e7_place_order(v_store, i_egg,   vd_mart,   null,   30,  9100, 3, business_day() + 1);
+  o := e7_place_order(v_store, i_pork,  vd_chuk,   null, 5000, 65000, 2, business_day() + 1, 'manual', v_day);
+  o := e7_place_order(v_store, i_kimchi,vd_online, null,10000, 33500, 2, business_day() + 2, 'manual', v_day);
+  o := e7_place_order(v_store, i_egg,   vd_mart,   null,   30,  9100, 3, business_day() + 1, 'manual', v_day);
 
   raise notice '시드 완료 — 식재료 18 · 메뉴 7(+반제품 1) · 22일치 매출·입고';
 end $$;
