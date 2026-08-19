@@ -102,18 +102,18 @@ begin
   vd_online := save_vendor(v_store, '{"name":"식자재쇼핑몰"}');
 
   -- ── 카테고리 12종 (③ 3.2 / ④ 4.1) ─────────────────────────
-  c_meat      := save_category(v_store, '{"name":"축산-계란","sort_order":1,"default_loss_rate":0}');
-  c_sea       := save_category(v_store, '{"name":"수산-해조류","sort_order":2,"default_loss_rate":10}');
-  c_veg       := save_category(v_store, '{"name":"농산(신선)","sort_order":3,"default_loss_rate":12}');
-  c_grain     := save_category(v_store, '{"name":"곡물-견과-분말","sort_order":4,"default_loss_rate":0}');
-  c_dairy     := save_category(v_store, '{"name":"유제품","sort_order":5,"default_loss_rate":0}');
-  c_frozen    := save_category(v_store, '{"name":"냉동식품","sort_order":6,"default_loss_rate":0}');
-  c_sauce     := save_category(v_store, '{"name":"소스-유지류-장류","sort_order":7,"default_loss_rate":0}');
-  c_spice     := save_category(v_store, '{"name":"향신료-허브","sort_order":8,"default_loss_rate":5}');
-  c_drink     := save_category(v_store, '{"name":"음료-주류","sort_order":9,"default_loss_rate":0}');
-  c_dry       := save_category(v_store, '{"name":"상온가공-건식","sort_order":10,"default_loss_rate":0}');
-  c_tofu      := save_category(v_store, '{"name":"두부-발효식품","sort_order":11,"default_loss_rate":0}');
-  c_bake      := save_category(v_store, '{"name":"베이커리","sort_order":12,"default_loss_rate":0}');
+  c_meat      := save_category(v_store, '{"name":"축산-계란","sort_order":1}');
+  c_sea       := save_category(v_store, '{"name":"수산-해조류","sort_order":2}');
+  c_veg       := save_category(v_store, '{"name":"농산(신선)","sort_order":3}');
+  c_grain     := save_category(v_store, '{"name":"곡물-견과-분말","sort_order":4}');
+  c_dairy     := save_category(v_store, '{"name":"유제품","sort_order":5}');
+  c_frozen    := save_category(v_store, '{"name":"냉동식품","sort_order":6}');
+  c_sauce     := save_category(v_store, '{"name":"소스-유지류-장류","sort_order":7}');
+  c_spice     := save_category(v_store, '{"name":"향신료-허브","sort_order":8}');
+  c_drink     := save_category(v_store, '{"name":"음료-주류","sort_order":9}');
+  c_dry       := save_category(v_store, '{"name":"상온가공-건식","sort_order":10}');
+  c_tofu      := save_category(v_store, '{"name":"두부-발효식품","sort_order":11}');
+  c_bake      := save_category(v_store, '{"name":"베이커리","sort_order":12}');
 
   -- ── 레시피 카테고리 (RCP-12) ────────────────────────────────
   rc_jjigae  := save_category(v_store, '{"name":"찌개·전골","kind":"recipe","sort_order":1}');
@@ -138,26 +138,26 @@ begin
 
   -- ── 식재료 (ING-02 등록 화면과 같은 함수) ───────────────────
   -- 검산 4종 — 단가가 고정이어야 하는 품목
-  i_pa     := save_ingredient(v_store, jsonb_build_object('name','대파','category_id',c_veg,'base_unit','g','per_volume',1000,'loss_rate',15,'safety_stock',2,'min_order_qty',1,'default_vendor_id',vd_nong));
-  i_pork   := save_ingredient(v_store, jsonb_build_object('name','돼지고기 앞다리','category_id',c_meat,'base_unit','g','per_volume',5000,'loss_rate',0,'safety_stock',2,'min_order_qty',1,'default_vendor_id',vd_chuk));
-  i_onion  := save_ingredient(v_store, jsonb_build_object('name','양파','category_id',c_veg,'base_unit','g','per_volume',1200,'loss_rate',10,'safety_stock',3,'min_order_qty',1,'default_vendor_id',vd_nong));
-  i_garlic := save_ingredient(v_store, jsonb_build_object('name','다진마늘','category_id',c_sauce,'base_unit','g','per_volume',1000,'loss_rate',0,'safety_stock',2,'min_order_qty',1,'default_vendor_id',vd_online));
+  i_pa     := save_ingredient(v_store, jsonb_build_object('name','대파','category_id',c_veg,'base_unit','g','per_volume',1000,'safety_stock',2,'min_order_qty',1,'default_vendor_id',vd_nong));
+  i_pork   := save_ingredient(v_store, jsonb_build_object('name','돼지고기 앞다리','category_id',c_meat,'base_unit','g','per_volume',5000,'safety_stock',2,'min_order_qty',1,'default_vendor_id',vd_chuk));
+  i_onion  := save_ingredient(v_store, jsonb_build_object('name','양파','category_id',c_veg,'base_unit','g','per_volume',1200,'safety_stock',3,'min_order_qty',1,'default_vendor_id',vd_nong));
+  i_garlic := save_ingredient(v_store, jsonb_build_object('name','다진마늘','category_id',c_sauce,'base_unit','g','per_volume',1000,'safety_stock',2,'min_order_qty',1,'default_vendor_id',vd_online));
 
   -- 나머지 — 단가가 움직이는 품목들
-  i_kimchi    := save_ingredient(v_store, jsonb_build_object('name','배추김치','category_id',c_tofu,'base_unit','g','per_volume',10000,'loss_rate',0,'safety_stock',1,'min_order_qty',1,'default_vendor_id',vd_online));
-  i_tofu      := save_ingredient(v_store, jsonb_build_object('name','두부','category_id',c_tofu,'base_unit','ea','per_volume',1,'loss_rate',0,'safety_stock',10,'min_order_qty',10,'default_vendor_id',vd_mart,'memo','찌개용 부침두부. 유통기한 짧음'));
-  i_egg       := save_ingredient(v_store, jsonb_build_object('name','계란','category_id',c_meat,'base_unit','ea','per_volume',30,'loss_rate',3,'safety_stock',2,'min_order_qty',1,'default_vendor_id',vd_mart));
-  i_gochu     := save_ingredient(v_store, jsonb_build_object('name','고춧가루','category_id',c_spice,'base_unit','g','per_volume',1000,'loss_rate',0,'safety_stock',1,'min_order_qty',1,'default_vendor_id',vd_online));
-  i_doenjang  := save_ingredient(v_store, jsonb_build_object('name','된장','category_id',c_sauce,'base_unit','g','per_volume',3000,'loss_rate',0,'safety_stock',1,'min_order_qty',1,'default_vendor_id',vd_online));
-  i_gochujang := save_ingredient(v_store, jsonb_build_object('name','고추장','category_id',c_sauce,'base_unit','g','per_volume',3000,'loss_rate',0,'safety_stock',1,'min_order_qty',1,'default_vendor_id',vd_online));
-  i_rice      := save_ingredient(v_store, jsonb_build_object('name','쌀','category_id',c_grain,'base_unit','g','per_volume',10000,'loss_rate',0,'safety_stock',1,'min_order_qty',1,'default_vendor_id',vd_online));
-  i_hobak     := save_ingredient(v_store, jsonb_build_object('name','애호박','category_id',c_veg,'base_unit','g','per_volume',300,'loss_rate',8,'safety_stock',5,'min_order_qty',5,'default_vendor_id',vd_nong));
-  i_cheong    := save_ingredient(v_store, jsonb_build_object('name','청양고추','category_id',c_veg,'base_unit','g','per_volume',200,'loss_rate',10,'safety_stock',3,'min_order_qty',3,'default_vendor_id',vd_nong));
-  i_oil       := save_ingredient(v_store, jsonb_build_object('name','식용유','category_id',c_sauce,'base_unit','ml','per_volume',1800,'loss_rate',0,'safety_stock',1,'min_order_qty',1,'default_vendor_id',vd_online));
-  i_sugar     := save_ingredient(v_store, jsonb_build_object('name','설탕','category_id',c_grain,'base_unit','g','per_volume',3000,'loss_rate',0,'safety_stock',1,'min_order_qty',1,'default_vendor_id',vd_online));
-  i_soy       := save_ingredient(v_store, jsonb_build_object('name','진간장','category_id',c_sauce,'base_unit','ml','per_volume',1800,'loss_rate',0,'safety_stock',1,'min_order_qty',1,'default_vendor_id',vd_online));
-  i_beef      := save_ingredient(v_store, jsonb_build_object('name','소고기 불고기감','category_id',c_meat,'base_unit','g','per_volume',1000,'loss_rate',0,'safety_stock',2,'min_order_qty',1,'default_vendor_id',vd_chuk));
-  i_anchovy   := save_ingredient(v_store, jsonb_build_object('name','국물용 멸치','category_id',c_sea,'base_unit','g','per_volume',500,'loss_rate',5,'safety_stock',1,'min_order_qty',1,'default_vendor_id',vd_online));
+  i_kimchi    := save_ingredient(v_store, jsonb_build_object('name','배추김치','category_id',c_tofu,'base_unit','g','per_volume',10000,'safety_stock',1,'min_order_qty',1,'default_vendor_id',vd_online));
+  i_tofu      := save_ingredient(v_store, jsonb_build_object('name','두부','category_id',c_tofu,'base_unit','ea','per_volume',1,'safety_stock',10,'min_order_qty',10,'default_vendor_id',vd_mart,'memo','찌개용 부침두부. 유통기한 짧음'));
+  i_egg       := save_ingredient(v_store, jsonb_build_object('name','계란','category_id',c_meat,'base_unit','ea','per_volume',30,'safety_stock',2,'min_order_qty',1,'default_vendor_id',vd_mart));
+  i_gochu     := save_ingredient(v_store, jsonb_build_object('name','고춧가루','category_id',c_spice,'base_unit','g','per_volume',1000,'safety_stock',1,'min_order_qty',1,'default_vendor_id',vd_online));
+  i_doenjang  := save_ingredient(v_store, jsonb_build_object('name','된장','category_id',c_sauce,'base_unit','g','per_volume',3000,'safety_stock',1,'min_order_qty',1,'default_vendor_id',vd_online));
+  i_gochujang := save_ingredient(v_store, jsonb_build_object('name','고추장','category_id',c_sauce,'base_unit','g','per_volume',3000,'safety_stock',1,'min_order_qty',1,'default_vendor_id',vd_online));
+  i_rice      := save_ingredient(v_store, jsonb_build_object('name','쌀','category_id',c_grain,'base_unit','g','per_volume',10000,'safety_stock',1,'min_order_qty',1,'default_vendor_id',vd_online));
+  i_hobak     := save_ingredient(v_store, jsonb_build_object('name','애호박','category_id',c_veg,'base_unit','g','per_volume',300,'safety_stock',5,'min_order_qty',5,'default_vendor_id',vd_nong));
+  i_cheong    := save_ingredient(v_store, jsonb_build_object('name','청양고추','category_id',c_veg,'base_unit','g','per_volume',200,'safety_stock',3,'min_order_qty',3,'default_vendor_id',vd_nong));
+  i_oil       := save_ingredient(v_store, jsonb_build_object('name','식용유','category_id',c_sauce,'base_unit','ml','per_volume',1800,'safety_stock',1,'min_order_qty',1,'default_vendor_id',vd_online));
+  i_sugar     := save_ingredient(v_store, jsonb_build_object('name','설탕','category_id',c_grain,'base_unit','g','per_volume',3000,'safety_stock',1,'min_order_qty',1,'default_vendor_id',vd_online));
+  i_soy       := save_ingredient(v_store, jsonb_build_object('name','진간장','category_id',c_sauce,'base_unit','ml','per_volume',1800,'safety_stock',1,'min_order_qty',1,'default_vendor_id',vd_online));
+  i_beef      := save_ingredient(v_store, jsonb_build_object('name','소고기 불고기감','category_id',c_meat,'base_unit','g','per_volume',1000,'safety_stock',2,'min_order_qty',1,'default_vendor_id',vd_chuk));
+  i_anchovy   := save_ingredient(v_store, jsonb_build_object('name','국물용 멸치','category_id',c_sea,'base_unit','g','per_volume',500,'safety_stock',1,'min_order_qty',1,'default_vendor_id',vd_online));
 
   -- ── 구매 옵션 (ING-05) ──────────────────────────────────────
   -- 같은 재료를 어디서 얼마에 살 수 있는지. 발주 화면이 여기서 값을 채운다.
@@ -391,13 +391,11 @@ begin
         else '[]'::jsonb end);
 
     -- ── 폐기 (E2) — 주 1회 상하는 채소 ──────────────────────
-    -- 폐기가 있어야 실측 로스율이 잡히고, 기준단가가 추정 로스율에서 실측으로 넘어간다.
     -- e2_discard 는 "버린 양"이 아니라 **남은 양**을 받는다. 220g 을 버린 셈으로 기록한다.
     --
-    -- ⚠ 검산 4종(대파·돼지고기·양파·다진마늘)에는 폐기를 넣지 않는다.
-    --   real_loss_rate 는 폐기가 **한 건이라도** 있으면 추정 로스율을 통째로 대체한다.
-    --   대파에 150g 폐기(0.6%)를 넣었더니 15% 추정이 0.6% 로 바뀌어
-    --   기준단가가 4.7059 → 4.0000, 제육볶음 재료비가 2,834.55 → 2,816.90 으로 어긋났다.
+    -- 0041 이후 폐기는 기준단가를 건드리지 않는다. 재고에서 빠지고 월 손익의
+    -- 폐기 손실로만 잡힌다. 그래서 어느 재료에 폐기를 넣든 검산값이 흔들리지 않는다
+    -- (이전에는 폐기 한 건이 추정 로스율을 통째로 대체해 단가가 내려앉았다).
     if d = 9 then
       perform e2_discard(i_hobak, greatest(stock_total_base(i_hobak) - 220, 0), v_day);
     elsif d = 4 then

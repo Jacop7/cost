@@ -1,7 +1,10 @@
 /**
  * 단가 계산 — ⑤ 2.3, ① 4.1·8.6.
- * 기준 단가 = 구매이력 가중평균(수량 가중) ÷ (1−로스율).
- * 실측 로스율 = 누적 폐기량 ÷ 누적 구매량.
+ * 기준 단가 = 구매이력 가중평균(수량 가중). 산 값 그대로다.
+ *
+ * ⚠ 0041 에서 로스율을 없앴다. 예전에는 `÷ (1−로스율)` 로 추정 손실을 단가에 얹었는데,
+ *   폐기를 입력하면 실측이 추정을 통째로 대체해 **단가가 오히려 내려가는** 구조였다.
+ *   이제 손실은 추정하지 않고 실제로 버릴 때만 폐기로 기록한다.
  *
  * 경계 계약 (가이드 불변식 6):
  *   산출이 불가능한 입력은 0이 아니라 **null**을 반환한다. 0으로 위장하면 원가가 0원이 되어
@@ -45,35 +48,20 @@ export function weightedAvgUnitPrice(purchases: PurchaseLike[]): number | null {
 }
 
 /**
- * 기준 단가 = 평균 단가 ÷ (1 − 로스율). lossRate 는 0~1.
- * 로스율 100% 이상이면 남는 양이 없어 단가를 정의할 수 없다 → null.
- * (0으로 나눠 Infinity, 100% 초과 시 음수 단가가 나오던 문제를 여기서 차단한다.)
+ * 기준 단가 = 실입고량 가중평균, 그 이상 아무것도 아니다 (0041).
+ * SQL `base_unit_price()` 와 같은 값이어야 한다.
  */
-export function baseUnitPrice(avgUnitPrice: number | null, lossRate: number): number | null {
+export function baseUnitPrice(avgUnitPrice: number | null): number | null {
   if (avgUnitPrice === null || !isNonNegativeFinite(avgUnitPrice)) return null;
-  if (!Number.isFinite(lossRate) || lossRate < 0 || lossRate >= 1) return null;
-  return avgUnitPrice / (1 - lossRate);
+  return avgUnitPrice;
 }
 
 /**
  * 등록 미리보기 단가 — 단일 구매가 기준 (① 3.5, A-02).
- * 예: 4,000원 / 1,000g, 로스 15% → 4.71원/g
+ * 예: 4,000원 / 1,000g → 4.00원/g
  */
-export const previewBaseUnitPrice = (
-  amount: number,
-  volume: number,
-  lossRate: number,
-): number | null => baseUnitPrice(rawUnitPrice(amount, volume), lossRate);
-
-/**
- * 실측 로스율 = 누적 폐기량 ÷ 누적 구매량 (**0~1 비율**). 구매 0이면 null.
- * ⚠ SQL `real_loss_rate()`는 같은 값을 **%**로 반환한다(100배). 연결 시 단위를 반드시 맞출 것.
- */
-export function realLossRate(totalDiscarded: number, totalPurchased: number): number | null {
-  if (!isNonNegativeFinite(totalDiscarded)) return null;
-  if (!isPositiveFinite(totalPurchased)) return null;
-  return totalDiscarded / totalPurchased;
-}
+export const previewBaseUnitPrice = (amount: number, volume: number): number | null =>
+  baseUnitPrice(rawUnitPrice(amount, volume));
 
 /** 입고가가 평균 대비 ±임계% 벗어나는지 (E1 급등 알림 판정, 기본 15%). */
 export function isPriceSpike(newUnitPrice: number, avgUnitPrice: number, threshold = 0.15): boolean {

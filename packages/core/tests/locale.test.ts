@@ -123,10 +123,10 @@ describe('통화기호 부착', () => {
 });
 
 describe('검산 기준값이 서식을 통과해도 유지된다', () => {
-  it('대파 4,000원/1,000g, 로스 15% → 4.71원/g', () => {
-    const p = previewBaseUnitPrice(4000, 1000, 0.15);
+  it('대파 4,000원/1,000g → 4원/g', () => {
+    const p = previewBaseUnitPrice(4000, 1000);
     expect(p).not.toBeNull();
-    expect(formatUnitPrice(p!, 'g', 'ko')).toBe('4.71원/g');
+    expect(formatUnitPrice(p!, 'g', 'ko')).toBe('4.00원/g');
   });
 
   it('같은 단가가 미국 로케일에서는 4자리로 보인다', () => {
@@ -135,7 +135,9 @@ describe('검산 기준값이 서식을 통과해도 유지된다', () => {
   });
 
   it('단가 자릿수를 사용자가 0~4 로 덮어쓸 수 있다', () => {
-    const p = previewBaseUnitPrice(4000, 1000, 0.15); // 4.70588…
+    // 나누어떨어지지 않는 단가라야 자릿수 반올림이 드러난다.
+    // 4,000원에 850g 이 들어온 경우 — 0041 이후에도 있을 수 있는 실제 입고다.
+    const p = previewBaseUnitPrice(4000, 850); // 4.70588…
     expect(p).not.toBeNull();
     expect(formatUnitPrice(p!, 'g', 'ko', 0)).toBe('5원/g');
     expect(formatUnitPrice(p!, 'g', 'ko', 1)).toBe('4.7원/g');

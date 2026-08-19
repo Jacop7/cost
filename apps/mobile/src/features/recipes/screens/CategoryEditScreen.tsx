@@ -10,7 +10,6 @@ import { type Href } from 'expo-router';
 import { AppHeader, Badge, Button, Card, Field, Icon, Input, QueryState, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { T } from '@/theme/tokens';
-import { clampDecimals } from '@/lib/num';
 import {
   useDeleteCategory,
   useReorderCategories,
@@ -41,7 +40,6 @@ export function CategoryEditScreen({ kind, backTo }: { kind: CategoryKind; backT
   const [editing, setEditing] = useState<CategoryRow | null>(null);
   const [adding, setAdding] = useState(false);
   const [name, setName] = useState('');
-  const [loss, setLoss] = useState('');
 
   const rows =
     kind === 'ingredient' ? lists.data?.categories
@@ -49,8 +47,8 @@ export function CategoryEditScreen({ kind, backTo }: { kind: CategoryKind; backT
     : lists.data?.materialCategories;
   const items = rows ?? [];
 
-  const openAdd = () => { setEditing(null); setAdding(true); setName(''); setLoss(''); };
-  const openEdit = (c: CategoryRow) => { setEditing(c); setAdding(true); setName(c.name); setLoss(String(c.defaultLossRate)); };
+  const openAdd = () => { setEditing(null); setAdding(true); setName(''); };
+  const openEdit = (c: CategoryRow) => { setEditing(c); setAdding(true); setName(c.name); };
 
   const submit = () => {
     const n = name.trim();
@@ -60,7 +58,6 @@ export function CategoryEditScreen({ kind, backTo }: { kind: CategoryKind; backT
         id: editing?.id,
         name: n,
         kind,
-        defaultLossRate: kind === 'ingredient' ? Number(loss) || 0 : undefined,
       },
       {
         onSuccess: () => { setAdding(false); setEditing(null); },
@@ -143,7 +140,6 @@ export function CategoryEditScreen({ kind, backTo }: { kind: CategoryKind; backT
                     {USED_LABEL[kind]} {c.usedCount}개
                   </Text>
                 </Pressable>
-                {kind === 'ingredient' && c.defaultLossRate > 0 ? <Badge tone="neutral" sm>로스 {c.defaultLossRate}%</Badge> : null}
                 <Pressable onPress={() => confirmDelete(c)} hitSlop={4} accessibilityRole="button" accessibilityLabel={`${c.name} 삭제`} style={{ width: 34, height: 34, alignItems: 'center', justifyContent: 'center' }}>
                   <Icon name="close" size={19} color={T.ter} />
                 </Pressable>
@@ -171,11 +167,6 @@ export function CategoryEditScreen({ kind, backTo }: { kind: CategoryKind; backT
         <Field label="이름" req>
           <Input value={name} onChangeText={setName} placeholder="예) 농산(신선)" accessibilityLabel="카테고리 이름" returnKeyType="done" onSubmitEditing={submit} />
         </Field>
-        {kind === 'ingredient' ? (
-          <Field label="기본 로스율" hint="이 카테고리로 식재료를 만들 때 처음 채워지는 값이에요">
-            <Input value={loss} onChangeText={(t) => setLoss(clampDecimals(t, 1))} placeholder="0" suffix="%" mono keyboardType="decimal-pad" accessibilityLabel="기본 로스율" />
-          </Field>
-        ) : null}
         <View style={{ flexDirection: 'row', gap: 9, marginTop: 8 }}>
           <View style={{ flex: 1 }}><Button kind="ghost" size="lg" full onPress={() => { setAdding(false); setEditing(null); }}>취소</Button></View>
           <View style={{ flex: 2 }}>

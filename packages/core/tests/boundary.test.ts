@@ -12,7 +12,6 @@ import {
   baseUnitPrice,
   previewBaseUnitPrice,
   weightedAvgUnitPrice,
-  realLossRate,
   computeProfit,
   materialCost,
 } from '../src';
@@ -52,45 +51,33 @@ describe('rawUnitPrice — 분모 0과 비유한 입력', () => {
   });
 });
 
-describe('baseUnitPrice — 로스율 경계', () => {
-  it('로스율 100%면 null (Infinity 금지)', () => {
-    expect(baseUnitPrice(4, 1)).toBeNull();
-  });
-
-  it('로스율 100% 초과면 null (음수 단가 금지)', () => {
-    expect(baseUnitPrice(4, 1.2)).toBeNull();
-  });
-
-  it('로스율 음수면 null', () => {
-    expect(baseUnitPrice(4, -0.1)).toBeNull();
-  });
-
+describe('baseUnitPrice — 산 값 그대로 (0041: 로스로 나누지 않는다)', () => {
   it('평균 단가가 null이면 null로 전파된다', () => {
-    expect(baseUnitPrice(null, 0.15)).toBeNull();
+    expect(baseUnitPrice(null)).toBeNull();
   });
 
-  it('로스율 0은 평균 단가 그대로', () => {
-    expect(baseUnitPrice(4, 0)).toBe(4);
+  it('음수 단가는 null', () => {
+    expect(baseUnitPrice(-1)).toBeNull();
   });
 
-  it('검산 — 4원/g · 로스 15% → 4.7058…', () => {
-    expect(baseUnitPrice(4, 0.15)).toBeCloseTo(4.70588, 4);
+  it('0원 단가는 유효하다 (무상 제공)', () => {
+    expect(baseUnitPrice(0)).toBe(0);
+  });
+
+  it('검산 — 4원/g 은 4원/g 이다', () => {
+    expect(baseUnitPrice(4)).toBe(4);
   });
 });
 
 describe('previewBaseUnitPrice — 합성 경로에서도 null 전파', () => {
   it('용량 0이면 null', () => {
-    expect(previewBaseUnitPrice(4000, 0, 0.15)).toBeNull();
+    expect(previewBaseUnitPrice(4000, 0)).toBeNull();
   });
 
-  it('로스율 100%면 null', () => {
-    expect(previewBaseUnitPrice(4000, 1000, 1)).toBeNull();
-  });
-
-  it('검산 기준값은 유지된다 — 대파 4,000원/1,000g, 로스 15% → 4.71', () => {
-    const p = previewBaseUnitPrice(4000, 1000, 0.15);
+  it('검산 기준값 — 대파 4,000원/1,000g → 4.00원/g', () => {
+    const p = previewBaseUnitPrice(4000, 1000);
     expect(p).not.toBeNull();
-    expect(p!).toBeCloseTo(4.70588, 4);
+    expect(p!).toBeCloseTo(4.0, 6);
   });
 });
 
@@ -116,19 +103,6 @@ describe('weightedAvgUnitPrice — 오염된 구매 이력', () => {
   });
 });
 
-describe('realLossRate — 분모 0', () => {
-  it('구매량 0이면 null', () => {
-    expect(realLossRate(150, 0)).toBeNull();
-  });
-
-  it('음수 입력이면 null', () => {
-    expect(realLossRate(-150, 1000)).toBeNull();
-  });
-
-  it('정상 입력은 0~1 비율 (SQL 은 %로 반환하므로 100배 차이가 의도된 것)', () => {
-    expect(realLossRate(150, 1000)).toBe(0.15);
-  });
-});
 
 describe('computeProfit — 인분·판매가 경계', () => {
   const base = {

@@ -41,7 +41,6 @@ export type Database = {
       categories: {
         Row: {
           created_at: string
-          default_loss_rate: number
           id: string
           kind: Database["public"]["Enums"]["category_kind"]
           name: string
@@ -50,7 +49,6 @@ export type Database = {
         }
         Insert: {
           created_at?: string
-          default_loss_rate?: number
           id?: string
           kind?: Database["public"]["Enums"]["category_kind"]
           name: string
@@ -59,7 +57,6 @@ export type Database = {
         }
         Update: {
           created_at?: string
-          default_loss_rate?: number
           id?: string
           kind?: Database["public"]["Enums"]["category_kind"]
           name?: string
@@ -239,7 +236,6 @@ export type Database = {
           created_at: string
           default_vendor_id: string | null
           id: string
-          loss_rate: number
           memo: string | null
           min_order_qty: number
           name: string
@@ -256,7 +252,6 @@ export type Database = {
           created_at?: string
           default_vendor_id?: string | null
           id?: string
-          loss_rate?: number
           memo?: string | null
           min_order_qty?: number
           name: string
@@ -273,7 +268,6 @@ export type Database = {
           created_at?: string
           default_vendor_id?: string | null
           id?: string
-          loss_rate?: number
           memo?: string | null
           min_order_qty?: number
           name?: string
@@ -323,6 +317,7 @@ export type Database = {
           type: Database["public"]["Enums"]["inventory_event_type"]
           unit_normalized: boolean
           volume_delta: number | null
+          waste: boolean
         }
         Insert: {
           count_delta?: number | null
@@ -339,6 +334,7 @@ export type Database = {
           type: Database["public"]["Enums"]["inventory_event_type"]
           unit_normalized?: boolean
           volume_delta?: number | null
+          waste?: boolean
         }
         Update: {
           count_delta?: number | null
@@ -355,6 +351,7 @@ export type Database = {
           type?: Database["public"]["Enums"]["inventory_event_type"]
           unit_normalized?: boolean
           volume_delta?: number | null
+          waste?: boolean
         }
         Relationships: [
           {
@@ -1426,7 +1423,6 @@ export type Database = {
           category_name: string
           base_unit: Database["public"]["Enums"]["base_unit"]
           per_volume: number
-          loss_rate: number
           safety_stock: number
           vendor_name: string
           memo: string
@@ -1445,12 +1441,6 @@ export type Database = {
           p_store: string
         }
         Returns: Json
-      }
-      real_loss_rate: {
-        Args: {
-          p_ingredient: string
-        }
-        Returns: number
       }
       recipe_detail: {
         Args: {

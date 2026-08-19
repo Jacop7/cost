@@ -30,7 +30,6 @@ export interface IngredientRow {
   categoryName: string | null;
   baseUnit: BaseUnit;
   perVolume: number;
-  lossRate: number;
   safetyStock: number;
   vendorName: string | null;
   memo: string | null;
@@ -68,8 +67,6 @@ export interface PurchaseRecord {
 export interface IngredientDetail extends IngredientRow {
   categoryId: string | null;
   minOrderQty: number;
-  /** 실측 로스율(%). 폐기 기록이 없으면 null — 0% 로 단정하지 않는다. */
-  realLossRate: number | null;
   sealedCount: number;
   openedRemain: number;
   purchase: { avg: number | null; low: number | null; high: number | null; count: number };
@@ -99,7 +96,6 @@ function toRow(r: Record<string, unknown>): IngredientRow {
     categoryName: str(r.category_name),
     baseUnit: r.base_unit as BaseUnit,
     perVolume: num(r.per_volume),
-    lossRate: num(r.loss_rate),
     safetyStock: num(r.safety_stock),
     vendorName: str(r.vendor_name),
     memo: str(r.memo),
@@ -143,7 +139,6 @@ export function useIngredientDetail(id: string | undefined) {
         ...toRow(r),
         categoryId: str(r.category_id),
         minOrderQty: num(r.min_order_qty),
-        realLossRate: numOrNull(r.real_loss_rate),
         sealedCount: num(r.sealed_count),
         openedRemain: num(r.opened_remain),
         purchase: {
@@ -213,7 +208,6 @@ export interface IngredientInput {
   categoryId: string | null;
   baseUnit: BaseUnit;
   perVolume: number;
-  lossRate: number;
   safetyStock: number;
   minOrderQty: number;
   defaultVendorId: string | null;
@@ -234,7 +228,6 @@ export function useSaveIngredient() {
           category_id: input.categoryId ?? '',
           base_unit: input.baseUnit,
           per_volume: input.perVolume,
-          loss_rate: input.lossRate,
           safety_stock: input.safetyStock,
           min_order_qty: input.minOrderQty,
           default_vendor_id: input.defaultVendorId ?? '',

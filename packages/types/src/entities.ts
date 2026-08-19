@@ -33,7 +33,6 @@ export interface Category {
   storeId: ID;
   name: string;
   order: number;
-  defaultLossRate: number; // 분류별 로스율 기본 제안값 (%)
 }
 
 export interface Ingredient {
@@ -44,7 +43,6 @@ export interface Ingredient {
   baseUnit: BaseUnit; // 기준 단위 (g/ml/ea)
   perVolume: number; // 개당 용량 (기준단위 기준). 'ea'면 포장당 개수.
   purchaseUnitLabel: string | null; // 구매단위 라벨(통/단/박스) — 표시용
-  lossRate: number; // 등록 시 추정 로스율 (%)
   safetyStock: number; // 안전재고 (개수)
   minOrderQty: number; // 최소 발주 (개수)
   vendorId: ID | null; // 기본 거래처(선택)

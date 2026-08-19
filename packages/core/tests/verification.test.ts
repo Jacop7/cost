@@ -18,10 +18,10 @@ import {
 } from '../src';
 
 describe('단가 (① 3.5, A-02)', () => {
-  it('대파 4,000원/1,000g, 로스 15% → 4.71원/g', () => {
-    const p = previewBaseUnitPrice(4000, 1000, 0.15);
+  it('대파 4,000원/1,000g → 4.00원/g (0041: 로스로 나누지 않는다)', () => {
+    const p = previewBaseUnitPrice(4000, 1000);
     expect(p).not.toBeNull(); // 산출 불가(null)가 아니어야 한다 — 경계 계약은 boundary.test.ts
-    expect(round(p!, 2)).toBe(4.71);
+    expect(round(p!, 2)).toBe(4.0);
   });
 
   it('수량 가중 평균 (대파 구매이력)', () => {
@@ -102,14 +102,14 @@ describe('재고 뱃지 (① 4.7, ③ 3.4)', () => {
 });
 
 describe('잔여 환산·발주 (⑤ 2.3)', () => {
-  it('잔여 환산량 = 개수 × 개당용량 × (1−로스)', () => {
-    // 미개봉2 × 1000g + 개봉1(가득 1000g) = 3000, 로스 15% → 2550
+  it('잔여 환산량 = 개수 × 개당용량 (로스를 곱하지 않는다)', () => {
+    // 미개봉2 × 1000g + 개봉1(가득 1000g) = 3000
+    // 재고는 물건의 양이다. SQL stock_total_base() 와 같은 값이어야 한다.
     const v = remainConverted(
       { sealedCount: 2, openedCount: 1, openedRemain: null, soonOut: false },
       1000,
-      0.15,
     );
-    expect(round(v)).toBe(2550);
+    expect(round(v)).toBe(3000);
   });
 
   it('권장 발주 수량 = Ceil(부족 ÷ 개당용량), 최소발주 보정', () => {
