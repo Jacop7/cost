@@ -186,7 +186,7 @@ describe('materialCost — 라인 단위 방어', () => {
  * '여유'로 보내면 미달을 여유라 하고, '소진 임박'으로 보내면 99% 남은 걸 임박이라 한다.
  */
 describe('stockBadge — 부족과 소진 임박은 다른 사건이다', () => {
-  const snap = (cnt: number) => ({ sealedCount: cnt, openedCount: 0, openedRemain: null, soonOut: false });
+  const snap = (stockTotal: number) => ({ stockTotal, soonOut: false });
 
   it('안전재고보다 적으면 부족', () => {
     expect(stockBadge(snap(2), 5)).toBe('low');

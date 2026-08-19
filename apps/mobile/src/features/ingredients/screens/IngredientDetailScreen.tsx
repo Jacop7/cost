@@ -159,9 +159,7 @@ export function IngredientDetailScreen() {
                   </Text>
                 </View>
                 <Text style={[{ fontSize: 14, color: T.sub2, marginTop: 6, fontWeight: '600' }, tnum]}>
-                  미개봉 {g.sealedCount}개
-                  {g.openedRemain > 0 ? ` + 개봉분 ${formatQuantity(g.openedRemain, unit)}` : ''}
-                  {' · '}개당 {formatQuantity(g.perVolume, unit)}
+                  개당 {formatQuantity(g.perVolume, unit)}
                 </Text>
                 <View style={{ marginTop: 10, flexDirection: 'row', gap: 6, flexWrap: 'wrap' }}>
                   <Badge tone={belowSafety(g) ? 'amber' : 'neutral'} sm>안전재고 {g.safetyStock}개</Badge>
@@ -391,7 +389,6 @@ export function IngredientDetailScreen() {
                   kind: change.kind,
                   // 폐기는 **남은 양**을 넘긴다(E2 가 폐기량을 역산한다).
                   value: change.nextStock,
-                  perVolume: g.perVolume,
                   reason: change.reason,
                 },
                 {

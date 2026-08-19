@@ -205,6 +205,7 @@ export type Database = {
           unit_extra_cost: number | null
           unit_material_cost: number | null
           unit_price: number
+          unit_tax: number | null
         }
         Insert: {
           created_at?: string
@@ -221,6 +222,7 @@ export type Database = {
           unit_extra_cost?: number | null
           unit_material_cost?: number | null
           unit_price: number
+          unit_tax?: number | null
         }
         Update: {
           created_at?: string
@@ -237,6 +239,7 @@ export type Database = {
           unit_extra_cost?: number | null
           unit_material_cost?: number | null
           unit_price?: number
+          unit_tax?: number | null
         }
         Relationships: [
           {
@@ -474,30 +477,24 @@ export type Database = {
         Row: {
           ingredient_id: string
           last_inbound_at: string | null
-          opened_count: number
-          opened_remain: number | null
-          sealed_count: number
           soon_out: boolean
+          stock_total: number
           store_id: string
           updated_at: string
         }
         Insert: {
           ingredient_id: string
           last_inbound_at?: string | null
-          opened_count?: number
-          opened_remain?: number | null
-          sealed_count?: number
           soon_out?: boolean
+          stock_total?: number
           store_id: string
           updated_at?: string
         }
         Update: {
           ingredient_id?: string
           last_inbound_at?: string | null
-          opened_count?: number
-          opened_remain?: number | null
-          sealed_count?: number
           soon_out?: boolean
+          stock_total?: number
           store_id?: string
           updated_at?: string
         }
@@ -1077,7 +1074,7 @@ export type Database = {
           price: number
           store_id: string
           target_profit_rate: number
-          tax_items: string[]
+          tax_items: Json
           tax_mode: Database["public"]["Enums"]["tax_mode"]
           updated_at: string
         }
@@ -1092,7 +1089,7 @@ export type Database = {
           price?: number
           store_id: string
           target_profit_rate?: number
-          tax_items?: string[]
+          tax_items?: Json
           tax_mode?: Database["public"]["Enums"]["tax_mode"]
           updated_at?: string
         }
@@ -1107,7 +1104,7 @@ export type Database = {
           price?: number
           store_id?: string
           target_profit_rate?: number
-          tax_items?: string[]
+          tax_items?: Json
           tax_mode?: Database["public"]["Enums"]["tax_mode"]
           updated_at?: string
         }
@@ -1310,6 +1307,12 @@ export type Database = {
       assert_no_rpc_overloads: {
         Args: Record<PropertyKey, never>
         Returns: undefined
+      }
+      assert_tax_items: {
+        Args: {
+          p_items: Json
+        }
+        Returns: Json
       }
       auto_close_due: {
         Args: {
@@ -1547,10 +1550,8 @@ export type Database = {
       e5_stock_adjusted: {
         Args: {
           p_ingredient: string
-          p_sealed: number
-          p_opened: number
+          p_stock_total: number
           p_soon: boolean
-          p_opened_remain?: number
           p_note?: string
           p_occurred_at?: string
         }
@@ -1756,6 +1757,18 @@ export type Database = {
           active: boolean
         }[]
       }
+      recipe_tax: {
+        Args: {
+          p_recipe: string
+        }
+        Returns: number
+      }
+      recipe_tax_items: {
+        Args: {
+          p_recipe: string
+        }
+        Returns: Json
+      }
       recompute_recipe: {
         Args: {
           p_recipe: string
@@ -1910,6 +1923,14 @@ export type Database = {
         }
         Returns: string
       }
+      save_recipe_tax_items: {
+        Args: {
+          p_store: string
+          p_recipe: string
+          p_items: Json
+        }
+        Returns: undefined
+      }
       save_sale: {
         Args: {
           p_store: string
@@ -1968,6 +1989,22 @@ export type Database = {
       stock_total_base: {
         Args: {
           p_ingredient: string
+        }
+        Returns: number
+      }
+      tax_breakdown: {
+        Args: {
+          p_price: number
+          p_mode: Database["public"]["Enums"]["tax_mode"]
+          p_items: Json
+        }
+        Returns: Json
+      }
+      tax_of: {
+        Args: {
+          p_price: number
+          p_mode: Database["public"]["Enums"]["tax_mode"]
+          p_items: Json
         }
         Returns: number
       }
