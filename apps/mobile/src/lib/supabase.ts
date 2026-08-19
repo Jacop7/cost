@@ -1,5 +1,5 @@
 /**
- * Supabase 클라이언트. 세션은 expo-secure-store 에 저장.
+ * Supabase 클라이언트. 세션은 네이티브에서 expo-secure-store, 웹에서 localStorage 에 저장.
  * 환경변수: EXPO_PUBLIC_SUPABASE_URL · EXPO_PUBLIC_SUPABASE_ANON_KEY (.env)
  *
  * ⚠ 화면은 여기를 직접 부르지 않는다. 도메인별 features 하위 hooks.ts 가 유일한 경계다.
@@ -8,13 +8,40 @@
  */
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from '@sikjae/db';
+import { Platform } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 
-const ExpoSecureStoreAdapter = {
+/**
+ * 세션 저장소는 플랫폼마다 다르다.
+ *
+ * ⚠ 웹에서 expo-secure-store 는 **빈 껍데기**다(ExpoSecureStore.web.js 가 `export default {}`).
+ *   구분 없이 쓰면 앱이 뜨자마자 세션을 읽다가 죽는다:
+ *     "ExpoSecureStore.default.getValueWithKeyAsync is not a function"
+ *   CLAUDE.md 가 `--web` 을 미리보기 수단으로 두고 있으므로 웹도 동작해야 한다.
+ *
+ * 웹은 localStorage 를 쓴다. 브라우저 미리보기는 개발용이라 기기 보안 저장소가 필요 없고,
+ * SSR/비브라우저 환경에서 localStorage 가 없을 수 있어 접근 전에 확인한다.
+ */
+const SecureStoreAdapter = {
   getItem: (key: string) => SecureStore.getItemAsync(key),
   setItem: (key: string, value: string) => SecureStore.setItemAsync(key, value),
   removeItem: (key: string) => SecureStore.deleteItemAsync(key),
 };
+
+const hasLocalStorage = (): boolean =>
+  typeof globalThis !== 'undefined' && typeof globalThis.localStorage !== 'undefined';
+
+const WebStorageAdapter = {
+  getItem: async (key: string) => (hasLocalStorage() ? globalThis.localStorage.getItem(key) : null),
+  setItem: async (key: string, value: string) => {
+    if (hasLocalStorage()) globalThis.localStorage.setItem(key, value);
+  },
+  removeItem: async (key: string) => {
+    if (hasLocalStorage()) globalThis.localStorage.removeItem(key);
+  },
+};
+
+const sessionStorage = Platform.OS === 'web' ? WebStorageAdapter : SecureStoreAdapter;
 
 const SUPABASE_URL = process.env.EXPO_PUBLIC_SUPABASE_URL ?? '';
 const SUPABASE_ANON_KEY = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY ?? '';
@@ -32,7 +59,7 @@ export const supabase = createClient<Database>(
   SUPABASE_ANON_KEY,
   {
     auth: {
-      storage: ExpoSecureStoreAdapter,
+      storage: sessionStorage,
       autoRefreshToken: true,
       persistSession: true,
       detectSessionInUrl: false,

@@ -42,26 +42,25 @@ describe('레시피 손익 (② 3장) — 제육볶음', () => {
     servings: 10,
     taxMode: 'included',
     extraPerServing: 300,
-    fixedRate: 0.3133, // 률 적용 시 고정 ≈ 3,760
-    // 재료 합 2,835 를 단일 라인으로 검증 (1인분량 1 × 단가 2835)
-    lines: [{ inputQty: 10, baseUnitPrice: 2835 }],
+    fixedRate: 0.313, // 률 적용 시 고정 = 3,756
+    // 재료 합 2,806.40 을 단일 라인으로 검증 (1인분량 1 × 단가 2806.4)
+    lines: [{ inputQty: 10, baseUnitPrice: 2806.4 }],
   });
 
   it('세금 = 12,000 × 10/110 ≈ 1,091', () => {
     expect(round(result.tax)).toBe(1091);
   });
 
-  it('고정 지출 ≈ 3,760', () => {
-    expect(round(result.fixedCost)).toBe(3760);
+  it('고정 지출 = 3,756', () => {
+    expect(round(result.fixedCost)).toBe(3756);
   });
 
-  it('순이익 4,014원', () => {
-    expect(round(result.profit)).toBe(4014);
+  it('순이익 4,046.69원', () => {
+    expect(result.profit).toBeCloseTo(4046.69, 2);
   });
 
-  it('순이익률 ≈ 33.4%', () => {
-    // 4,014 / 12,000 = 33.45% → 문서 표기 33.4%. 경계값이라 비율로 검증.
-    expect(result.profitRate).toBeCloseTo(0.334, 2);
+  it('순이익률 33.72%', () => {
+    expect(result.profitRate).toBeCloseTo(0.3372, 4);
   });
 
   it('권장가 16,000원 (목표 40%)', () => {
