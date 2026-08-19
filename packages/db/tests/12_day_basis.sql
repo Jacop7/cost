@@ -294,3 +294,104 @@ begin
     format('select e10_sale_recorded(%L, %L, %L, 1, 0, 0, 0)', pg_temp.store(), v_day, v_new),
     '22000');
 end $t$;
+
+-- ════════════════════════════════════════════════════════════════
+-- 영업 전에 만들고 고친 것은 **오늘부터** 반영된다
+--
+-- 사장님: "오늘 만든 메뉴라도 영업 전이면 반영 가능해"
+--
+-- 기준이 굳는 시점은 '오늘 0시'가 아니라 **영업 시작**이다. 그 전에는 아직
+-- 아무것도 정해지지 않았으므로, 만들든 고치든 오늘 장사에 그대로 들어간다.
+-- 막히는 것은 **영업을 시작한 뒤**에 만든 메뉴뿐이다.
+-- ════════════════════════════════════════════════════════════════
+
+do $t$
+declare
+  v_day date := business_day();
+  v_rcp uuid := pg_temp.rcp('제육볶음');
+  v_a   uuid;   -- 영업 전에 만든 메뉴
+  v_b   uuid;   -- 영업 시작 뒤에 만든 메뉴
+  v_res jsonb;
+  m     jsonb;
+begin
+  -- ── 오늘을 '영업 전'으로 되돌린다 ───────────────────────────
+  -- ⚠ 지우지 않고 날짜를 옮긴다. 매출·입출고·발주가 이 행을 참조해 삭제는 막힌다.
+  --   전부 이 트랜잭션 안이라 롤백된다.
+  begin perform close_business_day(pg_temp.store()); exception when others then null; end;
+  update business_days set business_date = v_day - 401
+   where store_id = pg_temp.store() and business_date = v_day;
+  perform pg_temp.eq_t('되돌리면 영업 전',
+    business_day_state(pg_temp.store())->>'status', 'none');
+
+  -- ── ① 영업 전에 메뉴를 만든다 ──────────────────────────────
+  v_a := save_recipe(pg_temp.store(), jsonb_build_object(
+    'name', '영업 전에 만든 메뉴', 'price', 7000, 'base_servings', 1));
+
+  m := (select x from jsonb_array_elements(day_menu_basis(pg_temp.store(), v_day)) x
+         where (x->>'recipe_id')::uuid = v_a);
+  perform pg_temp.ok('영업 전에는 새 메뉴도 오늘 기준에 든다', (m->>'in_basis')::boolean);
+  perform pg_temp.eq('카드에 지금 값이 그대로 보인다', (m->>'price')::numeric, 7000, 0);
+  perform pg_temp.ok('영업 전에는 "내일부터" 안내가 없다', (m->>'changed')::boolean is false);
+
+  -- ── 영업 전에 고친 값도 오늘부터다 ─────────────────────────
+  perform save_recipe(pg_temp.store(), jsonb_build_object(
+    'id', v_rcp, 'name', '제육볶음', 'price', 13500, 'base_servings', 10));
+
+  -- ── ② 영업 시작 — 이 시점 값으로 굳는다 ────────────────────
+  perform open_business_day(pg_temp.store());
+  perform pg_temp.ok('새 메뉴가 오늘 기준에 담겼다',
+    (day_snapshot(pg_temp.store(), v_day) #> array['recipes', v_a::text]) is not null);
+  perform pg_temp.eq('영업 전에 고친 판매가가 오늘 기준이다',
+    (day_snapshot(pg_temp.store(), v_day) #>> array['recipes', v_rcp::text, 'price'])::numeric,
+    13500, 0);
+
+  -- ── ③ 실제로 팔린다 ────────────────────────────────────────
+  v_res := e10_sale_recorded(pg_temp.store(), v_day, v_a, 1, 0, 0, 0);
+  perform pg_temp.eq('영업 전에 만든 메뉴가 오늘 팔린다',
+    (v_res->>'unit_price')::numeric, 7000, 0);
+  perform pg_temp.eq('영업 전에 고친 판매가로 기록된다',
+    (e10_sale_recorded(pg_temp.store(), v_day, v_rcp, 1, 0, 0, 0)->>'unit_price')::numeric,
+    13500, 0);
+
+  -- ── ④ 영업 시작 뒤에 만든 메뉴만 막힌다 ────────────────────
+  v_b := save_recipe(pg_temp.store(), jsonb_build_object(
+    'name', '영업 중에 만든 메뉴', 'price', 5000, 'base_servings', 1));
+  perform pg_temp.ok('영업 중에 만든 메뉴는 오늘 기준에 없다',
+    (select (x->>'in_basis')::boolean is false
+       from jsonb_array_elements(day_menu_basis(pg_temp.store(), v_day)) x
+      where (x->>'recipe_id')::uuid = v_b));
+  perform pg_temp.raises('그래서 오늘은 팔리지 않는다',
+    format('select e10_sale_recorded(%L, %L, %L, 1, 0, 0, 0)', pg_temp.store(), v_day, v_b),
+    '22000');
+end $t$;
+
+-- ════════════════════════════════════════════════════════════════
+-- 첫 판매가 영업 시작을 겸하는 흐름
+--
+-- 화면은 P0003 을 오류로 띄우지 않고 "오늘 영업을 시작할까요?" 를 묻는다.
+-- 시작하면 방금 만든 메뉴까지 담긴 기준이 생기고, 그대로 이어서 저장된다.
+-- ════════════════════════════════════════════════════════════════
+
+do $t$
+declare
+  v_day date := business_day();
+  v_new uuid;
+begin
+  begin perform close_business_day(pg_temp.store()); exception when others then null; end;
+  update business_days set business_date = v_day - 402
+   where store_id = pg_temp.store() and business_date = v_day;
+
+  v_new := save_recipe(pg_temp.store(), jsonb_build_object(
+    'name', '아침에 만든 메뉴', 'price', 6500, 'base_servings', 1));
+
+  -- 영업 전에는 서버가 막는다 — 화면이 시작을 먼저 묻는 근거다.
+  perform pg_temp.raises('영업 전에는 P0003 으로 막는다',
+    format('select e10_sale_recorded(%L, %L, %L, 1, 0, 0, 0)', pg_temp.store(), v_day, v_new),
+    'P0003');
+
+  -- 시작하고 그대로 이어서 저장 — 두 번 누르게 하지 않는다.
+  perform open_business_day(pg_temp.store());
+  perform pg_temp.eq('시작 직후 그 메뉴가 바로 팔린다',
+    (e10_sale_recorded(pg_temp.store(), v_day, v_new, 2, 0, 0, 0)->>'unit_price')::numeric,
+    6500, 0);
+end $t$;
