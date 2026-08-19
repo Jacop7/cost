@@ -129,3 +129,80 @@ begin
     (select count(*) from information_schema.columns
       where table_schema = 'public' and column_name like '%loss%'), 0, 0);
 end $t$;
+
+-- ════════════════════════════════════════════════════════════════
+-- 0042 · 로스율은 **표시 전용**으로 남는다
+-- ════════════════════════════════════════════════════════════════
+
+do $t$
+declare
+  v_daepa uuid := pg_temp.ing('대파');
+  v_rcp   uuid := pg_temp.rcp('제육볶음');
+  v_day   date := business_day();
+  v_item  uuid;
+  v_loss  jsonb;
+  b_price numeric;
+  b_stock numeric;
+  v_ev    uuid;
+begin
+  -- ── 폐기가 없으면 rate 는 null — 0% 로 단정하지 않는다 ──────
+  -- "안 버렸다"와 "아직 모른다"는 다르다. 0% 로 쓰면 사장님이 전자로 읽는다.
+  -- 시드가 바뀌어도 견디도록 폐기가 0건인 재료를 찾아서 쓴다.
+  declare v_clean uuid;
+  begin
+    select i.id into v_clean from ingredients i
+     where i.store_id = pg_temp.store()
+       and not exists (select 1 from inventory_events ev
+                        where ev.ingredient_id = i.id and ev.type = 'discard')
+     limit 1;
+    perform pg_temp.ok('폐기가 0건인 재료가 시드에 있다', v_clean is not null);
+    perform pg_temp.ok('폐기 기록이 없으면 rate null',
+      (ingredient_loss(v_clean)->>'rate') is null);
+  end;
+
+  -- ── 보관 폐기와 조리 폐기를 갈라서 준다 ─────────────────────
+  b_price := base_unit_price(v_daepa);
+  b_stock := stock_total_base(v_daepa);
+  perform e2_discard(v_daepa, b_stock - 200);          -- 보관 폐기 200
+  perform e10_sale_recorded(pg_temp.store(), v_day, v_rcp, 0, 0, 0, 4);  -- 조리 폐기 4인분
+
+  v_loss := ingredient_loss(v_daepa);
+  perform pg_temp.eq('보관 폐기량', (v_loss->>'storage_amount')::numeric, 200, 0.0001);
+  perform pg_temp.ok('조리 폐기량이 잡힌다', (v_loss->>'cooking_amount')::numeric > 0);
+  perform pg_temp.eq('합계 = 보관 + 조리',
+    (v_loss->>'total_amount')::numeric,
+    (v_loss->>'storage_amount')::numeric + (v_loss->>'cooking_amount')::numeric, 0.0001);
+  perform pg_temp.eq('로스율 = 폐기합 ÷ 실입고량 × 100',
+    (v_loss->>'rate')::numeric,
+    (v_loss->>'total_amount')::numeric / (v_loss->>'purchased')::numeric * 100, 0.0001);
+  perform pg_temp.eq('버린 금액 = 폐기량 × 기준단가',
+    (v_loss->>'total_cost')::numeric,
+    (v_loss->>'total_amount')::numeric * b_price, 0.01);
+
+  -- ── ⚠ 로스율은 기준단가에 곱해지지 않는다 ───────────────────
+  -- 이 단언이 0041 의 핵심이다. 다시 물리면 폐기할수록 단가가 내려간다.
+  perform pg_temp.eq('폐기가 쌓여도 기준단가 불변', base_unit_price(v_daepa), b_price, 0.0001);
+
+  -- ── 되돌린 폐기는 로스율에서 빠진다 ─────────────────────────
+  select id into v_ev from inventory_events
+   where ingredient_id = v_daepa and type = 'discard' and not waste order by seq desc limit 1;
+  perform e2_discard_reverted(v_ev, '테스트');
+  perform pg_temp.eq('되돌린 뒤 보관 폐기량 0',
+    (ingredient_loss(v_daepa)->>'storage_amount')::numeric, 0, 0.0001);
+
+  -- ── 조리 폐기는 식재료 화면에서 되돌릴 수 없다 ──────────────
+  -- 주인은 그 날 매출이다. 여기서 되돌리면 매출은 "버렸다"인데 재고는 반영 안 된 채 굳는다.
+  select ev.id into v_ev from inventory_events ev
+   where ev.ingredient_id = v_daepa and ev.type = 'discard' and ev.waste
+   order by ev.seq desc limit 1;
+  perform pg_temp.raises('조리 폐기 되돌리기는 거부',
+    format('select e2_discard_reverted(%L, %L)', v_ev, '테스트'), '22000');
+
+  -- ── stock_history 가 두 폐기를 구분해 준다 ──────────────────
+  perform pg_temp.ok('stock_history 가 waste 를 실어 준다',
+    exists (select 1 from stock_history(v_daepa) where type = 'discard' and waste));
+
+  -- ── ingredient_detail 이 loss 를 함께 준다 (화면 왕복 1회) ──
+  perform pg_temp.ok('ingredient_detail 에 loss 가 들어 있다',
+    ingredient_detail(v_daepa) ? 'loss');
+end $t$;

@@ -37,14 +37,21 @@ export function StockHistoryScreen() {
   const revertDiscard = useRevertDiscard(id ?? '');
 
   /**
-   * 폐기 취소 — 오입력한 폐기 하나가 기준단가를 영구히 바꿔버리는 걸 되돌린다.
-   * 폐기는 실측 로스율의 분자라, 잘못 넣으면 그 재료를 쓰는 모든 메뉴 원가가 틀어진다.
+   * 폐기 취소 — 오입력한 폐기를 되돌린다. 재고와 로스율 표시가 폐기 전으로 돌아간다.
+   * 기준단가는 애초에 폐기에 영향받지 않는다(0041).
+   *
+   * ⚠ 조리 폐기는 여기서 되돌릴 수 없다. 주인이 **그 날 매출**이기 때문이다.
+   *   여기서 되돌리면 매출은 "3개 버렸다"인데 재고는 반영 안 된 채로 굳는다(실측 확인).
    */
   const confirmRevert = (e: LedgerEntry) => {
     if (e.type !== 'discard' || e.reverted) return;
+    if (e.waste) {
+      Alert.alert('조리 폐기는 여기서 못 고쳐요', '만들어 놓고 못 판 몫이라 그 날 매출에서 수량을 고쳐 주세요.');
+      return;
+    }
     Alert.alert(
       '폐기 취소',
-      `${formatQuantity(Math.abs(e.countDelta), unit)} 폐기를 되돌려요. 재고와 기준단가가 폐기 전으로 돌아가고, 이 재료를 쓰는 메뉴 원가도 함께 바뀝니다.`,
+      `${formatQuantity(Math.abs(e.countDelta), unit)} 폐기를 되돌려요. 재고가 폐기 전으로 돌아가고 로스율에서도 빠집니다.`,
       [
         { text: '닫기', style: 'cancel' },
         {
@@ -159,7 +166,7 @@ export function StockHistoryScreen() {
               <Card pad={0} style={{ overflow: 'hidden' }}>
                 {list.map((e, i) => {
                   const v = toLedgerView(e, g?.baseUnit ?? 'g');
-                  const canRevert = e.type === 'discard' && !e.reverted;
+                  const canRevert = e.type === 'discard' && !e.reverted && !e.waste;
                   return (
                     <LedgerRow
                       key={v.id}

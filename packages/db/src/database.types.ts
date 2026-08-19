@@ -1432,6 +1432,12 @@ export type Database = {
           last_inbound_at: string
         }[]
       }
+      ingredient_loss: {
+        Args: {
+          p_ingredient: string
+        }
+        Returns: Json
+      }
       my_store_ids: {
         Args: Record<PropertyKey, never>
         Returns: string[]
@@ -1696,6 +1702,7 @@ export type Database = {
           note: string
           balance: number
           reverted: boolean
+          waste: boolean
         }[]
       }
       stock_total_base: {
