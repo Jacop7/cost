@@ -16,7 +16,8 @@
     "lint": "pnpm -r lint",
     "db:start": "pnpm --filter @sikjae/db start",
     "db:reset": "pnpm --filter @sikjae/db reset",
-    "db:types": "pnpm --filter @sikjae/db gen:types"
+    "db:types": "pnpm --filter @sikjae/db gen:types",
+    "db:test": "pnpm --filter @sikjae/db test"
   },
   "devDependencies": {
     "typescript": "^5.6.3",
