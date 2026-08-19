@@ -1462,6 +1462,12 @@ export type Database = {
           unit_price: number
         }[]
       }
+      recipe_blocked_by: {
+        Args: {
+          p_recipe: string
+        }
+        Returns: string
+      }
       recipe_detail: {
         Args: {
           p_recipe: string
@@ -1502,6 +1508,7 @@ export type Database = {
           profit_rate: number
           material_rate: number
           unknown_cost_lines: number
+          blocked_by: string
         }[]
       }
       recipe_material_cost: {

@@ -208,3 +208,54 @@ begin
       (select name from sales_channels where id = v_ch), '배민·쿠팡');
   end;
 end $t$;
+
+-- ════════════════════════════════════════════════════════════════
+-- 0046 · 팔 수 없는 메뉴는 팔리지 않는다
+--
+-- 재고 0 에서 팔면 원장이 소진을 기록하지 못한다(실측: 대파 125g 필요·차감 0g·
+-- 이벤트 0건). 매출과 재료비는 남는데 재고에서 나간 흔적이 없어, 다음 입고 때
+-- 재고가 실제보다 많아지고 그 오차가 영영 안 지워진다. 그래서 **막는다.**
+-- ════════════════════════════════════════════════════════════════
+
+do $t$
+declare
+  v_rcp uuid := pg_temp.rcp('제육볶음');
+  v_pa  uuid := pg_temp.ing('대파');
+  v_day date := business_day();
+begin
+  -- 오늘 판매를 0 으로 되돌려 기준선을 만든다.
+  perform e10_sale_recorded(pg_temp.store(), v_day, v_rcp, 0, 0, 0, 0);
+
+  -- ── 재료가 있으면 팔린다 ────────────────────────────────────
+  perform pg_temp.ok('재료가 있으면 판매 가능', recipe_blocked_by(v_rcp) is null);
+  perform e10_sale_recorded(pg_temp.store(), v_day, v_rcp, 2, 0, 0, 0);
+
+  -- ── 재료가 바닥나면 막힌다 ──────────────────────────────────
+  perform e10_sale_recorded(pg_temp.store(), v_day, v_rcp, 0, 0, 0, 0);
+  perform e2_discard(v_pa, 0);
+  perform pg_temp.eq_t('막는 재료를 알려준다', recipe_blocked_by(v_rcp), '대파');
+  perform pg_temp.raises('재료 소진 메뉴는 판매 거부',
+    format('select e10_sale_recorded(%L,%L,%L,5,0,0,0)', pg_temp.store(), v_day, v_rcp), '22000');
+
+  -- ⚠ 수량 0(지우기)은 막으면 안 된다 — 오입력을 영영 못 지운다.
+  perform pg_temp.ok('재료가 없어도 0 으로 지우기는 된다',
+    e10_sale_recorded(pg_temp.store(), v_day, v_rcp, 0, 0, 0, 0) is not null);
+
+  -- 조리 폐기만 적는 것도 재료가 나가므로 같이 막는다.
+  perform pg_temp.raises('재료 소진 메뉴는 조리 폐기도 거부',
+    format('select e10_sale_recorded(%L,%L,%L,0,0,0,3)', pg_temp.store(), v_day, v_rcp), '22000');
+
+  -- ── 판매중지 메뉴는 막힌다 ──────────────────────────────────
+  declare v_rice uuid := pg_temp.rcp('공기밥');
+  begin
+    perform deactivate_recipe(v_rice);
+    perform pg_temp.raises('판매중지 메뉴는 판매 거부',
+      format('select e10_sale_recorded(%L,%L,%L,3,0,0,0)', pg_temp.store(), v_day, v_rice), '22000');
+    perform pg_temp.ok('판매중지 메뉴도 0 으로 지우기는 된다',
+      e10_sale_recorded(pg_temp.store(), v_day, v_rice, 0, 0, 0, 0) is not null);
+  end;
+
+  -- ── 목록이 막힘 사유를 함께 준다 (화면이 배지를 그릴 근거) ──
+  perform pg_temp.eq_t('recipe_list 가 blocked_by 를 준다',
+    (select blocked_by from recipe_list(pg_temp.store()) where id = v_rcp), '대파');
+end $t$;

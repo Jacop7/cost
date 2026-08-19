@@ -52,17 +52,20 @@ const belowTarget = (r: RecipeRow) => r.profitRate * 100 < r.targetProfitRate;
 
 function RecipeCard({ r, onPress }: { r: RecipeRow; onPress: () => void }) {
   const stopped = !r.active;
+  // 재료가 바닥나 지금은 못 만드는 메뉴. 판매중지와 달리 입고하면 저절로 풀린다.
+  const short = !stopped && r.blockedBy !== null;
   const warn = !stopped && belowTarget(r);
   const rateColor = warn ? T.red : T.green;
 
   return (
     <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={`${r.name} 상세`}>
-      <Card pad={0} style={{ overflow: 'hidden', opacity: stopped ? 0.55 : 1 }}>
+      <Card pad={0} style={{ overflow: 'hidden', opacity: stopped || short ? 0.55 : 1 }}>
         <View style={{ paddingVertical: 15, paddingHorizontal: 16 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7, marginBottom: 12 }}>
             {stopped ? null : warn ? <Badge tone="red" solid sm>목표 미달</Badge> : <Badge tone="green" solid sm>목표 달성</Badge>}
             <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', letterSpacing: -0.3, color: T.ink }} numberOfLines={1}>{r.name}</Text>
             {stopped ? <Badge tone="neutral" sm>판매중지</Badge> : null}
+            {short ? <Badge tone="red" sm>재료 부족</Badge> : null}
             {r.categoryName ? <Badge tone="neutral" sm>{r.categoryName}</Badge> : null}
           </View>
 

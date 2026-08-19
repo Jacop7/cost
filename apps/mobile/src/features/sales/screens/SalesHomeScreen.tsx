@@ -9,7 +9,7 @@ import { useMemo, useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Button, Card, Field, Icon, Input, QueryState, Sheet, SortChip, SortSheet, type SortOption } from '@/components/kit';
+import { Badge, Button, Card, Field, Icon, Input, QueryState, Sheet, SortChip, SortSheet, type SortOption } from '@/components/kit';
 import { T, won } from '@/theme/tokens';
 import { useRecipeList, type RecipeRow } from '@/features/recipes/hooks';
 import { useSalesDay, useSaveSale, type EtcItem, type ExtraItem, type Shortage } from '../hooks';
@@ -277,14 +277,23 @@ export default function SalesHomeScreen() {
             {list.map((m, i) => {
               const q = soldBy.get(m.id);
               const total = q ? q.hall + q.delivery + q.takeout : 0;
+              // 팔 수 없는 이유. 사장님이 끈 것이 먼저다 — 그건 의도이고, 재료는 상태다.
+              const stopped = !m.active;
+              const blocked = stopped ? '판매 중지' : m.blockedBy ? '재료 부족' : null;
               return (
-                <View key={m.id} style={{ flexDirection: 'row', alignItems: 'center', gap: 11, paddingVertical: 14, paddingHorizontal: 15, borderBottomWidth: i < list.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
+                <View key={m.id} style={{ flexDirection: 'row', alignItems: 'center', gap: 11, paddingVertical: 14, paddingHorizontal: 15, borderBottomWidth: i < list.length - 1 ? 1 : 0, borderBottomColor: T.line2, opacity: blocked ? 0.45 : 1 }}>
                   <View style={{ flex: 1, minWidth: 0 }}>
-                    <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }} numberOfLines={1}>{m.name}</Text>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                      <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }} numberOfLines={1}>{m.name}</Text>
+                      {blocked ? <Badge tone={stopped ? 'neutral' : 'red'} sm>{blocked}</Badge> : null}
+                    </View>
                     <Text style={[{ fontSize: 14, color: T.ter, marginTop: 3 }, NUM]}>
-                      판매가 {won(m.price)} · 재료비 {won(Math.round(m.materialCost))}
+                      {/* 왜 안 되는지 그 자리에서 밝힌다 — 배지만으로는 어느 재료인지 모른다. */}
+                      {m.blockedBy && !stopped
+                        ? `${m.blockedBy}이(가) 없어요 · 식재료에서 재고를 맞춰 주세요`
+                        : `판매가 ${won(m.price)} · 재료비 ${won(Math.round(m.materialCost))}`}
                     </Text>
-                    <Pressable onPress={() => openMenu(m)} accessibilityRole="button" accessibilityLabel={`${m.name} 판매 수량 수정`} style={{ marginTop: 6, alignSelf: 'flex-start' }} hitSlop={6}>
+                    <Pressable onPress={() => openMenu(m)} disabled={blocked !== null} accessibilityRole="button" accessibilityLabel={`${m.name} 판매 수량 수정`} style={{ marginTop: 6, alignSelf: 'flex-start' }} hitSlop={6}>
                       <Text style={[{ fontSize: 14, fontWeight: '700', color: total > 0 ? T.blue : T.ter }, NUM]}>
                         총 {total}개{q && q.waste > 0 ? ` · 폐기 ${q.waste}` : ''}
                       </Text>
@@ -292,11 +301,14 @@ export default function SalesHomeScreen() {
                   </View>
                   <Pressable
                     onPress={() => openMenu(m)}
-                    accessibilityRole="button" accessibilityLabel={`${m.name} 판매 입력`}
-                    style={{ flexDirection: 'row', alignItems: 'center', gap: 3, paddingVertical: 9, paddingHorizontal: 16, borderRadius: 10, backgroundColor: T.blue }}
+                    disabled={blocked !== null}
+                    accessibilityRole="button"
+                    accessibilityLabel={blocked ? `${m.name} ${blocked}` : `${m.name} 판매 입력`}
+                    accessibilityState={{ disabled: blocked !== null }}
+                    style={{ flexDirection: 'row', alignItems: 'center', gap: 3, paddingVertical: 9, paddingHorizontal: 16, borderRadius: 10, backgroundColor: blocked ? T.line : T.blue }}
                   >
-                    <Icon name="plus" size={16} color={T.onColor} sw={2.4} />
-                    <Text style={{ fontSize: 14, fontWeight: '700', color: T.onColor }}>판매</Text>
+                    <Icon name="plus" size={16} color={blocked ? T.ter : T.onColor} sw={2.4} />
+                    <Text style={{ fontSize: 14, fontWeight: '700', color: blocked ? T.ter : T.onColor }}>판매</Text>
                   </Pressable>
                 </View>
               );
