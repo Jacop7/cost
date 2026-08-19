@@ -179,3 +179,75 @@ begin
   perform pg_temp.ok('레시피 현재값은 바뀐다',
     (select material_cost from recipe_list(pg_temp.store()) where id = v_rcp) > 2806.40);
 end $t$;
+
+-- ════════════════════════════════════════════════════════════════
+-- 0057 · 화면이 한 번에 읽는 상태
+--
+-- 네 함수를 따로 물으면 그 사이에 상태가 바뀔 수 있고, 왕복도 네 번이다.
+-- 한 번에 나오는 값이 각 함수와 같은 말을 하는지 못 박는다.
+-- ════════════════════════════════════════════════════════════════
+
+do $t$
+declare
+  v_day date := business_day();
+  st    jsonb;
+begin
+  -- ── 시작 전 ─────────────────────────────────────────────────
+  -- 'none' 은 "오늘 아직 시작 안 함"이다. 시드와 앞 블록이 오늘을 열어 두고 판매까지
+  -- 넣어 뒀으므로, 그 날 행을 지워 시작 전 상태를 만든다.
+  -- ⚠ 지우지 않고 날짜를 옮긴다. 매출·입출고·발주가 이 행을 참조하고 있어
+  --   삭제는 외래키에 막히고, 참조를 끊으려면 원장을 건드려야 한다(원장은 고칠 대상이 아니다).
+  --   전부 이 트랜잭션 안이라 롤백된다.
+  perform close_business_day(pg_temp.store());
+  update business_days set business_date = v_day - 400
+   where store_id = pg_temp.store() and business_date = v_day;
+
+  st := business_day_state(pg_temp.store());
+  perform pg_temp.eq_t('시작 전 상태는 none', st->>'status', 'none');
+  perform pg_temp.eq_t('오늘 날짜를 함께 준다', st->>'today', v_day::text);
+  perform pg_temp.ok('영업시간 설정이 함께 온다', (st#>>'{hours,close_time}') is not null);
+  perform pg_temp.ok('시작 전에는 자동 종료 예정이 없다', (st->>'auto_close_at') is null);
+
+  -- ── 영업 중 ─────────────────────────────────────────────────
+  perform open_business_day(pg_temp.store());
+  st := business_day_state(pg_temp.store());
+  perform pg_temp.eq_t('시작하면 open', st->>'status', 'open');
+  perform pg_temp.ok('영업일 id 를 준다', (st->>'business_day_id') is not null);
+  perform pg_temp.eq_t('예정 종료 시각이 설정과 같다',
+    to_char((st->>'planned_close_at')::timestamptz at time zone business_tz(), 'HH24:MI'),
+    to_char((select close_time from settings where store_id = pg_temp.store()), 'HH24:MI'));
+
+  -- ── 브레이크 ────────────────────────────────────────────────
+  perform set_break(pg_temp.store(), true);
+  perform pg_temp.eq_t('브레이크가 상태에 보인다',
+    business_day_state(pg_temp.store())->>'status', 'break');
+  perform set_break(pg_temp.store(), false);
+
+  -- ── 예정 종료를 지나면 알린다 ───────────────────────────────
+  update business_days
+     set planned_close_at = now() - interval '5 minutes',
+         last_activity_at = now() - interval '5 minutes'
+   where store_id = pg_temp.store() and business_date = v_day;
+  st := business_day_state(pg_temp.store());
+  perform pg_temp.ok('예정 종료를 지났다고 알린다', (st->>'past_planned')::boolean);
+  perform pg_temp.ok('자동 종료 시각은 마지막 활동 + 1시간으로 미뤄진다',
+    (st->>'auto_close_at')::timestamptz > now());
+
+  -- 자동 종료 10분 전
+  update business_days
+     set last_activity_at = now() - auto_close_grace() + interval '5 minutes'
+   where store_id = pg_temp.store() and business_date = v_day;
+  perform pg_temp.ok('10분 전이면 곧 종료된다고 알린다',
+    (business_day_state(pg_temp.store())->>'warn_soon')::boolean);
+
+  -- ── 자동 종료 뒤 미확인 알림 ────────────────────────────────
+  perform close_business_day(pg_temp.store(), 'auto');
+  st := business_day_state(pg_temp.store());
+  perform pg_temp.eq_t('종료하면 closed', st->>'status', 'closed');
+  perform pg_temp.eq_t('종료 방식이 보인다', st->>'close_method', 'auto');
+  perform pg_temp.ok('미확인 자동 종료를 알린다', (st->'unacked') is not null);
+  perform ack_auto_close((st#>>'{unacked,business_day_id}')::uuid);
+  perform pg_temp.ok('확인하면 사라진다',
+    (business_day_state(pg_temp.store())->'unacked') = 'null'::jsonb
+    or (business_day_state(pg_temp.store())->>'unacked') is null);
+end $t$;

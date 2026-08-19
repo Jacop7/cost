@@ -1368,6 +1368,12 @@ export type Database = {
           store_id: string
         }
       }
+      business_day_state: {
+        Args: {
+          p_store: string
+        }
+        Returns: Json
+      }
       business_month: {
         Args: {
           p_at?: string
