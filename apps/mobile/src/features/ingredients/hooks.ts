@@ -65,6 +65,7 @@ export interface PurchaseRecord {
 
 export interface IngredientDetail extends IngredientRow {
   categoryId: string | null;
+  defaultVendorId: string | null;
   minOrderQty: number;
   purchase: { avg: number | null; low: number | null; high: number | null; count: number };
   priceTrends: { date: string; price: number }[];
@@ -156,6 +157,7 @@ export function useIngredientDetail(id: string | undefined) {
       return {
         ...toRow(r),
         categoryId: str(r.category_id),
+        defaultVendorId: str(r.default_vendor_id),
         minOrderQty: num(r.min_order_qty),
         loss: (() => {
           const l = (r.loss ?? {}) as Record<string, unknown>;

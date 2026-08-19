@@ -53,9 +53,15 @@ export function IngredientDetailScreen() {
     if (!g) return;
     saveIngredient.mutate(
       {
-        id: g.id, name: g.name, categoryId: g.categoryId, baseUnit: g.baseUnit,
-        perVolume: g.perVolume, safetyStock: g.safetyStock,
-        minOrderQty: g.minOrderQty, defaultVendorId: null, memo: memo.trim() || null,
+        id: g.id,
+        name: g.name,
+        categoryId: g.categoryId,
+        baseUnit: g.baseUnit,
+        defaultVendorId: g.defaultVendorId,
+        perVolume: g.perVolume,
+        safetyStock: g.safetyStock,
+        minOrderQty: g.minOrderQty,
+        memo: memo.trim() || null,
       },
       {
         onSuccess: () => setMemoOpen(false),
