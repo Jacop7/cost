@@ -1,7 +1,7 @@
 /**
  * RCP-02 레시피 상세 — 메뉴 1개의 손익계산서.
  *
- * 숫자는 전부 서버가 낸 값이다(recipe_detail). 재료비는 반제품까지 재귀로 펼친 원가이고,
+ * 숫자는 전부 서버가 낸 값이다(recipe_detail). 재료비는 재료 줄을 펼친 원가이고,
  * 고정지출률은 이번 영업월 값이다. 앱은 배수(10개/1개/월평균)만 곱해 보여준다.
  */
 import { useMemo, useState, type ReactNode } from 'react';
@@ -161,7 +161,7 @@ export default function RecipeDetailScreen() {
             ];
             const segments = breakdown
               .filter((s) => s.amt > 0)
-              // 판매가 0(반제품)이면 비중을 낼 수 없다 — 0 으로 두어 도넛을 비운다.
+              // 판매가가 0 이면 비중을 낼 수 없다 — 0 으로 두어 도넛을 비운다.
               .map((b) => ({ label: b.label, value: price > 0 ? (b.amt / price) * 100 : 0, color: b.color }));
 
             // 고정지출 항목별 배분 — 월 합계 대비 비중으로 나눈다.
@@ -269,7 +269,6 @@ export default function RecipeDetailScreen() {
                             <View style={{ flex: 1, minWidth: 0 }}>
                               <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }} numberOfLines={1}>
                                 {l.name}
-                                {l.subRecipeId ? <Text style={{ fontSize: 14, color: T.blue, fontWeight: '700' }}> 반제품</Text> : null}
                               </Text>
                               <Text style={[{ fontSize: 14, color: T.ter, marginTop: 2 }, NUM]}>
                                 {l.unitPrice === null ? '단가 산출 전' : unit === null ? `${won(Math.round(l.unitPrice))}원/인분` : formatUnitPrice(l.unitPrice, unit)}

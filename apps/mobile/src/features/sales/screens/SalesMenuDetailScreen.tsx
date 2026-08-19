@@ -16,7 +16,7 @@ import { useSalesRange } from '../hooks';
 import { rangeLabel, todayBusiness } from '../period';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
-/** DB 기준단위(ea) → 화면 표기(개). 반제품 줄은 단위가 없어 null 이다. */
+/** DB 기준단위(ea) → 화면 표기(개). */
 const dispUnit = (u: 'g' | 'ml' | 'ea' | null) => (u === null ? null : u === 'ea' ? '개' : u);
 
 function SecHead({ title, sub }: { title: string; sub?: string }) {
@@ -160,7 +160,7 @@ export default function SalesMenuDetailScreen() {
                       <View key={l.id} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10, borderBottomWidth: i < r.lines.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
                         <View style={{ flex: 1, minWidth: 0 }}>
                           <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }} numberOfLines={1}>
-                            {l.name}{l.subRecipeId ? <Text style={{ fontSize: 14, color: T.blue, fontWeight: '700' }}> 반제품</Text> : null}
+                            {l.name}
                           </Text>
                           <Text style={[{ fontSize: 14, color: T.ter, marginTop: 2 }, NUM]}>
                             {l.unitPrice === null ? '단가 산출 전' : unit === null ? `${won(Math.round(l.unitPrice))}원/인분` : formatUnitPrice(l.unitPrice, unit)}

@@ -77,7 +77,8 @@ declare
   m_container uuid; m_gas uuid; m_plate uuid;
   -- 레시피
   r_jeyuk uuid; r_kimchi uuid; r_doenjang uuid; r_gyeran uuid; r_sundubu uuid;
-  r_rice uuid; r_sauce uuid; r_bulgogi uuid;
+  i_sauce uuid;
+  r_rice uuid; r_bulgogi uuid;
 
   d       int;
   v_day   date;
@@ -155,6 +156,10 @@ begin
   i_cheong    := save_ingredient(v_store, jsonb_build_object('name','청양고추','category_id',c_veg,'base_unit','g','per_volume',200,'safety_stock',3,'min_order_qty',3,'default_vendor_id',vd_nong));
   i_oil       := save_ingredient(v_store, jsonb_build_object('name','식용유','category_id',c_sauce,'base_unit','ml','per_volume',1800,'safety_stock',1,'min_order_qty',1,'default_vendor_id',vd_online));
   i_sugar     := save_ingredient(v_store, jsonb_build_object('name','설탕','category_id',c_grain,'base_unit','g','per_volume',3000,'safety_stock',1,'min_order_qty',1,'default_vendor_id',vd_online));
+  -- 양념장은 사장님이 만들어 두고 쓰는 물건이지만, 1차에서는 **일반 식재료**로 둔다.
+  -- 반제품(중간 레시피)은 설계상 1차 범위 밖이다(레시피 v3 §142 "구조만 예약").
+  -- 한 통 1,200ml 기준. 단가는 입고에서 나온다(3,806원/통 = 3.1717원/ml).
+  i_sauce     := save_ingredient(v_store, jsonb_build_object('name','불고기 양념장','category_id',c_sauce,'base_unit','ml','per_volume',1200,'safety_stock',1,'min_order_qty',1,'default_vendor_id',vd_online));
   i_soy       := save_ingredient(v_store, jsonb_build_object('name','진간장','category_id',c_sauce,'base_unit','ml','per_volume',1800,'safety_stock',1,'min_order_qty',1,'default_vendor_id',vd_online));
   i_beef      := save_ingredient(v_store, jsonb_build_object('name','소고기 불고기감','category_id',c_meat,'base_unit','g','per_volume',1000,'safety_stock',2,'min_order_qty',1,'default_vendor_id',vd_chuk));
   i_anchovy   := save_ingredient(v_store, jsonb_build_object('name','국물용 멸치','category_id',c_sea,'base_unit','g','per_volume',500,'safety_stock',1,'min_order_qty',1,'default_vendor_id',vd_online));
@@ -239,26 +244,13 @@ begin
     'target_profit_rate',60,'avg_monthly_sales',900,'category_id',rc_bap,
     'lines', jsonb_build_array(jsonb_build_object('ingredient_id',i_rice,'input_qty',1200))));
 
-  -- 반제품 — 이것 자체는 팔지 않는다(active=false). 불고기가 재료로 쓴다.
-  -- 반제품이 섞인 원가·소진 경로가 실제로 도는지 확인하는 용도이기도 하다.
-  r_sauce := save_recipe(v_store, jsonb_build_object(
-    'name','불고기 양념장','price',0,'tax_mode','exempt','base_servings',20,
-    'target_profit_rate',0,
-    'lines', jsonb_build_array(
-      jsonb_build_object('ingredient_id',i_soy,   'input_qty',400),
-      jsonb_build_object('ingredient_id',i_sugar, 'input_qty',300),
-      jsonb_build_object('ingredient_id',i_onion, 'input_qty',400),
-      jsonb_build_object('ingredient_id',i_garlic,'input_qty', 60),
-      jsonb_build_object('ingredient_id',i_pa,    'input_qty',100))));
-  perform deactivate_recipe(r_sauce);
-
   r_bulgogi := save_recipe(v_store, jsonb_build_object(
     'name','소불고기','price',14000,'tax_mode','included','base_servings',10,
     'target_profit_rate',35,'avg_monthly_sales',120,'category_id',rc_bokkeum,
     'lines', jsonb_build_array(
       jsonb_build_object('ingredient_id',i_beef,'input_qty',1500),
       jsonb_build_object('ingredient_id',i_onion,'input_qty',600),
-      jsonb_build_object('sub_recipe_id', r_sauce,'input_qty', 10)),   -- 양념장 10인분분
+      jsonb_build_object('ingredient_id',i_sauce,'input_qty',600)),   -- 양념장 600ml
     'extras', jsonb_build_array(jsonb_build_object('material_id',m_plate,'qty',1))));
 
   -- ── 고정지출 (MY-05) ────────────────────────────────────────
@@ -317,6 +309,7 @@ begin
       o := e7_place_order(v_store, i_pa,        vd_nong,   null, 1000,  4000, 4, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 4, 'S1-PA',     v_day);
       o := e7_place_order(v_store, i_onion,     vd_nong,   null, 1200,  2268, 6, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 6, 'S1-ONION',  v_day);
       o := e7_place_order(v_store, i_garlic,    vd_online, null, 1000,  8500, 2, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 2, 'S1-GARLIC', v_day);
+      o := e7_place_order(v_store, i_sauce,     vd_online, null, 1200,  3806, 3, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 3, 'S1-SAUCE',  v_day);
       o := e7_place_order(v_store, i_kimchi,    vd_online, null,10000, 32000, 3, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 3, 'S1-KIMCHI', v_day);
       o := e7_place_order(v_store, i_tofu,      vd_mart,   null,    1,  1800,60, v_day, 'manual', v_day); perform e1_confirm_inbound(o,60, 'S1-TOFU',   v_day);
       o := e7_place_order(v_store, i_egg,       vd_mart,   null,   30,  8700, 4, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 4, 'S1-EGG',    v_day);
@@ -337,6 +330,9 @@ begin
       o := e7_place_order(v_store, i_pork,   vd_chuk,   null, 5000, 65000, 3, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 3, 'S'||v_seq||'-PORK',  v_day);
       o := e7_place_order(v_store, i_pa,     vd_nong,   null, 1000,  4000, 3, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 3, 'S'||v_seq||'-PA',    v_day);
       o := e7_place_order(v_store, i_onion,  vd_nong,   null, 1200,  2268, 4, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 4, 'S'||v_seq||'-ONION', v_day);
+      -- 양념장도 같은 단가로 보충한다. 소불고기가 3주에 5,460ml 를 쓰므로
+      -- 첫날 3통만으로는 중간에 바닥나 소진이 멈춘다(원장과 판매가 어긋난다).
+      o := e7_place_order(v_store, i_sauce,  vd_online, null, 1200,  3806, 1, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 1, 'S'||v_seq||'-SAUCE', v_day);
 
       -- 나머지는 시세를 탄다 — 단가 추이 그래프가 실제로 움직이도록.
       o := e7_place_order(v_store, i_tofu,   vd_mart,   null,    1, 1800 + (v_seq % 4) * 50, 50, v_day, 'manual', v_day);
@@ -427,7 +423,7 @@ begin
   o := e7_place_order(v_store, i_kimchi,vd_online, null,10000, 33500, 2, business_day() + 2, 'manual', v_day);
   o := e7_place_order(v_store, i_egg,   vd_mart,   null,   30,  9100, 3, business_day() + 1, 'manual', v_day);
 
-  raise notice '시드 완료 — 식재료 18 · 메뉴 7(+반제품 1) · 22일치 매출·입고';
+  raise notice '시드 완료 — 식재료 19 · 메뉴 7 · 22일치 매출·입고';
 end $$;
 
 reset role;
