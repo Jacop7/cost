@@ -1428,6 +1428,14 @@ export type Database = {
           amount: number
         }[]
       }
+      day_menu_detail: {
+        Args: {
+          p_store: string
+          p_date: string
+          p_recipe: string
+        }
+        Returns: Json
+      }
       day_recipe_snapshot: {
         Args: {
           p_store: string
