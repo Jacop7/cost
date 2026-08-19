@@ -1,0 +1,738 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>식재료 · 레시피 수정 반영 상태</title>
+  <style>
+    :root {
+      --bg: #eef1f4;
+      --surface: #ffffff;
+      --surface-2: #f9fafb;
+      --ink: #191f28;
+      --ink-2: #333d4b;
+      --sub: #4e5968;
+      --ter: #8b95a1;
+      --line: #e5e8eb;
+      --line-2: #f2f4f6;
+      --blue: #3182f6;
+      --blue-tint: #ebf3fe;
+      --green: #15b374;
+      --green-tint: #e7f7f0;
+      --amber: #e07a00;
+      --amber-tint: #fff4e5;
+      --red: #f04452;
+      --red-tint: #feecec;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 15% 10%, rgba(49, 130, 246, .12), transparent 26rem),
+        var(--bg);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button { font: inherit; }
+
+    .workspace {
+      width: min(1240px, 100%);
+      margin: 0 auto;
+      padding: 28px 22px 52px;
+    }
+
+    .prototype-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 22px;
+    }
+
+    .eyebrow {
+      margin: 0 0 7px;
+      color: var(--blue);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: .08em;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(24px, 3vw, 34px);
+      letter-spacing: -.04em;
+    }
+
+    .lead {
+      max-width: 660px;
+      margin: 9px 0 0;
+      color: var(--sub);
+      font-size: 15px;
+      line-height: 1.55;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .control-label {
+      margin-right: 3px;
+      color: var(--sub);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .segmented {
+      display: flex;
+      gap: 3px;
+      padding: 4px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, .88);
+      box-shadow: 0 3px 12px rgba(25, 31, 40, .04);
+    }
+
+    .segmented button,
+    .action {
+      border: 0;
+      border-radius: 9px;
+      cursor: pointer;
+      font-weight: 800;
+      transition: transform .15s ease, background .15s ease, color .15s ease;
+    }
+
+    .segmented button {
+      padding: 8px 12px;
+      color: var(--ter);
+      background: transparent;
+      font-size: 13px;
+    }
+
+    .segmented button.active {
+      color: var(--ink);
+      background: var(--surface);
+      box-shadow: 0 2px 8px rgba(25, 31, 40, .08);
+    }
+
+    .action {
+      padding: 11px 14px;
+      color: #fff;
+      background: var(--blue);
+      font-size: 13px;
+    }
+
+    .action.secondary { color: var(--sub); background: var(--surface); border: 1px solid var(--line); }
+    button:active { transform: scale(.98); }
+
+    .phones {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 390px));
+      justify-content: center;
+      gap: 26px;
+    }
+
+    .phone-wrap { min-width: 0; }
+
+    .phone-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 0 8px 9px;
+      color: var(--sub);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .phone-label span:last-child { color: var(--ter); font-weight: 700; }
+
+    .phone {
+      position: relative;
+      height: 780px;
+      overflow: hidden;
+      border: 1px solid rgba(25, 31, 40, .1);
+      border-radius: 30px;
+      background: var(--surface);
+      box-shadow: 0 24px 70px rgba(25, 31, 40, .14);
+    }
+
+    .status-bar {
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 19px;
+      color: var(--ink);
+      font-size: 11px;
+      font-weight: 800;
+      background: var(--surface);
+    }
+
+    .signal { letter-spacing: 1px; }
+
+    .app-header {
+      height: 56px;
+      display: flex;
+      align-items: center;
+      padding: 0 15px;
+      border-bottom: 1px solid var(--line);
+      background: var(--surface);
+    }
+
+    .back {
+      width: 30px;
+      border: 0;
+      padding: 0;
+      color: var(--ink);
+      background: transparent;
+      font-size: 28px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .app-title { flex: 1; margin-left: 7px; font-size: 18px; font-weight: 800; }
+    .edit { color: var(--ink-2); font-size: 15px; font-weight: 800; }
+
+    .screen {
+      height: calc(100% - 84px);
+      overflow-y: auto;
+      padding: 12px 14px 30px;
+      background: #f2f4f6;
+      scrollbar-width: thin;
+    }
+
+    .card {
+      margin-bottom: 11px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--surface);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, .04);
+    }
+
+    .card-pad { padding: 16px; }
+    .badges { display: flex; gap: 6px; margin-bottom: 10px; }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      padding: 4px 8px;
+      border-radius: 999px;
+      color: var(--sub);
+      background: var(--surface-2);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .badge.green { color: var(--green); background: var(--green-tint); }
+    .badge.amber { color: var(--amber); background: var(--amber-tint); }
+
+    .item-title { margin: 0; font-size: 20px; font-weight: 800; letter-spacing: -.03em; }
+    .memo-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-top: 13px;
+      padding-top: 13px;
+      border-top: 1px solid var(--line-2);
+    }
+
+    .memo-label {
+      flex: 0 0 auto;
+      color: var(--sub);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .memo {
+      min-width: 0;
+      flex: 1;
+      margin: 0;
+      color: var(--ink-2);
+      font-size: 13px;
+      font-weight: 650;
+      line-height: 1.45;
+    }
+
+    .update-row {
+      width: calc(100% + 32px);
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      margin: 14px -16px -16px;
+      padding: 12px 16px;
+      border: 0;
+      border-top: 1px solid var(--line-2);
+      background: var(--surface-2);
+      color: inherit;
+      font-family: inherit;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .update-icon {
+      width: 22px;
+      height: 22px;
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      color: var(--blue);
+      background: var(--blue-tint);
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .update-copy { min-width: 0; flex: 1; overflow: hidden; }
+    .update-main {
+      overflow: hidden;
+      color: var(--ink-2);
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 22px;
+      letter-spacing: -.025em;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .update-main .divider { margin: 0 5px; color: #d1d6db; }
+    .reflect { color: var(--green); }
+    .reflect.pending { color: var(--amber); }
+    .chevron { flex: 0 0 auto; color: #b0b8c1; font-size: 22px; font-weight: 500; line-height: 20px; }
+
+    .history-panel {
+      position: absolute;
+      z-index: 20;
+      inset: 28px 0 0;
+      display: none;
+      flex-direction: column;
+      background: #f2f4f6;
+    }
+
+    .history-panel.open { display: flex; }
+
+    .history-head {
+      height: 56px;
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      padding: 0 15px;
+      border-bottom: 1px solid var(--line);
+      background: var(--surface);
+    }
+
+    .history-title { margin-left: 7px; font-size: 18px; font-weight: 800; }
+    .history-list { overflow-y: auto; padding: 12px 14px 28px; }
+    .history-count { margin: 2px 2px 10px; color: var(--sub); font-size: 13px; font-weight: 750; }
+
+    .history-item {
+      margin-bottom: 10px;
+      padding: 15px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--surface);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, .04);
+    }
+
+    .history-meta { display: flex; align-items: center; gap: 6px; }
+    .history-date { flex: 1; color: var(--ter); font-size: 12px; font-weight: 700; }
+    .history-status { color: var(--green); font-size: 11px; font-weight: 800; }
+    .history-status.pending { color: var(--amber); }
+    .history-item h3 { margin: 9px 0 3px; font-size: 15px; letter-spacing: -.02em; }
+    .history-source { color: var(--sub); font-size: 12px; font-weight: 650; }
+
+    .diff-list {
+      margin-top: 12px;
+      padding: 8px 10px;
+      border-radius: 9px;
+      background: var(--surface-2);
+    }
+
+    .diff-row { display: flex; align-items: center; gap: 8px; padding: 4px 0; font-size: 12px; }
+    .diff-label { width: 68px; flex: 0 0 auto; color: var(--ter); font-weight: 700; }
+    .diff-value { min-width: 0; flex: 1; color: var(--ink-2); font-weight: 750; text-align: right; }
+    .diff-arrow { margin: 0 3px; color: #b0b8c1; }
+    .auto-note { margin: 9px 0 0; color: #1f5fae; font-size: 12px; font-weight: 700; line-height: 1.45; }
+
+    .metric-top { display: flex; align-items: center; justify-content: space-between; }
+    .big-number { margin-top: 8px; font-size: 22px; font-weight: 800; letter-spacing: -.04em; }
+    .unit-price { color: var(--blue); font-size: 15px; font-weight: 800; }
+    .caption { margin-top: 5px; color: var(--ter); font-size: 13px; font-weight: 650; }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 13px 15px;
+      border-bottom: 1px solid var(--line-2);
+      background: var(--surface-2);
+    }
+
+    .section-title { color: var(--sub); font-size: 15px; font-weight: 800; }
+    .section-side { color: var(--ter); font-size: 12px; font-weight: 700; }
+    .blue-link { color: var(--blue); }
+
+    .rows { padding: 3px 15px 8px; }
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 0;
+      border-bottom: 1px solid var(--line-2);
+    }
+
+    .row:last-child { border-bottom: 0; }
+    .row-label { min-width: 0; flex: 1; color: var(--sub); font-size: 14px; font-weight: 650; }
+    .row-label strong { display: block; color: var(--ink); font-size: 15px; }
+    .row-label small { display: block; margin-top: 3px; color: var(--ter); font-size: 12px; }
+    .row-value { text-align: right; color: var(--ink); font-size: 15px; font-weight: 800; font-variant-numeric: tabular-nums; }
+    .row-value small { display: block; margin-top: 3px; color: var(--ter); font-size: 12px; font-weight: 650; }
+
+    .summary-grid { padding: 4px 15px 9px; }
+    .summary-row { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line-2); }
+    .summary-row:last-child { border-bottom: 0; }
+    .summary-row span:first-child { flex: 1; color: var(--sub); font-size: 14px; font-weight: 650; }
+    .summary-row strong { font-size: 15px; font-variant-numeric: tabular-nums; }
+
+    .cost-strip {
+      display: block;
+      padding: 4px 15px 9px;
+      border-top: 1px solid var(--line-2);
+      background: var(--surface);
+    }
+
+    .cost-cell {
+      display: flex;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--line-2);
+    }
+
+    .cost-cell:last-child { border-bottom: 0; }
+    .cost-cell span { flex: 1; color: var(--sub); font-size: 14px; font-weight: 650; }
+    .cost-cell strong { font-size: 15px; font-weight: 800; font-variant-numeric: tabular-nums; }
+    .cost-cell.profit strong { color: var(--green); }
+
+    .tabs { display: flex; gap: 20px; padding: 0 15px; border-bottom: 1px solid var(--line); }
+    .tab { position: relative; padding: 12px 0 10px; color: var(--ter); font-size: 13px; font-weight: 700; }
+    .tab.active { color: var(--ink); font-weight: 800; }
+    .tab.active::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; border-radius: 2px; background: var(--ink); }
+
+    .propagated-note {
+      display: flex;
+      gap: 8px;
+      margin: 9px 15px 2px;
+      padding: 9px 10px;
+      border-radius: 9px;
+      color: #1f5fae;
+      background: var(--blue-tint);
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.45;
+    }
+
+    .changed { animation: pulse 1.15s ease; }
+    @keyframes pulse { 0%, 100% { background: transparent; } 35% { background: var(--blue-tint); } }
+
+    .logic-note {
+      max-width: 806px;
+      margin: 24px auto 0;
+      padding: 16px 18px;
+      border: 1px solid rgba(49, 130, 246, .18);
+      border-radius: 14px;
+      color: var(--sub);
+      background: rgba(255, 255, 255, .8);
+      font-size: 14px;
+      line-height: 1.55;
+      box-shadow: 0 8px 30px rgba(25, 31, 40, .05);
+    }
+
+    .logic-note strong { color: var(--ink); }
+
+    @media (max-width: 840px) {
+      .workspace { padding: 18px 12px 42px; }
+      .prototype-head { align-items: stretch; flex-direction: column; }
+      .controls { justify-content: flex-start; }
+      .phones { grid-template-columns: minmax(0, 390px); }
+      .phone { height: 760px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="workspace">
+    <header class="prototype-head">
+      <div>
+        <p class="eyebrow">APP UI PROTOTYPE</p>
+        <h1>수정 내역 · 매출 반영 상태</h1>
+        <p class="lead">식재료 수정이 연관 레시피에 즉시 전파되는 모습과, 영업 시작 후 고친 값이 현재 매출 장부에는 반영되지 않는 상태를 함께 확인하는 화면입니다.</p>
+      </div>
+      <div class="controls" aria-label="프로토타입 조작">
+        <span class="control-label">현재 상태</span>
+        <div class="segmented" role="group" aria-label="영업 상태">
+          <button id="before-sales" type="button">영업 전</button>
+          <button id="during-sales" class="active" type="button">영업 중</button>
+        </div>
+        <button id="apply-change" class="action" type="button">대파 단가 수정</button>
+        <button id="reset" class="action secondary" type="button">초기화</button>
+      </div>
+    </header>
+
+    <section class="phones" aria-label="모바일 화면 비교">
+      <article class="phone-wrap">
+        <div class="phone-label"><span>식재료 상세</span><span>ING-03</span></div>
+        <div class="phone">
+          <div class="status-bar"><span>9:41</span><span class="signal">● ◔ ▰</span></div>
+          <header class="app-header"><button class="back" aria-label="뒤로">‹</button><span class="app-title">식재료</span><span class="edit">✎ 수정</span></header>
+          <div class="screen">
+            <section class="card card-pad">
+              <div class="badges"><span class="badge">채소</span><span class="badge">가락시장</span></div>
+              <h2 class="item-title">대파</h2>
+              <div class="memo-row"><span class="memo-label">메모</span><p class="memo">제육볶음·파채에 사용</p></div>
+              <button class="update-row history-trigger" type="button" data-history-target="ingredient-history" aria-label="대파 수정 내역 보기">
+                <span class="update-icon">↻</span>
+                <div class="update-copy">
+                  <div class="update-main">최근 수정 <span id="ingredient-time">08.18 09:10</span><span class="divider">·</span><span class="reflect" data-reflect>현재 매출 반영</span></div>
+                </div>
+                <span class="chevron" aria-hidden="true">›</span>
+              </button>
+            </section>
+
+            <section class="card card-pad">
+              <div class="metric-top"><span id="stock-badge" class="badge green">여유</span><span id="ingredient-unit-price" class="unit-price">4.00원/g</span></div>
+              <div class="big-number">총 3.5kg</div>
+              <div class="caption">현재 재고를 최소단위로 합산한 값</div>
+            </section>
+
+            <section class="card">
+              <div class="section-head"><span class="section-title">기준 단가</span><span class="section-side">입고 4건 기준</span></div>
+              <div class="rows">
+                <div class="row"><span class="row-label">실입고 기준<small>수량 가중평균</small></span><span id="base-price" class="row-value" style="color: var(--blue)">4.00원/g</span></div>
+                <div class="row"><span class="row-label">최근 입고<small>08.18 · 가락시장</small></span><span id="recent-price" class="row-value">4,000원<small>1kg</small></span></div>
+              </div>
+            </section>
+
+            <section class="card">
+              <div class="section-head"><span class="section-title">연결된 레시피</span><span class="section-side blue-link">2개</span></div>
+              <div class="rows">
+                <div id="linked-recipe" class="row"><span class="row-label"><strong>제육볶음</strong><small>1인분 40g 사용</small></span><span id="linked-cost" class="row-value">160원<small>재료비 5.7%</small></span></div>
+                <div class="row"><span class="row-label"><strong>대파 계란국</strong><small>1인분 15g 사용</small></span><span id="soup-cost" class="row-value">60원<small>재료비 3.1%</small></span></div>
+              </div>
+            </section>
+          </div>
+          <section id="ingredient-history" class="history-panel" aria-label="대파 수정 내역">
+            <header class="history-head"><button class="back history-close" type="button" aria-label="수정 내역 닫기">‹</button><span class="history-title">수정 내역</span></header>
+            <div class="history-list">
+              <p class="history-count">대파 · 변경 내역</p>
+              <article id="ingredient-history-latest" class="history-item" hidden>
+                <div class="history-meta"><span class="history-date">방금</span><span class="history-status" data-history-reflect>현재 매출 반영</span></div>
+                <h3>기준 단가 변경</h3>
+                <div class="history-source">입고 확정으로 자동 계산</div>
+                <div class="diff-list"><div class="diff-row"><span class="diff-label">기준 단가</span><span class="diff-value">4.00원/g <span class="diff-arrow">→</span> 4.80원/g</span></div></div>
+                <p class="auto-note">연결된 레시피 2개의 원가와 순이익을 자동 재계산했어요.</p>
+              </article>
+              <article class="history-item">
+                <div class="history-meta"><span class="history-date">2026.08.18 09:10</span><span class="history-status">현재 매출 반영</span></div>
+                <h3>식재료 정보 수정</h3>
+                <div class="history-source">사용자 직접 수정</div>
+                <div class="diff-list">
+                  <div class="diff-row"><span class="diff-label">메모</span><span class="diff-value">파채에 사용 <span class="diff-arrow">→</span> 제육볶음·파채에 사용</span></div>
+                  <div class="diff-row"><span class="diff-label">안전재고</span><span class="diff-value">2개 <span class="diff-arrow">→</span> 3개</span></div>
+                </div>
+              </article>
+              <article class="history-item">
+                <div class="history-meta"><span class="history-date">2026.08.15 08:42</span><span class="history-status">현재 매출 반영</span></div>
+                <h3>기준 단가 변경</h3>
+                <div class="history-source">가락시장 입고 확정</div>
+                <div class="diff-list"><div class="diff-row"><span class="diff-label">기준 단가</span><span class="diff-value">3.85원/g <span class="diff-arrow">→</span> 4.00원/g</span></div></div>
+              </article>
+            </div>
+          </section>
+        </div>
+      </article>
+
+      <article class="phone-wrap">
+        <div class="phone-label"><span>레시피 상세</span><span>RCP-02</span></div>
+        <div class="phone">
+          <div class="status-bar"><span>9:41</span><span class="signal">● ◔ ▰</span></div>
+          <header class="app-header"><button class="back" aria-label="뒤로">‹</button><span class="app-title">레시피</span><span class="edit">✎ 수정</span></header>
+          <div class="screen">
+            <section class="card">
+              <div class="card-pad" style="padding-bottom: 0">
+                <div style="display:flex; align-items:center; gap:8px"><h2 class="item-title" style="flex:1">제육볶음</h2><span class="badge green">목표 달성</span></div>
+                <div class="memo-row"><span class="memo-label">메모</span><p class="memo">평일 점심 대표 메뉴 · 보통맛 기준</p></div>
+                <button class="update-row history-trigger" type="button" data-history-target="recipe-history" aria-label="제육볶음 수정 내역 보기" style="margin-bottom:0">
+                  <span class="update-icon">↻</span>
+                  <div class="update-copy">
+                    <div class="update-main">최근 수정 <span id="recipe-time">08.18 09:10</span><span class="divider">·</span><span class="reflect" data-reflect>현재 매출 반영</span></div>
+                  </div>
+                  <span class="chevron" aria-hidden="true">›</span>
+                </button>
+              </div>
+              <div class="summary-grid">
+                <div class="summary-row"><span>판매가</span><strong>12,000원</strong></div>
+                <div class="summary-row"><span>기준 인분</span><strong>10인분</strong></div>
+                <div class="summary-row"><span>목표 순이익률</span><strong>30%</strong></div>
+              </div>
+              <div class="cost-strip">
+                <div class="cost-cell"><span>재료비</span><strong id="material-cost">2,806.40원</strong></div>
+                <div class="cost-cell"><span>대파 원가</span><strong id="green-onion-cost">160원</strong></div>
+                <div class="cost-cell profit"><span>순이익</span><strong id="profit">4,046.69원</strong></div>
+              </div>
+            </section>
+
+            <section class="card">
+              <div class="section-head"><span class="section-title">재료</span><span class="section-side blue-link">편집</span></div>
+              <div class="tabs"><span class="tab active">10인분 기준</span><span class="tab">1인분 기준</span></div>
+              <div id="propagated-note" class="propagated-note" hidden><span>↻</span><span>대파의 기준 단가 변경이 자동 반영됐어요.</span></div>
+              <div class="rows">
+                <div id="recipe-green-onion" class="row"><span class="row-label"><strong>대파</strong><small id="recipe-price-label">4.00원/g</small></span><span id="recipe-line-cost" class="row-value">1,600원<small>400g / 5.7%</small></span></div>
+                <div class="row"><span class="row-label"><strong>돼지고기</strong><small>12.50원/g</small></span><span class="row-value">10,000원<small>800g / 35.6%</small></span></div>
+                <div class="row"><span class="row-label"><strong>양념</strong><small>레시피 원가</small></span><span class="row-value">16,464원<small>소스 1회분</small></span></div>
+              </div>
+            </section>
+
+            <section class="card">
+              <div class="section-head"><span class="section-title">현재 매출 기준</span><span class="section-side">오늘 영업</span></div>
+              <div class="rows">
+                <div class="row"><span class="row-label">장부에 고정된 재료비<small id="ledger-detail">영업 시작 시점 기준</small></span><span id="ledger-cost" class="row-value">2,806.40원</span></div>
+                <div class="row"><span class="row-label">새 원가 적용일<small>매출 기록의 일관성을 유지해요</small></span><span id="effective-date" class="row-value">오늘</span></div>
+              </div>
+            </section>
+          </div>
+          <section id="recipe-history" class="history-panel" aria-label="제육볶음 수정 내역">
+            <header class="history-head"><button class="back history-close" type="button" aria-label="수정 내역 닫기">‹</button><span class="history-title">수정 내역</span></header>
+            <div class="history-list">
+              <p class="history-count">제육볶음 · 변경 내역</p>
+              <article id="recipe-history-latest" class="history-item" hidden>
+                <div class="history-meta"><span class="history-date">방금</span><span class="history-status" data-history-reflect>현재 매출 반영</span></div>
+                <h3>대파 기준 단가 자동 반영</h3>
+                <div class="history-source">식재료 변경에서 자동 전파</div>
+                <div class="diff-list">
+                  <div class="diff-row"><span class="diff-label">재료비</span><span class="diff-value">2,806.40원 <span class="diff-arrow">→</span> 2,838.40원</span></div>
+                  <div class="diff-row"><span class="diff-label">순이익</span><span class="diff-value">4,046.69원 <span class="diff-arrow">→</span> 4,014.69원</span></div>
+                </div>
+              </article>
+              <article class="history-item">
+                <div class="history-meta"><span class="history-date">2026.08.18 09:10</span><span class="history-status">현재 매출 반영</span></div>
+                <h3>레시피 정보 수정</h3>
+                <div class="history-source">사용자 직접 수정</div>
+                <div class="diff-list">
+                  <div class="diff-row"><span class="diff-label">메모</span><span class="diff-value">점심 메뉴 <span class="diff-arrow">→</span> 평일 점심 대표 메뉴</span></div>
+                  <div class="diff-row"><span class="diff-label">목표 이익률</span><span class="diff-value">28% <span class="diff-arrow">→</span> 30%</span></div>
+                </div>
+              </article>
+              <article class="history-item">
+                <div class="history-meta"><span class="history-date">2026.08.12 14:25</span><span class="history-status">현재 매출 반영</span></div>
+                <h3>돼지고기 기준 단가 자동 반영</h3>
+                <div class="history-source">식재료 변경에서 자동 전파</div>
+                <div class="diff-list"><div class="diff-row"><span class="diff-label">재료비</span><span class="diff-value">2,741.20원 <span class="diff-arrow">→</span> 2,806.40원</span></div></div>
+              </article>
+            </div>
+          </section>
+        </div>
+      </article>
+    </section>
+
+    <aside class="logic-note"><strong>표시 원칙</strong> · “최근 수정”은 직접 수정뿐 아니라 식재료 단가 변경으로 레시피가 자동 재계산된 시각도 포함합니다. 현재 화면의 원가는 즉시 바뀌고, 영업 중이라면 오늘 매출은 영업 시작 시점 값으로 유지됩니다.</aside>
+  </main>
+
+  <script>
+    const state = { duringSales: true, changed: false };
+    const $ = (id) => document.getElementById(id);
+
+    function setActiveState() {
+      $('before-sales').classList.toggle('active', !state.duringSales);
+      $('during-sales').classList.toggle('active', state.duringSales);
+      document.querySelectorAll('[data-reflect]').forEach((node) => {
+        const pending = state.changed && state.duringSales;
+        node.textContent = pending ? '현재 매출 미반영' : '현재 매출 반영';
+        node.classList.toggle('pending', pending);
+      });
+      document.querySelectorAll('[data-history-reflect]').forEach((node) => {
+        const pending = state.changed && state.duringSales;
+        node.textContent = pending ? '현재 매출 미반영' : '현재 매출 반영';
+        node.classList.toggle('pending', pending);
+      });
+      $('effective-date').textContent = state.changed && state.duringSales ? '다음 영업일' : '오늘';
+      $('ledger-detail').textContent = state.duringSales ? '영업 시작 시점 기준' : '아직 영업 전 · 최신값 사용';
+      $('ledger-cost').textContent = state.changed && !state.duringSales ? '2,838.40원' : '2,806.40원';
+    }
+
+    function pulse(...ids) {
+      ids.forEach((id) => {
+        const node = $(id);
+        node.classList.remove('changed');
+        void node.offsetWidth;
+        node.classList.add('changed');
+      });
+    }
+
+    function applyChange() {
+      state.changed = true;
+      $('ingredient-time').textContent = '방금';
+      $('recipe-time').textContent = '방금';
+      $('ingredient-unit-price').textContent = '4.80원/g';
+      $('base-price').textContent = '4.80원/g';
+      $('recent-price').innerHTML = '4,800원<small>1kg</small>';
+      $('linked-cost').innerHTML = '192원<small>재료비 6.8%</small>';
+      $('soup-cost').innerHTML = '72원<small>재료비 3.7%</small>';
+      $('material-cost').textContent = '2,838.40원';
+      $('green-onion-cost').textContent = '192원';
+      $('profit').textContent = '4,014.69원';
+      $('recipe-price-label').textContent = '4.80원/g';
+      $('recipe-line-cost').innerHTML = '1,920원<small>400g / 6.8%</small>';
+      $('propagated-note').hidden = false;
+      $('ingredient-history-latest').hidden = false;
+      $('recipe-history-latest').hidden = false;
+      $('apply-change').textContent = '단가 수정됨';
+      $('apply-change').disabled = true;
+      $('apply-change').style.opacity = '.65';
+      setActiveState();
+      pulse('linked-recipe', 'recipe-green-onion', 'material-cost', 'profit');
+    }
+
+    function reset() {
+      state.changed = false;
+      $('ingredient-time').textContent = '08.18 09:10';
+      $('recipe-time').textContent = '08.18 09:10';
+      $('ingredient-unit-price').textContent = '4.00원/g';
+      $('base-price').textContent = '4.00원/g';
+      $('recent-price').innerHTML = '4,000원<small>1kg</small>';
+      $('linked-cost').innerHTML = '160원<small>재료비 5.7%</small>';
+      $('soup-cost').innerHTML = '60원<small>재료비 3.1%</small>';
+      $('material-cost').textContent = '2,806.40원';
+      $('green-onion-cost').textContent = '160원';
+      $('profit').textContent = '4,046.69원';
+      $('recipe-price-label').textContent = '4.00원/g';
+      $('recipe-line-cost').innerHTML = '1,600원<small>400g / 5.7%</small>';
+      $('propagated-note').hidden = true;
+      $('ingredient-history-latest').hidden = true;
+      $('recipe-history-latest').hidden = true;
+      $('apply-change').textContent = '대파 단가 수정';
+      $('apply-change').disabled = false;
+      $('apply-change').style.opacity = '1';
+      setActiveState();
+    }
+
+    $('before-sales').addEventListener('click', () => { state.duringSales = false; setActiveState(); });
+    $('during-sales').addEventListener('click', () => { state.duringSales = true; setActiveState(); });
+    $('apply-change').addEventListener('click', applyChange);
+    $('reset').addEventListener('click', reset);
+    document.querySelectorAll('.history-trigger').forEach((button) => {
+      button.addEventListener('click', () => $(button.dataset.historyTarget).classList.add('open'));
+    });
+    document.querySelectorAll('.history-close').forEach((button) => {
+      button.addEventListener('click', () => button.closest('.history-panel').classList.remove('open'));
+    });
+    setActiveState();
+  </script>
+</body>
+</html>
