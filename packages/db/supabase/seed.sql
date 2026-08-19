@@ -302,6 +302,11 @@ begin
     v_day := business_day() - d;
     v_seq := v_seq + 1;
 
+    -- ── 영업 시작 (0048) ─────────────────────────────────────
+    -- 그날 쓸 값(판매가·재료 구성·단가·부자재·고정지출률)을 여기서 굳힌다.
+    -- 판매는 영업일이 열려 있어야 받는다 — 실제 사장님 흐름과 같다.
+    perform open_business_day(v_store, v_day);
+
     -- ── 입고 (E7 발주 → E1 입고 확정) ───────────────────────
     -- 첫날은 개업 재고를 크게 채우고, 이후 3일마다 보충한다.
     if v_seq = 1 then
@@ -417,6 +422,13 @@ begin
     elsif d = 4 then
       perform e2_discard(i_cheong, greatest(stock_total_base(i_cheong) - 120, 0), v_day);
     end if;
+
+    -- ── 영업 종료 ────────────────────────────────────────────
+    -- 오늘은 열어 둔다. 앱을 켜면 영업 중 상태로 시작해 사장님이 직접 닫는다.
+    if d > 0 then
+      perform close_business_day(v_store, 'manual');
+    end if;
+
   end loop;
 
   -- ── 진행 중인 발주 (ORD 대기 탭) ────────────────────────────

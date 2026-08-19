@@ -108,7 +108,7 @@ begin
   end;
 
   -- 수동 종료는 알리지 않는다 — 사장님이 직접 눌렀으니 이미 안다.
-  perform pg_temp.eq('수동 종료는 알림 대상이 아니다',
-    (select count(*) from business_days
-      where store_id = pg_temp.store() and close_method = 'manual' and not auto_close_ack), 0, 0);
+  -- ⚠ 시드가 지난 21일을 수동 종료해 두므로 전체를 세면 안 된다. 알림 대상만 본다.
+  perform pg_temp.ok('수동 종료는 알림 대상이 아니다',
+    unacked_auto_close(pg_temp.store()) is null);
 end $t$;
