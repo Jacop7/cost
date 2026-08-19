@@ -38,6 +38,65 @@ export type Database = {
           },
         ]
       }
+      business_days: {
+        Row: {
+          auto_close_ack: boolean
+          business_date: string
+          close_method:
+            | Database["public"]["Enums"]["business_close_method"]
+            | null
+          closed_at: string | null
+          created_at: string
+          id: string
+          last_activity_at: string
+          opened_at: string
+          planned_close_at: string
+          snapshot: Json
+          status: Database["public"]["Enums"]["business_day_status"]
+          store_id: string
+        }
+        Insert: {
+          auto_close_ack?: boolean
+          business_date: string
+          close_method?:
+            | Database["public"]["Enums"]["business_close_method"]
+            | null
+          closed_at?: string | null
+          created_at?: string
+          id?: string
+          last_activity_at?: string
+          opened_at?: string
+          planned_close_at: string
+          snapshot: Json
+          status?: Database["public"]["Enums"]["business_day_status"]
+          store_id: string
+        }
+        Update: {
+          auto_close_ack?: boolean
+          business_date?: string
+          close_method?:
+            | Database["public"]["Enums"]["business_close_method"]
+            | null
+          closed_at?: string | null
+          created_at?: string
+          id?: string
+          last_activity_at?: string
+          opened_at?: string
+          planned_close_at?: string
+          snapshot?: Json
+          status?: Database["public"]["Enums"]["business_day_status"]
+          store_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_days_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       categories: {
         Row: {
           created_at: string
@@ -75,6 +134,7 @@ export type Database = {
       }
       daily_sales: {
         Row: {
+          business_day_id: string | null
           created_at: string
           daily_extra: number
           etc_items: Json
@@ -87,6 +147,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          business_day_id?: string | null
           created_at?: string
           daily_extra?: number
           etc_items?: Json
@@ -99,6 +160,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          business_day_id?: string | null
           created_at?: string
           daily_extra?: number
           etc_items?: Json
@@ -111,6 +173,13 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "daily_sales_business_day_id_fkey"
+            columns: ["business_day_id"]
+            isOneToOne: false
+            referencedRelation: "business_days"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "daily_sales_store_id_fkey"
             columns: ["store_id"]
@@ -303,6 +372,7 @@ export type Database = {
       }
       inventory_events: {
         Row: {
+          business_day_id: string | null
           count_delta: number | null
           id: string
           idempotency_key: string | null
@@ -320,6 +390,7 @@ export type Database = {
           waste: boolean
         }
         Insert: {
+          business_day_id?: string | null
           count_delta?: number | null
           id?: string
           idempotency_key?: string | null
@@ -337,6 +408,7 @@ export type Database = {
           waste?: boolean
         }
         Update: {
+          business_day_id?: string | null
           count_delta?: number | null
           id?: string
           idempotency_key?: string | null
@@ -354,6 +426,13 @@ export type Database = {
           waste?: boolean
         }
         Relationships: [
+          {
+            foreignKeyName: "inventory_events_business_day_id_fkey"
+            columns: ["business_day_id"]
+            isOneToOne: false
+            referencedRelation: "business_days"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "inventory_events_ingredient_id_fk"
             columns: ["ingredient_id"]
@@ -583,6 +662,7 @@ export type Database = {
         Row: {
           amount: number
           brand_id: string | null
+          business_day_id: string | null
           created_at: string
           expected_at: string | null
           id: string
@@ -599,6 +679,7 @@ export type Database = {
         Insert: {
           amount: number
           brand_id?: string | null
+          business_day_id?: string | null
           created_at?: string
           expected_at?: string | null
           id?: string
@@ -615,6 +696,7 @@ export type Database = {
         Update: {
           amount?: number
           brand_id?: string | null
+          business_day_id?: string | null
           created_at?: string
           expected_at?: string | null
           id?: string
@@ -634,6 +716,13 @@ export type Database = {
             columns: ["brand_id"]
             isOneToOne: false
             referencedRelation: "brands"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_records_business_day_id_fkey"
+            columns: ["business_day_id"]
+            isOneToOne: false
+            referencedRelation: "business_days"
             referencedColumns: ["id"]
           },
           {
@@ -1206,6 +1295,12 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      ack_auto_close: {
+        Args: {
+          p_business_day: string
+        }
+        Returns: undefined
+      }
       assert_my_store: {
         Args: {
           p_store: string
@@ -1216,11 +1311,27 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: undefined
       }
+      auto_close_due: {
+        Args: {
+          p_store: string
+        }
+        Returns: Json
+      }
+      auto_close_grace: {
+        Args: Record<PropertyKey, never>
+        Returns: unknown
+      }
       base_unit_price: {
         Args: {
           p_ingredient: string
         }
         Returns: number
+      }
+      build_day_snapshot: {
+        Args: {
+          p_store: string
+        }
+        Returns: Json
       }
       business_cutoff: {
         Args: Record<PropertyKey, never>
@@ -1242,12 +1353,46 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: string
       }
+      close_business_day: {
+        Args: {
+          p_store: string
+          p_method?: Database["public"]["Enums"]["business_close_method"]
+        }
+        Returns: Json
+      }
+      close_if_due: {
+        Args: {
+          p_store: string
+        }
+        Returns: Json
+      }
       consume_stock: {
         Args: {
           p_ingredient: string
           p_amount: number
         }
         Returns: number
+      }
+      current_business_day: {
+        Args: {
+          p_store: string
+        }
+        Returns: {
+          auto_close_ack: boolean
+          business_date: string
+          close_method:
+            | Database["public"]["Enums"]["business_close_method"]
+            | null
+          closed_at: string | null
+          created_at: string
+          id: string
+          last_activity_at: string
+          opened_at: string
+          planned_close_at: string
+          snapshot: Json
+          status: Database["public"]["Enums"]["business_day_status"]
+          store_id: string
+        }
       }
       deactivate_ingredient: {
         Args: {
@@ -1453,11 +1598,25 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: string[]
       }
+      open_business_day: {
+        Args: {
+          p_store: string
+          p_date?: string
+        }
+        Returns: Json
+      }
       order_board: {
         Args: {
           p_store: string
         }
         Returns: Json
+      }
+      planned_close: {
+        Args: {
+          p_store: string
+          p_date: string
+        }
+        Returns: string
       }
       purchase_history: {
         Args: {
@@ -1567,6 +1726,13 @@ export type Database = {
           p_ingredient: string
         }
         Returns: undefined
+      }
+      reopen_business_day: {
+        Args: {
+          p_store: string
+          p_date: string
+        }
+        Returns: Json
       }
       reorder_categories: {
         Args: {
@@ -1718,6 +1884,13 @@ export type Database = {
         }
         Returns: string
       }
+      set_break: {
+        Args: {
+          p_store: string
+          p_on: boolean
+        }
+        Returns: Json
+      }
       settings_lists: {
         Args: {
           p_store: string
@@ -1748,9 +1921,23 @@ export type Database = {
         }
         Returns: number
       }
+      touch_business_day: {
+        Args: {
+          p_store: string
+        }
+        Returns: string
+      }
+      unacked_auto_close: {
+        Args: {
+          p_store: string
+        }
+        Returns: Json
+      }
     }
     Enums: {
       base_unit: "g" | "ml" | "ea"
+      business_close_method: "manual" | "auto"
+      business_day_status: "open" | "break" | "closed"
       candidate_reason: "safety_stock" | "soon_out" | "recipe" | "manual"
       candidate_status: "pending" | "ordered" | "excluded"
       category_kind: "ingredient" | "recipe" | "material"
