@@ -219,6 +219,64 @@ export interface SaveSaleInput {
 /** 재고가 모자란 채로 팔린 항목 — 화면이 "재고 기록이 실제와 다를 수 있어요"를 알려야 한다. */
 export interface Shortage { ingredientId: string; name: string; needed: number; available: number; shortage: number }
 
+/**
+ * 그날 기준 메뉴 손익 세부 — 판매가·재료 줄·부자재 항목·고정지출 항목까지
+ * **영업 시작 시점 값**이다(0051).
+ *
+ * ⚠ 레시피 상세(useRecipeDetail)를 쓰면 안 된다. 그건 "지금 팔면 얼마 남나"라
+ *   레시피를 고치는 순간 지난 날짜의 세부까지 따라 움직인다. 여기는 장부다.
+ */
+export interface DayMenuLine {
+  ingredientId: string; name: string; baseUnit: 'g' | 'ml' | 'ea';
+  perServing: number; unitPrice: number | null; amount: number;
+}
+export interface DayMenuExtra { name: string; qty: number; amount: number }
+export interface DayMenuFixedItem { key: string; amount: number; rate: number }
+export interface DayMenuDetail {
+  sold: boolean;
+  name: string;
+  qty: number; qtyWaste: number; qtyHall: number; qtyDelivery: number; qtyTakeout: number;
+  baseServings: number;
+  taxMode: 'included' | 'separate' | 'exempt';
+  price: number; materialCost: number; extraCost: number;
+  fixedRate: number; fixedCost: number; tax: number; profit: number;
+  lines: DayMenuLine[]; extras: DayMenuExtra[]; fixedItems: DayMenuFixedItem[];
+}
+
+export function useDayMenuDetail(date: string | undefined, recipeId: string | undefined) {
+  const storeId = useStoreId();
+  return useQuery({
+    queryKey: [...qk.salesDay(date ?? ''), 'menu', recipeId ?? ''],
+    enabled: Boolean(storeId && date && recipeId),
+    queryFn: async (): Promise<DayMenuDetail> => {
+      const { data, error } = await supabase.rpc('day_menu_detail', {
+        p_store: storeId, p_date: date as string, p_recipe: recipeId as string,
+      });
+      if (error) throw new Error(error.message);
+      const r = (data ?? {}) as unknown as Record<string, unknown>;
+      const arr = (k: string) => (r[k] ?? []) as Record<string, unknown>[];
+      return {
+        sold: Boolean(r.sold),
+        name: String(r.name ?? ''),
+        qty: num(r.qty), qtyWaste: num(r.qty_waste),
+        qtyHall: num(r.qty_hall), qtyDelivery: num(r.qty_delivery), qtyTakeout: num(r.qty_takeout),
+        baseServings: num(r.base_servings),
+        taxMode: (r.tax_mode ?? 'included') as DayMenuDetail['taxMode'],
+        price: num(r.price), materialCost: num(r.material_cost), extraCost: num(r.extra_cost),
+        fixedRate: num(r.fixed_rate), fixedCost: num(r.fixed_cost),
+        tax: num(r.tax), profit: num(r.profit),
+        lines: arr('lines').map((l) => ({
+          ingredientId: String(l.ingredient_id), name: String(l.name),
+          baseUnit: (l.base_unit ?? 'g') as DayMenuLine['baseUnit'],
+          perServing: num(l.per_serving), unitPrice: numOrNull(l.unit_price), amount: num(l.amount),
+        })),
+        extras: arr('extras').map((e) => ({ name: String(e.name), qty: num(e.qty), amount: num(e.amount) })),
+        fixedItems: arr('fixed_items').map((i) => ({ key: String(i.key), amount: num(i.amount), rate: num(i.rate) })),
+      };
+    },
+  });
+}
+
 export function useSaveSale() {
   const qc = useQueryClient();
   const storeId = useStoreId();

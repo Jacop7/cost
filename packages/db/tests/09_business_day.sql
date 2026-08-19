@@ -112,3 +112,70 @@ begin
   perform pg_temp.ok('수동 종료는 알림 대상이 아니다',
     unacked_auto_close(pg_temp.store()) is null);
 end $t$;
+
+-- ════════════════════════════════════════════════════════════════
+-- 0050·0051 · 오늘 값은 하루 동안 고정된다
+--
+-- 사장님: "계속 판매가만 생각하고 있는데 세부 항목도 영향 있다니까"
+-- 판매가뿐 아니라 재료 줄·부자재 항목·고정지출 항목까지 그날 값이어야 한다.
+-- ════════════════════════════════════════════════════════════════
+
+do $t$
+declare
+  v_rcp  uuid := pg_temp.rcp('제육볶음');
+  v_day  date := business_day();
+  b0     jsonb;
+  b1     jsonb;
+begin
+  -- ⚠ 앞 블록이 영업일을 닫아 뒀다. 판매를 받으려면 다시 열어야 한다 —
+  --   그 자체가 "종료된 날은 못 판다"는 계약의 확인이기도 하다.
+  perform reopen_business_day(pg_temp.store(), v_day);
+  perform e10_sale_recorded(pg_temp.store(), v_day, v_rcp, 10, 0, 0, 0);
+  b0 := day_menu_detail(pg_temp.store(), v_day, v_rcp);
+
+  perform pg_temp.eq('그날 판매가', (b0->>'price')::numeric, 12000, 0);
+  perform pg_temp.eq('그날 재료비', (b0->>'material_cost')::numeric, 2806.40, 0.01);
+  perform pg_temp.eq('그날 부자재', (b0->>'extra_cost')::numeric, 300, 0.01);
+  perform pg_temp.eq('재료 줄 4개', jsonb_array_length(b0->'lines'), 4, 0);
+  perform pg_temp.eq('부자재 줄 1개', jsonb_array_length(b0->'extras'), 1, 0);
+  perform pg_temp.ok('고정지출 항목별 배분이 있다', jsonb_array_length(b0->'fixed_items') > 0);
+  perform pg_temp.eq('고정지출 항목 합 = 고정비',
+    (select sum((i->>'amount')::numeric) from jsonb_array_elements(b0->'fixed_items') i),
+    (b0->>'fixed_cost')::numeric, 0.01);
+
+  -- ── 세부를 크게 흔든다 ──────────────────────────────────────
+  -- 부자재 삭제 + 인건비 인상 + 재료 단가 급등. 셋 다 지난 장부를 건드리면 안 된다.
+  perform save_recipe(pg_temp.store(), jsonb_build_object(
+    'id', v_rcp, 'name', '제육볶음', 'price', 12000, 'base_servings', 10,
+    'extras', jsonb_build_array()));
+  perform save_fixed_costs(pg_temp.store(), business_month(), 12000000,
+    (select jsonb_agg(case when x->>'key' = 'labor'
+        then jsonb_set(jsonb_set(x, '{total}', '3000000'), '{lines}', '[]'::jsonb) || '{"mode":"total"}'::jsonb
+        else x end)
+       from fixed_costs_monthly, jsonb_array_elements(items) x
+      where store_id = pg_temp.store() and month = business_month()));
+  perform e1_confirm_inbound(
+    e7_place_order(pg_temp.store(), pg_temp.ing('돼지고기 앞다리'),
+      (select id from vendors where store_id = pg_temp.store() limit 1),
+      null, 5000, 120000, 4, v_day), 4, 'TEST-SPIKE');
+
+  b1 := day_menu_detail(pg_temp.store(), v_day, v_rcp);
+
+  perform pg_temp.eq('판매가 그대로', (b1->>'price')::numeric, (b0->>'price')::numeric, 0);
+  perform pg_temp.eq('재료비 그대로', (b1->>'material_cost')::numeric, (b0->>'material_cost')::numeric, 0.0001);
+  perform pg_temp.eq('부자재 그대로', (b1->>'extra_cost')::numeric, (b0->>'extra_cost')::numeric, 0.0001);
+  perform pg_temp.eq('고정비 그대로', (b1->>'fixed_cost')::numeric, (b0->>'fixed_cost')::numeric, 0.0001);
+  perform pg_temp.eq('순이익 그대로', (b1->>'profit')::numeric, (b0->>'profit')::numeric, 0.0001);
+  -- 지운 부자재가 그날 세부에는 남아야 한다 — 그날 실제로 들어간 원가다.
+  perform pg_temp.eq('지운 부자재가 그날엔 남는다',
+    jsonb_array_length(b1->'extras'), 1, 0);
+  perform pg_temp.eq('급등한 재료의 그날 금액도 그대로',
+    (select (l->>'amount')::numeric from jsonb_array_elements(b1->'lines') l
+      where l->>'name' = '돼지고기 앞다리'),
+    (select (l->>'amount')::numeric from jsonb_array_elements(b0->'lines') l
+      where l->>'name' = '돼지고기 앞다리'), 0.0001);
+
+  -- 반대로 레시피 화면(현재값)은 바뀌어야 한다 — "앞으로 이렇게 판다"이므로.
+  perform pg_temp.ok('레시피 현재값은 바뀐다',
+    (select material_cost from recipe_list(pg_temp.store()) where id = v_rcp) > 2806.40);
+end $t$;

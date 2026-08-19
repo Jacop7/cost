@@ -12,7 +12,7 @@ import { safeBack } from '@/lib/nav';
 import { T, won } from '@/theme/tokens';
 import { formatQuantity, formatUnitPrice } from '@sikjae/core';
 import { useRecipeDetail } from '@/features/recipes/hooks';
-import { useSalesRange } from '../hooks';
+import { useDayMenuDetail, useSalesRange } from '../hooks';
 import { rangeLabel, todayBusiness } from '../period';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
@@ -36,16 +36,43 @@ export default function SalesMenuDetailScreen() {
 
   const recipe = useRecipeDetail(params.recipe);
   const range = useSalesRange(from, to);
+  /** 하루 조회면 그날 기준값을 쓴다. 기간이면 날마다 달라 한 벌로 못 그린다. */
+  const oneDay = from === to;
+  const day = useDayMenuDetail(oneDay ? from : undefined, params.recipe);
 
   const r = recipe.data;
   const sold = range.data?.menu.find((m) => m.recipeId === params.recipe);
 
-  // 개당 손익 — 서버가 준 현재 레시피 값으로 구성한다.
-  const price = r?.price ?? 0;
-  const material = r?.materialCost ?? 0;
-  const extra = r?.extraCost ?? 0;
-  const tax = r?.taxMode === 'included' ? (price * 10) / 110 : 0;
-  const fixed = (r?.fixedRate ?? 0) * price;
+  /**
+   * 개당 손익 — **그날 기준값**이다(0051).
+   *
+   * ⚠ 예전에는 현재 레시피(useRecipeDetail)로 구성했다. 그러면 레시피를 고치는
+   *   순간 지난 날짜의 재료 줄·부자재·고정지출 항목까지 따라 움직인다.
+   *   여기는 "그날 얼마 벌었나"를 보는 장부라 그날 값이어야 한다.
+   *   레시피 화면은 "지금 팔면 얼마 남나"라 현재 값이 맞다 — 둘은 다른 질문이다.
+   *
+   * 그날 판매가 없으면(또는 기간 조회면) 현재 레시피로 떨어진다.
+   */
+  const d = oneDay && day.data?.sold ? day.data : null;
+
+  /**
+   * 화면이 그릴 재료·부자재 줄. 그날 값이 있으면 그것, 없으면 현재 레시피.
+   * 두 소스의 모양이 달라 여기서 한 번만 맞춘다 — 아래 JSX 는 분기를 모른다.
+   */
+  const lineRows: { key: string; name: string; baseUnit: 'g' | 'ml' | 'ea' | null; perServing: number; unitPrice: number | null }[] =
+    d
+      ? d.lines.map((l) => ({ key: l.ingredientId, name: l.name, baseUnit: l.baseUnit, perServing: l.perServing, unitPrice: l.unitPrice }))
+      : (r?.lines ?? []).map((l) => ({ key: l.id, name: l.name, baseUnit: l.baseUnit, perServing: l.perServing, unitPrice: l.unitPrice }));
+
+  const extraRows: { key: string; name: string; amount: number }[] =
+    d
+      ? d.extras.map((e, i) => ({ key: `${e.name}-${i}`, name: e.name, amount: e.amount }))
+      : (r?.extras ?? []).map((e) => ({ key: e.id, name: e.name, amount: e.amount }));
+  const price = d?.price ?? r?.price ?? 0;
+  const material = d?.materialCost ?? r?.materialCost ?? 0;
+  const extra = d?.extraCost ?? r?.extraCost ?? 0;
+  const tax = d ? d.tax : r?.taxMode === 'included' ? (price * 10) / 110 : 0;
+  const fixed = d ? d.fixedCost : (r?.fixedRate ?? 0) * price;
   const profit = price - material - extra - tax - fixed;
   const rate = price > 0 ? Math.round((profit / price) * 1000) / 10 : 0;
   const p = (v: number) => (price > 0 ? Math.round((v / price) * 1000) / 10 : 0);
@@ -151,13 +178,13 @@ export default function SalesMenuDetailScreen() {
 
               {/* 재료 */}
               <Card pad={0} style={{ overflow: 'hidden' }}>
-                <SecHead title="재료" sub="(1인분 기준)" />
+                <SecHead title="재료" sub={d ? '(1인분 · 그날 기준)' : '(1인분 기준)'} />
                 <View style={{ paddingHorizontal: 15, paddingTop: 4, paddingBottom: 15 }}>
-                  {r.lines.map((l, i) => {
+                  {lineRows.map((l, i, all) => {
                     const cost = l.unitPrice === null ? null : l.perServing * l.unitPrice;
                     const unit = dispUnit(l.baseUnit);
                     return (
-                      <View key={l.id} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10, borderBottomWidth: i < r.lines.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
+                      <View key={l.key} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10, borderBottomWidth: i < all.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
                         <View style={{ flex: 1, minWidth: 0 }}>
                           <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }} numberOfLines={1}>
                             {l.name}
@@ -188,12 +215,12 @@ export default function SalesMenuDetailScreen() {
               </Card>
 
               {/* 부가 원가 */}
-              {r.extras.length > 0 ? (
+              {extraRows.length > 0 ? (
                 <Card pad={0} style={{ overflow: 'hidden' }}>
-                  <SecHead title="부자재" sub="(이 메뉴에만 들어가는 부가 원가)" />
+                  <SecHead title="부자재" sub={d ? '(그날 기준)' : '(이 메뉴에만 들어가는 부가 원가)'} />
                   <View style={{ paddingHorizontal: 15, paddingBottom: 4 }}>
-                    {r.extras.map((e, i) => (
-                      <View key={e.id} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 13, borderBottomWidth: i < r.extras.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
+                    {extraRows.map((e, i, all) => (
+                      <View key={e.key} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 13, borderBottomWidth: i < all.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
                         <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.ink2 }}>{e.name}</Text>
                         <View style={{ alignItems: 'flex-end' }}>
                           <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{won(e.amount)}원</Text>
@@ -210,8 +237,8 @@ export default function SalesMenuDetailScreen() {
                 <SecHead title="고정 지출 · 세금" sub="(개당 환산)" />
                 <View style={{ paddingHorizontal: 15, paddingBottom: 4 }}>
                   {([
-                    ['고정 지출', fixed, `고정지출률 ${Math.round((r.fixedRate ?? 0) * 1000) / 10}%`],
-                    ['부가세', tax, r.taxMode === 'included' ? '판매가 포함 (10/110)' : r.taxMode === 'separate' ? '별도' : '면세'],
+                    ['고정 지출', fixed, `고정지출률 ${Math.round((d ? d.fixedRate : r.fixedRate ?? 0) * 1000) / 10}%`],
+                    ['부가세', tax, (d ? d.taxMode : r.taxMode) === 'included' ? '판매가 포함 (10/110)' : (d ? d.taxMode : r.taxMode) === 'separate' ? '별도' : '면세'],
                   ] as const).map(([n, v, note], i) => (
                     <View key={n} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 13, borderBottomWidth: i < 1 ? 1 : 0, borderBottomColor: T.line2 }}>
                       <View style={{ flex: 1, minWidth: 0 }}>
