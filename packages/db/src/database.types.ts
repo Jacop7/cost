@@ -1366,6 +1366,7 @@ export type Database = {
           p_qty: number
           p_expected: string
           p_source?: Database["public"]["Enums"]["order_source"]
+          p_ordered_at?: string
         }
         Returns: string
       }
