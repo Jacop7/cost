@@ -2,8 +2,13 @@
  * SALES-09 메뉴 손익 상세 — 메뉴 1개 손익(RCP-02 포맷) + 기간 채널 구성.
  * SALES-08 메뉴별 손익 시트의 '자세히 보기'로 진입.
  *
- * 개당 손익은 **현재 레시피 기준**이고(서버 recipe_detail), 기간 실적은 판매 스냅샷 기준이다.
- * 둘은 다른 시점의 값이라 나란히 두되 라벨로 구분한다.
+ * **여기는 장부다. 전부 그날 기준이고, 현재 레시피는 쓰지 않는다.**
+ *   하루 조회  → 그날 스냅샷 (day_menu_detail, 0051)
+ *   기간 조회  → 날마다 그날 기준으로 계산해 **합산** (range_menu_detail, 0059)
+ *
+ * 예전에는 현재 레시피(recipe_detail)로 그려서, 레시피를 고치는 순간 지난 날짜의
+ * 재료 줄·부자재·고정지출 항목까지 따라 움직였다. 레시피 화면은 "지금 팔면 얼마 남나"라
+ * 현재 값이 맞고, 여기는 "그때 얼마 벌었나"라 그때 값이어야 한다 — 다른 질문이다.
  */
 import { ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
@@ -12,7 +17,7 @@ import { safeBack } from '@/lib/nav';
 import { T, won } from '@/theme/tokens';
 import { formatQuantity, formatUnitPrice } from '@sikjae/core';
 import { useRecipeDetail } from '@/features/recipes/hooks';
-import { useDayMenuDetail, useSalesRange } from '../hooks';
+import { useDayMenuDetail, useRangeMenuDetail, useSalesRange } from '../hooks';
 import { rangeLabel, todayBusiness } from '../period';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
@@ -39,6 +44,7 @@ export default function SalesMenuDetailScreen() {
   /** 하루 조회면 그날 기준값을 쓴다. 기간이면 날마다 달라 한 벌로 못 그린다. */
   const oneDay = from === to;
   const day = useDayMenuDetail(oneDay ? from : undefined, params.recipe);
+  const span = useRangeMenuDetail(oneDay ? undefined : from, oneDay ? undefined : to, params.recipe);
 
   const r = recipe.data;
   const sold = range.data?.menu.find((m) => m.recipeId === params.recipe);
@@ -54,34 +60,51 @@ export default function SalesMenuDetailScreen() {
    * 그날 판매가 없으면(또는 기간 조회면) 현재 레시피로 떨어진다.
    */
   const d = oneDay && day.data?.sold ? day.data : null;
+  const g = !oneDay && span.data?.sold ? span.data : null;
+  /** 장부 값을 하나라도 찾았는가. 못 찾으면(판매 없음) 현재 레시피로 그린다. */
+  const ledger = Boolean(d || g);
 
   /**
-   * 화면이 그릴 재료·부자재 줄. 그날 값이 있으면 그것, 없으면 현재 레시피.
-   * 두 소스의 모양이 달라 여기서 한 번만 맞춘다 — 아래 JSX 는 분기를 모른다.
+   * 화면이 그릴 재료·부자재 줄. 하루면 그날 스냅샷, 기간이면 날짜별 합, 둘 다 없으면 현재 레시피.
+   * 세 소스의 모양이 달라 여기서 한 번만 맞춘다 — 아래 JSX 는 분기를 모른다.
    */
   const lineRows: { key: string; name: string; baseUnit: 'g' | 'ml' | 'ea' | null; perServing: number; unitPrice: number | null }[] =
     d
       ? d.lines.map((l) => ({ key: l.ingredientId, name: l.name, baseUnit: l.baseUnit, perServing: l.perServing, unitPrice: l.unitPrice }))
-      : (r?.lines ?? []).map((l) => ({ key: l.id, name: l.name, baseUnit: l.baseUnit, perServing: l.perServing, unitPrice: l.unitPrice }));
+      : g
+        ? g.lines.map((l) => ({ key: l.ingredientId, name: l.name, baseUnit: l.baseUnit, perServing: l.perServing, unitPrice: l.unitPrice }))
+        : (r?.lines ?? []).map((l) => ({ key: l.id, name: l.name, baseUnit: l.baseUnit, perServing: l.perServing, unitPrice: l.unitPrice }));
 
   const extraRows: { key: string; name: string; amount: number }[] =
     d
       ? d.extras.map((e, i) => ({ key: `${e.name}-${i}`, name: e.name, amount: e.amount }))
-      : (r?.extras ?? []).map((e) => ({ key: e.id, name: e.name, amount: e.amount }));
-  const price = d?.price ?? r?.price ?? 0;
-  const material = d?.materialCost ?? r?.materialCost ?? 0;
-  const extra = d?.extraCost ?? r?.extraCost ?? 0;
-  const tax = d ? d.tax : r?.taxMode === 'included' ? (price * 10) / 110 : 0;
-  const fixed = d ? d.fixedCost : (r?.fixedRate ?? 0) * price;
+      : g
+        ? g.extras.map((e, i) => ({ key: `${e.name}-${i}`, name: e.name, amount: e.amount }))
+        : (r?.extras ?? []).map((e) => ({ key: e.id, name: e.name, amount: e.amount }));
+
+  const price = d?.price ?? g?.unitPrice ?? r?.price ?? 0;
+  const material = d?.materialCost ?? g?.unitMaterialCost ?? r?.materialCost ?? 0;
+  const extra = d?.extraCost ?? g?.unitExtraCost ?? r?.extraCost ?? 0;
+  const tax = d ? d.tax : g ? g.unitTax : r?.taxMode === 'included' ? (price * 10) / 110 : 0;
+  const fixed = d ? d.fixedCost : g ? g.unitFixedCost : (r?.fixedRate ?? 0) * price;
   const profit = price - material - extra - tax - fixed;
+
   /**
-   * 세금 내역 — 그날 판매 기준이다(0054). 기간 조회처럼 그날 값이 없으면 비고,
-   * 그때는 합계 한 줄만 그린다.
+   * 기간에 판매가가 여러 가지였는가. 9,300 / 9,800 / 12,000 을 평균 하나로 뭉개면
+   * 사장님이 확인할 방법이 없다 — 몇 원짜리가 몇 개였는지 함께 보여 준다.
+   */
+  const pricePoints = g?.pricePoints ?? [];
+  const multiPrice = pricePoints.length > 1;
+
+  /**
+   * 세금 내역 — 그날 판매 기준이다(0054). 기간이면 날마다 구성이 다를 수 있어
+   * 합계 한 줄만 그린다.
    */
   const taxRows = d?.taxItems ?? [];
   const taxMode = d ? d.taxMode : r?.taxMode;
-  const taxNote =
-    taxMode === 'included' ? '판매가 포함 (10/110)' : taxMode === 'separate' ? '별도' : '면세';
+  const taxNote = g
+    ? `기간 합 ${won(Math.round(g.tax))}원`
+    : taxMode === 'included' ? '판매가 포함 (10/110)' : taxMode === 'separate' ? '별도' : '면세';
   const rate = price > 0 ? Math.round((profit / price) * 1000) / 10 : 0;
   const p = (v: number) => (price > 0 ? Math.round((v / price) * 1000) / 10 : 0);
   const target = r?.targetProfitRate ?? 0;
@@ -129,10 +152,12 @@ export default function SalesMenuDetailScreen() {
                   <Text style={{ fontSize: 20, fontWeight: '800', letterSpacing: -0.3, color: T.ink }}>{r.name}</Text>
                 </View>
                 {([
-                  ['판매가', `${won(price)}원`, false],
+                  // 기간에 판매가가 여러 가지였으면 평균이라고 밝힌다. 그냥 한 숫자로 두면
+                  // 그 가격에 팔았다고 읽힌다.
+                  [multiPrice ? '판매가 (기간 평균)' : '판매가', `${won(Math.round(price))}원`, false],
                   [`${rangeLabel(from, to)} 판매량`, `${sold?.qty ?? 0}개${sold && sold.qtyWaste > 0 ? ` · 폐기 ${sold.qtyWaste}` : ''}`, false],
                   ['목표 순이익률', `${target}%`, false],
-                  ['현재 순이익률', `${rate}%`, true],
+                  [ledger ? '순이익률 (실적)' : '현재 순이익률', `${rate}%`, true],
                 ] as const).map(([k, v, accent]) => (
                   <View key={k} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12, paddingHorizontal: 16, borderTopWidth: 1, borderTopColor: T.line2 }}>
                     <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.sub }}>{k}</Text>
@@ -140,6 +165,34 @@ export default function SalesMenuDetailScreen() {
                   </View>
                 ))}
               </Card>
+
+              {/* 판매가가 여럿이었던 기간 — 몇 원짜리가 몇 개였는지 */}
+              {multiPrice ? (
+                <Card pad={0} style={{ overflow: 'hidden' }}>
+                  <SecHead title="판매가" sub={`이 기간에 ${pricePoints.length}가지였어요`} />
+                  <View style={{ paddingHorizontal: 15, paddingBottom: 4 }}>
+                    {pricePoints.map((pp, i) => (
+                      <View
+                        key={pp.price}
+                        style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 13, borderBottomWidth: i < pricePoints.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}
+                      >
+                        <View style={{ flex: 1, minWidth: 0 }}>
+                          <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{won(pp.price)}원</Text>
+                          <Text style={[{ fontSize: 14, color: T.ter, marginTop: 2 }, NUM]}>
+                            {pp.from === pp.to ? pp.from : `${pp.from} ~ ${pp.to}`} · {pp.days}일
+                          </Text>
+                        </View>
+                        <View style={{ alignItems: 'flex-end' }}>
+                          <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{pp.qty}개</Text>
+                          <Text style={[{ fontSize: 14, color: T.ter, marginTop: 2 }, NUM]}>
+                            {won(Math.round(pp.price * pp.qty))}원
+                          </Text>
+                        </View>
+                      </View>
+                    ))}
+                  </View>
+                </Card>
+              ) : null}
 
               {/* 순이익률 도넛 — 개당 기준 */}
               <Card pad={16} style={{ flexDirection: 'row', alignItems: 'center', gap: 16 }}>
@@ -186,7 +239,7 @@ export default function SalesMenuDetailScreen() {
 
               {/* 재료 */}
               <Card pad={0} style={{ overflow: 'hidden' }}>
-                <SecHead title="재료" sub={d ? '(1인분 · 그날 기준)' : '(1인분 기준)'} />
+                <SecHead title="재료" sub={d ? '(1인분 · 그날 기준)' : g ? `(1인분 평균 · ${g.days}일 합계 기준)` : '(1인분 기준)'} />
                 <View style={{ paddingHorizontal: 15, paddingTop: 4, paddingBottom: 15 }}>
                   {lineRows.map((l, i, all) => {
                     const cost = l.unitPrice === null ? null : l.perServing * l.unitPrice;
@@ -225,7 +278,7 @@ export default function SalesMenuDetailScreen() {
               {/* 부가 원가 */}
               {extraRows.length > 0 ? (
                 <Card pad={0} style={{ overflow: 'hidden' }}>
-                  <SecHead title="부자재" sub={d ? '(그날 기준)' : '(이 메뉴에만 들어가는 부가 원가)'} />
+                  <SecHead title="부자재" sub={d ? '(그날 기준)' : g ? '(기간 합계 기준)' : '(이 메뉴에만 들어가는 부가 원가)'} />
                   <View style={{ paddingHorizontal: 15, paddingBottom: 4 }}>
                     {extraRows.map((e, i, all) => (
                       <View key={e.key} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 13, borderBottomWidth: i < all.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
@@ -242,7 +295,7 @@ export default function SalesMenuDetailScreen() {
 
               {/* 고정 지출 · 세금 */}
               <Card pad={0} style={{ overflow: 'hidden' }}>
-                <SecHead title="고정 지출 · 세금" sub={d ? '(개당 · 그날 기준)' : '(개당 환산)'} />
+                <SecHead title="고정 지출 · 세금" sub={d ? '(개당 · 그날 기준)' : g ? '(개당 평균 · 기간 합계 기준)' : '(개당 환산)'} />
                 <View style={{ paddingHorizontal: 15, paddingBottom: 4 }}>
                   {(taxRows.length > 0
                     ? [
