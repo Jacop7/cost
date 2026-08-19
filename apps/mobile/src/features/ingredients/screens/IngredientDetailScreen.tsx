@@ -50,7 +50,7 @@ export function IngredientDetailScreen() {
     saveIngredient.mutate(
       {
         id: g.id, name: g.name, categoryId: g.categoryId, baseUnit: g.baseUnit,
-        perVolume: g.perVolume, lossRate: g.lossRate, safetyStock: g.safetyStock,
+        perVolume: g.perVolume, safetyStock: g.safetyStock,
         minOrderQty: g.minOrderQty, defaultVendorId: null, memo: memo.trim() || null,
       },
       {
@@ -154,7 +154,6 @@ export function IngredientDetailScreen() {
                   </Text>
                   <Text style={[{ flexShrink: 1, fontSize: 14, color: g.basePrice === null ? T.ter : T.sub, fontWeight: '700' }, tnum]} numberOfLines={1}>
                     {g.basePrice === null ? '단가 산출 전' : formatUnitPrice(g.basePrice, unit)}
-                    {g.lossRate > 0 ? <Text style={{ fontWeight: '600', color: T.sub2 }}> (로스 {g.lossRate}% 반영)</Text> : null}
                   </Text>
                 </View>
                 <Text style={[{ fontSize: 14, color: T.sub2, marginTop: 6, fontWeight: '600' }, tnum]}>
@@ -180,7 +179,7 @@ export function IngredientDetailScreen() {
                   <View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between' }}>
                     <View>
                       <Text style={{ fontSize: 14, color: T.ter, fontWeight: '600' }}>
-                        로스 반영{g.realLossRate !== null ? ` (실측 ${g.realLossRate}%)` : g.lossRate > 0 ? ` (추정 ${g.lossRate}%)` : ''}
+                        실입고 기준
                       </Text>
                       <Text style={[{ fontSize: 22, fontWeight: '800', color: g.basePrice === null ? T.ter : T.blue, marginTop: 2 }, tnum]}>
                         {g.basePrice === null ? '산출 전' : formatUnitPrice(g.basePrice, unit)}

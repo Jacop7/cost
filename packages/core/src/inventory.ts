@@ -16,13 +16,16 @@ export interface StockSnapshot {
 export const totalCount = (s: StockSnapshot): number => s.sealedCount + s.openedCount;
 
 /**
- * 잔여 환산량(기준단위) = 미개봉×개당용량 + 개봉분 남은 양, 에 (1−로스율) 적용.
+ * 잔여 환산량(기준단위) = 미개봉×개당용량 + 개봉분 남은 양.
  * 개봉분 남은 양 미입력 시 한 통 가득(perVolume)으로 가정.
+ *
+ * ⚠ 로스를 곱하지 않는다. SQL `stock_total_base()` 도 곱하지 않는다 —
+ *   재고는 **물건의 양**이지 쓸 수 있는 양의 추정치가 아니다.
+ *   (0041 이전에는 이 함수만 (1−로스)를 곱해 SQL 과 어긋나 있었다.)
  */
-export function remainConverted(s: StockSnapshot, perVolume: number, lossRate: number): number {
+export function remainConverted(s: StockSnapshot, perVolume: number): number {
   const openedGross = s.openedCount === 1 ? (s.openedRemain ?? perVolume) : 0;
-  const gross = s.sealedCount * perVolume + openedGross;
-  return gross * (1 - lossRate);
+  return s.sealedCount * perVolume + openedGross;
 }
 
 /** 재고 상태 뱃지 판정 (③ 3.4). soonOut/소진이 부족보다 우선. */

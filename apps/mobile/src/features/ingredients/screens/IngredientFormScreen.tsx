@@ -21,7 +21,6 @@ import { clampByUnit, clampDecimals } from '@/lib/num';
 import { useSettingsLists } from '@/features/my/hooks';
 import { useIngredientDetail, useSaveIngredient, type BaseUnit } from '../hooks';
 
-type LossMode = 'pct' | 'qty';
 
 const num = (s: string) => {
   const n = parseFloat(s.replace(/,/g, ''));
@@ -43,7 +42,6 @@ export function IngredientFormScreen({ id }: { id?: string }) {
   const [pickerOpen, setPickerOpen] = useState(false);
   const [catOpen, setCatOpen] = useState(false);
   const [vendorOpen, setVendorOpen] = useState(false);
-  const [lossMode, setLossMode] = useState<LossMode>('pct');
   const [loaded, setLoaded] = useState(false);
 
   const [name, setName] = useState('');
@@ -54,7 +52,6 @@ export function IngredientFormScreen({ id }: { id?: string }) {
   const [vol, setVol] = useState('');
   const [boxQty, setBoxQty] = useState('');
   const [price, setPrice] = useState('');
-  const [lossVal, setLossVal] = useState('');
   const [safe, setSafe] = useState('');
   const [minOrder, setMinOrder] = useState('');
   const [memo, setMemo] = useState('');
@@ -71,7 +68,6 @@ export function IngredientFormScreen({ id }: { id?: string }) {
     setVendorName(d.vendorName);
     setVol(String(d.perVolume));
     setPrice('');
-    setLossVal(String(d.lossRate));
     setSafe(String(d.safetyStock));
     setMinOrder(String(d.minOrderQty));
     setMemo(d.memo ?? '');
@@ -90,18 +86,16 @@ export function IngredientFormScreen({ id }: { id?: string }) {
 
   // 개당 용량(기준단위). 환산은 @sikjae/core displayToBase 한 곳에서만 한다.
   const perBase = unit === '박스' ? num(boxQty) : isDisplayUnit(unit) ? displayToBase(num(vol), unit) : num(vol);
-  const lossPct = lossMode === 'pct' ? num(lossVal) : isMeasure ? (num(lossVal) / 1000) * 100 : (num(lossVal) / 30) * 100;
 
   // 산출 불가(용량 0·로스율 100% 이상)는 null 로 둔다. 0원으로 위장하면 원가가 0이 되어
   // 순이익이 과대 계상되고 그대로 저장된다(@sikjae/core 경계 계약).
   const rawPer = roundOrNull(rawUnitPrice(num(price), perBase), 2);
-  const realPer = roundOrNull(previewBaseUnitPrice(num(price), perBase, lossPct / 100), 2);
+  const realPer = roundOrNull(previewBaseUnitPrice(num(price), perBase), 2);
 
   const nameError = name.trim() === '' ? '식재료 이름을 입력해 주세요' : undefined;
   const volError = perBase <= 0 ? '용량은 0보다 커야 해요' : undefined;
-  const lossError = lossPct < 0 || lossPct >= 100 ? '로스율은 0 이상 100 미만이어야 해요' : undefined;
 
-  const canSave = !nameError && !volError && !lossError && catId !== null && !save.isPending;
+  const canSave = !nameError && !volError && catId !== null && !save.isPending;
 
   const onSave = () => {
     if (!canSave) return;
@@ -112,7 +106,6 @@ export function IngredientFormScreen({ id }: { id?: string }) {
         categoryId: catId,
         baseUnit: base,
         perVolume: perBase,
-        lossRate: lossPct,
         safetyStock: num(safe),
         minOrderQty: num(minOrder) || 1,
         defaultVendorId: vendorId,
@@ -182,37 +175,6 @@ export function IngredientFormScreen({ id }: { id?: string }) {
             <Input value={price} placeholder="0" onChangeText={(t) => setPrice(clampDecimals(t, 0))} suffix="원" mono keyboardType="number-pad" accessibilityLabel="구매 가격" />
           </Field>
 
-          <Field
-            label="로스율"
-            req
-            error={lossVal !== '' ? lossError : undefined}
-            right={
-              <View style={{ flexDirection: 'row', gap: 3, padding: 3, backgroundColor: T.line, borderRadius: 9 }}>
-                {(['pct', 'qty'] as LossMode[]).map((k) => {
-                  const on = lossMode === k;
-                  return (
-                    <Pressable
-                      key={k}
-                      onPress={() => setLossMode(k)}
-                      accessibilityRole="button"
-                      accessibilityLabel={k === 'pct' ? '퍼센트로 입력' : '수량으로 입력'}
-                      accessibilityState={{ selected: on }}
-                      style={{ paddingVertical: 5, paddingHorizontal: 13, borderRadius: 7, backgroundColor: on ? T.surface : 'transparent' }}
-                    >
-                      <Text style={{ fontSize: 13, fontWeight: '700', color: on ? T.ink : T.sub2 }}>{k === 'pct' ? '%' : '수량'}</Text>
-                    </Pressable>
-                  );
-                })}
-              </View>
-            }
-          >
-            {lossMode === 'pct' ? (
-              <Input value={lossVal} placeholder="0" onChangeText={(t) => setLossVal(clampDecimals(t, 1))} suffix="%" mono keyboardType="decimal-pad" error={lossVal !== '' && Boolean(lossError)} accessibilityLabel="로스율 퍼센트" />
-            ) : (
-              <Input value={lossVal} placeholder="0" onChangeText={(t) => setLossVal(clampByUnit(t, unit))} suffix={`/ ${isMeasure ? `1,000${unit}` : '30개'} 중`} mono keyboardType="decimal-pad" accessibilityLabel="로스 수량" />
-            )}
-          </Field>
-
           {/* 단가 미리보기 — 저장 전에 결과를 눈으로 확인하게 한다. */}
           {num(price) > 0 && perBase > 0 ? (
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 16, paddingVertical: 13, paddingHorizontal: 14, borderRadius: 12, backgroundColor: T.blueTint }}>
@@ -220,7 +182,7 @@ export function IngredientFormScreen({ id }: { id?: string }) {
               <Text style={{ flex: 1, fontSize: 14, color: T.sub2, lineHeight: 20 }}>
                 {realPer === null
                   ? '입력값으로는 단가를 계산할 수 없어요'
-                  : `기준단가 ${realPer}원/${dispBase}${rawPer !== null && lossPct > 0 ? ` (로스 전 ${rawPer}원)` : ''}`}
+                  : `기준단가 ${realPer}원/${dispBase}`}
               </Text>
             </View>
           ) : null}
@@ -289,8 +251,6 @@ export function IngredientFormScreen({ id }: { id?: string }) {
           setCatId(cid);
           setCatName(cname);
           // 카테고리 기본 로스율을 비어 있을 때만 채운다. 사용자가 넣은 값을 덮으면 안 된다.
-          const dl = lists.data?.categories.find((c) => c.id === cid)?.defaultLossRate ?? 0;
-          if (lossVal === '' && dl > 0) { setLossMode('pct'); setLossVal(String(dl)); }
         }}
         onClose={() => setCatOpen(false)}
       />

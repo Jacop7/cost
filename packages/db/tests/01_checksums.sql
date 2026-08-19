@@ -10,11 +10,11 @@ declare
   r record;
   v_price numeric := 12000;
 begin
-  -- ── 대파: 4,000원 / 1,000g, 로스 15% → 4.7059원/g ──────────────
-  perform pg_temp.eq('대파 기준단가(원/g)', base_unit_price(pg_temp.ing('대파')), 4.7059, 0.0001);
-  -- 로스가 단가에 들어가는 방식을 못 박는다: 금액 ÷ 용량 ÷ (1 − 로스)
-  perform pg_temp.eq('대파 = 4000/1000/(1-0.15)',
-                     base_unit_price(pg_temp.ing('대파')), 4000::numeric/1000/0.85, 0.0001);
+  -- ── 대파: 4,000원 / 1,000g → 4.0000원/g (0041: 로스로 나누지 않는다) ──
+  perform pg_temp.eq('대파 기준단가(원/g)', base_unit_price(pg_temp.ing('대파')), 4.0000, 0.0001);
+  -- 산 값 그대로다. 손실은 추정하지 않고 실제로 버릴 때만 폐기로 기록한다.
+  perform pg_temp.eq('대파 = 4000/1000',
+                     base_unit_price(pg_temp.ing('대파')), 4000::numeric/1000, 0.0001);
 
   -- ── 고정지출률 31.30% (1,000원당 313원) ──────────────────────
   perform pg_temp.eq('고정지출률(%)',
@@ -23,10 +23,10 @@ begin
   -- ── 제육볶음 10인분 · 판매가 12,000 (부가세 포함) ─────────────
   select * into r from recipe_list(pg_temp.store()) where name = '제육볶음';
   perform pg_temp.eq('제육볶음 판매가',   r.price,         v_price,   0.01);
-  perform pg_temp.eq('제육볶음 재료비',   r.material_cost, 2834.55,   0.01);
+  perform pg_temp.eq('제육볶음 재료비',   r.material_cost, 2806.40,   0.01);
   perform pg_temp.eq('제육볶음 추가지출', r.extra_cost,     300.00,   0.01);
-  perform pg_temp.eq('제육볶음 순이익',   r.profit,        4018.54,   0.01);
-  perform pg_temp.eq('제육볶음 순이익률(%)', r.profit_rate * 100, 33.49, 0.01);
+  perform pg_temp.eq('제육볶음 순이익',   r.profit,        4046.69,   0.01);
+  perform pg_temp.eq('제육볶음 순이익률(%)', r.profit_rate * 100, 33.72, 0.01);
 
   -- 세금: 부가세 포함 = 판매가 × 10/110
   perform pg_temp.eq('제육볶음 부가세', r.tax, v_price * 10 / 110, 0.01);

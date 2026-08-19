@@ -56,9 +56,6 @@ export function CategoryPickerSheet({
               >
                 <View style={{ flex: 1, minWidth: 0 }}>
                   <Text style={{ fontSize: 16, fontWeight: '700', color: on ? T.blue : T.ink2 }}>{c.name}</Text>
-                  {c.defaultLossRate > 0 ? (
-                    <Text style={{ fontSize: 14, color: T.ter, marginTop: 2 }}>기본 로스율 {c.defaultLossRate}%</Text>
-                  ) : null}
                 </View>
                 {on ? <Icon name="check" size={17} color={T.blue} sw={2.4} /> : null}
               </Pressable>

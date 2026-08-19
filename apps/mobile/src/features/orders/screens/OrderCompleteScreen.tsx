@@ -82,7 +82,7 @@ export default function OrderCompleteScreen() {
 
   // 가드 없이 계산하면 용량 0에서 Infinity 가 화면에 그대로 찍힌다. null 로 막고 '-' 로 표기한다.
   const raw = roundOrNull(rawUnitPrice(amt, vol), 2);
-  const real = roundOrNull(previewBaseUnitPrice(amt, vol, (g?.lossRate ?? 0) / 100), 2);
+  const real = roundOrNull(previewBaseUnitPrice(amt, vol), 2);
 
   const canSave = Boolean(ingredientId) && vol > 0 && amt >= 0 && qtyN > 0 && !placeOrders.isPending;
 
@@ -171,7 +171,6 @@ export default function OrderCompleteScreen() {
               <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 11, paddingHorizontal: 15 }}>
                 <View style={{ flex: 1 }}>
                   <Text style={{ fontSize: 16, fontWeight: '600', color: T.sub }}>실사용 단가</Text>
-                  <Text style={{ fontSize: 14, color: T.ter, marginTop: 2 }}>로스 {g.lossRate}% 반영</Text>
                 </View>
                 <Text style={[{ fontSize: 16, fontWeight: '700', color: T.blue }, NUM]}>{dash(real)}원/{unit}</Text>
               </View>

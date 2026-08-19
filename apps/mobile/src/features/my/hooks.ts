@@ -16,7 +16,7 @@ const str = (v: unknown): string | null => (v === null || v === undefined ? null
 
 export type CategoryKind = 'ingredient' | 'recipe' | 'material';
 
-export interface CategoryRow { id: string; name: string; kind: CategoryKind; sortOrder: number; defaultLossRate: number; usedCount: number }
+export interface CategoryRow { id: string; name: string; kind: CategoryKind; sortOrder: number; usedCount: number }
 export interface VendorRow { id: string; name: string; usedCount: number }
 export interface ChannelRow { id: string; code: string; name: string; feeRate: number; feeNote: string | null; active: boolean }
 /** 부자재 마스터 — 여러 메뉴가 같은 단가를 참조하게 한다. */
@@ -53,7 +53,7 @@ export function useSettingsLists() {
           id: String(c.id), name: String(c.name),
           kind: (c.kind as CategoryKind) ?? 'ingredient',
           sortOrder: num(c.sort_order),
-          defaultLossRate: num(c.default_loss_rate), usedCount: num(c.used_count),
+          usedCount: num(c.used_count),
         }));
 
       return {
@@ -82,14 +82,13 @@ export function useSaveCategory() {
   const qc = useQueryClient();
   const storeId = useStoreId();
   return useMutation({
-    mutationFn: async (input: { id?: string; name: string; kind?: CategoryKind; defaultLossRate?: number }) => {
+    mutationFn: async (input: { id?: string; name: string; kind?: CategoryKind }) => {
       const { error } = await supabase.rpc('save_category', {
         p_store: storeId,
         p_payload: asJson({
           id: input.id ?? '',
           name: input.name,
           kind: input.kind ?? 'ingredient',
-          default_loss_rate: input.defaultLossRate,
         }),
       });
       if (error) throw new Error(error.message);
