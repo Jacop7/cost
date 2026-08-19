@@ -65,6 +65,7 @@ export function IngredientFormScreen({ id }: { id?: string }) {
     setName(d.name);
     setCatId(d.categoryId);
     setCatName(d.categoryName ?? '');
+    setVendorId(d.defaultVendorId);
     setVendorName(d.vendorName);
     setVol(String(d.perVolume));
     setPrice('');
