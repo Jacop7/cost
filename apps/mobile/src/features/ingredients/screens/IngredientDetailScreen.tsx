@@ -266,14 +266,39 @@ export function IngredientDetailScreen() {
                         key={o.id}
                         onPress={() => router.push(`/ingredients/option?ingredient=${g.id}&option=${o.id}`)}
                         accessibilityRole="button" accessibilityLabel={`${o.name} 수정`}
-                        style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 9, borderBottomWidth: i < g.options.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}
+                        /*
+                         * '현재 재고' 줄과 **같은 짜임**이다(LedgerRow).
+                         *   마장축산                       5kg
+                         *   앞다리살 5kg 박스           13원/g
+                         *   65,000원
+                         *
+                         * 왼쪽 세 줄은 무엇을 사는지, 오른쪽 두 줄은 얼마짜리인지.
+                         * 카드 세 개(최근 입고 · 현재 재고 · 구매 옵션)가 같은 리듬으로 읽힌다.
+                         */
+                        style={{ flexDirection: 'row', alignItems: 'center', gap: 11, paddingVertical: 11, borderBottomWidth: i < g.options.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}
                       >
                         <View style={{ flex: 1, minWidth: 0 }}>
-                          <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }} numberOfLines={1}>
-                            {o.name} · {formatQuantity(o.volume, unit)}
+                          {/*
+                            브랜드가 없으면 구매처를 쓴다. 빈 줄로 두면 목록이 무너지고,
+                            이 자리는 원래 "누구 것이냐"를 말하는 줄이다(0084).
+                            ⚠ 브랜드 입력 화면이 아직 없어 지금은 항상 구매처가 나온다.
+                          */}
+                          <Text style={{ fontSize: 14, color: T.ter, fontWeight: '600', marginBottom: 4 }} numberOfLines={1}>
+                            {o.brandName ?? o.vendorName ?? '구매처 미지정'}
                           </Text>
-                          <Text style={[{ fontSize: 14, color: T.ink, marginTop: 2 }, tnum]}>
-                            {o.vendorName ?? '거래처 미지정'} · {o.amount.toLocaleString('ko-KR')}원 · {formatUnitPrice(o.amount / (o.volume || 1), unit)}
+                          <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }} numberOfLines={1}>
+                            {o.name}
+                          </Text>
+                          <Text style={[{ fontSize: 14, color: T.sub2, marginTop: 3 }, tnum]}>
+                            {o.amount.toLocaleString('ko-KR')}원
+                          </Text>
+                        </View>
+                        <View style={{ alignItems: 'flex-end' }}>
+                          <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, tnum]}>
+                            {formatQuantity(o.volume, unit)}
+                          </Text>
+                          <Text style={[{ fontSize: 14, color: T.ter, marginTop: 3 }, tnum]}>
+                            {formatUnitPrice(o.amount / (o.volume || 1), unit)}
                           </Text>
                         </View>
                         <Icon name="chevron" size={16} color={T.line3} />
