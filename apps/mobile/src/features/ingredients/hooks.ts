@@ -49,6 +49,12 @@ export interface PurchaseOption {
   amount: number;
   vendorId: string | null;
   vendorName: string | null;
+  /**
+   * 제조사·브랜드(0084). **아직 입력 화면이 없어 항상 null 이다** —
+   * brands 테이블도 비어 있다. 값이 생기면 목록 첫 줄이 바로 받는다.
+   */
+  brandId: string | null;
+  brandName: string | null;
 }
 
 /**
@@ -286,6 +292,8 @@ export function useIngredientDetail(id: string | undefined) {
           amount: num(o.amount),
           vendorId: str(o.vendor_id),
           vendorName: str(o.vendor_name),
+          brandId: str(o.brand_id),
+          brandName: str(o.brand_name),
         })),
         orders: ((r.orders ?? []) as Record<string, unknown>[]).map((o) => ({
           id: String(o.id),
