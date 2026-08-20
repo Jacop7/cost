@@ -37,16 +37,18 @@ import {
 function sqlBaseUnitPrice(
   purchases: { amount: number; volume: number; receivedQty: number }[],
 ): number | null {
-  let num = 0;
-  let den = 0;
+  let spent = 0;
+  let volume = 0;
   for (const p of purchases) {
-    if (p.volume === 0) continue; // nullif(volume,0) → null → sum 에서 제외
-    // ⚠ 가중치는 **실입고량**이다(0038). 발주량을 쓰면 아직 안 온 물량이 평균을 끈다.
-    num += (p.amount / p.volume) * p.receivedQty;
-    den += p.receivedQty;
+    if (p.volume === 0) continue; // 금액/용량이 성립하지 않는 행은 통째로 제외
+    // ⚠ 가중치는 **실제로 들어온 양**이다(0072). 팩 개수로 가중하면 1kg 짜리 한 개가
+    //   20kg 짜리와 같은 무게를 가져 `단가 × 총입고량 = 쓴 돈` 이 깨진다.
+    //   실입고량을 쓰는 이유는 그대로다(0038) — 안 온 물량이 평균을 끌면 안 된다.
+    spent += p.amount * p.receivedQty;
+    volume += p.volume * p.receivedQty;
   }
-  if (den === 0) return null;
-  return num / den;
+  if (volume === 0) return null;
+  return spent / volume;
 }
 
 /**
@@ -106,6 +108,24 @@ describe('base_unit_price — core ↔ SQL', () => {
     const sql = sqlBaseUnitPrice(purchases);
     expect(core).not.toBeNull();
     expect(core!).toBeCloseTo(sql!, 10);
+  });
+
+  it('팩 용량이 섞이면 양으로 가중한다 — 단가 × 총입고량 = 쓴 돈', () => {
+    // 소포장 1kg 5,300원 1개 + 대용량 20kg 80,000원 1개
+    const mixed = [
+      { amount: 5300, volume: 1000, receivedQty: 1 },
+      { amount: 80000, volume: 20000, receivedQty: 1 },
+    ];
+    const core = baseUnitPrice(weightedAvgUnitPrice(forCore(mixed)))!;
+    expect(core).toBeCloseTo(sqlBaseUnitPrice(mixed)!, 10);
+
+    const spent = 5300 + 80000;
+    const volume = 1000 + 20000;
+    expect(core).toBeCloseTo(spent / volume, 10);
+    // ⚠ 이 불변식이 이 설계의 전부다.
+    expect(core * volume).toBeCloseTo(spent, 6);
+    // 개수 가중이면 (5.30 + 4.00) / 2 = 4.65 다. 그 값이면 안 된다.
+    expect(Math.abs(core - 4.65)).toBeGreaterThan(0.01);
   });
 
   it('검산 — 대파 단일 구매 4,000원/1,000g → 4.00', () => {

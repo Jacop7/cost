@@ -31,20 +31,32 @@ export function rawUnitPrice(amount: number, volume: number): number | null {
 }
 
 /**
- * 수량 가중 평균 단가 (로스 미반영). 유효한 이력이 없으면 null.
+ * 가중 평균 단가 = **쓴 돈 ÷ 들어온 양**. 유효한 이력이 없으면 null.
+ *
+ * ⚠ 가중치는 **양**이지 팩 개수가 아니다(0072). 개수로 가중하면 1kg 짜리 한 개가
+ *   20kg 짜리와 같은 무게를 가져, 들어온 양의 95%가 싼 값인데도 소포장 하나가
+ *   평균을 끌어올린다. 그러면 아래 불변식이 깨진다.
+ *
+ *     단가 × 총 입고량 = 그 재료에 쓴 돈
+ *
+ *   실측 — 1kg 5,300원 + 20kg 80,000원 (쓴 돈 85,300 / 들어온 양 21,000g)
+ *     개수 가중 4.6500원/g → 21,000g 을 97,650원으로 매긴다 (없는 돈 12,350원)
+ *     양   가중 4.0619원/g → 85,300원, 실제 쓴 돈과 같다
+ *
+ * SQL `base_unit_price()` 와 같은 값이어야 한다(절대원칙 3).
  * 용량 0 같은 오염된 행 하나가 전체 평균을 NaN으로 만들지 않도록 해당 행만 건너뛴다.
  */
 export function weightedAvgUnitPrice(purchases: PurchaseLike[]): number | null {
-  let pricedQty = 0;
-  let weighted = 0;
+  let volume = 0;
+  let spent = 0;
   for (const p of purchases) {
-    const per = rawUnitPrice(p.amount, p.volume);
-    if (per === null) continue; // 오염된 이력 행은 평균에서 제외
+    // 금액·용량이 성립하지 않는 행은 통째로 제외한다 — 분모만 키우면 단가가 내려간다.
+    if (rawUnitPrice(p.amount, p.volume) === null) continue;
     if (!isPositiveFinite(p.qty)) continue;
-    weighted += per * p.qty;
-    pricedQty += p.qty;
+    spent += p.amount * p.qty;
+    volume += p.volume * p.qty;
   }
-  return pricedQty > 0 ? weighted / pricedQty : null;
+  return volume > 0 ? spent / volume : null;
 }
 
 /**
