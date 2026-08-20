@@ -9,3 +9,4 @@ export { StockEditSheet } from './screens/StockEditSheet';
 export { HistoryFilterSheet } from './screens/HistoryFilterSheet';
 export * from './hooks';
 export * from './ledger';
+export { QuickInboundScreen } from './screens/QuickInboundScreen';
