@@ -5,7 +5,7 @@
  * 입고·소진·폐기·실사의 부호 규칙을 앱도 알아야 하고, 그 규칙이 두 벌이 된다.
  */
 import { useMemo, useState } from 'react';
-import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
+import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Card, Icon, QueryState } from '../../../components/kit';
 import { T, tnum } from '../../../theme/tokens';
@@ -14,7 +14,7 @@ import { safeBack } from '@/lib/nav';
 import { LedgerRow } from '../components/LedgerRow';
 import { HistoryFilterSheet, periodRange, type HistoryFilter } from './HistoryFilterSheet';
 import { dispUnit, toLedgerView, type LedgerType } from '../ledger';
-import { useIngredientDetail, useRevertDiscard, useStockHistory, type LedgerEntry } from '../hooks';
+import { useIngredientDetail, useStockHistory, type LedgerEntry } from '../hooks';
 
 /** 유형 칩 → 원장 종류. '조정'은 실사(E5)와 판매 취소 보정을 함께 본다. */
 const KIND_TYPES: Record<string, LedgerType[] | null> = {
@@ -34,38 +34,6 @@ export function StockHistoryScreen() {
 
   const detail = useIngredientDetail(id);
   const history = useStockHistory(id, periodRange(filter.period));
-  const revertDiscard = useRevertDiscard(id ?? '');
-
-  /**
-   * 폐기 취소 — 오입력한 폐기를 되돌린다. 재고와 로스율 표시가 폐기 전으로 돌아간다.
-   * 기준단가는 애초에 폐기에 영향받지 않는다(0041).
-   *
-   * ⚠ 조리 폐기는 여기서 되돌릴 수 없다. 주인이 **그 날 매출**이기 때문이다.
-   *   여기서 되돌리면 매출은 "3개 버렸다"인데 재고는 반영 안 된 채로 굳는다(실측 확인).
-   */
-  const confirmRevert = (e: LedgerEntry) => {
-    if (e.type !== 'discard' || e.reverted) return;
-    if (e.waste) {
-      Alert.alert('조리 폐기는 여기서 못 고쳐요', '만들어 놓고 못 판 몫이라 그 날 매출에서 수량을 고쳐 주세요.');
-      return;
-    }
-    Alert.alert(
-      '폐기 취소',
-      `${formatQuantity(Math.abs(e.countDelta), unit)} 폐기를 되돌려요. 재고가 폐기 전으로 돌아가고 로스율에서도 빠집니다.`,
-      [
-        { text: '닫기', style: 'cancel' },
-        {
-          text: '폐기 취소',
-          style: 'destructive',
-          onPress: () => revertDiscard.mutate(
-            { eventId: e.id },
-            { onError: (err) => Alert.alert('되돌리지 못했어요', err instanceof Error ? err.message : '잠시 후 다시 시도해 주세요') },
-          ),
-        },
-      ],
-    );
-  };
-
   const g = detail.data;
   const unit = g ? dispUnit(g.baseUnit) : 'g';
 
@@ -166,19 +134,23 @@ export function StockHistoryScreen() {
               <Card pad={0} style={{ overflow: 'hidden' }}>
                 {list.map((e, i) => {
                   const v = toLedgerView(e, g?.baseUnit ?? 'g');
-                  const canRevert = e.type === 'discard' && !e.reverted && !e.waste;
                   return (
+                    /*
+                     * ⚠ 여기서는 아무것도 눌리지 않는다. 이 화면은 입고·소진·폐기·조정이
+                     *   **섞인 원장**이라, 폐기 줄만 몰래 눌려 되돌아가면 사장님은
+                     *   어느 줄이 눌리는지 알 길이 없다. 폐기 되돌리기는 폐기 내역(ING-10)
+                     *   한 곳에서만 한다.
+                     */
                     <LedgerRow
                       key={v.id}
                       date={v.date}
                       act={e.reverted ? `${v.label} (취소됨)` : v.label}
-                      memo={canRevert ? '탭하면 폐기를 되돌려요' : v.memo}
+                      memo={v.memo}
                       delta={v.delta}
                       bal={v.balance}
                       up={v.up}
                       px={15}
                       last={i === list.length - 1}
-                      onPress={canRevert ? () => confirmRevert(e) : undefined}
                     />
                   );
                 })}
