@@ -55,32 +55,58 @@ begin
   perform pg_temp.eq('폐기량 0 이면 이벤트 안 생김',
     (select count(*) from inventory_events where ingredient_id = v_ing), b_events, 0);
 
-  -- ── 폐기 되돌리기는 **없다** (0085) ────────────────────────
-  -- 사장님 결정: 잘못 찍은 폐기는 재고 수정(E5)으로 맞춘다.
-  -- 앱에서 지웠는데 RPC 가 남아 있으면 로그인한 클라이언트가 그대로 부를 수 있다 —
-  -- 화면에 없는 기능이 API 로 열려 있는 것도 노출이다.
+  -- ── 폐기 삭제는 최근 7일치만 (0086) ────────────────────────
+  -- 사장님 결정: 오입력은 며칠 안에 알아챈다. 지난달 폐기를 오늘 지우면
+  -- 이미 확정된 월 손익·로스율이 소급해서 흔들린다.
   --
-  -- ⚠ 입고 취소(E11)는 남아 있다. 그건 **기준단가를 되돌려야** 하기 때문이다.
-  --   폐기는 단가를 건드리지 않으므로(0041) 재고 수정으로 충분하다.
-  perform pg_temp.ok('폐기 되돌리기 RPC 가 없다',
-    not exists (select 1 from pg_proc p join pg_namespace n on n.oid = p.pronamespace
-                 where n.nspname = 'public' and p.proname = 'e2_discard_reverted'));
+  -- ⚠ 화면이 ⋮ 를 감추는 건 안내일 뿐이다. 경계는 **서버**가 지킨다.
+  select id into v_ev from inventory_events
+   where ingredient_id = v_daepa and type = 'discard' order by seq desc limit 1;
 
-  -- 상쇄 이벤트 자체는 원장 규칙으로 남는다 — 입고 취소가 쓴다.
-  perform pg_temp.ok('되돌림 유니크 인덱스는 그대로',
+  perform pg_temp.eq_t('기간 제한은 한 곳에서 정한다', discard_delete_days()::text, '7');
+
+  perform e2_discard_reverted(v_ev, '테스트');
+  perform pg_temp.eq('지우면 재고가 돌아온다', stock_total_base(v_daepa), b_stock, 0.0001);
+  perform pg_temp.eq('그래도 기준단가는 그대로', base_unit_price(v_daepa), b_price, 0.0001);
+  perform pg_temp.ok('원장은 지우지 않는다 — 상쇄 이벤트를 쌓는다',
+    exists (select 1 from inventory_events where reverses_event_id = v_ev));
+  perform pg_temp.ok('stock_history 가 지운 걸 표시한다',
+    (select reverted from stock_history(v_daepa) where id = v_ev) is true);
+  perform pg_temp.eq('지운 폐기는 로스율에서 빠진다',
+    (ingredient_loss(v_daepa)->>'storage_amount')::numeric, 0, 0.0001);
+
+  -- 두 번 눌러도 한 번만 상쇄된다. 동시 요청은 유니크 인덱스가 막는다.
+  declare
+    s_stock  numeric := stock_total_base(v_daepa);
+    s_events bigint  := (select count(*) from inventory_events where ingredient_id = v_daepa);
+    v_again  jsonb;
+  begin
+    v_again := e2_discard_reverted(v_ev, '두번째');
+    perform pg_temp.ok('두 번째는 already_reverted',
+      (v_again->>'already_reverted')::boolean is true);
+    perform pg_temp.eq('두 번째에 재고 불변', stock_total_base(v_daepa), s_stock, 0);
+    perform pg_temp.eq('두 번째에 이벤트 불변',
+      (select count(*) from inventory_events where ingredient_id = v_daepa), s_events, 0);
+  end;
+  perform pg_temp.ok('상쇄 유니크 인덱스가 있다',
     exists (select 1 from pg_indexes
              where tablename = 'inventory_events' and indexname = 'inventory_events_reverses_uk'));
 
-  -- ── 잘못 찍은 폐기는 재고 수정으로 맞춘다 ───────────────────
-  -- 되돌리기를 없앤 자리를 이게 대신한다. 재고는 돌아오지만 **폐기 기록은 남는다** —
-  -- 그게 되돌리기와 다른 점이고, 그래서 로스율에는 계속 잡힌다.
-  perform e5_stock_adjusted(v_daepa, b_stock, false, '폐기 오입력 정정');
-  perform pg_temp.eq('재고 수정으로 수량은 되돌아온다',
-    stock_total_base(v_daepa), b_stock, 0.0001);
-  perform pg_temp.eq('그래도 기준단가는 그대로', base_unit_price(v_daepa), b_price, 0.0001);
-  perform pg_temp.ok('폐기 기록은 지워지지 않는다',
-    exists (select 1 from inventory_events
-             where ingredient_id = v_daepa and type = 'discard' and not waste));
+  -- ── 7일이 지나면 거절한다 ──────────────────────────────────
+  declare v_old uuid;
+  begin
+    insert into inventory_events
+      (store_id, ingredient_id, type, count_delta, volume_delta, occurred_at, note, unit_normalized)
+    values
+      -- ⚠ 폐기의 volume_delta 는 **버린 양(양수)** 이다. count_delta 만 음수다.
+      --   (inventory_events_discard_positive_ck 가 지킨다.)
+      (pg_temp.store(), v_daepa, 'discard', -50, 50,
+       (business_day() - discard_delete_days())::timestamptz, '오래된 폐기', true)
+    returning id into v_old;
+
+    perform pg_temp.raises('7일 지난 폐기는 못 지운다',
+      format('select e2_discard_reverted(%L, %L)', v_old, '테스트'), '22000');
+  end;
 
   -- ── ② 조리 폐기는 판매분과 갈라져 기록된다 (0041) ───────────
   -- 이전에는 "제육볶음 18개 소진 (폐기 2개 포함)" 한 줄로 뭉쳐 있어서
@@ -200,10 +226,13 @@ begin
   -- 이 단언이 0041 의 핵심이다. 다시 물리면 폐기할수록 단가가 내려간다.
   perform pg_temp.eq('폐기가 쌓여도 기준단가 불변', base_unit_price(v_daepa), b_price, 0.0001);
 
-  -- 되돌리기가 없으니 '되돌린 뒤 로스율' 도, '조리 폐기 되돌리기 거부' 도 검증할 게 없다.
-  -- 폐기는 한 번 찍으면 로스율에 남는다 — 재고 수정은 수량만 맞춘다.
-  perform pg_temp.ok('폐기는 로스율에 그대로 남는다',
-    (ingredient_loss(v_daepa)->>'storage_amount')::numeric > 0);
+  -- ── 조리 폐기는 여기서 못 지운다 ───────────────────────────
+  -- 주인은 그 날 매출이다. 여기서 지우면 매출은 "버렸다"인데 재고는 반영 안 된 채 굳는다.
+  select ev.id into v_ev from inventory_events ev
+   where ev.ingredient_id = v_daepa and ev.type = 'discard' and ev.waste
+   order by ev.seq desc limit 1;
+  perform pg_temp.raises('조리 폐기 삭제는 거부',
+    format('select e2_discard_reverted(%L, %L)', v_ev, '테스트'), '22000');
 
   -- ── stock_history 가 두 폐기를 구분해 준다 ──────────────────
   perform pg_temp.ok('stock_history 가 waste 를 실어 준다',
