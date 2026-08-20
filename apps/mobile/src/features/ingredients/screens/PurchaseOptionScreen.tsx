@@ -83,7 +83,6 @@ export function PurchaseOptionScreen() {
 
   // 입력 단위(kg·L)를 기준단위로 환산한다 — 저장 직전 한 번(절대원칙 1).
   const volBase = isDisplayUnit(unit) ? displayToBase(num(vol), unit) : num(vol);
-  const unitPrice = volBase > 0 ? num(amount) / volBase : null;
 
   const nameError = name.trim() === '' ? '옵션 이름을 입력해 주세요' : undefined;
   const volError = volBase <= 0 ? '용량은 0보다 커야 해요' : undefined;
@@ -170,7 +169,7 @@ export function PurchaseOptionScreen() {
                 <Select value={vendorName ?? ''} placeholder="지정 안 함" onPress={() => setVendorOpen(true)} />
               </Field>
 
-              <Field label="용량" req error={vol !== '' ? volError : undefined} hint="kg·L 입력 시 자동 환산">
+              <Field label="용량" req error={vol !== '' ? volError : undefined}>
                 <View style={{ flexDirection: 'row', gap: 10 }}>
                   <View style={{ flex: 2 }}>
                     <Input value={vol} onChangeText={(t) => setVol(clampByUnit(t, unit))} placeholder="0" mono keyboardType="decimal-pad" error={vol !== '' && Boolean(volError)} accessibilityLabel="용량" />
@@ -194,15 +193,6 @@ export function PurchaseOptionScreen() {
                 <Input value={url} onChangeText={setUrl} placeholder="https://" accessibilityLabel="구매 링크" />
               </Field>
 
-              {unitPrice !== null && Number.isFinite(unitPrice) ? (
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 13, paddingHorizontal: 14, borderRadius: 12, backgroundColor: T.blueTint }}>
-                  <Icon name="info" size={15} color={T.blue} />
-                  <Text style={{ flex: 1, fontSize: 14, color: T.sub2, lineHeight: 20 }}>
-                    이 옵션의 단가는 {formatUnitPrice(unitPrice, base)} 예요. 기준단가는 실제 입고 기록으로만 바뀌어요.
-                  </Text>
-                </View>
-              ) : null}
-
               {editingId ? (
                 <Pressable
                   onPress={() => confirmDelete(editingId, name || '이 옵션')}
@@ -223,10 +213,6 @@ export function PurchaseOptionScreen() {
         ) : (
           <>
             <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 4, paddingBottom: 24, gap: 11 }} showsVerticalScrollIndicator={false}>
-              <Text style={{ fontSize: 14, color: T.sub2, fontWeight: '600', marginHorizontal: 6 }}>
-                {g?.name} · 기준단위 {base}
-              </Text>
-
               {(g?.options.length ?? 0) === 0 ? (
                 <View style={{ paddingVertical: 40, alignItems: 'center', gap: 8 }}>
                   <Text style={{ fontSize: 16, color: T.ter }}>등록된 구매 옵션이 없어요</Text>
@@ -266,12 +252,6 @@ export function PurchaseOptionScreen() {
                 </Card>
               )}
 
-              <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, paddingVertical: 12, paddingHorizontal: 14, borderRadius: 12, backgroundColor: T.surface2 }}>
-                <Icon name="info" size={15} color={T.sub2} />
-                <Text style={{ flex: 1, fontSize: 14, color: T.sub2, lineHeight: 20 }}>
-                  구매 옵션은 가격 후보예요. 기준단가는 실제 입고 기록의 가중평균으로만 바뀌어요.
-                </Text>
-              </View>
             </ScrollView>
 
             <View style={{ paddingHorizontal: 20, paddingTop: 12, paddingBottom: 30, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
