@@ -92,7 +92,12 @@ export function IngredientDetailScreen() {
 
   const menuItems: { label: string; danger?: boolean; onPress: () => void }[] = [
     { label: '식재료 수정', onPress: () => router.push(`/ingredients/edit/${id}`) },
-    { label: '재고 수정', onPress: () => setStockOpen(true) },
+    // ⚠ '재고 추가'와 '재고 수정'은 다른 사건이다(0074).
+    //   추가 = 입고 → 기준 단가와 연결 메뉴 원가까지 바뀐다
+    //   수정 = 실사 → 재고만 바뀐다
+    //   같은 항목으로 묶으면 같은 손짓이 전혀 다른 결과를 낸다.
+    { label: '재고 추가 (입고)', onPress: () => router.push(`/ingredients/add-stock/${id}` as Href) },
+    { label: '재고 수정 (실사)', onPress: () => setStockOpen(true) },
     { label: '메모 수정', onPress: () => setMemoOpen(true) },
     { label: '구매 링크 · 옵션', onPress: () => router.push(`/ingredients/option?ingredient=${id}`) },
     { label: '식재료 삭제', danger: true, onPress: confirmDelete },
@@ -385,6 +390,7 @@ export function IngredientDetailScreen() {
       {g ? (
         <>
           <StockEditSheet
+            onAddStock={() => { setStockOpen(false); router.push(`/ingredients/add-stock/${id}` as Href); }}
             visible={stockOpen}
             onClose={() => setStockOpen(false)}
             name={g.name}

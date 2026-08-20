@@ -79,6 +79,7 @@ export function StockEditSheet({
   stock,
   onApply,
   saving = false,
+  onAddStock,
 }: {
   visible: boolean;
   onClose: () => void;
@@ -88,6 +89,8 @@ export function StockEditSheet({
   onApply: (next: StockChange) => void;
   /** 서버 저장 중. 버튼이 두 번 눌려 이벤트가 두 번 기록되는 것을 막는다. */
   saving?: boolean;
+  /** '재고 추가'로 건너갈 자리. 새로 사 온 것은 여기서 늘리면 안 된다(0074). */
+  onAddStock?: () => void;
 }) {
   const isCount = unit === '개';
   const dispUnit = isCount ? '개' : unit === 'ml' ? 'L' : 'kg';
@@ -211,6 +214,21 @@ export function StockEditSheet({
             onPress={() => onApply({ kind: tab, nextStock, wasteAmount: tab === 'waste' ? wasteBase : 0, reason: reason.trim() })}
           >{action}</Button>
         </View>
+
+        {/* ⚠ 새로 사 온 것을 여기서 늘리면 재고만 늘고 **기준 단가는 안 바뀐다.**
+            그러면 원가가 옛 가격에 머문다. 입고는 다른 사건이라 다른 길로 보낸다(0074). */}
+        {onAddStock ? (
+          <Pressable
+            onPress={onAddStock}
+            accessibilityRole="button" accessibilityLabel="재고 추가로 이동"
+            style={{ flexDirection: 'row', alignItems: 'center', gap: 7, marginTop: 12, paddingTop: 12, borderTopWidth: 1, borderTopColor: T.line2 }}
+          >
+            <Icon name="info" size={15} color={T.ter} />
+            <Text style={{ flex: 1, fontSize: 14, color: T.sub2 }}>
+              새로 사 왔다면 <Text style={{ fontWeight: '700', color: T.blue }}>재고 추가</Text>로 넣어 주세요 · 단가도 함께 반영돼요
+            </Text>
+          </Pressable>
+        ) : null}
       </View>
     </Sheet>
   );

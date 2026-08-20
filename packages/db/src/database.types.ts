@@ -1820,6 +1820,29 @@ export type Database = {
           unit_price: number
         }[]
       }
+      quick_inbound: {
+        Args: {
+          p_store: string
+          p_ingredient: string
+          p_volume: number
+          p_amount: number
+          p_qty?: number
+          p_vendor?: string
+          p_occurred_at?: string
+          p_idempotency_key?: string
+        }
+        Returns: Json
+      }
+      quick_inbound_preview: {
+        Args: {
+          p_store: string
+          p_ingredient: string
+          p_volume: number
+          p_amount: number
+          p_qty?: number
+        }
+        Returns: Json
+      }
       range_menu_detail: {
         Args: {
           p_store: string

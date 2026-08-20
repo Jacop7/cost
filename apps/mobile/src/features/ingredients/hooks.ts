@@ -53,6 +53,90 @@ export interface PurchaseOption {
   vendorName: string | null;
 }
 
+/**
+ * 빠른 입고 미리보기(0074) — **서버가 낸다.**
+ *
+ * ⚠ 앱이 따로 계산하면 확정 후 숫자와 갈린다. 4.81 을 보고 눌렀는데 4.85 가 되면
+ *   사장님은 그 화면을 두 번 다시 안 믿는다.
+ */
+export interface QuickInboundPreview {
+  stockBefore: number;
+  stockAfter: number;
+  added: number;
+  paid: number;
+  inboundUnitPrice: number | null;
+  basePriceBefore: number | null;
+  basePriceAfter: number | null;
+  affectedRecipes: number;
+}
+
+export function useQuickInboundPreview(
+  ingredientId: string | undefined, volume: number, amount: number, qty: number,
+) {
+  const storeId = useStoreId();
+  return useQuery({
+    queryKey: [...qk.ingredient(ingredientId ?? ''), 'quick-preview', volume, amount, qty],
+    enabled: Boolean(storeId && ingredientId && volume > 0 && qty > 0),
+    queryFn: async (): Promise<QuickInboundPreview> => {
+      const { data, error } = await supabase.rpc('quick_inbound_preview', {
+        p_store: storeId, p_ingredient: ingredientId as string,
+        p_volume: volume, p_amount: amount, p_qty: qty,
+      });
+      if (error) throw new Error(error.message);
+      const r = (data ?? {}) as unknown as Record<string, unknown>;
+      return {
+        stockBefore: num(r.stock_before),
+        stockAfter: num(r.stock_after),
+        added: num(r.added),
+        paid: num(r.paid),
+        inboundUnitPrice: numOrNull(r.inbound_unit_price),
+        basePriceBefore: numOrNull(r.base_price_before),
+        basePriceAfter: numOrNull(r.base_price_after),
+        affectedRecipes: num(r.affected_recipes),
+      };
+    },
+  });
+}
+
+export interface QuickInboundInput {
+  ingredientId: string;
+  /** 팩 1개 용량(기준단위) */
+  volume: number;
+  /** 팩 1개 금액 — 실제 결제금액 ÷ 개수 */
+  amount: number;
+  qty: number;
+  vendorId?: string | null;
+  occurredAt?: string;
+  /** 두 번 눌러도 한 번만 들어가게 하는 키(0074). */
+  idempotencyKey?: string;
+}
+
+/**
+ * 발주 없이 산 것을 바로 넣는다. **한 RPC** 다 — e7 → e1 을 앱에서 두 번 부르면
+ * 중간에 끊겼을 때 유령 발주가 남고 사장님은 정리할 방법이 없다.
+ */
+export function useQuickInbound() {
+  const qc = useQueryClient();
+  const storeId = useStoreId();
+  return useMutation({
+    mutationFn: async (input: QuickInboundInput): Promise<void> => {
+      const { error } = await supabase.rpc('quick_inbound', {
+        p_store: storeId,
+        p_ingredient: input.ingredientId,
+        p_volume: input.volume,
+        p_amount: input.amount,
+        p_qty: input.qty,
+        p_vendor: input.vendorId ?? undefined,
+        p_occurred_at: input.occurredAt,
+        p_idempotency_key: input.idempotencyKey,
+      });
+      if (error) throw new Error(error.message);
+    },
+    // 입고는 단가를 바꾼다 — 그 재료뿐 아니라 **전 레시피**와 매출 원가가 함께 움직인다.
+    onSuccess: (_r, input) => invalidate(qc, invalidateOn.e1(input.ingredientId)),
+  });
+}
+
 /** 상세 화면의 '구매 이력' — 발주 기록 최근 20건. */
 export interface PurchaseRecord {
   id: string;
