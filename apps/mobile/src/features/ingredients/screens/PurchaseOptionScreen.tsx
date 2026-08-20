@@ -266,19 +266,35 @@ export function PurchaseOptionScreen() {
                         key={o.id}
                         onPress={() => { setEditingId(o.id); setFormOpen(true); }}
                         accessibilityRole="button" accessibilityLabel={`${o.name} 수정`}
-                        style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 13, paddingHorizontal: 15, borderBottomWidth: i < g!.options.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}
+                        style={{ flexDirection: 'row', alignItems: 'center', gap: 11, paddingVertical: 12, paddingHorizontal: 15, borderBottomWidth: i < g!.options.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}
                       >
+                        {/*
+                          식재료 상세의 구매 옵션 줄과 **같은 짜임**이다.
+                            동네마트  [최저]                200g
+                            CJ 국물용 멸치              50.00원/g
+                            10,000원
+                          같은 것을 두 화면이 다르게 그리면 사장님은 다른 정보라고 읽는다.
+                        */}
                         <View style={{ flex: 1, minWidth: 0 }}>
-                          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                            <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }} numberOfLines={1}>{o.name}</Text>
+                          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 4 }}>
+                            <Text style={{ flexShrink: 1, fontSize: 14, color: T.ter, fontWeight: '600' }} numberOfLines={1}>
+                              {o.brandName ?? o.vendorName ?? '구매처 미지정'}
+                            </Text>
+                            {/* 배지는 여기 붙는다 — 오른쪽 두 줄은 용량·단가가 이미 쓰고 있다. */}
                             {isLow ? <Badge tone="green" sm>최저</Badge> : null}
                             {isHigh ? <Badge tone="red" sm>최고</Badge> : null}
                           </View>
+                          <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }} numberOfLines={1}>{o.name}</Text>
                           <Text style={[{ fontSize: 14, color: T.sub2, marginTop: 3 }, tnum]}>
-                            {formatQuantity(o.volume, base)} · {o.amount.toLocaleString('ko-KR')}원
+                            {o.amount.toLocaleString('ko-KR')}원
                           </Text>
-                          <Text style={[{ fontSize: 14, color: T.ter, marginTop: 2 }, tnum]}>
-                            {o.vendorName ?? '거래처 미지정'} · {formatUnitPrice(per, base)}
+                        </View>
+                        <View style={{ alignItems: 'flex-end' }}>
+                          <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, tnum]}>
+                            {formatQuantity(o.volume, base)}
+                          </Text>
+                          <Text style={[{ fontSize: 14, color: T.ter, marginTop: 3 }, tnum]}>
+                            {formatUnitPrice(per, base)}
                           </Text>
                         </View>
                         {o.url ? <Icon name="link" size={16} color={T.ter} /> : null}
