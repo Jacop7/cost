@@ -33,8 +33,6 @@ export interface IngredientRow {
   safetyStock: number;
   vendorName: string | null;
   memo: string | null;
-  /** 상세 첫 카드 아래 한 줄에 쓸 마지막 변경(0063). */
-  lastChange: LastChange;
   /** 재고 총량(기준단위) — 서버 `stock_total_base()` 값 */
   stockTotal: number;
   /** 기준단가(원/기준단위). 구매 이력이 없거나 로스율이 100% 이상이면 null(산출 불가). */
@@ -151,6 +149,14 @@ export interface PurchaseRecord {
 }
 
 export interface IngredientDetail extends IngredientRow {
+  /**
+   * 상세 첫 카드 아래 한 줄에 쓸 마지막 변경(0063).
+   *
+   * ⚠ **목록 타입에 두면 안 된다.** `toRow` 는 목록·상세가 함께 쓰는데
+   *   `ingredient_list` 는 `last_change` 를 주지 않는다. 거기서 파서를 부르면
+   *   목록이 통째로 터진다 — 실제로 그렇게 났다.
+   */
+  lastChange: LastChange;
   categoryId: string | null;
   defaultVendorId: string | null;
   minOrderQty: number;
@@ -205,7 +211,6 @@ function toRow(r: Record<string, unknown>): IngredientRow {
     safetyStock: num(r.safety_stock),
     vendorName: str(r.vendor_name),
     memo: str(r.memo),
-        lastChange: parseLastChange(r.last_change),
     stockTotal: num(r.stock_total),
     basePrice: numOrNull(r.base_price),
     soonOut: Boolean(r.soon_out),
@@ -244,6 +249,7 @@ export function useIngredientDetail(id: string | undefined) {
       const pu = (r.purchase ?? {}) as Record<string, unknown>;
       return {
         ...toRow(r),
+        lastChange: parseLastChange(r.last_change),
         categoryId: str(r.category_id),
         defaultVendorId: str(r.default_vendor_id),
         minOrderQty: num(r.min_order_qty),

@@ -79,6 +79,28 @@ export function useSession(): SessionState {
       const { data: sessionData } = await supabase.auth.getSession();
       let userId = sessionData.session?.user.id ?? null;
 
+      /**
+       * ⚠ **저장된 세션을 믿지 말고 살아 있는지 확인한다.**
+       *
+       * getSession 은 저장소에 있는 토큰을 그대로 돌려준다. 로컬 Supabase 를 다시
+       * 올리거나 토큰이 만료돼 갱신에 실패하면, 옛 토큰이 그대로 남아 자동 로그인이
+       * 건너뛰어지고 **그때부터 모든 조회가 401** 이 된다.
+       *
+       * 그 실패는 눈에 안 띈다 — supabase-js 는 오류를 던지지 않고 객체로 돌려주고,
+       * 훅이 그걸 throw 하면 react-query 가 삼켜 화면에만 "정보를 불러오지 못했어요"가
+       * 뜬다. 콘솔에는 아무것도 안 남아 원인을 찾는 데 오래 걸렸다(실측).
+       *
+       * getUser 는 서버에 물어 토큰을 검증한다. 죽었으면 지우고 다시 로그인한다.
+       * ⚠ 네트워크 오류로 로그아웃시키면 안 된다 — 인증이 거부된 경우(401·403)만 본다.
+       */
+      if (userId !== null) {
+        const { error } = await supabase.auth.getUser();
+        if (error && (error.status === 401 || error.status === 403)) {
+          await supabase.auth.signOut();
+          userId = null;
+        }
+      }
+
       if (userId === null && __DEV__) {
         // 로컬 시드 계정으로 자동 로그인 — 로그인 화면이 붙기 전까지의 개발 편의.
         const { data, error } = await supabase.auth.signInWithPassword({
