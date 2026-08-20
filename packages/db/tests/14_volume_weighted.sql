@@ -112,3 +112,57 @@ begin
          and abs(base_unit_price(i.id)
                  - sum(o.amount * o.received_qty) / nullif(sum(o.volume * o.received_qty), 0)) > 0.0001));
 end $t$;
+
+-- ════════════════════════════════════════════════════════════════
+-- 안전재고도 기준단위다 (0073)
+--
+-- 재고는 0056 에서 기준단위 총량으로 통일했는데 **안전재고만 개수**로 남아
+-- 비교할 때마다 `safety_stock × per_volume` 로 환산했다. 0072 이후 per_volume 은
+-- **기본값**일 뿐이라 그 환산이 설 자리가 없다.
+--
+-- 실측된 피해 — 사장님이 "우리는 5kg 짜리 산다"며 팩 용량만 고쳤더니
+-- 안전재고 기준이 3,000g → 5,000g 으로 소리 없이 바뀌었다. 안전재고는 건드리지도 않았다.
+-- ════════════════════════════════════════════════════════════════
+
+do $t$
+declare
+  v_i    uuid := pg_temp.ing('고추장');
+  v_safe numeric;
+  v_cat  uuid;
+  v_ven  uuid;
+begin
+  select safety_stock, category_id, default_vendor_id into v_safe, v_cat, v_ven
+    from ingredients where id = v_i;
+
+  perform pg_temp.eq('안전재고가 기준단위로 옮겨졌다', v_safe, 3000, 0.001);
+
+  -- ── 팩 용량만 고친다 ────────────────────────────────────────
+  perform save_ingredient(pg_temp.store(), jsonb_build_object(
+    'id', v_i, 'name', '고추장', 'base_unit', 'g', 'per_volume', 5000,
+    'safety_stock', v_safe, 'min_order_qty', 1,
+    'category_id', v_cat, 'default_vendor_id', v_ven));
+
+  perform pg_temp.eq('팩 용량을 고쳐도 안전재고는 안 움직인다',
+    (select safety_stock from ingredients where id = v_i), v_safe, 0.001);
+
+  -- ── 발주 후보 판정도 기준단위끼리 비교한다 ──────────────────
+  -- 재고를 안전재고 아래로 떨어뜨리면 후보로 떠야 한다.
+  perform e5_stock_adjusted(v_i, v_safe - 1, false, '검증');
+  perform refresh_order_candidate(v_i);
+  perform pg_temp.ok('안전재고 미달이면 후보로 뜬다',
+    exists (select 1 from order_candidates c
+             where c.ingredient_id = v_i
+               and exists (select 1 from unnest(c.reasons) r where r::text = 'safety_stock')));
+
+  -- 다시 채우면 사라진다.
+  perform e5_stock_adjusted(v_i, v_safe + 1, false, '검증');
+  perform refresh_order_candidate(v_i);
+  perform pg_temp.ok('채우면 후보에서 빠진다',
+    not exists (select 1 from order_candidates c
+                 where c.ingredient_id = v_i
+                   and exists (select 1 from unnest(c.reasons) r where r::text = 'safety_stock')));
+
+  -- ⚠ 최소 발주량은 개수 그대로다. 발주는 팩 단위로 한다.
+  perform pg_temp.eq('최소 발주량은 개수 그대로',
+    (select min_order_qty from ingredients where id = v_i), 1, 0);
+end $t$;

@@ -26,8 +26,10 @@ const dispUnit = (u: IngredientRow['baseUnit']) => (u === 'ea' ? '개' : u);
  * 판정은 `@sikjae/core` 의 stockBadge 와 같은 규칙이다 — 서버·앱이 갈리면 안 된다.
  * 안전재고는 **개수** 기준이라 개당 용량을 곱해 총량(기준단위)과 단위를 맞춘다.
  */
-export function belowSafety(g: { stockTotal: number; safetyStock: number; perVolume: number }): boolean {
-  return g.stockTotal < g.safetyStock * g.perVolume;
+export function belowSafety(g: { stockTotal: number; safetyStock: number }): boolean {
+  // ⚠ 안전재고는 이제 **기준단위**다(0073). perVolume 을 곱하지 않는다 —
+  //   곱하던 시절엔 팩 용량만 고쳐도 기준이 따라 움직였다.
+  return g.stockTotal < g.safetyStock;
 }
 
 export type StockState = 'out' | 'low' | 'ok';
@@ -72,7 +74,7 @@ export function IngCard({ g, onPress }: { g: IngredientRow; onPress?: () => void
             {/* 왜 노란지 그 자리에서 설명한다 — 안전선을 같이 보여준다. */}
             {stockStateOf(g) === 'low' ? (
               <Text style={{ fontSize: 13, fontWeight: '700', color: T.amberText }}>
-                안전 {formatQuantity(g.safetyStock * g.perVolume, unit)} 미달
+                안전 {formatQuantity(g.safetyStock, unit)} 미달
               </Text>
             ) : null}
           </View>

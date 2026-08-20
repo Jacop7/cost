@@ -377,6 +377,7 @@ export type Database = {
           per_volume: number
           purchase_unit_label: string | null
           safety_stock: number
+          safety_stock_is_base: boolean
           store_id: string
           updated_at: string
         }
@@ -393,6 +394,7 @@ export type Database = {
           per_volume: number
           purchase_unit_label?: string | null
           safety_stock?: number
+          safety_stock_is_base?: boolean
           store_id: string
           updated_at?: string
         }
@@ -409,6 +411,7 @@ export type Database = {
           per_volume?: number
           purchase_unit_label?: string | null
           safety_stock?: number
+          safety_stock_is_base?: boolean
           store_id?: string
           updated_at?: string
         }
