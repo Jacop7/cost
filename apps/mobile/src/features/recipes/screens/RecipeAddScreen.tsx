@@ -342,7 +342,7 @@ export default function RecipeAddScreen() {
                 <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, marginTop: 10, paddingVertical: 10, paddingHorizontal: 12, borderRadius: 10, backgroundColor: T.amberTint }}>
                   <Icon name="info" size={15} color={T.amberText} />
                   <Text style={{ flex: 1, fontSize: 14, color: T.amberText, lineHeight: 20 }}>
-                    단가가 없는 재료 {unknownLines}개는 원가에서 빠져 있어요. 발주 → 입고를 등록하면 자동으로 반영돼요.
+                    단가가 없는 재료 {unknownLines}개는 원가에서 빠져 있어요. 재고 추가나 입고를 등록하면 원가에 들어가요.
                   </Text>
                 </View>
               ) : null}
