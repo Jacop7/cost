@@ -271,25 +271,17 @@
 
     .base-price-result {
       display: none;
-      flex-direction: column;
-      gap: 6px;
+      align-items: center;
+      gap: 10px;
+      min-height: 35px;
       padding: 0 2px 10px;
       font-size: 13px;
     }
 
     .base-price-result.show { display: flex; }
-    .price-stage {
-      min-width: 0;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      color: var(--ter);
-      font-variant-numeric: tabular-nums;
-    }
-    .price-stage-label { color: var(--sub); font-weight: 700; white-space: nowrap; }
-    .price-stage strong { color: var(--ter); font-size: 14px; white-space: nowrap; }
-    .price-stage.after strong { color: var(--blue); font-size: 15px; }
+    .base-price-label { flex: 1; color: var(--sub); font-weight: 700; }
+    .base-price-values { color: var(--ter); font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .base-price-values b { margin-left: 5px; color: var(--blue); font-size: 15px; }
 
     .primary {
       width: 100%;
@@ -448,8 +440,8 @@
 
       <footer class="bottom-action">
         <div id="base-price-result" class="base-price-result" aria-live="polite">
-          <span class="price-stage"><span class="price-stage-label">등록 전 기준단가</span><strong id="previous-base-price">52.00원/g</strong></span>
-          <span class="price-stage after"><span class="price-stage-label">등록 후 기준단가</span><strong id="next-base-price">51.25원/g</strong></span>
+          <span class="base-price-label">기준단가</span>
+          <span class="base-price-values"><span id="previous-base-price">52.00원/g</span> → <b id="next-base-price">51.25원/g</b></span>
         </div>
         <button id="main-action" class="primary" type="button">저장</button>
       </footer>

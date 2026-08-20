@@ -85,6 +85,19 @@ export function PurchaseOptionScreen() {
   // 입력 단위(kg·L)를 기준단위로 환산한다 — 저장 직전 한 번(절대원칙 1).
   const volBase = isDisplayUnit(unit) ? displayToBase(num(vol), unit) : num(vol);
 
+  /*
+   * 이 옵션의 단가. 하단 바가 "얼마짜리를 저장하는지" 를 마지막으로 보여 준다.
+   *
+   * ⚠ 이건 **기준단가가 아니다.** 기준단가는 실제 입고의 가중평균이고 구매 옵션은
+   *   건드리지 못한다(절대원칙 2). 여기에 '기준단가'라고 쓰면 사장님은 저장만 해도
+   *   원가가 바뀐다고 읽는다 — 그건 사실이 아니다.
+   */
+  const unitPrice = volBase > 0 ? num(amount) / volBase : null;
+  const prevUnitPrice = (() => {
+    const o = editingId ? g?.options.find((x) => x.id === editingId) : undefined;
+    return o && o.volume > 0 ? o.amount / o.volume : null;
+  })();
+
   const nameError = name.trim() === '' ? '옵션 이름을 입력해 주세요' : undefined;
   const volError = volBase <= 0 ? '용량은 0보다 커야 해요' : undefined;
   const amountError = num(amount) <= 0 ? '금액을 입력해 주세요' : undefined;
@@ -210,6 +223,25 @@ export function PurchaseOptionScreen() {
             </ScrollView>
 
             <View style={{ paddingHorizontal: 20, paddingTop: 12, paddingBottom: 30, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
+              {/*
+                버튼 바로 위 한 줄 — 재고 추가 화면의 하단과 같은 짜임이다.
+                고친 값이 단가를 어디로 옮기는지 누르기 직전에 보인다.
+              */}
+              {unitPrice !== null && Number.isFinite(unitPrice) ? (
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 2, paddingBottom: 12 }}>
+                  <Text style={{ flex: 1, fontSize: 15, fontWeight: '700', color: T.sub }}>단가</Text>
+                  {/* 값이 실제로 움직였을 때만 전후를 보여 준다. 같은 값을 두 번 쓰면 읽는 데 방해만 된다. */}
+                  {prevUnitPrice !== null && Math.abs(prevUnitPrice - unitPrice) > 0.005 ? (
+                    <>
+                      <Text style={[{ fontSize: 14, color: T.ter }, tnum]}>{formatUnitPrice(prevUnitPrice, base)}</Text>
+                      <Icon name="arrowRight" size={14} color={T.blue} sw={2.2} />
+                    </>
+                  ) : null}
+                  <Text style={[{ fontSize: 16, fontWeight: '800', color: T.blue }, tnum]}>
+                    {formatUnitPrice(unitPrice, base)}
+                  </Text>
+                </View>
+              ) : null}
               <Button kind="primary" size="lg" full disabled={!canSave} loading={saveOption.isPending} onPress={onSave}>
                 {editingId ? '저장' : '추가'}
               </Button>
