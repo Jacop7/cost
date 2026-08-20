@@ -236,7 +236,6 @@ export function changeImpact(e: ChangeEvent, entity: ChangeEntity): string {
     if (keys.includes('safety_stock')) return '발주 후보 판정 기준만 바뀌었어요.';
     if (keys.includes('default_vendor_id')) return '다음 구매 옵션 선택의 기본값만 바뀌었어요.';
     if (keys.includes('min_order_qty')) return '발주 추천 수량만 바뀌었어요.';
-    if (keys.includes('memo')) return '메모는 계산에 들어가지 않아요.';
     return '매출 금액 계산에는 들어가지 않는 변경이에요.';
   }
 
