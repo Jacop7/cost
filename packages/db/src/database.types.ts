@@ -1658,6 +1658,7 @@ export type Database = {
         Args: {
           p_store: string
           p_month: string
+          p_prev_rate?: number
         }
         Returns: Json
       }
