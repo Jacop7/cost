@@ -105,12 +105,17 @@ const CHANGE_STATES: ChangeState[] = ['reflected', 'not_reflected', 'partial', '
  */
 export function parseLastChange(raw: unknown): LastChange {
   const r = (raw ?? {}) as Record<string, unknown>;
-  const raw_state = r.display_state;
-  const known = typeof raw_state === 'string' && (CHANGE_STATES as string[]).includes(raw_state);
+  const v = r.display_state;
 
-  if (!known && __DEV__) {
+  // ⚠ **키가 없는 것**과 **상태가 null 인 것**은 다르다.
+  //   키 없음 = 서버와 파서가 어긋났다(계약 위반) → 개발 중에 터뜨린다.
+  //   null    = 한 번도 안 고쳐서 말할 상태가 없다(0082) → 배지를 안 그린다.
+  const missing = !('display_state' in r);
+  const unknown = v !== null && v !== undefined && !(CHANGE_STATES as string[]).includes(String(v));
+
+  if ((missing || unknown) && __DEV__) {
     throw new Error(
-      `last_change.display_state 가 없거나 모르는 값입니다: ${JSON.stringify(raw_state)}. ` +
+      `last_change.display_state 가 ${missing ? '없습니다' : `모르는 값입니다: ${JSON.stringify(v)}`}. ` +
         '서버 last_entity_change() 와 이 파서가 어긋났습니다.',
     );
   }
@@ -118,7 +123,7 @@ export function parseLastChange(raw: unknown): LastChange {
   return {
     occurredAt: String(r.occurred_at ?? ''),
     eventId: str(r.event_id),
-    displayState: known ? (raw_state as ChangeState) : null,
+    displayState: !missing && !unknown && v !== null && v !== undefined ? (v as ChangeState) : null,
     hasHistory: r.has_history === true,
   };
 }

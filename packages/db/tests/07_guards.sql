@@ -165,17 +165,36 @@ declare
   lc    jsonb;
 begin
   -- ── 기록이 없을 때 ──────────────────────────────────────────
+  -- ⚠ 상태는 **null** 이어야 한다(0082). 'irrelevant' 로 채우면 화면이
+  --   "매출 계산과 무관"이라고 없는 사실을 주장한다 — 사장님이 실제로 헤맸다.
+  --   그래도 **키는 있어야** 한다. 키가 사라지면 앱 파서가 계약 위반으로 터진다.
   for lc in
     select ingredient_detail(v_ing)->'last_change'
     union all select recipe_detail(v_rcp)->'last_change'
   loop
     perform pg_temp.ok('last_change 가 있다', lc is not null and lc <> 'null'::jsonb);
     perform pg_temp.ok('display_state 키가 있다', lc ? 'display_state');
-    perform pg_temp.ok('아는 상태값이다',
-      lc->>'display_state' in ('reflected', 'not_reflected', 'partial', 'irrelevant'));
+    perform pg_temp.ok('아는 상태값이거나 null 이다',
+      lc->>'display_state' is null
+        or lc->>'display_state' in ('reflected', 'not_reflected', 'partial', 'irrelevant'));
+    perform pg_temp.ok('기록이 없으면 상태도 없다',
+      (lc->>'has_history')::boolean or (lc->>'display_state') is null);
+    perform pg_temp.ok('기록이 없으면 event_id 도 없다',
+      (lc->>'has_history')::boolean or (lc->>'event_id') is null);
     perform pg_temp.ok('occurred_at 이 있다', (lc->>'occurred_at') is not null);
     perform pg_temp.ok('event_id 키가 있다', lc ? 'event_id');
   end loop;
+
+  -- ⚠ 상세가 "최근 수정"이라 해 놓고 목록이 비어 있으면 안 된다.
+  --   기록이 없다고 말했으면 목록도 0건이어야 앞뒤가 맞는다.
+  declare v_lc jsonb := ingredient_detail(v_ing)->'last_change';
+  begin
+    if not (v_lc->>'has_history')::boolean then
+      perform pg_temp.eq('기록 없다고 했으면 목록도 0건',
+        (entity_change_history(pg_temp.store(), 'ingredient', v_ing, null, 20, 7)
+          #>>'{summary,count}')::int, 0, 0);
+    end if;
+  end;
 
   -- ── 기록이 생긴 뒤에도 ──────────────────────────────────────
   begin perform open_business_day(pg_temp.store()); exception when others then null; end;
