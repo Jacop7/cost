@@ -56,6 +56,7 @@
 | `sales` | SALES-07 | 당일 지출 추가 (항목·금액·메모) | (SalesHome 내 시트) | ✅ |
 | `sales` | SALES-05b | 판매 수량 입력 (매장/배달/포장 + **조리 폐기**) → **E10/E8** | (SalesHome 내 시트) | ✅ |
 | `sales` | SALES-01 | 매출관리 홈 (일일 판매 입력 + **영업 상태 바**) | `sales/index` (`SalesHomeScreen`) | ✅ |
+| `changes` | ING-03b / RCP-02b | 수정 내역 (식재료·레시피 공용 · 전후값·자동 전파·매출 반영 상태) | `ingredients/changes/[id]` · `recipes/changes/[id]` | ✅ |
 | `sales` | SALES-01b | 영업중·브레이크타임·영업종료 · 자동 종료 알림 | (SalesHome 내 `BusinessDayBar`) | ✅ |
 | `sales` | SALES-02 | 매출 분석 (기간 선택·캘린더·손익) | `sales/analytics` (`SalesAnalyticsScreen`) | ✅ |
 | `sales` | SALES-03 | 일 손익 상세 | `sales/day-detail` (`SalesDayDetailScreen`) | ✅ |

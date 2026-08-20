@@ -43,6 +43,8 @@ export interface RecipeDraft {
   categoryId: string | null;
   categoryName: string;
   price: string;
+  /** 메뉴 메모. 매출 계산과 무관하다(0063). */
+  memo: string;
   taxMode: TaxMode;
   /** 부가세 외 세금 항목. 요율은 입력 중이라 문자열로 든다(0052). */
   taxItems: DraftTaxItem[];
@@ -60,6 +62,7 @@ export const emptyDraft = (): RecipeDraft => ({
   categoryId: null,
   categoryName: '',
   price: '',
+  memo: '',
   taxMode: 'included',
   taxItems: [],
   baseServings: '10',

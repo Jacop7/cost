@@ -1,11 +1,12 @@
 // IngredientDetailScreen.tsx — ING-03 식재료 상세 (실데이터)
 import { useState } from 'react';
 import { Alert, Modal, Pressable, ScrollView, Text, View } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { AppHeader, Badge, Card, Icon, QueryState } from '../../../components/kit';
 import { T, tnum } from '../../../theme/tokens';
 import { formatQuantity, formatUnitPrice } from '@sikjae/core';
 import { safeBack } from '@/lib/nav';
+import { RecentChangeRow } from '@/features/changes';
 import { LedgerRow } from '../components/LedgerRow';
 import { LossCard } from '../components/LossCard';
 import { belowSafety, stockLabel, stockStateOf } from '../components/IngCard';
@@ -149,6 +150,11 @@ export function IngredientDetailScreen() {
                     {g.memo || '메모를 입력하세요'}
                   </Text>
                 </Pressable>
+                {/* 최근 수정 — 레시피 상세와 **같은 컴포넌트**를 쓴다(0063). */}
+                <RecentChangeRow
+                  change={g.lastChange}
+                  onPress={() => router.push(`/ingredients/changes/${g.id}` as Href)}
+                />
               </Card>
 
               {/* 잔여 */}

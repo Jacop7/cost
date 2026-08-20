@@ -87,6 +87,7 @@ export default function RecipeAddScreen() {
         categoryId: d.categoryId,
         categoryName: '',
         price: String(d.price),
+        memo: d.memo ?? '',
         taxMode: d.taxMode,
         taxItems: d.taxItems.map((t) => ({ name: t.name, rate: String(t.rate) })),
         baseServings: String(d.baseServings),
@@ -164,6 +165,7 @@ export default function RecipeAddScreen() {
         name: draft.name.trim(),
         price,
         taxMode: draft.taxMode,
+        memo: draft.memo.trim() || null,
         taxItems,
         baseServings: servings,
         targetProfitRate: num(draft.targetProfitRate),
@@ -221,6 +223,15 @@ export default function RecipeAddScreen() {
             </Field>
             <Field label="카테고리">
               <Select value={catLabel} placeholder="카테고리 선택" onPress={() => setCatOpen(true)} />
+            </Field>
+            {/* 메모 — 식재료와 같은 성격이다. 매출 계산에는 안 들어간다(0063). */}
+            <Field label="메모" hint="이 메뉴에 대해 기억할 것">
+              <Input
+                value={draft.memo}
+                onChangeText={(t) => patch({ memo: t })}
+                placeholder="예) 점심에만 판매"
+                accessibilityLabel="메모"
+              />
             </Field>
             <View style={{ flexDirection: 'row', gap: 10 }}>
               <View style={{ flex: 1.4 }}>

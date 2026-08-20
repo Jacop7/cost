@@ -9,6 +9,7 @@ import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { AppHeader, Badge, Card, Donut, Icon, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
+import { RecentChangeRow } from '@/features/changes';
 import { formatPercent, formatQuantity, formatUnitPrice, recommendedPrice, round, taxAmount, taxRate } from '@sikjae/core';
 import { T, won } from '@/theme/tokens';
 import { useFixedCosts } from '@/features/my/hooks';
@@ -179,9 +180,31 @@ export default function RecipeDetailScreen() {
               <>
                 {/* 메뉴 요약 */}
                 <Card pad={0} style={{ overflow: 'hidden' }}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7, paddingHorizontal: 16, paddingTop: 14, paddingBottom: 12 }}>
-                    <Text style={{ flex: 1, fontSize: 20, fontWeight: '800', letterSpacing: -0.3, color: T.ink }} numberOfLines={1}>{r.name}</Text>
-                    {!r.active ? <Badge tone="neutral" sm solid>판매중지</Badge> : warn ? <Badge tone="red" sm solid>목표 미달</Badge> : <Badge tone="green" sm solid>목표 달성</Badge>}
+                  <View style={{ paddingHorizontal: 16, paddingTop: 14, paddingBottom: 12 }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7 }}>
+                      <Text style={{ flex: 1, fontSize: 20, fontWeight: '800', letterSpacing: -0.3, color: T.ink }} numberOfLines={1}>{r.name}</Text>
+                      {!r.active ? <Badge tone="neutral" sm solid>판매중지</Badge> : warn ? <Badge tone="red" sm solid>목표 미달</Badge> : <Badge tone="green" sm solid>목표 달성</Badge>}
+                    </View>
+                    {/* 메모 — 식재료 상세와 같은 자리, 같은 모양(0063) */}
+                    <Pressable
+                      onPress={() => router.push(`/recipes/add?id=${r.id}` as Href)}
+                      accessibilityRole="button" accessibilityLabel="메모 수정"
+                      style={{ marginTop: 11, flexDirection: 'row', alignItems: 'center', gap: 6 }}
+                    >
+                      <Icon name="note" size={15} color={T.amberText} />
+                      <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub }}>메모</Text>
+                      <Text
+                        style={{ flex: 1, fontSize: 15, fontWeight: '600', color: r.memo ? T.ink2 : T.ter }}
+                        numberOfLines={1}
+                      >
+                        {r.memo || '메모 없음'}
+                      </Text>
+                    </Pressable>
+                    {/* 최근 수정 — 식재료 상세와 **같은 컴포넌트**를 쓴다(0063). */}
+                    <RecentChangeRow
+                      change={r.lastChange}
+                      onPress={() => router.push(`/recipes/changes/${r.id}` as Href)}
+                    />
                   </View>
                   {([
                     ['판매가', `${won(price)}원`],
