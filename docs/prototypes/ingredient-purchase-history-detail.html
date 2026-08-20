@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>식재료 구매 이력 상세 UI</title>
+  <style>
+    :root {
+      --bg: #eef1f4;
+      --app-bg: #f2f4f6;
+      --surface: #ffffff;
+      --surface-2: #f9fafb;
+      --ink: #191f28;
+      --ink-2: #333d4b;
+      --sub: #4e5968;
+      --sub-2: #6b7684;
+      --ter: #8b95a1;
+      --line: #e5e8eb;
+      --line-2: #f2f4f6;
+      --blue: #3182f6;
+      --blue-tint: #ebf3fe;
+      --green: #15b374;
+      --green-tint: #e7f7f0;
+      --amber: #e07a00;
+      --amber-tint: #fff4e5;
+      --red: #f04452;
+      --red-tint: #feecec;
+      --scrim: rgba(0, 0, 0, .42);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px 12px;
+      color: var(--ink);
+      background: radial-gradient(circle at 18% 8%, rgba(49, 130, 246, .12), transparent 26rem), var(--bg);
+      font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button { font: inherit; }
+    .prototype { width: min(390px, 100%); }
+    .prototype-label { margin: 0 6px 9px; color: var(--sub); font-size: 13px; font-weight: 800; }
+
+    .phone {
+      position: relative;
+      height: min(820px, calc(100vh - 72px));
+      min-height: 660px;
+      overflow: hidden;
+      border: 1px solid rgba(25, 31, 40, .1);
+      border-radius: 30px;
+      background: var(--surface);
+      box-shadow: 0 24px 70px rgba(25, 31, 40, .15);
+    }
+
+    .status-bar {
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 19px;
+      font-size: 11px;
+      font-weight: 800;
+      background: var(--surface);
+    }
+
+    .app-header {
+      height: 56px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 15px;
+      border-bottom: 1px solid var(--line);
+      background: var(--surface);
+    }
+
+    .back {
+      width: 30px;
+      border: 0;
+      padding: 0;
+      color: var(--ink);
+      background: transparent;
+      font-size: 28px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .app-title { flex: 1; font-size: 18px; font-weight: 800; }
+
+    .screen {
+      height: calc(100% - 84px);
+      overflow-y: auto;
+      padding: 12px 14px 28px;
+      background: var(--app-bg);
+      scrollbar-width: thin;
+    }
+
+    .panel {
+      margin-bottom: 11px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--surface);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, .04);
+    }
+
+    .basis { padding: 16px; }
+    .basis-label { color: var(--ter); font-size: 12px; font-weight: 700; }
+    .basis-title { display: flex; align-items: baseline; margin-top: 5px; }
+    .basis-title strong { flex: 1; color: var(--blue); font-size: 23px; font-weight: 800; letter-spacing: -.04em; }
+    .basis-title span { color: var(--sub); font-size: 12px; font-weight: 700; }
+    .formula { margin-top: 12px; padding: 10px 11px; border-radius: 10px; color: var(--ink-2); background: var(--surface-2); font-size: 13px; font-weight: 750; text-align: center; }
+    .formula b { color: var(--blue); }
+
+    .range { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+    .range-item { display: flex; align-items: baseline; gap: 6px; }
+    .range-item span { color: var(--ter); font-size: 12px; font-weight: 700; }
+    .range-item strong { font-size: 14px; font-weight: 800; }
+    .range-item.low strong { color: var(--blue); }
+    .range-item.high { justify-content: flex-end; }
+    .range-item.high strong { color: var(--red); }
+
+    .list-head { display: flex; align-items: center; padding: 13px 15px; border-bottom: 1px solid var(--line-2); background: var(--surface-2); }
+    .list-title { flex: 1; color: var(--sub); font-size: 15px; font-weight: 800; }
+    .list-count { color: var(--ter); font-size: 12px; font-weight: 700; }
+
+    .history-row {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 15px;
+      border: 0;
+      border-top: 1px solid var(--line-2);
+      color: var(--ink);
+      background: var(--surface);
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .history-row:first-of-type { border-top: 0; }
+    .history-copy { min-width: 0; flex: 1; }
+    .history-date { color: var(--ter); font-size: 12px; font-weight: 700; }
+    .history-vendor { overflow: hidden; margin-top: 4px; font-size: 15px; font-weight: 800; text-overflow: ellipsis; white-space: nowrap; }
+    .history-meta { margin-top: 4px; color: var(--sub-2); font-size: 12px; font-weight: 650; }
+    .history-value { flex: 0 0 auto; text-align: right; }
+    .history-value strong { display: block; font-size: 15px; font-weight: 800; }
+    .history-value small { display: block; margin-top: 4px; color: var(--ter); font-size: 11px; font-weight: 650; }
+    .chevron { flex: 0 0 auto; color: #b0b8c1; font-size: 21px; }
+
+    .tag { display: inline-block; margin-left: 5px; padding: 2px 5px; border-radius: 5px; font-size: 10px; font-weight: 800; vertical-align: 1px; }
+    .tag.low { color: var(--blue); background: var(--blue-tint); }
+    .tag.high { color: var(--red); background: var(--red-tint); }
+    .tag.partial { color: var(--amber); background: var(--amber-tint); }
+
+    .notice { display: flex; gap: 7px; padding: 13px 15px; color: var(--ter); font-size: 12px; font-weight: 650; line-height: 1.45; }
+
+    .overlay {
+      position: absolute;
+      z-index: 30;
+      inset: 0;
+      display: none;
+      align-items: flex-end;
+      background: var(--scrim);
+    }
+
+    .overlay.open { display: flex; }
+    .sheet { width: 100%; max-height: 84%; overflow-y: auto; padding: 10px 14px 20px; border-radius: 22px 22px 0 0; background: var(--surface); }
+    .handle { width: 40px; height: 5px; margin: 0 auto 13px; border-radius: 3px; background: var(--line); }
+    .sheet-head { display: flex; align-items: flex-start; padding: 4px 2px 14px; }
+    .sheet-heading { min-width: 0; flex: 1; }
+    .sheet-heading h2 { margin: 0; font-size: 19px; font-weight: 800; }
+    .sheet-heading p { margin: 5px 0 0; color: var(--ter); font-size: 12px; font-weight: 650; }
+    .sheet-state { padding: 4px 7px; border-radius: 7px; color: var(--green); background: var(--green-tint); font-size: 11px; font-weight: 800; }
+    .sheet-state.partial { color: var(--amber); background: var(--amber-tint); }
+
+    .detail-group { margin-top: 10px; overflow: hidden; border-radius: 12px; background: var(--surface-2); }
+    .detail-title { padding: 11px 12px; border-bottom: 1px solid var(--line); color: var(--sub); font-size: 13px; font-weight: 800; }
+    .detail-rows { padding: 3px 12px; }
+    .detail-row { display: flex; align-items: center; padding: 9px 0; border-bottom: 1px solid var(--line-2); }
+    .detail-row:last-child { border-bottom: 0; }
+    .detail-row span { flex: 1; color: var(--sub); font-size: 13px; font-weight: 650; }
+    .detail-row strong { color: var(--ink); font-size: 13px; font-weight: 800; text-align: right; }
+    .detail-row strong.blue { color: var(--blue); }
+    .detail-arrow { margin: 0 5px; color: #b0b8c1; }
+
+    .close {
+      width: 100%;
+      margin-top: 12px;
+      padding: 15px;
+      border: 0;
+      border-radius: 12px;
+      color: var(--ink);
+      background: var(--surface-2);
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <main class="prototype">
+    <p class="prototype-label">ING-06 · 구매 이력 상세</p>
+    <section class="phone" aria-label="고추장 구매 이력 상세 화면">
+      <div class="status-bar"><span>9:41</span><span>● ◔ ▰</span></div>
+      <header class="app-header"><button class="back" type="button" aria-label="뒤로">‹</button><span class="app-title">구매 이력</span></header>
+
+      <div class="screen">
+        <section class="panel basis">
+          <div class="basis-label">고추장 · 현재 기준 단가</div>
+          <div class="basis-title"><strong>5.00원/g</strong><span>입고 확정 3건</span></div>
+          <div class="formula"><b>총 지출 40,000원</b> ÷ 총 입고량 8kg</div>
+          <div class="range"><div class="range-item low"><span>최저</span><strong>4.80원/g</strong></div><div class="range-item high"><span>최고</span><strong>5.20원/g</strong></div></div>
+        </section>
+
+        <section class="panel">
+          <div class="list-head"><span class="list-title">단가에 반영된 구매</span><span class="list-count">총 3건</span></div>
+
+          <button class="history-row" type="button" data-entry="0" aria-label="8월 18일 식자재쇼핑몰 구매 상세">
+            <span class="history-copy"><span class="history-date">08/18 · 입고 완료</span><span class="history-vendor">식자재쇼핑몰 <span class="tag high">최고</span></span><span class="history-meta">3kg × 1개 · 구매 옵션</span></span>
+            <span class="history-value"><strong>15,600원</strong><small>5.20원/g</small></span><span class="chevron">›</span>
+          </button>
+
+          <button class="history-row" type="button" data-entry="1" aria-label="8월 11일 한빛식자재 구매 상세">
+            <span class="history-copy"><span class="history-date">08/11 · 부분 입고 <span class="tag partial">1/2개</span></span><span class="history-vendor">한빛식자재 <span class="tag low">최저</span></span><span class="history-meta">3kg × 2개 중 1개 도착</span></span>
+            <span class="history-value"><strong>14,400원</strong><small>4.80원/g</small></span><span class="chevron">›</span>
+          </button>
+
+          <button class="history-row" type="button" data-entry="2" aria-label="8월 3일 시장마트 구매 상세">
+            <span class="history-copy"><span class="history-date">08/03 · 입고 완료</span><span class="history-vendor">시장마트</span><span class="history-meta">1kg × 2개 · 직접 입력</span></span>
+            <span class="history-value"><strong>10,000원</strong><small>5.00원/g</small></span><span class="chevron">›</span>
+          </button>
+        </section>
+
+        <section class="panel"><div class="notice"><span>ⓘ</span><span>기준 단가는 팩 개수가 아니라 실제로 들어온 총량을 기준으로 계산해요. 발주 대기·취소는 포함하지 않아요.</span></div></section>
+      </div>
+
+      <div id="detail-overlay" class="overlay" role="dialog" aria-modal="true" aria-labelledby="detail-title">
+        <section class="sheet">
+          <div class="handle"></div>
+          <div class="sheet-head"><div class="sheet-heading"><h2 id="detail-title">구매 상세</h2><p id="detail-date"></p></div><span id="detail-state" class="sheet-state"></span></div>
+
+          <div class="detail-group">
+            <div class="detail-title">구매 정보</div>
+            <div class="detail-rows">
+              <div class="detail-row"><span>구매한 곳</span><strong id="detail-vendor"></strong></div>
+              <div class="detail-row"><span>등록 방식</span><strong id="detail-source"></strong></div>
+              <div class="detail-row"><span>상품 용량</span><strong id="detail-volume"></strong></div>
+              <div class="detail-row"><span>주문 수량</span><strong id="detail-ordered"></strong></div>
+              <div class="detail-row"><span>실제 입고</span><strong id="detail-received"></strong></div>
+              <div class="detail-row"><span>반영금액</span><strong id="detail-amount"></strong></div>
+            </div>
+          </div>
+
+          <div class="detail-group">
+            <div class="detail-title">단가 반영</div>
+            <div class="detail-rows">
+              <div class="detail-row"><span>이번 입고 단가</span><strong id="detail-unit-price" class="blue"></strong></div>
+              <div class="detail-row"><span>기준 단가</span><strong><span id="detail-before"></span><span class="detail-arrow">→</span><span id="detail-after"></span></strong></div>
+              <div class="detail-row"><span>연결 레시피</span><strong id="detail-recipes"></strong></div>
+            </div>
+          </div>
+
+          <button id="close-detail" class="close" type="button">닫기</button>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const entries = [
+      {
+        date: '2026.08.18 09:20', state: '입고 완료', partial: false,
+        vendor: '식자재쇼핑몰', source: '구매 옵션', volume: '3kg/개',
+        ordered: '1개', received: '1개 · 3kg', amount: '15,600원',
+        unitPrice: '5.20원/g · 최고', before: '4.88원/g', after: '5.00원/g', recipes: '3개 자동 재계산',
+      },
+      {
+        date: '2026.08.11 11:05', state: '부분 입고', partial: true,
+        vendor: '한빛식자재', source: '구매 옵션', volume: '3kg/개',
+        ordered: '2개', received: '1개 · 3kg', amount: '14,400원',
+        unitPrice: '4.80원/g · 최저', before: '5.00원/g', after: '4.88원/g', recipes: '3개 자동 재계산',
+      },
+      {
+        date: '2026.08.03 08:44', state: '입고 완료', partial: false,
+        vendor: '시장마트', source: '구매 옵션 없이 직접 입력', volume: '1kg/개',
+        ordered: '2개', received: '2개 · 2kg', amount: '10,000원',
+        unitPrice: '5.00원/g', before: '산출 전', after: '5.00원/g', recipes: '3개 자동 재계산',
+      },
+    ];
+
+    const overlay = document.getElementById('detail-overlay');
+
+    function openDetail(index) {
+      const entry = entries[index];
+      document.getElementById('detail-date').textContent = entry.date;
+      document.getElementById('detail-state').textContent = entry.state;
+      document.getElementById('detail-state').classList.toggle('partial', entry.partial);
+      document.getElementById('detail-vendor').textContent = entry.vendor;
+      document.getElementById('detail-source').textContent = entry.source;
+      document.getElementById('detail-volume').textContent = entry.volume;
+      document.getElementById('detail-ordered').textContent = entry.ordered;
+      document.getElementById('detail-received').textContent = entry.received;
+      document.getElementById('detail-amount').textContent = entry.amount;
+      document.getElementById('detail-unit-price').textContent = entry.unitPrice;
+      document.getElementById('detail-before').textContent = entry.before;
+      document.getElementById('detail-after').textContent = entry.after;
+      document.getElementById('detail-recipes').textContent = entry.recipes;
+      overlay.classList.add('open');
+    }
+
+    document.querySelectorAll('.history-row').forEach((button) => button.addEventListener('click', () => openDetail(Number(button.dataset.entry))));
+    document.getElementById('close-detail').addEventListener('click', () => overlay.classList.remove('open'));
+    overlay.addEventListener('click', (event) => { if (event.target === overlay) overlay.classList.remove('open'); });
+  </script>
+</body>
+</html>
