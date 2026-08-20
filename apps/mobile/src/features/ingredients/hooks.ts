@@ -532,24 +532,3 @@ export function useStockChange() {
   });
 }
 
-/**
- * 폐기 취소 (E2 되돌리기).
- *
- * 오입력한 폐기 하나가 그 식재료의 기준단가를 **영구히** 바꿔버리는 걸 막는다.
- * 원장은 지우지 않고 반대 이벤트를 쌓아 상쇄한다 — 되돌린 폐기는 실측 로스율에서 빠진다.
- */
-export function useRevertDiscard(ingredientId: string) {
-  const qc = useQueryClient();
-  return useMutation({
-    mutationFn: async (input: { eventId: string; reason?: string }) => {
-      const { data, error } = await supabase.rpc('e2_discard_reverted', {
-        p_event: input.eventId,
-        p_reason: input.reason,
-      });
-      if (error) throw new Error(error.message);
-      const r = (data ?? {}) as unknown as Record<string, unknown>;
-      return { alreadyReverted: Boolean(r.already_reverted), restored: num(r.restored) };
-    },
-    onSuccess: () => invalidate(qc, invalidateOn.e2(ingredientId)),
-  });
-}

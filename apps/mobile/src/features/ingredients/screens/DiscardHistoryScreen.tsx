@@ -6,19 +6,20 @@
  *   조리 후 폐기가 많다 → 덜 만들어야 한다
  * 한 숫자로 뭉치면 어느 쪽을 손봐야 할지 알 수 없다.
  *
- * 되돌리기 규칙도 다르다. 조리 전 폐기는 여기서 취소할 수 있지만, 조리 후 폐기는
- * **매출 기록이 주인**이라 그 날 매출에서 고쳐야 한다(0042). 탭으로 갈라두면
- * "왜 어떤 건 되고 어떤 건 안 되지?"가 자연스럽게 설명된다.
+ * ⚠ 여기서는 **읽기만 한다.** 폐기 되돌리기는 없앴다 — 잘못 찍었으면 재고 수정(E5)으로
+ *   맞추면 된다. 되돌리기와 재고 수정이 나란히 있으면 같은 일을 두 길로 하게 되고,
+ *   어느 쪽이 원장에 무엇을 남기는지 사장님이 알 수가 없다.
+ *   폐기 기록 자체는 남으므로 로스율에도 그대로 잡힌다.
  */
 import { useMemo, useState } from 'react';
-import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
+import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Badge, Card, Icon, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { formatQuantity } from '@sikjae/core';
 import { T, tnum, won } from '@/theme/tokens';
 import { dispUnit } from '../ledger';
-import { useIngredientDetail, useRevertDiscard, useStockHistory, type LedgerEntry } from '../hooks';
+import { useIngredientDetail, useStockHistory, type LedgerEntry } from '../hooks';
 
 type Tab = '전체' | '조리 전 폐기' | '조리 후 폐기';
 const TABS: Tab[] = ['전체', '조리 전 폐기', '조리 후 폐기'];
@@ -29,7 +30,6 @@ export default function DiscardHistoryScreen() {
 
   const detail = useIngredientDetail(id);
   const history = useStockHistory(id);
-  const revertDiscard = useRevertDiscard(id ?? '');
 
   const g = detail.data;
   const unit = dispUnit(g?.baseUnit ?? 'g');
@@ -53,33 +53,6 @@ export default function DiscardHistoryScreen() {
 
   const shownAmount = sum(shown);
   const shownCost = price === null ? null : shownAmount * price;
-
-  const confirmRevert = (e: LedgerEntry) => {
-    if (e.reverted) return;
-    if (e.waste) {
-      Alert.alert('조리 후 폐기는 여기서 못 고쳐요', '만들어 놓고 못 판 몫이라 그 날 매출에서 수량을 고쳐 주세요.');
-      return;
-    }
-    Alert.alert(
-      '폐기 취소',
-      `${formatQuantity(Math.abs(e.countDelta), unit)} 폐기를 되돌려요. 재고가 폐기 전으로 돌아가고 로스율에서도 빠집니다.`,
-      [
-        { text: '닫기', style: 'cancel' },
-        {
-          text: '폐기 취소',
-          style: 'destructive',
-          onPress: () =>
-            revertDiscard.mutate(
-              { eventId: e.id },
-              {
-                onError: (err) =>
-                  Alert.alert('되돌리지 못했어요', err instanceof Error ? err.message : '잠시 후 다시 시도해 주세요'),
-              },
-            ),
-        },
-      ],
-    );
-  };
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
@@ -138,18 +111,13 @@ export default function DiscardHistoryScreen() {
                 ? '만들어 놓고 못 판 몫이에요. 자주 남으면 만드는 양을 줄여 보세요.'
                 : tab === '조리 전 폐기'
                   ? '쓰기도 전에 상한 몫이에요. 자주 생기면 한 번에 사는 양을 줄여 보세요.'
-                  : '되돌린 폐기는 합계에서 빠져요.'}
+                  : '조리 전은 발주·보관을, 조리 후는 만드는 양을 손봐야 해요.'}
             </Text>
           </Card>
 
           {shown.map((e) => (
             <Card key={e.id} pad={0} style={{ overflow: 'hidden', opacity: e.reverted ? 0.5 : 1 }}>
-              <Pressable
-                onPress={() => confirmRevert(e)}
-                accessibilityRole="button"
-                accessibilityLabel={`${e.date} ${e.waste ? '조리 후' : '조리 전'} 폐기 ${formatQuantity(Math.abs(e.countDelta), unit)}`}
-                style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 14, paddingHorizontal: 15 }}
-              >
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 14, paddingHorizontal: 15 }}>
                 <View style={{ flex: 1, minWidth: 0 }}>
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
                     <Text style={[{ fontSize: 14, color: T.ter, fontWeight: '600' }, tnum]}>
@@ -163,9 +131,6 @@ export default function DiscardHistoryScreen() {
                   <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink, marginTop: 3 }} numberOfLines={1}>
                     {e.note ?? (e.waste ? '조리 후 폐기' : '조리 전 폐기')}
                   </Text>
-                  {!e.reverted && !e.waste ? (
-                    <Text style={{ fontSize: 14, color: T.ter, marginTop: 2 }}>탭하면 폐기를 되돌려요</Text>
-                  ) : null}
                 </View>
                 <View style={{ alignItems: 'flex-end' }}>
                   <Text style={[{ fontSize: 16, fontWeight: '800', color: T.red }, tnum]}>
@@ -177,7 +142,7 @@ export default function DiscardHistoryScreen() {
                     </Text>
                   ) : null}
                 </View>
-              </Pressable>
+              </View>
             </Card>
           ))}
 
