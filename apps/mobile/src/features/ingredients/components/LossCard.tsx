@@ -96,7 +96,6 @@ export function LossCard({ loss, baseUnit, discards, unitPrice, onPress }: {
               style={{
                 paddingVertical: 12, paddingHorizontal: 15,
                 borderBottomWidth: i < recent.length - 1 ? 1 : 0, borderBottomColor: T.line2,
-                opacity: e.reverted ? 0.45 : 1,
               }}
             >
               {/* 1줄 — 언제 · 얼마나 */}
@@ -113,7 +112,6 @@ export function LossCard({ loss, baseUnit, discards, unitPrice, onPress }: {
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 3 }}>
                 <Text style={{ flex: 1, minWidth: 0, fontSize: 15, fontWeight: '700', color: T.ink2 }} numberOfLines={1}>
                   {e.waste ? '조리 후 폐기' : '조리 전 폐기'}
-                  {e.reverted ? ' · 취소됨' : ''}
                 </Text>
                 {unitPrice !== null ? (
                   <Text style={[{ fontSize: 13, color: T.sub2 }, NUM]}>
