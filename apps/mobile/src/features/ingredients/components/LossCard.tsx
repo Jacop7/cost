@@ -85,35 +85,46 @@ export function LossCard({ loss, baseUnit, discards, unitPrice, onPress }: {
               disabled={!onPress}
               accessibilityRole={onPress ? 'button' : undefined}
               accessibilityLabel={`${e.date} ${e.waste ? '조리 후 폐기' : '조리 전 폐기'} ${formatQuantity(amount, u)}`}
+              /*
+               * 최근 입고 줄과 **같은 짜임**이다. 왼쪽은 무엇, 오른쪽은 값.
+               *   08/21                    −200g
+               *   조리 전 폐기            3,920원
+               *
+               * 날짜를 옆에 붙여 두면 폭이 좁을 때 '조리 전 폐기'가 잘린다.
+               * 위아래로 나누면 잘릴 일도 없고 두 카드가 같은 리듬으로 읽힌다.
+               */
               style={{
-                flexDirection: 'row', alignItems: 'center', gap: 10,
                 paddingVertical: 12, paddingHorizontal: 15,
                 borderBottomWidth: i < recent.length - 1 ? 1 : 0, borderBottomColor: T.line2,
                 opacity: e.reverted ? 0.45 : 1,
               }}
             >
-              <Text style={[{ fontSize: 14, color: T.ter, fontWeight: '600', width: 44 }, tnum]}>
-                {e.date.slice(5).replace('-', '/')}
-              </Text>
-              <View style={{ flex: 1, minWidth: 0 }}>
-                <Text style={{ fontSize: 15, fontWeight: '700', color: T.ink2 }} numberOfLines={1}>
-                  {e.waste ? '조리 후 폐기' : '조리 전 폐기'}
-                  {e.reverted ? ' · 취소됨' : ''}
+              {/* 1줄 — 언제 · 얼마나 */}
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                <Text style={[{ flex: 1, fontSize: 14, color: T.ter, fontWeight: '600' }, tnum]}>
+                  {e.date.slice(5).replace('-', '/')}
                 </Text>
-                {e.note ? (
-                  <Text style={{ fontSize: 13, color: T.ter, marginTop: 1 }} numberOfLines={1}>{e.note}</Text>
-                ) : null}
-              </View>
-              <View style={{ alignItems: 'flex-end' }}>
                 <Text style={[{ fontSize: 15, fontWeight: '800', color: T.red }, NUM]}>
                   −{formatQuantity(amount, u)}
                 </Text>
+              </View>
+
+              {/* 2줄 — 무엇을 버렸나 · 그게 얼마어치인가 */}
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 3 }}>
+                <Text style={{ flex: 1, minWidth: 0, fontSize: 15, fontWeight: '700', color: T.ink2 }} numberOfLines={1}>
+                  {e.waste ? '조리 후 폐기' : '조리 전 폐기'}
+                  {e.reverted ? ' · 취소됨' : ''}
+                </Text>
                 {unitPrice !== null ? (
-                  <Text style={[{ fontSize: 13, color: T.sub2, marginTop: 1 }, NUM]}>
+                  <Text style={[{ fontSize: 13, color: T.sub2 }, NUM]}>
                     {won(Math.round(amount * unitPrice))}원
                   </Text>
                 ) : null}
               </View>
+
+              {e.note ? (
+                <Text style={{ fontSize: 13, color: T.ter, marginTop: 2 }} numberOfLines={1}>{e.note}</Text>
+              ) : null}
             </Pressable>
           );
         })
