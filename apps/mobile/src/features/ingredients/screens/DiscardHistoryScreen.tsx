@@ -13,14 +13,14 @@
  *   그래서 '취소됨' 표시도 없다 — 상쇄되는 폐기가 생기지 않는다.
  */
 import { useMemo, useState } from 'react';
-import { Pressable, ScrollView, Text, View } from 'react-native';
+import { Alert, Modal, Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Badge, Card, Icon, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { formatQuantity } from '@sikjae/core';
+import { businessDay, formatQuantity } from '@sikjae/core';
 import { T, tnum, won } from '@/theme/tokens';
 import { dispUnit } from '../ledger';
-import { useIngredientDetail, useStockHistory, type LedgerEntry } from '../hooks';
+import { DISCARD_DELETE_DAYS, useDeleteDiscard, useIngredientDetail, useStockHistory, type LedgerEntry } from '../hooks';
 
 type Tab = '전체' | '조리 전 폐기' | '조리 후 폐기';
 const TABS: Tab[] = ['전체', '조리 전 폐기', '조리 후 폐기'];
@@ -31,16 +31,59 @@ export default function DiscardHistoryScreen() {
 
   const detail = useIngredientDetail(id);
   const history = useStockHistory(id);
+  const deleteDiscard = useDeleteDiscard(id ?? '');
+  const [menuFor, setMenuFor] = useState<LedgerEntry | null>(null);
 
   const g = detail.data;
   const unit = dispUnit(g?.baseUnit ?? 'g');
   const price = g?.basePrice ?? null;
 
-  /** 폐기만 추린다. 되돌려진 것도 보여주되 취소선으로 표시한다 — 원장은 지우지 않는다. */
+  /*
+   * 폐기만 추린다. **지운 폐기는 여기서 사라진다** —
+   * '삭제'라 해 놓고 취소선 그은 줄이 남으면 지운 게 아니다.
+   * 원장은 그대로다. 재고 변동 내역에서 '(취소됨)' 으로 볼 수 있다.
+   */
   const discards = useMemo(
-    () => (history.data ?? []).filter((e) => e.type === 'discard'),
+    () => (history.data ?? []).filter((e) => e.type === 'discard' && !e.reverted),
     [history.data],
   );
+
+  /**
+   * 지울 수 있는 줄인가. 조리 후 폐기는 **매출이 주인**이라 여기서 못 고치고,
+   * 7일이 지난 건 이미 월 손익·로스율의 근거로 굳었다.
+   * ⚠ 이건 안내일 뿐이다 — 진짜 경계는 서버(0086)가 막는다.
+   */
+  const canDelete = (e: LedgerEntry) => {
+    if (e.waste) return false;
+    const today = businessDay(new Date());
+    if (today === null) return false;
+    const days = Math.floor(
+      (Date.parse(`${today}T00:00:00Z`) - Date.parse(`${e.date}T00:00:00Z`)) / 86_400_000,
+    );
+    return days >= 0 && days < DISCARD_DELETE_DAYS;
+  };
+
+  const confirmDelete = (e: LedgerEntry) => {
+    Alert.alert(
+      '폐기 삭제',
+      `${formatQuantity(Math.abs(e.countDelta), unit)} 폐기를 지워요. 재고가 폐기 전으로 돌아가고 로스율에서도 빠집니다.`,
+      [
+        { text: '닫기', style: 'cancel' },
+        {
+          text: '삭제',
+          style: 'destructive',
+          onPress: () =>
+            deleteDiscard.mutate(
+              { eventId: e.id },
+              {
+                onError: (err) =>
+                  Alert.alert('지우지 못했어요', err instanceof Error ? err.message : '잠시 후 다시 시도해 주세요'),
+              },
+            ),
+        },
+      ],
+    );
+  };
 
   const shown = useMemo(() => {
     if (tab === '조리 전 폐기') return discards.filter((e) => !e.waste);
@@ -48,11 +91,7 @@ export default function DiscardHistoryScreen() {
     return discards;
   }, [discards, tab]);
 
-  /*
-   * 탭별 합계. 되돌린 건 거를 필요가 없다 — 폐기 되돌리기를 없앴으니
-   * 상쇄되는 폐기는 더 이상 생기지 않는다.
-   * (입고 취소(E11)는 그대로 살아 있지만 그건 이 화면에 안 나온다.)
-   */
+  /* 탭별 합계. discards 에서 지운 폐기가 이미 빠져 있어 서버 로스율과 같은 값이 된다. */
   const sum = (rows: LedgerEntry[]) =>
     rows.reduce((a, e) => a + Math.abs(e.countDelta), 0);
 
@@ -146,6 +185,20 @@ export default function DiscardHistoryScreen() {
                     </Text>
                   ) : null}
                 </View>
+                {/*
+                  ⋮ — 지울 수 있는 줄에만 나온다(조리 전 · 7일 이내).
+                  구매 옵션 수정 헤더와 **같은 메뉴**다. 같은 모양이 같은 뜻이어야 한다.
+                */}
+                {canDelete(e) ? (
+                  <Pressable
+                    onPress={() => setMenuFor(e)}
+                    accessibilityRole="button" accessibilityLabel="더보기"
+                    hitSlop={6}
+                    style={{ width: 32, height: 40, alignItems: 'center', justifyContent: 'center' }}
+                  >
+                    <Icon name="more" size={19} color={T.ter} />
+                  </Pressable>
+                ) : null}
               </View>
             </Card>
           ))}
@@ -158,6 +211,30 @@ export default function DiscardHistoryScreen() {
           </View>
         </QueryState>
       </ScrollView>
+
+      {/* 삭제 메뉴 — 구매 옵션 수정과 같은 하단 시트 */}
+      <Modal visible={menuFor !== null} transparent animationType="fade" onRequestClose={() => setMenuFor(null)} statusBarTranslucent>
+        <Pressable onPress={() => setMenuFor(null)} accessibilityRole="button" accessibilityLabel="메뉴 닫기" style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: T.scrim }}>
+          {/* 시트 본문 탭이 배경까지 전달돼 닫히지 않게 여기서 삼킨다. */}
+          <View onStartShouldSetResponder={() => true} style={{ backgroundColor: T.surface, borderTopLeftRadius: 20, borderTopRightRadius: 20, paddingHorizontal: 12, paddingTop: 10, paddingBottom: 16 }}>
+            <View style={{ alignItems: 'center', paddingBottom: 14 }}>
+              <View style={{ width: 40, height: 5, borderRadius: 3, backgroundColor: T.line }} />
+            </View>
+            <View style={{ backgroundColor: T.surface2, borderRadius: 14, overflow: 'hidden', marginBottom: 9 }}>
+              <Pressable
+                onPress={() => { const t = menuFor; setMenuFor(null); if (t) confirmDelete(t); }}
+                accessibilityRole="button" accessibilityLabel="폐기 삭제"
+                style={{ paddingVertical: 20, alignItems: 'center' }}
+              >
+                <Text style={{ fontSize: 16, fontWeight: '600', color: T.red }}>삭제</Text>
+              </Pressable>
+            </View>
+            <Pressable onPress={() => setMenuFor(null)} accessibilityRole="button" accessibilityLabel="닫기" style={{ paddingVertical: 20, borderRadius: 14, backgroundColor: T.surface2, alignItems: 'center' }}>
+              <Text style={{ fontSize: 16, fontWeight: '600', color: T.ink }}>닫기</Text>
+            </Pressable>
+          </View>
+        </Pressable>
+      </Modal>
     </View>
   );
 }

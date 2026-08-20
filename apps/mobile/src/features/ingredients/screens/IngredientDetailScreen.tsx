@@ -48,7 +48,8 @@ export function IngredientDetailScreen() {
   const unit = g ? dispUnit(g.baseUnit) : 'g';
   const recent = history.data?.slice(0, 4) ?? [];
   /** 로스율 카드가 쓸 폐기 줄. 재고 변동 내역과 같은 원장에서 온다. */
-  const discards = (history.data ?? []).filter((e) => e.type === 'discard');
+  // 지운 폐기는 빼고 센다. 폐기 내역·로스율·서버 로스율이 같은 분모를 써야 한다(0086).
+  const discards = (history.data ?? []).filter((e) => e.type === 'discard' && !e.reverted);
 
   const saveMemo = (memo: string) => {
     if (!g) return;

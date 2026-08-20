@@ -468,6 +468,31 @@ export function useSavePurchaseOption() {
   });
 }
 
+/**
+ * 폐기 삭제 (E2 상쇄) — 최근 7일치만(0086).
+ *
+ * 원장은 지우지 않고 반대 이벤트를 쌓는다. 재고는 돌아오고 로스율에서도 빠진다.
+ * ⚠ 기간 제한은 **서버가** 막는다. 화면이 ⋮ 를 감추는 건 안내일 뿐이다.
+ */
+export function useDeleteDiscard(ingredientId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (input: { eventId: string; reason?: string }) => {
+      const { data, error } = await supabase.rpc('e2_discard_reverted', {
+        p_event: input.eventId,
+        p_reason: input.reason,
+      });
+      if (error) throw new Error(error.message);
+      const r = (data ?? {}) as unknown as Record<string, unknown>;
+      return { alreadyReverted: Boolean(r.already_reverted), restored: num(r.restored) };
+    },
+    onSuccess: () => invalidate(qc, invalidateOn.e2(ingredientId)),
+  });
+}
+
+/** 폐기를 지울 수 있는 기간(일). SQL discard_delete_days() 와 같은 값이어야 한다. */
+export const DISCARD_DELETE_DAYS = 7;
+
 export function useDeletePurchaseOption(ingredientId: string) {
   const qc = useQueryClient();
   return useMutation({
