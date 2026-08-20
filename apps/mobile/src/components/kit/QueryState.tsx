@@ -60,6 +60,24 @@ export function QueryState({
         <Text style={{ fontSize: 14, color: T.sub2, textAlign: 'center', lineHeight: 20 }}>
           입력한 내용은 그대로예요. 잠시 후 다시 시도해 주세요.
         </Text>
+        {/*
+          ⚠ 개발 중에는 **무엇이 터졌는지** 화면에 그대로 보여 준다.
+            react-query 는 queryFn 이 던진 예외를 상태로 삼켜서 콘솔에 아무것도 안 남긴다.
+            그래서 "정보를 불러오지 못했어요"만 뜨고 원인을 찾을 단서가 없었다 —
+            서버·네트워크를 한참 뒤진 뒤에야 클라이언트 예외인 걸 알았다(실측).
+            사용자 빌드에서는 내부 메시지를 노출하지 않는다(가이드 §9.2).
+        */}
+        {__DEV__ && error ? (
+          <Text
+            selectable
+            style={{
+              fontSize: 12, color: T.red, textAlign: 'center', lineHeight: 17,
+              paddingHorizontal: 12, fontFamily: 'monospace',
+            }}
+          >
+            {error instanceof Error ? `${error.name}: ${error.message}` : String(error)}
+          </Text>
+        ) : null}
         {onRetry ? <Button kind="primary" size="md" onPress={onRetry}>다시 시도</Button> : null}
       </Box>
     );

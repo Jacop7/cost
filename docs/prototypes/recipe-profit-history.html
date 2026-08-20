@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>레시피 손익 변동 프로토타입</title>
+  <title>레시피 손익 변동 · 단순형</title>
   <style>
     :root {
       --canvas: #e9edf1;
@@ -11,19 +11,12 @@
       --surface: #ffffff;
       --surface-soft: #f7f8fa;
       --ink: #191f28;
-      --ink-2: #333d4b;
       --sub: #4e5968;
       --muted: #8b95a1;
       --line: #e5e8eb;
       --line-soft: #f2f4f6;
-      --blue: #3182f6;
-      --blue-soft: #eaf3ff;
       --green: #168f63;
-      --green-soft: #e9f8f1;
       --red: #f04452;
-      --red-soft: #fff0f1;
-      --amber: #c76800;
-      --amber-soft: #fff3e0;
       --scrim: rgba(0, 0, 0, .44);
     }
 
@@ -40,23 +33,13 @@
     }
 
     button { font: inherit; }
-
-    .workspace {
-      width: min(410px, 100%);
-      margin: 0 auto;
-    }
-
-    .prototype-label {
-      margin: 0 5px 10px;
-      color: var(--sub);
-      font-size: 13px;
-      font-weight: 800;
-    }
+    .workspace { width: min(410px, 100%); margin: 0 auto; }
+    .prototype-label { margin: 0 5px 10px; color: var(--sub); font-size: 13px; font-weight: 700; }
 
     .phone {
       position: relative;
-      height: min(840px, calc(100vh - 78px));
-      min-height: 690px;
+      height: min(820px, calc(100vh - 78px));
+      min-height: 660px;
       overflow: hidden;
       border: 1px solid rgba(25, 31, 40, .1);
       border-radius: 30px;
@@ -81,7 +64,6 @@
       align-items: center;
       gap: 8px;
       padding: 0 15px;
-      border-bottom: 1px solid var(--line-soft);
       background: var(--surface);
     }
 
@@ -96,73 +78,17 @@
       cursor: pointer;
     }
 
-    .app-title {
-      min-width: 0;
-      flex: 1;
-      overflow: hidden;
-      font-size: 18px;
-      font-weight: 800;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
+    .app-title { flex: 1; font-size: 18px; font-weight: 800; }
 
     .screen {
       height: calc(100% - 84px);
       overflow-y: auto;
-      padding: 13px 14px 30px;
+      padding: 14px 14px 30px;
       background: var(--app);
       scrollbar-width: thin;
     }
 
-    .current-profit {
-      overflow: hidden;
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      background: var(--surface);
-      box-shadow: 0 1px 3px rgba(0, 0, 0, .03);
-    }
-
-    .current-main {
-      display: flex;
-      align-items: flex-end;
-      gap: 12px;
-      padding: 16px;
-    }
-
-    .current-copy { min-width: 0; flex: 1; }
-    .current-label { color: var(--sub); font-size: 13px; font-weight: 800; }
-    .current-value { margin-top: 5px; font-size: 24px; font-weight: 800; letter-spacing: -.04em; }
-    .current-rate { color: var(--green); font-size: 18px; font-weight: 800; }
-
-    .current-basis {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      padding: 11px 16px;
-      border-top: 1px solid var(--line-soft);
-      color: var(--sub);
-      background: var(--surface-soft);
-      font-size: 12px;
-      font-weight: 700;
-    }
-
-    .current-basis .dot { color: #d1d6db; }
-
-    .section-meta {
-      display: flex;
-      align-items: center;
-      margin: 18px 6px 8px;
-    }
-
-    .section-meta h2 {
-      flex: 1;
-      margin: 0;
-      color: var(--sub);
-      font-size: 13px;
-      font-weight: 800;
-    }
-
-    .section-meta span { color: var(--muted); font-size: 12px; font-weight: 700; }
+    .month { margin: 0 6px 8px; color: var(--sub); font-size: 13px; font-weight: 800; }
 
     .history-list {
       overflow: hidden;
@@ -191,33 +117,13 @@
     .history-copy { min-width: 0; flex: 1; }
     .history-date { display: block; color: var(--muted); font-size: 12px; font-weight: 700; }
     .history-title { display: block; margin-top: 4px; font-size: 15px; font-weight: 800; }
+    .history-reason { display: block; overflow: hidden; margin-top: 4px; color: var(--sub); font-size: 12px; font-weight: 650; text-overflow: ellipsis; white-space: nowrap; }
 
-    .history-profit {
-      display: flex;
-      align-items: baseline;
-      gap: 6px;
-      margin-top: 6px;
-      white-space: nowrap;
-    }
-
-    .history-profit strong { font-size: 16px; font-weight: 800; }
-    .delta { font-size: 12px; font-weight: 800; }
-    .delta.up { color: var(--green); }
-    .delta.down { color: var(--red); }
-
-    .history-driver {
-      display: block;
-      overflow: hidden;
-      margin-top: 4px;
-      color: var(--sub);
-      font-size: 12px;
-      font-weight: 700;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .history-driver b { color: var(--ink-2); font-weight: 800; }
-    .legacy-mark { color: var(--amber); }
+    .history-result { flex: 0 0 auto; max-width: 112px; text-align: right; }
+    .history-result strong { display: block; font-size: 15px; font-weight: 800; white-space: nowrap; }
+    .history-result small { display: block; margin-top: 4px; font-size: 12px; font-weight: 800; }
+    .up { color: var(--green); }
+    .down { color: var(--red); }
     .chevron { flex: 0 0 auto; color: #b0b8c1; font-size: 22px; }
 
     .overlay {
@@ -233,72 +139,28 @@
 
     .sheet {
       width: 100%;
-      max-height: 84%;
+      max-height: 80%;
       overflow-y: auto;
       padding: 10px 14px 18px;
       border-radius: 22px 22px 0 0;
       background: var(--surface);
     }
 
-    .handle {
-      width: 40px;
-      height: 5px;
-      margin: 0 auto 14px;
-      border-radius: 3px;
-      background: var(--line);
-    }
+    .handle { width: 40px; height: 5px; margin: 0 auto 14px; border-radius: 3px; background: var(--line); }
+    .sheet-head { padding: 4px 3px 10px; }
+    .sheet-head h2 { margin: 0; font-size: 19px; font-weight: 800; }
+    .sheet-head p { margin: 5px 0 0; color: var(--muted); font-size: 12px; font-weight: 700; }
+    .group-title { margin: 16px 3px 8px; color: var(--sub); font-size: 13px; font-weight: 800; }
 
-    .sheet-head {
-      display: flex;
-      align-items: flex-start;
-      gap: 9px;
-      padding: 4px 3px 15px;
-    }
-
-    .sheet-heading { min-width: 0; flex: 1; }
-    .sheet-heading h2 { margin: 0; font-size: 19px; font-weight: 800; }
-    .sheet-heading p { margin: 5px 0 0; color: var(--muted); font-size: 12px; font-weight: 700; }
-
-    .cause-badge {
-      flex: 0 0 auto;
-      padding: 5px 7px;
-      border-radius: 7px;
-      color: var(--blue);
-      background: var(--blue-soft);
-      font-size: 11px;
-      font-weight: 800;
-      white-space: nowrap;
-    }
-
-    .profit-focus {
-      padding: 14px;
-      border-radius: 13px;
-      background: var(--surface-soft);
-    }
-
-    .focus-row { display: flex; align-items: center; gap: 8px; }
-    .focus-row + .focus-row { margin-top: 10px; }
-    .focus-label { flex: 1; color: var(--sub); font-size: 13px; font-weight: 800; }
-    .focus-before { color: var(--muted); font-size: 13px; font-weight: 700; }
-    .focus-arrow { color: #b0b8c1; font-size: 13px; }
-    .focus-after { font-size: 15px; font-weight: 800; }
-
-    .equation-title {
-      margin: 17px 3px 8px;
-      color: var(--sub);
-      font-size: 13px;
-      font-weight: 800;
-    }
-
-    .equation {
+    .change-group {
       overflow: hidden;
       border: 1px solid var(--line);
       border-radius: 13px;
     }
 
-    .equation-row {
+    .change-row {
       display: grid;
-      grid-template-columns: minmax(60px, 1fr) auto 14px auto;
+      grid-template-columns: minmax(64px, 1fr) auto 14px auto;
       align-items: center;
       gap: 6px;
       padding: 11px 12px;
@@ -306,41 +168,11 @@
       font-size: 13px;
     }
 
-    .equation-row:first-child { border-top: 0; }
-    .equation-row.changed { background: var(--blue-soft); }
-    .equation-row.total { background: var(--surface-soft); }
-    .equation-label { color: var(--sub); font-weight: 700; }
-    .equation-row.total .equation-label { color: var(--ink); font-weight: 800; }
-    .equation-before { color: var(--muted); font-weight: 700; text-align: right; white-space: nowrap; }
-    .equation-arrow { color: #b0b8c1; text-align: center; }
-    .equation-after { color: var(--ink); font-weight: 800; text-align: right; white-space: nowrap; }
-
-    .legacy-box {
-      display: none;
-      padding: 14px;
-      border-radius: 13px;
-      color: var(--sub);
-      background: var(--amber-soft);
-      font-size: 13px;
-      font-weight: 700;
-    }
-
-    .legacy-box strong { display: block; margin-bottom: 5px; color: var(--amber); font-weight: 800; }
-
-    .legacy-rates {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1px;
-      margin-top: 12px;
-      overflow: hidden;
-      border: 1px solid var(--line);
-      border-radius: 11px;
-      background: var(--line);
-    }
-
-    .legacy-rate { padding: 11px; background: var(--surface); }
-    .legacy-rate span { display: block; color: var(--muted); font-size: 11px; }
-    .legacy-rate b { display: block; margin-top: 3px; color: var(--ink); font-size: 15px; }
+    .change-row:first-child { border-top: 0; }
+    .change-label { color: var(--sub); font-weight: 700; }
+    .change-before { color: var(--muted); font-weight: 700; text-align: right; white-space: nowrap; }
+    .change-arrow { color: #b0b8c1; text-align: center; }
+    .change-after { font-weight: 800; text-align: right; white-space: nowrap; }
 
     .close {
       width: 100%;
@@ -359,18 +191,18 @@
       body { padding: 0; background: var(--surface); }
       .workspace { width: 100%; }
       .prototype-label { display: none; }
-      .phone { height: 100vh; min-height: 640px; border: 0; border-radius: 0; box-shadow: none; }
+      .phone { height: 100vh; min-height: 620px; border: 0; border-radius: 0; box-shadow: none; }
     }
 
     @media (max-width: 350px) {
-      .equation-row { grid-template-columns: minmax(54px, 1fr) auto 10px auto; padding-inline: 10px; font-size: 12px; }
-      .current-basis { gap: 5px; font-size: 11px; }
+      .history-result { max-width: 96px; }
+      .change-row { grid-template-columns: minmax(55px, 1fr) auto 10px auto; padding-inline: 10px; font-size: 12px; }
     }
   </style>
 </head>
 <body>
   <main class="workspace">
-    <p class="prototype-label">목록을 누르면 당시 전체 손익을 확인할 수 있습니다.</p>
+    <p class="prototype-label">목록을 누르면 변동 원인과 손익 결과만 표시됩니다.</p>
 
     <article class="phone" aria-label="제육볶음 손익 변동">
       <div class="status-bar"><span>9:41</span><span>● ◔ ▰</span></div>
@@ -380,29 +212,15 @@
       </header>
 
       <div class="screen">
-        <section class="current-profit" aria-label="현재 손익">
-          <div class="current-main">
-            <div class="current-copy">
-              <div class="current-label">제육볶음 현재 순이익</div>
-              <div class="current-value">4,046.69원</div>
-            </div>
-            <div class="current-rate">33.72%</div>
-          </div>
-          <div class="current-basis">
-            <span>판매가 12,000원</span><span class="dot">·</span><span>재료비 2,806.40원</span>
-          </div>
-        </section>
-
-        <div class="section-meta"><h2>2026년 8월</h2><span>최신순</span></div>
-
+        <h2 class="month">2026년 8월</h2>
         <section class="history-list" aria-label="손익 변동 목록">
           <button class="history-row" type="button" data-event="ingredient">
             <span class="history-copy">
               <span class="history-date">08/20 · 14:41</span>
               <span class="history-title">고춧가루 단가 반영</span>
-              <span class="history-profit"><strong>4,046.69원</strong><span class="delta up">+32원</span></span>
-              <span class="history-driver"><b>33.72%</b> · +0.26%p · 재료비 32원 감소</span>
+              <span class="history-reason">재료비 32원 감소</span>
             </span>
+            <span class="history-result"><strong>4,046.69원</strong><small class="up">+32원</small></span>
             <span class="chevron">›</span>
           </button>
 
@@ -410,9 +228,9 @@
             <span class="history-copy">
               <span class="history-date">08/18 · 16:02</span>
               <span class="history-title">고정지출 반영</span>
-              <span class="history-profit"><strong>4,014.69원</strong><span class="delta down">-36원</span></span>
-              <span class="history-driver"><b>33.46%</b> · -0.30%p · 고정지출 36원 증가</span>
+              <span class="history-reason">고정지출 36원 증가</span>
             </span>
+            <span class="history-result"><strong>4,014.69원</strong><small class="down">-36원</small></span>
             <span class="chevron">›</span>
           </button>
 
@@ -420,21 +238,12 @@
             <span class="history-copy">
               <span class="history-date">08/15 · 10:12</span>
               <span class="history-title">레시피 수정</span>
-              <span class="history-profit"><strong>4,050.69원</strong><span class="delta up">+299.54원</span></span>
-              <span class="history-driver"><b>33.76%</b> · +1.14%p · 판매가 500원 증가</span>
+              <span class="history-reason">판매가 500원 증가</span>
             </span>
+            <span class="history-result"><strong>4,050.69원</strong><small class="up">+299.54원</small></span>
             <span class="chevron">›</span>
           </button>
 
-          <button class="history-row" type="button" data-event="legacy">
-            <span class="history-copy">
-              <span class="history-date">08/10</span>
-              <span class="history-title">재료 단가</span>
-              <span class="history-profit"><strong>순이익률 32.10%</strong></span>
-              <span class="history-driver legacy-mark">금액 기록 없음 · 기존 비율 기록</span>
-            </span>
-            <span class="chevron">›</span>
-          </button>
         </section>
       </div>
 
@@ -442,40 +251,15 @@
         <section class="sheet">
           <div class="handle"></div>
           <div class="sheet-head">
-            <div class="sheet-heading">
-              <h2 id="sheet-title"></h2>
-              <p id="sheet-meta"></p>
-            </div>
-            <span class="cause-badge" id="sheet-cause"></span>
+            <h2 id="sheet-title"></h2>
+            <p id="sheet-meta"></p>
           </div>
 
           <div id="modern-detail">
-            <section class="profit-focus" aria-label="핵심 손익 변동">
-              <div class="focus-row">
-                <span class="focus-label">순이익</span>
-                <span class="focus-before" id="profit-before"></span>
-                <span class="focus-arrow">→</span>
-                <span class="focus-after" id="profit-after"></span>
-              </div>
-              <div class="focus-row">
-                <span class="focus-label">순이익률</span>
-                <span class="focus-before" id="rate-before"></span>
-                <span class="focus-arrow">→</span>
-                <span class="focus-after" id="rate-after"></span>
-              </div>
-            </section>
-
-            <h3 class="equation-title">당시 전체 손익</h3>
-            <div class="equation" id="equation"></div>
-          </div>
-
-          <div class="legacy-box" id="legacy-detail">
-            <strong>금액 기록 전 데이터</strong>
-            이 시점에는 순이익률과 재료비율만 저장되어 정확한 금액을 표시할 수 없습니다.
-            <div class="legacy-rates">
-              <div class="legacy-rate"><span>순이익률</span><b>32.10%</b></div>
-              <div class="legacy-rate"><span>재료비율</span><b>24.10%</b></div>
-            </div>
+            <h3 class="group-title">변동 원인</h3>
+            <div class="change-group" id="cause-group"></div>
+            <h3 class="group-title">손익 결과</h3>
+            <div class="change-group" id="result-group"></div>
           </div>
 
           <button class="close" type="button">닫기</button>
@@ -488,34 +272,18 @@
     const events = {
       ingredient: {
         title: '고춧가루 단가 반영',
-        meta: '2026.08.20 14:41 · 식재료 단가 변경',
-        cause: '재료비 변동',
-        profit: ['4,014.69원', '4,046.69원'],
-        rate: ['33.46%', '33.72%'],
-        changed: ['재료비', '순이익', '순이익률'],
-        rows: [
-          ['판매가', '12,000원', '12,000원'],
-          ['재료비', '2,838.40원', '2,806.40원'],
-          ['부자재', '300원', '300원'],
-          ['세금', '1,090.91원', '1,090.91원'],
-          ['고정지출', '3,756원', '3,756원'],
+        meta: '2026.08.20 14:41 · 고춧가루',
+        cause: ['재료비', '2,838.40원', '2,806.40원'],
+        result: [
           ['순이익', '4,014.69원', '4,046.69원'],
           ['순이익률', '33.46%', '33.72%'],
         ],
       },
       fixed: {
         title: '고정지출 반영',
-        meta: '2026.08.18 16:02 · 고정지출률 변경',
-        cause: '고정지출 변동',
-        profit: ['4,050.69원', '4,014.69원'],
-        rate: ['33.76%', '33.46%'],
-        changed: ['고정지출', '순이익', '순이익률'],
-        rows: [
-          ['판매가', '12,000원', '12,000원'],
-          ['재료비', '2,838.40원', '2,838.40원'],
-          ['부자재', '300원', '300원'],
-          ['세금', '1,090.91원', '1,090.91원'],
-          ['고정지출', '3,720원', '3,756원'],
+        meta: '2026.08.18 16:02 · 고정지출 설정',
+        cause: ['고정지출', '3,720원', '3,756원'],
+        result: [
           ['순이익', '4,050.69원', '4,014.69원'],
           ['순이익률', '33.76%', '33.46%'],
         ],
@@ -523,16 +291,8 @@
       recipe: {
         title: '레시피 수정',
         meta: '2026.08.15 10:12 · 직접 수정',
-        cause: '판매가 변동',
-        profit: ['3,751.15원', '4,050.69원'],
-        rate: ['32.62%', '33.76%'],
-        changed: ['판매가', '세금', '고정지출', '순이익', '순이익률'],
-        rows: [
-          ['판매가', '11,500원', '12,000원'],
-          ['재료비', '2,838.40원', '2,838.40원'],
-          ['부자재', '300원', '300원'],
-          ['세금', '1,045.45원', '1,090.91원'],
-          ['고정지출', '3,565원', '3,720원'],
+        cause: ['판매가', '11,500원', '12,000원'],
+        result: [
           ['순이익', '3,751.15원', '4,050.69원'],
           ['순이익률', '32.62%', '33.76%'],
         ],
@@ -540,38 +300,24 @@
     };
 
     const overlay = document.querySelector('.overlay');
-    const modernDetail = document.getElementById('modern-detail');
-    const legacyDetail = document.getElementById('legacy-detail');
     const title = document.getElementById('sheet-title');
     const meta = document.getElementById('sheet-meta');
-    const cause = document.getElementById('sheet-cause');
-    const equation = document.getElementById('equation');
+    const modernDetail = document.getElementById('modern-detail');
+    const causeGroup = document.getElementById('cause-group');
+    const resultGroup = document.getElementById('result-group');
+
+    function rowHtml([label, before, after]) {
+      return `<div class="change-row"><span class="change-label">${label}</span><span class="change-before">${before}</span><span class="change-arrow">→</span><span class="change-after">${after}</span></div>`;
+    }
 
     function openEvent(key) {
-      if (key === 'legacy') {
-        title.textContent = '재료 단가';
-        meta.textContent = '2026.08.10 · 기존 손익 기록';
-        cause.textContent = '기존 기록';
-        modernDetail.style.display = 'none';
-        legacyDetail.style.display = 'block';
-      } else {
-        const entry = events[key];
-        title.textContent = entry.title;
-        meta.textContent = entry.meta;
-        cause.textContent = entry.cause;
-        modernDetail.style.display = 'block';
-        legacyDetail.style.display = 'none';
-        document.getElementById('profit-before').textContent = entry.profit[0];
-        document.getElementById('profit-after').textContent = entry.profit[1];
-        document.getElementById('rate-before').textContent = entry.rate[0];
-        document.getElementById('rate-after').textContent = entry.rate[1];
-        equation.innerHTML = entry.rows.map(([label, before, after]) => {
-          const changed = entry.changed.includes(label) ? ' changed' : '';
-          const total = label === '순이익' || label === '순이익률' ? ' total' : '';
-          return `<div class="equation-row${changed}${total}"><span class="equation-label">${label}</span><span class="equation-before">${before}</span><span class="equation-arrow">→</span><span class="equation-after">${after}</span></div>`;
-        }).join('');
-      }
-
+      const event = events[key];
+      if (!event) return;
+      title.textContent = event.title;
+      meta.textContent = event.meta;
+      causeGroup.innerHTML = rowHtml(event.cause);
+      resultGroup.innerHTML = event.result.map(rowHtml).join('');
+      modernDetail.style.display = 'block';
       overlay.classList.add('open');
     }
 
@@ -582,7 +328,6 @@
     document.querySelectorAll('.history-row').forEach((row) => {
       row.addEventListener('click', () => openEvent(row.dataset.event));
     });
-
     document.querySelector('.close').addEventListener('click', closeSheet);
     overlay.addEventListener('click', (event) => {
       if (event.target === overlay) closeSheet();
@@ -590,6 +335,9 @@
     document.addEventListener('keydown', (event) => {
       if (event.key === 'Escape') closeSheet();
     });
+
+    const previewEvent = new URLSearchParams(window.location.search).get('event');
+    if (previewEvent && events[previewEvent]) openEvent(previewEvent);
   </script>
 </body>
 </html>

@@ -43,8 +43,26 @@ const WebStorageAdapter = {
 
 const sessionStorage = Platform.OS === 'web' ? WebStorageAdapter : SecureStoreAdapter;
 
-const SUPABASE_URL = process.env.EXPO_PUBLIC_SUPABASE_URL ?? '';
+const ENV_URL = process.env.EXPO_PUBLIC_SUPABASE_URL ?? '';
 const SUPABASE_ANON_KEY = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY ?? '';
+
+/**
+ * ⚠ **웹 미리보기는 LAN IP 를 탈 이유가 없다.**
+ *
+ * .env 의 주소는 **폰(Expo Go)** 이 PC 에 닿기 위한 것이다. 그런데 브라우저는
+ * Supabase 와 같은 기계에서 도니 localhost 로 충분하다. LAN IP 를 쓰면
+ * PC 의 IP 가 바뀔 때마다(오늘만 세 번) 웹이 조용히 옛 주소로 요청해
+ * "정보를 불러오지 못했어요"가 된다 — 서버는 멀쩡한데.
+ *
+ * 그래서 웹은 항상 로컬 주소를 쓰고, .env 의 IP 는 네이티브에만 쓴다.
+ * 포트는 .env 에서 가져와 로컬 Supabase 포트를 바꿔도 따라간다.
+ */
+const localPort = (() => {
+  const m = /:(\d+)\s*$/.exec(ENV_URL.trim());
+  return m ? m[1] : '54321';
+})();
+
+const SUPABASE_URL = Platform.OS === 'web' ? `http://127.0.0.1:${localPort}` : ENV_URL;
 
 /**
  * 환경변수 설정 여부. 화면은 "로딩"과 "환경 미설정"을 구분해서 보여야 한다.
