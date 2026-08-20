@@ -38,25 +38,46 @@ begin
                                         where c->>'key' = 'price'), '12000');
   perform pg_temp.eq_t('판매가 새값', (select c->>'after' from jsonb_array_elements(ev->'changes') c
                                         where c->>'key' = 'price'), '13500');
-  perform pg_temp.ok('메모도 같은 카드에 담긴다',
-    exists (select 1 from jsonb_array_elements(ev->'changes') c where c->>'key' = 'memo'));
+  -- ⚠ 메모는 담지 않는다(0077). 어느 계산에도 안 들어가는 자유 기록이라
+  --   여기 섞이면 진짜 변경을 밀어낸다 — 화면은 7일치만 보여 준다.
+  perform pg_temp.ok('메모는 카드에 담기지 않는다',
+    not exists (select 1 from jsonb_array_elements(ev->'changes') c where c->>'key' = 'memo'));
   perform pg_temp.ok('안 바뀐 필드는 없다',
     not exists (select 1 from jsonb_array_elements(ev->'changes') c where c->>'key' = 'base_servings'));
   perform pg_temp.ok('판매가가 바뀌었으니 매출에 영향', (ev->>'affects_sales')::boolean);
 
-  -- ── 메모만 고치면 매출과 무관하다 ───────────────────────────
+  -- ── 메모만 고치면 기록 자체가 없다 (0077) ───────────────────
+  declare v_before int;
+  begin
+    select count(*) into v_before from entity_change_events where entity_id = v_ing;
+    perform save_ingredient(pg_temp.store(), jsonb_build_object(
+      'id', v_ing, 'name', '대파', 'base_unit', 'g', 'per_volume', 1000,
+      -- ⚠ 안전재고는 기준단위다(0073). 지금 값을 그대로 보내야 '메모만 바뀜'이 된다.
+      'safety_stock', (select safety_stock from ingredients where id = v_ing), 'min_order_qty', 1,
+      'category_id', (select category_id from ingredients where id = v_ing),
+      'default_vendor_id', (select default_vendor_id from ingredients where id = v_ing),
+      'memo', '제육볶음·파채에 사용'));
+    perform pg_temp.eq('메모만 고치면 내역이 생기지 않는다',
+      (select count(*) from entity_change_events where entity_id = v_ing), v_before, 0);
+    -- 그래도 메모는 저장된다. 남기지 않는 것과 저장하지 않는 것은 다르다.
+    perform pg_temp.eq_t('메모는 저장된다',
+      (select memo from ingredients where id = v_ing), '제육볶음·파채에 사용');
+  end;
+
+  -- ── 메모와 다른 값을 같이 고치면, 다른 값만 남는다 ──────────
   perform save_ingredient(pg_temp.store(), jsonb_build_object(
     'id', v_ing, 'name', '대파', 'base_unit', 'g', 'per_volume', 1000,
-    -- ⚠ 안전재고는 기준단위다(0073). 지금 값을 그대로 보내야 '메모만 바뀜'이 된다.
-    'safety_stock', (select safety_stock from ingredients where id = v_ing), 'min_order_qty', 1,
+    'safety_stock', (select safety_stock from ingredients where id = v_ing) + 500, 'min_order_qty', 1,
     'category_id', (select category_id from ingredients where id = v_ing),
     'default_vendor_id', (select default_vendor_id from ingredients where id = v_ing),
-    'memo', '제육볶음·파채에 사용'));
+    'memo', '메모를 또 고침'));
   ev := jsonb_path_query_first(
     entity_change_history(pg_temp.store(), 'ingredient', v_ing, null, 5)->'items', '$[0]');
-  perform pg_temp.ok('메모 수정은 매출 계산과 무관', (ev->>'affects_sales')::boolean is false);
-  perform pg_temp.eq_t('상태도 무관', ev->>'state', 'irrelevant');
-  perform pg_temp.eq('메모 한 줄만 바뀐다', jsonb_array_length(ev->'changes'), 1, 0);
+  perform pg_temp.eq('안전재고 한 줄만 남는다', jsonb_array_length(ev->'changes'), 1, 0);
+  perform pg_temp.eq_t('그 한 줄은 안전재고다',
+    (select c->>'key' from jsonb_array_elements(ev->'changes') c), 'safety_stock');
+  perform pg_temp.ok('메모는 여기에도 없다',
+    not exists (select 1 from jsonb_array_elements(ev->'changes') c where c->>'key' = 'memo'));
 end $t$;
 
 -- ════════════════════════════════════════════════════════════════
@@ -338,11 +359,12 @@ begin
   perform pg_temp.eq_t('레시피 메모가 실제로 저장된다',
     (select memo from recipes where id = v_rcp), '점심 특선');
 
+  -- ⚠ 저장은 되지만 **내역에는 안 남는다**(0077). 둘은 다른 계약이다.
   ev := jsonb_path_query_first(
     entity_change_history(pg_temp.store(), 'recipe', v_rcp, null, 3)->'items', '$[0]');
-  perform pg_temp.eq_t('내역의 새값이 실제 저장값과 같다',
-    (select c->>'after' from jsonb_array_elements(ev->'changes') c where c->>'key' = 'memo'),
-    (select memo from recipes where id = v_rcp));
+  perform pg_temp.ok('메모는 내역에 남지 않는다',
+    ev is null or not exists (
+      select 1 from jsonb_array_elements(ev->'changes') c where c->>'key' = 'memo'));
 
   -- ── 키가 없는 저장은 메모를 건드리지 않는다 ─────────────────
   -- 판매 중지 토글처럼 헤더만 고치는 호출이 메모를 지우면 안 된다(tax_items 와 같은 규칙).
