@@ -10,6 +10,7 @@
  *   맞추면 된다. 되돌리기와 재고 수정이 나란히 있으면 같은 일을 두 길로 하게 되고,
  *   어느 쪽이 원장에 무엇을 남기는지 사장님이 알 수가 없다.
  *   폐기 기록 자체는 남으므로 로스율에도 그대로 잡힌다.
+ *   그래서 '취소됨' 표시도 없다 — 상쇄되는 폐기가 생기지 않는다.
  */
 import { useMemo, useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
@@ -47,9 +48,13 @@ export default function DiscardHistoryScreen() {
     return discards;
   }, [discards, tab]);
 
-  /** 탭별 합계 — 되돌린 건 뺀다. 로스율 카드와 같은 규칙이어야 숫자가 맞는다. */
+  /*
+   * 탭별 합계. 되돌린 건 거를 필요가 없다 — 폐기 되돌리기를 없앴으니
+   * 상쇄되는 폐기는 더 이상 생기지 않는다.
+   * (입고 취소(E11)는 그대로 살아 있지만 그건 이 화면에 안 나온다.)
+   */
   const sum = (rows: LedgerEntry[]) =>
-    rows.filter((e) => !e.reverted).reduce((a, e) => a + Math.abs(e.countDelta), 0);
+    rows.reduce((a, e) => a + Math.abs(e.countDelta), 0);
 
   const shownAmount = sum(shown);
   const shownCost = price === null ? null : shownAmount * price;
@@ -116,7 +121,7 @@ export default function DiscardHistoryScreen() {
           </Card>
 
           {shown.map((e) => (
-            <Card key={e.id} pad={0} style={{ overflow: 'hidden', opacity: e.reverted ? 0.5 : 1 }}>
+            <Card key={e.id} pad={0} style={{ overflow: 'hidden' }}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 14, paddingHorizontal: 15 }}>
                 <View style={{ flex: 1, minWidth: 0 }}>
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
@@ -126,7 +131,6 @@ export default function DiscardHistoryScreen() {
                     <Badge tone={e.waste ? 'amber' : 'neutral'} sm>
                       {e.waste ? '조리 후' : '조리 전'}
                     </Badge>
-                    {e.reverted ? <Badge tone="neutral" sm>취소됨</Badge> : null}
                   </View>
                   <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink, marginTop: 3 }} numberOfLines={1}>
                     {e.note ?? (e.waste ? '조리 후 폐기' : '조리 전 폐기')}

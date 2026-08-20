@@ -144,6 +144,11 @@ export function StockHistoryScreen() {
                     <LedgerRow
                       key={v.id}
                       date={v.date}
+                      /*
+                       * ⚠ '(취소됨)' 은 여기만 남는다. 이 화면은 입고도 보여 주는데
+                       *   **입고 취소(E11)는 그대로 살아 있다**(발주 화면의 '입고 취소').
+                       *   폐기 전용 화면에서는 뺐다 — 폐기는 이제 상쇄될 일이 없다.
+                       */
                       act={e.reverted ? `${v.label} (취소됨)` : v.label}
                       memo={v.memo}
                       delta={v.delta}
