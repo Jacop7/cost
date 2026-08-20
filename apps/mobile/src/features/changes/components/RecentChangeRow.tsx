@@ -22,11 +22,17 @@ export function RecentChangeRow({ change, onPress }: { change: LastChange; onPre
   const s = change.displayState ? stateLabel(change.displayState) : null;
   const c = s ? TONE[s.tone] : null;
 
+  /**
+   * ⚠ 한 번도 안 고쳤으면 그 시각은 **등록**이지 수정이 아니다(0082).
+   *   '최근 수정'이라 해 놓고 눌러 보면 목록이 비어 있어서 사장님이 헤맸다.
+   */
+  const label = change.hasHistory ? '최근 수정' : '등록';
+
   return (
     <Pressable
       onPress={onPress}
       accessibilityRole="button"
-      accessibilityLabel={`최근 수정 ${changeTime(change.occurredAt)}${s ? ` · ${s.text}` : ''}. 수정 내역 보기`}
+      accessibilityLabel={`${label} ${changeTime(change.occurredAt)}${s ? ` · ${s.text}` : ''}. 수정 내역 보기`}
       style={{
         flexDirection: 'row',
         alignItems: 'center',
@@ -48,12 +54,14 @@ export function RecentChangeRow({ change, onPress }: { change: LastChange; onPre
       </View>
 
       <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub }} numberOfLines={1}>
-        최근 수정 {changeTime(change.occurredAt)}
+        {label} {changeTime(change.occurredAt)}
       </Text>
 
       {/* ⚠ 한 줄을 지켜야 한다. 배지가 길어지면 이름 쪽이 아니라 여기가 줄어든다. */}
       <View style={{ flex: 1, minWidth: 0, alignItems: 'flex-start' }}>
-        {s && c ? (
+        {!change.hasHistory ? (
+          <Text style={{ fontSize: 13, color: T.ter }} numberOfLines={1}>아직 수정 없음</Text>
+        ) : s && c ? (
           <View style={{ paddingHorizontal: 7, paddingVertical: 3, borderRadius: 6, backgroundColor: c.bg }}>
             <Text style={{ fontSize: 12, fontWeight: '700', color: c.fg }} numberOfLines={1}>
               {s.text}
