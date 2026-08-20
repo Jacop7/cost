@@ -71,11 +71,27 @@ export function parseChangeEvent(raw: unknown): ChangeEvent {
   };
 }
 
-/** 목록 한 페이지. 20건씩 받고 커서로 이어 받는다. */
-export function useChangeHistory(entity: ChangeEntity, id: string | undefined) {
+/** 기간 창. null 이면 전체 — 좁히면 그 밖의 기록이 닿을 수 없게 되므로 고를 수 있어야 한다. */
+export type ChangeWindow = 7 | 30 | null;
+
+export interface ChangeSummary {
+  days: number | null;
+  count: number;
+  direct: number;
+  auto: number;
+  lastAt: string | null;
+}
+
+/**
+ * 목록 한 페이지. 20건씩 받고 커서로 이어 받는다.
+ *
+ * ⚠ 요약(건수·직접/자동)은 **서버가 창 전체를 세서** 준다. 받은 페이지에서 세면
+ *   20건까지만 센 값인데 사장님은 전체라고 읽는다.
+ */
+export function useChangeHistory(entity: ChangeEntity, id: string | undefined, days: ChangeWindow = 7) {
   const storeId = useStoreId();
   return useInfiniteQuery({
-    queryKey: [...qk.changeHistory(entity, id ?? '')],
+    queryKey: [...qk.changeHistory(entity, id ?? ''), days ?? 'all'],
     enabled: Boolean(storeId && id),
     initialPageParam: null as string | null,
     queryFn: async ({ pageParam }) => {
@@ -85,12 +101,21 @@ export function useChangeHistory(entity: ChangeEntity, id: string | undefined) {
         p_entity_id: id as string,
         p_cursor: pageParam ?? undefined,
         p_limit: 20,
+        p_days: days ?? undefined,
       });
       if (error) throw new Error(error.message);
       const r = (data ?? {}) as unknown as Record<string, unknown>;
+      const sm = (r.summary ?? {}) as Record<string, unknown>;
       return {
         items: ((r.items ?? []) as unknown[]).map(parseChangeEvent),
         nextCursor: str(r.next_cursor),
+        summary: {
+          days: sm.days === null || sm.days === undefined ? null : Number(sm.days),
+          count: num(sm.count),
+          direct: num(sm.direct),
+          auto: num(sm.auto),
+          lastAt: str(sm.last_at),
+        } satisfies ChangeSummary,
       };
     },
     getNextPageParam: (last) => last.nextCursor,
@@ -166,4 +191,85 @@ export function formatChangeValue(v: string | number | null, unit: string | null
     return unit ? `${s}${unit}` : s;
   }
   return String(v);
+}
+
+// ── 목록 한 줄이 보여 줄 것 ───────────────────────────────────
+
+/**
+ * 줄의 부제. 자동 변경은 **어디서 왔는지**가, 직접 수정은 **무엇이 어떻게 바뀌었는지**가
+ * 궁금하다 — 물음이 다르므로 문구도 다르다.
+ */
+export function changeSubtitle(e: ChangeEvent): string {
+  if (e.sourceType !== 'direct') {
+    return e.sourceName ? `${sourceLabel(e)} · ${e.sourceName}` : sourceLabel(e);
+  }
+  const only = e.changes.length === 1 ? e.changes[0] : undefined;
+  if (only) {
+    return `${formatChangeValue(only.before, only.unit)}에서 ${formatChangeValue(only.after, only.unit)}로 변경`;
+  }
+  return `${e.changes.length}개 항목 수정`;
+}
+
+/**
+ * 줄 오른쪽의 대표값 — 그 변경의 결과 한 숫자.
+ * 숫자가 아니면(거래처·이름 등) 값 대신 '변경'이라고만 한다. 이름을 좁은 자리에
+ * 욱여넣으면 잘려서 무엇으로 바뀌었는지 오히려 모른다.
+ */
+export function changeHeadline(e: ChangeEvent): string {
+  const c = e.changes[0];
+  if (!c) return '변경';
+  const n = typeof c.after === 'number' ? c.after : Number(c.after);
+  if (c.after === null || c.after === '' || Number.isNaN(n)) return '변경';
+  return formatChangeValue(c.after, c.unit);
+}
+
+/**
+ * 이 변경이 무엇을 뜻하는지 한 문장. 상세 시트 맨 아래에 붙는다.
+ *
+ * ⚠ 상태(반영/미반영)만으로는 부족하다. 사장님이 알고 싶은 건 "그래서 뭐가 달라지나"다 —
+ *   안전재고는 발주 후보만, 거래처는 다음 구매의 기본값만 바뀐다.
+ */
+export function changeImpact(e: ChangeEvent, entity: ChangeEntity): string {
+  const keys = e.changes.map((c) => c.key);
+
+  if (e.state === 'irrelevant') {
+    if (keys.includes('safety_stock')) return '발주 후보 판정 기준만 바뀌었어요.';
+    if (keys.includes('default_vendor_id')) return '다음 구매 옵션 선택의 기본값만 바뀌었어요.';
+    if (keys.includes('min_order_qty')) return '발주 추천 수량만 바뀌었어요.';
+    if (keys.includes('memo')) return '메모는 계산에 들어가지 않아요.';
+    return '매출 금액 계산에는 들어가지 않는 변경이에요.';
+  }
+
+  if (e.state === 'reflected') {
+    return '영업 시작 전에 바뀌어서 오늘 매출 기준에 이미 들어가 있어요.';
+  }
+
+  // 미반영 — 지금 값은 갱신됐지만 오늘 장부는 영업 시작 시점 값을 쓴다.
+  if (entity === 'ingredient') {
+    return e.affectedRecipes > 0
+      ? `연결된 메뉴 ${e.affectedRecipes}개의 현재 원가는 다시 계산됐어요. 오늘 매출 장부에는 다음 영업일부터 적용돼요.`
+      : '현재 단가는 갱신됐어요. 오늘 매출 장부에는 다음 영업일부터 적용돼요.';
+  }
+  if (e.sourceType !== 'direct') {
+    return '메뉴의 현재 원가는 갱신됐고, 오늘 매출 장부는 영업 시작 시점 값을 그대로 써요.';
+  }
+  if (e.state === 'partial') {
+    return '일부 메뉴만 오늘 기준에 들어가 있어요. 나머지는 다음 영업일부터예요.';
+  }
+  return '바뀐 값은 다음 영업일부터 매출에 적용돼요.';
+}
+
+/** `2026년 8월` — 월 묶음 머리말. */
+export function monthLabel(iso: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return '';
+  return `${d.getFullYear()}년 ${d.getMonth() + 1}월`;
+}
+
+/** `08/20 · 03:56` — 줄 왼쪽 위 시각. */
+export function changeStamp(iso: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return '';
+  const p = (n: number) => String(n).padStart(2, '0');
+  return `${p(d.getMonth() + 1)}/${p(d.getDate())} · ${p(d.getHours())}:${p(d.getMinutes())}`;
 }

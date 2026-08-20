@@ -1709,6 +1709,7 @@ export type Database = {
           p_entity_id: string
           p_cursor?: string
           p_limit?: number
+          p_days?: number
         }
         Returns: Json
       }
