@@ -131,16 +131,17 @@ export function StockHistoryScreen() {
               </Text>
             </View>
             <View style={{ flexDirection: 'row', paddingVertical: 13, paddingHorizontal: 15, gap: 12 }}>
-              {/* 부호는 값이 있을 때만 붙인다. '−0g' 은 아무 말도 아니다. */}
+              {/*
+                네 갈래를 **항상** 같은 자리에 둔다. 0 이라고 감추면 칸이 들쭉날쭉해서
+                어제 화면과 오늘 화면을 눈으로 못 겹친다. 부호만 값이 있을 때 붙인다 —
+                '−0g' 은 아무 말도 아니다.
+              */}
               {([
-                ['입고', signed(totals.inbound, unit, '+'), T.blue, true],
-                ['소진', signed(totals.consume, unit, '−'), T.red, true],
-                ['폐기', signed(totals.discard, unit, '−'), T.red, true],
-                // 조정은 0 이면 칸째로 감춘다 — 늘 0 인 매장이 대부분이라 자리만 먹는다.
-                ['조정', signed(Math.abs(totals.adjust), unit, totals.adjust >= 0 ? '+' : '−'),
-                  T.sub2, Math.abs(totals.adjust) > 0.0001],
+                ['입고', signed(totals.inbound, unit, '+'), T.blue],
+                ['소진', signed(totals.consume, unit, '−'), T.red],
+                ['폐기', signed(totals.discard, unit, '−'), T.red],
+                ['조정', signed(Math.abs(totals.adjust), unit, totals.adjust >= 0 ? '+' : '−'), T.sub2],
               ] as const)
-                .filter(([, , , show]) => show)
                 .map(([label, value, color]) => (
                   <View key={label} style={{ flex: 1, minWidth: 0 }}>
                     <Text style={{ fontSize: 14, color: T.ter, fontWeight: '600' }}>{label}</Text>

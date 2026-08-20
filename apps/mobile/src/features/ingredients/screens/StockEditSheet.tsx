@@ -98,19 +98,28 @@ export function StockEditSheet({
   const curDisp = round2(stock / factor);
 
   const [tab, setTab] = useState<TabId>('adj');
-  const [adjVal, setAdjVal] = useState(String(curDisp));
+  /**
+   * 조정 방향. **얼마로 만들지가 아니라 얼마를 더할지/뺄지**를 묻는다(0087).
+   *
+   * 예전에는 최종 수량을 직접 적게 했다. 그러면 사장님이 머릿속으로 뺄셈을 해야 하고,
+   * 4,510 에서 200 을 빼려다 4,310 을 잘못 적으면 그대로 저장된다 — 확인할 방법도 없다.
+   * 이제 '차감 200' 이라고 말하면 최종값은 화면이 계산해서 보여 준다.
+   */
+  const [dir, setDir] = useState<'add' | 'sub'>('sub');
+  const [adjVal, setAdjVal] = useState('');
   const [wasteVal, setWasteVal] = useState('');
   const [reason, setReason] = useState('');
 
-  // 열릴 때 현재 재고로 초기화.
+  // 열릴 때 초기화. 입력칸은 **비워 둔다** — 기본값은 위에 현재 재고로 보여 준다.
   useEffect(() => {
     if (visible) {
       setTab('adj');
-      setAdjVal(String(curDisp));
+      setDir('sub');
+      setAdjVal('');
       setWasteVal('');
       setReason('');
     }
-  }, [visible, curDisp]);
+  }, [visible]);
 
   const action = { adj: '저장', out: '소진 처리', waste: '폐기 처리' }[tab];
   const reasonPH = { adj: '예) 실사 후 보정', out: '예) 영업 종료 후 소진 확인', waste: '예) 유통기한 경과, 상함' }[tab];
@@ -121,7 +130,9 @@ export function StockEditSheet({
   }[tab];
 
   // 탭별 다음 재고(기준단위) 계산.
-  const nextAdj = isNaN(parseFloat(adjVal)) ? stock : Math.max(0, Math.round(parseFloat(adjVal) * factor));
+  // 조정은 **증감량**을 받는다. 최종값은 여기서 만든다 — 사장님이 뺄셈하지 않는다.
+  const adjBase = isNaN(parseFloat(adjVal)) ? 0 : Math.round(parseFloat(adjVal) * factor);
+  const nextAdj = Math.max(0, dir === 'add' ? stock + adjBase : stock - adjBase);
   const diffDisp = round2((nextAdj - stock) / factor);
   const wasteBase = isNaN(parseFloat(wasteVal)) ? 0 : Math.round(parseFloat(wasteVal) * factor);
   const afterWaste = Math.max(0, stock - wasteBase);
@@ -157,14 +168,58 @@ export function StockEditSheet({
         <View style={{ paddingHorizontal: 20, paddingTop: 18, paddingBottom: 18 }}>
           {tab === 'adj' ? (
             <>
-              <Text style={{ fontSize: 16, fontWeight: '700', color: T.sub, marginBottom: 7 }}>수량</Text>
-              <InputBox unit={dispUnit} value={adjVal} onChange={(t) => setAdjVal(clampByUnit(t, dispUnit))} accent={T.blue} />
+              {/* 기본값 — 지금 얼마인지부터 못 박고 시작한다. */}
+              <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: 13 }}>
+                <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: T.sub }}>현재 재고</Text>
+                <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, tnum]}>{curDisp}{dispUnit}</Text>
+              </View>
+
+              {/* 추가 / 차감 */}
+              <View style={{ flexDirection: 'row', gap: 8, marginBottom: 12 }}>
+                {([['add', '추가', T.blue], ['sub', '차감', T.red]] as const).map(([id, label, accent]) => {
+                  const on = dir === id;
+                  return (
+                    <Pressable
+                      key={id}
+                      onPress={() => setDir(id)}
+                      accessibilityRole="button"
+                      accessibilityLabel={label}
+                      accessibilityState={{ selected: on }}
+                      style={{
+                        flex: 1, paddingVertical: 12, borderRadius: 12, alignItems: 'center',
+                        borderWidth: 1.5, borderColor: on ? accent : T.line,
+                        backgroundColor: on ? (id === 'add' ? T.blueTint : T.redTint) : T.surface,
+                      }}
+                    >
+                      <Text style={{ fontSize: 16, fontWeight: on ? '800' : '600', color: on ? accent : T.sub2 }}>
+                        {label}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
+              </View>
+
+              <Text style={{ fontSize: 16, fontWeight: '700', color: T.sub, marginBottom: 7 }}>
+                {dir === 'add' ? '추가할 수량' : '차감할 수량'}
+              </Text>
+              <InputBox
+                unit={dispUnit}
+                value={adjVal}
+                onChange={(t) => setAdjVal(clampByUnit(t, dispUnit))}
+                accent={dir === 'add' ? T.blue : T.red}
+              />
+
+              {/* 최종값 — 사장님이 뺄셈하지 않는다. */}
               <Band bg={diffDisp === 0 ? undefined : diffDisp < 0 ? T.redTint : T.greenTint}>
                 {diffDisp === 0 ? (
                   <Text style={{ fontSize: 16, fontWeight: '800', color: T.sub }}>변동 없음</Text>
                 ) : (
-                  <Text style={[{ fontSize: 16, fontWeight: '800', color: diffDisp < 0 ? T.red : T.green }, tnum]}>
-                    {Math.abs(diffDisp)}{dispUnit} {diffDisp < 0 ? '감소' : '증가'}
+                  <Text style={[{ fontSize: 17, fontWeight: '800' }, tnum]}>
+                    <Text style={{ color: T.ter, fontWeight: '700' }}>{curDisp}{dispUnit}</Text>
+                    <Text style={{ color: T.ter }}>{'   →   '}</Text>
+                    <Text style={{ color: diffDisp < 0 ? T.red : T.green }}>
+                      {round2(nextAdj / factor)}{dispUnit}
+                    </Text>
                   </Text>
                 )}
               </Band>
@@ -210,7 +265,9 @@ export function StockEditSheet({
             size="lg"
             style={{ flex: 1.3 }}
             loading={saving}
-            disabled={tab === 'waste' && wasteBase <= 0}
+            /* 아무것도 안 적었으면 누를 수 없다. 예전엔 현재값이 채워져 있어 그냥 눌리면
+               '변동 없음' 이벤트가 원장에 쌓였다. */
+            disabled={(tab === 'waste' && wasteBase <= 0) || (tab === 'adj' && adjBase <= 0)}
             onPress={() => onApply({ kind: tab, nextStock, wasteAmount: tab === 'waste' ? wasteBase : 0, reason: reason.trim() })}
           >{action}</Button>
         </View>
