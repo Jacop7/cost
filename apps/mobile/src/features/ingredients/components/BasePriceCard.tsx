@@ -110,23 +110,50 @@ export function BasePriceCard({
               const isHigh = purchase.high !== null && o.unitPrice !== null && Math.abs(o.unitPrice - purchase.high) < 0.0001;
 
               return (
+                /*
+                 * 한 줄에 하나씩, **왼쪽은 무엇 · 오른쪽은 값**으로 맞춘다.
+                 *   08/18                          [최고]
+                 *   식자재 쇼핑몰                19.60원/g
+                 *   총 6kg (3kg × 2개) · 30,000원
+                 *
+                 * 날짜 옆에 뱃지, 거래처 옆에 단가 — 눈이 가로로 짝을 짓는다.
+                 * '입고 완료'는 뺐다. 이 목록은 전부 입고된 기록이라 아무 말도 아니다.
+                 */
                 <View
                   key={o.id}
-                  style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 10, paddingVertical: 12, borderBottomWidth: i < priced.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}
+                  style={{ paddingVertical: 12, borderBottomWidth: i < priced.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}
                 >
-                  <View style={{ flex: 1, minWidth: 0 }}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                      <Text style={[{ fontSize: 14, color: T.ter, fontWeight: '600' }, tnum]}>
-                        {o.orderedAt.slice(5).replace('-', '/')}
-                      </Text>
-                      {partial ? (
-                        <Text style={{ fontSize: 13, fontWeight: '700', color: T.amberText }}>부분 입고</Text>
-                      ) : null}
-                    </View>
-                    <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink, marginTop: 2 }} numberOfLines={1}>
+                  {/* 1줄 — 언제 · 그때가 최고였나 최저였나 */}
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                    <Text style={[{ fontSize: 14, color: T.ter, fontWeight: '600' }, tnum]}>
+                      {o.orderedAt.slice(5).replace('-', '/')}
+                    </Text>
+                    {partial ? (
+                      <Text style={{ fontSize: 13, fontWeight: '700', color: T.amberText }}>부분 입고</Text>
+                    ) : null}
+                    <View style={{ flex: 1 }} />
+                    {isLow || isHigh ? (
+                      <View style={{ paddingHorizontal: 6, paddingVertical: 2, borderRadius: 5, backgroundColor: isHigh ? T.redTint : T.blueTint }}>
+                        <Text style={{ fontSize: 12, fontWeight: '700', color: isHigh ? T.red : T.blue }}>
+                          {isHigh ? '최고' : '최저'}
+                        </Text>
+                      </View>
+                    ) : null}
+                  </View>
+
+                  {/* 2줄 — 어디서 · 얼마에. 붙어 있어야 비교가 된다. */}
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 3 }}>
+                    <Text style={{ flex: 1, minWidth: 0, fontSize: 16, fontWeight: '700', color: T.ink }} numberOfLines={1}>
                       {o.vendorName ?? '거래처 미지정'}
                     </Text>
-                    <Text style={[{ fontSize: 14, color: T.sub2, marginTop: 2 }, tnum]}>
+                    <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, tnum]}>
+                      {o.unitPrice === null ? '—' : formatUnitPrice(o.unitPrice, unit)}
+                    </Text>
+                  </View>
+
+                  {/* 3줄 — 무엇을 얼마어치. 부분 입고면 그 사실만 오른쪽에 덧붙인다. */}
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 2 }}>
+                    <Text style={[{ flex: 1, minWidth: 0, fontSize: 14, color: T.sub2 }, tnum]}>
                       {packSummary({
                         volume: o.volume, qty: o.qty, receivedQty: o.receivedQty, amount: o.amount,
                         fmtQty: (v) => formatQuantity(v, unit),
@@ -134,24 +161,9 @@ export function BasePriceCard({
                       })}
                       {partial ? ' 반영' : ''}
                     </Text>
-                  </View>
-
-                  <View style={{ alignItems: 'flex-end', gap: 3 }}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
-                      {isLow || isHigh ? (
-                        <View style={{ paddingHorizontal: 6, paddingVertical: 2, borderRadius: 5, backgroundColor: isHigh ? T.redTint : T.blueTint }}>
-                          <Text style={{ fontSize: 12, fontWeight: '700', color: isHigh ? T.red : T.blue }}>
-                            {isHigh ? '최고' : '최저'}
-                          </Text>
-                        </View>
-                      ) : null}
-                      <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, tnum]}>
-                        {o.unitPrice === null ? '—' : formatUnitPrice(o.unitPrice, unit)}
-                      </Text>
-                    </View>
-                    <Text style={{ fontSize: 13, color: T.ter }}>
-                      {partial ? '도착분만 반영' : '입고 완료'}
-                    </Text>
+                    {partial ? (
+                      <Text style={{ fontSize: 13, color: T.ter }}>도착분만 반영</Text>
+                    ) : null}
                   </View>
                 </View>
               );
