@@ -1,0 +1,509 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>폐기 내역 UI</title>
+  <style>
+    :root {
+      --page: #eef1f4;
+      --app: #f2f4f6;
+      --surface: #ffffff;
+      --surface2: #f9fafb;
+      --ink: #191f28;
+      --sub: #4e5968;
+      --ter: #8b95a1;
+      --line: #e5e8eb;
+      --line2: #f2f4f6;
+      --blue: #3182f6;
+      --blue-soft: #ebf3fe;
+      --red: #f04452;
+      --scrim: rgba(0, 0, 0, .42);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px 12px;
+      color: var(--ink);
+      background: var(--page);
+      font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button { font: inherit; }
+
+    .phone {
+      position: relative;
+      width: min(390px, 100%);
+      height: min(820px, calc(100vh - 48px));
+      min-height: 650px;
+      overflow: hidden;
+      border: 1px solid rgba(25, 31, 40, .1);
+      border-radius: 30px;
+      background: var(--app);
+      box-shadow: 0 24px 70px rgba(25, 31, 40, .14);
+    }
+
+    .status-bar {
+      height: 27px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 19px;
+      background: var(--surface);
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .app-header {
+      height: 56px;
+      display: flex;
+      align-items: center;
+      padding: 0 15px;
+      background: var(--surface);
+    }
+
+    .back {
+      width: 30px;
+      padding: 0;
+      border: 0;
+      color: var(--ink);
+      background: transparent;
+      font-size: 29px;
+      line-height: 1;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .app-title { flex: 1; font-size: 18px; font-weight: 800; }
+
+    .type-tabs {
+      display: flex;
+      align-items: stretch;
+      padding: 0 16px;
+      border-bottom: 1px solid var(--line);
+      background: var(--surface);
+    }
+
+    .type-tab {
+      min-width: 0;
+      padding: 13px 9px 11px;
+      border: 0;
+      border-bottom: 2px solid transparent;
+      color: var(--sub);
+      background: transparent;
+      font-size: 14px;
+      font-weight: 650;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .type-tab.active {
+      border-bottom-color: var(--ink);
+      color: var(--ink);
+      font-weight: 800;
+    }
+
+    .screen {
+      height: calc(100% - 128px);
+      overflow-y: auto;
+      padding: 0 16px 28px;
+      scrollbar-width: thin;
+    }
+
+    .condition-row {
+      display: flex;
+      align-items: center;
+      min-height: 48px;
+      padding: 5px 5px 4px;
+    }
+
+    .period-button {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 8px 1px;
+      border: 0;
+      color: var(--sub);
+      background: transparent;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .period-icon {
+      width: 16px;
+      height: 16px;
+      position: relative;
+      border: 1.6px solid currentColor;
+      border-radius: 4px;
+    }
+
+    .period-icon::before {
+      content: "";
+      position: absolute;
+      top: 3px;
+      right: 0;
+      left: 0;
+      border-top: 1.4px solid currentColor;
+    }
+
+    .condition-count {
+      margin-left: auto;
+      color: var(--ter);
+      font-size: 14px;
+      font-weight: 650;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .summary {
+      overflow: hidden;
+      margin-bottom: 14px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--surface);
+    }
+
+    .summary-head {
+      display: flex;
+      align-items: center;
+      padding: 13px 15px;
+      background: var(--surface2);
+    }
+
+    .summary-title { flex: 1; color: var(--sub); font-size: 16px; font-weight: 800; }
+    .summary-quantity { font-size: 17px; font-weight: 800; font-variant-numeric: tabular-nums; }
+
+    .summary-cost {
+      display: flex;
+      align-items: center;
+      padding: 12px 15px;
+      color: var(--ter);
+      font-size: 14px;
+      font-weight: 650;
+    }
+
+    .summary-cost strong {
+      margin-left: auto;
+      color: var(--ink);
+      font-size: 16px;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .month-title {
+      margin: 0 6px 7px;
+      color: var(--sub);
+      font-size: 14px;
+      font-weight: 750;
+    }
+
+    .history-card {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--surface);
+    }
+
+    .history-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 82px;
+      padding: 13px 12px 13px 15px;
+      border-bottom: 1px solid var(--line2);
+    }
+
+    .history-row:last-child { border-bottom: 0; }
+    .history-main { min-width: 0; flex: 1; }
+
+    .history-date {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--ter);
+      font-size: 13px;
+      font-weight: 650;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .type-badge {
+      padding: 3px 7px;
+      border-radius: 6px;
+      color: var(--sub);
+      background: var(--surface2);
+      font-size: 11px;
+      font-weight: 750;
+    }
+
+    .history-note {
+      overflow: hidden;
+      margin-top: 5px;
+      font-size: 16px;
+      font-weight: 750;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .history-value { flex: 0 0 auto; text-align: right; }
+    .history-quantity { color: var(--red); font-size: 16px; font-weight: 800; font-variant-numeric: tabular-nums; }
+    .history-cost { margin-top: 3px; color: var(--sub); font-size: 13px; font-weight: 650; font-variant-numeric: tabular-nums; }
+
+    .more {
+      width: 27px;
+      height: 40px;
+      border: 0;
+      color: var(--ter);
+      background: transparent;
+      font-size: 20px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .empty {
+      display: none;
+      padding: 70px 20px;
+      color: var(--ter);
+      text-align: center;
+      font-size: 15px;
+      font-weight: 650;
+    }
+
+    .empty.show { display: block; }
+    .empty strong { display: block; margin-bottom: 7px; color: var(--sub); font-size: 16px; }
+
+    .overlay {
+      position: absolute;
+      z-index: 20;
+      inset: 0;
+      display: none;
+      align-items: flex-end;
+      background: var(--scrim);
+    }
+
+    .overlay.open { display: flex; }
+
+    .sheet {
+      width: 100%;
+      padding: 10px 16px 20px;
+      border-radius: 22px 22px 0 0;
+      background: var(--surface);
+    }
+
+    .handle { width: 40px; height: 5px; margin: 0 auto 14px; border-radius: 3px; background: var(--line); }
+    .sheet-title { margin: 0 0 16px; font-size: 19px; font-weight: 800; }
+
+    .period-options {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .period-option {
+      min-height: 46px;
+      padding: 8px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      color: var(--sub);
+      background: var(--surface);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .period-option.selected { border-color: var(--blue); color: var(--blue); background: var(--blue-soft); }
+
+    .apply {
+      width: 100%;
+      height: 50px;
+      margin-top: 18px;
+      border: 0;
+      border-radius: 12px;
+      color: #fff;
+      background: var(--blue);
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .toast {
+      position: absolute;
+      z-index: 30;
+      right: 18px;
+      bottom: 24px;
+      left: 18px;
+      display: none;
+      padding: 13px 15px;
+      border-radius: 11px;
+      color: #fff;
+      background: rgba(25, 31, 40, .92);
+      font-size: 13px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .toast.show { display: block; }
+
+    @media (max-width: 430px) {
+      body { padding: 0; background: var(--app); }
+      .phone { width: 100%; height: 100vh; min-height: 620px; border: 0; border-radius: 0; box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="phone" aria-label="폐기 내역 화면">
+    <div class="status-bar"><span>9:41</span><span>● ◔ ▰</span></div>
+    <header class="app-header">
+      <button class="back" type="button" aria-label="뒤로">‹</button>
+      <span class="app-title">폐기 내역</span>
+    </header>
+
+    <nav class="type-tabs" role="tablist" aria-label="폐기 유형">
+      <button class="type-tab active" type="button" role="tab" aria-selected="true" data-type="all">전체 1</button>
+      <button class="type-tab" type="button" role="tab" aria-selected="false" data-type="before">조리 전 폐기 1</button>
+      <button class="type-tab" type="button" role="tab" aria-selected="false" data-type="after">조리 후 폐기</button>
+    </nav>
+
+    <section class="screen">
+      <div class="condition-row">
+        <button id="period-trigger" class="period-button" type="button" aria-haspopup="dialog" aria-expanded="false">
+          <span class="period-icon" aria-hidden="true"></span>
+          <span id="period-label">최근 3개월</span>
+          <span aria-hidden="true">⌄</span>
+        </button>
+        <span id="result-count" class="condition-count">1건</span>
+      </div>
+
+      <section id="summary" class="summary" aria-label="전체 폐기 합계">
+        <div class="summary-head">
+          <span class="summary-title">전체 합계</span>
+          <strong class="summary-quantity">6개</strong>
+        </div>
+        <div class="summary-cost"><span>폐기 금액</span><strong>1,800원</strong></div>
+      </section>
+
+      <section id="history-section">
+        <h2 class="month-title">2026년 8월</h2>
+        <div class="history-card">
+          <article class="history-row">
+            <div class="history-main">
+              <div class="history-date"><span>08/20</span><span class="type-badge">조리 전</span></div>
+              <div class="history-note">보관 중 변질</div>
+            </div>
+            <div class="history-value">
+              <div class="history-quantity">−6개</div>
+              <div class="history-cost">1,800원</div>
+            </div>
+            <button id="more-button" class="more" type="button" aria-label="더보기">⋮</button>
+          </article>
+        </div>
+      </section>
+
+      <div id="empty" class="empty">
+        <strong id="empty-title">조리 후 폐기 기록이 없어요</strong>
+        <span>선택한 기간에 해당하는 기록이 없습니다.</span>
+      </div>
+    </section>
+
+    <div id="period-overlay" class="overlay" role="dialog" aria-modal="true" aria-labelledby="period-title">
+      <section class="sheet">
+        <div class="handle"></div>
+        <h2 id="period-title" class="sheet-title">기간</h2>
+        <div class="period-options">
+          <button class="period-option" type="button" data-period="오늘">오늘</button>
+          <button class="period-option" type="button" data-period="최근 1개월">최근 1개월</button>
+          <button class="period-option selected" type="button" data-period="최근 3개월">최근 3개월</button>
+          <button class="period-option" type="button" data-period="최근 6개월">최근 6개월</button>
+          <button class="period-option" type="button" data-period="최근 1년">최근 1년</button>
+          <button class="period-option" type="button" data-period="전체">전체</button>
+        </div>
+        <button id="apply-period" class="apply" type="button">적용</button>
+      </section>
+    </div>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  </main>
+
+  <script>
+    let activeType = 'all';
+    let appliedPeriod = '최근 3개월';
+    let draftPeriod = appliedPeriod;
+    let toastTimer;
+
+    const byId = (id) => document.getElementById(id);
+
+    function rowIsVisible() {
+      return activeType !== 'after' && appliedPeriod !== '오늘';
+    }
+
+    function render() {
+      const visible = rowIsVisible();
+      const isAll = activeType === 'all';
+      byId('summary').style.display = isAll && visible ? '' : 'none';
+      byId('history-section').style.display = visible ? '' : 'none';
+      byId('empty').classList.toggle('show', !visible);
+      byId('result-count').textContent = visible ? '1건' : '0건';
+      byId('period-label').textContent = appliedPeriod;
+      byId('empty-title').textContent = activeType === 'after' ? '조리 후 폐기 기록이 없어요' : '이 기간의 폐기 기록이 없어요';
+    }
+
+    function selectType(type) {
+      activeType = type;
+      document.querySelectorAll('.type-tab').forEach((button) => {
+        const selected = button.dataset.type === type;
+        button.classList.toggle('active', selected);
+        button.setAttribute('aria-selected', String(selected));
+      });
+      render();
+    }
+
+    function openPeriod() {
+      draftPeriod = appliedPeriod;
+      document.querySelectorAll('.period-option').forEach((button) => {
+        button.classList.toggle('selected', button.dataset.period === draftPeriod);
+      });
+      byId('period-overlay').classList.add('open');
+      byId('period-trigger').setAttribute('aria-expanded', 'true');
+    }
+
+    function closePeriod() {
+      byId('period-overlay').classList.remove('open');
+      byId('period-trigger').setAttribute('aria-expanded', 'false');
+    }
+
+    function showToast(message) {
+      clearTimeout(toastTimer);
+      byId('toast').textContent = message;
+      byId('toast').classList.add('show');
+      toastTimer = setTimeout(() => byId('toast').classList.remove('show'), 1800);
+    }
+
+    document.querySelectorAll('.type-tab').forEach((button) => {
+      button.addEventListener('click', () => selectType(button.dataset.type));
+    });
+    byId('period-trigger').addEventListener('click', openPeriod);
+    byId('period-overlay').addEventListener('click', (event) => {
+      if (event.target === byId('period-overlay')) closePeriod();
+    });
+    document.querySelectorAll('.period-option').forEach((button) => {
+      button.addEventListener('click', () => {
+        draftPeriod = button.dataset.period;
+        document.querySelectorAll('.period-option').forEach((item) => item.classList.toggle('selected', item === button));
+      });
+    });
+    byId('apply-period').addEventListener('click', () => {
+      appliedPeriod = draftPeriod;
+      closePeriod();
+      render();
+    });
+    byId('more-button').addEventListener('click', () => showToast('폐기 삭제 메뉴가 열려요.'));
+
+    render();
+  </script>
+</body>
+</html>

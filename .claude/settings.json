@@ -25,7 +25,9 @@
       "Bash(rm -rf ing_zip)",
       "Bash(mkdir -p ing_zip)",
       "Bash(unzip -o \"C:/Users/jacop/Downloads/식재료 잔여 복사 요청.zip\" -d ing_zip)",
-      "Bash(echo \"exit: $?\")"
+      "Bash(echo \"exit: $?\")",
+      "Bash(python -)",
+      "Bash(echo \"종료=$?\")"
     ]
   }
 }
