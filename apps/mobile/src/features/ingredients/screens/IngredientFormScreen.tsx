@@ -69,7 +69,8 @@ export function IngredientFormScreen({ id }: { id?: string }) {
     setVendorName(d.vendorName);
     setVol(String(d.perVolume));
     setPrice('');
-    setSafe(String(d.safetyStock));
+    // 안전재고는 기준단위로 저장된다(0073). 화면에는 용량과 같은 단위로 보여 준다.
+    setSafe(String(isDisplayUnit(u) ? d.safetyStock / displayToBase(1, u) : d.safetyStock));
     setMinOrder(String(d.minOrderQty));
     setMemo(d.memo ?? '');
     setLoaded(true);
@@ -107,7 +108,9 @@ export function IngredientFormScreen({ id }: { id?: string }) {
         categoryId: catId,
         baseUnit: base,
         perVolume: perBase,
-        safetyStock: num(safe),
+        // ⚠ 저장은 기준단위다(절대원칙 1 · 0073). 화면 단위를 그대로 보내면
+        //   2kg 이 2g 으로 들어간다.
+        safetyStock: isDisplayUnit(unit) ? displayToBase(num(safe), unit) : num(safe),
         minOrderQty: num(minOrder) || 1,
         defaultVendorId: vendorId,
         memo: memo.trim() || null,
@@ -190,8 +193,10 @@ export function IngredientFormScreen({ id }: { id?: string }) {
 
           <View style={{ flexDirection: 'row', gap: 10 }}>
             <View style={{ flex: 1 }}>
-              <Field label="안전재고" req hint="개수 기준">
-                <Input value={safe} placeholder="0" onChangeText={(t) => setSafe(clampDecimals(t, 0))} suffix="개" mono keyboardType="number-pad" accessibilityLabel="안전재고" />
+              {/* 안전재고는 재고와 **같은 단위**다(0073). 팩 개수로 받으면
+                  팩 용량을 고칠 때 기준이 소리 없이 따라 움직인다. */}
+              <Field label="안전재고" req hint={`이 양 아래로 내려가면 발주 후보`}>
+                <Input value={safe} placeholder="0" onChangeText={(t) => setSafe(clampDecimals(t, 2))} suffix={isMeasure ? unit : dispBase} mono keyboardType="decimal-pad" accessibilityLabel="안전재고" />
               </Field>
             </View>
             <View style={{ flex: 1 }}>

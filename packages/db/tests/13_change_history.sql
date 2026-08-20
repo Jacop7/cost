@@ -47,7 +47,8 @@ begin
   -- ── 메모만 고치면 매출과 무관하다 ───────────────────────────
   perform save_ingredient(pg_temp.store(), jsonb_build_object(
     'id', v_ing, 'name', '대파', 'base_unit', 'g', 'per_volume', 1000,
-    'safety_stock', 2, 'min_order_qty', 1,
+    -- ⚠ 안전재고는 기준단위다(0073). 지금 값을 그대로 보내야 '메모만 바뀜'이 된다.
+    'safety_stock', (select safety_stock from ingredients where id = v_ing), 'min_order_qty', 1,
     'category_id', (select category_id from ingredients where id = v_ing),
     'default_vendor_id', (select default_vendor_id from ingredients where id = v_ing),
     'memo', '제육볶음·파채에 사용'));
@@ -362,7 +363,7 @@ begin
   -- ── 식재료 메모도 같은 계약이다 ─────────────────────────────
   perform save_ingredient(pg_temp.store(), jsonb_build_object(
     'id', v_ing, 'name', '두부', 'base_unit', 'ea', 'per_volume', 1,
-    'safety_stock', 2, 'min_order_qty', 1,
+    'safety_stock', (select safety_stock from ingredients where id = v_ing), 'min_order_qty', 1,
     'category_id', (select category_id from ingredients where id = v_ing),
     'default_vendor_id', (select default_vendor_id from ingredients where id = v_ing),
     'memo', '찌개용'));
