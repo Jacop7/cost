@@ -26,6 +26,10 @@ const KIND_TYPES: Record<string, LedgerType[] | null> = {
 };
 const KINDS = Object.keys(KIND_TYPES);
 
+/** 합계 한 칸의 표기. 0 이면 부호를 떼고 그냥 `0g` 이라고 쓴다. */
+const signed = (v: number, unit: 'g' | 'ml' | '개', sign: '+' | '−') =>
+  Math.abs(v) < 0.0001 ? formatQuantity(0, unit) : `${sign}${formatQuantity(v, unit)}`;
+
 export function StockHistoryScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
 
@@ -57,21 +61,30 @@ export function StockHistoryScreen() {
   }, [rows]);
 
   /*
-   * 기간 합계 — 원장의 **유형 그대로** 센다. 순증감만으로는 회전율을 알 수 없다.
+   * 기간 합계 — 원장의 **유형 그대로**, 그리고 **빠짐없이** 센다.
    *
-   * ⚠ 부호로 세지 않는다. 예전에는 '나간 양'이 폐기·조정 감소까지 다 삼켰다.
-   *   그런데 바로 아래 줄에는 '폐기'가 따로 적혀 있어서, 같은 폐기가 위에서는
-   *   소진으로 아래에서는 폐기로 읽혔다. 이름과 숫자가 어긋나면 안 된다.
-   *   폐기는 로스율 카드와 폐기 내역이 전담한다.
+   * ⚠ 부호로 세면 안 된다. '나간 양' 한 칸에 폐기·조정 감소까지 삼키면,
+   *   바로 아래 줄에는 '폐기'가 따로 적혀 있어서 같은 폐기가 위에서는 소진으로
+   *   아래에서는 폐기로 읽힌다.
+   * ⚠ 그렇다고 빼 버려도 안 된다. 그러면 `입고 − 소진` 이 재고 증감과 안 맞아
+   *   사장님이 대조할 수가 없다. 이름을 붙여서 **다 보여준다.**
+   *
+   *   시작 재고 + 입고 − 소진 − 폐기 ± 조정 = 현재 재고
+   *
+   * 유형 칩(전체/입고/소진/폐기/조정)과 같은 갈래를 쓴다.
    */
   const totals = useMemo(() => {
-    let inQty = 0;
-    let outQty = 0;
+    let inbound = 0;
+    let consume = 0;
+    let discard = 0;
+    let adjust = 0;   // 실사·조정은 늘 수도 줄 수도 있어 **순증감**으로 둔다
     for (const e of rows) {
-      if (e.type === 'inbound') inQty += Math.max(e.countDelta, 0);
-      else if (e.type === 'consume') outQty += Math.max(-e.countDelta, 0);
+      if (e.type === 'inbound') inbound += Math.max(e.countDelta, 0);
+      else if (e.type === 'consume') consume += Math.max(-e.countDelta, 0);
+      else if (e.type === 'discard') discard += Math.max(-e.countDelta, 0);
+      else adjust += e.countDelta;
     }
-    return { inQty, outQty };
+    return { inbound, consume, discard, adjust };
   }, [rows]);
 
   return (
@@ -117,19 +130,25 @@ export function StockHistoryScreen() {
                 {g ? formatQuantity(g.stockTotal, unit) : '—'}
               </Text>
             </View>
-            <View style={{ flexDirection: 'row', paddingVertical: 13, paddingHorizontal: 15, gap: 20 }}>
-              <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: 14, color: T.ter, fontWeight: '600' }}>입고</Text>
-                <Text style={[{ fontSize: 16, fontWeight: '800', color: T.blue, marginTop: 2 }, tnum]}>
-                  +{formatQuantity(totals.inQty, unit)}
-                </Text>
-              </View>
-              <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: 14, color: T.ter, fontWeight: '600' }}>소진</Text>
-                <Text style={[{ fontSize: 16, fontWeight: '800', color: T.red, marginTop: 2 }, tnum]}>
-                  −{formatQuantity(totals.outQty, unit)}
-                </Text>
-              </View>
+            <View style={{ flexDirection: 'row', paddingVertical: 13, paddingHorizontal: 15, gap: 12 }}>
+              {/* 부호는 값이 있을 때만 붙인다. '−0g' 은 아무 말도 아니다. */}
+              {([
+                ['입고', signed(totals.inbound, unit, '+'), T.blue, true],
+                ['소진', signed(totals.consume, unit, '−'), T.red, true],
+                ['폐기', signed(totals.discard, unit, '−'), T.red, true],
+                // 조정은 0 이면 칸째로 감춘다 — 늘 0 인 매장이 대부분이라 자리만 먹는다.
+                ['조정', signed(Math.abs(totals.adjust), unit, totals.adjust >= 0 ? '+' : '−'),
+                  T.sub2, Math.abs(totals.adjust) > 0.0001],
+              ] as const)
+                .filter(([, , , show]) => show)
+                .map(([label, value, color]) => (
+                  <View key={label} style={{ flex: 1, minWidth: 0 }}>
+                    <Text style={{ fontSize: 14, color: T.ter, fontWeight: '600' }}>{label}</Text>
+                    <Text style={[{ fontSize: 15, fontWeight: '800', color, marginTop: 2 }, tnum]} numberOfLines={1}>
+                      {value}
+                    </Text>
+                  </View>
+                ))}
             </View>
           </Card>
 
