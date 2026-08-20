@@ -18,14 +18,15 @@ const TONE = {
 } as const;
 
 export function RecentChangeRow({ change, onPress }: { change: LastChange; onPress: () => void }) {
-  const s = stateLabel(change.displayState);
-  const c = TONE[s.tone];
+  // ⚠ 상태를 모르면 배지를 그리지 않는다. 기본값으로 메꾸면 없는 사실을 주장한다.
+  const s = change.displayState ? stateLabel(change.displayState) : null;
+  const c = s ? TONE[s.tone] : null;
 
   return (
     <Pressable
       onPress={onPress}
       accessibilityRole="button"
-      accessibilityLabel={`최근 수정 ${changeTime(change.occurredAt)} · ${s.text}. 수정 내역 보기`}
+      accessibilityLabel={`최근 수정 ${changeTime(change.occurredAt)}${s ? ` · ${s.text}` : ''}. 수정 내역 보기`}
       style={{
         flexDirection: 'row',
         alignItems: 'center',
@@ -52,11 +53,13 @@ export function RecentChangeRow({ change, onPress }: { change: LastChange; onPre
 
       {/* ⚠ 한 줄을 지켜야 한다. 배지가 길어지면 이름 쪽이 아니라 여기가 줄어든다. */}
       <View style={{ flex: 1, minWidth: 0, alignItems: 'flex-start' }}>
-        <View style={{ paddingHorizontal: 7, paddingVertical: 3, borderRadius: 6, backgroundColor: c.bg }}>
-          <Text style={{ fontSize: 12, fontWeight: '700', color: c.fg }} numberOfLines={1}>
-            {s.text}
-          </Text>
-        </View>
+        {s && c ? (
+          <View style={{ paddingHorizontal: 7, paddingVertical: 3, borderRadius: 6, backgroundColor: c.bg }}>
+            <Text style={{ fontSize: 12, fontWeight: '700', color: c.fg }} numberOfLines={1}>
+              {s.text}
+            </Text>
+          </View>
+        ) : null}
       </View>
 
       <Icon name="chevron" size={16} color={T.ter} />

@@ -86,17 +86,39 @@ export function parseChangeEvent(raw: unknown): ChangeEvent {
 export interface LastChange {
   occurredAt: string;
   eventId: string | null;
-  displayState: ChangeState;
+  /**
+   * ⚠ **null 이면 서버가 상태를 말하지 않은 것**이다. 화면은 배지를 그리지 않는다.
+   *   'irrelevant' 로 메꾸면 "매출 계산과 무관"이라고 **없는 사실을 주장**하게 된다.
+   */
+  displayState: ChangeState | null;
   /** 한 번도 안 고쳤으면 false — 그때 occurredAt 은 생성일이다. */
   hasHistory: boolean;
 }
 
+const CHANGE_STATES: ChangeState[] = ['reflected', 'not_reflected', 'partial', 'irrelevant'];
+
+/**
+ * ⚠ `display_state` 가 빠지면 **개발 중에 바로 터뜨린다.**
+ *   조용히 기본값으로 메꾸면 화면이 초록 배지를 달고 아무도 모른다 —
+ *   실제로 last_change 모양이 바뀌었을 때 그렇게 새어 나갔다(0078).
+ *   배포본에서는 던지지 않는다. 배지 하나 때문에 상세 화면이 통째로 죽으면 안 된다.
+ */
 export function parseLastChange(raw: unknown): LastChange {
   const r = (raw ?? {}) as Record<string, unknown>;
+  const raw_state = r.display_state;
+  const known = typeof raw_state === 'string' && (CHANGE_STATES as string[]).includes(raw_state);
+
+  if (!known && __DEV__) {
+    throw new Error(
+      `last_change.display_state 가 없거나 모르는 값입니다: ${JSON.stringify(raw_state)}. ` +
+        '서버 last_entity_change() 와 이 파서가 어긋났습니다.',
+    );
+  }
+
   return {
     occurredAt: String(r.occurred_at ?? ''),
     eventId: str(r.event_id),
-    displayState: (r.display_state ?? 'irrelevant') as ChangeState,
+    displayState: known ? (raw_state as ChangeState) : null,
     hasHistory: r.has_history === true,
   };
 }

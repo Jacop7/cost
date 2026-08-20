@@ -100,3 +100,91 @@ begin
     format('select save_settings(%L, %L::jsonb)', pg_temp.store(),
            '{"open_time":"10:00","close_time":"10:00"}'), '22000');
 end $t$;
+
+-- ════════════════════════════════════════════════════════════════
+-- 오버로드 가드가 **실제로 잡는가**
+--
+-- 0080 에서 가드를 public 전체로 넓혔지만, "지금 오버로드가 없다"만 확인하면
+-- 가드가 망가져도 통과한다. 일부러 하나 만들어 **실패하는 것까지** 본다.
+--
+-- 실제로 겪은 일이다 — change_line 에 인자를 더하면서 옛 시그니처가 남았는데
+-- 가드는 전파 RPC 이름만 봐서 두 번이나 "clean" 이라고 답했다.
+-- ════════════════════════════════════════════════════════════════
+
+do $t$
+begin
+  -- 지금은 깨끗하다.
+  perform assert_no_rpc_overloads();
+  perform pg_temp.ok('평소에는 통과한다', true);
+
+  -- ⚠ public 에 함수를 만들려면 권한이 필요하다. 시험용으로만 잠깐 되돌린다
+  --   (트랜잭션 안이라 롤백된다).
+  execute 'reset role';
+  execute $q$
+    create function public.change_line(p_a int) returns int
+    language sql immutable as 'select p_a'
+  $q$;
+  execute 'set local role authenticated';
+
+  -- 이제 change_line 이 둘이다 — 가드가 반드시 터져야 한다.
+  perform pg_temp.raises('오버로드를 만들면 가드가 막는다',
+    'select assert_no_rpc_overloads()', null);
+
+  -- 치우면 다시 통과한다.
+  execute 'reset role';
+  execute 'drop function public.change_line(int)';
+  execute 'set local role authenticated';
+  perform assert_no_rpc_overloads();
+  perform pg_temp.ok('치우면 다시 통과한다', true);
+
+  -- ⚠ 전파 RPC 이름이 아닌 함수도 잡아야 한다. 전에는 여기가 뚫려 있었다.
+  execute 'reset role';
+  execute $q$
+    create function public.business_day(p_a int) returns int
+    language sql immutable as 'select p_a'
+  $q$;
+  execute 'set local role authenticated';
+  perform pg_temp.raises('전파 RPC 가 아닌 이름도 잡는다',
+    'select assert_no_rpc_overloads()', null);
+  execute 'reset role';
+  execute 'drop function public.business_day(int)';
+  execute 'set local role authenticated';
+end $t$;
+
+-- ════════════════════════════════════════════════════════════════
+-- 상세는 last_change 에 display_state 를 **반드시** 담는다
+--
+-- 앱 파서가 이 키로 배지를 정한다. 빠지면 조용히 '매출 계산과 무관'이 되어
+-- 없는 사실을 주장하게 된다 — 실제로 0078 에서 모양이 바뀌며 그렇게 샜다.
+-- ════════════════════════════════════════════════════════════════
+
+do $t$
+declare
+  v_ing uuid := pg_temp.ing('대파');
+  v_rcp uuid := pg_temp.rcp('제육볶음');
+  lc    jsonb;
+begin
+  -- ── 기록이 없을 때 ──────────────────────────────────────────
+  for lc in
+    select ingredient_detail(v_ing)->'last_change'
+    union all select recipe_detail(v_rcp)->'last_change'
+  loop
+    perform pg_temp.ok('last_change 가 있다', lc is not null and lc <> 'null'::jsonb);
+    perform pg_temp.ok('display_state 키가 있다', lc ? 'display_state');
+    perform pg_temp.ok('아는 상태값이다',
+      lc->>'display_state' in ('reflected', 'not_reflected', 'partial', 'irrelevant'));
+    perform pg_temp.ok('occurred_at 이 있다', (lc->>'occurred_at') is not null);
+    perform pg_temp.ok('event_id 키가 있다', lc ? 'event_id');
+  end loop;
+
+  -- ── 기록이 생긴 뒤에도 ──────────────────────────────────────
+  begin perform open_business_day(pg_temp.store()); exception when others then null; end;
+  perform save_recipe(pg_temp.store(), jsonb_build_object(
+    'id', v_rcp, 'name', '제육볶음', 'price', 12900, 'base_servings', 10));
+
+  lc := recipe_detail(v_rcp)->'last_change';
+  perform pg_temp.ok('수정 뒤에도 display_state 가 있다', lc ? 'display_state');
+  perform pg_temp.eq_t('영업 중 수정은 미반영', lc->>'display_state', 'not_reflected');
+  perform pg_temp.ok('그 사건의 id 를 가리킨다', (lc->>'event_id') is not null);
+  perform pg_temp.ok('기록이 있다고 알린다', (lc->>'has_history')::boolean);
+end $t$;
