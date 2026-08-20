@@ -63,6 +63,44 @@ export function periodRange(period: HistoryPeriod, today = todayBusiness()): { f
 
 const fmt = (s?: string) => (s ? s.replace(/-/g, '.') : '처음');
 
+/**
+ * 기간만 고르는 시트 — 폐기 내역(ING-10)이 쓴다.
+ *
+ * 거기에는 유형 칩이 이미 화면 위 탭으로 나와 있고 정렬은 항상 최신순이다.
+ * 조회 설정 시트를 통째로 재사용하면 쓰지도 않을 두 줄이 따라붙는다.
+ * ⚠ 기간 목록과 `periodRange()` 는 **이 파일 하나**를 같이 쓴다 — 두 화면이 갈리면 안 된다.
+ */
+export function PeriodSheet({
+  visible, onClose, value, onApply,
+}: {
+  visible: boolean;
+  onClose: () => void;
+  value: HistoryPeriod;
+  onApply: (v: HistoryPeriod) => void;
+}) {
+  const [period, setPeriod] = useState<HistoryPeriod>(value);
+  useEffect(() => { if (visible) setPeriod(value); }, [visible, value]);
+
+  const range = periodRange(period);
+
+  return (
+    <Sheet visible={visible} onClose={onClose} height={330} title="기간">
+      <View style={{ flex: 1, paddingTop: 6 }}>
+        <Seg opts={PERIODS} sel={period} onSelect={(o) => setPeriod(o as HistoryPeriod)} />
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 10, paddingVertical: 12, paddingHorizontal: 14, borderWidth: 1, borderColor: T.line, borderRadius: 12, backgroundColor: T.surface2 }}>
+          <Icon name="calendar" size={18} color={T.sub2} />
+          <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, tnum]}>{fmt(range.from)}</Text>
+          <Text style={{ flex: 1, textAlign: 'center', color: T.ter }}>~</Text>
+          <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, tnum]}>{fmt(range.to)}</Text>
+        </View>
+      </View>
+      <View style={{ paddingTop: 12, paddingBottom: 10 }}>
+        <Button kind="primary" size="lg" full onPress={() => onApply(period)}>적용</Button>
+      </View>
+    </Sheet>
+  );
+}
+
 export function HistoryFilterSheet({
   visible, onClose, value, onApply, kinds,
 }: {

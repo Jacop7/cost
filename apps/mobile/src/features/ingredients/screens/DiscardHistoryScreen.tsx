@@ -20,17 +20,23 @@ import { safeBack } from '@/lib/nav';
 import { businessDay, formatQuantity } from '@sikjae/core';
 import { T, tnum, won } from '@/theme/tokens';
 import { dispUnit } from '../ledger';
+import { PeriodSheet, periodRange, type HistoryPeriod } from './HistoryFilterSheet';
 import { DISCARD_DELETE_DAYS, useDeleteDiscard, useIngredientDetail, useStockHistory, type LedgerEntry } from '../hooks';
 
 type Tab = '전체' | '조리 전 폐기' | '조리 후 폐기';
 const TABS: Tab[] = ['전체', '조리 전 폐기', '조리 후 폐기'];
 
+/** `2026-08` → `2026년 8월`. 월 머리말. */
+const monthTitle = (ym: string) => `${ym.slice(0, 4)}년 ${Number(ym.slice(5, 7))}월`;
+
 export default function DiscardHistoryScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const [tab, setTab] = useState<Tab>('전체');
+  const [period, setPeriod] = useState<HistoryPeriod>('최근 3개월');
+  const [periodOpen, setPeriodOpen] = useState(false);
 
   const detail = useIngredientDetail(id);
-  const history = useStockHistory(id);
+  const history = useStockHistory(id, periodRange(period));
   const deleteDiscard = useDeleteDiscard(id ?? '');
   const [menuFor, setMenuFor] = useState<LedgerEntry | null>(null);
 
@@ -98,6 +104,18 @@ export default function DiscardHistoryScreen() {
   const shownAmount = sum(shown);
   const shownCost = price === null ? null : shownAmount * price;
 
+  /** 월 머리말로 묶는다. 같은 배열에 섞어 넣어야 스크롤이 자연스럽다. */
+  const groups = useMemo(() => {
+    const m = new Map<string, LedgerEntry[]>();
+    for (const e of shown) {
+      const ym = e.date.slice(0, 7);
+      const arr = m.get(ym);
+      if (arr) arr.push(e);
+      else m.set(ym, [e]);
+    }
+    return [...m.entries()];
+  }, [shown]);
+
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <AppHeader title="폐기 내역" onBack={() => safeBack(`/ingredients/${id}`)} />
@@ -124,7 +142,23 @@ export default function DiscardHistoryScreen() {
         })}
       </View>
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ padding: 16, paddingBottom: 32, gap: 11 }}>
+      {/* 조건 줄 — 왼쪽 기간, 오른쪽 건수. 재고 내역(ING-08)과 같은 자리·같은 모양이다. */}
+      <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, paddingTop: 10, paddingBottom: 6 }}>
+        <Pressable
+          onPress={() => setPeriodOpen(true)}
+          accessibilityRole="button" accessibilityLabel={`기간 ${period} 변경`}
+          hitSlop={6}
+          style={{ flexDirection: 'row', alignItems: 'center', gap: 5, paddingVertical: 6 }}
+        >
+          <Icon name="calendar" size={16} color={T.sub} />
+          <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub }}>{period}</Text>
+          <Icon name="chevronDown" size={16} color={T.sub} />
+        </Pressable>
+        <View style={{ flex: 1 }} />
+        <Text style={[{ fontSize: 14, fontWeight: '600', color: T.ter }, tnum]}>{shown.length}건</Text>
+      </View>
+
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 32, gap: 14 }}>
         <QueryState
           isLoading={history.isLoading}
           error={history.error}
@@ -137,80 +171,92 @@ export default function DiscardHistoryScreen() {
               : '식재료 상세에서 남은 양을 고치면 폐기로 기록돼요'
           }
         >
-          {/* 선택한 탭의 합계 */}
-          <Card pad={14}>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: T.sub }}>{tab} 합계</Text>
-              <View style={{ alignItems: 'flex-end' }}>
-                <Text style={[{ fontSize: 18, fontWeight: '800', color: T.ink }, tnum]}>
-                  {formatQuantity(shownAmount, unit)}
-                </Text>
-                <Text style={[{ fontSize: 14, color: T.ter, marginTop: 2 }, tnum]}>
-                  {shownCost === null ? '단가 산출 전' : `${won(Math.round(shownCost))}원`}
-                </Text>
-              </View>
+          {/* 합계 — 머리에 수량, 아래 금액. 재고 내역 요약 카드와 같은 짜임이다. */}
+          <Card pad={0} style={{ overflow: 'hidden' }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 13, paddingHorizontal: 15, backgroundColor: T.surface2 }}>
+              <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.sub }}>{tab} 합계</Text>
+              <Text style={[{ fontSize: 17, fontWeight: '800', color: T.ink }, tnum]}>
+                {formatQuantity(shownAmount, unit)}
+              </Text>
             </View>
-            <Text style={{ fontSize: 14, color: T.ter, lineHeight: 20, marginTop: 8 }}>
-              {tab === '조리 후 폐기'
-                ? '만들어 놓고 못 판 몫이에요. 자주 남으면 만드는 양을 줄여 보세요.'
-                : tab === '조리 전 폐기'
-                  ? '쓰기도 전에 상한 몫이에요. 자주 생기면 한 번에 사는 양을 줄여 보세요.'
-                  : '조리 전은 발주·보관을, 조리 후는 만드는 양을 손봐야 해요.'}
-            </Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12, paddingHorizontal: 15 }}>
+              <Text style={{ flex: 1, fontSize: 14, fontWeight: '600', color: T.ter }}>폐기 금액</Text>
+              <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, tnum]}>
+                {shownCost === null ? '단가 산출 전' : `${won(Math.round(shownCost))}원`}
+              </Text>
+            </View>
           </Card>
 
-          {shown.map((e) => (
-            <Card key={e.id} pad={0} style={{ overflow: 'hidden' }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 14, paddingHorizontal: 15 }}>
-                <View style={{ flex: 1, minWidth: 0 }}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                    <Text style={[{ fontSize: 14, color: T.ter, fontWeight: '600' }, tnum]}>
-                      {e.date.slice(5).replace('-', '/')}
-                    </Text>
-                    <Badge tone={e.waste ? 'amber' : 'neutral'} sm>
-                      {e.waste ? '조리 후' : '조리 전'}
-                    </Badge>
-                  </View>
-                  <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink, marginTop: 3 }} numberOfLines={1}>
-                    {e.note ?? (e.waste ? '조리 후 폐기' : '조리 전 폐기')}
-                  </Text>
-                </View>
-                <View style={{ alignItems: 'flex-end' }}>
-                  <Text style={[{ fontSize: 16, fontWeight: '800', color: T.red }, tnum]}>
-                    −{formatQuantity(Math.abs(e.countDelta), unit)}
-                  </Text>
-                  {price !== null ? (
-                    <Text style={[{ fontSize: 14, color: T.sub2, marginTop: 2 }, tnum]}>
-                      {won(Math.round(Math.abs(e.countDelta) * price))}원
-                    </Text>
-                  ) : null}
-                </View>
-                {/*
-                  ⋮ — 지울 수 있는 줄에만 나온다(조리 전 · 7일 이내).
-                  구매 옵션 수정 헤더와 **같은 메뉴**다. 같은 모양이 같은 뜻이어야 한다.
-                */}
-                {canDelete(e) ? (
-                  <Pressable
-                    onPress={() => setMenuFor(e)}
-                    accessibilityRole="button" accessibilityLabel="더보기"
-                    hitSlop={6}
-                    style={{ width: 32, height: 40, alignItems: 'center', justifyContent: 'center' }}
+          {groups.map(([ym, list]) => (
+            <View key={ym}>
+              <Text style={{ marginHorizontal: 6, marginBottom: 7, fontSize: 14, fontWeight: '700', color: T.sub }}>
+                {monthTitle(ym)}
+              </Text>
+              {/* 줄마다 카드를 쓰면 목록이 아니라 더미가 된다 — 한 장에 구분선. */}
+              <Card pad={0} style={{ overflow: 'hidden' }}>
+                {list.map((e, i) => (
+                  <View
+                    key={e.id}
+                    style={{
+                      flexDirection: 'row', alignItems: 'center', gap: 10,
+                      paddingVertical: 13, paddingLeft: 15, paddingRight: 12,
+                      borderBottomWidth: i < list.length - 1 ? 1 : 0, borderBottomColor: T.line2,
+                    }}
                   >
-                    <Icon name="more" size={19} color={T.ter} />
-                  </Pressable>
-                ) : null}
-              </View>
-            </Card>
+                    <View style={{ flex: 1, minWidth: 0 }}>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                        <Text style={[{ fontSize: 13, color: T.ter, fontWeight: '600' }, tnum]}>
+                          {e.date.slice(5).replace('-', '/')}
+                        </Text>
+                        <Badge tone={e.waste ? 'amber' : 'neutral'} sm>
+                          {e.waste ? '조리 후' : '조리 전'}
+                        </Badge>
+                      </View>
+                      <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink, marginTop: 5 }} numberOfLines={1}>
+                        {e.note ?? (e.waste ? '조리 후 폐기' : '조리 전 폐기')}
+                      </Text>
+                    </View>
+                    <View style={{ alignItems: 'flex-end' }}>
+                      <Text style={[{ fontSize: 16, fontWeight: '800', color: T.red }, tnum]}>
+                        −{formatQuantity(Math.abs(e.countDelta), unit)}
+                      </Text>
+                      {price !== null ? (
+                        <Text style={[{ fontSize: 13, color: T.sub, marginTop: 3 }, tnum]}>
+                          {won(Math.round(Math.abs(e.countDelta) * price))}원
+                        </Text>
+                      ) : null}
+                    </View>
+                    {/*
+                      ⋮ — 지울 수 있는 줄에만 나온다(조리 전 · 7일 이내).
+                      자리는 항상 비워 둔다. 있고 없고에 따라 오른쪽 숫자가 밀리면
+                      같은 목록이 줄마다 다르게 보인다.
+                    */}
+                    <View style={{ width: 27, alignItems: 'center' }}>
+                      {canDelete(e) ? (
+                        <Pressable
+                          onPress={() => setMenuFor(e)}
+                          accessibilityRole="button" accessibilityLabel="더보기"
+                          hitSlop={8}
+                          style={{ width: 27, height: 40, alignItems: 'center', justifyContent: 'center' }}
+                        >
+                          <Icon name="more" size={19} color={T.ter} />
+                        </Pressable>
+                      ) : null}
+                    </View>
+                  </View>
+                ))}
+              </Card>
+            </View>
           ))}
-
-          <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, paddingHorizontal: 2, marginTop: 2 }}>
-            <Icon name="info" size={15} color={T.ter} />
-            <Text style={{ flex: 1, fontSize: 14, color: T.ter, lineHeight: 20 }}>
-              버린 금액은 원가에 얹히지 않고 <Text style={{ fontWeight: '700' }}>월 손익의 폐기 손실</Text>로 잡혀요.
-            </Text>
-          </View>
         </QueryState>
       </ScrollView>
+
+      <PeriodSheet
+        visible={periodOpen}
+        value={period}
+        onClose={() => setPeriodOpen(false)}
+        onApply={(p) => { setPeriod(p); setPeriodOpen(false); }}
+      />
 
       {/* 삭제 메뉴 — 구매 옵션 수정과 같은 하단 시트 */}
       <Modal visible={menuFor !== null} transparent animationType="fade" onRequestClose={() => setMenuFor(null)} statusBarTranslucent>
