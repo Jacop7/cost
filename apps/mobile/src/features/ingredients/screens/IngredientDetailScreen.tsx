@@ -7,6 +7,7 @@ import { T, tnum } from '../../../theme/tokens';
 import { formatQuantity, formatUnitPrice } from '@sikjae/core';
 import { safeBack } from '@/lib/nav';
 import { RecentChangeRow } from '@/features/changes';
+import { BasePriceCard } from '../components/BasePriceCard';
 import { LedgerRow } from '../components/LedgerRow';
 import { LossCard } from '../components/LossCard';
 import { belowSafety, stockLabel, stockStateOf } from '../components/IngCard';
@@ -184,52 +185,15 @@ export function IngredientDetailScreen() {
                 </View>
               </Card>
 
-              {/* 기준 단가 */}
-              <Card pad={0} style={{ overflow: 'hidden' }}>
-                <SectionHeader
-                  right={<Text style={{ fontSize: 14, color: T.ter, fontWeight: '600' }}>입고 {g.purchase.count}건 기준</Text>}
-                >
-                  기준 단가
-                </SectionHeader>
-                <View style={{ paddingHorizontal: 16, paddingTop: 14, paddingBottom: 16 }}>
-                  <View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between' }}>
-                    <View>
-                      <Text style={{ fontSize: 14, color: T.ter, fontWeight: '600' }}>
-                        실입고 기준
-                      </Text>
-                      <Text style={[{ fontSize: 22, fontWeight: '800', color: g.basePrice === null ? T.ter : T.blue, marginTop: 2 }, tnum]}>
-                        {g.basePrice === null ? '산출 전' : formatUnitPrice(g.basePrice, unit)}
-                      </Text>
-                    </View>
-                    <View style={{ alignItems: 'flex-end' }}>
-                      <Text style={{ fontSize: 14, color: T.ter }}>가중평균</Text>
-                      <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, tnum]}>
-                        {g.purchase.avg === null ? '—' : formatUnitPrice(g.purchase.avg, unit)}
-                      </Text>
-                    </View>
-                  </View>
-
-                  {g.purchase.count > 0 ? (
-                    <View style={{ gap: 7, marginTop: 13, paddingTop: 13, borderTopWidth: 1, borderTopColor: T.line2 }}>
-                      {([
-                        ['최저', g.purchase.low, T.blue],
-                        ['최고', g.purchase.high, T.red],
-                      ] as const).map(([lbl, val, color]) => (
-                        <View key={lbl} style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                          <Text style={{ fontSize: 16, fontWeight: '700', width: 36, color }}>{lbl}</Text>
-                          <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, tnum]}>
-                            {val === null ? '—' : formatUnitPrice(val, unit)}
-                          </Text>
-                        </View>
-                      ))}
-                    </View>
-                  ) : (
-                    <Text style={{ fontSize: 14, color: T.ter, marginTop: 13, paddingTop: 13, borderTopWidth: 1, borderTopColor: T.line2 }}>
-                      입고 기록이 없어 단가를 낼 수 없어요. 발주 → 입고를 등록하면 자동으로 계산돼요.
-                    </Text>
-                  )}
-                </View>
-              </Card>
+              {/* 기준 단가 + 그 값을 만든 입고 기록 — 한 카드다.
+                  따로 두면 "5.00원/g" 이 어디서 나왔는지 두 카드를 오가며 맞춰 봐야 한다. */}
+              <BasePriceCard
+                unit={unit}
+                basePrice={g.basePrice}
+                purchase={g.purchase}
+                orders={g.orders}
+                onSeeAll={() => router.push(`/ingredients/purchases/${g.id}`)}
+              />
 
               {/* 로스율 — 폐기 이력 바로 위에 둔다. 숫자만 보면 어디서 나온 값인지 모른다. */}
               <LossCard
@@ -319,41 +283,6 @@ export function IngredientDetailScreen() {
                 </View>
               </Card>
 
-              {/* 구매 이력 */}
-              {g.orders.length > 0 ? (
-                <Card pad={0} style={{ overflow: 'hidden' }}>
-                  <SectionHeader>구매 이력</SectionHeader>
-                  <View style={{ paddingHorizontal: 16, paddingTop: 4, paddingBottom: 10 }}>
-                    {g.orders.slice(0, 6).map((o, i) => (
-                      <View key={o.id} style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 10, borderBottomWidth: i < Math.min(6, g.orders.length) - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
-                        <View style={{ flex: 1, minWidth: 0 }}>
-                          <Text style={[{ fontSize: 14, color: T.ter, fontWeight: '600' }, tnum]}>
-                            {o.orderedAt.slice(5).replace('-', '/')}
-                            {o.status === 'ordered' ? ' · 입고 대기' : o.status === 'partial' ? ' · 부분 입고' : o.status === 'canceled' ? ' · 취소' : ''}
-                          </Text>
-                          <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink, marginTop: 2 }} numberOfLines={1}>
-                            {o.vendorName ?? '거래처 미지정'}
-                          </Text>
-                          <Text style={[{ fontSize: 14, color: T.sub2, marginTop: 2 }, tnum]}>
-                            {formatQuantity(o.volume, unit)} × {o.qty}개 · {o.amount.toLocaleString('ko-KR')}원
-                          </Text>
-                        </View>
-                        <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, tnum]}>
-                          {o.unitPrice === null ? '—' : formatUnitPrice(o.unitPrice, unit)}
-                        </Text>
-                      </View>
-                    ))}
-                  </View>
-                  <Pressable
-                    onPress={() => router.push(`/ingredients/purchases/${g.id}`)}
-                    accessibilityRole="button" accessibilityLabel="구매 이력 전체 보기"
-                    style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 2, paddingVertical: 13, borderTopWidth: 1, borderTopColor: T.line2, backgroundColor: T.surface2 }}
-                  >
-                    <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub }}>자세히 보기</Text>
-                    <Icon name="chevron" size={16} color={T.ter} />
-                  </Pressable>
-                </Card>
-              ) : null}
             </>
           ) : null}
         </QueryState>
