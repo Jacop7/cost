@@ -47,7 +47,8 @@ export function LedgerRow({
       <View style={{ flex: 1 }}>
         <Text style={[{ fontSize: 14, color: T.ter, fontWeight: '600', marginBottom: 4 }, tnum]}>{date}</Text>
         <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>{act}</Text>
-        <Text style={{ fontSize: 14, color: T.ink, marginTop: 3 }}>{memo}</Text>
+        {/* 메모가 없으면 줄 자체를 그리지 않는다. 빈 Text 는 빈 줄만큼 자리를 먹는다. */}
+        {memo ? <Text style={{ fontSize: 14, color: T.ink, marginTop: 3 }}>{memo}</Text> : null}
       </View>
       <View style={{ alignItems: 'flex-end' }}>
         <Text style={[{ fontSize: 16, fontWeight: '800', color: up ? T.blue : T.red }, tnum]}>{dNum}<Text style={{ fontWeight: '600' }}>{dUnit}</Text></Text>
