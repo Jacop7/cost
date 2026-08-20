@@ -56,13 +56,20 @@ export function StockHistoryScreen() {
     return [...m.entries()];
   }, [rows]);
 
-  /** 기간 합계 — 들어온 양·나간 양을 따로 보여준다. 순증감만으로는 회전율을 알 수 없다. */
+  /*
+   * 기간 합계 — 원장의 **유형 그대로** 센다. 순증감만으로는 회전율을 알 수 없다.
+   *
+   * ⚠ 부호로 세지 않는다. 예전에는 '나간 양'이 폐기·조정 감소까지 다 삼켰다.
+   *   그런데 바로 아래 줄에는 '폐기'가 따로 적혀 있어서, 같은 폐기가 위에서는
+   *   소진으로 아래에서는 폐기로 읽혔다. 이름과 숫자가 어긋나면 안 된다.
+   *   폐기는 로스율 카드와 폐기 내역이 전담한다.
+   */
   const totals = useMemo(() => {
     let inQty = 0;
     let outQty = 0;
     for (const e of rows) {
-      if (e.countDelta > 0) inQty += e.countDelta;
-      else outQty += -e.countDelta;
+      if (e.type === 'inbound') inQty += Math.max(e.countDelta, 0);
+      else if (e.type === 'consume') outQty += Math.max(-e.countDelta, 0);
     }
     return { inQty, outQty };
   }, [rows]);
@@ -112,13 +119,13 @@ export function StockHistoryScreen() {
             </View>
             <View style={{ flexDirection: 'row', paddingVertical: 13, paddingHorizontal: 15, gap: 20 }}>
               <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: 14, color: T.ter, fontWeight: '600' }}>들어온 양</Text>
+                <Text style={{ fontSize: 14, color: T.ter, fontWeight: '600' }}>입고</Text>
                 <Text style={[{ fontSize: 16, fontWeight: '800', color: T.blue, marginTop: 2 }, tnum]}>
                   +{formatQuantity(totals.inQty, unit)}
                 </Text>
               </View>
               <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: 14, color: T.ter, fontWeight: '600' }}>나간 양</Text>
+                <Text style={{ fontSize: 14, color: T.ter, fontWeight: '600' }}>소진</Text>
                 <Text style={[{ fontSize: 16, fontWeight: '800', color: T.red, marginTop: 2 }, tnum]}>
                   −{formatQuantity(totals.outQty, unit)}
                 </Text>
