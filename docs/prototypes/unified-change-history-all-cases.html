@@ -1,0 +1,707 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>공통 수정 내역 전체 사례</title>
+  <style>
+    :root {
+      --canvas: #e9edf1;
+      --app: #f2f4f6;
+      --surface: #ffffff;
+      --surface-soft: #f7f8fa;
+      --ink: #191f28;
+      --sub: #4e5968;
+      --muted: #8b95a1;
+      --line: #e5e8eb;
+      --line-soft: #f2f4f6;
+      --blue: #3182f6;
+      --green: #168f63;
+      --green-bg: #e9f8f1;
+      --amber: #c76800;
+      --amber-bg: #fff3e0;
+      --neutral-bg: #eef1f4;
+      --scrim: rgba(0, 0, 0, .44);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 24px 14px 48px;
+      color: var(--ink);
+      background: var(--canvas);
+      font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button { font: inherit; }
+
+    .prototype {
+      width: min(900px, 100%);
+      margin: 0 auto;
+    }
+
+    .prototype-heading {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 16px;
+      margin: 0 auto 14px;
+      padding: 0 4px;
+    }
+
+    .prototype-heading h1 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .prototype-heading p {
+      margin: 4px 0 0;
+      color: var(--sub);
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    .phones {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 402px));
+      justify-content: center;
+      gap: 28px;
+    }
+
+    .phone {
+      position: relative;
+      height: min(850px, calc(100vh - 86px));
+      min-height: 700px;
+      overflow: hidden;
+      border: 1px solid rgba(25, 31, 40, .1);
+      border-radius: 30px;
+      background: var(--surface);
+      box-shadow: 0 22px 60px rgba(25, 31, 40, .14);
+    }
+
+    .status-bar {
+      height: 27px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 19px;
+      background: var(--surface);
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .app-header {
+      height: 56px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 15px;
+      background: var(--surface);
+    }
+
+    .back {
+      width: 25px;
+      border: 0;
+      padding: 0;
+      color: var(--ink);
+      background: transparent;
+      font-size: 28px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .app-title {
+      flex: 1;
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .screen {
+      height: calc(100% - 83px);
+      overflow-y: auto;
+      padding: 0 14px 28px;
+      background: var(--app);
+      scrollbar-width: thin;
+    }
+
+    .subject {
+      margin: 0 -14px;
+      padding: 12px 20px 15px;
+      background: var(--surface);
+    }
+
+    .subject-type {
+      display: block;
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .subject-name {
+      display: block;
+      margin-top: 4px;
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    .summary {
+      margin: 12px 0 16px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--surface);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, .03);
+    }
+
+    .summary-main,
+    .summary-counts {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 14px;
+    }
+
+    .summary-main {
+      border-bottom: 1px solid var(--line-soft);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .summary-main span:first-child { flex: 1; }
+    .summary-main strong { font-size: 15px; }
+
+    .summary-counts {
+      color: var(--sub);
+      background: var(--surface-soft);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .summary-counts strong {
+      margin-left: 3px;
+      color: var(--ink);
+      font-weight: 800;
+    }
+
+    .summary-counts .divider { color: #d1d6db; }
+
+    .month {
+      margin: 0 6px 8px;
+      color: var(--sub);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .history-list {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--surface);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, .03);
+    }
+
+    .history-row {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 14px;
+      border: 0;
+      border-top: 1px solid var(--line-soft);
+      color: var(--ink);
+      background: var(--surface);
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .history-row:first-child { border-top: 0; }
+    .history-row:active { background: var(--surface-soft); }
+
+    .history-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .history-date {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .history-title {
+      display: block;
+      margin-top: 4px;
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .history-desc {
+      display: block;
+      overflow: hidden;
+      margin-top: 4px;
+      color: var(--sub);
+      font-size: 12px;
+      font-weight: 650;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .row-end {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 5px 7px;
+      border-radius: 7px;
+      color: var(--green);
+      background: var(--green-bg);
+      font-size: 10px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .badge.pending,
+    .badge.partial {
+      color: var(--amber);
+      background: var(--amber-bg);
+    }
+
+    .badge.irrelevant {
+      color: var(--sub);
+      background: var(--neutral-bg);
+    }
+
+    .chevron {
+      color: #c5cbd3;
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    .screen-note {
+      margin: 12px 5px 0;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 650;
+      line-height: 1.5;
+    }
+
+    .overlay {
+      position: absolute;
+      z-index: 30;
+      inset: 0;
+      display: none;
+      align-items: flex-end;
+      background: var(--scrim);
+    }
+
+    .overlay.open { display: flex; }
+
+    .sheet {
+      width: 100%;
+      max-height: 84%;
+      overflow-y: auto;
+      padding: 9px 14px 18px;
+      border-radius: 22px 22px 0 0;
+      background: var(--surface);
+    }
+
+    .handle {
+      width: 40px;
+      height: 5px;
+      margin: 0 auto 14px;
+      border-radius: 3px;
+      background: var(--line);
+    }
+
+    .sheet-head {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 0 2px 14px;
+    }
+
+    .sheet-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .sheet-copy h2 {
+      margin: 0;
+      font-size: 19px;
+      font-weight: 800;
+    }
+
+    .sheet-copy p {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 650;
+      line-height: 1.45;
+    }
+
+    .change-group {
+      margin-top: 10px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--surface);
+    }
+
+    .change-group h3 {
+      margin: 0;
+      padding: 11px 12px;
+      border-bottom: 1px solid var(--line-soft);
+      color: var(--sub);
+      background: var(--surface-soft);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .change-row {
+      display: grid;
+      grid-template-columns: minmax(68px, .85fr) minmax(0, 1fr) 15px minmax(0, 1fr);
+      align-items: center;
+      gap: 5px;
+      padding: 11px 12px;
+      border-top: 1px solid var(--line-soft);
+      font-size: 12px;
+    }
+
+    .change-group h3 + .change-row { border-top: 0; }
+    .change-name { color: var(--sub); font-weight: 750; }
+    .before { overflow: hidden; color: var(--muted); text-align: right; text-overflow: ellipsis; white-space: nowrap; }
+    .change-arrow { color: #b0b8c1; text-align: center; }
+    .after { overflow: hidden; color: var(--ink); font-weight: 800; text-overflow: ellipsis; white-space: nowrap; }
+
+    .close {
+      width: 100%;
+      margin-top: 12px;
+      padding: 14px;
+      border: 0;
+      border-radius: 12px;
+      color: var(--ink);
+      background: var(--surface-soft);
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    @media (max-width: 860px) {
+      .prototype { width: min(402px, 100%); }
+      .prototype-heading { display: block; }
+      .phones { grid-template-columns: 1fr; }
+      .phone { height: 820px; }
+    }
+
+    @media (max-width: 370px) {
+      body { padding-inline: 7px; }
+      .phone { border-radius: 22px; }
+      .badge { max-width: 98px; white-space: normal; text-align: center; }
+      .change-row { grid-template-columns: 64px minmax(0, 1fr) 13px minmax(0, 1fr); padding-inline: 9px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="prototype">
+    <header class="prototype-heading">
+      <div>
+        <h1>공통 수정 내역 · 전체 사례</h1>
+        <p>같은 목록 구조와 상세 팝업을 식재료·레시피에 공통 적용</p>
+      </div>
+    </header>
+
+    <section class="phones" aria-label="식재료와 레시피 수정 내역 비교">
+      <article class="phone" data-page="ingredient" aria-label="식재료 수정 내역">
+        <div class="status-bar"><span>9:41</span><span>● ◔ ▰</span></div>
+        <header class="app-header">
+          <button class="back" type="button" aria-label="뒤로">‹</button>
+          <span class="app-title">수정 내역</span>
+        </header>
+        <div class="screen">
+          <section class="subject">
+            <span class="subject-type"></span>
+            <strong class="subject-name"></strong>
+          </section>
+          <section class="summary">
+            <div class="summary-main"><span>최근 7일 기준</span><strong class="total-count"></strong></div>
+            <div class="summary-counts"><span>직접 수정 <strong class="direct-count"></strong></span><span class="divider">·</span><span>자동 갱신 <strong class="linked-count"></strong></span></div>
+          </section>
+          <h2 class="month">2026년 8월</h2>
+          <section class="history-list"></section>
+          <p class="screen-note">최근 7일 수정 내역만 표시합니다. 메모 변경과 재고 수량 변동은 포함하지 않습니다.</p>
+        </div>
+        <div class="overlay" role="dialog" aria-modal="true" aria-label="변경 내용">
+          <section class="sheet">
+            <div class="handle"></div>
+            <div class="sheet-head">
+              <div class="sheet-copy"><h2></h2><p></p></div>
+              <span class="badge"></span>
+            </div>
+            <div class="groups"></div>
+            <button class="close" type="button">닫기</button>
+          </section>
+        </div>
+      </article>
+
+      <article class="phone" data-page="recipe" aria-label="레시피 수정 내역">
+        <div class="status-bar"><span>9:41</span><span>● ◔ ▰</span></div>
+        <header class="app-header">
+          <button class="back" type="button" aria-label="뒤로">‹</button>
+          <span class="app-title">수정 내역</span>
+        </header>
+        <div class="screen">
+          <section class="subject">
+            <span class="subject-type"></span>
+            <strong class="subject-name"></strong>
+          </section>
+          <section class="summary">
+            <div class="summary-main"><span>최근 7일 기준</span><strong class="total-count"></strong></div>
+            <div class="summary-counts"><span>직접 수정 <strong class="direct-count"></strong></span><span class="divider">·</span><span>자동 갱신 <strong class="linked-count"></strong></span></div>
+          </section>
+          <h2 class="month">2026년 8월</h2>
+          <section class="history-list"></section>
+          <p class="screen-note">최근 7일 수정 내역만 표시합니다. 메모 변경은 포함하지 않습니다.</p>
+        </div>
+        <div class="overlay" role="dialog" aria-modal="true" aria-label="변경 내용">
+          <section class="sheet">
+            <div class="handle"></div>
+            <div class="sheet-head">
+              <div class="sheet-copy"><h2></h2><p></p></div>
+              <span class="badge"></span>
+            </div>
+            <div class="groups"></div>
+            <button class="close" type="button">닫기</button>
+          </section>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <script>
+    const pages = {
+      ingredient: {
+        type: '식재료',
+        name: '고춧가루',
+        directCount: 2,
+        linkedCount: 2,
+        events: [
+          {
+            at: '08/20 · 14:38',
+            fullAt: '2026.08.20 14:38',
+            title: '입고 단가 반영',
+            description: '입고 확정으로 기준 단가 변경',
+            source: '식자재쇼핑몰 입고',
+            status: '일부 메뉴 미반영',
+            tone: 'partial',
+            showStatus: true,
+            kind: 'linked',
+            direct: [],
+            linked: [['기준 단가', '4.80원/g', '5.20원/g']]
+          },
+          {
+            at: '08/19 · 10:12',
+            fullAt: '2026.08.19 10:12',
+            title: '식재료 수정',
+            description: '개당 용량 외 2개 항목 변경',
+            source: '직접 수정',
+            status: '매출 계산과 무관',
+            tone: 'irrelevant',
+            showStatus: true,
+            kind: 'direct',
+            direct: [['개당 용량', '1kg', '2kg'], ['안전재고', '3kg', '4kg'], ['최소 발주량', '1개', '2개']],
+            linked: []
+          },
+          {
+            at: '08/18 · 16:20',
+            fullAt: '2026.08.18 16:20',
+            title: '입고 취소 반영',
+            description: '취소된 입고를 제외해 기준 단가 변경',
+            source: '08/18 식자재쇼핑몰 입고 취소',
+            status: '현재 매출 반영',
+            tone: 'reflected',
+            showStatus: true,
+            kind: 'linked',
+            direct: [],
+            linked: [['기준 단가', '5.20원/g', '4.95원/g']]
+          },
+          {
+            at: '08/15 · 09:05',
+            fullAt: '2026.08.15 09:05',
+            title: '식재료 수정',
+            description: '구매 기본값 2개 변경',
+            source: '직접 수정',
+            status: '매출 계산과 무관',
+            tone: 'irrelevant',
+            showStatus: true,
+            kind: 'direct',
+            direct: [['기본 구매처', '시장마트', '식자재쇼핑몰'], ['구매 옵션', '1kg · 8,900원', '2kg · 16,800원']],
+            linked: []
+          }
+        ]
+      },
+      recipe: {
+        type: '레시피',
+        name: '김치찌개',
+        directCount: 3,
+        linkedCount: 2,
+        events: [
+          {
+            at: '08/20 · 14:41',
+            fullAt: '2026.08.20 14:41',
+            title: '레시피 수정',
+            description: '판매가 외 3개 항목 변경',
+            source: '직접 수정',
+            status: '현재 매출 미반영',
+            tone: 'pending',
+            showStatus: true,
+            kind: 'direct',
+            direct: [['판매가', '9,500원', '9,000원'], ['부자재', '120원', '320원']],
+            linked: [['세금', '863.64원', '818.18원'], ['순이익', '2,278.92원', '1,780.88원']]
+          },
+          {
+            at: '08/20 · 14:38',
+            fullAt: '2026.08.20 14:38',
+            title: '식재료 단가 반영',
+            description: '고춧가루 기준 단가 변경',
+            source: '고춧가루 · 입고 단가 반영',
+            status: '현재 매출 미반영',
+            tone: 'pending',
+            showStatus: false,
+            kind: 'linked',
+            direct: [],
+            linked: [['재료비', '3,254.44원', '3,263.94원'], ['순이익', '1,990.38원', '1,980.88원']]
+          },
+          {
+            at: '08/18 · 08:40',
+            fullAt: '2026.08.18 08:40',
+            title: '고정지출 반영',
+            description: '고정지출률 변경',
+            source: '고정지출 설정',
+            status: '현재 매출 반영',
+            tone: 'reflected',
+            showStatus: true,
+            kind: 'linked',
+            direct: [],
+            linked: [['고정지출률', '30.8%', '31.3%'], ['개당 고정비', '2,772원', '2,817원'], ['순이익', '2,025.88원', '1,980.88원']]
+          },
+          {
+            at: '08/16 · 09:20',
+            fullAt: '2026.08.16 09:20',
+            title: '레시피 수정',
+            description: '식재료 사용량 변경',
+            source: '직접 수정',
+            status: '현재 매출 반영',
+            tone: 'reflected',
+            showStatus: false,
+            kind: 'direct',
+            direct: [['고춧가루', '20g', '22g']],
+            linked: [['재료비', '3,244.04원', '3,254.44원'], ['순이익', '2,000.78원', '1,990.38원']]
+          },
+          {
+            at: '08/14 · 11:10',
+            fullAt: '2026.08.14 11:10',
+            title: '레시피 수정',
+            description: '레시피 이름 변경',
+            source: '직접 수정',
+            status: '매출 계산과 무관',
+            tone: 'irrelevant',
+            showStatus: true,
+            kind: 'direct',
+            direct: [['레시피 이름', '돼지고기 김치찌개', '김치찌개']],
+            linked: []
+          }
+        ]
+      }
+    };
+
+    function badgeClass(tone) {
+      return tone === 'reflected' ? 'badge' : `badge ${tone}`;
+    }
+
+    function rowMarkup(event, index) {
+      return `
+        <button class="history-row" type="button" data-index="${index}">
+          <span class="history-copy">
+            <span class="history-date">${event.at}</span>
+            <span class="history-title">${event.title}</span>
+            <span class="history-desc">${event.description}</span>
+          </span>
+          <span class="row-end">
+            ${event.showStatus ? `<span class="${badgeClass(event.tone)}">${event.status}</span>` : ''}
+            <span class="chevron" aria-hidden="true">›</span>
+          </span>
+        </button>`;
+    }
+
+    function groupMarkup(title, rows) {
+      if (!rows.length) return '';
+      return `
+        <section class="change-group">
+          <h3>${title}</h3>
+          ${rows.map(([name, before, after]) => `
+            <div class="change-row">
+              <span class="change-name">${name}</span>
+              <span class="before">${before}</span>
+              <span class="change-arrow">→</span>
+              <strong class="after">${after}</strong>
+            </div>`).join('')}
+        </section>`;
+    }
+
+    document.querySelectorAll('.phone').forEach((phone) => {
+      const page = pages[phone.dataset.page];
+      const overlay = phone.querySelector('.overlay');
+      const historyList = phone.querySelector('.history-list');
+
+      phone.querySelector('.subject-type').textContent = page.type;
+      phone.querySelector('.subject-name').textContent = page.name;
+      phone.querySelector('.total-count').textContent = `${page.events.length}건`;
+      phone.querySelector('.direct-count').textContent = `${page.directCount}건`;
+      phone.querySelector('.linked-count').textContent = `${page.linkedCount}건`;
+      historyList.innerHTML = page.events.map(rowMarkup).join('');
+
+      historyList.querySelectorAll('.history-row').forEach((button) => {
+        button.addEventListener('click', () => {
+          const event = page.events[Number(button.dataset.index)];
+          overlay.querySelector('.sheet-copy h2').textContent = event.title;
+          overlay.querySelector('.sheet-copy p').textContent = `${event.fullAt} · ${event.source}`;
+          const badge = overlay.querySelector('.badge');
+          badge.textContent = event.status;
+          badge.className = badgeClass(event.tone);
+          badge.hidden = !event.showStatus;
+          overlay.querySelector('.groups').innerHTML = [
+            groupMarkup('직접 수정', event.direct),
+            groupMarkup('자동 갱신', event.linked)
+          ].join('');
+          overlay.classList.add('open');
+        });
+      });
+
+      function closeSheet() {
+        overlay.classList.remove('open');
+      }
+
+      overlay.querySelector('.close').addEventListener('click', closeSheet);
+      overlay.addEventListener('click', (event) => {
+        if (event.target === overlay) closeSheet();
+      });
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        document.querySelectorAll('.overlay.open').forEach((overlay) => overlay.classList.remove('open'));
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,13 +1,15 @@
 /**
- * 수정 내역 — 식재료·레시피가 같은 화면을 쓴다.
+ * 수정 내역 — 식재료·레시피가 **같은 화면**을 쓰고 데이터만 바꾼다.
  *
- * 프로토타입: docs/prototypes/ingredient-recipe-change-history.html
+ * 기획: docs/식재료-레시피-수정내역-최종기획.md (개정)
+ * 프로토타입: docs/prototypes/unified-change-history-all-cases.html
  *
- * 목록은 **한 줄**이고 자세한 건 눌러서 시트로 본다. 카드로 다 펼치면 세 건만 있어도
- * 한 화면을 넘겨야 해서, 정작 "언제 뭐가 바뀌었나"를 훑을 수가 없다.
- *
- * 상단 요약의 세 숫자는 **서버가 창 전체를 세서** 준다(0075). 받은 페이지에서 세면
- * 20건까지만 센 값인데 사장님은 전체라고 읽는다.
+ * 세 가지를 지킨다.
+ *   ① 헤더는 `수정 내역` 고정. 유형·이름은 본문에서 밝힌다.
+ *   ② 목록 우측에 **대표 금액을 두지 않는다** — 식재료와 레시피의 단위가 다르고
+ *      한 사건에 여러 값이 섞인다. 전후값은 전부 상세 시트에서 본다.
+ *   ③ 상태 배지는 목록 전체에서 **최대 두 건**. 어느 사건에 달지는 서버가 정한다 —
+ *      앱이 고르면 식재료 화면과 레시피 화면이 다르게 고를 수 있다.
  */
 import { useMemo, useState } from 'react';
 import { ActivityIndicator, FlatList, Pressable, ScrollView, Text, View } from 'react-native';
@@ -16,11 +18,8 @@ import { AppHeader, Card, Icon, QueryState, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { T } from '@/theme/tokens';
 import {
-  changeHeadline,
-  changeImpact,
+  badgeFor,
   changeStamp,
-  changeSubtitle,
-  changeTime,
   formatChangeValue,
   monthLabel,
   sourceLabel,
@@ -29,6 +28,8 @@ import {
   useChangeSubject,
   type ChangeEntity,
   type ChangeEvent,
+  type ChangeState,
+  type ChangeSummary,
 } from '../hooks';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
@@ -39,22 +40,47 @@ const TONE = {
   neutral: { fg: T.sub2, bg: T.line2 },
 } as const;
 
-/** 목록에 섞여 들어가는 월 머리말. 같은 배열에 두어야 스크롤이 자연스럽다. */
-type Row = { kind: 'month'; key: string; label: string } | { kind: 'event'; key: string; event: ChangeEvent };
-
-/**
- * 화면은 **최근 7일**만 본다(사장님 결정).
- *   화면 7일 → 서버 30일 보관 → 핵심 장부는 영구 보존
- * 원가가 왜 바뀌었는지는 며칠 안에 확인한다. 그보다 오래된 건 원장에서 본다.
- */
+/** 화면은 최근 7일만 본다. 서버는 30일 보관하고 핵심 장부는 영구 보존한다(0076). */
 const WINDOW_DAYS = 7;
 
-function StateBadge({ state }: { state: ChangeEvent['state'] }) {
+/** 목록에 섞여 들어가는 월 머리말. 같은 배열에 둬야 스크롤이 자연스럽다. */
+type Row = { kind: 'month'; key: string; label: string } | { kind: 'event'; key: string; event: ChangeEvent };
+
+function StateBadge({ state }: { state: ChangeState }) {
   const s = stateLabel(state);
   const c = TONE[s.tone];
   return (
     <View style={{ paddingHorizontal: 7, paddingVertical: 3, borderRadius: 6, backgroundColor: c.bg }}>
       <Text style={{ fontSize: 12, fontWeight: '700', color: c.fg }}>{s.text}</Text>
+    </View>
+  );
+}
+
+/** 상세 시트의 한 묶음 — `직접 수정` 또는 `자동 갱신`. */
+function ChangeGroup({ title, lines }: { title: string; lines: ChangeEvent['changes'] }) {
+  if (lines.length === 0) return null;
+  return (
+    <View style={{ marginTop: 16 }}>
+      <Text style={{ fontSize: 14, fontWeight: '800', color: T.sub, marginBottom: 8 }}>{title}</Text>
+      <View style={{ borderRadius: 12, borderWidth: 1, borderColor: T.line, overflow: 'hidden' }}>
+        {lines.map((l, i) => (
+          <View
+            key={l.key}
+            style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 12, paddingHorizontal: 13, borderTopWidth: i > 0 ? 1 : 0, borderTopColor: T.line2 }}
+          >
+            <Text style={{ width: 84, fontSize: 14, fontWeight: '700', color: T.sub }} numberOfLines={1}>
+              {l.label}
+            </Text>
+            <Text style={[{ fontSize: 15, color: T.ter }, NUM]} numberOfLines={1}>
+              {formatChangeValue(l.before, l.unit)}
+            </Text>
+            <Text style={{ fontSize: 14, color: T.ter }}>→</Text>
+            <Text style={[{ flex: 1, fontSize: 15, fontWeight: '800', color: T.ink }, NUM]} numberOfLines={1}>
+              {formatChangeValue(l.after, l.unit)}
+            </Text>
+          </View>
+        ))}
+      </View>
     </View>
   );
 }
@@ -70,9 +96,8 @@ export function ChangeHistoryScreen({ entity }: { entity: ChangeEntity }) {
   const subject = useChangeSubject(entity, id);
 
   const items = useMemo(() => q.data?.pages.flatMap((p) => p.items) ?? [], [q.data]);
-  const summary = q.data?.pages[0]?.summary;
+  const summary: ChangeSummary | undefined = q.data?.pages[0]?.summary;
 
-  /** 월이 바뀌는 자리에 머리말을 끼운다. */
   const rows = useMemo<Row[]>(() => {
     const out: Row[] = [];
     let last = '';
@@ -88,7 +113,7 @@ export function ChangeHistoryScreen({ entity }: { entity: ChangeEntity }) {
   }, [items]);
 
   /**
-   * 재고 변동·폐기는 여기 담지 않는다(기획 §5). 기준단가를 바꾸지 않고,
+   * 재고 수량 변동은 여기 담지 않는다(기획 §7). 기준 단가를 바꾸지 않고
    * 재고 원장이 이미 단일 출처다 — 두 곳에 적으면 어느 쪽이 맞는지 몰라진다.
    */
   const ledgers =
@@ -99,10 +124,13 @@ export function ChangeHistoryScreen({ entity }: { entity: ChangeEntity }) {
         ]
       : [];
 
+  const openBadge = open ? badgeFor(open, summary) : null;
+
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
+      {/* 헤더는 대상 이름 없이 고정한다 — 유형·이름은 본문이 밝힌다(기획 §4.1) */}
       <AppHeader
-        title={subject.data ? `수정 내역 · ${subject.data}` : '수정 내역'}
+        title="수정 내역"
         onBack={() => safeBack(entity === 'recipe' ? `/recipes/${id}` : `/ingredients/${id}`)}
       />
 
@@ -119,41 +147,67 @@ export function ChangeHistoryScreen({ entity }: { entity: ChangeEntity }) {
           keyExtractor={(r) => r.key}
           contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 28 }}
           ListHeaderComponent={
-            summary ? (
-              <Card pad={0} style={{ overflow: 'hidden', marginBottom: 12 }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12, paddingHorizontal: 15 }}>
-                  <Text style={{ flex: 1, fontSize: 15, fontWeight: '800', color: T.ink }}>
-                    {summary.days === null ? '전체' : `최근 ${summary.days}일`} 기준 {summary.count}건
-                  </Text>
-                  <Text style={[{ fontSize: 14, color: T.ter, fontWeight: '600' }, NUM]}>
-                    {summary.lastAt ? `최근 수정 ${changeTime(summary.lastAt)}` : '기록 없음'}
-                  </Text>
-                </View>
-                <View style={{ flexDirection: 'row', gap: 16, paddingVertical: 11, paddingHorizontal: 15, borderTopWidth: 1, borderTopColor: T.line2, backgroundColor: T.surface2 }}>
-                  {([
-                    ['직접 수정', summary.direct],
-                    ['자동 변경', summary.auto],
-                  ] as const).map(([k, v]) => (
-                    <View key={k} style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
-                      <Text style={{ fontSize: 14, color: T.sub2, fontWeight: '600' }}>{k}</Text>
-                      <Text style={[{ fontSize: 14, fontWeight: '800', color: T.ink }, NUM]}>{v}건</Text>
-                    </View>
-                  ))}
-                </View>
-              </Card>
-            ) : null
-          }
-          renderItem={({ item }) =>
-            item.kind === 'month' ? (
-              <Text style={{ fontSize: 14, fontWeight: '800', color: T.ter, marginTop: 6, marginBottom: 6 }}>
-                {item.label}
+            <View style={{ marginBottom: 12 }}>
+              {/* 무엇의 내역인가 — 헤더가 아니라 여기서 밝힌다 */}
+              <Text style={{ fontSize: 14, fontWeight: '700', color: T.ter }}>
+                {entity === 'recipe' ? '레시피' : '식재료'}
               </Text>
-            ) : (
+              <Text style={{ fontSize: 22, fontWeight: '800', color: T.ink, letterSpacing: -0.5, marginTop: 2 }}>
+                {subject.data ?? ''}
+              </Text>
+
+              {summary ? (
+                <Card pad={0} style={{ overflow: 'hidden', marginTop: 13 }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12, paddingHorizontal: 15 }}>
+                    <Text style={{ flex: 1, fontSize: 15, fontWeight: '800', color: T.ink }}>최근 7일 기준</Text>
+                    <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{summary.count}건</Text>
+                  </View>
+                  <View style={{ flexDirection: 'row', gap: 16, paddingVertical: 11, paddingHorizontal: 15, borderTopWidth: 1, borderTopColor: T.line2, backgroundColor: T.surface2 }}>
+                    {([
+                      ['직접 수정', summary.directCount],
+                      ['자동 갱신', summary.autoCount],
+                    ] as const).map(([k, v]) => (
+                      <View key={k} style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+                        <Text style={{ fontSize: 14, color: T.sub2, fontWeight: '600' }}>{k}</Text>
+                        <Text style={[{ fontSize: 14, fontWeight: '800', color: T.ink }, NUM]}>{v}건</Text>
+                      </View>
+                    ))}
+                  </View>
+                </Card>
+              ) : null}
+            </View>
+          }
+          renderItem={({ item, index }) => {
+            if (item.kind === 'month') {
+              return (
+                <Text style={{ fontSize: 14, fontWeight: '800', color: T.ter, marginTop: index === 0 ? 0 : 10, marginBottom: 8 }}>
+                  {item.label}
+                </Text>
+              );
+            }
+            const badge = badgeFor(item.event, summary);
+            // 카드 여러 장이 아니라 **하나의 그룹 카드**다 — 위아래 모서리만 둥글린다.
+            const first = index === 0 || rows[index - 1]?.kind === 'month';
+            const next = rows[index + 1];
+            const last = !next || next.kind === 'month';
+            return (
               <Pressable
                 onPress={() => setOpen(item.event)}
                 accessibilityRole="button"
                 accessibilityLabel={`${item.event.title} 자세히 보기`}
-                style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 13, paddingHorizontal: 15, marginBottom: 8, borderRadius: 12, borderWidth: 1, borderColor: T.line, backgroundColor: T.surface }}
+                style={{
+                  flexDirection: 'row', alignItems: 'center', gap: 10,
+                  paddingVertical: 14, paddingHorizontal: 15,
+                  backgroundColor: T.surface,
+                  borderLeftWidth: 1, borderRightWidth: 1, borderColor: T.line,
+                  borderTopWidth: first ? 1 : 0,
+                  borderBottomWidth: 1,
+                  borderBottomColor: last ? T.line : T.line2,
+                  borderTopLeftRadius: first ? 12 : 0,
+                  borderTopRightRadius: first ? 12 : 0,
+                  borderBottomLeftRadius: last ? 12 : 0,
+                  borderBottomRightRadius: last ? 12 : 0,
+                }}
               >
                 <View style={{ flex: 1, minWidth: 0 }}>
                   <Text style={[{ fontSize: 13, color: T.ter, fontWeight: '600' }, NUM]}>
@@ -163,23 +217,16 @@ export function ChangeHistoryScreen({ entity }: { entity: ChangeEntity }) {
                     {item.event.title}
                   </Text>
                   <Text style={{ fontSize: 14, color: T.sub2, marginTop: 2 }} numberOfLines={1}>
-                    {changeSubtitle(item.event)}
+                    {item.event.summary}
                   </Text>
                 </View>
-
-                <View style={{ alignItems: 'flex-end', gap: 4 }}>
-                  <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]} numberOfLines={1}>
-                    {changeHeadline(item.event)}
-                  </Text>
-                  <StateBadge state={item.event.state} />
-                </View>
+                {badge ? <StateBadge state={badge} /> : null}
                 <Icon name="chevron" size={16} color={T.ter} />
               </Pressable>
-            )
-          }
+            );
+          }}
           onEndReachedThreshold={0.4}
           onEndReached={() => {
-            // 20건씩 이어 받는다. 이미 받는 중이면 또 부르지 않는다.
             if (q.hasNextPage && !q.isFetchingNextPage) void q.fetchNextPage();
           }}
           ListFooterComponent={
@@ -190,25 +237,19 @@ export function ChangeHistoryScreen({ entity }: { entity: ChangeEntity }) {
                 </View>
               ) : null}
               {!q.hasNextPage ? (
-                <Text style={{ fontSize: 13, color: T.ter, lineHeight: 19, marginTop: 4, marginBottom: 10 }}>
-                  수정 내역은 최근 7일만 보여 주고 30일 뒤 지워져요.
-                  입고·재고·구매 기록과 가격·손익 추이는 그대로 남아요.
+                <Text style={{ fontSize: 13, color: T.ter, lineHeight: 19, marginTop: 12, marginBottom: 10 }}>
+                  최근 7일 수정 내역만 표시합니다. 메모 변경
+                  {entity === 'ingredient' ? '과 재고 수량 변동은' : '은'} 포함하지 않습니다.
                 </Text>
               ) : null}
               {!q.hasNextPage && ledgers.length > 0 ? (
-                <Card pad={0} style={{ overflow: 'hidden', marginTop: 6 }}>
-                  <View style={{ paddingHorizontal: 15, paddingTop: 13 }}>
-                    <Text style={{ fontSize: 14, fontWeight: '800', color: T.sub }}>수량 변동은 따로 봐요</Text>
-                    <Text style={{ fontSize: 14, color: T.ter, marginTop: 3, lineHeight: 20 }}>
-                      재고와 폐기는 기준 단가를 바꾸지 않아 여기에 남지 않아요.
-                    </Text>
-                  </View>
+                <Card pad={0} style={{ overflow: 'hidden' }}>
                   {ledgers.map((l, i) => (
                     <Pressable
                       key={l.href}
                       onPress={() => router.push(l.href as Href)}
                       accessibilityRole="button" accessibilityLabel={l.label}
-                      style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 13, paddingHorizontal: 15, borderTopWidth: 1, borderTopColor: T.line2, marginTop: i === 0 ? 9 : 0 }}
+                      style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 13, paddingHorizontal: 15, borderTopWidth: i > 0 ? 1 : 0, borderTopColor: T.line2 }}
                     >
                       <View style={{ flex: 1, minWidth: 0 }}>
                         <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>{l.label}</Text>
@@ -224,8 +265,11 @@ export function ChangeHistoryScreen({ entity }: { entity: ChangeEntity }) {
         />
       </QueryState>
 
-      {/* 변경 내용 — 목록은 훑는 곳이고, 자세한 건 여기서 본다 */}
-      <Sheet visible={open !== null} onClose={() => setOpen(null)} title="변경 내용" height={520}>
+      {/*
+        상세 — 사건 제목으로 시작한다. `변경 내용` 헤더도, 하단 안내 문구도 두지 않는다.
+        항목이 많거나 영향이 섞이면 한 문장이 실제 상태와 어긋난다(기획 §6).
+      */}
+      <Sheet visible={open !== null} onClose={() => setOpen(null)} height={520}>
         {open ? (
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 10 }}>
@@ -233,41 +277,16 @@ export function ChangeHistoryScreen({ entity }: { entity: ChangeEntity }) {
                 <Text style={{ fontSize: 18, fontWeight: '800', color: T.ink }}>{open.title}</Text>
                 <Text style={[{ fontSize: 14, color: T.sub2, marginTop: 3 }, NUM]}>
                   {changeStamp(open.occurredAt)} · {sourceLabel(open)}
-                  {open.sourceName ? ` · ${open.sourceName}` : ''}
                 </Text>
               </View>
-              <StateBadge state={open.state} />
+              {/* 선택된 최신 상태 사건일 때만 배지를 단다 */}
+              {openBadge ? <StateBadge state={openBadge} /> : null}
             </View>
 
-            {open.changes.length > 0 ? (
-              <View style={{ marginTop: 16, borderRadius: 12, borderWidth: 1, borderColor: T.line, overflow: 'hidden' }}>
-                {open.changes.map((l, i) => (
-                  <View
-                    key={l.key}
-                    style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 12, paddingHorizontal: 13, borderTopWidth: i > 0 ? 1 : 0, borderTopColor: T.line2 }}
-                  >
-                    <Text style={{ width: 84, fontSize: 14, fontWeight: '700', color: T.sub }} numberOfLines={1}>
-                      {l.label}
-                    </Text>
-                    <Text style={[{ fontSize: 15, color: T.ter }, NUM]} numberOfLines={1}>
-                      {formatChangeValue(l.before, l.unit)}
-                    </Text>
-                    <Text style={{ fontSize: 14, color: T.ter }}>→</Text>
-                    <Text style={[{ flex: 1, fontSize: 15, fontWeight: '800', color: T.ink }, NUM]} numberOfLines={1}>
-                      {formatChangeValue(l.after, l.unit)}
-                    </Text>
-                  </View>
-                ))}
-              </View>
-            ) : null}
+            <ChangeGroup title="직접 수정" lines={open.changes.filter((c) => c.kind === 'direct')} />
+            <ChangeGroup title="자동 갱신" lines={open.changes.filter((c) => c.kind === 'derived')} />
 
-            {/* 그래서 뭐가 달라지나 — 상태만으로는 알 수 없다 */}
-            <View style={{ flexDirection: 'row', gap: 8, marginTop: 14, padding: 13, borderRadius: 12, backgroundColor: T.surface2 }}>
-              <Icon name="info" size={16} color={T.sub2} />
-              <Text style={{ flex: 1, fontSize: 14, color: T.sub, lineHeight: 21 }}>
-                {changeImpact(open, entity)}
-              </Text>
-            </View>
+            <View style={{ height: 12 }} />
           </ScrollView>
         ) : null}
       </Sheet>

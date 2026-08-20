@@ -34,6 +34,11 @@ begin
   ev := jsonb_path_query_first(
     entity_change_history(pg_temp.store(), 'recipe', v_rcp, null, 5)->'items', '$[0]');
   perform pg_temp.eq_t('직접 수정으로 남는다', ev->>'source_type', 'direct');
+  perform pg_temp.eq_t('제목은 레시피 수정', ev->>'title', '레시피 수정');
+  -- ⚠ 한 줄 요약은 **직접 수정한 줄**로 만든다(0078). 계산 결과를 대표로
+  --   내세우면 "내가 순이익을 고쳤나?" 로 읽힌다.
+  perform pg_temp.ok('요약이 직접 수정한 값으로 시작한다',
+    (ev->>'summary') like '판매가%');
   perform pg_temp.eq_t('판매가 전값', (select c->>'before' from jsonb_array_elements(ev->'changes') c
                                         where c->>'key' = 'price'), '12000');
   perform pg_temp.eq_t('판매가 새값', (select c->>'after' from jsonb_array_elements(ev->'changes') c
@@ -163,7 +168,8 @@ begin
 
   v_ing_ev := jsonb_path_query_first(
     entity_change_history(pg_temp.store(), 'ingredient', v_ing, null, 5)->'items', '$[0]');
-  perform pg_temp.eq_t('식재료 카드 제목', v_ing_ev->>'title', '기준 단가 변경');
+  perform pg_temp.eq_t('식재료 카드 제목', v_ing_ev->>'title', '입고 단가 반영');
+  perform pg_temp.eq_t('한 줄 요약', v_ing_ev->>'summary', '입고 확정으로 기준 단가 변경');
   perform pg_temp.eq_t('출처는 입고', v_ing_ev->>'source_type', 'inbound');
   perform pg_temp.eq('단가 전값',
     (select (c->>'before')::numeric from jsonb_array_elements(v_ing_ev->'changes') c
@@ -181,7 +187,8 @@ begin
 
   v_rcp_ev := jsonb_path_query_first(
     entity_change_history(pg_temp.store(), 'recipe', pg_temp.rcp('제육볶음'), null, 5)->'items', '$[0]');
-  perform pg_temp.eq_t('레시피 카드 제목', v_rcp_ev->>'title', '대파 기준 단가 자동 반영');
+  perform pg_temp.eq_t('레시피 카드 제목', v_rcp_ev->>'title', '식재료 단가 반영');
+  perform pg_temp.eq_t('레시피 한 줄 요약', v_rcp_ev->>'summary', '대파 기준 단가 변경');
   perform pg_temp.eq_t('출처는 식재료 전파', v_rcp_ev->>'source_type', 'ingredient');
   perform pg_temp.eq_t('원본 이름을 알려 준다', v_rcp_ev->>'source_name', '대파');
   perform pg_temp.eq('재료비 전값',
@@ -277,7 +284,7 @@ begin
 
   ev := jsonb_path_query_first(
     entity_change_history(pg_temp.store(), 'recipe', v_rcp, null, 3)->'items', '$[0]');
-  perform pg_temp.eq_t('고정지출 카드 제목', ev->>'title', '고정 지출 자동 반영');
+  perform pg_temp.eq_t('고정지출 카드 제목', ev->>'title', '고정지출 반영');
   perform pg_temp.eq_t('출처는 고정지출', ev->>'source_type', 'fixed_cost');
   perform pg_temp.eq('고정지출률 전값',
     (select (c->>'before')::numeric from jsonb_array_elements(ev->'changes') c
@@ -317,7 +324,8 @@ begin
 
     ev := jsonb_path_query_first(
       entity_change_history(pg_temp.store(), 'ingredient', v_ing, null, 3)->'items', '$[0]');
-    perform pg_temp.eq_t('취소 카드 제목', ev->>'title', '입고 취소로 기준 단가 변경');
+    perform pg_temp.eq_t('취소 카드 제목', ev->>'title', '입고 취소 반영');
+    perform pg_temp.eq_t('취소 한 줄 요약', ev->>'summary', '취소된 입고를 제외해 기준 단가 변경');
     perform pg_temp.eq('취소 전값이 오른 단가',
       (select (c->>'before')::numeric from jsonb_array_elements(ev->'changes') c
         where c->>'key' = 'unit_price'), v_up, 0.0001);
@@ -397,4 +405,117 @@ begin
     recipe_detail(v_rcp)->>'memo', (select memo from recipes where id = v_rcp));
   perform pg_temp.eq_t('식재료 상세가 메모를 내려준다',
     ingredient_detail(v_ing)->>'memo', '찌개용');
+end $t$;
+
+-- ════════════════════════════════════════════════════════════════
+-- 배지는 목록 전체에서 최대 두 건 (0078, 기획 §5)
+--
+-- 과거 사건마다 '현재 매출 반영'을 붙이면 현재 값이 여러 개인 것처럼 보인다.
+-- 어느 사건에 달지는 **서버가** 정한다 — 앱이 고르면 두 화면이 다르게 고른다.
+-- ════════════════════════════════════════════════════════════════
+
+do $t$
+declare
+  v_rcp uuid := pg_temp.rcp('계란말이');
+  v_day date := business_day();
+  h     jsonb;
+  v_ref uuid; v_unref uuid;
+begin
+  -- 영업 전에 두 번 고친다 → 둘 다 '반영'이 될 값들
+  begin perform close_business_day(pg_temp.store()); exception when others then null; end;
+  update business_days set business_date = v_day - 420
+   where store_id = pg_temp.store() and business_date = v_day;
+
+  perform save_recipe(pg_temp.store(), jsonb_build_object(
+    'id', v_rcp, 'name', '계란말이', 'price', 7100, 'base_servings', 10));
+  perform save_recipe(pg_temp.store(), jsonb_build_object(
+    'id', v_rcp, 'name', '계란말이', 'price', 7200, 'base_servings', 10));
+
+  perform open_business_day(pg_temp.store());
+
+  -- 영업 중에 두 번 더 → 둘 다 '미반영'
+  perform save_recipe(pg_temp.store(), jsonb_build_object(
+    'id', v_rcp, 'name', '계란말이', 'price', 7300, 'base_servings', 10));
+  perform save_recipe(pg_temp.store(), jsonb_build_object(
+    'id', v_rcp, 'name', '계란말이', 'price', 7400, 'base_servings', 10));
+
+  h := entity_change_history(pg_temp.store(), 'recipe', v_rcp, null, 20, 7);
+  v_ref   := (h#>>'{summary,latest_reflected_event_id}')::uuid;
+  v_unref := (h#>>'{summary,latest_unreflected_event_id}')::uuid;
+
+  perform pg_temp.ok('매출 영향 사건이 넷 이상 쌓였다',
+    (select count(*) from jsonb_array_elements(h->'items') x
+      where (x->>'affects_sales')::boolean) >= 4);
+
+  -- ⚠ 여기가 계약이다 — 배지를 달 건 딱 두 건이다.
+  perform pg_temp.ok('반영 배지 대상이 하나 있다', v_ref is not null);
+  perform pg_temp.ok('미반영 배지 대상이 하나 있다', v_unref is not null);
+  perform pg_temp.ok('둘은 서로 다른 사건이다', v_ref <> v_unref);
+  perform pg_temp.eq_t('미반영 상태를 함께 준다', h#>>'{summary,latest_unreflected_state}', 'not_reflected');
+
+  -- 그 둘이 실제로 **가장 최근** 것인가
+  perform pg_temp.eq_t('미반영 대상이 최신 미반영 사건',
+    v_unref::text,
+    (select x->>'id' from jsonb_array_elements(h->'items') x
+      where x->>'state' = 'not_reflected' order by x->>'occurred_at' desc limit 1));
+  perform pg_temp.eq_t('반영 대상이 최신 반영 사건',
+    v_ref::text,
+    (select x->>'id' from jsonb_array_elements(h->'items') x
+      where x->>'state' = 'reflected' and (x->>'affects_sales')::boolean
+      order by x->>'occurred_at' desc limit 1));
+
+  -- 요약의 직접/자동 건수
+  perform pg_temp.ok('직접 수정 건수가 잡힌다', (h#>>'{summary,direct_count}')::int >= 4);
+  perform pg_temp.eq('창은 7일', (h#>>'{summary,days}')::int, 7, 0);
+end $t$;
+
+-- ════════════════════════════════════════════════════════════════
+-- 한 사건 안에서 직접 수정과 자동 갱신이 갈린다 (0078, 기획 §6)
+-- ════════════════════════════════════════════════════════════════
+
+do $t$
+declare
+  v_rcp uuid := pg_temp.rcp('된장찌개');
+  ev    jsonb;
+begin
+  begin perform open_business_day(pg_temp.store()); exception when others then null; end;
+
+  -- 판매가와 부자재를 함께 고친다 → 세금·순이익은 따라 움직인다
+  perform save_recipe(pg_temp.store(), jsonb_build_object(
+    'id', v_rcp, 'name', '된장찌개', 'price', 8800, 'base_servings', 10,
+    'extras', jsonb_build_array(jsonb_build_object('name', '뚝배기 가스비', 'amount', 320, 'qty', 1))));
+
+  ev := jsonb_path_query_first(
+    entity_change_history(pg_temp.store(), 'recipe', v_rcp, null, 5, 7)->'items', '$[0]');
+
+  perform pg_temp.eq_t('제목', ev->>'title', '레시피 수정');
+  perform pg_temp.ok('직접 수정에 판매가가 있다',
+    exists (select 1 from jsonb_array_elements(ev->'changes') c
+             where c->>'key' = 'price' and c->>'change_kind' = 'direct'));
+  perform pg_temp.ok('직접 수정에 부자재가 있다 — 사장님이 담고 빼는 값이다',
+    exists (select 1 from jsonb_array_elements(ev->'changes') c
+             where c->>'key' = 'extra_cost' and c->>'change_kind' = 'direct'));
+  perform pg_temp.ok('세금은 자동 갱신이다',
+    exists (select 1 from jsonb_array_elements(ev->'changes') c
+             where c->>'key' = 'tax' and c->>'change_kind' = 'derived'));
+  perform pg_temp.ok('순이익도 자동 갱신이다',
+    exists (select 1 from jsonb_array_elements(ev->'changes') c
+             where c->>'key' = 'profit' and c->>'change_kind' = 'derived'));
+
+  -- ⚠ 요약은 **직접 수정한 줄**로 만든다. 계산 결과를 대표로 내세우면
+  --   "내가 순이익을 고쳤나?" 로 읽힌다.
+  perform pg_temp.ok('요약이 직접 수정한 값으로 시작한다',
+    (ev->>'summary') like '판매가%' or (ev->>'summary') like '부자재%');
+
+  -- 전파 사건은 전부 자동 갱신이어야 한다
+  declare v_ing uuid := pg_temp.ing('두부'); e2 jsonb;
+  begin
+    perform quick_inbound(pg_temp.store(), v_ing, 1, 2500, 2, null, business_day(), 'T78-P');
+    e2 := jsonb_path_query_first(
+      entity_change_history(pg_temp.store(), 'recipe', v_rcp, null, 5, 7)->'items', '$[0]');
+    perform pg_temp.eq_t('전파 사건 제목', e2->>'title', '식재료 단가 반영');
+    perform pg_temp.ok('전파 사건에는 직접 수정이 없다',
+      not exists (select 1 from jsonb_array_elements(e2->'changes') c
+                   where c->>'change_kind' = 'direct'));
+  end;
 end $t$;

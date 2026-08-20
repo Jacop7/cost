@@ -279,6 +279,7 @@ export type Database = {
           source_entity_id: string | null
           source_type: Database["public"]["Enums"]["change_source"]
           store_id: string
+          summary: string | null
           title: string
         }
         Insert: {
@@ -294,6 +295,7 @@ export type Database = {
           source_entity_id?: string | null
           source_type: Database["public"]["Enums"]["change_source"]
           store_id: string
+          summary?: string | null
           title: string
         }
         Update: {
@@ -309,6 +311,7 @@ export type Database = {
           source_entity_id?: string | null
           source_type?: Database["public"]["Enums"]["change_source"]
           store_id?: string
+          summary?: string | null
           title?: string
         }
         Relationships: [
@@ -1442,6 +1445,7 @@ export type Database = {
           p_before: unknown
           p_after: unknown
           p_unit?: string
+          p_kind?: string
         }
         Returns: Json
       }
@@ -1821,6 +1825,12 @@ export type Database = {
           unit_price: number
         }[]
       }
+      purge_entity_changes: {
+        Args: {
+          p_days?: number
+        }
+        Returns: number
+      }
       quick_inbound: {
         Args: {
           p_store: string
@@ -1976,6 +1986,7 @@ export type Database = {
           p_affects?: boolean
           p_source_entity?: string
           p_correlation?: string
+          p_summary?: string
         }
         Returns: string
       }
