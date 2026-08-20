@@ -11,7 +11,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Badge, Button, Card, Field, Icon, Input, QueryState, SearchBar, Sheet } from '@/components/kit';
 import { formatQuantity, formatUnitPrice } from '@sikjae/core';
 import { T, won } from '@/theme/tokens';
-import { clampDecimals } from '@/lib/num';
+import { clampDecimals, packSummary } from '@/lib/num';
 import { makeInboundKey } from '@/lib/supabase';
 import { useIngredientDetail } from '@/features/ingredients/hooks';
 import { dispUnit } from '@/features/ingredients/ledger';
@@ -323,7 +323,12 @@ export default function OrdersHomeScreen() {
                     {dueLabel(w.expectedAt, today)}
                   </Text>
                   <Text style={[{ fontSize: 16, fontWeight: '600', color: T.sub, marginTop: 7 }, NUM]}>
-                    {w.vendorName ?? '거래처 미지정'} · {won(w.amount)}원 × {w.qty}개
+                    {/* ⚠ 아직 안 받았다. receivedQty 를 넘기면 '총 0kg' 이 된다 — 주문한 양을 보여 준다. */}
+                    {w.vendorName ?? '거래처 미지정'} · {packSummary({
+                      volume: w.volume, qty: w.qty, amount: w.amount,
+                      fmtQty: (v) => formatQuantity(v, dispUnit('g')),
+                      fmtWon: won,
+                    })}
                     {w.unitPrice !== null ? ` · ${formatUnitPrice(w.unitPrice, dispUnit('g'))}` : ''}
                   </Text>
                   <View style={{ flexDirection: 'row', gap: 8, marginTop: 12 }}>

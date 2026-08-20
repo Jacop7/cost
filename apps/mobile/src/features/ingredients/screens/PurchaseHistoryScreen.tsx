@@ -15,6 +15,7 @@ import { AppHeader, Badge, Card, Icon, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { formatQuantity, formatUnitPrice } from '@sikjae/core';
 import { T, tnum, won } from '@/theme/tokens';
+import { packSummary } from '@/lib/num';
 import { dispUnit } from '../ledger';
 import { useIngredientDetail, usePurchaseHistory, type PurchaseRow } from '../hooks';
 
@@ -97,12 +98,12 @@ export default function PurchaseHistoryScreen() {
                       {r.vendorName ?? '거래처 미지정'}
                     </Text>
                     <Text style={[{ fontSize: 14, color: T.sub2, marginTop: 2 }, tnum]}>
-                      {formatQuantity(r.volume, unit)} × {r.qty}개
-                      {/* 주문과 실제가 다르면 그 사실이 단가와 재고를 바꾼다 — 반드시 보여준다. */}
-                      {r.receivedQty !== null && r.receivedQty !== r.qty
-                        ? ` · 실제 ${r.receivedQty}개`
-                        : ''}
-                      {' · '}{won(r.amount)}원
+                      {/* 주문과 실제가 다르면 그 사실이 단가와 재고를 바꾼다 — packSummary 가 밝힌다. */}
+                      {packSummary({
+                        volume: r.volume, qty: r.qty, receivedQty: r.receivedQty, amount: r.amount,
+                        fmtQty: (v) => formatQuantity(v, unit),
+                        fmtWon: won,
+                      })}
                     </Text>
                   </View>
                   <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, tnum]}>

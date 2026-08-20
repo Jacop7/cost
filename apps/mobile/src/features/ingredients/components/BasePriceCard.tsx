@@ -16,6 +16,7 @@ import { Pressable, Text, View } from 'react-native';
 import { Icon } from '@/components/kit';
 import { formatQuantity, formatUnitPrice } from '@sikjae/core';
 import { T, tnum } from '@/theme/tokens';
+import { packSummary } from '@/lib/num';
 
 export interface InboundRecord {
   id: string;
@@ -105,8 +106,6 @@ export function BasePriceCard({
           <View style={{ paddingHorizontal: 16 }}>
             {priced.map((o, i) => {
               const partial = o.status === 'partial';
-              // 실제로 결제한 만큼 — 팩 금액 × 받은 개수.
-              const paid = o.amount * o.receivedQty;
               const isLow = purchase.low !== null && o.unitPrice !== null && Math.abs(o.unitPrice - purchase.low) < 0.0001;
               const isHigh = purchase.high !== null && o.unitPrice !== null && Math.abs(o.unitPrice - purchase.high) < 0.0001;
 
@@ -128,8 +127,11 @@ export function BasePriceCard({
                       {o.vendorName ?? '거래처 미지정'}
                     </Text>
                     <Text style={[{ fontSize: 14, color: T.sub2, marginTop: 2 }, tnum]}>
-                      {formatQuantity(o.volume, unit)} × {o.qty}개
-                      {partial ? ` 중 ${o.receivedQty}개` : ''} · {paid.toLocaleString('ko-KR')}원
+                      {packSummary({
+                        volume: o.volume, qty: o.qty, receivedQty: o.receivedQty, amount: o.amount,
+                        fmtQty: (v) => formatQuantity(v, unit),
+                        fmtWon: (v) => v.toLocaleString('ko-KR'),
+                      })}
                       {partial ? ' 반영' : ''}
                     </Text>
                   </View>
