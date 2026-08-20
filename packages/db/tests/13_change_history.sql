@@ -312,3 +312,66 @@ begin
   perform pg_temp.eq('폐기는 수정 내역을 만들지 않는다',
     (select count(*) from entity_change_events where entity_id = v_ing), n0, 0);
 end $t$;
+
+-- ════════════════════════════════════════════════════════════════
+-- 메모는 실제로 저장돼야 한다 (0071)
+--
+-- 0063 이 recipes.memo 컬럼과 화면·내역 비교까지 만들어 놓고 **save_recipe 에
+-- 쓰는 자리를 빠뜨렸다.** 메모를 입력해도 값은 비어 있는데 수정 내역에는
+-- "메모 (없음) → 점심 특선" 이 남았다.
+--
+-- 저장이 안 된 것보다 **원장이 거짓말을 한 것**이 더 나쁘다 —
+-- 사장님은 내역을 보고 저장됐다고 믿는다.
+-- ════════════════════════════════════════════════════════════════
+
+do $t$
+declare
+  v_rcp uuid := pg_temp.rcp('된장찌개');
+  v_ing uuid := pg_temp.ing('두부');
+  n0    int;
+  ev    jsonb;
+begin
+  -- ── 레시피 메모: 저장된다 ───────────────────────────────────
+  perform save_recipe(pg_temp.store(), jsonb_build_object(
+    'id', v_rcp, 'name', '된장찌개', 'price', 8000, 'base_servings', 10, 'memo', '점심 특선'));
+  perform pg_temp.eq_t('레시피 메모가 실제로 저장된다',
+    (select memo from recipes where id = v_rcp), '점심 특선');
+
+  ev := jsonb_path_query_first(
+    entity_change_history(pg_temp.store(), 'recipe', v_rcp, null, 3)->'items', '$[0]');
+  perform pg_temp.eq_t('내역의 새값이 실제 저장값과 같다',
+    (select c->>'after' from jsonb_array_elements(ev->'changes') c where c->>'key' = 'memo'),
+    (select memo from recipes where id = v_rcp));
+
+  -- ── 키가 없는 저장은 메모를 건드리지 않는다 ─────────────────
+  -- 판매 중지 토글처럼 헤더만 고치는 호출이 메모를 지우면 안 된다(tax_items 와 같은 규칙).
+  select count(*) into n0 from entity_change_events where entity_id = v_rcp;
+  perform save_recipe(pg_temp.store(), jsonb_build_object(
+    'id', v_rcp, 'name', '된장찌개', 'price', 8000, 'base_servings', 10));
+  perform pg_temp.eq_t('키가 없으면 메모는 그대로',
+    (select memo from recipes where id = v_rcp), '점심 특선');
+  perform pg_temp.eq('그때는 기록도 남기지 않는다',
+    (select count(*) from entity_change_events where entity_id = v_rcp), n0, 0);
+
+  -- ── 빈 값을 명시하면 지운다 ─────────────────────────────────
+  perform save_recipe(pg_temp.store(), jsonb_build_object(
+    'id', v_rcp, 'name', '된장찌개', 'price', 8000, 'base_servings', 10, 'memo', ''));
+  perform pg_temp.ok('빈 메모를 보내면 지워진다',
+    (select memo from recipes where id = v_rcp) is null);
+
+  -- ── 식재료 메모도 같은 계약이다 ─────────────────────────────
+  perform save_ingredient(pg_temp.store(), jsonb_build_object(
+    'id', v_ing, 'name', '두부', 'base_unit', 'ea', 'per_volume', 1,
+    'safety_stock', 2, 'min_order_qty', 1,
+    'category_id', (select category_id from ingredients where id = v_ing),
+    'default_vendor_id', (select default_vendor_id from ingredients where id = v_ing),
+    'memo', '찌개용'));
+  perform pg_temp.eq_t('식재료 메모도 저장된다',
+    (select memo from ingredients where id = v_ing), '찌개용');
+
+  -- ⚠ 상세 응답에도 실려야 화면이 그린다.
+  perform pg_temp.eq_t('레시피 상세가 메모를 내려준다',
+    recipe_detail(v_rcp)->>'memo', (select memo from recipes where id = v_rcp));
+  perform pg_temp.eq_t('식재료 상세가 메모를 내려준다',
+    ingredient_detail(v_ing)->>'memo', '찌개용');
+end $t$;
