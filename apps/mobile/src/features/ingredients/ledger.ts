@@ -62,19 +62,15 @@ export function toLedgerView(e: LedgerEntry, unit: 'g' | 'ml' | 'ea'): LedgerVie
   if (detail.endsWith(label)) detail = detail.slice(0, -label.length).trim();
 
   /*
-   * 최근 입고 카드와 **같은 말투**다 — `총 6kg (3kg × 2개) · 30,000원`.
-   *   총 105g · 순두부찌개 7개
-   *   총 200g                      (메모 없는 조리 전 폐기)
-   *
-   * 변화가 없는 실사에는 '총 0g' 을 쓰지 않는다. 아무 말도 아니다.
+   * ⚠ 여기에 `총 105g` 을 앞세우지 않는다. 오른쪽에 이미 `−105g` 이 있어서
+   *   같은 숫자를 두 번 말하게 된다. 한 번 넣었다가 뺐다.
    */
-  const total = e.countDelta === 0 ? '' : `총 ${formatQuantity(abs, u)}`;
 
   return {
     id: e.id,
     date: e.date.slice(5).replace('-', '/'),
     label,
-    memo: [total, detail].filter(Boolean).join(' · '),
+    memo: detail,
     // 변화가 없는 실사도 있다 — '0' 이 아니라 '변동 없음'이라고 적어야 읽힌다.
     delta: e.countDelta === 0 ? '변동 없음' : `${up ? '+' : '−'}${formatQuantity(abs, u)}`,
     balance: `잔량 ${formatQuantity(e.balance, u)}`,
