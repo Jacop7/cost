@@ -27,3 +27,39 @@ export const clampByUnit = (text: string, unit: string): string => clampDecimals
  * 이때 0 으로 그리면 "0원 단가"라는 거짓 정보가 되므로 '-' 로 비워 둔다.
  */
 export const dash = (v: number | null | undefined): string => (v == null ? '-' : String(v));
+
+/**
+ * 구매 한 건을 한 줄로 — `총 6kg (3kg × 2개) · 30,000원`.
+ *
+ * 들어온 **양이 먼저**다. 재고에 실제로 더해진 값이고 팩 구성은 그 근거다.
+ * 금액도 **총액**이다 — 팩 1개 금액을 총액처럼 보이면 3배 싸게 산 것처럼 읽힌다.
+ *
+ * 팩이 하나뿐이면 괄호를 뺀다. `총 3kg (3kg × 1개)` 는 같은 숫자를 두 번 말한다.
+ */
+export function packSummary(opts: {
+  /** 팩 1개 용량(기준단위) */
+  volume: number;
+  /** 주문한 개수 */
+  qty: number;
+  /** 실제로 받은 개수. 주문과 다르면 그 사실이 단가와 재고를 바꾼다. */
+  receivedQty?: number | null;
+  /** 팩 1개 금액 */
+  amount: number;
+  /** 양 표기 — formatQuantity 를 넘겨 받는다(단위 환산은 core 한 곳에서만 한다). */
+  fmtQty: (v: number) => string;
+  /** 금액 표기 */
+  fmtWon: (v: number) => string;
+}): string {
+  const got = opts.receivedQty ?? opts.qty;
+  const total = opts.volume * got;
+  const paid = opts.amount * got;
+  const partial = opts.receivedQty != null && opts.receivedQty !== opts.qty;
+
+  const breakdown = partial
+    ? ` (${opts.fmtQty(opts.volume)} × ${opts.qty}개 중 ${got}개)`
+    : got === 1
+      ? ''
+      : ` (${opts.fmtQty(opts.volume)} × ${got}개)`;
+
+  return `총 ${opts.fmtQty(total)}${breakdown} · ${opts.fmtWon(paid)}원`;
+}
