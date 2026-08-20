@@ -9,6 +9,7 @@ import { invalidate, invalidateOn, qk } from '@/lib/queryClient';
 import { supabase } from '@/lib/supabase';
 import { asJson } from '@/lib/json';
 import { useStoreId } from '@/lib/SessionProvider';
+import { parseChangeEvent, type ChangeEvent } from '@/features/changes/hooks';
 
 const num = (v: unknown): number => Number(v ?? 0);
 const numOrNull = (v: unknown): number | null => (v === null || v === undefined ? null : Number(v));
@@ -94,6 +95,10 @@ export interface RecipeDetail {
   active: boolean;
   /** 최근 30일 판매 실적 — 레시피 화면에서 매출 탭으로 건너가지 않게. */
   sales30d: { qty: number; revenue: number; waste: number };
+  /** 메뉴 메모. 식재료와 같은 자리에 같은 모양으로 보인다(0063). */
+  memo: string | null;
+  /** 상세 첫 카드 아래 한 줄에 쓸 마지막 변경(0063). */
+  lastChange: ChangeEvent;
   taxMode: TaxMode;
   /** 부가세 외 세금 항목(0052). 편집 화면이 그대로 고쳐 되보낸다. */
   taxItems: TaxItem[];
@@ -163,6 +168,8 @@ export function useRecipeDetail(id: string | undefined) {
           revenue: num((r.sales_30d as Record<string, unknown> | null)?.revenue),
           waste: num((r.sales_30d as Record<string, unknown> | null)?.waste),
         },
+        memo: str(r.memo),
+        lastChange: parseChangeEvent(r.last_change),
         taxMode: r.tax_mode as TaxMode,
         taxItems: taxItems(r.tax_items),
         taxBreakdown: taxRows(r.tax_breakdown),
@@ -209,6 +216,7 @@ export interface RecipeInput {
   categoryId?: string | null;
   active?: boolean;
   taxMode: TaxMode;
+  memo?: string | null;
   /** 보내면 **전량 교체**된다. 생략하면 서버가 기존 항목을 그대로 둔다(0055). */
   taxItems?: TaxItem[];
   baseServings: number;
@@ -234,6 +242,7 @@ export function useSaveRecipe() {
         target_profit_rate: input.targetProfitRate,
         avg_monthly_sales: input.avgMonthlySales ?? '',
       };
+      if (input.memo !== undefined) payload.memo = input.memo ?? '';
       if (input.taxItems) {
         payload.tax_items = input.taxItems.map((i) => ({ name: i.name, rate: i.rate }));
       }

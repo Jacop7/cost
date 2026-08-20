@@ -49,6 +49,9 @@ export const qk = {
   storeSettings: ['settings', 'store'] as const,
   fixedCosts: (month: string) => ['settings', 'fixed-costs', month] as const,
 
+  /** 수정 내역(0063) — 식재료·레시피가 같은 원장을 쓴다. */
+  changeHistory: (entity: string, id: string) => ['changes', entity, id] as const,
+
   /** 매장 컨텍스트(세션에서 해석). 로그인 상태가 바뀌면 전부 다시 받아야 한다. */
   store: ['store'] as const,
 } as const;
@@ -64,12 +67,14 @@ type Key = readonly unknown[];
 export const invalidateOn = {
   /** E1 입고: 재고·단가·이력·추이·후보·영향 레시피·매출 원가가 모두 바뀐다. */
   e1: (ingredientId: string): Key[] =>
-    [qk.ingredients, qk.ingredient(ingredientId), qk.stockHistory(ingredientId), qk.orders, qk.recipes, qk.sales],
+    [qk.ingredients, qk.ingredient(ingredientId), qk.stockHistory(ingredientId), qk.orders,
+     qk.recipes, qk.sales, ['changes']],
   /** E2 폐기: 재고·잔량·실측 로스율·기준단가·영향 레시피. 주문 기록은 불변. */
   e2: (ingredientId: string): Key[] =>
     [qk.ingredients, qk.ingredient(ingredientId), qk.stockHistory(ingredientId), qk.orders, qk.recipes, qk.sales],
   /** E3 레시피 저장: 레시피와 손익 추이. 재고·단가·주문은 불변. */
-  e3: (recipeId: string): Key[] => [qk.recipes, qk.recipe(recipeId), qk.sales],
+  e3: (recipeId: string): Key[] =>
+    [qk.recipes, qk.recipe(recipeId), qk.sales, qk.changeHistory('recipe', recipeId)],
   /** E4 고정지출: 같은 매장 **전 레시피** 손익과 월 손익. */
   e4: (): Key[] => [qk.recipes, qk.settings, qk.sales],
   /** E5 재고 실사: 재고 상태·이력·뱃지·후보. 기준단가와 주문 기록은 불변. */
@@ -89,7 +94,10 @@ export const invalidateOn = {
   businessDay: (): Key[] => [qk.businessDay, qk.sales],
   /** 식재료 등록·수정: 로스율이 바뀌면 그 재료를 쓰는 레시피 원가가 따라 움직인다. */
   ingredientSaved: (id?: string): Key[] =>
-    id ? [qk.ingredients, qk.ingredient(id), qk.recipes, qk.orders] : [qk.ingredients, qk.recipes, qk.orders],
+    id
+      ? [qk.ingredients, qk.ingredient(id), qk.recipes, qk.orders,
+         qk.changeHistory('ingredient', id), ['changes', 'recipe']]
+      : [qk.ingredients, qk.recipes, qk.orders, ['changes']],
   /** 설정(카테고리·거래처·채널): 목록을 쓰는 화면 전부. 채널 수수료는 손익에도 들어간다. */
   settingsSaved: (): Key[] => [qk.settings, qk.ingredients, qk.sales],
 } as const;

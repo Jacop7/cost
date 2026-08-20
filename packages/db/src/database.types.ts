@@ -265,6 +265,69 @@ export type Database = {
           },
         ]
       }
+      entity_change_events: {
+        Row: {
+          actor_id: string | null
+          affects_sales: boolean
+          business_day_id: string | null
+          changes: Json
+          correlation_id: string
+          entity_id: string
+          entity_type: string
+          id: string
+          occurred_at: string
+          source_entity_id: string | null
+          source_type: Database["public"]["Enums"]["change_source"]
+          store_id: string
+          title: string
+        }
+        Insert: {
+          actor_id?: string | null
+          affects_sales?: boolean
+          business_day_id?: string | null
+          changes?: Json
+          correlation_id?: string
+          entity_id: string
+          entity_type: string
+          id?: string
+          occurred_at?: string
+          source_entity_id?: string | null
+          source_type: Database["public"]["Enums"]["change_source"]
+          store_id: string
+          title: string
+        }
+        Update: {
+          actor_id?: string | null
+          affects_sales?: boolean
+          business_day_id?: string | null
+          changes?: Json
+          correlation_id?: string
+          entity_id?: string
+          entity_type?: string
+          id?: string
+          occurred_at?: string
+          source_entity_id?: string | null
+          source_type?: Database["public"]["Enums"]["change_source"]
+          store_id?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "entity_change_events_business_day_id_fkey"
+            columns: ["business_day_id"]
+            isOneToOne: false
+            referencedRelation: "business_days"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "entity_change_events_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       fixed_costs_monthly: {
         Row: {
           id: string
@@ -1032,6 +1095,7 @@ export type Database = {
           category_id: string | null
           created_at: string
           id: string
+          memo: string | null
           name: string
           price: number
           store_id: string
@@ -1047,6 +1111,7 @@ export type Database = {
           category_id?: string | null
           created_at?: string
           id?: string
+          memo?: string | null
           name: string
           price?: number
           store_id: string
@@ -1062,6 +1127,7 @@ export type Database = {
           category_id?: string | null
           created_at?: string
           id?: string
+          memo?: string | null
           name?: string
           price?: number
           store_id?: string
@@ -1354,6 +1420,28 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: string
       }
+      category_name: {
+        Args: {
+          p_id: string
+        }
+        Returns: string
+      }
+      change_event_json: {
+        Args: {
+          p_event: unknown
+        }
+        Returns: Json
+      }
+      change_line: {
+        Args: {
+          p_key: string
+          p_label: string
+          p_before: unknown
+          p_after: unknown
+          p_unit?: string
+        }
+        Returns: Json
+      }
       close_business_day: {
         Args: {
           p_store: string
@@ -1610,6 +1698,22 @@ export type Database = {
         }
         Returns: Json
       }
+      entity_change_history: {
+        Args: {
+          p_store: string
+          p_entity_type: string
+          p_entity_id: string
+          p_cursor?: string
+          p_limit?: number
+        }
+        Returns: Json
+      }
+      entity_change_state: {
+        Args: {
+          p_event: unknown
+        }
+        Returns: string
+      }
       fixed_cost_rate: {
         Args: {
           p_store: string
@@ -1658,6 +1762,14 @@ export type Database = {
       ingredient_loss: {
         Args: {
           p_ingredient: string
+        }
+        Returns: Json
+      }
+      last_entity_change: {
+        Args: {
+          p_store: string
+          p_entity_type: string
+          p_entity_id: string
         }
         Returns: Json
       }
@@ -1716,6 +1828,16 @@ export type Database = {
       recipe_blocked_by: {
         Args: {
           p_recipe: string
+        }
+        Returns: string
+      }
+      recipe_change_state: {
+        Args: {
+          p_store: string
+          p_recipe: string
+          p_occurred_at: string
+          p_business_day: string
+          p_affects: boolean
         }
         Returns: string
       }
@@ -1814,6 +1936,20 @@ export type Database = {
           p_zero?: boolean
         }
         Returns: Json
+      }
+      record_entity_change: {
+        Args: {
+          p_store: string
+          p_entity_type: string
+          p_entity_id: string
+          p_source: Database["public"]["Enums"]["change_source"]
+          p_title: string
+          p_changes: Json
+          p_affects?: boolean
+          p_source_entity?: string
+          p_correlation?: string
+        }
+        Returns: string
       }
       refresh_order_candidate: {
         Args: {
@@ -2051,6 +2187,12 @@ export type Database = {
         }
         Returns: Json
       }
+      vendor_name: {
+        Args: {
+          p_id: string
+        }
+        Returns: string
+      }
     }
     Enums: {
       base_unit: "g" | "ml" | "ea"
@@ -2059,6 +2201,7 @@ export type Database = {
       candidate_reason: "safety_stock" | "soon_out" | "manual"
       candidate_status: "pending" | "ordered" | "excluded"
       category_kind: "ingredient" | "recipe" | "material"
+      change_source: "direct" | "inbound" | "ingredient" | "fixed_cost"
       fixed_cost_mode: "total" | "detail"
       inventory_event_type:
         | "inbound"
