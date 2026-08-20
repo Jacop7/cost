@@ -4,9 +4,9 @@
  * 한 번의 저장·입고·전파는 **카드 한 장**이다. 필드마다 카드를 나누면
  * 판매가 하나 고친 것이 네 장으로 보여서 무엇이 일어났는지 알 수 없다.
  */
-import { ActivityIndicator, FlatList, Text, View } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
-import { AppHeader, Card, QueryState } from '@/components/kit';
+import { ActivityIndicator, FlatList, Pressable, Text, View } from 'react-native';
+import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
+import { AppHeader, Card, Icon, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { T } from '@/theme/tokens';
 import {
@@ -97,9 +97,23 @@ export function ChangeHistoryScreen({ entity }: { entity: ChangeEntity }) {
   const params = useLocalSearchParams<{ id?: string }>();
   const id = params.id;
 
+  const router = useRouter();
   const q = useChangeHistory(entity, id);
   const subject = useChangeSubject(entity, id);
   const items = q.data?.pages.flatMap((p) => p.items) ?? [];
+
+  /**
+   * 재고 변동·폐기는 여기 담지 않는다(기획 §5). 기준단가를 바꾸지 않고,
+   * 재고 원장이 이미 단일 출처다 — 두 곳에 적으면 어느 쪽이 맞는지 몰라진다.
+   * 대신 그리로 건너갈 자리를 준다.
+   */
+  const ledgers: { label: string; hint: string; href: string }[] =
+    entity === 'ingredient' && id
+      ? [
+          { label: '재고 변동', hint: '입고·소진·실사·폐기 수량', href: `/ingredients/history/${id}` },
+          { label: '구매 이력', hint: '언제 얼마에 샀는지', href: `/ingredients/purchases/${id}` },
+        ]
+      : [];
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
@@ -126,11 +140,37 @@ export function ChangeHistoryScreen({ entity }: { entity: ChangeEntity }) {
             if (q.hasNextPage && !q.isFetchingNextPage) void q.fetchNextPage();
           }}
           ListFooterComponent={
-            q.isFetchingNextPage ? (
-              <View style={{ paddingVertical: 18 }}>
-                <ActivityIndicator color={T.ter} />
-              </View>
-            ) : null
+            <>
+              {q.isFetchingNextPage ? (
+                <View style={{ paddingVertical: 18 }}>
+                  <ActivityIndicator color={T.ter} />
+                </View>
+              ) : null}
+              {!q.hasNextPage && ledgers.length > 0 ? (
+                <Card pad={0} style={{ overflow: 'hidden', marginTop: 4 }}>
+                  <View style={{ paddingHorizontal: 15, paddingTop: 13, paddingBottom: 4 }}>
+                    <Text style={{ fontSize: 14, fontWeight: '800', color: T.sub }}>수량 변동은 따로 봐요</Text>
+                    <Text style={{ fontSize: 14, color: T.ter, marginTop: 3, lineHeight: 20 }}>
+                      재고와 폐기는 기준 단가를 바꾸지 않아 여기에 남지 않아요.
+                    </Text>
+                  </View>
+                  {ledgers.map((l, i) => (
+                    <Pressable
+                      key={l.href}
+                      onPress={() => router.push(l.href as Href)}
+                      accessibilityRole="button" accessibilityLabel={l.label}
+                      style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 13, paddingHorizontal: 15, borderTopWidth: 1, borderTopColor: i === 0 ? T.line2 : T.line2, marginTop: i === 0 ? 9 : 0 }}
+                    >
+                      <View style={{ flex: 1, minWidth: 0 }}>
+                        <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>{l.label}</Text>
+                        <Text style={{ fontSize: 14, color: T.ter, marginTop: 2 }}>{l.hint}</Text>
+                      </View>
+                      <Icon name="chevron" size={16} color={T.ter} />
+                    </Pressable>
+                  ))}
+                </Card>
+              ) : null}
+            </>
           }
         />
       </QueryState>

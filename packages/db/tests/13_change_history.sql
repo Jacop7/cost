@@ -223,3 +223,92 @@ begin
     perform pg_temp.eq('중복 없다', (select count(distinct x) from unnest(v_ids) x), v_all, 0);
   end;
 end $t$;
+
+-- ════════════════════════════════════════════════════════════════
+-- 남은 자동 전파 — 고정지출과 입고 취소 (0069)
+--
+-- 사장님이 직접 고치지 않았는데 숫자가 움직이는 경우가 둘 더 있다.
+--   고정지출 저장 → 고정지출률 → **전 메뉴**의 순이익
+--   입고 취소   → 기준단가가 되돌아감 → 연결 메뉴 원가
+-- ════════════════════════════════════════════════════════════════
+
+do $t$
+declare
+  v_rcp uuid := pg_temp.rcp('제육볶음');
+  v_ing uuid := pg_temp.ing('대파');
+  v_ven uuid := (select id from vendors where store_id = pg_temp.store() limit 1);
+  v_day date := business_day();
+  v_ord uuid;
+  ev    jsonb;
+  n0    int;
+begin
+  begin perform open_business_day(pg_temp.store()); exception when others then null; end;
+
+  -- ── 고정지출 인상 ───────────────────────────────────────────
+  select count(*) into n0 from entity_change_events where entity_id = v_rcp;
+  perform save_fixed_costs(pg_temp.store(), business_month(), 12000000,
+    (select jsonb_agg(case when x->>'key' = 'labor'
+        then jsonb_set(jsonb_set(x, '{total}', '4500000'), '{lines}', '[]'::jsonb) || '{"mode":"total"}'::jsonb
+        else x end)
+       from fixed_costs_monthly, jsonb_array_elements(items) x
+      where store_id = pg_temp.store() and month = business_month()));
+
+  ev := jsonb_path_query_first(
+    entity_change_history(pg_temp.store(), 'recipe', v_rcp, null, 3)->'items', '$[0]');
+  perform pg_temp.eq_t('고정지출 카드 제목', ev->>'title', '고정 지출 자동 반영');
+  perform pg_temp.eq_t('출처는 고정지출', ev->>'source_type', 'fixed_cost');
+  perform pg_temp.eq('고정지출률 전값',
+    (select (c->>'before')::numeric from jsonb_array_elements(ev->'changes') c
+      where c->>'key' = 'fixed_rate'), 31.30, 0.01);
+  perform pg_temp.ok('률이 올랐다',
+    (select (c->>'after')::numeric from jsonb_array_elements(ev->'changes') c
+      where c->>'key' = 'fixed_rate') > 31.30);
+  perform pg_temp.ok('순이익이 줄어든 것도 함께 남는다',
+    (select (c->>'after')::numeric from jsonb_array_elements(ev->'changes') c
+      where c->>'key' = 'profit')
+    < (select (c->>'before')::numeric from jsonb_array_elements(ev->'changes') c
+      where c->>'key' = 'profit'));
+  perform pg_temp.ok('전 메뉴가 한 묶음이다', (ev->>'affected_recipes')::int > 0);
+
+  -- ⚠ 률이 안 바뀌는 저장(항목 이름만 손댐)은 기록하지 않는다.
+  select count(*) into n0 from entity_change_events where entity_id = v_rcp;
+  perform save_fixed_costs(pg_temp.store(), business_month(), 12000000,
+    (select items from fixed_costs_monthly
+      where store_id = pg_temp.store() and month = business_month()));
+  perform pg_temp.eq('률이 그대로면 기록하지 않는다',
+    (select count(*) from entity_change_events where entity_id = v_rcp), n0, 0);
+
+  -- ── 입고 취소 ───────────────────────────────────────────────
+  -- ⚠ 절대값(4.00)으로 재지 않는다. 앞 블록이 이미 대파를 입고해 둬서 기준이 달라졌다 —
+  --   같은 파일 안의 블록들은 한 트랜잭션을 공유한다.
+  declare
+    v_base0 numeric := base_unit_price(v_ing);
+    v_up    numeric;
+  begin
+    v_ord := e7_place_order(pg_temp.store(), v_ing, v_ven, null, 1000, 9000, 3, v_day);
+    perform e1_confirm_inbound(v_ord, 3, 'TEST-0069');
+    v_up := base_unit_price(v_ing);
+    perform pg_temp.ok('입고로 단가가 올랐다', v_up > v_base0);
+
+    perform e11_inbound_reverted(v_ord, '오입력');
+    perform pg_temp.eq('취소하면 단가가 돌아온다', base_unit_price(v_ing), v_base0, 0.0001);
+
+    ev := jsonb_path_query_first(
+      entity_change_history(pg_temp.store(), 'ingredient', v_ing, null, 3)->'items', '$[0]');
+    perform pg_temp.eq_t('취소 카드 제목', ev->>'title', '입고 취소로 기준 단가 변경');
+    perform pg_temp.eq('취소 전값이 오른 단가',
+      (select (c->>'before')::numeric from jsonb_array_elements(ev->'changes') c
+        where c->>'key' = 'unit_price'), v_up, 0.0001);
+    perform pg_temp.eq('취소 후값이 원래 단가',
+      (select (c->>'after')::numeric from jsonb_array_elements(ev->'changes') c
+        where c->>'key' = 'unit_price'), v_base0, 0.0001);
+    perform pg_temp.ok('연결 메뉴에도 같이 남는다', (ev->>'affected_recipes')::int > 0);
+  end;
+
+  -- ── 재고·폐기는 여기 담지 않는다(기획 §5) ───────────────────
+  -- 단가를 바꾸지 않고, 재고 원장이 이미 단일 출처다.
+  select count(*) into n0 from entity_change_events where entity_id = v_ing;
+  perform e2_discard(v_ing, greatest(stock_total_base(v_ing) - 50, 0));
+  perform pg_temp.eq('폐기는 수정 내역을 만들지 않는다',
+    (select count(*) from entity_change_events where entity_id = v_ing), n0, 0);
+end $t$;
