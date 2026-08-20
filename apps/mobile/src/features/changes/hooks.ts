@@ -29,12 +29,16 @@ export interface ChangeLine {
   before: string | number | null;
   after: string | number | null;
   unit: string | null;
+  /** direct 사장님이 친 값 · derived 그 결과로 계산된 값(0078). */
+  kind: 'direct' | 'derived';
 }
 
 export interface ChangeEvent {
   id: string | null;
   occurredAt: string;
   title: string;
+  /** 목록 한 줄 요약 — `판매가 외 3개 항목 변경`. 서버가 기록할 때 적는다(0078). */
+  summary: string;
   sourceType: ChangeSource;
   sourceName: string | null;
   changes: ChangeLine[];
@@ -55,6 +59,7 @@ export function parseChangeEvent(raw: unknown): ChangeEvent {
     id: str(r.id),
     occurredAt: String(r.occurred_at ?? ''),
     title: String(r.title ?? ''),
+    summary: String(r.summary ?? r.title ?? ''),
     sourceType: (r.source_type ?? 'direct') as ChangeSource,
     sourceName: str(r.source_name),
     changes: ((r.changes ?? []) as Record<string, unknown>[]).map((c) => ({
@@ -63,11 +68,36 @@ export function parseChangeEvent(raw: unknown): ChangeEvent {
       before: (c.before ?? null) as string | number | null,
       after: (c.after ?? null) as string | number | null,
       unit: str(c.unit),
+      kind: c.change_kind === 'derived' ? 'derived' : 'direct',
     })),
     affectsSales: r.affects_sales === true,
     state: (r.state ?? 'irrelevant') as ChangeState,
     affectedRecipes: num(r.affected_recipes),
     hasHistory: r.has_history !== false,
+  };
+}
+
+/**
+ * 상세 화면 한 줄이 쓰는 마지막 변경(기획 §10).
+ *
+ * ⚠ 목록의 사건과 **모양이 다르다.** 여기는 시각·상태만 필요하다.
+ *   ChangeEvent 로 읽으면 `display_state` 를 못 봐서 상태가 조용히 '무관'이 된다.
+ */
+export interface LastChange {
+  occurredAt: string;
+  eventId: string | null;
+  displayState: ChangeState;
+  /** 한 번도 안 고쳤으면 false — 그때 occurredAt 은 생성일이다. */
+  hasHistory: boolean;
+}
+
+export function parseLastChange(raw: unknown): LastChange {
+  const r = (raw ?? {}) as Record<string, unknown>;
+  return {
+    occurredAt: String(r.occurred_at ?? ''),
+    eventId: str(r.event_id),
+    displayState: (r.display_state ?? 'irrelevant') as ChangeState,
+    hasHistory: r.has_history === true,
   };
 }
 
@@ -77,9 +107,17 @@ export type ChangeWindow = 7 | 30 | null;
 export interface ChangeSummary {
   days: number | null;
   count: number;
-  direct: number;
-  auto: number;
+  directCount: number;
+  autoCount: number;
   lastAt: string | null;
+  /**
+   * 배지를 달 **두 건**의 id — 서버가 정한다(0078).
+   * 과거 사건마다 '현재 매출 반영'을 붙이면 현재 값이 여러 개인 것처럼 보인다.
+   * 앱이 고르면 식재료 화면과 레시피 화면이 다르게 고를 수 있다.
+   */
+  latestReflectedId: string | null;
+  latestUnreflectedId: string | null;
+  latestUnreflectedState: 'not_reflected' | 'partial' | null;
 }
 
 /**
@@ -112,9 +150,13 @@ export function useChangeHistory(entity: ChangeEntity, id: string | undefined, d
         summary: {
           days: sm.days === null || sm.days === undefined ? null : Number(sm.days),
           count: num(sm.count),
-          direct: num(sm.direct),
-          auto: num(sm.auto),
+          directCount: num(sm.direct_count),
+          autoCount: num(sm.auto_count),
           lastAt: str(sm.last_at),
+          latestReflectedId: str(sm.latest_reflected_event_id),
+          latestUnreflectedId: str(sm.latest_unreflected_event_id),
+          latestUnreflectedState: (str(sm.latest_unreflected_state) as
+            'not_reflected' | 'partial' | null) ?? null,
         } satisfies ChangeSummary,
       };
     },
@@ -148,16 +190,6 @@ export function stateLabel(s: ChangeState): { text: string; tone: 'green' | 'amb
     case 'not_reflected': return { text: '현재 매출 미반영', tone: 'amber' };
     case 'partial': return { text: '일부 메뉴 미반영', tone: 'amber' };
     default: return { text: '매출 계산과 무관', tone: 'neutral' };
-  }
-}
-
-/** 변경이 어디서 왔는지. 카드 둘째 줄이 된다. */
-export function sourceLabel(e: ChangeEvent): string {
-  switch (e.sourceType) {
-    case 'inbound': return '입고 확정으로 자동 계산';
-    case 'ingredient': return '식재료 변경에서 자동 전파';
-    case 'fixed_cost': return '고정 지출 변경에서 자동 전파';
-    default: return '직접 수정';
   }
 }
 
@@ -196,66 +228,35 @@ export function formatChangeValue(v: string | number | null, unit: string | null
 // ── 목록 한 줄이 보여 줄 것 ───────────────────────────────────
 
 /**
- * 줄의 부제. 자동 변경은 **어디서 왔는지**가, 직접 수정은 **무엇이 어떻게 바뀌었는지**가
- * 궁금하다 — 물음이 다르므로 문구도 다르다.
- */
-export function changeSubtitle(e: ChangeEvent): string {
-  if (e.sourceType !== 'direct') {
-    return e.sourceName ? `${sourceLabel(e)} · ${e.sourceName}` : sourceLabel(e);
-  }
-  const only = e.changes.length === 1 ? e.changes[0] : undefined;
-  if (only) {
-    return `${formatChangeValue(only.before, only.unit)}에서 ${formatChangeValue(only.after, only.unit)}로 변경`;
-  }
-  return `${e.changes.length}개 항목 수정`;
-}
-
-/**
- * 줄 오른쪽의 대표값 — 그 변경의 결과 한 숫자.
- * 숫자가 아니면(거래처·이름 등) 값 대신 '변경'이라고만 한다. 이름을 좁은 자리에
- * 욱여넣으면 잘려서 무엇으로 바뀌었는지 오히려 모른다.
- */
-export function changeHeadline(e: ChangeEvent): string {
-  const c = e.changes[0];
-  if (!c) return '변경';
-  const n = typeof c.after === 'number' ? c.after : Number(c.after);
-  if (c.after === null || c.after === '' || Number.isNaN(n)) return '변경';
-  return formatChangeValue(c.after, c.unit);
-}
-
-/**
- * 이 변경이 무엇을 뜻하는지 한 문장. 상세 시트 맨 아래에 붙는다.
+ * 변경이 어디서 왔는가 — 상세 시트의 부제.
  *
- * ⚠ 상태(반영/미반영)만으로는 부족하다. 사장님이 알고 싶은 건 "그래서 뭐가 달라지나"다 —
- *   안전재고는 발주 후보만, 거래처는 다음 구매의 기본값만 바뀐다.
+ * ⚠ 화면 문구는 **직접 수정 / 자동 갱신** 둘뿐이다(기획 §2).
+ *   '자동 반영'·'자동 전파'·'연관 변경'은 쓰지 않는다.
  */
-export function changeImpact(e: ChangeEvent, entity: ChangeEntity): string {
-  const keys = e.changes.map((c) => c.key);
+export function sourceLabel(e: ChangeEvent): string {
+  switch (e.sourceType) {
+    case 'inbound':
+      return e.title === '입고 취소 반영' ? '입고 취소' : '입고 확정';
+    case 'ingredient':
+      return e.sourceName ? `${e.sourceName} 단가 변경` : '식재료 단가 변경';
+    case 'fixed_cost':
+      return '고정지출 설정';
+    default:
+      return '직접 수정';
+  }
+}
 
-  if (e.state === 'irrelevant') {
-    if (keys.includes('safety_stock')) return '발주 후보 판정 기준만 바뀌었어요.';
-    if (keys.includes('default_vendor_id')) return '다음 구매 옵션 선택의 기본값만 바뀌었어요.';
-    if (keys.includes('min_order_qty')) return '발주 추천 수량만 바뀌었어요.';
-    return '매출 금액 계산에는 들어가지 않는 변경이에요.';
-  }
-
-  if (e.state === 'reflected') {
-    return '영업 시작 전에 바뀌어서 오늘 매출 기준에 이미 들어가 있어요.';
-  }
-
-  // 미반영 — 지금 값은 갱신됐지만 오늘 장부는 영업 시작 시점 값을 쓴다.
-  if (entity === 'ingredient') {
-    return e.affectedRecipes > 0
-      ? `연결된 메뉴 ${e.affectedRecipes}개의 현재 원가는 다시 계산됐어요. 오늘 매출 장부에는 다음 영업일부터 적용돼요.`
-      : '현재 단가는 갱신됐어요. 오늘 매출 장부에는 다음 영업일부터 적용돼요.';
-  }
-  if (e.sourceType !== 'direct') {
-    return '메뉴의 현재 원가는 갱신됐고, 오늘 매출 장부는 영업 시작 시점 값을 그대로 써요.';
-  }
-  if (e.state === 'partial') {
-    return '일부 메뉴만 오늘 기준에 들어가 있어요. 나머지는 다음 영업일부터예요.';
-  }
-  return '바뀐 값은 다음 영업일부터 매출에 적용돼요.';
+/**
+ * 목록에서 이 사건에 배지를 달까. 매출에 영향을 주는 사건은 **최대 두 건**만 단다.
+ * 과거 사건마다 '현재 매출 반영'이 붙으면 현재 값이 여러 개인 것처럼 보인다(기획 §5).
+ */
+export function badgeFor(e: ChangeEvent, s: ChangeSummary | undefined): ChangeState | null {
+  // 매출과 무관한 사건은 언제나 그렇게 밝힌다 — 헷갈릴 여지가 없다.
+  if (!e.affectsSales) return 'irrelevant';
+  if (!s || !e.id) return null;
+  if (e.id === s.latestUnreflectedId) return s.latestUnreflectedState ?? 'not_reflected';
+  if (e.id === s.latestReflectedId) return 'reflected';
+  return null;
 }
 
 /** `2026년 8월` — 월 묶음 머리말. */

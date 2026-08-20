@@ -9,7 +9,7 @@ import { invalidate, invalidateOn, qk } from '@/lib/queryClient';
 import { supabase } from '@/lib/supabase';
 import { asJson } from '@/lib/json';
 import { useStoreId } from '@/lib/SessionProvider';
-import { parseChangeEvent, type ChangeEvent } from '@/features/changes/hooks';
+import { parseLastChange, type LastChange } from '@/features/changes/hooks';
 
 const num = (v: unknown): number => Number(v ?? 0);
 const numOrNull = (v: unknown): number | null => (v === null || v === undefined ? null : Number(v));
@@ -98,7 +98,7 @@ export interface RecipeDetail {
   /** 메뉴 메모. 식재료와 같은 자리에 같은 모양으로 보인다(0063). */
   memo: string | null;
   /** 상세 첫 카드 아래 한 줄에 쓸 마지막 변경(0063). */
-  lastChange: ChangeEvent;
+  lastChange: LastChange;
   taxMode: TaxMode;
   /** 부가세 외 세금 항목(0052). 편집 화면이 그대로 고쳐 되보낸다. */
   taxItems: TaxItem[];
@@ -169,7 +169,7 @@ export function useRecipeDetail(id: string | undefined) {
           waste: num((r.sales_30d as Record<string, unknown> | null)?.waste),
         },
         memo: str(r.memo),
-        lastChange: parseChangeEvent(r.last_change),
+        lastChange: parseLastChange(r.last_change),
         taxMode: r.tax_mode as TaxMode,
         taxItems: taxItems(r.tax_items),
         taxBreakdown: taxRows(r.tax_breakdown),

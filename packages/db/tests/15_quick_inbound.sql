@@ -88,7 +88,7 @@ begin
 
   ev := jsonb_path_query_first(
     entity_change_history(pg_temp.store(), 'ingredient', v_i, null, 3)->'items', '$[0]');
-  perform pg_temp.eq_t('식재료 내역에 남는다', ev->>'title', '기준 단가 변경');
+  perform pg_temp.eq_t('식재료 내역에 남는다', ev->>'title', '입고 단가 반영');
   perform pg_temp.eq_t('출처는 입고', ev->>'source_type', 'inbound');
   perform pg_temp.ok('연결 메뉴 수도 함께', (ev->>'affected_recipes')::int > 0);
 

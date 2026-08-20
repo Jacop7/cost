@@ -13,7 +13,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { invalidate, invalidateOn, qk } from '@/lib/queryClient';
 import { supabase } from '@/lib/supabase';
 import { useStoreId } from '@/lib/SessionProvider';
-import { parseChangeEvent, type ChangeEvent } from '@/features/changes/hooks';
+import { parseLastChange, type LastChange } from '@/features/changes/hooks';
 import { asJson } from '@/lib/json';
 
 export type BaseUnit = 'g' | 'ml' | 'ea';
@@ -34,7 +34,7 @@ export interface IngredientRow {
   vendorName: string | null;
   memo: string | null;
   /** 상세 첫 카드 아래 한 줄에 쓸 마지막 변경(0063). */
-  lastChange: ChangeEvent;
+  lastChange: LastChange;
   /** 재고 총량(기준단위) — 서버 `stock_total_base()` 값 */
   stockTotal: number;
   /** 기준단가(원/기준단위). 구매 이력이 없거나 로스율이 100% 이상이면 null(산출 불가). */
@@ -205,7 +205,7 @@ function toRow(r: Record<string, unknown>): IngredientRow {
     safetyStock: num(r.safety_stock),
     vendorName: str(r.vendor_name),
     memo: str(r.memo),
-        lastChange: parseChangeEvent(r.last_change),
+        lastChange: parseLastChange(r.last_change),
     stockTotal: num(r.stock_total),
     basePrice: numOrNull(r.base_price),
     soonOut: Boolean(r.soon_out),

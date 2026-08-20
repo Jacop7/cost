@@ -9,7 +9,7 @@
 import { Pressable, Text, View } from 'react-native';
 import { Icon } from '@/components/kit';
 import { T } from '@/theme/tokens';
-import { changeTime, stateLabel, type ChangeEvent } from '../hooks';
+import { changeTime, stateLabel, type LastChange } from '../hooks';
 
 const TONE = {
   green: { fg: T.green, bg: T.greenTint },
@@ -17,8 +17,8 @@ const TONE = {
   neutral: { fg: T.sub2, bg: T.line2 },
 } as const;
 
-export function RecentChangeRow({ change, onPress }: { change: ChangeEvent; onPress: () => void }) {
-  const s = stateLabel(change.state);
+export function RecentChangeRow({ change, onPress }: { change: LastChange; onPress: () => void }) {
+  const s = stateLabel(change.displayState);
   const c = TONE[s.tone];
 
   return (
