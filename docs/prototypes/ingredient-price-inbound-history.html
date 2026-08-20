@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>기준 단가 · 입고 이력 통합 UI</title>
+  <style>
+    :root {
+      --bg: #eef1f4;
+      --app-bg: #f2f4f6;
+      --surface: #ffffff;
+      --surface-2: #f9fafb;
+      --ink: #191f28;
+      --ink-2: #333d4b;
+      --sub: #4e5968;
+      --sub-2: #6b7684;
+      --ter: #8b95a1;
+      --line: #e5e8eb;
+      --line-2: #f2f4f6;
+      --blue: #3182f6;
+      --blue-tint: #ebf3fe;
+      --green: #15b374;
+      --green-tint: #e7f7f0;
+      --red: #f04452;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px 12px;
+      color: var(--ink);
+      background: radial-gradient(circle at 18% 8%, rgba(49, 130, 246, .12), transparent 26rem), var(--bg);
+      font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button { font: inherit; }
+    .prototype { width: min(390px, 100%); }
+    .prototype-label { margin: 0 6px 9px; color: var(--sub); font-size: 13px; font-weight: 800; }
+
+    .phone {
+      position: relative;
+      height: min(820px, calc(100vh - 72px));
+      min-height: 660px;
+      overflow: hidden;
+      border: 1px solid rgba(25, 31, 40, .1);
+      border-radius: 30px;
+      background: var(--surface);
+      box-shadow: 0 24px 70px rgba(25, 31, 40, .15);
+    }
+
+    .status-bar {
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 19px;
+      font-size: 11px;
+      font-weight: 800;
+      background: var(--surface);
+    }
+
+    .app-header {
+      height: 56px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 15px;
+      border-bottom: 1px solid var(--line);
+      background: var(--surface);
+    }
+
+    .back {
+      width: 30px;
+      border: 0;
+      padding: 0;
+      color: var(--ink);
+      background: transparent;
+      font-size: 28px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .app-title { flex: 1; font-size: 18px; font-weight: 800; }
+    .edit { color: var(--ink-2); font-size: 15px; font-weight: 800; }
+
+    .screen {
+      height: calc(100% - 84px);
+      overflow-y: auto;
+      padding: 12px 14px 28px;
+      background: var(--app-bg);
+      scrollbar-width: thin;
+    }
+
+    .panel {
+      margin-bottom: 11px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--surface);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, .04);
+    }
+
+    .summary { padding: 15px 16px; }
+    .chips { display: flex; gap: 6px; margin-bottom: 10px; }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 8px;
+      border-radius: 999px;
+      color: var(--sub);
+      background: var(--surface-2);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .chip.green { color: var(--green); background: var(--green-tint); }
+    .ingredient-name { margin: 0; font-size: 20px; font-weight: 800; letter-spacing: -.03em; }
+    .memo { display: flex; gap: 10px; margin-top: 13px; padding-top: 13px; border-top: 1px solid var(--line-2); font-size: 13px; }
+    .memo strong { color: var(--sub); }
+    .memo span { color: var(--ink-2); font-weight: 650; }
+
+    .recent-update {
+      width: calc(100% + 32px);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 14px -16px -15px;
+      padding: 12px 16px;
+      border: 0;
+      border-top: 1px solid var(--line-2);
+      color: var(--ink-2);
+      background: var(--surface-2);
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .recent-icon { width: 22px; height: 22px; display: grid; place-items: center; border-radius: 50%; color: var(--blue); background: var(--blue-tint); font-size: 13px; font-weight: 900; }
+    .recent-copy { min-width: 0; flex: 1; overflow: hidden; font-size: 12px; font-weight: 800; text-overflow: ellipsis; white-space: nowrap; }
+    .recent-copy em { margin-left: 5px; color: var(--ter); font-style: normal; }
+    .recent-copy b { color: var(--green); }
+    .chevron { flex: 0 0 auto; color: #b0b8c1; font-size: 22px; font-weight: 500; }
+
+    .stock { padding: 15px 16px; }
+    .stock-top { display: flex; align-items: center; }
+    .stock-top .chip { margin-right: auto; }
+    .stock-price { color: var(--sub); font-size: 13px; font-weight: 800; }
+    .stock-main { margin-top: 8px; font-size: 21px; font-weight: 800; letter-spacing: -.04em; }
+    .stock-sub { margin-top: 5px; color: var(--ter); font-size: 13px; font-weight: 650; }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      padding: 13px 15px;
+      border-bottom: 1px solid var(--line-2);
+      background: var(--surface-2);
+    }
+
+    .section-title { flex: 1; color: var(--sub); font-size: 15px; font-weight: 800; }
+    .section-side { color: var(--ter); font-size: 12px; font-weight: 700; }
+
+    .price-summary { padding: 15px; }
+    .price-main { display: flex; align-items: flex-end; gap: 12px; }
+    .price-primary { min-width: 0; flex: 1; }
+    .price-label { color: var(--ter); font-size: 12px; font-weight: 700; }
+    .price-value { margin-top: 3px; color: var(--blue); font-size: 22px; font-weight: 800; letter-spacing: -.04em; }
+    .average { text-align: right; }
+    .average strong { display: block; margin-top: 3px; font-size: 15px; font-weight: 800; }
+
+    .range { display: flex; gap: 18px; margin-top: 13px; padding-top: 13px; border-top: 1px solid var(--line-2); }
+    .range-item { display: flex; align-items: baseline; gap: 6px; }
+    .range-item span { color: var(--ter); font-size: 12px; font-weight: 700; }
+    .range-item strong { font-size: 14px; font-weight: 800; }
+    .range-item.low strong { color: var(--blue); }
+    .range-item.high strong { color: var(--red); }
+
+    .inbound-head { display: flex; align-items: center; padding: 11px 15px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line-2); }
+    .inbound-head strong { flex: 1; color: var(--ink-2); font-size: 14px; font-weight: 800; }
+    .inbound-head span { color: var(--ter); font-size: 12px; font-weight: 700; }
+
+    .inbound-list { padding: 0 15px; }
+    .inbound-row { display: flex; align-items: center; gap: 10px; padding: 12px 0; border-bottom: 1px solid var(--line-2); }
+    .inbound-row:last-child { border-bottom: 0; }
+    .inbound-copy { min-width: 0; flex: 1; }
+    .inbound-date { color: var(--ter); font-size: 12px; font-weight: 700; }
+    .inbound-vendor { overflow: hidden; margin-top: 3px; color: var(--ink); font-size: 14px; font-weight: 800; text-overflow: ellipsis; white-space: nowrap; }
+    .inbound-detail { margin-top: 3px; color: var(--sub-2); font-size: 12px; font-weight: 650; }
+    .inbound-price { flex: 0 0 auto; text-align: right; font-size: 14px; font-weight: 800; }
+    .inbound-price small { display: block; margin-top: 3px; color: var(--ter); font-size: 11px; font-weight: 650; }
+    .partial { margin-left: 5px; color: #e07a00; }
+    .price-mark { display: inline-block; margin-right: 5px; padding: 2px 5px; border-radius: 5px; font-size: 10px; font-weight: 800; vertical-align: 1px; }
+    .price-mark.low { color: var(--blue); background: var(--blue-tint); }
+    .price-mark.high { color: var(--red); background: #feecec; }
+
+    .view-all {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      padding: 13px;
+      border: 0;
+      border-top: 1px solid var(--line-2);
+      color: var(--sub);
+      background: var(--surface-2);
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .notice { display: flex; gap: 7px; padding: 13px 15px; color: var(--ter); font-size: 12px; font-weight: 650; line-height: 1.45; }
+
+    .history-screen {
+      position: absolute;
+      z-index: 20;
+      inset: 28px 0 0;
+      display: none;
+      flex-direction: column;
+      background: var(--app-bg);
+    }
+
+    .history-screen.open { display: flex; }
+    .history-list { overflow-y: auto; padding: 12px 14px 28px; }
+    .history-summary { margin-bottom: 10px; padding: 14px 15px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
+    .history-summary span { color: var(--ter); font-size: 12px; font-weight: 700; }
+    .history-summary strong { display: block; margin-top: 4px; color: var(--blue); font-size: 20px; font-weight: 800; }
+    .history-summary p { margin: 5px 0 0; color: var(--sub); font-size: 12px; font-weight: 650; }
+
+    .history-item { margin-bottom: 10px; padding: 15px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
+    .history-item-top { display: flex; align-items: center; }
+    .history-item-date { flex: 1; color: var(--ter); font-size: 12px; font-weight: 700; }
+    .history-item-state { color: var(--green); font-size: 11px; font-weight: 800; }
+    .history-item h2 { margin: 9px 0 3px; font-size: 15px; }
+    .history-item p { margin: 0; color: var(--sub); font-size: 12px; font-weight: 650; }
+    .history-data { margin-top: 11px; padding: 8px 10px; border-radius: 9px; background: var(--surface-2); }
+    .history-data-row { display: flex; align-items: center; padding: 4px 0; font-size: 12px; }
+    .history-data-row span { flex: 1; color: var(--ter); font-weight: 700; }
+    .history-data-row strong { color: var(--ink-2); font-weight: 800; }
+  </style>
+</head>
+<body>
+  <main class="prototype">
+    <p class="prototype-label">ING-03 · 기준 단가와 입고 이력 통합</p>
+    <section class="phone" aria-label="고추장 식재료 상세">
+      <div class="status-bar"><span>9:41</span><span>● ◔ ▰</span></div>
+      <header class="app-header"><button class="back" type="button" aria-label="뒤로">‹</button><span class="app-title">식재료</span><span class="edit">✎ 수정</span></header>
+
+      <div class="screen">
+        <section class="panel summary">
+          <div class="chips"><span class="chip">소스·유지류·장류</span><span class="chip">식자재쇼핑몰</span></div>
+          <h1 class="ingredient-name">고추장</h1>
+          <div class="memo"><strong>메모</strong><span>볶음요리·양념장에 사용</span></div>
+          <button class="recent-update" type="button"><span class="recent-icon">↻</span><span class="recent-copy">최근 수정 08.20 03:56 <em>·</em> <b>현재 매출 반영</b></span><span class="chevron">›</span></button>
+        </section>
+
+        <section class="panel stock">
+          <div class="stock-top"><span class="chip green">여유</span><span class="stock-price">5.00원/g</span></div>
+          <div class="stock-main">총 7.5kg</div>
+          <div class="stock-sub">개당 3kg · 안전재고 1개 · 최소발주 1개</div>
+        </section>
+
+        <section class="panel">
+          <div class="section-head"><span class="section-title">기준 단가</span><span class="section-side">입고 3건 기준</span></div>
+          <div class="price-summary">
+            <div class="price-main">
+              <div class="price-primary"><div class="price-label">실입고 기준</div><div class="price-value">5.00원/g</div></div>
+              <div class="average"><div class="price-label">가중평균</div><strong>5.00원/g</strong></div>
+            </div>
+            <div class="range"><div class="range-item low"><span>최저</span><strong>4.80원/g</strong></div><div class="range-item high"><span>최고</span><strong>5.20원/g</strong></div></div>
+          </div>
+
+          <div class="inbound-head"><strong>최근 입고</strong><span>단가 계산에 포함된 기록</span></div>
+          <div class="inbound-list">
+            <div class="inbound-row">
+              <div class="inbound-copy"><div class="inbound-date">08/18</div><div class="inbound-vendor">식자재쇼핑몰</div><div class="inbound-detail">3kg × 1개 · 15,600원</div></div>
+              <div class="inbound-price"><span class="price-mark high">최고</span>5.20원/g<small>입고 완료</small></div>
+            </div>
+            <div class="inbound-row">
+              <div class="inbound-copy"><div class="inbound-date">08/11 <span class="partial">부분 입고</span></div><div class="inbound-vendor">한빛식자재</div><div class="inbound-detail">3kg × 2개 중 1개 · 14,400원 반영</div></div>
+              <div class="inbound-price"><span class="price-mark low">최저</span>4.80원/g<small>도착분만 반영</small></div>
+            </div>
+            <div class="inbound-row">
+              <div class="inbound-copy"><div class="inbound-date">08/03</div><div class="inbound-vendor">시장마트</div><div class="inbound-detail">1kg × 2개 · 10,000원</div></div>
+              <div class="inbound-price">5.00원/g<small>입고 완료</small></div>
+            </div>
+          </div>
+          <button id="open-history" class="view-all" type="button">입고 이력 전체보기 <span class="chevron">›</span></button>
+        </section>
+
+        <section class="panel"><div class="notice"><span>ⓘ</span><span>발주 대기·취소 기록은 기준 단가에 포함되지 않으며 발주 화면에서 확인할 수 있어요.</span></div></section>
+
+        <section class="panel">
+          <div class="section-head"><span class="section-title">현재 재고</span><span class="section-side" style="color:var(--ink);font-size:15px">7.5kg</span></div>
+          <div class="inbound-list"><div class="inbound-row"><div class="inbound-copy"><div class="inbound-date">08/20</div><div class="inbound-vendor">판매 소진</div><div class="inbound-detail">제육볶음 판매 반영</div></div><div class="inbound-price" style="color:var(--red)">−195g<small>잔량 7.5kg</small></div></div></div>
+        </section>
+      </div>
+
+      <section id="history-screen" class="history-screen" aria-label="입고 이력 전체">
+        <header class="app-header"><button id="close-history" class="back" type="button" aria-label="식재료 상세로 돌아가기">‹</button><span class="app-title">입고 이력</span></header>
+        <div class="history-list">
+          <section class="history-summary"><span>고추장 기준 단가</span><strong>5.00원/g</strong><p>입고 확정 3건의 수량 가중평균</p></section>
+
+          <article class="history-item">
+            <div class="history-item-top"><span class="history-item-date">2026.08.18 09:20</span><span class="price-mark high">최고</span><span class="history-item-state">입고 완료</span></div>
+            <h2>식자재쇼핑몰</h2><p>고추장 3kg · 구매 옵션 사용</p>
+            <div class="history-data"><div class="history-data-row"><span>입고량</span><strong>3kg</strong></div><div class="history-data-row"><span>결제금액</span><strong>15,600원</strong></div><div class="history-data-row"><span>입고 단가</span><strong>5.20원/g</strong></div></div>
+          </article>
+
+          <article class="history-item">
+            <div class="history-item-top"><span class="history-item-date">2026.08.11 11:05</span><span class="price-mark low">최저</span><span class="history-item-state" style="color:#e07a00">부분 입고</span></div>
+            <h2>한빛식자재</h2><p>주문 2개 중 도착한 1개만 단가에 반영</p>
+            <div class="history-data"><div class="history-data-row"><span>입고량</span><strong>3kg</strong></div><div class="history-data-row"><span>반영금액</span><strong>14,400원</strong></div><div class="history-data-row"><span>입고 단가</span><strong>4.80원/g</strong></div></div>
+          </article>
+
+          <article class="history-item">
+            <div class="history-item-top"><span class="history-item-date">2026.08.03 08:44</span><span class="history-item-state">입고 완료</span></div>
+            <h2>시장마트</h2><p>구매 옵션 없이 직접 입력</p>
+            <div class="history-data"><div class="history-data-row"><span>입고량</span><strong>2kg</strong></div><div class="history-data-row"><span>결제금액</span><strong>10,000원</strong></div><div class="history-data-row"><span>입고 단가</span><strong>5.00원/g</strong></div></div>
+          </article>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    const historyScreen = document.getElementById('history-screen');
+    document.getElementById('open-history').addEventListener('click', () => historyScreen.classList.add('open'));
+    document.getElementById('close-history').addEventListener('click', () => historyScreen.classList.remove('open'));
+  </script>
+</body>
+</html>
