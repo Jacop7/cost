@@ -228,7 +228,6 @@ export function IngredientDetailScreen() {
                         up={v.up}
                         px={15}
                         last={i === recent.length - 1}
-                        onPress={() => router.push(`/ingredients/history/${g.id}`)}
                       />
                     );
                   })
