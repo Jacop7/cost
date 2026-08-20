@@ -7,7 +7,7 @@
 import { useMemo, useState, type ReactNode } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
-import { AppHeader, Badge, Card, Donut, Icon, QueryState } from '@/components/kit';
+import { AppHeader, Badge, Card, Donut, Icon, MemoEditSheet, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { RecentChangeRow } from '@/features/changes';
 import { formatPercent, formatQuantity, formatUnitPrice, recommendedPrice, round, taxAmount, taxRate } from '@sikjae/core';
@@ -71,6 +71,7 @@ export default function RecipeDetailScreen() {
   const [costMode, setCostMode] = useState<'batch' | 'one'>('one');
   const [view, setView] = useState<'batch' | 'one' | 'month'>('one');
   const [simOpen, setSimOpen] = useState(false);
+  const [memoOpen, setMemoOpen] = useState(false);
 
   const r = detail.data;
 
@@ -91,6 +92,27 @@ export default function RecipeDetailScreen() {
       recommended: recRaw == null ? null : Math.round(recRaw / 100) * 100,
     };
   }, [r]);
+
+  /**
+   * 메모만 고친다. 재료·부자재·세금 항목은 보내지 않는다 —
+   * 서버가 키 없는 필드는 그대로 두므로(0055·0071) 구성이 날아가지 않는다.
+   */
+  const saveMemo = (memo: string) => {
+    if (!r) return;
+    saveRecipe.mutate(
+      {
+        id: r.id, name: r.name, price: r.price, taxMode: r.taxMode,
+        baseServings: r.baseServings, targetProfitRate: r.targetProfitRate,
+        avgMonthlySales: r.avgMonthlySales,
+        memo: memo.trim() || null,
+      },
+      {
+        onSuccess: () => setMemoOpen(false),
+        onError: (e: unknown) =>
+          Alert.alert('저장하지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'),
+      },
+    );
+  };
 
   const toggleActive = () => {
     if (!r) return;
@@ -187,7 +209,7 @@ export default function RecipeDetailScreen() {
                     </View>
                     {/* 메모 — 식재료 상세와 같은 자리, 같은 모양(0063) */}
                     <Pressable
-                      onPress={() => router.push(`/recipes/add?id=${r.id}` as Href)}
+                      onPress={() => setMemoOpen(true)}
                       accessibilityRole="button" accessibilityLabel="메모 수정"
                       style={{ marginTop: 11, flexDirection: 'row', alignItems: 'center', gap: 6 }}
                     >
@@ -558,6 +580,16 @@ export default function RecipeDetailScreen() {
           })() : null}
         </QueryState>
       </ScrollView>
+
+      {r ? (
+        <MemoEditSheet
+          visible={memoOpen}
+          value={r.memo ?? ''}
+          saving={saveRecipe.isPending}
+          onClose={() => setMemoOpen(false)}
+          onSave={saveMemo}
+        />
+      ) : null}
 
       {r && calc ? (
         <PriceSimSheet

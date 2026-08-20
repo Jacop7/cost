@@ -10,6 +10,7 @@ import { cardShadow, FONT, STATUS, T, won } from '@/theme/tokens';
 
 const NUM: TextStyle = { fontVariant: FONT.num as unknown as TextStyle['fontVariant'] };
 export { Icon };
+export { MemoEditSheet } from './MemoEditSheet';
 export type { IconName } from './Icon';
 export { AppHeader } from './AppHeader';
 export { Sheet } from './Sheet';

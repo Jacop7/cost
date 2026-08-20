@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { Alert, Modal, Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
-import { AppHeader, Badge, Card, Icon, QueryState } from '../../../components/kit';
+import { AppHeader, Badge, Card, Icon, MemoEditSheet, QueryState } from '../../../components/kit';
 import { T, tnum } from '../../../theme/tokens';
 import { formatQuantity, formatUnitPrice } from '@sikjae/core';
 import { safeBack } from '@/lib/nav';
@@ -11,7 +11,6 @@ import { LedgerRow } from '../components/LedgerRow';
 import { LossCard } from '../components/LossCard';
 import { belowSafety, stockLabel, stockStateOf } from '../components/IngCard';
 import { StockEditSheet } from './StockEditSheet';
-import { MemoEditSheet } from './MemoEditSheet';
 import { dispUnit, toLedgerView } from '../ledger';
 import {
   useDeactivateIngredient,
