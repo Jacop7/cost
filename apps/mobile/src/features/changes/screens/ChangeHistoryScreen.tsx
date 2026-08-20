@@ -29,7 +29,6 @@ import {
   useChangeSubject,
   type ChangeEntity,
   type ChangeEvent,
-  type ChangeWindow,
 } from '../hooks';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
@@ -43,11 +42,12 @@ const TONE = {
 /** 목록에 섞여 들어가는 월 머리말. 같은 배열에 두어야 스크롤이 자연스럽다. */
 type Row = { kind: 'month'; key: string; label: string } | { kind: 'event'; key: string; event: ChangeEvent };
 
-const WINDOWS: { label: string; days: ChangeWindow }[] = [
-  { label: '7일', days: 7 },
-  { label: '30일', days: 30 },
-  { label: '전체', days: null },
-];
+/**
+ * 화면은 **최근 7일**만 본다(사장님 결정).
+ *   화면 7일 → 서버 30일 보관 → 핵심 장부는 영구 보존
+ * 원가가 왜 바뀌었는지는 며칠 안에 확인한다. 그보다 오래된 건 원장에서 본다.
+ */
+const WINDOW_DAYS = 7;
 
 function StateBadge({ state }: { state: ChangeEvent['state'] }) {
   const s = stateLabel(state);
@@ -64,10 +64,9 @@ export function ChangeHistoryScreen({ entity }: { entity: ChangeEntity }) {
   const id = params.id;
   const router = useRouter();
 
-  const [days, setDays] = useState<ChangeWindow>(7);
   const [open, setOpen] = useState<ChangeEvent | null>(null);
 
-  const q = useChangeHistory(entity, id, days);
+  const q = useChangeHistory(entity, id, WINDOW_DAYS);
   const subject = useChangeSubject(entity, id);
 
   const items = useMemo(() => q.data?.pages.flatMap((p) => p.items) ?? [], [q.data]);
@@ -107,31 +106,13 @@ export function ChangeHistoryScreen({ entity }: { entity: ChangeEntity }) {
         onBack={() => safeBack(entity === 'recipe' ? `/recipes/${id}` : `/ingredients/${id}`)}
       />
 
-      {/* 기간 — 좁히면 그 밖의 기록이 닿을 수 없으므로 고를 수 있어야 한다 */}
-      <View style={{ flexDirection: 'row', gap: 7, paddingHorizontal: 16, paddingBottom: 10 }}>
-        {WINDOWS.map((w) => {
-          const on = w.days === days;
-          return (
-            <Pressable
-              key={w.label}
-              onPress={() => setDays(w.days)}
-              accessibilityRole="button" accessibilityLabel={`${w.label} 보기`}
-              accessibilityState={{ selected: on }}
-              style={{ paddingVertical: 7, paddingHorizontal: 13, borderRadius: 999, borderWidth: 1, borderColor: on ? T.blue : T.line, backgroundColor: on ? T.blueTint : T.surface }}
-            >
-              <Text style={{ fontSize: 14, fontWeight: '700', color: on ? T.blue : T.sub2 }}>{w.label}</Text>
-            </Pressable>
-          );
-        })}
-      </View>
-
       <QueryState
         isLoading={q.isLoading}
         error={q.error}
         isEmpty={items.length === 0}
         onRetry={() => void q.refetch()}
-        emptyTitle={days === null ? '아직 수정한 적이 없어요' : '이 기간에는 수정 내역이 없어요'}
-        emptyHint={days === null ? '값을 고치거나 입고를 확정하면 여기에 남아요' : '기간을 넓혀 보세요'}
+        emptyTitle="최근 7일 동안 수정한 적이 없어요"
+        emptyHint="값을 고치거나 입고를 확정하면 여기에 남아요"
       >
         <FlatList
           data={rows}
@@ -207,6 +188,12 @@ export function ChangeHistoryScreen({ entity }: { entity: ChangeEntity }) {
                 <View style={{ paddingVertical: 18 }}>
                   <ActivityIndicator color={T.ter} />
                 </View>
+              ) : null}
+              {!q.hasNextPage ? (
+                <Text style={{ fontSize: 13, color: T.ter, lineHeight: 19, marginTop: 4, marginBottom: 10 }}>
+                  수정 내역은 최근 7일만 보여 주고 30일 뒤 지워져요.
+                  입고·재고·구매 기록과 가격·손익 추이는 그대로 남아요.
+                </Text>
               ) : null}
               {!q.hasNextPage && ledgers.length > 0 ? (
                 <Card pad={0} style={{ overflow: 'hidden', marginTop: 6 }}>
