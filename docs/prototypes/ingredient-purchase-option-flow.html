@@ -1,0 +1,562 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>구매 옵션 수정 · 입고 기준단가 미리보기</title>
+  <style>
+    :root {
+      --page: #eef1f4;
+      --app: #f2f4f6;
+      --surface: #ffffff;
+      --surface2: #f9fafb;
+      --ink: #191f28;
+      --sub: #4e5968;
+      --ter: #8b95a1;
+      --line: #e5e8eb;
+      --line2: #f2f4f6;
+      --blue: #3182f6;
+      --blue-soft: #ebf3fe;
+      --red: #f04452;
+      --shadow: rgba(25, 31, 40, .14);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 24px 14px 40px;
+      color: var(--ink);
+      background: var(--page);
+      font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button, input, select { font: inherit; }
+
+    .prototype {
+      width: min(880px, 100%);
+      margin: 0 auto;
+    }
+
+    .prototype-tabs {
+      display: flex;
+      gap: 8px;
+      width: min(390px, 100%);
+      margin: 0 auto 12px;
+      padding: 4px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, .75);
+    }
+
+    .prototype-tab {
+      flex: 1;
+      min-height: 40px;
+      border: 0;
+      border-radius: 9px;
+      color: var(--sub);
+      background: transparent;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .prototype-tab.active {
+      color: var(--ink);
+      background: var(--surface);
+      box-shadow: 0 2px 8px rgba(25, 31, 40, .08);
+    }
+
+    .phone {
+      position: relative;
+      width: min(390px, 100%);
+      height: min(800px, calc(100vh - 104px));
+      min-height: 650px;
+      margin: 0 auto;
+      overflow: hidden;
+      border: 1px solid rgba(25, 31, 40, .1);
+      border-radius: 30px;
+      background: var(--app);
+      box-shadow: 0 24px 70px var(--shadow);
+    }
+
+    .status-bar {
+      height: 27px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 19px;
+      background: var(--surface);
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .app-header {
+      height: 56px;
+      display: flex;
+      align-items: center;
+      padding: 0 15px;
+      border-bottom: 1px solid var(--line);
+      background: var(--surface);
+    }
+
+    .back {
+      width: 30px;
+      padding: 0;
+      border: 0;
+      color: var(--ink);
+      background: transparent;
+      font-size: 29px;
+      line-height: 1;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .app-title { flex: 1; font-size: 18px; font-weight: 800; }
+
+    .screen {
+      height: calc(100% - 83px);
+      overflow-y: auto;
+      padding: 13px 16px 120px;
+      scrollbar-width: thin;
+    }
+
+    .view[hidden] { display: none; }
+
+    .field { margin-bottom: 18px; }
+    .field-label {
+      display: block;
+      margin: 0 2px 8px;
+      color: var(--sub);
+      font-size: 14px;
+      font-weight: 750;
+    }
+
+    .required { margin-left: 2px; color: var(--blue); }
+    .optional { color: var(--ter); font-weight: 650; }
+
+    .control,
+    .select-control {
+      width: 100%;
+      height: 50px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 0 14px;
+      color: var(--ink);
+      background: var(--surface);
+      font-size: 16px;
+      font-weight: 650;
+      outline: none;
+    }
+
+    .control:focus,
+    .select-control:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(49, 130, 246, .12); }
+
+    .control::placeholder { color: #b0b8c1; }
+
+    .two-column {
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(96px, 1fr);
+      gap: 10px;
+    }
+
+    .money-wrap { position: relative; }
+    .money-wrap .control { padding-right: 42px; font-variant-numeric: tabular-nums; }
+    .suffix {
+      position: absolute;
+      top: 15px;
+      right: 14px;
+      color: var(--sub);
+      font-size: 14px;
+      font-weight: 700;
+      pointer-events: none;
+    }
+
+    .delete-option {
+      width: 100%;
+      height: 48px;
+      margin-top: 4px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      color: var(--red);
+      background: var(--surface);
+      font-size: 16px;
+      font-weight: 750;
+      cursor: pointer;
+    }
+
+    .ingredient-summary {
+      margin-bottom: 12px;
+      padding: 15px 16px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--surface);
+    }
+
+    .ingredient-caption { margin: 0 0 5px; color: var(--ter); font-size: 12px; font-weight: 700; }
+    .ingredient-name { margin: 0; font-size: 20px; font-weight: 800; }
+    .ingredient-meta { margin-top: 7px; color: var(--sub); font-size: 13px; font-weight: 650; }
+    .ingredient-meta strong { color: var(--ink); }
+
+    .form-card {
+      padding: 16px 15px 1px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--surface);
+    }
+
+    .compact-row {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .compact-row .control { min-width: 0; flex: 1; }
+
+    .stepper {
+      display: flex;
+      height: 50px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--surface);
+    }
+
+    .stepper button {
+      width: 44px;
+      border: 0;
+      color: var(--ink);
+      background: var(--surface2);
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .stepper input {
+      width: 54px;
+      border: 0;
+      border-right: 1px solid var(--line);
+      border-left: 1px solid var(--line);
+      color: var(--ink);
+      background: var(--surface);
+      text-align: center;
+      font-weight: 800;
+      outline: none;
+    }
+
+    .added-stock {
+      min-width: 0;
+      flex: 1;
+      color: var(--sub);
+      font-size: 14px;
+      font-weight: 650;
+      text-align: right;
+    }
+
+    .added-stock strong { margin-left: 4px; color: var(--ink); font-size: 16px; }
+
+    .manual-fields { display: none; }
+    .manual-fields.open { display: block; }
+
+    .bottom-action {
+      position: absolute;
+      z-index: 5;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      padding: 11px 16px 18px;
+      border-top: 1px solid var(--line);
+      background: rgba(255, 255, 255, .97);
+    }
+
+    .base-price-result {
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+      padding: 0 2px 10px;
+      font-size: 13px;
+    }
+
+    .base-price-result.show { display: flex; }
+    .price-stage {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--ter);
+      font-variant-numeric: tabular-nums;
+    }
+    .price-stage-label { color: var(--sub); font-weight: 700; white-space: nowrap; }
+    .price-stage strong { color: var(--ter); font-size: 14px; white-space: nowrap; }
+    .price-stage.after strong { color: var(--blue); font-size: 15px; }
+
+    .primary {
+      width: 100%;
+      height: 51px;
+      border: 0;
+      border-radius: 12px;
+      color: #fff;
+      background: var(--blue);
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .primary:disabled { color: #b0b8c1; background: var(--line); cursor: default; }
+
+    .toast {
+      position: absolute;
+      z-index: 20;
+      right: 18px;
+      bottom: 91px;
+      left: 18px;
+      display: none;
+      padding: 13px 15px;
+      border-radius: 11px;
+      color: #fff;
+      background: rgba(25, 31, 40, .92);
+      font-size: 13px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .toast.show { display: block; }
+
+    @media (max-width: 430px) {
+      body { padding: 0; background: var(--app); }
+      .prototype-tabs { width: 100%; margin-bottom: 0; border-radius: 0; }
+      .phone { width: 100%; height: calc(100vh - 48px); min-height: 620px; border: 0; border-radius: 0; box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="prototype">
+    <nav class="prototype-tabs" aria-label="프로토타입 화면 선택">
+      <button class="prototype-tab active" type="button" data-view="option">구매 옵션 수정</button>
+      <button class="prototype-tab" type="button" data-view="inbound">실제 입고</button>
+    </nav>
+
+    <section class="phone" aria-label="식재료 구매 옵션과 실제 입고 화면">
+      <div class="status-bar"><span>9:41</span><span>● ◔ ▰</span></div>
+      <header class="app-header">
+        <button class="back" type="button" aria-label="뒤로">‹</button>
+        <span id="app-title" class="app-title">구매 옵션 수정</span>
+      </header>
+
+      <section id="option-view" class="view screen">
+        <div class="field">
+          <label class="field-label" for="option-name">옵션 이름<span class="required">*</span></label>
+          <input id="option-name" class="control" value="국물용 멸치 3kg" />
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="option-vendor">구매처</label>
+          <select id="option-vendor" class="select-control">
+            <option>식자재쇼핑몰</option>
+            <option>한빛식자재</option>
+            <option>지정 안 함</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="option-volume">용량<span class="required">*</span></label>
+          <div class="two-column">
+            <input id="option-volume" class="control" type="number" min="0" step="0.1" value="3" inputmode="decimal" />
+            <select id="option-unit" class="select-control" aria-label="용량 단위">
+              <option selected>kg</option>
+              <option>g</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="option-amount">금액<span class="required">*</span></label>
+          <div class="money-wrap">
+            <input id="option-amount" class="control" type="number" min="0" step="100" value="150000" inputmode="numeric" />
+            <span class="suffix">원</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="option-url">구매 링크 <span class="optional">(선택)</span></label>
+          <input id="option-url" class="control" type="url" value="https://example.com/anchovy" />
+        </div>
+
+        <button id="delete-option" class="delete-option" type="button">삭제</button>
+      </section>
+
+      <section id="inbound-view" class="view screen" hidden>
+        <section class="ingredient-summary">
+          <p class="ingredient-caption">식재료</p>
+          <h1 class="ingredient-name">국물용 멸치</h1>
+          <div class="ingredient-meta">현재 재고 <strong>5kg</strong> · 기준 단가 <strong>52.00원/g</strong></div>
+        </section>
+
+        <section class="form-card">
+          <div class="field">
+            <label class="field-label" for="inbound-option">구매한 곳 · 구매 옵션</label>
+            <select id="inbound-option" class="select-control">
+              <option value="saved">식자재쇼핑몰 · 국물용 멸치 3kg</option>
+              <option value="none">구매 옵션 선택 안 함</option>
+            </select>
+          </div>
+
+          <div id="manual-fields" class="manual-fields">
+            <div class="field">
+              <label class="field-label" for="manual-vendor">구매한 곳 <span class="optional">(선택)</span></label>
+              <input id="manual-vendor" class="control" placeholder="예: 동네마트" />
+            </div>
+            <div class="field">
+              <label class="field-label" for="manual-volume">개당 용량<span class="required">*</span></label>
+              <div class="two-column">
+                <input id="manual-volume" class="control" type="number" min="0" step="0.1" value="" placeholder="0" inputmode="decimal" />
+                <select id="manual-unit" class="select-control" aria-label="개당 용량 단위">
+                  <option selected>kg</option>
+                  <option>g</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="field">
+            <span class="field-label">입고 수량<span class="required">*</span></span>
+            <div class="compact-row">
+              <div class="stepper">
+                <button id="quantity-minus" type="button" aria-label="수량 줄이기">−</button>
+                <input id="inbound-quantity" type="number" min="1" step="1" value="1" aria-label="입고 수량" />
+                <button id="quantity-plus" type="button" aria-label="수량 늘리기">＋</button>
+              </div>
+              <div class="added-stock">추가 재고 <strong id="added-stock">3kg</strong></div>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="paid-amount">실제 결제금액<span class="required">*</span></label>
+            <div class="money-wrap">
+              <input id="paid-amount" class="control" type="number" min="0" step="100" value="150000" inputmode="numeric" />
+              <span class="suffix">원</span>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="inbound-date">입고일</label>
+            <input id="inbound-date" class="control" type="date" value="2026-08-21" />
+          </div>
+        </section>
+      </section>
+
+      <footer class="bottom-action">
+        <div id="base-price-result" class="base-price-result" aria-live="polite">
+          <span class="price-stage"><span class="price-stage-label">등록 전 기준단가</span><strong id="previous-base-price">52.00원/g</strong></span>
+          <span class="price-stage after"><span class="price-stage-label">등록 후 기준단가</span><strong id="next-base-price">51.25원/g</strong></span>
+        </div>
+        <button id="main-action" class="primary" type="button">저장</button>
+      </footer>
+
+      <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <script>
+    const currentBasePrice = 52;
+    const priorInboundVolume = 5000;
+    const priorInboundAmount = currentBasePrice * priorInboundVolume;
+    const savedOptionVolume = 3000;
+    const savedOptionAmount = 150000;
+    let currentView = 'option';
+    let toastTimer;
+
+    const byId = (id) => document.getElementById(id);
+
+    function toBaseVolume(value, unit) {
+      const amount = Math.max(0, Number(value) || 0);
+      return unit === 'kg' ? amount * 1000 : amount;
+    }
+
+    function formatWeight(grams) {
+      if (grams >= 1000) {
+        const kg = grams / 1000;
+        return `${Number.isInteger(kg) ? kg : kg.toFixed(1)}kg`;
+      }
+      return `${grams}g`;
+    }
+
+    function updateInbound() {
+      const usesSavedOption = byId('inbound-option').value === 'saved';
+      byId('manual-fields').classList.toggle('open', !usesSavedOption);
+
+      const eachVolume = usesSavedOption
+        ? savedOptionVolume
+        : toBaseVolume(byId('manual-volume').value, byId('manual-unit').value);
+      const quantity = Math.max(1, Number.parseInt(byId('inbound-quantity').value, 10) || 1);
+      const paidAmount = Math.max(0, Number(byId('paid-amount').value) || 0);
+      const totalVolume = eachVolume * quantity;
+      const complete = totalVolume > 0 && paidAmount > 0;
+      const nextBasePrice = complete
+        ? (priorInboundAmount + paidAmount) / (priorInboundVolume + totalVolume)
+        : null;
+
+      byId('inbound-quantity').value = String(quantity);
+      byId('added-stock').textContent = totalVolume > 0 ? formatWeight(totalVolume) : '용량 입력 필요';
+      byId('base-price-result').classList.toggle('show', complete && currentView === 'inbound');
+      byId('next-base-price').textContent = nextBasePrice === null ? '' : `${nextBasePrice.toFixed(2)}원/g`;
+      byId('main-action').disabled = currentView === 'inbound' && !complete;
+      if (currentView === 'inbound') {
+        byId('main-action').textContent = complete ? `재고 ${formatWeight(totalVolume)} 추가` : '용량·금액을 입력해 주세요';
+      }
+    }
+
+    function setView(view) {
+      currentView = view;
+      const inbound = view === 'inbound';
+      byId('option-view').hidden = inbound;
+      byId('inbound-view').hidden = !inbound;
+      byId('app-title').textContent = inbound ? '재고 추가' : '구매 옵션 수정';
+      document.querySelectorAll('.prototype-tab').forEach((button) => {
+        button.classList.toggle('active', button.dataset.view === view);
+      });
+      byId('main-action').disabled = false;
+      byId('main-action').textContent = inbound ? '재고 추가' : '저장';
+      byId('base-price-result').classList.toggle('show', inbound);
+      if (inbound) updateInbound();
+    }
+
+    function changeQuantity(delta) {
+      const input = byId('inbound-quantity');
+      input.value = String(Math.max(1, (Number.parseInt(input.value, 10) || 1) + delta));
+      if (byId('inbound-option').value === 'saved') {
+        byId('paid-amount').value = String(savedOptionAmount * Number(input.value));
+      }
+      updateInbound();
+    }
+
+    function showToast(message) {
+      clearTimeout(toastTimer);
+      byId('toast').textContent = message;
+      byId('toast').classList.add('show');
+      toastTimer = setTimeout(() => byId('toast').classList.remove('show'), 1800);
+    }
+
+    document.querySelectorAll('.prototype-tab').forEach((button) => {
+      button.addEventListener('click', () => setView(button.dataset.view));
+    });
+
+    byId('inbound-option').addEventListener('change', () => {
+      const usesSavedOption = byId('inbound-option').value === 'saved';
+      byId('paid-amount').value = usesSavedOption ? String(savedOptionAmount * Number(byId('inbound-quantity').value || 1)) : '';
+      updateInbound();
+    });
+    byId('manual-volume').addEventListener('input', updateInbound);
+    byId('manual-unit').addEventListener('change', updateInbound);
+    byId('paid-amount').addEventListener('input', updateInbound);
+    byId('inbound-quantity').addEventListener('input', updateInbound);
+    byId('quantity-minus').addEventListener('click', () => changeQuantity(-1));
+    byId('quantity-plus').addEventListener('click', () => changeQuantity(1));
+    byId('main-action').addEventListener('click', () => showToast(currentView === 'inbound' ? '입고 등록 전 화면이에요.' : '구매 옵션 저장 전 화면이에요.'));
+    byId('delete-option').addEventListener('click', () => showToast('구매 옵션 삭제 확인이 열려요.'));
+
+    setView(new URLSearchParams(window.location.search).get('view') === 'inbound' ? 'inbound' : 'option');
+  </script>
+</body>
+</html>

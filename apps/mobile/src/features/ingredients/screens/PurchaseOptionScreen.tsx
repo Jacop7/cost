@@ -8,7 +8,7 @@
  *   기준단가는 실제 입고(E1) 이력의 가중평균이다.
  */
 import { useEffect, useMemo, useState } from 'react';
-import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
+import { Alert, Modal, Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { AppHeader, Badge, Button, Card, Field, Icon, Input, QueryState, Select } from '../../../components/kit';
 import { T, tnum } from '../../../theme/tokens';
@@ -48,6 +48,7 @@ export function PurchaseOptionScreen() {
   const [amount, setAmount] = useState('');
   const [url, setUrl] = useState('');
   const [vendorOpen, setVendorOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [unitOpen, setUnitOpen] = useState(false);
 
   // 기준단위가 정해지면 입력 단위 기본값도 그걸로 맞춘다.
@@ -149,6 +150,19 @@ export function PurchaseOptionScreen() {
       <AppHeader
         title={formOpen ? (editingId ? '구매 옵션 수정' : '구매 옵션 추가') : '구매 링크 · 옵션'}
         onBack={() => (formOpen ? setFormOpen(false) : safeBack(`/ingredients/${ingredientId}`))}
+        right={
+          /* 수정 중일 때만 띄운다 — 아직 만들지도 않은 옵션에는 지울 게 없다. */
+          formOpen && editingId ? (
+            <Pressable
+              onPress={() => setMenuOpen(true)}
+              accessibilityRole="button" accessibilityLabel="더보기"
+              hitSlop={6}
+              style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}
+            >
+              <Icon name="more" size={20} color={T.ink2} />
+            </Pressable>
+          ) : undefined
+        }
       />
 
       <QueryState
@@ -193,15 +207,6 @@ export function PurchaseOptionScreen() {
                 <Input value={url} onChangeText={setUrl} placeholder="https://" accessibilityLabel="구매 링크" />
               </Field>
 
-              {editingId ? (
-                <Pressable
-                  onPress={() => confirmDelete(editingId, name || '이 옵션')}
-                  accessibilityRole="button" accessibilityLabel="구매 옵션 삭제"
-                  style={{ marginTop: 18, paddingVertical: 14, alignItems: 'center', borderRadius: 12, borderWidth: 1, borderColor: T.line }}
-                >
-                  <Text style={{ fontSize: 16, fontWeight: '700', color: T.red }}>삭제</Text>
-                </Pressable>
-              ) : null}
             </ScrollView>
 
             <View style={{ paddingHorizontal: 20, paddingTop: 12, paddingBottom: 30, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
@@ -260,6 +265,34 @@ export function PurchaseOptionScreen() {
           </>
         )}
       </QueryState>
+
+      {/*
+        헤더 ⋮ 메뉴 — 식재료 상세의 '수정' 메뉴와 **같은 모양**이다.
+        같은 자리에서 같은 동작이 같은 모습으로 열려야 사장님이 두 번 배우지 않는다.
+      */}
+      <Modal visible={menuOpen} transparent animationType="fade" onRequestClose={() => setMenuOpen(false)} statusBarTranslucent>
+        <Pressable onPress={() => setMenuOpen(false)} accessibilityRole="button" accessibilityLabel="메뉴 닫기" style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: T.scrim }}>
+          {/* 시트 본문 탭이 배경까지 전달돼 닫히지 않게 여기서 삼킨다.
+              빈 onPress 를 단 Pressable 로 막으면 스크린리더가 "버튼"이라고 읽는다 — View 로 처리한다. */}
+          <View onStartShouldSetResponder={() => true} style={{ backgroundColor: T.surface, borderTopLeftRadius: 20, borderTopRightRadius: 20, paddingHorizontal: 12, paddingTop: 10, paddingBottom: 16 }}>
+            <View style={{ alignItems: 'center', paddingBottom: 14 }}>
+              <View style={{ width: 40, height: 5, borderRadius: 3, backgroundColor: T.line }} />
+            </View>
+            <View style={{ backgroundColor: T.surface2, borderRadius: 14, overflow: 'hidden', marginBottom: 9 }}>
+              <Pressable
+                onPress={() => { setMenuOpen(false); if (editingId) confirmDelete(editingId, name || '이 옵션'); }}
+                accessibilityRole="button" accessibilityLabel="구매 옵션 삭제"
+                style={{ paddingVertical: 20, alignItems: 'center' }}
+              >
+                <Text style={{ fontSize: 16, fontWeight: '600', color: T.red }}>삭제</Text>
+              </Pressable>
+            </View>
+            <Pressable onPress={() => setMenuOpen(false)} accessibilityRole="button" accessibilityLabel="닫기" style={{ paddingVertical: 20, borderRadius: 14, backgroundColor: T.surface2, alignItems: 'center' }}>
+              <Text style={{ fontSize: 16, fontWeight: '600', color: T.ink }}>닫기</Text>
+            </Pressable>
+          </View>
+        </Pressable>
+      </Modal>
 
       <VendorPickerSheet
         visible={vendorOpen}
