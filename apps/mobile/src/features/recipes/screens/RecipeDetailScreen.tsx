@@ -9,12 +9,13 @@ import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { AppHeader, Badge, Card, Donut, Icon, MemoEditSheet, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { RecentChangeRow } from '@/features/changes';
+import { RecentChangeRow, changeStamp } from '@/features/changes';
 import { formatPercent, formatQuantity, formatUnitPrice, recommendedPrice, round, taxAmount, taxRate } from '@sikjae/core';
 import { T, won } from '@/theme/tokens';
 import { useFixedCosts } from '@/features/my/hooks';
 import { PriceSimSheet } from '../components/PriceSimSheet';
 import { useDeactivateRecipe, useRecipeDetail, useSaveRecipe } from '../hooks';
+import { deltaTone, useProfitHistory } from '../profitHistory';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 
@@ -64,6 +65,8 @@ export default function RecipeDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
 
   const detail = useRecipeDetail(id);
+  /** 축약 목록 3줄. RCP-16 과 **같은 RPC** 를 쓴다 — 두 화면이 다른 걸 보여 주면 안 된다. */
+  const profitQ = useProfitHistory(id, 3);
   const fixedCosts = useFixedCosts();
   const saveRecipe = useSaveRecipe();
   const deactivate = useDeactivateRecipe();
@@ -74,6 +77,7 @@ export default function RecipeDetailScreen() {
   const [memoOpen, setMemoOpen] = useState(false);
 
   const r = detail.data;
+  const profitChanges = profitQ.data?.pages[0]?.items ?? [];
 
   const calc = useMemo(() => {
     if (!r) return null;
@@ -195,8 +199,6 @@ export default function RecipeDetailScreen() {
               amount: fixedSum > 0 ? (fixed * i.total) / fixedSum : 0,
               rate: fixedSum > 0 ? (r.fixedRate * i.total) / fixedSum : 0,
             }));
-
-            const trends = [...r.profitTrends].reverse().slice(0, 4);
 
             return (
               <>
@@ -536,35 +538,52 @@ export default function RecipeDetailScreen() {
                   </Pressable>
                 </Card>
 
-                {/* 손익 변동 — profit_trends 스냅샷 */}
+                {/* 손익 변동 — 금액 스냅샷(0083). RCP-16 과 같은 한 줄 구조다. */}
                 <Card pad={0} style={{ overflow: 'hidden' }}>
-                  <SecHead title="손익 변동" sub={`${r.profitTrends.length}건`} />
-                  {trends.length === 0 ? (
-                    <Text style={{ fontSize: 16, color: T.ter, padding: 15 }}>아직 기록된 변동이 없어요</Text>
+                  <SecHead title="손익 변동" />
+                  {profitChanges.length === 0 ? (
+                    <Text style={{ fontSize: 16, color: T.ter, padding: 15 }}>
+                      아직 기록된 손익 변동이 없어요
+                    </Text>
                   ) : (
-                    trends.map((h, i) => (
-                      <Pressable
-                        key={`${h.date}-${i}`}
-                        onPress={() => router.push(`/recipes/profit-history?id=${r.id}` as Href)}
-                        accessibilityRole="button" accessibilityLabel={`${h.date} 손익 변동`}
-                        style={{ flexDirection: 'row', alignItems: 'center', gap: 11, paddingVertical: 12, paddingHorizontal: 15, borderBottomWidth: 1, borderBottomColor: T.line2 }}
-                      >
-                        <View style={{ flex: 1 }}>
-                          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                            <Text style={[{ fontSize: 14, color: T.ter, fontWeight: '600' }, NUM]}>{h.date.replace(/-/g, '.')}</Text>
-                            {i === 0 ? <Badge tone="blue" sm>최근</Badge> : null}
-                            <Badge tone="neutral" sm>
-                              {h.cause === 'material' ? '재료 단가' : h.cause === 'fixed' ? '고정지출' : '레시피 변경'}
-                            </Badge>
+                    profitChanges.map((h) => {
+                      const tone = deltaTone(h.profitDelta);
+                      return (
+                        <Pressable
+                          key={h.id}
+                          onPress={() => router.push(`/recipes/profit-history?id=${r.id}` as Href)}
+                          accessibilityRole="button"
+                          accessibilityLabel={`${h.title}. 순이익 ${won(Math.round(h.profitAfter * 100) / 100)}원`}
+                          style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 10, paddingVertical: 12, paddingHorizontal: 15, borderBottomWidth: 1, borderBottomColor: T.line2 }}
+                        >
+                          <View style={{ flex: 1, minWidth: 0 }}>
+                            <Text style={[{ fontSize: 13, color: T.ter, fontWeight: '600' }, NUM]}>
+                              {changeStamp(h.occurredAt)}
+                            </Text>
+                            <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink, marginTop: 4 }} numberOfLines={1}>
+                              {h.title}
+                            </Text>
+                            {h.summary ? (
+                              <Text style={{ fontSize: 14, color: T.sub, marginTop: 3 }} numberOfLines={1}>{h.summary}</Text>
+                            ) : null}
                           </View>
-                          <Text style={[{ fontSize: 16, color: T.sub, fontWeight: '600', marginTop: 5 }, NUM]}>
-                            순이익률 <Text style={{ color: T.ink2, fontWeight: '700' }}>{h.profitRate}%</Text>
-                            {'  '}재료비율 <Text style={{ color: T.ink2, fontWeight: '700' }}>{h.materialRate}%</Text>
-                          </Text>
-                        </View>
-                        <Icon name="chevron" size={16} color={T.line3} />
-                      </Pressable>
-                    ))
+                          <View style={{ alignItems: 'flex-end', paddingTop: 14 }}>
+                            <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>
+                              {won(Math.round(h.profitAfter * 100) / 100)}원
+                            </Text>
+                            {/* 0원은 '변동 없음' 이다. '+0원'은 아무 말도 아니다. */}
+                            {tone === 'flat' ? (
+                              <Text style={{ fontSize: 13, fontWeight: '700', color: T.ter, marginTop: 3 }}>변동 없음</Text>
+                            ) : (
+                              <Text style={[{ fontSize: 13, fontWeight: '800', marginTop: 3, color: tone === 'up' ? T.green : T.red }, NUM]}>
+                                {tone === 'up' ? '+' : '−'}{won(Math.abs(Math.round((h.profitDelta ?? 0) * 100) / 100))}원
+                              </Text>
+                            )}
+                          </View>
+                          <Icon name="chevron" size={16} color={T.line3} />
+                        </Pressable>
+                      );
+                    })
                   )}
                   <Pressable
                     onPress={() => router.push(`/recipes/profit-history?id=${r.id}` as Href)}
