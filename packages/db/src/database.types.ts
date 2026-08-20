@@ -868,36 +868,88 @@ export type Database = {
       }
       profit_trends: {
         Row: {
+          calculation_version: number
           cause: Database["public"]["Enums"]["trend_cause"]
           created_at: string
+          extra_cost: number | null
+          fixed_cost: number | null
+          fixed_rate: number | null
           id: string
+          is_baseline: boolean
+          material_cost: number | null
           material_rate: number
+          occurred_at: string
+          previous_snapshot_id: string | null
+          price: number | null
+          profit_amount: number | null
           profit_rate: number
           recipe_id: string
+          source_entity_id: string | null
+          source_label: string | null
+          source_type: string | null
           store_id: string
+          summary: string | null
+          tax_amount: number | null
           trend_date: string
         }
         Insert: {
+          calculation_version?: number
           cause: Database["public"]["Enums"]["trend_cause"]
           created_at?: string
+          extra_cost?: number | null
+          fixed_cost?: number | null
+          fixed_rate?: number | null
           id?: string
+          is_baseline?: boolean
+          material_cost?: number | null
           material_rate: number
+          occurred_at?: string
+          previous_snapshot_id?: string | null
+          price?: number | null
+          profit_amount?: number | null
           profit_rate: number
           recipe_id: string
+          source_entity_id?: string | null
+          source_label?: string | null
+          source_type?: string | null
           store_id: string
+          summary?: string | null
+          tax_amount?: number | null
           trend_date: string
         }
         Update: {
+          calculation_version?: number
           cause?: Database["public"]["Enums"]["trend_cause"]
           created_at?: string
+          extra_cost?: number | null
+          fixed_cost?: number | null
+          fixed_rate?: number | null
           id?: string
+          is_baseline?: boolean
+          material_cost?: number | null
           material_rate?: number
+          occurred_at?: string
+          previous_snapshot_id?: string | null
+          price?: number | null
+          profit_amount?: number | null
           profit_rate?: number
           recipe_id?: string
+          source_entity_id?: string | null
+          source_label?: string | null
+          source_type?: string | null
           store_id?: string
+          summary?: string | null
+          tax_amount?: number | null
           trend_date?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "profit_trends_previous_snapshot_id_fkey"
+            columns: ["previous_snapshot_id"]
+            isOneToOne: false
+            referencedRelation: "profit_trends"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "profit_trends_recipe_id_fk"
             columns: ["recipe_id"]
@@ -1782,6 +1834,12 @@ export type Database = {
         }
         Returns: Json
       }
+      money_short: {
+        Args: {
+          p: number
+        }
+        Returns: string
+      }
       my_store_ids: {
         Args: Record<PropertyKey, never>
         Returns: string[]
@@ -1803,6 +1861,20 @@ export type Database = {
         Args: {
           p_store: string
           p_date: string
+        }
+        Returns: string
+      }
+      profit_delta_cause: {
+        Args: {
+          p_prev: unknown
+          p_cur: unknown
+        }
+        Returns: Json
+      }
+      profit_event_title: {
+        Args: {
+          p_source_type: string
+          p_label: string
         }
         Returns: string
       }
@@ -1942,6 +2014,15 @@ export type Database = {
           active: boolean
         }[]
       }
+      recipe_profit_history: {
+        Args: {
+          p_recipe: string
+          p_before?: string
+          p_before_id?: string
+          p_limit?: number
+        }
+        Returns: Json
+      }
       recipe_snapshot_entry: {
         Args: {
           p_recipe: string
@@ -1965,6 +2046,7 @@ export type Database = {
           p_recipe: string
           p_cause: Database["public"]["Enums"]["trend_cause"]
           p_occurred_at?: string
+          p_source?: string
         }
         Returns: undefined
       }

@@ -16,6 +16,7 @@ export * from './units';
 export * from './pricing';
 export * from './inventory';
 export * from './recipe';
+export * from './profitSnapshot';
 export * from './fixedCost';
 export * from './ordering';
 export * from './propagation';

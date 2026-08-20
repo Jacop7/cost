@@ -35,7 +35,7 @@
 | `recipes` | RCP-13 | 부자재 관리 (+ RCP-14 부자재 수정 시트) | `recipes/materials` (`MaterialManageScreen`) | ✅ |
 | `recipes` | RCP-07 | 평균 판매량 입력 (기간·환산·배분비율) | `recipes/avg-sales` (`AvgSalesScreen`) | ✅ |
 | `recipes` | RCP-10 | 순이익률 변동 추이 (기간별 라인·min/max) | `recipes/profit-trend` (`ProfitTrendScreen`) | ✅ |
-| `recipes` | RCP-16 | 손익 변동 상세 (원장 → 손익표 시트) | `recipes/profit-history` (`ProfitHistoryScreen`) | ✅ |
+| `recipes` | RCP-16 | 손익 변동 (금액 목록 → 원인·결과 시트, 커서 20건) | `recipes/profit-history` (`ProfitHistoryScreen`) | ✅ |
 | `recipes` | RCP-12 | 레시피 카테고리 설정 (추가·수정·삭제) | `recipes/category` (`CategoryScreen`) | ✅ |
 | `recipes`→`my` | MY-02 | 고정 지출 자세히 (자세히 보기 진입) | `recipes/fixed-cost` (`my/FixedCostScreen`) | ✅ |
 | `recipes`→`my` | MY-02 | 고정 지출 수정 (항목/카드 추가·삭제) → **E4** | `recipes/fixed-cost-edit` (`my/FixedCostEditScreen`) | ✅ |
