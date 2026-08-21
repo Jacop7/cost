@@ -1,0 +1,971 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>상세 연관 화면 공통 UI</title>
+  <style>
+    :root {
+      --page: #eef1f4;
+      --app: #f2f4f6;
+      --surface: #ffffff;
+      --surface2: #f9fafb;
+      --ink: #191f28;
+      --ink2: #333d4b;
+      --sub: #4e5968;
+      --ter: #8b95a1;
+      --line: #e5e8eb;
+      --line2: #f2f4f6;
+      --blue: #3182f6;
+      --blue-soft: #ebf3fe;
+      --red: #f04452;
+      --red-soft: #fff0f1;
+      --amber: #b76e00;
+      --amber-soft: #fff4df;
+      --green: #0e9f6e;
+      --green-soft: #e7f7f0;
+      --scrim: rgba(0, 0, 0, .42);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 24px 12px 40px;
+      color: var(--ink);
+      background: var(--page);
+      font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button { font: inherit; }
+
+    .prototype {
+      width: min(900px, 100%);
+      margin: 0 auto;
+    }
+
+    .screen-switcher {
+      width: min(540px, 100%);
+      display: flex;
+      gap: 3px;
+      overflow-x: auto;
+      margin: 0 auto 12px;
+      padding: 4px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, .75);
+      scrollbar-width: none;
+    }
+
+    .screen-switcher::-webkit-scrollbar { display: none; }
+
+    .screen-switch {
+      flex: 0 0 auto;
+      min-height: 40px;
+      padding: 7px 13px;
+      border: 0;
+      border-radius: 9px;
+      color: var(--sub);
+      background: transparent;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .screen-switch.active {
+      color: var(--ink);
+      background: var(--surface);
+      box-shadow: 0 2px 8px rgba(25, 31, 40, .08);
+    }
+
+    .phone {
+      position: relative;
+      width: min(390px, 100%);
+      height: min(820px, calc(100vh - 104px));
+      min-height: 650px;
+      margin: 0 auto;
+      overflow: hidden;
+      border: 1px solid rgba(25, 31, 40, .1);
+      border-radius: 30px;
+      background: var(--app);
+      box-shadow: 0 24px 70px rgba(25, 31, 40, .14);
+    }
+
+    .status-bar {
+      height: 27px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 19px;
+      background: var(--surface);
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .app-header {
+      height: 56px;
+      display: flex;
+      align-items: center;
+      padding: 0 15px;
+      background: var(--surface);
+    }
+
+    .back {
+      width: 30px;
+      padding: 0;
+      border: 0;
+      color: var(--ink);
+      background: transparent;
+      font-size: 29px;
+      line-height: 1;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .app-title {
+      min-width: 0;
+      flex: 1;
+      overflow: hidden;
+      font-size: 18px;
+      font-weight: 800;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .type-tabs-wrap {
+      display: none;
+      overflow-x: auto;
+      border-bottom: 1px solid var(--line);
+      background: var(--surface);
+      scrollbar-width: none;
+    }
+
+    .type-tabs-wrap.show { display: block; }
+    .type-tabs-wrap::-webkit-scrollbar { display: none; }
+
+    .type-tabs {
+      width: max-content;
+      min-width: 100%;
+      display: flex;
+      padding: 0 12px;
+    }
+
+    .type-tab {
+      padding: 13px 9px 11px;
+      border: 0;
+      border-bottom: 2px solid transparent;
+      color: var(--sub);
+      background: transparent;
+      font-size: 14px;
+      font-weight: 650;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .type-tab.active {
+      border-bottom-color: var(--ink);
+      color: var(--ink);
+      font-weight: 800;
+    }
+
+    .content {
+      height: calc(100% - 83px);
+      overflow-y: auto;
+      padding: 0 16px 28px;
+      scrollbar-width: thin;
+    }
+
+    .phone.has-type-tabs .content { height: calc(100% - 128px); }
+
+    .condition-row {
+      display: flex;
+      align-items: center;
+      min-height: 49px;
+      padding: 5px 5px 4px;
+    }
+
+    .condition-row[hidden] { display: none; }
+
+    .content.direct { padding-top: 14px; }
+    .phone.has-bottom-action .content { padding-bottom: 96px; }
+
+    .condition-button {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 8px 1px;
+      border: 0;
+      color: var(--sub);
+      background: transparent;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .calendar-icon {
+      position: relative;
+      width: 16px;
+      height: 16px;
+      border: 1.5px solid currentColor;
+      border-radius: 4px;
+    }
+
+    .calendar-icon::before {
+      content: "";
+      position: absolute;
+      top: 3px;
+      right: 0;
+      left: 0;
+      border-top: 1.4px solid currentColor;
+    }
+
+    .result-count {
+      margin-left: auto;
+      color: var(--ter);
+      font-size: 14px;
+      font-weight: 650;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .summary {
+      overflow: hidden;
+      margin-bottom: 14px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--surface);
+    }
+
+    .summary[hidden] { display: none; }
+
+    .summary-head {
+      display: flex;
+      align-items: center;
+      padding: 13px 15px;
+      background: var(--surface2);
+    }
+
+    .summary-head-label { flex: 1; color: var(--sub); font-size: 16px; font-weight: 800; }
+    .summary-head-value { color: var(--ink); font-size: 17px; font-weight: 800; font-variant-numeric: tabular-nums; }
+
+    .summary-body {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+      padding: 12px 15px 13px;
+    }
+
+    .summary-body.one { grid-template-columns: 1fr; }
+    .summary-metric { min-width: 0; display: flex; align-items: baseline; gap: 7px; }
+    .summary-metric-label { color: var(--ter); font-size: 13px; font-weight: 650; white-space: nowrap; }
+    .summary-metric-value { margin-left: auto; color: var(--ink2); font-size: 15px; font-weight: 800; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .summary-metric-value.blue { color: var(--blue); }
+    .summary-metric-value.red { color: var(--red); }
+
+    .month-group { margin-bottom: 14px; }
+    .month-title { margin: 0 6px 7px; color: var(--sub); font-size: 14px; font-weight: 750; }
+
+    .history-card {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--surface);
+    }
+
+    .history-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 83px;
+      padding: 13px 12px 13px 15px;
+      border-bottom: 1px solid var(--line2);
+    }
+
+    .history-row:last-child { border-bottom: 0; }
+    .history-button {
+      width: 100%;
+      border: 0;
+      color: inherit;
+      background: var(--surface);
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+    }
+    .history-main { min-width: 0; flex: 1; }
+
+    .history-top {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--ter);
+      font-size: 13px;
+      font-weight: 650;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .badge {
+      padding: 3px 7px;
+      border-radius: 6px;
+      color: var(--sub);
+      background: var(--surface2);
+      font-size: 11px;
+      font-weight: 750;
+    }
+
+    .badge.blue { color: var(--blue); background: var(--blue-soft); }
+    .badge.red { color: var(--red); background: var(--red-soft); }
+    .badge.amber { color: var(--amber); background: var(--amber-soft); }
+    .badge.green { color: var(--green); background: var(--green-soft); }
+
+    .history-title {
+      overflow: hidden;
+      margin-top: 4px;
+      color: var(--ink);
+      font-size: 16px;
+      font-weight: 750;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .history-detail {
+      overflow: hidden;
+      margin-top: 3px;
+      color: var(--sub);
+      font-size: 13px;
+      font-weight: 550;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .history-values { flex: 0 0 auto; text-align: right; }
+    .history-primary { color: var(--ink); font-size: 16px; font-weight: 800; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .history-primary.up { color: var(--blue); }
+    .history-primary.down { color: var(--red); }
+    .history-secondary { margin-top: 3px; color: var(--ter); font-size: 13px; font-weight: 650; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .history-secondary.up { color: var(--blue); font-weight: 750; }
+    .history-secondary.down { color: var(--red); font-weight: 750; }
+
+    .chevron { flex: 0 0 auto; color: var(--ter); font-size: 22px; line-height: 1; }
+
+    .more {
+      width: 25px;
+      height: 40px;
+      padding: 0;
+      border: 0;
+      color: var(--ter);
+      background: transparent;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .empty {
+      padding: 76px 18px;
+      color: var(--ter);
+      text-align: center;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .empty strong { display: block; margin-bottom: 7px; color: var(--sub); font-size: 16px; }
+
+    .option-card {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--surface);
+    }
+
+    .option-row {
+      width: 100%;
+      min-height: 88px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 13px 12px 13px 15px;
+      border: 0;
+      border-bottom: 1px solid var(--line2);
+      color: var(--ink);
+      background: var(--surface);
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .option-row:last-child { border-bottom: 0; }
+    .option-main { min-width: 0; flex: 1; }
+    .option-vendor { display: flex; align-items: center; gap: 6px; color: var(--ter); font-size: 13px; font-weight: 650; }
+    .option-name { display: block; overflow: hidden; margin-top: 4px; font-size: 16px; font-weight: 750; text-overflow: ellipsis; white-space: nowrap; }
+    .option-amount { display: block; margin-top: 3px; color: var(--sub); font-size: 13px; font-weight: 600; }
+    .option-values { flex: 0 0 auto; text-align: right; }
+    .option-volume { display: block; font-size: 16px; font-weight: 800; }
+    .option-price { display: block; margin-top: 3px; color: var(--ter); font-size: 13px; font-weight: 650; }
+
+    .bottom-action {
+      position: absolute;
+      z-index: 8;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      display: none;
+      padding: 12px 16px 18px;
+      border-top: 1px solid var(--line);
+      background: rgba(255, 255, 255, .97);
+    }
+
+    .bottom-action.show { display: block; }
+    .primary-action {
+      width: 100%;
+      height: 50px;
+      border: 0;
+      border-radius: 12px;
+      color: #fff;
+      background: var(--blue);
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .overlay {
+      position: absolute;
+      z-index: 30;
+      inset: 0;
+      display: none;
+      align-items: flex-end;
+      background: var(--scrim);
+    }
+
+    .overlay.open { display: flex; }
+
+    .sheet {
+      width: 100%;
+      padding: 10px 16px 20px;
+      border-radius: 22px 22px 0 0;
+      background: var(--surface);
+    }
+
+    .handle { width: 40px; height: 5px; margin: 0 auto 14px; border-radius: 3px; background: var(--line); }
+    .sheet-title { margin: 0 0 16px; font-size: 19px; font-weight: 800; }
+    .filter-label { margin: 0 0 9px; color: var(--sub); font-size: 15px; font-weight: 750; }
+    .filter-label.order { margin-top: 18px; }
+
+    .filter-options {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .filter-options.order-options { grid-template-columns: repeat(2, 1fr); }
+
+    .filter-option {
+      min-height: 45px;
+      padding: 8px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      color: var(--sub);
+      background: var(--surface);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .filter-option.selected { border-color: var(--blue); color: var(--blue); background: var(--blue-soft); }
+
+    .apply {
+      width: 100%;
+      height: 50px;
+      margin-top: 18px;
+      border: 0;
+      border-radius: 12px;
+      color: #fff;
+      background: var(--blue);
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .detail-sheet { padding-bottom: 24px; }
+    .detail-title { margin: 0; font-size: 19px; font-weight: 800; }
+    .detail-meta { margin-top: 5px; color: var(--ter); font-size: 13px; font-weight: 600; }
+    .detail-section-title { margin: 18px 0 8px; color: var(--sub); font-size: 14px; font-weight: 800; }
+    .detail-card { overflow: hidden; border: 1px solid var(--line); border-radius: 12px; }
+    .detail-row { display: flex; align-items: center; gap: 8px; min-height: 48px; padding: 11px 13px; border-bottom: 1px solid var(--line2); }
+    .detail-row:last-child { border-bottom: 0; }
+    .detail-label { width: 74px; color: var(--sub); font-size: 14px; font-weight: 700; }
+    .detail-before { margin-left: auto; color: var(--ter); font-size: 14px; font-variant-numeric: tabular-nums; }
+    .detail-arrow { color: var(--ter); }
+    .detail-after { color: var(--ink); font-size: 15px; font-weight: 800; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+    .toast {
+      position: absolute;
+      z-index: 40;
+      right: 18px;
+      bottom: 24px;
+      left: 18px;
+      display: none;
+      padding: 13px 15px;
+      border-radius: 11px;
+      color: #fff;
+      background: rgba(25, 31, 40, .92);
+      font-size: 13px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .toast.show { display: block; }
+
+    @media (max-width: 430px) {
+      body { padding: 0; background: var(--app); }
+      .screen-switcher { width: 100%; margin-bottom: 0; border-radius: 0; }
+      .phone { width: 100%; height: calc(100vh - 48px); min-height: 620px; border: 0; border-radius: 0; box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="prototype">
+    <nav class="screen-switcher" aria-label="상세 연관 화면 선택">
+      <button class="screen-switch active" type="button" data-screen="stock">재고 내역</button>
+      <button class="screen-switch" type="button" data-screen="purchase">구매 이력</button>
+      <button class="screen-switch" type="button" data-screen="discard">폐기 내역</button>
+      <button class="screen-switch" type="button" data-screen="options">구매 링크 · 옵션</button>
+      <button class="screen-switch" type="button" data-screen="profit">손익 변동</button>
+    </nav>
+
+    <section id="phone" class="phone has-type-tabs" aria-label="상세 연관 화면 공통 UI">
+      <div class="status-bar"><span>9:41</span><span>● ◔ ▰</span></div>
+      <header class="app-header">
+        <button class="back" type="button" aria-label="뒤로">‹</button>
+        <span id="app-title" class="app-title">돼지고기 앞다리 재고 내역</span>
+      </header>
+
+      <div id="type-tabs-wrap" class="type-tabs-wrap show">
+        <nav id="type-tabs" class="type-tabs" role="tablist" aria-label="내역 유형"></nav>
+      </div>
+
+      <section class="content">
+        <div id="condition-row" class="condition-row">
+          <button id="condition-trigger" class="condition-button" type="button" aria-haspopup="dialog" aria-expanded="false">
+            <span class="calendar-icon" aria-hidden="true"></span>
+            <span id="condition-text">최근 3개월 · 최신순</span>
+            <span aria-hidden="true">⌄</span>
+          </button>
+          <span id="result-count" class="result-count">5건</span>
+        </div>
+
+        <section id="summary" class="summary" aria-label="전체 요약">
+          <div class="summary-head">
+            <span id="summary-head-label" class="summary-head-label">현재 재고</span>
+            <strong id="summary-head-value" class="summary-head-value">13.5kg</strong>
+          </div>
+          <div id="summary-body" class="summary-body"></div>
+        </section>
+
+        <div id="history-groups"></div>
+        <div id="empty" class="empty" hidden></div>
+      </section>
+
+      <footer id="bottom-action" class="bottom-action">
+        <button id="bottom-primary" class="primary-action" type="button">구매 옵션 추가</button>
+      </footer>
+
+      <div id="filter-overlay" class="overlay" role="dialog" aria-modal="true" aria-labelledby="filter-title">
+        <section class="sheet">
+          <div class="handle"></div>
+          <h2 id="filter-title" class="sheet-title">기간 · 정렬</h2>
+          <p class="filter-label">기간</p>
+          <div class="filter-options" id="period-options">
+            <button class="filter-option" type="button" data-period="오늘">오늘</button>
+            <button class="filter-option" type="button" data-period="최근 1개월">최근 1개월</button>
+            <button class="filter-option selected" type="button" data-period="최근 3개월">최근 3개월</button>
+            <button class="filter-option" type="button" data-period="최근 6개월">최근 6개월</button>
+            <button class="filter-option" type="button" data-period="최근 1년">최근 1년</button>
+            <button class="filter-option" type="button" data-period="전체">전체</button>
+          </div>
+          <p class="filter-label order">정렬</p>
+          <div class="filter-options order-options" id="order-options">
+            <button class="filter-option selected" type="button" data-order="최신순">최신순</button>
+            <button class="filter-option" type="button" data-order="오래된순">오래된순</button>
+          </div>
+          <button id="apply-filter" class="apply" type="button">적용</button>
+        </section>
+      </div>
+
+      <div id="detail-overlay" class="overlay" role="dialog" aria-modal="true" aria-labelledby="detail-title">
+        <section class="sheet detail-sheet">
+          <div class="handle"></div>
+          <h2 id="detail-title" class="detail-title"></h2>
+          <div id="detail-meta" class="detail-meta"></div>
+          <div id="detail-content"></div>
+        </section>
+      </div>
+
+      <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <script>
+    const screens = {
+      stock: {
+        kind: 'history',
+        title: '돼지고기 앞다리 재고 내역',
+        tabs: [
+          { key: 'all', label: '전체' },
+          { key: 'inbound', label: '입고' },
+          { key: 'consume', label: '판매 소진' },
+          { key: 'discard', label: '폐기' },
+          { key: 'adjust', label: '조정' },
+        ],
+        summary: {
+          label: '현재 재고', value: '13.5kg',
+          metrics: [
+            { label: '입고', value: '+15kg', tone: 'blue' },
+            { label: '판매 소진', value: '−1.6kg', tone: 'red' },
+          ],
+        },
+        rows: [
+          { id: 's1', date: '2026-08-20', type: 'consume', title: '판매 소진', detail: '제육볶음 10개', primary: '−500g', secondary: '잔량 13.5kg', tone: 'down' },
+          { id: 's2', date: '2026-08-20', type: 'adjust', title: '수량 조정', detail: '재고 실사', primary: '+500g', secondary: '잔량 14kg', tone: 'up' },
+          { id: 's3', date: '2026-08-19', type: 'discard', title: '조리 전 폐기', detail: '보관 중 변질', primary: '−400g', secondary: '잔량 13.5kg', tone: 'down' },
+          { id: 's4', date: '2026-08-18', type: 'consume', title: '판매 소진', detail: '김치찌개 14개', primary: '−1.1kg', secondary: '잔량 13.9kg', tone: 'down' },
+          { id: 's5', date: '2026-08-16', type: 'inbound', title: '입고', detail: '마장축산 · 총 15kg', primary: '+15kg', secondary: '잔량 15kg', tone: 'up' },
+        ],
+      },
+      purchase: {
+        kind: 'history',
+        title: '고추장 구매 이력',
+        tabs: [],
+        summary: {
+          label: '기준단가', value: '5.00원/g',
+          metrics: [
+            { label: '기간 최저', value: '4.70원/g', tone: 'blue' },
+            { label: '기간 최고', value: '5.30원/g', tone: 'red' },
+          ],
+        },
+        rows: [
+          { id: 'p1', date: '2026-08-18', type: 'all', badge: '최고', badgeTone: 'red', title: '시장마트', detail: '총 1kg · 5,300원', primary: '5.30원/g', secondary: '', tone: '' },
+          { id: 'p2', date: '2026-08-12', type: 'all', badge: '최저', badgeTone: 'blue', title: '한빛식자재', detail: '총 5kg · 23,500원', primary: '4.70원/g', secondary: '', tone: '' },
+          { id: 'p3', date: '2026-07-29', type: 'all', title: '식자재쇼핑몰', detail: '총 3kg · 15,000원', primary: '5.00원/g', secondary: '', tone: '' },
+        ],
+      },
+      discard: {
+        kind: 'history',
+        title: '두부 폐기 내역',
+        tabs: [
+          { key: 'all', label: '전체' },
+          { key: 'before', label: '조리 전 폐기' },
+          { key: 'after', label: '조리 후 폐기' },
+        ],
+        summary: {
+          label: '전체 합계', value: '6개',
+          metrics: [{ label: '폐기 금액', value: '1,800원', tone: '' }],
+        },
+        rows: [
+          { id: 'd1', date: '2026-08-20', type: 'before', badge: '조리 전', badgeTone: '', title: '보관 중 변질', detail: '', primary: '−6개', secondary: '1,800원', tone: 'down', menu: true },
+        ],
+      },
+      options: {
+        kind: 'options',
+        title: '구매 링크 · 옵션',
+        tabs: [],
+        rows: [
+          { id: 'o1', vendor: '한빛식자재', badge: '최저', badgeTone: 'blue', title: '고추장 5kg', amount: '23,500원', volume: '5kg', price: '4.70원/g' },
+          { id: 'o2', vendor: '식자재쇼핑몰', title: '고추장 3kg', amount: '15,000원', volume: '3kg', price: '5.00원/g' },
+          { id: 'o3', vendor: '시장마트', badge: '최고', badgeTone: 'red', title: '고추장 1kg', amount: '5,300원', volume: '1kg', price: '5.30원/g' },
+        ],
+      },
+      profit: {
+        kind: 'profit',
+        title: '손익 변동',
+        tabs: [],
+        rows: [
+          {
+            id: 'r1', date: '2026-08-20', type: 'all', title: '고춧가루 단가 반영', detail: '재료비 32원 감소', primary: '4,046.69원', secondary: '+32원', secondaryTone: 'up',
+            detailData: {
+              meta: '08/20 · 14:38 · 식재료 변경',
+              cause: [['고춧가루 기준단가', '160원', '128원']],
+              result: [['순이익', '4,014.69원', '4,046.69원'], ['순이익률', '33.46%', '33.72%']],
+            },
+          },
+          {
+            id: 'r2', date: '2026-08-19', type: 'all', title: '고정지출 반영', detail: '고정지출 36원 증가', primary: '4,014.69원', secondary: '−36원', secondaryTone: 'down',
+            detailData: {
+              meta: '08/19 · 18:12 · 고정지출 변경',
+              cause: [['고정지출', '3,720원', '3,756원']],
+              result: [['순이익', '4,050.69원', '4,014.69원'], ['순이익률', '33.76%', '33.46%']],
+            },
+          },
+          {
+            id: 'r3', date: '2026-08-18', type: 'all', title: '레시피 수정', detail: '판매가 500원 증가', primary: '4,050.69원', secondary: '+299.54원', secondaryTone: 'up',
+            detailData: {
+              meta: '08/18 · 15:20 · 직접 수정',
+              cause: [['판매가', '11,500원', '12,000원']],
+              result: [['순이익', '3,751.15원', '4,050.69원'], ['순이익률', '32.62%', '33.76%']],
+            },
+          },
+        ],
+      },
+    };
+
+    let activeScreen = 'stock';
+    let activeType = 'all';
+    let appliedPeriod = '최근 3개월';
+    let appliedOrder = '최신순';
+    let draftPeriod = appliedPeriod;
+    let draftOrder = appliedOrder;
+    let toastTimer;
+
+    const byId = (id) => document.getElementById(id);
+
+    function formatMonth(date) {
+      const [year, month] = date.split('-');
+      return `${year}년 ${Number(month)}월`;
+    }
+
+    function formatDay(date) {
+      return date.slice(5).replace('-', '/');
+    }
+
+    function typeCount(screen, type) {
+      if (type === 'all') return screen.rows.length;
+      return screen.rows.filter((row) => row.type === type).length;
+    }
+
+    function visibleRows() {
+      const screen = screens[activeScreen];
+      if (screen.kind !== 'history') return screen.rows;
+      if (appliedPeriod === '오늘') return [];
+      const filtered = activeType === 'all' ? screen.rows : screen.rows.filter((row) => row.type === activeType);
+      return appliedOrder === '오래된순' ? [...filtered].reverse() : filtered;
+    }
+
+    function renderTabs() {
+      const screen = screens[activeScreen];
+      const hasTabs = screen.tabs.length > 0;
+      byId('phone').classList.toggle('has-type-tabs', hasTabs);
+      byId('type-tabs-wrap').classList.toggle('show', hasTabs);
+      byId('type-tabs').innerHTML = screen.tabs.map((tab) => {
+        const count = typeCount(screen, tab.key);
+        const countText = count > 0 ? ` ${count}` : '';
+        const selected = tab.key === activeType;
+        return `<button class="type-tab${selected ? ' active' : ''}" type="button" role="tab" aria-selected="${selected}" data-type="${tab.key}">${tab.label}${countText}</button>`;
+      }).join('');
+      byId('type-tabs').querySelectorAll('.type-tab').forEach((button) => {
+        button.addEventListener('click', () => {
+          activeType = button.dataset.type;
+          render();
+        });
+      });
+    }
+
+    function renderSummary(rows) {
+      const screen = screens[activeScreen];
+      const show = screen.kind === 'history' && Boolean(screen.summary) && activeType === 'all' && rows.length > 0;
+      byId('summary').hidden = !show;
+      if (!show) return;
+      byId('summary-head-label').textContent = screen.summary.label;
+      byId('summary-head-value').textContent = screen.summary.value;
+      const metrics = screen.summary.metrics;
+      byId('summary-body').classList.toggle('one', metrics.length === 1);
+      byId('summary-body').innerHTML = metrics.map((metric) => `
+        <div class="summary-metric">
+          <span class="summary-metric-label">${metric.label}</span>
+          <strong class="summary-metric-value ${metric.tone}">${metric.value}</strong>
+        </div>
+      `).join('');
+    }
+
+    function renderGroups(rows) {
+      const groups = new Map();
+      rows.forEach((row) => {
+        const month = formatMonth(row.date);
+        if (!groups.has(month)) groups.set(month, []);
+        groups.get(month).push(row);
+      });
+
+      byId('history-groups').innerHTML = [...groups.entries()].map(([month, monthRows]) => `
+        <section class="month-group">
+          <h2 class="month-title">${month}</h2>
+          <div class="history-card">
+            ${monthRows.map((row) => {
+              const open = row.detailData
+                ? `<button class="history-row history-button" type="button" data-detail="${row.id}">`
+                : '<article class="history-row">';
+              const close = row.detailData ? '</button>' : '</article>';
+              return `
+              ${open}
+                <div class="history-main">
+                  <div class="history-top">
+                    <span>${formatDay(row.date)}</span>
+                    ${row.badge ? `<span class="badge ${row.badgeTone || ''}">${row.badge}</span>` : ''}
+                  </div>
+                  <div class="history-title">${row.title}</div>
+                  ${row.detail ? `<div class="history-detail">${row.detail}</div>` : ''}
+                </div>
+                <div class="history-values">
+                  <div class="history-primary ${row.tone || ''}">${row.primary}</div>
+                  ${row.secondary ? `<div class="history-secondary ${row.secondaryTone || ''}">${row.secondary}</div>` : ''}
+                </div>
+                ${row.menu ? `<button class="more" type="button" data-row="${row.id}" aria-label="더보기">⋮</button>` : ''}
+                ${row.detailData ? '<span class="chevron" aria-hidden="true">›</span>' : ''}
+              ${close}
+            `;}).join('')}
+          </div>
+        </section>
+      `).join('');
+
+      byId('history-groups').querySelectorAll('.more').forEach((button) => {
+        button.addEventListener('click', () => showToast('삭제 메뉴가 열려요.'));
+      });
+      byId('history-groups').querySelectorAll('[data-detail]').forEach((button) => {
+        button.addEventListener('click', () => openProfitDetail(button.dataset.detail));
+      });
+    }
+
+    function renderOptions(rows) {
+      byId('history-groups').innerHTML = `
+        <section class="option-card">
+          ${rows.map((row) => `
+            <button class="option-row" type="button" data-option="${row.id}">
+              <span class="option-main">
+                <span class="option-vendor">
+                  <span>${row.vendor}</span>
+                  ${row.badge ? `<span class="badge ${row.badgeTone || ''}">${row.badge}</span>` : ''}
+                </span>
+                <span class="option-name">${row.title}</span>
+                <span class="option-amount">${row.amount}</span>
+              </span>
+              <span class="option-values">
+                <span class="option-volume">${row.volume}</span>
+                <span class="option-price">${row.price}</span>
+              </span>
+              <span class="chevron" aria-hidden="true">›</span>
+            </button>
+          `).join('')}
+        </section>
+      `;
+      byId('history-groups').querySelectorAll('[data-option]').forEach((button) => {
+        button.addEventListener('click', () => showToast('구매 옵션 수정 화면이 열려요.'));
+      });
+    }
+
+    function detailRows(rows) {
+      return rows.map(([label, before, after]) => `
+        <div class="detail-row">
+          <span class="detail-label">${label}</span>
+          <span class="detail-before">${before}</span>
+          <span class="detail-arrow">→</span>
+          <strong class="detail-after">${after}</strong>
+        </div>
+      `).join('');
+    }
+
+    function openProfitDetail(id) {
+      const row = screens.profit.rows.find((item) => item.id === id);
+      if (!row?.detailData) return;
+      byId('detail-title').textContent = row.title;
+      byId('detail-meta').textContent = row.detailData.meta;
+      byId('detail-content').innerHTML = `
+        <h3 class="detail-section-title">변동 원인</h3>
+        <div class="detail-card">${detailRows(row.detailData.cause)}</div>
+        <h3 class="detail-section-title">손익 결과</h3>
+        <div class="detail-card">${detailRows(row.detailData.result)}</div>
+      `;
+      byId('detail-overlay').classList.add('open');
+    }
+
+    function renderEmpty(rows) {
+      const empty = byId('empty');
+      empty.hidden = rows.length > 0;
+      if (rows.length > 0) return;
+      const title = activeScreen === 'discard' && activeType === 'after'
+        ? '조리 후 폐기 기록이 없어요'
+        : '이 조건에 맞는 기록이 없어요';
+      empty.innerHTML = `<strong>${title}</strong><span>선택한 기간에 해당하는 기록이 없습니다.</span>`;
+    }
+
+    function render() {
+      const screen = screens[activeScreen];
+      const rows = visibleRows();
+      const isHistory = screen.kind === 'history';
+      const isOptions = screen.kind === 'options';
+      byId('app-title').textContent = screen.title;
+      byId('condition-text').textContent = `${appliedPeriod} · ${appliedOrder}`;
+      byId('result-count').textContent = `${rows.length}건`;
+      byId('condition-row').hidden = !isHistory;
+      document.querySelector('.content').classList.toggle('direct', !isHistory);
+      byId('phone').classList.toggle('has-bottom-action', isOptions);
+      byId('bottom-action').classList.toggle('show', isOptions);
+      document.querySelectorAll('.screen-switch').forEach((button) => {
+        button.classList.toggle('active', button.dataset.screen === activeScreen);
+      });
+      renderTabs();
+      renderSummary(rows);
+      if (isOptions) renderOptions(rows);
+      else renderGroups(rows);
+      renderEmpty(rows);
+    }
+
+    function setScreen(screen) {
+      activeScreen = screen;
+      activeType = 'all';
+      closeFilter();
+      byId('detail-overlay').classList.remove('open');
+      render();
+    }
+
+    function openFilter() {
+      draftPeriod = appliedPeriod;
+      draftOrder = appliedOrder;
+      document.querySelectorAll('[data-period]').forEach((button) => button.classList.toggle('selected', button.dataset.period === draftPeriod));
+      document.querySelectorAll('[data-order]').forEach((button) => button.classList.toggle('selected', button.dataset.order === draftOrder));
+      byId('filter-overlay').classList.add('open');
+      byId('condition-trigger').setAttribute('aria-expanded', 'true');
+    }
+
+    function closeFilter() {
+      byId('filter-overlay').classList.remove('open');
+      byId('condition-trigger').setAttribute('aria-expanded', 'false');
+    }
+
+    function showToast(message) {
+      clearTimeout(toastTimer);
+      byId('toast').textContent = message;
+      byId('toast').classList.add('show');
+      toastTimer = setTimeout(() => byId('toast').classList.remove('show'), 1800);
+    }
+
+    document.querySelectorAll('.screen-switch').forEach((button) => {
+      button.addEventListener('click', () => setScreen(button.dataset.screen));
+    });
+    byId('condition-trigger').addEventListener('click', openFilter);
+    byId('filter-overlay').addEventListener('click', (event) => {
+      if (event.target === byId('filter-overlay')) closeFilter();
+    });
+    byId('detail-overlay').addEventListener('click', (event) => {
+      if (event.target === byId('detail-overlay')) byId('detail-overlay').classList.remove('open');
+    });
+    byId('bottom-primary').addEventListener('click', () => showToast('구매 옵션 추가 화면이 열려요.'));
+    document.querySelectorAll('[data-period]').forEach((button) => {
+      button.addEventListener('click', () => {
+        draftPeriod = button.dataset.period;
+        document.querySelectorAll('[data-period]').forEach((item) => item.classList.toggle('selected', item === button));
+      });
+    });
+    document.querySelectorAll('[data-order]').forEach((button) => {
+      button.addEventListener('click', () => {
+        draftOrder = button.dataset.order;
+        document.querySelectorAll('[data-order]').forEach((item) => item.classList.toggle('selected', item === button));
+      });
+    });
+    byId('apply-filter').addEventListener('click', () => {
+      appliedPeriod = draftPeriod;
+      appliedOrder = draftOrder;
+      closeFilter();
+      render();
+    });
+
+    const requestedScreen = new URLSearchParams(window.location.search).get('screen');
+    setScreen(Object.hasOwn(screens, requestedScreen) ? requestedScreen : 'stock');
+    const requestedEvent = new URLSearchParams(window.location.search).get('event');
+    if (activeScreen === 'profit' && requestedEvent) openProfitDetail(requestedEvent);
+  </script>
+</body>
+</html>
