@@ -11,6 +11,9 @@
 (AGENTS.md 는 4탭으로 적혀 있으나 매출관리 탭이 추가되어 실제 구현은 5탭이다. `app/(tabs)/_layout.tsx` 가 실물.)
 공통 헤더 패턴: 리스트 화면은 **타이틀(좌, 24·800) + 검색/알림 아이콘(우)**, 그 아래 **밑줄형 탭/카테고리 스트립**(좌측 정렬, 하단 구분선 `#D1D6DB`).
 
+식재료 상세에서 진입하는 재고·구매·폐기 내역 화면의 공통 구조와 컴포넌트 기준은
+`docs/식재료-상세-내역화면-공통-UI-가이드.md`를 따른다.
+
 ## 화면 인벤토리 — ✅ 구현 / ⬜ 미구현
 
 | 모듈 | 화면 ID | 이름 | 라우트 / 파일 | 상태 |
@@ -34,7 +37,6 @@
 | `recipes` | RCP-11 | 부자재 검색·담기 | `recipes/material-search` (`MaterialSearchScreen`) | ✅ |
 | `recipes` | RCP-13 | 부자재 관리 (+ RCP-14 부자재 수정 시트) | `recipes/materials` (`MaterialManageScreen`) | ✅ |
 | `recipes` | RCP-07 | 평균 판매량 입력 (기간·환산·배분비율) | `recipes/avg-sales` (`AvgSalesScreen`) | ✅ |
-| `recipes` | RCP-10 | 순이익률 변동 추이 (기간별 라인·min/max) | `recipes/profit-trend` (`ProfitTrendScreen`) | ✅ |
 | `recipes` | RCP-16 | 손익 변동 (금액 목록 → 원인·결과 시트, 커서 20건) | `recipes/profit-history` (`ProfitHistoryScreen`) | ✅ |
 | `recipes` | RCP-12 | 레시피 카테고리 설정 (추가·수정·삭제) | `recipes/category` (`CategoryScreen`) | ✅ |
 | `recipes`→`my` | MY-02 | 고정 지출 자세히 (자세히 보기 진입) | `recipes/fixed-cost` (`my/FixedCostScreen`) | ✅ |

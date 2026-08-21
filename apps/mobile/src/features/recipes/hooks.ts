@@ -114,7 +114,6 @@ export interface RecipeDetail {
   categoryId: string | null;
   lines: RecipeLine[];
   extras: { id: string; name: string; amount: number; materialId: string | null; qty: number }[];
-  profitTrends: { date: string; profitRate: number; materialRate: number; cause: 'material' | 'recipe' | 'fixed' }[];
 }
 
 export function useRecipeList() {
@@ -197,12 +196,6 @@ export function useRecipeDetail(id: string | undefined) {
           amount: num(e.amount),
           materialId: str(e.material_id),
           qty: num(e.qty) || 1,
-        })),
-        profitTrends: ((r.profit_trends ?? []) as Record<string, unknown>[]).map((t) => ({
-          date: String(t.date),
-          profitRate: num(t.profit_rate),
-          materialRate: num(t.material_rate),
-          cause: t.cause as 'material' | 'recipe' | 'fixed',
         })),
       };
     },
