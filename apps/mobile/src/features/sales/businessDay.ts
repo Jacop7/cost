@@ -44,6 +44,11 @@ export interface BusinessDayState {
   due: boolean;
   /** 아직 확인 안 한 자동 종료. 다음 앱 실행 때 알린다. */
   unacked: AutoCloseNotice | null;
+  /**
+   * 열려 있는 영업일이 **오늘이 아니다**(businessDate ≠ today).
+   * 이때 오늘 매출은 서버가 45001 로 막는다 — 바가 '영업 중'만 말하면 안 된다.
+   */
+  staleDay: boolean;
   hours: {
     openTime: string | null;
     closeTime: string | null;
@@ -74,6 +79,10 @@ function parse(raw: unknown): BusinessDayState {
     pastPlanned: r.past_planned === true,
     warnSoon: r.warn_soon === true,
     due: r.due === true,
+    // 열린 날이 오늘이 아니면 오늘 매출은 서버가 막는다. 화면이 알아야 한다.
+    staleDay:
+      (r.status === 'open' || r.status === 'break') &&
+      String(r.business_date ?? '') !== String(r.today ?? ''),
     unacked: u
       ? {
           businessDayId: String(u.business_day_id),
@@ -99,6 +108,22 @@ export function useBusinessDay() {
     queryKey: qk.businessDay,
     enabled: Boolean(storeId),
     queryFn: async (): Promise<BusinessDayState> => {
+      /*
+       * ⚠ 자동 종료는 **저절로 일어나지 않는다.** 서버에 스케줄러가 없어서
+       *   누군가 불러 줘야 하고, 상태를 보는 이 순간이 그 자리다.
+       *
+       *   안 부르면 어제 영업이 열린 채로 굳는다. 그러면 오늘 매출 등록이
+       *   `아직 영업을 시작하지 않았어요`(45001)로 막히는데, 화면 위 바는
+       *   '영업 중'이라고 말한다 — 사장님은 왜 저장이 안 되는지 알 길이 없다.
+       *   (실제로 이틀 열려 있었고 메뉴 판매 저장이 막혔다.)
+       *
+       * ⚠ 실패해도 조회는 계속한다. 종료를 못 했다고 화면까지 막을 이유는 없다.
+       */
+      const closed = await supabase.rpc('close_if_due', { p_store: storeId });
+      if (closed.error && __DEV__) {
+        console.warn('[businessDay] close_if_due:', closed.error.message);
+      }
+
       const { data, error } = await supabase.rpc('business_day_state', { p_store: storeId });
       if (error) throw new Error(error.message);
       return parse(data);

@@ -86,6 +86,11 @@ export function BusinessDayBar({ state }: { state: BusinessDayState }) {
         ? `${t} 자동 종료됐어요`
         : t ? `${t} 종료했어요` : '오늘 영업을 마쳤어요';
     }
+    /*
+     * ⚠ 열린 날이 오늘이 아니면 이 말부터 해야 한다. 그냥 '영업 중'이라고 하면
+     *   오늘 매출 저장이 45001 로 막히는 이유를 알 길이 없다 — 실제로 그랬다.
+     */
+    if (state.staleDay) return `${state.businessDate.slice(5).replace('-', '/')} 영업이 안 닫혔어요 · 종료해야 오늘을 시작해요`;
     if (state.warnSoon) return `${auto} 에 자동 종료돼요`;
     if (state.pastPlanned) return `예정 종료 ${planned} 이 지났어요 · ${auto} 자동 종료`;
     return planned ? `${planned} 종료 예정` : '영업 중이에요';
@@ -98,8 +103,8 @@ export function BusinessDayBar({ state }: { state: BusinessDayState }) {
           flexDirection: 'row', alignItems: 'center', gap: 9,
           paddingVertical: 11, paddingHorizontal: 13,
           borderRadius: 12, borderWidth: 1,
-          borderColor: state.warnSoon || state.pastPlanned ? T.amberText : T.line,
-          backgroundColor: state.warnSoon || state.pastPlanned ? T.amberTint : T.surface,
+          borderColor: state.warnSoon || state.pastPlanned || state.staleDay ? T.amberText : T.line,
+          backgroundColor: state.warnSoon || state.pastPlanned || state.staleDay ? T.amberTint : T.surface,
         }}
       >
         <Badge tone={st.tone}>{st.label}</Badge>
