@@ -1,9 +1,11 @@
 /**
  * MY > 세금 — 매장 하나에 하나다(0087).
  *
- * 0052 는 세금을 **레시피마다** 고치게 만들었다. 잘못 만든 것이다.
- * 부가세 모드도 카드 수수료도 매장 전체에 하나이고, 메뉴 50개면 50번 고쳐야 했다.
- * 한 개를 빠뜨리면 그 메뉴만 다른 세금으로 손익이 계산된다.
+ * 규칙은 하나다 — **판매가 × Σ(항목 요율)**(0090).
+ * 포함/별도/면세 세 갈래는 없앴다. 사장님이 답해야 할 질문이 하나 더 생기는 것이었다.
+ * 항목이 없으면 0원이고, 그게 면세다.
+ *
+ * ⚠ 부가세 포함 가격이면 **9.09%** 다(10/110). 10 을 적으면 메뉴당 109원이 더 빠진다.
  *
  * 고정 지출과 **같은 짜임**이다 —
  *   저장 → 전 레시피 손익 재계산 → 각 메뉴의 손익 변동에 '세금 반영' 한 줄.
@@ -13,18 +15,11 @@
  */
 import { useEffect, useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
-import type { TaxMode } from '@sikjae/types';
 import { AppHeader, Button, Card, Icon, Input, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { clampDecimals } from '@/lib/num';
 import { T, tnum } from '@/theme/tokens';
 import { useSaveStoreTax, useStoreSettings } from '../hooks';
-
-const MODES: [TaxMode, string, string][] = [
-  ['included', '포함', '판매가 × 10/110 을 부가세로 잡아요'],
-  ['separate', '별도', '판매가와 별도로 받아 손익에서 빼지 않아요'],
-  ['exempt', '면세', '부가세가 없는 품목이에요'],
-];
 
 interface Row { name: string; rate: string }
 
@@ -32,7 +27,6 @@ export default function MyTaxScreen() {
   const settings = useStoreSettings();
   const save = useSaveStoreTax();
 
-  const [mode, setMode] = useState<TaxMode>('included');
   const [rows, setRows] = useState<Row[]>([]);
   const [loaded, setLoaded] = useState(false);
 
@@ -40,7 +34,6 @@ export default function MyTaxScreen() {
   useEffect(() => {
     const s = settings.data;
     if (!s || loaded) return;
-    setMode(s.taxMode);
     setRows(s.taxItems.map((t) => ({ name: t.name, rate: String(t.rate) })));
     setLoaded(true);
   }, [settings.data, loaded]);
@@ -56,13 +49,13 @@ export default function MyTaxScreen() {
     : undefined;
   const error = nameError ?? rateError;
 
-  /** 부가세 + 더한 항목. 서버 `tax_of()` 와 같은 공식이다(절대원칙 3). */
-  const rate = (mode === 'included' ? 10 / 110 : 0) + rows.reduce((a, t) => a + num(t.rate) / 100, 0);
+  /** 세금 = 적은 항목의 합. 서버 `tax_of()` 와 같은 공식이다(절대원칙 3). */
+  const rate = rows.reduce((a, t) => a + num(t.rate) / 100, 0);
 
   const onSave = () => {
     if (error) return;
     save.mutate(
-      { mode, items: rows.map((t) => ({ name: t.name.trim(), rate: num(t.rate) })) },
+      rows.map((t) => ({ name: t.name.trim(), rate: num(t.rate) })),
       {
         onSuccess: (res) => {
           safeBack('/my');
@@ -89,40 +82,10 @@ export default function MyTaxScreen() {
           onRetry={() => void settings.refetch()}
           emptyTitle="설정을 불러오지 못했어요"
         >
-          {/* 부가세 */}
-          <Card pad={0} style={{ overflow: 'hidden' }}>
-            <View style={{ paddingVertical: 13, paddingHorizontal: 15, backgroundColor: T.surface2 }}>
-              <Text style={{ fontSize: 16, fontWeight: '800', color: T.sub }}>부가세</Text>
-            </View>
-            {MODES.map(([k, label, hint], i) => {
-              const on = mode === k;
-              return (
-                <Pressable
-                  key={k}
-                  onPress={() => setMode(k)}
-                  accessibilityRole="radio"
-                  accessibilityState={{ selected: on }}
-                  accessibilityLabel={`${label} — ${hint}`}
-                  style={{
-                    flexDirection: 'row', alignItems: 'center', gap: 10,
-                    paddingVertical: 14, paddingHorizontal: 15,
-                    borderTopWidth: i > 0 ? 1 : 0, borderTopColor: T.line2,
-                  }}
-                >
-                  <View style={{ flex: 1, minWidth: 0 }}>
-                    <Text style={{ fontSize: 16, fontWeight: '700', color: on ? T.blue : T.ink }}>{label}</Text>
-                    <Text style={{ fontSize: 14, color: T.ter, marginTop: 2 }}>{hint}</Text>
-                  </View>
-                  {on ? <Icon name="check" size={19} color={T.blue} sw={2.4} /> : null}
-                </Pressable>
-              );
-            })}
-          </Card>
-
           {/* 그 밖의 세금·수수료 */}
           <Card pad={0} style={{ overflow: 'hidden' }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 13, paddingHorizontal: 15, backgroundColor: T.surface2 }}>
-              <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.sub }}>그 밖의 세금·수수료</Text>
+              <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.sub }}>세금 항목</Text>
               <Text style={{ fontSize: 13, fontWeight: '600', color: T.ter }}>판매가 대비 %</Text>
             </View>
 
@@ -133,7 +96,7 @@ export default function MyTaxScreen() {
                     <Input
                       value={t.name}
                       onChangeText={(v) => setRows((p) => p.map((x, k) => (k === i ? { ...x, name: v } : x)))}
-                      placeholder="예) 카드 수수료"
+                      placeholder="예) 부가세, 카드 수수료"
                       accessibilityLabel={`항목 ${i + 1} 이름`}
                     />
                   </View>
@@ -141,7 +104,7 @@ export default function MyTaxScreen() {
                     <Input
                       value={t.rate}
                       onChangeText={(v) =>
-                        setRows((p) => p.map((x, k) => (k === i ? { ...x, rate: clampDecimals(v, 2) } : x)))
+                        setRows((p) => p.map((x, k) => (k === i ? { ...x, rate: clampDecimals(v, 4) } : x)))
                       }
                       placeholder="0"
                       suffix="%"

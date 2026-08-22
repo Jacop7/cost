@@ -187,7 +187,7 @@ describe('recompute_recipe 손익 — core ↔ SQL', () => {
     const core = computeProfit({
       price: fixture.price,
       servings: fixture.baseServings,
-      taxMode: 'included',
+      taxItems: [{ name: '부가세', rate: (100 * 10) / 110 }],
       lines: fixture.lines,
       extraPerServing: fixture.extraPerServing,
       fixedRate: fixture.fixedRate,
@@ -202,46 +202,46 @@ describe('recompute_recipe 손익 — core ↔ SQL', () => {
   it('순이익률 — core 는 비율(0~1), SQL 은 % 2자리 반올림', () => {
     const sql = sqlRecomputeRecipe(fixture);
     const core = computeProfit({
-      price: fixture.price, servings: fixture.baseServings, taxMode: 'included',
+      price: fixture.price, servings: fixture.baseServings, taxItems: [{ name: '부가세', rate: (100 * 10) / 110 }],
       lines: fixture.lines, extraPerServing: fixture.extraPerServing, fixedRate: fixture.fixedRate,
     });
     expect(Math.round(core.profitRate * 100 * 100) / 100).toBe(sql.profitRatePct);
   });
 
-  it('세금 — 부가세 포함은 판매가 × 10/110', () => {
-    expect(taxAmount(12000, 'included')).toBeCloseTo(sqlRecomputeRecipe(fixture).tax, 10);
-    expect(taxAmount(12000, 'separate')).toBe(0);
-  });
-
   // ⚠ SQL tax_of() 와 같은 값이어야 한다(절대원칙 3). 아래 기대값은 psql 실측이다.
-  //   select tax_of(12000,'included','[{"name":"카드 수수료","rate":2.5}]') → 1390.909…
-  it('세금 항목 — 부가세 + 판매가 대비 % 합산 (0052)', () => {
-    const items = [{ name: '카드 수수료', rate: 2.5 }];
-    expect(taxAmount(12000, 'included', items)).toBeCloseTo(1390.9090909090909, 9);
-    expect(taxAmount(12000, 'separate', items)).toBeCloseTo(300, 9);
-    expect(taxAmount(12000, 'exempt', items)).toBeCloseTo(300, 9);
-    // 항목이 비면 기존 값 그대로 — 검산 3종이 안 움직인다.
-    expect(taxAmount(12000, 'included', [])).toBeCloseTo(taxAmount(12000, 'included'), 10);
-    // 요율 0·음수는 없는 항목으로 본다 (SQL 의 where rate > 0).
-    expect(taxAmount(12000, 'included', [{ name: '없음', rate: 0 }])).toBeCloseTo(
-      taxAmount(12000, 'included'), 10);
-    expect(taxAmount(12000, 'included', [{ name: '이상', rate: -5 }])).toBeCloseTo(
-      taxAmount(12000, 'included'), 10);
+  //   select tax_of(12000, 'included', '[{"name":"부가세","rate":9.0909090909}]') → 1090.909…
+  const VAT = { name: '부가세', rate: (100 * 10) / 110 };
+
+  it('세금 = 항목의 합 (0090) — 부가세도 항목 하나다', () => {
+    expect(taxAmount(12000, [VAT])).toBeCloseTo(sqlRecomputeRecipe(fixture).tax, 10);
+    // 항목이 없으면 0원. 사장님은 그걸 면세로 읽는다 — 모드를 물어보지 않는다.
+    expect(taxAmount(12000)).toBe(0);
+    expect(taxAmount(12000, [])).toBe(0);
   });
 
-  it('세금 내역 — 합이 세금액과 같고 부가세가 기본 항목이다', () => {
-    const items = [{ name: '카드 수수료', rate: 2.5 }];
-    const rows = taxBreakdown(12000, 'included', items);
+  it('세금 항목 — 여러 줄을 더한다', () => {
+    const items = [VAT, { name: '카드 수수료', rate: 2.5 }];
+    expect(taxAmount(12000, items)).toBeCloseTo(1390.9090909090909, 9);
+    // 부가세를 빼면 카드 수수료만 남는다 — 면세 매장이 그렇게 만든다.
+    expect(taxAmount(12000, [{ name: '카드 수수료', rate: 2.5 }])).toBeCloseTo(300, 9);
+    // 요율 0·음수는 없는 항목으로 본다 (SQL 의 where rate > 0).
+    expect(taxAmount(12000, [VAT, { name: '없음', rate: 0 }])).toBeCloseTo(taxAmount(12000, [VAT]), 10);
+    expect(taxAmount(12000, [VAT, { name: '이상', rate: -5 }])).toBeCloseTo(taxAmount(12000, [VAT]), 10);
+  });
+
+  it('세금 내역 — 합이 세금액과 같다. 기본 항목은 없다', () => {
+    const items = [VAT, { name: '카드 수수료', rate: 2.5 }];
+    const rows = taxBreakdown(12000, items);
     expect(rows).toHaveLength(2);
-    expect(rows[0]).toMatchObject({ name: '부가세', builtin: true });
-    expect(rows.reduce((a, r) => a + r.amount, 0)).toBeCloseTo(taxAmount(12000, 'included', items), 9);
-    // 면세면 부가세 줄이 사라지고 추가 항목만 남는다.
-    expect(taxBreakdown(12000, 'exempt', items)).toHaveLength(1);
+    // 0090: 부가세도 사장님이 적은 줄이라 builtin 이 아니다.
+    expect(rows[0]).toMatchObject({ name: '부가세', builtin: false });
+    expect(rows.reduce((a, r) => a + r.amount, 0)).toBeCloseTo(taxAmount(12000, items), 9);
+    expect(taxBreakdown(12000, [])).toHaveLength(0);
   });
 
   it('세금 비율 — 권장 판매가 분모에 그대로 들어간다', () => {
-    expect(taxRate('included')).toBeCloseTo(10 / 110, 12);
-    expect(taxRate('included', [{ name: '카드 수수료', rate: 2.5 }])).toBeCloseTo(10 / 110 + 0.025, 12);
+    expect(taxRate([VAT])).toBeCloseTo(10 / 110, 12);
+    expect(taxRate([VAT, { name: '카드 수수료', rate: 2.5 }])).toBeCloseTo(10 / 110 + 0.025, 12);
   });
 
   it('단가 null 재료 — core 는 건너뛰고 SQL 은 coalesce 0, 결과 원가는 같다', () => {
@@ -254,7 +254,7 @@ describe('recompute_recipe 손익 — core ↔ SQL', () => {
     };
     const sql = sqlRecomputeRecipe(withNull);
     const core = computeProfit({
-      price: withNull.price, servings: withNull.baseServings, taxMode: 'included',
+      price: withNull.price, servings: withNull.baseServings, taxItems: [{ name: '부가세', rate: (100 * 10) / 110 }],
       lines: withNull.lines, extraPerServing: withNull.extraPerServing, fixedRate: withNull.fixedRate,
     });
     expect(core.materialCost).toBeCloseTo(sql.material, 10);
@@ -266,7 +266,7 @@ describe('recompute_recipe 손익 — core ↔ SQL', () => {
     const zero = { ...fixture, price: 0 };
     expect(sqlRecomputeRecipe(zero).profitRatePct).toBe(0);
     const core = computeProfit({
-      price: 0, servings: zero.baseServings, taxMode: 'included',
+      price: 0, servings: zero.baseServings, taxItems: [{ name: '부가세', rate: (100 * 10) / 110 }],
       lines: zero.lines, extraPerServing: zero.extraPerServing, fixedRate: zero.fixedRate,
     });
     expect(core.profitRate).toBe(0);
@@ -297,7 +297,7 @@ describe('recompute_recipe 손익 — core ↔ SQL', () => {
    */
   it('[알려진 차이] 음수 판매가 — core 는 0 으로 정규화, SQL 에는 제약이 없다', () => {
     const core = computeProfit({
-      price: -12000, servings: 10, taxMode: 'included',
+      price: -12000, servings: 10, taxItems: [{ name: '부가세', rate: (100 * 10) / 110 }],
       lines: [], extraPerServing: 0, fixedRate: 0,
     });
     expect(core.price).toBe(0);

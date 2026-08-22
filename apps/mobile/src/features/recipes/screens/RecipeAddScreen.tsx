@@ -134,16 +134,15 @@ export default function RecipeAddScreen() {
    *   보이다가 저장 후 서버가 매장 값을 얹어 숫자가 달라진다.
    *   고치는 곳은 MY > 세금 한 곳뿐이다.
    */
-  const taxMode = settings.data?.taxMode ?? 'included';
   const taxItems = settings.data?.taxItems ?? [];
-  const tax = round(taxAmount(price, taxMode, taxItems));
+  const tax = round(taxAmount(price, taxItems));
   const fixed = round(fixedRate * price);
   const profit = price - tax - material - fixed - extra;
   const profitRate = price > 0 ? profit / price : 0;
   const warn = profitRate < target;
   const PROFIT = warn ? T.red : T.green;
   // 권장가 분모에도 세금 항목이 들어간다 — 빼면 카드 수수료만큼 낮게 나온다.
-  const recRaw = recommendedPrice(material + extra, fixedRate, target, taxRate(taxMode, taxItems));
+  const recRaw = recommendedPrice(material + extra, fixedRate, target, taxRate(taxItems));
   const recommended = recRaw == null ? null : Math.round(recRaw / 100) * 100;
 
   const cm = costMode === 'batch' ? servings : 1;

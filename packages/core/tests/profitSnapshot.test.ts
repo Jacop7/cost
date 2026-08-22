@@ -44,7 +44,7 @@ describe('기준선 자체가 검산값이다', () => {
     const p = computeProfit({
       price: 12000,
       servings: 10,
-      taxMode: 'included',
+      taxItems: [{ name: '부가세', rate: (100 * 10) / 110 }],
       lines: [{ inputQty: 28064, baseUnitPrice: 1 }],
       extraPerServing: 300,
       fixedRate: 0.313,

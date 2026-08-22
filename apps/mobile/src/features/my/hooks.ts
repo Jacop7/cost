@@ -331,11 +331,13 @@ export function useSaveStoreTax() {
   const qc = useQueryClient();
   const storeId = useStoreId();
   return useMutation({
-    mutationFn: async (input: { mode: TaxMode; items: { name: string; rate: number }[] }) => {
+    mutationFn: async (items: { name: string; rate: number }[]) => {
       const { data, error } = await supabase.rpc('save_store_tax', {
         p_store: storeId,
-        p_mode: input.mode,
-        p_items: input.items.filter((t) => t.name.trim() !== '' && t.rate > 0),
+        // ⚠ 서버 인자는 남아 있지만 tax_of() 가 더는 읽지 않는다(0090).
+        //   세금은 항목의 합뿐이다. 인자를 지우려면 RPC 를 drop 해야 해서 자리만 뒀다.
+        p_mode: 'included',
+        p_items: items.filter((t) => t.name.trim() !== '' && t.rate > 0),
       });
       if (error) throw new Error(error.message);
       const r = (data ?? {}) as unknown as Record<string, unknown>;

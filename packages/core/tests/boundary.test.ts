@@ -109,7 +109,7 @@ describe('computeProfit — 인분·판매가 경계', () => {
   const base = {
     price: 12000,
     servings: 10,
-    taxMode: 'included' as const,
+    taxItems: [{ name: '부가세', rate: (100 * 10) / 110 }],
     extraPerServing: 300,
     fixedRate: 0.313,
     lines: [{ inputQty: 10, baseUnitPrice: 2806.4 }],
