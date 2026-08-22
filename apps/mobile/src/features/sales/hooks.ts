@@ -442,6 +442,72 @@ export function useMaterialUsage(from: string, to: string, enabled = true) {
   });
 }
 
+/** 폐기 손실 되짚기(0092) — 조리 폐기와 식재료 폐기는 **갈라서** 본다(0041). */
+export interface WasteBreakdown {
+  total: number;
+  menuTotal: number;
+  ingredientTotal: number;
+  /** 조리 폐기 — 만들어 놓고 못 판 몫. 덜 만들어야 한다는 신호. */
+  menu: { name: string; qty: number; amount: number }[];
+  /** 식재료 폐기 — 쓰기도 전에 버린 몫. 발주·보관을 손봐야 한다는 신호. */
+  ingredient: { name: string; qty: number; baseUnit: string; amount: number }[];
+}
+
+export function useWasteBreakdown(from: string, to: string, enabled = true) {
+  const storeId = useStoreId();
+  return useQuery({
+    queryKey: [...qk.salesRange(from, to), 'waste'],
+    enabled: enabled && Boolean(from) && Boolean(to),
+    queryFn: async (): Promise<WasteBreakdown> => {
+      const { data, error } = await supabase.rpc('sales_waste_breakdown', { p_store: storeId, p_from: from, p_to: to });
+      if (error) throw new Error(error.message);
+      const r = (data ?? {}) as unknown as Record<string, unknown>;
+      return {
+        total: num(r.total),
+        menuTotal: num(r.menu_total),
+        ingredientTotal: num(r.ingredient_total),
+        menu: ((r.menu ?? []) as Record<string, unknown>[]).map((m) => ({
+          name: String(m.name), qty: num(m.qty), amount: num(m.amount),
+        })),
+        ingredient: ((r.ingredient ?? []) as Record<string, unknown>[]).map((i) => ({
+          name: String(i.name), qty: num(i.qty),
+          baseUnit: String(i.base_unit ?? 'g'), amount: num(i.amount),
+        })),
+      };
+    },
+  });
+}
+
+/** 세금 되짚기(0092) — 항목별, 그리고 메뉴분·기타 매출분. */
+export interface TaxBreakdown {
+  total: number;
+  menuTotal: number;
+  etcTotal: number;
+  items: { name: string; rate: number; amount: number; menuAmount: number; etcAmount: number }[];
+}
+
+export function useTaxBreakdown(from: string, to: string, enabled = true) {
+  const storeId = useStoreId();
+  return useQuery({
+    queryKey: [...qk.salesRange(from, to), 'tax'],
+    enabled: enabled && Boolean(from) && Boolean(to),
+    queryFn: async (): Promise<TaxBreakdown> => {
+      const { data, error } = await supabase.rpc('sales_tax_breakdown', { p_store: storeId, p_from: from, p_to: to });
+      if (error) throw new Error(error.message);
+      const r = (data ?? {}) as unknown as Record<string, unknown>;
+      return {
+        total: num(r.total),
+        menuTotal: num(r.menu_total),
+        etcTotal: num(r.etc_total),
+        items: ((r.items ?? []) as Record<string, unknown>[]).map((i) => ({
+          name: String(i.name), rate: num(i.rate), amount: num(i.amount),
+          menuAmount: num(i.menu_amount), etcAmount: num(i.etc_amount),
+        })),
+      };
+    },
+  });
+}
+
 export interface ExtraUsageItem {
   name: string;
   qty: number;
