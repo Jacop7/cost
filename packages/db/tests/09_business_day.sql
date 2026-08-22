@@ -20,7 +20,13 @@ begin
   v_open := open_business_day(pg_temp.store());
   v_id := (v_open->>'business_day_id')::uuid;
   perform pg_temp.ok('영업 시작 → id 반환', v_id is not null);
-  perform pg_temp.eq_t('상태가 영업 중', v_open->>'status', 'open');
+  /*
+   * ⚠ '이미 열려 있으면 그걸 돌려준다'가 계약이다(불변식 8). 그때 상태는
+   *   브레이크일 수도 있다 — 시드가 깨끗하다고 가정하면 언젠가 반드시 깨진다.
+   *   여기서 확인할 건 **영업이 시작돼 있다**는 것이지 정확히 'open' 인지가 아니다.
+   */
+  perform pg_temp.ok('영업이 시작된 상태다',
+    (v_open->>'status') in ('open', 'break'));
 
   select snapshot into v_snap from business_days where id = v_id;
   perform pg_temp.ok('스냅샷이 비어 있지 않다', v_snap is not null and v_snap <> '{}'::jsonb);
