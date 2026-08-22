@@ -139,6 +139,7 @@ export type Database = {
           daily_extra: number
           etc_items: Json
           etc_revenue: number
+          etc_tax: number
           extra_items: Json
           id: string
           note: string | null
@@ -152,6 +153,7 @@ export type Database = {
           daily_extra?: number
           etc_items?: Json
           etc_revenue?: number
+          etc_tax?: number
           extra_items?: Json
           id?: string
           note?: string | null
@@ -165,6 +167,7 @@ export type Database = {
           daily_extra?: number
           etc_items?: Json
           etc_revenue?: number
+          etc_tax?: number
           extra_items?: Json
           id?: string
           note?: string | null
@@ -2170,6 +2173,22 @@ export type Database = {
         }
         Returns: Json
       }
+      sales_tax_breakdown: {
+        Args: {
+          p_store: string
+          p_from: string
+          p_to: string
+        }
+        Returns: Json
+      }
+      sales_waste_breakdown: {
+        Args: {
+          p_store: string
+          p_from: string
+          p_to: string
+        }
+        Returns: Json
+      }
       save_category: {
         Args: {
           p_store: string
@@ -2287,6 +2306,12 @@ export type Database = {
       stock_total_base: {
         Args: {
           p_ingredient: string
+        }
+        Returns: number
+      }
+      store_tax_rate: {
+        Args: {
+          p_store: string
         }
         Returns: number
       }

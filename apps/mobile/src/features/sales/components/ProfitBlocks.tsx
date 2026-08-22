@@ -92,10 +92,10 @@ export function ProfitBreakdownCard({
   const costs: [string, number, Href | null][] = [
     ['(−) 재료 원가', summary.materialCost, `/sales/material${q}` as Href],
     ['(−) 부자재', summary.extraMaterialCost, `/sales/extra${q}` as Href],
-    ['(−) 폐기 손실', summary.wasteLoss, null],
+    ['(−) 폐기 손실', summary.wasteLoss, `/sales/waste${q}` as Href],
     ['(−) 고정 지출', summary.fixedCost, `/sales/fixed${q}` as Href],
     ['(−) 추가 지출', summary.dailyExtra, `/sales/expense${q}` as Href],
-    ['(−) 세금', summary.tax, null],
+    ['(−) 세금', summary.tax, `/sales/tax${q}` as Href],
   ];
 
   return (
