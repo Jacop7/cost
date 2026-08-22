@@ -53,8 +53,10 @@ begin
   -- 판매가 · 부자재 삭제 · 세금 항목 추가 · 재료 단가 급등 · 인건비 인상.
   perform save_recipe(pg_temp.store(), jsonb_build_object(
     'id', v_rcp, 'name', '제육볶음', 'price', 20000, 'base_servings', 10,
-    'tax_items', jsonb_build_array(jsonb_build_object('name', '카드 수수료', 'rate', 2.5)),
     'extras', jsonb_build_array()));
+  -- ⚠ 세금은 레시피가 아니라 **매장**이 정한다(0087). 여기서 함께 흔든다.
+  perform save_store_tax(pg_temp.store(), 'included',
+    '[{"name":"카드 수수료","rate":2.5}]'::jsonb);
   perform e1_confirm_inbound(
     e7_place_order(pg_temp.store(), v_ing, v_ven, null, 5000, 150000, 4, v_day), 4, 'TEST-0058');
   perform save_fixed_costs(pg_temp.store(), business_month(), 12000000,
@@ -260,10 +262,11 @@ begin
   perform pg_temp.eq('카드 재료비 = 오늘 기준', (m0->>'material_cost')::numeric, 2806.40, 0.01);
   perform pg_temp.ok('오늘 팔 수 있는 메뉴다', (m0->>'in_basis')::boolean);
 
-  -- ⚠ 안 고친 메뉴로 확인한다. 앞 블록들이 제육볶음을 이미 흔들어 놨다 —
-  --   같은 트랜잭션이라 그 수정이 그대로 살아 있다.
-  perform pg_temp.ok('안 고친 메뉴에는 안내가 없다',
-    (select (m->>'changed')::boolean is false
+  -- ⚠ 세금은 매장 하나에 하나라(0087) 앞 블록의 세금 변경이 **전 메뉴**를 건드렸다.
+  --   그래서 손도 안 댄 공기밥도 '그날 기준과 다르다'고 알린다 — 그게 맞다.
+  --   같은 트랜잭션이라 앞 블록의 수정이 그대로 살아 있다.
+  perform pg_temp.ok('세금이 바뀌면 안 고친 메뉴도 달라졌다고 알린다',
+    (select (m->>'changed')::boolean
        from jsonb_array_elements(day_menu_basis(pg_temp.store(), v_day)) m
       where (m->>'recipe_id')::uuid = pg_temp.rcp('공기밥')));
 

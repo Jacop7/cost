@@ -40,45 +40,72 @@ begin
   perform pg_temp.eq('내역 합 = 세금',
     (select sum((i->>'amount')::numeric) from jsonb_array_elements(v_br) i), 1390.909, 0.01);
 
-  -- ── 저장이 값을 검사한다 ────────────────────────────────────
+  -- ── 세금은 **매장**이 정한다 (0087) ────────────────────────
+  -- 0052 는 레시피마다 고치게 했다. 메뉴 50개면 50번 고쳐야 했고 하나를
+  -- 빠뜨리면 그 메뉴만 다른 세금으로 손익이 계산된다.
+  perform pg_temp.ok('레시피별 세금 저장 RPC 는 없다',
+    not exists (select 1 from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+                 where n.nspname = 'public' and p.proname = 'save_recipe_tax_items'));
+
+  -- 저장이 값을 검사한다.
   perform pg_temp.raises('이름 빈 항목 거부',
-    format('select save_recipe_tax_items(%L, %L, %L::jsonb)', pg_temp.store(), v_rcp,
+    format('select save_store_tax(%L, %L, %L::jsonb)', pg_temp.store(), 'included',
            '[{"name":"  ","rate":2.5}]'), '22000');
   perform pg_temp.raises('음수 요율 거부',
-    format('select save_recipe_tax_items(%L, %L, %L::jsonb)', pg_temp.store(), v_rcp,
+    format('select save_store_tax(%L, %L, %L::jsonb)', pg_temp.store(), 'included',
            '[{"name":"이상한 세금","rate":-1}]'), '22000');
   perform pg_temp.raises('100% 이상 거부',
-    format('select save_recipe_tax_items(%L, %L, %L::jsonb)', pg_temp.store(), v_rcp,
+    format('select save_store_tax(%L, %L, %L::jsonb)', pg_temp.store(), 'included',
            '[{"name":"전부","rate":100}]'), '22000');
-
-  -- 남의 매장 것은 못 고친다 (RLS 계약).
   perform pg_temp.raises('남의 매장 거부',
-    format('select save_recipe_tax_items(%L, %L, %L::jsonb)',
-           '00000000-0000-0000-0000-0000000000ff', v_rcp, '[]'), null);
+    format('select save_store_tax(%L, %L, %L::jsonb)',
+           '00000000-0000-0000-0000-0000000000ff', 'included', '[]'), null);
 
-  -- ── 레시피 저장이 같은 화면에서 항목을 받는다 (0055) ────────
+  -- ── 저장하면 **전 레시피**에 퍼지고 손익 변동에 남는다 ──────
+  declare
+    v_res jsonb;
+    v_n   int := (select count(*) from recipes
+                   where store_id = pg_temp.store() and coalesce(active, true));
+    v_row jsonb;
+  begin
+    v_res := save_store_tax(pg_temp.store(), 'included',
+                            '[{"name":"  카드 수수료  ","rate":2.5}]'::jsonb);
+
+    perform pg_temp.ok('바뀌었다고 답한다', (v_res->>'changed')::boolean is true);
+    perform pg_temp.eq('활성 레시피 전부에 퍼진다', (v_res->>'recipes')::numeric, v_n, 0);
+    perform pg_temp.eq_t('이름 앞뒤 공백은 다듬어 저장',
+      (select tax_items->0->>'name' from settings where store_id = pg_temp.store()), '카드 수수료');
+    perform pg_temp.eq('제육 세금 = 부가세 + 2.5%', recipe_tax(v_rcp), 1390.909, 0.01);
+
+    -- 손익 변동(RCP-16)에 '세금 반영' 한 줄.
+    v_row := recipe_profit_history(v_rcp) -> 'rows' -> 0;
+    perform pg_temp.eq_t('손익 변동 제목', v_row->>'title', '세금 반영');
+    perform pg_temp.eq_t('대표 원인은 세금', v_row->>'cause_key', 'tax_amount');
+    perform pg_temp.eq_t('시트 부제', v_row->>'source_label', '세금 설정');
+    perform pg_temp.eq('세금이 300원 늘었다',
+      (v_row->>'cause_after')::numeric - (v_row->>'cause_before')::numeric, 300, 0.01);
+    perform pg_temp.eq('순이익은 그만큼 준다', (v_row->>'profit_delta')::numeric, -300, 0.01);
+
+    -- 같은 값을 다시 저장하면 아무 일도 없다. 목록에 쓰레기가 쌓이면 안 된다.
+    v_res := save_store_tax(pg_temp.store(), 'included',
+                            '[{"name":"카드 수수료","rate":2.5}]'::jsonb);
+    perform pg_temp.ok('같은 값 재저장은 변동 없음', (v_res->>'changed')::boolean is false);
+    perform pg_temp.eq_t('그래서 목록도 그대로',
+      (recipe_profit_history(v_rcp) -> 'rows' -> 0 ->> 'id'), v_row->>'id');
+  end;
+
+  -- ── 레시피 저장으로는 세금을 못 바꾼다 ──────────────────────
+  -- 값이 바뀌는 길은 하나여야 한다(절대원칙 2 와 같은 이유).
   perform save_recipe(pg_temp.store(), jsonb_build_object(
     'id', v_rcp, 'name', '제육볶음', 'price', 12000, 'base_servings', 10,
-    'tax_items', jsonb_build_array(jsonb_build_object('name', '  카드 수수료  ', 'rate', 2.5))));
-  perform pg_temp.eq('저장 경로로 들어간 항목이 계산된다', recipe_tax(v_rcp), 1390.909, 0.01);
-  perform pg_temp.eq_t('이름 앞뒤 공백은 다듬어 저장',
-    (select tax_items->0->>'name' from recipes where id = v_rcp), '카드 수수료');
+    'tax_items', jsonb_build_array(), 'tax_mode', 'exempt'));
+  perform pg_temp.eq_t('레시피 저장이 모드를 못 바꾼다',
+    (select tax_mode::text from recipes where id = v_rcp), 'included');
+  perform pg_temp.eq('레시피 저장이 항목을 못 지운다', recipe_tax(v_rcp), 1390.909, 0.01);
 
-  -- 헤더만 고치는 저장은 항목을 지우지 않는다 — 키가 없으면 그대로 둔다.
-  perform save_recipe(pg_temp.store(), jsonb_build_object(
-    'id', v_rcp, 'name', '제육볶음', 'price', 13000, 'base_servings', 10));
-  perform pg_temp.eq('키가 없으면 항목은 그대로',
-    jsonb_array_length((select tax_items from recipes where id = v_rcp)), 1, 0);
-  -- 빈 배열을 보내면 지운다 — "다 뺐다"는 뜻이다.
-  perform save_recipe(pg_temp.store(), jsonb_build_object(
-    'id', v_rcp, 'name', '제육볶음', 'price', 12000, 'base_servings', 10,
-    'tax_items', jsonb_build_array()));
-  perform pg_temp.eq('빈 배열이면 지운다', recipe_tax(v_rcp), 1090.909, 0.01);
-
-  perform pg_temp.raises('저장 경로도 요율을 검사한다',
-    format('select save_recipe(%L, %L::jsonb)', pg_temp.store(), jsonb_build_object(
-      'id', v_rcp, 'name', '제육볶음', 'price', 12000, 'base_servings', 10,
-      'tax_items', jsonb_build_array(jsonb_build_object('name','전부','rate',100)))::text), '22000');
+  -- 원래대로 되돌린다 — 뒤 블록이 검산값(1,090.91)을 쓴다.
+  perform save_store_tax(pg_temp.store(), 'included', '[]'::jsonb);
+  perform pg_temp.eq('되돌리면 부가세만', recipe_tax(v_rcp), 1090.909, 0.01);
 
   -- 상세 조회가 항목과 내역을 함께 준다 — 화면이 두 번 물어볼 필요가 없다.
   declare v_d jsonb := recipe_detail(v_rcp);
@@ -117,7 +144,7 @@ begin
   v_tx0 := (sales_summary(pg_temp.store(), v_day, v_day)->>'tax')::numeric;
 
   -- 판 뒤에 카드 수수료를 새로 넣는다.
-  perform save_recipe_tax_items(pg_temp.store(), v_rcp, '[{"name":"카드 수수료","rate":2.5}]'::jsonb);
+  perform save_store_tax(pg_temp.store(), 'included', '[{"name":"카드 수수료","rate":2.5}]'::jsonb);
 
   b1 := day_menu_detail(pg_temp.store(), v_day, v_rcp);
   perform pg_temp.eq('그날 세금 그대로', (b1->>'tax')::numeric, (b0->>'tax')::numeric, 0.0001);

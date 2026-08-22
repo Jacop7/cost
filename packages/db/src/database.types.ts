@@ -1269,6 +1269,8 @@ export type Database = {
           open_time: string
           quantity_digits: number
           store_id: string
+          tax_items: Json
+          tax_mode: Database["public"]["Enums"]["tax_mode"]
           unit_price_digits: number
           unit_system: string
           updated_at: string
@@ -1289,6 +1291,8 @@ export type Database = {
           open_time?: string
           quantity_digits?: number
           store_id: string
+          tax_items?: Json
+          tax_mode?: Database["public"]["Enums"]["tax_mode"]
           unit_price_digits?: number
           unit_system?: string
           updated_at?: string
@@ -1309,6 +1313,8 @@ export type Database = {
           open_time?: string
           quantity_digits?: number
           store_id?: string
+          tax_items?: Json
+          tax_mode?: Database["public"]["Enums"]["tax_mode"]
           unit_price_digits?: number
           unit_system?: string
           updated_at?: string
@@ -1655,6 +1661,10 @@ export type Database = {
           p_id: string
         }
         Returns: undefined
+      }
+      discard_delete_days: {
+        Args: Record<PropertyKey, never>
+        Returns: number
       }
       e1_confirm_inbound: {
         Args: {
@@ -2211,14 +2221,6 @@ export type Database = {
         }
         Returns: string
       }
-      save_recipe_tax_items: {
-        Args: {
-          p_store: string
-          p_recipe: string
-          p_items: Json
-        }
-        Returns: undefined
-      }
       save_sale: {
         Args: {
           p_store: string
@@ -2235,6 +2237,14 @@ export type Database = {
           p_payload: Json
         }
         Returns: undefined
+      }
+      save_store_tax: {
+        Args: {
+          p_store: string
+          p_mode: Database["public"]["Enums"]["tax_mode"]
+          p_items?: Json
+        }
+        Returns: Json
       }
       save_vendor: {
         Args: {
@@ -2334,7 +2344,7 @@ export type Database = {
       order_status: "ordered" | "partial" | "received" | "canceled"
       stock_badge: "ok" | "low" | "out"
       tax_mode: "included" | "separate" | "exempt"
-      trend_cause: "material" | "recipe" | "fixed"
+      trend_cause: "material" | "recipe" | "fixed" | "tax"
     }
     CompositeTypes: {
       [_ in never]: never

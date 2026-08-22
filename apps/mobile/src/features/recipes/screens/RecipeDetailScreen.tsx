@@ -105,7 +105,7 @@ export default function RecipeDetailScreen() {
     if (!r) return;
     saveRecipe.mutate(
       {
-        id: r.id, name: r.name, price: r.price, taxMode: r.taxMode,
+        id: r.id, name: r.name, price: r.price,
         baseServings: r.baseServings, targetProfitRate: r.targetProfitRate,
         avgMonthlySales: r.avgMonthlySales,
         memo: memo.trim() || null,
@@ -134,7 +134,7 @@ export default function RecipeDetailScreen() {
     }
     saveRecipe.mutate(
       {
-        id: r.id, name: r.name, price: r.price, taxMode: r.taxMode,
+        id: r.id, name: r.name, price: r.price,
         baseServings: r.baseServings, targetProfitRate: r.targetProfitRate,
         avgMonthlySales: r.avgMonthlySales, active: true,
       },

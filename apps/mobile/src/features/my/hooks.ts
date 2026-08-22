@@ -10,6 +10,7 @@ import { supabase } from '@/lib/supabase';
 import { asJson } from '@/lib/json';
 import { useStoreId } from '@/lib/SessionProvider';
 import { currentBusinessMonth } from '@sikjae/core';
+import type { TaxMode } from '@sikjae/types';
 
 const num = (v: unknown): number => Number(v ?? 0);
 const str = (v: unknown): string | null => (v === null || v === undefined ? null : String(v));
@@ -277,6 +278,12 @@ export interface StoreSettings {
   overnight: boolean;
   /** 총 영업 시간(분). 10:00~02:00 이면 960. */
   openMinutes: number;
+  /**
+   * 세금 — **매장 하나에 하나다**(0087). 레시피마다 다르지 않다.
+   * 고치는 길은 MY > 세금 뿐이고, 고치면 전 레시피 손익 변동에 기록된다.
+   */
+  taxMode: TaxMode;
+  taxItems: { name: string; rate: number }[];
 }
 
 export function useStoreSettings() {
@@ -306,8 +313,35 @@ export function useStoreSettings() {
         breakEnd: str(r.break_end),
         overnight: Boolean(r.overnight),
         openMinutes: num(r.open_minutes),
+        taxMode: (String(r.tax_mode ?? 'included') as TaxMode),
+        taxItems: ((r.tax_items ?? []) as Record<string, unknown>[]).map((t) => ({
+          name: String(t.name ?? ''),
+          rate: num(t.rate),
+        })),
       };
     },
+  });
+}
+
+/**
+ * 세금 저장(0087). 전 레시피 손익이 다시 계산되고 손익 변동에 한 줄씩 남는다.
+ * ⚠ 그래서 레시피·매출·수정 내역까지 함께 무효화한다 — 고정지출(E4)과 같다.
+ */
+export function useSaveStoreTax() {
+  const qc = useQueryClient();
+  const storeId = useStoreId();
+  return useMutation({
+    mutationFn: async (input: { mode: TaxMode; items: { name: string; rate: number }[] }) => {
+      const { data, error } = await supabase.rpc('save_store_tax', {
+        p_store: storeId,
+        p_mode: input.mode,
+        p_items: input.items.filter((t) => t.name.trim() !== '' && t.rate > 0),
+      });
+      if (error) throw new Error(error.message);
+      const r = (data ?? {}) as unknown as Record<string, unknown>;
+      return { changed: Boolean(r.changed), recipes: num(r.recipes) };
+    },
+    onSuccess: () => invalidate(qc, [qk.storeSettings, ...invalidateOn.e4()]),
   });
 }
 
