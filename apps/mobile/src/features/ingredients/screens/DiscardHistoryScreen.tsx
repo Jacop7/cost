@@ -21,19 +21,18 @@ import { businessDay, formatQuantity } from '@sikjae/core';
 import { T, tnum, won } from '@/theme/tokens';
 import { dispUnit } from '../ledger';
 import { PeriodSheet, periodRange, type HistoryPeriod } from './HistoryFilterSheet';
+import { ConditionRow, FilterButton, MonthHead, SummaryCard, groupByMonth, monthTitle } from '../components/HistoryLayout';
 import { DISCARD_DELETE_DAYS, useDeleteDiscard, useIngredientDetail, useStockHistory, type LedgerEntry } from '../hooks';
 
 type Tab = '전체' | '조리 전 폐기' | '조리 후 폐기';
 const TABS: Tab[] = ['전체', '조리 전 폐기', '조리 후 폐기'];
-
-/** `2026-08` → `2026년 8월`. 월 머리말. */
-const monthTitle = (ym: string) => `${ym.slice(0, 4)}년 ${Number(ym.slice(5, 7))}월`;
 
 export default function DiscardHistoryScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const [tab, setTab] = useState<Tab>('전체');
   const [period, setPeriod] = useState<HistoryPeriod>('최근 3개월');
   const [periodOpen, setPeriodOpen] = useState(false);
+  const [tabOpen, setTabOpen] = useState(false);
 
   const detail = useIngredientDetail(id);
   const history = useStockHistory(id, periodRange(period));
@@ -104,59 +103,20 @@ export default function DiscardHistoryScreen() {
   const shownAmount = sum(shown);
   const shownCost = price === null ? null : shownAmount * price;
 
-  /** 월 머리말로 묶는다. 같은 배열에 섞어 넣어야 스크롤이 자연스럽다. */
-  const groups = useMemo(() => {
-    const m = new Map<string, LedgerEntry[]>();
-    for (const e of shown) {
-      const ym = e.date.slice(0, 7);
-      const arr = m.get(ym);
-      if (arr) arr.push(e);
-      else m.set(ym, [e]);
-    }
-    return [...m.entries()];
-  }, [shown]);
+  const groups = groupByMonth(shown, (e) => e.date);
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <AppHeader title="폐기 내역" onBack={() => safeBack(`/ingredients/${id}`)} />
 
-      {/* 탭 — 밑줄형, 좌측 정렬 */}
-      <View style={{ flexDirection: 'row', paddingHorizontal: 20, borderBottomWidth: 1, borderBottomColor: T.line2, backgroundColor: T.surface }}>
-        {TABS.map((k) => {
-          const on = k === tab;
-          const n = k === '전체' ? discards.length : discards.filter((e) => (k === '조리 후 폐기' ? e.waste : !e.waste)).length;
-          return (
-            <Pressable
-              key={k}
-              onPress={() => setTab(k)}
-              accessibilityRole="tab"
-              accessibilityState={{ selected: on }}
-              accessibilityLabel={`${k} ${n}건`}
-              style={{ paddingVertical: 13, paddingHorizontal: 12, borderBottomWidth: 2, borderBottomColor: on ? T.ink : 'transparent' }}
-            >
-              <Text style={{ fontSize: 15, fontWeight: on ? '800' : '600', color: on ? T.ink : T.sub2 }}>
-                {k}{n > 0 ? ` ${n}` : ''}
-              </Text>
-            </Pressable>
-          );
-        })}
-      </View>
-
-      {/* 조건 줄 — 왼쪽 기간, 오른쪽 건수. 재고 내역(ING-08)과 같은 자리·같은 모양이다. */}
-      <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, paddingTop: 10, paddingBottom: 6 }}>
-        <Pressable
-          onPress={() => setPeriodOpen(true)}
-          accessibilityRole="button" accessibilityLabel={`기간 ${period} 변경`}
-          hitSlop={6}
-          style={{ flexDirection: 'row', alignItems: 'center', gap: 5, paddingVertical: 6 }}
-        >
-          <Icon name="calendar" size={16} color={T.sub} />
-          <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub }}>{period}</Text>
-          <Icon name="chevronDown" size={16} color={T.sub} />
-        </Pressable>
-        <View style={{ flex: 1 }} />
-        <Text style={[{ fontSize: 14, fontWeight: '600', color: T.ter }, tnum]}>{shown.length}건</Text>
-      </View>
+      {/*
+        조건 줄 — 유형·기간을 **오른쪽에** 나란히. 다섯 내역 화면이 같은 자리다.
+        탭으로 두면 유형이 화면 폭을 먹고, 기간은 갈 곳이 없어진다.
+      */}
+      <ConditionRow>
+        <FilterButton label={tab} onPress={() => setTabOpen(true)} />
+        <FilterButton label={period} onPress={() => setPeriodOpen(true)} />
+      </ConditionRow>
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 32, gap: 14 }}>
         <QueryState
@@ -171,27 +131,16 @@ export default function DiscardHistoryScreen() {
               : '식재료 상세에서 남은 양을 고치면 폐기로 기록돼요'
           }
         >
-          {/* 합계 — 머리에 수량, 아래 금액. 재고 내역 요약 카드와 같은 짜임이다. */}
-          <Card pad={0} style={{ overflow: 'hidden' }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 13, paddingHorizontal: 15, backgroundColor: T.surface2 }}>
-              <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.sub }}>{tab} 합계</Text>
-              <Text style={[{ fontSize: 17, fontWeight: '800', color: T.ink }, tnum]}>
-                {formatQuantity(shownAmount, unit)}
-              </Text>
-            </View>
-            <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12, paddingHorizontal: 15 }}>
-              <Text style={{ flex: 1, fontSize: 14, fontWeight: '600', color: T.ter }}>폐기 금액</Text>
-              <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, tnum]}>
-                {shownCost === null ? '단가 산출 전' : `${won(Math.round(shownCost))}원`}
-              </Text>
-            </View>
-          </Card>
+          {/* 합계 — 머리에 수량·금액. 다섯 화면이 같은 요약 카드를 쓴다. */}
+          <SummaryCard
+            label={`${tab} 합계`}
+            value={formatQuantity(shownAmount, unit)}
+            sub={shownCost === null ? '단가 산출 전' : `${won(Math.round(shownCost))}원`}
+          />
 
           {groups.map(([ym, list]) => (
             <View key={ym}>
-              <Text style={{ marginHorizontal: 6, marginBottom: 7, fontSize: 14, fontWeight: '700', color: T.sub }}>
-                {monthTitle(ym)}
-              </Text>
+              <MonthHead month={monthTitle(ym)} count={list.length} />
               {/* 줄마다 카드를 쓰면 목록이 아니라 더미가 된다 — 한 장에 구분선. */}
               <Card pad={0} style={{ overflow: 'hidden' }}>
                 {list.map((e, i) => (
@@ -250,6 +199,36 @@ export default function DiscardHistoryScreen() {
           ))}
         </QueryState>
       </ScrollView>
+
+      {/* 유형 선택 — 기간 시트와 같은 하단 시트. 같은 자리에서 같은 모양이어야 한다. */}
+      <Modal visible={tabOpen} transparent animationType="fade" onRequestClose={() => setTabOpen(false)} statusBarTranslucent>
+        <Pressable onPress={() => setTabOpen(false)} accessibilityRole="button" accessibilityLabel="닫기" style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: T.scrim }}>
+          <View onStartShouldSetResponder={() => true} style={{ backgroundColor: T.surface, borderTopLeftRadius: 20, borderTopRightRadius: 20, paddingHorizontal: 20, paddingTop: 10, paddingBottom: 26 }}>
+            <View style={{ alignItems: 'center', paddingBottom: 12 }}>
+              <View style={{ width: 40, height: 5, borderRadius: 3, backgroundColor: T.line }} />
+            </View>
+            <Text style={{ fontSize: 19, fontWeight: '800', color: T.ink, marginBottom: 14 }}>유형</Text>
+            {TABS.map((k) => {
+              const on = k === tab;
+              const n = k === '전체' ? discards.length : discards.filter((e) => (k === '조리 후 폐기' ? e.waste : !e.waste)).length;
+              return (
+                <Pressable
+                  key={k}
+                  onPress={() => { setTab(k); setTabOpen(false); }}
+                  accessibilityRole="button"
+                  accessibilityState={{ selected: on }}
+                  accessibilityLabel={`${k} ${n}건`}
+                  style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 14, borderTopWidth: 1, borderTopColor: T.line2 }}
+                >
+                  <Text style={{ flex: 1, fontSize: 16, fontWeight: on ? '800' : '600', color: on ? T.blue : T.ink }}>{k}</Text>
+                  <Text style={[{ fontSize: 14, color: T.ter, marginRight: 8 }, tnum]}>{n}건</Text>
+                  {on ? <Icon name="check" size={18} color={T.blue} sw={2.4} /> : null}
+                </Pressable>
+              );
+            })}
+          </View>
+        </Pressable>
+      </Modal>
 
       <PeriodSheet
         visible={periodOpen}

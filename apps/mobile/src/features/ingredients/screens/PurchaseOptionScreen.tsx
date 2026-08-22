@@ -276,21 +276,23 @@ export function PurchaseOptionScreen() {
                           같은 것을 두 화면이 다르게 그리면 사장님은 다른 정보라고 읽는다.
                         */}
                         <View style={{ flex: 1, minWidth: 0 }}>
-                          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 4 }}>
-                            <Text style={{ flexShrink: 1, fontSize: 14, color: T.ter, fontWeight: '600' }} numberOfLines={1}>
-                              {o.brandName ?? o.vendorName ?? '구매처 미지정'}
-                            </Text>
-                            {/* 배지는 여기 붙는다 — 오른쪽 두 줄은 용량·단가가 이미 쓰고 있다. */}
-                            {isLow ? <Badge tone="green" sm>최저</Badge> : null}
-                            {isHigh ? <Badge tone="red" sm>최고</Badge> : null}
-                          </View>
+                          <Text style={{ fontSize: 14, color: T.ter, fontWeight: '600', marginBottom: 4 }} numberOfLines={1}>
+                            {o.brandName ?? o.vendorName ?? '구매처 미지정'}
+                          </Text>
                           <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }} numberOfLines={1}>{o.name}</Text>
                           <Text style={[{ fontSize: 14, color: T.sub2, marginTop: 3 }, tnum]}>
                             {o.amount.toLocaleString('ko-KR')}원
                           </Text>
                         </View>
+                        {/*
+                          최저·최고는 **단가 쪽**에 붙는다 — 그 배지가 가리키는 게 단가다.
+                          구매 이력(ING-09)도 같은 자리를 쓴다.
+                        */}
                         <View style={{ alignItems: 'flex-end' }}>
-                          <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, tnum]}>
+                          <View style={{ height: 18, justifyContent: 'center' }}>
+                            {isLow ? <Badge tone="blue" sm>최저</Badge> : isHigh ? <Badge tone="red" sm>최고</Badge> : null}
+                          </View>
+                          <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink, marginTop: 2 }, tnum]}>
                             {formatQuantity(o.volume, base)}
                           </Text>
                           <Text style={[{ fontSize: 14, color: T.ter, marginTop: 3 }, tnum]}>
