@@ -55,8 +55,9 @@ begin
     'id', v_rcp, 'name', '제육볶음', 'price', 20000, 'base_servings', 10,
     'extras', jsonb_build_array()));
   -- ⚠ 세금은 레시피가 아니라 **매장**이 정한다(0087). 여기서 함께 흔든다.
+  -- ⚠ 부가세도 항목이다(0090). 빼고 보내면 세금이 되레 줄어 '흔든다'가 안 된다.
   perform save_store_tax(pg_temp.store(), 'included',
-    '[{"name":"카드 수수료","rate":2.5}]'::jsonb);
+    '[{"name":"부가세","rate":9.0909090909},{"name":"카드 수수료","rate":2.5}]'::jsonb);
   perform e1_confirm_inbound(
     e7_place_order(pg_temp.store(), v_ing, v_ven, null, 5000, 150000, 4, v_day), 4, 'TEST-0058');
   perform save_fixed_costs(pg_temp.store(), business_month(), 12000000,

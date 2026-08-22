@@ -85,12 +85,12 @@ export default function RecipeDetailScreen() {
     const material = r.materialCost;
     const extra = r.extraCost;
     // 세금 = 부가세 + 사장님이 더한 항목(0052). 서버 tax_of() 와 같은 공식이다.
-    const tax = round(taxAmount(price, r.taxMode, r.taxItems));
+    const tax = round(taxAmount(price, r.taxItems));
     const fixed = round(r.fixedRate * price);
     const profit = price - tax - material - fixed - extra;
     const profitRate = price > 0 ? profit / price : 0;
     const target = r.targetProfitRate / 100;
-    const recRaw = recommendedPrice(material + extra, r.fixedRate, target, taxRate(r.taxMode, r.taxItems));
+    const recRaw = recommendedPrice(material + extra, r.fixedRate, target, taxRate(r.taxItems));
     return {
       price, material, extra, tax, fixed, profit, profitRate, target,
       recommended: recRaw == null ? null : Math.round(recRaw / 100) * 100,
@@ -619,7 +619,7 @@ export default function RecipeDetailScreen() {
           extra={calc.extra}
           fixedRate={r.fixedRate}
           target={calc.target}
-          taxRatio={taxRate(r.taxMode, r.taxItems)}
+          taxRatio={taxRate(r.taxItems)}
         />
       ) : null}
     </View>

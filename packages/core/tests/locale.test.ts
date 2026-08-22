@@ -149,7 +149,7 @@ describe('검산 기준값이 서식을 통과해도 유지된다', () => {
     const r = computeProfit({
       price: 12000,
       servings: 10,
-      taxMode: 'included',
+      taxItems: [{ name: '부가세', rate: (100 * 10) / 110 }],
       extraPerServing: 300,
       fixedRate: 0.313,
       lines: [{ inputQty: 10, baseUnitPrice: 2806.4 }],

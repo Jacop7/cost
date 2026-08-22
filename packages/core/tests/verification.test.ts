@@ -39,7 +39,7 @@ describe('레시피 손익 (② 3장) — 제육볶음', () => {
   const result = computeProfit({
     price: 12000,
     servings: 10,
-    taxMode: 'included',
+    taxItems: [{ name: '부가세', rate: (100 * 10) / 110 }],
     extraPerServing: 300,
     fixedRate: 0.313, // 률 적용 시 고정 = 3,756
     // 재료 합 2,806.40 을 단일 라인으로 검증 (1인분량 1 × 단가 2806.4)
