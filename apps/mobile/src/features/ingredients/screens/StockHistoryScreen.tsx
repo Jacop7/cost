@@ -13,6 +13,7 @@ import { formatQuantity } from '@sikjae/core';
 import { safeBack } from '@/lib/nav';
 import { LedgerRow } from '../components/LedgerRow';
 import { HistoryFilterSheet, periodRange, type HistoryFilter } from './HistoryFilterSheet';
+import { ConditionRow, FilterButton, MonthHead, SummaryCard, monthTitle } from '../components/HistoryLayout';
 import { dispUnit, toLedgerView, type LedgerType } from '../ledger';
 import { useIngredientDetail, useStockHistory, type LedgerEntry } from '../hooks';
 
@@ -89,29 +90,18 @@ export function StockHistoryScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
-      <AppHeader
-        title={g ? `${g.name} 재고 내역` : '재고 내역'}
-        onBack={() => safeBack(`/ingredients/${id}`)}
-        right={
-          <Pressable
-            onPress={() => setFilterOpen(true)}
-            accessibilityRole="button" accessibilityLabel="조회 설정"
-            style={{ flexDirection: 'row', alignItems: 'center', gap: 3, paddingHorizontal: 8, paddingVertical: 8 }}
-          >
-            <Icon name="sort" size={19} color={T.ink2} />
-            <Text style={{ color: T.ink2, fontSize: 16, fontWeight: '700' }}>조회</Text>
-          </Pressable>
-        }
-      />
+      {/* 어느 재료인지는 들어온 화면이 안다. 이름이 길면 헤더가 밀린다(프로토타입 5.1). */}
+      <AppHeader title="재고 내역" onBack={() => safeBack(`/ingredients/${id}`)} />
 
-      {/* 선택된 조건 요약 — 왜 이만큼만 보이는지 알 수 있어야 한다. */}
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 22, paddingBottom: 10 }}>
-        <Text style={{ fontSize: 14, color: T.sub2, fontWeight: '600' }}>
-          {filter.period} · {filter.kind} · {filter.order}
-        </Text>
-        <View style={{ flex: 1 }} />
-        <Text style={[{ fontSize: 14, color: T.ter, fontWeight: '600' }, tnum]}>{rows.length}건</Text>
-      </View>
+      {/*
+        조건 줄 — 유형·기간을 **오른쪽에** 나란히. 다섯 내역 화면이 같은 자리다.
+        예전에는 헤더 오른쪽 '조회' 버튼 하나에 셋(기간·유형·정렬)이 숨어 있어
+        무엇으로 걸러진 목록인지 열어 봐야 알 수 있었다.
+      */}
+      <ConditionRow>
+        <FilterButton label={filter.kind} onPress={() => setFilterOpen(true)} />
+        <FilterButton label={filter.period} onPress={() => setFilterOpen(true)} />
+      </ConditionRow>
 
       <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 28, gap: 11 }} showsVerticalScrollIndicator={false}>
         <QueryState
@@ -122,42 +112,21 @@ export function StockHistoryScreen() {
           emptyTitle="이 조건에 맞는 기록이 없어요"
           emptyHint="조회 설정에서 기간이나 종류를 넓혀 보세요"
         >
-          {/* 요약 */}
-          <Card pad={0} style={{ overflow: 'hidden' }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 13, paddingHorizontal: 15, backgroundColor: T.surface2 }}>
-              <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.sub }}>현재 재고</Text>
-              <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, tnum]}>
-                {g ? formatQuantity(g.stockTotal, unit) : '—'}
-              </Text>
-            </View>
-            <View style={{ flexDirection: 'row', paddingVertical: 13, paddingHorizontal: 15, gap: 12 }}>
-              {/*
-                네 갈래를 **항상** 같은 자리에 둔다. 0 이라고 감추면 칸이 들쭉날쭉해서
-                어제 화면과 오늘 화면을 눈으로 못 겹친다. 부호만 값이 있을 때 붙인다 —
-                '−0g' 은 아무 말도 아니다.
-              */}
-              {([
-                ['입고', signed(totals.inbound, unit, '+'), T.blue],
-                ['소진', signed(totals.consume, unit, '−'), T.red],
-                ['폐기', signed(totals.discard, unit, '−'), T.red],
-                ['조정', signed(Math.abs(totals.adjust), unit, totals.adjust >= 0 ? '+' : '−'), T.sub2],
-              ] as const)
-                .map(([label, value, color]) => (
-                  <View key={label} style={{ flex: 1, minWidth: 0 }}>
-                    <Text style={{ fontSize: 14, color: T.ter, fontWeight: '600' }}>{label}</Text>
-                    <Text style={[{ fontSize: 15, fontWeight: '800', color, marginTop: 2 }, tnum]} numberOfLines={1}>
-                      {value}
-                    </Text>
-                  </View>
-                ))}
-            </View>
-          </Card>
+          {/* 요약 — 다섯 화면이 같은 카드를 쓴다. */}
+          <SummaryCard
+            label="현재 재고"
+            value={g ? formatQuantity(g.stockTotal, unit) : '—'}
+            metrics={[
+              { label: '입고', value: signed(totals.inbound, unit, '+'), tone: 'blue' },
+              { label: '판매 소진', value: signed(totals.consume, unit, '−'), tone: 'red' },
+              { label: '폐기', value: signed(totals.discard, unit, '−'), tone: 'red' },
+              { label: '조정', value: signed(Math.abs(totals.adjust), unit, totals.adjust >= 0 ? '+' : '−') },
+            ]}
+          />
 
           {groups.map(([ym, list]) => (
             <View key={ym}>
-              <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub, marginHorizontal: 6, marginBottom: 7 }}>
-                {ym.slice(0, 4)}년 {Number(ym.slice(5))}월
-              </Text>
+              <MonthHead month={monthTitle(ym)} count={list.length} />
               <Card pad={0} style={{ overflow: 'hidden' }}>
                 {list.map((e, i) => {
                   const v = toLedgerView(e, g?.baseUnit ?? 'g');

@@ -15,6 +15,7 @@ import { useMemo, useState } from 'react';
 import { ActivityIndicator, FlatList, Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { AppHeader, Card, Icon, QueryState, Sheet } from '@/components/kit';
+import { SummaryCard } from '@/features/ingredients/components/HistoryLayout';
 import { safeBack } from '@/lib/nav';
 import { T } from '@/theme/tokens';
 import {
@@ -156,24 +157,21 @@ export function ChangeHistoryScreen({ entity }: { entity: ChangeEntity }) {
                 {subject.data ?? ''}
               </Text>
 
+              {/*
+                요약 카드 — 다섯 내역 화면이 **같은 카드**를 쓴다(0089).
+                머리에 대표값(건수), 아래 칸칸이 갈래.
+              */}
               {summary ? (
-                <Card pad={0} style={{ overflow: 'hidden', marginTop: 13 }}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12, paddingHorizontal: 15 }}>
-                    <Text style={{ flex: 1, fontSize: 15, fontWeight: '800', color: T.ink }}>최근 7일 기준</Text>
-                    <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{summary.count}건</Text>
-                  </View>
-                  <View style={{ flexDirection: 'row', gap: 16, paddingVertical: 11, paddingHorizontal: 15, borderTopWidth: 1, borderTopColor: T.line2, backgroundColor: T.surface2 }}>
-                    {([
-                      ['직접 수정', summary.directCount],
-                      ['자동 갱신', summary.autoCount],
-                    ] as const).map(([k, v]) => (
-                      <View key={k} style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
-                        <Text style={{ fontSize: 14, color: T.sub2, fontWeight: '600' }}>{k}</Text>
-                        <Text style={[{ fontSize: 14, fontWeight: '800', color: T.ink }, NUM]}>{v}건</Text>
-                      </View>
-                    ))}
-                  </View>
-                </Card>
+                <View style={{ marginTop: 13 }}>
+                  <SummaryCard
+                    label="최근 7일 기준"
+                    value={`${summary.count}건`}
+                    metrics={[
+                      { label: '직접 수정', value: `${summary.directCount}건` },
+                      { label: '자동 갱신', value: `${summary.autoCount}건` },
+                    ]}
+                  />
+                </View>
               ) : null}
             </View>
           }
