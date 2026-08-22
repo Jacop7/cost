@@ -39,9 +39,18 @@ begin
   f0 := sales_fixed_breakdown(pg_temp.store(), v_day, v_day);
   r0 := (select material_cost from recipe_list(pg_temp.store()) where id = v_rcp);
 
-  -- ③ 두 화면이 같은 말을 하는가 — 되짚기 합계 = 손익의 재료비
-  perform pg_temp.eq('되짚기 재료비 = 손익 재료비',
-    (m0->>'total')::numeric, (s0->>'material_cost')::numeric, 0.01);
+  /*
+   * ③ 두 화면이 같은 말을 하는가.
+   *
+   * ⚠ 되짚기와 손익 재료비는 **같지 않다.** 다른 질문에 답한다 —
+   *     되짚기      "이 재료를 얼마나 썼나"  → 조리 폐기도 쓴 것이다
+   *     손익 재료비 "판 것의 원가는 얼마인가" → 조리 폐기는 폐기 손실로 따로 뺀다
+   *   차이는 정확히 조리 폐기다. 예전엔 그날 조리 폐기가 0이라 우연히 같았고,
+   *   폐기가 있는 날 데이터가 들어오자 바로 어긋났다(실측 4,788.70원).
+   */
+  perform pg_temp.eq('되짚기 재료비 = 손익 재료비 + 조리 폐기',
+    (m0->>'total')::numeric,
+    (s0->>'material_cost')::numeric + (s0->>'waste_menu')::numeric, 0.01);
   perform pg_temp.eq('되짚기 고정비 = 손익 고정비',
     (f0->>'total')::numeric, (s0->>'fixed_cost')::numeric, 0.01);
   perform pg_temp.eq('고정 항목별 합 = 고정비 합계',
@@ -104,8 +113,10 @@ begin
     0.0001);
 
   -- 되짚기와 손익이 여전히 같은 말을 하는가
-  perform pg_temp.eq('수정 후에도 되짚기 = 손익 (재료비)',
-    (m1->>'total')::numeric, (s1->>'material_cost')::numeric, 0.01);
+  -- 같은 이유로 여기도 조리 폐기를 더해야 맞다.
+  perform pg_temp.eq('수정 후에도 되짚기 = 손익 재료비 + 조리 폐기',
+    (m1->>'total')::numeric,
+    (s1->>'material_cost')::numeric + (s1->>'waste_menu')::numeric, 0.01);
   perform pg_temp.eq('수정 후에도 되짚기 = 손익 (고정비)',
     (f1->>'total')::numeric, (s1->>'fixed_cost')::numeric, 0.01);
 
