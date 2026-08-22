@@ -45,7 +45,12 @@ export default function SalesDayDetailScreen() {
               <SecLabel title="채널 구성" onPress={() => router.push(`/sales/channel?from=${date}&to=${date}` as Href)} />
               <ChannelMixCard summary={summary} channels={range.data?.channels ?? []} />
 
-              <SecLabel title="일 손익 계산" onPress={() => router.push(`/sales/day-detail?date=${date}` as Href)} />
+              {/*
+                ⚠ '자세히 보기'를 달지 않는다. 아래 카드의 **줄마다** 화살표가 있고
+                  각각 매출·재료·부자재·폐기·고정·추가·세금 상세로 간다.
+                  머리에 하나 더 두면 같은 곳을 두 길로 가게 된다(중복).
+              */}
+              <SecLabel title="일 손익 계산" />
               <ProfitBreakdownCard summary={summary} qtyLabel={`${qty}개`} from={date} to={date} />
 
               <View style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 2, marginTop: 4 }}>
