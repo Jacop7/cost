@@ -176,13 +176,12 @@
       scrollbar-width: thin;
     }
 
-    .phone.has-type-tabs .content { height: calc(100% - 128px); }
-
     .condition-row {
       display: flex;
       align-items: center;
+      gap: 6px;
       min-height: 49px;
-      padding: 5px 5px 4px;
+      padding: 5px 0 4px;
     }
 
     .condition-row[hidden] { display: none; }
@@ -190,47 +189,34 @@
     .content.direct { padding-top: 14px; }
     .phone.has-bottom-action .content { padding-bottom: 96px; }
 
+    .condition-actions {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
     .condition-button {
+      min-width: 0;
       display: flex;
       align-items: center;
       gap: 5px;
-      padding: 8px 1px;
-      border: 0;
+      padding: 7px 10px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
       color: var(--sub);
-      background: transparent;
-      font-size: 14px;
-      font-weight: 700;
+      background: var(--surface);
+      font-size: 13px;
+      font-weight: 750;
       cursor: pointer;
     }
 
-    .calendar-icon {
-      position: relative;
-      width: 16px;
-      height: 16px;
-      border: 1.5px solid currentColor;
-      border-radius: 4px;
-    }
-
-    .calendar-icon::before {
-      content: "";
-      position: absolute;
-      top: 3px;
-      right: 0;
-      left: 0;
-      border-top: 1.4px solid currentColor;
-    }
-
-    .result-count {
-      margin-left: auto;
-      color: var(--ter);
-      font-size: 14px;
-      font-weight: 650;
-      font-variant-numeric: tabular-nums;
-    }
+    .condition-button span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .condition-arrow { flex: 0 0 auto; color: var(--ter); font-size: 13px; }
 
     .summary {
       overflow: hidden;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
       border: 1px solid var(--line);
       border-radius: 14px;
       background: var(--surface);
@@ -241,29 +227,31 @@
     .summary-head {
       display: flex;
       align-items: center;
-      padding: 13px 15px;
-      background: var(--surface2);
+      padding: 14px 15px;
     }
 
-    .summary-head-label { flex: 1; color: var(--sub); font-size: 16px; font-weight: 800; }
-    .summary-head-value { color: var(--ink); font-size: 17px; font-weight: 800; font-variant-numeric: tabular-nums; }
+    .summary-head-label { flex: 1; color: var(--sub); font-size: 15px; font-weight: 800; }
+    .summary-head-value { color: var(--ink); font-size: 18px; font-weight: 800; font-variant-numeric: tabular-nums; }
 
     .summary-body {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 18px;
-      padding: 12px 15px 13px;
+      gap: 14px;
+      padding: 12px 15px;
+      border-top: 1px solid var(--line2);
     }
 
+    .summary-body[hidden] { display: none; }
     .summary-body.one { grid-template-columns: 1fr; }
-    .summary-metric { min-width: 0; display: flex; align-items: baseline; gap: 7px; }
-    .summary-metric-label { color: var(--ter); font-size: 13px; font-weight: 650; white-space: nowrap; }
-    .summary-metric-value { margin-left: auto; color: var(--ink2); font-size: 15px; font-weight: 800; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .summary-metric { min-width: 0; }
+    .summary-metric-label { display: block; margin-bottom: 4px; color: var(--ter); font-size: 12px; font-weight: 700; white-space: nowrap; }
+    .summary-metric-value { display: block; color: var(--ink2); font-size: 15px; font-weight: 800; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .summary-count { margin-left: 4px; color: var(--ter); font-size: 12px; font-weight: 700; white-space: nowrap; }
     .summary-metric-value.blue { color: var(--blue); }
     .summary-metric-value.red { color: var(--red); }
 
-    .month-group { margin-bottom: 14px; }
-    .month-title { margin: 0 6px 7px; color: var(--sub); font-size: 14px; font-weight: 750; }
+    .month-group { margin-bottom: 12px; }
+    .month-title { display: flex; align-items: center; justify-content: space-between; margin: 16px 5px 7px; color: var(--sub); font-size: 13px; font-weight: 800; }
 
     .history-card {
       overflow: hidden;
@@ -276,8 +264,8 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      min-height: 83px;
-      padding: 13px 12px 13px 15px;
+      min-height: 72px;
+      padding: 12px 14px;
       border-bottom: 1px solid var(--line2);
     }
 
@@ -298,18 +286,18 @@
       align-items: center;
       gap: 6px;
       color: var(--ter);
-      font-size: 13px;
-      font-weight: 650;
+      font-size: 12px;
+      font-weight: 700;
       font-variant-numeric: tabular-nums;
     }
 
     .badge {
-      padding: 3px 7px;
+      padding: 3px 6px;
       border-radius: 6px;
       color: var(--sub);
       background: var(--surface2);
-      font-size: 11px;
-      font-weight: 750;
+      font-size: 10px;
+      font-weight: 800;
     }
 
     .badge.blue { color: var(--blue); background: var(--blue-soft); }
@@ -321,8 +309,8 @@
       overflow: hidden;
       margin-top: 4px;
       color: var(--ink);
-      font-size: 16px;
-      font-weight: 750;
+      font-size: 15px;
+      font-weight: 800;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
@@ -331,21 +319,23 @@
       overflow: hidden;
       margin-top: 3px;
       color: var(--sub);
-      font-size: 13px;
-      font-weight: 550;
+      font-size: 12px;
+      font-weight: 600;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
 
     .history-values { flex: 0 0 auto; text-align: right; }
-    .history-primary { color: var(--ink); font-size: 16px; font-weight: 800; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .history-values.has-price-badge { align-self: stretch; }
+    .history-price-badge { min-height: 16px; display: flex; justify-content: flex-end; align-items: flex-start; margin-bottom: 5px; }
+    .history-primary { color: var(--ink); font-size: 15px; font-weight: 800; font-variant-numeric: tabular-nums; white-space: nowrap; }
     .history-primary.up { color: var(--blue); }
     .history-primary.down { color: var(--red); }
-    .history-secondary { margin-top: 3px; color: var(--ter); font-size: 13px; font-weight: 650; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .history-secondary { margin-top: 3px; color: var(--ter); font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
     .history-secondary.up { color: var(--blue); font-weight: 750; }
     .history-secondary.down { color: var(--red); font-weight: 750; }
 
-    .chevron { flex: 0 0 auto; color: var(--ter); font-size: 22px; line-height: 1; }
+    .chevron { flex: 0 0 auto; color: var(--ter); font-size: 20px; line-height: 1; }
 
     .more {
       width: 25px;
@@ -395,7 +385,8 @@
     .option-vendor { display: flex; align-items: center; gap: 6px; color: var(--ter); font-size: 13px; font-weight: 650; }
     .option-name { display: block; overflow: hidden; margin-top: 4px; font-size: 16px; font-weight: 750; text-overflow: ellipsis; white-space: nowrap; }
     .option-amount { display: block; margin-top: 3px; color: var(--sub); font-size: 13px; font-weight: 600; }
-    .option-values { flex: 0 0 auto; text-align: right; }
+    .option-values { flex: 0 0 auto; align-self: stretch; text-align: right; }
+    .option-price-badge { min-height: 16px; display: flex; justify-content: flex-end; align-items: flex-start; margin-bottom: 4px; }
     .option-volume { display: block; font-size: 16px; font-weight: 800; }
     .option-price { display: block; margin-top: 3px; color: var(--ter); font-size: 13px; font-weight: 650; }
 
@@ -529,25 +520,16 @@
       <button class="screen-switch" type="button" data-screen="profit">손익 변동</button>
     </nav>
 
-    <section id="phone" class="phone has-type-tabs" aria-label="상세 연관 화면 공통 UI">
+    <section id="phone" class="phone" aria-label="상세 연관 화면 공통 UI">
       <div class="status-bar"><span>9:41</span><span>● ◔ ▰</span></div>
       <header class="app-header">
         <button class="back" type="button" aria-label="뒤로">‹</button>
         <span id="app-title" class="app-title">재고 내역</span>
       </header>
 
-      <div id="type-tabs-wrap" class="type-tabs-wrap show">
-        <nav id="type-tabs" class="type-tabs" role="tablist" aria-label="내역 유형"></nav>
-      </div>
-
       <section class="content">
         <div id="condition-row" class="condition-row">
-          <button id="condition-trigger" class="condition-button" type="button" aria-haspopup="dialog" aria-expanded="false">
-            <span class="calendar-icon" aria-hidden="true"></span>
-            <span id="condition-text">최근 3개월 · 최신순</span>
-            <span aria-hidden="true">⌄</span>
-          </button>
-          <span id="result-count" class="result-count">5건</span>
+          <div id="condition-actions" class="condition-actions"></div>
         </div>
 
         <section id="summary" class="summary" aria-label="전체 요약">
@@ -569,21 +551,9 @@
       <div id="filter-overlay" class="overlay" role="dialog" aria-modal="true" aria-labelledby="filter-title">
         <section class="sheet">
           <div class="handle"></div>
-          <h2 id="filter-title" class="sheet-title">기간 · 정렬</h2>
-          <p class="filter-label">기간</p>
-          <div class="filter-options" id="period-options">
-            <button class="filter-option" type="button" data-period="오늘">오늘</button>
-            <button class="filter-option" type="button" data-period="최근 1개월">최근 1개월</button>
-            <button class="filter-option selected" type="button" data-period="최근 3개월">최근 3개월</button>
-            <button class="filter-option" type="button" data-period="최근 6개월">최근 6개월</button>
-            <button class="filter-option" type="button" data-period="최근 1년">최근 1년</button>
-            <button class="filter-option" type="button" data-period="전체">전체</button>
-          </div>
-          <p class="filter-label order">정렬</p>
-          <div class="filter-options order-options" id="order-options">
-            <button class="filter-option selected" type="button" data-order="최신순">최신순</button>
-            <button class="filter-option" type="button" data-order="오래된순">오래된순</button>
-          </div>
+          <h2 id="filter-title" class="sheet-title">유형</h2>
+          <p id="filter-label" class="filter-label">기록 유형</p>
+          <div class="filter-options" id="filter-options"></div>
           <button id="apply-filter" class="apply" type="button">적용</button>
         </section>
       </div>
@@ -618,6 +588,8 @@
           metrics: [
             { label: '입고', value: '+15kg', tone: 'blue' },
             { label: '판매 소진', value: '−1.6kg', tone: 'red' },
+            { label: '폐기', value: '−400g', tone: 'red' },
+            { label: '조정', value: '+500g', tone: 'blue' },
           ],
         },
         rows: [
@@ -653,9 +625,10 @@
           { key: 'before', label: '조리 전 폐기' },
           { key: 'after', label: '조리 후 폐기' },
         ],
-        summary: {
-          label: '전체 합계', value: '6개',
-          metrics: [{ label: '폐기 금액', value: '1,800원', tone: '' }],
+        summaries: {
+          all: { label: '전체', value: '1,800원 / 6개', metrics: [] },
+          before: { label: '조리 전 폐기', value: '1,800원 / 6개', metrics: [] },
+          after: { label: '조리 후 폐기', value: '0원 / 0개', metrics: [] },
         },
         rows: [
           { id: 'd1', date: '2026-08-20', type: 'before', badge: '조리 전', badgeTone: '', title: '보관 중 변질', detail: '', primary: '−6개', secondary: '1,800원', tone: 'down', menu: true },
@@ -706,10 +679,13 @@
 
     let activeScreen = 'stock';
     let activeType = 'all';
-    let appliedPeriod = '최근 3개월';
-    let appliedOrder = '최신순';
-    let draftPeriod = appliedPeriod;
-    let draftOrder = appliedOrder;
+    const historyFilters = {
+      stock: { period: '최근 3개월', type: 'all' },
+      purchase: { period: '최근 3개월' },
+      discard: { period: '최근 3개월', type: 'all' },
+    };
+    let filterKind = 'period';
+    let draftValue = '';
     let toastTimer;
 
     const byId = (id) => document.getElementById(id);
@@ -731,43 +707,52 @@
     function visibleRows() {
       const screen = screens[activeScreen];
       if (screen.kind !== 'history') return screen.rows;
-      if (appliedPeriod === '오늘') return [];
-      const filtered = activeType === 'all' ? screen.rows : screen.rows.filter((row) => row.type === activeType);
-      return appliedOrder === '오래된순' ? [...filtered].reverse() : filtered;
+      const filter = historyFilters[activeScreen];
+      activeType = filter?.type ?? 'all';
+      return activeType === 'all' ? screen.rows : screen.rows.filter((row) => row.type === activeType);
     }
 
-    function renderTabs() {
+    function renderConditions() {
       const screen = screens[activeScreen];
-      const hasTabs = screen.tabs.length > 0;
-      byId('phone').classList.toggle('has-type-tabs', hasTabs);
-      byId('type-tabs-wrap').classList.toggle('show', hasTabs);
-      byId('type-tabs').innerHTML = screen.tabs.map((tab) => {
-        const count = typeCount(screen, tab.key);
-        const countText = count > 0 ? ` ${count}` : '';
-        const selected = tab.key === activeType;
-        return `<button class="type-tab${selected ? ' active' : ''}" type="button" role="tab" aria-selected="${selected}" data-type="${tab.key}">${tab.label}${countText}</button>`;
-      }).join('');
-      byId('type-tabs').querySelectorAll('.type-tab').forEach((button) => {
-        button.addEventListener('click', () => {
-          activeType = button.dataset.type;
-          render();
-        });
+      const filter = historyFilters[activeScreen];
+      if (screen.kind !== 'history' || !filter) {
+        byId('condition-actions').innerHTML = '';
+        return;
+      }
+      const typeTab = screen.tabs.find((tab) => tab.key === (filter.type ?? 'all'));
+      const typeButton = filter.type === undefined ? '' : `
+        <button class="condition-button" type="button" data-filter-kind="type" aria-haspopup="dialog">
+          <span>${typeTab?.label ?? '전체'}</span><span class="condition-arrow" aria-hidden="true">⌄</span>
+        </button>`;
+      byId('condition-actions').innerHTML = `${typeButton}
+        <button class="condition-button" type="button" data-filter-kind="period" aria-haspopup="dialog">
+          <span>${filter.period}</span><span class="condition-arrow" aria-hidden="true">⌄</span>
+        </button>`;
+      byId('condition-actions').querySelectorAll('[data-filter-kind]').forEach((button) => {
+        button.addEventListener('click', () => openFilter(button.dataset.filterKind));
       });
+    }
+
+    function summaryValue(value) {
+      const parts = String(value).split(/\s*\/\s*/);
+      return parts.length === 2 ? `${parts[0]}<span class="summary-count">· ${parts[1]}</span>` : value;
     }
 
     function renderSummary(rows) {
       const screen = screens[activeScreen];
-      const show = screen.kind === 'history' && Boolean(screen.summary) && activeType === 'all' && rows.length > 0;
+      const selectedSummary = screen.summaries?.[activeType] ?? screen.summary;
+      const show = screen.kind === 'history' && Boolean(selectedSummary) && (activeType === 'all' || activeScreen === 'discard') && (rows.length > 0 || activeScreen === 'discard');
       byId('summary').hidden = !show;
       if (!show) return;
-      byId('summary-head-label').textContent = screen.summary.label;
-      byId('summary-head-value').textContent = screen.summary.value;
-      const metrics = screen.summary.metrics;
+      byId('summary-head-label').textContent = selectedSummary.label;
+      byId('summary-head-value').innerHTML = summaryValue(selectedSummary.value);
+      const metrics = selectedSummary.metrics;
+      byId('summary-body').hidden = metrics.length === 0;
       byId('summary-body').classList.toggle('one', metrics.length === 1);
       byId('summary-body').innerHTML = metrics.map((metric) => `
         <div class="summary-metric">
           <span class="summary-metric-label">${metric.label}</span>
-          <strong class="summary-metric-value ${metric.tone}">${metric.value}</strong>
+          <strong class="summary-metric-value ${metric.tone}">${summaryValue(metric.value)}</strong>
         </div>
       `).join('');
     }
@@ -780,31 +765,41 @@
         groups.get(month).push(row);
       });
 
+      if (rows.length === 0 && screens[activeScreen].kind === 'history') {
+        const month = formatMonth(screens[activeScreen].rows[0]?.date ?? '2026-08-01');
+        byId('history-groups').innerHTML = `<section class="month-group"><h2 class="month-title"><span>${month}</span><span>총 0건</span></h2></section>`;
+        return;
+      }
+
       byId('history-groups').innerHTML = [...groups.entries()].map(([month, monthRows]) => `
         <section class="month-group">
-          <h2 class="month-title">${month}</h2>
+          <h2 class="month-title"><span>${month}</span>${screens[activeScreen].kind === 'history' ? `<span>총 ${monthRows.length}건</span>` : ''}</h2>
           <div class="history-card">
             ${monthRows.map((row) => {
-              const open = row.detailData
+              const priceBadge = row.badge === '최저' || row.badge === '최고';
+              const alignValueRows = priceBadge || Boolean(row.detailData) || activeScreen === 'stock' || activeScreen === 'discard';
+              const opensDetail = Boolean(row.detailData) && activeScreen !== 'profit';
+              const open = opensDetail
                 ? `<button class="history-row history-button" type="button" data-detail="${row.id}">`
                 : '<article class="history-row">';
-              const close = row.detailData ? '</button>' : '</article>';
+              const close = opensDetail ? '</button>' : '</article>';
               return `
               ${open}
                 <div class="history-main">
                   <div class="history-top">
                     <span>${formatDay(row.date)}</span>
-                    ${row.badge ? `<span class="badge ${row.badgeTone || ''}">${row.badge}</span>` : ''}
+                    ${row.badge && !priceBadge ? `<span class="badge ${row.badgeTone || ''}">${row.badge}</span>` : ''}
                   </div>
                   <div class="history-title">${row.title}</div>
                   ${row.detail ? `<div class="history-detail">${row.detail}</div>` : ''}
                 </div>
-                <div class="history-values">
+                <div class="history-values${alignValueRows ? ' has-price-badge' : ''}">
+                  ${alignValueRows ? `<div class="history-price-badge"${priceBadge ? '' : ' aria-hidden="true"'}>${priceBadge ? `<span class="badge ${row.badgeTone || ''}">${row.badge}</span>` : ''}</div>` : ''}
                   <div class="history-primary ${row.tone || ''}">${row.primary}</div>
                   ${row.secondary ? `<div class="history-secondary ${row.secondaryTone || ''}">${row.secondary}</div>` : ''}
                 </div>
                 ${row.menu ? `<button class="more" type="button" data-row="${row.id}" aria-label="더보기">⋮</button>` : ''}
-                ${row.detailData ? '<span class="chevron" aria-hidden="true">›</span>' : ''}
+                ${opensDetail ? '<span class="chevron" aria-hidden="true">›</span>' : ''}
               ${close}
             `;}).join('')}
           </div>
@@ -827,12 +822,12 @@
               <span class="option-main">
                 <span class="option-vendor">
                   <span>${row.vendor}</span>
-                  ${row.badge ? `<span class="badge ${row.badgeTone || ''}">${row.badge}</span>` : ''}
                 </span>
                 <span class="option-name">${row.title}</span>
                 <span class="option-amount">${row.amount}</span>
               </span>
               <span class="option-values">
+                <span class="option-price-badge"${row.badge ? '' : ' aria-hidden="true"'}>${row.badge ? `<span class="badge ${row.badgeTone || ''}">${row.badge}</span>` : ''}</span>
                 <span class="option-volume">${row.volume}</span>
                 <span class="option-price">${row.price}</span>
               </span>
@@ -887,8 +882,6 @@
       const isHistory = screen.kind === 'history';
       const isOptions = screen.kind === 'options';
       byId('app-title').textContent = screen.title;
-      byId('condition-text').textContent = `${appliedPeriod} · ${appliedOrder}`;
-      byId('result-count').textContent = `${rows.length}건`;
       byId('condition-row').hidden = !isHistory;
       document.querySelector('.content').classList.toggle('direct', !isHistory);
       byId('phone').classList.toggle('has-bottom-action', isOptions);
@@ -896,7 +889,7 @@
       document.querySelectorAll('.screen-switch').forEach((button) => {
         button.classList.toggle('active', button.dataset.screen === activeScreen);
       });
-      renderTabs();
+      renderConditions();
       renderSummary(rows);
       if (isOptions) renderOptions(rows);
       else renderGroups(rows);
@@ -905,24 +898,37 @@
 
     function setScreen(screen) {
       activeScreen = screen;
-      activeType = 'all';
+      activeType = historyFilters[screen]?.type ?? 'all';
       closeFilter();
       byId('detail-overlay').classList.remove('open');
       render();
     }
 
-    function openFilter() {
-      draftPeriod = appliedPeriod;
-      draftOrder = appliedOrder;
-      document.querySelectorAll('[data-period]').forEach((button) => button.classList.toggle('selected', button.dataset.period === draftPeriod));
-      document.querySelectorAll('[data-order]').forEach((button) => button.classList.toggle('selected', button.dataset.order === draftOrder));
+    function openFilter(kind) {
+      const screen = screens[activeScreen];
+      const filter = historyFilters[activeScreen];
+      if (!filter) return;
+      filterKind = kind;
+      draftValue = kind === 'type' ? (filter.type ?? 'all') : filter.period;
+      const items = kind === 'type'
+        ? screen.tabs
+        : ['최근 1개월', '최근 3개월', '최근 6개월', '전체'].map((label) => ({ key: label, label }));
+      byId('filter-title').textContent = kind === 'type' ? '유형' : '기간';
+      byId('filter-label').textContent = kind === 'type' ? '기록 유형' : '조회 기간';
+      byId('filter-options').innerHTML = items.map((item) => `
+        <button class="filter-option${item.key === draftValue ? ' selected' : ''}" type="button" data-filter-value="${item.key}">${item.label}</button>
+      `).join('');
+      byId('filter-options').querySelectorAll('[data-filter-value]').forEach((button) => {
+        button.addEventListener('click', () => {
+          draftValue = button.dataset.filterValue;
+          byId('filter-options').querySelectorAll('[data-filter-value]').forEach((item) => item.classList.toggle('selected', item === button));
+        });
+      });
       byId('filter-overlay').classList.add('open');
-      byId('condition-trigger').setAttribute('aria-expanded', 'true');
     }
 
     function closeFilter() {
       byId('filter-overlay').classList.remove('open');
-      byId('condition-trigger').setAttribute('aria-expanded', 'false');
     }
 
     function showToast(message) {
@@ -935,7 +941,6 @@
     document.querySelectorAll('.screen-switch').forEach((button) => {
       button.addEventListener('click', () => setScreen(button.dataset.screen));
     });
-    byId('condition-trigger').addEventListener('click', openFilter);
     byId('filter-overlay').addEventListener('click', (event) => {
       if (event.target === byId('filter-overlay')) closeFilter();
     });
@@ -943,21 +948,10 @@
       if (event.target === byId('detail-overlay')) byId('detail-overlay').classList.remove('open');
     });
     byId('bottom-primary').addEventListener('click', () => showToast('구매 옵션 추가 화면이 열려요.'));
-    document.querySelectorAll('[data-period]').forEach((button) => {
-      button.addEventListener('click', () => {
-        draftPeriod = button.dataset.period;
-        document.querySelectorAll('[data-period]').forEach((item) => item.classList.toggle('selected', item === button));
-      });
-    });
-    document.querySelectorAll('[data-order]').forEach((button) => {
-      button.addEventListener('click', () => {
-        draftOrder = button.dataset.order;
-        document.querySelectorAll('[data-order]').forEach((item) => item.classList.toggle('selected', item === button));
-      });
-    });
     byId('apply-filter').addEventListener('click', () => {
-      appliedPeriod = draftPeriod;
-      appliedOrder = draftOrder;
+      const filter = historyFilters[activeScreen];
+      if (filterKind === 'type') filter.type = draftValue;
+      else filter.period = draftValue;
       closeFilter();
       render();
     });

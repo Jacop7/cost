@@ -12,7 +12,7 @@ import { safeBack } from '@/lib/nav';
 import { formatPercent, formatQuantity, formatUnitPrice, recommendedPrice, round, taxAmount, taxRate } from '@sikjae/core';
 import { T, won } from '@/theme/tokens';
 import { clampDecimals } from '@/lib/num';
-import { useSettingsLists } from '@/features/my/hooks';
+import { useSettingsLists, useStoreSettings } from '@/features/my/hooks';
 import { useRecipeDetail, useSaveRecipe } from '../hooks';
 import { emptyDraft, useRecipeDraft, type DraftLine } from '../draftStore';
 
@@ -72,7 +72,7 @@ export default function RecipeAddScreen() {
   const [costMode, setCostMode] = useState<'batch' | 'one'>('one');
   const [plMode, setPlMode] = useState<'batch' | 'one' | 'month'>('one');
   const [catOpen, setCatOpen] = useState(false);
-  const [taxOpen, setTaxOpen] = useState(false);
+  const settings = useStoreSettings();   // 세금은 매장이 정한다(0087)
   const [qtyEdit, setQtyEdit] = useState<number | null>(null);
   const [qtyDraft, setQtyDraft] = useState('');
 
@@ -129,17 +129,21 @@ export default function RecipeAddScreen() {
   const extra = draft.extras.reduce((s, e) => s + e.amount * e.qty, 0);
   const fixedRate = d?.fixedRate ?? 0;
   /** 요율이 숫자로 읽히는 항목만 계산에 넣는다 — 서버 `tax_of()` 의 `where rate > 0` 과 같다. */
-  const taxItems = draft.taxItems
-    .map((t) => ({ name: t.name.trim(), rate: num(t.rate) }))
-    .filter((t) => t.rate > 0);
-  const tax = round(taxAmount(price, draft.taxMode, taxItems));
+  /*
+   * ⚠ 세금은 **매장 설정**에서 읽는다(0087). 초안에 담아 두면 새 메뉴에서 0원으로
+   *   보이다가 저장 후 서버가 매장 값을 얹어 숫자가 달라진다.
+   *   고치는 곳은 MY > 세금 한 곳뿐이다.
+   */
+  const taxMode = settings.data?.taxMode ?? 'included';
+  const taxItems = settings.data?.taxItems ?? [];
+  const tax = round(taxAmount(price, taxMode, taxItems));
   const fixed = round(fixedRate * price);
   const profit = price - tax - material - fixed - extra;
   const profitRate = price > 0 ? profit / price : 0;
   const warn = profitRate < target;
   const PROFIT = warn ? T.red : T.green;
   // 권장가 분모에도 세금 항목이 들어간다 — 빼면 카드 수수료만큼 낮게 나온다.
-  const recRaw = recommendedPrice(material + extra, fixedRate, target, taxRate(draft.taxMode, taxItems));
+  const recRaw = recommendedPrice(material + extra, fixedRate, target, taxRate(taxMode, taxItems));
   const recommended = recRaw == null ? null : Math.round(recRaw / 100) * 100;
 
   const cm = costMode === 'batch' ? servings : 1;
@@ -149,13 +153,7 @@ export default function RecipeAddScreen() {
 
   const nameError = draft.name.trim() === '' ? '메뉴 이름을 입력해 주세요' : undefined;
   const priceError = price < 0 ? '판매가는 0 이상이어야 해요' : undefined;
-  /** 서버(assert_tax_items)와 같은 규칙으로 미리 막는다 — 저장 눌러서 알게 하지 않는다. */
-  const taxError = draft.taxItems.some((t) => t.name.trim() === '')
-    ? '세금 항목 이름을 입력해 주세요'
-    : draft.taxItems.some((t) => num(t.rate) < 0 || num(t.rate) >= 100)
-      ? '세금 요율은 0 이상 100 미만이어야 해요'
-      : undefined;
-  const canSave = !nameError && !priceError && !taxError && servings >= 1 && !save.isPending;
+  const canSave = !nameError && !priceError && servings >= 1 && !save.isPending;
 
   const onSave = () => {
     if (!canSave) return;
@@ -164,9 +162,7 @@ export default function RecipeAddScreen() {
         id: draft.id,
         name: draft.name.trim(),
         price,
-        taxMode: draft.taxMode,
         memo: draft.memo.trim() || null,
-        taxItems,
         baseServings: servings,
         targetProfitRate: num(draft.targetProfitRate),
         avgMonthlySales: draft.avgMonthlySales.trim() === '' ? null : monthly,
@@ -237,16 +233,6 @@ export default function RecipeAddScreen() {
               <View style={{ flex: 1.4 }}>
                 <Field label="판매가" req error={draft.price !== '' ? priceError : undefined}>
                   <Input value={draft.price} onChangeText={(t) => patch({ price: clampDecimals(t, 0) })} placeholder="0" suffix="원" mono keyboardType="number-pad" accessibilityLabel="판매가" />
-                </Field>
-              </View>
-              <View style={{ flex: 1 }}>
-                <Field label="세금">
-                  <Select
-                    value={`${draft.taxMode === 'included' ? '포함' : draft.taxMode === 'separate' ? '별도' : '면세'}${
-                      taxItems.length > 0 ? ` +${taxItems.length}` : ''
-                    }`}
-                    onPress={() => setTaxOpen(true)}
-                  />
                 </Field>
               </View>
             </View>
@@ -503,107 +489,6 @@ export default function RecipeAddScreen() {
             <Icon name="plus" size={17} color={T.blue} sw={2.2} />
             <Text style={{ fontSize: 16, fontWeight: '700', color: T.blue }}>카테고리 관리</Text>
           </Pressable>
-        </ScrollView>
-      </Sheet>
-
-      {/* 세금 — 부가세(기본) + 사장님이 더하는 항목 */}
-      <Sheet visible={taxOpen} onClose={() => setTaxOpen(false)} title="세금" sub="부가세와 그 밖에 판매가에서 빠지는 몫" height={620}>
-        <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
-          <Text style={{ fontSize: 14, fontWeight: '800', color: T.sub, marginBottom: 2 }}>부가세</Text>
-          {([
-            ['included', '포함', '판매가 × 10/110 을 부가세로 잡아요'],
-            ['separate', '별도', '판매가와 별도로 받아 손익에서 빼지 않아요'],
-            ['exempt', '면세', '부가세가 없는 품목이에요'],
-          ] as const).map(([k, label, hint]) => {
-            const on = draft.taxMode === k;
-            return (
-              <Pressable
-                key={k}
-                onPress={() => patch({ taxMode: k })}
-                accessibilityRole="button" accessibilityLabel={label} accessibilityState={{ selected: on }}
-                style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12, paddingHorizontal: 4 }}
-              >
-                <View style={{ flex: 1 }}>
-                  <Text style={{ fontSize: 16, fontWeight: '700', color: on ? T.blue : T.ink }}>{label}</Text>
-                  <Text style={{ fontSize: 14, color: T.ter, marginTop: 2 }}>{hint}</Text>
-                </View>
-                {on ? <Icon name="check" size={18} color={T.blue} sw={2.4} /> : null}
-              </Pressable>
-            );
-          })}
-
-          {/* 추가 항목 — 카드 수수료처럼 판매가에서 비율로 빠지는 것들 */}
-          <View style={{ height: 1, backgroundColor: T.line, marginVertical: 14 }} />
-          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 6 }}>
-            <Text style={{ flex: 1, fontSize: 14, fontWeight: '800', color: T.sub }}>그 밖의 세금·수수료</Text>
-            <Text style={[{ fontSize: 14, fontWeight: '700', color: T.ter }, NUM]}>판매가 대비 %</Text>
-          </View>
-          {/* ⚠ 플랫폼 수수료는 여기 넣지 마세요 — 고정 지출에서 이미 빠집니다(0043). */}
-          <Text style={{ fontSize: 13, color: T.ter, marginBottom: 10, lineHeight: 19 }}>
-            배달앱 중개 수수료는 여기가 아니라 MY {'>'} 고정 지출에서 관리해요. 두 곳에 넣으면 같은 돈이 두 번 빠져요.
-          </Text>
-
-          {draft.taxItems.map((t, i) => (
-            <View key={`tax-${i}`} style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 9 }}>
-              <View style={{ flex: 1.6 }}>
-                <Input
-                  value={t.name}
-                  onChangeText={(v) => updateTaxItem(i, { name: v })}
-                  placeholder="예) 카드 수수료"
-                  accessibilityLabel={`세금 항목 ${i + 1} 이름`}
-                />
-              </View>
-              <View style={{ flex: 1 }}>
-                <Input
-                  value={t.rate}
-                  onChangeText={(v) => updateTaxItem(i, { rate: clampDecimals(v, 2) })}
-                  placeholder="0"
-                  suffix="%"
-                  mono
-                  keyboardType="decimal-pad"
-                  accessibilityLabel={`세금 항목 ${i + 1} 요율`}
-                />
-              </View>
-              <Pressable
-                onPress={() => removeTaxItem(i)}
-                accessibilityRole="button" accessibilityLabel={`${t.name || `세금 항목 ${i + 1}`} 삭제`}
-                hitSlop={8}
-                style={{ width: 34, height: 34, alignItems: 'center', justifyContent: 'center' }}
-              >
-                <Icon name="close" size={18} color={T.ter} />
-              </Pressable>
-            </View>
-          ))}
-
-          <Pressable
-            onPress={addTaxItem}
-            accessibilityRole="button" accessibilityLabel="세금 항목 추가"
-            style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5, paddingVertical: 13, borderRadius: 12, borderWidth: 1, borderStyle: 'dashed', borderColor: T.blue, marginTop: 2 }}
-          >
-            <Icon name="plus" size={17} color={T.blue} sw={2.2} />
-            <Text style={{ fontSize: 16, fontWeight: '700', color: T.blue }}>항목 추가</Text>
-          </Pressable>
-
-          {taxError ? (
-            <Text style={{ fontSize: 14, fontWeight: '600', color: T.red, marginTop: 10 }}>{taxError}</Text>
-          ) : null}
-
-          {/* 합계 — 지금 판매가로 얼마가 빠지는지 바로 보여 준다 */}
-          <View style={{ marginTop: 14, padding: 13, borderRadius: 12, backgroundColor: T.surface2 }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.ink }}>세금 합계</Text>
-              <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{won(Math.round(tax))}원</Text>
-            </View>
-            <Text style={[{ fontSize: 14, color: T.ter, marginTop: 3 }, NUM]}>
-              판매가 {won(Math.round(price))}원의 {formatPercent(price > 0 ? tax / price : 0)}
-            </Text>
-          </View>
-
-          <View style={{ marginTop: 14, marginBottom: 4 }}>
-            <Button kind="primary" size="lg" full disabled={Boolean(taxError)} onPress={() => setTaxOpen(false)}>
-              확인
-            </Button>
-          </View>
         </ScrollView>
       </Sheet>
 

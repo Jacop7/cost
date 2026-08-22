@@ -17,6 +17,8 @@ const sections = (d: {
   locale: string; unit: string; category: string; vendor: string; channel: string; hours: string; alert: string;
 }): MenuItem[] => [
   { icon: 'won', bg: T.blueTint, fg: T.blue, t: '고정 지출 (월)', d: '인건비·수수료·포장 등 → 고정지출률', route: '/recipes/fixed-cost' as Href },
+  // 세금은 매장 하나에 하나다(0087). 고치면 전 메뉴 손익이 다시 계산된다.
+  { icon: 'receipt', bg: T.blueTint, fg: T.blue, t: '세금', d: '부가세 · 카드 수수료 등 판매가에서 빠지는 몫', route: '/my/tax' as Href },
   { icon: 'grid', bg: '#F0EDFB', fg: '#7C5CE0', t: '카테고리 관리', d: d.category, route: '/my/categories' as Href },
   { icon: 'globe', bg: '#E8F1FB', fg: '#2E6FD0', t: '언어 · 통화', d: d.locale, route: '/my/language' as Href },
   { icon: 'ruler', bg: '#FEF1E6', fg: '#E08A2B', t: '단위 설정', d: d.unit, route: '/my/units' as Href },

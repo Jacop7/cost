@@ -208,10 +208,12 @@ export interface RecipeInput {
   price: number;
   categoryId?: string | null;
   active?: boolean;
-  taxMode: TaxMode;
   memo?: string | null;
-  /** 보내면 **전량 교체**된다. 생략하면 서버가 기존 항목을 그대로 둔다(0055). */
-  taxItems?: TaxItem[];
+  /*
+   * ⚠ 세금은 여기 없다(0087). 매장 설정(MY > 세금)이 정하고 서버 트리거가
+   *   레시피에 실어 준다 — 레시피 저장으로는 세금을 못 바꾼다.
+   *   값이 바뀌는 길은 하나여야 한다(절대원칙 2 와 같은 이유).
+   */
   baseServings: number;
   targetProfitRate: number;
   avgMonthlySales: number | null;
@@ -230,15 +232,11 @@ export function useSaveRecipe() {
         id: input.id ?? '',
         name: input.name,
         price: input.price,
-        tax_mode: input.taxMode,
         base_servings: input.baseServings,
         target_profit_rate: input.targetProfitRate,
         avg_monthly_sales: input.avgMonthlySales ?? '',
       };
       if (input.memo !== undefined) payload.memo = input.memo ?? '';
-      if (input.taxItems) {
-        payload.tax_items = input.taxItems.map((i) => ({ name: i.name, rate: i.rate }));
-      }
       if (input.categoryId !== undefined) payload.category_id = input.categoryId ?? '';
       if (input.active !== undefined) payload.active = input.active;
       if (input.lines) {

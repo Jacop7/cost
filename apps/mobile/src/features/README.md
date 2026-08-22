@@ -50,6 +50,7 @@
 | `orders` | ORD-03 | 입고 확정 (실제 수량·부분 입고·멱등키) → **E1** | (OrdersHome 내 시트) | ✅ |
 | `orders` | ORD-07 | 발주 취소 → **E12** / 입고 취소 → **E11** | (OrdersHome 카드 버튼) | ✅ |
 | `my` | MY-01 | 마이페이지 홈 (사업장 + 설정 메뉴) | `my/index` (`MyHomeScreen`) | ✅ |
+| `my` | MY-TAX | 세금 (부가세 · 추가 항목 → 전 레시피 손익 반영) | `my/tax` (`MyTaxScreen`) | ✅ |
 | `my` | MY-03 | 카테고리 관리 허브 | `my/categories` (`MyCategoryHubScreen`) | ✅ |
 | `my` | MY-03 | 카테고리 편집 | `my/category` (`MyCategoryScreen`) | ✅ |
 | `my` | MY-05 | 구매처·브랜드 | `my/vendors` (`MyVendorsScreen`) | ✅ |
