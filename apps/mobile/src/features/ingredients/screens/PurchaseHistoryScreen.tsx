@@ -18,7 +18,7 @@ import { T, tnum, won } from '@/theme/tokens';
 import { packSummary } from '@/lib/num';
 import { dispUnit } from '../ledger';
 import { PeriodSheet, periodRange, type HistoryPeriod } from './HistoryFilterSheet';
-import { ConditionRow, FilterButton, MonthHead, SummaryCard, groupByMonth, monthTitle } from '../components/HistoryLayout';
+import { ConditionRow, FilterButton, MonthHead, SummaryCard, groupByMonth, historyContent, monthTitle } from '../components/HistoryLayout';
 import { useIngredientDetail, usePurchaseHistory, type PurchaseRow } from '../hooks';
 
 const STATUS: Record<PurchaseRow['status'], { label: string; tone: 'blue' | 'amber' | 'neutral' | 'green' }> = {
@@ -57,12 +57,12 @@ export default function PurchaseHistoryScreen() {
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <AppHeader title="구매 이력" onBack={() => safeBack(`/ingredients/${id}`)} />
 
-      {/* 조건 줄 — 다섯 내역 화면이 같은 자리·같은 모양이다. */}
-      <ConditionRow>
-        <FilterButton label={period} onPress={() => setPeriodOpen(true)} />
-      </ConditionRow>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={historyContent}>
+        {/* 조건 줄 — 목록과 함께 스크롤된다(프로토타입 `.content`). */}
+        <ConditionRow>
+          <FilterButton label={period} onPress={() => setPeriodOpen(true)} />
+        </ConditionRow>
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 32, gap: 14 }}>
         <QueryState
           isLoading={purchases.isLoading}
           error={purchases.error}
@@ -89,11 +89,11 @@ export default function PurchaseHistoryScreen() {
             }
           />
 
-          {groups.map(([ym, list]) => (
+          {groups.map(([ym, list], gi) => (
             <View key={ym}>
-              <MonthHead month={monthTitle(ym)} count={list.length} />
+              <MonthHead month={monthTitle(ym)} count={list.length} first={gi === 0} />
               {/* 줄마다 카드를 쓰면 목록이 아니라 더미가 된다 — 한 장에 구분선. */}
-              <Card pad={0} style={{ overflow: 'hidden' }}>
+              <Card pad={0} style={{ overflow: 'hidden', marginBottom: 12 }}>
                 {list.map((r, i) => {
                   const st = STATUS[r.status];
                   const mark = range === null || r.unitPrice === null ? null
@@ -104,23 +104,23 @@ export default function PurchaseHistoryScreen() {
                       key={r.id}
                       style={{
                         flexDirection: 'row', alignItems: 'center', gap: 10,
-                        paddingVertical: 13, paddingHorizontal: 15,
+                        minHeight: 72, paddingVertical: 12, paddingHorizontal: 14,
                         borderBottomWidth: i < list.length - 1 ? 1 : 0, borderBottomColor: T.line2,
                         opacity: r.status === 'canceled' ? 0.5 : 1,
                       }}
                     >
                       <View style={{ flex: 1, minWidth: 0 }}>
                         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                          <Text style={[{ fontSize: 13, color: T.ter, fontWeight: '600' }, tnum]}>
+                          <Text style={[{ fontSize: 12, color: T.ter, fontWeight: '700' }, tnum]}>
                             {r.orderedAt.slice(5).replace('-', '/')}
                           </Text>
                           {/* 입고 완료는 이 목록의 기본값이라 적지 않는다. 예외만 말한다. */}
                           {r.status !== 'received' ? <Badge tone={st.tone} sm>{st.label}</Badge> : null}
                         </View>
-                        <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink, marginTop: 5 }} numberOfLines={1}>
+                        <Text style={{ fontSize: 15, fontWeight: '800', color: T.ink, marginTop: 4 }} numberOfLines={1}>
                           {r.vendorName ?? '거래처 미지정'}
                         </Text>
-                        <Text style={[{ fontSize: 14, color: T.sub2, marginTop: 3 }, tnum]}>
+                        <Text style={[{ fontSize: 12, color: T.sub, fontWeight: '600', marginTop: 3 }, tnum]}>
                           {/* 주문과 실제가 다르면 그 사실이 단가와 재고를 바꾼다 — packSummary 가 밝힌다. */}
                           {packSummary({
                             volume: r.volume, qty: r.qty, receivedQty: r.receivedQty, amount: r.amount,
@@ -134,7 +134,7 @@ export default function PurchaseHistoryScreen() {
                         <View style={{ height: 18, justifyContent: 'center' }}>
                           {mark ? <Badge tone={mark === '최저' ? 'blue' : 'red'} sm>{mark}</Badge> : null}
                         </View>
-                        <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink, marginTop: 2 }, tnum]}>
+                        <Text style={[{ fontSize: 15, fontWeight: '800', color: T.ink, marginTop: 2 }, tnum]}>
                           {r.unitPrice === null ? '—' : formatUnitPrice(r.unitPrice, unit)}
                         </Text>
                       </View>

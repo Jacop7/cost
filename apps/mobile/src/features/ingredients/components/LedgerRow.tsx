@@ -56,7 +56,9 @@ export function LedgerRow({
           색은 구매 요약(`총 3.5kg (500g × 7개) · 68,600원`)과 **같은 톤**이다 —
           둘 다 "그래서 무엇이 얼마나"를 받쳐 주는 줄이라 같은 무게로 읽혀야 한다.
         */}
-        {memo ? <Text style={{ fontSize: 14, color: T.sub2, marginTop: 3 }}>{memo}</Text> : null}
+        {memo ? (
+          <Text style={{ fontSize: 12, color: T.sub, fontWeight: '600', marginTop: 3 }} numberOfLines={1}>{memo}</Text>
+        ) : null}
       </View>
       <View style={{ alignItems: 'flex-end' }}>
         <Text style={[{ fontSize: 16, fontWeight: '800', color: up ? T.blue : T.red }, tnum]}>{dNum}<Text style={{ fontWeight: '600' }}>{dUnit}</Text></Text>

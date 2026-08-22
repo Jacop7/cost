@@ -21,7 +21,7 @@ import { T, tnum } from '@/theme/tokens';
 /** 조건 줄 — **왼쪽부터** 채운다(프로토타입 `.condition`). 오른쪽은 건수 자리다. */
 export function ConditionRow({ children, right }: { children: ReactNode; right?: ReactNode }) {
   return (
-    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, minHeight: 38, paddingHorizontal: 20, paddingTop: 6, paddingBottom: 6 }}>
+    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, minHeight: 38, marginBottom: 8 }}>
       {children}
       <View style={{ flex: 1 }} />
       {right}
@@ -37,10 +37,10 @@ export function FilterButton({ label, onPress }: { label: string; onPress: () =>
       accessibilityRole="button"
       accessibilityLabel={`${label} 변경`}
       hitSlop={6}
-      style={{ flexDirection: 'row', alignItems: 'center', gap: 3, paddingVertical: 7, paddingHorizontal: 10, borderRadius: 9, borderWidth: 1, borderColor: T.line, backgroundColor: T.surface }}
+      style={{ flexDirection: 'row', alignItems: 'center', gap: 5, paddingVertical: 7, paddingHorizontal: 10, borderRadius: 9, borderWidth: 1, borderColor: T.line, backgroundColor: T.surface }}
     >
-      <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub }}>{label}</Text>
-      <Icon name="chevronDown" size={15} color={T.ter} />
+      <Text style={{ fontSize: 13, fontWeight: '700', color: T.sub }} numberOfLines={1}>{label}</Text>
+      <Icon name="chevronDown" size={14} color={T.ter} />
     </Pressable>
   );
 }
@@ -73,7 +73,7 @@ export function SummaryCard({ label, value, sub, metrics = [] }: {
   for (let i = 0; i < metrics.length; i += 2) pairs.push(metrics.slice(i, i + 2));
 
   return (
-    <Card pad={0} style={{ overflow: 'hidden' }}>
+    <Card pad={0} style={{ overflow: 'hidden', marginBottom: 12 }}>
       <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 14, paddingHorizontal: 15 }}>
         <Text style={{ fontSize: 15, fontWeight: '800', color: T.sub }}>{label}</Text>
         <View style={{ flex: 1 }} />
@@ -109,15 +109,25 @@ export function SummaryCard({ label, value, sub, metrics = [] }: {
   );
 }
 
-/** 월 머리말 — 왼쪽 `2026년 8월`, 오른쪽 `총 7건`. */
-export function MonthHead({ month, count }: { month: string; count: number }) {
+/**
+ * 월 머리말 — 왼쪽 `2026년 8월`, 오른쪽 `총 7건`.
+ * 양쪽이 **같은 무게**다(프로토타입 `.month`). 한쪽만 흐리면 짝이 안 맞는다.
+ */
+export function MonthHead({ month, count, first = false }: { month: string; count: number; first?: boolean }) {
   return (
-    <View style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 6, marginBottom: 7 }}>
-      <Text style={{ flex: 1, fontSize: 14, fontWeight: '700', color: T.sub }}>{month}</Text>
-      <Text style={[{ fontSize: 13, fontWeight: '600', color: T.ter }, tnum]}>총 {count}건</Text>
+    <View style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 5, marginTop: first ? 0 : 16, marginBottom: 7 }}>
+      <Text style={{ flex: 1, fontSize: 13, fontWeight: '800', color: T.sub }}>{month}</Text>
+      <Text style={[{ fontSize: 13, fontWeight: '800', color: T.sub }, tnum]}>총 {count}건</Text>
     </View>
   );
 }
+
+/**
+ * 내역 화면 본문의 공통 여백 — 프로토타입 `.content{padding:12px 16px 30px}`.
+ * ⚠ 조건 줄은 **이 안**에 둔다. 헤더 밑에 고정하면 목록만 스크롤돼서
+ *   프로토타입과 다른 화면이 된다.
+ */
+export const historyContent = { paddingHorizontal: 16, paddingTop: 12, paddingBottom: 30 } as const;
 
 /** `2026-08` → `2026년 8월`. 다섯 화면이 같은 문장을 쓰게 여기서만 만든다. */
 export const monthTitle = (ym: string) => `${ym.slice(0, 4)}년 ${Number(ym.slice(5, 7))}월`;

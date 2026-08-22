@@ -13,7 +13,7 @@ import { formatQuantity } from '@sikjae/core';
 import { safeBack } from '@/lib/nav';
 import { LedgerRow } from '../components/LedgerRow';
 import { HistoryFilterSheet, periodRange, type HistoryFilter } from './HistoryFilterSheet';
-import { ConditionRow, FilterButton, MonthHead, SummaryCard, monthTitle } from '../components/HistoryLayout';
+import { ConditionRow, FilterButton, MonthHead, SummaryCard, historyContent, monthTitle } from '../components/HistoryLayout';
 import { dispUnit, toLedgerView, type LedgerType } from '../ledger';
 import { useIngredientDetail, useStockHistory, type LedgerEntry } from '../hooks';
 
@@ -93,17 +93,17 @@ export function StockHistoryScreen() {
       {/* 어느 재료인지는 들어온 화면이 안다. 이름이 길면 헤더가 밀린다(프로토타입 5.1). */}
       <AppHeader title="재고 내역" onBack={() => safeBack(`/ingredients/${id}`)} />
 
-      {/*
-        조건 줄 — 유형·기간을 **오른쪽에** 나란히. 다섯 내역 화면이 같은 자리다.
-        예전에는 헤더 오른쪽 '조회' 버튼 하나에 셋(기간·유형·정렬)이 숨어 있어
-        무엇으로 걸러진 목록인지 열어 봐야 알 수 있었다.
-      */}
-      <ConditionRow>
-        <FilterButton label={filter.kind} onPress={() => setFilterOpen(true)} />
-        <FilterButton label={filter.period} onPress={() => setFilterOpen(true)} />
-      </ConditionRow>
+      <ScrollView contentContainerStyle={historyContent} showsVerticalScrollIndicator={false}>
+        {/*
+          조건 줄 — 유형·기간을 **왼쪽부터**. 목록과 함께 스크롤된다(프로토타입 `.content`).
+          예전에는 헤더 오른쪽 '조회' 버튼 하나에 셋(기간·유형·정렬)이 숨어 있어
+          무엇으로 걸러진 목록인지 열어 봐야 알 수 있었다.
+        */}
+        <ConditionRow>
+          <FilterButton label={filter.kind} onPress={() => setFilterOpen(true)} />
+          <FilterButton label={filter.period} onPress={() => setFilterOpen(true)} />
+        </ConditionRow>
 
-      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 28, gap: 11 }} showsVerticalScrollIndicator={false}>
         <QueryState
           isLoading={history.isLoading || detail.isLoading}
           error={history.error ?? detail.error}
@@ -124,10 +124,10 @@ export function StockHistoryScreen() {
             ]}
           />
 
-          {groups.map(([ym, list]) => (
+          {groups.map(([ym, list], gi) => (
             <View key={ym}>
-              <MonthHead month={monthTitle(ym)} count={list.length} />
-              <Card pad={0} style={{ overflow: 'hidden' }}>
+              <MonthHead month={monthTitle(ym)} count={list.length} first={gi === 0} />
+              <Card pad={0} style={{ overflow: 'hidden', marginBottom: 12 }}>
                 {list.map((e, i) => {
                   const v = toLedgerView(e, g?.baseUnit ?? 'g');
                   return (

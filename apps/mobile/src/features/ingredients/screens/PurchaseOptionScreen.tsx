@@ -266,7 +266,7 @@ export function PurchaseOptionScreen() {
                         key={o.id}
                         onPress={() => { setEditingId(o.id); setFormOpen(true); }}
                         accessibilityRole="button" accessibilityLabel={`${o.name} 수정`}
-                        style={{ flexDirection: 'row', alignItems: 'center', gap: 11, paddingVertical: 12, paddingHorizontal: 15, borderBottomWidth: i < g!.options.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}
+                        style={{ flexDirection: 'row', alignItems: 'center', gap: 11, minHeight: 72, paddingVertical: 12, paddingHorizontal: 14, borderBottomWidth: i < g!.options.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}
                       >
                         {/*
                           식재료 상세의 구매 옵션 줄과 **같은 짜임**이다.
@@ -280,7 +280,7 @@ export function PurchaseOptionScreen() {
                             {o.brandName ?? o.vendorName ?? '구매처 미지정'}
                           </Text>
                           <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }} numberOfLines={1}>{o.name}</Text>
-                          <Text style={[{ fontSize: 14, color: T.sub2, marginTop: 3 }, tnum]}>
+                          <Text style={[{ fontSize: 12, color: T.sub, fontWeight: '600', marginTop: 3 }, tnum]}>
                             {o.amount.toLocaleString('ko-KR')}원
                           </Text>
                         </View>
@@ -292,10 +292,10 @@ export function PurchaseOptionScreen() {
                           <View style={{ height: 18, justifyContent: 'center' }}>
                             {isLow ? <Badge tone="blue" sm>최저</Badge> : isHigh ? <Badge tone="red" sm>최고</Badge> : null}
                           </View>
-                          <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink, marginTop: 2 }, tnum]}>
+                          <Text style={[{ fontSize: 15, fontWeight: '800', color: T.ink, marginTop: 2 }, tnum]}>
                             {formatQuantity(o.volume, base)}
                           </Text>
-                          <Text style={[{ fontSize: 14, color: T.ter, marginTop: 3 }, tnum]}>
+                          <Text style={[{ fontSize: 12, color: T.ter, fontWeight: '700', marginTop: 3 }, tnum]}>
                             {formatUnitPrice(per, base)}
                           </Text>
                         </View>

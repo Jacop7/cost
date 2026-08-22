@@ -21,7 +21,7 @@ import { businessDay, formatQuantity } from '@sikjae/core';
 import { T, tnum, won } from '@/theme/tokens';
 import { dispUnit } from '../ledger';
 import { PeriodSheet, periodRange, type HistoryPeriod } from './HistoryFilterSheet';
-import { ConditionRow, FilterButton, MonthHead, SummaryCard, groupByMonth, monthTitle } from '../components/HistoryLayout';
+import { ConditionRow, FilterButton, MonthHead, SummaryCard, groupByMonth, historyContent, monthTitle } from '../components/HistoryLayout';
 import { DISCARD_DELETE_DAYS, useDeleteDiscard, useIngredientDetail, useStockHistory, type LedgerEntry } from '../hooks';
 
 type Tab = '전체' | '조리 전 폐기' | '조리 후 폐기';
@@ -109,16 +109,13 @@ export default function DiscardHistoryScreen() {
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <AppHeader title="폐기 내역" onBack={() => safeBack(`/ingredients/${id}`)} />
 
-      {/*
-        조건 줄 — 유형·기간을 **오른쪽에** 나란히. 다섯 내역 화면이 같은 자리다.
-        탭으로 두면 유형이 화면 폭을 먹고, 기간은 갈 곳이 없어진다.
-      */}
-      <ConditionRow>
-        <FilterButton label={tab} onPress={() => setTabOpen(true)} />
-        <FilterButton label={period} onPress={() => setPeriodOpen(true)} />
-      </ConditionRow>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={historyContent}>
+        {/* 조건 줄 — 목록과 함께 스크롤된다(프로토타입 `.content`). */}
+        <ConditionRow>
+          <FilterButton label={tab} onPress={() => setTabOpen(true)} />
+          <FilterButton label={period} onPress={() => setPeriodOpen(true)} />
+        </ConditionRow>
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 32, gap: 14 }}>
         <QueryState
           isLoading={history.isLoading}
           error={history.error}
@@ -138,39 +135,39 @@ export default function DiscardHistoryScreen() {
             sub={shownCost === null ? '단가 산출 전' : `${won(Math.round(shownCost))}원`}
           />
 
-          {groups.map(([ym, list]) => (
+          {groups.map(([ym, list], gi) => (
             <View key={ym}>
-              <MonthHead month={monthTitle(ym)} count={list.length} />
+              <MonthHead month={monthTitle(ym)} count={list.length} first={gi === 0} />
               {/* 줄마다 카드를 쓰면 목록이 아니라 더미가 된다 — 한 장에 구분선. */}
-              <Card pad={0} style={{ overflow: 'hidden' }}>
+              <Card pad={0} style={{ overflow: 'hidden', marginBottom: 12 }}>
                 {list.map((e, i) => (
                   <View
                     key={e.id}
                     style={{
                       flexDirection: 'row', alignItems: 'center', gap: 10,
-                      paddingVertical: 13, paddingLeft: 15, paddingRight: 12,
+                      minHeight: 72, paddingVertical: 12, paddingLeft: 14, paddingRight: 12,
                       borderBottomWidth: i < list.length - 1 ? 1 : 0, borderBottomColor: T.line2,
                     }}
                   >
                     <View style={{ flex: 1, minWidth: 0 }}>
                       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                        <Text style={[{ fontSize: 13, color: T.ter, fontWeight: '600' }, tnum]}>
+                        <Text style={[{ fontSize: 12, color: T.ter, fontWeight: '700' }, tnum]}>
                           {e.date.slice(5).replace('-', '/')}
                         </Text>
                         <Badge tone={e.waste ? 'amber' : 'neutral'} sm>
                           {e.waste ? '조리 후' : '조리 전'}
                         </Badge>
                       </View>
-                      <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink, marginTop: 5 }} numberOfLines={1}>
+                      <Text style={{ fontSize: 15, fontWeight: '800', color: T.ink, marginTop: 4 }} numberOfLines={1}>
                         {e.note ?? (e.waste ? '조리 후 폐기' : '조리 전 폐기')}
                       </Text>
                     </View>
                     <View style={{ alignItems: 'flex-end' }}>
-                      <Text style={[{ fontSize: 16, fontWeight: '800', color: T.red }, tnum]}>
+                      <Text style={[{ fontSize: 15, fontWeight: '800', color: T.red }, tnum]}>
                         −{formatQuantity(Math.abs(e.countDelta), unit)}
                       </Text>
                       {price !== null ? (
-                        <Text style={[{ fontSize: 13, color: T.sub, marginTop: 3 }, tnum]}>
+                        <Text style={[{ fontSize: 12, color: T.ter, fontWeight: '700', marginTop: 3 }, tnum]}>
                           {won(Math.round(Math.abs(e.countDelta) * price))}원
                         </Text>
                       ) : null}
