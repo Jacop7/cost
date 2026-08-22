@@ -18,11 +18,13 @@ import { Pressable, Text, View } from 'react-native';
 import { Card, Icon } from '@/components/kit';
 import { T, tnum } from '@/theme/tokens';
 
-/** 조건 줄 — **오른쪽 정렬**. 목록이 왼쪽 정렬이라 조건은 반대편에 둬야 눈이 안 섞인다. */
-export function ConditionRow({ children }: { children: ReactNode }) {
+/** 조건 줄 — **왼쪽부터** 채운다(프로토타입 `.condition`). 오른쪽은 건수 자리다. */
+export function ConditionRow({ children, right }: { children: ReactNode; right?: ReactNode }) {
   return (
-    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', gap: 6, paddingHorizontal: 20, paddingTop: 10, paddingBottom: 4 }}>
+    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, minHeight: 38, paddingHorizontal: 20, paddingTop: 6, paddingBottom: 6 }}>
       {children}
+      <View style={{ flex: 1 }} />
+      {right}
     </View>
   );
 }
@@ -63,26 +65,42 @@ export function SummaryCard({ label, value, sub, metrics = [] }: {
   sub?: string;
   metrics?: Metric[];
 }) {
+  /*
+   * ⚠ 칸은 **두 개씩 줄바꿈**한다(프로토타입 `.summary-grid` = 2열).
+   *   네 개를 한 줄에 밀어 넣으면 '판매 소진' 같은 라벨이 잘리고 숫자도 좁아진다.
+   */
+  const pairs: Metric[][] = [];
+  for (let i = 0; i < metrics.length; i += 2) pairs.push(metrics.slice(i, i + 2));
+
   return (
     <Card pad={0} style={{ overflow: 'hidden' }}>
-      <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 13, paddingHorizontal: 15, backgroundColor: T.surface2 }}>
-        <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.sub }}>{label}</Text>
-        <Text style={[{ fontSize: 17, fontWeight: '800', color: T.ink }, tnum]}>{value}</Text>
+      <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 14, paddingHorizontal: 15 }}>
+        <Text style={{ fontSize: 15, fontWeight: '800', color: T.sub }}>{label}</Text>
+        <View style={{ flex: 1 }} />
+        <Text style={[{ fontSize: 18, fontWeight: '800', color: T.ink }, tnum]}>{value}</Text>
         {sub ? (
-          <Text style={[{ fontSize: 14, fontWeight: '600', color: T.ter, marginLeft: 5 }, tnum]}>· {sub}</Text>
+          <Text style={[{ fontSize: 12, fontWeight: '700', color: T.ter, marginLeft: 4 }, tnum]}>· {sub}</Text>
         ) : null}
       </View>
       {metrics.length > 0 ? (
-        <View style={{ flexDirection: 'row', paddingVertical: 12, paddingHorizontal: 15, gap: 12 }}>
-          {metrics.map((m) => (
-            <View key={m.label} style={{ flex: 1, minWidth: 0 }}>
-              <Text style={{ fontSize: 13, color: T.ter, fontWeight: '600' }} numberOfLines={1}>{m.label}</Text>
-              <Text
-                style={[{ fontSize: 15, fontWeight: '800', marginTop: 2, color: m.tone === 'blue' ? T.blue : m.tone === 'red' ? T.red : T.ink }, tnum]}
-                numberOfLines={1}
-              >
-                {m.value}
-              </Text>
+        <View style={{ paddingVertical: 12, paddingHorizontal: 15, gap: 14, borderTopWidth: 1, borderTopColor: T.line2 }}>
+          {pairs.map((pair, i) => (
+            <View key={i} style={{ flexDirection: 'row', gap: 14 }}>
+              {pair.map((m) => (
+                <View key={m.label} style={{ flex: 1, minWidth: 0 }}>
+                  <Text style={{ fontSize: 12, color: T.ter, fontWeight: '700', marginBottom: 4 }} numberOfLines={1}>
+                    {m.label}
+                  </Text>
+                  <Text
+                    style={[{ fontSize: 15, fontWeight: '800', color: m.tone === 'blue' ? T.blue : m.tone === 'red' ? T.red : T.ink }, tnum]}
+                    numberOfLines={1}
+                  >
+                    {m.value}
+                  </Text>
+                </View>
+              ))}
+              {/* 홀수 개면 마지막 줄의 빈 칸을 잡아 둔다 — 안 그러면 한 칸이 폭을 다 먹는다. */}
+              {pair.length === 1 ? <View style={{ flex: 1 }} /> : null}
             </View>
           ))}
         </View>
