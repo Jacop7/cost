@@ -110,13 +110,19 @@ begin
     perform pg_temp.ok('자동 종료가 다음 실행 때 알려진다', u is not null);
     perform pg_temp.eq_t('알림이 그 날짜를 가리킨다', u->>'business_date', v_day::text);
     perform ack_auto_close((u->>'business_day_id')::uuid);
-    perform pg_temp.ok('확인하면 다시 안 알린다', unacked_auto_close(pg_temp.store()) is null);
+    -- ⚠ '알림이 하나도 없다'가 아니라 **이 영업일이 다시 안 뜬다**를 본다.
+    --   다른 날 자동 종료가 확인 안 된 채 남아 있을 수 있다(08-22 가 그랬다).
+    perform pg_temp.ok('확인하면 다시 안 알린다',
+      coalesce(unacked_auto_close(pg_temp.store())->>'business_day_id', '') <> (u->>'business_day_id'));
   end;
 
   -- 수동 종료는 알리지 않는다 — 사장님이 직접 눌렀으니 이미 안다.
-  -- ⚠ 시드가 지난 21일을 수동 종료해 두므로 전체를 세면 안 된다. 알림 대상만 본다.
+  -- ⚠ '알림이 없다'로 보면 안 된다. 확인 안 한 **다른 날** 자동 종료가 남아 있을 수
+  --   있어서(08-22 가 그랬다) 이 파일이 날짜에 따라 빨개진다.
+  --   불변식은 '알림이 없다'가 아니라 **뜨는 게 있다면 그건 자동 종료다** 이다.
   perform pg_temp.ok('수동 종료는 알림 대상이 아니다',
-    unacked_auto_close(pg_temp.store()) is null);
+    coalesce((select close_method::text from business_days
+               where id = (unacked_auto_close(pg_temp.store())->>'business_day_id')::uuid), 'auto') = 'auto');
 end $t$;
 
 -- ════════════════════════════════════════════════════════════════
@@ -252,8 +258,12 @@ begin
   perform pg_temp.eq_t('종료하면 closed', st->>'status', 'closed');
   perform pg_temp.eq_t('종료 방식이 보인다', st->>'close_method', 'auto');
   perform pg_temp.ok('미확인 자동 종료를 알린다', (st->'unacked') is not null);
-  perform ack_auto_close((st#>>'{unacked,business_day_id}')::uuid);
-  perform pg_temp.ok('확인하면 사라진다',
-    (business_day_state(pg_temp.store())->'unacked') = 'null'::jsonb
-    or (business_day_state(pg_temp.store())->>'unacked') is null);
+  declare v_acked uuid := (st#>>'{unacked,business_day_id}')::uuid;
+  begin
+    perform ack_auto_close(v_acked);
+    -- ⚠ '알림이 사라진다'가 아니라 **이 영업일이 다시 안 뜬다**를 본다.
+    --   확인 안 한 다른 날 자동 종료가 남아 있을 수 있다(08-22 가 그랬다).
+    perform pg_temp.ok('확인하면 사라진다',
+      coalesce((business_day_state(pg_temp.store())#>>'{unacked,business_day_id}'), '') <> v_acked::text);
+  end;
 end $t$;

@@ -2133,6 +2133,14 @@ export type Database = {
         }
         Returns: Json
       }
+      sales_etc_by_channel: {
+        Args: {
+          p_store: string
+          p_from: string
+          p_to: string
+        }
+        Returns: Json
+      }
       sales_extra_usage: {
         Args: {
           p_store: string

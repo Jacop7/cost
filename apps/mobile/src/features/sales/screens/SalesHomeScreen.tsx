@@ -12,7 +12,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Badge, Button, Card, Field, Icon, Input, QueryState, Sheet, SortChip, SortSheet, type SortOption } from '@/components/kit';
 import { T, won } from '@/theme/tokens';
 import { useRecipeList, type RecipeRow } from '@/features/recipes/hooks';
-import { useSalesDay, useSaveSale, type EtcItem, type ExtraItem, type Shortage } from '../hooks';
+import { useSalesDay, useSaveSale, type ChannelCode, type EtcItem, type ExtraItem, type Shortage } from '../hooks';
+import { CHANNEL_LABEL, channelName } from '../channels';
 import { isClosedError, isNotOpenError, useBusinessDay, useDayMenuBasis, useOpenBusinessDay } from '../businessDay';
 import { BusinessDayBar } from '../components/BusinessDayBar';
 import { dayLabel, todayBusiness } from '../period';
@@ -85,6 +86,12 @@ export default function SalesHomeScreen() {
   const [etcName, setEtcName] = useState('');
   const [etcPrice, setEtcPrice] = useState('');
   const [etcQty, setEtcQty] = useState('1');
+  /*
+   * 기본값은 매장이다 — 주류·음료는 거의 매장에서 나간다.
+   * ⚠ 기본값이 있다고 '모르면 매장'인 건 아니다. 옛 줄은 channel 이 아예 없고,
+   *   그건 미지정으로 남는다(0093).
+   */
+  const [etcChannel, setEtcChannel] = useState<ChannelCode>('hall');
 
   const [expOpen, setExpOpen] = useState(false);
   const [expName, setExpName] = useState('');
@@ -206,11 +213,14 @@ export default function SalesHomeScreen() {
       Alert.alert('입력을 확인해 주세요', '항목명과 판매가를 입력해 주세요.');
       return;
     }
-    const next: EtcItem[] = [...(s?.etcItems ?? []), { name: etcName.trim(), price, qty }];
+    const next: EtcItem[] = [...(s?.etcItems ?? []), { name: etcName.trim(), price, qty, channel: etcChannel }];
     saveSale.mutate(
       { date: today, items: allItems(), etcItems: next },
       {
-        onSuccess: () => { setEtcOpen(false); setEtcName(''); setEtcPrice(''); setEtcQty('1'); },
+        onSuccess: () => {
+          setEtcOpen(false); setEtcName(''); setEtcPrice(''); setEtcQty('1');
+          // 채널은 되돌리지 않는다 — 배달 음료를 연달아 적는 게 흔하다.
+        },
         onError: (e) => Alert.alert('저장하지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'),
       },
     );
@@ -434,7 +444,13 @@ export default function SalesHomeScreen() {
           <Card pad={0} style={{ overflow: 'hidden', marginBottom: 14 }}>
             {s!.etcItems.map((e, i) => (
               <View key={`${e.name}-${i}`} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 11, paddingHorizontal: 15, borderBottomWidth: i < s!.etcItems.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
-                <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.sub }}>{e.name} <Text style={{ color: T.ter }}>×{e.qty}</Text></Text>
+                <View style={{ flex: 1, minWidth: 0 }}>
+                  <Text style={{ fontSize: 16, fontWeight: '600', color: T.sub }}>{e.name} <Text style={{ color: T.ter }}>×{e.qty}</Text></Text>
+                  {/* 미지정은 회색으로 둔다 — 매장으로 보이면 안 된다(0093). */}
+                  <Text style={{ fontSize: 13, fontWeight: '700', color: e.channel ? T.blue : T.ter, marginTop: 2 }}>
+                    {channelName(e.channel)}
+                  </Text>
+                </View>
                 <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink, marginRight: 10 }, NUM]}>{won(e.price * e.qty)}원</Text>
                 <Pressable
                   onPress={() => saveSale.mutate({ date: today, items: allItems(), etcItems: s!.etcItems.filter((_, j) => j !== i) })}
@@ -451,6 +467,34 @@ export default function SalesHomeScreen() {
           <View style={{ flex: 1.5 }}><Field label="판매가" req><Input value={etcPrice} onChangeText={setEtcPrice} placeholder="2000" keyboardType="number-pad" suffix="원" mono /></Field></View>
           <View style={{ flex: 1 }}><Field label="수량"><Input value={etcQty} onChangeText={setEtcQty} keyboardType="number-pad" suffix="개" mono /></Field></View>
         </View>
+        {/*
+          한 줄에 채널 하나다. 소주를 매장·배달 둘 다 팔았으면 두 줄로 적는다 —
+          메뉴처럼 3칸으로 쪼개면 음료 하나 넣는 데 숫자를 셋 눌러야 한다.
+        */}
+        <Field label="판매 채널" req>
+          <View style={{ flexDirection: 'row', gap: 7 }}>
+            {CHANNEL_LABEL.map(([code, name]) => {
+              const on = etcChannel === code;
+              return (
+                <Pressable
+                  key={code}
+                  onPress={() => setEtcChannel(code)}
+                  accessibilityRole="radio"
+                  accessibilityState={{ selected: on }}
+                  accessibilityLabel={name}
+                  style={{
+                    flex: 1, paddingVertical: 12, borderRadius: 11, alignItems: 'center',
+                    borderWidth: on ? 1.5 : 1,
+                    borderColor: on ? T.blue : T.line,
+                    backgroundColor: on ? T.blueTint : T.surface,
+                  }}
+                >
+                  <Text style={{ fontSize: 15, fontWeight: on ? '800' : '600', color: on ? T.blue : T.sub }}>{name}</Text>
+                </Pressable>
+              );
+            })}
+          </View>
+        </Field>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 12, paddingHorizontal: 14, borderRadius: 10, backgroundColor: T.blueTint }}>
           <Icon name="info" size={15} color={T.blue} />
           <Text style={{ flex: 1, fontSize: 14, color: T.sub2, lineHeight: 20 }}>기타 매출은 재료 차감 없이 매출에만 더해져요.</Text>

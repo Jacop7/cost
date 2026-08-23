@@ -51,7 +51,20 @@ export interface SaleItem {
   qty: number;
 }
 
-export interface EtcItem { name: string; price: number; qty: number }
+/** 채널은 매장·배달앱·포장 **3개 고정**이다(0043). 네 번째는 없다. */
+export type ChannelCode = 'hall' | 'delivery' | 'takeout';
+export const CHANNEL_CODES: ChannelCode[] = ['hall', 'delivery', 'takeout'];
+
+export interface EtcItem {
+  name: string;
+  price: number;
+  qty: number;
+  /**
+   * 판매 채널(0093). **없을 수 있다** — 채널을 묻기 전에 적은 옛 줄이다.
+   * ⚠ 없다고 매장으로 치면 안 된다. 모르는 것이지 매장인 게 아니다.
+   */
+  channel?: ChannelCode;
+}
 export interface ExtraItem { name: string; amount: number; memo?: string }
 
 export interface SalesDay {
@@ -112,6 +125,7 @@ export function useSalesDay(date: string) {
         dailyExtra: num(r.daily_extra),
         etcItems: ((r.etc_items ?? []) as Record<string, unknown>[]).map((e) => ({
           name: String(e.name ?? ''), price: num(e.price), qty: num(e.qty),
+          channel: CHANNEL_CODES.includes(e.channel as ChannelCode) ? (e.channel as ChannelCode) : undefined,
         })),
         extraItems: ((r.extra_items ?? []) as Record<string, unknown>[]).map((e) => ({
           name: String(e.name ?? ''), amount: num(e.amount), memo: str(e.memo) ?? undefined,
@@ -372,7 +386,7 @@ export function useSaveSale() {
           qty_waste: i.qtyWaste ?? 0,
         })),
         p_etc_items: input.etcItems
-          ? input.etcItems.map((e) => ({ name: e.name, price: e.price, qty: e.qty }))
+          ? input.etcItems.map((e) => ({ name: e.name, price: e.price, qty: e.qty, channel: e.channel ?? null }))
           : undefined,
         p_extra_items: input.extraItems
           ? input.extraItems.map((e) => ({ name: e.name, amount: e.amount, memo: e.memo ?? '' }))
@@ -503,6 +517,42 @@ export function useTaxBreakdown(from: string, to: string, enabled = true) {
           name: String(i.name), rate: num(i.rate), amount: num(i.amount),
           menuAmount: num(i.menu_amount), etcAmount: num(i.etc_amount),
         })),
+      };
+    },
+  });
+}
+
+/**
+ * 채널별 기타 매출(0093).
+ *
+ * ⚠ `unassigned` 는 **매장이 아니다.** 채널을 묻기 전에 적은 줄이라 모르는 것이다.
+ *   여기 몫이 크면 채널별 손익이 그만큼 눈을 감고 있다는 뜻이다.
+ */
+export interface EtcByChannel {
+  total: number;
+  byChannel: Record<string, { amount: number; tax: number }>;
+  unassigned: number;
+  unassignedTax: number;
+}
+
+export function useEtcByChannel(from: string, to: string, enabled = true) {
+  const storeId = useStoreId();
+  return useQuery({
+    queryKey: [...qk.salesRange(from, to), 'etc-channel'],
+    enabled: enabled && Boolean(from) && Boolean(to),
+    queryFn: async (): Promise<EtcByChannel> => {
+      const { data, error } = await supabase.rpc('sales_etc_by_channel', { p_store: storeId, p_from: from, p_to: to });
+      if (error) throw new Error(error.message);
+      const r = (data ?? {}) as unknown as Record<string, unknown>;
+      const by: Record<string, { amount: number; tax: number }> = {};
+      for (const [k, v] of Object.entries((r.by_channel ?? {}) as Record<string, Record<string, unknown>>)) {
+        by[k] = { amount: num(v.amount), tax: num(v.tax) };
+      }
+      return {
+        total: num(r.total),
+        byChannel: by,
+        unassigned: num(r.unassigned),
+        unassignedTax: num(r.unassigned_tax),
       };
     },
   });

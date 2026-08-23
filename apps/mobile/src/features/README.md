@@ -57,6 +57,7 @@
 | `my` | MY-06 | 알림 설정 | `my/notifications` (`MyNotificationsScreen`) | ✅ |
 | `recipes` | RCP-12b | 부자재 카테고리 | `recipes/material-category` (`MaterialCategoryScreen`) | ✅ |
 | `sales` | SALES-06 | 기타 매출 추가 (항목·단가·수량) | (SalesHome 내 시트) | ✅ |
+| `sales` | SALES-06 | 기타 매출 추가에 **판매 채널** 선택(매장·배달·포장) | `SalesHomeScreen` 시트 | ✅ |
 | `sales` | SALES-17 | 폐기 손실 자세히 (조리 폐기 · 식재료 폐기) | `sales/waste` (`SalesWasteScreen`) | ✅ |
 | `sales` | SALES-18 | 세금 자세히 (항목별 · 메뉴분/기타분) | `sales/tax` (`SalesTaxScreen`) | ✅ |
 | `sales` | SALES-07 | 당일 지출 추가 (항목·금액·메모) | (SalesHome 내 시트) | ✅ |

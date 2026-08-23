@@ -14,6 +14,13 @@
 -- 쓰더라도 150g 은 어디에도 기록되지 않고, 장부 재고가 물리 재고보다 많아진다.
 -- ════════════════════════════════════════════════════════════════
 
+-- ⚠ 오늘 영업일이 열려 있어야 판매를 적을 수 있다.
+--   날이 바뀌면 아무도 안 연 채 테스트가 돈다 — 실제로 08-23 아침에 이 파일이 빨개졌다.
+--   07·12 와 같은 수로 여기서 연다. 트랜잭션 안이라 곧 되돌려진다.
+do $open$ begin
+  perform open_business_day(pg_temp.store());
+exception when others then null; end $open$;
+
 do $t$
 declare
   v_daepa uuid := pg_temp.ing('대파');
