@@ -9,6 +9,7 @@ import { AppHeader, Card, Icon, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { T, won } from '@/theme/tokens';
 import { useSalesDay, useSalesRange } from '../hooks';
+import { channelName } from '../channels';
 import { rangeLabel, todayBusiness } from '../period';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
@@ -80,7 +81,13 @@ export default function SalesRevenueScreen() {
               <Text style={{ fontSize: 14, fontWeight: '800', color: T.ink, paddingTop: 16, paddingBottom: 4 }}>기타 매출</Text>
               {etcItems.map((e, i) => (
                 <View key={`${e.name}-${i}`} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 9, paddingLeft: 12, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
-                  <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.sub }}>{e.name} <Text style={{ color: T.ter }}>×{e.qty}</Text></Text>
+                  <View style={{ flex: 1, minWidth: 0 }}>
+                    <Text style={{ fontSize: 16, fontWeight: '600', color: T.sub }}>{e.name} <Text style={{ color: T.ter }}>×{e.qty}</Text></Text>
+                    {/* 미지정은 회색이다 — 매장으로 보이면 안 된다(0093). */}
+                    <Text style={{ fontSize: 13, fontWeight: '700', color: e.channel ? T.blue : T.ter, marginTop: 2 }}>
+                      {channelName(e.channel)}
+                    </Text>
+                  </View>
                   <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{won(e.price * e.qty)}원</Text>
                 </View>
               ))}

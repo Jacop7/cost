@@ -10,7 +10,7 @@ import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Card, Icon, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { T, won } from '@/theme/tokens';
-import { useSalesRange } from '../hooks';
+import { useEtcByChannel, useSalesRange } from '../hooks';
 import { useChannelFixed } from '@/features/my/hooks';
 import { rangeLabel, todayBusiness } from '../period';
 
@@ -26,9 +26,21 @@ export default function SalesChannelScreen() {
   const range = useSalesRange(from, to);
   // 고정지출은 항목마다 드는 채널이 다르다(수수료는 배달에만). 서버가 비중대로 나눠 준다.
   const chFixed = useChannelFixed(from, to);
+  // 기타 매출도 채널이 있다(0093). 채널을 묻기 전에 적은 줄만 미지정으로 남는다.
+  const etcCh = useEtcByChannel(from, to);
   const s = range.data?.summary;
-  const channels = (range.data?.channels ?? []).filter((c) => c.amount > 0);
-  const menuRevenue = channels.reduce((a, c) => a + c.amount, 0);
+  const etcOf = (code: string) => etcCh.data?.byChannel[code]?.amount ?? 0;
+  const etcTaxOf = (code: string) => etcCh.data?.byChannel[code]?.tax ?? 0;
+  const channels = (range.data?.channels ?? [])
+    .map((c) => ({ ...c, etc: etcOf(c.code), etcTax: etcTaxOf(c.code) }))
+    .filter((c) => c.amount + c.etc > 0);
+  /*
+   * ⚠ 배분 분모는 **채널에 귀속된 매출 전부**다. 기타 매출을 빼 놓으면
+   *   술을 많이 파는 매장의 고정지출이 배달 쪽으로 쏠린다.
+   *   미지정 몫은 여전히 뺀다 — 어느 채널인지 모르니까.
+   */
+  const assigned = channels.reduce((a, c) => a + c.amount + c.etc, 0);
+  const unassigned = etcCh.data?.unassigned ?? 0;
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
@@ -46,17 +58,19 @@ export default function SalesChannelScreen() {
           {channels.map((c) => {
             // 채널에 귀속되지 않는 비용은 **메뉴 매출** 비중으로 나눈다.
             // 기타 매출은 채널이 없으므로 분모에서 뺀다.
-            const share = menuRevenue > 0 ? c.amount / menuRevenue : 0;
+            const revenue = c.amount + c.etc;
+            const share = assigned > 0 ? revenue / assigned : 0;
             const waste = (s?.wasteLoss ?? 0) * share;
             // 비중 설정이 있으면 그 값, 없으면 서버가 매출 비중으로 계산한 값이 온다.
             const fixed = chFixed.data?.byChannel[c.code] ?? (s?.fixedCost ?? 0) * share;
             const daily = (s?.dailyExtra ?? 0) * share;
             const extraMat = (s?.extraMaterialCost ?? 0) * share;
-            const profit = c.amount - c.material - extraMat - c.tax - waste - fixed - daily;
-            const rate = c.amount > 0 ? Math.round((profit / c.amount) * 1000) / 10 : 0;
+            const tax = c.tax + c.etcTax;
+            const profit = revenue - c.material - extraMat - tax - waste - fixed - daily;
+            const rate = revenue > 0 ? Math.round((profit / revenue) * 1000) / 10 : 0;
             const neg = profit < 0;
             const PR = neg ? T.red : T.green;
-            const p = (v: number) => (c.amount > 0 ? Math.round((v / c.amount) * 1000) / 10 : 0);
+            const p = (v: number) => (revenue > 0 ? Math.round((v / revenue) * 1000) / 10 : 0);
 
             // [라벨, 금액, 배분값인가]
             const costs: [string, number, boolean][] = [
@@ -65,7 +79,7 @@ export default function SalesChannelScreen() {
               ['(−) 폐기 손실', waste, true],
               ['(−) 고정 지출', fixed, chFixed.data === undefined],
               ['(−) 추가 지출', daily, true],
-              ['(−) 세금', c.tax, false],
+              ['(−) 세금', tax, false],
             ];
 
             return (
@@ -82,9 +96,16 @@ export default function SalesChannelScreen() {
                     <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{c.qty}개</Text>
                   </View>
                   <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
-                    <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.ink }}>매출</Text>
+                    <View style={{ flex: 1, minWidth: 0 }}>
+                      <Text style={{ fontSize: 16, fontWeight: '800', color: T.ink }}>매출</Text>
+                      {c.etc > 0 ? (
+                        <Text style={[{ fontSize: 14, fontWeight: '600', color: T.ter, marginTop: 2 }, NUM]}>
+                          메뉴 {won(c.amount)}원 · 기타 {won(c.etc)}원
+                        </Text>
+                      ) : null}
+                    </View>
                     <View style={{ alignItems: 'flex-end' }}>
-                      <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{won(c.amount)}원</Text>
+                      <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{won(revenue)}원</Text>
                       <Text style={{ fontSize: 14, fontWeight: '600', color: T.ter, marginTop: 2 }}>100%</Text>
                     </View>
                   </View>
@@ -113,11 +134,25 @@ export default function SalesChannelScreen() {
           })}
         </QueryState>
 
+        {/*
+          ⚠ 미지정을 조용히 어느 채널에 얹으면 안 된다(0093). 눈에 보여야 사장님이 고친다.
+        */}
+        {unassigned > 0 ? (
+          <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, paddingVertical: 12, paddingHorizontal: 14, borderRadius: 12, backgroundColor: T.surface2, borderWidth: 1, borderColor: T.line }}>
+            <Icon name="info" size={15} color={T.ter} />
+            <Text style={{ flex: 1, fontSize: 14, color: T.sub, fontWeight: '600', lineHeight: 20 }}>
+              채널이 없는 기타 매출 <Text style={[{ fontWeight: '800', color: T.ink }, NUM]}>{won(unassigned)}원</Text>은
+              위 계산에서 빠져 있어요. 채널을 묻기 전에 적은 줄이라 어디서 팔렸는지 몰라요 —
+              매출 자세히에서 다시 적으면 채널별 손익에 들어가요.
+            </Text>
+          </View>
+        ) : null}
+
         <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, paddingVertical: 12, paddingHorizontal: 14, borderRadius: 12, backgroundColor: T.blueTint, borderWidth: 1, borderColor: T.blueLine }}>
           <Icon name="info" size={15} color={T.blue} />
           <Text style={{ flex: 1, fontSize: 14, color: T.blue, fontWeight: '600', lineHeight: 20 }}>
-            재료비·수수료·세금은 채널별 판매 수량에서 나온 실제값이에요. 고정 지출은 항목별 채널 비중대로 나뉘고,
-            비중을 정하지 않은 항목만 매출 비중으로 배분돼요.
+            재료비·수수료·세금은 채널별 판매 수량에서 나온 실제값이에요. 기타 매출도 적어 둔 채널로 들어가요.
+            고정 지출은 항목별 채널 비중대로 나뉘고, 비중을 정하지 않은 항목만 매출 비중으로 배분돼요.
           </Text>
         </View>
       </ScrollView>
