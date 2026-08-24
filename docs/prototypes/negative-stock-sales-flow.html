@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>영업 시작·판매 재고 부족 흐름</title>
+  <style>
+    :root{
+      --app:#f2f4f6;--surface:#fff;--surface2:#f7f8fa;--ink:#191f28;--sub:#4e5968;
+      --ter:#8b95a1;--line:#dfe3e8;--line2:#edf0f3;--blue:#3182f6;--blue2:#eaf3ff;
+      --red:#f04452;--red2:#fff0f1;--green:#00a86b;--green2:#e8f8f1;--amber:#b96b00;--amber2:#fff4df;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;padding:24px;background:#e9edf2;color:var(--ink);font-family:Arial,"Apple SD Gothic Neo","Noto Sans KR",sans-serif}
+    button,input,select{font:inherit}
+    button{cursor:pointer}
+    .prototype{max-width:940px;margin:0 auto}
+    .catalog{margin-bottom:18px;padding:14px;border:1px solid rgba(25,31,40,.09);border-radius:16px;background:rgba(255,255,255,.82)}
+    .catalog-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:11px}
+    .catalog-head strong{font-size:17px}
+    .catalog-head span{color:var(--ter);font-size:12px;font-weight:700}
+    .scenario-nav{display:flex;flex-wrap:wrap;gap:7px}
+    .scenario-nav button{min-height:38px;padding:0 13px;border:0;border-radius:10px;background:transparent;color:var(--sub);font-size:13px;font-weight:800}
+    .scenario-nav button.on{background:var(--ink);color:#fff}
+    .phone{position:relative;width:min(390px,100%);height:min(820px,calc(100vh - 184px));min-height:650px;margin:auto;overflow:hidden;border:1px solid rgba(25,31,40,.12);border-radius:30px;background:var(--app);box-shadow:0 24px 72px rgba(25,31,40,.16)}
+    .statusbar{height:26px;display:flex;align-items:center;justify-content:space-between;padding:0 19px;background:#fff;font-size:11px;font-weight:800}
+    .app-header{height:56px;display:flex;align-items:center;gap:6px;padding:0 14px;background:#fff;border-bottom:1px solid var(--line2)}
+    .back{width:28px;padding:0;border:0;background:transparent;color:var(--ink);font-size:29px;line-height:1;text-align:left}
+    .app-title{font-size:18px;font-weight:850}
+    .header-action{margin-left:auto;border:0;background:transparent;color:var(--blue);font-size:14px;font-weight:800}
+    .content{height:calc(100% - 82px);overflow-y:auto;padding:12px 16px 96px;scrollbar-width:thin}
+    .section-label{margin:17px 2px 8px;color:var(--sub);font-size:13px;font-weight:800}
+    .section-label:first-child{margin-top:0}
+    .card{overflow:hidden;margin-bottom:11px;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+    .row{display:flex;align-items:center;gap:10px;min-height:50px;padding:12px 14px;border-bottom:1px solid var(--line2)}
+    .row:last-child{border-bottom:0}
+    .row-label{min-width:0;flex:1;color:var(--sub);font-size:14px;font-weight:750}
+    .row-value{font-size:14px;font-weight:850;font-variant-numeric:tabular-nums}
+    .state-card{padding:14px}
+    .state-top{display:flex;align-items:center;gap:9px}
+    .state-date{display:flex;align-items:baseline;gap:4px;font-size:16px;font-weight:850}
+    .state-date small{color:var(--sub);font-size:13px}
+    .state-hours{margin-left:2px;color:var(--ter);font-size:12px;font-weight:700}
+    .state-tag{margin-left:auto;padding:5px 8px;border-radius:7px;background:var(--surface2);color:var(--sub);font-size:11px;font-weight:850}
+    .state-tag.open{background:var(--green2);color:var(--green)}
+    .primary-action{width:100%;height:48px;margin-top:13px;border:0;border-radius:12px;background:var(--blue);color:#fff;font-size:15px;font-weight:850}
+    .notice{display:flex;align-items:center;gap:10px;width:100%;min-height:53px;margin-bottom:11px;padding:11px 13px;border:1px solid #bdd8ff;border-radius:13px;background:var(--blue2);color:var(--ink);text-align:left}
+    .notice-dot{width:9px;height:9px;flex:none;border-radius:50%;background:var(--blue)}
+    .notice-copy{min-width:0;flex:1}
+    .notice-copy b{display:block;font-size:13px}
+    .notice-copy small{display:block;margin-top:3px;color:var(--sub);font-size:11px;font-weight:700}
+    .chev{color:var(--ter);font-size:19px}
+    .hero{padding:16px}
+    .hero small{display:block;color:var(--ter);font-size:12px;font-weight:700}
+    .hero b{display:block;margin-top:5px;font-size:24px}
+    .hero span{display:block;margin-top:5px;color:var(--sub);font-size:12px;font-weight:700}
+    .menu-row{display:flex;align-items:center;gap:12px;padding:13px 14px;border-bottom:1px solid var(--line2)}
+    .menu-row:last-child{border-bottom:0}
+    .menu-copy{min-width:0;flex:1}
+    .menu-copy strong{display:block;font-size:14px}
+    .menu-copy small{display:block;margin-top:4px;color:var(--ter);font-size:11px;font-weight:700}
+    .counter{display:flex;align-items:center;gap:10px}
+    .counter button{width:28px;height:28px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--blue);font-size:18px;font-weight:800}
+    .counter b{min-width:18px;text-align:center;font-size:14px}
+    .footer{position:absolute;z-index:5;right:0;bottom:0;left:0;padding:10px 16px 18px;border-top:1px solid var(--line);background:rgba(255,255,255,.96)}
+    .footer button{width:100%;height:49px;border:0;border-radius:12px;background:var(--blue);color:#fff;font-size:15px;font-weight:850}
+    .summary{padding:14px}
+    .summary strong{font-size:17px}
+    .summary p{margin:6px 0 0;color:var(--sub);font-size:12px;line-height:18px;font-weight:650}
+    .recipe-head{display:flex;align-items:flex-start;gap:8px;padding:14px;border-bottom:1px solid var(--line2)}
+    .recipe-head>span{min-width:0;flex:1}
+    .recipe-head strong{display:block;font-size:15px}
+    .recipe-head small{display:block;margin-top:4px;color:var(--ter);font-size:11px;font-weight:700}
+    .danger-badge{padding:4px 7px;border-radius:6px;background:var(--red2);color:var(--red);font-size:11px;font-weight:850}
+    .ingredient-row{padding:13px 14px;border-bottom:1px solid var(--line2)}
+    .ingredient-row:last-child{border-bottom:0}
+    .ingredient-top{display:flex;align-items:center;gap:10px}
+    .ingredient-top strong{min-width:0;flex:1;font-size:14px}
+    .stock-add-small{height:34px;padding:0 11px;border:0;border-radius:9px;background:var(--blue);color:#fff;font-size:12px;font-weight:850}
+    .ingredient-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:10px}
+    .metric{min-width:0}
+    .metric span{display:block;color:var(--ter);font-size:10px;font-weight:700}
+    .metric b{display:block;margin-top:3px;font-size:12px;font-variant-numeric:tabular-nums}
+    .metric b.red{color:var(--red)}
+    .outline-action{width:100%;height:46px;margin-top:3px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--sub);font-size:14px;font-weight:800}
+    .ingredient-hero{padding:15px}
+    .ingredient-name{font-size:17px;font-weight:850}
+    .ingredient-status{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin-top:13px}
+    .ingredient-status span{color:var(--sub);font-size:12px;font-weight:700}
+    .ingredient-status b{color:var(--red);font-size:21px}
+    .form-card{padding:0 14px}
+    .field{display:block;padding:13px 0;border-bottom:1px solid var(--line2)}
+    .field:last-child{border-bottom:0}
+    .field>span{display:block;margin-bottom:7px;color:var(--sub);font-size:12px;font-weight:750}
+    .input-wrap{display:flex;align-items:center;gap:8px}
+    .input-wrap input{min-width:0;flex:1;height:42px;padding:0 11px;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--ink);font-size:15px;font-weight:800;text-align:right}
+    .input-wrap select{width:82px;height:42px;padding:0 8px;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--ink);font-size:13px;font-weight:750}
+    .optional-row{width:100%;display:flex;align-items:center;gap:10px;padding:14px 0;border:0;background:#fff;text-align:left}
+    .optional-row span{min-width:0;flex:1;color:var(--sub);font-size:13px;font-weight:750}
+    .optional-row b{font-size:13px}
+    .preview-row{display:flex;align-items:center;gap:10px;padding:14px}
+    .preview-row span{min-width:0;flex:1;color:var(--sub);font-size:13px;font-weight:750}
+    .preview-values{font-size:13px;font-weight:750;font-variant-numeric:tabular-nums}
+    .preview-values em{margin-left:5px;color:var(--blue);font-size:15px;font-style:normal;font-weight:850}
+    .overlay{position:absolute;z-index:20;inset:0;display:none;align-items:flex-end;background:rgba(0,0,0,.42)}
+    .overlay.open{display:flex}
+    .sheet{width:100%;padding:9px 16px 22px;border-radius:22px 22px 0 0;background:#fff}
+    .handle{width:40px;height:5px;margin:0 auto 16px;border-radius:3px;background:var(--line)}
+    .sheet h2{margin:0;font-size:19px}
+    .sheet p{margin:7px 0 0;color:var(--sub);font-size:13px;line-height:19px;font-weight:650}
+    .warning-list{margin-top:14px;overflow:hidden;border:1px solid var(--line);border-radius:12px}
+    .warning-item{display:flex;align-items:center;gap:10px;padding:12px;border-bottom:1px solid var(--line2)}
+    .warning-item:last-child{border-bottom:0}
+    .warning-item span{min-width:0;flex:1}
+    .warning-item b{display:block;font-size:13px}
+    .warning-item small{display:block;margin-top:3px;color:var(--ter);font-size:11px;font-weight:700}
+    .warning-item strong{color:var(--red);font-size:12px}
+    .sheet-actions{display:grid;grid-template-columns:1fr 1.35fr;gap:8px;margin-top:16px}
+    .sheet-actions button{height:48px;border:0;border-radius:12px;font-size:14px;font-weight:850}
+    .secondary{background:var(--surface2);color:var(--ink)}
+    .primary{background:var(--blue);color:#fff}
+    .toast{position:absolute;z-index:30;right:18px;bottom:84px;left:18px;display:none;padding:13px 14px;border-radius:12px;background:rgba(25,31,40,.94);color:#fff;font-size:13px;font-weight:750;text-align:center;box-shadow:0 8px 28px rgba(0,0,0,.2)}
+    .toast.show{display:block}
+    .empty{padding:28px 18px;text-align:center}
+    .empty b{display:block;font-size:16px}
+    .empty p{margin:7px 0 0;color:var(--ter);font-size:12px;line-height:18px;font-weight:700}
+    @media(max-width:520px){
+      body{padding:0;background:var(--app)}.catalog{margin:0;border:0;border-radius:0;padding:8px 10px}.catalog-head{display:none}
+      .phone{width:100%;height:calc(100vh - 54px);min-height:610px;border:0;border-radius:0;box-shadow:none}
+    }
+  </style>
+</head>
+<body>
+  <main class="prototype">
+    <section class="catalog" aria-label="프로토타입 화면 선택">
+      <div class="catalog-head"><strong>재고 부족 확인 흐름</strong><span>영업 시작 · 판매 · 재고 추가</span></div>
+      <nav class="scenario-nav">
+        <button type="button" data-screen="start">영업 시작</button>
+        <button type="button" data-screen="sale">판매</button>
+        <button type="button" data-screen="check">재고 확인</button>
+        <button type="button" data-screen="add">재고 추가</button>
+      </nav>
+    </section>
+
+    <section class="phone" aria-label="모바일 앱 프로토타입">
+      <div class="statusbar"><span>9:41</span><span>● ◉ ▰</span></div>
+      <header class="app-header"><button class="back" id="back" type="button" aria-label="뒤로">‹</button><strong class="app-title" id="app-title">매출관리</strong><button class="header-action" id="header-action" type="button"></button></header>
+      <div class="content" id="content"></div>
+      <div id="footer"></div>
+      <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="sheet-title"><section class="sheet"><div class="handle"></div><div id="sheet-body"></div></section></div>
+      <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <script>
+    const $=id=>document.getElementById(id);
+    const params=new URLSearchParams(location.search);
+    let screen=['start','sale','check','add'].includes(params.get('screen'))?params.get('screen'):'start';
+    let businessOpen=false;
+    let saleRecorded=false;
+    let beefResolved=false;
+    let greenResolved=false;
+    let checkSource=params.get('source')==='start'?'start':'sale';
+    let selectedIngredient='소고기 불고기감';
+    const quantities={bulgogi:10,stew:5};
+
+    function setScreen(next){
+      screen=next;
+      history.replaceState(null,'',`${location.pathname}?screen=${screen}`);
+      closeSheet();
+      render();
+      $('content').scrollTop=0;
+    }
+
+    function shortageCount(){return Number(!beefResolved)+Number(!greenResolved)}
+
+    function shortageNotice(){
+      const count=shortageCount();
+      if(count===0)return'';
+      return `<button class="notice" type="button" data-open-check><span class="notice-dot"></span><span class="notice-copy"><b>재고 확인 필요 ${count}개</b><small>부족한 메뉴와 식재료를 확인해 주세요</small></span><span class="chev">›</span></button>`;
+    }
+
+    function startScreen(){
+      return `${shortageNotice()}<section class="card state-card"><div class="state-top"><span class="state-date">8월 24일 <small>(월)</small></span><span class="state-hours">11:00–22:00</span><span class="state-tag ${businessOpen?'open':''}">${businessOpen?'영업 중':'영업 전'}</span></div>${businessOpen?'':'<button class="primary-action" type="button" data-start>영업 시작</button>'}</section><section class="card hero"><small>오늘 순이익</small><b>${businessOpen?'0원':'—'}</b><span>${businessOpen?'판매를 기록하면 손익이 계산돼요':'영업을 시작하면 오늘 기록이 열려요'}</span></section><div class="section-label">오늘 판매</div><section class="card"><div class="menu-row"><span class="menu-copy"><strong>제육볶음</strong><small>판매가 12,000원 · 재료비 2,806원</small></span><span class="row-value">0개</span></div><div class="menu-row"><span class="menu-copy"><strong>김치찌개</strong><small>판매가 9,000원 · 재료비 3,264원</small></span><span class="row-value">0개</span></div><div class="menu-row"><span class="menu-copy"><strong>소불고기</strong><small>판매가 14,500원 · 재료비 4,789원</small></span><span class="row-value">0개</span></div></section>`;
+    }
+
+    function saleScreen(){
+      const total=quantities.bulgogi+quantities.stew;
+      return `${shortageNotice()}<section class="card"><div class="row"><span class="row-label">영업일</span><strong class="row-value">8월 24일 (월)</strong></div><div class="row"><span class="row-label">판매 채널</span><strong class="row-value">매장</strong></div></section><div class="section-label">메뉴별 판매 수량</div><section class="card"><div class="menu-row"><span class="menu-copy"><strong>소불고기</strong><small>14,500원 · 소고기 재고 부족</small></span><span class="counter"><button type="button" data-count="bulgogi" data-delta="-1">−</button><b>${quantities.bulgogi}</b><button type="button" data-count="bulgogi" data-delta="1">+</button></span></div><div class="menu-row"><span class="menu-copy"><strong>김치찌개</strong><small>9,000원 · 대파 재고 부족</small></span><span class="counter"><button type="button" data-count="stew" data-delta="-1">−</button><b>${quantities.stew}</b><button type="button" data-count="stew" data-delta="1">+</button></span></div></section><section class="card"><div class="row"><span class="row-label">판매 수량</span><strong class="row-value">${total}개</strong></div><div class="row"><span class="row-label">매출 합계</span><strong class="row-value">${(quantities.bulgogi*14500+quantities.stew*9000).toLocaleString('ko-KR')}원</strong></div></section>`;
+    }
+
+    function ingredientMetrics(current,needed,shortage){
+      return `<div class="ingredient-metrics"><div class="metric"><span>현재 재고</span><b class="red">${current}</b></div><div class="metric"><span>필요 수량</span><b>${needed}</b></div><div class="metric"><span>부족 수량</span><b class="red">${shortage}</b></div></div>`;
+    }
+
+    function checkScreen(){
+      const isStart=checkSource==='start';
+      const beef=beefResolved?'':`<section class="card"><div class="recipe-head"><span><strong>소불고기</strong><small>${isStart?'1개 판매 기준':saleRecorded?'판매 기록 기준':'10개 판매 기준'}</small></span><span class="danger-badge">재고 부족</span></div><div class="ingredient-row"><div class="ingredient-top"><strong>소고기 불고기감</strong><button class="stock-add-small" type="button" data-add="소고기 불고기감">재고 추가</button></div>${ingredientMetrics('−750g',isStart?'150g':'1.5kg',isStart?'900g':'2.25kg')}</div></section>`;
+      const stew=greenResolved?'':`<section class="card"><div class="recipe-head"><span><strong>김치찌개</strong><small>${isStart?'1개 판매 기준':saleRecorded?'판매 기록 기준':'5개 판매 기준'}</small></span><span class="danger-badge">재고 부족</span></div><div class="ingredient-row"><div class="ingredient-top"><strong>대파</strong><button class="stock-add-small" type="button" data-add="대파">재고 추가</button></div>${ingredientMetrics('−20g',isStart?'50g':'250g',isStart?'70g':'270g')}</div></section>`;
+      const count=shortageCount();
+      if(count===0)return `<section class="card empty"><b>확인이 필요한 재고가 없어요</b><p>추가한 재고가 연결된 레시피에 반영됐어요.</p></section><button class="outline-action" type="button" data-all-low>전체 부족 재고 보기</button>`;
+      return `<section class="card summary"><strong>재고 확인 필요 ${count}개</strong><p>부족한 식재료만 표시했어요. 재고를 추가하지 않아도 영업과 판매는 계속할 수 있어요.</p></section>${beef}${stew}<button class="outline-action" type="button" data-all-low>전체 부족 재고 보기</button>`;
+    }
+
+    function addScreen(){
+      const isGreenOnion=selectedIngredient==='대파';
+      const current=isGreenOnion?'−20g':'−750g';
+      const quantity=isGreenOnion?'1':'3';
+      const amount=isGreenOnion?'4,000':'36,000';
+      const before=isGreenOnion?'4.00원/g':'13.00원/g';
+      const after=isGreenOnion?'4.00원/g':'12.75원/g';
+      return `<section class="card ingredient-hero"><div class="ingredient-name">${selectedIngredient}</div><div class="ingredient-status"><span>현재 재고</span><b>${current}</b></div></section><div class="section-label">입고 정보</div><section class="card form-card"><label class="field"><span>추가 수량</span><span class="input-wrap"><input id="add-quantity" type="number" min="0.001" step="0.001" value="${quantity}" inputmode="decimal"><select id="add-unit"><option>kg</option><option>g</option></select></span></label><label class="field"><span>구매 금액</span><span class="input-wrap"><input id="add-amount" type="text" value="${amount}" inputmode="numeric"><b>원</b></span></label></section><div class="section-label">구매한 곳 · 선택</div><section class="card form-card"><button class="optional-row" type="button" data-purchase-option><span>구매 링크 옵션</span><b>선택 안 함</b><span class="chev">›</span></button></section><section class="card"><div class="preview-row"><span>기준단가</span><div class="preview-values">${before} → <em>${after}</em></div></div></section>`;
+    }
+
+    function openShortageSheet(type){
+      const isStart=type==='start';
+      const warningItems=`${beefResolved?'':`<div class="warning-item"><span><b>소불고기</b><small>소고기 불고기감</small></span><strong>${isStart?'900g':'2.25kg'} 부족</strong></div>`}${greenResolved?'':`<div class="warning-item"><span><b>김치찌개</b><small>대파</small></span><strong>${isStart?'70g':'270g'} 부족</strong></div>`}`;
+      $('sheet-body').innerHTML=`<h2 id="sheet-title">${isStart?'현재 재고가 부족한 메뉴가 있어요':'판매 수량보다 재고가 부족해요'}</h2><p>재고를 확인하거나 그대로 ${isStart?'영업을 시작':'판매'}할 수 있어요.</p><div class="warning-list">${warningItems}</div><div class="sheet-actions"><button class="secondary" type="button" data-sheet-check>재고 확인</button><button class="primary" type="button" data-sheet-continue>${isStart?'그대로 영업 시작':'그대로 판매'}</button></div>`;
+      $('overlay').classList.add('open');
+      document.querySelector('[data-sheet-check]').onclick=()=>{checkSource=type;setScreen('check')};
+      document.querySelector('[data-sheet-continue]').onclick=()=>{
+        closeSheet();
+        if(isStart){businessOpen=true;render();showToast(`영업을 시작했어요 · 재고 확인 필요 ${shortageCount()}개`);}
+        else{saleRecorded=true;showToast('판매를 기록했어요 · 부족분은 음수 재고로 반영돼요');}
+      };
+    }
+
+    function openAllLow(){
+      $('sheet-body').innerHTML=`<h2 id="sheet-title">전체 부족 재고</h2><p>안전재고 이하인 식재료예요.</p><div class="warning-list"><div class="warning-item"><span><b>소고기 불고기감</b><small>현재 −750g · 안전재고 2kg</small></span><strong>소진</strong></div><div class="warning-item"><span><b>대파</b><small>현재 −20g · 안전재고 1kg</small></span><strong>소진</strong></div><div class="warning-item"><span><b>양파</b><small>현재 1.2kg · 안전재고 2kg</small></span><strong>소진 임박</strong></div></div><div class="sheet-actions" style="grid-template-columns:1fr"><button class="secondary" type="button" data-close>닫기</button></div>`;
+      $('overlay').classList.add('open');
+      document.querySelector('[data-close]').onclick=closeSheet;
+    }
+
+    function saveStock(){
+      const quantity=Number($('add-quantity')?.value||0);
+      const amount=Number(($('add-amount')?.value||'').replaceAll(',',''));
+      if(quantity<=0||amount<=0){showToast('추가 수량과 구매 금액을 입력해 주세요');return;}
+      if(selectedIngredient==='소고기 불고기감')beefResolved=true;
+      if(selectedIngredient==='대파')greenResolved=true;
+      showToast(`${selectedIngredient} 재고를 추가했어요`);
+      setTimeout(()=>setScreen('check'),650);
+    }
+
+    function openPurchaseOption(){
+      $('sheet-body').innerHTML=`<h2 id="sheet-title">구매한 곳 선택</h2><p>구매 링크 옵션은 선택하지 않아도 등록할 수 있어요.</p><div class="warning-list"><button class="warning-item" type="button" data-option style="width:100%;border-top:0;border-right:0;border-left:0;background:#fff;text-align:left"><span><b>마장축산</b><small>소고기 불고기감 · 3kg</small></span><strong style="color:var(--ink)">36,000원</strong></button><button class="warning-item" type="button" data-no-option style="width:100%;border:0;background:#fff;text-align:left"><span><b>선택 안 함</b><small>수량과 구매 금액만 기록</small></span></button></div>`;
+      $('overlay').classList.add('open');
+      document.querySelector('[data-option]').onclick=closeSheet;
+      document.querySelector('[data-no-option]').onclick=closeSheet;
+    }
+
+    function closeSheet(){$('overlay').classList.remove('open')}
+    function showToast(message){$('toast').textContent=message;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),1800)}
+
+    function bind(){
+      document.querySelectorAll('[data-screen]').forEach(button=>button.onclick=()=>setScreen(button.dataset.screen));
+      document.querySelectorAll('[data-open-check]').forEach(button=>button.onclick=()=>setScreen('check'));
+      const start=document.querySelector('[data-start]');if(start)start.onclick=()=>shortageCount()===0?(businessOpen=true,render()):openShortageSheet('start');
+      document.querySelectorAll('[data-count]').forEach(button=>button.onclick=()=>{const key=button.dataset.count;quantities[key]=Math.max(0,quantities[key]+Number(button.dataset.delta));render()});
+      document.querySelectorAll('[data-add]').forEach(button=>button.onclick=()=>{selectedIngredient=button.dataset.add;setScreen('add')});
+      const allLow=document.querySelector('[data-all-low]');if(allLow)allLow.onclick=openAllLow;
+      const purchase=document.querySelector('[data-purchase-option]');if(purchase)purchase.onclick=openPurchaseOption;
+      $('back').onclick=()=>screen==='add'||screen==='check'?setScreen(saleRecorded?'sale':'start'):history.back();
+    }
+
+    function render(){
+      document.querySelectorAll('[data-screen]').forEach(button=>button.classList.toggle('on',button.dataset.screen===screen));
+      const title={start:'매출관리',sale:'판매 입력',check:'재고 확인',add:'재고 추가'}[screen];
+      $('app-title').textContent=title;
+      $('header-action').textContent='';
+      $('content').innerHTML=screen==='start'?startScreen():screen==='sale'?saleScreen():screen==='check'?checkScreen():addScreen();
+      if(screen==='sale')$('footer').innerHTML=`<footer class="footer"><button type="button" data-sale>판매 ${quantities.bulgogi+quantities.stew}개 기록</button></footer>`;
+      else if(screen==='add')$('footer').innerHTML=`<footer class="footer"><button type="button" data-save-stock>재고 ${selectedIngredient==='대파'?'1kg':'3kg'} 추가</button></footer>`;
+      else $('footer').innerHTML='';
+      const sale=document.querySelector('[data-sale]');if(sale)sale.onclick=()=>shortageCount()===0?showToast('판매를 기록했어요'):openShortageSheet('sale');
+      const save=document.querySelector('[data-save-stock]');if(save)save.onclick=saveStock;
+      bind();
+    }
+
+    $('overlay').addEventListener('click',event=>{if(event.target===$('overlay'))closeSheet()});
+    render();
+  </script>
+</body>
+</html>
