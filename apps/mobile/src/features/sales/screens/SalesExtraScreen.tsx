@@ -12,6 +12,7 @@ import { safeBack } from '@/lib/nav';
 import { T, won } from '@/theme/tokens';
 import { useExtraUsage, useSalesRange, type ExtraUsageItem } from '../hooks';
 import { rangeLabel, todayBusiness } from '../period';
+import { DetailSummary } from '../components/ProfitBlocks';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 
@@ -34,8 +35,6 @@ export default function SalesExtraScreen() {
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <AppHeader title="부자재 자세히" onBack={() => safeBack(`/sales/day?date=${to}`)} />
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 2, paddingBottom: 28 }}>
-        <Text style={{ fontSize: 14, color: T.ter, fontWeight: '600', marginHorizontal: 2, marginBottom: 10 }}>{rangeLabel(from, to)}</Text>
-
         <QueryState
           isLoading={usage.isLoading}
           error={usage.error}
@@ -45,10 +44,7 @@ export default function SalesExtraScreen() {
           emptyHint="레시피의 ‘부가 원가’에 포장용기 등을 등록하면 집계돼요"
         >
           <Card onLine pad={0} style={{ overflow: 'hidden' }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12, paddingHorizontal: 15, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
-              <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.sub }}>매출 대비</Text>
-              <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{rate}%</Text>
-            </View>
+            <DetailSummary rows={[['영업일', rangeLabel(from, to)], ['부자재 합계', `${won(Math.round(total))}원`], ['매출 대비', `${rate}%`]] as [string, string][]} />
             <View style={{ paddingHorizontal: 15, paddingBottom: 4 }}>
               {items.map((m, i) => (
                 <Pressable
@@ -70,17 +66,9 @@ export default function SalesExtraScreen() {
                 </Pressable>
               ))}
             </View>
-            <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 15, paddingHorizontal: 15, backgroundColor: T.surface2, borderTopWidth: 1, borderTopColor: T.line }}>
-              <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.ink }}>부자재 합계</Text>
-              <Text style={[{ fontSize: 18, fontWeight: '800', color: T.ink }, NUM]}>{won(Math.round(total))}원</Text>
-            </View>
           </Card>
         </QueryState>
 
-        <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, marginTop: 11, paddingVertical: 12, paddingHorizontal: 14, borderRadius: 10, backgroundColor: T.blueTint }}>
-          <Icon name="info" size={15} color={T.blue} />
-          <Text style={{ flex: 1, fontSize: 14, color: T.sub2, lineHeight: 20 }}>판매된 메뉴에 설정된 부가 원가(포장용기 등)를 판매 시점 값으로 합산했어요.</Text>
-        </View>
       </ScrollView>
 
       {/* SALES-16 부자재별 사용 메뉴 */}

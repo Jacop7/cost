@@ -29,21 +29,11 @@ export function ConditionRow({ children, right }: { children: ReactNode; right?:
   );
 }
 
-/** 조건 줄의 버튼 하나 — `최근 3개월 ⌄`. */
-export function FilterButton({ label, onPress }: { label: string; onPress: () => void }) {
-  return (
-    <Pressable
-      onPress={onPress}
-      accessibilityRole="button"
-      accessibilityLabel={`${label} 변경`}
-      hitSlop={6}
-      style={{ flexDirection: 'row', alignItems: 'center', gap: 5, paddingVertical: 7, paddingHorizontal: 10, borderRadius: 9, borderWidth: 1, borderColor: T.line, backgroundColor: T.surface }}
-    >
-      <Text style={{ fontSize: 13, fontWeight: '700', color: T.sub }} numberOfLines={1}>{label}</Text>
-      <Icon name="chevronDown" size={14} color={T.ter} />
-    </Pressable>
-  );
-}
+/**
+ * 조건 줄의 버튼 하나 — `최근 3개월 ⌄`.
+ * ⚠ 정의는 **kit 한 곳**이다(0096). 매출 분석도 같은 버튼을 쓰므로 두 벌이 되면 어긋난다.
+ */
+export { FilterButton } from '@/components/kit';
 
 export interface Metric {
   label: string;

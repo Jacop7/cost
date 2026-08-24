@@ -12,7 +12,8 @@
  */
 import { ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
-import { AppHeader, Card, Donut, QueryState } from '@/components/kit';
+import { AppHeader, Card, QueryState } from '@/components/kit';
+import { SalesRow, SecLabel } from '../components/ProfitBlocks';
 import { safeBack } from '@/lib/nav';
 import { T, won } from '@/theme/tokens';
 import { formatQuantity, formatUnitPrice } from '@sikjae/core';
@@ -109,13 +110,17 @@ export default function SalesMenuDetailScreen() {
   const p = (v: number) => (price > 0 ? Math.round((v / price) * 1000) / 10 : 0);
   const target = r?.targetProfitRate ?? 0;
 
-  const donutSeg = [
-    { label: '재료', value: p(material), color: '#8B95A1' },
-    { label: '부자재', value: p(extra), color: '#CDD3DA' },
-    { label: '고정 지출', value: p(fixed), color: '#5B6573' },
-    { label: '세금', value: p(tax), color: '#B0B8C1' },
-    { label: '순이익', value: Math.max(0, rate), color: rate >= target ? T.green : T.red },
-  ].filter((x) => x.value > 0);
+  /*
+   * ⚠ 프로토타입은 이 화면 전체가 **총액 기준**이다 — 재료 33,677원은 개당 2,806원에
+   *   12개를 곱한 값이고, 아래 재료 소계도 같은 숫자로 맞물린다.
+   *   개당으로 그리면 카드마다 기준이 달라 소계가 안 맞는다.
+   * ⚠ 판매가 없으면 곱할 게 없으므로 개당으로 떨어지고, 제목이 그렇게 말한다.
+   */
+  const soldQty = sold?.qty ?? 0;
+  const totalBasis = soldQty > 0;
+  const mult = totalBasis ? soldQty : 1;
+  const basisLabel = totalBasis ? `${rangeLabel(from, to)} 판매량 기준` : '1개 기준';
+
 
   const legend: [string, number, number, string][] = [
     ['재료', material, p(material), '#8B95A1'],
@@ -152,16 +157,21 @@ export default function SalesMenuDetailScreen() {
                   <Text style={{ fontSize: 20, fontWeight: '800', letterSpacing: -0.3, color: T.ink }}>{r.name}</Text>
                 </View>
                 {([
+                  ['영업일', rangeLabel(from, to), undefined, false],
+                  ['판매 수량', `${soldQty}개${sold && sold.qtyWaste > 0 ? ` · 폐기 ${sold.qtyWaste}` : ''}`, undefined, false],
                   // 기간에 판매가가 여러 가지였으면 평균이라고 밝힌다. 그냥 한 숫자로 두면
                   // 그 가격에 팔았다고 읽힌다.
-                  [multiPrice ? '판매가 (기간 평균)' : '판매가', `${won(Math.round(price))}원`, false],
-                  [`${rangeLabel(from, to)} 판매량`, `${sold?.qty ?? 0}개${sold && sold.qtyWaste > 0 ? ` · 폐기 ${sold.qtyWaste}` : ''}`, false],
-                  ['목표 순이익률', `${target}%`, false],
-                  [ledger ? '순이익률 (실적)' : '현재 순이익률', `${rate}%`, true],
-                ] as const).map(([k, v, accent]) => (
-                  <View key={k} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12, paddingHorizontal: 16, borderTopWidth: 1, borderTopColor: T.line2 }}>
-                    <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.sub }}>{k}</Text>
-                    <Text style={[{ fontSize: 16, fontWeight: '800', color: accent ? (rate >= target ? T.green : T.red) : T.ink }, NUM]}>{v}</Text>
+                  totalBasis
+                    ? ['매출', `${won(Math.round(sold?.revenue ?? price * soldQty))}원`, undefined, false] as const
+                    : [multiPrice ? '판매가 (기간 평균)' : '판매가', `${won(Math.round(price))}원`, undefined, false] as const,
+                  [ledger ? '순이익률' : '현재 순이익률', `${rate}%`, `목표 ${target}%`, true],
+                ] as const).map(([k, v, subLabel, accent]) => (
+                  <View key={k} style={{ flexDirection: 'row', alignItems: 'center', minHeight: 47, paddingVertical: 12, paddingHorizontal: 16, borderTopWidth: 1, borderTopColor: T.line2 }}>
+                    <View style={{ flex: 1, minWidth: 0 }}>
+                      <Text style={{ fontSize: 15, fontWeight: '700', color: T.sub }}>{k}</Text>
+                      {subLabel ? <Text style={{ fontSize: 12, fontWeight: '700', color: T.ter, marginTop: 3 }}>{subLabel}</Text> : null}
+                    </View>
+                    <Text style={[{ fontSize: 15, fontWeight: '800', color: accent ? (rate >= target ? T.green : T.red) : T.ink }, NUM]}>{v}</Text>
                   </View>
                 ))}
               </Card>
@@ -194,20 +204,25 @@ export default function SalesMenuDetailScreen() {
                 </Card>
               ) : null}
 
-              {/* 순이익률 도넛 — 개당 기준 */}
-              <Card pad={16} style={{ flexDirection: 'row', alignItems: 'center', gap: 16 }}>
-                <Donut size={112} thick={17} mainSize={18} mainColor={rate >= target ? T.green : T.red} centerTop="순이익률" centerMain={`${rate}%`} segments={donutSeg} />
-                <View style={{ flex: 1 }}>
-                  <Text style={{ fontSize: 14, color: T.ter, fontWeight: '700', marginBottom: 6 }}>1개 기준</Text>
-                  {legend.map(([l, amt, pct, c]) => {
+              {/*
+                ⚠ 도넛을 뺐다(프로토타입 규격). 다섯 조각짜리 도넛이 알려 주는 건
+                  줄에 적힌 비율과 같은 것이고, 가운데 순이익률은 위 카드가 이미 말한다.
+              */}
+              <SecLabel title={basisLabel} />
+              <Card pad={0} style={{ overflow: 'hidden' }}>
+                <View style={{ paddingHorizontal: 14, paddingTop: 5, paddingBottom: 5 }}>
+                  {legend.map(([l, amt, pct, c], i) => {
                     const accent = l === '순이익';
                     return (
-                      <View key={l} style={{ flexDirection: 'row', alignItems: 'center', gap: 7, paddingVertical: 3 }}>
-                        <View style={{ width: 9, height: 9, borderRadius: 3, backgroundColor: c }} />
-                        <Text style={{ flex: 1, fontSize: 14, fontWeight: accent ? '800' : '600', color: accent ? c : T.sub2 }}>{l}</Text>
-                        <Text style={[{ fontSize: 14, fontWeight: '800', color: accent ? c : T.ink, marginRight: 8 }, NUM]}>{won(Math.round(amt))}원</Text>
-                        <Text style={[{ width: 44, textAlign: 'right', fontSize: 14, fontWeight: '600', color: accent ? c : T.ter }, NUM]}>{pct}%</Text>
-                      </View>
+                      <SalesRow
+                        key={l}
+                        label={l}
+                        amount={`${won(Math.round(amt * mult))}원`}
+                        percent={`${pct}%`}
+                        strong={accent}
+                        tone={accent ? c : undefined}
+                        last={i === legend.length - 1}
+                      />
                     );
                   })}
                 </View>
@@ -215,34 +230,33 @@ export default function SalesMenuDetailScreen() {
 
               {/* 채널 구성 — 기간 판매 실적 */}
               {chTotal > 0 ? (
-                <Card pad={16} style={{ flexDirection: 'row', alignItems: 'center', gap: 16 }}>
-                  <Donut
-                    size={120} thick={19} mainSize={20}
-                    segments={chQty.map((c) => ({ label: c.label, value: Math.round((c.qty / chTotal) * 1000) / 10, color: c.color }))}
-                    centerTop="판매" centerMain={`${chTotal}개`}
-                  />
-                  <View style={{ flex: 1 }}>
-                    <Text style={[{ fontSize: 14, color: T.ter, fontWeight: '700', marginBottom: 8 }, NUM]}>매출 {won(sold?.revenue ?? 0)}원 · 채널 구성</Text>
-                    {chQty.map((c) => (
-                      <View key={c.label} style={{ flexDirection: 'row', alignItems: 'center', gap: 7, paddingVertical: 3 }}>
-                        <View style={{ width: 9, height: 9, borderRadius: 3, backgroundColor: c.color }} />
-                        <Text style={{ flex: 1, fontSize: 14, fontWeight: '600', color: T.sub2 }}>{c.label}</Text>
-                        <Text style={[{ fontSize: 14, fontWeight: '700', color: T.sub, marginRight: 8 }, NUM]}>{c.qty}개</Text>
-                        <Text style={[{ width: 40, textAlign: 'right', fontSize: 14, fontWeight: '700', color: T.ter }, NUM]}>
-                          {Math.round((c.qty / chTotal) * 1000) / 10}%
-                        </Text>
-                      </View>
-                    ))}
-                  </View>
-                </Card>
+                <>
+                  <SecLabel title="채널 구성" />
+                  <Card pad={0} style={{ overflow: 'hidden' }}>
+                    <View style={{ paddingHorizontal: 14, paddingTop: 5, paddingBottom: 5 }}>
+                      {chQty.map((c, i) => (
+                        <SalesRow
+                          key={c.label}
+                          label={c.label}
+                          amount={`${won(Math.round(price * c.qty))}원`}
+                          percent={`${c.qty}개 / ${Math.round((c.qty / chTotal) * 1000) / 10}%`}
+                          strong
+                          last={i === chQty.length - 1}
+                        />
+                      ))}
+                    </View>
+                  </Card>
+                </>
               ) : null}
 
               {/* 재료 */}
               <Card pad={0} style={{ overflow: 'hidden' }}>
-                <SecHead title="재료" sub={d ? '(1인분 · 그날 기준)' : g ? `(1인분 평균 · ${g.days}일 합계 기준)` : '(1인분 기준)'} />
+                {/* ⚠ 위 손익 카드와 **같은 기준**이라야 소계가 맞물린다. */}
+                <SecHead title="재료" />
                 <View style={{ paddingHorizontal: 15, paddingTop: 4, paddingBottom: 15 }}>
                   {lineRows.map((l, i, all) => {
-                    const cost = l.unitPrice === null ? null : l.perServing * l.unitPrice;
+                    const used = l.perServing * mult;
+                    const cost = l.unitPrice === null ? null : used * l.unitPrice;
                     const unit = dispUnit(l.baseUnit);
                     return (
                       <View key={l.key} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10, borderBottomWidth: i < all.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
@@ -259,7 +273,7 @@ export default function SalesMenuDetailScreen() {
                             {cost === null ? '—' : `${won(Math.round(cost))}원`}
                           </Text>
                           <Text style={[{ fontSize: 14, color: T.ter, marginTop: 2 }, NUM]}>
-                            {unit === null ? `${l.perServing}인분` : formatQuantity(l.perServing, unit)} / {cost === null ? '—' : `${p(cost)}%`}
+                            {unit === null ? `${used}인분` : formatQuantity(used, unit)} / {cost === null ? '—' : `${p(cost / mult)}%`}
                           </Text>
                         </View>
                       </View>
@@ -268,7 +282,7 @@ export default function SalesMenuDetailScreen() {
                   <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, paddingTop: 10, borderTopWidth: 1, borderTopColor: T.line }}>
                     <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.ink2 }}>소계</Text>
                     <View style={{ alignItems: 'flex-end' }}>
-                      <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{won(Math.round(material))}원</Text>
+                      <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{won(Math.round(material * mult))}원</Text>
                       <Text style={[{ fontSize: 14, fontWeight: '700', color: T.sub2, marginTop: 2 }, NUM]}>{p(material)}%</Text>
                     </View>
                   </View>
@@ -278,13 +292,13 @@ export default function SalesMenuDetailScreen() {
               {/* 부가 원가 */}
               {extraRows.length > 0 ? (
                 <Card pad={0} style={{ overflow: 'hidden' }}>
-                  <SecHead title="부자재" sub={d ? '(그날 기준)' : g ? '(기간 합계 기준)' : '(이 메뉴에만 들어가는 부가 원가)'} />
+                  <SecHead title="부자재" />
                   <View style={{ paddingHorizontal: 15, paddingBottom: 4 }}>
                     {extraRows.map((e, i, all) => (
                       <View key={e.key} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 13, borderBottomWidth: i < all.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
                         <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.ink2 }}>{e.name}</Text>
                         <View style={{ alignItems: 'flex-end' }}>
-                          <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{won(e.amount)}원</Text>
+                          <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{won(Math.round(e.amount * mult))}원</Text>
                           <Text style={[{ fontSize: 14, fontWeight: '600', color: T.ter, marginTop: 2 }, NUM]}>{p(e.amount)}%</Text>
                         </View>
                       </View>
@@ -295,7 +309,7 @@ export default function SalesMenuDetailScreen() {
 
               {/* 고정 지출 · 세금 */}
               <Card pad={0} style={{ overflow: 'hidden' }}>
-                <SecHead title="고정 지출 · 세금" sub={d ? '(개당 · 그날 기준)' : g ? '(개당 평균 · 기간 합계 기준)' : '(개당 환산)'} />
+                <SecHead title="고정 지출 · 세금" />
                 <View style={{ paddingHorizontal: 15, paddingBottom: 4 }}>
                   {(taxRows.length > 0
                     ? [
@@ -315,7 +329,7 @@ export default function SalesMenuDetailScreen() {
                         <Text style={{ fontSize: 14, color: T.ter, marginTop: 2 }}>{note}</Text>
                       </View>
                       <View style={{ alignItems: 'flex-end' }}>
-                        <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{won(Math.round(v))}원</Text>
+                        <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{won(Math.round(v * mult))}원</Text>
                         <Text style={[{ fontSize: 14, fontWeight: '600', color: T.ter, marginTop: 2 }, NUM]}>{p(v)}%</Text>
                       </View>
                     </View>

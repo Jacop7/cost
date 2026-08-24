@@ -13,6 +13,7 @@ import { T, won } from '@/theme/tokens';
 import { formatQuantity, formatUnitPrice } from '@sikjae/core';
 import { useMaterialUsage, useSalesRange, type MaterialUsageItem } from '../hooks';
 import { rangeLabel, todayBusiness } from '../period';
+import { DetailSummary } from '../components/ProfitBlocks';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 const dispUnit = (u: 'g' | 'ml' | 'ea') => (u === 'ea' ? '개' : u);
@@ -40,8 +41,6 @@ export default function SalesMaterialScreen() {
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <AppHeader title="재료 원가 자세히" onBack={() => safeBack(`/sales/day?date=${to}`)} />
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 2, paddingBottom: 28 }}>
-        <Text style={{ fontSize: 14, color: T.ter, fontWeight: '600', marginHorizontal: 2, marginBottom: 10 }}>{rangeLabel(from, to)}</Text>
-
         <QueryState
           isLoading={usage.isLoading}
           error={usage.error}
@@ -51,12 +50,9 @@ export default function SalesMaterialScreen() {
           emptyHint="판매를 등록하면 레시피대로 자동 집계돼요"
         >
           <Card onLine pad={0} style={{ overflow: 'hidden' }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12, paddingHorizontal: 15, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
-              <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.sub }}>매출 원가율</Text>
-              <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{costRate}%</Text>
-            </View>
+            <DetailSummary rows={[['영업일', rangeLabel(from, to)], ['재료 원가 합계', `${won(Math.round(total))}원`], ['매출 원가율', `${costRate}%`]] as [string, string][]} />
             <View style={{ paddingHorizontal: 15, paddingBottom: 15 }}>
-              <Text style={{ fontSize: 14, fontWeight: '800', color: T.ink, paddingTop: 12, paddingBottom: 2 }}>사용 식재료</Text>
+              <Text style={{ fontSize: 13, fontWeight: '800', color: T.ink, paddingTop: 12, paddingBottom: 2 }}>사용 식재료</Text>
               {list.map((m) => {
                 const unit = dispUnit(m.baseUnit);
                 const menus = m.menus.map((x) => x.menuName);
@@ -91,17 +87,9 @@ export default function SalesMaterialScreen() {
                 </Pressable>
               ) : null}
             </View>
-            <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 15, paddingHorizontal: 15, backgroundColor: T.surface2, borderTopWidth: 1, borderTopColor: T.line }}>
-              <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.ink }}>재료 원가 합계</Text>
-              <Text style={[{ fontSize: 18, fontWeight: '800', color: T.ink }, NUM]}>{won(Math.round(total))}원</Text>
-            </View>
           </Card>
         </QueryState>
 
-        <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, marginTop: 11, paddingVertical: 12, paddingHorizontal: 14, borderRadius: 10, backgroundColor: T.blueTint }}>
-          <Icon name="info" size={15} color={T.blue} />
-          <Text style={{ flex: 1, fontSize: 14, color: T.sub2, lineHeight: 20 }}>판매된 메뉴의 레시피에서 실제로 차감된 사용량을 합산한 금액이에요.</Text>
-        </View>
       </ScrollView>
 
       {/* SALES-14 재료별 사용 메뉴 */}
