@@ -173,6 +173,29 @@ export function useCloseBusinessDay() {
   });
 }
 
+/**
+ * 어제 걸 닫고 오늘을 연다 — **한 번에**.
+ *
+ * 안 닫힌 날이 남아 있으면 오늘 매출이 서버에서 45001 로 막힌다. 예전엔 사장님이
+ * `종료` 누르고 `영업 시작` 을 또 눌러야 했는데, 화면은 그때 초록 '영업중' 배지를
+ * 달고 있었다 — 뭘 눌러야 하는지 알 길이 없었다. 버튼 하나로 끝낸다.
+ *
+ * ⚠ 어제 기준값은 어제 것 그대로 잠긴 채로 닫힌다. 오늘 것만 지금 값으로 굳는다.
+ */
+export function useCloseStaleAndOpen() {
+  const qc = useQueryClient();
+  const storeId = useStoreId();
+  return useMutation({
+    mutationFn: async (): Promise<void> => {
+      const closed = await supabase.rpc('close_business_day', { p_store: storeId });
+      if (closed.error) throw new Error(closed.error.message);
+      const opened = await supabase.rpc('open_business_day', { p_store: storeId });
+      if (opened.error) throw new Error(opened.error.message);
+    },
+    onSuccess: () => invalidate(qc, invalidateOn.businessDay()),
+  });
+}
+
 /** 종료 되돌리기 — 끝낸 뒤에 빠뜨린 판매를 넣을 때. 기준값(스냅샷)은 그대로다. */
 export function useReopenBusinessDay() {
   const qc = useQueryClient();
