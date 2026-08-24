@@ -45,13 +45,32 @@ export default function SalesRevenueScreen() {
           emptyTitle=""
         >
           <Card onLine pad={0} style={{ overflow: 'hidden' }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12, paddingHorizontal: 15, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
-              <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.sub }}>판매 수량</Text>
-              <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{rangeLabel(from, to)} {s?.qty ?? 0}개</Text>
+            {/*
+              프로토타입 `.revenue-summary` — 영업일·판매 수량·매출 합계가 **머리에** 온다.
+              합계를 맨 아래 두면 메뉴가 길어질수록 "그래서 얼마?"를 스크롤해야 찾는다.
+            */}
+            <View style={{ backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line }}>
+              {([
+                ['영업일', rangeLabel(from, to)],
+                ['판매 수량', `${s?.qty ?? 0}개`],
+                ['매출 합계', `${won(s?.revenue ?? 0)}원`],
+              ] as const).map(([k, v], i) => (
+                <View
+                  key={k}
+                  style={{
+                    flexDirection: 'row', alignItems: 'center', gap: 12, minHeight: 47,
+                    paddingVertical: 12, paddingHorizontal: 15,
+                    borderBottomWidth: i === 2 ? 0 : 1, borderBottomColor: T.line2,
+                  }}
+                >
+                  <Text style={{ flex: 1, fontSize: 15, fontWeight: '700', color: T.sub }}>{k}</Text>
+                  <Text style={[{ fontSize: 15, fontWeight: '800', color: T.ink }, NUM]}>{v}</Text>
+                </View>
+              ))}
             </View>
 
             <View style={{ paddingHorizontal: 15, paddingBottom: 15 }}>
-              <Text style={{ fontSize: 14, fontWeight: '800', color: T.ink, paddingTop: 12, paddingBottom: 2 }}>메뉴 매출</Text>
+              <Text style={{ fontSize: 13, fontWeight: '800', color: T.ink, paddingTop: 12, paddingBottom: 2 }}>메뉴 매출</Text>
               {list.map((m) => (
                 <View key={m.recipeId ?? m.menuName} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 9, paddingLeft: 12, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
                   <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.sub }} numberOfLines={1}>
@@ -78,7 +97,7 @@ export default function SalesRevenueScreen() {
                 <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink2 }, NUM]}>{won(menuSum)}원</Text>
               </View>
 
-              <Text style={{ fontSize: 14, fontWeight: '800', color: T.ink, paddingTop: 16, paddingBottom: 4 }}>기타 매출</Text>
+              <Text style={{ fontSize: 13, fontWeight: '800', color: T.ink, paddingTop: 16, paddingBottom: 4 }}>기타 매출</Text>
               {etcItems.map((e, i) => (
                 <View key={`${e.name}-${i}`} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 9, paddingLeft: 12, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
                   <View style={{ flex: 1, minWidth: 0 }}>
@@ -105,11 +124,6 @@ export default function SalesRevenueScreen() {
                   <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink2 }, NUM]}>{won(s?.etcRevenue ?? 0)}원</Text>
                 </View>
               )}
-            </View>
-
-            <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 15, paddingHorizontal: 15, backgroundColor: T.surface2, borderTopWidth: 1, borderTopColor: T.line }}>
-              <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.ink }}>매출 합계</Text>
-              <Text style={[{ fontSize: 18, fontWeight: '800', color: T.ink }, NUM]}>{won(s?.revenue ?? 0)}원</Text>
             </View>
           </Card>
         </QueryState>

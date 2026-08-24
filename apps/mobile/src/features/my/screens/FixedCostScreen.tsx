@@ -5,9 +5,9 @@
  * 여기 숫자 하나가 전 메뉴 순이익률을 움직인다 — 화면에서 그 사실을 알린다.
  */
 import { useState } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
-import { AppHeader, Badge, Button, Card, Chip, Icon, QueryState } from '@/components/kit';
+import { AppHeader, Badge, Button, Card, FilterButton, Icon, QueryState, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { formatPercent } from '@sikjae/core';
 import { T, won } from '@/theme/tokens';
@@ -37,6 +37,8 @@ export default function FixedCostScreen() {
   const router = useRouter();
   const months = recentMonths();
   const [month, setMonth] = useState(months[0]!);
+  /** 월 고르는 입구는 하나다(0096) — 매출 분석·식재료 내역과 같은 필터 버튼. */
+  const [monthOpen, setMonthOpen] = useState(false);
   const fixed = useFixedCosts(month);
   // 적어둔 월매출이 전 메뉴 순이익에 곱해진다 — 실제와 얼마나 벌어졌는지 함께 보여준다(M-030).
   const check = useRevenueCheck(month);
@@ -51,13 +53,13 @@ export default function FixedCostScreen() {
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <AppHeader title="고정 지출" onBack={() => safeBack('/my')} />
 
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ flexGrow: 0 }} contentContainerStyle={{ gap: 7, paddingHorizontal: 20, paddingVertical: 10 }}>
-        {months.map((m) => (
-          <Chip key={m} active={m === month} onPress={() => setMonth(m)}>
-            {Number(m.slice(5))}월
-          </Chip>
-        ))}
-      </ScrollView>
+      {/*
+        ⚠ 칩 6개를 필터 버튼 하나로 바꿨다(0096). 매출 분석·식재료 내역이 쓰는
+          `.condition-filter` 와 같은 모양이라야 사장님이 한 번만 배운다.
+      */}
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, minHeight: 38, paddingHorizontal: 20, paddingVertical: 8 }}>
+        <FilterButton label={`${month.slice(0, 4)}년 ${Number(month.slice(5))}월`} onPress={() => setMonthOpen(true)} />
+      </View>
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 2, paddingBottom: 24, gap: 11 }}>
         <QueryState
@@ -130,6 +132,32 @@ export default function FixedCostScreen() {
           수정
         </Button>
       </View>
+
+      <Sheet visible={monthOpen} onClose={() => setMonthOpen(false)} title="월" sub="어느 달을 볼까요?" height={430}>
+        <Card pad={0} style={{ overflow: 'hidden' }}>
+          {months.map((m, i) => {
+            const on = m === month;
+            return (
+              <Pressable
+                key={m}
+                onPress={() => { setMonth(m); setMonthOpen(false); }}
+                accessibilityRole="button"
+                accessibilityState={{ selected: on }}
+                accessibilityLabel={`${m.slice(0, 4)}년 ${Number(m.slice(5))}월`}
+                style={{
+                  flexDirection: 'row', alignItems: 'center', gap: 10, minHeight: 55, paddingHorizontal: 15,
+                  borderBottomWidth: i === months.length - 1 ? 0 : 1, borderBottomColor: T.line2,
+                }}
+              >
+                <Text style={{ flex: 1, fontSize: 15, fontWeight: on ? '800' : '700', color: on ? T.blue : T.ink }}>
+                  {m.slice(0, 4)}년 {Number(m.slice(5))}월
+                </Text>
+                {on ? <Icon name="check" size={18} color={T.blue} /> : null}
+              </Pressable>
+            );
+          })}
+        </Card>
+      </Sheet>
     </View>
   );
 }

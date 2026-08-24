@@ -11,7 +11,8 @@ import { AppHeader, Card, Icon, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { T, won } from '@/theme/tokens';
 import { useFixedBreakdown } from '../hooks';
-import { rangeLabel, todayBusiness } from '../period';
+import { rangeLabel, todayBusiness } from '../period';
+import { DetailSummary } from '../components/ProfitBlocks';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 
@@ -53,9 +54,14 @@ export default function SalesFixedScreen() {
         }
       />
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 2, paddingBottom: 28, gap: 11 }}>
-        <Text style={{ fontSize: 14, color: T.ter, fontWeight: '600', marginHorizontal: 2 }}>
-          {rangeLabel(from, to)} · {fixed.data?.month ?? ''} 고정지출 기준
-        </Text>
+        <Card pad={0} style={{ overflow: 'hidden' }}>
+          <DetailSummary
+            rows={[
+              ['영업일', `${rangeLabel(from, to)} · ${fixed.data?.month ?? ''} 기준`],
+              ['고정 지출 합계', `${won(Math.round(total))}원`, ratePct != null ? `${ratePct}%` : undefined],
+            ]}
+          />
+        </Card>
 
         {fixed.data?.provisional ? (
           <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, paddingVertical: 12, paddingHorizontal: 14, borderRadius: 12, backgroundColor: T.amberTint }}>
@@ -115,19 +121,6 @@ export default function SalesFixedScreen() {
           })}
         </QueryState>
 
-        <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 15, paddingHorizontal: 16, borderRadius: 12, backgroundColor: T.surface2 }}>
-          <Text style={{ fontSize: 16, fontWeight: '800', color: T.ink2 }}>고정 지출 합계</Text>
-          <View style={{ flex: 1 }} />
-          <Text style={[{ fontSize: 18, fontWeight: '800', color: T.ink, marginRight: 10 }, NUM]}>{won(Math.round(total))}원</Text>
-          {ratePct != null ? <Text style={[{ fontSize: 14, fontWeight: '700', color: T.blue }, NUM]}>{ratePct}%</Text> : null}
-        </View>
-
-        <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, paddingVertical: 12, paddingHorizontal: 14, borderRadius: 12, backgroundColor: T.blueTint, borderWidth: 1, borderColor: T.blueLine }}>
-          <Icon name="info" size={15} color={T.blue} />
-          <Text style={{ flex: 1, fontSize: 14, color: T.blue, fontWeight: '600', lineHeight: 20 }}>
-            고정지출은 월 입력값을 매출 비율(고정지출률)로 환산해 반영해요. 위 금액은 이 기간 매출에 귀속된 몫이에요.
-          </Text>
-        </View>
       </ScrollView>
     </View>
   );

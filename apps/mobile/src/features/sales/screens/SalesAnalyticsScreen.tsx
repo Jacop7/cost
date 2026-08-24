@@ -9,12 +9,12 @@
  */
 import { useMemo, useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
-import { type Href } from 'expo-router';
-import { AppHeader, Button, Card, Chip, Icon, QueryState, Sheet } from '@/components/kit';
+import { type Href, useRouter } from 'expo-router';
+import { AppHeader, Button, Card, FilterButton, Icon, QueryState, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { T, won } from '@/theme/tokens';
 import { useSalesRange, type RangeMenu } from '../hooks';
-import { ChannelMixCard, MenuSalesList, ProfitBreakdownCard, SecLabel } from '../components/ProfitBlocks';
+import { ChannelMixCard, MenuSalesList, ProfitBreakdownCard, SalesRow, SecLabel } from '../components/ProfitBlocks';
 import { MenuProfitSheet } from '../components/MenuProfitSheet';
 import { addDays, parseDay, periods, rangeLabel, todayBusiness, type PeriodKey } from '../period';
 
@@ -40,18 +40,28 @@ const monthTitle = (anchor: string) => {
   return `${d.getUTCFullYear()}년 ${d.getUTCMonth() + 1}월`;
 };
 
+/** 두 날짜 사이의 일수(양끝 포함). 직접설정 시트에서 "며칠치인지"를 말해 준다. */
+function dayGap(from: string, to: string): number {
+  return Math.round((parseDay(to).getTime() - parseDay(from).getTime()) / 86_400_000) + 1;
+}
+
 export default function SalesAnalyticsScreen() {
   const today = todayBusiness();
   const PRESETS = useMemo(() => periods(today), [today]);
 
   const [periodKey, setPeriodKey] = useState<PeriodKey>('today');
   const [custom, setCustom] = useState<{ from: string; to: string } | null>(null);
+  /** 기간 고르는 입구는 여기 하나다(0096). 칩 여섯 개를 이 시트로 옮겼다. */
+  const [periodOpen, setPeriodOpen] = useState(false);
+  /** 직접설정에서 지금 고치는 칸. 달력 탭이 여기로 들어간다. */
+  const [editing, setEditing] = useState<'from' | 'to'>('from');
   const [monthAnchor, setMonthAnchor] = useState(today);
 
   const [pickerOpen, setPickerOpen] = useState(false);
   const [draftFrom, setDraftFrom] = useState<string | null>(null);
   const [draftTo, setDraftTo] = useState<string | null>(null);
 
+  const router = useRouter();
   const [showAll, setShowAll] = useState(false);
   const [sel, setSel] = useState<RangeMenu | null>(null);
 
@@ -84,13 +94,26 @@ export default function SalesAnalyticsScreen() {
   const openPicker = () => {
     setDraftFrom(custom?.from ?? addDays(today, -6));
     setDraftTo(custom?.to ?? today);
+    setEditing('from');
     setPickerOpen(true);
   };
 
-  /** 두 번 눌러 구간을 정한다. 첫 탭은 시작, 두 번째 탭은 끝(거꾸로 누르면 뒤집는다). */
+  /**
+   * 달력 탭은 **지금 고르고 있는 칸**에 들어간다.
+   *
+   * ⚠ 예전엔 "첫 탭은 시작, 두 번째 탭은 끝"이었다. 화면 어디에도 지금이 몇 번째
+   *   탭인지 안 적혀 있어서, 끝을 고치려면 처음부터 다시 눌러야 했다.
+   *   이제 시작일·종료일이 각각 칸으로 보이고, 고칠 칸을 눌러 그것만 바꾼다.
+   */
   const pickDay = (day: string) => {
-    if (draftFrom === null || draftTo !== null) { setDraftFrom(day); setDraftTo(null); return; }
-    if (day < draftFrom) { setDraftTo(draftFrom); setDraftFrom(day); return; }
+    if (editing === 'from') {
+      setDraftFrom(day);
+      // 시작이 끝을 넘어서면 끝을 끌고 간다 — 거꾸로인 구간을 만들지 않는다.
+      if (draftTo !== null && day > draftTo) setDraftTo(day);
+      setEditing('to');
+      return;
+    }
+    if (draftFrom !== null && day < draftFrom) { setDraftFrom(day); return; }
     setDraftTo(day);
   };
 
@@ -112,65 +135,17 @@ export default function SalesAnalyticsScreen() {
       <AppHeader title="매출 분석" onBack={() => safeBack('/sales' as Href)} />
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 2, paddingBottom: 24, gap: 11 }}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 7, paddingVertical: 8, paddingRight: 4 }}>
-          {PRESETS.map((p) => (
-            <Chip key={p.key} active={p.key === periodKey} onPress={() => setPeriodKey(p.key)}>{p.short}</Chip>
-          ))}
-          <Chip active={periodKey === 'custom'} onPress={openPicker}>직접설정</Chip>
-        </ScrollView>
-
-        <Text style={{ fontSize: 16, fontWeight: '800', color: T.ink, marginHorizontal: 2, marginTop: -2 }}>
-          {active.label}
-          {dayCount > 1 ? <Text style={{ fontSize: 14, fontWeight: '700', color: T.ter }}>  {dayCount}일</Text> : null}
-        </Text>
-
-        {/* 캘린더 — 선택 기간을 파랑으로 */}
-        <Card pad={14}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10, marginBottom: 10 }}>
-            <Pressable onPress={() => shiftMonth(-1)} hitSlop={10} accessibilityRole="button" accessibilityLabel="이전 달">
-              <View style={{ transform: [{ rotate: '180deg' }] }}><Icon name="chevron" size={18} color={T.ter} /></View>
-            </Pressable>
-            <Text style={{ fontSize: 16, fontWeight: '800', color: T.ink, minWidth: 110, textAlign: 'center' }}>{monthTitle(monthAnchor)}</Text>
-            <Pressable onPress={() => shiftMonth(1)} hitSlop={10} accessibilityRole="button" accessibilityLabel="다음 달">
-              <Icon name="chevron" size={18} color={T.ter} />
-            </Pressable>
-          </View>
-          <View style={{ flexDirection: 'row', marginBottom: 6 }}>
-            {DOWS.map((d, i) => (
-              <Text key={d} style={{ flex: 1, textAlign: 'center', fontSize: 13, fontWeight: '700', color: i === 0 ? T.red : T.ter }}>{d}</Text>
-            ))}
-          </View>
-          <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
-            {cells.map((day, i) => {
-              if (!day) return <View key={`pad-${i}`} style={{ width: `${100 / 7}%`, aspectRatio: 1 }} />;
-              const profit = dailyBy.get(day);
-              const on = inRange(day);
-              const sun = i % 7 === 0;
-              const dnum = Number(day.slice(8));
-              return (
-                <View key={day} style={{ width: `${100 / 7}%`, aspectRatio: 1, padding: 2 }}>
-                  <Pressable
-                    onPress={() => { setCustom({ from: day, to: day }); setPeriodKey('custom'); }}
-                    accessibilityRole="button"
-                    accessibilityLabel={`${dnum}일${profit != null ? ` 순이익 ${Math.round(profit / 1000)}천원` : ''}`}
-                    style={{ flex: 1, borderRadius: 9, alignItems: 'center', justifyContent: 'center', gap: 1, backgroundColor: on ? T.blue : profit != null ? T.surface2 : 'transparent' }}
-                  >
-                    <Text style={{ fontSize: 13, fontWeight: on ? '800' : '600', color: on ? T.onColor : sun ? T.red : T.ink2 }}>{dnum}</Text>
-                    {profit != null ? (
-                      <Text style={[{ fontSize: 13, fontWeight: '800', color: on ? 'rgba(255,255,255,0.9)' : profit >= 0 ? T.green : T.red, lineHeight: 15 }, NUM]}>
-                        {Math.round(profit / 1000)}
-                      </Text>
-                    ) : null}
-                  </Pressable>
-                </View>
-              );
-            })}
-          </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5, marginTop: 10, paddingTop: 10, borderTopWidth: 1, borderTopColor: T.line2 }}>
-            <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: T.green }} />
-            <Text style={{ fontSize: 13, color: T.ter }}>숫자 = 그날 순이익(천원) · 파랑 = 선택 기간</Text>
-          </View>
-        </Card>
+        {/*
+          프로토타입 `.condition-filter` — 기간은 **버튼 하나**로 고른다.
+          예전엔 칩 6개 + 달력 + 직접설정 시트로 같은 일을 하는 길이 셋이었다.
+        */}
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, minHeight: 38, marginTop: 4 }}>
+          <FilterButton label={`${active.short}, ${active.label}`} onPress={() => setPeriodOpen(true)} />
+          <View style={{ flex: 1 }} />
+          {dayCount > 1 ? (
+            <Text style={[{ fontSize: 13, fontWeight: '700', color: T.ter }, NUM]}>{dayCount}일</Text>
+          ) : null}
+        </View>
 
         <QueryState
           isLoading={range.isLoading}
@@ -182,28 +157,45 @@ export default function SalesAnalyticsScreen() {
           {s ? (
             <>
               <SecLabel title="매출 분석" />
-              <Card pad={16}>
-                {([
-                  ['매출', won(s.revenue), '100%', T.ink, false],
-                  ['지출', won(expense), `${expenseRate}%`, T.amberText, false],
-                  ['순이익', won(s.profit), `${profitRate}%`, T.green, true],
-                ] as const).map(([l, v, p, c, bold], i) => (
-                  <View key={l} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 9, borderBottomWidth: i < 2 ? 1 : 0, borderBottomColor: T.line2 }}>
-                    <Text style={{ flex: 1, fontSize: 16, fontWeight: bold ? '800' : '600', color: bold ? T.green : T.ink2 }}>{l}</Text>
-                    <Text style={[{ fontSize: 16, fontWeight: '800', color: c, marginRight: 10 }, NUM]}>{v}원</Text>
-                    <Text style={[{ width: 48, textAlign: 'right', fontSize: 14, fontWeight: '700', color: T.ter }, NUM]}>{p}</Text>
-                  </View>
-                ))}
+              <Card pad={0} style={{ overflow: 'hidden' }}>
+                <View style={{ paddingHorizontal: 14, paddingTop: 5, paddingBottom: 5 }}>
+                  {/*
+                    ⚠ 비율은 **항상 회색**이다(프로토타입 `.analysis-summary-value small`).
+                      값만 칠하고, 순이익 줄만 라벨까지 초록으로 간다.
+                  */}
+                  {([
+                    ['매출', won(s.revenue), '100%', undefined, false],
+                    ['지출', won(expense), `${expenseRate}%`, T.amberText, false],
+                    ['순이익', won(s.profit), `${profitRate}%`, T.green, true],
+                  ] as const).map(([l, v, p, c, isProfit], i) => (
+                    <SalesRow
+                      key={l}
+                      label={l}
+                      amount={`${v}원`}
+                      percent={p}
+                      strong
+                      tone={c}
+                      labelTone={isProfit ? T.green : undefined}
+                      percentTone={T.ter}
+                      last={i === 2}
+                    />
+                  ))}
+                </View>
                 {dayCount > 1 ? (
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 10 }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 14, paddingBottom: 12 }}>
                     <Icon name="info" size={14} color={T.ter} />
                     <Text style={[{ flex: 1, fontSize: 13, color: T.ter }, NUM]}>하루 평균 순이익 {won(avgProfit)}원 · {dayCount}일 기준</Text>
                   </View>
                 ) : null}
               </Card>
 
-              <SecLabel title="채널 구성" />
-              <ChannelMixCard summary={s} channels={range.data?.channels ?? []} />
+              {/* '자세히 보기'는 카드 안 맨 아래다(프로토타입 `.channel-more`). */}
+              <SecLabel title="채널별 매출" />
+              <ChannelMixCard
+                summary={s}
+                channels={range.data?.channels ?? []}
+                onMore={() => router.push(`/sales/channel?from=${active.from}&to=${active.to}` as Href)}
+              />
 
               <SecLabel title="손익 계산" />
               <ProfitBreakdownCard
@@ -211,12 +203,11 @@ export default function SalesAnalyticsScreen() {
                 qtyLabel={dayCount > 1 ? `${dayCount}일 · ${s.qty}개` : `${s.qty}개`}
                 from={active.from}
                 to={active.to}
+                profitFirst
+                blackAmounts
               />
 
-              <View style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 2, marginTop: 4 }}>
-                <Text style={{ flex: 1, fontSize: 14, fontWeight: '700', color: T.sub }}>메뉴별 판매량</Text>
-                <Text style={{ fontSize: 14, fontWeight: '700', color: T.ter }}>총 {range.data?.menu.length ?? 0}개 · 판매량순</Text>
-              </View>
+              <SecLabel title="메뉴별 판매량" right={`총 ${range.data?.menu.length ?? 0}개`} />
               <MenuSalesList menu={range.data?.menu ?? []} showAll={showAll} onShowAll={() => setShowAll(true)} onSelect={setSel} />
             </>
           ) : null}
@@ -227,15 +218,85 @@ export default function SalesAnalyticsScreen() {
         <MenuProfitSheet sel={sel} summary={s} periodLabel={active.label} from={active.from} to={active.to} onClose={() => setSel(null)} />
       ) : null}
 
+      {/*
+        기간 고르기 — 프로토타입 `.condition-filter` 가 여는 자리.
+        ⚠ 여기가 **유일한 입구**다. 칩을 화면에 다시 뿌리면 같은 일을 하는 길이 둘이 된다.
+      */}
+      <Sheet visible={periodOpen} onClose={() => setPeriodOpen(false)} title="기간" sub="언제를 볼까요?" height={470}>
+        <Card pad={0} style={{ overflow: 'hidden' }}>
+          {PRESETS.map((pp, i) => {
+            const on = periodKey === pp.key;
+            return (
+              <Pressable
+                key={pp.key}
+                onPress={() => { setPeriodKey(pp.key); setPeriodOpen(false); }}
+                accessibilityRole="button"
+                accessibilityState={{ selected: on }}
+                accessibilityLabel={`${pp.short} ${pp.label}`}
+                style={{
+                  flexDirection: 'row', alignItems: 'center', gap: 10, minHeight: 55,
+                  paddingHorizontal: 15,
+                  borderBottomWidth: i === PRESETS.length - 1 ? 0 : 1, borderBottomColor: T.line2,
+                }}
+              >
+                <View style={{ flex: 1, minWidth: 0 }}>
+                  <Text style={{ fontSize: 15, fontWeight: on ? '800' : '700', color: on ? T.blue : T.ink }}>{pp.short}</Text>
+                  <Text style={[{ fontSize: 12, fontWeight: '600', color: T.ter, marginTop: 3 }, NUM]}>{pp.label}</Text>
+                </View>
+                {on ? <Icon name="check" size={18} color={T.blue} /> : null}
+              </Pressable>
+            );
+          })}
+        </Card>
+
+        <View style={{ marginTop: 12 }}>
+          <Button kind="ghost" size="lg" full onPress={() => { setPeriodOpen(false); openPicker(); }}>
+            직접 설정하기
+          </Button>
+        </View>
+      </Sheet>
+
       {/* 직접설정 — 시작일·종료일을 눌러 구간 지정 */}
       <Sheet
         visible={pickerOpen}
         onClose={() => setPickerOpen(false)}
         title="기간 직접 설정"
-        sub={draftFrom ? (draftTo ? rangeLabel(draftFrom, draftTo) : '종료일을 눌러 주세요') : '시작일을 눌러 주세요'}
-        height={520}
+        sub={draftFrom && draftTo ? `${rangeLabel(draftFrom, draftTo)} · ${dayGap(draftFrom, draftTo)}일` : '고칠 칸을 누르고 날짜를 골라 주세요'}
+        height={600}
       >
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10, marginBottom: 10 }}>
+        {/*
+          시작일·종료일을 **각각 칸으로** 보여 준다.
+          ⚠ 예전엔 달력을 두 번 눌러 구간을 정했는데, 지금이 몇 번째 탭인지 화면에
+            안 적혀 있었다. 끝만 고치고 싶어도 처음부터 다시 눌러야 했다.
+        */}
+        <View style={{ flexDirection: 'row', gap: 10, marginBottom: 14 }}>
+          {([['시작일', 'from', draftFrom], ['종료일', 'to', draftTo]] as const).map(([label, key, value]) => {
+            const on = editing === key;
+            return (
+              <View key={key} style={{ flex: 1, minWidth: 0 }}>
+                <Text style={{ fontSize: 13, fontWeight: '700', color: T.sub2, marginBottom: 6 }}>{label}</Text>
+                <Pressable
+                  onPress={() => setEditing(key)}
+                  accessibilityRole="button"
+                  accessibilityState={{ selected: on }}
+                  accessibilityLabel={`${label} ${value ?? '없음'} 고르기`}
+                  style={{
+                    flexDirection: 'row', alignItems: 'center', gap: 8, minHeight: 50,
+                    paddingHorizontal: 13, borderRadius: 12,
+                    borderWidth: on ? 1.5 : 1, borderColor: on ? T.blue : T.line,
+                    backgroundColor: on ? T.blueTint : T.surface,
+                  }}
+                >
+                  <Text style={[{ flex: 1, fontSize: 16, fontWeight: '700', color: value ? T.ink : T.ter }, NUM]} numberOfLines={1}>
+                    {value ?? '선택'}
+                  </Text>
+                  <Icon name="calendar" size={17} color={on ? T.blue : T.ter} />
+                </Pressable>
+              </View>
+            );
+          })}
+        </View>
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10, marginBottom: 4 }}>
           <Pressable onPress={() => shiftMonth(-1)} hitSlop={10} accessibilityRole="button" accessibilityLabel="이전 달">
             <View style={{ transform: [{ rotate: '180deg' }] }}><Icon name="chevron" size={18} color={T.ter} /></View>
           </Pressable>
@@ -244,6 +305,9 @@ export default function SalesAnalyticsScreen() {
             <Icon name="chevron" size={18} color={T.ter} />
           </Pressable>
         </View>
+        <Text style={{ fontSize: 13, fontWeight: '700', color: T.blue, textAlign: 'center', marginBottom: 8 }}>
+          {editing === 'from' ? '시작일' : '종료일'}을 고르는 중이에요
+        </Text>
         <View style={{ flexDirection: 'row', marginBottom: 6 }}>
           {DOWS.map((d, i) => (
             <Text key={d} style={{ flex: 1, textAlign: 'center', fontSize: 13, fontWeight: '700', color: i === 0 ? T.red : T.ter }}>{d}</Text>

@@ -10,7 +10,8 @@ import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Card, Icon, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { T, won } from '@/theme/tokens';
-import { useEtcByChannel, useSalesRange } from '../hooks';
+import { useEtcByChannel, useSalesRange } from '../hooks';
+import { DetailSummary, SalesRow } from '../components/ProfitBlocks';
 import { useChannelFixed } from '@/features/my/hooks';
 import { rangeLabel, todayBusiness } from '../period';
 
@@ -31,9 +32,12 @@ export default function SalesChannelScreen() {
   const s = range.data?.summary;
   const etcOf = (code: string) => etcCh.data?.byChannel[code]?.amount ?? 0;
   const etcTaxOf = (code: string) => etcCh.data?.byChannel[code]?.tax ?? 0;
+  /* 순서는 매장 · 배달앱 · 포장 고정이다(프로토타입). 금액순이면 날마다 자리가 바뀐다. */
+  const ORDER: Record<string, number> = { hall: 0, delivery: 1, takeout: 2 };
   const channels = (range.data?.channels ?? [])
     .map((c) => ({ ...c, etc: etcOf(c.code), etcTax: etcTaxOf(c.code) }))
-    .filter((c) => c.amount + c.etc > 0);
+    .filter((c) => c.amount + c.etc > 0)
+    .sort((a, b2) => (ORDER[a.code] ?? 9) - (ORDER[b2.code] ?? 9));
   /*
    * ⚠ 배분 분모는 **채널에 귀속된 매출 전부**다. 기타 매출을 빼 놓으면
    *   술을 많이 파는 매장의 고정지출이 배달 쪽으로 쏠린다.
@@ -46,7 +50,9 @@ export default function SalesChannelScreen() {
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <AppHeader title="채널별 손익" onBack={() => safeBack(`/sales/day?date=${to}`)} />
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 2, paddingBottom: 28, gap: 11 }}>
-        <Text style={{ fontSize: 14, color: T.ter, fontWeight: '600', marginHorizontal: 2 }}>{rangeLabel(from, to)}</Text>
+        <Card pad={0} style={{ overflow: 'hidden' }}>
+          <DetailSummary rows={[['영업일', rangeLabel(from, to)]]} />
+        </Card>
 
         <QueryState
           isLoading={range.isLoading}
@@ -84,50 +90,28 @@ export default function SalesChannelScreen() {
 
             return (
               <Card key={c.code} pad={0} style={{ overflow: 'hidden' }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 13, paddingHorizontal: 15, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 12, paddingHorizontal: 14, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
                   <View style={{ width: 10, height: 10, borderRadius: 3, backgroundColor: COLOR[c.code] ?? T.sub2 }} />
-                  <Text style={{ fontSize: 16, fontWeight: '800', color: T.sub }}>{c.name}</Text>
-                  <View style={{ flex: 1 }} />
-                  <Text style={{ fontSize: 14, fontWeight: '600', color: T.ter }}>매출 대비 %</Text>
+                  <Text style={{ fontSize: 15, fontWeight: '800', color: T.sub }}>{c.name}</Text>
                 </View>
-                <View style={{ paddingHorizontal: 15, paddingBottom: 14 }}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
-                    <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.sub }}>판매 수량</Text>
-                    <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{c.qty}개</Text>
-                  </View>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
-                    <View style={{ flex: 1, minWidth: 0 }}>
-                      <Text style={{ fontSize: 16, fontWeight: '800', color: T.ink }}>매출</Text>
-                      {c.etc > 0 ? (
-                        <Text style={[{ fontSize: 14, fontWeight: '600', color: T.ter, marginTop: 2 }, NUM]}>
-                          메뉴 {won(c.amount)}원 · 기타 {won(c.etc)}원
-                        </Text>
-                      ) : null}
-                    </View>
-                    <View style={{ alignItems: 'flex-end' }}>
-                      <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{won(revenue)}원</Text>
-                      <Text style={{ fontSize: 14, fontWeight: '600', color: T.ter, marginTop: 2 }}>100%</Text>
-                    </View>
-                  </View>
-                  {costs.map(([n, v, allocated]) => (
-                    <View key={n} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 9, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
-                      <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.sub }}>
-                        {n}
-                        {allocated ? <Text style={{ fontSize: 14, color: T.ter, fontWeight: '600' }}> 배분</Text> : null}
-                      </Text>
-                      <View style={{ alignItems: 'flex-end' }}>
-                        <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ter }, NUM]}>{won(v)}원</Text>
-                        <Text style={[{ fontSize: 14, fontWeight: '600', color: T.ter, marginTop: 2 }, NUM]}>{p(v)}%</Text>
-                      </View>
-                    </View>
+                <View style={{ paddingHorizontal: 14, paddingTop: 5, paddingBottom: 5 }}>
+                  <SalesRow label="판매 수량" amount={`${c.qty}개`} strong />
+                  <SalesRow
+                    label="매출"
+                    amount={`${won(revenue)}원`}
+                    percent="100%"
+                    strong
+                  />
+                  <SalesRow label="순이익" amount={`${neg ? '−' : ''}${won(Math.abs(profit))}원`} percent={`${rate}%`} strong tone={PR} />
+                  {costs.map(([n, v, allocated], k) => (
+                    <SalesRow
+                      key={n}
+                      label={allocated ? `${n} 배분` : n}
+                      amount={`${won(v)}원`}
+                      percent={`${p(v)}%`}
+                      last={k === costs.length - 1}
+                    />
                   ))}
-                  <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 12 }}>
-                    <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.ink }}>순이익</Text>
-                    <View style={{ alignItems: 'flex-end' }}>
-                      <Text style={[{ fontSize: 16, fontWeight: '800', color: PR }, NUM]}>{neg ? '−' : ''}{won(Math.abs(profit))}원</Text>
-                      <Text style={[{ fontSize: 14, fontWeight: '800', color: PR, marginTop: 2 }, NUM]}>{rate}%</Text>
-                    </View>
-                  </View>
                 </View>
               </Card>
             );
@@ -135,26 +119,15 @@ export default function SalesChannelScreen() {
         </QueryState>
 
         {/*
-          ⚠ 미지정을 조용히 어느 채널에 얹으면 안 된다(0093). 눈에 보여야 사장님이 고친다.
+          ⚠ 설명 문단은 다 걷어냈다 — 사장님: "설명이 더 헷갈려."
+            `배분` 꼬리표가 줄마다 붙어 있으니 문단으로 또 말할 필요가 없다.
+            다만 미지정 금액은 **화면에 없는 돈**이라 한 줄로 남긴다.
         */}
         {unassigned > 0 ? (
-          <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, paddingVertical: 12, paddingHorizontal: 14, borderRadius: 12, backgroundColor: T.surface2, borderWidth: 1, borderColor: T.line }}>
-            <Icon name="info" size={15} color={T.ter} />
-            <Text style={{ flex: 1, fontSize: 14, color: T.sub, fontWeight: '600', lineHeight: 20 }}>
-              채널이 없는 기타 매출 <Text style={[{ fontWeight: '800', color: T.ink }, NUM]}>{won(unassigned)}원</Text>은
-              위 계산에서 빠져 있어요. 채널을 묻기 전에 적은 줄이라 어디서 팔렸는지 몰라요 —
-              매출 자세히에서 다시 적으면 채널별 손익에 들어가요.
-            </Text>
-          </View>
+          <Card pad={0} style={{ overflow: 'hidden' }}>
+            <DetailSummary rows={[['채널 미지정 기타 매출', `${won(unassigned)}원`]]} />
+          </Card>
         ) : null}
-
-        <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, paddingVertical: 12, paddingHorizontal: 14, borderRadius: 12, backgroundColor: T.blueTint, borderWidth: 1, borderColor: T.blueLine }}>
-          <Icon name="info" size={15} color={T.blue} />
-          <Text style={{ flex: 1, fontSize: 14, color: T.blue, fontWeight: '600', lineHeight: 20 }}>
-            재료비·수수료·세금은 채널별 판매 수량에서 나온 실제값이에요. 기타 매출도 적어 둔 채널로 들어가요.
-            고정 지출은 항목별 채널 비중대로 나뉘고, 비중을 정하지 않은 항목만 매출 비중으로 배분돼요.
-          </Text>
-        </View>
       </ScrollView>
     </View>
   );

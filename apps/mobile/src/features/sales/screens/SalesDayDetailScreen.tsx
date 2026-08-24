@@ -42,8 +42,13 @@ export default function SalesDayDetailScreen() {
         >
           {summary ? (
             <>
-              <SecLabel title="채널 구성" onPress={() => router.push(`/sales/channel?from=${date}&to=${date}` as Href)} />
-              <ChannelMixCard summary={summary} channels={range.data?.channels ?? []} />
+              {/* '자세히 보기'는 카드 안 맨 아래다(프로토타입 `.channel-more`). 제목엔 안 단다. */}
+              <SecLabel title="채널별 매출" />
+              <ChannelMixCard
+                summary={summary}
+                channels={range.data?.channels ?? []}
+                onMore={() => router.push(`/sales/channel?from=${date}&to=${date}` as Href)}
+              />
 
               {/*
                 ⚠ '자세히 보기'를 달지 않는다. 아래 카드의 **줄마다** 화살표가 있고
@@ -53,12 +58,7 @@ export default function SalesDayDetailScreen() {
               <SecLabel title="일 손익 계산" />
               <ProfitBreakdownCard summary={summary} qtyLabel={`${qty}개`} from={date} to={date} />
 
-              <View style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 2, marginTop: 4 }}>
-                <Text style={{ flex: 1, fontSize: 14, fontWeight: '700', color: T.sub }}>메뉴별 판매량</Text>
-                <Text style={{ fontSize: 14, fontWeight: '700', color: T.ter }}>
-                  총 {range.data?.menu.length ?? 0}개 · 판매량순
-                </Text>
-              </View>
+              <SecLabel title="메뉴별 판매량" right={`총 ${range.data?.menu.length ?? 0}개`} />
               <MenuSalesList menu={range.data?.menu ?? []} showAll={showAll} onShowAll={() => setShowAll(true)} onSelect={setSel} />
             </>
           ) : null}

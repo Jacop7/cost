@@ -23,7 +23,8 @@ declare
   -- 수정 전 / 후를 같은 이름으로 비교하려고 나란히 든다.
   b0 jsonb; b1 jsonb;   -- 메뉴 손익 상세
   s0 jsonb; s1 jsonb;   -- 손익 합계
-  m0 jsonb; m1 jsonb;   -- 재료 되짚기
+  m0 jsonb;
+  v_short numeric; m1 jsonb;   -- 재료 되짚기
   e0 jsonb; e1 jsonb;   -- 부자재 되짚기
   f0 jsonb; f1 jsonb;   -- 고정 지출 되짚기
   r0 numeric;
@@ -48,9 +49,40 @@ begin
    *   차이는 정확히 조리 폐기다. 예전엔 그날 조리 폐기가 0이라 우연히 같았고,
    *   폐기가 있는 날 데이터가 들어오자 바로 어긋났다(실측 4,788.70원).
    */
-  perform pg_temp.eq('되짚기 재료비 = 손익 재료비 + 조리 폐기',
+  /*
+   * ⚠ 여기에 **재고 부족분**이 빠져 있었다. 되짚기는 `inventory_events` 를 세는데,
+   *   재고가 모자라면 필요한 만큼 못 빠진다(판매는 막지 않고 부족만 알린다).
+   *   그러면 실제로 나간 양이 판 것보다 적어 등식이 깨진다 —
+   *   실측 08-24: 소고기 불고기감 1,500g 필요 · 750g 만 차감 · 22,425원 차이.
+   *
+   *   재고가 넉넉한 날만 우연히 맞던 식이었다. 부족분을 명시해야 언제나 성립한다.
+   */
+  select coalesce(sum((n.need - coalesce(g.got, 0))
+                      * coalesce(day_unit_price(pg_temp.store(), v_day, n.ing), 0)), 0)
+    into v_short
+    from (
+      select (l->>'ingredient_id')::uuid as ing,
+             sum((l->>'per_serving')::numeric
+                 * (it.qty_hall + it.qty_delivery + it.qty_takeout + coalesce(it.qty_waste, 0))) as need
+        from daily_sales ds
+        join daily_sales_items it on it.daily_sales_id = ds.id
+        cross join lateral jsonb_array_elements(
+          coalesce(day_snapshot(pg_temp.store(), v_day)
+                   #> array['recipes', it.recipe_id::text, 'lines'], '[]'::jsonb)) l
+       where ds.store_id = pg_temp.store() and ds.sale_date = v_day
+       group by 1) n
+    left join (
+      select ev.ingredient_id as ing, sum(-ev.count_delta) as got
+        from inventory_events ev
+        join daily_sales_items it on it.id = ev.sales_item_id
+        join daily_sales ds on ds.id = it.daily_sales_id
+       where ds.store_id = pg_temp.store() and ds.sale_date = v_day
+       group by 1) g on g.ing = n.ing
+   where n.need - coalesce(g.got, 0) > 0.0001;
+
+  perform pg_temp.eq('되짚기 재료비 = 손익 재료비 + 조리 폐기 − 재고 부족분',
     (m0->>'total')::numeric,
-    (s0->>'material_cost')::numeric + (s0->>'waste_menu')::numeric, 0.01);
+    (s0->>'material_cost')::numeric + (s0->>'waste_menu')::numeric - v_short, 0.01);
   perform pg_temp.eq('되짚기 고정비 = 손익 고정비',
     (f0->>'total')::numeric, (s0->>'fixed_cost')::numeric, 0.01);
   perform pg_temp.eq('고정 항목별 합 = 고정비 합계',
@@ -114,9 +146,10 @@ begin
 
   -- 되짚기와 손익이 여전히 같은 말을 하는가
   -- 같은 이유로 여기도 조리 폐기를 더해야 맞다.
-  perform pg_temp.eq('수정 후에도 되짚기 = 손익 재료비 + 조리 폐기',
+  -- 부족분은 레시피를 고쳐도 그대로다 — 이미 나간 재고 이벤트는 안 움직인다.
+  perform pg_temp.eq('수정 후에도 되짚기 = 손익 재료비 + 조리 폐기 − 재고 부족분',
     (m1->>'total')::numeric,
-    (s1->>'material_cost')::numeric + (s1->>'waste_menu')::numeric, 0.01);
+    (s1->>'material_cost')::numeric + (s1->>'waste_menu')::numeric - v_short, 0.01);
   perform pg_temp.eq('수정 후에도 되짚기 = 손익 (고정비)',
     (f1->>'total')::numeric, (s1->>'fixed_cost')::numeric, 0.01);
 
@@ -242,12 +275,28 @@ begin
     (g1->>'fixed_cost')::numeric, 0.01);
 
   -- 판매가가 여러 가지면 그대로 늘어놓는다 (평균으로 뭉개지 않는다).
+  -- ⚠ `v_day - 3` 에 그 메뉴 판매가 있으리라 **가정하면 안 된다.** 날이 바뀌면 창이
+  --   밀려 그 날이 비고, 바꿀 행이 0건이라 판매가가 하나만 남는다
+  --   (실제로 08-24 아침에 이 파일이 그렇게 깨졌다).
+  --   창 안에서 **실제로 판매가 있는 날**을 골라 그 날 가격만 바꾼다.
   update daily_sales_items it set unit_price = 9300
     from daily_sales ds
    where ds.id = it.daily_sales_id and ds.store_id = pg_temp.store()
-     and ds.sale_date = v_day - 3 and it.recipe_id = v_rcp;
-  perform pg_temp.eq('판매가가 둘이면 목록도 둘',
-    jsonb_array_length(range_menu_detail(pg_temp.store(), v_day - 6, v_day, v_rcp)->'price_points'), 2, 0);
+     and it.recipe_id = v_rcp
+     and ds.sale_date = (
+       select min(ds2.sale_date)
+         from daily_sales ds2 join daily_sales_items it2 on it2.daily_sales_id = ds2.id
+        where ds2.store_id = pg_temp.store() and it2.recipe_id = v_rcp
+          and ds2.sale_date between v_day - 6 and v_day - 1);
+
+  -- 불변식은 '둘'이라는 숫자가 아니라 **가짓수만큼 늘어놓는다** 이다.
+  -- 숫자를 박으면 시드가 바뀔 때마다 또 깨진다.
+  perform pg_temp.eq('판매가 가짓수만큼 목록에 담긴다',
+    jsonb_array_length(range_menu_detail(pg_temp.store(), v_day - 6, v_day, v_rcp)->'price_points'),
+    (select count(distinct it.unit_price)
+       from daily_sales ds join daily_sales_items it on it.daily_sales_id = ds.id
+      where ds.store_id = pg_temp.store() and it.recipe_id = v_rcp
+        and ds.sale_date between v_day - 6 and v_day), 0);
 end $t$;
 
 -- ════════════════════════════════════════════════════════════════

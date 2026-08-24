@@ -193,6 +193,28 @@ export function Chip({ children, active, tone, onPress }: { children: ReactNode;
   );
 }
 
+/**
+ * 조건 줄의 필터 버튼 — 프로토타입 `.condition-filter`.
+ *
+ * ⚠ 앱에서 **기간·유형을 고르는 입구는 이것 하나**다(0096). 식재료 내역 5개 화면이
+ *   이미 이 모양을 쓰는데 매출 분석만 칩 여섯 개를 따로 뒀다. 같은 일을 하는 길이
+ *   둘이면 사장님은 둘 다 안 믿는다 — 실제로 "이해가 안 된다"가 여기서 나왔다.
+ */
+export function FilterButton({ label, onPress }: { label: string; onPress: () => void }) {
+  return (
+    <Pressable
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={`${label} 변경`}
+      hitSlop={6}
+      style={{ flexDirection: 'row', alignItems: 'center', gap: 5, paddingVertical: 7, paddingHorizontal: 10, borderRadius: 9, borderWidth: 1, borderColor: T.line, backgroundColor: T.surface }}
+    >
+      <Text style={{ fontSize: 13, fontWeight: '700', color: T.sub }} numberOfLines={1}>{label}</Text>
+      <Icon name="chevronDown" size={14} color={T.ter} />
+    </Pressable>
+  );
+}
+
 // ── 스테퍼 ────────────────────────────────────────────────────
 export function Stepper({ value, unit, onChange, label }: { value: number; unit?: string; onChange?: (v: number) => void; label?: string }) {
   // 34×34 버튼이라 hitSlop 5 를 더해 최소 44×44 터치 영역을 채운다(가이드 §9.6-1·2).
