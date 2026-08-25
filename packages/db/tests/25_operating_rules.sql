@@ -246,15 +246,27 @@ begin
   v_today := store_local_date(v_store);
 
   /*
-   * ⚠ 앞 블록들이 이미 예약 규칙을 만들어 뒀다. 여기서 `pending 은 null` 을 그냥
-   *   기대하면 **앞 블록 순서에 기대는 시험**이 된다 — 파일을 재배치하는 순간 깨진다.
-   *   출발점을 명시적으로 고정한다(규칙은 앱 권한으로 못 지우므로 소유자로 올라간다).
+   * ⚠ 앞 블록들이 예약 규칙을 만들고 **활성 규칙의 시각까지 바꿔 놨다.**
+   *   여기서 `pending 은 null`·`today 는 22:00` 을 그냥 기대하면 **앞 블록 순서에
+   *   기대는 시험**이 된다 — 파일을 재배치하거나 앞 블록을 고치는 순간 깨진다.
+   *   예약을 지우는 것만으로는 부족하다. 활성 규칙의 **내용까지** 되돌려야 독립적이다.
+   *   (규칙은 앱 권한으로 못 고치므로 소유자로 올라간다.)
    */
   set local role postgres;
   delete from operating_rules where store_id = v_store and effective_from > v_today;
-  update operating_rules set effective_to = null
+  update operating_rules
+     set effective_to  = null,
+         weekly_hours  = (select jsonb_object_agg(d::text, jsonb_build_object(
+                                   'open', '11:00:00', 'close', '22:00:00', 'closed', false))
+                            from generate_series(0, 6) d),
+         weekly_breaks = '{}'::jsonb
    where id = (select id from operating_rules
                 where store_id = v_store order by effective_from desc limit 1);
+  -- 다른 규칙이 남아 있으면 위 하나만 고쳐도 소용없다.
+  if (select count(*) from operating_rules where store_id = v_store) <> 1 then
+    raise exception '⑩ 출발점: 규칙이 %개입니다 — 1개여야 합니다',
+      (select count(*) from operating_rules where store_id = v_store);
+  end if;
   set local role authenticated;
 
   v_res := operating_hours_status(v_store);
