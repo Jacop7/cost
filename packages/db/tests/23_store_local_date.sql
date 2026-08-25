@@ -263,14 +263,53 @@ begin
       where n.nspname = 'public' and p.prokind = 'f' and l.lanname in ('plpgsql','sql')
         and p.prosrc like '%business_month(%' and p.proname <> 'business_month'),
     '없음');
+
+  /*
+   * "business_month 를 안 쓴다" 만으로는 부족하다. **어느 매장의 월을 쓰는지**가
+   * 진짜 문제다. 엉뚱한 매장 식을 넣어도 위 검사는 통과한다.
+   * 그래서 다섯 자리의 호출 형태를 그대로 못 박는다.
+   */
+  for r in
+    select * from (values
+      ('e1_confirm_inbound',   'store_local_month(o.store_id)'),
+      ('e11_inbound_reverted', 'store_local_month(o.store_id)'),
+      ('recipe_detail',        'store_local_month(r.store_id)'),
+      ('recipe_list',          'store_local_month(r.store_id)'),
+      ('save_recipe',          'store_local_month(p_store)')
+    ) as t(fn, call)
+  loop
+    select pg_get_functiondef(p.oid) into v_def
+      from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+     where n.nspname = 'public' and p.proname = r.fn;
+    perform pg_temp.ok(format('%s 가 %s 를 쓴다', r.fn, r.call),
+      position(r.call in v_def) > 0);
+  end loop;
+
+  -- 스냅샷만은 **날짜에서** 월을 뽑는다. now() 기준이면 1/31 → 2/1 새벽이 깨진다.
+  select pg_get_functiondef(p.oid) into v_def
+    from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+   where n.nspname = 'public' and p.proname = 'build_day_snapshot';
+  perform pg_temp.ok('스냅샷은 그 영업일의 달을 쓴다',
+    position($q$to_char(p_date, 'YYYY-MM')$q$ in v_def) > 0);
+  perform pg_temp.ok('스냅샷은 now() 기준 월을 쓰지 않는다',
+    position('store_local_month' in v_def) = 0);
 end $t$;
 
 
--- ── ⑦ 뉴욕 월말 — 입고부터 고정지출률까지 (0124) ─────────────
+-- ── ⑦ 뉴욕 월말의 고정지출률 (0124) ─────────────────────────
 /*
  * 뉴욕 8월 31일 저녁 7시는 **서울로 9월 1일 아침 8시**다.
  * 월 기준이 서울을 물고 있으면 그 순간 8월 원가에 **9월 고정지출률**이 붙는다.
- * 함수 이름만 보고 넘기지 말고 실제로 입고를 넣어 레시피 재계산까지 굴려 본다.
+ *
+ * ⚠ 이 블록이 **증명하는 것과 못 하는 것**을 정확히 적어 둔다.
+ *   증명한다 — 같은 순간에 두 월 함수가 다른 달을 준다는 것,
+ *              그리고 `build_day_snapshot(store, 날짜)` 가 **그 날짜의 달**을 쓴다는 것.
+ *              (8/31 → 10% · 9/1 → 40% 로 값이 갈린다)
+ *   못 한다  — **월 경계에서 실제로 입고를 굴리는 것**. `e1_confirm_inbound` 는
+ *              `store_local_month(o.store_id)` = **지금 시각** 기준이라, now() 를
+ *              8/31 뉴욕 저녁으로 옮길 수 없으면 그 갈림을 재현할 수 없다.
+ *              오늘(8/25)은 서울도 뉴욕도 8월이라 애초에 안 갈린다.
+ *              그 자리는 위 ⑥ 의 **호출 형태 검증**이 대신 지킨다.
  */
 do $t$
 declare
@@ -309,8 +348,13 @@ begin
   v_seen := (build_day_snapshot(pg_temp.store(), '2026-09-01'::date)->>'fixed_rate')::numeric;
   perform pg_temp.eq('9/1 장부에는 9월 고정지출률', v_seen, v_rate_sep, 0.001);
 
-  -- 레시피 조회·목록도 매장 현지 월을 본다(지금 시각 기준이라 값만 같은지 본다).
-  perform pg_temp.eq('레시피 상세의 고정지출률 = 매장 현지 월',
+  /*
+   * 레시피 상세도 매장 현지 월을 본다.
+   * ⚠ 이건 **지금 시각** 기준이다(고정된 v_at 이 아니다). 오늘은 서울도 뉴욕도
+   *   같은 달이라 이 단언만으로는 서울/뉴욕을 못 가른다 — 값이 같은지만 본다.
+   *   가르는 일은 ⑥ 의 호출 형태 검증이 한다.
+   */
+  perform pg_temp.eq('레시피 상세의 고정지출률 = 매장 현지 월(지금 시각 기준)',
     (recipe_detail(v_rcp)->>'fixed_rate')::numeric,
     coalesce(fixed_cost_rate(pg_temp.store(), store_local_month(pg_temp.store())), 0), 0.0001);
 end $t$;
