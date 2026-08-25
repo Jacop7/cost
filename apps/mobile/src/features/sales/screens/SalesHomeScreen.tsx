@@ -20,7 +20,7 @@ import { ShortageWarningSheet } from '../components/ShortageWarningSheet';
 import { BusinessDateGate } from '../components/BusinessDateGate';
 import { setPendingSale, clearPendingSale } from '../pendingSale';
 import { CHANNEL_LABEL, channelName } from '../channels';
-import { isClosedError, isNotOpenError, isRevisionConflict, useBusinessDay, useDayMenuBasis, useAutoCloseSweep, useOpenBusinessDay, useSalesBusinessDate } from '../businessDay';
+import { isClosedError, isNotOpenError, isRevisionConflict, useBusinessDay, useDayMenuBasis, useOpenBusinessDay, useSalesBusinessDate } from '../businessDay';
 import { BusinessDayBar } from '../components/BusinessDayBar';
 import { dayLabel } from '../period';
 
@@ -92,7 +92,6 @@ function SalesHomeBody({ today }: { today: string }) {
    *   폐기 내역·입고 등록·발주 화면을 **여는 것만으로 영업이 종료된다.**
    *   pg_cron 이 들어오면 이 줄을 지운다.
    */
-  useAutoCloseSweep();
   const insets = useSafeAreaInsets();
   const router = useRouter();
 

@@ -166,46 +166,20 @@ export function useBusinessDay() {
   });
 }
 
-/**
- * 과도기 자동 마감 실행. **판매 홈 한 곳에서만** 부른다.
+/*
+ * ⚠ 여기 있던 `useAutoCloseSweep()` 을 지웠다(0137).
  *
- * ⚠ 이건 조회가 아니라 **명령**이다. 장부 상태를 바꾼다.
- *   그래서 날짜를 묻는 훅과 갈라 놨다 — 안 그러면 화면을 여는 것만으로 영업이 끝난다.
+ *   그건 서버에 스케줄러가 없던 시절의 임시방편이었다 — 앱이 1분마다 `close_if_due` 를
+ *   불러 줘야 어제 영업일이 닫혔고, 앱을 안 열면 안 닫혔다(기획서 §2.4).
+ *   실제로 8/22 장부에 `8/23 08:25` 가 찍혀 있었다.
  *
- * ⚠ 임시다. 서버에 스케줄러가 없어서 누군가 불러 줘야 하고, 지금은 앱이 유일한
- *   실행 주체다. 안 부르면 어제 영업이 열린 채로 굳고, 오늘 매출 등록이 45001 로
- *   막히는데 화면 위 바는 '영업 중'이라고 말한다(실제로 이틀 열려 있었다).
- *   `close_due_business_days()` + pg_cron 이 들어오면 이 훅은 지운다.
+ *   이제 `close_due_business_days()` 를 pg_cron 이 1분마다 돈다. 앱은 관여하지 않는다.
  *
- * ⚠ 실패해도 조용히 넘어간다. 종료를 못 했다고 화면까지 막을 이유는 없다.
+ *   ⚠ 남겨 두면 **판정이 두 곳**이 된다. 더구나 규칙이 서로 다르다 —
+ *     앱 경로(`auto_close_due`)는 `마지막 활동 + 1시간` 이라 활동이 있으면 밀리고,
+ *     서버 스윕은 `예정 종료 + 고정 유예` 라 안 밀린다. 두 개를 같이 두면
+ *     "어느 쪽이 먼저 닫았느냐"에 따라 `closed_at` 이 달라진다.
  */
-export function useAutoCloseSweep(): void {
-  const qc = useQueryClient();
-  const storeId = useStoreId();
-  useEffect(() => {
-    if (!storeId) return;
-    let alive = true;
-    const run = async () => {
-      const r = await supabase.rpc('close_if_due', { p_store: storeId });
-      if (!alive) return;
-      if (r.error) {
-        if (__DEV__) console.warn('[businessDay] close_if_due:', r.error.message);
-        return;
-      }
-      /*
-       * ⚠ **실제로 닫혔을 때만** 갱신한다. 예전엔 매분 무조건 `qk.sales` 전체를
-       *   무효화했다 — 평상시엔 닫히는 일이 없는데도 1분마다 매출 화면의 모든 조회가
-       *   다시 돌았다. 평상시 상태 갱신은 `useBusinessDay()` 의 60초 폴링 몫이다.
-       */
-      if ((r.data as { closed?: boolean } | null)?.closed === true) {
-        invalidate(qc, invalidateOn.businessDay());
-      }
-    };
-    void run();
-    const id = setInterval(() => void run(), 60_000);
-    return () => { alive = false; clearInterval(id); };
-  }, [qc, storeId]);
-}
 
 /** 영업 시작 — 이 시점 값으로 오늘이 굳는다. */
 export function useOpenBusinessDay() {
