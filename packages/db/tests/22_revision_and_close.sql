@@ -169,4 +169,53 @@ begin
   perform pg_temp.ok('스냅샷이 없으면 못 쟀다고 한다', not (v_res->>'has_basis')::boolean);
   perform pg_temp.eq('그때 부족은 0건으로 나온다 — 믿으면 안 되는 0이다',
     (v_res->>'ingredient_count')::int, 0, 0);
+
+  -- 메뉴가 없으면 잴 게 없다. "못 쟀다"와는 다르다.
+  v_res := sale_shortages(pg_temp.store(), v_day, '[]'::jsonb);
+  perform pg_temp.ok('잴 메뉴가 없으면 기준은 있는 걸로 본다', (v_res->>'has_basis')::boolean);
+end $t$;
+
+
+-- ── ⑤ 영업 중에 만든 새 메뉴 (0120) ───────────────────────────
+/*
+ * 0119 는 "그날 스냅샷에 메뉴가 **하나라도** 있나"만 물었다. 그 질문으로는
+ * 영업 중에 만든 메뉴를 못 잡는다 —
+ *   기존 메뉴들의 스냅샷이 있으니 has_basis = true 인데,
+ *   정작 새 메뉴는 스냅샷에 없어서 필요 재료가 0건으로 계산되고,
+ *   부족 경고 없이 저장된 뒤에야 그 메뉴의 스냅샷이 추가된다.
+ * 물어야 할 것은 **"이번에 파는 메뉴 전부가 스냅샷에 있나"** 다.
+ *
+ * ⚠ `bool_and` 는 null 을 **건너뛴다.** 스냅샷에 없는 메뉴는 `jsonb_typeof` 가 null 이라
+ *   `null = 'object'` 가 null 이 되고, coalesce 로 눕히지 않으면 그대로 true 가 나온다.
+ *   실제로 0120 첫 판이 그렇게 통과했다.
+ */
+do $t$
+declare
+  r_je  uuid := pg_temp.rcp('제육볶음');
+  r_new uuid;
+  v_day date := business_day();
+  v_res jsonb;
+begin
+  -- 영업은 이미 시작돼 있다(위 블록들). 그 뒤에 메뉴를 만든다.
+  r_new := save_recipe(pg_temp.store(), jsonb_build_object(
+    'name', '영업중 새메뉴', 'price', 10000, 'base_servings', 10,
+    'lines', jsonb_build_array(jsonb_build_object(
+      'ingredient_id', pg_temp.ing('소고기 불고기감'), 'input_qty', 2000))));
+
+  perform pg_temp.ok('새 메뉴는 그날 스냅샷에 없다',
+    day_snapshot(pg_temp.store(), v_day) #> array['recipes', r_new::text] is null);
+
+  v_res := sale_shortages(pg_temp.store(), v_day,
+    jsonb_build_array(jsonb_build_object('recipe_id', r_new, 'qty_hall', 5)));
+  perform pg_temp.ok('새 메뉴만 팔면 못 쟀다고 한다', not (v_res->>'has_basis')::boolean);
+
+  -- 하나라도 없으면 그 저장은 못 잰 것이다. 기존 메뉴가 섞여 있어도 마찬가지다.
+  v_res := sale_shortages(pg_temp.store(), v_day, jsonb_build_array(
+    jsonb_build_object('recipe_id', r_je,  'qty_hall', 1),
+    jsonb_build_object('recipe_id', r_new, 'qty_hall', 5)));
+  perform pg_temp.ok('기존 메뉴가 섞여 있어도 못 쟀다고 한다', not (v_res->>'has_basis')::boolean);
+
+  v_res := sale_shortages(pg_temp.store(), v_day,
+    jsonb_build_array(jsonb_build_object('recipe_id', r_je, 'qty_hall', 1)));
+  perform pg_temp.ok('스냅샷에 있는 메뉴만 팔면 잰 것이다', (v_res->>'has_basis')::boolean);
 end $t$;

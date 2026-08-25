@@ -246,11 +246,16 @@ export interface SaveSaleInput {
   date: string;
   items: SaleItemInput[];
   /**
-   * 화면이 마지막으로 본 판본(0117). 안 보내면 검사하지 않는다.
-   * ⚠ 저장하는 곳은 **전부** 보내야 한다. 한 곳이라도 빼먹으면 그 경로로
-   *   낡은 화면이 남의 기록을 덮어쓴다.
+   * 화면이 마지막으로 본 판본(0117).
+   *
+   * ⚠ **필수다.** 예전엔 선택값(`?:`)이었는데, 그러면 나중에 저장 경로가 하나
+   *   늘어날 때 빼먹어도 타입체크가 통과한다 — 그 경로로 낡은 화면이 남의 기록을
+   *   조용히 덮어쓴다. 빼먹을 수 없게 만드는 게 유일하게 믿을 만한 방어다.
+   *
+   *   조회가 끝나기 전에는 저장 자체를 막는다(버튼 비활성).
+   *   생략을 허용하는 건 DB 함수 쪽뿐이다 — 시드와 서버 내부 호출용이다.
    */
-  baseRevision?: number;
+  baseRevision: number;
   /** 생략하면 그날 값을 그대로 둔다. 빈 배열을 보내면 전부 지운다. */
   etcItems?: EtcItem[];
   extraItems?: ExtraItem[];
@@ -417,7 +422,7 @@ export function useSaveSale() {
         p_extra_items: input.extraItems
           ? input.extraItems.map((e) => ({ name: e.name, amount: e.amount, memo: e.memo ?? '' }))
           : undefined,
-        p_base_revision: input.baseRevision ?? undefined,
+        p_base_revision: input.baseRevision,
       });
       if (error) throw new Error(error.message);
 

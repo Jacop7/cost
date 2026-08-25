@@ -2,11 +2,13 @@
  * SALES-20 추가 지출 상세 — 당일 일회성 현금 지출 목록.
  * 하루 장부에 붙어 있는 항목이라 기간 조회에서는 합계만 보여준다.
  */
+import { useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Card, Icon, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { T, won } from '@/theme/tokens';
+import { isRevisionConflict } from '../businessDay';
 import { useSalesDay, useSalesRange, useSaveSale } from '../hooks';
 import { rangeLabel, todayBusiness } from '../period';
 import { DetailSummary } from '../components/ProfitBlocks';
@@ -23,6 +25,8 @@ export default function SalesExpenseScreen() {
   const day = useSalesDay(isOneDay ? from : '');
   const range = useSalesRange(from, to, !isOneDay);
   const saveSale = useSaveSale();
+  /** 다른 기기가 먼저 저장했을 때 짧게만 알린다(45009 · 0117). 사장님이 할 일은 없다. */
+  const [toast, setToast] = useState<string | null>(null);
 
   const rows = isOneDay ? (day.data?.extraItems ?? []) : [];
   const total = isOneDay ? (day.data?.dailyExtra ?? 0) : (range.data?.summary.dailyExtra ?? 0);
@@ -39,7 +43,21 @@ export default function SalesExpenseScreen() {
      */
     saveSale.mutate(
       { date: from, items, extraItems: rows.filter((_, i) => i !== index), baseRevision: day.data.revision },
-      { onError: (e) => Alert.alert('삭제하지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요') },
+      {
+        onError: (e) => {
+          /*
+           * ⚠ 매출 홈과 **같게** 다룬다. 판본만 보내고 45009 를 기본 오류창으로 띄우면
+           *   데이터는 지켜지지만 사장님은 무슨 일인지 모르고, 낡은 목록을 계속 보며
+           *   같은 삭제를 반복하게 된다. 다시 받아서 최신 목록을 보여 줘야 끝난다.
+           */
+          if (isRevisionConflict(e)) {
+            void day.refetch();
+            setToast('다른 기기에서 판매 내역이 변경됐어요 · 최신 내역을 다시 불러왔어요');
+            return;
+          }
+          Alert.alert('삭제하지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요');
+        },
+      },
     );
   };
 
@@ -89,6 +107,19 @@ export default function SalesExpenseScreen() {
         </QueryState>
 
       </ScrollView>
-    </View>
+          {/*
+        다른 기기가 먼저 저장했다(45009 · 0117). 최신 목록은 이미 다시 받고 있으므로
+        사장님이 누를 것이 없다 — 모달로 세우지 않고 짧게만 알린다. 매출 홈과 같은 모양이다.
+      */}
+      {toast ? (
+        <Pressable
+          onPress={() => setToast(null)}
+          accessibilityRole="button" accessibilityLabel="알림 닫기"
+          style={{ position: 'absolute', left: 16, right: 16, bottom: 24, paddingVertical: 13, paddingHorizontal: 15, borderRadius: 12, backgroundColor: 'rgba(25,31,40,0.92)' }}
+        >
+          <Text style={{ fontSize: 14, fontWeight: '700', color: '#fff', lineHeight: 20 }}>{toast}</Text>
+        </Pressable>
+      ) : null}
+</View>
   );
 }

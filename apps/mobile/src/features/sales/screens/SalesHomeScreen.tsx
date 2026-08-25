@@ -99,8 +99,6 @@ export default function SalesHomeScreen() {
    */
   const [ask, setAsk] = useState<null | { recipes: ShortageRecipe[]; save: () => void }>(null);
   const checkShortages = useCheckSaleShortages();
-  /** 다른 기기가 먼저 저장했을 때(45009). 오류가 아니라 다시 받아 보라는 뜻이다. */
-  const [conflict, setConflict] = useState(false);
 
   const [etcOpen, setEtcOpen] = useState(false);
   const [etcName, setEtcName] = useState('');
@@ -183,7 +181,24 @@ export default function SalesHomeScreen() {
      *   판매를 조용히 지웠다(실측: 제육 5개가 사라졌다). 이제 서버가 막는다.
      *   할 일은 하나다 — 다시 받아서 보여 준다. 사장님이 보고 다시 누르면 된다.
      */
-    if (isRevisionConflict(e)) { void day.refetch(); setConflict(true); return; }
+    if (isRevisionConflict(e)) {
+      /*
+       * 낡은 화면이란 **다른 기기가 고치기 전 데이터를 보고 있는 지금 이 화면**이다.
+       * 그러니 붙잡을 게 없다 — 들고 있던 데이터도, 입력하던 값도 **버리고** 다시 받는다.
+       *
+       * ⚠ 초안을 남겨 두면 안 된다. 그대로 다시 누르면 방금 남이 고친 값을
+       *   내 낡은 값으로 덮어쓰게 된다. 지금 판본이라 이번엔 서버도 안 막는다.
+       * ⚠ 모달로 세우지 않는다. 사장님이 할 일이 없는 알림이다 —
+       *   최신 내역은 이미 다시 받고 있다. 짧게만 알린다.
+       */
+      setSel(null); setDraft(ZERO);
+      setEtcOpen(false); setEtcName(''); setEtcPrice(''); setEtcQty('1');
+      setExpOpen(false); setExpName(''); setExpAmount(''); setExpMemo('');
+      setAsk(null); setPendingRetry(null); clearPendingSale();
+      void day.refetch();
+      setToast('다른 기기에서 판매 내역이 변경됐어요 · 최신 내역을 다시 불러왔어요');
+      return;
+    }
     setToast(e instanceof Error ? e.message : '저장하지 못했어요');
   };
 
@@ -206,10 +221,13 @@ export default function SalesHomeScreen() {
    *   재시도에서는 경고가 통째로 새어 나갔다. 이제 재시도가 검사부터 다시 한다.
    */
   const checkThenSave = (items: SaleItemInput[]) => {
+    // ⚠ 그날 장부를 아직 못 받았으면 저장하지 않는다. 판본을 모르는 채로 보내면
+    //   서버가 검사를 건너뛰고, 그 틈으로 낡은 덮어쓰기가 들어온다(0117).
+    if (!s) return;
     const run = () =>
       saveSale.mutate(
         // ⚠ 판본을 반드시 실어 보낸다(0117). 빼먹으면 그 경로로 낡은 화면이 남을 덮어쓴다.
-        { date: today, items, baseRevision: s?.revision },
+        { date: today, items, baseRevision: s.revision },
         {
           onSuccess: (shortages) => { setSel(null); clearPendingSale(); warnShortages(shortages); },
           onError: (e) => onSaveError(e, () => checkThenSave(items)),
@@ -258,7 +276,8 @@ export default function SalesHomeScreen() {
       Alert.alert('입력을 확인해 주세요', '항목명과 판매가를 입력해 주세요.');
       return;
     }
-    const next: EtcItem[] = [...(s?.etcItems ?? []), { name: etcName.trim(), price, qty, channel: etcChannel }];
+    if (!s) return;   // 판본을 모르면 저장하지 않는다(0117)
+    const next: EtcItem[] = [...s.etcItems, { name: etcName.trim(), price, qty, channel: etcChannel }];
     /*
      * ⚠ 기타 매출은 **배열 통째로** 교체된다. 그래서 낡은 화면이 저장하면 다른 기기가
      *   넣은 항목이 통째로 사라진다 — A 가 소주, B 가 맥주를 넣으면 하나만 남는다.
@@ -267,7 +286,7 @@ export default function SalesHomeScreen() {
      */
     const run = () =>
       saveSale.mutate(
-        { date: today, items: allItems(), etcItems: next, baseRevision: s?.revision },
+        { date: today, items: allItems(), etcItems: next, baseRevision: s.revision },
         {
           onSuccess: () => {
             setEtcOpen(false); setEtcName(''); setEtcPrice(''); setEtcQty('1');
@@ -285,10 +304,11 @@ export default function SalesHomeScreen() {
       Alert.alert('입력을 확인해 주세요', '항목명과 금액을 입력해 주세요.');
       return;
     }
-    const next: ExtraItem[] = [...(s?.extraItems ?? []), { name: expName.trim(), amount, memo: expMemo.trim() || undefined }];
+    if (!s) return;   // 판본을 모르면 저장하지 않는다(0117)
+    const next: ExtraItem[] = [...s.extraItems, { name: expName.trim(), amount, memo: expMemo.trim() || undefined }];
     const run = () =>
       saveSale.mutate(
-        { date: today, items: allItems(), extraItems: next, baseRevision: s?.revision },
+        { date: today, items: allItems(), extraItems: next, baseRevision: s.revision },
         {
           onSuccess: () => { setExpOpen(false); setExpName(''); setExpAmount(''); setExpMemo(''); },
           onError: (e) => onSaveError(e, run),
@@ -557,7 +577,8 @@ export default function SalesHomeScreen() {
             </Text>
 
             <View style={{ marginTop: 16 }}>
-              <Button kind="primary" size="lg" full loading={saveSale.isPending} onPress={saveQty}>저장</Button>
+              {/* ⚠ 그날 장부를 못 받았으면 못 누른다. 판본 없이 저장하면 검사가 건너뛰어진다(0117). */}
+              <Button kind="primary" size="lg" full disabled={!s} loading={saveSale.isPending} onPress={saveQty}>저장</Button>
             </View>
           </View>
         ) : null}
@@ -579,7 +600,7 @@ export default function SalesHomeScreen() {
                 <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink, marginRight: 10 }, NUM]}>{won(e.price * e.qty)}원</Text>
                 <Pressable
                   onPress={() => saveSale.mutate(
-                    { date: today, items: allItems(), etcItems: s!.etcItems.filter((_, j) => j !== i), baseRevision: s?.revision },
+                    { date: today, items: allItems(), etcItems: s!.etcItems.filter((_, j) => j !== i), baseRevision: s!.revision },
                     { onError: (e) => onSaveError(e, () => {}) })}
                   hitSlop={8} accessibilityRole="button" accessibilityLabel={`${e.name} 삭제`}
                 >
@@ -627,7 +648,7 @@ export default function SalesHomeScreen() {
           <Text style={{ flex: 1, fontSize: 14, color: T.sub2, lineHeight: 20 }}>기타 매출은 재료 차감 없이 매출에만 더해져요.</Text>
         </View>
         <View style={{ marginTop: 18 }}>
-          <Button kind="primary" size="lg" full loading={saveSale.isPending} onPress={addEtc}>추가</Button>
+          <Button kind="primary" size="lg" full disabled={!s} loading={saveSale.isPending} onPress={addEtc}>추가</Button>
         </View>
       </Sheet>
 
@@ -644,7 +665,7 @@ export default function SalesHomeScreen() {
                 <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink, marginRight: 10 }, NUM]}>{won(e.amount)}원</Text>
                 <Pressable
                   onPress={() => saveSale.mutate(
-                    { date: today, items: allItems(), extraItems: s!.extraItems.filter((_, j) => j !== i), baseRevision: s?.revision },
+                    { date: today, items: allItems(), extraItems: s!.extraItems.filter((_, j) => j !== i), baseRevision: s!.revision },
                     { onError: (e) => onSaveError(e, () => {}) })}
                   hitSlop={8} accessibilityRole="button" accessibilityLabel={`${e.name} 삭제`}
                 >
@@ -662,25 +683,12 @@ export default function SalesHomeScreen() {
           <Text style={{ flex: 1, fontSize: 14, color: T.amberText, lineHeight: 20 }}>그날 손익에서만 차감되고, 고정 지출엔 반영되지 않아요.</Text>
         </View>
         <View style={{ marginTop: 18 }}>
-          <Button kind="primary" size="lg" full loading={saveSale.isPending} onPress={addExpense}>추가</Button>
+          <Button kind="primary" size="lg" full disabled={!s} loading={saveSale.isPending} onPress={addExpense}>추가</Button>
         </View>
       </Sheet>
 
       <SortSheet visible={sortOpen} options={SORTS} value={sort} onSelect={setSort} onClose={() => setSortOpen(false)} />
 
-      {/*
-        다른 기기가 먼저 저장했다(45009 · 0117). 오류가 아니라 **다시 보라**는 뜻이다.
-        이미 `day.refetch()` 를 걸어 뒀으므로 닫으면 최신 내역이 보인다.
-      */}
-      <ConfirmSheet
-        visible={conflict}
-        title="다른 기기에서 판매 내역이 변경됐어요"
-        message="최신 내역을 다시 확인해 주세요. 방금 입력한 내용은 저장되지 않았어요."
-        confirmText="확인"
-        cancelText="닫기"
-        onCancel={() => setConflict(false)}
-        onConfirm={() => setConflict(false)}
-      />
 
       {/*
         저장 직전 부족 확인 — 막는 게 아니라 알리는 것이다(기획안 §4.4).
