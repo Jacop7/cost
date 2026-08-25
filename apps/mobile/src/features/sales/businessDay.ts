@@ -234,6 +234,15 @@ export const isNotOpenError = (e: unknown): boolean =>
 export const isClosedError = (e: unknown): boolean =>
   e instanceof Error && e.message.includes('영업은 종료됐어요');
 
+/**
+ * 서버가 "낡은 화면"으로 막았는가(45009 · 0117).
+ *
+ * 다른 기기가 먼저 저장해서 판본이 올라간 경우다. 오류가 아니라 **다음에 할 일**이다 —
+ * 다시 받아서 보여 주면 된다. 조용히 덮어쓰면 남이 적은 판매가 사라진다(실측).
+ */
+export const isRevisionConflict = (e: unknown): boolean =>
+  e instanceof Error && e.message.includes('다른 기기에서 판매 내역이 변경됐어요');
+
 /** '2026-08-20T13:00:00+00:00' → '22:00'. 자정을 넘기면 '02:00' 처럼 그대로 나온다. */
 export function hhmm(iso: string | null): string {
   if (!iso) return '';

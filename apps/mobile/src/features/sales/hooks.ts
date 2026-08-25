@@ -70,6 +70,12 @@ export interface ExtraItem { name: string; amount: number; memo?: string }
 
 export interface SalesDay {
   saleDate: string;
+  /**
+   * 그날 매출의 판본(0117). 저장할 때 **그대로 되보낸다**.
+   * 서버 값과 다르면 이 화면은 낡은 것이고, 저장은 45009 로 거부된다 —
+   * 그게 다른 기기가 적은 판매를 조용히 지우지 않게 하는 유일한 장치다.
+   */
+  revision: number;
   items: SaleItem[];
   etcItems: EtcItem[];
   extraItems: ExtraItem[];
@@ -118,10 +124,11 @@ export function useSalesDay(date: string) {
       if (error) throw new Error(error.message);
       const r = (data ?? null) as unknown as Record<string, unknown> | null;
       if (!r) {
-        return { saleDate: date, items: [], etcItems: [], extraItems: [], etcRevenue: 0, dailyExtra: 0, summary: EMPTY_SUMMARY(date) };
+        return { saleDate: date, revision: 0, items: [], etcItems: [], extraItems: [], etcRevenue: 0, dailyExtra: 0, summary: EMPTY_SUMMARY(date) };
       }
       return {
         saleDate: String(r.sale_date ?? date),
+        revision: num(r.revision),
         etcRevenue: num(r.etc_revenue),
         dailyExtra: num(r.daily_extra),
         etcItems: ((r.etc_items ?? []) as Record<string, unknown>[]).map((e) => ({
@@ -238,6 +245,12 @@ export type ShortageMode = 'start' | 'sale';
 export interface SaveSaleInput {
   date: string;
   items: SaleItemInput[];
+  /**
+   * 화면이 마지막으로 본 판본(0117). 안 보내면 검사하지 않는다.
+   * ⚠ 저장하는 곳은 **전부** 보내야 한다. 한 곳이라도 빼먹으면 그 경로로
+   *   낡은 화면이 남의 기록을 덮어쓴다.
+   */
+  baseRevision?: number;
   /** 생략하면 그날 값을 그대로 둔다. 빈 배열을 보내면 전부 지운다. */
   etcItems?: EtcItem[];
   extraItems?: ExtraItem[];
@@ -404,6 +417,7 @@ export function useSaveSale() {
         p_extra_items: input.extraItems
           ? input.extraItems.map((e) => ({ name: e.name, amount: e.amount, memo: e.memo ?? '' }))
           : undefined,
+        p_base_revision: input.baseRevision ?? undefined,
       });
       if (error) throw new Error(error.message);
 
@@ -668,6 +682,12 @@ export interface ShortageRecipe {
 export interface ShortageResult {
   /** 'start' 면 안전재고를, 'sale' 이면 필요 수량을 나란히 보여 준다(기획안 §4.4). */
   mode: ShortageMode;
+  /**
+   * 잴 수 있었나(0119). 필요량은 **그날 스냅샷**에서 오므로 영업 시작 전에는 못 잰다.
+   * ⚠ false 면 `ingredientCount: 0` 은 "넉넉하다"가 아니라 **"못 쟀다"** 는 뜻이다.
+   *   둘을 같이 취급하면 영업 시작 직후 재시도에서 경고가 통째로 새어 나간다.
+   */
+  hasBasis: boolean;
   ingredientCount: number;
   recipes: ShortageRecipe[];
 }
@@ -676,6 +696,8 @@ const parseShortages = (data: unknown): ShortageResult => {
   const r = (data ?? {}) as Record<string, unknown>;
   return {
     mode: r.mode === 'sale' ? 'sale' : 'start',
+    // 영업 시작 판정은 지금 재고만 보므로 언제나 잴 수 있다. 스냅샷이 필요한 건 판매 판정뿐이다.
+    hasBasis: r.mode === 'sale' ? r.has_basis === true : true,
     ingredientCount: num(r.ingredient_count),
     recipes: ((r.recipes ?? []) as Record<string, unknown>[]).map((x) => ({
       recipeId: String(x.recipe_id),

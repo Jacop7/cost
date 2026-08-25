@@ -19,7 +19,7 @@ import { useCheckSaleShortages, useRecipeShortages, useSalesDay, useSaveSale,
 import { ShortageWarningSheet } from '../components/ShortageWarningSheet';
 import { setPendingSale, clearPendingSale } from '../pendingSale';
 import { CHANNEL_LABEL, channelName } from '../channels';
-import { isClosedError, isNotOpenError, useBusinessDay, useDayMenuBasis, useOpenBusinessDay } from '../businessDay';
+import { isClosedError, isNotOpenError, isRevisionConflict, useBusinessDay, useDayMenuBasis, useOpenBusinessDay } from '../businessDay';
 import { BusinessDayBar } from '../components/BusinessDayBar';
 import { dayLabel, todayBusiness } from '../period';
 
@@ -99,6 +99,8 @@ export default function SalesHomeScreen() {
    */
   const [ask, setAsk] = useState<null | { recipes: ShortageRecipe[]; save: () => void }>(null);
   const checkShortages = useCheckSaleShortages();
+  /** 다른 기기가 먼저 저장했을 때(45009). 오류가 아니라 다시 받아 보라는 뜻이다. */
+  const [conflict, setConflict] = useState(false);
 
   const [etcOpen, setEtcOpen] = useState(false);
   const [etcName, setEtcName] = useState('');
@@ -176,6 +178,12 @@ export default function SalesHomeScreen() {
   const onSaveError = (e: unknown, retry: () => void) => {
     if (isNotOpenError(e)) { setPendingRetry(() => retry); return; }
     if (isClosedError(e)) { setToast('이미 종료된 영업일이에요 · 위에서 영업 기록을 다시 열어 주세요'); return; }
+    /*
+     * ⚠ 낡은 화면(45009 · 0117). 예전엔 이런 저장이 **그냥 통과했고**, 다른 기기가 적은
+     *   판매를 조용히 지웠다(실측: 제육 5개가 사라졌다). 이제 서버가 막는다.
+     *   할 일은 하나다 — 다시 받아서 보여 준다. 사장님이 보고 다시 누르면 된다.
+     */
+    if (isRevisionConflict(e)) { void day.refetch(); setConflict(true); return; }
     setToast(e instanceof Error ? e.message : '저장하지 못했어요');
   };
 
@@ -189,19 +197,22 @@ export default function SalesHomeScreen() {
    * ⚠ 판정은 서버가 한다. 전체 판매량이 아니라 **이번에 더 빠질 몫**이라
    *   10개를 7개로 줄이는 저장에는 경고가 뜨지 않는다.
    */
-  const saveQty = () => {
-    if (!sel) return;
-    const items: SaleItemInput[] = [...soldBy.entries()]
-      .filter(([id]) => id !== sel.id)
-      .map(([recipeId, q]) => ({ recipeId, qtyHall: q.hall, qtyDelivery: q.delivery, qtyTakeout: q.takeout, qtyWaste: q.waste }));
-    items.push({ recipeId: sel.id, qtyHall: draft.hall, qtyDelivery: draft.delivery, qtyTakeout: draft.takeout, qtyWaste: draft.waste });
-
+  /*
+   * 재고를 재고 → (모자라면 묻고) → 저장. **재시도도 이 문으로 들어온다.**
+   *
+   * ⚠ 예전엔 `아직 영업 전`(45001)으로 막힌 뒤 영업을 시작하고 **저장만** 다시 불렀다.
+   *   그런데 첫 검사는 스냅샷이 없을 때 이미 `부족 0건` 을 받아 놨다 — 필요량이
+   *   그날 스냅샷에서 오기 때문이다(0119 `has_basis`). 그래서 영업 시작 직후
+   *   재시도에서는 경고가 통째로 새어 나갔다. 이제 재시도가 검사부터 다시 한다.
+   */
+  const checkThenSave = (items: SaleItemInput[]) => {
     const run = () =>
       saveSale.mutate(
-        { date: today, items },
+        // ⚠ 판본을 반드시 실어 보낸다(0117). 빼먹으면 그 경로로 낡은 화면이 남을 덮어쓴다.
+        { date: today, items, baseRevision: s?.revision },
         {
           onSuccess: (shortages) => { setSel(null); clearPendingSale(); warnShortages(shortages); },
-          onError: (e) => onSaveError(e, run),
+          onError: (e) => onSaveError(e, () => checkThenSave(items)),
         },
       );
 
@@ -214,11 +225,25 @@ export default function SalesHomeScreen() {
         run();
         return;
       }
-      if (short.ingredientCount === 0) { run(); return; }
+      /*
+       * ⚠ `hasBasis` 가 false 면 `0건` 은 "넉넉하다"가 아니라 **"못 쟀다"** 다(0119).
+       *   그대로 저장하면 서버가 45001 로 막고, 영업을 시작한 뒤 이 함수가 다시 불려
+       *   그때는 스냅샷이 있으니 제대로 잰다. 여기서 억지로 경고를 띄우지 않는다.
+       */
+      if (!short.hasBasis || short.ingredientCount === 0) { run(); return; }
       // `재고 확인` 으로 건너갔다가 돌아와도 같은 묶음을 다시 잴 수 있게 들려 보낸다.
       setPendingSale(today, items);
       setAsk({ recipes: short.recipes, save: run });
     })();
+  };
+
+  const saveQty = () => {
+    if (!sel) return;
+    const items: SaleItemInput[] = [...soldBy.entries()]
+      .filter(([id]) => id !== sel.id)
+      .map(([recipeId, q]) => ({ recipeId, qtyHall: q.hall, qtyDelivery: q.delivery, qtyTakeout: q.takeout, qtyWaste: q.waste }));
+    items.push({ recipeId: sel.id, qtyHall: draft.hall, qtyDelivery: draft.delivery, qtyTakeout: draft.takeout, qtyWaste: draft.waste });
+    checkThenSave(items);
   };
 
   const allItems = () =>
@@ -234,16 +259,24 @@ export default function SalesHomeScreen() {
       return;
     }
     const next: EtcItem[] = [...(s?.etcItems ?? []), { name: etcName.trim(), price, qty, channel: etcChannel }];
-    saveSale.mutate(
-      { date: today, items: allItems(), etcItems: next },
-      {
-        onSuccess: () => {
-          setEtcOpen(false); setEtcName(''); setEtcPrice(''); setEtcQty('1');
-          // 채널은 되돌리지 않는다 — 배달 음료를 연달아 적는 게 흔하다.
+    /*
+     * ⚠ 기타 매출은 **배열 통째로** 교체된다. 그래서 낡은 화면이 저장하면 다른 기기가
+     *   넣은 항목이 통째로 사라진다 — A 가 소주, B 가 맥주를 넣으면 하나만 남는다.
+     *   항목 단위로 합치지 않는 이유는 같은 이름이 여럿일 수 있어 무엇이 같은
+     *   항목인지 정할 수 없기 때문이다. 대신 **판본 검사**로 낡은 배열을 막는다.
+     */
+    const run = () =>
+      saveSale.mutate(
+        { date: today, items: allItems(), etcItems: next, baseRevision: s?.revision },
+        {
+          onSuccess: () => {
+            setEtcOpen(false); setEtcName(''); setEtcPrice(''); setEtcQty('1');
+            // 채널은 되돌리지 않는다 — 배달 음료를 연달아 적는 게 흔하다.
+          },
+          onError: (e) => onSaveError(e, run),
         },
-        onError: (e) => Alert.alert('저장하지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'),
-      },
-    );
+      );
+    run();
   };
 
   const addExpense = () => {
@@ -253,13 +286,15 @@ export default function SalesHomeScreen() {
       return;
     }
     const next: ExtraItem[] = [...(s?.extraItems ?? []), { name: expName.trim(), amount, memo: expMemo.trim() || undefined }];
-    saveSale.mutate(
-      { date: today, items: allItems(), extraItems: next },
-      {
-        onSuccess: () => { setExpOpen(false); setExpName(''); setExpAmount(''); setExpMemo(''); },
-        onError: (e) => Alert.alert('저장하지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'),
-      },
-    );
+    const run = () =>
+      saveSale.mutate(
+        { date: today, items: allItems(), extraItems: next, baseRevision: s?.revision },
+        {
+          onSuccess: () => { setExpOpen(false); setExpName(''); setExpAmount(''); setExpMemo(''); },
+          onError: (e) => onSaveError(e, run),
+        },
+      );
+    run();
   };
 
   const marginPct = summary && summary.revenue > 0 ? Math.round((summary.profit / summary.revenue) * 1000) / 10 : 0;
@@ -543,7 +578,9 @@ export default function SalesHomeScreen() {
                 </View>
                 <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink, marginRight: 10 }, NUM]}>{won(e.price * e.qty)}원</Text>
                 <Pressable
-                  onPress={() => saveSale.mutate({ date: today, items: allItems(), etcItems: s!.etcItems.filter((_, j) => j !== i) })}
+                  onPress={() => saveSale.mutate(
+                    { date: today, items: allItems(), etcItems: s!.etcItems.filter((_, j) => j !== i), baseRevision: s?.revision },
+                    { onError: (e) => onSaveError(e, () => {}) })}
                   hitSlop={8} accessibilityRole="button" accessibilityLabel={`${e.name} 삭제`}
                 >
                   <Icon name="close" size={16} color={T.ter} />
@@ -606,7 +643,9 @@ export default function SalesHomeScreen() {
                 </View>
                 <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink, marginRight: 10 }, NUM]}>{won(e.amount)}원</Text>
                 <Pressable
-                  onPress={() => saveSale.mutate({ date: today, items: allItems(), extraItems: s!.extraItems.filter((_, j) => j !== i) })}
+                  onPress={() => saveSale.mutate(
+                    { date: today, items: allItems(), extraItems: s!.extraItems.filter((_, j) => j !== i), baseRevision: s?.revision },
+                    { onError: (e) => onSaveError(e, () => {}) })}
                   hitSlop={8} accessibilityRole="button" accessibilityLabel={`${e.name} 삭제`}
                 >
                   <Icon name="close" size={16} color={T.ter} />
@@ -628,6 +667,20 @@ export default function SalesHomeScreen() {
       </Sheet>
 
       <SortSheet visible={sortOpen} options={SORTS} value={sort} onSelect={setSort} onClose={() => setSortOpen(false)} />
+
+      {/*
+        다른 기기가 먼저 저장했다(45009 · 0117). 오류가 아니라 **다시 보라**는 뜻이다.
+        이미 `day.refetch()` 를 걸어 뒀으므로 닫으면 최신 내역이 보인다.
+      */}
+      <ConfirmSheet
+        visible={conflict}
+        title="다른 기기에서 판매 내역이 변경됐어요"
+        message="최신 내역을 다시 확인해 주세요. 방금 입력한 내용은 저장되지 않았어요."
+        confirmText="확인"
+        cancelText="닫기"
+        onCancel={() => setConflict(false)}
+        onConfirm={() => setConflict(false)}
+      />
 
       {/*
         저장 직전 부족 확인 — 막는 게 아니라 알리는 것이다(기획안 §4.4).

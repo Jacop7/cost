@@ -143,6 +143,7 @@ export type Database = {
           extra_items: Json
           id: string
           note: string | null
+          revision: number
           sale_date: string
           store_id: string
           updated_at: string
@@ -157,6 +158,7 @@ export type Database = {
           extra_items?: Json
           id?: string
           note?: string | null
+          revision?: number
           sale_date: string
           store_id: string
           updated_at?: string
@@ -171,6 +173,7 @@ export type Database = {
           extra_items?: Json
           id?: string
           note?: string | null
+          revision?: number
           sale_date?: string
           store_id?: string
           updated_at?: string
@@ -2270,6 +2273,7 @@ export type Database = {
           p_items: Json
           p_etc_items?: Json
           p_extra_items?: Json
+          p_base_revision?: number
         }
         Returns: Json
       }

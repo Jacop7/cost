@@ -32,8 +32,13 @@ export default function SalesExpenseScreen() {
     const items = day.data.items
       .filter((it) => it.recipeId)
       .map((it) => ({ recipeId: it.recipeId as string, qtyHall: it.qtyHall, qtyDelivery: it.qtyDelivery, qtyTakeout: it.qtyTakeout, qtyWaste: it.qtyWaste }));
+    /*
+     * ⚠ 판본을 실어 보낸다(0117). 이 화면도 `extra_items` 를 **배열 통째로** 교체하므로,
+     *   빼먹으면 다른 기기가 방금 넣은 지출이 조용히 사라진다.
+     *   저장하는 곳이 여럿인데 한 곳만 빠져도 그 문으로 뚫린다.
+     */
     saveSale.mutate(
-      { date: from, items, extraItems: rows.filter((_, i) => i !== index) },
+      { date: from, items, extraItems: rows.filter((_, i) => i !== index), baseRevision: day.data.revision },
       { onError: (e) => Alert.alert('삭제하지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요') },
     );
   };
