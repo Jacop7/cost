@@ -19,6 +19,11 @@ export type BusinessDayStatus = 'none' | 'open' | 'break' | 'closed';
 
 export interface AutoCloseNotice {
   businessDayId: string;
+  /**
+   * 지금 판매 화면이 대상으로 삼는 **장부 날짜**.
+   * 영업 중이면 열린 장부의 날짜이고, 영업 전·종료 후에는 서버가 정한 대상 날짜다.
+   * ⚠ 새벽 영업 중이면 전날일 수 있다. 앱이 자정으로 날짜를 넘기면 그 판매가 샌다.
+   */
   businessDate: string;
   closedAt: string | null;
   plannedCloseAt: string | null;
@@ -78,10 +83,15 @@ function parse(raw: unknown): BusinessDayState {
   const u = r.unacked as Record<string, unknown> | null;
   return {
     today: String(r.today ?? ''),
-    localDate: String(r.local_date ?? r.today ?? ''),
+    /*
+     * ⚠ **`today` 로 대신 메우지 않는다.** 예전엔 `r.local_date ?? r.today` 였는데,
+     *   그러면 서버가 필드를 빠뜨려도 정상처럼 보이고 세 날짜를 가른 의미가 사라진다.
+     *   없으면 빈 문자열이고, 그러면 화면이 멈춘다 — 그게 맞다.
+     */
+    localDate: String(r.local_date ?? ''),
     status: (r.status ?? 'none') as BusinessDayStatus,
     businessDayId: str(r.business_day_id),
-    businessDate: String(r.business_date ?? r.today ?? ''),
+    businessDate: String(r.business_date ?? ''),
     openedAt: str(r.opened_at),
     plannedCloseAt: str(r.planned_close_at),
     closedAt: str(r.closed_at),
@@ -253,9 +263,22 @@ export const isClosedError = (e: unknown): boolean =>
  *   앱이 계산하면 그게 곧 앱과 DB 가 각자 오늘을 계산하는 상태다(기획서 §2.1).
  *   부르는 쪽이 로딩을 다뤄야 한다.
  */
-export function useStoreLocalDate(): string | null {
+export interface ServerDate {
+  /** 서버가 정한 날짜. 아직 못 받았거나 서버가 안 줬으면 `null`. */
+  date: string | null;
+  isLoading: boolean;
+  error: unknown;
+  refetch: () => void;
+}
+
+/*
+ * ⚠ 날짜만 돌려주면 **로딩과 오류를 구별할 수 없다.** 예전엔 `string | null` 이라
+ *   RPC 가 실패해도 화면은 "아직 안 왔다" 로 읽고 영원히 로딩만 그렸다.
+ *   부르는 쪽이 재시도를 붙일 수 있어야 한다.
+ */
+export function useStoreLocalDate(): ServerDate {
   const q = useBusinessDay();
-  return q.data?.localDate || null;
+  return { date: q.data?.localDate || null, isLoading: q.isLoading, error: q.error, refetch: () => void q.refetch() };
 }
 
 /**
@@ -264,9 +287,9 @@ export function useStoreLocalDate(): string | null {
  * ⚠ 새벽 영업 중이면 **전날**일 수 있다. 그게 이 값의 존재 이유다 —
  *   앱이 자정으로 날짜를 넘겨 버리면 새벽 판매가 다음 날 장부로 샌다.
  */
-export function useSalesBusinessDate(): string | null {
+export function useSalesBusinessDate(): ServerDate {
   const q = useBusinessDay();
-  return q.data?.businessDate || null;
+  return { date: q.data?.businessDate || null, isLoading: q.isLoading, error: q.error, refetch: () => void q.refetch() };
 }
 
 /**

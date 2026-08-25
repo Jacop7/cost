@@ -17,17 +17,34 @@ import { Alert, Modal, Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Badge, Card, Icon, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { businessDay, formatQuantity } from '@sikjae/core';
+import { formatQuantity } from '@sikjae/core';
 import { T, tnum, won } from '@/theme/tokens';
 import { dispUnit } from '../ledger';
 import { PeriodSheet, periodRange, type HistoryPeriod } from './HistoryFilterSheet';
+import { useStoreLocalDate } from '@/features/sales/businessDay';
+import { BusinessDateGate } from '@/features/sales/components/BusinessDateGate';
 import { ConditionRow, FilterButton, MonthHead, SummaryCard, groupByMonth, historyContent, monthTitle } from '../components/HistoryLayout';
 import { DISCARD_DELETE_DAYS, useDeleteDiscard, useIngredientDetail, useStockHistory, type LedgerEntry } from '../hooks';
 
 type Tab = '전체' | '조리 전 폐기' | '조리 후 폐기';
 const TABS: Tab[] = ['전체', '조리 전 폐기', '조리 후 폐기'];
 
+/**
+ * ⚠ 여기는 **날짜가 표시가 아니라 권한**이다(0125). 아래 `canDelete` 가 폐기 삭제
+ *   허용 여부를 날짜로 정한다. 앱이 `businessDay(new Date())` 로 직접 계산하면
+ *   서버가 막는 경계(0086)와 달라져, 사장님 화면에는 지울 수 있다고 나오는데
+ *   눌러도 거부되거나 그 반대가 된다.
+ *   그래서 **매장 현지 날짜**를 서버에서 받고 나서 본체를 붙인다.
+ */
 export default function DiscardHistoryScreen() {
+  return (
+    <BusinessDateGate source={useStoreLocalDate()} title="폐기 내역">
+      {(localDate) => <DiscardHistoryBody localDate={localDate} />}
+    </BusinessDateGate>
+  );
+}
+
+function DiscardHistoryBody({ localDate }: { localDate: string }) {
   const { id } = useLocalSearchParams<{ id: string }>();
   const [tab, setTab] = useState<Tab>('전체');
   const [period, setPeriod] = useState<HistoryPeriod>('최근 3개월');
@@ -60,10 +77,9 @@ export default function DiscardHistoryScreen() {
    */
   const canDelete = (e: LedgerEntry) => {
     if (e.waste) return false;
-    const today = businessDay(new Date());
-    if (today === null) return false;
+    // ⚠ 서버가 준 매장 현지 날짜를 쓴다(0125). 앱이 계산하면 서버 경계와 갈린다.
     const days = Math.floor(
-      (Date.parse(`${today}T00:00:00Z`) - Date.parse(`${e.date}T00:00:00Z`)) / 86_400_000,
+      (Date.parse(`${localDate}T00:00:00Z`) - Date.parse(`${e.date}T00:00:00Z`)) / 86_400_000,
     );
     return days >= 0 && days < DISCARD_DELETE_DAYS;
   };

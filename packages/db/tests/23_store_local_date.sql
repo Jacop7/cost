@@ -358,3 +358,53 @@ begin
     (recipe_detail(v_rcp)->>'fixed_rate')::numeric,
     coalesce(fixed_cost_rate(pg_temp.store(), store_local_month(pg_temp.store())), 0), 0.0001);
 end $t$;
+
+
+-- ── ⑧ 상태 응답 계약 (0125) ─────────────────────────────────
+/*
+ * 마이그레이션은 함수 **정의**를 검사했지만, 응답에 실제로 어떤 값이 실리는지는
+ * 안 봤다. 앱이 그 값을 날짜 권위로 쓰므로 계약을 여기서 못 박는다.
+ *
+ * ⚠ 세 키는 **서로 다른 것**이다. 값이 같을 때가 많아 하나가 빠져도 안 티 난다.
+ *     local_date    매장 달력의 오늘. 영업시간과 무관. 발주·입고·재고가 쓴다
+ *     today         판매 영업일 기준(cutoff 반영). 3단계에서 정리된다
+ *     business_date 판매 화면이 대상으로 삼는 장부 날짜.
+ *                   영업 중이면 열린 장부, 영업 전·종료 후에는 서버가 정한 대상 날짜.
+ *                   **새벽 영업 중이면 전날일 수 있다.**
+ */
+do $t$
+declare v_s jsonb;
+begin
+  v_s := business_day_state(pg_temp.store());
+
+  perform pg_temp.ok('세 날짜 키가 모두 있다',
+    (v_s ? 'local_date') and (v_s ? 'today') and (v_s ? 'business_date'));
+  perform pg_temp.eq_t('local_date = store_local_date(매장)',
+    v_s->>'local_date', store_local_date(pg_temp.store())::text);
+
+  /*
+   * 시간대를 바꾸면 local_date 가 따라 움직여야 한다. 안 움직이면 그건 서울이
+   * 어딘가에 박혀 있다는 뜻이다.
+   * ⚠ 뉴욕이 서울과 **다른 날**이 되는 시각에만 갈린다. `now()` 는 못 옮기므로
+   *   여기서는 "매장 설정을 따라간다" 는 것까지만 잰다.
+   */
+  insert into store_time_settings (store_id, timezone) values (pg_temp.store(), 'America/New_York')
+  on conflict (store_id) do update set timezone = excluded.timezone;
+  v_s := business_day_state(pg_temp.store());
+  perform pg_temp.eq_t('시간대를 바꾸면 local_date 도 따라간다',
+    v_s->>'local_date', store_local_date(pg_temp.store())::text);
+  perform pg_temp.eq_t('그때도 store_timezone 이 뉴욕이다',
+    store_timezone(pg_temp.store()), 'America/New_York');
+
+  insert into store_time_settings (store_id, timezone) values (pg_temp.store(), 'Asia/Seoul')
+  on conflict (store_id) do update set timezone = excluded.timezone;
+
+  /*
+   * ⚠ 앱은 `local_date` 가 없을 때 `today` 로 **조용히 대신 메우지 않는다**
+   *   (businessDay.ts 의 파싱이 `?? ''` 다). 그래야 서버가 필드를 빠뜨렸을 때
+   *   화면이 멈추고 사장님이 알아챈다. 서버 쪽에서는 그 필드가 **항상 있어야** 한다.
+   */
+  perform pg_temp.ok('local_date 가 빈 값이 아니다', length(coalesce(v_s->>'local_date','')) = 10);
+  perform pg_temp.ok('business_date 도 빈 값이 아니다',
+    length(coalesce((business_day_state(pg_temp.store()))->>'business_date','')) = 10);
+end $t$;

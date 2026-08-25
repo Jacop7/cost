@@ -10,19 +10,27 @@ import { safeBack } from '@/lib/nav';
 import { T } from '@/theme/tokens';
 import { useSalesDay, useSalesRange, type RangeMenu } from '../hooks';
 import { ChannelMixCard, MenuSalesList, ProfitBreakdownCard, SecLabel } from '../components/ProfitBlocks';
+import { BusinessDateGate } from '../components/BusinessDateGate';
 import { MenuProfitSheet } from '../components/MenuProfitSheet';
 import { dayLabel } from '../period';
 import { useSalesBusinessDate } from '../businessDay';
 
+/**
+ * ⚠ 서버가 정한 장부 날짜를 받고 나서 본체를 붙인다(0125). 앱이 직접 계산하지 않는다.
+ *   게이트가 로딩·오류·재시도를 함께 다룬다 — 날짜 조회가 실패하면 예전엔 영원히
+ *   "불러오는 중" 만 떴다.
+ */
 export default function SalesDayDetailScreen() {
+  return (
+    <BusinessDateGate source={useSalesBusinessDate()} title="일 손익">
+      {(serverToday) => <SalesDayDetailScreenBody serverToday={serverToday} />}
+    </BusinessDateGate>
+  );
+}
+
+function SalesDayDetailScreenBody({ serverToday }: { serverToday: string }) {
   const router = useRouter();
   const params = useLocalSearchParams<{ date?: string }>();
-  /*
-   * ⚠ **서버가 정한 장부 날짜**를 쓴다(0125). 앱이 `+09:00` 고정 오프셋으로 직접
-   *   계산하면 앱과 DB 가 각자 오늘을 갖게 된다(기획서 §2.1).
-   *   못 받았으면 빈 문자열이고, 그동안 조회가 꺼진다 — 잘못된 날의 숫자보다 낫다.
-   */
-  const serverToday = useSalesBusinessDate() ?? '';
   const date = params.date ?? serverToday;
 
   const day = useSalesDay(date);
@@ -37,7 +45,7 @@ export default function SalesDayDetailScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
-      <AppHeader title={`${dayLabel(date)} 손익`} onBack={() => safeBack('/sales' as Href)} />
+      <AppHeader title={`${dayLabel(date, serverToday)} 손익`} onBack={() => safeBack('/sales' as Href)} />
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 2, paddingBottom: 24, gap: 11 }}>
         <QueryState

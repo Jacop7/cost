@@ -14,6 +14,7 @@ import { ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Card, QueryState } from '@/components/kit';
 import { SalesRow, SecLabel } from '../components/ProfitBlocks';
+import { BusinessDateGate } from '../components/BusinessDateGate';
 import { safeBack } from '@/lib/nav';
 import { T, won } from '@/theme/tokens';
 import { formatQuantity, formatUnitPrice } from '@sikjae/core';
@@ -35,15 +36,22 @@ function SecHead({ title, sub }: { title: string; sub?: string }) {
   );
 }
 
+/**
+ * ⚠ 서버가 정한 장부 날짜를 받고 나서 본체를 붙인다(0125). 앱이 직접 계산하지 않는다.
+ *   게이트가 로딩·오류·재시도를 함께 다룬다 — 날짜 조회가 실패하면 예전엔 영원히
+ *   "불러오는 중" 만 떴다.
+ */
 export default function SalesMenuDetailScreen() {
+  return (
+    <BusinessDateGate source={useSalesBusinessDate()} title="메뉴 손익">
+      {(serverToday) => <SalesMenuDetailScreenBody serverToday={serverToday} />}
+    </BusinessDateGate>
+  );
+}
+
+function SalesMenuDetailScreenBody({ serverToday }: { serverToday: string }) {
   const params = useLocalSearchParams<{ recipe?: string; from?: string; to?: string }>();
-    /*
-   * ⚠ **서버가 정한 장부 날짜**를 쓴다(0125). 앱이 `+09:00` 고정 오프셋으로 직접
-   *   계산하면 앱과 DB 가 각자 오늘을 갖게 된다(기획서 §2.1).
-   *   못 받았으면 빈 문자열이고, 그동안 조회가 꺼진다 — 잘못된 날의 숫자보다 낫다.
-   */
-  const serverToday = useSalesBusinessDate() ?? '';
-  const today = serverToday;
+    const today = serverToday;
   const from = params.from ?? today;
   const to = params.to ?? today;
 
