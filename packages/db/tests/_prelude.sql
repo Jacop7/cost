@@ -85,3 +85,48 @@ create function pg_temp.rcp(p_name text) returns uuid
 language sql stable as $h$
   select id from recipes where name = p_name and store_id = pg_temp.store()
 $h$;
+
+-- ── 영업일 준비 ────────────────────────────────────────────────
+/*
+ * 오늘 영업일을 **열린 상태로** 만들어 준다. 이미 열려 있으면 그대로 둔다.
+ *
+ * ⚠ 이게 없으면 시험이 **바깥 세상에 기댄다.** 실제로 그랬다 —
+ *   앱의 자동 마감이 22:00 에 오늘 장부를 닫아 버리자 시험 다섯 개가 빨개졌고,
+ *   사람이 앱에서 되열어야 초록이 됐다. 그건 검증이 아니라 운이다.
+ *
+ * ⚠ 트랜잭션 안에서 돌고 롤백되므로 진짜 장부를 바꾸지 않는다.
+ *   각 시험 파일이 제 손으로 begin/exception 을 적던 걸 여기로 모은다.
+ */
+create function pg_temp.open_today() returns date
+language plpgsql as $h$
+declare v_day date := business_day();
+begin
+  -- 없으면 연다.
+  begin
+    perform open_business_day(pg_temp.store(), v_day);
+    return v_day;
+  exception when others then null;
+  end;
+
+  -- 닫혀 있으면 되연다.
+  if (select status::text from business_days
+       where store_id = pg_temp.store() and business_date = v_day) = 'closed' then
+    begin
+      perform reopen_business_day(pg_temp.store(), v_day);
+    exception when others then null;
+    end;
+  end if;
+
+  -- 다른 날이 열려 있어 오늘을 못 열었으면 그 날을 닫고 오늘을 연다.
+  if not exists (select 1 from business_days
+                  where store_id = pg_temp.store() and business_date = v_day
+                    and status::text <> 'closed') then
+    begin
+      perform close_business_day(pg_temp.store());
+      perform open_business_day(pg_temp.store(), v_day);
+    exception when others then null;
+    end;
+  end if;
+
+  return v_day;
+end $h$;

@@ -17,6 +17,13 @@ declare
   v_day   date := business_day();
 begin
   -- ── 시작: 행과 스냅샷이 함께 만들어진다 ─────────────────────
+  /*
+   * ⚠ 먼저 **열린 상태를 만들어 둔다.** 오늘 장부가 닫혀 있으면 아래 호출이
+   *   `이미 종료됐어요`(23505)로 터진다 — 실제로 자동 마감이 돈 뒤 그렇게 빨개졌다.
+   *   시험이 바깥 세상의 시각에 기대면 안 된다.
+   *   열려 있으면 아래 호출은 '이미 열려 있음' 경로를 타고 그 행을 돌려준다(불변식 8).
+   */
+  perform pg_temp.open_today();
   v_open := open_business_day(pg_temp.store());
   v_id := (v_open->>'business_day_id')::uuid;
   perform pg_temp.ok('영업 시작 → id 반환', v_id is not null);
@@ -78,9 +85,35 @@ begin
     to_char((auto_close_due(pg_temp.store())->>'auto_close_at')::timestamptz at time zone business_tz(), 'HH24:MI'),
     '23:35');
 
-  -- 아직 안 됐으면 닫지 않는다.
+  /*
+   * 아직 안 됐으면 닫지 않는다.
+   *
+   * ⚠ **지금 시각에 기대지 않는다.** 바로 위에서 활동 시각을 22:35 로 박아 뒀는데,
+   *   그 상태로 이 단언을 하면 "지금이 23:35 이전" 이라는 숨은 전제가 생긴다.
+   *   실제로 밤에 돌리면 빨개진다. 활동을 **지금**으로 옮겨 종료 예정을 미래로 민다
+   *   (`auto_close_due` 는 `greatest(예정 종료, 마지막 활동 + 1시간)` 이라
+   *    지금+1시간은 언제 돌려도 미래다).
+   */
+  update business_days set last_activity_at = now() where id = v_id;
   perform pg_temp.ok('아직 때가 아니면 안 닫는다',
     (close_if_due(pg_temp.store())->>'closed')::boolean is false);
+
+  /*
+   * 반대쪽도 잰다 — 때가 **지났으면** 닫는다. 이것도 시각에 안 기댄다.
+   * 예정 종료와 마지막 활동을 둘 다 과거로 밀어 놓는다.
+   */
+  update business_days
+     set planned_close_at = now() - interval '3 hours',
+         last_activity_at = now() - interval '3 hours'
+   where id = v_id;
+  perform pg_temp.ok('때가 지났으면 닫는다',
+    (close_if_due(pg_temp.store())->>'closed')::boolean is true);
+  perform pg_temp.eq_t('자동으로 닫혔다고 남는다',
+    (select close_method::text from business_days where id = v_id), 'auto');
+
+  -- 아래 수동 종료 시험을 위해 되열어 둔다.
+  perform reopen_business_day(pg_temp.store(), v_day);
+  update business_days set last_activity_at = now() where id = v_id;
 
   -- ── 종료: 시각·방식·집계가 남는다 ───────────────────────────
   v_close := close_business_day(pg_temp.store());

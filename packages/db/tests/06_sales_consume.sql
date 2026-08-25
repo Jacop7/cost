@@ -14,7 +14,7 @@
 --   날이 바뀌면 아무도 안 연 채 테스트가 돈다 — 실제로 08-23 아침에 이 파일이 빨개졌다.
 --   07·12 와 같은 수로 여기서 연다. 트랜잭션 안이라 곧 되돌려진다.
 do $open$ begin
-  perform open_business_day(pg_temp.store());
+  perform pg_temp.open_today();   -- 닫혀 있어도 열어 준다(프렐류드 헬퍼)
 exception when others then null; end $open$;
 
 do $t$

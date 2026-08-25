@@ -70,11 +70,7 @@ declare
   v_item jsonb;
 begin
   -- 스냅샷이 있어야 필요량이 나온다. 닫혀 있으면 다시 연다(다른 테스트와 같은 처리).
-  begin
-    perform open_business_day(pg_temp.store());
-  exception when others then
-    begin perform reopen_business_day(pg_temp.store(), business_day()); exception when others then null; end;
-  end;
+  perform pg_temp.open_today();   -- 열린 영업일을 보장한다(프렐류드 헬퍼)
   v_day := business_day();
 
   -- ⚠ 오늘 장부에 이미 판매가 적혀 있을 수 있다(앱으로 넣은 실데이터). 그러면

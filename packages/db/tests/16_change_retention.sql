@@ -21,11 +21,7 @@ declare
 begin
   -- ⚠ 닫혀 있으면 **다시 열어야** 한다. 앱에서 영업을 한 번 마치면 그날은 closed 로 남고,
   --   여는 데 실패한다. 그 상태로 두면 이 파일이 통째로 빨개진다(실제로 그랬다).
-  begin
-    perform open_business_day(pg_temp.store());
-  exception when others then
-    begin perform reopen_business_day(pg_temp.store(), business_day()); exception when others then null; end;
-  end;
+  perform pg_temp.open_today();   -- 열린 영업일을 보장한다(프렐류드 헬퍼)
 
   -- 내역이 쌓이도록 몇 가지를 실제로 바꾼다.
   perform quick_inbound(pg_temp.store(), v_ing, 1000, 6000, 2, null, v_day, 'T16-A');
@@ -101,11 +97,7 @@ declare
 begin
   -- ⚠ 닫혀 있으면 **다시 열어야** 한다. 앱에서 영업을 한 번 마치면 그날은 closed 로 남고,
   --   여는 데 실패한다. 그 상태로 두면 이 파일이 통째로 빨개진다(실제로 그랬다).
-  begin
-    perform open_business_day(pg_temp.store());
-  exception when others then
-    begin perform reopen_business_day(pg_temp.store(), business_day()); exception when others then null; end;
-  end;
+  perform pg_temp.open_today();   -- 열린 영업일을 보장한다(프렐류드 헬퍼)
 
   perform quick_inbound(pg_temp.store(), v_ing, 1000, 2000, 1, null, v_day, 'T16-B');
   select count(*) into v_new from entity_change_events where store_id = pg_temp.store();
