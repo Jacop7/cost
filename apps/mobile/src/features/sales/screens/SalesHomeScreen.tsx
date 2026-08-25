@@ -17,6 +17,7 @@ import { useRecipeList, type RecipeRow } from '@/features/recipes/hooks';
 import { useCheckSaleShortages, useRecipeShortages, useSalesDay, useSaveSale,
   type ChannelCode, type EtcItem, type ExtraItem, type SaleItemInput, type Shortage, type ShortageRecipe } from '../hooks';
 import { ShortageWarningSheet } from '../components/ShortageWarningSheet';
+import { BusinessDateGate } from '../components/BusinessDateGate';
 import { setPendingSale, clearPendingSale } from '../pendingSale';
 import { CHANNEL_LABEL, channelName } from '../channels';
 import { isClosedError, isNotOpenError, isRevisionConflict, useBusinessDay, useDayMenuBasis, useOpenBusinessDay, useSalesBusinessDate } from '../businessDay';
@@ -65,21 +66,28 @@ function SaleStepper({ value, onChange, label }: { value: number; onChange: (v: 
 interface Qty { hall: number; delivery: number; takeout: number; waste: number }
 const ZERO: Qty = { hall: 0, delivery: 0, takeout: 0, waste: 0 };
 
+/**
+ * ⚠ **서버가 정한 장부 날짜**를 받고 나서 본체를 붙인다(0125).
+ *
+ *   앱이 `+09:00` 고정 오프셋으로 오늘을 만들면 앱과 DB 가 각자 오늘을 갖는다
+ *   (기획서 §2.1). 새벽 영업이면 장부는 전날인데 앱은 자정에 날짜를 넘겨 버려
+ *   그 판매가 다음 날 장부로 샌다.
+ *
+ *   빈 날짜로 본체를 그리면 안 되는 이유가 하나 더 있다 — 머리글이
+ *   `dayLabel('')` 로 **`NaN월 NaN일`** 을 낸다. 실제로 그랬다.
+ *   그리고 날짜 조회가 실패했을 때 게이트가 오류와 재시도를 보여 준다.
+ */
 export default function SalesHomeScreen() {
+  return (
+    <BusinessDateGate source={useSalesBusinessDate()} title="매출관리">
+      {(today) => <SalesHomeBody today={today} />}
+    </BusinessDateGate>
+  );
+}
+
+function SalesHomeBody({ today }: { today: string }) {
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  /*
-   * ⚠ **서버가 정한 장부 날짜**를 쓴다(0125). 앱이 계산하지 않는다.
-   *   예전엔 `todayBusiness()` 가 `+09:00` 고정 오프셋으로 만들었고, 그래서 앱과 DB 가
-   *   각자 오늘을 계산했다(기획서 §2.1). 새벽 영업이면 장부는 전날인데 앱은 자정에
-   *   날짜를 넘겨 버려, 그 판매가 다음 날 장부로 샌다.
-   *
-   * ⚠ 못 받았으면 `null` 이고, 그동안 **저장을 막는다**. 날짜를 모르는 채로 저장하면
-   *   그게 곧 남의 날짜에 적는 것이다. 조회도 그동안 멈춘다(빈 화면이 잘못된 날보다 낫다).
-   */
-  const serverDate = useSalesBusinessDate();
-  /** 빈 문자열이면 조회가 꺼지고 저장 버튼도 잠긴다. 날짜를 지어내지 않는다. */
-  const today = serverDate ?? '';
 
   const day = useSalesDay(today);
   const recipes = useRecipeList();
@@ -346,7 +354,7 @@ export default function SalesHomeScreen() {
         <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 20, paddingRight: 12, paddingTop: 6, paddingBottom: 12 }}>
           <View style={{ flex: 1 }}>
             <Text style={{ fontSize: 22, fontWeight: '800', color: T.ink, letterSpacing: -0.6 }}>매출관리</Text>
-            <Text style={{ fontSize: 14, color: T.sub2, marginTop: 2, fontWeight: '600' }}>{dayLabel(today)}</Text>
+            <Text style={{ fontSize: 14, color: T.sub2, marginTop: 2, fontWeight: '600' }}>{dayLabel(today, today)}</Text>
           </View>
           <Pressable
             onPress={() => router.push('/sales/analytics' as Href)}

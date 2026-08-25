@@ -18,6 +18,7 @@ import { ChannelMixCard, MenuSalesList, ProfitBreakdownCard, SalesRow, SecLabel 
 import { MenuProfitSheet } from '../components/MenuProfitSheet';
 import { addDays, parseDay, periods, rangeLabel, type PeriodKey } from '../period';
 import { useSalesBusinessDate } from '../businessDay';
+import { BusinessDateGate } from '../components/BusinessDateGate';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 const DOWS = ['일', '월', '화', '수', '목', '금', '토'];
@@ -56,18 +57,20 @@ function dayGap(from: string, to: string): number {
  *
  * 그래서 날짜를 받은 **뒤에** 본체를 처음 붙인다. 본체는 날짜를 prop 으로 받으므로
  * 그 안의 훅들은 언제나 진짜 날짜를 본다.
+ *
+ * ⚠ 게이트가 `key={date}` 로 **날짜가 바뀌면 본체를 다시 만든다.** 화면을 열어 둔 채
+ *   자정을 넘기거나 영업일이 바뀌면 `monthAnchor` 가 옛 날짜에 남기 때문이다.
  */
 export default function SalesAnalyticsScreen() {
-  const today = useSalesBusinessDate();
-  if (!today) {
-    return (
-      <View style={{ flex: 1, backgroundColor: T.bg }}>
-        <AppHeader title="매출 분석" onBack={() => safeBack('/sales' as Href)} />
-        <QueryState isLoading error={null} isEmpty={false} emptyTitle="">{null}</QueryState>
-      </View>
-    );
-  }
-  return <SalesAnalyticsBody today={today} />;
+  return (
+    <BusinessDateGate
+      source={useSalesBusinessDate()}
+      title="매출 분석"
+      onBack={() => safeBack('/sales' as Href)}
+    >
+      {(today) => <SalesAnalyticsBody today={today} />}
+    </BusinessDateGate>
+  );
 }
 
 function SalesAnalyticsBody({ today }: { today: string }) {
