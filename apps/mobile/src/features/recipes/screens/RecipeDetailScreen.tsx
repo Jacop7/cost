@@ -10,7 +10,7 @@ import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { AppHeader, Badge, Card, Donut, Icon, MemoEditSheet, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { RecentChangeRow, changeStamp } from '@/features/changes';
-import { formatPercent, formatQuantity, formatUnitPrice, recommendedPrice, round, taxAmount, taxRate } from '@sikjae/core';
+import { formatPercent, formatQuantity, formatUnitPrice, isNegativeStock, recommendedPrice, round, stockStateOf, STOCK_STATE_LABEL, taxAmount, taxRate } from '@sikjae/core';
 import { T, won } from '@/theme/tokens';
 import { useFixedCosts } from '@/features/my/hooks';
 import { PriceSimSheet } from '../components/PriceSimSheet';
@@ -315,11 +315,26 @@ export default function RecipeDetailScreen() {
                             style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10, borderBottomWidth: i < r.lines.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}
                           >
                             <View style={{ flex: 1, minWidth: 0 }}>
-                              <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }} numberOfLines={1}>
-                                {l.name}
-                              </Text>
+                              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+                                <Text style={{ flexShrink: 1, fontSize: 16, fontWeight: '700', color: T.ink }} numberOfLines={1}>
+                                  {l.name}
+                                </Text>
+                                {l.ingredientId && stockStateOf(l) !== 'ok' ? (
+                                  <Badge tone="red" solid sm>{STOCK_STATE_LABEL[stockStateOf(l)].label}</Badge>
+                                ) : null}
+                              </View>
                               <Text style={[{ fontSize: 14, color: T.ter, marginTop: 2 }, NUM]}>
                                 {l.unitPrice === null ? '단가 산출 전' : unit === null ? `${won(Math.round(l.unitPrice))}원/인분` : formatUnitPrice(l.unitPrice, unit)}
+                                {/*
+                                  ⚠ 단가 옆에 **지금 재고**를 붙인다(기획안 §6). 레시피를 보면서
+                                    "이걸 오늘 팔 수 있나"를 알려면 여기 있어야 한다.
+                                    반제품 줄(ingredientId 없음)은 창고 재고라는 게 없으므로 뺀다.
+                                */}
+                                {l.ingredientId && unit !== null ? (
+                                  <Text style={{ color: isNegativeStock(l.stockTotal) ? T.red : T.ter, fontWeight: isNegativeStock(l.stockTotal) ? '800' : '400' }}>
+                                    {'  ·  '}재고 {formatQuantity(l.stockTotal, unit)}
+                                  </Text>
+                                ) : null}
                               </Text>
                             </View>
                             <View style={{ alignItems: 'flex-end' }}>

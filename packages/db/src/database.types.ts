@@ -1527,6 +1527,7 @@ export type Database = {
         Args: {
           p_ingredient: string
           p_amount: number
+          p_allow_negative?: boolean
         }
         Returns: number
       }
@@ -2123,6 +2124,14 @@ export type Database = {
           p_id: string
         }
         Returns: undefined
+      }
+      sale_shortages: {
+        Args: {
+          p_store: string
+          p_date: string
+          p_items: Json
+        }
+        Returns: Json
       }
       sales_channel_fixed: {
         Args: {

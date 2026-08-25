@@ -149,6 +149,7 @@ export function StockHistoryScreen() {
                       memo={v.memo}
                       delta={v.delta}
                       bal={v.balance}
+                      balNeg={v.balanceNegative}
                       up={v.up}
                       px={15}
                       last={i === list.length - 1}

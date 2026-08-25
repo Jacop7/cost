@@ -10,7 +10,7 @@ import {
   recommendedPrice,
   fixedCostRate,
   fixedCostPerThousand,
-  stockBadge,
+  stockStateOf,
   recommendedOrderQty,
   round,
   pct1,
@@ -82,14 +82,19 @@ describe('고정지출률 (④ 2, G-01)', () => {
 });
 
 describe('재고 뱃지 (① 4.7, ③ 3.4)', () => {
-  it('대파 재고 3,000g, 안전재고 2,000g → 충분', () => {
-    expect(stockBadge({ stockTotal: 3000, soonOut: false }, 2000)).toBe('ok');
+  it('대파 재고 3,000g, 안전재고 2,000g → 여유', () => {
+    expect(stockStateOf({ stockTotal: 3000, safetyStock: 2000, soonOut: false })).toBe('ok');
   });
-  it('양파 재고 1,000g, 안전재고 3,000g → 부족', () => {
-    expect(stockBadge({ stockTotal: 1000, soonOut: false }, 3000)).toBe('low');
+  it('양파 재고 1,000g, 안전재고 3,000g → 소진 임박', () => {
+    expect(stockStateOf({ stockTotal: 1000, safetyStock: 3000, soonOut: false })).toBe('low');
   });
-  it('다진마늘 곧소진 → 소진임박', () => {
-    expect(stockBadge({ stockTotal: 1000, soonOut: true }, 2000)).toBe('out');
+  // 0102 — 아직 1,000g 있으니 '소진'이 아니다. 사장님이 켜 둔 신호일 뿐이다.
+  it('다진마늘 곷소진 → 소진 임박', () => {
+    expect(stockStateOf({ stockTotal: 1000, safetyStock: 500, soonOut: true })).toBe('low');
+  });
+  // 재고가 음수면 그제야 '소진'이다.
+  it('소고기 재고 −750g → 소진', () => {
+    expect(stockStateOf({ stockTotal: -750, safetyStock: 2000, soonOut: false })).toBe('out');
   });
 });
 

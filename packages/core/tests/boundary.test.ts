@@ -8,7 +8,9 @@
  */
 import { describe, it, expect } from 'vitest';
 import {
-  stockBadge,
+  stockStateOf,
+  shortageOf,
+  isNegativeStock,
   rawUnitPrice,
   baseUnitPrice,
   previewBaseUnitPrice,
@@ -185,37 +187,67 @@ describe('materialCost — 라인 단위 방어', () => {
  * 2단계로 줄이면 어느 쪽으로 흡수하든 거짓말이 된다 —
  * '여유'로 보내면 미달을 여유라 하고, '소진 임박'으로 보내면 99% 남은 걸 임박이라 한다.
  */
-describe('stockBadge — 부족과 소진 임박은 다른 사건이다', () => {
-  const snap = (stockTotal: number) => ({ stockTotal, soonOut: false });
+describe('stockStateOf — 소진과 소진 임박은 다른 사건이다', () => {
+  const snap = (stockTotal: number, safetyStock = 5) => ({ stockTotal, safetyStock, soonOut: false });
 
-  it('안전재고보다 적으면 부족', () => {
-    expect(stockBadge(snap(2), 5)).toBe('low');
+  it('안전재고보다 적으면 소진 임박', () => {
+    expect(stockStateOf(snap(2))).toBe('low');
   });
 
-  it('안전재고와 같으면 부족 — 경계는 미달 쪽이다', () => {
-    expect(stockBadge(snap(5), 5)).toBe('low');
+  // 기획안 §3 은 "안전재고 **이하**" 다. 안전재고는 "이만큼은 있어야 한다"는 선이지
+  // "이만큼이면 넉넉하다"가 아니다. 앱 복사본만 `<` 라서 여기서 갈렸었다.
+  it('안전재고와 같으면 소진 임박 — 경계는 미달 쪽이다', () => {
+    expect(stockStateOf(snap(5))).toBe('low');
   });
 
-  it('안전재고보다 많아야 충분', () => {
-    expect(stockBadge(snap(6), 5)).toBe('ok');
+  it('안전재고보다 많으면 여유', () => {
+    expect(stockStateOf(snap(6))).toBe('ok');
   });
 
-  it('완전 소진은 부족보다 우선', () => {
-    expect(stockBadge(snap(0), 5)).toBe('out');
+  it('0 은 소진 — 소진 임박보다 우선', () => {
+    expect(stockStateOf(snap(0))).toBe('out');
   });
 
-  it('소진임박 표시는 수량과 무관하게 우선', () => {
-    expect(stockBadge({ ...snap(100), soonOut: true }, 5)).toBe('out');
+  /*
+   * ⚠ 여기가 0102 로 뜻이 바뀐 자리다. 예전엔 `soonOut` 이 곧 'out' 이었다.
+   *   이제 'out' 은 **지금 없다**는 뜻이고, `soonOut` 은 아직 있으니 'low' 다.
+   *   100개 남았는데 '소진'이라고 쓰면 사장님이 그 뱃지를 안 믿는다.
+   */
+  it('곧소진 표시는 아직 있으므로 소진 임박이다', () => {
+    expect(stockStateOf({ ...snap(100), soonOut: true })).toBe('low');
   });
 
-  it('안전선 바로 아래는 부족이지 소진 임박이 아니다', () => {
-    // 진간장 1,780/1,800 = 99%. 이걸 빨강으로 칠하면 빨강이 의미를 잃는다.
-    expect(stockBadge(snap(4), 5)).toBe('low');
-    expect(stockBadge(snap(4), 5)).not.toBe('out');
+  it('안전선 바로 아래는 소진 임박이지 소진이 아니다', () => {
+    // 진간장 1,780/1,800 = 99%. 이걸 '소진'으로 칠하면 그 말이 의미를 잃는다.
+    expect(stockStateOf(snap(4))).toBe('low');
+    expect(stockStateOf(snap(4))).not.toBe('out');
   });
 
   it('세 상태가 모두 나온다 — 2단계로 뭉치지 않는다', () => {
-    const got = new Set([stockBadge(snap(0), 5), stockBadge(snap(3), 5), stockBadge(snap(9), 5)]);
+    const got = new Set([stockStateOf(snap(0)), stockStateOf(snap(3)), stockStateOf(snap(9))]);
     expect(got).toEqual(new Set(['out', 'low', 'ok']));
+  });
+
+  /*
+   * 음수 재고(0102). 판매가 재고보다 많았던 몫이 그대로 남아 있는 상태다.
+   * ⚠ 0 으로 보정하지 않는다 — 감추면 입고 누락을 알아챌 단서가 사라진다.
+   */
+  it('음수 재고는 소진이다', () => {
+    expect(stockStateOf(snap(-750))).toBe('out');
+  });
+
+  it('음수 재고는 곧소진이 꺼져 있어도 소진이다', () => {
+    expect(stockStateOf({ stockTotal: -750, safetyStock: 2000, soonOut: false })).toBe('out');
+  });
+
+  it('부족량은 음수일 때만 나온다 — 상태명이 아니라 설명이다', () => {
+    expect(shortageOf(-750)).toBe(750);
+    expect(shortageOf(0)).toBe(0);
+    expect(shortageOf(120)).toBe(0);
+  });
+
+  it('빨간색 판정은 한 곳에서만 나온다', () => {
+    expect(isNegativeStock(-1)).toBe(true);
+    expect(isNegativeStock(0)).toBe(false);
   });
 });

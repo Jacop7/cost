@@ -11,6 +11,7 @@ import { BasePriceCard } from '../components/BasePriceCard';
 import { LedgerRow } from '../components/LedgerRow';
 import { LossCard } from '../components/LossCard';
 import { belowSafety, stockLabel, stockStateOf } from '../components/IngCard';
+import { isNegativeStock, shortageOf } from '@sikjae/core';
 import { StockEditSheet } from './StockEditSheet';
 import { dispUnit, toLedgerView } from '../ledger';
 import {
@@ -169,7 +170,8 @@ export function IngredientDetailScreen() {
                   {st ? <Badge tone={st.tone} solid sm>{st.label}</Badge> : null}
                 </View>
                 <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 8, marginTop: 8 }}>
-                  <Text style={[{ fontSize: 20, fontWeight: '800', letterSpacing: -0.6, color: T.ink }, tnum]}>
+                  {/* ⚠ 음수는 빨강 그대로(0102). 0 으로 보정하면 왜 마이너스인지 물어볼 일이 없어진다. */}
+                  <Text style={[{ fontSize: 20, fontWeight: '800', letterSpacing: -0.6, color: isNegativeStock(g.stockTotal) ? T.red : T.ink }, tnum]}>
                     총 {formatQuantity(g.stockTotal, unit)}
                   </Text>
                   <Text style={[{ flexShrink: 1, fontSize: 14, color: g.basePrice === null ? T.ter : T.sub, fontWeight: '700' }, tnum]} numberOfLines={1}>
@@ -179,6 +181,15 @@ export function IngredientDetailScreen() {
                 <Text style={[{ fontSize: 14, color: T.sub2, marginTop: 6, fontWeight: '600' }, tnum]}>
                   개당 {formatQuantity(g.perVolume, unit)}
                 </Text>
+                {/*
+                  부족량은 **설명**이지 상태명이 아니다(기획안 §3). 상태 뱃지는 `소진` 이고
+                  수량은 `−750g` 그대로다. 여기서는 얼마나 채워야 0 이 되는지만 덧붙인다.
+                */}
+                {isNegativeStock(g.stockTotal) ? (
+                  <Text style={[{ fontSize: 14, color: T.red, marginTop: 4, fontWeight: '700' }, tnum]}>
+                    재고 부족 {formatQuantity(shortageOf(g.stockTotal), unit)} · 입고를 빠뜨렸는지 확인해 주세요
+                  </Text>
+                ) : null}
                 <View style={{ marginTop: 10, flexDirection: 'row', gap: 6, flexWrap: 'wrap' }}>
                   <Badge tone={belowSafety(g) ? 'amber' : 'neutral'} sm>안전재고 {g.safetyStock}개</Badge>
                   <Badge tone="neutral" sm>최소발주 {g.minOrderQty}개</Badge>

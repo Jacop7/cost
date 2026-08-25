@@ -13,7 +13,13 @@ import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Badge, Button, Card, Field, Icon, Input, QueryState, SearchBar, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { formatQuantity, formatUnitPrice } from '@sikjae/core';
+import {
+  formatQuantity,
+  formatUnitPrice,
+  isNegativeStock,
+  stockStateOf,
+  STOCK_STATE_LABEL,
+} from '@sikjae/core';
 import { T, won } from '@/theme/tokens';
 import { clampDecimals } from '@/lib/num';
 import { useIngredientList } from '@/features/ingredients/hooks';
@@ -93,10 +99,20 @@ export default function RecipeIngredientSearchScreen() {
                           <Text style={{ fontSize: 16, fontWeight: '800', letterSpacing: -0.3, color: T.ink }} numberOfLines={1}>{g.name}</Text>
                           {g.categoryName ? <Badge tone="neutral" sm>{g.categoryName}</Badge> : null}
                           {already ? <Badge tone="blue" sm>담김</Badge> : null}
+                          {/*
+                            ⚠ 재고 상태를 여기서도 보여 준다(0108). 예전엔 회색 문장 한 줄뿐이라
+                              소진된 재료인지 모른 채 레시피에 담았다.
+                          */}
+                          {stockStateOf(g) !== 'ok' ? (
+                            <Badge tone="red" solid sm>{STOCK_STATE_LABEL[stockStateOf(g)].label}</Badge>
+                          ) : null}
                         </View>
                         <Text style={[{ fontSize: 14, color: T.sub2, marginTop: 6, fontWeight: '600' }, NUM]}>
                           {g.basePrice === null ? '단가 산출 전' : `기준 단가 ${formatUnitPrice(g.basePrice, unit)}`}
-                          {'  ·  '}재고 {formatQuantity(g.stockTotal, unit)}
+                          {'  ·  '}재고{' '}
+                          <Text style={{ color: isNegativeStock(g.stockTotal) ? T.red : T.sub2, fontWeight: '800' }}>
+                            {formatQuantity(g.stockTotal, unit)}
+                          </Text>
                         </Text>
                       </View>
                       <Icon name="plus" size={20} color={T.blue} sw={2.2} />

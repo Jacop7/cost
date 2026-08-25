@@ -86,6 +86,14 @@ export interface RecipeLine {
   perServing: number;
   /** 기준단가(원/기준단위). 산출 전이면 null — 0 으로 그리면 공짜 재료로 읽힌다. */
   unitPrice: number | null;
+  /**
+   * 현재 장부 재고(기준단위). **음수일 수 있다**(0102).
+   * ⚠ 이 줄은 사용량·단가·원가와 다른 축이다. 원가는 음수가 되지 않는다 —
+   *   음수인 것은 지금 창고에 얼마가 있느냐뿐이다.
+   */
+  stockTotal: number;
+  safetyStock: number;
+  soonOut: boolean;
 }
 
 export interface RecipeDetail {
@@ -189,6 +197,9 @@ export function useRecipeDetail(id: string | undefined) {
           inputQty: num(l.input_qty),
           perServing: num(l.per_serving),
           unitPrice: numOrNull(l.unit_price),
+          stockTotal: num(l.stock_total),
+          safetyStock: num(l.safety_stock),
+          soonOut: Boolean(l.soon_out),
         })),
         extras: ((r.extras ?? []) as Record<string, unknown>[]).map((e) => ({
           id: String(e.id),

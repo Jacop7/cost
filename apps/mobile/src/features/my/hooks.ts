@@ -4,6 +4,7 @@
  * 목록 셋은 서로 다른 화면이 쓰지만 조회 비용이 작아 `settings_lists` 하나로 받는다.
  * 각각 따로 받으면 화면 진입마다 3 왕복이 되고, 무효화 대상도 3배로 흩어진다.
  */
+import { useCallback } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { invalidate, invalidateOn, qk } from '@/lib/queryClient';
 import { supabase } from '@/lib/supabase';
@@ -135,6 +136,39 @@ export function useSaveVendor() {
     },
     onSuccess: () => invalidate(qc, invalidateOn.settingsSaved()),
   });
+}
+
+/**
+ * 이름으로 거래처를 확보한다 — 있으면 그 id, 없으면 만들어서 id.
+ *
+ * 재고 추가에서 `직접 입력` 으로 구매처를 적을 때 쓴다(기획안 §4.4).
+ * ⚠ 같은 이름을 두 번 만들지 않는다. `save_vendor` 가 중복을 23505 로 막긴 하지만,
+ *   막힌 뒤에 되찾는 것보다 먼저 찾아보는 게 낫다 — 대소문자만 다른 경우도 같은 곳이다.
+ */
+export function useEnsureVendor() {
+  const qc = useQueryClient();
+  const storeId = useStoreId();
+  const lists = useSettingsLists();
+  return useCallback(
+    async (name: string): Promise<string> => {
+      const n = name.trim();
+      if (n === '') throw new Error('구매처를 입력해 주세요');
+
+      const hit = (lists.data?.vendors ?? []).find(
+        (v) => v.name.trim().toLowerCase() === n.toLowerCase(),
+      );
+      if (hit) return hit.id;
+
+      const { data, error } = await supabase.rpc('save_vendor', {
+        p_store: storeId,
+        p_payload: asJson({ id: '', name: n }),
+      });
+      if (error) throw new Error(error.message);
+      invalidate(qc, invalidateOn.settingsSaved());
+      return String(data);
+    },
+    [qc, storeId, lists.data],
+  );
 }
 
 /** 발주 이력이 있으면 서버가 숨김 처리한다 — 지우면 과거 발주의 거래처가 사라진다. */

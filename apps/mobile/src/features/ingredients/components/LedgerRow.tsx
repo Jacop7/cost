@@ -14,6 +14,7 @@ export function LedgerRow({
   memo,
   delta,
   bal,
+  balNeg,
   up,
   px = 15,
   last = false,
@@ -24,6 +25,8 @@ export function LedgerRow({
   memo: string;
   delta: string;
   bal: string; // 표시 그대로 (예: '잔량 3.9kg')
+  /** 그 잔량이 음수인가. 참이면 빨강 — `−750g` 을 회색으로 쓰면 그냥 지나친다(0102). */
+  balNeg?: boolean;
   up: boolean; // true=입고(양수, 파랑) / false=소진·폐기(음수, 빨강)
   px?: number; // 좌우 패딩 (카드 15 · 전체폭 22)
   last?: boolean; // 그룹의 마지막 행이면 하단 구분선 제거
@@ -62,7 +65,7 @@ export function LedgerRow({
       </View>
       <View style={{ alignItems: 'flex-end' }}>
         <Text style={[{ fontSize: 16, fontWeight: '800', color: up ? T.blue : T.red }, tnum]}>{dNum}<Text style={{ fontWeight: '600' }}>{dUnit}</Text></Text>
-        <Text style={[{ fontSize: 14, color: T.ter, marginTop: 3 }, tnum]}>{bal}</Text>
+        <Text style={[{ fontSize: 14, color: balNeg ? T.red : T.ter, fontWeight: balNeg ? '800' : '400', marginTop: 3 }, tnum]}>{bal}</Text>
       </View>
     </Pressable>
   );
