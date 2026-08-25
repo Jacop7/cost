@@ -15,6 +15,35 @@ const num = (v: unknown): number => Number(v ?? 0);
 const numOrNull = (v: unknown): number | null => (v === null || v === undefined ? null : Number(v));
 const str = (v: unknown): string | null => (v === null || v === undefined ? null : String(v));
 
+const YM = /^\d{4}-(0[1-9]|1[0-2])$/;
+
+/**
+ * 고정지출 응답을 **검증**한다. 없으면 조회 오류로 올린다 — 조용히 넘기지 않는다.
+ *
+ * ⚠ 예전엔 `String(r.fixed_month ?? '')` · `(r.fixed_items ?? [])` 였다. 서버가 키를
+ *   빠뜨리면 화면이 **거짓말을 하면서 멀쩡해 보인다** —
+ *       항목 자리: `이번 달 고정지출이 아직 없어요`
+ *       소계 자리: `3,756원 · 31.3%`   (fixedRate 는 따로 오므로 그대로 나온다)
+ *   사장님은 고정지출을 지운 적이 없는데 지워졌다고 읽는다. 차라리 못 불러온 게 낫다.
+ */
+function reqFixed(r: Record<string, unknown>): { month: string; items: { key: string; total: number }[] } {
+  const month = typeof r.fixed_month === 'string' ? r.fixed_month : '';
+  if (!YM.test(month)) {
+    throw new Error('서버가 고정지출 기준 월을 주지 않았어요. 잠시 후 다시 시도해 주세요');
+  }
+  if (!Array.isArray(r.fixed_items)) {
+    throw new Error('서버가 고정지출 항목을 주지 않았어요. 잠시 후 다시 시도해 주세요');
+  }
+  return {
+    month,
+    // 항목 자체는 **비어 있어도 정상**이다 — 아직 안 적은 달이 그렇다.
+    // 여기서 거르는 건 `배열이 아닌 것`, 즉 서버가 안 준 경우뿐이다.
+    items: (r.fixed_items as Record<string, unknown>[]).map((i) => ({
+      key: String(i.key ?? ''), total: Number(i.total ?? 0),
+    })),
+  };
+}
+
 export type TaxMode = 'included' | 'separate' | 'exempt';
 
 /** 부가세 외 세금 항목 — 카드 수수료 등. rate 는 판매가 대비 %(0052). */
@@ -172,6 +201,8 @@ export function useRecipeDetail(id: string | undefined) {
       if (error) throw new Error(error.message);
       if (!data) return null;
       const r = data as unknown as Record<string, unknown>;
+      // 던지면 react-query 가 오류로 잡고, 화면의 QueryState 가 재시도를 준다.
+      const fixed = reqFixed(r);
       return {
         id: String(r.id),
         name: String(r.name),
@@ -194,10 +225,8 @@ export function useRecipeDetail(id: string | undefined) {
         materialCost: num(r.material_cost),
         extraCost: num(r.extra_cost),
         fixedRate: num(r.fixed_rate),
-        fixedMonth: String(r.fixed_month ?? ''),
-        fixedItems: ((r.fixed_items ?? []) as Record<string, unknown>[]).map((i) => ({
-          key: String(i.key ?? ''), total: num(i.total),
-        })),
+        fixedMonth: fixed.month,
+        fixedItems: fixed.items,
         categoryId: str(r.category_id),
         lines: ((r.lines ?? []) as Record<string, unknown>[]).map((l) => ({
           id: String(l.id),
