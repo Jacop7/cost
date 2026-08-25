@@ -40,3 +40,42 @@ begin
     (m2->>'total')::numeric, (s2->>'material_cost')::numeric, 0.01);
   perform pg_temp.ok('그래도 재료비는 0이 아니다', (s2->>'material_cost')::numeric > 0);
 end $t$;
+
+
+-- ════════════════════════════════════════════════════════════════
+-- 판 날이 하루라도 재료비 0 이면 안 된다 (0110)
+--
+-- 실측: 개업 첫날(2026-07-30) 하루만 메뉴 7종 전부 `unit_material_cost = 0`
+--       인데 매출은 600,000원이었다. 그날 손익은 재료비 없이 잡혀 있었다.
+--
+-- 시드가 `open_business_day()` 를 개업 재고보다 **먼저** 불러서, 단가가 아직
+-- null 인 상태로 그날 값이 얼어붙은 것이다. 이튿날부터는 전날 단가가 남아 있어
+-- 멀쩡했고 — 그래서 하루짜리 구멍을 오래 못 봤다.
+--
+-- 날짜를 박아 두지 않는다. **모든 날**에 대해 재는 게 이 시험의 요점이다.
+-- ════════════════════════════════════════════════════════════════
+do $t$
+declare v_bad int; v_days int;
+begin
+  select count(*) into v_bad
+    from daily_sales ds join daily_sales_items it on it.daily_sales_id = ds.id
+   where ds.store_id = pg_temp.store()
+     and it.recipe_id is not null
+     and (it.qty_hall + it.qty_delivery + it.qty_takeout) > 0
+     and coalesce(it.unit_material_cost, 0) = 0;
+  perform pg_temp.eq('판매가 있는데 재료비가 0 인 줄', v_bad, 0, 0);
+
+  -- 스냅샷 쪽도 같이 본다. 판매 줄만 고치고 스냅샷을 두면 되짚기가 다시 갈린다.
+  select count(*) into v_bad
+    from business_days bd
+    join jsonb_each(bd.snapshot->'recipes') e on true
+   where bd.store_id = pg_temp.store() and bd.snapshot is not null
+     and coalesce((e.value->>'material_cost')::numeric, 0) = 0
+     and exists (select 1 from jsonb_array_elements(coalesce(e.value->'lines','[]'::jsonb)) l
+                  where coalesce((l->>'per_serving')::numeric, 0) > 0);
+  perform pg_temp.eq('재료가 있는데 재료비가 0 인 스냅샷 메뉴', v_bad, 0, 0);
+
+  select count(distinct sale_date) into v_days
+    from daily_sales where store_id = pg_temp.store();
+  perform pg_temp.ok(format('%s일치를 전부 확인했다', v_days), v_days > 20);
+end $t$;
