@@ -16,7 +16,8 @@ import { T, won } from '@/theme/tokens';
 import { useSalesRange, type RangeMenu } from '../hooks';
 import { ChannelMixCard, MenuSalesList, ProfitBreakdownCard, SalesRow, SecLabel } from '../components/ProfitBlocks';
 import { MenuProfitSheet } from '../components/MenuProfitSheet';
-import { addDays, parseDay, periods, rangeLabel, todayBusiness, type PeriodKey } from '../period';
+import { addDays, parseDay, periods, rangeLabel, type PeriodKey } from '../period';
+import { useSalesBusinessDate } from '../businessDay';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 const DOWS = ['일', '월', '화', '수', '목', '금', '토'];
@@ -45,8 +46,31 @@ function dayGap(from: string, to: string): number {
   return Math.round((parseDay(to).getTime() - parseDay(from).getTime()) / 86_400_000) + 1;
 }
 
+/**
+ * ⚠ 이 화면만 **감싸는 층**이 필요하다.
+ *
+ * 다른 조회 화면은 날짜를 조회 인자로만 쓰므로 빈 값이면 조회가 꺼지고 끝이다.
+ * 그런데 여기는 `useState(today)` 로 **상태를 씨앗 삼는다**(달력 기준월).
+ * 훅은 조건부로 못 부르니, 빈 날짜로 한 번 렌더되면 그 빈 값이 상태에 굳어
+ * 나중에 서버 날짜가 와도 안 바뀐다.
+ *
+ * 그래서 날짜를 받은 **뒤에** 본체를 처음 붙인다. 본체는 날짜를 prop 으로 받으므로
+ * 그 안의 훅들은 언제나 진짜 날짜를 본다.
+ */
 export default function SalesAnalyticsScreen() {
-  const today = todayBusiness();
+  const today = useSalesBusinessDate();
+  if (!today) {
+    return (
+      <View style={{ flex: 1, backgroundColor: T.bg }}>
+        <AppHeader title="매출 분석" onBack={() => safeBack('/sales' as Href)} />
+        <QueryState isLoading error={null} isEmpty={false} emptyTitle="">{null}</QueryState>
+      </View>
+    );
+  }
+  return <SalesAnalyticsBody today={today} />;
+}
+
+function SalesAnalyticsBody({ today }: { today: string }) {
   const PRESETS = useMemo(() => periods(today), [today]);
 
   const [periodKey, setPeriodKey] = useState<PeriodKey>('today');

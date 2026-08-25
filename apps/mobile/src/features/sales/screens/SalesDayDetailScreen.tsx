@@ -11,12 +11,19 @@ import { T } from '@/theme/tokens';
 import { useSalesDay, useSalesRange, type RangeMenu } from '../hooks';
 import { ChannelMixCard, MenuSalesList, ProfitBreakdownCard, SecLabel } from '../components/ProfitBlocks';
 import { MenuProfitSheet } from '../components/MenuProfitSheet';
-import { dayLabel, todayBusiness } from '../period';
+import { dayLabel } from '../period';
+import { useSalesBusinessDate } from '../businessDay';
 
 export default function SalesDayDetailScreen() {
   const router = useRouter();
   const params = useLocalSearchParams<{ date?: string }>();
-  const date = params.date ?? todayBusiness();
+  /*
+   * ⚠ **서버가 정한 장부 날짜**를 쓴다(0125). 앱이 `+09:00` 고정 오프셋으로 직접
+   *   계산하면 앱과 DB 가 각자 오늘을 갖게 된다(기획서 §2.1).
+   *   못 받았으면 빈 문자열이고, 그동안 조회가 꺼진다 — 잘못된 날의 숫자보다 낫다.
+   */
+  const serverToday = useSalesBusinessDate() ?? '';
+  const date = params.date ?? serverToday;
 
   const day = useSalesDay(date);
   // 메뉴별 집계·채널 구성은 기간 함수가 하루 범위로도 그대로 답한다 — 같은 정의를 두 벌 두지 않는다.

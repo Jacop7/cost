@@ -12,7 +12,8 @@ import { safeBack } from '@/lib/nav';
 import { T, won } from '@/theme/tokens';
 import { formatQuantity, formatUnitPrice } from '@sikjae/core';
 import { useMaterialUsage, useSalesRange, type MaterialUsageItem } from '../hooks';
-import { rangeLabel, todayBusiness } from '../period';
+import { rangeLabel } from '../period';
+import { useSalesBusinessDate } from '../businessDay';
 import { DetailSummary } from '../components/ProfitBlocks';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
@@ -21,7 +22,13 @@ const dispUnit = (u: 'g' | 'ml' | 'ea') => (u === 'ea' ? '개' : u);
 export default function SalesMaterialScreen() {
   const router = useRouter();
   const params = useLocalSearchParams<{ from?: string; to?: string; date?: string }>();
-  const today = todayBusiness();
+    /*
+   * ⚠ **서버가 정한 장부 날짜**를 쓴다(0125). 앱이 `+09:00` 고정 오프셋으로 직접
+   *   계산하면 앱과 DB 가 각자 오늘을 갖게 된다(기획서 §2.1).
+   *   못 받았으면 빈 문자열이고, 그동안 조회가 꺼진다 — 잘못된 날의 숫자보다 낫다.
+   */
+  const serverToday = useSalesBusinessDate() ?? '';
+  const today = serverToday;
   const from = params.from ?? params.date ?? today;
   const to = params.to ?? params.date ?? today;
 
