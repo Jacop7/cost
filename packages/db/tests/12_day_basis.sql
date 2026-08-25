@@ -374,7 +374,7 @@ begin
   -- ── 오늘을 '영업 전'으로 되돌린다 ───────────────────────────
   -- ⚠ 지우지 않고 날짜를 옮긴다. 매출·입출고·발주가 이 행을 참조해 삭제는 막힌다.
   --   전부 이 트랜잭션 안이라 롤백된다.
-  begin perform close_business_day(pg_temp.store()); exception when others then null; end;
+  perform pg_temp.close_today();   -- 이미 닫혀 있으면 그대로 둔다(프렐류드 헬퍼)
   update business_days set business_date = v_day - 401
    where store_id = pg_temp.store() and business_date = v_day;
   perform pg_temp.eq_t('되돌리면 영업 전',
@@ -433,7 +433,7 @@ declare
   v_day date := business_day();
   v_new uuid;
 begin
-  begin perform close_business_day(pg_temp.store()); exception when others then null; end;
+  perform pg_temp.close_today();   -- 이미 닫혀 있으면 그대로 둔다(프렐류드 헬퍼)
   update business_days set business_date = v_day - 402
    where store_id = pg_temp.store() and business_date = v_day;
 
@@ -469,7 +469,7 @@ declare
 begin
   -- 오늘을 영업 전으로 되돌리고, 된장찌개를 꺼 둔 채로 시작한다.
   -- (재료가 떨어져 잠깐 꺼 두는 상황 — 이게 제일 흔하다.)
-  begin perform close_business_day(pg_temp.store()); exception when others then null; end;
+  perform pg_temp.close_today();   -- 이미 닫혀 있으면 그대로 둔다(프렐류드 헬퍼)
   update business_days set business_date = v_day - 405
    where store_id = pg_temp.store() and business_date = v_day;
   update recipes set active = false where id = v_off;

@@ -175,3 +175,39 @@ begin
 
   return v_day;
 end $h$;
+
+
+/*
+ * 오늘을 **영업 전**으로 되돌린다. `open_today()` 의 짝이다.
+ *
+ * ⚠ 예전엔 부르는 쪽마다 이렇게 적혀 있었다 —
+ *       begin perform close_business_day(...); exception when others then null; end;
+ *   닫혀 있을 때 나는 정상 실패를 넘기려던 것인데, `when others` 라 **모든** 실패를
+ *   같이 삼킨다. 다음 단계에서 `close_business_day()` 자체를 고칠 텐데, 그때 진짜
+ *   원인이 여기서 조용히 사라진다. 그래서 예상 SQLSTATE 만 잡고 사후조건을 확인한다.
+ *
+ *   22000 = 영업 중이 아니에요 (애초에 안 열림 — 원하는 상태가 이미 맞다)
+ *   45002 = 이미 종료된 영업일이에요 (역시 원하는 상태다)
+ */
+create function pg_temp.close_today() returns date
+language plpgsql as $h$
+declare v_day date := business_day(); v_st text;
+begin
+  begin
+    perform close_business_day(pg_temp.store());
+  exception
+    when sqlstate '22000' or sqlstate '45002' then null;
+  end;
+
+  -- ── 사후조건: 오늘이 열려 있지 않다 ──
+  select max(status::text) into v_st
+    from business_days
+   where store_id = pg_temp.store() and business_date = v_day;
+
+  if v_st in ('open', 'break') then
+    raise exception 'close_today: 오늘(%) 영업일이 아직 %입니다 — 닫히지 않았습니다', v_day, v_st
+      using errcode = '45003';
+  end if;
+
+  return v_day;
+end $h$;

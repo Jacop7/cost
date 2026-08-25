@@ -119,6 +119,13 @@ export interface RecipeDetail {
   materialCost: number;
   extraCost: number;
   fixedRate: number;
+  /**
+   * ⚠ `fixedRate` 를 낸 **그 달**과 **그 달의 항목**이다(0128). 서버가 한 문장에서
+   *   같이 낸다 — 앱이 따로 고정지출을 조회하면 매장 자정 사이에 두 요청이 갈려
+   *   9월 비율을 8월 항목으로 쪼갤 수 있다(합계는 맞고 줄마다 틀린다).
+   */
+  fixedMonth: string;
+  fixedItems: { key: string; total: number }[];
   categoryId: string | null;
   lines: RecipeLine[];
   extras: { id: string; name: string; amount: number; materialId: string | null; qty: number }[];
@@ -187,6 +194,10 @@ export function useRecipeDetail(id: string | undefined) {
         materialCost: num(r.material_cost),
         extraCost: num(r.extra_cost),
         fixedRate: num(r.fixed_rate),
+        fixedMonth: String(r.fixed_month ?? ''),
+        fixedItems: ((r.fixed_items ?? []) as Record<string, unknown>[]).map((i) => ({
+          key: String(i.key ?? ''), total: num(i.total),
+        })),
         categoryId: str(r.category_id),
         lines: ((r.lines ?? []) as Record<string, unknown>[]).map((l) => ({
           id: String(l.id),

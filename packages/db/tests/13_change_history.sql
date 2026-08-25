@@ -99,7 +99,7 @@ declare
   ev    jsonb;
 begin
   -- ── 영업 전 수정 → 오늘 시작 때 담긴다 → 반영 ───────────────
-  begin perform close_business_day(pg_temp.store()); exception when others then null; end;
+  perform pg_temp.close_today();   -- 이미 닫혀 있으면 그대로 둔다(프렐류드 헬퍼)
   update business_days set business_date = v_day - 410
    where store_id = pg_temp.store() and business_date = v_day;
 
@@ -426,7 +426,7 @@ declare
   v_ref uuid; v_unref uuid;
 begin
   -- 영업 전에 두 번 고친다 → 둘 다 '반영'이 될 값들
-  begin perform close_business_day(pg_temp.store()); exception when others then null; end;
+  perform pg_temp.close_today();   -- 이미 닫혀 있으면 그대로 둔다(프렐류드 헬퍼)
   update business_days set business_date = v_day - 420
    where store_id = pg_temp.store() and business_date = v_day;
 
