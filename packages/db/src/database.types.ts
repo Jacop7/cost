@@ -756,7 +756,7 @@ export type Database = {
           expected_at?: string | null
           id?: string
           ingredient_id: string
-          ordered_at?: string
+          ordered_at: string
           qty: number
           received_qty?: number
           source?: Database["public"]["Enums"]["order_source"]
@@ -1337,18 +1337,21 @@ export type Database = {
       }
       store_time_settings: {
         Row: {
+          confirmed: boolean
           created_at: string
           store_id: string
           timezone: string
           updated_at: string
         }
         Insert: {
+          confirmed?: boolean
           created_at?: string
           store_id: string
           timezone?: string
           updated_at?: string
         }
         Update: {
+          confirmed?: boolean
           created_at?: string
           store_id?: string
           timezone?: string

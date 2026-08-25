@@ -199,18 +199,15 @@ begin
   end loop;
 
   /*
-   * ③ 오늘은 값이 같아야 한다(cutoff 0 · 매장 하나). 다르면 이 단계가 값을 바꾼 것이다.
+   * ⚠ 여기에 "오늘 두 날짜가 같다"는 검사를 넣었다가 **뺐다.**
    *
-   * ⚠ 매장이 **없을 수 있다.** 마이그레이션은 시드보다 먼저 돈다 — 새 DB 에서는
-   *   여기가 빈 테이블이다. `null is distinct from <date>` 는 **참**이라
-   *   그대로 두면 새로 깔 때마다 이 마이그레이션이 터진다(실제로 터졌다).
+   *   18:00–02:00 매장에 새벽 1시에 배포하면 정상적으로
+   *       현지 날짜 = 오늘 · 판매 영업일 = 어제
+   *   가 된다. 그게 맞는 동작인데 마이그레이션이 그걸 보고 터진다.
+   *   **배포 시각에 따라 실패하는 검증은 검증이 아니다.**
+   *
+   *   값이 안 바뀌는지는 테스트 23 이 **고정된 시각**으로 확인한다. 거기가 맞는 자리다.
    */
-  if exists (select 1 from stores) then
-    if (select store_local_date(id) from stores limit 1) is distinct from business_day() then
-      raise exception '0121: 현지 날짜(%) 와 영업일(%) 이 다릅니다 — 이 단계는 값이 바뀌면 안 됩니다',
-        (select store_local_date(id) from stores limit 1), business_day() using errcode = '45003';
-    end if;
-  end if;
 end
 $chk$;
 
