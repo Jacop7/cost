@@ -213,3 +213,38 @@ begin
   perform pg_temp.ok('그 사건의 id 를 가리킨다', (lc->>'event_id') is not null);
   perform pg_temp.ok('기록이 있다고 알린다', (lc->>'has_history')::boolean);
 end $t$;
+
+
+-- ════════════════════════════════════════════════════════════════
+-- 반제품은 1차 범위 밖이다 (0109)
+--
+-- `sub_recipe_id` 는 2차용 **예약 컬럼**인데, 읽는 쪽(재귀 전개·원가·스냅샷)이
+-- 조용히 자라 있었다. 데이터가 하나도 없어서 여태 안 돌았을 뿐이다.
+-- 값이 들어가는 순간 그 길들이 한꺼번에 살아난다 — 그래서 문을 잠근다.
+-- ════════════════════════════════════════════════════════════════
+do $t$
+declare
+  v_rcp uuid := pg_temp.rcp('제육볶음');
+  v_sub uuid := pg_temp.rcp('공기밥');
+begin
+  perform pg_temp.eq('반제품 줄은 하나도 없다',
+    (select count(*) from recipe_lines where sub_recipe_id is not null), 0, 0);
+
+  -- 쓰기 경로에서 사장님 말로 거부한다.
+  perform pg_temp.raises('save_recipe 는 반제품을 거부한다',
+    format($q$select save_recipe(%L, jsonb_build_object(
+              'id', %L, 'name', '제육볶음', 'price', 12000, 'base_servings', 10,
+              'lines', jsonb_build_array(jsonb_build_object('sub_recipe_id', %L, 'input_qty', 1))))$q$,
+           pg_temp.store(), v_rcp, v_sub), '22000');
+
+  -- 쓰기 경로를 우회해도 제약이 막는다. 둘 다 있어야 한다 —
+  -- 함수만 고치면 다음 마이그레이션이 그 함수를 통째로 갈아엎으면서 같이 지운다.
+  perform pg_temp.raises('제약도 직접 삽입을 막는다',
+    format($q$insert into recipe_lines (store_id, recipe_id, sub_recipe_id, input_qty)
+              values (%L, %L, %L, 1)$q$, pg_temp.store(), v_rcp, v_sub), '23514');
+
+  -- 재료 없는 줄도 막는다 — 반제품이 아니면 식재료여야 한다.
+  perform pg_temp.raises('식재료도 반제품도 없는 줄은 막는다',
+    format($q$insert into recipe_lines (store_id, recipe_id, input_qty) values (%L, %L, 1)$q$,
+           pg_temp.store(), v_rcp), '23514');
+end $t$;

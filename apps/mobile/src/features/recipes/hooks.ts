@@ -253,7 +253,12 @@ export function useSaveRecipe() {
       if (input.lines) {
         payload.lines = input.lines.map((l) => ({
           ingredient_id: l.ingredientId ?? '',
-          sub_recipe_id: l.subRecipeId ?? '',
+          /*
+           * ⚠ `sub_recipe_id` 를 보내지 않는다(0109). 반제품은 1차 범위 밖이고,
+           *   서버도 값이 들어오면 거부한다. 예전엔 `''` 를 보내고 있었는데,
+           *   빈 문자열이라 통과했을 뿐 **보내는 자리가 남아 있다는 게 문제**였다 —
+           *   화면 하나만 채우면 예약 컬럼이 곧바로 기능이 된다.
+           */
           input_qty: l.inputQty,
         }));
       }

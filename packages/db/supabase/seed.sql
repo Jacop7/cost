@@ -302,13 +302,17 @@ begin
     v_day := business_day() - d;
     v_seq := v_seq + 1;
 
-    -- ── 영업 시작 (0048) ─────────────────────────────────────
-    -- 그날 쓸 값(판매가·재료 구성·단가·부자재·고정지출률)을 여기서 굳힌다.
-    -- 판매는 영업일이 열려 있어야 받는다 — 실제 사장님 흐름과 같다.
-    perform open_business_day(v_store, v_day);
-
-    -- ── 입고 (E7 발주 → E1 입고 확정) ───────────────────────
-    -- 첫날은 개업 재고를 크게 채우고, 이후 3일마다 보충한다.
+    -- ── 개업 재고 (첫날만) ───────────────────────────────────
+    -- ⚠ **영업 시작보다 먼저** 채운다(0110). 순서가 반대였을 때 7/30 하루가 통째로
+    --   망가졌다 — 그날 스냅샷의 재료비가 메뉴 7종 전부 `0` 이었다.
+    --
+    --   기준단가는 `쓴 돈 ÷ 들어온 양`(0072)이고, 그 '쓴 돈'은 발주 기록에서 온다.
+    --   개업 전에는 발주가 하나도 없으니 모든 단가가 null 이고, 그 상태로 영업을
+    --   시작하면 재료비 0 이 그날 스냅샷에 **얼어붙는다.** 스냅샷은 하루 동안
+    --   고정이므로 나중에 입고해도 그날은 영영 0 이다.
+    --
+    --   그래서 7/30 만 매출 600,000원에 재료비 0원이었다. 이튿날부터는 전날
+    --   단가가 남아 있어 멀쩡했고, 그 탓에 하루짜리 구멍을 오래 못 봤다.
     if v_seq = 1 then
       o := e7_place_order(v_store, i_pork,      vd_chuk,   null, 5000, 65000, 4, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 4, 'S1-PORK',   v_day);
       o := e7_place_order(v_store, i_pa,        vd_nong,   null, 1000,  4000, 8, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 8, 'S1-PA',     v_day);
@@ -330,7 +334,17 @@ begin
       o := e7_place_order(v_store, i_beef,      vd_chuk,   null, 1000, 28000, 4, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 4, 'S1-BEEF',   v_day);
       o := e7_place_order(v_store, i_anchovy,   vd_online, null,  500,  9800, 7, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 7, 'S1-ANCH',   v_day);
 
-    elsif d % 3 = 0 then
+    end if;
+
+    -- ── 영업 시작 (0048) ─────────────────────────────────────
+    -- 그날 쓸 값(판매가·재료 구성·단가·부자재·고정지출률)을 여기서 굳힌다.
+    -- 판매는 영업일이 열려 있어야 받는다 — 실제 사장님 흐름과 같다.
+    perform open_business_day(v_store, v_day);
+
+    -- ── 보충 입고 (E7 발주 → E1 입고 확정) ──────────────────
+    -- ⚠ 보충은 영업 시작 **뒤**가 맞다. 장사 중에 들어온 물건이라 그날 스냅샷을
+    --   흔들지 않아야 한다(0048). 개업 재고만 예외로 앞에 둔다.
+    if v_seq <> 1 and d % 3 = 0 then
       -- 정기 보충. 검산 4종은 **같은 단가**로만 재입고한다(계약 단가).
       o := e7_place_order(v_store, i_pork,   vd_chuk,   null, 5000, 65000, 3, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 3, 'S'||v_seq||'-PORK',  v_day);
       o := e7_place_order(v_store, i_pa,     vd_nong,   null, 1000,  4000, 3, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 3, 'S'||v_seq||'-PA',    v_day);
