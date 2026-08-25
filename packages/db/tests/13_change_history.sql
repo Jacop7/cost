@@ -160,7 +160,13 @@ declare
   v_rcp_ev jsonb;
   v_corr uuid;
 begin
-  begin perform open_business_day(pg_temp.store()); exception when others then null; end;
+  -- ⚠ 닫혀 있으면 **다시 열어야** 한다. 앱에서 영업을 한 번 마치면 그날은 closed 로 남고,
+  --   여는 데 실패한다. 그 상태로 두면 이 파일이 통째로 빨개진다(실제로 그랬다).
+  begin
+    perform open_business_day(pg_temp.store());
+  exception when others then
+    begin perform reopen_business_day(pg_temp.store(), business_day()); exception when others then null; end;
+  end;
 
   -- 대파를 비싸게 들인다 — 4.00 → 오른다
   perform e1_confirm_inbound(
@@ -271,7 +277,13 @@ declare
   ev    jsonb;
   n0    int;
 begin
-  begin perform open_business_day(pg_temp.store()); exception when others then null; end;
+  -- ⚠ 닫혀 있으면 **다시 열어야** 한다. 앱에서 영업을 한 번 마치면 그날은 closed 로 남고,
+  --   여는 데 실패한다. 그 상태로 두면 이 파일이 통째로 빨개진다(실제로 그랬다).
+  begin
+    perform open_business_day(pg_temp.store());
+  exception when others then
+    begin perform reopen_business_day(pg_temp.store(), business_day()); exception when others then null; end;
+  end;
 
   -- ── 고정지출 인상 ───────────────────────────────────────────
   select count(*) into n0 from entity_change_events where entity_id = v_rcp;
@@ -478,7 +490,13 @@ declare
   v_rcp uuid := pg_temp.rcp('된장찌개');
   ev    jsonb;
 begin
-  begin perform open_business_day(pg_temp.store()); exception when others then null; end;
+  -- ⚠ 닫혀 있으면 **다시 열어야** 한다. 앱에서 영업을 한 번 마치면 그날은 closed 로 남고,
+  --   여는 데 실패한다. 그 상태로 두면 이 파일이 통째로 빨개진다(실제로 그랬다).
+  begin
+    perform open_business_day(pg_temp.store());
+  exception when others then
+    begin perform reopen_business_day(pg_temp.store(), business_day()); exception when others then null; end;
+  end;
 
   -- 판매가와 부자재를 함께 고친다 → 세금·순이익은 따라 움직인다
   perform save_recipe(pg_temp.store(), jsonb_build_object(

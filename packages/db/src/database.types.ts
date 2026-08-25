@@ -2036,6 +2036,12 @@ export type Database = {
         }
         Returns: Json
       }
+      recipe_shortages: {
+        Args: {
+          p_store: string
+        }
+        Returns: Json
+      }
       recipe_snapshot_entry: {
         Args: {
           p_recipe: string

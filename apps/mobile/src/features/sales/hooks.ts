@@ -624,3 +624,54 @@ export function useFixedBreakdown(from: string, to: string, enabled = true) {
     },
   });
 }
+
+/**
+ * 재고가 바닥나 못 만드는 레시피와 그 재료들(0101).
+ * ⚠ `ingredientCount` 는 **식재료** 개수다 — 같은 재료가 여러 메뉴를 막아도 하나로 센다.
+ *   매출 상단의 `식재료 부족 N개` 가 쓰는 숫자가 이것이다.
+ */
+export interface ShortageIngredient {
+  ingredientId: string;
+  name: string;
+  baseUnit: string;
+  safetyStock: number;
+  safetyStockIsBase: boolean;
+  perVolume: number;
+  needPerServing: number;
+  stock: number;
+}
+export interface ShortageRecipe {
+  recipeId: string;
+  name: string;
+  ingredients: ShortageIngredient[];
+}
+
+export function useRecipeShortages(enabled = true) {
+  const storeId = useStoreId();
+  return useQuery({
+    queryKey: ['sales', 'shortages', storeId],
+    enabled: enabled && Boolean(storeId),
+    queryFn: async (): Promise<{ ingredientCount: number; recipes: ShortageRecipe[] }> => {
+      const { data, error } = await supabase.rpc('recipe_shortages', { p_store: storeId });
+      if (error) throw new Error(error.message);
+      const r = (data ?? {}) as unknown as Record<string, unknown>;
+      return {
+        ingredientCount: num(r.ingredient_count),
+        recipes: ((r.recipes ?? []) as Record<string, unknown>[]).map((x) => ({
+          recipeId: String(x.recipe_id),
+          name: String(x.name),
+          ingredients: ((x.ingredients ?? []) as Record<string, unknown>[]).map((g) => ({
+            ingredientId: String(g.ingredient_id),
+            name: String(g.name),
+            baseUnit: String(g.base_unit),
+            safetyStock: num(g.safety_stock),
+            safetyStockIsBase: g.safety_stock_is_base === true,
+            perVolume: num(g.per_volume),
+            needPerServing: num(g.need_per_serving),
+            stock: num(g.stock),
+          })),
+        })),
+      };
+    },
+  });
+}
