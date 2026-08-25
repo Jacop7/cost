@@ -3,60 +3,35 @@ import React from 'react';
 import { View, Text, Pressable } from 'react-native';
 import { Card, Badge } from '../../../components/kit';
 import { T, tnum } from '../../../theme/tokens';
-import { formatQuantity, formatUnitPrice } from '@sikjae/core';
+import {
+  belowSafety,
+  formatQuantity,
+  formatUnitPrice,
+  isNegativeStock,
+  stockStateOf,
+  STOCK_STATE_LABEL,
+  type StockState,
+} from '@sikjae/core';
 import type { IngredientRow } from '../hooks';
 
 /** DB 기준단위(ea) → 화면 표기(개). */
 const dispUnit = (u: IngredientRow['baseUnit']) => (u === 'ea' ? '개' : u);
 
 /**
- * 재고 상태 — 소진 임박 / 부족 / 여유 **3단계**.
+ * 재고 상태 판정은 **`@sikjae/core` 한 곳**에 있다(0108).
  *
- * ⚠ 두 번 틀렸던 자리다. 기록해 둔다.
- *   ① 처음: 3단계를 2단계로 줄이며 '부족'을 **'여유'로** 흡수 →
- *      안전재고 미달인데 '여유'라고 썼다(실측 7종. 애호박 720/1500).
- *   ② 다음: 흡수 방향을 뒤집어 '부족'을 **'소진 임박'으로** 보냈다 →
- *      진간장이 안전선의 99%(1,780/1,800) 인데 '소진 임박'이 됐다. 과장이다.
+ * ⚠ 예전엔 여기에도 한 벌이 있었고 core 와 **뜻이 달랐다** —
+ *   core 는 `soonOut` 을 'out' 으로 보냈고 여기는 'low' 로 봤다.
+ *   같은 이름이 다른 뜻이라 어느 쪽을 고쳐도 다른 쪽이 안 따라왔다.
+ *   안전선 경계도 여기만 `<` 였다(기획안 §3 은 `이하`).
  *
- * 둘은 다른 사건이다.
- *   소진 임박 — 지금 없거나 곧 없다. **오늘 사야 한다.**
- *   부족     — 안전선 아래로 내려왔다. **슬슬 시켜야 한다.**
- * 하나로 합치면 급한 것과 안 급한 것이 같은 색이 되어 빨강이 의미를 잃는다.
- *
- * 판정은 `@sikjae/core` 의 stockBadge 와 같은 규칙이다 — 서버·앱이 갈리면 안 된다.
- * 안전재고는 **개수** 기준이라 개당 용량을 곱해 총량(기준단위)과 단위를 맞춘다.
+ * 아래 셋은 **재수출일 뿐**이다. 이미 이 경로로 import 하는 화면이 여럿이라
+ * 한 번에 갈아엎지 않고 통로만 core 로 돌렸다. 새 화면은 core 에서 직접 가져온다.
  */
-export function belowSafety(g: { stockTotal: number; safetyStock: number }): boolean {
-  // ⚠ 안전재고는 이제 **기준단위**다(0073). perVolume 을 곱하지 않는다 —
-  //   곱하던 시절엔 팩 용량만 고쳐도 기준이 따라 움직였다.
-  return g.stockTotal < g.safetyStock;
-}
+export { belowSafety, stockStateOf };
+export type { StockState };
 
-/**
- * 재고 상태 — **여유 / 소진 임박 / 소진** 세 단계(0102).
- *
- * ⚠ 예전엔 두 단계였고 `재고 0 이하`와 `곧 떨어짐`을 한 칸에 뭉쳤다.
- *   음수 재고가 생기면서 둘을 갈라야 한다 — 할 일이 다르기 때문이다.
- *     소진      지금 없다(0 이하). 음수면 입고 누락이나 판매 오기록도 의심해야 한다.
- *     소진 임박 아직 있지만 곧 떨어진다. 발주할 때다.
- */
-export type StockState = 'out' | 'low' | 'ok';
-
-export function stockStateOf(g: {
-  stockTotal: number; safetyStock: number; perVolume: number; soonOut: boolean;
-}): StockState {
-  if (g.stockTotal <= 0) return 'out';
-  if (g.soonOut || belowSafety(g)) return 'low';
-  return 'ok';
-}
-
-const STATE: Record<StockState, { label: string; tone: 'green' | 'amber' | 'red' }> = {
-  out: { label: '소진', tone: 'red' },
-  low: { label: '소진 임박', tone: 'red' },
-  ok: { label: '여유', tone: 'green' },
-};
-
-export const stockLabel = (st: StockState) => STATE[st];
+export const stockLabel = (st: StockState) => STOCK_STATE_LABEL[st];
 
 export function IngCard({ g, onPress }: { g: IngredientRow; onPress?: () => void }) {
   const unit = dispUnit(g.baseUnit);
@@ -76,7 +51,14 @@ export function IngCard({ g, onPress }: { g: IngredientRow; onPress?: () => void
           </View>
 
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7, marginTop: 9 }}>
-            <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, tnum]} numberOfLines={1}>
+            {/*
+              ⚠ 음수 재고는 **빨강 그대로**다(0102). `0g` 으로 보정하지 않는다 —
+                감추면 입고를 빠뜨렸다는 단서가 화면에서 사라진다.
+            */}
+            <Text
+              style={[{ fontSize: 16, fontWeight: '800', color: isNegativeStock(g.stockTotal) ? T.red : T.ink }, tnum]}
+              numberOfLines={1}
+            >
               총 {formatQuantity(g.stockTotal, unit)}
             </Text>
             {/* 왜 노란지 그 자리에서 설명한다 — 안전선을 같이 보여준다. */}

@@ -3,7 +3,7 @@
  *
  * 같은 사건을 화면마다 다르게 부르면(‘판매 소진’ vs ‘소진’) 사장님은 다른 일이 벌어졌다고 읽는다.
  */
-import { formatQuantity } from '@sikjae/core';
+import { formatQuantity, isNegativeStock } from '@sikjae/core';
 import type { LedgerEntry } from './hooks';
 
 export type LedgerType = LedgerEntry['type'];
@@ -37,6 +37,11 @@ export interface LedgerView {
   memo: string;
   delta: string;
   balance: string;
+  /**
+   * 그 사건 직후 잔량이 음수였는가(0102). 문자열은 이미 `−750g` 을 담고 있지만
+   * **색은 따로 정해야 한다** — 회색으로 쓰면 스크롤하다 그냥 지나친다.
+   */
+  balanceNegative: boolean;
   /** true 면 증가(파랑), false 면 감소(빨강). */
   up: boolean;
 }
@@ -74,6 +79,8 @@ export function toLedgerView(e: LedgerEntry, unit: 'g' | 'ml' | 'ea'): LedgerVie
     // 변화가 없는 실사도 있다 — '0' 이 아니라 '변동 없음'이라고 적어야 읽힌다.
     delta: e.countDelta === 0 ? '변동 없음' : `${up ? '+' : '−'}${formatQuantity(abs, u)}`,
     balance: `잔량 ${formatQuantity(e.balance, u)}`,
+    // 그 사건 직후 잔량이 음수였는가 — 화면이 빨강으로 칠할지 정한다(0102).
+    balanceNegative: isNegativeStock(e.balance),
     up,
   };
 }

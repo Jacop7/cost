@@ -14,9 +14,12 @@
  *       **뱃지 글자만** 다르다.
  */
 import { Pressable, Text, View } from 'react-native';
+import { type Href, useRouter } from 'expo-router';
 import { Button, ConfirmSheet, Icon, Sheet } from '@/components/kit';
 import { useState } from 'react';
 import { T } from '@/theme/tokens';
+import { useRecipeShortages } from '../hooks';
+import { ShortageWarningSheet } from './ShortageWarningSheet';
 import {
   hhmm,
   useAckAutoClose,
@@ -72,6 +75,20 @@ export function BusinessDayBar({ state }: { state: BusinessDayState }) {
   const [ask, setAsk] = useState<null | 'open' | 'close'>(null);
   const [err, setErr] = useState<string | null>(null);
   const fail = (e: unknown) => setErr(e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요');
+  const router = useRouter();
+  /*
+   * 영업 시작 전 부족 확인(기획안 §4.4) — 판정은 서버가 한다.
+   * `현재 재고 < 1개 필요량` 인 레시피만 잡는다. 안전재고 미달인데 1개는 만들 수
+   * 있는 건 여기 안 넣는다 — 매일 뜨는 빨간 경고는 아무도 안 읽는다.
+   */
+  const shortage = useRecipeShortages();
+  const [askShort, setAskShort] = useState(false);
+
+  /** 잠금 설명을 먼저 보이고, 그다음에 부족을 알린다. 부족이 없으면 바로 시작한다. */
+  const startDay = () => {
+    if ((shortage.data?.ingredientCount ?? 0) > 0) { setAskShort(true); return; }
+    open.mutate(undefined, { onError: fail });
+  };
 
   /*
    * ⚠ 이 확인창이 잠금의 **유일한 설명**이다. 카드에서 문장을 뺐으므로 여기서만 말한다.
@@ -168,7 +185,22 @@ export function BusinessDayBar({ state }: { state: BusinessDayState }) {
         confirmText="영업 시작"
         loading={open.isPending}
         onCancel={() => setAsk(null)}
-        onConfirm={() => { setAsk(null); open.mutate(undefined, { onError: fail }); }}
+        onConfirm={() => { setAsk(null); startDay(); }}
+      />
+
+      {/*
+        ⚠ 부족해도 **막지 않는다**(기획안 §4.4). 알고 넘어갈 기회만 준다.
+          `그대로 영업 시작` 을 누르면 그대로 연다. 미해결 부족은 매출 상단의
+          `식재료 부족 N개` 안내가 계속 들고 있는다.
+      */}
+      <ShortageWarningSheet
+        visible={askShort}
+        mode="start"
+        recipes={shortage.data?.recipes ?? []}
+        loading={open.isPending}
+        onCheck={() => { setAskShort(false); router.push('/sales/stock-check?mode=start' as Href); }}
+        onContinue={() => { setAskShort(false); open.mutate(undefined, { onError: fail }); }}
+        onClose={() => setAskShort(false)}
       />
       <ConfirmSheet
         visible={ask === 'close'}

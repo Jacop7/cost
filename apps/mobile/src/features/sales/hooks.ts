@@ -5,6 +5,7 @@
  * **식재료 재고까지 차감**한다(E10 → E8). 그래서 저장 후에는 매출뿐 아니라
  * 재고·발주 후보 캐시도 함께 버려야 한다 — 안 그러면 "팔았는데 식재료 화면은 그대로"가 된다.
  */
+import { useCallback } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { invalidate, invalidateOn, qk } from '@/lib/queryClient';
 import { supabase } from '@/lib/supabase';
@@ -222,9 +223,21 @@ export function useSalesRange(from: string, to: string, enabled = true) {
   });
 }
 
+/** 판매 한 줄. 저장과 부족 판정이 **같은 모양**을 쓴다 — 갈리면 미리보기가 거짓말이 된다. */
+export interface SaleItemInput {
+  recipeId: string;
+  qtyHall: number;
+  qtyDelivery: number;
+  qtyTakeout: number;
+  qtyWaste?: number;
+}
+
+/** 부족 판정의 종류. 화면이 `안전재고` 를 쓸지 `필요 수량` 을 쓸지 가른다(기획안 §4.4). */
+export type ShortageMode = 'start' | 'sale';
+
 export interface SaveSaleInput {
   date: string;
-  items: { recipeId: string; qtyHall: number; qtyDelivery: number; qtyTakeout: number; qtyWaste?: number }[];
+  items: SaleItemInput[];
   /** 생략하면 그날 값을 그대로 둔다. 빈 배열을 보내면 전부 지운다. */
   etcItems?: EtcItem[];
   extraItems?: ExtraItem[];
@@ -638,6 +651,13 @@ export interface ShortageIngredient {
   safetyStockIsBase: boolean;
   perVolume: number;
   needPerServing: number;
+  /**
+   * 화면에 적을 **필요 수량**. 서버가 판정 종류에 맞춰 채워 준다(0107).
+   *   영업 시작 판정 → 1개 필요량
+   *   판매 판정     → 이번에 **더 빠질** 몫(증가분)
+   * ⚠ 앱이 다시 계산하지 않는다. 계산이 두 벌이 되면 경고와 실제 차감이 갈린다.
+   */
+  need: number;
   stock: number;
 }
 export interface ShortageRecipe {
@@ -645,33 +665,92 @@ export interface ShortageRecipe {
   name: string;
   ingredients: ShortageIngredient[];
 }
+export interface ShortageResult {
+  /** 'start' 면 안전재고를, 'sale' 이면 필요 수량을 나란히 보여 준다(기획안 §4.4). */
+  mode: ShortageMode;
+  ingredientCount: number;
+  recipes: ShortageRecipe[];
+}
 
+const parseShortages = (data: unknown): ShortageResult => {
+  const r = (data ?? {}) as Record<string, unknown>;
+  return {
+    mode: r.mode === 'sale' ? 'sale' : 'start',
+    ingredientCount: num(r.ingredient_count),
+    recipes: ((r.recipes ?? []) as Record<string, unknown>[]).map((x) => ({
+      recipeId: String(x.recipe_id),
+      name: String(x.name),
+      ingredients: ((x.ingredients ?? []) as Record<string, unknown>[]).map((g) => ({
+        ingredientId: String(g.ingredient_id),
+        name: String(g.name),
+        baseUnit: String(g.base_unit),
+        safetyStock: num(g.safety_stock),
+        safetyStockIsBase: g.safety_stock_is_base === true,
+        perVolume: num(g.per_volume),
+        needPerServing: num(g.need_per_serving),
+        need: num(g.need),
+        stock: num(g.stock),
+      })),
+    })),
+  };
+};
+
+/** 영업 시작 판정 — 지금 재고로 **1개도 못 만드는** 레시피(0107). 상단 안내도 이 숫자다. */
 export function useRecipeShortages(enabled = true) {
   const storeId = useStoreId();
   return useQuery({
     queryKey: ['sales', 'shortages', storeId],
     enabled: enabled && Boolean(storeId),
-    queryFn: async (): Promise<{ ingredientCount: number; recipes: ShortageRecipe[] }> => {
+    queryFn: async (): Promise<ShortageResult> => {
       const { data, error } = await supabase.rpc('recipe_shortages', { p_store: storeId });
       if (error) throw new Error(error.message);
-      const r = (data ?? {}) as unknown as Record<string, unknown>;
-      return {
-        ingredientCount: num(r.ingredient_count),
-        recipes: ((r.recipes ?? []) as Record<string, unknown>[]).map((x) => ({
-          recipeId: String(x.recipe_id),
-          name: String(x.name),
-          ingredients: ((x.ingredients ?? []) as Record<string, unknown>[]).map((g) => ({
-            ingredientId: String(g.ingredient_id),
-            name: String(g.name),
-            baseUnit: String(g.base_unit),
-            safetyStock: num(g.safety_stock),
-            safetyStockIsBase: g.safety_stock_is_base === true,
-            perVolume: num(g.per_volume),
-            needPerServing: num(g.need_per_serving),
-            stock: num(g.stock),
-          })),
-        })),
-      };
+      return parseShortages(data);
     },
   });
+}
+
+/** 저장 직전에 보낼 판매 묶음. `save_sale` 이 받는 것과 같은 모양이어야 한다. */
+const toRpcItems = (items: SaleItemInput[]) =>
+  items.map((i) => ({
+    recipe_id: i.recipeId,
+    qty_hall: i.qtyHall,
+    qty_delivery: i.qtyDelivery,
+    qty_takeout: i.qtyTakeout,
+    qty_waste: i.qtyWaste ?? 0,
+  }));
+
+/**
+ * 판매 판정 — 이 판매를 저장하면 **더 빠질 몫**이 모자란가(0107).
+ *
+ * ⚠ 전체 판매량이 아니라 증가분이다. 10개를 7개로 고치는데 경고가 뜨면 거짓말이다.
+ *   그 계산은 전부 서버에 있다 — 여기서는 결과를 그리기만 한다.
+ */
+export function useSaleShortages(date: string, items: SaleItemInput[], enabled = true) {
+  const storeId = useStoreId();
+  return useQuery({
+    queryKey: ['sales', 'saleShortages', storeId, date, toRpcItems(items)],
+    enabled: enabled && Boolean(storeId) && items.length > 0,
+    queryFn: async (): Promise<ShortageResult> => {
+      const { data, error } = await supabase.rpc('sale_shortages', {
+        p_store: storeId, p_date: date, p_items: toRpcItems(items),
+      });
+      if (error) throw new Error(error.message);
+      return parseShortages(data);
+    },
+  });
+}
+
+/** 저장 버튼을 누른 그 순간 한 번 재는 용도. 조회 캐시에 얹지 않는다. */
+export function useCheckSaleShortages() {
+  const storeId = useStoreId();
+  return useCallback(
+    async (date: string, items: SaleItemInput[]): Promise<ShortageResult> => {
+      const { data, error } = await supabase.rpc('sale_shortages', {
+        p_store: storeId, p_date: date, p_items: toRpcItems(items),
+      });
+      if (error) throw new Error(error.message);
+      return parseShortages(data);
+    },
+    [storeId],
+  );
 }

@@ -11,9 +11,13 @@ import { type Href, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Badge, Button, Card, ConfirmSheet, Field, Icon, Input, QueryState, Sheet, SortChip, SortSheet, type SortOption } from '@/components/kit';
 import { T, won } from '@/theme/tokens';
-import { useRecipeList, type RecipeRow } from '@/features/recipes/hooks';
+import { useRecipeList, type RecipeRow } from '@/features/recipes/hooks';
 
-import { useRecipeShortages, useSalesDay, useSaveSale, type ChannelCode, type EtcItem, type ExtraItem, type Shortage } from '../hooks';
+
+import { useCheckSaleShortages, useRecipeShortages, useSalesDay, useSaveSale,
+  type ChannelCode, type EtcItem, type ExtraItem, type SaleItemInput, type Shortage, type ShortageRecipe } from '../hooks';
+import { ShortageWarningSheet } from '../components/ShortageWarningSheet';
+import { setPendingSale, clearPendingSale } from '../pendingSale';
 import { CHANNEL_LABEL, channelName } from '../channels';
 import { isClosedError, isNotOpenError, useBusinessDay, useDayMenuBasis, useOpenBusinessDay } from '../businessDay';
 import { BusinessDayBar } from '../components/BusinessDayBar';
@@ -69,7 +73,8 @@ export default function SalesHomeScreen() {
   const day = useSalesDay(today);
   const recipes = useRecipeList();
   const saveSale = useSaveSale();
-  const bday = useBusinessDay();
+  const bday = useBusinessDay();
+
   const shortage = useRecipeShortages();
   const openDay = useOpenBusinessDay();
   /**
@@ -87,6 +92,13 @@ export default function SalesHomeScreen() {
   const [pendingRetry, setPendingRetry] = useState<null | (() => void)>(null);
   /** 짧은 알림 — 팝업 대신. 웹에서도 뜬다. */
   const [toast, setToast] = useState<string | null>(null);
+  /**
+   * 저장 직전에 잰 부족 결과. 있으면 시트를 띄우고, `그대로 판매` 를 누르면 저장한다.
+   * ⚠ 판매는 **한 번만** 저장한다(기획안 §4.5). 경고 때문에 두 번 부르면 안 된다 —
+   *   그래서 잴 때는 `sale_shortages`(읽기 전용)만 부르고, 저장은 여기서 한 번 한다.
+   */
+  const [ask, setAsk] = useState<null | { recipes: ShortageRecipe[]; save: () => void }>(null);
+  const checkShortages = useCheckSaleShortages();
 
   const [etcOpen, setEtcOpen] = useState(false);
   const [etcName, setEtcName] = useState('');
@@ -167,9 +179,19 @@ export default function SalesHomeScreen() {
     setToast(e instanceof Error ? e.message : '저장하지 못했어요');
   };
 
+  /*
+   * 판매 저장 — **재는 것과 저장하는 것을 갈라 둔다.**
+   *
+   * ⚠ 재고가 모자라도 막지 않는다(기획안 §2.1·§4.4). 예전엔 서버가 막았고,
+   *   한 번 음수가 되면 그 메뉴를 **영영 못 고쳤다** — 수량을 되돌리는 것조차
+   *   같은 문으로 들어오기 때문이다. 지금은 알리기만 한다.
+   *
+   * ⚠ 판정은 서버가 한다. 전체 판매량이 아니라 **이번에 더 빠질 몫**이라
+   *   10개를 7개로 줄이는 저장에는 경고가 뜨지 않는다.
+   */
   const saveQty = () => {
     if (!sel) return;
-    const items = [...soldBy.entries()]
+    const items: SaleItemInput[] = [...soldBy.entries()]
       .filter(([id]) => id !== sel.id)
       .map(([recipeId, q]) => ({ recipeId, qtyHall: q.hall, qtyDelivery: q.delivery, qtyTakeout: q.takeout, qtyWaste: q.waste }));
     items.push({ recipeId: sel.id, qtyHall: draft.hall, qtyDelivery: draft.delivery, qtyTakeout: draft.takeout, qtyWaste: draft.waste });
@@ -178,11 +200,25 @@ export default function SalesHomeScreen() {
       saveSale.mutate(
         { date: today, items },
         {
-          onSuccess: (shortages) => { setSel(null); warnShortages(shortages); },
+          onSuccess: (shortages) => { setSel(null); clearPendingSale(); warnShortages(shortages); },
           onError: (e) => onSaveError(e, run),
         },
       );
-    run();
+
+    void (async () => {
+      let short;
+      try {
+        short = await checkShortages(today, items);
+      } catch {
+        // 재는 데 실패했다고 판매를 막지 않는다. 저장은 저장대로 되어야 한다.
+        run();
+        return;
+      }
+      if (short.ingredientCount === 0) { run(); return; }
+      // `재고 확인` 으로 건너갔다가 돌아와도 같은 묶음을 다시 잴 수 있게 들려 보낸다.
+      setPendingSale(today, items);
+      setAsk({ recipes: short.recipes, save: run });
+    })();
   };
 
   const allItems = () =>
@@ -361,19 +397,30 @@ export default function SalesHomeScreen() {
               // 팔 수 없는 이유. 사장님이 끈 것이 먼저다 — 그건 의도이고, 재료는 상태다.
               // ⚠ 오늘 기준에 없는 메뉴는 막지 않는다(0062). 오늘 기록이 없어 움직일 숫자가
               //   없으므로, 팔면 그 시점 값으로 오늘 기준에 더해진다.
+              /*
+               * ⚠ **판매를 막는 것은 `판매 중지` 하나뿐이다**(기획안 §2.1).
+               *   그건 사장님이 끈 것이고 — 의도다.
+               *
+               *   재료 부족은 막지 않는다. 예전엔 `blockedBy` 도 같이 막았고,
+               *   그래서 서버에서 음수 재고를 허용해도 **화면에서 닿을 수가 없었다.**
+               *   더 나쁜 건 한 번 음수가 된 메뉴의 수량을 **되돌리지도 못한 것**이다 —
+               *   수정도 같은 판매 버튼으로 들어오기 때문이다.
+               *   부족은 빨간 뱃지로 알리고, 저장 직전에 한 번 더 묻는다.
+               */
               const stopped = !m.active;
-              const blocked = stopped ? '판매 중지' : m.blockedBy ? '재료 부족' : null;
+              const short = !stopped && m.blockedBy !== null;
+              const blocked = stopped;
               return (
                 <View key={m.id} style={{ flexDirection: 'row', alignItems: 'center', gap: 10, minHeight: 82, paddingVertical: 12, paddingHorizontal: 14, borderBottomWidth: i < list.length - 1 ? 1 : 0, borderBottomColor: T.line2, opacity: blocked ? 0.45 : 1 }}>
                   <View style={{ flex: 1, minWidth: 0 }}>
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
                       <Text style={{ fontSize: 15, fontWeight: '800', color: T.ink }} numberOfLines={1}>{m.name}</Text>
-                      {blocked ? <Badge tone={stopped ? 'neutral' : 'red'} sm>{blocked}</Badge> : null}
+                      {stopped ? <Badge tone="neutral" sm>판매 중지</Badge> : short ? <Badge tone="red" sm solid>재료 부족</Badge> : null}
                     </View>
                     <Text style={[{ fontSize: 12, color: T.ter, marginTop: 3 }, NUM]}>
                       {/* 왜 안 되는지 그 자리에서 밝힌다 — 배지만으로는 어느 재료인지 모른다. */}
-                      {m.blockedBy && !stopped
-                        ? `${m.blockedBy}이(가) 없어요 · 식재료에서 재고를 맞춰 주세요`
+                      {short
+                        ? `${m.blockedBy}이(가) 모자라요 · 팔면 부족분이 음수 재고로 남아요`
                         // ⚠ 오늘 팔면 잡히는 값이다. 현재 레시피가 아니다(0061).
                         : `판매가 ${won(Math.round(b?.price ?? m.price))} · 재료비 ${won(Math.round(b?.materialCost ?? m.materialCost))}`}
                     </Text>
@@ -392,7 +439,7 @@ export default function SalesHomeScreen() {
                   */}
                   <Pressable
                     onPress={() => openMenu(m)}
-                    disabled={blocked !== null}
+                    disabled={blocked}
                     accessibilityRole="button" accessibilityLabel={`${m.name} 판매 수량 수정`}
                     style={{ alignItems: 'flex-end' }}
                     hitSlop={6}
@@ -409,10 +456,10 @@ export default function SalesHomeScreen() {
 
                   <Pressable
                     onPress={() => openMenu(m)}
-                    disabled={blocked !== null}
+                    disabled={blocked}
                     accessibilityRole="button"
-                    accessibilityLabel={blocked ? `${m.name} ${blocked}` : `${m.name} 판매 입력`}
-                    accessibilityState={{ disabled: blocked !== null }}
+                    accessibilityLabel={blocked ? `${m.name} 판매 중지` : `${m.name} 판매 입력`}
+                    accessibilityState={{ disabled: blocked }}
                     style={{ flexDirection: 'row', alignItems: 'center', gap: 3, paddingVertical: 9, paddingHorizontal: 16, borderRadius: 10, backgroundColor: blocked ? T.line : T.blue }}
                   >
                     <Icon name="plus" size={16} color={blocked ? T.ter : T.onColor} sw={2.4} />
@@ -570,6 +617,20 @@ export default function SalesHomeScreen() {
       </Sheet>
 
       <SortSheet visible={sortOpen} options={SORTS} value={sort} onSelect={setSort} onClose={() => setSortOpen(false)} />
+
+      {/*
+        저장 직전 부족 확인 — 막는 게 아니라 알리는 것이다(기획안 §4.4).
+        ⚠ `그대로 판매` 는 **한 번만** 저장한다. 경고 때문에 두 번 부르면 재고가 두 번 빠진다.
+      */}
+      <ShortageWarningSheet
+        visible={ask !== null}
+        mode="sale"
+        recipes={ask?.recipes ?? []}
+        loading={saveSale.isPending}
+        onCheck={() => { setAsk(null); setSel(null); router.push('/sales/stock-check?mode=sale' as Href); }}
+        onContinue={() => { const run = ask?.save; setAsk(null); run?.(); }}
+        onClose={() => setAsk(null)}
+      />
 
       {/*
         판매를 저장하려다 '아직 영업 전'으로 막혔을 때 — 시작하고 **이어서** 저장한다.

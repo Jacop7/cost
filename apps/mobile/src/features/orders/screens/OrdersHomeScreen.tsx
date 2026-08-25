@@ -9,7 +9,7 @@ import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Badge, Button, Card, Field, Icon, Input, QueryState, SearchBar, Sheet } from '@/components/kit';
-import { formatQuantity, formatUnitPrice } from '@sikjae/core';
+import { formatQuantity, formatUnitPrice, isNegativeStock } from '@sikjae/core';
 import { T, won } from '@/theme/tokens';
 import { clampDecimals, packSummary } from '@/lib/num';
 import { makeInboundKey } from '@/lib/supabase';
@@ -285,7 +285,8 @@ export default function OrdersHomeScreen() {
                     </View>
                     <View style={{ flex: 1, paddingVertical: 9, paddingHorizontal: 12, backgroundColor: T.surface2, borderRadius: 10 }}>
                       <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub }}>현재 재고</Text>
-                      <Text style={[{ fontSize: 16, fontWeight: '600', color: T.sub, marginTop: 3 }, NUM]}>
+                      {/* ⚠ 발주 후보에서도 음수는 빨강 그대로다(0102). 권장 발주량에 부족분이 들어 있다. */}
+                      <Text style={[{ fontSize: 16, fontWeight: isNegativeStock(c.stockTotal) ? '800' : '600', color: isNegativeStock(c.stockTotal) ? T.red : T.sub, marginTop: 3 }, NUM]}>
                         {formatQuantity(c.stockTotal, unit)}
                       </Text>
                       <Text style={[{ fontSize: 14, color: T.ter, marginTop: 1 }, NUM]}>
