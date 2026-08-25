@@ -50,7 +50,9 @@ export type Database = {
           id: string
           last_activity_at: string
           opened_at: string
+          operating_rule_id: string | null
           planned_close_at: string
+          scheduled_open_at: string | null
           snapshot: Json
           status: Database["public"]["Enums"]["business_day_status"]
           store_id: string
@@ -66,7 +68,9 @@ export type Database = {
           id?: string
           last_activity_at?: string
           opened_at?: string
+          operating_rule_id?: string | null
           planned_close_at: string
+          scheduled_open_at?: string | null
           snapshot: Json
           status?: Database["public"]["Enums"]["business_day_status"]
           store_id: string
@@ -82,12 +86,21 @@ export type Database = {
           id?: string
           last_activity_at?: string
           opened_at?: string
+          operating_rule_id?: string | null
           planned_close_at?: string
+          scheduled_open_at?: string | null
           snapshot?: Json
           status?: Database["public"]["Enums"]["business_day_status"]
           store_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "business_days_operating_rule_id_fkey"
+            columns: ["operating_rule_id"]
+            isOneToOne: false
+            referencedRelation: "operating_rules"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "business_days_store_id_fkey"
             columns: ["store_id"]
@@ -678,6 +691,47 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "monthly_pl_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      operating_rules: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          effective_from: string
+          effective_to: string | null
+          id: string
+          store_id: string
+          weekly_breaks: Json
+          weekly_hours: Json
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          effective_from: string
+          effective_to?: string | null
+          id?: string
+          store_id: string
+          weekly_breaks?: Json
+          weekly_hours: Json
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          effective_from?: string
+          effective_to?: string | null
+          id?: string
+          store_id?: string
+          weekly_breaks?: Json
+          weekly_hours?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "operating_rules_store_id_fkey"
             columns: ["store_id"]
             isOneToOne: false
             referencedRelation: "stores"
@@ -1452,6 +1506,18 @@ export type Database = {
         }
         Returns: Json
       }
+      assert_weekly_breaks: {
+        Args: {
+          p: Json
+        }
+        Returns: boolean
+      }
+      assert_weekly_hours: {
+        Args: {
+          p: Json
+        }
+        Returns: boolean
+      }
       auto_close_due: {
         Args: {
           p_store: string
@@ -1501,7 +1567,9 @@ export type Database = {
           id: string
           last_activity_at: string
           opened_at: string
+          operating_rule_id: string | null
           planned_close_at: string
+          scheduled_open_at: string | null
           snapshot: Json
           status: Database["public"]["Enums"]["business_day_status"]
           store_id: string
@@ -1582,7 +1650,9 @@ export type Database = {
           id: string
           last_activity_at: string
           opened_at: string
+          operating_rule_id: string | null
           planned_close_at: string
+          scheduled_open_at: string | null
           snapshot: Json
           status: Database["public"]["Enums"]["business_day_status"]
           store_id: string
@@ -1894,12 +1964,40 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: string[]
       }
+      normalize_day_times: {
+        Args: {
+          p: Json
+        }
+        Returns: Json
+      }
       open_business_day: {
         Args: {
           p_store: string
           p_date?: string
         }
         Returns: Json
+      }
+      operating_hours_status: {
+        Args: {
+          p_store: string
+        }
+        Returns: Json
+      }
+      operating_rule_at: {
+        Args: {
+          p_store: string
+          p_date: string
+        }
+        Returns: {
+          created_at: string
+          created_by: string | null
+          effective_from: string
+          effective_to: string | null
+          id: string
+          store_id: string
+          weekly_breaks: Json
+          weekly_hours: Json
+        }
       }
       order_board: {
         Args: {
@@ -2332,10 +2430,25 @@ export type Database = {
         }
         Returns: string
       }
+      scheduled_open_at: {
+        Args: {
+          p_store: string
+          p_date: string
+        }
+        Returns: string
+      }
       set_break: {
         Args: {
           p_store: string
           p_on: boolean
+        }
+        Returns: Json
+      }
+      set_operating_hours: {
+        Args: {
+          p_store: string
+          p_weekly_hours: Json
+          p_weekly_breaks?: Json
         }
         Returns: Json
       }
@@ -2368,6 +2481,13 @@ export type Database = {
           p_ingredient: string
         }
         Returns: number
+      }
+      store_hours_on: {
+        Args: {
+          p_store: string
+          p_date: string
+        }
+        Returns: Json
       }
       store_local_date: {
         Args: {

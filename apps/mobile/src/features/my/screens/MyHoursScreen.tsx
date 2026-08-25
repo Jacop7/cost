@@ -13,7 +13,7 @@ import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { AppHeader, Badge, Button, Card, Icon, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { T } from '@/theme/tokens';
-import { useSaveSettings, useStoreSettings } from '../hooks';
+import { useHoursStatus, useSaveSettings, useStoreSettings } from '../hooks';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 
@@ -41,10 +41,20 @@ const spanLabel = (min: number) => {
   return m === 0 ? `${h}시간` : `${h}시간 ${m}분`;
 };
 
+/** '2026-08-27' → '8월 27일'. 이 화면 한 줄에만 쓰므로 여기 둔다. */
+const mdLabel = (ymd: string) => `${Number(ymd.slice(5, 7))}월 ${Number(ymd.slice(8, 10))}일`;
+
 export default function MyHoursScreen() {
   const settings = useStoreSettings();
+  /**
+   * ⚠ 저장한 값과 **적용 중인 값**은 다를 수 있다(0130·0131).
+   *   영업 중에 시간을 바꾸면 오늘은 옛 시간으로 끝내고 내일부터 새 시간이다.
+   *   이 줄이 없으면 사장님은 오늘부터 바뀐 줄 안다 — 서버는 맞는데 화면이 거짓말한다.
+   */
+  const status = useHoursStatus();
   const save = useSaveSettings();
   const s = settings.data;
+  const pending = status.data?.pending ?? null;
 
   const [open, setOpen] = useState('11:00');
   const [close, setClose] = useState('22:00');
@@ -124,6 +134,28 @@ export default function MyHoursScreen() {
           onRetry={() => void settings.refetch()}
           emptyTitle="설정을 불러오지 못했어요"
         >
+          {/*
+            예약된 변경이 있으면 **제일 위에** 말한다. 저장 버튼 근처에 두면
+            이미 저장을 누른 뒤에야 눈에 들어온다.
+          */}
+          {pending ? (
+            <Card pad={0} style={{ overflow: 'hidden', borderColor: T.blue }}>
+              {/* 아이콘은 제목 줄에 맞춘다 — 가운데 정렬하면 두 줄 사이에 뜬다. */}
+              <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 8, padding: 14 }}>
+                <View style={{ paddingTop: 1 }}><Icon name="calendar" size={18} color={T.blue} /></View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 15, fontWeight: '800', color: T.blue }}>
+                    {mdLabel(pending.effectiveFrom)}부터 적용돼요
+                  </Text>
+                  <Text style={{ fontSize: 14, color: T.ter, marginTop: 2 }}>
+                    오늘은 {status.data?.today.openTime.slice(0, 5)}~{status.data?.today.closeTime.slice(0, 5)} 그대로예요.
+                    영업 중에 바꾼 시간은 다음 영업일부터 적용돼요.
+                  </Text>
+                </View>
+              </View>
+            </Card>
+          ) : null}
+
           <Card pad={0} style={{ overflow: 'hidden' }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 13, paddingHorizontal: 15, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
               <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.sub }}>영업시간</Text>

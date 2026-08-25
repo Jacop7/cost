@@ -417,6 +417,64 @@ export function useSaveSettings() {
   });
 }
 
+export interface OperatingHours {
+  openTime: string;
+  closeTime: string;
+  breakStart: string | null;
+  breakEnd: string | null;
+  /** 종료가 시작보다 이르면 1 — 다음 날로 넘어간다는 뜻이다. 서버가 계산한다. */
+  closeDayOffset: number;
+  closed: boolean;
+}
+
+export interface HoursStatus {
+  localDate: string;
+  /** 오늘 **실제로** 적용 중인 시간. settings 입력값이 아니라 규칙에서 온다. */
+  today: OperatingHours;
+  /** 아직 시작 안 한 규칙. 없으면 null. */
+  pending: { effectiveFrom: string; hours: OperatingHours } | null;
+}
+
+const hoursOf = (v: Record<string, unknown>): OperatingHours => ({
+  openTime: String(v.open_time ?? ''),
+  closeTime: String(v.close_time ?? ''),
+  breakStart: v.break_start == null ? null : String(v.break_start),
+  breakEnd: v.break_end == null ? null : String(v.break_end),
+  closeDayOffset: Number(v.close_day_offset ?? 0),
+  closed: Boolean(v.closed),
+});
+
+/**
+ * 지금 적용 중인 영업시간과 **예약된** 영업시간(0131).
+ *
+ * ⚠ 왜 `useStoreSettings` 로 안 되는가 — 그건 **입력 폼**이라 저장하는 순간 새 값이 된다.
+ *   그런데 영업 중에 바꾸면 실제 적용은 **다음 영업일**부터다(0130). 둘을 같은 값으로
+ *   보여 주면 화면이 "오늘부터 바뀌었다"고 거짓말한다.
+ */
+export function useHoursStatus() {
+  const storeId = useStoreId();
+  return useQuery({
+    queryKey: [...qk.storeSettings, 'hours-status'],
+    enabled: Boolean(storeId),
+    queryFn: async (): Promise<HoursStatus> => {
+      const { data, error } = await supabase.rpc('operating_hours_status', { p_store: storeId });
+      if (error) throw new Error(error.message);
+      const r = (data ?? {}) as unknown as Record<string, unknown>;
+      const today = r.today as Record<string, unknown> | null;
+      if (!today) throw new Error('서버가 영업시간을 주지 않았어요. 잠시 후 다시 시도해 주세요');
+      const p = r.pending as Record<string, unknown> | null;
+      return {
+        localDate: String(r.local_date ?? ''),
+        today: hoursOf(today),
+        pending: p
+          ? { effectiveFrom: String(p.effective_from ?? ''),
+              hours: hoursOf((p.hours ?? {}) as Record<string, unknown>) }
+          : null,
+      };
+    },
+  });
+}
+
 // ── 부자재 마스터 (RCP-13) ────────────────────────────────────
 
 export function useSaveMaterial() {
