@@ -99,13 +99,25 @@ $h$;
  */
 create function pg_temp.open_today() returns date
 language plpgsql as $h$
-declare v_day date := business_day();
+declare
+  v_day date := business_day();
+  v_n   int;
+  v_st  text;
+  v_other int;
 begin
+  /*
+   * ⚠ 잡는 것은 **예상된 상태 충돌뿐**이다.
+   *     22000  아직 열려 있음 · 영업 중이 아님 · 미래 날짜
+   *     23505  이미 종료된 날
+   *     P0002  되열 종료 기록이 없음
+   *   `when others` 로 뭉뚱그리면 `open_business_day` **자체가 망가져도** 헬퍼가
+   *   조용히 삼키고 날짜를 돌려준다. 그러면 시험 전체가 그 회귀를 못 본다.
+   */
+
   -- 없으면 연다.
   begin
     perform open_business_day(pg_temp.store(), v_day);
-    return v_day;
-  exception when others then null;
+  exception when sqlstate '22000' or sqlstate '23505' then null;
   end;
 
   -- 닫혀 있으면 되연다.
@@ -113,7 +125,7 @@ begin
        where store_id = pg_temp.store() and business_date = v_day) = 'closed' then
     begin
       perform reopen_business_day(pg_temp.store(), v_day);
-    exception when others then null;
+    exception when sqlstate '22000' or sqlstate 'P0002' then null;
     end;
   end if;
 
@@ -124,8 +136,41 @@ begin
     begin
       perform close_business_day(pg_temp.store());
       perform open_business_day(pg_temp.store(), v_day);
-    exception when others then null;
+    exception when sqlstate '22000' or sqlstate '23505' or sqlstate '45002' then null;
     end;
+    -- 그래도 안 열렸으면 되열기를 한 번 더 시도한다(오늘이 이미 종료된 경우).
+    if (select status::text from business_days
+         where store_id = pg_temp.store() and business_date = v_day) = 'closed' then
+      begin
+        perform reopen_business_day(pg_temp.store(), v_day);
+      exception when sqlstate '22000' or sqlstate 'P0002' then null;
+      end;
+    end if;
+  end if;
+
+  /*
+   * ── 사후조건 ────────────────────────────────────────────────
+   * ⚠ 여기가 없으면 위의 예외 처리들이 **실패를 성공처럼** 보이게 만든다.
+   *   헬퍼는 "열어 준다" 고 약속했으므로, 못 열었으면 **여기서 터져야** 한다.
+   *   안 터지면 그 뒤 시험이 엉뚱한 이유로 빨개지고 원인을 못 찾는다.
+   */
+  select count(*), max(status::text) into v_n, v_st
+    from business_days where store_id = pg_temp.store() and business_date = v_day;
+
+  if v_n <> 1 then
+    raise exception 'open_today: 오늘(%) 영업일이 %개입니다 — 정확히 1개여야 합니다', v_day, v_n
+      using errcode = '45003';
+  end if;
+  if v_st not in ('open', 'break') then
+    raise exception 'open_today: 오늘(%) 영업일이 %입니다 — open 또는 break 여야 합니다', v_day, v_st
+      using errcode = '45003';
+  end if;
+
+  select count(*) into v_other from business_days
+   where store_id = pg_temp.store() and business_date <> v_day and status::text <> 'closed';
+  if v_other > 0 then
+    raise exception 'open_today: 다른 날짜에 열린 영업일이 %개 남아 있습니다', v_other
+      using errcode = '45003';
   end if;
 
   return v_day;
