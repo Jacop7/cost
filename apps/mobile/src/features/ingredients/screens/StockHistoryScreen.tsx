@@ -11,6 +11,8 @@ import { AppHeader, Card, Icon, QueryState } from '../../../components/kit';
 import { T, tnum } from '../../../theme/tokens';
 import { formatQuantity } from '@sikjae/core';
 import { safeBack } from '@/lib/nav';
+import { useStoreLocalDate } from '@/features/sales/businessDay';
+import { BusinessDateGate } from '@/features/sales/components/BusinessDateGate';
 import { LedgerRow } from '../components/LedgerRow';
 import { HistoryFilterSheet, periodRange, type HistoryFilter } from './HistoryFilterSheet';
 import { ConditionRow, FilterButton, MonthHead, SummaryCard, historyContent, monthTitle } from '../components/HistoryLayout';
@@ -31,14 +33,28 @@ const KINDS = Object.keys(KIND_TYPES);
 const signed = (v: number, unit: 'g' | 'ml' | '개', sign: '+' | '−') =>
   Math.abs(v) < 0.0001 ? formatQuantity(0, unit) : `${sign}${formatQuantity(v, unit)}`;
 
+/**
+ * ⚠ 이력 화면의 기간은 **매장 현지 날짜** 기준이다(0125). 판매 영업일이 아니다 —
+ *   폐기·입고·구매는 달력 날짜로 센다. 앱이 직접 계산하지 않고 서버에서 받는다.
+ */
 export function StockHistoryScreen() {
+  // 게이트가 오류를 그릴 때도 나갈 길이 있어야 한다 — 본체 밖이라 여기서 한 번 더 읽는다.
+  const gateId = useLocalSearchParams<{ id?: string }>().id;
+  return (
+    <BusinessDateGate source={useStoreLocalDate()} title="재고 내역" onBack={() => safeBack(`/ingredients/${gateId}`)}>
+      {(localDate) => <StockHistoryScreenBody localDate={localDate} />}
+    </BusinessDateGate>
+  );
+}
+
+function StockHistoryScreenBody({ localDate }: { localDate: string }) {
   const { id } = useLocalSearchParams<{ id: string }>();
 
   const [filter, setFilter] = useState<HistoryFilter>({ period: '최근 3개월', kind: '전체', order: '최신순' });
   const [filterOpen, setFilterOpen] = useState(false);
 
   const detail = useIngredientDetail(id);
-  const history = useStockHistory(id, periodRange(filter.period));
+  const history = useStockHistory(id, periodRange(filter.period, localDate));
   const g = detail.data;
   const unit = g ? dispUnit(g.baseUnit) : 'g';
 
@@ -163,6 +179,7 @@ export function StockHistoryScreen() {
       </ScrollView>
 
       <HistoryFilterSheet
+        today={localDate}
         visible={filterOpen}
         value={filter}
         kinds={KINDS}

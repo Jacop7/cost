@@ -12,14 +12,28 @@ import { safeBack } from '@/lib/nav';
 import { T, won } from '@/theme/tokens';
 import { clampDecimals } from '@/lib/num';
 import { useSalesRange } from '@/features/sales/hooks';
-import { addDays, todayBusiness } from '@/features/sales/period';
+import { addDays } from '@/features/sales/period';
+import { useStoreLocalDate } from '@/features/sales/businessDay';
+import { BusinessDateGate } from '@/features/sales/components/BusinessDateGate';
 import { useRecipeDraft } from '../draftStore';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 
+/**
+ * ⚠ 여기 날짜는 **매장 현지 날짜**다(0125). 판매 영업일이 아니다 —
+ *   발주·입고는 달력 날짜로 센다. 앱이 직접 계산하지 않고 서버에서 받는다.
+ */
 export default function AvgSalesScreen() {
+  return (
+    <BusinessDateGate source={useStoreLocalDate()} title="평균 판매량" onBack={() => safeBack('/recipes/add')}>
+      {(localDate) => <AvgSalesScreenBody localDate={localDate} />}
+    </BusinessDateGate>
+  );
+}
+
+function AvgSalesScreenBody({ localDate }: { localDate: string }) {
   const { recipe } = useLocalSearchParams<{ recipe?: string }>();
-  const today = todayBusiness();
+  const today = localDate;
   const range = useSalesRange(addDays(today, -29), today);
 
   const draft = useRecipeDraft((s) => s.draft);

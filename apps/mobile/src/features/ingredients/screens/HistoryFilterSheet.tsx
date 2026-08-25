@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { Button, Icon, Sheet } from '../../../components/kit';
 import { T, tnum } from '../../../theme/tokens';
-import { addDays, todayBusiness } from '@/features/sales/period';
+import { addDays } from '@/features/sales/period';
 
 function Seg({ opts, sel, onSelect }: { opts: string[]; sel: string; onSelect: (o: string) => void }) {
   return (
@@ -55,8 +55,15 @@ const DAYS: Record<HistoryPeriod, number | null> = {
   '오늘': 0, '최근 1개월': 30, '최근 3개월': 90, '최근 6개월': 180, '최근 1년': 365, '전체': null,
 };
 
-/** 칩이 뜻하는 실제 구간. 화면 표시와 조회가 같은 규칙을 쓰게 여기서만 만든다. */
-export function periodRange(period: HistoryPeriod, today = todayBusiness()): { from?: string; to: string } {
+/**
+ * 칩이 뜻하는 실제 구간. 화면 표시와 조회가 같은 규칙을 쓰게 여기서만 만든다.
+ *
+ * ⚠ `today` 에 기본값을 **두지 않는다**(0125). 예전엔 `todayBusiness()` 였는데,
+ *   그러면 부르는 쪽이 잊어도 조용히 돌아가고 그 자리만 앱이 계산한 날짜를 쓴다.
+ *   여기 날짜는 **매장 현지 날짜**(localDate)다 — 판매 영업일이 아니다.
+ *   폐기·입고·구매 이력은 달력 날짜로 세는 게 맞다.
+ */
+export function periodRange(period: HistoryPeriod, today: string): { from?: string; to: string } {
   const d = DAYS[period];
   return d === null ? { to: today } : { from: addDays(today, -d), to: today };
 }
@@ -71,17 +78,20 @@ const fmt = (s?: string) => (s ? s.replace(/-/g, '.') : '처음');
  * ⚠ 기간 목록과 `periodRange()` 는 **이 파일 하나**를 같이 쓴다 — 두 화면이 갈리면 안 된다.
  */
 export function PeriodSheet({
+  today,
   visible, onClose, value, onApply,
 }: {
   visible: boolean;
   onClose: () => void;
   value: HistoryPeriod;
   onApply: (v: HistoryPeriod) => void;
+  /** 매장 현지 날짜. 부르는 화면이 게이트에서 받아 넘긴다(0125). */
+  today: string;
 }) {
   const [period, setPeriod] = useState<HistoryPeriod>(value);
   useEffect(() => { if (visible) setPeriod(value); }, [visible, value]);
 
-  const range = periodRange(period);
+  const range = periodRange(period, today);
 
   return (
     <Sheet visible={visible} onClose={onClose} height={330} title="기간">
@@ -102,6 +112,7 @@ export function PeriodSheet({
 }
 
 export function HistoryFilterSheet({
+  today,
   visible, onClose, value, onApply, kinds,
 }: {
   visible: boolean;
@@ -109,6 +120,8 @@ export function HistoryFilterSheet({
   value: HistoryFilter;
   onApply: (v: HistoryFilter) => void;
   kinds: string[];
+  /** 매장 현지 날짜. 부르는 화면이 게이트에서 받아 넘긴다(0125). */
+  today: string;
 }) {
   const [period, setPeriod] = useState<HistoryPeriod>(value.period);
   const [kind, setKind] = useState(value.kind);
@@ -119,7 +132,7 @@ export function HistoryFilterSheet({
     if (visible) { setPeriod(value.period); setKind(value.kind); setOrder(value.order); }
   }, [visible, value.period, value.kind, value.order]);
 
-  const range = periodRange(period);
+  const range = periodRange(period, today);
 
   return (
     <Sheet

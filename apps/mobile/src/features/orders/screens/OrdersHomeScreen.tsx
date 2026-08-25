@@ -15,7 +15,9 @@ import { clampDecimals, packSummary } from '@/lib/num';
 import { makeInboundKey } from '@/lib/supabase';
 import { useIngredientDetail } from '@/features/ingredients/hooks';
 import { dispUnit } from '@/features/ingredients/ledger';
-import { addDays, todayBusiness } from '@/features/sales/period';
+import { addDays } from '@/features/sales/period';
+import { useStoreLocalDate } from '@/features/sales/businessDay';
+import { BusinessDateGate } from '@/features/sales/components/BusinessDateGate';
 import {
   useCancelOrder,
   useConfirmInbound,
@@ -51,10 +53,22 @@ const isLate = (expected: string | null, today: string) => Boolean(expected) && 
 
 type TabKey = 'candidate' | 'waiting' | 'received';
 
+/**
+ * ⚠ 여기 날짜는 **매장 현지 날짜**다(0125). 판매 영업일이 아니다 —
+ *   발주·입고는 달력 날짜로 센다. 앱이 직접 계산하지 않고 서버에서 받는다.
+ */
 export default function OrdersHomeScreen() {
+  return (
+    <BusinessDateGate source={useStoreLocalDate()} title="발주">
+      {(localDate) => <OrdersHomeScreenBody localDate={localDate} />}
+    </BusinessDateGate>
+  );
+}
+
+function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  const today = todayBusiness();
+  const today = localDate;
 
   const board = useOrderBoard();
   const placeOrders = usePlaceOrders();

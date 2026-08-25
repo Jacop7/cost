@@ -13,6 +13,8 @@ import { ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Badge, Card, Icon, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
+import { useStoreLocalDate } from '@/features/sales/businessDay';
+import { BusinessDateGate } from '@/features/sales/components/BusinessDateGate';
 import { formatQuantity, formatUnitPrice } from '@sikjae/core';
 import { T, tnum, won } from '@/theme/tokens';
 import { packSummary } from '@/lib/num';
@@ -28,13 +30,27 @@ const STATUS: Record<PurchaseRow['status'], { label: string; tone: 'blue' | 'amb
   canceled: { label: '취소', tone: 'neutral' },
 };
 
+/**
+ * ⚠ 이력 화면의 기간은 **매장 현지 날짜** 기준이다(0125). 판매 영업일이 아니다 —
+ *   폐기·입고·구매는 달력 날짜로 센다. 앱이 직접 계산하지 않고 서버에서 받는다.
+ */
 export default function PurchaseHistoryScreen() {
+  // 게이트가 오류를 그릴 때도 나갈 길이 있어야 한다 — 본체 밖이라 여기서 한 번 더 읽는다.
+  const gateId = useLocalSearchParams<{ id?: string }>().id;
+  return (
+    <BusinessDateGate source={useStoreLocalDate()} title="구매 이력" onBack={() => safeBack(`/ingredients/${gateId}`)}>
+      {(localDate) => <PurchaseHistoryScreenBody localDate={localDate} />}
+    </BusinessDateGate>
+  );
+}
+
+function PurchaseHistoryScreenBody({ localDate }: { localDate: string }) {
   const { id } = useLocalSearchParams<{ id: string }>();
   const [period, setPeriod] = useState<HistoryPeriod>('최근 3개월');
   const [periodOpen, setPeriodOpen] = useState(false);
 
   const detail = useIngredientDetail(id);
-  const purchases = usePurchaseHistory(id, periodRange(period));
+  const purchases = usePurchaseHistory(id, periodRange(period, localDate));
 
   const g = detail.data;
   const unit = dispUnit(g?.baseUnit ?? 'g');
@@ -156,6 +172,7 @@ export default function PurchaseHistoryScreen() {
       </ScrollView>
 
       <PeriodSheet
+        today={localDate}
         visible={periodOpen}
         value={period}
         onClose={() => setPeriodOpen(false)}

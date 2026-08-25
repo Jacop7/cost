@@ -37,8 +37,10 @@ const TABS: Tab[] = ['전체', '조리 전 폐기', '조리 후 폐기'];
  *   그래서 **매장 현지 날짜**를 서버에서 받고 나서 본체를 붙인다.
  */
 export default function DiscardHistoryScreen() {
+  // 게이트가 오류를 그릴 때도 나갈 길이 있어야 한다 — 본체 밖이라 여기서 한 번 더 읽는다.
+  const gateId = useLocalSearchParams<{ id?: string }>().id;
   return (
-    <BusinessDateGate source={useStoreLocalDate()} title="폐기 내역">
+    <BusinessDateGate source={useStoreLocalDate()} title="폐기 내역" onBack={() => safeBack(`/ingredients/${gateId}`)}>
       {(localDate) => <DiscardHistoryBody localDate={localDate} />}
     </BusinessDateGate>
   );
@@ -52,7 +54,7 @@ function DiscardHistoryBody({ localDate }: { localDate: string }) {
   const [tabOpen, setTabOpen] = useState(false);
 
   const detail = useIngredientDetail(id);
-  const history = useStockHistory(id, periodRange(period));
+  const history = useStockHistory(id, periodRange(period, localDate));
   const deleteDiscard = useDeleteDiscard(id ?? '');
   const [menuFor, setMenuFor] = useState<LedgerEntry | null>(null);
 
@@ -244,6 +246,7 @@ function DiscardHistoryBody({ localDate }: { localDate: string }) {
       </Modal>
 
       <PeriodSheet
+        today={localDate}
         visible={periodOpen}
         value={period}
         onClose={() => setPeriodOpen(false)}

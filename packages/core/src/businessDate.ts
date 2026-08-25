@@ -1,5 +1,16 @@
 /**
- * 영업일·영업월 — 앱과 DB가 같은 "하루"를 가리키게 하는 단일 기준.
+ * 영업일·영업월 — 순수 날짜 변환.
+ *
+ * ⚠ **앱은 더 이상 이 파일로 "오늘"을 세지 않는다**(0125). 날짜 권위는 서버 하나다 —
+ *   판매 영업일은 `business_day_state().business_date`, 일반 기록의 달력 날짜는
+ *   `store_local_date()`. 앱에서는 `useSalesBusinessDate()` · `useStoreLocalDate()` 로 받는다.
+ *   앱과 DB 가 각자 오늘을 계산하면 자정 전후에 하루가 갈린다(기획서 §2.1).
+ *
+ *   그래서 `currentBusinessDay()` · `currentBusinessMonth()` 는 **부르는 곳이 없다.**
+ *   새로 부르지 않는다. 서버 날짜를 받아 `businessDay(at)` 처럼 인자를 주는 변환만 쓴다.
+ *   (`+09:00` 고정 오프셋이라 매장 시간대가 KST 가 아니면 애초에 틀린 값을 낸다.)
+ *
+ * 아래는 옮겨 오기 전의 배경 설명이다 —
  *
  * 문제 배경:
  *   앱은 기기 로컬(한국 사장님이면 KST)로 날짜를 만들고, SQL 은 `to_char(now(),'YYYY-MM')` ·
