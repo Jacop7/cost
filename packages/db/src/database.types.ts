@@ -1471,6 +1471,7 @@ export type Database = {
       build_day_snapshot: {
         Args: {
           p_store: string
+          p_date: string
         }
         Returns: Json
       }
@@ -2369,6 +2370,13 @@ export type Database = {
         Returns: number
       }
       store_local_date: {
+        Args: {
+          p_store: string
+          p_at?: string
+        }
+        Returns: string
+      }
+      store_local_month: {
         Args: {
           p_store: string
           p_at?: string
