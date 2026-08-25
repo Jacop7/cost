@@ -20,7 +20,7 @@ import { ShortageWarningSheet } from '../components/ShortageWarningSheet';
 import { BusinessDateGate } from '../components/BusinessDateGate';
 import { setPendingSale, clearPendingSale } from '../pendingSale';
 import { CHANNEL_LABEL, channelName } from '../channels';
-import { isClosedError, isNotOpenError, isRevisionConflict, useBusinessDay, useDayMenuBasis, useOpenBusinessDay, useSalesBusinessDate } from '../businessDay';
+import { isClosedError, isNotOpenError, isRevisionConflict, useBusinessDay, useDayMenuBasis, useAutoCloseSweep, useOpenBusinessDay, useSalesBusinessDate } from '../businessDay';
 import { BusinessDayBar } from '../components/BusinessDayBar';
 import { dayLabel } from '../period';
 
@@ -86,6 +86,13 @@ export default function SalesHomeScreen() {
 }
 
 function SalesHomeBody({ today }: { today: string }) {
+  /*
+   * ⚠ 자동 마감 실행은 **여기 한 곳**이다(과도기). 예전엔 영업일 조회 훅 안에 있었는데,
+   *   날짜 권위를 서버로 옮기면서 그 훅이 날짜 조회의 통로가 됐다 — 그대로 두면
+   *   폐기 내역·입고 등록·발주 화면을 **여는 것만으로 영업이 종료된다.**
+   *   pg_cron 이 들어오면 이 줄을 지운다.
+   */
+  useAutoCloseSweep();
   const insets = useSafeAreaInsets();
   const router = useRouter();
 

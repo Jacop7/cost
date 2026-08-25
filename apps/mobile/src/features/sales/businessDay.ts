@@ -9,6 +9,7 @@
  * 그래서 매출 등록 전에 영업이 시작돼 있어야 한다. 시작 전이면 서버가 45001 으로
  * 막고, 화면은 "오늘 영업을 시작할까요?"를 먼저 묻는다.
  */
+import { useEffect } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { invalidate, invalidateOn, qk } from '@/lib/queryClient';
 import { supabase } from '@/lib/supabase';
@@ -82,16 +83,19 @@ function parse(raw: unknown): BusinessDayState {
   const h = (r.hours ?? {}) as Record<string, unknown>;
   const u = r.unacked as Record<string, unknown> | null;
   return {
-    today: String(r.today ?? ''),
+    today: reqDate(r.today, 'today'),
     /*
      * ⚠ **`today` 로 대신 메우지 않는다.** 예전엔 `r.local_date ?? r.today` 였는데,
      *   그러면 서버가 필드를 빠뜨려도 정상처럼 보이고 세 날짜를 가른 의미가 사라진다.
-     *   없으면 빈 문자열이고, 그러면 화면이 멈춘다 — 그게 맞다.
+     *
+     * ⚠ 빈 문자열로 넘기지도 않는다. 그러면 `error` 가 null 인 채 날짜만 없어서
+     *   게이트가 **오류도 로딩도 아닌 빈 화면**을 그린다 — 사장님은 다시 시도할
+     *   길이 없다. 없거나 모양이 틀리면 **던진다.**
      */
-    localDate: String(r.local_date ?? ''),
+    localDate: reqDate(r.local_date, 'local_date'),
     status: (r.status ?? 'none') as BusinessDayStatus,
     businessDayId: str(r.business_day_id),
-    businessDate: String(r.business_date ?? ''),
+    businessDate: reqDate(r.business_date, 'business_date'),
     openedAt: str(r.opened_at),
     plannedCloseAt: str(r.planned_close_at),
     closedAt: str(r.closed_at),
@@ -124,6 +128,16 @@ function parse(raw: unknown): BusinessDayState {
   };
 }
 
+/** 'YYYY-MM-DD' 만 통과시킨다. 날짜 권위를 서버로 옮겼으므로 모양이 틀리면 그건 사고다. */
+const YMD = /^\d{4}-\d{2}-\d{2}$/;
+function reqDate(v: unknown, field: string): string {
+  const t = typeof v === 'string' ? v : '';
+  if (!YMD.test(t)) {
+    throw new Error(`서버가 날짜를 주지 않았어요 (${field}). 잠시 후 다시 시도해 주세요`);
+  }
+  return t;
+}
+
 export function useBusinessDay() {
   const storeId = useStoreId();
   return useQuery({
@@ -131,21 +145,17 @@ export function useBusinessDay() {
     enabled: Boolean(storeId),
     queryFn: async (): Promise<BusinessDayState> => {
       /*
-       * ⚠ 자동 종료는 **저절로 일어나지 않는다.** 서버에 스케줄러가 없어서
-       *   누군가 불러 줘야 하고, 상태를 보는 이 순간이 그 자리다.
+       * ⚠ **조회만 한다.** 예전엔 여기서 `close_if_due()` 를 같이 불렀다 —
+       *   서버에 스케줄러가 없어 누군가 불러 줘야 했고, 상태를 보는 이 순간을
+       *   그 자리로 삼았다.
        *
-       *   안 부르면 어제 영업이 열린 채로 굳는다. 그러면 오늘 매출 등록이
-       *   `아직 영업을 시작하지 않았어요`(45001)로 막히는데, 화면 위 바는
-       *   '영업 중'이라고 말한다 — 사장님은 왜 저장이 안 되는지 알 길이 없다.
-       *   (실제로 이틀 열려 있었고 메뉴 판매 저장이 막혔다.)
+       *   그런데 날짜 권위를 서버로 옮기면서 이 훅이 **날짜 조회의 통로**가 됐다.
+       *   그러면 폐기 내역·입고 등록·발주 화면을 **여는 것만으로 영업이 종료된다.**
+       *   "날짜를 묻는 것" 과 "영업을 끝내는 것" 은 같은 문으로 들어오면 안 된다.
        *
-       * ⚠ 실패해도 조회는 계속한다. 종료를 못 했다고 화면까지 막을 이유는 없다.
+       *   자동 종료는 `useAutoCloseSweep()` 이 맡는다 — **판매 홈에서만** 부른다.
+       *   서버 스케줄러(pg_cron)가 들어오면 그것도 지운다.
        */
-      const closed = await supabase.rpc('close_if_due', { p_store: storeId });
-      if (closed.error && __DEV__) {
-        console.warn('[businessDay] close_if_due:', closed.error.message);
-      }
-
       const { data, error } = await supabase.rpc('business_day_state', { p_store: storeId });
       if (error) throw new Error(error.message);
       return parse(data);
@@ -154,6 +164,41 @@ export function useBusinessDay() {
     refetchInterval: 60_000,
     refetchOnWindowFocus: true,
   });
+}
+
+/**
+ * 과도기 자동 마감 실행. **판매 홈 한 곳에서만** 부른다.
+ *
+ * ⚠ 이건 조회가 아니라 **명령**이다. 장부 상태를 바꾼다.
+ *   그래서 날짜를 묻는 훅과 갈라 놨다 — 안 그러면 화면을 여는 것만으로 영업이 끝난다.
+ *
+ * ⚠ 임시다. 서버에 스케줄러가 없어서 누군가 불러 줘야 하고, 지금은 앱이 유일한
+ *   실행 주체다. 안 부르면 어제 영업이 열린 채로 굳고, 오늘 매출 등록이 45001 로
+ *   막히는데 화면 위 바는 '영업 중'이라고 말한다(실제로 이틀 열려 있었다).
+ *   `close_due_business_days()` + pg_cron 이 들어오면 이 훅은 지운다.
+ *
+ * ⚠ 실패해도 조용히 넘어간다. 종료를 못 했다고 화면까지 막을 이유는 없다.
+ */
+export function useAutoCloseSweep(): void {
+  const qc = useQueryClient();
+  const storeId = useStoreId();
+  useEffect(() => {
+    if (!storeId) return;
+    let alive = true;
+    const run = async () => {
+      const r = await supabase.rpc('close_if_due', { p_store: storeId });
+      if (!alive) return;
+      if (r.error) {
+        if (__DEV__) console.warn('[businessDay] close_if_due:', r.error.message);
+        return;
+      }
+      // 실제로 닫혔을 수 있으니 상태를 다시 받는다.
+      invalidate(qc, invalidateOn.businessDay());
+    };
+    void run();
+    const id = setInterval(() => void run(), 60_000);
+    return () => { alive = false; clearInterval(id); };
+  }, [qc, storeId]);
 }
 
 /** 영업 시작 — 이 시점 값으로 오늘이 굳는다. */
