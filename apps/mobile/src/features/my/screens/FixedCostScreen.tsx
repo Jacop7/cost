@@ -11,7 +11,8 @@ import { AppHeader, Badge, Button, Card, FilterButton, Icon, QueryState, Sheet }
 import { safeBack } from '@/lib/nav';
 import { formatPercent } from '@sikjae/core';
 import { T, won } from '@/theme/tokens';
-import { currentBusinessMonth } from '@sikjae/core';
+import { useStoreLocalDate } from '@/features/sales/businessDay';
+import { BusinessDateGate } from '@/features/sales/components/BusinessDateGate';
 import { useFixedCosts, useRevenueCheck } from '../hooks';
 import { RevenueGapCard } from '../components/RevenueGapCard';
 
@@ -22,9 +23,13 @@ const LABEL: Record<string, string> = {
   packing: '포장비', delivery: '배달/배송', ads: '광고/홍보', etc: '기타',
 };
 
-/** 최근 6개월 — 지난달 값을 그대로 복사해 쓰는 일이 잦아 월 이동이 필요하다. */
-function recentMonths(count = 6): string[] {
-  const now = currentBusinessMonth();
+/**
+ * 최근 6개월 — 지난달 값을 그대로 복사해 쓰는 일이 잦아 월 이동이 필요하다.
+ *
+ * ⚠ `now` 는 **인자**다(0126). 예전엔 기기 시계로 이번 달을 만들었는데, 그러면
+ *   해외 매장 월말에 서버는 8월인데 이 목록만 9월부터 시작한다.
+ */
+function recentMonths(now: string, count = 6): string[] {
   const y = Number(now.slice(0, 4));
   const m = Number(now.slice(5, 7));
   return Array.from({ length: count }, (_, i) => {
@@ -33,9 +38,21 @@ function recentMonths(count = 6): string[] {
   });
 }
 
+/**
+ * ⚠ 기준 월은 **서버**가 준다(0126). `local_date` 의 앞 7글자 —
+ *   `store_local_month()` 과 같은 값이다(둘 다 매장 시간대의 지금).
+ */
 export default function FixedCostScreen() {
+  return (
+    <BusinessDateGate source={useStoreLocalDate()} title="고정 지출" onBack={() => safeBack('/my')}>
+      {(localDate) => <FixedCostScreenBody localMonth={localDate.slice(0, 7)} />}
+    </BusinessDateGate>
+  );
+}
+
+function FixedCostScreenBody({ localMonth }: { localMonth: string }) {
   const router = useRouter();
-  const months = recentMonths();
+  const months = recentMonths(localMonth);
   const [month, setMonth] = useState(months[0]!);
   /** 월 고르는 입구는 하나다(0096) — 매출 분석·식재료 내역과 같은 필터 버튼. */
   const [monthOpen, setMonthOpen] = useState(false);

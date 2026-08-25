@@ -17,9 +17,13 @@
 -- ⚠ 오늘 영업일이 열려 있어야 판매를 적을 수 있다.
 --   날이 바뀌면 아무도 안 연 채 테스트가 돈다 — 실제로 08-23 아침에 이 파일이 빨개졌다.
 --   07·12 와 같은 수로 여기서 연다. 트랜잭션 안이라 곧 되돌려진다.
+-- ⚠ 여기를 `exception when others then null` 로 감싸지 않는다. 그러면 헬퍼가 확인한
+--   사후조건("오늘 영업일이 정확히 하나, 상태는 open|break")까지 통째로 삼킨다 —
+--   못 열어도 조용히 지나가고 저 아래 판매가 `아직 영업을 시작하지 않았어요` 로 죽는다.
+--   여는 실패는 여기서 크게 터져야 어디가 잘못됐는지 보인다.
 do $open$ begin
   perform pg_temp.open_today();   -- 닫혀 있어도 열어 준다(프렐류드 헬퍼)
-exception when others then null; end $open$;
+end $open$;
 
 do $t$
 declare

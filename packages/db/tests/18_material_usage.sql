@@ -13,17 +13,15 @@ do $t$
 declare
   v_rcp  uuid := pg_temp.rcp('제육볶음');
   v_ing  uuid := pg_temp.ing('대파');
-  v_day  date := business_day();
+  v_day  date;
   v_left numeric;
   m2 jsonb; s2 jsonb;
 begin
   -- ⚠ 이 파일 앞 블록이 영업일을 닫아 두므로 **다시 열어야** 판매가 들어간다.
-  --   여는 데 실패하면 이미 종료된 날이라는 뜻이라 reopen 으로 간다.
-  begin
-    perform open_business_day(pg_temp.store());
-  exception when others then
-    begin perform reopen_business_day(pg_temp.store(), v_day); exception when others then null; end;
-  end;
+  --   예전엔 여기서 `when others then null` 로 삼켰다 — 그래서 못 열어도 조용히
+  --   지나가고, 판매가 `아직 영업을 시작하지 않았어요` 로 죽었다(실제로 그랬다).
+  --   프렐류드 헬퍼는 사후조건까지 확인하고 못 지키면 예외를 낸다.
+  v_day := pg_temp.open_today();
 
   -- 대파를 1g 만 남기고 비운다. 조정 이벤트라 원장 합계는 그대로 맞는다.
   perform e5_stock_adjusted(v_ing, 1, false, '테스트: 재고 바닥');

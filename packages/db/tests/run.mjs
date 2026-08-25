@@ -17,6 +17,16 @@ import { fileURLToPath } from 'node:url';
 
 const DIR = dirname(fileURLToPath(import.meta.url));
 const CONTAINER = process.env.SUPABASE_DB_CONTAINER ?? 'supabase_db_sikjae';
+
+/*
+ * 어느 DB 에 붙을지. 기본은 개발 DB(`postgres`).
+ *
+ * ⚠ 예전엔 `-d postgres` 가 박혀 있었다. 새 DB 를 떠 놓고 `PGDATABASE=fresh… node run.mjs`
+ *   로 돌린 뒤 "새 DB 23/23" 이라고 적은 적이 있는데, 실제로는 개발 DB 를 한 번 더
+ *   돌린 것이었다 — **통과했는데 아무것도 확인하지 않은** 종류의 거짓말이다.
+ *   이제 실제로 갈아탄다.
+ */
+const DATABASE = process.env.PGDATABASE ?? 'postgres';
 const filter = process.argv[2] ?? '';
 
 const prelude = readFileSync(join(DIR, '_prelude.sql'), 'utf8');
@@ -37,7 +47,7 @@ for (const file of files) {
   const sql = `${prelude}\n${readFileSync(join(DIR, file), 'utf8')}\nrollback;\n`;
   const r = spawnSync(
     'docker',
-    ['exec', '-i', CONTAINER, 'psql', '-U', 'postgres', '-d', 'postgres', '-v', 'ON_ERROR_STOP=1', '-q'],
+    ['exec', '-i', CONTAINER, 'psql', '-U', 'postgres', '-d', DATABASE, '-v', 'ON_ERROR_STOP=1', '-q'],
     { input: sql, encoding: 'utf8' },
   );
 
