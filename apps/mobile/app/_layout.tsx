@@ -4,11 +4,14 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { queryClient } from '@/lib/queryClient';
 import { SessionGate } from '@/lib/SessionProvider';
-import { getFontAssets, initTextDirection, patchTextFonts } from '@/theme/fonts';
+import { getFontAssets, initTextDirection, patchTextFonts } from '@/theme/fonts';
+import { installWebAlert } from '@/lib/webAlert';
 
 // 전역 폰트 적용(Text/TextInput 렌더 주입) + 로케일 방향 — 모듈 로드 시 1회.
 patchTextFonts();
 initTextDirection();
+// ⚠ 웹의 Alert 는 빈 함수라 확인창이 전부 죽는다. 되살린다(0103).
+installWebAlert();
 
 /** 루트 레이아웃 — 폰트 로드 + 쿼리 클라이언트 + 세이프에어리어. 탭은 (tabs) 그룹. */
 export default function RootLayout() {
