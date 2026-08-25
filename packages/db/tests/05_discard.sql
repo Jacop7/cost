@@ -283,3 +283,54 @@ begin
     (select count(*) from stock_history(v_daepa) where type = 'discard' and waste)
     + (select count(*) from stock_history(v_daepa) where type = 'discard' and not waste));
 end $t$;
+
+
+-- ════════════════════════════════════════════════════════════════
+-- 폐기 원장은 **실제로 빠진 양**을 적는다 (0113)
+--
+-- 동시성 감사에서 나왔다. 예전엔 이랬다 —
+--     v_before  := stock_total_base(...);       ← 잠금 없이 읽고
+--     perform consume_stock(..., v_discard);    ← 반환값을 버리고
+--     insert ... count_delta = -v_discard       ← **빼려던 양**을 적었다
+--
+-- 실측(결정적 재현): 출발 3,000g, `남은 양 1,000` 으로 2,000g 을 뺄 셈이었는데
+-- 그 사이 다른 세션이 재고를 50g 으로 떨어뜨렸다. 실제로는 50g 만 빠졌는데
+-- 원장에는 2,000g 이 적혔다 — 최종 잔액 0 vs 원장 합 −1,950 (1,950g 어긋남).
+--
+-- 이제 잠그고 나서 계산하고, 원장에는 consume_stock 이 실제로 뺀 양을 적는다.
+-- 여기서는 **불변식**을 못 박는다 — 경합 없이도 성립해야 하는 관계다.
+-- ════════════════════════════════════════════════════════════════
+do $t$
+declare
+  v_i    uuid := pg_temp.ing('청양고추');
+  v_day  date := business_day();
+  v_st0  numeric; v_led0 numeric;
+  v_st1  numeric; v_led1 numeric;
+  v_res  jsonb;
+begin
+  perform e5_stock_adjusted(v_i, 1000, false, 'T05 기준 맞추기');
+  v_st0 := stock_total_base(v_i);
+  select coalesce(sum(count_delta), 0) into v_led0 from inventory_events where ingredient_id = v_i;
+
+  -- 400g 을 남긴다 → 600g 폐기
+  v_res := e2_discard(v_i, 400, v_day);
+  v_st1 := stock_total_base(v_i);
+  select coalesce(sum(count_delta), 0) into v_led1 from inventory_events where ingredient_id = v_i;
+
+  perform pg_temp.eq('폐기 후 재고', v_st1, 400, 0.001);
+  perform pg_temp.eq('반환한 폐기량', (v_res->>'discarded')::numeric, 600, 0.001);
+  -- ⚠ 이 한 줄이 0113 의 핵심이다. 원장에 적힌 양과 실제로 줄어든 양이 같아야 한다.
+  perform pg_temp.eq('원장에 적힌 양 = 실제로 줄어든 양', v_led0 - v_led1, v_st0 - v_st1, 0.001);
+
+  -- 같은 `남은 양` 으로 다시 부르면 더 뺄 게 없다 — 멱등하다.
+  v_res := e2_discard(v_i, 400, v_day);
+  perform pg_temp.ok('같은 남은 양으로 다시 부르면 건너뛴다', (v_res->>'skipped')::boolean);
+  perform pg_temp.eq('재고가 두 번 빠지지 않는다', stock_total_base(v_i), 400, 0.001);
+  perform pg_temp.eq('0g 짜리 폐기 행을 만들지 않는다',
+    (select coalesce(sum(count_delta), 0) from inventory_events where ingredient_id = v_i), v_led1, 0.001);
+
+  -- 지금보다 많이 남기라는 건 폐기가 아니다. 재고를 **늘리면 안 된다**.
+  v_res := e2_discard(v_i, 900, v_day);
+  perform pg_temp.ok('남은 양이 지금보다 크면 건너뛴다', (v_res->>'skipped')::boolean);
+  perform pg_temp.eq('폐기가 재고를 늘리지 않는다', stock_total_base(v_i), 400, 0.001);
+end $t$;
