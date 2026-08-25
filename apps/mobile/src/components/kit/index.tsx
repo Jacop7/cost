@@ -13,7 +13,7 @@ export { Icon };
 export { MemoEditSheet } from './MemoEditSheet';
 export type { IconName } from './Icon';
 export { AppHeader } from './AppHeader';
-export { Sheet } from './Sheet';
+export { ConfirmSheet, Sheet } from './Sheet';
 export { SearchBar } from './SearchBar';
 export { QueryState } from './QueryState';
 export { SortChip, SortSheet } from './SortSheet';
