@@ -424,10 +424,21 @@ export default function SalesHomeScreen() {
                         // ⚠ 오늘 팔면 잡히는 값이다. 현재 레시피가 아니다(0061).
                         : `판매가 ${won(Math.round(b?.price ?? m.price))} · 재료비 ${won(Math.round(b?.materialCost ?? m.materialCost))}`}
                     </Text>
-                    {/* 영업 중에 고친 값 — 오늘 장부에는 안 들어간다고 그 자리에서 밝힌다. */}
+                    {/*
+                      지금 값이 오늘 장부와 다르다고 그 자리에서 밝힌다.
+                      ⚠ `수정한 값` 이라고 쓰면 안 된다. 이 표시는 **원인을 모른다** —
+                        서버의 `changed` 는 `현재 원가 ≠ 스냅샷 원가` 일 뿐이라,
+                        사장님이 레시피를 고쳤을 때도 켜지지만 **입고로 단가가 움직여도** 켜진다.
+                        실제로 DB 를 새로 깐 직후, 아무것도 안 고쳤는데 네 메뉴에 이 문구가 떠 있었다
+                        (그날 보충 입고가 영업 시작 뒤에 들어왔기 때문이다).
+                        고치지도 않은 걸 고쳤다고 하면 사장님은 이 줄을 안 믿게 된다.
+                      판매가는 사장님만 바꾸므로 그때만 `판매가` 라고 짚어 준다.
+                    */}
                     {b?.changed ? (
                       <Text style={[{ fontSize: 13, color: T.amberText, marginTop: 3, fontWeight: '600' }, NUM]}>
-                        수정한 값{b.currentPrice !== b.price ? ` (판매가 ${won(Math.round(b.currentPrice))})` : ''}은 다음 영업일부터 적용돼요
+                        {b.currentPrice !== b.price
+                          ? `판매가 ${won(Math.round(b.currentPrice))}원은 다음 영업일부터 적용돼요`
+                          : `지금 재료비 ${won(Math.round(b.currentMaterialCost))}원은 다음 영업일부터 적용돼요`}
                       </Text>
                     ) : null}
                   </View>
