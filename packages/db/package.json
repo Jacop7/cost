@@ -11,7 +11,8 @@
     "diff": "supabase db diff",
     "push": "supabase db push",
     "gen:types": "supabase gen types typescript --local > src/database.types.ts",
-    "test": "node tests/run.mjs"
+    "test": "node tests/run.mjs",
+    "fresh-db": "bash scripts/fresh-db.sh"
   },
   "devDependencies": {
     "supabase": "^1.207.9"

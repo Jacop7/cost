@@ -205,7 +205,7 @@ begin
    *   (전부 이 트랜잭션 안이라 롤백된다.)
    */
   set local role postgres;
-  grant insert, update, delete on operating_rules to authenticated;
+  grant insert, update, delete, truncate on operating_rules to authenticated;
   drop policy if exists pg_temp_rw on operating_rules;
   create policy pg_temp_rw on operating_rules for all to authenticated
     using (store_id in (select my_store_ids())) with check (store_id in (select my_store_ids()));
@@ -218,9 +218,69 @@ begin
             values (%L, %L, %L::jsonb)',
            v_store, date '2096-01-01', pg_temp.hours('09:00','18:00')::text),
     '42501');
+  /*
+   * ⚠ TRUNCATE 는 **행 트리거를 안 부른다**(0134). 0133 만 있을 땐 여기로 새어 나갔다 —
+   *   `truncate ... cascade` 한 줄이면 규칙 이력과 영업일이 같이 사라진다.
+   *   문장 트리거로 따로 막는다.
+   */
+  perform pg_temp.raises('비우기(truncate)도 막힌다',
+    'truncate operating_rules cascade', '42501');
+  perform pg_temp.raises('영업일 비우기도 막힌다',
+    'truncate business_days cascade', '42501');
+
   -- 그 상태에서도 RPC 는 통과해야 한다. 막기만 하고 길이 없으면 그건 고장이다.
   perform pg_temp.ok('그 상태에서도 RPC 는 통과',
     (set_operating_hours(v_store, pg_temp.hours('13:00','23:30'))->>'rule_id') is not null);
+end $t$;
+
+
+-- ── ⑩ operating_hours_status 계약 (0131) ──────────────────────
+-- 마이그레이션의 사후 확인은 **적용될 때 한 번**이다. 이 함수는 화면이 "언제부터
+-- 적용되는지" 말하는 유일한 근거라, 나중에 덮어써지면 그 안내가 조용히 사라진다.
+do $t$
+declare
+  v_store uuid := pg_temp.store();
+  v_res   jsonb;
+  v_today date;
+begin
+  v_today := store_local_date(v_store);
+
+  /*
+   * ⚠ 앞 블록들이 이미 예약 규칙을 만들어 뒀다. 여기서 `pending 은 null` 을 그냥
+   *   기대하면 **앞 블록 순서에 기대는 시험**이 된다 — 파일을 재배치하는 순간 깨진다.
+   *   출발점을 명시적으로 고정한다(규칙은 앱 권한으로 못 지우므로 소유자로 올라간다).
+   */
+  set local role postgres;
+  delete from operating_rules where store_id = v_store and effective_from > v_today;
+  update operating_rules set effective_to = null
+   where id = (select id from operating_rules
+                where store_id = v_store order by effective_from desc limit 1);
+  set local role authenticated;
+
+  v_res := operating_hours_status(v_store);
+
+  perform pg_temp.eq_t('local_date = 매장 현지 날짜', v_res->>'local_date', v_today::text);
+  perform pg_temp.eq_t('today 는 그날 유효한 규칙과 같다',
+    (v_res->'today')::text, store_hours_on(v_store, v_today)::text);
+  -- 앱이 'HH:MM(:SS)' 로 검사한다. 여기서 어긋나면 화면이 오류로 뜬다.
+  perform pg_temp.ok('today 시각이 시각 형식',
+    (v_res->'today'->>'open_time') ~ '^([01][0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$');
+
+  -- 예약이 없으면 **null** 이어야 한다. 빈 객체면 앱이 "예약이 있다"로 읽는다.
+  perform pg_temp.close_today();      -- 오늘을 닫아 둬야 다음 변경이 내일부터가 된다
+  perform pg_temp.ok('예약이 없으면 pending 은 null',
+    jsonb_typeof(operating_hours_status(v_store)->'pending') = 'null');
+
+  -- 예약을 만들면 그 날짜와 그날 규칙이 실려 온다.
+  perform set_operating_hours(v_store, pg_temp.hours('18:00','02:00'));
+  v_res := operating_hours_status(v_store);
+  perform pg_temp.eq_t('pending 시작일 = 내일',
+    v_res->'pending'->>'effective_from', (v_today + 1)::text);
+  perform pg_temp.eq_t('pending 시간 = 그날 규칙',
+    (v_res->'pending'->'hours')::text, store_hours_on(v_store, v_today + 1)::text);
+  perform pg_temp.eq_t('pending 종료 시각', v_res->'pending'->'hours'->>'close_time', '02:00:00');
+  -- 그리고 today 는 **안 바뀐다.** 이게 이 화면이 말해야 하는 전부다.
+  perform pg_temp.eq_t('today 는 그대로', v_res->'today'->>'close_time', '22:00:00');
 end $t$;
 
 
