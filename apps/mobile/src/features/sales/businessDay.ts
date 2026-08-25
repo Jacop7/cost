@@ -26,7 +26,18 @@ export interface AutoCloseNotice {
 }
 
 export interface BusinessDayState {
+  /**
+   * 판매 영업일 기준의 오늘(cutoff 반영). 3단계에서 정리된다.
+   * ⚠ `localDate` 와 다른 값이다 — 지금은 cutoff 가 0 이라 같아 보일 뿐이다.
+   */
   today: string;
+  /**
+   * **매장 달력의 오늘**(0125). 영업시간과 무관하다.
+   * 발주·입고·재고·레시피 화면이 쓸 날짜다 — 거기서는 판매 영업일이 아니라 달력 날짜가 맞다.
+   * ⚠ 앱이 직접 계산하지 않는다. 예전엔 `+09:00` 고정 오프셋으로 만들었고,
+   *   그래서 앱과 DB 가 각자 오늘을 계산했다(기획서 §2.1).
+   */
+  localDate: string;
   status: BusinessDayStatus;
   businessDayId: string | null;
   businessDate: string;
@@ -67,6 +78,7 @@ function parse(raw: unknown): BusinessDayState {
   const u = r.unacked as Record<string, unknown> | null;
   return {
     today: String(r.today ?? ''),
+    localDate: String(r.local_date ?? r.today ?? ''),
     status: (r.status ?? 'none') as BusinessDayStatus,
     businessDayId: str(r.business_day_id),
     businessDate: String(r.business_date ?? r.today ?? ''),
@@ -233,6 +245,29 @@ export const isNotOpenError = (e: unknown): boolean =>
 /** 서버가 "종료된 영업일"로 막았는가(45002). 되돌리기를 권한다. */
 export const isClosedError = (e: unknown): boolean =>
   e instanceof Error && e.message.includes('영업은 종료됐어요');
+
+/**
+ * 서버가 정한 **매장 달력의 오늘**(0125). 발주·입고·재고·레시피 화면이 쓴다.
+ *
+ * ⚠ 못 받았으면 `null` 이다. **직접 계산해서 메우지 않는다** —
+ *   앱이 계산하면 그게 곧 앱과 DB 가 각자 오늘을 계산하는 상태다(기획서 §2.1).
+ *   부르는 쪽이 로딩을 다뤄야 한다.
+ */
+export function useStoreLocalDate(): string | null {
+  const q = useBusinessDay();
+  return q.data?.localDate || null;
+}
+
+/**
+ * 서버가 정한 **지금 장부의 날짜**(business_date). 판매 화면이 쓴다.
+ *
+ * ⚠ 새벽 영업 중이면 **전날**일 수 있다. 그게 이 값의 존재 이유다 —
+ *   앱이 자정으로 날짜를 넘겨 버리면 새벽 판매가 다음 날 장부로 샌다.
+ */
+export function useSalesBusinessDate(): string | null {
+  const q = useBusinessDay();
+  return q.data?.businessDate || null;
+}
 
 /**
  * 서버가 "낡은 화면"으로 막았는가(45009 · 0117).

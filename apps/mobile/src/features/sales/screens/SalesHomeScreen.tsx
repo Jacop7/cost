@@ -19,9 +19,9 @@ import { useCheckSaleShortages, useRecipeShortages, useSalesDay, useSaveSale,
 import { ShortageWarningSheet } from '../components/ShortageWarningSheet';
 import { setPendingSale, clearPendingSale } from '../pendingSale';
 import { CHANNEL_LABEL, channelName } from '../channels';
-import { isClosedError, isNotOpenError, isRevisionConflict, useBusinessDay, useDayMenuBasis, useOpenBusinessDay } from '../businessDay';
+import { isClosedError, isNotOpenError, isRevisionConflict, useBusinessDay, useDayMenuBasis, useOpenBusinessDay, useSalesBusinessDate } from '../businessDay';
 import { BusinessDayBar } from '../components/BusinessDayBar';
-import { dayLabel, todayBusiness } from '../period';
+import { dayLabel } from '../period';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 
@@ -68,7 +68,18 @@ const ZERO: Qty = { hall: 0, delivery: 0, takeout: 0, waste: 0 };
 export default function SalesHomeScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  const today = todayBusiness();
+  /*
+   * ⚠ **서버가 정한 장부 날짜**를 쓴다(0125). 앱이 계산하지 않는다.
+   *   예전엔 `todayBusiness()` 가 `+09:00` 고정 오프셋으로 만들었고, 그래서 앱과 DB 가
+   *   각자 오늘을 계산했다(기획서 §2.1). 새벽 영업이면 장부는 전날인데 앱은 자정에
+   *   날짜를 넘겨 버려, 그 판매가 다음 날 장부로 샌다.
+   *
+   * ⚠ 못 받았으면 `null` 이고, 그동안 **저장을 막는다**. 날짜를 모르는 채로 저장하면
+   *   그게 곧 남의 날짜에 적는 것이다. 조회도 그동안 멈춘다(빈 화면이 잘못된 날보다 낫다).
+   */
+  const serverDate = useSalesBusinessDate();
+  /** 빈 문자열이면 조회가 꺼지고 저장 버튼도 잠긴다. 날짜를 지어내지 않는다. */
+  const today = serverDate ?? '';
 
   const day = useSalesDay(today);
   const recipes = useRecipeList();

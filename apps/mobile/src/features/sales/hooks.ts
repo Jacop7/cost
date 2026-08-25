@@ -119,6 +119,13 @@ export function useSalesDay(date: string) {
   const storeId = useStoreId();
   return useQuery({
     queryKey: qk.salesDay(date),
+    /*
+     * ⚠ 날짜가 빈 문자열이면 **조회하지 않는다**(0125). 서버가 장부 날짜를 알려 주기
+     *   전에는 어느 날을 물어야 할지 모른다. 앱이 직접 계산해서 메우면 그게 곧
+     *   앱과 DB 가 각자 오늘을 계산하는 상태다(기획서 §2.1).
+     *   빈 화면이 잘못된 날의 장부보다 낫다.
+     */
+    enabled: Boolean(storeId) && Boolean(date),
     queryFn: async (): Promise<SalesDay> => {
       const { data, error } = await supabase.rpc('sales_day', { p_store: storeId, p_date: date });
       if (error) throw new Error(error.message);
