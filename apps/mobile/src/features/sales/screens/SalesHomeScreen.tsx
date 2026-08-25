@@ -243,6 +243,8 @@ export default function SalesHomeScreen() {
   };
 
   const marginPct = summary && summary.revenue > 0 ? Math.round((summary.profit / summary.revenue) * 1000) / 10 : 0;
+  /** 아직 오늘을 시작 안 했나 — 히어로가 0원 대신 `—` 를 보여 줘야 하는 상태. */
+  const beforeOpen = bday.data?.status === 'none';
   const draftTotal = draft.hall + draft.delivery + draft.takeout;
   const sortLabel = SORTS.find((x) => x.key === sort)?.label ?? '판매량순';
 
@@ -268,35 +270,29 @@ export default function SalesHomeScreen() {
         {/* 영업 상태 — 오늘 기준값이 언제 굳는지 여기서 정해진다 */}
         {bday.data ? <BusinessDayBar state={bday.data} /> : null}
 
-        {/* 오늘 손익 히어로 */}
-        <View style={{ backgroundColor: T.blue, borderRadius: 16, padding: 17, marginBottom: 11 }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 11 }}>
-            <Text style={{ flex: 1, fontSize: 14, fontWeight: '700', color: 'rgba(255,255,255,0.85)' }}>오늘 순이익 (실시간)</Text>
-            <Pressable
-              onPress={() => router.push(`/sales/day?date=${today}` as Href)}
-              accessibilityRole="button" accessibilityLabel="일 손익 상세"
-              style={{ flexDirection: 'row', alignItems: 'center', gap: 2 }}
-            >
-              <Text style={{ fontSize: 14, fontWeight: '700', color: T.onColor }}>일 상세</Text>
-              <Icon name="chevron" size={14} color={T.onColor} />
-            </Pressable>
-          </View>
-          <Text style={[{ fontSize: 22, fontWeight: '800', color: T.onColor, letterSpacing: -0.6 }, NUM]}>
-            {won(summary?.profit ?? 0)}<Text style={{ fontSize: 16 }}>원</Text>
+        {/*
+          오늘 순이익 — 프로토타입 `.hero`.
+          ⚠ 세 칸(매출·지출·이익률)을 **한 줄**로 합쳤다. 프로토타입은
+            `매출 529,500원 · 순이익률 17.9%` 한 줄이고, 지출은 아래 일 손익에서 본다.
+          ⚠ 영업 전에는 값 자리에 `—` 를 둔다. 0원이라고 쓰면 "오늘 하나도 못 팔았다"로
+            읽히는데, 사실은 아직 시작을 안 한 것이다.
+          카드 전체를 누르면 일 손익으로 간다 — 프로토타입에 `일 상세` 링크는 없다.
+        */}
+        <Pressable
+          onPress={() => router.push(`/sales/day?date=${today}` as Href)}
+          accessibilityRole="button" accessibilityLabel="오늘 손익 자세히"
+          style={{ backgroundColor: T.blue, borderRadius: 16, padding: 16, marginBottom: 11 }}
+        >
+          <Text style={{ fontSize: 13, fontWeight: '700', color: 'rgba(255,255,255,0.82)' }}>오늘 순이익</Text>
+          <Text style={[{ fontSize: 25, fontWeight: '800', color: T.onColor, letterSpacing: -0.6, marginTop: 7 }, NUM]}>
+            {beforeOpen ? '—' : `${won(summary?.profit ?? 0)}원`}
           </Text>
-          <View style={{ flexDirection: 'row', gap: 18, marginTop: 13 }}>
-            {([
-              ['매출', won(summary?.revenue ?? 0)],
-              ['지출', won((summary?.revenue ?? 0) - (summary?.profit ?? 0))],
-              ['이익률', `${marginPct}%`],
-            ] as const).map(([l, v]) => (
-              <View key={l}>
-                <Text style={{ fontSize: 14, color: 'rgba(255,255,255,0.7)', fontWeight: '600' }}>{l}</Text>
-                <Text style={[{ fontSize: 16, fontWeight: '800', color: T.onColor, marginTop: 1 }, NUM]}>{v}</Text>
-              </View>
-            ))}
-          </View>
-        </View>
+          <Text style={[{ fontSize: 13, fontWeight: '700', color: 'rgba(255,255,255,0.86)', marginTop: 4 }, NUM]}>
+            {beforeOpen
+              ? '영업을 시작하면 오늘 기록이 열려요'
+              : `매출 ${won(summary?.revenue ?? 0)}원 · 순이익률 ${marginPct}%`}
+          </Text>
+        </Pressable>
 
         {/* 기타 매출 · 지출 추가 */}
         <View style={{ flexDirection: 'row', gap: 8, marginBottom: 12 }}>
@@ -350,13 +346,13 @@ export default function SalesHomeScreen() {
               const stopped = !m.active;
               const blocked = stopped ? '판매 중지' : m.blockedBy ? '재료 부족' : null;
               return (
-                <View key={m.id} style={{ flexDirection: 'row', alignItems: 'center', gap: 11, paddingVertical: 14, paddingHorizontal: 15, borderBottomWidth: i < list.length - 1 ? 1 : 0, borderBottomColor: T.line2, opacity: blocked ? 0.45 : 1 }}>
+                <View key={m.id} style={{ flexDirection: 'row', alignItems: 'center', gap: 10, minHeight: 82, paddingVertical: 12, paddingHorizontal: 14, borderBottomWidth: i < list.length - 1 ? 1 : 0, borderBottomColor: T.line2, opacity: blocked ? 0.45 : 1 }}>
                   <View style={{ flex: 1, minWidth: 0 }}>
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                      <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }} numberOfLines={1}>{m.name}</Text>
+                      <Text style={{ fontSize: 15, fontWeight: '800', color: T.ink }} numberOfLines={1}>{m.name}</Text>
                       {blocked ? <Badge tone={stopped ? 'neutral' : 'red'} sm>{blocked}</Badge> : null}
                     </View>
-                    <Text style={[{ fontSize: 14, color: T.ter, marginTop: 3 }, NUM]}>
+                    <Text style={[{ fontSize: 12, color: T.ter, marginTop: 3 }, NUM]}>
                       {/* 왜 안 되는지 그 자리에서 밝힌다 — 배지만으로는 어느 재료인지 모른다. */}
                       {m.blockedBy && !stopped
                         ? `${m.blockedBy}이(가) 없어요 · 식재료에서 재고를 맞춰 주세요`
@@ -369,12 +365,30 @@ export default function SalesHomeScreen() {
                         수정한 값{b.currentPrice !== b.price ? ` (판매가 ${won(Math.round(b.currentPrice))})` : ''}은 다음 영업일부터 적용돼요
                       </Text>
                     ) : null}
-                    <Pressable onPress={() => openMenu(m)} disabled={blocked !== null} accessibilityRole="button" accessibilityLabel={`${m.name} 판매 수량 수정`} style={{ marginTop: 6, alignSelf: 'flex-start' }} hitSlop={6}>
-                      <Text style={[{ fontSize: 14, fontWeight: '700', color: total > 0 ? T.blue : T.ter }, NUM]}>
-                        총 {total}개{q && q.waste > 0 ? ` · 폐기 ${q.waste}` : ''}
-                      </Text>
-                    </Pressable>
                   </View>
+
+                  {/*
+                    우측 수량·금액 — 프로토타입 `.menu-value`.
+                    ⚠ 좌측에 있던 `총 N개` 줄을 여기로 올렸다. 같은 것을 두 자리에 두지 않는다.
+                      누르면 수량 수정으로 가는 것도 그대로다.
+                  */}
+                  <Pressable
+                    onPress={() => openMenu(m)}
+                    disabled={blocked !== null}
+                    accessibilityRole="button" accessibilityLabel={`${m.name} 판매 수량 수정`}
+                    style={{ alignItems: 'flex-end' }}
+                    hitSlop={6}
+                  >
+                    <Text style={[{ fontSize: 15, fontWeight: '800', color: total > 0 ? T.ink : T.ter }, NUM]}>
+                      {total}개{q && q.waste > 0 ? ` · 폐기 ${q.waste}` : ''}
+                    </Text>
+                    {total > 0 ? (
+                      <Text style={[{ fontSize: 12, fontWeight: '700', color: T.ter, marginTop: 3 }, NUM]}>
+                        {won(Math.round((b?.price ?? m.price) * total))}원
+                      </Text>
+                    ) : null}
+                  </Pressable>
+
                   <Pressable
                     onPress={() => openMenu(m)}
                     disabled={blocked !== null}
