@@ -435,11 +435,34 @@ export interface HoursStatus {
   pending: { effectiveFrom: string; hours: OperatingHours } | null;
 }
 
-const hoursOf = (v: Record<string, unknown>): OperatingHours => ({
-  openTime: String(v.open_time ?? ''),
-  closeTime: String(v.close_time ?? ''),
-  breakStart: v.break_start == null ? null : String(v.break_start),
-  breakEnd: v.break_end == null ? null : String(v.break_end),
+const HHMM = /^([01]\d|2[0-3]):[0-5]\d(:[0-5]\d)?$/;
+const YMD_RE = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/;
+
+const failed = (what: string) =>
+  new Error(`서버가 ${what}을 주지 않았어요. 잠시 후 다시 시도해 주세요`);
+
+/** 시각 문자열. 형식이 아니면 던진다 — 빈 문자열로 넘기면 화면이 `~` 만 그린다. */
+function reqTime(v: unknown, what: string): string {
+  const t = typeof v === 'string' ? v : '';
+  if (!HHMM.test(t)) throw failed(what);
+  return t;
+}
+
+/** 브레이크는 **없는 게 정상**이다. 다만 있으면 시각이어야 한다. */
+function optTime(v: unknown, what: string): string | null {
+  if (v === null || v === undefined) return null;
+  return reqTime(v, what);
+}
+
+/**
+ * ⚠ 조용한 기본값을 두지 않는다(0132). `String(v.open_time ?? '')` 이면 서버가 키를
+ *   빠뜨려도 화면이 멀쩡히 열리고 시간만 빈칸이 된다. 사장님은 영업시간이 지워진 줄 안다.
+ */
+const hoursOf = (v: Record<string, unknown>, where: string): OperatingHours => ({
+  openTime: reqTime(v.open_time, `${where} 시작 시각`),
+  closeTime: reqTime(v.close_time, `${where} 종료 시각`),
+  breakStart: optTime(v.break_start, `${where} 브레이크 시작`),
+  breakEnd: optTime(v.break_end, `${where} 브레이크 종료`),
   closeDayOffset: Number(v.close_day_offset ?? 0),
   closed: Boolean(v.closed),
 });
@@ -460,17 +483,25 @@ export function useHoursStatus() {
       const { data, error } = await supabase.rpc('operating_hours_status', { p_store: storeId });
       if (error) throw new Error(error.message);
       const r = (data ?? {}) as unknown as Record<string, unknown>;
+
+      const localDate = typeof r.local_date === 'string' ? r.local_date : '';
+      if (!YMD_RE.test(localDate)) throw failed('오늘 날짜');
+
       const today = r.today as Record<string, unknown> | null;
-      if (!today) throw new Error('서버가 영업시간을 주지 않았어요. 잠시 후 다시 시도해 주세요');
+      if (!today) throw failed('오늘 영업시간');
+
       const p = r.pending as Record<string, unknown> | null;
-      return {
-        localDate: String(r.local_date ?? ''),
-        today: hoursOf(today),
-        pending: p
-          ? { effectiveFrom: String(p.effective_from ?? ''),
-              hours: hoursOf((p.hours ?? {}) as Record<string, unknown>) }
-          : null,
-      };
+      let pending: HoursStatus['pending'] = null;
+      if (p) {
+        const from = typeof p.effective_from === 'string' ? p.effective_from : '';
+        if (!YMD_RE.test(from)) throw failed('영업시간 적용 시작일');
+        pending = {
+          effectiveFrom: from,
+          hours: hoursOf((p.hours ?? {}) as Record<string, unknown>, '예약된'),
+        };
+      }
+
+      return { localDate, today: hoursOf(today, '오늘'), pending };
     },
   });
 }

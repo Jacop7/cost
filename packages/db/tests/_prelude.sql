@@ -191,21 +191,38 @@ end $h$;
  */
 create function pg_temp.close_today() returns date
 language plpgsql as $h$
-declare v_day date := business_day(); v_st text;
+declare v_id uuid; v_day date; v_st text;
 begin
+  /*
+   * ⚠ **닫기 전에 실제로 열려 있는 행을 잡아 둔다.** 예전엔 `business_day()` 로 오늘을
+   *   구해 그 날짜만 확인했는데, `business_day()` 는 `business_cutoff()` → `settings`
+   *   를 읽는다. 시험 도중 영업시간을 18:00~02:00 으로 바꾸면 cutoff 가 생겨
+   *   **검사 날짜가 전날로 옮겨 간다.** 실제 실행 시각이 00:00~02:00 이면 오늘 장부가
+   *   안 닫혔는데도 사후조건이 통과한다 — 시각에 기대는 시험이 된다.
+   *   여는 쪽이 만든 그 행을 그대로 따라가면 시각과 무관해진다.
+   */
+  select id, business_date into v_id, v_day
+    from business_days
+   where store_id = pg_temp.store() and status::text <> 'closed'
+   order by business_date desc
+   limit 1;
+
+  if v_id is null then
+    return business_day();   -- 열린 게 없다. 원하는 상태가 이미 맞다.
+  end if;
+
   begin
     perform close_business_day(pg_temp.store());
   exception
+    -- 22000 = 영업 중이 아니에요 / 45002 = 이미 종료된 영업일이에요. 둘 다 원하는 상태다.
     when sqlstate '22000' or sqlstate '45002' then null;
   end;
 
-  -- ── 사후조건: 오늘이 열려 있지 않다 ──
-  select max(status::text) into v_st
-    from business_days
-   where store_id = pg_temp.store() and business_date = v_day;
-
-  if v_st in ('open', 'break') then
-    raise exception 'close_today: 오늘(%) 영업일이 아직 %입니다 — 닫히지 않았습니다', v_day, v_st
+  -- ── 사후조건: **그 행**이 닫혔다 ──
+  select status::text into v_st from business_days where id = v_id;
+  if v_st is distinct from 'closed' then
+    raise exception 'close_today: %(%) 영업일이 아직 %입니다 — 닫히지 않았습니다',
+      v_day, v_id, coalesce(v_st, '(사라짐)')
       using errcode = '45003';
   end if;
 

@@ -127,11 +127,17 @@ export default function MyHoursScreen() {
       <AppHeader title="영업시간" onBack={() => safeBack('/my')} />
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ padding: 16, paddingBottom: 24, gap: 11 }}>
+        {/*
+          ⚠ **둘을 같이 본다**(0132). 예전엔 `settings` 만 봤다. 그러면
+            `operating_hours_status()` 가 죽어도 화면은 멀쩡히 열리고 적용 예정 안내만
+            소리 없이 사라진다 — 영업 중에 바꾼 시간이 언제부터인지 아무도 안 알려 준다.
+            둘 중 하나라도 못 불러오면 화면을 안 그리는 게 맞다.
+        */}
         <QueryState
-          isLoading={settings.isLoading}
-          error={settings.error}
+          isLoading={settings.isLoading || status.isLoading}
+          error={settings.error ?? status.error}
           isEmpty={false}
-          onRetry={() => void settings.refetch()}
+          onRetry={() => { void settings.refetch(); void status.refetch(); }}
           emptyTitle="설정을 불러오지 못했어요"
         >
           {/*
@@ -145,11 +151,14 @@ export default function MyHoursScreen() {
                 <View style={{ paddingTop: 1 }}><Icon name="calendar" size={18} color={T.blue} /></View>
                 <View style={{ flex: 1 }}>
                   <Text style={{ fontSize: 15, fontWeight: '800', color: T.blue }}>
-                    {mdLabel(pending.effectiveFrom)}부터 적용돼요
+                    변경한 영업시간은 {mdLabel(pending.effectiveFrom)}부터 적용돼요
                   </Text>
+                  {/*
+                    ⚠ `영업 중에 바꾼` 이라고 쓰면 안 된다 — 오늘 영업을 **이미 종료한 뒤**
+                      바꿔도 예약 규칙이 생긴다. 조건을 좁게 적으면 그 경우에 화면이 틀린다.
+                  */}
                   <Text style={{ fontSize: 14, color: T.ter, marginTop: 2 }}>
-                    오늘은 {status.data?.today.openTime.slice(0, 5)}~{status.data?.today.closeTime.slice(0, 5)} 그대로예요.
-                    영업 중에 바꾼 시간은 다음 영업일부터 적용돼요.
+                    오늘 영업시간은 {status.data?.today.openTime.slice(0, 5)}~{status.data?.today.closeTime.slice(0, 5)} 그대로예요.
                   </Text>
                 </View>
               </View>
