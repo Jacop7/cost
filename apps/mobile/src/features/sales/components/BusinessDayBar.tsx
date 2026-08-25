@@ -18,7 +18,7 @@ import { type Href, useRouter } from 'expo-router';
 import { Button, ConfirmSheet, Icon, Sheet } from '@/components/kit';
 import { useState } from 'react';
 import { T } from '@/theme/tokens';
-import { useRecipeShortages } from '../hooks';
+import { useCheckRecipeShortages, type ShortageRecipe } from '../hooks';
 import { ShortageWarningSheet } from './ShortageWarningSheet';
 import {
   hhmm,
@@ -81,13 +81,33 @@ export function BusinessDayBar({ state }: { state: BusinessDayState }) {
    * `현재 재고 < 1개 필요량` 인 레시피만 잡는다. 안전재고 미달인데 1개는 만들 수
    * 있는 건 여기 안 넣는다 — 매일 뜨는 빨간 경고는 아무도 안 읽는다.
    */
-  const shortage = useRecipeShortages();
-  const [askShort, setAskShort] = useState(false);
+  const checkShortages = useCheckRecipeShortages();
+  const [askShort, setAskShort] = useState<null | ShortageRecipe[]>(null);
+  const [checking, setChecking] = useState(false);
 
-  /** 잠금 설명을 먼저 보이고, 그다음에 부족을 알린다. 부족이 없으면 바로 시작한다. */
+  /**
+   * 잠금 설명을 먼저 보이고, 그다음에 부족을 알린다. 부족이 없으면 바로 시작한다.
+   *
+   * ⚠ 여기서 **그 순간 서버에 묻는다.** 캐시를 읽던 시절엔 아직 안 받았거나 실패했을 때
+   *   `?? 0` 에 걸려 부족이 없는 것처럼 지나갔다 — 경고가 있어야 할 자리에서 조용했다.
+   */
   const startDay = () => {
-    if ((shortage.data?.ingredientCount ?? 0) > 0) { setAskShort(true); return; }
-    open.mutate(undefined, { onError: fail });
+    setChecking(true);
+    void (async () => {
+      try {
+        const short = await checkShortages();
+        if (short.ingredientCount > 0) { setAskShort(short.recipes); return; }
+        open.mutate(undefined, { onError: fail });
+      } catch {
+        /*
+         * 재는 데 실패했다고 **영업 시작을 막지 않는다.** 부족 확인은 알려 주는 절차이지
+         * 허가가 아니다(기획안 §4.4). 조회 한 번 실패했다고 장사를 못 열면 그게 더 나쁘다.
+         */
+        open.mutate(undefined, { onError: fail });
+      } finally {
+        setChecking(false);
+      }
+    })();
   };
 
   /*
@@ -150,7 +170,7 @@ export function BusinessDayBar({ state }: { state: BusinessDayState }) {
               마감하고 시작
             </Button>
           ) : state.status === 'none' ? (
-            <Button kind="primary" size="sm" onPress={onOpen} loading={open.isPending} accessibilityLabel="영업 시작">
+            <Button kind="primary" size="sm" onPress={onOpen} loading={open.isPending || checking} accessibilityLabel="영업 시작">
               영업 시작
             </Button>
           ) : running ? (
@@ -194,13 +214,13 @@ export function BusinessDayBar({ state }: { state: BusinessDayState }) {
           `식재료 부족 N개` 안내가 계속 들고 있는다.
       */}
       <ShortageWarningSheet
-        visible={askShort}
+        visible={askShort !== null}
         mode="start"
-        recipes={shortage.data?.recipes ?? []}
+        recipes={askShort ?? []}
         loading={open.isPending}
-        onCheck={() => { setAskShort(false); router.push('/sales/stock-check?mode=start' as Href); }}
-        onContinue={() => { setAskShort(false); open.mutate(undefined, { onError: fail }); }}
-        onClose={() => setAskShort(false)}
+        onCheck={() => { setAskShort(null); router.push('/sales/stock-check?mode=start' as Href); }}
+        onContinue={() => { setAskShort(null); open.mutate(undefined, { onError: fail }); }}
+        onClose={() => setAskShort(null)}
       />
       <ConfirmSheet
         visible={ask === 'close'}

@@ -139,30 +139,36 @@ begin
 
   -- ── 식재료 (ING-02 등록 화면과 같은 함수) ───────────────────
   -- 검산 4종 — 단가가 고정이어야 하는 품목
-  i_pa     := save_ingredient(v_store, jsonb_build_object('name','대파','category_id',c_veg,'base_unit','g','per_volume',1000,'safety_stock',2,'min_order_qty',1,'default_vendor_id',vd_nong));
-  i_pork   := save_ingredient(v_store, jsonb_build_object('name','돼지고기 앞다리','category_id',c_meat,'base_unit','g','per_volume',5000,'safety_stock',2,'min_order_qty',1,'default_vendor_id',vd_chuk));
-  i_onion  := save_ingredient(v_store, jsonb_build_object('name','양파','category_id',c_veg,'base_unit','g','per_volume',1200,'safety_stock',3,'min_order_qty',1,'default_vendor_id',vd_nong));
-  i_garlic := save_ingredient(v_store, jsonb_build_object('name','다진마늘','category_id',c_sauce,'base_unit','g','per_volume',1000,'safety_stock',2,'min_order_qty',1,'default_vendor_id',vd_online));
+  -- ⚠ 안전재고는 **기준단위**다(0073). 예전 시드는 구매단위 개수로 적었다 —
+  --   대파 `2`(2망)처럼. 0073 이 `× per_volume` 로 옮겨 적어서 개발 DB 는 멀쩡했지만,
+  --   새로 리셋하면 마이그레이션이 시드보다 먼저 도니 옮길 행이 없어 `2` 가 그대로 남는다.
+  --   그러면 `stockStateOf` 가 재고 1,900g 을 `안전재고 2g` 과 견주게 되어
+  --   **소진 임박이 영영 안 뜬다.** 별도 DB 로 새로 깔아 보고서야 드러났다(0111).
+  --   `safety_stock_is_base` 는 0111 이 기본값 true 로 바꿨다 — 지금은 늘 기준단위다.
+  i_pa     := save_ingredient(v_store, jsonb_build_object('name','대파','category_id',c_veg,'base_unit','g','per_volume',1000,'safety_stock',2000,'min_order_qty',1,'default_vendor_id',vd_nong));
+  i_pork   := save_ingredient(v_store, jsonb_build_object('name','돼지고기 앞다리','category_id',c_meat,'base_unit','g','per_volume',5000,'safety_stock',10000,'min_order_qty',1,'default_vendor_id',vd_chuk));
+  i_onion  := save_ingredient(v_store, jsonb_build_object('name','양파','category_id',c_veg,'base_unit','g','per_volume',1200,'safety_stock',3600,'min_order_qty',1,'default_vendor_id',vd_nong));
+  i_garlic := save_ingredient(v_store, jsonb_build_object('name','다진마늘','category_id',c_sauce,'base_unit','g','per_volume',1000,'safety_stock',2000,'min_order_qty',1,'default_vendor_id',vd_online));
 
   -- 나머지 — 단가가 움직이는 품목들
-  i_kimchi    := save_ingredient(v_store, jsonb_build_object('name','배추김치','category_id',c_tofu,'base_unit','g','per_volume',10000,'safety_stock',1,'min_order_qty',1,'default_vendor_id',vd_online));
+  i_kimchi    := save_ingredient(v_store, jsonb_build_object('name','배추김치','category_id',c_tofu,'base_unit','g','per_volume',10000,'safety_stock',10000,'min_order_qty',1,'default_vendor_id',vd_online));
   i_tofu      := save_ingredient(v_store, jsonb_build_object('name','두부','category_id',c_tofu,'base_unit','ea','per_volume',1,'safety_stock',10,'min_order_qty',10,'default_vendor_id',vd_mart,'memo','찌개용 부침두부. 유통기한 짧음'));
-  i_egg       := save_ingredient(v_store, jsonb_build_object('name','계란','category_id',c_meat,'base_unit','ea','per_volume',30,'safety_stock',2,'min_order_qty',1,'default_vendor_id',vd_mart));
-  i_gochu     := save_ingredient(v_store, jsonb_build_object('name','고춧가루','category_id',c_spice,'base_unit','g','per_volume',1000,'safety_stock',1,'min_order_qty',1,'default_vendor_id',vd_online));
-  i_doenjang  := save_ingredient(v_store, jsonb_build_object('name','된장','category_id',c_sauce,'base_unit','g','per_volume',3000,'safety_stock',1,'min_order_qty',1,'default_vendor_id',vd_online));
-  i_gochujang := save_ingredient(v_store, jsonb_build_object('name','고추장','category_id',c_sauce,'base_unit','g','per_volume',3000,'safety_stock',1,'min_order_qty',1,'default_vendor_id',vd_online));
-  i_rice      := save_ingredient(v_store, jsonb_build_object('name','쌀','category_id',c_grain,'base_unit','g','per_volume',10000,'safety_stock',1,'min_order_qty',1,'default_vendor_id',vd_online));
-  i_hobak     := save_ingredient(v_store, jsonb_build_object('name','애호박','category_id',c_veg,'base_unit','g','per_volume',300,'safety_stock',5,'min_order_qty',5,'default_vendor_id',vd_nong));
-  i_cheong    := save_ingredient(v_store, jsonb_build_object('name','청양고추','category_id',c_veg,'base_unit','g','per_volume',200,'safety_stock',3,'min_order_qty',3,'default_vendor_id',vd_nong));
-  i_oil       := save_ingredient(v_store, jsonb_build_object('name','식용유','category_id',c_sauce,'base_unit','ml','per_volume',1800,'safety_stock',1,'min_order_qty',1,'default_vendor_id',vd_online));
-  i_sugar     := save_ingredient(v_store, jsonb_build_object('name','설탕','category_id',c_grain,'base_unit','g','per_volume',3000,'safety_stock',1,'min_order_qty',1,'default_vendor_id',vd_online));
+  i_egg       := save_ingredient(v_store, jsonb_build_object('name','계란','category_id',c_meat,'base_unit','ea','per_volume',30,'safety_stock',60,'min_order_qty',1,'default_vendor_id',vd_mart));
+  i_gochu     := save_ingredient(v_store, jsonb_build_object('name','고춧가루','category_id',c_spice,'base_unit','g','per_volume',1000,'safety_stock',1000,'min_order_qty',1,'default_vendor_id',vd_online));
+  i_doenjang  := save_ingredient(v_store, jsonb_build_object('name','된장','category_id',c_sauce,'base_unit','g','per_volume',3000,'safety_stock',3000,'min_order_qty',1,'default_vendor_id',vd_online));
+  i_gochujang := save_ingredient(v_store, jsonb_build_object('name','고추장','category_id',c_sauce,'base_unit','g','per_volume',3000,'safety_stock',3000,'min_order_qty',1,'default_vendor_id',vd_online));
+  i_rice      := save_ingredient(v_store, jsonb_build_object('name','쌀','category_id',c_grain,'base_unit','g','per_volume',10000,'safety_stock',10000,'min_order_qty',1,'default_vendor_id',vd_online));
+  i_hobak     := save_ingredient(v_store, jsonb_build_object('name','애호박','category_id',c_veg,'base_unit','g','per_volume',300,'safety_stock',1500,'min_order_qty',5,'default_vendor_id',vd_nong));
+  i_cheong    := save_ingredient(v_store, jsonb_build_object('name','청양고추','category_id',c_veg,'base_unit','g','per_volume',200,'safety_stock',600,'min_order_qty',3,'default_vendor_id',vd_nong));
+  i_oil       := save_ingredient(v_store, jsonb_build_object('name','식용유','category_id',c_sauce,'base_unit','ml','per_volume',1800,'safety_stock',1800,'min_order_qty',1,'default_vendor_id',vd_online));
+  i_sugar     := save_ingredient(v_store, jsonb_build_object('name','설탕','category_id',c_grain,'base_unit','g','per_volume',3000,'safety_stock',3000,'min_order_qty',1,'default_vendor_id',vd_online));
   -- 양념장은 사장님이 만들어 두고 쓰는 물건이지만, 1차에서는 **일반 식재료**로 둔다.
   -- 반제품(중간 레시피)은 설계상 1차 범위 밖이다(레시피 v3 §142 "구조만 예약").
   -- 한 통 1,200ml 기준. 단가는 입고에서 나온다(3,806원/통 = 3.1717원/ml).
-  i_sauce     := save_ingredient(v_store, jsonb_build_object('name','불고기 양념장','category_id',c_sauce,'base_unit','ml','per_volume',1200,'safety_stock',1,'min_order_qty',1,'default_vendor_id',vd_online));
-  i_soy       := save_ingredient(v_store, jsonb_build_object('name','진간장','category_id',c_sauce,'base_unit','ml','per_volume',1800,'safety_stock',1,'min_order_qty',1,'default_vendor_id',vd_online));
-  i_beef      := save_ingredient(v_store, jsonb_build_object('name','소고기 불고기감','category_id',c_meat,'base_unit','g','per_volume',1000,'safety_stock',2,'min_order_qty',1,'default_vendor_id',vd_chuk));
-  i_anchovy   := save_ingredient(v_store, jsonb_build_object('name','국물용 멸치','category_id',c_sea,'base_unit','g','per_volume',500,'safety_stock',1,'min_order_qty',1,'default_vendor_id',vd_online));
+  i_sauce     := save_ingredient(v_store, jsonb_build_object('name','불고기 양념장','category_id',c_sauce,'base_unit','ml','per_volume',1200,'safety_stock',1200,'min_order_qty',1,'default_vendor_id',vd_online));
+  i_soy       := save_ingredient(v_store, jsonb_build_object('name','진간장','category_id',c_sauce,'base_unit','ml','per_volume',1800,'safety_stock',1800,'min_order_qty',1,'default_vendor_id',vd_online));
+  i_beef      := save_ingredient(v_store, jsonb_build_object('name','소고기 불고기감','category_id',c_meat,'base_unit','g','per_volume',1000,'safety_stock',2000,'min_order_qty',1,'default_vendor_id',vd_chuk));
+  i_anchovy   := save_ingredient(v_store, jsonb_build_object('name','국물용 멸치','category_id',c_sea,'base_unit','g','per_volume',500,'safety_stock',500,'min_order_qty',1,'default_vendor_id',vd_online));
 
   -- ── 구매 옵션 (ING-05) ──────────────────────────────────────
   -- 같은 재료를 어디서 얼마에 살 수 있는지. 발주 화면이 여기서 값을 채운다.
@@ -172,6 +178,111 @@ begin
   perform save_purchase_option(v_store, jsonb_build_object('ingredient_id',i_kimchi,'purchase_name','포기김치 10kg','vendor_id',vd_online,'volume',10000,'amount',32000,'url','https://example.com/kimchi-10kg'));
   perform save_purchase_option(v_store, jsonb_build_object('ingredient_id',i_rice,'purchase_name','신동진 10kg','vendor_id',vd_online,'volume',10000,'amount',32000));
   perform save_purchase_option(v_store, jsonb_build_object('ingredient_id',i_oil,'purchase_name','카놀라유 1.8L','vendor_id',vd_online,'volume',1800,'amount',6500));
+
+  -- ══════════════════════════════════════════════════════════
+  -- 개업 재고 — **레시피보다 먼저**
+  -- ══════════════════════════════════════════════════════════
+  -- ⚠ 순서가 이 세 가지를 한꺼번에 정한다(0110·0112). 셋 다 같은 뿌리다 —
+  --   **값이 없는 상태로 굳은 것을 나중에 되돌릴 수 없다.**
+  --
+  --   기준단가는 `쓴 돈 ÷ 들어온 양`(0072)이고 그 '쓴 돈'은 발주 기록에서 온다.
+  --   그러니 발주가 하나도 없는 동안에는 모든 단가가 null 이다. 그 상태에서
+  --     · 레시피를 만들면  → 손익 추이의 **기준선**이 재료비 0 으로 박힌다
+  --     · 영업을 시작하면  → 그날 **스냅샷**이 재료비 0 으로 얼어붙는다
+  --   둘 다 지나간 기록이라 나중에 입고해도 안 고쳐진다.
+  --
+  --   실측(새 DB 로 확인): 첫날 매출 600,000원에 재료비 0원, 기준선 재료비도 0.
+  --   기대값은 제육볶음 2,806.40 이다.
+  --
+  -- ⚠ 개업 재고만 앞에 둔다. **보충 입고는 영업 시작 뒤**가 맞다 —
+  --   장사 중에 들어온 물건이 그날 스냅샷을 흔들면 안 된다(0048).
+  v_day := business_day() - 21;
+    o := e7_place_order(v_store, i_pork,      vd_chuk,   null, 5000, 65000, 4, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 4, 'S1-PORK',   v_day);
+    o := e7_place_order(v_store, i_pa,        vd_nong,   null, 1000,  4000, 8, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 8, 'S1-PA',     v_day);
+    o := e7_place_order(v_store, i_onion,     vd_nong,   null, 1200,  2268,10, v_day, 'manual', v_day); perform e1_confirm_inbound(o,10, 'S1-ONION',  v_day);
+    o := e7_place_order(v_store, i_garlic,    vd_online, null, 1000,  8500, 2, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 2, 'S1-GARLIC', v_day);
+    o := e7_place_order(v_store, i_sauce,     vd_online, null, 1200,  3806, 3, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 3, 'S1-SAUCE',  v_day);
+    o := e7_place_order(v_store, i_kimchi,    vd_online, null,10000, 32000, 3, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 3, 'S1-KIMCHI', v_day);
+    o := e7_place_order(v_store, i_tofu,      vd_mart,   null,    1,  1800,90, v_day, 'manual', v_day); perform e1_confirm_inbound(o,90, 'S1-TOFU',   v_day);
+    o := e7_place_order(v_store, i_egg,       vd_mart,   null,   30,  8700, 7, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 7, 'S1-EGG',    v_day);
+    o := e7_place_order(v_store, i_gochu,     vd_online, null, 1000, 28000, 2, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 2, 'S1-GOCHU',  v_day);
+    o := e7_place_order(v_store, i_doenjang,  vd_online, null, 3000, 12000, 3, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 3, 'S1-DEN',    v_day);
+    o := e7_place_order(v_store, i_gochujang, vd_online, null, 3000, 15000, 2, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 2, 'S1-GOJ',    v_day);
+    o := e7_place_order(v_store, i_rice,      vd_online, null,10000, 32000, 7, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 7, 'S1-RICE',   v_day);
+    o := e7_place_order(v_store, i_hobak,     vd_nong,   null,  300,  1500,20, v_day, 'manual', v_day); perform e1_confirm_inbound(o,20, 'S1-HOBAK',  v_day);
+    o := e7_place_order(v_store, i_cheong,    vd_nong,   null,  200,  2000, 12, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 12, 'S1-CHEONG', v_day);
+    o := e7_place_order(v_store, i_oil,       vd_online, null, 1800,  6500, 2, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 2, 'S1-OIL',    v_day);
+    o := e7_place_order(v_store, i_sugar,     vd_online, null, 3000,  5400, 1, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 1, 'S1-SUGAR',  v_day);
+    o := e7_place_order(v_store, i_soy,       vd_online, null, 1800,  7200, 2, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 2, 'S1-SOY',    v_day);
+    o := e7_place_order(v_store, i_beef,      vd_chuk,   null, 1000, 28000, 4, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 4, 'S1-BEEF',   v_day);
+    o := e7_place_order(v_store, i_anchovy,   vd_online, null,  500,  9800, 7, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 7, 'S1-ANCH',   v_day);
+
+  -- ⚠ 고정지출·세금은 **레시피보다 먼저** 정한다(0112). 레시피를 만드는 순간
+  --   손익 추이의 **기준선**이 박히는데, 그 기준선은 재료비뿐 아니라 세금과
+  --   고정지출까지 담는다. 뒤에 두면 기준선이 `세금 0 · 고정지출 0` 으로 굳고,
+  --   나중에 세금을 저장해도 지나간 기준선은 안 고쳐진다.
+  --   실측(새 DB): 기준선 세금이 1,090.91 이 아니라 0 이었다.
+
+  -- ── 고정지출 (MY-05) ────────────────────────────────────────
+  -- 고정지출률 **31.3%** (3,756,000 / 12,000,000) — AGENTS.md 검산값.
+  -- ⚠ 항목을 고칠 땐 합계를 반드시 다시 맞출 것.
+  --
+  -- 지난달과 이번달 둘 다 넣는다. recompute_recipe 는 `business_month()`(오늘 기준)로
+  -- 고정지출률을 찾으므로 과거 월만 있으면 오늘 조회가 null 이 되어 고정지출 0 으로 계산된다
+  -- (실증: 33.49% 여야 할 값이 64.79% 로 나왔다).
+  -- 채널 비중(weights): 수수료·배달대행은 배달에만, 포장비는 배달·포장에만 든다.
+  -- 이걸 안 넣으면 매장이 배달 수수료를 떠안아 "매장이 적자"로 보인다.
+  -- 합계만 넣으면 화면이 "합계 입력 2,400,000원" 한 줄로 끝나 무엇으로 이뤄진
+  -- 금액인지 알 수 없다. 실제 사장님은 급여 명세와 정산서를 보고 적으므로
+  -- **세부 내역**으로 넣는다. 소계는 그대로여야 한다 — 31.30% 검산값이 걸려 있다.
+  perform save_fixed_costs(v_store, m, 12000000, jsonb_build_array(
+      jsonb_build_object('key','labor', 'mode','detail','total',2400000,
+                         'lines', jsonb_build_array(
+                           jsonb_build_object('name','주방 이모 (월급)','amount',1700000),
+                           jsonb_build_object('name','홀 아르바이트','amount',700000)),
+                         'weights', jsonb_build_object('hall',30,'delivery',50,'takeout',20)),
+      jsonb_build_object('key','commission','mode','detail','total',603000,
+                         'lines', jsonb_build_array(
+                           jsonb_build_object('name','배달앱 중개 수수료','amount',380000),
+                           jsonb_build_object('name','카드·간편결제 수수료','amount',133000),
+                           jsonb_build_object('name','포장 주문 중개','amount',90000)),
+                         'weights', jsonb_build_object('delivery',100)),
+      jsonb_build_object('key','packing','mode','detail','total',380000,
+                         'lines', jsonb_build_array(
+                           jsonb_build_object('name','포장 용기','amount',260000),
+                           jsonb_build_object('name','비닐봉투·수저세트','amount',120000)),
+                         'weights', jsonb_build_object('delivery',70,'takeout',30)),
+      jsonb_build_object('key','delivery','mode','detail','total',120000,
+                         'lines', jsonb_build_array(
+                           jsonb_build_object('name','배달대행 월정액','amount',120000)),
+                         'weights', jsonb_build_object('delivery',100)),
+      jsonb_build_object('key','ads','mode','detail','total',253000,
+                         'lines', jsonb_build_array(
+                           jsonb_build_object('name','배달앱 광고','amount',180000),
+                           jsonb_build_object('name','전단·SNS','amount',73000)))
+    ))  -- 2,400,000 + 603,000 + 380,000 + 120,000 + 253,000 = 3,756,000
+  from (select distinct m from unnest(array[
+          to_char((business_day() - 30)::date, 'YYYY-MM'),
+          business_month()]) m) months;
+
+  -- ══════════════════════════════════════════════════════════
+  -- 세금 (0090) — 매장 하나에 하나
+  -- ══════════════════════════════════════════════════════════
+  -- ⚠ 여기가 없어서 **새로 리셋하면 검산이 깨졌다**(0111). 별도 DB 에 마이그레이션
+  --   101개 + 시드를 새로 깔아 보고서야 드러났다 —
+  --       제육볶음 순이익  기대 4,046.69 · 실제 5,137.60  (차이 1,090.91 = 부가세)
+  --
+  --   여태 개발 DB 가 멀쩡했던 건 0090 이 **이미 있던 행을 옮겨 적었기** 때문이다.
+  --   새 DB 에서는 마이그레이션이 시드보다 먼저 도니 옮겨 적을 행이 없다.
+  --   시드가 옛 모델(레시피별 `tax_mode`)만 알고 `settings.tax_items` 를 안 채웠다.
+  --
+  -- ⚠ 10% 가 아니라 **9.0909…%** 다. 부가세 포함 가격에서 부가세는 판매가의 10/110 이다.
+  --   10 을 적으면 12,000원 메뉴에서 109원이 더 빠진다(CLAUDE.md 검산 기준값).
+  --
+  -- ⚠ 3주 재생보다 **먼저** 부른다. 영업일 스냅샷이 그날 세금을 얼리기 때문에,
+  --   뒤에 두면 이미 지나간 날들이 세금 0 으로 굳는다.
+  perform save_store_tax(v_store, 'included'::tax_mode,
+    jsonb_build_array(jsonb_build_object('name', '부가세', 'rate', 9.0909090909)));
 
   -- ── 레시피 (RCP-03 등록 화면과 같은 함수) ───────────────────
   --
@@ -253,88 +364,12 @@ begin
       jsonb_build_object('ingredient_id',i_sauce,'input_qty',600)),   -- 양념장 600ml
     'extras', jsonb_build_array(jsonb_build_object('material_id',m_plate,'qty',1))));
 
-  -- ── 고정지출 (MY-05) ────────────────────────────────────────
-  -- 고정지출률 **31.3%** (3,756,000 / 12,000,000) — AGENTS.md 검산값.
-  -- ⚠ 항목을 고칠 땐 합계를 반드시 다시 맞출 것.
-  --
-  -- 지난달과 이번달 둘 다 넣는다. recompute_recipe 는 `business_month()`(오늘 기준)로
-  -- 고정지출률을 찾으므로 과거 월만 있으면 오늘 조회가 null 이 되어 고정지출 0 으로 계산된다
-  -- (실증: 33.49% 여야 할 값이 64.79% 로 나왔다).
-  -- 채널 비중(weights): 수수료·배달대행은 배달에만, 포장비는 배달·포장에만 든다.
-  -- 이걸 안 넣으면 매장이 배달 수수료를 떠안아 "매장이 적자"로 보인다.
-  -- 합계만 넣으면 화면이 "합계 입력 2,400,000원" 한 줄로 끝나 무엇으로 이뤄진
-  -- 금액인지 알 수 없다. 실제 사장님은 급여 명세와 정산서를 보고 적으므로
-  -- **세부 내역**으로 넣는다. 소계는 그대로여야 한다 — 31.30% 검산값이 걸려 있다.
-  perform save_fixed_costs(v_store, m, 12000000, jsonb_build_array(
-      jsonb_build_object('key','labor', 'mode','detail','total',2400000,
-                         'lines', jsonb_build_array(
-                           jsonb_build_object('name','주방 이모 (월급)','amount',1700000),
-                           jsonb_build_object('name','홀 아르바이트','amount',700000)),
-                         'weights', jsonb_build_object('hall',30,'delivery',50,'takeout',20)),
-      jsonb_build_object('key','commission','mode','detail','total',603000,
-                         'lines', jsonb_build_array(
-                           jsonb_build_object('name','배달앱 중개 수수료','amount',380000),
-                           jsonb_build_object('name','카드·간편결제 수수료','amount',133000),
-                           jsonb_build_object('name','포장 주문 중개','amount',90000)),
-                         'weights', jsonb_build_object('delivery',100)),
-      jsonb_build_object('key','packing','mode','detail','total',380000,
-                         'lines', jsonb_build_array(
-                           jsonb_build_object('name','포장 용기','amount',260000),
-                           jsonb_build_object('name','비닐봉투·수저세트','amount',120000)),
-                         'weights', jsonb_build_object('delivery',70,'takeout',30)),
-      jsonb_build_object('key','delivery','mode','detail','total',120000,
-                         'lines', jsonb_build_array(
-                           jsonb_build_object('name','배달대행 월정액','amount',120000)),
-                         'weights', jsonb_build_object('delivery',100)),
-      jsonb_build_object('key','ads','mode','detail','total',253000,
-                         'lines', jsonb_build_array(
-                           jsonb_build_object('name','배달앱 광고','amount',180000),
-                           jsonb_build_object('name','전단·SNS','amount',73000)))
-    ))  -- 2,400,000 + 603,000 + 380,000 + 120,000 + 253,000 = 3,756,000
-  from (select distinct m from unnest(array[
-          to_char((business_day() - 30)::date, 'YYYY-MM'),
-          business_month()]) m) months;
-
   -- ══════════════════════════════════════════════════════════
   -- 최근 3주 재생 — 입고와 판매를 **날짜 순서대로**
   -- ══════════════════════════════════════════════════════════
   for d in reverse 21 .. 0 loop
     v_day := business_day() - d;
     v_seq := v_seq + 1;
-
-    -- ── 개업 재고 (첫날만) ───────────────────────────────────
-    -- ⚠ **영업 시작보다 먼저** 채운다(0110). 순서가 반대였을 때 7/30 하루가 통째로
-    --   망가졌다 — 그날 스냅샷의 재료비가 메뉴 7종 전부 `0` 이었다.
-    --
-    --   기준단가는 `쓴 돈 ÷ 들어온 양`(0072)이고, 그 '쓴 돈'은 발주 기록에서 온다.
-    --   개업 전에는 발주가 하나도 없으니 모든 단가가 null 이고, 그 상태로 영업을
-    --   시작하면 재료비 0 이 그날 스냅샷에 **얼어붙는다.** 스냅샷은 하루 동안
-    --   고정이므로 나중에 입고해도 그날은 영영 0 이다.
-    --
-    --   그래서 7/30 만 매출 600,000원에 재료비 0원이었다. 이튿날부터는 전날
-    --   단가가 남아 있어 멀쩡했고, 그 탓에 하루짜리 구멍을 오래 못 봤다.
-    if v_seq = 1 then
-      o := e7_place_order(v_store, i_pork,      vd_chuk,   null, 5000, 65000, 4, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 4, 'S1-PORK',   v_day);
-      o := e7_place_order(v_store, i_pa,        vd_nong,   null, 1000,  4000, 8, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 8, 'S1-PA',     v_day);
-      o := e7_place_order(v_store, i_onion,     vd_nong,   null, 1200,  2268,10, v_day, 'manual', v_day); perform e1_confirm_inbound(o,10, 'S1-ONION',  v_day);
-      o := e7_place_order(v_store, i_garlic,    vd_online, null, 1000,  8500, 2, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 2, 'S1-GARLIC', v_day);
-      o := e7_place_order(v_store, i_sauce,     vd_online, null, 1200,  3806, 3, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 3, 'S1-SAUCE',  v_day);
-      o := e7_place_order(v_store, i_kimchi,    vd_online, null,10000, 32000, 3, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 3, 'S1-KIMCHI', v_day);
-      o := e7_place_order(v_store, i_tofu,      vd_mart,   null,    1,  1800,90, v_day, 'manual', v_day); perform e1_confirm_inbound(o,90, 'S1-TOFU',   v_day);
-      o := e7_place_order(v_store, i_egg,       vd_mart,   null,   30,  8700, 7, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 7, 'S1-EGG',    v_day);
-      o := e7_place_order(v_store, i_gochu,     vd_online, null, 1000, 28000, 2, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 2, 'S1-GOCHU',  v_day);
-      o := e7_place_order(v_store, i_doenjang,  vd_online, null, 3000, 12000, 3, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 3, 'S1-DEN',    v_day);
-      o := e7_place_order(v_store, i_gochujang, vd_online, null, 3000, 15000, 2, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 2, 'S1-GOJ',    v_day);
-      o := e7_place_order(v_store, i_rice,      vd_online, null,10000, 32000, 7, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 7, 'S1-RICE',   v_day);
-      o := e7_place_order(v_store, i_hobak,     vd_nong,   null,  300,  1500,20, v_day, 'manual', v_day); perform e1_confirm_inbound(o,20, 'S1-HOBAK',  v_day);
-      o := e7_place_order(v_store, i_cheong,    vd_nong,   null,  200,  2000, 12, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 12, 'S1-CHEONG', v_day);
-      o := e7_place_order(v_store, i_oil,       vd_online, null, 1800,  6500, 2, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 2, 'S1-OIL',    v_day);
-      o := e7_place_order(v_store, i_sugar,     vd_online, null, 3000,  5400, 1, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 1, 'S1-SUGAR',  v_day);
-      o := e7_place_order(v_store, i_soy,       vd_online, null, 1800,  7200, 2, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 2, 'S1-SOY',    v_day);
-      o := e7_place_order(v_store, i_beef,      vd_chuk,   null, 1000, 28000, 4, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 4, 'S1-BEEF',   v_day);
-      o := e7_place_order(v_store, i_anchovy,   vd_online, null,  500,  9800, 7, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 7, 'S1-ANCH',   v_day);
-
-    end if;
 
     -- ── 영업 시작 (0048) ─────────────────────────────────────
     -- 그날 쓸 값(판매가·재료 구성·단가·부자재·고정지출률)을 여기서 굳힌다.

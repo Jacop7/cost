@@ -191,7 +191,11 @@ export function IngredientDetailScreen() {
                   </Text>
                 ) : null}
                 <View style={{ marginTop: 10, flexDirection: 'row', gap: 6, flexWrap: 'wrap' }}>
-                  <Badge tone={belowSafety(g) ? 'amber' : 'neutral'} sm>안전재고 {g.safetyStock}개</Badge>
+                  {/*
+                    ⚠ 안전재고는 **기준단위**다(0073). `개` 를 붙이면 `2000개` 로 읽힌다 —
+                      실제로는 2,000g 이다. 수량과 같은 포맷을 쓴다.
+                  */}
+                  <Badge tone={belowSafety(g) ? 'amber' : 'neutral'} sm>안전재고 {formatQuantity(g.safetyStock, unit)}</Badge>
                   <Badge tone="neutral" sm>최소발주 {g.minOrderQty}개</Badge>
                   {g.lastInboundAt ? <Badge tone="neutral" sm>최근입고 {g.lastInboundAt.slice(5).replace('-', '/')}</Badge> : null}
                 </View>

@@ -155,6 +155,22 @@ begin
     (select count(*) from profit_trends where recipe_id = v_rcp and profit_amount is not null) >= 5);
 
   -- ── ⑦ 옛 비율 행은 섞이지 않는다 ───────────────────────────
+  /*
+   * 옛 비율 행 = `profit_amount` 컬럼이 생기기 **전에** 쌓인 줄. 비율만 있고 금액이 없다.
+   *
+   * ⚠ 예전엔 "개발 DB 에 그런 줄이 있다"를 전제로 세었다. 그건 **시드가 만드는 게
+   *   아니라 이 DB 가 살아온 흔적**이라, 새 DB 에 깔면 한 줄도 없어서 실패한다
+   *   (실측: 별도 DB 로 새로 깔았더니 여기서 걸렸다). 지켜야 할 건 "그런 줄이
+   *   존재한다"가 아니라 **"있어도 목록에 안 나온다"** 이므로, 직접 하나 만들어서 잰다.
+   */
+  --   `calculation_version = 1` 이 곧 '옛 계산'이라는 표식이다. 아래 ⑨ 도 이걸 센다.
+  insert into profit_trends
+    (store_id, recipe_id, trend_date, profit_rate, material_rate, cause, occurred_at,
+     calculation_version)
+  values
+    (pg_temp.store(), v_rcp, business_day(), 30.00, 23.00, 'material', now() - interval '1 day',
+     1);
+
   perform pg_temp.ok('옛 비율 행이 실제로 있다',
     (select count(*) from profit_trends
       where recipe_id = v_rcp and profit_amount is null) > 0);
