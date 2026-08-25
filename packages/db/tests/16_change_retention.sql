@@ -240,4 +240,59 @@ begin
   perform pg_temp.eq(
     coalesce('인증 사용자가 못 부르는 함수: ' || v_names, '인증 사용자는 전부 부를 수 있다'),
     v_n, 0, 0);
+
+  /*
+   * ⚠ 앞의 두 줄은 **지금 있는** 함수만 본다. 정작 위험한 건 다음에 만들어질 함수다 —
+   *   0135 의 확인이 딱 그래서 통과했고, 실제로는 절반만 걷혀 있었다.
+   *   그러니 **진짜로 하나 만들어** 본다(트랜잭션 안이라 롤백된다).
+   *
+   *   빨개지면 기본 권한 두 층 중 하나가 빠진 것이다(0136):
+   *     PUBLIC 은 전역   → `alter default privileges for role postgres revoke … from public`
+   *     anon   은 스키마별 → `… for role postgres in schema public revoke … from anon`
+   */
+  execute 'reset role';
+  execute 'create function public.zz_grant_probe() returns int language sql as ''select 1''';
+  perform pg_temp.ok('새로 만든 함수는 PUBLIC 이 못 부른다',
+    not has_function_privilege('public', 'public.zz_grant_probe()', 'execute'));
+  perform pg_temp.ok('새로 만든 함수는 anon 도 못 부른다',
+    not has_function_privilege('anon', 'public.zz_grant_probe()', 'execute'));
+  perform pg_temp.ok('그래도 인증 사용자는 부를 수 있다',
+    has_function_privilege('authenticated', 'public.zz_grant_probe()', 'execute'));
+  execute 'drop function public.zz_grant_probe()';
+  execute 'set local role authenticated';
+end $t$;
+
+
+-- ── SECURITY DEFINER 허용 목록 (0136) ─────────────────────────
+/*
+ * definer 함수는 **RLS 를 지나간다.** 그래서 하나 늘 때마다 그게 매장을 가리는지
+ * 사람이 봐야 한다 — `purge_entity_changes` 가 안 가려서 이번 일이 났다.
+ *
+ * 여기 목록을 못 박아 두면, 새 definer 함수가 생길 때 시험이 빨개진다.
+ * 그때 할 일은 목록에 이름을 더하는 게 아니라 **그 함수가 매장을 가리는지 보는 것**이다.
+ *
+ * 지금 다섯의 근거:
+ *   my_store_ids                 auth.uid() 로 자기 매장만. 이게 RLS 의 뿌리다.
+ *   purge_entity_changes         매장을 안 가린다. 대신 30일 고정 + anon 차단(0135).
+ *   set_operating_hours          첫 줄이 assert_my_store 다(0132).
+ *   settings_sync_operating_rule 트리거 전용. 직접 못 부른다.
+ *   stores_default_operating_rule 트리거 전용. 직접 못 부른다.
+ */
+do $t$
+declare v_now text; v_want text;
+begin
+  select string_agg(p.proname, ', ' order by p.proname) into v_now
+    from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+   where n.nspname = 'public' and p.prokind = 'f' and p.prosecdef;
+
+  v_want := 'my_store_ids, purge_entity_changes, set_operating_hours, '
+         || 'settings_sync_operating_rule, stores_default_operating_rule';
+
+  perform pg_temp.eq_t('SECURITY DEFINER 함수 목록이 그대로다', coalesce(v_now, '(없음)'), v_want);
+
+  -- 그리고 그중 anon 이 부를 수 있는 건 하나도 없어야 한다.
+  perform pg_temp.eq('definer 함수 중 anon 이 부를 수 있는 것',
+    (select count(*) from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+      where n.nspname = 'public' and p.prokind = 'f' and p.prosecdef
+        and has_function_privilege('anon', p.oid, 'execute')), 0, 0);
 end $t$;
