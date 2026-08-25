@@ -34,11 +34,7 @@ declare
   v_before numeric;
   v_sum  numeric;
 begin
-  begin
-    perform open_business_day(pg_temp.store());
-  exception when others then
-    begin perform reopen_business_day(pg_temp.store(), business_day()); exception when others then null; end;
-  end;
+  perform pg_temp.open_today();   -- 열린 영업일을 보장한다(프렐류드 헬퍼)
   v_day := business_day();
 
   v_items := jsonb_build_array(
@@ -96,11 +92,7 @@ declare
   v_res jsonb;
   v_before numeric;
 begin
-  begin
-    perform open_business_day(pg_temp.store());
-  exception when others then
-    begin perform reopen_business_day(pg_temp.store(), business_day()); exception when others then null; end;
-  end;
+  perform pg_temp.open_today();   -- 열린 영업일을 보장한다(프렐류드 헬퍼)
   v_day := business_day();
 
   perform save_sale(pg_temp.store(), v_day, jsonb_build_array(

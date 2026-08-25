@@ -192,8 +192,14 @@ export function useAutoCloseSweep(): void {
         if (__DEV__) console.warn('[businessDay] close_if_due:', r.error.message);
         return;
       }
-      // 실제로 닫혔을 수 있으니 상태를 다시 받는다.
-      invalidate(qc, invalidateOn.businessDay());
+      /*
+       * ⚠ **실제로 닫혔을 때만** 갱신한다. 예전엔 매분 무조건 `qk.sales` 전체를
+       *   무효화했다 — 평상시엔 닫히는 일이 없는데도 1분마다 매출 화면의 모든 조회가
+       *   다시 돌았다. 평상시 상태 갱신은 `useBusinessDay()` 의 60초 폴링 몫이다.
+       */
+      if ((r.data as { closed?: boolean } | null)?.closed === true) {
+        invalidate(qc, invalidateOn.businessDay());
+      }
     };
     void run();
     const id = setInterval(() => void run(), 60_000);

@@ -140,7 +140,7 @@ declare
   b1    jsonb;
   v_tx0 numeric;
 begin
-  perform open_business_day(pg_temp.store());
+  perform pg_temp.open_today();   -- 닫혀 있어도 열어 준다(프렐류드 헬퍼)
   perform e10_sale_recorded(pg_temp.store(), v_day, v_rcp, 10, 0, 0, 0);
   b0 := day_menu_detail(pg_temp.store(), v_day, v_rcp);
 
