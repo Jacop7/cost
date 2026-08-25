@@ -137,7 +137,8 @@ begin
   --   테스트는 영업일을 닫았다 다시 열어 새 기준을 잡는다.
   perform close_business_day(pg_temp.store());
   perform reopen_business_day(pg_temp.store(), v_day);
-  update business_days set snapshot = build_day_snapshot(pg_temp.store())
+  -- ⚠ 날짜를 넘긴다(0124). 스냅샷의 고정지출률은 **그 영업일이 속한 달**이어야 한다.
+  update business_days set snapshot = build_day_snapshot(pg_temp.store(), v_day)
    where store_id = pg_temp.store() and business_date = v_day;
 
   d := save_sale(pg_temp.store(), v_day,
