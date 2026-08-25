@@ -77,9 +77,17 @@ export const invalidateOn = {
     [qk.recipes, qk.recipe(recipeId), qk.sales, qk.changeHistory('recipe', recipeId)],
   /** E4 고정지출: 같은 매장 **전 레시피** 손익과 월 손익. */
   e4: (): Key[] => [qk.recipes, qk.settings, qk.sales],
-  /** E5 재고 실사: 재고 상태·이력·뱃지·후보. 기준단가와 주문 기록은 불변. */
+  /**
+   * E5 재고 실사: 재고 상태·이력·뱃지·후보. 기준단가와 주문 기록은 불변.
+   *
+   * ⚠ `qk.sales` 와 `qk.recipes` 가 빠져 있었다. 재고를 고치면 **부족 판정이 바뀐다** —
+   *   매출 상단의 `식재료 부족 N개`(`recipe_shortages`)와 레시피의 `재료 부족` 뱃지가
+   *   그대로 옛 숫자로 남았다. E1·E2·E10 은 처음부터 둘을 다 갖고 있었는데
+   *   실사만 빠져서, 재고를 맞춰 놓고도 경고가 안 사라졌다.
+   */
   e5: (ingredientId: string): Key[] =>
-    [qk.ingredients, qk.ingredient(ingredientId), qk.stockHistory(ingredientId), qk.orders],
+    [qk.ingredients, qk.ingredient(ingredientId), qk.stockHistory(ingredientId), qk.orders,
+     qk.recipes, qk.sales],
   /** E7 발주 등록: 주문 기록과 후보 상태만. **재고·단가는 절대 무효화 대상이 아니다**(불변식 2). */
   e7: (): Key[] => [qk.orders],
   /**
@@ -92,12 +100,16 @@ export const invalidateOn = {
    * 오늘 기준이 굳으므로(0048), 매출 화면 전체를 다시 읽어야 한다.
    */
   businessDay: (): Key[] => [qk.businessDay, qk.sales],
-  /** 식재료 등록·수정: 로스율이 바뀌면 그 재료를 쓰는 레시피 원가가 따라 움직인다. */
+  /**
+   * 식재료 등록·수정: 로스율이 바뀌면 그 재료를 쓰는 레시피 원가가 따라 움직인다.
+   * ⚠ 안전재고도 여기서 바뀐다. 그 값은 `재고 확인` 화면이 `안전재고 · 현재 재고` 로
+   *   나란히 보여 주므로 매출 쪽도 다시 읽어야 한다.
+   */
   ingredientSaved: (id?: string): Key[] =>
     id
-      ? [qk.ingredients, qk.ingredient(id), qk.recipes, qk.orders,
+      ? [qk.ingredients, qk.ingredient(id), qk.recipes, qk.orders, qk.sales,
          qk.changeHistory('ingredient', id), ['changes', 'recipe']]
-      : [qk.ingredients, qk.recipes, qk.orders, ['changes']],
+      : [qk.ingredients, qk.recipes, qk.orders, qk.sales, ['changes']],
   /** 설정(카테고리·거래처·채널): 목록을 쓰는 화면 전부. 채널 수수료는 손익에도 들어간다. */
   settingsSaved: (): Key[] => [qk.settings, qk.ingredients, qk.sales],
 } as const;

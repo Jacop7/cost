@@ -740,6 +740,22 @@ export function useSaleShortages(date: string, items: SaleItemInput[], enabled =
   });
 }
 
+/**
+ * 영업 시작 버튼을 누른 그 순간 한 번 재는 용도.
+ *
+ * ⚠ 캐시(`useRecipeShortages`)를 읽으면 안 된다. 아직 안 받았거나 실패했으면
+ *   `undefined` 라 `?? 0` 에 걸려 **부족이 없는 것처럼** 지나간다 — 조용히 틀리는 쪽이다.
+ *   눌렀을 때 서버에 직접 물어보면 로딩이라는 상태 자체가 없다.
+ */
+export function useCheckRecipeShortages() {
+  const storeId = useStoreId();
+  return useCallback(async (): Promise<ShortageResult> => {
+    const { data, error } = await supabase.rpc('recipe_shortages', { p_store: storeId });
+    if (error) throw new Error(error.message);
+    return parseShortages(data);
+  }, [storeId]);
+}
+
 /** 저장 버튼을 누른 그 순간 한 번 재는 용도. 조회 캐시에 얹지 않는다. */
 export function useCheckSaleShortages() {
   const storeId = useStoreId();
