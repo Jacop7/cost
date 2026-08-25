@@ -104,10 +104,19 @@ alter default privileges in schema public
   grant all on tables to anon, authenticated, service_role;
 alter default privileges in schema public
   grant all on sequences to anon, authenticated, service_role;
+-- ⚠ 함수는 **anon 과 PUBLIC 을 뺀다**(0135). Postgres 는 새 함수에 PUBLIC 실행 권한을
+--   주고 Supabase 기본 권한은 anon 에도 준다. 그래서 로그인 안 한 사람이
+--   `purge_entity_changes(1)` 로 **모든 매장의 수정 내역을 지울 수 있었다**(실측 128건).
+--   테이블은 RLS 가 막아 주지만 `security definer` 함수는 RLS 를 지나간다 —
+--   함수 권한이 유일한 문이다.
 alter default privileges in schema public
-  grant execute on functions to anon, authenticated, service_role;
+  revoke execute on functions from public;
+alter default privileges in schema public
+  grant execute on functions to authenticated, service_role;
 alter default privileges in schema extensions
-  grant execute on functions to anon, authenticated, service_role;
+  revoke execute on functions from public;
+alter default privileges in schema extensions
+  grant execute on functions to authenticated, service_role;
 EOF
 
 # ── 마이그레이션 ────────────────────────────────────────────────
