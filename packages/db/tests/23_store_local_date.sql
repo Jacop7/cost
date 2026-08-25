@@ -193,3 +193,60 @@ begin
   perform pg_temp.ok('백필로 들어간 시간대는 confirmed 가 아니다',
     not (select confirmed from store_time_settings where store_id = pg_temp.store()));
 end $t$;
+
+
+-- ── ⑥ 인자 형태와 시간대까지 (0123) ──────────────────────────
+/*
+ * 0121 의 치환도 검증도 **`business_day()` 라는 문자열만** 봤다. 그런데
+ * `e2_discard_reverted` 는 인자를 넣어 부른다 — `business_day(ev.occurred_at)`.
+ * 그래서 안 옮겨졌는데 "13개 전부 옮겼다" 고 통과했다. 눈이 같으면 못 잡는다.
+ *
+ * 그리고 날짜만 옮기고 **시간대는 안 옮겼다**. `business_tz()` 는 서울 하드코딩인데
+ * 옮긴 함수들이 여전히 그걸로 타임스탬프를 만들고 있었다 —
+ *     (v_day::timestamp at time zone business_tz())
+ * 뉴욕 매장이면 13시간 어긋난 순간이 저장되고, 되읽을 때 날짜 경계가 하루 밀린다.
+ */
+do $t$
+declare r record; v_def text;
+begin
+  -- ⚠ `business_day(` 로 본다. 괄호까지만 보면 인자 있는 호출을 놓친다.
+  for r in
+    select unnest(array['e1_confirm_inbound','e2_discard','e2_discard_reverted','e5_stock_adjusted',
+                        'e7_place_order','e11_inbound_reverted','quick_inbound','e4_fixed_cost_saved',
+                        'recipe_detail','recompute_recipe','retire_channel','save_store_tax',
+                        'fixed_cost_revenue_check']) as fn
+  loop
+    select pg_get_functiondef(p.oid) into v_def
+      from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+     where n.nspname = 'public' and p.proname = r.fn;
+    perform pg_temp.ok(format('%s 에 영업일 호출이 한 톨도 없다', r.fn),
+      position('business_day(' in v_def) = 0);
+  end loop;
+
+  -- 시간대를 옮긴 9개.
+  for r in
+    select unnest(array['e1_confirm_inbound','e2_discard','e5_stock_adjusted','recompute_recipe',
+                        'stock_history','sales_summary','sales_waste_breakdown','planned_close',
+                        'reconcile_sales_consumption']) as fn
+  loop
+    select pg_get_functiondef(p.oid) into v_def
+      from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+     where n.nspname = 'public' and p.proname = r.fn;
+    perform pg_temp.ok(format('%s 는 매장 시간대를 쓴다', r.fn),
+      position('business_tz()' in v_def) = 0 and position('store_timezone(' in v_def) > 0);
+  end loop;
+
+  /*
+   * 남아도 되는 건 딱 둘이다.
+   *   business_day   — 판매 무리가 쓴다(3단계에서 통째로 간다)
+   *   business_month — 고정지출 귀속 월 키다. 잘못 옮기면 월 손익이 통째로 이동한다.
+   * 셋째가 생기면 누가 몰래 하드코딩을 되살린 것이다.
+   */
+  perform pg_temp.eq_t('시간대 하드코딩이 남은 함수는 둘뿐',
+    (select coalesce(string_agg(p.proname, ',' order by p.proname), '')
+       from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+       join pg_language l on l.oid = p.prolang
+      where n.nspname = 'public' and p.prokind = 'f' and l.lanname in ('plpgsql','sql')
+        and p.prosrc like '%business_tz()%' and p.proname <> 'business_tz'),
+    'business_day,business_month');
+end $t$;
