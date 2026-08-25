@@ -249,4 +249,68 @@ begin
       where n.nspname = 'public' and p.prokind = 'f' and l.lanname in ('plpgsql','sql')
         and p.prosrc like '%business_tz()%' and p.proname <> 'business_tz'),
     'business_day,business_month');
+
+  /*
+   * ⚠ **간접 경로까지** 본다. 위 검사는 직접 호출만 보므로, `business_month()` 를
+   *   거쳐 서울을 무는 함수가 있으면 "정확히 둘" 이라고 통과한다 — 실제로 그렇게
+   *   여섯 함수(입고·입고취소·레시피 조회/목록/저장·스냅샷)가 뚫려 있었다.
+   *   business_month 를 **부르는 함수가 하나도 없어야** 한다.
+   */
+  perform pg_temp.eq_t('월 기준을 서울로 무는 함수가 없다',
+    (select coalesce(string_agg(p.proname, ',' order by p.proname), '없음')
+       from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+       join pg_language l on l.oid = p.prolang
+      where n.nspname = 'public' and p.prokind = 'f' and l.lanname in ('plpgsql','sql')
+        and p.prosrc like '%business_month(%' and p.proname <> 'business_month'),
+    '없음');
+end $t$;
+
+
+-- ── ⑦ 뉴욕 월말 — 입고부터 고정지출률까지 (0124) ─────────────
+/*
+ * 뉴욕 8월 31일 저녁 7시는 **서울로 9월 1일 아침 8시**다.
+ * 월 기준이 서울을 물고 있으면 그 순간 8월 원가에 **9월 고정지출률**이 붙는다.
+ * 함수 이름만 보고 넘기지 말고 실제로 입고를 넣어 레시피 재계산까지 굴려 본다.
+ */
+do $t$
+declare
+  v_at   timestamptz := '2026-08-31 23:00:00+00'::timestamptz;  -- 뉴욕 8/31 19:00 · 서울 9/1 08:00
+  v_rcp  uuid := pg_temp.rcp('제육볶음');
+  v_rate_aug numeric := 0.10;
+  v_rate_sep numeric := 0.40;
+  v_seen numeric;
+begin
+  insert into store_time_settings (store_id, timezone) values (pg_temp.store(), 'America/New_York')
+  on conflict (store_id) do update set timezone = excluded.timezone;
+
+  -- 같은 순간인데 달이 다르다.
+  perform pg_temp.eq_t('뉴욕에서는 아직 8월', store_local_month(pg_temp.store(), v_at), '2026-08');
+  perform pg_temp.eq_t('서울 기준이면 9월이 된다', business_month(v_at), '2026-09');
+
+  -- 두 달의 고정지출률을 크게 다르게 심어 둔다. 섞이면 눈에 띄게.
+  -- 고정지출률 = 항목 합계 ÷ 목표 매출. 두 달을 크게 다르게 심어 둔다 — 섞이면 눈에 띄게.
+  delete from fixed_costs_monthly where store_id = pg_temp.store() and month in ('2026-08','2026-09');
+  insert into fixed_costs_monthly (store_id, month, total_revenue, items)
+  values (pg_temp.store(), '2026-08', 10000000,
+          jsonb_build_array(jsonb_build_object('key','rent','total',1000000))),
+         (pg_temp.store(), '2026-09', 10000000,
+          jsonb_build_array(jsonb_build_object('key','rent','total',4000000)));
+
+  perform pg_temp.eq('8월 고정지출률', fixed_cost_rate(pg_temp.store(), '2026-08'), v_rate_aug, 0.001);
+  perform pg_temp.eq('9월 고정지출률', fixed_cost_rate(pg_temp.store(), '2026-09'), v_rate_sep, 0.001);
+
+  /*
+   * 영업일 스냅샷은 **그 영업일이 속한 달**을 쓴다. 만드는 시각이 아니다.
+   * ⚠ 1월 31일 영업이 2월 1일 새벽까지 이어져도 장부는 1월치다 —
+   *   여기를 now() 로 되돌리면 그 경우가 조용히 깨진다.
+   */
+  v_seen := (build_day_snapshot(pg_temp.store(), '2026-08-31'::date)->>'fixed_rate')::numeric;
+  perform pg_temp.eq('8/31 장부에는 8월 고정지출률', v_seen, v_rate_aug, 0.001);
+  v_seen := (build_day_snapshot(pg_temp.store(), '2026-09-01'::date)->>'fixed_rate')::numeric;
+  perform pg_temp.eq('9/1 장부에는 9월 고정지출률', v_seen, v_rate_sep, 0.001);
+
+  -- 레시피 조회·목록도 매장 현지 월을 본다(지금 시각 기준이라 값만 같은지 본다).
+  perform pg_temp.eq('레시피 상세의 고정지출률 = 매장 현지 월',
+    (recipe_detail(v_rcp)->>'fixed_rate')::numeric,
+    coalesce(fixed_cost_rate(pg_temp.store(), store_local_month(pg_temp.store())), 0), 0.0001);
 end $t$;

@@ -148,9 +148,9 @@ begin
 
   -- ③ 다음 영업일 기준에는 새 값이 들어간다 ───────────────────
   perform pg_temp.eq('다음 영업일 기준 판매가',
-    (build_day_snapshot(pg_temp.store()) #>> array['recipes', v_rcp::text, 'price'])::numeric, 20000, 0);
+    (build_day_snapshot(pg_temp.store(), store_local_date(pg_temp.store())) #>> array['recipes', v_rcp::text, 'price'])::numeric, 20000, 0);
   perform pg_temp.ok('다음 영업일 기준 고정지출률도 새 값',
-    (build_day_snapshot(pg_temp.store())->>'fixed_rate')::numeric
+    (build_day_snapshot(pg_temp.store(), store_local_date(pg_temp.store()))->>'fixed_rate')::numeric
       > (s0->>'fixed_rate')::numeric);
 end $t$;
 

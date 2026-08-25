@@ -176,10 +176,10 @@ begin
   -- 다음 영업일 기준에는 반영된다 — 그날 아침에 뜨는 스냅샷이 곧 새 기준이다.
   -- (내일 날짜로는 영업을 못 열므로 스냅샷 생성기를 직접 본다.)
   perform pg_temp.eq('다음 영업일 기준엔 반영',
-    (build_day_snapshot(pg_temp.store()) #>> array['recipes', v_rcp::text, 'tax'])::numeric,
+    (build_day_snapshot(pg_temp.store(), store_local_date(pg_temp.store())) #>> array['recipes', v_rcp::text, 'tax'])::numeric,
     1390.909, 0.01);
   -- 부가세 + 카드 수수료 두 줄이 그대로 얼어붙는다.
   perform pg_temp.eq('다음 영업일 기준에 항목도 담긴다',
-    jsonb_array_length(build_day_snapshot(pg_temp.store())
+    jsonb_array_length(build_day_snapshot(pg_temp.store(), store_local_date(pg_temp.store()))
                        #> array['recipes', v_rcp::text, 'tax_items']), 2, 0);
 end $t$;
