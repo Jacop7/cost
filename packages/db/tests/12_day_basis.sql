@@ -30,7 +30,13 @@ declare
   r0 numeric;
 begin
   -- 앞 파일들이 오늘을 닫아 뒀을 수 있다. 열려 있어야 판다.
-  begin perform open_business_day(pg_temp.store()); exception when others then null; end;
+  -- ⚠ 닫혀 있으면 **다시 열어야** 한다. 앱에서 영업을 한 번 마치면 그날은 closed 로 남고,
+  --   여는 데 실패한다. 그 상태로 두면 이 파일이 통째로 빨개진다(실제로 그랬다).
+  begin
+    perform open_business_day(pg_temp.store());
+  exception when others then
+    begin perform reopen_business_day(pg_temp.store(), business_day()); exception when others then null; end;
+  end;
   perform e10_sale_recorded(pg_temp.store(), v_day, v_rcp, 10, 0, 0, 0);
 
   b0 := day_menu_detail(pg_temp.store(), v_day, v_rcp);
@@ -163,7 +169,13 @@ declare
   w0     numeric;
   w1     numeric;
 begin
-  begin perform open_business_day(pg_temp.store()); exception when others then null; end;
+  -- ⚠ 닫혀 있으면 **다시 열어야** 한다. 앱에서 영업을 한 번 마치면 그날은 closed 로 남고,
+  --   여는 데 실패한다. 그 상태로 두면 이 파일이 통째로 빨개진다(실제로 그랬다).
+  begin
+    perform open_business_day(pg_temp.store());
+  exception when others then
+    begin perform reopen_business_day(pg_temp.store(), business_day()); exception when others then null; end;
+  end;
 
   -- 대파를 조금 버린다. e2_discard 의 2번째 인자는 **남은 양**이다.
   v_rem := stock_total_base(v_ing);
@@ -197,7 +209,13 @@ declare
   g1    jsonb;
   b     jsonb;
 begin
-  begin perform open_business_day(pg_temp.store()); exception when others then null; end;
+  -- ⚠ 닫혀 있으면 **다시 열어야** 한다. 앱에서 영업을 한 번 마치면 그날은 closed 로 남고,
+  --   여는 데 실패한다. 그 상태로 두면 이 파일이 통째로 빨개진다(실제로 그랬다).
+  begin
+    perform open_business_day(pg_temp.store());
+  exception when others then
+    begin perform reopen_business_day(pg_temp.store(), business_day()); exception when others then null; end;
+  end;
   perform e10_sale_recorded(pg_temp.store(), v_day, v_rcp, 10, 0, 0, 0);
 
   -- ── 하루짜리 기간 = 그날 값 ─────────────────────────────────
@@ -294,7 +312,13 @@ declare
   m1    jsonb;
   v_new uuid;
 begin
-  begin perform open_business_day(pg_temp.store()); exception when others then null; end;
+  -- ⚠ 닫혀 있으면 **다시 열어야** 한다. 앱에서 영업을 한 번 마치면 그날은 closed 로 남고,
+  --   여는 데 실패한다. 그 상태로 두면 이 파일이 통째로 빨개진다(실제로 그랬다).
+  begin
+    perform open_business_day(pg_temp.store());
+  exception when others then
+    begin perform reopen_business_day(pg_temp.store(), business_day()); exception when others then null; end;
+  end;
 
   m0 := (select m from jsonb_array_elements(day_menu_basis(pg_temp.store(), v_day)) m
           where (m->>'recipe_id')::uuid = v_rcp);
