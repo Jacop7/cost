@@ -326,16 +326,10 @@ begin
 
   -- ⚠ 앞선 블록들이 이 영업일을 이미 닫아 놨을 수 있다. 그러면 open 이 실패하고
   --   이어지는 close 가 `영업 중이 아니에요` 로 터진다 — 실제로 그렇게 터졌다.
-  --   닫혀 있으면 다시 열어서 출발점을 맞춘다.
-  begin
-    perform open_business_day(pg_temp.store());
-  exception when others then
-    begin perform reopen_business_day(pg_temp.store(), v_day); exception when others then null; end;
-  end;
-  if (select status::text from business_days
-       where store_id = pg_temp.store() and business_date = v_day) <> 'closed' then
-    perform close_business_day(pg_temp.store());
-  end if;
+  --   두 헬퍼가 각각 사후조건까지 확인한다(예전엔 `when others then null` 이라
+  --   못 열어도 조용히 지나갔다).
+  perform pg_temp.open_today();    -- 열려 있어야 닫을 수 있다
+  perform pg_temp.close_today();   -- 그리고 닫는다
   perform pg_temp.eq_t('영업이 종료됐다',
     (select status::text from business_days where store_id = pg_temp.store() and business_date = v_day), 'closed');
   perform pg_temp.eq('수량>0 인 메뉴 줄이 없다',
