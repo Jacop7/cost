@@ -1335,6 +1335,35 @@ export type Database = {
           },
         ]
       }
+      store_time_settings: {
+        Row: {
+          created_at: string
+          store_id: string
+          timezone: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          store_id: string
+          timezone?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          store_id?: string
+          timezone?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "store_time_settings_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: true
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       stores: {
         Row: {
           created_at: string
@@ -2336,11 +2365,24 @@ export type Database = {
         }
         Returns: number
       }
+      store_local_date: {
+        Args: {
+          p_store: string
+          p_at?: string
+        }
+        Returns: string
+      }
       store_tax_rate: {
         Args: {
           p_store: string
         }
         Returns: number
+      }
+      store_timezone: {
+        Args: {
+          p_store: string
+        }
+        Returns: string
       }
       tax_breakdown: {
         Args: {
