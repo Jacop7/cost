@@ -32,19 +32,27 @@ export function belowSafety(g: { stockTotal: number; safetyStock: number }): boo
   return g.stockTotal < g.safetyStock;
 }
 
+/**
+ * 재고 상태 — **여유 / 소진 임박 / 소진** 세 단계(0102).
+ *
+ * ⚠ 예전엔 두 단계였고 `재고 0 이하`와 `곧 떨어짐`을 한 칸에 뭉쳤다.
+ *   음수 재고가 생기면서 둘을 갈라야 한다 — 할 일이 다르기 때문이다.
+ *     소진      지금 없다(0 이하). 음수면 입고 누락이나 판매 오기록도 의심해야 한다.
+ *     소진 임박 아직 있지만 곧 떨어진다. 발주할 때다.
+ */
 export type StockState = 'out' | 'low' | 'ok';
 
 export function stockStateOf(g: {
   stockTotal: number; safetyStock: number; perVolume: number; soonOut: boolean;
 }): StockState {
-  if (g.soonOut || g.stockTotal <= 0) return 'out';
-  if (belowSafety(g)) return 'low';
+  if (g.stockTotal <= 0) return 'out';
+  if (g.soonOut || belowSafety(g)) return 'low';
   return 'ok';
 }
 
 const STATE: Record<StockState, { label: string; tone: 'green' | 'amber' | 'red' }> = {
-  out: { label: '소진 임박', tone: 'red' },
-  low: { label: '부족', tone: 'amber' },
+  out: { label: '소진', tone: 'red' },
+  low: { label: '소진 임박', tone: 'red' },
   ok: { label: '여유', tone: 'green' },
 };
 

@@ -92,10 +92,23 @@ describe('formatQuantity — 저장 최소단위 → 화면 표기', () => {
     expect(formatQuantity(0, '개')).toBe('0개');
   });
 
-  it('음수·비유한 값은 0 으로 막는다 — 화면에 Infinity 를 띄우지 않는다', () => {
-    expect(formatQuantity(-500, 'g')).toBe('0g');
+  /*
+   * ⚠ 0102 에서 **음수를 감추지 않기로** 바꿨다. 예전엔 0 으로 막았는데,
+   *   판매가 재고를 넘으면 장부가 음수인데 화면만 0 이었다 —
+   *   사장님이 입고 누락을 알아챌 단서가 사라진다(기획안 §4.1).
+   *   숫자가 아닌 값만 0 으로 떨어뜨린다.
+   */
+  it('음수는 그대로 보여 준다 — 장부가 음수면 화면도 음수다', () => {
+    expect(formatQuantity(-500, 'g')).toBe('−500g');
+    expect(formatQuantity(-750, 'g')).toBe('−750g');
+    expect(formatQuantity(-2500, 'g')).toBe('−2.5kg');
+    expect(formatQuantity(-3, '개')).toBe('−3개');
+  });
+
+  it('숫자가 아닌 값만 0 으로 막는다 — 화면에 Infinity 를 띄우지 않는다', () => {
     expect(formatQuantity(Number.NaN, 'g')).toBe('0g');
     expect(formatQuantity(Number.POSITIVE_INFINITY, 'g')).toBe('0g');
+    expect(formatQuantity(Number.NEGATIVE_INFINITY, 'g')).toBe('0g');
   });
 
   it('소수 단위 재고도 원단위에서 반올림한다', () => {

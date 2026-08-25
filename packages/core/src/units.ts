@@ -76,10 +76,21 @@ export function formatQuantity(
   opts: { maxDigits?: number } = {},
 ): string {
   const { maxDigits = 1 } = opts;
-  const v = isNonNegativeFinite(value) ? value : 0;
+  /*
+   * ⚠ **음수를 0 으로 바꾸지 않는다**(0102). 예전엔 `isNonNegativeFinite` 로 걸러
+   *   `−750g` 이 화면에 `0g` 으로 나왔다 — 장부는 음수인데 화면만 0이었다.
+   *   판매가 재고를 넘으면 부족분이 음수로 남는 게 규칙이고(기획안 §4.1),
+   *   그걸 감추면 사장님이 입고 누락을 알아챌 단서가 사라진다.
+   *   숫자가 아닌 값(NaN·Infinity)만 0 으로 떨어뜨린다.
+   */
+  const raw = Number.isFinite(value) ? value : 0;
+  const neg = raw < 0;
+  const v = Math.abs(raw);
+  // 빼기 기호는 하이픈이 아니라 U+2212 다 — 숫자 옆에서 하이픈은 얇아 안 보인다.
+  const sign = neg ? '−' : '';
 
   // '개'(화면 표기)와 'ea'(저장 단위)를 함께 받는다.
-  if (base === 'ea' || base === '개') return `${Math.round(v)}개`;
+  if (base === 'ea' || base === '개') return `${sign}${Math.round(v)}개`;
 
   const baseUnit: BaseUnit = base === 'kg' ? 'g' : base === 'L' ? 'ml' : (base as BaseUnit);
   const big = BIG_OF[baseUnit];
@@ -87,7 +98,7 @@ export function formatQuantity(
   if (big !== null && v >= 1000) {
     // toFixed 로 자리수를 맞춘 뒤 뒤 0 을 떼어낸다. 1.000 → "1", 1.250 → "1.25"
     const text = (v / 1000).toFixed(maxDigits).replace(/\.?0+$/, '');
-    return `${text}${big}`;
+    return `${sign}${text}${big}`;
   }
-  return `${Math.round(v)}${baseUnit === 'ml' ? 'ml' : 'g'}`;
+  return `${sign}${Math.round(v)}${baseUnit === 'ml' ? 'ml' : 'g'}`;
 }

@@ -9,7 +9,7 @@ import { useMemo, useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Badge, Button, Card, Field, Icon, Input, QueryState, Sheet, SortChip, SortSheet, type SortOption } from '@/components/kit';
+import { Badge, Button, Card, ConfirmSheet, Field, Icon, Input, QueryState, Sheet, SortChip, SortSheet, type SortOption } from '@/components/kit';
 import { T, won } from '@/theme/tokens';
 import { useRecipeList, type RecipeRow } from '@/features/recipes/hooks';
 
@@ -83,6 +83,10 @@ export default function SalesHomeScreen() {
   const [draft, setDraft] = useState<Qty>(ZERO);
   const [sort, setSort] = useState<SortKey>('qty');
   const [sortOpen, setSortOpen] = useState(false);
+  /** 판매를 저장하려다 45001 로 막혔을 때, 영업을 시작하면 이어서 다시 저장한다. */
+  const [pendingRetry, setPendingRetry] = useState<null | (() => void)>(null);
+  /** 짧은 알림 — 팝업 대신. 웹에서도 뜬다. */
+  const [toast, setToast] = useState<string | null>(null);
 
   const [etcOpen, setEtcOpen] = useState(false);
   const [etcName, setEtcName] = useState('');
@@ -137,52 +141,30 @@ export default function SalesHomeScreen() {
     setDraft(soldBy.get(r.id) ?? ZERO);
   };
 
-  /** 부족분은 오류가 아니다 — 이미 팔린 것이다. 다만 재고 기록이 틀어졌다는 신호이므로 알린다. */
+  /*
+   * 부족분은 오류가 아니다 — 이미 팔린 것이다.
+   * ⚠ 0102 이후 부족분은 **음수 재고로 장부에 남는다.** 그래서 긴 목록 팝업 대신
+   *   짧게만 알리고, 자세한 건 상단의 `식재료 부족 N개` 안내가 계속 들고 있는다
+   *   (기획안 §4.5). 팝업으로 다 말하면 닫는 순간 사라진다.
+   */
   const warnShortages = (shortages: Shortage[]) => {
     if (shortages.length === 0) return;
-    const lines = shortages.slice(0, 5).map((x) => `· ${x.name} ${Math.round(x.shortage)} 부족`);
-    Alert.alert(
-      '재고 기록이 실제와 달라요',
-      `판매는 그대로 기록했어요. 아래 재료는 기록상 재고보다 많이 나갔습니다.\n\n${lines.join('\n')}${shortages.length > 5 ? `\n외 ${shortages.length - 5}건` : ''}\n\n식재료 탭에서 실제 재고를 맞춰 주세요.`,
-      [{ text: '확인' }],
-    );
+    setToast('판매를 기록했어요 · 부족분은 음수 재고로 반영돼요');
   };
 
-  /**
+  /*
    * 저장이 막힌 두 경우는 오류가 아니라 **다음에 할 일**이다.
-   *  45001 아직 영업 전  → "오늘 영업을 시작할까요?" 를 묻고, 시작하면 그대로 이어서 저장한다.
+   *  45001 아직 영업 전  → 영업을 시작하고 방금 누른 판매를 이어서 저장한다.
    *  45002 이미 종료됨   → 영업 기록을 다시 열어야 한다고 알린다.
-   * 그냥 서버 문구를 띄우면 사장님은 무엇을 눌러야 할지 알 수 없다.
+   *
+   * ⚠ `Alert.alert()` 은 웹에서 **빈 함수**라 아무 일도 안 일어난다
+   *   (`react-native-web` 의 구현이 `static alert() {}`).
+   *   여기가 특히 치명적이었다 — 45001 확인창이 안 뜨니 **판매 저장이 영영 막혔다.**
    */
   const onSaveError = (e: unknown, retry: () => void) => {
-    if (isNotOpenError(e)) {
-      Alert.alert(
-        '오늘 영업을 시작할까요?',
-        '지금의 판매가·재료 구성·단가·부자재·고정지출·세금이 오늘 기준으로 정해져요.\n영업 중에 메뉴를 고쳐도 오늘 매출에는 반영되지 않고, 다음 영업일부터 적용돼요.',
-        [
-          { text: '취소', style: 'cancel' },
-          {
-            text: '영업 시작',
-            onPress: () =>
-              openDay.mutate(undefined, {
-                // 시작하자마자 방금 누른 판매를 이어서 저장한다 — 두 번 누르게 하지 않는다.
-                onSuccess: retry,
-                onError: (err) => Alert.alert('영업을 시작하지 못했어요', err.message),
-              }),
-          },
-        ],
-      );
-      return;
-    }
-    if (isClosedError(e)) {
-      Alert.alert(
-        '이미 종료된 영업일이에요',
-        '빠뜨린 판매를 넣으려면 위에서 영업 기록을 다시 열어 주세요.',
-        [{ text: '확인' }],
-      );
-      return;
-    }
-    Alert.alert('저장하지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요');
+    if (isNotOpenError(e)) { setPendingRetry(() => retry); return; }
+    if (isClosedError(e)) { setToast('이미 종료된 영업일이에요 · 위에서 영업 기록을 다시 열어 주세요'); return; }
+    setToast(e instanceof Error ? e.message : '저장하지 못했어요');
   };
 
   const saveQty = () => {
@@ -588,6 +570,39 @@ export default function SalesHomeScreen() {
       </Sheet>
 
       <SortSheet visible={sortOpen} options={SORTS} value={sort} onSelect={setSort} onClose={() => setSortOpen(false)} />
+
+      {/*
+        판매를 저장하려다 '아직 영업 전'으로 막혔을 때 — 시작하고 **이어서** 저장한다.
+        두 번 누르게 하지 않는다.
+      */}
+      <ConfirmSheet
+        visible={pendingRetry !== null}
+        title="오늘 영업을 시작할까요?"
+        message={'지금의 판매가·재료 구성·단가·부자재·고정지출·세금이 오늘 기준으로 정해져요. 영업 중에 메뉴를 고쳐도 오늘 매출에는 반영되지 않고, 다음 영업일부터 적용돼요.'}
+        confirmText="영업 시작"
+        loading={openDay.isPending}
+        onCancel={() => setPendingRetry(null)}
+        onConfirm={() => {
+          const retry = pendingRetry;
+          setPendingRetry(null);
+          openDay.mutate(undefined, {
+            onSuccess: () => retry?.(),
+            onError: (err) => setToast(err.message),
+          });
+        }}
+      />
+
+      {/* 짧은 알림 — 팝업 대신. 닫으면 사라지고, 남아야 할 것은 상단 안내가 들고 있다. */}
+      {toast ? (
+        <Pressable
+          onPress={() => setToast(null)}
+          accessibilityRole="button" accessibilityLabel="알림 닫기"
+          style={{ position: 'absolute', left: 16, right: 16, bottom: 24, paddingVertical: 13, paddingHorizontal: 15, borderRadius: 12, backgroundColor: 'rgba(25,31,40,0.92)' }}
+        >
+          <Text style={{ fontSize: 14, fontWeight: '700', color: '#fff', lineHeight: 20 }}>{toast}</Text>
+        </Pressable>
+      ) : null}
+
     </View>
   );
 }

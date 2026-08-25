@@ -245,20 +245,39 @@ begin
   perform pg_temp.ok('재료가 있으면 판매 가능', recipe_blocked_by(v_rcp) is null);
   perform e10_sale_recorded(pg_temp.store(), v_day, v_rcp, 2, 0, 0, 0);
 
-  -- ── 재료가 바닥나면 막힌다 ──────────────────────────────────
+  /*
+   * ── 재료가 바닥나도 **막지 않는다** (0102) ──────────────────
+   *
+   * ⚠ 예전엔 22000 으로 거부했다. 그런데 판매가 재고를 넘어 음수가 되면
+   *   그 메뉴를 **영영 못 고치게** 된다 — 수량 수정도 같은 문으로 들어오기 때문이다
+   *   (실측: 소불고기가 −750g 이 되자 재조정이 튕겼다).
+   *   기획안 §2.1·§4.4: "판매는 재고 부족 여부와 관계없이 기록한다."
+   *   부족은 막는 게 아니라 **알리는 것**이다 — 응답의 shortages 와 매출 상단 안내.
+   *
+   * ⚠ '판매 중지'(사장님이 끈 메뉴)는 여전히 막는다. 그건 재고가 아니라 의도다.
+   */
   perform e10_sale_recorded(pg_temp.store(), v_day, v_rcp, 0, 0, 0, 0);
   perform e2_discard(v_pa, 0);
   perform pg_temp.eq_t('막는 재료를 알려준다', recipe_blocked_by(v_rcp), '대파');
-  perform pg_temp.raises('재료 소진 메뉴는 판매 거부',
-    format('select e10_sale_recorded(%L,%L,%L,5,0,0,0)', pg_temp.store(), v_day, v_rcp), '22000');
 
-  -- ⚠ 수량 0(지우기)은 막으면 안 된다 — 오입력을 영영 못 지운다.
-  perform pg_temp.ok('재료가 없어도 0 으로 지우기는 된다',
+  perform pg_temp.ok('재료가 없어도 판매는 기록된다',
+    e10_sale_recorded(pg_temp.store(), v_day, v_rcp, 5, 0, 0, 0) is not null);
+  perform pg_temp.ok('그만큼 재고가 음수로 내려간다',
+    stock_total_base(v_pa) < 0);
+  perform pg_temp.eq('원장 합 = 잔액 (음수여도)',
+    (select stock_total from inventory_states where ingredient_id = v_pa),
+    (select coalesce(sum(count_delta), 0) from inventory_events where ingredient_id = v_pa), 0.001);
+
+  -- ⚠ 수량 0(지우기)은 당연히 된다 — 오입력을 영영 못 지우면 안 된다.
+  perform pg_temp.ok('0 으로 지우기도 된다',
     e10_sale_recorded(pg_temp.store(), v_day, v_rcp, 0, 0, 0, 0) is not null);
+  perform pg_temp.eq('지우면 재고가 되돌아온다',
+    stock_total_base(v_pa), 0, 0.001);
 
-  -- 조리 폐기만 적는 것도 재료가 나가므로 같이 막는다.
-  perform pg_temp.raises('재료 소진 메뉴는 조리 폐기도 거부',
-    format('select e10_sale_recorded(%L,%L,%L,0,0,0,3)', pg_temp.store(), v_day, v_rcp), '22000');
+  -- 조리 폐기만 적는 것도 같은 문이다.
+  perform pg_temp.ok('재료가 없어도 조리 폐기는 기록된다',
+    e10_sale_recorded(pg_temp.store(), v_day, v_rcp, 0, 0, 0, 3) is not null);
+  perform e10_sale_recorded(pg_temp.store(), v_day, v_rcp, 0, 0, 0, 0);
 
   -- ── 판매중지 메뉴는 막힌다 ──────────────────────────────────
   declare v_rice uuid := pg_temp.rcp('공기밥');
