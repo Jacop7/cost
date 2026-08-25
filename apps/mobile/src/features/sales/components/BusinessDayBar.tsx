@@ -13,8 +13,8 @@
  *     · 종료 원인 문구도 안 쓴다 — 직접 종료는 `영업 종료`, 자동은 `자동 영업종료` 로
  *       **뱃지 글자만** 다르다.
  */
-import { Alert, Pressable, Text, View } from 'react-native';
-import { Button, Icon, Sheet } from '@/components/kit';
+import { Pressable, Text, View } from 'react-native';
+import { Button, ConfirmSheet, Icon, Sheet } from '@/components/kit';
 import { useState } from 'react';
 import { T } from '@/theme/tokens';
 import {
@@ -64,30 +64,22 @@ export function BusinessDayBar({ state }: { state: BusinessDayState }) {
   const fixStale = useCloseStaleAndOpen();
   const ack = useAckAutoClose();
   const [manage, setManage] = useState(false);
-
-  const fail = (e: unknown) =>
-    Alert.alert('처리하지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요');
+  /*
+   * ⚠ 확인은 **시트로** 한다. `Alert.alert()` 은 웹에서 빈 함수라 아무 일도 안 일어난다
+   *   (`react-native-web` 의 구현이 `static alert() {}` 이다).
+   *   그래서 '영업 시작' 버튼이 죽은 것처럼 보였다 — 실제로 사장님이 그렇게 겪었다.
+   */
+  const [ask, setAsk] = useState<null | 'open' | 'close'>(null);
+  const [err, setErr] = useState<string | null>(null);
+  const fail = (e: unknown) => setErr(e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요');
 
   /*
    * ⚠ 이 확인창이 잠금의 **유일한 설명**이다. 카드에서 문장을 뺐으므로 여기서만 말한다.
    *   기능 설명이 아니라 **사장님에게 좋은 점**으로 적는다 — 장사 중에 레시피를 고쳐도
    *   오늘 장부가 안 흔들린다는 게 이 기능의 값어치다.
    */
-  const onOpen = () =>
-    Alert.alert(
-      '오늘 값을 지금으로 굳힐까요?',
-      '지금의 판매가·재료비·부자재·고정지출·세금으로 오늘 장부가 정해져요.\n\n'
-        + '오늘 장사 중에 레시피나 재료값을 고쳐도 오늘 매출·손익은 안 흔들려요. '
-        + '고친 값은 내일부터 들어가요.',
-      [{ text: '취소', style: 'cancel' }, { text: '시작', onPress: () => open.mutate(undefined, { onError: fail }) }],
-    );
-
-  const onClose = () =>
-    Alert.alert(
-      '오늘 장사를 마칠까요?',
-      '오늘 판매·매출·원가를 잠가요. 빠뜨린 게 있으면 나중에 다시 열 수 있어요.',
-      [{ text: '취소', style: 'cancel' }, { text: '마감', onPress: () => close.mutate(undefined, { onError: fail }) }],
-    );
+  const onOpen = () => setAsk('open');
+  const onClose = () => setAsk('close');
 
   const [dateLabel, dowLabel] = dayParts(state.businessDate);
   const o = clock(state.hours.openTime);
@@ -168,6 +160,35 @@ export function BusinessDayBar({ state }: { state: BusinessDayState }) {
           영업 중   ① 브레이크 타임  ② 영업 종료
           브레이크  ① 영업 재개      ② 영업 종료
       */}
+      <ConfirmSheet
+        visible={ask === 'open'}
+        title="오늘 값을 지금으로 굳힐까요?"
+        message={'지금의 판매가·재료비·부자재·고정지출·세금으로 오늘 장부가 정해져요.\n\n'
+          + '오늘 장사 중에 레시피나 재료값을 고쳐도 오늘 매출·손익은 안 흔들려요. 고친 값은 내일부터 들어가요.'}
+        confirmText="영업 시작"
+        loading={open.isPending}
+        onCancel={() => setAsk(null)}
+        onConfirm={() => { setAsk(null); open.mutate(undefined, { onError: fail }); }}
+      />
+      <ConfirmSheet
+        visible={ask === 'close'}
+        title="오늘 장사를 마칠까요?"
+        message="오늘 판매·매출·원가를 잠가요. 빠뜨린 게 있으면 나중에 다시 열 수 있어요."
+        confirmText="영업 종료"
+        loading={close.isPending}
+        onCancel={() => setAsk(null)}
+        onConfirm={() => { setAsk(null); close.mutate(undefined, { onError: fail }); }}
+      />
+      <ConfirmSheet
+        visible={err !== null}
+        title="처리하지 못했어요"
+        message={err ?? ''}
+        confirmText="확인"
+        cancelText="닫기"
+        onCancel={() => setErr(null)}
+        onConfirm={() => setErr(null)}
+      />
+
       <Sheet visible={manage} onClose={() => setManage(false)} title={stateLabel} sub={`${dateLabel} ${dowLabel}`} height={300}>
         {([
           state.status === 'break'

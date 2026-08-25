@@ -11,7 +11,9 @@ import { type Href, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Badge, Button, Card, Field, Icon, Input, QueryState, Sheet, SortChip, SortSheet, type SortOption } from '@/components/kit';
 import { T, won } from '@/theme/tokens';
-import { useRecipeList, type RecipeRow } from '@/features/recipes/hooks';
+import { useRecipeList, type RecipeRow } from '@/features/recipes/hooks';
+import { useIngredientList } from '@/features/ingredients/hooks';
+import { stockStateOf } from '@/features/ingredients/components/IngCard';
 import { useSalesDay, useSaveSale, type ChannelCode, type EtcItem, type ExtraItem, type Shortage } from '../hooks';
 import { CHANNEL_LABEL, channelName } from '../channels';
 import { isClosedError, isNotOpenError, useBusinessDay, useDayMenuBasis, useOpenBusinessDay } from '../businessDay';
@@ -68,7 +70,8 @@ export default function SalesHomeScreen() {
   const day = useSalesDay(today);
   const recipes = useRecipeList();
   const saveSale = useSaveSale();
-  const bday = useBusinessDay();
+  const bday = useBusinessDay();
+  const ings = useIngredientList();
   const openDay = useOpenBusinessDay();
   /**
    * 오늘 팔면 얼마로 잡히는지(0061). 카드가 현재 레시피를 보고 있으면
@@ -245,6 +248,12 @@ export default function SalesHomeScreen() {
   const marginPct = summary && summary.revenue > 0 ? Math.round((summary.profit / summary.revenue) * 1000) / 10 : 0;
   /** 아직 오늘을 시작 안 했나 — 히어로가 0원 대신 `—` 를 보여 줘야 하는 상태. */
   const beforeOpen = bday.data?.status === 'none';
+  /*
+   * 재고 부족 안내 — 프로토타입 `.stock-notice`.
+   * ⚠ 세는 것은 **식재료**다. 같은 재료가 여러 메뉴를 막아도 하나로 센다.
+   *   `out` = 재고가 0 이하이거나 사장님이 소진 임박으로 표시한 것.
+   */
+  const shortages = (ings.data ?? []).filter((g) => stockStateOf(g) === 'out');
   const draftTotal = draft.hall + draft.delivery + draft.takeout;
   const sortLabel = SORTS.find((x) => x.key === sort)?.label ?? '판매량순';
 
@@ -267,6 +276,34 @@ export default function SalesHomeScreen() {
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 24 }}>
+        {/*
+          재고 부족 안내 — 프로토타입 `.stock-notice`. **맨 위**다.
+          부족한 게 없으면 아예 안 그린다(프로토타입도 count===0 이면 빈 문자열).
+        */}
+        {shortages.length > 0 ? (
+          <Pressable
+            onPress={() => router.push('/ingredients' as Href)}
+            accessibilityRole="button"
+            accessibilityLabel={`식재료 부족 ${shortages.length}개 — 재고 확인`}
+            style={{
+              flexDirection: 'row', alignItems: 'center', gap: 9, minHeight: 52, marginBottom: 11,
+              paddingVertical: 11, paddingHorizontal: 13,
+              borderWidth: 1, borderColor: T.red, borderRadius: 13, backgroundColor: T.redTint,
+            }}
+          >
+            <Icon name="warn" size={16} color={T.red} />
+            <View style={{ flex: 1, minWidth: 0 }}>
+              <Text style={{ fontSize: 13, fontWeight: '800', color: T.red }}>
+                식재료 부족 {shortages.length}개
+              </Text>
+              <Text style={{ fontSize: 11, fontWeight: '700', color: T.sub, marginTop: 3 }}>
+                부족한 식재료의 재고를 추가해 주세요
+              </Text>
+            </View>
+            <Icon name="chevron" size={16} color={T.red} />
+          </Pressable>
+        ) : null}
+
         {/* 영업 상태 — 오늘 기준값이 언제 굳는지 여기서 정해진다 */}
         {bday.data ? <BusinessDayBar state={bday.data} /> : null}
 
