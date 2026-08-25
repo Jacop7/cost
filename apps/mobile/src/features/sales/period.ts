@@ -1,10 +1,13 @@
 /**
  * 매출 기간 프리셋 (SALES-02).
  *
- * 기준일은 **영업일**(KST)이다. 기기 로컬이나 UTC 로 계산하면 자정 전후에 하루가 어긋나
- * "오늘 매출이 어제로 잡히는" 문제가 생긴다(@sikjae/core businessDate).
+ * ⚠ **여기엔 오늘이 없다**(0125). 기준일은 부르는 쪽이 넘긴다 —
+ *   판매는 `useSalesBusinessDate()`, 일반 기록은 `useStoreLocalDate()`.
+ *   둘 다 서버가 정한다. 앱이 기기 시계로 오늘을 계산하던 `todayBusiness()` 는 지웠다.
+ *   앱과 DB 가 각자 오늘을 세면 자정 전후에 하루가 갈린다(기획서 §2.1).
+ *
+ * 날짜 산술(`addDays`·달의 처음/끝)과 표기(`dayLabel`)만 남는다. 전부 순수 함수다.
  */
-import { currentBusinessDay } from '@sikjae/core';
 
 export type PeriodKey = 'today' | 'yesterday' | 'week' | 'month' | 'lastMonth' | 'custom';
 
@@ -50,8 +53,9 @@ export function dayLabel(s: string, today: string): string {
 }
 
 /**
- * ⚠ `today` 는 **연도 생략 판단에만** 쓴다(0125). 기본값은 두지 않는다 —
- *   기본값을 두면 부르는 쪽이 잊고, 그 자리만 기기 날짜에 기대게 된다.
+ * ⚠ `today` 는 **연도 생략 판단에만** 쓴다(0125). 생략하면 구간의 끝(`to`)을 쓴다 —
+ *   이건 기기 날짜가 아니라 **인자에서 나온 값**이라 안전하다.
+ *   기기 시계를 기본값으로 두는 것만 금지다.
  */
 export function rangeLabel(from: string, to: string, today: string = to): string {
   if (from === to) return dayLabel(from, today);
@@ -83,14 +87,3 @@ export function periods(today: string): Period[] {
     },
   ];
 }
-
-/**
- * @deprecated 앱이 직접 계산하는 오늘. **새 코드에서 쓰지 않는다**(0125).
- *
- * `+09:00` 고정 오프셋이라 서머타임이 있는 지역에서 틀리고, 무엇보다 앱과 DB 가
- * 각자 오늘을 계산하게 된다(기획서 §2.1). 서버가 정한 날짜를 쓴다 —
- * 판매는 `useSalesBusinessDate()`, 일반 기록은 `useStoreLocalDate()`.
- *
- * 아직 남겨 둔 이유는 일반 기록 화면 몇 개가 옮겨지기 전이라서다. 그게 끝나면 지운다.
- */
-export const todayBusiness = currentBusinessDay;

@@ -21,10 +21,12 @@ import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { AppHeader, Button, Card, ConfirmSheet, Field, Icon, Input, QueryState, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
+import { useStoreLocalDate } from '@/features/sales/businessDay';
+import { BusinessDateGate } from '@/features/sales/components/BusinessDateGate';
 import { formatQuantity, formatUnitPrice, isNegativeStock } from '@sikjae/core';
 import { T, won } from '@/theme/tokens';
 import { clampDecimals } from '@/lib/num';
-import { todayBusiness } from '@/features/sales/period';
+
 import { useEnsureVendor } from '@/features/my/hooks';
 import { useIngredientDetail, useQuickInbound, useQuickInboundPreview } from '../hooks';
 
@@ -68,7 +70,21 @@ function PreviewRow({ label, before, after, beforeTone, last }: {
   );
 }
 
+/**
+ * ⚠ 여기 날짜는 **매장 현지 날짜**다(0125). 판매 영업일이 아니다 —
+ *   발주·입고는 달력 날짜로 센다. 앱이 직접 계산하지 않고 서버에서 받는다.
+ */
 export function QuickInboundScreen() {
+  // 게이트가 오류를 그릴 때도 나갈 길이 있어야 한다 — 본체 밖이라 여기서 한 번 더 읽는다.
+  const gateId = useLocalSearchParams<{ id?: string }>().id;
+  return (
+    <BusinessDateGate source={useStoreLocalDate()} title="재고 추가" onBack={() => safeBack(`/ingredients/${gateId}`)}>
+      {(localDate) => <QuickInboundScreenBody localDate={localDate} />}
+    </BusinessDateGate>
+  );
+}
+
+function QuickInboundScreenBody({ localDate }: { localDate: string }) {
   const params = useLocalSearchParams<{ id?: string }>();
   const id = params.id;
   const router = useRouter();
@@ -85,7 +101,12 @@ export function QuickInboundScreen() {
   const [volume, setVolume] = useState('');
   const [qty, setQty] = useState(1);
   const [paid, setPaid] = useState('');
-  const [day, setDay] = useState(todayBusiness());
+  /*
+   * ⚠ **최초 한 번만** 서버 날짜로 초기화한다. 사장님이 지난 날짜를 골라 놓은 뒤
+   *   재조회가 돌아도 그 선택을 덮어쓰면 안 된다.
+   *   (게이트가 `key={date}` 라 날짜 자체가 바뀌면 본체가 새로 만들어진다 — 그건 맞다.)
+   */
+  const [day, setDay] = useState(localDate);
   const [err, setErr] = useState<string | null>(null);
 
   const options = g?.options ?? [];
@@ -300,7 +321,7 @@ export function QuickInboundScreen() {
                   />
                 </Field>
 
-                <Field label="입고일" hint={day !== todayBusiness() ? '지난 날짜 입고는 오늘 기준부터 반영돼요' : undefined}>
+                <Field label="입고일" hint={day !== localDate ? '지난 날짜 입고는 오늘 기준부터 반영돼요' : undefined}>
                   <Input
                     value={day}
                     onChangeText={setDay}
