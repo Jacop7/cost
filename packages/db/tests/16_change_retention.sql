@@ -206,18 +206,25 @@ begin
 end $t$;
 
 
--- ── 함수 권한의 기본값 (0135) ─────────────────────────────────
+-- ── 함수 권한의 기본값 (0135 · 0136) ──────────────────────────
 /*
- * ⚠ 이건 한 함수의 문제가 아니라 **기본값**의 문제다.
- *   Postgres 는 새 함수에 `PUBLIC` 실행 권한을 준다. `alter default privileges` 로
- *   기본값을 고쳐 놔도, 새 DB 에서 새로 만든 함수에 `=X/postgres` 가 그대로 붙는 걸
- *   측정했다 — template 이 들고 있는 기본값이 이긴다.
+ * ⚠ 이건 한 함수의 문제가 아니라 **기본값**의 문제다. 그리고 그 기본값은 **두 층**이다 —
+ *   한쪽만 걷으면 절반만 걷힌다. 0135 가 실제로 그랬다.
  *
- *   그래서 0135 가 지금 있는 함수를 명시적으로 걷었는데, **다음 마이그레이션이 함수를
- *   하나 만들면 그 함수는 또 PUBLIC 이다.** 그걸 여기서 잡는다.
- *   빨개지면 그 마이그레이션 끝에 아래 두 줄을 넣으면 된다:
- *       revoke execute on all functions in schema public from public, anon;
- *       grant  execute on all functions in schema public to authenticated, service_role;
+ *       PUBLIC 은 PostgreSQL 의 **전역** 기본값   → `in schema` 를 **빼야** 걷힌다
+ *       anon   은 Supabase 의 **스키마별** 기본값 → `in schema` 를 **줘야** 걷힌다
+ *
+ *   실측: `in schema` 만 쓰면 새로 만든 함수가 `PUBLIC=true anon=true` 로 그대로 생긴다.
+ *   (0135 에는 "template 기본값이 이긴다"고 적었는데 **틀린 설명이었다.** template 과
+ *    무관하다. 0136 이 바로잡았다.)
+ *
+ *   빨개지면 두 층 중 하나가 빠진 것이다. 0136 의 세 문장을 그대로 쓰면 된다:
+ *       alter default privileges for role postgres
+ *         revoke execute on functions from public;                    -- 전역
+ *       alter default privileges for role postgres in schema public
+ *         revoke execute on functions from anon;                      -- 스키마별
+ *       alter default privileges for role postgres in schema public
+ *         grant  execute on functions to authenticated, service_role;
  */
 do $t$
 declare v_n int; v_names text;
@@ -252,6 +259,7 @@ begin
    */
   execute 'reset role';
   execute 'create function public.zz_grant_probe() returns int language sql as ''select 1''';
+  -- ⚠ 빨개지면 기본 권한 **두 층** 중 하나가 빠진 것이다(위 머리말 참고).
   perform pg_temp.ok('새로 만든 함수는 PUBLIC 이 못 부른다',
     not has_function_privilege('public', 'public.zz_grant_probe()', 'execute'));
   perform pg_temp.ok('새로 만든 함수는 anon 도 못 부른다',
@@ -281,12 +289,23 @@ end $t$;
 do $t$
 declare v_now text; v_want text;
 begin
-  select string_agg(p.proname, ', ' order by p.proname) into v_now
+  /*
+   * ⚠ **시그니처까지** 본다. 이름만 비교하면 `set_operating_hours` 의 인자가 위험하게
+   *   바뀌어도(예: 매장 인자가 빠져도) 이름이 같아 그대로 통과한다.
+   *   definer 는 RLS 를 지나가므로 "무엇을 받는가"가 곧 권한 경계다.
+   */
+  select string_agg(p.proname || '(' || pg_get_function_identity_arguments(p.oid) || ')',
+                    ' | ' order by p.proname, pg_get_function_identity_arguments(p.oid))
+    into v_now
     from pg_proc p join pg_namespace n on n.oid = p.pronamespace
    where n.nspname = 'public' and p.prokind = 'f' and p.prosecdef;
 
-  v_want := 'my_store_ids, purge_entity_changes, set_operating_hours, '
-         || 'settings_sync_operating_rule, stores_default_operating_rule';
+  v_want := concat_ws(' | ',
+    'my_store_ids()',
+    'purge_entity_changes()',
+    'set_operating_hours(p_store uuid, p_weekly_hours jsonb, p_weekly_breaks jsonb)',
+    'settings_sync_operating_rule()',
+    'stores_default_operating_rule()');
 
   perform pg_temp.eq_t('SECURITY DEFINER 함수 목록이 그대로다', coalesce(v_now, '(없음)'), v_want);
 
