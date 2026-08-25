@@ -135,9 +135,13 @@ end $t$;
 
 
 -- ── ⑥ 겹침·형식은 저장 시점에 막힌다 ──────────────────────────
+-- ⚠ 여기만 **postgres 로 올라가서** 시험한다(0132). 앱 사용자에게는 직접 쓰기 권한이
+--   아예 없어서(⑧ 참고) 트리거까지 가지도 못한다. 그래도 이 방어선은 살아 있어야 한다 —
+--   `set_operating_hours` 에 버그가 생겨도 겹친 규칙이 저장되면 안 되기 때문이다.
 do $t$
 declare v_store uuid := pg_temp.store();
 begin
+  set local role postgres;
   -- 겹치는 규칙을 손으로 밀어 넣어 본다.
   perform pg_temp.raises('겹치는 규칙은 거부',
     format('insert into operating_rules (store_id, effective_from, effective_to, weekly_hours)
@@ -165,6 +169,88 @@ begin
            v_store, date '2092-01-01', pg_temp.hours('09:00','18:00')::text,
            '{"1":{"start":"15:00"}}'),
     '22000');
+  set local role authenticated;   -- 다음 블록은 다시 앱 사용자로 돈다
+end $t$;
+
+
+-- ── ⑧ 규칙 이력은 손으로 못 고친다 (0132) ─────────────────────
+-- 규칙을 직접 고칠 수 있으면 소급 방지가 통째로 무너진다 —
+-- 8월 규칙의 시각을 손으로 바꾸면 8월 예정 종료가 다시 계산된다. 막으려던 그것이다.
+do $t$
+declare v_store uuid := pg_temp.store();
+begin
+  perform pg_temp.ok('읽기는 된다',
+    (select count(*) from operating_rules where store_id = v_store) > 0);
+
+  -- 42501 = insufficient_privilege. RLS 가 아니라 **권한**에서 막힌다.
+  perform pg_temp.raises('직접 수정은 막힌다',
+    'update operating_rules set weekly_hours = weekly_hours', '42501');
+  perform pg_temp.raises('직접 삭제도 막힌다',
+    'delete from operating_rules', '42501');
+  perform pg_temp.raises('직접 추가도 막힌다',
+    format('insert into operating_rules (store_id, effective_from, weekly_hours)
+            values (%L, %L, %L::jsonb)',
+           v_store, date '2095-01-01', pg_temp.hours('09:00','18:00')::text),
+    '42501');
+
+  -- 그런데 RPC 로는 된다. 문이 하나뿐이라는 뜻이다.
+  perform pg_temp.ok('RPC 로는 바꿀 수 있다',
+    (set_operating_hours(v_store, pg_temp.hours('12:00','23:00'))->>'rule_id') is not null);
+
+  /*
+   * ⚠ 여기가 진짜 확인이다(0133). 위 세 개는 **권한**이 막은 것일 수도 있는데,
+   *   권한은 `grant all on all tables` 한 줄로 조용히 되살아난다 — 실제로 내 새 DB
+   *   빌드 스크립트가 그러고 있었고 아무도 못 봤다.
+   *   그래서 권한과 정책을 **0129 원래 상태로 되살린 뒤**에도 막히는지 본다.
+   *   (전부 이 트랜잭션 안이라 롤백된다.)
+   */
+  set local role postgres;
+  grant insert, update, delete on operating_rules to authenticated;
+  drop policy if exists pg_temp_rw on operating_rules;
+  create policy pg_temp_rw on operating_rules for all to authenticated
+    using (store_id in (select my_store_ids())) with check (store_id in (select my_store_ids()));
+  set local role authenticated;
+
+  perform pg_temp.raises('권한·정책이 되살아나도 막힌다',
+    'update operating_rules set weekly_hours = weekly_hours', '42501');
+  perform pg_temp.raises('추가도 마찬가지',
+    format('insert into operating_rules (store_id, effective_from, weekly_hours)
+            values (%L, %L, %L::jsonb)',
+           v_store, date '2096-01-01', pg_temp.hours('09:00','18:00')::text),
+    '42501');
+  -- 그 상태에서도 RPC 는 통과해야 한다. 막기만 하고 길이 없으면 그건 고장이다.
+  perform pg_temp.ok('그 상태에서도 RPC 는 통과',
+    (set_operating_hours(v_store, pg_temp.hours('13:00','23:30'))->>'rule_id') is not null);
+end $t$;
+
+
+-- ── ⑨ 장부와 규칙이 갈리지 않는다 (0132 경합) ──────────────────
+/*
+ * 잠금이 없으면 이 불변식이 깨진다. 실측한 순서는 —
+ *     A 시간 변경: 열린 영업일 없음 확인
+ *     B 영업 시작: 옛 규칙으로 오늘 장부 생성
+ *     A 새 규칙을 **오늘부터** 적용
+ * 결과: 장부는 22:00 규칙을 가리키는데 그날 유효한 규칙은 02:00, 예정 종료가 4시간 갈렸다.
+ *
+ * ⚠ 동시 실행은 한 트랜잭션 안에서 못 만든다. 대신 **결과 불변식**을 못 박는다 —
+ *   깨진 상태가 만들어지면 여기서 걸린다.
+ */
+do $t$
+declare v_store uuid := pg_temp.store(); v_bad int;
+begin
+  perform pg_temp.open_today();
+
+  select count(*) into v_bad
+    from business_days d
+   where d.store_id = v_store
+     and d.operating_rule_id is distinct from (select id from operating_rule_at(d.store_id, d.business_date));
+  perform pg_temp.eq('모든 장부가 그날 유효한 규칙을 가리킨다', v_bad, 0, 0);
+
+  select count(*) into v_bad
+    from business_days d
+   where d.store_id = v_store
+     and d.planned_close_at is distinct from planned_close(d.store_id, d.business_date);
+  perform pg_temp.eq('저장된 예정 종료 = 그날 규칙이 내는 값', v_bad, 0, 0);
 end $t$;
 
 
