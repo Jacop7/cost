@@ -8,8 +8,14 @@
 -- 그러면 다시 **9월 비율을 8월 항목으로 쪼갠다.** 합계는 맞고 줄마다 틀린다 —
 -- 화면에서 제일 알아채기 어려운 종류다.
 --
--- 그래서 두 값을 **한 문장 안에서** 낸다. `language sql` 함수라 `now()` 가 문장 하나에
--- 고정되고, 아래 lateral 로 `store_local_month` 을 딱 한 번만 평가한다.
+-- 그래서 세 값을 **한 문장 안에서** 낸다.
+--
+-- ⚠ 보장되는 것을 정확히 적는다. lateral 이 `store_local_month` 을 "딱 한 번만
+--   평가한다"고 단정할 수 없다 — 최적화기가 식을 인라인할 수 있다. 실제 보장은 이것이다:
+--       **하나의 SQL 문, 하나의 MVCC 스냅샷 안에서 같은 `fm.m` 값을
+--         비율·월·항목 조회 세 곳이 함께 쓴다.**
+--   비율을 낸 달과 항목을 가져온 달이 갈릴 수 없다는 뜻이고, 필요한 건 그것뿐이다.
+--
 -- 앱은 이제 이 화면에서 고정지출 RPC 를 **부르지 않는다** — 갈릴 두 번이 없어진다.
 --
 -- 응답에 키 두 개가 는다(빼는 건 없다):
@@ -23,7 +29,7 @@ declare
   v_new text;
   v_old_tail text := '  from recipes r where r.id = p_recipe;';
   v_new_tail text := '  from recipes r'
-                  || E'\n' || '  -- 한 번만 평가한다. 아래 세 자리가 반드시 같은 달을 봐야 한다.'
+                  || E'\n' || '  -- 문장 하나 = 스냅샷 하나. 이 한 값을 비율·월·항목 세 자리가 함께 쓴다(0128).'
                   || E'\n' || '  cross join lateral (select store_local_month(r.store_id) as m) fm'
                   || E'\n' || '  where r.id = p_recipe;';
   v_old_rate text := '''fixed_rate'', coalesce(fixed_cost_rate(r.store_id, store_local_month(r.store_id)), 0),';
