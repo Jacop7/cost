@@ -10,7 +10,6 @@ import { invalidate, invalidateOn, qk } from '@/lib/queryClient';
 import { supabase } from '@/lib/supabase';
 import { asJson } from '@/lib/json';
 import { useStoreId } from '@/lib/SessionProvider';
-import { currentBusinessMonth } from '@sikjae/core';
 import type { TaxMode } from '@sikjae/types';
 
 const num = (v: unknown): number => Number(v ?? 0);
@@ -217,7 +216,13 @@ export interface FixedCosts {
   rate: number | null;
 }
 
-export function useFixedCosts(month: string = currentBusinessMonth()) {
+/**
+ * ⚠ `month` 에 기본값을 **두지 않는다**(0126). 예전엔 core 의 `currentBusinessMonth`
+ *   였는데, 그건 기기 시계에서 나온 `+09:00` 고정 오프셋 값이다. 뉴욕 매장의
+ *   8/31 22:00 은 서울로 9/1 이라 **서버는 8월 장부를 보는데 이 훅만 9월을 열었다.**
+ *   부르는 쪽이 서버 월(`localDate.slice(0, 7)`)을 넘긴다.
+ */
+export function useFixedCosts(month: string) {
   const storeId = useStoreId();
   return useQuery({
     queryKey: qk.fixedCosts(month),
@@ -515,7 +520,8 @@ export interface RevenueCheck {
   hasSales: boolean;
 }
 
-export function useRevenueCheck(month: string = currentBusinessMonth()) {
+/** ⚠ 기본값 없음 — 위 `useFixedCosts` 와 같은 이유다(0126). */
+export function useRevenueCheck(month: string) {
   const storeId = useStoreId();
   return useQuery({
     queryKey: [...qk.fixedCosts(month), 'revenue-check'],

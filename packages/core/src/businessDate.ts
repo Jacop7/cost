@@ -1,13 +1,20 @@
 /**
  * 영업일·영업월 — 순수 날짜 변환.
  *
- * ⚠ **앱은 더 이상 이 파일로 "오늘"을 세지 않는다**(0125). 날짜 권위는 서버 하나다 —
+ * ⚠ **앱은 더 이상 이 파일로 "오늘"도 "이번 달"도 세지 않는다.** 날짜 권위는 서버 하나다 —
  *   판매 영업일은 `business_day_state().business_date`, 일반 기록의 달력 날짜는
- *   `store_local_date()`. 앱에서는 `useSalesBusinessDate()` · `useStoreLocalDate()` 로 받는다.
+ *   `store_local_date()`, 그 달은 그 값의 앞 7글자(`store_local_month()` 과 같다).
+ *   앱에서는 `useSalesBusinessDate()` · `useStoreLocalDate()` 로 받는다.
  *   앱과 DB 가 각자 오늘을 계산하면 자정 전후에 하루가 갈린다(기획서 §2.1).
  *
- *   그래서 `currentBusinessDay()` · `currentBusinessMonth()` 는 **부르는 곳이 없다.**
- *   새로 부르지 않는다. 서버 날짜를 받아 `businessDay(at)` 처럼 인자를 주는 변환만 쓴다.
+ *   일(day) 은 0125 에서, 월(month) 은 0126 에서 닫았다. 두 번에 나뉜 이유가 곧 교훈이다 —
+ *   일만 옮기고 "앱에서 오늘을 지웠다"고 적었는데 `currentBusinessMonth` 가 네 군데
+ *   살아 있었다. 뉴욕 매장의 8/31 22:00 은 서울로 9/1 이라, 서버는 8월 장부를 보는데
+ *   고정지출 화면만 9월을 열었다.
+ *
+ *   그래서 지금 `currentBusinessDay()` · `currentBusinessMonth()` 는 **부르는 곳이 없다**
+ *   (레포 전체 확인, 주석 언급 제외). 새로 부르지 않는다 — 서버 날짜를 받아
+ *   `businessDay(at)` 처럼 인자를 주는 변환만 쓴다.
  *   (`+09:00` 고정 오프셋이라 매장 시간대가 KST 가 아니면 애초에 틀린 값을 낸다.)
  *
  * 아래는 옮겨 오기 전의 배경 설명이다 —

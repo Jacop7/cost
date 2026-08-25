@@ -10,7 +10,9 @@ import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Button, Card, Field, Icon, Input, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { formatPercent, currentBusinessMonth } from '@sikjae/core';
+import { formatPercent } from '@sikjae/core';
+import { useStoreLocalDate } from '@/features/sales/businessDay';
+import { BusinessDateGate } from '@/features/sales/components/BusinessDateGate';
 import { T, won } from '@/theme/tokens';
 import { clampDecimals } from '@/lib/num';
 import { useFixedCosts, useRevenueCheck, useSaveFixedCosts, type ChannelWeights, type FixedCostItem } from '../hooks';
@@ -37,9 +39,22 @@ const num = (s: string) => {
 interface DraftLine { name: string; amount: string }
 interface DraftItem { key: string; label: string; mode: 'total' | 'detail'; total: string; lines: DraftLine[]; weights: ChannelWeights | null }
 
+/**
+ * ⚠ 경로에 월이 없으면 **서버 월**을 쓴다(0126). 기기 시계로 만든 이번 달이 아니다 —
+ *   서버가 8월 장부를 보는데 여기서 9월을 저장하면 그 달 고정지출률이 통째로 어긋나고,
+ *   저장 한 번이 전 메뉴 손익을 다시 계산하므로 되돌리기도 어렵다.
+ */
 export default function FixedCostEditScreen() {
+  return (
+    <BusinessDateGate source={useStoreLocalDate()} title="고정 지출 수정" onBack={() => safeBack('/recipes/fixed-cost')}>
+      {(localDate) => <FixedCostEditScreenBody localMonth={localDate.slice(0, 7)} />}
+    </BusinessDateGate>
+  );
+}
+
+function FixedCostEditScreenBody({ localMonth }: { localMonth: string }) {
   const params = useLocalSearchParams<{ month?: string }>();
-  const month = params.month ?? currentBusinessMonth();
+  const month = params.month ?? localMonth;
 
   const fixed = useFixedCosts(month);
   const check = useRevenueCheck(month);

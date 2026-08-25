@@ -13,6 +13,8 @@ import { RecentChangeRow, changeStamp } from '@/features/changes';
 import { formatPercent, formatQuantity, formatUnitPrice, isNegativeStock, recommendedPrice, round, stockStateOf, STOCK_STATE_LABEL, taxAmount, taxRate } from '@sikjae/core';
 import { T, won } from '@/theme/tokens';
 import { useFixedCosts } from '@/features/my/hooks';
+import { useStoreLocalDate } from '@/features/sales/businessDay';
+import { BusinessDateGate } from '@/features/sales/components/BusinessDateGate';
 import { PriceSimSheet } from '../components/PriceSimSheet';
 import { useDeactivateRecipe, useRecipeDetail, useSaveRecipe } from '../hooks';
 import { deltaTone, useProfitHistory } from '../profitHistory';
@@ -60,14 +62,28 @@ function CostTabs({ value, onChange, servings }: { value: 'batch' | 'one'; onCha
   );
 }
 
+/**
+ * ⚠ 고정지출 **항목별 배분**은 서버 월과 같은 달을 봐야 한다(0126).
+ *   권위 있는 `fixedRate` 는 `recipe_detail` 이 `store_local_month(r.store_id)` 로 낸 값이다.
+ *   여기서 기기 시계로 다른 달의 항목 합계를 가져오면, 8월 비율을 9월 항목으로 쪼갠다 —
+ *   합계는 맞는데 줄마다 틀린 숫자가 된다(제일 알아채기 어려운 종류다).
+ */
 export default function RecipeDetailScreen() {
+  return (
+    <BusinessDateGate source={useStoreLocalDate()} title="메뉴 상세" onBack={() => safeBack('/recipes')}>
+      {(localDate) => <RecipeDetailScreenBody localMonth={localDate.slice(0, 7)} />}
+    </BusinessDateGate>
+  );
+}
+
+function RecipeDetailScreenBody({ localMonth }: { localMonth: string }) {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
 
   const detail = useRecipeDetail(id);
   /** 축약 목록 3줄. RCP-16 과 **같은 RPC** 를 쓴다 — 두 화면이 다른 걸 보여 주면 안 된다. */
   const profitQ = useProfitHistory(id, 3);
-  const fixedCosts = useFixedCosts();
+  const fixedCosts = useFixedCosts(localMonth);
   const saveRecipe = useSaveRecipe();
   const deactivate = useDeactivateRecipe();
 
