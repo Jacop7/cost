@@ -126,13 +126,28 @@ end $t$;
 do $t$
 declare v_def text;
 begin
+  /*
+   * ⚠ 몸통이 `close_business_day_row` 로 옮겨졌다(0137). 수동 마감과 자동 마감이
+   *   **같은 몸통**을 쓰게 하려는 것이었다 — 두 벌이면 스냅샷·집계가 갈린다.
+   *   그래서 잠금 순서도 거기서 본다. `close_business_day` 만 보던 옛 시험은
+   *   이 이동에 빨개졌고, 그게 맞다(그 함수엔 이제 `for update` 가 없다).
+   */
   select pg_get_functiondef(p.oid) into v_def
     from pg_proc p join pg_namespace n on n.oid = p.pronamespace
-   where n.nspname = 'public' and p.proname = 'close_business_day';
+   where n.nspname = 'public' and p.proname = 'close_business_day_row';
 
   perform pg_temp.ok('마감이 영업일 행을 잠근다', position('for update' in v_def) > 0);
   perform pg_temp.ok('잠금이 집계보다 앞이다',
     position('for update' in v_def) < position('v_sum := sales_summary' in v_def));
+
+  -- 그리고 수동·자동 둘 다 그 몸통으로 들어가야 한다. 한쪽이라도 제 길로 새면
+  -- 잠금이 없는 마감 경로가 생긴다.
+  perform pg_temp.ok('수동 마감이 몸통을 부른다',
+    pg_get_functiondef('public.close_business_day(uuid,business_close_method)'::regprocedure)
+      like '%close_business_day_row(%');
+  perform pg_temp.ok('자동 마감도 같은 몸통을 부른다',
+    pg_get_functiondef('public.close_due_business_days()'::regprocedure)
+      like '%close_business_day_row(%');
 
   select pg_get_functiondef(p.oid) into v_def
     from pg_proc p join pg_namespace n on n.oid = p.pronamespace

@@ -238,15 +238,29 @@ begin
     coalesce('anon 이 부를 수 있는 함수: ' || v_names, 'anon 이 부를 수 있는 함수 없음'),
     v_n, 0, 0);
 
-  -- 반대쪽도 본다. 다 걷어 버리면 앱이 통째로 죽는다.
+  /*
+   * 반대쪽도 본다. 다 걷어 버리면 앱이 통째로 죽는다.
+   *
+   * ⚠ 다만 **일부러 막은 것**이 있다. 사람 없이 도는 함수는 사람이 부르면 안 된다 —
+   *   `close_due_business_days` 는 매장을 안 가리는 definer 라, 인증 사용자에게 열면
+   *   남의 매장 영업일까지 닫을 수 있다(0137). 크론(service_role)만 부른다.
+   *   목록에 이름이 늘면 그때마다 **왜 막았는지**를 여기 적는다.
+   */
   select count(*), string_agg(p.proname, ', ' order by p.proname)
     into v_n, v_names
     from pg_proc p join pg_namespace n on n.oid = p.pronamespace
    where n.nspname = 'public' and p.prokind = 'f'
-     and not has_function_privilege('authenticated', p.oid, 'execute');
+     and not has_function_privilege('authenticated', p.oid, 'execute')
+     and p.proname not in ('close_due_business_days');
   perform pg_temp.eq(
     coalesce('인증 사용자가 못 부르는 함수: ' || v_names, '인증 사용자는 전부 부를 수 있다'),
     v_n, 0, 0);
+
+  -- 그리고 그 예외는 **정말로** 막혀 있어야 한다. 목록에만 적고 열려 있으면 의미가 없다.
+  perform pg_temp.ok('크론 전용 함수는 인증 사용자도 못 부른다',
+    not has_function_privilege('authenticated', 'public.close_due_business_days()', 'execute'));
+  perform pg_temp.ok('크론 전용 함수는 anon 도 못 부른다',
+    not has_function_privilege('anon', 'public.close_due_business_days()', 'execute'));
 
   /*
    * ⚠ 앞의 두 줄은 **지금 있는** 함수만 본다. 정작 위험한 건 다음에 만들어질 함수다 —
@@ -285,6 +299,8 @@ end $t$;
  *   set_operating_hours          첫 줄이 assert_my_store 다(0132).
  *   settings_sync_operating_rule 트리거 전용. 직접 못 부른다.
  *   stores_default_operating_rule 트리거 전용. 직접 못 부른다.
+ *   close_due_business_days      매장을 안 가린다. 그래서 사람에게는 **아예 안 연다** —
+ *                                크론(service_role)만 부른다(0137).
  */
 do $t$
 declare v_now text; v_want text;
@@ -301,6 +317,7 @@ begin
    where n.nspname = 'public' and p.prokind = 'f' and p.prosecdef;
 
   v_want := concat_ws(' | ',
+    'close_due_business_days()',
     'my_store_ids()',
     'purge_entity_changes()',
     'set_operating_hours(p_store uuid, p_weekly_hours jsonb, p_weekly_breaks jsonb)',
