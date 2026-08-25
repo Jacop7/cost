@@ -267,3 +267,65 @@ begin
       coalesce((business_day_state(pg_temp.store())#>>'{unacked,business_day_id}'), '') <> v_acked::text);
   end;
 end $t$;
+
+
+-- ════════════════════════════════════════════════════════════════
+-- 기타 매출·추가 지출도 영업일을 지킨다 (0115)
+--
+-- 동시성 감사에서 나왔다. `save_sale` 은 메뉴 판매를 `e10_sale_recorded` 로 넘기고
+-- 거기 영업일 가드가 있는데, **기타/추가 분기는 그 함수를 안 거친다.**
+--
+-- 여태 안 들킨 이유: 그날 수량>0 인 메뉴 줄이 하나라도 있으면 '화면에서 지운 메뉴'
+-- 루프가 `e10_sale_recorded(..., 0,0,0,0)` 을 불러 **그게 대신** 걸렸다.
+-- 우연히 막혀 있었던 것이라, 메뉴 판매가 없는 날엔 그대로 뚫렸다.
+-- 실측: 종료된 날에 490,000원이 들어갔다.
+-- ════════════════════════════════════════════════════════════════
+do $t$
+declare
+  v_day date := business_day();
+  v_etc0 numeric;
+begin
+  -- ⚠ 메뉴 판매를 **전부 0 으로 비운다.** 하나라도 남아 있으면 다른 가드가 대신 걸려
+  --   이 시험이 아무것도 안 재게 된다 — 실제로 그렇게 통과했었다.
+  update daily_sales_items it set qty_hall = 0, qty_delivery = 0, qty_takeout = 0, qty_waste = 0
+    from daily_sales ds where ds.id = it.daily_sales_id
+     and ds.store_id = pg_temp.store() and ds.sale_date = v_day;
+
+  -- ⚠ 앞선 블록들이 이 영업일을 이미 닫아 놨을 수 있다. 그러면 open 이 실패하고
+  --   이어지는 close 가 `영업 중이 아니에요` 로 터진다 — 실제로 그렇게 터졌다.
+  --   닫혀 있으면 다시 열어서 출발점을 맞춘다.
+  begin
+    perform open_business_day(pg_temp.store());
+  exception when others then
+    begin perform reopen_business_day(pg_temp.store(), v_day); exception when others then null; end;
+  end;
+  if (select status::text from business_days
+       where store_id = pg_temp.store() and business_date = v_day) <> 'closed' then
+    perform close_business_day(pg_temp.store());
+  end if;
+  perform pg_temp.eq_t('영업이 종료됐다',
+    (select status::text from business_days where store_id = pg_temp.store() and business_date = v_day), 'closed');
+  perform pg_temp.eq('수량>0 인 메뉴 줄이 없다',
+    (select count(*) from daily_sales_items it join daily_sales ds on ds.id = it.daily_sales_id
+      where ds.store_id = pg_temp.store() and ds.sale_date = v_day
+        and it.qty_hall + it.qty_delivery + it.qty_takeout + coalesce(it.qty_waste, 0) > 0), 0, 0);
+
+  select coalesce(etc_revenue, 0) into v_etc0
+    from daily_sales where store_id = pg_temp.store() and sale_date = v_day;
+
+  perform pg_temp.raises('종료된 날 기타 매출은 거부',
+    format($q$select save_sale(%L, %L, null, %L::jsonb, null)$q$,
+           pg_temp.store(), v_day,
+           jsonb_build_array(jsonb_build_object('name','종료 후 주류','price',490000,'qty',1))::text),
+    '45002');
+
+  perform pg_temp.raises('종료된 날 추가 지출도 거부',
+    format($q$select save_sale(%L, %L, null, null, %L::jsonb)$q$,
+           pg_temp.store(), v_day,
+           jsonb_build_array(jsonb_build_object('name','종료 후 얼음','amount',30000))::text),
+    '45002');
+
+  perform pg_temp.eq('기타 매출이 늘지 않았다',
+    (select coalesce(etc_revenue, 0) from daily_sales
+      where store_id = pg_temp.store() and sale_date = v_day), v_etc0, 0.001);
+end $t$;
