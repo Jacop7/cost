@@ -19,7 +19,8 @@ import { T, won } from '@/theme/tokens';
 import { formatQuantity, formatUnitPrice } from '@sikjae/core';
 import { useRecipeDetail } from '@/features/recipes/hooks';
 import { useDayMenuDetail, useRangeMenuDetail, useSalesRange } from '../hooks';
-import { rangeLabel, todayBusiness } from '../period';
+import { rangeLabel } from '../period';
+import { useSalesBusinessDate } from '../businessDay';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 /** DB 기준단위(ea) → 화면 표기(개). */
@@ -36,7 +37,13 @@ function SecHead({ title, sub }: { title: string; sub?: string }) {
 
 export default function SalesMenuDetailScreen() {
   const params = useLocalSearchParams<{ recipe?: string; from?: string; to?: string }>();
-  const today = todayBusiness();
+    /*
+   * ⚠ **서버가 정한 장부 날짜**를 쓴다(0125). 앱이 `+09:00` 고정 오프셋으로 직접
+   *   계산하면 앱과 DB 가 각자 오늘을 갖게 된다(기획서 §2.1).
+   *   못 받았으면 빈 문자열이고, 그동안 조회가 꺼진다 — 잘못된 날의 숫자보다 낫다.
+   */
+  const serverToday = useSalesBusinessDate() ?? '';
+  const today = serverToday;
   const from = params.from ?? today;
   const to = params.to ?? today;
 
