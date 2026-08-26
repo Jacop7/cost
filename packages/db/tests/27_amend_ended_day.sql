@@ -390,10 +390,70 @@ begin
                       join business_days d on d.id = r.business_day_id
                      where d.store_id = v_store and d.business_date = v_day);
   begin
+    /*
+     * ⚠ "안 바뀌었다" 는 판본과 감사 기록만이 아니다. **자국이 하나도 없어야** 한다.
+     *   0147 은 판본은 안 올렸는데 `updated_at` 과 오늘 영업일의 `last_activity_at` 이
+     *   움직였다. 나중에 "누가 언제 건드렸나" 를 볼 때 그게 거짓말한다.
+     */
+    declare
+      v_upd0  timestamptz;
+      v_act0  timestamptz;
+      v_ev0   int;
+    begin
+    /*
+     * ⚠ **오늘을 열어 두고 잰다.** 처음엔 앞 블록이 닫아 둔 상태로 재서
+     *   `오늘 영업일의 마지막 활동도 그대로 = (없음)` 이 나왔다 — 통과했지만
+     *   아무것도 안 잰 단언이었다. 건드릴 대상이 있어야 안 건드린 것을 잴 수 있다.
+     */
+    perform pg_temp.open_today();
+    /*
+     * ⚠ `updated_at` 도 뒤로 밀어 둔다. `now()` 는 트랜잭션 시작 시각이라, 같은
+     *   트랜잭션에서 방금 쓴 행은 **이미 그 값**이다 — 다시 찍어도 값이 안 변해서
+     *   "쓸 때마다 시각을 찍는다" 는 결함을 못 잡는다(사보타주를 걸어 보고 알았다).
+     * ⚠ 미는 UPDATE 자체도 `daily_sales_touch` 트리거에 걸려 도로 `now()` 가 된다.
+     *   그래서 트리거를 잠깐 끄고 민다. 이 시험의 준비 과정일 뿐 계약이 아니다.
+     */
+    set local role postgres;
+    alter table daily_sales disable trigger daily_sales_touch;
+    update daily_sales set updated_at = now() - interval '1 hour'
+     where store_id = v_store and sale_date = v_day;
+    alter table daily_sales enable trigger daily_sales_touch;
+    set local role authenticated;
+
+    v_upd0 := (select updated_at from daily_sales
+                where store_id = v_store and sale_date = v_day);
+    perform pg_temp.ok('전제: 저장 시각이 지금보다 과거다', v_upd0 < now());
+    perform pg_temp.ok('전제: 기타매출이 실제로 있다 — 없으면 그 경로를 안 탄다',
+      (select etc_items from daily_sales
+        where store_id = v_store and sale_date = v_day) is not null);
+    v_act0 := (select last_activity_at from business_days
+                where store_id = v_store and status::text <> 'closed'
+                order by business_date desc limit 1);
+    v_ev0  := (select count(*) from inventory_events);
+    perform pg_temp.ok('전제: 오늘 영업일이 열려 있다', v_act0 is not null);
+    /*
+     * ⚠ **기타매출도 그대로 되보낸다.** 화면은 고친 칸만 보내지 않고 화면에 있는
+     *   값을 통째로 보낸다. 메뉴만 보내면 몸통의 기타/지출 경로를 안 타서
+     *   "몸통이 시각을 선갱신한다" 는 결함을 못 잡는다 — 사보타주를 걸어 보고 알았다.
+     */
     v_c := amend_ended_business_day(v_store, v_day, (v_b->>'revision')::int,
-             jsonb_build_array(jsonb_build_object('recipe_id', v_r, 'qty_hall', 9)));
+             jsonb_build_array(jsonb_build_object('recipe_id', v_r, 'qty_hall', 9)),
+             (select etc_items from daily_sales
+               where store_id = v_store and sale_date = v_day),
+             (select extra_items from daily_sales
+               where store_id = v_store and sale_date = v_day));
 
     perform pg_temp.ok('안 바뀌었다고 말한다', (v_c->>'changed')::boolean is false);
+    perform pg_temp.eq_t('저장 시각도 안 움직인다',
+      (select updated_at from daily_sales
+        where store_id = v_store and sale_date = v_day)::text, v_upd0::text);
+    perform pg_temp.eq('재고 이벤트도 안 늘어난다',
+      (select count(*) from inventory_events), v_ev0, 0);
+    perform pg_temp.eq_t('오늘 영업일의 마지막 활동도 그대로',
+      (select last_activity_at from business_days
+        where store_id = v_store and status::text <> 'closed'
+        order by business_date desc limit 1)::text, v_act0::text);
+    end;
     perform pg_temp.eq('판본이 안 오른다 — 화면이 그대로 다시 쓸 수 있어야 한다',
       (v_c->>'revision')::int, (v_b->>'revision')::int, 0);
     perform pg_temp.eq('정정 횟수도 그대로',
@@ -405,14 +465,31 @@ begin
         where d.store_id = v_store and d.business_date = v_day), v_cnt, 0);
   end;
 
-  -- ③ 감사 상세의 메뉴명은 **판매 시점** 이름이다. 지금 이름을 바꿔도 과거는 그대로다.
-  declare v_old_name text := (select name from recipes where id = v_r);
+  /*
+   * ③ 감사 상세의 메뉴명은 **판매 시점** 이름이다.
+   *
+   * ⚠ 순서가 중요하다. 감사 기록을 만든 **뒤에** 이름을 바꾸면 옛 구현(`recipes.name`)도
+   *   통과한다 — 이미 저장된 jsonb 는 어차피 안 바뀌기 때문이다. 처음에 그렇게 짰다가
+   *   아무것도 못 재는 시험이었다.
+   *   이름을 **먼저** 바꾸고, 그 뒤에 만든 **새** 기록이 옛 이름을 지키는지 본다.
+   */
+  declare
+    v_old_name text := (select name from recipes where id = v_r);
+    v_d        jsonb;
   begin
     set local role postgres;
     update recipes set name = '이름을 바꿔 봤다' where id = v_r;
     set local role authenticated;
 
-    perform pg_temp.eq_t('감사 상세는 팔릴 때 이름을 지킨다',
+    -- 이름을 바꾼 **뒤에** 새 정정을 만든다.
+    v_d := amend_ended_business_day(v_store, v_day, pg_temp.rev(v_day),
+             jsonb_build_array(jsonb_build_object('recipe_id', v_r, 'qty_hall', 11)));
+
+    perform pg_temp.eq_t('새 감사 기록도 팔릴 때 이름을 지킨다',
+      (select (x->>'name') from jsonb_array_elements(v_d->'after_detail'->'items') x
+        where (x->>'recipe_id')::uuid = v_r),
+      v_old_name);
+    perform pg_temp.eq_t('저장된 감사 기록도 마찬가지',
       (select (x->>'name') from business_day_revisions r
          join business_days d on d.id = r.business_day_id
          cross join lateral jsonb_array_elements(r.after_detail->'items') x
@@ -424,5 +501,64 @@ begin
     set local role postgres;
     update recipes set name = v_old_name where id = v_r;
     set local role authenticated;
+  end;
+end $t$;
+
+
+-- ── ⑪ 과거 정정은 오늘을 건드리지 않는다 (0148 ③) ─────────────
+/*
+ * ⚠ 이건 **무변경일 때만의 이야기가 아니다.** 실제로 고칠 때도 마찬가지다 —
+ *   지난주 판매를 고치는 것이 오늘 영업일의 `last_activity_at` 을 밀면
+ *   "오늘 마지막으로 장사한 시각" 이 틀려진다. 과거를 고치는 일과 오늘 장사하는
+ *   일은 다른 일이다.
+ */
+do $t$
+declare
+  v_store uuid := pg_temp.store();
+  v_r     uuid := pg_temp.rcp('제육볶음');
+  v_day   date;
+  v_act0  timestamptz;
+  v_res   jsonb;
+begin
+  v_day := pg_temp.ended_day();
+  perform pg_temp.open_today();
+
+  /*
+   * ⚠ 활동 시각을 **한 시간 뒤로 밀어 둔다.**
+   *   `touch_business_day` 는 `now()`(트랜잭션 시작 시각)를 찍는데, 방금 연 영업일의
+   *   활동 시각도 같은 `now()` 다. 그대로 재면 두 값이 같아 `>` 도 `=` 도 아무것도
+   *   증명하지 못한다 — 처음에 그렇게 짰다가 `오늘 저장은 오늘을 건드린다` 가 빨개졌다.
+   *   밀어 두면 "안 건드렸다" 와 "건드렸다" 가 서로 다른 값으로 갈린다.
+   */
+  set local role postgres;
+  update business_days set last_activity_at = now() - interval '1 hour'
+   where store_id = v_store and status::text <> 'closed';
+  set local role authenticated;
+
+  v_act0 := (select last_activity_at from business_days
+              where store_id = v_store and status::text <> 'closed'
+              order by business_date desc limit 1);
+  perform pg_temp.ok('전제: 오늘 영업일이 열려 있다', v_act0 is not null);
+  perform pg_temp.ok('전제: 활동 시각이 지금보다 과거다', v_act0 < now());
+
+  -- **실제로** 바뀌는 정정이다.
+  v_res := amend_ended_business_day(v_store, v_day, pg_temp.rev(v_day),
+             jsonb_build_array(jsonb_build_object('recipe_id', v_r, 'qty_hall', 21)));
+  perform pg_temp.ok('전제: 실제로 바뀐 정정이다', (v_res->>'changed')::boolean);
+
+  perform pg_temp.eq_t('그래도 오늘 마지막 활동은 안 움직인다',
+    (select last_activity_at from business_days
+      where store_id = v_store and status::text <> 'closed'
+      order by business_date desc limit 1)::text, v_act0::text);
+
+  -- 반대로, **오늘** 저장은 오늘을 건드려야 한다. 막기만 하면 그건 고장이다.
+  declare v_act1 timestamptz;
+  begin
+    perform save_sale(v_store, business_day(),
+      jsonb_build_array(jsonb_build_object('recipe_id', v_r, 'qty_hall', 1)));
+    v_act1 := (select last_activity_at from business_days
+                where store_id = v_store and status::text <> 'closed'
+                order by business_date desc limit 1);
+    perform pg_temp.ok('오늘 저장은 오늘을 건드린다', v_act1 > v_act0);
   end;
 end $t$;
