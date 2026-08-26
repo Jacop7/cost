@@ -118,13 +118,36 @@ export default function MyHoursScreen() {
   const validationError = useMemo(() => (days ? validateWeeklySchedule(days) : null), [days]);
   const overnight = !pClosed && isOvernight(pOpen, pClose);
 
+  /*
+   * 첫 요일을 고르면 **그 요일의 현재 값**을 패널에 싣는다(검토 P2-5).
+   * 예전엔 늘 11:00~22:00 으로 시작해서, 09:00~17:00 요일의 브레이크만 바꾸려다
+   * 시간까지 기본값으로 덮을 수 있었다.
+   */
+  const loadDayIntoPanel = (d: number) => {
+    const day = days?.[d];
+    if (!day) return;
+    setPClosed(day.closed);
+    if (!day.closed) { setPOpen(day.open); setPClose(day.close); }
+    const hasBreak = day.breakStart !== null && day.breakEnd !== null;
+    setUseBreak(hasBreak);
+    if (hasBreak) { setPBs(day.breakStart!); setPBe(day.breakEnd!); }
+  };
+
   const toggleDay = (d: number) => {
+    if (!selected.has(d) && selected.size === 0) loadDayIntoPanel(d);
     setSelected((prev) => {
       const next = new Set(prev);
       if (next.has(d)) next.delete(d); else next.add(d);
       return next;
     });
   };
+
+  /** 고른 요일들의 저장된 값이 서로 다른가 — 적용하면 전부 패널 값으로 덮인다. */
+  const mixedSelection = useMemo(() => {
+    if (!days || selected.size < 2) return false;
+    const keys = [...selected].map((d) => JSON.stringify(days[d] ?? null));
+    return new Set(keys).size > 1;
+  }, [days, selected]);
 
   /** 편집 패널 값을 고른 요일들에 적는다. */
   const applyToSelected = () => {
@@ -324,6 +347,7 @@ export default function MyHoursScreen() {
                   ? `${DOW_ORDER.filter((d) => selected.has(d)).map((d) => DOW_LABEL[d]).join('·')}요일 시간`
                   : '요일을 먼저 고르세요'}
               </Text>
+              {mixedSelection ? <Badge tone="neutral" sm>값이 서로 달라요</Badge> : null}
               {overnight ? <Badge tone="blue" sm>자정 넘김</Badge> : null}
               {!pClosed ? (
                 <Text style={[{ fontSize: 15, fontWeight: '800', color: T.ink }, NUM]}>

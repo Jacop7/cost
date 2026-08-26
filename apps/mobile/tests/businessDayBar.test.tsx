@@ -83,6 +83,19 @@ describe('상태별 표시', () => {
    * ⚠ 자동 종료는 closedAt(기한 = 예정 + 유예 23:00)이 아니라 예정 종료(22:00)로
    *   그린다(0138) — 두 값은 뜻이 다르다. 여기가 흔들리면 §6.1 의 11:00–22:00 이 깨진다.
    */
+  /*
+   * P2-6 — 종료 시각은 **매장 시간대**로 그린다. 이 시험은 어떤 기기(러너 시간대)에서
+   * 돌아도 같아야 한다: 뉴욕 매장의 21:30(EDT) 종료는 늘 '21:30' 이다.
+   * 기기 시간대(getHours)로 그리면 서울 러너에서 10:30 이 된다 — 그걸 잡는 시험이다.
+   */
+  it('종료 시각은 매장 현지로 그린다 — 보는 기기의 시간대가 아니다 (P2-6)', () => {
+    render(<BusinessDayBar state={state({
+      status: 'closed', closeMethod: 'manual', timezone: 'America/New_York',
+      closedAt: '2026-08-26T21:30:00-04:00', plannedCloseAt: '2026-08-26T22:00:00-04:00',
+    })} />);
+    expect(screen.getByText('11:00–21:30')).toBeTruthy();
+  });
+
   it('자동 종료 — 예정 종료 시각으로 그리고 `자동 영업종료`', () => {
     render(<BusinessDayBar state={state({
       status: 'closed', closeMethod: 'auto',
