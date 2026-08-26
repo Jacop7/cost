@@ -271,10 +271,23 @@ end $h$;
  */
 create function pg_temp.force_open(p_day date) returns void
 language plpgsql as $h$
+declare v_n int;
 begin
   set local role postgres;
   update business_days
      set status = 'open', closed_at = null, close_method = null
    where store_id = pg_temp.store() and business_date = p_day;
+  get diagnostics v_n = row_count;
   set local role authenticated;
+
+  /*
+   * ⚠ 사후조건. 대상 행이 없어도 조용히 성공하면 **시험 준비가 실패한 걸 모른 채**
+   *   본문이 돌고, 엉뚱한 자리에서 빨개진다. `open_today()` 가 사후조건을 갖게 된
+   *   것과 같은 이유다.
+   */
+  if v_n <> 1 then
+    raise exception 'force_open: %(%) 영업일이 %개입니다 — 정확히 1개여야 합니다',
+      p_day, pg_temp.store(), v_n
+      using errcode = '45003';
+  end if;
 end $h$;

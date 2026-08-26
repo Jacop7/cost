@@ -77,20 +77,18 @@ begin
    * 끝없이 밀렸고(기획서 §2.5), 브레이크 버튼도 활동으로 쳐서 마감을 미뤘다.
    * 지금은 `예정 종료 + 유예` 하나뿐이다 — 화면의 예고와 서버 스윕이 같은 식을 쓴다.
    */
+  /*
+   * ⚠ `auto_close_due()` 로 예고 시각을 재던 단언 둘은 지웠다(0142). 그 함수와
+   *   `auto_close_at`·`past_planned`·`warn_soon`·`due` 응답은 **그리는 자리가 없어**
+   *   같이 걷어냈다. 기획서 §6.1 의 `영업 중` 규격에도 그런 예고가 없다.
+   *
+   *   기한이 활동을 안 따라간다는 계약은 26번이 **행동으로** 확인한다 —
+   *   활동을 지금으로 만들어 놓고 스윕이 그대로 닫는지 본다. 그쪽이 더 세다.
+   */
   update business_days
      set planned_close_at = (v_day + time '22:00') at time zone business_tz(),
-         last_activity_at = (v_day + time '21:47') at time zone business_tz()
+         last_activity_at = (v_day + time '23:35') at time zone business_tz()
    where id = v_id;
-  perform pg_temp.eq_t('예정 22:00 → 자동 종료 23:00',
-    to_char((auto_close_due(pg_temp.store())->>'auto_close_at')::timestamptz at time zone business_tz(), 'HH24:MI'),
-    '23:00');
-
-  -- ⚠ 여기가 핵심이다. **활동을 뒤로 밀어도 예고가 안 움직인다.**
-  update business_days
-     set last_activity_at = (v_day + time '23:35') at time zone business_tz() where id = v_id;
-  perform pg_temp.eq_t('활동을 23:35 로 밀어도 그대로 23:00',
-    to_char((auto_close_due(pg_temp.store())->>'auto_close_at')::timestamptz at time zone business_tz(), 'HH24:MI'),
-    '23:00');
 
   /*
    * 아직 때가 아니면 스윕이 안 닫는다.
@@ -258,7 +256,10 @@ begin
   perform pg_temp.eq_t('시작 전 상태는 none', st->>'status', 'none');
   perform pg_temp.eq_t('오늘 날짜를 함께 준다', st->>'today', v_day::text);
   perform pg_temp.ok('영업시간 설정이 함께 온다', (st#>>'{hours,close_time}') is not null);
-  perform pg_temp.ok('시작 전에는 자동 종료 예정이 없다', (st->>'auto_close_at') is null);
+  -- ⚠ `auto_close_at` 단언은 지웠다(0142) — 그 키 자체가 없어졌다. 대신 없다는 것을 본다.
+  perform pg_temp.ok('예고 키는 아예 없다',
+    not (st ? 'auto_close_at') and not (st ? 'past_planned')
+    and not (st ? 'warn_soon') and not (st ? 'due'));
 
   -- ── 영업 중 ─────────────────────────────────────────────────
   perform open_business_day(pg_temp.store());
@@ -275,32 +276,23 @@ begin
     business_day_state(pg_temp.store())->>'status', 'break');
   perform set_break(pg_temp.store(), false);
 
-  -- ── 예정 종료를 지나면 알린다 ───────────────────────────────
+  /*
+   * ── 예정 종료를 지나도 상태는 그대로다 ─────────────────────
+   *
+   * ⚠ `past_planned`·`warn_soon` 단언은 지웠다(0142). 그 예고들은 **그리는 자리가
+   *   없어서** 서버 응답에서 걷어냈다 — 기획서 §6.1 의 `영업 중` 규격에도 없다.
+   *   지금 계약은 하나다: 예정 종료를 지나도 **닫히기 전까지는 `open`** 이다.
+   *   실제로 닫는 것은 크론 스윕이고, 그 계약은 26번이 본다.
+   */
   update business_days
      set planned_close_at = now() - interval '5 minutes',
          last_activity_at = now() - interval '5 minutes'
    where store_id = pg_temp.store() and business_date = v_day;
   st := business_day_state(pg_temp.store());
-  perform pg_temp.ok('예정 종료를 지났다고 알린다', (st->>'past_planned')::boolean);
-  -- ⚠ 자동 종료 시각은 **예정 종료 + 유예**다(0139). 마지막 활동은 안 본다.
-  perform pg_temp.eq_t('자동 종료 시각 = 예정 종료 + 유예',
-    (st->>'auto_close_at')::timestamptz::text,
-    ((st->>'planned_close_at')::timestamptz + auto_close_grace())::text);
+  perform pg_temp.eq_t('예정 종료를 지나도 아직 open', st->>'status', 'open');
+  perform pg_temp.ok('예정 종료 시각은 그대로 준다', (st->>'planned_close_at') is not null);
 
-  /*
-   * 자동 종료 10분 전. **예정 종료**를 옮겨야 한다 — 활동을 옮겨도 이제 아무 일도 없다.
-   * (예전 시험은 활동을 옮겨 놓고 경고를 기대했다. 그게 §2.5 의 밀림이었다.)
-   */
-  update business_days
-     set planned_close_at = now() - auto_close_grace() + interval '5 minutes',
-         last_activity_at = now() - interval '2 hours'
-   where store_id = pg_temp.store() and business_date = v_day;
-  perform pg_temp.ok('10분 전이면 곧 종료된다고 알린다',
-    (business_day_state(pg_temp.store())->>'warn_soon')::boolean);
-  perform pg_temp.ok('활동이 오래됐어도 예고는 그대로다',
-    (business_day_state(pg_temp.store())->>'warn_soon')::boolean);
-
-  -- ── 자동 종료 뒤 미확인 알림 ────────────────────────────────
+  -- ── 자동 종료가 기록에 남는다 ───────────────────────────────
   -- ⚠ 사람은 `auto` 를 고를 수 없다(0139). 자동 종료는 스윕만 만든다.
   update business_days set planned_close_at = now() - interval '3 hours'
    where store_id = pg_temp.store() and status::text <> 'closed';

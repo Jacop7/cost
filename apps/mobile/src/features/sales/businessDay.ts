@@ -48,17 +48,16 @@ export interface BusinessDayState {
   closedAt: string | null;
   closeMethod: 'manual' | 'auto' | null;
   lastActivityAt: string | null;
-  /**
-   * 자동 마감 **기한** — `예정 종료 + 유예`(0139).
-   * ⚠ 마지막 활동을 안 따라간다. 예전엔 `마지막 활동 + 1시간` 이라 판매를 넣을수록
-   *   밀렸고, 그러면 화면의 예고와 서버가 실제로 닫는 시각이 갈렸다(기획서 §2.5).
+  /*
+   * ⚠ `autoCloseAt`·`pastPlanned`·`warnSoon`·`due` 를 지웠다(0142).
+   *   타입 선언과 파싱만 있고 **그리는 자리가 하나도 없었다.** 기획서 §6.1 의
+   *   `영업 중` 규격에도 그런 예고가 없다 — 카드는 `영업일 + 시간 + 상태/행동`
+   *   한 줄뿐이다. 서버의 `auto_close_due()` 도 이 응답을 만들려고만 있어 같이 지웠다.
+   *   §5-4 가 확인 배너를 없앤 것과 같은 결정이다.
+   *
+   *   자동으로 닫혔다는 사실은 `closeMethod` 로 안다. 마감 시각을 미리 알리는 UI 를
+   *   만들게 되면 그때 다시 세운다 — 껍데기로 남겨 두지 않는다.
    */
-  autoCloseAt: string | null;
-  /** 예정 종료를 지났다 → "영업을 종료할까요?" */
-  pastPlanned: boolean;
-  /** 자동 종료 10분 전 → "10분 후 자동 종료돼요" */
-  warnSoon: boolean;
-  due: boolean;
   /**
    * 열려 있는 영업일이 **오늘이 아니다**(businessDate ≠ today).
    * 이때 오늘 매출은 서버가 45001 로 막는다 — 바가 '영업 중'만 말하면 안 된다.
@@ -98,10 +97,6 @@ function parse(raw: unknown): BusinessDayState {
     closedAt: str(r.closed_at),
     closeMethod: (str(r.close_method) as 'manual' | 'auto' | null) ?? null,
     lastActivityAt: str(r.last_activity_at),
-    autoCloseAt: str(r.auto_close_at),
-    pastPlanned: r.past_planned === true,
-    warnSoon: r.warn_soon === true,
-    due: r.due === true,
     // 열린 날이 오늘이 아니면 오늘 매출은 서버가 막는다. 화면이 알아야 한다.
     staleDay:
       (r.status === 'open' || r.status === 'break') &&
@@ -163,10 +158,10 @@ export function useBusinessDay() {
  *
  *   이제 `close_due_business_days()` 를 pg_cron 이 1분마다 돈다. 앱은 관여하지 않는다.
  *
- *   ⚠ 남겨 두면 **판정이 두 곳**이 된다. 더구나 규칙이 서로 다르다 —
- *     앱 경로(`auto_close_due`)는 `마지막 활동 + 1시간` 이라 활동이 있으면 밀리고,
- *     서버 스윕은 `예정 종료 + 고정 유예` 라 안 밀린다. 두 개를 같이 두면
- *     "어느 쪽이 먼저 닫았느냐"에 따라 `closed_at` 이 달라진다.
+ *   ⚠ 남겨 뒀다면 **판정이 두 곳**이 됐을 것이다. 그때는 규칙까지 서로 달랐다 —
+ *     앱 경로는 `마지막 활동 + 1시간` 이라 활동이 있으면 밀렸고, 서버 스윕은
+ *     `예정 종료 + 고정 유예` 라 안 밀렸다. (0139 에서 서버 쪽도 한 식으로 통일했고,
+ *      앱 경로는 여기서 아예 없앴다.)
  */
 
 /** 영업 시작 — 이 시점 값으로 오늘이 굳는다. */
@@ -240,8 +235,9 @@ export function useCloseStaleAndOpen() {
  *   과거 판매 수정은 정정 RPC(`amend_ended_business_day`)가 할 일이다 — 아직 없다.
  *
  *   **자동 종료 확인** — `BusinessDayBar` 가 선언만 해 두고 한 번도 안 썼다.
- *   `unacked` 를 그리는 자리도 없다. 서버의 `ack_auto_close` 는 그대로 두었으니
- *   그 알림을 화면에 붙일 때 다시 만들면 된다.
+ *   기획서 §5-4 가 "예정 종료는 정상 동작이므로 매일 확인 배너를 띄우지 않는다" 로
+ *   정했으므로 서버의 `ack_auto_close`·`unacked_auto_close` 와 `auto_close_ack`
+ *   컬럼도 **같이 지웠다**(0141). 되살릴 자리를 남기지 않는다.
  */
 
 /**
