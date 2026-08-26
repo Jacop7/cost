@@ -170,5 +170,65 @@ begin
     format('select close_business_day(%L)', pg_temp.store()), '42501');
   -- 앱 문은 살아 있다 — 문을 좁히다 문 자체를 잠그면 장사를 못 연다.
   perform pg_temp.ok('전이 문은 열려 있다',
-    has_function_privilege('authenticated', 'public.transition_business_state(uuid, text)', 'execute'));
+    has_function_privilege('authenticated', 'public.transition_business_state(uuid, text, time)', 'execute'));
+end $t$;
+
+
+-- ── ⑤ 늦은 개점 — 오늘만, 종료 시간을 골라서 (0162, 검토 P1-4) ──
+/*
+ * 규칙 종료 + 유예가 지난 시각의 개점: 직접 시작은 크론이 1분 안에 닫고,
+ * 첫 판매 시작은 45002 로 롤백됐다. 이제 45015 로 종료 시간을 요구하고,
+ * 고른 시간은 그 영업일에만 굳는다(주간 설정 불변).
+ *
+ * ⚠ 시각 의존을 좁히려고 규칙을 00:01~00:02 로 둔다 — 자정 직후 2분을 빼면
+ *   실행 시각이 언제든 "이미 지난 영업시간"이다.
+ */
+do $t$
+declare
+  v_store uuid;
+  v_today date;
+  v_res   jsonb;
+begin
+  set local role postgres;
+  insert into stores (owner_id, name) values (pg_temp.owner(), '시험 매장 심야')
+    returning id into v_store;
+  update operating_rules
+     set weekly_hours = (select jsonb_object_agg(d::text, jsonb_build_object('open','00:01','close','00:02'))
+                           from generate_series(0, 6) d),
+         weekly_breaks = '{}'::jsonb
+   where store_id = v_store;
+  set local role authenticated;
+
+  v_today := store_local_date(v_store);
+
+  -- 종료 시간 없이는 45015 — "골라 주세요"라는 다음 할 일이다(45001 과 같은 성격).
+  perform pg_temp.raises('늦은 개점은 종료 시간을 요구한다',
+    format('select transition_business_state(%L, %L)', v_store, 'open'), '45015');
+  perform pg_temp.ok('45015 로 거부됐으면 장부도 안 생겼다',
+    not exists (select 1 from business_days where store_id = v_store));
+
+  -- 다음 영업 시작(내일 00:01)과 겹치는 선택은 거부 — 00:02 는 이미 지난 시각이라
+  -- 내일 00:02 로 해석되고, 그건 내일 시작(00:01)을 넘는다.
+  perform pg_temp.raises('다음 영업 시작과 겹치는 종료는 거부',
+    format('select transition_business_state(%L, %L, %L)', v_store, 'open', '00:02'), '22000');
+
+  -- 00:00 은 내일 00:00 으로 해석된다 — 내일 시작(00:01) 전이라 허용.
+  v_res := transition_business_state(v_store, 'open', '00:00');
+  perform pg_temp.ok('늦은 개점 성공', (v_res->>'late_open')::boolean is true);
+  perform pg_temp.eq_t('고른 종료가 그 영업일에 굳는다',
+    (select planned_close_at::text from business_days
+      where store_id = v_store and business_date = v_today),
+    (((v_today + 1)::timestamp) at time zone store_timezone(v_store))::text);
+  -- 규칙 트리거가 시각을 HH:MM:SS 로 정규화한다 — time 으로 비교한다.
+  perform pg_temp.ok('주간 설정은 그대로다 — 오늘에만 적용',
+    (select (weekly_hours->'1'->>'close')::time from operating_rules
+      where store_id = v_store and effective_to is null) = time '00:02');
+
+  -- 이미 시작한 날의 종료 시간은 여기서 못 바꾼다 — 조용히 무시하지 않는다.
+  perform pg_temp.raises('이미 연 날에 종료 시간 지정은 거부',
+    format('select transition_business_state(%L, %L, %L)', v_store, 'open', '01:00'), '22000');
+
+  -- 늦은 개점이 아닌 전이에 종료 시간을 실으면 거부 — 문은 늦은 개점뿐이다.
+  perform pg_temp.raises('브레이크 전이에 종료 시간은 거부',
+    format('select transition_business_state(%L, %L, %L)', v_store, 'start_break', '01:00'), '22000');
 end $t$;

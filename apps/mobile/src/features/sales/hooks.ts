@@ -300,6 +300,8 @@ export interface SaveSaleInput {
    * 열기만 되고 저장이 죽으면 빈 영업일이 남았다.
    */
   openDay?: boolean;
+  /** 늦은 개점(45015) 뒤 고른 오늘 마칠 시간 'HH:MM' — openDay 재시도에만 싣는다(0162). */
+  openCloseTime?: string;
   /** 생략하면 그날 값을 그대로 둔다. 빈 배열을 보내면 전부 지운다. */
   etcItems?: EtcItem[];
   extraItems?: ExtraItem[];
@@ -475,6 +477,7 @@ export function useSaveSale() {
           : undefined,
         p_base_revision: input.baseRevision,
         p_open_day: input.openDay ?? false,
+        p_open_close_time: input.openCloseTime ?? undefined,
       });
       // ⚠ 코드를 살려 던진다(0145). 화면이 문구가 아니라 SQLSTATE 로 가른다.
       if (error) throw rpcError(error);

@@ -20,8 +20,10 @@ import { useState } from 'react';
 import { T } from '@/theme/tokens';
 import { useCheckRecipeShortages, type ShortageRecipe } from '../hooks';
 import { ShortageWarningSheet } from './ShortageWarningSheet';
+import { LateCloseSheet } from './LateCloseSheet';
 import {
   hhmm,
+  isLateOpenError,
   useBusinessDay,
   useCloseBusinessDay,
   useCloseStaleAndOpen,
@@ -70,7 +72,19 @@ export function BusinessDayBar({ state }: { state: BusinessDayState }) {
    */
   const [ask, setAsk] = useState<null | 'open' | 'close'>(null);
   const [err, setErr] = useState<string | null>(null);
-  const fail = (e: unknown) => setErr(e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요');
+  /*
+   * 늦은 개점(0162) — 45015 는 오류가 아니라 "오늘 마칠 시간을 골라 주세요"다.
+   * 어느 경로(시작·마감하고 시작)에서 왔는지 들고 있다가, 고른 시간으로 같은 전이를 다시 민다.
+   */
+  const [lateAsk, setLateAsk] = useState<null | 'open' | 'stale'>(null);
+  const fail = (e: unknown) => {
+    if (isLateOpenError(e)) { setLateAsk('open'); return; }
+    setErr(e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요');
+  };
+  const failStale = (e: unknown) => {
+    if (isLateOpenError(e)) { setLateAsk('stale'); return; }
+    setErr(e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요');
+  };
   const router = useRouter();
   /*
    * 영업 시작 전 부족 확인(기획안 §4.4) — 판정은 서버가 한다.
@@ -167,7 +181,7 @@ export function BusinessDayBar({ state }: { state: BusinessDayState }) {
           {state.staleDay ? (
             <Button
               kind="primary" size="sm" loading={fixStale.isPending}
-              onPress={() => fixStale.mutate(undefined, { onError: fail })}
+              onPress={() => fixStale.mutate(undefined, { onError: failStale })}
               accessibilityLabel="지난 장사 마감하고 오늘 시작"
             >
               마감하고 시작
@@ -234,6 +248,19 @@ export function BusinessDayBar({ state }: { state: BusinessDayState }) {
         onCancel={() => setAsk(null)}
         onConfirm={() => { setAsk(null); close.mutate(undefined, { onError: fail }); }}
       />
+      <LateCloseSheet
+        visible={lateAsk !== null}
+        timezone={state.timezone}
+        loading={open.isPending || fixStale.isPending}
+        onCancel={() => setLateAsk(null)}
+        onConfirm={(t) => {
+          const via = lateAsk;
+          setLateAsk(null);
+          if (via === 'stale') fixStale.mutate({ closeTime: t }, { onError: failStale });
+          else open.mutate({ closeTime: t }, { onError: fail });
+        }}
+      />
+
       <ConfirmSheet
         visible={err !== null}
         title="처리하지 못했어요"

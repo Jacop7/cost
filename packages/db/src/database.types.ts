@@ -2128,6 +2128,13 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: string[]
       }
+      next_scheduled_open: {
+        Args: {
+          p_store: string
+          p_after: string
+        }
+        Returns: string
+      }
       normalize_day_times: {
         Args: {
           p: Json
@@ -2138,6 +2145,7 @@ export type Database = {
         Args: {
           p_store: string
           p_date?: string
+          p_close_time?: string
         }
         Returns: Json
       }
@@ -2592,6 +2600,7 @@ export type Database = {
           p_extra_items?: Json
           p_base_revision?: number
           p_open_day?: boolean
+          p_open_close_time?: string
         }
         Returns: Json
       }
@@ -2732,6 +2741,7 @@ export type Database = {
         Args: {
           p_store: string
           p_action: string
+          p_close_time?: string
         }
         Returns: Json
       }

@@ -380,22 +380,19 @@ begin
     -- ⚠ 소유자 우회(0160). 앱 문(전이)은 날짜를 못 받는다 — 과거 재생은 몸통 직행이
     --   맞고, 그 몸통은 앱 롤에 안 열려 있다. 0139 의 reset role 우회와 같은 관례다.
     reset role;
-    perform open_business_day(v_store, v_day);
-    set role authenticated;
-
     /*
-     * ⚠ 오늘(d=0)은 시각 독립이어야 한다(0158 검토에서 실측). 예정 종료 22:00 +
-     *   유예가 지난 23:00 이후에 시드를 돌리면 오늘 판매가 DAY_CLOSED 로 죽었다.
-     *   (옛 날짜들은 규칙 이력이 없어 예정 종료가 null 이라 게이트를 안 탄다 —
-     *    오늘만 걸리는 지뢰였다.) 이미 지났으면 두 시간 뒤로 민다.
+     * ⚠ 오늘(d=0)은 시각 독립이어야 한다(0158 실측 — 밤 시드가 DAY_CLOSED 로 죽었다).
+     *   0162 부터는 그게 정식 경로다: 규칙 종료가 지났으면 45015(늦은 개점)가 오고,
+     *   종료 시간을 골라 다시 연다 — 여기선 두 시간 뒤로 고른다.
+     *   과거 날짜(d>0)는 소유자 재생이라 그날 규칙 종료가 그대로 굳는다.
      */
-    if d = 0 then
-      update business_days
-         set planned_close_at = clock_timestamp() + interval '2 hours'
-       where store_id = v_store and business_date = v_day
-         and planned_close_at is not null
-         and planned_close_at <= clock_timestamp();
-    end if;
+    begin
+      perform open_business_day(v_store, v_day);
+    exception when sqlstate '45015' then
+      perform open_business_day(v_store, v_day,
+        ((clock_timestamp() at time zone store_timezone(v_store)) + interval '2 hours')::time);
+    end;
+    set role authenticated;
 
     -- ── 보충 입고 (E7 발주 → E1 입고 확정) ──────────────────
     -- ⚠ 보충은 영업 시작 **뒤**가 맞다. 장사 중에 들어온 물건이라 그날 스냅샷을
