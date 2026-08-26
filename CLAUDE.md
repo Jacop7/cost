@@ -75,11 +75,18 @@ Expo(RN) + Supabase 모노레포. 모든 데이터가 기록·전파되어 추�
   각각 따로 돌리다 하나를 빼먹는 일이 있어서 한 명령으로 묶었다. CI 도 이걸 부른다.
 - `pnpm test` (루트) → `packages/core` vitest · `packages/db` `tests/run.mjs` · `apps/mobile` vitest.
   ⚠ 개수는 여기 안 적는다 — 늘어나면 곧 거짓이 된다. 명령이 답한다.
-- 앱 시험은 `apps/mobile/tests/*.test.ts` 에 두고 **vitest** 로 돈다.
+- 앱 시험은 `apps/mobile/tests/*.test.{ts,tsx}` 에 두고 **vitest** 로 돈다.
   ⚠ `node --experimental-strip-types` 를 쓰지 않는다 — 그건 Node 24 전용이라 루트가
   선언한 `engines.node: >=20` 과 어긋난다(Node 20 에서 `pnpm test` 가 깨진다).
-  ⚠ 시험 대상 모듈은 **앱 의존이 없는 순수 함수**로 뺀다(`features/sales/dayContract.ts` 처럼).
-  화면 자체를 재려면 RN 테스트 라이브러리가 따로 필요하다 — 아직 없다.
+- **화면도 잰다.** `react-native` 를 `react-native-web` 으로 바꿔 jsdom 에 그리고
+  `@testing-library/react` 로 누른다(`vitest.config.ts`).
+  ⚠ `@testing-library/react-native` 는 못 쓴다 — `react-native` 소스가 Flow 인데
+  그걸 벗기는 건 Jest 의 babel 프리셋이고 vitest 의 esbuild 는 Flow 를 못 읽는다.
+  ⚠ `react-native-safe-area-context` · `react-native-svg` 는 `tests/setup.ts` 에서
+  **모듈째 대신 세운다.** 둘 다 `react-native/Libraries/…`(Flow)를 깊은 경로로 가져온다.
+  그래서 **아이콘·차트의 생김새와 노치 여백은 안 재진다** — 잡는 것은 글자와
+  접근성 이름이다. 실제로 그려지는지는 `pnpm verify` ⑤ 의 웹 번들이 본다.
+  ⚠ 화면 시험은 훅을 대신 세우고 **서버를 안 부른다.** 서버 계약은 DB 스위트가 잰다.
 - `bash packages/db/scripts/fresh-db.sh fresh_x` 로 새 DB, `--until <14자리>` 로 중간 상태.
   `bash packages/db/scripts/upgrade-check.sh` 는 마이그레이션 **순서**를 태운다 —
   최종 상태만 보는 시험은 "앞이 만든 값을 뒤가 검사해서 통과" 하는 구멍을 못 잡는다.
