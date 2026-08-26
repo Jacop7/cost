@@ -12,7 +12,7 @@ import { supabase, rpcError } from '@/lib/supabase';
 import { useStoreId } from '@/lib/SessionProvider';
 // 응답 계약 검사는 **앱 의존 없는 한 모듈**에 둔다 — 시험이 본체를 그대로 돌릴 수 있게.
 import {
-  CONTRACT_HINT, parseSalesDayContract,
+  CONTRACT_HINT, parseAmendResultContract, parseSalesDayContract,
   type SalesDayBasisQuality, type SalesDayStatus,
 } from './dayContract';
 
@@ -159,7 +159,8 @@ export function useSalesDay(date: string) {
       if (!r) throw new Error(`${CONTRACT_HINT} (sales_day)`);
       return {
         saleDate: String(r.sale_date ?? date),
-        revision: num(r.revision),
+        // ⚠ `revision` 은 아래 `parseSalesDayContract` 가 준다. 여기서 `num(...)` 으로 읽으면
+        //   서버가 빠뜨렸을 때 0 이 되고, 그 0 을 들고 저장하러 갔다가 45009 를 맞는다.
         etcRevenue: num(r.etc_revenue),
         dailyExtra: num(r.daily_extra),
         etcItems: ((r.etc_items ?? []) as Record<string, unknown>[]).map((e) => ({
@@ -565,15 +566,12 @@ export function useAmendPastSale() {
           });
         }
       }
-      const bq = r.basis_quality;
-      return {
-        changed: Boolean(r.changed),
-        created: Boolean(r.created),
-        revision: num(r.revision),
-        auditRevisionNo: num(r.audit_revision_no),
-        basisQuality: bq === 'exact' || bq === 'estimated_current' ? (bq as BasisQuality) : null,
-        shortages: out,
-      };
+      /*
+       * ⚠ 판단에 쓰는 값은 **계약으로** 읽는다. 예전엔 `Boolean(...)`·`num(...)` 이라
+       *   서버가 빠뜨려도 `changed=false`·`revision=0` 으로 조용히 넘어갔다 —
+       *   앞엣것은 "안 바뀌었어요" 라는 거짓말이고, 뒤엣것은 다음 저장을 45009 로 막는다.
+       */
+      return { ...parseAmendResultContract(r), shortages: out };
     },
     /*
      * 과거를 고치면 그날뿐 아니라 **그날이 든 모든 기간 집계**가 달라진다.
