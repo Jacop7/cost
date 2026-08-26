@@ -113,6 +113,29 @@ describe('판본', () => {
   it('숫자 문자열은 받는다', () => {
     expect(parseSalesDayContract({ ...base, revision: '12' }).revision).toBe(12);
   });
+
+  /*
+   * ⚠ 정수 "같은" 값도 거른다. 판본·정정 횟수는 DB 에서 전부 `integer`(int4)라
+   *   0 ~ 2,147,483,647 의 십진 정수 밖은 서버가 만들 수 없는 값이다 — 음수·지수 표기·
+   *   16진·정밀도를 잃는 큰 수가 왔다면 판본이 아니라 계약 위반이다.
+   *   특히 '9007199254740993' 은 Number() 가 …992 로 **반올림해 버려서**,
+   *   범위를 안 보면 다른 판본으로 조용히 바뀐 채 저장에 나간다.
+   */
+  it.each([
+    ['음수', { ...base, revision: -1 }],
+    ['음수 문자열', { ...base, revision: '-1' }],
+    ['지수 표기 문자열', { ...base, revision: '1e3' }],
+    ['16진 문자열', { ...base, revision: '0x10' }],
+    ['정밀도를 잃는 큰 문자열', { ...base, revision: '9007199254740993' }],
+    ['int4 상한 초과', { ...base, revision: 2147483648 }],
+  ])('revision 이 %s → 던진다', (_label, payload) => {
+    expect(() => parseSalesDayContract(payload)).toThrow();
+  });
+
+  it('int4 상한과 0 은 받는다', () => {
+    expect(parseSalesDayContract({ ...base, revision: '2147483647' }).revision).toBe(2147483647);
+    expect(parseSalesDayContract({ ...base, revision: 0 }).revision).toBe(0);
+  });
 });
 
 describe('정정 응답 계약', () => {
@@ -142,6 +165,13 @@ describe('정정 응답 계약', () => {
     ['revision 이 빠졌다', { changed: true, created: false, audit_revision_no: 2, basis_quality: 'exact' }],
     ['audit_revision_no 가 빠졌다', { changed: true, created: false, revision: 9, basis_quality: 'exact' }],
     ['basis_quality 키가 없다', { changed: true, created: false, revision: 9, audit_revision_no: 2 }],
+    /*
+     * ⚠ null 도 거절한다. `sales_day` 는 장부 없는 날이 있어 null 이 정상 답이지만,
+     *   정정은 **성공했다면 장부가 반드시 있다** — `business_days.basis_quality` 는
+     *   NOT NULL(0144)이다. null 을 통과시키면 "이 장부가 무엇으로 계산됐는지 모른다" 는
+     *   응답이 정상처럼 지나가고, 화면은 추정 배지를 그릴지 판단할 근거를 잃는다.
+     */
+    ['basis_quality 가 null 이다', { changed: true, created: false, revision: 9, audit_revision_no: 2, basis_quality: null }],
     ['모르는 기준 품질', { changed: true, created: false, revision: 9, audit_revision_no: 2, basis_quality: 'guessed' }],
   ])('%s → 던진다', (_label, payload) => {
     expect(() => parseAmendResultContract(payload)).toThrow();

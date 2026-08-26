@@ -77,7 +77,9 @@ Expo(RN) + Supabase 모노레포. 모든 데이터가 기록·전파되어 추�
   ⚠ 개수는 여기 안 적는다 — 늘어나면 곧 거짓이 된다. 명령이 답한다.
 - 앱 시험은 `apps/mobile/tests/*.test.{ts,tsx}` 에 두고 **vitest** 로 돈다.
   ⚠ `node --experimental-strip-types` 를 쓰지 않는다 — 그건 Node 24 전용이라 루트가
-  선언한 `engines.node: >=20` 과 어긋난다(Node 20 에서 `pnpm test` 가 깨진다).
+  선언한 `engines.node: >=20.19.4` 와 어긋난다(Node 20 에서 `pnpm test` 가 깨진다).
+  하한 자체는 `react-native@0.81`·`metro@0.83` 이 요구하는 값이고, CI 매트릭스가 이 정확한
+  버전으로 돈다 — `20` 이라고 적으면 최신 20.x 를 받아 실제 하한은 검증되지 않는다.
 - **화면도 잰다.** `react-native` 를 `react-native-web` 으로 바꿔 jsdom 에 그리고
   `@testing-library/react` 로 누른다(`vitest.config.ts`).
   ⚠ `@testing-library/react-native` 는 못 쓴다 — `react-native` 소스가 Flow 인데
