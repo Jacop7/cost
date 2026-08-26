@@ -194,7 +194,20 @@ begin
 
   -- 영업 전 상태로 되돌린다 — ⑤~⑦이 연 오늘 장부를 치운다(시험 준비, 롤백된다).
   -- 전이 감사(0157)가 이 장부를 참조하므로 그것부터 치운다.
+  /*
+   * ⚠ 시각 독립: 오늘 규칙이 22:00 종료라, 23:00(유예 포함) 이후 실행이면 p_open_day 로
+   *   새로 연 날이 그 자리에서 DAY_CLOSED 게이트에 걸린다. 오늘 규칙의 종료를 23:59 로
+   *   밀어 시험을 시각과 떼어 놓는다(소유자 준비, 롤백).
+   *   — 이건 **제품 공백의 노출**이기도 하다: 규칙 종료 + 유예 뒤에 영업을 시작하면
+   *     열자마자 저장이 막히고 크론이 1분 안에 닫는다. 늦은 개점의 예정 종료를
+   *     어떻게 둘지는 사장님 결정이 필요하다(보고서에 남김).
+   */
   set local role postgres;
+  update operating_rules r
+     set weekly_hours = (select jsonb_object_agg(d::text, jsonb_build_object('open','11:00','close','23:59'))
+                           from generate_series(0, 6) d)
+   where r.store_id = v_store
+     and r.effective_from <= v_day and (r.effective_to is null or r.effective_to >= v_day);
   delete from business_state_transitions t using business_days d
    where t.business_day_id = d.id and d.store_id = v_store and d.business_date = v_day;
   delete from business_days where store_id = v_store and business_date = v_day;

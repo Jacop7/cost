@@ -560,7 +560,12 @@ begin
       where store_id = v_store and status::text <> 'closed'
       order by business_date desc limit 1)::text, v_act0::text);
 
-  -- 반대로, **오늘** 저장은 오늘을 건드려야 한다. 막기만 하면 그건 고장이다.
+  /*
+   * 0158 부터는 **오늘 저장도** 활동 도장을 안 찍는다 — 자동 마감이 활동을 안 보므로
+   * (0139) 죽은 값이었다. 예전엔 여기서 '오늘 저장은 오늘을 건드린다' 를 반대 증명으로
+   * 뒀는데(막기만 한 게 아님을 보이려고), 이제는 "아무도 안 찍는다" 가 계약이다.
+   * 이 단언이 빨개지면 누가 활동 추적을 되살린 것이다.
+   */
   declare v_act1 timestamptz;
   begin
     perform save_sale(v_store, pg_temp.today(),
@@ -568,7 +573,7 @@ begin
     v_act1 := (select last_activity_at from business_days
                 where store_id = v_store and status::text <> 'closed'
                 order by business_date desc limit 1);
-    perform pg_temp.ok('오늘 저장은 오늘을 건드린다', v_act1 > v_act0);
+    perform pg_temp.eq_t('오늘 저장도 활동 도장을 안 찍는다 (0158)', v_act1::text, v_act0::text);
   end;
 end $t$;
 

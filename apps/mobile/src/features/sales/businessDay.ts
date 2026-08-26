@@ -47,7 +47,6 @@ export interface BusinessDayState {
   plannedCloseAt: string | null;
   closedAt: string | null;
   closeMethod: 'manual' | 'auto' | null;
-  lastActivityAt: string | null;
   /*
    * ⚠ `autoCloseAt`·`pastPlanned`·`warnSoon`·`due` 를 지웠다(0142).
    *   타입 선언과 파싱만 있고 **그리는 자리가 하나도 없었다.** 기획서 §6.1 의
@@ -96,7 +95,6 @@ function parse(raw: unknown): BusinessDayState {
     plannedCloseAt: str(r.planned_close_at),
     closedAt: str(r.closed_at),
     closeMethod: (str(r.close_method) as 'manual' | 'auto' | null) ?? null,
-    lastActivityAt: str(r.last_activity_at),
     // 열린 날이 오늘이 아니면 오늘 매출은 서버가 막는다. 화면이 알아야 한다.
     staleDay:
       (r.status === 'open' || r.status === 'break') &&

@@ -177,6 +177,22 @@ begin
       using errcode = '45003';
   end if;
 
+  /*
+   * ⚠ 시각 독립(0158 검토에서 실측): 예정 종료 22:00 + 유예가 지난 23:00 이후에
+   *   스위트를 돌리면 오늘 판매 저장이 전부 DAY_CLOSED 로 빨개졌다(08·20·21·22·27·29)
+   *   — 시험이 바깥 세상의 시각에 기대고 있었다. 열린 오늘의 예정 종료가 이미
+   *   지났으면 두 시간 뒤로 민다. 기한을 직접 재는 시험은 이 뒤에 제 손으로
+   *   값을 다시 놓으므로 영향이 없다.
+   */
+  set local role postgres;
+  update business_days
+     set planned_close_at = clock_timestamp() + interval '2 hours'
+   where store_id = pg_temp.store() and business_date = v_day
+     and status::text <> 'closed'
+     and planned_close_at is not null
+     and planned_close_at <= clock_timestamp();
+  set local role authenticated;
+
   return v_day;
 end $h$;
 

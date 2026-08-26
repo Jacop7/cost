@@ -64,7 +64,7 @@
 | `sales` | SALES-05b | 판매 수량 입력 (매장/배달/포장 + **조리 폐기**) → **E10/E8** | (SalesHome 내 시트) | ✅ |
 | `sales` | SALES-01 | 매출관리 홈 (일일 판매 입력 + **영업 상태 바**) | `sales/index` (`SalesHomeScreen`) | ✅ |
 | `changes` | ING-03b / RCP-02b | 수정 내역 (식재료·레시피 공용 · 전후값·자동 전파·매출 반영 상태) | `ingredients/changes/[id]` · `recipes/changes/[id]` | ✅ |
-| `sales` | SALES-01b | 영업중·브레이크타임·영업종료 · 자동 종료 알림 | (SalesHome 내 `BusinessDayBar`) | ✅ |
+| `sales` | SALES-01b | 영업중·브레이크타임·영업종료 (전이 한 문 · 자동 브레이크는 서버 크론) | (SalesHome 내 `BusinessDayBar`) | ✅ |
 | `sales` | SALES-02 | 매출 분석 (기간 선택·캘린더·손익) | `sales/analytics` (`SalesAnalyticsScreen`) | ✅ |
 | `sales` | SALES-03 | 일 손익 상세 | `sales/day-detail` (`SalesDayDetailScreen`) | ✅ |
 | `sales` | SALES-04 | 일 손익 전체 | `sales/day` (`SalesDayFullScreen`) | ✅ |
@@ -78,7 +78,7 @@
 | `sales` | SALES-21 | 과거 판매 내역 수정·추가 (§6.4 · 다시 열지 않고 정정) | `sales/past` (`SalesPastEditScreen`) | ✅ |
 | `my` | MY-04 | 단위 설정 (단위 시스템·조리컵/스푼·묶음 단위·**단가 표기 자릿수**) | `my/units` (`MyUnitsScreen`) | ✅ |
 | `my` | MY-08 | 언어·통화 설정 (로케일 → 통화·구분자·소수점·금액 자릿수) | `my/language` (`MyLanguageScreen`) | ✅ |
-| `my` | MY-09 | 영업시간 (시작·종료·브레이크 · 영업일 경계) | `my/hours` (`MyHoursScreen`) | ✅ |
+| `my` | MY-09 | 영업시간 (요일별 시간·브레이크 · 매장 시간대 · 영업일 경계) | `my/hours` (`MyHoursScreen`) | ✅ |
 
 > 위 ✅ 는 **실데이터 연결 + 전파 + 재조회**까지 통과한 상태다(2026-08-19).
 

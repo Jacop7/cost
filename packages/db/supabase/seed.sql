@@ -379,6 +379,20 @@ begin
     -- 판매는 영업일이 열려 있어야 받는다 — 실제 사장님 흐름과 같다.
     perform open_business_day(v_store, v_day);
 
+    /*
+     * ⚠ 오늘(d=0)은 시각 독립이어야 한다(0158 검토에서 실측). 예정 종료 22:00 +
+     *   유예가 지난 23:00 이후에 시드를 돌리면 오늘 판매가 DAY_CLOSED 로 죽었다.
+     *   (옛 날짜들은 규칙 이력이 없어 예정 종료가 null 이라 게이트를 안 탄다 —
+     *    오늘만 걸리는 지뢰였다.) 이미 지났으면 두 시간 뒤로 민다.
+     */
+    if d = 0 then
+      update business_days
+         set planned_close_at = clock_timestamp() + interval '2 hours'
+       where store_id = v_store and business_date = v_day
+         and planned_close_at is not null
+         and planned_close_at <= clock_timestamp();
+    end if;
+
     -- ── 보충 입고 (E7 발주 → E1 입고 확정) ──────────────────
     -- ⚠ 보충은 영업 시작 **뒤**가 맞다. 장사 중에 들어온 물건이라 그날 스냅샷을
     --   흔들지 않아야 한다(0048). 개업 재고만 예외로 앞에 둔다.

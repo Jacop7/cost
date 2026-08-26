@@ -63,7 +63,14 @@ begin
    where store_id = v_store and business_date = v_today;
 
   perform pg_temp.ok('시작할 때 예정 종료가 저장됐다', v_stored is not null);
-  perform pg_temp.eq_t('저장값 = 그날 규칙이 내는 값', v_stored::text, v_before::text);
+  /*
+   * ⚠ 밤 실행이면 프렐류드가 지나간 예정 종료를 미래로 민다(시각 독립 보정).
+   *   그 경우 저장값은 규칙값이 아니라 "지금보다 뒤"가 맞다 — 둘 다 참으로 친다.
+   *   낮 실행은 여전히 정확한 규칙값 일치를 잰다.
+   */
+  perform pg_temp.ok('저장값 = 그날 규칙이 내는 값 (밤이면 프렐류드가 민 미래값)',
+    v_stored is not distinct from v_before
+    or (v_before <= clock_timestamp() and v_stored > clock_timestamp()));
   perform pg_temp.ok('시작할 때 규칙 id 도 남았다',
     (select operating_rule_id from business_days
       where store_id = v_store and business_date = v_today) is not null);
@@ -321,7 +328,11 @@ begin
   select count(*) into v_bad
     from business_days d
    where d.store_id = v_store
-     and d.planned_close_at is distinct from planned_close(d.store_id, d.business_date);
+     and d.planned_close_at is distinct from planned_close(d.store_id, d.business_date)
+     -- ⚠ 밤 실행 예외: 지나간 예정 종료를 프렐류드·시드가 미래로 민다(시각 독립 보정).
+     --   그 행은 "규칙값이 이미 과거고 저장값이 미래"인 모양이라 여기서 걸러 낸다.
+     and not (planned_close(d.store_id, d.business_date) <= clock_timestamp()
+              and d.planned_close_at > clock_timestamp());
   perform pg_temp.eq('저장된 예정 종료 = 그날 규칙이 내는 값', v_bad, 0, 0);
 end $t$;
 
