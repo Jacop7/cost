@@ -196,7 +196,7 @@ begin
   perform pg_temp.ok('카드에 시작 시각이 있다', v_before is not null);
 
   -- 영업 중에 시간을 바꾼다 — 규칙은 다음 영업일부터다(0132).
-  v_set := set_operating_hours(v_store,
+  v_set := pg_temp.set_hours(
     (select jsonb_object_agg(d::text, jsonb_build_object('open','10:00','close','23:00'))
        from generate_series(0, 6) d));
   perform pg_temp.ok('오늘 적용이 아니라고 답한다', (v_set->>'applies_today')::boolean is false);

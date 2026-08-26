@@ -232,3 +232,25 @@ begin
   perform pg_temp.raises('브레이크 전이에 종료 시간은 거부',
     format('select transition_business_state(%L, %L, %L)', v_store, 'start_break', '01:00'), '22000');
 end $t$;
+
+
+-- ── ⑥ 늦은 개점 종료 시각은 DST 안전하다 (0163, 검토 P1-3) ──────
+/*
+ * timestamptz + interval '1 day' 는 서머타임이 바뀌는 날 한 시간 어긋난다.
+ * 다음 **현지 날짜**를 만들고 시간대를 적용해야 벽시계가 맞는다.
+ */
+do $t$
+begin
+  -- 뉴욕 2026-11-01 02:00 EDT→EST. 10/31 02:30 이 지난 뒤 고른 "02:30"은 11/1 02:30 EST(07:30Z).
+  perform pg_temp.eq_t('가을 되돌림 — 다음 날 02:30 은 EST 07:30Z',
+    late_close_at('2026-10-31', '02:30', 'America/New_York', '2026-11-01 08:00:00+00')::text,
+    '2026-11-01 07:30:00+00'::timestamptz::text);
+  -- 아직 안 지난 시각은 오늘 그대로.
+  perform pg_temp.eq_t('안 지났으면 오늘 그 시각',
+    late_close_at('2026-10-31', '23:00', 'America/New_York', '2026-10-31 20:00:00-04')::text,
+    '2026-10-31 23:00:00-04'::timestamptz::text);
+  -- 서울(서머타임 없음)은 두 방식이 같다 — 회귀 방지용 대조.
+  perform pg_temp.eq_t('서울은 단순히 다음 날',
+    late_close_at('2026-08-27', '00:30', 'Asia/Seoul', '2026-08-27 23:00:00+09')::text,
+    '2026-08-28 00:30:00+09'::timestamptz::text);
+end $t$;

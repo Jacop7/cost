@@ -110,17 +110,28 @@ if (skipDb) {
 } else {
   step('③ 새 DB (마이그레이션 전체 + 시험)', () => {
     if (!BASH) { console.error('bash 를 못 찾았습니다 (Git Bash 필요). --no-db 로 뺄 수 있습니다.'); return false; }
-    const db = 'fresh_verify';
-    if (!run(BASH, ['packages/db/scripts/fresh-db.sh', db])) return false;
-    let ok = run('node', ['packages/db/tests/run.mjs'], { env: { ...process.env, PGDATABASE: db } });
     /*
-     * 2세션 경합(검토 항목) — 스위트가 초록이어도 연결 하나짜리 하네스는 경합을 못 본다.
-     * 같은 일회용 DB 위에서 판매 저장 ↔ 크론(마감·브레이크)을 실제로 동시에 돌린다.
-     * ⚠ 커밋이 남는 시험이라 스위트(롤백) **다음**에 돈다.
+     * ⚠ DB 이름은 실행마다 다르다. 고정 이름이면 두 verify 가 겹치거나 앞 실행이 남긴
+     *   DB 를 만나 "이미 있음"으로 헷갈린다. 정리는 try/finally 로 **반드시** 돌고,
+     *   drop 이 실패하면 그 사실을 감추지 않는다.
      */
-    if (ok) ok = run('node', ['packages/db/tests/concurrency.mjs', db]);
-    // ⚠ 실패해도 **반드시 치운다.** 남으면 다음 실행이 이미 있는 DB 를 만나 헷갈린다.
-    run(BASH, ['packages/db/scripts/fresh-db.sh', '--drop', db], { stdio: 'ignore' });
+    const db = `fresh_verify_${process.pid}_${Date.now().toString(36)}`;
+    if (!run(BASH, ['packages/db/scripts/fresh-db.sh', db])) return false;
+    let ok = false;
+    try {
+      ok = run('node', ['packages/db/tests/run.mjs'], { env: { ...process.env, PGDATABASE: db } });
+      /*
+       * 2세션 경합(검토 항목) — 스위트가 초록이어도 연결 하나짜리 하네스는 경합을 못 본다.
+       * 같은 일회용 DB 위에서 판매 저장 ↔ 크론(마감·브레이크)을 실제로 동시에 돌린다.
+       * ⚠ 커밋이 남는 시험이라 스위트(롤백) **다음**에 돈다.
+       */
+      if (ok) ok = run('node', ['packages/db/tests/concurrency.mjs', db]);
+    } finally {
+      if (!run(BASH, ['packages/db/scripts/fresh-db.sh', '--drop', db])) {
+        console.error(`⚠ 일회용 DB 정리 실패 — 직접 지우세요: ${db}`);
+        ok = false;
+      }
+    }
     return ok;
   });
   step('④ 업그레이드 경로', () => {

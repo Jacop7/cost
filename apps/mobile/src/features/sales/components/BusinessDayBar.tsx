@@ -143,9 +143,17 @@ export function BusinessDayBar({ state }: { state: BusinessDayState }) {
    *   **두 값은 뜻이 다르다.** 섞었던 게 0137 의 잘못이었다.
    */
   const closeShown = state.closeMethod === 'auto' ? state.plannedCloseAt : state.closedAt;
+  const live = state.status === 'open' || state.status === 'break';
+  /*
+   * 열린 장부는 **그 장부에 굳은 값**을 그린다 — 연 시각–예정 종료(검토 P2-4).
+   * 규칙 시간(hours)으로 그리면 23:10 에 열어 01:00 종료를 고른 늦은 개점(0162)도
+   * `11:00–22:00` 으로 보인다. 장부가 사실이고 규칙은 예정이다.
+   */
   const hours = state.status === 'closed' && closeShown
     ? `${o || '—'}–${hhmm(closeShown, state.timezone)}`
-    : o && c ? `${o}–${c}` : '';
+    : live && state.plannedCloseAt
+      ? `${hhmm(state.openedAt, state.timezone) || o || '—'}–${hhmm(state.plannedCloseAt, state.timezone)}`
+      : o && c ? `${o}–${c}` : '';
 
   const running = state.status === 'open' || state.status === 'break';
   const stateLabel = state.status === 'break' ? '브레이크 중' : '영업 중';

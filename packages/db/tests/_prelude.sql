@@ -37,6 +37,19 @@ language sql stable as $h$
   select (resolve_sales_business_context(pg_temp.store())).sales_date
 $h$;
 
+/*
+ * 영업시간 저장 — 앱 문(set_operating_hours)은 편집 기준 판본이 **필수**다(0163).
+ * 시험이 매번 열린 행의 rule_id·revision 을 읽어 싣는다. 화면이 하는 일과 같다.
+ */
+create function pg_temp.set_hours(p_hours jsonb, p_breaks jsonb default '{}'::jsonb) returns jsonb
+language plpgsql as $h$
+declare r record;
+begin
+  select id, revision into r from operating_rules
+   where store_id = pg_temp.store() and effective_to is null;
+  return set_operating_hours(pg_temp.store(), p_hours, p_breaks, r.id, r.revision);
+end $h$;
+
 -- ── 단언 헬퍼 (pg_temp = 이 세션에서만 산다) ────────────────────
 
 create function pg_temp.ok(p_label text, p_cond boolean) returns void
