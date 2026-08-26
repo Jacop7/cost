@@ -10,14 +10,11 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { invalidate, invalidateOn, qk } from '@/lib/queryClient';
 import { supabase, rpcError } from '@/lib/supabase';
 import { useStoreId } from '@/lib/SessionProvider';
-import type { BusinessDayStatus } from './businessDay';
 // 응답 계약 검사는 **앱 의존 없는 한 모듈**에 둔다 — 시험이 본체를 그대로 돌릴 수 있게.
-import { CONTRACT_HINT, needBool, needEnum } from './dayContract';
-
-/** `day_status` 를 그대로 믿지 않고 아는 값만 받는다. */
-const DAY_STATUSES: BusinessDayStatus[] = ['none', 'open', 'break', 'closed'];
-
-const BASIS_QUALITIES: BasisQuality[] = ['exact', 'estimated_current'];
+import {
+  CONTRACT_HINT, parseSalesDayContract,
+  type SalesDayBasisQuality, type SalesDayStatus,
+} from './dayContract';
 
 const num = (v: unknown): number => Number(v ?? 0);
 const numOrNull = (v: unknown): number | null => (v === null || v === undefined ? null : Number(v));
@@ -76,8 +73,12 @@ export interface EtcItem {
 }
 export interface ExtraItem { name: string; amount: number; memo?: string }
 
-/** 그날 손익을 무엇을 기준으로 계산했나(0144·0149). 장부가 없으면 null. */
-export type BasisQuality = 'exact' | 'estimated_current';
+/**
+ * 그날 손익을 무엇을 기준으로 계산했나(0144·0149). 장부가 없으면 null.
+ * 정의는 `dayContract` 한 곳에 있다 — 응답을 검사하는 곳과 화면이 쓰는 곳이 갈리면
+ * 한쪽만 고쳐지는 날이 온다.
+ */
+export type BasisQuality = SalesDayBasisQuality;
 
 export interface SalesDay {
   saleDate: string;
@@ -102,8 +103,11 @@ export interface SalesDay {
   basisQuality: BasisQuality | null;
   /** 그날 영업일 장부가 있나. 없으면 §6.4 의 `판매 내역 추가` 자리다. */
   hasLedger: boolean;
-  /** 장부 상태. `closed` 면 정정 RPC 로, 그 밖이면 오늘 판매 화면으로 간다. */
-  dayStatus: BusinessDayStatus | null;
+  /**
+   * 장부 상태. `closed` 면 정정 RPC 로, 그 밖이면 오늘 판매 화면으로 간다.
+   * ⚠ `none` 은 없다 — 장부가 없으면 null 이다(`dayContract` 참고).
+   */
+  dayStatus: SalesDayStatus | null;
   /** 고칠 수 있는 기간인가(지난달 1일~오늘). **서버가 정한다** — 앱이 두 벌 갖지 않는다. */
   editable: boolean;
 }
@@ -179,10 +183,12 @@ export function useSalesDay(date: string) {
           qty: num(it.qty),
         })),
         summary: parseSummary(r.summary),
-        basisQuality: needEnum(r, 'basis_quality', BASIS_QUALITIES),
-        hasLedger: needBool(r, 'has_ledger'),
-        dayStatus: needEnum(r, 'day_status', DAY_STATUSES),
-        editable: needBool(r, 'editable'),
+        /*
+         * ⚠ 넷을 **한 번에** 읽는다. 하나씩 보면 서로 모순된 응답이 통과한다 —
+         *   `has_ledger: true` 인데 `basis_quality`·`day_status` 가 둘 다 null 이면
+         *   화면은 배지를 안 그리고 정정 버튼만 띄운다(0153 검토).
+         */
+        ...parseSalesDayContract(r),
       };
     },
   });
