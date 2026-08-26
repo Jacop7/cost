@@ -90,6 +90,10 @@ Expo(RN) + Supabase 모노레포. 모든 데이터가 기록·전파되어 추�
   접근성 이름이다. 실제로 그려지는지는 `pnpm verify` ⑤ 의 웹 번들이 본다.
   ⚠ 화면 시험은 훅을 대신 세우고 **서버를 안 부른다.** 서버 계약은 DB 스위트가 잰다.
 - `bash packages/db/scripts/fresh-db.sh fresh_x` 로 새 DB, `--until <14자리>` 로 중간 상태.
+  ⚠ 스크립트가 **supabase_admin 으로 한 번 접속**해 그 롤의 기본 권한(TRUNCATE·TRIGGER·
+  REFERENCES)을 걷어낸다 — postgres 는 그 롤의 멤버가 아니라 마이그레이션(0166)으로는 못 한다.
+  새 환경(운영·개발 DB)에도 같은 문장을 한 번 실행해야 대시보드가 만든 표가 열리지 않는다.
+  시험 31 이 `pg_default_acl` 로 두 롤을 다 잰다.
 - 경합은 `node packages/db/tests/concurrency.mjs fresh_x` — 실제 연결 2개로
   판매 저장 ↔ 크론(마감·브레이크)을 동시에 돌린다. **커밋이 남으므로 일회용 DB 전용**
   (스크립트가 fresh_* 이름을 강제한다). verify ③ 이 스위트 다음에 자동으로 돌린다.

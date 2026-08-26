@@ -28,6 +28,24 @@ create function pg_temp.owner() returns uuid
 language sql immutable as $h$ select '00000000-0000-0000-0000-0000000000a1'::uuid $h$;
 
 /*
+ * 교차 매장 방어 시험(27 ⑰ · 29 뉴욕 · 30 · 31)은 **같은 사장님의 두 번째 매장**을 소유자로
+ * 만든다 — "내 매장 문지기는 통과하되 남의 메뉴는 막히는" 실제 위험을 재기 위해서다.
+ * 0167 의 소유자당-하나 트리거는 이 세션 플래그로만 열린다. 앱 롤은 INSERT 자체가 없다.
+ */
+set local sikjae.multi_store_fixture = 'on';
+
+/** 다른 사장님 — auth.users 행을 만든다(소유자). 남남 시나리오용. */
+create function pg_temp.new_owner() returns uuid
+language plpgsql as $h$
+declare v uuid := gen_random_uuid();
+begin
+  set local role postgres;
+  insert into auth.users (id) values (v);
+  set local role authenticated;
+  return v;
+end $h$;
+
+/*
  * 시험이 말하는 '오늘' — 시드 매장의 **판매 영업일**(0154).
  * 예전엔 전역 business_day() 였는데 0155 에서 지웠다 — settings limit 1 이라
  * 매장을 안 가렸다. 지금은 매장 컨텍스트가 규칙으로 구한다.

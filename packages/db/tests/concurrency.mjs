@@ -114,10 +114,13 @@ const waitForLockSql = (dayId, timeoutSec) =>
         */
        select count(*) into n
          from pg_locks l
+         join pg_stat_activity a on a.pid = l.pid
         where l.pid <> pg_backend_pid() and l.granted
           and l.locktype = 'advisory'
           and ((l.classid::bigint << 32) | l.objid::bigint)
-              = hashtextextended('conc:${dayId}', 0);
+              = hashtextextended('conc:${dayId}', 0)
+          -- 정확히 판매 세션 A 다 — 같은 키를 잡은 다른 세션으로는 안 열린다.
+          and a.application_name = 'conc-A';
        if n > 0 then return; end if;
        perform pg_sleep(0.01);
      end loop;
@@ -139,7 +142,8 @@ const items = (qty) =>
  * 성공한 회차는 `OK:i:<커밋 직전 시각>` 을 찍는다(실패한 트랜잭션은 롤백돼 아무것도 안 찍는다).
  */
 function sellerSql(n, hold, startAtIso, dayId) {
-  const head = `set role authenticated;\nset request.jwt.claims='${CLAIMS}';\n${barrierSql(startAtIso)}`;
+  // application_name 으로 **이 세션이 A 임을** 밝힌다 — 장벽이 같은 키를 쥔 다른 세션에 안 열리게(검토 지적).
+  const head = `set application_name = 'conc-A';\nset role authenticated;\nset request.jwt.claims='${CLAIMS}';\n${barrierSql(startAtIso)}`;
   const body = Array.from({ length: n }, (_, k) => {
     const i = k + 1;
     return [
@@ -177,10 +181,17 @@ function cronStats(out) {
    *   실패 수를 안 실어도 초록이다 — 시험이 아무것도 안 재는 상태가 된다.
    */
   const sum = (arr, k) => arr.reduce((acc, j) => acc + (k in j ? Number(j[k]) : NaN), 0);
+  /*
+   * ⚠ 합산으로 재면 +1/-1 이 상쇄된다(검토 지적). 응답 **하나하나**가 failed=0 이어야 한다 —
+   *   키가 없거나 0 이 아니면 그 응답 번호를 남긴다.
+   */
+  const bad = (arr, tag) => arr.map((j, i) => ({ i, v: j.failed }))
+    .filter(({ v }) => !(v === 0)).map(({ i, v }) => `${tag}#${i}=${String(v)}`);
   return {
     sweepRuns: sweeps.length,
     breakRuns: breaks.length,
     failed: sum(sweeps, 'failed') + sum(breaks, 'failed'),
+    badResponses: [...bad(sweeps, 'sweep'), ...bad(breaks, 'break')],
     closed: sum(sweeps, 'closed'),
     breakStarted: sum(breaks, 'break_started'),
     resumed: sum(breaks, 'resumed'),
@@ -253,7 +264,7 @@ ok('전제: 스냅샷에 제육볶음 재료선이 있다(원장 합계의 기�
   ok('평시: 준비 완료 장벽이 성립했다(A 잠금 확인 후 B 출발)', !b.out.includes('BARRIER_TIMEOUT') && !b.err.includes('BARRIER_TIMEOUT'));
   ok('평시: 스윕 응답이 호출 수와 같다', cs.sweepRuns === 60, `sweep=${cs.sweepRuns}`);
   ok('평시: 브레이크 응답이 호출 수와 같다', cs.breakRuns === 60, `break=${cs.breakRuns}`);
-  ok('평시: 크론 실패 0 — 응답 JSON 전수(failed 키 없으면 실패)', cs.failed === 0, `failed=${cs.failed}`);
+  ok('평시: 크론 실패 0 — 응답마다(합산 아님, failed 키 없으면 실패)', cs.badResponses.length === 0, cs.badResponses.slice(0, 5).join(' '));
   ok('평시: 자동 브레이크가 폭풍 중에 실제로 돌았다', cs.breakStarted === 1 && q(
     `select count(*) from business_state_transitions where business_day_id='${dayId}' and to_status='break' and method='auto'`) === '1');
   const st = q(`select status::text from business_days where id='${dayId}'`);
@@ -299,7 +310,7 @@ ok('전제: 스냅샷에 제육볶음 재료선이 있다(원장 합계의 기�
   ok('경합: 준비 완료 장벽이 성립했다', !b.out.includes('BARRIER_TIMEOUT') && !b.err.includes('BARRIER_TIMEOUT'));
   ok('경합: 스윕 응답이 호출 수와 같다', cs2.sweepRuns === 120, `sweep=${cs2.sweepRuns}`);
   ok('경합: 브레이크 응답이 호출 수와 같다', cs2.breakRuns === 120, `break=${cs2.breakRuns}`);
-  ok('경합: 크론 실패 0 — 응답 JSON 전수(failed 키 없으면 실패)', cs2.failed === 0, `failed=${cs2.failed}`);
+  ok('경합: 크론 실패 0 — 응답마다(합산 아님, failed 키 없으면 실패)', cs2.badResponses.length === 0, cs2.badResponses.slice(0, 5).join(' '));
   ok('경합: 스윕이 실제로 정확히 한 번 닫았다', cs2.closed === 1, `closed=${cs2.closed}`);
 
   const lastOk = oks.length ? Math.max(...oks.map((o) => o.i)) : 0;
