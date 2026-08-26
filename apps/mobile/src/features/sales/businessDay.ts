@@ -339,12 +339,29 @@ export const isDateOutOfRange = (e: unknown): boolean => codeOf(e) === '45010';
 /** 45011 DAY_IS_LIVE — 그날은 아직 살아 있다. 보통 저장 경로로 가야 한다(0145). */
 export const isDayLive = (e: unknown): boolean => codeOf(e) === '45011';
 
-/** '2026-08-20T13:00:00+00:00' → '22:00'. 자정을 넘기면 '02:00' 처럼 그대로 나온다. */
-export function hhmm(iso: string | null): string {
+/**
+ * '2026-08-20T13:00:00+00:00' → '22:00' — **매장 시간대 기준**(검토 P2-6).
+ *
+ * ⚠ 예전엔 기기의 getHours() 였다. 뉴욕 매장을 서울 폰으로 보면 종료 22:00 이
+ *   11:00 으로 그려졌다 — 시각은 매장 현지가 사실이고, 보는 기기는 우연이다.
+ *   시간대는 서버(business_day_state.timezone, 0162)가 준다.
+ *   시간대를 못 읽는 기기(Intl 미지원)면 빈 값 — 틀린 시각보다 없는 시각이 낫다.
+ */
+export function hhmm(iso: string | null, timezone: string): string {
   if (!iso) return '';
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return '';
-  return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+  try {
+    const parts = new Intl.DateTimeFormat('en-GB', {
+      timeZone: timezone, hour: '2-digit', minute: '2-digit', hour12: false,
+    }).formatToParts(d);
+    const h = parts.find((p) => p.type === 'hour')?.value ?? '';
+    const m = parts.find((p) => p.type === 'minute')?.value ?? '';
+    // en-GB 는 자정을 '24'로 낼 수 있다 — 표기는 '00'이다.
+    return h === '' || m === '' ? '' : `${h === '24' ? '00' : h}:${m}`;
+  } catch {
+    return '';
+  }
 }
 
 /**

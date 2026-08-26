@@ -144,7 +144,7 @@ export function BusinessDayBar({ state }: { state: BusinessDayState }) {
    */
   const closeShown = state.closeMethod === 'auto' ? state.plannedCloseAt : state.closedAt;
   const hours = state.status === 'closed' && closeShown
-    ? `${o || '—'}–${hhmm(closeShown)}`
+    ? `${o || '—'}–${hhmm(closeShown, state.timezone)}`
     : o && c ? `${o}–${c}` : '';
 
   const running = state.status === 'open' || state.status === 'break';

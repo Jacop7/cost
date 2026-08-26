@@ -116,6 +116,41 @@ describe('거울 검증', () => {
   });
 });
 
+describe('요일 선택 시 기존 값 (P2-5)', () => {
+  const VARIED_HOURS = {
+    ...UNIFORM_HOURS,
+    '3': { open: '09:00', close: '17:00', closed: false },   // 수요일만 다르다
+  };
+
+  it('첫 요일을 고르면 그 요일의 현재 값이 패널에 실린다 — 기본값으로 덮지 않는다', () => {
+    hoursStatus.mockReturnValue(status({
+      currentRule: { ruleId: 'rule-1', revision: 3, effectiveFrom: '2026-01-01', weeklyHours: VARIED_HOURS, weeklyBreaks: {} },
+    }));
+    render(<MyHoursScreen />);
+    fireEvent.click(screen.getByLabelText('수요일'));
+    // 패널의 시작/종료 행에 09:00·17:00 이 보인다(요일 줄 + 패널 = 각각 2번째 노드).
+    expect(screen.getAllByText('09:00').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText('17:00').length).toBeGreaterThanOrEqual(1);
+    // 그대로 적용해도 시간이 안 바뀐다 — 브레이크만 바꾸려는 사장님이 안전하다.
+    fireEvent.click(screen.getByText('선택한 요일에 적용'));
+    expect(screen.getByText('09:00~17:00')).toBeTruthy();
+  });
+
+  it('서로 다른 요일을 함께 고르면 혼합 표시가 뜬다', () => {
+    hoursStatus.mockReturnValue(status({
+      currentRule: { ruleId: 'rule-1', revision: 3, effectiveFrom: '2026-01-01', weeklyHours: VARIED_HOURS, weeklyBreaks: {} },
+    }));
+    render(<MyHoursScreen />);
+    fireEvent.click(screen.getByLabelText('화요일'));
+    fireEvent.click(screen.getByLabelText('수요일'));
+    expect(screen.getByText('값이 서로 달라요')).toBeTruthy();
+    // 같은 값 요일끼리는 안 뜬다.
+    fireEvent.click(screen.getByLabelText('수요일'));   // 해제
+    fireEvent.click(screen.getByLabelText('월요일'));
+    expect(screen.queryByText('값이 서로 달라요')).toBeNull();
+  });
+});
+
 describe('예약 규칙 판본 (0159)', () => {
   const PENDING_HOURS = Object.fromEntries(
     Array.from({ length: 7 }, (_, d) => [String(d), { open: '10:00', close: '21:00', closed: false }]),
