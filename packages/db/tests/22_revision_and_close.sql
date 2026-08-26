@@ -153,9 +153,13 @@ begin
     from pg_proc p join pg_namespace n on n.oid = p.pronamespace
    where n.nspname = 'public' and p.proname = 'save_sale';
   perform pg_temp.ok('판매도 같은 행을 잠근다', position('for update' in v_def) > 0);
-  -- ⚠ 잠근 **뒤에** 상태를 읽어야 한다. 앞에서 읽으면 기다리는 동안 닫힌 걸 못 본다.
+  /*
+   * ⚠ 잠근 **뒤에** 상태를 읽어야 한다. 앞에서 읽으면 기다리는 동안 닫힌 걸 못 본다.
+   *   문구는 0140 에서 바뀌었다 — 되열기 경로가 없어졌는데 `다시 열어 주세요` 라고
+   *   안내하고 있었다. 여기를 문구로 짚는 이상 그 변화에 같이 따라와야 한다.
+   */
   perform pg_temp.ok('잠근 뒤에 상태를 읽는다',
-    position('for update' in v_def) < position('영업은 종료됐어요' in v_def));
+    position('for update' in v_def) < position('영업이 종료되어' in v_def));
 end $t$;
 
 

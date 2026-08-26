@@ -22,12 +22,10 @@ import { useCheckRecipeShortages, type ShortageRecipe } from '../hooks';
 import { ShortageWarningSheet } from './ShortageWarningSheet';
 import {
   hhmm,
-  useAckAutoClose,
   useBusinessDay,
   useCloseBusinessDay,
   useCloseStaleAndOpen,
   useOpenBusinessDay,
-  useReopenBusinessDay,
   useSetBreak,
   type BusinessDayState,
 } from '../businessDay';
@@ -63,9 +61,7 @@ export function BusinessDayBar({ state }: { state: BusinessDayState }) {
   const open = useOpenBusinessDay();
   const setBreak = useSetBreak();
   const close = useCloseBusinessDay();
-  const reopen = useReopenBusinessDay();
   const fixStale = useCloseStaleAndOpen();
-  const ack = useAckAutoClose();
   const [manage, setManage] = useState(false);
   /*
    * ⚠ 확인은 **시트로** 한다. `Alert.alert()` 은 웹에서 빈 함수라 아무 일도 안 일어난다
@@ -232,7 +228,7 @@ export function BusinessDayBar({ state }: { state: BusinessDayState }) {
       <ConfirmSheet
         visible={ask === 'close'}
         title="오늘 장사를 마칠까요?"
-        message="오늘 판매·매출·원가를 잠가요. 빠뜨린 게 있으면 나중에 다시 열 수 있어요."
+        message="오늘 판매·매출·원가를 잠가요. 종료한 뒤에는 오늘 장부에 더 넣을 수 없어요."
         confirmText="영업 종료"
         loading={close.isPending}
         onCancel={() => setAsk(null)}
