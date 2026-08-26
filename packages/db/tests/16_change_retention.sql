@@ -330,6 +330,12 @@ end $t$;
  *                                definer 만 쓸 수 있다. 둘 다 첫 줄이 assert_my_store 다.
  *   (settings_sync_operating_rule 은 0164 에서 지웠다 — settings 는 표시 폼이고 권위는 규칙이다.)
  *   stores_default_operating_rule 트리거 전용. 직접 못 부른다.
+ *   stores_default_settings · stores_default_time_settings
+ *                                트리거 전용(0165). definer 인 이유는 settings·
+ *                                store_time_settings 가 앱 롤에 안 열려 있어서다 —
+ *                                예전엔 시간대 트리거가 invoker 라 매장 생성이 42501 로 죽었다.
+ *   create_store                 매장 생성의 공식 문(0165). auth.uid() 로 주인을 정하고
+ *                                초기화 셋이 다 생겼는지 확인한다.
  *   close_due_business_days      매장을 안 가린다. 그래서 사람에게는 **아예 안 연다** —
  *                                크론(service_role)만 부른다(0137).
  *   close_business_day           첫 줄이 assert_my_store 다. definer 인 이유는 권한을
@@ -369,6 +375,7 @@ begin
     'apply_operating_hours(p_store uuid, p_weekly_hours jsonb, p_weekly_breaks jsonb, p_base_rule_id uuid, p_base_revision integer)',
     'close_business_day(p_store uuid)',
     'close_due_business_days()',
+    'create_store(p_name text, p_timezone text)',
     'my_store_ids()',
     'open_business_day(p_store uuid, p_date date, p_close_time time without time zone)',
     'purge_entity_changes()',
@@ -378,6 +385,8 @@ begin
     'set_operating_hours(p_store uuid, p_weekly_hours jsonb, p_weekly_breaks jsonb, p_base_rule_id uuid, p_base_revision integer)',
     'set_store_timezone(p_store uuid, p_timezone text)',
     'stores_default_operating_rule()',
+    'stores_default_settings()',
+    'stores_default_time_settings()',
     'transition_business_state(p_store uuid, p_action text, p_close_time time without time zone)');
 
   perform pg_temp.eq_t('SECURITY DEFINER 함수 목록이 그대로다', coalesce(v_now, '(없음)'), v_want);

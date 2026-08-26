@@ -94,7 +94,34 @@ function lockWatcher(seconds) {
   });
 }
 
-/** 같은 순간에 출발시키는 장벽 — 두 세션이 절대 시각까지 잠든 뒤 시작한다. */
+/**
+ * 준비 완료 장벽 — B 는 **A 가 대상 행 잠금을 실제로 쥔 뒤** 출발한다.
+ * ⚠ 절대 시각 대기는 두 세션의 시작만 맞출 뿐 경합을 보장하지 않는다 — 실측: 다른 기기에서
+ *   `waits=0/600`(잠금 대기 0)으로 빨개졌다. 여기서는 pg_locks 를 폴링해 그 행에 걸린
+ *   잠금을 본 뒤에야 시작한다. 타임아웃 안에 못 보면 곧바로 알린다(조용히 지나치지 않는다).
+ */
+const waitForLockSql = (dayId, timeoutSec) =>
+  `do $bar$
+   declare i int; n int;
+   begin
+     for i in 1..${Math.round(timeoutSec * 100)} loop
+       /*
+        * A 가 save_sale 로 쓰기를 한 순간 **transactionid 잠금**을 쥔다 — 커밋 전까지 유지된다.
+        * ⚠ 세션 상태로 재면 안 된다: A 는 pg_sleep 중이라 'active' 지 'idle in transaction'
+        *   이 아니다(실측 — 그래서 장벽이 매번 시간 초과했다). 잠금 자체가 신호다.
+        */
+       select count(*) into n
+         from pg_locks l
+         join pg_stat_activity a on a.pid = l.pid
+        where l.pid <> pg_backend_pid() and l.granted
+          and a.datname = current_database()
+          and l.locktype = 'transactionid' and l.mode = 'ExclusiveLock';
+       if n > 0 then return; end if;
+       perform pg_sleep(0.01);
+     end loop;
+     raise notice 'BARRIER_TIMEOUT';
+   end $bar$;\n`;
+/** 같은 순간에 출발시키는 장벽 — A 쪽은 절대 시각까지 잠든 뒤 시작한다. */
 const barrierSql = (startAtIso) =>
   `select pg_sleep(greatest(0, extract(epoch from ('${startAtIso}'::timestamptz - clock_timestamp()))));\n`;
 
@@ -129,20 +156,26 @@ function sellerSql(n, hold, startAtIso) {
  * ⚠ 처음 판은 apply_due_breaks 를 두 번 부르고 `failed` 를 버렸다 — 크론이 실제로 실패해도
  *   초록이었다(검토 실측). 이제 모든 실행의 failed=0 이 조건이다.
  */
-function cronSql(n, sleep, startAtIso) {
+function cronSql(n, sleep, startAtIso, dayId) {
   const body = Array.from({ length: n }, () =>
     `select 'SWEEP:'||close_due_business_days()::text;\nselect 'BREAK:'||apply_due_breaks()::text;\nselect pg_sleep(${sleep});`,
   ).join('\n');
-  return barrierSql(startAtIso) + body + '\n';
+  // 절대 시각까지 기다린 **뒤**, A 가 잠금을 쥔 것을 보고 출발한다(준비 완료 장벽).
+  return barrierSql(startAtIso) + waitForLockSql(dayId, 10) + body + '\n';
 }
 
 /** B 출력에서 크론 응답을 전부 파싱한다 — 실패 합계·닫힘 합계·브레이크 합계. */
 function cronStats(out) {
   const sweeps = [...out.matchAll(/^SWEEP:(\{.*\})$/gm)].map((m) => JSON.parse(m[1]));
   const breaks = [...out.matchAll(/^BREAK:(\{.*\})$/gm)].map((m) => JSON.parse(m[1]));
-  const sum = (arr, k) => arr.reduce((acc, j) => acc + Number(j[k] ?? 0), 0);
+  /*
+   * ⚠ `failed` 키가 **없으면** 실패로 친다. `?? 0` 으로 메우면 응답 모양이 바뀌어
+   *   실패 수를 안 실어도 초록이다 — 시험이 아무것도 안 재는 상태가 된다.
+   */
+  const sum = (arr, k) => arr.reduce((acc, j) => acc + (k in j ? Number(j[k]) : NaN), 0);
   return {
-    runs: sweeps.length + breaks.length,
+    sweepRuns: sweeps.length,
+    breakRuns: breaks.length,
     failed: sum(sweeps, 'failed') + sum(breaks, 'failed'),
     closed: sum(sweeps, 'closed'),
     breakStarted: sum(breaks, 'break_started'),
@@ -156,11 +189,14 @@ const startIn = (sec) => new Date(Date.now() + sec * 1000).toISOString();
 function ledgerMismatch(expectedQty) {
   return q(`
     with need as (
+      -- ⚠ 재료별로 **합산**한다. 같은 식재료가 여러 줄에 있으면(양념 2줄 등) 줄마다 비교해
+      --   정상 원장도 어긋난 것처럼 보인다.
       select (l->>'ingredient_id')::uuid as ingredient_id,
-             (l->>'per_serving')::numeric as per_serving
+             sum((l->>'per_serving')::numeric) as per_serving
         from business_days d,
              jsonb_array_elements(d.snapshot->'recipes'->'${recipeId}'->'lines') l
        where d.id = '${dayId}'
+       group by 1
     ),
     got as (
       select e.ingredient_id, sum(e.count_delta) as delta
@@ -199,7 +235,7 @@ ok('전제: 스냅샷에 제육볶음 재료선이 있다(원장 합계의 기�
   const startAt = startIn(1.5);
   const [a, b, { waits, samples }] = await Promise.all([
     session('A', sellerSql(15, 0.06, startAt), 40_000),
-    session('B', cronSql(60, 0.02, startAt), 40_000),
+    session('B', cronSql(60, 0.02, startAt, dayId), 40_000),
     lockWatcher(6),
   ]);
 
@@ -210,8 +246,10 @@ ok('전제: 스냅샷에 제육볶음 재료선이 있다(원장 합계의 기�
   ok('평시: 판매 15건 전부 성공', (a.out.match(/^OK:/gm) ?? []).length === 15);
   ok('평시: 관찰자가 실제 잠금 대기를 봤다 — 경합이 있었다', waits > 0, `waits=${waits}/${samples}`);
   const cs = cronStats(b.out);
-  ok('평시: 크론 응답을 전부 받았다(호출 = 응답)', cs.runs === 120, `runs=${cs.runs}`);
-  ok('평시: 크론 실패 0 — 응답 JSON 전수', cs.failed === 0, `failed=${cs.failed}`);
+  ok('평시: 준비 완료 장벽이 성립했다(A 잠금 확인 후 B 출발)', !b.out.includes('BARRIER_TIMEOUT') && !b.err.includes('BARRIER_TIMEOUT'));
+  ok('평시: 스윕 응답이 호출 수와 같다', cs.sweepRuns === 60, `sweep=${cs.sweepRuns}`);
+  ok('평시: 브레이크 응답이 호출 수와 같다', cs.breakRuns === 60, `break=${cs.breakRuns}`);
+  ok('평시: 크론 실패 0 — 응답 JSON 전수(failed 키 없으면 실패)', cs.failed === 0, `failed=${cs.failed}`);
   ok('평시: 자동 브레이크가 폭풍 중에 실제로 돌았다', cs.breakStarted === 1 && q(
     `select count(*) from business_state_transitions where business_day_id='${dayId}' and to_status='break' and method='auto'`) === '1');
   const st = q(`select status::text from business_days where id='${dayId}'`);
@@ -229,7 +267,7 @@ ok('전제: 스냅샷에 제육볶음 재료선이 있다(원장 합계의 기�
   const startAt = startIn(1.5);
   const [a, b, { waits, samples }] = await Promise.all([
     session('A', sellerSql(40, 0.06, startAt), 60_000),
-    session('B', cronSql(120, 0.02, startAt), 60_000),
+    session('B', cronSql(120, 0.02, startAt, dayId), 60_000),
     lockWatcher(10),
   ]);
 
@@ -254,8 +292,10 @@ ok('전제: 스냅샷에 제육볶음 재료선이 있다(원장 합계의 기�
   ok('경합: 닫힘 전이는 정확히 한 번', q(
     `select count(*) from business_state_transitions where business_day_id='${dayId}' and to_status='closed'`) === '1');
   const cs2 = cronStats(b.out);
-  ok('경합: 크론 응답을 전부 받았다(호출 = 응답)', cs2.runs === 240, `runs=${cs2.runs}`);
-  ok('경합: 크론 실패 0 — 응답 JSON 전수', cs2.failed === 0, `failed=${cs2.failed}`);
+  ok('경합: 준비 완료 장벽이 성립했다', !b.out.includes('BARRIER_TIMEOUT') && !b.err.includes('BARRIER_TIMEOUT'));
+  ok('경합: 스윕 응답이 호출 수와 같다', cs2.sweepRuns === 120, `sweep=${cs2.sweepRuns}`);
+  ok('경합: 브레이크 응답이 호출 수와 같다', cs2.breakRuns === 120, `break=${cs2.breakRuns}`);
+  ok('경합: 크론 실패 0 — 응답 JSON 전수(failed 키 없으면 실패)', cs2.failed === 0, `failed=${cs2.failed}`);
   ok('경합: 스윕이 실제로 정확히 한 번 닫았다', cs2.closed === 1, `closed=${cs2.closed}`);
 
   const lastOk = oks.length ? Math.max(...oks.map((o) => o.i)) : 0;
