@@ -17,6 +17,7 @@ import { useRecipeList, type RecipeRow } from '@/features/recipes/hooks';
 import { useCheckSaleShortages, useRecipeShortages, useSalesDay, useSaveSale,
   type ChannelCode, type EtcItem, type ExtraItem, type SaleItemInput, type Shortage, type ShortageRecipe } from '../hooks';
 import { ShortageWarningSheet } from '../components/ShortageWarningSheet';
+import { SaleStepper } from '../components/SaleStepper';
 import { BusinessDateGate } from '../components/BusinessDateGate';
 import { setPendingSale, clearPendingSale } from '../pendingSale';
 import { CHANNEL_LABEL, channelName } from '../channels';
@@ -32,35 +33,6 @@ const SORTS: readonly SortOption<SortKey>[] = [
   { key: 'profit', label: '순이익순', hint: '개당 순이익이 큰 메뉴부터' },
   { key: 'name', label: '이름순', hint: '가나다순' },
 ];
-
-/** − N + 스테퍼. 34×34 라 hitSlop 5 를 더해 최소 44×44 를 채운다(가이드 §9.6-1). */
-function SaleStepper({ value, onChange, label }: { value: number; onChange: (v: number) => void; label: string }) {
-  const Btn = ({ ic, delta, disabled }: { ic: 'minus' | 'plus'; delta: number; disabled?: boolean }) => (
-    <Pressable
-      onPress={() => onChange(Math.max(0, value + delta))}
-      disabled={disabled}
-      accessibilityRole="button"
-      accessibilityLabel={`${label} ${delta > 0 ? '늘리기' : '줄이기'}`}
-      accessibilityState={{ disabled: Boolean(disabled) }}
-      hitSlop={5}
-      style={{
-        width: 34, height: 34, borderRadius: 9,
-        backgroundColor: disabled ? T.line2 : delta > 0 ? T.blue : T.line2,
-        opacity: disabled ? 0.5 : 1,
-        alignItems: 'center', justifyContent: 'center',
-      }}
-    >
-      <Icon name={ic} size={18} color={delta > 0 && !disabled ? T.onColor : T.sub} sw={2.4} />
-    </Pressable>
-  );
-  return (
-    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7 }}>
-      <Btn ic="minus" delta={-1} disabled={value <= 0} />
-      <Text style={[{ minWidth: 26, textAlign: 'center', fontSize: 18, fontWeight: '800', color: value ? T.ink : T.ter }, NUM]}>{value}</Text>
-      <Btn ic="plus" delta={1} />
-    </View>
-  );
-}
 
 /** 화면 입력용 수량 묶음. 저장 전까지는 서버 값과 별개로 들고 있어야 취소가 가능하다. */
 interface Qty { hall: number; delivery: number; takeout: number; waste: number }
