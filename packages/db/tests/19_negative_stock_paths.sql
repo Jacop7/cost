@@ -17,7 +17,7 @@
 do $t$
 declare
   v_i     uuid := pg_temp.ing('대파');
-  v_day   date := business_day();
+  v_day   date := pg_temp.today();
   v_res   jsonb;
   v_rev   jsonb;
   v_order uuid;

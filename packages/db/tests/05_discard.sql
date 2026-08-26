@@ -30,7 +30,7 @@ declare
   v_daepa uuid := pg_temp.ing('대파');
   v_ing   uuid := pg_temp.ing('청양고추');
   v_rcp   uuid := pg_temp.rcp('제육볶음');
-  v_day   date := business_day();
+  v_day   date := pg_temp.today();
   v_ev    uuid;
   v_res   jsonb;
   b_events bigint;
@@ -112,7 +112,7 @@ begin
       -- ⚠ 폐기의 volume_delta 는 **버린 양(양수)** 이다. count_delta 만 음수다.
       --   (inventory_events_discard_positive_ck 가 지킨다.)
       (pg_temp.store(), v_daepa, 'discard', -50, 50,
-       (business_day() - discard_delete_days())::timestamptz, '오래된 폐기', true)
+       (pg_temp.today() - discard_delete_days())::timestamptz, '오래된 폐기', true)
     returning id into v_old;
 
     perform pg_temp.raises('7일 지난 폐기는 못 지운다',
@@ -188,7 +188,7 @@ do $t$
 declare
   v_daepa uuid := pg_temp.ing('대파');
   v_rcp   uuid := pg_temp.rcp('제육볶음');
-  v_day   date := business_day();
+  v_day   date := pg_temp.today();
   v_item  uuid;
   v_loss  jsonb;
   b_price numeric;
@@ -307,7 +307,7 @@ end $t$;
 do $t$
 declare
   v_i    uuid := pg_temp.ing('청양고추');
-  v_day  date := business_day();
+  v_day  date := pg_temp.today();
   v_st0  numeric; v_led0 numeric;
   v_st1  numeric; v_led1 numeric;
   v_res  jsonb;

@@ -33,10 +33,10 @@ begin
   perform pg_temp.ok('먼 미래에도 규칙이 있다',
     store_hours_on(v_store, date '2099-12-31') is not null);
   perform pg_temp.eq_t('시드 시간은 11:00~22:00',
-    (store_hours_on(v_store, business_day())->>'open_time') || '~' ||
-    (store_hours_on(v_store, business_day())->>'close_time'), '11:00:00~22:00:00');
+    (store_hours_on(v_store, pg_temp.today())->>'open_time') || '~' ||
+    (store_hours_on(v_store, pg_temp.today())->>'close_time'), '11:00:00~22:00:00');
   perform pg_temp.eq('낮 영업이면 종료가 같은 날',
-    (store_hours_on(v_store, business_day())->>'close_day_offset')::numeric, 0, 0);
+    (store_hours_on(v_store, pg_temp.today())->>'close_day_offset')::numeric, 0, 0);
 end $t$;
 
 

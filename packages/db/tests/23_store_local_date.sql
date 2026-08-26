@@ -18,35 +18,37 @@
 -- 전역 settings 가 아니라 매장별 규칙으로 계산한다. 시험은 29 가 잰다.
 -- ════════════════════════════════════════════════════════════════
 
--- ── ① 영업시간을 바꿔도 현지 날짜는 안 움직인다 ───────────────
+-- ── ① 영업시간을 바꿔도 과거 해석이 안 움직인다 ───────────────
 do $t$
 declare
   v_at   timestamptz;
-  v_bd0  date; v_ld0 date;
-  v_bd1  date; v_ld1 date;
+  v_ld0  date; v_sd0 date;
+  v_ld1  date; v_sd1 date;
 begin
-  -- 서울 새벽 1시. 자정 너머 영업이면 '어제 장부'지만 달력으로는 오늘이다.
-  v_at := (business_day()::text || ' 01:00')::timestamp at time zone 'Asia/Seoul';
+  -- 서울 새벽 1시(과거의 고정 시각).
+  v_at := (pg_temp.today()::text || ' 01:00')::timestamp at time zone 'Asia/Seoul';
 
-  v_bd0 := business_day(v_at);
   v_ld0 := store_local_date(pg_temp.store(), v_at);
-  perform pg_temp.eq_t('바꾸기 전에는 둘이 같다', v_bd0::text, v_ld0::text);
+  v_sd0 := (resolve_sales_business_context(pg_temp.store(), v_at)).sales_date;
 
   -- 사장님이 영업시간을 18:00–02:00 으로 바꾼다.
   update settings set open_time = '18:00', close_time = '02:00';
 
-  v_bd1 := business_day(v_at);
   v_ld1 := store_local_date(pg_temp.store(), v_at);
+  v_sd1 := (resolve_sales_business_context(pg_temp.store(), v_at)).sales_date;
 
   /*
-   * ⚠ 여기가 이 파일의 이유다. **같은 과거 시각**을 두 번 재는데 답이 달라진다.
-   *   business_day 는 지금 설정을 읽으므로 어제로 밀린다.
+   * 예전엔 여기서 전역 business_day() 가 **같은 과거 시각을 다른 날로** 읽는 것을
+   * 보였다 — 지금 설정(settings)이 과거 해석에 섞여 있었기 때문이다(기획서 §2.2).
+   * 그 함수는 0155 에서 지웠다. 판매 영업일은 **날짜별 규칙**(operating_rules)으로
+   * 구하고, 설정 변경은 다음 영업일부터의 새 규칙이 되므로(0132) 과거 시각의
+   * 해석은 현지 날짜든 영업일이든 움직이지 않아야 한다.
    */
-  perform pg_temp.ok('영업일은 과거 해석이 바뀐다 (그래서 일반 기록에 쓰면 안 된다)',
-    v_bd1 is distinct from v_bd0);
   perform pg_temp.eq_t('현지 날짜는 그대로다', v_ld1::text, v_ld0::text);
+  perform pg_temp.eq_t('판매 영업일도 그대로다 — 과거 해석은 규칙이 지킨다',
+    v_sd1::text, v_sd0::text);
 
-  -- ⚠ 되돌린다. 안 되돌리면 아래 블록들이 cutoff 02:00 인 채로 돌고,
+  -- ⚠ 되돌린다. 안 되돌리면 아래 블록들이 자정 넘김 규칙 아래서 돌고,
   --   서울 시간 00:00~02:00 에 실행하면 통과/실패가 갈린다 — 시각에 따라 흔들리는 시험이 된다.
   update settings set open_time = '11:00', close_time = '22:00';
 end $t$;
@@ -93,7 +95,7 @@ begin
       from pg_proc p join pg_namespace n on n.oid = p.pronamespace
      where n.nspname = 'public' and p.proname = r.fn;
     perform pg_temp.ok(format('%s 는 현지 날짜를 쓴다', r.fn),
-      position('store_local_date' in v_def) > 0 and position('business_day()' in v_def) = 0);
+      position('store_local_date' in v_def) > 0 and position('pg_temp.today()' in v_def) = 0);
   end loop;
 
   /*
@@ -113,7 +115,7 @@ begin
      where n.nspname = 'public' and p.proname = r.fn;
     perform pg_temp.ok(format('%s 는 매장 컨텍스트를 쓴다 (0154)', r.fn),
       position('resolve_sales_business_context' in v_def) > 0
-      and position('business_day()' in v_def) = 0);
+      and position('pg_temp.today()' in v_def) = 0);
   end loop;
 end $t$;
 
@@ -129,8 +131,9 @@ declare
   --   답이 달라진다 — 시각에 따라 흔들리는 시험은 아무것도 안 지킨다.
   v_at timestamptz := '2026-08-25 12:00:00+09'::timestamptz;   -- 서울 정오
 begin
-  perform pg_temp.eq_t('정오에는 두 날짜가 같다 (cutoff 0)',
-    store_local_date(pg_temp.store(), v_at)::text, business_day(v_at)::text);
+  perform pg_temp.eq_t('정오에는 두 날짜가 같다 (자정 안 넘는 규칙)',
+    store_local_date(pg_temp.store(), v_at)::text,
+    (resolve_sales_business_context(pg_temp.store(), v_at)).sales_date::text);
 
   -- 실제 기록 경로도 같은 날짜를 남긴다.
   perform quick_inbound(pg_temp.store(), v_i, 1000, 4000, 1, null, null, 'T23');
@@ -241,18 +244,18 @@ begin
   end loop;
 
   /*
-   * 남아도 되는 건 딱 둘이다.
-   *   business_day   — 판매 무리가 쓴다(3단계에서 통째로 간다)
+   * 남아도 되는 건 딱 하나다.
    *   business_month — 고정지출 귀속 월 키다. 잘못 옮기면 월 손익이 통째로 이동한다.
-   * 셋째가 생기면 누가 몰래 하드코딩을 되살린 것이다.
+   * (business_day 는 0155 에서 지웠다 — 판매 무리는 매장 컨텍스트를 쓴다.)
+   * 둘째가 생기면 누가 몰래 하드코딩을 되살린 것이다.
    */
-  perform pg_temp.eq_t('시간대 하드코딩이 남은 함수는 둘뿐',
+  perform pg_temp.eq_t('시간대 하드코딩이 남은 함수는 하나뿐',
     (select coalesce(string_agg(p.proname, ',' order by p.proname), '')
        from pg_proc p join pg_namespace n on n.oid = p.pronamespace
        join pg_language l on l.oid = p.prolang
       where n.nspname = 'public' and p.prokind = 'f' and l.lanname in ('plpgsql','sql')
         and p.prosrc like '%business_tz()%' and p.proname <> 'business_tz'),
-    'business_day,business_month');
+    'business_month');
 
   /*
    * ⚠ **간접 경로까지** 본다. 위 검사는 직접 호출만 보므로, `business_month()` 를

@@ -39,7 +39,7 @@ declare
   v_rev int;
 begin
   perform pg_temp.open_today();   -- 열린 영업일을 보장한다(프렐류드 헬퍼)
-  v_day := business_day();
+  v_day := pg_temp.today();
 
   perform save_sale(pg_temp.store(), v_day, jsonb_build_array(
     jsonb_build_object('recipe_id', r_je, 'qty_hall', 0),
@@ -74,7 +74,7 @@ do $t$
 declare
   r_je  uuid := pg_temp.rcp('제육볶음');
   r_ki  uuid := pg_temp.rcp('김치찌개');
-  v_day date := business_day();
+  v_day date := pg_temp.today();
   v_seen int;
 begin
   -- 두 기기가 같은 판본을 본다.
@@ -167,7 +167,7 @@ end $t$;
 do $t$
 declare
   r_je  uuid := pg_temp.rcp('제육볶음');
-  v_day date := business_day();
+  v_day date := pg_temp.today();
   v_res jsonb;
 begin
   v_res := sale_shortages(pg_temp.store(), v_day,
@@ -208,7 +208,7 @@ do $t$
 declare
   r_je  uuid := pg_temp.rcp('제육볶음');
   r_new uuid;
-  v_day date := business_day();
+  v_day date := pg_temp.today();
   v_res jsonb;
 begin
   -- 영업은 이미 시작돼 있다(위 블록들). 그 뒤에 메뉴를 만든다.

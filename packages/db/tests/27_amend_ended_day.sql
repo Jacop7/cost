@@ -68,8 +68,8 @@ begin
   --   통째로 우회된다.
   perform pg_temp.open_today();
   perform pg_temp.raises('영업 중인 날은 이 문이 아니다',
-    format('select amend_ended_business_day(%L, %L, %s, %L::jsonb)', v_store, business_day(),
-           pg_temp.rev(business_day()), v_items::text),
+    format('select amend_ended_business_day(%L, %L, %s, %L::jsonb)', v_store, pg_temp.today(),
+           pg_temp.rev(pg_temp.today()), v_items::text),
     '45011');
 end $t$;
 
@@ -216,10 +216,10 @@ begin
    */
   perform pg_temp.raises('판매 반영 몸통은 못 부른다',
     format('select apply_sale_items(%L, %L, gen_random_uuid(), ''[]''::jsonb, null, null)',
-           pg_temp.store(), business_day()), '42501');
+           pg_temp.store(), pg_temp.today()), '42501');
   perform pg_temp.raises('판매 이벤트도 직접은 못 부른다',
     format('select e10_sale_recorded(%L, %L, %L, 1)',
-           pg_temp.store(), business_day(), pg_temp.rcp('제육볶음')), '42501');
+           pg_temp.store(), pg_temp.today(), pg_temp.rcp('제육볶음')), '42501');
   /*
    * ⚠ `add_to_day_basis` 도 같다(0149). `p_allow_closed => true` 로 부르면 종료된
    *   장부의 기준을 바꾸고 `basis_quality` 를 내릴 수 있다 — 판본 검사도 감사 기록도 없이.
@@ -228,7 +228,7 @@ begin
    */
   perform pg_temp.raises('기준 더하기 몸통도 직접은 못 부른다',
     format('select add_to_day_basis(%L, %L, %L, true)',
-           pg_temp.store(), business_day(), pg_temp.rcp('제육볶음')), '42501');
+           pg_temp.store(), pg_temp.today(), pg_temp.rcp('제육볶음')), '42501');
 
   -- 감사 기록도 손댈 수 없다. 손댈 수 있으면 감사 기록이 아니다.
   perform pg_temp.raises('정정 기록은 직접 못 쓴다',
@@ -563,7 +563,7 @@ begin
   -- 반대로, **오늘** 저장은 오늘을 건드려야 한다. 막기만 하면 그건 고장이다.
   declare v_act1 timestamptz;
   begin
-    perform save_sale(v_store, business_day(),
+    perform save_sale(v_store, pg_temp.today(),
       jsonb_build_array(jsonb_build_object('recipe_id', v_r, 'qty_hall', 1)));
     v_act1 := (select last_activity_at from business_days
                 where store_id = v_store and status::text <> 'closed'
@@ -762,7 +762,7 @@ begin
 
   -- ⚠ 반대쪽도 본다. 열기만 하면 그건 고장이다 — **오늘**은 여전히 못 판다.
   perform pg_temp.raises('그래도 오늘은 판매 중지된 메뉴를 못 판다',
-    format('select save_sale(%L, business_day(), %L::jsonb)', v_store,
+    format('select save_sale(%L, pg_temp.today(), %L::jsonb)', v_store,
            jsonb_build_array(jsonb_build_object('recipe_id', v_r, 'qty_hall', 1))::text),
     '22000');
 

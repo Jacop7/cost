@@ -56,7 +56,7 @@ begin
   -- ── 미래 날짜로는 기록할 수 없다 ────────────────────────────
   -- 아직 일어나지 않은 일이 추이에 점을 찍으면 그래프가 앞질러 간다.
   perform pg_temp.raises('미래 날짜 폐기 거부',
-    format('select e2_discard(%L, 0, %L::date)', pg_temp.ing('대파'), business_day() + 1));
+    format('select e2_discard(%L, 0, %L::date)', pg_temp.ing('대파'), pg_temp.today() + 1));
 
   -- ── RPC 오버로드는 0 이어야 한다 ────────────────────────────
   -- 같은 이름 함수가 둘이면 PostgREST 가 어느 쪽을 부를지 모른다.
@@ -73,21 +73,13 @@ end $t$;
 
 do $t$
 begin
-  -- 자정을 안 넘는 영업이면 경계도 자정이다(기존 동작 보존).
-  perform save_settings(pg_temp.store(), '{"open_time":"11:00","close_time":"22:00"}'::jsonb);
-  perform pg_temp.eq_t('자정 안 넘으면 경계 0', business_cutoff()::text, '00:00:00');
-  perform pg_temp.eq_t('새벽 1시는 그날',
-    business_day('2026-08-21 01:00+09')::text, '2026-08-21');
-
-  -- 자정을 넘으면 종료 시각이 경계다.
+  /*
+   * 경계 자체("새벽 1시는 전날 장사")는 시험 29 가 잰다 — 전역
+   * business_cutoff()·business_day() 는 0155 에서 지웠고, 판정은
+   * resolve_sales_business_context 가 매장 규칙으로 한다.
+   * 여기 남는 것은 **설정 저장의 검증**이다.
+   */
   perform save_settings(pg_temp.store(), '{"open_time":"10:00","close_time":"02:00"}'::jsonb);
-  perform pg_temp.eq_t('자정 넘으면 경계 = 종료시각', business_cutoff()::text, '02:00:00');
-  perform pg_temp.eq_t('새벽 1시는 전날 장사',
-    business_day('2026-08-21 01:00+09')::text, '2026-08-20');
-  perform pg_temp.eq_t('새벽 3시는 당일',
-    business_day('2026-08-21 03:00+09')::text, '2026-08-21');
-  perform pg_temp.eq_t('아침 10시는 당일',
-    business_day('2026-08-21 10:00+09')::text, '2026-08-21');
 
   -- 총 영업 시간이 자정을 넘어도 맞는다.
   perform pg_temp.eq('10:00~02:00 은 16시간',
@@ -99,6 +91,13 @@ begin
   perform pg_temp.raises('시작=종료 거부',
     format('select save_settings(%L, %L::jsonb)', pg_temp.store(),
            '{"open_time":"10:00","close_time":"10:00"}'), '22000');
+
+  /*
+   * ⚠ 되돌린다. 안 되돌리면 이 파일의 나머지 블록이 자정 넘김 규칙 아래서 돌고,
+   *   서울 00:00~02:00 에 실행하면 pg_temp.today() 가 전날로 밀린다 —
+   *   시각에 따라 흔들리는 시험이 된다.
+   */
+  perform save_settings(pg_temp.store(), '{"open_time":"11:00","close_time":"22:00"}'::jsonb);
 end $t$;
 
 -- ════════════════════════════════════════════════════════════════
@@ -138,16 +137,18 @@ begin
   perform pg_temp.ok('치우면 다시 통과한다', true);
 
   -- ⚠ 전파 RPC 이름이 아닌 함수도 잡아야 한다. 전에는 여기가 뚫려 있었다.
+  --   (미끼는 실제로 서명이 하나뿐인 함수여야 한다 — business_day 는 0155 에서
+  --    지워져 미끼를 만들어도 오버로드가 안 된다. store_local_date 로 바꿨다.)
   execute 'reset role';
   execute $q$
-    create function public.business_day(p_a int) returns int
+    create function public.store_local_date(p_a int) returns int
     language sql immutable as 'select p_a'
   $q$;
   execute 'set local role authenticated';
   perform pg_temp.raises('전파 RPC 가 아닌 이름도 잡는다',
     'select assert_no_rpc_overloads()', null);
   execute 'reset role';
-  execute 'drop function public.business_day(int)';
+  execute 'drop function public.store_local_date(int)';
   execute 'set local role authenticated';
 end $t$;
 

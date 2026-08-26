@@ -12,7 +12,7 @@ do $t$
 declare
   v_ing  uuid := pg_temp.ing('대파');
   v_rcp  uuid := pg_temp.rcp('제육볶음');
-  v_day  date := business_day();
+  v_day  date := pg_temp.today();
   -- 지우기 전 계산값
   v_price0 numeric;  v_stock0 numeric;  v_mat0 numeric;  v_profit0 numeric;
   v_ledger0 int;     v_orders0 int;     v_ptrend0 int;   v_ftrend0 int;
@@ -90,7 +90,7 @@ end $t$;
 do $t$
 declare
   v_ing uuid := pg_temp.ing('양파');
-  v_day date := business_day();
+  v_day date := pg_temp.today();
   v_old uuid;
   v_new int;
   v_n   int;
@@ -197,7 +197,7 @@ begin
    */
   execute 'reset role';
   update business_days set business_date = date '2020-01-02', status = 'closed'
-   where store_id = pg_temp.store() and business_date = business_day();
+   where store_id = pg_temp.store() and business_date = pg_temp.today();
   execute 'set local role authenticated';
 
   perform pg_temp.open_today();          -- 여기서 청소가 곁일로 돈다
