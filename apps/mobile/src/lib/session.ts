@@ -45,9 +45,28 @@ const INITIAL = { phase: 'loading' as SessionPhase, userId: null, storeId: null,
  *   (`create_store`)도 같은 기준(created_at, id)으로 매장을 고른다 — 양쪽이 같은
  *   매장을 가리켜야 한다.
  */
+/** 매장 선택 질의가 요구하는 빌더 모양 — `supabase.from` 의 부분집합. 시험이 가짜를 끼운다. */
+export interface StoreQueryBuilder {
+  select: (cols: string) => {
+    order: (col: string, opts: { ascending: boolean }) => {
+      order: (col: string, opts: { ascending: boolean }) => { limit: (n: number) => unknown };
+    };
+  };
+}
+
+/**
+ * 매장 선택 질의 — 서버 create_store 와 같은 기준(created_at, id)으로 **정렬해서** 하나.
+ * 정렬 없이 limit(1) 이면 매장이 둘일 때 실행마다 다른 매장이 잡힌다(검토 지적).
+ */
+export function pickStoreQuery(from: (table: 'stores') => StoreQueryBuilder) {
+  return from('stores').select('id')
+    .order('created_at', { ascending: true }).order('id', { ascending: true }).limit(1);
+}
+
 async function resolveStoreId(): Promise<{ storeId: string | null; message: string | null }> {
-  const { data, error } = await supabase.from('stores')
-    .select('id').order('created_at', { ascending: true }).order('id', { ascending: true }).limit(1);
+  const { data, error } = await (pickStoreQuery((t) => supabase.from(t) as unknown as StoreQueryBuilder) as Promise<{
+    data: { id: string }[] | null; error: unknown;
+  }>);
   if (error) return { storeId: null, message: '매장 정보를 불러오지 못했어요. 잠시 후 다시 시도해 주세요.' };
   const first = data?.[0]?.id ?? null;
   if (first === null) {

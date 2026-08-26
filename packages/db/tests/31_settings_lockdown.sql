@@ -90,12 +90,16 @@ end $t$;
  */
 do $t$
 declare
-  v_id  uuid;
-  v_res jsonb;
+  v_id    uuid;
+  v_res   jsonb;
+  v_other uuid;
 begin
-  -- ① 직접 생성도 살아 있다 — 트리거 셋이 definer 라 앱 롤로 만들어진다.
+  -- ① 소유자 픽스처 생성에도 트리거 셋이 따라붙는다. 앱 롤의 직접 INSERT 는 0167 로 없어졌다 —
+  --    그 계약은 아래 '단일 매장' 블록이 잰다.
+  set local role postgres;
   insert into stores (owner_id, name) values (pg_temp.owner(), '시험 매장 신규직접')
     returning id into v_id;
+  set local role authenticated;
   perform pg_temp.eq('직접 생성: 설정 행이 생긴다',
     (select count(*) from settings where store_id = v_id), 1, 0);
   perform pg_temp.eq('직접 생성: 시간대 행이 생긴다',
@@ -115,12 +119,21 @@ begin
   perform pg_temp.eq('저장된 세금 항목이 실제로 있다',
     (select jsonb_array_length(tax_items) from settings where store_id = v_id), 1, 0);
   /*
-   * ③ 공식 문(create_store) — 1차 범위는 매장 하나라, 이미 있으면 **그 매장**을 답한다(0166).
+   * ③ 공식 문(create_store) — 1차 범위는 매장 하나라, 이미 있으면 **그 매장**을 답하고
+   *   시간대도 안 만진다(0166·0167). 그래서 새 매장의 시간대 계약은 **매장이 없는 계정**으로
+   *   잰다 — 기존 사장님으로 부르면 created=false 에 기존 시간대가 온다(아래 '단일 매장' 블록).
    * ⚠ 여기서 개수 합(3)으로 재면 안 된다. 이 파일 앞 블록이 예약 규칙을 만들어 두면
    *   규칙이 2개라 합이 4가 된다 — 실제로 그렇게 빨개졌다. 있음/없음으로 잰다.
    */
+  v_other := pg_temp.new_owner();
+  set local role postgres;
+  perform set_config('request.jwt.claims', json_build_object('sub', v_other, 'role', 'authenticated')::text, true);
+  set local role authenticated;
+  -- 이름 검사는 **만들 때** 한다 — 매장이 이미 있으면 이름은 쓰이지 않고 그 매장이 온다.
+  perform pg_temp.raises('공식 문: 이름이 비면 거부', $q$select create_store('   ')$q$, '22000');
   v_res := create_store('시험 매장 공식문', 'America/New_York');
   v_id := (v_res->>'store_id')::uuid;
+  perform pg_temp.ok('공식 문: 새 계정이면 created=true', (v_res->>'created')::boolean is true);
   perform pg_temp.eq_t('공식 문: 시간대가 정해진다', v_res->>'timezone', 'America/New_York');
   perform pg_temp.ok('공식 문: 설정·규칙·시간대가 모두 있다',
     exists (select 1 from settings where store_id = v_id)
@@ -128,7 +141,11 @@ begin
     and exists (select 1 from store_time_settings where store_id = v_id));
   perform pg_temp.ok('공식 문: 정한 시간대는 confirmed 다',
     (select confirmed from store_time_settings where store_id = v_id));
-  perform pg_temp.raises('공식 문: 이름이 비면 거부', $q$select create_store('   ')$q$, '22000');
+  perform pg_temp.ok('공식 문: 매장이 있으면 빈 이름도 그 매장을 답한다(이름은 만들 때만 본다)',
+    ((create_store('   '))->>'store_id')::uuid = v_id);
+  set local role postgres;
+  perform set_config('request.jwt.claims', json_build_object('sub', pg_temp.owner(), 'role', 'authenticated')::text, true);
+  set local role authenticated;
 end $t$;
 
 
@@ -213,4 +230,93 @@ begin
   perform pg_temp.eq_t('백필이 표시 폼(06:00~14:00)을 보존한다',
     (store_hours_on(v_store, store_local_date(v_store))->>'open_time') || '~' ||
     (store_hours_on(v_store, store_local_date(v_store))->>'close_time'), '06:00:00~14:00:00');
+end $t$;
+
+
+-- ── 단일 매장을 DB 가 지킨다 · create_store 재호출 무해 (0167) ────
+do $t$
+declare
+  v_res jsonb;
+  v_tz0 text;
+  v_other uuid;
+begin
+  -- ① 재호출은 시간대를 안 바꾼다 — 열린 장부의 날짜와 현지 날짜가 갈라지면 안 된다(실측).
+  perform pg_temp.open_today();   -- 영업 중이면 set_store_timezone 도 45011 인 상태
+  v_tz0 := store_timezone(pg_temp.store());
+  v_res := create_store('재호출', 'America/New_York');
+  perform pg_temp.ok('있으면 created=false', (v_res->>'created')::boolean is false);
+  perform pg_temp.eq_t('재호출은 시간대를 안 바꾼다', store_timezone(pg_temp.store()), v_tz0);
+  perform pg_temp.eq_t('응답 시간대도 기존 값', v_res->>'timezone', v_tz0);
+
+  -- ② 앱 롤의 stores 직접 쓰기는 권한부터 없다 — 매장은 create_store 로만 생긴다.
+  --    RLS 만으로 막혀도 42501 이라 권한 자체를 따로 잰다(정책이 아니라 GRANT 가 닫혀야 한다).
+  perform pg_temp.ok('stores 에 앱 롤 INSERT/UPDATE/DELETE GRANT 가 없다',
+    not has_table_privilege('authenticated', 'public.stores', 'INSERT')
+    and not has_table_privilege('authenticated', 'public.stores', 'UPDATE')
+    and not has_table_privilege('authenticated', 'public.stores', 'DELETE')
+    and not has_table_privilege('anon', 'public.stores', 'INSERT'));
+  perform pg_temp.raises('stores 직접 INSERT 는 42501',
+    format($q$insert into stores (owner_id, name) values (%L, '직접')$q$, pg_temp.owner()), '42501');
+  perform pg_temp.raises('stores 직접 UPDATE 도 42501',
+    format($q$update stores set name = 'x' where id = %L$q$, pg_temp.store()), '42501');
+  perform pg_temp.raises('stores 직접 DELETE 도 42501',
+    format($q$delete from stores where id = %L$q$, pg_temp.store()), '42501');
+
+  -- ③ 소유자당 하나 — 픽스처 플래그가 꺼져 있으면 소유자로도 두 번째 매장이 안 생긴다.
+  set local role postgres;
+  set local sikjae.multi_store_fixture = 'off';
+  perform pg_temp.raises('플래그 없이는 두 번째 매장이 23505',
+    format($q$insert into stores (owner_id, name) values (%L, '둘째')$q$, pg_temp.owner()), '23505');
+  set local sikjae.multi_store_fixture = 'on';
+  set local role authenticated;
+
+  -- ④ 다른 사장님은 제 매장 하나를 create_store 로 만든다 — 남남 시나리오의 기반.
+  v_other := pg_temp.new_owner();
+  set local role postgres;
+  perform set_config('request.jwt.claims', json_build_object('sub', v_other, 'role', 'authenticated')::text, true);
+  set local role authenticated;
+  v_res := create_store('남의 매장');
+  perform pg_temp.ok('남의 계정은 새 매장을 만든다', (v_res->>'created')::boolean is true);
+  set local role postgres;
+  perform set_config('request.jwt.claims', json_build_object('sub', pg_temp.owner(), 'role', 'authenticated')::text, true);
+  set local role authenticated;
+end $t$;
+
+
+-- ── 기본 권한 — postgres 와 supabase_admin 둘 다 닫혀 있다 (0166·0167) ──
+/*
+ * 검토 재현: supabase_admin 이 public 에 만든 테이블은 TRUNCATE/TRIGGER/REFERENCES 가 다시
+ * 열렸다. postgres 는 그 롤의 기본 권한을 못 바꾸므로(멤버가 아니다) fresh-db.sh 가
+ * 슈퍼유저 연결로 걷어낸다. 여기서는 **두 롤의 pg_default_acl** 을 잰다 — 표 하나 만들어
+ * 보는 것은 postgres 만 할 수 있어(31 앞 블록), 나머지는 기본 권한 행 자체가 증거다.
+ */
+do $t$
+declare v_open text;
+begin
+  select string_agg(r.rolname, ', ') into v_open
+    from pg_default_acl a join pg_roles r on r.oid = a.defaclrole
+   where a.defaclnamespace = 'public'::regnamespace and a.defaclobjtype = 'r'
+     and r.rolname in ('postgres', 'supabase_admin')
+     -- aclitem 글자: D=TRUNCATE t=TRIGGER x=REFERENCES. 앱 롤 항목에 하나라도 있으면 열린 것.
+     and exists (select 1 from unnest(a.defaclacl) x
+                  where x::text ~ '^(anon|authenticated)=' and x::text ~ '=[^/]*[Dtx]');
+  /*
+   * ⚠ "행이 있다"로 재지 않는다 — 새 DB 는 supabase_admin 의 기본 권한이 애초에 비어 있어
+   *   회수가 무행(no-op)이고 pg_default_acl 에 행이 안 생긴다(실측). 열린 행이 **없음**이 계약이다.
+   *   supabase_admin 으로 표를 실제로 만들어 보는 시험은 fresh-db.sh 의 슈퍼유저 단계가 한다
+   *   (이 세션은 postgres 라 그 롤이 못 된다).
+   */
+  perform pg_temp.ok('postgres·supabase_admin 기본 권한에 TRUNCATE/TRIGGER/REFERENCES 가 없다',
+    v_open is null);
+end $t$;
+
+
+-- ── save_settings 계약 (0167) — 받는 키는 저장되고, 모르는 키는 거부 ──
+do $t$
+begin
+  perform save_settings(pg_temp.store(), jsonb_build_object('unit_system', 'metric', 'cup_volume', 200, 'currency', 'KRW'));
+  perform pg_temp.eq('cup_volume 이 실제로 저장된다',
+    (select cup_volume from settings where store_id = pg_temp.store()), 200, 0);
+  perform pg_temp.raises('모르는 키는 거부 — 조용히 버리지 않는다',
+    format('select save_settings(%L, %L::jsonb)', pg_temp.store(), '{"theme":"dark"}'), '22000');
 end $t$;

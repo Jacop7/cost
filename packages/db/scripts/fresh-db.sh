@@ -92,6 +92,24 @@ fi
 # ── 빈 DB ───────────────────────────────────────────────────────
 psql_d postgres -c "drop database if exists $D;" -c "create database $D;"
 
+# supabase_admin 이 만들 테이블의 기본 권한 — postgres 는 이 롤의 멤버가 아니라 못 바꾼다(0166 경고).
+# 슈퍼유저 연결로 한 번 걷어낸다. 운영·개발 DB 도 같은 문장을 한 번 실행해 두어야 한다.
+docker exec -i -e PGPASSWORD=postgres "$CT" psql -U supabase_admin -d "$D" -v ON_ERROR_STOP=1 -q -c \
+  "alter default privileges for role supabase_admin in schema public revoke truncate, trigger, references on tables from anon, authenticated;" \
+  || { echo "supabase_admin 기본 권한 정리 실패" >&2; exit 1; }
+# 역할별 실제 생성 시험 — supabase_admin 이 **정말로 표를 만들어** 앱 롤 권한이 닫혔는지 본다.
+# (시험 스위트는 postgres 세션이라 이 롤로 표를 못 만든다. 여기가 유일한 실측 지점이다.)
+ADMIN_PROBE=$(docker exec -i -e PGPASSWORD=postgres "$CT" psql -U supabase_admin -d "$D" -v ON_ERROR_STOP=1 -q -t -A <<'EOF'
+create table public._acl_probe_admin (id int);
+select has_table_privilege('authenticated', 'public._acl_probe_admin', 'TRUNCATE')
+    or has_table_privilege('authenticated', 'public._acl_probe_admin', 'TRIGGER')
+    or has_table_privilege('authenticated', 'public._acl_probe_admin', 'REFERENCES')
+    or has_table_privilege('anon', 'public._acl_probe_admin', 'TRUNCATE');
+drop table public._acl_probe_admin;
+EOF
+) || { echo "supabase_admin 생성 시험 실패" >&2; exit 1; }
+[ "$ADMIN_PROBE" = "f" ] || { echo "supabase_admin 이 만든 표가 앱 롤에 TRUNCATE/TRIGGER/REFERENCES 로 열립니다 ($ADMIN_PROBE)" >&2; exit 1; }
+
 psql_d "$D" <<EOF
 create schema if not exists extensions;
 create extension if not exists "pgcrypto" with schema extensions;

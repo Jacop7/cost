@@ -58,18 +58,30 @@ export default function MyHomeScreen() {
    *   요일별 판단도 같은 원천(오늘 적용 규칙)으로 한다.
    */
   const today = hoursStatus.data?.today;
+  // 시간과 브레이크 **둘 다** 요일별로 본다 — 시간은 같고 브레이크만 다른 매장도 '요일마다 달라요'다.
   const perDay = (() => {
-    const wh = hoursStatus.data?.currentRule?.weeklyHours as Record<string, unknown> | undefined;
-    if (!wh) return false;
-    return new Set(Array.from({ length: 7 }, (_, d) => JSON.stringify(wh[String(d)] ?? null))).size > 1;
+    const rule = hoursStatus.data?.currentRule;
+    if (!rule) return false;
+    const wh = rule.weeklyHours as Record<string, unknown>;
+    const wb = rule.weeklyBreaks as Record<string, unknown>;
+    const keys = Array.from({ length: 7 }, (_, d) => JSON.stringify([wh[String(d)] ?? null, wb[String(d)] ?? null]));
+    return new Set(keys).size > 1;
   })();
-  const hoursDesc = !today
-    ? '설정 안 됨'
-    : today.closed
-      ? '오늘은 휴무예요'
-      : perDay
-        ? `오늘 ${today.openTime.slice(0, 5)} ~ ${today.closeDayOffset === 1 ? '익일 ' : ''}${today.closeTime.slice(0, 5)} · 요일마다 달라요`
-        : `${today.openTime.slice(0, 5)} ~ ${today.closeDayOffset === 1 ? '익일 ' : ''}${today.closeTime.slice(0, 5)}`;
+  /*
+   * ⚠ 로딩·오류·미설정을 가른다(검토 지적). 셋을 다 '설정 안 됨'으로 뭉치면 RPC 오류가
+   *   "설정이 없다"로 읽혀 사장님이 없는 설정을 다시 하러 간다.
+   */
+  const hoursDesc = hoursStatus.isLoading
+    ? '불러오는 중…'
+    : hoursStatus.isError
+      ? '영업시간을 불러오지 못했어요'
+      : !today
+        ? '설정 안 됨'
+        : today.closed
+          ? '오늘은 휴무예요'
+          : perDay
+            ? `오늘 ${today.openTime.slice(0, 5)} ~ ${today.closeDayOffset === 1 ? '익일 ' : ''}${today.closeTime.slice(0, 5)} · 요일마다 달라요`
+            : `${today.openTime.slice(0, 5)} ~ ${today.closeDayOffset === 1 ? '익일 ' : ''}${today.closeTime.slice(0, 5)}`;
 
   const alertOn = settings.data
     ? [settings.data.alertMorningSummary, settings.data.alertInboundDelay, settings.data.alertPriceSpike, settings.data.alertTargetMiss].filter(Boolean).length
