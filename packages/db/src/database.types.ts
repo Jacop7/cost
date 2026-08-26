@@ -40,7 +40,9 @@ export type Database = {
       }
       business_day_revisions: {
         Row: {
+          after_detail: Json | null
           after_summary: Json
+          before_detail: Json | null
           before_summary: Json
           business_day_id: string
           changed_at: string
@@ -50,7 +52,9 @@ export type Database = {
           revision_no: number
         }
         Insert: {
+          after_detail?: Json | null
           after_summary: Json
+          before_detail?: Json | null
           before_summary: Json
           business_day_id: string
           changed_at?: string
@@ -60,7 +64,9 @@ export type Database = {
           revision_no: number
         }
         Update: {
+          after_detail?: Json | null
           after_summary?: Json
+          before_detail?: Json | null
           before_summary?: Json
           business_day_id?: string
           changed_at?: string
@@ -1532,11 +1538,11 @@ export type Database = {
         Args: {
           p_store: string
           p_date: string
+          p_base_revision: number
           p_items?: Json
           p_etc_items?: Json
           p_extra_items?: Json
           p_reason?: string
-          p_base_revision?: number
         }
         Returns: Json
       }
@@ -1782,6 +1788,13 @@ export type Database = {
           p_date: string
         }
         Returns: number
+      }
+      day_sales_detail: {
+        Args: {
+          p_store: string
+          p_date: string
+        }
+        Returns: Json
       }
       day_snapshot: {
         Args: {

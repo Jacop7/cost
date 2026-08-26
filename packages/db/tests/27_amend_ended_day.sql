@@ -15,6 +15,13 @@
 --   ⑧ 몸통(문지기 없는 함수)은 앱 롤이 못 부른다
 -- ════════════════════════════════════════════════════════════════
 
+-- 그날 현재 판본. 정정 RPC 는 판본이 **필수**다(0146).
+create function pg_temp.rev(p_day date) returns integer
+language sql stable as $h$
+  select coalesce((select revision from daily_sales
+                    where store_id = pg_temp.store() and sale_date = p_day), 0)
+$h$;
+
 -- 종료된 과거 날을 하나 만든다(오늘이 아닌, 허용 기간 안).
 create function pg_temp.ended_day() returns date
 language plpgsql as $h$
@@ -49,19 +56,20 @@ declare
 begin
   -- 허용 기간은 **지난달 1일 ~ 오늘**이다(§6.4).
   perform pg_temp.raises('지난달 1일 하루 전은 거절',
-    format('select amend_ended_business_day(%L, %L, %L::jsonb)', v_store,
+    format('select amend_ended_business_day(%L, %L, 0, %L::jsonb)', v_store,
            (date_trunc('month', v_today)::date - interval '1 month' - interval '1 day')::date,
            v_items::text),
     '45010');
   perform pg_temp.raises('내일도 거절',
-    format('select amend_ended_business_day(%L, %L, %L::jsonb)', v_store, v_today + 1, v_items::text),
+    format('select amend_ended_business_day(%L, %L, 0, %L::jsonb)', v_store, v_today + 1, v_items::text),
     '45010');
 
   -- ⚠ 살아 있는 날은 이 문이 아니다. "그냥 되게" 만들면 오늘 장부의 규칙(마감 기한·판본)이
   --   통째로 우회된다.
   perform pg_temp.open_today();
   perform pg_temp.raises('영업 중인 날은 이 문이 아니다',
-    format('select amend_ended_business_day(%L, %L, %L::jsonb)', v_store, business_day(), v_items::text),
+    format('select amend_ended_business_day(%L, %L, %s, %L::jsonb)', v_store, business_day(),
+           pg_temp.rev(business_day()), v_items::text),
     '45011');
 end $t$;
 
@@ -96,7 +104,7 @@ begin
     from daily_sales ds join daily_sales_items it on it.daily_sales_id = ds.id
    where ds.store_id = v_store and ds.sale_date = v_day and it.recipe_id = v_r;
 
-  v_res := amend_ended_business_day(v_store, v_day,
+  v_res := amend_ended_business_day(v_store, v_day, pg_temp.rev(v_day),
              jsonb_build_array(jsonb_build_object('recipe_id', v_r, 'qty_hall', 10)),
              null, null, '시험: 빠뜨린 판매');
 
@@ -170,7 +178,7 @@ begin
     raise exception '⑤ 전제 실패: 장부가 없는 날을 못 찾았습니다';
   end if;
 
-  v_res := amend_ended_business_day(v_store, v_day,
+  v_res := amend_ended_business_day(v_store, v_day, pg_temp.rev(v_day),
              jsonb_build_array(jsonb_build_object('recipe_id', v_r, 'qty_hall', 3)));
 
   perform pg_temp.ok('없던 장부를 만들었다', (v_res->>'created')::boolean);
@@ -219,4 +227,92 @@ begin
      values (gen_random_uuid(), 1, ''{}''::jsonb, ''{}''::jsonb)', '42501');
   perform pg_temp.raises('정정 기록은 지울 수도 없다',
     'delete from business_day_revisions', '42501');
+end $t$;
+
+
+-- ── ⑨ 0146 이 막은 네 구멍 ────────────────────────────────────
+/*
+ * 넷 다 실측으로 확인된 것들이다. 방향이 맞아도 이런 자리가 남으면 기능이 아니라
+ * 새 사고의 씨앗이 된다.
+ */
+do $t$
+declare
+  v_store uuid := pg_temp.store();
+  v_today date := store_local_date(v_store);
+  v_r     uuid := pg_temp.rcp('제육볶음');
+  v_day   date;
+  v_res   jsonb;
+  v_free  date;
+begin
+  -- ① 바꿀 게 없으면 아무것도 만들지 않는다.
+  --    0145 는 빈 호출만으로 종료 장부 + 감사 기록이 생겼다(created=true · revision=1).
+  v_day := pg_temp.ended_day();
+  perform pg_temp.raises('빈 저장은 거절',
+    format('select amend_ended_business_day(%L, %L, %s, ''[]''::jsonb)',
+           v_store, v_day, pg_temp.rev(v_day)), '45012');
+
+  -- ② 기타 매출만 넣어도 영업일에 이어진다.
+  --    0145 는 메뉴가 있을 때만 `e10` 이 우연히 이어 줬다 — 우연에 기댄 연결이었다.
+  perform amend_ended_business_day(v_store, v_day, pg_temp.rev(v_day), '[]'::jsonb,
+    jsonb_build_array(jsonb_build_object('name','시험 음료','price',3000,'qty',2)));
+  perform pg_temp.eq_t('기타 매출만 넣어도 영업일에 이어진다',
+    (select ds.business_day_id::text from daily_sales ds
+      where ds.store_id = v_store and ds.sale_date = v_day),
+    (select id::text from business_days
+      where store_id = v_store and business_date = v_day));
+
+  /*
+   * ③ 합계가 그대로여도 감사가 변경을 남긴다.
+   *   매장 1개를 배달 1개로 옮기면 총량도 금액도 같다 — 합계만 남기면 감사 기록이
+   *   **아무 차이도 없다고 말한다.** 0145 가 그랬다.
+   */
+  perform amend_ended_business_day(v_store, v_day, pg_temp.rev(v_day),
+    jsonb_build_array(jsonb_build_object('recipe_id', v_r, 'qty_hall', 4, 'qty_delivery', 0)));
+  v_res := amend_ended_business_day(v_store, v_day, pg_temp.rev(v_day),
+    jsonb_build_array(jsonb_build_object('recipe_id', v_r, 'qty_hall', 3, 'qty_delivery', 1)));
+
+  perform pg_temp.eq_t('합계는 그대로다 — 그래서 합계만으로는 못 잡는다',
+    (v_res->'before_summary'->>'revenue'), (v_res->'after_summary'->>'revenue'));
+  perform pg_temp.ok('그래도 상세는 다르다',
+    (v_res->'before_detail') <> (v_res->'after_detail'));
+  perform pg_temp.eq('채널이 옮겨간 것이 상세에 보인다',
+    (select (x->>'qty_delivery')::numeric
+       from jsonb_array_elements(v_res->'after_detail'->'items') x
+      where (x->>'recipe_id')::uuid = v_r), 1, 0);
+  perform pg_temp.ok('감사 기록에도 상세가 남는다',
+    (select before_detail is not null and after_detail is not null
+       from business_day_revisions r
+       join business_days d on d.id = r.business_day_id
+      where d.store_id = v_store and d.business_date = v_day
+      order by r.revision_no desc limit 1));
+
+  /*
+   * ④ **제일 나쁜 것** — 기록 없는 오늘을 종료 장부로 만들면 그날 영업을 통째로 막는다.
+   *   허용 기간이 오늘까지라 이 문으로 들어올 수 있었고, 그 뒤 `open_business_day` 는
+   *   "이미 종료된 날" 이라며 거부한다.
+   */
+  /*
+   * ⚠ 날짜만 옮기면 그 행이 **열린 채로** 남아 `open_business_day` 가
+   *   "다른 날이 아직 열려 있다" 로 거부한다. 옮기면서 닫아 둔다.
+   *   (지우지 않는 이유는 매출·발주가 이 행을 참조하기 때문이다.)
+   */
+  set local role postgres;
+  update business_days set business_date = v_today - 400, status = 'closed'
+   where store_id = v_store and business_date = v_today;
+  set local role authenticated;
+
+  perform pg_temp.raises('장부 없는 오늘은 이 문으로 못 만든다',
+    format('select amend_ended_business_day(%L, %L, 0, %L::jsonb)', v_store, v_today,
+           jsonb_build_array(jsonb_build_object('recipe_id', v_r, 'qty_hall', 1))::text),
+    '45001');
+  -- 그리고 정상 경로는 그대로 열려 있어야 한다. 막기만 하면 그건 고장이다.
+  perform pg_temp.eq_t('영업 시작은 여전히 된다',
+    open_business_day(v_store, v_today)->>'status', 'open');
+
+  -- ⑤ 판본이 어긋나면 거절한다(신규 RPC 라 선택값 없이 굳혔다).
+  perform pg_temp.close_today();
+  perform pg_temp.raises('낡은 판본은 거절',
+    format('select amend_ended_business_day(%L, %L, 999, %L::jsonb)', v_store, v_today,
+           jsonb_build_array(jsonb_build_object('recipe_id', v_r, 'qty_hall', 1))::text),
+    '45009');
 end $t$;
