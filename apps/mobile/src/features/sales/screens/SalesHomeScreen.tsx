@@ -200,7 +200,7 @@ function SalesHomeBody({ today }: { today: string }) {
    */
   const onSaveError = (e: unknown, retry: () => void) => {
     if (isNotOpenError(e)) { setPendingRetry(() => retry); return; }
-    if (isClosedError(e)) { setToast('이미 종료된 영업일이에요 · 위에서 영업 기록을 다시 열어 주세요'); return; }
+    if (isClosedError(e)) { setToast('영업이 종료되어 판매를 저장할 수 없어요'); return; }
     /*
      * ⚠ 낡은 화면(45009 · 0117). 예전엔 이런 저장이 **그냥 통과했고**, 다른 기기가 적은
      *   판매를 조용히 지웠다(실측: 제육 5개가 사라졌다). 이제 서버가 막는다.

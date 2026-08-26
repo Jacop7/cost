@@ -243,30 +243,18 @@ export function useCloseStaleAndOpen() {
   });
 }
 
-/** 종료 되돌리기 — 끝낸 뒤에 빠뜨린 판매를 넣을 때. 기준값(스냅샷)은 그대로다. */
-export function useReopenBusinessDay() {
-  const qc = useQueryClient();
-  const storeId = useStoreId();
-  return useMutation({
-    mutationFn: async (date: string): Promise<void> => {
-      const { error } = await supabase.rpc('reopen_business_day', { p_store: storeId, p_date: date });
-      if (error) throw new Error(error.message);
-    },
-    onSuccess: () => invalidate(qc, invalidateOn.businessDay()),
-  });
-}
-
-/** 자동 종료 알림 확인 — 한 번 알리고 다시 알리지 않는다. */
-export function useAckAutoClose() {
-  const qc = useQueryClient();
-  return useMutation({
-    mutationFn: async (businessDayId: string): Promise<void> => {
-      const { error } = await supabase.rpc('ack_auto_close', { p_business_day: businessDayId });
-      if (error) throw new Error(error.message);
-    },
-    onSuccess: () => invalidate(qc, invalidateOn.businessDay()),
-  });
-}
+/*
+ * ⚠ 여기 있던 `useReopenBusinessDay()` 와 `useAckAutoClose()` 를 지웠다(0140).
+ *
+ *   **되열기** — 기획서 §6.4 가 "종료된 장부를 다시 열지 않는다" 로 정했고, 0139 에서
+ *   서버가 실제로 그렇게 됐다. 화면에 되열기 버튼이 없는데 훅만 남아 있으면
+ *   다음 사람이 "이미 있는 기능" 으로 읽고 다시 붙인다.
+ *   과거 판매 수정은 정정 RPC(`amend_ended_business_day`)가 할 일이다 — 아직 없다.
+ *
+ *   **자동 종료 확인** — `BusinessDayBar` 가 선언만 해 두고 한 번도 안 썼다.
+ *   `unacked` 를 그리는 자리도 없다. 서버의 `ack_auto_close` 는 그대로 두었으니
+ *   그 알림을 화면에 붙일 때 다시 만들면 된다.
+ */
 
 /**
  * 서버가 "아직 영업을 시작하지 않았어요"로 막았는가(45001). 화면이 시작을 먼저 묻는다.
@@ -278,8 +266,14 @@ export const isNotOpenError = (e: unknown): boolean =>
   e instanceof Error && e.message.includes('아직 영업을 시작하지 않았어요');
 
 /** 서버가 "종료된 영업일"로 막았는가(45002). 되돌리기를 권한다. */
+/*
+ * ⚠ 서버 문구와 **짝을 맞춰야** 한다(0140). 서버가 `영업이 종료되어 판매를 저장할 수
+ *   없어요` 로 바뀌었고, 여기만 옛 문구를 보면 화면이 오류를 못 알아본다.
+ *   (예전 문구는 `고치려면 영업 기록을 다시 열어 주세요` 로 끝났는데, 되열기 경로가
+ *    없어진 뒤로는 **없는 길을 시키는 말**이었다.)
+ */
 export const isClosedError = (e: unknown): boolean =>
-  e instanceof Error && e.message.includes('영업은 종료됐어요');
+  e instanceof Error && e.message.includes('영업이 종료되어');
 
 /**
  * 서버가 정한 **매장 달력의 오늘**(0125). 발주·입고·재고·레시피 화면이 쓴다.
