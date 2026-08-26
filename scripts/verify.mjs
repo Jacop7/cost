@@ -112,7 +112,13 @@ if (skipDb) {
     if (!BASH) { console.error('bash 를 못 찾았습니다 (Git Bash 필요). --no-db 로 뺄 수 있습니다.'); return false; }
     const db = 'fresh_verify';
     if (!run(BASH, ['packages/db/scripts/fresh-db.sh', db])) return false;
-    const ok = run('node', ['packages/db/tests/run.mjs'], { env: { ...process.env, PGDATABASE: db } });
+    let ok = run('node', ['packages/db/tests/run.mjs'], { env: { ...process.env, PGDATABASE: db } });
+    /*
+     * 2세션 경합(검토 항목) — 스위트가 초록이어도 연결 하나짜리 하네스는 경합을 못 본다.
+     * 같은 일회용 DB 위에서 판매 저장 ↔ 크론(마감·브레이크)을 실제로 동시에 돌린다.
+     * ⚠ 커밋이 남는 시험이라 스위트(롤백) **다음**에 돈다.
+     */
+    if (ok) ok = run('node', ['packages/db/tests/concurrency.mjs', db]);
     // ⚠ 실패해도 **반드시 치운다.** 남으면 다음 실행이 이미 있는 DB 를 만나 헷갈린다.
     run(BASH, ['packages/db/scripts/fresh-db.sh', '--drop', db], { stdio: 'ignore' });
     return ok;

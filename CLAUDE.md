@@ -90,6 +90,9 @@ Expo(RN) + Supabase 모노레포. 모든 데이터가 기록·전파되어 추�
   접근성 이름이다. 실제로 그려지는지는 `pnpm verify` ⑤ 의 웹 번들이 본다.
   ⚠ 화면 시험은 훅을 대신 세우고 **서버를 안 부른다.** 서버 계약은 DB 스위트가 잰다.
 - `bash packages/db/scripts/fresh-db.sh fresh_x` 로 새 DB, `--until <14자리>` 로 중간 상태.
+- 경합은 `node packages/db/tests/concurrency.mjs fresh_x` — 실제 연결 2개로
+  판매 저장 ↔ 크론(마감·브레이크)을 동시에 돌린다. **커밋이 남으므로 일회용 DB 전용**
+  (스크립트가 fresh_* 이름을 강제한다). verify ③ 이 스위트 다음에 자동으로 돌린다.
   `bash packages/db/scripts/upgrade-check.sh` 는 마이그레이션 **순서**를 태운다 —
   최종 상태만 보는 시험은 "앞이 만든 값을 뒤가 검사해서 통과" 하는 구멍을 못 잡는다.
 
