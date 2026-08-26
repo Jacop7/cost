@@ -102,6 +102,45 @@ begin
 end $t$;
 
 
+-- ── ④b 열린 장부가 밤을 소유한다 (0161, 검토 P1-3) ─────────────
+/*
+ * 휴무일 수동 개점·연장 영업: 규칙은 "월요일 03:00 은 월요일" 이라 말하지만,
+ * 일요일 장부가 굳은 예정 종료(05:00)까지 열려 있으면 그 판매는 일요일 장사다.
+ * 규칙 계산과 장부가 갈리는 시각을 골라 **분기가 실제로 이긴다**는 걸 잰다 —
+ * 뉴욕 규칙(18:00~02:00)으로는 03:00 이 이미 월요일이다.
+ */
+do $t$
+declare
+  v_b  uuid := pg_temp.ny();
+  v_id uuid;
+begin
+  set local role postgres;
+  insert into business_days (store_id, business_date, status, snapshot, opened_at, planned_close_at)
+       values (v_b, '2026-04-05', 'open', '{}'::jsonb,
+               '2026-04-05 18:00:00'::timestamp at time zone 'America/New_York',
+               '2026-04-06 05:00:00'::timestamp at time zone 'America/New_York')
+    returning id into v_id;
+  set local role authenticated;
+
+  perform pg_temp.eq_t('굳은 종료 전 새벽 판매는 열린 그 날 장사다',
+    (resolve_sales_business_context(v_b, '2026-04-06 03:00:00'::timestamp at time zone 'America/New_York')).sales_date::text,
+    '2026-04-05');
+  perform pg_temp.eq_t('굳은 종료 시각부터는 다음 날이다',
+    (resolve_sales_business_context(v_b, '2026-04-06 05:00:00'::timestamp at time zone 'America/New_York')).sales_date::text,
+    '2026-04-06');
+  -- 하한 — 열기 전 시각은 이 장부 것이 아니다(과거 조회를 삼키면 안 된다).
+  perform pg_temp.eq_t('연 시각 전(일요일 정오)은 장부 소유가 아니다',
+    (resolve_sales_business_context(v_b, '2026-04-05 12:00:00'::timestamp at time zone 'America/New_York')).sales_date::text,
+    '2026-04-05');
+
+  -- 다음 블록들이 이 임시 장부에 기대지 않게 치운다.
+  set local role postgres;
+  delete from business_state_transitions where business_day_id = v_id;
+  delete from business_days where id = v_id;
+  set local role authenticated;
+end $t$;
+
+
 -- ── ⑤·⑥ 기한 지난 옛 영업일 — 표시와 원자 마감 ────────────────
 do $t$
 declare
