@@ -2345,6 +2345,13 @@ export type Database = {
         }
         Returns: undefined
       }
+      resolve_sales_business_context: {
+        Args: {
+          p_store: string
+          p_at?: string
+        }
+        Returns: Database["public"]["CompositeTypes"]["sales_business_context"]
+      }
       restore_stock: {
         Args: {
           p_ingredient: string
@@ -2357,6 +2364,13 @@ export type Database = {
           p_id: string
         }
         Returns: undefined
+      }
+      rule_hours_on: {
+        Args: {
+          p_rule: string
+          p_date: string
+        }
+        Returns: Json
       }
       sale_date_allowed: {
         Args: {
@@ -2511,6 +2525,7 @@ export type Database = {
           p_etc_items?: Json
           p_extra_items?: Json
           p_base_revision?: number
+          p_open_day?: boolean
         }
         Returns: Json
       }
@@ -2673,7 +2688,18 @@ export type Database = {
       trend_cause: "material" | "recipe" | "fixed" | "tax"
     }
     CompositeTypes: {
-      [_ in never]: never
+      sales_business_context: {
+        timezone: string | null
+        local_date: string | null
+        sales_date: string | null
+        sales_rule_id: string | null
+        open_day_id: string | null
+        open_business_date: string | null
+        open_status: Database["public"]["Enums"]["business_day_status"] | null
+        open_planned_close_at: string | null
+        open_rule_id: string | null
+        open_expired: boolean | null
+      }
     }
   }
 }
