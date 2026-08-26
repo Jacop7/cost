@@ -1203,31 +1203,25 @@ begin
       where store_id = v_store and sale_date = v_today), 0);
 
   /*
-   * ⚠ 위 단언만으로는 **되짚기 규칙을 못 잰다.** 세율을 읽고 나서 세금을 기록하니
-   *   무슨 값이든 늘 자기끼리 맞는다 — 스냅샷 세율을 0.99 로 망가뜨려도 통과했다
-   *   (사보타주를 걸어 보고 알았다). 규칙 자체를 부른다.
+   * ⚠ **세율을 되짚어 만들어 내지 않는다**(0152). 0151 은 `etc_tax ÷ etc_revenue` 로
+   *   되짚었는데, `etc_tax` 는 소수 둘째 자리로 반올림돼 저장된다 — 나눗셈으로 나오는 건
+   *   그때 세율이 아니라 "저장된 합계를 재현하는 유효 세율" 이다. 실측:
+   *     실제 9.0909% · 기타매출 1원 → 세금 0.09원 → 역산 9.0000%
+   *     그 뒤 10,000원: 실제 909.09원 vs 역산 900.00원 = 9.09원 어긋남
+   *   그 값을 그날 기준으로 굳히면 앞으로의 정정이 조용히 틀어진다.
+   *   `estimated_current` 를 붙여 넘길 수도 없다 — 그건 "현재 기준" 이라는 뜻이고
+   *   역산 세율은 현재 기준도 아니다. 붙이면 화면 문구가 거짓이 된다.
+   *   규칙은 하나다: **재현되면 유지, 아니면 멈추고 사람이 넣는다.**
    */
-  set local role postgres;
-  update business_days set snapshot = jsonb_set(snapshot, '{etc_tax_rate}', to_jsonb(0.99::numeric))
-   where store_id = v_store and business_date = v_today;
-  set local role authenticated;
-  perform pg_temp.eq('전제: 굳은 세율이 기록과 어긋나 있다',
-    day_etc_tax_rate(v_store, v_today), 0.99, 0);
-  perform pg_temp.eq('되짚은 세율은 설정도 스냅샷도 안 본다',
-    etc_tax_rate_of_record(v_store, v_today), v_rate, 0.000000001);
-  perform pg_temp.ok('되짚을 기록이 없으면 null 이다',
-    etc_tax_rate_of_record(v_store, v_today - 400) is null);
-
-  -- 망가뜨린 것을 되돌린다. 아래 전수 검사가 이걸 잡으면 안 된다.
-  set local role postgres;
-  update business_days set snapshot = jsonb_set(snapshot, '{etc_tax_rate}', to_jsonb(v_rate))
-   where store_id = v_store and business_date = v_today;
-  set local role authenticated;
+  perform pg_temp.ok('되짚어 세율을 만들어 내는 함수는 없다',
+    not exists (select 1 from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+                 where n.nspname = 'public' and p.proname = 'etc_tax_rate_of_record'));
 
   /*
-   * 열린 장부 전체에 대해서도 같아야 한다.
+   * 열린 장부 전체가 그 규칙을 만족해야 한다.
    * ⚠ 이 줄의 이빨은 **배포 때** 나온다 — 시험 트랜잭션 안의 장부는 시험이 직접 만든
-   *   것뿐이라 대개 저절로 맞는다. 0151 의 사후 확인이 같은 검사를 실제 데이터에 건다.
+   *   것뿐이라 대개 저절로 맞는다. 0152 의 검사가 같은 조건을 실제 데이터에 걸고,
+   *   어긋나면 마이그레이션이 **멈춘다**(무엇을 어떻게 넣을지까지 알려 준다).
    */
   select count(*) into v_n
     from business_days bd

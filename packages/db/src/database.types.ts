@@ -1997,13 +1997,6 @@ export type Database = {
         }
         Returns: string
       }
-      etc_tax_rate_of_record: {
-        Args: {
-          p_store: string
-          p_date: string
-        }
-        Returns: number
-      }
       fixed_cost_rate: {
         Args: {
           p_store: string
