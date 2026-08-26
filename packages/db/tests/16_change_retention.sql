@@ -328,6 +328,8 @@ end $t$;
  *   open_business_day            같은 이유다(0154) — 기한 지난 옛 날을 닫을 때 매장
  *                                검사 없는 몸통 `close_business_day_row` 를 부른다.
  *                                첫 줄이 assert_my_store 다.
+ *   set_store_timezone           직접 쓰기를 걷어낸 store_time_settings 에 쓴다(0156).
+ *                                첫 줄이 assert_my_store, 영업 중이면 45011 로 거부.
  */
 do $t$
 declare v_now text; v_want text;
@@ -352,6 +354,7 @@ begin
     'purge_entity_changes()',
     'save_sale(p_store uuid, p_date date, p_items jsonb, p_etc_items jsonb, p_extra_items jsonb, p_base_revision integer, p_open_day boolean)',
     'set_operating_hours(p_store uuid, p_weekly_hours jsonb, p_weekly_breaks jsonb)',
+    'set_store_timezone(p_store uuid, p_timezone text)',
     'settings_sync_operating_rule()',
     'stores_default_operating_rule()');
 

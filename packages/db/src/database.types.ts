@@ -1605,6 +1605,13 @@ export type Database = {
         }
         Returns: boolean
       }
+      assert_weekly_schedule: {
+        Args: {
+          p_hours: Json
+          p_breaks: Json
+        }
+        Returns: boolean
+      }
       auto_close_grace: {
         Args: Record<PropertyKey, never>
         Returns: unknown
@@ -2560,6 +2567,13 @@ export type Database = {
           p_store: string
           p_weekly_hours: Json
           p_weekly_breaks?: Json
+        }
+        Returns: Json
+      }
+      set_store_timezone: {
+        Args: {
+          p_store: string
+          p_timezone: string
         }
         Returns: Json
       }
