@@ -48,7 +48,11 @@ UNTIL=""
 while true; do
   case "${1:-}" in
     --drop)  DROP_ONLY=1; shift ;;
-    --until) UNTIL="${2:-}"; shift 2
+    --until) # ⚠ 값이 있는지 **먼저** 본다. `shift 2` 를 앞세우면 인자가 하나뿐일 때
+             #   shift 가 실패하고 `set -e` 가 **아무 말 없이** 끝낸다(실측 exit 1, 출력 0줄).
+             [ "$#" -ge 2 ] || {
+               echo "--until 뒤에 14자리 마이그레이션 접두사가 필요합니다" >&2; exit 2; }
+             UNTIL="$2"; shift 2
              printf '%s' "$UNTIL" | grep -Eq '^[0-9]{14}$' || {
                echo "--until 은 14자리 마이그레이션 접두사여야 합니다 (받은 값: '$UNTIL')" >&2; exit 2; }
              # ⚠ 형식만 보면 **없는 번호**도 통과한다. 그러면 전체를 다 태우고도
@@ -67,7 +71,7 @@ done
 
 D="${1:-}"
 if [ -z "$D" ]; then
-  echo "쓰는 법: fresh-db.sh [--drop] fresh_<이름>" >&2
+  echo "쓰는 법: fresh-db.sh [--drop] [--until <14자리>] fresh_<이름>" >&2
   exit 2
 fi
 if ! printf '%s' "$D" | grep -Eq '^fresh_[a-z0-9_]{1,50}$'; then
