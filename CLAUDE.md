@@ -70,6 +70,15 @@ Expo(RN) + Supabase 모노레포. 모든 데이터가 기록·전파되어 추�
 - **공통 헤더**: 리스트는 타이틀(24·800, 좌) + 검색/알림 아이콘(우), 그 아래 밑줄형 탭(좌측 정렬, 구분선 `#D1D6DB`). 카드는 `border + cardShadow`.
 - 구현 화면 인벤토리·플로우는 `apps/mobile/src/features/README.md` 단일 출처로 갱신.
 
+## 검사 실행
+- `pnpm test` (루트) → `packages/core` vitest · `packages/db` `tests/run.mjs` · `apps/mobile` `scripts/run-checks.mjs`.
+- 앱 쪽 검사는 `src/**/*.check.ts` 를 node 타입 스트립으로 그대로 돌린다 — **앱 의존이 없어야** 한다
+  (`@/` 별칭·react-native 를 import 하면 못 읽는다). 그래서 `tsconfig` 의 `exclude` 에 있고
+  검사 파일 안에서는 import 에 `.ts` 확장자를 붙인다.
+- `bash packages/db/scripts/fresh-db.sh fresh_x` 로 새 DB, `--until <14자리>` 로 중간 상태.
+  `bash packages/db/scripts/upgrade-check.sh` 는 마이그레이션 **순서**를 태운다 —
+  최종 상태만 보는 시험은 "앞이 만든 값을 뒤가 검사해서 통과" 하는 구멍을 못 잡는다.
+
 ## dev 실행
 - `cd apps/mobile && npx expo start --tunnel` (IP 변동·외부 접속 대응, Expo Go SDK 54). `--web`은 브라우저 미리보기.
 - Node 24 + Expo CLI undici 버그로 시작 시 죽으면 `EXPO_OFFLINE=1` 우회(오프라인은 localhost 바인딩이라 폰은 터널/LAN).
