@@ -316,3 +316,113 @@ begin
            jsonb_build_array(jsonb_build_object('recipe_id', v_r, 'qty_hall', 1))::text),
     '45009');
 end $t$;
+
+
+-- ── ⑩ 응답 계약 (0147) ────────────────────────────────────────
+/*
+ * ⚠ 이 블록은 **DB 를 다시 조회하지 않는다.** 위 블록들은 매번 `pg_temp.rev()` 로
+ *   판본을 새로 읽어서, 응답이 틀린 판본을 주고 있어도 못 봤다 —
+ *   실제로 0146 은 응답에 감사용 값(1)을 담았는데 다음 판본은 5였다.
+ *   화면은 DB 를 다시 못 읽는다. **응답만 들고** 다음 저장을 한다.
+ */
+do $t$
+declare
+  v_store uuid := pg_temp.store();
+  v_r     uuid := pg_temp.rcp('제육볶음');
+  v_day   date;
+  v_a     jsonb;
+  v_b     jsonb;
+begin
+  v_day := pg_temp.ended_day();
+
+  /*
+   * ⚠ 두 판본을 **일부러 벌려 놓는다.**
+   *   시드 상태에서는 둘이 우연히 같을 수 있고(실제로 6·6 이 나왔다), 그러면 응답이
+   *   둘을 뒤바꿔 담아도 시험이 못 잡는다 — 사보타주를 걸어 보고 알았다.
+   *   판매 판본만 밀어 두면 그 뒤로는 값이 겹치지 않는다.
+   */
+  set local role postgres;
+  insert into daily_sales (store_id, sale_date) values (v_store, v_day)
+  on conflict (store_id, sale_date) do update set revision = daily_sales.revision + 7;
+  set local role authenticated;
+
+  v_a := amend_ended_business_day(v_store, v_day, pg_temp.rev(v_day),
+           jsonb_build_array(jsonb_build_object('recipe_id', v_r, 'qty_hall', 6)));
+  perform pg_temp.ok('바뀌었다고 말한다', (v_a->>'changed')::boolean);
+  perform pg_temp.ok('두 판본이 실제로 벌어져 있다 — 안 그러면 뒤바뀜을 못 잡는다',
+    (v_a->>'revision')::int <> (v_a->>'audit_revision_no')::int);
+
+  -- 응답의 `revision` 만 들고 두 번째 정정. 여기서 45009 가 나면 계약이 틀린 것이다.
+  v_b := amend_ended_business_day(v_store, v_day, (v_a->>'revision')::int,
+           jsonb_build_array(jsonb_build_object('recipe_id', v_r, 'qty_hall', 9)));
+  perform pg_temp.eq('두 번째 정정이 실제로 반영된다',
+    (select coalesce(sum(it.qty_hall), 0) from daily_sales ds
+       join daily_sales_items it on it.daily_sales_id = ds.id
+      where ds.store_id = v_store and ds.sale_date = v_day and it.recipe_id = v_r), 9, 0);
+
+  -- 두 판본은 **다른 값**이다. 섞으면 화면이 다음 저장에서 즉시 45009 를 맞는다.
+  perform pg_temp.eq('판매 판본이 하나 는다',
+    (v_b->>'revision')::int, (v_a->>'revision')::int + 1, 0);
+  perform pg_temp.eq('감사 판본도 하나 는다',
+    (v_b->>'audit_revision_no')::int, (v_a->>'audit_revision_no')::int + 1, 0);
+  /*
+   * ⚠ "둘이 다르다" 로 재면 안 된다 — **우연히 같을 수 있다**(실제로 6·6 이 나왔다).
+   *   계약은 각자 **제 출처**를 가리킨다는 것이다. 0146 이 깬 것도 그 지점이다:
+   *   응답에 감사용 값을 담아 화면이 다음 저장에서 즉시 45009 를 맞았다.
+   */
+  perform pg_temp.eq('revision = daily_sales.revision (다음 저장에 되보낼 값)',
+    (v_b->>'revision')::int, pg_temp.rev(v_day), 0);
+  perform pg_temp.eq('audit_revision_no = business_days.revision_no (정정 횟수)',
+    (v_b->>'audit_revision_no')::int,
+    (select revision_no from business_days
+      where store_id = v_store and business_date = v_day), 0);
+
+  /*
+   * ② 같은 값을 다시 보내면 **아무것도 안 남는다.**
+   *   저장 버튼을 두 번 누르는 일은 흔하다. 그때마다 `before = after` 인 정정 기록이
+   *   쌓이면 감사 기록이 잡음으로 차서 진짜 변경을 못 찾는다.
+   */
+  declare
+    v_c     jsonb;
+    v_audit int := (select revision_no from business_days
+                     where store_id = v_store and business_date = v_day);
+    v_cnt   int := (select count(*) from business_day_revisions r
+                      join business_days d on d.id = r.business_day_id
+                     where d.store_id = v_store and d.business_date = v_day);
+  begin
+    v_c := amend_ended_business_day(v_store, v_day, (v_b->>'revision')::int,
+             jsonb_build_array(jsonb_build_object('recipe_id', v_r, 'qty_hall', 9)));
+
+    perform pg_temp.ok('안 바뀌었다고 말한다', (v_c->>'changed')::boolean is false);
+    perform pg_temp.eq('판본이 안 오른다 — 화면이 그대로 다시 쓸 수 있어야 한다',
+      (v_c->>'revision')::int, (v_b->>'revision')::int, 0);
+    perform pg_temp.eq('정정 횟수도 그대로',
+      (select revision_no from business_days
+        where store_id = v_store and business_date = v_day), v_audit, 0);
+    perform pg_temp.eq('감사 기록이 안 늘어난다',
+      (select count(*) from business_day_revisions r
+         join business_days d on d.id = r.business_day_id
+        where d.store_id = v_store and d.business_date = v_day), v_cnt, 0);
+  end;
+
+  -- ③ 감사 상세의 메뉴명은 **판매 시점** 이름이다. 지금 이름을 바꿔도 과거는 그대로다.
+  declare v_old_name text := (select name from recipes where id = v_r);
+  begin
+    set local role postgres;
+    update recipes set name = '이름을 바꿔 봤다' where id = v_r;
+    set local role authenticated;
+
+    perform pg_temp.eq_t('감사 상세는 팔릴 때 이름을 지킨다',
+      (select (x->>'name') from business_day_revisions r
+         join business_days d on d.id = r.business_day_id
+         cross join lateral jsonb_array_elements(r.after_detail->'items') x
+        where d.store_id = v_store and d.business_date = v_day
+          and (x->>'recipe_id')::uuid = v_r
+        order by r.revision_no desc limit 1),
+      v_old_name);
+
+    set local role postgres;
+    update recipes set name = v_old_name where id = v_r;
+    set local role authenticated;
+  end;
+end $t$;
