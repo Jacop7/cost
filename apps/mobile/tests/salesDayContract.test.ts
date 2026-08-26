@@ -6,7 +6,7 @@
  * 아무도 모른다. 그래서 "빠지면 던진다" 와 "서로 안 맞으면 던진다" 를 여기서 잰다.
  *
  * ⚠ 한때 `node --experimental-strip-types` 로 돌렸는데, 그건 **Node 24 전용**이라
- *   루트가 선언한 `engines.node: >=20` 과 어긋났다 — Node 20 에서 `pnpm test` 가 깨진다.
+ *   루트가 선언한 `engines.node: >=20.19.4` 와 어긋났다 — Node 20 에서 `pnpm test` 가 깨진다.
  *   `packages/core` 가 이미 쓰는 vitest 로 옮겼다(vitest 2 는 `^18 || >=20`).
  *   새 의존성도, 별도 러너도 필요 없다.
  */
@@ -132,6 +132,11 @@ describe('판본', () => {
     expect(() => parseSalesDayContract(payload)).toThrow();
   });
 
+  /** 공백을 두른 문자열도 서버가 못 만드는 값이다 — 다듬어 주지 않고 던진다. */
+  it("revision 이 ' 12 ' → 던진다", () => {
+    expect(() => parseSalesDayContract({ ...base, revision: ' 12 ' })).toThrow();
+  });
+
   it('int4 상한과 0 은 받는다', () => {
     expect(parseSalesDayContract({ ...base, revision: '2147483647' }).revision).toBe(2147483647);
     expect(parseSalesDayContract({ ...base, revision: 0 }).revision).toBe(0);
@@ -175,5 +180,29 @@ describe('정정 응답 계약', () => {
     ['모르는 기준 품질', { changed: true, created: false, revision: 9, audit_revision_no: 2, basis_quality: 'guessed' }],
   ])('%s → 던진다', (_label, payload) => {
     expect(() => parseAmendResultContract(payload)).toThrow();
+  });
+
+  /*
+   * ⚠ 필드가 각자 멀쩡해도 **조합이 거짓말**일 수 있다 — `sales_day` 쪽 관계 검사와 같은 이유다.
+   *   서버는 장부를 만들었으면(created) 반드시
+   *     · changed=true 다 — 0150 이 `v_changed := v_created or …` 로 묶었다.
+   *       이걸 통과시키면 화면이 "바뀐 내용이 없어요" 라고 잘못 말한다.
+   *     · basis_quality='estimated_current' 다 — 과거 장부를 지금 만들면 기준이 현재값이라
+   *       0147 생성 분기가 그 값을 하드코딩했고, 이후 경로는 내리기만 한다.
+   *   둘 다 DB 가 만들 수 없는 응답이므로 계약 위반으로 던진다.
+   */
+  it.each([
+    ['created 인데 changed=false', { changed: false, created: true, revision: 9, audit_revision_no: 2, basis_quality: 'estimated_current' }],
+    ['created 인데 basis_quality=exact', { changed: true, created: true, revision: 9, audit_revision_no: 2, basis_quality: 'exact' }],
+  ])('%s → 던진다', (_label, payload) => {
+    expect(() => parseAmendResultContract(payload)).toThrow();
+  });
+
+  it('created 정상 조합은 통과한다', () => {
+    const r = parseAmendResultContract({
+      changed: true, created: true, revision: 1, audit_revision_no: 1, basis_quality: 'estimated_current',
+    });
+    expect(r.created).toBe(true);
+    expect(r.basisQuality).toBe('estimated_current');
   });
 });
