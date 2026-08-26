@@ -193,7 +193,10 @@ begin
     'recipe_id', v_r, 'qty_hall', 1, 'qty_delivery', 0, 'qty_takeout', 0, 'qty_waste', 0));
 
   -- 영업 전 상태로 되돌린다 — ⑤~⑦이 연 오늘 장부를 치운다(시험 준비, 롤백된다).
+  -- 전이 감사(0157)가 이 장부를 참조하므로 그것부터 치운다.
   set local role postgres;
+  delete from business_state_transitions t using business_days d
+   where t.business_day_id = d.id and d.store_id = v_store and d.business_date = v_day;
   delete from business_days where store_id = v_store and business_date = v_day;
   set local role authenticated;
 

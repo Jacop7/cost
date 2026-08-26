@@ -170,43 +170,48 @@ export function useBusinessDay() {
  *      앱 경로는 여기서 아예 없앴다.)
  */
 
-/** 영업 시작 — 이 시점 값으로 오늘이 굳는다. */
-export function useOpenBusinessDay() {
+/**
+ * 상태 전이 — 한 문(0157). open · start_break · resume · end.
+ * 서버 몸통이 행을 잠그고 상태를 재확인하며 감사 기록을 남긴다.
+ * 틀린 전이(이미 브레이크인데 또 브레이크 등)는 45014 로 온다.
+ */
+function useTransition(action: 'open' | 'start_break' | 'resume' | 'end') {
   const qc = useQueryClient();
   const storeId = useStoreId();
   return useMutation({
     mutationFn: async (): Promise<void> => {
-      const { error } = await supabase.rpc('open_business_day', { p_store: storeId });
+      const { error } = await supabase.rpc('transition_business_state', {
+        p_store: storeId, p_action: action,
+      });
       if (error) throw new Error(error.message);
     },
     onSuccess: () => invalidate(qc, invalidateOn.businessDay()),
   });
 }
 
-/** 브레이크타임 — 같은 영업일을 유지한다. 오늘 기준값도 그대로다. */
+/** 영업 시작 — 이 시점 값으로 오늘이 굳는다. */
+export function useOpenBusinessDay() {
+  return useTransition('open');
+}
+
+/**
+ * 브레이크타임 — 같은 영업일을 유지한다. 오늘 기준값도 그대로다.
+ * ⚠ 옛 set_break 은 상태값만 바꿨다(검사·기록 없음) — 0157 에서 지웠다.
+ *   설정된 브레이크 시간의 자동 전환(크론)도 같은 서버 몸통을 쓴다.
+ */
 export function useSetBreak() {
-  const qc = useQueryClient();
-  const storeId = useStoreId();
-  return useMutation({
-    mutationFn: async (on: boolean): Promise<void> => {
-      const { error } = await supabase.rpc('set_break', { p_store: storeId, p_on: on });
-      if (error) throw new Error(error.message);
-    },
-    onSuccess: () => invalidate(qc, invalidateOn.businessDay()),
-  });
+  const start = useTransition('start_break');
+  const resume = useTransition('resume');
+  return {
+    mutate: (on: boolean, opts?: { onError?: (e: Error) => void }) =>
+      (on ? start : resume).mutate(undefined, opts),
+    isPending: start.isPending || resume.isPending,
+  };
 }
 
 /** 영업 종료 — 그날 장부를 집계해 함께 남기고 잠근다. */
 export function useCloseBusinessDay() {
-  const qc = useQueryClient();
-  const storeId = useStoreId();
-  return useMutation({
-    mutationFn: async (): Promise<void> => {
-      const { error } = await supabase.rpc('close_business_day', { p_store: storeId });
-      if (error) throw new Error(error.message);
-    },
-    onSuccess: () => invalidate(qc, invalidateOn.businessDay()),
-  });
+  return useTransition('end');
 }
 
 /**
@@ -227,7 +232,9 @@ export function useCloseStaleAndOpen() {
   const storeId = useStoreId();
   return useMutation({
     mutationFn: async (): Promise<void> => {
-      const opened = await supabase.rpc('open_business_day', { p_store: storeId });
+      const opened = await supabase.rpc('transition_business_state', {
+        p_store: storeId, p_action: 'open',
+      });
       if (opened.error) throw new Error(opened.error.message);
     },
     onSuccess: () => invalidate(qc, invalidateOn.businessDay()),

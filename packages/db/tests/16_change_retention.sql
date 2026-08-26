@@ -260,7 +260,10 @@ begin
        'e10_sale_recorded',        -- 0145 — p_allow_closed 가 열려 있으면 그게 곧 문이다
        -- 0149 — p_allow_closed => true 면 종료된 장부의 기준을 바꾸고 basis_quality 를
        --        내릴 수 있다. 판본 검사도 감사 기록도 없이. 문은 정정 RPC 다.
-       'add_to_day_basis');
+       'add_to_day_basis',
+       'apply_due_breaks',         -- 0157 — 매장을 안 가린다. 크론(service_role)만.
+       'set_break_row',            -- 0157 — 매장 검사 없는 몸통. 문은 전이 RPC 다.
+       'record_state_transition'); -- 0157 — 감사 기록 도우미. 함수 안에서만 돈다.
   perform pg_temp.eq(
     coalesce('인증 사용자가 못 부르는 함수: ' || v_names, '인증 사용자는 전부 부를 수 있다'),
     v_n, 0, 0);
@@ -330,6 +333,10 @@ end $t$;
  *                                첫 줄이 assert_my_store 다.
  *   set_store_timezone           직접 쓰기를 걷어낸 store_time_settings 에 쓴다(0156).
  *                                첫 줄이 assert_my_store, 영업 중이면 45011 로 거부.
+ *   transition_business_state    전이 한 문(0157) — 매장 검사 없는 몸통
+ *                                set_break_row 를 부른다. 첫 줄이 assert_my_store.
+ *   apply_due_breaks             매장을 안 가린다 — 크론(service_role)만 부른다(0157).
+ *                                close_due_business_days 와 같은 자세.
  */
 do $t$
 declare v_now text; v_want text;
@@ -347,6 +354,7 @@ begin
 
   v_want := concat_ws(' | ',
     'amend_ended_business_day(p_store uuid, p_date date, p_base_revision integer, p_items jsonb, p_etc_items jsonb, p_extra_items jsonb, p_reason text)',
+    'apply_due_breaks()',
     'close_business_day(p_store uuid)',
     'close_due_business_days()',
     'my_store_ids()',
@@ -356,7 +364,8 @@ begin
     'set_operating_hours(p_store uuid, p_weekly_hours jsonb, p_weekly_breaks jsonb)',
     'set_store_timezone(p_store uuid, p_timezone text)',
     'settings_sync_operating_rule()',
-    'stores_default_operating_rule()');
+    'stores_default_operating_rule()',
+    'transition_business_state(p_store uuid, p_action text)');
 
   perform pg_temp.eq_t('SECURITY DEFINER 함수 목록이 그대로다', coalesce(v_now, '(없음)'), v_want);
 
