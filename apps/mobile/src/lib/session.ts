@@ -37,9 +37,17 @@ export interface SessionState {
 
 const INITIAL = { phase: 'loading' as SessionPhase, userId: null, storeId: null, message: null };
 
-/** 로그인된 사용자의 매장 id. 매장이 여러 개면 첫 번째(1차 범위는 단일 매장). */
+/**
+ * 로그인된 사용자의 매장 id. 1차 범위는 매장 하나다(기획서 §12).
+ *
+ * ⚠ **정렬 없이 첫 행을 고르면 안 된다**(0166 검토). 매장이 둘 이상이면 어느 쪽이
+ *   잡힐지 실행마다 달라지고, 앱이 어제와 다른 매장을 열 수 있다. 서버의 공식 문
+ *   (`create_store`)도 같은 기준(created_at, id)으로 매장을 고른다 — 양쪽이 같은
+ *   매장을 가리켜야 한다.
+ */
 async function resolveStoreId(): Promise<{ storeId: string | null; message: string | null }> {
-  const { data, error } = await supabase.from('stores').select('id').limit(1);
+  const { data, error } = await supabase.from('stores')
+    .select('id').order('created_at', { ascending: true }).order('id', { ascending: true }).limit(1);
   if (error) return { storeId: null, message: '매장 정보를 불러오지 못했어요. 잠시 후 다시 시도해 주세요.' };
   const first = data?.[0]?.id ?? null;
   if (first === null) {

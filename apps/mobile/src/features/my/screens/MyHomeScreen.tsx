@@ -51,18 +51,25 @@ export default function MyHomeScreen() {
    * ⚠ 이 값은 표시 폼(settings)의 **월요일** 시간이다 — 요일별 설정(0156)이 들어온 뒤로
    *   전체 영업시간처럼 보이면 거짓말이 된다. 요일마다 다르면 그렇다고 말한다.
    */
+  /*
+   * ⚠ 표시 폼(settings)과 규칙을 **섞지 않는다**(0166 검토). settings 는 마지막 저장이
+   *   비친 값이라, 예약 규칙이 있으면 '내일부터'의 월요일 값을 오늘인 양 보여 준다.
+   *   오늘 실제 시간은 서버가 준다(operating_hours_status.today) — 그걸 그린다.
+   *   요일별 판단도 같은 원천(오늘 적용 규칙)으로 한다.
+   */
+  const today = hoursStatus.data?.today;
   const perDay = (() => {
-    const wh = hoursStatus.data?.currentRule?.weeklyHours as Record<string, { open?: string; close?: string; closed?: boolean }> | undefined;
+    const wh = hoursStatus.data?.currentRule?.weeklyHours as Record<string, unknown> | undefined;
     if (!wh) return false;
-    const keys = Array.from({ length: 7 }, (_, d) => JSON.stringify(wh[String(d)] ?? null));
-    return new Set(keys).size > 1;
+    return new Set(Array.from({ length: 7 }, (_, d) => JSON.stringify(wh[String(d)] ?? null))).size > 1;
   })();
-  const hoursDesc = settings.data
-    ? perDay
-      ? '요일마다 달라요'
-      : `${settings.data.openTime} ~ ${settings.data.overnight ? '익일 ' : ''}${settings.data.closeTime}`
-        + ` · ${Math.round(settings.data.openMinutes / 60)}시간`
-    : '설정 안 됨';
+  const hoursDesc = !today
+    ? '설정 안 됨'
+    : today.closed
+      ? '오늘은 휴무예요'
+      : perDay
+        ? `오늘 ${today.openTime.slice(0, 5)} ~ ${today.closeDayOffset === 1 ? '익일 ' : ''}${today.closeTime.slice(0, 5)} · 요일마다 달라요`
+        : `${today.openTime.slice(0, 5)} ~ ${today.closeDayOffset === 1 ? '익일 ' : ''}${today.closeTime.slice(0, 5)}`;
 
   const alertOn = settings.data
     ? [settings.data.alertMorningSummary, settings.data.alertInboundDelay, settings.data.alertPriceSpike, settings.data.alertTargetMiss].filter(Boolean).length
