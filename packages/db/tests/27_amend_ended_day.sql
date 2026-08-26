@@ -220,6 +220,15 @@ begin
   perform pg_temp.raises('판매 이벤트도 직접은 못 부른다',
     format('select e10_sale_recorded(%L, %L, %L, 1)',
            pg_temp.store(), business_day(), pg_temp.rcp('제육볶음')), '42501');
+  /*
+   * ⚠ `add_to_day_basis` 도 같다(0149). `p_allow_closed => true` 로 부르면 종료된
+   *   장부의 기준을 바꾸고 `basis_quality` 를 내릴 수 있다 — 판본 검사도 감사 기록도 없이.
+   *   16번의 "못 부르는 함수 목록" 은 **적어 두기만** 하는 곳이라 열려도 조용하다.
+   *   그래서 여기서 **실제로 불러** 본다.
+   */
+  perform pg_temp.raises('기준 더하기 몸통도 직접은 못 부른다',
+    format('select add_to_day_basis(%L, %L, %L, true)',
+           pg_temp.store(), business_day(), pg_temp.rcp('제육볶음')), '42501');
 
   -- 감사 기록도 손댈 수 없다. 손댈 수 있으면 감사 기록이 아니다.
   perform pg_temp.raises('정정 기록은 직접 못 쓴다',
@@ -561,4 +570,248 @@ begin
                 order by business_date desc limit 1);
     perform pg_temp.ok('오늘 저장은 오늘을 건드린다', v_act1 > v_act0);
   end;
+end $t$;
+
+
+-- ── ⑫ 세율을 바꿔도 과거 기타 세금은 안 움직인다 (0149) ────────
+/*
+ * 실측으로 잡힌 것: 저장된 2,636.36원이 현재 세율만 9.0909% → 20% 로 바꾸니
+ * 5,800원이 됐다. 사장님은 아무것도 안 고쳤는데 과거 세금과 손익이 움직였다.
+ *
+ * ⚠ 이 블록부터 매장 세율을 바꾼다. 뒤 블록들이 그걸 전제로 하니 순서를 바꾸지 않는다.
+ */
+do $t$
+declare
+  v_store uuid := pg_temp.store();
+  v_day   date := pg_temp.ended_day();
+  v_etc   jsonb := jsonb_build_array(
+                     jsonb_build_object('name','시험 음료','price',29000,'qty',1));
+  v_tax0  numeric;
+  v_tax1  numeric;
+  v_res   jsonb;
+begin
+  /*
+   * ⚠ 그날 세율을 **명시로 심는다.** 시드에 이미 있는 옛 장부라 스냅샷에 `etc_tax_rate`
+   *   가 없었고, 그 상태로 재니 `is distinct from` 이 null 때문에 헛통과했다 —
+   *   `그날 세율이 없다` 와 `그날 세율이 다르다` 가 구별되지 않았다.
+   *   현재 세율(뒤에서 20%)과 확연히 다른 5% 를 쓴다.
+   */
+  set local role postgres;
+  update business_days
+     set snapshot = jsonb_set(snapshot, '{etc_tax_rate}', to_jsonb(0.05::numeric)),
+         basis_quality = 'exact'
+   where store_id = v_store and business_date = v_day;
+  set local role authenticated;
+  perform pg_temp.eq('전제: 그날 세율이 5%다', day_etc_tax_rate(v_store, v_day), 0.05, 0);
+
+  -- 그날 세율로 기타 매출을 하나 남긴다.
+  v_res  := amend_ended_business_day(v_store, v_day, pg_temp.rev(v_day),
+              '[]'::jsonb, v_etc, '[]'::jsonb);
+  v_tax0 := (select etc_tax from daily_sales
+              where store_id = v_store and sale_date = v_day);
+  perform pg_temp.eq('전제: 그날 세율 5%로 매겨졌다 — 현재 세율이 아니다',
+    v_tax0, round(29000 * 0.05, 2), 0);
+
+  -- 사장님이 오늘 세율을 고친다.
+  set local role postgres;
+  update settings set tax_items = '[{"name":"시험세","rate":20}]'::jsonb
+   where store_id = v_store;
+  set local role authenticated;
+  -- ⚠ `is distinct from` 만 쓰면 그날 세율이 **없을 때도** 참이다. 둘 다 있고 다름을 잰다.
+  perform pg_temp.ok('전제: 그날 세율이 기록에 있다', day_etc_tax_rate(v_store, v_day) is not null);
+  perform pg_temp.ok('전제: 현재 세율이 그날 세율과 다르다',
+    store_tax_rate(v_store) <> day_etc_tax_rate(v_store, v_day));
+
+  /*
+   * 화면은 고친 칸만 보내지 않고 화면에 있는 값을 통째로 보낸다.
+   * 그러니 "같은 내용을 그대로 다시 보내는" 것이 흔한 경로다.
+   */
+  v_res  := amend_ended_business_day(v_store, v_day, pg_temp.rev(v_day),
+              '[]'::jsonb, v_etc, '[]'::jsonb);
+  v_tax1 := (select etc_tax from daily_sales
+              where store_id = v_store and sale_date = v_day);
+
+  perform pg_temp.eq('과거 기타 세금은 그대로다', v_tax1, v_tax0, 0);
+  perform pg_temp.ok('바뀐 게 없다고 말한다', (v_res->>'changed')::boolean is false);
+  perform pg_temp.eq_t('그날 기준도 안 내려간다', v_res->>'basis_quality', 'exact');
+end $t$;
+
+
+-- ── ⑬ 금액을 고칠 때는 그날 세율로 매긴다 ──────────────────────
+do $t$
+declare
+  v_store uuid := pg_temp.store();
+  v_day   date := pg_temp.ended_day();
+  v_etc   jsonb := jsonb_build_array(
+                     jsonb_build_object('name','시험 음료','price',10000,'qty',1));
+  v_rate  numeric;
+  v_tax   numeric;
+  v_res   jsonb;
+begin
+  v_rate := day_etc_tax_rate(v_store, v_day);
+  perform pg_temp.ok('전제: 그날 세율이 기록에 있다', v_rate is not null);
+  perform pg_temp.ok('전제: 현재 세율은 그날 것과 다르다', store_tax_rate(v_store) <> v_rate);
+  perform pg_temp.eq_t('전제: 아직 그날 기준 그대로다',
+    (select basis_quality::text from business_days
+      where store_id = v_store and business_date = v_day), 'exact');
+
+  v_res := amend_ended_business_day(v_store, v_day, pg_temp.rev(v_day),
+             '[]'::jsonb, v_etc, '[]'::jsonb);
+  v_tax := (select etc_tax from daily_sales
+             where store_id = v_store and sale_date = v_day);
+
+  perform pg_temp.ok('전제: 실제로 바뀐 정정이다', (v_res->>'changed')::boolean);
+  perform pg_temp.eq('금액을 고쳐도 세율은 그날 것이다', v_tax, round(10000 * v_rate, 2), 0);
+  -- 그날 기준을 그대로 썼으니 내려갈 이유가 없다.
+  perform pg_temp.eq_t('그날 기준을 썼으면 안 내려간다', v_res->>'basis_quality', 'exact');
+end $t$;
+
+
+-- ── ⑭ 그날 세율이 없으면 현재 세율 + 그렇게 했다고 남긴다 ──────
+do $t$
+declare
+  v_store uuid := pg_temp.store();
+  v_day   date := pg_temp.ended_day();
+  v_etc   jsonb := jsonb_build_array(
+                     jsonb_build_object('name','시험 음료','price',7000,'qty',1));
+  v_cur   numeric;
+  v_tax   numeric;
+  v_res   jsonb;
+begin
+  -- 0149 이전에 열린 장부에는 그날 세율이 없다. 그 상태를 만든다.
+  set local role postgres;
+  update business_days
+     set snapshot = snapshot - 'etc_tax_rate', basis_quality = 'exact'
+   where store_id = v_store and business_date = v_day;
+  set local role authenticated;
+  perform pg_temp.ok('전제: 그날 세율이 기록에 없다',
+    day_etc_tax_rate(v_store, v_day) is null);
+
+  /*
+   * ⚠ 먼저 **같은 내용**을 보낸다. 그날 세율이 없으면 현재 세율로 다시 계산하고
+   *   싶어지는데, 그러면 사장님이 아무것도 안 고쳤는데 과거 세금이 움직인다.
+   *   내용이 같으면 **계산 자체를 안 하는 것**이 규칙이다.
+   *   (그날 세율이 있는 동안은 이 규칙이 없어도 값이 같아서 티가 안 난다 —
+   *    사보타주를 걸어 보고 알았다. 세율이 없는 여기가 유일하게 구별되는 자리다.)
+   */
+  declare
+    v_same jsonb := (select etc_items from daily_sales
+                      where store_id = v_store and sale_date = v_day);
+    v_t0   numeric := (select etc_tax from daily_sales
+                        where store_id = v_store and sale_date = v_day);
+    v_now  numeric;
+  begin
+    select round(coalesce(sum(coalesce((x->>'price')::numeric,0)
+                            * coalesce((x->>'qty')::numeric,1)), 0)
+                 * store_tax_rate(v_store), 2)
+      into v_now from jsonb_array_elements(v_same) x;
+    perform pg_temp.ok('전제: 남은 세금이 현재 세율로 매긴 값과 다르다', v_t0 <> v_now);
+
+    v_res := amend_ended_business_day(v_store, v_day, pg_temp.rev(v_day),
+               '[]'::jsonb, v_same, '[]'::jsonb);
+    perform pg_temp.eq('그날 세율이 없어도 같은 내용이면 세금이 안 움직인다',
+      (select etc_tax from daily_sales
+        where store_id = v_store and sale_date = v_day), v_t0, 0);
+    perform pg_temp.ok('바뀐 게 없다고 말한다', (v_res->>'changed')::boolean is false);
+    perform pg_temp.eq_t('기준도 안 내려간다', v_res->>'basis_quality', 'exact');
+  end;
+
+  v_cur := store_tax_rate(v_store);
+  v_res := amend_ended_business_day(v_store, v_day, pg_temp.rev(v_day),
+             '[]'::jsonb, v_etc, '[]'::jsonb);
+  v_tax := (select etc_tax from daily_sales
+             where store_id = v_store and sale_date = v_day);
+
+  perform pg_temp.eq('그날 세율이 없으면 현재 세율로 매긴다', v_tax, round(7000 * v_cur, 2), 0);
+  /*
+   * ⚠ 조용히 현재값을 쓰면 나중에 그 숫자가 무엇이었는지 되짚을 수 없다.
+   *   매출과 수량은 사장님이 적은 실제 기록이고, 내려간 것은 **계산 기준**뿐이다.
+   */
+  perform pg_temp.eq_t('그리고 그렇게 했다고 응답에 남긴다',
+    v_res->>'basis_quality', 'estimated_current');
+  perform pg_temp.eq_t('장부에도 남는다',
+    (select basis_quality::text from business_days
+      where store_id = v_store and business_date = v_day), 'estimated_current');
+end $t$;
+
+
+-- ── ⑮ 지금 판매 중지한 메뉴의 과거 수량도 고칠 수 있다 ─────────
+/*
+ * 실측으로 잡힌 것: 제육볶음을 판매 중지하니 3일 전 수량 수정이 22000 으로 거절됐다.
+ * `판매 중지` 는 **오늘 파는 것**을 막는 스위치다. 과거에 실제로 판 기록과는 무관하다.
+ */
+do $t$
+declare
+  v_store uuid := pg_temp.store();
+  v_day   date := pg_temp.ended_day();
+  v_r     uuid := pg_temp.rcp('제육볶음');
+  v_q     numeric;
+begin
+  set local role postgres;
+  update recipes set active = false where id = v_r;
+  set local role authenticated;
+  perform pg_temp.ok('전제: 지금은 판매 중지된 메뉴다',
+    not (select active from recipes where id = v_r));
+
+  perform amend_ended_business_day(v_store, v_day, pg_temp.rev(v_day),
+            jsonb_build_array(jsonb_build_object('recipe_id', v_r, 'qty_hall', 4)));
+  v_q := (select it.qty_hall from daily_sales ds
+            join daily_sales_items it on it.daily_sales_id = ds.id
+           where ds.store_id = v_store and ds.sale_date = v_day and it.recipe_id = v_r);
+  perform pg_temp.eq('판매 중지된 메뉴도 과거 수량을 고칠 수 있다', v_q, 4, 0);
+
+  -- ⚠ 반대쪽도 본다. 열기만 하면 그건 고장이다 — **오늘**은 여전히 못 판다.
+  perform pg_temp.raises('그래도 오늘은 판매 중지된 메뉴를 못 판다',
+    format('select save_sale(%L, business_day(), %L::jsonb)', v_store,
+           jsonb_build_array(jsonb_build_object('recipe_id', v_r, 'qty_hall', 1))::text),
+    '22000');
+
+  set local role postgres;
+  update recipes set active = true where id = v_r;
+  set local role authenticated;
+end $t$;
+
+
+-- ── ⑯ 그날 기준에 없던 메뉴는 더하되, 기준이 내려간다 ──────────
+/*
+ * §6.4 의 `판매 내역 추가` 는 그날 기준에 없는 메뉴로도 들어온다 — 그때 꺼 뒀던 메뉴,
+ * 그 뒤에 만든 메뉴. 여기서 막으면 그 화면 자체가 성립하지 않는다.
+ * 더한 값은 그날 값이 아니라 지금 값이므로 그 장부는 `estimated_current` 로 내려간다.
+ *
+ * ⚠ 이 블록은 응답 계약도 함께 잰다. 정정 RPC 는 몸통을 부르기 **전에** 장부를 읽으므로,
+ *   다시 읽지 않으면 몸통이 내린 뒤에도 옛 값(`exact`)을 돌려준다(0149 ⑤).
+ */
+do $t$
+declare
+  v_store uuid := pg_temp.store();
+  v_day   date := pg_temp.ended_day();
+  v_r     uuid := pg_temp.rcp('제육볶음');
+  v_res   jsonb;
+begin
+  set local role postgres;
+  update business_days
+     set snapshot = jsonb_set(snapshot, '{recipes}', (snapshot->'recipes') - v_r::text),
+         basis_quality = 'exact'
+   where store_id = v_store and business_date = v_day;
+  set local role authenticated;
+  perform pg_temp.ok('전제: 그날 기준에 그 메뉴가 없다',
+    (select snapshot #> array['recipes', v_r::text] from business_days
+      where store_id = v_store and business_date = v_day) is null);
+
+  v_res := amend_ended_business_day(v_store, v_day, pg_temp.rev(v_day),
+             jsonb_build_array(jsonb_build_object('recipe_id', v_r, 'qty_hall', 6)));
+
+  perform pg_temp.ok('종료된 장부에도 기준을 더한다',
+    (select snapshot #> array['recipes', v_r::text] from business_days
+      where store_id = v_store and business_date = v_day) is not null);
+  perform pg_temp.eq_t('응답이 몸통이 내린 뒤 값을 준다',
+    v_res->>'basis_quality', 'estimated_current');
+
+  -- 그날에도 없고 지금도 없는 메뉴는 **안정된 코드**로 돌려보낸다.
+  perform pg_temp.raises('없는 메뉴는 BASIS_NOT_AVAILABLE 로 거절한다',
+    format('select amend_ended_business_day(%L, %L, %s, %L::jsonb)',
+           v_store, v_day, pg_temp.rev(v_day),
+           jsonb_build_array(jsonb_build_object(
+             'recipe_id', '00000000-0000-0000-0000-0000000000ff', 'qty_hall', 1))::text),
+    '45013');
 end $t$;

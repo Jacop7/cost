@@ -257,7 +257,10 @@ begin
        -- 몸통 계열: 문지기가 없다. 문은 close_business_day / save_sale / amend 다.
        'close_business_day_row',   -- 0138
        'apply_sale_items',         -- 0145
-       'e10_sale_recorded');       -- 0145 — p_allow_closed 가 열려 있으면 그게 곧 문이다
+       'e10_sale_recorded',        -- 0145 — p_allow_closed 가 열려 있으면 그게 곧 문이다
+       -- 0149 — p_allow_closed => true 면 종료된 장부의 기준을 바꾸고 basis_quality 를
+       --        내릴 수 있다. 판본 검사도 감사 기록도 없이. 문은 정정 RPC 다.
+       'add_to_day_basis');
   perform pg_temp.eq(
     coalesce('인증 사용자가 못 부르는 함수: ' || v_names, '인증 사용자는 전부 부를 수 있다'),
     v_n, 0, 0);
