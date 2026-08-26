@@ -14,6 +14,11 @@
 #     PGDATABASE=fresh_a node packages/db/tests/run.mjs
 #     bash packages/db/scripts/fresh-db.sh --drop fresh_a
 #
+# `--until <14자리>` 로 **그 마이그레이션까지만** 태울 수 있다. 업그레이드 경로를 재는 데 쓴다 —
+# 최종 상태만 보면 `앞 마이그레이션이 만들어 놓은 값을 뒤 마이그레이션이 검사해서 통과`
+# 하는 구멍을 못 잡는다(실제로 0151→0152 가 그랬다).
+#     bash packages/db/scripts/fresh-db.sh --until 20260826000150 fresh_up
+#
 # ⚠ 로컬 supabase 컨테이너가 떠 있어야 한다(SUPABASE_DB_CONTAINER 로 바꿀 수 있다).
 # ════════════════════════════════════════════════════════════════
 set -euo pipefail
@@ -39,7 +44,16 @@ psql_d() { docker exec -i "$CT" psql -U postgres -d "$1" -v ON_ERROR_STOP=1 -q "
 #   그래서 **`fresh_` 로 시작하는 안전한 식별자만** 받는다. 실수로 지울 수 있는 DB 는
 #   이 접두사를 쓰지 않는다.
 DROP_ONLY=0
-if [ "${1:-}" = "--drop" ]; then DROP_ONLY=1; shift; fi
+UNTIL=""
+while true; do
+  case "${1:-}" in
+    --drop)  DROP_ONLY=1; shift ;;
+    --until) UNTIL="${2:-}"; shift 2
+             printf '%s' "$UNTIL" | grep -Eq '^[0-9]{14}$' || {
+               echo "--until 은 14자리 마이그레이션 접두사여야 합니다 (받은 값: '$UNTIL')" >&2; exit 2; } ;;
+    *) break ;;
+  esac
+done
 
 D="${1:-}"
 if [ -z "$D" ]; then
@@ -126,11 +140,14 @@ EOF
 # ── 마이그레이션 ────────────────────────────────────────────────
 shopt -s nullglob
 for f in "$MIG_DIR"/*.sql; do
-  psql_d "$D" < "$f" > /dev/null || { echo "MIGFAIL $(basename "$f")" >&2; exit 1; }
+  b="$(basename "$f")"
+  # `--until` 이 있으면 그 접두사보다 뒤엣것은 안 태운다(이름이 시각 순이라 사전순 비교로 충분).
+  if [ -n "$UNTIL" ] && [ "${b:0:14}" \> "$UNTIL" ]; then break; fi
+  psql_d "$D" < "$f" > /dev/null || { echo "MIGFAIL $b" >&2; exit 1; }
 done
 shopt -u nullglob
 
 # ── 시드 ────────────────────────────────────────────────────────
 psql_d "$D" < "$SEED" > /dev/null || { echo "SEEDFAIL" >&2; exit 1; }
 
-echo "$D 준비 완료"
+echo "$D 준비 완료${UNTIL:+ (${UNTIL} 까지)}"
