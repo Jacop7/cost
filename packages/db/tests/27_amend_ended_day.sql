@@ -815,3 +815,263 @@ begin
              'recipe_id', '00000000-0000-0000-0000-0000000000ff', 'qty_hall', 1))::text),
     '45013');
 end $t$;
+
+
+-- ── ⑰ 남의 매장 메뉴는 우리 장부에 못 들어온다 (0150) ──────────
+/*
+ * 실측으로 잡힌 것: 매장 A 의 과거 장부에 매장 B 의 `남의 메뉴`(판매가 7,777)가
+ * 판매행으로 저장됐다. `add_to_day_basis` 가 `p_recipe` 의 매장을 안 봤고,
+ * 정정 RPC 는 `security definer` 라 RLS 도 지나간다.
+ *
+ * ⚠ `assert_my_store(p_store)` 로는 못 막는다. 그건 "이 사람이 이 매장 사람인가" 지
+ *   "이 메뉴가 이 매장 것인가" 가 아니다.
+ */
+do $t$
+declare
+  v_store uuid := pg_temp.store();
+  v_day   date := pg_temp.ended_day();
+  v_b     uuid;
+  v_other uuid;
+begin
+  -- 매장 B 와 그 매장 메뉴를 만든다.
+  set local role postgres;
+  /*
+   * ⚠ 주인은 **같은 사장님**으로 둔다. 그래야 `assert_my_store(A)` 가 통과하고도
+   *   메뉴만 B 것인, 실제로 위험한 경우가 된다. 남남이면 문지기가 먼저 막아서
+   *   정작 재려던 경계를 안 재게 된다.
+   */
+  insert into stores (owner_id, name)
+       values (pg_temp.owner(), '시험 매장 B')
+    returning id into v_b;
+
+  create temp table _other_recipe on commit drop as
+    select * from recipes where id = pg_temp.rcp('제육볶음');
+  update _other_recipe
+     set id = '00000000-0000-0000-0000-0000000000c9',
+         store_id = v_b, name = '남의 메뉴', price = 7777;
+  insert into recipes select * from _other_recipe;
+  select id into v_other from _other_recipe;
+  set local role authenticated;
+
+  perform pg_temp.ok('전제: 그 메뉴는 우리 매장 것이 아니다',
+    (select store_id from recipes where id = v_other) <> v_store);
+
+  perform pg_temp.raises('남의 매장 메뉴는 안정된 코드로 거절한다',
+    format('select amend_ended_business_day(%L, %L, %s, %L::jsonb)',
+           v_store, v_day, pg_temp.rev(v_day),
+           jsonb_build_array(jsonb_build_object('recipe_id', v_other, 'qty_hall', 1))::text),
+    '45013');
+
+  -- ⚠ 거절만으로는 부족하다. **아무것도 안 남아야** 한다.
+  perform pg_temp.ok('우리 장부 기준에 남의 메뉴가 없다',
+    (select snapshot #> array['recipes', v_other::text] from business_days
+      where store_id = v_store and business_date = v_day) is null);
+  perform pg_temp.eq('우리 판매내역에 남의 메뉴 줄이 없다',
+    (select count(*) from daily_sales ds
+       join daily_sales_items it on it.daily_sales_id = ds.id
+      where ds.store_id = v_store and ds.sale_date = v_day and it.recipe_id = v_other),
+    0, 0);
+end $t$;
+
+
+-- ── ⑱ 팔지도 않고 기준부터 더하지 않는다 (0150) ────────────────
+/*
+ * 실측으로 잡힌 것: 그날 기준에 없는 메뉴를 **0개**로 보내니
+ *   응답 changed=false / basis exact → estimated_current / 메뉴 기준 추가됨
+ *   판매 판본 4→4 / 감사 판본 0→0
+ * 아무도 안 남긴 변경이다. 기준을 더하는 것은 장부를 바꾸는 일이라,
+ * 바꿀 판매가 있을 때만 해야 한다.
+ *
+ * ⑯ 은 양수 판매만 재서 이 경계를 놓쳤다.
+ */
+do $t$
+declare
+  v_store uuid := pg_temp.store();
+  v_day   date := pg_temp.ended_day();
+  v_new   uuid := '00000000-0000-0000-0000-0000000000ca';
+  v_res   jsonb;
+  v_bq0   text;
+  v_aud0  int;
+  v_rev0  int;
+  v_cnt0  int;
+begin
+  -- 그날 스냅샷이 찍힌 뒤에 만든 메뉴 — 그날 기준에 없다.
+  set local role postgres;
+  create temp table _new_recipe on commit drop as
+    select * from recipes where id = pg_temp.rcp('제육볶음');
+  update _new_recipe set id = v_new, name = '나중에 만든 메뉴';
+  insert into recipes select * from _new_recipe;
+  update business_days set basis_quality = 'exact'
+   where store_id = v_store and business_date = v_day;
+  set local role authenticated;
+
+  select basis_quality::text, revision_no into v_bq0, v_aud0
+    from business_days where store_id = v_store and business_date = v_day;
+  v_rev0 := pg_temp.rev(v_day);
+  v_cnt0 := (select count(*) from business_day_revisions r
+               join business_days d on d.id = r.business_day_id
+              where d.store_id = v_store and d.business_date = v_day);
+  perform pg_temp.eq_t('전제: 그날 기준은 아직 그날 것이다', v_bq0, 'exact');
+  perform pg_temp.ok('전제: 그 메뉴 기준이 그날에 없다',
+    (select snapshot #> array['recipes', v_new::text] from business_days
+      where store_id = v_store and business_date = v_day) is null);
+
+  -- ── 0개 : 아무것도 안 판다 ──
+  v_res := amend_ended_business_day(v_store, v_day, v_rev0,
+             jsonb_build_array(jsonb_build_object('recipe_id', v_new, 'qty_hall', 0)));
+
+  perform pg_temp.ok('0개면 바뀐 게 없다고 말한다', (v_res->>'changed')::boolean is false);
+  perform pg_temp.ok('0개면 기준을 안 더한다',
+    (select snapshot #> array['recipes', v_new::text] from business_days
+      where store_id = v_store and business_date = v_day) is null);
+  perform pg_temp.eq_t('0개면 그날 기준 품질도 그대로다',
+    (select basis_quality::text from business_days
+      where store_id = v_store and business_date = v_day), v_bq0);
+  perform pg_temp.eq('0개면 판매 판본도 그대로다', pg_temp.rev(v_day), v_rev0, 0);
+
+  -- ── 1개 : 실제로 판다 ── 반대쪽도 봐야 "안 더한다"가 의미를 가진다.
+  v_res := amend_ended_business_day(v_store, v_day, v_rev0,
+             jsonb_build_array(jsonb_build_object('recipe_id', v_new, 'qty_hall', 1)));
+
+  perform pg_temp.ok('실제로 팔면 기준을 더한다',
+    (select snapshot #> array['recipes', v_new::text] from business_days
+      where store_id = v_store and business_date = v_day) is not null);
+  perform pg_temp.eq_t('그리고 그날 기준 품질이 내려간다',
+    (select basis_quality::text from business_days
+      where store_id = v_store and business_date = v_day), 'estimated_current');
+  perform pg_temp.ok('기준이 내려갔으니 그것만으로도 변경이다',
+    (v_res->>'changed')::boolean);
+
+  -- 감사 기록이 **무엇이 내려갔는지**까지 남긴다.
+  perform pg_temp.eq('정정 기록이 하나 늘었다',
+    (select count(*) from business_day_revisions r
+       join business_days d on d.id = r.business_day_id
+      where d.store_id = v_store and d.business_date = v_day), v_cnt0 + 1, 0);
+  declare v_r business_day_revisions;
+  begin
+    select r.* into v_r from business_day_revisions r
+      join business_days d on d.id = r.business_day_id
+     where d.store_id = v_store and d.business_date = v_day
+     order by r.revision_no desc limit 1;
+    perform pg_temp.eq_t('감사 기록에 내려가기 전 값이 남는다',
+      v_r.before_basis_quality::text, 'exact');
+    perform pg_temp.eq_t('감사 기록에 내려간 뒤 값도 남는다',
+      v_r.after_basis_quality::text, 'estimated_current');
+  end;
+end $t$;
+
+
+-- ── ⑲ 열린 장부의 기타매출 세율은 그날 안에서 안 움직인다 (0150) ─
+/*
+ * 0149 는 **앞으로 만드는** 스냅샷만 고쳤다. 그 시점에 이미 열려 있던 장부는 그대로여서
+ * 같은 영업일 안에서 설정을 바꾸면 세금이 따라 움직였다 —
+ * 실측: 1,000원 → 100원(10%), 세율을 20% 로 바꾼 뒤 2,000원 → 400원.
+ */
+do $t$
+declare
+  v_store uuid := pg_temp.store();
+  v_today date;
+  v_rate  numeric;
+  v_t1    numeric;
+  v_t2    numeric;
+  v_n     int;
+begin
+  v_today := pg_temp.open_today();
+  v_rate  := day_etc_tax_rate(v_store, v_today);
+  perform pg_temp.ok('전제: 열린 장부에 그날 세율이 굳어 있다', v_rate is not null);
+
+  perform save_sale(v_store, v_today, '[]'::jsonb,
+    jsonb_build_array(jsonb_build_object('name','시험 음료','price',1000,'qty',1)));
+  v_t1 := (select etc_tax from daily_sales where store_id = v_store and sale_date = v_today);
+  perform pg_temp.eq('그날 세율로 매긴다', v_t1, round(1000 * v_rate, 2), 0);
+
+  -- 영업 중에 사장님이 세율을 바꾼다.
+  set local role postgres;
+  update settings set tax_items = '[{"name":"시험세","rate":37}]'::jsonb where store_id = v_store;
+  set local role authenticated;
+  perform pg_temp.ok('전제: 현재 세율이 그날 세율과 달라졌다', store_tax_rate(v_store) <> v_rate);
+
+  perform save_sale(v_store, v_today, '[]'::jsonb,
+    jsonb_build_array(jsonb_build_object('name','시험 음료','price',2000,'qty',1)));
+  v_t2 := (select etc_tax from daily_sales where store_id = v_store and sale_date = v_today);
+
+  perform pg_temp.eq('같은 영업일 안에서는 세율이 안 움직인다', v_t2, round(2000 * v_rate, 2), 0);
+  perform pg_temp.eq_t('열린 장부의 세율도 그대로다',
+    day_etc_tax_rate(v_store, v_today)::text, v_rate::text);
+
+  /*
+   * ⚠ 0150 의 채움은 **일회성 마이그레이션**이라 시험이 직접 못 부른다.
+   *   대신 그 결과인 불변식을 잰다 — 열린 장부에 세율 없는 것이 하나도 없어야 한다.
+   */
+  select count(*) into v_n from business_days
+   where status::text <> 'closed'
+     and not (coalesce(snapshot, '{}'::jsonb) ? 'etc_tax_rate');
+  perform pg_temp.eq('세율이 안 굳은 열린 장부가 없다', v_n, 0, 0);
+end $t$;
+
+
+-- ── ⑳ 판매가 그대로여도 기준이 내려갔으면 변경이다 (0150) ──────
+/*
+ * ⑱ 은 `기준이 내려갔으니 변경이다` 를 재는 척했지만 **구별을 못 했다.** 거기서는
+ * 실제로 판매도 늘어서, 기준 조건을 빼도 `changed=true` 가 그대로 나왔다
+ * (사보타주를 걸어 보고 알았다).
+ *
+ * 구별되는 자리는 하나다: **판매 수량은 그대로인데 기준만 더해지는** 경우.
+ * 옛 장부에서 그 메뉴 기준이 유실됐고, 사장님이 같은 수량을 다시 저장하는 상황이다.
+ *   · 판매 상세도 합계도 그대로 → 옛 판정으로는 `changed=false`
+ *   · 그런데 그날 손익을 무엇으로 계산했는지는 바뀌었다 → 남겨야 한다
+ */
+do $t$
+declare
+  v_store uuid := pg_temp.store();
+  v_day   date := pg_temp.ended_day();
+  v_r     uuid := pg_temp.rcp('제육볶음');
+  v_res   jsonb;
+  v_bdet0 jsonb;
+  v_sum0  jsonb;
+  v_cnt0  int;
+begin
+  -- 그 메뉴 판매를 5개로 확정해 둔다.
+  perform amend_ended_business_day(v_store, v_day, pg_temp.rev(v_day),
+            jsonb_build_array(jsonb_build_object('recipe_id', v_r, 'qty_hall', 5)));
+
+  -- 그날 기준에서 그 메뉴만 지운다 — 기준이 유실된 옛 장부 흉내.
+  set local role postgres;
+  update business_days
+     set snapshot = jsonb_set(snapshot, '{recipes}', (snapshot->'recipes') - v_r::text),
+         basis_quality = 'exact'
+   where store_id = v_store and business_date = v_day;
+  set local role authenticated;
+
+  v_bdet0 := day_sales_detail(v_store, v_day);
+  v_sum0  := sales_summary(v_store, v_day, v_day);
+  v_cnt0  := (select count(*) from business_day_revisions r
+                join business_days d on d.id = r.business_day_id
+               where d.store_id = v_store and d.business_date = v_day);
+  perform pg_temp.ok('전제: 그 메뉴 기준이 그날에 없다',
+    (select snapshot #> array['recipes', v_r::text] from business_days
+      where store_id = v_store and business_date = v_day) is null);
+  perform pg_temp.eq_t('전제: 그날 기준은 아직 그날 것이다',
+    (select basis_quality::text from business_days
+      where store_id = v_store and business_date = v_day), 'exact');
+
+  -- **같은 수량**으로 다시 저장한다.
+  v_res := amend_ended_business_day(v_store, v_day, pg_temp.rev(v_day),
+             jsonb_build_array(jsonb_build_object('recipe_id', v_r, 'qty_hall', 5)));
+
+  -- 판매는 정말로 그대로여야 이 시험이 성립한다.
+  perform pg_temp.eq_t('전제: 판매 상세가 그대로다',
+    day_sales_detail(v_store, v_day)::text, v_bdet0::text);
+  perform pg_temp.eq_t('전제: 판매 합계도 그대로다',
+    sales_summary(v_store, v_day, v_day)::text, v_sum0::text);
+
+  perform pg_temp.eq_t('그런데 그날 기준 품질은 내려갔다',
+    (select basis_quality::text from business_days
+      where store_id = v_store and business_date = v_day), 'estimated_current');
+  perform pg_temp.ok('판매가 그대로여도 기준이 내려갔으면 변경이다',
+    (v_res->>'changed')::boolean);
+  perform pg_temp.eq('그러니 정정 기록도 남는다',
+    (select count(*) from business_day_revisions r
+       join business_days d on d.id = r.business_day_id
+      where d.store_id = v_store and d.business_date = v_day), v_cnt0 + 1, 0);
+end $t$;
