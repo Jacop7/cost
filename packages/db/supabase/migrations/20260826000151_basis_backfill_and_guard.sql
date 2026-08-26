@@ -7,9 +7,8 @@
 --   ② 열린 장부 세율 채움이 **기존 기록을 안 봤다.**
 --      배포 전에 기타 매출이 이미 있었다면 그 세금은 그때 세율로 계산돼 있는데,
 --      0150 은 거기에 지금 세율을 굳혔다. 기록과 기준이 어긋난다.
---        기존 기타매출 세금 10% 로 계산 → 설정이 20% 로 바뀜 → 0150 이 20% 를 굳힘
---      (개발 DB 는 열린 장부의 기타 매출이 0원이라 실제 어긋남은 없었다.
---       그래도 배포 대상마다 다르니 규칙으로 닫는다.)
+--      ⚠ 처음엔 여기서 `etc_tax ÷ etc_revenue` 로 되짚었는데 **그건 추측이었다.**
+--        걷어냈다 — 아래 ② 와 0152 를 보라.
 -- ════════════════════════════════════════════════════════════════
 
 -- ── ① 남의 매장 메뉴는 스냅샷에 있어도 안 준다 ──────────────────
@@ -138,48 +137,25 @@ begin
 end $m$;
 
 
--- ── ② 열린 장부 세율은 **기존 기록이 있으면 그 기록을 따른다** ──
+-- ── ② 세율은 되짚지 않는다 — 0152 가 정책을 갖는다 ─────────────
 /*
- * 기타 매출 세금이 이미 있으면 그때 쓴 세율은 되짚을 수 있다 — `etc_tax ÷ etc_revenue`.
- * 지금 세율을 굳히는 것보다 이쪽이 옳다. 기록이 먼저고 설정은 나중이다.
+ * 여기 있던 자동 역산(`etc_tax ÷ etc_revenue`)은 **걷어냈다.**
  *
- * ⚠ **못 설명할 때만** 고친다. 굳어 있는 세율로 기록이 재현되면 그건 이미 맞는 값이다.
- *   0150 이 옳게 채운 장부와 새로 열린 장부를 건드리지 않으려는 조건이다.
- * ⚠ 종료된 장부는 여전히 안 건드린다(0150). 비워 두는 것이 정직하다.
+ * `etc_tax` 는 소수 둘째 자리로 반올림돼 저장된다. 나눗셈으로 나오는 건 그때 세율이
+ * 아니라 "저장된 합계를 재현하는 유효 세율" 이다 — 실제 9.0909% 짜리 1원 기록에서
+ * 9.0000% 가 나오고, 그 뒤 10,000원에서 909.09원 대신 900.00원이 된다.
+ *
+ * ⚠ 더 나쁜 것은 **자기 검사를 통과한다**는 점이다. 0152 가 "굳은 세율로 세금이
+ *   재현되나" 를 보는데, 여기서 방금 역산해 넣은 값이라 언제나 재현된다.
+ *   업그레이드 경로(`0150 → 0151 → 0152`)를 실제로 태워 보고 알았다:
+ *     0151 전 : 굳은 세율 0.0909…  저장 900원  재현 909.09원  mismatch=true
+ *     0151 후 : 굳은 세율 0.09      저장 900원  재현 900.00원  mismatch=false → 통과
+ *   최종 상태만 보는 시험으로는 절대 안 잡힌다.
+ *
+ * 그래서 이 마이그레이션은 **아무것도 추측하지 않는다.** 세율 정책은 0152 한 곳에 있고,
+ * 재현 안 되는 장부가 있으면 거기서 멈춘다.
+ * (`etc_tax_rate_of_record()` 도 여기서 안 만든다 — 0152 가 남아 있으면 지운다.)
  */
-create or replace function public.etc_tax_rate_of_record(p_store uuid, p_date date)
-returns numeric
-language sql
-stable
-as $fn$
-  /*
-   * 그날 기타매출 **기록에서 되짚은** 세율. 설정도 스냅샷도 안 본다 —
-   * 기록이 먼저고 설정은 나중이다. 되짚을 기록이 없으면 null.
-   */
-  select case when coalesce(etc_revenue, 0) > 0 and etc_tax is not null
-              then round(etc_tax / etc_revenue, 12) end
-    from daily_sales
-   where store_id = p_store and sale_date = p_date;
-$fn$;
-
-comment on function public.etc_tax_rate_of_record(uuid, date) is
-  '그날 기타매출 기록에서 되짚은 세율 — etc_tax ÷ etc_revenue(0151). 열린 장부에 세율을 굳힐 때 지금 설정보다 이 값이 먼저다.';
-
-revoke execute on function public.etc_tax_rate_of_record(uuid, date) from public, anon;
-grant  execute on function public.etc_tax_rate_of_record(uuid, date) to authenticated, service_role;
-
-update business_days bd
-   set snapshot = jsonb_set(coalesce(bd.snapshot, '{}'::jsonb), '{etc_tax_rate}',
-                            to_jsonb(etc_tax_rate_of_record(bd.store_id, bd.business_date)), true)
-  from daily_sales ds
- where ds.store_id = bd.store_id
-   and ds.sale_date = bd.business_date
-   and bd.status::text <> 'closed'
-   and etc_tax_rate_of_record(bd.store_id, bd.business_date) is not null
-   -- ⚠ **못 설명할 때만** 고친다. 굳은 세율로 기록이 재현되면 그건 이미 맞는 값이다.
-   and round(ds.etc_revenue
-             * coalesce((bd.snapshot->>'etc_tax_rate')::numeric, -1), 2)
-       is distinct from round(ds.etc_tax, 2);
 
 
 -- ── 사후 확인 ────────────────────────────────────────────────────
@@ -228,18 +204,7 @@ begin
     raise exception '0151: 다른 매장 메뉴가 담긴 영업일 기준이 %건 있습니다 — 손으로 정정한 뒤 다시 올리세요', v_n;
   end if;
 
-  -- 열린 장부의 세율이 그날 기록을 설명해야 한다.
-  select count(*) into v_n
-    from business_days bd
-    join daily_sales ds on ds.store_id = bd.store_id and ds.sale_date = bd.business_date
-   where bd.status::text <> 'closed'
-     and coalesce(ds.etc_revenue, 0) > 0
-     and ds.etc_tax is not null
-     and round(ds.etc_revenue * coalesce((bd.snapshot->>'etc_tax_rate')::numeric, -1), 2)
-         is distinct from round(ds.etc_tax, 2);
-  if v_n > 0 then
-    raise exception '0151: 굳은 세율이 그날 기타매출 세금을 설명하지 못하는 열린 장부가 %건 남았습니다', v_n;
-  end if;
+  -- 세율 검사는 여기 없다. 0152 가 갖는다(위 ② 참고).
 end $v$;
 
 select public.assert_no_rpc_overloads();
