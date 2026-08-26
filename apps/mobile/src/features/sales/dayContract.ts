@@ -1,11 +1,15 @@
 /**
- * `sales_day` 응답이 **약속한 모양인지** 본다. 아니면 던진다.
+ * 서버 응답이 **약속한 모양인지** 본다. 아니면 던진다.
  *
  * ⚠ 없는 값을 기본값으로 메우면 안 된다(0153 검토). 서버 배포가 어긋났을 때
  *   `editable` 이 빠지면 `false` 로 읽혀 **수정 버튼이 조용히 사라지고**,
  *   `basis_quality` 가 빠지면 **배지가 조용히 사라진다.** 둘 다 화면은 멀쩡해 보이는데
  *   사장님이 쓸 수 있어야 할 기능이 없어진 상태다 — 오류로 보이는 편이 낫다.
  *   `QueryState` 가 이 오류를 받아 재시도 버튼과 함께 보여 준다.
+ *
+ * ⚠ **판본이 특히 그렇다.** `revision` 을 `Number(v ?? 0)` 으로 읽으면 서버가 빠뜨렸을 때
+ *   0 이 되고, 화면은 그 0 을 들고 저장하러 갔다가 45009(다른 기기에서 바뀌었어요)를
+ *   맞는다. 사장님 눈에는 아무 이유 없이 저장이 막히는 것으로 보인다.
  *
  * ⚠ **필드를 따로따로 보면 부족하다.** 넷이 서로를 설명하는 값이라, 하나씩만 보면
  *   말이 안 되는 응답이 통과한다 — 예컨대
@@ -14,9 +18,9 @@
  *   뜻이다. 그런 응답을 받으면 화면은 배지를 안 그리고 `수정` 버튼을 띄운다.
  *   그래서 `parseSalesDayContract()` 가 넷을 **한 번에** 읽고 관계까지 본다.
  *
- * ⚠ 이 파일은 **앱 의존이 없다.** `node --experimental-strip-types` 로 그대로 돌려
- *   좋은 응답·나쁜 응답을 실제로 넣어 볼 수 있어야 한다 — 시험이 복사본을 재면
- *   본체가 바뀌어도 초록으로 남는다. 곁의 `dayContract.check.ts` 가 그 시험이고
+ * ⚠ 이 파일은 **앱 의존이 없다.** 그래야 시험이 화면을 띄우지 않고 이 함수만 돌려
+ *   좋은 응답·나쁜 응답을 실제로 넣어 볼 수 있다 — 시험이 복사본을 재면 본체가 바뀌어도
+ *   초록으로 남는다. 시험은 `tests/salesDayContract.test.ts` 이고
  *   `pnpm --filter @sikjae/mobile test` 로 돈다.
  */
 export const CONTRACT_HINT = '앱과 서버 버전이 맞지 않아요. 잠시 뒤 다시 시도해 주세요.';
@@ -37,10 +41,25 @@ export type SalesDayBasisQuality = 'exact' | 'estimated_current';
 export type SalesDayStatus = 'open' | 'break' | 'closed';
 
 export interface SalesDayContract {
+  /** 다음 저장에 되보낼 판본(0117). 없으면 계약 위반이다 — 0 으로 메우지 않는다. */
+  revision: number;
   basisQuality: SalesDayBasisQuality | null;
   hasLedger: boolean;
   dayStatus: SalesDayStatus | null;
   editable: boolean;
+}
+
+/** 정정 RPC(`amend_ended_business_day`)의 응답 중 **판단에 쓰는** 값들. */
+export interface AmendResultContract {
+  /** 정말로 달라졌나. 같은 값을 다시 보내면 false 다(0148). */
+  changed: boolean;
+  /** 장부가 없어서 만들었나. */
+  created: boolean;
+  /** **다음 저장에 되보낼 판본.** 아래 `auditRevisionNo` 와 다른 값이다(0147). */
+  revision: number;
+  /** 이 장부를 몇 번 정정했나(감사용). */
+  auditRevisionNo: number;
+  basisQuality: SalesDayBasisQuality | null;
 }
 
 const BASIS_QUALITIES: readonly SalesDayBasisQuality[] = ['exact', 'estimated_current'];
@@ -49,8 +68,23 @@ const DAY_STATUSES: readonly SalesDayStatus[] = ['open', 'break', 'closed'];
 const bad = (detail: string): Error => new Error(`${CONTRACT_HINT} (${detail})`);
 
 function needBool(r: Record<string, unknown>, key: string): boolean {
-  if (typeof r[key] !== 'boolean') throw bad(`sales_day.${key}`);
+  if (typeof r[key] !== 'boolean') throw bad(`${key}`);
   return r[key] as boolean;
+}
+
+/**
+ * 정수여야 하는 값.
+ *
+ * ⚠ 숫자 문자열도 받는다 — PostgREST 가 큰 정수를 문자열로 실어 보내는 경우가 있어서다.
+ *   대신 **없거나 숫자가 아니면 던진다.** `Number(v ?? 0)` 은 없을 때 0 을 만들고,
+ *   그 0 이 판본으로 나가면 저장이 45009 로 막힌다.
+ */
+function needInt(r: Record<string, unknown>, key: string): number {
+  const v = r[key];
+  if (v === null || v === undefined) throw bad(`${key}`);
+  const n = typeof v === 'number' ? v : typeof v === 'string' && v.trim() !== '' ? Number(v) : NaN;
+  if (!Number.isFinite(n) || !Number.isInteger(n)) throw bad(`${key}=${String(v)}`);
+  return n;
 }
 
 /**
@@ -63,17 +97,17 @@ function needBool(r: Record<string, unknown>, key: string): boolean {
 function needEnum<V extends string>(
   r: Record<string, unknown>, key: string, allowed: readonly V[],
 ): V | null {
-  if (!(key in r)) throw bad(`sales_day.${key}`);
+  if (!(key in r)) throw bad(`${key}`);
   const v = r[key];
   if (v === null || v === undefined) return null;
   if (typeof v !== 'string' || !allowed.includes(v as V)) {
-    throw bad(`sales_day.${key}=${String(v)}`);
+    throw bad(`${key}=${String(v)}`);
   }
   return v as V;
 }
 
 /**
- * 네 필드를 **한 번에** 읽고 서로 맞는지까지 본다.
+ * `sales_day` 의 판단용 값들을 **한 번에** 읽고 서로 맞는지까지 본다.
  *
  * 관계 규칙 —
  *   · 장부가 있으면 기준 품질과 상태가 **반드시 있다**
@@ -82,6 +116,7 @@ function needEnum<V extends string>(
  *  장부가 살아 있는 오늘도 고칠 수 있는 기간 안이다.)
  */
 export function parseSalesDayContract(r: Record<string, unknown>): SalesDayContract {
+  const revision = needInt(r, 'revision');
   const hasLedger = needBool(r, 'has_ledger');
   const editable = needBool(r, 'editable');
   const basisQuality = needEnum(r, 'basis_quality', BASIS_QUALITIES);
@@ -95,5 +130,22 @@ export function parseSalesDayContract(r: Record<string, unknown>): SalesDayContr
     if (dayStatus !== null) throw bad(`장부가 없는데 day_status=${dayStatus} 다`);
   }
 
-  return { basisQuality, hasLedger, dayStatus, editable };
+  return { revision, basisQuality, hasLedger, dayStatus, editable };
+}
+
+/**
+ * 정정 RPC 응답.
+ *
+ * ⚠ `revision` 과 `audit_revision_no` 는 **다른 값**이다(0147). 화면이 다음 저장에
+ *   되보낼 것은 앞엣것이고, 뒤엣것은 정정 횟수다. 둘 다 없으면 던진다 —
+ *   특히 `revision` 이 0 으로 메워지면 다음 저장이 곧바로 45009 로 막힌다.
+ */
+export function parseAmendResultContract(r: Record<string, unknown>): AmendResultContract {
+  return {
+    changed: needBool(r, 'changed'),
+    created: needBool(r, 'created'),
+    revision: needInt(r, 'revision'),
+    auditRevisionNo: needInt(r, 'audit_revision_no'),
+    basisQuality: needEnum(r, 'basis_quality', BASIS_QUALITIES),
+  };
 }

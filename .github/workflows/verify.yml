@@ -17,6 +17,15 @@ on:
 jobs:
   verify:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      # ⚠ **하한과 실제 개발 버전 둘 다** 돈다.
+      #   20 만 돌면 24 에서만 나는 문제를, 24 만 돌면 하한을 깨는 의존성을 못 잡는다.
+      #   실제로 두 번 다 겪었다 — `--experimental-strip-types`(24 전용)와
+      #   `jsdom@30`(`^22.22.2 || ^24.15.0 || >=26` 요구)이 하한을 깼다.
+      matrix:
+        node: [20, 24]
+    name: verify (node ${{ matrix.node }})
     steps:
       - uses: actions/checkout@v4
 
@@ -24,11 +33,9 @@ jobs:
         with:
           version: 9.12.0
 
-      # ⚠ 루트가 선언한 하한(engines.node >=20)으로 돈다. 24 로만 도는 것을 쓰면
-      #   여기서 깨져야 한다 — 실제로 `--experimental-strip-types` 가 그랬다.
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: ${{ matrix.node }}
           cache: pnpm
 
       - run: pnpm install --frozen-lockfile

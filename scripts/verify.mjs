@@ -155,7 +155,19 @@ for (const r of results) {
   const mark = r.skipped ? '건너뜀' : r.ok ? 'ok    ' : 'FAIL  ';
   console.log(`  ${mark} ${r.name}${r.skipped ? '' : `  (${r.secs}s)`}`);
 }
+/*
+ * ⚠ 건너뛴 것이 있으면 **`전체 검증 통과` 라고 하지 않는다.** 한동안 "전체 통과가
+ *   아닙니다" 라고 적어 놓고 바로 다음 줄에 "전체 검증 통과" 를 찍었다 — 스스로
+ *   모순된 말이고, 훑어보는 사람은 뒤엣것만 읽는다.
+ */
 const skipped = results.filter((r) => r.skipped).map((r) => r.name);
-if (skipped.length) console.log(`\n⚠ 건너뛴 것: ${skipped.join(' · ')} — 전체 통과가 아닙니다.`);
-console.log(failed === 0 ? '\n전체 검증 통과' : `\n검증 실패 ${failed}건`);
+const ran = results.length - skipped.length;
+if (skipped.length) console.log(`\n⚠ 건너뛴 것: ${skipped.join(' · ')}`);
+console.log(
+  failed > 0
+    ? `\n검증 실패 ${failed}건`
+    : skipped.length
+      ? `\n선택 범위 검증 통과 (${ran}/${results.length}단계) — 전체 통과가 아니다`
+      : '\n전체 검증 통과',
+);
 process.exit(failed === 0 ? 0 : 1);

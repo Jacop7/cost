@@ -11,31 +11,31 @@
  *   새 의존성도, 별도 러너도 필요 없다.
  */
 import { describe, expect, it } from 'vitest';
-import { parseSalesDayContract } from '../src/features/sales/dayContract';
+import { parseAmendResultContract, parseSalesDayContract } from '../src/features/sales/dayContract';
 
 /** 0153 이 실제로 주는 모양들. */
-const OPEN_DAY = { basis_quality: 'exact', has_ledger: true, day_status: 'open', editable: true };
-const CLOSED_DAY = { basis_quality: 'estimated_current', has_ledger: true, day_status: 'closed', editable: true };
-const NO_LEDGER = { basis_quality: null, has_ledger: false, day_status: null, editable: true };
-const TOO_OLD = { basis_quality: null, has_ledger: false, day_status: null, editable: false };
+const OPEN_DAY = { revision: 3, basis_quality: 'exact', has_ledger: true, day_status: 'open', editable: true };
+const CLOSED_DAY = { revision: 7, basis_quality: 'estimated_current', has_ledger: true, day_status: 'closed', editable: true };
+const NO_LEDGER = { revision: 0, basis_quality: null, has_ledger: false, day_status: null, editable: true };
+const TOO_OLD = { revision: 0, basis_quality: null, has_ledger: false, day_status: null, editable: false };
 
 describe('정상 응답', () => {
   it('영업 중인 날', () => {
     expect(parseSalesDayContract(OPEN_DAY)).toEqual({
-      basisQuality: 'exact', hasLedger: true, dayStatus: 'open', editable: true,
+      revision: 3, basisQuality: 'exact', hasLedger: true, dayStatus: 'open', editable: true,
     });
   });
 
   it('종료된 날 · 현재 기준으로 계산됨', () => {
     expect(parseSalesDayContract(CLOSED_DAY)).toEqual({
-      basisQuality: 'estimated_current', hasLedger: true, dayStatus: 'closed', editable: true,
+      revision: 7, basisQuality: 'estimated_current', hasLedger: true, dayStatus: 'closed', editable: true,
     });
   });
 
   /** ⚠ null 은 정상 답이다. "장부가 없다" 는 뜻이지 계약 위반이 아니다. */
   it('기록 없는 날 — 기준 품질과 상태가 null 이어도 정상', () => {
     expect(parseSalesDayContract(NO_LEDGER)).toEqual({
-      basisQuality: null, hasLedger: false, dayStatus: null, editable: true,
+      revision: 0, basisQuality: null, hasLedger: false, dayStatus: null, editable: true,
     });
   });
 
@@ -47,13 +47,13 @@ describe('정상 응답', () => {
 
 describe('필드가 빠지거나 타입이 어긋나면 던진다', () => {
   it.each([
-    ['editable 이 빠졌다', { basis_quality: null, has_ledger: false, day_status: null }],
-    ['has_ledger 가 빠졌다', { basis_quality: null, day_status: null, editable: true }],
-    ['basis_quality 키가 없다', { has_ledger: false, day_status: null, editable: true }],
-    ['day_status 키가 없다', { basis_quality: null, has_ledger: false, editable: true }],
-    ['editable 이 문자열이다', { basis_quality: null, has_ledger: false, day_status: null, editable: 'true' }],
-    ['모르는 기준 품질', { basis_quality: 'guessed', has_ledger: true, day_status: 'open', editable: true }],
-    ['모르는 장부 상태', { basis_quality: 'exact', has_ledger: true, day_status: 'reopened', editable: true }],
+    ['editable 이 빠졌다', { revision: 1, basis_quality: null, has_ledger: false, day_status: null }],
+    ['has_ledger 가 빠졌다', { revision: 1, basis_quality: null, day_status: null, editable: true }],
+    ['basis_quality 키가 없다', { revision: 1, has_ledger: false, day_status: null, editable: true }],
+    ['day_status 키가 없다', { revision: 1, basis_quality: null, has_ledger: false, editable: true }],
+    ['editable 이 문자열이다', { revision: 1, basis_quality: null, has_ledger: false, day_status: null, editable: 'true' }],
+    ['모르는 기준 품질', { revision: 1, basis_quality: 'guessed', has_ledger: true, day_status: 'open', editable: true }],
+    ['모르는 장부 상태', { revision: 1, basis_quality: 'exact', has_ledger: true, day_status: 'reopened', editable: true }],
   ])('%s', (_label, payload) => {
     expect(() => parseSalesDayContract(payload)).toThrow();
   });
@@ -66,7 +66,7 @@ describe('필드가 빠지거나 타입이 어긋나면 던진다', () => {
    */
   it('day_status=none 은 이 응답의 값이 아니다', () => {
     expect(() => parseSalesDayContract(
-      { basis_quality: 'exact', has_ledger: true, day_status: 'none', editable: true },
+      { revision: 1, basis_quality: 'exact', has_ledger: true, day_status: 'none', editable: true },
     )).toThrow();
   });
 });
@@ -79,12 +79,71 @@ describe('필드가 빠지거나 타입이 어긋나면 던진다', () => {
  */
 describe('서로 모순된 조합도 던진다', () => {
   it.each([
-    ['장부가 있는데 기준 품질이 null', { basis_quality: null, has_ledger: true, day_status: 'open', editable: true }],
-    ['장부가 있는데 상태가 null', { basis_quality: 'exact', has_ledger: true, day_status: null, editable: true }],
-    ['장부가 있는데 둘 다 null', { basis_quality: null, has_ledger: true, day_status: null, editable: true }],
-    ['장부가 없는데 기준 품질이 있다', { basis_quality: 'exact', has_ledger: false, day_status: null, editable: true }],
-    ['장부가 없는데 상태가 있다', { basis_quality: null, has_ledger: false, day_status: 'closed', editable: true }],
+    ['장부가 있는데 기준 품질이 null', { revision: 1, basis_quality: null, has_ledger: true, day_status: 'open', editable: true }],
+    ['장부가 있는데 상태가 null', { revision: 1, basis_quality: 'exact', has_ledger: true, day_status: null, editable: true }],
+    ['장부가 있는데 둘 다 null', { revision: 1, basis_quality: null, has_ledger: true, day_status: null, editable: true }],
+    ['장부가 없는데 기준 품질이 있다', { revision: 1, basis_quality: 'exact', has_ledger: false, day_status: null, editable: true }],
+    ['장부가 없는데 상태가 있다', { revision: 1, basis_quality: null, has_ledger: false, day_status: 'closed', editable: true }],
   ])('%s', (_label, payload) => {
     expect(() => parseSalesDayContract(payload)).toThrow();
+  });
+});
+
+
+/**
+ * 판본은 **0 으로 메우면 안 된다.**
+ *
+ * `Number(v ?? 0)` 으로 읽으면 서버가 빠뜨렸을 때 0 이 되고, 화면은 그 0 을 들고
+ * 저장하러 갔다가 45009(다른 기기에서 바뀌었어요)를 맞는다. 사장님 눈에는 아무 이유 없이
+ * 저장이 막히는 것으로 보인다 — 오류로 보이는 편이 낫다.
+ */
+describe('판본', () => {
+  const base = { basis_quality: null, has_ledger: false, day_status: null, editable: true };
+
+  it.each([
+    ['revision 이 빠졌다', base],
+    ['revision 이 null 이다', { ...base, revision: null }],
+    ['revision 이 숫자가 아니다', { ...base, revision: 'abc' }],
+    ['revision 이 정수가 아니다', { ...base, revision: 1.5 }],
+  ])('%s → 던진다', (_label, payload) => {
+    expect(() => parseSalesDayContract(payload)).toThrow();
+  });
+
+  /** PostgREST 가 큰 정수를 문자열로 실어 보내는 경우가 있어 숫자 문자열은 받는다. */
+  it('숫자 문자열은 받는다', () => {
+    expect(parseSalesDayContract({ ...base, revision: '12' }).revision).toBe(12);
+  });
+});
+
+describe('정정 응답 계약', () => {
+  const OK = {
+    changed: true, created: false, revision: 9, audit_revision_no: 2, basis_quality: 'estimated_current',
+  };
+
+  it('정상 응답', () => {
+    expect(parseAmendResultContract(OK)).toEqual({
+      changed: true, created: false, revision: 9, auditRevisionNo: 2, basisQuality: 'estimated_current',
+    });
+  });
+
+  /*
+   * 두 판본은 **다른 값**이다(0147). 화면이 다음 저장에 되보낼 것은 `revision` 이고
+   * `audit_revision_no` 는 정정 횟수다. 섞으면 다음 저장이 곧바로 45009 를 맞는다.
+   */
+  it('두 판본을 각자 읽는다', () => {
+    const r = parseAmendResultContract(OK);
+    expect(r.revision).toBe(9);
+    expect(r.auditRevisionNo).toBe(2);
+  });
+
+  it.each([
+    ['changed 가 빠졌다', { created: false, revision: 9, audit_revision_no: 2, basis_quality: 'exact' }],
+    ['created 가 빠졌다', { changed: true, revision: 9, audit_revision_no: 2, basis_quality: 'exact' }],
+    ['revision 이 빠졌다', { changed: true, created: false, audit_revision_no: 2, basis_quality: 'exact' }],
+    ['audit_revision_no 가 빠졌다', { changed: true, created: false, revision: 9, basis_quality: 'exact' }],
+    ['basis_quality 키가 없다', { changed: true, created: false, revision: 9, audit_revision_no: 2 }],
+    ['모르는 기준 품질', { changed: true, created: false, revision: 9, audit_revision_no: 2, basis_quality: 'guessed' }],
+  ])('%s → 던진다', (_label, payload) => {
+    expect(() => parseAmendResultContract(payload)).toThrow();
   });
 });
