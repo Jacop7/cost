@@ -131,7 +131,7 @@ begin
    * 영업 시작 — 기한 지난 옛 날을 **같은 트랜잭션에서** auto 로 닫고 오늘을 연다.
    * 예전엔 close → open RPC 두 번이라 사이에 다른 기기가 끼어들 수 있었다.
    */
-  v_open := open_business_day(v_store);
+  v_open := transition_business_state(v_store, 'open');
   perform pg_temp.ok('새로 열었다', (v_open->>'already_open')::boolean is false);
   perform pg_temp.eq_t('닫은 옛 날짜를 알려 준다', v_open->>'closed_stale_date', '2020-01-15');
   perform pg_temp.eq_t('옛 장부는 auto 로 닫혔다',

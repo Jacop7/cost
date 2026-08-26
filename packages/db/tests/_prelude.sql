@@ -126,7 +126,7 @@ begin
 
   -- 없으면 연다.
   begin
-    perform open_business_day(pg_temp.store(), v_day);
+    perform transition_business_state(pg_temp.store(), 'open');   -- v_day = 판매 영업일이라 동치(0160)
   exception when sqlstate '22000' or sqlstate '23505' then null;
   end;
 
@@ -141,8 +141,8 @@ begin
                   where store_id = pg_temp.store() and business_date = v_day
                     and status::text <> 'closed') then
     begin
-      perform close_business_day(pg_temp.store());
-      perform open_business_day(pg_temp.store(), v_day);
+      perform transition_business_state(pg_temp.store(), 'end');
+      perform transition_business_state(pg_temp.store(), 'open');   -- v_day = 판매 영업일이라 동치(0160)
     exception when sqlstate '22000' or sqlstate '23505' or sqlstate '45002' then null;
     end;
     -- 그래도 안 열렸으면 되열기를 한 번 더 시도한다(오늘이 이미 종료된 경우).
@@ -232,7 +232,7 @@ begin
   end if;
 
   begin
-    perform close_business_day(pg_temp.store());
+    perform transition_business_state(pg_temp.store(), 'end');
   exception
     -- 22000 = 영업 중이 아니에요 / 45002 = 이미 종료된 영업일이에요. 둘 다 원하는 상태다.
     when sqlstate '22000' or sqlstate '45002' then null;
