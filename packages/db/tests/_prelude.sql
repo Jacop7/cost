@@ -123,10 +123,7 @@ begin
   -- 닫혀 있으면 되연다.
   if (select status::text from business_days
        where store_id = pg_temp.store() and business_date = v_day) = 'closed' then
-    begin
-      perform reopen_business_day(pg_temp.store(), v_day);
-    exception when sqlstate '22000' or sqlstate 'P0002' then null;
-    end;
+    perform pg_temp.force_open(v_day);   -- 소유자로 직접 되돌린다(0141)
   end if;
 
   -- 다른 날이 열려 있어 오늘을 못 열었으면 그 날을 닫고 오늘을 연다.
@@ -141,10 +138,7 @@ begin
     -- 그래도 안 열렸으면 되열기를 한 번 더 시도한다(오늘이 이미 종료된 경우).
     if (select status::text from business_days
          where store_id = pg_temp.store() and business_date = v_day) = 'closed' then
-      begin
-        perform reopen_business_day(pg_temp.store(), v_day);
-      exception when sqlstate '22000' or sqlstate 'P0002' then null;
-      end;
+      perform pg_temp.force_open(v_day);   -- 소유자로 직접 되돌린다(0141)
     end if;
   end if;
 
@@ -263,4 +257,24 @@ begin
   v_res := close_due_business_days();
   set local role authenticated;
   return v_res;
+end $h$;
+
+
+/*
+ * 그 날짜 장부를 **강제로 열린 상태로** 되돌린다. 시험 준비용이다.
+ *
+ * ⚠ 예전엔 `reopen_business_day()` 를 썼는데, 그건 운영 RPC 였고 인증 사용자에게
+ *   열려 있었다 — 화면에 버튼만 없을 뿐 종료된 장부를 누구나 다시 열 수 있었다.
+ *   기획서 §6.4 는 "종료된 장부를 다시 열지 않는다" 다. 그래서 그 함수를 지웠고(0141),
+ *   시험은 **소유자로 직접** 고친다. 시험이 할 수 있는 일과 앱 사용자가 할 수 있는
+ *   일은 다르다 — 그 차이를 없애려고 운영 함수를 남기면 안 된다.
+ */
+create function pg_temp.force_open(p_day date) returns void
+language plpgsql as $h$
+begin
+  set local role postgres;
+  update business_days
+     set status = 'open', closed_at = null, close_method = null
+   where store_id = pg_temp.store() and business_date = p_day;
+  set local role authenticated;
 end $h$;

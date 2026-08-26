@@ -40,7 +40,6 @@ export type Database = {
       }
       business_days: {
         Row: {
-          auto_close_ack: boolean
           business_date: string
           close_method:
             | Database["public"]["Enums"]["business_close_method"]
@@ -58,7 +57,6 @@ export type Database = {
           store_id: string
         }
         Insert: {
-          auto_close_ack?: boolean
           business_date: string
           close_method?:
             | Database["public"]["Enums"]["business_close_method"]
@@ -76,7 +74,6 @@ export type Database = {
           store_id: string
         }
         Update: {
-          auto_close_ack?: boolean
           business_date?: string
           close_method?:
             | Database["public"]["Enums"]["business_close_method"]
@@ -1476,12 +1473,6 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      ack_auto_close: {
-        Args: {
-          p_business_day: string
-        }
-        Returns: undefined
-      }
       add_to_day_basis: {
         Args: {
           p_store: string
@@ -1557,7 +1548,6 @@ export type Database = {
           p_date: string
         }
         Returns: {
-          auto_close_ack: boolean
           business_date: string
           close_method:
             | Database["public"]["Enums"]["business_close_method"]
@@ -1644,7 +1634,6 @@ export type Database = {
           p_store: string
         }
         Returns: {
-          auto_close_ack: boolean
           business_date: string
           close_method:
             | Database["public"]["Enums"]["business_close_method"]
@@ -2240,13 +2229,6 @@ export type Database = {
         }
         Returns: undefined
       }
-      reopen_business_day: {
-        Args: {
-          p_store: string
-          p_date: string
-        }
-        Returns: Json
-      }
       reorder_categories: {
         Args: {
           p_store: string
@@ -2544,12 +2526,6 @@ export type Database = {
           p_store: string
         }
         Returns: string
-      }
-      unacked_auto_close: {
-        Args: {
-          p_store: string
-        }
-        Returns: Json
       }
       vendor_name: {
         Args: {

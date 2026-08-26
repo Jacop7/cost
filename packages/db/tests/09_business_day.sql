@@ -112,7 +112,7 @@ begin
     (select close_method::text from business_days where id = v_id), 'auto');
 
   -- 아래 수동 종료 시험을 위해 되열어 둔다.
-  perform reopen_business_day(pg_temp.store(), v_day);
+  perform pg_temp.force_open(v_day);   -- 소유자로 직접(0141)
   update business_days set planned_close_at = now() + interval '5 hours' where id = v_id;
 
   -- ── 종료: 시각·방식·집계가 남는다 ───────────────────────────
@@ -132,33 +132,37 @@ begin
     format('select open_business_day(%L, %L)', pg_temp.store(), v_day), '23505');
 
   -- ── 다시 열어 고칠 수 있다 ──────────────────────────────────
-  perform pg_temp.eq_t('종료 되돌리기', reopen_business_day(pg_temp.store(), v_day)->>'status', 'open');
+  /*
+   * ⚠ `종료 되돌리기` 시험은 지웠다(0141). 기획서 §6.4 는 "종료된 장부를 다시 열지
+   *   않는다" 이고 `reopen_business_day` 를 삭제했다. 없는 기능을 시험이 붙들고 있으면
+   *   다음 사람이 되살린다. 과거 수정은 정정 RPC 가 할 일이다.
+   */
+  perform pg_temp.force_open(v_day);
   perform pg_temp.ok('되돌려도 스냅샷은 그대로',
     (select snapshot->'recipes' from business_days where id = v_id) = v_snap->'recipes');
 
-  -- ── 자동 종료 기록과 확인 ───────────────────────────────────
-  -- ⚠ 사람은 `auto` 를 고를 수 없다(0139). 자동 종료는 스윕만 만든다.
+  /*
+   * ── 자동 종료가 기록으로 남는다 ─────────────────────────────
+   *
+   * ⚠ `확인 배너`(unacked/ack) 시험은 통째로 지웠다(0141). 기획서 §5-4 가
+   *   "예정 종료는 **정상 동작이므로 매일 확인 배너를 띄우지 않는다**" 로 정했고,
+   *   §6.1 도 상태 카드에 종료 원인 문장을 두지 말라고 했다.
+   *   그래서 `ack_auto_close`·`unacked_auto_close`·`auto_close_ack` 을 서버에서 지웠다.
+   *   없는 기능을 시험이 붙들고 있으면 다음 사람이 되살린다.
+   *
+   *   남는 계약은 하나다 — **자동으로 닫혔다는 사실이 기록에 남는다.**
+   *   직접 종료와 자동 종료는 `close_method` 로만 구분한다(§6.1).
+   */
   update business_days set planned_close_at = now() - interval '3 hours'
    where store_id = pg_temp.store() and status::text <> 'closed';
   perform pg_temp.as_owner_sweep();
-  declare u jsonb := unacked_auto_close(pg_temp.store());
-  begin
-    perform pg_temp.ok('자동 종료가 다음 실행 때 알려진다', u is not null);
-    perform pg_temp.eq_t('알림이 그 날짜를 가리킨다', u->>'business_date', v_day::text);
-    perform ack_auto_close((u->>'business_day_id')::uuid);
-    -- ⚠ '알림이 하나도 없다'가 아니라 **이 영업일이 다시 안 뜬다**를 본다.
-    --   다른 날 자동 종료가 확인 안 된 채 남아 있을 수 있다(08-22 가 그랬다).
-    perform pg_temp.ok('확인하면 다시 안 알린다',
-      coalesce(unacked_auto_close(pg_temp.store())->>'business_day_id', '') <> (u->>'business_day_id'));
-  end;
 
-  -- 수동 종료는 알리지 않는다 — 사장님이 직접 눌렀으니 이미 안다.
-  -- ⚠ '알림이 없다'로 보면 안 된다. 확인 안 한 **다른 날** 자동 종료가 남아 있을 수
-  --   있어서(08-22 가 그랬다) 이 파일이 날짜에 따라 빨개진다.
-  --   불변식은 '알림이 없다'가 아니라 **뜨는 게 있다면 그건 자동 종료다** 이다.
-  perform pg_temp.ok('수동 종료는 알림 대상이 아니다',
-    coalesce((select close_method::text from business_days
-               where id = (unacked_auto_close(pg_temp.store())->>'business_day_id')::uuid), 'auto') = 'auto');
+  perform pg_temp.eq_t('자동으로 닫혔다고 남는다',
+    (select close_method::text from business_days where id = v_id), 'auto');
+  perform pg_temp.eq_t('상태도 종료',
+    (select status::text from business_days where id = v_id), 'closed');
+  perform pg_temp.ok('종료 시각이 남는다',
+    (select closed_at from business_days where id = v_id) is not null);
 end $t$;
 
 -- ════════════════════════════════════════════════════════════════
@@ -177,7 +181,7 @@ declare
 begin
   -- ⚠ 앞 블록이 영업일을 닫아 뒀다. 판매를 받으려면 다시 열어야 한다 —
   --   그 자체가 "종료된 날은 못 판다"는 계약의 확인이기도 하다.
-  perform reopen_business_day(pg_temp.store(), v_day);
+  perform pg_temp.force_open(v_day);   -- 소유자로 직접(0141)
   perform e10_sale_recorded(pg_temp.store(), v_day, v_rcp, 10, 0, 0, 0);
   b0 := day_menu_detail(pg_temp.store(), v_day, v_rcp);
 
@@ -304,15 +308,13 @@ begin
   st := business_day_state(pg_temp.store());
   perform pg_temp.eq_t('종료하면 closed', st->>'status', 'closed');
   perform pg_temp.eq_t('종료 방식이 보인다', st->>'close_method', 'auto');
-  perform pg_temp.ok('미확인 자동 종료를 알린다', (st->'unacked') is not null);
-  declare v_acked uuid := (st#>>'{unacked,business_day_id}')::uuid;
-  begin
-    perform ack_auto_close(v_acked);
-    -- ⚠ '알림이 사라진다'가 아니라 **이 영업일이 다시 안 뜬다**를 본다.
-    --   확인 안 한 다른 날 자동 종료가 남아 있을 수 있다(08-22 가 그랬다).
-    perform pg_temp.ok('확인하면 사라진다',
-      coalesce((business_day_state(pg_temp.store())#>>'{unacked,business_day_id}'), '') <> v_acked::text);
-  end;
+  /*
+   * ⚠ `unacked` 확인 배너 시험은 지웠다(0141) — 기획서 §5-4 가 배너를 없앴고
+   *   서버에서도 그 키·함수·컬럼을 전부 걷어냈다.
+   *   대신 **응답이 그 키를 안 준다**는 것을 못 박는다. 앱 타입에서도 지웠으므로
+   *   서버가 다시 주기 시작하면 둘이 갈린다.
+   */
+  perform pg_temp.ok('상태 응답에 unacked 가 없다', not (st ? 'unacked'));
 end $t$;
 
 
