@@ -18,18 +18,14 @@ import { useStoreId } from '@/lib/SessionProvider';
 /** 'none' = 오늘 아직 시작 전 · 'closed' = 오늘 이미 끝냄. 화면이 다른 것을 그린다. */
 export type BusinessDayStatus = 'none' | 'open' | 'break' | 'closed';
 
-export interface AutoCloseNotice {
-  businessDayId: string;
-  /**
-   * 지금 판매 화면이 대상으로 삼는 **장부 날짜**.
-   * 영업 중이면 열린 장부의 날짜이고, 영업 전·종료 후에는 서버가 정한 대상 날짜다.
-   * ⚠ 새벽 영업 중이면 전날일 수 있다. 앱이 자정으로 날짜를 넘기면 그 판매가 샌다.
-   */
-  businessDate: string;
-  closedAt: string | null;
-  plannedCloseAt: string | null;
-  lastActivityAt: string | null;
-}
+/*
+ * ⚠ 여기 있던 `AutoCloseNotice` 와 `BusinessDayState.unacked` 를 지웠다(0141).
+ *   자동 종료 확인 배너는 기획에서 삭제됐다 — §5-4 "예정 종료는 정상 동작이므로
+ *   매일 확인 배너를 띄우지 않는다". 서버의 `unacked` 키·`ack_auto_close`·
+ *   `unacked_auto_close`·`auto_close_ack` 컬럼도 같이 걷어냈다.
+ *   직접 종료와 자동 종료는 `closeMethod` 로만 구분한다(§6.1).
+ */
+
 
 export interface BusinessDayState {
   /**
@@ -52,15 +48,17 @@ export interface BusinessDayState {
   closedAt: string | null;
   closeMethod: 'manual' | 'auto' | null;
   lastActivityAt: string | null;
-  /** 마지막 활동 뒤로 미뤄진 **실제** 자동 종료 시각. 예정 시각과 다를 수 있다. */
+  /**
+   * 자동 마감 **기한** — `예정 종료 + 유예`(0139).
+   * ⚠ 마지막 활동을 안 따라간다. 예전엔 `마지막 활동 + 1시간` 이라 판매를 넣을수록
+   *   밀렸고, 그러면 화면의 예고와 서버가 실제로 닫는 시각이 갈렸다(기획서 §2.5).
+   */
   autoCloseAt: string | null;
   /** 예정 종료를 지났다 → "영업을 종료할까요?" */
   pastPlanned: boolean;
   /** 자동 종료 10분 전 → "10분 후 자동 종료돼요" */
   warnSoon: boolean;
   due: boolean;
-  /** 아직 확인 안 한 자동 종료. 다음 앱 실행 때 알린다. */
-  unacked: AutoCloseNotice | null;
   /**
    * 열려 있는 영업일이 **오늘이 아니다**(businessDate ≠ today).
    * 이때 오늘 매출은 서버가 45001 로 막는다 — 바가 '영업 중'만 말하면 안 된다.
@@ -81,7 +79,6 @@ const str = (v: unknown): string | null => (v === null || v === undefined ? null
 function parse(raw: unknown): BusinessDayState {
   const r = (raw ?? {}) as Record<string, unknown>;
   const h = (r.hours ?? {}) as Record<string, unknown>;
-  const u = r.unacked as Record<string, unknown> | null;
   return {
     today: reqDate(r.today, 'today'),
     /*
@@ -109,15 +106,6 @@ function parse(raw: unknown): BusinessDayState {
     staleDay:
       (r.status === 'open' || r.status === 'break') &&
       String(r.business_date ?? '') !== String(r.today ?? ''),
-    unacked: u
-      ? {
-          businessDayId: String(u.business_day_id),
-          businessDate: String(u.business_date),
-          closedAt: str(u.closed_at),
-          plannedCloseAt: str(u.planned_close_at),
-          lastActivityAt: str(u.last_activity_at),
-        }
-      : null,
     hours: {
       openTime: str(h.open_time),
       closeTime: str(h.close_time),
@@ -265,7 +253,7 @@ export function useCloseStaleAndOpen() {
 export const isNotOpenError = (e: unknown): boolean =>
   e instanceof Error && e.message.includes('아직 영업을 시작하지 않았어요');
 
-/** 서버가 "종료된 영업일"로 막았는가(45002). 되돌리기를 권한다. */
+/** 서버가 "종료된 영업일"로 막았는가(45002). 되돌릴 길은 없다 — 사실만 알린다. */
 /*
  * ⚠ 서버 문구와 **짝을 맞춰야** 한다(0140). 서버가 `영업이 종료되어 판매를 저장할 수
  *   없어요` 로 바뀌었고, 여기만 옛 문구를 보면 화면이 오류를 못 알아본다.

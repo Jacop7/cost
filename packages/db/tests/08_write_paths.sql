@@ -140,7 +140,7 @@ begin
   --   실제 사장님도 영업 중에 새 메뉴를 만들면 다음 영업일부터 판다.
   --   테스트는 영업일을 닫았다 다시 열어 새 기준을 잡는다.
   perform close_business_day(pg_temp.store());
-  perform reopen_business_day(pg_temp.store(), v_day);
+  perform pg_temp.force_open(v_day);   -- 소유자로 직접(0141)
   -- ⚠ 날짜를 넘긴다(0124). 스냅샷의 고정지출률은 **그 영업일이 속한 달**이어야 한다.
   update business_days set snapshot = build_day_snapshot(pg_temp.store(), v_day)
    where store_id = pg_temp.store() and business_date = v_day;
