@@ -1509,12 +1509,6 @@ export type Database = {
         }
         Returns: boolean
       }
-      auto_close_due: {
-        Args: {
-          p_store: string
-        }
-        Returns: Json
-      }
       auto_close_grace: {
         Args: Record<PropertyKey, never>
         Returns: unknown
