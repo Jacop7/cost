@@ -498,8 +498,12 @@ begin
        * 것과 같은 길이다 — 장부를 다시 열지 않고 정정 RPC 로 들어간다.
        * 그날 스냅샷은 이미 있으므로 `basis_quality` 는 `exact` 그대로다.
        */
-      perform amend_ended_business_day(v_store, v_day, v_sale_items, v_sale_etc, v_sale_extra,
-                                       '시드: 그날 판매 기록');
+      -- ⚠ 판본은 필수다(0146). 이 시점 판본을 읽어 넘긴다 — 시드는 혼자 도니 0 이다.
+      perform amend_ended_business_day(
+        v_store, v_day,
+        coalesce((select revision from daily_sales
+                   where store_id = v_store and sale_date = v_day), 0),
+        v_sale_items, v_sale_etc, v_sale_extra, '시드: 그날 판매 기록');
     end if;
 
   end loop;

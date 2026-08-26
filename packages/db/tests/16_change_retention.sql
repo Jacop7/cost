@@ -338,7 +338,7 @@ begin
    where n.nspname = 'public' and p.prokind = 'f' and p.prosecdef;
 
   v_want := concat_ws(' | ',
-    'amend_ended_business_day(p_store uuid, p_date date, p_items jsonb, p_etc_items jsonb, p_extra_items jsonb, p_reason text, p_base_revision integer)',
+    'amend_ended_business_day(p_store uuid, p_date date, p_base_revision integer, p_items jsonb, p_etc_items jsonb, p_extra_items jsonb, p_reason text)',
     'close_business_day(p_store uuid)',
     'close_due_business_days()',
     'my_store_ids()',
