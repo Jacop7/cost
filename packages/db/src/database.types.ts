@@ -178,6 +178,58 @@ export type Database = {
           },
         ]
       }
+      business_state_transitions: {
+        Row: {
+          at: string
+          business_day_id: string
+          by_user: string | null
+          from_status: Database["public"]["Enums"]["business_day_status"] | null
+          id: string
+          method: string
+          store_id: string
+          to_status: Database["public"]["Enums"]["business_day_status"]
+        }
+        Insert: {
+          at?: string
+          business_day_id: string
+          by_user?: string | null
+          from_status?:
+            | Database["public"]["Enums"]["business_day_status"]
+            | null
+          id?: string
+          method: string
+          store_id: string
+          to_status: Database["public"]["Enums"]["business_day_status"]
+        }
+        Update: {
+          at?: string
+          business_day_id?: string
+          by_user?: string | null
+          from_status?:
+            | Database["public"]["Enums"]["business_day_status"]
+            | null
+          id?: string
+          method?: string
+          store_id?: string
+          to_status?: Database["public"]["Enums"]["business_day_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_state_transitions_business_day_id_fkey"
+            columns: ["business_day_id"]
+            isOneToOne: false
+            referencedRelation: "business_days"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_state_transitions_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       categories: {
         Row: {
           created_at: string
@@ -1565,6 +1617,10 @@ export type Database = {
         }
         Returns: Json
       }
+      apply_due_breaks: {
+        Args: Record<PropertyKey, never>
+        Returns: Json
+      }
       apply_sale_items: {
         Args: {
           p_store: string
@@ -2329,6 +2385,15 @@ export type Database = {
         }
         Returns: string
       }
+      record_state_transition: {
+        Args: {
+          p_day: unknown
+          p_from: Database["public"]["Enums"]["business_day_status"]
+          p_to: Database["public"]["Enums"]["business_day_status"]
+          p_method: string
+        }
+        Returns: undefined
+      }
       refresh_order_candidate: {
         Args: {
           p_ingredient: string
@@ -2555,10 +2620,11 @@ export type Database = {
         }
         Returns: string
       }
-      set_break: {
+      set_break_row: {
         Args: {
-          p_store: string
+          p_day_id: string
           p_on: boolean
+          p_method: string
         }
         Returns: Json
       }
@@ -2661,6 +2727,13 @@ export type Database = {
           p_store: string
         }
         Returns: string
+      }
+      transition_business_state: {
+        Args: {
+          p_store: string
+          p_action: string
+        }
+        Returns: Json
       }
       vendor_name: {
         Args: {

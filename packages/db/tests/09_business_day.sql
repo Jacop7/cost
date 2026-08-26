@@ -62,13 +62,14 @@ begin
   perform pg_temp.eq('영업일 행은 하나뿐',
     (select count(*) from business_days where store_id = pg_temp.store() and business_date = v_day), 1, 0);
 
-  -- ── 브레이크: 상태만 바뀐다 ─────────────────────────────────
-  perform pg_temp.eq_t('브레이크 전환', set_break(pg_temp.store(), true)->>'status', 'break');
+  -- ── 브레이크: 상태만 바뀐다 (0157 부터 전이 한 문으로) ─────────
+  perform pg_temp.eq_t('브레이크 전환',
+    transition_business_state(pg_temp.store(), 'start_break')->>'status', 'break');
   perform pg_temp.eq_t('브레이크 중에도 같은 영업일',
     (select id::text from business_days where store_id = pg_temp.store() and status = 'break'), v_id::text);
   perform pg_temp.ok('브레이크가 스냅샷을 바꾸지 않는다',
     (select snapshot from business_days where id = v_id) = v_snap);
-  perform pg_temp.eq_t('영업 재개', set_break(pg_temp.store(), false)->>'status', 'open');
+  perform pg_temp.eq_t('영업 재개', transition_business_state(pg_temp.store(), 'resume')->>'status', 'open');
 
   /*
    * ── 자동 종료 예고: **활동을 안 따라간다**(0139) ────────────
@@ -125,7 +126,7 @@ begin
 
   -- ── 종료 뒤에는 영업 조작이 막힌다 ──────────────────────────
   perform pg_temp.raises('종료 후 브레이크 거부',
-    format('select set_break(%L, true)', pg_temp.store()), '22000');
+    format('select transition_business_state(%L, %L)', pg_temp.store(), 'start_break'), '22000');
   perform pg_temp.raises('같은 날 재시작 거부',
     format('select open_business_day(%L, %L)', pg_temp.store(), v_day), '23505');
 
@@ -271,10 +272,10 @@ begin
     to_char((select close_time from settings where store_id = pg_temp.store()), 'HH24:MI'));
 
   -- ── 브레이크 ────────────────────────────────────────────────
-  perform set_break(pg_temp.store(), true);
+  perform transition_business_state(pg_temp.store(), 'start_break');
   perform pg_temp.eq_t('브레이크가 상태에 보인다',
     business_day_state(pg_temp.store())->>'status', 'break');
-  perform set_break(pg_temp.store(), false);
+  perform transition_business_state(pg_temp.store(), 'resume');
 
   /*
    * ── 예정 종료를 지나도 상태는 그대로다 ─────────────────────
