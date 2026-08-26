@@ -263,7 +263,11 @@ begin
        'add_to_day_basis',
        'apply_due_breaks',         -- 0157 — 매장을 안 가린다. 크론(service_role)만.
        'set_break_row',            -- 0157 — 매장 검사 없는 몸통. 문은 전이 RPC 다.
-       'record_state_transition'); -- 0157 — 감사 기록 도우미. 함수 안에서만 돈다.
+       'record_state_transition',  -- 0157 — 감사 기록 도우미. 함수 안에서만 돈다.
+       -- 0160 — 날짜 인자가 있어 앱에 열면 과거 장부를 open 으로 만들 수 있다(§6.4 우회).
+       --        앱 문은 transition_business_state · save_sale(p_open_day)뿐이다.
+       'open_business_day',
+       'close_business_day');      -- 0160 — 같은 이유. 문은 전이 RPC 다.
   perform pg_temp.eq(
     coalesce('인증 사용자가 못 부르는 함수: ' || v_names, '인증 사용자는 전부 부를 수 있다'),
     v_n, 0, 0);
@@ -281,9 +285,10 @@ begin
   perform pg_temp.ok('마감 몸통은 인증 사용자도 못 부른다',
     not has_function_privilege('authenticated',
       'public.close_business_day_row(uuid,business_close_method)', 'execute'));
+  -- 0160 부터 사람의 문은 전이 RPC 다 — close_business_day 도 내부 몸통이 됐다.
   perform pg_temp.ok('그래도 정상 문은 열려 있다',
-    has_function_privilege('authenticated',
-      'public.close_business_day(uuid)', 'execute'));
+    has_function_privilege('authenticated', 'public.transition_business_state(uuid, text)', 'execute')
+    and not has_function_privilege('authenticated', 'public.close_business_day(uuid)', 'execute'));
 
   /*
    * ⚠ 앞의 두 줄은 **지금 있는** 함수만 본다. 정작 위험한 건 다음에 만들어질 함수다 —
@@ -326,6 +331,7 @@ end $t$;
  *                                크론(service_role)만 부른다(0137).
  *   close_business_day           첫 줄이 assert_my_store 다. definer 인 이유는 권한을
  *                                걷어낸 몸통(`close_business_day_row`)을 부르기 위해서다(0138).
+ *                                0160 부터 앱 롤에는 안 열린 내부 몸통이다.
  *   save_sale                    같은 이유다(0145) — 몸통 `apply_sale_items` 를 부른다.
  *   amend_ended_business_day     같은 이유다(0145). 첫 줄이 assert_my_store.
  *   open_business_day            같은 이유다(0154) — 기한 지난 옛 날을 닫을 때 매장

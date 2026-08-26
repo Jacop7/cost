@@ -395,7 +395,7 @@ begin
     'id', v_rcp, 'name', '제육볶음', 'price', 13500, 'base_servings', 10));
 
   -- ── ② 영업 시작 — 이 시점 값으로 굳는다 ────────────────────
-  perform open_business_day(pg_temp.store());
+  perform transition_business_state(pg_temp.store(), 'open');
   perform pg_temp.ok('새 메뉴가 오늘 기준에 담겼다',
     (day_snapshot(pg_temp.store(), v_day) #> array['recipes', v_a::text]) is not null);
   perform pg_temp.eq('영업 전에 고친 판매가가 오늘 기준이다',
@@ -446,7 +446,7 @@ begin
     '45001');
 
   -- 시작하고 그대로 이어서 저장 — 두 번 누르게 하지 않는다.
-  perform open_business_day(pg_temp.store());
+  perform transition_business_state(pg_temp.store(), 'open');
   perform pg_temp.eq('시작 직후 그 메뉴가 바로 팔린다',
     (pg_temp.e10(pg_temp.store(), v_day, v_new, 2, 0, 0, 0)->>'unit_price')::numeric,
     6500, 0);
@@ -473,7 +473,7 @@ begin
   update business_days set business_date = v_day - 405
    where store_id = pg_temp.store() and business_date = v_day;
   update recipes set active = false where id = v_off;
-  perform open_business_day(pg_temp.store());
+  perform transition_business_state(pg_temp.store(), 'open');
   perform pg_temp.ok('꺼 둔 메뉴는 오늘 기준에 없다',
     (day_snapshot(pg_temp.store(), v_day) #> array['recipes', v_off::text]) is null);
 
@@ -520,7 +520,7 @@ begin
    *      0062 의 불변식은 문이 달라졌다고 풀리지 않는다.
    *      (없던 메뉴를 더하면 estimated_current 로 내려간다 — 27번 ⑯ 이 잰다.)
    */
-  perform close_business_day(pg_temp.store());
+  perform transition_business_state(pg_temp.store(), 'end');
   set local role postgres;
   perform pg_temp.raises('종료된 날에는 판매 경로로 더하지 않는다',
     format('select add_to_day_basis(%L, %L, %L)', pg_temp.store(), v_day, pg_temp.rcp('계란말이')),

@@ -316,7 +316,7 @@ begin
     '45001');
   -- 그리고 정상 경로는 그대로 열려 있어야 한다. 막기만 하면 그건 고장이다.
   perform pg_temp.eq_t('영업 시작은 여전히 된다',
-    open_business_day(v_store, v_today)->>'status', 'open');
+    transition_business_state(v_store, 'open')->>'status', 'open');
 
   -- ⑤ 판본이 어긋나면 거절한다(신규 RPC 라 선택값 없이 굳혔다).
   perform pg_temp.close_today();

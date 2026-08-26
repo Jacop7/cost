@@ -24,7 +24,7 @@ begin
    *   열려 있으면 아래 호출은 '이미 열려 있음' 경로를 타고 그 행을 돌려준다(불변식 8).
    */
   perform pg_temp.open_today();
-  v_open := open_business_day(pg_temp.store());
+  v_open := transition_business_state(pg_temp.store(), 'open');
   v_id := (v_open->>'business_day_id')::uuid;
   perform pg_temp.ok('영업 시작 → id 반환', v_id is not null);
   /*
@@ -58,7 +58,7 @@ begin
 
   -- ── 두 번 눌러도 새로 만들지 않는다 (불변식 8) ──────────────
   perform pg_temp.ok('재시작은 같은 영업일을 돌려준다',
-    (open_business_day(pg_temp.store())->>'already_open')::boolean is true);
+    (transition_business_state(pg_temp.store(), 'open')->>'already_open')::boolean is true);
   perform pg_temp.eq('영업일 행은 하나뿐',
     (select count(*) from business_days where store_id = pg_temp.store() and business_date = v_day), 1, 0);
 
@@ -115,7 +115,7 @@ begin
   update business_days set planned_close_at = now() + interval '5 hours' where id = v_id;
 
   -- ── 종료: 시각·방식·집계가 남는다 ───────────────────────────
-  v_close := close_business_day(pg_temp.store());
+  v_close := transition_business_state(pg_temp.store(), 'end');
   perform pg_temp.eq_t('종료 방식이 수동', v_close->>'close_method', 'manual');
   perform pg_temp.ok('실제 종료 시각이 남는다', (v_close->>'closed_at') is not null);
   perform pg_temp.ok('그날 집계가 함께 남는다', (v_close->'summary') is not null);
@@ -127,8 +127,9 @@ begin
   -- ── 종료 뒤에는 영업 조작이 막힌다 ──────────────────────────
   perform pg_temp.raises('종료 후 브레이크 거부',
     format('select transition_business_state(%L, %L)', pg_temp.store(), 'start_break'), '22000');
+  -- 앱 문(전이)에는 날짜 인자가 없다(0160) — 오늘 = 판매 영업일이라 같은 검사다.
   perform pg_temp.raises('같은 날 재시작 거부',
-    format('select open_business_day(%L, %L)', pg_temp.store(), v_day), '23505');
+    format('select transition_business_state(%L, %L)', pg_temp.store(), 'open'), '23505');
 
   -- ── 다시 열어 고칠 수 있다 ──────────────────────────────────
   /*
@@ -249,7 +250,7 @@ begin
   -- ⚠ 지우지 않고 날짜를 옮긴다. 매출·입출고·발주가 이 행을 참조하고 있어
   --   삭제는 외래키에 막히고, 참조를 끊으려면 원장을 건드려야 한다(원장은 고칠 대상이 아니다).
   --   전부 이 트랜잭션 안이라 롤백된다.
-  perform close_business_day(pg_temp.store());
+  perform transition_business_state(pg_temp.store(), 'end');
   update business_days set business_date = v_day - 400
    where store_id = pg_temp.store() and business_date = v_day;
 
@@ -263,7 +264,7 @@ begin
     and not (st ? 'warn_soon') and not (st ? 'due'));
 
   -- ── 영업 중 ─────────────────────────────────────────────────
-  perform open_business_day(pg_temp.store());
+  perform transition_business_state(pg_temp.store(), 'open');
   st := business_day_state(pg_temp.store());
   perform pg_temp.eq_t('시작하면 open', st->>'status', 'open');
   perform pg_temp.ok('영업일 id 를 준다', (st->>'business_day_id') is not null);

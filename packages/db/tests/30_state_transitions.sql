@@ -152,3 +152,23 @@ begin
   perform pg_temp.ok('읽기는 된다 — 내 매장 것',
     (select count(*) from business_state_transitions) >= 0);
 end $t$;
+
+
+-- ── ④ 과거 직접 열기 우회는 막혔다 (0160, 검토 P1-2) ────────────
+/*
+ * 실측된 우회: 인증 사용자가 open_business_day(store, '2020-01-01') 로 과거 날짜를
+ * open 으로 만들 수 있었다 — 과거는 정정 RPC 만 쓰라는 규칙(§6.4)의 구멍.
+ * 앱 문(전이·판매 저장)은 날짜를 못 받아 오늘만 연다.
+ */
+do $t$
+begin
+  perform pg_temp.raises('과거 날짜 직접 열기는 권한부터 없다',
+    format('select open_business_day(%L, %L)', pg_temp.store(), '2020-01-01'), '42501');
+  perform pg_temp.raises('오늘도 몸통 직접 호출은 막혔다',
+    format('select open_business_day(%L)', pg_temp.store()), '42501');
+  perform pg_temp.raises('종료 몸통도 막혔다',
+    format('select close_business_day(%L)', pg_temp.store()), '42501');
+  -- 앱 문은 살아 있다 — 문을 좁히다 문 자체를 잠그면 장사를 못 연다.
+  perform pg_temp.ok('전이 문은 열려 있다',
+    has_function_privilege('authenticated', 'public.transition_business_state(uuid, text)', 'execute'));
+end $t$;

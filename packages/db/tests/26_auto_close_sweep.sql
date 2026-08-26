@@ -242,7 +242,7 @@ begin
   perform pg_temp.set_close(now() - interval '3 hours');
 
   -- 사장님이 먼저 닫는다.
-  perform close_business_day(pg_temp.store());
+  perform transition_business_state(pg_temp.store(), 'end');
 
   -- 스윕이 뒤늦게 돈다 — 닫을 게 없다. 실패도 아니다.
   v_res := pg_temp.sweep();
