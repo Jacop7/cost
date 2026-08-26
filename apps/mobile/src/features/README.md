@@ -75,6 +75,7 @@
 | `sales` | SALES-12 | 부자재 상세 | `sales/extra` (`SalesExtraScreen`) | ✅ |
 | `sales` | SALES-13 | 고정 지출 상세 | `sales/fixed` (`SalesFixedScreen`) | ✅ |
 | `sales` | SALES-14 | 추가 지출 | `sales/expense` (`SalesExpenseScreen`) | ✅ |
+| `sales` | SALES-21 | 과거 판매 내역 수정·추가 (§6.4 · 다시 열지 않고 정정) | `sales/past` (`SalesPastEditScreen`) | ✅ |
 | `my` | MY-04 | 단위 설정 (단위 시스템·조리컵/스푼·묶음 단위·**단가 표기 자릿수**) | `my/units` (`MyUnitsScreen`) | ✅ |
 | `my` | MY-08 | 언어·통화 설정 (로케일 → 통화·구분자·소수점·금액 자릿수) | `my/language` (`MyLanguageScreen`) | ✅ |
 | `my` | MY-09 | 영업시간 (시작·종료·브레이크 · 영업일 경계) | `my/hours` (`MyHoursScreen`) | ✅ |
@@ -97,7 +98,7 @@
 | `ingredients/hooks` | `ingredient_list` · `ingredient_detail` · `stock_history` | ING-01/03/07 |
 | `recipes/hooks` | `recipe_list` · `recipe_detail` · `recipe_pick_list` | RCP-01/02/03 |
 | `orders/hooks` | `order_board` | ORD-01 |
-| `sales/hooks` | `sales_day` · `sales_range` · `sales_material_usage` · `sales_extra_usage` · `sales_fixed_breakdown` | SALES 전부 |
+| `sales/hooks` | `sales_day` · `sales_range` · `sales_material_usage` · `sales_extra_usage` · `sales_fixed_breakdown` · `amend_ended_business_day` | SALES 전부 |
 | `my/hooks` | `settings_lists` · `get_settings` · `sales_channel_fixed` | MY 전부 |
 
 저장은 하나의 함수 = 하나의 트랜잭션이다: `save_ingredient` · `save_recipe` · `save_purchase_option`

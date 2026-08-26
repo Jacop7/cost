@@ -10,6 +10,10 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { invalidate, invalidateOn, qk } from '@/lib/queryClient';
 import { supabase, rpcError } from '@/lib/supabase';
 import { useStoreId } from '@/lib/SessionProvider';
+import type { BusinessDayStatus } from './businessDay';
+
+/** `day_status` 를 그대로 믿지 않고 아는 값만 받는다. */
+const DAY_STATUSES: BusinessDayStatus[] = ['none', 'open', 'break', 'closed'];
 
 const num = (v: unknown): number => Number(v ?? 0);
 const numOrNull = (v: unknown): number | null => (v === null || v === undefined ? null : Number(v));
@@ -68,6 +72,9 @@ export interface EtcItem {
 }
 export interface ExtraItem { name: string; amount: number; memo?: string }
 
+/** 그날 손익을 무엇을 기준으로 계산했나(0144·0149). 장부가 없으면 null. */
+export type BasisQuality = 'exact' | 'estimated_current';
+
 export interface SalesDay {
   saleDate: string;
   /**
@@ -82,6 +89,19 @@ export interface SalesDay {
   etcRevenue: number;
   dailyExtra: number;
   summary: SalesSummary;
+  /**
+   * 그날 원가·손익의 계산 기준(0153). `estimated_current` 면 화면이
+   * `원가·손익은 현재 기준으로 계산했어요` 를 보여 준다.
+   * ⚠ 매출과 판매 수량은 사장님이 적은 **실제 기록**이다. `전체가 추정` 처럼 말하면 안 된다.
+   * ⚠ 장부가 없으면 null 이다 — 없는 것과 정확한 것은 다르다. `exact` 로 채우지 않는다.
+   */
+  basisQuality: BasisQuality | null;
+  /** 그날 영업일 장부가 있나. 없으면 §6.4 의 `판매 내역 추가` 자리다. */
+  hasLedger: boolean;
+  /** 장부 상태. `closed` 면 정정 RPC 로, 그 밖이면 오늘 판매 화면으로 간다. */
+  dayStatus: BusinessDayStatus | null;
+  /** 고칠 수 있는 기간인가(지난달 1일~오늘). **서버가 정한다** — 앱이 두 벌 갖지 않는다. */
+  editable: boolean;
 }
 
 export function parseSummary(v: unknown): SalesSummary {
@@ -130,8 +150,17 @@ export function useSalesDay(date: string) {
       const { data, error } = await supabase.rpc('sales_day', { p_store: storeId, p_date: date });
       if (error) throw new Error(error.message);
       const r = (data ?? null) as unknown as Record<string, unknown> | null;
+      /*
+       * ⚠ 0153 부터 서버는 기록 없는 날도 한 줄로 답한다. 이 갈래는 그전 서버를 만났을
+       *   때의 대비다 — `editable: false` 로 둬서 **모르면 못 고치게** 한다.
+       *   반대로 두면 낡은 서버에서 정정 화면이 열리고 저장이 45010 으로 튕긴다.
+       */
       if (!r) {
-        return { saleDate: date, revision: 0, items: [], etcItems: [], extraItems: [], etcRevenue: 0, dailyExtra: 0, summary: EMPTY_SUMMARY(date) };
+        return {
+          saleDate: date, revision: 0, items: [], etcItems: [], extraItems: [],
+          etcRevenue: 0, dailyExtra: 0, summary: EMPTY_SUMMARY(date),
+          basisQuality: null, hasLedger: false, dayStatus: null, editable: false,
+        };
       }
       return {
         saleDate: String(r.sale_date ?? date),
@@ -159,6 +188,12 @@ export function useSalesDay(date: string) {
           qty: num(it.qty),
         })),
         summary: parseSummary(r.summary),
+        basisQuality: r.basis_quality === 'exact' || r.basis_quality === 'estimated_current'
+          ? (r.basis_quality as BasisQuality) : null,
+        hasLedger: Boolean(r.has_ledger),
+        dayStatus: DAY_STATUSES.includes(r.day_status as BusinessDayStatus)
+          ? (r.day_status as BusinessDayStatus) : null,
+        editable: Boolean(r.editable),
       };
     },
   });
@@ -455,6 +490,103 @@ export function useSaveSale() {
   });
 }
 
+
+// ── 과거 정정 (§6.4) ──────────────────────────────────────────
+
+export interface AmendPastSaleInput {
+  date: string;
+  /**
+   * 화면이 마지막으로 본 판본. `useSaveSale` 과 같은 이유로 **필수다**(0146).
+   * ⚠ 이 값은 `sales_day.revision` 이다. 응답의 `auditRevisionNo`(정정 횟수)와 다른 값이니
+   *   섞으면 다음 저장이 곧바로 45009 로 튕긴다 — 실제로 그랬다(0147).
+   */
+  baseRevision: number;
+  /** 안 보낸 메뉴는 그대로 둔다. 지울 때는 0 을 명시해 보낸다(0117). */
+  items: SaleItemInput[];
+  /** 생략하면 그날 값을 그대로 둔다. 빈 배열을 보내면 전부 지운다. */
+  etcItems?: EtcItem[];
+  extraItems?: ExtraItem[];
+  reason?: string;
+}
+
+export interface AmendPastSaleResult {
+  /** 정말로 달라졌나. 같은 값을 다시 보내면 false 이고 아무 자국도 안 남는다(0148). */
+  changed: boolean;
+  /** 장부가 없어서 만들었나. 만들었으면 기준은 현재값이다. */
+  created: boolean;
+  /** **다음 저장에 되보낼 판본.** 안 바뀌었으면 그대로다. */
+  revision: number;
+  /** 이 장부를 몇 번 정정했나(감사용). 위 판본과 다른 값이다. */
+  auditRevisionNo: number;
+  basisQuality: BasisQuality | null;
+  shortages: Shortage[];
+}
+
+/**
+ * 종료된 과거 영업일을 **다시 열지 않고** 고친다(기획서 §6.4).
+ *
+ * ⚠ 오늘·영업 중인 날은 이 문이 아니다 — 서버가 45011 로 돌려보낸다. 그건 오류가 아니라
+ *   "판매 화면에서 저장하세요" 라는 뜻이므로 화면이 그렇게 안내한다.
+ */
+export function useAmendPastSale() {
+  const qc = useQueryClient();
+  const storeId = useStoreId();
+  return useMutation({
+    mutationFn: async (input: AmendPastSaleInput): Promise<AmendPastSaleResult> => {
+      const { data, error } = await supabase.rpc('amend_ended_business_day', {
+        p_store: storeId,
+        p_date: input.date,
+        p_base_revision: input.baseRevision,
+        p_items: input.items.map((i) => ({
+          recipe_id: i.recipeId,
+          qty_hall: i.qtyHall,
+          qty_delivery: i.qtyDelivery,
+          qty_takeout: i.qtyTakeout,
+          qty_waste: i.qtyWaste ?? 0,
+        })),
+        p_etc_items: input.etcItems
+          ? input.etcItems.map((e) => ({ name: e.name, price: e.price, qty: e.qty, channel: e.channel ?? null }))
+          : undefined,
+        p_extra_items: input.extraItems
+          ? input.extraItems.map((e) => ({ name: e.name, amount: e.amount, memo: e.memo ?? '' }))
+          : undefined,
+        p_reason: input.reason ?? undefined,
+      });
+      // ⚠ 코드를 살려 던진다(0145). 화면이 문구가 아니라 SQLSTATE 로 가른다.
+      if (error) throw rpcError(error);
+
+      const r = (data ?? {}) as unknown as Record<string, unknown>;
+      // 부족분은 오류가 아니다 — 이미 팔린 것이다. `save_sale` 과 같은 모양으로 모은다.
+      const out: Shortage[] = [];
+      for (const res of ((r.items ?? []) as Record<string, unknown>[])) {
+        const consume = (res?.consume ?? {}) as Record<string, unknown>;
+        for (const sh of (consume.shortages ?? []) as Record<string, unknown>[]) {
+          out.push({
+            ingredientId: String(sh.ingredient_id),
+            name: String(sh.name),
+            needed: num(sh.needed),
+            available: num(sh.available),
+            shortage: num(sh.shortage),
+          });
+        }
+      }
+      const bq = r.basis_quality;
+      return {
+        changed: Boolean(r.changed),
+        created: Boolean(r.created),
+        revision: num(r.revision),
+        auditRevisionNo: num(r.audit_revision_no),
+        basisQuality: bq === 'exact' || bq === 'estimated_current' ? (bq as BasisQuality) : null,
+        shortages: out,
+      };
+    },
+    /*
+     * 과거를 고치면 그날뿐 아니라 **그날이 든 모든 기간 집계**가 달라진다.
+     * `qk.sales` 를 통째로 버린다 — 어느 기간 카드가 그 날을 품고 있는지 셀 수 없다.
+     */
+    onSuccess: (_r, input) => invalidate(qc, [...invalidateOn.e10(), qk.salesDay(input.date)]),
+  });
+}
 // ── 지출 내역 되짚기 (SALES-13/15/17) ─────────────────────────
 // 합계만 보여주면 사장님은 확인할 방법이 없다. 내역은 이미 원장에 있으므로 되읽어 온다.
 
