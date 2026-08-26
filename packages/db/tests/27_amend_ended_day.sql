@@ -1075,3 +1075,167 @@ begin
        join business_days d on d.id = r.business_day_id
       where d.store_id = v_store and d.business_date = v_day), v_cnt0 + 1, 0);
 end $t$;
+
+
+-- ── ㉑ 남의 매장 메뉴는 기준에 이미 있어도 안 준다 (0151) ───────
+/*
+ * 0150 은 **더하는 길**만 막았다. 스냅샷에 이미 섞여 들어간 기준은 `이미 있으면
+ * 그대로 둔다` 로 그냥 통과했다. 지금 DB 는 0건이지만, 막는 자리가 뒤에 있으면
+ * 뒤늦게 발견됐을 때는 이미 퍼진 뒤다.
+ *
+ * ⚠ 함께 지켜야 할 구별: **지운 메뉴**는 막지 않는다. 그날 기준에 남아 있으면
+ *   과거 판매를 계속 고칠 수 있어야 한다. 끊는 것은 다른 매장 것으로 **존재하는**
+ *   경우뿐이다. 아래 두 블록이 그 둘을 각각 잰다.
+ */
+do $t$
+declare
+  v_store uuid := pg_temp.store();
+  v_day   date := pg_temp.ended_day();
+  v_other uuid := '00000000-0000-0000-0000-0000000000c9';   -- ⑰ 이 만든 매장 B 메뉴
+begin
+  perform pg_temp.ok('전제: 그 메뉴는 아직 다른 매장 것이다',
+    (select store_id from recipes where id = v_other) <> v_store);
+
+  -- 오염된 장부를 손으로 만든다 — 0150 이전에 들어왔을 수 있는 모습.
+  set local role postgres;
+  update business_days
+     set snapshot = jsonb_set(snapshot, array['recipes', v_other::text],
+                              recipe_snapshot_entry(v_other), true)
+   where store_id = v_store and business_date = v_day;
+  set local role authenticated;
+  perform pg_temp.ok('전제: 우리 장부 기준에 남의 메뉴가 섞여 있다',
+    (select snapshot #> array['recipes', v_other::text] from business_days
+      where store_id = v_store and business_date = v_day) is not null);
+
+  perform pg_temp.raises('기준에 이미 있어도 남의 매장 메뉴는 거절한다',
+    format('select amend_ended_business_day(%L, %L, %s, %L::jsonb)',
+           v_store, v_day, pg_temp.rev(v_day),
+           jsonb_build_array(jsonb_build_object('recipe_id', v_other, 'qty_hall', 2))::text),
+    '45013');
+  perform pg_temp.eq('그래도 판매행은 안 생긴다',
+    (select count(*) from daily_sales ds
+       join daily_sales_items it on it.daily_sales_id = ds.id
+      where ds.store_id = v_store and ds.sale_date = v_day and it.recipe_id = v_other),
+    0, 0);
+
+  /*
+   * ⚠ 판매 경로가 먼저 막아도 **기준 함수 자체**도 막아야 한다. 문이 하나뿐이면
+   *   나중에 다른 부르는 쪽이 생겼을 때 그대로 새어 나간다.
+   *   위 정정 호출만으로는 이 겹을 못 잰다 — 판매 경로에서 이미 끊겨서 여기까지 안 온다
+   *   (사보타주를 걸어 보고 알았다). 그래서 소유자로 **직접** 불러 본다.
+   */
+  set local role postgres;
+  perform pg_temp.raises('기준 함수도 남의 매장 메뉴를 직접 거절한다',
+    format('select add_to_day_basis(%L, %L, %L, true)', v_store, v_day, v_other), '45013');
+  set local role authenticated;
+
+  -- 치워 둔다. 다음 블록이 깨끗한 장부에서 재야 한다.
+  set local role postgres;
+  update business_days
+     set snapshot = jsonb_set(snapshot, '{recipes}', (snapshot->'recipes') - v_other::text)
+   where store_id = v_store and business_date = v_day;
+  set local role authenticated;
+end $t$;
+
+
+-- ── ㉒ 지운 메뉴는 그날 기준이 남아 있으면 계속 쓴다 (0151) ─────
+do $t$
+declare
+  v_store uuid := pg_temp.store();
+  v_day   date := pg_temp.ended_day();
+  v_gone  uuid := '00000000-0000-0000-0000-0000000000cb';
+  v_entry jsonb;
+begin
+  -- `recipes` 에는 없는데 그날 기준에는 남아 있는 메뉴 — 사장님이 지운 메뉴다.
+  set local role postgres;
+  update business_days
+     set snapshot = jsonb_set(snapshot, array['recipes', v_gone::text],
+                              jsonb_build_object('name', '지운 메뉴', 'price', 5000,
+                                                 'material_cost', 1000, 'extra_cost', 0,
+                                                 'tax', 0, 'tax_mode', 'included'), true)
+   where store_id = v_store and business_date = v_day;
+  set local role authenticated;
+  perform pg_temp.ok('전제: 그 메뉴는 지금 레시피에 없다',
+    not exists (select 1 from recipes where id = v_gone));
+
+  set local role postgres;
+  v_entry := add_to_day_basis(v_store, v_day, v_gone, true);
+  set local role authenticated;
+  perform pg_temp.eq_t('지운 메뉴라도 그날 기준이 있으면 그대로 준다',
+    v_entry->>'name', '지운 메뉴');
+
+  set local role postgres;
+  update business_days
+     set snapshot = jsonb_set(snapshot, '{recipes}', (snapshot->'recipes') - v_gone::text)
+   where store_id = v_store and business_date = v_day;
+  set local role authenticated;
+end $t$;
+
+
+-- ── ㉓ 열린 장부의 굳은 세율은 그날 기록을 설명해야 한다 (0151) ──
+/*
+ * 0150 은 열린 장부에 **지금 세율**을 무조건 굳혔다. 배포 전에 기타 매출이 이미 있었다면
+ * 그 세금은 그때 세율로 계산돼 있는데 기준만 지금 값이 된다 — 기록과 기준이 어긋난다.
+ * 0151 은 기록이 있으면 `etc_tax ÷ etc_revenue` 로 되짚어 굳힌다.
+ *
+ * 채움 자체는 일회성 마이그레이션이라 시험이 직접 못 부른다. 대신 **그 결과인 불변식**을
+ * 잰다 — 열린 장부의 굳은 세율로 그날 기타매출 세금이 재현돼야 한다.
+ */
+do $t$
+declare
+  v_store uuid := pg_temp.store();
+  v_today date;
+  v_rate  numeric;
+  v_n     int;
+begin
+  v_today := pg_temp.open_today();
+  perform save_sale(v_store, v_today, '[]'::jsonb,
+    jsonb_build_array(jsonb_build_object('name','시험 음료','price',3300,'qty',1)));
+  v_rate := day_etc_tax_rate(v_store, v_today);
+  perform pg_temp.ok('전제: 오늘 기타매출이 실제로 있다',
+    (select coalesce(etc_revenue,0) from daily_sales
+      where store_id = v_store and sale_date = v_today) > 0);
+
+  perform pg_temp.eq('굳은 세율이 오늘 기타매출 세금을 설명한다',
+    (select round(etc_revenue * v_rate, 2) from daily_sales
+      where store_id = v_store and sale_date = v_today),
+    (select etc_tax from daily_sales
+      where store_id = v_store and sale_date = v_today), 0);
+
+  /*
+   * ⚠ 위 단언만으로는 **되짚기 규칙을 못 잰다.** 세율을 읽고 나서 세금을 기록하니
+   *   무슨 값이든 늘 자기끼리 맞는다 — 스냅샷 세율을 0.99 로 망가뜨려도 통과했다
+   *   (사보타주를 걸어 보고 알았다). 규칙 자체를 부른다.
+   */
+  set local role postgres;
+  update business_days set snapshot = jsonb_set(snapshot, '{etc_tax_rate}', to_jsonb(0.99::numeric))
+   where store_id = v_store and business_date = v_today;
+  set local role authenticated;
+  perform pg_temp.eq('전제: 굳은 세율이 기록과 어긋나 있다',
+    day_etc_tax_rate(v_store, v_today), 0.99, 0);
+  perform pg_temp.eq('되짚은 세율은 설정도 스냅샷도 안 본다',
+    etc_tax_rate_of_record(v_store, v_today), v_rate, 0.000000001);
+  perform pg_temp.ok('되짚을 기록이 없으면 null 이다',
+    etc_tax_rate_of_record(v_store, v_today - 400) is null);
+
+  -- 망가뜨린 것을 되돌린다. 아래 전수 검사가 이걸 잡으면 안 된다.
+  set local role postgres;
+  update business_days set snapshot = jsonb_set(snapshot, '{etc_tax_rate}', to_jsonb(v_rate))
+   where store_id = v_store and business_date = v_today;
+  set local role authenticated;
+
+  /*
+   * 열린 장부 전체에 대해서도 같아야 한다.
+   * ⚠ 이 줄의 이빨은 **배포 때** 나온다 — 시험 트랜잭션 안의 장부는 시험이 직접 만든
+   *   것뿐이라 대개 저절로 맞는다. 0151 의 사후 확인이 같은 검사를 실제 데이터에 건다.
+   */
+  select count(*) into v_n
+    from business_days bd
+    join daily_sales ds on ds.store_id = bd.store_id and ds.sale_date = bd.business_date
+   where bd.status::text <> 'closed'
+     and coalesce(ds.etc_revenue, 0) > 0
+     and ds.etc_tax is not null
+     and round(ds.etc_revenue * coalesce((bd.snapshot->>'etc_tax_rate')::numeric, -1), 2)
+         is distinct from round(ds.etc_tax, 2);
+  perform pg_temp.eq('기록을 설명 못 하는 열린 장부가 없다', v_n, 0, 0);
+end $t$;

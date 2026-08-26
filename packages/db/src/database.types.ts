@@ -40,8 +40,14 @@ export type Database = {
       }
       business_day_revisions: {
         Row: {
+          after_basis_quality:
+            | Database["public"]["Enums"]["day_basis_quality"]
+            | null
           after_detail: Json | null
           after_summary: Json
+          before_basis_quality:
+            | Database["public"]["Enums"]["day_basis_quality"]
+            | null
           before_detail: Json | null
           before_summary: Json
           business_day_id: string
@@ -52,8 +58,14 @@ export type Database = {
           revision_no: number
         }
         Insert: {
+          after_basis_quality?:
+            | Database["public"]["Enums"]["day_basis_quality"]
+            | null
           after_detail?: Json | null
           after_summary: Json
+          before_basis_quality?:
+            | Database["public"]["Enums"]["day_basis_quality"]
+            | null
           before_detail?: Json | null
           before_summary: Json
           business_day_id: string
@@ -64,8 +76,14 @@ export type Database = {
           revision_no: number
         }
         Update: {
+          after_basis_quality?:
+            | Database["public"]["Enums"]["day_basis_quality"]
+            | null
           after_detail?: Json | null
           after_summary?: Json
+          before_basis_quality?:
+            | Database["public"]["Enums"]["day_basis_quality"]
+            | null
           before_detail?: Json | null
           before_summary?: Json
           business_day_id?: string
@@ -1531,6 +1549,7 @@ export type Database = {
           p_store: string
           p_date: string
           p_recipe: string
+          p_allow_closed?: boolean
         }
         Returns: Json
       }
@@ -1725,6 +1744,13 @@ export type Database = {
           status: Database["public"]["Enums"]["business_day_status"]
           store_id: string
         }
+      }
+      day_etc_tax_rate: {
+        Args: {
+          p_store: string
+          p_date: string
+        }
+        Returns: number
       }
       day_fixed_items: {
         Args: {
@@ -1970,6 +1996,13 @@ export type Database = {
           p_event: unknown
         }
         Returns: string
+      }
+      etc_tax_rate_of_record: {
+        Args: {
+          p_store: string
+          p_date: string
+        }
+        Returns: number
       }
       fixed_cost_rate: {
         Args: {
