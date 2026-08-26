@@ -106,16 +106,18 @@ const waitForLockSql = (dayId, timeoutSec) =>
    begin
      for i in 1..${Math.round(timeoutSec * 100)} loop
        /*
-        * A 가 save_sale 로 쓰기를 한 순간 **transactionid 잠금**을 쥔다 — 커밋 전까지 유지된다.
-        * ⚠ 세션 상태로 재면 안 된다: A 는 pg_sleep 중이라 'active' 지 'idle in transaction'
-        *   이 아니다(실측 — 그래서 장벽이 매번 시간 초과했다). 잠금 자체가 신호다.
+        * A 는 save_sale 로 그 영업일 행을 잠근 **뒤** 이 dayId 로 만든 권고 잠금을 잡는다.
+        * 그 잠금이 보이면 A 가 대상 행을 쥔 채 트랜잭션 안에 있다는 뜻이다.
+        * ⚠ transactionid 잠금만 보면 **무관한 트랜잭션**도 준비 완료로 읽힌다(검토 지적).
+        * ⚠ 세션 상태로도 재면 안 된다: A 는 pg_sleep 중이라 'active' 다(실측 — 장벽이
+        *   매번 시간 초과했다). dayId 로 못박은 잠금 자체가 신호다.
         */
        select count(*) into n
          from pg_locks l
-         join pg_stat_activity a on a.pid = l.pid
         where l.pid <> pg_backend_pid() and l.granted
-          and a.datname = current_database()
-          and l.locktype = 'transactionid' and l.mode = 'ExclusiveLock';
+          and l.locktype = 'advisory'
+          and ((l.classid::bigint << 32) | l.objid::bigint)
+              = hashtextextended('conc:${dayId}', 0);
        if n > 0 then return; end if;
        perform pg_sleep(0.01);
      end loop;
@@ -136,13 +138,15 @@ const items = (qty) =>
  * A 세션 — 판매 i=1..n. 각 저장은 트랜잭션 안에서 잠금을 쥔 채 hold 만큼 머문 뒤 커밋한다.
  * 성공한 회차는 `OK:i:<커밋 직전 시각>` 을 찍는다(실패한 트랜잭션은 롤백돼 아무것도 안 찍는다).
  */
-function sellerSql(n, hold, startAtIso) {
+function sellerSql(n, hold, startAtIso, dayId) {
   const head = `set role authenticated;\nset request.jwt.claims='${CLAIMS}';\n${barrierSql(startAtIso)}`;
   const body = Array.from({ length: n }, (_, k) => {
     const i = k + 1;
     return [
       'begin;',
       `select save_sale('${STORE}','${today}',${items(i)});`,
+      // 준비 완료 신호 — 이 영업일로 못박은 권고 잠금(0166 검토). 커밋까지 유지된다.
+      `select pg_advisory_xact_lock(hashtextextended('conc:${dayId}', 0));`,
       `select pg_sleep(${hold});`,
       `select 'OK:${i}:'||clock_timestamp();`,
       'commit;',
@@ -234,7 +238,7 @@ ok('전제: 스냅샷에 제육볶음 재료선이 있다(원장 합계의 기�
 
   const startAt = startIn(1.5);
   const [a, b, { waits, samples }] = await Promise.all([
-    session('A', sellerSql(15, 0.06, startAt), 40_000),
+    session('A', sellerSql(15, 0.06, startAt, dayId), 40_000),
     session('B', cronSql(60, 0.02, startAt, dayId), 40_000),
     lockWatcher(6),
   ]);
@@ -266,7 +270,7 @@ ok('전제: 스냅샷에 제육볶음 재료선이 있다(원장 합계의 기�
   q(`update business_days set planned_close_at = clock_timestamp() - auto_close_grace() + interval '3.5 seconds' where id='${dayId}'`);
   const startAt = startIn(1.5);
   const [a, b, { waits, samples }] = await Promise.all([
-    session('A', sellerSql(40, 0.06, startAt), 60_000),
+    session('A', sellerSql(40, 0.06, startAt, dayId), 60_000),
     session('B', cronSql(120, 0.02, startAt, dayId), 60_000),
     lockWatcher(10),
   ]);

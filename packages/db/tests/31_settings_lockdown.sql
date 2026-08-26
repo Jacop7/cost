@@ -114,15 +114,103 @@ begin
   perform pg_temp.ok('세금 저장이 changed 를 답한다', v_res ? 'changed');
   perform pg_temp.eq('저장된 세금 항목이 실제로 있다',
     (select jsonb_array_length(tax_items) from settings where store_id = v_id), 1, 0);
-  -- ③ 공식 문(create_store)도 같은 결과를 한 트랜잭션으로 낸다.
+  /*
+   * ③ 공식 문(create_store) — 1차 범위는 매장 하나라, 이미 있으면 **그 매장**을 답한다(0166).
+   * ⚠ 여기서 개수 합(3)으로 재면 안 된다. 이 파일 앞 블록이 예약 규칙을 만들어 두면
+   *   규칙이 2개라 합이 4가 된다 — 실제로 그렇게 빨개졌다. 있음/없음으로 잰다.
+   */
   v_res := create_store('시험 매장 공식문', 'America/New_York');
   v_id := (v_res->>'store_id')::uuid;
   perform pg_temp.eq_t('공식 문: 시간대가 정해진다', v_res->>'timezone', 'America/New_York');
-  perform pg_temp.eq('공식 문: 설정·규칙·시간대가 모두 있다',
-    (select count(*) from settings where store_id = v_id)
-    + (select count(*) from operating_rules where store_id = v_id)
-    + (select count(*) from store_time_settings where store_id = v_id), 3, 0);
+  perform pg_temp.ok('공식 문: 설정·규칙·시간대가 모두 있다',
+    exists (select 1 from settings where store_id = v_id)
+    and exists (select 1 from operating_rules where store_id = v_id)
+    and exists (select 1 from store_time_settings where store_id = v_id));
   perform pg_temp.ok('공식 문: 정한 시간대는 confirmed 다',
     (select confirmed from store_time_settings where store_id = v_id));
   perform pg_temp.raises('공식 문: 이름이 비면 거부', $q$select create_store('   ')$q$, '22000');
+end $t$;
+
+
+-- ── TRUNCATE 와 미래 테이블 (0166) ──────────────────────────────
+/*
+ * 실측된 구멍: 28개 중 23개에서 인증·익명 롤이 TRUNCATE 를 쓸 수 있었다.
+ * **RLS 는 TRUNCATE 에 적용되지 않는다** — 남의 매장 행까지 통째로 사라진다
+ * (검토자가 price_trends 100건 → 0건을 재현). 그리고 회수는 그때 있던 테이블에만
+ * 걸리므로, 기본 권한을 안 바꾸면 다음에 만든 테이블이 다시 열린다.
+ */
+do $t$
+declare v_n int;
+begin
+  perform pg_temp.raises('앱 롤은 TRUNCATE 를 못 한다',
+    'truncate table public.price_trends', '42501');
+  perform pg_temp.ok('어떤 테이블에도 TRUNCATE 가 없다(인증·익명)',
+    (select count(*) from pg_class c join pg_namespace n on n.oid = c.relnamespace
+      where n.nspname = 'public' and c.relkind = 'r'
+        and (has_table_privilege('authenticated', c.oid, 'TRUNCATE')
+             or has_table_privilege('anon', c.oid, 'TRUNCATE'))) = 0);
+
+  -- 미래 테이블도 닫힌 채 태어난다 — 기본 권한(alter default privileges)이 걸렸는가.
+  set local role postgres;
+  create table public._probe_future_acl (id int);
+  set local role authenticated;
+  perform pg_temp.ok('새로 만든 테이블도 TRUNCATE/TRIGGER/REFERENCES 가 닫혀 있다',
+    not has_table_privilege('authenticated', 'public._probe_future_acl', 'TRUNCATE')
+    and not has_table_privilege('authenticated', 'public._probe_future_acl', 'TRIGGER')
+    and not has_table_privilege('authenticated', 'public._probe_future_acl', 'REFERENCES'));
+  set local role postgres;
+  drop table public._probe_future_acl;
+  set local role authenticated;
+end $t$;
+
+
+-- ── 단일 매장 계약과 백필 보존 (0166) ───────────────────────────
+do $t$
+declare
+  v_a jsonb; v_b jsonb;
+  v_n int;
+  v_store uuid;
+begin
+  /*
+   * 두 번 눌러도 매장은 하나다(기획서 §12). 예전엔 둘이 생겼고, 앱은 정렬 없이 첫 행을
+   * 골라 어느 쪽이 잡힐지 실행마다 달랐다.
+   * ⚠ 시드 사장님은 이미 매장이 있다 — 그래서 첫 호출부터 created=false 여야 한다.
+   */
+  select count(*) into v_n from stores where owner_id = pg_temp.owner();
+  v_a := create_store('중복 시험 매장');
+  v_b := create_store('중복 시험 매장 2');
+  perform pg_temp.eq('두 번 불러도 매장 수가 안 는다',
+    (select count(*) from stores where owner_id = pg_temp.owner()), v_n, 0);
+  perform pg_temp.eq_t('둘 다 같은 매장을 답한다', v_a->>'store_id', v_b->>'store_id');
+  perform pg_temp.ok('이미 있으면 created=false', (v_a->>'created')::boolean is false);
+  perform pg_temp.eq_t('앱과 같은 기준(created_at, id)으로 고른다',
+    v_a->>'store_id',
+    (select id::text from stores where owner_id = pg_temp.owner() order by created_at, id limit 1));
+
+  /*
+   * 백필 보존 — 표시 폼이 06:00–14:00 인 매장의 규칙을 11–22 로 덮으면 안 된다.
+   * 문(0159)을 안 지난 규칙(revision=1)만 표시 폼을 따른다.
+   */
+  set local role postgres;
+  insert into stores (owner_id, name) values (pg_temp.owner(), '백필 시험 매장') returning id into v_store;
+  update settings set open_time = '06:00', close_time = '14:00' where store_id = v_store;
+  delete from operating_rules where store_id = v_store;
+  insert into operating_rules (store_id, effective_from, effective_to, weekly_hours, weekly_breaks)
+       values (v_store, '-infinity', null,
+               (select jsonb_object_agg(d::text, jsonb_build_object('open','11:00','close','22:00','closed',false))
+                  from generate_series(0, 6) d), '{}'::jsonb);
+  -- 0166 의 백필과 같은 문장(마이그레이션이 한 일을 여기서 재현해 잰다).
+  update operating_rules r
+     set weekly_hours = (select jsonb_object_agg(d::text, jsonb_build_object(
+                                  'open', s.open_time::text, 'close', s.close_time::text,
+                                  'closed', coalesce((r.weekly_hours -> d::text ->> 'closed')::boolean, false)))
+                           from generate_series(0, 6) d)
+    from settings s
+   where s.store_id = r.store_id and r.store_id = v_store
+     and r.effective_to is null and r.revision = 1
+     and (r.weekly_hours -> '1' ->> 'open') is distinct from s.open_time::text;
+  set local role authenticated;
+  perform pg_temp.eq_t('백필이 표시 폼(06:00~14:00)을 보존한다',
+    (store_hours_on(v_store, store_local_date(v_store))->>'open_time') || '~' ||
+    (store_hours_on(v_store, store_local_date(v_store))->>'close_time'), '06:00:00~14:00:00');
 end $t$;
