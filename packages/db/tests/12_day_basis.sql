@@ -509,9 +509,42 @@ begin
   perform pg_temp.eq('매출은 새로 판 만큼만 늘었다',
     (s1->>'revenue')::numeric - (s0->>'revenue')::numeric, 5500 * 2, 0.01);
 
-  -- 종료된 날에는 더할 수 없다 — 그날 장부는 잠긴 것이다
+  /*
+   * 종료된 날에는 **판매 경로로는** 더하지 않는다 — 그날 장부는 잠긴 것이다.
+   *
+   * ⚠ 두 가지가 바뀌었다(0149).
+   *   ① `add_to_day_basis` 는 몸통이라 앱 롤이 못 부른다. 소유자로 부른다 —
+   *      안 그러면 42501(권한 없음)이 나와서 "막혔다"가 다른 이유로 통과한다.
+   *   ② `p_allow_closed => true` 인 **정정 경로**는 종료된 날에도 들어온다. §6.4 의
+   *      `판매 내역 추가` 가 그 경로다. 다만 **이미 있는 기준은 그래도 안 건드린다** —
+   *      0062 의 불변식은 문이 달라졌다고 풀리지 않는다.
+   *      (없던 메뉴를 더하면 estimated_current 로 내려간다 — 27번 ⑯ 이 잰다.)
+   */
   perform close_business_day(pg_temp.store());
-  perform pg_temp.raises('종료된 날에는 더하지 않는다',
+  set local role postgres;
+  perform pg_temp.raises('종료된 날에는 판매 경로로 더하지 않는다',
     format('select add_to_day_basis(%L, %L, %L)', pg_temp.store(), v_day, pg_temp.rcp('계란말이')),
     '45002');
+
+  declare
+    v_e0 jsonb := (select snapshot #> array['recipes', pg_temp.rcp('계란말이')::text]
+                     from business_days
+                    where store_id = pg_temp.store() and business_date = v_day);
+  begin
+    perform pg_temp.ok('전제: 그 메뉴 기준이 이미 그날에 있다', v_e0 is not null);
+    perform pg_temp.eq_t('전제: 아직 그날 기준 그대로다',
+      (select basis_quality::text from business_days
+        where store_id = pg_temp.store() and business_date = v_day), 'exact');
+
+    perform add_to_day_basis(pg_temp.store(), v_day, pg_temp.rcp('계란말이'), true);
+
+    perform pg_temp.eq_t('정정 경로라도 이미 있는 기준은 안 건드린다',
+      (select (snapshot #> array['recipes', pg_temp.rcp('계란말이')::text])::text
+         from business_days
+        where store_id = pg_temp.store() and business_date = v_day), v_e0::text);
+    perform pg_temp.eq_t('건드린 게 없으니 내려가지도 않는다',
+      (select basis_quality::text from business_days
+        where store_id = pg_temp.store() and business_date = v_day), 'exact');
+  end;
+  set local role authenticated;
 end $t$;
