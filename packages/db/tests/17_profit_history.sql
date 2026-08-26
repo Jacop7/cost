@@ -18,7 +18,7 @@ do $t$
 declare
   v_st   uuid := pg_temp.store();
   v_ven  uuid := (select id from vendors where store_id = pg_temp.store() limit 1);
-  v_day  date := business_day();
+  v_day  date := pg_temp.today();
   v_rcp  uuid := pg_temp.rcp('제육볶음');
   v_ing  uuid := pg_temp.ing('대파');
   v_base profit_trends;
@@ -168,7 +168,7 @@ begin
     (store_id, recipe_id, trend_date, profit_rate, material_rate, cause, occurred_at,
      calculation_version)
   values
-    (pg_temp.store(), v_rcp, business_day(), 30.00, 23.00, 'material', now() - interval '1 day',
+    (pg_temp.store(), v_rcp, pg_temp.today(), 30.00, 23.00, 'material', now() - interval '1 day',
      1);
 
   perform pg_temp.ok('옛 비율 행이 실제로 있다',
@@ -230,7 +230,7 @@ begin
   insert into profit_trends (
       store_id, recipe_id, trend_date, profit_rate, material_rate, cause,
       occurred_at, price, material_cost, extra_cost, profit_amount)
-  values (pg_temp.store(), v_rcp, business_day(), 10, 10, 'recipe',
+  values (pg_temp.store(), v_rcp, pg_temp.today(), 10, 10, 'recipe',
       clock_timestamp(), 8000, 1000, 0, 5000);   -- 세금·고정지출이 비었다
 
   perform pg_temp.raises('반쪽 스냅샷은 예외로 막는다',

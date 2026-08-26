@@ -199,7 +199,7 @@ begin
   --
   -- ⚠ 개업 재고만 앞에 둔다. **보충 입고는 영업 시작 뒤**가 맞다 —
   --   장사 중에 들어온 물건이 그날 스냅샷을 흔들면 안 된다(0048).
-  v_day := business_day() - 21;
+  v_day := store_local_date(v_store) - 21;
     o := e7_place_order(v_store, i_pork,      vd_chuk,   null, 5000, 65000, 4, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 4, 'S1-PORK',   v_day);
     o := e7_place_order(v_store, i_pa,        vd_nong,   null, 1000,  4000, 8, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 8, 'S1-PA',     v_day);
     o := e7_place_order(v_store, i_onion,     vd_nong,   null, 1200,  2268,10, v_day, 'manual', v_day); perform e1_confirm_inbound(o,10, 'S1-ONION',  v_day);
@@ -265,7 +265,7 @@ begin
                            jsonb_build_object('name','전단·SNS','amount',73000)))
     ))  -- 2,400,000 + 603,000 + 380,000 + 120,000 + 253,000 = 3,756,000
   from (select distinct m from unnest(array[
-          to_char((business_day() - 30)::date, 'YYYY-MM'),
+          to_char((store_local_date(v_store) - 30)::date, 'YYYY-MM'),
           business_month()]) m) months;
 
   -- ══════════════════════════════════════════════════════════
@@ -371,7 +371,7 @@ begin
   -- 최근 3주 재생 — 입고와 판매를 **날짜 순서대로**
   -- ══════════════════════════════════════════════════════════
   for d in reverse 21 .. 0 loop
-    v_day := business_day() - d;
+    v_day := store_local_date(v_store) - d;
     v_seq := v_seq + 1;
 
     -- ── 영업 시작 (0048) ─────────────────────────────────────
@@ -510,9 +510,9 @@ begin
 
   -- ── 진행 중인 발주 (ORD 대기 탭) ────────────────────────────
   -- 아직 도착하지 않은 주문이 있어야 "입고 대기" 탭이 빈 화면이 아니다.
-  o := e7_place_order(v_store, i_pork,  vd_chuk,   null, 5000, 65000, 2, business_day() + 1, 'manual', v_day);
-  o := e7_place_order(v_store, i_kimchi,vd_online, null,10000, 33500, 2, business_day() + 2, 'manual', v_day);
-  o := e7_place_order(v_store, i_egg,   vd_mart,   null,   30,  9100, 3, business_day() + 1, 'manual', v_day);
+  o := e7_place_order(v_store, i_pork,  vd_chuk,   null, 5000, 65000, 2, store_local_date(v_store) + 1, 'manual', v_day);
+  o := e7_place_order(v_store, i_kimchi,vd_online, null,10000, 33500, 2, store_local_date(v_store) + 2, 'manual', v_day);
+  o := e7_place_order(v_store, i_egg,   vd_mart,   null,   30,  9100, 3, store_local_date(v_store) + 1, 'manual', v_day);
 
   raise notice '시드 완료 — 식재료 19 · 메뉴 7 · 22일치 매출·입고';
 end $$;

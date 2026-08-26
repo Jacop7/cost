@@ -34,7 +34,7 @@ language plpgsql as $h$
 begin
   set local role postgres;
   update business_days set planned_close_at = p_at
-   where store_id = pg_temp.store() and business_date = business_day();
+   where store_id = pg_temp.store() and business_date = pg_temp.today();
   set local role authenticated;
 end $h$;
 

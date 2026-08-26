@@ -35,7 +35,7 @@ declare
   v_sum  numeric;
 begin
   perform pg_temp.open_today();   -- 열린 영업일을 보장한다(프렐류드 헬퍼)
-  v_day := business_day();
+  v_day := pg_temp.today();
 
   v_items := jsonb_build_array(
     jsonb_build_object('recipe_id', r_je, 'qty_hall', 10),
@@ -93,7 +93,7 @@ declare
   v_before numeric;
 begin
   perform pg_temp.open_today();   -- 열린 영업일을 보장한다(프렐류드 헬퍼)
-  v_day := business_day();
+  v_day := pg_temp.today();
 
   perform save_sale(pg_temp.store(), v_day, jsonb_build_array(
     jsonb_build_object('recipe_id', r_je, 'qty_hall', 10),

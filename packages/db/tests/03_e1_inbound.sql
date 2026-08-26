@@ -25,7 +25,7 @@ begin
     into b_stock, b_events, b_trend;
 
   v_order := e7_place_order(pg_temp.store(), v_ing, v_vendor, null,
-                            v_vol, 4000, v_qty, business_day());
+                            v_vol, 4000, v_qty, pg_temp.today());
 
   -- ── 1회 확정 ─────────────────────────────────────────────────
   perform e1_confirm_inbound(v_order, v_qty, 'test-key-1');

@@ -14,7 +14,7 @@
 do $t$
 declare
   v_i    uuid := pg_temp.ing('고추장');
-  v_day  date := business_day();
+  v_day  date := pg_temp.today();
   v_pv   jsonb;
   v_res  jsonb;
   v_n0   int;
@@ -79,7 +79,7 @@ end $t$;
 do $t$
 declare
   v_i   uuid := pg_temp.ing('대파');
-  v_day date := business_day();
+  v_day date := pg_temp.today();
   ev    jsonb;
 begin
   -- ⚠ 닫혀 있으면 **다시 열어야** 한다. 앱에서 영업을 한 번 마치면 그날은 closed 로 남고,

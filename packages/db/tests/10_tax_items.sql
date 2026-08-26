@@ -135,7 +135,7 @@ end $t$;
 do $t$
 declare
   v_rcp uuid := pg_temp.rcp('제육볶음');
-  v_day date := business_day();
+  v_day date := pg_temp.today();
   b0    jsonb;
   b1    jsonb;
   v_tx0 numeric;

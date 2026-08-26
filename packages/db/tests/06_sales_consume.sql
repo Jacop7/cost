@@ -24,7 +24,7 @@ end $open$;
 do $t$
 declare
   v_rcp   uuid := pg_temp.rcp('제육볶음');
-  v_day   date := business_day();
+  v_day   date := pg_temp.today();
   v_item  uuid;
   b_stock numeric;
   m_stock numeric;

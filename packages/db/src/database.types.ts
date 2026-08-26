@@ -1622,16 +1622,6 @@ export type Database = {
         }
         Returns: Json
       }
-      business_cutoff: {
-        Args: Record<PropertyKey, never>
-        Returns: unknown
-      }
-      business_day: {
-        Args: {
-          p_at?: string
-        }
-        Returns: string
-      }
       business_day_of: {
         Args: {
           p_store: string

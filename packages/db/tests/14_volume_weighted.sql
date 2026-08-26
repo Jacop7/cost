@@ -19,7 +19,7 @@ do $t$
 declare
   v_st  uuid := pg_temp.store();
   v_ven uuid := (select id from vendors where store_id = pg_temp.store() limit 1);
-  v_day date := business_day();
+  v_day date := pg_temp.today();
   v_i   uuid;
   v_s0  numeric;
   v_s1  numeric;

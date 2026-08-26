@@ -27,6 +27,16 @@ language sql immutable as $h$ select '00000000-0000-0000-0000-0000000000b1'::uui
 create function pg_temp.owner() returns uuid
 language sql immutable as $h$ select '00000000-0000-0000-0000-0000000000a1'::uuid $h$;
 
+/*
+ * 시험이 말하는 '오늘' — 시드 매장의 **판매 영업일**(0154).
+ * 예전엔 전역 business_day() 였는데 0155 에서 지웠다 — settings limit 1 이라
+ * 매장을 안 가렸다. 지금은 매장 컨텍스트가 규칙으로 구한다.
+ */
+create function pg_temp.today() returns date
+language sql stable as $h$
+  select (resolve_sales_business_context(pg_temp.store())).sales_date
+$h$;
+
 -- ── 단언 헬퍼 (pg_temp = 이 세션에서만 산다) ────────────────────
 
 create function pg_temp.ok(p_label text, p_cond boolean) returns void
@@ -100,7 +110,7 @@ $h$;
 create function pg_temp.open_today() returns date
 language plpgsql as $h$
 declare
-  v_day date := business_day();
+  v_day date := pg_temp.today();
   v_n   int;
   v_st  text;
   v_other int;
@@ -202,7 +212,7 @@ begin
    limit 1;
 
   if v_id is null then
-    return business_day();   -- 열린 게 없다. 원하는 상태가 이미 맞다.
+    return pg_temp.today();   -- 열린 게 없다. 원하는 상태가 이미 맞다.
   end if;
 
   begin

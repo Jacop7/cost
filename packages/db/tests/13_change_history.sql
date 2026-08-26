@@ -95,7 +95,7 @@ end $t$;
 do $t$
 declare
   v_rcp uuid := pg_temp.rcp('순두부찌개');
-  v_day date := business_day();
+  v_day date := pg_temp.today();
   ev    jsonb;
 begin
   -- ── 영업 전 수정 → 오늘 시작 때 담긴다 → 반영 ───────────────
@@ -155,7 +155,7 @@ do $t$
 declare
   v_ing  uuid := pg_temp.ing('대파');
   v_ven  uuid := (select id from vendors where store_id = pg_temp.store() limit 1);
-  v_day  date := business_day();
+  v_day  date := pg_temp.today();
   v_ing_ev jsonb;
   v_rcp_ev jsonb;
   v_corr uuid;
@@ -268,7 +268,7 @@ declare
   v_rcp uuid := pg_temp.rcp('제육볶음');
   v_ing uuid := pg_temp.ing('대파');
   v_ven uuid := (select id from vendors where store_id = pg_temp.store() limit 1);
-  v_day date := business_day();
+  v_day date := pg_temp.today();
   v_ord uuid;
   ev    jsonb;
   n0    int;
@@ -421,7 +421,7 @@ end $t$;
 do $t$
 declare
   v_rcp uuid := pg_temp.rcp('계란말이');
-  v_day date := business_day();
+  v_day date := pg_temp.today();
   h     jsonb;
   v_ref uuid; v_unref uuid;
 begin
@@ -516,7 +516,7 @@ begin
   -- 전파 사건은 전부 자동 갱신이어야 한다
   declare v_ing uuid := pg_temp.ing('두부'); e2 jsonb;
   begin
-    perform quick_inbound(pg_temp.store(), v_ing, 1, 2500, 2, null, business_day(), 'T78-P');
+    perform quick_inbound(pg_temp.store(), v_ing, 1, 2500, 2, null, pg_temp.today(), 'T78-P');
     e2 := jsonb_path_query_first(
       entity_change_history(pg_temp.store(), 'recipe', v_rcp, null, 5, 7)->'items', '$[0]');
     perform pg_temp.eq_t('전파 사건 제목', e2->>'title', '식재료 단가 반영');

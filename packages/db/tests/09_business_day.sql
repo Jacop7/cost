@@ -14,7 +14,7 @@ declare
   v_id    uuid;
   v_snap  jsonb;
   v_close jsonb;
-  v_day   date := business_day();
+  v_day   date := pg_temp.today();
 begin
   -- ── 시작: 행과 스냅샷이 함께 만들어진다 ─────────────────────
   /*
@@ -173,7 +173,7 @@ end $t$;
 do $t$
 declare
   v_rcp  uuid := pg_temp.rcp('제육볶음');
-  v_day  date := business_day();
+  v_day  date := pg_temp.today();
   b0     jsonb;
   b1     jsonb;
 begin
@@ -239,7 +239,7 @@ end $t$;
 
 do $t$
 declare
-  v_day date := business_day();
+  v_day date := pg_temp.today();
   st    jsonb;
 begin
   -- ── 시작 전 ─────────────────────────────────────────────────
@@ -323,7 +323,7 @@ end $t$;
 -- ════════════════════════════════════════════════════════════════
 do $t$
 declare
-  v_day date := business_day();
+  v_day date := pg_temp.today();
   v_etc0 numeric;
 begin
   -- ⚠ 메뉴 판매를 **전부 0 으로 비운다.** 하나라도 남아 있으면 다른 가드가 대신 걸려

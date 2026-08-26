@@ -18,7 +18,7 @@ declare
   v_rcp uuid := pg_temp.rcp('제육볶음');
   v_ing uuid := pg_temp.ing('돼지고기 앞다리');
   v_ven uuid := (select id from vendors where store_id = pg_temp.store() limit 1);
-  v_day date := business_day();
+  v_day date := pg_temp.today();
 
   -- 수정 전 / 후를 같은 이름으로 비교하려고 나란히 든다.
   b0 jsonb; b1 jsonb;   -- 메뉴 손익 상세
@@ -160,7 +160,7 @@ do $t$
 declare
   v_ing  uuid := pg_temp.ing('대파');
   v_ven  uuid := (select id from vendors where store_id = pg_temp.store() limit 1);
-  v_day  date := business_day();
+  v_day  date := pg_temp.today();
   v_rem  numeric;
   w0     numeric;
   w1     numeric;
@@ -196,7 +196,7 @@ end $t$;
 do $t$
 declare
   v_rcp uuid := pg_temp.rcp('제육볶음');
-  v_day date := business_day();
+  v_day date := pg_temp.today();
   g0    jsonb;
   g1    jsonb;
   b     jsonb;
@@ -295,7 +295,7 @@ end $t$;
 do $t$
 declare
   v_rcp uuid := pg_temp.rcp('제육볶음');
-  v_day date := business_day();
+  v_day date := pg_temp.today();
   m0    jsonb;
   m1    jsonb;
   v_new uuid;
@@ -364,7 +364,7 @@ end $t$;
 
 do $t$
 declare
-  v_day date := business_day();
+  v_day date := pg_temp.today();
   v_rcp uuid := pg_temp.rcp('제육볶음');
   v_a   uuid;   -- 영업 전에 만든 메뉴
   v_b   uuid;   -- 영업 시작 뒤에 만든 메뉴
@@ -430,7 +430,7 @@ end $t$;
 
 do $t$
 declare
-  v_day date := business_day();
+  v_day date := pg_temp.today();
   v_new uuid;
 begin
   perform pg_temp.close_today();   -- 이미 닫혀 있으면 그대로 둔다(프렐류드 헬퍼)
@@ -460,7 +460,7 @@ end $t$;
 
 do $t$
 declare
-  v_day date := business_day();
+  v_day date := pg_temp.today();
   v_rcp uuid := pg_temp.rcp('제육볶음');
   v_off uuid := pg_temp.rcp('된장찌개');
   v_new uuid;

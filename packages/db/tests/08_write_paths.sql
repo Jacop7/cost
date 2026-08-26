@@ -26,7 +26,7 @@ declare
   v_vendor uuid;
   v_order  uuid;
   v_rcp    uuid;
-  v_day    date := business_day();
+  v_day    date := pg_temp.today();
   d        jsonb;
   r        record;
 begin
@@ -197,7 +197,7 @@ end $t$;
 -- ════════════════════════════════════════════════════════════════
 
 do $t$
-declare j jsonb := sales_summary(pg_temp.store(), business_day() - 20, business_day());
+declare j jsonb := sales_summary(pg_temp.store(), pg_temp.today() - 20, pg_temp.today());
 begin
   -- 손익에 채널 수수료 항목이 아예 없어야 한다. 있으면 누가 되살린 것이다.
   perform pg_temp.ok('순이익에 channel_fee 가 없다', not (j ? 'channel_fee'));
@@ -241,7 +241,7 @@ do $t$
 declare
   v_rcp uuid := pg_temp.rcp('제육볶음');
   v_pa  uuid := pg_temp.ing('대파');
-  v_day date := business_day();
+  v_day date := pg_temp.today();
 begin
   -- 오늘 판매를 0 으로 되돌려 기준선을 만든다.
   perform pg_temp.e10(pg_temp.store(), v_day, v_rcp, 0, 0, 0, 0);
