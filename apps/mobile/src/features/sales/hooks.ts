@@ -294,6 +294,12 @@ export interface SaveSaleInput {
    *   생략을 허용하는 건 DB 함수 쪽뿐이다 — 시드와 서버 내부 호출용이다.
    */
   baseRevision: number;
+  /**
+   * 영업 전(45001)에서 확인을 받은 뒤의 재시도만 true 로 보낸다(0154).
+   * 서버가 영업 시작 + 저장을 **한 트랜잭션**으로 한다 — 예전엔 RPC 두 번이라
+   * 열기만 되고 저장이 죽으면 빈 영업일이 남았다.
+   */
+  openDay?: boolean;
   /** 생략하면 그날 값을 그대로 둔다. 빈 배열을 보내면 전부 지운다. */
   etcItems?: EtcItem[];
   extraItems?: ExtraItem[];
@@ -439,11 +445,18 @@ export function useRangeMenuDetail(from: string | undefined, to: string | undefi
   });
 }
 
+export interface SaveSaleResult {
+  /** 부족분 — 오류가 아니라 이미 팔린 것이다. */
+  shortages: Shortage[];
+  /** 이 저장이 영업 시작을 겸했나(0154). 화면이 안내와 상태 카드 갱신에 쓴다. */
+  dayOpened: boolean;
+}
+
 export function useSaveSale() {
   const qc = useQueryClient();
   const storeId = useStoreId();
   return useMutation({
-    mutationFn: async (input: SaveSaleInput): Promise<Shortage[]> => {
+    mutationFn: async (input: SaveSaleInput): Promise<SaveSaleResult> => {
       const { data, error } = await supabase.rpc('save_sale', {
         p_store: storeId,
         p_date: input.date,
@@ -461,6 +474,7 @@ export function useSaveSale() {
           ? input.extraItems.map((e) => ({ name: e.name, amount: e.amount, memo: e.memo ?? '' }))
           : undefined,
         p_base_revision: input.baseRevision,
+        p_open_day: input.openDay ?? false,
       });
       // ⚠ 코드를 살려 던진다(0145). 화면이 문구가 아니라 SQLSTATE 로 가른다.
       if (error) throw rpcError(error);
@@ -480,9 +494,14 @@ export function useSaveSale() {
           });
         }
       }
-      return out;
+      return { shortages: out, dayOpened: (data as unknown as Record<string, unknown>)?.day_opened === true };
     },
-    onSuccess: (_r, input) => invalidate(qc, [...invalidateOn.e10(), qk.salesDay(input.date)]),
+    // 영업 시작을 겸했으면 상태 카드도 다시 그려야 한다 — 안 하면 카드가 '영업 전' 인 채
+    // 판매만 쌓인다.
+    onSuccess: (r, input) => invalidate(qc, [
+      ...invalidateOn.e10(), qk.salesDay(input.date),
+      ...(r.dayOpened ? invalidateOn.businessDay() : []),
+    ]),
   });
 }
 

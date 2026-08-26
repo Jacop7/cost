@@ -216,6 +216,10 @@ export function useCloseBusinessDay() {
  * `종료` 누르고 `영업 시작` 을 또 눌러야 했는데, 화면은 그때 초록 '영업중' 배지를
  * 달고 있었다 — 뭘 눌러야 하는지 알 길이 없었다. 버튼 하나로 끝낸다.
  *
+ * ⚠ 이제 **RPC 도 한 번이다**(0154). 예정 종료가 지난 옛 날은 `open_business_day` 가
+ *   같은 트랜잭션에서 닫고 연다 — close → open 두 번이던 시절엔 사이에 다른 기기가
+ *   끼어들 수 있었다. 기한(유예)까지 지난 날은 auto(예정 시각 기록), 유예 안이면
+ *   manual(지금 시각)로 닫힌다.
  * ⚠ 어제 기준값은 어제 것 그대로 잠긴 채로 닫힌다. 오늘 것만 지금 값으로 굳는다.
  */
 export function useCloseStaleAndOpen() {
@@ -223,8 +227,6 @@ export function useCloseStaleAndOpen() {
   const storeId = useStoreId();
   return useMutation({
     mutationFn: async (): Promise<void> => {
-      const closed = await supabase.rpc('close_business_day', { p_store: storeId });
-      if (closed.error) throw new Error(closed.error.message);
       const opened = await supabase.rpc('open_business_day', { p_store: storeId });
       if (opened.error) throw new Error(opened.error.message);
     },

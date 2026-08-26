@@ -13,9 +13,9 @@
 -- 일반 기록(발주·입고·재고·가격추이·손익추이·수정내역)의 날짜는 그러면 안 된다.
 -- 달력 날짜는 영업시간과 무관하다 — "서울 매장 01:00 입고는 현지 달력의 오늘 입고다"(§4.1).
 --
--- ⚠ 판매·영업일 무리는 **아직 옮기지 않았다.** 거기는 cutoff 가 의미가 있다
---   (새벽 영업이면 전날 장부). 3단계에서 통째로 간다. 이 시험이 그 경계를 지킨다 —
---   실수로 판매까지 옮기면 새벽 판매가 다음 날 장부로 새 버린다.
+-- 판매·영업일 무리는 0154 에서 **매장 컨텍스트**(resolve_sales_business_context)로
+-- 옮겼다. 거기는 cutoff 가 의미가 있는데(새벽 영업이면 전날 장부), 이제 그 cutoff 를
+-- 전역 settings 가 아니라 매장별 규칙으로 계산한다. 시험은 29 가 잰다.
 -- ════════════════════════════════════════════════════════════════
 
 -- ── ① 영업시간을 바꿔도 현지 날짜는 안 움직인다 ───────────────
@@ -97,9 +97,12 @@ begin
   end loop;
 
   /*
-   * 판매·영업일 5개 — **아직 옮기면 안 된다.**
-   * 여기는 cutoff 가 일부러 들어 있다. 새벽 2시까지 영업하는 집에서 01:00 판매는
-   * 어제 장부에 들어가야 한다. 3단계에서 sync_business_context 로 옮긴다.
+   * 판매·영업일 5개 — 0154 에서 매장 컨텍스트로 옮겼다.
+   * 새벽 2시까지 영업하는 집의 01:00 판매가 어제 장부에 들어가는 건 그대로인데,
+   * 그 판정을 전역 `business_day()`(settings limit 1)가 아니라
+   * `resolve_sales_business_context` 가 매장별 규칙으로 한다.
+   * 전역 함수가 돌아오면 다매장에서 날짜가 틀린다 — 서울 새벽 판매가
+   * 뉴욕 매장 설정에 좌우된다.
    */
   for r in
     select unnest(array['business_day_state','day_menu_basis','e10_sale_recorded',
@@ -108,8 +111,9 @@ begin
     select pg_get_functiondef(p.oid) into v_def
       from pg_proc p join pg_namespace n on n.oid = p.pronamespace
      where n.nspname = 'public' and p.proname = r.fn;
-    perform pg_temp.ok(format('%s 는 아직 영업일을 쓴다 (3단계 몫)', r.fn),
-      position('business_day()' in v_def) > 0);
+    perform pg_temp.ok(format('%s 는 매장 컨텍스트를 쓴다 (0154)', r.fn),
+      position('resolve_sales_business_context' in v_def) > 0
+      and position('business_day()' in v_def) = 0);
   end loop;
 end $t$;
 

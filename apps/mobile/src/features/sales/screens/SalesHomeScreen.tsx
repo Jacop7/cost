@@ -21,7 +21,7 @@ import { SaleStepper } from '../components/SaleStepper';
 import { BusinessDateGate } from '../components/BusinessDateGate';
 import { setPendingSale, clearPendingSale } from '../pendingSale';
 import { CHANNEL_LABEL, channelName } from '../channels';
-import { isClosedError, isNotOpenError, isRevisionConflict, useBusinessDay, useDayMenuBasis, useOpenBusinessDay, useSalesBusinessDate } from '../businessDay';
+import { isClosedError, isNotOpenError, isRevisionConflict, useBusinessDay, useDayMenuBasis, useSalesBusinessDate } from '../businessDay';
 import { BusinessDayBar } from '../components/BusinessDayBar';
 import { dayLabel } from '../period';
 
@@ -73,7 +73,6 @@ function SalesHomeBody({ today }: { today: string }) {
   const bday = useBusinessDay();
 
   const shortage = useRecipeShortages();
-  const openDay = useOpenBusinessDay();
   /**
    * 오늘 팔면 얼마로 잡히는지(0061). 카드가 현재 레시피를 보고 있으면
    * 판매가를 고친 순간 화면과 장부가 어긋난다 — 화면이 20,000 이라 해 놓고
@@ -218,17 +217,33 @@ function SalesHomeBody({ today }: { today: string }) {
    *   그날 스냅샷에서 오기 때문이다(0119 `has_basis`). 그래서 영업 시작 직후
    *   재시도에서는 경고가 통째로 새어 나갔다. 이제 재시도가 검사부터 다시 한다.
    */
-  const checkThenSave = (items: SaleItemInput[]) => {
+  /*
+   * ⚠ `openDay` 는 45001 확인을 받은 재시도만 true 다(0154). 서버가 영업 시작과
+   *   저장을 **한 트랜잭션**으로 한다 — 예전엔 여기서 open RPC 를 따로 부른 뒤
+   *   저장을 다시 불렀고, 열기만 되고 저장이 죽으면 빈 영업일이 남았다.
+   *   첫 판매의 부족 경고는 시트 대신 저장 응답의 부족분 알림이 맡는다 —
+   *   저장 전에 재려 해도 스냅샷이 아직 없어 못 잰다(0119 hasBasis).
+   */
+  const checkThenSave = (items: SaleItemInput[], openDay = false) => {
     // ⚠ 그날 장부를 아직 못 받았으면 저장하지 않는다. 판본을 모르는 채로 보내면
     //   서버가 검사를 건너뛰고, 그 틈으로 낡은 덮어쓰기가 들어온다(0117).
     if (!s) return;
     const run = () =>
       saveSale.mutate(
         // ⚠ 판본을 반드시 실어 보낸다(0117). 빼먹으면 그 경로로 낡은 화면이 남을 덮어쓴다.
-        { date: today, items, baseRevision: s.revision },
+        { date: today, items, baseRevision: s.revision, openDay },
         {
-          onSuccess: (shortages) => { setSel(null); clearPendingSale(); warnShortages(shortages); },
-          onError: (e) => onSaveError(e, () => checkThenSave(items)),
+          onSuccess: ({ shortages, dayOpened }) => {
+            setSel(null); clearPendingSale();
+            if (dayOpened) {
+              setToast(shortages.length > 0
+                ? '영업을 시작하고 판매를 기록했어요 · 부족분은 음수 재고로 반영돼요'
+                : '영업을 시작하고 판매를 기록했어요');
+            } else {
+              warnShortages(shortages);
+            }
+          },
+          onError: (e) => onSaveError(e, () => checkThenSave(items, true)),
         },
       );
 
@@ -282,15 +297,16 @@ function SalesHomeBody({ today }: { today: string }) {
      *   항목 단위로 합치지 않는 이유는 같은 이름이 여럿일 수 있어 무엇이 같은
      *   항목인지 정할 수 없기 때문이다. 대신 **판본 검사**로 낡은 배열을 막는다.
      */
-    const run = () =>
+    const run = (openDay = false) =>
       saveSale.mutate(
-        { date: today, items: allItems(), etcItems: next, baseRevision: s.revision },
+        { date: today, items: allItems(), etcItems: next, baseRevision: s.revision, openDay },
         {
           onSuccess: () => {
             setEtcOpen(false); setEtcName(''); setEtcPrice(''); setEtcQty('1');
             // 채널은 되돌리지 않는다 — 배달 음료를 연달아 적는 게 흔하다.
           },
-          onError: (e) => onSaveError(e, run),
+          // 45001 재시도는 영업 시작을 겸한다(0154) — 한 트랜잭션이다.
+          onError: (e) => onSaveError(e, () => run(true)),
         },
       );
     run();
@@ -304,12 +320,13 @@ function SalesHomeBody({ today }: { today: string }) {
     }
     if (!s) return;   // 판본을 모르면 저장하지 않는다(0117)
     const next: ExtraItem[] = [...s.extraItems, { name: expName.trim(), amount, memo: expMemo.trim() || undefined }];
-    const run = () =>
+    const run = (openDay = false) =>
       saveSale.mutate(
-        { date: today, items: allItems(), extraItems: next, baseRevision: s.revision },
+        { date: today, items: allItems(), extraItems: next, baseRevision: s.revision, openDay },
         {
           onSuccess: () => { setExpOpen(false); setExpName(''); setExpAmount(''); setExpMemo(''); },
-          onError: (e) => onSaveError(e, run),
+          // 45001 재시도는 영업 시작을 겸한다(0154) — 한 트랜잭션이다.
+          onError: (e) => onSaveError(e, () => run(true)),
         },
       );
     run();
@@ -711,15 +728,17 @@ function SalesHomeBody({ today }: { today: string }) {
         title="오늘 영업을 시작할까요?"
         message={'지금의 판매가·재료 구성·단가·부자재·고정지출·세금이 오늘 기준으로 정해져요. 영업 중에 메뉴를 고쳐도 오늘 매출에는 반영되지 않고, 다음 영업일부터 적용돼요.'}
         confirmText="영업 시작"
-        loading={openDay.isPending}
+        loading={saveSale.isPending}
         onCancel={() => setPendingRetry(null)}
         onConfirm={() => {
           const retry = pendingRetry;
           setPendingRetry(null);
-          openDay.mutate(undefined, {
-            onSuccess: () => retry?.(),
-            onError: (err) => setToast(err.message),
-          });
+          /*
+           * open RPC 를 따로 부르지 않는다(0154). 재시도가 `openDay=true` 로 저장하고,
+           * 서버가 영업 시작 + 저장을 한 트랜잭션으로 한다. 예전 두 번 호출은
+           * 열기만 성공하고 저장이 죽으면 빈 영업일을 남겼다.
+           */
+          retry?.();
         }}
       />
 

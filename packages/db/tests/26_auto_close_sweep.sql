@@ -224,10 +224,10 @@ begin
    *   **오래 기다린 트랜잭션일수록 더 잘 샌다.**
    */
   perform pg_temp.ok('판매 저장이 clock_timestamp 로 기한을 본다',
-    pg_temp.fn_code_has('public.save_sale(uuid,date,jsonb,jsonb,jsonb,integer)'::regprocedure,
+    pg_temp.fn_code_has('public.save_sale(uuid,date,jsonb,jsonb,jsonb,integer,boolean)'::regprocedure,
                         'clock_timestamp() >= v_bday.planned_close_at'));
   perform pg_temp.ok('그 자리에 now() 를 쓰지 않는다',
-    not pg_temp.fn_code_has('public.save_sale(uuid,date,jsonb,jsonb,jsonb,integer)'::regprocedure,
+    not pg_temp.fn_code_has('public.save_sale(uuid,date,jsonb,jsonb,jsonb,integer,boolean)'::regprocedure,
                             'now() >= v_bday.planned_close_at'));
 end $t$;
 
