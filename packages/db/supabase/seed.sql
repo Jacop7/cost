@@ -88,6 +88,9 @@ declare
   -- 하루 판매량에 요일 색을 준다. 전부 같은 숫자면 매출 그래프가 직선이라
   -- "이 화면이 진짜 데이터를 그리고 있나"를 확인할 수 없다.
   v_w     numeric;
+  v_sale_items  jsonb;
+  v_sale_etc    jsonb;
+  v_sale_extra  jsonb;
 begin
   if exists (select 1 from ingredients where store_id = v_store) then
     raise notice '시드 생략 — 이미 데이터가 있습니다';
@@ -421,18 +424,15 @@ begin
              when 5 then 1.35 when 6 then 1.45 when 0 then 0.75 when 1 then 0.85 else 1.0 end;
 
     /*
-     * ⚠ 과거 픽스처는 **소유자 경로**로 넣는다(0139).
-     *   `save_sale` 은 잠근 영업일의 자동 마감 기한이 지났으면 앱 롤의 저장을 거부한다.
-     *   여기서 만드는 날들은 전부 기한이 한참 지난 과거라, 앱 롤 그대로면 8/05 에서
-     *   45002 로 죽는다(실제로 죽었다).
+     * ⚠ 판매는 **날짜에 맞는 문**으로 넣는다(0145).
+     *   오늘   → `save_sale` (살아 있는 장부)
+     *   과거   → `amend_ended_business_day` (종료된 장부를 다시 열지 않고 정정)
      *
-     *   예전처럼 규칙에 **날짜 예외**를 두는 것으로 풀면 안 된다 — 그건 기획서 §6.4
-     *   ("종료된 장부를 다시 열지 않는다")와 반대이고, 진짜 사용자에게도 구멍이 된다.
-     *   픽스처가 소유자로 넣는 것이 맞다. 나머지 시드는 그대로 `authenticated` 로 돌아
-     *   RLS 를 태운다.
+     *   0139 에서는 여기서 `reset role` 로 소유자 우회를 했다. `save_sale` 의 기한
+     *   검사가 과거 날짜를 막았기 때문인데, 그건 시드가 사용자에게 없는 길로 다니는
+     *   것이었다. 이제 그 길이 실제로 생겼으므로 우회를 걷어낸다.
      */
-    execute 'reset role';
-    perform save_sale(v_store, v_day, jsonb_build_array(
+    v_sale_items := jsonb_build_array(
       jsonb_build_object('recipe_id', r_jeyuk,
         'qty_hall',     round(9 * v_w + (v_seq % 4)),
         'qty_delivery', round(5 * v_w + (v_seq % 3)),
@@ -462,16 +462,20 @@ begin
       jsonb_build_object('recipe_id', r_rice,
         'qty_hall',     round(22 * v_w),
         'qty_delivery', round(9 * v_w),
-        'qty_takeout',  round(3 * v_w))),
-      -- 기타 매출 — 레시피에 없는 음료. 재료 차감 없이 매출에만 더해진다.
-      jsonb_build_array(
+        'qty_takeout',  round(3 * v_w)));
+    -- 기타 매출 — 레시피에 없는 음료. 재료 차감 없이 매출에만 더해진다.
+    v_sale_etc := jsonb_build_array(
         jsonb_build_object('name','음료(캔)', 'price',2000,'qty', round(7 * v_w)),
-        jsonb_build_object('name','소주·맥주','price',5000,'qty', round(3 * v_w))),
-      -- 당일 일회성 지출 — 고정지출에는 들어가지 않는다.
-      case when d % 7 = 1
+        jsonb_build_object('name','소주·맥주','price',5000,'qty', round(3 * v_w)));
+    -- 당일 일회성 지출 — 고정지출에는 들어가지 않는다.
+    v_sale_extra := case when d % 7 = 1
         then jsonb_build_array(jsonb_build_object('name','얼음·소모품','amount',45000,'memo','주 1회 구매'))
-        else '[]'::jsonb end);
-    execute 'set local role authenticated';
+        else '[]'::jsonb end;
+
+    -- 오늘은 살아 있는 장부라 보통 저장 경로로 넣는다. 과거는 아래 종료 뒤에 정정한다.
+    if d = 0 then
+      perform save_sale(v_store, v_day, v_sale_items, v_sale_etc, v_sale_extra);
+    end if;
 
     -- ── 폐기 (E2) — 주 1회 상하는 채소 ──────────────────────
     -- e2_discard 는 "버린 양"이 아니라 **남은 양**을 받는다. 220g 을 버린 셈으로 기록한다.
@@ -489,6 +493,13 @@ begin
     -- 오늘은 열어 둔다. 앱을 켜면 영업 중 상태로 시작해 사장님이 직접 닫는다.
     if d > 0 then
       perform close_business_day(v_store);   -- 방식은 늘 manual 이다(0139)
+      /*
+       * 종료 **뒤에** 그날 판매를 넣는다(0145). 사장님이 나중에 빠뜨린 판매를 넣는
+       * 것과 같은 길이다 — 장부를 다시 열지 않고 정정 RPC 로 들어간다.
+       * 그날 스냅샷은 이미 있으므로 `basis_quality` 는 `exact` 그대로다.
+       */
+      perform amend_ended_business_day(v_store, v_day, v_sale_items, v_sale_etc, v_sale_extra,
+                                       '시드: 그날 판매 기록');
     end if;
 
   end loop;

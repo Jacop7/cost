@@ -251,7 +251,13 @@ begin
     from pg_proc p join pg_namespace n on n.oid = p.pronamespace
    where n.nspname = 'public' and p.prokind = 'f'
      and not has_function_privilege('authenticated', p.oid, 'execute')
-     and p.proname not in ('close_due_business_days', 'close_business_day_row');
+     and p.proname not in (
+       -- 크론 전용: 매장을 안 가리는 definer 다(0137)
+       'close_due_business_days',
+       -- 몸통 계열: 문지기가 없다. 문은 close_business_day / save_sale / amend 다.
+       'close_business_day_row',   -- 0138
+       'apply_sale_items',         -- 0145
+       'e10_sale_recorded');       -- 0145 — p_allow_closed 가 열려 있으면 그게 곧 문이다
   perform pg_temp.eq(
     coalesce('인증 사용자가 못 부르는 함수: ' || v_names, '인증 사용자는 전부 부를 수 있다'),
     v_n, 0, 0);
@@ -314,6 +320,8 @@ end $t$;
  *                                크론(service_role)만 부른다(0137).
  *   close_business_day           첫 줄이 assert_my_store 다. definer 인 이유는 권한을
  *                                걷어낸 몸통(`close_business_day_row`)을 부르기 위해서다(0138).
+ *   save_sale                    같은 이유다(0145) — 몸통 `apply_sale_items` 를 부른다.
+ *   amend_ended_business_day     같은 이유다(0145). 첫 줄이 assert_my_store.
  */
 do $t$
 declare v_now text; v_want text;
@@ -330,10 +338,12 @@ begin
    where n.nspname = 'public' and p.prokind = 'f' and p.prosecdef;
 
   v_want := concat_ws(' | ',
+    'amend_ended_business_day(p_store uuid, p_date date, p_items jsonb, p_etc_items jsonb, p_extra_items jsonb, p_reason text, p_base_revision integer)',
     'close_business_day(p_store uuid)',
     'close_due_business_days()',
     'my_store_ids()',
     'purge_entity_changes()',
+    'save_sale(p_store uuid, p_date date, p_items jsonb, p_etc_items jsonb, p_extra_items jsonb, p_base_revision integer)',
     'set_operating_hours(p_store uuid, p_weekly_hours jsonb, p_weekly_breaks jsonb)',
     'settings_sync_operating_rule()',
     'stores_default_operating_rule()');

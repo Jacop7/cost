@@ -291,3 +291,28 @@ begin
       using errcode = '45003';
   end if;
 end $h$;
+
+
+/*
+ * 판매 이벤트를 **소유자로** 부른다.
+ *
+ * ⚠ `e10_sale_recorded` 는 앱 롤에서 걷혔다(0145). 이제 몸통 계열이라 부르는 곳은
+ *   `apply_sale_items` 뿐이고, 문은 `save_sale` 과 `amend_ended_business_day` 다.
+ *   시험은 이벤트 자체를 직접 재야 하므로 소유자로 부른다 — 0141 의 `force_open`
+ *   과 같은 판단이다.
+ */
+create function pg_temp.e10(
+  p_store uuid, p_date date, p_recipe uuid,
+  p_qty_hall numeric default 0, p_qty_delivery numeric default 0,
+  p_qty_takeout numeric default 0, p_qty_waste numeric default 0,
+  p_allow_closed boolean default false
+) returns jsonb
+language plpgsql as $h$
+declare v jsonb;
+begin
+  set local role postgres;
+  v := e10_sale_recorded(p_store, p_date, p_recipe,
+                         p_qty_hall, p_qty_delivery, p_qty_takeout, p_qty_waste, p_allow_closed);
+  set local role authenticated;
+  return v;
+end $h$;

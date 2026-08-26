@@ -92,3 +92,34 @@ export const supabase = createClient<Database>(
  */
 export const makeInboundKey = (orderId: string): string =>
   `${orderId}:${Date.now().toString(36)}:${Math.random().toString(36).slice(2, 10)}`;
+
+/**
+ * 서버가 거절한 이유를 **코드로** 들고 다니는 오류.
+ *
+ * ⚠ 예전엔 `new Error(error.message)` 로 문구만 남겼고, 화면은 그 한국어를 검사해
+ *   분기했다(`isClosedError` 등). 그래서 0140 에서 문구 하나를 고칠 때 판별식도
+ *   같이 고쳐야 했고, 한쪽만 고치면 **화면이 오류를 못 알아봤다.**
+ *
+ * ⚠ 코드베이스 주석에는 "PostgREST 응답에 SQLSTATE 가 그대로 오지 않는 경우가 있다"
+ *   고 적혀 있었는데 **실측해 보니 틀렸다.** 그대로 온다:
+ *       {"code":"45010","details":"SALE_DATE_OUT_OF_RANGE","hint":null,"message":"…"}
+ *   `code` 가 SQLSTATE, `details` 가 서버가 붙인 안정된 이름이다(0144).
+ */
+export class RpcError extends Error {
+  /** SQLSTATE. 45001 BEFORE_OPEN · 45002 DAY_CLOSED · 45009 REVISION_CONFLICT · 45010 SALE_DATE_OUT_OF_RANGE · 45011 DAY_IS_LIVE */
+  readonly code: string | null;
+  /** 서버가 `detail` 로 붙인 이름. 로그에서 읽기 좋다. */
+  readonly detail: string | null;
+
+  constructor(message: string, code: string | null, detail: string | null) {
+    super(message);
+    this.name = 'RpcError';
+    this.code = code;
+    this.detail = detail;
+  }
+}
+
+/** supabase-js 의 오류를 `RpcError` 로 옮긴다. 문구는 그대로 두고 코드를 살린다. */
+export function rpcError(e: { message: string; code?: string | null; details?: string | null }): RpcError {
+  return new RpcError(e.message, e.code ?? null, e.details ?? null);
+}

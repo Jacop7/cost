@@ -38,8 +38,50 @@ export type Database = {
           },
         ]
       }
+      business_day_revisions: {
+        Row: {
+          after_summary: Json
+          before_summary: Json
+          business_day_id: string
+          changed_at: string
+          changed_by: string | null
+          id: string
+          reason: string | null
+          revision_no: number
+        }
+        Insert: {
+          after_summary: Json
+          before_summary: Json
+          business_day_id: string
+          changed_at?: string
+          changed_by?: string | null
+          id?: string
+          reason?: string | null
+          revision_no: number
+        }
+        Update: {
+          after_summary?: Json
+          before_summary?: Json
+          business_day_id?: string
+          changed_at?: string
+          changed_by?: string | null
+          id?: string
+          reason?: string | null
+          revision_no?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_day_revisions_business_day_id_fkey"
+            columns: ["business_day_id"]
+            isOneToOne: false
+            referencedRelation: "business_days"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       business_days: {
         Row: {
+          basis_quality: Database["public"]["Enums"]["day_basis_quality"]
           business_date: string
           close_method:
             | Database["public"]["Enums"]["business_close_method"]
@@ -48,15 +90,17 @@ export type Database = {
           created_at: string
           id: string
           last_activity_at: string
-          opened_at: string
+          opened_at: string | null
           operating_rule_id: string | null
           planned_close_at: string
+          revision_no: number
           scheduled_open_at: string | null
           snapshot: Json
           status: Database["public"]["Enums"]["business_day_status"]
           store_id: string
         }
         Insert: {
+          basis_quality?: Database["public"]["Enums"]["day_basis_quality"]
           business_date: string
           close_method?:
             | Database["public"]["Enums"]["business_close_method"]
@@ -65,15 +109,17 @@ export type Database = {
           created_at?: string
           id?: string
           last_activity_at?: string
-          opened_at?: string
+          opened_at?: string | null
           operating_rule_id?: string | null
           planned_close_at: string
+          revision_no?: number
           scheduled_open_at?: string | null
           snapshot: Json
           status?: Database["public"]["Enums"]["business_day_status"]
           store_id: string
         }
         Update: {
+          basis_quality?: Database["public"]["Enums"]["day_basis_quality"]
           business_date?: string
           close_method?:
             | Database["public"]["Enums"]["business_close_method"]
@@ -82,9 +128,10 @@ export type Database = {
           created_at?: string
           id?: string
           last_activity_at?: string
-          opened_at?: string
+          opened_at?: string | null
           operating_rule_id?: string | null
           planned_close_at?: string
+          revision_no?: number
           scheduled_open_at?: string | null
           snapshot?: Json
           status?: Database["public"]["Enums"]["business_day_status"]
@@ -1481,6 +1528,30 @@ export type Database = {
         }
         Returns: Json
       }
+      amend_ended_business_day: {
+        Args: {
+          p_store: string
+          p_date: string
+          p_items?: Json
+          p_etc_items?: Json
+          p_extra_items?: Json
+          p_reason?: string
+          p_base_revision?: number
+        }
+        Returns: Json
+      }
+      apply_sale_items: {
+        Args: {
+          p_store: string
+          p_date: string
+          p_sales: string
+          p_items: Json
+          p_etc_items: Json
+          p_extra_items: Json
+          p_allow_closed?: boolean
+        }
+        Returns: Json
+      }
       assert_my_store: {
         Args: {
           p_store: string
@@ -1542,6 +1613,7 @@ export type Database = {
           p_date: string
         }
         Returns: {
+          basis_quality: Database["public"]["Enums"]["day_basis_quality"]
           business_date: string
           close_method:
             | Database["public"]["Enums"]["business_close_method"]
@@ -1550,9 +1622,10 @@ export type Database = {
           created_at: string
           id: string
           last_activity_at: string
-          opened_at: string
+          opened_at: string | null
           operating_rule_id: string | null
           planned_close_at: string
+          revision_no: number
           scheduled_open_at: string | null
           snapshot: Json
           status: Database["public"]["Enums"]["business_day_status"]
@@ -1628,6 +1701,7 @@ export type Database = {
           p_store: string
         }
         Returns: {
+          basis_quality: Database["public"]["Enums"]["day_basis_quality"]
           business_date: string
           close_method:
             | Database["public"]["Enums"]["business_close_method"]
@@ -1636,9 +1710,10 @@ export type Database = {
           created_at: string
           id: string
           last_activity_at: string
-          opened_at: string
+          opened_at: string | null
           operating_rule_id: string | null
           planned_close_at: string
+          revision_no: number
           scheduled_open_at: string | null
           snapshot: Json
           status: Database["public"]["Enums"]["business_day_status"]
@@ -1781,6 +1856,7 @@ export type Database = {
           p_qty_delivery?: number
           p_qty_takeout?: number
           p_qty_waste?: number
+          p_allow_closed?: boolean
         }
         Returns: Json
       }
@@ -2243,6 +2319,13 @@ export type Database = {
         }
         Returns: undefined
       }
+      sale_date_allowed: {
+        Args: {
+          p_store: string
+          p_date: string
+        }
+        Returns: boolean
+      }
       sale_shortages: {
         Args: {
           p_store: string
@@ -2536,6 +2619,7 @@ export type Database = {
       candidate_status: "pending" | "ordered" | "excluded"
       category_kind: "ingredient" | "recipe" | "material"
       change_source: "direct" | "inbound" | "ingredient" | "fixed_cost"
+      day_basis_quality: "exact" | "estimated_current"
       fixed_cost_mode: "total" | "detail"
       inventory_event_type:
         | "inbound"
