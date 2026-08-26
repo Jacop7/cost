@@ -2722,12 +2722,6 @@ export type Database = {
         }
         Returns: number
       }
-      touch_business_day: {
-        Args: {
-          p_store: string
-        }
-        Returns: string
-      }
       transition_business_state: {
         Args: {
           p_store: string
