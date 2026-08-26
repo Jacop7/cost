@@ -390,7 +390,7 @@ export function useSaveSettings() {
   const qc = useQueryClient();
   const storeId = useStoreId();
   return useMutation({
-    mutationFn: async (input: Partial<StoreSettings>) => {
+    mutationFn: async (input: Partial<Omit<StoreSettings, 'openTime' | 'closeTime' | 'breakStart' | 'breakEnd'>>) => {
       const payload: Record<string, unknown> = {};
       if (input.unitSystem !== undefined) payload.unit_system = input.unitSystem;
       if (input.cupVolume !== undefined) payload.cup_volume = input.cupVolume;
@@ -404,11 +404,8 @@ export function useSaveSettings() {
       if (input.alertInboundDelay !== undefined) payload.alert_inbound_delay = input.alertInboundDelay;
       if (input.alertPriceSpike !== undefined) payload.alert_price_spike = input.alertPriceSpike;
       if (input.alertTargetMiss !== undefined) payload.alert_target_miss = input.alertTargetMiss;
-      if (input.openTime !== undefined) payload.open_time = input.openTime;
-      if (input.closeTime !== undefined) payload.close_time = input.closeTime;
-      // 브레이크는 지우는 것도 뜻이 있다 — undefined 가 아니면 null 이라도 보낸다.
-      if (input.breakStart !== undefined) payload.break_start = input.breakStart ?? '';
-      if (input.breakEnd !== undefined) payload.break_end = input.breakEnd ?? '';
+      // ⚠ 영업시간은 여기로 안 간다(0163) — 서버가 키만 봐도 거부한다. MY > 영업시간의
+      //   set_operating_hours(판본 필수)가 유일한 문이다.
 
       const { error } = await supabase.rpc('save_settings', { p_store: storeId, p_payload: asJson(payload) });
       if (error) throw new Error(error.message);

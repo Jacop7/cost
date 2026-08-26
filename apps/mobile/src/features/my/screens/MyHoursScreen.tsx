@@ -72,6 +72,12 @@ export default function MyHoursScreen() {
   const [base, setBase] = useState<{ ruleId: string; revision: number } | null>(null);
   /** 지금 고른 요일들(dow). 편집 패널의 값이 여기 요일에 적용된다. */
   const [selected, setSelected] = useState<Set<number>>(new Set());
+  /**
+   * 패널 값을 가져온 **기준 요일**(검토 P1 재재검토). 그 요일이 해제되면 남은 요일 중
+   * 첫 요일의 값을 다시 싣는다 — 2→1 만 보면 3→2 에서 기준이 빠진 뒤 다른 요일이
+   * 기준 요일 값으로 조용히 덮인다.
+   */
+  const [panelSource, setPanelSource] = useState<number | null>(null);
 
   // 편집 패널 — 선택 요일에 적용할 값.
   const [pOpen, setPOpen] = useState('11:00');
@@ -126,6 +132,7 @@ export default function MyHoursScreen() {
   const loadDayIntoPanel = (d: number) => {
     const day = days?.[d];
     if (!day) return;
+    setPanelSource(d);
     setPClosed(day.closed);
     if (!day.closed) { setPOpen(day.open); setPClose(day.close); }
     const hasBreak = day.breakStart !== null && day.breakEnd !== null;
@@ -135,15 +142,21 @@ export default function MyHoursScreen() {
 
   const toggleDay = (d: number) => {
     const next = new Set(selected);
-    if (next.has(d)) next.delete(d); else next.add(d);
+    const removing = next.has(d);
+    if (removing) next.delete(d); else next.add(d);
     /*
-     * 패널은 "지금 고른 요일의 현재 값"을 따라간다 —
-     *   · 첫 선택: 그 요일을 싣는다.
-     *   · 해제해서 **하나만 남으면** 남은 요일을 다시 싣는다(검토 P2-5 재검토).
-     *     수(09~17) → 화 추가 → 수 해제 뒤 패널이 09~17 로 남아 있으면, 적용이 화요일을
-     *     조용히 덮는다.
+     * 패널은 "기준 요일의 현재 값"을 따라간다 —
+     *   · 첫 선택: 그 요일이 기준이다.
+     *   · **기준 요일이 해제되면** 남은 요일 중 표시 순서상 첫 요일을 새 기준으로 싣는다.
+     *     2→1 만 보면 부족하다(검토 P1): 수(09~17)·화·목을 고른 뒤 수를 빼면 패널은
+     *     09~17 인 채 화·목만 남고, 적용이 둘을 조용히 덮는다.
      */
-    if (next.size === 1) loadDayIntoPanel([...next][0]!);
+    if (next.size === 0) {
+      setPanelSource(null);
+    } else if (selected.size === 0 || (removing && d === panelSource)) {
+      const first = DOW_ORDER.find((x) => next.has(x));
+      if (first !== undefined) loadDayIntoPanel(first);
+    }
     setSelected(next);
   };
 
@@ -157,6 +170,8 @@ export default function MyHoursScreen() {
   /** 편집 패널 값을 고른 요일들에 적는다. */
   const applyToSelected = () => {
     if (!days || selected.size === 0) return;
+    // 적용하면 고른 요일이 전부 패널 값이 된다 — 기준 요일은 그중 첫 요일로 둔다.
+    setPanelSource(DOW_ORDER.find((x) => selected.has(x)) ?? null);
     const next: WeeklySchedule = { ...days };
     for (const d of selected) {
       next[d] = pClosed
@@ -179,13 +194,20 @@ export default function MyHoursScreen() {
    */
   const reloadFromServer = async () => {
     const r = await status.refetch();
-    const basis = r.data ? (r.data.pending ?? r.data.currentRule) : null;
+    /*
+     * ⚠ 재조회가 **실패**하면 r.data 에는 캐시의 옛 데이터가 남아 있다(react-query 는
+     *   오류 때 이전 데이터를 유지한다). 그걸 최신으로 오판해 다시 적용하면 옛 판본이
+     *   되살아나 45009 가 반복된다 — 성공한 응답으로만 교체한다.
+     */
+    if (r.isError || !r.data) return false;
+    const basis = r.data.pending ?? r.data.currentRule;
     if (!basis) return false;
     const parsed = fromRule(basis.weeklyHours, basis.weeklyBreaks);
     if (!parsed) return false;
     setDays(parsed);
     setBase({ ruleId: basis.ruleId, revision: basis.revision });
     setSelected(new Set());
+    setPanelSource(null);
     return true;
   };
 
@@ -214,6 +236,8 @@ export default function MyHoursScreen() {
            * 들고 있던 편집을 버리고 최신 규칙으로 **교체**한다(판매 저장과 같은 처리).
            */
           if (e instanceof RpcError && e.code === '45009') {
+            // 낡은 판본으로는 더 저장하지 못하게 먼저 막는다 — 재조회가 실패해도 그대로다.
+            setBase(null);
             void reloadFromServer().then((ok) => {
               setToast(ok
                 ? '다른 기기에서 영업시간이 변경됐어요 · 최신 값을 다시 불러왔어요'
@@ -273,7 +297,7 @@ export default function MyHoursScreen() {
           isLoading={status.isLoading}
           error={status.error ?? (brokenRule ? new Error('영업시간 규칙을 읽지 못했어요. 잠시 후 다시 시도해 주세요') : null)}
           isEmpty={false}
-          onRetry={() => { setDays(null); void status.refetch(); }}
+          onRetry={() => { void reloadFromServer(); }}
           emptyTitle="설정을 불러오지 못했어요"
         >
           {/* 예약된 변경이 있으면 **제일 위에** 말한다(0131). */}

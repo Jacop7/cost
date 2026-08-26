@@ -150,6 +150,21 @@ describe('요일 선택 시 기존 값 (P2-5)', () => {
     expect(screen.getByText('09:00~17:00')).toBeTruthy();
   });
 
+  it('기준 요일을 빼면(3→2) 남은 요일 값으로 패널이 바뀐다 — 다른 요일을 덮지 않는다', () => {
+    hoursStatus.mockReturnValue(status({
+      currentRule: { ruleId: 'rule-1', revision: 3, effectiveFrom: '2026-01-01', weeklyHours: VARIED_HOURS, weeklyBreaks: {} },
+    }));
+    render(<MyHoursScreen />);
+    fireEvent.click(screen.getByLabelText('수요일'));   // 기준 = 수(09~17)
+    fireEvent.click(screen.getByLabelText('화요일'));
+    fireEvent.click(screen.getByLabelText('목요일'));   // 셋
+    fireEvent.click(screen.getByLabelText('수요일'));   // 기준 해제 → 화·목
+    fireEvent.click(screen.getByText('선택한 요일에 적용'));
+    // 화·목은 제 값(11:00~22:00)을 지켜야 한다 — 수요일 값(09~17)으로 덮이면 4줄이 된다.
+    expect(screen.getAllByText('11:00~22:00')).toHaveLength(6);
+    expect(screen.getByText('09:00~17:00')).toBeTruthy();
+  });
+
   it('서로 다른 요일을 함께 고르면 혼합 표시가 뜬다', () => {
     hoursStatus.mockReturnValue(status({
       currentRule: { ruleId: 'rule-1', revision: 3, effectiveFrom: '2026-01-01', weeklyHours: VARIED_HOURS, weeklyBreaks: {} },
@@ -218,6 +233,25 @@ describe('예약 규칙 판본 (0159)', () => {
     const arg = saveHours.mock.calls.at(-1)![0] as { baseRuleId: string; baseRevision: number };
     expect(arg.baseRuleId).toBe('rule-9');
     expect(arg.baseRevision).toBe(12);
+  });
+});
+
+describe('45009 뒤 재조회 실패 (P1 재재검토)', () => {
+  it('재조회가 실패하면 캐시의 옛 값을 최신으로 오판하지 않고, 저장도 막는다', async () => {
+    // refetch 가 오류로 끝나면서 r.data 에는 캐시(옛 판본)가 남는다 — react-query 의 실제 모양.
+    const st = status();
+    const refetch = vi.fn(async () => ({ data: st.data, isError: true, error: new Error('network') }));
+    hoursStatus.mockReturnValue({ ...st, refetch });
+    saveHours.mockImplementationOnce((_input: unknown, opts?: { onError?: (e: Error) => void }) => {
+      opts?.onError?.(new RpcError('다른 기기에서 영업시간이 변경됐어요', '45009', 'REVISION_CONFLICT'));
+    });
+    render(<MyHoursScreen />);
+    fireEvent.click(screen.getByText('저장'));
+    await vi.waitFor(() => expect(screen.getByText(/최신 값을 못 받았어요/)).toBeTruthy());
+    // 다음 저장은 서버로 나가지 않는다 — 낡은 판본으로 45009 를 반복할 뿐이다.
+    fireEvent.click(screen.getByText('저장'));
+    expect(saveHours).toHaveBeenCalledTimes(1);
+    expect(screen.getByText(/편집 기준을 다시 불러왔어요|최신 값을 못 받았어요/)).toBeTruthy();
   });
 });
 

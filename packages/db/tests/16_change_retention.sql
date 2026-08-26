@@ -326,7 +326,9 @@ end $t$;
  *   my_store_ids                 auth.uid() 로 자기 매장만. 이게 RLS 의 뿌리다.
  *   purge_entity_changes         매장을 안 가린다. 대신 30일 고정 + anon 차단(0135).
  *   set_operating_hours          첫 줄이 assert_my_store 다(0132).
- *   settings_sync_operating_rule 트리거 전용. 직접 못 부른다.
+ *   save_settings · save_store_tax  settings 를 쓴다 — 앱 롤의 직접 쓰기를 걷어낸 뒤(0164)
+ *                                definer 만 쓸 수 있다. 둘 다 첫 줄이 assert_my_store 다.
+ *   (settings_sync_operating_rule 은 0164 에서 지웠다 — settings 는 표시 폼이고 권위는 규칙이다.)
  *   stores_default_operating_rule 트리거 전용. 직접 못 부른다.
  *   close_due_business_days      매장을 안 가린다. 그래서 사람에게는 **아예 안 연다** —
  *                                크론(service_role)만 부른다(0137).
@@ -371,9 +373,10 @@ begin
     'open_business_day(p_store uuid, p_date date, p_close_time time without time zone)',
     'purge_entity_changes()',
     'save_sale(p_store uuid, p_date date, p_items jsonb, p_etc_items jsonb, p_extra_items jsonb, p_base_revision integer, p_open_day boolean, p_open_close_time time without time zone)',
+    'save_settings(p_store uuid, p_payload jsonb)',
+    'save_store_tax(p_store uuid, p_mode tax_mode, p_items jsonb)',
     'set_operating_hours(p_store uuid, p_weekly_hours jsonb, p_weekly_breaks jsonb, p_base_rule_id uuid, p_base_revision integer)',
     'set_store_timezone(p_store uuid, p_timezone text)',
-    'settings_sync_operating_rule()',
     'stores_default_operating_rule()',
     'transition_business_state(p_store uuid, p_action text, p_close_time time without time zone)');
 

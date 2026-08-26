@@ -31,8 +31,11 @@ begin
   v_ld0 := store_local_date(pg_temp.store(), v_at);
   v_sd0 := (resolve_sales_business_context(pg_temp.store(), v_at)).sales_date;
 
-  -- 사장님이 영업시간을 18:00–02:00 으로 바꾼다.
+  -- 표시 폼(settings)을 소유자가 직접 바꾼다 — 0164 부터 앱 롤은 못 쓰고, 동기화 트리거도
+  -- 없어 규칙에 닿지 않는다. 그래도 날짜 해석이 흔들리지 않는지가 이 블록의 단언이다.
+  set local role postgres;
   update settings set open_time = '18:00', close_time = '02:00';
+  set local role authenticated;
 
   v_ld1 := store_local_date(pg_temp.store(), v_at);
   v_sd1 := (resolve_sales_business_context(pg_temp.store(), v_at)).sales_date;
@@ -48,9 +51,10 @@ begin
   perform pg_temp.eq_t('판매 영업일도 그대로다 — 과거 해석은 규칙이 지킨다',
     v_sd1::text, v_sd0::text);
 
-  -- ⚠ 되돌린다. 안 되돌리면 아래 블록들이 자정 넘김 규칙 아래서 돌고,
-  --   서울 시간 00:00~02:00 에 실행하면 통과/실패가 갈린다 — 시각에 따라 흔들리는 시험이 된다.
+  -- 되돌린다(표시 폼).
+  set local role postgres;
   update settings set open_time = '11:00', close_time = '22:00';
+  set local role authenticated;
 end $t$;
 
 

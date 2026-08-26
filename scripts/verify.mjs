@@ -116,9 +116,10 @@ if (skipDb) {
      *   drop 이 실패하면 그 사실을 감추지 않는다.
      */
     const db = `fresh_verify_${process.pid}_${Date.now().toString(36)}`;
-    if (!run(BASH, ['packages/db/scripts/fresh-db.sh', db])) return false;
     let ok = false;
     try {
+      // 생성 자체가 중간에 실패해도(마이그레이션 오류) 반쯤 만들어진 DB 가 남는다 — finally 가 치운다.
+      if (!run(BASH, ['packages/db/scripts/fresh-db.sh', db])) return false;
       ok = run('node', ['packages/db/tests/run.mjs'], { env: { ...process.env, PGDATABASE: db } });
       /*
        * 2세션 경합(검토 항목) — 스위트가 초록이어도 연결 하나짜리 하네스는 경합을 못 본다.
