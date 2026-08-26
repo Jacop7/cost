@@ -125,14 +125,14 @@ begin
   select sum(amount) into v_need
     from recipe_ingredient_needs(v_rcp, 1) where ingredient_id = v_daepa;
 
-  perform e10_sale_recorded(pg_temp.store(), v_day, v_rcp, 1, 0, 0, 0);
+  perform pg_temp.e10(pg_temp.store(), v_day, v_rcp, 1, 0, 0, 0);
   select it.id into v_item from daily_sales_items it
     join daily_sales d on d.id = it.daily_sales_id
    where d.store_id = pg_temp.store() and d.sale_date = v_day and it.recipe_id = v_rcp;
   perform e9_sales_reverted(v_item);
   b_stock := stock_total_base(v_daepa);
 
-  perform e10_sale_recorded(pg_temp.store(), v_day, v_rcp, 20, 0, 0, 3);
+  perform pg_temp.e10(pg_temp.store(), v_day, v_rcp, 20, 0, 0, 3);
 
   perform pg_temp.eq('판매분은 consume 으로 20인분',
     (select -sum(count_delta) from inventory_events
@@ -217,7 +217,7 @@ begin
   b_stock := stock_total_base(v_daepa);
   b_loss  := coalesce((ingredient_loss(v_daepa)->>'storage_amount')::numeric, 0);
   perform e2_discard(v_daepa, b_stock - 200);          -- 보관 폐기 200
-  perform e10_sale_recorded(pg_temp.store(), v_day, v_rcp, 0, 0, 0, 4);  -- 조리 폐기 4인분
+  perform pg_temp.e10(pg_temp.store(), v_day, v_rcp, 0, 0, 0, 4);  -- 조리 폐기 4인분
 
   v_loss := ingredient_loss(v_daepa);
   perform pg_temp.eq('보관 폐기량 200 이 더해졌다',

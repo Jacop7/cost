@@ -141,7 +141,7 @@ declare
   v_tx0 numeric;
 begin
   perform pg_temp.open_today();   -- 닫혀 있어도 열어 준다(프렐류드 헬퍼)
-  perform e10_sale_recorded(pg_temp.store(), v_day, v_rcp, 10, 0, 0, 0);
+  perform pg_temp.e10(pg_temp.store(), v_day, v_rcp, 10, 0, 0, 0);
   b0 := day_menu_detail(pg_temp.store(), v_day, v_rcp);
 
   perform pg_temp.eq('그날 세금 = 부가세', (b0->>'tax')::numeric, 1090.909, 0.01);

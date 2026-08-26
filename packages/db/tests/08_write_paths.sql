@@ -244,11 +244,11 @@ declare
   v_day date := business_day();
 begin
   -- 오늘 판매를 0 으로 되돌려 기준선을 만든다.
-  perform e10_sale_recorded(pg_temp.store(), v_day, v_rcp, 0, 0, 0, 0);
+  perform pg_temp.e10(pg_temp.store(), v_day, v_rcp, 0, 0, 0, 0);
 
   -- ── 재료가 있으면 팔린다 ────────────────────────────────────
   perform pg_temp.ok('재료가 있으면 판매 가능', recipe_blocked_by(v_rcp) is null);
-  perform e10_sale_recorded(pg_temp.store(), v_day, v_rcp, 2, 0, 0, 0);
+  perform pg_temp.e10(pg_temp.store(), v_day, v_rcp, 2, 0, 0, 0);
 
   /*
    * ── 재료가 바닥나도 **막지 않는다** (0102) ──────────────────
@@ -261,12 +261,12 @@ begin
    *
    * ⚠ '판매 중지'(사장님이 끈 메뉴)는 여전히 막는다. 그건 재고가 아니라 의도다.
    */
-  perform e10_sale_recorded(pg_temp.store(), v_day, v_rcp, 0, 0, 0, 0);
+  perform pg_temp.e10(pg_temp.store(), v_day, v_rcp, 0, 0, 0, 0);
   perform e2_discard(v_pa, 0);
   perform pg_temp.eq_t('막는 재료를 알려준다', recipe_blocked_by(v_rcp), '대파');
 
   perform pg_temp.ok('재료가 없어도 판매는 기록된다',
-    e10_sale_recorded(pg_temp.store(), v_day, v_rcp, 5, 0, 0, 0) is not null);
+    pg_temp.e10(pg_temp.store(), v_day, v_rcp, 5, 0, 0, 0) is not null);
   perform pg_temp.ok('그만큼 재고가 음수로 내려간다',
     stock_total_base(v_pa) < 0);
   perform pg_temp.eq('원장 합 = 잔액 (음수여도)',
@@ -275,23 +275,23 @@ begin
 
   -- ⚠ 수량 0(지우기)은 당연히 된다 — 오입력을 영영 못 지우면 안 된다.
   perform pg_temp.ok('0 으로 지우기도 된다',
-    e10_sale_recorded(pg_temp.store(), v_day, v_rcp, 0, 0, 0, 0) is not null);
+    pg_temp.e10(pg_temp.store(), v_day, v_rcp, 0, 0, 0, 0) is not null);
   perform pg_temp.eq('지우면 재고가 되돌아온다',
     stock_total_base(v_pa), 0, 0.001);
 
   -- 조리 폐기만 적는 것도 같은 문이다.
   perform pg_temp.ok('재료가 없어도 조리 폐기는 기록된다',
-    e10_sale_recorded(pg_temp.store(), v_day, v_rcp, 0, 0, 0, 3) is not null);
-  perform e10_sale_recorded(pg_temp.store(), v_day, v_rcp, 0, 0, 0, 0);
+    pg_temp.e10(pg_temp.store(), v_day, v_rcp, 0, 0, 0, 3) is not null);
+  perform pg_temp.e10(pg_temp.store(), v_day, v_rcp, 0, 0, 0, 0);
 
   -- ── 판매중지 메뉴는 막힌다 ──────────────────────────────────
   declare v_rice uuid := pg_temp.rcp('공기밥');
   begin
     perform deactivate_recipe(v_rice);
     perform pg_temp.raises('판매중지 메뉴는 판매 거부',
-      format('select e10_sale_recorded(%L,%L,%L,3,0,0,0)', pg_temp.store(), v_day, v_rice), '22000');
+      format('select pg_temp.e10(%L,%L,%L,3,0,0,0)', pg_temp.store(), v_day, v_rice), '22000');
     perform pg_temp.ok('판매중지 메뉴도 0 으로 지우기는 된다',
-      e10_sale_recorded(pg_temp.store(), v_day, v_rice, 0, 0, 0, 0) is not null);
+      pg_temp.e10(pg_temp.store(), v_day, v_rice, 0, 0, 0, 0) is not null);
   end;
 
   -- ── 목록이 막힘 사유를 함께 준다 (화면이 배지를 그릴 근거) ──

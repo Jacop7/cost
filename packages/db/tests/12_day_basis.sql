@@ -33,7 +33,7 @@ begin
   -- ⚠ 닫혀 있으면 **다시 열어야** 한다. 앱에서 영업을 한 번 마치면 그날은 closed 로 남고,
   --   여는 데 실패한다. 그 상태로 두면 이 파일이 통째로 빨개진다(실제로 그랬다).
   perform pg_temp.open_today();   -- 열린 영업일을 보장한다(프렐류드 헬퍼)
-  perform e10_sale_recorded(pg_temp.store(), v_day, v_rcp, 10, 0, 0, 0);
+  perform pg_temp.e10(pg_temp.store(), v_day, v_rcp, 10, 0, 0, 0);
 
   b0 := day_menu_detail(pg_temp.store(), v_day, v_rcp);
   s0 := sales_summary(pg_temp.store(), v_day, v_day);
@@ -204,7 +204,7 @@ begin
   -- ⚠ 닫혀 있으면 **다시 열어야** 한다. 앱에서 영업을 한 번 마치면 그날은 closed 로 남고,
   --   여는 데 실패한다. 그 상태로 두면 이 파일이 통째로 빨개진다(실제로 그랬다).
   perform pg_temp.open_today();   -- 열린 영업일을 보장한다(프렐류드 헬퍼)
-  perform e10_sale_recorded(pg_temp.store(), v_day, v_rcp, 10, 0, 0, 0);
+  perform pg_temp.e10(pg_temp.store(), v_day, v_rcp, 10, 0, 0, 0);
 
   -- ── 하루짜리 기간 = 그날 값 ─────────────────────────────────
   -- 두 함수가 같은 하루를 다르게 말하면 화면이 어느 쪽을 믿어야 할지 알 수 없다.
@@ -330,7 +330,7 @@ begin
 
   -- ⚠ 이게 핵심이다 — 카드에 보이는 값과 **실제로 기록되는 값**이 같아야 한다.
   perform pg_temp.eq('카드에 보이는 값 = 팔면 기록되는 값',
-    (e10_sale_recorded(pg_temp.store(), v_day, v_rcp, 5, 0, 0, 0)->>'unit_price')::numeric,
+    (pg_temp.e10(pg_temp.store(), v_day, v_rcp, 5, 0, 0, 0)->>'unit_price')::numeric,
     (m1->>'price')::numeric, 0.0001);
 
   -- ── 영업 중에 만든 메뉴는 팔면 오늘 기준에 **더해진다** (0062) ─
@@ -342,14 +342,14 @@ begin
        from jsonb_array_elements(day_menu_basis(pg_temp.store(), v_day)) m
       where (m->>'recipe_id')::uuid = v_new));
   perform pg_temp.eq('팔면 그 시점 값으로 기록된다',
-    (e10_sale_recorded(pg_temp.store(), v_day, v_new, 1, 0, 0, 0)->>'unit_price')::numeric, 5000, 0);
+    (pg_temp.e10(pg_temp.store(), v_day, v_new, 1, 0, 0, 0)->>'unit_price')::numeric, 5000, 0);
   perform pg_temp.ok('그러면서 오늘 기준에 더해진다',
     (day_snapshot(pg_temp.store(), v_day) #> array['recipes', v_new::text]) is not null);
   -- 더해진 뒤의 수정은 여전히 다음 영업일부터다 — 기준은 한 번 정해지면 그날 안 움직인다.
   perform save_recipe(pg_temp.store(), jsonb_build_object(
     'id', v_new, 'name', '오늘 만든 메뉴', 'price', 9900, 'base_servings', 1));
   perform pg_temp.eq('더해진 뒤 고쳐도 오늘은 그대로',
-    (e10_sale_recorded(pg_temp.store(), v_day, v_new, 2, 0, 0, 0)->>'unit_price')::numeric, 5000, 0);
+    (pg_temp.e10(pg_temp.store(), v_day, v_new, 2, 0, 0, 0)->>'unit_price')::numeric, 5000, 0);
 end $t$;
 
 -- ════════════════════════════════════════════════════════════════
@@ -403,11 +403,11 @@ begin
     13500, 0);
 
   -- ── ③ 실제로 팔린다 ────────────────────────────────────────
-  v_res := e10_sale_recorded(pg_temp.store(), v_day, v_a, 1, 0, 0, 0);
+  v_res := pg_temp.e10(pg_temp.store(), v_day, v_a, 1, 0, 0, 0);
   perform pg_temp.eq('영업 전에 만든 메뉴가 오늘 팔린다',
     (v_res->>'unit_price')::numeric, 7000, 0);
   perform pg_temp.eq('영업 전에 고친 판매가로 기록된다',
-    (e10_sale_recorded(pg_temp.store(), v_day, v_rcp, 1, 0, 0, 0)->>'unit_price')::numeric,
+    (pg_temp.e10(pg_temp.store(), v_day, v_rcp, 1, 0, 0, 0)->>'unit_price')::numeric,
     13500, 0);
 
   -- ── ④ 영업 시작 뒤에 만든 메뉴도 팔린다 — 더해질 뿐이다(0062) ─
@@ -418,7 +418,7 @@ begin
        from jsonb_array_elements(day_menu_basis(pg_temp.store(), v_day)) x
       where (x->>'recipe_id')::uuid = v_b));
   perform pg_temp.ok('그래도 팔린다',
-    (e10_sale_recorded(pg_temp.store(), v_day, v_b, 1, 0, 0, 0)->>'added_to_basis')::boolean);
+    (pg_temp.e10(pg_temp.store(), v_day, v_b, 1, 0, 0, 0)->>'added_to_basis')::boolean);
 end $t$;
 
 -- ════════════════════════════════════════════════════════════════
@@ -442,13 +442,13 @@ begin
 
   -- 영업 전에는 서버가 막는다 — 화면이 시작을 먼저 묻는 근거다.
   perform pg_temp.raises('영업 전에는 45001 으로 막는다',
-    format('select e10_sale_recorded(%L, %L, %L, 1, 0, 0, 0)', pg_temp.store(), v_day, v_new),
+    format('select pg_temp.e10(%L, %L, %L, 1, 0, 0, 0)', pg_temp.store(), v_day, v_new),
     '45001');
 
   -- 시작하고 그대로 이어서 저장 — 두 번 누르게 하지 않는다.
   perform open_business_day(pg_temp.store());
   perform pg_temp.eq('시작 직후 그 메뉴가 바로 팔린다',
-    (e10_sale_recorded(pg_temp.store(), v_day, v_new, 2, 0, 0, 0)->>'unit_price')::numeric,
+    (pg_temp.e10(pg_temp.store(), v_day, v_new, 2, 0, 0, 0)->>'unit_price')::numeric,
     6500, 0);
 end $t$;
 
@@ -477,14 +477,14 @@ begin
   perform pg_temp.ok('꺼 둔 메뉴는 오늘 기준에 없다',
     (day_snapshot(pg_temp.store(), v_day) #> array['recipes', v_off::text]) is null);
 
-  perform e10_sale_recorded(pg_temp.store(), v_day, v_rcp, 10, 0, 0, 0);
+  perform pg_temp.e10(pg_temp.store(), v_day, v_rcp, 10, 0, 0, 0);
   b0 := day_menu_detail(pg_temp.store(), v_day, v_rcp);
   s0 := sales_summary(pg_temp.store(), v_day, v_day);
 
   -- 입고돼서 다시 켠다 → 오늘 팔 수 있어야 한다
   update recipes set active = true where id = v_off;
   perform pg_temp.eq('껐다 켠 메뉴가 오늘 팔린다',
-    (e10_sale_recorded(pg_temp.store(), v_day, v_off, 1, 0, 0, 0)->>'unit_price')::numeric, 8000, 0);
+    (pg_temp.e10(pg_temp.store(), v_day, v_off, 1, 0, 0, 0)->>'unit_price')::numeric, 8000, 0);
 
   -- 영업 중에 만든 새 메뉴도
   -- ⚠ 매출 증가분은 **이전 기록이 없는 메뉴**로만 잰다. e10 은 수량을 덮어쓰므로
@@ -493,7 +493,7 @@ begin
   v_new := save_recipe(pg_temp.store(), jsonb_build_object(
     'name', '영업 중 신메뉴', 'price', 5500, 'base_servings', 1));
   perform pg_temp.eq('영업 중에 만든 메뉴도 팔린다',
-    (e10_sale_recorded(pg_temp.store(), v_day, v_new, 2, 0, 0, 0)->>'unit_price')::numeric, 5500, 0);
+    (pg_temp.e10(pg_temp.store(), v_day, v_new, 2, 0, 0, 0)->>'unit_price')::numeric, 5500, 0);
 
   -- ⚠ 핵심: 더해도 기존 항목은 그대로여야 한다
   b1 := day_menu_detail(pg_temp.store(), v_day, v_rcp);

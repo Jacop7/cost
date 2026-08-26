@@ -8,7 +8,7 @@
 import { useCallback } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { invalidate, invalidateOn, qk } from '@/lib/queryClient';
-import { supabase } from '@/lib/supabase';
+import { supabase, rpcError } from '@/lib/supabase';
 import { useStoreId } from '@/lib/SessionProvider';
 
 const num = (v: unknown): number => Number(v ?? 0);
@@ -431,7 +431,8 @@ export function useSaveSale() {
           : undefined,
         p_base_revision: input.baseRevision,
       });
-      if (error) throw new Error(error.message);
+      // ⚠ 코드를 살려 던진다(0145). 화면이 문구가 아니라 SQLSTATE 로 가른다.
+      if (error) throw rpcError(error);
 
       // 부족분은 오류가 아니다 — 이미 팔린 것이다. 화면에 알려주기 위해 모아 돌려준다.
       const results = ((data as unknown as Record<string, unknown>)?.items ?? []) as Record<string, unknown>[];

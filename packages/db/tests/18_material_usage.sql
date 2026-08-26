@@ -29,7 +29,7 @@ begin
   perform pg_temp.eq('재고를 1g 로 비웠다', coalesce(v_left, -1), 1, 0.0001);
 
   -- 대파를 쓰는 메뉴를 한 그릇 판다 — 필요량(25g)이 남은 재고(1g)보다 많다.
-  perform e10_sale_recorded(pg_temp.store(), v_day, v_rcp, 1, 0, 0, 0);
+  perform pg_temp.e10(pg_temp.store(), v_day, v_rcp, 1, 0, 0, 0);
 
   m2 := sales_material_usage(pg_temp.store(), v_day, v_day);
   s2 := sales_summary(pg_temp.store(), v_day, v_day);

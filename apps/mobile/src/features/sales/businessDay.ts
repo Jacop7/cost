@@ -12,7 +12,7 @@
 import { useEffect } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { invalidate, invalidateOn, qk } from '@/lib/queryClient';
-import { supabase } from '@/lib/supabase';
+import { supabase, RpcError } from '@/lib/supabase';
 import { useStoreId } from '@/lib/SessionProvider';
 
 /** 'none' = 오늘 아직 시작 전 · 'closed' = 오늘 이미 끝냄. 화면이 다른 것을 그린다. */
@@ -246,24 +246,26 @@ export function useCloseStaleAndOpen() {
  *   컬럼도 **같이 지웠다**(0141). 되살릴 자리를 남기지 않는다.
  */
 
-/**
- * 서버가 "아직 영업을 시작하지 않았어요"로 막았는가(45001). 화면이 시작을 먼저 묻는다.
- *
- * ⚠ 코드가 아니라 **문구**로 가려낸다. PostgREST 응답에 SQLSTATE 가 그대로 오지 않는
- *   경우가 있어서다. 문구를 바꾸면 여기도 함께 고쳐야 한다.
- */
-export const isNotOpenError = (e: unknown): boolean =>
-  e instanceof Error && e.message.includes('아직 영업을 시작하지 않았어요');
-
-/** 서버가 "종료된 영업일"로 막았는가(45002). 되돌릴 길은 없다 — 사실만 알린다. */
 /*
- * ⚠ 서버 문구와 **짝을 맞춰야** 한다(0140). 서버가 `영업이 종료되어 판매를 저장할 수
- *   없어요` 로 바뀌었고, 여기만 옛 문구를 보면 화면이 오류를 못 알아본다.
- *   (예전 문구는 `고치려면 영업 기록을 다시 열어 주세요` 로 끝났는데, 되열기 경로가
- *    없어진 뒤로는 **없는 길을 시키는 말**이었다.)
+ * 서버가 왜 막았는가 — **코드로** 가른다(0145).
+ *
+ * ⚠ 예전엔 한국어 문구를 검사했다. 그래서 0140 에서 문구를 고칠 때 여기도 같이 고쳐야
+ *   했고, 한쪽만 고치면 화면이 오류를 못 알아봤다. 문구는 사람이 읽는 것이고 코드는
+ *   화면이 읽는 것이다 — 둘을 묶어 두면 문구를 못 고친다.
+ *
+ * ⚠ 여기엔 "PostgREST 응답에 SQLSTATE 가 그대로 오지 않는 경우가 있다" 고 적혀 있었다.
+ *   **실측해 보니 틀렸다.** 그대로 온다 —
+ *       {"code":"45010","details":"SALE_DATE_OUT_OF_RANGE","hint":null,"message":"…"}
+ *   `code` 가 SQLSTATE, `details` 는 서버가 붙인 이름이다(0144). 분기는 SQLSTATE 로
+ *   한다 — 그쪽이 PostgreSQL 이 보장하는 값이다.
  */
-export const isClosedError = (e: unknown): boolean =>
-  e instanceof Error && e.message.includes('영업이 종료되어');
+const codeOf = (e: unknown): string | null => (e instanceof RpcError ? e.code : null);
+
+/** 45001 BEFORE_OPEN — 아직 영업 전. 화면이 시작을 먼저 묻는다. */
+export const isNotOpenError = (e: unknown): boolean => codeOf(e) === '45001';
+
+/** 45002 DAY_CLOSED — 종료됐거나 자동 마감 기한이 지났다. 되돌릴 길은 없다(§6.4). */
+export const isClosedError = (e: unknown): boolean => codeOf(e) === '45002';
 
 /**
  * 서버가 정한 **매장 달력의 오늘**(0125). 발주·입고·재고·레시피 화면이 쓴다.
@@ -307,8 +309,13 @@ export function useSalesBusinessDate(): ServerDate {
  * 다른 기기가 먼저 저장해서 판본이 올라간 경우다. 오류가 아니라 **다음에 할 일**이다 —
  * 다시 받아서 보여 주면 된다. 조용히 덮어쓰면 남이 적은 판매가 사라진다(실측).
  */
-export const isRevisionConflict = (e: unknown): boolean =>
-  e instanceof Error && e.message.includes('다른 기기에서 판매 내역이 변경됐어요');
+export const isRevisionConflict = (e: unknown): boolean => codeOf(e) === '45009';
+
+/** 45010 SALE_DATE_OUT_OF_RANGE — 지난달 1일~오늘 밖이다(0144). */
+export const isDateOutOfRange = (e: unknown): boolean => codeOf(e) === '45010';
+
+/** 45011 DAY_IS_LIVE — 그날은 아직 살아 있다. 보통 저장 경로로 가야 한다(0145). */
+export const isDayLive = (e: unknown): boolean => codeOf(e) === '45011';
 
 /** '2026-08-20T13:00:00+00:00' → '22:00'. 자정을 넘기면 '02:00' 처럼 그대로 나온다. */
 export function hhmm(iso: string | null): string {
