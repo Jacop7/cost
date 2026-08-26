@@ -76,7 +76,7 @@ begin
       where store_id = v_store and business_date = v_today) is not null);
 
   -- ── 영업 중에 18:00~02:00 으로 바꾼다 ──
-  v_res := set_operating_hours(v_store, pg_temp.hours('18:00', '02:00'));
+  v_res := pg_temp.set_hours(pg_temp.hours('18:00', '02:00'));
 
   perform pg_temp.ok('오늘부터가 아니다', (v_res->>'applies_today')::boolean is false);
   perform pg_temp.eq_t('다음 날부터다', (v_res->>'effective_from')::date::text, (v_today + 1)::text);
@@ -122,7 +122,7 @@ begin
 
   -- 오늘 장부를 닫아 두면 새 규칙이 **내일부터**다. 요일 확인은 미래 날짜로 한다.
   perform pg_temp.close_today();
-  perform set_operating_hours(v_store, v_h);
+  perform pg_temp.set_hours(v_h);
 
   -- 다음 일요일을 찾는다(오늘 이후 · 새 규칙 적용 범위 안).
   select d into v_sun from generate_series(v_today + 1, v_today + 8, '1 day') g(d)
@@ -202,7 +202,7 @@ begin
 
   -- 그런데 RPC 로는 된다. 문이 하나뿐이라는 뜻이다.
   perform pg_temp.ok('RPC 로는 바꿀 수 있다',
-    (set_operating_hours(v_store, pg_temp.hours('12:00','23:00'))->>'rule_id') is not null);
+    (pg_temp.set_hours(pg_temp.hours('12:00','23:00'))->>'rule_id') is not null);
 
   /*
    * ⚠ 여기가 진짜 확인이다(0133). 위 세 개는 **권한**이 막은 것일 수도 있는데,
@@ -237,7 +237,7 @@ begin
 
   -- 그 상태에서도 RPC 는 통과해야 한다. 막기만 하고 길이 없으면 그건 고장이다.
   perform pg_temp.ok('그 상태에서도 RPC 는 통과',
-    (set_operating_hours(v_store, pg_temp.hours('13:00','23:30'))->>'rule_id') is not null);
+    (pg_temp.set_hours(pg_temp.hours('13:00','23:30'))->>'rule_id') is not null);
 end $t$;
 
 
@@ -291,7 +291,7 @@ begin
     jsonb_typeof(operating_hours_status(v_store)->'pending') = 'null');
 
   -- 예약을 만들면 그 날짜와 그날 규칙이 실려 온다.
-  perform set_operating_hours(v_store, pg_temp.hours('18:00','02:00'));
+  perform pg_temp.set_hours(pg_temp.hours('18:00','02:00'));
   v_res := operating_hours_status(v_store);
   perform pg_temp.eq_t('pending 시작일 = 내일',
     v_res->'pending'->>'effective_from', (v_today + 1)::text);
@@ -337,10 +337,9 @@ begin
 end $t$;
 
 
--- ── ⑦ 앱이 실제로 쓰는 경로 (save_settings) ───────────────────
--- ⚠ 앱은 `set_operating_hours` 를 직접 안 부른다. MY > 영업시간은 `save_settings` 로 간다.
---   그래서 여기까지 확인하지 않으면 "규칙은 잘 도는데 화면에서 저장하면 안 바뀐다"가 된다.
---   실제로 처음엔 settings 만 바뀌고 규칙은 옛 값으로 남았다.
+-- ── ⑦ settings 로는 영업시간이 안 들어온다 (0163) ────────────────
+-- ⚠ 예전엔 save_settings 가 토큰 없이 set_operating_hours 를 불러 판본 검사를 우회했다.
+--   문은 하나(MY > 영업시간 → set_operating_hours + 판본)다. 시간과 무관한 저장은 그대로.
 do $t$
 declare
   v_store uuid := pg_temp.store();
@@ -350,13 +349,21 @@ begin
   v_today  := pg_temp.open_today();          -- 영업 중
   v_before := planned_close(v_store, v_today);
 
-  perform save_settings(v_store, jsonb_build_object('open_time', '18:00', 'close_time', '02:00'));
+  perform pg_temp.raises('save_settings 에 영업시간 키는 거부',
+    format('select save_settings(%L, %L::jsonb)', v_store,
+           jsonb_build_object('open_time', '18:00', 'close_time', '02:00')::text), '22000');
+  perform pg_temp.raises('브레이크 키만 실어도 거부',
+    format('select save_settings(%L, %L::jsonb)', v_store,
+           jsonb_build_object('break_start', '15:00')::text), '22000');
 
-  -- settings 는 바로 바뀐다(입력 폼이니까).
-  perform pg_temp.eq_t('settings 는 새 값',
+  -- 시간과 무관한 저장은 그대로 된다 — 규칙도 안 건드린다.
+  perform save_settings(v_store, jsonb_build_object('money_digits', 1));
+  perform pg_temp.eq_t('무관한 저장은 통과', (select money_digits::text from settings where store_id = v_store), '1');
+
+  -- 정식 문(토큰)으로 바꾸면: 오늘은 옛 규칙, 내일부터 새 규칙 — 표시 폼(settings)도 따라온다.
+  perform pg_temp.set_hours(pg_temp.hours('18:00', '02:00'));
+  perform pg_temp.eq_t('settings 는 표시 폼으로 새 값을 비춘다',
     (select close_time::text from settings where store_id = v_store), '02:00:00');
-
-  -- 규칙도 따라왔다. 다만 **내일부터**다.
   perform pg_temp.eq_t('오늘은 옛 규칙 그대로',
     store_hours_on(v_store, v_today)->>'close_time', '22:00:00');
   perform pg_temp.eq_t('내일부터 새 규칙',
@@ -364,13 +371,8 @@ begin
   perform pg_temp.eq_t('오늘 예정 종료도 그대로',
     planned_close(v_store, v_today)::text, v_before::text);
 
-  -- 시간과 무관한 저장은 규칙을 안 건드린다.
-  perform save_settings(v_store, jsonb_build_object('money_digits', 1));
-  perform pg_temp.eq('규칙 개수가 안 늘었다',
-    (select count(*) from operating_rules where store_id = v_store), 2, 0);
-
   -- 같은 날 또 고치면 예약 규칙을 **덮어쓴다** — 규칙이 계속 쌓이면 안 된다.
-  perform save_settings(v_store, jsonb_build_object('open_time', '17:00', 'close_time', '01:00'));
+  perform pg_temp.set_hours(pg_temp.hours('17:00', '01:00'));
   perform pg_temp.eq('그래도 규칙은 2개',
     (select count(*) from operating_rules where store_id = v_store), 2, 0);
   perform pg_temp.eq_t('내일 값이 갱신됐다',
@@ -393,26 +395,26 @@ declare
 begin
   -- 시작=종료 — 영업일 경계를 못 정한다.
   perform pg_temp.raises('시작=종료 거부',
-    format('select set_operating_hours(%L, %L::jsonb)', pg_temp.store(),
+    format('select pg_temp.set_hours(%L::jsonb)',
       (select jsonb_object_agg(d::text, jsonb_build_object('open','10:00','close','10:00'))
          from generate_series(0, 6) d)::text), '22000');
 
   -- 영업시간 밖 브레이크.
   perform pg_temp.raises('영업시간 밖 브레이크 거부',
-    format('select set_operating_hours(%L, %L::jsonb, %L::jsonb)', pg_temp.store(),
+    format('select pg_temp.set_hours(%L::jsonb, %L::jsonb)',
       v_all::text, jsonb_build_object('1', jsonb_build_object('start','23:00','end','23:30'))::text),
     '22000');
 
   -- 브레이크 시작=종료.
   perform pg_temp.raises('브레이크 시작=종료 거부',
-    format('select set_operating_hours(%L, %L::jsonb, %L::jsonb)', pg_temp.store(),
+    format('select pg_temp.set_hours(%L::jsonb, %L::jsonb)',
       v_all::text, jsonb_build_object('1', jsonb_build_object('start','15:00','end','15:00'))::text),
     '22000');
 
   -- 자정 넘김이 다음 날 영업과 겹친다 — 월요일이 새벽 2:30 에 닫는데 화요일이 2:00 에 연다.
   -- ⚠ 표본은 요일별로 달라야 한다. 균일한 주간표는 겹침이 성립 불가다(0156 주석).
   perform pg_temp.raises('다음 날과 겹치는 자정 넘김 거부',
-    format('select set_operating_hours(%L, %L::jsonb)', pg_temp.store(),
+    format('select pg_temp.set_hours(%L::jsonb)',
       jsonb_set(
         (select jsonb_object_agg(d::text, jsonb_build_object('open','02:00','close','22:00'))
            from generate_series(0, 6) d),
@@ -420,14 +422,14 @@ begin
 
   -- 휴무일의 브레이크 — 뜻이 없다.
   perform pg_temp.raises('휴무일 브레이크 거부',
-    format('select set_operating_hours(%L, %L::jsonb, %L::jsonb)', pg_temp.store(),
+    format('select pg_temp.set_hours(%L::jsonb, %L::jsonb)',
       jsonb_set(v_all, '{1}', jsonb_build_object('open','11:00','close','22:00','closed',true))::text,
       jsonb_build_object('1', jsonb_build_object('start','15:00','end','16:00'))::text),
     '22000');
 
   -- 02:00~02:00 은 경계 사례처럼 보여도 폭이 0이다 — 시작=종료 거부.
   perform pg_temp.raises('02:00~02:00 도 시작=종료라 거부',
-    format('select set_operating_hours(%L, %L::jsonb)', pg_temp.store(),
+    format('select pg_temp.set_hours(%L::jsonb)',
       (select jsonb_object_agg(d::text, jsonb_build_object('open','02:00','close','02:00'))
          from generate_series(0, 6) d)::text), '22000');
 end $t$;
@@ -437,7 +439,7 @@ declare
   v_res jsonb;
 begin
   -- 18:00~02:00 + 다음 날 02:00 오픈(= 경계 맞닿음)은 허용된다.
-  v_res := set_operating_hours(pg_temp.store(),
+  v_res := pg_temp.set_hours(
     (select jsonb_object_agg(d::text, jsonb_build_object('open','02:00','close','01:00'))
        from generate_series(0, 6) d),
     (select jsonb_object_agg(d::text, jsonb_build_object('start','00:00','end','00:30'))
@@ -447,7 +449,7 @@ begin
   perform pg_temp.ok('새벽 구간 브레이크(00:00~00:30)도 영업시간 안', true);
 
   -- 원상 복구 — 이 파일 뒤 블록과 다른 시험이 기본 시간에 기대지 않게.
-  perform set_operating_hours(pg_temp.store(),
+  perform pg_temp.set_hours(
     (select jsonb_object_agg(d::text, jsonb_build_object('open','11:00','close','22:00'))
        from generate_series(0, 6) d));
 end $t$;
@@ -487,9 +489,17 @@ begin
              (v_res->>'rule_id')::uuid, (v_res->>'rule_revision')::int);
   perform pg_temp.ok('응답 판본으로 이어 저장할 수 있다', v_res ? 'rule_revision');
 
-  -- 토큰 없는 저장(시드·마이그레이션·옛 경로)은 검사를 건너뛴다 — save_sale 과 같은 규칙.
-  v_res := set_operating_hours(v_store, v_hours);
-  perform pg_temp.ok('토큰이 없으면 검사 생략', v_res ? 'rule_id');
+  /*
+   * 토큰 없는 저장은 **거부**다(0163). 0159 는 생략했는데 그 생략이 곧 우회로였다.
+   * 시드·소유자용 무판본 저장은 내부 함수(apply_operating_hours)로 갈랐고 앱 롤엔 안 열린다.
+   */
+  perform pg_temp.raises('토큰이 없으면 저장 자체를 거부한다',
+    format('select set_operating_hours(%L, %L::jsonb)', v_store, v_hours::text), '22000');
+  perform pg_temp.raises('한쪽만 있어도 거부한다',
+    format('select set_operating_hours(%L, %L::jsonb, %L::jsonb, %L)', v_store, v_hours::text, '{}',
+           (select id from operating_rules where store_id = v_store and effective_to is null)), '22000');
+  perform pg_temp.raises('무판본 몸통은 앱 롤이 못 부른다',
+    format('select apply_operating_hours(%L, %L::jsonb)', v_store, v_hours::text), '42501');
 
   -- 상태 RPC 가 편집 기준의 판본을 준다 — 화면이 여기서 토큰을 얻는다.
   perform pg_temp.ok('상태 응답에 편집 기준 판본이 있다',

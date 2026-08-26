@@ -79,7 +79,13 @@ begin
    * resolve_sales_business_context 가 매장 규칙으로 한다.
    * 여기 남는 것은 **설정 저장의 검증**이다.
    */
-  perform save_settings(pg_temp.store(), '{"open_time":"10:00","close_time":"02:00"}'::jsonb);
+  -- 영업시간은 정식 문(토큰)으로만 들어온다(0163). settings 는 표시 폼으로 따라온다.
+  perform pg_temp.raises('save_settings 에 영업시간 키는 거부(0163)',
+    format('select save_settings(%L, %L::jsonb)', pg_temp.store(),
+           '{"open_time":"10:00","close_time":"02:00"}'), '22000');
+  perform pg_temp.set_hours(
+    (select jsonb_object_agg(d::text, jsonb_build_object('open','10:00','close','02:00'))
+       from generate_series(0, 6) d));
 
   -- 총 영업 시간이 자정을 넘어도 맞는다.
   perform pg_temp.eq('10:00~02:00 은 16시간',
@@ -87,17 +93,20 @@ begin
   perform pg_temp.ok('자정 넘김 표시',
     (get_settings(pg_temp.store())->>'overnight')::boolean is true);
 
-  -- 시작과 종료가 같으면 경계를 정할 수 없다.
+  -- 시작과 종료가 같으면 경계를 정할 수 없다(정식 문의 의미 검증, 0156).
   perform pg_temp.raises('시작=종료 거부',
-    format('select save_settings(%L, %L::jsonb)', pg_temp.store(),
-           '{"open_time":"10:00","close_time":"10:00"}'), '22000');
+    format('select pg_temp.set_hours(%L::jsonb)',
+           (select jsonb_object_agg(d::text, jsonb_build_object('open','10:00','close','10:00'))
+              from generate_series(0, 6) d)::text), '22000');
 
   /*
    * ⚠ 되돌린다. 안 되돌리면 이 파일의 나머지 블록이 자정 넘김 규칙 아래서 돌고,
    *   서울 00:00~02:00 에 실행하면 pg_temp.today() 가 전날로 밀린다 —
    *   시각에 따라 흔들리는 시험이 된다.
    */
-  perform save_settings(pg_temp.store(), '{"open_time":"11:00","close_time":"22:00"}'::jsonb);
+  perform pg_temp.set_hours(
+    (select jsonb_object_agg(d::text, jsonb_build_object('open','11:00','close','22:00'))
+       from generate_series(0, 6) d));
 end $t$;
 
 -- ════════════════════════════════════════════════════════════════

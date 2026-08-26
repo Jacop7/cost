@@ -262,6 +262,7 @@ begin
        --        내릴 수 있다. 판본 검사도 감사 기록도 없이. 문은 정정 RPC 다.
        'add_to_day_basis',
        'apply_due_breaks',         -- 0157 — 매장을 안 가린다. 크론(service_role)만.
+       'apply_operating_hours',    -- 0163 — 무판본 저장 몸통. 앱 문은 set_operating_hours(토큰 필수).
        'set_break_row',            -- 0157 — 매장 검사 없는 몸통. 문은 전이 RPC 다.
        'record_state_transition',  -- 0157 — 감사 기록 도우미. 함수 안에서만 돈다.
        -- 0160 — 날짜 인자가 있어 앱에 열면 과거 장부를 open 으로 만들 수 있다(§6.4 우회).
@@ -343,6 +344,8 @@ end $t$;
  *                                set_break_row 를 부른다. 첫 줄이 assert_my_store.
  *   apply_due_breaks             매장을 안 가린다 — 크론(service_role)만 부른다(0157).
  *                                close_due_business_days 와 같은 자세.
+ *   apply_operating_hours        무판본 저장 몸통(0163). 앱 롤엔 안 열린다 — 토큰 필수 문
+ *                                set_operating_hours 만 여기로 온다.
  */
 do $t$
 declare v_now text; v_want text;
@@ -361,6 +364,7 @@ begin
   v_want := concat_ws(' | ',
     'amend_ended_business_day(p_store uuid, p_date date, p_base_revision integer, p_items jsonb, p_etc_items jsonb, p_extra_items jsonb, p_reason text)',
     'apply_due_breaks()',
+    'apply_operating_hours(p_store uuid, p_weekly_hours jsonb, p_weekly_breaks jsonb, p_base_rule_id uuid, p_base_revision integer)',
     'close_business_day(p_store uuid)',
     'close_due_business_days()',
     'my_store_ids()',

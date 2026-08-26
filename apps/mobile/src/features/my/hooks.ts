@@ -572,16 +572,16 @@ export function useSetOperatingHours() {
     mutationFn: async (input: {
       weeklyHours: Record<string, unknown>;
       weeklyBreaks: Record<string, unknown>;
-      /** 편집 기준(0159). 없으면 검사 생략 — 옛 경로용이고 화면은 반드시 싣는다. */
-      baseRuleId?: string;
-      baseRevision?: number;
+      /** 편집 기준(0159). **필수**다(0163) — 서버도 없으면 거부한다(BASE_REQUIRED). */
+      baseRuleId: string;
+      baseRevision: number;
     }): Promise<{ effectiveFrom: string; appliesToday: boolean; ruleId: string; ruleRevision: number }> => {
       const { data, error } = await supabase.rpc('set_operating_hours', {
         p_store: storeId,
         p_weekly_hours: asJson(input.weeklyHours),
         p_weekly_breaks: asJson(input.weeklyBreaks),
-        p_base_rule_id: input.baseRuleId ?? undefined,
-        p_base_revision: input.baseRevision ?? undefined,
+        p_base_rule_id: input.baseRuleId,
+        p_base_revision: input.baseRevision,
       });
       // ⚠ 코드를 살려 던진다(0145) — 화면이 45009(다른 기기 변경)를 문구가 아니라 코드로 가른다.
       if (error) throw rpcError(error);

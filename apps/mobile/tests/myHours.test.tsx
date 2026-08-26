@@ -136,6 +136,20 @@ describe('요일 선택 시 기존 값 (P2-5)', () => {
     expect(screen.getByText('09:00~17:00')).toBeTruthy();
   });
 
+  it('해제해서 하나만 남으면 남은 요일 값을 다시 싣는다 — 남은 요일을 덮지 않는다', () => {
+    hoursStatus.mockReturnValue(status({
+      currentRule: { ruleId: 'rule-1', revision: 3, effectiveFrom: '2026-01-01', weeklyHours: VARIED_HOURS, weeklyBreaks: {} },
+    }));
+    render(<MyHoursScreen />);
+    fireEvent.click(screen.getByLabelText('수요일'));   // 패널 09:00~17:00
+    fireEvent.click(screen.getByLabelText('화요일'));   // 둘 선택
+    fireEvent.click(screen.getByLabelText('수요일'));   // 수 해제 → 화만 남는다
+    fireEvent.click(screen.getByText('선택한 요일에 적용'));
+    // 화요일은 제 값(11:00~22:00)을 유지해야 한다 — 수요일 값으로 덮이면 6줄이 된다.
+    expect(screen.getAllByText('11:00~22:00')).toHaveLength(6);
+    expect(screen.getByText('09:00~17:00')).toBeTruthy();
+  });
+
   it('서로 다른 요일을 함께 고르면 혼합 표시가 뜬다', () => {
     hoursStatus.mockReturnValue(status({
       currentRule: { ruleId: 'rule-1', revision: 3, effectiveFrom: '2026-01-01', weeklyHours: VARIED_HOURS, weeklyBreaks: {} },
@@ -178,17 +192,32 @@ describe('예약 규칙 판본 (0159)', () => {
     expect(arg.baseRevision).toBe(5);
   });
 
-  it('45009 면 편집을 버리고 최신 값을 다시 받는다 — 남의 변경을 안 덮는다', () => {
-    const refetch = vi.fn();
-    const st = status();
-    hoursStatus.mockReturnValue({ ...st, refetch });
-    saveHours.mockImplementation((_input: unknown, opts?: { onError?: (e: Error) => void }) => {
+  /*
+   * ⚠ refetch 의 **결과**로 교체해야 한다. 캐시(옛 데이터)를 그대로 둔 채 days 만 비우면
+   *   effect 가 옛 판본으로 다시 초기화해 45009 가 반복됐다(검토 P1-1 재검토).
+   *   여기서는 refetch 가 새 판본(rule-9, 10:00~21:00)을 돌려주고, 화면이 그 값으로
+   *   바뀌며 다음 저장이 새 판본을 싣는지를 본다.
+   */
+  it('45009 면 refetch 결과로 편집과 판본을 교체한다 — 옛 값이 다시 들어오지 않는다', async () => {
+    const fresh = status({
+      currentRule: { ruleId: 'rule-9', revision: 12, effectiveFrom: '2026-01-01', weeklyHours: PENDING_HOURS, weeklyBreaks: {} },
+    });
+    const refetch = vi.fn(async () => ({ data: fresh.data }));
+    hoursStatus.mockReturnValue({ ...status(), refetch });   // 캐시는 여전히 옛 값(11:00~22:00)
+    saveHours.mockImplementationOnce((_input: unknown, opts?: { onError?: (e: Error) => void }) => {
       opts?.onError?.(new RpcError('다른 기기에서 영업시간이 변경됐어요', '45009', 'REVISION_CONFLICT'));
     });
     render(<MyHoursScreen />);
     fireEvent.click(screen.getByText('저장'));
+    await vi.waitFor(() => expect(screen.getByText(/최신 값을 다시 불러왔어요/)).toBeTruthy());
     expect(refetch).toHaveBeenCalled();
-    expect(screen.getByText(/다른 기기에서 영업시간이 변경됐어요/)).toBeTruthy();
+    // 화면이 서버의 새 값으로 바뀌었다 — 캐시의 옛 값(11:00~22:00)이 아니다.
+    expect(screen.getAllByText('10:00~21:00')).toHaveLength(7);
+    // 다음 저장은 새 판본을 싣는다.
+    fireEvent.click(screen.getByText('저장'));
+    const arg = saveHours.mock.calls.at(-1)![0] as { baseRuleId: string; baseRevision: number };
+    expect(arg.baseRuleId).toBe('rule-9');
+    expect(arg.baseRevision).toBe(12);
   });
 });
 

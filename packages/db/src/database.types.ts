@@ -1624,6 +1624,16 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: Json
       }
+      apply_operating_hours: {
+        Args: {
+          p_store: string
+          p_weekly_hours: Json
+          p_weekly_breaks?: Json
+          p_base_rule_id?: string
+          p_base_revision?: number
+        }
+        Returns: Json
+      }
       apply_sale_items: {
         Args: {
           p_store: string
@@ -2111,6 +2121,15 @@ export type Database = {
           p_entity_id: string
         }
         Returns: Json
+      }
+      late_close_at: {
+        Args: {
+          p_date: string
+          p_close: string
+          p_tz: string
+          p_now: string
+        }
+        Returns: string
       }
       lock_business_scope: {
         Args: {

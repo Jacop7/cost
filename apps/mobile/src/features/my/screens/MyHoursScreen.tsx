@@ -134,12 +134,17 @@ export default function MyHoursScreen() {
   };
 
   const toggleDay = (d: number) => {
-    if (!selected.has(d) && selected.size === 0) loadDayIntoPanel(d);
-    setSelected((prev) => {
-      const next = new Set(prev);
-      if (next.has(d)) next.delete(d); else next.add(d);
-      return next;
-    });
+    const next = new Set(selected);
+    if (next.has(d)) next.delete(d); else next.add(d);
+    /*
+     * 패널은 "지금 고른 요일의 현재 값"을 따라간다 —
+     *   · 첫 선택: 그 요일을 싣는다.
+     *   · 해제해서 **하나만 남으면** 남은 요일을 다시 싣는다(검토 P2-5 재검토).
+     *     수(09~17) → 화 추가 → 수 해제 뒤 패널이 09~17 로 남아 있으면, 적용이 화요일을
+     *     조용히 덮는다.
+     */
+    if (next.size === 1) loadDayIntoPanel([...next][0]!);
+    setSelected(next);
   };
 
   /** 고른 요일들의 저장된 값이 서로 다른가 — 적용하면 전부 패널 값으로 덮인다. */
@@ -166,15 +171,35 @@ export default function MyHoursScreen() {
     setToast(`${DOW_ORDER.filter((d) => selected.has(d)).map((d) => DOW_LABEL[d]).join('·')}요일에 적용했어요`);
   };
 
+  /**
+   * 최신 규칙으로 편집을 **직접** 교체한다(검토 P1-1 재검토).
+   * ⚠ `setDays(null)` 뒤 refetch 만 부르면, 재조회가 끝나기 전에 effect 가 캐시의
+   *   **옛** 데이터로 다시 초기화한다 — 새 응답은 무시되고 45009 가 반복됐다.
+   *   refetch 의 결과를 기다려 그 값으로 바꿔 넣는다.
+   */
+  const reloadFromServer = async () => {
+    const r = await status.refetch();
+    const basis = r.data ? (r.data.pending ?? r.data.currentRule) : null;
+    if (!basis) return false;
+    const parsed = fromRule(basis.weeklyHours, basis.weeklyBreaks);
+    if (!parsed) return false;
+    setDays(parsed);
+    setBase({ ruleId: basis.ruleId, revision: basis.revision });
+    setSelected(new Set());
+    return true;
+  };
+
   const submit = () => {
     if (!days) return;
     // 거울 검증 — 서버가 할 말을 미리 한다. 권위는 서버다.
     const err = validateWeeklySchedule(days);
     if (err) { Alert.alert('저장할 수 없어요', err); setToast(err); return; }
+    // ⚠ 판본 없이는 저장하지 않는다(0163) — 서버도 거부하지만, 여기서 먼저 최신 값을 받아 온다.
+    if (!base) { void reloadFromServer(); setToast('편집 기준을 다시 불러왔어요 · 다시 저장해 주세요'); return; }
     const { hours, breaks } = toWeeklyJson(days);
     save.mutate(
       // ⚠ 판본을 반드시 실어 보낸다(0159) — 빼먹으면 다른 기기의 변경을 조용히 덮는다.
-      { weeklyHours: hours, weeklyBreaks: breaks, baseRuleId: base?.ruleId, baseRevision: base?.revision },
+      { weeklyHours: hours, weeklyBreaks: breaks, baseRuleId: base.ruleId, baseRevision: base.revision },
       {
         onSuccess: (r) => {
           // 다음 저장에 되보낼 판본 — 이어서 편집해도 내 저장과 충돌하지 않는다.
@@ -186,12 +211,14 @@ export default function MyHoursScreen() {
         onError: (e) => {
           /*
            * 낡은 화면(45009) — 다른 기기가 먼저 저장했다. 붙잡을 게 없다:
-           * 들고 있던 편집을 버리고 최신 규칙을 다시 받는다(판매 저장과 같은 처리).
+           * 들고 있던 편집을 버리고 최신 규칙으로 **교체**한다(판매 저장과 같은 처리).
            */
           if (e instanceof RpcError && e.code === '45009') {
-            setDays(null); setBase(null);
-            void status.refetch();
-            setToast('다른 기기에서 영업시간이 변경됐어요 · 최신 값을 다시 불러왔어요');
+            void reloadFromServer().then((ok) => {
+              setToast(ok
+                ? '다른 기기에서 영업시간이 변경됐어요 · 최신 값을 다시 불러왔어요'
+                : '다른 기기에서 영업시간이 변경됐어요 · 최신 값을 못 받았어요. 다시 시도해 주세요');
+            });
             return;
           }
           const msg = e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요';

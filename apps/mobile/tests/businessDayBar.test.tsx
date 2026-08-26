@@ -70,6 +70,19 @@ describe('상태별 표시', () => {
     expect(screen.getByLabelText('영업 중 바꾸기')).toBeTruthy();
   });
 
+  /*
+   * 열린 장부는 굳은 값(연 시각–예정 종료)을 그린다(검토 P2-4). 늦은 개점으로 23:10 에
+   * 열어 01:00 종료를 골랐으면 규칙의 11:00–22:00 이 아니라 23:10–01:00 이어야 한다.
+   */
+  it('늦은 개점의 카드는 연 시각–고른 종료를 그린다 (P2-4)', () => {
+    render(<BusinessDayBar state={state({
+      status: 'open', businessDayId: 'd-1',
+      openedAt: '2026-08-26T23:10:00+09:00', plannedCloseAt: '2026-08-27T01:00:00+09:00',
+    })} />);
+    expect(screen.getByText('23:10–01:00')).toBeTruthy();
+    expect(screen.queryByText('11:00–22:00')).toBeNull();
+  });
+
   it('직접 종료 — 실제 종료 시각, `영업 종료` pill', () => {
     render(<BusinessDayBar state={state({
       status: 'closed', closeMethod: 'manual',
