@@ -64,14 +64,19 @@ begin
     store_local_date(pg_temp.store(), v_at)::text, '2026-08-26');
 
   -- ⚠ 행이 있다고 가정하지 않는다. 없으면 update 가 0행을 치고 시험이 조용히 통과한다.
+  --   (준비 쓰기는 소유자 직접이다 — 0156 부터 앱 롤은 테이블에 직접 못 쓴다.)
+  set local role postgres;
   insert into store_time_settings (store_id, timezone) values (pg_temp.store(), 'America/New_York')
   on conflict (store_id) do update set timezone = excluded.timezone;
+  set local role authenticated;
   -- 뉴욕(UTC-4, 서머타임)이면 아직 같은 날 18:30 이다.
   perform pg_temp.eq_t('뉴욕에서는 같은 날',
     store_local_date(pg_temp.store(), v_at)::text, '2026-08-25');
 
   -- 등록이 없어도 멈추지 않는다. 날짜 계산이 설정 때문에 죽으면 안 된다.
+  set local role postgres;
   delete from store_time_settings where store_id = pg_temp.store();
+  set local role authenticated;
   perform pg_temp.eq_t('시간대가 없으면 서울로 떨어진다',
     store_local_date(pg_temp.store(), v_at)::text, '2026-08-26');
 end $t$;
@@ -162,8 +167,10 @@ begin
    *   "거부되어야 하는데 성공했다" 가 아니라 그냥 통과해 버린다 — 실제로 그렇게 걸렸다.
    *   행이 있어야 트리거가 돈다.
    */
+  set local role postgres;
   insert into store_time_settings (store_id, timezone) values (pg_temp.store(), 'Asia/Seoul')
   on conflict (store_id) do update set timezone = excluded.timezone;
+  set local role authenticated;
 
   perform pg_temp.ok('발주일에 전역 기본값이 없다',
     not exists (select 1 from information_schema.columns
@@ -177,28 +184,53 @@ begin
       order by created_at desc limit 1),
     store_local_date(pg_temp.store())::text);
 
-  -- 시간대는 PostgreSQL 이 아는 이름만 받는다. 틀린 값이 들어가면 그 매장의
-  -- 입고·발주·재고 수정이 날짜 계산 단계에서 전부 죽는다.
+  /*
+   * 시간대는 PostgreSQL 이 아는 이름만 받는다. 틀린 값이 들어가면 그 매장의
+   * 입고·발주·재고 수정이 날짜 계산 단계에서 전부 죽는다.
+   * ⚠ 문은 RPC 하나다(0156) — 가드 트리거는 그 안에서 돈다. 직접 쓰기는 아예 막혔다.
+   *   (RPC 는 영업 중이면 45011 로 거부하므로, 가드 검증도 영업 전 상태에서 잰다.)
+   */
+  perform pg_temp.close_today();
   perform pg_temp.raises('알 수 없는 시간대는 거부',
-    format($q$update store_time_settings set timezone = 'KST+9' where store_id = %L$q$,
-           pg_temp.store()), '22000');
+    format('select set_store_timezone(%L, %L)', pg_temp.store(), 'KST+9'), '22000');
   perform pg_temp.raises('빈 시간대도 거부',
-    format($q$update store_time_settings set timezone = '' where store_id = %L$q$,
-           pg_temp.store()), '22000');
+    format('select set_store_timezone(%L, %L)', pg_temp.store(), ''), '22000');
+  perform pg_temp.raises('앱 롤의 직접 쓰기는 막혔다',
+    format($q$update store_time_settings set timezone = 'Asia/Seoul' where store_id = %L$q$,
+           pg_temp.store()), '42501');
 
-  -- 맞는 값은 통과하고 updated_at 이 따라 오른다.
-  update store_time_settings set updated_at = '2000-01-01'::timestamptz where store_id = pg_temp.store();
-  update store_time_settings set timezone = 'America/New_York' where store_id = pg_temp.store();
+  -- 맞는 값은 통과하고 updated_at 이 따라 오르며, 사장님이 정한 값(confirmed)이 된다.
+  set local role postgres;
+  update store_time_settings set updated_at = '2000-01-01'::timestamptz, confirmed = false
+   where store_id = pg_temp.store();
+  set local role authenticated;
+  perform set_store_timezone(pg_temp.store(), 'America/New_York');
   perform pg_temp.ok('updated_at 이 자동으로 갱신된다',
     (select updated_at from store_time_settings where store_id = pg_temp.store()) > now() - interval '1 minute');
+  perform pg_temp.ok('RPC 로 정한 시간대는 confirmed 다',
+    (select confirmed from store_time_settings where store_id = pg_temp.store()));
+
+  -- 영업 중에는 못 바꾼다 — 열린 장부의 날짜 해석이 흔들린다.
+  perform pg_temp.open_today();
+  perform pg_temp.raises('영업 중 시간대 변경은 45011',
+    format('select set_store_timezone(%L, %L)', pg_temp.store(), 'Asia/Seoul'), '45011');
+  perform pg_temp.close_today();
+  perform set_store_timezone(pg_temp.store(), 'America/New_York');
 
   /*
-   * ⚠ 백필로 들어간 'Asia/Seoul' 은 **정한 값이 아니다.** 해외 매장이 생기면
+   * ⚠ 백필·준비로 들어간 값은 **정한 값이 아니다.** 해외 매장이 생기면
    *   서울이 맞을 리 없는데, 값이 들어 있으면 화면도 사장님도 정해진 값으로 읽는다.
    *   앱이 첫 기록 전에 고르게 하려면 '정했는지'를 알아야 한다.
+   *   (위에서 RPC 로 정했으니 여기서는 백필 상태를 다시 만들어 잰다 —
+   *    RPC 를 지나지 않은 행만 confirmed=false 다.)
    */
+  set local role postgres;
+  update store_time_settings set confirmed = false where store_id = pg_temp.store();
+  set local role authenticated;
   perform pg_temp.ok('백필로 들어간 시간대는 confirmed 가 아니다',
     not (select confirmed from store_time_settings where store_id = pg_temp.store()));
+  perform pg_temp.eq_t('operating_hours_status 도 그걸 그대로 말한다',
+    operating_hours_status(pg_temp.store())->>'timezone_confirmed', 'false');
 end $t$;
 
 
@@ -326,8 +358,10 @@ declare
   v_rate_sep numeric := 0.40;
   v_seen numeric;
 begin
+  set local role postgres;
   insert into store_time_settings (store_id, timezone) values (pg_temp.store(), 'America/New_York')
   on conflict (store_id) do update set timezone = excluded.timezone;
+  set local role authenticated;
 
   -- 같은 순간인데 달이 다르다.
   perform pg_temp.eq_t('뉴욕에서는 아직 8월', store_local_month(pg_temp.store(), v_at), '2026-08');
@@ -395,16 +429,20 @@ begin
    * ⚠ 뉴욕이 서울과 **다른 날**이 되는 시각에만 갈린다. `now()` 는 못 옮기므로
    *   여기서는 "매장 설정을 따라간다" 는 것까지만 잰다.
    */
+  set local role postgres;
   insert into store_time_settings (store_id, timezone) values (pg_temp.store(), 'America/New_York')
   on conflict (store_id) do update set timezone = excluded.timezone;
+  set local role authenticated;
   v_s := business_day_state(pg_temp.store());
   perform pg_temp.eq_t('시간대를 바꾸면 local_date 도 따라간다',
     v_s->>'local_date', store_local_date(pg_temp.store())::text);
   perform pg_temp.eq_t('그때도 store_timezone 이 뉴욕이다',
     store_timezone(pg_temp.store()), 'America/New_York');
 
+  set local role postgres;
   insert into store_time_settings (store_id, timezone) values (pg_temp.store(), 'Asia/Seoul')
   on conflict (store_id) do update set timezone = excluded.timezone;
+  set local role authenticated;
 
   /*
    * ⚠ 앱은 `local_date` 가 없을 때 `today` 로 **조용히 대신 메우지 않는다**

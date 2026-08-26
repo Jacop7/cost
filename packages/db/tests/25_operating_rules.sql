@@ -367,3 +367,76 @@ begin
   perform pg_temp.eq_t('오늘은 여전히 옛 규칙',
     store_hours_on(v_store, v_today)->>'open_time', '11:00:00');
 end $t$;
+
+
+-- ════════════════════════════════════════════════════════════════
+-- 주간 일정 의미 검증 (0156) — 공개 문(set_operating_hours)으로 잰다
+--
+-- 모양 검증만 있던 시절엔 뜻이 틀린 값이 다 들어갔다. 겹치는 자정 넘김이
+-- 저장되면 그 시각의 판매가 어느 영업일인지 **정의가 안 된다.**
+-- ════════════════════════════════════════════════════════════════
+do $t$
+declare
+  v_all  jsonb := (select jsonb_object_agg(d::text, jsonb_build_object('open','11:00','close','22:00'))
+                     from generate_series(0, 6) d);
+begin
+  -- 시작=종료 — 영업일 경계를 못 정한다.
+  perform pg_temp.raises('시작=종료 거부',
+    format('select set_operating_hours(%L, %L::jsonb)', pg_temp.store(),
+      (select jsonb_object_agg(d::text, jsonb_build_object('open','10:00','close','10:00'))
+         from generate_series(0, 6) d)::text), '22000');
+
+  -- 영업시간 밖 브레이크.
+  perform pg_temp.raises('영업시간 밖 브레이크 거부',
+    format('select set_operating_hours(%L, %L::jsonb, %L::jsonb)', pg_temp.store(),
+      v_all::text, jsonb_build_object('1', jsonb_build_object('start','23:00','end','23:30'))::text),
+    '22000');
+
+  -- 브레이크 시작=종료.
+  perform pg_temp.raises('브레이크 시작=종료 거부',
+    format('select set_operating_hours(%L, %L::jsonb, %L::jsonb)', pg_temp.store(),
+      v_all::text, jsonb_build_object('1', jsonb_build_object('start','15:00','end','15:00'))::text),
+    '22000');
+
+  -- 자정 넘김이 다음 날 영업과 겹친다 — 월요일이 새벽 2:30 에 닫는데 화요일이 2:00 에 연다.
+  -- ⚠ 표본은 요일별로 달라야 한다. 균일한 주간표는 겹침이 성립 불가다(0156 주석).
+  perform pg_temp.raises('다음 날과 겹치는 자정 넘김 거부',
+    format('select set_operating_hours(%L, %L::jsonb)', pg_temp.store(),
+      jsonb_set(
+        (select jsonb_object_agg(d::text, jsonb_build_object('open','02:00','close','22:00'))
+           from generate_series(0, 6) d),
+        '{1}', jsonb_build_object('open','18:00','close','02:30'))::text), '22000');
+
+  -- 휴무일의 브레이크 — 뜻이 없다.
+  perform pg_temp.raises('휴무일 브레이크 거부',
+    format('select set_operating_hours(%L, %L::jsonb, %L::jsonb)', pg_temp.store(),
+      jsonb_set(v_all, '{1}', jsonb_build_object('open','11:00','close','22:00','closed',true))::text,
+      jsonb_build_object('1', jsonb_build_object('start','15:00','end','16:00'))::text),
+    '22000');
+
+  -- 02:00~02:00 은 경계 사례처럼 보여도 폭이 0이다 — 시작=종료 거부.
+  perform pg_temp.raises('02:00~02:00 도 시작=종료라 거부',
+    format('select set_operating_hours(%L, %L::jsonb)', pg_temp.store(),
+      (select jsonb_object_agg(d::text, jsonb_build_object('open','02:00','close','02:00'))
+         from generate_series(0, 6) d)::text), '22000');
+end $t$;
+
+do $t$
+declare
+  v_res jsonb;
+begin
+  -- 18:00~02:00 + 다음 날 02:00 오픈(= 경계 맞닿음)은 허용된다.
+  v_res := set_operating_hours(pg_temp.store(),
+    (select jsonb_object_agg(d::text, jsonb_build_object('open','02:00','close','01:00'))
+       from generate_series(0, 6) d),
+    (select jsonb_object_agg(d::text, jsonb_build_object('start','00:00','end','00:30'))
+       from generate_series(0, 6) d));
+  perform pg_temp.ok('경계가 맞닿는 자정 넘김(02:00 오픈·다음 날 01:00 마감)은 허용',
+    v_res ? 'rule_id');
+  perform pg_temp.ok('새벽 구간 브레이크(00:00~00:30)도 영업시간 안', true);
+
+  -- 원상 복구 — 이 파일 뒤 블록과 다른 시험이 기본 시간에 기대지 않게.
+  perform set_operating_hours(pg_temp.store(),
+    (select jsonb_object_agg(d::text, jsonb_build_object('open','11:00','close','22:00'))
+       from generate_series(0, 6) d));
+end $t$;

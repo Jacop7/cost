@@ -1,243 +1,471 @@
 /**
- * MY-09 영업시간 — 시작·종료·브레이크 타임.
+ * MY-09 영업시간 — 요일별 시간·브레이크·매장 시간대 (0156).
  *
- * 왜 필요한가: 종료 시각이 **영업일 경계**다(0047). 10:00~02:00 영업인데 자정을
- * 경계로 쓰면 새벽 1시 매출이 다음 날로 넘어가 하루 장사가 둘로 쪼개진다.
- * 여기서 종료를 02:00 으로 두면 새벽 장사가 전날에 묶인다.
+ * 왜 필요한가: 종료 시각이 **영업일 경계**다. 10:00~02:00 영업인데 자정을 경계로
+ * 쓰면 새벽 1시 매출이 다음 날로 넘어가 하루 장사가 둘로 쪼개진다. 경계 판정은
+ * 서버(resolve_sales_business_context)가 요일별 규칙으로 한다 — 여기는 그 규칙을
+ * 적는 화면이다.
+ *
+ * 짜임 —
+ *   · 요일 칩(월~일)을 **골라서** 공통 시간을 적용한다. 요일마다 화면을 오가지 않는다.
+ *   · 시각은 15분 단위 선택 + 직접 입력. 자정 넘김은 종료<시작이면 자동으로 '다음 날'.
+ *   · 검증은 서버(assert_weekly_schedule)가 권위이고, 같은 규칙의 거울
+ *     (`weeklySchedule.ts`)이 저장 전에 같은 말을 미리 해 준다.
+ *   · 매장 시간대는 별도 문(set_store_timezone) — 영업 중이면 서버가 45011 로 막는다.
+ *     정한 적 없으면(confirmed=false) 기기 시간대를 제안한다.
  *
  * 브레이크 타임은 판매가 없는 시간대 표시일 뿐이고, 장부를 확정하지 않는다.
  * 확정은 영업 종료 한 번이다.
  */
-import { useEffect, useState } from 'react';
-import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
-import { AppHeader, Badge, Button, Card, Icon, QueryState } from '@/components/kit';
+import { useEffect, useMemo, useState } from 'react';
+import { Alert, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
+import { AppHeader, Badge, Button, Card, Icon, QueryState, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { T } from '@/theme/tokens';
-import { useHoursStatus, useSaveSettings, useStoreSettings } from '../hooks';
+import { useHoursStatus, useSetOperatingHours, useSetStoreTimezone } from '../hooks';
+import {
+  DEFAULT_DAY, DOW_LABEL, DOW_ORDER, QUARTER_SLOTS, WeeklySchedule,
+  fromRule, isOvernight, normalizeTimeInput, spanLabel, spanMinutes,
+  toWeeklyJson, validateWeeklySchedule,
+} from '../weeklySchedule';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
-
-/** 30분 단위. 분 단위까지 받으면 입력만 번거롭고 경계 계산에 득이 없다. */
-const SLOTS = Array.from({ length: 48 }, (_, i) => {
-  const h = Math.floor(i / 2);
-  const m = i % 2 === 0 ? '00' : '30';
-  return `${String(h).padStart(2, '0')}:${m}`;
-});
-
-const toMin = (t: string) => {
-  const [h, m] = t.split(':').map(Number);
-  return (h ?? 0) * 60 + (m ?? 0);
-};
-
-/** 자정을 넘으면 24시간을 더해 길이를 구한다. */
-function spanMinutes(open: string, close: string): number {
-  const d = toMin(close) - toMin(open);
-  return d <= 0 ? d + 24 * 60 : d;
-}
-
-const spanLabel = (min: number) => {
-  const h = Math.floor(min / 60);
-  const m = min % 60;
-  return m === 0 ? `${h}시간` : `${h}시간 ${m}분`;
-};
 
 /** '2026-08-27' → '8월 27일'. 이 화면 한 줄에만 쓰므로 여기 둔다. */
 const mdLabel = (ymd: string) => `${Number(ymd.slice(5, 7))}월 ${Number(ymd.slice(8, 10))}일`;
 
-export default function MyHoursScreen() {
-  const settings = useStoreSettings();
-  /**
-   * ⚠ 저장한 값과 **적용 중인 값**은 다를 수 있다(0130·0131).
-   *   영업 중에 시간을 바꾸면 오늘은 옛 시간으로 끝내고 내일부터 새 시간이다.
-   *   이 줄이 없으면 사장님은 오늘부터 바뀐 줄 안다 — 서버는 맞는데 화면이 거짓말한다.
-   */
-  const status = useHoursStatus();
-  const save = useSaveSettings();
-  const s = settings.data;
-  const pending = status.data?.pending ?? null;
+/** 자주 쓰는 시간대 — 전체 IANA 목록은 화면에 못 싣는다. 나머지는 직접 입력. */
+const COMMON_TZ = [
+  'Asia/Seoul', 'Asia/Tokyo', 'Asia/Shanghai', 'Asia/Singapore', 'Asia/Bangkok',
+  'America/New_York', 'America/Los_Angeles', 'Europe/London', 'Australia/Sydney',
+];
 
-  const [open, setOpen] = useState('11:00');
-  const [close, setClose] = useState('22:00');
-  const [bStart, setBStart] = useState<string | null>(null);
-  const [bEnd, setBEnd] = useState<string | null>(null);
-  const [picking, setPicking] = useState<null | 'open' | 'close' | 'bStart' | 'bEnd'>(null);
+/** 기기 시간대 — 최초 제안용. 못 읽으면 null(제안을 안 하는 게 낫다). */
+function deviceTimezone(): string | null {
+  try {
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    return typeof tz === 'string' && tz.includes('/') ? tz : null;
+  } catch {
+    return null;
+  }
+}
+
+const dayLabel = (s: { open: string; close: string; closed: boolean; breakStart: string | null; breakEnd: string | null }) => {
+  if (s.closed) return '휴무';
+  const night = isOvernight(s.open, s.close);
+  const base = `${s.open}~${night ? '다음 날 ' : ''}${s.close}`;
+  return s.breakStart && s.breakEnd ? `${base} · 브레이크 ${s.breakStart}~${s.breakEnd}` : base;
+};
+
+export default function MyHoursScreen() {
+  const status = useHoursStatus();
+  const save = useSetOperatingHours();
+  const saveTz = useSetStoreTimezone();
+
+  /** 편집 중인 주간표. 서버 규칙을 받아 시작한다. */
+  const [days, setDays] = useState<WeeklySchedule | null>(null);
+  /** 지금 고른 요일들(dow). 편집 패널의 값이 여기 요일에 적용된다. */
+  const [selected, setSelected] = useState<Set<number>>(new Set());
+
+  // 편집 패널 — 선택 요일에 적용할 값.
+  const [pOpen, setPOpen] = useState('11:00');
+  const [pClose, setPClose] = useState('22:00');
+  const [pClosed, setPClosed] = useState(false);
+  const [useBreak, setUseBreak] = useState(false);
+  const [pBs, setPBs] = useState('15:00');
+  const [pBe, setPBe] = useState('17:00');
+
+  const [picking, setPicking] = useState<null | 'open' | 'close' | 'bs' | 'be'>(null);
+  const [typed, setTyped] = useState('');
+  const [tzOpen, setTzOpen] = useState(false);
+  const [tzTyped, setTzTyped] = useState('');
+  const [toast, setToast] = useState<string | null>(null);
+
+  const st = status.data;
 
   useEffect(() => {
-    if (!s) return;
-    setOpen(s.openTime);
-    setClose(s.closeTime);
-    setBStart(s.breakStart);
-    setBEnd(s.breakEnd);
-  }, [s]);
+    if (!st || days !== null) return;
+    /*
+     * ⚠ 규칙 모양이 어긋나면 기본값으로 **메우지 않는다**(fromRule 이 null).
+     *   메우면 사장님이 저장하는 순간 진짜 규칙이 기본값으로 덮인다.
+     *   규칙이 아예 없는 새 매장만 기본값에서 시작한다.
+     */
+    if (st.currentRule) {
+      const parsed = fromRule(st.currentRule.weeklyHours, st.currentRule.weeklyBreaks);
+      if (parsed) setDays(parsed);
+      return;
+    }
+    const fresh: WeeklySchedule = {};
+    for (let d = 0; d < 7; d += 1) fresh[d] = { ...DEFAULT_DAY };
+    setDays(fresh);
+  }, [st, days]);
 
-  const overnight = toMin(close) <= toMin(open);
-  const span = spanMinutes(open, close);
-  const sameTime = open === close;
-  const breakBroken = (bStart === null) !== (bEnd === null);
+  const brokenRule = Boolean(st?.currentRule) && days === null && !status.isLoading;
 
-  const dirty =
-    s !== undefined &&
-    (open !== s.openTime || close !== s.closeTime || bStart !== s.breakStart || bEnd !== s.breakEnd);
+  const validationError = useMemo(() => (days ? validateWeeklySchedule(days) : null), [days]);
+  const overnight = !pClosed && isOvernight(pOpen, pClose);
+
+  const toggleDay = (d: number) => {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(d)) next.delete(d); else next.add(d);
+      return next;
+    });
+  };
+
+  /** 편집 패널 값을 고른 요일들에 적는다. */
+  const applyToSelected = () => {
+    if (!days || selected.size === 0) return;
+    const next: WeeklySchedule = { ...days };
+    for (const d of selected) {
+      next[d] = pClosed
+        ? { ...(next[d] ?? DEFAULT_DAY), closed: true, breakStart: null, breakEnd: null }
+        : {
+            open: pOpen, close: pClose, closed: false,
+            breakStart: useBreak ? pBs : null,
+            breakEnd: useBreak ? pBe : null,
+          };
+    }
+    setDays(next);
+    setToast(`${DOW_ORDER.filter((d) => selected.has(d)).map((d) => DOW_LABEL[d]).join('·')}요일에 적용했어요`);
+  };
 
   const submit = () => {
-    if (sameTime) { Alert.alert('시작과 종료가 같아요', '영업일 경계를 정할 수 없어요. 다른 시각으로 바꿔 주세요.'); return; }
-    if (breakBroken) { Alert.alert('브레이크 타임', '시작과 종료를 모두 정하거나, 둘 다 비워 주세요.'); return; }
+    if (!days) return;
+    // 거울 검증 — 서버가 할 말을 미리 한다. 권위는 서버다.
+    const err = validateWeeklySchedule(days);
+    if (err) { Alert.alert('저장할 수 없어요', err); setToast(err); return; }
+    const { hours, breaks } = toWeeklyJson(days);
     save.mutate(
-      { openTime: open, closeTime: close, breakStart: bStart, breakEnd: bEnd },
-      { onError: (e) => Alert.alert('저장하지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요') },
+      { weeklyHours: hours, weeklyBreaks: breaks },
+      {
+        onSuccess: (r) => {
+          setToast(r.appliesToday
+            ? '저장했어요 · 오늘부터 적용돼요'
+            : `저장했어요 · ${mdLabel(r.effectiveFrom)}부터 적용돼요`);
+        },
+        onError: (e) => {
+          const msg = e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요';
+          Alert.alert('저장하지 못했어요', msg); setToast(msg);
+        },
+      },
     );
   };
 
-  const Row = ({ label, value, hint, onPress, onClear }: {
-    label: string; value: string | null; hint?: string;
-    onPress: () => void; onClear?: () => void;
-  }) => (
-    <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 13, paddingHorizontal: 15, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
+  const chooseTz = (tz: string) => {
+    setTzOpen(false);
+    saveTz.mutate(tz, {
+      onSuccess: () => setToast(`매장 시간대를 ${tz} 로 저장했어요`),
+      onError: (e) => {
+        // 영업 중(45011)이면 서버 문구가 그대로 할 일을 말한다.
+        const msg = e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요';
+        Alert.alert('시간대를 바꾸지 못했어요', msg); setToast(msg);
+      },
+    });
+  };
+
+  const pickValue = picking === 'open' ? pOpen : picking === 'close' ? pClose : picking === 'bs' ? pBs : pBe;
+  const applyPick = (t: string) => {
+    if (picking === 'open') setPOpen(t);
+    else if (picking === 'close') setPClose(t);
+    else if (picking === 'bs') setPBs(t);
+    else if (picking === 'be') setPBe(t);
+    setPicking(null); setTyped('');
+  };
+
+  const TimeRow = ({ label, value, kind, hint }: { label: string; value: string; kind: 'open' | 'close' | 'bs' | 'be'; hint?: string }) => (
+    <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12, paddingHorizontal: 15, borderTopWidth: 1, borderTopColor: T.line2 }}>
       <View style={{ flex: 1 }}>
-        <Text style={{ fontSize: 16, fontWeight: '700', color: T.sub }}>{label}</Text>
-        {hint ? <Text style={{ fontSize: 14, color: T.ter, marginTop: 2 }}>{hint}</Text> : null}
+        <Text style={{ fontSize: 15, fontWeight: '700', color: T.sub }}>{label}</Text>
+        {hint ? <Text style={{ fontSize: 13, color: T.ter, marginTop: 1 }}>{hint}</Text> : null}
       </View>
-      {onClear && value !== null ? (
-        <Pressable onPress={onClear} hitSlop={6} accessibilityRole="button" accessibilityLabel={`${label} 지우기`} style={{ paddingHorizontal: 8 }}>
-          <Icon name="close" size={17} color={T.ter} />
-        </Pressable>
-      ) : null}
-      <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={`${label} 선택`} style={{ flexDirection: 'row', alignItems: 'center', gap: 3 }}>
-        <Text style={[{ fontSize: 16, fontWeight: '800', color: value === null ? T.ter : T.ink }, NUM]}>
-          {value ?? '없음'}
-        </Text>
+      <Pressable onPress={() => { setPicking(kind); setTyped(''); }} accessibilityRole="button" accessibilityLabel={`${label} 선택`} style={{ flexDirection: 'row', alignItems: 'center', gap: 3 }}>
+        <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{value}</Text>
         <Icon name="chevronDown" size={16} color={T.ter} />
       </Pressable>
     </View>
   );
 
-  const cur =
-    picking === 'open' ? open : picking === 'close' ? close : picking === 'bStart' ? bStart : bEnd;
-
-  const applySlot = (t: string) => {
-    if (picking === 'open') setOpen(t);
-    else if (picking === 'close') setClose(t);
-    else if (picking === 'bStart') setBStart(t);
-    else if (picking === 'bEnd') setBEnd(t);
-    setPicking(null);
-  };
+  const deviceTz = deviceTimezone();
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <AppHeader title="영업시간" onBack={() => safeBack('/my')} />
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ padding: 16, paddingBottom: 24, gap: 11 }}>
-        {/*
-          ⚠ **둘을 같이 본다**(0132). 예전엔 `settings` 만 봤다. 그러면
-            `operating_hours_status()` 가 죽어도 화면은 멀쩡히 열리고 적용 예정 안내만
-            소리 없이 사라진다 — 영업 중에 바꾼 시간이 언제부터인지 아무도 안 알려 준다.
-            둘 중 하나라도 못 불러오면 화면을 안 그리는 게 맞다.
-        */}
         <QueryState
-          isLoading={settings.isLoading || status.isLoading}
-          error={settings.error ?? status.error}
+          isLoading={status.isLoading}
+          error={status.error ?? (brokenRule ? new Error('영업시간 규칙을 읽지 못했어요. 잠시 후 다시 시도해 주세요') : null)}
           isEmpty={false}
-          onRetry={() => { void settings.refetch(); void status.refetch(); }}
+          onRetry={() => { setDays(null); void status.refetch(); }}
           emptyTitle="설정을 불러오지 못했어요"
         >
-          {/*
-            예약된 변경이 있으면 **제일 위에** 말한다. 저장 버튼 근처에 두면
-            이미 저장을 누른 뒤에야 눈에 들어온다.
-          */}
-          {pending ? (
+          {/* 예약된 변경이 있으면 **제일 위에** 말한다(0131). */}
+          {st?.pending ? (
             <Card pad={0} style={{ overflow: 'hidden', borderColor: T.blue }}>
-              {/* 아이콘은 제목 줄에 맞춘다 — 가운데 정렬하면 두 줄 사이에 뜬다. */}
               <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 8, padding: 14 }}>
                 <View style={{ paddingTop: 1 }}><Icon name="calendar" size={18} color={T.blue} /></View>
                 <View style={{ flex: 1 }}>
                   <Text style={{ fontSize: 15, fontWeight: '800', color: T.blue }}>
-                    변경한 영업시간은 {mdLabel(pending.effectiveFrom)}부터 적용돼요
+                    변경한 영업시간은 {mdLabel(st.pending.effectiveFrom)}부터 적용돼요
                   </Text>
-                  {/*
-                    ⚠ `영업 중에 바꾼` 이라고 쓰면 안 된다 — 오늘 영업을 **이미 종료한 뒤**
-                      바꿔도 예약 규칙이 생긴다. 조건을 좁게 적으면 그 경우에 화면이 틀린다.
-                  */}
                   <Text style={{ fontSize: 14, color: T.ter, marginTop: 2 }}>
-                    오늘 영업시간은 {status.data?.today.openTime.slice(0, 5)}~{status.data?.today.closeTime.slice(0, 5)} 그대로예요.
+                    오늘 영업시간은 {st.today.openTime.slice(0, 5)}~{st.today.closeTime.slice(0, 5)} 그대로예요.
                   </Text>
                 </View>
               </View>
             </Card>
           ) : null}
 
-          <Card pad={0} style={{ overflow: 'hidden' }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 13, paddingHorizontal: 15, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
-              <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.sub }}>영업시간</Text>
-              {overnight && !sameTime ? <Badge tone="blue" sm>자정 넘김</Badge> : null}
-              <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>
-                {sameTime ? '—' : spanLabel(span)}
-              </Text>
-            </View>
-            <Row label="시작" value={open} onPress={() => setPicking('open')} />
-            <Row
-              label="종료"
-              hint={overnight && !sameTime ? '다음 날' : undefined}
-              value={close}
-              onPress={() => setPicking('close')}
-            />
-          </Card>
-
-          <Card pad={0} style={{ overflow: 'hidden' }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 13, paddingHorizontal: 15, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
-              <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.sub }}>브레이크 타임</Text>
-              <Text style={{ fontSize: 14, color: T.ter, fontWeight: '600' }}>선택</Text>
-            </View>
-            <Row label="시작" value={bStart} onPress={() => setPicking('bStart')} onClear={() => setBStart(null)} />
-            <Row label="종료" value={bEnd} onPress={() => setPicking('bEnd')} onClear={() => setBEnd(null)} />
-          </Card>
-
-          <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, paddingHorizontal: 2, marginTop: 2 }}>
-            <Icon name="info" size={15} color={T.ter} />
-            <Text style={{ flex: 1, fontSize: 14, color: T.ter, lineHeight: 20 }}>
-              종료 시각이 <Text style={{ fontWeight: '700' }}>하루의 경계</Text>예요.
-              {overnight && !sameTime
-                ? ` 새벽 ${close} 까지 판 건 전날 매출로 잡혀요.`
-                : ' 자정에 날짜가 바뀌어요.'}
-            </Text>
-          </View>
-
-          {/* 시각 고르기 — 30분 단위 */}
-          {picking !== null ? (
-            <Card pad={0} style={{ overflow: 'hidden' }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12, paddingHorizontal: 15, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
-                <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.sub }}>
-                  {picking === 'open' ? '영업 시작' : picking === 'close' ? '영업 종료' : picking === 'bStart' ? '브레이크 시작' : '브레이크 종료'}
-                </Text>
-                <Pressable onPress={() => setPicking(null)} hitSlop={6} accessibilityRole="button" accessibilityLabel="닫기">
-                  <Icon name="close" size={19} color={T.ter} />
-                </Pressable>
-              </View>
-              <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 7, padding: 13 }}>
-                {SLOTS.map((t) => {
-                  const on = t === cur;
-                  return (
-                    <Pressable
-                      key={t}
-                      onPress={() => applySlot(t)}
-                      accessibilityRole="button" accessibilityLabel={t}
-                      accessibilityState={{ selected: on }}
-                      style={{ paddingVertical: 8, paddingHorizontal: 11, borderRadius: 9, borderWidth: 1, borderColor: on ? T.blue : T.line, backgroundColor: on ? T.blueTint : T.surface }}
-                    >
-                      <Text style={[{ fontSize: 14, fontWeight: on ? '800' : '600', color: on ? T.blue : T.sub2 }, NUM]}>{t}</Text>
-                    </Pressable>
-                  );
-                })}
+          {/* 매장 시간대 — 날짜 계산의 뿌리. 정한 적 없으면 기기 시간대를 제안한다. */}
+          {st && !st.timezoneConfirmed && deviceTz ? (
+            <Card pad={0} style={{ overflow: 'hidden', borderColor: T.blue }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, padding: 14 }}>
+                <Icon name="info" size={18} color={T.blue} />
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 15, fontWeight: '800', color: T.blue }}>매장 시간대를 정해 주세요</Text>
+                  <Text style={{ fontSize: 13.5, color: T.ter, marginTop: 2 }}>기기 시간대는 {deviceTz} 예요.</Text>
+                </View>
+                <Button kind="primary" size="sm" loading={saveTz.isPending} onPress={() => chooseTz(deviceTz)}>
+                  기기 시간대 사용
+                </Button>
               </View>
             </Card>
           ) : null}
+
+          <Card pad={0} style={{ overflow: 'hidden' }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 13, paddingHorizontal: 15 }}>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: 16, fontWeight: '800', color: T.sub }}>매장 시간대</Text>
+                <Text style={{ fontSize: 13.5, color: T.ter, marginTop: 2 }}>
+                  {st?.timezoneConfirmed ? '날짜·영업일 계산의 기준이에요' : '아직 정하지 않아 서울 기준이에요'}
+                </Text>
+              </View>
+              <Pressable onPress={() => { setTzTyped(''); setTzOpen(true); }} accessibilityRole="button" accessibilityLabel="시간대 변경" style={{ flexDirection: 'row', alignItems: 'center', gap: 3 }}>
+                <Text style={{ fontSize: 15, fontWeight: '800', color: T.ink }}>{st?.timezone ?? ''}</Text>
+                <Icon name="chevronDown" size={16} color={T.ter} />
+              </Pressable>
+            </View>
+          </Card>
+
+          {/* 요일별 현재 값 — 저장될 결과를 그대로 보여 준다. */}
+          <Card pad={0} style={{ overflow: 'hidden' }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 13, paddingHorizontal: 15, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
+              <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.sub }}>요일별 영업시간</Text>
+              <Text style={{ fontSize: 13.5, color: T.ter }}>바꿀 요일을 고르세요</Text>
+            </View>
+
+            <View style={{ flexDirection: 'row', gap: 6, padding: 13 }}>
+              {DOW_ORDER.map((d) => {
+                const on = selected.has(d);
+                const closed = days?.[d]?.closed === true;
+                return (
+                  <Pressable
+                    key={d}
+                    onPress={() => toggleDay(d)}
+                    accessibilityRole="button"
+                    accessibilityLabel={`${DOW_LABEL[d]}요일`}
+                    accessibilityState={{ selected: on }}
+                    style={{
+                      flex: 1, alignItems: 'center', paddingVertical: 9, borderRadius: 10, borderWidth: 1,
+                      borderColor: on ? T.blue : T.line,
+                      backgroundColor: on ? T.blueTint : closed ? T.surface2 : T.surface,
+                    }}
+                  >
+                    <Text style={{ fontSize: 15, fontWeight: on ? '800' : '600', color: on ? T.blue : closed ? T.ter : T.sub2 }}>
+                      {DOW_LABEL[d]}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+
+            {days ? DOW_ORDER.map((d) => (
+              <View key={d} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10, paddingHorizontal: 15, borderTopWidth: 1, borderTopColor: T.line2 }}>
+                <Text style={{ width: 34, fontSize: 15, fontWeight: '800', color: selected.has(d) ? T.blue : T.sub }}>{DOW_LABEL[d]}</Text>
+                <Text style={[{ flex: 1, fontSize: 14.5, fontWeight: '600', color: days[d]?.closed ? T.ter : T.ink }, NUM]}>
+                  {days[d] ? dayLabel(days[d]) : '—'}
+                </Text>
+              </View>
+            )) : null}
+          </Card>
+
+          {/* 편집 패널 — 고른 요일에 공통 적용 */}
+          <Card pad={0} style={{ overflow: 'hidden' }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 13, paddingHorizontal: 15, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
+              <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.sub }}>
+                {selected.size > 0
+                  ? `${DOW_ORDER.filter((d) => selected.has(d)).map((d) => DOW_LABEL[d]).join('·')}요일 시간`
+                  : '요일을 먼저 고르세요'}
+              </Text>
+              {overnight ? <Badge tone="blue" sm>자정 넘김</Badge> : null}
+              {!pClosed ? (
+                <Text style={[{ fontSize: 15, fontWeight: '800', color: T.ink }, NUM]}>
+                  {pOpen === pClose ? '—' : spanLabel(spanMinutes(pOpen, pClose))}
+                </Text>
+              ) : null}
+            </View>
+
+            {/* 휴무 */}
+            <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12, paddingHorizontal: 15 }}>
+              <Text style={{ flex: 1, fontSize: 15, fontWeight: '700', color: T.sub }}>휴무</Text>
+              <Pressable
+                onPress={() => setPClosed((v) => !v)}
+                accessibilityRole="switch" accessibilityLabel="휴무"
+                accessibilityState={{ checked: pClosed }}
+                style={{ paddingVertical: 5, paddingHorizontal: 12, borderRadius: 999, backgroundColor: pClosed ? T.blue : T.line2 }}
+              >
+                <Text style={{ fontSize: 13.5, fontWeight: '800', color: pClosed ? T.onColor : T.sub2 }}>{pClosed ? '휴무' : '영업'}</Text>
+              </Pressable>
+            </View>
+
+            {!pClosed ? (
+              <>
+                <TimeRow label="시작" value={pOpen} kind="open" />
+                <TimeRow label="종료" value={pClose} kind="close" hint={overnight ? '다음 날' : undefined} />
+
+                <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12, paddingHorizontal: 15, borderTopWidth: 1, borderTopColor: T.line2 }}>
+                  <Text style={{ flex: 1, fontSize: 15, fontWeight: '700', color: T.sub }}>브레이크 타임</Text>
+                  <Pressable
+                    onPress={() => setUseBreak((v) => !v)}
+                    accessibilityRole="switch" accessibilityLabel="브레이크 타임 사용"
+                    accessibilityState={{ checked: useBreak }}
+                    style={{ paddingVertical: 5, paddingHorizontal: 12, borderRadius: 999, backgroundColor: useBreak ? T.blue : T.line2 }}
+                  >
+                    <Text style={{ fontSize: 13.5, fontWeight: '800', color: useBreak ? T.onColor : T.sub2 }}>{useBreak ? '사용' : '사용 안 함'}</Text>
+                  </Pressable>
+                </View>
+                {useBreak ? (
+                  <>
+                    <TimeRow label="브레이크 시작" value={pBs} kind="bs" />
+                    <TimeRow label="브레이크 종료" value={pBe} kind="be" />
+                  </>
+                ) : null}
+              </>
+            ) : null}
+
+            <View style={{ padding: 13, borderTopWidth: 1, borderTopColor: T.line2 }}>
+              <Button kind="ghost" full disabled={selected.size === 0} onPress={applyToSelected}>
+                선택한 요일에 적용
+              </Button>
+            </View>
+          </Card>
+
+          {/* 거울 검증 결과 — 저장 전에 서버가 할 말을 미리 보여 준다. */}
+          {validationError ? (
+            <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, paddingHorizontal: 2 }}>
+              <Icon name="info" size={15} color={T.red} />
+              <Text style={{ flex: 1, fontSize: 14, color: T.red, lineHeight: 20 }}>{validationError}</Text>
+            </View>
+          ) : (
+            <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, paddingHorizontal: 2 }}>
+              <Icon name="info" size={15} color={T.ter} />
+              <Text style={{ flex: 1, fontSize: 14, color: T.ter, lineHeight: 20 }}>
+                종료 시각이 <Text style={{ fontWeight: '700' }}>하루의 경계</Text>예요. 종료를 시작보다
+                이르게 두면 자동으로 다음 날 종료(자정 넘김)로 저장돼요.
+              </Text>
+            </View>
+          )}
         </QueryState>
       </ScrollView>
 
       <View style={{ paddingHorizontal: 20, paddingTop: 11, paddingBottom: 30, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
-        <Button kind="primary" size="lg" full loading={save.isPending} disabled={!dirty || sameTime} onPress={submit}>
+        <Button kind="primary" size="lg" full loading={save.isPending} disabled={!days || validationError !== null} onPress={submit}>
           저장
         </Button>
       </View>
+
+      {/* 시각 선택 — 15분 단위 + 직접 입력 */}
+      <Sheet
+        visible={picking !== null}
+        onClose={() => { setPicking(null); setTyped(''); }}
+        title={picking === 'open' ? '영업 시작' : picking === 'close' ? '영업 종료' : picking === 'bs' ? '브레이크 시작' : '브레이크 종료'}
+        height="72%"
+      >
+        <View style={{ flexDirection: 'row', gap: 8, paddingBottom: 11, alignItems: 'center' }}>
+          <TextInput
+            value={typed}
+            onChangeText={setTyped}
+            placeholder="직접 입력 · 예) 21:30"
+            placeholderTextColor={T.ter}
+            keyboardType="numbers-and-punctuation"
+            accessibilityLabel="시각 직접 입력"
+            style={{ flex: 1, borderWidth: 1, borderColor: T.line, borderRadius: 10, paddingVertical: 9, paddingHorizontal: 12, fontSize: 15, color: T.ink, backgroundColor: T.surface }}
+          />
+          <Button
+            kind="primary" size="sm"
+            onPress={() => {
+              const t = normalizeTimeInput(typed);
+              if (t === null) { setToast('시각은 HH:MM 으로 적어 주세요'); return; }
+              applyPick(t);
+            }}
+          >
+            입력
+          </Button>
+        </View>
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 7, paddingBottom: 24 }}>
+          {QUARTER_SLOTS.map((t) => {
+            const on = t === pickValue;
+            return (
+              <Pressable
+                key={t}
+                onPress={() => applyPick(t)}
+                accessibilityRole="button" accessibilityLabel={t}
+                accessibilityState={{ selected: on }}
+                style={{ paddingVertical: 8, paddingHorizontal: 10, borderRadius: 9, borderWidth: 1, borderColor: on ? T.blue : T.line, backgroundColor: on ? T.blueTint : T.surface }}
+              >
+                <Text style={[{ fontSize: 14, fontWeight: on ? '800' : '600', color: on ? T.blue : T.sub2 }, NUM]}>{t}</Text>
+              </Pressable>
+            );
+          })}
+        </View>
+      </Sheet>
+
+      {/* 시간대 선택 */}
+      <Sheet visible={tzOpen} onClose={() => setTzOpen(false)} title="매장 시간대" sub="날짜·영업일 계산의 기준이에요" height="72%">
+        <View style={{ flexDirection: 'row', gap: 8, paddingBottom: 11, alignItems: 'center' }}>
+          <TextInput
+            value={tzTyped}
+            onChangeText={setTzTyped}
+            placeholder="직접 입력 · 예) Asia/Seoul"
+            placeholderTextColor={T.ter}
+            autoCapitalize="none"
+            accessibilityLabel="시간대 직접 입력"
+            style={{ flex: 1, borderWidth: 1, borderColor: T.line, borderRadius: 10, paddingVertical: 9, paddingHorizontal: 12, fontSize: 15, color: T.ink, backgroundColor: T.surface }}
+          />
+          <Button kind="primary" size="sm" onPress={() => { if (tzTyped.trim()) chooseTz(tzTyped.trim()); }}>
+            입력
+          </Button>
+        </View>
+        {(deviceTz && !COMMON_TZ.includes(deviceTz) ? [deviceTz, ...COMMON_TZ] : COMMON_TZ).map((tz) => {
+          const on = tz === st?.timezone;
+          return (
+            <Pressable
+              key={tz}
+              onPress={() => chooseTz(tz)}
+              accessibilityRole="button" accessibilityLabel={tz}
+              accessibilityState={{ selected: on }}
+              style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 13, borderBottomWidth: 1, borderBottomColor: T.line2 }}
+            >
+              <Text style={{ flex: 1, fontSize: 15, fontWeight: on ? '800' : '600', color: on ? T.blue : T.ink }}>{tz}</Text>
+              {tz === deviceTz ? <Badge tone="blue" sm>기기</Badge> : null}
+              {on ? <Icon name="check" size={17} color={T.blue} /> : null}
+            </Pressable>
+          );
+        })}
+        <View style={{ height: 24 }} />
+      </Sheet>
+
+      {/* 짧은 알림 — 팝업 대신. 웹에서도 뜬다(Alert 는 웹에서 빈 함수다). */}
+      {toast ? (
+        <Pressable
+          onPress={() => setToast(null)}
+          accessibilityRole="button" accessibilityLabel="알림 닫기"
+          style={{ position: 'absolute', left: 16, right: 16, bottom: 24, paddingVertical: 13, paddingHorizontal: 15, borderRadius: 12, backgroundColor: 'rgba(25,31,40,0.92)' }}
+        >
+          <Text style={{ fontSize: 14, fontWeight: '700', color: '#fff', lineHeight: 20 }}>{toast}</Text>
+        </Pressable>
+      ) : null}
     </View>
   );
 }

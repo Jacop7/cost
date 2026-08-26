@@ -429,8 +429,14 @@ export interface OperatingHours {
 
 export interface HoursStatus {
   localDate: string;
+  /** 매장 시간대(IANA). 정한 적 없으면 서버 기본(Asia/Seoul)이 온다. */
+  timezone: string;
+  /** 사장님이 **정한** 값인가(0122 confirmed). false 면 화면이 기기 시간대를 제안한다. */
+  timezoneConfirmed: boolean;
   /** 오늘 **실제로** 적용 중인 시간. settings 입력값이 아니라 규칙에서 온다. */
   today: OperatingHours;
+  /** 지금 적용 중인 규칙 전체(주간) — 요일별 편집 화면의 초깃값(0156). 규칙이 없으면 null. */
+  currentRule: { effectiveFrom: string | null; weeklyHours: Record<string, unknown>; weeklyBreaks: Record<string, unknown> } | null;
   /** 아직 시작 안 한 규칙. 없으면 null. */
   pending: { effectiveFrom: string; hours: OperatingHours } | null;
 }
@@ -487,6 +493,27 @@ export function useHoursStatus() {
       const localDate = typeof r.local_date === 'string' ? r.local_date : '';
       if (!YMD_RE.test(localDate)) throw failed('오늘 날짜');
 
+      // ⚠ 조용한 기본값 금지(0132·0156). 없으면 던져야 배포 어긋남이 화면에 보인다.
+      const timezone = typeof r.timezone === 'string' && r.timezone !== '' ? r.timezone : null;
+      if (timezone === null) throw failed('매장 시간대');
+      if (typeof r.timezone_confirmed !== 'boolean') throw failed('시간대 확정 여부');
+
+      const cr = r.current_rule as Record<string, unknown> | null | undefined;
+      let currentRule: HoursStatus['currentRule'] = null;
+      if (cr) {
+        const wh = cr.weekly_hours;
+        const wb = cr.weekly_breaks;
+        if (typeof wh !== 'object' || wh === null || typeof wb !== 'object' || wb === null) {
+          throw failed('주간 규칙');
+        }
+        currentRule = {
+          effectiveFrom: typeof cr.effective_from === 'string' && YMD_RE.test(cr.effective_from)
+            ? cr.effective_from : null,
+          weeklyHours: wh as Record<string, unknown>,
+          weeklyBreaks: wb as Record<string, unknown>,
+        };
+      }
+
       const today = r.today as Record<string, unknown> | null;
       if (!today) throw failed('오늘 영업시간');
 
@@ -501,8 +528,62 @@ export function useHoursStatus() {
         };
       }
 
-      return { localDate, today: hoursOf(today, '오늘'), pending };
+      return {
+        localDate, timezone, timezoneConfirmed: r.timezone_confirmed,
+        today: hoursOf(today, '오늘'), currentRule, pending,
+      };
     },
+  });
+}
+
+/**
+ * 요일별 영업시간 저장(0156) — `set_operating_hours` 직행.
+ *
+ * ⚠ `useSaveSettings` 가 아니다. 그쪽(settings)은 요일 구분이 없는 옛 입력 폼이라
+ *   월~일 공통값만 실을 수 있다. 요일별 규칙은 이 문으로만 온전히 간다.
+ */
+export function useSetOperatingHours() {
+  const qc = useQueryClient();
+  const storeId = useStoreId();
+  return useMutation({
+    mutationFn: async (input: {
+      weeklyHours: Record<string, unknown>;
+      weeklyBreaks: Record<string, unknown>;
+    }): Promise<{ effectiveFrom: string; appliesToday: boolean }> => {
+      const { data, error } = await supabase.rpc('set_operating_hours', {
+        p_store: storeId,
+        p_weekly_hours: asJson(input.weeklyHours),
+        p_weekly_breaks: asJson(input.weeklyBreaks),
+      });
+      if (error) throw new Error(error.message);
+      const r = (data ?? {}) as unknown as Record<string, unknown>;
+      // 언제부터인지는 화면이 반드시 말해야 한다(0130) — 없으면 계약 위반이다.
+      const from = typeof r.effective_from === 'string' ? r.effective_from : '';
+      if (!YMD_RE.test(from)) throw failed('적용 시작일');
+      if (typeof r.applies_today !== 'boolean') throw failed('오늘 적용 여부');
+      return { effectiveFrom: from, appliesToday: r.applies_today };
+    },
+    // 영업시간은 상태 카드(business_day_state)에도 실린다 — 같이 다시 그린다.
+    onSuccess: () => invalidate(qc, [...invalidateOn.settingsSaved(), ...invalidateOn.businessDay()]),
+  });
+}
+
+/**
+ * 매장 시간대 변경(0156) — 유일한 문. 영업 중이면 서버가 45011 로 거부한다.
+ * 최초 제안은 화면이 기기 시간대(Intl)로 하고, 확정은 이 RPC 가 confirmed 로 남긴다.
+ */
+export function useSetStoreTimezone() {
+  const qc = useQueryClient();
+  const storeId = useStoreId();
+  return useMutation({
+    mutationFn: async (timezone: string): Promise<void> => {
+      const { error } = await supabase.rpc('set_store_timezone', {
+        p_store: storeId, p_timezone: timezone,
+      });
+      if (error) throw new Error(error.message);
+    },
+    // 시간대가 바뀌면 '오늘'이 움직인다 — 날짜를 쓰는 화면 전부가 대상이다.
+    onSuccess: () => invalidate(qc, [...invalidateOn.settingsSaved(), ...invalidateOn.businessDay()]),
   });
 }
 
