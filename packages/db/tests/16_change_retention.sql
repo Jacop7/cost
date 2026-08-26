@@ -361,7 +361,7 @@ begin
     'open_business_day(p_store uuid, p_date date)',
     'purge_entity_changes()',
     'save_sale(p_store uuid, p_date date, p_items jsonb, p_etc_items jsonb, p_extra_items jsonb, p_base_revision integer, p_open_day boolean)',
-    'set_operating_hours(p_store uuid, p_weekly_hours jsonb, p_weekly_breaks jsonb)',
+    'set_operating_hours(p_store uuid, p_weekly_hours jsonb, p_weekly_breaks jsonb, p_base_rule_id uuid, p_base_revision integer)',
     'set_store_timezone(p_store uuid, p_timezone text)',
     'settings_sync_operating_rule()',
     'stores_default_operating_rule()',

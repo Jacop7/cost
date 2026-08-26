@@ -825,6 +825,7 @@ export type Database = {
           effective_from: string
           effective_to: string | null
           id: string
+          revision: number
           store_id: string
           weekly_breaks: Json
           weekly_hours: Json
@@ -835,6 +836,7 @@ export type Database = {
           effective_from: string
           effective_to?: string | null
           id?: string
+          revision?: number
           store_id: string
           weekly_breaks?: Json
           weekly_hours: Json
@@ -845,6 +847,7 @@ export type Database = {
           effective_from?: string
           effective_to?: string | null
           id?: string
+          revision?: number
           store_id?: string
           weekly_breaks?: Json
           weekly_hours?: Json
@@ -2155,6 +2158,7 @@ export type Database = {
           effective_from: string
           effective_to: string | null
           id: string
+          revision: number
           store_id: string
           weekly_breaks: Json
           weekly_hours: Json
@@ -2633,6 +2637,8 @@ export type Database = {
           p_store: string
           p_weekly_hours: Json
           p_weekly_breaks?: Json
+          p_base_rule_id?: string
+          p_base_revision?: number
         }
         Returns: Json
       }

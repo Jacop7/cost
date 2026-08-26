@@ -7,6 +7,7 @@
  */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
+import { RpcError } from '@/lib/supabase';
 import type { HoursStatus } from '@/features/my/hooks';
 
 vi.mock('expo-router', () => ({
@@ -37,7 +38,7 @@ function status(over: Partial<HoursStatus> = {}): { data: HoursStatus; isLoading
       timezone: 'Asia/Seoul',
       timezoneConfirmed: true,
       today: { openTime: '11:00', closeTime: '22:00', breakStart: null, breakEnd: null, closeDayOffset: 0, closed: false },
-      currentRule: { effectiveFrom: '2026-01-01', weeklyHours: UNIFORM_HOURS, weeklyBreaks: {} },
+      currentRule: { ruleId: 'rule-1', revision: 3, effectiveFrom: '2026-01-01', weeklyHours: UNIFORM_HOURS, weeklyBreaks: {} },
       pending: null,
       ...over,
     },
@@ -112,6 +113,47 @@ describe('거울 검증', () => {
     expect(screen.getByText('자정 넘김')).toBeTruthy();
     fireEvent.click(screen.getByText('선택한 요일에 적용'));
     expect(screen.getByText('11:00~다음 날 02:00')).toBeTruthy();
+  });
+});
+
+describe('예약 규칙 판본 (0159)', () => {
+  const PENDING_HOURS = Object.fromEntries(
+    Array.from({ length: 7 }, (_, d) => [String(d), { open: '10:00', close: '21:00', closed: false }]),
+  );
+  const pending = {
+    ruleId: 'rule-2', revision: 5, effectiveFrom: '2026-08-27',
+    weeklyHours: PENDING_HOURS, weeklyBreaks: {},
+    hours: { openTime: '10:00', closeTime: '21:00', breakStart: null, breakEnd: null, closeDayOffset: 0, closed: false },
+  };
+
+  it('예약이 있으면 예약 주간표로 편집을 시작한다 — 재진입해도 안 사라진다', () => {
+    hoursStatus.mockReturnValue(status({ pending }));
+    render(<MyHoursScreen />);
+    // 현재 규칙(11:00~22:00)이 아니라 예약(10:00~21:00)이 보여야 한다.
+    expect(screen.getAllByText('10:00~21:00')).toHaveLength(7);
+    expect(screen.queryByText('11:00~22:00')).toBeNull();
+  });
+
+  it('저장이 편집 기준의 판본을 실어 보낸다', () => {
+    hoursStatus.mockReturnValue(status({ pending }));
+    render(<MyHoursScreen />);
+    fireEvent.click(screen.getByText('저장'));
+    const arg = saveHours.mock.calls[0]![0] as { baseRuleId?: string; baseRevision?: number };
+    expect(arg.baseRuleId).toBe('rule-2');
+    expect(arg.baseRevision).toBe(5);
+  });
+
+  it('45009 면 편집을 버리고 최신 값을 다시 받는다 — 남의 변경을 안 덮는다', () => {
+    const refetch = vi.fn();
+    const st = status();
+    hoursStatus.mockReturnValue({ ...st, refetch });
+    saveHours.mockImplementation((_input: unknown, opts?: { onError?: (e: Error) => void }) => {
+      opts?.onError?.(new RpcError('다른 기기에서 영업시간이 변경됐어요', '45009', 'REVISION_CONFLICT'));
+    });
+    render(<MyHoursScreen />);
+    fireEvent.click(screen.getByText('저장'));
+    expect(refetch).toHaveBeenCalled();
+    expect(screen.getByText(/다른 기기에서 영업시간이 변경됐어요/)).toBeTruthy();
   });
 });
 
