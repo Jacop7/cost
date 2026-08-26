@@ -29,6 +29,9 @@ importers:
       '@sikjae/core':
         specifier: workspace:*
         version: link:../../packages/core
+      '@sikjae/db':
+        specifier: workspace:*
+        version: link:../../packages/db
       '@sikjae/types':
         specifier: workspace:*
         version: link:../../packages/types
@@ -96,6 +99,9 @@ importers:
       typescript:
         specifier: ^5.6.3
         version: 5.9.3
+      vitest:
+        specifier: ^2.1.9
+        version: 2.1.9(@types/node@25.9.2)(lightningcss@1.32.0)(terser@5.48.0)
 
   packages/core:
     dependencies:

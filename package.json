@@ -13,6 +13,7 @@
     "core": "pnpm --filter @sikjae/core",
     "typecheck": "pnpm -r typecheck",
     "test": "pnpm -r test",
+    "verify": "node scripts/verify.mjs",
     "lint": "pnpm -r lint",
     "db:start": "pnpm --filter @sikjae/db start",
     "db:reset": "pnpm --filter @sikjae/db reset",

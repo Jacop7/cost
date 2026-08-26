@@ -1,0 +1,37 @@
+# 전체 검증을 자동으로 돌린다 — 지금까지는 손으로만 돌렸다.
+#
+# ⚠ **DB 두 단계는 여기서 못 돈다.** `fresh-db.sh` 는 로컬 supabase 컨테이너에
+#   `docker exec` 하고, 거기서 `auth.users` 모양을 그대로 베껴 온다. CI 에 그 스택이
+#   없으므로 `--no-db` 로 뺀다. 스크립트가 끝에 "건너뛴 것" 을 적으므로 초록이
+#   "전부 통과" 로 읽히지 않는다.
+#
+#   DB·업그레이드 경로는 로컬에서 `pnpm verify` 로 돌린다. 그 둘을 CI 로 옮기려면
+#   supabase 스택을 띄우는 단계가 먼저 필요하다(아직 없다).
+name: verify
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.12.0
+
+      # ⚠ 루트가 선언한 하한(engines.node >=20)으로 돈다. 24 로만 도는 것을 쓰면
+      #   여기서 깨져야 한다 — 실제로 `--experimental-strip-types` 가 그랬다.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # ① 타입 · ② 시험 3종 · ⑤ 웹 번들
+      - run: pnpm verify --no-db

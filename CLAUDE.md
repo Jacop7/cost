@@ -71,10 +71,15 @@ Expo(RN) + Supabase 모노레포. 모든 데이터가 기록·전파되어 추�
 - 구현 화면 인벤토리·플로우는 `apps/mobile/src/features/README.md` 단일 출처로 갱신.
 
 ## 검사 실행
-- `pnpm test` (루트) → `packages/core` vitest · `packages/db` `tests/run.mjs` · `apps/mobile` `scripts/run-checks.mjs`.
-- 앱 쪽 검사는 `src/**/*.check.ts` 를 node 타입 스트립으로 그대로 돌린다 — **앱 의존이 없어야** 한다
-  (`@/` 별칭·react-native 를 import 하면 못 읽는다). 그래서 `tsconfig` 의 `exclude` 에 있고
-  검사 파일 안에서는 import 에 `.ts` 확장자를 붙인다.
+- **`pnpm verify`** (루트) 한 방 — 타입 · 시험 3종 · 새 DB · 업그레이드 경로 · 웹 번들.
+  각각 따로 돌리다 하나를 빼먹는 일이 있어서 한 명령으로 묶었다. CI 도 이걸 부른다.
+- `pnpm test` (루트) → `packages/core` vitest 168 · `packages/db` `tests/run.mjs` 27 ·
+  `apps/mobile` vitest.
+- 앱 시험은 `apps/mobile/tests/*.test.ts` 에 두고 **vitest** 로 돈다.
+  ⚠ `node --experimental-strip-types` 를 쓰지 않는다 — 그건 Node 24 전용이라 루트가
+  선언한 `engines.node: >=20` 과 어긋난다(Node 20 에서 `pnpm test` 가 깨진다).
+  ⚠ 시험 대상 모듈은 **앱 의존이 없는 순수 함수**로 뺀다(`features/sales/dayContract.ts` 처럼).
+  화면 자체를 재려면 RN 테스트 라이브러리가 따로 필요하다 — 아직 없다.
 - `bash packages/db/scripts/fresh-db.sh fresh_x` 로 새 DB, `--until <14자리>` 로 중간 상태.
   `bash packages/db/scripts/upgrade-check.sh` 는 마이그레이션 **순서**를 태운다 —
   최종 상태만 보는 시험은 "앞이 만든 값을 뒤가 검사해서 통과" 하는 구멍을 못 잡는다.
