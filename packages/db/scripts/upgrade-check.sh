@@ -31,6 +31,9 @@ D=fresh_upgrade_check
 BASE=20260826000150            # 이 마이그레이션까지 태운 상태에서 시작한다
 STEPS=(20260826000151_basis_backfill_and_guard.sql
        20260826000152_no_rate_guessing.sql)
+# 시나리오 ① 이 **어디서 · 왜** 멈춰야 하는지. 이 둘을 안 보면 아무 이유로 깨져도 통과한다.
+EXPECT_STOP=20260826000152_no_rate_guessing.sql
+EXPECT_MSG='0152: 굳은 세율로'
 
 psql_d() { docker exec -i "$CT" psql -U postgres -d "$1" -v ON_ERROR_STOP=1 -q "${@:2}"; }
 cleanup() { bash "$SCRIPT_DIR/fresh-db.sh" --drop "$D" >/dev/null 2>&1 || true; }
@@ -70,15 +73,25 @@ if [ "$n" = "0" ]; then
   fail=1
 else
   say "   전제: 어긋난 열린 장부 ${n}건"
-  blocked=0
+  # ⚠ "멈추기만 하면 통과" 로 세면 안 된다. 0151 이 **다른 이유**로 깨져도 초록이 된다.
+  #   어디서 멈췄는지와 무슨 문구로 멈췄는지를 둘 다 본다.
+  stopped_at=""; err=""
   for m in "${STEPS[@]}"; do
-    if ! psql_d "$D" < "$MIG_DIR/$m" >/dev/null 2>&1; then blocked=1; say "   멈춘 곳: $m"; break; fi
+    if err="$(psql_d "$D" < "$MIG_DIR/$m" 2>&1 1>/dev/null)"; then :; else stopped_at="$m"; break; fi
   done
-  if [ "$blocked" = "1" ]; then
-    say "   ok   업그레이드가 멈춘다"
-  else
+  if [ -z "$stopped_at" ]; then
     say "   FAIL 어긋난 장부가 그대로 통과했다"
     fail=1
+  elif [ "$stopped_at" != "$EXPECT_STOP" ]; then
+    say "   FAIL 엉뚱한 곳에서 멈췄다: $stopped_at (기대: $EXPECT_STOP)"
+    say "        $(printf '%s' "$err" | head -3)"
+    fail=1
+  elif ! printf '%s' "$err" | grep -qF "$EXPECT_MSG"; then
+    say "   FAIL $EXPECT_STOP 에서 멈추긴 했는데 다른 이유다 (기대 문구: $EXPECT_MSG)"
+    say "        $(printf '%s' "$err" | head -3)"
+    fail=1
+  else
+    say "   ok   $EXPECT_STOP 이 '$EXPECT_MSG …' 로 멈춘다"
   fi
 fi
 

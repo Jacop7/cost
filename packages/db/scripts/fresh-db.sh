@@ -50,7 +50,17 @@ while true; do
     --drop)  DROP_ONLY=1; shift ;;
     --until) UNTIL="${2:-}"; shift 2
              printf '%s' "$UNTIL" | grep -Eq '^[0-9]{14}$' || {
-               echo "--until 은 14자리 마이그레이션 접두사여야 합니다 (받은 값: '$UNTIL')" >&2; exit 2; } ;;
+               echo "--until 은 14자리 마이그레이션 접두사여야 합니다 (받은 값: '$UNTIL')" >&2; exit 2; }
+             # ⚠ 형식만 보면 **없는 번호**도 통과한다. 그러면 전체를 다 태우고도
+             #   "그 번호까지 준비됐다" 고 말한다 — 업그레이드 검사가 거짓으로 초록이 된다.
+             # ⚠ `ls` 로 세면 안 된다. 매칭이 없을 때 `ls` 가 2 로 끝나고, `pipefail` 때문에
+             #   대입이 실패해 스크립트가 **아무 말 없이** 죽는다(실제로 그랬다 — exit 2, 출력 없음).
+             shopt -s nullglob
+             _hit=( "$MIG_DIR/${UNTIL}"_*.sql )
+             shopt -u nullglob
+             [ "${#_hit[@]}" = "1" ] || {
+               echo "--until $UNTIL 에 맞는 마이그레이션이 ${#_hit[@]}개입니다 (정확히 1개여야 합니다)" >&2
+               exit 2; } ;;
     *) break ;;
   esac
 done
