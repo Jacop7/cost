@@ -251,7 +251,7 @@ begin
     from pg_proc p join pg_namespace n on n.oid = p.pronamespace
    where n.nspname = 'public' and p.prokind = 'f'
      and not has_function_privilege('authenticated', p.oid, 'execute')
-     and p.proname not in ('close_due_business_days');
+     and p.proname not in ('close_due_business_days', 'close_business_day_row');
   perform pg_temp.eq(
     coalesce('인증 사용자가 못 부르는 함수: ' || v_names, '인증 사용자는 전부 부를 수 있다'),
     v_n, 0, 0);
@@ -261,6 +261,17 @@ begin
     not has_function_privilege('authenticated', 'public.close_due_business_days()', 'execute'));
   perform pg_temp.ok('크론 전용 함수는 anon 도 못 부른다',
     not has_function_privilege('anon', 'public.close_due_business_days()', 'execute'));
+  /*
+   * ⚠ 마감 **몸통**은 권한 검사를 안 한다. 열어 두면 사장님이 직접 불러
+   *   `close_method`·`closed_at` 을 아무 값으로나 적을 수 있다(0138).
+   *   사람이 들어오는 문은 `close_business_day` 하나뿐이어야 한다.
+   */
+  perform pg_temp.ok('마감 몸통은 인증 사용자도 못 부른다',
+    not has_function_privilege('authenticated',
+      'public.close_business_day_row(uuid,business_close_method,timestamptz)', 'execute'));
+  perform pg_temp.ok('그래도 정상 문은 열려 있다',
+    has_function_privilege('authenticated',
+      'public.close_business_day(uuid,business_close_method)', 'execute'));
 
   /*
    * ⚠ 앞의 두 줄은 **지금 있는** 함수만 본다. 정작 위험한 건 다음에 만들어질 함수다 —
@@ -301,6 +312,8 @@ end $t$;
  *   stores_default_operating_rule 트리거 전용. 직접 못 부른다.
  *   close_due_business_days      매장을 안 가린다. 그래서 사람에게는 **아예 안 연다** —
  *                                크론(service_role)만 부른다(0137).
+ *   close_business_day           첫 줄이 assert_my_store 다. definer 인 이유는 권한을
+ *                                걷어낸 몸통(`close_business_day_row`)을 부르기 위해서다(0138).
  */
 do $t$
 declare v_now text; v_want text;
@@ -317,6 +330,7 @@ begin
    where n.nspname = 'public' and p.prokind = 'f' and p.prosecdef;
 
   v_want := concat_ws(' | ',
+    'close_business_day(p_store uuid, p_method business_close_method)',
     'close_due_business_days()',
     'my_store_ids()',
     'purge_entity_changes()',

@@ -228,3 +228,24 @@ begin
 
   return v_day;
 end $h$;
+
+
+/*
+ * 함수 **코드**에 그 글자가 있는가. 주석 줄은 뺀다.
+ *
+ * ⚠ 이 헬퍼가 있는 이유 — `pg_get_functiondef()` 를 통째로 `like` 로 훑는 단언을
+ *   네 번 썼고 **네 번 다 자기 주석에 걸렸다.** 설명을 잘 적을수록 더 잘 걸린다.
+ *   ("`clock_timestamp()` 다 — `now()` 는 …" 이라고 적어 두면 `now()` 로 바꿔 놔도
+ *    `clock_timestamp` 가 주석에 남아 단언이 통과한다.)
+ *   코드를 확인하고 싶으면 코드만 봐야 한다.
+ */
+create function pg_temp.fn_code_has(p_fn regprocedure, p_needle text) returns boolean
+language sql stable as $h$
+  select exists (
+    select 1
+      from regexp_split_to_table(pg_get_functiondef(p_fn), E'\n') as line
+     where line like '%' || p_needle || '%'
+       and btrim(line) not like '--%'
+       and btrim(line) not like '*%'
+       and btrim(line) not like '/*%')
+$h$;

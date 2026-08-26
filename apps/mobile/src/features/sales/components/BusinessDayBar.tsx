@@ -125,9 +125,16 @@ export function BusinessDayBar({ state }: { state: BusinessDayState }) {
   /*
    * 영업시간 자리 — 프로토타입 `.state-hours`.
    * 종료된 날은 **실제 시작–종료**를 보여 준다(직접 종료 11:00–21:30, 자동 11:00–22:00).
+   *
+   * ⚠ 자동 종료는 `closedAt` 이 아니라 `plannedCloseAt` 으로 그린다(0138).
+   *   자동 마감의 `closedAt` 은 **기한**(예정 종료 + 유예)이라 23:00 이다.
+   *   그 값을 그리면 `11:00–23:00` 이 되어 §6.1 이 못 박은 `11:00–22:00` 과 어긋난다.
+   *   장부에는 기한이 맞고(22:45 판매보다 뒤여야 한다), 화면에는 예정 종료가 맞다 —
+   *   **두 값은 뜻이 다르다.** 섞었던 게 0137 의 잘못이었다.
    */
-  const hours = state.status === 'closed' && state.closedAt
-    ? `${o || '—'}–${hhmm(state.closedAt)}`
+  const closeShown = state.closeMethod === 'auto' ? state.plannedCloseAt : state.closedAt;
+  const hours = state.status === 'closed' && closeShown
+    ? `${o || '—'}–${hhmm(closeShown)}`
     : o && c ? `${o}–${c}` : '';
 
   const running = state.status === 'open' || state.status === 'break';
