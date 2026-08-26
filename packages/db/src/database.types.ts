@@ -1617,14 +1617,18 @@ export type Database = {
       close_business_day: {
         Args: {
           p_store: string
-          p_method?: Database["public"]["Enums"]["business_close_method"]
         }
         Returns: Json
       }
-      close_if_due: {
+      close_business_day_row: {
         Args: {
-          p_store: string
+          p_day_id: string
+          p_method: Database["public"]["Enums"]["business_close_method"]
         }
+        Returns: Json
+      }
+      close_due_business_days: {
+        Args: Record<PropertyKey, never>
         Returns: Json
       }
       consume_stock: {
@@ -1954,6 +1958,12 @@ export type Database = {
         }
         Returns: Json
       }
+      lock_business_scope: {
+        Args: {
+          p_store: string
+        }
+        Returns: undefined
+      }
       money_short: {
         Args: {
           p: number
@@ -2046,9 +2056,7 @@ export type Database = {
         }[]
       }
       purge_entity_changes: {
-        Args: {
-          p_days?: number
-        }
+        Args: Record<PropertyKey, never>
         Returns: number
       }
       quick_inbound: {

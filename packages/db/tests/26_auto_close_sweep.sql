@@ -126,7 +126,7 @@ end $t$;
 do $t$
 begin
   perform pg_temp.ok('수동 마감이 몸통을 부른다',
-    pg_get_functiondef('public.close_business_day(uuid,business_close_method)'::regprocedure)
+    pg_get_functiondef('public.close_business_day(uuid)'::regprocedure)
       like '%close_business_day_row(%');
   perform pg_temp.ok('자동 마감도 같은 몸통을 부른다',
     pg_get_functiondef('public.close_due_business_days()'::regprocedure)
@@ -242,7 +242,7 @@ begin
   perform pg_temp.set_close(now() - interval '3 hours');
 
   -- 사장님이 먼저 닫는다.
-  perform close_business_day(pg_temp.store(), 'manual');
+  perform close_business_day(pg_temp.store());
 
   -- 스윕이 뒤늦게 돈다 — 닫을 게 없다. 실패도 아니다.
   v_res := pg_temp.sweep();

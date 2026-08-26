@@ -249,3 +249,18 @@ language sql stable as $h$
        and btrim(line) not like '*%'
        and btrim(line) not like '/*%')
 $h$;
+
+
+/*
+ * 스윕을 소유자 자격으로 돌린다. 앱 롤은 못 부른다(0137·0138) —
+ * 매장을 안 가리는 definer 라 사람에게는 아예 안 열었기 때문이다.
+ */
+create function pg_temp.as_owner_sweep() returns jsonb
+language plpgsql as $h$
+declare v_res jsonb;
+begin
+  set local role postgres;
+  v_res := close_due_business_days();
+  set local role authenticated;
+  return v_res;
+end $h$;

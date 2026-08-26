@@ -70,50 +70,50 @@ begin
     (select snapshot from business_days where id = v_id) = v_snap);
   perform pg_temp.eq_t('영업 재개', set_break(pg_temp.store(), false)->>'status', 'open');
 
-  -- ── 자동 종료: 예정 뒤 활동이 있으면 미룬다 ─────────────────
+  /*
+   * ── 자동 종료 예고: **활동을 안 따라간다**(0139) ────────────
+   *
+   * 예전엔 `max(예정 종료, 마지막 활동 + 1시간)` 이었다. 판매를 계속 넣으면 예고가
+   * 끝없이 밀렸고(기획서 §2.5), 브레이크 버튼도 활동으로 쳐서 마감을 미뤘다.
+   * 지금은 `예정 종료 + 유예` 하나뿐이다 — 화면의 예고와 서버 스윕이 같은 식을 쓴다.
+   */
   update business_days
      set planned_close_at = (v_day + time '22:00') at time zone business_tz(),
          last_activity_at = (v_day + time '21:47') at time zone business_tz()
    where id = v_id;
-  perform pg_temp.eq_t('활동 21:47 → 자동 종료 22:47',
+  perform pg_temp.eq_t('예정 22:00 → 자동 종료 23:00',
     to_char((auto_close_due(pg_temp.store())->>'auto_close_at')::timestamptz at time zone business_tz(), 'HH24:MI'),
-    '22:47');
+    '23:00');
 
+  -- ⚠ 여기가 핵심이다. **활동을 뒤로 밀어도 예고가 안 움직인다.**
   update business_days
-     set last_activity_at = (v_day + time '22:35') at time zone business_tz() where id = v_id;
-  perform pg_temp.eq_t('활동 22:35 → 자동 종료 23:35',
+     set last_activity_at = (v_day + time '23:35') at time zone business_tz() where id = v_id;
+  perform pg_temp.eq_t('활동을 23:35 로 밀어도 그대로 23:00',
     to_char((auto_close_due(pg_temp.store())->>'auto_close_at')::timestamptz at time zone business_tz(), 'HH24:MI'),
-    '23:35');
+    '23:00');
 
   /*
-   * 아직 안 됐으면 닫지 않는다.
-   *
-   * ⚠ **지금 시각에 기대지 않는다.** 바로 위에서 활동 시각을 22:35 로 박아 뒀는데,
-   *   그 상태로 이 단언을 하면 "지금이 23:35 이전" 이라는 숨은 전제가 생긴다.
-   *   실제로 밤에 돌리면 빨개진다. 활동을 **지금**으로 옮겨 종료 예정을 미래로 민다
-   *   (`auto_close_due` 는 `greatest(예정 종료, 마지막 활동 + 1시간)` 이라
-   *    지금+1시간은 언제 돌려도 미래다).
+   * 아직 때가 아니면 스윕이 안 닫는다.
+   * ⚠ **지금 시각에 기대지 않는다.** 예정 종료를 미래로 밀어 둔다 —
+   *   활동은 이제 아무 영향이 없으므로 예정 종료 하나만 움직이면 된다.
    */
-  update business_days set last_activity_at = now() where id = v_id;
-  perform pg_temp.ok('아직 때가 아니면 안 닫는다',
-    (close_if_due(pg_temp.store())->>'closed')::boolean is false);
+  update business_days set planned_close_at = now() + interval '5 hours' where id = v_id;
+  perform pg_temp.eq('아직 때가 아니면 안 닫는다',
+    (pg_temp.as_owner_sweep()->>'closed')::int, 0, 0);
 
-  /*
-   * 반대쪽도 잰다 — 때가 **지났으면** 닫는다. 이것도 시각에 안 기댄다.
-   * 예정 종료와 마지막 활동을 둘 다 과거로 밀어 놓는다.
-   */
+  -- 반대쪽 — 때가 지났으면 닫는다. 활동은 **지금**으로 둔 채로 확인한다.
   update business_days
      set planned_close_at = now() - interval '3 hours',
-         last_activity_at = now() - interval '3 hours'
+         last_activity_at = now()
    where id = v_id;
-  perform pg_temp.ok('때가 지났으면 닫는다',
-    (close_if_due(pg_temp.store())->>'closed')::boolean is true);
+  perform pg_temp.eq('때가 지났으면 닫는다',
+    (pg_temp.as_owner_sweep()->>'closed')::int, 1, 0);
   perform pg_temp.eq_t('자동으로 닫혔다고 남는다',
     (select close_method::text from business_days where id = v_id), 'auto');
 
   -- 아래 수동 종료 시험을 위해 되열어 둔다.
   perform reopen_business_day(pg_temp.store(), v_day);
-  update business_days set last_activity_at = now() where id = v_id;
+  update business_days set planned_close_at = now() + interval '5 hours' where id = v_id;
 
   -- ── 종료: 시각·방식·집계가 남는다 ───────────────────────────
   v_close := close_business_day(pg_temp.store());
@@ -137,7 +137,10 @@ begin
     (select snapshot->'recipes' from business_days where id = v_id) = v_snap->'recipes');
 
   -- ── 자동 종료 기록과 확인 ───────────────────────────────────
-  perform close_business_day(pg_temp.store(), 'auto');
+  -- ⚠ 사람은 `auto` 를 고를 수 없다(0139). 자동 종료는 스윕만 만든다.
+  update business_days set planned_close_at = now() - interval '3 hours'
+   where store_id = pg_temp.store() and status::text <> 'closed';
+  perform pg_temp.as_owner_sweep();
   declare u jsonb := unacked_auto_close(pg_temp.store());
   begin
     perform pg_temp.ok('자동 종료가 다음 실행 때 알려진다', u is not null);
@@ -275,18 +278,29 @@ begin
    where store_id = pg_temp.store() and business_date = v_day;
   st := business_day_state(pg_temp.store());
   perform pg_temp.ok('예정 종료를 지났다고 알린다', (st->>'past_planned')::boolean);
-  perform pg_temp.ok('자동 종료 시각은 마지막 활동 + 1시간으로 미뤄진다',
-    (st->>'auto_close_at')::timestamptz > now());
+  -- ⚠ 자동 종료 시각은 **예정 종료 + 유예**다(0139). 마지막 활동은 안 본다.
+  perform pg_temp.eq_t('자동 종료 시각 = 예정 종료 + 유예',
+    (st->>'auto_close_at')::timestamptz::text,
+    ((st->>'planned_close_at')::timestamptz + auto_close_grace())::text);
 
-  -- 자동 종료 10분 전
+  /*
+   * 자동 종료 10분 전. **예정 종료**를 옮겨야 한다 — 활동을 옮겨도 이제 아무 일도 없다.
+   * (예전 시험은 활동을 옮겨 놓고 경고를 기대했다. 그게 §2.5 의 밀림이었다.)
+   */
   update business_days
-     set last_activity_at = now() - auto_close_grace() + interval '5 minutes'
+     set planned_close_at = now() - auto_close_grace() + interval '5 minutes',
+         last_activity_at = now() - interval '2 hours'
    where store_id = pg_temp.store() and business_date = v_day;
   perform pg_temp.ok('10분 전이면 곧 종료된다고 알린다',
     (business_day_state(pg_temp.store())->>'warn_soon')::boolean);
+  perform pg_temp.ok('활동이 오래됐어도 예고는 그대로다',
+    (business_day_state(pg_temp.store())->>'warn_soon')::boolean);
 
   -- ── 자동 종료 뒤 미확인 알림 ────────────────────────────────
-  perform close_business_day(pg_temp.store(), 'auto');
+  -- ⚠ 사람은 `auto` 를 고를 수 없다(0139). 자동 종료는 스윕만 만든다.
+  update business_days set planned_close_at = now() - interval '3 hours'
+   where store_id = pg_temp.store() and status::text <> 'closed';
+  perform pg_temp.as_owner_sweep();
   st := business_day_state(pg_temp.store());
   perform pg_temp.eq_t('종료하면 closed', st->>'status', 'closed');
   perform pg_temp.eq_t('종료 방식이 보인다', st->>'close_method', 'auto');

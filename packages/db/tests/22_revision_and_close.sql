@@ -143,7 +143,7 @@ begin
   -- 그리고 수동·자동 둘 다 그 몸통으로 들어가야 한다. 한쪽이라도 제 길로 새면
   -- 잠금이 없는 마감 경로가 생긴다.
   perform pg_temp.ok('수동 마감이 몸통을 부른다',
-    pg_get_functiondef('public.close_business_day(uuid,business_close_method)'::regprocedure)
+    pg_get_functiondef('public.close_business_day(uuid)'::regprocedure)
       like '%close_business_day_row(%');
   perform pg_temp.ok('자동 마감도 같은 몸통을 부른다',
     pg_get_functiondef('public.close_due_business_days()'::regprocedure)
