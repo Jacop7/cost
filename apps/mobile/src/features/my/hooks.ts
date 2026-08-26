@@ -307,6 +307,7 @@ export interface StoreSettings {
   alertPriceSpike: boolean;
   alertTargetMiss: boolean;
   /** 영업 시작 시각 'HH:MM'. */
+  /** ⚠ 표시 폼의 **월요일** 값이다(0156 이후 영업시간은 요일별이다). 권위는 규칙이다. */
   openTime: string;
   /** 영업 종료 시각 'HH:MM'. 시작보다 이르면 자정을 넘는 영업이다. */
   closeTime: string;

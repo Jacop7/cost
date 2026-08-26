@@ -9,7 +9,7 @@ import { getLocale } from '@sikjae/core';
 import { Card, Icon, IconName } from '@/components/kit';
 import { T } from '@/theme/tokens';
 import { useSettings, useUnitDigits } from '../store';
-import { useSettingsLists, useStoreName, useStoreSettings } from '../hooks';
+import { useHoursStatus, useSettingsLists, useStoreName, useStoreSettings } from '../hooks';
 
 interface MenuItem { icon: IconName; bg: string; fg: string; t: string; d: string; route: Href | null; }
 /** 언어·통화·단위는 현재 선택값을 설명줄에 보여야 해서 함수로 둔다(나머지는 정적). */
@@ -36,6 +36,8 @@ export default function MyHomeScreen() {
   const unitDigits = useUnitDigits();
   const lists = useSettingsLists();
   const settings = useStoreSettings();
+  // 요일별 규칙(0156)을 알아야 '월요일 값'을 전체인 양 말하지 않는다.
+  const hoursStatus = useHoursStatus();
   const storeName = useStoreName();
 
   // 수수료는 고정 지출에서 관리한다(0043). 여기서는 어떤 채널을 쓰는지만 보인다.
@@ -44,10 +46,22 @@ export default function MyHomeScreen() {
     ? '등록된 채널 없음'
     : activeChannels.map((c) => c.name).join(' · ');
 
-  // 종료 시각이 영업일 경계라 자정을 넘는지 함께 보인다(0047).
+  /*
+   * 종료 시각이 영업일 경계라 자정을 넘는지 함께 보인다(0047).
+   * ⚠ 이 값은 표시 폼(settings)의 **월요일** 시간이다 — 요일별 설정(0156)이 들어온 뒤로
+   *   전체 영업시간처럼 보이면 거짓말이 된다. 요일마다 다르면 그렇다고 말한다.
+   */
+  const perDay = (() => {
+    const wh = hoursStatus.data?.currentRule?.weeklyHours as Record<string, { open?: string; close?: string; closed?: boolean }> | undefined;
+    if (!wh) return false;
+    const keys = Array.from({ length: 7 }, (_, d) => JSON.stringify(wh[String(d)] ?? null));
+    return new Set(keys).size > 1;
+  })();
   const hoursDesc = settings.data
-    ? `${settings.data.openTime} ~ ${settings.data.overnight ? '익일 ' : ''}${settings.data.closeTime}`
-      + ` · ${Math.round(settings.data.openMinutes / 60)}시간`
+    ? perDay
+      ? '요일마다 달라요'
+      : `${settings.data.openTime} ~ ${settings.data.overnight ? '익일 ' : ''}${settings.data.closeTime}`
+        + ` · ${Math.round(settings.data.openMinutes / 60)}시간`
     : '설정 안 됨';
 
   const alertOn = settings.data

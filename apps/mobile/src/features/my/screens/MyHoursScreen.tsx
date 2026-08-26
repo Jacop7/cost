@@ -217,7 +217,13 @@ export default function MyHoursScreen() {
     const err = validateWeeklySchedule(days);
     if (err) { Alert.alert('저장할 수 없어요', err); setToast(err); return; }
     // ⚠ 판본 없이는 저장하지 않는다(0163) — 서버도 거부하지만, 여기서 먼저 최신 값을 받아 온다.
-    if (!base) { void reloadFromServer(); setToast('편집 기준을 다시 불러왔어요 · 다시 저장해 주세요'); return; }
+    if (!base) {
+      // ⚠ 재조회가 또 실패할 수 있다 — 결과를 보고 말한다("불러왔어요"는 성공했을 때만).
+      void reloadFromServer().then((ok) => setToast(ok
+        ? '편집 기준을 다시 불러왔어요 · 다시 저장해 주세요'
+        : '최신 값을 못 받았어요 · 잠시 뒤 다시 시도해 주세요'));
+      return;
+    }
     const { hours, breaks } = toWeeklyJson(days);
     save.mutate(
       // ⚠ 판본을 반드시 실어 보낸다(0159) — 빼먹으면 다른 기기의 변경을 조용히 덮는다.

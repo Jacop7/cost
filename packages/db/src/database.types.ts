@@ -1787,6 +1787,13 @@ export type Database = {
         }
         Returns: number
       }
+      create_store: {
+        Args: {
+          p_name: string
+          p_timezone?: string
+        }
+        Returns: Json
+      }
       current_business_day: {
         Args: {
           p_store: string
