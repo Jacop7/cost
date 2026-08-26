@@ -7,7 +7,7 @@
 import { useCallback } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { invalidate, invalidateOn, qk } from '@/lib/queryClient';
-import { supabase } from '@/lib/supabase';
+import { rpcError, supabase } from '@/lib/supabase';
 import { asJson } from '@/lib/json';
 import { useStoreId } from '@/lib/SessionProvider';
 import type { TaxMode } from '@sikjae/types';
@@ -435,10 +435,24 @@ export interface HoursStatus {
   timezoneConfirmed: boolean;
   /** 오늘 **실제로** 적용 중인 시간. settings 입력값이 아니라 규칙에서 온다. */
   today: OperatingHours;
-  /** 지금 적용 중인 규칙 전체(주간) — 요일별 편집 화면의 초깃값(0156). 규칙이 없으면 null. */
-  currentRule: { effectiveFrom: string | null; weeklyHours: Record<string, unknown>; weeklyBreaks: Record<string, unknown> } | null;
-  /** 아직 시작 안 한 규칙. 없으면 null. */
-  pending: { effectiveFrom: string; hours: OperatingHours } | null;
+  /** 지금 적용 중인 규칙 전체(주간). 규칙이 없으면 null. */
+  currentRule: WeeklyRuleInfo | null;
+  /**
+   * 아직 시작 안 한 규칙. 없으면 null.
+   * ⚠ 있으면 **이게 편집 기준이다**(0159 · 검토 P1-1) — 예약 주간표를 통째로 받아
+   *   이어서 편집해야 한다. 예전엔 그날 시간만 받아서, 재진입한 화면이 현재 규칙으로
+   *   다시 편집했고 예약 변경이 조용히 사라졌다.
+   */
+  pending: (WeeklyRuleInfo & { effectiveFrom: string; hours: OperatingHours }) | null;
+}
+
+/** 편집 기준 규칙 — 판본(revision)은 저장에 되보내는 토큰이다(0159). */
+export interface WeeklyRuleInfo {
+  ruleId: string;
+  revision: number;
+  effectiveFrom: string | null;
+  weeklyHours: Record<string, unknown>;
+  weeklyBreaks: Record<string, unknown>;
 }
 
 const HHMM = /^([01]\d|2[0-3]):[0-5]\d(:[0-5]\d)?$/;
@@ -498,21 +512,28 @@ export function useHoursStatus() {
       if (timezone === null) throw failed('매장 시간대');
       if (typeof r.timezone_confirmed !== 'boolean') throw failed('시간대 확정 여부');
 
-      const cr = r.current_rule as Record<string, unknown> | null | undefined;
-      let currentRule: HoursStatus['currentRule'] = null;
-      if (cr) {
-        const wh = cr.weekly_hours;
-        const wb = cr.weekly_breaks;
+      const ruleInfo = (v: unknown, what: string): WeeklyRuleInfo | null => {
+        const rr = v as Record<string, unknown> | null | undefined;
+        if (!rr) return null;
+        const wh = rr.weekly_hours;
+        const wb = rr.weekly_breaks;
         if (typeof wh !== 'object' || wh === null || typeof wb !== 'object' || wb === null) {
-          throw failed('주간 규칙');
+          throw failed(what);
         }
-        currentRule = {
-          effectiveFrom: typeof cr.effective_from === 'string' && YMD_RE.test(cr.effective_from)
-            ? cr.effective_from : null,
+        // ⚠ 판본이 없으면 던진다 — 0 으로 메우면 저장이 45009 로 막힌다(dayContract 와 같은 이유).
+        const rid = typeof rr.rule_id === 'string' && rr.rule_id !== '' ? rr.rule_id : null;
+        const rev = typeof rr.revision === 'number' && Number.isSafeInteger(rr.revision) && rr.revision >= 1
+          ? rr.revision : null;
+        if (rid === null || rev === null) throw failed(`${what} 판본`);
+        return {
+          ruleId: rid, revision: rev,
+          effectiveFrom: typeof rr.effective_from === 'string' && YMD_RE.test(rr.effective_from)
+            ? rr.effective_from : null,
           weeklyHours: wh as Record<string, unknown>,
           weeklyBreaks: wb as Record<string, unknown>,
         };
-      }
+      };
+      const currentRule = ruleInfo(r.current_rule, '주간 규칙');
 
       const today = r.today as Record<string, unknown> | null;
       if (!today) throw failed('오늘 영업시간');
@@ -520,9 +541,11 @@ export function useHoursStatus() {
       const p = r.pending as Record<string, unknown> | null;
       let pending: HoursStatus['pending'] = null;
       if (p) {
-        const from = typeof p.effective_from === 'string' ? p.effective_from : '';
-        if (!YMD_RE.test(from)) throw failed('영업시간 적용 시작일');
+        const info = ruleInfo(p, '예약 규칙');
+        const from = info?.effectiveFrom ?? null;
+        if (info === null || from === null) throw failed('영업시간 적용 시작일');
         pending = {
+          ...info,
           effectiveFrom: from,
           hours: hoursOf((p.hours ?? {}) as Record<string, unknown>, '예약된'),
         };
@@ -549,19 +572,30 @@ export function useSetOperatingHours() {
     mutationFn: async (input: {
       weeklyHours: Record<string, unknown>;
       weeklyBreaks: Record<string, unknown>;
-    }): Promise<{ effectiveFrom: string; appliesToday: boolean }> => {
+      /** 편집 기준(0159). 없으면 검사 생략 — 옛 경로용이고 화면은 반드시 싣는다. */
+      baseRuleId?: string;
+      baseRevision?: number;
+    }): Promise<{ effectiveFrom: string; appliesToday: boolean; ruleId: string; ruleRevision: number }> => {
       const { data, error } = await supabase.rpc('set_operating_hours', {
         p_store: storeId,
         p_weekly_hours: asJson(input.weeklyHours),
         p_weekly_breaks: asJson(input.weeklyBreaks),
+        p_base_rule_id: input.baseRuleId ?? undefined,
+        p_base_revision: input.baseRevision ?? undefined,
       });
-      if (error) throw new Error(error.message);
+      // ⚠ 코드를 살려 던진다(0145) — 화면이 45009(다른 기기 변경)를 문구가 아니라 코드로 가른다.
+      if (error) throw rpcError(error);
       const r = (data ?? {}) as unknown as Record<string, unknown>;
       // 언제부터인지는 화면이 반드시 말해야 한다(0130) — 없으면 계약 위반이다.
       const from = typeof r.effective_from === 'string' ? r.effective_from : '';
       if (!YMD_RE.test(from)) throw failed('적용 시작일');
       if (typeof r.applies_today !== 'boolean') throw failed('오늘 적용 여부');
-      return { effectiveFrom: from, appliesToday: r.applies_today };
+      // 다음 저장에 되보낼 판본(0159) — 없으면 계약 위반이다.
+      const rid = typeof r.rule_id === 'string' && r.rule_id !== '' ? r.rule_id : null;
+      const rev = typeof r.rule_revision === 'number' && Number.isSafeInteger(r.rule_revision) && r.rule_revision >= 1
+        ? r.rule_revision : null;
+      if (rid === null || rev === null) throw failed('규칙 판본');
+      return { effectiveFrom: from, appliesToday: r.applies_today, ruleId: rid, ruleRevision: rev };
     },
     // 영업시간은 상태 카드(business_day_state)에도 실린다 — 같이 다시 그린다.
     onSuccess: () => invalidate(qc, [...invalidateOn.settingsSaved(), ...invalidateOn.businessDay()]),

@@ -19,6 +19,7 @@
  */
 import { useEffect, useMemo, useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
+import { RpcError } from '@/lib/supabase';
 import { AppHeader, Badge, Button, Card, Icon, QueryState, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { T } from '@/theme/tokens';
@@ -64,6 +65,11 @@ export default function MyHoursScreen() {
 
   /** 편집 중인 주간표. 서버 규칙을 받아 시작한다. */
   const [days, setDays] = useState<WeeklySchedule | null>(null);
+  /**
+   * 편집 기준의 판본(0159 · 검토 P1-1). 저장에 되보내 다른 기기의 변경을 덮지 않는다.
+   * 저장 응답의 새 판본으로 갱신해 이어서 편집할 수 있다.
+   */
+  const [base, setBase] = useState<{ ruleId: string; revision: number } | null>(null);
   /** 지금 고른 요일들(dow). 편집 패널의 값이 여기 요일에 적용된다. */
   const [selected, setSelected] = useState<Set<number>>(new Set());
 
@@ -86,21 +92,28 @@ export default function MyHoursScreen() {
   useEffect(() => {
     if (!st || days !== null) return;
     /*
+     * 편집 기준은 **예약이 있으면 예약**이다(0159 · 검토 P1-1). 예전엔 늘 현재 규칙으로
+     * 시작해서, 영업 중에 바꿔 둔 예약을 재진입한 화면이 못 보고 다시 덮었다.
      * ⚠ 규칙 모양이 어긋나면 기본값으로 **메우지 않는다**(fromRule 이 null).
      *   메우면 사장님이 저장하는 순간 진짜 규칙이 기본값으로 덮인다.
      *   규칙이 아예 없는 새 매장만 기본값에서 시작한다.
      */
-    if (st.currentRule) {
-      const parsed = fromRule(st.currentRule.weeklyHours, st.currentRule.weeklyBreaks);
-      if (parsed) setDays(parsed);
+    const basis = st.pending ?? st.currentRule;
+    if (basis) {
+      const parsed = fromRule(basis.weeklyHours, basis.weeklyBreaks);
+      if (parsed) {
+        setDays(parsed);
+        setBase({ ruleId: basis.ruleId, revision: basis.revision });
+      }
       return;
     }
     const fresh: WeeklySchedule = {};
     for (let d = 0; d < 7; d += 1) fresh[d] = { ...DEFAULT_DAY };
     setDays(fresh);
+    setBase(null);
   }, [st, days]);
 
-  const brokenRule = Boolean(st?.currentRule) && days === null && !status.isLoading;
+  const brokenRule = Boolean(st?.pending ?? st?.currentRule) && days === null && !status.isLoading;
 
   const validationError = useMemo(() => (days ? validateWeeklySchedule(days) : null), [days]);
   const overnight = !pClosed && isOvernight(pOpen, pClose);
@@ -137,14 +150,27 @@ export default function MyHoursScreen() {
     if (err) { Alert.alert('저장할 수 없어요', err); setToast(err); return; }
     const { hours, breaks } = toWeeklyJson(days);
     save.mutate(
-      { weeklyHours: hours, weeklyBreaks: breaks },
+      // ⚠ 판본을 반드시 실어 보낸다(0159) — 빼먹으면 다른 기기의 변경을 조용히 덮는다.
+      { weeklyHours: hours, weeklyBreaks: breaks, baseRuleId: base?.ruleId, baseRevision: base?.revision },
       {
         onSuccess: (r) => {
+          // 다음 저장에 되보낼 판본 — 이어서 편집해도 내 저장과 충돌하지 않는다.
+          setBase({ ruleId: r.ruleId, revision: r.ruleRevision });
           setToast(r.appliesToday
             ? '저장했어요 · 오늘부터 적용돼요'
             : `저장했어요 · ${mdLabel(r.effectiveFrom)}부터 적용돼요`);
         },
         onError: (e) => {
+          /*
+           * 낡은 화면(45009) — 다른 기기가 먼저 저장했다. 붙잡을 게 없다:
+           * 들고 있던 편집을 버리고 최신 규칙을 다시 받는다(판매 저장과 같은 처리).
+           */
+          if (e instanceof RpcError && e.code === '45009') {
+            setDays(null); setBase(null);
+            void status.refetch();
+            setToast('다른 기기에서 영업시간이 변경됐어요 · 최신 값을 다시 불러왔어요');
+            return;
+          }
           const msg = e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요';
           Alert.alert('저장하지 못했어요', msg); setToast(msg);
         },

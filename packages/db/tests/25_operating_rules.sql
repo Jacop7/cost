@@ -451,3 +451,48 @@ begin
     (select jsonb_object_agg(d::text, jsonb_build_object('open','11:00','close','22:00'))
        from generate_series(0, 6) d));
 end $t$;
+
+
+-- ════════════════════════════════════════════════════════════════
+-- 두 기기 편집 충돌 (0159) — 나중 저장이 먼저 저장을 조용히 덮으면 안 된다
+--
+-- 편집 기준은 **열린 규칙 행**(effective_to null)이다. 예약이 있으면 예약이
+-- 곧 열린 행이라, 화면의 기준(pending ?? current)과 서버의 기준이 같은 행이다.
+-- ════════════════════════════════════════════════════════════════
+do $t$
+declare
+  v_store uuid := pg_temp.store();
+  v_base  record;
+  v_res   jsonb;
+  v_hours jsonb := (select jsonb_object_agg(d::text, jsonb_build_object('open','11:00','close','22:00'))
+                      from generate_series(0, 6) d);
+begin
+  select id, revision into v_base from operating_rules
+   where store_id = v_store and effective_to is null;
+  perform pg_temp.ok('전제: 열린 규칙 행이 있고 판본이 있다',
+    v_base.id is not null and v_base.revision >= 1);
+
+  -- 기기 A: 판본을 들고 저장 — 통과하고 다음 판본을 받는다.
+  v_res := set_operating_hours(v_store, v_hours, '{}'::jsonb, v_base.id, v_base.revision);
+  perform pg_temp.ok('판본을 들고 저장하면 통과하고 다음 판본을 준다',
+    (v_res->>'rule_revision')::int >= 1);
+
+  -- 기기 B: **낡은 판본**으로 저장 — 조용히 덮지 않고 45009 다.
+  perform pg_temp.raises('낡은 판본 저장은 45009 — 먼저 저장한 변경을 못 덮는다',
+    format('select set_operating_hours(%L, %L::jsonb, %L::jsonb, %L, %s)',
+           v_store, v_hours::text, '{}', v_base.id, v_base.revision), '45009');
+
+  -- 기기 A: 응답 판본으로 이어 저장 — 화면이 되보낼 값이 맞다.
+  v_res := set_operating_hours(v_store, v_hours, '{}'::jsonb,
+             (v_res->>'rule_id')::uuid, (v_res->>'rule_revision')::int);
+  perform pg_temp.ok('응답 판본으로 이어 저장할 수 있다', v_res ? 'rule_revision');
+
+  -- 토큰 없는 저장(시드·마이그레이션·옛 경로)은 검사를 건너뛴다 — save_sale 과 같은 규칙.
+  v_res := set_operating_hours(v_store, v_hours);
+  perform pg_temp.ok('토큰이 없으면 검사 생략', v_res ? 'rule_id');
+
+  -- 상태 RPC 가 편집 기준의 판본을 준다 — 화면이 여기서 토큰을 얻는다.
+  perform pg_temp.ok('상태 응답에 편집 기준 판본이 있다',
+    (operating_hours_status(v_store)->'current_rule'->>'revision') is not null
+    or (operating_hours_status(v_store)->'pending'->>'revision') is not null);
+end $t$;
