@@ -136,14 +136,20 @@ export function useBusinessDay() {
        *   그러면 폐기 내역·입고 등록·발주 화면을 **여는 것만으로 영업이 종료된다.**
        *   "날짜를 묻는 것" 과 "영업을 끝내는 것" 은 같은 문으로 들어오면 안 된다.
        *
-       *   자동 종료는 `useAutoCloseSweep()` 이 맡는다 — **판매 홈에서만** 부른다.
-       *   서버 스케줄러(pg_cron)가 들어오면 그것도 지운다.
+       *   지금 자동 종료는 **서버 pg_cron 만** 실행한다(0137·0139). 앱은 관여하지 않는다 —
+       *   `useAutoCloseSweep()` 도 지웠다. 앱이 실행 주체이던 시절의 흔적이 없어야
+       *   "화면을 여니 영업이 끝났다" 가 다시 생기지 않는다.
        */
       const { data, error } = await supabase.rpc('business_day_state', { p_store: storeId });
       if (error) throw new Error(error.message);
       return parse(data);
     },
-    // 자동 종료가 다가오는지는 시간이 지나야 바뀐다 — 화면을 열어 둔 채로도 알려면 주기적으로 본다.
+    /*
+     * 화면을 열어 둔 채로도 상태가 바뀐다 — **크론이 닫기 때문이다.**
+     * ⚠ 예전엔 "자동 종료가 다가오는지" 를 갱신하려던 것이었는데, 그 예고
+     *   (`auto_close_at`·`warn_soon` 등)는 그리는 자리가 없어 지웠다(0142).
+     *   지금 이 주기의 목적은 하나다 — 크론이 바꾼 종료 상태를 따라잡는 것.
+     */
     refetchInterval: 60_000,
     refetchOnWindowFocus: true,
   });
