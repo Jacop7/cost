@@ -213,9 +213,13 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
                 <Notice>지난달 1일부터 오늘까지만 고칠 수 있어요.</Notice>
               ) : null}
 
-              {!s.hasLedger ? (
-                <Notice>이 날은 영업 기록이 없어요. 저장하면 현재 판매가와 원가를 기준으로 계산돼요.</Notice>
-              ) : null}
+              {/*
+                ⚠ 기록 없는 날이라고 **여기서 미리 알리지 않는다**(§6.4).
+                  한때 파란 안내 카드를 띄웠는데, 기획은 "빈 화면에서 경고 카드를 먼저
+                  노출하지 않는다 — 저장할 때 확인한다" 이다. 화면을 열자마자 경고가 뜨면
+                  아직 아무것도 안 한 사장님에게 잘못을 알리는 꼴이 된다.
+                  알림은 아래 `ConfirmSheet` 한 곳뿐이다.
+              */}
 
               <Card pad={0} style={{ overflow: 'hidden' }}>
                 {rows.map((r, i) => {

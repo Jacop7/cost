@@ -25,6 +25,10 @@
     },
     "composite": false
   },
+  "//exclude": "*.check.ts 는 앱이 아니라 node 로 직접 돌리는 검사 스크립트다(`node --experimental-strip-types`). 앱 규칙(ts 확장자 금지·process 타입)이 안 맞고, Metro 도 아무도 import 하지 않으므로 번들에 안 넣는다.",
+  "exclude": [
+    "src/**/*.check.ts"
+  ],
   "include": [
     "app",
     "src",

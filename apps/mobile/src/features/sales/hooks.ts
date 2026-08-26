@@ -11,9 +11,13 @@ import { invalidate, invalidateOn, qk } from '@/lib/queryClient';
 import { supabase, rpcError } from '@/lib/supabase';
 import { useStoreId } from '@/lib/SessionProvider';
 import type { BusinessDayStatus } from './businessDay';
+// 응답 계약 검사는 **앱 의존 없는 한 모듈**에 둔다 — 시험이 본체를 그대로 돌릴 수 있게.
+import { CONTRACT_HINT, needBool, needEnum } from './dayContract';
 
 /** `day_status` 를 그대로 믿지 않고 아는 값만 받는다. */
 const DAY_STATUSES: BusinessDayStatus[] = ['none', 'open', 'break', 'closed'];
+
+const BASIS_QUALITIES: BasisQuality[] = ['exact', 'estimated_current'];
 
 const num = (v: unknown): number => Number(v ?? 0);
 const numOrNull = (v: unknown): number | null => (v === null || v === undefined ? null : Number(v));
@@ -127,13 +131,6 @@ export function parseSummary(v: unknown): SalesSummary {
   };
 }
 
-const EMPTY_SUMMARY = (date: string): SalesSummary => ({
-  from: date, to: date, days: 0, revenue: 0, etcRevenue: 0, qty: 0,
-  materialCost: 0, extraMaterialCost: 0, tax: 0,
-  wasteLoss: 0, wasteIngredient: 0, wasteMenu: 0, dailyExtra: 0,
-  fixedCost: 0, fixedRate: null, fixedRateProvisional: true, profit: 0,
-});
-
 /** 하루 장부 (SALES-01 / SALES-03). 판매 기록이 없는 날도 빈 장부를 돌려준다. */
 export function useSalesDay(date: string) {
   const storeId = useStoreId();
@@ -151,17 +148,11 @@ export function useSalesDay(date: string) {
       if (error) throw new Error(error.message);
       const r = (data ?? null) as unknown as Record<string, unknown> | null;
       /*
-       * ⚠ 0153 부터 서버는 기록 없는 날도 한 줄로 답한다. 이 갈래는 그전 서버를 만났을
-       *   때의 대비다 — `editable: false` 로 둬서 **모르면 못 고치게** 한다.
-       *   반대로 두면 낡은 서버에서 정정 화면이 열리고 저장이 45010 으로 튕긴다.
+       * ⚠ 0153 부터 서버는 **기록 없는 날도 한 줄로** 답한다. 답이 없다는 건 빈 장부가
+       *   아니라 계약이 어긋났다는 뜻이다 — 빈 장부로 메우면 화면은 멀쩡해 보이는데
+       *   `수정할 수 없는 날` 처럼 보인다.
        */
-      if (!r) {
-        return {
-          saleDate: date, revision: 0, items: [], etcItems: [], extraItems: [],
-          etcRevenue: 0, dailyExtra: 0, summary: EMPTY_SUMMARY(date),
-          basisQuality: null, hasLedger: false, dayStatus: null, editable: false,
-        };
-      }
+      if (!r) throw new Error(`${CONTRACT_HINT} (sales_day)`);
       return {
         saleDate: String(r.sale_date ?? date),
         revision: num(r.revision),
@@ -188,12 +179,10 @@ export function useSalesDay(date: string) {
           qty: num(it.qty),
         })),
         summary: parseSummary(r.summary),
-        basisQuality: r.basis_quality === 'exact' || r.basis_quality === 'estimated_current'
-          ? (r.basis_quality as BasisQuality) : null,
-        hasLedger: Boolean(r.has_ledger),
-        dayStatus: DAY_STATUSES.includes(r.day_status as BusinessDayStatus)
-          ? (r.day_status as BusinessDayStatus) : null,
-        editable: Boolean(r.editable),
+        basisQuality: needEnum(r, 'basis_quality', BASIS_QUALITIES),
+        hasLedger: needBool(r, 'has_ledger'),
+        dayStatus: needEnum(r, 'day_status', DAY_STATUSES),
+        editable: needBool(r, 'editable'),
       };
     },
   });
