@@ -6,8 +6,8 @@
  *
  * 도는 것 —
  *   ① 타입          `pnpm -r typecheck`
- *   ② 시험 3종      `pnpm -r test` (core 168 · db 27 · mobile 계약)
- *   ③ 새 DB         마이그레이션 전체를 빈 DB 에 태우고 27개 다시
+ *   ② 시험 3종      `pnpm -r test` (core · db · mobile)
+ *   ③ 새 DB         마이그레이션 전체를 빈 DB 에 태우고 DB 시험을 다시
  *   ④ 업그레이드 경로 마이그레이션 **순서**를 태운다
  *   ⑤ 웹 번들       Metro 가 실제로 묶는지
  *

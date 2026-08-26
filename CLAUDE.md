@@ -73,8 +73,8 @@ Expo(RN) + Supabase 모노레포. 모든 데이터가 기록·전파되어 추�
 ## 검사 실행
 - **`pnpm verify`** (루트) 한 방 — 타입 · 시험 3종 · 새 DB · 업그레이드 경로 · 웹 번들.
   각각 따로 돌리다 하나를 빼먹는 일이 있어서 한 명령으로 묶었다. CI 도 이걸 부른다.
-- `pnpm test` (루트) → `packages/core` vitest 168 · `packages/db` `tests/run.mjs` 27 ·
-  `apps/mobile` vitest.
+- `pnpm test` (루트) → `packages/core` vitest · `packages/db` `tests/run.mjs` · `apps/mobile` vitest.
+  ⚠ 개수는 여기 안 적는다 — 늘어나면 곧 거짓이 된다. 명령이 답한다.
 - 앱 시험은 `apps/mobile/tests/*.test.ts` 에 두고 **vitest** 로 돈다.
   ⚠ `node --experimental-strip-types` 를 쓰지 않는다 — 그건 Node 24 전용이라 루트가
   선언한 `engines.node: >=20` 과 어긋난다(Node 20 에서 `pnpm test` 가 깨진다).
