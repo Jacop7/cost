@@ -59,7 +59,12 @@ export interface AmendResultContract {
   revision: number;
   /** 이 장부를 몇 번 정정했나(감사용). */
   auditRevisionNo: number;
-  basisQuality: SalesDayBasisQuality | null;
+  /**
+   * ⚠ `sales_day` 와 달리 **null 이 없다.** 정정이 성공했다는 건 장부가 반드시 있다는
+   *   뜻이고, `business_days.basis_quality` 는 NOT NULL(0144)이다. null 을 받으면
+   *   화면이 추정 배지를 그릴지 판단할 근거를 잃으므로 계약 위반으로 던진다.
+   */
+  basisQuality: SalesDayBasisQuality;
 }
 
 const BASIS_QUALITIES: readonly SalesDayBasisQuality[] = ['exact', 'estimated_current'];
@@ -72,18 +77,27 @@ function needBool(r: Record<string, unknown>, key: string): boolean {
   return r[key] as boolean;
 }
 
+/** PostgreSQL `integer`(int4) 상한. 판본·정정 횟수 컬럼이 전부 이 타입이다. */
+const PG_INT_MAX = 2147483647;
+
 /**
- * 정수여야 하는 값.
+ * 정수여야 하는 값 — DB 컬럼이 int4 이므로 **0 ~ 2,147,483,647 의 십진 정수**만 참이다.
  *
  * ⚠ 숫자 문자열도 받는다 — PostgREST 가 큰 정수를 문자열로 실어 보내는 경우가 있어서다.
- *   대신 **없거나 숫자가 아니면 던진다.** `Number(v ?? 0)` 은 없을 때 0 을 만들고,
+ *   대신 십진 숫자만이다. `Number()` 에 그냥 맡기면 `'1e3'`→1000, `'0x10'`→16 처럼
+ *   서버가 만들 리 없는 표기가 통과하고, `'9007199254740993'` 은 …992 로 **반올림돼**
+ *   다른 판본으로 조용히 바뀐 채 저장에 나간다. 음수도 마찬가지로 서버가 못 만드는 값이다.
+ * ⚠ **없거나 범위 밖이면 던진다.** `Number(v ?? 0)` 은 없을 때 0 을 만들고,
  *   그 0 이 판본으로 나가면 저장이 45009 로 막힌다.
  */
 function needInt(r: Record<string, unknown>, key: string): number {
   const v = r[key];
   if (v === null || v === undefined) throw bad(`${key}`);
-  const n = typeof v === 'number' ? v : typeof v === 'string' && v.trim() !== '' ? Number(v) : NaN;
-  if (!Number.isFinite(n) || !Number.isInteger(n)) throw bad(`${key}=${String(v)}`);
+  const n =
+    typeof v === 'number' ? v
+    : typeof v === 'string' && /^[0-9]+$/.test(v.trim()) ? Number(v.trim())
+    : NaN;
+  if (!Number.isSafeInteger(n) || n < 0 || n > PG_INT_MAX) throw bad(`${key}=${String(v)}`);
   return n;
 }
 
@@ -104,6 +118,15 @@ function needEnum<V extends string>(
     throw bad(`${key}=${String(v)}`);
   }
   return v as V;
+}
+
+/** `needEnum` 과 같되 **null 도 계약 위반**이다 — 원천 컬럼이 NOT NULL 인 응답용. */
+function needEnumNonNull<V extends string>(
+  r: Record<string, unknown>, key: string, allowed: readonly V[],
+): V {
+  const v = needEnum(r, key, allowed);
+  if (v === null) throw bad(`${key}=null`);
+  return v;
 }
 
 /**
@@ -146,6 +169,6 @@ export function parseAmendResultContract(r: Record<string, unknown>): AmendResul
     created: needBool(r, 'created'),
     revision: needInt(r, 'revision'),
     auditRevisionNo: needInt(r, 'audit_revision_no'),
-    basisQuality: needEnum(r, 'basis_quality', BASIS_QUALITIES),
+    basisQuality: needEnumNonNull(r, 'basis_quality', BASIS_QUALITIES),
   };
 }

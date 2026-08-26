@@ -5,7 +5,12 @@
   "description": "식자재 원가 계산 및 발주 관리 앱 — 데이터 플랫폼 (Expo + Supabase 모노레포)",
   "packageManager": "pnpm@9.12.0",
   "engines": {
-    "node": ">=20"
+    "node": ">=20.19.4"
+  },
+  "pnpm": {
+    "overrides": {
+      "jsdom": "^26.1.0"
+    }
   },
   "scripts": {
     "mobile": "pnpm --filter @sikjae/mobile",

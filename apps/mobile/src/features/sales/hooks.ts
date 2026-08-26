@@ -514,7 +514,8 @@ export interface AmendPastSaleResult {
   revision: number;
   /** 이 장부를 몇 번 정정했나(감사용). 위 판본과 다른 값이다. */
   auditRevisionNo: number;
-  basisQuality: BasisQuality | null;
+  /** null 없음 — 정정이 성공했다면 장부가 반드시 있다(`business_days.basis_quality` NOT NULL). */
+  basisQuality: BasisQuality;
   shortages: Shortage[];
 }
 
