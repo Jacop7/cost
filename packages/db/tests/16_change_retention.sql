@@ -130,7 +130,7 @@ begin
 
   -- ⚠ 청소가 실패해도 영업 시작이 막히면 안 된다 — 곁일이다.
   perform pg_temp.ok('영업 시작에 청소가 붙어 있다',
-    pg_get_functiondef('public.open_business_day(uuid,date)'::regprocedure)
+    pg_get_functiondef('public.open_business_day(uuid,date,time)'::regprocedure)
       like '%purge_entity_changes%');
 end $t$;
 
@@ -287,7 +287,7 @@ begin
       'public.close_business_day_row(uuid,business_close_method)', 'execute'));
   -- 0160 부터 사람의 문은 전이 RPC 다 — close_business_day 도 내부 몸통이 됐다.
   perform pg_temp.ok('그래도 정상 문은 열려 있다',
-    has_function_privilege('authenticated', 'public.transition_business_state(uuid, text)', 'execute')
+    has_function_privilege('authenticated', 'public.transition_business_state(uuid, text, time)', 'execute')
     and not has_function_privilege('authenticated', 'public.close_business_day(uuid)', 'execute'));
 
   /*
@@ -364,14 +364,14 @@ begin
     'close_business_day(p_store uuid)',
     'close_due_business_days()',
     'my_store_ids()',
-    'open_business_day(p_store uuid, p_date date)',
+    'open_business_day(p_store uuid, p_date date, p_close_time time without time zone)',
     'purge_entity_changes()',
-    'save_sale(p_store uuid, p_date date, p_items jsonb, p_etc_items jsonb, p_extra_items jsonb, p_base_revision integer, p_open_day boolean)',
+    'save_sale(p_store uuid, p_date date, p_items jsonb, p_etc_items jsonb, p_extra_items jsonb, p_base_revision integer, p_open_day boolean, p_open_close_time time without time zone)',
     'set_operating_hours(p_store uuid, p_weekly_hours jsonb, p_weekly_breaks jsonb, p_base_rule_id uuid, p_base_revision integer)',
     'set_store_timezone(p_store uuid, p_timezone text)',
     'settings_sync_operating_rule()',
     'stores_default_operating_rule()',
-    'transition_business_state(p_store uuid, p_action text)');
+    'transition_business_state(p_store uuid, p_action text, p_close_time time without time zone)');
 
   perform pg_temp.eq_t('SECURITY DEFINER 함수 목록이 그대로다', coalesce(v_now, '(없음)'), v_want);
 

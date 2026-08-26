@@ -9,6 +9,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
 import type { BusinessDayState } from '@/features/sales/businessDay';
+import { RpcError } from '@/lib/supabase';
 
 vi.mock('expo-router', () => ({
   useRouter: () => ({ push: vi.fn(), replace: vi.fn() }),
@@ -37,7 +38,7 @@ import { BusinessDayBar } from '@/features/sales/components/BusinessDayBar';
 
 function state(over: Partial<BusinessDayState> = {}): BusinessDayState {
   return {
-    today: '2026-08-26', localDate: '2026-08-26',
+    today: '2026-08-26', localDate: '2026-08-26', timezone: 'Asia/Seoul',
     status: 'none', businessDayId: null, businessDate: '2026-08-26',
     openedAt: null, plannedCloseAt: null, closedAt: null, closeMethod: null,
     staleDay: false,
@@ -121,6 +122,40 @@ describe('전이 호출', () => {
      */
     fireEvent.click(screen.getAllByText('영업 종료')[0]!);
     expect(closeMutate).toHaveBeenCalledTimes(1);
+  });
+
+  it('늦은 개점(45015)이면 마칠 시간을 골라 다시 연다 (0162)', async () => {
+    // 첫 시도는 45015 — 규칙 종료가 지난 시각의 시작이다.
+    openMutate.mockImplementationOnce((_arg: unknown, opts?: { onError?: (e: Error) => void }) => {
+      opts?.onError?.(new RpcError('오늘 영업시간이 이미 지났어요', '45015', 'LATE_OPEN'));
+    });
+    render(<BusinessDayBar state={state()} />);
+    fireEvent.click(screen.getByLabelText('영업 시작'));
+    fireEvent.click(screen.getAllByText('영업 시작').at(-1)!);   // 확인 시트
+    await vi.waitFor(() => expect(screen.getByText('오늘은 몇 시까지 하실까요?')).toBeTruthy());
+
+    /*
+     * ⚠ RN-web Pressable(Modal 안)은 click 만으로는 안 눌린다 — pointer 시퀀스가
+     *   필요하다(실측: click 단독은 첫 상호작용이 조용히 삼켜졌다).
+     */
+    /*
+     * ⚠ 시트 안 슬롯 Pressable 은 이 하네스에서 **전체 실행 시** 안 눌린다 — 격리 실행은
+     *   pointer 시퀀스로 눌리는데 전체 스위트에선 조용하다(RN-web 반응계의 전역 상태로
+     *   추정). 슬롯 상호작용은 setup.ts 의 '안 재는 것' 목록에 속한다.
+     *   여기서 재는 계약은 "45015 → 시트 → **고른 시간이 같은 전이에 실려 재전송**"이고,
+     *   기본 제안값(매장 현지 지금+1h, 15분 올림)도 고른 시간이다.
+     */
+    const press = (el: Element) => {
+      fireEvent.pointerDown(el); fireEvent.pointerUp(el); fireEvent.click(el);
+    };
+    await vi.waitFor(() => {
+      press(screen.getByText('이 시간으로 시작'));
+      expect(openMutate.mock.calls.length).toBeGreaterThan(1);
+    });
+    expect(openMutate).toHaveBeenLastCalledWith(
+      { closeTime: expect.stringMatching(/^([01][0-9]|2[0-3]):(00|15|30|45)$/) },
+      expect.anything(),
+    );
   });
 
   it('영업 시작도 확인 시트를 거친다 — 오늘 값 굳힘 안내', async () => {

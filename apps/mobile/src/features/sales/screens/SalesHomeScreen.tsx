@@ -21,8 +21,9 @@ import { SaleStepper } from '../components/SaleStepper';
 import { BusinessDateGate } from '../components/BusinessDateGate';
 import { setPendingSale, clearPendingSale } from '../pendingSale';
 import { CHANNEL_LABEL, channelName } from '../channels';
-import { isClosedError, isNotOpenError, isRevisionConflict, useBusinessDay, useDayMenuBasis, useSalesBusinessDate } from '../businessDay';
+import { isClosedError, isLateOpenError, isNotOpenError, isRevisionConflict, useBusinessDay, useDayMenuBasis, useSalesBusinessDate } from '../businessDay';
 import { BusinessDayBar } from '../components/BusinessDayBar';
+import { LateCloseSheet } from '../components/LateCloseSheet';
 import { dayLabel } from '../period';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
@@ -86,6 +87,8 @@ function SalesHomeBody({ today }: { today: string }) {
   const [sortOpen, setSortOpen] = useState(false);
   /** 판매를 저장하려다 45001 로 막혔을 때, 영업을 시작하면 이어서 다시 저장한다. */
   const [pendingRetry, setPendingRetry] = useState<null | (() => void)>(null);
+  /** 늦은 개점(45015) — 고른 시간으로 같은 저장을 다시 민다(0162). */
+  const [lateRetry, setLateRetry] = useState<null | ((closeTime: string) => void)>(null);
   /** 짧은 알림 — 팝업 대신. 웹에서도 뜬다. */
   const [toast, setToast] = useState<string | null>(null);
   /**
@@ -170,8 +173,10 @@ function SalesHomeBody({ today }: { today: string }) {
    *   (`react-native-web` 의 구현이 `static alert() {}`).
    *   여기가 특히 치명적이었다 — 45001 확인창이 안 뜨니 **판매 저장이 영영 막혔다.**
    */
-  const onSaveError = (e: unknown, retry: () => void) => {
+  const onSaveError = (e: unknown, retry: () => void, retryLate?: (closeTime: string) => void) => {
     if (isNotOpenError(e)) { setPendingRetry(() => retry); return; }
+    // 45015 — 영업시간이 지난 첫 판매. 오늘 마칠 시간을 골라 열기+저장을 다시 민다(0162).
+    if (isLateOpenError(e) && retryLate) { setLateRetry(() => retryLate); return; }
     if (isClosedError(e)) { setToast('영업이 종료되어 판매를 저장할 수 없어요'); return; }
     /*
      * ⚠ 낡은 화면(45009 · 0117). 예전엔 이런 저장이 **그냥 통과했고**, 다른 기기가 적은
@@ -224,14 +229,14 @@ function SalesHomeBody({ today }: { today: string }) {
    *   첫 판매의 부족 경고는 시트 대신 저장 응답의 부족분 알림이 맡는다 —
    *   저장 전에 재려 해도 스냅샷이 아직 없어 못 잰다(0119 hasBasis).
    */
-  const checkThenSave = (items: SaleItemInput[], openDay = false) => {
+  const checkThenSave = (items: SaleItemInput[], openDay = false, openCloseTime?: string) => {
     // ⚠ 그날 장부를 아직 못 받았으면 저장하지 않는다. 판본을 모르는 채로 보내면
     //   서버가 검사를 건너뛰고, 그 틈으로 낡은 덮어쓰기가 들어온다(0117).
     if (!s) return;
     const run = () =>
       saveSale.mutate(
         // ⚠ 판본을 반드시 실어 보낸다(0117). 빼먹으면 그 경로로 낡은 화면이 남을 덮어쓴다.
-        { date: today, items, baseRevision: s.revision, openDay },
+        { date: today, items, baseRevision: s.revision, openDay, openCloseTime },
         {
           onSuccess: ({ shortages, dayOpened }) => {
             setSel(null); clearPendingSale();
@@ -243,7 +248,7 @@ function SalesHomeBody({ today }: { today: string }) {
               warnShortages(shortages);
             }
           },
-          onError: (e) => onSaveError(e, () => checkThenSave(items, true)),
+          onError: (e) => onSaveError(e, () => checkThenSave(items, true), (t) => checkThenSave(items, true, t)),
         },
       );
 
@@ -297,16 +302,16 @@ function SalesHomeBody({ today }: { today: string }) {
      *   항목 단위로 합치지 않는 이유는 같은 이름이 여럿일 수 있어 무엇이 같은
      *   항목인지 정할 수 없기 때문이다. 대신 **판본 검사**로 낡은 배열을 막는다.
      */
-    const run = (openDay = false) =>
+    const run = (openDay = false, openCloseTime?: string) =>
       saveSale.mutate(
-        { date: today, items: allItems(), etcItems: next, baseRevision: s.revision, openDay },
+        { date: today, items: allItems(), etcItems: next, baseRevision: s.revision, openDay, openCloseTime },
         {
           onSuccess: () => {
             setEtcOpen(false); setEtcName(''); setEtcPrice(''); setEtcQty('1');
             // 채널은 되돌리지 않는다 — 배달 음료를 연달아 적는 게 흔하다.
           },
-          // 45001 재시도는 영업 시작을 겸한다(0154) — 한 트랜잭션이다.
-          onError: (e) => onSaveError(e, () => run(true)),
+          // 45001 재시도는 영업 시작을 겸한다(0154) — 한 트랜잭션이다. 45015 는 시간을 골라서(0162).
+          onError: (e) => onSaveError(e, () => run(true), (t) => run(true, t)),
         },
       );
     run();
@@ -320,13 +325,13 @@ function SalesHomeBody({ today }: { today: string }) {
     }
     if (!s) return;   // 판본을 모르면 저장하지 않는다(0117)
     const next: ExtraItem[] = [...s.extraItems, { name: expName.trim(), amount, memo: expMemo.trim() || undefined }];
-    const run = (openDay = false) =>
+    const run = (openDay = false, openCloseTime?: string) =>
       saveSale.mutate(
-        { date: today, items: allItems(), extraItems: next, baseRevision: s.revision, openDay },
+        { date: today, items: allItems(), extraItems: next, baseRevision: s.revision, openDay, openCloseTime },
         {
           onSuccess: () => { setExpOpen(false); setExpName(''); setExpAmount(''); setExpMemo(''); },
-          // 45001 재시도는 영업 시작을 겸한다(0154) — 한 트랜잭션이다.
-          onError: (e) => onSaveError(e, () => run(true)),
+          // 45001 재시도는 영업 시작을 겸한다(0154) — 한 트랜잭션이다. 45015 는 시간을 골라서(0162).
+          onError: (e) => onSaveError(e, () => run(true), (t) => run(true, t)),
         },
       );
     run();
@@ -739,6 +744,18 @@ function SalesHomeBody({ today }: { today: string }) {
            * 열기만 성공하고 저장이 죽으면 빈 영업일을 남겼다.
            */
           retry?.();
+        }}
+      />
+
+      <LateCloseSheet
+        visible={lateRetry !== null}
+        timezone={bday.data?.timezone ?? 'Asia/Seoul'}
+        loading={saveSale.isPending}
+        onCancel={() => setLateRetry(null)}
+        onConfirm={(t) => {
+          const retry = lateRetry;
+          setLateRetry(null);
+          retry?.(t);
         }}
       />
 

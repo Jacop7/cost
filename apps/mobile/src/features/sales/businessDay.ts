@@ -12,7 +12,7 @@
 import { useEffect } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { invalidate, invalidateOn, qk } from '@/lib/queryClient';
-import { supabase, RpcError } from '@/lib/supabase';
+import { supabase, RpcError, rpcError } from '@/lib/supabase';
 import { useStoreId } from '@/lib/SessionProvider';
 
 /** 'none' = 오늘 아직 시작 전 · 'closed' = 오늘 이미 끝냄. 화면이 다른 것을 그린다. */
@@ -40,6 +40,8 @@ export interface BusinessDayState {
    *   그래서 앱과 DB 가 각자 오늘을 계산했다(기획서 §2.1).
    */
   localDate: string;
+  /** 매장 시간대(0162). 종료 시각 표시·늦은 개점 기본값이 **매장 현지** 기준이어야 한다. */
+  timezone: string;
   status: BusinessDayStatus;
   businessDayId: string | null;
   businessDate: string;
@@ -88,6 +90,12 @@ function parse(raw: unknown): BusinessDayState {
      *   길이 없다. 없거나 모양이 틀리면 **던진다.**
      */
     localDate: reqDate(r.local_date, 'local_date'),
+    // ⚠ 조용한 기본값 금지 — 시간대가 빠지면 종료 시각이 기기 시간대로 그려진다(P2-6).
+    timezone: (() => {
+      const tz = typeof r.timezone === 'string' ? r.timezone : '';
+      if (tz === '') throw new Error('서버 응답에 timezone 이 없어요. 잠시 후 다시 시도해 주세요');
+      return tz;
+    })(),
     status: (r.status ?? 'none') as BusinessDayStatus,
     businessDayId: str(r.business_day_id),
     businessDate: reqDate(r.business_date, 'business_date'),
@@ -171,17 +179,20 @@ export function useBusinessDay() {
 /**
  * 상태 전이 — 한 문(0157). open · start_break · resume · end.
  * 서버 몸통이 행을 잠그고 상태를 재확인하며 감사 기록을 남긴다.
- * 틀린 전이(이미 브레이크인데 또 브레이크 등)는 45014 로 온다.
+ * 틀린 전이(이미 브레이크인데 또 브레이크 등)는 45014,
+ * 규칙 종료가 지난 시각의 시작은 45015(늦은 개점 — 종료 시간을 골라 다시)로 온다.
  */
 function useTransition(action: 'open' | 'start_break' | 'resume' | 'end') {
   const qc = useQueryClient();
   const storeId = useStoreId();
   return useMutation({
-    mutationFn: async (): Promise<void> => {
+    mutationFn: async (arg?: { closeTime?: string }): Promise<void> => {
       const { error } = await supabase.rpc('transition_business_state', {
         p_store: storeId, p_action: action,
+        p_close_time: arg?.closeTime ?? undefined,
       });
-      if (error) throw new Error(error.message);
+      // ⚠ 코드를 살려 던진다(0145) — 화면이 45015 를 문구가 아니라 코드로 가른다.
+      if (error) throw rpcError(error);
     },
     onSuccess: () => invalidate(qc, invalidateOn.businessDay()),
   });
@@ -229,11 +240,12 @@ export function useCloseStaleAndOpen() {
   const qc = useQueryClient();
   const storeId = useStoreId();
   return useMutation({
-    mutationFn: async (): Promise<void> => {
+    mutationFn: async (arg?: { closeTime?: string }): Promise<void> => {
       const opened = await supabase.rpc('transition_business_state', {
         p_store: storeId, p_action: 'open',
+        p_close_time: arg?.closeTime ?? undefined,
       });
-      if (opened.error) throw new Error(opened.error.message);
+      if (opened.error) throw rpcError(opened.error);
     },
     onSuccess: () => invalidate(qc, invalidateOn.businessDay()),
   });
@@ -270,6 +282,9 @@ const codeOf = (e: unknown): string | null => (e instanceof RpcError ? e.code : 
 
 /** 45001 BEFORE_OPEN — 아직 영업 전. 화면이 시작을 먼저 묻는다. */
 export const isNotOpenError = (e: unknown): boolean => codeOf(e) === '45001';
+
+/** 45015 LATE_OPEN — 규칙 종료가 지난 시각의 시작. 오늘 마칠 시간을 골라 다시 연다(0162). */
+export const isLateOpenError = (e: unknown): boolean => codeOf(e) === '45015';
 
 /** 45002 DAY_CLOSED — 종료됐거나 자동 마감 기한이 지났다. 되돌릴 길은 없다(§6.4). */
 export const isClosedError = (e: unknown): boolean => codeOf(e) === '45002';
