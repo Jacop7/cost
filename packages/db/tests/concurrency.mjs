@@ -124,12 +124,30 @@ function sellerSql(n, hold, startAtIso) {
   return head + body + '\n';
 }
 
-/** B 세션 — 크론 둘을 촘촘히. 소유자(크론과 같은 권한). */
+/**
+ * B 세션 — 크론 둘을 촘촘히, **각각 한 번씩**. 응답 JSON 을 통째로 찍어 실패 수까지 본다.
+ * ⚠ 처음 판은 apply_due_breaks 를 두 번 부르고 `failed` 를 버렸다 — 크론이 실제로 실패해도
+ *   초록이었다(검토 실측). 이제 모든 실행의 failed=0 이 조건이다.
+ */
 function cronSql(n, sleep, startAtIso) {
   const body = Array.from({ length: n }, () =>
-    `select 'SWEEP:'||(close_due_business_days()->>'closed');\nselect 'BREAK:'||(apply_due_breaks()->>'break_started')||':'||(apply_due_breaks()->>'resumed');\nselect pg_sleep(${sleep});`,
+    `select 'SWEEP:'||close_due_business_days()::text;\nselect 'BREAK:'||apply_due_breaks()::text;\nselect pg_sleep(${sleep});`,
   ).join('\n');
   return barrierSql(startAtIso) + body + '\n';
+}
+
+/** B 출력에서 크론 응답을 전부 파싱한다 — 실패 합계·닫힘 합계·브레이크 합계. */
+function cronStats(out) {
+  const sweeps = [...out.matchAll(/^SWEEP:(\{.*\})$/gm)].map((m) => JSON.parse(m[1]));
+  const breaks = [...out.matchAll(/^BREAK:(\{.*\})$/gm)].map((m) => JSON.parse(m[1]));
+  const sum = (arr, k) => arr.reduce((acc, j) => acc + Number(j[k] ?? 0), 0);
+  return {
+    runs: sweeps.length + breaks.length,
+    failed: sum(sweeps, 'failed') + sum(breaks, 'failed'),
+    closed: sum(sweeps, 'closed'),
+    breakStarted: sum(breaks, 'break_started'),
+    resumed: sum(breaks, 'resumed'),
+  };
 }
 
 const startIn = (sec) => new Date(Date.now() + sec * 1000).toISOString();
@@ -152,8 +170,9 @@ function ledgerMismatch(expectedQty) {
        where s.store_id='${STORE}' and s.sale_date='${today}' and i.recipe_id='${recipeId}'
        group by e.ingredient_id
     )
-    select count(*) from need n left join got g using (ingredient_id)
-     where coalesce(g.delta, 0) <> -(${expectedQty} * n.per_serving)`);
+    -- ⚠ FULL JOIN — 스냅샷에 없는 재료에 이벤트가 붙었어도(예상 밖 차감) 잡아야 한다.
+    select count(*) from need n full join got g using (ingredient_id)
+     where coalesce(g.delta, 0) <> -(${expectedQty} * coalesce(n.per_serving, 0))`);
 }
 
 const finalQty = () => Number(q(
@@ -190,7 +209,10 @@ ok('전제: 스냅샷에 제육볶음 재료선이 있다(원장 합계의 기�
   ok('평시: B 에 SQL 오류가 하나도 없다(SQLSTATE 전수)', b.states.length === 0, `states=${b.states.join(',')}`);
   ok('평시: 판매 15건 전부 성공', (a.out.match(/^OK:/gm) ?? []).length === 15);
   ok('평시: 관찰자가 실제 잠금 대기를 봤다 — 경합이 있었다', waits > 0, `waits=${waits}/${samples}`);
-  ok('평시: 자동 브레이크가 폭풍 중에 실제로 돌았다', /BREAK:[1-9]/.test(b.out) && q(
+  const cs = cronStats(b.out);
+  ok('평시: 크론 응답을 전부 받았다(호출 = 응답)', cs.runs === 120, `runs=${cs.runs}`);
+  ok('평시: 크론 실패 0 — 응답 JSON 전수', cs.failed === 0, `failed=${cs.failed}`);
+  ok('평시: 자동 브레이크가 폭풍 중에 실제로 돌았다', cs.breakStarted === 1 && q(
     `select count(*) from business_state_transitions where business_day_id='${dayId}' and to_status='break' and method='auto'`) === '1');
   const st = q(`select status::text from business_days where id='${dayId}'`);
   ok('평시: 장부는 닫히지 않았다 — 예정 종료 전 스윕은 무해하다', st === 'open' || st === 'break', `status=${st}`);
@@ -231,7 +253,10 @@ ok('전제: 스냅샷에 제육볶음 재료선이 있다(원장 합계의 기�
   ok('경합: 장부는 auto 로 닫혔다', q(`select close_method::text from business_days where id='${dayId}'`) === 'auto');
   ok('경합: 닫힘 전이는 정확히 한 번', q(
     `select count(*) from business_state_transitions where business_day_id='${dayId}' and to_status='closed'`) === '1');
-  ok('경합: 스윕이 실제로 닫았다', /SWEEP:[1-9]/.test(b.out));
+  const cs2 = cronStats(b.out);
+  ok('경합: 크론 응답을 전부 받았다(호출 = 응답)', cs2.runs === 240, `runs=${cs2.runs}`);
+  ok('경합: 크론 실패 0 — 응답 JSON 전수', cs2.failed === 0, `failed=${cs2.failed}`);
+  ok('경합: 스윕이 실제로 정확히 한 번 닫았다', cs2.closed === 1, `closed=${cs2.closed}`);
 
   const lastOk = oks.length ? Math.max(...oks.map((o) => o.i)) : 0;
   ok('경합: 최종 수량 = 마지막 성공 수량 — 반쯤 남은 저장이 없다', finalQty() === lastOk, `qty=${finalQty()} lastOk=${lastOk}`);

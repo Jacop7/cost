@@ -97,7 +97,22 @@ begin
     return;
   end if;
 
+  -- 0164: settings 는 앱 롤이 직접 못 쓴다 — 시드 준비는 소유자로(0139·0160 관례).
+  reset role;
   insert into settings (store_id) values (v_store) on conflict do nothing;
+  /*
+   * 영업시간 11:00~22:00 은 **규칙**에 굳힌다(검산 기준: 시험 09·25 가 이 값을 전제한다).
+   * 예전엔 settings 기본값(11:00/22:00)을 동기화 트리거가 기본 규칙 행(-infinity~)에
+   * 옮겼는데, 그 트리거는 0164 에서 지웠다. 같은 결과를 소유자 직접 갱신으로 낸다 —
+   * 저장 몸통(apply_operating_hours)은 "오늘부터" 규칙을 만들어 과거 21일이 기본값
+   * (09~21)으로 남는다(실측: 시험 25 '지난주 영업시간도 옛 값'이 빨개졌다).
+   * ⚠ 별칭 dw — 이 블록의 루프 변수 d 와 이름이 겹치면 '모호한 참조'로 죽는다(실측).
+   */
+  update operating_rules
+     set weekly_hours = (select jsonb_object_agg(dw::text, jsonb_build_object('open','11:00','close','22:00','closed',false))
+                           from generate_series(0, 6) dw)
+   where store_id = v_store and effective_to is null;
+  set role authenticated;
 
   -- ── 거래처 (MY-03) ──────────────────────────────────────────
   vd_nong   := save_vendor(v_store, '{"name":"성동청과"}');

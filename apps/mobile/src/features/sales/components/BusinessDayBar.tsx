@@ -149,8 +149,9 @@ export function BusinessDayBar({ state }: { state: BusinessDayState }) {
    * 규칙 시간(hours)으로 그리면 23:10 에 열어 01:00 종료를 고른 늦은 개점(0162)도
    * `11:00–22:00` 으로 보인다. 장부가 사실이고 규칙은 예정이다.
    */
+  // 닫힌 날도 **실제 연 시각**이다 — 늦은 개점(23:10)을 규칙 시작(11:00)으로 되돌리면 안 된다.
   const hours = state.status === 'closed' && closeShown
-    ? `${o || '—'}–${hhmm(closeShown, state.timezone)}`
+    ? `${hhmm(state.openedAt, state.timezone) || o || '—'}–${hhmm(closeShown, state.timezone)}`
     : live && state.plannedCloseAt
       ? `${hhmm(state.openedAt, state.timezone) || o || '—'}–${hhmm(state.plannedCloseAt, state.timezone)}`
       : o && c ? `${o}–${c}` : '';

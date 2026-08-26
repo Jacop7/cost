@@ -74,6 +74,15 @@ describe('상태별 표시', () => {
    * 열린 장부는 굳은 값(연 시각–예정 종료)을 그린다(검토 P2-4). 늦은 개점으로 23:10 에
    * 열어 01:00 종료를 골랐으면 규칙의 11:00–22:00 이 아니라 23:10–01:00 이어야 한다.
    */
+  it('늦은 개점을 닫은 뒤에도 실제 연 시각을 유지한다 — 규칙 11:00 으로 안 돌아간다', () => {
+    render(<BusinessDayBar state={state({
+      status: 'closed', closeMethod: 'manual',
+      openedAt: '2026-08-26T23:10:00+09:00', closedAt: '2026-08-27T00:40:00+09:00',
+      plannedCloseAt: '2026-08-27T01:00:00+09:00',
+    })} />);
+    expect(screen.getByText('23:10–00:40')).toBeTruthy();
+  });
+
   it('늦은 개점의 카드는 연 시각–고른 종료를 그린다 (P2-4)', () => {
     render(<BusinessDayBar state={state({
       status: 'open', businessDayId: 'd-1',
