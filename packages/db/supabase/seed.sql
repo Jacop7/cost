@@ -420,6 +420,18 @@ begin
     v_w := case extract(dow from v_day)::int
              when 5 then 1.35 when 6 then 1.45 when 0 then 0.75 when 1 then 0.85 else 1.0 end;
 
+    /*
+     * ⚠ 과거 픽스처는 **소유자 경로**로 넣는다(0139).
+     *   `save_sale` 은 잠근 영업일의 자동 마감 기한이 지났으면 앱 롤의 저장을 거부한다.
+     *   여기서 만드는 날들은 전부 기한이 한참 지난 과거라, 앱 롤 그대로면 8/05 에서
+     *   45002 로 죽는다(실제로 죽었다).
+     *
+     *   예전처럼 규칙에 **날짜 예외**를 두는 것으로 풀면 안 된다 — 그건 기획서 §6.4
+     *   ("종료된 장부를 다시 열지 않는다")와 반대이고, 진짜 사용자에게도 구멍이 된다.
+     *   픽스처가 소유자로 넣는 것이 맞다. 나머지 시드는 그대로 `authenticated` 로 돌아
+     *   RLS 를 태운다.
+     */
+    execute 'reset role';
     perform save_sale(v_store, v_day, jsonb_build_array(
       jsonb_build_object('recipe_id', r_jeyuk,
         'qty_hall',     round(9 * v_w + (v_seq % 4)),
@@ -459,6 +471,7 @@ begin
       case when d % 7 = 1
         then jsonb_build_array(jsonb_build_object('name','얼음·소모품','amount',45000,'memo','주 1회 구매'))
         else '[]'::jsonb end);
+    execute 'set local role authenticated';
 
     -- ── 폐기 (E2) — 주 1회 상하는 채소 ──────────────────────
     -- e2_discard 는 "버린 양"이 아니라 **남은 양**을 받는다. 220g 을 버린 셈으로 기록한다.
@@ -475,7 +488,7 @@ begin
     -- ── 영업 종료 ────────────────────────────────────────────
     -- 오늘은 열어 둔다. 앱을 켜면 영업 중 상태로 시작해 사장님이 직접 닫는다.
     if d > 0 then
-      perform close_business_day(v_store, 'manual');
+      perform close_business_day(v_store);   -- 방식은 늘 manual 이다(0139)
     end if;
 
   end loop;

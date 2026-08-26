@@ -268,10 +268,10 @@ begin
    */
   perform pg_temp.ok('마감 몸통은 인증 사용자도 못 부른다',
     not has_function_privilege('authenticated',
-      'public.close_business_day_row(uuid,business_close_method,timestamptz)', 'execute'));
+      'public.close_business_day_row(uuid,business_close_method)', 'execute'));
   perform pg_temp.ok('그래도 정상 문은 열려 있다',
     has_function_privilege('authenticated',
-      'public.close_business_day(uuid,business_close_method)', 'execute'));
+      'public.close_business_day(uuid)', 'execute'));
 
   /*
    * ⚠ 앞의 두 줄은 **지금 있는** 함수만 본다. 정작 위험한 건 다음에 만들어질 함수다 —
@@ -330,7 +330,7 @@ begin
    where n.nspname = 'public' and p.prokind = 'f' and p.prosecdef;
 
   v_want := concat_ws(' | ',
-    'close_business_day(p_store uuid, p_method business_close_method)',
+    'close_business_day(p_store uuid)',
     'close_due_business_days()',
     'my_store_ids()',
     'purge_entity_changes()',
