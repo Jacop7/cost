@@ -257,13 +257,21 @@ describe('45009 뒤 재조회 실패 (P1 재재검토)', () => {
 
 describe('매장 시간대', () => {
   it('정한 적 없으면 기기 시간대를 제안하고, 누르면 그 값으로 저장한다', () => {
-    hoursStatus.mockReturnValue(status({ timezoneConfirmed: false }));
-    render(<MyHoursScreen />);
-    expect(screen.getByText('매장 시간대를 정해 주세요')).toBeTruthy();
-    fireEvent.click(screen.getByText('기기 시간대 사용'));
-    expect(saveTz).toHaveBeenCalledTimes(1);
-    const tz = saveTz.mock.calls[0]![0] as string;
-    expect(tz).toContain('/');   // IANA 모양 — 기기마다 값은 다르다
+    // GitHub Actions·UTC 기기도 같은 경로를 지나야 한다. `UTC`는 슬래시가 없지만
+    // Intl과 PostgreSQL이 모두 받는 유효한 IANA 시간대다.
+    const current = Intl.DateTimeFormat().resolvedOptions();
+    const timezone = vi.spyOn(Intl.DateTimeFormat.prototype, 'resolvedOptions')
+      .mockReturnValue({ ...current, timeZone: 'UTC' });
+    try {
+      hoursStatus.mockReturnValue(status({ timezoneConfirmed: false }));
+      render(<MyHoursScreen />);
+      expect(screen.getByText('매장 시간대를 정해 주세요')).toBeTruthy();
+      fireEvent.click(screen.getByText('기기 시간대 사용'));
+      expect(saveTz).toHaveBeenCalledTimes(1);
+      expect(saveTz.mock.calls[0]![0]).toBe('UTC');
+    } finally {
+      timezone.mockRestore();
+    }
   });
 
   it('정해 둔 매장은 제안 배너가 없다', () => {
