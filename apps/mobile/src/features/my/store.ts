@@ -9,18 +9,28 @@
  * 단가 자릿수는 "미설정 = 로케일 기본값 따라감" 으로 두어, 언어를 바꾸면 명시 설정이 없는 한
  * 새 로케일 기본값(금액+2)으로 자연스럽게 따라간다.
  */
-import { DEFAULT_LOCALE, type LocaleKey, unitPriceDigits } from '@sikjae/core';
+import { DEFAULT_LOCALE, LOCALES, type LocaleKey, unitPriceDigits } from '@sikjae/core';
 import { useSaveSettings, useStoreSettings } from './hooks';
 
-/** 저장된 로케일 문자열이 우리가 아는 값인지 확인한다. 모르는 값이면 기본값으로 떨어진다. */
-const asLocale = (v: string | undefined): LocaleKey =>
-  (v && unitPriceDigits(v as LocaleKey) >= 0 ? (v as LocaleKey) : DEFAULT_LOCALE);
+/** 우리가 아는 언어 키인가 — LOCALES 의 키 집합으로 직접 본다. */
+export const isLocaleKey = (v: unknown): v is LocaleKey =>
+  typeof v === 'string' && LOCALES.some((l) => l.key === v);
+
+/**
+ * 저장된 로케일 문자열이 우리가 아는 값인지 확인한다. 모르는 값이면 기본값으로 떨어진다.
+ * ⚠ 예전엔 `unitPriceDigits(v) >= 0` 으로 쟀는데 그 함수가 안에서 기본값으로 폴백해 'xx-XX' 도
+ *   유효한 것처럼 통과했다(검토 지적). 키 집합으로 잰다.
+ */
+export const asLocale = (v: string | undefined): LocaleKey => (isLocaleKey(v) ? v : DEFAULT_LOCALE);
 
 export interface AppSettings {
   locale: LocaleKey;
   /** 단가 소수 자릿수(명시값). null 이면 로케일 기본값을 따른다. */
   unitDigits: number | null;
   loading: boolean;
+  /** 서버 조회 실패 — 화면은 이걸 '설정 없음'이나 기본값으로 읽으면 안 된다. */
+  error: boolean;
+  refetch: () => void;
 }
 
 export function useSettings(): AppSettings {
@@ -30,7 +40,13 @@ export function useSettings(): AppSettings {
   // 그래야 언어를 바꿀 때 자릿수가 따라온다.
   const stored = q.data?.unitPriceDigits;
   const isDefault = stored === undefined || stored === unitPriceDigits(locale);
-  return { locale, unitDigits: isDefault ? null : stored, loading: q.isLoading };
+  return {
+    locale,
+    unitDigits: isDefault ? null : stored,
+    loading: q.isLoading,
+    error: q.isError,
+    refetch: () => { void q.refetch(); },
+  };
 }
 
 /** 실제 적용될 단가 자릿수 — 명시 설정이 있으면 그 값, 없으면 로케일 기본값. */
@@ -39,11 +55,17 @@ export function useUnitDigits(): number {
   return unitDigits ?? unitPriceDigits(locale);
 }
 
+export interface SaveCallbacks {
+  onSuccess?: () => void;
+  onError?: (e: unknown) => void;
+}
+
 /**
  * 설정 변경 — 서버에 저장한다.
  *
  * ⚠ 언어를 바꾸면 단가 자릿수의 "기본값"이 함께 바뀐다. 명시 설정이 없던 상태라면
  *   새 로케일 기본값으로 같이 저장해 화면과 저장값이 어긋나지 않게 한다.
+ * ⚠ 화면은 **onSuccess 에서만** 이동한다 — 요청을 보내자마자 닫으면 실패를 못 본다(검토 지적).
  */
 export function useSettingsActions() {
   const save = useSaveSettings();
@@ -51,7 +73,7 @@ export function useSettingsActions() {
 
   return {
     saving: save.isPending,
-    setLocale: (next: LocaleKey, onError?: (e: unknown) => void) =>
+    setLocale: (next: LocaleKey, cb: SaveCallbacks = {}) =>
       save.mutate(
         {
           locale: next,
@@ -60,7 +82,7 @@ export function useSettingsActions() {
           // 명시 설정이 없으면 단가 자릿수는 새 로케일 기본값을 따라간다.
           unitPriceDigits: unitDigits ?? unitPriceDigits(next),
         },
-        { onError },
+        { onSuccess: cb.onSuccess, onError: cb.onError },
       ),
     setUnitDigits: (next: number | null, onError?: (e: unknown) => void) =>
       save.mutate({ unitPriceDigits: next ?? unitPriceDigits(locale) }, { onError }),
