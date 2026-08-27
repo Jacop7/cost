@@ -424,6 +424,19 @@ begin
       perform open_business_day(v_store, v_day,
         ((clock_timestamp() at time zone store_timezone(v_store)) + interval '2 hours')::time);
     end;
+    /*
+     * upgrade-check 는 0162 이전의 중간 버전에도 **현재** seed 를 재생한다. 그 버전의
+     * open_business_day(uuid,date)는 늦은 개점 종료 시각을 받을 수 없어, 23시 이후에는
+     * 이미 지난 22:00 을 굳힌 채 바로 아래 save_sale 이 DAY_CLOSED 로 막혔다.
+     * 오늘 픽스처에만 소유자 권한으로 미래 종료를 보장한다. 최신 스키마는 위 0162 정식
+     * 경로를 쓰므로 이 호환 보정에 들어오지 않는다.
+     */
+    if d = 0
+       and to_regprocedure('public.open_business_day(uuid,date,time)') is null then
+      update business_days
+         set planned_close_at = greatest(planned_close_at, clock_timestamp() + interval '2 hours')
+       where store_id = v_store and business_date = v_day and status::text in ('open', 'break');
+    end if;
     set role authenticated;
 
     -- ── 보충 입고 (E7 발주 → E1 입고 확정) ──────────────────

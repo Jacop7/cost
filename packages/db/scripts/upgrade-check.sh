@@ -54,6 +54,18 @@ say() { printf '%s\n' "$*"; }
 say "① 0150 상태 + 어긋난 열린 장부 → 업그레이드가 멈춰야 한다"
 bash "$SCRIPT_DIR/fresh-db.sh" --until "$BASE" "$D" >/dev/null
 
+# 현재 seed 는 0162 이전 스키마도 재생한다. 옛 개점 함수가 22:00 을 굳히더라도
+# 오늘 픽스처는 판매를 받을 수 있도록 종료 시각이 미래여야 한다.
+open_future=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c "
+  select count(*) from business_days
+   where status::text in ('open','break') and planned_close_at > clock_timestamp();")
+if [ "$open_future" = "1" ]; then
+  say "   ok   중간 버전 시드의 오늘 장부 종료 시각이 미래다"
+else
+  say "   FAIL 중간 버전 시드의 열린 오늘 장부가 미래 종료를 보장하지 않는다 (${open_future}건)"
+  fail=1
+fi
+
 # 배포 전에 이미 기타 매출이 있었고, 그 세금이 지금 굳은 세율로는 재현되지 않는 상태.
 # (실제 9.0909% 로 계산해 두고 굳은 값만 다른 경우가 아니라, 그 반대 — 어느 쪽이든
 #  "굳은 값이 기록을 설명 못 한다" 는 같은 신호다.)
