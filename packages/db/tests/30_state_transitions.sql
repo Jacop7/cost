@@ -29,7 +29,7 @@ begin
   perform pg_temp.raises('알 수 없는 전이는 거부',
     format('select transition_business_state(%L, %L)', v_store, 'nap'), '22000');
 
-  perform pg_temp.eq_t('시작', transition_business_state(v_store, 'open')->>'status', 'open');
+  perform pg_temp.eq_t('시작', pg_temp.open_for_test(v_store)->>'status', 'open');
   select id, business_date into v_id, v_day from business_days
    where store_id = v_store and status = 'open';
   perform pg_temp.ok('시작이 감사에 남는다 — 영업 전(null)→open · manual',
@@ -218,7 +218,7 @@ begin
     format('select transition_business_state(%L, %L, %L)', v_store, 'open', '00:02'), '22000');
 
   -- 00:00 은 내일 00:00 으로 해석된다 — 내일 시작(00:01) 전이라 허용.
-  v_res := transition_business_state(v_store, 'open', '00:00');
+  v_res := pg_temp.open_for_test(v_store, '00:00');
   perform pg_temp.ok('늦은 개점 성공', (v_res->>'late_open')::boolean is true);
   perform pg_temp.eq_t('고른 종료가 그 영업일에 굳는다',
     (select planned_close_at::text from business_days
@@ -240,7 +240,70 @@ begin
 end $t$;
 
 
--- ── ⑥ 늦은 개점 종료 시각은 DST 안전하다 (0163, 검토 P1-3) ──────
+-- ── ⑥ 시험 준비도 늦은 개점과 다른 날 정리를 같은 문으로 처리한다 ──
+/*
+ * UTC 시각에 맞춰 매장 현지 시각이 정오 이후가 되는 고정 오프셋 시간대를 고른다.
+ * 오늘 규칙을 00:01~00:02 로 두면 벽시계를 기다리지 않아도 반드시 늦은 개점이다.
+ * 다른 날짜의 열린 장부를 먼저 만들어 open_today()의 두 번째 개점 분기까지 통과시킨다.
+ */
+do $t$
+declare
+  v_store  uuid := pg_temp.store();
+  v_day    date;
+  v_old_id uuid;
+  v_dow    integer;
+  v_offset integer := 12 - extract(hour from clock_timestamp() at time zone 'UTC')::integer;
+  v_tz     text := case
+    when v_offset = 0 then 'Etc/GMT'
+    when v_offset > 0 then 'Etc/GMT-' || v_offset
+    else 'Etc/GMT+' || abs(v_offset)
+  end;
+begin
+  set local role postgres;
+  update store_time_settings set timezone = v_tz where store_id = v_store;
+  set local role authenticated;
+
+  v_day := pg_temp.open_today();
+  select id into v_old_id from business_days
+   where store_id = v_store and business_date = v_day and status in ('open', 'break');
+
+  v_dow := extract(dow from v_day)::integer;
+  set local role postgres;
+  update operating_rules
+     set weekly_hours = (
+       select jsonb_object_agg(
+         d::text,
+         case when d = v_dow
+              then jsonb_build_object('open', '00:01', 'close', '00:02')
+              else jsonb_build_object('open', '11:00', 'close', '22:00') end)
+       from generate_series(0, 6) d),
+         weekly_breaks = '{}'::jsonb
+   where store_id = v_store and effective_to is null;
+  update business_days
+     set business_date = v_day - 1000,
+         status = 'open',
+         opened_at = clock_timestamp() + interval '1 hour',
+         scheduled_open_at = clock_timestamp() + interval '1 hour',
+         planned_close_at = clock_timestamp() + interval '2 hours'
+   where id = v_old_id;
+  set local role authenticated;
+
+  perform pg_temp.ok('강제 매장 현지 시각은 규칙 종료 뒤다',
+    (clock_timestamp() at time zone store_timezone(v_store))::time > time '00:02');
+  perform pg_temp.open_today();
+
+  perform pg_temp.eq_t('다른 날짜 장부는 먼저 종료됐다',
+    (select status::text from business_days where id = v_old_id), 'closed');
+  perform pg_temp.eq_t('늦은 개점 폴백으로 오늘 장부가 열렸다',
+    (select status::text from business_days
+      where store_id = v_store and business_date = v_day), 'open');
+  perform pg_temp.ok('시험용 종료 시각도 현재보다 뒤다',
+    (select planned_close_at > clock_timestamp() from business_days
+      where store_id = v_store and business_date = v_day));
+end $t$;
+
+
+-- ── ⑦ 늦은 개점 종료 시각은 DST 안전하다 (0163, 검토 P1-3) ──────
 /*
  * timestamptz + interval '1 day' 는 서머타임이 바뀌는 날 한 시간 어긋난다.
  * 다음 **현지 날짜**를 만들고 시간대를 적용해야 벽시계가 맞는다.

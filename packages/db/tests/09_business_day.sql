@@ -264,13 +264,14 @@ begin
     and not (st ? 'warn_soon') and not (st ? 'due'));
 
   -- ── 영업 중 ─────────────────────────────────────────────────
-  perform transition_business_state(pg_temp.store(), 'open');
+  perform pg_temp.open_today();
   st := business_day_state(pg_temp.store());
   perform pg_temp.eq_t('시작하면 open', st->>'status', 'open');
   perform pg_temp.ok('영업일 id 를 준다', (st->>'business_day_id') is not null);
-  perform pg_temp.eq_t('예정 종료 시각이 설정과 같다',
-    to_char((st->>'planned_close_at')::timestamptz at time zone business_tz(), 'HH24:MI'),
-    to_char((select close_time from settings where store_id = pg_temp.store()), 'HH24:MI'));
+  perform pg_temp.eq_t('예정 종료 시각은 열린 장부에 굳은 값이다',
+    (st->>'planned_close_at')::timestamptz::text,
+    (select planned_close_at::text from business_days
+      where store_id = pg_temp.store() and business_date = v_day));
 
   -- ── 브레이크 ────────────────────────────────────────────────
   perform transition_business_state(pg_temp.store(), 'start_break');

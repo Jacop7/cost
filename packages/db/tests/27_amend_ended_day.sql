@@ -315,8 +315,9 @@ begin
            jsonb_build_array(jsonb_build_object('recipe_id', v_r, 'qty_hall', 1))::text),
     '45001');
   -- 그리고 정상 경로는 그대로 열려 있어야 한다. 막기만 하면 그건 고장이다.
+  perform pg_temp.open_today();
   perform pg_temp.eq_t('영업 시작은 여전히 된다',
-    transition_business_state(v_store, 'open')->>'status', 'open');
+    business_day_state(v_store)->>'status', 'open');
 
   -- ⑤ 판본이 어긋나면 거절한다(신규 RPC 라 선택값 없이 굳혔다).
   perform pg_temp.close_today();

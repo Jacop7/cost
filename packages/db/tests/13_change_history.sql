@@ -109,7 +109,7 @@ begin
     entity_change_history(pg_temp.store(), 'recipe', v_rcp, null, 5)->'items', '$[0]');
   perform pg_temp.eq_t('영업 전 수정은 반영', ev->>'state', 'reflected');
 
-  perform transition_business_state(pg_temp.store(), 'open');
+  perform pg_temp.open_today();
   ev := jsonb_path_query_first(
     entity_change_history(pg_temp.store(), 'recipe', v_rcp, null, 5)->'items', '$[0]');
   perform pg_temp.eq_t('영업 시작 뒤에도 그 수정은 반영', ev->>'state', 'reflected');
@@ -435,7 +435,7 @@ begin
   perform save_recipe(pg_temp.store(), jsonb_build_object(
     'id', v_rcp, 'name', '계란말이', 'price', 7200, 'base_servings', 10));
 
-  perform transition_business_state(pg_temp.store(), 'open');
+  perform pg_temp.open_today();
 
   -- 영업 중에 두 번 더 → 둘 다 '미반영'
   perform save_recipe(pg_temp.store(), jsonb_build_object(
