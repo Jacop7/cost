@@ -109,7 +109,11 @@ Expo(RN) + Supabase 모노레포. 모든 데이터가 기록·전파되어 추�
   빈 `{}`·JSON 타입 불일치·목록 밖 값은 22000(EMPTY_PAYLOAD / INVALID_VALUE).
   ⚠ 언어 목록을 바꾸는 마이그레이션은 **한 파일 안에** ① 기존 행 이관 ② `settings_locale_combo_ck`
   재생성(drop+add) ③ 전 행 `locale_combo_ok` 대조(어긋나면 멈춤)를 함께 담는다 — 표를 바꿔도 기존
-  행은 저절로 재검증되지 않는다. `localeSqlParity` 가 0169 이후 파일의 이 구조를 잰다.
+  행은 저절로 재검증되지 않는다. `localeSqlParity` 가 0169 이후 파일의 이 구조를 잰다(정규식 — 보조),
+  `localeDbParity` 가 verify ③ 의 새 DB 에서 **실제 함수 결과**를 core 와 대조한다(권위).
+- `get_settings` 응답 키(20개)는 앱 `parseStoreSettings` 의 계약이다. DB 시험 32 가 **실제 RPC 응답**의
+  키·타입을 재고 앱 시험(settingsResponse)이 그 리터럴을 읽어 파서와 대조한다 — 한쪽만 고치면 빨개진다.
+  앱 파서는 타입뿐 아니라 값(언어↔통화·자릿수, metric, 컵 범위, HH:MM, 세금 항목)도 거른다.
 - 경합은 `node packages/db/tests/concurrency.mjs fresh_x` — 실제 연결 2개로
   판매 저장 ↔ 크론(마감·브레이크)을 동시에 돌린다. **커밋이 남으므로 일회용 DB 전용**
   (스크립트가 fresh_* 이름을 강제한다). verify ③ 이 스위트 다음에 자동으로 돌린다.

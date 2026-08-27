@@ -30,6 +30,8 @@ export interface AppSettings {
   loading: boolean;
   /** 서버 조회 실패 — 화면은 이걸 '설정 없음'이나 기본값으로 읽으면 안 된다. */
   error: boolean;
+  /** 값이 한 번이라도 왔나. error 와 함께 참이면 **배경 재조회 실패**다 — 마지막 값으로 계속 쓸 수 있다. */
+  hasData: boolean;
   refetch: () => void;
 }
 
@@ -45,6 +47,7 @@ export function useSettings(): AppSettings {
     unitDigits: isDefault ? null : stored,
     loading: q.isLoading,
     error: q.isError,
+    hasData: q.data !== undefined,
     refetch: () => { void q.refetch(); },
   };
 }

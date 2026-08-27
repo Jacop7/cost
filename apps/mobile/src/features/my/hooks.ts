@@ -11,6 +11,7 @@ import { rpcError, supabase } from '@/lib/supabase';
 import { asJson } from '@/lib/json';
 import { useStoreId } from '@/lib/SessionProvider';
 import type { TaxMode } from '@sikjae/types';
+import { LOCALES } from '@sikjae/core';
 
 const num = (v: unknown): number => Number(v ?? 0);
 const str = (v: unknown): string | null => (v === null || v === undefined ? null : String(v));
@@ -326,8 +327,12 @@ export interface StoreSettings {
   taxItems: { name: string; rate: number }[];
 }
 
-/** get_settings 응답 계약 — 키와 JSON 타입. 하나라도 빠지면 오류다(기본값으로 메우지 않는다). */
-const SETTINGS_SHAPE = {
+/**
+ * get_settings 응답 계약 — 키와 JSON 타입. 하나라도 빠지면 오류다(기본값으로 메우지 않는다).
+ * ⚠ DB 시험 32 가 **실제 RPC 응답**의 키 집합을 이 목록과 같은 리터럴로 재고, 앱 시험(settingsResponse)이
+ *   그 리터럴을 읽어 여기와 대조한다 — 어느 한쪽만 고치면 빨개진다(검토 P0: cup_volume 이 RPC 에 없었다).
+ */
+export const SETTINGS_SHAPE = {
   locale: 'string', currency: 'string', unit_system: 'string',
   cup_volume: 'number', default_target_profit_rate: 'number',
   unit_price_digits: 'number', quantity_digits: 'number', money_digits: 'number',
@@ -353,6 +358,35 @@ export function parseStoreSettings(data: unknown): StoreSettings {
       : typeof v === t;
     if (!ok) throw new Error(`설정 응답에 ${k} 가 없거나 형식이 달라요 (${t})`);
   }
+  /*
+   * 값의 뜻(검토 P1) — 타입만 보면 미등록 언어·통화, 음수 컵, 자릿수 9, "25:00", 깨진 세금 항목이 통과하고
+   * 미등록 언어는 나중에 ko 로 위장된다. 서버(0167~0169)와 같은 규칙으로 여기서도 거른다.
+   */
+  const bad = (k: string, why: string): never => { throw new Error(`설정 응답의 ${k} 가 이상해요: ${why}`); };
+  const loc = LOCALES.find((l) => l.key === r.locale);
+  if (!loc) bad('locale', `미등록 언어 ${String(r.locale)}`);
+  if (r.currency !== loc!.currency) bad('currency', `${String(r.currency)} 는 ${loc!.key} 의 통화(${loc!.currency})가 아니에요`);
+  if (r.money_digits !== loc!.moneyDigits) bad('money_digits', `${String(r.money_digits)} ≠ 통화 자릿수 ${loc!.moneyDigits}`);
+  if (r.unit_system !== 'metric') bad('unit_system', `1차는 metric 뿐 (${String(r.unit_system)})`);
+  const cup = r.cup_volume as number;
+  if (!Number.isFinite(cup) || cup <= 0 || cup > 5000) bad('cup_volume', `0 < v ≤ 5000 (${cup})`);
+  for (const k of ['unit_price_digits', 'quantity_digits'] as const) {
+    const v = r[k] as number;
+    if (!Number.isInteger(v) || v < 0 || v > 4) bad(k, `0~4 정수 (${v})`);
+  }
+  const rate = r.default_target_profit_rate as number;
+  if (!Number.isFinite(rate) || rate < 0 || rate > 100) bad('default_target_profit_rate', `0~100 (${rate})`);
+  const HHMM = /^([01]\d|2[0-3]):[0-5]\d$/;
+  for (const k of ['open_time', 'close_time'] as const) if (!HHMM.test(r[k] as string)) bad(k, `HH:MM 이 아니에요 (${String(r[k])})`);
+  for (const k of ['break_start', 'break_end'] as const) if (r[k] !== null && !HHMM.test(r[k] as string)) bad(k, `HH:MM 이 아니에요 (${String(r[k])})`);
+  if (!Number.isInteger(r.open_minutes) || (r.open_minutes as number) < 0 || (r.open_minutes as number) > 1440) bad('open_minutes', `0~1440 (${String(r.open_minutes)})`);
+  if (!TAX_MODES.has(r.tax_mode as string)) bad('tax_mode', `모르는 값 ${String(r.tax_mode)}`);
+  for (const [i, t] of (r.tax_items as unknown[]).entries()) {
+    const it = t as Record<string, unknown> | null;
+    if (!it || typeof it !== 'object' || typeof it.name !== 'string' || typeof it.rate !== 'number' || !Number.isFinite(it.rate) || it.rate < 0 || it.rate > 100) {
+      bad('tax_items', `${i}번째 항목이 {name: 문자열, rate: 0~100} 이 아니에요`);
+    }
+  }
   return {
     unitSystem: r.unit_system as string,
     cupVolume: r.cup_volume as number,
@@ -374,12 +408,11 @@ export function parseStoreSettings(data: unknown): StoreSettings {
     overnight: r.overnight as boolean,
     openMinutes: r.open_minutes as number,
     taxMode: r.tax_mode as TaxMode,
-    taxItems: (r.tax_items as Record<string, unknown>[]).map((t) => ({
-      name: String(t.name ?? ''),
-      rate: num(t.rate),
-    })),
+    taxItems: (r.tax_items as { name: string; rate: number }[]).map((t) => ({ name: t.name, rate: t.rate })),
   };
 }
+/** 서버 settings.tax_mode 의 값 집합(0090 이후 tax_of 가 읽지 않지만 응답엔 남아 있다). */
+const TAX_MODES = new Set(['included', 'separate', 'exempt']);
 
 export function useStoreSettings() {
   const storeId = useStoreId();
