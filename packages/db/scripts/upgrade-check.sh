@@ -172,5 +172,37 @@ else
 fi
 psql_d "$D" -c "drop table if exists public._expect_0167;" >/dev/null
 
+# ── 시나리오 5·6 · 언어 키 이관 (0168·0169, 검토 I·J) ───────────────
+# 새 DB 는 설정 행이 'ko' 로 태어나 레거시 이관(ko-KR → ko)을 못 잰다. 0167 상태에서 레거시 값을
+# 만들어 두고 0168·0169 를 태운다 — ⑤ 옮겨지고 조합이 맞춰져야 하고, ⑥ 모르는 키는 0168 이 멈춰야 한다.
+BASE5=20260826000167
+STEPS5=($(cd "$MIG_DIR" && ls 20260826000168_*.sql 20260826000169_*.sql))
+say "⑤ 0167 상태 + 레거시 'ko-KR' · 어긋난 통화 → 0168·0169 가 'ko/KRW/0' 으로 옮겨야 한다"
+bash "$SCRIPT_DIR/fresh-db.sh" --until "$BASE5" "$D" >/dev/null
+psql_d "$D" -c "update settings set locale = 'ko-KR', currency = 'USD', money_digits = 2;" >/dev/null
+ok=1
+for m in "${STEPS5[@]}"; do
+  if ! err="$(psql_d "$D" < "$MIG_DIR/$m" 2>&1 1>/dev/null)"; then ok=0; say "   FAIL $m 에서 막혔다"; say "        $(printf '%s' "$err" | head -3)"; break; fi
+done
+if [ "$ok" = "1" ]; then
+  got=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c "select string_agg(locale||'/'||currency||'/'||money_digits, ',') from settings;")
+  if [ "$got" = "ko/KRW/0" ]; then say "   ok   ko-KR/USD/2 → $got"; else say "   FAIL 이관 결과가 다르다: $got"; fail=1; fi
+  combo=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c "select count(*) from pg_constraint where conname = 'settings_locale_combo_ck' and convalidated;")
+  if [ "$combo" = "1" ]; then say "   ok   조합 CHECK 가 걸렸다"; else say "   FAIL 조합 CHECK 가 없다"; fail=1; fi
+else
+  fail=1
+fi
+
+say "⑥ 0167 상태 + 모르는 언어 키 'xx-XX' → 0168 이 멈춰야 한다"
+bash "$SCRIPT_DIR/fresh-db.sh" --until "$BASE5" "$D" >/dev/null
+psql_d "$D" -c "update settings set locale = 'xx-XX';" >/dev/null
+if err="$(psql_d "$D" < "$MIG_DIR/${STEPS5[0]}" 2>&1 1>/dev/null)"; then
+  say "   FAIL 모르는 언어 키가 그대로 통과했다"; fail=1
+elif printf '%s' "$err" | grep -qF '0168: 알 수 없는 언어 키'; then
+  say "   ok   0168 이 '알 수 없는 언어 키 …' 로 멈춘다"
+else
+  say "   FAIL 0168 이 멈추긴 했는데 다른 이유다"; say "        $(printf '%s' "$err" | head -3)"; fail=1
+fi
+
 say ""
-if [ "$fail" = "0" ]; then say "업그레이드 경로 4/4 통과"; else say "업그레이드 경로 실패"; exit 1; fi
+if [ "$fail" = "0" ]; then say "업그레이드 경로 6/6 통과"; else say "업그레이드 경로 실패"; exit 1; fi

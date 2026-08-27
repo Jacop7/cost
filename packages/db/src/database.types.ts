@@ -2138,6 +2138,14 @@ export type Database = {
         }
         Returns: string
       }
+      locale_combo_ok: {
+        Args: {
+          p_locale: string
+          p_currency: string
+          p_money_digits: number
+        }
+        Returns: boolean
+      }
       locale_defaults: {
         Args: {
           p_locale: string

@@ -328,6 +328,9 @@ end $t$;
 -- ── save_settings 계약 (0167) — 받는 키는 저장되고, 모르는 키는 거부 ──
 do $t$
 begin
+  -- 전제: 이 블록은 언어가 ko 라고 가정한다. 매장이 en-US 면 KRW 저장이 거부돼 빨개진다(검토 지적) —
+  -- 현재 언어에 기대지 않고 명시한다(스위트는 롤백되므로 되돌릴 필요가 없다).
+  perform save_settings(pg_temp.store(), '{"locale":"ko"}'::jsonb);
   perform save_settings(pg_temp.store(), jsonb_build_object('unit_system', 'metric', 'cup_volume', 200, 'currency', 'KRW'));
   perform pg_temp.eq('cup_volume 이 실제로 저장된다',
     (select cup_volume from settings where store_id = pg_temp.store()), 200, 0);
@@ -385,6 +388,15 @@ begin
       where exists (select 1 from locale_defaults(l))), 10, 0);
   perform pg_temp.ok('표의 CHECK — RPC 밖에서도 언어 키는 목록 안이어야 한다',
     exists (select 1 from pg_constraint where conname = 'settings_locale_ck' and convalidated));
+  -- 조합도 표가 지킨다(0169) — service_role·소유자 직접 갱신으로 en-US/KRW/0 을 못 넣는다(검토 실측).
+  set local role postgres;
+  perform pg_temp.raises('직접 갱신으로도 언어·통화·자릿수 조합을 못 깬다 (23514)',
+    format($q$update settings set locale = 'en-US' where store_id = %L$q$, pg_temp.store()), '23514');
+  perform pg_temp.raises('통화만 바꿔도 조합 위반',
+    format($q$update settings set currency = 'USD' where store_id = %L$q$, pg_temp.store()), '23514');
+  set local role authenticated;
+  perform pg_temp.eq_t('조합 위반이 거부된 뒤에도 행은 그대로',
+    (select locale || '/' || currency || '/' || money_digits from settings where store_id = pg_temp.store()), 'ko/KRW/0');
   perform pg_temp.eq_t('기본 언어 키는 ko (예전 ko-KR 은 0168 이 옮겼다)',
     (select column_default from information_schema.columns
       where table_schema = 'public' and table_name = 'settings' and column_name = 'locale'), '''ko''::text');

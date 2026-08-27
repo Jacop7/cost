@@ -12,7 +12,7 @@
  *   (UI 문구 번역·글꼴·RTL)은 아직 연결하지 않았다. 지금 확정되는 것은 숫자 서식 기준값뿐이다.
  */
 import { useState } from 'react';
-import { Pressable, ScrollView, Text, View } from 'react-native';
+import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   LOCALES,
@@ -61,21 +61,60 @@ function PreviewRow({ label, value, hint, last }: { label: string; value: string
   );
 }
 
+/**
+ * 바깥 화면은 **게이트**다 — 서버 설정이 오기 전에는 초안을 만들지 않는다.
+ * ⚠ 예전엔 캐시가 비면 fallback 'ko' 로 useState 가 굳어, 실제 언어가 en-US 여도 한국어가 선택된
+ *   채 저장 버튼까지 살아 있었다(검토 지적). 로딩·오류는 각각 그렇게 보이고, 초안은 값이 온 뒤 만든다.
+ */
 export default function MyLanguageScreen() {
+  const settings = useSettings();
+  if (settings.loading) {
+    return (
+      <Shell>
+        <Text style={{ fontSize: 15, color: T.ter, margin: 20 }}>불러오는 중…</Text>
+      </Shell>
+    );
+  }
+  if (settings.error) {
+    return (
+      <Shell>
+        <Notice style={{ margin: 16 }}>설정을 불러오지 못했어요</Notice>
+        <View style={{ marginHorizontal: 16 }}>
+          <Button kind="gray" size="lg" full onPress={settings.refetch}>다시 시도</Button>
+        </View>
+      </Shell>
+    );
+  }
+  return <LanguageEditor initial={settings.locale} />;
+}
+
+function Shell({ children }: { children: React.ReactNode }) {
+  return (
+    <View style={{ flex: 1, backgroundColor: T.bg }}>
+      <AppHeader title="언어 · 통화" onBack={() => safeBack('/my')} />
+      {children}
+    </View>
+  );
+}
+
+function LanguageEditor({ initial }: { initial: LocaleKey }) {
   const insets = useSafeAreaInsets();
-  const { locale } = useSettings();
+  const locale = initial;
   const { setLocale, saving } = useSettingsActions();
   const digits = useUnitDigits();
 
-  const [draft, setDraft] = useState<LocaleKey>(locale); // 확정 전 선택
+  const [draft, setDraft] = useState<LocaleKey>(initial); // 확정 전 선택 — 서버값이 온 뒤에만 만들어진다
   const [confirm, setConfirm] = useState(false); // 확인 시트
   const changed = draft !== locale;
   const D = getLocale(draft);
 
+  // 성공 뒤에만 닫고 이동한다. 실패는 그 자리에서 알리고 시트를 유지한다(검토 지적).
   const onSave = () => {
-    setLocale(draft);
-    setConfirm(false);
-    safeBack('/my');
+    if (saving) return;
+    setLocale(draft, {
+      onSuccess: () => { setConfirm(false); safeBack('/my'); },
+      onError: (e) => Alert.alert('저장하지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'),
+    });
   };
 
   return (
@@ -93,6 +132,10 @@ export default function MyLanguageScreen() {
               <Pressable
                 key={l.key}
                 onPress={() => setDraft(l.key as LocaleKey)}
+                accessibilityRole="radio"
+                accessibilityLabel={l.native}
+                accessibilityState={{ checked: on }}
+                aria-checked={on}
                 style={{ flexDirection: 'row', alignItems: 'center', padding: 15, borderBottomWidth: i < LOCALES.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}
               >
                 <View style={{ flex: 1, minWidth: 0 }}>
@@ -122,7 +165,7 @@ export default function MyLanguageScreen() {
 
       {/* 저장 — 고른 즉시가 아니라 확인 시트를 거쳐 확정 */}
       <View style={{ paddingHorizontal: 20, paddingTop: 12, paddingBottom: Math.max(insets.bottom, 16) + 14, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
-        <Button kind="primary" size="lg" full onPress={() => changed && setConfirm(true)} style={changed ? undefined : { opacity: 0.4 }}>
+        <Button kind="primary" size="lg" full disabled={!changed || saving} onPress={() => setConfirm(true)} accessibilityLabel="저장">
           저장
         </Button>
       </View>
@@ -147,8 +190,8 @@ export default function MyLanguageScreen() {
         ) : null}
 
         <View style={{ flexDirection: 'row', gap: 9 }}>
-          <View style={{ flex: 1 }}><Button kind="ghost" size="lg" full onPress={() => setConfirm(false)}>취소</Button></View>
-          <View style={{ flex: 2 }}><Button kind="primary" size="lg" full onPress={onSave}>저장</Button></View>
+          <View style={{ flex: 1 }}><Button kind="ghost" size="lg" full disabled={saving} onPress={() => setConfirm(false)}>취소</Button></View>
+          <View style={{ flex: 2 }}><Button kind="primary" size="lg" full loading={saving} onPress={onSave} accessibilityLabel="언어 저장 확정">저장</Button></View>
         </View>
       </Sheet>
     </View>
