@@ -6,12 +6,13 @@
  */
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { invalidate, invalidateOn, qk } from '@/lib/queryClient';
+import {
+  rpcNullableNumber as numOrNull,
+  rpcNullableString as str,
+  rpcNumber as num,
+} from '@/lib/rpcValue';
 import { supabase, makeInboundKey } from '@/lib/supabase';
 import { useStoreId } from '@/lib/SessionProvider';
-
-const num = (v: unknown): number => Number(v ?? 0);
-const numOrNull = (v: unknown): number | null => (v === null || v === undefined ? null : Number(v));
-const str = (v: unknown): string | null => (v === null || v === undefined ? null : String(v));
 
 export type CandidateReason = 'safety_stock' | 'soon_out' | 'manual';
 

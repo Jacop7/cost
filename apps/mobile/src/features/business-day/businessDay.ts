@@ -12,6 +12,7 @@
 import { useEffect } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { invalidate, invalidateOn, qk } from '@/lib/queryClient';
+import { rpcNullableString as str, rpcNumber as num } from '@/lib/rpcValue';
 import { supabase, RpcError, rpcError } from '@/lib/supabase';
 import { useStoreId } from '@/lib/SessionProvider';
 
@@ -73,8 +74,6 @@ export interface BusinessDayState {
     overnight: boolean;
   };
 }
-
-const str = (v: unknown): string | null => (v === null || v === undefined ? null : String(v));
 
 function parse(raw: unknown): BusinessDayState {
   const r = (raw ?? {}) as Record<string, unknown>;
@@ -410,19 +409,19 @@ export function useDayMenuBasis(date: string | undefined) {
         m.set(String(r.recipe_id), {
           recipeId: String(r.recipe_id),
           name: String(r.name ?? ''),
-          price: Number(r.price ?? 0),
-          materialCost: Number(r.material_cost ?? 0),
-          extraCost: Number(r.extra_cost ?? 0),
-          tax: Number(r.tax ?? 0),
-          fixedCost: Number(r.fixed_cost ?? 0),
-          profit: Number(r.profit ?? 0),
-          currentPrice: Number(r.current_price ?? 0),
-          currentMaterialCost: Number(r.current_material_cost ?? 0),
-          currentProfit: Number(r.current_profit ?? 0),
+          price: num(r.price),
+          materialCost: num(r.material_cost),
+          extraCost: num(r.extra_cost),
+          tax: num(r.tax),
+          fixedCost: num(r.fixed_cost),
+          profit: num(r.profit),
+          currentPrice: num(r.current_price),
+          currentMaterialCost: num(r.current_material_cost),
+          currentProfit: num(r.current_profit),
           changed: r.changed === true,
           inBasis: r.in_basis !== false,
           active: r.active !== false,
-          blockedBy: r.blocked_by === null || r.blocked_by === undefined ? null : String(r.blocked_by),
+          blockedBy: str(r.blocked_by),
         });
       }
       return m;

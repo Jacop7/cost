@@ -13,6 +13,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import type { ProfitCauseKey } from '@sikjae/core';
 import { supabase } from '@/lib/supabase';
 import { qk } from '@/lib/queryClient';
+import { rpcNullableString } from '@/lib/rpcValue';
 
 export interface ProfitCauseRow {
   key: ProfitCauseKey;
@@ -59,7 +60,7 @@ function parseChange(raw: unknown): ProfitChange {
     throw new Error('손익 스냅샷에 순이익이 없습니다. 서버 recipe_profit_history() 와 어긋났습니다.');
   }
 
-  const causeKey = r.cause_key === null || r.cause_key === undefined ? null : String(r.cause_key);
+  const causeKey = rpcNullableString(r.cause_key);
   const before = num(r.cause_before);
   const causeAfter = num(r.cause_after);
 
@@ -67,9 +68,8 @@ function parseChange(raw: unknown): ProfitChange {
     id: String(r.id),
     occurredAt: String(r.occurred_at),
     title: String(r.title ?? ''),
-    summary: r.summary === null || r.summary === undefined ? null : String(r.summary),
-    sourceLabel:
-      r.source_label === null || r.source_label === undefined ? null : String(r.source_label),
+    summary: rpcNullableString(r.summary),
+    sourceLabel: rpcNullableString(r.source_label),
     cause:
       causeKey !== null && before !== null && causeAfter !== null
         ? {

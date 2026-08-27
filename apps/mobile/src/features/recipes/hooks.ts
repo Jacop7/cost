@@ -8,12 +8,13 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { invalidate, invalidateOn, qk } from '@/lib/queryClient';
 import { supabase } from '@/lib/supabase';
 import { asJson } from '@/lib/json';
+import {
+  rpcNullableNumber as numOrNull,
+  rpcNullableString as str,
+  rpcNumber as num,
+} from '@/lib/rpcValue';
 import { useStoreId } from '@/lib/SessionProvider';
 import { parseLastChange, type LastChange } from '@/features/changes/hooks';
-
-const num = (v: unknown): number => Number(v ?? 0);
-const numOrNull = (v: unknown): number | null => (v === null || v === undefined ? null : Number(v));
-const str = (v: unknown): string | null => (v === null || v === undefined ? null : String(v));
 
 const YM = /^\d{4}-(0[1-9]|1[0-2])$/;
 
@@ -39,7 +40,7 @@ function reqFixed(r: Record<string, unknown>): { month: string; items: { key: st
     // 항목 자체는 **비어 있어도 정상**이다 — 아직 안 적은 달이 그렇다.
     // 여기서 거르는 건 `배열이 아닌 것`, 즉 서버가 안 준 경우뿐이다.
     items: (r.fixed_items as Record<string, unknown>[]).map((i) => ({
-      key: String(i.key ?? ''), total: Number(i.total ?? 0),
+      key: String(i.key ?? ''), total: num(i.total),
     })),
   };
 }
@@ -61,14 +62,14 @@ export interface TaxRow extends TaxItem {
 const taxItems = (v: unknown): TaxItem[] =>
   ((v ?? []) as Record<string, unknown>[]).map((i) => ({
     name: String(i.name ?? ''),
-    rate: Number(i.rate ?? 0),
+    rate: num(i.rate),
   }));
 
 const taxRows = (v: unknown): TaxRow[] =>
   ((v ?? []) as Record<string, unknown>[]).map((i) => ({
     name: String(i.name ?? ''),
-    rate: Number(i.rate ?? 0),
-    amount: Number(i.amount ?? 0),
+    rate: num(i.rate),
+    amount: num(i.amount),
     builtin: i.builtin === true,
   }));
 

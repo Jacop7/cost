@@ -8,9 +8,7 @@ import { invalidate, invalidateOn, qk } from '@/lib/queryClient';
 import { supabase } from '@/lib/supabase';
 import { asJson } from '@/lib/json';
 import { useStoreId } from '@/lib/SessionProvider';
-
-const num = (v: unknown): number => Number(v ?? 0);
-const str = (v: unknown): string | null => (v === null || v === undefined ? null : String(v));
+import { rpcNullableString as str, rpcNumber as num } from '@/lib/rpcValue';
 
 export type CategoryKind = 'ingredient' | 'recipe' | 'material';
 

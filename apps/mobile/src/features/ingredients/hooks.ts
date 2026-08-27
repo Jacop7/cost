@@ -15,13 +15,13 @@ import { supabase } from '@/lib/supabase';
 import { useStoreId } from '@/lib/SessionProvider';
 import { parseLastChange, type LastChange } from '@/features/changes/hooks';
 import { asJson } from '@/lib/json';
+import {
+  rpcNullableNumber as numOrNull,
+  rpcNullableString as str,
+  rpcNumber as num,
+} from '@/lib/rpcValue';
 
 export type BaseUnit = 'g' | 'ml' | 'ea';
-
-/** null 을 0 으로 바꾸지 않는다 — "산출 불가"와 "0원"은 다른 뜻이다. */
-const num = (v: unknown): number => Number(v ?? 0);
-const numOrNull = (v: unknown): number | null => (v === null || v === undefined ? null : Number(v));
-const str = (v: unknown): string | null => (v === null || v === undefined ? null : String(v));
 
 /** 목록 카드가 필요한 만큼만. 화면이 쓰지 않는 컬럼까지 끌어오지 않는다. */
 export interface IngredientRow {
