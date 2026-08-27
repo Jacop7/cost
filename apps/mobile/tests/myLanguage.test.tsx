@@ -1,11 +1,23 @@
 /**
- * MY-08 언어 화면(검토 J·K) —
+ * MY-08 언어 화면(검토 J·K·L) —
  *   · 서버 설정이 오기 전에는 초안이 없다(로딩·오류 게이트). 실제 언어가 en-US 면 그 줄이 선택돼 있다.
  *   · 저장은 성공 콜백에서만 화면을 떠난다. 실패는 **화면 안 문구**(웹에서도 보인다), 저장 중엔
- *     버튼도 배경 터치도 잠긴다. 서버 언어가 바뀌면 초안을 새로 만든다.
+ *     버튼도 배경 터치도 잠긴다 — 실제 생명주기 순서(요청 → pending → 콜백)로 잰다.
+ *   · 서버 언어가 바뀌면: 수정 전엔 조용히 따르고, 수정·저장 중엔 초안을 지키며 알린다(새로고침으로 동기화).
  */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+
+/**
+ * RN-web 의 Modal 은 닫힘 애니메이션 끝(animationend)에야 DOM 을 걷는데 jsdom 엔 애니메이션이 없어
+ * 닫힌 시트가 영원히 남는다. 시트의 열림/닫힘을 **DOM 으로 재기 위해** Modal 만 visible 에 따라
+ * 즉시 그리거나 지우는 것으로 바꾼다(나머지 react-native 는 원본).
+ */
+vi.mock('react-native', async (importOriginal) => {
+  const rn = await importOriginal<typeof import('react-native')>();
+  const Modal = ({ visible, children }: { visible?: boolean; children?: React.ReactNode }) => (visible ? <>{children}</> : null);
+  return { ...rn, Modal };
+});
 
 vi.mock('expo-router', () => ({
   useRouter: () => ({ push: vi.fn(), replace: vi.fn(), back: vi.fn() }),
@@ -32,15 +44,17 @@ const loaded = (locale: string, unitPriceDigits = 3) => ({
 });
 
 const checked = (label: string) => screen.getByLabelText(label).getAttribute('aria-checked');
+const disabled = (label: string) => screen.getByLabelText(label).getAttribute('aria-disabled') === 'true';
 /** RN-web 의 Pressable 은 Modal 안에서 click 만으로는 안 눌린다 — 포인터 순서로 누른다(businessDayBar 시험과 같다). */
 const press = (el: Element) => { fireEvent.pointerDown(el); fireEvent.pointerUp(el); fireEvent.click(el); };
-const saveDisabled = () => screen.getByLabelText('저장').getAttribute('aria-disabled') === 'true';
+const sheetOpen = () => screen.queryByText('이렇게 보여요') !== null;
+const lastCallbacks = () => mutate.mock.calls.at(-1)![1] as { onSuccess: () => void; onError: (e: unknown) => void };
 
 /** 한국어를 고르고 확인 시트까지 연다. */
 async function pickKoAndOpenSheet() {
   fireEvent.click(screen.getByLabelText('한국어'));
   fireEvent.click(screen.getByLabelText('저장'));
-  await waitFor(() => expect(screen.getByText('이렇게 보여요')).toBeTruthy());
+  await waitFor(() => expect(sheetOpen()).toBe(true));
 }
 
 beforeEach(() => {
@@ -70,82 +84,103 @@ describe('언어 화면 게이트', () => {
     render(<MyLanguageScreen />);
     expect(checked('English (US)')).toBe('true');
     expect(checked('한국어')).toBe('false');
-    expect(saveDisabled()).toBe(true);
+    expect(disabled('저장')).toBe(true);
   });
+});
 
-  it('열어 둔 사이 서버 언어가 바뀌면 초안을 새로 만든다 — 낡은 초안이 새 값을 덮어쓰지 않는다', () => {
+describe('서버 언어가 바뀌면', () => {
+  it('수정 전이면 조용히 따른다 — 알림 없음', () => {
     const { rerender } = render(<MyLanguageScreen />);
-    fireEvent.click(screen.getByLabelText('한국어'));
-    expect(checked('한국어')).toBe('true');
     storeSettings.mockReturnValue(loaded('ja'));
     rerender(<MyLanguageScreen />);
     expect(checked('日本語')).toBe('true');
-    expect(checked('한국어')).toBe('false');
-    expect(saveDisabled()).toBe(true);
+    expect(screen.queryByRole('status')).toBeNull();
+    expect(disabled('저장')).toBe(true);
+  });
+
+  it('수정 중이면 초안을 지키고 알린다 — 저장은 잠기고, 새로고침 뒤 서버값으로 맞춘다', () => {
+    const { rerender } = render(<MyLanguageScreen />);
+    fireEvent.click(screen.getByLabelText('한국어'));
+    storeSettings.mockReturnValue(loaded('ja'));
+    rerender(<MyLanguageScreen />);
+    expect(checked('한국어')).toBe('true');           // 초안이 살아 있다
+    expect(screen.getByRole('status').textContent).toContain('다른 기기에서 설정이 변경됐어요');
+    expect(disabled('저장')).toBe(true);
+    fireEvent.click(screen.getByLabelText('새로고침'));
+    expect(checked('日本語')).toBe('true');
+    expect(screen.queryByRole('status')).toBeNull();
+    expect(disabled('저장')).toBe(true);              // 서버값과 같으니 바뀐 게 없다
+  });
+
+  it('저장 중에 바뀌어도 진행 중인 저장은 끊기지 않는다 — 완료 콜백이 그대로 온다', async () => {
+    const { rerender } = render(<MyLanguageScreen />);
+    await pickKoAndOpenSheet();
+    fireEvent.click(screen.getByLabelText('언어 저장 확정'));
+    await waitFor(() => expect(mutate).toHaveBeenCalledTimes(1));
+    pending = true;
+    storeSettings.mockReturnValue(loaded('ja'));
+    rerender(<MyLanguageScreen />);
+    expect(sheetOpen()).toBe(true);                    // 편집기가 다시 만들어지지 않았다
+    expect(screen.getAllByText(/다른 기기에서 설정이 변경됐어요/).length).toBeGreaterThan(0);
+    lastCallbacks().onSuccess();
+    expect(safeBack).toHaveBeenCalledWith('/my');
   });
 });
 
 describe('저장 흐름', () => {
   it('성공 콜백에서만 화면을 떠난다 — 요청 직후엔 안 떠난다', async () => {
     render(<MyLanguageScreen />);
-    expect(saveDisabled()).toBe(true);
     await pickKoAndOpenSheet();
     fireEvent.click(screen.getByLabelText('언어 저장 확정'));
     await waitFor(() => expect(mutate).toHaveBeenCalledTimes(1));
     // 언어만 보낸다 — 통화·금액 자릿수는 서버가 파생한다(0168). 단가 자릿수는 명시값(3)을 유지.
     expect(mutate.mock.calls[0]![0]).toEqual({ locale: 'ko', unitPriceDigits: 3 });
     expect(safeBack).not.toHaveBeenCalled();
-    (mutate.mock.calls[0]![1] as { onSuccess: () => void }).onSuccess();
+    lastCallbacks().onSuccess();
     expect(safeBack).toHaveBeenCalledWith('/my');
   });
 
-  it('실패는 화면 안에 보이고(웹에서도) 시트에 남는다', async () => {
-    render(<MyLanguageScreen />);
-    await pickKoAndOpenSheet();
-    fireEvent.click(screen.getByLabelText('언어 저장 확정'));
-    await waitFor(() => expect(mutate).toHaveBeenCalledTimes(1));
-    (mutate.mock.calls[0]![1] as { onError: (e: unknown) => void }).onError(new Error('지원하지 않는 언어예요'));
-    await waitFor(() => expect(screen.getByRole('alert').textContent).toContain('지원하지 않는 언어예요'));
-    expect(screen.getByText('이렇게 보여요')).toBeTruthy();
-    expect(safeBack).not.toHaveBeenCalled();
-    // 다시 시도하면 옛 문구는 사라진다.
-    fireEvent.click(screen.getByLabelText('언어 저장 확정'));
-    await waitFor(() => expect(mutate).toHaveBeenCalledTimes(2));
-    expect(screen.queryByRole('alert')).toBeNull();
-  });
-
-  /*
-   * 배경 터치(= Android 뒤로가기의 onRequestClose)는 Sheet 의 onClose 다. RN-web Modal 은 닫혀도
-   * 애니메이션 끝 이벤트가 없는 jsdom 에서 DOM 을 바로 걷지 않으므로, 닫힘은 **closeSheet 의 부수효과**
-   * (오류 문구 정리)로 잰다 — 저장 중이 아니면 지워지고, 저장 중이면 남는다.
-   */
-  it('저장 중이 아니면 배경 터치로 닫힌다 — 아래 차단 시험의 양성 대조', async () => {
-    render(<MyLanguageScreen />);
-    await pickKoAndOpenSheet();
-    fireEvent.click(screen.getByLabelText('언어 저장 확정'));
-    await waitFor(() => expect(mutate).toHaveBeenCalledTimes(1));
-    (mutate.mock.calls[0]![1] as { onError: (e: unknown) => void }).onError(new Error('x'));
-    await waitFor(() => expect(screen.getByRole('alert')).toBeTruthy());
-    press(screen.getByLabelText('닫기'));
-    await waitFor(() => expect(screen.queryByRole('alert')).toBeNull());
-  });
-
-  it('저장 중(pending 전환)엔 확정·취소·배경 터치가 모두 막힌다', async () => {
+  it('실제 생명주기: 요청 → 저장 중(모두 잠김·배경 터치 무시) → 실패 → 문구 표시·다시 열림', async () => {
     const { rerender } = render(<MyLanguageScreen />);
     await pickKoAndOpenSheet();
     fireEvent.click(screen.getByLabelText('언어 저장 확정'));
     await waitFor(() => expect(mutate).toHaveBeenCalledTimes(1));
-    (mutate.mock.calls[0]![1] as { onError: (e: unknown) => void }).onError(new Error('x'));
-    await waitFor(() => expect(screen.getByRole('alert')).toBeTruthy());
-    // 요청이 나가 있는 상태로 전환한다.
+
+    // ① 요청이 나가 있다(pending) — 콜백은 아직 없다.
     pending = true;
     rerender(<MyLanguageScreen />);
-    expect(screen.getByLabelText('언어 저장 확정').getAttribute('aria-disabled')).toBe('true');
+    expect(disabled('언어 저장 확정')).toBe(true);
     expect(screen.getByText('취소').closest('[aria-disabled]')?.getAttribute('aria-disabled')).toBe('true');
-    press(screen.getByLabelText('닫기'));   // 배경 터치(= Android 뒤로가기와 같은 onClose) — 막혀야 한다
-    expect(screen.getByRole('alert')).toBeTruthy();   // closeSheet 가 돌았다면 지워졌을 문구
+    press(screen.getByLabelText('닫기'));   // 배경 터치(= Android 뒤로가기와 같은 onClose)
+    expect(sheetOpen()).toBe(true);        // 막혔다
     fireEvent.click(screen.getByLabelText('언어 저장 확정'));
-    expect(mutate).toHaveBeenCalledTimes(1);          // 연타해도 두 번 보내지 않는다
-    expect(saveDisabled()).toBe(true);                 // 바깥 저장도 잠긴다
+    expect(mutate).toHaveBeenCalledTimes(1);   // 연타해도 두 번 보내지 않는다
+    expect(disabled('저장')).toBe(true);        // 바깥 저장도 잠긴다
+
+    // ② 실패 콜백이 온다 → pending 해제.
+    lastCallbacks().onError(new Error('지원하지 않는 언어예요'));
+    pending = false;
+    rerender(<MyLanguageScreen />);
+    await waitFor(() => expect(screen.getByRole('alert').textContent).toContain('지원하지 않는 언어예요'));
+    expect(sheetOpen()).toBe(true);
+    expect(disabled('언어 저장 확정')).toBe(false);
+    expect(safeBack).not.toHaveBeenCalled();
+
+    // ③ 이제는 배경 터치로 닫힌다(양성 대조) — 오류 문구도 함께 정리된다.
+    press(screen.getByLabelText('닫기'));
+    await waitFor(() => expect(sheetOpen()).toBe(false));
+    expect(screen.queryByRole('alert')).toBeNull();
+  });
+
+  it('다시 시도하면 옛 실패 문구는 사라진다', async () => {
+    render(<MyLanguageScreen />);
+    await pickKoAndOpenSheet();
+    fireEvent.click(screen.getByLabelText('언어 저장 확정'));
+    await waitFor(() => expect(mutate).toHaveBeenCalledTimes(1));
+    lastCallbacks().onError(new Error('x'));
+    await waitFor(() => expect(screen.getByRole('alert')).toBeTruthy());
+    fireEvent.click(screen.getByLabelText('언어 저장 확정'));
+    await waitFor(() => expect(mutate).toHaveBeenCalledTimes(2));
+    expect(screen.queryByRole('alert')).toBeNull();
   });
 });

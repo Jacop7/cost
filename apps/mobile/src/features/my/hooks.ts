@@ -326,6 +326,61 @@ export interface StoreSettings {
   taxItems: { name: string; rate: number }[];
 }
 
+/** get_settings 응답 계약 — 키와 JSON 타입. 하나라도 빠지면 오류다(기본값으로 메우지 않는다). */
+const SETTINGS_SHAPE = {
+  locale: 'string', currency: 'string', unit_system: 'string',
+  cup_volume: 'number', default_target_profit_rate: 'number',
+  unit_price_digits: 'number', quantity_digits: 'number', money_digits: 'number',
+  alert_morning_summary: 'boolean', alert_inbound_delay: 'boolean', alert_price_spike: 'boolean', alert_target_miss: 'boolean',
+  open_time: 'string', close_time: 'string', break_start: 'string|null', break_end: 'string|null',
+  overnight: 'boolean', open_minutes: 'number', tax_mode: 'string', tax_items: 'array',
+} as const;
+
+/**
+ * 응답 경계 검증(검토 지적). 예전엔 `data ?? {}` 로 null 을 빈 객체로 바꾸고 ko/KRW 를 채워서,
+ * 설정 행이 없거나 RLS 가 회귀해도 **정상 한국어 설정처럼** 보였다. 이제 null·키 누락·타입 불일치는
+ * 오류이고, 화면은 그걸 오류로 그린다. 시험이 이 함수만 떼어 잰다.
+ */
+export function parseStoreSettings(data: unknown): StoreSettings {
+  if (data === null || data === undefined || typeof data !== 'object' || Array.isArray(data)) {
+    throw new Error('설정 응답이 비어 있어요 — 설정 행이 없거나 권한이 없어요');
+  }
+  const r = data as Record<string, unknown>;
+  for (const [k, t] of Object.entries(SETTINGS_SHAPE)) {
+    const v = r[k];
+    const ok = t === 'array' ? Array.isArray(v)
+      : t === 'string|null' ? (v === null || typeof v === 'string')
+      : typeof v === t;
+    if (!ok) throw new Error(`설정 응답에 ${k} 가 없거나 형식이 달라요 (${t})`);
+  }
+  return {
+    unitSystem: r.unit_system as string,
+    cupVolume: r.cup_volume as number,
+    defaultTargetProfitRate: r.default_target_profit_rate as number,
+    // core LocaleKey 다('ko', 'en-US', …). 예전 기본값 'ko-KR' 은 0168 이 'ko' 로 옮겼다.
+    locale: r.locale as string,
+    currency: r.currency as string,
+    unitPriceDigits: r.unit_price_digits as number,
+    quantityDigits: r.quantity_digits as number,
+    moneyDigits: r.money_digits as number,
+    alertMorningSummary: r.alert_morning_summary as boolean,
+    alertInboundDelay: r.alert_inbound_delay as boolean,
+    alertPriceSpike: r.alert_price_spike as boolean,
+    alertTargetMiss: r.alert_target_miss as boolean,
+    openTime: r.open_time as string,
+    closeTime: r.close_time as string,
+    breakStart: r.break_start as string | null,
+    breakEnd: r.break_end as string | null,
+    overnight: r.overnight as boolean,
+    openMinutes: r.open_minutes as number,
+    taxMode: r.tax_mode as TaxMode,
+    taxItems: (r.tax_items as Record<string, unknown>[]).map((t) => ({
+      name: String(t.name ?? ''),
+      rate: num(t.rate),
+    })),
+  };
+}
+
 export function useStoreSettings() {
   const storeId = useStoreId();
   return useQuery({
@@ -333,33 +388,7 @@ export function useStoreSettings() {
     queryFn: async (): Promise<StoreSettings> => {
       const { data, error } = await supabase.rpc('get_settings', { p_store: storeId });
       if (error) throw new Error(error.message);
-      const r = (data ?? {}) as unknown as Record<string, unknown>;
-      return {
-        unitSystem: String(r.unit_system ?? 'metric'),
-        cupVolume: num(r.cup_volume),
-        defaultTargetProfitRate: num(r.default_target_profit_rate),
-        // core LocaleKey 다('ko', 'en-US', …). 예전 기본값 'ko-KR' 은 0168 이 'ko' 로 옮겼다.
-        locale: String(r.locale ?? 'ko'),
-        currency: String(r.currency ?? 'KRW'),
-        unitPriceDigits: num(r.unit_price_digits),
-        quantityDigits: num(r.quantity_digits),
-        moneyDigits: num(r.money_digits),
-        alertMorningSummary: Boolean(r.alert_morning_summary),
-        alertInboundDelay: Boolean(r.alert_inbound_delay),
-        alertPriceSpike: Boolean(r.alert_price_spike),
-        alertTargetMiss: Boolean(r.alert_target_miss),
-        openTime: String(r.open_time ?? '11:00'),
-        closeTime: String(r.close_time ?? '22:00'),
-        breakStart: str(r.break_start),
-        breakEnd: str(r.break_end),
-        overnight: Boolean(r.overnight),
-        openMinutes: num(r.open_minutes),
-        taxMode: (String(r.tax_mode ?? 'included') as TaxMode),
-        taxItems: ((r.tax_items ?? []) as Record<string, unknown>[]).map((t) => ({
-          name: String(t.name ?? ''),
-          rate: num(t.rate),
-        })),
-      };
+      return parseStoreSettings(data);
     },
   });
 }

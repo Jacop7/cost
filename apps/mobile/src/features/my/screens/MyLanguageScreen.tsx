@@ -11,7 +11,7 @@
  * 확정값은 서버(settings)에 저장된다. 실제 언어 전환
  *   (UI 문구 번역·글꼴·RTL)은 아직 연결하지 않았다. 지금 확정되는 것은 숫자 서식 기준값뿐이다.
  */
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
@@ -85,9 +85,9 @@ export default function MyLanguageScreen() {
       </Shell>
     );
   }
-  // key: 서버 언어가 바뀌면(다른 기기에서 저장 등) 편집기를 새로 만든다 — 낡은 초안이 새 서버값을
-  // 덮어쓰지 않게(검토 지적). 이 화면의 저장은 성공하면 떠나므로 사용자의 고름이 사라질 일은 없다.
-  return <LanguageEditor key={settings.locale} initial={settings.locale} />;
+  // ⚠ key 로 편집기를 다시 만들지 않는다 — 다른 기기 변경·재조회 때 초안·확인 시트·오류·저장 중 잠금과
+  //   완료 콜백까지 사라진다(검토 지적). 편집기가 서버값 변화를 스스로 다룬다(아래 정책).
+  return <LanguageEditor serverLocale={settings.locale} />;
 }
 
 function Shell({ children }: { children: React.ReactNode }) {
@@ -99,18 +99,40 @@ function Shell({ children }: { children: React.ReactNode }) {
   );
 }
 
-function LanguageEditor({ initial }: { initial: LocaleKey }) {
+/**
+ * 서버 언어가 바뀔 때의 정책(검토 지적) —
+ *   · 수정 전(초안을 안 건드렸고 시트도 닫힘): 새 서버값으로 조용히 동기화.
+ *   · 수정 중·저장 중: 초안을 **유지**하고 "다른 기기에서 설정이 변경됐어요" 를 보이며 저장을 잠근다.
+ *     사용자가 [새로고침] 을 눌러 서버값으로 맞춘 뒤 다시 고른다. 진행 중인 저장은 끊지 않는다.
+ */
+function LanguageEditor({ serverLocale }: { serverLocale: LocaleKey }) {
   const insets = useSafeAreaInsets();
-  const locale = initial;
+  const locale = serverLocale;
   const { setLocale, saving } = useSettingsActions();
   const digits = useUnitDigits();
 
-  const [draft, setDraft] = useState<LocaleKey>(initial); // 확정 전 선택 — 서버값이 온 뒤에만 만들어진다
+  const [draft, setDraft] = useState<LocaleKey>(serverLocale); // 확정 전 선택 — 서버값이 온 뒤에만 만들어진다
+  const [touched, setTouched] = useState(false);               // 사용자가 초안을 건드렸나
   const [confirm, setConfirm] = useState(false); // 확인 시트
   // 저장 실패 문구 — **화면 안**에 그린다. Alert.alert 는 웹(react-native-web)에서 아무것도 안 보여 준다(검토 지적).
   const [saveError, setSaveError] = useState<string | null>(null);
+  // 수정 중에 서버값이 바뀌었다 — 새로고침 전엔 저장을 막는다.
+  const [serverChanged, setServerChanged] = useState(false);
+  const seen = useRef(serverLocale);
+  useEffect(() => {
+    if (seen.current === serverLocale) return;
+    seen.current = serverLocale;
+    if (!touched && !confirm && !saving) setDraft(serverLocale);
+    else setServerChanged(true);
+  }, [serverLocale, touched, confirm, saving]);
+
   const changed = draft !== locale;
   const D = getLocale(draft);
+
+  const pick = (k: LocaleKey) => { setDraft(k); setTouched(true); };
+  const refresh = () => {
+    setDraft(serverLocale); setTouched(false); setServerChanged(false); setSaveError(null); setConfirm(false);
+  };
 
   // 저장 중엔 시트를 못 닫는다 — 취소 버튼뿐 아니라 배경 터치·Android 뒤로가기(onRequestClose)도 같은 문이다.
   const closeSheet = () => {
@@ -121,7 +143,7 @@ function LanguageEditor({ initial }: { initial: LocaleKey }) {
 
   // 성공 뒤에만 닫고 이동한다. 실패는 그 자리에서 알리고 시트를 유지한다(검토 지적).
   const onSave = () => {
-    if (saving) return;
+    if (saving || serverChanged) return;
     setSaveError(null);
     setLocale(draft, {
       onSuccess: () => { setConfirm(false); safeBack('/my'); },
@@ -136,6 +158,12 @@ function LanguageEditor({ initial }: { initial: LocaleKey }) {
         {/* 언어·지역 — 통화와 숫자 서식이 여기서 함께 결정된다 */}
         <Text style={{ fontSize: 14, fontWeight: '700', color: T.ter, marginHorizontal: 4, marginBottom: 6 }}>언어 · 지역</Text>
         <Notice style={{ marginBottom: 10 }}>금액의 기본 소수 자릿수는 통화가 정해요. 원·엔·동은 소수가 없어 0자리, 달러·유로 등은 2자리예요.</Notice>
+        {serverChanged ? (
+          <View role="status" style={{ marginBottom: 10, padding: 13, borderRadius: 12, backgroundColor: T.redTint, borderWidth: 1, borderColor: T.red }}>
+            <Text style={{ fontSize: 14, fontWeight: '700', color: T.red, lineHeight: 20 }}>다른 기기에서 설정이 변경됐어요. 새로고침 후 다시 저장해 주세요.</Text>
+            <View style={{ marginTop: 8 }}><Button kind="gray" size="md" onPress={refresh} accessibilityLabel="새로고침">새로고침</Button></View>
+          </View>
+        ) : null}
         <Card pad={0} style={{ overflow: 'hidden' }}>
           {LOCALES.map((l, i) => {
             const on = l.key === draft;
@@ -143,7 +171,7 @@ function LanguageEditor({ initial }: { initial: LocaleKey }) {
             return (
               <Pressable
                 key={l.key}
-                onPress={() => setDraft(l.key as LocaleKey)}
+                onPress={() => pick(l.key as LocaleKey)}
                 accessibilityRole="radio"
                 accessibilityLabel={l.native}
                 accessibilityState={{ checked: on }}
@@ -177,7 +205,7 @@ function LanguageEditor({ initial }: { initial: LocaleKey }) {
 
       {/* 저장 — 고른 즉시가 아니라 확인 시트를 거쳐 확정 */}
       <View style={{ paddingHorizontal: 20, paddingTop: 12, paddingBottom: Math.max(insets.bottom, 16) + 14, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
-        <Button kind="primary" size="lg" full disabled={!changed || saving} onPress={() => setConfirm(true)} accessibilityLabel="저장">
+        <Button kind="primary" size="lg" full disabled={!changed || saving || serverChanged} onPress={() => setConfirm(true)} accessibilityLabel="저장">
           저장
         </Button>
       </View>
@@ -206,10 +234,15 @@ function LanguageEditor({ initial }: { initial: LocaleKey }) {
             저장하지 못했어요 · {saveError}
           </Text>
         ) : null}
+        {serverChanged ? (
+          <Text style={{ fontSize: 14, fontWeight: '700', color: T.red, lineHeight: 20, marginBottom: 12 }}>
+            다른 기기에서 설정이 변경됐어요. 새로고침 후 다시 저장해 주세요.
+          </Text>
+        ) : null}
 
         <View style={{ flexDirection: 'row', gap: 9 }}>
           <View style={{ flex: 1 }}><Button kind="ghost" size="lg" full disabled={saving} onPress={closeSheet}>취소</Button></View>
-          <View style={{ flex: 2 }}><Button kind="primary" size="lg" full loading={saving} onPress={onSave} accessibilityLabel="언어 저장 확정">저장</Button></View>
+          <View style={{ flex: 2 }}><Button kind="primary" size="lg" full loading={saving} disabled={serverChanged} onPress={onSave} accessibilityLabel="언어 저장 확정">저장</Button></View>
         </View>
       </Sheet>
     </View>
