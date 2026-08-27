@@ -212,5 +212,27 @@ else
   say "   FAIL 0168 이 멈추긴 했는데 다른 이유다"; say "        $(printf '%s' "$err" | head -3)"; fail=1
 fi
 
+# ── 시나리오 7 · 매장이 둘인 DB 에서도 0170 이 통과해야 한다 (검토 N P0) ────────
+# 첫 판 0170 의 사후조건은 `array_agg … limit 1` 이라 매장이 둘이면 키 40개를 모아 멈췄다.
+# 다른 사장님의 두 번째 매장(create_store 트리거 셋이 설정 행을 만든다)을 두고 0170 을 태운다.
+say "⑦ 0169 상태 + 매장 2개 → 0170 이 통과하고 매장마다 20키여야 한다"
+BASE7=20260826000169
+STEP7="$(cd "$MIG_DIR" && ls 20260826000170_*.sql)"
+bash "$SCRIPT_DIR/fresh-db.sh" --until "$BASE7" "$D" >/dev/null
+psql_d "$D" <<'EOF' >/dev/null
+insert into auth.users (id) values ('00000000-0000-0000-0000-00000000c0c0');
+insert into stores (owner_id, name) values ('00000000-0000-0000-0000-00000000c0c0', '업그레이드 시험 매장 2');
+EOF
+n=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c "select count(*) from settings;")
+if [ "$n" != "2" ]; then
+  say "   FAIL 전제가 안 섰다 — 설정 행이 2개가 아니다 ($n)"; fail=1
+elif ! err="$(psql_d "$D" < "$MIG_DIR/$STEP7" 2>&1 1>/dev/null)"; then
+  say "   FAIL 매장이 둘이면 0170 이 멈춘다"; say "        $(printf '%s' "$err" | head -3)"; fail=1
+else
+  bad=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c "
+    select count(*) from (select s.store_id, count(k) as n from settings s, jsonb_object_keys(get_settings(s.store_id)) k group by 1) t where t.n <> 20;")
+  if [ "$bad" = "0" ]; then say "   ok   매장 2개 모두 20키"; else say "   FAIL 20키가 아닌 매장 ${bad}개"; fail=1; fi
+fi
+
 say ""
-if [ "$fail" = "0" ]; then say "업그레이드 경로 6/6 통과"; else say "업그레이드 경로 실패"; exit 1; fi
+if [ "$fail" = "0" ]; then say "업그레이드 경로 7/7 통과"; else say "업그레이드 경로 실패"; exit 1; fi

@@ -18,10 +18,12 @@
 #       [ADMIN_DB_SSLMODE=require] [ADMIN_DB_SSLROOTCERT=/path/ca.crt] [ADMIN_DB_PASSWORD=…]
 #         bash packages/db/scripts/admin-acl.sh --remote <fix|check>
 #       · 값마다 문자 집합·범위를 검사한다(여러 줄·공백·=·따옴표는 거부, 포트는 1~65535, IPv6 는 그대로).
-#       · psql 은 **비운 환경(env -i)** 에서 뜬다 — PATH·HOME 등 최소한과 위 접속 정보만 넣는다. 셸의
-#         PGSSLROOTCERT·PGSSLKEY·PGCHANNELBINDING·PGSERVICE·PGPASSWORD 같은 것은 하나도 상속되지 않는다.
+#       · psql 은 **비운 환경**에서 뜬다 — 격리된 서브셸에서 export 변수를 전부 unset 하고 필요한 것만 export 한 뒤
+#         exec 한다. 비밀번호는 psql 은 물론 env 같은 **중간 명령의 argv 에도** 실리지 않는다(검토 P1: `env -i A=… cmd`
+#         는 env 프로세스의 명령행에 값이 보였다). 셸의 PGSSLROOTCERT·PGSSLKEY·PGCHANNELBINDING·PGSERVICE·PGPASSWORD
+#         같은 것은 하나도 상속되지 않는다.
 #       · 비밀번호는 ADMIN_DB_PASSWORD 가 있으면 그것만 PGPASSWORD 로, 없으면 PGPASSFILE(있으면 그 경로,
-#         없으면 ~/.pgpass)에 맡긴다. argv 에는 어떤 접속 정보도 없다.
+#         없으면 libpq 기본 ~/.pgpass — Windows 는 %APPDATA%\postgresql\pgpass.conf)에 맡긴다.
 #   fix   = 회수하고 잰다        check = 재기만 한다(배포 후 확인·게이트)     ← 생략 불가
 #   프로브가 열려 있으면 exit 1 — 조용히 넘어가지 않는다.
 #
@@ -37,11 +39,17 @@ usage() {
   echo "        원격: ADMIN_DB_HOST ADMIN_DB_USER [ADMIN_DB_PORT] [ADMIN_DB_NAME] [ADMIN_DB_SSLMODE] [ADMIN_DB_SSLROOTCERT] [ADMIN_DB_PASSWORD | PGPASSFILE]" >&2
   exit 2
 }
-# 자식이 받을 최소 환경 — 나머지는 전부 버린다(env -i).
-BASE_ENV=(PATH="$PATH" HOME="${HOME:-}" LANG="${LANG:-C.UTF-8}")
-for v in USERPROFILE SYSTEMROOT SystemRoot TEMP TMP; do
-  [ -n "${!v:-}" ] && BASE_ENV+=("$v=${!v}")
-done
+
+# 자식이 받을 최소 환경 — 나머지 export 변수는 서브셸 안에서 전부 unset 한다(부모 셸은 그대로).
+# ⚠ `env -i A=1 B=2 cmd` 는 A·B 가 env 프로세스의 argv 에 실린다 — 비밀번호가 새는 길이었다(검토 P1).
+KEEP_ENV=' PATH HOME LANG LC_ALL USERPROFILE SYSTEMROOT SystemRoot TEMP TMP APPDATA LOCALAPPDATA PROGRAMDATA HOMEDRIVE HOMEPATH USERNAME COMSPEC '
+scrub_env() {
+  local v
+  for v in $(compgen -e); do
+    case "$KEEP_ENV" in *" $v "*) ;; *) unset "$v" ;; esac
+  done
+  export LANG="${LANG:-C.UTF-8}"
+}
 
 TARGET="${1:-}"; shift || true
 case "$TARGET" in
@@ -54,9 +62,10 @@ case "$TARGET" in
     CT="${SUPABASE_DB_CONTAINER:-supabase_db_sikjae}"
     [[ "$CT" =~ ^[A-Za-z0-9_.-]{1,128}$ ]] || { echo "admin-acl: SUPABASE_DB_CONTAINER 형식이 아닙니다" >&2; exit 2; }
     LPW="${SUPABASE_ADMIN_PASSWORD:-postgres}"
-    # -e PGPASSWORD (값 없이) — docker 가 환경에서 가져간다. argv 에는 이름만 남는다.
-    run() { env -i "${BASE_ENV[@]}" PGPASSWORD="$LPW" docker exec -i -e PGPASSWORD "$CT" \
-              psql -U supabase_admin -d "$D" -v ON_ERROR_STOP=1 -q -t -A "$@"; }
+    # 격리된 서브셸: 환경을 비우고 PGPASSWORD 만 export 한 뒤 exec. docker 에는 -e PGPASSWORD(이름만)로 넘긴다 —
+    # 어떤 argv 에도 비밀번호가 없다.
+    run() { ( scrub_env; export PGPASSWORD="$LPW"; exec docker exec -i -e PGPASSWORD "$CT" \
+              psql -U supabase_admin -d "$D" -v ON_ERROR_STOP=1 -q -t -A "$@" ); }
     WHERE="local $CT/$D"
     ;;
   --remote)
@@ -77,16 +86,18 @@ case "$TARGET" in
       # 경로는 OS 마다 모양이 달라 문자 집합 대신 "한 줄이고 읽을 수 있는 파일"만 본다.
       [[ "$CA" != *$'\n'* ]] && [ -r "$CA" ] || { echo "admin-acl: ADMIN_DB_SSLROOTCERT 는 읽을 수 있는 파일 경로(한 줄)여야 합니다" >&2; exit 2; }
     fi
-    CONN_ENV=(PGHOST="$H" PGPORT="$P" PGDATABASE="$N" PGUSER="$U" PGSSLMODE="$SSL" PGCONNECT_TIMEOUT=15)
-    [ -n "$CA" ] && CONN_ENV+=(PGSSLROOTCERT="$CA")
-    if [ -n "${ADMIN_DB_PASSWORD:-}" ]; then
-      CONN_ENV+=(PGPASSWORD="$ADMIN_DB_PASSWORD")
-    elif [ -n "${PGPASSFILE:-}" ]; then
-      # 비밀번호를 안 줬으면 파일에만 맡긴다 — 셸의 PGPASSWORD 는 env -i 로 이미 사라진다.
-      CONN_ENV+=(PGPASSFILE="$PGPASSFILE")
-    fi
-    # 접속 정보는 전부 libpq 환경변수로 — argv 에는 psql 옵션만 남는다. 환경은 비우고 위 것만 넣는다.
-    run() { env -i "${BASE_ENV[@]}" "${CONN_ENV[@]}" psql -v ON_ERROR_STOP=1 -q -t -A "$@"; }
+    RPW="${ADMIN_DB_PASSWORD:-}"; RPF="${PGPASSFILE:-}"
+    # 접속 정보는 전부 libpq 환경변수로 — 격리된 서브셸에서 환경을 비우고 export 한 뒤 exec 한다.
+    # argv 에는 psql 옵션만 남고, 비밀번호는 env 같은 중간 명령의 argv 에도 실리지 않는다(검토 P1).
+    run() { (
+      scrub_env
+      export PGHOST="$H" PGPORT="$P" PGDATABASE="$N" PGUSER="$U" PGSSLMODE="$SSL" PGCONNECT_TIMEOUT=15
+      [ -n "$CA" ] && export PGSSLROOTCERT="$CA"
+      if [ -n "$RPW" ]; then export PGPASSWORD="$RPW"
+      elif [ -n "$RPF" ]; then export PGPASSFILE="$RPF"   # 비밀번호를 안 줬으면 파일에만 맡긴다 — 셸의 PGPASSWORD 는 scrub 으로 사라진다.
+      fi
+      exec psql -v ON_ERROR_STOP=1 -q -t -A "$@"
+    ); }
     WHERE="remote $H:$P/$N"
     ;;
   *) usage ;;

@@ -60,6 +60,10 @@ describe('parseStoreSettings', () => {
     expect(() => parseStoreSettings({ ...FULL, tax_mode: 'vat' })).toThrow(/tax_mode/);
     expect(() => parseStoreSettings({ ...FULL, tax_items: [{ name: 3, rate: 'x' }] })).toThrow(/tax_items/);
     expect(() => parseStoreSettings({ ...FULL, tax_items: [null] })).toThrow(/tax_items/);
+    // 서버 assert_tax_items 와 같은 경계 — 공백 이름 거부, 요율은 100 미만.
+    expect(() => parseStoreSettings({ ...FULL, tax_items: [{ name: '   ', rate: 10 }] })).toThrow(/tax_items/);
+    expect(() => parseStoreSettings({ ...FULL, tax_items: [{ name: '부가세', rate: 100 }] })).toThrow(/tax_items/);
+    expect(parseStoreSettings({ ...FULL, tax_items: [{ name: '부가세', rate: 99.99 }] }).taxItems[0]!.rate).toBe(99.99);
     // 정상 조합은 통과한다(ko/KRW/0).
     expect(parseStoreSettings({ ...FULL, locale: 'ko', currency: 'KRW', money_digits: 0 }).locale).toBe('ko');
   });

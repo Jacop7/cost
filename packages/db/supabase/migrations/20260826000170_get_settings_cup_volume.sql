@@ -43,17 +43,26 @@ comment on function public.get_settings(uuid) is
 
 -- ── 사후조건 ────────────────────────────────────────────────────
 do $$
-declare v_keys text[];
+declare v_n int; v_bad int;
 begin
-  select array_agg(k order by k) into v_keys
-    from settings s, jsonb_object_keys(public.get_settings(s.store_id)) k
-   limit 1;
-  if v_keys is null then
+  /*
+   * ⚠ 매장마다 따로 센다(검토 P0). 첫 판은 `array_agg(...) limit 1` 이었는데 LIMIT 은 집계 **뒤에** 걸려
+   *   매장이 둘이면 키 40개를 모아 "20개가 아니다"로 배포가 멈췄다(실측). GROUP BY store_id 로 잰다.
+   */
+  select count(*) into v_n from settings;
+  if v_n = 0 then
     -- 설정 행이 없는 DB(새 DB 의 마이그레이션 시점)면 함수 본문으로만 확인한다.
     if position('''cup_volume'', s.cup_volume' in pg_get_functiondef('public.get_settings(uuid)'::regprocedure)) = 0 then
       raise exception '0170: get_settings 에 cup_volume 이 없습니다';
     end if;
-  elsif not ('cup_volume' = any(v_keys)) or array_length(v_keys, 1) <> 20 then
-    raise exception '0170: get_settings 키가 20개(cup_volume 포함)가 아닙니다: %', array_to_string(v_keys, ',');
+    return;
+  end if;
+  select count(*) into v_bad
+    from (select s.store_id, array_agg(k order by k) as keys
+            from settings s, jsonb_object_keys(public.get_settings(s.store_id)) k
+           group by s.store_id) t
+   where not ('cup_volume' = any(t.keys)) or array_length(t.keys, 1) <> 20;
+  if v_bad > 0 then
+    raise exception '0170: get_settings 키가 20개(cup_volume 포함)가 아닌 매장이 %개 있습니다', v_bad;
   end if;
 end $$;

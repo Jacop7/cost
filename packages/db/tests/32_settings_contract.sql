@@ -32,6 +32,26 @@ begin
   perform pg_temp.ok('브레이크는 문자열 또는 null', jsonb_typeof(v_res -> 'break_start') in ('string','null')
                                               and jsonb_typeof(v_res -> 'break_end') in ('string','null'));
   perform pg_temp.eq_t('tax_items 는 배열', jsonb_typeof(v_res -> 'tax_items'), 'array');
-  perform pg_temp.ok('cup_volume 은 저장값 그대로(양수)', (v_res ->> 'cup_volume')::numeric > 0);
   perform pg_temp.ok('시각은 HH:MM', (v_res ->> 'open_time') ~ '^\d\d:\d\d$' and (v_res ->> 'close_time') ~ '^\d\d:\d\d$');
+
+  /*
+   * 저장값 **보존**(검토 P1) — "양수인가"로는 상수 1 을 돌려줘도 통과했다. 눈에 띄는 값으로 저장한 뒤
+   * 응답이 **행의 값 그대로**인지 잰다. 다른 통과 필드도 행과 직접 대조한다.
+   */
+  perform save_settings(pg_temp.store(), '{"cup_volume": 333, "quantity_digits": 3, "unit_price_digits": 1}'::jsonb);
+  v_res := get_settings(pg_temp.store());
+  perform pg_temp.eq('cup_volume 은 저장한 333 그대로', (v_res ->> 'cup_volume')::numeric, 333, 0);
+  perform pg_temp.ok('통과 필드들이 settings 행과 같다',
+    exists (select 1 from settings s where s.store_id = pg_temp.store()
+             and (v_res ->> 'cup_volume')::numeric = s.cup_volume
+             and (v_res ->> 'quantity_digits')::int = s.quantity_digits
+             and (v_res ->> 'unit_price_digits')::int = s.unit_price_digits
+             and (v_res ->> 'money_digits')::int = s.money_digits
+             and (v_res ->> 'locale') = s.locale and (v_res ->> 'currency') = s.currency
+             and (v_res ->> 'unit_system') = s.unit_system
+             and (v_res ->> 'default_target_profit_rate')::numeric = s.default_target_profit_rate
+             and (v_res ->> 'alert_morning_summary')::boolean = s.alert_morning_summary
+             and (v_res ->> 'open_time') = to_char(s.open_time, 'HH24:MI')
+             and (v_res ->> 'close_time') = to_char(s.close_time, 'HH24:MI')
+             and (v_res -> 'tax_items') = s.tax_items));
 end $t$;
