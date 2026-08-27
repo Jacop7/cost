@@ -162,6 +162,7 @@ begin
    * ⚠ 잡는 것은 **예상된 상태 충돌뿐**이다.
    *     22000  아직 열려 있음 · 영업 중이 아님 · 미래 날짜
    *     23505  이미 종료된 날
+   *     45015  규칙 종료가 지난 늦은 개점 — 시드와 같이 두 시간 뒤 종료로 재시도
    *     P0002  되열 종료 기록이 없음
    *   `when others` 로 뭉뚱그리면 `open_business_day` **자체가 망가져도** 헬퍼가
    *   조용히 삼키고 날짜를 돌려준다. 그러면 시험 전체가 그 회귀를 못 본다.
@@ -170,7 +171,14 @@ begin
   -- 없으면 연다.
   begin
     perform transition_business_state(pg_temp.store(), 'open');   -- v_day = 판매 영업일이라 동치(0160)
-  exception when sqlstate '22000' or sqlstate '23505' then null;
+  exception
+    when sqlstate '45015' then
+      -- 오늘 규칙 종료 뒤에도 시험은 바깥 시각과 무관해야 한다(0162).
+      -- 시드의 오늘 개점과 같은 정식 경로로, 매장 현지 시각 두 시간 뒤에 닫는다.
+      perform transition_business_state(
+        pg_temp.store(), 'open',
+        ((clock_timestamp() at time zone store_timezone(pg_temp.store())) + interval '2 hours')::time);
+    when sqlstate '22000' or sqlstate '23505' then null;
   end;
 
   -- 닫혀 있으면 되연다.
