@@ -518,10 +518,10 @@ git branch --show-current
 git branch --all
 git rev-parse --short HEAD
 git rev-parse --short origin/main
-git rev-list --left-right --count HEAD...origin/main
-git merge-base --is-ancestor 840ae15 HEAD; "old-main-is-ancestor exit=$LASTEXITCODE"
-git rev-list --count 840ae15..HEAD
-git rev-list --merges 840ae15..HEAD --count
+git rev-list --left-right --count main...origin/main
+git merge-base --is-ancestor 840ae15 main; "old-main-is-ancestor exit=$LASTEXITCODE"
+git rev-list --count 840ae15..main
+git rev-list --merges 840ae15..main --count
 git tag --list 'deploy-*'
 $migrationFiles = Get-ChildItem -LiteralPath 'packages/db/supabase/migrations' -Recurse -File -Filter '*.sql'
 $migrationFiles.Count
