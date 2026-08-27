@@ -7,8 +7,8 @@
 
 - **문서 위치**: `docs/브랜치-DB-운영-기획안.md`
 - **최종 수정**: 2026-08-27
-- **현재 상태**: 개정 3판 승인·Git 추적 완료. 대형 기능 브랜치를 `main`에 fast-forward 병합했고,
-  §9.2의 후속 정리를 진행한다. 운영·스테이징 적용 이력은 아직 미확인이다.
+- **현재 상태**: 개정 3판 승인·Git 추적 완료. 대형 기능 브랜치와 `TEST-1`을 `main`에 fast-forward
+  병합했고, §9.2의 다음 작업은 §10 폴더 경계 리팩터링이다. 운영·스테이징 적용 이력은 아직 미확인이다.
 
 ## 문서 책임
 
@@ -151,7 +151,8 @@ feat/supplier-order-submit
 - P1-2 Supabase CLI v2 업그레이드 여부 결정과 전환 검증
 - P1-3 §11 저장소 문서 전체 동기화(루트·`packages/db` README 포함)
 
-병합 후 22시대 재검증에서 발견한 DB 시험의 늦은 개점 시간 의존성은 `TEST-1`로 별도 등록한다.
+병합 후 22시대 재검증에서 발견한 DB 시험의 늦은 개점 시간 의존성은 `TEST-1`로 별도 등록했고,
+`3a9f2d1`에서 완료했다.
 
 권장 항목 형식:
 
@@ -481,34 +482,39 @@ pull request에 실행된다. **feature HEAD의 workflow matrix job이 모두 `c
 | 항목                    | 확인값                                                               |
 | ----------------------- | -------------------------------------------------------------------- |
 | 기능 병합 기준          | `main` · `origin/main` = `86db920`, 차이 `0 0`                       |
+| `TEST-1` 병합 기준      | `3a9f2d1` — 동일 SHA CI 확인 당시 `origin/main`과 차이 `0 0`        |
 | 문서 작업 브랜치        | `codex/docs-post-merge-baseline`, `86db920`에서 분기                  |
 | 병합 방식               | `840ae15` 이후 192커밋 선형 fast-forward · merge commit 0개          |
 | 기능 브랜치             | 로컬·원격 삭제 완료, 원격 작업 브랜치는 `main`만 남음                |
 | 기획안 추적             | `744784d`에서 두 기획안만 최초 커밋                                  |
 | 마이그레이션            | 161개, 최신 `20260826000172_settings_revision_noop_tax.sql`          |
-| DB 회귀 시험            | 번호 파일 32개 · 병합 시 32/32, 22시대 재검증은 개발·새 DB 26/32    |
+| DB 회귀 시험            | 번호 파일 32개 · 야간 `TEST-1` 후 개발·새 DB 모두 32/32             |
 | core · mobile 시험      | core 176 passed · 2 skipped, mobile 173/173                          |
-| 로컬 전체 검증          | 병합 시 6/6 · 22시대 재검증은 ②·④ 실패, ①·③·⑤·⑥ 통과              |
-| GitHub Actions          | feature·`main`의 Node 20.19.4·24 모두 `completed/success`            |
+| 로컬 전체 검증          | `3a9f2d1`에서 6/6 · 업그레이드 8/8 · 임시 DB 0개                    |
+| GitHub Actions          | `3a9f2d1` feature·`main`의 Node 20.19.4·24 모두 `completed/success`  |
 | 운영 Supabase 적용 이력 | **미확인** — 원격 프로젝트 링크와 `migration list` 확인 전           |
 | 배포 태그               | 없음 — 운영 배포를 하지 않았으므로 정상                              |
 | 스냅샷 작성 워킹트리    | `.claude/settings.json` 수정 + 이 기획안 수정 + `작업큐.md` 신규     |
 
-- **확인 시각**: `2026-08-27T22:17:43+09:00`
+- **확인 시각**: `2026-08-27T23:21:59+09:00`
 - **재검증 환경**: Windows `10.0.26200.0` · Node `24.15.0` · pnpm `9.12.0` · 로컬 Supabase
-- **CI 근거**:
+- **기능 병합 CI 근거**:
   - [feature 최종 성공 run](https://github.com/Jacop7/cost/actions/runs/33072549823)
   - [`main` 동일 SHA 성공 run](https://github.com/Jacop7/cost/actions/runs/33072723599)
+- **TEST-1 CI 근거**:
+  - [feature 성공 run](https://github.com/Jacop7/cost/actions/runs/33081474853)
+  - [`main` 동일 SHA 성공 run](https://github.com/Jacop7/cost/actions/runs/33081709783)
 - **절차 이탈 기록**: `bc6bd75`는 feature CI가 끝나기 전에 `main`으로 이동해 `main` CI가 실패했다.
   `86db920`에서 수정하고 feature CI의 모든 workflow matrix job이 성공한 뒤 두 번째 fast-forward를
   수행했다. 이 이력을 근거로 §8.2는 `queued`·`in_progress`를 통과로 보지 않으며, feature와 `main`의
   **동일 SHA** 성공을 각각 확인하도록 고정한다.
-- **병합 후 발견 사항**: `2026-08-27T22:04+09:00`에 `corepack pnpm verify`를 다시 실행하자
-  `09`·`12`·`13`·`27`·`29`·`30` DB 시험이 영업 종료 뒤 `transition_business_state(..., 'open')`을
-  종료 시각 없이 직접 호출해 `45015 LATE_OPEN`으로 실패했다. 개발 DB와 새 DB가 모두 26/32였고,
-  타입·ACL·업그레이드 8/8·웹 번들은 통과했다. 제품 로직 변경이 아니라 시험 준비 경로의 남은 시간
-  의존성이며 [`TEST-1`](./작업큐.md#test-1-야간-db-시험-시간-독립화)을 해결하기 전에는 로컬 전체
-  검증을 현재도 6/6이라고 표현하지 않는다.
+- **병합 후 발견 및 해결**: `2026-08-27T22:04+09:00` 야간 재검증에서 여섯 DB 시험이 종료 시각 없는
+  직접 개점으로 `45015 LATE_OPEN`을 받아 개발·새 DB가 26/32로 실패했다. 제품 규칙의 오류가 아니라
+  시험 준비와 중간 버전 seed 재생의 벽시각 의존성이었다. `05b0cce`는 `45015`만 처리하는 시험 헬퍼를
+  만들고 여섯 시험과 `_prelude.sql`의 두 개점 경로를 통일했으며, `00:01~00:02` 강제 회귀시험으로
+  폴백을 검증했다. `3a9f2d1`은 `0150` 중간 상태 seed·업그레이드 야간 호환을 보정했다. 그 결과 로컬
+  검증 6/6, 개발·새 DB 32/32, 업그레이드 8/8, 임시 DB 0개와 동일 SHA feature·`main` CI 성공을
+  확인했다.
 - **근거 명령**:
 
 ```powershell
@@ -531,9 +537,9 @@ Test-Path packages/db/supabase/.temp/project-ref
 Select-String -LiteralPath '.github/workflows/verify.yml' -Pattern 'node:|pnpm verify --no-db'
 Select-String -LiteralPath 'scripts/verify.mjs' -Pattern 'step\(|--no-db'
 corepack pnpm verify
-$featureSha = '86db9208cd23a007d08bade8a9a2136d39db7c3b'
+$testSha = '3a9f2d17ef127ccf40db5f5ed9d3812e7f93135e'
 $runs = Invoke-RestMethod -Headers @{ 'User-Agent' = 'repo-status-check' } `
-  -Uri "https://api.github.com/repos/Jacop7/cost/actions/runs?head_sha=$featureSha"
+  -Uri "https://api.github.com/repos/Jacop7/cost/actions/runs?head_sha=$testSha"
 $runs.workflow_runs | Select-Object head_branch, status, conclusion, html_url
 ```
 
@@ -547,7 +553,7 @@ $runs.workflow_runs | Select-Object head_branch, status, conclusion, html_url
 | 1    | 완료        | 두 기획안 검토와 Git 추적 승인 |
 | 2    | 완료        | `744784d`에 두 문서만 커밋, `.claude/settings.json` 제외 |
 | 3    | 완료        | 대형 기능 브랜치의 기능 변경 중단 |
-| 4    | 완료 후 결함 발견 | 병합 시 6/6. 병합 후 야간 재검증 실패는 `TEST-1`로 등록 |
+| 4    | 완료        | 야간 결함을 `TEST-1` `3a9f2d1`로 해결. 로컬 6/6·DB 32/32·업그레이드 8/8 회복 |
 | 5    | 완료        | 주요 앱 흐름 수동 점검 |
 | 6    | 미확인      | 운영 프로젝트 미연결. `migration list`·백업 상태를 추정하지 않음 |
 | 7    | 완료        | 옛 `main` `840ae15`가 최종 HEAD의 직접 조상임을 확인 |
@@ -555,7 +561,7 @@ $runs.workflow_runs | Select-Object head_branch, status, conclusion, html_url
 | 9    | 해당 없음   | 운영 배포가 없어 배포 태그를 만들지 않음 |
 | 10   | 완료        | 로컬·원격 feature 브랜치 삭제 |
 | 11   | 완료        | [`docs/작업큐.md`](./작업큐.md) 생성, P0 4건·P1 3건 등록 |
-| 12   | **다음**    | `TEST-1`로 검증 기준선을 복구한 뒤 §10 폴더 경계 리팩터링 |
+| 12   | **다음**    | §10 폴더 경계 리팩터링([`REF-1`](./작업큐.md#ref-1-폴더-경계-리팩터링)) |
 | 13   | 진행 예정   | §11의 README·아키텍처·화면 인벤토리 동기화 |
 
 운영 DB가 이미 feature 마이그레이션을 포함했다면 파일을 고치지 말고, 운영 이력과 저장소 이력을
