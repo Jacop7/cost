@@ -212,25 +212,41 @@ begin
     when sqlstate '22000' or sqlstate '23505' then null;
   end;
 
-  -- 닫혀 있으면 되연다.
-  if (select status::text from business_days
-       where store_id = pg_temp.store() and business_date = v_day) = 'closed' then
-    perform pg_temp.force_open(v_day);   -- 소유자로 직접 되돌린다(0141)
-  end if;
-
-  -- 다른 날이 열려 있어 오늘을 못 열었으면 그 날을 닫고 오늘을 연다.
+  -- 오늘이 아직 안 열렸다면 다른 날을 먼저 닫은 뒤 오늘을 연다.
   if not exists (select 1 from business_days
                   where store_id = pg_temp.store() and business_date = v_day
                     and status::text <> 'closed') then
-    begin
-      perform transition_business_state(pg_temp.store(), 'end');
-      perform pg_temp.open_for_test(pg_temp.store());   -- v_day = 판매 영업일이라 동치(0160)
-    exception when sqlstate '22000' or sqlstate '23505' or sqlstate '45002' then null;
-    end;
-    -- 그래도 안 열렸으면 되열기를 한 번 더 시도한다(오늘이 이미 종료된 경우).
-    if (select status::text from business_days
-         where store_id = pg_temp.store() and business_date = v_day) = 'closed' then
-      perform pg_temp.force_open(v_day);   -- 소유자로 직접 되돌린다(0141)
+    /*
+     * 오늘의 닫힌 행을 먼저 되열면 다른 날짜의 열린 행과 둘이 동시에 열린다.
+     * 반드시 다른 날짜를 먼저 닫고, 그 성공이 보존된 뒤 오늘을 열거나 되연다.
+     *
+     * 종료와 재개점을 같은 예외 블록에도 넣지 않는다.
+     * 재개점이 23505(오늘 행이 이미 종료됨) 등으로 실패하면 PL/pgSQL 하위
+     * 트랜잭션이 블록 전체를 되돌린다. 그러면 앞에서 성공한 종료까지 취소돼
+     * 다른 날짜의 열린 장부가 남는다. 두 동작은 각각 제 결과를 보존해야 한다.
+     */
+    if exists (select 1 from business_days
+                where store_id = pg_temp.store() and business_date <> v_day
+                  and status::text <> 'closed') then
+      begin
+        perform transition_business_state(pg_temp.store(), 'end');
+      exception when sqlstate '22000' or sqlstate '45002' then null;
+      end;
+    end if;
+
+    -- 다른 날이 실제로 닫힌 뒤에만 오늘을 연다. 실패하면 아래 사후조건이 원인을 드러낸다.
+    if not exists (select 1 from business_days
+                    where store_id = pg_temp.store() and business_date <> v_day
+                      and status::text <> 'closed') then
+      if (select status::text from business_days
+           where store_id = pg_temp.store() and business_date = v_day) = 'closed' then
+        perform pg_temp.force_open(v_day);   -- 소유자로 직접 되돌린다(0141)
+      else
+        begin
+          perform pg_temp.open_for_test(pg_temp.store());   -- v_day = 판매 영업일이라 동치(0160)
+        exception when sqlstate '23505' then null;
+        end;
+      end if;
     end if;
   end if;
 

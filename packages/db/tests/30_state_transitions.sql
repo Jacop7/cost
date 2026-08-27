@@ -242,7 +242,10 @@ end $t$;
 
 -- ── ⑥ 시험 준비도 늦은 개점과 다른 날 정리를 같은 문으로 처리한다 ──
 /*
- * UTC 시각에 맞춰 매장 현지 시각이 정오 이후가 되는 고정 오프셋 시간대를 고른다.
+ * 먼저 열린 장부의 날짜를 고정하고, 그 **같은 현지 날짜**에서 03:00~21:00인
+ * 고정 오프셋 시간대를 고른다. 시각만 맞추고 날짜를 확인하지 않으면 UTC 저녁
+ * 실행에서 목표 날짜가 전날로 바뀌어 닫힌 시드 장부를 되여는 엉뚱한 경로를
+ * 탄다. DST 전환 경계와 자정에도 기대지 않는다.
  * 오늘 규칙을 00:01~00:02 로 두면 벽시계를 기다리지 않아도 반드시 늦은 개점이다.
  * 다른 날짜의 열린 장부를 먼저 만들어 open_today()의 두 번째 개점 분기까지 통과시킨다.
  */
@@ -252,20 +255,28 @@ declare
   v_day    date;
   v_old_id uuid;
   v_dow    integer;
-  v_offset integer := 12 - extract(hour from clock_timestamp() at time zone 'UTC')::integer;
-  v_tz     text := case
-    when v_offset = 0 then 'Etc/GMT'
-    when v_offset > 0 then 'Etc/GMT-' || v_offset
-    else 'Etc/GMT+' || abs(v_offset)
-  end;
+  v_tz     text;
 begin
-  set local role postgres;
-  update store_time_settings set timezone = v_tz where store_id = v_store;
-  set local role authenticated;
-
   v_day := pg_temp.open_today();
   select id into v_old_id from business_days
    where store_id = v_store and business_date = v_day and status in ('open', 'break');
+
+  select z.name into v_tz
+    from pg_timezone_names z
+   where (clock_timestamp() at time zone z.name)::date = v_day
+     and (clock_timestamp() at time zone z.name)::time >= time '03:00'
+     and (clock_timestamp() at time zone z.name)::time < time '21:00'
+     and z.name like 'Etc/GMT%'
+   order by z.name
+   limit 1;
+  perform pg_temp.ok('같은 날짜의 경계에서 떨어진 고정 오프셋 시간대를 찾았다',
+    v_tz is not null);
+
+  set local role postgres;
+  update store_time_settings set timezone = v_tz where store_id = v_store;
+  set local role authenticated;
+  perform pg_temp.eq_t('시간대를 바꿔도 목표 현지 날짜는 그대로다',
+    store_local_date(v_store)::text, v_day::text);
 
   v_dow := extract(dow from v_day)::integer;
   set local role postgres;
@@ -288,6 +299,9 @@ begin
    where id = v_old_id;
   set local role authenticated;
 
+  perform pg_temp.ok('오늘 행을 옛 날짜로 옮겨 늦은 개점 경로를 만든다',
+    not exists (select 1 from business_days
+      where store_id = v_store and business_date = v_day));
   perform pg_temp.ok('강제 매장 현지 시각은 규칙 종료 뒤다',
     (clock_timestamp() at time zone store_timezone(v_store))::time > time '00:02');
   perform pg_temp.open_today();
@@ -300,6 +314,30 @@ begin
   perform pg_temp.ok('시험용 종료 시각도 현재보다 뒤다',
     (select planned_close_at > clock_timestamp() from business_days
       where store_id = v_store and business_date = v_day));
+
+  /*
+   * 대상 날짜에 이미 **종료 장부가 있는** 갈래도 잰다. open_today()가 다른 날을
+   * 닫은 뒤 신규 개점을 시도하면 23505가 날 수 있다. 종료와 개점을 한 예외
+   * 블록에 묶으면 그 23505가 앞선 종료까지 롤백해 두 날이 동시에 열린다.
+   */
+  perform transition_business_state(v_store, 'end');
+  set local role postgres;
+  update business_days
+     set status = 'open',
+         opened_at = clock_timestamp() + interval '1 hour',
+         scheduled_open_at = clock_timestamp() + interval '1 hour',
+         planned_close_at = clock_timestamp() + interval '2 hours',
+         closed_at = null,
+         close_method = null
+   where id = v_old_id;
+  set local role authenticated;
+
+  perform pg_temp.open_today();
+  perform pg_temp.eq_t('종료 장부가 있어도 다른 날짜 장부는 먼저 종료된다',
+    (select status::text from business_days where id = v_old_id), 'closed');
+  perform pg_temp.eq_t('종료됐던 오늘 장부만 다시 열린다',
+    (select status::text from business_days
+      where store_id = v_store and business_date = v_day), 'open');
 end $t$;
 
 
