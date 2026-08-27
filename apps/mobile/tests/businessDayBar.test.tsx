@@ -8,7 +8,7 @@
  */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
-import type { BusinessDayState } from '@/features/sales/businessDay';
+import type { BusinessDayState } from '@/features/business-day/businessDay';
 import { RpcError } from '@/lib/supabase';
 
 vi.mock('expo-router', () => ({
@@ -20,7 +20,7 @@ const openMutate = vi.fn();
 const breakMutate = vi.fn();
 const closeMutate = vi.fn();
 const staleMutate = vi.fn();
-vi.mock('@/features/sales/businessDay', async (importOriginal) => ({
+vi.mock('@/features/business-day/businessDay', async (importOriginal) => ({
   ...(await importOriginal<Record<string, unknown>>()),
   useOpenBusinessDay: () => ({ mutate: openMutate, isPending: false }),
   useSetBreak: () => ({ mutate: breakMutate, isPending: false }),

@@ -8,7 +8,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { RpcError } from '@/lib/supabase';
-import type { HoursStatus } from '@/features/my/hooks';
+import type { HoursStatus } from '@/features/settings/hooks';
 
 vi.mock('expo-router', () => ({
   useRouter: () => ({ push: vi.fn(), replace: vi.fn() }),
@@ -18,7 +18,7 @@ vi.mock('expo-router', () => ({
 const hoursStatus = vi.fn();
 const saveHours = vi.fn();
 const saveTz = vi.fn();
-vi.mock('@/features/my/hooks', async (importOriginal) => ({
+vi.mock('@/features/settings/hooks', async (importOriginal) => ({
   ...(await importOriginal<Record<string, unknown>>()),
   useHoursStatus: () => hoursStatus(),
   useSetOperatingHours: () => ({ mutate: saveHours, isPending: false }),

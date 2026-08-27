@@ -11,10 +11,10 @@ import { safeBack } from '@/lib/nav';
 import { T } from '@/theme/tokens';
 import { useSalesDay, useSalesRange, type RangeMenu } from '../hooks';
 import { ChannelMixCard, MenuSalesList, ProfitBreakdownCard, SecLabel } from '../components/ProfitBlocks';
-import { BusinessDateGate } from '../components/BusinessDateGate';
+import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
 import { MenuProfitSheet } from '../components/MenuProfitSheet';
-import { dayLabel } from '../period';
-import { useSalesBusinessDate } from '../businessDay';
+import { dayLabel } from '@/lib/date';
+import { useSalesBusinessDate } from '@/features/business-day/businessDay';
 
 /**
  * ⚠ 서버가 정한 장부 날짜를 받고 나서 본체를 붙인다(0125). 앱이 직접 계산하지 않는다.

@@ -17,7 +17,7 @@ import {
   useSettingsLists,
   type CategoryKind,
   type CategoryRow,
-} from '@/features/my/hooks';
+} from '@/features/master-data/hooks';
 
 const TITLE: Record<CategoryKind, string> = {
   ingredient: '식재료 카테고리',

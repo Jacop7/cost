@@ -15,9 +15,9 @@ import { clampDecimals, packSummary } from '@/lib/num';
 import { makeInboundKey } from '@/lib/supabase';
 import { useIngredientDetail } from '@/features/ingredients/hooks';
 import { dispUnit } from '@/features/ingredients/ledger';
-import { addDays } from '@/features/sales/period';
-import { useStoreLocalDate } from '@/features/sales/businessDay';
-import { BusinessDateGate } from '@/features/sales/components/BusinessDateGate';
+import { addDays } from '@/lib/date';
+import { useStoreLocalDate } from '@/features/business-day/businessDay';
+import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
 import {
   useCancelOrder,
   useConfirmInbound,

@@ -11,7 +11,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Badge, Card, Chip, FAB, Icon, QueryState, ScrollTabs, SearchBar, Sheet } from '@/components/kit';
 import { T, won } from '@/theme/tokens';
 import { formatPercent } from '@sikjae/core';
-import { useSettingsLists } from '@/features/my/hooks';
+import { useSettingsLists } from '@/features/master-data/hooks';
 import { useRecipeList, type RecipeRow } from '../hooks';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };

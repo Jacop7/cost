@@ -19,7 +19,7 @@ vi.mock('expo-router', () => ({
   router: { canGoBack: () => true, back: vi.fn(), replace: vi.fn() },
 }));
 
-vi.mock('@/features/sales/businessDay', async (importOriginal) => ({
+vi.mock('@/features/business-day/businessDay', async (importOriginal) => ({
   ...(await importOriginal<Record<string, unknown>>()),
   useSalesBusinessDate: () => ({ date: '2026-08-26', isLoading: false, error: null, refetch: vi.fn() }),
 }));

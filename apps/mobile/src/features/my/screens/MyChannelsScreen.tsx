@@ -17,7 +17,7 @@ import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { AppHeader, Badge, Button, Card, Field, Icon, Input, QueryState, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { T } from '@/theme/tokens';
-import { useSaveChannel, useSettingsLists, type ChannelRow } from '../hooks';
+import { useSaveChannel, useSettingsLists, type ChannelRow } from '@/features/master-data/hooks';
 
 export default function MyChannelsScreen() {
   const lists = useSettingsLists();

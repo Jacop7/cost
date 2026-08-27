@@ -18,13 +18,13 @@ import { useCheckSaleShortages, useRecipeShortages, useSalesDay, useSaveSale,
   type ChannelCode, type EtcItem, type ExtraItem, type SaleItemInput, type Shortage, type ShortageRecipe } from '../hooks';
 import { ShortageWarningSheet } from '../components/ShortageWarningSheet';
 import { SaleStepper } from '../components/SaleStepper';
-import { BusinessDateGate } from '../components/BusinessDateGate';
+import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
 import { setPendingSale, clearPendingSale } from '../pendingSale';
 import { CHANNEL_LABEL, channelName } from '../channels';
-import { isClosedError, isLateOpenError, isNotOpenError, isRevisionConflict, useBusinessDay, useDayMenuBasis, useSalesBusinessDate } from '../businessDay';
+import { isClosedError, isLateOpenError, isNotOpenError, isRevisionConflict, useBusinessDay, useDayMenuBasis, useSalesBusinessDate } from '@/features/business-day/businessDay';
 import { BusinessDayBar } from '../components/BusinessDayBar';
 import { LateCloseSheet } from '../components/LateCloseSheet';
-import { dayLabel } from '../period';
+import { dayLabel } from '@/lib/date';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 

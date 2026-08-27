@@ -2,7 +2,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { RpcError } from '@/lib/supabase';
-import type { StoreSettings } from '@/features/my/hooks';
+import type { StoreSettings } from '@/features/settings/hooks';
 
 vi.mock('expo-router', () => ({
   useRouter: () => ({ push: vi.fn(), replace: vi.fn(), back: vi.fn() }),
@@ -23,7 +23,7 @@ const saveSettingsMutate = vi.fn();
 const saveTaxMutate = vi.fn();
 let settingsPending = false;
 let taxPending = false;
-vi.mock('@/features/my/hooks', async (importOriginal) => ({
+vi.mock('@/features/settings/hooks', async (importOriginal) => ({
   ...(await importOriginal<Record<string, unknown>>()),
   useStoreSettings: () => settingsQuery(),
   useSaveSettings: () => ({ mutate: saveSettingsMutate, isPending: settingsPending }),

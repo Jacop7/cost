@@ -15,7 +15,7 @@ import {
   useSaveMaterial,
   useSettingsLists,
   type MaterialRow,
-} from '@/features/my/hooks';
+} from '@/features/master-data/hooks';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 const squash = (s: string) => s.replace(/\s+/g, '').toLowerCase();

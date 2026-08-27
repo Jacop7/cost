@@ -12,10 +12,10 @@ import { safeBack } from '@/lib/nav';
 import { T, won } from '@/theme/tokens';
 import { formatQuantity, formatUnitPrice } from '@sikjae/core';
 import { useMaterialUsage, useSalesRange, type MaterialUsageItem } from '../hooks';
-import { rangeLabel } from '../period';
-import { useSalesBusinessDate } from '../businessDay';
+import { rangeLabel } from '@/lib/date';
+import { useSalesBusinessDate } from '@/features/business-day/businessDay';
 import { DetailSummary } from '../components/ProfitBlocks';
-import { BusinessDateGate } from '../components/BusinessDateGate';
+import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 const dispUnit = (u: 'g' | 'ml' | 'ea') => (u === 'ea' ? '개' : u);

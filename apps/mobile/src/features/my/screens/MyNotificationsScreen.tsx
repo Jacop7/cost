@@ -9,7 +9,7 @@ import { AppHeader, Badge, Button, Card, Icon, QueryState } from '@/components/k
 import { safeBack } from '@/lib/nav';
 import { RpcError } from '@/lib/supabase';
 import { T } from '@/theme/tokens';
-import { useSaveSettings, useStoreSettings, type SaveSettingsInput, type StoreSettings } from '../hooks';
+import { useSaveSettings, useStoreSettings, type SaveSettingsInput, type StoreSettings } from '@/features/settings/hooks';
 
 type Key = 'alertMorningSummary' | 'alertInboundDelay' | 'alertPriceSpike' | 'alertTargetMiss';
 

@@ -26,10 +26,10 @@ import {
   type ChannelCode, type EtcItem, type ExtraItem, type SaleItemInput,
 } from '../hooks';
 import { CHANNEL_LABEL, channelName } from '../channels';
-import { isDateOutOfRange, isDayLive, isRevisionConflict, useSalesBusinessDate } from '../businessDay';
-import { BusinessDateGate } from '../components/BusinessDateGate';
+import { isDateOutOfRange, isDayLive, isRevisionConflict, useSalesBusinessDate } from '@/features/business-day/businessDay';
+import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
 import { SaleStepper } from '../components/SaleStepper';
-import { dayLabel } from '../period';
+import { dayLabel } from '@/lib/date';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 

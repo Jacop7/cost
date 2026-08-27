@@ -11,7 +11,7 @@ import { useEffect, useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { Button, Icon, Sheet, Slider } from '@/components/kit';
 import { T } from '@/theme/tokens';
-import { useSettingsLists } from '../hooks';
+import { useSettingsLists } from '@/features/master-data/hooks';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 

@@ -23,7 +23,7 @@ import { RpcError } from '@/lib/supabase';
 import { AppHeader, Badge, Button, Card, Icon, QueryState, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { T } from '@/theme/tokens';
-import { useHoursStatus, useSetOperatingHours, useSetStoreTimezone } from '../hooks';
+import { useHoursStatus, useSetOperatingHours, useSetStoreTimezone } from '@/features/settings/hooks';
 import {
   DEFAULT_DAY, DOW_LABEL, DOW_ORDER, QUARTER_SLOTS, WeeklySchedule,
   fromRule, isOvernight, normalizeTimeInput, spanLabel, spanMinutes,

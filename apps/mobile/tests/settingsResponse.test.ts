@@ -6,7 +6,7 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { SETTINGS_SHAPE, parseStoreSettings } from '@/features/my/hooks';
+import { SETTINGS_SHAPE, parseStoreSettings } from '@/features/settings/hooks';
 
 const FULL = {
   locale: 'en-US', currency: 'USD', unit_system: 'metric', cup_volume: 200, default_target_profit_rate: 40,

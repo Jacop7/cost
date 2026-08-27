@@ -23,7 +23,7 @@ import type { ReactNode } from 'react';
 import { View } from 'react-native';
 import { AppHeader, QueryState } from '@/components/kit';
 import { T } from '@/theme/tokens';
-import type { ServerDate } from '../businessDay';
+import type { ServerDate } from '@/features/business-day/businessDay';
 
 export function BusinessDateGate({
   source, title, onBack, children,

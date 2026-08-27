@@ -18,7 +18,7 @@ import { CategoryPickerSheet } from '../components/CategoryPickerSheet';
 import { VendorPickerSheet } from '../components/VendorPickerSheet';
 import { safeBack } from '@/lib/nav';
 import { clampByUnit, clampDecimals } from '@/lib/num';
-import { useSettingsLists } from '@/features/my/hooks';
+import { useSettingsLists } from '@/features/master-data/hooks';
 import { useIngredientDetail, useSaveIngredient, type BaseUnit } from '../hooks';
 
 

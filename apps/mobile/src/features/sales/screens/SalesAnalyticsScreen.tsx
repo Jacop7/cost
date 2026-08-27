@@ -16,9 +16,10 @@ import { T, won } from '@/theme/tokens';
 import { useSalesRange, type RangeMenu } from '../hooks';
 import { ChannelMixCard, MenuSalesList, ProfitBreakdownCard, SalesRow, SecLabel } from '../components/ProfitBlocks';
 import { MenuProfitSheet } from '../components/MenuProfitSheet';
-import { addDays, parseDay, periods, rangeLabel, type PeriodKey } from '../period';
-import { useSalesBusinessDate } from '../businessDay';
-import { BusinessDateGate } from '../components/BusinessDateGate';
+import { addDays, parseDay, rangeLabel } from '@/lib/date';
+import { periods, type PeriodKey } from '../period';
+import { useSalesBusinessDate } from '@/features/business-day/businessDay';
+import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 const DOWS = ['일', '월', '화', '수', '목', '금', '토'];

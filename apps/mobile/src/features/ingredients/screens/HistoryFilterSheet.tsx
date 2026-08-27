@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { Button, Icon, Sheet } from '../../../components/kit';
 import { T, tnum } from '../../../theme/tokens';
-import { addDays } from '@/features/sales/period';
+import { addDays } from '@/lib/date';
 
 function Seg({ opts, sel, onSelect }: { opts: string[]; sel: string; onSelect: (o: string) => void }) {
   return (

@@ -7,7 +7,7 @@ import { type Href, useRouter } from 'expo-router';
 import { AppHeader, Card, Icon, IconName, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { T } from '@/theme/tokens';
-import { useSettingsLists } from '../hooks';
+import { useSettingsLists } from '@/features/master-data/hooks';
 
 export default function MyCategoryHubScreen() {
   const router = useRouter();

@@ -12,7 +12,8 @@ import { safeBack } from '@/lib/nav';
 import { formatPercent, formatQuantity, formatUnitPrice, recommendedPrice, round, taxAmount, taxRate } from '@sikjae/core';
 import { T, won } from '@/theme/tokens';
 import { clampDecimals } from '@/lib/num';
-import { useSettingsLists, useStoreSettings } from '@/features/my/hooks';
+import { useSettingsLists } from '@/features/master-data/hooks';
+import { useStoreSettings } from '@/features/settings/hooks';
 import { useRecipeDetail, useSaveRecipe } from '../hooks';
 import { emptyDraft, useRecipeDraft, type DraftLine } from '../draftStore';
 

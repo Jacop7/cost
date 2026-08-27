@@ -14,14 +14,14 @@ import { ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Card, QueryState } from '@/components/kit';
 import { SalesRow, SecLabel } from '../components/ProfitBlocks';
-import { BusinessDateGate } from '../components/BusinessDateGate';
+import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
 import { safeBack } from '@/lib/nav';
 import { T, won } from '@/theme/tokens';
 import { formatQuantity, formatUnitPrice } from '@sikjae/core';
 import { useRecipeDetail } from '@/features/recipes/hooks';
 import { useDayMenuDetail, useRangeMenuDetail, useSalesRange } from '../hooks';
-import { rangeLabel } from '../period';
-import { useSalesBusinessDate } from '../businessDay';
+import { rangeLabel } from '@/lib/date';
+import { useSalesBusinessDate } from '@/features/business-day/businessDay';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 /** DB 기준단위(ea) → 화면 표기(개). */
