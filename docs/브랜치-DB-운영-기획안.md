@@ -6,9 +6,10 @@
 > 서버 구성, 실행 위치, Queue·Edge Function·외부 Worker의 책임과 분리 조건은 짝 문서를 따른다.
 
 - **문서 위치**: `docs/브랜치-DB-운영-기획안.md`
-- **최종 수정**: 2026-08-27
+- **최종 수정**: 2026-08-28
 - **현재 상태**: 개정 3판 승인·Git 추적 완료. 대형 기능 브랜치와 `TEST-1`을 `main`에 fast-forward
-  병합했고, §9.2의 다음 작업은 §10 폴더 경계 리팩터링이다. 운영·스테이징 적용 이력은 아직 미확인이다.
+  병합한 뒤 §10 폴더 경계 리팩터링도 `cceafb9`에서 완료했다. 다음 작업은 §11 저장소 문서
+  동기화이며, 운영·스테이징 적용 이력은 아직 미확인이다.
 
 ## 문서 책임
 
@@ -582,7 +583,7 @@ features/sales/period.ts의 순수 날짜 함수
   → src/lib/date.ts
 features/my/hooks.ts의 공용 설정
   → features/settings/hooks.ts
-features/my/hooks.ts의 카테고리·거래처·채널
+features/my/hooks.ts의 카테고리·거래처·채널·부자재
   → features/master-data/hooks.ts
 features/ingredients/components/HistoryLayout.tsx
   → components/history/HistoryLayout.tsx
