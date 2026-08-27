@@ -17,7 +17,8 @@
 #     bash packages/db/scripts/upgrade-check.sh
 #
 # ⚠ 로컬 supabase 컨테이너가 떠 있어야 한다(SUPABASE_DB_CONTAINER 로 바꿀 수 있다).
-# ⚠ `fresh_upgrade_check` DB 를 만들고 지운다. 그 이름의 DB 는 쓰지 말 것.
+# ⚠ 실행마다 `fresh_upgrade_check_<pid>_<난수>` DB 를 만들고 그 이름만 지운다 — 고정 이름이면
+#   두 검증을 동시에 돌릴 때 서로의 DB 를 지웠다(검토 실측).
 # ════════════════════════════════════════════════════════════════
 set -euo pipefail
 
@@ -25,7 +26,7 @@ CT="${SUPABASE_DB_CONTAINER:-supabase_db_sikjae}"
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 DB_DIR="$(cd -- "$SCRIPT_DIR/.." && pwd)"
 MIG_DIR="$DB_DIR/supabase/migrations"
-D=fresh_upgrade_check
+D="fresh_upgrade_check_$$_${RANDOM}"
 
 # 이 경로가 재는 지점. 여기를 바꾸면 아래 시나리오도 같이 봐야 한다.
 BASE=20260826000150            # 이 마이그레이션까지 태운 상태에서 시작한다
