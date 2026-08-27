@@ -6,9 +6,18 @@ import { describe, expect, it } from 'vitest';
 import { buildSettingsPayload, type SaveSettingsInput } from '@/features/my/hooks';
 
 describe('buildSettingsPayload', () => {
-  it('합의한 키를 snake_case 로 싣는다 — 단위·컵·통화 포함', () => {
-    expect(buildSettingsPayload({ unitSystem: 'metric', cupVolume: 200, currency: 'KRW', alertTargetMiss: false }))
-      .toEqual({ unit_system: 'metric', cup_volume: 200, currency: 'KRW', alert_target_miss: false });
+  it('합의한 키를 snake_case 로 싣는다 — 단위·컵·언어 포함', () => {
+    expect(buildSettingsPayload({ unitSystem: 'metric', cupVolume: 200, locale: 'en-US', alertTargetMiss: false }))
+      .toEqual({ unit_system: 'metric', cup_volume: 200, locale: 'en-US', alert_target_miss: false });
+  });
+
+  it('통화·금액 자릿수는 보내지 않는다 — 언어가 정한다(0168)', () => {
+    // @ts-expect-error currency 는 서버가 언어에서 파생한다
+    const c: Partial<SaveSettingsInput> = { currency: 'USD' };
+    // @ts-expect-error moneyDigits 도 통화가 정한다
+    const m: Partial<SaveSettingsInput> = { moneyDigits: 2 };
+    // 런타임에 섞여 와도(캐스트) 싣지 않는다 — 언어만 실린다.
+    expect(buildSettingsPayload({ ...c, ...m, locale: 'ja' } as Partial<SaveSettingsInput>)).toEqual({ locale: 'ja' });
   });
 
   it('실을 게 없으면 던진다 — 빈 저장이 성공처럼 끝나지 않는다', () => {

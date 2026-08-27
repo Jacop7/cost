@@ -2138,6 +2138,15 @@ export type Database = {
         }
         Returns: string
       }
+      locale_defaults: {
+        Args: {
+          p_locale: string
+        }
+        Returns: {
+          currency: string
+          money_digits: number
+        }[]
+      }
       lock_business_scope: {
         Args: {
           p_store: string

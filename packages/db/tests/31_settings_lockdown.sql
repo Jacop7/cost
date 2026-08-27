@@ -57,8 +57,9 @@ begin
   perform pg_temp.ok('시간표가 그대로', v_rule1.weekly_hours = v_rule0.weekly_hours);
 
   -- ④ 쓰기 RPC 는 살아 있다(definer) — 설정은 여전히 저장된다.
-  perform save_settings(v_store, jsonb_build_object('money_digits', 2));
-  perform pg_temp.eq_t('save_settings 는 definer 로 통과', (select money_digits::text from settings where store_id = v_store), '2');
+  -- 금액 자릿수는 통화가 정한다(0168) — 사장님이 고치는 자릿수는 수량 쪽이다.
+  perform save_settings(v_store, jsonb_build_object('quantity_digits', 2));
+  perform pg_temp.eq_t('save_settings 는 definer 로 통과', (select quantity_digits::text from settings where store_id = v_store), '2');
   perform save_store_tax(v_store,
     (select tax_mode from settings where store_id = v_store),
     (select coalesce(tax_items, '[]'::jsonb) from settings where store_id = v_store));
@@ -351,4 +352,40 @@ begin
   perform pg_temp.eq_t('목록 안의 통화·언어는 저장된다',
     (select currency || '/' || locale from settings where store_id = pg_temp.store()), 'USD/en-US');
   perform save_settings(pg_temp.store(), '{"currency":"KRW","locale":"ko"}'::jsonb);
+
+  -- ── 0168: 모양·JSON 타입 · 언어가 통화·자릿수를 정한다 ──
+  perform pg_temp.raises('빈 {} 는 거부 — updated_at 만 바꾸는 저장은 없다',
+    format('select save_settings(%L, %L::jsonb)', pg_temp.store(), '{}'), '22000');
+  perform pg_temp.raises('객체가 아니면 거부',
+    format('select save_settings(%L, %L::jsonb)', pg_temp.store(), '[1]'), '22000');
+  perform pg_temp.raises('"yes" 는 참이 아니다 — 문자열 알림 값 거부',
+    format('select save_settings(%L, %L::jsonb)', pg_temp.store(), '{"alert_morning_summary":"yes"}'), '22000');
+  perform pg_temp.raises('"abc" 컵 용량은 계약 오류(22000)지 원시 22P02 가 아니다',
+    format('select save_settings(%L, %L::jsonb)', pg_temp.store(), '{"cup_volume":"abc"}'), '22000');
+  perform pg_temp.raises('"2" 자릿수도 숫자 타입이어야 한다',
+    format('select save_settings(%L, %L::jsonb)', pg_temp.store(), '{"money_digits":"2"}'), '22000');
+  perform pg_temp.ok('거부된 저장은 알림 값을 안 바꿨다',
+    (select alert_morning_summary from settings where store_id = pg_temp.store()) is not null);
+
+  perform save_settings(pg_temp.store(), '{"locale":"en-US"}'::jsonb);
+  perform pg_temp.eq_t('언어만 보내도 통화·금액 자릿수가 함께 파생된다 (en-US → USD·2)',
+    (select locale || '/' || currency || '/' || money_digits from settings where store_id = pg_temp.store()), 'en-US/USD/2');
+  perform pg_temp.raises('언어와 다른 통화를 같이 보내면 거부',
+    format('select save_settings(%L, %L::jsonb)', pg_temp.store(), '{"locale":"ja","currency":"USD"}'), '22000');
+  perform pg_temp.raises('현재 언어(en-US)와 다른 통화만 보내도 거부',
+    format('select save_settings(%L, %L::jsonb)', pg_temp.store(), '{"currency":"KRW"}'), '22000');
+  perform pg_temp.raises('통화와 다른 금액 자릿수도 거부',
+    format('select save_settings(%L, %L::jsonb)', pg_temp.store(), '{"money_digits":0}'), '22000');
+  perform pg_temp.eq_t('거부된 요청은 언어를 안 바꿨다', (select locale from settings where store_id = pg_temp.store()), 'en-US');
+  perform save_settings(pg_temp.store(), '{"locale":"ko"}'::jsonb);
+  perform pg_temp.eq_t('ko → KRW·0 으로 돌아온다',
+    (select locale || '/' || currency || '/' || money_digits from settings where store_id = pg_temp.store()), 'ko/KRW/0');
+  perform pg_temp.eq('locale_defaults 는 core LOCALES 의 열 개를 안다',
+    (select count(*) from unnest(array['ko','en-US','ja','de','ar-SA','ar-AE','vi','es-ES','es-MX','pt-BR']) l
+      where exists (select 1 from locale_defaults(l))), 10, 0);
+  perform pg_temp.ok('표의 CHECK — RPC 밖에서도 언어 키는 목록 안이어야 한다',
+    exists (select 1 from pg_constraint where conname = 'settings_locale_ck' and convalidated));
+  perform pg_temp.eq_t('기본 언어 키는 ko (예전 ko-KR 은 0168 이 옮겼다)',
+    (select column_default from information_schema.columns
+      where table_schema = 'public' and table_name = 'settings' and column_name = 'locale'), '''ko''::text');
 end $t$;

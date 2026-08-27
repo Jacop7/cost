@@ -357,8 +357,9 @@ begin
            jsonb_build_object('break_start', '15:00')::text), '22000');
 
   -- 시간과 무관한 저장은 그대로 된다 — 규칙도 안 건드린다.
-  perform save_settings(v_store, jsonb_build_object('money_digits', 1));
-  perform pg_temp.eq_t('무관한 저장은 통과', (select money_digits::text from settings where store_id = v_store), '1');
+  -- 금액 자릿수는 통화가 정한다(0168) — 사장님이 고치는 자릿수는 수량 쪽이다.
+  perform save_settings(v_store, jsonb_build_object('quantity_digits', 1));
+  perform pg_temp.eq_t('무관한 저장은 통과', (select quantity_digits::text from settings where store_id = v_store), '1');
 
   -- 정식 문(토큰)으로 바꾸면: 오늘은 옛 규칙, 내일부터 새 규칙 — 표시 폼(settings)도 따라온다.
   perform pg_temp.set_hours(pg_temp.hours('18:00', '02:00'));
