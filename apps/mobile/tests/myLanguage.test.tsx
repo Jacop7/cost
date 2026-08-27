@@ -7,6 +7,7 @@
  */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { RpcError } from '@/lib/supabase';
 
 /**
  * RN-web 의 Modal 은 닫힘 애니메이션 끝(animationend)에야 DOM 을 걷는데 jsdom 엔 애니메이션이 없어
@@ -229,6 +230,18 @@ describe('저장 흐름', () => {
     press(screen.getByLabelText('닫기'));
     await waitFor(() => expect(sheetOpen()).toBe(false));
     expect(screen.queryByRole('alert')).toBeNull();
+  });
+
+  it('45009(다른 기기가 먼저 저장) 는 실패 문구가 아니라 충돌 배너다 — 새로고침으로만 풀린다', async () => {
+    render(<MyLanguageScreen />);
+    await pickKoAndOpenSheet();
+    fireEvent.click(screen.getByLabelText('언어 저장 확정'));
+    await waitFor(() => expect(mutate).toHaveBeenCalledTimes(1));
+    lastCallbacks().onError(new RpcError('다른 기기에서 설정이 변경됐어요', '45009', 'REVISION_CONFLICT'));
+    await waitFor(() => expect(screen.getAllByText(/다른 기기에서 설정이 변경됐어요/).length).toBeGreaterThan(0));
+    expect(screen.queryByRole('alert')).toBeNull();                 // 일반 실패 문구가 아니다
+    expect(disabled('언어 저장 확정')).toBe(true);                    // 새로고침 전엔 잠긴다
+    expect(safeBack).not.toHaveBeenCalled();
   });
 
   it('다시 시도하면 옛 실패 문구는 사라진다', async () => {

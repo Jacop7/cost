@@ -136,6 +136,8 @@ if (skipDb) {
         try { ok = pnpmRun(['--filter', '@sikjae/core', 'exec', 'vitest', 'run', 'tests/localeDbParity.test.ts']); }
         finally { delete process.env.SIKJAE_PARITY_DB; }
       }
+      // admin-acl.sh 회귀시험 — bash -x 에서도 비밀번호(canary)가 어떤 출력에도 없어야 한다(검토 O).
+      if (ok) ok = run(BASH, ['packages/db/scripts/admin-acl.test.sh']);
     } finally {
       if (!run(BASH, ['packages/db/scripts/fresh-db.sh', '--drop', db])) {
         console.error(`⚠ 일회용 DB 정리 실패 — 직접 지우세요: ${db}`);

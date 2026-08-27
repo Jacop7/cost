@@ -57,12 +57,21 @@ begin
     end if;
     return;
   end if;
+  /*
+   * ⚠ LEFT JOIN LATERAL — get_settings 가 NULL 을 돌려주는 매장은 jsonb_object_keys 가 0행이라 안쪽
+   *   조인으로는 그룹 자체가 사라져 "이상 없음"으로 통과했다(검토 지적). 매장 수와 검사된 매장 수도 맞춘다.
+   */
   select count(*) into v_bad
-    from (select s.store_id, array_agg(k order by k) as keys
-            from settings s, jsonb_object_keys(public.get_settings(s.store_id)) k
+    from (select s.store_id, count(k.k) as n, bool_or(k.k = 'cup_volume') as has_cup
+            from settings s
+            left join lateral jsonb_object_keys(public.get_settings(s.store_id)) as k(k) on true
            group by s.store_id) t
-   where not ('cup_volume' = any(t.keys)) or array_length(t.keys, 1) <> 20;
+   where t.n <> 20 or coalesce(t.has_cup, false) = false;
   if v_bad > 0 then
     raise exception '0170: get_settings 키가 20개(cup_volume 포함)가 아닌 매장이 %개 있습니다', v_bad;
+  end if;
+  if (select count(distinct s.store_id) from settings s
+       left join lateral jsonb_object_keys(public.get_settings(s.store_id)) as k(k) on true) <> v_n then
+    raise exception '0170: 검사된 매장 수가 설정 행 수(%)와 다릅니다', v_n;
   end if;
 end $$;

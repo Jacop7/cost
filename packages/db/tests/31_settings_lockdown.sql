@@ -58,7 +58,7 @@ begin
 
   -- ④ 쓰기 RPC 는 살아 있다(definer) — 설정은 여전히 저장된다.
   -- 금액 자릿수는 통화가 정한다(0168) — 사장님이 고치는 자릿수는 수량 쪽이다.
-  perform save_settings(v_store, jsonb_build_object('quantity_digits', 2));
+  perform save_settings(v_store, jsonb_build_object('quantity_digits', 2), pg_temp.settings_rev(v_store));
   perform pg_temp.eq_t('save_settings 는 definer 로 통과', (select quantity_digits::text from settings where store_id = v_store), '2');
   perform save_store_tax(v_store,
     (select tax_mode from settings where store_id = v_store),
@@ -330,57 +330,57 @@ do $t$
 begin
   -- 전제: 이 블록은 언어가 ko 라고 가정한다. 매장이 en-US 면 KRW 저장이 거부돼 빨개진다(검토 지적) —
   -- 현재 언어에 기대지 않고 명시한다(스위트는 롤백되므로 되돌릴 필요가 없다).
-  perform save_settings(pg_temp.store(), '{"locale":"ko"}'::jsonb);
-  perform save_settings(pg_temp.store(), jsonb_build_object('unit_system', 'metric', 'cup_volume', 200, 'currency', 'KRW'));
+  perform save_settings(pg_temp.store(), '{"locale":"ko"}'::jsonb, pg_temp.settings_rev(pg_temp.store()));
+  perform save_settings(pg_temp.store(), jsonb_build_object('unit_system', 'metric', 'cup_volume', 200, 'currency', 'KRW'), pg_temp.settings_rev(pg_temp.store()));
   perform pg_temp.eq('cup_volume 이 실제로 저장된다',
     (select cup_volume from settings where store_id = pg_temp.store()), 200, 0);
   perform pg_temp.raises('모르는 키는 거부 — 조용히 버리지 않는다',
-    format('select save_settings(%L, %L::jsonb)', pg_temp.store(), '{"theme":"dark"}'), '22000');
+    format('select save_settings(%L, %L::jsonb, %s)', pg_temp.store(), '{"theme":"dark"}', pg_temp.settings_rev(pg_temp.store())), '22000');
   -- 값의 뜻(검토 P2) — 키가 맞아도 뜻이 틀리면 거부.
   perform pg_temp.raises('unit_system 은 metric 뿐(1차)',
-    format('select save_settings(%L, %L::jsonb)', pg_temp.store(), '{"unit_system":"nonsense"}'), '22000');
+    format('select save_settings(%L, %L::jsonb, %s)', pg_temp.store(), '{"unit_system":"nonsense"}', pg_temp.settings_rev(pg_temp.store())), '22000');
   perform pg_temp.raises('컵 용량 음수는 거부',
-    format('select save_settings(%L, %L::jsonb)', pg_temp.store(), '{"cup_volume":-5}'), '22000');
+    format('select save_settings(%L, %L::jsonb, %s)', pg_temp.store(), '{"cup_volume":-5}', pg_temp.settings_rev(pg_temp.store())), '22000');
   perform pg_temp.raises('모르는 통화는 거부',
-    format('select save_settings(%L, %L::jsonb)', pg_temp.store(), '{"currency":"???"}'), '22000');
+    format('select save_settings(%L, %L::jsonb, %s)', pg_temp.store(), '{"currency":"???"}', pg_temp.settings_rev(pg_temp.store())), '22000');
   perform pg_temp.raises('모르는 언어는 거부',
-    format('select save_settings(%L, %L::jsonb)', pg_temp.store(), '{"locale":"xx-XX"}'), '22000');
+    format('select save_settings(%L, %L::jsonb, %s)', pg_temp.store(), '{"locale":"xx-XX"}', pg_temp.settings_rev(pg_temp.store())), '22000');
   perform pg_temp.raises('자릿수 범위 밖은 거부',
-    format('select save_settings(%L, %L::jsonb)', pg_temp.store(), '{"unit_price_digits":9}'), '22000');
+    format('select save_settings(%L, %L::jsonb, %s)', pg_temp.store(), '{"unit_price_digits":9}', pg_temp.settings_rev(pg_temp.store())), '22000');
   perform pg_temp.raises('목표 이익률 100 초과는 거부',
-    format('select save_settings(%L, %L::jsonb)', pg_temp.store(), '{"default_target_profit_rate":150}'), '22000');
+    format('select save_settings(%L, %L::jsonb, %s)', pg_temp.store(), '{"default_target_profit_rate":150}', pg_temp.settings_rev(pg_temp.store())), '22000');
   perform pg_temp.eq_t('거부된 저장은 아무것도 안 바꿨다 — unit_system 그대로',
     (select unit_system from settings where store_id = pg_temp.store()), 'metric');
-  perform save_settings(pg_temp.store(), '{"currency":"USD","locale":"en-US"}'::jsonb);
+  perform save_settings(pg_temp.store(), '{"currency":"USD","locale":"en-US"}'::jsonb, pg_temp.settings_rev(pg_temp.store()));
   perform pg_temp.eq_t('목록 안의 통화·언어는 저장된다',
     (select currency || '/' || locale from settings where store_id = pg_temp.store()), 'USD/en-US');
-  perform save_settings(pg_temp.store(), '{"currency":"KRW","locale":"ko"}'::jsonb);
+  perform save_settings(pg_temp.store(), '{"currency":"KRW","locale":"ko"}'::jsonb, pg_temp.settings_rev(pg_temp.store()));
 
   -- ── 0168: 모양·JSON 타입 · 언어가 통화·자릿수를 정한다 ──
   perform pg_temp.raises('빈 {} 는 거부 — updated_at 만 바꾸는 저장은 없다',
-    format('select save_settings(%L, %L::jsonb)', pg_temp.store(), '{}'), '22000');
+    format('select save_settings(%L, %L::jsonb, %s)', pg_temp.store(), '{}', pg_temp.settings_rev(pg_temp.store())), '22000');
   perform pg_temp.raises('객체가 아니면 거부',
-    format('select save_settings(%L, %L::jsonb)', pg_temp.store(), '[1]'), '22000');
+    format('select save_settings(%L, %L::jsonb, %s)', pg_temp.store(), '[1]', pg_temp.settings_rev(pg_temp.store())), '22000');
   perform pg_temp.raises('"yes" 는 참이 아니다 — 문자열 알림 값 거부',
-    format('select save_settings(%L, %L::jsonb)', pg_temp.store(), '{"alert_morning_summary":"yes"}'), '22000');
+    format('select save_settings(%L, %L::jsonb, %s)', pg_temp.store(), '{"alert_morning_summary":"yes"}', pg_temp.settings_rev(pg_temp.store())), '22000');
   perform pg_temp.raises('"abc" 컵 용량은 계약 오류(22000)지 원시 22P02 가 아니다',
-    format('select save_settings(%L, %L::jsonb)', pg_temp.store(), '{"cup_volume":"abc"}'), '22000');
+    format('select save_settings(%L, %L::jsonb, %s)', pg_temp.store(), '{"cup_volume":"abc"}', pg_temp.settings_rev(pg_temp.store())), '22000');
   perform pg_temp.raises('"2" 자릿수도 숫자 타입이어야 한다',
-    format('select save_settings(%L, %L::jsonb)', pg_temp.store(), '{"money_digits":"2"}'), '22000');
+    format('select save_settings(%L, %L::jsonb, %s)', pg_temp.store(), '{"money_digits":"2"}', pg_temp.settings_rev(pg_temp.store())), '22000');
   perform pg_temp.ok('거부된 저장은 알림 값을 안 바꿨다',
     (select alert_morning_summary from settings where store_id = pg_temp.store()) is not null);
 
-  perform save_settings(pg_temp.store(), '{"locale":"en-US"}'::jsonb);
+  perform save_settings(pg_temp.store(), '{"locale":"en-US"}'::jsonb, pg_temp.settings_rev(pg_temp.store()));
   perform pg_temp.eq_t('언어만 보내도 통화·금액 자릿수가 함께 파생된다 (en-US → USD·2)',
     (select locale || '/' || currency || '/' || money_digits from settings where store_id = pg_temp.store()), 'en-US/USD/2');
   perform pg_temp.raises('언어와 다른 통화를 같이 보내면 거부',
-    format('select save_settings(%L, %L::jsonb)', pg_temp.store(), '{"locale":"ja","currency":"USD"}'), '22000');
+    format('select save_settings(%L, %L::jsonb, %s)', pg_temp.store(), '{"locale":"ja","currency":"USD"}', pg_temp.settings_rev(pg_temp.store())), '22000');
   perform pg_temp.raises('현재 언어(en-US)와 다른 통화만 보내도 거부',
-    format('select save_settings(%L, %L::jsonb)', pg_temp.store(), '{"currency":"KRW"}'), '22000');
+    format('select save_settings(%L, %L::jsonb, %s)', pg_temp.store(), '{"currency":"KRW"}', pg_temp.settings_rev(pg_temp.store())), '22000');
   perform pg_temp.raises('통화와 다른 금액 자릿수도 거부',
-    format('select save_settings(%L, %L::jsonb)', pg_temp.store(), '{"money_digits":0}'), '22000');
+    format('select save_settings(%L, %L::jsonb, %s)', pg_temp.store(), '{"money_digits":0}', pg_temp.settings_rev(pg_temp.store())), '22000');
   perform pg_temp.eq_t('거부된 요청은 언어를 안 바꿨다', (select locale from settings where store_id = pg_temp.store()), 'en-US');
-  perform save_settings(pg_temp.store(), '{"locale":"ko"}'::jsonb);
+  perform save_settings(pg_temp.store(), '{"locale":"ko"}'::jsonb, pg_temp.settings_rev(pg_temp.store()));
   perform pg_temp.eq_t('ko → KRW·0 으로 돌아온다',
     (select locale || '/' || currency || '/' || money_digits from settings where store_id = pg_temp.store()), 'ko/KRW/0');
   perform pg_temp.eq('locale_defaults 는 core LOCALES 의 열 개를 안다',

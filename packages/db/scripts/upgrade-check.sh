@@ -229,9 +229,12 @@ if [ "$n" != "2" ]; then
 elif ! err="$(psql_d "$D" < "$MIG_DIR/$STEP7" 2>&1 1>/dev/null)"; then
   say "   FAIL 매장이 둘이면 0170 이 멈춘다"; say "        $(printf '%s' "$err" | head -3)"; fail=1
 else
+  # LEFT JOIN LATERAL — 응답이 NULL 인 매장도 0키로 세어 빨개진다(안쪽 조인이면 그룹이 사라져 통과했다).
   bad=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c "
-    select count(*) from (select s.store_id, count(k) as n from settings s, jsonb_object_keys(get_settings(s.store_id)) k group by 1) t where t.n <> 20;")
-  if [ "$bad" = "0" ]; then say "   ok   매장 2개 모두 20키"; else say "   FAIL 20키가 아닌 매장 ${bad}개"; fail=1; fi
+    select count(*) from (select s.store_id, count(k.k) as n from settings s
+                            left join lateral jsonb_object_keys(get_settings(s.store_id)) as k(k) on true
+                           group by 1) t where t.n <> 20;")
+  if [ "$bad" = "0" ]; then say "   ok   매장 2개 모두 20키(응답 NULL 매장 없음)"; else say "   FAIL 20키가 아닌 매장 ${bad}개"; fail=1; fi
 fi
 
 say ""

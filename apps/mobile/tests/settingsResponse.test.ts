@@ -14,6 +14,7 @@ const FULL = {
   alert_morning_summary: true, alert_inbound_delay: false, alert_price_spike: true, alert_target_miss: false,
   open_time: '11:00', close_time: '22:00', break_start: null, break_end: null, overnight: false, open_minutes: 660,
   tax_mode: 'included', tax_items: [{ name: '부가세', rate: 9.0909 }],
+  revision: 3,
 };
 
 describe('parseStoreSettings', () => {
@@ -23,6 +24,7 @@ describe('parseStoreSettings', () => {
     expect(s.currency).toBe('USD');
     expect(s.moneyDigits).toBe(2);
     expect(s.cupVolume).toBe(200);
+    expect(s.revision).toBe(3);
     expect(s.taxItems).toEqual([{ name: '부가세', rate: 9.0909 }]);
   });
 
@@ -58,6 +60,8 @@ describe('parseStoreSettings', () => {
     expect(() => parseStoreSettings({ ...FULL, break_end: '9:5' })).toThrow(/break_end/);
     expect(() => parseStoreSettings({ ...FULL, open_minutes: 99999 })).toThrow(/open_minutes/);
     expect(() => parseStoreSettings({ ...FULL, tax_mode: 'vat' })).toThrow(/tax_mode/);
+    expect(() => parseStoreSettings({ ...FULL, revision: 0 })).toThrow(/revision/);
+    expect(() => parseStoreSettings({ ...FULL, revision: 1.5 })).toThrow(/revision/);
     expect(() => parseStoreSettings({ ...FULL, tax_items: [{ name: 3, rate: 'x' }] })).toThrow(/tax_items/);
     expect(() => parseStoreSettings({ ...FULL, tax_items: [null] })).toThrow(/tax_items/);
     // 서버 assert_tax_items 와 같은 경계 — 공백 이름 거부, 요율은 100 미만.

@@ -25,6 +25,7 @@ import {
 } from '@sikjae/core';
 import { AppHeader, Button, Card, Icon, Notice, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
+import { RpcError } from '@/lib/supabase';
 import { T, tnum } from '@/theme/tokens';
 import { useSettings, useSettingsActions, useUnitDigits } from '../store';
 
@@ -174,7 +175,11 @@ function LanguageEditor({ serverLocale, staleError, refetch }: { serverLocale: L
     setSaveError(null);
     setLocale(draft, {
       onSuccess: () => { setConfirm(false); safeBack('/my'); },
-      onError: (e) => setSaveError(e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'),
+      onError: (e) => {
+        // 45009 = 다른 기기가 먼저 저장했다(0171). 문구가 아니라 코드로 가른다 — 충돌 배너 + 새로고침.
+        if (e instanceof RpcError && e.code === '45009') { setServerChanged(true); return; }
+        setSaveError(e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요');
+      },
     });
   };
 

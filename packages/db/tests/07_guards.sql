@@ -81,8 +81,8 @@ begin
    */
   -- 영업시간은 정식 문(토큰)으로만 들어온다(0163). settings 는 표시 폼으로 따라온다.
   perform pg_temp.raises('save_settings 에 영업시간 키는 거부(0163)',
-    format('select save_settings(%L, %L::jsonb)', pg_temp.store(),
-           '{"open_time":"10:00","close_time":"02:00"}'), '22000');
+    format('select save_settings(%L, %L::jsonb, %s)', pg_temp.store(),
+           '{"open_time":"10:00","close_time":"02:00"}', pg_temp.settings_rev(pg_temp.store())), '22000');
   perform pg_temp.set_hours(
     (select jsonb_object_agg(d::text, jsonb_build_object('open','10:00','close','02:00'))
        from generate_series(0, 6) d));
