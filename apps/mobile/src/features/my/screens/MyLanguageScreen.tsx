@@ -82,7 +82,7 @@ export default function MyLanguageScreen() {
       <Shell>
         <Notice style={{ margin: 16 }}>설정을 불러오지 못했어요</Notice>
         <View style={{ marginHorizontal: 16 }}>
-          <Button kind="gray" size="lg" full onPress={settings.refetch}>다시 시도</Button>
+          <Button kind="gray" size="lg" full onPress={() => { void settings.refetch(); }}>다시 시도</Button>
         </View>
       </Shell>
     );
@@ -107,7 +107,7 @@ function Shell({ children }: { children: React.ReactNode }) {
  *   · 수정 중·저장 중: 초안을 **유지**하고 "다른 기기에서 설정이 변경됐어요" 를 보이며 저장을 잠근다.
  *     사용자가 [새로고침] 을 눌러 서버값으로 맞춘 뒤 다시 고른다. 진행 중인 저장은 끊지 않는다.
  */
-function LanguageEditor({ serverLocale, staleError, refetch }: { serverLocale: LocaleKey; staleError: boolean; refetch: () => void }) {
+function LanguageEditor({ serverLocale, staleError, refetch }: { serverLocale: LocaleKey; staleError: boolean; refetch: () => Promise<LocaleKey | null> }) {
   const insets = useSafeAreaInsets();
   const locale = serverLocale;
   const { setLocale, saving } = useSettingsActions();
@@ -132,9 +132,34 @@ function LanguageEditor({ serverLocale, staleError, refetch }: { serverLocale: L
   const D = getLocale(draft);
 
   const pick = (k: LocaleKey) => { setDraft(k); setTouched(true); };
-  const refresh = () => {
-    setDraft(serverLocale); setTouched(false); setServerChanged(false); setSaveError(null); setConfirm(false);
+  const [refreshing, setRefreshing] = useState(false);
+  /**
+   * 새로고침 = **서버를 실제로 다시 조회**한다(검토 지적 — 예전엔 prop 을 복사하고 충돌만 지웠다).
+   * 성공 응답이 온 뒤에만 초안·기준값을 바꾸고 충돌을 푼다. 실패하면 아무것도 바꾸지 않는다(배너가 남는다).
+   */
+  const refresh = async () => {
+    if (refreshing) return;
+    setRefreshing(true);
+    try {
+      const fresh = await refetch();
+      if (fresh === null) return;
+      seen.current = fresh;
+      setDraft(fresh); setTouched(false); setServerChanged(false); setSaveError(null); setConfirm(false);
+    } finally {
+      setRefreshing(false);
+    }
   };
+  /**
+   * 다시 시도(재조회 실패 배너) = 서버를 다시 조회만 한다. 초안은 건드리지 않는다 — 성공했는데 서버값이
+   * 그대로면 사용자가 고른 값으로 이어서 저장할 수 있고, 서버값이 달라졌다면 위 효과가 충돌로 알린다.
+   */
+  const retry = async () => {
+    if (refreshing) return;
+    setRefreshing(true);
+    try { await refetch(); } finally { setRefreshing(false); }
+  };
+  // 재조회 실패 중에는 저장을 막는다 — 캐시의 언어·단가 자릿수로 다른 기기의 최신 설정을 덮을 수 있다(검토 P1).
+  const blocked = serverChanged || staleError || refreshing;
 
   // 저장 중엔 시트를 못 닫는다 — 취소 버튼뿐 아니라 배경 터치·Android 뒤로가기(onRequestClose)도 같은 문이다.
   const closeSheet = () => {
@@ -145,7 +170,7 @@ function LanguageEditor({ serverLocale, staleError, refetch }: { serverLocale: L
 
   // 성공 뒤에만 닫고 이동한다. 실패는 그 자리에서 알리고 시트를 유지한다(검토 지적).
   const onSave = () => {
-    if (saving || serverChanged) return;
+    if (saving || blocked) return;
     setSaveError(null);
     setLocale(draft, {
       onSuccess: () => { setConfirm(false); safeBack('/my'); },
@@ -163,13 +188,13 @@ function LanguageEditor({ serverLocale, staleError, refetch }: { serverLocale: L
         {staleError ? (
           <View role="status" accessibilityLabel="재조회 실패" style={{ marginBottom: 10, padding: 13, borderRadius: 12, backgroundColor: T.redTint, borderWidth: 1, borderColor: T.red }}>
             <Text style={{ fontSize: 14, fontWeight: '700', color: T.red, lineHeight: 20 }}>최신 설정을 불러오지 못했어요. 마지막으로 받은 값 기준이에요.</Text>
-            <View style={{ marginTop: 8 }}><Button kind="gray" size="md" onPress={refetch} accessibilityLabel="다시 시도">다시 시도</Button></View>
+            <View style={{ marginTop: 8 }}><Button kind="gray" size="md" loading={refreshing} onPress={() => { void retry(); }} accessibilityLabel="다시 시도">다시 시도</Button></View>
           </View>
         ) : null}
         {serverChanged ? (
           <View role="status" style={{ marginBottom: 10, padding: 13, borderRadius: 12, backgroundColor: T.redTint, borderWidth: 1, borderColor: T.red }}>
             <Text style={{ fontSize: 14, fontWeight: '700', color: T.red, lineHeight: 20 }}>다른 기기에서 설정이 변경됐어요. 새로고침 후 다시 저장해 주세요.</Text>
-            <View style={{ marginTop: 8 }}><Button kind="gray" size="md" onPress={refresh} accessibilityLabel="새로고침">새로고침</Button></View>
+            <View style={{ marginTop: 8 }}><Button kind="gray" size="md" loading={refreshing} onPress={() => { void refresh(); }} accessibilityLabel="새로고침">새로고침</Button></View>
           </View>
         ) : null}
         <Card pad={0} style={{ overflow: 'hidden' }}>
@@ -213,7 +238,7 @@ function LanguageEditor({ serverLocale, staleError, refetch }: { serverLocale: L
 
       {/* 저장 — 고른 즉시가 아니라 확인 시트를 거쳐 확정 */}
       <View style={{ paddingHorizontal: 20, paddingTop: 12, paddingBottom: Math.max(insets.bottom, 16) + 14, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
-        <Button kind="primary" size="lg" full disabled={!changed || saving || serverChanged} onPress={() => setConfirm(true)} accessibilityLabel="저장">
+        <Button kind="primary" size="lg" full disabled={!changed || saving || blocked} onPress={() => setConfirm(true)} accessibilityLabel="저장">
           저장
         </Button>
       </View>
@@ -247,10 +272,15 @@ function LanguageEditor({ serverLocale, staleError, refetch }: { serverLocale: L
             다른 기기에서 설정이 변경됐어요. 새로고침 후 다시 저장해 주세요.
           </Text>
         ) : null}
+        {staleError && !serverChanged ? (
+          <Text style={{ fontSize: 14, fontWeight: '700', color: T.red, lineHeight: 20, marginBottom: 12 }}>
+            최신 설정을 확인하지 못해 저장할 수 없어요. 다시 시도한 뒤 저장해 주세요.
+          </Text>
+        ) : null}
 
         <View style={{ flexDirection: 'row', gap: 9 }}>
           <View style={{ flex: 1 }}><Button kind="ghost" size="lg" full disabled={saving} onPress={closeSheet}>취소</Button></View>
-          <View style={{ flex: 2 }}><Button kind="primary" size="lg" full loading={saving} disabled={serverChanged} onPress={onSave} accessibilityLabel="언어 저장 확정">저장</Button></View>
+          <View style={{ flex: 2 }}><Button kind="primary" size="lg" full loading={saving} disabled={blocked} onPress={onSave} accessibilityLabel="언어 저장 확정">저장</Button></View>
         </View>
       </Sheet>
     </View>

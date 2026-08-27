@@ -381,10 +381,12 @@ export function parseStoreSettings(data: unknown): StoreSettings {
   for (const k of ['break_start', 'break_end'] as const) if (r[k] !== null && !HHMM.test(r[k] as string)) bad(k, `HH:MM 이 아니에요 (${String(r[k])})`);
   if (!Number.isInteger(r.open_minutes) || (r.open_minutes as number) < 0 || (r.open_minutes as number) > 1440) bad('open_minutes', `0~1440 (${String(r.open_minutes)})`);
   if (!TAX_MODES.has(r.tax_mode as string)) bad('tax_mode', `모르는 값 ${String(r.tax_mode)}`);
+  // 서버 assert_tax_items 와 같은 규칙 — 이름은 다듬어 비어 있지 않고, 요율은 0 이상 100 **미만**.
   for (const [i, t] of (r.tax_items as unknown[]).entries()) {
     const it = t as Record<string, unknown> | null;
-    if (!it || typeof it !== 'object' || typeof it.name !== 'string' || typeof it.rate !== 'number' || !Number.isFinite(it.rate) || it.rate < 0 || it.rate > 100) {
-      bad('tax_items', `${i}번째 항목이 {name: 문자열, rate: 0~100} 이 아니에요`);
+    if (!it || typeof it !== 'object' || typeof it.name !== 'string' || it.name.trim() === ''
+        || typeof it.rate !== 'number' || !Number.isFinite(it.rate) || it.rate < 0 || it.rate >= 100) {
+      bad('tax_items', `${i}번째 항목이 {name: 비어 있지 않은 문자열, rate: 0 이상 100 미만} 이 아니에요`);
     }
   }
   return {

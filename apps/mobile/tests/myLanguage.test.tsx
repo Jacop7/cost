@@ -40,7 +40,10 @@ import MyLanguageScreen from '@/features/my/screens/MyLanguageScreen';
 // 단가 자릿수 3 = 명시값(en-US 기본 4 와 다름) — 언어를 바꿔도 유지돼야 한다.
 const loaded = (locale: string, unitPriceDigits = 3) => ({
   data: { locale, unitPriceDigits, currency: 'USD', moneyDigits: 2 },
-  isLoading: false, isError: false, refetch: vi.fn(),
+  isLoading: false, isError: false,
+  // react-query 의 refetch 처럼 결과 객체로 resolve 한다(store 가 data.locale 을 읽는다).
+  refetch: vi.fn(async (): Promise<{ data: { locale: string; unitPriceDigits: number; currency: string; moneyDigits: number } | undefined; isError: boolean }> =>
+    ({ data: { locale, unitPriceDigits, currency: 'USD', moneyDigits: 2 }, isError: false })),
 });
 
 const checked = (label: string) => screen.getByLabelText(label).getAttribute('aria-checked');
@@ -64,7 +67,7 @@ beforeEach(() => {
 
 describe('언어 화면 게이트', () => {
   it('로딩 중엔 초안도 저장 버튼도 없다 — 기본값 ko 로 굳지 않는다', () => {
-    storeSettings.mockReturnValue({ data: undefined, isLoading: true, isError: false, refetch: vi.fn() });
+    storeSettings.mockReturnValue({ data: undefined, isLoading: true, isError: false, refetch: vi.fn(async () => ({ data: undefined, isError: true })) });
     render(<MyLanguageScreen />);
     expect(screen.getByText('불러오는 중…')).toBeTruthy();
     expect(screen.queryByLabelText('한국어')).toBeNull();
@@ -72,7 +75,7 @@ describe('언어 화면 게이트', () => {
   });
 
   it('오류는 오류라고 말하고 다시 시도를 준다', () => {
-    const refetch = vi.fn();
+    const refetch = vi.fn(async () => ({ data: undefined, isError: true }));
     storeSettings.mockReturnValue({ data: undefined, isLoading: false, isError: true, refetch });
     render(<MyLanguageScreen />);
     expect(screen.getByText('설정을 불러오지 못했어요')).toBeTruthy();
@@ -96,8 +99,7 @@ describe('배경 재조회 실패', () => {
     await waitFor(() => expect(mutate).toHaveBeenCalledTimes(1));
     pending = true;
     // 캐시는 남은 채 배경 재조회가 실패했다.
-    const refetch = vi.fn();
-    storeSettings.mockReturnValue({ ...loaded('en-US'), isError: true, refetch });
+    storeSettings.mockReturnValue({ ...loaded('en-US'), isError: true });
     rerender(<MyLanguageScreen />);
     expect(sheetOpen()).toBe(true);                                    // 편집기가 살아 있다
     expect(screen.queryByText('설정을 불러오지 못했어요')).toBeNull(); // 전체 오류 화면이 아니다
@@ -108,8 +110,27 @@ describe('배경 재조회 실패', () => {
     expect(safeBack).toHaveBeenCalledWith('/my');
   });
 
+  it('재조회 실패 중엔 새 저장을 막는다 — 캐시 값으로 최신 설정을 덮지 않게. 재조회가 성공하면 풀린다', async () => {
+    const { rerender } = render(<MyLanguageScreen />);
+    fireEvent.click(screen.getByLabelText('한국어'));
+    expect(disabled('저장')).toBe(false);
+    storeSettings.mockReturnValue({ ...loaded('en-US'), isError: true });
+    rerender(<MyLanguageScreen />);
+    expect(disabled('저장')).toBe(true);                       // 바깥 저장 잠김
+    expect(checked('한국어')).toBe('true');                    // 초안은 그대로
+    // 다시 시도 = 실제 refetch(초안은 건드리지 않는다). 성공 응답이 오면(오류 해제) 고른 값으로 저장이 다시 열린다.
+    const stale = storeSettings.mock.results.at(-1)!.value as ReturnType<typeof loaded>;
+    fireEvent.click(screen.getByLabelText('다시 시도'));
+    await waitFor(() => expect(stale.refetch).toHaveBeenCalledTimes(1));
+    storeSettings.mockReturnValue(loaded('en-US'));
+    rerender(<MyLanguageScreen />);
+    await waitFor(() => expect(disabled('저장')).toBe(false));
+    expect(checked('한국어')).toBe('true');                    // 고른 값이 살아 있다
+    expect(screen.queryByLabelText('재조회 실패')).toBeNull();
+  });
+
   it('값이 한 번도 안 왔으면 오류 화면이다', () => {
-    storeSettings.mockReturnValue({ data: undefined, isLoading: false, isError: true, refetch: vi.fn() });
+    storeSettings.mockReturnValue({ data: undefined, isLoading: false, isError: true, refetch: vi.fn(async () => ({ data: undefined, isError: true })) });
     render(<MyLanguageScreen />);
     expect(screen.getByText('설정을 불러오지 못했어요')).toBeTruthy();
     expect(screen.queryByLabelText('한국어')).toBeNull();
@@ -126,16 +147,26 @@ describe('서버 언어가 바뀌면', () => {
     expect(disabled('저장')).toBe(true);
   });
 
-  it('수정 중이면 초안을 지키고 알린다 — 저장은 잠기고, 새로고침 뒤 서버값으로 맞춘다', () => {
+  it('수정 중이면 초안을 지키고 알린다 — 저장은 잠기고, 새로고침은 **실제 재조회 성공 뒤에만** 서버값으로 맞춘다', async () => {
     const { rerender } = render(<MyLanguageScreen />);
     fireEvent.click(screen.getByLabelText('한국어'));
-    storeSettings.mockReturnValue(loaded('ja'));
+    const ja = loaded('ja');
+    storeSettings.mockReturnValue(ja);
     rerender(<MyLanguageScreen />);
     expect(checked('한국어')).toBe('true');           // 초안이 살아 있다
     expect(screen.getByRole('status').textContent).toContain('다른 기기에서 설정이 변경됐어요');
     expect(disabled('저장')).toBe(true);
+    // 재조회가 실패하면(null) 아무것도 안 바뀐다 — 배너·초안 유지.
+    ja.refetch.mockImplementationOnce(async () => ({ data: undefined, isError: true }));
     fireEvent.click(screen.getByLabelText('새로고침'));
-    expect(checked('日本語')).toBe('true');
+    await waitFor(() => expect(ja.refetch).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(disabled('새로고침')).toBe(false));   // 재조회가 끝나 버튼이 풀렸다
+    expect(checked('한국어')).toBe('true');
+    expect(screen.getByRole('status')).toBeTruthy();
+    // 성공 응답이 오면 그 값으로 초안·기준값을 바꾸고 충돌이 풀린다.
+    fireEvent.click(screen.getByLabelText('새로고침'));
+    await waitFor(() => expect(ja.refetch).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(checked('日本語')).toBe('true'));
     expect(screen.queryByRole('status')).toBeNull();
     expect(disabled('저장')).toBe(true);              // 서버값과 같으니 바뀐 게 없다
   });

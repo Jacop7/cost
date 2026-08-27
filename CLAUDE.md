@@ -99,9 +99,11 @@ Expo(RN) + Supabase 모노레포. 모든 데이터가 기록·전파되어 추�
   (CI 는 `--no-db` 라 이 단계를 안 돈다). fix/check 는 생략 불가.
   ⚠ 접속 문자열(URL/keyword)은 **받지 않는다** — 항목별 환경변수만(값마다 문자 집합 검사). 정규식으로
   비밀번호를 떼는 방식은 `?pass%77ord=`·`password =`·`sslpassword=` 에서 새어 나갔다.
-  접속 정보는 전부 libpq 환경변수(PGHOST…)로 psql 에 가고 argv 에는 옵션만 남는다. 비밀번호는
-  `ADMIN_DB_PASSWORD` 가 있으면 그것만, 없으면 셸의 `PGPASSWORD` 도 지운 채 `PGPASSFILE`/`~/.pgpass`.
-  자식에 `ADMIN_*`·`PGSERVICE`·`PGOPTIONS` 는 넘기지 않고 로그는 host/db 까지만. 접속 계정이
+  접속 정보는 전부 libpq 환경변수(PGHOST…)로 psql 에 가고 argv 에는 옵션만 남는다 — 격리된 서브셸에서
+  export 변수를 전부 unset 하고 필요한 것만 export 한 뒤 `exec` 한다(`env -i A=… cmd` 는 env 의 argv 에
+  값이 실려 쓰지 않는다). 비밀번호는 `ADMIN_DB_PASSWORD` 가 있으면 그것만, 없으면 셸의 `PGPASSWORD` 도
+  지운 채 `PGPASSFILE`/libpq 기본 pgpass(Windows 는 `%APPDATA%\postgresql\pgpass.conf`). 셸의
+  `PGSSL*`·`PGSERVICE`·`PGOPTIONS` 등은 상속되지 않고 로그는 host/db 까지만. 접속 계정이
   supabase_admin 이거나 그 롤로 전환 가능한 슈퍼유저인지 먼저 확인하고 아니면 아무것도 안 바꾼다.
   시험 31 이 `pg_default_acl` 로 두 롤을 다 잰다.
 - 설정 값은 서버가 잰다(0167·0168): 언어 키는 core `LOCALES` 의 키('ko', 'en-US', …)이고
