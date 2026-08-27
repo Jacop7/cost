@@ -55,7 +55,9 @@ export function useSettingsActions() {
       save.mutate(
         {
           locale: next,
-          // 명시 설정이 없으면 새 로케일 기본값을 따라간다.
+          // 통화·금액 자릿수는 **서버가 언어에서 파생**한다(0168 locale_defaults) — 여기서 따로
+          // 보내지 않는다. 보내면 서버 표와 어긋나는 순간 거부된다(INVALID_VALUE).
+          // 명시 설정이 없으면 단가 자릿수는 새 로케일 기본값을 따라간다.
           unitPriceDigits: unitDigits ?? unitPriceDigits(next),
         },
         { onError },

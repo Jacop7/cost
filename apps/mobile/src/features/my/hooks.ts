@@ -338,7 +338,8 @@ export function useStoreSettings() {
         unitSystem: String(r.unit_system ?? 'metric'),
         cupVolume: num(r.cup_volume),
         defaultTargetProfitRate: num(r.default_target_profit_rate),
-        locale: String(r.locale ?? 'ko-KR'),
+        // core LocaleKey 다('ko', 'en-US', …). 예전 기본값 'ko-KR' 은 0168 이 'ko' 로 옮겼다.
+        locale: String(r.locale ?? 'ko'),
         currency: String(r.currency ?? 'KRW'),
         unitPriceDigits: num(r.unit_price_digits),
         quantityDigits: num(r.quantity_digits),
@@ -393,19 +394,19 @@ export function useSaveStoreTax() {
  * 버려서 빈 저장이 성공처럼 끝났다(검토 지적).
  */
 export type SaveSettingsInput = Pick<StoreSettings,
-  | 'locale' | 'currency' | 'unitSystem' | 'cupVolume' | 'defaultTargetProfitRate'
-  | 'unitPriceDigits' | 'quantityDigits' | 'moneyDigits'
+  | 'locale' | 'unitSystem' | 'cupVolume' | 'defaultTargetProfitRate'
+  | 'unitPriceDigits' | 'quantityDigits'
   | 'alertMorningSummary' | 'alertInboundDelay' | 'alertPriceSpike' | 'alertTargetMiss'>;
+// ⚠ currency·moneyDigits 는 여기 없다 — **언어가 정한다**(0168 locale_defaults). 서버가 파생하고,
+//   같은 요청에 다른 값이 실리면 거부한다. 앱은 locale 만 보낸다.
 
 const SETTINGS_KEYS: Record<keyof SaveSettingsInput, string> = {
   locale: 'locale',
-  currency: 'currency',
   unitSystem: 'unit_system',
   cupVolume: 'cup_volume',
   defaultTargetProfitRate: 'default_target_profit_rate',
   unitPriceDigits: 'unit_price_digits',
   quantityDigits: 'quantity_digits',
-  moneyDigits: 'money_digits',
   alertMorningSummary: 'alert_morning_summary',
   alertInboundDelay: 'alert_inbound_delay',
   alertPriceSpike: 'alert_price_spike',

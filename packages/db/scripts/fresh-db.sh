@@ -95,7 +95,8 @@ psql_d postgres -c "drop database if exists $D;" -c "create database $D;"
 # supabase_admin 이 만들 테이블의 기본 권한 — postgres 는 이 롤의 멤버가 아니라 못 바꾼다(0166 경고).
 # 슈퍼유저 접속으로 걷어내고 **그 롤로 표를 실제로 만들어** 닫혔는지 잰다. 운영·개발 DB 도 같은
 # 스크립트를 배포 절차에서 부른다(ADMIN_DB_URL). 시험 스위트는 postgres 세션이라 이 롤이 못 된다.
-bash "$(dirname -- "${BASH_SOURCE[0]}")/admin-acl.sh" "$D" fix >/dev/null || exit 1
+# ⚠ --local 이라 ADMIN_DB_URL 을 보지 않지만, 혹시 남아 있어도 상속되지 않게 지운다(검토 P0).
+env -u ADMIN_DB_URL bash "$(dirname -- "${BASH_SOURCE[0]}")/admin-acl.sh" --local "$D" fix >/dev/null || exit 1
 
 psql_d "$D" <<EOF
 create schema if not exists extensions;
