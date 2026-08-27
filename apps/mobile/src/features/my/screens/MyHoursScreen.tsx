@@ -45,7 +45,9 @@ const COMMON_TZ = [
 function deviceTimezone(): string | null {
   try {
     const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    return typeof tz === 'string' && tz.includes('/') ? tz : null;
+    // `UTC`도 Intl·PostgreSQL이 모두 아는 유효한 IANA 시간대다. 지역/도시 형태만
+    // 받으면 UTC로 설정된 기기에서는 최초 시간대 제안이 조용히 사라진다.
+    return typeof tz === 'string' && tz.trim() ? tz : null;
   } catch {
     return null;
   }
