@@ -93,13 +93,15 @@ declare
   v_id    uuid;
   v_res   jsonb;
   v_other uuid;
+  v_owner uuid := pg_temp.new_owner();   -- 계정당 매장 하나(0167) — 새 사장님
 begin
   -- ① 소유자 픽스처 생성에도 트리거 셋이 따라붙는다. 앱 롤의 직접 INSERT 는 0167 로 없어졌다 —
   --    그 계약은 아래 '단일 매장' 블록이 잰다.
   set local role postgres;
-  insert into stores (owner_id, name) values (pg_temp.owner(), '시험 매장 신규직접')
+  insert into stores (owner_id, name) values (v_owner, '시험 매장 신규직접')
     returning id into v_id;
   set local role authenticated;
+  perform pg_temp.as_owner(v_owner);   -- 이 매장의 사장님으로 세금을 저장한다
   perform pg_temp.eq('직접 생성: 설정 행이 생긴다',
     (select count(*) from settings where store_id = v_id), 1, 0);
   perform pg_temp.eq('직접 생성: 시간대 행이 생긴다',
@@ -184,6 +186,7 @@ end $t$;
 -- ── 단일 매장 계약과 백필 보존 (0166) ───────────────────────────
 do $t$
 declare
+  v_owner_bf uuid;
   v_a jsonb; v_b jsonb;
   v_n int;
   v_store uuid;
@@ -208,8 +211,9 @@ begin
    * 백필 보존 — 표시 폼이 06:00–14:00 인 매장의 규칙을 11–22 로 덮으면 안 된다.
    * 문(0159)을 안 지난 규칙(revision=1)만 표시 폼을 따른다.
    */
+  v_owner_bf := pg_temp.new_owner();   -- 계정당 매장 하나(0167)
   set local role postgres;
-  insert into stores (owner_id, name) values (pg_temp.owner(), '백필 시험 매장') returning id into v_store;
+  insert into stores (owner_id, name) values (v_owner_bf, '백필 시험 매장') returning id into v_store;
   update settings set open_time = '06:00', close_time = '14:00' where store_id = v_store;
   delete from operating_rules where store_id = v_store;
   insert into operating_rules (store_id, effective_from, effective_to, weekly_hours, weekly_breaks)
@@ -227,9 +231,11 @@ begin
      and r.effective_to is null and r.revision = 1
      and (r.weekly_hours -> '1' ->> 'open') is distinct from s.open_time::text;
   set local role authenticated;
+  perform pg_temp.as_owner(v_owner_bf);   -- 그 매장은 다른 사장님 것 — 그 사장님으로 읽는다(RLS)
   perform pg_temp.eq_t('백필이 표시 폼(06:00~14:00)을 보존한다',
     (store_hours_on(v_store, store_local_date(v_store))->>'open_time') || '~' ||
     (store_hours_on(v_store, store_local_date(v_store))->>'close_time'), '06:00:00~14:00:00');
+  perform pg_temp.as_owner(pg_temp.owner());
 end $t$;
 
 
@@ -262,13 +268,20 @@ begin
   perform pg_temp.raises('stores 직접 DELETE 도 42501',
     format($q$delete from stores where id = %L$q$, pg_temp.store()), '42501');
 
-  -- ③ 소유자당 하나 — 픽스처 플래그가 꺼져 있으면 소유자로도 두 번째 매장이 안 생긴다.
+  -- ③ 계정당 하나 — UNIQUE(owner_id). 소유자 직접 INSERT 로도 두 번째 매장은 안 생긴다.
+  --    (첫 판은 exists 트리거 + 세션 플래그였고 두 세션 동시 INSERT 가 둘 다 통과했다 — 검토 재현.)
   set local role postgres;
-  set local sikjae.multi_store_fixture = 'off';
-  perform pg_temp.raises('플래그 없이는 두 번째 매장이 23505',
+  perform pg_temp.raises('같은 계정의 두 번째 매장은 23505 (UNIQUE)',
     format($q$insert into stores (owner_id, name) values (%L, '둘째')$q$, pg_temp.owner()), '23505');
-  set local sikjae.multi_store_fixture = 'on';
   set local role authenticated;
+  perform pg_temp.ok('stores.owner_id 에 UNIQUE 제약이 있다 — 트리거가 아니라 제약이다',
+    exists (select 1 from pg_constraint c
+             where c.conrelid = 'public.stores'::regclass and c.contype = 'u'
+               and c.conkey = array[(select attnum from pg_attribute
+                                      where attrelid = 'public.stores'::regclass and attname = 'owner_id')]));
+  perform pg_temp.ok('시험용 우회(트리거·플래그)가 운영 스키마에 없다',
+    not exists (select 1 from pg_trigger where tgname = 'stores_00_single_per_owner')
+    and not exists (select 1 from pg_proc where proname = 'stores_single_per_owner'));
 
   -- ④ 다른 사장님은 제 매장 하나를 create_store 로 만든다 — 남남 시나리오의 기반.
   v_other := pg_temp.new_owner();
@@ -319,4 +332,23 @@ begin
     (select cup_volume from settings where store_id = pg_temp.store()), 200, 0);
   perform pg_temp.raises('모르는 키는 거부 — 조용히 버리지 않는다',
     format('select save_settings(%L, %L::jsonb)', pg_temp.store(), '{"theme":"dark"}'), '22000');
+  -- 값의 뜻(검토 P2) — 키가 맞아도 뜻이 틀리면 거부.
+  perform pg_temp.raises('unit_system 은 metric 뿐(1차)',
+    format('select save_settings(%L, %L::jsonb)', pg_temp.store(), '{"unit_system":"nonsense"}'), '22000');
+  perform pg_temp.raises('컵 용량 음수는 거부',
+    format('select save_settings(%L, %L::jsonb)', pg_temp.store(), '{"cup_volume":-5}'), '22000');
+  perform pg_temp.raises('모르는 통화는 거부',
+    format('select save_settings(%L, %L::jsonb)', pg_temp.store(), '{"currency":"???"}'), '22000');
+  perform pg_temp.raises('모르는 언어는 거부',
+    format('select save_settings(%L, %L::jsonb)', pg_temp.store(), '{"locale":"xx-XX"}'), '22000');
+  perform pg_temp.raises('자릿수 범위 밖은 거부',
+    format('select save_settings(%L, %L::jsonb)', pg_temp.store(), '{"unit_price_digits":9}'), '22000');
+  perform pg_temp.raises('목표 이익률 100 초과는 거부',
+    format('select save_settings(%L, %L::jsonb)', pg_temp.store(), '{"default_target_profit_rate":150}'), '22000');
+  perform pg_temp.eq_t('거부된 저장은 아무것도 안 바꿨다 — unit_system 그대로',
+    (select unit_system from settings where store_id = pg_temp.store()), 'metric');
+  perform save_settings(pg_temp.store(), '{"currency":"USD","locale":"en-US"}'::jsonb);
+  perform pg_temp.eq_t('목록 안의 통화·언어는 저장된다',
+    (select currency || '/' || locale from settings where store_id = pg_temp.store()), 'USD/en-US');
+  perform save_settings(pg_temp.store(), '{"currency":"KRW","locale":"ko"}'::jsonb);
 end $t$;

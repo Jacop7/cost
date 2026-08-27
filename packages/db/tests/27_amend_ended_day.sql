@@ -837,16 +837,17 @@ declare
   v_day   date := pg_temp.ended_day();
   v_b     uuid;
   v_other uuid;
+  v_owner_b uuid;
 begin
   -- 매장 B 와 그 매장 메뉴를 만든다.
-  set local role postgres;
   /*
-   * ⚠ 주인은 **같은 사장님**으로 둔다. 그래야 `assert_my_store(A)` 가 통과하고도
-   *   메뉴만 B 것인, 실제로 위험한 경우가 된다. 남남이면 문지기가 먼저 막아서
-   *   정작 재려던 경계를 안 재게 된다.
+   * 주인은 **다른 사장님**이다(0167: 계정당 매장 하나 — UNIQUE). 문지기 `assert_my_store(A)` 는
+   * p_store(A) 만 보므로 남남이어도 통과한다 — 재려는 경계는 "메뉴가 B 것"이라는 별개의 검사다.
    */
+  v_owner_b := pg_temp.new_owner();
+  set local role postgres;
   insert into stores (owner_id, name)
-       values (pg_temp.owner(), '시험 매장 B')
+       values (v_owner_b, '시험 매장 B')
     returning id into v_b;
 
   create temp table _other_recipe on commit drop as
@@ -856,10 +857,10 @@ begin
          store_id = v_b, name = '남의 메뉴', price = 7777;
   insert into recipes select * from _other_recipe;
   select id into v_other from _other_recipe;
-  set local role authenticated;
-
+  -- 전제는 소유자로 본다 — 앱 롤에는 남의 매장 메뉴가 RLS 로 안 보인다(그게 정상이다).
   perform pg_temp.ok('전제: 그 메뉴는 우리 매장 것이 아니다',
     (select store_id from recipes where id = v_other) <> v_store);
+  set local role authenticated;
 
   perform pg_temp.raises('남의 매장 메뉴는 안정된 코드로 거절한다',
     format('select amend_ended_business_day(%L, %L, %s, %L::jsonb)',
@@ -1098,11 +1099,12 @@ declare
   v_day   date := pg_temp.ended_day();
   v_other uuid := '00000000-0000-0000-0000-0000000000c9';   -- ⑰ 이 만든 매장 B 메뉴
 begin
+  -- 전제는 소유자로 본다 — 남의 매장 메뉴는 앱 롤에 RLS 로 안 보인다(정상).
+  set local role postgres;
   perform pg_temp.ok('전제: 그 메뉴는 아직 다른 매장 것이다',
     (select store_id from recipes where id = v_other) <> v_store);
 
   -- 오염된 장부를 손으로 만든다 — 0150 이전에 들어왔을 수 있는 모습.
-  set local role postgres;
   update business_days
      set snapshot = jsonb_set(snapshot, array['recipes', v_other::text],
                               recipe_snapshot_entry(v_other), true)

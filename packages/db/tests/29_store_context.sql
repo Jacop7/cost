@@ -11,19 +11,23 @@
 -- ════════════════════════════════════════════════════════════════
 
 -- ── 준비: 뉴욕 매장 ────────────────────────────────────────────
--- ⚠ 주인은 같은 사장님이다(27 ⑰과 같은 이유) — 문지기(assert_my_store)가 아니라
---   날짜 계산 자체를 잰다.
+-- 주인은 **다른 사장님**이다(0167: 계정당 매장 하나). 여기서 재는 건 문지기가 아니라 날짜 계산이라,
+-- 뉴욕 매장을 읽는 블록은 그 사장님으로 읽는다(앱 롤에는 남의 매장이 RLS 로 안 보인다 — 정상).
+-- 조회 헬퍼 둘은 임시 표를 읽는다 — stores 는 다른 사장님 것이라 앱 롤에 안 보이고,
+-- pg_temp 함수는 이 세션(authenticated)이 소유해 definer 로도 RLS 를 못 넘는다(실측).
+create temp table _ny (store_id uuid, owner_id uuid) on commit drop;
 create function pg_temp.ny() returns uuid
-language sql stable as $h$
-  select id from stores where name = '시험 매장 뉴욕' and owner_id = pg_temp.owner()
-$h$;
+language sql stable as $h$ select store_id from _ny $h$;
+create function pg_temp.ny_owner() returns uuid
+language sql stable as $h$ select owner_id from _ny $h$;
 
 do $t$
 declare
   v_b uuid;
+  v_owner uuid := pg_temp.new_owner();   -- 계정당 매장 하나(0167) — 다른 사장님의 매장
 begin
   set local role postgres;
-  insert into stores (owner_id, name) values (pg_temp.owner(), '시험 매장 뉴욕')
+  insert into stores (owner_id, name) values (v_owner, '시험 매장 뉴욕')
     returning id into v_b;
   insert into store_time_settings (store_id, timezone) values (v_b, 'America/New_York')
   on conflict (store_id) do update set timezone = excluded.timezone;
@@ -41,6 +45,7 @@ begin
     raise exception '준비 실패: 뉴욕 매장 규칙이 1개가 아닙니다';
   end if;
   set local role authenticated;
+  insert into _ny values (v_b, v_owner);
 end $t$;
 
 
@@ -53,6 +58,7 @@ declare
   b    public.sales_business_context;
 begin
   a := resolve_sales_business_context(pg_temp.store(), v_at);
+  perform pg_temp.as_owner(pg_temp.ny_owner());   -- 뉴욕 매장은 다른 사장님 것 — 그 사장님으로 읽는다(RLS)
   b := resolve_sales_business_context(pg_temp.ny(), v_at);
 
   perform pg_temp.eq_t('서울 낮 2시 → 오늘 영업일', a.sales_date::text, '2026-08-26');
@@ -62,12 +68,14 @@ begin
     a.sales_date is distinct from b.sales_date);
   perform pg_temp.eq_t('시간대도 매장 것', b.timezone, 'America/New_York');
   perform pg_temp.ok('적용 규칙 id 를 준다', b.sales_rule_id is not null);
+  perform pg_temp.as_owner(pg_temp.owner());
 end $t$;
 
 
 -- ── ② 경계 — 종료 시각 정각부터 오늘이다 ──────────────────────
 do $t$
 begin
+  perform pg_temp.as_owner(pg_temp.ny_owner());   -- 뉴욕 매장은 다른 사장님 것 — 그 사장님으로 읽는다(RLS)
   perform pg_temp.eq_t('뉴욕 01:59:59 → 어제',
     (resolve_sales_business_context(pg_temp.ny(), '2026-08-26 05:59:59+00')).sales_date::text,
     '2026-08-25');
@@ -76,6 +84,7 @@ begin
   perform pg_temp.eq_t('뉴욕 02:00:00 정각 → 오늘 (유예는 날짜가 아니다)',
     (resolve_sales_business_context(pg_temp.ny(), '2026-08-26 06:00:00+00')).sales_date::text,
     '2026-08-26');
+  perform pg_temp.as_owner(pg_temp.owner());
 end $t$;
 
 
@@ -94,11 +103,13 @@ end $t$;
 -- ── ④ 서머타임 경계에서도 규칙 시각대로다 ─────────────────────
 do $t$
 begin
+  perform pg_temp.as_owner(pg_temp.ny_owner());   -- 뉴욕 매장은 다른 사장님 것 — 그 사장님으로 읽는다(RLS)
   -- 2026-11-01 에 뉴욕 서머타임이 끝난다(EDT→EST). 그 다음 날 새벽 00:30(EST) —
   -- 전날(11/1) 규칙 18:00–02:00 의 종료(11/2 02:00 EST) 전이므로 어제 영업일이다.
   perform pg_temp.eq_t('서머타임 끝난 다음 날 새벽도 어제 영업일',
     (resolve_sales_business_context(pg_temp.ny(), '2026-11-02 05:30:00+00')).sales_date::text,
     '2026-11-01');
+  perform pg_temp.as_owner(pg_temp.owner());
 end $t$;
 
 
@@ -114,6 +125,7 @@ declare
   v_b  uuid := pg_temp.ny();
   v_id uuid;
 begin
+  perform pg_temp.as_owner(pg_temp.ny_owner());   -- 뉴욕 매장은 다른 사장님 것 — 그 사장님으로 읽는다(RLS)
   set local role postgres;
   insert into business_days (store_id, business_date, status, snapshot, opened_at, planned_close_at)
        values (v_b, '2026-04-05', 'open', '{}'::jsonb,
@@ -138,6 +150,7 @@ begin
   delete from business_state_transitions where business_day_id = v_id;
   delete from business_days where id = v_id;
   set local role authenticated;
+  perform pg_temp.as_owner(pg_temp.owner());
 end $t$;
 
 

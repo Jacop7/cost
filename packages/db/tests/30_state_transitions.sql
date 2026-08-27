@@ -16,11 +16,13 @@ declare
   v_store uuid;
   v_day   date;
   v_id    uuid;
+  v_owner uuid := pg_temp.new_owner();   -- 계정당 매장 하나(0167) — 다른 사장님의 빈 매장
 begin
   set local role postgres;
-  insert into stores (owner_id, name) values (pg_temp.owner(), '시험 매장 전이')
+  insert into stores (owner_id, name) values (v_owner, '시험 매장 전이')
     returning id into v_store;
   set local role authenticated;
+  perform pg_temp.as_owner(v_owner);   -- 그 매장의 사장님으로 전이를 부른다
 
   perform pg_temp.raises('영업 전 브레이크는 거부',
     format('select transition_business_state(%L, %L)', v_store, 'start_break'), '22000');
@@ -33,7 +35,7 @@ begin
   perform pg_temp.ok('시작이 감사에 남는다 — 영업 전(null)→open · manual',
     exists (select 1 from business_state_transitions
              where business_day_id = v_id and from_status is null
-               and to_status = 'open' and method = 'manual' and by_user = pg_temp.owner()));
+               and to_status = 'open' and method = 'manual' and by_user = v_owner));
 
   perform pg_temp.eq_t('브레이크', transition_business_state(v_store, 'start_break')->>'status', 'break');
   perform pg_temp.raises('브레이크 중 또 브레이크는 45014',
@@ -60,6 +62,7 @@ begin
 
   perform pg_temp.raises('종료 뒤 또 종료는 거부',
     format('select transition_business_state(%L, %L)', v_store, 'end'), '22000');
+  perform pg_temp.as_owner(pg_temp.owner());
 end $t$;
 
 
@@ -188,9 +191,10 @@ declare
   v_store uuid;
   v_today date;
   v_res   jsonb;
+  v_owner uuid := pg_temp.new_owner();   -- 계정당 매장 하나(0167) — 다른 사장님의 매장
 begin
   set local role postgres;
-  insert into stores (owner_id, name) values (pg_temp.owner(), '시험 매장 심야')
+  insert into stores (owner_id, name) values (v_owner, '시험 매장 심야')
     returning id into v_store;
   update operating_rules
      set weekly_hours = (select jsonb_object_agg(d::text, jsonb_build_object('open','00:01','close','00:02'))
@@ -198,6 +202,7 @@ begin
          weekly_breaks = '{}'::jsonb
    where store_id = v_store;
   set local role authenticated;
+  perform pg_temp.as_owner(v_owner);
 
   v_today := store_local_date(v_store);
 
@@ -231,6 +236,7 @@ begin
   -- 늦은 개점이 아닌 전이에 종료 시간을 실으면 거부 — 문은 늦은 개점뿐이다.
   perform pg_temp.raises('브레이크 전이에 종료 시간은 거부',
     format('select transition_business_state(%L, %L, %L)', v_store, 'start_break', '01:00'), '22000');
+  perform pg_temp.as_owner(pg_temp.owner());
 end $t$;
 
 

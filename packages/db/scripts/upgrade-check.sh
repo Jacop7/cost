@@ -116,5 +116,61 @@ left=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c "
    where n.nspname = 'public' and p.proname = 'etc_tax_rate_of_record';")
 if [ "$left" = "0" ]; then say "   ok   옛 helper 가 지워졌다"; else say "   FAIL 옛 helper 가 남았다"; fail=1; fi
 
+# ── 시나리오 4 · 사장님이 저장한 요일별 규칙을 백필이 건드리면 안 된다 (0167, 검토 P0) ──
+# 0166 상태에서 문(0159)이 만드는 것과 같은 행(created_by 있음 · revision 1 · 실제 시작일)을
+# 요일마다 다르게 저장해 두고, settings 는 그 규칙의 월요일 값만 비추게 한다(0163 이 하는 일).
+# 첫 판 0167 은 revision=1 을 "안 만진 초기 규칙"으로 읽고 이 행의 화~일·브레이크를 월요일
+# 값으로 덮어썼다(원본 복구 불가). 최종 상태만 보는 스위트는 이 경로를 못 잰다 — 여기서 잰다.
+say "④ 0166 상태 + 사장님이 저장한 요일별 예약 규칙 → 0167 이 그 행을 안 건드려야 한다"
+BASE4=20260826000166
+STEP4="$(cd "$MIG_DIR" && ls 20260826000167_*.sql)"
+bash "$SCRIPT_DIR/fresh-db.sh" --until "$BASE4" "$D" >/dev/null
+psql_d "$D" <<'EOF' >/dev/null
+do $f$
+declare v_store uuid; v_owner uuid; v_from date;
+begin
+  select id, owner_id into v_store, v_owner from stores order by created_at, id limit 1;
+  v_from := store_local_date(v_store) + 1;
+  -- 문이 하는 일과 같다: 열린 규칙을 닫고 내일부터의 새 규칙을 사장님 이름으로 넣는다.
+  update operating_rules set effective_to = v_from - 1 where store_id = v_store and effective_to is null;
+  insert into operating_rules (store_id, effective_from, effective_to, weekly_hours, weekly_breaks, created_by)
+  values (v_store, v_from, null,
+    (select jsonb_object_agg(d::text, jsonb_build_object(
+              'open',  (time '06:00' + make_interval(hours => d))::text,
+              'close', (time '14:00' + make_interval(hours => d))::text, 'closed', false))
+       from generate_series(0, 6) d),
+    (select jsonb_object_agg(d::text, jsonb_build_object(
+              'start', (time '10:00' + make_interval(mins => d))::text,
+              'end',   (time '10:30' + make_interval(mins => d))::text))
+       from generate_series(0, 6) d),
+    v_owner);
+  -- 표시 폼은 월요일(1) 값만 비춘다 — 검토가 재현한 바로 그 상태.
+  update settings set open_time = '07:00', close_time = '15:00', break_start = '10:01', break_end = '10:31'
+   where store_id = v_store;
+end $f$;
+create table public._expect_0167 as
+  select id, weekly_hours, weekly_breaks from operating_rules where created_by is not null;
+EOF
+n=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c "select count(*) from public._expect_0167;")
+if [ "$n" = "0" ]; then
+  say "   FAIL 전제가 안 섰다 — 사장님 저장 규칙을 못 만들었다"
+  fail=1
+elif ! err="$(psql_d "$D" < "$MIG_DIR/$STEP4" 2>&1 1>/dev/null)"; then
+  say "   FAIL 0167 이 멀쩡한 DB 에서 막혔다"
+  say "        $(printf '%s' "$err" | head -3)"
+  fail=1
+else
+  changed=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c "
+    select count(*) from operating_rules r join public._expect_0167 e on e.id = r.id
+     where r.weekly_hours::text <> e.weekly_hours::text or r.weekly_breaks::text <> e.weekly_breaks::text;")
+  if [ "$changed" = "0" ]; then
+    say "   ok   사장님이 저장한 규칙(요일별 시간·브레이크)이 그대로다"
+  else
+    say "   FAIL 0167 백필이 사장님 저장 규칙 ${changed}건을 덮어썼다"
+    fail=1
+  fi
+fi
+psql_d "$D" -c "drop table if exists public._expect_0167;" >/dev/null
+
 say ""
-if [ "$fail" = "0" ]; then say "업그레이드 경로 3/3 통과"; else say "업그레이드 경로 실패"; exit 1; fi
+if [ "$fail" = "0" ]; then say "업그레이드 경로 4/4 통과"; else say "업그레이드 경로 실패"; exit 1; fi

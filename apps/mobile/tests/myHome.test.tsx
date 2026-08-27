@@ -80,6 +80,23 @@ describe('MY 홈 영업시간 줄', () => {
     expect(screen.getByText(/요일마다 달라요/)).toBeTruthy();
   });
 
+  it('시간만 요일별로 달라도 요일마다 달라요', () => {
+    hoursStatus.mockReturnValue(status({
+      currentRule: { ruleId: 'r', revision: 1, effectiveFrom: null,
+        weeklyHours: { ...UNIFORM, '6': { open: '10:00', close: '20:00', closed: false } }, weeklyBreaks: {} },
+    }));
+    render(<MyHomeScreen />);
+    expect(screen.getByText(/^오늘 11:00 ~ 22:00 · 요일마다 달라요$/)).toBeTruthy();
+  });
+
+  it('자정을 넘는 영업은 익일로 표기한다', () => {
+    hoursStatus.mockReturnValue(status({
+      today: { openTime: '18:00:00', closeTime: '02:00:00', breakStart: null, breakEnd: null, closeDayOffset: 1, closed: false },
+    }));
+    render(<MyHomeScreen />);
+    expect(screen.getByText('18:00 ~ 익일 02:00')).toBeTruthy();
+  });
+
   it('휴무일은 휴무라고 말한다', () => {
     hoursStatus.mockReturnValue(status({
       today: { openTime: '11:00:00', closeTime: '22:00:00', breakStart: null, breakEnd: null, closeDayOffset: 0, closed: true },
