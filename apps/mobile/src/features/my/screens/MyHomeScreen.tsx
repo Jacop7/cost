@@ -9,7 +9,9 @@ import { getLocale } from '@sikjae/core';
 import { Card, Icon, IconName } from '@/components/kit';
 import { T } from '@/theme/tokens';
 import { useSettings, useUnitDigits } from '../store';
-import { useHoursStatus, useSettingsLists, useStoreName, useStoreSettings } from '../hooks';
+import { useSettingsLists } from '@/features/master-data/hooks';
+import { useHoursStatus, useStoreSettings } from '@/features/settings/hooks';
+import { useStoreName } from '../hooks';
 
 interface MenuItem { icon: IconName; bg: string; fg: string; t: string; d: string; route: Href | null; }
 /** 언어·통화·단위는 현재 선택값을 설명줄에 보여야 해서 함수로 둔다(나머지는 정적). */

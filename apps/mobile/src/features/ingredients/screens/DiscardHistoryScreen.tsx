@@ -21,9 +21,9 @@ import { formatQuantity } from '@sikjae/core';
 import { T, tnum, won } from '@/theme/tokens';
 import { dispUnit } from '../ledger';
 import { PeriodSheet, periodRange, type HistoryPeriod } from './HistoryFilterSheet';
-import { useStoreLocalDate } from '@/features/sales/businessDay';
-import { BusinessDateGate } from '@/features/sales/components/BusinessDateGate';
-import { ConditionRow, FilterButton, MonthHead, SummaryCard, groupByMonth, historyContent, monthTitle } from '../components/HistoryLayout';
+import { useStoreLocalDate } from '@/features/business-day/businessDay';
+import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
+import { ConditionRow, FilterButton, MonthHead, SummaryCard, groupByMonth, historyContent, monthTitle } from '@/components/history/HistoryLayout';
 import { DISCARD_DELETE_DAYS, useDeleteDiscard, useIngredientDetail, useStockHistory, type LedgerEntry } from '../hooks';
 
 type Tab = '전체' | '조리 전 폐기' | '조리 후 폐기';

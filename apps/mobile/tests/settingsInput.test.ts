@@ -3,7 +3,7 @@
  * 타입 경계는 tsc 가 잰다(`@ts-expect-error` 가 남으면 컴파일이 실패한다 — tests 는 tsconfig include 다).
  */
 import { describe, expect, it } from 'vitest';
-import { buildSettingsPayload, type SaveSettingsInput } from '@/features/my/hooks';
+import { buildSettingsPayload, type SaveSettingsInput } from '@/features/settings/hooks';
 
 describe('buildSettingsPayload', () => {
   it('합의한 키를 snake_case 로 싣는다 — 단위·컵·언어 포함', () => {

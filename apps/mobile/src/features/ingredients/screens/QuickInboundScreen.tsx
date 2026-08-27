@@ -21,13 +21,13 @@ import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { AppHeader, Button, Card, ConfirmSheet, Field, Icon, Input, QueryState, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { useStoreLocalDate } from '@/features/sales/businessDay';
-import { BusinessDateGate } from '@/features/sales/components/BusinessDateGate';
+import { useStoreLocalDate } from '@/features/business-day/businessDay';
+import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
 import { formatQuantity, formatUnitPrice, isNegativeStock } from '@sikjae/core';
 import { T, won } from '@/theme/tokens';
 import { clampDecimals } from '@/lib/num';
 
-import { useEnsureVendor } from '@/features/my/hooks';
+import { useEnsureVendor } from '@/features/master-data/hooks';
 import { useIngredientDetail, useQuickInbound, useQuickInboundPreview } from '../hooks';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };

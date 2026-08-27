@@ -30,7 +30,7 @@ import {
   useOpenBusinessDay,
   useSetBreak,
   type BusinessDayState,
-} from '../businessDay';
+} from '@/features/business-day/businessDay';
 
 /** 'HH:MM:SS' → 'HH:MM'. */
 const clock = (t: string | null): string => (t ? t.slice(0, 5) : '');

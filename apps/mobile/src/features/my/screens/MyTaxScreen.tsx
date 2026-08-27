@@ -20,7 +20,7 @@ import { safeBack } from '@/lib/nav';
 import { clampDecimals } from '@/lib/num';
 import { RpcError } from '@/lib/supabase';
 import { T, tnum } from '@/theme/tokens';
-import { useSaveStoreTax, useStoreSettings } from '../hooks';
+import { useSaveStoreTax, useStoreSettings } from '@/features/settings/hooks';
 
 interface Row { name: string; rate: string }
 

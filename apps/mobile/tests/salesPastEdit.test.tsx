@@ -24,7 +24,7 @@ vi.mock('expo-router', () => ({
 }));
 
 /** 서버가 정한 오늘. 화면은 이걸 받고 나서야 본체를 그린다(0125). */
-vi.mock('@/features/sales/businessDay', async (importOriginal) => ({
+vi.mock('@/features/business-day/businessDay', async (importOriginal) => ({
   ...(await importOriginal<Record<string, unknown>>()),
   useSalesBusinessDate: () => ({ date: '2026-08-26', isLoading: false, error: null, refetch: vi.fn() }),
 }));

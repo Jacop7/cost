@@ -8,11 +8,11 @@ import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Card, Icon, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { T, won } from '@/theme/tokens';
-import { isRevisionConflict, useSalesBusinessDate } from '../businessDay';
+import { isRevisionConflict, useSalesBusinessDate } from '@/features/business-day/businessDay';
 import { useSalesDay, useSalesRange, useSaveSale } from '../hooks';
-import { rangeLabel } from '../period';
+import { rangeLabel } from '@/lib/date';
 import { DetailSummary } from '../components/ProfitBlocks';
-import { BusinessDateGate } from '../components/BusinessDateGate';
+import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 

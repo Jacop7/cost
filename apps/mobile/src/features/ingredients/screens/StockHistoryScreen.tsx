@@ -11,11 +11,11 @@ import { AppHeader, Card, Icon, QueryState } from '../../../components/kit';
 import { T, tnum } from '../../../theme/tokens';
 import { formatQuantity } from '@sikjae/core';
 import { safeBack } from '@/lib/nav';
-import { useStoreLocalDate } from '@/features/sales/businessDay';
-import { BusinessDateGate } from '@/features/sales/components/BusinessDateGate';
+import { useStoreLocalDate } from '@/features/business-day/businessDay';
+import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
 import { LedgerRow } from '../components/LedgerRow';
 import { HistoryFilterSheet, periodRange, type HistoryFilter } from './HistoryFilterSheet';
-import { ConditionRow, FilterButton, MonthHead, SummaryCard, historyContent, monthTitle } from '../components/HistoryLayout';
+import { ConditionRow, FilterButton, MonthHead, SummaryCard, historyContent, monthTitle } from '@/components/history/HistoryLayout';
 import { dispUnit, toLedgerView, type LedgerType } from '../ledger';
 import { useIngredientDetail, useStockHistory, type LedgerEntry } from '../hooks';
 

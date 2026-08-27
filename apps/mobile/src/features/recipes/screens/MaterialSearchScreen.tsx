@@ -8,7 +8,7 @@ import { type Href, useRouter } from 'expo-router';
 import { AppHeader, Badge, Card, Icon, QueryState, SearchBar } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { T, won } from '@/theme/tokens';
-import { useSettingsLists } from '@/features/my/hooks';
+import { useSettingsLists } from '@/features/master-data/hooks';
 import { useRecipeDraft } from '../draftStore';
 
 const squash = (s: string) => s.replace(/\s+/g, '').toLowerCase();

@@ -10,7 +10,7 @@
  * 새 로케일 기본값(금액+2)으로 자연스럽게 따라간다.
  */
 import { DEFAULT_LOCALE, LOCALES, type LocaleKey, unitPriceDigits } from '@sikjae/core';
-import { useSaveSettings, useStoreSettings, type SettingsSaveResult } from './hooks';
+import { useSaveSettings, useStoreSettings, type SettingsSaveResult } from '@/features/settings/hooks';
 
 /** 우리가 아는 언어 키인가 — LOCALES 의 키 집합으로 직접 본다. */
 export const isLocaleKey = (v: unknown): v is LocaleKey =>

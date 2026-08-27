@@ -6,7 +6,7 @@
  */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import type { HoursStatus } from '@/features/my/hooks';
+import type { HoursStatus } from '@/features/settings/hooks';
 
 vi.mock('expo-router', () => ({
   useRouter: () => ({ push: vi.fn(), replace: vi.fn() }),
@@ -15,14 +15,20 @@ vi.mock('expo-router', () => ({
 }));
 
 const hoursStatus = vi.fn();
-vi.mock('@/features/my/hooks', async (importOriginal) => ({
+vi.mock('@/features/settings/hooks', async (importOriginal) => ({
   ...(await importOriginal<Record<string, unknown>>()),
   useHoursStatus: () => hoursStatus(),
   useStoreSettings: () => ({ data: undefined, isLoading: false, error: null }),
+}));
+vi.mock('@/features/master-data/hooks', async (importOriginal) => ({
+  ...(await importOriginal<Record<string, unknown>>()),
   useSettingsLists: () => ({
     data: { categories: [], recipeCategories: [], materials: [], vendors: [], channels: [] },
     isLoading: false, error: null,
   }),
+}));
+vi.mock('@/features/my/hooks', async (importOriginal) => ({
+  ...(await importOriginal<Record<string, unknown>>()),
   useStoreName: () => ({ data: '시험 매장', isLoading: false, error: null }),
 }));
 

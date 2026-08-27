@@ -10,9 +10,9 @@ import { safeBack } from '@/lib/nav';
 import { T, won } from '@/theme/tokens';
 import { useSalesDay, useSalesRange } from '../hooks';
 import { channelName } from '../channels';
-import { rangeLabel } from '../period';
-import { useSalesBusinessDate } from '../businessDay';
-import { BusinessDateGate } from '../components/BusinessDateGate';
+import { rangeLabel } from '@/lib/date';
+import { useSalesBusinessDate } from '@/features/business-day/businessDay';
+import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 

@@ -12,7 +12,7 @@ import {
   useSaveSettings,
   useSaveStoreTax,
   type StoreSettings,
-} from '@/features/my/hooks';
+} from '@/features/settings/hooks';
 import { qk } from '@/lib/queryClient';
 import { supabase } from '@/lib/supabase';
 

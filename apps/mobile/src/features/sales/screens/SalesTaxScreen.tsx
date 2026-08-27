@@ -14,10 +14,10 @@ import { AppHeader, Card, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { T, won } from '@/theme/tokens';
 import { DetailRow, DetailSection, DetailSummary } from '../components/ProfitBlocks';
-import { BusinessDateGate } from '../components/BusinessDateGate';
+import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
 import { useSalesRange, useTaxBreakdown } from '../hooks';
-import { rangeLabel } from '../period';
-import { useSalesBusinessDate } from '../businessDay';
+import { rangeLabel } from '@/lib/date';
+import { useSalesBusinessDate } from '@/features/business-day/businessDay';
 
 /** 9.0909090909 → `9.09%`. 화면은 두 자리면 충분하다. */
 const pct2 = (v: number) => `${(Math.round(v * 100) / 100).toFixed(2)}%`;

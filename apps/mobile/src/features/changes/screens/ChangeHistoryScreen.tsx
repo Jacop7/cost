@@ -15,7 +15,7 @@ import { useMemo, useState } from 'react';
 import { ActivityIndicator, FlatList, Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { AppHeader, Card, Icon, QueryState, Sheet } from '@/components/kit';
-import { SummaryCard } from '@/features/ingredients/components/HistoryLayout';
+import { SummaryCard } from '@/components/history/HistoryLayout';
 import { safeBack } from '@/lib/nav';
 import { T } from '@/theme/tokens';
 import {

@@ -6,7 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ScreenShell, ScrollTabs, Icon, FAB, SearchBar, SortChip, SortSheet, QueryState, type SortOption } from '../../../components/kit';
 import { T } from '../../../theme/tokens';
 import { useIngredientList, type IngredientRow } from '../hooks';
-import { useSettingsLists } from '@/features/my/hooks';
+import { useSettingsLists } from '@/features/master-data/hooks';
 import { IngCard, stockStateOf } from '../components/IngCard';
 
 // 추천순: 소진 임박 → 부족 → 여유. 배지와 **같은 판정**을 쓴다.

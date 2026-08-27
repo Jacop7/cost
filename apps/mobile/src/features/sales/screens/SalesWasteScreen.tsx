@@ -16,10 +16,10 @@ import { safeBack } from '@/lib/nav';
 import { formatQuantity } from '@sikjae/core';
 import { T, won } from '@/theme/tokens';
 import { DetailRow, DetailSection, DetailSummary } from '../components/ProfitBlocks';
-import { BusinessDateGate } from '../components/BusinessDateGate';
+import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
 import { useSalesRange, useWasteBreakdown } from '../hooks';
-import { rangeLabel } from '../period';
-import { useSalesBusinessDate } from '../businessDay';
+import { rangeLabel } from '@/lib/date';
+import { useSalesBusinessDate } from '@/features/business-day/businessDay';
 
 /**
  * ⚠ 서버가 정한 장부 날짜를 받고 나서 본체를 붙인다(0125). 앱이 직접 계산하지 않는다.

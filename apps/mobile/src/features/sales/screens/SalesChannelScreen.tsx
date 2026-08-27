@@ -13,10 +13,10 @@ import { T, won } from '@/theme/tokens';
 import { useEtcByChannel, useSalesRange } from '../hooks';
 
 import { DetailSummary, SalesRow } from '../components/ProfitBlocks';
-import { BusinessDateGate } from '../components/BusinessDateGate';
+import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
 import { useChannelFixed } from '@/features/my/hooks';
-import { rangeLabel } from '../period';
-import { useSalesBusinessDate } from '../businessDay';
+import { rangeLabel } from '@/lib/date';
+import { useSalesBusinessDate } from '@/features/business-day/businessDay';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 const COLOR: Record<string, string> = { hall: '#3182F6', delivery: '#7A8694', takeout: '#C5CCD3' };

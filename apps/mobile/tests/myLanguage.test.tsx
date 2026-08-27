@@ -30,7 +30,7 @@ vi.mock('@/lib/nav', () => ({ safeBack: (...a: unknown[]) => safeBack(...a) }));
 const storeSettings = vi.fn();
 const mutate = vi.fn();
 let pending = false;
-vi.mock('@/features/my/hooks', async (importOriginal) => ({
+vi.mock('@/features/settings/hooks', async (importOriginal) => ({
   ...(await importOriginal<Record<string, unknown>>()),
   useStoreSettings: () => storeSettings(),
   useSaveSettings: () => ({ mutate, isPending: pending }),

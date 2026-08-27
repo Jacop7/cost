@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { Alert, ScrollView, Text, View, Pressable } from 'react-native';
 import { Button, Icon, Input, Sheet, QueryState } from '../../../components/kit';
 import { T } from '../../../theme/tokens';
-import { useSaveVendor, useSettingsLists } from '@/features/my/hooks';
+import { useSaveVendor, useSettingsLists } from '@/features/master-data/hooks';
 
 export function VendorPickerSheet({
   visible,

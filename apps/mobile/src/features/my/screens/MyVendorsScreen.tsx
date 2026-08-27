@@ -12,7 +12,7 @@ import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { AppHeader, Badge, Button, Card, Field, Icon, Input, QueryState, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { T } from '@/theme/tokens';
-import { useDeleteVendor, useSaveVendor, useSettingsLists, type VendorRow } from '../hooks';
+import { useDeleteVendor, useSaveVendor, useSettingsLists, type VendorRow } from '@/features/master-data/hooks';
 
 /** 공백·기호를 지운 뒤 같으면 "비슷한 이름"으로 본다('대림유통' vs '대림 유통'). */
 const key = (s: string) => s.replace(/[\s·\-()]/g, '').toLowerCase();

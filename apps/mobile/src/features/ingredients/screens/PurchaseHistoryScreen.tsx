@@ -13,14 +13,14 @@ import { ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Badge, Card, Icon, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { useStoreLocalDate } from '@/features/sales/businessDay';
-import { BusinessDateGate } from '@/features/sales/components/BusinessDateGate';
+import { useStoreLocalDate } from '@/features/business-day/businessDay';
+import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
 import { formatQuantity, formatUnitPrice } from '@sikjae/core';
 import { T, tnum, won } from '@/theme/tokens';
 import { packSummary } from '@/lib/num';
 import { dispUnit } from '../ledger';
 import { PeriodSheet, periodRange, type HistoryPeriod } from './HistoryFilterSheet';
-import { ConditionRow, FilterButton, MonthHead, SummaryCard, groupByMonth, historyContent, monthTitle } from '../components/HistoryLayout';
+import { ConditionRow, FilterButton, MonthHead, SummaryCard, groupByMonth, historyContent, monthTitle } from '@/components/history/HistoryLayout';
 import { useIngredientDetail, usePurchaseHistory, type PurchaseRow } from '../hooks';
 
 const STATUS: Record<PurchaseRow['status'], { label: string; tone: 'blue' | 'amber' | 'neutral' | 'green' }> = {

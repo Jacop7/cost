@@ -1,18 +1,35 @@
 # features/ — 화면 ID ↔ 기능 모듈 매핑
 
-탭별 feature 모듈. 각 모듈은 `screens/`(화면·시트) + `hooks.ts`(조회·저장)로 구성한다.
+탭별 화면 도메인은 주로 `screens/`(화면·시트) + `hooks.ts`(조회·저장)로 구성한다.
+여러 화면 도메인이 함께 쓰는 영업일·설정·마스터 데이터는 아래 공용 논리 경계가 소유한다.
 **`demoData.ts` 는 전부 제거됐다** — 모든 화면이 Supabase 실데이터를 쓴다.
 공통 UI 킷은 `src/components/kit`, 계산은 `@sikjae/core`, 데이터 계약은 `@sikjae/types`.
 
-화면은 supabase 를 직접 부르지 않는다. `features/<도메인>/hooks.ts` 가 유일한 경계이고,
-쿼리 키·무효화 규칙은 `src/lib/queryClient.ts` 의 `qk`·`invalidateOn` 이 단일 출처다.
+화면은 Supabase를 직접 부르지 않는다. 서버 접근은 `features/*/hooks.ts`와
+`features/business-day/businessDay.ts`가 소유하고, 쿼리 키·무효화 규칙은
+`src/lib/queryClient.ts`의 `qk`·`invalidateOn`이 단일 출처다.
 
 하단 탭 순서: **식재료(ING) · 레시피(RCP) · 발주(ORD) · 매출관리(SALES) · MY** — 5탭.
 (AGENTS.md 는 4탭으로 적혀 있으나 매출관리 탭이 추가되어 실제 구현은 5탭이다. `app/(tabs)/_layout.tsx` 가 실물.)
 공통 헤더 패턴: 리스트 화면은 **타이틀(좌, 24·800) + 검색/알림 아이콘(우)**, 그 아래 **밑줄형 탭/카테고리 스트립**(좌측 정렬, 하단 구분선 `#D1D6DB`).
 
 식재료 상세에서 진입하는 재고·구매·폐기 내역 화면의 공통 구조와 컴포넌트 기준은
-`docs/식재료-상세-내역화면-공통-UI-가이드.md`를 따른다.
+`docs/식재료-상세-내역화면-공통-UI-가이드.md`를 따르며, 구현은
+`src/components/history/HistoryLayout.tsx`가 소유한다.
+
+## 공용 논리 경계
+
+| 경계 | 책임 | 사용 범위 |
+|---|---|---|
+| `features/business-day` | 서버 영업일·매장 현지 날짜, 영업 상태 전이, `BusinessDateGate` | 매출·발주·입고·이력 화면 |
+| `features/settings/hooks.ts` | 매장 설정 계약·저장, 세금, 영업시간, 매장 시간대 | MY 설정 화면과 설정 소비 화면 |
+| `features/master-data/hooks.ts` | 카테고리·구매처·판매 채널·부자재 조회·저장 | 식재료·레시피·MY 화면 |
+| `src/lib/date.ts` | 기기 시계 없이 서버가 준 날짜를 다루는 순수 산술·표기 | 기간 조회와 날짜 머리글 |
+| `features/sales/period.ts` | 매출 기간 프리셋 | 매출 분석 화면 |
+| `components/history/HistoryLayout.tsx` | 재고·구매·폐기 이력 공통 레이아웃 | 식재료 이력 화면 |
+
+`features/my/hooks.ts`에는 MY가 소유하는 고정 지출·매장명·채널 고정비·매출 확인만 둔다.
+옛 위치의 재수출 파일은 두지 않으며, 경계 이동은 `tests/domainBoundaries.test.ts`가 검사한다.
 
 ## 화면 인벤토리 — ✅ 구현 / ⬜ 미구현
 
@@ -99,7 +116,10 @@
 | `recipes/hooks` | `recipe_list` · `recipe_detail` · `recipe_pick_list` | RCP-01/02/03 |
 | `orders/hooks` | `order_board` | ORD-01 |
 | `sales/hooks` | `sales_day` · `sales_range` · `sales_material_usage` · `sales_extra_usage` · `sales_fixed_breakdown` · `amend_ended_business_day` | SALES 전부 |
-| `my/hooks` | `settings_lists` · `get_settings` · `sales_channel_fixed` | MY 전부 |
+| `business-day/businessDay` | `business_day_state` · `transition_business_state` · `day_menu_basis` | 영업 상태·서버 날짜를 쓰는 화면 |
+| `settings/hooks` | `get_settings` · `save_settings` · `save_store_tax` · `operating_hours_status` · `set_operating_hours` · `set_store_timezone` | MY 설정과 설정 소비 화면 |
+| `master-data/hooks` | `settings_lists` · 카테고리·구매처·채널·부자재 저장 함수 | 식재료·레시피·MY 관리 화면 |
+| `my/hooks` | `fixed_costs_monthly` · `save_fixed_costs` · 매장명 · `sales_channel_fixed` · `fixed_cost_revenue_check` | MY·레시피·매출 화면 |
 
 저장은 하나의 함수 = 하나의 트랜잭션이다: `save_ingredient` · `save_recipe` · `save_purchase_option`
 · `save_material` · `save_category` · `save_vendor` · `save_channel` · `save_fixed_costs` · `save_sale`.

@@ -5,7 +5,7 @@
 import { ScrollView, Text, View, Pressable } from 'react-native';
 import { Sheet, Icon, QueryState } from '../../../components/kit';
 import { T } from '../../../theme/tokens';
-import { useSettingsLists } from '@/features/my/hooks';
+import { useSettingsLists } from '@/features/master-data/hooks';
 
 export function CategoryPickerSheet({
   visible,
