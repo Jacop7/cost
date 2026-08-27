@@ -87,7 +87,7 @@ Expo(RN) + Supabase 모노레포. 모든 데이터가 기록·전파되어 추�
   ⚠ `react-native-safe-area-context` · `react-native-svg` 는 `tests/setup.ts` 에서
   **모듈째 대신 세운다.** 둘 다 `react-native/Libraries/…`(Flow)를 깊은 경로로 가져온다.
   그래서 **아이콘·차트의 생김새와 노치 여백은 안 재진다** — 잡는 것은 글자와
-  접근성 이름이다. 실제로 그려지는지는 `pnpm verify` ⑤ 의 웹 번들이 본다.
+  접근성 이름이다. 실제로 그려지는지는 `pnpm verify` ⑥ 의 웹 번들이 본다.
   ⚠ 화면 시험은 훅을 대신 세우고 **서버를 안 부른다.** 서버 계약은 DB 스위트가 잰다.
 - `bash packages/db/scripts/fresh-db.sh fresh_x` 로 새 DB, `--until <14자리>` 로 중간 상태.
   ⚠ 스크립트가 `scripts/admin-acl.sh` 를 **supabase_admin 접속으로** 불러 그 롤의 기본 권한
@@ -105,11 +105,14 @@ Expo(RN) + Supabase 모노레포. 모든 데이터가 기록·전파되어 추�
   지운 채 `PGPASSFILE`/libpq 기본 pgpass(Windows 는 `%APPDATA%\postgresql\pgpass.conf`). 셸의
   `PGSSL*`·`PGSERVICE`·`PGOPTIONS` 등은 상속되지 않고 로그는 host/db 까지만. 접속 계정이
   supabase_admin 이거나 그 롤로 전환 가능한 슈퍼유저인지 먼저 확인하고 아니면 아무것도 안 바꾼다.
-  스크립트는 비밀번호를 읽기 전에 xtrace 를 끈다(`bash -x` 에서 `export PGPASSWORD=…` 가 찍혔었다) —
-  `scripts/admin-acl.test.sh`(verify ③) 가 bash -x 출력에 canary 가 없음·argv/환경 격리·거부 경로를 잰다.
+  본체는 `bash -p` 하위 셸에서만 돌아 export 된 함수·SHELLOPTS 를 받지 않는다. `bash -x` 의 custom PS4 는
+  첫 명령 전에 평가될 수 있어 비밀번호 환경변수와 같이 쓰면 안전하게 막을 수 없다 — xtrace 진단에는
+  반드시 `PGPASSFILE` 을 쓴다. `admin-acl.test.sh`(verify ③, `--no-db` CI 에도 포함)가 이 계약과
+  함수 사보타주·인자 경계·정확한 환경 허용 목록·거부 경로를 잰다.
   시험 31 이 `pg_default_acl` 로 두 롤을 다 잰다.
-- 설정 저장은 **판본**이 필요하다(0171): `save_settings(p_store, p_payload, p_base_revision)` — 없으면
-  22000 BASE_REQUIRED, 다르면 45009 REVISION_CONFLICT, 저장마다 +1, `get_settings.revision` 이 토큰이다.
+- 설정 저장은 **판본**이 필요하다(0171·0172): `save_settings(p_store, p_payload, p_base_revision)` — 없으면
+  22000 BASE_REQUIRED, 다르면 45009 REVISION_CONFLICT. 실제 값이 바뀔 때만 +1 하고 무변경 저장은
+  판본·수정 시각을 그대로 둔다. `get_settings.revision` 이 토큰이며 세금 저장도 같은 판본을 쓴다.
   DB 시험은 `pg_temp.settings_rev(store)` 로 현재 판본을 보낸다.
 - 설정 값은 서버가 잰다(0167·0168): 언어 키는 core `LOCALES` 의 키('ko', 'en-US', …)이고
   **통화·금액 자릿수는 언어에서 파생**한다(`locale_defaults`, core 시험 `localeSqlParity` 가 대조).

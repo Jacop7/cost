@@ -441,24 +441,75 @@ export function useSaveStoreTax() {
   const qc = useQueryClient();
   const storeId = useStoreId();
   return useMutation({
-    mutationFn: async (items: { name: string; rate: number }[]) => {
+    mutationFn: async (input: { items: { name: string; rate: number }[]; baseRevision: number }) => {
+      if (!Number.isSafeInteger(input.baseRevision) || input.baseRevision < 1) {
+        throw new Error('설정을 아직 불러오지 못했어요 — 잠시 후 다시 시도해 주세요');
+      }
+      const items = input.items
+        // 서버 assert_tax_items 계약과 같다. 0%도 아직 요율을 정하지 않은 유효 항목으로 보존한다.
+        .filter((t) => t.name.trim() !== '' && t.rate >= 0)
+        .map((t) => ({ name: t.name.trim(), rate: t.rate }));
       const { data, error } = await supabase.rpc('save_store_tax', {
         p_store: storeId,
         // ⚠ 서버 인자는 남아 있지만 tax_of() 가 더는 읽지 않는다(0090).
         //   세금은 항목의 합뿐이다. 인자를 지우려면 RPC 를 drop 해야 해서 자리만 뒀다.
         p_mode: 'included',
-        p_items: items.filter((t) => t.name.trim() !== '' && t.rate > 0),
+        p_items: items,
+        p_base_revision: input.baseRevision,
       });
-      if (error) throw new Error(error.message);
-      const r = (data ?? {}) as unknown as Record<string, unknown>;
-      return { changed: Boolean(r.changed), recipes: num(r.recipes) };
+      if (error) throw rpcError(error);
+      return { ...parseTaxSaveResult(data), items };
     },
-    onSuccess: () => invalidate(qc, [qk.storeSettings, ...invalidateOn.e4()]),
+    onSuccess: (result) => {
+      qc.setQueryData<StoreSettings>(qk.storeSettings, (old) => old
+        ? { ...old, taxMode: 'included', taxItems: result.items, revision: result.revision }
+        : old);
+      invalidate(qc, [qk.storeSettings, ...invalidateOn.e4()]);
+    },
   });
 }
 
+export interface SettingsSaveResult { changed: boolean; revision: number }
+export interface TaxSaveResult extends SettingsSaveResult { recipes: number }
+
+function resultObject(data: unknown, what: string): Record<string, unknown> {
+  if (data === null || typeof data !== 'object' || Array.isArray(data)) {
+    throw new Error(`서버가 ${what} 저장 결과를 주지 않았어요`);
+  }
+  return data as Record<string, unknown>;
+}
+
+function resultBool(r: Record<string, unknown>, key: string, what: string): boolean {
+  if (typeof r[key] !== 'boolean') throw new Error(`서버 ${what} 결과의 ${key} 형식이 달라요`);
+  return r[key] as boolean;
+}
+
+function resultInt(r: Record<string, unknown>, key: string, what: string, min: number): number {
+  const v = r[key];
+  if (typeof v !== 'number' || !Number.isSafeInteger(v) || v < min || v > 2147483647) {
+    throw new Error(`서버 ${what} 결과의 ${key} 형식이 달라요`);
+  }
+  return v;
+}
+
+/** save_settings 응답 계약 — 누락을 false/0 으로 위장하지 않는다. */
+export function parseSettingsSaveResult(data: unknown): SettingsSaveResult {
+  const r = resultObject(data, '설정');
+  return { changed: resultBool(r, 'changed', '설정'), revision: resultInt(r, 'revision', '설정', 1) };
+}
+
+/** save_store_tax 응답 계약. */
+export function parseTaxSaveResult(data: unknown): TaxSaveResult {
+  const r = resultObject(data, '세금');
+  return {
+    changed: resultBool(r, 'changed', '세금'),
+    recipes: resultInt(r, 'recipes', '세금', 0),
+    revision: resultInt(r, 'revision', '세금', 1),
+  };
+}
+
 /**
- * 서버 save_settings(0167)와 합의한 **12개 키**. StoreSettings 의 나머지(taxItems·taxMode·
+ * 서버 save_settings(0172)와 합의한 **10개 키**. StoreSettings 의 나머지(taxItems·taxMode·
  * overnight·영업시간…)는 타입에서부터 못 넘긴다 — 예전엔 넓은 타입이 받아 놓고 전송에서
  * 버려서 빈 저장이 성공처럼 끝났다(검토 지적).
  */
@@ -499,24 +550,42 @@ export function buildSettingsPayload(input: Partial<SaveSettingsInput>): Record<
 /**
  * 설정 저장 — **판본 토큰**(0171)을 함께 보낸다. 마지막으로 받은 설정의 revision 이 base 이고, 그 사이
  * 다른 기기가 저장했으면 서버가 45009 로 거절한다(화면은 코드로 갈라 충돌 배너를 띄운다).
- * 설정을 아직 못 받았으면 보내지 않는다 — base 없이 보내면 서버가 BASE_REQUIRED 로 막는다.
+ * 화면이 편집 시작 판본을 주지 않으면 보내지 않는다 — base 없이 보내면 서버가 BASE_REQUIRED 로 막는다.
  */
+export interface SaveSettingsMutation {
+  values: Partial<SaveSettingsInput>;
+  /** 사용자가 편집을 시작했을 때의 판본. 저장 직전 최신 캐시로 바꾸면 낡은 초안이 덮어쓴다. */
+  baseRevision: number;
+}
+
 export function useSaveSettings() {
   const qc = useQueryClient();
   const storeId = useStoreId();
   return useMutation({
-    mutationFn: async (input: Partial<SaveSettingsInput>) => {
-      const cached = qc.getQueryData<StoreSettings>(qk.storeSettings);
-      const base = cached?.revision;
-      if (!Number.isSafeInteger(base) || (base as number) < 1) throw new Error('설정을 아직 불러오지 못했어요 — 잠시 후 다시 시도해 주세요');
-      const { error } = await supabase.rpc('save_settings', {
-        p_store: storeId, p_payload: asJson(buildSettingsPayload(input)), p_base_revision: base,
+    mutationFn: async (input: SaveSettingsMutation) => {
+      if (!Number.isSafeInteger(input.baseRevision) || input.baseRevision < 1) throw new Error('설정을 아직 불러오지 못했어요 — 잠시 후 다시 시도해 주세요');
+      const { data, error } = await supabase.rpc('save_settings', {
+        p_store: storeId, p_payload: asJson(buildSettingsPayload(input.values)), p_base_revision: input.baseRevision,
       });
       // ⚠ 코드를 살려 던진다 — 화면이 45009(다른 기기 변경)를 문구가 아니라 코드로 가른다.
       if (error) throw rpcError(error);
+      return parseSettingsSaveResult(data);
     },
-    // 성공·실패 모두 다시 읽는다 — 45009 뒤에는 새 판본과 값을 받아야 다음 저장이 된다.
-    onSettled: () => invalidate(qc, [qk.settings, qk.storeSettings]),
+    onSuccess: (result, input) => {
+      // 새 판본을 즉시 올려 재조회 전 연속 저장이 방금 자기가 올린 판본과 충돌하지 않게 한다.
+      qc.setQueryData<StoreSettings>(qk.storeSettings, (old) => {
+        if (!old) return old;
+        const next = { ...old, ...input.values, revision: result.revision };
+        if (input.values.locale !== undefined) {
+          const loc = LOCALES.find((l) => l.key === input.values.locale);
+          if (loc) { next.currency = loc.currency; next.moneyDigits = loc.moneyDigits; }
+        }
+        return next;
+      });
+      invalidate(qc, [qk.settings, qk.storeSettings]);
+    },
+    // 45009 뒤에는 최신값을 받되, 화면은 사용자가 새로고침하기 전까지 자기 초안을 유지하고 저장을 막는다.
+    onError: () => invalidate(qc, [qk.settings, qk.storeSettings]),
   });
 }
 

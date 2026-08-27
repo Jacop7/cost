@@ -24,6 +24,10 @@
 #         같은 것은 하나도 상속되지 않는다.
 #       · 비밀번호는 ADMIN_DB_PASSWORD 가 있으면 그것만 PGPASSWORD 로, 없으면 PGPASSFILE(있으면 그 경로,
 #         없으면 libpq 기본 ~/.pgpass — Windows 는 %APPDATA%\postgresql\pgpass.conf)에 맡긴다.
+#       · `bash -x` 의 PS4 는 스크립트 첫 명령보다 먼저 평가될 수 있다. 따라서 xtrace 진단에는
+#         ADMIN_DB_PASSWORD/SUPABASE_ADMIN_PASSWORD 를 환경으로 주지 말고 PGPASSFILE 을 쓴다.
+#         스크립트 안에서 이를 사후 차단하면 이미 출력된 비밀을 되돌릴 수 없으므로, 이 조합을
+#         안전하다고 약속하지 않는다(admin-acl.test.sh 가 custom PS4 + PGPASSFILE 경로를 잰다).
 #   fix   = 회수하고 잰다        check = 재기만 한다(배포 후 확인·게이트)     ← 생략 불가
 #   프로브가 열려 있으면 exit 1 — 조용히 넘어가지 않는다.
 #
@@ -32,9 +36,22 @@
 #   아니면 아무것도 바꾸지 않고 멈춘다. 마이그레이션(0167)은 이 상태를 NOTICE 로만 남긴다.
 # ⚠ 로그는 host/db 까지. 받은 값이 틀려도 되풀이하지 않는다.
 # ════════════════════════════════════════════════════════════════
+# 본체는 privileged mode(`bash -p`)에서만 돈다. 이 모드는 환경에서 가져온 BASH_FUNC_* 함수와
+# SHELLOPTS/BASHOPTS 를 적용하지 않는다. `/bin/bash` 는 경로로 직접 실행하므로 밖에서 export 한
+# set/unset/export/exec/compgen 함수가 이 부트스트랩을 가로챌 수 없다. 부모 분기는 자격증명을
+# 읽지도, 다른 명령을 실행하지도 않고 자식의 종료 상태를 그대로 돌려준다.
+# xtrace + 환경 비밀번호는 명시적으로 거부한다. 기본 PS4 에서는 아래 문구를 내고 exit 2지만,
+# custom PS4 가 비밀번호를 참조했다면 **이 첫 조건을 실행하기 전** 이미 샐 수 있다. 그래서 진단
+# 계약은 환경 비밀번호 자체를 주지 않고 PGPASSFILE 을 쓰는 것이다.
+if [[ $- == *x* && ( -v ADMIN_DB_PASSWORD || -v SUPABASE_ADMIN_PASSWORD ) ]]; then
+  /usr/bin/printf '%s\n' 'admin-acl: xtrace(-x)에서는 환경 비밀번호를 받지 않습니다 — PGPASSFILE을 사용하세요' >&2
+  /bin/bash -p -c 'exit 2'
+elif [[ ! -o privileged ]]; then
+  /bin/bash -p "$0" "$@"
+else
 set -euo pipefail
-# ⚠ xtrace 를 **비밀번호를 읽기 전에** 끈다 — `bash -x` 로 부르면 `LPW=…`·`export PGPASSWORD=…` 가 그대로
-#   찍혔다(검토 실측). 스크립트 안에서 다시 켜지 않는다. (회귀시험: scripts/admin-acl.test.sh — canary 부재)
+# 일반 xtrace 는 본체 첫 줄에서 끈다. 단, custom PS4 가 비밀번호 환경변수를 참조하면 이 줄보다
+# 먼저 샐 수 있으므로 위 계약대로 그 진단에는 PGPASSFILE 만 사용한다.
 { set +x; } 2>/dev/null
 
 usage() {
@@ -51,9 +68,9 @@ scrub_env() {
   local v
   # `builtin` — 밖에서 export 된 같은 이름의 함수로 목록을 속이지 못하게(검토 지적).
   for v in $(builtin compgen -e); do
-    case "$KEEP_ENV" in *" $v "*) ;; *) unset "$v" 2>/dev/null || true ;; esac
+    case "$KEEP_ENV" in *" $v "*) ;; *) builtin unset "$v" 2>/dev/null || true ;; esac
   done
-  export LANG="${LANG:-C.UTF-8}"
+  builtin export LANG="${LANG:-C.UTF-8}"
 }
 
 TARGET="${1:-}"; shift || true
@@ -69,7 +86,7 @@ case "$TARGET" in
     LPW="${SUPABASE_ADMIN_PASSWORD:-postgres}"
     # 격리된 서브셸: 환경을 비우고 PGPASSWORD 만 export 한 뒤 exec. docker 에는 -e PGPASSWORD(이름만)로 넘긴다 —
     # 어떤 argv 에도 비밀번호가 없다.
-    run() { ( scrub_env; export PGPASSWORD="$LPW"; exec docker exec -i -e PGPASSWORD "$CT" \
+    run() { ( scrub_env; builtin export PGPASSWORD="$LPW"; builtin exec docker exec -i -e PGPASSWORD "$CT" \
               psql -U supabase_admin -d "$D" -v ON_ERROR_STOP=1 -q -t -A "$@" ); }
     WHERE="local $CT/$D"
     ;;
@@ -96,12 +113,12 @@ case "$TARGET" in
     # argv 에는 psql 옵션만 남고, 비밀번호는 env 같은 중간 명령의 argv 에도 실리지 않는다(검토 P1).
     run() { (
       scrub_env
-      export PGHOST="$H" PGPORT="$P" PGDATABASE="$N" PGUSER="$U" PGSSLMODE="$SSL" PGCONNECT_TIMEOUT=15
-      [ -n "$CA" ] && export PGSSLROOTCERT="$CA"
-      if [ -n "$RPW" ]; then export PGPASSWORD="$RPW"
-      elif [ -n "$RPF" ]; then export PGPASSFILE="$RPF"   # 비밀번호를 안 줬으면 파일에만 맡긴다 — 셸의 PGPASSWORD 는 scrub 으로 사라진다.
+      builtin export PGHOST="$H" PGPORT="$P" PGDATABASE="$N" PGUSER="$U" PGSSLMODE="$SSL" PGCONNECT_TIMEOUT=15
+      [ -n "$CA" ] && builtin export PGSSLROOTCERT="$CA"
+      if [ -n "$RPW" ]; then builtin export PGPASSWORD="$RPW"
+      elif [ -n "$RPF" ]; then builtin export PGPASSFILE="$RPF"   # 비밀번호를 안 줬으면 파일에만 맡긴다 — 셸의 PGPASSWORD 는 scrub 으로 사라진다.
       fi
-      exec psql -v ON_ERROR_STOP=1 -q -t -A "$@"
+      builtin exec psql -v ON_ERROR_STOP=1 -q -t -A "$@"
     ); }
     WHERE="remote $H:$P/$N"
     ;;
@@ -160,3 +177,4 @@ if [ "$PROBE" != "t" ] || [ -n "$OPEN" ]; then
   exit 1
 fi
 echo "admin-acl: ok — supabase_admin 이 만든 표가 앱 롤에 닫혀 있습니다 [$WHERE]"
+fi

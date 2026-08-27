@@ -90,7 +90,10 @@ export default function MyLanguageScreen() {
   }
   // ⚠ key 로 편집기를 다시 만들지 않는다 — 다른 기기 변경·재조회 때 초안·확인 시트·오류·저장 중 잠금과
   //   완료 콜백까지 사라진다(검토 지적). 편집기가 서버값 변화를 스스로 다룬다(아래 정책).
-  return <LanguageEditor serverLocale={settings.locale} staleError={settings.error} refetch={settings.refetch} />;
+  if (settings.revision === null) {
+    return <Shell><Notice style={{ margin: 16 }}>설정 판본을 불러오지 못했어요</Notice></Shell>;
+  }
+  return <LanguageEditor serverLocale={settings.locale} serverRevision={settings.revision} staleError={settings.error} refetch={settings.refetch} />;
 }
 
 function Shell({ children }: { children: React.ReactNode }) {
@@ -108,28 +111,46 @@ function Shell({ children }: { children: React.ReactNode }) {
  *   · 수정 중·저장 중: 초안을 **유지**하고 "다른 기기에서 설정이 변경됐어요" 를 보이며 저장을 잠근다.
  *     사용자가 [새로고침] 을 눌러 서버값으로 맞춘 뒤 다시 고른다. 진행 중인 저장은 끊지 않는다.
  */
-function LanguageEditor({ serverLocale, staleError, refetch }: { serverLocale: LocaleKey; staleError: boolean; refetch: () => Promise<LocaleKey | null> }) {
+function LanguageEditor({ serverLocale, serverRevision, staleError, refetch }: {
+  serverLocale: LocaleKey;
+  serverRevision: number;
+  staleError: boolean;
+  refetch: () => Promise<{ locale: LocaleKey; revision: number } | null>;
+}) {
   const insets = useSafeAreaInsets();
-  const locale = serverLocale;
   const { setLocale, saving } = useSettingsActions();
   const digits = useUnitDigits();
 
   const [draft, setDraft] = useState<LocaleKey>(serverLocale); // 확정 전 선택 — 서버값이 온 뒤에만 만들어진다
+  const [baseLocale, setBaseLocale] = useState<LocaleKey>(serverLocale);
+  const [baseRevision, setBaseRevision] = useState(serverRevision);
   const [touched, setTouched] = useState(false);               // 사용자가 초안을 건드렸나
   const [confirm, setConfirm] = useState(false); // 확인 시트
   // 저장 실패 문구 — **화면 안**에 그린다. Alert.alert 는 웹(react-native-web)에서 아무것도 안 보여 준다(검토 지적).
   const [saveError, setSaveError] = useState<string | null>(null);
   // 수정 중에 서버값이 바뀌었다 — 새로고침 전엔 저장을 막는다.
   const [serverChanged, setServerChanged] = useState(false);
-  const seen = useRef(serverLocale);
+  const seen = useRef(serverRevision);
+  const conflictBaseRevision = useRef<number | null>(null);
   useEffect(() => {
-    if (seen.current === serverLocale) return;
-    seen.current = serverLocale;
-    if (!touched && !confirm && !saving) setDraft(serverLocale);
-    else setServerChanged(true);
-  }, [serverLocale, touched, confirm, saving]);
+    // revision 은 단조 증가한다. 늦게 도착한 낮은 판본으로 화면 기준과 다음 저장 토큰을
+    // 되돌리면 서버가 다시 45009 를 내므로, 마지막으로 본 판본보다 낮은 응답은 무시한다.
+    if (serverRevision < seen.current) return;
+    if (seen.current === serverRevision) return;
+    seen.current = serverRevision;
+    if (!touched && !confirm && !saving) {
+      setDraft(serverLocale);
+      setBaseLocale(serverLocale);
+      setBaseRevision(serverRevision);
+    }
+    else {
+      conflictBaseRevision.current = baseRevision;
+      setServerChanged(true);
+    }
+  }, [serverLocale, serverRevision, touched, confirm, saving, baseRevision]);
 
-  const changed = draft !== locale;
+  const locale = baseLocale;
+  const changed = draft !== baseLocale;
   const D = getLocale(draft);
 
   const pick = (k: LocaleKey) => { setDraft(k); setTouched(true); };
@@ -144,8 +165,21 @@ function LanguageEditor({ serverLocale, staleError, refetch }: { serverLocale: L
     try {
       const fresh = await refetch();
       if (fresh === null) return;
-      seen.current = fresh;
-      setDraft(fresh); setTouched(false); setServerChanged(false); setSaveError(null); setConfirm(false);
+      const conflictBase = conflictBaseRevision.current;
+      if (serverChanged && (
+        conflictBase === null
+        || fresh.revision <= conflictBase
+        || fresh.revision < seen.current
+      )) return;
+      seen.current = fresh.revision;
+      setDraft(fresh.locale);
+      setBaseLocale(fresh.locale);
+      setBaseRevision(fresh.revision);
+      setTouched(false);
+      conflictBaseRevision.current = null;
+      setServerChanged(false);
+      setSaveError(null);
+      setConfirm(false);
     } finally {
       setRefreshing(false);
     }
@@ -173,11 +207,26 @@ function LanguageEditor({ serverLocale, staleError, refetch }: { serverLocale: L
   const onSave = () => {
     if (saving || blocked) return;
     setSaveError(null);
-    setLocale(draft, {
-      onSuccess: () => { setConfirm(false); safeBack('/my'); },
+    setLocale(draft, baseRevision, {
+      // 훅이 캐시에 새 판본을 먼저 반영한다. 이 화면의 기준 판본도 같이 올려 두지 않으면
+      // 이동이 늦거나 실패한 순간 자기 저장을 "다른 기기 변경"으로 오인한다.
+      onSuccess: (result) => {
+        seen.current = result.revision;
+        setBaseLocale(draft);
+        setBaseRevision(result.revision);
+        setTouched(false);
+        conflictBaseRevision.current = null;
+        setServerChanged(false);
+        setConfirm(false);
+        safeBack('/my');
+      },
       onError: (e) => {
         // 45009 = 다른 기기가 먼저 저장했다(0171). 문구가 아니라 코드로 가른다 — 충돌 배너 + 새로고침.
-        if (e instanceof RpcError && e.code === '45009') { setServerChanged(true); return; }
+        if (e instanceof RpcError && e.code === '45009') {
+          conflictBaseRevision.current = baseRevision;
+          setServerChanged(true);
+          return;
+        }
         setSaveError(e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요');
       },
     });

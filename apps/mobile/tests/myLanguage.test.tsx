@@ -39,12 +39,12 @@ vi.mock('@/features/my/hooks', async (importOriginal) => ({
 import MyLanguageScreen from '@/features/my/screens/MyLanguageScreen';
 
 // 단가 자릿수 3 = 명시값(en-US 기본 4 와 다름) — 언어를 바꿔도 유지돼야 한다.
-const loaded = (locale: string, unitPriceDigits = 3) => ({
-  data: { locale, unitPriceDigits, currency: 'USD', moneyDigits: 2 },
+const loaded = (locale: string, unitPriceDigits = 3, revision = locale === 'en-US' ? 7 : 8) => ({
+  data: { locale, unitPriceDigits, currency: 'USD', moneyDigits: 2, unitSystem: 'metric', cupVolume: 200, revision },
   isLoading: false, isError: false,
   // react-query 의 refetch 처럼 결과 객체로 resolve 한다(store 가 data.locale 을 읽는다).
-  refetch: vi.fn(async (): Promise<{ data: { locale: string; unitPriceDigits: number; currency: string; moneyDigits: number } | undefined; isError: boolean }> =>
-    ({ data: { locale, unitPriceDigits, currency: 'USD', moneyDigits: 2 }, isError: false })),
+  refetch: vi.fn(async (): Promise<{ data: { locale: string; unitPriceDigits: number; currency: string; moneyDigits: number; unitSystem: string; cupVolume: number; revision: number } | undefined; isError: boolean }> =>
+    ({ data: { locale, unitPriceDigits, currency: 'USD', moneyDigits: 2, unitSystem: 'metric', cupVolume: 200, revision }, isError: false })),
 });
 
 const checked = (label: string) => screen.getByLabelText(label).getAttribute('aria-checked');
@@ -52,7 +52,11 @@ const disabled = (label: string) => screen.getByLabelText(label).getAttribute('a
 /** RN-web 의 Pressable 은 Modal 안에서 click 만으로는 안 눌린다 — 포인터 순서로 누른다(businessDayBar 시험과 같다). */
 const press = (el: Element) => { fireEvent.pointerDown(el); fireEvent.pointerUp(el); fireEvent.click(el); };
 const sheetOpen = () => screen.queryByText('이렇게 보여요') !== null;
-const lastCallbacks = () => mutate.mock.calls.at(-1)![1] as { onSuccess: () => void; onError: (e: unknown) => void };
+const lastCallbacks = () => mutate.mock.calls.at(-1)![1] as {
+  onSuccess: (result: { changed: boolean; revision: number }) => void;
+  onError: (e: unknown) => void;
+};
+const completeSuccess = (revision = 8) => lastCallbacks().onSuccess({ changed: true, revision });
 
 /** 한국어를 고르고 확인 시트까지 연다. */
 async function pickKoAndOpenSheet() {
@@ -107,7 +111,7 @@ describe('배경 재조회 실패', () => {
     expect(screen.getByLabelText('재조회 실패').textContent).toContain('마지막으로 받은 값 기준');
     expect(checked('한국어')).toBe('true');
     expect(disabled('언어 저장 확정')).toBe(true);
-    lastCallbacks().onSuccess();                                       // 완료 콜백이 그대로 온다
+    completeSuccess();                                                 // 완료 콜백이 그대로 온다
     expect(safeBack).toHaveBeenCalledWith('/my');
   });
 
@@ -148,6 +152,19 @@ describe('서버 언어가 바뀌면', () => {
     expect(disabled('저장')).toBe(true);
   });
 
+  it('수정 전이어도 늦게 온 낮은 판본은 무시하고 다음 저장은 마지막 판본을 쓴다', async () => {
+    const { rerender } = render(<MyLanguageScreen />);
+    storeSettings.mockReturnValue(loaded('ja', 3, 3));
+    rerender(<MyLanguageScreen />);
+
+    expect(checked('English (US)')).toBe('true');
+    expect(checked('日本語')).toBe('false');
+    await pickKoAndOpenSheet();
+    fireEvent.click(screen.getByLabelText('언어 저장 확정'));
+    await waitFor(() => expect(mutate).toHaveBeenCalledTimes(1));
+    expect(mutate.mock.calls[0]![0]).toEqual({ values: { locale: 'ko', unitPriceDigits: 3 }, baseRevision: 7 });
+  });
+
   it('수정 중이면 초안을 지키고 알린다 — 저장은 잠기고, 새로고침은 **실제 재조회 성공 뒤에만** 서버값으로 맞춘다', async () => {
     const { rerender } = render(<MyLanguageScreen />);
     fireEvent.click(screen.getByLabelText('한국어'));
@@ -182,7 +199,7 @@ describe('서버 언어가 바뀌면', () => {
     rerender(<MyLanguageScreen />);
     expect(sheetOpen()).toBe(true);                    // 편집기가 다시 만들어지지 않았다
     expect(screen.getAllByText(/다른 기기에서 설정이 변경됐어요/).length).toBeGreaterThan(0);
-    lastCallbacks().onSuccess();
+    completeSuccess();
     expect(safeBack).toHaveBeenCalledWith('/my');
   });
 });
@@ -194,9 +211,9 @@ describe('저장 흐름', () => {
     fireEvent.click(screen.getByLabelText('언어 저장 확정'));
     await waitFor(() => expect(mutate).toHaveBeenCalledTimes(1));
     // 언어만 보낸다 — 통화·금액 자릿수는 서버가 파생한다(0168). 단가 자릿수는 명시값(3)을 유지.
-    expect(mutate.mock.calls[0]![0]).toEqual({ locale: 'ko', unitPriceDigits: 3 });
+    expect(mutate.mock.calls[0]![0]).toEqual({ values: { locale: 'ko', unitPriceDigits: 3 }, baseRevision: 7 });
     expect(safeBack).not.toHaveBeenCalled();
-    lastCallbacks().onSuccess();
+    completeSuccess();
     expect(safeBack).toHaveBeenCalledWith('/my');
   });
 
@@ -242,6 +259,38 @@ describe('저장 흐름', () => {
     expect(screen.queryByRole('alert')).toBeNull();                 // 일반 실패 문구가 아니다
     expect(disabled('언어 저장 확정')).toBe(true);                    // 새로고침 전엔 잠긴다
     expect(safeBack).not.toHaveBeenCalled();
+  });
+
+  it('45009 뒤 같은 판본 재조회는 충돌을 유지하고 더 높은 판본만 채택한다', async () => {
+    const q = loaded('en-US', 3, 7);
+    const fresh = loaded('ja', 3, 8);
+    q.refetch
+      .mockResolvedValueOnce({ data: q.data, isError: false })
+      .mockResolvedValueOnce({ data: fresh.data, isError: false });
+    storeSettings.mockReturnValue(q);
+    render(<MyLanguageScreen />);
+
+    await pickKoAndOpenSheet();
+    fireEvent.click(screen.getByLabelText('언어 저장 확정'));
+    await waitFor(() => expect(mutate).toHaveBeenCalledTimes(1));
+    lastCallbacks().onError(new RpcError('충돌', '45009', 'REVISION_CONFLICT'));
+    await waitFor(() => expect(screen.getByLabelText('새로고침')).toBeTruthy());
+
+    fireEvent.click(screen.getByLabelText('새로고침'));
+    await waitFor(() => expect(q.refetch).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(disabled('새로고침')).toBe(false));
+    expect(screen.getByRole('status')).toBeTruthy();
+    expect(disabled('언어 저장 확정')).toBe(true);
+
+    fireEvent.click(screen.getByLabelText('새로고침'));
+    await waitFor(() => expect(q.refetch).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(checked('日本語')).toBe('true'));
+    expect(screen.queryByRole('status')).toBeNull();
+
+    await pickKoAndOpenSheet();
+    fireEvent.click(screen.getByLabelText('언어 저장 확정'));
+    await waitFor(() => expect(mutate).toHaveBeenCalledTimes(2));
+    expect(mutate.mock.calls.at(-1)![0]).toEqual({ values: { locale: 'ko', unitPriceDigits: 3 }, baseRevision: 8 });
   });
 
   it('다시 시도하면 옛 실패 문구는 사라진다', async () => {

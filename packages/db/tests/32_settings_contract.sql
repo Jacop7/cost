@@ -57,11 +57,18 @@ begin
 end $t$;
 
 
--- ── 판본 (0171) — 다른 기기가 먼저 저장했으면 45009, base 없이는 22000, 저장마다 1씩 ─────
+-- ── 판본 (0171·0172) — 충돌을 막고, 무변경 저장은 판본·시각을 안 움직인다 ───────────
 do $t$
-declare v_rev int; v_res jsonb;
+declare
+  v_rev   int;
+  v_res   jsonb;
+  v_stamp timestamptz;
+  v_same  int;
+  v_next  int;
 begin
   v_rev := pg_temp.settings_rev(pg_temp.store());
+  select quantity_digits into v_same from settings where store_id = pg_temp.store();
+  v_next := case when v_same = 1 then 2 else 1 end;
   perform pg_temp.ok('응답 revision = 행의 판본', (get_settings(pg_temp.store()) ->> 'revision')::int = v_rev);
   perform pg_temp.raises('base 없이는 22000 BASE_REQUIRED',
     format('select save_settings(%L, %L::jsonb)', pg_temp.store(), '{"quantity_digits":1}'), '22000');
@@ -70,8 +77,25 @@ begin
   perform pg_temp.raises('앞선 base 도 45009',
     format('select save_settings(%L, %L::jsonb, %s)', pg_temp.store(), '{"quantity_digits":1}', v_rev + 1), '45009');
   perform pg_temp.eq('거부된 저장은 판본을 안 올린다', pg_temp.settings_rev(pg_temp.store()), v_rev, 0);
-  v_res := save_settings(pg_temp.store(), '{"quantity_digits":1}'::jsonb, v_rev);
+
+  -- UPDATE 가 한 번이라도 돌면 settings_touch 가 시각을 now() 로 되돌리게 미래 표식을 심는다.
+  set local role postgres;
+  alter table settings disable trigger settings_touch;
+  update settings set updated_at = clock_timestamp() + interval '1 hour' where store_id = pg_temp.store();
+  alter table settings enable trigger settings_touch;
+  select updated_at into v_stamp from settings where store_id = pg_temp.store();
+  set local role authenticated;
+
+  v_res := save_settings(pg_temp.store(), jsonb_build_object('quantity_digits', v_same), v_rev);
+  perform pg_temp.ok('같은 값 저장은 changed=false', (v_res ->> 'changed')::boolean is false);
+  perform pg_temp.eq('같은 값 저장은 판본 불변', pg_temp.settings_rev(pg_temp.store()), v_rev, 0);
+  perform pg_temp.eq('무변경 응답도 현재 판본을 준다', (v_res ->> 'revision')::int, v_rev, 0);
+  perform pg_temp.eq_t('같은 값 저장은 updated_at 불변',
+    (select updated_at::text from settings where store_id = pg_temp.store()), v_stamp::text);
+
+  v_res := save_settings(pg_temp.store(), jsonb_build_object('quantity_digits', v_next), v_rev);
   perform pg_temp.eq('맞는 base 면 저장되고 판본이 1 오른다', pg_temp.settings_rev(pg_temp.store()), v_rev + 1, 0);
+  perform pg_temp.ok('실제 변경은 changed=true', (v_res ->> 'changed')::boolean is true);
   perform pg_temp.eq('응답이 새 판본을 준다', (v_res ->> 'revision')::int, v_rev + 1, 0);
   perform pg_temp.raises('같은 base 로 두 번째 저장(다른 기기 시나리오)은 45009',
     format('select save_settings(%L, %L::jsonb, %s)', pg_temp.store(), '{"quantity_digits":2}', v_rev), '45009');

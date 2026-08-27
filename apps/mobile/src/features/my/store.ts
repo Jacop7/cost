@@ -10,7 +10,7 @@
  * 새 로케일 기본값(금액+2)으로 자연스럽게 따라간다.
  */
 import { DEFAULT_LOCALE, LOCALES, type LocaleKey, unitPriceDigits } from '@sikjae/core';
-import { useSaveSettings, useStoreSettings } from './hooks';
+import { useSaveSettings, useStoreSettings, type SettingsSaveResult } from './hooks';
 
 /** 우리가 아는 언어 키인가 — LOCALES 의 키 집합으로 직접 본다. */
 export const isLocaleKey = (v: unknown): v is LocaleKey =>
@@ -25,6 +25,12 @@ export const asLocale = (v: string | undefined): LocaleKey => (isLocaleKey(v) ? 
 
 export interface AppSettings {
   locale: LocaleKey;
+  /** 편집 시작 시점에 고정해 저장에 되돌려줄 설정 판본. */
+  revision: number | null;
+  /** 1차는 metric 만 허용한다. null 은 서버값을 아직 못 받은 상태다. */
+  unitSystem: string | null;
+  /** 서버에 저장된 1컵 용량(ml). */
+  cupVolume: number | null;
   /** 단가 소수 자릿수(명시값). null 이면 로케일 기본값을 따른다. */
   unitDigits: number | null;
   loading: boolean;
@@ -32,8 +38,13 @@ export interface AppSettings {
   error: boolean;
   /** 값이 한 번이라도 왔나. error 와 함께 참이면 **배경 재조회 실패**다 — 보여 줄 순 있지만 저장은 막는다. */
   hasData: boolean;
-  /** 서버를 실제로 다시 조회한다. 성공하면 새 언어 키, 실패하면 null — 화면은 성공 응답으로만 기준값을 바꾼다. */
-  refetch: () => Promise<LocaleKey | null>;
+  /** 서버를 실제로 다시 조회한다. 성공하면 새 언어·판본, 실패하면 null — 성공 응답으로만 기준값을 바꾼다. */
+  refetch: () => Promise<{
+    locale: LocaleKey;
+    revision: number;
+    unitSystem: string;
+    cupVolume: number;
+  } | null>;
 }
 
 export function useSettings(): AppSettings {
@@ -45,6 +56,9 @@ export function useSettings(): AppSettings {
   const isDefault = stored === undefined || stored === unitPriceDigits(locale);
   return {
     locale,
+    revision: q.data?.revision ?? null,
+    unitSystem: q.data?.unitSystem ?? null,
+    cupVolume: q.data?.cupVolume ?? null,
     unitDigits: isDefault ? null : stored,
     loading: q.isLoading,
     error: q.isError,
@@ -53,7 +67,14 @@ export function useSettings(): AppSettings {
       // 실패는 null 로 — 던지지 않는다(호출부는 대개 fire-and-forget 이라 unhandled rejection 이 된다).
       try {
         const r = await q.refetch();
-        return r?.data && !r.isError ? asLocale(r.data.locale) : null;
+        return r?.data && !r.isError
+          ? {
+              locale: asLocale(r.data.locale),
+              revision: r.data.revision,
+              unitSystem: r.data.unitSystem,
+              cupVolume: r.data.cupVolume,
+            }
+          : null;
       } catch {
         return null;
       }
@@ -68,7 +89,7 @@ export function useUnitDigits(): number {
 }
 
 export interface SaveCallbacks {
-  onSuccess?: () => void;
+  onSuccess?: (result: SettingsSaveResult) => void;
   onError?: (e: unknown) => void;
 }
 
@@ -85,18 +106,27 @@ export function useSettingsActions() {
 
   return {
     saving: save.isPending,
-    setLocale: (next: LocaleKey, cb: SaveCallbacks = {}) =>
+    setLocale: (next: LocaleKey, baseRevision: number, cb: SaveCallbacks = {}) =>
       save.mutate(
         {
-          locale: next,
-          // 통화·금액 자릿수는 **서버가 언어에서 파생**한다(0168 locale_defaults) — 여기서 따로
-          // 보내지 않는다. 보내면 서버 표와 어긋나는 순간 거부된다(INVALID_VALUE).
-          // 명시 설정이 없으면 단가 자릿수는 새 로케일 기본값을 따라간다.
-          unitPriceDigits: unitDigits ?? unitPriceDigits(next),
+          values: {
+            locale: next,
+            // 통화·금액 자릿수는 **서버가 언어에서 파생**한다(0168 locale_defaults).
+            unitPriceDigits: unitDigits ?? unitPriceDigits(next),
+          },
+          baseRevision,
         },
         { onSuccess: cb.onSuccess, onError: cb.onError },
       ),
-    setUnitDigits: (next: number | null, onError?: (e: unknown) => void) =>
-      save.mutate({ unitPriceDigits: next ?? unitPriceDigits(locale) }, { onError }),
+    setUnitDigits: (next: number | null, baseRevision: number, cb: SaveCallbacks = {}) =>
+      save.mutate(
+        { values: { unitPriceDigits: next ?? unitPriceDigits(locale) }, baseRevision },
+        { onSuccess: cb.onSuccess, onError: cb.onError },
+      ),
+    setCupVolume: (next: number, baseRevision: number, cb: SaveCallbacks = {}) =>
+      save.mutate(
+        { values: { cupVolume: next }, baseRevision },
+        { onSuccess: cb.onSuccess, onError: cb.onError },
+      ),
   };
 }

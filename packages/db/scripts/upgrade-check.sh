@@ -237,5 +237,143 @@ else
   if [ "$bad" = "0" ]; then say "   ok   매장 2개 모두 20키(응답 NULL 매장 없음)"; else say "   FAIL 20키가 아닌 매장 ${bad}개"; fail=1; fi
 fi
 
+# ── 시나리오 8 · 0170 기존 2매장 → 판본 마이그레이션 전체 (검토 O 후속) ─────────
+# 특정 마지막 파일을 박지 않는다. 0170 뒤에 있는 마이그레이션을 실행 시점의 최신까지 순서대로
+# 태운다 — 0172 처럼 0171 계약을 완결하는 후속이 생겨도 이 경로가 빠뜨리지 않는다.
+say "⑧ 0170 상태 + 서로 다른 2매장 설정 → 최신까지 값 보존·일반/세금 판본 계약"
+BASE8=20260826000170
+STEPS8=()
+while IFS= read -r m; do
+  prefix="${m%%_*}"
+  if [[ "$prefix" > "$BASE8" ]]; then STEPS8+=("$m"); fi
+done < <(cd "$MIG_DIR" && printf '%s\n' *.sql | LC_ALL=C sort)
+if [ "${#STEPS8[@]}" -lt 2 ] \
+   || [[ " ${STEPS8[*]} " != *" 20260826000171_settings_revision.sql "* ]] \
+   || [[ " ${STEPS8[*]} " != *" 20260826000172_settings_revision_noop_tax.sql "* ]]; then
+  say "   FAIL 0171·0172 를 포함한 후속 마이그레이션 목록을 만들지 못했다"
+  fail=1
+else
+  bash "$SCRIPT_DIR/fresh-db.sh" --until "$BASE8" "$D" >/dev/null
+  psql_d "$D" <<'EOF' >/dev/null
+insert into auth.users (id) values ('00000000-0000-0000-0000-00000000c0c0');
+insert into stores (owner_id, name) values ('00000000-0000-0000-0000-00000000c0c0', '판본 업그레이드 매장 2');
+
+with ranked as (
+  select s.store_id, row_number() over (order by st.created_at, st.id) as n
+    from settings s join stores st on st.id = s.store_id
+)
+update settings s set
+  locale = case r.n when 1 then 'en-US' else 'ja' end,
+  currency = case r.n when 1 then 'USD' else 'JPY' end,
+  money_digits = case r.n when 1 then 2 else 0 end,
+  cup_volume = case r.n when 1 then 333 else 444 end,
+  quantity_digits = case r.n when 1 then 3 else 4 end,
+  default_target_profit_rate = case r.n when 1 then 37 else 42 end,
+  alert_morning_summary = (r.n = 1),
+  alert_inbound_delay = (r.n = 2),
+  tax_mode = case r.n when 1 then 'included'::tax_mode else 'exempt'::tax_mode end,
+  tax_items = case r.n when 1 then '[{"name":"지방세","rate":3.5}]'::jsonb else '[]'::jsonb end
+from ranked r where r.store_id = s.store_id;
+
+create table public._expect_0171 as
+select s.store_id, to_jsonb(s) - 'updated_at' as value_before
+  from settings s;
+EOF
+  n=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c "select count(*) from public._expect_0171;")
+  if [ "$n" != "2" ]; then
+    say "   FAIL 전제가 안 섰다 — 보존할 설정 행이 2개가 아니다 ($n)"
+    fail=1
+  else
+    ok=1
+    for m in "${STEPS8[@]}"; do
+      if ! err="$(psql_d "$D" < "$MIG_DIR/$m" 2>&1 1>/dev/null)"; then
+        ok=0; say "   FAIL $m 에서 막혔다"; say "        $(printf '%s' "$err" | head -3)"; break
+      fi
+    done
+    if [ "$ok" = "1" ]; then
+      # 기대 행을 기준으로만 inner join 하면 후속 마이그레이션이 설정 행을 지운 경우 그 행이
+      # 비교에서 사라져 changed=0 으로 거짓 통과한다. FULL JOIN 으로 값 변경뿐 아니라 누락·추가도 센다.
+      changed=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c "
+        select count(*)
+          from public._expect_0171 e
+          full join settings s using (store_id)
+         where e.store_id is null
+            or s.store_id is null
+            or (to_jsonb(s) - 'updated_at' - 'revision') is distinct from e.value_before;")
+      rev_bad=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c "select count(*) from settings where revision <> 1;")
+      old_fn=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c "
+        select count(*) from pg_proc p where p.pronamespace='public'::regnamespace
+          and ((p.proname='save_settings' and p.pronargs <> 3)
+            or (p.proname='save_store_tax' and p.pronargs <> 4));")
+      if [ "$changed" = "0" ] && [ "$rev_bad" = "0" ] && [ "$old_fn" = "0" ]; then
+        say "   ok   두 매장의 기존 일반·세금 값 보존 · revision=1 · 옛 시그니처 0개"
+      else
+        say "   FAIL 값 변경=$changed 판본 불일치=$rev_bad 옛 시그니처=$old_fn"
+        fail=1
+      fi
+
+      # 앱이 밟는 문으로 무변경→변경→낡은 판본 거부를 잰다. 전부 롤백해 보존 검산과 분리한다.
+      if ! err="$(psql_d "$D" <<'EOF' 2>&1 1>/dev/null
+begin;
+select set_config('request.jwt.claims',
+  jsonb_build_object('sub', owner_id, 'role', 'authenticated')::text, true)
+  from stores order by created_at, id limit 1;
+set local role authenticated;
+do $test$
+declare
+  v settings%rowtype;
+  v_r jsonb;
+  v_time timestamptz;
+  v_mode tax_mode;
+begin
+  select s.* into v from settings s join stores st on st.id=s.store_id order by st.created_at, st.id limit 1;
+  v_time := v.updated_at;
+
+  v_r := save_settings(v.store_id, jsonb_build_object('cup_volume', v.cup_volume), v.revision);
+  if (v_r->>'changed')::boolean or (v_r->>'revision')::int <> v.revision then
+    raise exception '⑧ save_settings 무변경 응답이 틀렸습니다: %', v_r;
+  end if;
+  v_r := save_store_tax(v.store_id, v.tax_mode, v.tax_items, v.revision);
+  if (v_r->>'changed')::boolean or (v_r->>'revision')::int <> v.revision then
+    raise exception '⑧ save_store_tax 무변경 응답이 틀렸습니다: %', v_r;
+  end if;
+  if (select updated_at from settings where store_id=v.store_id) is distinct from v_time then
+    raise exception '⑧ 무변경 저장이 updated_at 을 바꿨습니다';
+  end if;
+
+  v_r := save_settings(v.store_id, jsonb_build_object('cup_volume', v.cup_volume + 1), v.revision);
+  if not (v_r->>'changed')::boolean or (v_r->>'revision')::int <> v.revision + 1 then
+    raise exception '⑧ save_settings 변경 판본이 틀렸습니다: %', v_r;
+  end if;
+  begin
+    perform save_settings(v.store_id, jsonb_build_object('quantity_digits', 2), v.revision);
+    raise exception '⑧ save_settings 낡은 판본이 통과했습니다';
+  exception when sqlstate '45009' then null;
+  end;
+
+  v_mode := case when v.tax_mode = 'exempt' then 'included'::tax_mode else 'exempt'::tax_mode end;
+  v_r := save_store_tax(v.store_id, v_mode, '[]'::jsonb, v.revision + 1);
+  if not (v_r->>'changed')::boolean or (v_r->>'revision')::int <> v.revision + 2 then
+    raise exception '⑧ save_store_tax 변경 판본이 틀렸습니다: %', v_r;
+  end if;
+  begin
+    perform save_store_tax(v.store_id, v_mode, '[]'::jsonb, v.revision + 1);
+    raise exception '⑧ save_store_tax 낡은 판본이 통과했습니다';
+  exception when sqlstate '45009' then null;
+  end;
+end $test$;
+rollback;
+EOF
+      )"; then
+        say "   FAIL 일반/세금 판본 행동 계약이 깨졌다"; say "        $(printf '%s' "$err" | head -3)"; fail=1
+      else
+        say "   ok   일반·세금 무변경은 자국 0, 변경은 +1, 낡은 판본은 45009"
+      fi
+    else
+      fail=1
+    fi
+  fi
+fi
+
 say ""
-if [ "$fail" = "0" ]; then say "업그레이드 경로 7/7 통과"; else say "업그레이드 경로 실패"; exit 1; fi
+if [ "$fail" = "0" ]; then say "업그레이드 경로 8/8 통과"; else say "업그레이드 경로 실패"; exit 1; fi

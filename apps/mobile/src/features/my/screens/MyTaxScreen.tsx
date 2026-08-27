@@ -13,11 +13,12 @@
  * ⚠ 배달 중개 수수료는 여기가 아니라 **고정 지출**이다(0043).
  *   두 곳에 넣으면 같은 돈이 손익에서 두 번 빠진다(실측 19일 503,397원).
  */
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { AppHeader, Button, Card, Icon, Input, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { clampDecimals } from '@/lib/num';
+import { RpcError } from '@/lib/supabase';
 import { T, tnum } from '@/theme/tokens';
 import { useSaveStoreTax, useStoreSettings } from '../hooks';
 
@@ -29,14 +30,74 @@ export default function MyTaxScreen() {
 
   const [rows, setRows] = useState<Row[]>([]);
   const [loaded, setLoaded] = useState(false);
+  const [touched, setTouched] = useState(false);
+  const [baseRevision, setBaseRevision] = useState<number | null>(null);
+  const [serverChanged, setServerChanged] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
+  const seenRevision = useRef<number | null>(null);
+  const conflictBaseRevision = useRef<number | null>(null);
 
   // 서버 값으로 한 번만 채운다. 매번 덮으면 입력 중에 글자가 되돌아간다.
   useEffect(() => {
     const s = settings.data;
-    if (!s || loaded) return;
-    setRows(s.taxItems.map((t) => ({ name: t.name, rate: String(t.rate) })));
-    setLoaded(true);
-  }, [settings.data, loaded]);
+    if (!s) return;
+    if (!loaded) {
+      setRows(s.taxItems.map((t) => ({ name: t.name, rate: String(t.rate) })));
+      setBaseRevision(s.revision);
+      seenRevision.current = s.revision;
+      setLoaded(true);
+      return;
+    }
+    if (seenRevision.current === s.revision) return;
+    // 자체 저장/충돌 새로고침 뒤 늦게 끝난 옛 조회가 더 낮은 판본을 돌려줘도 초안과 기준을 되돌리지 않는다.
+    if (seenRevision.current !== null && s.revision < seenRevision.current) return;
+    seenRevision.current = s.revision;
+    if (!touched && !save.isPending) {
+      setRows(s.taxItems.map((t) => ({ name: t.name, rate: String(t.rate) })));
+      setBaseRevision(s.revision);
+    } else if (s.revision !== baseRevision) {
+      setServerChanged(true);
+    }
+  }, [settings.data, loaded, touched, save.isPending, baseRevision]);
+
+  const editRows = (fn: (prev: Row[]) => Row[]) => {
+    setRows(fn);
+    setTouched(true);
+    setSaveError(null);
+  };
+
+  /** 충돌 해결 — 성공 응답의 세금 항목·판본을 편집 기준으로 채택한다. */
+  const adoptLatest = async () => {
+    if (refreshing) return;
+    setRefreshing(true);
+    try {
+      const r = await settings.refetch();
+      if (r.isError || !r.data) return;
+      const s = r.data;
+      const conflictBase = conflictBaseRevision.current;
+      if (serverChanged && (
+        conflictBase === null
+        || s.revision <= conflictBase
+        || (seenRevision.current !== null && s.revision < seenRevision.current)
+      )) return;
+      seenRevision.current = s.revision;
+      setRows(s.taxItems.map((t) => ({ name: t.name, rate: String(t.rate) })));
+      setBaseRevision(s.revision);
+      setTouched(false);
+      conflictBaseRevision.current = null;
+      setServerChanged(false);
+      setSaveError(null);
+    } finally { setRefreshing(false); }
+  };
+
+  /** 배경 재조회 실패 재시도 — 서버 조회만 다시 하고 사용자가 쓰던 초안은 유지한다. */
+  const retryPreservingDraft = async () => {
+    if (refreshing) return;
+    setRefreshing(true);
+    try { await settings.refetch(); }
+    finally { setRefreshing(false); }
+  };
 
   const num = (v: string) => {
     const n = parseFloat(v);
@@ -53,35 +114,57 @@ export default function MyTaxScreen() {
   const rate = rows.reduce((a, t) => a + num(t.rate) / 100, 0);
 
   const onSave = () => {
-    if (error) return;
+    if (error || baseRevision === null || serverChanged || settings.isError || save.isPending) return;
+    setSaveError(null);
     save.mutate(
-      rows.map((t) => ({ name: t.name.trim(), rate: num(t.rate) })),
+      { items: rows.map((t) => ({ name: t.name.trim(), rate: num(t.rate) })), baseRevision },
       {
         onSuccess: (res) => {
+          seenRevision.current = res.revision;
+          setBaseRevision(res.revision);
           safeBack('/my');
           if (res.changed) {
             // 몇 개 메뉴가 다시 계산됐는지 말해 준다. 조용히 넘기면 무슨 일이 났는지 모른다.
             Alert.alert('세금을 저장했어요', `메뉴 ${res.recipes}개의 손익이 다시 계산됐어요.`);
           }
         },
-        onError: (e) =>
-          Alert.alert('저장하지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'),
+        onError: (e) => {
+          if (e instanceof RpcError && e.code === '45009') {
+            conflictBaseRevision.current = baseRevision;
+            setServerChanged(true);
+            return;
+          }
+          setSaveError(e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요');
+        },
       },
     );
   };
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
-      <AppHeader title="세금" onBack={() => safeBack('/my')} />
+      <AppHeader title="세금" onBack={() => { if (!save.isPending) safeBack('/my'); }} />
 
       <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 28, gap: 11 }} showsVerticalScrollIndicator={false}>
         <QueryState
           isLoading={settings.isLoading}
-          error={settings.error}
+          error={settings.data ? null : settings.error}
           isEmpty={false}
           onRetry={() => void settings.refetch()}
           emptyTitle="설정을 불러오지 못했어요"
         >
+          {settings.isError && settings.data ? (
+            <View role="alert" style={{ padding: 13, borderRadius: 12, backgroundColor: T.redTint }}>
+              <Text style={{ color: T.red, fontWeight: '700' }}>최신 설정을 불러오지 못했어요. 다시 시도해 주세요.</Text>
+              <View style={{ marginTop: 8 }}><Button kind="gray" size="md" loading={refreshing} onPress={() => { void retryPreservingDraft(); }}>다시 시도</Button></View>
+            </View>
+          ) : null}
+          {serverChanged ? (
+            <View role="status" style={{ padding: 13, borderRadius: 12, backgroundColor: T.redTint, borderWidth: 1, borderColor: T.red }}>
+              <Text style={{ color: T.red, fontWeight: '700' }}>다른 기기에서 설정이 변경됐어요. 새로고침 후 다시 저장해 주세요.</Text>
+              <View style={{ marginTop: 8 }}><Button kind="gray" size="md" loading={refreshing} onPress={() => { void adoptLatest(); }} accessibilityLabel="새로고침">새로고침</Button></View>
+            </View>
+          ) : null}
+          {saveError ? <Text role="alert" style={{ color: T.red, fontWeight: '700' }}>저장하지 못했어요 · {saveError}</Text> : null}
           {/* 그 밖의 세금·수수료 */}
           <Card pad={0} style={{ overflow: 'hidden' }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 13, paddingHorizontal: 15, backgroundColor: T.surface2 }}>
@@ -95,7 +178,8 @@ export default function MyTaxScreen() {
                   <View style={{ flex: 2 }}>
                     <Input
                       value={t.name}
-                      onChangeText={(v) => setRows((p) => p.map((x, k) => (k === i ? { ...x, name: v } : x)))}
+                      disabled={save.isPending || serverChanged || settings.isError}
+                      onChangeText={(v) => editRows((p) => p.map((x, k) => (k === i ? { ...x, name: v } : x)))}
                       placeholder="예) 부가세, 카드 수수료"
                       accessibilityLabel={`항목 ${i + 1} 이름`}
                     />
@@ -103,8 +187,9 @@ export default function MyTaxScreen() {
                   <View style={{ flex: 1 }}>
                     <Input
                       value={t.rate}
+                      disabled={save.isPending || serverChanged || settings.isError}
                       onChangeText={(v) =>
-                        setRows((p) => p.map((x, k) => (k === i ? { ...x, rate: clampDecimals(v, 4) } : x)))
+                        editRows((p) => p.map((x, k) => (k === i ? { ...x, rate: clampDecimals(v, 4) } : x)))
                       }
                       placeholder="0"
                       suffix="%"
@@ -114,7 +199,8 @@ export default function MyTaxScreen() {
                     />
                   </View>
                   <Pressable
-                    onPress={() => setRows((p) => p.filter((_, k) => k !== i))}
+                    onPress={() => editRows((p) => p.filter((_, k) => k !== i))}
+                    disabled={save.isPending || serverChanged || settings.isError}
                     accessibilityRole="button"
                     accessibilityLabel={`${t.name || `항목 ${i + 1}`} 삭제`}
                     hitSlop={8}
@@ -126,7 +212,9 @@ export default function MyTaxScreen() {
               ))}
 
               <Pressable
-                onPress={() => setRows((p) => [...p, { name: '', rate: '' }])}
+                onPress={() => editRows((p) => [...p, { name: '', rate: '' }])}
+                disabled={save.isPending || serverChanged || settings.isError}
+                accessibilityState={{ disabled: save.isPending || serverChanged || settings.isError }}
                 accessibilityRole="button"
                 accessibilityLabel="세금 항목 추가"
                 style={{
@@ -170,7 +258,7 @@ export default function MyTaxScreen() {
           kind="primary"
           size="lg"
           full
-          disabled={Boolean(error) || !loaded}
+          disabled={Boolean(error) || !loaded || baseRevision === null || serverChanged || settings.isError}
           loading={save.isPending}
           onPress={onSave}
         >
