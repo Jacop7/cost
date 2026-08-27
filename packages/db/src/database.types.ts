@@ -2662,7 +2662,8 @@ export type Database = {
         Args: {
           p_store: string
           p_mode: Database["public"]["Enums"]["tax_mode"]
-          p_items?: Json
+          p_items: Json
+          p_base_revision?: number
         }
         Returns: Json
       }

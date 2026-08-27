@@ -62,7 +62,8 @@ begin
   perform pg_temp.eq_t('save_settings 는 definer 로 통과', (select quantity_digits::text from settings where store_id = v_store), '2');
   perform save_store_tax(v_store,
     (select tax_mode from settings where store_id = v_store),
-    (select coalesce(tax_items, '[]'::jsonb) from settings where store_id = v_store));
+    (select coalesce(tax_items, '[]'::jsonb) from settings where store_id = v_store),
+    pg_temp.settings_rev(v_store));
   perform pg_temp.ok('save_store_tax 도 definer 로 통과', true);
 
   -- ⑤ 동기화 트리거가 없다 — 소유자가 표시 폼을 바꿔도 규칙은 안 움직인다.
@@ -117,7 +118,8 @@ begin
     '11:00:00~22:00:00');
   -- ② 세금 저장이 실제로 저장된다 — 0행에 성공을 돌려주지 않는다.
   v_res := save_store_tax(v_id, (select tax_mode from settings where store_id = v_id),
-                          '[{"name":"부가세","rate":9.0909}]'::jsonb);
+                          '[{"name":"부가세","rate":9.0909}]'::jsonb,
+                          pg_temp.settings_rev(v_id));
   perform pg_temp.ok('세금 저장이 changed 를 답한다', v_res ? 'changed');
   perform pg_temp.eq('저장된 세금 항목이 실제로 있다',
     (select jsonb_array_length(tax_items) from settings where store_id = v_id), 1, 0);

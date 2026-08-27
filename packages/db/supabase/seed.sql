@@ -91,6 +91,7 @@ declare
   v_sale_items  jsonb;
   v_sale_etc    jsonb;
   v_sale_extra  jsonb;
+  v_tax_result  jsonb;
 begin
   if exists (select 1 from ingredients where store_id = v_store) then
     raise notice '시드 생략 — 이미 데이터가 있습니다';
@@ -299,8 +300,24 @@ begin
   --
   -- ⚠ 3주 재생보다 **먼저** 부른다. 영업일 스냅샷이 그날 세금을 얼리기 때문에,
   --   뒤에 두면 이미 지나간 날들이 세금 0 으로 굳는다.
-  perform save_store_tax(v_store, 'included'::tax_mode,
-    jsonb_build_array(jsonb_build_object('name', '부가세', 'rate', 9.0909090909)));
+  -- upgrade-check 는 과거 마이그레이션까지만 올린 DB 에도 이 시드를 실행한다.
+  -- 0172 전에는 settings.revision 과 4인자 함수가 없으므로, 존재하는 계약을 동적으로
+  -- 선택한다. 정적 SQL 로 두 형태를 함께 적으면 없는 컬럼/시그니처가 먼저 해석돼
+  -- 중간 버전 DB 를 만들 수 없다.
+  if to_regprocedure('public.save_store_tax(uuid,tax_mode,jsonb,integer)') is not null then
+    execute 'select public.save_store_tax($1, $2, $3,
+                  (select revision from public.settings where store_id = $1))'
+       into v_tax_result
+      using v_store, 'included'::tax_mode,
+            jsonb_build_array(jsonb_build_object('name', '부가세', 'rate', 9.0909090909));
+  elsif to_regprocedure('public.save_store_tax(uuid,tax_mode,jsonb)') is not null then
+    execute 'select public.save_store_tax($1, $2, $3)'
+       into v_tax_result
+      using v_store, 'included'::tax_mode,
+            jsonb_build_array(jsonb_build_object('name', '부가세', 'rate', 9.0909090909));
+  else
+    raise exception '시드에 필요한 save_store_tax 함수가 없습니다';
+  end if;
 
   -- ── 레시피 (RCP-03 등록 화면과 같은 함수) ───────────────────
   --

@@ -7,11 +7,12 @@
  * 도는 것 —
  *   ① 타입          `pnpm -r typecheck`
  *   ② 시험 3종      `pnpm -r test` (core · db · mobile)
- *   ③ 새 DB         마이그레이션 전체를 빈 DB 에 태우고 DB 시험을 다시
- *   ④ 업그레이드 경로 마이그레이션 **순서**를 태운다
- *   ⑤ 웹 번들       Metro 가 실제로 묶는지
+ *   ③ ACL 보안      Docker 없이 비밀번호·argv·환경 격리 회귀시험
+ *   ④ 새 DB         마이그레이션 전체를 빈 DB 에 태우고 DB 시험을 다시
+ *   ⑤ 업그레이드 경로 마이그레이션 **순서**를 태운다
+ *   ⑥ 웹 번들       Metro 가 실제로 묶는지
  *
- * ⚠ ③④ 는 로컬 supabase 컨테이너가 필요하다. 없으면 **건너뛰지 않고 실패**한다 —
+ * ⚠ ④⑤ 는 로컬 supabase 컨테이너가 필요하다. 없으면 **건너뛰지 않고 실패**한다 —
  *   조용히 건너뛰면 "통과" 가 거짓이 된다. DB 없이 앞부분만 보려면 `--no-db`,
  *   번들을 빼려면 `--no-bundle` 을 준다(무엇을 뺐는지 끝에 적힌다).
  */
@@ -104,11 +105,17 @@ step(skipDb ? '② 시험 (core · mobile — DB 제외)' : '② 시험 (pnpm -r
     : pnpmRun(['-r', 'test'])
 ));
 
+// Docker 가 필요 없는 보안 시험이다. DB 단계 안에 두면 `--no-db` CI 에서 영원히 안 돈다.
+step('③ ACL 보안 (비밀번호 · argv · 환경 격리)', () => {
+  if (!BASH) { console.error('bash 를 못 찾았습니다 (Git Bash 필요).'); return false; }
+  return run(BASH, ['packages/db/scripts/admin-acl.test.sh']);
+});
+
 if (skipDb) {
-  results.push({ name: '③ 새 DB', ok: true, secs: '0.0', skipped: true });
-  results.push({ name: '④ 업그레이드 경로', ok: true, secs: '0.0', skipped: true });
+  results.push({ name: '④ 새 DB', ok: true, secs: '0.0', skipped: true });
+  results.push({ name: '⑤ 업그레이드 경로', ok: true, secs: '0.0', skipped: true });
 } else {
-  step('③ 새 DB (마이그레이션 전체 + 시험)', () => {
+  step('④ 새 DB (마이그레이션 전체 + 시험)', () => {
     if (!BASH) { console.error('bash 를 못 찾았습니다 (Git Bash 필요). --no-db 로 뺄 수 있습니다.'); return false; }
     /*
      * ⚠ DB 이름은 실행마다 다르다. 고정 이름이면 두 verify 가 겹치거나 앞 실행이 남긴
@@ -136,8 +143,6 @@ if (skipDb) {
         try { ok = pnpmRun(['--filter', '@sikjae/core', 'exec', 'vitest', 'run', 'tests/localeDbParity.test.ts']); }
         finally { delete process.env.SIKJAE_PARITY_DB; }
       }
-      // admin-acl.sh 회귀시험 — bash -x 에서도 비밀번호(canary)가 어떤 출력에도 없어야 한다(검토 O).
-      if (ok) ok = run(BASH, ['packages/db/scripts/admin-acl.test.sh']);
     } finally {
       if (!run(BASH, ['packages/db/scripts/fresh-db.sh', '--drop', db])) {
         console.error(`⚠ 일회용 DB 정리 실패 — 직접 지우세요: ${db}`);
@@ -146,16 +151,16 @@ if (skipDb) {
     }
     return ok;
   });
-  step('④ 업그레이드 경로', () => {
+  step('⑤ 업그레이드 경로', () => {
     if (!BASH) { console.error('bash 를 못 찾았습니다 (Git Bash 필요).'); return false; }
     return run(BASH, ['packages/db/scripts/upgrade-check.sh']);
   });
 }
 
 if (skipBundle) {
-  results.push({ name: '⑤ 웹 번들', ok: true, secs: '0.0', skipped: true });
+  results.push({ name: '⑥ 웹 번들', ok: true, secs: '0.0', skipped: true });
 } else {
-  step('⑤ 웹 번들 (Metro export)', () => {
+  step('⑥ 웹 번들 (Metro export)', () => {
     /*
      * ⚠ dev 서버를 띄우고 curl 하지 않는다 — 포트가 겹치고, 죽이는 것을 잊으면 다음
      *   실행이 **옛 서버의 번들**을 받아 초록이 된다. `expo export` 는 한 번 묶고 끝난다.

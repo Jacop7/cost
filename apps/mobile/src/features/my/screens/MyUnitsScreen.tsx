@@ -1,219 +1,224 @@
 /**
- * MY-04 단위 설정 — 단위 시스템(미터법·미국식·영국식) 선택 → 무게/부피 단위·환산·조리컵 기본값 반영.
- * 조리컵·스푼·묶음단위(박스·판 등)는 사용자 설정. '개'가 기본(최소) 단위. 내부 저장은 항상 g·ml·개.
- * ⚠ 디자인 프로토타입(로컬 상태·데모).
+ * MY-04 단위 설정.
+ *
+ * 내부 저장 단위는 항상 g·ml·개이고 1차 서버 계약은 metric 하나뿐이다. 저장되지 않는
+ * 미국식·영국식·스푼·묶음 입력을 데모로 보여 주지 않는다. 사용자가 바꿀 수 있는 값은
+ * 서버에 실제로 저장되는 1컵 용량과 단가 표기 자릿수다.
  */
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { UNIT_PRICE_DIGIT_OPTIONS, formatUnitPrice, getLocale, unitPriceDigits } from '@sikjae/core';
-import { AppHeader, Button, Card, Field, Icon, Input, Notice, Sheet } from '@/components/kit';
+import { AppHeader, Button, Card, Field, Input, Notice } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
+import { clampDecimals } from '@/lib/num';
+import { RpcError } from '@/lib/supabase';
 import { T } from '@/theme/tokens';
 import { useSettings, useSettingsActions, useUnitDigits } from '../store';
 
-/**
- * 자릿수 견본에 쓰는 실값 — 4,000원에 850g 이 들어온 경우 → 4.7058…원/g.
- * 나누어떨어지지 않는 값이라야 소수 자릿수 차이가 눈에 보인다.
- * (0041 이후 단가는 매입액 ÷ 실입고량 그대로다 — 로스로 나누지 않는다.)
- */
 const SAMPLE_UNIT_PRICE = 4000 / 850;
 
-interface UnitSystem {
-  name: string;
-  base?: boolean;
-  weight: string;
-  weightConv: string;
-  volume: string;
-  volumeConv: string;
-  cup: number; // 조리컵 기본 용량(ml)
-}
-const SYSTEMS: UnitSystem[] = [
-  { name: '미터법', base: true, weight: 'g · kg', weightConv: '1 kg = 1,000 g', volume: 'ml · L', volumeConv: '1 L = 1,000 ml', cup: 200 },
-  { name: '미국식', weight: 'oz · lb', weightConv: '1 lb = 16 oz', volume: 'fl oz · pt · qt · gal', volumeConv: '1 pt = 16 fl oz · 1 qt = 2 pt · 1 gal = 4 qt', cup: 240 },
-  { name: '영국식', weight: 'oz · lb', weightConv: '1 lb = 16 oz', volume: 'fl oz · pt · qt · gal', volumeConv: '1 pt = 20 fl oz · 1 qt = 2 pt · 1 gal = 4 qt', cup: 250 },
-];
-function DetailRow({ label, value, conv, last }: { label: string; value: string; conv?: string; last?: boolean }) {
+function DetailRow({ label, value, sub, last }: { label: string; value: string; sub?: string; last?: boolean }) {
   return (
-    <View style={{ flexDirection: 'row', alignItems: 'flex-start', paddingVertical: 12, paddingHorizontal: 15, borderBottomWidth: last ? 0 : 1, borderBottomColor: T.line2 }}>
-      <Text style={{ width: 64, fontSize: 16, fontWeight: '600', color: T.sub }}>{label}</Text>
+    <View style={{ flexDirection: 'row', alignItems: 'flex-start', paddingVertical: 13, paddingHorizontal: 15, borderBottomWidth: last ? 0 : 1, borderBottomColor: T.line2 }}>
+      <Text style={{ width: 72, fontSize: 16, fontWeight: '600', color: T.sub }}>{label}</Text>
       <View style={{ flex: 1, alignItems: 'flex-end' }}>
         <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>{value}</Text>
-        {conv ? <Text style={[{ fontSize: 14, color: T.ter, marginTop: 2 }, { fontVariant: ['tabular-nums'] }]}>{conv}</Text> : null}
+        {sub ? <Text style={{ fontSize: 14, color: T.ter, marginTop: 2 }}>{sub}</Text> : null}
       </View>
     </View>
   );
 }
 
 export default function MyUnitsScreen() {
-  // 단가 자릿수 — 로케일 기본값(금액+2)을 따르되 사용자가 덮어쓸 수 있다.
-  // 기본값과 같은 값을 고르면 override 를 지워(null) 언어를 바꿔도 새 기본값을 따라가게 한다.
-  const { locale } = useSettings();
-  const { setUnitDigits } = useSettingsActions();
+  const settings = useSettings();
+  const { locale } = settings;
+  const { setCupVolume, setUnitDigits, saving } = useSettingsActions();
   const digits = useUnitDigits();
   const defaultDigits = unitPriceDigits(locale);
   const L = getLocale(locale);
 
-  const [sysIdx, setSysIdx] = useState(0);
-  const sys = SYSTEMS[sysIdx]!;
-  const [cup, setCup] = useState<string>(String(sys.cup)); // 1컵 ml (사용자 입력)
-  const [bigSpoon, setBigSpoon] = useState('15'); // 큰스푼 ml
-  const [smallSpoon, setSmallSpoon] = useState('5'); // 작은스푼 ml
+  const [cup, setCup] = useState(settings.cupVolume === null ? '' : String(settings.cupVolume));
+  // 조회 캐시는 저장보다 먼저 시작된 응답으로 잠시 옛값이 될 수 있다. 변경 여부는 live cache 가
+  // 아니라 사용자가 편집을 시작한 기준값과 비교한다.
+  const [baseCup, setBaseCup] = useState<number | null>(settings.cupVolume);
+  const [cupTouched, setCupTouched] = useState(false);
+  const [baseRevision, setBaseRevision] = useState<number | null>(settings.revision);
+  const [serverChanged, setServerChanged] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const seenRevision = useRef(settings.revision);
+  const conflictBaseRevision = useRef<number | null>(null);
 
-  const selectSys = (i: number) => { setSysIdx(i); setCup(String(SYSTEMS[i]!.cup)); };
+  useEffect(() => {
+    if (settings.revision === null || settings.cupVolume === null) return;
+    if (baseRevision === null) {
+      seenRevision.current = settings.revision;
+      setBaseRevision(settings.revision);
+      setBaseCup(settings.cupVolume);
+      setCup(String(settings.cupVolume));
+      return;
+    }
+    // revision 은 단조 증가한다. 자체 저장 뒤 늦게 끝난 옛 refetch가 낮은 판본을 돌려줘도
+    // 방금 저장한 기준값·판본을 되돌리면 안 된다.
+    if (seenRevision.current !== null && settings.revision < seenRevision.current) return;
+    if (seenRevision.current === settings.revision) return;
+    seenRevision.current = settings.revision;
+    if (!cupTouched && !saving) {
+      setBaseRevision(settings.revision);
+      setBaseCup(settings.cupVolume);
+      setCup(String(settings.cupVolume));
+    } else if (settings.revision !== baseRevision) {
+      setServerChanged(true);
+    }
+  }, [settings.revision, settings.cupVolume, baseRevision, cupTouched, saving]);
 
-  // 개수 단위 — 낱개(개·모·마리 등) 위에 박스·판 등 묶음(1 묶음 = per × base). 편집은 시트에서 폼으로.
-  const [pkg, setPkg] = useState<{ name: string; per: string; base: string }[]>([{ name: '박스', per: '30', base: '개' }]);
-  const [edit, setEdit] = useState<{ i: number; name: string; per: string; base: string } | null>(null); // 편집 시트(i<0=신규)
-  const removePkg = (i: number) => setPkg((xs) => xs.filter((_, k) => k !== i));
-  const openAdd = () => setEdit({ i: -1, name: '', per: '', base: '개' });
-  const openEdit = (i: number) => { const u = pkg[i]!; setEdit({ i, name: u.name, per: u.per, base: u.base }); };
-  const saveEdit = () => {
-    if (!edit) return;
-    const name = edit.name.trim();
-    const per = edit.per.trim();
-    const base = edit.base.trim() || '개';
-    if (!name || !per) return;
-    setPkg((xs) => (edit.i < 0 ? [...xs, { name, per, base }] : xs.map((u, k) => (k === edit.i ? { name, per, base } : u))));
-    setEdit(null);
+  /** 충돌 해결/최초 오류 복구 — 성공한 최신 서버값을 편집 기준으로 채택한다. */
+  const adoptLatest = async () => {
+    const fresh = await settings.refetch();
+    if (!fresh) return;
+    const conflictBase = conflictBaseRevision.current;
+    if (serverChanged && (
+      conflictBase === null
+      || fresh.revision <= conflictBase
+      || (seenRevision.current !== null && fresh.revision < seenRevision.current)
+    )) return;
+    seenRevision.current = fresh.revision;
+    setBaseRevision(fresh.revision);
+    setBaseCup(fresh.cupVolume);
+    setCup(String(fresh.cupVolume));
+    setCupTouched(false);
+    conflictBaseRevision.current = null;
+    setServerChanged(false);
+    setSaveError(null);
   };
+
+  const onSaveError = (e: unknown) => {
+    if (e instanceof RpcError && e.code === '45009') {
+      conflictBaseRevision.current = baseRevision;
+      setServerChanged(true);
+      return;
+    }
+    setSaveError(e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요');
+  };
+
+  const acceptRevision = (revision: number) => {
+    seenRevision.current = revision;
+    setBaseRevision(revision);
+  };
+
+  const blocked = saving || serverChanged || settings.error;
+  const cupNumber = Number(cup);
+  // 서버 settings.cup_volume 은 numeric 이다. 236.5ml 같은 실제 컵값을 화면에서 정수로
+  // 잘라 계약을 좁히지 않는다(소수 넷째 자리까지 입력, 저장값 비교는 숫자로).
+  const cupValid = Number.isFinite(cupNumber) && cupNumber > 0 && cupNumber <= 5000;
+  const cupChanged = baseCup !== null && cupNumber !== baseCup;
+
+  const saveCup = () => {
+    if (blocked || baseRevision === null || !cupValid || !cupChanged) return;
+    setSaveError(null);
+    setCupVolume(cupNumber, baseRevision, {
+      onSuccess: (result) => {
+        acceptRevision(result.revision);
+        setBaseCup(cupNumber);
+        setCupTouched(false);
+      },
+      onError: onSaveError,
+    });
+  };
+
+  const saveDigits = (next: number, isDefault: boolean) => {
+    if (blocked || baseRevision === null) return;
+    setSaveError(null);
+    setUnitDigits(isDefault ? null : next, baseRevision, {
+      onSuccess: (result) => acceptRevision(result.revision),
+      onError: onSaveError,
+    });
+  };
+
+  if (settings.loading) {
+    return <View style={{ flex: 1, backgroundColor: T.bg }}><AppHeader title="단위 설정" onBack={() => safeBack('/my')} /><Text style={{ margin: 20, color: T.ter }}>불러오는 중…</Text></View>;
+  }
+  if ((settings.error && !settings.hasData) || baseRevision === null || settings.cupVolume === null || settings.unitSystem === null) {
+    return (
+      <View style={{ flex: 1, backgroundColor: T.bg }}>
+        <AppHeader title="단위 설정" onBack={() => safeBack('/my')} />
+        <Notice style={{ margin: 16 }}>설정을 불러오지 못했어요</Notice>
+        <View style={{ marginHorizontal: 16 }}><Button kind="gray" size="lg" full onPress={() => { void adoptLatest(); }}>다시 시도</Button></View>
+      </View>
+    );
+  }
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <AppHeader title="단위 설정" onBack={() => safeBack('/my')} />
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 4, paddingBottom: 28 }}>
-        {/* 단위 시스템 선택 */}
-        <Text style={{ fontSize: 14, fontWeight: '700', color: T.ter, marginHorizontal: 4, marginBottom: 8 }}>단위 시스템</Text>
+        {settings.error && settings.hasData ? (
+          <View role="alert" accessibilityLabel="재조회 실패" style={{ marginBottom: 10, padding: 13, borderRadius: 12, backgroundColor: T.redTint }}>
+            <Text style={{ fontSize: 14, fontWeight: '700', color: T.red }}>최신 설정을 불러오지 못했어요. 다시 시도해 주세요.</Text>
+            {/* 배경 오류 재시도는 조회만 다시 한다. 수정 중인 컵 초안을 서버값으로 덮지 않는다. */}
+            <View style={{ marginTop: 8 }}><Button kind="gray" size="md" onPress={() => { void settings.refetch(); }} accessibilityLabel="다시 시도">다시 시도</Button></View>
+          </View>
+        ) : null}
+        {serverChanged ? (
+          <View role="status" style={{ marginBottom: 10, padding: 13, borderRadius: 12, backgroundColor: T.redTint, borderWidth: 1, borderColor: T.red }}>
+            <Text style={{ fontSize: 14, fontWeight: '700', color: T.red }}>다른 기기에서 설정이 변경됐어요. 새로고침 후 다시 저장해 주세요.</Text>
+            <View style={{ marginTop: 8 }}><Button kind="gray" size="md" onPress={() => { void adoptLatest(); }} accessibilityLabel="새로고침">새로고침</Button></View>
+          </View>
+        ) : null}
+        {saveError ? <Text role="alert" style={{ color: T.red, fontWeight: '700', marginBottom: 10 }}>저장하지 못했어요 · {saveError}</Text> : null}
+
+        <Text style={{ fontSize: 14, fontWeight: '700', color: T.ter, marginHorizontal: 4, marginBottom: 8 }}>기준 단위</Text>
         <Card pad={0} style={{ overflow: 'hidden', marginBottom: 16 }}>
-          {SYSTEMS.map((s, i) => {
-            const on = i === sysIdx;
-            return (
-              <Pressable key={s.name} onPress={() => selectSys(i)} style={{ flexDirection: 'row', alignItems: 'center', padding: 15, borderBottomWidth: i < SYSTEMS.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
-                <View style={{ flex: 1 }}>
-                  <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>{s.name}{s.base ? <Text style={{ fontSize: 14, color: T.ter, fontWeight: '600' }}> (기본)</Text> : null}</Text>
-                  <Text style={{ fontSize: 14, color: T.ter, marginTop: 3 }}>{s.weight} · {s.volume}</Text>
-                </View>
-                <View style={{ width: 24, height: 24, borderRadius: 12, borderWidth: on ? 7 : 2, borderColor: on ? T.blue : T.line }} />
-              </Pressable>
-            );
-          })}
+          <DetailRow label="방식" value="미터법" sub="내부 저장은 항상 최소 단위" />
+          <DetailRow label="무게" value="g · kg" sub="1kg = 1,000g" />
+          <DetailRow label="부피" value="ml · L" sub="1L = 1,000ml" last />
         </Card>
 
-        {/* 선택 시스템 무게·부피 단위 */}
-        <Text style={{ fontSize: 14, fontWeight: '700', color: T.ter, marginHorizontal: 4, marginBottom: 8 }}>{sys.name} 무게·부피 단위</Text>
-        <Card pad={0} style={{ overflow: 'hidden', marginBottom: 16 }}>
-          <DetailRow label="무게" value={sys.weight} conv={sys.weightConv} />
-          <DetailRow label="부피" value={sys.volume} conv={sys.volumeConv} last />
+        <Text style={{ fontSize: 14, fontWeight: '700', color: T.ter, marginHorizontal: 4, marginBottom: 8 }}>조리컵</Text>
+        <Card style={{ marginBottom: 16 }}>
+          <Field label="1컵 용량" hint="레시피 입력에서 컵을 ml로 환산할 때 사용해요.">
+            <Input
+              value={cup}
+              suffix="ml"
+              mono
+              keyboardType="decimal-pad"
+              disabled={blocked}
+              onChangeText={(value) => {
+                setCup(clampDecimals(value, 4));
+                setCupTouched(true);
+                setSaveError(null);
+              }}
+              accessibilityLabel="1컵 용량"
+            />
+          </Field>
+          {!cupValid ? <Text style={{ color: T.red, fontSize: 14, marginBottom: 10 }}>0보다 크고 5,000ml 이하로 입력해 주세요.</Text> : null}
+          <Button kind="primary" size="lg" full disabled={blocked || !cupValid || !cupChanged} loading={saving} onPress={saveCup} accessibilityLabel="컵 용량 저장">컵 용량 저장</Button>
         </Card>
 
-        {/* 조리컵 · 스푼 (사용자 직접 입력) */}
-        <Text style={{ fontSize: 14, fontWeight: '700', color: T.ter, marginHorizontal: 4, marginBottom: 8 }}>조리컵 · 스푼 (직접 입력)</Text>
-        <Card pad={0} style={{ overflow: 'hidden', marginBottom: 16 }}>
-          {/* 1컵 */}
-          <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12, paddingHorizontal: 15, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
-            <View style={{ flex: 1 }}>
-              <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>1컵</Text>
-              <Text style={{ fontSize: 14, color: T.ter, marginTop: 2 }}>{sys.name} 기본 {sys.cup}ml</Text>
-            </View>
-            <View style={{ width: 120 }}>
-              <Input value={cup} suffix="ml" mono keyboardType="number-pad" onChangeText={(t) => setCup(t.replace(/[^0-9]/g, ''))} />
-            </View>
-          </View>
-          {/* 큰스푼 */}
-          <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12, paddingHorizontal: 15, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
-            <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: T.ink }}>큰스푼</Text>
-            <View style={{ width: 120 }}>
-              <Input value={bigSpoon} suffix="ml" mono keyboardType="number-pad" onChangeText={(t) => setBigSpoon(t.replace(/[^0-9]/g, ''))} />
-            </View>
-          </View>
-          {/* 작은스푼 */}
-          <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12, paddingHorizontal: 15 }}>
-            <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: T.ink }}>작은스푼</Text>
-            <View style={{ width: 120 }}>
-              <Input value={smallSpoon} suffix="ml" mono keyboardType="number-pad" onChangeText={(t) => setSmallSpoon(t.replace(/[^0-9]/g, ''))} />
-            </View>
-          </View>
-        </Card>
-
-        {/* 단가 표기 자릿수 — 이 화면에서 유일하게 "취향"이 갈리는 값.
-            구분자·통화·금액 자릿수는 사실이라 언어·통화(MY-08)가 정하고, 여기선 단가만 고른다. */}
         <Text style={{ fontSize: 14, fontWeight: '700', color: T.ter, marginHorizontal: 4, marginBottom: 6 }}>단가 표기 자릿수</Text>
-        <Notice style={{ marginBottom: 10 }}>식재료 단가·원가가 이 자릿수로 보여요. 표기만 바뀌고 저장·계산은 원래 값 그대로예요.</Notice>
-        <Card pad={0} style={{ overflow: 'hidden', marginBottom: 16 }}>
+        <Notice style={{ marginBottom: 10 }}>식재료 단가·원가의 표기만 바뀌고 저장·계산 값은 그대로예요.</Notice>
+        <Card pad={0} style={{ overflow: 'hidden' }}>
           {UNIT_PRICE_DIGIT_OPTIONS.map((d, i) => {
             const on = d === digits;
             const isDefault = d === defaultDigits;
-            // 서식 견본 라벨 — 소수점 문자는 로케일을 따른다(독일이면 0,00).
-            const pattern = d === 0 ? '0' : '0' + L.decimal + '0'.repeat(d);
+            const pattern = d === 0 ? '0' : `0${L.decimal}${'0'.repeat(d)}`;
             return (
               <Pressable
                 key={d}
-                onPress={() => setUnitDigits(isDefault ? null : d)}
+                onPress={() => saveDigits(d, isDefault)}
+                disabled={blocked}
+                accessibilityRole="radio"
+                accessibilityLabel={`단가 소수 ${d}자리`}
+                accessibilityState={{ checked: on, disabled: blocked }}
                 style={{ flexDirection: 'row', alignItems: 'center', padding: 15, borderBottomWidth: i < UNIT_PRICE_DIGIT_OPTIONS.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}
               >
                 <Text style={[{ width: 74, fontSize: 16, fontWeight: '600', color: T.sub }, { fontVariant: ['tabular-nums'] }]}>{pattern}</Text>
-                <Text style={[{ flex: 1, minWidth: 0, fontSize: 16, fontWeight: '700', color: T.ink }, { fontVariant: ['tabular-nums'] }]}>{formatUnitPrice(SAMPLE_UNIT_PRICE, 'g', locale, d)}</Text>
+                <Text style={[{ flex: 1, fontSize: 16, fontWeight: '700', color: T.ink }, { fontVariant: ['tabular-nums'] }]}>{formatUnitPrice(SAMPLE_UNIT_PRICE, 'g', locale, d)}</Text>
                 <View style={{ width: 24, height: 24, borderRadius: 12, borderWidth: on ? 7 : 2, borderColor: on ? T.blue : T.line, marginLeft: 12 }} />
               </Pressable>
             );
           })}
         </Card>
-
-        {/* 개수 단위 — '개'가 기본(최소) 단위. 박스·판 등 자주 쓰는 묶음 단위 등록(리스트 + 편집 시트). */}
-        <Text style={{ fontSize: 14, fontWeight: '700', color: T.ter, marginHorizontal: 4, marginBottom: 6 }}>개수 단위</Text>
-        <Notice style={{ marginBottom: 10 }}>기본 단위는 개예요. 박스·판처럼 자주 쓰는 묶음 단위를 등록해두면 식재료 등록할 때 골라 쓸 수 있어요.</Notice>
-        <Card pad={0} style={{ overflow: 'hidden' }}>
-          {pkg.length === 0 ? (
-            <View style={{ paddingVertical: 20, paddingHorizontal: 15, alignItems: 'center' }}>
-              <Text style={{ fontSize: 14, color: T.ter }}>등록된 묶음 단위가 없어요.</Text>
-            </View>
-          ) : (
-            pkg.map((u, i) => (
-              <View key={i} style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 12, paddingLeft: 15, paddingRight: 10, borderBottomWidth: i < pkg.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
-                <View style={{ flex: 1, minWidth: 0 }}>
-                  <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>{u.name}</Text>
-                  <Text style={{ fontSize: 14, color: T.sub2, marginTop: 3, fontWeight: '600' }}>{u.per}{u.base}들이</Text>
-                </View>
-                <Pressable onPress={() => openEdit(i)} hitSlop={4} style={{ width: 34, height: 34, alignItems: 'center', justifyContent: 'center' }} accessibilityRole="button" accessibilityLabel="묶음 단위 수정">
-                  <Icon name="edit" size={18} color={T.ter} sw={2} />
-                </Pressable>
-                <Pressable onPress={() => removePkg(i)} hitSlop={4} style={{ width: 34, height: 34, alignItems: 'center', justifyContent: 'center' }} accessibilityRole="button" accessibilityLabel="묶음 단위 삭제">
-                  <Icon name="close" size={19} color={T.ter} />
-                </Pressable>
-              </View>
-            ))
-          )}
-        </Card>
-        <Pressable onPress={openAdd} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5, paddingVertical: 14, marginTop: 12, borderRadius: 12, borderWidth: 1, borderStyle: 'dashed', borderColor: T.blue, backgroundColor: T.blueTint }}>
-          <Icon name="plus" size={17} color={T.blue} sw={2.2} />
-          <Text style={{ fontSize: 14, fontWeight: '700', color: T.blue }}>묶음 단위 추가</Text>
-        </Pressable>
-
-        <View style={{ flexDirection: 'row', gap: 7, marginHorizontal: 4, marginTop: 16, alignItems: 'flex-start' }}>
-          <Icon name="info" size={15} color={T.ter} />
-          <Text style={{ flex: 1, fontSize: 14, color: T.ter, lineHeight: 20 }}>여기 값은 기본이에요. 품목마다 묶음 수량이 다르면 등록할 때 개별 지정할 수 있어요. 내부 저장은 항상 g·ml·개.</Text>
-        </View>
       </ScrollView>
-
-      {/* 묶음 단위 추가·수정 시트 */}
-      <Sheet visible={edit != null} onClose={() => setEdit(null)} title={edit && edit.i < 0 ? '묶음 단위 추가' : '묶음 단위 수정'} sub="박스·판처럼 여러 개를 묶는 단위예요" height={380}>
-        {edit ? (
-          <View>
-            <Field label="단위 이름" req>
-              <Input value={edit.name} placeholder="예: 박스·판·망" onChangeText={(v) => setEdit({ ...edit, name: v })} />
-            </Field>
-            <Field label="1묶음 수량" req hint="한 묶음에 든 개수와 낱개 단위명(개·모·마리·장 등)">
-              <View style={{ flexDirection: 'row', gap: 10 }}>
-                <View style={{ flex: 2 }}><Input value={edit.per} placeholder="0" mono keyboardType="number-pad" onChangeText={(v) => setEdit({ ...edit, per: v.replace(/[^0-9]/g, '') })} /></View>
-                <View style={{ flex: 1 }}><Input value={edit.base} placeholder="개" onChangeText={(v) => setEdit({ ...edit, base: v })} /></View>
-              </View>
-            </Field>
-            <View style={{ flexDirection: 'row', gap: 9, marginTop: 8 }}>
-              <View style={{ flex: 1 }}><Button kind="ghost" size="lg" full onPress={() => setEdit(null)}>취소</Button></View>
-              <View style={{ flex: 2 }}><Button kind="primary" size="lg" full onPress={saveEdit}>저장</Button></View>
-            </View>
-          </View>
-        ) : null}
-      </Sheet>
     </View>
   );
 }

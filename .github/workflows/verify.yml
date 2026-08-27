@@ -43,5 +43,5 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      # ① 타입 · ② 시험 3종 · ⑤ 웹 번들
+      # ① 타입 · ② 시험 2종(DB 제외) · ③ ACL 보안 · ⑥ 웹 번들
       - run: pnpm verify --no-db

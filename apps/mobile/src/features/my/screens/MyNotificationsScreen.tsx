@@ -3,9 +3,11 @@
  *
  * 이전에는 지역 상태라 화면을 나갔다 오면 원래대로 돌아갔다.
  */
-import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
-import { AppHeader, Badge, Card, Icon, QueryState } from '@/components/kit';
+import { useRef, useState } from 'react';
+import { Pressable, ScrollView, Text, View } from 'react-native';
+import { AppHeader, Badge, Button, Card, Icon, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
+import { RpcError } from '@/lib/supabase';
 import { T } from '@/theme/tokens';
 import { useSaveSettings, useStoreSettings, type SaveSettingsInput, type StoreSettings } from '../hooks';
 
@@ -37,15 +39,45 @@ function Toggle({ on, disabled, onPress, label }: { on: boolean; disabled?: bool
 export default function MyNotificationsScreen() {
   const settings = useStoreSettings();
   const save = useSaveSettings();
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [serverChanged, setServerChanged] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+  const conflictBaseRevision = useRef<number | null>(null);
 
   const s = settings.data;
   const onCount = s ? ITEMS.filter((it) => s[it.key]).length : 0;
 
   const toggle = (key: Key) => {
-    if (!s) return;
-    save.mutate({ [key]: !s[key] } as Partial<SaveSettingsInput>, {
-      onError: (e) => Alert.alert('바꾸지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'),
+    if (!s || serverChanged || settings.isError) return;
+    const attemptedRevision = s.revision;
+    setSaveError(null);
+    save.mutate({ values: { [key]: !s[key] } as Partial<SaveSettingsInput>, baseRevision: attemptedRevision }, {
+      onError: (e) => {
+        if (e instanceof RpcError && e.code === '45009') {
+          conflictBaseRevision.current = attemptedRevision;
+          setServerChanged(true);
+          return;
+        }
+        setSaveError(e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요');
+      },
     });
+  };
+
+  const refresh = async () => {
+    if (refreshing) return;
+    setRefreshing(true);
+    try {
+      const r = await settings.refetch();
+      if (!r.isError && r.data) {
+        const conflictBase = conflictBaseRevision.current;
+        // 45009 를 낸 판본과 같거나 그보다 오래된 재조회는 충돌을 해결한 것이 아니다.
+        // 현재 화면 캐시보다 낮은 응답도 늦게 도착한 옛 조회이므로 채택하지 않는다.
+        if (serverChanged && (conflictBase === null || r.data.revision <= conflictBase || (s && r.data.revision < s.revision))) return;
+        conflictBaseRevision.current = null;
+        setServerChanged(false);
+        setSaveError(null);
+      }
+    } finally { setRefreshing(false); }
   };
 
   return (
@@ -54,11 +86,24 @@ export default function MyNotificationsScreen() {
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 8, paddingBottom: 28 }}>
         <QueryState
           isLoading={settings.isLoading}
-          error={settings.error}
+          error={settings.data ? null : settings.error}
           isEmpty={false}
           onRetry={() => void settings.refetch()}
           emptyTitle=""
         >
+          {settings.isError && settings.data ? (
+            <View role="alert" accessibilityLabel="재조회 실패" style={{ marginBottom: 10, padding: 13, borderRadius: 12, backgroundColor: T.redTint }}>
+              <Text style={{ color: T.red, fontWeight: '700' }}>최신 설정을 불러오지 못했어요. 다시 시도해 주세요.</Text>
+              <View style={{ marginTop: 8 }}><Button kind="gray" size="md" onPress={() => { void refresh(); }}>다시 시도</Button></View>
+            </View>
+          ) : null}
+          {serverChanged ? (
+            <View role="status" style={{ marginBottom: 10, padding: 13, borderRadius: 12, backgroundColor: T.redTint, borderWidth: 1, borderColor: T.red }}>
+              <Text style={{ color: T.red, fontWeight: '700' }}>다른 기기에서 설정이 변경됐어요. 새로고침 후 다시 저장해 주세요.</Text>
+              <View style={{ marginTop: 8 }}><Button kind="gray" size="md" loading={refreshing} onPress={() => { void refresh(); }} accessibilityLabel="새로고침">새로고침</Button></View>
+            </View>
+          ) : null}
+          {saveError ? <Text role="alert" style={{ color: T.red, fontWeight: '700', marginBottom: 10 }}>바꾸지 못했어요 · {saveError}</Text> : null}
           <Text style={{ fontSize: 14, color: T.ter, marginHorizontal: 4, marginBottom: 10 }}>4종 중 {onCount}개 켜짐</Text>
           <Card pad={0} style={{ overflow: 'hidden' }}>
             {ITEMS.map((n, i) => (
@@ -70,7 +115,7 @@ export default function MyNotificationsScreen() {
                   </View>
                   <Text style={{ fontSize: 14, color: T.ter, marginTop: 3, lineHeight: 19 }}>{n.desc}</Text>
                 </View>
-                <Toggle on={Boolean(s?.[n.key])} disabled={save.isPending} onPress={() => toggle(n.key)} label={n.name} />
+                <Toggle on={Boolean(s?.[n.key])} disabled={save.isPending || serverChanged || settings.isError} onPress={() => toggle(n.key)} label={n.name} />
               </View>
             ))}
           </Card>
