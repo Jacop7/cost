@@ -75,7 +75,9 @@ export default function MyLanguageScreen() {
       </Shell>
     );
   }
-  if (settings.error) {
+  // 값이 한 번도 안 온 채 실패했을 때만 오류 화면이다. 값이 있는데 **배경 재조회**가 실패한 경우는
+  // 편집기를 없애지 않는다(초안·시트·저장 중 잠금·완료 콜백이 끊긴다 — 검토 지적) — 배너로만 알린다.
+  if (settings.error && !settings.hasData) {
     return (
       <Shell>
         <Notice style={{ margin: 16 }}>설정을 불러오지 못했어요</Notice>
@@ -87,7 +89,7 @@ export default function MyLanguageScreen() {
   }
   // ⚠ key 로 편집기를 다시 만들지 않는다 — 다른 기기 변경·재조회 때 초안·확인 시트·오류·저장 중 잠금과
   //   완료 콜백까지 사라진다(검토 지적). 편집기가 서버값 변화를 스스로 다룬다(아래 정책).
-  return <LanguageEditor serverLocale={settings.locale} />;
+  return <LanguageEditor serverLocale={settings.locale} staleError={settings.error} refetch={settings.refetch} />;
 }
 
 function Shell({ children }: { children: React.ReactNode }) {
@@ -105,7 +107,7 @@ function Shell({ children }: { children: React.ReactNode }) {
  *   · 수정 중·저장 중: 초안을 **유지**하고 "다른 기기에서 설정이 변경됐어요" 를 보이며 저장을 잠근다.
  *     사용자가 [새로고침] 을 눌러 서버값으로 맞춘 뒤 다시 고른다. 진행 중인 저장은 끊지 않는다.
  */
-function LanguageEditor({ serverLocale }: { serverLocale: LocaleKey }) {
+function LanguageEditor({ serverLocale, staleError, refetch }: { serverLocale: LocaleKey; staleError: boolean; refetch: () => void }) {
   const insets = useSafeAreaInsets();
   const locale = serverLocale;
   const { setLocale, saving } = useSettingsActions();
@@ -158,6 +160,12 @@ function LanguageEditor({ serverLocale }: { serverLocale: LocaleKey }) {
         {/* 언어·지역 — 통화와 숫자 서식이 여기서 함께 결정된다 */}
         <Text style={{ fontSize: 14, fontWeight: '700', color: T.ter, marginHorizontal: 4, marginBottom: 6 }}>언어 · 지역</Text>
         <Notice style={{ marginBottom: 10 }}>금액의 기본 소수 자릿수는 통화가 정해요. 원·엔·동은 소수가 없어 0자리, 달러·유로 등은 2자리예요.</Notice>
+        {staleError ? (
+          <View role="status" accessibilityLabel="재조회 실패" style={{ marginBottom: 10, padding: 13, borderRadius: 12, backgroundColor: T.redTint, borderWidth: 1, borderColor: T.red }}>
+            <Text style={{ fontSize: 14, fontWeight: '700', color: T.red, lineHeight: 20 }}>최신 설정을 불러오지 못했어요. 마지막으로 받은 값 기준이에요.</Text>
+            <View style={{ marginTop: 8 }}><Button kind="gray" size="md" onPress={refetch} accessibilityLabel="다시 시도">다시 시도</Button></View>
+          </View>
+        ) : null}
         {serverChanged ? (
           <View role="status" style={{ marginBottom: 10, padding: 13, borderRadius: 12, backgroundColor: T.redTint, borderWidth: 1, borderColor: T.red }}>
             <Text style={{ fontSize: 14, fontWeight: '700', color: T.red, lineHeight: 20 }}>다른 기기에서 설정이 변경됐어요. 새로고침 후 다시 저장해 주세요.</Text>

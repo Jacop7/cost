@@ -15,30 +15,33 @@
 #       <db> 는 식별자(영소문자·숫자·_)만 — 접속 문자열은 거부한다.
 #   원격(운영·개발) — 접속 정보는 **항목별 환경변수**로만 받는다. 접속 문자열(URL/keyword)은 받지 않는다:
 #       ADMIN_DB_HOST=db.example.com ADMIN_DB_USER=supabase_admin [ADMIN_DB_PORT=5432] [ADMIN_DB_NAME=postgres]
-#       [ADMIN_DB_SSLMODE=require] [ADMIN_DB_PASSWORD=…]  bash packages/db/scripts/admin-acl.sh --remote <fix|check>
-#       · 값마다 문자 집합을 검사한다(호스트·이름·사용자에 공백·=·따옴표가 있으면 거부).
-#       · 비밀번호는 ADMIN_DB_PASSWORD 가 있으면 그것만 PGPASSWORD 환경으로 psql 에 넘기고, 없으면
-#         셸의 PGPASSWORD 도 **지운 채** libpq 의 PGPASSFILE/~/.pgpass 에 맡긴다. argv 에는 어떤 접속 정보도 없다.
-#       · 접속 문자열을 파싱해 비밀번호를 떼는 방식은 버렸다 — ?pass%77ord= · "password =" · sslpassword=
-#         같은 libpq 가 받아들이는 변형을 정규식이 다 못 잡았다(검토 실측).
+#       [ADMIN_DB_SSLMODE=require] [ADMIN_DB_SSLROOTCERT=/path/ca.crt] [ADMIN_DB_PASSWORD=…]
+#         bash packages/db/scripts/admin-acl.sh --remote <fix|check>
+#       · 값마다 문자 집합·범위를 검사한다(여러 줄·공백·=·따옴표는 거부, 포트는 1~65535, IPv6 는 그대로).
+#       · psql 은 **비운 환경(env -i)** 에서 뜬다 — PATH·HOME 등 최소한과 위 접속 정보만 넣는다. 셸의
+#         PGSSLROOTCERT·PGSSLKEY·PGCHANNELBINDING·PGSERVICE·PGPASSWORD 같은 것은 하나도 상속되지 않는다.
+#       · 비밀번호는 ADMIN_DB_PASSWORD 가 있으면 그것만 PGPASSWORD 로, 없으면 PGPASSFILE(있으면 그 경로,
+#         없으면 ~/.pgpass)에 맡긴다. argv 에는 어떤 접속 정보도 없다.
 #   fix   = 회수하고 잰다        check = 재기만 한다(배포 후 확인·게이트)     ← 생략 불가
 #   프로브가 열려 있으면 exit 1 — 조용히 넘어가지 않는다.
 #
 # ⚠ 운영 배포 절차의 한 단계다(`--remote fix` 한 번, 이후 `--remote check` 로 게이트).
 #   접속 계정은 supabase_admin 이거나 그 롤로 전환할 수 있는 슈퍼유저여야 한다 — 먼저 확인하고
 #   아니면 아무것도 바꾸지 않고 멈춘다. 마이그레이션(0167)은 이 상태를 NOTICE 로만 남긴다.
-# ⚠ 자식 프로세스(psql·docker)에는 ADMIN_* 를 넘기지 않고 PGSERVICE·PGOPTIONS 도 지운다. 로그는 host/db 까지.
+# ⚠ 로그는 host/db 까지. 받은 값이 틀려도 되풀이하지 않는다.
 # ════════════════════════════════════════════════════════════════
 set -euo pipefail
 
 usage() {
   echo "사용법: admin-acl.sh --local <db> <fix|check> | --remote <fix|check>" >&2
-  echo "        원격: ADMIN_DB_HOST ADMIN_DB_USER [ADMIN_DB_PORT] [ADMIN_DB_NAME] [ADMIN_DB_SSLMODE] [ADMIN_DB_PASSWORD | PGPASSFILE]" >&2
+  echo "        원격: ADMIN_DB_HOST ADMIN_DB_USER [ADMIN_DB_PORT] [ADMIN_DB_NAME] [ADMIN_DB_SSLMODE] [ADMIN_DB_SSLROOTCERT] [ADMIN_DB_PASSWORD | PGPASSFILE]" >&2
   exit 2
 }
-# 자식에 넘기지 않을 변수 — 접속 정보 원본·서비스 파일·옵션.
-SCRUB=(-u ADMIN_DB_URL -u ADMIN_DB_HOST -u ADMIN_DB_PORT -u ADMIN_DB_NAME -u ADMIN_DB_USER -u ADMIN_DB_PASSWORD -u ADMIN_DB_SSLMODE
-       -u PGSERVICE -u PGSERVICEFILE -u PGOPTIONS -u PGHOST -u PGHOSTADDR -u PGPORT -u PGDATABASE -u PGUSER -u PGSSLMODE)
+# 자식이 받을 최소 환경 — 나머지는 전부 버린다(env -i).
+BASE_ENV=(PATH="$PATH" HOME="${HOME:-}" LANG="${LANG:-C.UTF-8}")
+for v in USERPROFILE SYSTEMROOT SystemRoot TEMP TMP; do
+  [ -n "${!v:-}" ] && BASE_ENV+=("$v=${!v}")
+done
 
 TARGET="${1:-}"; shift || true
 case "$TARGET" in
@@ -46,13 +49,13 @@ case "$TARGET" in
     D="${1:-}"; [ -n "$D" ] || usage; shift
     MODE="${1:-}"
     # 식별자만 — `postgresql://…` 같은 접속 문자열을 psql -d 가 URI 로 읽는다(검토 재현). 값은 되풀이하지 않는다.
-    if ! printf '%s' "$D" | grep -Eq '^[a-z_][a-z0-9_]{0,62}$'; then
-      echo "admin-acl: --local 의 DB 이름은 식별자(영소문자·숫자·_)만 됩니다 (받은 값 ${#D}자, 되풀이하지 않음)" >&2; exit 2
-    fi
+    [[ "$D" =~ ^[a-z_][a-z0-9_]{0,62}$ ]] \
+      || { echo "admin-acl: --local 의 DB 이름은 식별자(영소문자·숫자·_)만 됩니다 (받은 값 ${#D}자, 되풀이하지 않음)" >&2; exit 2; }
     CT="${SUPABASE_DB_CONTAINER:-supabase_db_sikjae}"
+    [[ "$CT" =~ ^[A-Za-z0-9_.-]{1,128}$ ]] || { echo "admin-acl: SUPABASE_DB_CONTAINER 형식이 아닙니다" >&2; exit 2; }
     LPW="${SUPABASE_ADMIN_PASSWORD:-postgres}"
     # -e PGPASSWORD (값 없이) — docker 가 환경에서 가져간다. argv 에는 이름만 남는다.
-    run() { env "${SCRUB[@]}" PGPASSWORD="$LPW" docker exec -i -e PGPASSWORD "$CT" \
+    run() { env -i "${BASE_ENV[@]}" PGPASSWORD="$LPW" docker exec -i -e PGPASSWORD "$CT" \
               psql -U supabase_admin -d "$D" -v ON_ERROR_STOP=1 -q -t -A "$@"; }
     WHERE="local $CT/$D"
     ;;
@@ -61,24 +64,29 @@ case "$TARGET" in
     if [ -n "${ADMIN_DB_URL:-}" ]; then
       echo "admin-acl: ADMIN_DB_URL 은 더는 받지 않습니다 — ADMIN_DB_HOST/PORT/NAME/USER(+ADMIN_DB_PASSWORD 또는 PGPASSFILE)로 주세요" >&2; exit 2
     fi
-    H="${ADMIN_DB_HOST:-}"; P="${ADMIN_DB_PORT:-5432}"; N="${ADMIN_DB_NAME:-postgres}"; U="${ADMIN_DB_USER:-}"; SSL="${ADMIN_DB_SSLMODE:-require}"
+    H="${ADMIN_DB_HOST:-}"; P="${ADMIN_DB_PORT:-5432}"; N="${ADMIN_DB_NAME:-postgres}"; U="${ADMIN_DB_USER:-}"
+    SSL="${ADMIN_DB_SSLMODE:-require}"; CA="${ADMIN_DB_SSLROOTCERT:-}"
     [ -n "$H" ] && [ -n "$U" ] || { echo "admin-acl: --remote 는 ADMIN_DB_HOST 와 ADMIN_DB_USER 가 필요합니다" >&2; exit 2; }
-    # 값마다 문자 집합 — 공백·=·따옴표·슬래시가 섞이면 접속 문자열을 밀어 넣으려는 것이다. 값은 되풀이하지 않는다.
-    printf '%s' "$H"   | grep -Eq '^[A-Za-z0-9._-]{1,253}$' || { echo "admin-acl: ADMIN_DB_HOST 형식이 아닙니다(호스트명/IP만)" >&2; exit 2; }
-    printf '%s' "$P"   | grep -Eq '^[0-9]{1,5}$'            || { echo "admin-acl: ADMIN_DB_PORT 는 숫자여야 합니다" >&2; exit 2; }
-    printf '%s' "$N"   | grep -Eq '^[A-Za-z0-9_.-]{1,63}$'  || { echo "admin-acl: ADMIN_DB_NAME 형식이 아닙니다" >&2; exit 2; }
-    printf '%s' "$U"   | grep -Eq '^[A-Za-z0-9_.-]{1,63}$'  || { echo "admin-acl: ADMIN_DB_USER 형식이 아닙니다" >&2; exit 2; }
+    # bash 의 =~ 는 문자열 전체에 앵커된다 — 여러 줄 값은 문자 집합에 줄바꿈이 없어 통과하지 못한다(grep 은 줄마다 봐서 뚫렸다).
+    [[ "$H" =~ ^[A-Za-z0-9._:-]{1,253}$ ]] || { echo "admin-acl: ADMIN_DB_HOST 형식이 아닙니다(호스트명 또는 IPv4/IPv6 리터럴만)" >&2; exit 2; }
+    [[ "$P" =~ ^[0-9]{1,5}$ ]] && [ "$P" -ge 1 ] && [ "$P" -le 65535 ] || { echo "admin-acl: ADMIN_DB_PORT 는 1~65535 여야 합니다" >&2; exit 2; }
+    [[ "$N" =~ ^[A-Za-z0-9_.-]{1,63}$ ]]  || { echo "admin-acl: ADMIN_DB_NAME 형식이 아닙니다" >&2; exit 2; }
+    [[ "$U" =~ ^[A-Za-z0-9_.-]{1,63}$ ]]  || { echo "admin-acl: ADMIN_DB_USER 형식이 아닙니다" >&2; exit 2; }
     case "$SSL" in disable|allow|prefer|require|verify-ca|verify-full) ;; *) echo "admin-acl: ADMIN_DB_SSLMODE 값이 아닙니다" >&2; exit 2 ;; esac
-    if [ -n "${ADMIN_DB_PASSWORD:-}" ]; then
-      RPW="$ADMIN_DB_PASSWORD"
-      # 접속 정보는 전부 libpq 환경변수로 — argv 에는 psql 옵션만 남는다.
-      run() { env "${SCRUB[@]}" PGPASSWORD="$RPW" PGHOST="$H" PGPORT="$P" PGDATABASE="$N" PGUSER="$U" PGSSLMODE="$SSL" PGCONNECT_TIMEOUT=15 \
-                psql -v ON_ERROR_STOP=1 -q -t -A "$@"; }
-    else
-      # 비밀번호를 안 줬으면 셸의 PGPASSWORD 도 지운다 — 어떤 비밀번호를 썼는지 스크립트가 알 수 있어야 한다(PGPASSFILE/~/.pgpass 만).
-      run() { env "${SCRUB[@]}" -u PGPASSWORD PGHOST="$H" PGPORT="$P" PGDATABASE="$N" PGUSER="$U" PGSSLMODE="$SSL" PGCONNECT_TIMEOUT=15 \
-                psql -v ON_ERROR_STOP=1 -q -t -A "$@"; }
+    if [ -n "$CA" ]; then
+      # 경로는 OS 마다 모양이 달라 문자 집합 대신 "한 줄이고 읽을 수 있는 파일"만 본다.
+      [[ "$CA" != *$'\n'* ]] && [ -r "$CA" ] || { echo "admin-acl: ADMIN_DB_SSLROOTCERT 는 읽을 수 있는 파일 경로(한 줄)여야 합니다" >&2; exit 2; }
     fi
+    CONN_ENV=(PGHOST="$H" PGPORT="$P" PGDATABASE="$N" PGUSER="$U" PGSSLMODE="$SSL" PGCONNECT_TIMEOUT=15)
+    [ -n "$CA" ] && CONN_ENV+=(PGSSLROOTCERT="$CA")
+    if [ -n "${ADMIN_DB_PASSWORD:-}" ]; then
+      CONN_ENV+=(PGPASSWORD="$ADMIN_DB_PASSWORD")
+    elif [ -n "${PGPASSFILE:-}" ]; then
+      # 비밀번호를 안 줬으면 파일에만 맡긴다 — 셸의 PGPASSWORD 는 env -i 로 이미 사라진다.
+      CONN_ENV+=(PGPASSFILE="$PGPASSFILE")
+    fi
+    # 접속 정보는 전부 libpq 환경변수로 — argv 에는 psql 옵션만 남는다. 환경은 비우고 위 것만 넣는다.
+    run() { env -i "${BASE_ENV[@]}" "${CONN_ENV[@]}" psql -v ON_ERROR_STOP=1 -q -t -A "$@"; }
     WHERE="remote $H:$P/$N"
     ;;
   *) usage ;;

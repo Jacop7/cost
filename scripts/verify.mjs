@@ -127,6 +127,15 @@ if (skipDb) {
        * ⚠ 커밋이 남는 시험이라 스위트(롤백) **다음**에 돈다.
        */
       if (ok) ok = run('node', ['packages/db/tests/concurrency.mjs', db]);
+      /*
+       * core LOCALES ↔ 살아 있는 DB 의 locale_defaults() 대조(검토 지적) — SQL 파일을 정규식으로 읽는
+       * 시험은 대소문자·문자열 안 문구에 속을 수 있다. 여기서는 새 DB 의 **실제 함수 결과**와 비교한다.
+       */
+      if (ok) {
+        process.env.SIKJAE_PARITY_DB = db;
+        try { ok = pnpmRun(['--filter', '@sikjae/core', 'exec', 'vitest', 'run', 'tests/localeDbParity.test.ts']); }
+        finally { delete process.env.SIKJAE_PARITY_DB; }
+      }
     } finally {
       if (!run(BASH, ['packages/db/scripts/fresh-db.sh', '--drop', db])) {
         console.error(`⚠ 일회용 DB 정리 실패 — 직접 지우세요: ${db}`);

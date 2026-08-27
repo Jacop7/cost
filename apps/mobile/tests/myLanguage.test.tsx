@@ -88,6 +88,34 @@ describe('언어 화면 게이트', () => {
   });
 });
 
+describe('배경 재조회 실패', () => {
+  it('값이 있으면 편집기를 없애지 않는다 — 배너로 알리고, 초안·저장 중 상태가 그대로다', async () => {
+    const { rerender } = render(<MyLanguageScreen />);
+    await pickKoAndOpenSheet();
+    fireEvent.click(screen.getByLabelText('언어 저장 확정'));
+    await waitFor(() => expect(mutate).toHaveBeenCalledTimes(1));
+    pending = true;
+    // 캐시는 남은 채 배경 재조회가 실패했다.
+    const refetch = vi.fn();
+    storeSettings.mockReturnValue({ ...loaded('en-US'), isError: true, refetch });
+    rerender(<MyLanguageScreen />);
+    expect(sheetOpen()).toBe(true);                                    // 편집기가 살아 있다
+    expect(screen.queryByText('설정을 불러오지 못했어요')).toBeNull(); // 전체 오류 화면이 아니다
+    expect(screen.getByLabelText('재조회 실패').textContent).toContain('마지막으로 받은 값 기준');
+    expect(checked('한국어')).toBe('true');
+    expect(disabled('언어 저장 확정')).toBe(true);
+    lastCallbacks().onSuccess();                                       // 완료 콜백이 그대로 온다
+    expect(safeBack).toHaveBeenCalledWith('/my');
+  });
+
+  it('값이 한 번도 안 왔으면 오류 화면이다', () => {
+    storeSettings.mockReturnValue({ data: undefined, isLoading: false, isError: true, refetch: vi.fn() });
+    render(<MyLanguageScreen />);
+    expect(screen.getByText('설정을 불러오지 못했어요')).toBeTruthy();
+    expect(screen.queryByLabelText('한국어')).toBeNull();
+  });
+});
+
 describe('서버 언어가 바뀌면', () => {
   it('수정 전이면 조용히 따른다 — 알림 없음', () => {
     const { rerender } = render(<MyLanguageScreen />);
