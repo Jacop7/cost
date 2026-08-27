@@ -150,6 +150,43 @@ $h$;
  * ⚠ 트랜잭션 안에서 돌고 롤백되므로 진짜 장부를 바꾸지 않는다.
  *   각 시험 파일이 제 손으로 begin/exception 을 적던 걸 여기로 모은다.
  */
+/*
+ * 시험 전용 영업 시작 문.
+ *
+ * 제품은 규칙 종료 뒤 종료 시각 없는 개점을 45015 로 거부한다. 시험 준비만 시드와 같은
+ * 정식 늦은 개점 경로를 사용해 매장 현지 시각 두 시간 뒤를 고른다. 45015 를 삼키거나
+ * 제품 규칙을 느슨하게 하지 않는다.
+ */
+create function pg_temp.open_for_test(p_store uuid, p_late_close_time time default null) returns jsonb
+language plpgsql as $h$
+declare
+  v_result jsonb;
+  v_count  integer;
+  v_status text;
+begin
+  begin
+    v_result := transition_business_state(p_store, 'open');
+  exception
+    when sqlstate '45015' then
+      v_result := transition_business_state(
+        p_store, 'open',
+        coalesce(
+          p_late_close_time,
+          ((clock_timestamp() at time zone store_timezone(p_store)) + interval '2 hours')::time));
+  end;
+
+  select count(*), max(d.status::text) into v_count, v_status
+    from business_days d
+   where d.id = (v_result->>'business_day_id')::uuid
+     and d.store_id = p_store;
+  if v_count <> 1 or v_status not in ('open', 'break') then
+    raise exception 'open_for_test: 반환 영업일이 매장에 열린 상태로 존재하지 않습니다'
+      using errcode = '45003';
+  end if;
+
+  return v_result;
+end $h$;
+
 create function pg_temp.open_today() returns date
 language plpgsql as $h$
 declare
@@ -170,14 +207,8 @@ begin
 
   -- 없으면 연다.
   begin
-    perform transition_business_state(pg_temp.store(), 'open');   -- v_day = 판매 영업일이라 동치(0160)
+    perform pg_temp.open_for_test(pg_temp.store());   -- v_day = 판매 영업일이라 동치(0160)
   exception
-    when sqlstate '45015' then
-      -- 오늘 규칙 종료 뒤에도 시험은 바깥 시각과 무관해야 한다(0162).
-      -- 시드의 오늘 개점과 같은 정식 경로로, 매장 현지 시각 두 시간 뒤에 닫는다.
-      perform transition_business_state(
-        pg_temp.store(), 'open',
-        ((clock_timestamp() at time zone store_timezone(pg_temp.store())) + interval '2 hours')::time);
     when sqlstate '22000' or sqlstate '23505' then null;
   end;
 
@@ -193,7 +224,7 @@ begin
                     and status::text <> 'closed') then
     begin
       perform transition_business_state(pg_temp.store(), 'end');
-      perform transition_business_state(pg_temp.store(), 'open');   -- v_day = 판매 영업일이라 동치(0160)
+      perform pg_temp.open_for_test(pg_temp.store());   -- v_day = 판매 영업일이라 동치(0160)
     exception when sqlstate '22000' or sqlstate '23505' or sqlstate '45002' then null;
     end;
     -- 그래도 안 열렸으면 되열기를 한 번 더 시도한다(오늘이 이미 종료된 경우).
