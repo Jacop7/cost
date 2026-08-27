@@ -325,6 +325,8 @@ export interface StoreSettings {
    */
   taxMode: TaxMode;
   taxItems: { name: string; rate: number }[];
+  /** 저장 토큰(0171) — save_settings 의 p_base_revision. 다른 기기가 먼저 저장했으면 45009. */
+  revision: number;
 }
 
 /**
@@ -339,6 +341,7 @@ export const SETTINGS_SHAPE = {
   alert_morning_summary: 'boolean', alert_inbound_delay: 'boolean', alert_price_spike: 'boolean', alert_target_miss: 'boolean',
   open_time: 'string', close_time: 'string', break_start: 'string|null', break_end: 'string|null',
   overnight: 'boolean', open_minutes: 'number', tax_mode: 'string', tax_items: 'array',
+  revision: 'number',
 } as const;
 
 /**
@@ -381,6 +384,7 @@ export function parseStoreSettings(data: unknown): StoreSettings {
   for (const k of ['break_start', 'break_end'] as const) if (r[k] !== null && !HHMM.test(r[k] as string)) bad(k, `HH:MM 이 아니에요 (${String(r[k])})`);
   if (!Number.isInteger(r.open_minutes) || (r.open_minutes as number) < 0 || (r.open_minutes as number) > 1440) bad('open_minutes', `0~1440 (${String(r.open_minutes)})`);
   if (!TAX_MODES.has(r.tax_mode as string)) bad('tax_mode', `모르는 값 ${String(r.tax_mode)}`);
+  if (!Number.isSafeInteger(r.revision) || (r.revision as number) < 1) bad('revision', `1 이상 정수 (${String(r.revision)})`);
   // 서버 assert_tax_items 와 같은 규칙 — 이름은 다듬어 비어 있지 않고, 요율은 0 이상 100 **미만**.
   for (const [i, t] of (r.tax_items as unknown[]).entries()) {
     const it = t as Record<string, unknown> | null;
@@ -411,6 +415,7 @@ export function parseStoreSettings(data: unknown): StoreSettings {
     openMinutes: r.open_minutes as number,
     taxMode: r.tax_mode as TaxMode,
     taxItems: (r.tax_items as { name: string; rate: number }[]).map((t) => ({ name: t.name, rate: t.rate })),
+    revision: r.revision as number,
   };
 }
 /** 서버 settings.tax_mode 의 값 집합(0090 이후 tax_of 가 읽지 않지만 응답엔 남아 있다). */
@@ -491,15 +496,27 @@ export function buildSettingsPayload(input: Partial<SaveSettingsInput>): Record<
   return payload;
 }
 
+/**
+ * 설정 저장 — **판본 토큰**(0171)을 함께 보낸다. 마지막으로 받은 설정의 revision 이 base 이고, 그 사이
+ * 다른 기기가 저장했으면 서버가 45009 로 거절한다(화면은 코드로 갈라 충돌 배너를 띄운다).
+ * 설정을 아직 못 받았으면 보내지 않는다 — base 없이 보내면 서버가 BASE_REQUIRED 로 막는다.
+ */
 export function useSaveSettings() {
   const qc = useQueryClient();
   const storeId = useStoreId();
   return useMutation({
     mutationFn: async (input: Partial<SaveSettingsInput>) => {
-      const { error } = await supabase.rpc('save_settings', { p_store: storeId, p_payload: asJson(buildSettingsPayload(input)) });
-      if (error) throw new Error(error.message);
+      const cached = qc.getQueryData<StoreSettings>(qk.storeSettings);
+      const base = cached?.revision;
+      if (!Number.isSafeInteger(base) || (base as number) < 1) throw new Error('설정을 아직 불러오지 못했어요 — 잠시 후 다시 시도해 주세요');
+      const { error } = await supabase.rpc('save_settings', {
+        p_store: storeId, p_payload: asJson(buildSettingsPayload(input)), p_base_revision: base,
+      });
+      // ⚠ 코드를 살려 던진다 — 화면이 45009(다른 기기 변경)를 문구가 아니라 코드로 가른다.
+      if (error) throw rpcError(error);
     },
-    onSuccess: () => invalidate(qc, [qk.settings]),
+    // 성공·실패 모두 다시 읽는다 — 45009 뒤에는 새 판본과 값을 받아야 다음 저장이 된다.
+    onSettled: () => invalidate(qc, [qk.settings, qk.storeSettings]),
   });
 }
 

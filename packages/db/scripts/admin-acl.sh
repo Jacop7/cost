@@ -33,6 +33,9 @@
 # ⚠ 로그는 host/db 까지. 받은 값이 틀려도 되풀이하지 않는다.
 # ════════════════════════════════════════════════════════════════
 set -euo pipefail
+# ⚠ xtrace 를 **비밀번호를 읽기 전에** 끈다 — `bash -x` 로 부르면 `LPW=…`·`export PGPASSWORD=…` 가 그대로
+#   찍혔다(검토 실측). 스크립트 안에서 다시 켜지 않는다. (회귀시험: scripts/admin-acl.test.sh — canary 부재)
+{ set +x; } 2>/dev/null
 
 usage() {
   echo "사용법: admin-acl.sh --local <db> <fix|check> | --remote <fix|check>" >&2
@@ -44,9 +47,11 @@ usage() {
 # ⚠ `env -i A=1 B=2 cmd` 는 A·B 가 env 프로세스의 argv 에 실린다 — 비밀번호가 새는 길이었다(검토 P1).
 KEEP_ENV=' PATH HOME LANG LC_ALL USERPROFILE SYSTEMROOT SystemRoot TEMP TMP APPDATA LOCALAPPDATA PROGRAMDATA HOMEDRIVE HOMEPATH USERNAME COMSPEC '
 scrub_env() {
+  { set +x; } 2>/dev/null      # 서브셸에서도 xtrace 는 꺼진 채(SHELLOPTS 로 켜져 들어와도)
   local v
-  for v in $(compgen -e); do
-    case "$KEEP_ENV" in *" $v "*) ;; *) unset "$v" ;; esac
+  # `builtin` — 밖에서 export 된 같은 이름의 함수로 목록을 속이지 못하게(검토 지적).
+  for v in $(builtin compgen -e); do
+    case "$KEEP_ENV" in *" $v "*) ;; *) unset "$v" 2>/dev/null || true ;; esac
   done
   export LANG="${LANG:-C.UTF-8}"
 }

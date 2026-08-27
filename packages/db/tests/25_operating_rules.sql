@@ -350,15 +350,15 @@ begin
   v_before := planned_close(v_store, v_today);
 
   perform pg_temp.raises('save_settings 에 영업시간 키는 거부',
-    format('select save_settings(%L, %L::jsonb)', v_store,
-           jsonb_build_object('open_time', '18:00', 'close_time', '02:00')::text), '22000');
+    format('select save_settings(%L, %L::jsonb, %s)', v_store,
+           jsonb_build_object('open_time', '18:00', 'close_time', '02:00')::text, pg_temp.settings_rev(v_store)), '22000');
   perform pg_temp.raises('브레이크 키만 실어도 거부',
-    format('select save_settings(%L, %L::jsonb)', v_store,
-           jsonb_build_object('break_start', '15:00')::text), '22000');
+    format('select save_settings(%L, %L::jsonb, %s)', v_store,
+           jsonb_build_object('break_start', '15:00')::text, pg_temp.settings_rev(v_store)), '22000');
 
   -- 시간과 무관한 저장은 그대로 된다 — 규칙도 안 건드린다.
   -- 금액 자릿수는 통화가 정한다(0168) — 사장님이 고치는 자릿수는 수량 쪽이다.
-  perform save_settings(v_store, jsonb_build_object('quantity_digits', 1));
+  perform save_settings(v_store, jsonb_build_object('quantity_digits', 1), pg_temp.settings_rev(v_store));
   perform pg_temp.eq_t('무관한 저장은 통과', (select quantity_digits::text from settings where store_id = v_store), '1');
 
   -- 정식 문(토큰)으로 바꾸면: 오늘은 옛 규칙, 내일부터 새 규칙 — 표시 폼(settings)도 따라온다.

@@ -380,7 +380,7 @@ begin
     'open_business_day(p_store uuid, p_date date, p_close_time time without time zone)',
     'purge_entity_changes()',
     'save_sale(p_store uuid, p_date date, p_items jsonb, p_etc_items jsonb, p_extra_items jsonb, p_base_revision integer, p_open_day boolean, p_open_close_time time without time zone)',
-    'save_settings(p_store uuid, p_payload jsonb)',
+    'save_settings(p_store uuid, p_payload jsonb, p_base_revision integer)',
     'save_store_tax(p_store uuid, p_mode tax_mode, p_items jsonb)',
     'set_operating_hours(p_store uuid, p_weekly_hours jsonb, p_weekly_breaks jsonb, p_base_rule_id uuid, p_base_revision integer)',
     'set_store_timezone(p_store uuid, p_timezone text)',

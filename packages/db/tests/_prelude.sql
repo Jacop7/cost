@@ -44,6 +44,10 @@ begin
   return v;
 end $h$;
 
+/** 설정 판본(0171) — save_settings 의 p_base_revision 으로 되보낼 현재 값. 시험은 늘 최신 판본으로 저장한다. */
+create function pg_temp.settings_rev(p_store uuid) returns integer
+language sql stable as $h$ select revision from settings where store_id = p_store $h$;
+
 /** 세션의 사장님을 바꾼다(JWT 클레임). 블록 끝에 pg_temp.as_owner(pg_temp.owner()) 로 되돌릴 것. */
 create function pg_temp.as_owner(p_uid uuid) returns void
 language plpgsql as $h$

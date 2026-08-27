@@ -1451,6 +1451,7 @@ export type Database = {
           money_digits: number
           open_time: string
           quantity_digits: number
+          revision: number
           store_id: string
           tax_items: Json
           tax_mode: Database["public"]["Enums"]["tax_mode"]
@@ -1473,6 +1474,7 @@ export type Database = {
           money_digits?: number
           open_time?: string
           quantity_digits?: number
+          revision?: number
           store_id: string
           tax_items?: Json
           tax_mode?: Database["public"]["Enums"]["tax_mode"]
@@ -1495,6 +1497,7 @@ export type Database = {
           money_digits?: number
           open_time?: string
           quantity_digits?: number
+          revision?: number
           store_id?: string
           tax_items?: Json
           tax_mode?: Database["public"]["Enums"]["tax_mode"]
@@ -2651,8 +2654,9 @@ export type Database = {
         Args: {
           p_store: string
           p_payload: Json
+          p_base_revision?: number
         }
-        Returns: undefined
+        Returns: Json
       }
       save_store_tax: {
         Args: {

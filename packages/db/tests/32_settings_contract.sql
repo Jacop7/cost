@@ -14,18 +14,18 @@ declare
   v_want text[] := array['alert_inbound_delay','alert_morning_summary','alert_price_spike','alert_target_miss',
                          'break_end','break_start','close_time','cup_volume','currency','default_target_profit_rate',
                          'locale','money_digits','open_minutes','open_time','overnight','quantity_digits',
-                         'tax_items','tax_mode','unit_price_digits','unit_system'];
+                         'revision','tax_items','tax_mode','unit_price_digits','unit_system'];
 begin
   select array_agg(k order by k) into v_keys from jsonb_object_keys(v_res) k;
-  perform pg_temp.eq_t('get_settings 의 실제 키 집합 = 앱 계약(20키)', array_to_string(v_keys, ','), array_to_string(v_want, ','));
+  perform pg_temp.eq_t('get_settings 의 실제 키 집합 = 앱 계약(21키)', array_to_string(v_keys, ','), array_to_string(v_want, ','));
 
   -- JSON 타입 — 파서가 요구하는 그대로.
   perform pg_temp.eq_t('문자열 키', (select string_agg(k || ':' || jsonb_typeof(v_res -> k), ',' order by k)
      from unnest(array['locale','currency','unit_system','tax_mode','open_time','close_time']) k),
      'close_time:string,currency:string,locale:string,open_time:string,tax_mode:string,unit_system:string');
   perform pg_temp.eq_t('숫자 키', (select string_agg(jsonb_typeof(v_res -> k), ',' order by k)
-     from unnest(array['cup_volume','default_target_profit_rate','unit_price_digits','quantity_digits','money_digits','open_minutes']) k),
-     'number,number,number,number,number,number');
+     from unnest(array['cup_volume','default_target_profit_rate','unit_price_digits','quantity_digits','money_digits','open_minutes','revision']) k),
+     'number,number,number,number,number,number,number');
   perform pg_temp.eq_t('참/거짓 키', (select string_agg(jsonb_typeof(v_res -> k), ',' order by k)
      from unnest(array['alert_morning_summary','alert_inbound_delay','alert_price_spike','alert_target_miss','overnight']) k),
      'boolean,boolean,boolean,boolean,boolean');
@@ -38,7 +38,7 @@ begin
    * 저장값 **보존**(검토 P1) — "양수인가"로는 상수 1 을 돌려줘도 통과했다. 눈에 띄는 값으로 저장한 뒤
    * 응답이 **행의 값 그대로**인지 잰다. 다른 통과 필드도 행과 직접 대조한다.
    */
-  perform save_settings(pg_temp.store(), '{"cup_volume": 333, "quantity_digits": 3, "unit_price_digits": 1}'::jsonb);
+  perform save_settings(pg_temp.store(), '{"cup_volume": 333, "quantity_digits": 3, "unit_price_digits": 1}'::jsonb, pg_temp.settings_rev(pg_temp.store()));
   v_res := get_settings(pg_temp.store());
   perform pg_temp.eq('cup_volume 은 저장한 333 그대로', (v_res ->> 'cup_volume')::numeric, 333, 0);
   perform pg_temp.ok('통과 필드들이 settings 행과 같다',
@@ -54,4 +54,25 @@ begin
              and (v_res ->> 'open_time') = to_char(s.open_time, 'HH24:MI')
              and (v_res ->> 'close_time') = to_char(s.close_time, 'HH24:MI')
              and (v_res -> 'tax_items') = s.tax_items));
+end $t$;
+
+
+-- ── 판본 (0171) — 다른 기기가 먼저 저장했으면 45009, base 없이는 22000, 저장마다 1씩 ─────
+do $t$
+declare v_rev int; v_res jsonb;
+begin
+  v_rev := pg_temp.settings_rev(pg_temp.store());
+  perform pg_temp.ok('응답 revision = 행의 판본', (get_settings(pg_temp.store()) ->> 'revision')::int = v_rev);
+  perform pg_temp.raises('base 없이는 22000 BASE_REQUIRED',
+    format('select save_settings(%L, %L::jsonb)', pg_temp.store(), '{"quantity_digits":1}'), '22000');
+  perform pg_temp.raises('낡은 base 는 45009',
+    format('select save_settings(%L, %L::jsonb, %s)', pg_temp.store(), '{"quantity_digits":1}', v_rev - 1), '45009');
+  perform pg_temp.raises('앞선 base 도 45009',
+    format('select save_settings(%L, %L::jsonb, %s)', pg_temp.store(), '{"quantity_digits":1}', v_rev + 1), '45009');
+  perform pg_temp.eq('거부된 저장은 판본을 안 올린다', pg_temp.settings_rev(pg_temp.store()), v_rev, 0);
+  v_res := save_settings(pg_temp.store(), '{"quantity_digits":1}'::jsonb, v_rev);
+  perform pg_temp.eq('맞는 base 면 저장되고 판본이 1 오른다', pg_temp.settings_rev(pg_temp.store()), v_rev + 1, 0);
+  perform pg_temp.eq('응답이 새 판본을 준다', (v_res ->> 'revision')::int, v_rev + 1, 0);
+  perform pg_temp.raises('같은 base 로 두 번째 저장(다른 기기 시나리오)은 45009',
+    format('select save_settings(%L, %L::jsonb, %s)', pg_temp.store(), '{"quantity_digits":2}', v_rev), '45009');
 end $t$;

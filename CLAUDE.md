@@ -105,7 +105,12 @@ Expo(RN) + Supabase 모노레포. 모든 데이터가 기록·전파되어 추�
   지운 채 `PGPASSFILE`/libpq 기본 pgpass(Windows 는 `%APPDATA%\postgresql\pgpass.conf`). 셸의
   `PGSSL*`·`PGSERVICE`·`PGOPTIONS` 등은 상속되지 않고 로그는 host/db 까지만. 접속 계정이
   supabase_admin 이거나 그 롤로 전환 가능한 슈퍼유저인지 먼저 확인하고 아니면 아무것도 안 바꾼다.
+  스크립트는 비밀번호를 읽기 전에 xtrace 를 끈다(`bash -x` 에서 `export PGPASSWORD=…` 가 찍혔었다) —
+  `scripts/admin-acl.test.sh`(verify ③) 가 bash -x 출력에 canary 가 없음·argv/환경 격리·거부 경로를 잰다.
   시험 31 이 `pg_default_acl` 로 두 롤을 다 잰다.
+- 설정 저장은 **판본**이 필요하다(0171): `save_settings(p_store, p_payload, p_base_revision)` — 없으면
+  22000 BASE_REQUIRED, 다르면 45009 REVISION_CONFLICT, 저장마다 +1, `get_settings.revision` 이 토큰이다.
+  DB 시험은 `pg_temp.settings_rev(store)` 로 현재 판본을 보낸다.
 - 설정 값은 서버가 잰다(0167·0168): 언어 키는 core `LOCALES` 의 키('ko', 'en-US', …)이고
   **통화·금액 자릿수는 언어에서 파생**한다(`locale_defaults`, core 시험 `localeSqlParity` 가 대조).
   빈 `{}`·JSON 타입 불일치·목록 밖 값은 22000(EMPTY_PAYLOAD / INVALID_VALUE).
