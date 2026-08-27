@@ -93,14 +93,17 @@ Expo(RN) + Supabase 모노레포. 모든 데이터가 기록·전파되어 추�
   ⚠ 스크립트가 `scripts/admin-acl.sh` 를 **supabase_admin 접속으로** 불러 그 롤의 기본 권한
   (TRUNCATE·TRIGGER·REFERENCES)을 걷어내고 **그 롤로 표를 실제로 만들어** 닫혔는지 잰다 —
   postgres 는 그 롤의 멤버가 아니라 마이그레이션(0166·0167)으로는 못 하고 NOTICE 만 남긴다.
-  대상도 동작도 **명시적**이다 — 로컬은 `--local <db> <fix|check>`(식별자만, ADMIN_DB_URL 을 보지 않는다),
-  운영·개발은 배포 절차에서 `ADMIN_DB_URL=… ADMIN_DB_PASSWORD=… bash packages/db/scripts/admin-acl.sh --remote fix`
-  한 번, 이후 `--remote check` 로 게이트(CI 는 `--no-db` 라 이 단계를 안 돈다). fix/check 는 생략 불가.
-  ⚠ `ADMIN_DB_URL` 에 비밀번호가 있으면 **거부**한다(파싱해서 떼지 않는다 — `?password=`·탭 구분·
-  이스케이프 인용에서 새어 나갔다). 비밀번호는 `ADMIN_DB_PASSWORD`(환경으로만 psql 에 전달) 또는
-  `PGPASSFILE`/`~/.pgpass`. 자식 프로세스에 `ADMIN_*` 는 넘기지 않고 로그는 host/db 까지만.
-  접속 계정이 supabase_admin 이거나 그 롤로 전환 가능한 슈퍼유저인지 먼저 확인하고 아니면 아무것도
-  안 바꾼다. 시험 31 이 `pg_default_acl` 로 두 롤을 다 잰다.
+  대상도 동작도 **명시적**이다 — 로컬은 `--local <db> <fix|check>`(식별자만), 운영·개발은 배포
+  절차에서 `ADMIN_DB_HOST=… ADMIN_DB_USER=… [ADMIN_DB_PORT/NAME/SSLMODE] [ADMIN_DB_PASSWORD=…]
+  bash packages/db/scripts/admin-acl.sh --remote fix` 한 번, 이후 `--remote check` 로 게이트
+  (CI 는 `--no-db` 라 이 단계를 안 돈다). fix/check 는 생략 불가.
+  ⚠ 접속 문자열(URL/keyword)은 **받지 않는다** — 항목별 환경변수만(값마다 문자 집합 검사). 정규식으로
+  비밀번호를 떼는 방식은 `?pass%77ord=`·`password =`·`sslpassword=` 에서 새어 나갔다.
+  접속 정보는 전부 libpq 환경변수(PGHOST…)로 psql 에 가고 argv 에는 옵션만 남는다. 비밀번호는
+  `ADMIN_DB_PASSWORD` 가 있으면 그것만, 없으면 셸의 `PGPASSWORD` 도 지운 채 `PGPASSFILE`/`~/.pgpass`.
+  자식에 `ADMIN_*`·`PGSERVICE`·`PGOPTIONS` 는 넘기지 않고 로그는 host/db 까지만. 접속 계정이
+  supabase_admin 이거나 그 롤로 전환 가능한 슈퍼유저인지 먼저 확인하고 아니면 아무것도 안 바꾼다.
+  시험 31 이 `pg_default_acl` 로 두 롤을 다 잰다.
 - 설정 값은 서버가 잰다(0167·0168): 언어 키는 core `LOCALES` 의 키('ko', 'en-US', …)이고
   **통화·금액 자릿수는 언어에서 파생**한다(`locale_defaults`, core 시험 `localeSqlParity` 가 대조).
   빈 `{}`·JSON 타입 불일치·목록 밖 값은 22000(EMPTY_PAYLOAD / INVALID_VALUE).

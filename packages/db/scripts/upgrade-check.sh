@@ -37,7 +37,14 @@ EXPECT_STOP=20260826000152_no_rate_guessing.sql
 EXPECT_MSG='0152: 굳은 세율로'
 
 psql_d() { docker exec -i "$CT" psql -U postgres -d "$1" -v ON_ERROR_STOP=1 -q "${@:2}"; }
-cleanup() { bash "$SCRIPT_DIR/fresh-db.sh" --drop "$D" >/dev/null 2>&1 || true; }
+# 임시 DB 삭제 실패를 숨기지 않는다(검토 지적) — 시험이 통과했어도 DB 가 남으면 빨간 결과다.
+# (EXIT 트랩 안의 exit 1 이 최종 상태가 된다. 삭제가 됐으면 원래 상태를 그대로 둔다.)
+cleanup() {
+  if ! bash "$SCRIPT_DIR/fresh-db.sh" --drop "$D" >/dev/null 2>&1; then
+    echo "임시 DB 삭제 실패: $D — 직접 지우세요 (drop database $D)" >&2
+    exit 1
+  fi
+}
 trap cleanup EXIT
 
 fail=0
