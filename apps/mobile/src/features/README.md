@@ -3,14 +3,15 @@
 탭별 화면 도메인은 주로 `screens/`(화면·시트) + `hooks.ts`(조회·저장)로 구성한다.
 여러 화면 도메인이 함께 쓰는 영업일·설정·마스터 데이터는 아래 공용 논리 경계가 소유한다.
 **`demoData.ts` 는 전부 제거됐다** — 모든 화면이 Supabase 실데이터를 쓴다.
-공통 UI 킷은 `src/components/kit`, 계산은 `@sikjae/core`, 데이터 계약은 `@sikjae/types`.
+공통 UI 킷은 `src/components/kit`, 계산은 `@sikjae/core`가 맡는다. Supabase 생성 타입은
+`@sikjae/db`, `TaxItem`·`StockBadge` 같은 소형 수기 계약은 `@sikjae/types`가 맡는다.
 
 화면은 Supabase를 직접 부르지 않는다. 서버 접근은 `features/*/hooks.ts`와
-`features/business-day/businessDay.ts`가 소유하고, 쿼리 키·무효화 규칙은
-`src/lib/queryClient.ts`의 `qk`·`invalidateOn`이 단일 출처다.
+`features/business-day/businessDay.ts`가 소유한다. 공유 쿼리 루트와 전파 이벤트별 무효화 범위는
+`src/lib/queryClient.ts`의 `qk`·`invalidateOn`이 소유한다. 화면 전용 보조 키는 해당 도메인 훅이 소유한다.
 
 하단 탭 순서: **식재료(ING) · 레시피(RCP) · 발주(ORD) · 매출관리(SALES) · MY** — 5탭.
-(AGENTS.md 는 4탭으로 적혀 있으나 매출관리 탭이 추가되어 실제 구현은 5탭이다. `app/(tabs)/_layout.tsx` 가 실물.)
+`app/(tabs)/_layout.tsx`와 `AGENTS.md`가 같은 순서를 사용한다.
 공통 헤더 패턴: 리스트 화면은 **타이틀(좌, 24·800) + 검색/알림 아이콘(우)**, 그 아래 **밑줄형 탭/카테고리 스트립**(좌측 정렬, 하단 구분선 `#D1D6DB`).
 
 식재료 상세에서 진입하는 재고·구매·폐기 내역 화면의 공통 구조와 컴포넌트 기준은
@@ -25,6 +26,7 @@
 | `features/settings/hooks.ts` | 매장 설정 계약·저장, 세금, 영업시간, 매장 시간대 | MY 설정 화면과 설정 소비 화면 |
 | `features/master-data/hooks.ts` | 카테고리·구매처·판매 채널·부자재 조회·저장 | 식재료·레시피·MY 화면 |
 | `src/lib/date.ts` | 기기 시계 없이 서버가 준 날짜를 다루는 순수 산술·표기 | 기간 조회와 날짜 머리글 |
+| `src/lib/rpcValue.ts` | nullable 여부를 보존하는 공통 RPC 숫자·문자열 변환 | 도메인 응답 매핑 훅 |
 | `features/sales/period.ts` | 매출 기간 프리셋 | 매출 분석 화면 |
 | `components/history/HistoryLayout.tsx` | 재고·구매·폐기 이력 공통 레이아웃 | 식재료 이력 화면 |
 
@@ -41,7 +43,7 @@
 | `ingredients` | ING-04 | 식재료 수정 (용량·안전재고·최소발주·구매옵션) | `ingredients/edit/[id]` (`IngredientEditScreen`) | ✅ |
 | `ingredients` | ING-03b | 재고 추가 (빠른 입고 · 구매 옵션 자동 채움 · 서버 미리보기) → **E7+E1** | `ingredients/add-stock/[id]` (`QuickInboundScreen`) | ✅ |
 | `ingredients` | ING-05 | 재고 수정 (수량 조정·완전 소진·폐기) → **E2/E5** | `StockEditSheet`(시트) | ✅ |
-| `ingredients` | ING-06 | 구매 링크·옵션 수정 (URL·환산단가·최근 비교) | `ingredients/option` (`PurchaseOptionScreen`) | ✅ |
+| `ingredients` | ING-05 | 구매 링크·옵션 수정 (**재고 수정과 ID 중복 — [작업큐 P2-4](../../../../docs/작업큐.md#p2-4-화면-id-전수-정리)에서 결정**) | `ingredients/option` (`PurchaseOptionScreen`) | ✅ |
 | `ingredients` | ING-07 | 재고 내역 (변동 원장·기간 필터) | `ingredients/history/[id]` (`StockHistoryScreen`) | ✅ |
 | `ingredients` | ING-08 | 조회 설정 (기간·유형·정렬 필터) | `HistoryFilterSheet`(시트) | ✅ |
 | `ingredients` | ING-09 | 구매 이력 전체 (건별 단가·단가 범위·기준단가 대조) | `ingredients/purchases/[id]` (`PurchaseHistoryScreen`) | ✅ |
@@ -49,15 +51,15 @@
 | `ingredients` | — | 메모 수정 (멀티라인·글자수) | `MemoEditSheet`(시트) | ✅ |
 | `recipes` | RCP-01 | 레시피 리스트 (정렬·판매상태/목표 필터) | `recipes/index` | ✅ |
 | `recipes` | RCP-02 | 레시피 상세 (도넛·손익·재료·고정지출·**세금 항목별**) | `recipes/[id]` | ✅ |
-| `recipes` | RCP-03 | 레시피 추가/수정 (세금 시트에서 **세금 항목 추가·삭제**) → **E3** | `recipes/add` | ✅ |
-| `recipes` | RCP-09 | 식재료 검색·담기 + 사용량 입력 시트 | `recipes/ingredient-search` | ✅ |
+| `recipes` | RCP-03 | 레시피 추가/수정 (재료·부자재·추가 지출·목표율) → **E3** | `recipes/add` | ✅ |
+| `recipes` | RCP-10 | 식재료 검색·담기 + 사용량 입력 시트 | `recipes/ingredient-search` (`RecipeIngredientSearchScreen`) | ✅ |
 | `recipes` | RCP-11 | 부자재 검색·담기 | `recipes/material-search` (`MaterialSearchScreen`) | ✅ |
 | `recipes` | RCP-13 | 부자재 관리 (+ RCP-14 부자재 수정 시트) | `recipes/materials` (`MaterialManageScreen`) | ✅ |
 | `recipes` | RCP-07 | 평균 판매량 입력 (기간·환산·배분비율) | `recipes/avg-sales` (`AvgSalesScreen`) | ✅ |
 | `recipes` | RCP-16 | 손익 변동 (금액 목록 → 원인·결과 시트, 커서 20건) | `recipes/profit-history` (`ProfitHistoryScreen`) | ✅ |
 | `recipes` | RCP-12 | 레시피 카테고리 설정 (추가·수정·삭제) | `recipes/category` (`CategoryScreen`) | ✅ |
-| `recipes`→`my` | MY-02 | 고정 지출 자세히 (자세히 보기 진입) | `recipes/fixed-cost` (`my/FixedCostScreen`) | ✅ |
-| `recipes`→`my` | MY-02 | 고정 지출 수정 (항목/카드 추가·삭제) → **E4** | `recipes/fixed-cost-edit` (`my/FixedCostEditScreen`) | ✅ |
+| `recipes`→`my` | MY-05 | 고정 지출 자세히 (자세히 보기 진입) | `recipes/fixed-cost` (`my/FixedCostScreen`) | ✅ |
+| `recipes`→`my` | MY-05 | 고정 지출 수정 (항목/카드 추가·삭제) → **E4** | `recipes/fixed-cost-edit` (`my/FixedCostEditScreen`) | ✅ |
 | `recipes` | RCP-05 | 판매가 시뮬레이션 (상세 내 시트·슬라이더 라이브 재계산) | `recipes/PriceSimSheet`(시트) | ✅ |
 | `recipes`→`my` | RCP-15 | 적용 채널·비중 (고정지출 수정 내 시트·슬라이더·합계 검증) | `my/ChannelWeightSheet`(시트) | ✅ |
 | `orders` | ORD-01 | 발주 현황 (발주 후보/입고 예정/입고 완료) | `orders/index` | ✅ |
@@ -70,8 +72,9 @@
 | `my` | MY-TAX | 세금 (부가세 · 추가 항목 → 전 레시피 손익 반영) | `my/tax` (`MyTaxScreen`) | ✅ |
 | `my` | MY-03 | 카테고리 관리 허브 | `my/categories` (`MyCategoryHubScreen`) | ✅ |
 | `my` | MY-03 | 카테고리 편집 | `my/category` (`MyCategoryScreen`) | ✅ |
-| `my` | MY-05 | 구매처·브랜드 | `my/vendors` (`MyVendorsScreen`) | ✅ |
+| `my` | MY-04 | 구매처·브랜드 (**단위 설정과 ID 중복 — [작업큐 P2-4](../../../../docs/작업큐.md#p2-4-화면-id-전수-정리)에서 결정**) | `my/vendors` (`MyVendorsScreen`) | ✅ |
 | `my` | MY-06 | 알림 설정 | `my/notifications` (`MyNotificationsScreen`) | ✅ |
+| `my` | MY-07 | 판매 채널 이름·사용 여부 | `my/channels` (`MyChannelsScreen`) | ✅ |
 | `recipes` | RCP-12b | 부자재 카테고리 | `recipes/material-category` (`MaterialCategoryScreen`) | ✅ |
 | `sales` | SALES-06 | 기타 매출 추가 (항목·단가·수량) | (SalesHome 내 시트) | ✅ |
 | `sales` | SALES-06 | 기타 매출 추가에 **판매 채널** 선택(매장·배달·포장) | `SalesHomeScreen` 시트 | ✅ |
@@ -83,21 +86,22 @@
 | `changes` | ING-03b / RCP-02b | 수정 내역 (식재료·레시피 공용 · 전후값·자동 전파·매출 반영 상태) | `ingredients/changes/[id]` · `recipes/changes/[id]` | ✅ |
 | `sales` | SALES-01b | 영업중·브레이크타임·영업종료 (전이 한 문 · 자동 브레이크는 서버 크론) | (SalesHome 내 `BusinessDayBar`) | ✅ |
 | `sales` | SALES-02 | 매출 분석 (기간 선택·캘린더·손익) | `sales/analytics` (`SalesAnalyticsScreen`) | ✅ |
-| `sales` | SALES-03 | 일 손익 상세 | `sales/day-detail` (`SalesDayDetailScreen`) | ✅ |
-| `sales` | SALES-04 | 일 손익 전체 | `sales/day` (`SalesDayFullScreen`) | ✅ |
-| `sales` | SALES-05 | 매출 상세 | `sales/revenue` (`SalesRevenueScreen`) | ✅ |
-| `sales` | SALES-08 | 메뉴별 손익 (하루=그날 스냅샷 · 기간=날짜별 **합**, 판매가 여럿이면 목록) | `sales/menu` (`SalesMenuDetailScreen`) | ✅ |
-| `sales` | SALES-18 | 채널별 손익 | `sales/channel` (`SalesChannelScreen`) | ✅ |
-| `sales` | SALES-11 | 재료 원가 상세 | `sales/material` (`SalesMaterialScreen`) | ✅ |
-| `sales` | SALES-12 | 부자재 상세 | `sales/extra` (`SalesExtraScreen`) | ✅ |
-| `sales` | SALES-13 | 고정 지출 상세 | `sales/fixed` (`SalesFixedScreen`) | ✅ |
-| `sales` | SALES-14 | 추가 지출 | `sales/expense` (`SalesExpenseScreen`) | ✅ |
+| `sales` | SALES-03 | 일 손익 상세 | `sales/day` (`SalesDayDetailScreen`) | ✅ |
+| `sales` | SALES-10 | 손익 전체 자세히 | `sales/day-detail` (`SalesDayFullScreen`) | ✅ |
+| `sales` | SALES-12 | 매출 상세 | `sales/revenue` (`SalesRevenueScreen`) | ✅ |
+| `sales` | SALES-09 | 메뉴 손익 상세 (하루=그날 스냅샷 · 기간=날짜별 **합**) | `sales/menu` (`SalesMenuDetailScreen`) | ✅ |
+| `sales` | SALES-18 | 채널별 손익 (**세금 화면과 ID 중복 — [작업큐 P2-4](../../../../docs/작업큐.md#p2-4-화면-id-전수-정리)에서 결정**) | `sales/channel` (`SalesChannelScreen`) | ✅ |
+| `sales` | SALES-13 | 재료 원가 상세 (+ SALES-14 재료별 사용 메뉴 시트) | `sales/material` (`SalesMaterialScreen`) | ✅ |
+| `sales` | SALES-15 | 부자재 상세 (+ SALES-16 부자재별 사용 메뉴 시트) | `sales/extra` (`SalesExtraScreen`) | ✅ |
+| `sales` | SALES-17 | 고정 지출 상세 (**폐기 손실과 ID 중복 — [작업큐 P2-4](../../../../docs/작업큐.md#p2-4-화면-id-전수-정리)에서 결정**) | `sales/fixed` (`SalesFixedScreen`) | ✅ |
+| `sales` | SALES-20 | 추가 지출 | `sales/expense` (`SalesExpenseScreen`) | ✅ |
+| `sales` | SALES-19 | 부족 메뉴·식재료 재고 확인 | `sales/stock-check` (`SalesStockCheckScreen`) | ✅ |
 | `sales` | SALES-21 | 과거 판매 내역 수정·추가 (§6.4 · 다시 열지 않고 정정) | `sales/past` (`SalesPastEditScreen`) | ✅ |
-| `my` | MY-04 | 단위 설정 (단위 시스템·조리컵/스푼·묶음 단위·**단가 표기 자릿수**) | `my/units` (`MyUnitsScreen`) | ✅ |
+| `my` | MY-04 | 단위 설정 (미터법 표시·1컵 용량·**단가 표기 자릿수**) | `my/units` (`MyUnitsScreen`) | ✅ |
 | `my` | MY-08 | 언어·통화 설정 (로케일 → 통화·구분자·소수점·금액 자릿수) | `my/language` (`MyLanguageScreen`) | ✅ |
 | `my` | MY-09 | 영업시간 (요일별 시간·브레이크 · 매장 시간대 · 영업일 경계) | `my/hours` (`MyHoursScreen`) | ✅ |
 
-> 위 ✅ 는 **실데이터 연결 + 전파 + 재조회**까지 통과한 상태다(2026-08-19).
+> 위 ✅ 는 **실데이터 연결 + 전파 + 재조회**까지 구현된 현재 인벤토리다(2026-08-28).
 
 ## 주요 화면 플로우 (수집 → 등록 → 노출)
 
@@ -107,8 +111,8 @@
 
 ## 데이터 — 서버 함수가 화면 단위로 내려준다
 
-화면 한 장이 필요한 값을 **한 번의 호출**로 받는다. 파생값(재고 총량·기준단가·손익)은 전부 서버가
-정의하므로 앱이 다시 계산하지 않는다(절대원칙 3).
+조회 함수는 화면이 필요한 응답 단위를 소유한다. 화면에 따라 한 RPC 또는 명시적 보조 조회를 사용하지만,
+파생값(재고 총량·기준단가·손익)은 서버가 정의하므로 앱이 다시 계산하지 않는다(절대원칙 3).
 
 | 훅 | 서버 함수 | 쓰는 화면 |
 |---|---|---|
@@ -131,7 +135,8 @@
 - 수량/용량 단위는 **kg·g·ml + 개수(개/모)** 만 노출(망·통·박스·판 등 구매단위 라벨은 표기에서 제거, 상품명/거래처로 분리).
 - 구매 옵션 표기: **식재료명 · 용량 · 금액 / 구매처 · 단가**.
 - 재고는 최소단위(g/ml/개)의 **총량 하나**로 저장·표시한다. 미개봉/개봉분을 별도 상태로 관리하지 않는다.
-- 재고 상태: **여유 / 소진 임박**(2단계, ING 리스트). 발주 후보는 사유(안전재고 미달·곧 소진).
+- 재고 상태: **여유 / 소진 임박 / 소진** 3단계. 0 이하는 소진이며 음수 수량을 그대로 표시한다.
+  발주 후보는 별도로 안전재고 미달·곧 소진 사유를 가진다.
 - 숫자 서식은 `@sikjae/core` 의 `locale.ts` 가 단일 출처(`formatMoney`·`formatUnitPrice`·`formatPercent`·`parseNumber`). 축이 둘로 나뉜다:
   - **로케일이 정함**(MY-08 언어·통화): 자릿수 구분자 · 소수점 문자 · 통화기호 · **금액** 소수 자릿수(원·엔·동=0, 그 외=2). 선택지가 아니라 사실이라 사용자는 언어만 고른다.
   - **사용자가 정함**(MY-04 단위 설정): **단가** 소수 자릿수 0~4. 기본값 = 금액 자릿수 + 2 (한국 4.71원/g · 미국 $0.0047/g). 기본값과 같은 값을 고르면 override 를 지워(null) 언어를 바꿔도 새 기본값을 따라간다.
@@ -146,6 +151,6 @@
 특히 **판매(E10)는 매출뿐 아니라 재고도 바꾼다**(E8 소진). 그래서 `invalidateOn.e10()` 은
 `sales` 와 함께 `ingredients`·`orders` 도 무효화한다. 이걸 빼면 "팔았는데 식재료 화면은 그대로"가 된다.
 
-메뉴를 팔면 서버가 레시피를 **반제품까지 재귀로 펼쳐** 식재료를 차감한다
-(`recipe_ingredient_needs`). 재고가 모자란 채로 팔렸으면 부족분을 돌려주고, 화면이 그대로 알린다 —
-판매를 막지는 않는다(이미 팔린 것이므로).
+메뉴를 팔면 서버가 그날 스냅샷의 **직접 식재료 라인** 필요량을 전부 차감한다. 반제품은 1차 범위 밖이라
+`recipe_lines_no_sub_recipe` 제약과 `save_recipe`가 입력을 막는다. 재고가 모자라도 가용량으로 자르지
+않고 필요량 전부를 원장에 기록해 음수 잔액을 보존한다. 화면은 부족을 알리되 판매를 막지 않는다.
