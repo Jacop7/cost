@@ -1,52 +1,66 @@
-# @sikjae/mobile — Expo 앱 (SDK 54)
+# @sikjae/mobile — Expo 앱
 
-사장님용 모바일 앱. 하단 4탭(**식재료·레시피·발주·MY**), expo-router 파일 기반 라우팅.
-React 19 · RN 0.81 · expo-router 6. 디자인은 kit 디자인 시스템(Toss/Cashnote 스타일, primary 블루).
+사장님용 Expo SDK 54 앱. React 19 · RN 0.81 · expo-router 6을 사용하며 하단 탭은
+**식재료 · 레시피 · 발주 · 매출관리 · MY** 5개다.
 
 ## 구조
 
-```
-app/                      # expo-router (라우팅 = 파일 트리)
-├── _layout.tsx           # 루트: QueryClient + SafeArea
-├── index.tsx             # → /ingredients 리다이렉트
-└── (tabs)/
-    ├── _layout.tsx       # 하단 4탭 (식재료·레시피·발주·MY)
-    ├── ingredients/      # ING-  (_layout=Stack)
-    │   ├── index.tsx     #   ING-01 리스트
-    │   ├── [id].tsx      #   ING-02 상세
-    │   ├── add.tsx       #   ING-03 추가
-    │   └── option.tsx    #   ING-05 구매 링크·옵션 추가
-    ├── recipes/          # RCP-  (_layout=Stack, index 스캐폴드)
-    ├── orders/           # ORD-  (_layout=Stack, index 스캐폴드)
-    └── my/               # MY-   (_layout=Stack, index 스캐폴드)
+```text
+app/
+  (tabs)/                  expo-router 5탭과 화면 라우트
 src/
-├── features/             # 탭별 기능 모듈 (screens·demoData) — features/README 참조
-├── components/
-│   ├── kit/              # 공통 UI 킷(RN 이식): Icon·Card·Button·Badge·StatusBadge·
-│   │                     #   Chip·Stepper·Field·Input·Select·Row·PLRow·SegTabs·ScrollTabs·
-│   │                     #   FAB·Stat·PeriodChip·AppHeader·Sheet·Donut·TrendChart
-│   └── EmptyState.tsx
-├── lib/                  # supabase 클라이언트·RPC 래퍼(e1~e5)·queryClient
-└── theme/                # 디자인 토큰 (T 팔레트·STATUS·spacing·radius·cardShadow)
+  components/kit           공통 UI 킷
+  components/history       재고·구매·폐기 이력 공통 레이아웃
+  features/business-day    영업일·매장 날짜·상태 전이 공용 경계
+  features/settings        매장 설정 공용 경계
+  features/master-data     카테고리·구매처·채널·부자재 공용 경계
+  features/{domain}        화면·시트·조회·저장 훅
+  lib/date.ts              서버가 준 날짜의 순수 산술·표기
+  lib/rpcValue.ts          RPC 응답의 공통 숫자·문자열 변환
+  theme                    디자인 토큰
+tests/                     vitest + jsdom 컴포넌트·계약·경계 시험
 ```
 
-각 탭은 폴더 + `_layout.tsx`(Stack) 구조라야 탭 라우트명이 매칭된다(없으면 `ingredients/index`로 펼쳐져 탭바가 깨짐).
+모든 주요 화면은 Supabase 실데이터와 연결돼 있다. 화면은 Supabase를 직접 부르지 않고 도메인 훅을
+사용하며, 공유 쿼리 루트와 전파 이벤트별 무효화 범위는 `src/lib/queryClient.ts`가 소유한다. 화면 ID·라우트·구현 상태의
+단일 출처는 [src/features/README.md](./src/features/README.md)다.
 
 ## 원칙
-- 계산은 `@sikjae/core`(미리보기) + 서버 RPC(확정). 앱은 입력 환산·표시·캐시 무효화 담당.
-- 저장 직전 구매단위·N인분 → 기준단위·1인분 환산(`@sikjae/core/units`).
-- 화면은 자체 헤더(`AppHeader`)를 그리므로 Stack/Tabs 헤더는 숨김.
 
-## 실행
+- 확정 계산은 DB RPC, 앱 미리보기는 `@sikjae/core`를 사용한다.
+- 저장은 구매단위·N인분 입력을 g/ml/개·1인분 기준으로 환산한 뒤 수행한다.
+- 서버 날짜를 받기 전 기기 시계로 영업일을 추정하지 않는다.
+- 재고 상태는 `@sikjae/core`의 `stockStateOf` 한 곳에서 판정한다.
+- 공용 논리 경계에서 화면 도메인을 역참조하지 않는다.
+- 각 탭 폴더는 `_layout.tsx`를 가지며 자체 `AppHeader`를 사용한다.
+
+## 환경
+
+`.env.example`을 복사해 공개 가능한 로컬 Supabase URL과 anon/publishable key를 설정한다. DB 비밀번호나
+service role은 앱 환경에 넣지 않는다.
+
 ```bash
-cp .env.example .env                 # Supabase URL/anon key
-npx expo start                       # Metro (QR → Expo Go SDK 54)
-npx expo start --tunnel              # IP 무관 외부 접속(권장 — Wi-Fi IP 변동 대응)
-npx expo start --web                 # 웹 브라우저 미리보기
+cd apps/mobile
+npx expo start
+npx expo start --lan
+npx expo start --tunnel
+npx expo start --web
 ```
-> Node 24 + Expo CLI undici 버그로 시작 시 죽으면 `EXPO_OFFLINE=1` 우회(오프라인은 localhost 바인딩 → 폰은 터널/LAN 사용).
-> Expo×pnpm 호환 위해 루트 `.npmrc`에 `node-linker=hoisted`.
 
-## 현재 상태
-식재료 탭(ING-01·02·03·05) 구현. 데이터는 데모(`src/features/ingredients/demoData.ts`).
-레시피·발주·MY는 빈 상태 스캐폴드. Supabase 연동(쿼리·전파 RPC)은 다음 단계.
+Node 하한은 루트 `package.json`의 `>=20.19.4`, pnpm은 `9.12.0`이다. 루트 `.npmrc`의
+`node-linker=hoisted`를 유지한다.
+
+## 검사
+
+```bash
+# 앱만 빠르게
+corepack pnpm --filter @sikjae/mobile typecheck
+corepack pnpm --filter @sikjae/mobile test
+
+# 저장소 전체 6단계
+corepack pnpm verify
+```
+
+UI 시험은 `react-native-web`과 jsdom으로 글자·접근성 이름·상호작용을 확인한다. 아이콘·차트 모양과
+네이티브 노치 여백은 모듈 대역 때문에 직접 재지 않으며, 실제 번들 가능 여부는 전체 검증의 웹 번들이
+확인한다.

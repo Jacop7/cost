@@ -8,8 +8,8 @@
 - **문서 위치**: `docs/브랜치-DB-운영-기획안.md`
 - **최종 수정**: 2026-08-28
 - **현재 상태**: 개정 3판 승인·Git 추적 완료. 대형 기능 브랜치와 `TEST-1`을 `main`에 fast-forward
-  병합한 뒤 §10 폴더 경계 리팩터링도 `cceafb9`에서 완료했다. 다음 작업은 §11 저장소 문서
-  동기화이며, 운영·스테이징 적용 이력은 아직 미확인이다.
+  병합한 뒤 §10 폴더 경계 리팩터링도 `cceafb9`에서 완료했다. 현재 §11 저장소 문서 동기화
+  `P1-3`을 수행 중이며, 운영·스테이징 적용 이력은 아직 미확인이다.
 
 ## 문서 책임
 
@@ -24,11 +24,8 @@
 
 - 구조·분리 판단: 서버 확장 아키텍처 기획안
 - 브랜치·배포·복구 방법: 이 문서
-- 계산·원장 정합성: `AGENTS.md`, 마이그레이션과 회귀 시험, 동기화 후 `ARCHITECTURE.md`
+- 계산·원장 정합성: `ARCHITECTURE.md`, `AGENTS.md`, 마이그레이션과 회귀 시험
 - 화면 구현 상태: `apps/mobile/src/features/README.md`
-
-현재 `ARCHITECTURE.md`에는 오래된 이벤트 범위와 검산값이 남아 있으므로 §11 문서 동기화 전에는
-실제 마이그레이션·시험·`AGENTS.md`가 우선한다.
 
 ## 개정 이력
 
@@ -150,7 +147,7 @@ feat/supplier-order-submit
 - P0-4 운영 Supabase·스테이징·백업·복구 훈련 준비
 - P1-1 첫 원격 프로젝트 연결 전 `admin-acl.sh --remote audit` 구현과 회귀시험
 - P1-2 Supabase CLI v2 업그레이드 여부 결정과 전환 검증
-- P1-3 §11 저장소 문서 전체 동기화(루트·`packages/db` README 포함)
+- P1-3 §11 저장소 문서 전체 동기화(루트·앱·`packages/db` README 포함, 현재 진행 중)
 
 병합 후 22시대 재검증에서 발견한 DB 시험의 늦은 개점 시간 의존성은 `TEST-1`로 별도 등록했고,
 `3a9f2d1`에서 완료했다.
@@ -562,17 +559,17 @@ $runs.workflow_runs | Select-Object head_branch, status, conclusion, html_url
 | 9    | 해당 없음   | 운영 배포가 없어 배포 태그를 만들지 않음 |
 | 10   | 완료        | 로컬·원격 feature 브랜치 삭제 |
 | 11   | 완료        | [`docs/작업큐.md`](./작업큐.md) 생성, P0 4건·P1 3건 등록 |
-| 12   | **다음**    | §10 폴더 경계 리팩터링([`REF-1`](./작업큐.md#ref-1-폴더-경계-리팩터링)) |
-| 13   | 진행 예정   | §11의 README·아키텍처·화면 인벤토리 동기화 |
+| 12   | 완료        | §10 폴더 경계 리팩터링 `REF-1`을 `cceafb9`에서 완료 |
+| 13   | **진행 중** | §11의 README·아키텍처·화면 인벤토리 동기화 `P1-3` |
 
 운영 DB가 이미 feature 마이그레이션을 포함했다면 파일을 고치지 말고, 운영 이력과 저장소 이력을
 대조한 뒤 신속히 `main`을 맞춘다.
 
 ## 10. 폴더 경계 리팩터링
 
-대형 브랜치 병합 직후 새 기능 전에 `refactor/domain-boundaries` 단독 브랜치로 수행한다.
+`REF-1` 전용 브랜치에서 수행해 `cceafb9`로 `main`에 반영했다. 아래는 완료한 이동 범위다.
 
-예정 이동:
+완료한 이동:
 
 ```text
 features/sales/businessDay.ts
@@ -607,13 +604,14 @@ features/ingredients/components/HistoryLayout.tsx
 2. `docs/서버-확장-아키텍처-기획안.md` — 채택 단계와 측정값
 3. `docs/작업큐.md` — 상태·의존성·완료 조건의 단일 출처로 갱신
 4. `CLAUDE.md`·`AGENTS.md` — 탭·데이터·검증·짝 문서 참조
-5. `README.md` — 시작·검증·배포 환경
+5. `README.md`·`apps/mobile/README.md` — 저장소·앱 시작, 검증, 배포 환경
 6. `ARCHITECTURE.md` — 현재 원장·전파 이벤트·검산값
 7. `apps/mobile/src/features/README.md` — 화면 인벤토리
 8. `packages/db/README.md` — 마이그레이션·fresh DB·ACL·업그레이드 경로
 
-현재 루트 README와 `packages/db/README.md`에는 `pnpm verify`·ACL·업그레이드 경로가 없으므로 위
-동기화가 끝나기 전에는 배포 기준 문서로 사용하지 않는다.
+`P1-3`은 루트·앱·DB README, `CLAUDE.md`·`AGENTS.md`, `ARCHITECTURE.md`, 두 기획안과 화면
+인벤토리를 같은 측정값으로 맞춘다. 병합 완료와 동일 SHA CI가 기록되기 전에는 작업 브랜치의 문서를
+배포 기준으로 사용하지 않는다.
 
 문서 상태 스냅샷에는 확인 시각과 근거 명령을 함께 남긴다. 검증하지 못한 운영 상태는 “미확인”으로
 쓰고 추정으로 채우지 않는다.

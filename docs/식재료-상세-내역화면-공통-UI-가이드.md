@@ -1,6 +1,7 @@
 # 식재료 상세 내역 화면 공통 UI 가이드
 
-> 상태: 기획 기준 확정안 · 앱 미반영  
+> 상태: **역사적 UI 기준안**. 현재 구현 여부와 화면 소유권은
+> [`apps/mobile/src/features/README.md`](../apps/mobile/src/features/README.md)를 단일 출처로 본다.
 > 대상: ING-07 재고 내역 · ING-09 구매 이력 · ING-10 폐기 내역  
 > 공통 비교 시안: [ingredient-history-common-ui.html](./prototypes/ingredient-history-common-ui.html)  
 > 폐기 내역 단독 시안: [ingredient-discard-history.html](./prototypes/ingredient-discard-history.html)

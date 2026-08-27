@@ -90,7 +90,7 @@ type Size = 'sm' | 'md' | 'lg';
 /**
  * Button — 상태 계약(가이드 §9.7): Default / Pressed / Disabled / Loading.
  *
- * 데이터를 바꾸는 버튼(E1~E7·저장·삭제)은 탭 즉시 `loading` 으로 전환해 중복 제출을 막는다.
+ * 데이터를 바꾸는 버튼(전파 이벤트·저장·삭제)은 탭 즉시 `loading` 으로 전환해 중복 제출을 막는다.
  * 단, debounce 만으로 데이터 무결성을 보장하지 않는다 — 서버 멱등성(예: E1 의 idempotency key)과
  * 함께 써야 한다. 여기서 막는 것은 "사용자 눈에 보이는 연타"까지다.
  *

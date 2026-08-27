@@ -1,76 +1,121 @@
-# 식자재 원가 계산 및 발주 관리 앱
+# 식자재 관리 앱
 
-> 수기 입력만으로 **재고 → 발주 → 입고 → 원가 → 손익** 한 사이클이 끊김 없이 완결되는 식당 운영 데이터 플랫폼.
-> 모든 입고·폐기·고정지출 입력이 즉시 단가·손익·추이로 전파되며, 추후 상세 리포트의 원천 데이터가 된다.
+> 식당 사장님이 수기 입력만으로 **재고 → 발주 → 입고 → 원가 → 판매 → 손익**을 한 흐름으로
+> 기록하는 모바일 운영 데이터 플랫폼.
 
-타겟: 일반 식당 · 프랜차이즈/다점포 · 카페/베이커리 (단체급식 제외)
+현재 제품은 Expo 앱과 Supabase Postgres를 한 저장소에서 관리하는 모듈러 모놀리스다. 확정 계산과
+원장은 DB RPC가 소유하고, 앱은 입력·표시·캐시 무효화, `packages/core`는 미리보기와 검산을 맡는다.
 
-## 스택
+## 현재 구성
 
-| 영역 | 선택 | 이유 |
+| 영역 | 현재 채택 | 비고 |
 |---|---|---|
-| 프론트 | **Expo SDK 54** (React 19 · RN 0.81 · expo-router 6) | 모바일 4탭 앱, 푸시·카메라(OCR) 네이티브 지원 |
-| 백엔드 | **Supabase** (Postgres + RLS + Edge Functions) | 관계형 ERD, 행 단위 보안(RLS), E1~E7 전파를 트랜잭션 RPC로 |
-| 구조 | **pnpm 모노레포** (`node-linker=hoisted`) | 계산 로직·타입을 앱/DB가 공유. RN/Metro 호환 위해 hoisted |
-| 디자인 | **kit 디자인 시스템** (Toss/Cashnote 스타일) | primary=블루 `#3182F6`, 상태=여유(초록)/소진임박(빨강), 비용=그레이 |
+| 앱 | Expo SDK 54 · React 19 · RN 0.81 · expo-router 6 | 식재료·레시피·발주·매출관리·MY 5탭 |
+| 서버 | Supabase Postgres · Auth · Data API/RPC · RLS · pg_cron | Queue·Edge Function·외부 Worker는 아직 미도입 |
+| 계산 | DB RPC(확정) + `packages/core`(미리보기·검산) | 같은 공식을 시험으로 대조 |
+| 저장소 | pnpm 9.12 모노레포 · `node-linker=hoisted` | RN/Metro 호환 |
 
-## 디렉토리
-
-```
-.
-├── apps/
-│   └── mobile/            # Expo 앱 (expo-router, 하단 4탭)
-├── packages/
-│   ├── types/             # 17엔터티 공유 타입 (DB ↔ 앱)
-│   ├── core/              # 파생값 계산 엔진(순수 TS) + 검산 테스트
-│   └── db/                # Supabase: 스키마·RLS·E1~E7 RPC·시드
-├── docs/                  # 설계 문서 (①~⑧ 원본 요약)
-└── ARCHITECTURE.md        # 데이터 흐름 · 전파 이벤트 · 계산 맵
+```text
+apps/mobile                 점주 앱과 화면별 훅
+packages/core               순수 계산·서식·검산
+packages/types              앱에서 쓰는 소형 도메인 계약
+packages/db                 마이그레이션·RLS·RPC·Cron·시드·DB 시험
+docs                        제품·운영·서버 확장 기획
+ARCHITECTURE.md             현재 원장·계산·전파 구조
 ```
 
-## 핵심 설계 원칙
+화면과 모듈의 실제 인벤토리는
+[apps/mobile/src/features/README.md](./apps/mobile/src/features/README.md)를 단일 출처로 사용한다.
 
-1. **저장은 1인분·최소단위(g/ml/개) 표준화, 입력은 N인분·구매단위 자율화.**
-   사장님은 익숙한 단위로 입력하고, 시스템이 쪼개어 저장·계산한다.
-2. **재고·단가·이력은 오직 E1(입고 확정)·E2/E5(재고 수정)에서만 변한다.** 발주 등록(E7)은 기록일 뿐.
-3. **서버가 진실의 원천.** E1~E7 전파는 Postgres RPC(트랜잭션)로 원자성 보장. 앱은 `packages/core`로 동일 공식을 미리보기에만 사용.
-4. **추이/스냅샷 테이블은 1차부터 기록.** 그래프(2차)가 스키마 변경 없이 얹힌다.
+## 필수 런타임
 
-## 시작하기
+- Node.js **20.19.4 이상**. CI는 하한 `20.19.4`와 개발 기준 `24`를 모두 실행한다.
+- pnpm **9.12.0**. 전역 버전 대신 `corepack pnpm` 사용을 권장한다.
+- 로컬 DB 검증에는 Docker Desktop과 Git Bash가 필요하다.
+- 폰 확인에는 Expo Go SDK 54가 필요하다.
+
+## 처음 실행
 
 ```bash
-pnpm install         # node-linker=hoisted (.npmrc) — RN/Metro 호환
-pnpm db:start        # 로컬 Supabase 기동 (Docker 필요)
-pnpm db:reset        # 스키마 + 시드 적용
-pnpm db:types        # DB → packages/types 타입 생성
-
-# 앱 개발 서버 (apps/mobile)
-pnpm mobile start              # Metro (QR → Expo Go)
-cd apps/mobile && npx expo start --tunnel   # IP 무관 터널(외부 접속·Expo Go)
-cd apps/mobile && npx expo start --web      # 웹 브라우저 미리보기
+corepack pnpm install --frozen-lockfile
+corepack pnpm db:start
 ```
 
-> 참고
-> - Expo Go는 **SDK 54** 앱이어야 한다(프로젝트도 SDK 54).
-> - Node 24 + Expo CLI 의존성 검사 버그(undici)로 죽으면 `EXPO_OFFLINE=1`로 우회(단, 오프라인은 localhost 바인딩이라 폰 접속엔 터널/LAN 사용).
+로컬 DB를 시드 상태로 다시 만들 때만 다음 명령을 사용한다. **현재 로컬 데이터는 삭제된다.**
 
-## 현재 구현 상태 (UI)
+```bash
+corepack pnpm db:reset
+corepack pnpm db:types
+```
 
-하단 탭 순서: **식재료 · 레시피 · 발주 · MY**. 공통 헤더(타이틀+검색/알림 아이콘) + 밑줄형 탭으로 통일.
+앱은 저장소 루트에서 다음처럼 시작한다.
 
-| 탭 | 구현 화면 |
-|---|---|
-| 식재료(ING) | 리스트·상세·추가·**재고 수정 시트**·구매 링크/옵션 추가·메모/식재료 수정 |
-| 레시피(RCP) | 리스트·상세(도넛·손익)·추가·**재료 검색·담기 + 사용량 시트**·고정지출 자세히/수정 |
-| 발주(ORD) | 발주 현황(후보/입고예정/입고완료)·주문하기 시트·발주 완료 시트·**발주 완료 등록(달력)** |
-| MY | 홈 스캐폴드(고정지출 자세히/수정은 레시피에서 진입) |
+```bash
+corepack pnpm mobile start
 
-상세 화면·라우트·플로우·데이터는 [apps/mobile/src/features/README.md](./apps/mobile/src/features/README.md) 참조.
-데이터는 현재 데모(`apps/mobile/src/features/*/demoData.ts`). Supabase 연동(쿼리·E1~E7 RPC)은 다음 단계.
+# 폰과 외부 네트워크에서 확인할 때
+cd apps/mobile
+npx expo start --tunnel
 
-표기 규칙: 수량/용량은 **kg·g·ml + 개수(개/모)** 만 노출(망·통·박스 등 구매단위는 상품명/거래처로 분리). 재고 상태는 **여유/소진 임박** 2단계.
+# 브라우저 미리보기
+npx expo start --web
+```
 
-## MVP 범위
+Node 24에서 Expo CLI의 네트워크 의존성 확인이 실패하면 `EXPO_OFFLINE=1`을 사용할 수 있다. 오프라인
+모드는 localhost 기준이므로 폰에서는 `--lan` 또는 정상화된 터널을 사용한다.
 
-1차는 수기 입력 + 계산 정확성에 집중. OCR·링크 추출·그래프·푸시 알림은 2차(스키마는 1차부터 완비).
-상세는 [ARCHITECTURE.md](./ARCHITECTURE.md) 및 [docs/](./docs/) 참조.
+## 검증
+
+전체 로컬 게이트는 한 명령이다.
+
+```bash
+corepack pnpm verify
+```
+
+1. 전 패키지 타입 검사
+2. core · DB · mobile 시험
+3. ACL 스크립트의 비밀번호·인자·환경 격리 시험
+4. 빈 DB에 전체 마이그레이션 적용 + DB 32개 스위트 + 2세션 경합 + 로케일 실측 대조
+5. 중간 버전에서 최신까지의 업그레이드 경로
+6. Expo 웹 번들
+
+Docker DB가 없는 환경에서는 아래 범위만 확인할 수 있다. 출력도 **전체 통과가 아닌 4/6 선택 범위**로
+표시한다.
+
+```bash
+corepack pnpm verify --no-db
+```
+
+GitHub Actions는 Node `20.19.4`·`24`에서 이 `--no-db` 범위를 실행한다. 새 DB와 업그레이드 경로는
+아직 로컬 관리 게이트이며, 이를 병합 필수 CI로 옮기는 작업은
+[작업큐 P0-2](./docs/작업큐.md#p0-2-db-전체-검증을-병합-필수-체크로-이전)에 남아 있다.
+
+## 핵심 데이터 규칙
+
+- 저장 단위는 g/ml/개 최소 단위와 1인분 기준이다.
+- 기준단가는 **쓴 돈 ÷ 실제 들어온 양**이다. 팩 개수나 로스율로 가중하지 않는다.
+- 발주(E7)는 기록만 하고, 입고(E1) 전에는 재고·단가를 바꾸지 않는다.
+- 판매(E10→E8)는 필요한 전량을 원장에 기록한다. 재고가 부족해도 판매를 막거나 0으로 자르지 않고
+  음수 잔액을 보존한다.
+- 재고 상태는 **여유 / 소진 임박 / 소진** 3단계이며 `packages/core`의 `stockStateOf`가 단일 판정처다.
+- 반제품은 1차 범위 밖이며 DB 제약과 `save_recipe`가 등록을 막는다.
+- 영업일의 판매가·재료·원가·세금·고정지출은 시작 시 스냅샷으로 고정한다. 종료된 날은 다시 열지
+  않고 정정 RPC와 감사 원장으로 수정한다.
+
+고정 검산값과 이벤트 전체 목록은 [ARCHITECTURE.md](./ARCHITECTURE.md)에서 확인한다.
+
+## 환경과 배포
+
+| 환경 | 용도 | 원칙 |
+|---|---|---|
+| 로컬 Supabase | 개발·파괴적 시험·경합 | 시드/합성 데이터만 사용 |
+| 스테이징 | 운영 계약 통합 검증 | 아직 미구축. 첫 실매장 전에 별도 프로젝트로 준비 |
+| 운영 | 실제 매장 데이터 | 아직 연결·적용 이력 미확인. `main`의 승인된 이력만 적용 |
+
+현재 1차 계약은 `stores.owner_id UNIQUE`, 즉 계정 하나당 매장 하나다. 다매장·직원 권한은 미래 확장
+범위이며 현재 지원 기능으로 간주하지 않는다.
+
+`supabase db push`를 로컬 관성으로 운영에 실행하지 않는다. 첫 원격 프로젝트 연결 전에 원격 ACL
+읽기 전용 감사(P1-1)와 Supabase CLI v2 전환 여부(P1-2)를 먼저 닫아야 한다. 브랜치·마이그레이션·배포·
+복구 절차는 [브랜치·DB 배포 운영 기획안](./docs/브랜치-DB-운영-기획안.md), 서버 분리 판단은
+[서버 확장 아키텍처 기획안](./docs/서버-확장-아키텍처-기획안.md)을 따른다.

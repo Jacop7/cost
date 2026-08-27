@@ -1,6 +1,6 @@
 /**
  * 디자인 토큰 — ver.2 프로토타입 kit.jsx 의 T·STATUS 를 RN으로 이식(확정 원천).
- * Toss/Cashnote 스타일: primary=블루, 순이익·충분=초록, 부족=앰버, 소진임박=레드, 비용=그레이.
+ * Toss/Cashnote 스타일: primary=블루, 긍정=초록, 주의=앰버, 위험=레드, 비용=그레이.
  */
 
 import { formatNumber, getLocale } from '@sikjae/core';
@@ -62,13 +62,16 @@ export const TYPE = {
   captionSm: { fontSize: 13, fontWeight: '600' }, // 칩·탭 라벨
 } as const;
 
-/** 재고 상태 키 — 여유(ok) / 안전재고 미달(low) / 소진 임박(out). */
+/** legacy kit 상태 키 — core `StockState`와 의미가 아직 다르며 재고 판정에 쓰지 않는다(P2-3). */
 export type StatusKey = 'ok' | 'low' | 'out';
 
 /** 숫자 정렬용 tabular-nums 스타일 (kit tnum). */
 export const tnum = { fontVariant: ['tabular-nums'] } as { fontVariant: ('tabular-nums')[] };
 
-/** 재고 상태색 — 2단계: 여유 / 소진 임박. ('부족' 단계 제거, 기존 부족은 여유로 흡수) */
+/**
+ * kit의 옛 범용 상태색. core 재고 계약(여유/소진 임박/소진)의 단일 판정처가 아니며,
+ * 키·라벨 통합은 작업큐 P2-3에서 수행한다.
+ */
 export const STATUS: Record<
   StatusKey,
   { label: string; fg: string; bg: string; bar: string }

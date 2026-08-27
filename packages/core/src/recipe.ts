@@ -2,7 +2,7 @@
  * 레시피 원가·손익 계산 — ② 3장, ⑤ 2.3.
  * 1인분 소요량 = 입력량 ÷ N. 재료 원가 = Σ(1인분량 × 기준단가).
  * 순이익 = 판매가 − 세금 − 재료 − 고정 − 추가.
- * 권장 판매가 = (재료+추가) ÷ (1 − 1/11 − 고정지출률 − 목표).
+ * 권장 판매가 = (재료+추가) ÷ (1 − 세금비율 − 고정지출률 − 목표).
  */
 import type { TaxItem } from '@sikjae/types';
 import { isNonNegativeFinite, isPositiveFinite } from './guards';
@@ -109,7 +109,7 @@ export function materialCost(lines: RecipeLineInput[], servings: number): {
   return { cost, hasMissingPrice };
 }
 
-/** 손익 계산 (② 3장). 검산: 제육 → profit 4014, rate 0.334. */
+/** 손익 계산. 검산: 제육 → profit 4,046.69원, rate 0.3372. */
 export function computeProfit(input: ProfitInput): ProfitResult {
   const { servings, taxItems, lines } = input;
   // 음수·비유한 판매가는 0으로 정규화한다. 음수 매출은 도메인상 존재하지 않고,
@@ -137,8 +137,8 @@ export function computeProfit(input: ProfitInput): ProfitResult {
 
 /**
  * 권장 판매가 (② 3.6) = (재료+추가) ÷ (1 − 세금비율 − 고정지출률 − 목표순이익률).
- * 세금비율 기본값은 부가세 포함분 1/11(=10/110). 카드 수수료 같은 세금 항목이 있으면
- * `taxRate(items)` 를 넘긴다 — 안 넘기면 그만큼 권장가가 낮게 나온다(0052).
+ * 호환 기본값은 과거 검산 시나리오의 부가세 포함분 1/11(=10/110)이다. 실제 앱 호출자는
+ * 매장 세금 항목의 `taxRate(items)`를 명시적으로 넘긴다. 이 기본 인자 정리는 작업큐 P2-5다.
  * 분모 ≤ 0이면 산출 불가(null).
  * 검산: 제육 (2835+300)/(1−1/11−0.313−0.40) ≈ 15,986 → 16,000
  */

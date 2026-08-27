@@ -6,8 +6,8 @@
 /** 기준 단위 — 모든 저장·계산의 표준. kg→g, L→ml 로 정규화. ea = '개'. */
 export type BaseUnit = 'g' | 'ml' | 'ea';
 
-/** 재고 상태 뱃지 — 잔여 개수 vs 안전재고 자동 판정 (① 2.2). */
-export type StockBadge = 'ok' | 'low' | 'out'; // 충분 · 부족 · 소진임박
+/** 재고 상태 — 여유(ok) · 소진 임박(low) · 소진(out). 판정은 core `stockStateOf` 한 곳이다. */
+export type StockBadge = 'ok' | 'low' | 'out';
 
 /** 재고 이벤트 유형 (⑤ 재고이벤트). 폐기 누적 → 실측 로스율. */
 export type InventoryEventType =
@@ -30,13 +30,15 @@ export type CandidateReason = 'safety_stock' | 'soon_out' | 'manual';
 /** 발주 후보 상태. */
 export type CandidateStatus = 'pending' | 'ordered' | 'excluded'; // 대기/주문함/제외
 
-/** 세금 모드 (② 2.1) — 부가세 포함/별도/면세. */
+/**
+ * 옛 세금 모드 필드. 현재 계산은 이 값을 읽지 않고 매장 `TaxItem[]` 합만 사용한다.
+ * 저장 계약 호환을 위해 타입 자리는 유지한다.
+ */
 export type TaxMode = 'included' | 'separate' | 'exempt';
 
 /**
- * 부가세 외 세금 항목 — 카드 수수료·기타 세금 등(0052).
- * rate 는 **판매가 대비 %**(2.5 = 2.5%). 부가세는 taxMode 가 맡는 기본 항목이라
- * 여기에 넣지 않는다.
+ * 매장 세금 항목. 부가세도 항목 하나이며 기본으로 더해지는 세금은 없다(0090).
+ * rate 는 판매가 대비 %(2.5 = 2.5%). 부가세 포함 가격이면 10이 아니라 10/110을 넣는다.
  */
 export interface TaxItem {
   name: string;

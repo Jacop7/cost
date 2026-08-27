@@ -15,7 +15,7 @@ export interface PriceTrendPoint {
   orderRecordId: ID | null; // 점 → 근거 입고 내역
 }
 
-/** 순이익 추이 스냅샷 — E1~E4 변경 이벤트에서 생성 (② 3.8). */
+/** 순이익 추이 스냅샷 — 손익에 영향을 주는 권위 전파 경로에서 생성. */
 export interface ProfitTrendPoint {
   id: ID;
   storeId: ID;
