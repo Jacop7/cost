@@ -76,21 +76,35 @@ function session(name, sql, timeoutMs) {
  * ⚠ 표본마다 psql 을 새로 띄우면 간격이 150ms 를 넘어 잠금 대기(수십 ms)를 놓친다 —
  *   실측: 마감 경합에서 32표본 0건. DO 블록 안 루프는 다른 세션의 대기를 실시간으로 본다.
  */
+/** 실행별 고유 세션 이름 — 같은 DB 에 다른 실행이 있어도 **이 쌍**만 본다(검토 지적). */
+const A_NAME = `conc-A-${process.pid}`;
+const B_NAME = `conc-B-${process.pid}`;
+
 function lockWatcher(seconds) {
   const n = Math.round(seconds * 100);
-  const sql = `do $w$ declare n int := 0; c int; i int; begin
+  /*
+   * 두 가지를 센다. `waits` 는 이 DB 의 아무 Lock 대기(정보용). `pair` 는 **B 가 A 에 막힌**
+   * 표본이다 — pg_blocking_pids(B) 에 A 의 pid 가 들어 있어야 한다. 전체 대기 수로는
+   * 무관한 세션의 대기도 "경합이 있었다"로 읽힌다(검토 지적).
+   */
+  const sql = `do $w$ declare n int := 0; np int := 0; c int; cp int; i int; begin
     for i in 1..${n} loop
       perform pg_sleep(0.01);
       select count(*) into c from pg_stat_activity
        where datname = current_database() and wait_event_type = 'Lock';
+      select count(*) into cp
+        from pg_stat_activity b join pg_stat_activity a on a.application_name = '${A_NAME}'
+       where b.application_name = '${B_NAME}' and b.wait_event_type = 'Lock'
+         and a.pid = any(pg_blocking_pids(b.pid));
       if c > 0 then n := n + 1; end if;
+      if cp > 0 then np := np + 1; end if;
     end loop;
-    raise notice 'WAITS:%:%', n, ${n};
+    raise notice 'WAITS:%:%:%', n, np, ${n};
   end $w$;
 `;
   return session('W', sql, seconds * 1000 + 10_000).then((r) => {
-    const m = r.err.match(/WAITS:(\d+):(\d+)/);
-    return { waits: m ? Number(m[1]) : -1, samples: m ? Number(m[2]) : 0 };
+    const m = r.err.match(/WAITS:(\d+):(\d+):(\d+)/);
+    return { waits: m ? Number(m[1]) : -1, pairWaits: m ? Number(m[2]) : -1, samples: m ? Number(m[3]) : 0 };
   });
 }
 
@@ -119,8 +133,8 @@ const waitForLockSql = (dayId, timeoutSec) =>
           and l.locktype = 'advisory'
           and ((l.classid::bigint << 32) | l.objid::bigint)
               = hashtextextended('conc:${dayId}', 0)
-          -- 정확히 판매 세션 A 다 — 같은 키를 잡은 다른 세션으로는 안 열린다.
-          and a.application_name = 'conc-A';
+          -- 정확히 **이 실행의** 판매 세션 A 다 — 같은 키를 잡은 다른 세션으로는 안 열린다.
+          and a.application_name = '${A_NAME}';
        if n > 0 then return; end if;
        perform pg_sleep(0.01);
      end loop;
@@ -142,8 +156,8 @@ const items = (qty) =>
  * 성공한 회차는 `OK:i:<커밋 직전 시각>` 을 찍는다(실패한 트랜잭션은 롤백돼 아무것도 안 찍는다).
  */
 function sellerSql(n, hold, startAtIso, dayId) {
-  // application_name 으로 **이 세션이 A 임을** 밝힌다 — 장벽이 같은 키를 쥔 다른 세션에 안 열리게(검토 지적).
-  const head = `set application_name = 'conc-A';\nset role authenticated;\nset request.jwt.claims='${CLAIMS}';\n${barrierSql(startAtIso)}`;
+  // application_name 으로 **이 실행의 A 임을** 밝힌다 — 장벽·관찰자가 이 이름으로 짝을 맞춘다(검토 지적).
+  const head = `set application_name = '${A_NAME}';\nset role authenticated;\nset request.jwt.claims='${CLAIMS}';\n${barrierSql(startAtIso)}`;
   const body = Array.from({ length: n }, (_, k) => {
     const i = k + 1;
     return [
@@ -169,7 +183,7 @@ function cronSql(n, sleep, startAtIso, dayId) {
     `select 'SWEEP:'||close_due_business_days()::text;\nselect 'BREAK:'||apply_due_breaks()::text;\nselect pg_sleep(${sleep});`,
   ).join('\n');
   // 절대 시각까지 기다린 **뒤**, A 가 잠금을 쥔 것을 보고 출발한다(준비 완료 장벽).
-  return barrierSql(startAtIso) + waitForLockSql(dayId, 10) + body + '\n';
+  return `set application_name = '${B_NAME}';\n` + barrierSql(startAtIso) + waitForLockSql(dayId, 10) + body + '\n';
 }
 
 /** B 출력에서 크론 응답을 전부 파싱한다 — 실패 합계·닫힘 합계·브레이크 합계. */
@@ -248,7 +262,7 @@ ok('전제: 스냅샷에 제육볶음 재료선이 있다(원장 합계의 기�
   ok('전제: 자동 브레이크 픽스처가 굳었다', q(`select (rule_hours_on(operating_rule_id, business_date)->>'break_end')::time = time '23:59' from business_days where id='${dayId}'`) === 't');
 
   const startAt = startIn(1.5);
-  const [a, b, { waits, samples }] = await Promise.all([
+  const [a, b, { waits, pairWaits, samples }] = await Promise.all([
     session('A', sellerSql(15, 0.06, startAt, dayId), 40_000),
     session('B', cronSql(60, 0.02, startAt, dayId), 40_000),
     lockWatcher(6),
@@ -260,6 +274,7 @@ ok('전제: 스냅샷에 제육볶음 재료선이 있다(원장 합계의 기�
   ok('평시: B 에 SQL 오류가 하나도 없다(SQLSTATE 전수)', b.states.length === 0, `states=${b.states.join(',')}`);
   ok('평시: 판매 15건 전부 성공', (a.out.match(/^OK:/gm) ?? []).length === 15);
   ok('평시: 관찰자가 실제 잠금 대기를 봤다 — 경합이 있었다', waits > 0, `waits=${waits}/${samples}`);
+  ok('평시: B 가 **A 에** 막혔다 — pg_blocking_pids(B) ∋ A (세션 쌍 단언)', pairWaits > 0, `pair=${pairWaits}/${samples}`);
   const cs = cronStats(b.out);
   ok('평시: 준비 완료 장벽이 성립했다(A 잠금 확인 후 B 출발)', !b.out.includes('BARRIER_TIMEOUT') && !b.err.includes('BARRIER_TIMEOUT'));
   ok('평시: 스윕 응답이 호출 수와 같다', cs.sweepRuns === 60, `sweep=${cs.sweepRuns}`);
@@ -280,7 +295,7 @@ ok('전제: 스냅샷에 제육볶음 재료선이 있다(원장 합계의 기�
   q(`update business_days set status = 'open' where id='${dayId}' and status = 'break'`);
   q(`update business_days set planned_close_at = clock_timestamp() - auto_close_grace() + interval '3.5 seconds' where id='${dayId}'`);
   const startAt = startIn(1.5);
-  const [a, b, { waits, samples }] = await Promise.all([
+  const [a, b, { waits, pairWaits, samples }] = await Promise.all([
     session('A', sellerSql(40, 0.06, startAt, dayId), 60_000),
     session('B', cronSql(120, 0.02, startAt, dayId), 60_000),
     lockWatcher(10),
@@ -297,7 +312,8 @@ ok('전제: 스냅샷에 제육볶음 재료선이 있다(원장 합계의 기�
     `states=${[...new Set(a.states)].join(',')}`);
   ok('경합: B 에 SQL 오류가 없다', b.states.length === 0, `states=${b.states.join(',')}`);
   // 마감은 한 순간이라 잠금 대기가 관찰될지는 확률적이다 — 필수 증명은 ①이 한다. 여기선 기록만.
-  console.log(`  info 경합: 잠금 대기 표본 ${waits}/${samples}`);
+  // 마감 경합의 대기는 수십 ms 한 번이라 표본이 0일 수 있다 — 여기서는 단언하지 않고 쌍(B←A)까지 남긴다.
+  console.log(`  info 경합: 잠금 대기 표본 ${waits}/${samples} · B←A ${pairWaits}`);
 
   const oks = [...a.out.matchAll(/^OK:(\d+):(.+)$/gm)].map((m) => ({ i: Number(m[1]), at: m[2] }));
   ok('경합: 경계 전 저장은 성공했다', oks.length >= 1, `성공 ${oks.length}`);

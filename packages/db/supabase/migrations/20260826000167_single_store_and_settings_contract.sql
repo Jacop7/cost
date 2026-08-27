@@ -1,30 +1,32 @@
 /*
- * 0167 · 단일 매장을 DB 가 지킨다 · create_store 재호출 무해 · settings 계약 · 백필 전체 비교
+ * 0167 · 단일 매장 계약 · create_store 재호출 무해 · settings 계약 · 백필(부트스트랩 행만)
  *
- * ① create_store 재호출이 시간대를 바꿨다 — created=false 인데도 p_timezone 이 실렸다.
- *    영업 중 set_store_timezone 은 45011 로 막히는데 이 문으로는 통과했다(실측).
- *    이미 있으면 **즉시 그 매장을 돌려주고 아무것도 안 바꾼다.** 시간대는 그 문(set_store_timezone)뿐.
+ * ⚠ 이 파일은 첫 푸시 뒤 **실환경 적용 전에** 고쳐졌다(검토 P0·P1). 후속 번호로 덧대지 않은 이유:
+ *   새 DB 는 순서대로 태우므로 잘못된 0167 이 먼저 돌아 데이터를 잃는다. 개발 DB 는 재적용했다
+ *   (트리거 → UNIQUE 로 바뀌는 부분은 아래가 스스로 정리한다).
  *
- * ② 단일 매장이 DB 에서 보장되지 않았다 — 인증 사용자가 stores 에 직접 INSERT 할 수 있었고
- *    owner_id 유일성도 없었다. 정렬(0166)은 둘 중 하나를 일정하게 고를 뿐이다.
- *    · stores 의 직접 쓰기를 앱 롤에서 걷어낸다 — 매장은 create_store 로만 생긴다.
- *    · 소유자당 매장 하나를 트리거가 지킨다. ⚠ 유일 인덱스가 아니라 트리거인 이유:
- *      교차 매장 방어 시험(27 ⑰ · 29 뉴욕 · 30 · 31)이 **같은 사장님의 두 번째 매장**을
- *      소유자로 만들어 "내 매장 문지기는 통과하되 남의 메뉴는 막히는" 실제 위험을 잰다.
- *      그 픽스처는 세션 플래그(sikjae.multi_store_fixture=on)로만 열린다 — 앱 롤은 INSERT
- *      자체가 없어 플래그를 켜도 길이 없다.
+ * ① create_store 재호출 — 0166 은 기존 매장에도 시간대 인자를 적용했다. 열린 장부의 영업일과
+ *    매장 현지 날짜가 갈라진다(실측). 매장이 있으면 **시간대를 보기 전에** created=false 로 끝낸다.
  *
- * ③ save_settings 는 앱이 보내는 unit_system·cup_volume·currency 를 조용히 버렸다 —
- *    저장된 척했다. 셋을 받고, **모르는 키는 거부**해 같은 일이 다시 생기지 않게 한다.
+ * ② 단일 매장 — 앱 롤의 stores 직접 INSERT/UPDATE/DELETE 를 권한부터 걷어내고,
+ *    `owner_id` 에 **UNIQUE 제약**을 건다. 첫 판은 `exists` 트리거 + 세션 플래그였는데
+ *    두 세션이 동시에 들어오면 둘 다 통과했다(검토 재현). 제약은 경합에서도 하나만 남긴다.
+ *    교차 매장 시험은 **다른 사장님**의 매장을 쓴다 — 우회 플래그는 운영 스키마에 두지 않는다.
  *
- * ④ 0166 백필은 월요일 open 만 비교했다. 종료·브레이크·다른 요일만 어긋난 규칙은 안 고쳤다 —
- *    표시 폼 전체(7일 시간 + 브레이크)로 기대값을 만들어 비교한다(revision=1 만).
+ * ③ save_settings — 받는 키를 명시하고(언어·통화·단위·컵·자릿수·목표율·알림) 모르는 키는
+ *    거부한다. 예전엔 unit_system·cup_volume·currency 를 조용히 버려 앱이 저장된 줄 알았다.
+ *    값의 뜻도 여기서 잰다: 1차는 metric 고정, 컵 용량은 양수, 통화·언어는 core 의 목록.
  *
- * ⑤ supabase_admin 의 기본 권한은 postgres 가 못 바꾼다(멤버가 아니다). 그 롤이 public 에
- *    만든 테이블은 다시 열린다(검토 재현). 마이그레이션은 여기서 **감추지 않고** 남긴다 —
- *    로컬·CI 는 fresh-db.sh 가 슈퍼유저 연결로 그 기본 권한을 걷어내고, 시험 31 이
- *    pg_default_acl 을 두 롤 모두에 대해 잰다. 운영은 런북 항목이다(대시보드 테이블은
- *    postgres 소유라 이 마이그레이션의 기본 권한이 적용된다).
+ * ④ 백필 — 0166 은 revision=1 을 "안 만진 초기 규칙"으로 읽고 월요일 시작만 비교했다.
+ *    틀렸다: 사장님이 문(0159)으로 저장한 **새 예약 규칙도 revision=1** 이고, settings 는
+ *    그 규칙의 월요일 값만 비춘다. 그 백필은 화~일과 브레이크를 월요일 값으로 덮어썼다
+ *    (검토 재현 — 원본은 복구 불가). 대상을 **진짜 부트스트랩 행**으로 한정한다:
+ *    `created_by is null and effective_from = '-infinity'` (0129·0165 가 만드는 행의 모양).
+ *    문이 만든 행은 항상 created_by 가 있고 effective_from 이 실제 날짜다(0130~0163).
+ *
+ * ⑤ supabase_admin 기본 권한은 postgres 가 못 바꾼다(멤버가 아니다). 여기서는 감추지 않고
+ *    NOTICE 로 남긴다 — 실행 가능한 단계는 `scripts/admin-acl.sh`(fresh-db.sh 가 부르고, 운영은
+ *    배포 절차에서 부른다). 시험 31 이 두 롤의 pg_default_acl 을 잰다.
  */
 
 -- ── ① create_store — 있으면 즉시 반환 ────────────────────────────
@@ -59,6 +61,7 @@ begin
     raise exception '매장 이름을 적어 주세요' using errcode = '22000';
   end if;
 
+  -- 트리거 셋(시간대·규칙·설정)이 같은 트랜잭션에서 따라붙는다(0165 ②). UNIQUE 가 둘째를 막는다.
   insert into stores (owner_id, name) values (v_uid, btrim(p_name)) returning id into v_id;
 
   if p_timezone is not null then
@@ -77,35 +80,38 @@ begin
                             'timezone', store_timezone(v_id), 'local_date', store_local_date(v_id));
 end;
 $$;
+comment on function public.create_store(text, text) is
+'매장 생성의 공식 문(0165·0166·0167). 계정당 매장 하나(UNIQUE) — 이미 있으면 시간대 인자를 보지 않고 created=false 로 그 매장을 돌려준다. 매장·시간대·영업규칙·설정을 한 트랜잭션으로 만들고 셋이 다 생겼는지 확인한다.';
+revoke execute on function public.create_store(text, text) from public, anon;
+grant  execute on function public.create_store(text, text) to authenticated, service_role;
 
--- ── ② stores — 앱 롤 직접 쓰기 회수 + 소유자당 하나 ─────────────
+-- ── ② stores — 앱 롤 직접 쓰기 회수 + 계정당 하나(UNIQUE) ────────
 revoke insert, update, delete, truncate on public.stores from anon, authenticated;
 drop policy if exists stores_insert on public.stores;
 drop policy if exists stores_update on public.stores;
 drop policy if exists stores_delete on public.stores;
 -- 읽기 정책(stores_select)은 그대로.
 
-create or replace function public.stores_single_per_owner()
-returns trigger
-language plpgsql
-as $$
-begin
-  -- 시험 픽스처만 연다(교차 매장 방어 시험). 앱 롤은 INSERT 자체가 없어 이 플래그로도 못 연다.
-  if current_setting('sikjae.multi_store_fixture', true) = 'on' then
-    return new;
-  end if;
-  if exists (select 1 from public.stores s where s.owner_id = new.owner_id and s.id <> new.id) then
-    raise exception '한 계정에 매장은 하나예요 (1차 범위)'
-      using errcode = '23505', detail = 'SINGLE_STORE';
-  end if;
-  return new;
-end;
-$$;
+-- 첫 판의 트리거·플래그 우회는 걷어낸다(개발 DB 에 남아 있을 수 있다).
 drop trigger if exists stores_00_single_per_owner on public.stores;
-create trigger stores_00_single_per_owner before insert or update of owner_id on public.stores
-  for each row execute function public.stores_single_per_owner();
+drop function if exists public.stores_single_per_owner();
 
--- ── ③ save_settings — 받는 키를 넓히고, 모르는 키는 거부 ──────────
+do $$
+declare v_n int;
+begin
+  select count(*) into v_n from (select owner_id from public.stores group by owner_id having count(*) > 1) d;
+  if v_n > 0 then
+    raise exception '0167: 이미 매장이 둘 이상인 계정이 %개 있습니다 — 정리 후 다시 적용하세요', v_n;
+  end if;
+  if not exists (select 1 from pg_constraint where conname = 'stores_owner_id_key'
+                    and conrelid = 'public.stores'::regclass) then
+    alter table public.stores add constraint stores_owner_id_key unique (owner_id);
+  end if;
+end $$;
+comment on constraint stores_owner_id_key on public.stores is
+'계정당 매장 하나(1차 범위, 기획서 §12 · 0167). 트리거가 아니라 제약이다 — 두 트랜잭션이 동시에 들어와도 하나만 남는다.';
+
+-- ── ③ save_settings — 받는 키를 넓히고, 모르는 키·틀린 값은 거부 ──
 create or replace function public.save_settings(p_store uuid, p_payload jsonb)
 returns void
 language plpgsql
@@ -114,6 +120,8 @@ set search_path to 'public'
 as $$
 declare
   v_unknown text;
+  v_num     numeric;
+  v_txt     text;
 begin
   perform assert_my_store(p_store);   -- ⚠ 반드시 첫 줄
   perform lock_business_scope(p_store);   -- 0134 와 같은 순서
@@ -138,6 +146,41 @@ begin
     raise exception '저장할 수 없는 설정이에요: %', v_unknown using errcode = '22000', detail = 'UNKNOWN_KEY';
   end if;
 
+  /*
+   * 값의 뜻(검토 P2). 키만 보면 'nonsense'·-5·'???' 가 그대로 저장된다.
+   * 목록은 packages/core/src/locale.ts 의 LOCALES 와 같다 — 앱 선택지가 곧 서버 허용치다.
+   */
+  if p_payload ? 'unit_system' and p_payload->>'unit_system' is distinct from 'metric' then
+    raise exception '1차는 미터법만 지원해요' using errcode = '22000', detail = 'INVALID_VALUE';
+  end if;
+  if p_payload ? 'cup_volume' then
+    v_num := (p_payload->>'cup_volume')::numeric;
+    if v_num is null or v_num <= 0 or v_num > 5000 then
+      raise exception '컵 용량은 0 보다 크고 5,000ml 이하여야 해요' using errcode = '22000', detail = 'INVALID_VALUE';
+    end if;
+  end if;
+  if p_payload ? 'currency' and p_payload->>'currency' not in ('KRW','USD','JPY','EUR','SAR','AED','VND','MXN','BRL') then
+    raise exception '지원하지 않는 통화예요: %', p_payload->>'currency' using errcode = '22000', detail = 'INVALID_VALUE';
+  end if;
+  if p_payload ? 'locale' and p_payload->>'locale' not in ('ko','en-US','ja','de','ar-SA','ar-AE','vi','es-ES','es-MX','pt-BR') then
+    raise exception '지원하지 않는 언어예요: %', p_payload->>'locale' using errcode = '22000', detail = 'INVALID_VALUE';
+  end if;
+  foreach v_txt in array array['unit_price_digits', 'quantity_digits', 'money_digits']
+  loop
+    if p_payload ? v_txt then
+      v_num := (p_payload->>v_txt)::numeric;
+      if v_num is null or v_num <> trunc(v_num) or v_num < 0 or v_num > 4 then
+        raise exception '자릿수는 0~4 사이 정수여야 해요 (%)', v_txt using errcode = '22000', detail = 'INVALID_VALUE';
+      end if;
+    end if;
+  end loop;
+  if p_payload ? 'default_target_profit_rate' then
+    v_num := (p_payload->>'default_target_profit_rate')::numeric;
+    if v_num is null or v_num < 0 or v_num > 100 then
+      raise exception '목표 이익률은 0~100%% 사이여야 해요' using errcode = '22000', detail = 'INVALID_VALUE';
+    end if;
+  end if;
+
   insert into settings (store_id) values (p_store) on conflict (store_id) do nothing;
 
   update settings set
@@ -158,9 +201,13 @@ begin
 end;
 $$;
 comment on function public.save_settings(uuid, jsonb) is
-'설정 저장(언어·통화·단위·자릿수·알림). 영업시간 키는 거부(0163), 모르는 키도 거부(0167) — 조용히 버리면 앱이 저장된 줄 안다. settings 는 앱 롤이 직접 못 쓰므로 definer(0164).';
+'설정 저장(언어·통화·단위·자릿수·알림). 영업시간 키는 거부(0163), 모르는 키·틀린 값도 거부(0167) — 조용히 버리면 앱이 저장된 줄 안다. settings 는 앱 롤이 직접 못 쓰므로 definer(0164).';
 
--- ── ④ 백필 — 표시 폼 전체(7일 시간 + 브레이크)로 비교 ────────────
+-- ── ④ 백필 — 부트스트랩 행만, 표시 폼 전체(7일 시간 + 브레이크)로 ──
+/*
+ * 대상: 문을 한 번도 안 지난 **부트스트랩** 행 — created_by 없음 · effective_from = -infinity ·
+ * 열려 있음 · revision 1. 사장님이 저장한 행은 created_by 가 있고 시작일이 실제 날짜다.
+ */
 with expected as (
   select s.store_id,
          (select jsonb_object_agg(d::text, jsonb_build_object(
@@ -175,7 +222,9 @@ with expected as (
          r.id as rule_id
     from public.settings s
     join public.operating_rules r on r.store_id = s.store_id and r.effective_to is null
-   where r.revision = 1 and s.open_time is not null and s.close_time is not null
+   where r.revision = 1
+     and r.created_by is null and r.effective_from = '-infinity'::date
+     and s.open_time is not null and s.close_time is not null
 )
 update public.operating_rules r
    set weekly_hours = e.hours, weekly_breaks = e.breaks
@@ -202,25 +251,26 @@ begin
      or has_table_privilege('authenticated', 'public.stores', 'delete') then
     raise exception '0167: stores 직접 쓰기가 아직 열려 있습니다';
   end if;
-  if not exists (select 1 from pg_trigger where tgname = 'stores_00_single_per_owner') then
-    raise exception '0167: 소유자당 하나 트리거가 없습니다';
+  if not exists (select 1 from pg_constraint where conname = 'stores_owner_id_key'
+                    and conrelid = 'public.stores'::regclass and contype = 'u') then
+    raise exception '0167: stores.owner_id UNIQUE 제약이 없습니다';
   end if;
-  select count(*) into v_n from (select owner_id from stores group by owner_id having count(*) > 1) d;
-  if v_n > 0 then
-    raise exception '0167: 이미 매장이 둘 이상인 계정이 %개 있습니다 — 정리 후 다시 적용하세요', v_n;
+  if exists (select 1 from pg_trigger where tgname = 'stores_00_single_per_owner') then
+    raise exception '0167: 첫 판의 우회 트리거가 남아 있습니다';
   end if;
 
   select pg_get_functiondef(p.oid) into v_def
     from pg_proc p where p.pronamespace = 'public'::regnamespace and p.proname = 'save_settings';
-  if position('UNKNOWN_KEY' in v_def) = 0 or position('unit_system' in v_def) = 0 then
+  if position('UNKNOWN_KEY' in v_def) = 0 or position('INVALID_VALUE' in v_def) = 0
+     or position('unit_system' in v_def) = 0 then
     raise exception '0167: save_settings 계약이 덜 됐습니다';
   end if;
 
-  -- 백필 — 문을 안 지난 규칙이 표시 폼 전체(7일 시작·종료 + 브레이크)와 어긋난 매장이 없다.
-  -- (0166 은 월요일 시작만 봐서 종료·브레이크가 다른 매장을 놓쳤다.)
+  -- 백필 — **부트스트랩** 행만 표시 폼 전체와 맞는다. 사장님 저장 행은 대상이 아니다.
   select count(*) into v_n
     from public.operating_rules r join public.settings s on s.store_id = r.store_id
    where r.effective_to is null and r.revision = 1
+     and r.created_by is null and r.effective_from = '-infinity'::date
      and s.open_time is not null and s.close_time is not null
      and exists (select 1 from generate_series(0, 6) d
                   where (r.weekly_hours -> d::text ->> 'open')  is distinct from s.open_time::text
@@ -229,11 +279,9 @@ begin
                            (r.weekly_breaks -> d::text ->> 'start') is distinct from s.break_start::text
                         or (r.weekly_breaks -> d::text ->> 'end')   is distinct from s.break_end::text)));
   if v_n > 0 then
-    raise exception '0167: 규칙이 표시 폼(시작·종료·브레이크)과 어긋난 매장이 %개 있습니다', v_n;
+    raise exception '0167: 부트스트랩 규칙이 표시 폼(시작·종료·브레이크)과 어긋난 매장이 %개 있습니다', v_n;
   end if;
 
-  -- postgres 의 기본 권한은 닫혀 있어야 한다(0166). supabase_admin 은 여기서 못 고친다 —
-  -- 감추지 않고 남긴다: 로컬·CI 는 fresh-db.sh, 시험 31 이 두 롤 모두를 잰다.
   -- 롤은 이름으로 잇는다 — supabase_admin 이 없는 호스트에서 ::regrole 은 그 자체로 터진다.
   if exists (select 1 from pg_default_acl a join pg_roles ro on ro.oid = a.defaclrole
               where ro.rolname = 'postgres' and a.defaclnamespace = 'public'::regnamespace
@@ -247,6 +295,6 @@ begin
                 and a.defaclobjtype = 'r'
                 and exists (select 1 from unnest(a.defaclacl) x
                              where x::text ~ '^(anon|authenticated)=' and x::text ~ '=[^/]*[Dtx]')) then
-    raise notice '0167: ⚠ supabase_admin 의 기본 권한이 아직 열려 있습니다 — 이 롤이 public 에 만드는 테이블은 TRUNCATE/TRIGGER/REFERENCES 가 열립니다. fresh-db.sh 의 슈퍼유저 단계(로컬·CI) 또는 운영 런북으로 걷어내세요.';
+    raise notice '0167: ⚠ supabase_admin 의 기본 권한이 아직 열려 있습니다 — 이 롤이 public 에 만드는 테이블은 TRUNCATE/TRIGGER/REFERENCES 가 열립니다. scripts/admin-acl.sh 를 슈퍼유저 접속으로 실행하세요(배포 절차의 단계).';
   end if;
 end $$;

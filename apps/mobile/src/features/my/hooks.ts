@@ -387,28 +387,51 @@ export function useSaveStoreTax() {
   });
 }
 
+/**
+ * 서버 save_settings(0167)와 합의한 **12개 키**. StoreSettings 의 나머지(taxItems·taxMode·
+ * overnight·영업시간…)는 타입에서부터 못 넘긴다 — 예전엔 넓은 타입이 받아 놓고 전송에서
+ * 버려서 빈 저장이 성공처럼 끝났다(검토 지적).
+ */
+export type SaveSettingsInput = Pick<StoreSettings,
+  | 'locale' | 'currency' | 'unitSystem' | 'cupVolume' | 'defaultTargetProfitRate'
+  | 'unitPriceDigits' | 'quantityDigits' | 'moneyDigits'
+  | 'alertMorningSummary' | 'alertInboundDelay' | 'alertPriceSpike' | 'alertTargetMiss'>;
+
+const SETTINGS_KEYS: Record<keyof SaveSettingsInput, string> = {
+  locale: 'locale',
+  currency: 'currency',
+  unitSystem: 'unit_system',
+  cupVolume: 'cup_volume',
+  defaultTargetProfitRate: 'default_target_profit_rate',
+  unitPriceDigits: 'unit_price_digits',
+  quantityDigits: 'quantity_digits',
+  moneyDigits: 'money_digits',
+  alertMorningSummary: 'alert_morning_summary',
+  alertInboundDelay: 'alert_inbound_delay',
+  alertPriceSpike: 'alert_price_spike',
+  alertTargetMiss: 'alert_target_miss',
+};
+
+/**
+ * 전송 페이로드 — 합의한 키만 싣고, **실을 게 없으면 오류**다(조용한 no-op 금지).
+ * ⚠ 영업시간은 여기로 안 간다(0163) — MY > 영업시간의 set_operating_hours(판본 필수)가 유일한 문이다.
+ */
+export function buildSettingsPayload(input: Partial<SaveSettingsInput>): Record<string, unknown> {
+  const payload: Record<string, unknown> = {};
+  for (const k of Object.keys(SETTINGS_KEYS) as (keyof SaveSettingsInput)[]) {
+    const v = input[k];
+    if (v !== undefined) payload[SETTINGS_KEYS[k]] = v;
+  }
+  if (Object.keys(payload).length === 0) throw new Error('저장할 설정 값이 없어요');
+  return payload;
+}
+
 export function useSaveSettings() {
   const qc = useQueryClient();
   const storeId = useStoreId();
   return useMutation({
-    mutationFn: async (input: Partial<Omit<StoreSettings, 'openTime' | 'closeTime' | 'breakStart' | 'breakEnd'>>) => {
-      const payload: Record<string, unknown> = {};
-      if (input.unitSystem !== undefined) payload.unit_system = input.unitSystem;
-      if (input.cupVolume !== undefined) payload.cup_volume = input.cupVolume;
-      if (input.defaultTargetProfitRate !== undefined) payload.default_target_profit_rate = input.defaultTargetProfitRate;
-      if (input.locale !== undefined) payload.locale = input.locale;
-      if (input.currency !== undefined) payload.currency = input.currency;
-      if (input.unitPriceDigits !== undefined) payload.unit_price_digits = input.unitPriceDigits;
-      if (input.quantityDigits !== undefined) payload.quantity_digits = input.quantityDigits;
-      if (input.moneyDigits !== undefined) payload.money_digits = input.moneyDigits;
-      if (input.alertMorningSummary !== undefined) payload.alert_morning_summary = input.alertMorningSummary;
-      if (input.alertInboundDelay !== undefined) payload.alert_inbound_delay = input.alertInboundDelay;
-      if (input.alertPriceSpike !== undefined) payload.alert_price_spike = input.alertPriceSpike;
-      if (input.alertTargetMiss !== undefined) payload.alert_target_miss = input.alertTargetMiss;
-      // ⚠ 영업시간은 여기로 안 간다(0163) — 서버가 키만 봐도 거부한다. MY > 영업시간의
-      //   set_operating_hours(판본 필수)가 유일한 문이다.
-
-      const { error } = await supabase.rpc('save_settings', { p_store: storeId, p_payload: asJson(payload) });
+    mutationFn: async (input: Partial<SaveSettingsInput>) => {
+      const { error } = await supabase.rpc('save_settings', { p_store: storeId, p_payload: asJson(buildSettingsPayload(input)) });
       if (error) throw new Error(error.message);
     },
     onSuccess: () => invalidate(qc, [qk.settings]),

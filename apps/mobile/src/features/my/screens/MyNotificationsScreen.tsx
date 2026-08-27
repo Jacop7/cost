@@ -7,7 +7,7 @@ import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { AppHeader, Badge, Card, Icon, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { T } from '@/theme/tokens';
-import { useSaveSettings, useStoreSettings, type StoreSettings } from '../hooks';
+import { useSaveSettings, useStoreSettings, type SaveSettingsInput, type StoreSettings } from '../hooks';
 
 type Key = 'alertMorningSummary' | 'alertInboundDelay' | 'alertPriceSpike' | 'alertTargetMiss';
 
@@ -43,7 +43,7 @@ export default function MyNotificationsScreen() {
 
   const toggle = (key: Key) => {
     if (!s) return;
-    save.mutate({ [key]: !s[key] } as Partial<StoreSettings>, {
+    save.mutate({ [key]: !s[key] } as Partial<SaveSettingsInput>, {
       onError: (e) => Alert.alert('바꾸지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'),
     });
   };

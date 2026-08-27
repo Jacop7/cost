@@ -28,13 +28,12 @@ create function pg_temp.owner() returns uuid
 language sql immutable as $h$ select '00000000-0000-0000-0000-0000000000a1'::uuid $h$;
 
 /*
- * 교차 매장 방어 시험(27 ⑰ · 29 뉴욕 · 30 · 31)은 **같은 사장님의 두 번째 매장**을 소유자로
- * 만든다 — "내 매장 문지기는 통과하되 남의 메뉴는 막히는" 실제 위험을 재기 위해서다.
- * 0167 의 소유자당-하나 트리거는 이 세션 플래그로만 열린다. 앱 롤은 INSERT 자체가 없다.
+ * 계정당 매장은 하나다(0167 UNIQUE). 교차 매장 시험(27 ⑰ · 29 뉴욕 · 30 · 31)의 두 번째 매장은
+ * **다른 사장님** 것이다 — 문지기 assert_my_store 는 p_store 만 보므로 남남이어도 통과하고,
+ * 재려는 경계("메뉴가 남의 매장 것")는 그와 별개의 검사다. 운영 스키마에 시험용 우회는 없다.
  */
-set local sikjae.multi_store_fixture = 'on';
 
-/** 다른 사장님 — auth.users 행을 만든다(소유자). 남남 시나리오용. */
+/** 다른 사장님 — auth.users 행을 만든다(소유자). ⚠ 끝나면 롤이 authenticated 다. */
 create function pg_temp.new_owner() returns uuid
 language plpgsql as $h$
 declare v uuid := gen_random_uuid();
@@ -43,6 +42,15 @@ begin
   insert into auth.users (id) values (v);
   set local role authenticated;
   return v;
+end $h$;
+
+/** 세션의 사장님을 바꾼다(JWT 클레임). 블록 끝에 pg_temp.as_owner(pg_temp.owner()) 로 되돌릴 것. */
+create function pg_temp.as_owner(p_uid uuid) returns void
+language plpgsql as $h$
+begin
+  set local role postgres;
+  perform set_config('request.jwt.claims', json_build_object('sub', p_uid, 'role', 'authenticated')::text, true);
+  set local role authenticated;
 end $h$;
 
 /*
