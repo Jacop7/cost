@@ -7,9 +7,9 @@
 
 - **문서 위치**: `docs/브랜치-DB-운영-기획안.md`
 - **최종 수정**: 2026-08-28
-- **현재 상태**: 개정 3판 승인·Git 추적 완료. 대형 기능 브랜치와 `TEST-1`을 `main`에 fast-forward
-  병합한 뒤 §10 폴더 경계 리팩터링도 `cceafb9`에서 완료했다. 현재 §11 저장소 문서 동기화
-  `P1-3`을 수행 중이며, 운영·스테이징 적용 이력은 아직 미확인이다.
+- **현재 상태**: 개정 3판 승인·Git 추적 완료. 대형 기능 브랜치와 `TEST-1`, §10 폴더 경계
+  리팩터링(`cceafb9`), §11 저장소 문서 동기화(`01c5358`)를 `main`에 fast-forward 병합했다.
+  다음 작업은 원격 ACL 읽기 전용 감사 `P1-1`이며, 운영·스테이징 적용 이력은 아직 미확인이다.
 
 ## 문서 책임
 
@@ -147,7 +147,7 @@ feat/supplier-order-submit
 - P0-4 운영 Supabase·스테이징·백업·복구 훈련 준비
 - P1-1 첫 원격 프로젝트 연결 전 `admin-acl.sh --remote audit` 구현과 회귀시험
 - P1-2 Supabase CLI v2 업그레이드 여부 결정과 전환 검증
-- P1-3 §11 저장소 문서 전체 동기화(루트·앱·`packages/db` README 포함, 현재 진행 중)
+- P1-3 §11 저장소 문서 전체 동기화(루트·앱·`packages/db` README 포함, `01c5358` 완료)
 
 병합 후 22시대 재검증에서 발견한 DB 시험의 늦은 개점 시간 의존성은 `TEST-1`로 별도 등록했고,
 `3a9f2d1`에서 완료했다.
@@ -560,7 +560,7 @@ $runs.workflow_runs | Select-Object head_branch, status, conclusion, html_url
 | 10   | 완료        | 로컬·원격 feature 브랜치 삭제 |
 | 11   | 완료        | [`docs/작업큐.md`](./작업큐.md) 생성, P0 4건·P1 3건 등록 |
 | 12   | 완료        | §10 폴더 경계 리팩터링 `REF-1`을 `cceafb9`에서 완료 |
-| 13   | **진행 중** | §11의 README·아키텍처·화면 인벤토리 동기화 `P1-3` |
+| 13   | 완료        | §11의 README·아키텍처·화면 인벤토리 동기화 `P1-3` (`01c5358`) |
 
 운영 DB가 이미 feature 마이그레이션을 포함했다면 파일을 고치지 말고, 운영 이력과 저장소 이력을
 대조한 뒤 신속히 `main`을 맞춘다.
@@ -609,9 +609,9 @@ features/ingredients/components/HistoryLayout.tsx
 7. `apps/mobile/src/features/README.md` — 화면 인벤토리
 8. `packages/db/README.md` — 마이그레이션·fresh DB·ACL·업그레이드 경로
 
-`P1-3`은 루트·앱·DB README, `CLAUDE.md`·`AGENTS.md`, `ARCHITECTURE.md`, 두 기획안과 화면
-인벤토리를 같은 측정값으로 맞춘다. 병합 완료와 동일 SHA CI가 기록되기 전에는 작업 브랜치의 문서를
-배포 기준으로 사용하지 않는다.
+`P1-3`은 `01c5358`에서 루트·앱·DB README, `CLAUDE.md`·`AGENTS.md`, `ARCHITECTURE.md`,
+두 기획안과 화면 인벤토리를 같은 측정값으로 맞췄다. 로컬 6/6과 동일 SHA의 feature·`main` CI를
+확인했으며, 상세 결과와 run id는 [`docs/작업큐.md`](./작업큐.md#p1-3-저장소-문서-동기화)에 남겼다.
 
 문서 상태 스냅샷에는 확인 시각과 근거 명령을 함께 남긴다. 검증하지 못한 운영 상태는 “미확인”으로
 쓰고 추정으로 채우지 않는다.
