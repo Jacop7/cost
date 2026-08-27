@@ -9,6 +9,7 @@ import { asJson } from '@/lib/json';
 import { useStoreId } from '@/lib/SessionProvider';
 import type { TaxMode } from '@sikjae/types';
 import { LOCALES } from '@sikjae/core';
+import { rpcNumber } from '@/lib/rpcValue';
 
 // ── 매장 설정 (MY-06 단위 · MY-08 언어/통화 · 알림) ───────────
 export interface StoreSettings {
@@ -372,7 +373,7 @@ const hoursOf = (v: Record<string, unknown>, where: string): OperatingHours => (
   closeTime: reqTime(v.close_time, `${where} 종료 시각`),
   breakStart: optTime(v.break_start, `${where} 브레이크 시작`),
   breakEnd: optTime(v.break_end, `${where} 브레이크 종료`),
-  closeDayOffset: Number(v.close_day_offset ?? 0),
+  closeDayOffset: rpcNumber(v.close_day_offset),
   closed: Boolean(v.closed),
 });
 

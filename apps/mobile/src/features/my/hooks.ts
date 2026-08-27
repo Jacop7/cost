@@ -7,8 +7,7 @@ import { invalidate, invalidateOn, qk } from '@/lib/queryClient';
 import { supabase } from '@/lib/supabase';
 import { asJson } from '@/lib/json';
 import { useStoreId } from '@/lib/SessionProvider';
-
-const num = (v: unknown): number => Number(v ?? 0);
+import { rpcNumber as num } from '@/lib/rpcValue';
 
 // ── 고정지출 (MY-05) ──────────────────────────────────────────
 export interface FixedCostLine { name: string; amount: number }

@@ -1,13 +1,18 @@
 /**
  * 매출 조회·저장 훅.
  *
- * 여기가 사이클의 마지막 고리다. 메뉴를 팔면 서버가 레시피를 재귀로 펼쳐
- * **식재료 재고까지 차감**한다(E10 → E8). 그래서 저장 후에는 매출뿐 아니라
+ * 여기가 사이클의 마지막 고리다. 메뉴를 팔면 서버가 그날 스냅샷의 직접 식재료 라인을 사용해
+ * **식재료 재고까지 차감**한다(E10 → E8). 반제품은 1차 입력이 금지돼 있다. 그래서 저장 후에는 매출뿐 아니라
  * 재고·발주 후보 캐시도 함께 버려야 한다 — 안 그러면 "팔았는데 식재료 화면은 그대로"가 된다.
  */
 import { useCallback } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { invalidate, invalidateOn, qk } from '@/lib/queryClient';
+import {
+  rpcNullableNumber as numOrNull,
+  rpcNullableString as str,
+  rpcNumber as num,
+} from '@/lib/rpcValue';
 import { supabase, rpcError } from '@/lib/supabase';
 import { useStoreId } from '@/lib/SessionProvider';
 // 응답 계약 검사는 **앱 의존 없는 한 모듈**에 둔다 — 시험이 본체를 그대로 돌릴 수 있게.
@@ -15,10 +20,6 @@ import {
   CONTRACT_HINT, parseAmendResultContract, parseSalesDayContract,
   type SalesDayBasisQuality, type SalesDayStatus,
 } from './dayContract';
-
-const num = (v: unknown): number => Number(v ?? 0);
-const numOrNull = (v: unknown): number | null => (v === null || v === undefined ? null : Number(v));
-const str = (v: unknown): string | null => (v === null || v === undefined ? null : String(v));
 
 /** 손익 한 장. 서버 `sales_summary()` 가 유일한 계산 주체다(절대원칙 3). */
 export interface SalesSummary {

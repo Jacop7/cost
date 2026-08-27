@@ -13,6 +13,11 @@
  */
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { qk } from '@/lib/queryClient';
+import {
+  rpcNullableNumber as numOrNull,
+  rpcNullableString as str,
+  rpcNumber as num,
+} from '@/lib/rpcValue';
 import { supabase } from '@/lib/supabase';
 import { useStoreId } from '@/lib/SessionProvider';
 
@@ -49,9 +54,6 @@ export interface ChangeEvent {
   /** 아직 한 번도 안 고쳤으면 false — 목록에는 '최초 등록'만 있다. */
   hasHistory: boolean;
 }
-
-const num = (v: unknown): number => Number(v ?? 0);
-const str = (v: unknown): string | null => (v === null || v === undefined ? null : String(v));
 
 export function parseChangeEvent(raw: unknown): ChangeEvent {
   const r = (raw ?? {}) as Record<string, unknown>;
@@ -175,7 +177,7 @@ export function useChangeHistory(entity: ChangeEntity, id: string | undefined, d
         items: ((r.items ?? []) as unknown[]).map(parseChangeEvent),
         nextCursor: str(r.next_cursor),
         summary: {
-          days: sm.days === null || sm.days === undefined ? null : Number(sm.days),
+          days: numOrNull(sm.days),
           count: num(sm.count),
           directCount: num(sm.direct_count),
           autoCount: num(sm.auto_count),
