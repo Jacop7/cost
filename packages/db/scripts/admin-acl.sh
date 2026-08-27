@@ -9,68 +9,67 @@
 #   ① 기본 권한을 걷어내고 ② **supabase_admin 으로 표를 만들어** 닫혔는지 잰다(트랜잭션 안에서
 #   만들고 롤백한다 — 중간에 실패해도 프로브 표가 남지 않는다).
 #
-# 쓰는 법 — 대상은 **명시적 모드**로만 고른다(환경변수 하나로 운영이 잡히면 안 된다 — 검토 P0).
-#   로컬 컨테이너의 일회용 DB:  bash packages/db/scripts/admin-acl.sh --local <db> [fix|check]
-#       <db> 는 식별자(영소문자·숫자·_)만 — 접속 문자열은 거부한다(검토 P1: --local 로 원격 접속이 됐다).
-#   원격(운영·개발):            ADMIN_DB_URL='…' bash packages/db/scripts/admin-acl.sh --remote [fix|check]
-#       URI(postgresql://user:pw@host/db) 또는 keyword(host=… dbname=… password=…) 둘 다 된다.
-#       ⚠ 비밀번호는 argv 에 싣지 않는다 — 접속 문자열에서 떼어 PGPASSWORD 환경변수로만 넘긴다.
-#         비밀번호를 아예 빼고 ~/.pgpass(PGPASSFILE)를 쓰는 편이 더 낫다.
-#   fix   = 회수하고 잰다        check = 재기만 한다(배포 후 확인·게이트)
+# 쓰는 법 — 대상도 동작도 **명시적으로**만(검토: 환경변수 하나로 운영이 잡히거나 기본값이 fix 면 안 된다).
+#   로컬 컨테이너의 일회용 DB:  bash packages/db/scripts/admin-acl.sh --local <db> <fix|check>
+#       <db> 는 식별자(영소문자·숫자·_)만 — 접속 문자열은 거부한다.
+#   원격(운영·개발):            ADMIN_DB_URL='…' [ADMIN_DB_PASSWORD='…'] bash packages/db/scripts/admin-acl.sh --remote <fix|check>
+#       ADMIN_DB_URL 은 URI(postgresql://user@host/db) 또는 keyword(host=… dbname=… user=…) — **비밀번호는 금지**.
+#       비밀번호는 ADMIN_DB_PASSWORD(환경으로만 psql 에 전달) 또는 PGPASSFILE/~/.pgpass 로 준다.
+#       접속 문자열을 파싱해 비밀번호를 떼어 내는 짓은 하지 않는다 — ?password=, 탭 구분, 이스케이프 인용,
+#       중복 password= 같은 형식에서 새어 나갔다(검토 실측). 비밀번호가 보이면 **거부**하고 값은 되풀이하지 않는다.
+#   fix   = 회수하고 잰다        check = 재기만 한다(배포 후 확인·게이트)     ← 생략 불가
 #   프로브가 열려 있으면 exit 1 — 조용히 넘어가지 않는다.
 #
 # ⚠ 운영 배포 절차의 한 단계다(`--remote fix` 한 번, 이후 `--remote check` 로 게이트).
 #   접속 계정은 supabase_admin 이거나 그 롤로 전환할 수 있는 슈퍼유저여야 한다 — 먼저 확인하고
 #   아니면 아무것도 바꾸지 않고 멈춘다. 마이그레이션(0167)은 이 상태를 NOTICE 로만 남긴다.
-# ⚠ 접속 문자열은 로그에 찍지 않는다. 대상 표시는 host/db 까지다.
+# ⚠ 자식 프로세스(psql·docker)에는 ADMIN_DB_URL·ADMIN_DB_PASSWORD 를 넘기지 않는다. 로그는 host/db 까지.
 # ════════════════════════════════════════════════════════════════
 set -euo pipefail
 
-usage() { echo "사용법: admin-acl.sh --local <db> [fix|check] | --remote [fix|check]  (원격은 ADMIN_DB_URL 필수)" >&2; exit 2; }
+usage() {
+  echo "사용법: admin-acl.sh --local <db> <fix|check> | --remote <fix|check>" >&2
+  echo "        원격은 ADMIN_DB_URL(비밀번호 없이) 필수, 비밀번호는 ADMIN_DB_PASSWORD 또는 PGPASSFILE" >&2
+  exit 2
+}
 
 TARGET="${1:-}"; shift || true
-PGPW=""          # 비밀번호는 여기에만 — run() 이 환경변수로 넘긴다
+PGPW=""          # 비밀번호는 여기에만 — run() 이 환경변수로만 넘긴다
 case "$TARGET" in
   --local)
     D="${1:-}"; [ -n "$D" ] || usage; shift
-    MODE="${1:-fix}"
-    # 식별자만 — `postgresql://…` 같은 접속 문자열을 psql -d 가 URI 로 읽는다(검토 재현).
+    MODE="${1:-}"
+    # 식별자만 — `postgresql://…` 같은 접속 문자열을 psql -d 가 URI 로 읽는다(검토 재현). 값은 되풀이하지 않는다.
     if ! printf '%s' "$D" | grep -Eq '^[a-z_][a-z0-9_]{0,62}$'; then
-      # 값은 되풀이하지 않는다 — 접속 문자열이 들어왔다면 비밀번호가 실려 있을 수 있다.
       echo "admin-acl: --local 의 DB 이름은 식별자(영소문자·숫자·_)만 됩니다 (받은 값 ${#D}자, 되풀이하지 않음)" >&2; exit 2
     fi
     CT="${SUPABASE_DB_CONTAINER:-supabase_db_sikjae}"
     PGPW="${SUPABASE_ADMIN_PASSWORD:-postgres}"
     # -e PGPASSWORD (값 없이) — docker 가 환경에서 가져간다. argv 에는 이름만 남는다.
-    run() { PGPASSWORD="$PGPW" docker exec -i -e PGPASSWORD "$CT" \
+    run() { env -u ADMIN_DB_URL -u ADMIN_DB_PASSWORD PGPASSWORD="$PGPW" docker exec -i -e PGPASSWORD "$CT" \
               psql -U supabase_admin -d "$D" -v ON_ERROR_STOP=1 -q -t -A "$@"; }
     WHERE="local $CT/$D"
     ;;
   --remote)
-    MODE="${1:-fix}"
-    [ -n "${ADMIN_DB_URL:-}" ] || { echo "admin-acl: --remote 는 ADMIN_DB_URL(슈퍼유저 접속 문자열)이 필요합니다" >&2; exit 2; }
-    CONN="$ADMIN_DB_URL"
+    MODE="${1:-}"
+    CONN="${ADMIN_DB_URL:-}"
+    [ -n "$CONN" ] || { echo "admin-acl: --remote 는 ADMIN_DB_URL(접속 문자열, 비밀번호 없이)이 필요합니다" >&2; exit 2; }
+    # 비밀번호가 실려 있으면 거부 — 어떤 형식이든(URI userinfo · ?password= · keyword password= · 탭/줄바꿈 구분).
+    if printf '%s' "$CONN" | grep -Eiq '(^|[[:space:]?&;])password=' \
+       || printf '%s' "$CONN" | grep -Eq '^[a-zA-Z]+://[^@/]*:[^@/]*@'; then
+      echo "admin-acl: ADMIN_DB_URL 에 비밀번호를 넣지 마세요 — ADMIN_DB_PASSWORD 또는 PGPASSFILE 로 주세요 (값은 되풀이하지 않음)" >&2; exit 2
+    fi
+    PGPW="${ADMIN_DB_PASSWORD:-}"
+    # 자식에는 ADMIN_* 를 넘기지 않는다. 비밀번호는 PGPASSWORD 환경으로만(없으면 libpq 가 PGPASSFILE/~/.pgpass 를 본다).
+    if [ -n "$PGPW" ]; then
+      run() { env -u ADMIN_DB_URL -u ADMIN_DB_PASSWORD PGPASSWORD="$PGPW" psql "$CONN" -v ON_ERROR_STOP=1 -q -t -A "$@"; }
+    else
+      run() { env -u ADMIN_DB_URL -u ADMIN_DB_PASSWORD psql "$CONN" -v ON_ERROR_STOP=1 -q -t -A "$@"; }
+    fi
     case "$CONN" in
-      *://*)
-        # URI — userinfo 의 비밀번호를 떼어 낸다(퍼센트 인코딩 해제). 나머지는 그대로 argv 로 간다(호스트·DB 는 비밀이 아니다).
-        if printf '%s' "$CONN" | grep -Eq '^[a-zA-Z]+://[^@/]*:[^@/]*@'; then
-          PGPW="$(printf '%s' "$CONN" | sed -E 's#^[a-zA-Z]+://[^@/:]*:([^@/]*)@.*$#\1#')"
-          PGPW="$(printf '%b' "${PGPW//%/\\x}")"
-          CONN="$(printf '%s' "$CONN" | sed -E 's#^([a-zA-Z]+://[^@/:]*):[^@/]*@#\1@#')"
-        fi
-        WHERE="remote $(printf '%s' "$CONN" | sed -E 's#^[a-zA-Z]+://([^@/]*@)?##; s#\?.*$##')"
-        ;;
-      *)
-        # keyword conninfo — password=… 를 떼어 낸다('…' 인용 포함). 표시는 host/dbname 만.
-        if printf '%s' "$CONN" | grep -Eq "(^| )password="; then
-          PGPW="$(printf '%s' "$CONN" | sed -nE "s/.*(^| )password=('([^']*)'|([^ ]*)).*/\3\4/p")"
-          CONN="$(printf '%s' "$CONN" | sed -E "s/(^| )password=('[^']*'|[^ ]*)//")"
-        fi
-        WHERE="remote $(printf '%s' "$CONN" | sed -nE 's/.*(^| )host=([^ ]*).*/\2/p')/$(printf '%s' "$CONN" | sed -nE 's/.*(^| )dbname=([^ ]*).*/\2/p')"
-        ;;
+      *://*) WHERE="remote $(printf '%s' "$CONN" | sed -E 's#^[a-zA-Z]+://([^@/]*@)?##; s#\?.*$##')" ;;
+      *)     WHERE="remote $(printf '%s' "$CONN" | tr '\t\n' '  ' | sed -nE 's/.*(^| )host=([^ ]*).*/\2/p')/$(printf '%s' "$CONN" | tr '\t\n' '  ' | sed -nE 's/.*(^| )dbname=([^ ]*).*/\2/p')" ;;
     esac
-    # PGPASSWORD 는 환경으로만 — argv 에 비밀번호가 없다. 비어 있으면 libpq 가 ~/.pgpass 를 본다.
-    run() { PGPASSWORD="$PGPW" psql "$CONN" -v ON_ERROR_STOP=1 -q -t -A "$@"; }
     ;;
   *) usage ;;
 esac

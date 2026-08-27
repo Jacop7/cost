@@ -66,4 +66,22 @@ describe('locale_defaults(SQL) ↔ LOCALES(core)', () => {
     const { text } = lastDefinition('add constraint settings_locale_combo_ck');
     expect(text).toMatch(/check \(public\.locale_combo_ok\(locale, currency, money_digits\)\)/);
   });
+
+  /**
+   * 목록을 바꾸는 마이그레이션의 규율(검토 지적) — locale_defaults 를 다시 정의하면 기존 settings 행은
+   * 저절로 재검증되지 않는다. 같은 파일 안에 ① 기존 행 이관(update … settings) ② 조합 CHECK 재생성
+   * (drop + add, 검증됨) ③ 전 행 대조(locale_combo_ok(s.locale …) 로 어긋난 행 수를 세어 멈춤)가
+   * **한 단위로** 있어야 한다. 0169 이후 파일만 본다(0168 은 CHECK 가 생기기 전이다).
+   */
+  it('0169 이후 locale_defaults 를 다시 정의하는 마이그레이션은 이관·CHECK 재생성·전 행 대조를 함께 담는다', () => {
+    const later = files.filter((f) => f.slice(0, 14) > '20260826000169')
+      .map((f) => ({ f, text: readFileSync(resolve(MIG_DIR, f), 'utf8') }))
+      .filter(({ text }) => text.includes('create or replace function public.locale_defaults'));
+    for (const { f, text } of later) {
+      expect(text, `${f}: 기존 행 이관(update public.settings)`).toMatch(/update public\.settings/);
+      expect(text, `${f}: 조합 CHECK 재생성(drop)`).toMatch(/drop constraint if exists settings_locale_combo_ck/);
+      expect(text, `${f}: 조합 CHECK 재생성(add)`).toMatch(/add constraint settings_locale_combo_ck\s+check \(public\.locale_combo_ok\(locale, currency, money_digits\)\)/);
+      expect(text, `${f}: 전 행 대조`).toMatch(/not public\.locale_combo_ok\(s\.locale, s\.currency, s\.money_digits\)/);
+    }
+  });
 });

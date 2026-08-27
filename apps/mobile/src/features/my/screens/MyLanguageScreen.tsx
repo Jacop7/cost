@@ -12,7 +12,7 @@
  *   (UI 문구 번역·글꼴·RTL)은 아직 연결하지 않았다. 지금 확정되는 것은 숫자 서식 기준값뿐이다.
  */
 import { useState } from 'react';
-import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
+import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   LOCALES,
@@ -85,7 +85,9 @@ export default function MyLanguageScreen() {
       </Shell>
     );
   }
-  return <LanguageEditor initial={settings.locale} />;
+  // key: 서버 언어가 바뀌면(다른 기기에서 저장 등) 편집기를 새로 만든다 — 낡은 초안이 새 서버값을
+  // 덮어쓰지 않게(검토 지적). 이 화면의 저장은 성공하면 떠나므로 사용자의 고름이 사라질 일은 없다.
+  return <LanguageEditor key={settings.locale} initial={settings.locale} />;
 }
 
 function Shell({ children }: { children: React.ReactNode }) {
@@ -105,15 +107,25 @@ function LanguageEditor({ initial }: { initial: LocaleKey }) {
 
   const [draft, setDraft] = useState<LocaleKey>(initial); // 확정 전 선택 — 서버값이 온 뒤에만 만들어진다
   const [confirm, setConfirm] = useState(false); // 확인 시트
+  // 저장 실패 문구 — **화면 안**에 그린다. Alert.alert 는 웹(react-native-web)에서 아무것도 안 보여 준다(검토 지적).
+  const [saveError, setSaveError] = useState<string | null>(null);
   const changed = draft !== locale;
   const D = getLocale(draft);
+
+  // 저장 중엔 시트를 못 닫는다 — 취소 버튼뿐 아니라 배경 터치·Android 뒤로가기(onRequestClose)도 같은 문이다.
+  const closeSheet = () => {
+    if (saving) return;
+    setConfirm(false);
+    setSaveError(null);
+  };
 
   // 성공 뒤에만 닫고 이동한다. 실패는 그 자리에서 알리고 시트를 유지한다(검토 지적).
   const onSave = () => {
     if (saving) return;
+    setSaveError(null);
     setLocale(draft, {
       onSuccess: () => { setConfirm(false); safeBack('/my'); },
-      onError: (e) => Alert.alert('저장하지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'),
+      onError: (e) => setSaveError(e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'),
     });
   };
 
@@ -172,7 +184,7 @@ function LanguageEditor({ initial }: { initial: LocaleKey }) {
 
       {/* 확인 — 고른 언어로 실제 화면 숫자가 어떻게 보이는지 확인하고 확정 */}
       {/* sub 는 한국어 라벨을 앞에 둔다 — 아랍어 이름이 앞이면 그 줄이 RTL 로 판정돼 시트 헤더가 우측으로 밀린다. */}
-      <Sheet visible={confirm} onClose={() => setConfirm(false)} title="이렇게 보여요" sub={`${D.label} · ${D.currencyName} (${D.currency})`} height={NEEDS_RESTART.has(D.lang) ? 490 : 420}>
+      <Sheet visible={confirm} onClose={closeSheet} title="이렇게 보여요" sub={`${D.label} · ${D.currencyName} (${D.currency})`} height={NEEDS_RESTART.has(D.lang) ? 490 : 420}>
         <Card pad={0} style={{ overflow: 'hidden', marginBottom: 12 }} shadow={false}>
           <PreviewRow label="판매가" hint={`소수 ${D.moneyDigits}자리 · 통화가 정해요`} value={formatMoney(P_PRICE, draft)} />
           <PreviewRow label="대파 단가" hint={`소수 ${digits}자리 · 단위 설정에서 조정`} value={formatUnitPrice(P_UNIT, 'g', draft, digits)} />
@@ -189,8 +201,14 @@ function LanguageEditor({ initial }: { initial: LocaleKey }) {
           </View>
         ) : null}
 
+        {saveError ? (
+          <Text accessibilityRole="alert" style={{ fontSize: 14, fontWeight: '700', color: T.red, lineHeight: 20, marginBottom: 12 }}>
+            저장하지 못했어요 · {saveError}
+          </Text>
+        ) : null}
+
         <View style={{ flexDirection: 'row', gap: 9 }}>
-          <View style={{ flex: 1 }}><Button kind="ghost" size="lg" full disabled={saving} onPress={() => setConfirm(false)}>취소</Button></View>
+          <View style={{ flex: 1 }}><Button kind="ghost" size="lg" full disabled={saving} onPress={closeSheet}>취소</Button></View>
           <View style={{ flex: 2 }}><Button kind="primary" size="lg" full loading={saving} onPress={onSave} accessibilityLabel="언어 저장 확정">저장</Button></View>
         </View>
       </Sheet>
