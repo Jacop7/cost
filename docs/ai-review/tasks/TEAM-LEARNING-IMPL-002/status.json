@@ -1,0 +1,38 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "TEAM-LEARNING-IMPL-002",
+  "predecessor_review": {
+    "task_id": "TEAM-LEARNING-IMPL-001",
+    "source_commit_sha": "52fe84b61016b5a65d328cd55b8a1862d2447372",
+    "round": "r001",
+    "task_sha256": "d1adaed6bdfad675b2b9366c13654e2376383fe51acbae081981762cae72f7a5",
+    "manifest_sha256": "2ec8ceb6fc0ea72c674de1f252944f6fd34000c379caaf4595fab5657f12218e",
+    "run_sha256": "4a60d56642cb2b49b0bed2a703a474b608f9ff7e21678da20e8f0f945d94e832",
+    "review_sha256": "476c7e535636dd43a2d065a2fa5b130a12be5cd611936c8e6d7d7170976f58bc",
+    "finding_registry_sha256": "b26f124f17cafa12a26846db39b2d7315f5b9877a5b2a3488b5e8de2fcf3445f",
+    "handoff_turn_id": "turn-o001",
+    "handoff_entry_sha256": "3c76efd894b47f50b59b7ab11f4ed487a4ea4d831c023dbce75741aee4fdc2e6",
+    "handoff_run_sha256": "ab64fe27af321f3c76762ce35edfa76f1daff778cddccec3c2bf8ab9d25ada99"
+  },
+  "updated_at": "2026-08-28T19:44:14.087Z",
+  "latest_round": "r001",
+  "review_state": "OPEN",
+  "workflow_state": "FIXING",
+  "gate_state": "OPEN",
+  "run_state": "RESULT_RECEIVED",
+  "defect_state": "NOT_APPLICABLE",
+  "verdict": "CHANGES_REQUIRED",
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "fallback_reason": null,
+  "latest_run_sha256": "c5217ffa8b369b1a9b7013c142a07596aa4277490422e204d50227008a852e08",
+  "open_required_finding_ids": [
+    "TL-FIRST-SECURITY-PACKET-FIELDS-UNSCANNED"
+  ],
+  "open_optional_finding_ids": [],
+  "closed_finding_ids": [],
+  "candidate_review_state": null,
+  "candidate_review_sha256": null,
+  "backlog_dispositions": []
+}

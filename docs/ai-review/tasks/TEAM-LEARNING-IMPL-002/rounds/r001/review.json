@@ -1,0 +1,417 @@
+{
+  "schema_version": "2.0",
+  "task_id": "TEAM-LEARNING-IMPL-002",
+  "reviewer_role": "FABLE-ARCH",
+  "review_mode": "RECHECK",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "e799f42676aa607b9f7a6ce1f3739bed99fe9b5e",
+  "target_commit_sha": "a4fd66c4e9452000f32ac5786769e777f7af624f",
+  "target_tree_oid": "38a71b1c8d7ac5e7627bce68f204cbc8388577a9",
+  "agents_blob_oid": "64b82275832bb6ce981b419294a428e77383be3e",
+  "agents_sha256": "0f1dd530a46174aeff884146569b2e2534f6ec8b544b531054f48e86b84c0f97",
+  "task_sha256": "4d42e236be71e0346d2dac05cb8c3db5845a7dc4658e73d5a37f2857a2731111",
+  "collaboration_sha256": "16d84d2ed2697ab814214a36ab5d3d33ca44b57d3dfe5ca48f5496daca4bcb5b",
+  "input_files_sha256": "093d62c4736ed457f246b006a1ffe4b7641d03645137d532a964a5571592c891",
+  "schema_sha256": "90fbeb7ed4ebf29cb0fa8be8a7781f71ff210a179293a11fc52b1fdef86d6655",
+  "runner_sha256": "2acb4ea7cde660939c8ed577dcf8431eb60da084fa77df7b87ca7699a5b6e567",
+  "verdict": "CHANGES_REQUIRED",
+  "summary": "predecessor r001의 Finding 5건을 같은 finding_id로 재확인했다. 5건 모두 수용 기준이 target commit 코드와 자체시험에서 충족돼 VERIFIED로 기록한다.\n\n(1) TL-REGISTRY-SAME-COMMIT-TRUST: loadLearningContext가 baseline↔target 장부 blob을 비교해 변경 시 artifact/reference 선언을 강제하고(미선언 65), 최초 도입은 artifact 포함을 요구하며, 적용 ID의 항목이 같은 Task에서 바뀌면 거부한다. manifest는 learning_registry_blob_oid·sha256·assignment_sha256·target_date를 봉인하고 staging 비교(4678행)가 STALE 75로 대조한다. 자체시험(6077~6140행)이 숨김 장부·CANDIDATE→VERIFIED 승격·manifest 해시 변조를 모두 부정 시험한다.\n(2) TL-CLEANROOM-SCAN-INCOMPLETE: 표식 정규식에 LRN- ID 패턴이 추가됐고, 최초 SECURITY는 collaboration.md 전체를, FINAL_INDEPENDENT는 independent_request·requirements·human_decisions·required_evidence까지 검사한다. SECURITY 후속 프롬프트의 trusted_task_packet과 metadata에서 excluded 사유 본문이 제거된다(자체시험 6172행).\n(3) TL-APPEND-CLEANROOM-LATE-FAIL: append 경로가 normalizeManualTurn 직후, 어떤 파일도 쓰기 전에 assertLearningAppendCandidate로 후보 장부 전체를 검사하며, 거부 메시지가 턴 ID와 표식을 명시한다.\n(4) TL-EXPIRY-COMMITTER-DATE-ONLY: 판정일은 commit 날짜와 실행 UTC 날짜 중 늦은 쪽이며 manifest learning_target_date에 봉인되고 README·ROLE_CONTEXTS에 명시됐다.\n(5) TL-SUCCESSOR-AND-TEST-GAPS: fallback_review에 learning_assignment_sha256이 조건부 필수 키로 추가되고 predecessor와 적용·제외 집합 동일성과 hash를 모두 대조한다. excluded 순서 변조 76, FINAL 프롬프트 LRN- 부재 시험이 추가됐다. protocol 1.1과 장부 없는 commit의 1.2 Task는 null 반환·조건부 키로 호환이 유지된다(1-7).\n\n새 Finding 1건(Minor)을 낸다. 요구 1-2는 \"최초 SECURITY의 실제 전체 입력\" 차단을 명시하지만, task 필드(requirements·human_decisions·required_evidence) 검사는 FINAL_INDEPENDENT에만 적용되고 최초 SECURITY 프롬프트의 trusted_task_packet에는 같은 필드가 검사 없이 통째로 들어간다. 한 줄 수준의 수정이며 proposed_edits에 제안했다. 아울러 작업큐·기획안의 완료 조건 문구가 여전히 SOLAR_REQUEST만 언급해 넓어진 계약보다 좁게 서술돼 있어 정렬 편집을 제안한다.\n\n참고: 자체시험 묶음 50개(test 호출 수 정적 확인)와 protocol 1.2 계약 22/22, verify 6/6의 실제 실행 증거는 이번 패킷의 evidence_paths·공동 장부에 없다. VERIFIED는 코드·자체시험 정적 확인에 따른 로컬 판정이며, Codex 실행 증거와 게이트 종결은 별도로 남는다.",
+  "findings": [
+    {
+      "finding_id": "TL-REGISTRY-SAME-COMMIT-TRUST",
+      "severity": "Major",
+      "review_state": "VERIFIED",
+      "category": "ARCHITECTURE",
+      "requirement_or_invariant_ids": [
+        "TEAM-LEARNING-1-1",
+        "TEAM-LEARNING-1-2",
+        "TEAM-LEARNING-1-7",
+        "AGENTS:single-canonical-artifact",
+        "AI-REVIEW:immutable-rounds"
+      ],
+      "evidence": [
+        {
+          "path": "scripts/fable-review.mjs",
+          "line_start": 632,
+          "line_end": 656,
+          "observation": "baseline↔target 장부 blob oid를 비교해 변경 시 artifact_paths/reference_paths 선언을 요구하고(65), 최초 도입은 artifact_paths 포함을 강제하며, 적용 ID 항목이 baseline과 다르면 같은 Task 적용을 거부한다."
+        },
+        {
+          "path": "scripts/fable-review.mjs",
+          "line_start": 706,
+          "line_end": 721,
+          "observation": "manifest에 learning_registry_blob_oid·learning_registry_sha256·learning_assignment_sha256·learning_target_date를 기록하고 불일치 시 STALE 75."
+        },
+        {
+          "path": "scripts/fable-review.mjs",
+          "line_start": 4672,
+          "line_end": 4678,
+          "observation": "staging manifest 비교가 학습 ID 배열과 장부 해시 계약을 함께 대조한다."
+        },
+        {
+          "path": "scripts/fable-review.mjs",
+          "line_start": 5268,
+          "line_end": 5272,
+          "observation": "manifest 생성 시 learningManifestFields가 봉인된다."
+        },
+        {
+          "path": "scripts/fable-review.mjs",
+          "line_start": 6077,
+          "line_end": 6140,
+          "observation": "임시 git 저장소로 blob 봉인, manifest 해시 변조 STALE 75, 미선언 장부 65, 같은 Task CANDIDATE→VERIFIED 승격 거부를 시험한다."
+        }
+      ],
+      "impact": "수용 기준 3건과 required_tests 3건이 모두 충족돼 장부 조작에 의한 CANDIDATE 주입 경로가 기계적으로 차단됐다.",
+      "acceptance_criteria": [
+        "baseline과 target의 docs/team/TEAM_LEARNING.md blob이 다르면 해당 경로가 task.artifact_paths(또는 reference_paths)에 있어야 하고, 없으면 exit 65로 실패 폐쇄한다.",
+        "적용 ID의 장부 항목이 baseline↔target 사이에 변경됐으면 같은 Task에서 적용할 수 없다(장부가 baseline에 없던 최초 도입 commit은 artifact 포함 조건으로만 허용).",
+        "manifest에 learning_registry_blob_oid와 sha256을 기록하고 staging manifest 비교에 포함한다."
+      ],
+      "required_tests": [
+        "self-test: 장부가 변경됐는데 allowed_paths에 없는 Task가 65로 거부된다",
+        "self-test: 같은 commit에서 CANDIDATE→VERIFIED로 바뀐 항목을 적용하면 거부된다",
+        "self-test: manifest의 learning_registry 해시가 target 장부와 다르면 STALE 75"
+      ],
+      "previous_finding_id": "TL-REGISTRY-SAME-COMMIT-TRUST",
+      "verified_by_engine": "FABLE"
+    },
+    {
+      "finding_id": "TL-CLEANROOM-SCAN-INCOMPLETE",
+      "severity": "Major",
+      "review_state": "VERIFIED",
+      "category": "SECURITY",
+      "requirement_or_invariant_ids": [
+        "TEAM-LEARNING-1-4",
+        "TEAM-LEARNING-1-5",
+        "AI-REVIEW:independent-clean-room"
+      ],
+      "evidence": [
+        {
+          "path": "scripts/fable-review.mjs",
+          "line_start": 195,
+          "line_end": 195,
+          "observation": "LEARNING_SUMMARY_MARKER_RE에 \\bLRN-[A-Z0-9][A-Z0-9_-]{2,63}\\b 패턴이 추가됐다."
+        },
+        {
+          "path": "scripts/fable-review.mjs",
+          "line_start": 675,
+          "line_end": 700,
+          "observation": "최초 SECURITY와 FINAL_INDEPENDENT는 collaboration.md 전체를 검사하고 위반 턴 ID·표식을 메시지에 넣으며, FINAL_INDEPENDENT는 independent_request·requirements·human_decisions·required_evidence도 검사한다."
+        },
+        {
+          "path": "scripts/fable-review.mjs",
+          "line_start": 2632,
+          "line_end": 2641,
+          "observation": "SECURITY 프롬프트의 trusted_task_packet과 metadata에서 excluded_learning_ids가 ID 배열로 축약돼 사유 본문이 제거된다."
+        },
+        {
+          "path": "scripts/fable-review.mjs",
+          "line_start": 6028,
+          "line_end": 6047,
+          "observation": "SOLAR_REQUEST·CODEX_EVIDENCE 턴 표식 65, FINAL independent_request의 LRN- ID 65, predecessor 있는 SECURITY 후속의 ID 나열 허용을 시험한다."
+        },
+        {
+          "path": "scripts/fable-review.mjs",
+          "line_start": 6159,
+          "line_end": 6172,
+          "observation": "SECURITY 후속 프롬프트에 제외 사유 본문이 없음을 시험한다."
+        }
+      ],
+      "impact": "수용 기준 4건과 required_tests 3건이 충족됐다. 최초 SECURITY task 필드 잔여 공백은 별도 신규 Finding으로 분리했다.",
+      "acceptance_criteria": [
+        "FINAL_INDEPENDENT Task의 independent_request와 requirements·human_decisions·required_evidence 문자열에도 학습 표식 검사를 적용한다.",
+        "최초 SECURITY(predecessor·fallback·closure 없음) Task는 collaboration.md의 모든 턴 구간(SOLAR_REQUEST 외 포함)을 검사한다.",
+        "LEARNING_SUMMARY_MARKER_RE에 \\bLRN-[A-Z0-9][A-Z0-9_-]{2,63}\\b 패턴을 추가한다.",
+        "SECURITY 후속 Task 프롬프트의 trusted_task_packet에서 excluded_learning_ids[].reason 본문을 검사하거나 제거해 ID만 전달되는 계약(1-5)을 유지한다."
+      ],
+      "required_tests": [
+        "self-test: FINAL_INDEPENDENT independent_request에 'LRN-ORCH-TEST-001' 또는 '학습 요약'이 있으면 65 거부",
+        "self-test: 최초 SECURITY collaboration의 CODEX_EVIDENCE 턴에 학습 표식이 있으면 65 거부",
+        "self-test: predecessor가 있는 SECURITY 후속은 ID 나열을 계속 허용"
+      ],
+      "previous_finding_id": "TL-CLEANROOM-SCAN-INCOMPLETE",
+      "verified_by_engine": "FABLE"
+    },
+    {
+      "finding_id": "TL-APPEND-CLEANROOM-LATE-FAIL",
+      "severity": "Minor",
+      "review_state": "VERIFIED",
+      "category": "OPERATIONS",
+      "requirement_or_invariant_ids": [
+        "TEAM-LEARNING-1-3",
+        "AGENTS:fable-append-only-ledger"
+      ],
+      "evidence": [
+        {
+          "path": "scripts/fable-review.mjs",
+          "line_start": 702,
+          "line_end": 704,
+          "observation": "assertLearningAppendCandidate가 현재 장부와 새 턴을 이어붙인 후보 전체에 assertLearningCleanRoom을 적용한다."
+        },
+        {
+          "path": "scripts/fable-review.mjs",
+          "line_start": 4190,
+          "line_end": 4198,
+          "observation": "append 경로는 collaboration.md 불변 확인·정규화 직후, stage 파일이나 장부를 쓰기 전에 후보 검사를 수행한다."
+        },
+        {
+          "path": "scripts/fable-review.mjs",
+          "line_start": 684,
+          "line_end": 685,
+          "observation": "거부 메시지가 위반 턴 ID(예: turn-h001)와 매칭된 표식을 명시한다."
+        },
+        {
+          "path": "scripts/fable-review.mjs",
+          "line_start": 6050,
+          "line_end": 6061,
+          "observation": "클린룸 Task에 HUMAN_DECISION 학습 표식 턴 append 시 65 거부와 기존 장부 불변을 시험한다."
+        }
+      ],
+      "impact": "append-only 장부가 영구 실패 상태로 오염되기 전에 차단된다.",
+      "acceptance_criteria": [
+        "fable:append가 새 턴을 붙이기 전에 후보 장부 전체에 assertLearningCleanRoom을 적용해 거부한다.",
+        "거부 메시지가 어느 턴·표식 때문인지 명시한다."
+      ],
+      "required_tests": [
+        "self-test: 클린룸 Task에 학습 표식 턴 append 시 65 거부, 장부 무변경"
+      ],
+      "previous_finding_id": "TL-APPEND-CLEANROOM-LATE-FAIL",
+      "verified_by_engine": "FABLE"
+    },
+    {
+      "finding_id": "TL-EXPIRY-COMMITTER-DATE-ONLY",
+      "severity": "Minor",
+      "review_state": "VERIFIED",
+      "category": "DATA_INTEGRITY",
+      "requirement_or_invariant_ids": [
+        "TEAM-LEARNING-1-4",
+        "AI-REVIEW:immutable-rounds"
+      ],
+      "evidence": [
+        {
+          "path": "scripts/fable-review.mjs",
+          "line_start": 657,
+          "line_end": 665,
+          "observation": "evaluationDate는 commit 날짜와 실행 UTC 날짜 중 늦은 쪽이며 context에 target_date·execution_date를 함께 기록한다."
+        },
+        {
+          "path": "scripts/fable-review.mjs",
+          "line_start": 711,
+          "line_end": 711,
+          "observation": "manifest learning_target_date에 판정 기준일이 봉인된다."
+        },
+        {
+          "path": "scripts/fable-review.mjs",
+          "line_start": 6063,
+          "line_end": 6075,
+          "observation": "review_by 2026-08-29 항목을 실행일 2026-08-30으로 평가하면 65 거부됨을 시험한다."
+        },
+        {
+          "path": "docs/team/ROLE_CONTEXTS.md",
+          "line_start": 27,
+          "line_end": 28,
+          "observation": "만료 판정 기준(두 날짜 중 늦은 날짜)이 명시됐다."
+        },
+        {
+          "path": "docs/ai-review/README.md",
+          "line_start": 276,
+          "line_end": 279,
+          "observation": "README에도 같은 판정 기준과 manifest 봉인이 서술됐다."
+        }
+      ],
+      "impact": "committer date 조작만으로 만료 학습을 주입하는 우회가 닫혔다. 두 날짜 합성 자체는 loadLearningContext 경로에서 직접 부정 시험되지 않으나 한 줄 로직으로 잔여 위험은 낮다.",
+      "acceptance_criteria": [
+        "실행 시각의 UTC 날짜도 함께 비교해 review_by가 실행일보다 이르면 거부하고 manifest에 판정 기준일(learning_target_date)을 기록한다.",
+        "README 또는 ROLE_CONTEXTS에 만료 판정 기준(두 날짜 중 늦은 쪽)을 명시한다."
+      ],
+      "required_tests": [
+        "self-test: review_by가 commit 날짜 이후지만 실행일 이전이면 65 거부"
+      ],
+      "previous_finding_id": "TL-EXPIRY-COMMITTER-DATE-ONLY",
+      "verified_by_engine": "FABLE"
+    },
+    {
+      "finding_id": "TL-SUCCESSOR-AND-TEST-GAPS",
+      "severity": "Improvement",
+      "review_state": "VERIFIED",
+      "category": "TEST_GAP",
+      "requirement_or_invariant_ids": [
+        "TEAM-LEARNING-1-5",
+        "TEAM-LEARNING-1-6"
+      ],
+      "evidence": [
+        {
+          "path": "scripts/fable-review/protocol-v12.mjs",
+          "line_start": 63,
+          "line_end": 75,
+          "observation": "학습 필드가 있는 Task의 fallback_review는 learning_assignment_sha256을 정확한 키 집합으로 요구한다."
+        },
+        {
+          "path": "scripts/fable-review.mjs",
+          "line_start": 2932,
+          "line_end": 2961,
+          "observation": "predecessor와 successor의 적용·제외 집합 동일성과 assignment hash를 모두 대조하고 불일치 시 STALE 75."
+        },
+        {
+          "path": "scripts/fable-review.mjs",
+          "line_start": 3019,
+          "line_end": 3019,
+          "observation": "loadPinnedFallbackReview가 materialize된 predecessor task로 위 검사를 호출한다."
+        },
+        {
+          "path": "scripts/fable-review.mjs",
+          "line_start": 6181,
+          "line_end": 6201,
+          "observation": "successor 학습 집합 불일치와 hash 불일치 부정 시험."
+        },
+        {
+          "path": "scripts/fable-review.mjs",
+          "line_start": 6379,
+          "line_end": 6388,
+          "observation": "excluded_learning_ids 순서 변조 result가 76으로 거부됨을 시험한다."
+        },
+        {
+          "path": "scripts/fable-review.mjs",
+          "line_start": 6173,
+          "line_end": 6178,
+          "observation": "FINAL_INDEPENDENT 프롬프트에 verified_learning_context와 LRN- 문자열이 없음을 시험한다."
+        },
+        {
+          "path": "scripts/fable-review/protocol-v12.test.mjs",
+          "line_start": 40,
+          "line_end": 48,
+          "observation": "learning_assignment_sha256 수용과 누락 거부 계약 시험."
+        }
+      ],
+      "impact": "계약 봉인 빈틈과 시험 공백이 메워졌다.",
+      "acceptance_criteria": [
+        "fallback_review에 predecessor의 학습 ID 집합 해시를 추가해 successor와 대조한다.",
+        "excluded_learning_ids 변조·순서 변경 result가 76으로 거부됨을 시험한다.",
+        "FINAL_INDEPENDENT 프롬프트가 verified_learning_context와 LRN- 문자열을 포함하지 않음을 시험한다."
+      ],
+      "required_tests": [
+        "protocol-v12.test.mjs: successor 학습 집합 불일치 거부",
+        "self-test: excluded 변조 76, FINAL 프롬프트 클린룸"
+      ],
+      "previous_finding_id": "TL-SUCCESSOR-AND-TEST-GAPS",
+      "verified_by_engine": "FABLE"
+    },
+    {
+      "finding_id": "TL-FIRST-SECURITY-PACKET-FIELDS-UNSCANNED",
+      "severity": "Minor",
+      "review_state": "OPEN",
+      "category": "SECURITY",
+      "requirement_or_invariant_ids": [
+        "TEAM-LEARNING-1-2",
+        "AI-REVIEW:independent-clean-room"
+      ],
+      "evidence": [
+        {
+          "path": "scripts/fable-review.mjs",
+          "line_start": 687,
+          "line_end": 699,
+          "observation": "requirements·human_decisions·required_evidence 표식 검사가 task.route === 'FINAL_INDEPENDENT'일 때만 실행되고 최초 SECURITY(mustBeClean이지만 firstSecurity)에는 적용되지 않는다."
+        },
+        {
+          "path": "scripts/fable-review.mjs",
+          "line_start": 2632,
+          "line_end": 2638,
+          "observation": "SECURITY 프롬프트의 trusted_task_packet은 excluded만 축약하고 requirements·human_decisions·required_evidence를 검사 없이 그대로 포함한다."
+        },
+        {
+          "path": "docs/team/ROLE_CONTEXTS.md",
+          "line_start": 36,
+          "line_end": 38,
+          "observation": "문서도 task 필드 검사를 최종 독립 감사에만 한정해 서술한다."
+        },
+        {
+          "path": "docs/작업큐.md",
+          "line_start": 232,
+          "line_end": 235,
+          "observation": "완료 조건 문구가 여전히 SOLAR_REQUEST 장부만 언급해 구현된 전체 장부·task 필드 검사보다 좁다."
+        }
+      ],
+      "impact": "요구 1-2의 '최초 SECURITY의 실제 전체 입력' 차단에 대해, 저자가 통제하는 task.json의 requirements·human_decisions·required_evidence에 LRN- ID나 학습 요약을 적으면 최초 보안 감사 프롬프트에 검사 없이 전달된다. 장부 검사와 동일한 위협 모델이며 수정은 조건문 한 줄 수준이다.",
+      "acceptance_criteria": [
+        "assertLearningCleanRoom의 task 필드 검사를 FINAL_INDEPENDENT 전용에서 mustBeClean(최초 SECURITY 포함)으로 확장하고, 오류 메시지에 route를 표기한다.",
+        "ROLE_CONTEXTS·README·작업큐·기획안의 클린룸 서술을 '두 경로의 공동 장부 전체와 task 요구·사람 결정·필수 증거 필드'로 통일한다."
+      ],
+      "required_tests": [
+        "self-test: 최초 SECURITY task의 human_decisions에 'LRN-ORCH-TEST-001'이 있으면 65 거부, predecessor가 있는 SECURITY 후속은 계속 허용"
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    }
+  ],
+  "proposed_edits": [
+    {
+      "edit_id": "TL-EDIT-FIRST-SECURITY-FIELD-SCAN",
+      "path": "scripts/fable-review.mjs",
+      "anchor": "      ['independent_request', [task.independent_request]],",
+      "operation": "COMMENT",
+      "proposed_text": "이 필드 루프를 감싸는 `if (task.route === 'FINAL_INDEPENDENT')` 조건을 제거하거나 `if (mustBeClean)`으로 바꿔 최초 SECURITY Task에도 requirements·human_decisions·required_evidence(및 null이 아닌 independent_request) 검사를 적용한다. 오류 메시지는 `${task.route} ${field}에 학습 표식(...)을 넣을 수 없습니다.`처럼 route를 표기한다. 자체시험 'independent-and-first-security-reviews-are-learning-clean-rooms'에 최초 SECURITY task.human_decisions에 'LRN-ORCH-TEST-001'이 있을 때 65 거부 케이스를 추가한다.",
+      "rationale": "요구 1-2의 최초 SECURITY 전체 입력 차단을 완성한다.",
+      "finding_ids": [
+        "TL-FIRST-SECURITY-PACKET-FIELDS-UNSCANNED"
+      ]
+    },
+    {
+      "edit_id": "TL-EDIT-ROLE-CONTEXTS-CLEANROOM-SCOPE",
+      "path": "docs/team/ROLE_CONTEXTS.md",
+      "anchor": "  비어 있어야 한다. 최종 독립 감사의 요청·요구·사람 결정·필수 증거와 두 경로의 공동 장부 전체에도",
+      "operation": "REPLACE",
+      "proposed_text": "  비어 있어야 한다. 두 경로의 Task 요청·요구·사람 결정·필수 증거와 공동 장부 전체에도",
+      "rationale": "실행기 확장 후 문서와 코드를 일치시킨다.",
+      "finding_ids": [
+        "TL-FIRST-SECURITY-PACKET-FIELDS-UNSCANNED"
+      ]
+    },
+    {
+      "edit_id": "TL-EDIT-WORKQUEUE-CLEANROOM-SCOPE",
+      "path": "docs/작업큐.md",
+      "anchor": "- `SECURITY` route r001의 `SOLAR_REQUEST` 장부에 Learning ID·학습 요약이 있으면 실행기가",
+      "operation": "REPLACE",
+      "proposed_text": "- `SECURITY` route r001과 `FABLE-FINAL` 모든 회차의 공동 장부 전체와 Task 요구·사람 결정·필수 증거 필드에 Learning ID·학습 요약이 있으면 실행기와 append 경로가",
+      "rationale": "완료 조건을 구현된 넓은 클린룸 계약과 일치시킨다(다음 줄 '실패 폐쇄함을 자체시험이 검증한다.'와 이어짐).",
+      "finding_ids": [
+        "TL-FIRST-SECURITY-PACKET-FIELDS-UNSCANNED"
+      ]
+    },
+    {
+      "edit_id": "TL-EDIT-PLAN-CLEANROOM-SCOPE",
+      "path": "docs/팀구성_상세기획안.md",
+      "anchor": "`SECURITY` Task의 두 필드 및 `SOLAR_REQUEST` 학습 표식을 비워 둔다. 보안 후속 Task에는 검증된 ID",
+      "operation": "REPLACE",
+      "proposed_text": "`SECURITY` Task의 두 필드를 비우고, 두 경로의 공동 장부 전체와 Task 요구·사람 결정·필수 증거에 학습 표식이 있으면 실행기와 append 경로가 거부한다. 보안 후속 Task에는 검증된 ID",
+      "rationale": "기획안 서술을 README·ROLE_CONTEXTS와 같은 범위로 정렬한다.",
+      "finding_ids": [
+        "TL-FIRST-SECURITY-PACKET-FIELDS-UNSCANNED"
+      ]
+    }
+  ],
+  "closed_finding_ids": [],
+  "reopened_finding_ids": [],
+  "remaining_required_finding_ids": [
+    "TL-FIRST-SECURITY-PACKET-FIELDS-UNSCANNED"
+  ],
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "applied_learning_ids": [
+    "LRN-ORCH-CI-001"
+  ],
+  "excluded_learning_ids": [
+    {
+      "learning_id": "LRN-CODEX-TIME-001",
+      "reason": "DB 영업일 시간 독립 시험은 이번 AI 검수 실행기 변경 범위와 직접 관련이 없다."
+    },
+    {
+      "learning_id": "LRN-OPS-BACKUP-001",
+      "reason": "개발 DB 백업·복구 절차는 이번 학습 컨텍스트 계약 변경에 적용되지 않는다."
+    },
+    {
+      "learning_id": "LRN-AUDIT-PIN-001",
+      "reason": "아직 CANDIDATE이고 이번 구현은 선택 fixture pin 잔여 자체를 변경하지 않는다."
+    }
+  ]
+}
