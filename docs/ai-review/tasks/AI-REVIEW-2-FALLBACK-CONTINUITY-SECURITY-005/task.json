@@ -10,8 +10,8 @@
   "review_mode": "SECURITY",
   "snapshot_mode": "COMMIT",
   "baseline_commit_sha": "f1db6cc4bca7b9f3ca80620098610b09174bb126",
-  "target_commit_sha": "bbcb3690f60fbbd5da7c9e20ad36b45f6a3b8f74",
-  "target_tree_oid": "3a0b681911f652b5227a600e5b2c49f6dc72c0ed",
+  "target_commit_sha": "293a2d50d4af17d3c5c604b67cc7c746fd6e6296",
+  "target_tree_oid": "679a3835a9e3a7a18e51836f8184add921c63793",
   "agents_blob_oid": "64b82275832bb6ce981b419294a428e77383be3e",
   "agents_sha256": "0f1dd530a46174aeff884146569b2e2534f6ec8b544b531054f48e86b84c0f97",
   "requirements": [
@@ -64,16 +64,16 @@
   "independent_request": null,
   "predecessor_review": {
     "task_id": "AI-REVIEW-2-FALLBACK-CONTINUITY-FINAL-003",
-    "source_commit_sha": "6a1b4f34575d124e62b489574911dd03aba53cba",
+    "source_commit_sha": "4ce50f6a6950f24aea81e0c962045f0d81d60795",
     "round": "r001",
     "task_sha256": "8937b88c3242cdf84a342c58d17b4b2c0dc7e8557dfe9bdce50428cb61e4eef9",
     "manifest_sha256": "9d43aaefb7ec856aa63583b9110870fbf4eb8964e89035198c7b63578922ddb9",
     "run_sha256": "4ab2cea192d5bfb53da665788808d38455c70ce071d65907342d87339f283ac0",
     "review_sha256": "69414da9fceace85cf941d201cb4338d5fadb97202bcf2f6f518c523d4cd5ad7",
     "finding_registry_sha256": "fc46b737421436dc1c75de193c69575a33d41168d128bf247a5b0068e822a693",
-    "handoff_turn_id": "turn-o001",
-    "handoff_entry_sha256": "d261c72a3a71508036dc39212527d096aa1f9e58b571140c4140ee17c5847e76",
-    "handoff_run_sha256": "885bb20ca5bfa3fa3d4441340c9b520707df41eb5220f8701b80f400cefb6e45"
+    "handoff_turn_id": "turn-o002",
+    "handoff_entry_sha256": "ddec9ad2a8db249088eb74bdf94e24b576f586e8b75350f82ed54a0f168e0a17",
+    "handoff_run_sha256": "86447091a94303512d4ee5e600f4a2a4ffdbb2f737958b9312f6a20662c74d58"
   },
   "primary_reviewer_engine": "FABLE",
   "reviewer_engine": "FABLE",

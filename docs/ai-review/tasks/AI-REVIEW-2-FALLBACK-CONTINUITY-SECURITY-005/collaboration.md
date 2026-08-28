@@ -6,8 +6,8 @@
 ## SOLAR_REQUEST · turn-s001 · r001
 
 - role: `AI-DEPUTY-ORCHESTRATOR`
-- reply_to_turn_id: `turn-o001`
-- target_commit_sha: `bbcb3690f60fbbd5da7c9e20ad36b45f6a3b8f74`
+- reply_to_turn_id: `turn-o002`
+- target_commit_sha: `293a2d50d4af17d3c5c604b67cc7c746fd6e6296`
 - changed_artifact_paths: `scripts/fable-review.mjs`, `docs/ai-review/README.md`
 - 충족해야 할 요구사항·불변식: predecessor의 `SEC-FB-FINAL-001`~`004`, append-only audit, Fable primary, P0-2 전 CLOSED 금지
 - 이번에 바꾼 내용: 선언한 task 증거만 EVIDENCE로 materialize하고 동일 SECURITY lane의 predecessor registry 승계를 허용했다. Opus 비승계 실패 사유를 보존하고 fallback pin 변조 시험을 전체 필드로 확장했다. 비용은 기존 센트 반올림 계약을 유지한다.
