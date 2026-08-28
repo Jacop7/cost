@@ -48,3 +48,25 @@ predecessor r001의 Finding 5건을 같은 finding_id로 재확인했다. 5건 �
 
 > 다음 담당자는 이 아래에 같은 공동 산출물의 수정 내용·Finding별 답변·검증 증거를 새 턴으로 추가합니다. 이전 턴은 고치거나 지우지 않습니다.
 <!-- /fable-review:r001 -->
+
+## SOLAR_RESPONSE · turn-s001 · r001
+
+- role: `SOLAR-ORCH`
+- reply_to_turn_id: `turn-f001`
+- target_commit_sha: `1844ba15e445f7098d8520a9a2cf7001d38a3750`
+- Finding `TL-FIRST-SECURITY-PACKET-FIELDS-UNSCANNED`: `assertLearningCleanRoom`의 Task 필드 검사를 `FINAL_INDEPENDENT` 전용이 아니라 `mustBeClean` 전체로 확장했다. 따라서 predecessor·fallback·closure가 없는 최초 `SECURITY`도 요청·요구·사람 결정·필수 증거에서 학습 ID와 요약을 거부한다.
+- 오류는 route와 필드 이름을 함께 표시하며, 최초 SECURITY의 `human_decisions`에 `LRN-*` ID를 넣으면 65로 거부되는 부정 시험을 추가했다. predecessor가 있는 보안 후속은 ID-only 계약대로 계속 허용된다.
+- `docs/team/ROLE_CONTEXTS.md`, `docs/ai-review/README.md`, `docs/작업큐.md`, `docs/팀구성_상세기획안.md`를 같은 클린룸 범위로 정렬했다.
+- next_review_request: `CODEX_EVIDENCE`
+
+## CODEX_EVIDENCE · turn-c001 · r001
+
+- role: `CODEX-FUNCTION-QA`
+- reply_to_turn_id: `turn-s001`
+- verified_commit_sha: `1844ba15e445f7098d8520a9a2cf7001d38a3750`
+- focused_contracts: `corepack pnpm fable:self-test` 50개 묶음, protocol 1.2 계약 22/22, `node --check scripts/fable-review.mjs` 통과.
+- full_gate: `corepack pnpm verify` 6/6 통과. DB 32/32, core 177(2 skipped), mobile 189, ACL 보안, 새 DB·2세션 경합·locale parity, 업그레이드 8/8, 웹 번들을 포함한다.
+- regression_evidence: 최초 SECURITY의 `human_decisions` 학습 표식은 route·필드가 포함된 오류로 거부되고, 보안 후속의 ID-only 장부는 계속 허용됨을 같은 self-test에서 확인했다.
+- predecessor_findings: TEAM-LEARNING-IMPL-001 r001의 5건은 TEAM-LEARNING-IMPL-002 r001에서 모두 VERIFIED로 재확인됐다.
+- remaining_required_finding_ids: `TL-FIRST-SECURITY-PACKET-FIELDS-UNSCANNED`
+- next_review_request: `AI_DEPUTY_SUCCESSOR_HANDOFF`
