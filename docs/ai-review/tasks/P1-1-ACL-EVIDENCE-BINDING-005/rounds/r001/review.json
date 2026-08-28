@@ -1,0 +1,87 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P1-1-ACL-EVIDENCE-BINDING-005",
+  "reviewer_role": "FABLE-SEC",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "d1942efdbe5ebaa01e858cc9813ef9763ffd9b61",
+  "target_commit_sha": "0670437a498ff6db86d66584217901ee01929485",
+  "target_tree_oid": "4d72a9e2a173ffbb4fcf3a6569fadb8f2dd79961",
+  "agents_blob_oid": "64b82275832bb6ce981b419294a428e77383be3e",
+  "agents_sha256": "0f1dd530a46174aeff884146569b2e2534f6ec8b544b531054f48e86b84c0f97",
+  "task_sha256": "995296495ec307b04abdd9edf55e05082befb7bc8d0117c1871648f0938a3c27",
+  "collaboration_sha256": "f75998c2e44480948142c38cdd1eaca52adcbeca8b3f1344e73a795be6412130",
+  "input_files_sha256": "964c57c5f69e8d0a22386403cd658ce5f847a25fc96926a197d38f30911403dc",
+  "schema_sha256": "f8860ea87aacde86f541f7b1a1640729bf516dcdaf78e168c0e2e01f0edfac5c",
+  "runner_sha256": "1e09d053693e46b03a27bc34c443a4ac258ff6358eda1d33e0a76b160e97bf8b",
+  "verdict": "PASS",
+  "summary": "P1-1-ACL-EVIDENCE-BINDING-005 초기 검수(FABLE-SEC) 결과: 세 요구사항이 모두 충족돼 PASS다. (1) 005-1: 증거 문서 59-62행이 최종 verify 6/6을 V2 target commit 474d087…과 시험 SHA 380afade…a6575에 명시적으로 결속했고, 이 SHA는 현재 스냅샷의 admin-acl-audit.test.mjs blob(input_files sha256)과 정확히 일치한다. 53-54행의 SQL SHA c47665…도 스냅샷 admin-acl-audit.sql과 일치해 결속이 현재 판본에도 유효하다. (2) 005-2: 61-62행과 75-76행이 fresh_% DB 0개와 rls_disabled_app_tables=0·ledger_write_paths=32·unapproved_authenticated_rpc=87이 같은 V2 실행 값임을 명시했고, 값은 시험 163행(rls 고정 0)·205-206행(부채 상한 32/87)·217행(출력 형식)과 부합한다. (3) 005-3: 32-34행이 V1 '부채가 기준선을 넘었습니다'와 V2 '부채가 기준선을 넘었거나 정수가 아닙니다'의 차이를 정수 검사 추가로 설명했고, 시험 210-212행의 실제 문구 및 빈 문자열 입력 시 '관측= 기준선=32'(51행)와 정확히 일치한다. V2 사보타주 행 48-50의 stderr도 시험 181·133·102-104·116-118행과 대조해 일치함을 확인했다. 스냅샷에는 V1 시험 파일이 없어 V1 blob SHA 0596e56…은 문서의 기재와 공동 장부의 대조 진술로만 확인 가능하며, 이는 판정을 막지 않는다. 비차단 Improvement 1건(관측값 stdout 원문 미첨부·V1 blob 재현 경로 부재)을 제안 편집과 함께 기록했다. PASS는 외부 게이트를 닫지 않으며 gate_state는 OPEN으로 남는다.",
+  "findings": [
+    {
+      "finding_id": "P1-1-BINDING-005-OBSERVED-STDOUT-VERBATIM",
+      "severity": "Improvement",
+      "review_state": "OPEN",
+      "category": "OTHER",
+      "requirement_or_invariant_ids": [
+        "P1-1-BINDING-005-2",
+        "AGENTS:inspection-execution"
+      ],
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/P1-1-ACL-SUPPORT-SOURCE-002.md",
+          "line_start": 75,
+          "line_end": 76,
+          "observation": "보안 관측값 0/32/87이 산문으로만 기록돼 있고, 시험이 실제로 출력하는 stdout 줄(metric 개수·모바일 RPC 개수·관측값 줄)은 원문 그대로 첨부되지 않았다."
+        },
+        {
+          "path": "packages/db/scripts/admin-acl-audit.test.mjs",
+          "line_start": 216,
+          "line_end": 217,
+          "observation": "시험은 통과 시 '관측값: rls_disabled_app_tables=… ledger_write_paths=… unapproved_authenticated_rpc=…' 고정 형식의 stdout을 내므로 이 줄을 그대로 옮기면 값과 시험 판본의 연결이 문서 문장이 아닌 출력 형식으로 고정된다."
+        },
+        {
+          "path": "docs/ai-review/evidence/P1-1-ACL-SUPPORT-SOURCE-002.md",
+          "line_start": 27,
+          "line_end": 30,
+          "observation": "V1 시험 SHA 0596e56…은 스냅샷에 V1 파일이 없어 독립 재현이 불가하고, git blob oid가 없어 후속 재검수에서 commit d0051c1의 blob과 바로 대조할 경로가 없다."
+        }
+      ],
+      "impact": "현재 결속은 유효하지만, 관측값이 산문이어서 후속 판본에서 시험 출력 형식이 바뀌어도 문서가 그대로 남을 수 있고, V1 blob 대조는 문서 기재를 신뢰하는 방식에 머문다. 판정을 막는 결함은 아니다.",
+      "acceptance_criteria": [
+        "최종 검증 절에 admin-acl-audit.test.mjs 216-217행 형식의 실제 stdout 두 줄을 원문 그대로 첨부한다.",
+        "V1·V2 판본 표에 각 시험 파일의 git blob oid 열을 추가해 commit별 대조 경로를 남긴다."
+      ],
+      "required_tests": [
+        "문서 변경만이므로 별도 시험 없음. 첨부한 stdout 줄이 시험 216-217행 형식과 일치하는지 육안 대조."
+      ],
+      "previous_finding_id": null
+    }
+  ],
+  "proposed_edits": [
+    {
+      "edit_id": "P1-1-BINDING-005-E1",
+      "path": "docs/ai-review/evidence/P1-1-ACL-SUPPORT-SOURCE-002.md",
+      "anchor": "종료 후 `fresh_%` DB는 0개였다. 보안 관측값은",
+      "operation": "REPLACE",
+      "proposed_text": "종료 후 `fresh_%` DB는 0개였다. 같은 V2 실행에서 `admin-acl-audit.test.mjs`가 낸 stdout은 다음과 같다.\n\n```text\nadmin-acl audit 실제 DB 계약 통과 — metric 16개 · 모바일 RPC 61개 · 비-mobile 예외 1개\n  관측값: rls_disabled_app_tables=0 ledger_write_paths=32 unapproved_authenticated_rpc=87\n```\n\n보안 관측값은",
+      "rationale": "시험 216-217행의 고정 stdout 형식을 원문으로 첨부해 관측값과 시험 판본의 연결을 산문이 아닌 출력으로 고정한다. metric·RPC 개수는 실제 실행 출력으로 치환해야 한다.",
+      "finding_ids": [
+        "P1-1-BINDING-005-OBSERVED-STDOUT-VERBATIM"
+      ]
+    },
+    {
+      "edit_id": "P1-1-BINDING-005-E2",
+      "path": "docs/ai-review/evidence/P1-1-ACL-SUPPORT-SOURCE-002.md",
+      "anchor": "| 판본 | target commit | `admin-acl-audit.test.mjs` SHA-256 |",
+      "operation": "COMMENT",
+      "proposed_text": "판본 표에 `git blob oid` 열을 추가해 V1(d0051c1)·V2(474d087) 각 commit의 admin-acl-audit.test.mjs blob oid를 기재하면, 스냅샷에 V1 파일이 없어도 후속 재검수가 `git cat-file`로 SHA-256 대조를 재현할 수 있다. V2 blob oid는 현재 스냅샷 기준 9da5001f312deb7a6a291a1e334059f0e22fca26이다.",
+      "rationale": "V1 시험 SHA는 현재 스냅샷에서 독립 재현이 불가하므로 commit-blob 대조 경로를 문서에 남긴다.",
+      "finding_ids": [
+        "P1-1-BINDING-005-OBSERVED-STDOUT-VERBATIM"
+      ]
+    }
+  ],
+  "closed_finding_ids": [],
+  "reopened_finding_ids": [],
+  "remaining_required_finding_ids": []
+}

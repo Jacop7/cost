@@ -1,0 +1,49 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "P1-1-ACL-EVIDENCE-BINDING-005",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R3",
+  "author_role": "SOLAR-DB",
+  "reviewer_role": "FABLE-SEC",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "d1942efdbe5ebaa01e858cc9813ef9763ffd9b61",
+  "target_commit_sha": "0670437a498ff6db86d66584217901ee01929485",
+  "target_tree_oid": "4d72a9e2a173ffbb4fcf3a6569fadb8f2dd79961",
+  "agents_blob_oid": "64b82275832bb6ce981b419294a428e77383be3e",
+  "agents_sha256": "0f1dd530a46174aeff884146569b2e2534f6ec8b544b531054f48e86b84c0f97",
+  "requirements": [
+    "P1-1-BINDING-005-1: 최종 verify 6/6 결과가 V2 target commit 474d087과 시험 SHA 380afade...a6575에 명시적으로 연결된다.",
+    "P1-1-BINDING-005-2: fresh DB 0개와 0/32/87 보안 관측값이 같은 V2 실행에서 나온 값임을 명시한다.",
+    "P1-1-BINDING-005-3: V1 부채 stderr 문구와 V2 문구 차이가 정수 검사 추가에 따른 판본 차이임을 기록한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:inspection-execution",
+    "P1-1-BINDING-004-FINAL-VERIFY-V2-UNBOUND",
+    "P1-1-BINDING-004-V1-WORDING-NOTE"
+  ],
+  "artifact_paths": [
+    "docs/ai-review/evidence/P1-1-ACL-SUPPORT-SOURCE-002.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "packages/db/scripts/admin-acl-audit.test.mjs",
+    "packages/db/scripts/admin-acl-audit.sql"
+  ],
+  "evidence_paths": [],
+  "excluded_paths": [],
+  "required_evidence": [
+    "최종 검증 절의 V2 commit·시험 SHA 결속 문장",
+    "fresh DB·보안 관측값이 동일 V2 실행이라는 명시",
+    "V1·V2 stderr 문구 차이 설명과 각 시험 blob SHA 대조"
+  ],
+  "human_decisions": [
+    "2026-08-28 사용자가 페이블 필수 지적을 계속 반영하도록 승인했다.",
+    "이 Task는 직전 필수 Finding과 선택 문구 보강의 결속만 최종 판정한다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null
+}
