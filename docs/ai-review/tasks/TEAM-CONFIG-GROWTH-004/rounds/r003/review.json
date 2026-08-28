@@ -1,0 +1,245 @@
+{
+  "schema_version": "1.0",
+  "task_id": "TEAM-CONFIG-GROWTH-004",
+  "reviewer_role": "FABLE-ARCH",
+  "review_mode": "RECHECK",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "ad3a7bb926da0dbb0fc1217d5af461f8c8dc6b77",
+  "target_commit_sha": "ad3a7bb926da0dbb0fc1217d5af461f8c8dc6b77",
+  "target_tree_oid": "3d163df305cf01aa9296e2b74cf663a9bcc9d3df",
+  "agents_blob_oid": "64b82275832bb6ce981b419294a428e77383be3e",
+  "agents_sha256": "0f1dd530a46174aeff884146569b2e2534f6ec8b544b531054f48e86b84c0f97",
+  "task_sha256": "8946c4e8764ea149c9b93c273c28595787d02309525997b4771c3324ab415ca0",
+  "collaboration_sha256": "3438d7da5e0fb7f59ad10b8779cec95b261610cc8b619192711e0c9040f94886",
+  "input_files_sha256": "54b5ca9a1f904345965e85b4906826ebb4949013928c902080af1f2bc1bb309d",
+  "schema_sha256": "f8860ea87aacde86f541f7b1a1640729bf516dcdaf78e168c0e2e01f0edfac5c",
+  "runner_sha256": "1e09d053693e46b03a27bc34c443a4ac258ff6358eda1d33e0a76b160e97bf8b",
+  "verdict": "PASS",
+  "summary": "r003 재검수. r002 이후 변경된 artifact는 docs/ai-review/README.md(4d190…)뿐이며 기획안(16267…)·작업큐(6127b…)는 r002와 동일 hash로 UNCHANGED다. (1) TCG4-ARCH-005(Improvement): README §9 428-430이 \"CLOSED 전환은 decision commit의 보호 원격 필수 체크 성공 기록이 있는 뒤 최초 발견 역할이 §6의 closure successor(COMMIT, registry hash 승계)로 재검수할 때만 허용한다\"로 바뀌어 §6 248-255의 closure successor 계약(모든 reviewer_role, 원 route·역할·범위 유지, predecessor 최신 성공 회차 registry hash 승계, decision commit 이상 COMMIT snapshot, 보호 체크 증거 미봉인 시 CLOSED 거부, AI-REVIEW-2·P0-2 소유)을 이름·snapshot·registry 조건으로 직접 참조한다. §4 두 도식(150·164)·기획안 §4.4 5항(804)·11항(810)·상태 순환(795)과 용어·순서가 일치하며 TCG4-EDIT-004가 그대로 적용됐다 → VERIFIED. (2) 앞서 VERIFIED한 TCG4-ARCH-001~004의 근거 위치(README §6 248-255, §4 147-150·161-164, §8 367-371·387-389; 작업큐 158-159·176-180·210-211·352-355; 기획안 795·804·810)를 현재 판본에서 다시 읽어 변경 없이 유지됨을 확인했다. Codex 증거(git diff --check, §6·§9 대조, SHA-256 재계산)는 문구 교차참조만 바뀐 변경에 충분하고 self-test 미재실행 사유도 타당하다. 새 Finding은 없다. 판정 PASS이나 gate_state는 OPEN을 유지하며, P0-2 보호 체크와 AI-REVIEW-2 closure successor 구현 전이므로 CLOSED 전환·closed_finding_ids는 요청하지 않는다.",
+  "findings": [
+    {
+      "finding_id": "TCG4-ARCH-001",
+      "severity": "Major",
+      "review_state": "VERIFIED",
+      "category": "ARCHITECTURE",
+      "requirement_or_invariant_ids": [
+        "REQ-9-closed-after-protected-check",
+        "AI-REVIEW:immutable-rounds",
+        "AI-REVIEW:pass-is-not-gate-closure"
+      ],
+      "evidence": [
+        {
+          "path": "docs/ai-review/README.md",
+          "line_start": 248,
+          "line_end": 255,
+          "observation": "r003 판본에서도 모든 reviewer_role용 closure successor 계약(원 route·역할·범위 유지, predecessor 최신 성공 회차 registry hash 승계, decision commit 이상 COMMIT snapshot, 보호 체크 증거 미봉인 시 CLOSED 거부, AI-REVIEW-2·P0-2 소유, 구현 전 CLOSED 금지)이 FABLE-FINAL commit 변경 successor·§8 소진 successor와 분리돼 변경 없이 유지된다."
+        },
+        {
+          "path": "docs/작업큐.md",
+          "line_start": 176,
+          "line_end": 178,
+          "observation": "AI-REVIEW-2 완료 조건의 closure successor protocol 1.2 구현과 보호 체크 증거 없는 CLOSED 거부가 유지된다(작업큐 hash r002와 동일)."
+        },
+        {
+          "path": "docs/작업큐.md",
+          "line_start": 352,
+          "line_end": 355,
+          "observation": "P0-2 완료 조건의 validator 결합·FINAL 외 route registry 단절 거부 자체시험이 유지된다."
+        },
+        {
+          "path": "docs/팀구성_상세기획안.md",
+          "line_start": 804,
+          "line_end": 804,
+          "observation": "§4.4 5항이 모든 역할용 COMMIT closure successor 재검수와 AI-REVIEW-2·P0-2 소유를 명시한다(기획안 hash r002와 동일)."
+        },
+        {
+          "path": "docs/팀구성_상세기획안.md",
+          "line_start": 810,
+          "line_end": 810,
+          "observation": "§4.4 11항이 CLOSED를 closure successor 전용으로 두어 anchor 선행 조건이 아님을 유지한다."
+        }
+      ],
+      "impact": "FINAL 외 route의 CLOSED 경로가 실행 가능한 successor 계약으로 정의되고 소유 작업·자체시험이 고정돼 previous_finding_id 연속성 단절 위험이 해소됐다.",
+      "acceptance_criteria": [
+        "README §9 또는 §6에 '보호 체크 성공 뒤 CLOSED 재검수'를 어떤 Task/successor 계약(모든 reviewer_role, target=decision commit 이상, predecessor registry hash 승계, COMMIT snapshot)으로 실행하는지 명시한다.",
+        "해당 계약의 소유 작업(P0-2 또는 AI-REVIEW-2)을 작업큐 완료 조건에 추가하고 '구현 전에는 CLOSED 전환 불가'를 유지한다.",
+        "팀구성_상세기획안 §4.4 5·11항이 같은 successor 계약을 참조한다."
+      ],
+      "required_tests": [
+        "소유 작업의 자체시험: FINAL 외 route가 decision commit 대상 successor로 registry를 승계하고, 보호 체크 성공 기록 없이 CLOSED를 반환하면 거부됨을 검증"
+      ],
+      "previous_finding_id": "TCG4-ARCH-001"
+    },
+    {
+      "finding_id": "TCG4-ARCH-002",
+      "severity": "Minor",
+      "review_state": "VERIFIED",
+      "category": "POLICY",
+      "requirement_or_invariant_ids": [
+        "REQ-9-closed-after-protected-check",
+        "REQ-11-three-docs-consistency"
+      ],
+      "evidence": [
+        {
+          "path": "docs/ai-review/README.md",
+          "line_start": 147,
+          "line_end": 150,
+          "observation": "솔라 선행 도식이 반복 종료를 VERIFIED로만 두고 anchor·decision commit → 보호 게이트 검증 → P0-2 뒤 closure successor CLOSED 순서를 유지한다."
+        },
+        {
+          "path": "docs/ai-review/README.md",
+          "line_start": 161,
+          "line_end": 164,
+          "observation": "페이블 선행 도식도 같은 순서를 유지한다."
+        },
+        {
+          "path": "docs/ai-review/README.md",
+          "line_start": 428,
+          "line_end": 430,
+          "observation": "§9의 CLOSED 조건이 보호 체크 성공 기록 뒤 closure successor 재검수로 도식과 같은 순서다."
+        },
+        {
+          "path": "docs/팀구성_상세기획안.md",
+          "line_start": 795,
+          "line_end": 795,
+          "observation": "기획안 상태 순환(anchor·decision commit → 보호 체크 성공 → 최초 발견 역할 재검수 → CLOSED)과 동일한 순서다."
+        }
+      ],
+      "impact": "같은 문서 안의 종결 순서가 하나로 통일돼 CLOSED를 anchor 선행 조건으로 오해할 여지가 없어졌다.",
+      "acceptance_criteria": [
+        "README §4 두 도식의 반복 종료 조건을 'VERIFIED'로만 두고 CLOSED는 게이트 검증 뒤 단계로 옮긴다."
+      ],
+      "required_tests": [],
+      "previous_finding_id": "TCG4-ARCH-002"
+    },
+    {
+      "finding_id": "TCG4-ARCH-003",
+      "severity": "Minor",
+      "review_state": "VERIFIED",
+      "category": "ARCHITECTURE",
+      "requirement_or_invariant_ids": [
+        "REQ-4-initial-recheck-vs-review-mode"
+      ],
+      "evidence": [
+        {
+          "path": "docs/ai-review/README.md",
+          "line_start": 367,
+          "line_end": 371,
+          "observation": "MANDATORY_MUTUAL·CONDITIONAL successor의 task.review_mode는 route 기본값 INITIAL 유지, RECHECK는 inherited registry에서 실행기가 파생, 직접 선언 시 거부 규정이 r003 판본에서 유지된다."
+        },
+        {
+          "path": "docs/팀구성_상세기획안.md",
+          "line_start": 617,
+          "line_end": 621,
+          "observation": "기획안 §3.10.1이 같은 규칙을 반복한다(기획안 hash r002와 동일)."
+        },
+        {
+          "path": "docs/작업큐.md",
+          "line_start": 158,
+          "line_end": 159,
+          "observation": "AI-REVIEW-2 완료 조건의 INITIAL 유지·파생 RECHECK·직접 선언 거부 자체시험이 유지된다."
+        },
+        {
+          "path": "docs/ai-review/templates/task.example.json",
+          "line_start": 4,
+          "line_end": 10,
+          "observation": "MANDATORY_MUTUAL template의 review_mode가 INITIAL로 현재 route 기본값과 일치한다."
+        }
+      ],
+      "impact": "successor task 필드 값과 registry 승계 의미가 route 전체에서 분리돼 구현자 해석 분기가 사라졌다.",
+      "acceptance_criteria": [
+        "README §8·기획안 §3.10.1에 MANDATORY_MUTUAL·CONDITIONAL successor의 task.review_mode 값(권장: route 기본값 INITIAL 유지, RECHECK는 inherited registry에서 파생)을 명시한다.",
+        "작업큐 AI-REVIEW-2 완료 조건에 해당 자체시험을 추가한다."
+      ],
+      "required_tests": [
+        "successor task.review_mode를 RECHECK로 직접 발행한 경우의 수용/거부 결과가 문서와 같음을 자체시험으로 검증"
+      ],
+      "previous_finding_id": "TCG4-ARCH-003"
+    },
+    {
+      "finding_id": "TCG4-ARCH-004",
+      "severity": "Minor",
+      "review_state": "VERIFIED",
+      "category": "TEST_GAP",
+      "requirement_or_invariant_ids": [
+        "REQ-10-ai-review-2-owns-protocol-1.2",
+        "REQ-7-learning-lifecycle",
+        "TEAM-PLAN:evidence-based-learning-loop"
+      ],
+      "evidence": [
+        {
+          "path": "docs/작업큐.md",
+          "line_start": 210,
+          "line_end": 211,
+          "observation": "TEAM-LEARNING-1 완료 조건의 CANDIDATE·RETIRED ID 주입·protocol 1.1 Task 학습 필드 추가 실패 폐쇄 자체시험이 유지된다."
+        },
+        {
+          "path": "docs/작업큐.md",
+          "line_start": 179,
+          "line_end": 180,
+          "observation": "AI-REVIEW-2 완료 조건의 표본 재감사 기록 없는 FABLE-SEC·FABLE-FINAL Opus 결과 참조 AI_DEPUTY_GATE_DECISION 거부 자체시험이 유지된다."
+        },
+        {
+          "path": "docs/ai-review/README.md",
+          "line_start": 387,
+          "line_end": 389,
+          "observation": "정책 문구(재감사 전 결과는 게이트 종결 근거 불가)와 자체시험 조건이 일치한다."
+        }
+      ],
+      "impact": "정책과 실행기의 조용한 괴리를 막는 사보타주 시험이 소유 작업 완료 조건에 고정됐다.",
+      "acceptance_criteria": [
+        "TEAM-LEARNING-1 완료 조건에 CANDIDATE/RETIRED ID 주입과 protocol 1.1 Task 학습 필드 추가가 실패 폐쇄됨을 자체시험으로 검증하는 항목을 추가한다.",
+        "AI-REVIEW-2 또는 P0-2 완료 조건에 표본 재감사 기록 없는 SEC/FINAL Opus 결과를 참조한 AI_DEPUTY_GATE_DECISION이 거부됨을 검증하는 항목을 추가한다."
+      ],
+      "required_tests": [
+        "fable:self-test 사보타주 묶음 2종 추가"
+      ],
+      "previous_finding_id": "TCG4-ARCH-004"
+    },
+    {
+      "finding_id": "TCG4-ARCH-005",
+      "severity": "Improvement",
+      "review_state": "VERIFIED",
+      "category": "POLICY",
+      "requirement_or_invariant_ids": [
+        "REQ-11-three-docs-consistency"
+      ],
+      "evidence": [
+        {
+          "path": "docs/ai-review/README.md",
+          "line_start": 428,
+          "line_end": 430,
+          "observation": "§9 CLOSED 조건이 '최초 발견 역할이 §6의 closure successor(COMMIT, registry hash 승계)로 재검수할 때만 허용한다'로 바뀌어 §6 계약을 이름·snapshot 모드·registry 승계 조건으로 명시 참조한다. TCG4-EDIT-004 문안이 그대로 적용됐다."
+        },
+        {
+          "path": "docs/ai-review/README.md",
+          "line_start": 248,
+          "line_end": 255,
+          "observation": "참조 대상인 §6 closure successor 계약 정의가 변경 없이 존재해 교차참조가 유효하다."
+        },
+        {
+          "path": "docs/ai-review/README.md",
+          "line_start": 150,
+          "line_end": 150,
+          "observation": "§4 도식과 §9가 이제 같은 'closure successor 재검수' 용어를 쓴다."
+        },
+        {
+          "path": "docs/팀구성_상세기획안.md",
+          "line_start": 804,
+          "line_end": 804,
+          "observation": "기획안 §4.4 5항의 COMMIT closure successor·registry hash 승계 표현과 README §9가 일치한다."
+        }
+      ],
+      "impact": "§9만 읽는 AI 부 O도 CLOSED 재검수를 기존 Task의 다음 회차가 아닌 별도 closure successor로 인식하게 돼 세 문서 용어가 통일됐다.",
+      "acceptance_criteria": [
+        "README §9의 CLOSED 조건 문장이 §6 closure successor 계약을 명시적으로 참조한다."
+      ],
+      "required_tests": [],
+      "previous_finding_id": "TCG4-ARCH-005"
+    }
+  ],
+  "proposed_edits": [],
+  "closed_finding_ids": [],
+  "reopened_finding_ids": [],
+  "remaining_required_finding_ids": []
+}

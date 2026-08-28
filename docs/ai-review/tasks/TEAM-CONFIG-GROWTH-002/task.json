@@ -1,0 +1,74 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "TEAM-CONFIG-GROWTH-002",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R2",
+  "author_role": "SOLAR-ORCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "d6dcdfb04af4bc0c579e07edc36d6104755e2f3c",
+  "target_commit_sha": "4a7b9fde198d944a9b0e9e593bc7a573a84cb52d",
+  "target_tree_oid": "e9747b8a9a009161cf3388f668e2ba9c75aefecb",
+  "agents_blob_oid": "64b82275832bb6ce981b419294a428e77383be3e",
+  "agents_sha256": "0f1dd530a46174aeff884146569b2e2534f6ec8b544b531054f48e86b84c0f97",
+  "requirements": [
+    "TEAM-CONFIG-1: 페이블 모델 제공자·구독의 구조화된 예산·속도·용량 소진 때만 Opus 신규 클린 컨텍스트가 같은 독립 감사 범위와 권한을 승계한다.",
+    "TEAM-CONFIG-2: runner 회차 상한, 인증·CLI 설정·권위 경로·target SHA·hash-chain·schema·의미 계약 오류는 Opus 전환으로 우회하지 않는다.",
+    "TEAM-CONFIG-3: 소진 승계는 기존 FABLE-FINAL commit 변경 successor와 분리하며, 모든 reviewer role에서 동일 baseline·target, 실패 run, 성공 회차 유무에 따른 INITIAL/RECHECK와 작업 전체 상한 차감을 protocol 1.2 구현 계약으로 정의한다.",
+    "TEAM-CONFIG-4: 실제 reviewer engine·model·CLI·runner hash를 review/run/status/장부에 기록하고, 검증 권한은 원 reviewer role을 따르며 고위험 Opus 검증은 페이블 표본 재감사 전 gate 종결에 쓰지 않는다.",
+    "TEAM-CONFIG-5: 팀 학습은 단일 TEAM_LEARNING 장부에서 증거 기반 CANDIDATE→VERIFIED→RETIRED 수명주기를 가진다.",
+    "TEAM-CONFIG-6: Learning ID 패킷 필드는 TEAM-LEARNING-1 전 protocol 1.1 계약이 아니며, protocol 1.2 구현은 VERIFIED ID만 허용하고 CANDIDATE·RETIRED 및 최초 클린룸 회차 주입을 거부한다.",
+    "TEAM-CONFIG-7: INDEPENDENT-AUDIT 후보는 페이블 원본에서 전사하고 Codex 실행 증거 또는 사람만 검증하며, FABLE-SEC·FABLE-FINAL 최초 회차는 학습 요약을 받지 않는다.",
+    "TEAM-CONFIG-8: 현재 문서 정책과 실제 runner 지원 상태를 구분하고 AI-REVIEW-2·TEAM-LEARNING-1 완료 전 성공으로 보고하지 않는다.",
+    "TCG-001-SUCCESSOR-CONTRACT-GAP 완료 조건이 세 공식 문서에 모순 없이 반영되어야 한다.",
+    "TCG-001-EXHAUSTION-ALLOWLIST-AMBIGUITY 완료 조건이 세 공식 문서에 모순 없이 반영되어야 한다.",
+    "TCG-001-ENGINE-IDENTITY-SCHEMA 완료 조건이 세 공식 문서에 모순 없이 반영되어야 한다.",
+    "TCG-001-LEARNING-PACKET-PROTOCOL 완료 조건이 세 공식 문서에 모순 없이 반영되어야 한다.",
+    "TCG-001-LEARNING-AUDIT-LANE-VERIFIER 완료 조건이 세 공식 문서에 모순 없이 반영되어야 한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:single-canonical-artifact",
+    "AGENTS:fable-append-only-ledger",
+    "AGENTS:authoritative-root",
+    "AI-REVIEW:immutable-rounds",
+    "AI-REVIEW:successor-handoff",
+    "AI-REVIEW:pass-is-not-gate-closure",
+    "TEAM-PLAN:reviewer-role-engine-separation",
+    "TEAM-PLAN:evidence-based-learning-loop"
+  ],
+  "artifact_paths": [
+    "docs/팀구성_상세기획안.md",
+    "docs/ai-review/README.md",
+    "docs/작업큐.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/templates/task.example.json",
+    "scripts/fable-review/schema-v1.json",
+    "scripts/fable-review.mjs"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "세 공식 문서와 AGENTS.md 사이의 역할·상태·우선순위·종결 권한 일치 여부",
+    "제공자 구조화 소진과 runner 상한·인증·설정·계약 실패의 구분 및 자유 텍스트 우회 방지",
+    "소진 handoff와 기존 predecessor_review 계약의 분리, 첫 실패 INITIAL과 성공 회차 뒤 RECHECK의 완결성",
+    "엔진·모델·CLI·runner 출처가 결과·상태·장부에 남고 reviewer role 기반 검증 권한이 고정되는지",
+    "protocol 1.1 미지원 상태와 1.2 구현 계획, Learning ID 수명주기·주입 차단·호환 규칙의 일치 여부",
+    "INDEPENDENT-AUDIT 검증자와 FABLE-SEC·FABLE-FINAL 클린룸 및 RECHECK 주입 경계의 독립성",
+    "AI-REVIEW-2와 TEAM-LEARNING-1 touches·완료 조건이 필요한 runner·schema·사보타주 시험을 빠짐없이 포함하는지"
+  ],
+  "human_decisions": [
+    "2026-08-28 사용자가 페이블 소진 시 Opus를 소환하도록 팀 구성안을 수정하라고 결정했다.",
+    "2026-08-28 사용자가 각 팀의 업무 히스토리를 축적해 팀이 성장하는 장치를 마련하라고 결정했다.",
+    "2026-08-28 사용자가 관련 공식 문서 전체를 페이블이 검수하도록 요청했다.",
+    "TEAM-CONFIG-GROWTH-001 r001의 필수 Finding 5건을 수정 commit 4a7b9fd에 반영했으며, protocol 1.1의 불변 COMMIT target 규칙 때문에 수정판은 새 Task로 전체 재검수한다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null
+}

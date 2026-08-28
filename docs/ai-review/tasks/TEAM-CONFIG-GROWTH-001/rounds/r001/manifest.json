@@ -1,0 +1,115 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "TEAM-CONFIG-GROWTH-001",
+  "round": "r001",
+  "created_at": "2026-08-28T09:13:42.371Z",
+  "review_mode": "INITIAL",
+  "baseline_commit_sha": "c0b832de0f69c5b91a6cea94dafa22a79b55cc7f",
+  "target_commit_sha": "d6dcdfb04af4bc0c579e07edc36d6104755e2f3c",
+  "target_tree_oid": "196382ca745b4627db277a764991c39240f9303b",
+  "agents_blob_oid": "64b82275832bb6ce981b419294a428e77383be3e",
+  "agents_sha256": "0f1dd530a46174aeff884146569b2e2534f6ec8b544b531054f48e86b84c0f97",
+  "task_sha256": "74dd8623dcf661c4efa6a2a661e41ba0e02662288ebf7de0c4aa4d3739d118eb",
+  "collaboration_sha256": "5c780a22887ee1919f1848aa08e34b3709d1a023c4acb0840936dd21fc0ac8d3",
+  "collaboration_bytes": 2703,
+  "input_files_sha256": "72dc0b3896234d8471d1f8057fcc1d584fe7d098d3e8824e5ee5cbbe77323687",
+  "schema_sha256": "f8860ea87aacde86f541f7b1a1640729bf516dcdaf78e168c0e2e01f0edfac5c",
+  "runner_sha256": "1e09d053693e46b03a27bc34c443a4ac258ff6358eda1d33e0a76b160e97bf8b",
+  "snapshot_mode": "COMMIT",
+  "previous_review_sha256": null,
+  "previous_run_sha256": null,
+  "predecessor_review": null,
+  "retry_of_failed_round": null,
+  "artifact_paths": [
+    "docs/팀구성_상세기획안.md",
+    "docs/ai-review/README.md",
+    "docs/작업큐.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/templates/task.example.json",
+    "scripts/fable-review/schema-v1.json",
+    "scripts/fable-review.mjs"
+  ],
+  "allowed_paths": [
+    "docs/팀구성_상세기획안.md",
+    "docs/ai-review/README.md",
+    "docs/작업큐.md",
+    "AGENTS.md",
+    "docs/ai-review/templates/task.example.json",
+    "scripts/fable-review/schema-v1.json",
+    "scripts/fable-review.mjs"
+  ],
+  "excluded_paths": [],
+  "input_files": [
+    {
+      "path": "AGENTS.md",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 10492,
+      "git_blob_oid": "64b82275832bb6ce981b419294a428e77383be3e",
+      "sha256": "0f1dd530a46174aeff884146569b2e2534f6ec8b544b531054f48e86b84c0f97",
+      "line_count": 151
+    },
+    {
+      "path": "docs/작업큐.md",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 40568,
+      "git_blob_oid": "6f2b833d59d16b007d30286319922809d014903b",
+      "sha256": "588de231884b45b51d1962958b5029a61516737379ff43df0c43fa8ff5cbabd1",
+      "line_count": 734
+    },
+    {
+      "path": "docs/팀구성_상세기획안.md",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 82558,
+      "git_blob_oid": "c2b2e1b2d9367ec477013b900cd3f96946ec6902",
+      "sha256": "28f46a12a91814e49f328c29e20750fda79543c56950a55aa7da662e5eb91bec",
+      "line_count": 1648
+    },
+    {
+      "path": "docs/ai-review/README.md",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 28468,
+      "git_blob_oid": "882619174b8047f46f1d3fd47ca2259da5181b5e",
+      "sha256": "2138451a2a67e6ac89f73ff05cf6b305194078c2925448d7fde54a5ca7b2eb9a",
+      "line_count": 412
+    },
+    {
+      "path": "docs/ai-review/templates/task.example.json",
+      "path_role": "EVIDENCE",
+      "change_type": "COMMIT",
+      "size": 1226,
+      "git_blob_oid": "e1643d53a4649648f14114645427355428b161f2",
+      "sha256": "e3184d42d8cf2b2f04eb4fc78fb909e83f66f40eb63d3de855309c536c21b855",
+      "line_count": 41
+    },
+    {
+      "path": "scripts/fable-review.mjs",
+      "path_role": "EVIDENCE",
+      "change_type": "COMMIT",
+      "size": 339729,
+      "git_blob_oid": "19660207ec1d8e205bc215e933c7b5109c799eb8",
+      "sha256": "4d277fac5dc151729769e691b951a02f4229f5ce805c08cf25874cedb0a4d22e",
+      "line_count": 7558
+    },
+    {
+      "path": "scripts/fable-review/schema-v1.json",
+      "path_role": "EVIDENCE",
+      "change_type": "COMMIT",
+      "size": 7145,
+      "git_blob_oid": "037dddc32bbacd6358217f523672cde1faead78d",
+      "sha256": "447248727ce555d594206d36c551c182f9dae9258e1f138284c8831ca96f1a52",
+      "line_count": 233
+    }
+  ],
+  "source_archive_version": 1,
+  "finding_resolution_semantics": "VERIFIED_RESOLVED_V1",
+  "artifact_snapshot_sha256": null,
+  "input_snapshot_sha256": null
+}

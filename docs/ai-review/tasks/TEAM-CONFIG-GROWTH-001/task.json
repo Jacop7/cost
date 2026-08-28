@@ -1,0 +1,67 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "TEAM-CONFIG-GROWTH-001",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R2",
+  "author_role": "SOLAR-ORCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "c0b832de0f69c5b91a6cea94dafa22a79b55cc7f",
+  "target_commit_sha": "d6dcdfb04af4bc0c579e07edc36d6104755e2f3c",
+  "target_tree_oid": "196382ca745b4627db277a764991c39240f9303b",
+  "agents_blob_oid": "64b82275832bb6ce981b419294a428e77383be3e",
+  "agents_sha256": "0f1dd530a46174aeff884146569b2e2534f6ec8b544b531054f48e86b84c0f97",
+  "requirements": [
+    "TEAM-CONFIG-1: 페이블 모델 예산·속도·용량 소진 때만 Opus 신규 클린 컨텍스트가 같은 독립 감사 범위와 권한을 승계한다.",
+    "TEAM-CONFIG-2: 인증·권위 경로·target SHA·hash-chain·schema·의미 계약 오류는 Opus 전환으로 우회하지 않는다.",
+    "TEAM-CONFIG-3: 실패 run은 불변 보존하고 successor Task가 동일 target·artifact/input hash·Finding registry·사용 상한을 봉인한다.",
+    "TEAM-CONFIG-4: 실제 reviewer engine·model·CLI·runner hash를 기록하고 Opus 결과를 페이블 결과로 가장하지 않는다.",
+    "TEAM-CONFIG-5: 팀 학습은 단일 TEAM_LEARNING 장부에서 증거 기반 CANDIDATE→VERIFIED→RETIRED 수명주기를 가진다.",
+    "TEAM-CONFIG-6: VERIFIED Learning ID만 다음 관련 Task Packet·시험·템플릿·런북에 재주입하며 정책 변경은 사람 결정과 기존 권위 문서 반영 전에는 효력이 없다.",
+    "TEAM-CONFIG-7: 독립 종합 감사 최초 회차에는 팀 결론 요약을 넣지 않고 오래된·충돌·악화 학습을 재검증 또는 폐기한다.",
+    "TEAM-CONFIG-8: 현재 문서 정책과 실제 runner 지원 상태를 구분하고 AI-REVIEW-2·TEAM-LEARNING-1 완료 전 성공으로 보고하지 않는다."
+  ],
+  "invariant_ids": [
+    "AGENTS:single-canonical-artifact",
+    "AGENTS:fable-append-only-ledger",
+    "AGENTS:authoritative-root",
+    "AI-REVIEW:immutable-rounds",
+    "AI-REVIEW:successor-handoff",
+    "AI-REVIEW:pass-is-not-gate-closure",
+    "TEAM-PLAN:reviewer-role-engine-separation",
+    "TEAM-PLAN:evidence-based-learning-loop"
+  ],
+  "artifact_paths": [
+    "docs/팀구성_상세기획안.md",
+    "docs/ai-review/README.md",
+    "docs/작업큐.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/templates/task.example.json",
+    "scripts/fable-review/schema-v1.json",
+    "scripts/fable-review.mjs"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "네 공식 문서 사이의 역할·상태·우선순위·종결 권한 일치 여부",
+    "소진과 검증 실패를 구분하는 allowlist/denylist 및 모델 전환 우회 방지 분석",
+    "successor Task가 target SHA·Finding registry·권한·사용 상한을 정확히 승계할 수 있는지에 대한 현재 runner 대비 gap",
+    "TEAM_LEARNING이 기존 작업·결정·검수 원본을 복제하거나 정책 권위를 침범하지 않는지 분석",
+    "검증 학습의 재주입·효과 측정·재검증·폐기와 독립 감사 클린룸 예외의 완결성",
+    "AI-REVIEW-2와 TEAM-LEARNING-1 완료 조건이 실제 구현·사보타주 시험으로 충분한지 검토"
+  ],
+  "human_decisions": [
+    "2026-08-28 사용자가 페이블 소진 시 Opus를 소환하도록 팀 구성안을 수정하라고 결정했다.",
+    "2026-08-28 사용자가 각 팀의 업무 히스토리를 축적해 팀이 성장하는 장치를 마련하라고 결정했다.",
+    "2026-08-28 사용자가 이 변경과 관련된 공식 문서 전체를 페이블이 검수하도록 요청했다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null
+}

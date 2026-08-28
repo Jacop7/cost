@@ -1,0 +1,70 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "TEAM-CONFIG-GROWTH-004",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R2",
+  "author_role": "SOLAR-ORCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "ad3a7bb926da0dbb0fc1217d5af461f8c8dc6b77",
+  "target_commit_sha": "ad3a7bb926da0dbb0fc1217d5af461f8c8dc6b77",
+  "target_tree_oid": "3d163df305cf01aa9296e2b74cf663a9bcc9d3df",
+  "agents_blob_oid": "64b82275832bb6ce981b419294a428e77383be3e",
+  "agents_sha256": "0f1dd530a46174aeff884146569b2e2534f6ec8b544b531054f48e86b84c0f97",
+  "requirements": [
+    "페이블 제공자·구독의 구조화된 소진만 Opus 승계를 허용하고 runner 상한·인증·설정·hash·계약 오류는 우회하지 않는다.",
+    "소진 successor는 기존 FABLE-FINAL commit 변경 successor와 분리하고 동일 baseline·target·불변 실패 run·registry·작업 전체 상한을 유지한다.",
+    "predecessor 장부·fallback handoff·source commit을 봉인하고 FINAL_INDEPENDENT와 그 밖의 route 입력 범위를 클린룸에 맞게 분리한다.",
+    "registry 승계 의미 INITIAL/RECHECK와 route의 task.review_mode 및 r001/후속 회차 명칭을 혼동하지 않는다.",
+    "review/run/status/장부에 실제 엔진 출처를 남기고 원 reviewer role·verified_by_engine·페이블 표본 재감사 권한을 강제한다.",
+    "모델 결과 없는 오류는 review/verdict를 합성하지 않고 RUN_FAILED와 구조화된 사유로 남긴다.",
+    "TEAM_LEARNING은 증거 기반 수명주기를 가지며 protocol 1.1 과도기와 protocol 1.2 기계 차단을 명확히 분리한다.",
+    "FABLE-FINAL 모든 회차와 FABLE-SEC r001의 학습 주입을 금지하고 INDEPENDENT-AUDIT 검증 독립성을 유지한다.",
+    "Finding CLOSED는 anchor의 선행 조건이 아니며 decision commit 보호 체크 성공 뒤 최초 발견 역할의 재검수에서만 허용한다.",
+    "AI-REVIEW-2가 protocol 1.2와 결과 schema 승격을 소유하고 TEAM-LEARNING-1은 그 완료에 의존한다.",
+    "TEAM-CONFIG-GROWTH-001·002·003에서 발견된 필수 Finding 16건의 완료 조건이 세 공식 문서에 모순 없이 반영되어야 한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:single-canonical-artifact",
+    "AGENTS:fable-append-only-ledger",
+    "AGENTS:authoritative-root",
+    "AI-REVIEW:immutable-rounds",
+    "AI-REVIEW:pass-is-not-gate-closure",
+    "TEAM-PLAN:reviewer-role-engine-separation",
+    "TEAM-PLAN:evidence-based-learning-loop"
+  ],
+  "artifact_paths": [
+    "docs/팀구성_상세기획안.md",
+    "docs/ai-review/README.md",
+    "docs/작업큐.md"
+  ],
+  "reference_paths": ["AGENTS.md"],
+  "evidence_paths": [
+    "docs/ai-review/templates/task.example.json",
+    "scripts/fable-review/schema-v1.json",
+    "scripts/fable-review.mjs"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "세 공식 문서와 AGENTS.md의 권위·역할·상태·종결 권한 일치",
+    "구조화 소진과 비승계 오류 경계 및 모델 결과 없는 실패 상태",
+    "route별 successor registry·장부·handoff·source commit 연속성과 클린룸",
+    "엔진 출처·원 reviewer role 검증 권한·고위험 표본 재감사",
+    "protocol 1.1 과도기와 protocol 1.2 구현 순서·소유권·호환 규칙",
+    "학습 수명주기·보안/최종감사 주입 차단·감사 레인 검증 독립성",
+    "anchor→decision→보호 체크→CLOSED 순서",
+    "AI-REVIEW-2·TEAM-LEARNING-1 완료 조건의 구현·사보타주 시험 완결성"
+  ],
+  "human_decisions": [
+    "2026-08-28 사용자가 페이블 소진 시 Opus를 소환하도록 팀 구성안을 수정하라고 결정했다.",
+    "2026-08-28 사용자가 각 팀의 업무 히스토리를 축적해 팀이 성장하는 장치를 마련하라고 결정했다.",
+    "2026-08-28 사용자가 관련 공식 문서 전체를 페이블이 검수하도록 요청했다.",
+    "Opus 정확한 model ID와 작업 전체 기본 사용 상한은 AI-REVIEW-2에서 HUMAN_DECISION으로 고정한다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null
+}
