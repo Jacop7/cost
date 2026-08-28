@@ -250,11 +250,15 @@ commit이어야 한다. 두 Task는 같은 `FABLE-FINAL` 경로·검수 범위�
 `task.json` 필드로 간주하지 않으며 protocol 1.1 실행기는 계속 미지 필드로 거부한다. 구현 뒤에도
 기존 protocol 1.1 Task는 당시 감사 원본으로만 보존하고 필드를 덧붙여 재사용하지 않는다. 새 필드가
 필요한 작업은 protocol 1.2 Task로 새로 발행하고, 적용 Learning ID는 `VERIFIED`만 허용한다.
-`CANDIDATE`·`RETIRED` ID가 있거나 `FABLE-SEC`·`FABLE-FINAL`의 `INITIAL` 클린룸 회차에 학습 필드가
-비어 있지 않으면 실행기는 실패 폐쇄한다. protocol 1.1 과도기에는 다른 역할도 `VERIFIED` Learning
+`CANDIDATE`·`RETIRED` ID가 있거나 `FABLE-SEC` r001·`FABLE-FINAL` 모든 회차에 학습 필드가 비어
+있지 않으면 실행기는 실패 폐쇄한다. protocol 1.1 과도기에는 다른 역할도 `VERIFIED` Learning
 ID만 `SOLAR_REQUEST` 본문에 기록한다. 공동 장부가 입력되는 `SECURITY` route 첫 회차와
 `FABLE-FINAL` Task의 `SOLAR_REQUEST`에는 Learning ID·학습 요약을 넣지 않으며, protocol 1.2의
 기계 차단 전에는 사람 또는 AI 부 오케스트레이터의 수동 확인만이 이 제한을 통제한다.
+
+protocol 1.2 task 버전과 결과 schema 승격의 소유 작업은 `AI-REVIEW-2`다. `TEAM-LEARNING-1`은 그
+작업이 고정한 새 필드·호환 규칙 위에 학습 장부와 주입 검사를 구현하며 `AI-REVIEW-2` 완료 뒤에
+진행한다.
 
 ## 7. 격리 스냅샷
 
@@ -349,13 +353,17 @@ protocol 1.2 Task에 predecessor task·round·run hash와 실패 사유를 봉�
 
 여기서 `INITIAL`·`RECHECK`는 inherited registry 유무에 따른 승계 의미다. `FABLE-SEC`·
 `FABLE-FINAL` successor의 실제 `task.review_mode`는 route가 정한 `SECURITY`·`FINAL`을 유지한다.
-`RECHECK` successor는 봉인된 predecessor 장부 전체를 읽기 전용 입력으로 받고, 성공 회차가 없는
-`INITIAL` successor는 predecessor `SOLAR_REQUEST`까지만 받는다.
+`FINAL_INDEPENDENT` route successor는 registry 승계 여부와 무관하게 predecessor 장부를 받지 않고
+`independent_request`와 predecessor registry hash 블록만 받는다. 그 밖의 `MANDATORY_MUTUAL`·
+`CONDITIONAL`·`SECURITY` route에서는 registry를 승계한 successor가 봉인된 predecessor 장부 전체를
+읽기 전용 입력으로 받고, 성공 회차가 없는 successor는 predecessor `SOLAR_REQUEST`까지만 받는다.
 
 Opus도 기존과 같은 새 세션, 빈 MCP, `Read/Glob/Grep`, `--restricted`, `--safe-mode`, 제품 파일 쓰기
 금지 규칙을 사용한다. 결과가 같은 구조·의미 계약을 통과하면 실제 엔진 출처를 표시한 채 로컬
 `VERIFIED`까지 진행할 수 있지만 보호 원격·사람 승인·`CLOSED` 규칙을 바꾸지 않는다. Opus도 사용할
-수 없으면 더 약한 모델로 연쇄 하향하지 않고 `BLOCKED`로 보고한다.
+수 없으면 더 약한 모델로 연쇄 하향하지 않는다. 모델 결과 없는 실행은 `review.json`이나 verdict를
+합성하지 않고 `run_state=RUN_FAILED`, 사유 `FALLBACK_UNAVAILABLE`로 남겨 `status.json` 요약을 통해
+사람에게 보고한다. 비승계 오류도 `NOT_FALLBACK_ELIGIBLE` 사유의 `RUN_FAILED`로 남긴다.
 
 엔진 출처는 결과 schema 승격 뒤 `review.json`, `run.json`, `status.json`의 회차 요약과 장부
 `FABLE_REVIEW`·`FABLE_RECHECK` 턴 헤더에 모두 필수로 기록한다. `reviewer_role`은 승계한 원 역할
@@ -377,6 +385,9 @@ ID(`FABLE-ARCH` 등)를 유지하고 `OPUS-FALLBACK`은 컨텍스트 ID일 뿐 �
 - `run_state`: `RESULT_RECEIVED | RUN_FAILED | STALE`; CLI·판본 실행 상태
 - `defect_state`: 기능 QA 결함 상태; Fable 검수 상태와 별도
 - `gate_state`: 로컬 실행기는 `OPEN`을 유지하며 외부 게이트 종결과 혼동하지 않음
+
+verdict `BLOCKED`는 모델이 유효한 구조화 결과로 반환했을 때만 사용한다. 인증 실패, 비승계 오류,
+대체 엔진 부재처럼 모델 결과가 없는 실행 상태를 표현하기 위해 합성하지 않는다.
 
 `status.json`은 실행기만 갱신하며 필수 미해결, 선택 미해결, 누적 종결 Finding을 분리한다.
 `OPEN`·`DISPUTED`는 미해결이고, 완료 조건과 Codex 증거를 최초 발견 역할이 확인한 `VERIFIED`는
