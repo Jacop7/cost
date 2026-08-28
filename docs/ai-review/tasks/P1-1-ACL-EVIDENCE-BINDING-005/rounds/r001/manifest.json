@@ -1,0 +1,81 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "P1-1-ACL-EVIDENCE-BINDING-005",
+  "round": "r001",
+  "created_at": "2026-08-28T11:33:22.734Z",
+  "review_mode": "INITIAL",
+  "baseline_commit_sha": "d1942efdbe5ebaa01e858cc9813ef9763ffd9b61",
+  "target_commit_sha": "0670437a498ff6db86d66584217901ee01929485",
+  "target_tree_oid": "4d72a9e2a173ffbb4fcf3a6569fadb8f2dd79961",
+  "agents_blob_oid": "64b82275832bb6ce981b419294a428e77383be3e",
+  "agents_sha256": "0f1dd530a46174aeff884146569b2e2534f6ec8b544b531054f48e86b84c0f97",
+  "task_sha256": "995296495ec307b04abdd9edf55e05082befb7bc8d0117c1871648f0938a3c27",
+  "collaboration_sha256": "f75998c2e44480948142c38cdd1eaca52adcbeca8b3f1344e73a795be6412130",
+  "collaboration_bytes": 985,
+  "input_files_sha256": "964c57c5f69e8d0a22386403cd658ce5f847a25fc96926a197d38f30911403dc",
+  "schema_sha256": "f8860ea87aacde86f541f7b1a1640729bf516dcdaf78e168c0e2e01f0edfac5c",
+  "runner_sha256": "1e09d053693e46b03a27bc34c443a4ac258ff6358eda1d33e0a76b160e97bf8b",
+  "snapshot_mode": "COMMIT",
+  "previous_review_sha256": null,
+  "previous_run_sha256": null,
+  "predecessor_review": null,
+  "retry_of_failed_round": null,
+  "artifact_paths": [
+    "docs/ai-review/evidence/P1-1-ACL-SUPPORT-SOURCE-002.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "packages/db/scripts/admin-acl-audit.test.mjs",
+    "packages/db/scripts/admin-acl-audit.sql"
+  ],
+  "evidence_paths": [],
+  "allowed_paths": [
+    "docs/ai-review/evidence/P1-1-ACL-SUPPORT-SOURCE-002.md",
+    "AGENTS.md",
+    "packages/db/scripts/admin-acl-audit.test.mjs",
+    "packages/db/scripts/admin-acl-audit.sql"
+  ],
+  "excluded_paths": [],
+  "input_files": [
+    {
+      "path": "AGENTS.md",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 10492,
+      "git_blob_oid": "64b82275832bb6ce981b419294a428e77383be3e",
+      "sha256": "0f1dd530a46174aeff884146569b2e2534f6ec8b544b531054f48e86b84c0f97",
+      "line_count": 151
+    },
+    {
+      "path": "docs/ai-review/evidence/P1-1-ACL-SUPPORT-SOURCE-002.md",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 5671,
+      "git_blob_oid": "5894fa729d25a324c3e7f83d7c1edb56468b57b5",
+      "sha256": "02bafc41c4ac705653460fa00e08801b574a8042690f7aadad35742c454336f3",
+      "line_count": 76
+    },
+    {
+      "path": "packages/db/scripts/admin-acl-audit.sql",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 13375,
+      "git_blob_oid": "20f0306c0990f098251201977993ec8253d86cb2",
+      "sha256": "c47665cab7ef141855879c6200f33b2b701a65f78a7e95e14be34c7b1e86aaa4",
+      "line_count": 221
+    },
+    {
+      "path": "packages/db/scripts/admin-acl-audit.test.mjs",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 10554,
+      "git_blob_oid": "9da5001f312deb7a6a291a1e334059f0e22fca26",
+      "sha256": "380afade0352ace4165f52487b701bac037b4575400cc5843b2b6407cd0a6575",
+      "line_count": 217
+    }
+  ],
+  "source_archive_version": 1,
+  "finding_resolution_semantics": "VERIFIED_RESOLVED_V1",
+  "artifact_snapshot_sha256": null,
+  "input_snapshot_sha256": null
+}
