@@ -61,7 +61,7 @@
     "summary": { "type": "string", "minLength": 1, "maxLength": 4000 },
     "findings": {
       "type": "array",
-      "description": "Full active finding registry for this task. During RECHECK, repeat every prior non-CLOSED finding, including locally resolved VERIFIED findings, until formal closure.",
+      "description": "Full active finding registry for this task. During RECHECK, including a handoff-authorized successor Task, repeat every prior non-CLOSED finding with the same ID, severity, and category until formal closure.",
       "maxItems": 100,
       "items": { "$ref": "#/$defs/finding" }
     },
