@@ -32,6 +32,7 @@ import { basename, dirname, isAbsolute, join, relative, resolve, sep } from 'nod
 import { fileURLToPath } from 'node:url';
 import { TextDecoder } from 'node:util';
 import {
+  DEFAULT_TASK_CAP_USD,
   FALLBACK_MODEL_ID,
   FALLBACK_REVIEWER_ENGINE,
   PRIMARY_MODEL_ID,
@@ -2581,6 +2582,79 @@ function artifactSetSha256(inputFiles) {
   return sha256(Buffer.from(`${JSON.stringify(artifacts)}\n`, 'utf8'));
 }
 
+function usdCents(value, label) {
+  const amount = Number(value);
+  if (!Number.isFinite(amount) || amount < 0) {
+    throw new ReviewError(`${label} 금액을 센트 단위로 계산할 수 없습니다.`, { exitCode: 75, runState: 'STALE' });
+  }
+  return Math.round((amount + Number.EPSILON) * 100);
+}
+
+function conservativeRunCostCents(run) {
+  return usdCents(
+    run.total_cost_usd ?? run.max_budget_usd,
+    run.total_cost_usd === null || run.total_cost_usd === undefined ? '비용 미확정 회차 상한' : '회차 비용',
+  );
+}
+
+function totalRoundCostCents(records) {
+  return records.reduce((total, record) => total + conservativeRunCostCents(record.run), 0);
+}
+
+function approvedTaskBudget(manualHistory, taskBudgetUsd) {
+  const pins = manualHistory.records
+    .filter((record) => record.identity.turnType === 'HUMAN_DECISION')
+    .flatMap((record) => [...decodeSafeText(record.entryRaw, 'HUMAN_DECISION entry').matchAll(
+      /^- task_budget_usd_approved: `((?:0|[1-9]\d*)(?:\.\d{1,2})?)`$/gm,
+    )].map((match) => match[1]));
+  return pins.length === 1 && usdCents(pins[0], '승인 상한') === usdCents(taskBudgetUsd, 'Task 상한');
+}
+
+function assertTaskBudgetApproval(task, manualHistory) {
+  if (usdCents(task.task_budget_usd, 'Task 상한') <= usdCents(DEFAULT_TASK_CAP_USD, '기본 Task 상한')) return;
+  if (!approvedTaskBudget(manualHistory, task.task_budget_usd)) {
+    throw new ReviewError(
+      `기본 작업 상한 ${DEFAULT_TASK_CAP_USD} USD를 넘는 Task에는 정확한 HUMAN_DECISION 승인 pin이 필요합니다: TASK_CAP_APPROVAL_REQUIRED`,
+      { exitCode: 64 },
+    );
+  }
+}
+
+function assertFallbackTaskParity(sourceTask, task) {
+  if (
+    sourceTask.target_commit_sha !== task.target_commit_sha
+    || sourceTask.route !== task.route
+    || sourceTask.reviewer_role !== task.reviewer_role
+    || sourceTask.snapshot_mode !== task.snapshot_mode
+    || sourceTask.task_budget_usd !== task.task_budget_usd
+  ) {
+    throw new ReviewError('fallback predecessor와 successor의 대상·route·역할·snapshot·작업 상한이 다릅니다.', {
+      exitCode: 75,
+      runState: 'STALE',
+    });
+  }
+}
+
+function assertClosureExecutionBlocked(repoRoot, task) {
+  if (!task.closure_contract) return;
+  assertGitAncestor(
+    repoRoot,
+    task.closure_contract.decision_commit_sha,
+    task.target_commit_sha,
+    'closure decision commit',
+  );
+  throw new ReviewError(
+    'closure successor 계약은 유효하지만 P0-2 보호 원격 validator 결합 전에는 실행할 수 없습니다.',
+    { exitCode: 65 },
+  );
+}
+
+function fallbackFailureDisposition(engine, classification) {
+  return engine === FALLBACK_REVIEWER_ENGINE
+    ? { eligible: false, reason: 'FALLBACK_UNAVAILABLE' }
+    : { eligible: classification.eligible, reason: classification.reason };
+}
+
 function loadPinnedFallbackReview({ repoRoot, runtime, task }) {
   const contract = task.engine_contract?.fallback;
   if (!contract) return null;
@@ -2596,14 +2670,7 @@ function loadPinnedFallbackReview({ repoRoot, runtime, task }) {
   try {
     const sourceTaskRaw = readBounded(join(sourceDir, 'task.json'), 'fallback predecessor task.json');
     const sourceTask = validateTask(parseJson(sourceTaskRaw, 'fallback predecessor task.json'), contract.from_task_id);
-    if (
-      sourceTask.target_commit_sha !== task.target_commit_sha
-      || sourceTask.route !== task.route
-      || sourceTask.reviewer_role !== task.reviewer_role
-      || sourceTask.snapshot_mode !== task.snapshot_mode
-    ) {
-      throw new ReviewError('fallback predecessor와 successor의 대상·route·역할·snapshot이 다릅니다.', { exitCode: 75, runState: 'STALE' });
-    }
+    assertFallbackTaskParity(sourceTask, task);
     for (const field of ['artifact_paths', 'reference_paths', 'evidence_paths', 'excluded_paths']) {
       if (!sameJsonValue(sourceTask[field], task[field])) {
         throw new ReviewError(`fallback predecessor와 successor의 ${field} 범위가 다릅니다.`, { exitCode: 75, runState: 'STALE' });
@@ -2659,6 +2726,7 @@ function loadPinnedFallbackReview({ repoRoot, runtime, task }) {
       collaborationRaw,
       predecessor: inherited,
     });
+    assertTaskBudgetApproval(sourceTask, chain.manualHistory);
     const handoffRecord = chain.manualHistory.records.find((record) => record.identity.turnId === contract.handoff_turn_id);
     const terminal = chain.events.at(-1);
     if (
@@ -2692,11 +2760,10 @@ function loadPinnedFallbackReview({ repoRoot, runtime, task }) {
     if (!sameJsonValue(handoff, expectedHandoff)) {
       throw new ReviewError('fallback handoff 내용이 successor Task와 다릅니다.', { exitCode: 75, runState: 'STALE' });
     }
-    const actualSpent = roundNames.reduce((total, roundName) => {
-      const record = loadRoundRecord(sourceRoundsDir, Number(roundName.slice(1)), sourceTask);
-      return total + Number(record.run.total_cost_usd ?? 0);
-    }, 0).toFixed(2);
-    if (actualSpent !== contract.spent_usd) {
+    const actualSpentCents = totalRoundCostCents(roundNames.map((roundName) => (
+      loadRoundRecord(sourceRoundsDir, Number(roundName.slice(1)), sourceTask)
+    )));
+    if (actualSpentCents !== usdCents(contract.spent_usd, 'fallback 사용액')) {
       throw new ReviewError('fallback 사용액이 실패 run의 실제 비용과 다릅니다.', { exitCode: 75, runState: 'STALE' });
     }
     return {
@@ -3207,6 +3274,51 @@ function parseFallbackHandoff(entryRaw, label = 'fallback handoff') {
     }
   }
   return Object.fromEntries([['turn_id', heading[1]], ...fields]);
+}
+
+function validateFallbackHandoffForAppend({ entryRaw, roundsDir, task, predecessor, chain }) {
+  if (chain.manualHistory.records.some((record) => record.identity.turnType === 'AI_DEPUTY_FALLBACK_HANDOFF')) {
+    throw new ReviewError('fallback handoff는 원 Task에 한 번만 추가할 수 있습니다.', { exitCode: 65 });
+  }
+  if (!existsSync(roundsDir)) {
+    throw new ReviewError('fallback handoff에 대응하는 공개 실패 회차가 없습니다.', { exitCode: 65 });
+  }
+  const roundNames = readdirSync(roundsDir).filter((name) => /^r\d{3}$/.test(name)).sort();
+  const handoff = parseFallbackHandoff(entryRaw);
+  if (!roundNames.length || roundNames.at(-1) !== handoff.from_round) {
+    throw new ReviewError('fallback handoff는 최신 공개 실패 회차만 가리킬 수 있습니다.', { exitCode: 65 });
+  }
+  const roundNumber = Number(handoff.from_round.slice(1));
+  const record = loadRoundRecord(roundsDir, roundNumber, task);
+  if (
+    record.run.run_state !== 'RUN_FAILED'
+    || record.run.fallback_eligible !== true
+    || record.run.fallback_reason !== handoff.reason
+    || record.runHash !== handoff.from_run_sha256
+  ) {
+    throw new ReviewError('fallback handoff의 run은 실제 소진 allowlist 실패 회차와 같아야 합니다.', { exitCode: 65 });
+  }
+  if (
+    record.manifest.target_commit_sha !== handoff.target_commit_sha
+    || record.manifest.input_files_sha256 !== handoff.input_files_sha256
+    || artifactSetSha256(record.manifest.input_files) !== handoff.artifact_set_sha256
+  ) {
+    throw new ReviewError('fallback handoff의 대상·입력·산출물 hash가 실패 회차와 다릅니다.', { exitCode: 65 });
+  }
+  const loaded = previousResult(join(roundsDir, `r${String(roundNumber + 1).padStart(3, '0')}`), roundNumber + 1, task, predecessor);
+  const registry = [...loaded.registryFindings].sort((left, right) => left.finding_id.localeCompare(right.finding_id));
+  if (sha256(canonicalFindingRegistryRaw(registry)) !== handoff.finding_registry_sha256) {
+    throw new ReviewError('fallback handoff의 Finding registry hash가 실패 회차 원본과 다릅니다.', { exitCode: 65 });
+  }
+  const records = roundNames.map((roundName) => loadRoundRecord(roundsDir, Number(roundName.slice(1)), task));
+  const spentCents = totalRoundCostCents(records);
+  const capCents = usdCents(task.task_budget_usd, 'Task 상한');
+  if (
+    spentCents !== usdCents(handoff.spent_usd, 'fallback handoff 사용액')
+    || capCents - spentCents !== usdCents(handoff.remaining_usd, 'fallback handoff 잔여액')
+  ) {
+    throw new ReviewError('fallback handoff의 사용액·잔여액이 실제 회차 비용과 다릅니다.', { exitCode: 65 });
+  }
 }
 
 function parseSuccessorHandoff(entryRaw, label = 'successor handoff') {
@@ -3722,6 +3834,9 @@ function executeAppendTurn(args) {
       throw new ReviewError('collaboration.md가 후속 회차 읽기 제한을 넘게 됩니다. 새 Task ID로 이어가세요.', { exitCode: 74 });
     }
     const identity = manualTurnIdentity(entryRaw);
+    if (identity.turnType === 'AI_DEPUTY_FALLBACK_HANDOFF') {
+      validateFallbackHandoffForAppend({ entryRaw, roundsDir, task, predecessor, chain });
+    }
     const expected = Buffer.concat([latest, entryRaw]);
     const stageName = `.${chain.manualHistory.nextSequence}.stage-${process.pid}-${Date.now()}`;
     const stage = join(turnsDir, stageName);
@@ -4560,18 +4675,7 @@ async function executeReview(args) {
     const engineContract = task.protocol_version === '1.2'
       ? task.engine_contract
       : { engine: PRIMARY_REVIEWER_ENGINE, model: PRIMARY_MODEL_ID, fallback: null };
-    if (task.closure_contract) {
-      assertGitAncestor(
-        repoRoot,
-        task.closure_contract.decision_commit_sha,
-        task.target_commit_sha,
-        'closure decision commit',
-      );
-      throw new ReviewError(
-        'closure successor 계약은 유효하지만 P0-2 보호 원격 validator 결합 전에는 실행할 수 없습니다.',
-        { exitCode: 65 },
-      );
-    }
+    assertClosureExecutionBlocked(repoRoot, task);
     if (
       engineContract.fallback
       && Number(args.maxBudgetUsd) > Number(engineContract.fallback.remaining_usd)
@@ -4707,16 +4811,20 @@ async function executeReview(args) {
       collaborationRaw,
       predecessor,
     });
-    if (task.protocol_version === '1.2') {
-      const inheritedSpent = Number(engineContract.fallback?.spent_usd ?? 0);
-      const currentTaskSpent = (previous.history ?? []).reduce(
-        (total, record) => total + Number(record.run?.total_cost_usd ?? 0),
-        0,
+    if (chain.manualHistory.records.some((record) => record.identity.turnType === 'AI_DEPUTY_FALLBACK_HANDOFF')) {
+      throw new ReviewError(
+        'fallback handoff 뒤에는 원 Task의 Fable 회차를 다시 시작할 수 없습니다. 봉인된 successor Task를 사용하세요.',
+        { exitCode: 65 },
       );
-      const remaining = Number(task.task_budget_usd) - inheritedSpent - currentTaskSpent;
-      if (remaining <= 0 || Number(args.maxBudgetUsd) > remaining + Number.EPSILON) {
+    }
+    if (task.protocol_version === '1.2') {
+      if (!fallbackPredecessor) assertTaskBudgetApproval(task, chain.manualHistory);
+      const remainingCents = usdCents(task.task_budget_usd, 'Task 상한')
+        - usdCents(engineContract.fallback?.spent_usd ?? 0, '승계 사용액')
+        - totalRoundCostCents(previous.history ?? []);
+      if (remainingCents <= 0 || usdCents(args.maxBudgetUsd, '회차 상한') > remainingCents) {
         throw new ReviewError(
-          `작업 전체 상한의 잔여액(${Math.max(0, remaining).toFixed(2)} USD)보다 회차 상한이 큽니다: TASK_CAP_APPROVAL_REQUIRED`,
+          `작업 전체 상한의 잔여액(${(Math.max(0, remainingCents) / 100).toFixed(2)} USD)보다 회차 상한이 큽니다: TASK_CAP_APPROVAL_REQUIRED`,
           { exitCode: 64 },
         );
       }
@@ -4982,9 +5090,7 @@ async function executeReview(args) {
         terminalReason: envelope?.terminal_reason,
         providerErrorCode: envelope?.error_code,
       });
-      const persistedFallbackReason = engineContract.engine === FALLBACK_REVIEWER_ENGINE
-        ? 'FALLBACK_UNAVAILABLE'
-        : fallbackClassification.reason;
+      const fallbackDisposition = fallbackFailureDisposition(engineContract.engine, fallbackClassification);
       const failedRun = {
         protocol_version: task.protocol_version,
         task_id: task.task_id,
@@ -4998,8 +5104,8 @@ async function executeReview(args) {
         primary_reviewer_engine: PRIMARY_REVIEWER_ENGINE,
         reviewer_engine: engineContract.engine,
         reviewer_model: engineContract.model,
-        fallback_eligible: engineContract.engine === PRIMARY_REVIEWER_ENGINE && fallbackClassification.eligible,
-        fallback_reason: persistedFallbackReason,
+        fallback_eligible: fallbackDisposition.eligible,
+        fallback_reason: fallbackDisposition.reason,
         effort: 'high',
         max_budget_usd: args.maxBudgetUsd,
         exit_code: finalError.exitCode,
@@ -5257,7 +5363,10 @@ function expectReviewError(action, { exitCode, runState, messageIncludes } = {})
   selfTestAssert(caught instanceof ReviewError, `ReviewError 예상, 실제=${caught?.constructor?.name || 'none'}`);
   if (exitCode !== undefined) selfTestAssert(caught.exitCode === exitCode, `exitCode ${exitCode} 예상, 실제=${caught.exitCode}`);
   if (runState !== undefined) selfTestAssert(caught.runState === runState, `runState ${runState} 예상, 실제=${caught.runState}`);
-  if (messageIncludes) selfTestAssert(caught.message.includes(messageIncludes), `오류 메시지에 '${messageIncludes}' 없음`);
+  if (messageIncludes) selfTestAssert(
+    caught.message.includes(messageIncludes),
+    `오류 메시지에 '${messageIncludes}' 없음 (실제: ${caught.message})`,
+  );
 }
 
 function validationSelfTestFixture() {
@@ -5403,6 +5512,60 @@ function runSelfTests() {
     expectReviewError(
       () => parseArgs(['--self-test', '--max-budget-usd', '4']),
       { exitCode: 64, messageIncludes: '--task 검수 실행에서만' },
+    );
+  });
+
+  test('protocol-v12-task-cap-parity-approval-and-conservative-cost', () => {
+    const baseTask = {
+      target_commit_sha: '1'.repeat(40), route: 'SECURITY', reviewer_role: 'FABLE-SEC',
+      snapshot_mode: 'COMMIT', task_budget_usd: '4.00',
+    };
+    expectReviewError(() => assertFallbackTaskParity(baseTask, { ...baseTask, task_budget_usd: '10.00' }), {
+      exitCode: 75,
+      runState: 'STALE',
+      messageIncludes: '작업 상한',
+    });
+    const noApproval = { records: [] };
+    expectReviewError(() => assertTaskBudgetApproval({ task_budget_usd: '4.01' }, noApproval), {
+      exitCode: 64,
+      messageIncludes: 'TASK_CAP_APPROVAL_REQUIRED',
+    });
+    const approved = {
+      records: [{
+        identity: { turnType: 'HUMAN_DECISION' },
+        entryRaw: Buffer.from('## HUMAN_DECISION · turn-h001 · r001\n\n- role: `HUMAN`\n- task_budget_usd_approved: `4.01`\n'),
+      }],
+    };
+    assertTaskBudgetApproval({ task_budget_usd: '4.01' }, approved);
+    selfTestAssert(
+      totalRoundCostCents([
+        { run: { total_cost_usd: 1.005, max_budget_usd: '2.00' } },
+        { run: { total_cost_usd: 1.005, max_budget_usd: '2.00' } },
+      ]) === 202,
+      '회차별 센트 반올림 합산',
+    );
+    selfTestAssert(
+      totalRoundCostCents([{ run: { total_cost_usd: null, max_budget_usd: '2.00' } }]) === 200,
+      '비용 미확정 회차는 상한 전액 차감',
+    );
+  });
+
+  test('closure-successor-halts-before-p0-2', () => {
+    const head = git(['rev-parse', 'HEAD'], SCRIPT_ROOT);
+    expectReviewError(() => assertClosureExecutionBlocked(SCRIPT_ROOT, {
+      target_commit_sha: head,
+      closure_contract: { decision_commit_sha: head },
+    }), { exitCode: 65, messageIncludes: 'P0-2 보호 원격 validator' });
+  });
+
+  test('opus-failure-is-fallback-unavailable', () => {
+    const result = fallbackFailureDisposition(FALLBACK_REVIEWER_ENGINE, {
+      eligible: true,
+      reason: 'MODEL_RATE_LIMITED',
+    });
+    selfTestAssert(
+      result.eligible === false && result.reason === 'FALLBACK_UNAVAILABLE',
+      'Opus 실패는 추가 fallback 없이 종료',
     );
   });
 
@@ -7983,6 +8146,217 @@ function runSelfTests() {
           predecessor_review: { ...predecessorReview, source_commit_sha: misplacedHandoffCommit },
         }, successorTaskId),
       }), { exitCode: 75, runState: 'STALE' });
+    } finally {
+      if (!isPathInside(tmpdir(), temporaryRoot) || resolve(temporaryRoot) === resolve(tmpdir())) {
+        throw new Error(`self-test 임시 경로 안전 검사 실패: ${temporaryRoot}`);
+      }
+      rmSync(temporaryRoot, { recursive: true, force: true });
+    }
+  });
+
+  test('fallback-successor-import-rejects-any-tampered-pin', () => {
+    const temporaryRoot = mkdtempSync(join(tmpdir(), 'fable-fallback-import-selftest-'));
+    try {
+      const repoRoot = join(temporaryRoot, 'repo');
+      const runtime = join(temporaryRoot, 'runtime');
+      git(['clone', '--shared', '--quiet', SCRIPT_ROOT, repoRoot], temporaryRoot);
+      git(['config', 'user.name', 'Fable Self Test'], repoRoot);
+      git(['config', 'user.email', 'fable-self-test@example.invalid'], repoRoot);
+      mkdirSync(runtime);
+
+      const fixtureId = 'AI-REVIEW-2-FALLBACK-CONTINUITY-001';
+      const fixtureDir = join(repoRoot, 'docs', 'ai-review', 'tasks', fixtureId);
+      const fixtureTask = parseJson(readFileSync(join(fixtureDir, 'task.json')), 'fallback fixture task');
+      const fixtureRound = join(fixtureDir, 'rounds', 'r001');
+      const fixtureManifest = parseJson(readFileSync(join(fixtureRound, 'manifest.json')), 'fallback fixture manifest');
+      const fixtureRun = parseJson(readFileSync(join(fixtureRound, 'run.json')), 'fallback fixture run');
+      const targetCommit = fixtureTask.target_commit_sha;
+      const sourceTaskId = 'SELF-FALLBACK-SOURCE-001';
+      const successorTaskId = 'SELF-FALLBACK-SUCCESSOR-002';
+      const sourceTaskDir = join(repoRoot, 'docs', 'ai-review', 'tasks', sourceTaskId);
+      const sourceRoundsDir = join(sourceTaskDir, 'rounds');
+      const sourceRoundDir = join(sourceRoundsDir, 'r001');
+      const turnsDir = join(sourceTaskDir, 'turns');
+      mkdirSync(sourceRoundDir, { recursive: true });
+      mkdirSync(turnsDir);
+      const sourcePacket = {
+        ...fixtureTask,
+        task_id: sourceTaskId,
+        human_decisions: [],
+        primary_reviewer_engine: PRIMARY_REVIEWER_ENGINE,
+        reviewer_engine: PRIMARY_REVIEWER_ENGINE,
+        reviewer_model: PRIMARY_MODEL_ID,
+        task_budget_usd: DEFAULT_TASK_CAP_USD,
+        fallback_review: null,
+        closure_review: null,
+      };
+      const sourceTaskRaw = Buffer.from(`${JSON.stringify(sourcePacket, null, 2)}\n`, 'utf8');
+      const sourceTask = validateTask(JSON.parse(JSON.stringify(sourcePacket)), sourceTaskId);
+      const collaborationBefore = Buffer.from('# fallback source ledger\n', 'utf8');
+      const manifest = {
+        ...fixtureManifest,
+        task_id: sourceTaskId,
+        task_sha256: sha256(sourceTaskRaw),
+        collaboration_sha256: sha256(collaborationBefore),
+        collaboration_bytes: collaborationBefore.length,
+        previous_review_sha256: null,
+        previous_run_sha256: null,
+        retry_of_failed_round: null,
+        predecessor_review: null,
+        primary_reviewer_engine: PRIMARY_REVIEWER_ENGINE,
+        reviewer_engine: PRIMARY_REVIEWER_ENGINE,
+        reviewer_model: PRIMARY_MODEL_ID,
+        fallback_review: null,
+        closure_review: null,
+      };
+      const manifestRaw = Buffer.from(`${JSON.stringify(manifest, null, 2)}\n`, 'utf8');
+      const failedRun = {
+        ...fixtureRun,
+        task_id: sourceTaskId,
+        run_state: 'RUN_FAILED',
+        model: PRIMARY_MODEL_ID,
+        primary_reviewer_engine: PRIMARY_REVIEWER_ENGINE,
+        reviewer_engine: PRIMARY_REVIEWER_ENGINE,
+        reviewer_model: PRIMARY_MODEL_ID,
+        fallback_eligible: true,
+        fallback_reason: 'MODEL_RATE_LIMITED',
+        max_budget_usd: '2.00',
+        exit_code: 69,
+        claude_exit_code: 1,
+        manifest_sha256: sha256(manifestRaw),
+        review_sha256: null,
+        review_markdown_sha256: null,
+        candidate_review_state: null,
+        candidate_review_sha256: null,
+        candidate_review_markdown_sha256: null,
+        candidate_encoding: null,
+        validation_stage: null,
+        validation_failure_code: null,
+        task_sha256: sha256(sourceTaskRaw),
+        collaboration_before_bytes: collaborationBefore.length,
+        collaboration_before_sha256: sha256(collaborationBefore),
+        collaboration_entry_bytes: 0,
+        collaboration_entry_sha256: null,
+        collaboration_after_bytes: collaborationBefore.length,
+        collaboration_after_sha256: sha256(collaborationBefore),
+        total_cost_usd: 0.25,
+      };
+      const failedRunRaw = Buffer.from(`${JSON.stringify(failedRun, null, 2)}\n`, 'utf8');
+      immutableWrite(join(sourceTaskDir, 'task.json'), sourceTaskRaw);
+      immutableWrite(join(sourceTaskDir, 'collaboration.md'), collaborationBefore);
+      immutableWrite(join(sourceTaskDir, 'status.json'), Buffer.from('{}\n'));
+      immutableWrite(join(sourceRoundDir, 'manifest.json'), manifestRaw);
+      immutableWrite(join(sourceRoundDir, 'run.json'), failedRunRaw);
+      immutableWrite(join(sourceRoundDir, 'runner-source.mjs'), readFileSync(join(fixtureRound, 'runner-source.mjs')));
+      immutableWrite(join(sourceRoundDir, 'schema-source.json'), readFileSync(join(fixtureRound, 'schema-source.json')));
+      selfTestAssert(loadRoundRecord(sourceRoundsDir, 1, sourceTask).run.fallback_eligible === true, '소진 실패 fixture 검증');
+      git(['add', `docs/ai-review/tasks/${sourceTaskId}`], repoRoot);
+      git(['commit', '--quiet', '-m', 'test: add fallback failed source'], repoRoot);
+      const handoffBaseCommit = git(['rev-parse', 'HEAD'], repoRoot);
+
+      const registryHash = sha256(canonicalFindingRegistryRaw([]));
+      const artifactHash = artifactSetSha256(manifest.input_files);
+      const handoffBody = Buffer.from([
+        '## AI_DEPUTY_FALLBACK_HANDOFF · turn-o001 · r001',
+        '',
+        `- role: \`${sourceTask.gate_owner}\``,
+        `- from_task_id: \`${sourceTaskId}\``,
+        '- from_round: `r001`',
+        `- from_run_sha256: \`${sha256(failedRunRaw)}\``,
+        '- reason: `MODEL_RATE_LIMITED`',
+        `- target_commit_sha: \`${targetCommit}\``,
+        `- input_files_sha256: \`${manifest.input_files_sha256}\``,
+        `- artifact_set_sha256: \`${artifactHash}\``,
+        `- finding_registry_sha256: \`${registryHash}\``,
+        '- spent_usd: `0.25`',
+        '- remaining_usd: `3.75`',
+        `- successor_task_id: \`${successorTaskId}\``,
+        '- next_review_request: `OPUS_FALLBACK_REVIEW`',
+        '',
+      ].join('\n'));
+      const handoffEntryRaw = normalizeManualTurn(handoffBody, collaborationBefore, sourceTask);
+      const chain = validateUnifiedCollaborationChain({
+        roundsDir: sourceRoundsDir,
+        turnsDir,
+        task: sourceTask,
+        taskRaw: sourceTaskRaw,
+        collaborationRaw: collaborationBefore,
+      });
+      validateFallbackHandoffForAppend({
+        entryRaw: handoffEntryRaw,
+        roundsDir: sourceRoundsDir,
+        task: sourceTask,
+        predecessor: null,
+        chain,
+      });
+      const wrongCostEntry = normalizeManualTurn(
+        Buffer.from(handoffBody.toString('utf8').replace('- spent_usd: `0.25`', '- spent_usd: `0.26`').replace('- remaining_usd: `3.75`', '- remaining_usd: `3.74`')),
+        collaborationBefore,
+        sourceTask,
+      );
+      expectReviewError(() => validateFallbackHandoffForAppend({
+        entryRaw: wrongCostEntry, roundsDir: sourceRoundsDir, task: sourceTask, predecessor: null, chain,
+      }), { exitCode: 65, messageIncludes: '사용액·잔여액' });
+
+      const collaborationAfter = Buffer.concat([collaborationBefore, handoffEntryRaw]);
+      const runnerRaw = readFileSync(fileURLToPath(import.meta.url));
+      const sequence = chain.manualHistory.nextSequence;
+      const handoffRun = {
+        protocol_version: '1.2', task_id: sourceTaskId, sequence, run_state: 'APPEND_COMMITTED',
+        created_at: '2026-08-28T00:00:00.000Z', turn_id: 'turn-o001',
+        turn_type: 'AI_DEPUTY_FALLBACK_HANDOFF', role: sourceTask.gate_owner,
+        task_sha256: sha256(sourceTaskRaw), runner_sha256: sha256(runnerRaw),
+        previous_manual_run_sha256: chain.manualHistory.previousManualRunHash,
+        collaboration_before_sha256: sha256(collaborationBefore), collaboration_before_bytes: collaborationBefore.length,
+        collaboration_entry_sha256: sha256(handoffEntryRaw), collaboration_entry_bytes: handoffEntryRaw.length,
+        collaboration_after_sha256: sha256(collaborationAfter), collaboration_after_bytes: collaborationAfter.length,
+      };
+      const handoffRunRaw = Buffer.from(`${JSON.stringify(handoffRun, null, 2)}\n`, 'utf8');
+      const handoffDir = join(turnsDir, sequence);
+      mkdirSync(handoffDir);
+      immutableWrite(join(handoffDir, 'entry.md'), handoffEntryRaw);
+      immutableWrite(join(handoffDir, 'run.json'), handoffRunRaw);
+      immutableWrite(join(handoffDir, 'runner-source.mjs'), runnerRaw);
+      writeFileSync(join(sourceTaskDir, 'collaboration.md'), collaborationAfter);
+      git(['add', `docs/ai-review/tasks/${sourceTaskId}`], repoRoot);
+      git(['commit', '--quiet', '-m', 'test: seal fallback handoff'], repoRoot);
+      const sourceCommit = git(['rev-parse', 'HEAD'], repoRoot);
+
+      const fallbackReview = {
+        from_task_id: sourceTaskId, from_round: 'r001', from_run_sha256: sha256(failedRunRaw),
+        reason: 'MODEL_RATE_LIMITED', source_commit_sha: sourceCommit,
+        handoff_base_commit_sha: handoffBaseCommit, target_commit_sha: targetCommit,
+        input_files_sha256: manifest.input_files_sha256, artifact_set_sha256: artifactHash,
+        finding_registry_sha256: registryHash, inherited_finding_ids: [],
+        collaboration_bytes: collaborationAfter.length, collaboration_sha256: sha256(collaborationAfter),
+        handoff_turn_id: 'turn-o001', handoff_entry_sha256: sha256(handoffEntryRaw),
+        handoff_run_sha256: sha256(handoffRunRaw), spent_usd: '0.25', remaining_usd: '3.75',
+      };
+      const successorPacket = {
+        ...sourcePacket, task_id: successorTaskId,
+        reviewer_engine: FALLBACK_REVIEWER_ENGINE, reviewer_model: FALLBACK_MODEL_ID,
+        fallback_review: fallbackReview,
+      };
+      const successor = validateTask(JSON.parse(JSON.stringify(successorPacket)), successorTaskId);
+      const imported = loadPinnedFallbackReview({ repoRoot, runtime, task: successor });
+      selfTestAssert(imported.contract.task_id === sourceTaskId && imported.registryFindings.length === 0, 'fallback source 성공 승계');
+
+      const rejectsPin = (patch, messageIncludes) => {
+        const packet = structuredClone(successorPacket);
+        Object.assign(packet.fallback_review, patch);
+        const tampered = validateTask(packet, successorTaskId);
+        expectReviewError(() => loadPinnedFallbackReview({ repoRoot, runtime, task: tampered }), {
+          exitCode: 75, runState: 'STALE', messageIncludes,
+        });
+      };
+      rejectsPin({ from_run_sha256: '0'.repeat(64) }, '실패 원본');
+      rejectsPin({ handoff_entry_sha256: '0'.repeat(64) }, 'terminal fallback handoff');
+      rejectsPin({ spent_usd: '0.26', remaining_usd: '3.74' }, 'handoff 내용');
+      rejectsPin({ reason: 'MODEL_CAPACITY_UNAVAILABLE' }, '실패 원본');
+      writeFileSync(join(repoRoot, 'outside-fallback.txt'), 'contaminated\n');
+      git(['add', 'outside-fallback.txt'], repoRoot);
+      git(['commit', '--quiet', '-m', 'test: contaminate fallback source'], repoRoot);
+      rejectsPin({ source_commit_sha: git(['rev-parse', 'HEAD'], repoRoot) }, '지정 handoff 턴 하나만 추가');
     } finally {
       if (!isPathInside(tmpdir(), temporaryRoot) || resolve(temporaryRoot) === resolve(tmpdir())) {
         throw new Error(`self-test 임시 경로 안전 검사 실패: ${temporaryRoot}`);

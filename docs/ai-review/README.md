@@ -366,6 +366,20 @@ protocol 1.2 Task에 predecessor task·round·run hash와 실패 사유를 봉�
 작업 전체 상한에서 먼저 차감한다. 예시는 `templates/task-v12-primary.example.json`과
 `templates/task-v12-fallback.example.json`에 있으며 protocol 1.1 장부는 fallback handoff를 거부한다.
 
+successor의 `task_budget_usd`는 predecessor와 같아야 한다. 기본 상한 `4.00`을 넘는 Task는 실행 전에
+같은 Task 장부의 `HUMAN_DECISION` 턴에 `task_budget_usd_approved` 금액 pin이 정확히 하나 있어야 하며,
+fallback은 predecessor의 그 승인까지 검증한다. pin이 없거나 금액이 다르면
+`TASK_CAP_APPROVAL_REQUIRED`로 중단한다. 회차 비용은 각 값을 센트로 반올림해 정수로 합산하고,
+CLI envelope가 없어 `total_cost_usd=null`이면 그 회차의 `max_budget_usd` 전액을 사용한 것으로
+보수적으로 차감한다.
+
+승인 턴에는 다음 줄을 정확히 한 번 기록한다. `<승인금액>`은 `task.json`의
+`task_budget_usd`와 센트 단위로 같아야 한다.
+
+```md
+- task_budget_usd_approved: `<승인금액>`
+```
+
 `artifact_set_sha256`은 실패 회차 `manifest.json`의 `input_files` 중 `path_role=ARTIFACT`인 항목만
 `path` 오름차순으로 정렬하고, 각 항목을 `path`, `change_type`, `size`, `git_blob_oid`, `sha256`
 순서의 객체로 만든 배열을 JSON 직렬화한 뒤 끝에 LF 한 바이트를 붙인 UTF-8 bytes의 SHA-256이다.
@@ -397,6 +411,9 @@ ID(`FABLE-ARCH` 등)를 유지하고 `OPUS-FALLBACK`은 컨텍스트 ID일 뿐 �
 
 수동으로 model만 바꾼 결과는 공식 검수로 합류할 수 없다. 실행기는 실패 run·handoff-only source
 commit·장부 bytes/hash·입력/산출물/registry hash·실사용액을 검증한 새 protocol 1.2 successor만 받는다.
+fallback handoff는 실제 최신 `RUN_FAILED` 소진 회차와 모든 pin·비용이 일치할 때 한 번만 append할 수
+있다. 그 뒤 원 Task의 Fable 회차는 재개하지 않고 봉인된 successor Task만 실행한다. 잘못된 handoff는
+append 전에 거부하므로 append-only 장부를 오염시킨 뒤 다시 시도하는 경로를 만들지 않는다.
 closure 구조 계약도 protocol 1.2가 소유하지만 실제 실행은 P0-2 보호 원격 validator가 결합될 때까지
 명시적으로 중단한다.
 

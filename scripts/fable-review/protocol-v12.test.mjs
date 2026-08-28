@@ -48,6 +48,9 @@ assert.equal(fallbackInputScope('SECURITY', { hasSuccessfulRound: true }), 'FULL
 assert.equal(fallbackInputScope('SECURITY', { hasSuccessfulRound: false }), 'SOLAR_REQUEST_ONLY');
 assert.throws(() => assertFallbackResultBinding({ primary_reviewer_engine: 'FABLE', reviewer_engine: 'OPUS_FALLBACK', reviewer_model: 'claude-opus-5', findings: [{ review_state: 'VERIFIED' }] }, task), /verified_by_engine/);
 assert.doesNotThrow(() => assertFallbackResultBinding({ primary_reviewer_engine: 'FABLE', reviewer_engine: 'OPUS_FALLBACK', reviewer_model: 'claude-opus-5', findings: [{ review_state: 'VERIFIED', verified_by_engine: 'OPUS_FALLBACK' }] }, task));
+const primaryTask = { engine_contract: { engine: PRIMARY_REVIEWER_ENGINE, model: PRIMARY_MODEL_ID } };
+assert.throws(() => assertFallbackResultBinding({ primary_reviewer_engine: 'FABLE', reviewer_engine: 'FABLE', reviewer_model: PRIMARY_MODEL_ID, findings: [{ review_state: 'VERIFIED', verified_by_engine: 'OPUS_FALLBACK' }] }, primaryTask), /실제 엔진/);
+assert.throws(() => assertFallbackResultBinding({ primary_reviewer_engine: 'FABLE', reviewer_engine: 'FABLE', reviewer_model: PRIMARY_MODEL_ID, findings: [{ review_state: 'OPEN', verified_by_engine: 'FABLE' }] }, primaryTask), /VERIFIED가 아닌/);
 const closure = {
   from_task_id: 'SOURCE-001', from_round: 'r002', from_run_sha256: hash('1'),
   from_review_sha256: hash('2'), finding_registry_sha256: hash('3'),
@@ -57,4 +60,4 @@ const closure = {
 };
 assert.equal(validateClosureReview(closure, { task_id: 'CLOSURE-001', snapshot_mode: 'COMMIT' }).decision_commit_sha, oid('4'));
 assert.throws(() => validateClosureReview(closure, { task_id: 'CLOSURE-001', snapshot_mode: 'WORKING_TREE_HASHED' }), /COMMIT/);
-console.log('protocol 1.2 fallback 계약 18/18 통과');
+console.log('protocol 1.2 fallback 계약 20/20 통과');
