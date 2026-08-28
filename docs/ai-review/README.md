@@ -180,6 +180,9 @@ FABLE_REVIEW + Finding/수정 문구
 - `BACKLOG_DISPOSITION`
 - `AI_DEPUTY_GATE_DECISION`
 - `AI_DEPUTY_SUCCESSOR_HANDOFF` — 새 COMMIT Task가 이전 Finding을 재검수하도록 승인하는 기계 판독 턴
+- `AI_DEPUTY_FALLBACK_HANDOFF` — protocol 1.2 예약. 페이블 소진 successor에 predecessor
+  run·사유·registry·장부 판본을 잇는 기계 판독 턴이며 `AI-REVIEW-2` 완료 전 protocol 1.1 append는
+  거부된다
 
 솔라 응답은 각 Finding마다 `APPLIED | PARTIAL | REJECTED | NEEDS_HUMAN_DECISION`을 표시한다.
 Codex 증거는 명령, 종료 결과, 검증한 SHA, 증거 경로를 기록한다. Improvement를 즉시 반영하지
@@ -248,7 +251,10 @@ commit이어야 한다. 두 Task는 같은 `FABLE-FINAL` 경로·검수 범위�
 기존 protocol 1.1 Task는 당시 감사 원본으로만 보존하고 필드를 덧붙여 재사용하지 않는다. 새 필드가
 필요한 작업은 protocol 1.2 Task로 새로 발행하고, 적용 Learning ID는 `VERIFIED`만 허용한다.
 `CANDIDATE`·`RETIRED` ID가 있거나 `FABLE-SEC`·`FABLE-FINAL`의 `INITIAL` 클린룸 회차에 학습 필드가
-비어 있지 않으면 실행기는 실패 폐쇄한다.
+비어 있지 않으면 실행기는 실패 폐쇄한다. protocol 1.1 과도기에는 다른 역할도 `VERIFIED` Learning
+ID만 `SOLAR_REQUEST` 본문에 기록한다. 공동 장부가 입력되는 `SECURITY` route 첫 회차와
+`FABLE-FINAL` Task의 `SOLAR_REQUEST`에는 Learning ID·학습 요약을 넣지 않으며, protocol 1.2의
+기계 차단 전에는 사람 또는 AI 부 오케스트레이터의 수동 확인만이 이 제한을 통제한다.
 
 ## 7. 격리 스냅샷
 
@@ -328,6 +334,8 @@ terminal reason 또는 오류 코드로 소진됐다는 뜻이다. runner가 정
 - inherited finding ID, 허용·제외 경로와 읽기 전용 권한
 - Opus의 정확한 model ID와 작업 전체 사용 상한의 남은 범위
 - 고위험 `FABLE-SEC`·`FABLE-FINAL` 결과의 페이블 복구 후 표본 재감사 조건
+- predecessor `collaboration.md`의 append 후 bytes/hash, `AI_DEPUTY_FALLBACK_HANDOFF`
+  turn/entry/run hash와 handoff만 추가한 source commit SHA
 
 이 소진 승계는 §6의 `predecessor_review`와 다른 별도 handoff 계약이다. §6은 확정 commit을 바꿔
 `FABLE-FINAL` Finding을 재검수하는 경로이고, 소진 승계는 모든 `reviewer_role`에서 predecessor와
@@ -338,6 +346,11 @@ protocol 1.2 Task에 predecessor task·round·run hash와 실패 사유를 봉�
 소진되어 성공 회차가 없으면 inherited Finding 0건인 `INITIAL`로 실행한다. 실패 run의 실제 사용액은
 작업 전체 상한에서 먼저 차감한다. 이 handoff와 필드는 `AI-REVIEW-2` 완료 전에는 실행 가능한
 `task.json` 계약이 아니다.
+
+여기서 `INITIAL`·`RECHECK`는 inherited registry 유무에 따른 승계 의미다. `FABLE-SEC`·
+`FABLE-FINAL` successor의 실제 `task.review_mode`는 route가 정한 `SECURITY`·`FINAL`을 유지한다.
+`RECHECK` successor는 봉인된 predecessor 장부 전체를 읽기 전용 입력으로 받고, 성공 회차가 없는
+`INITIAL` successor는 predecessor `SOLAR_REQUEST`까지만 받는다.
 
 Opus도 기존과 같은 새 세션, 빈 MCP, `Read/Glob/Grep`, `--restricted`, `--safe-mode`, 제품 파일 쓰기
 금지 규칙을 사용한다. 결과가 같은 구조·의미 계약을 통과하면 실제 엔진 출처를 표시한 채 로컬
