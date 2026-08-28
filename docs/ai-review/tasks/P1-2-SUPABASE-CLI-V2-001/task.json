@@ -1,0 +1,93 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "P1-2-SUPABASE-CLI-V2-001",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R2",
+  "author_role": "SOLAR-ARCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "d092f978632c986c3af67c32cc02a72a0c96be8e",
+  "target_commit_sha": "4403ae2fdf0a4de9c755e191f274e75a1dcae3b9",
+  "target_tree_oid": "db08de9c4116f9848e71d395c57132a760156df7",
+  "agents_blob_oid": "6b12788b3d4ee02f51eb184b8820b6896363f940",
+  "agents_sha256": "acb85beb6ddee33f862621962f7d4d53b873a1e6e22376e598fac977905b2356",
+  "requirements": [
+    "P1-2-1: Supabase CLI를 2.116.0으로 고정하고 pnpm 9.12.0 실행 경로를 우회하지 않는다.",
+    "P1-2-2: CLI v2 초기화 후 마이그레이션 장부 161건과 로컬 스키마가 일치한다.",
+    "P1-2-3: db reset 후 supabase_admin 기본 ACL을 fix하고 check하지 않으면 성공으로 보고하지 않는다.",
+    "P1-2-4: 종료된 inbucket 설정을 local_smtp로 전환하되 로컬 메일 서비스는 기존처럼 비활성으로 유지한다.",
+    "P1-2-5: 스키마 및 제품 계약은 바꾸지 않고 CLI v2 타입 출력만 재생성한다.",
+    "P1-2-6: verify의 CLI 계약·ACL 단계가 Docker DB 전체 검증과 CI 선택 범위를 거짓으로 확대하지 않는다."
+  ],
+  "invariant_ids": [
+    "AGENTS:server-calculation-authority",
+    "AGENTS:migration-forward-only",
+    "AGENTS:full-local-gate",
+    "AGENTS:remote-acl-not-yet-applied",
+    "WORK-QUEUE:P1-2",
+    "BRANCH-DB:cli-v2-decision"
+  ],
+  "artifact_paths": [
+    "packages/db/package.json",
+    "package.json",
+    "packages/db/scripts/reset-local.mjs",
+    "packages/db/scripts/cli-contract.test.mjs",
+    "scripts/verify.mjs",
+    "packages/db/supabase/config.toml",
+    "packages/db/src/database.types.ts",
+    "README.md",
+    "ARCHITECTURE.md",
+    "packages/db/README.md",
+    "docs/브랜치-DB-운영-기획안.md",
+    "docs/서버-확장-아키텍처-기획안.md",
+    "docs/작업큐.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "packages/db/scripts/admin-acl.sh",
+    "packages/db/scripts/admin-acl.test.sh",
+    "packages/db/scripts/fresh-db.sh",
+    "packages/db/scripts/upgrade-check.sh",
+    "docs/team/TEAM_LEARNING.md"
+  ],
+  "evidence_paths": [],
+  "excluded_paths": [],
+  "required_evidence": [
+    "CLI 2.116.0·pnpm 9.12.0 설치 계약과 raw pnpm 우회 차단",
+    "migration list 161/161·db push dry-run 0건·db:types 반복 해시 일치",
+    "db reset 후 admin ACL fix/check·시드 19/7/22·장부 161건",
+    "corepack pnpm verify 6/6 및 fresh_* 잔류 0건",
+    "운영·스테이징 미적용과 remote ACL audit 미완료 상태를 성공으로 위장하지 않았는지 검토"
+  ],
+  "human_decisions": [
+    "2026-08-29 사용자가 기획안의 남은 작업을 우선순위대로 자동 진행하도록 승인했다.",
+    "P1-2는 로컬 CLI·장부·검증 경로 전환까지만 수행하고 운영 DB 적용은 별도 인증·배포 승인 전에 수행하지 않는다.",
+    "Fable은 기존 Claude Code Max 로그인 세션을 사용하고 4.00 USD는 실행 상한으로만 적용한다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "4.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [
+    "LRN-ORCH-CI-001",
+    "LRN-OPS-BACKUP-001"
+  ],
+  "excluded_learning_ids": [
+    {
+      "learning_id": "LRN-CODEX-TIME-001",
+      "reason": "DB 영업일 시간 독립 헬퍼는 CLI 버전·ACL 초기화 경계와 직접 관련이 없다."
+    },
+    {
+      "learning_id": "LRN-AUDIT-PIN-001",
+      "reason": "아직 CANDIDATE이므로 정책 입력으로 적용하지 않는다."
+    }
+  ]
+}
