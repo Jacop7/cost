@@ -63,7 +63,7 @@
     "기존 r001과 제한 재검수 실패 기록은 삭제·덮어쓰지 않고 보존한다."
   ],
   "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
-  "independent_request": "predecessor AI-REVIEW-2-FALLBACK-CONTINUITY-001 r001의 Finding 5건(SEC-FB-001-TASK-CAP-RAISE-UNCHECKED, SEC-FB-002-VERIFIED-BY-ENGINE-MISATTRIBUTION, SEC-FB-003-FALLBACK-RUNNER-NEGATIVE-TESTS-MISSING, SEC-FB-004-HANDOFF-APPEND-UNBOUND, SEC-FB-005-SPENT-ROUNDING-NULL-COST)이 target commit에서 실제로 수정됐는지 각각 같은 finding_id로 확인하라. 이 5개는 전부 predecessor에서 승계된 Finding이므로 각 결과의 previous_finding_id는 반드시 자신의 finding_id와 정확히 같아야 한다. acceptance criteria와 required tests가 충족되면 VERIFIED로 반환하라. 상한·엔진 표시·handoff append·센트 비용·실패 status 복구 계약과 protocol 1.1 호환성을 코드·시험·문서에서 교차 대조하라. 범위를 TEAM-LEARNING이나 제품 기능으로 넓히지 말고 공식 CLOSED를 선언하지 말라.",
+  "independent_request": null,
   "predecessor_review": {
     "task_id": "AI-REVIEW-2-FALLBACK-CONTINUITY-001",
     "source_commit_sha": "02c202a5d65459335624b40837913494a2325867",
