@@ -1,0 +1,86 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-REVIEW-2-FALLBACK-CONTINUITY-FINAL-003",
+  "route": "SECURITY",
+  "risk_level": "R3",
+  "author_role": "AI-DEPUTY-ORCHESTRATOR",
+  "reviewer_role": "FABLE-SEC",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "SECURITY",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "4eadc9a185204ae8bf27a69cd9c40f25e0ed05ba",
+  "target_commit_sha": "f1db6cc4bca7b9f3ca80620098610b09174bb126",
+  "target_tree_oid": "0003476890949437b1e6ec02da1a7683598deef1",
+  "agents_blob_oid": "64b82275832bb6ce981b419294a428e77383be3e",
+  "agents_sha256": "0f1dd530a46174aeff884146569b2e2534f6ec8b544b531054f48e86b84c0f97",
+  "requirements": [
+    "SEC-FB-001: predecessor와 successor의 작업 상한이 같고 기본 4.00 USD 초과는 같은 Task 장부의 정확한 HUMAN_DECISION pin 없이 실행되지 않아야 한다.",
+    "SEC-FB-002: 모든 VERIFIED Finding의 verified_by_engine은 실제 실행 엔진과 같고 비-VERIFIED Finding은 null이어야 한다.",
+    "SEC-FB-003: fallback import pin 변조, closure 조기 실행, Opus 실패 재-fallback을 부정 시험이 실제로 거부해야 한다.",
+    "SEC-FB-004: fallback handoff는 최신 allowlist 소진 실패 run과 모든 hash·비용이 일치할 때 한 번만 append되고 이후 원 Task Fable 재시도가 차단돼야 한다.",
+    "SEC-FB-005: 비용은 회차별 센트 정수로 합산하고 total_cost_usd null은 해당 회차 상한 전액으로 차감해야 한다.",
+    "실패 회차 복구와 재조정 후에도 fallback_reason과 실제 reviewer engine/model이 status.json에 보존돼야 한다.",
+    "protocol 1.1 기록과 제품 검증 6단계를 깨뜨리지 않아야 한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:ai-review-shared-ledger",
+    "AGENTS:local-verification-gate",
+    "WORK-QUEUE:AI-REVIEW-2",
+    "AI-REVIEW:append-only-audit",
+    "AI-REVIEW:fable-primary-opus-fallback"
+  ],
+  "artifact_paths": [
+    "scripts/fable-review.mjs",
+    "scripts/fable-review/protocol-v12.mjs",
+    "scripts/fable-review/protocol-v12.test.mjs",
+    "docs/ai-review/README.md",
+    "docs/팀구성_상세기획안.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/ai-review/schema-v1.json"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/tasks/AI-REVIEW-2-FALLBACK-CONTINUITY-001/rounds/r001/review.json",
+    "docs/ai-review/tasks/AI-REVIEW-2-FALLBACK-CONTINUITY-001/rounds/r001/run.json",
+    "docs/ai-review/tasks/AI-REVIEW-2-FALLBACK-CONTINUITY-001/turns/t0001/entry.md",
+    "docs/ai-review/tasks/AI-REVIEW-2-FALLBACK-CONTINUITY-RECHECK-002/rounds/r001/run.json"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "SEC-FB-001~005를 각각 같은 finding_id와 previous_finding_id로 재검증한 결과",
+    "fallback-successor-import-rejects-any-tampered-pin 통합 부정 시험",
+    "closure-successor-halts-before-p0-2와 opus-failure-is-fallback-unavailable 시험",
+    "Fable wrapper self-test 39개 묶음과 protocol 1.2 계약 20/20",
+    "corepack pnpm verify 6/6"
+  ],
+  "human_decisions": [
+    "2026-08-28 사용자는 기존 Claude Code Max 로그인 세션으로 Fable 기본 검수를 실행하도록 승인했다.",
+    "2026-08-29 사용자는 0.42 USD 제한 재검수가 결과 생성 전 종료된 후 Fable 최종 재검수 진행을 승인했다.",
+    "이 후속 Task의 실행 상한은 4.00 USD이며 별도 API 결제가 아닌 Max CLI 실행 가드다.",
+    "Opus는 이 재검수에서 사용하지 않으며 Fable의 구조화된 모델 소진과 별도 사용자 승인이 있을 때만 대체 경로로 고려한다.",
+    "기존 r001과 제한 재검수 실패 기록은 삭제·덮어쓰지 않고 보존한다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": "predecessor AI-REVIEW-2-FALLBACK-CONTINUITY-001 r001의 Finding 5건(SEC-FB-001-TASK-CAP-RAISE-UNCHECKED, SEC-FB-002-VERIFIED-BY-ENGINE-MISATTRIBUTION, SEC-FB-003-FALLBACK-RUNNER-NEGATIVE-TESTS-MISSING, SEC-FB-004-HANDOFF-APPEND-UNBOUND, SEC-FB-005-SPENT-ROUNDING-NULL-COST)이 target commit에서 실제로 수정됐는지 각각 같은 finding_id로 확인하라. 이 5개는 전부 predecessor에서 승계된 Finding이므로 각 결과의 previous_finding_id는 반드시 자신의 finding_id와 정확히 같아야 한다. acceptance criteria와 required tests가 충족되면 VERIFIED로 반환하라. 상한·엔진 표시·handoff append·센트 비용·실패 status 복구 계약과 protocol 1.1 호환성을 코드·시험·문서에서 교차 대조하라. 범위를 TEAM-LEARNING이나 제품 기능으로 넓히지 말고 공식 CLOSED를 선언하지 말라.",
+  "predecessor_review": {
+    "task_id": "AI-REVIEW-2-FALLBACK-CONTINUITY-001",
+    "source_commit_sha": "02c202a5d65459335624b40837913494a2325867",
+    "round": "r001",
+    "task_sha256": "a49addd45badfd8c3b476d216a20b2257c62220d111f1f6ce4bde89431acc288",
+    "manifest_sha256": "cffd9ba037b9462f807b7a64a452c4e68cf1a79e0a34e2499fb494a05725b211",
+    "run_sha256": "2c7d8b7114a19f8a112d2f183378f7b4e234883f268cad8279b9ad7f1c5a2bbb",
+    "review_sha256": "56fc8813423b4634c17436c748f7036cccccec05bf2062f04af05b121800d0d0",
+    "finding_registry_sha256": "b6a9155d3a2d8afdb2017af9a79d51e75a8c0d4917b1fe3b6b0b9483a3998275",
+    "handoff_turn_id": "turn-o001",
+    "handoff_entry_sha256": "9505bb0720eb193baff494d6e40d068212ab6b87fd2614391782e6fb59ac122b",
+    "handoff_run_sha256": "4d230dae5be033d8fc6979b432558cb20a1e3393915471b6c9d5114465a32363"
+  },
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "4.00",
+  "fallback_review": null,
+  "closure_review": null
+}
