@@ -1,0 +1,398 @@
+{
+  "title": "Sikjae reviewer engine-bound result v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "task_id",
+    "reviewer_role",
+    "review_mode",
+    "snapshot_mode",
+    "baseline_commit_sha",
+    "target_commit_sha",
+    "target_tree_oid",
+    "agents_blob_oid",
+    "agents_sha256",
+    "task_sha256",
+    "collaboration_sha256",
+    "input_files_sha256",
+    "schema_sha256",
+    "runner_sha256",
+    "verdict",
+    "summary",
+    "findings",
+    "proposed_edits",
+    "closed_finding_ids",
+    "reopened_finding_ids",
+    "remaining_required_finding_ids",
+    "primary_reviewer_engine",
+    "reviewer_engine",
+    "reviewer_model",
+    "applied_learning_ids",
+    "excluded_learning_ids"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "2.0"
+    },
+    "task_id": {
+      "type": "string",
+      "pattern": "^[A-Z0-9][A-Z0-9_-]{2,63}$"
+    },
+    "reviewer_role": {
+      "type": "string",
+      "enum": [
+        "FABLE-ARCH",
+        "FABLE-SEC",
+        "FABLE-STRATEGY",
+        "FABLE-FINAL"
+      ]
+    },
+    "review_mode": {
+      "type": "string",
+      "enum": [
+        "INITIAL",
+        "RECHECK",
+        "SECURITY",
+        "FINAL",
+        "SMOKE"
+      ]
+    },
+    "snapshot_mode": {
+      "type": "string",
+      "enum": [
+        "COMMIT",
+        "WORKING_TREE_HASHED"
+      ]
+    },
+    "baseline_commit_sha": {
+      "$ref": "#/$defs/git_oid"
+    },
+    "target_commit_sha": {
+      "$ref": "#/$defs/git_oid"
+    },
+    "target_tree_oid": {
+      "$ref": "#/$defs/git_oid"
+    },
+    "agents_blob_oid": {
+      "$ref": "#/$defs/git_oid"
+    },
+    "agents_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "task_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "collaboration_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "input_files_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "schema_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "runner_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "verdict": {
+      "type": "string",
+      "enum": [
+        "PASS",
+        "CHANGES_REQUIRED",
+        "BLOCKED",
+        "DISPUTED"
+      ]
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4000
+    },
+    "findings": {
+      "type": "array",
+      "description": "Full active finding registry for this task. During RECHECK, including a handoff-authorized successor Task, repeat every prior non-CLOSED finding with the same ID, severity, and category until formal closure.",
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/$defs/finding"
+      }
+    },
+    "proposed_edits": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/$defs/proposed_edit"
+      }
+    },
+    "closed_finding_ids": {
+      "type": "array",
+      "description": "Reserved for a future P0-2 protected-gate-backed non-CLOSED to CLOSED transition. The current local runner rejects new CLOSED transitions.",
+      "uniqueItems": true,
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/$defs/finding_id"
+      }
+    },
+    "reopened_finding_ids": {
+      "type": "array",
+      "description": "Only IDs transitioning from CLOSED to OPEN in this round.",
+      "uniqueItems": true,
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/$defs/finding_id"
+      }
+    },
+    "remaining_required_finding_ids": {
+      "type": "array",
+      "description": "Exact set of OPEN or DISPUTED non-Improvement finding IDs. VERIFIED is locally resolved and excluded; CLOSED is formal external closure.",
+      "uniqueItems": true,
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/$defs/finding_id"
+      }
+    },
+    "primary_reviewer_engine": {
+      "const": "FABLE"
+    },
+    "reviewer_engine": {
+      "enum": [
+        "FABLE",
+        "OPUS_FALLBACK"
+      ]
+    },
+    "reviewer_model": {
+      "enum": [
+        "claude-fable-5",
+        "claude-opus-5"
+      ]
+    },
+    "applied_learning_ids": {
+      "const": [
+        "LRN-ORCH-CI-001"
+      ]
+    },
+    "excluded_learning_ids": {
+      "const": [
+        {
+          "learning_id": "LRN-CODEX-TIME-001",
+          "reason": "DB 영업일 시간 독립 시험은 이번 AI 검수 실행기 변경 범위와 직접 관련이 없다."
+        },
+        {
+          "learning_id": "LRN-OPS-BACKUP-001",
+          "reason": "개발 DB 백업·복구 절차는 이번 학습 컨텍스트 계약 변경에 적용되지 않는다."
+        },
+        {
+          "learning_id": "LRN-AUDIT-PIN-001",
+          "reason": "아직 CANDIDATE이고 이번 구현은 선택 fixture pin 잔여 자체를 변경하지 않는다."
+        }
+      ]
+    }
+  },
+  "$defs": {
+    "git_oid": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "finding_id": {
+      "type": "string",
+      "pattern": "^[A-Z0-9][A-Z0-9_-]{2,95}$"
+    },
+    "short_text": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "line_start",
+        "line_end",
+        "observation"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        },
+        "line_start": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "line_end": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "observation": {
+          "$ref": "#/$defs/short_text"
+        }
+      }
+    },
+    "finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "finding_id",
+        "severity",
+        "review_state",
+        "category",
+        "requirement_or_invariant_ids",
+        "evidence",
+        "impact",
+        "acceptance_criteria",
+        "required_tests",
+        "previous_finding_id",
+        "verified_by_engine"
+      ],
+      "properties": {
+        "finding_id": {
+          "$ref": "#/$defs/finding_id"
+        },
+        "severity": {
+          "type": "string",
+          "enum": [
+            "Blocker",
+            "Critical",
+            "Major",
+            "Minor",
+            "Improvement"
+          ]
+        },
+        "review_state": {
+          "type": "string",
+          "enum": [
+            "OPEN",
+            "VERIFIED",
+            "CLOSED",
+            "DISPUTED"
+          ],
+          "description": "OPEN and DISPUTED are unresolved. VERIFIED means acceptance criteria were locally confirmed and does not close the external gate. CLOSED requires the future P0-2 protected gate."
+        },
+        "category": {
+          "type": "string",
+          "enum": [
+            "POLICY",
+            "ARCHITECTURE",
+            "DATA_INTEGRITY",
+            "SECURITY",
+            "CODE",
+            "UX",
+            "TEST_GAP",
+            "OPERATIONS",
+            "OTHER"
+          ]
+        },
+        "requirement_or_invariant_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 50,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          }
+        },
+        "evidence": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 20,
+          "items": {
+            "$ref": "#/$defs/evidence"
+          }
+        },
+        "impact": {
+          "$ref": "#/$defs/short_text"
+        },
+        "acceptance_criteria": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 20,
+          "items": {
+            "$ref": "#/$defs/short_text"
+          }
+        },
+        "required_tests": {
+          "type": "array",
+          "maxItems": 20,
+          "items": {
+            "$ref": "#/$defs/short_text"
+          }
+        },
+        "previous_finding_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[A-Z0-9][A-Z0-9_-]{2,95}$"
+        },
+        "verified_by_engine": {
+          "enum": [
+            null,
+            "FABLE",
+            "OPUS_FALLBACK"
+          ]
+        }
+      }
+    },
+    "proposed_edit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "edit_id",
+        "path",
+        "anchor",
+        "operation",
+        "proposed_text",
+        "rationale",
+        "finding_ids"
+      ],
+      "properties": {
+        "edit_id": {
+          "type": "string",
+          "pattern": "^[A-Z0-9][A-Z0-9_-]{2,95}$"
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        },
+        "anchor": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000,
+          "pattern": "^[^\\r\\n]+$"
+        },
+        "operation": {
+          "type": "string",
+          "enum": [
+            "ADD",
+            "REPLACE",
+            "DELETE",
+            "COMMENT"
+          ]
+        },
+        "proposed_text": {
+          "type": "string",
+          "maxLength": 12000
+        },
+        "rationale": {
+          "$ref": "#/$defs/short_text"
+        },
+        "finding_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 20,
+          "items": {
+            "$ref": "#/$defs/finding_id"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "TEAM-LEARNING-IMPL-003",
+  "sequence": "t0001",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-08-28T20:04:39.037Z",
+  "turn_id": "turn-c001",
+  "turn_type": "CODEX_EVIDENCE",
+  "role": "CODEX-FUNCTION-QA",
+  "task_sha256": "03967854b5496060a0bb14f75aaeb9851c90d893ee663820447043d4f771d545",
+  "runner_sha256": "59c2d0194b5578b0c2e18da15b1be040228daa60c98090500b7acf992345ac4e",
+  "previous_manual_run_sha256": null,
+  "collaboration_before_sha256": "94dd3b4ab0f786f94b1576fe2e3672571fe20a32a8540569142b471b167a8543",
+  "collaboration_before_bytes": 3803,
+  "collaboration_entry_sha256": "8db4679054e1db92410e2d2544377efdc8e50ee7f884a004bb99b284f31287a1",
+  "collaboration_entry_bytes": 868,
+  "collaboration_after_sha256": "e833ceedd5f31fd331ab1b5c4eaca3398354c6a4cd6bfc94be03b2bb5b9ad81c",
+  "collaboration_after_bytes": 4671
+}
