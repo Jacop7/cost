@@ -281,8 +281,8 @@ manifest는 target 장부 blob·내용 hash와 적용 집합 hash를 봉인한�
 범위·금지 재사용·체크리스트만 주입한다. predecessor가 있는 보안 후속 Task에는 ID 목록만 전달하고
 제외 사유를 포함한 학습 요약은 전달하지 않는다. fallback successor는 predecessor와 같은 적용·제외
 집합 및 그 hash를 가져야 한다. `FINAL_INDEPENDENT` 모든 Task와 predecessor가 없는 최초 `SECURITY`
-Task는 적용·제외 배열이 모두 비어 있어야 한다. 최종 독립 감사의 요청·요구·사람 결정·필수 증거와
-두 경로의 공동 장부 전체에 Learning ID·학습 요약 표식이 있어도 실행기와 append 경로가 거부한다.
+Task는 적용·제외 배열이 모두 비어 있어야 한다. 두 경로의 Task 요청·요구·사람 결정·필수 증거와
+공동 장부 전체에 Learning ID·학습 요약 표식이 있어도 실행기와 append 경로가 거부한다.
 상세 역할 규칙은 [`docs/team/ROLE_CONTEXTS.md`](../team/ROLE_CONTEXTS.md),
 학습 원장은 [`docs/team/TEAM_LEARNING.md`](../team/TEAM_LEARNING.md)가 소유한다.
 

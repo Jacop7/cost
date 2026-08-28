@@ -684,7 +684,7 @@ function assertLearningCleanRoom(task, collaborationRaw) {
     const turn = [...prefix.matchAll(/^## ([A-Z_]+)\s+·\s+(turn-[scho]\d{3})/gm)].at(-1)?.[2] ?? '장부 머리말';
     throw new ReviewError(`독립 종합 감사와 최초 보안 감사의 ${turn}에 학습 표식(${collaborationMatch[0]})을 넣을 수 없습니다.`, { exitCode: 65 });
   }
-  if (task.route === 'FINAL_INDEPENDENT') {
+  if (mustBeClean) {
     for (const [field, values] of [
       ['independent_request', [task.independent_request]],
       ['requirements', task.requirements],
@@ -693,7 +693,7 @@ function assertLearningCleanRoom(task, collaborationRaw) {
     ]) {
       const match = LEARNING_SUMMARY_MARKER_RE.exec((values ?? []).filter(Boolean).join('\n'));
       if (match) {
-        throw new ReviewError(`FINAL_INDEPENDENT ${field}에 학습 표식(${match[0]})을 넣을 수 없습니다.`, { exitCode: 65 });
+        throw new ReviewError(`${task.route} ${field}에 학습 표식(${match[0]})을 넣을 수 없습니다.`, { exitCode: 65 });
       }
     }
   }
@@ -6043,6 +6043,13 @@ function runSelfTests() {
         independent_request: 'LRN-ORCH-TEST-001을 적용하라',
       }, Buffer.from('# clean log\n', 'utf8')),
       { exitCode: 65, messageIncludes: 'independent_request' },
+    );
+    expectReviewError(
+      () => assertLearningCleanRoom({
+        ...securityTask,
+        human_decisions: ['LRN-ORCH-TEST-001을 보안 감사에 적용한다.'],
+      }, Buffer.from('# clean log\n', 'utf8')),
+      { exitCode: 65, messageIncludes: 'SECURITY human_decisions' },
     );
     assertLearningCleanRoom({ ...securityTask, predecessor_review: {} }, Buffer.from('# log\n## SOLAR_REQUEST · turn-s001 · r001\n- applied_learning_ids: LRN-ORCH-TEST-001', 'utf8'));
   });

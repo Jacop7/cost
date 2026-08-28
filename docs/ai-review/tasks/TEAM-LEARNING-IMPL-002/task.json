@@ -1,0 +1,101 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "TEAM-LEARNING-IMPL-002",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R3",
+  "author_role": "SOLAR-ORCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "e799f42676aa607b9f7a6ce1f3739bed99fe9b5e",
+  "target_commit_sha": "a4fd66c4e9452000f32ac5786769e777f7af624f",
+  "target_tree_oid": "38a71b1c8d7ac5e7627bce68f204cbc8388577a9",
+  "agents_blob_oid": "64b82275832bb6ce981b419294a428e77383be3e",
+  "agents_sha256": "0f1dd530a46174aeff884146569b2e2534f6ec8b544b531054f48e86b84c0f97",
+  "requirements": [
+    "TEAM-LEARNING-1-1: target 장부의 blob·SHA와 학습 배정 SHA를 봉인하고 같은 작업 안의 학습 승격을 신뢰하지 않는다.",
+    "TEAM-LEARNING-1-2: FINAL_INDEPENDENT와 최초 SECURITY의 실제 전체 입력에서 학습 ID·요약을 사전에 차단한다.",
+    "TEAM-LEARNING-1-3: 수동 턴 append는 파일을 쓰기 전에 클린룸 계약을 확인한다.",
+    "TEAM-LEARNING-1-4: 만료는 target commit 날짜와 실행 UTC 날짜 중 더 늦은 날짜를 기준으로 판단한다.",
+    "TEAM-LEARNING-1-5: successor·fallback은 predecessor와 학습 배정이 정확히 같고 assignment hash가 일치해야 한다.",
+    "TEAM-LEARNING-1-6: predecessor r001의 Finding 5건을 같은 finding_id로 재확인한다.",
+    "TEAM-LEARNING-1-7: protocol 1.1 및 기존 protocol 1.2 감사 원본 호환을 유지한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:single-canonical-artifact",
+    "AGENTS:fable-append-only-ledger",
+    "AGENTS:team-learning-context",
+    "WORK-QUEUE:TEAM-LEARNING-1",
+    "AI-REVIEW:immutable-rounds",
+    "AI-REVIEW:independent-clean-room"
+  ],
+  "artifact_paths": [
+    "scripts/fable-review.mjs",
+    "docs/team/TEAM_LEARNING.md",
+    "docs/team/ROLE_CONTEXTS.md",
+    "docs/ai-review/README.md",
+    "docs/ai-review/templates/task-v12-primary.example.json",
+    "docs/ai-review/templates/task-v12-fallback.example.json",
+    "docs/팀구성_상세기획안.md",
+    "docs/작업큐.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "scripts/fable-review/schema-v1.json",
+    "scripts/fable-review/protocol-v12.mjs",
+    "scripts/fable-review/protocol-v12.test.mjs"
+  ],
+  "evidence_paths": [],
+  "excluded_paths": [],
+  "required_evidence": [
+    "predecessor r001의 Finding 5건을 동일 finding_id와 previous_finding_id로 재확인",
+    "fable:self-test 50개 묶음과 protocol 1.2 계약 22/22",
+    "corepack pnpm verify 6/6",
+    "장부 blob·배정 hash·같은 commit 승격·전체 클린룸 입력·append 사전 차단·만료·successor/fallback 부정 시험"
+  ],
+  "human_decisions": [
+    "2026-08-29 사용자가 기획안의 남은 작업을 승인 없이 자동으로 진행하도록 승인했다.",
+    "기존 Claude Code Max 로그인 세션을 사용하고 Fable 검수 비용 표시는 실행 상한으로만 관리한다.",
+    "predecessor r001 감사 원본과 CHANGES_REQUIRED 결과를 보존하고 immutable successor에서 재검수한다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": {
+    "task_id": "TEAM-LEARNING-IMPL-001",
+    "source_commit_sha": "52fe84b61016b5a65d328cd55b8a1862d2447372",
+    "round": "r001",
+    "task_sha256": "d1adaed6bdfad675b2b9366c13654e2376383fe51acbae081981762cae72f7a5",
+    "manifest_sha256": "2ec8ceb6fc0ea72c674de1f252944f6fd34000c379caaf4595fab5657f12218e",
+    "run_sha256": "4a60d56642cb2b49b0bed2a703a474b608f9ff7e21678da20e8f0f945d94e832",
+    "review_sha256": "476c7e535636dd43a2d065a2fa5b130a12be5cd611936c8e6d7d7170976f58bc",
+    "finding_registry_sha256": "b26f124f17cafa12a26846db39b2d7315f5b9877a5b2a3488b5e8de2fcf3445f",
+    "handoff_turn_id": "turn-o001",
+    "handoff_entry_sha256": "3c76efd894b47f50b59b7ab11f4ed487a4ea4d831c023dbce75741aee4fdc2e6",
+    "handoff_run_sha256": "ab64fe27af321f3c76762ce35edfa76f1daff778cddccec3c2bf8ab9d25ada99"
+  },
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "4.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [
+    "LRN-ORCH-CI-001"
+  ],
+  "excluded_learning_ids": [
+    {
+      "learning_id": "LRN-CODEX-TIME-001",
+      "reason": "DB 영업일 시간 독립 시험은 이번 AI 검수 실행기 변경 범위와 직접 관련이 없다."
+    },
+    {
+      "learning_id": "LRN-OPS-BACKUP-001",
+      "reason": "개발 DB 백업·복구 절차는 이번 학습 컨텍스트 계약 변경에 적용되지 않는다."
+    },
+    {
+      "learning_id": "LRN-AUDIT-PIN-001",
+      "reason": "아직 CANDIDATE이고 이번 구현은 선택 fixture pin 잔여 자체를 변경하지 않는다."
+    }
+  ]
+}

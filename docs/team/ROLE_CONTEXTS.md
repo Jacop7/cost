@@ -34,7 +34,7 @@
   hash를 봉인한다.
 - protocol 1.1과 TEAM-LEARNING-1 이전 protocol 1.2 Task는 당시 원본으로 보존한다.
 - `FINAL_INDEPENDENT` 모든 Task와 predecessor가 없는 최초 `SECURITY` Task는 두 배열이 모두
-  비어 있어야 한다. 최종 독립 감사의 요청·요구·사람 결정·필수 증거와 두 경로의 공동 장부 전체에도
+  비어 있어야 한다. 두 경로의 Task 요청·요구·사람 결정·필수 증거와 공동 장부 전체에도
   Learning ID·학습 요약을 넣지 않는다.
 - predecessor가 있는 보안 후속 Task는 `VERIFIED` 적용·제외 ID 목록만 받을 수 있고 제외 사유를
   포함한 학습 요약 본문은 받지 않는다.
