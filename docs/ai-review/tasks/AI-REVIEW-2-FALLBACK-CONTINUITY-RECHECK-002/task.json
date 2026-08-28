@@ -1,0 +1,70 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-REVIEW-2-FALLBACK-CONTINUITY-RECHECK-002",
+  "route": "SECURITY",
+  "risk_level": "R3",
+  "author_role": "SOLAR-ARCH",
+  "reviewer_role": "FABLE-SEC",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "SECURITY",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "4eadc9a185204ae8bf27a69cd9c40f25e0ed05ba",
+  "target_commit_sha": "edd66b7a6eee0abaaedeb447d4b0023946bae60f",
+  "target_tree_oid": "31ed205b03930505f614ed4640e645bdaa8a7747",
+  "agents_blob_oid": "64b82275832bb6ce981b419294a428e77383be3e",
+  "agents_sha256": "0f1dd530a46174aeff884146569b2e2534f6ec8b544b531054f48e86b84c0f97",
+  "requirements": [
+    "SEC-FB-001: predecessor와 fallback successor의 작업 상한이 같고 기본 4.00 USD 초과는 같은 Task 장부의 정확한 HUMAN_DECISION pin 없이는 실행되지 않아야 한다.",
+    "SEC-FB-002: 모든 VERIFIED Finding의 verified_by_engine은 실제 실행 엔진과 같고 비-VERIFIED Finding은 null이어야 한다.",
+    "SEC-FB-003: fallback import pin 변조, closure 조기 실행, Opus 실패 재-fallback을 부정 시험이 실제로 거부해야 한다.",
+    "SEC-FB-004: fallback handoff는 최신 allowlist 소진 실패 run과 모든 hash·비용이 일치할 때 한 번만 append되고 이후 원 Task Fable 재시도가 차단돼야 한다.",
+    "SEC-FB-005: 비용은 회차별 센트 정수로 합산하고 total_cost_usd null은 해당 회차 상한 전액으로 차감해야 한다.",
+    "기존 protocol 1.1 기록과 제품 검증 6단계를 깨뜨리지 않아야 한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:ai-review-shared-ledger",
+    "AGENTS:local-verification-gate",
+    "WORK-QUEUE:AI-REVIEW-2",
+    "AI-REVIEW:append-only-audit",
+    "AI-REVIEW:fable-primary-opus-fallback"
+  ],
+  "artifact_paths": [
+    "scripts/fable-review.mjs",
+    "scripts/fable-review/protocol-v12.mjs",
+    "scripts/fable-review/protocol-v12.test.mjs",
+    "docs/ai-review/README.md",
+    "docs/팀구성_상세기획안.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/ai-review/schema-v1.json"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/tasks/AI-REVIEW-2-FALLBACK-CONTINUITY-001/rounds/r001/review.md",
+    "docs/ai-review/tasks/AI-REVIEW-2-FALLBACK-CONTINUITY-001/rounds/r001/review.json",
+    "docs/ai-review/tasks/AI-REVIEW-2-FALLBACK-CONTINUITY-001/rounds/r001/run.json"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "SEC-FB-001~005 각각의 수정 코드와 같은 Finding ID의 판정",
+    "fallback-successor-import-rejects-any-tampered-pin 통합 부정 시험",
+    "closure-successor-halts-before-p0-2와 opus-failure-is-fallback-unavailable 시험",
+    "fable:self-test 39개 묶음과 protocol 1.2 계약 20/20",
+    "corepack pnpm verify 6/6"
+  ],
+  "human_decisions": [
+    "2026-08-28 사용자는 기존 Claude Code Max 로그인 세션을 사용하고 이번 AI-REVIEW-2 검수 전체를 4.00 USD 실행 상한 안에서 진행하도록 승인했다.",
+    "원 r001의 센트 단위 비용 3.58 USD를 차감한 잔여 0.42 USD만 이 재검수 Task에 배정한다.",
+    "Opus는 Fable의 구조화된 모델 소진 때만 사용하며 작업 상한 부족은 fallback 사유가 아니다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "0.42",
+  "fallback_review": null,
+  "closure_review": null
+}
