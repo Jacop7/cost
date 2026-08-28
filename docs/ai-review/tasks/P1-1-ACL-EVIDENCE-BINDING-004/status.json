@@ -1,0 +1,24 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "P1-1-ACL-EVIDENCE-BINDING-004",
+  "predecessor_review": null,
+  "updated_at": "2026-08-28T11:31:29.510Z",
+  "latest_round": "r001",
+  "review_state": "OPEN",
+  "workflow_state": "FIXING",
+  "gate_state": "OPEN",
+  "run_state": "RESULT_RECEIVED",
+  "defect_state": "NOT_APPLICABLE",
+  "verdict": "CHANGES_REQUIRED",
+  "latest_run_sha256": "f74aaaa629f07859df65cee68798d9ce4bfb8a367040736c8772ab97b7341829",
+  "open_required_finding_ids": [
+    "P1-1-BINDING-004-FINAL-VERIFY-V2-UNBOUND"
+  ],
+  "open_optional_finding_ids": [
+    "P1-1-BINDING-004-V1-WORDING-NOTE"
+  ],
+  "closed_finding_ids": [],
+  "candidate_review_state": null,
+  "candidate_review_sha256": null,
+  "backlog_dispositions": []
+}

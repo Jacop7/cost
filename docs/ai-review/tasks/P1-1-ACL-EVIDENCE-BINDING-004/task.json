@@ -1,0 +1,48 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "P1-1-ACL-EVIDENCE-BINDING-004",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R3",
+  "author_role": "SOLAR-DB",
+  "reviewer_role": "FABLE-SEC",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "474d087fa341a70bb792cd10bd9f6907985e6617",
+  "target_commit_sha": "d1942efdbe5ebaa01e858cc9813ef9763ffd9b61",
+  "target_tree_oid": "6acebf973c9b74cb748ed9a38bf52793a0f542cd",
+  "agents_blob_oid": "64b82275832bb6ce981b419294a428e77383be3e",
+  "agents_sha256": "0f1dd530a46174aeff884146569b2e2534f6ec8b544b531054f48e86b84c0f97",
+  "requirements": [
+    "P1-1-EVIDENCE-1: 사보타주 실행 판본을 target commit과 admin-acl-audit.test.mjs SHA-256에 결속한다.",
+    "P1-1-EVIDENCE-2: 핵심 실패 출력을 의역으로 위장하지 않고 실제 stderr 문자열로 기록한다.",
+    "P1-1-EVIDENCE-3: V1·V2 해시가 해당 commit의 시험 blob과 일치하고 최종 verify 결과가 V2에 연결된다."
+  ],
+  "invariant_ids": [
+    "AGENTS:inspection-execution",
+    "P1-1-SUPPORT-003-EVIDENCE-VERBATIM-BINDING"
+  ],
+  "artifact_paths": [
+    "docs/ai-review/evidence/P1-1-ACL-SUPPORT-SOURCE-002.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "packages/db/scripts/admin-acl-audit.test.mjs",
+    "packages/db/scripts/admin-acl-audit.sql"
+  ],
+  "evidence_paths": [],
+  "excluded_paths": [],
+  "required_evidence": [
+    "V1·V2 시험 파일 SHA-256과 해당 commit blob 실측 일치",
+    "metric 누락·중복·장부·RPC·부채 실패 문자열과 현재 fail() 문구 대조",
+    "V2에서 실행한 corepack pnpm verify 6/6 exit 0와 fresh DB 0개"
+  ],
+  "human_decisions": [
+    "2026-08-28 사용자가 페이블 필수 지적을 계속 반영하도록 승인했다.",
+    "비차단 Improvement 3건은 별도 후속 범위로 유지하고 이 Task는 필수 증거 결속만 판정한다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null
+}

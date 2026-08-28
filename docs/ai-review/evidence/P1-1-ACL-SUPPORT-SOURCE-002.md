@@ -30,6 +30,8 @@ r001의 필수 Finding은 보안 metric 값 미봉인, 동적 RPC 건너뜀, 실
 | V2 | `474d087fa341a70bb792cd10bd9f6907985e6617` | `380afade0352ace4165f52487b701bac037b4575400cc5843b2b6407cd0a6575` |
 
 `실제 stderr`는 `admin-acl audit 회귀시험 실패:` 접두사부터 검수가 출력한 문자열을 그대로 적었다.
+V1의 `부채가 기준선을 넘었습니다`는 V1 시험 원문이며, V2에서 정수 검사가 추가돼
+`부채가 기준선을 넘었거나 정수가 아닙니다`로 바뀌었다.
 
 | 판본 | 사보타주 | exit | 실제 stderr |
 | --- | --- | ---: | --- |
@@ -54,7 +56,10 @@ r001의 필수 Finding은 보안 metric 값 미봉인, 동적 RPC 건너뜀, 실
 
 ## 최종 검증
 
-`corepack pnpm verify` 종료 코드는 0이었다.
+최종 검증은 V2(target commit `474d087fa341a70bb792cd10bd9f6907985e6617`,
+`admin-acl-audit.test.mjs` SHA-256 `380afade0352ace4165f52487b701bac037b4575400cc5843b2b6407cd0a6575`)
+작업 트리에서 모든 사보타주를 복구한 뒤 실행했다. 아래 `fresh_%` DB 개수와 보안 관측값도
+같은 V2 실행의 값이다. `corepack pnpm verify` 종료 코드는 0이었다.
 
 ```text
 ok     ① 타입 (pnpm -r typecheck)
