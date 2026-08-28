@@ -24,6 +24,11 @@ SHA를 임시 읽기 전용 checkout해 hash-chain만 검증하고 폐기하는 
 `AGENTS.md`는 protocol 1.1의 모든 작업에서 `reference_paths`에만 둔다. 정책 문서 자체를 바꾸려면
 그 변경만을 위한 별도 Task와 사람 승인 경로를 연다.
 
+`docs/ai-review/tasks/**`는 기본적으로 실행 상태를 담는 제어 경로라 스냅샷에서 제외한다. 다만
+Task가 그 아래의 정확한 파일을 `evidence_paths`로 선언하면 그 파일만 `EVIDENCE` 역할의 읽기 전용
+입력으로 물질화한다. 선언하지 않은 Task 제어 파일은 계속 제외하며, 선언한 증거의 bytes/hash는
+`input_files_sha256`에 포함된다.
+
 공동 작성은 다음 의미의 **매개형 공동 작성**이다.
 
 1. 솔라는 `artifact_paths`의 같은 파일을 실제로 작성·수정한다.
@@ -239,8 +244,10 @@ CI 하나나 로컬 Git ref만으로는 외부 봉인이 아니다.
 handoff만 추가한 별도 source commit, predecessor 최신 성공 회차의 task/manifest/run/review/전체
 Finding registry hash, handoff turn/entry/run hash를 모두 고정한다. source commit은 successor target
 이후 기존 턴을 수정·삭제하지 않고 predecessor의 `collaboration.md`와 지정 handoff 턴 파일 3개만 추가한
-commit이어야 한다. 두 Task는 같은 `FABLE-FINAL` 경로·검수 범위여야
-하고 successor baseline은 predecessor target이어야 한다. successor가 `predecessor_review`를 선언했는데
+commit이어야 한다. 두 Task는 같은 route·`review_mode`·`reviewer_role`의 `COMMIT` 검수 경로여야
+하고 successor baseline은 predecessor target이어야 한다. 이 승계는 `FINAL_INDEPENDENT`뿐 아니라
+`SECURITY`처럼 같은 검수 lane에서 확정 commit을 바꿔 기존 Finding을 재검수할 때도 사용한다.
+successor가 `predecessor_review`를 선언했는데
 이 상호 handoff가 없거나 hash·범위·회차가 다르면 실행기는 실패 폐쇄한다. `status.json`은 권위 입력이
 아니라 봉인된 회차에서 재생해 대조하는
 요약일 뿐이다.
