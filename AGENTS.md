@@ -11,6 +11,7 @@
 - 현재 원장·계산·전파: `ARCHITECTURE.md`
 - 화면 ID·라우트·구현 상태: `apps/mobile/src/features/README.md`
 - 작업 순서·완료 기록: `docs/작업큐.md`
+- 팀 역할·감사 대체 호출·성장형 학습 루프: `docs/팀구성_상세기획안.md`
 - 솔라·페이블 공동 작성·검수: `docs/ai-review/README.md`
 - 브랜치·DB 배포·복구: `docs/브랜치-DB-운영-기획안.md`
 - 서버 구성·확장 판단: `docs/서버-확장-아키텍처-기획안.md`

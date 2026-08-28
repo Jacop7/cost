@@ -298,6 +298,33 @@ PowerShell 진입점도 같은 실행기를 호출한다.
 `claude-fable-5`, high effort, 회차당 최대 `$2.00`, 새 세션, 빈 MCP, `Read/Glob/Grep`만 사용한다.
 실제 실행 버전과 실행 파일 hash는 매 run에 기록한다. `--restricted`, `--safe-mode`를 해제하지 않는다.
 
+### 페이블 소진과 Opus 연속성 경로
+
+팀 운영 목표는 페이블 모델의 예산·사용량·속도·용량이 소진됐을 때 Opus 신규 클린 컨텍스트가
+같은 독립 감사 역할을 이어받는 것이다. 감사 역할과 실행 모델을 분리하며, 실제 결과에는
+`primary_reviewer_engine`, `reviewer_engine`, 정확한 model ID와 CLI·runner hash를 기록한다.
+
+허용되는 승계 사유는 `MODEL_BUDGET_EXHAUSTED`, `MODEL_RATE_LIMITED`,
+`MODEL_CAPACITY_UNAVAILABLE`뿐이다. 인증 실패, 권위 경로·target commit·hash-chain 불일치, 허용 경로
+위반, schema·저장소 의미 계약 위반은 승계 사유가 아니며 Opus로 우회하지 않는다.
+
+승계는 실패한 회차를 덮어쓰거나 같은 Task의 모델만 바꾸는 방식이 아니다. 불변 실패 run을 남기고
+새 successor Task에 다음을 봉인한다.
+
+- predecessor task·round·run SHA-256과 승계 사유
+- 동일 target commit, artifact/input hash와 Finding registry hash
+- inherited finding ID, 허용·제외 경로와 읽기 전용 권한
+- Opus의 정확한 model ID와 작업 전체 사용 상한의 남은 범위
+- 고위험 `FABLE-SEC`·`FABLE-FINAL` 결과의 페이블 복구 후 표본 재감사 조건
+
+Opus도 기존과 같은 새 세션, 빈 MCP, `Read/Glob/Grep`, `--restricted`, `--safe-mode`, 제품 파일 쓰기
+금지 규칙을 사용한다. 결과가 같은 구조·의미 계약을 통과하면 실제 엔진 출처를 표시한 채 로컬
+`VERIFIED`까지 진행할 수 있지만 보호 원격·사람 승인·`CLOSED` 규칙을 바꾸지 않는다. Opus도 사용할
+수 없으면 더 약한 모델로 연쇄 하향하지 않고 `BLOCKED`로 보고한다.
+
+이 절은 `AI-REVIEW-2`의 구현 계약이다. runner·schema·task template·사보타주 시험이 함께 반영되기
+전에는 수동으로 model을 바꾼 결과를 공식 검수로 합류하거나 Opus 승계를 성공으로 보고하지 않는다.
+
 `fable:review`는 네트워크·모델 판단이 포함된 상호검수다. 재현 가능한 기계 게이트
 `corepack pnpm verify`에 합치지 않으며, 둘 다 필요한 작업은 각각의 증거를 남긴다.
 
