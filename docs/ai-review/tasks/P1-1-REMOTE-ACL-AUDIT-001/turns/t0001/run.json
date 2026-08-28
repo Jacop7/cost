@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "P1-1-REMOTE-ACL-AUDIT-001",
+  "sequence": "t0001",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-08-28T09:03:01.762Z",
+  "turn_id": "turn-s002",
+  "turn_type": "SOLAR_RESPONSE",
+  "role": "SOLAR-DB",
+  "task_sha256": "a3c93545595b5facdd17b83b0e13f0ac94ed70bf3d640292fdf0df68fabce2fc",
+  "runner_sha256": "1e09d053693e46b03a27bc34c443a4ac258ff6358eda1d33e0a76b160e97bf8b",
+  "previous_manual_run_sha256": null,
+  "collaboration_before_sha256": "44cc995cf74c3926d14cae8606b996c217bbc66c85963411d77b165918a6e6cc",
+  "collaboration_before_bytes": 7445,
+  "collaboration_entry_sha256": "43b3330dd3b45c728b8ba8074ed620a29b5ba6b69f13826b345bc0d8022c897a",
+  "collaboration_entry_bytes": 5502,
+  "collaboration_after_sha256": "5fb0b536510097cbc895dca23ee6207a8803071a2732912bebd9b6d724948347",
+  "collaboration_after_bytes": 12947
+}

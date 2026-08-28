@@ -1,0 +1,370 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P1-1-REMOTE-ACL-AUDIT-001",
+  "reviewer_role": "FABLE-SEC",
+  "review_mode": "RECHECK",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "d5aeafd7098836c73e29c362386b8250f8476431",
+  "target_commit_sha": "d5aeafd7098836c73e29c362386b8250f8476431",
+  "target_tree_oid": "93312ab6ece551f5ce85a75d1aa60693f9a649b1",
+  "agents_blob_oid": "35001543ec3d5a84ff328620f1c85eeb571141fc",
+  "agents_sha256": "a5667526727635dbb4f95ffc13159277d4cca8b222f554145c77eb87b961e384",
+  "task_sha256": "a3c93545595b5facdd17b83b0e13f0ac94ed70bf3d640292fdf0df68fabce2fc",
+  "collaboration_sha256": "ae6f63f46953568bcb700731b59d05ec1466a8136ca23484cc4925181d719589",
+  "input_files_sha256": "105a5dd1059821a584961d873e4192f802107bf469adc10615481234058effc1",
+  "schema_sha256": "f8860ea87aacde86f541f7b1a1640729bf516dcdaf78e168c0e2e01f0edfac5c",
+  "runner_sha256": "1e09d053693e46b03a27bc34c443a4ac258ff6358eda1d33e0a76b160e97bf8b",
+  "verdict": "PASS",
+  "summary": "P1-1 원격 ACL 읽기 전용 audit 도구 FABLE-SEC 재검수(r003). 이전 필수 finding 5건과 선택 1건을 스냅샷 원문으로 대조한 결과 모두 수용 기준을 충족해 VERIFIED로 기록한다. (1) MISSING-METRIC-FAIL-OPEN: admin-acl.sh 153~177행이 seen 추적·duplicate_metric·16개 필수 metric(platform_default_open 포함) missing_metric 검사를 bash 내장만으로 수행하고, test.sh 210~223행이 부분·빈·중복 출력 사보타주를 exit 1로 고정한다. (2) RLS-LEDGER-WRITE-PATH-GAP: audit SQL 80~90행 rls_disabled_app_tables(프로브 제외), 111~134행 ledger_write_paths(README 권위 데이터 10개 표, GRANT×RLS 비활성 또는 PUBLIC/롤 대상 쓰기 정책)를 추가했고 셸 165행이 0을 요구하며 성공 문구(186행)는 측정 범위로 한정됐다. 개발 DB 실측 0/32/87은 README·브랜치 §4.5·서버-확장 서문에 배포 차단·P0-5 연결로 숨김 없이 기록됐다. (3) SIGNATURE-SEARCH-PATH: SQL 4행 set local search_path 고정, anon_rpc·unapproved가 prokind ('f','p')로 확장, Codex가 호출자 search_path=pg_catalog 조건에서 통과를 확인했다. (4) TEST-GAP-ALLOWLIST-REALDB: SQL 45~47행 create_store 비-mobile 예외 명시, 7행 시험 파일·verify ④ 지정, 본 검수에서 evidence 훅 10개의 .rpc 이름 61개 유일 집합 + create_store = allowlist 62개가 양방향 일치함을 재확인했다. (5) DOC-AUDIT-MODE-STALE: README 27~30행 구조표 갱신; AGENTS.md 138행은 reference라 별도 동기화 작업으로 남긴다(스냅샷은 UNCHANGED). (6) SQLPATH-SSL: 슬래시 없는 호출 처리·기대 경로 출력·verify-full 권장 문서화 완료. 새 항목 1건(Improvement, 비차단): 게이트를 지탱하는 admin-acl-audit.test.mjs와 verify ④ hunk가 이 패킷의 artifact에 없어 소스가 봉인·검수되지 않았다. 잔여 위험 방향은 모두 실패 폐쇄이므로 PASS를 막지 않지만 다음 패킷에서 봉인을 요청한다. 실제 호스티드 audit 미실행과 32/87 축소는 사람 결정대로 별도 R3(P0-5) 과제이며, PASS는 도구 구현 검수 통과일 뿐 원격 ACL 게이트(gate_state)는 OPEN으로 유지된다.",
+  "findings": [
+    {
+      "finding_id": "P1-1-SEC-AUDIT-MISSING-METRIC-FAIL-OPEN",
+      "severity": "Major",
+      "review_state": "VERIFIED",
+      "category": "SECURITY",
+      "requirement_or_invariant_ids": [
+        "P1-1-AUDIT-2",
+        "P1-1-AUDIT-5",
+        "AGENTS:acl-environment-deployment"
+      ],
+      "evidence": [
+        {
+          "path": "packages/db/scripts/admin-acl.sh",
+          "line_start": 153,
+          "line_end": 177,
+          "observation": "seen 추적으로 duplicate_metric을 기록하고, 16개 필수 metric(platform_default_open 포함)이 하나라도 없으면 missing_metric=으로 실패한다. 검사는 case/변수 확장 등 bash 내장만 사용해 자격증명 환경에서 자식 프로세스를 띄우지 않는다."
+        },
+        {
+          "path": "packages/db/scripts/admin-acl.sh",
+          "line_start": 179,
+          "line_end": 187,
+          "observation": "failed가 비어 있지 않으면 stderr 사유와 exit 1. 성공 문구는 '측정한 애플리케이션 ACL 항목이 닫혀 있습니다(플랫폼 기본 권한과 별도)'로 한정됐다."
+        },
+        {
+          "path": "packages/db/scripts/admin-acl.test.sh",
+          "line_start": 151,
+          "line_end": 182,
+          "observation": "shim이 16개 metric 행을 내고 audit_partial(2행만)·audit_empty(무출력)·audit_duplicate(같은 metric 두 행) 분기를 제공한다."
+        },
+        {
+          "path": "packages/db/scripts/admin-acl.test.sh",
+          "line_start": 210,
+          "line_end": 223,
+          "observation": "부분 누락→missing_metric=unapproved_authenticated_rpc, 빈 출력→missing_metric=, 중복→duplicate_metric=unapproved_authenticated_rpc 각각 exit 1을 확인한다. Codex 장부: 셸 회귀시험 exit 0."
+        }
+      ],
+      "impact": "이전: metric 누락·중복·빈 출력이 거짓 초록을 만들 수 있었다. 현재: 정확한 16개 metric 집합이 각 1회 존재해야만 exit 0이며, 부분 출력·SQL 회귀는 실패 폐쇄된다.",
+      "acceptance_criteria": [
+        "audit 모드는 정확히 기대하는 metric 집합(현재 16개)이 각각 한 번씩 존재해야만 exit 0이며, 누락·중복·빈 출력은 exit 1과 사유(missing_metric=/duplicate_metric=)를 stderr에 낸다.",
+        "platform_default_open 행이 없으면 '알 수 없음'으로 성공하지 않고 실패한다.",
+        "검사는 자격증명 환경에서 grep 등 자식 프로세스를 띄우지 않고 bash 내장만 사용한다."
+      ],
+      "required_tests": [
+        "admin-acl.test.sh ⑤ audit_partial: exit 1과 missing_metric= 확인(210~213행 존재)",
+        "admin-acl.test.sh ⑤ audit_empty: exit 1 확인(215~218행 존재)",
+        "admin-acl.test.sh ⑤ audit_duplicate: exit 1 확인(220~223행 존재)"
+      ],
+      "previous_finding_id": "P1-1-SEC-AUDIT-MISSING-METRIC-FAIL-OPEN"
+    },
+    {
+      "finding_id": "P1-1-SEC-AUDIT-RLS-LEDGER-WRITE-PATH-GAP",
+      "severity": "Major",
+      "review_state": "VERIFIED",
+      "category": "SECURITY",
+      "requirement_or_invariant_ids": [
+        "P1-1-AUDIT-2",
+        "AGENTS:server-authority",
+        "AGENTS:ledger-write-paths"
+      ],
+      "evidence": [
+        {
+          "path": "packages/db/scripts/admin-acl-audit.sql",
+          "line_start": 80,
+          "line_end": 90,
+          "observation": "rls_disabled_app_tables: public 일반/파티션 표 중 relrowsecurity가 꺼졌고 anon/authenticated에 SELECT/INSERT/UPDATE/DELETE 중 하나라도 있는 표 수. rollback 대상 프로브 표는 제외한다."
+        },
+        {
+          "path": "packages/db/scripts/admin-acl-audit.sql",
+          "line_start": 111,
+          "line_end": 134,
+          "observation": "ledger_write_paths: README 권위 데이터와 같은 10개 표에서 앱 롤 쓰기 GRANT가 있고 RLS 비활성이거나 PUBLIC(polroles {0}) 또는 해당 롤 대상 '*'/a/w/d 정책이 있는 조합 수. 제한(restrictive) 정책도 경로로 세므로 방향은 보수적(실패 쪽)이다."
+        },
+        {
+          "path": "packages/db/scripts/admin-acl.sh",
+          "line_start": 165,
+          "line_end": 166,
+          "observation": "두 metric이 0 기대 목록에 포함돼 1 이상이면 실패한다."
+        },
+        {
+          "path": "packages/db/README.md",
+          "line_start": 100,
+          "line_end": 106,
+          "observation": "개발 DB 실측 RLS 비활성 0개·원장 직접 쓰기 32개·미승인 함수 87개를 기록하고 P0-5 전에는 원격 ACL 안전 완료로 기록하지 않는다고 명시한다."
+        },
+        {
+          "path": "docs/브랜치-DB-운영-기획안.md",
+          "line_start": 259,
+          "line_end": 265,
+          "observation": "§4.5가 같은 실측값을 배포 차단 사유로 적고 P0-5 연결과 원격 미실행을 구분한다."
+        },
+        {
+          "path": "docs/서버-확장-아키텍처-기획안.md",
+          "line_start": 26,
+          "line_end": 28,
+          "observation": "서문 측정값에 0/32/87과 배포 차단·P0-5 미완료를 동기화했다."
+        },
+        {
+          "path": "packages/db/scripts/admin-acl.test.sh",
+          "line_start": 225,
+          "line_end": 233,
+          "observation": "rls_disabled_app_tables=1, ledger_write_paths=1 각각 exit 1을 확인한다."
+        }
+      ],
+      "impact": "이전: RLS 비활성 표와 원장 표 직접 쓰기 경로를 재지 않아 AGENTS 서버 계산 권위·원장 쓰기 경로 불변식에 대해 거짓 초록이 가능했다. 현재: 두 경로를 측정해 실패시키고, 개발 DB의 32건 직접 쓰기 경로를 숨기지 않고 P0-5 R3 축소 과제로 연결했다. 축소 자체는 사람 승인 대상이며 이 audit-only 범위 밖이다.",
+      "acceptance_criteria": [
+        "audit SQL에 rls_disabled_app_tables(expected=0) metric을 추가하고 admin-acl.sh가 0을 요구한다.",
+        "audit SQL에 ledger_write_paths(expected=0) metric을 추가하고 admin-acl.sh가 0을 요구한다. 원장 표 목록은 README 권위 데이터와 일치시킨다.",
+        "개발 DB 실측에서 두 metric이 0이 아니면 숨기지 않고 87개 항목과 같은 방식으로 문서·P0-5에 연결한다.",
+        "성공 문구는 측정 범위로 한정한다."
+      ],
+      "required_tests": [
+        "admin-acl.test.sh ⑤ shim 행에 두 metric 추가, 1 이상이면 exit 1 확인(225~233행 존재)",
+        "개발 DB 원시 metric 재실행 결과 기록(Codex 장부: rls_disabled_app_tables=0, ledger_write_paths=32)"
+      ],
+      "previous_finding_id": "P1-1-SEC-AUDIT-RLS-LEDGER-WRITE-PATH-GAP"
+    },
+    {
+      "finding_id": "P1-1-SEC-AUDIT-SIGNATURE-SEARCH-PATH",
+      "severity": "Minor",
+      "review_state": "VERIFIED",
+      "category": "CODE",
+      "requirement_or_invariant_ids": [
+        "P1-1-AUDIT-3"
+      ],
+      "evidence": [
+        {
+          "path": "packages/db/scripts/admin-acl-audit.sql",
+          "line_start": 1,
+          "line_end": 4,
+          "observation": "begin 직후 set local search_path = pg_catalog, public 으로 regprocedure::text 표기를 세션 설정과 무관하게 고정한다. 임시 표는 pg_temp가 암묵적으로 먼저 탐색돼 영향이 없다."
+        },
+        {
+          "path": "packages/db/scripts/admin-acl-audit.sql",
+          "line_start": 173,
+          "line_end": 176,
+          "observation": "anon_rpc가 prokind in ('f','p')로 procedure를 포함한다."
+        },
+        {
+          "path": "packages/db/scripts/admin-acl-audit.sql",
+          "line_start": 207,
+          "line_end": 211,
+          "observation": "unapproved_authenticated_rpc도 prokind in ('f','p'). facade_rpc_missing(198~205행)은 의도대로 'f'만 본다."
+        },
+        {
+          "path": "COLLABORATION_LOG",
+          "line_start": 0,
+          "line_end": 0,
+          "observation": "Codex 장부: 호출자 search_path를 pg_catalog로 둔 실제 DB 검사에서 16개 유일 metric과 facade 시그니처 대조 통과."
+        }
+      ],
+      "impact": "이전: 호스티드 롤별 search_path 차이로 allowlist 62개가 통째로 불일치(거짓 빨강)될 수 있었고 procedure가 감사 밖이었다. 현재: 시그니처 텍스트가 환경과 무관하며 CALL 가능한 procedure도 집계된다.",
+      "acceptance_criteria": [
+        "audit 트랜잭션 시작 직후 set local search_path = pg_catalog, public 을 고정한다.",
+        "anon_rpc·unapproved_authenticated_rpc는 prokind in ('f','p')를 대상으로 한다."
+      ],
+      "required_tests": [
+        "호출자 search_path='pg_catalog' 상태로 audit SQL을 실행해도 facade_rpc_missing=0(Codex 장부 확인)"
+      ],
+      "previous_finding_id": "P1-1-SEC-AUDIT-SIGNATURE-SEARCH-PATH"
+    },
+    {
+      "finding_id": "P1-1-SEC-AUDIT-TEST-GAP-ALLOWLIST-REALDB",
+      "severity": "Minor",
+      "review_state": "VERIFIED",
+      "category": "TEST_GAP",
+      "requirement_or_invariant_ids": [
+        "P1-1-AUDIT-3",
+        "P1-1-AUDIT-1"
+      ],
+      "evidence": [
+        {
+          "path": "packages/db/scripts/admin-acl-audit.sql",
+          "line_start": 6,
+          "line_end": 11,
+          "observation": "실제 DB 회귀검사가 verify ④의 admin-acl-audit.test.mjs임을 명시하고, 비-mobile 예외 임시 표 _acl_non_mobile_rpc를 둔다."
+        },
+        {
+          "path": "packages/db/scripts/admin-acl-audit.sql",
+          "line_start": 45,
+          "line_end": 47,
+          "observation": "create_store(text,text)를 모바일 .rpc 호출이 아닌 온보딩 소비자의 명시적 예외로 표시해 자동 대조에서 이 한 건만 제외한다."
+        },
+        {
+          "path": "packages/db/scripts/admin-acl-audit.sql",
+          "line_start": 12,
+          "line_end": 43,
+          "observation": "allowlist 62개 = 본 검수에서 evidence 훅 10개의 .rpc 이름 61개 유일 집합(65회 호출) + create_store. 양방향 잉여·누락 없음."
+        },
+        {
+          "path": "packages/db/README.md",
+          "line_start": 30,
+          "line_end": 30,
+          "observation": "구조표가 admin-acl-audit.test.mjs를 '실제 DB metric·rollback·모바일 RPC 허용 목록 대조'로 등재한다."
+        },
+        {
+          "path": "COLLABORATION_LOG",
+          "line_start": 0,
+          "line_end": 0,
+          "observation": "Codex 장부: node admin-acl-audit.test.mjs와 verify ④ 새 DB에서 16개 metric·rollback 뒤 probe 부재·모바일 RPC 61개·비-mobile 예외 1개 통과, AST 대조 양방향 사보타주 실패 확인."
+        }
+      ],
+      "impact": "이전: allowlist↔앱 소스 자동 대조와 audit SQL 실제 실행 시험이 없었다. 현재: SQL이 예외를 명시하고 verify ④가 실제 DB 실행·rollback·양방향 대조를 수행한다(시험 소스 봉인은 별도 Improvement 항목).",
+      "acceptance_criteria": [
+        "verify ④ 또는 DB 스위트에서 fresh DB에 admin-acl-audit.sql을 실행해 16개 metric 행이 나오고 실행 뒤 public._acl_probe_postgres가 없음을 확인한다.",
+        "apps/mobile/src에서 .rpc 이름 집합을 추출해 allowlist와 양방향 diff하거나, create_store처럼 앱 밖 호출만 있는 항목은 SQL에 호출처를 적는다."
+      ],
+      "required_tests": [
+        "fresh DB audit SQL 실행 시험(Codex 장부 통과)",
+        "allowlist↔앱 rpc 이름 diff 시험(Codex 장부 통과, 본 검수 수동 대조 일치)"
+      ],
+      "previous_finding_id": "P1-1-SEC-AUDIT-TEST-GAP-ALLOWLIST-REALDB"
+    },
+    {
+      "finding_id": "P1-1-SEC-DOC-AUDIT-MODE-STALE",
+      "severity": "Minor",
+      "review_state": "VERIFIED",
+      "category": "POLICY",
+      "requirement_or_invariant_ids": [
+        "P1-1-AUDIT-5",
+        "AGENTS:acl-environment-deployment"
+      ],
+      "evidence": [
+        {
+          "path": "packages/db/README.md",
+          "line_start": 27,
+          "line_end": 30,
+          "observation": "구조표가 admin-acl.sh를 '로컬 fix·check, 원격 audit(읽기 전용)·fix·check'로, 짝 SQL과 두 시험 파일을 함께 적는다."
+        },
+        {
+          "path": "packages/db/README.md",
+          "line_start": 108,
+          "line_end": 112,
+          "observation": "verify-full·CA 권장, fix|check 전제 조건, 실측 전 완료 기록 금지가 도구 동작과 일치한다."
+        },
+        {
+          "path": "AGENTS.md",
+          "line_start": 138,
+          "line_end": 139,
+          "observation": "스냅샷 AGENTS.md(UNCHANGED)는 여전히 'audit 모드는 아직 없다(P1-1)'다. reference_path이므로 이 회차 편집 대상이 아니며 솔라 장부대로 ACL hunk 별도 동기화를 남긴다."
+        }
+      ],
+      "impact": "공식 artifact 문서 3종은 도구 상태와 일치한다. AGENTS.md 138행 동기화는 별도 작업으로 완료돼야 원격 ACL 완료 판정 기준이 하나가 된다.",
+      "acceptance_criteria": [
+        "packages/db/README.md 27행이 audit·fix·check를 모두 적는다.",
+        "AGENTS.md 138~139행 갱신은 별도 작업(문서 동기화)으로 등록하고 이 회차에서 reference_path를 편집하지 않는다."
+      ],
+      "required_tests": [],
+      "previous_finding_id": "P1-1-SEC-DOC-AUDIT-MODE-STALE"
+    },
+    {
+      "finding_id": "P1-1-SEC-AUDIT-SQLPATH-SSL-HARDENING",
+      "severity": "Improvement",
+      "review_state": "VERIFIED",
+      "category": "OPERATIONS",
+      "requirement_or_invariant_ids": [
+        "P1-1-AUDIT-4"
+      ],
+      "evidence": [
+        {
+          "path": "packages/db/scripts/admin-acl.sh",
+          "line_start": 57,
+          "line_end": 62,
+          "observation": "슬래시 없는 호출은 ./admin-acl-audit.sql로 해석하고 자식 프로세스를 띄우지 않는다."
+        },
+        {
+          "path": "packages/db/scripts/admin-acl.sh",
+          "line_start": 149,
+          "line_end": 149,
+          "observation": "SQL 파일을 읽을 수 없으면 기대 경로를 포함한 진단 후 exit 1."
+        },
+        {
+          "path": "packages/db/README.md",
+          "line_start": 108,
+          "line_end": 109,
+          "observation": "verify-full과 CA 파일 권장, require의 한계를 명시한다."
+        }
+      ],
+      "impact": "운영 편의·심층 방어 항목 완료. 비밀번호 격리 계약(scrub_env 후 exec, argv 무비밀번호)은 변경되지 않았다.",
+      "acceptance_criteria": [
+        "AUDIT_SQL_FILE 계산이 슬래시 없는 호출도 처리하거나 실패 메시지에 기대 경로를 포함한다.",
+        "문서에 운영 접속 권장값(verify-full, CA 경로)을 적는다."
+      ],
+      "required_tests": [],
+      "previous_finding_id": "P1-1-SEC-AUDIT-SQLPATH-SSL-HARDENING"
+    },
+    {
+      "finding_id": "P1-1-SEC-SUPPORT-TEST-UNSEALED",
+      "severity": "Improvement",
+      "review_state": "OPEN",
+      "category": "TEST_GAP",
+      "requirement_or_invariant_ids": [
+        "P1-1-AUDIT-3",
+        "P1-1-AUDIT-1"
+      ],
+      "evidence": [
+        {
+          "path": "packages/db/scripts/admin-acl-audit.sql",
+          "line_start": 7,
+          "line_end": 7,
+          "observation": "audit SQL 계약의 실제 DB 실행·allowlist 양방향 대조를 verify ④의 admin-acl-audit.test.mjs에 위임한다."
+        },
+        {
+          "path": "packages/db/README.md",
+          "line_start": 30,
+          "line_end": 30,
+          "observation": "admin-acl-audit.test.mjs를 공식 구조로 등재하지만 이 파일과 scripts/verify.mjs ④ hunk는 패킷 artifact_paths·input_files에 없어 스냅샷에 존재하지 않는다(Glob 결과 없음)."
+        },
+        {
+          "path": "COLLABORATION_LOG",
+          "line_start": 0,
+          "line_end": 0,
+          "observation": "솔라 장부: '신규 지원 시험은 후속 commit 독립 감사에서 소스까지 봉인한다'. Codex 장부: 해당 시험 통과와 사보타주 실패를 확인했으나 소스는 이 검수에서 봉인·열람되지 않았다."
+        }
+      ],
+      "impact": "allowlist 드리프트와 SQL 회귀를 로컬에서 잡는 장치의 소스가 검수 밖이다. 다만 드리프트·회귀의 주요 방향(새 앱 RPC 미등록, SQL 문법 오류)은 원격 audit에서 실패 폐쇄되고 본 검수가 61+1=62 양방향 일치를 수동 확인했으므로 게이트 판정을 막지 않는다.",
+      "acceptance_criteria": [
+        "다음 패킷(후속 commit 검수 또는 이 과제의 다음 RECHECK)에서 packages/db/scripts/admin-acl-audit.test.mjs와 scripts/verify.mjs의 ④ hunk를 artifact_paths로 봉인해 소스를 검수한다.",
+        "해당 시험이 metric 16개 정확 집합·rollback 뒤 probe 부재·allowlist 양방향 diff 실패를 각각 비정상 종료로 만드는지 소스로 확인한다."
+      ],
+      "required_tests": [
+        "봉인된 admin-acl-audit.test.mjs에 대한 사보타주 시험(allowlist 항목 삭제·앱 RPC 추가·SQL select 삭제) 결과 기록"
+      ],
+      "previous_finding_id": null
+    }
+  ],
+  "proposed_edits": [
+    {
+      "edit_id": "E12-SERVER-DOC-DUP-PHRASE",
+      "path": "docs/서버-확장-아키텍처-기획안.md",
+      "anchor": "저장소 문서와 공용 RPC 변환 경계의 기준선 동기화(P1-3)는 `01c5358`에서 완료했다. 다음 서버 운영",
+      "operation": "REPLACE",
+      "proposed_text": "저장소 문서와 공용 RPC 변환 경계의 기준선 동기화(P1-3)는 `01c5358`에서 완료했다.",
+      "rationale": "30행 끝 '다음 서버 운영'이 31행 첫머리와 중복돼 문장이 끊긴다. 의미 변경 없는 오탈자 정리.",
+      "finding_ids": []
+    },
+    {
+      "edit_id": "E13-SQL-SUPPORT-TEST-SEAL-NOTE",
+      "path": "packages/db/scripts/admin-acl-audit.sql",
+      "anchor": "-- 이 파일은 admin-acl.sh --remote audit와 verify ④의 admin-acl-audit.test.mjs가 함께 사용한다.",
+      "operation": "COMMENT",
+      "proposed_text": "admin-acl-audit.test.mjs와 verify ④ hunk는 이 패킷의 봉인 artifact가 아니다. 다음 검수 패킷의 artifact_paths에 두 파일을 포함해 소스까지 봉인해 달라(P1-1-SEC-SUPPORT-TEST-UNSEALED).",
+      "rationale": "게이트 지원 시험의 소스 검수를 후속 패킷에 연결한다.",
+      "finding_ids": [
+        "P1-1-SEC-SUPPORT-TEST-UNSEALED"
+      ]
+    }
+  ],
+  "closed_finding_ids": [],
+  "reopened_finding_ids": [],
+  "remaining_required_finding_ids": []
+}
