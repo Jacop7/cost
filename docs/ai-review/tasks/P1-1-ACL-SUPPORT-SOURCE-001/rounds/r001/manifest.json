@@ -1,0 +1,227 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "P1-1-ACL-SUPPORT-SOURCE-001",
+  "round": "r001",
+  "created_at": "2026-08-28T10:09:33.573Z",
+  "review_mode": "INITIAL",
+  "baseline_commit_sha": "d5aeafd7098836c73e29c362386b8250f8476431",
+  "target_commit_sha": "36fec6710762cfc9543486316e062e8173be6712",
+  "target_tree_oid": "e71f383b778b86193a851cf7a00c07c473da109c",
+  "agents_blob_oid": "64b82275832bb6ce981b419294a428e77383be3e",
+  "agents_sha256": "0f1dd530a46174aeff884146569b2e2534f6ec8b544b531054f48e86b84c0f97",
+  "task_sha256": "2e2d805805112838bb5c8917be87d2f10dafc847669297a83eaa3c35f54846ea",
+  "collaboration_sha256": "62c75007a08747789ef86ed776f5a7cbefbafce7ec033c2e8ee0df35bb30d000",
+  "collaboration_bytes": 1635,
+  "input_files_sha256": "9b948617dcff73b01fbef1c22139de19a2569708bfe5c28eda3324b6457e6016",
+  "schema_sha256": "f8860ea87aacde86f541f7b1a1640729bf516dcdaf78e168c0e2e01f0edfac5c",
+  "runner_sha256": "1e09d053693e46b03a27bc34c443a4ac258ff6358eda1d33e0a76b160e97bf8b",
+  "snapshot_mode": "COMMIT",
+  "previous_review_sha256": null,
+  "previous_run_sha256": null,
+  "predecessor_review": null,
+  "retry_of_failed_round": null,
+  "artifact_paths": [
+    "packages/db/scripts/admin-acl-audit.test.mjs",
+    "scripts/verify.mjs"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "packages/db/scripts/admin-acl-audit.sql",
+    "packages/db/README.md"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/tasks/P1-1-REMOTE-ACL-AUDIT-001/rounds/r003/review.md",
+    "packages/db/scripts/admin-acl.sh",
+    "packages/db/scripts/admin-acl.test.sh",
+    "apps/mobile/src/features/business-day/businessDay.ts",
+    "apps/mobile/src/features/changes/hooks.ts",
+    "apps/mobile/src/features/ingredients/hooks.ts",
+    "apps/mobile/src/features/master-data/hooks.ts",
+    "apps/mobile/src/features/my/hooks.ts",
+    "apps/mobile/src/features/orders/hooks.ts",
+    "apps/mobile/src/features/recipes/hooks.ts",
+    "apps/mobile/src/features/recipes/profitHistory.ts",
+    "apps/mobile/src/features/sales/hooks.ts",
+    "apps/mobile/src/features/settings/hooks.ts"
+  ],
+  "allowed_paths": [
+    "packages/db/scripts/admin-acl-audit.test.mjs",
+    "scripts/verify.mjs",
+    "AGENTS.md",
+    "packages/db/scripts/admin-acl-audit.sql",
+    "packages/db/README.md",
+    "docs/ai-review/tasks/P1-1-REMOTE-ACL-AUDIT-001/rounds/r003/review.md",
+    "packages/db/scripts/admin-acl.sh",
+    "packages/db/scripts/admin-acl.test.sh",
+    "apps/mobile/src/features/business-day/businessDay.ts",
+    "apps/mobile/src/features/changes/hooks.ts",
+    "apps/mobile/src/features/ingredients/hooks.ts",
+    "apps/mobile/src/features/master-data/hooks.ts",
+    "apps/mobile/src/features/my/hooks.ts",
+    "apps/mobile/src/features/orders/hooks.ts",
+    "apps/mobile/src/features/recipes/hooks.ts",
+    "apps/mobile/src/features/recipes/profitHistory.ts",
+    "apps/mobile/src/features/sales/hooks.ts",
+    "apps/mobile/src/features/settings/hooks.ts"
+  ],
+  "excluded_paths": [],
+  "input_files": [
+    {
+      "path": "AGENTS.md",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 10492,
+      "git_blob_oid": "64b82275832bb6ce981b419294a428e77383be3e",
+      "sha256": "0f1dd530a46174aeff884146569b2e2534f6ec8b544b531054f48e86b84c0f97",
+      "line_count": 151
+    },
+    {
+      "path": "apps/mobile/src/features/business-day/businessDay.ts",
+      "path_role": "EVIDENCE",
+      "change_type": "COMMIT",
+      "size": 20343,
+      "git_blob_oid": "a252a2ca7b4f8cb8eee1601db0fdbdb1aab84fee",
+      "sha256": "3b4bd234288876f784b84aee424443548583e59668b0be8052524c9e28908f63",
+      "line_count": 430
+    },
+    {
+      "path": "apps/mobile/src/features/changes/hooks.ts",
+      "path_role": "EVIDENCE",
+      "change_type": "COMMIT",
+      "size": 12691,
+      "git_blob_oid": "75def2a41e04dab5365933e7b6eedf3078add73a",
+      "sha256": "f6def59efd8e448b77860fc23f07f2a80c4f00d32e63faf5c454feb17ec5a668",
+      "line_count": 304
+    },
+    {
+      "path": "apps/mobile/src/features/ingredients/hooks.ts",
+      "path_role": "EVIDENCE",
+      "change_type": "COMMIT",
+      "size": 19838,
+      "git_blob_oid": "d34306428d6375653d59c5112cb1324a19bd2c5c",
+      "sha256": "b3d067d871743cb460b8a70aea7ddd176ecd47d854ffe0fa89440f3027c19c29",
+      "line_count": 559
+    },
+    {
+      "path": "apps/mobile/src/features/master-data/hooks.ts",
+      "path_role": "EVIDENCE",
+      "change_type": "COMMIT",
+      "size": 9261,
+      "git_blob_oid": "fd2adfb6335e434abf737ad97ab1f81d467e1f97",
+      "sha256": "690bafccc978b120a6e1b57aa7d3cd66c39ddbc0c71314bd79e31884fe31d57f",
+      "line_count": 252
+    },
+    {
+      "path": "apps/mobile/src/features/my/hooks.ts",
+      "path_role": "EVIDENCE",
+      "change_type": "COMMIT",
+      "size": 7655,
+      "git_blob_oid": "40f20c75a1416e1310a9e198ee9b392d3714c955",
+      "sha256": "a49b5b70889833c60d7caf76245e9bd87b36b431c2e91c0d8ff690c5b0ff5402",
+      "line_count": 180
+    },
+    {
+      "path": "apps/mobile/src/features/orders/hooks.ts",
+      "path_role": "EVIDENCE",
+      "change_type": "COMMIT",
+      "size": 7237,
+      "git_blob_oid": "6a8302ba0c26e98270c0bd973919d677ca01555a",
+      "sha256": "05d8441573edf45e02c6dbe8f5dd855af090bc4174da03df0920902c04b280f4",
+      "line_count": 216
+    },
+    {
+      "path": "apps/mobile/src/features/recipes/hooks.ts",
+      "path_role": "EVIDENCE",
+      "change_type": "COMMIT",
+      "size": 13613,
+      "git_blob_oid": "28e3d671dae0db4d9303e0d71845eeab257fe7c7",
+      "sha256": "604c0c5777b82463181fe6e6056f557b64a678b7d346695ac4371c7c230e6228",
+      "line_count": 353
+    },
+    {
+      "path": "apps/mobile/src/features/recipes/profitHistory.ts",
+      "path_role": "EVIDENCE",
+      "change_type": "COMMIT",
+      "size": 4579,
+      "git_blob_oid": "2d7d419fb77ccd0f23e1436e290fc588a19dc6bb",
+      "sha256": "8ee54367a9882dcd26a26e7bc713fef399e3f1dfd64ed91a00686bc0063c5b7a",
+      "line_count": 121
+    },
+    {
+      "path": "apps/mobile/src/features/sales/hooks.ts",
+      "path_role": "EVIDENCE",
+      "change_type": "COMMIT",
+      "size": 40595,
+      "git_blob_oid": "05a513fec02945eb25be75ca2ed1917e41aa7bf0",
+      "sha256": "03f5944c307a463bf5c14e1447922c1cb9cbf0c1493d026b0ffc01e0fb6ae775",
+      "line_count": 956
+    },
+    {
+      "path": "apps/mobile/src/features/settings/hooks.ts",
+      "path_role": "EVIDENCE",
+      "change_type": "COMMIT",
+      "size": 25498,
+      "git_blob_oid": "a6abca0413d7ea8bfe2334aa618abeb5c55e41be",
+      "sha256": "49c96e45d911062008affd7657ef22c3a5c69d239a72fe5afbcd8dd203759832",
+      "line_count": 512
+    },
+    {
+      "path": "packages/db/README.md",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 6410,
+      "git_blob_oid": "48cf5688603b4ab25e20e38d02b9461f11afd277",
+      "sha256": "5209f33c3b72195bf7edcdfd962dbc045314a4c15ab0c1fcc81ff5a75b9ec8c5",
+      "line_count": 122
+    },
+    {
+      "path": "packages/db/scripts/admin-acl-audit.sql",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 13375,
+      "git_blob_oid": "20f0306c0990f098251201977993ec8253d86cb2",
+      "sha256": "c47665cab7ef141855879c6200f33b2b701a65f78a7e95e14be34c7b1e86aaa4",
+      "line_count": 221
+    },
+    {
+      "path": "packages/db/scripts/admin-acl-audit.test.mjs",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 6574,
+      "git_blob_oid": "97a17f81a6c12cc3fa337ed8b4083ac3d7189f9d",
+      "sha256": "f84f6861dcee407d77e796e2cd10598c8f2d5fa447e397f66c22545ad82c07c4",
+      "line_count": 139
+    },
+    {
+      "path": "packages/db/scripts/admin-acl.sh",
+      "path_role": "EVIDENCE",
+      "change_type": "COMMIT",
+      "size": 17035,
+      "git_blob_oid": "cda5dfff4d3d21eb7927cd0de82953844f2bed37",
+      "sha256": "d7f7e1f9bf3eb6d4ebb2279585402cd47343b78bcec228b0edf09e07ddd460e2",
+      "line_count": 241
+    },
+    {
+      "path": "packages/db/scripts/admin-acl.test.sh",
+      "path_role": "EVIDENCE",
+      "change_type": "COMMIT",
+      "size": 15120,
+      "git_blob_oid": "70bc5854f70e3f215d3b7f8256699bd639a68897",
+      "sha256": "84984e5fa8e022e9e0a263a9ba7ecb6cb463fe7f494298c960999042da6aabfc",
+      "line_count": 261
+    },
+    {
+      "path": "scripts/verify.mjs",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 9987,
+      "git_blob_oid": "fc25db1e9b29e75db436aa014b80070ccd1c3840",
+      "sha256": "ba7f51631ac4e4bfab42932a40ca3b534b59f6bed42a97040072507f32baf466",
+      "line_count": 213
+    }
+  ],
+  "source_archive_version": 1,
+  "finding_resolution_semantics": "VERIFIED_RESOLVED_V1",
+  "artifact_snapshot_sha256": null,
+  "input_snapshot_sha256": null
+}

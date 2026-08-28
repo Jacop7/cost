@@ -130,8 +130,8 @@ if (skipDb) {
       ok = run('node', ['packages/db/tests/run.mjs'], { env: { ...process.env, PGDATABASE: db } });
       /*
        * P1-1 원격 audit SQL을 실제 새 DB에서 실행한다. 현재 미승인 RPC는 배포 audit가
-       * 실패시키는 별도 보안 부채이고, 여기서는 metric 완전성·rollback·모바일 허용 목록
-       * 양방향 일치를 검증한다.
+       * 실패시키는 별도 보안 부채이고, 여기서는 metric 완전성·새 DB 사후조건 값·
+       * rollback·모바일 허용 목록 양방향 일치를 검증한다.
        */
       if (ok) ok = run('node', ['packages/db/scripts/admin-acl-audit.test.mjs', db]);
       /*

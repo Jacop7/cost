@@ -1,0 +1,67 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "P1-1-ACL-SUPPORT-SOURCE-001",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R3",
+  "author_role": "SOLAR-DB",
+  "reviewer_role": "FABLE-SEC",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "d5aeafd7098836c73e29c362386b8250f8476431",
+  "target_commit_sha": "36fec6710762cfc9543486316e062e8173be6712",
+  "target_tree_oid": "e71f383b778b86193a851cf7a00c07c473da109c",
+  "agents_blob_oid": "64b82275832bb6ce981b419294a428e77383be3e",
+  "agents_sha256": "0f1dd530a46174aeff884146569b2e2534f6ec8b544b531054f48e86b84c0f97",
+  "requirements": [
+    "P1-1-SUPPORT-1: 실제 DB audit 회귀시험 소스가 16개 metric 정확 집합, rollback 뒤 probe 부재, 모바일 RPC와 SQL facade 허용 목록의 양방향 일치를 검사한다.",
+    "P1-1-SUPPORT-2: 전체 verify의 새 DB 단계가 지원 시험을 실제로 실행하며 실패를 건너뛰지 않는다.",
+    "P1-1-SUPPORT-3: P1-1 r003의 비차단 P1-1-SEC-SUPPORT-TEST-UNSEALED 지적을 근거로 지원 시험 소스의 실효성을 독립 검수한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:inspection-execution",
+    "AGENTS:server-authority",
+    "P1-1-SEC-SUPPORT-TEST-UNSEALED"
+  ],
+  "artifact_paths": [
+    "packages/db/scripts/admin-acl-audit.test.mjs",
+    "scripts/verify.mjs"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "packages/db/scripts/admin-acl-audit.sql",
+    "packages/db/README.md"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/tasks/P1-1-REMOTE-ACL-AUDIT-001/rounds/r003/review.md",
+    "packages/db/scripts/admin-acl.sh",
+    "packages/db/scripts/admin-acl.test.sh",
+    "apps/mobile/src/features/business-day/businessDay.ts",
+    "apps/mobile/src/features/changes/hooks.ts",
+    "apps/mobile/src/features/ingredients/hooks.ts",
+    "apps/mobile/src/features/master-data/hooks.ts",
+    "apps/mobile/src/features/my/hooks.ts",
+    "apps/mobile/src/features/orders/hooks.ts",
+    "apps/mobile/src/features/recipes/hooks.ts",
+    "apps/mobile/src/features/recipes/profitHistory.ts",
+    "apps/mobile/src/features/sales/hooks.ts",
+    "apps/mobile/src/features/settings/hooks.ts"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "admin-acl-audit.test.mjs의 metric 집합, probe rollback, TypeScript AST 양방향 대조 구현 소스",
+    "scripts/verify.mjs ④ 단계가 fresh DB 이름을 지원 시험에 전달하는 실제 호출 경로",
+    "개발 DB와 fresh DB의 지원 시험 통과 및 allowlist 드리프트가 실패하는 사보타주 증거",
+    "P1-1 r003 PASS와 지원 시험 미봉인 Improvement 원문 대조"
+  ],
+  "human_decisions": [
+    "2026-08-28 사용자가 P1-1 후속 검수를 계속 진행하라고 승인했다.",
+    "2026-08-28 P1-1 r003은 필수 Finding을 모두 VERIFIED하고 지원 시험 소스 봉인만 비차단 Improvement로 남겼다.",
+    "2026-08-28 MANDATORY_MUTUAL Task에는 successor 승계가 허용되지 않아 잘못된 handoff 시도와 exit 75를 보존하고, 대상 commit을 바꾸지 않은 별도 INITIAL 보안 검수로 전진한다.",
+    "실제 호스티드 audit와 32/87 권한 축소는 이 지원 시험 소스 검수 범위가 아니다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null
+}

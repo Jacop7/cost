@@ -1,0 +1,265 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P1-1-ACL-SUPPORT-SOURCE-001",
+  "reviewer_role": "FABLE-SEC",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "d5aeafd7098836c73e29c362386b8250f8476431",
+  "target_commit_sha": "36fec6710762cfc9543486316e062e8173be6712",
+  "target_tree_oid": "e71f383b778b86193a851cf7a00c07c473da109c",
+  "agents_blob_oid": "64b82275832bb6ce981b419294a428e77383be3e",
+  "agents_sha256": "0f1dd530a46174aeff884146569b2e2534f6ec8b544b531054f48e86b84c0f97",
+  "task_sha256": "2e2d805805112838bb5c8917be87d2f10dafc847669297a83eaa3c35f54846ea",
+  "collaboration_sha256": "62c75007a08747789ef86ed776f5a7cbefbafce7ec033c2e8ee0df35bb30d000",
+  "input_files_sha256": "9b948617dcff73b01fbef1c22139de19a2569708bfe5c28eda3324b6457e6016",
+  "schema_sha256": "f8860ea87aacde86f541f7b1a1640729bf516dcdaf78e168c0e2e01f0edfac5c",
+  "runner_sha256": "1e09d053693e46b03a27bc34c443a4ac258ff6358eda1d33e0a76b160e97bf8b",
+  "verdict": "CHANGES_REQUIRED",
+  "summary": "P1-1 지원 시험 소스(admin-acl-audit.test.mjs)와 verify ④ 연결을 독립 검수했다. 확인된 것: (1) verify.mjs ④는 일회용 fresh DB 이름을 argv로 지원 시험에 실제 전달하고, 실패는 ok=false→failed++→exit 1로 전파되며 건너뛰지 않는다. (2) 시험은 16개 metric의 정확 집합·중복·미지 metric·expected 설명을 검사하고, 별도 세션에서 to_regclass로 프로브 부재를 확인한다. (3) 모바일 .rpc 리터럴 61개와 SQL 허용 목록 62개(create_store 비-mobile 예외 1개 제외)를 grep으로 독립 재계수해 양방향 일치를 확인했다. 미해결: (A) Major — 시험이 16개 metric 중 probe_owner·facade_rpc_missing 2개만 값을 단언한다. anon_rpc=0·blocked_internal_rpc=0·protected_writes=0·probe_dangerous=0·public_dangerous=0·rls_disabled_app_tables=0·source_schema_grants=0·supabase_admin_objects=0·protected_objects=6·blocked_internal_rpc_objects=11처럼 fresh DB가 이미 만족하는 사후조건이 봉인되지 않아, 새 migration이 anon EXECUTE나 보호 표 쓰기를 다시 열어도 verify ④가 초록이다. 이는 공동 장부의 집중 검토 질문 \"SQL 문법만 실행하고 사후조건을 놓치지 않는가\"에 대한 실질적 미충족이다. (B) Minor — AST 대조가 리터럴이 아닌 .rpc(name) 호출을 조용히 건너뛰어 양방향 일치 계약에 구멍이 있다(현재 코드에는 해당 호출 없음). (C) Minor — required_evidence 중 r003 review.md 원문과 allowlist 드리프트 사보타주 증거가 스냅샷에 없어 P1-1-SUPPORT-3 원문 대조와 실패 경로 실증을 검수할 수 없다. (D) Improvement — SQL 허용 목록을 정규식으로 추출하며 비-mobile 예외⊆허용 목록 검사가 없다. 실제 호스티드 audit와 32/87 부채 축소는 사람 결정대로 범위 밖이다.",
+  "findings": [
+    {
+      "finding_id": "P1-1-SUPPORT-SEC-METRIC-VALUES-UNSEALED",
+      "severity": "Major",
+      "review_state": "OPEN",
+      "category": "TEST_GAP",
+      "requirement_or_invariant_ids": [
+        "P1-1-SUPPORT-1",
+        "AGENTS:inspection-execution",
+        "AGENTS:server-authority",
+        "P1-1-SEC-SUPPORT-TEST-UNSEALED"
+      ],
+      "evidence": [
+        {
+          "path": "packages/db/scripts/admin-acl-audit.test.mjs",
+          "line_start": 114,
+          "line_end": 120,
+          "observation": "16개 metric의 존재·expected 설명·중복·미지 metric만 검사하고, 값은 probe_owner와 facade_rpc_missing 두 개만 단언한다. 나머지 14개 metric의 관측값은 아무 조건 없이 통과한다."
+        },
+        {
+          "path": "packages/db/scripts/admin-acl-audit.test.mjs",
+          "line_start": 138,
+          "line_end": 139,
+          "observation": "rls_disabled_app_tables·ledger_write_paths·unapproved_authenticated_rpc는 '관측값'으로 출력만 하며, anon_rpc·blocked_internal_rpc·protected_writes 등은 출력조차 하지 않는다."
+        },
+        {
+          "path": "packages/db/scripts/admin-acl-audit.sql",
+          "line_start": 172,
+          "line_end": 193,
+          "observation": "SQL 자체는 anon_rpc=0, blocked_internal_rpc=0, blocked_internal_rpc_objects=11을 '현재 승인 계약'으로 정의한다. 셸 audit는 이를 실패 조건으로 쓰지만 지원 시험은 쓰지 않는다."
+        },
+        {
+          "path": "packages/db/scripts/admin-acl.sh",
+          "line_start": 159,
+          "line_end": 167,
+          "observation": "원격 audit 셸 게이트는 16개 metric 전부에 값 조건을 건다. 같은 SQL을 fresh DB에서 도는 지원 시험만 값 조건이 빠져 로컬 게이트와 호스티드 게이트의 계약이 비대칭이다."
+        },
+        {
+          "path": "packages/db/README.md",
+          "line_start": 104,
+          "line_end": 106,
+          "observation": "README는 RLS 비활성 앱 표 0개를 실측으로 기록하고 32/87만 P0-5 부채로 남긴다. 즉 나머지 항목은 이미 닫힌 상태로 공식화돼 있으나 시험이 이를 고정하지 않는다."
+        },
+        {
+          "path": "scripts/verify.mjs",
+          "line_start": 131,
+          "line_end": 136,
+          "observation": "④ 단계 주석은 'metric 완전성·rollback·허용 목록 일치'만 검증한다고 명시한다. 새 migration이 anon EXECUTE·보호 표 쓰기·supabase_admin 소유 객체를 다시 열어도 verify ④는 통과한다."
+        }
+      ],
+      "impact": "필수 로컬 게이트(pnpm verify ④)가 fresh DB의 앱 롤 공격면 사후조건을 실제로 봉인하지 않는다. 0165~0167이 닫은 anon RPC·내부 몸통 EXECUTE·보호 표 직접 쓰기·위험 테이블 권한이 후속 migration에서 회귀해도 로컬에서는 감지되지 않고, 호스티드 audit(현재 87건 부채로 항상 실패)에서만 드러나므로 회귀와 기존 부채가 구분되지 않는다. 서버 권위 원칙(AGENTS §절대 원칙 3)의 실효 경계인 DB grant 계약이 시험으로 보호되지 않는다.",
+      "acceptance_criteria": [
+        "admin-acl-audit.test.mjs가 fresh DB에서 이미 만족하는 metric(probe_dangerous·public_dangerous·rls_disabled_app_tables·protected_writes·source_schema_grants·supabase_admin_objects·anon_rpc·blocked_internal_rpc=0, protected_objects=6, blocked_internal_rpc_objects=11)의 값을 정확히 단언하고 불일치 시 exit 1 한다.",
+        "migrations는 하네스 계약({0,2}) 밖의 값이면 실패하고, platform_default_open은 informational로 유지한다.",
+        "P0-5 부채 metric(ledger_write_paths·unapproved_authenticated_rpc)은 성공으로 위장하지 않되, fresh DB 실측 기준선을 코드에 기록하고 그 값을 초과하면 실패한다(축소는 허용).",
+        "verify.mjs ④ 주석과 시험 헤더 주석이 '값 단언 포함'으로 갱신된다."
+      ],
+      "required_tests": [
+        "fresh DB에서 pnpm verify ④ 통과(값 단언 포함) 실행 로그",
+        "사보타주: fresh DB에 grant execute on function public.close_business_day to authenticated 적용 후 지원 시험이 blocked_internal_rpc 불일치로 exit 1 하는 증거",
+        "사보타주: 임의 public 함수에 grant execute to anon 적용 후 anon_rpc 불일치로 exit 1 하는 증거",
+        "부채 기준선 초과(unapproved_authenticated_rpc 기준선+1) 시 실패하고, 축소 시 통과하는 증거"
+      ],
+      "previous_finding_id": null
+    },
+    {
+      "finding_id": "P1-1-SUPPORT-SEC-DYNAMIC-RPC-SKIPPED",
+      "severity": "Minor",
+      "review_state": "OPEN",
+      "category": "TEST_GAP",
+      "requirement_or_invariant_ids": [
+        "P1-1-SUPPORT-1",
+        "AGENTS:server-authority"
+      ],
+      "evidence": [
+        {
+          "path": "packages/db/scripts/admin-acl-audit.test.mjs",
+          "line_start": 86,
+          "line_end": 92,
+          "observation": "CallExpression의 첫 인자가 isStringLiteralLike일 때만 이름을 수집한다. 변수·치환 템플릿·계산식 인자를 가진 .rpc(...) 호출은 오류 없이 무시된다."
+        },
+        {
+          "path": "packages/db/scripts/admin-acl-audit.test.mjs",
+          "line_start": 130,
+          "line_end": 136,
+          "observation": "양방향 대조는 수집된 리터럴 집합만 사용하므로, 동적 이름 호출이 생기면 '미허용' 방향 검사가 그 호출을 영원히 보지 못한다."
+        },
+        {
+          "path": "apps/mobile/src/features/sales/hooks.ts",
+          "line_start": 937,
+          "line_end": 948,
+          "observation": "현재 모바일 소스의 .rpc 호출 61개는 전부 문자열 리터럴이다(독립 grep으로 비리터럴 호출 0건 확인). 따라서 이 결함은 잠재적이며 현재 결과를 바꾸지는 않는다."
+        }
+      ],
+      "impact": "향후 도메인 훅이 supabase.rpc(fnName) 형태의 동적 호출을 추가하면 허용 목록 밖 RPC를 앱이 호출해도 지원 시험이 통과한다. 공동 장부의 '양방향 일치' 주장이 리터럴 호출에만 유효한 조건부 주장이 된다.",
+      "acceptance_criteria": [
+        "첫 인자가 문자열 리터럴(NoSubstitutionTemplateLiteral 포함)이 아닌 .rpc(...) 호출을 발견하면 파일:줄과 함께 실패한다.",
+        "시험 헤더 주석에 '동적 .rpc 이름은 허용하지 않는다'는 계약을 명시한다."
+      ],
+      "required_tests": [
+        "임시로 apps/mobile/src에 const n='x'; supabase.rpc(n) 형태를 추가했을 때 지원 시험이 exit 1 하는 사보타주 증거",
+        "치환 없는 템플릿 리터럴 .rpc(`sales_day`)는 정상 수집되는 증거"
+      ],
+      "previous_finding_id": null
+    },
+    {
+      "finding_id": "P1-1-SUPPORT-SEC-EVIDENCE-NOT-MATERIALIZED",
+      "severity": "Minor",
+      "review_state": "OPEN",
+      "category": "OTHER",
+      "requirement_or_invariant_ids": [
+        "P1-1-SUPPORT-3",
+        "P1-1-SEC-SUPPORT-TEST-UNSEALED",
+        "AGENTS:inspection-execution"
+      ],
+      "evidence": [
+        {
+          "path": "COLLABORATION_LOG",
+          "line_start": 0,
+          "line_end": 0,
+          "observation": "task packet의 evidence_paths에 docs/ai-review/tasks/P1-1-REMOTE-ACL-AUDIT-001/rounds/r003/review.md가 있으나 input_files 17건에 포함되지 않았고 스냅샷의 docs/ 트리가 비어 있어 읽을 수 없다. P1-1-SEC-SUPPORT-TEST-UNSEALED의 원문과 r003 PASS 대조(required_evidence 4)를 수행할 수 없다."
+        },
+        {
+          "path": "COLLABORATION_LOG",
+          "line_start": 0,
+          "line_end": 0,
+          "observation": "required_evidence 3 '허용 목록 드리프트가 실패하는 사보타주 증거'는 공동 장부 turn-s001의 '대조 통과·pnpm verify 6/6 통과' 문장뿐이며, 실패 경로(드리프트·metric 누락·프로브 잔존)가 실제로 exit 1 한 실행 기록이 스냅샷 어디에도 없다."
+        },
+        {
+          "path": "packages/db/scripts/admin-acl.test.sh",
+          "line_start": 130,
+          "line_end": 233,
+          "observation": "셸 audit는 shim으로 실패 경로 9종을 자체 회귀시험한다. 반면 admin-acl-audit.test.mjs는 자기 자신의 실패 경로를 검증하는 시험이나 기록된 사보타주 증거가 없다."
+        }
+      ],
+      "impact": "검수자는 시험의 성공 경로 소스만 확인할 수 있고, 실패 경로가 실제로 작동하는지와 r003 Improvement가 요구한 봉인 범위가 이 소스로 충족되는지를 원문 대조로 판정할 수 없다. 통과 주장만 있는 시험은 AGENTS '건너뛴 단계가 있으면 전체 통과라고 표현하지 않는다'의 취지상 봉인 근거로 부족하다.",
+      "acceptance_criteria": [
+        "다음 라운드 스냅샷에 r003 review.md가 실제 materialize되거나, 해당 Improvement 원문이 공동 장부 턴에 인용된다.",
+        "CODEX-FUNCTION-QA 검증 턴 또는 공동 장부에 사보타주 3종(허용 목록에서 항목 1개 제거→미허용 실패, 모바일 호출 없는 항목 추가→미사용 실패, SQL에서 metric 1개 제거→누락 실패)의 exit 1 출력이 기록된다."
+      ],
+      "required_tests": [
+        "허용 목록 드리프트 양방향 각 1건이 exit 1 하는 실행 로그",
+        "SQL metric 1개 삭제·중복 시 exit 1 하는 실행 로그",
+        "rollback; 제거 시 프로브 잔존으로 exit 1 하는 실행 로그(별도 fresh DB에서, 이후 drop)"
+      ],
+      "previous_finding_id": null
+    },
+    {
+      "finding_id": "P1-1-SUPPORT-SEC-ALLOWLIST-REGEX-EXTRACTION",
+      "severity": "Improvement",
+      "review_state": "OPEN",
+      "category": "CODE",
+      "requirement_or_invariant_ids": [
+        "P1-1-SUPPORT-1"
+      ],
+      "evidence": [
+        {
+          "path": "packages/db/scripts/admin-acl-audit.test.mjs",
+          "line_start": 60,
+          "line_end": 71,
+          "observation": "SQL 허용 목록을 'insert into …' 문자열 위치와 첫 ';'까지의 본문에 정규식을 적용해 추출한다. 현재 SQL 형식(12~43줄, 47줄)에는 정확히 맞지만 주석·따옴표 변형·';' 포함 주석에 취약하다. 다만 추출 오류는 미허용/미사용 방향 실패로 드러나므로 조용한 통과로 이어지진 않는다."
+        },
+        {
+          "path": "packages/db/scripts/admin-acl-audit.test.mjs",
+          "line_start": 125,
+          "line_end": 130,
+          "observation": "_acl_non_mobile_rpc 예외가 _acl_approved_rpc의 부분집합인지 검사하지 않는다. 허용 목록 밖 이름을 예외로 넣어도 조용히 무시된다."
+        },
+        {
+          "path": "packages/db/scripts/admin-acl-audit.test.mjs",
+          "line_start": 18,
+          "line_end": 24,
+          "observation": "DATABASE는 식별자 정규식으로 검증하지만 SUPABASE_DB_CONTAINER는 검증하지 않는다. 셸 없이 argv로만 전달되어 주입 위험은 없으나 admin-acl.sh(92줄)의 형식 검사와 비대칭이다."
+        },
+        {
+          "path": "scripts/verify.mjs",
+          "line_start": 143,
+          "line_end": 145,
+          "observation": "같은 파일의 locale parity 주석이 'SQL 파일을 정규식으로 읽는 시험은 문자열 안 문구에 속을 수 있다'고 명시한다. 허용 목록 추출도 같은 취약 패턴이다."
+        }
+      ],
+      "impact": "현재 통과 결과를 바꾸지 않는 견고성 문제다. 허용 목록 SQL 형식이 바뀌면 시험이 오탐으로 실패해 유지보수 비용이 늘고, 예외 목록 오타는 감지되지 않는다.",
+      "acceptance_criteria": [
+        "비-mobile 예외 이름이 허용 목록에 없으면 실패한다.",
+        "추출된 시그니처 수가 0이거나 SQL의 values 행 수와 다르면 실패하는 자기 검증을 두거나, 시험이 같은 psql 세션 안에서 'select signature from _acl_approved_rpc'를 rollback 전에 실행해 DB 값으로 추출한다.",
+        "SUPABASE_DB_CONTAINER를 admin-acl.sh와 같은 정규식으로 검증한다."
+      ],
+      "required_tests": [
+        "_acl_non_mobile_rpc에 허용 목록 밖 이름을 추가한 사보타주에서 실패하는 증거"
+      ],
+      "previous_finding_id": null
+    }
+  ],
+  "proposed_edits": [
+    {
+      "edit_id": "P1-1-SUPPORT-EDIT-METRIC-VALUES",
+      "path": "packages/db/scripts/admin-acl-audit.test.mjs",
+      "anchor": "if (seen.get('facade_rpc_missing').value !== '0') fail(`허용 facade가 DB에 없습니다: ${seen.get('facade_rpc_missing').value}`);",
+      "operation": "ADD",
+      "proposed_text": "\n// 새 DB가 이미 만족하는 사후조건은 값까지 고정한다. 값을 단언하지 않는 항목은 하네스 의존\n// (migrations·platform_default_open)과 P0-5 부채(ledger_write_paths·unapproved_authenticated_rpc)뿐이다.\nconst FRESH_DB_VALUES = new Map([\n  ['probe_dangerous', '0'], ['public_dangerous', '0'], ['rls_disabled_app_tables', '0'],\n  ['protected_objects', '6'], ['protected_writes', '0'], ['source_schema_grants', '0'],\n  ['supabase_admin_objects', '0'], ['anon_rpc', '0'], ['blocked_internal_rpc', '0'],\n  ['blocked_internal_rpc_objects', '11'],\n]);\nfor (const [metric, value] of FRESH_DB_VALUES) {\n  if (seen.get(metric).value !== value) fail(`${metric} 사후조건 불일치: 관측=${seen.get(metric).value} 기대=${value}`);\n}\n// psql 기반 fresh harness는 CLI 장부가 없어 0, CLI 적용 DB는 2다. 그 밖의 값은 계약 밖이다.\nif (!['0', '2'].includes(seen.get('migrations').value)) fail(`migrations 값이 하네스 계약 밖입니다: ${seen.get('migrations').value}`);\n// P0-5 부채는 성공으로 바꾸지 않는다. 다만 기록된 fresh DB 기준선보다 커지면 회귀이므로 실패한다(축소는 허용).\n// ⚠ 기준선 숫자는 fresh DB 실측으로 확정한다(README의 32/87은 개발 DB 실측이다).\nconst DEBT_CEILING = new Map([['ledger_write_paths', 32], ['unapproved_authenticated_rpc', 87]]);\nfor (const [metric, ceiling] of DEBT_CEILING) {\n  const observed = Number(seen.get(metric).value);\n  if (!Number.isInteger(observed) || observed > ceiling) fail(`${metric} 부채가 기준선을 넘었습니다: 관측=${seen.get(metric).value} 기준선=${ceiling}`);\n}",
+      "rationale": "fresh DB가 이미 만족하는 10개 metric 값을 단언해 후속 migration의 grant 회귀를 verify ④에서 잡고, 부채 metric은 성공 위장 없이 기준선 초과만 실패시킨다.",
+      "finding_ids": [
+        "P1-1-SUPPORT-SEC-METRIC-VALUES-UNSEALED"
+      ]
+    },
+    {
+      "edit_id": "P1-1-SUPPORT-EDIT-DYNAMIC-RPC",
+      "path": "packages/db/scripts/admin-acl-audit.test.mjs",
+      "anchor": "function mobileRpcNames() {",
+      "operation": "REPLACE",
+      "proposed_text": "function mobileRpcNames() {\n  const names = new Set();\n  const dynamic = [];\n  for (const path of filesBelow(MOBILE_SRC)) {\n    const source = ts.createSourceFile(path, readFileSync(path, 'utf8'), ts.ScriptTarget.Latest, true);\n    const visit = (node) => {\n      if (ts.isCallExpression(node)\n          && ts.isPropertyAccessExpression(node.expression)\n          && node.expression.name.text === 'rpc') {\n        const first = node.arguments[0];\n        if (first && ts.isStringLiteralLike(first)) {\n          names.add(first.text);\n        } else {\n          // 이름이 리터럴이 아니면 허용 목록과 대조할 수 없다. 조용히 건너뛰면 양방향 일치가 거짓이 된다.\n          const { line } = source.getLineAndCharacterOfPosition(node.getStart(source));\n          dynamic.push(`${path}:${line + 1}`);\n        }\n      }\n      ts.forEachChild(node, visit);\n    };\n    visit(source);\n  }\n  if (dynamic.length) fail(`리터럴이 아닌 .rpc 이름 — 허용 목록 대조 불가: ${dynamic.join(', ')}`);\n  return names;\n}",
+      "rationale": "함수 전체를 교체한다(anchor 줄부터 대응하는 닫는 중괄호까지). 동적 .rpc 이름 호출을 실패로 만들어 양방향 대조 계약을 무조건적으로 만든다.",
+      "finding_ids": [
+        "P1-1-SUPPORT-SEC-DYNAMIC-RPC-SKIPPED"
+      ]
+    },
+    {
+      "edit_id": "P1-1-SUPPORT-EDIT-NONMOBILE-SUBSET",
+      "path": "packages/db/scripts/admin-acl-audit.test.mjs",
+      "anchor": "const expectedMobileNames = new Set([...approvedNames].filter((name) => !nonMobileNames.has(name)));",
+      "operation": "ADD",
+      "proposed_text": "const strayNonMobile = difference(nonMobileNames, approvedNames);\nif (strayNonMobile.length) fail(`비-mobile 예외가 허용 목록에 없습니다: ${strayNonMobile.join(', ')}`);\nif (approvedSignatures.length === 0) fail('허용 RPC 시그니처를 하나도 추출하지 못했습니다 — SQL 형식이 바뀌었는지 확인하세요');",
+      "rationale": "anchor 줄 바로 뒤에 추가한다. 예외 목록 오타와 정규식 추출 실패(0건)를 조용히 넘기지 않는다.",
+      "finding_ids": [
+        "P1-1-SUPPORT-SEC-ALLOWLIST-REGEX-EXTRACTION"
+      ]
+    },
+    {
+      "edit_id": "P1-1-SUPPORT-EDIT-VERIFY-COMMENT",
+      "path": "scripts/verify.mjs",
+      "anchor": "       * 실패시키는 별도 보안 부채이고, 여기서는 metric 완전성·rollback·모바일 허용 목록",
+      "operation": "REPLACE",
+      "proposed_text": "       * 실패시키는 별도 보안 부채이고, 여기서는 metric 완전성·새 DB 사후조건 값·rollback·모바일 허용 목록",
+      "rationale": "④ 단계 주석이 값 단언을 포함한 실제 검증 범위를 설명하도록 맞춘다(METRIC-VALUES 수정과 함께 반영).",
+      "finding_ids": [
+        "P1-1-SUPPORT-SEC-METRIC-VALUES-UNSEALED"
+      ]
+    }
+  ],
+  "closed_finding_ids": [],
+  "reopened_finding_ids": [],
+  "remaining_required_finding_ids": [
+    "P1-1-SUPPORT-SEC-METRIC-VALUES-UNSEALED",
+    "P1-1-SUPPORT-SEC-DYNAMIC-RPC-SKIPPED",
+    "P1-1-SUPPORT-SEC-EVIDENCE-NOT-MATERIALIZED"
+  ]
+}
