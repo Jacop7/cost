@@ -119,6 +119,20 @@ const PREDECESSOR_REVIEW_KEYS = new Set([
 const MAX_PREDECESSOR_DEPTH = 8;
 const SAFE_CLAUDE_SUBTYPES = new Set(['success', 'error_max_budget_usd']);
 const SAFE_CLAUDE_TERMINAL_REASONS = new Set(['completed', 'budget_exhausted']);
+const CANDIDATE_REVIEW_STATES = new Set(['NOT_MERGED', 'VALIDATION_REJECTED']);
+const VALIDATION_REJECTED_ENCODING = 'CANONICAL_JSON_V1';
+const VALIDATION_REJECTED_STAGE = 'SEMANTIC_VALIDATE_RESULT';
+const RESULT_VALIDATION_FAILURE_CODES = new Set([
+  'RESULT_ROOT_CONTRACT',
+  'RESULT_BINDING_MISMATCH',
+  'RESULT_FINDINGS_CONTRACT',
+  'RESULT_EVIDENCE_CONTRACT',
+  'RESULT_EDITS_CONTRACT',
+  'RESULT_STATE_TRANSITION_CONTRACT',
+  'RESULT_REMAINING_SET_MISMATCH',
+  'RESULT_VERDICT_CONTRACT',
+  'RESULT_SEMANTIC_CONTRACT',
+]);
 
 function findingResolutionSemantics(manifest, label = 'manifest') {
   const marker = manifest?.finding_resolution_semantics;
@@ -163,11 +177,14 @@ const SECRET_PATTERNS = [
 ];
 
 class ReviewError extends Error {
-  constructor(message, { exitCode = 70, runState = 'RUN_FAILED' } = {}) {
+  constructor(message, { exitCode = 70, runState = 'RUN_FAILED', diagnosticCode = null } = {}) {
     super(message);
     this.name = 'ReviewError';
     this.exitCode = exitCode;
     this.runState = runState;
+    this.diagnosticCode = RESULT_VALIDATION_FAILURE_CODES.has(diagnosticCode)
+      ? diagnosticCode
+      : null;
   }
 }
 
@@ -1300,19 +1317,19 @@ function inspectPreparedRoundStage(stage) {
     expectedFiles.add('review.md');
     expectedFiles.add('collaboration-entry.md');
   } else if (['RUN_FAILED', 'STALE'].includes(run.run_state)) {
-    if (run.candidate_review_state === 'NOT_MERGED') {
+    const candidateMetadata = candidateReviewMetadata(run, '회차 staging', {
+      exitCode: 73,
+      runState: run.run_state,
+    });
+    if (candidateMetadata.state !== null) {
       const candidateRaw = readPreparedStageFile(stage, 'candidate-review.json', MAX_REVIEW_FILE_BYTES);
       const candidateMarkdownRaw = readPreparedStageFile(stage, 'candidate-review.md', MAX_REVIEW_FILE_BYTES);
-      if (
-        sha256(candidateRaw) !== run.review_sha256
-        || sha256(candidateMarkdownRaw) !== run.candidate_review_markdown_sha256
-      ) {
-        throw new ReviewError('회차 staging 후보 결과 hash가 다릅니다.', { exitCode: 73 });
-      }
+      assertCandidateReviewArtifacts(run, candidateRaw, candidateMarkdownRaw, '회차 staging', {
+        exitCode: 73,
+        runState: run.run_state,
+      });
       expectedFiles.add('candidate-review.json');
       expectedFiles.add('candidate-review.md');
-    } else if (run.review_sha256 !== null) {
-      throw new ReviewError('회차 staging 실패 run의 review hash에 대응하는 후보가 없습니다.', { exitCode: 73 });
     }
   } else {
     throw new ReviewError(`회차 staging run_state를 공개할 수 없습니다: ${run.run_state}`, { exitCode: 73 });
@@ -1649,16 +1666,15 @@ function loadRoundRecord(roundsDir, roundNumber, task) {
       ) {
         throw new ReviewError(`${roundName} review.md 또는 collaboration entry hash가 run.json과 다릅니다.`, { exitCode: 75, runState: 'STALE' });
       }
-    } else if (run.candidate_review_state === 'NOT_MERGED') {
+    } else if (run.candidate_review_state !== null && run.candidate_review_state !== undefined) {
       const candidateJsonPath = join(roundPath, 'candidate-review.json');
       const candidateMarkdownPath = join(roundPath, 'candidate-review.md');
+      const candidateMetadata = candidateReviewMetadata(run, `${roundName} 보존 후보`);
       if (
-        !SHA256_RE.test(run.review_sha256 || '')
-        || !SHA256_RE.test(run.candidate_review_markdown_sha256 || '')
-        || !existsSync(candidateJsonPath)
+        !existsSync(candidateJsonPath)
         || !existsSync(candidateMarkdownPath)
       ) {
-        throw new ReviewError(`${roundName} NOT_MERGED 후보 원본 또는 hash가 없습니다.`, { exitCode: 75, runState: 'STALE' });
+        throw new ReviewError(`${roundName} ${candidateMetadata.state} 후보 원본이 없습니다.`, { exitCode: 75, runState: 'STALE' });
       }
       assertSafeControlFile(candidateJsonPath, roundsDir, `${roundName} candidate-review.json`);
       assertSafeControlFile(candidateMarkdownPath, roundsDir, `${roundName} candidate-review.md`);
@@ -1666,11 +1682,9 @@ function loadRoundRecord(roundsDir, roundNumber, task) {
       const candidateMarkdownRaw = readBoundedTo(candidateMarkdownPath, `${roundName} candidate-review.md`, MAX_REVIEW_FILE_BYTES);
       decodeSafeText(candidateJsonRaw, `${roundName} candidate-review.json`);
       decodeSafeText(candidateMarkdownRaw, `${roundName} candidate-review.md`);
-      if (sha256(candidateJsonRaw) !== run.review_sha256 || sha256(candidateMarkdownRaw) !== run.candidate_review_markdown_sha256) {
-        throw new ReviewError(`${roundName} 후보 원본 hash가 run.json과 다릅니다.`, { exitCode: 75, runState: 'STALE' });
-      }
-    } else if (run.review_sha256 !== null) {
-      throw new ReviewError(`${roundName} 실패 회차 review hash에 대응하는 보존 원본이 없습니다.`, { exitCode: 75, runState: 'STALE' });
+      assertCandidateReviewArtifacts(run, candidateJsonRaw, candidateMarkdownRaw, `${roundName} 보존 후보`);
+    } else {
+      candidateReviewMetadata(run, `${roundName} 실패 회차`);
     }
   }
   if (task.protocol_version === '1.1' && run.run_state === 'RESULT_RECEIVED') {
@@ -2496,7 +2510,12 @@ function validateResult(result, {
   previous,
   allowClosedTransitions = false,
   verifiedIsResolved = true,
+  validationDiagnostics = null,
 }) {
+  const markValidationPhase = (failureCode) => {
+    if (validationDiagnostics) validationDiagnostics.failureCode = failureCode;
+  };
+  markValidationPhase('RESULT_ROOT_CONTRACT');
   ensureObject(result, 'structured_output');
   const keys = Object.keys(result);
   for (const key of RESULT_KEYS) {
@@ -2522,9 +2541,11 @@ function validateResult(result, {
     schema_sha256: snapshot.schema_sha256,
     runner_sha256: snapshot.runner_sha256,
   };
+  markValidationPhase('RESULT_BINDING_MISMATCH');
   for (const [key, value] of Object.entries(expected)) {
     if (result[key] !== value) throw new ReviewError(`결과의 ${key}가 실행 입력과 다릅니다.`, { exitCode: 76, runState: 'STALE' });
   }
+  markValidationPhase('RESULT_FINDINGS_CONTRACT');
   ensureString(result.verdict, 'verdict', { values: VERDICTS });
   ensureString(result.summary, 'summary', { max: 4000 });
   ensureLedgerBlockSafe(result.summary, 'summary');
@@ -2564,6 +2585,7 @@ function validateResult(result, {
     if (!Array.isArray(finding.evidence) || finding.evidence.length < 1 || finding.evidence.length > 20) {
       throw new ReviewError(`${finding.finding_id}.evidence는 1~20개여야 합니다.`, { exitCode: 76 });
     }
+    markValidationPhase('RESULT_EVIDENCE_CONTRACT');
     for (const [evidenceIndex, evidence] of finding.evidence.entries()) {
       ensureExactKeys(evidence, EVIDENCE_KEYS, `${finding.finding_id}.evidence[${evidenceIndex}]`);
       ensureString(evidence.path, `${finding.finding_id}.evidence.path`, { max: 500 });
@@ -2590,11 +2612,13 @@ function validateResult(result, {
         }
       }
     }
+    markValidationPhase('RESULT_FINDINGS_CONTRACT');
     if (mode !== 'RECHECK' && finding.review_state !== 'OPEN') {
       throw new ReviewError(`최초 검수 finding은 OPEN이어야 합니다: ${finding.finding_id}`, { exitCode: 76 });
     }
   }
 
+  markValidationPhase('RESULT_EDITS_CONTRACT');
   if (!Array.isArray(result.proposed_edits) || result.proposed_edits.length > 100) {
     throw new ReviewError('proposed_edits는 최대 100개 배열이어야 합니다.', { exitCode: 76 });
   }
@@ -2641,6 +2665,7 @@ function validateResult(result, {
   const closed = new Set(result.closed_finding_ids);
   const reopened = new Set(result.reopened_finding_ids);
   const remaining = new Set(result.remaining_required_finding_ids);
+  markValidationPhase('RESULT_STATE_TRANSITION_CONTRACT');
   if (
     !allowClosedTransitions
     && (result.closed_finding_ids.length > 0 || result.findings.some((finding) => finding.review_state === 'CLOSED'))
@@ -2713,9 +2738,11 @@ function validateResult(result, {
     .map((finding) => finding.finding_id)
     .sort();
   const declaredRemaining = [...remaining].sort();
+  markValidationPhase('RESULT_REMAINING_SET_MISMATCH');
   if (JSON.stringify(mandatoryOpen) !== JSON.stringify(declaredRemaining)) {
     throw new ReviewError('remaining_required_finding_ids가 현재 필수 미종결 finding 집합과 정확히 일치하지 않습니다.', { exitCode: 76 });
   }
+  markValidationPhase('RESULT_VERDICT_CONTRACT');
   if (result.verdict === 'PASS') {
     if (mandatoryOpen.length) {
       throw new ReviewError('PASS인데 필수 미해결 finding이 남아 있습니다.', { exitCode: 76 });
@@ -2723,6 +2750,7 @@ function validateResult(result, {
   } else if (result.verdict === 'CHANGES_REQUIRED' && result.remaining_required_finding_ids.length === 0) {
     throw new ReviewError('CHANGES_REQUIRED에는 필수 미해결 finding ID가 필요합니다.', { exitCode: 76 });
   }
+  if (validationDiagnostics) validationDiagnostics.failureCode = null;
   return result;
 }
 
@@ -3534,6 +3562,119 @@ function safeReviewErrorCode(error) {
   }
 }
 
+function safeValidationFailureCode(error) {
+  return RESULT_VALIDATION_FAILURE_CODES.has(error?.diagnosticCode)
+    ? error.diagnosticCode
+    : 'RESULT_SEMANTIC_CONTRACT';
+}
+
+function validationRejectedCandidateMarkdown(candidateHash, failureCode) {
+  return Buffer.from([
+    '> **VALIDATION_REJECTED 진단 후보** — Claude structured_output은 JSON Schema를 통과했지만 저장소 의미 계약에서 거부됐습니다.',
+    `> 검증 단계: ${VALIDATION_REJECTED_STAGE}`,
+    `> 실패 코드: ${failureCode}`,
+    `> 인코딩: ${VALIDATION_REJECTED_ENCODING}`,
+    `> 후보 SHA-256: ${candidateHash}`,
+    '> 이 파일과 candidate-review.json은 공식 검수 결과가 아니며 Finding·공동 장부·후속 검수 입력으로 승격되지 않습니다.',
+    '',
+  ].join('\n'), 'utf8');
+}
+
+function candidateReviewMetadata(run, label, { exitCode = 75, runState = 'STALE' } = {}) {
+  const fail = (message) => {
+    throw new ReviewError(`${label} ${message}`, { exitCode, runState });
+  };
+  const state = run.candidate_review_state ?? null;
+  const reviewHash = run.review_sha256 ?? null;
+  const candidateHash = run.candidate_review_sha256 ?? null;
+  const markdownHash = run.candidate_review_markdown_sha256 ?? null;
+  const validationStage = run.validation_stage ?? null;
+  const validationFailureCode = run.validation_failure_code ?? null;
+  const candidateEncoding = run.candidate_encoding ?? null;
+  if (state === null) {
+    if (reviewHash !== null || candidateHash !== null || markdownHash !== null) {
+      fail('후보 상태가 없는데 review/candidate hash가 남아 있습니다.');
+    }
+    if (validationStage !== null) {
+      if (
+        validationStage !== VALIDATION_REJECTED_STAGE
+        || !RESULT_VALIDATION_FAILURE_CODES.has(validationFailureCode)
+        || candidateEncoding !== null
+      ) {
+        fail('보존되지 않은 의미 검증 실패 metadata가 올바르지 않습니다.');
+      }
+    } else if (validationFailureCode !== null || candidateEncoding !== null) {
+      fail('검증 단계가 없는데 의미 검증 metadata가 남아 있습니다.');
+    }
+    return { state, candidateHash: null };
+  }
+  if (!CANDIDATE_REVIEW_STATES.has(state)) fail(`알 수 없는 candidate_review_state입니다: ${state}`);
+  if (!SHA256_RE.test(markdownHash || '')) fail('후보 Markdown hash가 없습니다.');
+  if (state === 'NOT_MERGED') {
+    if (!SHA256_RE.test(reviewHash || '')) fail('검증된 후보 review hash가 없습니다.');
+    if (candidateHash !== null && candidateHash !== reviewHash) {
+      fail('검증된 후보 candidate/review hash가 다릅니다.');
+    }
+    if (validationStage !== null || validationFailureCode !== null || candidateEncoding !== null) {
+      fail('검증된 후보에 의미 검증 거부 metadata가 섞였습니다.');
+    }
+    return { state, candidateHash: reviewHash };
+  }
+  if (
+    reviewHash !== null
+    || !SHA256_RE.test(candidateHash || '')
+    || validationStage !== VALIDATION_REJECTED_STAGE
+    || !RESULT_VALIDATION_FAILURE_CODES.has(validationFailureCode)
+    || candidateEncoding !== VALIDATION_REJECTED_ENCODING
+  ) {
+    fail('VALIDATION_REJECTED 후보 metadata가 올바르지 않습니다.');
+  }
+  return { state, candidateHash };
+}
+
+function assertCandidateReviewArtifacts(run, candidateJson, candidateMarkdown, label, options = {}) {
+  const metadata = candidateReviewMetadata(run, label, options);
+  const fail = (message) => {
+    throw new ReviewError(`${label} ${message}`, {
+      exitCode: options.exitCode ?? 75,
+      runState: options.runState ?? 'STALE',
+    });
+  };
+  if (metadata.state === null) fail('후보 파일이 있지만 candidate_review_state가 없습니다.');
+  if (
+    sha256(candidateJson) !== metadata.candidateHash
+    || sha256(candidateMarkdown) !== run.candidate_review_markdown_sha256
+  ) {
+    fail('후보 원본 hash가 run.json과 다릅니다.');
+  }
+  if (metadata.state === 'VALIDATION_REJECTED') {
+    let parsed;
+    try {
+      parsed = JSON.parse(candidateJson.toString('utf8'));
+    } catch {
+      fail('VALIDATION_REJECTED 후보 JSON을 해석할 수 없습니다.');
+    }
+    const canonical = Buffer.from(`${JSON.stringify(parsed, null, 2)}\n`, 'utf8');
+    if (!canonical.equals(candidateJson)) fail('VALIDATION_REJECTED 후보가 canonical JSON이 아닙니다.');
+    const expectedMarkdown = validationRejectedCandidateMarkdown(
+      metadata.candidateHash,
+      run.validation_failure_code,
+    );
+    if (!expectedMarkdown.equals(candidateMarkdown)) {
+      fail('VALIDATION_REJECTED 진단 Markdown이 안전한 정규 형식과 다릅니다.');
+    }
+  }
+  return metadata;
+}
+
+function candidateStatusFields(run) {
+  const metadata = candidateReviewMetadata(run, 'status candidate', { exitCode: 75, runState: 'STALE' });
+  return {
+    candidate_review_state: metadata.state,
+    candidate_review_sha256: metadata.candidateHash,
+  };
+}
+
 function safeFailureRunDiagnostics({
   primaryError = null,
   cleanupError = null,
@@ -3547,6 +3688,57 @@ function safeFailureRunDiagnostics({
     cleanup_error: safeReviewErrorCode(cleanupError),
     collaboration_integrity_error: safeReviewErrorCode(collaborationIntegrityError),
     error: safeReviewErrorCode(finalError),
+  };
+}
+
+function failedCandidateArtifacts({
+  validated = null,
+  preparedOutput = null,
+  validationCandidateRaw = null,
+  validationFailure = null,
+  round,
+  finalError,
+} = {}) {
+  const candidateJson = validated
+    ? (preparedOutput?.reviewJson || Buffer.from(`${JSON.stringify(validated, null, 2)}\n`, 'utf8'))
+    : validationCandidateRaw;
+  if (!candidateJson) return null;
+  decodeSafeText(candidateJson, 'candidate-review.json');
+  if (validated) {
+    const failureCode = safeReviewErrorCode(finalError);
+    const candidateMarkdown = Buffer.from([
+      '> **NOT_MERGED 후보 결과** — Claude 결과 자체는 스키마 검증을 통과했지만 입력 판본·정리·합류 게이트가 실패했습니다.',
+      `> 실패 코드: ${failureCode}`,
+      '',
+      resultMarkdown(validated, round),
+    ].join('\n'), 'utf8');
+    decodeSafeText(candidateMarkdown, 'candidate-review.md');
+    const candidateHash = sha256(candidateJson);
+    return {
+      state: 'NOT_MERGED',
+      candidateJson,
+      candidateMarkdown,
+      candidateHash,
+      reviewHash: candidateHash,
+      candidateEncoding: null,
+      validationStage: null,
+      validationFailureCode: null,
+    };
+  }
+  if (!validationFailure) return null;
+  const validationFailureCode = safeValidationFailureCode(validationFailure);
+  const candidateHash = sha256(candidateJson);
+  const candidateMarkdown = validationRejectedCandidateMarkdown(candidateHash, validationFailureCode);
+  decodeSafeText(candidateMarkdown, 'candidate-review.md');
+  return {
+    state: 'VALIDATION_REJECTED',
+    candidateJson,
+    candidateMarkdown,
+    candidateHash,
+    reviewHash: null,
+    candidateEncoding: VALIDATION_REJECTED_ENCODING,
+    validationStage: VALIDATION_REJECTED_STAGE,
+    validationFailureCode,
   };
 }
 
@@ -3766,6 +3958,9 @@ function reconcilePublishedRound({
   const expectedFindingStatus = review
     ? findingStatusLists(review, previousStatusValue, contract.semantics)
     : carriedStatus;
+  const expectedCandidateStatus = review
+    ? { candidate_review_state: null, candidate_review_sha256: null }
+    : candidateStatusFields(record.run);
   if (existsSync(statusPath)) {
     try {
       const status = parseJson(readBounded(statusPath, 'status.json'), 'status.json');
@@ -3778,6 +3973,8 @@ function reconcilePublishedRound({
         && status.run_state === record.run.run_state
         && status.verdict === (review?.verdict ?? null)
         && sameFindingStatusFields(status, expectedFindingStatus)
+        && status.candidate_review_state === expectedCandidateStatus.candidate_review_state
+        && status.candidate_review_sha256 === expectedCandidateStatus.candidate_review_sha256
       ) {
         console.log(`${task.task_id} ${roundName}: 공개 회차와 status가 이미 일치합니다.`);
         return { exitCode: record.run.exit_code, review, statusPreserved: true };
@@ -3820,8 +4017,7 @@ function reconcilePublishedRound({
       verdict: null,
       latest_run_sha256: record.runHash,
       ...expectedFindingStatus,
-      candidate_review_state: record.run.candidate_review_state ?? null,
-      candidate_review_sha256: record.run.candidate_review_state === 'NOT_MERGED' ? record.run.review_sha256 : null,
+      ...expectedCandidateStatus,
       backlog_dispositions: [],
     });
   }
@@ -3989,8 +4185,7 @@ function recoverPreparedRound({
       verdict: null,
       latest_run_sha256: runHash,
       ...carriedStatus,
-      candidate_review_state: run.candidate_review_state ?? null,
-      candidate_review_sha256: run.candidate_review_state === 'NOT_MERGED' ? run.review_sha256 : null,
+      ...candidateStatusFields(run),
       backlog_dispositions: [],
     });
   }
@@ -4211,6 +4406,8 @@ async function executeReview(args) {
     let cleanupError = null;
     let validated = null;
     let preparedOutput = null;
+    let validationCandidateRaw = null;
+    let validationFailure = null;
 
     try {
       immutableWrite(join(roundStage, 'runner-source.mjs'), runnerRaw);
@@ -4259,13 +4456,30 @@ async function executeReview(args) {
       if (!requestedModelUsage || requestedModelUsage.canonicalModel !== CLAUDE_MODEL) {
         throw new ReviewError(`요청한 모델(${CLAUDE_MODEL})의 실행 증거가 없습니다.`, { exitCode: 76 });
       }
-      validated = validateResult(envelope.structured_output, {
-        task,
-        snapshot,
-        mode,
-        inputFiles,
-        previous,
-      });
+      validationCandidateRaw = Buffer.from(
+        `${JSON.stringify(envelope.structured_output, null, 2)}\n`,
+        'utf8',
+      );
+      decodeSafeText(validationCandidateRaw, 'Claude structured_output candidate');
+      const validationDiagnostics = { failureCode: 'RESULT_SEMANTIC_CONTRACT' };
+      try {
+        validated = validateResult(envelope.structured_output, {
+          task,
+          snapshot,
+          mode,
+          inputFiles,
+          previous,
+          validationDiagnostics,
+        });
+      } catch (error) {
+        validationFailure = error instanceof ReviewError
+          ? error
+          : new ReviewError(error.message || String(error), { exitCode: 76 });
+        validationFailure.diagnosticCode = RESULT_VALIDATION_FAILURE_CODES.has(validationDiagnostics.failureCode)
+          ? validationDiagnostics.failureCode
+          : 'RESULT_SEMANTIC_CONTRACT';
+        throw validationFailure;
+      }
       assertExecutionInputsUnchanged({
         repoRoot,
         task,
@@ -4347,27 +4561,22 @@ async function executeReview(args) {
     }
     const finalError = collaborationIntegrityError || primaryError || cleanupError;
     if (finalError) {
-      let candidateReviewHash = null;
-      let candidateReviewMarkdownHash = null;
+      let candidateArtifacts = null;
       let candidatePreservationError = null;
-      if (validated) {
+      if (validated || (validationCandidateRaw && validationFailure)) {
         try {
-          const candidateJson = preparedOutput?.reviewJson
-            || Buffer.from(`${JSON.stringify(validated, null, 2)}\n`, 'utf8');
-          const failureCode = safeReviewErrorCode(finalError);
-          const candidateMarkdown = Buffer.from([
-            '> **NOT_MERGED 후보 결과** — Claude 결과 자체는 스키마 검증을 통과했지만 입력 판본·정리·합류 게이트가 실패했습니다.',
-            `> 실패 코드: ${failureCode}`,
-            '',
-            resultMarkdown(validated, args.round),
-          ].join('\n'), 'utf8');
-          decodeSafeText(candidateJson, 'candidate-review.json');
-          decodeSafeText(candidateMarkdown, 'candidate-review.md');
-          immutableWrite(join(roundStage, 'candidate-review.json'), candidateJson);
-          immutableWrite(join(roundStage, 'candidate-review.md'), candidateMarkdown);
-          candidateReviewHash = sha256(candidateJson);
-          candidateReviewMarkdownHash = sha256(candidateMarkdown);
+          candidateArtifacts = failedCandidateArtifacts({
+            validated,
+            preparedOutput,
+            validationCandidateRaw,
+            validationFailure,
+            round: args.round,
+            finalError,
+          });
+          immutableWrite(join(roundStage, 'candidate-review.json'), candidateArtifacts.candidateJson);
+          immutableWrite(join(roundStage, 'candidate-review.md'), candidateArtifacts.candidateMarkdown);
         } catch (error) {
+          candidateArtifacts = null;
           candidatePreservationError = error instanceof ReviewError
             ? error
             : new ReviewError('후보 결과 보존에 실패했습니다.');
@@ -4399,10 +4608,18 @@ async function executeReview(args) {
         stdout_sha256: claudeOutput?.stdout ? sha256(claudeOutput.stdout) : null,
         stderr_sha256: claudeOutput?.stderr ? sha256(claudeOutput.stderr) : null,
         manifest_sha256: manifestHash,
-        review_sha256: candidateReviewHash,
+        review_sha256: candidateArtifacts?.reviewHash ?? null,
         review_markdown_sha256: null,
-        candidate_review_state: candidateReviewHash ? 'NOT_MERGED' : null,
-        candidate_review_markdown_sha256: candidateReviewMarkdownHash,
+        candidate_review_state: candidateArtifacts?.state ?? null,
+        candidate_review_sha256: candidateArtifacts?.candidateHash ?? null,
+        candidate_review_markdown_sha256: candidateArtifacts
+          ? sha256(candidateArtifacts.candidateMarkdown)
+          : null,
+        candidate_encoding: candidateArtifacts?.candidateEncoding ?? null,
+        validation_stage: validationFailure ? VALIDATION_REJECTED_STAGE : null,
+        validation_failure_code: validationFailure
+          ? safeValidationFailureCode(validationFailure)
+          : null,
         task_sha256: snapshot.task_sha256,
         schema_sha256: snapshot.schema_sha256,
         runner_sha256: snapshot.runner_sha256,
@@ -4433,8 +4650,8 @@ async function executeReview(args) {
         verdict: null,
         latest_run_sha256: failedRunHash,
         ...carriedStatus,
-        candidate_review_state: candidateReviewHash ? 'NOT_MERGED' : null,
-        candidate_review_sha256: candidateReviewHash,
+        candidate_review_state: candidateArtifacts?.state ?? null,
+        candidate_review_sha256: candidateArtifacts?.candidateHash ?? null,
         backlog_dispositions: [],
       });
       throw new ReviewError(
@@ -4468,7 +4685,11 @@ async function executeReview(args) {
       review_sha256: reviewHash,
       review_markdown_sha256: sha256(reviewMarkdown),
       candidate_review_state: null,
+      candidate_review_sha256: null,
       candidate_review_markdown_sha256: null,
+      candidate_encoding: null,
+      validation_stage: null,
+      validation_failure_code: null,
       task_sha256: snapshot.task_sha256,
       schema_sha256: snapshot.schema_sha256,
       runner_sha256: snapshot.runner_sha256,
@@ -4532,6 +4753,7 @@ async function executeReview(args) {
           review_sha256: reviewHash,
           review_markdown_sha256: null,
           candidate_review_state: 'NOT_MERGED',
+          candidate_review_sha256: reviewHash,
           candidate_review_markdown_sha256: sha256(candidateMarkdown),
           collaboration_entry_bytes: 0,
           collaboration_entry_sha256: null,
@@ -4769,6 +4991,111 @@ function runSelfTests() {
     expectReviewError(
       () => parseArgs(['--self-test', '--max-budget-usd', '4']),
       { exitCode: 64, messageIncludes: '--task 검수 실행에서만' },
+    );
+  });
+
+  test('schema-valid-semantic-failure-preserves-diagnostic-candidate', () => {
+    const fixture = validationSelfTestFixture();
+    const candidate = {
+      ...fixture.common,
+      verdict: 'PASS',
+      summary: '의미 계약 실패 진단용 완전한 결과',
+      findings: [{
+        ...fixture.priorFinding,
+        previous_finding_id: fixture.priorFinding.finding_id,
+      }],
+      proposed_edits: [],
+      closed_finding_ids: [],
+      reopened_finding_ids: [],
+      remaining_required_finding_ids: [],
+    };
+    const validationDiagnostics = {};
+    let validationFailure = null;
+    try {
+      validateResult(candidate, {
+        task: fixture.task,
+        snapshot: fixture.snapshot,
+        mode: 'RECHECK',
+        inputFiles: fixture.inputFiles,
+        previous: { value: { findings: [fixture.priorFinding] } },
+        validationDiagnostics,
+      });
+    } catch (error) {
+      validationFailure = error;
+      validationFailure.diagnosticCode = validationDiagnostics.failureCode;
+    }
+    selfTestAssert(
+      validationFailure instanceof ReviewError
+        && validationFailure.exitCode === 76
+        && validationFailure.message.includes('remaining_required_finding_ids')
+        && validationFailure.diagnosticCode === 'RESULT_REMAINING_SET_MISMATCH',
+      '완전한 결과가 의도한 의미 계약에서만 거부됨',
+    );
+    const candidateRaw = Buffer.from(`${JSON.stringify(candidate, null, 2)}\n`, 'utf8');
+    const artifacts = failedCandidateArtifacts({
+      validationCandidateRaw: candidateRaw,
+      validationFailure,
+      round: 2,
+      finalError: validationFailure,
+    });
+    const diagnosticMarkdown = artifacts.candidateMarkdown.toString('utf8');
+    selfTestAssert(
+      artifacts.candidateJson.equals(candidateRaw)
+        && artifacts.state === 'VALIDATION_REJECTED'
+        && artifacts.reviewHash === null
+        && artifacts.candidateHash === sha256(candidateRaw)
+        && diagnosticMarkdown.includes('VALIDATION_REJECTED 진단 후보')
+        && diagnosticMarkdown.includes('RESULT_REMAINING_SET_MISMATCH')
+        && !diagnosticMarkdown.includes(fixture.priorFinding.finding_id)
+        && !diagnosticMarkdown.includes(candidate.summary)
+        && !diagnosticMarkdown.includes('# SELF-VALIDATE-001 Fable 검수'),
+      '의미 검증 실패 후보는 원본 JSON만 격리 보존하고 결과처럼 렌더링하지 않음',
+    );
+    const rejectedRun = {
+      review_sha256: null,
+      candidate_review_state: artifacts.state,
+      candidate_review_sha256: artifacts.candidateHash,
+      candidate_review_markdown_sha256: sha256(artifacts.candidateMarkdown),
+      candidate_encoding: artifacts.candidateEncoding,
+      validation_stage: artifacts.validationStage,
+      validation_failure_code: artifacts.validationFailureCode,
+    };
+    assertCandidateReviewArtifacts(
+      rejectedRun,
+      artifacts.candidateJson,
+      artifacts.candidateMarkdown,
+      'self-test rejected candidate',
+    );
+    selfTestAssert(
+      sameJsonValue(candidateStatusFields(rejectedRun), {
+        candidate_review_state: 'VALIDATION_REJECTED',
+        candidate_review_sha256: artifacts.candidateHash,
+      }),
+      'status에는 거부 상태와 별도 candidate hash만 노출',
+    );
+    expectReviewError(
+      () => candidateReviewMetadata({ ...rejectedRun, candidate_review_state: 'UNKNOWN' }, 'self-test'),
+      { exitCode: 75, runState: 'STALE', messageIncludes: '알 수 없는' },
+    );
+    const secretValue = ['sk', 'live', 'abcdefghijklmnop'].join('_');
+    const secretRaw = Buffer.from(`${JSON.stringify({ summary: secretValue })}\n`, 'utf8');
+    expectReviewError(
+      () => failedCandidateArtifacts({
+        validationCandidateRaw: secretRaw,
+        validationFailure,
+        round: 2,
+        finalError: new ReviewError('invalid', { exitCode: 76 }),
+      }),
+      { exitCode: 77, messageIncludes: '민감정보' },
+    );
+    expectReviewError(
+      () => failedCandidateArtifacts({
+        validationCandidateRaw: Buffer.alloc(MAX_REVIEW_FILE_BYTES + 1, 0x61),
+        validationFailure,
+        round: 2,
+        finalError: validationFailure,
+      }),
+      { exitCode: 65, messageIncludes: '파일별' },
     );
   });
 
@@ -5430,8 +5757,15 @@ function runSelfTests() {
       };
       const artifactSnapshotRaw = workingArtifactSnapshotRaw(task, fixture.inputFiles);
       const inputSnapshotRaw = workingInputSnapshotRaw(task, fixture.inputFiles);
-      const candidateRaw = Buffer.from('{"candidate":true}\n');
-      const candidateMarkdownRaw = Buffer.from('# candidate\n');
+      const rejectedFindingId = 'REJECTED-CANDIDATE-001';
+      const candidateRaw = Buffer.from(`${JSON.stringify({
+        findings: [{ finding_id: rejectedFindingId }],
+      }, null, 2)}\n`);
+      const candidateHash = sha256(candidateRaw);
+      const candidateMarkdownRaw = validationRejectedCandidateMarkdown(
+        candidateHash,
+        'RESULT_REMAINING_SET_MISMATCH',
+      );
       const manifestBase = {
         protocol_version: '1.1',
         task_id: task.task_id,
@@ -5527,10 +5861,14 @@ function runSelfTests() {
         round: 'r002',
         run_state: 'RUN_FAILED',
         manifest_sha256: sha256(manifestR2Raw),
-        review_sha256: sha256(candidateRaw),
+        review_sha256: null,
         review_markdown_sha256: null,
-        candidate_review_state: 'NOT_MERGED',
+        candidate_review_state: 'VALIDATION_REJECTED',
+        candidate_review_sha256: candidateHash,
         candidate_review_markdown_sha256: sha256(candidateMarkdownRaw),
+        candidate_encoding: VALIDATION_REJECTED_ENCODING,
+        validation_stage: VALIDATION_REJECTED_STAGE,
+        validation_failure_code: 'RESULT_REMAINING_SET_MISMATCH',
         task_sha256: manifestR2.task_sha256,
         schema_sha256: manifestR2.schema_sha256,
         runner_sha256: manifestR2.runner_sha256,
@@ -5552,7 +5890,14 @@ function runSelfTests() {
 
       const previous = previousResult(join(roundsDir, 'r003'), 3, task);
       selfTestAssert(previous.baseRound === 'r001', '실패 회차 뒤 r001 성공 결과 계승');
+      selfTestAssert(previous.retryOfFailedRound === 'r002', '거부 후보 회차를 재시도 대상으로 표시');
+      selfTestAssert(previous.hash === reviewHash, '거부 후보 hash가 아닌 마지막 성공 review hash 계승');
       selfTestAssert(previous.value.findings[0].finding_id === fixture.priorFinding.finding_id, 'r001 Finding 계승');
+      selfTestAssert(
+        !previous.registryFindings.some((finding) => finding.finding_id === rejectedFindingId)
+          && !previous.value.findings.some((finding) => finding.finding_id === rejectedFindingId),
+        'VALIDATION_REJECTED 후보 Finding은 registry·후속 입력으로 승격되지 않음',
+      );
       selfTestAssert(effectiveReviewMode(task, 3, previous) === 'RECHECK', '재시도 모드 RECHECK 유지');
       validatePreviousRoundIntegrity(
         previous,
@@ -5760,6 +6105,12 @@ function runSelfTests() {
       const complete = createRoundStage(roundsDir, 'r001');
       const runnerRaw = Buffer.from('// stage self-test runner\n');
       const schemaRaw = Buffer.from('{"type":"object"}\n');
+      const rejectedCandidateRaw = Buffer.from(`${JSON.stringify({ rejected: true }, null, 2)}\n`);
+      const rejectedCandidateHash = sha256(rejectedCandidateRaw);
+      const rejectedCandidateMarkdownRaw = validationRejectedCandidateMarkdown(
+        rejectedCandidateHash,
+        'RESULT_ROOT_CONTRACT',
+      );
       const inputFiles = [
         {
           path: 'AGENTS.md', path_role: 'REFERENCE', change_type: 'COMMIT', size: 1,
@@ -5800,7 +6151,12 @@ function runSelfTests() {
         run_state: 'RUN_FAILED',
         manifest_sha256: sha256(manifestRaw),
         review_sha256: null,
-        candidate_review_state: null,
+        candidate_review_state: 'VALIDATION_REJECTED',
+        candidate_review_sha256: rejectedCandidateHash,
+        candidate_review_markdown_sha256: sha256(rejectedCandidateMarkdownRaw),
+        candidate_encoding: VALIDATION_REJECTED_ENCODING,
+        validation_stage: VALIDATION_REJECTED_STAGE,
+        validation_failure_code: 'RESULT_ROOT_CONTRACT',
         task_sha256: manifest.task_sha256,
         schema_sha256: manifest.schema_sha256,
         runner_sha256: manifest.runner_sha256,
@@ -5814,6 +6170,8 @@ function runSelfTests() {
       immutableWrite(join(complete, 'schema-source.json'), schemaRaw);
       immutableWrite(join(complete, 'manifest.json'), manifestRaw);
       immutableWrite(join(complete, 'run.json'), `${JSON.stringify(run, null, 2)}\n`);
+      immutableWrite(join(complete, 'candidate-review.json'), rejectedCandidateRaw);
+      immutableWrite(join(complete, 'candidate-review.md'), rejectedCandidateMarkdownRaw);
       const unknownSemanticsManifestRaw = Buffer.from(`${JSON.stringify({
         ...manifest,
         finding_resolution_semantics: 'UNKNOWN_FUTURE_SEMANTICS',
@@ -5842,6 +6200,10 @@ function runSelfTests() {
       publishRoundStage(complete, roundDir, roundsDir);
       selfTestAssert(existsSync(join(roundDir, 'manifest.json')), 'manifest 원자 공개');
       selfTestAssert(existsSync(join(roundDir, 'run.json')), 'run 원자 공개');
+      selfTestAssert(
+        readFileSync(join(roundDir, 'candidate-review.json')).equals(rejectedCandidateRaw),
+        'VALIDATION_REJECTED 후보 원본 원자 공개',
+      );
       selfTestAssert(!existsSync(complete), 'staging 이름 제거');
     } finally {
       if (!isPathInside(tmpdir(), temporaryRoot) || resolve(temporaryRoot) === resolve(tmpdir())) {
@@ -6139,6 +6501,171 @@ function runSelfTests() {
     }
   });
 
+  test('prepared-validation-rejected-is-recovered-without-ledger-append', () => {
+    const temporaryRoot = mkdtempSync(join(tmpdir(), 'fable-review-rejected-recovery-'));
+    try {
+      const taskDir = join(temporaryRoot, 'task');
+      const roundsDir = join(taskDir, 'rounds');
+      const roundDir = join(roundsDir, 'r001');
+      const collaborationPath = join(taskDir, 'collaboration.md');
+      const statusPath = join(taskDir, 'status.json');
+      mkdirSync(roundsDir, { recursive: true });
+      const fixture = validationSelfTestFixture();
+      const task = {
+        ...fixture.task,
+        protocol_version: '1.1',
+        task_id: 'SELF-REJECTED-RECOVER-001',
+        review_mode: 'INITIAL',
+        snapshot_mode: fixture.snapshot.snapshot_mode,
+        baseline_commit_sha: fixture.snapshot.baseline_commit_sha,
+        target_commit_sha: fixture.snapshot.target_commit_sha,
+        target_tree_oid: fixture.snapshot.target_tree_oid,
+        agents_blob_oid: fixture.snapshot.agents_blob_oid,
+        agents_sha256: fixture.snapshot.agents_sha256,
+      };
+      const taskRaw = Buffer.from(`${JSON.stringify({ task_id: task.task_id })}\n`);
+      const collaborationRaw = Buffer.from('# rejected recovery ledger\n');
+      const artifactSnapshotRaw = workingArtifactSnapshotRaw(task, fixture.inputFiles);
+      const inputSnapshotRaw = workingInputSnapshotRaw(task, fixture.inputFiles);
+      const snapshot = {
+        ...fixture.snapshot,
+        task_sha256: sha256(taskRaw),
+        collaboration_sha256: sha256(collaborationRaw),
+        schema_sha256: sha256(fixture.schemaSource),
+        runner_sha256: sha256(fixture.runnerSource),
+      };
+      const manifest = {
+        protocol_version: '1.1',
+        task_id: task.task_id,
+        round: 'r001',
+        review_mode: 'INITIAL',
+        ...snapshot,
+        collaboration_bytes: collaborationRaw.length,
+        artifact_paths: task.artifact_paths,
+        reference_paths: task.reference_paths,
+        evidence_paths: task.evidence_paths,
+        allowed_paths: task.allowed_paths,
+        excluded_paths: task.excluded_paths,
+        input_files: publicInputFiles(fixture.inputFiles),
+        previous_review_sha256: null,
+        previous_run_sha256: null,
+        retry_of_failed_round: null,
+        source_archive_version: 1,
+        artifact_snapshot_sha256: sha256(artifactSnapshotRaw),
+        input_snapshot_sha256: sha256(inputSnapshotRaw),
+      };
+      const manifestRaw = Buffer.from(`${JSON.stringify(manifest, null, 2)}\n`);
+      const candidateRaw = Buffer.from(`${JSON.stringify({ invalid: 'semantic-only' }, null, 2)}\n`);
+      const candidateHash = sha256(candidateRaw);
+      const candidateMarkdownRaw = validationRejectedCandidateMarkdown(
+        candidateHash,
+        'RESULT_ROOT_CONTRACT',
+      );
+      const run = {
+        protocol_version: '1.1',
+        task_id: task.task_id,
+        round: 'r001',
+        started_at: nowIso(),
+        finished_at: nowIso(),
+        run_state: 'RUN_FAILED',
+        exit_code: 76,
+        manifest_sha256: sha256(manifestRaw),
+        review_sha256: null,
+        review_markdown_sha256: null,
+        candidate_review_state: 'VALIDATION_REJECTED',
+        candidate_review_sha256: candidateHash,
+        candidate_review_markdown_sha256: sha256(candidateMarkdownRaw),
+        candidate_encoding: VALIDATION_REJECTED_ENCODING,
+        validation_stage: VALIDATION_REJECTED_STAGE,
+        validation_failure_code: 'RESULT_ROOT_CONTRACT',
+        task_sha256: manifest.task_sha256,
+        schema_sha256: manifest.schema_sha256,
+        runner_sha256: manifest.runner_sha256,
+        input_files_sha256: manifest.input_files_sha256,
+        collaboration_before_sha256: manifest.collaboration_sha256,
+        collaboration_before_bytes: collaborationRaw.length,
+        collaboration_entry_sha256: null,
+        collaboration_entry_bytes: 0,
+        collaboration_after_sha256: manifest.collaboration_sha256,
+        collaboration_after_bytes: collaborationRaw.length,
+      };
+      const runRaw = Buffer.from(`${JSON.stringify(run, null, 2)}\n`);
+      const stage = createRoundStage(roundsDir, 'r001');
+      immutableWrite(join(stage, 'runner-source.mjs'), fixture.runnerSource);
+      immutableWrite(join(stage, 'schema-source.json'), fixture.schemaSource);
+      immutableWrite(join(stage, 'manifest.json'), manifestRaw);
+      immutableWrite(join(stage, 'artifact-snapshot.json'), artifactSnapshotRaw);
+      immutableWrite(join(stage, 'input-snapshot.json'), inputSnapshotRaw);
+      immutableWrite(join(stage, 'candidate-review.json'), candidateRaw);
+      immutableWrite(join(stage, 'candidate-review.md'), candidateMarkdownRaw);
+      immutableWrite(join(stage, 'run.json'), runRaw);
+      immutableWrite(collaborationPath, collaborationRaw);
+      const recoveryArgs = {
+        roundsDir,
+        roundName: 'r001',
+        roundDir,
+        collaborationPath,
+        statusPath,
+        task,
+        taskRaw,
+        previous: { value: null, hash: null, runHash: null, retryOfFailedRound: null, manifest: null },
+        previousStatusValue: null,
+        carriedStatus: {
+          open_required_finding_ids: [],
+          open_optional_finding_ids: [],
+          closed_finding_ids: [],
+        },
+      };
+
+      writeFileSync(join(stage, 'candidate-review.json'), Buffer.from('{"invalid":"tampered"}\n'));
+      expectReviewError(() => recoverPreparedRound(recoveryArgs), {
+        exitCode: 73,
+        messageIncludes: '후보 원본 hash',
+      });
+      selfTestAssert(
+        !existsSync(roundDir)
+          && !existsSync(statusPath)
+          && readFileSync(collaborationPath).equals(collaborationRaw),
+        '거부 후보 변조 시 회차·status·장부 모두 불변',
+      );
+      writeFileSync(join(stage, 'candidate-review.json'), candidateRaw);
+      const recovered = recoverPreparedRound(recoveryArgs);
+      const status = parseJson(readFileSync(statusPath), 'rejected recovered status');
+      selfTestAssert(
+        recovered.exitCode === 76
+          && readFileSync(collaborationPath).equals(collaborationRaw)
+          && status.verdict === null
+          && status.candidate_review_state === 'VALIDATION_REJECTED'
+          && status.candidate_review_sha256 === candidateHash
+          && !existsSync(join(roundDir, 'review.json'))
+          && !existsSync(join(roundDir, 'collaboration-entry.md')),
+        '거부 후보는 장부 합류 없이 격리 상태로만 복구',
+      );
+
+      writeFileSync(statusPath, `${JSON.stringify({
+        ...status,
+        candidate_review_state: 'NOT_MERGED',
+        candidate_review_sha256: 'f'.repeat(64),
+      }, null, 2)}\n`);
+      const reconciled = reconcilePublishedRound({
+        ...recoveryArgs,
+        taskRaw,
+      });
+      const repairedStatus = parseJson(readFileSync(statusPath), 'rejected reconciled status');
+      selfTestAssert(
+        !reconciled.statusPreserved
+          && repairedStatus.candidate_review_state === 'VALIDATION_REJECTED'
+          && repairedStatus.candidate_review_sha256 === candidateHash,
+        'candidate 상태·hash만 오염돼도 공개 회차에서 status 재생성',
+      );
+    } finally {
+      if (!isPathInside(tmpdir(), temporaryRoot) || resolve(temporaryRoot) === resolve(tmpdir())) {
+        throw new Error(`self-test 임시 경로 안전 검사 실패: ${temporaryRoot}`);
+      }
+      rmSync(temporaryRoot, { recursive: true, force: true });
+    }
+  });
+
   test('manual-turns-use-the-shared-append-contract', () => {
     const current = Buffer.from('# shared ledger\n');
     const raw = Buffer.from('## SOLAR_RESPONSE · turn-s001 · r001\r\n\r\n- role: `SOLAR`\r\n- next_review_request: `CODEX_EVIDENCE`\r\n');
@@ -6389,6 +6916,14 @@ function runSelfTests() {
         messageIncludes: '후보 원본 hash',
       });
       writeFileSync(join(roundDir, 'candidate-review.md'), candidateMarkdownRaw);
+
+      writeFileSync(join(roundDir, 'candidate-review.json'), Buffer.from('{"candidate":false}\n'));
+      expectReviewError(() => loadRoundRecord(roundsDir, 1, task), {
+        exitCode: 75,
+        runState: 'STALE',
+        messageIncludes: '후보 원본 hash',
+      });
+      writeFileSync(join(roundDir, 'candidate-review.json'), candidateRaw);
 
       writeFileSync(join(roundDir, 'input-snapshot.json'), Buffer.from('{"tampered":true}\n'));
       expectReviewError(() => loadRoundRecord(roundsDir, 1, task), {
