@@ -127,8 +127,124 @@ if printf '%s\n' "$out" | grep '^DOCKER_ARG_' | grep -qF 'PGPASSWORD='; then bad
 check_env_allowlist "local docker" DOCKER_ENV "$out" "PGPASSWORD"
 has "$out" 'DOCKER_PASSWORD=present' && ok "docker 프로세스 환경에 PGPASSWORD 존재" || bad "docker 환경에 PGPASSWORD 없음"
 
-echo "⑤ 거부 — 접속 문자열·잘못된 값·모드 생략"
-out="$(ADMIN_DB_URL="postgresql://a:$CANARY@h/db" bash "$ACL" --remote check 2>&1)"; rc=$?
+echo "⑤ remote audit — 전환 없이 앱 ACL을 재고 실패를 숨기지 않는다"
+cat > "$SHIM/psql" <<'EOF'
+#!/usr/bin/env bash
+sql="$*"
+if [ ! -t 0 ]; then sql="$sql$(cat)"; fi
+prev=""
+for arg in "$@"; do
+  if [ "$prev" = "-f" ]; then sql="$sql$(cat "$arg")"; fi
+  prev="$arg"
+done
+
+if [[ "$sql" == *"current_user || '|'"* ]]; then
+  printf '%s|false|false\n' "${PGUSER:-postgres}"
+  exit 0
+fi
+
+[[ "$sql" != *"set local role supabase_admin"* ]] || { echo "AUDIT_SET_ROLE" >&2; exit 9; }
+[[ "$sql" == *"create table public._acl_probe_postgres"* ]] || { echo "AUDIT_NO_PROBE" >&2; exit 9; }
+[[ "$sql" == *"rollback;"* ]] || { echo "AUDIT_NO_ROLLBACK" >&2; exit 9; }
+echo "AUDIT_SQL_OK" >&2
+
+migrations=2; dangerous=0; owner="${PGUSER:-postgres}"; rls_off=0; ledger_direct=0
+case "${PGDATABASE:-}" in
+  audit_missing) migrations=1 ;;
+  audit_open) dangerous=1 ;;
+  audit_rpc_open) rpc_open=1 ;;
+  audit_rls_off) rls_off=1 ;;
+  audit_ledger_direct) ledger_direct=1 ;;
+  audit_partial) printf 'migrations|2|expected=2\nprobe_owner|%s|expected=postgres\n' "$owner"; exit 0 ;;
+  audit_empty) exit 0 ;;
+  audit_duplicate) duplicate=1 ;;
+esac
+: "${rpc_open:=0}" "${duplicate:=0}"
+cat <<ROWS
+migrations|$migrations|expected=2
+probe_owner|$owner|expected=postgres
+probe_dangerous|0|expected=0
+public_dangerous|$dangerous|expected=0
+rls_disabled_app_tables|$rls_off|expected=0
+protected_objects|6|expected=6
+protected_writes|0|expected=0
+ledger_write_paths|$ledger_direct|expected=0
+source_schema_grants|0|expected=0
+supabase_admin_objects|0|expected=0
+anon_rpc|0|expected=0
+blocked_internal_rpc|0|expected=0
+blocked_internal_rpc_objects|11|expected=11
+facade_rpc_missing|0|expected=0
+unapproved_authenticated_rpc|$rpc_open|expected=0
+platform_default_open|1|informational
+ROWS
+[ "$duplicate" = "0" ] || printf 'unapproved_authenticated_rpc|0|expected=0\n'
+EOF
+chmod +x "$SHIM/psql"
+
+out="$(PATH="$SHIM:$PATH" ADMIN_DB_HOST=prod.invalid ADMIN_DB_USER=postgres \
+       ADMIN_DB_PASSWORD="$CANARY" bash "$ACL" --remote audit 2>&1)"; rc=$?
+[ "$rc" -eq 0 ] && ok "전환 불가 postgres audit 통과" || bad "정상 audit 실패(exit $rc)"
+check_no_canary "audit 비밀번호 비노출" "$out"
+has "$out" 'current_user=postgres rolsuper=false supabase_admin_member=false' \
+  && ok "WHO 원값 출력" || bad "WHO 원값이 없다"
+has "$out" 'AUDIT_SQL_OK' && ok "프로브·rollback 실행, SET ROLE 없음" || bad "audit SQL 계약을 못 지킴"
+has "$out" 'platform-exception' && ok "플랫폼 기본 권한을 별도 예외로 보고" || bad "플랫폼 기본 권한을 성공으로 숨김"
+has "$out" 'audit ok — 측정한 애플리케이션 ACL 항목이 닫혀 있습니다' && ok "측정 범위로 한정한 성공 명칭" || bad "audit 성공 명칭이 넓거나 없다"
+
+out="$(PATH="$SHIM:$PATH" ADMIN_DB_HOST=prod.invalid ADMIN_DB_NAME=audit_open ADMIN_DB_USER=postgres \
+       bash "$ACL" --remote audit 2>&1)"; rc=$?
+[ "$rc" -eq 1 ] && has "$out" 'public_dangerous=1' \
+  && ok "앱 롤 위험 권한 한 건이면 실패" || bad "위험 권한을 통과시킴(exit $rc)"
+
+out="$(PATH="$SHIM:$PATH" ADMIN_DB_HOST=prod.invalid ADMIN_DB_NAME=audit_missing ADMIN_DB_USER=postgres \
+       bash "$ACL" --remote audit 2>&1)"; rc=$?
+[ "$rc" -eq 1 ] && has "$out" 'migrations=1' \
+  && ok "ACL 마이그레이션 누락이면 실패" || bad "마이그레이션 누락을 통과시킴(exit $rc)"
+
+out="$(PATH="$SHIM:$PATH" ADMIN_DB_HOST=prod.invalid ADMIN_DB_NAME=audit_rpc_open ADMIN_DB_USER=postgres \
+       bash "$ACL" --remote audit 2>&1)"; rc=$?
+[ "$rc" -eq 1 ] && has "$out" 'unapproved_authenticated_rpc=1' \
+  && ok "허용 목록 밖 RPC 한 건이면 실패" || bad "미승인 RPC를 통과시킴(exit $rc)"
+
+out="$(PATH="$SHIM:$PATH" ADMIN_DB_HOST=prod.invalid ADMIN_DB_NAME=audit_partial ADMIN_DB_USER=postgres \
+       bash "$ACL" --remote audit 2>&1)"; rc=$?
+[ "$rc" -eq 1 ] && has "$out" 'missing_metric=unapproved_authenticated_rpc' \
+  && ok "metric 일부 누락이면 실패" || bad "metric 누락을 통과시킴(exit $rc)"
+
+out="$(PATH="$SHIM:$PATH" ADMIN_DB_HOST=prod.invalid ADMIN_DB_NAME=audit_empty ADMIN_DB_USER=postgres \
+       bash "$ACL" --remote audit 2>&1)"; rc=$?
+[ "$rc" -eq 1 ] && has "$out" 'missing_metric=' \
+  && ok "빈 audit 출력이면 실패" || bad "빈 출력을 통과시킴(exit $rc)"
+
+out="$(PATH="$SHIM:$PATH" ADMIN_DB_HOST=prod.invalid ADMIN_DB_NAME=audit_duplicate ADMIN_DB_USER=postgres \
+       bash "$ACL" --remote audit 2>&1)"; rc=$?
+[ "$rc" -eq 1 ] && has "$out" 'duplicate_metric=unapproved_authenticated_rpc' \
+  && ok "metric 중복이면 실패" || bad "metric 중복을 통과시킴(exit $rc)"
+
+out="$(PATH="$SHIM:$PATH" ADMIN_DB_HOST=prod.invalid ADMIN_DB_NAME=audit_rls_off ADMIN_DB_USER=postgres \
+       bash "$ACL" --remote audit 2>&1)"; rc=$?
+[ "$rc" -eq 1 ] && has "$out" 'rls_disabled_app_tables=1' \
+  && ok "RLS 비활성 표 한 건이면 실패" || bad "RLS 비활성을 통과시킴(exit $rc)"
+
+out="$(PATH="$SHIM:$PATH" ADMIN_DB_HOST=prod.invalid ADMIN_DB_NAME=audit_ledger_direct ADMIN_DB_USER=postgres \
+       bash "$ACL" --remote audit 2>&1)"; rc=$?
+[ "$rc" -eq 1 ] && has "$out" 'ledger_write_paths=1' \
+  && ok "원장 직접 쓰기 한 건이면 실패" || bad "원장 직접 쓰기를 통과시킴(exit $rc)"
+
+out="$(PATH="$SHIM:$PATH" ADMIN_DB_HOST=prod.invalid ADMIN_DB_USER=limited \
+       bash "$ACL" --remote audit 2>&1)"; rc=$?
+[ "$rc" -eq 1 ] && has "$out" 'probe_owner=limited' \
+  && ok "postgres 소유가 아닌 프로브는 실패" || bad "프로브 소유자 어긋남을 통과시킴(exit $rc)"
+
+out="$(PATH="$SHIM:$PATH" bash "$ACL" --local postgres audit 2>&1)"; rc=$?
+[ "$rc" -eq 2 ] && ok "audit 은 원격 전용" || bad "로컬 audit 이 허용됨(exit $rc)"
+
+echo "⑥ 거부 — 접속 문자열·잘못된 값·모드 생략"
+URL_PREFIX='postgresql:'
+BAD_REMOTE_URL="${URL_PREFIX}//a:${CANARY}@h/db"
+BAD_LOCAL_URL="${URL_PREFIX}//x:${CANARY}@h/db"
+out="$(ADMIN_DB_URL="$BAD_REMOTE_URL" bash "$ACL" --remote check 2>&1)"; rc=$?
 [ "$rc" -eq 2 ] && ok "ADMIN_DB_URL 거부(exit 2)" || bad "ADMIN_DB_URL 이 거부되지 않음(exit $rc)"; check_no_canary "ADMIN_DB_URL 거부 메시지" "$out"
 out="$(ADMIN_DB_HOST="h password=$CANARY" ADMIN_DB_USER=u bash "$ACL" --remote check 2>&1)"; rc=$?
 [ "$rc" -eq 2 ] && ok "호스트에 섞은 password= 거부" || bad "호스트 검증 실패(exit $rc)"; check_no_canary "호스트 거부 메시지" "$out"
@@ -138,7 +254,7 @@ out="$(ADMIN_DB_HOST=h ADMIN_DB_PORT=0 ADMIN_DB_USER=u bash "$ACL" --remote chec
 [ "$rc" -eq 2 ] && ok "포트 0 거부" || bad "포트 0 통과(exit $rc)"
 out="$(ADMIN_DB_HOST=h ADMIN_DB_USER=u bash "$ACL" --remote 2>&1)"; rc=$?
 [ "$rc" -eq 2 ] && ok "모드 생략 거부" || bad "모드 생략 통과(exit $rc)"
-out="$(bash "$ACL" --local "postgresql://x:$CANARY@h/db" check 2>&1)"; rc=$?
+out="$(bash "$ACL" --local "$BAD_LOCAL_URL" check 2>&1)"; rc=$?
 [ "$rc" -eq 2 ] && ok "--local 접속 문자열 거부" || bad "--local 접속 문자열 통과(exit $rc)"; check_no_canary "--local 거부 메시지" "$out"
 
 echo

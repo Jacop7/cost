@@ -129,6 +129,12 @@ if (skipDb) {
       if (!run(BASH, ['packages/db/scripts/fresh-db.sh', db])) return false;
       ok = run('node', ['packages/db/tests/run.mjs'], { env: { ...process.env, PGDATABASE: db } });
       /*
+       * P1-1 원격 audit SQL을 실제 새 DB에서 실행한다. 현재 미승인 RPC는 배포 audit가
+       * 실패시키는 별도 보안 부채이고, 여기서는 metric 완전성·rollback·모바일 허용 목록
+       * 양방향 일치를 검증한다.
+       */
+      if (ok) ok = run('node', ['packages/db/scripts/admin-acl-audit.test.mjs', db]);
+      /*
        * 2세션 경합(검토 항목) — 스위트가 초록이어도 연결 하나짜리 하네스는 경합을 못 본다.
        * 같은 일회용 DB 위에서 판매 저장 ↔ 크론(마감·브레이크)을 실제로 동시에 돌린다.
        * ⚠ 커밋이 남는 시험이라 스위트(롤백) **다음**에 돈다.

@@ -1,0 +1,262 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "P1-1-REMOTE-ACL-AUDIT-001",
+  "round": "r003",
+  "created_at": "2026-08-28T09:03:28.779Z",
+  "review_mode": "RECHECK",
+  "baseline_commit_sha": "d5aeafd7098836c73e29c362386b8250f8476431",
+  "target_commit_sha": "d5aeafd7098836c73e29c362386b8250f8476431",
+  "target_tree_oid": "93312ab6ece551f5ce85a75d1aa60693f9a649b1",
+  "agents_blob_oid": "35001543ec3d5a84ff328620f1c85eeb571141fc",
+  "agents_sha256": "a5667526727635dbb4f95ffc13159277d4cca8b222f554145c77eb87b961e384",
+  "task_sha256": "a3c93545595b5facdd17b83b0e13f0ac94ed70bf3d640292fdf0df68fabce2fc",
+  "collaboration_sha256": "ae6f63f46953568bcb700731b59d05ec1466a8136ca23484cc4925181d719589",
+  "collaboration_bytes": 16029,
+  "input_files_sha256": "105a5dd1059821a584961d873e4192f802107bf469adc10615481234058effc1",
+  "schema_sha256": "f8860ea87aacde86f541f7b1a1640729bf516dcdaf78e168c0e2e01f0edfac5c",
+  "runner_sha256": "1e09d053693e46b03a27bc34c443a4ac258ff6358eda1d33e0a76b160e97bf8b",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "previous_review_sha256": "02f3fae5cf8ab275e2c3e0fc5f97ef25a229b25b4b9cd9897ee1071e7e286d57",
+  "previous_run_sha256": "07c4f589c6d52079fb7824771e19c3dca43edf83640ac0ec4d0cc87832a04193",
+  "predecessor_review": null,
+  "retry_of_failed_round": null,
+  "artifact_paths": [
+    "packages/db/scripts/admin-acl.sh",
+    "packages/db/scripts/admin-acl.test.sh",
+    "packages/db/scripts/admin-acl-audit.sql",
+    "packages/db/README.md",
+    "docs/브랜치-DB-운영-기획안.md",
+    "docs/서버-확장-아키텍처-기획안.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "ARCHITECTURE.md"
+  ],
+  "evidence_paths": [
+    "packages/db/supabase/migrations/20260826000166_default_table_acl.sql",
+    "packages/db/supabase/migrations/20260826000167_single_store_and_admin_acl.sql",
+    "packages/db/tests/16_change_retention.sql",
+    "packages/db/tests/31_settings_lockdown.sql",
+    "apps/mobile/src/features/business-day/businessDay.ts",
+    "apps/mobile/src/features/changes/hooks.ts",
+    "apps/mobile/src/features/ingredients/hooks.ts",
+    "apps/mobile/src/features/master-data/hooks.ts",
+    "apps/mobile/src/features/my/hooks.ts",
+    "apps/mobile/src/features/orders/hooks.ts",
+    "apps/mobile/src/features/recipes/hooks.ts",
+    "apps/mobile/src/features/recipes/profitHistory.ts",
+    "apps/mobile/src/features/sales/hooks.ts",
+    "apps/mobile/src/features/settings/hooks.ts"
+  ],
+  "allowed_paths": [
+    "packages/db/scripts/admin-acl.sh",
+    "packages/db/scripts/admin-acl.test.sh",
+    "packages/db/scripts/admin-acl-audit.sql",
+    "packages/db/README.md",
+    "docs/브랜치-DB-운영-기획안.md",
+    "docs/서버-확장-아키텍처-기획안.md",
+    "AGENTS.md",
+    "ARCHITECTURE.md",
+    "packages/db/supabase/migrations/20260826000166_default_table_acl.sql",
+    "packages/db/supabase/migrations/20260826000167_single_store_and_admin_acl.sql",
+    "packages/db/tests/16_change_retention.sql",
+    "packages/db/tests/31_settings_lockdown.sql",
+    "apps/mobile/src/features/business-day/businessDay.ts",
+    "apps/mobile/src/features/changes/hooks.ts",
+    "apps/mobile/src/features/ingredients/hooks.ts",
+    "apps/mobile/src/features/master-data/hooks.ts",
+    "apps/mobile/src/features/my/hooks.ts",
+    "apps/mobile/src/features/orders/hooks.ts",
+    "apps/mobile/src/features/recipes/hooks.ts",
+    "apps/mobile/src/features/recipes/profitHistory.ts",
+    "apps/mobile/src/features/sales/hooks.ts",
+    "apps/mobile/src/features/settings/hooks.ts"
+  ],
+  "excluded_paths": [],
+  "input_files": [
+    {
+      "path": "AGENTS.md",
+      "path_role": "REFERENCE",
+      "change_type": "UNCHANGED",
+      "size": 10242,
+      "git_blob_oid": "35001543ec3d5a84ff328620f1c85eeb571141fc",
+      "sha256": "a5667526727635dbb4f95ffc13159277d4cca8b222f554145c77eb87b961e384",
+      "line_count": 149
+    },
+    {
+      "path": "apps/mobile/src/features/business-day/businessDay.ts",
+      "path_role": "EVIDENCE",
+      "change_type": "MODIFIED",
+      "size": 20773,
+      "git_blob_oid": "4b1a47e35cd16929dabca350fd3932127c15f52b",
+      "sha256": "036bdfedc549d700378b96da7227030696398df980e367e75ad05a11ba8b11af",
+      "line_count": 430
+    },
+    {
+      "path": "apps/mobile/src/features/changes/hooks.ts",
+      "path_role": "EVIDENCE",
+      "change_type": "MODIFIED",
+      "size": 12995,
+      "git_blob_oid": "f7b24ac26ff4bc5d206104391fbf4e952c6d4b4c",
+      "sha256": "1edb4ccb8dfe2917a67224d52d9e4d897370c2584b013426a1f67647555fef45",
+      "line_count": 304
+    },
+    {
+      "path": "apps/mobile/src/features/ingredients/hooks.ts",
+      "path_role": "EVIDENCE",
+      "change_type": "MODIFIED",
+      "size": 20397,
+      "git_blob_oid": "669b89697d8134c951c0340d82fe30ff8ffca66e",
+      "sha256": "8ede526e216bf8ad8d9a941a4b2e160e39ba3b4a8c96792ca736fe2eec26b5e5",
+      "line_count": 559
+    },
+    {
+      "path": "apps/mobile/src/features/master-data/hooks.ts",
+      "path_role": "EVIDENCE",
+      "change_type": "MODIFIED",
+      "size": 9513,
+      "git_blob_oid": "8e54f4e20e95c9d778c4554a78fa0d48394b3994",
+      "sha256": "29b859cd00b1b606b63f22078e03d0eb1f97aaff80d39693f0f902a917882036",
+      "line_count": 252
+    },
+    {
+      "path": "apps/mobile/src/features/my/hooks.ts",
+      "path_role": "EVIDENCE",
+      "change_type": "MODIFIED",
+      "size": 7835,
+      "git_blob_oid": "d2cadbd8c221f669c3b2f2c2009d36290727fb3a",
+      "sha256": "cc110dcccb2a82067b8bef3d9261738ed85b2ff7e7811f116d77dfcd94f617f8",
+      "line_count": 180
+    },
+    {
+      "path": "apps/mobile/src/features/orders/hooks.ts",
+      "path_role": "EVIDENCE",
+      "change_type": "MODIFIED",
+      "size": 7453,
+      "git_blob_oid": "d1af8184730b2018086272fad70e760a8cf2b6e1",
+      "sha256": "9ac796a3b037123516ec21a83d6a51a97f9938a30656b67602d07fa95076d947",
+      "line_count": 216
+    },
+    {
+      "path": "apps/mobile/src/features/recipes/hooks.ts",
+      "path_role": "EVIDENCE",
+      "change_type": "MODIFIED",
+      "size": 13966,
+      "git_blob_oid": "90fcf73e4ef4162c40f1ea48ede8f90b73e8cf75",
+      "sha256": "29331dbd00eb47c7ad3e7e60bd5ef0c1c821e7a69a143b1c24af5accbe15d819",
+      "line_count": 353
+    },
+    {
+      "path": "apps/mobile/src/features/recipes/profitHistory.ts",
+      "path_role": "EVIDENCE",
+      "change_type": "MODIFIED",
+      "size": 4700,
+      "git_blob_oid": "9cd2ed98d10b86a3a478167c93e295e5e7ac1bce",
+      "sha256": "d42885467b553dbadc7aaacd9e57588292f9f46380e3795621408723fa959416",
+      "line_count": 121
+    },
+    {
+      "path": "apps/mobile/src/features/sales/hooks.ts",
+      "path_role": "EVIDENCE",
+      "change_type": "MODIFIED",
+      "size": 41551,
+      "git_blob_oid": "82a5a959813c2d5628a634c6d94fff61e1519768",
+      "sha256": "5dedac73f95fd92e601ef1ec594d800bddd6dbbc7041e6d238b1ab4209830f15",
+      "line_count": 956
+    },
+    {
+      "path": "apps/mobile/src/features/settings/hooks.ts",
+      "path_role": "EVIDENCE",
+      "change_type": "MODIFIED",
+      "size": 26010,
+      "git_blob_oid": "e11e60457a1aa89c38229ba1b515fe770e4e796a",
+      "sha256": "6b0d2a6e5bcb739f0d7482f3bc49d7062cc3f626022c069b4184c9a3e1224ca1",
+      "line_count": 512
+    },
+    {
+      "path": "ARCHITECTURE.md",
+      "path_role": "REFERENCE",
+      "change_type": "MODIFIED",
+      "size": 11164,
+      "git_blob_oid": "dd3cdc14b82cdfae2ce7f395fd82fe3798d80768",
+      "sha256": "acebd129570e7f9aa5d3a92039aaa988e3dd90fa61d2c26770a9c0db7b10a341",
+      "line_count": 170
+    },
+    {
+      "path": "docs/브랜치-DB-운영-기획안.md",
+      "path_role": "ARTIFACT",
+      "change_type": "MODIFIED",
+      "size": 39884,
+      "git_blob_oid": "98324405889b1e86bf73876b9a729d8abc7cc8d2",
+      "sha256": "3dfe4f9a48ba0d75c25e0cd53545b47508a85eeab792bf7ef6c3b90fb633b21f",
+      "line_count": 675
+    },
+    {
+      "path": "docs/서버-확장-아키텍처-기획안.md",
+      "path_role": "ARTIFACT",
+      "change_type": "MODIFIED",
+      "size": 46609,
+      "git_blob_oid": "44a3ee4325bbecac1ebaf0f9fe62fc712e4187fd",
+      "sha256": "bd797cc7be58c140301ce06a2d86340ee7fa9234545cb7ad33ca60eaa4444030",
+      "line_count": 892
+    },
+    {
+      "path": "packages/db/README.md",
+      "path_role": "ARTIFACT",
+      "change_type": "MODIFIED",
+      "size": 6515,
+      "git_blob_oid": "e2f2b0a02f5a41a5066137719a8482b5e5746e6e",
+      "sha256": "f46e95c8fee6a2d38821407c478634187bc0fbd3e176fd0506d464300072c8cd",
+      "line_count": 122
+    },
+    {
+      "path": "packages/db/scripts/admin-acl-audit.sql",
+      "path_role": "ARTIFACT",
+      "change_type": "ADDED",
+      "size": 13375,
+      "git_blob_oid": "20f0306c0990f098251201977993ec8253d86cb2",
+      "sha256": "c47665cab7ef141855879c6200f33b2b701a65f78a7e95e14be34c7b1e86aaa4",
+      "line_count": 221
+    },
+    {
+      "path": "packages/db/scripts/admin-acl.sh",
+      "path_role": "ARTIFACT",
+      "change_type": "MODIFIED",
+      "size": 17035,
+      "git_blob_oid": "cda5dfff4d3d21eb7927cd0de82953844f2bed37",
+      "sha256": "d7f7e1f9bf3eb6d4ebb2279585402cd47343b78bcec228b0edf09e07ddd460e2",
+      "line_count": 241
+    },
+    {
+      "path": "packages/db/scripts/admin-acl.test.sh",
+      "path_role": "ARTIFACT",
+      "change_type": "MODIFIED",
+      "size": 15120,
+      "git_blob_oid": "70bc5854f70e3f215d3b7f8256699bd639a68897",
+      "sha256": "84984e5fa8e022e9e0a263a9ba7ecb6cb463fe7f494298c960999042da6aabfc",
+      "line_count": 261
+    },
+    {
+      "path": "packages/db/tests/16_change_retention.sql",
+      "path_role": "EVIDENCE",
+      "change_type": "UNCHANGED",
+      "size": 24589,
+      "git_blob_oid": "81ffd3906e432a53cc08a992c49093a5ec6be8ae",
+      "sha256": "a30eb2adda5090bd0ba5e6a4c43ab6e1a825fb0ac08d3d7e169de9ec0d8fc6e8",
+      "line_count": 399
+    },
+    {
+      "path": "packages/db/tests/31_settings_lockdown.sql",
+      "path_role": "EVIDENCE",
+      "change_type": "UNCHANGED",
+      "size": 28092,
+      "git_blob_oid": "ad76d375956d90c632679f31e478395e5854658f",
+      "sha256": "917cd975b5f1d389184f1e3fa534e5663aa0ee7471159c040a9babd08ea9754e",
+      "line_count": 405
+    }
+  ],
+  "source_archive_version": 1,
+  "finding_resolution_semantics": "VERIFIED_RESOLVED_V1",
+  "artifact_snapshot_sha256": "1883cb104e3f6d7826fee3b6505886b19bc9d249b3e6b9157b6debb484a7a8b1",
+  "input_snapshot_sha256": "c7a3904061df12a70cb870855264105f4a643ea9d81600c9da9545d3a189f007"
+}

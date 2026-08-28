@@ -135,8 +135,9 @@ corepack pnpm verify --no-db
 
 - `admin-acl.test.sh`는 verify ③에서 Docker 없이 비밀번호·argv·환경 격리를 검사한다.
 - 로컬 fresh DB의 `supabase_admin` 기본 ACL은 스크립트가 fix/check한다.
-- 호스티드 원격에서 전환 불가 계정을 위한 읽기 전용 `audit` 모드는 아직 없다(P1-1).
-  이를 구현하기 전 원격 ACL 단계를 성공으로 쓰거나 수동 우회하지 않는다.
+- 호스티드 원격은 `admin-acl.sh --remote audit`으로 앱 롤 공격면을 먼저 읽기 전용 감사한다.
+  `supabase_admin` 전환 불가여도 앱 ACL은 판정하되, 플랫폼 기본 권한은 별도 예외로 기록하고
+  `supabase_admin ACL 통과`로 쓰지 않는다. 실제 운영 실행 전에는 원격 ACL 적용 완료로 보지 않는다.
 - Supabase CLI v2 전환도 P1-2 미결정이다.
 - 운영·스테이징에 적용된 migration은 불변이며 새 migration으로 전진 복구한다.
 - 운영에는 `main`에 포함된 승인 이력만 적용한다. 로컬·스테이징·운영을 같은 DB로 쓰지 않는다.

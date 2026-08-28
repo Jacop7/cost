@@ -16,7 +16,7 @@
 #   원격(운영·개발) — 접속 정보는 **항목별 환경변수**로만 받는다. 접속 문자열(URL/keyword)은 받지 않는다:
 #       ADMIN_DB_HOST=db.example.com ADMIN_DB_USER=supabase_admin [ADMIN_DB_PORT=5432] [ADMIN_DB_NAME=postgres]
 #       [ADMIN_DB_SSLMODE=require] [ADMIN_DB_SSLROOTCERT=/path/ca.crt] [ADMIN_DB_PASSWORD=…]
-#         bash packages/db/scripts/admin-acl.sh --remote <fix|check>
+#         bash packages/db/scripts/admin-acl.sh --remote <audit|fix|check>
 #       · 값마다 문자 집합·범위를 검사한다(여러 줄·공백·=·따옴표는 거부, 포트는 1~65535, IPv6 는 그대로).
 #       · psql 은 **비운 환경**에서 뜬다 — 격리된 서브셸에서 export 변수를 전부 unset 하고 필요한 것만 export 한 뒤
 #         exec 한다. 비밀번호는 psql 은 물론 env 같은 **중간 명령의 argv 에도** 실리지 않는다(검토 P1: `env -i A=… cmd`
@@ -28,6 +28,7 @@
 #         ADMIN_DB_PASSWORD/SUPABASE_ADMIN_PASSWORD 를 환경으로 주지 말고 PGPASSFILE 을 쓴다.
 #         스크립트 안에서 이를 사후 차단하면 이미 출력된 비밀을 되돌릴 수 없으므로, 이 조합을
 #         안전하다고 약속하지 않는다(admin-acl.test.sh 가 custom PS4 + PGPASSFILE 경로를 잰다).
+#   audit = 영구 변경 없이 앱 롤 공격면을 잰다(호스티드 우선 게이트, supabase_admin 전환 없음)
 #   fix   = 회수하고 잰다        check = 재기만 한다(배포 후 확인·게이트)     ← 생략 불가
 #   프로브가 열려 있으면 exit 1 — 조용히 넘어가지 않는다.
 #
@@ -53,9 +54,15 @@ set -euo pipefail
 # 일반 xtrace 는 본체 첫 줄에서 끈다. 단, custom PS4 가 비밀번호 환경변수를 참조하면 이 줄보다
 # 먼저 샐 수 있으므로 위 계약대로 그 진단에는 PGPASSFILE 만 사용한다.
 { set +x; } 2>/dev/null
+# 자격증명 환경을 가진 채 dirname/pwd 같은 자식 프로세스를 띄우지 않는다. 슬래시 없는
+# `bash admin-acl.sh` 호출도 현재 디렉터리의 짝 SQL을 찾게 한다.
+case "${BASH_SOURCE[0]}" in
+  */*) AUDIT_SQL_FILE="${BASH_SOURCE[0]%/*}/admin-acl-audit.sql" ;;
+  *)   AUDIT_SQL_FILE="./admin-acl-audit.sql" ;;
+esac
 
 usage() {
-  echo "사용법: admin-acl.sh --local <db> <fix|check> | --remote <fix|check>" >&2
+  echo "사용법: admin-acl.sh --local <db> <fix|check> | --remote <audit|fix|check>" >&2
   echo "        원격: ADMIN_DB_HOST ADMIN_DB_USER [ADMIN_DB_PORT] [ADMIN_DB_NAME] [ADMIN_DB_SSLMODE] [ADMIN_DB_SSLROOTCERT] [ADMIN_DB_PASSWORD | PGPASSFILE]" >&2
   exit 2
 }
@@ -124,7 +131,61 @@ case "$TARGET" in
     ;;
   *) usage ;;
 esac
-case "$MODE" in fix|check) ;; *) usage ;; esac
+case "$MODE" in
+  fix|check) ;;
+  audit) [ "$TARGET" = "--remote" ] || usage ;;
+  *) usage ;;
+esac
+
+# 호스티드 대체 게이트. 영구 변경은 하지 않고, 프로브도 같은 트랜잭션에서 rollback한다.
+# `supabase_admin` 전환 가능 여부는 사실로만 출력한다. 전환 불가가 감사 실패 사유는 아니다.
+if [ "$MODE" = "audit" ]; then
+  WHO=$(run -c "select current_user || '|' || coalesce((select rolsuper from pg_roles where rolname = current_user), false)::text
+                       || '|' || coalesce(pg_has_role(current_user, 'supabase_admin', 'member'), false)::text;") \
+    || { echo "admin-acl: 접속 실패 [$WHERE]" >&2; exit 1; }
+  IFS='|' read -r AUDIT_USER AUDIT_SUPER AUDIT_MEMBER <<< "$WHO"
+  echo "admin-acl: audit identity current_user=$AUDIT_USER rolsuper=$AUDIT_SUPER supabase_admin_member=$AUDIT_MEMBER [$WHERE]"
+
+  [ -r "$AUDIT_SQL_FILE" ] || { echo "admin-acl: audit SQL 파일을 읽을 수 없습니다(기대 경로: $AUDIT_SQL_FILE)" >&2; exit 1; }
+  AUDIT=$(run -f "$AUDIT_SQL_FILE") \
+    || { echo "admin-acl: audit SQL 실행 실패 — 아무것도 바꾸지 않았습니다 [$WHERE]" >&2; exit 1; }
+
+  failed=""; seen=" "
+  platform_open="알 수 없음"
+  while IFS='|' read -r metric value expected; do
+    [ -n "$metric" ] || continue
+    case "$seen" in *" $metric "*) failed="${failed}${failed:+, }duplicate_metric=$metric" ;; esac
+    seen="$seen$metric "
+    case "$metric" in
+      platform_default_open) platform_open="$value" ;;
+      migrations) [ "$value" = "2" ] || failed="${failed}${failed:+, }$metric=$value" ;;
+      probe_owner) [ "$value" = "postgres" ] || failed="${failed}${failed:+, }$metric=$value" ;;
+      protected_objects) [ "$value" = "6" ] || failed="${failed}${failed:+, }$metric=$value" ;;
+      blocked_internal_rpc_objects) [ "$value" = "11" ] || failed="${failed}${failed:+, }$metric=$value" ;;
+      probe_dangerous|public_dangerous|protected_writes|source_schema_grants|supabase_admin_objects|anon_rpc|blocked_internal_rpc|facade_rpc_missing|unapproved_authenticated_rpc|rls_disabled_app_tables|ledger_write_paths)
+        [ "$value" = "0" ] || failed="${failed}${failed:+, }$metric=$value" ;;
+      *) failed="${failed}${failed:+, }unknown_metric=$metric" ;;
+    esac
+    echo "admin-acl: audit $metric=$value ($expected)"
+  done <<< "$AUDIT"
+
+  # 필수 metric이 하나라도 없으면 실패한다. 빈 출력·부분 출력·중복 행은 성공으로 위장할 수 없다.
+  for required in migrations probe_owner probe_dangerous public_dangerous protected_objects protected_writes \
+                  source_schema_grants supabase_admin_objects anon_rpc blocked_internal_rpc blocked_internal_rpc_objects \
+                  facade_rpc_missing unapproved_authenticated_rpc rls_disabled_app_tables ledger_write_paths platform_default_open; do
+    case "$seen" in *" $required "*) ;; *) failed="${failed}${failed:+, }missing_metric=$required" ;; esac
+  done
+
+  if [ -n "$failed" ]; then
+    echo "admin-acl: audit 실패 — $failed [$WHERE]" >&2
+    exit 1
+  fi
+  if [ "$platform_open" != "0" ]; then
+    echo "admin-acl: audit platform-exception — supabase_admin 기본 권한 열린 행=$platform_open; 전환 가능하면 fix→check, 불가능하면 플랫폼 관리 영역으로 기록하세요 [$WHERE]"
+  fi
+  echo "admin-acl: audit ok — 측정한 애플리케이션 ACL 항목이 닫혀 있습니다(플랫폼 기본 권한과 별도) [$WHERE]"
+  exit 0
+fi
 
 # 접속 계정 확인 — supabase_admin 이거나 그 롤이 될 수 있는 슈퍼유저여야 한다. 아니면 아무것도 안 바꾼다.
 WHO=$(run -c "select current_user || '|' || (select rolsuper from pg_roles where rolname = current_user)::text

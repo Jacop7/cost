@@ -24,8 +24,10 @@ supabase/
 scripts/
   fresh-db.sh             격리 DB 생성·중간 버전 재생
   upgrade-check.sh        실제 마이그레이션 순서의 업그레이드 검사
-  admin-acl.sh            로컬/원격 supabase_admin 기본 ACL fix·check
+  admin-acl.sh            로컬 fix·check, 원격 audit(읽기 전용)·fix·check
+  admin-acl-audit.sql     원격 audit의 rollback 전용 앱 롤 공격면 감사 SQL
   admin-acl.test.sh       비밀번호·argv·환경 격리 회귀시험
+  admin-acl-audit.test.mjs 실제 DB metric·rollback·모바일 RPC 허용 목록 대조
 tests/
   _prelude.sql            공통 픽스처·사후조건
   01_…32_*.sql            트랜잭션 DB 회귀 스위트
@@ -95,11 +97,19 @@ bash packages/db/scripts/admin-acl.sh --local postgres check
 bash packages/db/scripts/admin-acl.test.sh
 ```
 
-`--remote fix|check`는 접속 계정이 `supabase_admin`이거나 그 롤로 전환 가능한 슈퍼유저일 때만 동작한다.
-호스티드 Supabase 계정에서 이 전환이 가능한지는 아직 실측하지 않았다. 전환 불가 환경을 위한 읽기 전용
-`audit` 모드는 아직 구현되지 않았으므로, 첫 원격 연결은
-[작업큐 P1-1](../../docs/작업큐.md#p1-1-원격-acl-읽기-전용-감사) 전까지 ACL 단계에서 중단한다.
-불가능한 `check`를 성공으로 기록하거나 수동 SQL로 우회하지 않는다.
+`--remote audit`은 `supabase_admin`으로 전환하지 않고 WHO 원값, ACL 마이그레이션, postgres 소유
+rollback 프로브, 앱 롤의 위험 테이블 권한, RLS 비활성 public 표, 원장 직접 쓰기 경로,
+integration·ops·Queue 원본 노출, 내부 RPC 권한과 앱이 직접 쓰는 facade RPC의 정확한 시그니처
+허용 목록을 검사한다. 플랫폼 내부
+롤의 기본 권한은 앱 감사와 분리해 예외로 보고한다. 2026-08-28 개발 DB 실측은 RLS 비활성 앱 표
+`0개`, 원장 직접 쓰기 조합 `32개`, 허용 목록 밖 authenticated 함수 `87개`였다. 감사 결과는 실패가
+정상이며 `P0-5` 최소 권한 마이그레이션 전에는 원격 ACL 안전 완료로 기록하면 안 된다.
+
+호스티드 접속은 가능하면 `ADMIN_DB_SSLMODE=verify-full`과 공급자가 제공한 CA 파일의
+`ADMIN_DB_SSLROOTCERT`를 사용한다. `require`는 암호화만 하고 서버 인증서는 검증하지 않는다.
+`--remote fix|check`는 접속 계정이 `supabase_admin`이거나 그 롤로 전환할 수 있을 때만 사용한다.
+실제 운영 접속에서 `audit`을 실행하기 전에는 원격 ACL 적용까지 완료됐다고 기록하지 않는다.
+[작업큐 P1-1](../../docs/작업큐.md#p1-1-원격-acl-읽기-전용-감사)을 따른다.
 
 ## 환경별 적용
 

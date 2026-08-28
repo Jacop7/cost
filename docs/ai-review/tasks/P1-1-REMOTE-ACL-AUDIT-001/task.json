@@ -1,0 +1,76 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "P1-1-REMOTE-ACL-AUDIT-001",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R3",
+  "author_role": "SOLAR-DB",
+  "reviewer_role": "FABLE-SEC",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "d5aeafd7098836c73e29c362386b8250f8476431",
+  "target_commit_sha": "d5aeafd7098836c73e29c362386b8250f8476431",
+  "target_tree_oid": "93312ab6ece551f5ce85a75d1aa60693f9a649b1",
+  "agents_blob_oid": "35001543ec3d5a84ff328620f1c85eeb571141fc",
+  "agents_sha256": "a5667526727635dbb4f95ffc13159277d4cca8b222f554145c77eb87b961e384",
+  "requirements": [
+    "P1-1-AUDIT-1: 원격 audit는 supabase_admin 전환과 영구 변경 없이 WHO 원값, ACL migration, rollback 프로브와 앱 롤 공격면을 검사한다.",
+    "P1-1-AUDIT-2: anon/authenticated 위험 테이블 권한, 보호 테이블 쓰기, 원본 스키마 노출, 플랫폼 소유 앱 객체와 내부 RPC 노출을 거짓 초록 없이 실패시킨다.",
+    "P1-1-AUDIT-3: authenticated 실행 권한은 앱이 직접 쓰는 facade의 정확한 regprocedure 시그니처 허용 목록과 양방향 대조한다.",
+    "P1-1-AUDIT-4: 비밀번호는 stdout/stderr/argv로 노출하지 않고 기존 remote 접속 환경 격리를 유지한다.",
+    "P1-1-AUDIT-5: 도구 구현, 실제 호스티드 실행, 앱 ACL 안전 완료와 플랫폼 기본 권한 예외를 서로 다른 상태로 기록한다.",
+    "P1-1-AUDIT-6: 현재 개발 DB에서 발견된 허용 목록 밖 authenticated 함수 87개를 숨기지 않고 배포 차단과 별도 R3 권한 축소 작업으로 연결한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:acl-environment-deployment",
+    "AGENTS:server-authority",
+    "AGENTS:ledger-write-paths",
+    "WORK-QUEUE:P1-1",
+    "WORK-QUEUE:P0-5"
+  ],
+  "artifact_paths": [
+    "packages/db/scripts/admin-acl.sh",
+    "packages/db/scripts/admin-acl.test.sh",
+    "packages/db/scripts/admin-acl-audit.sql",
+    "packages/db/README.md",
+    "docs/브랜치-DB-운영-기획안.md",
+    "docs/서버-확장-아키텍처-기획안.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "ARCHITECTURE.md"
+  ],
+  "evidence_paths": [
+    "packages/db/supabase/migrations/20260826000166_default_table_acl.sql",
+    "packages/db/supabase/migrations/20260826000167_single_store_and_admin_acl.sql",
+    "packages/db/tests/16_change_retention.sql",
+    "packages/db/tests/31_settings_lockdown.sql",
+    "apps/mobile/src/features/business-day/businessDay.ts",
+    "apps/mobile/src/features/changes/hooks.ts",
+    "apps/mobile/src/features/ingredients/hooks.ts",
+    "apps/mobile/src/features/master-data/hooks.ts",
+    "apps/mobile/src/features/my/hooks.ts",
+    "apps/mobile/src/features/orders/hooks.ts",
+    "apps/mobile/src/features/recipes/hooks.ts",
+    "apps/mobile/src/features/recipes/profitHistory.ts",
+    "apps/mobile/src/features/sales/hooks.ts",
+    "apps/mobile/src/features/settings/hooks.ts"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "admin-acl.test.sh의 비밀번호 비노출, audit 원격 전용, 실패 폐쇄 사보타주 결과",
+    "admin-acl-audit.sql을 개발 DB에서 실행한 원시 metric과 rollback 뒤 프로브 부재",
+    "앱 소스의 supabase.rpc 호출 이름과 exact facade allowlist의 대조",
+    "현재 허용 목록 밖 authenticated 함수 수와 위험 내부 도우미 표본",
+    "corepack pnpm verify의 6단계 결과와 audit 실패가 제품 회귀 실패가 아니라 배포 차단임을 구분한 기록"
+  ],
+  "human_decisions": [
+    "2026-08-28 사용자가 P1-1 구현을 계속하고 페이블 문제 제기를 실제 수정에 반영하라고 승인했다.",
+    "authenticated 함수 권한을 바꾸는 R3 migration은 별도 사람 승인 전에는 이 audit-only 변경에 포함하지 않는다.",
+    "접근 가능한 호스티드 Supabase 자격이 없어 원격 audit 실행은 아직 수행하지 않는다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null
+}
