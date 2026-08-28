@@ -154,11 +154,13 @@ export function assertFallbackResultBinding(result, task) {
     || result.reviewer_model !== expected.model) {
     throw new Error('결과의 실제 reviewer engine/model 출처가 Task와 다릅니다.');
   }
-  if (expected.engine === FALLBACK_REVIEWER_ENGINE) {
-    for (const finding of result.findings ?? []) {
-      if (finding.review_state === 'VERIFIED' && finding.verified_by_engine !== FALLBACK_REVIEWER_ENGINE) {
-        throw new Error('Opus가 VERIFIED한 Finding에는 verified_by_engine이 필요합니다.');
-      }
+  for (const finding of result.findings ?? []) {
+    const verified = finding.review_state === 'VERIFIED';
+    if (verified && finding.verified_by_engine !== expected.engine) {
+      throw new Error(`VERIFIED Finding의 verified_by_engine은 실제 엔진(${expected.engine})이어야 합니다.`);
+    }
+    if (!verified && finding.verified_by_engine !== null) {
+      throw new Error('VERIFIED가 아닌 Finding에는 verified_by_engine을 기록할 수 없습니다.');
     }
   }
 }
