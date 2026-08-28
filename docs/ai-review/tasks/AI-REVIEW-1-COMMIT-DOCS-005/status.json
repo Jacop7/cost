@@ -14,15 +14,15 @@
     "handoff_entry_sha256": "5e8fc93f700a94690b4ea3af770df0a74ed3989076fa7479e26041f5bfe4791c",
     "handoff_run_sha256": "2c9717dfba1be0752e231136af2a0d03a3f2d258f6c12283648801f01de655d8"
   },
-  "updated_at": "2026-08-28T06:43:14.514Z",
-  "latest_round": "r001",
+  "updated_at": "2026-08-28T06:47:25.023Z",
+  "latest_round": "r002",
   "review_state": "OPEN",
   "workflow_state": "READY_FOR_REVIEW",
   "gate_state": "OPEN",
   "run_state": "RUN_FAILED",
   "defect_state": "NOT_APPLICABLE",
   "verdict": null,
-  "latest_run_sha256": "29969e01a756f1491f312bc567d2eeed3765a94a8adbeef8bd97fb75a99e92e4",
+  "latest_run_sha256": "55f2110ad24bdc5d0557c2fdc0f6429deb8cc5d7983ac2c82546f034c9b3e0b2",
   "open_required_finding_ids": [
     "FINAL-DOCS-001-CMD-004",
     "FINAL-DOCS-001-STATE-001",
