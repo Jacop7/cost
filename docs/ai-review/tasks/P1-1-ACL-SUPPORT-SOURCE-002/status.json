@@ -1,0 +1,26 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "P1-1-ACL-SUPPORT-SOURCE-002",
+  "predecessor_review": null,
+  "updated_at": "2026-08-28T11:01:24.537Z",
+  "latest_round": "r002",
+  "review_state": "OPEN",
+  "workflow_state": "FIXING",
+  "gate_state": "OPEN",
+  "run_state": "RESULT_RECEIVED",
+  "defect_state": "NOT_APPLICABLE",
+  "verdict": "CHANGES_REQUIRED",
+  "latest_run_sha256": "6e4be8d7ee122dc51bd242427ef2c122d4c5c99a842295bceff69dd390d030b1",
+  "open_required_finding_ids": [
+    "P1-1-SUPPORT-002-EVIDENCE-NOT-MATERIALIZED",
+    "P1-1-SUPPORT-002-MIGRATIONS-ZERO-AMBIGUOUS",
+    "P1-1-SUPPORT-002-RPC-SCAN-EVASION"
+  ],
+  "open_optional_finding_ids": [
+    "P1-1-SUPPORT-002-DEBT-VALUE-PARSING"
+  ],
+  "closed_finding_ids": [],
+  "candidate_review_state": null,
+  "candidate_review_sha256": null,
+  "backlog_dispositions": []
+}

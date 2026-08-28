@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "P1-1-ACL-SUPPORT-SOURCE-002",
+  "sequence": "t0001",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-08-28T11:21:03.747Z",
+  "turn_id": "turn-s002",
+  "turn_type": "SOLAR_RESPONSE",
+  "role": "SOLAR-DB",
+  "task_sha256": "d832fff49ad7c5797c8165e88a4b04b752d0a52ae6ab78cff9ebc1e0e087612a",
+  "runner_sha256": "1e09d053693e46b03a27bc34c443a4ac258ff6358eda1d33e0a76b160e97bf8b",
+  "previous_manual_run_sha256": null,
+  "collaboration_before_sha256": "e478f337a71deb6347f3803e83bfc950f4aaf814382edbe4480888de2ba07bd3",
+  "collaboration_before_bytes": 5282,
+  "collaboration_entry_sha256": "81e5c973221d9d7182fa703d83690e7573d2481aea2fdae3b8e4edea0a07c1b8",
+  "collaboration_entry_bytes": 1007,
+  "collaboration_after_sha256": "7e3e11984e19f70a93334714c81523309f2a87b6e2b917181650acb1b8481ba0",
+  "collaboration_after_bytes": 6289
+}

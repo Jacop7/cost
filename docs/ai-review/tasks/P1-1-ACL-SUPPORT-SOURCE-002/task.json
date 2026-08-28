@@ -1,0 +1,61 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "P1-1-ACL-SUPPORT-SOURCE-002",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R3",
+  "author_role": "SOLAR-DB",
+  "reviewer_role": "FABLE-SEC",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "e625cade1ecbaa4bd15af18589b033013ff0270d",
+  "target_commit_sha": "d0051c17bb6f842e28b48813616114fefc50913c",
+  "target_tree_oid": "bf4c6fb7e99ec586f81a9a3a72af11a9fff1fa34",
+  "agents_blob_oid": "64b82275832bb6ce981b419294a428e77383be3e",
+  "agents_sha256": "0f1dd530a46174aeff884146569b2e2534f6ec8b544b531054f48e86b84c0f97",
+  "requirements": [
+    "P1-1-SUPPORT-1: fresh DB audit 회귀시험이 16개 metric의 정확한 집합과 이미 닫힌 보안 사후조건 값을 단언한다.",
+    "P1-1-SUPPORT-2: 동적 RPC 이름을 거부하고 모바일 RPC·SQL facade·비-mobile 예외를 양방향으로 대조한다.",
+    "P1-1-SUPPORT-3: verify 새 DB 단계가 지원 시험을 실제로 실행하고 값 회귀·프로브 잔존·allowlist 드리프트를 실패 폐쇄한다.",
+    "P1-1-SUPPORT-4: P0-5 부채 32/87을 0으로 위장하지 않고 증가만 차단하며 축소는 허용한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:inspection-execution",
+    "AGENTS:server-authority",
+    "P1-1-SUPPORT-SEC-METRIC-VALUES-UNSEALED",
+    "P1-1-SUPPORT-SEC-DYNAMIC-RPC-SKIPPED",
+    "P1-1-SUPPORT-SEC-EVIDENCE-NOT-MATERIALIZED"
+  ],
+  "artifact_paths": [
+    "packages/db/scripts/admin-acl-audit.test.mjs",
+    "scripts/verify.mjs"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "packages/db/scripts/admin-acl-audit.sql",
+    "packages/db/README.md"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/tasks/P1-1-ACL-SUPPORT-SOURCE-001/rounds/r001/review.md",
+    "docs/ai-review/tasks/P1-1-ACL-SUPPORT-SOURCE-001/collaboration.md",
+    "docs/ai-review/tasks/P1-1-REMOTE-ACL-AUDIT-001/rounds/r003/review.md",
+    "packages/db/scripts/admin-acl.sh",
+    "packages/db/scripts/admin-acl.test.sh"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "fresh DB 보안 metric 정확 값·부채 ceiling·migrations 0/2 단언 소스",
+    "GRANT·동적 RPC·allowlist·metric·rollback 사보타주 실패 증거",
+    "corepack pnpm verify 6/6 exit 0와 fresh DB 잔여 0개",
+    "이전 r001 Finding 원문과 Finding별 반영 장부"
+  ],
+  "human_decisions": [
+    "2026-08-28 사용자가 P1-1과 페이블 지적 반영을 계속 진행하도록 승인했다.",
+    "2026-08-28 P1-1-ACL-SUPPORT-SOURCE-001 r001 CHANGES_REQUIRED의 필수 3건과 선택 1건을 모두 반영했다.",
+    "실제 호스티드 audit와 32/87 권한 축소는 별도 P0-5 R3 사람 승인 범위로 유지한다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null
+}

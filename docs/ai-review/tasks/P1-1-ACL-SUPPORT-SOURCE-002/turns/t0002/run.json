@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "P1-1-ACL-SUPPORT-SOURCE-002",
+  "sequence": "t0002",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-08-28T11:21:04.477Z",
+  "turn_id": "turn-c002",
+  "turn_type": "CODEX_EVIDENCE",
+  "role": "CODEX-FUNCTION-QA",
+  "task_sha256": "d832fff49ad7c5797c8165e88a4b04b752d0a52ae6ab78cff9ebc1e0e087612a",
+  "runner_sha256": "1e09d053693e46b03a27bc34c443a4ac258ff6358eda1d33e0a76b160e97bf8b",
+  "previous_manual_run_sha256": "28c5f5d6031ea0ca9c9fd50c2b2b98545ce3ec0a69a8991350820d1121f74d1f",
+  "collaboration_before_sha256": "7e3e11984e19f70a93334714c81523309f2a87b6e2b917181650acb1b8481ba0",
+  "collaboration_before_bytes": 6289,
+  "collaboration_entry_sha256": "548db3950682bbb83bfa5712f0c34adebfa5aba8b59473a551596edfa6c07cad",
+  "collaboration_entry_bytes": 1013,
+  "collaboration_after_sha256": "91c3bea552ec271f73c20189eb35965ad4e134553276c80a08340c404577e469",
+  "collaboration_after_bytes": 7302
+}
