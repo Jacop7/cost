@@ -1,0 +1,68 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "AI-REVIEW-1-COMMIT-001",
+  "route": "FINAL_INDEPENDENT",
+  "risk_level": "R2",
+  "author_role": "AI-DEPUTY-ORCHESTRATOR",
+  "reviewer_role": "FABLE-FINAL",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "FINAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "36f8c6ce36c4c24266ccf77b1dad3e53c4655041",
+  "target_commit_sha": "3637a36b43ddf31d8b991254e36b6f2c4440f142",
+  "target_tree_oid": "b64c06c0a098c2e094f12652d2cbc9e2de015634",
+  "agents_blob_oid": "35001543ec3d5a84ff328620f1c85eeb571141fc",
+  "agents_sha256": "a5667526727635dbb4f95ffc13159277d4cca8b222f554145c77eb87b961e384",
+  "requirements": [
+    "AI-REVIEW-1: 하나의 공식 산출물을 솔라와 페이블이 append-only 공동 장부로 개선한다.",
+    "공식 Claude Code에는 격리된 읽기 전용 snapshot과 Read/Glob/Grep만 제공한다.",
+    "WORKING과 COMMIT 입력, 실행기, 스키마, 검수 원본, 장부 전후를 SHA-256 hash-chain으로 보존한다.",
+    "실패·중단·죽은 lock·prepared transaction을 조용히 성공 처리하거나 과거 기록을 덮어쓰지 않는다.",
+    "P0-2 보호 ruleset과 필수 validator 전에는 VERIFIED까지만 허용하고 공식 CLOSED를 선언하지 않는다."
+  ],
+  "invariant_ids": [
+    "AGENTS:project-and-authority",
+    "AGENTS:inspection-execution",
+    "AGENTS:acl-environment-deployment"
+  ],
+  "artifact_paths": [
+    ".gitattributes",
+    "CLAUDE.md",
+    "package.json",
+    "scripts/fable-review.mjs",
+    "scripts/fable-review.ps1",
+    "scripts/fable-review/schema-v1.json",
+    "docs/7h-worklog.md",
+    "docs/작업큐.md",
+    "docs/팀구성_상세기획안.md",
+    "docs/ai-review/README.md",
+    "docs/ai-review/fixtures/shared-coauthoring-smoke.md",
+    "docs/ai-review/templates/collaboration.md",
+    "docs/ai-review/templates/task.example.json"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "ARCHITECTURE.md",
+    "docs/브랜치-DB-운영-기획안.md",
+    "docs/서버-확장-아키텍처-기획안.md"
+  ],
+  "evidence_paths": [
+    ".github/workflows/verify.yml",
+    "scripts/verify.mjs"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "target commit 3637a36의 commit/tree/AGENTS blob과 입력 파일 SHA 왕복",
+    "fable:check 성공과 fable:self-test 18/18",
+    "pnpm verify 6/6: DB 32/32, core 177, mobile 189, 경합, parity, 업그레이드 8/8, 웹 번들",
+    "WORKING r003 PASS, 필수 Finding 0건, 선택 Finding VERIFIED, gate OPEN",
+    "P0-2 외부 보호 게이트가 아직 없다는 실패 폐쇄 상태"
+  ],
+  "human_decisions": [
+    "2026-08-28 사용자가 공식 Claude Code 읽기 전용 검수와 후속 진행을 승인했다.",
+    "운영 배포·미해결 위험 수용·공식 CLOSED는 이번 로컬 작업에 위임하지 않았다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": "AI-REVIEW-1의 최종 독립 감사를 수행하라. 공동 장부의 자기변호는 입력하지 않았으며, target commit 3637a36에 고정된 허용 파일만 검토한다. 단일 공식 산출물 공동 작성, 읽기 전용 Claude 격리, 입력·runner·schema·review·장부 hash-chain, task lock과 prepared transaction 복구, 비밀·OneDrive·linked-path 차단, Finding 상태 전이, anchor/decision commit 계약을 독립적으로 반박 검토하라. WORKING 최종 검수는 SETUP-V11-FINAL-002 r003 PASS였고 run/review/input/artifact SHA-256은 각각 c8bb04349c6851d4ec076f2db7dca866daa07f8f23117085b96f76230a302299, c43007df1b2cbda5d21544118be2bf6bc2d2582f56a29cdec085581c65d89d9f, 09896e24fbf7c318dcda8a2134bd0029b8f310d426c1afffc9829e6200ca0aba, ce90ad6580caa352584a90aa6413f4c412d461dad6b164aea6478524aa5de9ff다. Codex는 fable:check, fable:self-test 18/18, pnpm verify 6/6을 확인했고 그 전체 검증은 DB 32/32, core 177, mobile 189, 실제 두 세션 경합, locale parity, 업그레이드 8/8, 웹 번들을 포함했다. 이 실행 결과는 감사 대상의 주장으로 취급하고 코드·문서 계약과 대조하라. P0-2 GitHub ruleset/필수 validator는 아직 없으므로 PASS여도 로컬 gate_state는 OPEN이고 Finding은 VERIFIED까지만 가능하며 공식 CLOSED를 선언해서는 안 된다. 필수 결함이 있으면 실제 허용 파일과 줄을 인용하고 같은 공식본에 적용 가능한 수정안을 제시하라."
+}

@@ -53,6 +53,8 @@ SHA를 임시 읽기 전용 checkout해 hash-chain만 검증하고 폐기하는 
 ```text
 docs/ai-review/
 ├─ README.md
+├─ fixtures/
+│  └─ shared-coauthoring-smoke.md 공동 작성 왕복 smoke 검증용 고정 입력(역할별 사본 아님)
 ├─ templates/
 │  ├─ task.example.json
 │  └─ collaboration.md
@@ -118,10 +120,14 @@ lock만 로컬 runtime의 `locks/stale/`에 원본 격리한 뒤 재획득하며
 페이블이 먼저 아이디어를 제안한 경우에도 솔라가 구현 가능성·도메인 정책·통합 영향을 역검수한 뒤
 같은 공식 산출물에 반영한다. 페이블 제안을 별도 전략 문서로 확정하지 않는다.
 
-비-Fable 턴은 PowerShell에서 UTF-8 본문을 표준입력으로 전달한다. 예시는 다음과 같다.
+비-Fable 턴은 PowerShell에서 UTF-8 본문을 표준입력으로 전달한다. PowerShell 7(`pwsh`)을
+권장한다. Windows PowerShell 5.1을 사용한다면 네이티브 프로세스 파이프 인코딩도 UTF-8로
+명시한 뒤 실행한다.
 
 ```powershell
-Get-Content -Raw .\turn.md | corepack pnpm fable:append -- --task TASK-ID
+$utf8 = [System.Text.UTF8Encoding]::new($false)
+$OutputEncoding = [Console]::OutputEncoding = $utf8
+Get-Content -Raw -Encoding utf8 .\turn.md | corepack pnpm fable:append -- --task TASK-ID
 ```
 
 `turn.md`는 전송용 초안일 뿐 공식 기록이 아니며 권위 저장소 또는 고정 로컬 runtime에서만 만들고
@@ -137,7 +143,7 @@ SOLAR_REQUEST + 같은 공식본 수정
 → SOLAR_RESPONSE + 같은 공식본 반영 또는 반론
 → CODEX_EVIDENCE + 실행·회귀 증거
 → FABLE_RECHECK(같은 finding_id)
-↺ 필수 Finding이 닫힐 때까지 반복
+↺ 필수 Finding이 `VERIFIED` 또는 P0-2 구축 뒤 `CLOSED`가 될 때까지 반복
 → AI 부 오케스트레이터 종결 결정 → 보호 원격/외부 attestation 게이트 검증
 ```
 
@@ -283,15 +289,22 @@ PowerShell 진입점도 같은 실행기를 호출한다.
 
 ## 9. 상태와 종결 권한
 
-- `finding.review_state`: `OPEN | VERIFIED | CLOSED | DISPUTED`; 최초 발견 역할만 Finding을 닫음
+- `finding.review_state`: `OPEN | VERIFIED | CLOSED | DISPUTED`; 최초 발견 역할만 Finding을
+  `VERIFIED`로 전환하며, P0-2 구축 뒤에만 `CLOSED` 전환을 요청함
 - `run_state`: `RESULT_RECEIVED | RUN_FAILED | STALE`; CLI·판본 실행 상태
 - `defect_state`: 기능 QA 결함 상태; Fable 검수 상태와 별도
 - `gate_state`: 로컬 실행기는 `OPEN`을 유지하며 외부 게이트 종결과 혼동하지 않음
 
-`status.json`은 실행기만 갱신하며 필수 미종결, 선택 미종결, 누적 종결 Finding을 분리한다. `PASS`는
-필수 Finding이 없다는 페이블 판정이며 task/gate의 자동 `CLOSED`가 아니다. 최초 발견 역할이
-Finding을 닫고, AI 부 오케스트레이터가 증거를 확인해 외부 게이트에 종결 결정을 요청한다.
+`status.json`은 실행기만 갱신하며 필수 미해결, 선택 미해결, 누적 종결 Finding을 분리한다.
+`OPEN`·`DISPUTED`는 미해결이고, 완료 조건과 Codex 증거를 최초 발견 역할이 확인한 `VERIFIED`는
+로컬 해결 상태라 `remaining_required_finding_ids`와 `PASS` 차단 집계에서 제외한다. `PASS`는
+필수 미해결 Finding이 없다는 페이블 판정이며 task/gate의 자동 `CLOSED`가 아니다. AI 부
+오케스트레이터가 증거를 확인해 외부 게이트에 종결 결정을 요청한다.
 정책·위험·운영 승인은 필요한 사람이 별도로 결정한다.
+
+새 회차의 `manifest.json`은 Finding 해결 의미 버전을 함께 봉인한다. 이 표식이 없는 과거 회차와
+그때 생성된 `status.json`은 당시 계약(`VERIFIED`도 미종결 집계)에 따라 재생하며 소급해 다시 쓰지
+않는다. 표식이 있는 새 회차부터 위의 현재 계약을 적용한다.
 
 PASS 뒤 AI 부 오케스트레이터는 같은 판본을 `COMMIT` 모드로 최종 확인하고 anchor commit을 만든
 다음, `AI_DEPUTY_GATE_DECISION` 턴에 검증한 review/run/artifact/input hash, anchor commit SHA,
@@ -301,12 +314,15 @@ PASS 뒤 AI 부 오케스트레이터는 같은 판본을 `COMMIT` 모드로 최
 공식 `CLOSED`의 권위는 decision commit SHA에 대해 성공한 보호 원격 필수 체크와 해당 보호 ref 반영
 기록의 조합이다. 대체 수단은 사람이 사전 승인한 외부 서명/attestation뿐이다. 위험 등급상 사람
 승인이 필요하면 먼저 `HUMAN_DECISION`을 decision commit에 포함한다. 현재 `P0-2`의 GitHub ruleset과
-필수 체크가 구축되기 전에는 `VERIFIED`까지만 가능하고 공식 gate `CLOSED`를 선언하지 않는다.
+필수 체크가 구축되기 전에는 Finding `review_state`를 `VERIFIED`까지만 올리고 `CLOSED`로 전환하지
+않으며 공식 gate `CLOSED`도 선언하지 않는다. `CLOSED` 전환은 decision commit의 보호 원격 필수
+체크 성공 기록이 있는 뒤 최초 발견 역할의 재검수에서만 허용한다.
 
 ## 10. 보존과 정정
 
 - `rounds/rNNN`과 원본 검수는 append-only다. 같은 회차를 재실행하거나 덮어쓰지 않는다.
-- 틀린 검수도 삭제하지 않는다. 다음 회차에서 같은 ID를 닫거나 재개방·분쟁 처리한다.
+- 틀린 검수도 삭제하지 않는다. 다음 회차에서 같은 ID를 `VERIFIED`로 확인하고, P0-2 구축 뒤에는
+  `CLOSED`로 전환하거나 재개방·분쟁 처리한다.
 - 유효한 Claude 결과 뒤 입력 STALE 또는 snapshot 정리 실패가 나면 `candidate-review.*`로 보존하고
   공식 장부에는 합류하지 않는다.
 - 후보·읽기용 review·prepared entry·WORKING snapshot도 run/manifest hash에 연결하며 다음 회차가

@@ -1,0 +1,26 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "AI-REVIEW-1-COMMIT-DOCS-001",
+  "updated_at": "2026-08-28T04:27:44.841Z",
+  "latest_round": "r001",
+  "review_state": "OPEN",
+  "workflow_state": "FIXING",
+  "gate_state": "OPEN",
+  "run_state": "RESULT_RECEIVED",
+  "defect_state": "NOT_APPLICABLE",
+  "verdict": "CHANGES_REQUIRED",
+  "latest_run_sha256": "91329c122b814522420141368060cb1518dff8ece5ee99ba74ed5a0fc2424fe9",
+  "open_required_finding_ids": [
+    "FINAL-DOCS-001-STATE-001",
+    "FINAL-DOCS-001-STRUCT-002",
+    "FINAL-DOCS-001-TEMPLATE-003",
+    "FINAL-DOCS-001-CMD-004"
+  ],
+  "open_optional_finding_ids": [
+    "FINAL-DOCS-001-ATTR-005"
+  ],
+  "closed_finding_ids": [],
+  "candidate_review_state": null,
+  "candidate_review_sha256": null,
+  "backlog_dispositions": []
+}

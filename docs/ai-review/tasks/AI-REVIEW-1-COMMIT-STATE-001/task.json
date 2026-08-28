@@ -1,0 +1,46 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "AI-REVIEW-1-COMMIT-STATE-001",
+  "route": "FINAL_INDEPENDENT",
+  "risk_level": "R2",
+  "author_role": "AI-DEPUTY-ORCHESTRATOR",
+  "reviewer_role": "FABLE-FINAL",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "FINAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "36f8c6ce36c4c24266ccf77b1dad3e53c4655041",
+  "target_commit_sha": "3637a36b43ddf31d8b991254e36b6f2c4440f142",
+  "target_tree_oid": "b64c06c0a098c2e094f12652d2cbc9e2de015634",
+  "agents_blob_oid": "35001543ec3d5a84ff328620f1c85eeb571141fc",
+  "agents_sha256": "a5667526727635dbb4f95ffc13159277d4cca8b222f554145c77eb87b961e384",
+  "requirements": [
+    "task, runner, schema, 입력, review, run과 공동 장부 전후를 SHA-256 체인으로 보존한다.",
+    "동시 실행, 죽은 lock, 실패 회차, prepared append 중단과 재시도를 원본 손실 없이 실패 폐쇄한다.",
+    "Finding ID와 상태 전이는 같은 검수 역할의 증거 기반 재검수만 허용하며 P0-2 전에는 VERIFIED를 넘지 않는다."
+  ],
+  "invariant_ids": [
+    "AGENTS:project-and-authority",
+    "AI-REVIEW:closed-loop-recheck",
+    "AI-REVIEW:pass-is-not-gate-closure"
+  ],
+  "artifact_paths": [
+    "scripts/fable-review.mjs",
+    "scripts/fable-review/schema-v1.json"
+  ],
+  "reference_paths": [
+    "AGENTS.md"
+  ],
+  "evidence_paths": [],
+  "excluded_paths": [],
+  "required_evidence": [
+    "acquireLock, releaseLock, loadPrevious, validatePreviousRoundIntegrity, appendCollaboration과 prepared transaction 복구 코드 줄",
+    "validateResult, Finding registry와 gate decision 검증 코드 줄",
+    "실패 회차가 장부를 추가하지 않고 다음 회차가 previous run hash를 계승하는 계약"
+  ],
+  "human_decisions": [
+    "2026-08-28 사용자가 공식 Claude Code 읽기 전용 검수와 후속 진행을 승인했다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": "AI-REVIEW-1의 상태·해시·복구 계약만 최종 독립 감사하라. 범위를 넓히지 말고 Grep으로 acquireLock, releaseLock, loadPrevious, validatePreviousRoundIntegrity, validateResult, appendCollaboration, prepared transaction과 gate decision 관련 함수를 찾은 뒤 직접 연결된 코드만 읽어라. 동시 실행, stale lock 회수, 실패 회차 재시도, runner/schema/task 불변, append 전후 hash, prepared append crash recovery, Finding ID/previous_finding_id/state 전이와 P0-2 이전 VERIFIED 상한을 반박 검토하라. 앞선 광범위 감사 실패는 비용 상한에 따른 실행 실패이며 PASS가 아니다. Codex의 self-test 18/18과 verify 6/6은 감사 대상의 주장이다. P0-2가 없으므로 PASS여도 gate_state OPEN과 VERIFIED 상한을 유지한다. 결과는 실제 결함과 최소 근거만 간결히 반환하라."
+}

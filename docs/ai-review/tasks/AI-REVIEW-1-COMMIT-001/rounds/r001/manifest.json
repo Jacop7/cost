@@ -1,0 +1,245 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "AI-REVIEW-1-COMMIT-001",
+  "round": "r001",
+  "created_at": "2026-08-28T04:08:38.836Z",
+  "review_mode": "FINAL",
+  "baseline_commit_sha": "36f8c6ce36c4c24266ccf77b1dad3e53c4655041",
+  "target_commit_sha": "3637a36b43ddf31d8b991254e36b6f2c4440f142",
+  "target_tree_oid": "b64c06c0a098c2e094f12652d2cbc9e2de015634",
+  "agents_blob_oid": "35001543ec3d5a84ff328620f1c85eeb571141fc",
+  "agents_sha256": "a5667526727635dbb4f95ffc13159277d4cca8b222f554145c77eb87b961e384",
+  "task_sha256": "90ca1945095faf6009f226b38c12db3c7de37abf31f241b6da5d7e453fa1a0a4",
+  "collaboration_sha256": "7fd00e5a4a1c7595ffb905ce12bc6d68f2ee454a4c28ed6deb0382a887d8a08e",
+  "collaboration_bytes": 393,
+  "input_files_sha256": "4e0ac1f869041a2e94ed6bb9beb19fb8e48e95bd004a56eb4191ce294d9d9fee",
+  "schema_sha256": "96196975ad07cb57b1147d58900197a3ecd42812397a91bd0dd024f9d2a7d674",
+  "runner_sha256": "ce4512b71312f5b3b3f8bc16bae77fd29fb1dbe637676bf6b96b7401f115b8d3",
+  "snapshot_mode": "COMMIT",
+  "previous_review_sha256": null,
+  "previous_run_sha256": null,
+  "retry_of_failed_round": null,
+  "artifact_paths": [
+    ".gitattributes",
+    "CLAUDE.md",
+    "package.json",
+    "scripts/fable-review.mjs",
+    "scripts/fable-review.ps1",
+    "scripts/fable-review/schema-v1.json",
+    "docs/7h-worklog.md",
+    "docs/작업큐.md",
+    "docs/팀구성_상세기획안.md",
+    "docs/ai-review/README.md",
+    "docs/ai-review/fixtures/shared-coauthoring-smoke.md",
+    "docs/ai-review/templates/collaboration.md",
+    "docs/ai-review/templates/task.example.json"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "ARCHITECTURE.md",
+    "docs/브랜치-DB-운영-기획안.md",
+    "docs/서버-확장-아키텍처-기획안.md"
+  ],
+  "evidence_paths": [
+    ".github/workflows/verify.yml",
+    "scripts/verify.mjs"
+  ],
+  "allowed_paths": [
+    ".gitattributes",
+    "CLAUDE.md",
+    "package.json",
+    "scripts/fable-review.mjs",
+    "scripts/fable-review.ps1",
+    "scripts/fable-review/schema-v1.json",
+    "docs/7h-worklog.md",
+    "docs/작업큐.md",
+    "docs/팀구성_상세기획안.md",
+    "docs/ai-review/README.md",
+    "docs/ai-review/fixtures/shared-coauthoring-smoke.md",
+    "docs/ai-review/templates/collaboration.md",
+    "docs/ai-review/templates/task.example.json",
+    "AGENTS.md",
+    "ARCHITECTURE.md",
+    "docs/브랜치-DB-운영-기획안.md",
+    "docs/서버-확장-아키텍처-기획안.md",
+    ".github/workflows/verify.yml",
+    "scripts/verify.mjs"
+  ],
+  "excluded_paths": [],
+  "input_files": [
+    {
+      "path": ".gitattributes",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 132,
+      "git_blob_oid": "1936766635660a531ee40dc8dc25c45af1cc8452",
+      "sha256": "2451a4e95c6bc6610b253733a978c5b20a6e199006d3f192786b0cbbabedfcb3",
+      "line_count": 2
+    },
+    {
+      "path": ".github/workflows/verify.yml",
+      "path_role": "EVIDENCE",
+      "change_type": "COMMIT",
+      "size": 1917,
+      "git_blob_oid": "929a3b7fac6c2abbbef1b57a22684d084bade0ce",
+      "sha256": "7fe128dc646e1c70bb4fe70ee641c41e11192ce4051da07de360b61ca204652d",
+      "line_count": 47
+    },
+    {
+      "path": "AGENTS.md",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 10242,
+      "git_blob_oid": "35001543ec3d5a84ff328620f1c85eeb571141fc",
+      "sha256": "a5667526727635dbb4f95ffc13159277d4cca8b222f554145c77eb87b961e384",
+      "line_count": 149
+    },
+    {
+      "path": "ARCHITECTURE.md",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 10994,
+      "git_blob_oid": "79911ff114c721daf3119b5847b26ee2ce83b20c",
+      "sha256": "f0e218c5949769a7873666c4fd7ed3255709cf99f03fec2a7462cb8fde2dfe9b",
+      "line_count": 170
+    },
+    {
+      "path": "CLAUDE.md",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 1168,
+      "git_blob_oid": "744b02bb6df3d6a41ba06c15578415d53e940a83",
+      "sha256": "1687d8c42466aa6e60bc438b8c155f5062095405bbdfef196f3d4fe81402e468",
+      "line_count": 15
+    },
+    {
+      "path": "docs/7h-worklog.md",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 94365,
+      "git_blob_oid": "23dcbd55f378d12429e1d93eb3e3ec36c15e8a3c",
+      "sha256": "21aa6e91c0e7d8d929263827d32e2113b065031e76348af28022b378bfbe3f57",
+      "line_count": 1396
+    },
+    {
+      "path": "docs/브랜치-DB-운영-기획안.md",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 38659,
+      "git_blob_oid": "9ae1439c066f47c7099aea288944cfff32c1f2b7",
+      "sha256": "8df772084a52c16b15ee5a612dfc7ec12385735035480910462dc43e010c6ac2",
+      "line_count": 670
+    },
+    {
+      "path": "docs/서버-확장-아키텍처-기획안.md",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 45302,
+      "git_blob_oid": "4787df42628403f17728849367113c49126f261b",
+      "sha256": "98c16db557e09cf57fa98433f4244e51fe75a5bc9f6358904d098ea3aef7a0e5",
+      "line_count": 889
+    },
+    {
+      "path": "docs/작업큐.md",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 34271,
+      "git_blob_oid": "32f27bb144feccd9965f2ab5bde20d85b599bf41",
+      "sha256": "bfc6ec414dcb1eb7ba35ae83bff9ccf2d1cafae0c441a421dc714e86f6bc61ec",
+      "line_count": 629
+    },
+    {
+      "path": "docs/팀구성_상세기획안.md",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 73992,
+      "git_blob_oid": "22a785477a78a1dd7143fe960b8789e0e02c9368",
+      "sha256": "367c41b82d25dd653d07d4f5224483f9ea378a9ba8e53ea05e13f42d12156092",
+      "line_count": 1514
+    },
+    {
+      "path": "docs/ai-review/fixtures/shared-coauthoring-smoke.md",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 2296,
+      "git_blob_oid": "8adf45c564289abf1d3c763d923f467720375b9e",
+      "sha256": "ce90ad6580caa352584a90aa6413f4c412d461dad6b164aea6478524aa5de9ff",
+      "line_count": 32
+    },
+    {
+      "path": "docs/ai-review/README.md",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 22749,
+      "git_blob_oid": "c1e8634a69d30f217d112b723551cb8117da24e0",
+      "sha256": "cd93eafebe9fab23c7d92b73c3d319134f0a38b42921dc38cc6a1bae92bac53a",
+      "line_count": 345
+    },
+    {
+      "path": "docs/ai-review/templates/collaboration.md",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 3232,
+      "git_blob_oid": "5260452b79ebc8edc7d3c5e4e2cd09a679fed820",
+      "sha256": "fa653f5b6c23bad9d98e7a4d28738e6c97879a6d266012f42a08a6863b724ea1",
+      "line_count": 103
+    },
+    {
+      "path": "docs/ai-review/templates/task.example.json",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 1196,
+      "git_blob_oid": "9826a8dfbe2518cebec66bfc1c4121119bfd28e0",
+      "sha256": "723585d121de39290e2a25ea6a13d8e522efe842f5e64395c239e7b871c24fd1",
+      "line_count": 40
+    },
+    {
+      "path": "package.json",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 1151,
+      "git_blob_oid": "0c1089be3441af2b57c09a60b223efdd064c8bdb",
+      "sha256": "2b2d66f0cd31b5816392368fb062ef96688b2f086c9e182df5dbdcc8c1021195",
+      "line_count": 36
+    },
+    {
+      "path": "scripts/fable-review.mjs",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 238728,
+      "git_blob_oid": "ede1f79246f5348d0dbca1fd12c898f0d4daf7ee",
+      "sha256": "c5104239932e358802b77ac93cbb003a11981fbea70c297a6f5e821fde4927a7",
+      "line_count": 5180
+    },
+    {
+      "path": "scripts/fable-review.ps1",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 126,
+      "git_blob_oid": "53faa98aac504519857da95b2d80f6028f954981",
+      "sha256": "24ef2b0ee4a9d1780295d29b1f8f77814059134decb8b62e16de33735f82e546",
+      "line_count": 5
+    },
+    {
+      "path": "scripts/fable-review/schema-v1.json",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 6611,
+      "git_blob_oid": "26904d5f4d3f4189fb4262274b8aa6b23e76871d",
+      "sha256": "65f4ed8319b4a64f5a21c402c6ded06c704c8eb848b2ab0e1dae5ca0e7d7ac98",
+      "line_count": 231
+    },
+    {
+      "path": "scripts/verify.mjs",
+      "path_role": "EVIDENCE",
+      "change_type": "COMMIT",
+      "size": 9613,
+      "git_blob_oid": "aa3883a037f6d92a81ba3ae0c9fdab1f25ed6ba0",
+      "sha256": "07be80d08a44b7eccc9500c9f3ef264e106b3468f0f64a839c4551cc4cd3ef80",
+      "line_count": 207
+    }
+  ],
+  "source_archive_version": 1,
+  "artifact_snapshot_sha256": null,
+  "input_snapshot_sha256": null
+}

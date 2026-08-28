@@ -1,0 +1,320 @@
+{
+  "schema_version": "1.0",
+  "task_id": "AI-REVIEW-1-COMMIT-DOCS-001",
+  "reviewer_role": "FABLE-FINAL",
+  "review_mode": "FINAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "36f8c6ce36c4c24266ccf77b1dad3e53c4655041",
+  "target_commit_sha": "3637a36b43ddf31d8b991254e36b6f2c4440f142",
+  "target_tree_oid": "b64c06c0a098c2e094f12652d2cbc9e2de015634",
+  "agents_blob_oid": "35001543ec3d5a84ff328620f1c85eeb571141fc",
+  "agents_sha256": "a5667526727635dbb4f95ffc13159277d4cca8b222f554145c77eb87b961e384",
+  "task_sha256": "d97ffdaec473ac01549cd8a454e3856bfdbb198dadeba01b59563cc959dc12f2",
+  "collaboration_sha256": "13ebf028faa4699fa3b3ac6d680cdca1af4c58d8d425b02b01a6c5878afc6f9a",
+  "input_files_sha256": "4f53e8a044b746b89845603d8fb0682d7419cc0f23e523276afc61aca2f75b89",
+  "schema_sha256": "96196975ad07cb57b1147d58900197a3ecd42812397a91bd0dd024f9d2a7d674",
+  "runner_sha256": "ce4512b71312f5b3b3f8bc16bae77fd29fb1dbe637676bf6b96b7401f115b8d3",
+  "verdict": "CHANGES_REQUIRED",
+  "summary": "AI-REVIEW-1 공식 문서·명령 계약을 COMMIT 3637a36b 기준으로 독립 대조했다. 일치 확인: package.json의 fable:check/self-test/append/review 스크립트와 README §3·§8 명령, PowerShell wrapper의 동일 실행기 pass-through, AGENTS §검사 실행의 fable:review 명령과 `pnpm verify --no-db` 4/6 범위·Node 20.19.4/24 매트릭스(verify.yml·verify.mjs), FINAL_INDEPENDENT 조합·independent_request null 규칙(task.example.json), 장부 턴 유형·Codex 증거 항목(template·fixture·README §5), PASS≠gate CLOSED·gate_state OPEN 유지(README §9·fixture·template)는 서로 모순 없다. 실제 불일치 4건과 개선 1건: (1) Major — P0-2 이전 `VERIFIED` 상한이 README §9 L304·fixture L20-21에 있는데, README §4 L140·§9 L286/L292·§10 L309와 fixture L13-14/L30은 페이블이 Finding을 `CLOSED`로 전환하는 것을 정상 종결 경로로 서술해 상한과 충돌하고, PASS의 '필수 Finding 없음'에 VERIFIED 필수 Finding이 포함되는지도 정의되지 않았다. (2) Minor — README §2 저장 구조가 공식 artifact인 `fixtures/shared-coauthoring-smoke.md`를 분류하지 않는다. (3) Minor — collaboration 템플릿 헤더가 `pnpm fable:append` 전용 append 규칙을 빠뜨리고 역할을 솔라·페이블·Codex로만 적어 AGENTS L21·README L84-85·L110과 어긋난다. (4) Minor — README L121-125의 `Get-Content -Raw | fable:append` 예시는 Windows PowerShell 5.1에서 UTF-8 전달을 보장하지 않는다. (5) Improvement — .gitattributes가 `candidate-review.md`를 다루지 않는다. 실행기 내부 구현은 범위 밖으로 두었다. WORKING r003 PASS, FINAL-SMOKE-002-IMP-001 VERIFIED, gate OPEN 상태는 그대로이며 이 감사는 공식 CLOSED를 선언하지 않는다.",
+  "findings": [
+    {
+      "finding_id": "FINAL-DOCS-001-STATE-001",
+      "severity": "Major",
+      "review_state": "OPEN",
+      "category": "POLICY",
+      "requirement_or_invariant_ids": [
+        "AI-REVIEW:pass-is-not-gate-closure",
+        "REQ-3:P0-2-전-PASS와-공식-CLOSED-분리"
+      ],
+      "evidence": [
+        {
+          "path": "docs/ai-review/README.md",
+          "line_start": 303,
+          "line_end": 304,
+          "observation": "P0-2 ruleset·필수 체크 구축 전에는 `VERIFIED`까지만 가능하고 공식 gate `CLOSED`를 선언하지 않는다고 규정한다. gate_state 열거값은 OPEN뿐(L289)이므로 이 VERIFIED 상한은 finding.review_state에 걸린다."
+        },
+        {
+          "path": "docs/ai-review/README.md",
+          "line_start": 286,
+          "line_end": 293,
+          "observation": "finding.review_state 열거에 CLOSED가 있고 '최초 발견 역할만 Finding을 닫음', '최초 발견 역할이 Finding을 닫고 … 외부 게이트에 종결 결정을 요청한다'고 서술해 Finding CLOSED가 P0-2 조건 없이 정상 경로로 읽힌다."
+        },
+        {
+          "path": "docs/ai-review/README.md",
+          "line_start": 140,
+          "line_end": 140,
+          "observation": "'필수 Finding이 닫힐 때까지 반복' — 상한이 VERIFIED이면 P0-2 전에는 이 루프가 종료 조건을 만족할 수 없다."
+        },
+        {
+          "path": "docs/ai-review/README.md",
+          "line_start": 309,
+          "line_end": 309,
+          "observation": "'다음 회차에서 같은 ID를 닫거나' — 역시 P0-2 조건 없이 Finding 종결을 허용한다."
+        },
+        {
+          "path": "docs/ai-review/fixtures/shared-coauthoring-smoke.md",
+          "line_start": 12,
+          "line_end": 14,
+          "observation": "완료 조건 충족 시 페이블이 해당 Finding을 `CLOSED`로 전환한다고 서술한다."
+        },
+        {
+          "path": "docs/ai-review/fixtures/shared-coauthoring-smoke.md",
+          "line_start": 20,
+          "line_end": 21,
+          "observation": "같은 파일이 P0-2 전에는 'Finding·task 상태를 VERIFIED까지만 올릴 수 있다'고 하여 L13-14·L30과 내부 모순이다."
+        },
+        {
+          "path": "docs/ai-review/fixtures/shared-coauthoring-smoke.md",
+          "line_start": 30,
+          "line_end": 30,
+          "observation": "통과 조건에 '완료 조건이 충족된 때만 Finding을 닫는다'가 있다."
+        },
+        {
+          "path": "docs/ai-review/README.md",
+          "line_start": 270,
+          "line_end": 270,
+          "observation": "종료 코드 0 = 'PASS — 필수 Finding 없음'. VERIFIED 상태의 필수 Finding이 '없음'에 포함되는지, remaining_required 집계에서 제외되는지 어디에도 정의되지 않았다."
+        },
+        {
+          "path": "COLLABORATION_LOG",
+          "line_start": 0,
+          "line_end": 0,
+          "observation": "작업 패킷: 선택 Finding FINAL-SMOKE-002-IMP-001은 VERIFIED, gate OPEN이며 P0-2 전 공식 CLOSED 선언은 결함이다. 즉 실제 운용 상태는 Finding VERIFIED 정지인데 README §4/§9/§10과 fixture 절반은 Finding CLOSED를 전제한다."
+        }
+      ],
+      "impact": "P0-2 이전에 페이블/실행기가 Finding을 CLOSED로 전환해도 문서상 정당화되고, 반대로 VERIFIED에 멈춘 필수 Finding이 PASS·remaining_required 판정에서 어떻게 취급되는지 정의가 없어 같은 상태를 두 역할이 다르게 해석할 수 있다. 실행기가 재검증하는 'Finding 상태 전이'(L183-184)의 기준 문서 자체가 모순이므로 PASS≠gate CLOSED 불변식의 문서 계약이 완결되지 않는다.",
+      "acceptance_criteria": [
+        "README §9에 P0-2 전 Finding 상태 상한(VERIFIED)과 CLOSED 허용 시점(보호 원격 필수 체크 성공 후 최초 발견 역할의 재검수)을 한 곳에서 정의한다.",
+        "PASS·remaining_required_finding_ids 판정에서 VERIFIED 필수 Finding이 '해결됨'으로 취급되는지 명시한다.",
+        "README §4 L140, §9 L286·L292, §10 L309와 fixture L13-14·L30의 '닫는다/CLOSED' 표현을 위 정의와 일치시킨다(예: 'VERIFIED 또는 P0-2 이후 CLOSED').",
+        "fixture 내부에서 L13-14와 L20-21이 서로 모순되지 않는다."
+      ],
+      "required_tests": [
+        "fable:self-test에 'P0-2 전 RECHECK가 Finding을 CLOSED로 반환하면 거부/경고' 사례가 있는지 별도 실행기 Task에서 확인한다.",
+        "WORKING r003 PASS 결과의 remaining_required 집계가 VERIFIED 정의와 일치하는지 Codex 증거로 남긴다."
+      ],
+      "previous_finding_id": null
+    },
+    {
+      "finding_id": "FINAL-DOCS-001-STRUCT-002",
+      "severity": "Minor",
+      "review_state": "OPEN",
+      "category": "ARCHITECTURE",
+      "requirement_or_invariant_ids": [
+        "AI-REVIEW:single-canonical-artifact",
+        "REQ-1:README-fixture-template-동일-설명"
+      ],
+      "evidence": [
+        {
+          "path": "docs/ai-review/README.md",
+          "line_start": 53,
+          "line_end": 59,
+          "observation": "저장 구조 트리는 README.md, templates/(task.example.json, collaboration.md), tasks/만 나열하고 fixtures/ 디렉터리를 포함하지 않는다."
+        },
+        {
+          "path": "docs/ai-review/README.md",
+          "line_start": 48,
+          "line_end": 49,
+          "observation": "역할명·수정 단계를 붙인 경쟁 공식 문서를 만들지 않는다고 규정하므로, 분류되지 않은 docs/ai-review 하위 파일은 경쟁 사본인지 공식 산출물인지 판별 기준이 없다."
+        },
+        {
+          "path": "docs/ai-review/fixtures/shared-coauthoring-smoke.md",
+          "line_start": 1,
+          "line_end": 5,
+          "observation": "이 파일은 공동 작성 왕복 검증용 고정 입력이며 본 Task의 artifact_paths에 포함된 공식 산출물이지만 README 어디에서도 참조되지 않는다."
+        }
+      ],
+      "impact": "공식 artifact로 관리되는 fixture의 존재·역할이 README 저장 구조에 없어, 독자가 README만으로는 이 파일이 공식 산출물인지 감사 기록인지 알 수 없다.",
+      "acceptance_criteria": [
+        "README §2 트리에 fixtures/shared-coauthoring-smoke.md와 그 역할(공동 작성 왕복 smoke 검증 고정 입력)을 추가한다."
+      ],
+      "required_tests": [],
+      "previous_finding_id": null
+    },
+    {
+      "finding_id": "FINAL-DOCS-001-TEMPLATE-003",
+      "severity": "Minor",
+      "review_state": "OPEN",
+      "category": "POLICY",
+      "requirement_or_invariant_ids": [
+        "AGENTS:project-and-authority",
+        "REQ-1:README-fixture-template-동일-설명"
+      ],
+      "evidence": [
+        {
+          "path": "docs/ai-review/templates/collaboration.md",
+          "line_start": 3,
+          "line_end": 5,
+          "observation": "헤더는 '솔라·페이블·Codex'의 append-only 장부라며 '새 턴은 맨 아래에 추가'라고만 적고, fable:append 경유·직접 편집 금지를 언급하지 않는다. 같은 템플릿에 HUMAN·AI-DEPUTY-ORCHESTRATOR 턴(L60-98)이 있는데 헤더 역할 목록에서 빠져 있다."
+        },
+        {
+          "path": "AGENTS.md",
+          "line_start": 21,
+          "line_end": 21,
+          "observation": "비-Fable 턴은 pnpm fable:append로만 추가하고 collaboration.md를 직접 편집하지 않는다."
+        },
+        {
+          "path": "docs/ai-review/README.md",
+          "line_start": 84,
+          "line_end": 85,
+          "observation": "솔라·Codex·사람·AI 부 O의 턴도 반드시 pnpm fable:append를 사용한다."
+        },
+        {
+          "path": "docs/ai-review/README.md",
+          "line_start": 110,
+          "line_end": 110,
+          "observation": "collaboration.md 규칙: 직접 편집·과거 prefix 수정·삭제 금지."
+        },
+        {
+          "path": "CLAUDE.md",
+          "line_start": 10,
+          "line_end": 11,
+          "observation": "다른 역할의 턴도 pnpm fable:append를 거쳐야 하며 직접 편집하지 않는다."
+        }
+      ],
+      "impact": "각 Task의 collaboration.md에 복사되는 헤더가 '맨 아래에 추가'만 안내해 직접 편집을 유도할 수 있고, 이는 AGENTS·README·CLAUDE.md가 공통으로 금지하는 행위다.",
+      "acceptance_criteria": [
+        "템플릿 헤더에 '비-Fable 턴은 pnpm fable:append로만 추가, Fable 턴은 실행기만 추가, 직접 편집 금지'를 명시한다.",
+        "헤더 역할 목록을 솔라·페이블·Codex·사람·AI 부 오케스트레이터로 맞춘다."
+      ],
+      "required_tests": [],
+      "previous_finding_id": null
+    },
+    {
+      "finding_id": "FINAL-DOCS-001-CMD-004",
+      "severity": "Minor",
+      "review_state": "OPEN",
+      "category": "OPERATIONS",
+      "requirement_or_invariant_ids": [
+        "REQ-2:package-script-wrapper-CI-명령-일치"
+      ],
+      "evidence": [
+        {
+          "path": "docs/ai-review/README.md",
+          "line_start": 121,
+          "line_end": 125,
+          "observation": "'PowerShell에서 UTF-8 본문을 표준입력으로 전달한다'고 하면서 예시는 `Get-Content -Raw .\\turn.md | corepack pnpm fable:append -- --task TASK-ID`다. Windows PowerShell 5.1에서는 -Encoding 미지정 시 ANSI(CP949)로 읽고 네이티브 프로세스 파이프는 $OutputEncoding(기본 ASCII)로 재인코딩하므로 한글 본문의 UTF-8 전달이 보장되지 않는다. PowerShell 버전 요구가 명시돼 있지 않다."
+        },
+        {
+          "path": "package.json",
+          "line_start": 24,
+          "line_end": 24,
+          "observation": "fable:append = node scripts/fable-review.mjs --append-turn — 스크립트 이름 자체는 README와 일치한다."
+        }
+      ],
+      "impact": "문서가 약속한 'UTF-8 본문 전달'을 예시 명령이 모든 지원 셸에서 만족하지 못해, 한글 턴이 깨지거나 실행기 검증에서 거부되는 원인을 문서로는 알 수 없다.",
+      "acceptance_criteria": [
+        "예시에 `-Encoding utf8`을 추가하고, Windows PowerShell 5.1 사용 시 `$OutputEncoding`/`[Console]::OutputEncoding`을 UTF-8로 설정하거나 PowerShell 7(pwsh) 사용을 요구한다고 명시한다."
+      ],
+      "required_tests": [
+        "한글 포함 turn.md를 pwsh 7과 Windows PowerShell 5.1에서 각각 append하여 entry.md hash가 원문 UTF-8 hash와 같은지 Codex 증거로 남긴다."
+      ],
+      "previous_finding_id": null
+    },
+    {
+      "finding_id": "FINAL-DOCS-001-ATTR-005",
+      "severity": "Improvement",
+      "review_state": "OPEN",
+      "category": "OPERATIONS",
+      "requirement_or_invariant_ids": [
+        "AI-REVIEW:single-canonical-artifact"
+      ],
+      "evidence": [
+        {
+          "path": ".gitattributes",
+          "line_start": 1,
+          "line_end": 2,
+          "observation": "'Fable review markdown is immutable model output'이라며 docs/ai-review/tasks/**/review.md에만 -whitespace를 준다."
+        },
+        {
+          "path": "docs/ai-review/README.md",
+          "line_start": 46,
+          "line_end": 46,
+          "observation": "candidate-review.*도 페이블이 실제 반환한 유효 원본이며 동일하게 불변 보존 대상이다(L72, L114)."
+        }
+      ],
+      "impact": "candidate-review.md는 같은 불변 모델 출력이지만 glob에 걸리지 않아 whitespace 경고 처리가 review.md와 다르다. 내용 무결성에는 영향 없다.",
+      "acceptance_criteria": [
+        ".gitattributes에 docs/ai-review/tasks/**/candidate-review.md -whitespace를 추가하거나 제외 이유를 주석으로 남긴다."
+      ],
+      "required_tests": [],
+      "previous_finding_id": null
+    }
+  ],
+  "proposed_edits": [
+    {
+      "edit_id": "FINAL-DOCS-001-E001",
+      "path": "docs/ai-review/README.md",
+      "anchor": "필수 체크가 구축되기 전에는 `VERIFIED`까지만 가능하고 공식 gate `CLOSED`를 선언하지 않는다.",
+      "operation": "REPLACE",
+      "proposed_text": "필수 체크가 구축되기 전에는 Finding `review_state`를 `VERIFIED`까지만 올리고 `CLOSED`로 전환하지 않으며, 공식 gate `CLOSED`도 선언하지 않는다. 이 기간에는 최초 발견 역할이 완료 조건 충족을 확인한 `VERIFIED` 필수 Finding을 '해결됨'으로 취급해 `PASS` 판정과 `remaining_required_finding_ids` 집계에서 제외한다. §4의 '닫힐 때까지'와 §10의 '같은 ID를 닫거나'는 P0-2 전에는 `VERIFIED` 전환을 뜻하며, `CLOSED` 전환은 decision commit에 대한 보호 원격 필수 체크 성공 기록이 있는 뒤 최초 발견 역할의 재검수 회차에서만 한다.",
+      "rationale": "README §4/§9/§10과 fixture 사이의 Finding CLOSED vs VERIFIED 상한 모순을 한 곳에서 해소하고 PASS 판정 기준을 정의한다.",
+      "finding_ids": [
+        "FINAL-DOCS-001-STATE-001"
+      ]
+    },
+    {
+      "edit_id": "FINAL-DOCS-001-E002",
+      "path": "docs/ai-review/fixtures/shared-coauthoring-smoke.md",
+      "anchor": "Finding을 `CLOSED`로 전환한다.",
+      "operation": "REPLACE",
+      "proposed_text": "Finding을 `VERIFIED`로 전환하며, `CLOSED` 전환은 `P0-2` 보호 원격 필수 체크가 구축·성공한 뒤의 재검수 회차에서만 한다.",
+      "rationale": "fixture L13-14가 같은 파일의 L20-21(P0-2 전 VERIFIED 상한)과 모순되지 않게 한다. L30의 '닫는다'도 같은 표현으로 맞춘다.",
+      "finding_ids": [
+        "FINAL-DOCS-001-STATE-001"
+      ]
+    },
+    {
+      "edit_id": "FINAL-DOCS-001-E003",
+      "path": "docs/ai-review/README.md",
+      "anchor": "│  └─ collaboration.md",
+      "operation": "ADD",
+      "proposed_text": "├─ fixtures/\n│  └─ shared-coauthoring-smoke.md 공동 작성 왕복 smoke 검증용 고정 입력(공식 artifact, 역할별 사본 아님)",
+      "rationale": "공식 artifact인 fixture를 저장 구조에 분류해 경쟁 사본 금지 규칙(§1)과 충돌하지 않게 한다.",
+      "finding_ids": [
+        "FINAL-DOCS-001-STRUCT-002"
+      ]
+    },
+    {
+      "edit_id": "FINAL-DOCS-001-E004",
+      "path": "docs/ai-review/templates/collaboration.md",
+      "anchor": "> 이 파일은 솔라·페이블·Codex가 `task.json`의 `artifact_paths`에 지정된 같은 공식 산출물을",
+      "operation": "REPLACE",
+      "proposed_text": "> 이 파일은 솔라·페이블·Codex·사람·AI 부 오케스트레이터가 `task.json`의 `artifact_paths`에 지정된 같은 공식 산출물을\n> 개선하는 append-only 상호작용 장부다. Fable 턴은 검수 실행기만 추가하고, 그 밖의 모든 턴은\n> `corepack pnpm fable:append -- --task <TASK-ID>`로만 맨 아래에 추가한다. 이 파일을 직접 편집하거나\n> 과거 턴을 고치거나 지우지 않는다. `reference_paths`와 `evidence_paths`는 읽기 전용이다.",
+      "rationale": "AGENTS L21·README L84-85·L110·CLAUDE.md L10-11의 fable:append 전용 규칙과 역할 목록을 템플릿 헤더에 반영한다(기존 L3-5 블록 전체를 대체).",
+      "finding_ids": [
+        "FINAL-DOCS-001-TEMPLATE-003"
+      ]
+    },
+    {
+      "edit_id": "FINAL-DOCS-001-E005",
+      "path": "docs/ai-review/README.md",
+      "anchor": "Get-Content -Raw .\\turn.md | corepack pnpm fable:append -- --task TASK-ID",
+      "operation": "REPLACE",
+      "proposed_text": "# PowerShell 7(pwsh) 권장. Windows PowerShell 5.1은 먼저 $OutputEncoding = [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false) 를 설정한다.\nGet-Content -Raw -Encoding utf8 .\\turn.md | corepack pnpm fable:append -- --task TASK-ID",
+      "rationale": "문서가 약속한 UTF-8 표준입력 전달을 예시 명령이 실제로 보장하게 한다.",
+      "finding_ids": [
+        "FINAL-DOCS-001-CMD-004"
+      ]
+    },
+    {
+      "edit_id": "FINAL-DOCS-001-E006",
+      "path": ".gitattributes",
+      "anchor": "docs/ai-review/tasks/**/review.md -whitespace",
+      "operation": "ADD",
+      "proposed_text": "docs/ai-review/tasks/**/candidate-review.md -whitespace",
+      "rationale": "candidate-review.md도 동일한 불변 모델 출력이므로 같은 whitespace 규칙을 적용한다.",
+      "finding_ids": [
+        "FINAL-DOCS-001-ATTR-005"
+      ]
+    }
+  ],
+  "closed_finding_ids": [],
+  "reopened_finding_ids": [],
+  "remaining_required_finding_ids": [
+    "FINAL-DOCS-001-STATE-001",
+    "FINAL-DOCS-001-STRUCT-002",
+    "FINAL-DOCS-001-TEMPLATE-003",
+    "FINAL-DOCS-001-CMD-004"
+  ]
+}

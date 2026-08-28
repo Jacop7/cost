@@ -107,6 +107,21 @@ const LEGACY_UNARCHIVED_ROUNDS = new Map([
   ])],
 ]);
 const UTF8_DECODER = new TextDecoder('utf-8', { fatal: true });
+const FINDING_RESOLUTION_SEMANTICS = 'VERIFIED_RESOLVED_V1';
+const SAFE_CLAUDE_SUBTYPES = new Set(['success', 'error_max_budget_usd']);
+const SAFE_CLAUDE_TERMINAL_REASONS = new Set(['completed', 'budget_exhausted']);
+
+function findingResolutionSemantics(manifest, label = 'manifest') {
+  const marker = manifest?.finding_resolution_semantics;
+  if (marker === undefined) return { verifiedIsResolved: false, allowClosedTransitions: true };
+  if (marker === FINDING_RESOLUTION_SEMANTICS) {
+    return { verifiedIsResolved: true, allowClosedTransitions: false };
+  }
+  throw new ReviewError(
+    `${label}의 finding_resolution_semantics를 이 실행기가 지원하지 않습니다.`,
+    { exitCode: 75, runState: 'STALE' },
+  );
+}
 const TASK_KEYS_V11 = new Set([
   'protocol_version', 'task_id', 'route', 'risk_level', 'author_role', 'reviewer_role',
   'verifier_role', 'gate_owner', 'review_mode', 'snapshot_mode', 'baseline_commit_sha',
@@ -329,7 +344,7 @@ function printHelp() {
 사용법:
   node scripts/fable-review.mjs --check
   node scripts/fable-review.mjs --self-test
-  Get-Content -Raw turn.md | node scripts/fable-review.mjs --append-turn --task <TASK-ID>
+  PowerShell 7: Get-Content -Raw -Encoding utf8 turn.md | node scripts/fable-review.mjs --append-turn --task <TASK-ID>
   node scripts/fable-review.mjs --task <TASK-ID> [--round <1..999>] [--timeout-ms <ms>]
 
 검수 패킷:
@@ -1160,6 +1175,7 @@ function inspectPreparedRoundStage(stage) {
   const run = parseJson(runRaw, 'staging run.json');
   ensureObject(manifest, 'staging manifest.json');
   ensureObject(run, 'staging run.json');
+  findingResolutionSemantics(manifest, 'staging manifest.json');
   if (
     manifest.source_archive_version !== 1
     || manifest.protocol_version !== '1.1'
@@ -1449,6 +1465,7 @@ function loadRoundRecord(roundsDir, roundNumber, task) {
   const run = parseJson(runRaw, `${roundName} run.json`);
   ensureObject(manifest, `${roundName} manifest.json`);
   ensureObject(run, `${roundName} run.json`);
+  findingResolutionSemantics(manifest, `${roundName} manifest.json`);
   if (
     manifest.task_id !== task.task_id
     || run.task_id !== task.task_id
@@ -1647,6 +1664,7 @@ function previousResult(roundDir, round, task) {
       hash: null,
       runHash: null,
       manifest: null,
+      resultManifest: null,
       run: null,
       history: [],
       registryFindings: [],
@@ -1680,6 +1698,10 @@ function previousResult(roundDir, round, task) {
       throw new ReviewError(`${record.roundName}이 그 시점의 최신 성공 검수 hash를 계승하지 않았습니다.`, { exitCode: 75, runState: 'STALE' });
     }
     if (record.run.run_state === 'RESULT_RECEIVED') {
+      const semantics = findingResolutionSemantics(
+        record.manifest,
+        `${record.roundName} manifest.json`,
+      );
       try {
         validateResult(record.value, {
           task,
@@ -1690,6 +1712,7 @@ function previousResult(roundDir, round, task) {
             value: base?.value ?? null,
             registryFindings: [...findingRegistry.values()],
           },
+          ...semantics,
         });
       } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
@@ -1710,6 +1733,7 @@ function previousResult(roundDir, round, task) {
     baseRound: base?.roundName ?? null,
     retryOfFailedRound: immediate.run.run_state === 'RESULT_RECEIVED' ? null : immediate.roundName,
     manifest: immediate.manifest,
+    resultManifest: base?.manifest ?? null,
     manifestRaw: immediate.manifestRaw,
     manifestHash: immediate.manifestHash,
     run: immediate.run,
@@ -1771,7 +1795,14 @@ function validatePreviousRoundIntegrity(previous, snapshot, collaborationRaw, ta
           throw new ReviewError(`${record.roundName || '과거 회차'}의 장부 entry hash가 다릅니다.`, { exitCode: 75, runState: 'STALE' });
         }
         const roundNumber = Number(record.roundName.slice(1));
-        const expectedEntry = Buffer.from(collaborationEntry(record.value, roundNumber, record.hash), 'utf8');
+        const semantics = findingResolutionSemantics(
+          record.manifest,
+          `${record.roundName || '과거 회차'} manifest.json`,
+        );
+        const expectedEntry = Buffer.from(
+          collaborationEntry(record.value, roundNumber, record.hash, semantics),
+          'utf8',
+        );
         if (!entry.equals(expectedEntry)) {
           throw new ReviewError(`${record.roundName || '과거 회차'} 공동 장부 entry가 review 원본과 byte 단위로 다릅니다.`, { exitCode: 75, runState: 'STALE' });
         }
@@ -1802,12 +1833,15 @@ Hard rules:
 3. This is a hash-sealed snapshot. Echo every supplied SHA/hash and snapshot mode exactly.
 4. Cite an allowed file and real 1-based line range. Use COLLABORATION_LOG with lines 0..0 only
    when the evidence exists solely in the supplied task packet or shared collaboration log.
-5. Keep the same finding_id during RECHECK. Only the original reviewer role may close its finding.
-6. In an initial review, every finding is OPEN. In RECHECK, closed_finding_ids contains only IDs
-   that transition from non-CLOSED to CLOSED in this round; never repeat an ID already CLOSED in
-   the prior result. reopened_finding_ids likewise contains only CLOSED-to-OPEN transitions in this
-   round. Keep every currently unresolved required ID in remaining_required_finding_ids.
+5. Keep the same finding_id during RECHECK. Only the original reviewer role may verify its finding.
+6. In an initial review, every finding is OPEN. In RECHECK, use VERIFIED when acceptance criteria and
+   Codex evidence are satisfied. VERIFIED is locally resolved and is excluded from
+   remaining_required_finding_ids, but it is not formal closure. P0-2 protected required checks do not
+   exist yet, so CLOSED transitions and closed_finding_ids are rejected. DISPUTED and OPEN remain
+   unresolved. Keep every currently unresolved required ID in remaining_required_finding_ids. Repeat
+   every prior non-CLOSED finding in findings, including VERIFIED findings, until formal closure.
 7. PASS means no unresolved Blocker/Critical/Major/Minor finding. Improvement items do not block PASS.
+   PASS and VERIFIED never close the external gate; gate_state remains OPEN.
 8. Co-author only artifact_paths: when useful, provide concrete section-anchored changes in proposed_edits.
    Every proposed_edits.anchor must be one single-line literal anchor with no CR/LF or ledger marker.
    Never propose an edit to reference_paths or evidence_paths; request a separate task instead.
@@ -1928,18 +1962,23 @@ async function runClaude({ cli, cwd, prompt, schema, timeoutMs }) {
   });
 }
 
-function redactEnvelope(envelope) {
-  const sensitiveKey = /(?:session|email|account|organization|oauth|token|secret|password)/i;
-  function walk(value) {
-    if (Array.isArray(value)) return value.map(walk);
-    if (!value || typeof value !== 'object') return value;
-    const result = {};
-    for (const [key, child] of Object.entries(value)) {
-      result[key] = sensitiveKey.test(key) ? '[REDACTED]' : walk(child);
-    }
-    return result;
-  }
-  return walk(envelope);
+function safeClaudeEnum(value, allowed) {
+  return typeof value === 'string' && allowed.has(value) ? value : null;
+}
+
+function safeClaudeSubtype(value) {
+  return safeClaudeEnum(value, SAFE_CLAUDE_SUBTYPES);
+}
+
+function safeClaudeTerminalReason(value) {
+  return safeClaudeEnum(value, SAFE_CLAUDE_TERMINAL_REASONS);
+}
+
+function safeClaudeFailureLabel(envelope) {
+  return [
+    safeClaudeSubtype(envelope?.subtype),
+    safeClaudeTerminalReason(envelope?.terminal_reason),
+  ].filter(Boolean).join(' / ');
 }
 
 function validateIdArray(value, label, { max = 100 } = {}) {
@@ -1968,7 +2007,19 @@ function ensureLedgerInlineSafe(value, label) {
   }
 }
 
-function validateResult(result, { task, snapshot, mode, inputFiles, previous }) {
+function isResolvedFindingForSemantics(finding, verifiedIsResolved) {
+  return finding.review_state === 'CLOSED' || (verifiedIsResolved && finding.review_state === 'VERIFIED');
+}
+
+function validateResult(result, {
+  task,
+  snapshot,
+  mode,
+  inputFiles,
+  previous,
+  allowClosedTransitions = false,
+  verifiedIsResolved = true,
+}) {
   ensureObject(result, 'structured_output');
   const keys = Object.keys(result);
   for (const key of RESULT_KEYS) {
@@ -2113,6 +2164,15 @@ function validateResult(result, { task, snapshot, mode, inputFiles, previous }) 
   const closed = new Set(result.closed_finding_ids);
   const reopened = new Set(result.reopened_finding_ids);
   const remaining = new Set(result.remaining_required_finding_ids);
+  if (
+    !allowClosedTransitions
+    && (result.closed_finding_ids.length > 0 || result.findings.some((finding) => finding.review_state === 'CLOSED'))
+  ) {
+    throw new ReviewError(
+      'P0-2 보호 원격 필수 체크 전에는 Finding을 VERIFIED까지만 확인할 수 있고 CLOSED 전이는 허용하지 않습니다.',
+      { exitCode: 76 },
+    );
+  }
   for (const id of closed) {
     if (reopened.has(id) || remaining.has(id)) {
       throw new ReviewError(`finding 상태 목록이 상호 배타적이지 않습니다: ${id}`, { exitCode: 76 });
@@ -2172,7 +2232,7 @@ function validateResult(result, { task, snapshot, mode, inputFiles, previous }) 
   }
 
   const mandatoryOpen = result.findings
-    .filter((finding) => finding.severity !== 'Improvement' && finding.review_state !== 'CLOSED')
+    .filter((finding) => finding.severity !== 'Improvement' && !isResolvedFindingForSemantics(finding, verifiedIsResolved))
     .map((finding) => finding.finding_id)
     .sort();
   const declaredRemaining = [...remaining].sort();
@@ -2247,14 +2307,14 @@ function resultMarkdown(result, round) {
   return lines.join('\n');
 }
 
-function collaborationEntry(result, round, reviewHash) {
+function collaborationEntry(result, round, reviewHash, { verifiedIsResolved = true } = {}) {
   const roundName = `r${String(round).padStart(3, '0')}`;
   const turnType = result.review_mode === 'RECHECK' ? 'FABLE_RECHECK' : 'FABLE_REVIEW';
   const requiredOpen = result.findings
-    .filter((finding) => finding.severity !== 'Improvement' && finding.review_state !== 'CLOSED')
+    .filter((finding) => finding.severity !== 'Improvement' && !isResolvedFindingForSemantics(finding, verifiedIsResolved))
     .map((finding) => finding.finding_id);
   const optionalOpen = result.findings
-    .filter((finding) => finding.severity === 'Improvement' && finding.review_state !== 'CLOSED')
+    .filter((finding) => finding.severity === 'Improvement' && !isResolvedFindingForSemantics(finding, verifiedIsResolved))
     .map((finding) => finding.finding_id);
   const lines = [
     '',
@@ -2843,12 +2903,131 @@ function workflowStateFor(verdict) {
   return 'OPEN';
 }
 
-function safeUsage(envelope) {
+function safeNonNegativeNumber(value) {
+  return typeof value === 'number' && Number.isFinite(value) && value >= 0 ? value : null;
+}
+
+function pickSafeNumbers(source, keys) {
+  if (!source || typeof source !== 'object' || Array.isArray(source)) return null;
+  const result = {};
+  for (const key of keys) {
+    const value = safeNonNegativeNumber(source[key]);
+    if (value !== null) result[key] = value;
+  }
+  return Object.keys(result).length ? result : null;
+}
+
+function safeUsage(envelope = {}) {
+  const usage = pickSafeNumbers(envelope.usage, [
+    'input_tokens',
+    'cache_creation_input_tokens',
+    'cache_read_input_tokens',
+    'output_tokens',
+  ]);
+  const modelUsage = {};
+  if (envelope.modelUsage && typeof envelope.modelUsage === 'object' && !Array.isArray(envelope.modelUsage)) {
+    for (const [model, value] of Object.entries(envelope.modelUsage)) {
+      if (model !== CLAUDE_MODEL) continue;
+      const safe = pickSafeNumbers(value, [
+        'inputTokens',
+        'outputTokens',
+        'cacheReadInputTokens',
+        'cacheCreationInputTokens',
+        'webSearchRequests',
+        'costUSD',
+        'contextWindow',
+        'maxOutputTokens',
+      ]);
+      if (safe) modelUsage[model] = safe;
+    }
+  }
   return {
-    total_cost_usd: typeof envelope.total_cost_usd === 'number' ? envelope.total_cost_usd : null,
-    usage: envelope.usage && typeof envelope.usage === 'object' ? envelope.usage : null,
-    model_usage: envelope.modelUsage && typeof envelope.modelUsage === 'object' ? envelope.modelUsage : null,
+    total_cost_usd: safeNonNegativeNumber(envelope.total_cost_usd),
+    usage,
+    model_usage: Object.keys(modelUsage).length ? modelUsage : null,
   };
+}
+
+function safeClaudeEnvelopeDiagnostic(envelope) {
+  return {
+    subtype: safeClaudeSubtype(envelope?.subtype),
+    terminal_reason: safeClaudeTerminalReason(envelope?.terminal_reason),
+    is_error: typeof envelope?.is_error === 'boolean' ? envelope.is_error : null,
+    permission_denial_count: Array.isArray(envelope?.permission_denials)
+      ? envelope.permission_denials.length
+      : null,
+    structured_output_present: Boolean(envelope?.structured_output),
+    requested_model_confirmed:
+      envelope?.modelUsage?.[CLAUDE_MODEL]?.canonicalModel === CLAUDE_MODEL,
+    ...safeUsage(envelope || {}),
+  };
+}
+
+function safeClaudeFailureRunFields(envelope) {
+  const safe = safeClaudeEnvelopeDiagnostic(envelope || {});
+  return {
+    terminal_reason: safe.terminal_reason,
+    claude_subtype: safe.subtype,
+    total_cost_usd: safe.total_cost_usd,
+    usage: safe.usage,
+    model_usage: safe.model_usage,
+  };
+}
+
+function safeReviewErrorCode(error) {
+  if (!error) return null;
+  if (error.runState === 'STALE') return 'STALE_INPUT_OR_HISTORY';
+  switch (error.exitCode) {
+    case 65: return 'INPUT_CONTRACT_FAILED';
+    case 69: return 'CLAUDE_EXECUTION_FAILED';
+    case 73: return 'RUNTIME_STATE_FAILED';
+    case 74: return 'SIZE_LIMIT_FAILED';
+    case 75: return 'STALE_INPUT_OR_HISTORY';
+    case 76: return 'RESULT_VALIDATION_FAILED';
+    case 77: return 'PERMISSION_POLICY_FAILED';
+    case 124: return 'TIMEOUT';
+    default: return 'RUNNER_FAILED';
+  }
+}
+
+function safeFailureRunDiagnostics({
+  primaryError = null,
+  cleanupError = null,
+  collaborationIntegrityError = null,
+  finalError = null,
+  candidatePreservationError = null,
+} = {}) {
+  return {
+    candidate_preservation_error: safeReviewErrorCode(candidatePreservationError),
+    primary_error: safeReviewErrorCode(primaryError),
+    cleanup_error: safeReviewErrorCode(cleanupError),
+    collaboration_integrity_error: safeReviewErrorCode(collaborationIntegrityError),
+    error: safeReviewErrorCode(finalError),
+  };
+}
+
+function persistClaudeEnvelopeDiagnostic(logDir, envelope) {
+  mkdirSync(logDir, { recursive: true });
+  const safe = safeClaudeEnvelopeDiagnostic(envelope || {});
+  immutableWrite(join(logDir, 'stdout.redacted.json'), `${JSON.stringify(safe, null, 2)}\n`);
+  return 'stdout.redacted.json';
+}
+
+function persistClaudeFailureDiagnostic(logDir, stdout) {
+  mkdirSync(logDir, { recursive: true });
+  let envelope;
+  try {
+    decodeSafeText(stdout, 'Claude 실패 stdout envelope');
+    envelope = parseJson(stdout, 'Claude 실패 stdout envelope');
+  } catch {
+    immutableWrite(
+      join(logDir, 'stdout.failure.json'),
+      `${JSON.stringify({ sha256: sha256(stdout), bytes: stdout.length }, null, 2)}\n`,
+    );
+    return { envelope: null, failureLabel: '', fileName: 'stdout.failure.json' };
+  }
+  const fileName = persistClaudeEnvelopeDiagnostic(logDir, envelope);
+  return { envelope, failureLabel: safeClaudeFailureLabel(envelope), fileName };
 }
 
 function assertExecutionInputsUnchanged({
@@ -2885,7 +3064,7 @@ function assertExecutionInputsUnchanged({
   assertReviewSnapshotUnchanged(reviewPath, inputFiles);
 }
 
-function findingStatusLists(result, previousResultValue = null) {
+function findingStatusLists(result, previousResultValue = null, { verifiedIsResolved = true } = {}) {
   const closed = new Set(
     (previousResultValue?.findings || [])
       .filter((finding) => finding.review_state === 'CLOSED')
@@ -2897,10 +3076,10 @@ function findingStatusLists(result, previousResultValue = null) {
   }
   return {
     open_required_finding_ids: result.findings
-      .filter((finding) => finding.severity !== 'Improvement' && finding.review_state !== 'CLOSED')
+      .filter((finding) => finding.severity !== 'Improvement' && !isResolvedFindingForSemantics(finding, verifiedIsResolved))
       .map((finding) => finding.finding_id),
     open_optional_finding_ids: result.findings
-      .filter((finding) => finding.severity === 'Improvement' && finding.review_state !== 'CLOSED')
+      .filter((finding) => finding.severity === 'Improvement' && !isResolvedFindingForSemantics(finding, verifiedIsResolved))
       .map((finding) => finding.finding_id),
     closed_finding_ids: [...closed].sort(),
   };
@@ -2916,6 +3095,7 @@ function preparedRoundStages(roundsDir, roundName) {
 
 function validatePreparedManifestContract({ manifest, task, taskRaw, previous, roundName, collaborationRaw }) {
   const roundNumber = Number(roundName.slice(1));
+  const semantics = findingResolutionSemantics(manifest, `${roundName} manifest.json`);
   const expectedScalars = {
     task_id: task.task_id,
     round: roundName,
@@ -2960,7 +3140,7 @@ function validatePreparedManifestContract({ manifest, task, taskRaw, previous, r
     runner_sha256: manifest.runner_sha256,
   };
   validatePreviousRoundIntegrity(previous, snapshot, collaborationRaw, task);
-  return { roundNumber, snapshot };
+  return { roundNumber, snapshot, semantics };
 }
 
 function reconcilePublishedRound({
@@ -3001,13 +3181,17 @@ function reconcilePublishedRound({
       mode: record.manifest.review_mode,
       inputFiles: record.manifest.input_files,
       previous,
+      ...contract.semantics,
     });
     const reviewMarkdownRaw = readBoundedTo(join(roundDir, 'review.md'), `${roundName} review.md`, MAX_REVIEW_FILE_BYTES);
     const entryRaw = readBoundedTo(join(roundDir, 'collaboration-entry.md'), `${roundName} collaboration-entry.md`, MAX_INPUT_BYTES);
     if (!reviewMarkdownRaw.equals(Buffer.from(resultMarkdown(review, contract.roundNumber), 'utf8'))) {
       throw new ReviewError(`${roundName} review.md가 검증된 review.json의 정규 렌더링과 다릅니다.`, { exitCode: 75, runState: 'STALE' });
     }
-    if (!entryRaw.equals(Buffer.from(collaborationEntry(review, contract.roundNumber, record.hash), 'utf8'))) {
+    if (!entryRaw.equals(Buffer.from(
+      collaborationEntry(review, contract.roundNumber, record.hash, contract.semantics),
+      'utf8',
+    ))) {
       throw new ReviewError(`${roundName} collaboration entry가 검증된 review.json의 정규 턴과 다릅니다.`, { exitCode: 75, runState: 'STALE' });
     }
   }
@@ -3048,7 +3232,7 @@ function reconcilePublishedRound({
       defect_state: 'NOT_APPLICABLE',
       verdict: review.verdict,
       latest_run_sha256: record.runHash,
-      ...findingStatusLists(review, previousStatusValue),
+      ...findingStatusLists(review, previousStatusValue, contract.semantics),
       candidate_review_state: null,
       candidate_review_sha256: null,
       backlog_dispositions: [],
@@ -3141,10 +3325,14 @@ function recoverPreparedRound({
       mode: manifest.review_mode,
       inputFiles: manifest.input_files,
       previous,
+      ...preparedContract.semantics,
     });
     const { roundNumber } = preparedContract;
     const expectedReviewMarkdownRaw = Buffer.from(resultMarkdown(review, roundNumber), 'utf8');
-    const expectedEntryRaw = Buffer.from(collaborationEntry(review, roundNumber, run.review_sha256), 'utf8');
+    const expectedEntryRaw = Buffer.from(
+      collaborationEntry(review, roundNumber, run.review_sha256, preparedContract.semantics),
+      'utf8',
+    );
     if (!reviewMarkdownRaw.equals(expectedReviewMarkdownRaw)) {
       throw new ReviewError('staging review.md가 검증된 review.json의 정규 렌더링과 다릅니다.', { exitCode: 75, runState: 'STALE' });
     }
@@ -3211,7 +3399,7 @@ function recoverPreparedRound({
       defect_state: 'NOT_APPLICABLE',
       verdict: review.verdict,
       latest_run_sha256: runHash,
-      ...findingStatusLists(review, previousStatusValue),
+      ...findingStatusLists(review, previousStatusValue, preparedContract.semantics),
       candidate_review_state: null,
       candidate_review_sha256: null,
       backlog_dispositions: [],
@@ -3317,7 +3505,14 @@ async function executeReview(args) {
     const previousStatusValue = previous.value
       ? { findings: previous.registryFindings || previous.value.findings }
       : null;
-    const carriedStatus = previousStatusValue ? findingStatusLists(previousStatusValue) : {
+    const previousResultSemantics = previous.resultManifest
+      ? findingResolutionSemantics(previous.resultManifest, `${previous.baseRound || '직전 성공 회차'} manifest.json`)
+      : { verifiedIsResolved: true };
+    const carriedStatus = previousStatusValue ? findingStatusLists(
+      previousStatusValue,
+      null,
+      previousResultSemantics,
+    ) : {
       open_required_finding_ids: [],
       open_optional_finding_ids: [],
       closed_finding_ids: [],
@@ -3404,6 +3599,7 @@ async function executeReview(args) {
       excluded_paths: task.excluded_paths,
       input_files: publicInputFiles(inputFiles),
       source_archive_version: 1,
+      finding_resolution_semantics: FINDING_RESOLUTION_SEMANTICS,
       artifact_snapshot_sha256: artifactSnapshotRaw ? sha256(artifactSnapshotRaw) : null,
       input_snapshot_sha256: inputSnapshotRaw ? sha256(inputSnapshotRaw) : null,
     };
@@ -3436,11 +3632,17 @@ async function executeReview(args) {
         bytes: claudeOutput.stderr.length,
       }, null, 2)}\n`);
       if (claudeOutput.code !== 0) {
-        throw new ReviewError(`Claude Code가 종료 코드 ${claudeOutput.code}로 끝났습니다.`, { exitCode: 69 });
+        const diagnostic = persistClaudeFailureDiagnostic(logDir, claudeOutput.stdout);
+        envelope = diagnostic.envelope;
+        const { failureLabel } = diagnostic;
+        throw new ReviewError(
+          `Claude Code가 종료 코드 ${claudeOutput.code}로 끝났습니다.${failureLabel ? ` (${failureLabel})` : ''}`,
+          { exitCode: 69 },
+        );
       }
       decodeSafeText(claudeOutput.stdout, 'Claude stdout envelope');
       envelope = parseJson(claudeOutput.stdout, 'Claude stdout envelope');
-      immutableWrite(join(logDir, 'stdout.redacted.json'), `${JSON.stringify(redactEnvelope(envelope), null, 2)}\n`);
+      persistClaudeEnvelopeDiagnostic(logDir, envelope);
       if (envelope.is_error !== false || envelope.subtype !== 'success') {
         throw new ReviewError('Claude 응답 envelope가 성공 상태가 아닙니다.', { exitCode: 76 });
       }
@@ -3549,9 +3751,10 @@ async function executeReview(args) {
         try {
           const candidateJson = preparedOutput?.reviewJson
             || Buffer.from(`${JSON.stringify(validated, null, 2)}\n`, 'utf8');
+          const failureCode = safeReviewErrorCode(finalError);
           const candidateMarkdown = Buffer.from([
             '> **NOT_MERGED 후보 결과** — Claude 결과 자체는 스키마 검증을 통과했지만 입력 판본·정리·합류 게이트가 실패했습니다.',
-            `> 실패 원인: ${finalError.message}`,
+            `> 실패 코드: ${failureCode}`,
             '',
             resultMarkdown(validated, args.round),
           ].join('\n'), 'utf8');
@@ -3562,9 +3765,18 @@ async function executeReview(args) {
           candidateReviewHash = sha256(candidateJson);
           candidateReviewMarkdownHash = sha256(candidateMarkdown);
         } catch (error) {
-          candidatePreservationError = error instanceof Error ? error.message : String(error);
+          candidatePreservationError = error instanceof ReviewError
+            ? error
+            : new ReviewError('후보 결과 보존에 실패했습니다.');
         }
       }
+      const safeDiagnostics = safeFailureRunDiagnostics({
+        primaryError,
+        cleanupError,
+        collaborationIntegrityError,
+        finalError,
+        candidatePreservationError,
+      });
       const failedRun = {
         protocol_version: task.protocol_version,
         task_id: task.task_id,
@@ -3579,6 +3791,7 @@ async function executeReview(args) {
         max_budget_usd: MAX_BUDGET_USD,
         exit_code: finalError.exitCode,
         claude_exit_code: claudeOutput?.code ?? null,
+        ...safeClaudeFailureRunFields(envelope),
         duration_ms: claudeOutput?.duration_ms ?? null,
         stdout_sha256: claudeOutput?.stdout ? sha256(claudeOutput.stdout) : null,
         stderr_sha256: claudeOutput?.stderr ? sha256(claudeOutput.stderr) : null,
@@ -3587,7 +3800,6 @@ async function executeReview(args) {
         review_markdown_sha256: null,
         candidate_review_state: candidateReviewHash ? 'NOT_MERGED' : null,
         candidate_review_markdown_sha256: candidateReviewMarkdownHash,
-        candidate_preservation_error: candidatePreservationError,
         task_sha256: snapshot.task_sha256,
         schema_sha256: snapshot.schema_sha256,
         runner_sha256: snapshot.runner_sha256,
@@ -3598,10 +3810,7 @@ async function executeReview(args) {
         collaboration_entry_sha256: null,
         collaboration_after_bytes: collaborationAfterFailure.length,
         collaboration_after_sha256: sha256(collaborationAfterFailure),
-        primary_error: primaryError?.message ?? null,
-        cleanup_error: cleanupError?.message ?? null,
-        collaboration_integrity_error: collaborationIntegrityError?.message ?? null,
-        error: finalError.message,
+        ...safeDiagnostics,
       };
       const failedRunRaw = Buffer.from(`${JSON.stringify(failedRun, null, 2)}\n`, 'utf8');
       const failedRunHash = sha256(failedRunRaw);
@@ -3624,7 +3833,10 @@ async function executeReview(args) {
         candidate_review_sha256: candidateReviewHash,
         backlog_dispositions: [],
       });
-      throw finalError;
+      throw new ReviewError(
+        `검수 실행이 실패했습니다 (${safeReviewErrorCode(finalError)}).`,
+        { exitCode: finalError.exitCode, runState: finalError.runState },
+      );
     }
 
     const exitCode = verdictExitCode(validated.verdict);
@@ -3644,7 +3856,7 @@ async function executeReview(args) {
       max_budget_usd: MAX_BUDGET_USD,
       exit_code: exitCode,
       claude_exit_code: claudeOutput.code,
-      terminal_reason: envelope.terminal_reason ?? null,
+      terminal_reason: safeClaudeTerminalReason(envelope.terminal_reason),
       duration_ms: claudeOutput.duration_ms,
       stdout_sha256: sha256(claudeOutput.stdout),
       stderr_sha256: sha256(claudeOutput.stderr),
@@ -3700,9 +3912,10 @@ async function executeReview(args) {
           const stagedPath = join(roundStage, stagedName);
           if (existsSync(stagedPath)) unlinkSync(stagedPath);
         }
+        const appendFailureCode = safeReviewErrorCode(appendError);
         const candidateMarkdown = Buffer.from([
           '> **NOT_MERGED 후보 결과** — 구조화 결과는 유효하지만 collaboration 원자 합류가 실패했습니다.',
-          `> 실패 원인: ${appendError.message}`,
+          `> 실패 코드: ${appendFailureCode}`,
           '',
           reviewMarkdown.toString('utf8'),
         ].join('\n'), 'utf8');
@@ -3720,10 +3933,10 @@ async function executeReview(args) {
           collaboration_entry_sha256: null,
           collaboration_after_bytes: currentCollaboration.length,
           collaboration_after_sha256: sha256(currentCollaboration),
-          primary_error: appendError.message,
-          cleanup_error: null,
-          collaboration_integrity_error: null,
-          error: appendError.message,
+          ...safeFailureRunDiagnostics({
+            primaryError: appendError,
+            finalError: appendError,
+          }),
         }, null, 2)}\n`, 'utf8');
         const appendFailedRunHash = sha256(appendFailedRunRaw);
         immutableWrite(join(roundStage, 'run.json'), appendFailedRunRaw);
@@ -3931,6 +4144,128 @@ function runSelfTests() {
     completed.push(name);
   };
 
+  test('claude-envelope-and-failed-run-are-allowlisted', () => {
+    const envelope = {
+      subtype: 'error_max_budget_usd',
+      terminal_reason: 'budget_exhausted',
+      session_id: 'secret-session',
+      nested: { oauth_token: 'secret-token' },
+    };
+    selfTestAssert(
+      safeClaudeFailureLabel(envelope) === 'error_max_budget_usd / budget_exhausted',
+      'Claude 실패 안전 label 보존',
+    );
+    selfTestAssert(
+      safeClaudeFailureLabel({ subtype: 'unsafe detail with spaces', terminal_reason: 'completed' }) === 'completed',
+      'Claude 실패 label에 자유문자열 미포함',
+    );
+    selfTestAssert(
+      safeClaudeSubtype('sk-live-secret123') === null
+        && safeClaudeTerminalReason('budget_exhausted') === 'budget_exhausted',
+      'Claude 실패 run 필드는 명시 allowlist 값만 보존',
+    );
+    const canary = 'sk-live-secret123';
+    const diagnostic = safeClaudeEnvelopeDiagnostic({
+      ...envelope,
+      subtype: canary,
+      terminal_reason: canary,
+      usage: { input_tokens: 7, message: 'private free text' },
+      modelUsage: {
+        [CLAUDE_MODEL]: { outputTokens: 9, provider: 'private free text' },
+        [canary]: { outputTokens: 999 },
+      },
+    });
+    selfTestAssert(
+      diagnostic.subtype === null
+        && diagnostic.terminal_reason === null
+        && diagnostic.usage.input_tokens === 7
+        && !('message' in diagnostic.usage)
+        && diagnostic.model_usage[CLAUDE_MODEL].outputTokens === 9
+        && !('provider' in diagnostic.model_usage[CLAUDE_MODEL])
+        && !JSON.stringify(diagnostic).includes('private free text')
+        && !JSON.stringify(diagnostic).includes(canary),
+      'Claude 실패 진단은 명시 허용된 상태·모델·숫자만 보존',
+    );
+
+    const temporaryRoot = mkdtempSync(join(tmpdir(), 'fable-review-failure-diagnostic-'));
+    try {
+      const validDir = join(temporaryRoot, 'valid');
+      const maliciousEnvelope = Buffer.from(JSON.stringify({
+        ...envelope,
+        subtype: canary,
+        terminal_reason: canary,
+        session_id: canary,
+        usage: { input_tokens: 11, note: canary },
+        modelUsage: {
+          [CLAUDE_MODEL]: { outputTokens: 13, provider: canary },
+          [canary]: { outputTokens: 17 },
+        },
+      }));
+      const persisted = persistClaudeFailureDiagnostic(validDir, maliciousEnvelope);
+      const persistedRaw = readFileSync(join(validDir, persisted.fileName), 'utf8');
+      selfTestAssert(persisted.fileName === 'stdout.redacted.json', '유효 실패 envelope 진단 파일 생성');
+      selfTestAssert(!persistedRaw.includes(canary), '실제 실패 진단 파일에 canary 미포함');
+      const persistedJson = JSON.parse(persistedRaw);
+      selfTestAssert(
+        persistedJson.subtype === null
+          && persistedJson.terminal_reason === null
+          && persistedJson.usage.input_tokens === 11
+          && persistedJson.model_usage[CLAUDE_MODEL].outputTokens === 13,
+        '실제 실패 진단 파일은 안전 필드만 직렬화',
+      );
+      const failedRunFieldsRaw = JSON.stringify(safeClaudeFailureRunFields(JSON.parse(maliciousEnvelope.toString('utf8'))));
+      selfTestAssert(!failedRunFieldsRaw.includes(canary), '실패 run.json용 필드에 canary 미포함');
+
+      const invalidSuccessDir = join(temporaryRoot, 'invalid-success');
+      const invalidSuccessEnvelope = {
+        is_error: false,
+        subtype: 'success',
+        terminal_reason: 'completed',
+        permission_denials: [],
+        structured_output: { verdict: canary },
+        modelUsage: {
+          [CLAUDE_MODEL]: { canonicalModel: CLAUDE_MODEL, outputTokens: 19 },
+        },
+      };
+      const invalidSuccessFile = persistClaudeEnvelopeDiagnostic(
+        invalidSuccessDir,
+        invalidSuccessEnvelope,
+      );
+      const invalidSuccessRaw = readFileSync(join(invalidSuccessDir, invalidSuccessFile), 'utf8');
+      const validationError = new ReviewError(`허용되지 않은 verdict: ${canary}`, { exitCode: 76 });
+      const failedDiagnostics = safeFailureRunDiagnostics({
+        primaryError: validationError,
+        finalError: validationError,
+      });
+      const candidateFailureLine = `> 실패 코드: ${safeReviewErrorCode(validationError)}`;
+      selfTestAssert(
+        !invalidSuccessRaw.includes(canary)
+          && !JSON.stringify(failedDiagnostics).includes(canary)
+          && !candidateFailureLine.includes(canary)
+          && failedDiagnostics.primary_error === 'RESULT_VALIDATION_FAILED'
+          && failedDiagnostics.error === 'RESULT_VALIDATION_FAILED',
+        '종료 코드 0의 잘못된 결과도 진단·실패 run·후보 문서에 자유문자열을 남기지 않음',
+      );
+
+      const invalidDir = join(temporaryRoot, 'invalid');
+      const invalidRaw = Buffer.from(`not-json-${canary}`);
+      const invalidPersisted = persistClaudeFailureDiagnostic(invalidDir, invalidRaw);
+      const invalidJson = JSON.parse(readFileSync(join(invalidDir, invalidPersisted.fileName), 'utf8'));
+      selfTestAssert(
+        invalidPersisted.fileName === 'stdout.failure.json'
+          && invalidJson.sha256 === sha256(invalidRaw)
+          && invalidJson.bytes === invalidRaw.length
+          && !JSON.stringify(invalidJson).includes(canary),
+        '해석 불가 실패 stdout은 hash와 byte 수만 보존',
+      );
+    } finally {
+      if (!isPathInside(tmpdir(), temporaryRoot) || resolve(temporaryRoot) === resolve(tmpdir())) {
+        throw new Error(`self-test 임시 경로 안전 검사 실패: ${temporaryRoot}`);
+      }
+      rmSync(temporaryRoot, { recursive: true, force: true });
+    }
+  });
+
   test('prior-required-finding-cannot-disappear', () => {
     const fixture = validationSelfTestFixture();
     const maliciousPass = {
@@ -3950,6 +4285,417 @@ function runSelfTests() {
       inputFiles: fixture.inputFiles,
       previous: { value: { findings: [fixture.priorFinding] } },
     }), { exitCode: 76, messageIncludes: '사라졌습니다' });
+  });
+
+  test('verified-required-finding-is-resolved-but-not-closed', () => {
+    const fixture = validationSelfTestFixture();
+    const verified = {
+      ...fixture.priorFinding,
+      review_state: 'VERIFIED',
+      previous_finding_id: fixture.priorFinding.finding_id,
+    };
+    const result = {
+      ...fixture.common,
+      review_mode: 'RECHECK',
+      verdict: 'PASS',
+      summary: '완료 조건을 확인했지만 외부 gate는 아직 열려 있음',
+      findings: [verified],
+      proposed_edits: [],
+      closed_finding_ids: [],
+      reopened_finding_ids: [],
+      remaining_required_finding_ids: [],
+    };
+    validateResult(result, {
+      task: fixture.task,
+      snapshot: fixture.snapshot,
+      mode: 'RECHECK',
+      inputFiles: fixture.inputFiles,
+      previous: { value: { findings: [fixture.priorFinding] } },
+    });
+    const status = findingStatusLists(result);
+    selfTestAssert(status.open_required_finding_ids.length === 0, 'VERIFIED 필수 finding은 로컬 미해결 목록에서 제외');
+    selfTestAssert(status.closed_finding_ids.length === 0, 'VERIFIED finding은 CLOSED 누적에 넣지 않음');
+    const entry = collaborationEntry(result, 2, 'f'.repeat(64));
+    selfTestAssert(entry.includes('- 필수 미종결 Finding: 없음'), 'VERIFIED finding 장부 미종결 집계 제외');
+    selfTestAssert(entry.includes('- 닫힌 Finding: 없음'), 'VERIFIED finding 장부 CLOSED 집계 제외');
+
+    validateResult(result, {
+      task: fixture.task,
+      snapshot: fixture.snapshot,
+      mode: 'RECHECK',
+      inputFiles: fixture.inputFiles,
+      previous: { value: { findings: [verified] } },
+    });
+    expectReviewError(() => validateResult({ ...result, findings: [] }, {
+      task: fixture.task,
+      snapshot: fixture.snapshot,
+      mode: 'RECHECK',
+      inputFiles: fixture.inputFiles,
+      previous: { value: { findings: [verified] } },
+    }), { exitCode: 76, messageIncludes: '사라졌습니다' });
+  });
+
+  test('legacy-verified-required-finding-replays-with-its-original-meaning', () => {
+    const fixture = validationSelfTestFixture();
+    const legacyVerified = {
+      ...fixture.priorFinding,
+      review_state: 'VERIFIED',
+      previous_finding_id: fixture.priorFinding.finding_id,
+    };
+    const result = {
+      ...fixture.common,
+      review_mode: 'RECHECK',
+      verdict: 'CHANGES_REQUIRED',
+      summary: '구버전에서 VERIFIED를 미해결로 보던 기록',
+      findings: [legacyVerified],
+      proposed_edits: [],
+      closed_finding_ids: [],
+      reopened_finding_ids: [],
+      remaining_required_finding_ids: [legacyVerified.finding_id],
+    };
+    validateResult(result, {
+      task: fixture.task,
+      snapshot: fixture.snapshot,
+      mode: 'RECHECK',
+      inputFiles: fixture.inputFiles,
+      previous: { value: { findings: [fixture.priorFinding] } },
+      allowClosedTransitions: true,
+      verifiedIsResolved: false,
+    });
+    expectReviewError(() => validateResult(result, {
+      task: fixture.task,
+      snapshot: fixture.snapshot,
+      mode: 'RECHECK',
+      inputFiles: fixture.inputFiles,
+      previous: { value: { findings: [fixture.priorFinding] } },
+    }), { exitCode: 76, messageIncludes: 'remaining_required_finding_ids' });
+
+    const legacyStatus = findingStatusLists(result, null, { verifiedIsResolved: false });
+    const currentStatus = findingStatusLists(result);
+    selfTestAssert(
+      legacyStatus.open_required_finding_ids.includes(legacyVerified.finding_id),
+      'legacy VERIFIED는 status 필수 미종결에 남음',
+    );
+    selfTestAssert(
+      !currentStatus.open_required_finding_ids.includes(legacyVerified.finding_id),
+      'current VERIFIED는 status 필수 미종결에서 빠짐',
+    );
+    const legacyEntry = collaborationEntry(result, 2, 'f'.repeat(64), { verifiedIsResolved: false });
+    const currentEntry = collaborationEntry(result, 2, 'f'.repeat(64));
+    selfTestAssert(
+      legacyEntry.includes(`- 필수 미종결 Finding: ${legacyVerified.finding_id}`),
+      'legacy VERIFIED는 장부 필수 미종결에 남음',
+    );
+    selfTestAssert(
+      currentEntry.includes('- 필수 미종결 Finding: 없음'),
+      'current VERIFIED는 장부 필수 미종결에서 빠짐',
+    );
+  });
+
+  test('unknown-finding-resolution-semantics-is-stale', () => {
+    expectReviewError(() => findingResolutionSemantics({
+      finding_resolution_semantics: 'UNKNOWN_FUTURE_SEMANTICS',
+    }, 'self-test manifest'), {
+      exitCode: 75,
+      runState: 'STALE',
+      messageIncludes: '지원하지 않습니다',
+    });
+  });
+
+  test('local-review-cannot-close-before-protected-gate', () => {
+    const fixture = validationSelfTestFixture();
+    const currentSemantics = findingResolutionSemantics({
+      finding_resolution_semantics: FINDING_RESOLUTION_SEMANTICS,
+    }, 'current self-test manifest');
+    const legacySemantics = findingResolutionSemantics({}, 'legacy self-test manifest');
+    selfTestAssert(
+      currentSemantics.verifiedIsResolved
+        && currentSemantics.allowClosedTransitions === false
+        && !legacySemantics.verifiedIsResolved
+        && legacySemantics.allowClosedTransitions === true,
+      '현재 회차만 VERIFIED 해결 의미를 쓰고 CLOSED 우회는 marker 없는 역사 회차에만 허용',
+    );
+    const closed = {
+      ...fixture.priorFinding,
+      review_state: 'CLOSED',
+      previous_finding_id: fixture.priorFinding.finding_id,
+    };
+    const result = {
+      ...fixture.common,
+      review_mode: 'RECHECK',
+      verdict: 'PASS',
+      summary: '보호 원격 증거 없이 닫으려는 결과',
+      findings: [closed],
+      proposed_edits: [],
+      closed_finding_ids: [closed.finding_id],
+      reopened_finding_ids: [],
+      remaining_required_finding_ids: [],
+    };
+    expectReviewError(() => validateResult(result, {
+      task: fixture.task,
+      snapshot: fixture.snapshot,
+      mode: 'RECHECK',
+      inputFiles: fixture.inputFiles,
+      previous: { value: { findings: [fixture.priorFinding] } },
+      ...currentSemantics,
+    }), { exitCode: 76, messageIncludes: 'P0-2 보호 원격 필수 체크' });
+    validateResult(result, {
+      task: fixture.task,
+      snapshot: fixture.snapshot,
+      mode: 'RECHECK',
+      inputFiles: fixture.inputFiles,
+      previous: { value: { findings: [fixture.priorFinding] } },
+      ...legacySemantics,
+    });
+  });
+
+  test('current-marker-recovery-and-reconcile-reject-closed', () => {
+    const temporaryRoot = mkdtempSync(join(tmpdir(), 'fable-review-current-closed-'));
+    try {
+      const taskDir = join(temporaryRoot, 'task');
+      const roundsDir = join(taskDir, 'rounds');
+      const roundDir = join(roundsDir, 'r002');
+      const collaborationPath = join(taskDir, 'collaboration.md');
+      const statusPath = join(taskDir, 'status.json');
+      mkdirSync(roundsDir, { recursive: true });
+
+      const fixture = validationSelfTestFixture();
+      const task = {
+        ...fixture.task,
+        protocol_version: '1.1',
+        task_id: 'SELF-CURRENT-CLOSED-001',
+        review_mode: 'INITIAL',
+        snapshot_mode: fixture.snapshot.snapshot_mode,
+        baseline_commit_sha: fixture.snapshot.baseline_commit_sha,
+        target_commit_sha: fixture.snapshot.target_commit_sha,
+        target_tree_oid: fixture.snapshot.target_tree_oid,
+        agents_blob_oid: fixture.snapshot.agents_blob_oid,
+        agents_sha256: fixture.snapshot.agents_sha256,
+      };
+      const taskRaw = Buffer.from(`${JSON.stringify({ task_id: task.task_id })}\n`);
+      const artifactSnapshotRaw = workingArtifactSnapshotRaw(task, fixture.inputFiles);
+      const inputSnapshotRaw = workingInputSnapshotRaw(task, fixture.inputFiles);
+      const initialLedgerRaw = Buffer.from('# current semantics recovery ledger\n');
+      const commonSnapshot = {
+        ...fixture.snapshot,
+        task_sha256: sha256(taskRaw),
+        schema_sha256: sha256(fixture.schemaSource),
+        runner_sha256: sha256(fixture.runnerSource),
+      };
+
+      const priorReview = {
+        ...fixture.common,
+        task_id: task.task_id,
+        review_mode: 'INITIAL',
+        task_sha256: commonSnapshot.task_sha256,
+        collaboration_sha256: sha256(initialLedgerRaw),
+        schema_sha256: commonSnapshot.schema_sha256,
+        runner_sha256: commonSnapshot.runner_sha256,
+        verdict: 'CHANGES_REQUIRED',
+        summary: '보호 게이트 전 열린 Finding',
+        findings: [fixture.priorFinding],
+        proposed_edits: [],
+        closed_finding_ids: [],
+        reopened_finding_ids: [],
+        remaining_required_finding_ids: [fixture.priorFinding.finding_id],
+      };
+      const priorReviewRaw = Buffer.from(`${JSON.stringify(priorReview, null, 2)}\n`);
+      const priorReviewHash = sha256(priorReviewRaw);
+      const priorEntryRaw = Buffer.from(collaborationEntry(priorReview, 1, priorReviewHash), 'utf8');
+      const collaborationRaw = Buffer.concat([initialLedgerRaw, priorEntryRaw]);
+      const priorManifest = {
+        protocol_version: '1.1',
+        task_id: task.task_id,
+        round: 'r001',
+        review_mode: 'INITIAL',
+        ...commonSnapshot,
+        collaboration_sha256: sha256(initialLedgerRaw),
+        collaboration_bytes: initialLedgerRaw.length,
+        previous_review_sha256: null,
+        previous_run_sha256: null,
+        retry_of_failed_round: null,
+        artifact_paths: task.artifact_paths,
+        reference_paths: task.reference_paths,
+        evidence_paths: task.evidence_paths,
+        allowed_paths: task.allowed_paths,
+        excluded_paths: task.excluded_paths,
+        input_files: publicInputFiles(fixture.inputFiles),
+        source_archive_version: 1,
+        finding_resolution_semantics: FINDING_RESOLUTION_SEMANTICS,
+        artifact_snapshot_sha256: sha256(artifactSnapshotRaw),
+        input_snapshot_sha256: sha256(inputSnapshotRaw),
+      };
+      const priorManifestRaw = Buffer.from(`${JSON.stringify(priorManifest, null, 2)}\n`);
+      const priorRun = {
+        protocol_version: '1.1',
+        task_id: task.task_id,
+        round: 'r001',
+        run_state: 'RESULT_RECEIVED',
+        exit_code: 20,
+        manifest_sha256: sha256(priorManifestRaw),
+        review_sha256: priorReviewHash,
+        review_markdown_sha256: sha256(Buffer.from(resultMarkdown(priorReview, 1), 'utf8')),
+        candidate_review_state: null,
+        candidate_review_markdown_sha256: null,
+        task_sha256: commonSnapshot.task_sha256,
+        schema_sha256: commonSnapshot.schema_sha256,
+        runner_sha256: commonSnapshot.runner_sha256,
+        input_files_sha256: commonSnapshot.input_files_sha256,
+        collaboration_before_sha256: sha256(initialLedgerRaw),
+        collaboration_before_bytes: initialLedgerRaw.length,
+        collaboration_entry_sha256: sha256(priorEntryRaw),
+        collaboration_entry_bytes: priorEntryRaw.length,
+        collaboration_after_sha256: sha256(collaborationRaw),
+        collaboration_after_bytes: collaborationRaw.length,
+      };
+      const priorRunRaw = Buffer.from(`${JSON.stringify(priorRun, null, 2)}\n`);
+      const previous = {
+        value: priorReview,
+        raw: priorReviewRaw,
+        hash: priorReviewHash,
+        baseRound: 'r001',
+        retryOfFailedRound: null,
+        manifest: priorManifest,
+        resultManifest: priorManifest,
+        manifestRaw: priorManifestRaw,
+        manifestHash: sha256(priorManifestRaw),
+        run: priorRun,
+        runHash: sha256(priorRunRaw),
+        history: [{
+          roundName: 'r001',
+          manifest: priorManifest,
+          run: priorRun,
+          value: priorReview,
+          hash: priorReviewHash,
+        }],
+        registryFindings: [fixture.priorFinding],
+      };
+
+      const snapshot = {
+        ...commonSnapshot,
+        collaboration_sha256: sha256(collaborationRaw),
+      };
+      const manifest = {
+        protocol_version: '1.1',
+        task_id: task.task_id,
+        round: 'r002',
+        review_mode: 'RECHECK',
+        ...snapshot,
+        collaboration_bytes: collaborationRaw.length,
+        previous_review_sha256: previous.hash,
+        previous_run_sha256: previous.runHash,
+        retry_of_failed_round: null,
+        artifact_paths: task.artifact_paths,
+        reference_paths: task.reference_paths,
+        evidence_paths: task.evidence_paths,
+        allowed_paths: task.allowed_paths,
+        excluded_paths: task.excluded_paths,
+        input_files: publicInputFiles(fixture.inputFiles),
+        source_archive_version: 1,
+        finding_resolution_semantics: FINDING_RESOLUTION_SEMANTICS,
+        artifact_snapshot_sha256: sha256(artifactSnapshotRaw),
+        input_snapshot_sha256: sha256(inputSnapshotRaw),
+      };
+      const manifestRaw = Buffer.from(`${JSON.stringify(manifest, null, 2)}\n`);
+      const closedFinding = {
+        ...fixture.priorFinding,
+        review_state: 'CLOSED',
+        previous_finding_id: fixture.priorFinding.finding_id,
+      };
+      const review = {
+        ...fixture.common,
+        task_id: task.task_id,
+        review_mode: 'RECHECK',
+        task_sha256: snapshot.task_sha256,
+        collaboration_sha256: snapshot.collaboration_sha256,
+        schema_sha256: snapshot.schema_sha256,
+        runner_sha256: snapshot.runner_sha256,
+        verdict: 'PASS',
+        summary: '보호 게이트 없이 CLOSED를 복구하려는 결과',
+        findings: [closedFinding],
+        proposed_edits: [],
+        closed_finding_ids: [closedFinding.finding_id],
+        reopened_finding_ids: [],
+        remaining_required_finding_ids: [],
+      };
+      const reviewRaw = Buffer.from(`${JSON.stringify(review, null, 2)}\n`);
+      const reviewMarkdownRaw = Buffer.from(resultMarkdown(review, 2), 'utf8');
+      const entryRaw = Buffer.from(collaborationEntry(review, 2, sha256(reviewRaw)), 'utf8');
+      const afterRaw = Buffer.concat([collaborationRaw, entryRaw]);
+      const run = {
+        protocol_version: '1.1',
+        task_id: task.task_id,
+        round: 'r002',
+        run_state: 'RESULT_RECEIVED',
+        exit_code: 0,
+        manifest_sha256: sha256(manifestRaw),
+        review_sha256: sha256(reviewRaw),
+        review_markdown_sha256: sha256(reviewMarkdownRaw),
+        candidate_review_state: null,
+        candidate_review_markdown_sha256: null,
+        task_sha256: snapshot.task_sha256,
+        schema_sha256: snapshot.schema_sha256,
+        runner_sha256: snapshot.runner_sha256,
+        input_files_sha256: snapshot.input_files_sha256,
+        collaboration_before_sha256: snapshot.collaboration_sha256,
+        collaboration_before_bytes: collaborationRaw.length,
+        collaboration_entry_sha256: sha256(entryRaw),
+        collaboration_entry_bytes: entryRaw.length,
+        collaboration_after_sha256: sha256(afterRaw),
+        collaboration_after_bytes: afterRaw.length,
+      };
+      const stage = createRoundStage(roundsDir, 'r002');
+      immutableWrite(join(stage, 'runner-source.mjs'), fixture.runnerSource);
+      immutableWrite(join(stage, 'schema-source.json'), fixture.schemaSource);
+      immutableWrite(join(stage, 'manifest.json'), manifestRaw);
+      immutableWrite(join(stage, 'artifact-snapshot.json'), artifactSnapshotRaw);
+      immutableWrite(join(stage, 'input-snapshot.json'), inputSnapshotRaw);
+      immutableWrite(join(stage, 'review.json'), reviewRaw);
+      immutableWrite(join(stage, 'review.md'), reviewMarkdownRaw);
+      immutableWrite(join(stage, 'collaboration-entry.md'), entryRaw);
+      immutableWrite(join(stage, 'run.json'), `${JSON.stringify(run, null, 2)}\n`);
+      immutableWrite(collaborationPath, collaborationRaw);
+
+      const recoveryArgs = {
+        roundsDir,
+        roundName: 'r002',
+        roundDir,
+        collaborationPath,
+        statusPath,
+        task,
+        taskRaw,
+        previous,
+        previousStatusValue: null,
+        carriedStatus: {
+          open_required_finding_ids: [fixture.priorFinding.finding_id],
+          open_optional_finding_ids: [],
+          closed_finding_ids: [],
+        },
+      };
+      expectReviewError(() => recoverPreparedRound(recoveryArgs), {
+        exitCode: 76,
+        messageIncludes: 'P0-2 보호 원격 필수 체크',
+      });
+      selfTestAssert(
+        existsSync(stage) && !existsSync(roundDir) && readFileSync(collaborationPath).equals(collaborationRaw),
+        '현재 의미 prepared CLOSED는 공개·장부 append 전 거부',
+      );
+
+      publishRoundStage(stage, roundDir, roundsDir);
+      expectReviewError(() => reconcilePublishedRound(recoveryArgs), {
+        exitCode: 76,
+        messageIncludes: 'P0-2 보호 원격 필수 체크',
+      });
+      selfTestAssert(
+        !existsSync(statusPath) && readFileSync(collaborationPath).equals(collaborationRaw),
+        '현재 의미 published CLOSED도 status 재조정 전에 거부',
+      );
+    } finally {
+      if (!isPathInside(tmpdir(), temporaryRoot) || resolve(temporaryRoot) === resolve(tmpdir())) {
+        throw new Error(`self-test 임시 경로 안전 검사 실패: ${temporaryRoot}`);
+      }
+      rmSync(temporaryRoot, { recursive: true, force: true });
+    }
   });
 
   test('closed-finding-id-cannot-be-reused-or-downgraded', () => {
@@ -4440,6 +5186,24 @@ function runSelfTests() {
       immutableWrite(join(complete, 'schema-source.json'), schemaRaw);
       immutableWrite(join(complete, 'manifest.json'), manifestRaw);
       immutableWrite(join(complete, 'run.json'), `${JSON.stringify(run, null, 2)}\n`);
+      const unknownSemanticsManifestRaw = Buffer.from(`${JSON.stringify({
+        ...manifest,
+        finding_resolution_semantics: 'UNKNOWN_FUTURE_SEMANTICS',
+      }, null, 2)}\n`);
+      const unknownSemanticsRunRaw = Buffer.from(`${JSON.stringify({
+        ...run,
+        manifest_sha256: sha256(unknownSemanticsManifestRaw),
+      }, null, 2)}\n`);
+      writeFileSync(join(complete, 'manifest.json'), unknownSemanticsManifestRaw);
+      writeFileSync(join(complete, 'run.json'), unknownSemanticsRunRaw);
+      expectReviewError(() => publishRoundStage(complete, roundDir, roundsDir), {
+        exitCode: 75,
+        runState: 'STALE',
+        messageIncludes: '지원하지 않습니다',
+      });
+      selfTestAssert(!existsSync(roundDir), '미지원 finding 의미 staging 미공개');
+      writeFileSync(join(complete, 'manifest.json'), manifestRaw);
+      writeFileSync(join(complete, 'run.json'), `${JSON.stringify(run, null, 2)}\n`);
       unlinkSync(join(complete, 'runner-source.mjs'));
       expectReviewError(() => publishRoundStage(complete, roundDir, roundsDir), {
         exitCode: 73,
@@ -5126,6 +5890,36 @@ function runSelfTests() {
     selfTestAssert(anchorPattern === '^[^\\r\\n]+$', 'proposed edit anchor 단일행 schema 계약');
     const anchorRegex = new RegExp(anchorPattern);
     selfTestAssert(anchorRegex.test('## 단일행 anchor') && !anchorRegex.test('첫 줄\n둘째 줄'), 'anchor 개행을 schema에서 거부');
+  });
+
+  test('legacy-markerless-published-round-replays-byte-exact', () => {
+    const taskId = 'SETUP-V11-FINAL-002';
+    const taskDir = join(SCRIPT_ROOT, 'docs', 'ai-review', 'tasks', taskId);
+    const roundsDir = join(taskDir, 'rounds');
+    const taskRaw = readBounded(join(taskDir, 'task.json'), `${taskId} task.json`);
+    const collaborationRaw = readBounded(join(taskDir, 'collaboration.md'), `${taskId} collaboration.md`);
+    const task = validateTask(parseJson(taskRaw, `${taskId} task.json`), taskId);
+    validateUnifiedCollaborationChain({
+      roundsDir,
+      turnsDir: join(taskDir, 'turns'),
+      task,
+      taskRaw,
+      collaborationRaw,
+    });
+    const record = loadRoundRecord(roundsDir, 3, task);
+    const semantics = findingResolutionSemantics(record.manifest, `${taskId}/r003 manifest.json`);
+    selfTestAssert(!semantics.verifiedIsResolved, 'marker 없는 역사 회차는 legacy finding 의미 사용');
+    const storedEntry = readBounded(
+      join(roundsDir, 'r003', 'collaboration-entry.md'),
+      `${taskId}/r003 collaboration-entry.md`,
+    );
+    const expectedEntry = Buffer.from(collaborationEntry(record.value, 3, record.hash, semantics), 'utf8');
+    selfTestAssert(storedEntry.equals(expectedEntry), 'marker 없는 r003 장부 entry byte 재생');
+    const status = findingStatusLists(record.value, null, semantics);
+    selfTestAssert(
+      status.open_optional_finding_ids.includes('FINAL-SMOKE-002-IMP-001'),
+      'legacy VERIFIED Improvement는 역사 회차의 선택 미종결 유지',
+    );
   });
 
   test('legacy-unarchived-rounds-match-exact-allowlist', () => {
