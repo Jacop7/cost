@@ -359,7 +359,8 @@ PASS 뒤 AI 부 오케스트레이터는 같은 판본을 `COMMIT` 모드로 최
 `RECHECK`다. 독립 감사 요청은 계속 사용하되 predecessor 원본 review hash와 전체 Finding registry
 hash를 서로 다른 블록으로 제공한다. 원본 review를 변형한 뒤 옛 hash를 붙이지 않으며, predecessor의
 모든 non-CLOSED Finding을 같은 ID·심각도·범주로 다시 반환해야 한다. P0-2 전에는 CLOSED Finding을
-successor로 승계하지 않는다.
+successor로 승계하지 않는다. 기존 Finding의 `previous_finding_id`는 같은 `finding_id`여야 하며,
+재검수에서 새로 발견한 Finding만 `previous_finding_id=null`과 `review_state=OPEN`을 사용한다.
 
 독립 감사 보고서는 경쟁 제품 문서가 아니라 공동 편집 전의 독립 증거다. 출시 Go/No-Go와 잔여
 위험 수용은 사람이 결정한다.
