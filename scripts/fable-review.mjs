@@ -2655,6 +2655,23 @@ function fallbackFailureDisposition(engine, classification) {
     : { eligible: classification.eligible, reason: classification.reason };
 }
 
+function fallbackFailureStatusFields(reason) {
+  return { fallback_reason: reason ?? null };
+}
+
+function reviewerStatusFields(run) {
+  if (run.protocol_version !== '1.2') return {};
+  return {
+    primary_reviewer_engine: run.primary_reviewer_engine,
+    reviewer_engine: run.reviewer_engine,
+    reviewer_model: run.reviewer_model,
+  };
+}
+
+function sameReviewerStatusFields(status, expected) {
+  return Object.entries(expected).every(([key, value]) => status[key] === value);
+}
+
 function loadPinnedFallbackReview({ repoRoot, runtime, task }) {
   const contract = task.engine_contract?.fallback;
   if (!contract) return null;
@@ -4405,6 +4422,10 @@ function reconcilePublishedRound({
   const expectedCandidateStatus = review
     ? { candidate_review_state: null, candidate_review_sha256: null }
     : candidateStatusFields(record.run);
+  const expectedFallbackStatus = fallbackFailureStatusFields(
+    review ? null : record.run.fallback_reason,
+  );
+  const expectedReviewerStatus = reviewerStatusFields(record.run);
   if (existsSync(statusPath)) {
     try {
       const status = parseJson(readBounded(statusPath, 'status.json'), 'status.json');
@@ -4419,6 +4440,8 @@ function reconcilePublishedRound({
         && sameFindingStatusFields(status, expectedFindingStatus)
         && status.candidate_review_state === expectedCandidateStatus.candidate_review_state
         && status.candidate_review_sha256 === expectedCandidateStatus.candidate_review_sha256
+        && status.fallback_reason === expectedFallbackStatus.fallback_reason
+        && sameReviewerStatusFields(status, expectedReviewerStatus)
       ) {
         console.log(`${task.task_id} ${roundName}: 공개 회차와 status가 이미 일치합니다.`);
         return { exitCode: record.run.exit_code, review, statusPreserved: true };
@@ -4432,6 +4455,7 @@ function reconcilePublishedRound({
       protocol_version: task.protocol_version,
       task_id: task.task_id,
       ...predecessorStatusFields(task),
+      ...expectedReviewerStatus,
       updated_at: record.run.finished_at,
       latest_round: roundName,
       review_state: reviewStateFor(review.verdict),
@@ -4440,6 +4464,7 @@ function reconcilePublishedRound({
       run_state: 'RESULT_RECEIVED',
       defect_state: 'NOT_APPLICABLE',
       verdict: review.verdict,
+      ...expectedFallbackStatus,
       latest_run_sha256: record.runHash,
       ...expectedFindingStatus,
       candidate_review_state: null,
@@ -4451,6 +4476,7 @@ function reconcilePublishedRound({
       protocol_version: task.protocol_version,
       task_id: task.task_id,
       ...predecessorStatusFields(task),
+      ...expectedReviewerStatus,
       updated_at: record.run.finished_at,
       latest_round: roundName,
       review_state: 'OPEN',
@@ -4459,6 +4485,7 @@ function reconcilePublishedRound({
       run_state: record.run.run_state,
       defect_state: 'NOT_APPLICABLE',
       verdict: null,
+      ...expectedFallbackStatus,
       latest_run_sha256: record.runHash,
       ...expectedFindingStatus,
       ...expectedCandidateStatus,
@@ -4600,6 +4627,7 @@ function recoverPreparedRound({
       protocol_version: task.protocol_version,
       task_id: task.task_id,
       ...predecessorStatusFields(task),
+      ...reviewerStatusFields(run),
       updated_at: run.finished_at,
       latest_round: roundName,
       review_state: reviewStateFor(review.verdict),
@@ -4608,6 +4636,7 @@ function recoverPreparedRound({
       run_state: 'RESULT_RECEIVED',
       defect_state: 'NOT_APPLICABLE',
       verdict: review.verdict,
+      ...fallbackFailureStatusFields(null),
       latest_run_sha256: runHash,
       ...findingStatusLists(review, previousStatusValue, preparedContract.semantics),
       candidate_review_state: null,
@@ -4619,6 +4648,7 @@ function recoverPreparedRound({
       protocol_version: task.protocol_version,
       task_id: task.task_id,
       ...predecessorStatusFields(task),
+      ...reviewerStatusFields(run),
       updated_at: run.finished_at,
       latest_round: roundName,
       review_state: 'OPEN',
@@ -4627,6 +4657,7 @@ function recoverPreparedRound({
       run_state: run.run_state,
       defect_state: 'NOT_APPLICABLE',
       verdict: null,
+      ...fallbackFailureStatusFields(run.fallback_reason),
       latest_run_sha256: runHash,
       ...carriedStatus,
       ...candidateStatusFields(run),
@@ -5158,7 +5189,7 @@ async function executeReview(args) {
         primary_reviewer_engine: PRIMARY_REVIEWER_ENGINE,
         reviewer_engine: engineContract.engine,
         reviewer_model: engineContract.model,
-        fallback_reason: persistedFallbackReason,
+        ...fallbackFailureStatusFields(fallbackDisposition.reason),
         latest_run_sha256: failedRunHash,
         ...carriedStatus,
         candidate_review_state: candidateArtifacts?.state ?? null,
@@ -5566,6 +5597,34 @@ function runSelfTests() {
     selfTestAssert(
       result.eligible === false && result.reason === 'FALLBACK_UNAVAILABLE',
       'Opus 실패는 추가 fallback 없이 종료',
+    );
+    selfTestAssert(
+      fallbackFailureStatusFields(result.reason).fallback_reason === 'FALLBACK_UNAVAILABLE',
+      'Opus 실패 상태 요약도 같은 종료 사유를 기록',
+    );
+    const primaryFailure = fallbackFailureDisposition(PRIMARY_REVIEWER_ENGINE, {
+      eligible: false,
+      reason: 'TASK_CAP_APPROVAL_REQUIRED',
+    });
+    selfTestAssert(
+      fallbackFailureStatusFields(primaryFailure.reason).fallback_reason === 'TASK_CAP_APPROVAL_REQUIRED',
+      'Fable 상한 실패 상태 요약은 실행 실패 사유를 그대로 기록',
+    );
+    selfTestAssert(
+      sameReviewerStatusFields(
+        reviewerStatusFields({
+          protocol_version: '1.2',
+          primary_reviewer_engine: PRIMARY_REVIEWER_ENGINE,
+          reviewer_engine: FALLBACK_REVIEWER_ENGINE,
+          reviewer_model: FALLBACK_MODEL_ID,
+        }),
+        {
+          primary_reviewer_engine: PRIMARY_REVIEWER_ENGINE,
+          reviewer_engine: FALLBACK_REVIEWER_ENGINE,
+          reviewer_model: FALLBACK_MODEL_ID,
+        },
+      ),
+      '복구 상태에도 실제 reviewer engine/model 유지',
     );
   });
 
