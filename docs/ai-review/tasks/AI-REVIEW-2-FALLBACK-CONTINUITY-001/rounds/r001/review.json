@@ -1,0 +1,292 @@
+{
+  "schema_version": "2.0",
+  "task_id": "AI-REVIEW-2-FALLBACK-CONTINUITY-001",
+  "reviewer_role": "FABLE-SEC",
+  "review_mode": "SECURITY",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "ca0c3107c9e283ca424c249d6a3961dfa1d939b3",
+  "target_commit_sha": "4eadc9a185204ae8bf27a69cd9c40f25e0ed05ba",
+  "target_tree_oid": "bec1abc06c4c9e33bf157eb44bdd4d5bccd25432",
+  "agents_blob_oid": "64b82275832bb6ce981b419294a428e77383be3e",
+  "agents_sha256": "0f1dd530a46174aeff884146569b2e2534f6ec8b544b531054f48e86b84c0f97",
+  "task_sha256": "a49addd45badfd8c3b476d216a20b2257c62220d111f1f6ce4bde89431acc288",
+  "collaboration_sha256": "87f6edf04fc67c9f841fa276067ed626fad9c5ce6486520fb1856de68286662b",
+  "input_files_sha256": "e149f13a4a17d75e710666ccc6d8bdf242e451adac0569e8287c924d331fc5fb",
+  "schema_sha256": "82a94ddcfd1c12f139066e57c1231bdcfdf8528639f7f02aaa6cd44a5bbed12b",
+  "runner_sha256": "1d96769d27726c4be3ccda4efc43d9d900b8a426178e9adf632e843d92c6f2b3",
+  "verdict": "CHANGES_REQUIRED",
+  "summary": "protocol 1.2 Fable→Opus 소진 fallback 경로를 보안 관점에서 검수했다. 강점: 승계 사유 allowlist가 구조화 코드만 받고 회차 상한 `budget_exhausted`는 TASK_CAP_APPROVAL_REQUIRED로 분리되며(protocol-v12.mjs 33-41), successor는 실패 run hash·fallback_eligible·target/입력/산출물 hash·registry hash·장부 bytes/hash·handoff turn/entry/run hash·handoff-only source commit·실사용액을 모두 대조하고(fable-review.mjs 2584-2716), Opus 실패는 FALLBACK_UNAVAILABLE로 폐쇄되며(4985-5001) closure 계약은 검증 후 실행을 중단한다(4563-4574). 결과 엔진 필드는 manifest·review·run·status에 결합된다. 그러나 다음 결함이 남는다. (1) successor가 `task_budget_usd`를 4.00보다 크게 선언하면 잔여액 산식이 successor의 상한을 기준으로 통과하고 predecessor 상한·사람 승인과 대조되지 않아 AI-REVIEW-2-3의 \"사람 승인 없는 상한 초과 fallback 금지\"가 우회된다. (2) `verified_by_engine`은 Opus 결과의 VERIFIED에만 강제되어 Fable 결과가 Opus 검증으로 위장하거나 비-VERIFIED Finding에 임의 엔진을 붙일 수 있어 AI-REVIEW-2-4의 실제 엔진 기록이 깨진다. (3) required_evidence가 주장한 handoff hash·closure 중단·FALLBACK_UNAVAILABLE 부정 시험이 실행기 자체시험에 없고 `loadPinnedFallbackReview`는 어떤 시험에서도 호출되지 않는다. (4) `fable:append`는 AI_DEPUTY_FALLBACK_HANDOFF를 형식만 검사해 실제 소진 실패 run이 없어도 handoff 턴이 장부에 남을 수 있다. 판정은 CHANGES_REQUIRED이며 protocol 1.1 호환성 파괴는 발견하지 못했다.",
+  "findings": [
+    {
+      "finding_id": "SEC-FB-001-TASK-CAP-RAISE-UNCHECKED",
+      "severity": "Major",
+      "review_state": "OPEN",
+      "category": "SECURITY",
+      "requirement_or_invariant_ids": [
+        "AI-REVIEW-2-3",
+        "AI-REVIEW-2-2",
+        "AI-REVIEW:fable-primary-opus-fallback"
+      ],
+      "evidence": [
+        {
+          "path": "scripts/fable-review/protocol-v12.mjs",
+          "line_start": 79,
+          "line_end": 84,
+          "observation": "잔여액 검증이 successor task.task_budget_usd를 cap으로 사용하며 normalizeUsd는 10.00까지 허용한다(22-31). predecessor 상한이나 기본 4.00과 비교하지 않는다."
+        },
+        {
+          "path": "scripts/fable-review.mjs",
+          "line_start": 2599,
+          "line_end": 2611,
+          "observation": "predecessor↔successor 대조 항목은 target·route·role·snapshot·경로 4종뿐이고 task_budget_usd는 비교하지 않는다."
+        },
+        {
+          "path": "scripts/fable-review.mjs",
+          "line_start": 2676,
+          "line_end": 2701,
+          "observation": "handoff의 spent/remaining은 contract와의 동일성과 실사용액만 검증하므로 successor가 cap 10.00·remaining 6.10으로 선언하면 spent 3.90인 소진 run에서도 통과한다."
+        },
+        {
+          "path": "docs/팀구성_상세기획안.md",
+          "line_start": 613,
+          "line_end": 614,
+          "observation": "정책은 기본 상한 4.00 초과 시 사람 승인 요청을 요구하지만 코드에 구조화된 승인 증거 요건이 없다."
+        }
+      ],
+      "impact": "gate owner가 successor task.json의 task_budget_usd만 올리면 사람 승인 없이 작업 전체 상한을 넘겨 Opus를 실행할 수 있어 예산 통제와 AI-REVIEW-2-3이 무력화된다.",
+      "acceptance_criteria": [
+        "loadPinnedFallbackReview가 sourceTask.task_budget_usd !== task.task_budget_usd이면 STALE(75)로 거부한다.",
+        "task_budget_usd가 DEFAULT_TASK_CAP_USD를 넘는 protocol 1.2 Task는 장부의 HUMAN_DECISION 턴에 machine-readable 상한 승인 pin(예: `- task_budget_usd_approved: `X.XX``)이 있어야 실행되고 없으면 TASK_CAP_APPROVAL_REQUIRED로 실패한다.",
+        "README §페이블 소진에 상한 상향 절차와 successor 상한 동일성 규칙을 명시한다."
+      ],
+      "required_tests": [
+        "successor task_budget_usd를 10.00으로 올린 fallback Task가 exit 75로 거부되는 부정 시험",
+        "승인 pin 없는 4.01 이상 Task가 exit 64 TASK_CAP_APPROVAL_REQUIRED로 실패하는 부정 시험"
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    },
+    {
+      "finding_id": "SEC-FB-002-VERIFIED-BY-ENGINE-MISATTRIBUTION",
+      "severity": "Major",
+      "review_state": "OPEN",
+      "category": "DATA_INTEGRITY",
+      "requirement_or_invariant_ids": [
+        "AI-REVIEW-2-4",
+        "AI-REVIEW:fable-primary-opus-fallback"
+      ],
+      "evidence": [
+        {
+          "path": "scripts/fable-review/protocol-v12.mjs",
+          "line_start": 150,
+          "line_end": 164,
+          "observation": "verified_by_engine 검사는 expected.engine이 OPUS_FALLBACK이고 review_state가 VERIFIED인 경우에만 수행된다. Fable 엔진 결과가 VERIFIED Finding에 OPUS_FALLBACK을 적거나, 어떤 엔진이든 OPEN/DISPUTED Finding에 임의 엔진 값을 적어도 통과한다."
+        },
+        {
+          "path": "scripts/fable-review.mjs",
+          "line_start": 2857,
+          "line_end": 2863,
+          "observation": "validateResult는 assertFallbackResultBinding 외에 finding별 엔진 값을 추가로 검사하지 않는다."
+        },
+        {
+          "path": "scripts/fable-review.mjs",
+          "line_start": 3028,
+          "line_end": 3028,
+          "observation": "장부 entry는 finding.verified_by_engine을 그대로 '검증 엔진'으로 출력하므로 위장 값이 공식 장부에 남는다."
+        },
+        {
+          "path": "docs/ai-review/README.md",
+          "line_start": 391,
+          "line_end": 396,
+          "observation": "정책은 엔진 위장을 검증 거부 대상으로 규정한다."
+        }
+      ],
+      "impact": "Finding registry와 장부에 실제 실행 엔진과 다른 검증 엔진이 기록될 수 있어 Opus 검증 표본 재감사 요건(FABLE-SEC/FINAL)을 회피하거나 반대로 Fable 검증을 Opus로 위장할 수 있다.",
+      "acceptance_criteria": [
+        "모든 엔진에서 review_state===VERIFIED이면 verified_by_engine이 정확히 expected.engine과 같아야 한다.",
+        "review_state가 VERIFIED가 아니면 verified_by_engine은 null이어야 한다(승계된 과거 VERIFIED를 재기록하는 경우는 registry의 기존 값과 동일해야 함).",
+        "위반 시 RESULT_BINDING_MISMATCH 또는 별도 failure code로 exit 76."
+      ],
+      "required_tests": [
+        "Fable 결과의 VERIFIED Finding에 OPUS_FALLBACK을 적으면 거부",
+        "OPEN Finding에 verified_by_engine 비-null이면 거부",
+        "Opus 결과의 VERIFIED Finding에 FABLE을 적으면 거부(기존)"
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    },
+    {
+      "finding_id": "SEC-FB-003-FALLBACK-RUNNER-NEGATIVE-TESTS-MISSING",
+      "severity": "Major",
+      "review_state": "OPEN",
+      "category": "TEST_GAP",
+      "requirement_or_invariant_ids": [
+        "AI-REVIEW-2-2",
+        "AI-REVIEW-2-5",
+        "AI-REVIEW-2-6",
+        "AGENTS:local-verification-gate"
+      ],
+      "evidence": [
+        {
+          "path": "scripts/fable-review.mjs",
+          "line_start": 7214,
+          "line_end": 7238,
+          "observation": "실행기 자체시험의 fallback 묶음은 protocol 1.1/1.2 handoff 수용 여부만 검사한다."
+        },
+        {
+          "path": "scripts/fable-review.mjs",
+          "line_start": 2584,
+          "line_end": 2716,
+          "observation": "loadPinnedFallbackReview는 self-test 어디서도 호출되지 않아 실패 run·handoff hash·registry·실사용액 대조 분기가 실행 증거 없이 남아 있다(호출 지점은 3658·4582 운영 경로뿐)."
+        },
+        {
+          "path": "scripts/fable-review.mjs",
+          "line_start": 4563,
+          "line_end": 4574,
+          "observation": "closure 계약 검증 후 실행 중단 분기와 4985-5001의 FALLBACK_UNAVAILABLE/fallback_eligible 기록 분기에 자체시험이 없다."
+        },
+        {
+          "path": "scripts/fable-review/protocol-v12.test.mjs",
+          "line_start": 31,
+          "line_end": 59,
+          "observation": "18개 단언은 계약 단위 수준이며 실제 저장소·장부·run.json을 사용한 부정 시험이 아니다."
+        },
+        {
+          "path": "COLLABORATION_LOG",
+          "line_start": 0,
+          "line_end": 0,
+          "observation": "required_evidence는 'handoff hash·closure 중단에 대한 부정 시험'을 주장하지만 스냅샷에는 해당 시험이 없다."
+        }
+      ],
+      "impact": "AI-REVIEW-2-2의 핵심인 '하나라도 바꾸면 successor가 통과하지 않는다'가 회귀해도 fable:self-test가 감지하지 못하고, 장부의 시험 증거 주장이 실제 코드와 불일치한다.",
+      "acceptance_criteria": [
+        "pinned-successor 통합 시험과 동형으로 실제 git clone·RUN_FAILED run.json·AI_DEPUTY_FALLBACK_HANDOFF 턴을 만든 뒤 loadPinnedFallbackReview 성공 경로 1건과 from_run_sha256·handoff_entry_sha256·spent_usd·reason·source commit 오염 각각의 거부 시험을 추가한다.",
+        "closure_review가 있는 Task 실행이 exit 65 메시지 'P0-2 보호 원격 validator'로 중단되는 시험을 추가한다.",
+        "Opus 엔진 실패 run이 fallback_eligible=false·fallback_reason=FALLBACK_UNAVAILABLE로 기록되는 시험을 추가한다.",
+        "장부 SOLAR 턴의 증거 주장을 실제 시험 이름과 함께 갱신한다."
+      ],
+      "required_tests": [
+        "fallback-successor-import-rejects-any-tampered-pin",
+        "closure-successor-halts-before-p0-2",
+        "opus-failure-is-fallback-unavailable"
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    },
+    {
+      "finding_id": "SEC-FB-004-HANDOFF-APPEND-UNBOUND",
+      "severity": "Minor",
+      "review_state": "OPEN",
+      "category": "SECURITY",
+      "requirement_or_invariant_ids": [
+        "AI-REVIEW-2-2",
+        "AI-REVIEW:append-only-audit"
+      ],
+      "evidence": [
+        {
+          "path": "scripts/fable-review.mjs",
+          "line_start": 3298,
+          "line_end": 3303,
+          "observation": "fable:append는 AI_DEPUTY_FALLBACK_HANDOFF를 protocol 버전과 필드 형식(3165-3209)만 검사하고 최신 회차가 fallback_eligible RUN_FAILED인지, from_run_sha256·spent_usd가 실제 run.json과 맞는지 확인하지 않는다."
+        },
+        {
+          "path": "scripts/fable-review.mjs",
+          "line_start": 2662,
+          "line_end": 2674,
+          "observation": "불일치는 successor 실행 시점에야 STALE로 잡히므로 잘못된 handoff 턴이 append-only 장부에 영구히 남고 이후 terminal 검사(terminal.id === handoff sequence)를 만족하는 정당한 handoff를 다시 추가하기 어렵다."
+        }
+      ],
+      "impact": "소진이 아닌 실패나 존재하지 않는 run에 대한 handoff가 장부에 기록될 수 있어 감사 이력이 오염되고, 잘못된 handoff 이후 정상 승계 재시도 경로가 불명확하다.",
+      "acceptance_criteria": [
+        "append 경로에서 AI_DEPUTY_FALLBACK_HANDOFF는 rounds 최신 공개 회차가 run_state=RUN_FAILED·fallback_eligible=true·fallback_reason=reason이고 from_run_sha256·target_commit_sha·input_files_sha256·artifact_set_sha256·finding_registry_sha256·spent_usd가 실제 기록과 일치할 때만 수용한다.",
+        "handoff 턴 이후 같은 Task에 새 Fable 회차를 시작하면 거부하거나, 재시도를 허용하는 규칙을 README에 명시한다."
+      ],
+      "required_tests": [
+        "소진 실패 run이 없는 Task에 fallback handoff append 시 exit 65",
+        "spent_usd가 실제 total_cost_usd 합과 다른 handoff append 시 exit 65"
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    },
+    {
+      "finding_id": "SEC-FB-005-SPENT-ROUNDING-NULL-COST",
+      "severity": "Improvement",
+      "review_state": "OPEN",
+      "category": "CODE",
+      "requirement_or_invariant_ids": [
+        "AI-REVIEW-2-2"
+      ],
+      "evidence": [
+        {
+          "path": "scripts/fable-review.mjs",
+          "line_start": 2695,
+          "line_end": 2701,
+          "observation": "actualSpent는 부동소수 합을 toFixed(2)로 문자열화해 비교하며 total_cost_usd가 null인 실패 run(예: envelope 없는 timeout)은 0으로 계산된다."
+        },
+        {
+          "path": "scripts/fable-review.mjs",
+          "line_start": 3843,
+          "line_end": 3843,
+          "observation": "total_cost_usd는 envelope가 없으면 null이 되어 실제 지출이 누락될 수 있다."
+        }
+      ],
+      "impact": "실사용액 대조가 반올림 경계에서 false negative를 내거나 envelope 없는 실패의 비용이 상한 차감에서 빠질 수 있다.",
+      "acceptance_criteria": [
+        "센트 단위 정수 합산으로 비교하고 README에 반올림 규칙을 명시한다.",
+        "total_cost_usd가 null인 회차가 있으면 spent 대조를 보수적으로 처리(예: 해당 회차의 max_budget_usd를 가산)하거나 사람 확인을 요구한다."
+      ],
+      "required_tests": [
+        "1.005+1.005 합산 경계 시험",
+        "total_cost_usd null 회차 포함 시 잔여액 계산 시험"
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    }
+  ],
+  "proposed_edits": [
+    {
+      "edit_id": "EDIT-SEC-FB-001-CAP-PARITY",
+      "path": "scripts/fable-review.mjs",
+      "anchor": "      || sourceTask.snapshot_mode !== task.snapshot_mode",
+      "operation": "ADD",
+      "proposed_text": "      || sourceTask.task_budget_usd !== task.task_budget_usd",
+      "rationale": "fallback successor가 predecessor와 다른 작업 전체 상한을 선언하지 못하게 해 사람 승인 없는 상한 상향을 막는다.",
+      "finding_ids": [
+        "SEC-FB-001-TASK-CAP-RAISE-UNCHECKED"
+      ]
+    },
+    {
+      "edit_id": "EDIT-SEC-FB-002-ENGINE-ATTRIBUTION",
+      "path": "scripts/fable-review/protocol-v12.mjs",
+      "anchor": "  if (expected.engine === FALLBACK_REVIEWER_ENGINE) {",
+      "operation": "REPLACE",
+      "proposed_text": "  for (const finding of result.findings ?? []) {\n    const verified = finding.review_state === 'VERIFIED';\n    if (verified && finding.verified_by_engine !== expected.engine) {\n      throw new Error(`VERIFIED Finding의 verified_by_engine은 실제 엔진(${expected.engine})이어야 합니다.`);\n    }\n    if (!verified && finding.verified_by_engine !== null) {\n      throw new Error('VERIFIED가 아닌 Finding에는 verified_by_engine을 기록할 수 없습니다.');\n    }\n  }\n  if (false) {",
+      "rationale": "모든 엔진에서 Finding의 검증 엔진이 실제 실행 엔진과 일치하도록 강제해 위장을 차단한다. 기존 Opus 전용 블록은 새 루프가 포괄하므로 통합 시 제거한다.",
+      "finding_ids": [
+        "SEC-FB-002-VERIFIED-BY-ENGINE-MISATTRIBUTION"
+      ]
+    },
+    {
+      "edit_id": "EDIT-SEC-FB-001-README-CAP-RULE",
+      "path": "docs/ai-review/README.md",
+      "anchor": "- Opus의 정확한 model ID와 작업 전체 사용 상한의 남은 범위",
+      "operation": "ADD",
+      "proposed_text": "- successor `task_budget_usd`는 predecessor와 동일해야 하며, 기본 상한 `4.00`을 넘는 값은 predecessor 장부의 `HUMAN_DECISION` 턴에 machine-readable 승인 pin이 있을 때만 허용한다",
+      "rationale": "코드 변경과 같은 규칙을 공식 문서에 명시한다.",
+      "finding_ids": [
+        "SEC-FB-001-TASK-CAP-RAISE-UNCHECKED"
+      ]
+    }
+  ],
+  "closed_finding_ids": [],
+  "reopened_finding_ids": [],
+  "remaining_required_finding_ids": [
+    "SEC-FB-001-TASK-CAP-RAISE-UNCHECKED",
+    "SEC-FB-002-VERIFIED-BY-ENGINE-MISATTRIBUTION",
+    "SEC-FB-003-FALLBACK-RUNNER-NEGATIVE-TESTS-MISSING",
+    "SEC-FB-004-HANDOFF-APPEND-UNBOUND"
+  ],
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5"
+}

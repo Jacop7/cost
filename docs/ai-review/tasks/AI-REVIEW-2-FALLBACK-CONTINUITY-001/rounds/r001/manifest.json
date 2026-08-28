@@ -1,0 +1,171 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-REVIEW-2-FALLBACK-CONTINUITY-001",
+  "round": "r001",
+  "created_at": "2026-08-28T12:39:59.691Z",
+  "review_mode": "SECURITY",
+  "baseline_commit_sha": "ca0c3107c9e283ca424c249d6a3961dfa1d939b3",
+  "target_commit_sha": "4eadc9a185204ae8bf27a69cd9c40f25e0ed05ba",
+  "target_tree_oid": "bec1abc06c4c9e33bf157eb44bdd4d5bccd25432",
+  "agents_blob_oid": "64b82275832bb6ce981b419294a428e77383be3e",
+  "agents_sha256": "0f1dd530a46174aeff884146569b2e2534f6ec8b544b531054f48e86b84c0f97",
+  "task_sha256": "a49addd45badfd8c3b476d216a20b2257c62220d111f1f6ce4bde89431acc288",
+  "collaboration_sha256": "87f6edf04fc67c9f841fa276067ed626fad9c5ce6486520fb1856de68286662b",
+  "collaboration_bytes": 3336,
+  "input_files_sha256": "e149f13a4a17d75e710666ccc6d8bdf242e451adac0569e8287c924d331fc5fb",
+  "schema_sha256": "82a94ddcfd1c12f139066e57c1231bdcfdf8528639f7f02aaa6cd44a5bbed12b",
+  "runner_sha256": "1d96769d27726c4be3ccda4efc43d9d900b8a426178e9adf632e843d92c6f2b3",
+  "snapshot_mode": "COMMIT",
+  "previous_review_sha256": null,
+  "previous_run_sha256": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "fallback_review": null,
+  "closure_review": null,
+  "fallback_input_scope": null,
+  "retry_of_failed_round": null,
+  "artifact_paths": [
+    "package.json",
+    "scripts/fable-review.mjs",
+    "scripts/fable-review/protocol-v12.mjs",
+    "scripts/fable-review/protocol-v12.test.mjs",
+    "docs/ai-review/README.md",
+    "docs/ai-review/templates/task-v12-primary.example.json",
+    "docs/ai-review/templates/task-v12-fallback.example.json",
+    "docs/팀구성_상세기획안.md",
+    "docs/작업큐.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "ARCHITECTURE.md",
+    "docs/ai-review/schema-v1.json"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/tasks/P1-1-REMOTE-ACL-AUDIT-001/task.json",
+    "docs/ai-review/tasks/P1-1-REMOTE-ACL-AUDIT-001/collaboration.md"
+  ],
+  "allowed_paths": [
+    "package.json",
+    "scripts/fable-review.mjs",
+    "scripts/fable-review/protocol-v12.mjs",
+    "scripts/fable-review/protocol-v12.test.mjs",
+    "docs/ai-review/README.md",
+    "docs/ai-review/templates/task-v12-primary.example.json",
+    "docs/ai-review/templates/task-v12-fallback.example.json",
+    "docs/팀구성_상세기획안.md",
+    "docs/작업큐.md",
+    "AGENTS.md",
+    "ARCHITECTURE.md",
+    "docs/ai-review/schema-v1.json",
+    "docs/ai-review/tasks/P1-1-REMOTE-ACL-AUDIT-001/task.json",
+    "docs/ai-review/tasks/P1-1-REMOTE-ACL-AUDIT-001/collaboration.md"
+  ],
+  "excluded_paths": [],
+  "input_files": [
+    {
+      "path": "AGENTS.md",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 10492,
+      "git_blob_oid": "64b82275832bb6ce981b419294a428e77383be3e",
+      "sha256": "0f1dd530a46174aeff884146569b2e2534f6ec8b544b531054f48e86b84c0f97",
+      "line_count": 151
+    },
+    {
+      "path": "ARCHITECTURE.md",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 10994,
+      "git_blob_oid": "79911ff114c721daf3119b5847b26ee2ce83b20c",
+      "sha256": "f0e218c5949769a7873666c4fd7ed3255709cf99f03fec2a7462cb8fde2dfe9b",
+      "line_count": 170
+    },
+    {
+      "path": "docs/작업큐.md",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 48569,
+      "git_blob_oid": "e3d6cdf32a1888924f1baa76b57562ffcd101b0e",
+      "sha256": "81b61c04dc7d561641655fa9e1664d9e089e034af3b635115d4b3ff28b01334f",
+      "line_count": 830
+    },
+    {
+      "path": "docs/팀구성_상세기획안.md",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 88399,
+      "git_blob_oid": "62a75702f62c9fcbe7c310898f3738fd635a4dbf",
+      "sha256": "1b771ab8887e1088a3cf6d7bf32474bb23f330ea87f24c3a9d01cb2a240ddec7",
+      "line_count": 1706
+    },
+    {
+      "path": "docs/ai-review/README.md",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 35928,
+      "git_blob_oid": "7e753b48f6dfdc781e6cfe15a39e5bea357aa6e3",
+      "sha256": "b70c6a46fc084568531cbd36262eac8da8b495306a66b429ddd1d654d4050808",
+      "line_count": 491
+    },
+    {
+      "path": "docs/ai-review/templates/task-v12-fallback.example.json",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 2511,
+      "git_blob_oid": "b1f388613f79c69efe78e8e636580b721dafef9d",
+      "sha256": "c784477e8ca3d75a53c1a1078580533887e09d2835f6f0d54e479d6a6920aff8",
+      "line_count": 53
+    },
+    {
+      "path": "docs/ai-review/templates/task-v12-primary.example.json",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 1354,
+      "git_blob_oid": "8a65062e3b9e63ee47c75a3a73b64b5149bf6c31",
+      "sha256": "300267f35593db039c460017174488b135d7d34d79731db80c64834d402abdcf",
+      "line_count": 34
+    },
+    {
+      "path": "package.json",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 1202,
+      "git_blob_oid": "688538b0f7db610aeb9ec0fc3d81bd187f2f67d2",
+      "sha256": "be49612cb7e21235dd9d9aba0737940fe7a93ce361339a954d0b27fdbd089bfd",
+      "line_count": 36
+    },
+    {
+      "path": "scripts/fable-review.mjs",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 364741,
+      "git_blob_oid": "79ee294682696d0033dcb97cfad80715f6029011",
+      "sha256": "2c709dad7f9a2d2981d12716debf952aadf262402d2071aa187e13bbe3a48890",
+      "line_count": 8073
+    },
+    {
+      "path": "scripts/fable-review/protocol-v12.mjs",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 9168,
+      "git_blob_oid": "4b2f4eb2899a59f4dd3ddd817c6e5b68be613d51",
+      "sha256": "40a2980f0bdb7c8a84b25e68be6192e1da07f2e57235fcc3978fa8f3bfac20d9",
+      "line_count": 164
+    },
+    {
+      "path": "scripts/fable-review/protocol-v12.test.mjs",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 4144,
+      "git_blob_oid": "243fc2fa944f27ce16013c00309cb1dab6fca996",
+      "sha256": "3976de76a583956fdf566f1a8a607200e4cc391648291b60e705ca63ded7e712",
+      "line_count": 60
+    }
+  ],
+  "source_archive_version": 1,
+  "finding_resolution_semantics": "VERIFIED_RESOLVED_V1",
+  "artifact_snapshot_sha256": null,
+  "input_snapshot_sha256": null
+}
