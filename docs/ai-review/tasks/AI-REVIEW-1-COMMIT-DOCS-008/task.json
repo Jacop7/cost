@@ -1,0 +1,74 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "AI-REVIEW-1-COMMIT-DOCS-008",
+  "route": "FINAL_INDEPENDENT",
+  "risk_level": "R1",
+  "author_role": "AI-DEPUTY-ORCHESTRATOR",
+  "reviewer_role": "FABLE-FINAL",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "FINAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "3637a36b43ddf31d8b991254e36b6f2c4440f142",
+  "target_commit_sha": "1f4d41f75321506da4c2331e44524f063e34835f",
+  "target_tree_oid": "53bd16d802ad63a277ead682ee199cfc3a23e957",
+  "agents_blob_oid": "35001543ec3d5a84ff328620f1c85eeb571141fc",
+  "agents_sha256": "a5667526727635dbb4f95ffc13159277d4cca8b222f554145c77eb87b961e384",
+  "requirements": [
+    "README, fixture와 template가 단일 공식 산출물, append-only 역할과 최종 독립 감사 절차를 같은 뜻으로 설명한다.",
+    "package script, PowerShell wrapper, CI 증거와 사용 명령이 실제 파일과 일치한다.",
+    "P0-2 전에는 PASS와 공식 CLOSED를 분리하고 보호 게이트 부재를 숨기지 않는다."
+  ],
+  "invariant_ids": [
+    "AGENTS:project-and-authority",
+    "AI-REVIEW:single-canonical-artifact",
+    "AI-REVIEW:pass-is-not-gate-closure"
+  ],
+  "artifact_paths": [
+    ".gitattributes",
+    "CLAUDE.md",
+    "package.json",
+    "scripts/fable-review.ps1",
+    "docs/ai-review/README.md",
+    "docs/ai-review/fixtures/shared-coauthoring-smoke.md",
+    "docs/ai-review/templates/collaboration.md",
+    "docs/ai-review/templates/task.example.json"
+  ],
+  "reference_paths": [
+    "AGENTS.md"
+  ],
+  "evidence_paths": [
+    ".github/workflows/verify.yml",
+    "scripts/verify.mjs"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "문서의 명령, 역할, 상태 상한과 실제 package/CI 파일의 대조",
+    "WORKING r003 PASS와 선택 Finding VERIFIED, gate OPEN의 문서 계약",
+    "predecessor Finding 5건의 수정 위치와 target commit의 실제 내용",
+    "target commit, tree, AGENTS blob과 입력 SHA 고정"
+  ],
+  "human_decisions": [
+    "2026-08-28 사용자가 공식 Claude Code 읽기 전용 검수와 후속 진행을 승인했다.",
+    "2026-08-28 사용자가 별도 API 결제가 아닌 Claude Max 로그인 CLI 세션에서 총 4달러 이내 실행 상한의 최종 재검수를 승인했다.",
+    "2026-08-28 AI-REVIEW-1-COMMIT-DOCS-005 r001·r002와 DOCS-007 r001의 실패 기록을 삭제하거나 덮어쓰지 않고 보존하기로 했다.",
+    "2026-08-28 DOCS-007 r001 후보는 내용상 PASS와 5개 VERIFIED를 반환했지만 상속 Finding의 previous_finding_id를 null로 반환해 RESULT_STATE_TRANSITION_CONTRACT에서 격리됐다.",
+    "2026-08-28 실행 프롬프트와 README에 상속 Finding의 previous_finding_id는 같은 finding_id여야 한다는 계약을 명시하고 회귀 시험을 추가했다.",
+    "2026-08-28 predecessor 장부의 AI_DEPUTY_SUCCESSOR_HANDOFF가 이 후속 재검수와 원 Finding 5개의 동일 ID 재확인을 승인했다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": "AI-REVIEW-1의 공식 문서·명령 계약만 독립 재검수하라. predecessor AI-REVIEW-1-COMMIT-DOCS-001 r001의 Finding 5건(FINAL-DOCS-001-STATE-001, FINAL-DOCS-001-STRUCT-002, FINAL-DOCS-001-TEMPLATE-003, FINAL-DOCS-001-CMD-004, FINAL-DOCS-001-ATTR-005)이 target commit에서 실제로 수정됐는지 각각 같은 finding_id로 확인하고, 해결됐으면 VERIFIED로 반환하라. 이 5개는 모두 predecessor에서 상속된 Finding이므로 각 결과의 previous_finding_id를 null로 두지 말고 반드시 자신의 finding_id와 정확히 같게 반환하라. README, fixture, template, package script, wrapper, CI와 AGENTS를 대조하여 단일 공식 산출물, append-only 공동 장부, WORKING/COMMIT, 독립 FINAL, Codex 증거, Finding 상태와 P0-2 이전 VERIFIED 상한이 서로 모순되지 않는지도 확인하라. 실행기 내부 구현은 다른 독립 Task가 감사하므로 범위를 넓히지 마라. 공식 CLOSED는 선언하지 말고, 이전 Finding을 누락하거나 다른 ID로 바꾸지 마라.",
+  "predecessor_review": {
+    "task_id": "AI-REVIEW-1-COMMIT-DOCS-001",
+    "source_commit_sha": "7d930660566ac107ec18eda56853cab08ea576b8",
+    "round": "r001",
+    "task_sha256": "d97ffdaec473ac01549cd8a454e3856bfdbb198dadeba01b59563cc959dc12f2",
+    "manifest_sha256": "d5374bf5148beee2329355ef0537f92fc93f9979f673638afda22120491af6c2",
+    "run_sha256": "91329c122b814522420141368060cb1518dff8ece5ee99ba74ed5a0fc2424fe9",
+    "review_sha256": "a314ff8edc74e339ff29460ed45e93859111def72172a7e1c0fc18104389e3ef",
+    "finding_registry_sha256": "2d7e28296542ec836da4b5891bfb34ce8ae299ca40210ee3d3f5a11bb846102c",
+    "handoff_turn_id": "turn-o007",
+    "handoff_entry_sha256": "d4e3cf614a15901b0c9d8d500342ae0c5591b37fe444e47f56880862f0b6da55",
+    "handoff_run_sha256": "da8c1e9b8641d771b19f17f8fa028e112dcf834501e3e930a3f08ad2f27e8c8e"
+  }
+}
