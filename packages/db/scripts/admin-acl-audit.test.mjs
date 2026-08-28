@@ -15,7 +15,10 @@ import ts from 'typescript';
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(HERE, '..', '..', '..');
 const SQL_PATH = join(HERE, 'admin-acl-audit.sql');
-const MOBILE_SRC = join(ROOT, 'apps', 'mobile', 'src');
+const MOBILE_ROOTS = [
+  join(ROOT, 'apps', 'mobile', 'src'),
+  join(ROOT, 'apps', 'mobile', 'app'),
+];
 const CONTAINER = process.env.SUPABASE_DB_CONTAINER ?? 'supabase_db_sikjae';
 const DATABASE = process.argv[2] ?? process.env.PGDATABASE;
 
@@ -79,27 +82,49 @@ function filesBelow(dir) {
   return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
     const path = join(dir, entry.name);
     if (entry.isDirectory()) return filesBelow(path);
-    return /\.tsx?$/.test(entry.name) ? [path] : [];
+    return /\.(?:[cm]?[jt]sx?)$/.test(entry.name) ? [path] : [];
   });
 }
 
 function mobileRpcNames() {
   const names = new Set();
   const dynamic = [];
-  for (const path of filesBelow(MOBILE_SRC)) {
+  const files = MOBILE_ROOTS.flatMap(filesBelow);
+  if (files.length === 0) {
+    fail(`모바일 소스를 하나도 찾지 못했습니다: ${MOBILE_ROOTS.join(', ')}`);
+  }
+  for (const path of files) {
     const source = ts.createSourceFile(path, readFileSync(path, 'utf8'), ts.ScriptTarget.Latest, true);
     const visit = (node) => {
-      if (ts.isCallExpression(node)
-          && ts.isPropertyAccessExpression(node.expression)
-          && node.expression.name.text === 'rpc') {
-        const first = node.arguments[0];
-        // StringLiteral과 NoSubstitutionTemplateLiteral만 허용한다.
-        if (first && ts.isStringLiteralLike(first)) {
-          names.add(first.text);
-        } else {
-          const { line } = source.getLineAndCharacterOfPosition(node.getStart(source));
-          dynamic.push(`${path}:${line + 1}`);
+      if (ts.isCallExpression(node)) {
+        const callee = node.expression;
+        const isRpcProperty = ts.isPropertyAccessExpression(callee) && callee.name.text === 'rpc';
+        const isRpcElement = ts.isElementAccessExpression(callee)
+          && ts.isStringLiteralLike(callee.argumentExpression)
+          && callee.argumentExpression.text === 'rpc';
+        if (isRpcProperty || isRpcElement) {
+          const first = node.arguments[0];
+          if (isRpcProperty && first && ts.isStringLiteralLike(first)) {
+            names.add(first.text);
+          } else {
+            const { line } = source.getLineAndCharacterOfPosition(node.getStart(source));
+            dynamic.push(`${path}:${line + 1}`);
+          }
         }
+      }
+      // `const call = client.rpc` 처럼 별칭으로 빼는 경로도 조용히 건너뛰지 않는다.
+      if (ts.isPropertyAccessExpression(node)
+          && node.name.text === 'rpc'
+          && !(ts.isCallExpression(node.parent) && node.parent.expression === node)) {
+        const { line } = source.getLineAndCharacterOfPosition(node.getStart(source));
+        dynamic.push(`${path}:${line + 1}`);
+      }
+      if (ts.isElementAccessExpression(node)
+          && ts.isStringLiteralLike(node.argumentExpression)
+          && node.argumentExpression.text === 'rpc'
+          && !(ts.isCallExpression(node.parent) && node.parent.expression === node)) {
+        const { line } = source.getLineAndCharacterOfPosition(node.getStart(source));
+        dynamic.push(`${path}:${line + 1}`);
       }
       ts.forEachChild(node, visit);
     };
@@ -149,9 +174,11 @@ for (const [metric, expectedValue] of FRESH_DB_VALUES) {
   if (observed !== expectedValue) fail(`${metric} 사후조건 불일치: 관측=${observed} 기대=${expectedValue}`);
 }
 
-// psql fresh harness는 CLI 장부가 없어 0, CLI로 구축한 DB는 둘 모두 적용돼 2다.
-if (!['0', '2'].includes(seen.get('migrations').value)) {
-  fail(`migrations 값이 하네스 계약 밖입니다: ${seen.get('migrations').value}`);
+// CLI 장부가 없으면 0만, 있으면 0166·0167 둘 모두를 의미하는 2만 허용한다.
+const migrationLedger = psql("select case when to_regclass('supabase_migrations.schema_migrations') is null then 'absent' else 'present' end;").trim();
+const expectedMigrations = migrationLedger === 'present' ? '2' : '0';
+if (seen.get('migrations').value !== expectedMigrations) {
+  fail(`migrations 값이 하네스 계약 밖입니다: 관측=${seen.get('migrations').value} 장부=${migrationLedger} 기대=${expectedMigrations}`);
 }
 
 const probe = psql("select coalesce(to_regclass('public._acl_probe_postgres')::text, 'absent');").trim();
@@ -179,9 +206,10 @@ const DEBT_CEILING = new Map([
   ['unapproved_authenticated_rpc', 87],
 ]);
 for (const [metric, ceiling] of DEBT_CEILING) {
-  const observed = Number(seen.get(metric).value);
-  if (!Number.isInteger(observed) || observed < 0 || observed > ceiling) {
-    fail(`${metric} 부채가 기준선을 넘었습니다: 관측=${seen.get(metric).value} 기준선=${ceiling}`);
+  const raw = seen.get(metric).value;
+  // Number('')=0 같은 느슨한 변환으로 부채를 0으로 위장하지 않는다.
+  if (!/^\d+$/.test(raw) || Number(raw) > ceiling) {
+    fail(`${metric} 부채가 기준선을 넘었거나 정수가 아닙니다: 관측=${raw} 기준선=${ceiling}`);
   }
 }
 

@@ -1,0 +1,200 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P1-1-ACL-SUPPORT-SOURCE-002",
+  "reviewer_role": "FABLE-SEC",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "e625cade1ecbaa4bd15af18589b033013ff0270d",
+  "target_commit_sha": "d0051c17bb6f842e28b48813616114fefc50913c",
+  "target_tree_oid": "bf4c6fb7e99ec586f81a9a3a72af11a9fff1fa34",
+  "agents_blob_oid": "64b82275832bb6ce981b419294a428e77383be3e",
+  "agents_sha256": "0f1dd530a46174aeff884146569b2e2534f6ec8b544b531054f48e86b84c0f97",
+  "task_sha256": "d832fff49ad7c5797c8165e88a4b04b752d0a52ae6ab78cff9ebc1e0e087612a",
+  "collaboration_sha256": "a7a7fc15631ba6f870754950914702d8013660b22ec4b9ce34310173967f2135",
+  "input_files_sha256": "38e700c6d86fde626eee328f824922d42ed8d59d1fbcf6fef41a5291df86b574",
+  "schema_sha256": "f8860ea87aacde86f541f7b1a1640729bf516dcdaf78e168c0e2e01f0edfac5c",
+  "runner_sha256": "1e09d053693e46b03a27bc34c443a4ac258ff6358eda1d33e0a76b160e97bf8b",
+  "verdict": "CHANGES_REQUIRED",
+  "summary": "보안 관점 초기 검수(INITIAL) 결과다. 소스 자체는 r001 지적을 대체로 충실히 반영했다. (1) P1-1-SUPPORT-1: EXPECTED_METRICS 16개가 SQL 출력·admin-acl.sh 필수 목록과 정확히 일치하고, 누락·중복·미지 metric·추가 열을 모두 실패시키며, fresh DB 사후조건 10개 값(rls_disabled_app_tables=0, protected_objects=6, blocked_internal_rpc_objects=11 등)과 probe_owner=postgres·facade_rpc_missing=0을 고정한다. (2) P1-1-SUPPORT-2: TypeScript AST로 `.rpc(` 첫 인자가 StringLiteral/NoSubstitutionTemplateLiteral이 아니면 실패하고, 비-mobile 예외⊆허용 목록, (허용−예외)↔모바일 호출 양방향 차집합을 모두 실패 조건으로 둔다. (3) P1-1-SUPPORT-3: verify ④가 run.mjs 뒤·concurrency 앞에 지원 시험을 실제로 실행하고 ok 체인으로 실패를 전파하며 finally에서 DB를 정리한다. 컨테이너 이름·DB 식별자 정규식 검증으로 argv 주입도 막았다. (4) P1-1-SUPPORT-4: 부채 32/87을 ceiling으로만 두어 0 위장 없이 증가만 차단한다.\n\n그러나 필수 증거가 스냅샷에 없다. 패킷이 evidence_paths로 선언한 r001 review.md·collaboration.md·REMOTE-ACL-AUDIT r003 review.md 세 파일이 input_files·매니페스트·스냅샷 어디에도 실체화되지 않았고, required_evidence의 사보타주 exit 1 증거·verify 6/6·fresh_* 0개 증거도 공동 장부의 한 줄 주장 외에는 없다. 불변식 P1-1-SUPPORT-SEC-EVIDENCE-NOT-MATERIALIZED가 이번 라운드에도 재현된 것이므로 Major로 연다. 그 밖에 migrations 0/2 계약이 '장부는 있으나 0166·0167이 빠진 DB'를 0으로 통과시키는 점(Minor), `client['rpc'](x)` 요소 접근·별칭 호출이 동적 RPC 거부를 우회하고 스캔 루트가 `apps/mobile/src`의 .ts/.tsx로만 고정된 점(Minor), 부채 값 파싱이 Number() 기반이라 정수 정규식으로 엄격화할 여지(Improvement)를 기록했다. 세 Minor/Major는 proposed_edits로 구체 수정안을 제시했다. 실제 호스티드 audit와 32/87 축소는 사람 결정대로 별도 P0-5 R3 범위로 유지한다.",
+  "findings": [
+    {
+      "finding_id": "P1-1-SUPPORT-002-EVIDENCE-NOT-MATERIALIZED",
+      "severity": "Major",
+      "review_state": "OPEN",
+      "category": "OPERATIONS",
+      "requirement_or_invariant_ids": [
+        "P1-1-SUPPORT-SEC-EVIDENCE-NOT-MATERIALIZED",
+        "AGENTS:inspection-execution"
+      ],
+      "evidence": [
+        {
+          "path": "COLLABORATION_LOG",
+          "line_start": 0,
+          "line_end": 0,
+          "observation": "패킷 evidence_paths의 docs/ai-review/tasks/P1-1-ACL-SUPPORT-SOURCE-001/rounds/r001/review.md, 같은 태스크 collaboration.md, P1-1-REMOTE-ACL-AUDIT-001/rounds/r003/review.md 세 파일이 input_files 7개 목록·.review-input-manifest.json·스냅샷 디렉터리 어디에도 없다. required_evidence 4항 '이전 r001 Finding 원문과 Finding별 반영 장부'와 2·3항 '사보타주 exit 1', 'verify 6/6 exit 0·fresh_* 0개'는 공동 장부 turn-s001의 한 줄 서술 외에 실행 로그·Codex 검증 산출물이 없다."
+        }
+      ],
+      "impact": "R3 MANDATORY_MUTUAL 경로에서 r001의 필수 3건·선택 1건이 각각 어떤 코드 줄로 닫혔는지, 사보타주 5종이 실제로 exit 1이었는지를 검수자가 독립 확인할 수 없다. 불변식 P1-1-SUPPORT-SEC-EVIDENCE-NOT-MATERIALIZED가 이번 라운드에도 재현된 것이며, 이 상태로 PASS하면 '주장=증거'가 된다.",
+      "acceptance_criteria": [
+        "evidence_paths로 선언한 세 문서가 다음 라운드 스냅샷 input_files에 EVIDENCE 역할로 실체화되고 sha256이 매니페스트에 기록된다.",
+        "r001 Finding ID별로 반영 커밋·파일·줄 범위를 적은 장부(collaboration.md 또는 round 문서)가 스냅샷 안에 존재한다.",
+        "GRANT·동적 RPC·allowlist·metric·rollback 사보타주 5종의 명령·exit code·핵심 출력과 복구 후 corepack pnpm verify 6/6 exit 0·fresh_* 0개 결과가 Codex 검증 산출물로 스냅샷에 포함된다."
+      ],
+      "required_tests": [
+        "CODEX-FUNCTION-QA가 사보타주 5종(GRANT 추가·.rpc(변수)·허용 목록 항목 삭제·metric 행 삭제·rollback→commit)을 각각 적용해 node packages/db/scripts/admin-acl-audit.test.mjs <fresh_db> exit 1을 기록하고 복구한다.",
+        "corepack pnpm verify 전체 실행 로그와 실행 후 컨테이너의 fresh_% DB 목록 0건을 첨부한다."
+      ],
+      "previous_finding_id": null
+    },
+    {
+      "finding_id": "P1-1-SUPPORT-002-MIGRATIONS-ZERO-AMBIGUOUS",
+      "severity": "Minor",
+      "review_state": "OPEN",
+      "category": "TEST_GAP",
+      "requirement_or_invariant_ids": [
+        "P1-1-SUPPORT-1",
+        "P1-1-SUPPORT-SEC-METRIC-VALUES-UNSEALED"
+      ],
+      "evidence": [
+        {
+          "path": "packages/db/scripts/admin-acl-audit.test.mjs",
+          "line_start": 152,
+          "line_end": 155,
+          "observation": "migrations 값을 '0' 또는 '2'면 무조건 통과시킨다. 0이 '장부 없음' 때문인지 '장부는 있는데 0166·0167이 없음' 때문인지 구분하지 않는다."
+        },
+        {
+          "path": "packages/db/scripts/admin-acl-audit.sql",
+          "line_start": 49,
+          "line_end": 63,
+          "observation": "SQL은 장부 부재 시 0, 장부 존재 시 version in (0166, 0167) count를 낸다. 두 경우 모두 0이 될 수 있어 출력만으로는 구분 불가."
+        },
+        {
+          "path": "packages/db/scripts/admin-acl.sh",
+          "line_start": 161,
+          "line_end": 161,
+          "observation": "원격 audit 셸 게이트는 migrations=2만 통과시킨다. 지원 시험이 이보다 느슨한 계약을 두면서 조건을 명시하지 않는다."
+        }
+      ],
+      "impact": "CLI로 구축돼 supabase_migrations 장부가 있는 DB에서 ACL migration 0166·0167이 누락돼도 지원 시험이 migrations=0으로 통과한다. 다른 metric이 효과를 간접 측정하므로 즉시 위험은 낮지만, '0/2 단언'이 실제로는 '장부 존재 여부와 무관한 0 허용'이어서 사후조건 값 봉인이 불완전하다.",
+      "acceptance_criteria": [
+        "시험이 supabase_migrations.schema_migrations 존재 여부를 별도 질의로 확인하고, 장부가 있으면 migrations='2'만, 없으면 '0'만 통과시킨다.",
+        "실패 메시지에 장부 존재 여부와 기대값을 함께 출력한다."
+      ],
+      "required_tests": [
+        "fresh DB에 supabase_migrations.schema_migrations 빈 표를 임시로 만든 뒤 시험이 migrations 불일치로 exit 1인지 확인하고 표를 제거한다.",
+        "표가 없는 fresh DB에서는 migrations=0으로 통과하는지 확인한다."
+      ],
+      "previous_finding_id": null
+    },
+    {
+      "finding_id": "P1-1-SUPPORT-002-RPC-SCAN-EVASION",
+      "severity": "Minor",
+      "review_state": "OPEN",
+      "category": "TEST_GAP",
+      "requirement_or_invariant_ids": [
+        "P1-1-SUPPORT-2",
+        "P1-1-SUPPORT-SEC-DYNAMIC-RPC-SKIPPED"
+      ],
+      "evidence": [
+        {
+          "path": "packages/db/scripts/admin-acl-audit.test.mjs",
+          "line_start": 92,
+          "line_end": 102,
+          "observation": "PropertyAccessExpression이면서 name이 'rpc'인 호출만 본다. client['rpc'](name) 같은 ElementAccessExpression 호출, const rpc = client.rpc; rpc(name) 같은 별칭 호출은 이름 수집도 동적 거부도 되지 않아 조용히 지나간다."
+        },
+        {
+          "path": "packages/db/scripts/admin-acl-audit.test.mjs",
+          "line_start": 18,
+          "line_end": 18,
+          "observation": "스캔 루트가 apps/mobile/src 하나로 고정돼 있고 존재·비어 있음 검사가 없다."
+        },
+        {
+          "path": "packages/db/scripts/admin-acl-audit.test.mjs",
+          "line_start": 78,
+          "line_end": 84,
+          "observation": "확장자 .ts/.tsx만 수집한다. .js/.jsx/.mjs 파일의 .rpc 호출은 대조 대상에서 빠진다."
+        }
+      ],
+      "impact": "동적 RPC 이름 거부(P1-1-SUPPORT-2)를 요소 접근·별칭 한 줄로 우회할 수 있어, 허용 목록 밖 RPC를 호출하는 모바일 소스가 '미허용' 방향에서 감지되지 않는다. 역방향(미사용) 검사는 여전히 실패하므로 허용 목록 과대는 잡히지만, 호출 측 드리프트는 놓친다.",
+      "acceptance_criteria": [
+        "ElementAccessExpression으로 'rpc'를 접근하는 호출은 인자가 리터럴이어도 동적 호출로 취급해 실패시킨다.",
+        "스캔 루트에서 수집한 파일이 0개면 즉시 실패한다.",
+        "expo-router 라우트 디렉터리가 apps/mobile/src 밖에 있다면 스캔 루트에 포함하거나, 없음을 시험 주석에 명시한다.",
+        "수집 확장자를 .ts/.tsx/.js/.jsx/.mjs/.cjs로 넓히거나 .js 계열 부재를 실패 조건으로 둔다."
+      ],
+      "required_tests": [
+        "임시로 apps/mobile/src에 client['rpc']('save_sale') 호출을 추가해 시험이 exit 1인지 확인하고 되돌린다.",
+        "MOBILE_SRC를 빈 디렉터리로 바꿔 실행했을 때 '파일 0개'로 실패하는지 확인한다."
+      ],
+      "previous_finding_id": null
+    },
+    {
+      "finding_id": "P1-1-SUPPORT-002-DEBT-VALUE-PARSING",
+      "severity": "Improvement",
+      "review_state": "OPEN",
+      "category": "CODE",
+      "requirement_or_invariant_ids": [
+        "P1-1-SUPPORT-4"
+      ],
+      "evidence": [
+        {
+          "path": "packages/db/scripts/admin-acl-audit.test.mjs",
+          "line_start": 181,
+          "line_end": 186,
+          "observation": "Number(value)로 파싱해 정수·범위를 본다. Number('')는 0, Number(' 12 ')는 12로 통과한다. 현재 SQL은 count(*) 연결이라 빈 값이 나올 수 없지만 파서 자체는 느슨하다."
+        }
+      ],
+      "impact": "SQL이 바뀌어 빈 문자열이나 공백 포함 값을 내면 부채 ceiling 검사가 0으로 오인해 통과할 수 있다. 현재 위험은 없으나 값 봉인의 방어선이 얇다.",
+      "acceptance_criteria": [
+        "부채 값은 /^\\d+$/ 정규식으로 검증한 뒤 ceiling과 비교한다.",
+        "P0-5로 부채가 줄면 DEBT_CEILING을 그 값으로 내리는 규칙을 주석에 남긴다."
+      ],
+      "required_tests": [
+        "SQL을 임시로 수정해 ledger_write_paths 값을 빈 문자열로 내보냈을 때 시험이 실패하는지 확인한다."
+      ],
+      "previous_finding_id": null
+    }
+  ],
+  "proposed_edits": [
+    {
+      "edit_id": "P1-1-SUPPORT-002-EDIT-MIGRATIONS-LEDGER",
+      "path": "packages/db/scripts/admin-acl-audit.test.mjs",
+      "anchor": "// psql fresh harness는 CLI 장부가 없어 0, CLI로 구축한 DB는 둘 모두 적용돼 2다.",
+      "operation": "REPLACE",
+      "proposed_text": "// CLI 장부가 없으면 0만, 있으면 2만 허용한다. 장부가 있는데 0166·0167이 빠진 DB를 0으로 통과시키지 않는다.\nconst ledger = psql(\"select case when to_regclass('supabase_migrations.schema_migrations') is null then 'absent' else 'present' end;\").trim();\nconst expectedMigrations = ledger === 'present' ? '2' : '0';\nif (seen.get('migrations').value !== expectedMigrations) {\n  fail(`migrations 값이 하네스 계약 밖입니다: 관측=${seen.get('migrations').value} 장부=${ledger} 기대=${expectedMigrations}`);\n}",
+      "rationale": "앵커 주석과 바로 아래 if 블록(현재 152~155행)을 이 블록으로 교체한다. migrations 0/2 계약을 장부 존재 여부에 결합해 '장부 있음+ACL migration 누락' 상태를 실패로 닫는다.",
+      "finding_ids": [
+        "P1-1-SUPPORT-002-MIGRATIONS-ZERO-AMBIGUOUS"
+      ]
+    },
+    {
+      "edit_id": "P1-1-SUPPORT-002-EDIT-RPC-ELEMENT-ACCESS",
+      "path": "packages/db/scripts/admin-acl-audit.test.mjs",
+      "anchor": "        // StringLiteral과 NoSubstitutionTemplateLiteral만 허용한다.",
+      "operation": "COMMENT",
+      "proposed_text": "visit 함수(현재 91~106행)를 아래처럼 바꿔 요소 접근 호출을 동적 호출로 취급하고, mobileRpcNames 진입부에서 수집 파일 0개를 실패시킨다.\n\nfunction mobileRpcNames() {\n  const names = new Set();\n  const dynamic = [];\n  const files = filesBelow(MOBILE_SRC);\n  if (files.length === 0) fail(`모바일 소스를 하나도 찾지 못했습니다: ${MOBILE_SRC}`);\n  for (const path of files) {\n    const source = ts.createSourceFile(path, readFileSync(path, 'utf8'), ts.ScriptTarget.Latest, true);\n    const visit = (node) => {\n      if (ts.isCallExpression(node)) {\n        const callee = node.expression;\n        const isRpcProperty = ts.isPropertyAccessExpression(callee) && callee.name.text === 'rpc';\n        // client['rpc'](…) 요소 접근은 리터럴 검사 회피 경로이므로 인자와 무관하게 동적 호출로 본다.\n        const isRpcElement = ts.isElementAccessExpression(callee)\n          && ts.isStringLiteralLike(callee.argumentExpression)\n          && callee.argumentExpression.text === 'rpc';\n        if (isRpcProperty || isRpcElement) {\n          const first = node.arguments[0];\n          // StringLiteral과 NoSubstitutionTemplateLiteral만 허용한다.\n          if (isRpcProperty && first && ts.isStringLiteralLike(first)) {\n            names.add(first.text);\n          } else {\n            const { line } = source.getLineAndCharacterOfPosition(node.getStart(source));\n            dynamic.push(`${path}:${line + 1}`);\n          }\n        }\n      }\n      ts.forEachChild(node, visit);\n    };\n    visit(source);\n  }\n  if (dynamic.length) fail(`리터럴이 아닌 .rpc 이름 — 허용 목록 대조 불가: ${dynamic.join(', ')}`);\n  return names;\n}\n\n또한 filesBelow의 확장자 정규식을 /\\.(tsx?|jsx?|mjs|cjs)$/ 로 넓히고, expo-router 라우트 디렉터리가 src 밖에 있으면 스캔 루트 배열에 추가한다.",
+      "rationale": "동적 RPC 거부를 요소 접근으로 우회하는 경로를 막고, 스캔 루트 오지정 시 '허용 목록 전부 미사용'이라는 간접 실패 대신 명시적으로 실패하게 한다.",
+      "finding_ids": [
+        "P1-1-SUPPORT-002-RPC-SCAN-EVASION"
+      ]
+    },
+    {
+      "edit_id": "P1-1-SUPPORT-002-EDIT-DEBT-STRICT-PARSE",
+      "path": "packages/db/scripts/admin-acl-audit.test.mjs",
+      "anchor": "  const observed = Number(seen.get(metric).value);",
+      "operation": "REPLACE",
+      "proposed_text": "  const raw = seen.get(metric).value;\n  // 정수 문자열만 받는다. Number('')=0 같은 느슨한 변환으로 부채를 0으로 오인하지 않는다.\n  if (!/^\\d+$/.test(raw) || Number(raw) > ceiling) {\n    fail(`${metric} 부채가 기준선을 넘었거나 정수가 아닙니다: 관측=${raw} 기준선=${ceiling}`);\n  }",
+      "rationale": "앵커 줄과 바로 아래 if 블록(현재 182~185행)을 교체한다. 부채 ceiling 검사의 파서를 정수 정규식으로 엄격화한다.",
+      "finding_ids": [
+        "P1-1-SUPPORT-002-DEBT-VALUE-PARSING"
+      ]
+    }
+  ],
+  "closed_finding_ids": [],
+  "reopened_finding_ids": [],
+  "remaining_required_finding_ids": [
+    "P1-1-SUPPORT-002-EVIDENCE-NOT-MATERIALIZED",
+    "P1-1-SUPPORT-002-MIGRATIONS-ZERO-AMBIGUOUS",
+    "P1-1-SUPPORT-002-RPC-SCAN-EVASION"
+  ]
+}
