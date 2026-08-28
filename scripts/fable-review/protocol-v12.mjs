@@ -61,13 +61,18 @@ const FALLBACK_KEYS = new Set([
 ]);
 
 export function validateFallbackReview(value, task) {
-  exactKeys(value, FALLBACK_KEYS, 'fallback_review');
+  const hasLearningAssignment = Object.prototype.hasOwnProperty.call(task, 'applied_learning_ids')
+    || Object.prototype.hasOwnProperty.call(task, 'excluded_learning_ids');
+  const expectedKeys = new Set(FALLBACK_KEYS);
+  if (hasLearningAssignment) expectedKeys.add('learning_assignment_sha256');
+  exactKeys(value, expectedKeys, 'fallback_review');
   string(value.from_task_id, 'fallback_review.from_task_id', TASK_ID_RE);
   if (value.from_task_id === task.task_id) throw new Error('fallback successor는 새 Task ID여야 합니다.');
   string(value.from_round, 'fallback_review.from_round', /^r\d{3}$/);
   for (const key of ['from_run_sha256', 'input_files_sha256', 'artifact_set_sha256', 'finding_registry_sha256', 'collaboration_sha256', 'handoff_entry_sha256', 'handoff_run_sha256']) {
     string(value[key], `fallback_review.${key}`, SHA256_RE);
   }
+  if (hasLearningAssignment) string(value.learning_assignment_sha256, 'fallback_review.learning_assignment_sha256', SHA256_RE);
   for (const key of ['source_commit_sha', 'handoff_base_commit_sha', 'target_commit_sha']) string(value[key], `fallback_review.${key}`, GIT_OID_RE);
   string(value.handoff_turn_id, 'fallback_review.handoff_turn_id', /^turn-o\d{3}$/);
   if (!FALLBACK_REASONS.has(value.reason)) throw new Error('fallback_reason이 소진 allowlist 밖입니다.');

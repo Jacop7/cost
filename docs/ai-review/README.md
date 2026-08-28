@@ -274,11 +274,16 @@ protocol 1.2 Task는 두 필드를 모두 선언하고, 결과 schema 2.0·manif
 덧붙여 재사용하지 않는다.
 
 실행기는 대상 commit의 장부를 읽어 등록 여부·`VERIFIED` 상태·`review_by`·상호 충돌과 제외 사유를
-검증한다. `CANDIDATE`·`RETIRED`·기한 초과·충돌 ID는 실패 폐쇄한다. 일반 검수에는 검증된 ID의
+검증한다. 만료는 target commit 날짜와 실행 UTC 날짜 중 늦은 날짜로 판정한다. baseline과 target에서
+장부가 달라지면 검수 경로에 장부를 선언하고, 같은 commit에서 바뀐 항목은 즉시 적용하지 못한다.
+manifest는 target 장부 blob·내용 hash와 적용 집합 hash를 봉인한다. `CANDIDATE`·`RETIRED`·기한
+초과·충돌 ID는 실패 폐쇄한다. 일반 검수에는 검증된 ID의
 범위·금지 재사용·체크리스트만 주입한다. predecessor가 있는 보안 후속 Task에는 ID 목록만 전달하고
-학습 요약은 전달하지 않는다. `FINAL_INDEPENDENT` 모든 Task와 predecessor가 없는 최초 `SECURITY`
-Task는 적용·제외 배열이 모두 비어 있어야 하며, 해당 `SOLAR_REQUEST`에 Learning ID·학습 요약 표식이
-있어도 실행기가 거부한다. 상세 역할 규칙은 [`docs/team/ROLE_CONTEXTS.md`](../team/ROLE_CONTEXTS.md),
+제외 사유를 포함한 학습 요약은 전달하지 않는다. fallback successor는 predecessor와 같은 적용·제외
+집합 및 그 hash를 가져야 한다. `FINAL_INDEPENDENT` 모든 Task와 predecessor가 없는 최초 `SECURITY`
+Task는 적용·제외 배열이 모두 비어 있어야 한다. 최종 독립 감사의 요청·요구·사람 결정·필수 증거와
+두 경로의 공동 장부 전체에 Learning ID·학습 요약 표식이 있어도 실행기와 append 경로가 거부한다.
+상세 역할 규칙은 [`docs/team/ROLE_CONTEXTS.md`](../team/ROLE_CONTEXTS.md),
 학습 원장은 [`docs/team/TEAM_LEARNING.md`](../team/TEAM_LEARNING.md)가 소유한다.
 
 ## 7. 격리 스냅샷

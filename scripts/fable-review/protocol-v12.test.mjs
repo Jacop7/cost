@@ -37,6 +37,15 @@ rejects((v) => { v.fallback_review.reason = 'AUTH_FAILED'; }, /allowlist/);
 rejects((v) => { v.fallback_review.target_commit_sha = oid('a'); }, /target commit/);
 rejects((v) => { v.fallback_review.remaining_usd = '3.00'; }, /상한/);
 rejects((v) => { v.fallback_review = null; }, /fallback_review/);
+{
+  const learningTask = structuredClone(task);
+  learningTask.applied_learning_ids = ['LRN-ORCH-TEST-001'];
+  learningTask.excluded_learning_ids = [];
+  learningTask.fallback_review.learning_assignment_sha256 = hash('a');
+  assert.equal(validateProtocolV12Engine(learningTask).fallback.learning_assignment_sha256, hash('a'));
+  delete learningTask.fallback_review.learning_assignment_sha256;
+  assert.throws(() => validateProtocolV12Engine(learningTask), /필드가 계약/);
+}
 assert.equal(effectiveFallbackReviewMode(task, ['FINDING-1']), 'RECHECK');
 {
   const directRecheck = structuredClone(task);
@@ -60,4 +69,4 @@ const closure = {
 };
 assert.equal(validateClosureReview(closure, { task_id: 'CLOSURE-001', snapshot_mode: 'COMMIT' }).decision_commit_sha, oid('4'));
 assert.throws(() => validateClosureReview(closure, { task_id: 'CLOSURE-001', snapshot_mode: 'WORKING_TREE_HASHED' }), /COMMIT/);
-console.log('protocol 1.2 fallback 계약 20/20 통과');
+console.log('protocol 1.2 fallback 계약 22/22 통과');

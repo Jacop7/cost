@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "TEAM-LEARNING-IMPL-001",
+  "sequence": "t0001",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-08-28T19:12:09.439Z",
+  "turn_id": "turn-s001",
+  "turn_type": "SOLAR_REQUEST",
+  "role": "SOLAR-ORCH",
+  "task_sha256": "d1adaed6bdfad675b2b9366c13654e2376383fe51acbae081981762cae72f7a5",
+  "runner_sha256": "da30a77eb89b34563e9e502f2e16faf64c84cd65f3b6adf06bff825f82e26cbe",
+  "previous_manual_run_sha256": null,
+  "collaboration_before_sha256": "61c5ee7df150851bc892d3e08e9dc4a48cd88fde867ce18cac8a8753ac5366bf",
+  "collaboration_before_bytes": 262,
+  "collaboration_entry_sha256": "be3cfe225a40e5de3f4c55a466efdd11901aa0a66822c5697bd0f668b3faec22",
+  "collaboration_entry_bytes": 1807,
+  "collaboration_after_sha256": "73298f9cd798470389015c6d6ea9168316bba6b59167db2246e8e39fb2315c9f",
+  "collaboration_after_bytes": 2069
+}
