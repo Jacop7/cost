@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "P1-2-SUPABASE-CLI-V2-001",
+  "sequence": "t0001",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-08-28T23:26:13.095Z",
+  "turn_id": "turn-h001",
+  "turn_type": "HUMAN_DECISION",
+  "role": "HUMAN",
+  "task_sha256": "8b5eca7c870c482ce7e18ba5b175d628916410368c64ccb56f1883816170d8b0",
+  "runner_sha256": "eec0d522ac40626d478a317525a31741df6e5a259c68b5c165bd79648d21a1de",
+  "previous_manual_run_sha256": null,
+  "collaboration_before_sha256": "df4f8c5fde1a88d781c9663c698bd2faaa35fd36d251dec6fb83c79334dff1d6",
+  "collaboration_before_bytes": 2389,
+  "collaboration_entry_sha256": "f2bb84c307e4232ac6bbccd6c537633889ae4615e47e716b37f6e06c2c3153f9",
+  "collaboration_entry_bytes": 552,
+  "collaboration_after_sha256": "049303a14ad7b8aaef31a912dd2a3dca6c87644d79ff7a600c347a0159c894b8",
+  "collaboration_after_bytes": 2941
+}
