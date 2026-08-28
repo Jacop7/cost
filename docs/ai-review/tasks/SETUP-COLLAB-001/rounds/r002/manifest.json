@@ -1,0 +1,36 @@
+{
+  "protocol_version": "1.0",
+  "task_id": "SETUP-COLLAB-001",
+  "round": "r002",
+  "created_at": "2026-08-27T23:25:36.548Z",
+  "review_mode": "RECHECK",
+  "target_commit_sha": "77c9148ca30d9a5423fd48a7056e5c58ccdc62ae",
+  "target_tree_oid": "9cad53864ef8ef35568f1342e6c9f908c0934e79",
+  "agents_blob_oid": "b8ffe513f1ecca3b947a7148b3944f4e1f3f8f8c",
+  "agents_sha256": "539d410c59511d94a87dfba43851111231a26ab5b36878dbb0c55cbab31ff394",
+  "task_sha256": "5e43e881146ba6640381b2dfbd0ee299ab8f26fcd90ed4d8036ace75f48fa443",
+  "collaboration_sha256": "c7b5d50404ea1f6b83ac83022a0a200246fc24c62404cc5dcc0e546dadfe9f2b",
+  "input_files_sha256": "c814f9651d165672f7dbb329fa4820a2aba23cd7a9aea96c6b39ca769ab67f26",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "previous_review_sha256": "08c0e3cf930f915d68523d578cd134acb9171cb3e385e172fdbe0aacbb514e0d",
+  "retry_of_failed_round": null,
+  "allowed_paths": [
+    "AGENTS.md",
+    "docs/ai-review/README.md"
+  ],
+  "excluded_paths": [],
+  "input_files": [
+    {
+      "path": "AGENTS.md",
+      "size": 4888,
+      "git_blob_oid": "b8ffe513f1ecca3b947a7148b3944f4e1f3f8f8c",
+      "sha256": "539d410c59511d94a87dfba43851111231a26ab5b36878dbb0c55cbab31ff394"
+    },
+    {
+      "path": "docs/ai-review/README.md",
+      "size": 9448,
+      "git_blob_oid": "2ff81dafd7afa2de715225938c785d2402d7523f",
+      "sha256": "0ab039c1e005e6d8b19de7c7da0465b6eb227fd6fae7d1c86d68f387289c1bc4"
+    }
+  ]
+}

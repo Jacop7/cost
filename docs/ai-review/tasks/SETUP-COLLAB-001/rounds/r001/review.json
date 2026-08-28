@@ -1,0 +1,118 @@
+{
+  "schema_version": "1.0",
+  "task_id": "SETUP-COLLAB-001",
+  "reviewer_role": "FABLE-ARCH",
+  "review_mode": "SMOKE",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "target_commit_sha": "77c9148ca30d9a5423fd48a7056e5c58ccdc62ae",
+  "target_tree_oid": "9cad53864ef8ef35568f1342e6c9f908c0934e79",
+  "agents_blob_oid": "b8ffe513f1ecca3b947a7148b3944f4e1f3f8f8c",
+  "agents_sha256": "539d410c59511d94a87dfba43851111231a26ab5b36878dbb0c55cbab31ff394",
+  "task_sha256": "5e43e881146ba6640381b2dfbd0ee299ab8f26fcd90ed4d8036ace75f48fa443",
+  "collaboration_sha256": "2178317d7382676ca7bb22e99d4ba6762f94fce48ec2ad5e85b7ec133141fe5d",
+  "input_files_sha256": "53b77499f78bf41cf80154e63082764b979bac333314dab33fcdd1c2bc748146",
+  "verdict": "PASS",
+  "summary": "SMOKE r001 판정: PASS. 허용 경로 2개(AGENTS.md, docs/ai-review/README.md)만 읽었고 쓰기·셸·네트워크는 사용하지 않았다.\n\nCOLLAB-1(단일 공동 산출물): README.md 3-6행이 \"같은 공식 산출물을 차례로 개선\"과 tasks/ 디렉터리가 복제 장소가 아님을, 10-11행이 역할별 사본 금지와 allowed_paths 파일이 유일한 공동 산출물임을, 24-25행과 55행이 최종 문서 하나·순차 편집을 명시한다. 충족.\n\nCOLLAB-2(회차별 원본 보존): 16-17행이 review.json·review.md 영구 보존과 원본 미편집·다음 회차 정정을, 42-44행이 rounds/rNNN 내 원본 불변을, 59행이 직접 편집·삭제 금지를, 143-146행이 append-only와 틀린 검수도 삭제하지 않음을 명시한다. 충족.\n\nCOLLAB-3(대화 장부 합류): 14-15행이 collaboration.md 시간순 추가·과거 턴 수정 금지를, 18-20행이 proposed_edits의 자동 합류와 솔라/부오케스트레이터의 반영 책임을, 68행·78-79행·147행이 원본 보존과 장부 자동 합류·직전 review.json 자동 전달을 명시한다. 충족.\n\n두 조건을 뒤집거나 서로 모순되는 문구는 없다. 비차단 Improvement 2건만 남긴다: (1) README.md 144행의 `REOPENED`가 133행 review_state 열거와 실행기 응답 규약(reopened_finding_ids 목록)에 없어 용어가 어긋남 — 대체 문구를 proposed_edits로 제안. (2) AGENTS.md 9-15행 문서 책임 목록에 검수 규격 문서 항목이 없어 148행의 \"AGENTS.md 우선\" 규칙이 양방향으로 연결되지 않음 — AGENTS.md는 기준 commit 고정이므로 별도 사람 승인 변경으로 처리할 것을 권고.",
+  "findings": [
+    {
+      "finding_id": "COLLAB-001-REOPENED-STATE-TERM",
+      "severity": "Improvement",
+      "review_state": "OPEN",
+      "category": "OTHER",
+      "requirement_or_invariant_ids": [
+        "COLLAB-2",
+        "AI-REVIEW:append-only-review"
+      ],
+      "evidence": [
+        {
+          "path": "docs/ai-review/README.md",
+          "line_start": 133,
+          "line_end": 133,
+          "observation": "review_state 열거는 OPEN → FIXING → READY_FOR_REVIEW → VERIFIED → CLOSED와 예외 DISPUTED뿐이며 REOPENED가 없다."
+        },
+        {
+          "path": "docs/ai-review/README.md",
+          "line_start": 144,
+          "line_end": 145,
+          "observation": "다음 회차가 같은 finding ID를 CLOSED, REOPENED 또는 DISPUTED로 정정한다고 적어 133행에 없는 상태명을 사용한다."
+        },
+        {
+          "path": "COLLABORATION_LOG",
+          "line_start": 0,
+          "line_end": 0,
+          "observation": "실행기 응답 규약에서 재개는 review_state 값이 아니라 reopened_finding_ids 목록으로 표현된다."
+        }
+      ],
+      "impact": "보존·정정 규칙 자체는 유지되지만, 상태 어휘가 6절 열거와 어긋나 자동 처리(status.json 갱신, 회차 간 finding 추적)에서 해석이 갈릴 수 있다. 공동 작성 원칙·보존 원칙과는 무관하므로 PASS를 막지 않는다.",
+      "acceptance_criteria": [
+        "7절 정정 규칙의 상태 어휘가 6절 review_state 열거 또는 응답 규약의 reopened_finding_ids 중 하나로 일관되게 표현된다.",
+        "REOPENED를 상태로 유지하려면 133행 열거에 추가하고 전이 위치(CLOSED 또는 VERIFIED에서 OPEN으로 복귀)를 명시한다."
+      ],
+      "required_tests": [],
+      "previous_finding_id": null
+    },
+    {
+      "finding_id": "COLLAB-001-AGENTS-DOC-INDEX",
+      "severity": "Improvement",
+      "review_state": "OPEN",
+      "category": "ARCHITECTURE",
+      "requirement_or_invariant_ids": [
+        "COLLAB-1",
+        "AI-REVIEW:single-shared-artifact"
+      ],
+      "evidence": [
+        {
+          "path": "AGENTS.md",
+          "line_start": 9,
+          "line_end": 15,
+          "observation": "문서 책임 목록에 ARCHITECTURE.md, features/README.md, 작업큐, 브랜치-DB 운영, 서버 확장 5개만 있고 AI 검수 규격 문서 항목이 없다."
+        },
+        {
+          "path": "docs/ai-review/README.md",
+          "line_start": 148,
+          "line_end": 149,
+          "observation": "충돌 시 AGENTS.md와 사람 승인 결정이 우선한다고 README 쪽에서만 단방향으로 선언한다."
+        },
+        {
+          "path": "docs/ai-review/README.md",
+          "line_start": 89,
+          "line_end": 89,
+          "observation": "WORKING_TREE_HASHED 모드에서도 AGENTS.md는 기준 commit과 정확히 같아야 하므로 이번 회차 범위에서 AGENTS.md를 고칠 수는 없다."
+        }
+      ],
+      "impact": "권위 문서가 검수 규격 문서의 존재를 가리키지 않아, 새 작업자가 AGENTS.md만 읽으면 공동 작성·보존 규칙을 찾지 못할 수 있다. 정책 충돌은 아니며 단일 산출물 원칙을 훼손하지 않는다.",
+      "acceptance_criteria": [
+        "AGENTS.md 문서 책임 목록에 'AI 공동 작성·독립 검수 규격: docs/ai-review/README.md' 한 줄이 사람 승인 변경으로 추가되거나, 추가하지 않기로 한 결정이 collaboration.md에 기록된다."
+      ],
+      "required_tests": [],
+      "previous_finding_id": null
+    }
+  ],
+  "proposed_edits": [
+    {
+      "edit_id": "COLLAB-001-E1-REOPENED-WORDING",
+      "path": "docs/ai-review/README.md",
+      "anchor": "## 7. 보존·정정 규칙 — '틀린 검수도 삭제하지 않는다.' 항목(144-145행)",
+      "operation": "REPLACE",
+      "proposed_text": "- 틀린 검수도 삭제하지 않는다. 다음 회차가 같은 finding ID를 `CLOSED` 또는 `DISPUTED`로 정정하거나,\n  `reopened_finding_ids`에 올려 `OPEN`으로 되돌린다.",
+      "rationale": "6절 review_state 열거(133행)에 없는 REOPENED 대신 기존 상태값과 실행기 응답 규약의 reopened_finding_ids 목록으로 표현해 상태 어휘를 일치시킨다.",
+      "finding_ids": [
+        "COLLAB-001-REOPENED-STATE-TERM"
+      ]
+    },
+    {
+      "edit_id": "COLLAB-001-E2-AGENTS-INDEX-NOTE",
+      "path": "AGENTS.md",
+      "anchor": "## 프로젝트와 권위 — 문서 책임 목록(11-15행)",
+      "operation": "COMMENT",
+      "proposed_text": "AGENTS.md는 기준 commit 고정 파일이므로 이번 회차에서 편집하지 않는다. 별도 사람 승인 변경 시 다음 한 줄을 목록 끝에 추가할 것을 제안한다:\n- AI 공동 작성·독립 검수 규격: `docs/ai-review/README.md`",
+      "rationale": "README 148행이 AGENTS.md 우선을 선언하는데 AGENTS.md 쪽에는 역참조가 없어 권위 문서에서 검수 규격을 찾을 수 없다.",
+      "finding_ids": [
+        "COLLAB-001-AGENTS-DOC-INDEX"
+      ]
+    }
+  ],
+  "closed_finding_ids": [],
+  "reopened_finding_ids": [],
+  "remaining_required_finding_ids": []
+}

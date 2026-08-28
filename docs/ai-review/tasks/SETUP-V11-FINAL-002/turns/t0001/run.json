@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "SETUP-V11-FINAL-002",
+  "sequence": "t0001",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-08-28T03:46:50.903Z",
+  "turn_id": "turn-s002",
+  "turn_type": "SOLAR_RESPONSE",
+  "role": "SOLAR-ARCH",
+  "task_sha256": "2352981f659b4a2b4f94392878adeb29805a3c18c1981c8f55b1e0acaf65a5fc",
+  "runner_sha256": "c5104239932e358802b77ac93cbb003a11981fbea70c297a6f5e821fde4927a7",
+  "previous_manual_run_sha256": null,
+  "collaboration_before_sha256": "50fc9fb984251ce9a091afee9fae0f92c5202ed846862d28e929c4cddb472d7d",
+  "collaboration_before_bytes": 4492,
+  "collaboration_entry_sha256": "6977c33663972a75cf6a1857a424ec7504a9742303e56fa90a37345ce2f0917c",
+  "collaboration_entry_bytes": 1266,
+  "collaboration_after_sha256": "4ba171a7dcf2ef3fbce50ad65549fc7a67613af47ae25f826fadce2d724655df",
+  "collaboration_after_bytes": 5758
+}

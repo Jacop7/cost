@@ -1,0 +1,2 @@
+# Fable review markdown is immutable model output and may preserve source whitespace.
+docs/ai-review/tasks/**/review.md -whitespace

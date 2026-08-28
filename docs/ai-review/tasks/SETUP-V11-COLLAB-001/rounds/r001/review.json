@@ -1,0 +1,141 @@
+{
+  "schema_version": "1.0",
+  "task_id": "SETUP-V11-COLLAB-001",
+  "reviewer_role": "FABLE-ARCH",
+  "review_mode": "SMOKE",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "77c9148ca30d9a5423fd48a7056e5c58ccdc62ae",
+  "target_commit_sha": "77c9148ca30d9a5423fd48a7056e5c58ccdc62ae",
+  "target_tree_oid": "9cad53864ef8ef35568f1342e6c9f908c0934e79",
+  "agents_blob_oid": "b8ffe513f1ecca3b947a7148b3944f4e1f3f8f8c",
+  "agents_sha256": "539d410c59511d94a87dfba43851111231a26ab5b36878dbb0c55cbab31ff394",
+  "task_sha256": "4084def230d08e18edf31210231ffd2c178edd33d62d6d7afb2a85f771e2fde5",
+  "collaboration_sha256": "43301daede282b9d86c7894395c556d697e08e6a12215a6ded644897b4c9bada",
+  "input_files_sha256": "604543433424380f035c764f3ae3361ffb415fe877cc120124b7b110ccb927ad",
+  "schema_sha256": "b088e160631605408e41da34148cfc68da3a39352d5a968fafb8aab56a8dbf5d",
+  "runner_sha256": "1420520592d0c74a2f8c0e70165843c2a26d640d9d7d5b8909d160bb9ae04af0",
+  "verdict": "CHANGES_REQUIRED",
+  "summary": "SMOKE 최초 검수(r001). 공식 산출물 `docs/ai-review/fixtures/shared-coauthoring-smoke.md`의 \"현재 종결 규칙\"(9행)은 페이블이 필수 Finding을 남겨도 솔라 반영·Codex 실행 증거·페이블 재검수 없이 \"즉시 완료 처리\"한다고 명시한다. 이는 (1) 필수 Finding을 최초 검수 역할의 재검수로만 닫는 폐쇄형 왕복 규칙(README §1 26–33행, §4 90–97행, §9 222–228행; SMOKE-COAUTHOR-1, AI-REVIEW:closed-loop-recheck)과 (2) 페이블 PASS와 AI 부 오케스트레이터의 task/gate 종결을 분리하는 규칙(README §9 227–237행; SMOKE-COAUTHOR-3, AI-REVIEW:pass-is-not-gate-closure)을 동시에 위반한다. 같은 파일 13–17행의 \"통과 조건\"은 올바른 절차를 서술하고 있어 문서 내부에서도 자기모순이 있다. 단일 공식 산출물 원칙(SMOKE-COAUTHOR-2)은 위반 없이 충족된다(역할별 사본 없음, artifact 경로 1개). 필수 Finding 2건(Major)을 OPEN으로 남기며, 9행을 통과 조건과 정합하는 종결 규칙으로 교체하는 proposed_edit을 첨부한다. 솔라가 같은 파일에 반영하고 Codex가 새 판본 hash를 검증한 뒤 r002에서 같은 Finding ID로 재검수한다. PASS가 나더라도 gate_state는 AI 부 오케스트레이터의 별도 결정 전까지 OPEN이어야 한다.",
+  "findings": [
+    {
+      "finding_id": "SMOKE-COAUTHOR-CLOSE-RULE-001",
+      "severity": "Major",
+      "review_state": "OPEN",
+      "category": "POLICY",
+      "requirement_or_invariant_ids": [
+        "SMOKE-COAUTHOR-1",
+        "AI-REVIEW:closed-loop-recheck"
+      ],
+      "evidence": [
+        {
+          "path": "docs/ai-review/fixtures/shared-coauthoring-smoke.md",
+          "line_start": 7,
+          "line_end": 9,
+          "observation": "\"현재 종결 규칙\"이 페이블의 필수 Finding을 솔라 반영, Codex 실행 증거, 페이블 재검수 없이 즉시 완료 처리한다고 명시한다."
+        },
+        {
+          "path": "docs/ai-review/fixtures/shared-coauthoring-smoke.md",
+          "line_start": 14,
+          "line_end": 16,
+          "observation": "같은 파일의 통과 조건은 솔라 반영 → Codex hash·검증 → 같은 Finding ID 재검수 후 종결을 요구해 9행과 자기모순이다."
+        },
+        {
+          "path": "docs/ai-review/README.md",
+          "line_start": 26,
+          "line_end": 33,
+          "observation": "매개형 공동 작성 규격: 솔라 반영, Codex 증거, 페이블이 기존 finding_id로 재확인 후 종결·재개방. proposed_edits 기록만으로 공식 변경이 되지 않으며 새 판본 hash와 검증 증거 뒤 재검수돼야 한다."
+        },
+        {
+          "path": "docs/ai-review/README.md",
+          "line_start": 90,
+          "line_end": 97,
+          "observation": "솔라 선행 흐름은 FABLE_RECHECK(같은 finding_id)를 필수 Finding이 닫힐 때까지 반복한 뒤에만 게이트 종결로 넘어간다."
+        },
+        {
+          "path": "docs/ai-review/README.md",
+          "line_start": 222,
+          "line_end": 222,
+          "observation": "finding.review_state는 최초 발견 역할만 닫을 수 있다."
+        }
+      ],
+      "impact": "필수 Finding이 반영·검증·재검수 없이 소멸돼 검수 결과가 실제 산출물 상태와 분리된다. 폐쇄형 왕복이 성립하지 않아 상호검수 게이트가 형식화되고, 실행기의 Finding 상태 전이 재검증(README 137–140행)과도 충돌한다.",
+      "acceptance_criteria": [
+        "9행의 종결 규칙이 '필수 Finding은 솔라가 같은 공식본에 반영하고 Finding별 응답을 장부에 남기며, Codex가 수정 판본 hash와 검증 결과를 남긴 뒤, 최초 검수 역할(페이블)이 같은 finding_id로 재검수해 완료 조건이 충족된 때만 CLOSED로 전환한다'는 내용으로 교체된다.",
+        "'즉시 완료 처리' 또는 이에 상응하는 자동 종결 문구가 산출물에서 제거된다.",
+        "종결 규칙 절과 통과 조건 절(13–17행)이 서로 모순되지 않는다.",
+        "역할별 사본을 만들지 않고 같은 경로 docs/ai-review/fixtures/shared-coauthoring-smoke.md에서 수정된다."
+      ],
+      "required_tests": [
+        "Codex가 수정 산출물의 SHA-256과 input_files hash를 CODEX_EVIDENCE 턴으로 공동 장부에 기록",
+        "r002 FABLE_RECHECK에서 SMOKE-COAUTHOR-CLOSE-RULE-001을 같은 ID로 재검수해 CLOSED 전환 여부 확인"
+      ],
+      "previous_finding_id": null
+    },
+    {
+      "finding_id": "SMOKE-COAUTHOR-PASS-GATE-002",
+      "severity": "Major",
+      "review_state": "OPEN",
+      "category": "POLICY",
+      "requirement_or_invariant_ids": [
+        "SMOKE-COAUTHOR-3",
+        "AI-REVIEW:pass-is-not-gate-closure"
+      ],
+      "evidence": [
+        {
+          "path": "docs/ai-review/fixtures/shared-coauthoring-smoke.md",
+          "line_start": 9,
+          "line_end": 9,
+          "observation": "\"즉시 완료 처리\"는 페이블의 Finding 판정과 task/gate 종결을 하나의 상태로 합쳐 AI 부 오케스트레이터의 별도 게이트 결정을 생략한다."
+        },
+        {
+          "path": "docs/ai-review/fixtures/shared-coauthoring-smoke.md",
+          "line_start": 17,
+          "line_end": 17,
+          "observation": "통과 조건은 페이블 PASS와 AI 부 오케스트레이터의 task/gate 종결을 별도 상태로 유지하도록 요구해 9행과 충돌한다."
+        },
+        {
+          "path": "docs/ai-review/README.md",
+          "line_start": 227,
+          "line_end": 230,
+          "observation": "PASS는 필수 Finding이 없다는 페이블 판정이며 task/gate의 자동 CLOSED가 아니다. 최초 발견 역할이 Finding을 닫고 AI 부 오케스트레이터가 증거를 확인해 기술 게이트를 닫는다."
+        },
+        {
+          "path": "docs/ai-review/README.md",
+          "line_start": 232,
+          "line_end": 237,
+          "observation": "gate_state=CLOSED는 AI_DEPUTY_GATE_DECISION 턴에 hash·anchor commit·Codex 증거를 기록한 때만 갱신하며, 사람 승인이 필요하면 AWAITING_HUMAN으로 둔다."
+        }
+      ],
+      "impact": "페이블 판정이 곧 작업 종결로 해석되면 gate anchor commit, Codex 증거, 사람 승인(AWAITING_HUMAN) 경로가 건너뛰어져 README §9의 종결 권한 분리가 무력화된다.",
+      "acceptance_criteria": [
+        "산출물의 종결 규칙이 페이블 PASS(필수 Finding 0건)와 AI 부 오케스트레이터의 task/gate 종결(AI_DEPUTY_GATE_DECISION)을 별도 상태로 명시한다.",
+        "페이블이 PASS를 반환해도 gate_state가 자동으로 CLOSED가 되지 않으며, 게이트 종결 주체가 AI 부 오케스트레이터임을 문서에 적는다.",
+        "종결 규칙 절과 17행 통과 조건이 정합한다."
+      ],
+      "required_tests": [
+        "r002 재검수에서 PASS가 나더라도 status.json의 gate_state가 OPEN으로 유지되는지 Codex 또는 실행기 증거로 확인"
+      ],
+      "previous_finding_id": null
+    }
+  ],
+  "proposed_edits": [
+    {
+      "edit_id": "SMOKE-EDIT-CLOSE-RULE-001",
+      "path": "docs/ai-review/fixtures/shared-coauthoring-smoke.md",
+      "anchor": "## 현재 종결 규칙",
+      "operation": "REPLACE",
+      "proposed_text": "## 현재 종결 규칙\n\n페이블이 필수 Finding(Blocker·Critical·Major·Minor)을 남기면 즉시 완료 처리하지 않는다. 솔라가 같은\n공식 산출물에 수정을 반영하고 공동 장부에 Finding별 응답(`APPLIED | PARTIAL | REJECTED |\nNEEDS_HUMAN_DECISION`)을 남긴 뒤, Codex가 수정 판본의 SHA-256과 검증 결과를 `CODEX_EVIDENCE`로\n기록하고, 최초 검수 역할인 페이블이 같은 `finding_id`로 재검수해 완료 조건이 충족된 때만 해당\nFinding을 `CLOSED`로 전환한다.\n\n페이블 `PASS`는 필수 Finding이 0건이라는 검수 판정일 뿐이며 task/gate의 자동 종결이 아니다.\n`gate_state`는 AI 부 오케스트레이터가 `AI_DEPUTY_GATE_DECISION` 턴에 검증 hash·Codex 증거·종결\n근거를 기록할 때만 `CLOSED`로 바뀌고, 그 전까지 `OPEN`으로 유지한다.",
+      "rationale": "9행의 즉시 완료 규칙을 README §1·§4·§9 및 같은 파일 13–17행 통과 조건과 정합하는 폐쇄형 재검수·PASS/gate 분리 규칙으로 교체한다.",
+      "finding_ids": [
+        "SMOKE-COAUTHOR-CLOSE-RULE-001",
+        "SMOKE-COAUTHOR-PASS-GATE-002"
+      ]
+    }
+  ],
+  "closed_finding_ids": [],
+  "reopened_finding_ids": [],
+  "remaining_required_finding_ids": [
+    "SMOKE-COAUTHOR-CLOSE-RULE-001",
+    "SMOKE-COAUTHOR-PASS-GATE-002"
+  ]
+}

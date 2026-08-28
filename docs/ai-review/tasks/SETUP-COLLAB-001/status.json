@@ -1,0 +1,11 @@
+{
+  "protocol_version": "1.0",
+  "task_id": "SETUP-COLLAB-001",
+  "updated_at": "2026-08-27T23:26:47.953Z",
+  "latest_round": "r002",
+  "review_state": "VERIFIED",
+  "run_state": "RESULT_RECEIVED",
+  "defect_state": "NOT_APPLICABLE",
+  "verdict": "PASS",
+  "remaining_required_finding_ids": []
+}

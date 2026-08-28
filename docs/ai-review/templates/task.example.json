@@ -1,0 +1,40 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "TASK-ARCH-001",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R2",
+  "author_role": "SOLAR-ARCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "0000000000000000000000000000000000000000",
+  "target_commit_sha": "0000000000000000000000000000000000000000",
+  "target_tree_oid": "0000000000000000000000000000000000000000",
+  "agents_blob_oid": "0000000000000000000000000000000000000000",
+  "agents_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "requirements": [
+    "REQ-001"
+  ],
+  "invariant_ids": [
+    "AGENTS:absolute-principles"
+  ],
+  "artifact_paths": [
+    "docs/example.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "ARCHITECTURE.md"
+  ],
+  "evidence_paths": [
+    "packages/core/tests/example.test.ts"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "공동 산출물의 요구사항-설계-테스트 추적"
+  ],
+  "human_decisions": [],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null
+}

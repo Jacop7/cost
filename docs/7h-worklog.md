@@ -1,6 +1,8 @@
 # 장기 자율 작업 로그
 
-> 운영 지침: `CLAUDE_7H_AUTONOMOUS_GUIDE.md`(OneDrive 사본). 작업 대상 저장소는 `C:\Users\jacop\프로젝트\식자재관리앱`(origin: Jacop7/cost).
+> 이 파일은 과거 작업의 감사 로그다. 현재 운영 지침과 작업 대상은
+> `C:\Users\jacop\프로젝트\식자재관리앱` 저장소 안의 `AGENTS.md` 및 권위 문서만 사용하며,
+> 저장소 밖의 사본은 참조하지 않는다.
 
 ## 기준선
 

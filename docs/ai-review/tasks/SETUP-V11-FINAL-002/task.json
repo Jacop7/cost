@@ -1,0 +1,46 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "SETUP-V11-FINAL-002",
+  "route": "SMOKE",
+  "risk_level": "R0",
+  "author_role": "SOLAR-ARCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "SMOKE",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "77c9148ca30d9a5423fd48a7056e5c58ccdc62ae",
+  "target_commit_sha": "77c9148ca30d9a5423fd48a7056e5c58ccdc62ae",
+  "target_tree_oid": "9cad53864ef8ef35568f1342e6c9f908c0934e79",
+  "agents_blob_oid": "b8ffe513f1ecca3b947a7148b3944f4e1f3f8f8c",
+  "agents_sha256": "539d410c59511d94a87dfba43851111231a26ab5b36878dbb0c55cbab31ff394",
+  "requirements": [
+    "FINAL-SMOKE-1: 필수 Finding은 솔라 반영과 Codex 증거 뒤 최초 검수 역할의 재검수로만 닫는다",
+    "FINAL-SMOKE-2: 역할별 사본 대신 지정된 단일 공식 산출물을 반복 개선한다",
+    "FINAL-SMOKE-3: Fable PASS와 외부 보호 게이트의 공식 종결을 분리한다"
+  ],
+  "invariant_ids": [
+    "AI-REVIEW:single-canonical-artifact",
+    "AI-REVIEW:closed-loop-recheck",
+    "AI-REVIEW:pass-is-not-gate-closure"
+  ],
+  "artifact_paths": [
+    "docs/ai-review/fixtures/shared-coauthoring-smoke.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/ai-review/README.md"
+  ],
+  "evidence_paths": [],
+  "excluded_paths": [],
+  "required_evidence": [
+    "단일 공식 산출물과 같은 Finding ID 재검수 규칙의 줄 근거",
+    "PASS와 gate_state OPEN 및 외부 종결 권위 분리의 줄 근거",
+    "최신 실행기의 source archive, 전체 WORKING input snapshot, prepared entry와 run hash 보존"
+  ],
+  "human_decisions": [
+    "2026-08-28 사용자의 공식 Claude Code CLI 읽기 전용 상호검수 호출 승인"
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null
+}

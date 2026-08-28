@@ -1,0 +1,13 @@
+{
+  "protocol_version": "1.1",
+  "note": "동일 공동 산출물의 회차별 content-addressed 감사 판본이며 역할별 최종 문서가 아님",
+  "artifacts": [
+    {
+      "path": "docs/ai-review/fixtures/shared-coauthoring-smoke.md",
+      "change_type": "ADDED",
+      "size": 828,
+      "sha256": "f95efc28c4347223bfafdd1deff7aa348e0a0118ca135daa3beb7a4dad045807",
+      "content_utf8": "# 단일 산출물 공동 작성 왕복 검증\n\n## 목적\n\n솔라와 페이블이 역할별 사본을 만들지 않고 이 파일 하나를 반복 개선할 수 있는지 확인한다.\n\n## 현재 종결 규칙\n\n페이블이 필수 Finding을 남기면 솔라 반영, Codex 실행 증거, 페이블 재검수 없이 즉시 완료 처리한다.\n\n## 통과 조건\n\n- 페이블의 최초 검수 원본은 회차 기록에 보존한다.\n- 솔라는 같은 파일에 수정 내용을 반영하고 공동 장부에서 Finding별로 답한다.\n- Codex는 수정 판본의 hash와 검증 결과를 공동 장부에 남긴다.\n- 페이블은 같은 Finding ID로 재검수하고 완료 조건이 충족된 때만 Finding을 닫는다.\n- 페이블 PASS와 AI 부 오케스트레이터의 task/gate 종결은 별도 상태로 유지한다.\n"
+    }
+  ]
+}

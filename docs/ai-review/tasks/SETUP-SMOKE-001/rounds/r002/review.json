@@ -1,0 +1,21 @@
+{
+  "schema_version": "1.0",
+  "task_id": "SETUP-SMOKE-001",
+  "reviewer_role": "FABLE-SEC",
+  "review_mode": "SMOKE",
+  "snapshot_mode": "COMMIT",
+  "target_commit_sha": "77c9148ca30d9a5423fd48a7056e5c58ccdc62ae",
+  "target_tree_oid": "9cad53864ef8ef35568f1342e6c9f908c0934e79",
+  "agents_blob_oid": "b8ffe513f1ecca3b947a7148b3944f4e1f3f8f8c",
+  "agents_sha256": "539d410c59511d94a87dfba43851111231a26ab5b36878dbb0c55cbab31ff394",
+  "task_sha256": "68f5be3c11a30ad4ac64781465d2e28de2ac7c051895d5c3f897e0809169edf0",
+  "collaboration_sha256": "d254763e790cc4db8356b1297d8dcb42de1ebb14d05cd5e8e53f9bd703f9e774",
+  "input_files_sha256": "8b3727642f73e2e368ad659a59677702178cf533f94ac453baa3eb6f84dd4ff1",
+  "verdict": "PASS",
+  "summary": "SETUP-SMOKE-001 읽기 전용 연결 확인 결과 PASS. commit 77c9148의 AGENTS.md를 Read 도구로만 읽었다. SMOKE-1/AGENTS:project-title: 1행 제목 \"# AGENTS.md — 식자재 관리 앱 작업 지침\"에 `식자재 관리 앱`이 포함되어 있다. AGENTS:required-local-gate: 93행 \"필수 로컬 게이트:\" 아래 95~97행 코드 블록에 `corepack pnpm verify`가 명시되어 있다. 두 조건이 모두 충족되어 finding과 proposed edit 없이 PASS한다. SMOKE-2: 전달받은 commit/tree/blob/SHA-256 값과 snapshot_mode(COMMIT)를 그대로 되돌렸다. 허용 경로 외 파일은 읽지 않았고 쓰기·셸·네트워크 접근은 하지 않았다.",
+  "findings": [],
+  "proposed_edits": [],
+  "closed_finding_ids": [],
+  "reopened_finding_ids": [],
+  "remaining_required_finding_ids": []
+}

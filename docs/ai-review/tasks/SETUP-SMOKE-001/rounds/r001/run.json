@@ -1,0 +1,17 @@
+{
+  "protocol_version": "1.0",
+  "task_id": "SETUP-SMOKE-001",
+  "round": "r001",
+  "started_at": "2026-08-27T23:21:58.268Z",
+  "finished_at": "2026-08-27T23:22:00.617Z",
+  "run_state": "RUN_FAILED",
+  "cli_version": "2.1.248 (Claude Code)",
+  "model": "fable",
+  "effort": "high",
+  "exit_code": 69,
+  "claude_exit_code": 1,
+  "duration_ms": 1291,
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "d8a1e758a0885d376f7a2457d829c53f27040ef929246fb4e28105670fb743de",
+  "error": "Claude Code가 종료 코드 1로 끝났습니다."
+}

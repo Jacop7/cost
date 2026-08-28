@@ -1,0 +1,79 @@
+{
+  "protocol_version": "1.0",
+  "task_id": "SETUP-SMOKE-001",
+  "round": "r002",
+  "started_at": "2026-08-27T23:22:25.894Z",
+  "finished_at": "2026-08-27T23:22:54.188Z",
+  "run_state": "RESULT_RECEIVED",
+  "cli_version": "2.1.248 (Claude Code)",
+  "model": "fable",
+  "effort": "high",
+  "exit_code": 0,
+  "claude_exit_code": 0,
+  "terminal_reason": "completed",
+  "duration_ms": 26925,
+  "stdout_sha256": "40edec7ec5285907c5219da170bbbee57a20c7b4a0514632fe34172b128966a5",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "total_cost_usd": 0.384266,
+  "usage": {
+    "input_tokens": 58,
+    "cache_creation_input_tokens": 15073,
+    "cache_read_input_tokens": 10496,
+    "output_tokens": 1377,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 15073,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 56,
+        "output_tokens": 1220,
+        "cache_read_input_tokens": 10496,
+        "cache_creation_input_tokens": 4577,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 4577
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "model_usage": {
+    "claude-haiku-4-5-20251001": {
+      "inputTokens": 2800,
+      "outputTokens": 16,
+      "cacheReadInputTokens": 0,
+      "cacheCreationInputTokens": 0,
+      "webSearchRequests": 0,
+      "costUSD": 0.0028799999999999997,
+      "contextWindow": 200000,
+      "maxOutputTokens": 32000,
+      "canonicalModel": "claude-haiku-4-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    },
+    "claude-fable-5": {
+      "inputTokens": 58,
+      "outputTokens": 1377,
+      "cacheReadInputTokens": 10496,
+      "cacheCreationInputTokens": 15073,
+      "webSearchRequests": 0,
+      "costUSD": 0.381386,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 64000,
+      "canonicalModel": "claude-fable-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  }
+}

@@ -1,0 +1,93 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "SETUP-V11-COLLAB-001",
+  "round": "r002",
+  "started_at": "2026-08-28T00:13:16.751Z",
+  "finished_at": "2026-08-28T00:14:39.069Z",
+  "run_state": "RESULT_RECEIVED",
+  "cli_version": "2.1.248 (Claude Code)",
+  "cli_executable_sha256": "c322169422b45ec4bbfeae3aae6cfd6367a622b0d12f06ba9766e18bb8eca2af",
+  "model": "claude-fable-5",
+  "effort": "high",
+  "max_budget_usd": "2.00",
+  "exit_code": 0,
+  "claude_exit_code": 0,
+  "terminal_reason": "completed",
+  "duration_ms": 81826,
+  "stdout_sha256": "922ab99e11b1fea6051c88ec70baa5802c49955a5447c1dabd3baafd45f65b8c",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "manifest_sha256": "1261f59c58f8781718307cada516474eed004a34d76a5bc1699ea7e58af3f9cb",
+  "review_sha256": "99fd822cf4057c1e7d67bb4960cb4e757ad6fd54ca5fd9bbc0451464840ed6f5",
+  "task_sha256": "4084def230d08e18edf31210231ffd2c178edd33d62d6d7afb2a85f771e2fde5",
+  "schema_sha256": "b088e160631605408e41da34148cfc68da3a39352d5a968fafb8aab56a8dbf5d",
+  "runner_sha256": "1420520592d0c74a2f8c0e70165843c2a26d640d9d7d5b8909d160bb9ae04af0",
+  "input_files_sha256": "5168254703d34bc0859463db0532212c41060f57811ab9cfe55c22df48439b73",
+  "collaboration_before_bytes": 6373,
+  "collaboration_before_sha256": "3220a77c19218a02cc5932ac5cd65d03b987dba3a3e6e498d30d011a4dee95ea",
+  "collaboration_entry_bytes": 2921,
+  "collaboration_entry_sha256": "3908cb26273c2a4c6913bc5576512c00106302eff440297af017cd32c0194e79",
+  "collaboration_after_bytes": 9294,
+  "collaboration_after_sha256": "445491278b4d706c0758be04255eed8ee2c631b5bc7ffa246704a2f2091b397f",
+  "total_cost_usd": 0.9513280000000001,
+  "usage": {
+    "input_tokens": 246,
+    "cache_creation_input_tokens": 28294,
+    "cache_read_input_tokens": 81593,
+    "output_tokens": 5819,
+    "output_tokens_details": {
+      "thinking_tokens": 580
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 28294,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 84,
+        "output_tokens": 4902,
+        "cache_read_input_tokens": 28830,
+        "cache_creation_input_tokens": 4698,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 4698
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "model_usage": {
+    "claude-haiku-4-5-20251001": {
+      "inputTokens": 10365,
+      "outputTokens": 16,
+      "cacheReadInputTokens": 0,
+      "cacheCreationInputTokens": 0,
+      "webSearchRequests": 0,
+      "costUSD": 0.010445,
+      "contextWindow": 200000,
+      "maxOutputTokens": 32000,
+      "canonicalModel": "claude-haiku-4-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    },
+    "claude-fable-5": {
+      "inputTokens": 246,
+      "outputTokens": 5819,
+      "cacheReadInputTokens": 81593,
+      "cacheCreationInputTokens": 28294,
+      "webSearchRequests": 0,
+      "costUSD": 0.940883,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 64000,
+      "canonicalModel": "claude-fable-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  }
+}
