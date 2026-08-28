@@ -13,21 +13,21 @@
     }
   },
   "scripts": {
-    "mobile": "pnpm --filter @sikjae/mobile",
-    "db": "pnpm --filter @sikjae/db",
-    "core": "pnpm --filter @sikjae/core",
-    "typecheck": "pnpm -r typecheck",
-    "test": "pnpm -r test",
+    "mobile": "corepack pnpm --filter @sikjae/mobile",
+    "db": "corepack pnpm --filter @sikjae/db",
+    "core": "corepack pnpm --filter @sikjae/core",
+    "typecheck": "corepack pnpm -r typecheck",
+    "test": "corepack pnpm -r test",
     "verify": "node scripts/verify.mjs",
     "fable:check": "node scripts/fable-review.mjs --check",
     "fable:self-test": "node scripts/fable-review.mjs --self-test && node scripts/fable-review/protocol-v12.test.mjs",
     "fable:append": "node scripts/fable-review.mjs --append-turn",
     "fable:review": "node scripts/fable-review.mjs",
-    "lint": "pnpm -r lint",
-    "db:start": "pnpm --filter @sikjae/db start",
-    "db:reset": "pnpm --filter @sikjae/db reset",
-    "db:types": "pnpm --filter @sikjae/db gen:types",
-    "db:test": "pnpm --filter @sikjae/db test"
+    "lint": "corepack pnpm -r lint",
+    "db:start": "corepack pnpm --filter @sikjae/db start",
+    "db:reset": "corepack pnpm --filter @sikjae/db reset",
+    "db:types": "corepack pnpm --filter @sikjae/db gen:types",
+    "db:test": "corepack pnpm --filter @sikjae/db test"
   },
   "devDependencies": {
     "typescript": "^5.6.3",

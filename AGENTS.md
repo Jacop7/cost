@@ -110,7 +110,7 @@
 corepack pnpm verify
 ```
 
-실행 순서는 ① 타입 ② core·DB·mobile 시험 ③ ACL 셸 보안 ④ 새 DB 전체 migration·DB 스위트·
+실행 순서는 ① 타입 ② core·DB·mobile 시험 ③ CLI 고정 계약·ACL 셸 보안 ④ 새 DB 전체 migration·DB 스위트·
 2세션 경합·locale parity ⑤ 업그레이드 경로 ⑥ 웹 번들이다. 건너뛴 단계가 있으면 전체 통과라고
 표현하지 않는다.
 
@@ -139,7 +139,8 @@ corepack pnpm verify --no-db
 - 호스티드 원격은 `admin-acl.sh --remote audit`으로 앱 롤 공격면을 먼저 읽기 전용 감사한다.
   `supabase_admin` 전환 불가여도 앱 ACL은 판정하되, 플랫폼 기본 권한은 별도 예외로 기록하고
   `supabase_admin ACL 통과`로 쓰지 않는다. 실제 운영 실행 전에는 원격 ACL 적용 완료로 보지 않는다.
-- Supabase CLI v2 전환도 P1-2 미결정이다.
+- Supabase CLI는 `2.116.0`을 정확히 고정한다. 버전을 올릴 때는 P1-2와 같은 로컬
+  `db reset` · `migration list` · `db push --local --dry-run` · `db:types` · 전체 `verify`를 다시 통과한다.
 - 운영·스테이징에 적용된 migration은 불변이며 새 migration으로 전진 복구한다.
 - 운영에는 `main`에 포함된 승인 이력만 적용한다. 로컬·스테이징·운영을 같은 DB로 쓰지 않는다.
 

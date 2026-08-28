@@ -7,7 +7,7 @@
  * 도는 것 —
  *   ① 타입          `pnpm -r typecheck`
  *   ② 시험 3종      `pnpm -r test` (core · db · mobile)
- *   ③ ACL 보안      Docker 없이 비밀번호·argv·환경 격리 회귀시험
+ *   ③ 도구·ACL 보안 고정 CLI 계약과 Docker 없는 비밀번호·argv·환경 격리 회귀시험
  *   ④ 새 DB         마이그레이션 전체를 빈 DB 에 태우고 DB 시험을 다시
  *   ⑤ 업그레이드 경로 마이그레이션 **순서**를 태운다
  *   ⑥ 웹 번들       Metro 가 실제로 묶는지
@@ -106,7 +106,8 @@ step(skipDb ? '② 시험 (core · mobile — DB 제외)' : '② 시험 (pnpm -r
 ));
 
 // Docker 가 필요 없는 보안 시험이다. DB 단계 안에 두면 `--no-db` CI 에서 영원히 안 돈다.
-step('③ ACL 보안 (비밀번호 · argv · 환경 격리)', () => {
+step('③ CLI 계약 · ACL 보안', () => {
+  if (!run('node', ['packages/db/scripts/cli-contract.test.mjs'])) return false;
   if (!BASH) { console.error('bash 를 못 찾았습니다 (Git Bash 필요).'); return false; }
   return run(BASH, ['packages/db/scripts/admin-acl.test.sh']);
 });
