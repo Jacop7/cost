@@ -97,7 +97,8 @@ const MAX_PREDECESSOR_ARCHIVE_BYTES = 50 * 1024 * 1024;
 const MAX_PREDECESSOR_FILES = 500;
 const DEFAULT_TIMEOUT_MS = 15 * 60 * 1000;
 const MAX_TIMEOUT_MS = 60 * 60 * 1000;
-const MAX_BUDGET_USD = '2.00';
+const DEFAULT_MAX_BUDGET_USD = '2.00';
+const MAX_REVIEW_BUDGET_USD = 10;
 const CLAUDE_MODEL = 'claude-fable-5';
 const SUPPORTED_CLAUDE_VERSION = /^2\.1\.(?:248|250)\b/;
 const LEGACY_UNARCHIVED_ROUNDS = new Map([
@@ -314,8 +315,27 @@ function ensureStringArray(value, label, { max = 100, allowEmpty = true, itemMax
   }
 }
 
+function normalizeReviewBudget(value) {
+  if (typeof value !== 'string' || !/^(?:0|[1-9]\d*)(?:\.\d{1,2})?$/.test(value)) {
+    throw new ReviewError('--max-budget-usd는 소수 둘째 자리까지의 금액이어야 합니다.', { exitCode: 64 });
+  }
+  const amount = Number(value);
+  if (!Number.isFinite(amount) || amount < 0.01 || amount > MAX_REVIEW_BUDGET_USD) {
+    throw new ReviewError(`--max-budget-usd는 0.01~${MAX_REVIEW_BUDGET_USD.toFixed(2)} 범위여야 합니다.`, { exitCode: 64 });
+  }
+  return amount.toFixed(2);
+}
+
 function parseArgs(argv) {
-  const parsed = { check: false, selfTest: false, appendTurn: false, round: 1, timeoutMs: DEFAULT_TIMEOUT_MS };
+  const parsed = {
+    check: false,
+    selfTest: false,
+    appendTurn: false,
+    round: 1,
+    timeoutMs: DEFAULT_TIMEOUT_MS,
+    maxBudgetUsd: DEFAULT_MAX_BUDGET_USD,
+    maxBudgetProvided: false,
+  };
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
     if (arg === '--') continue;
@@ -325,6 +345,10 @@ function parseArgs(argv) {
     else if (arg === '--task') parsed.taskId = argv[++i];
     else if (arg === '--round') parsed.round = Number(argv[++i]);
     else if (arg === '--timeout-ms') parsed.timeoutMs = Number(argv[++i]);
+    else if (arg === '--max-budget-usd') {
+      parsed.maxBudgetUsd = normalizeReviewBudget(argv[++i]);
+      parsed.maxBudgetProvided = true;
+    }
     else if (arg === '--help' || arg === '-h') parsed.help = true;
     else throw new ReviewError(`알 수 없는 인자입니다: ${arg}`, { exitCode: 64 });
   }
@@ -336,6 +360,9 @@ function parseArgs(argv) {
   }
   if (parsed.appendTurn && !parsed.taskId) {
     throw new ReviewError('--append-turn에는 --task <TASK-ID>가 필요합니다.', { exitCode: 64 });
+  }
+  if (parsed.maxBudgetProvided && !parsed.taskId) {
+    throw new ReviewError('--max-budget-usd는 --task 검수 실행에서만 사용할 수 있습니다.', { exitCode: 64 });
   }
   const selectedModes = Number(parsed.check) + Number(parsed.selfTest) + Number(Boolean(parsed.taskId));
   if (!parsed.help && selectedModes !== 1) {
@@ -354,7 +381,7 @@ function printHelp() {
   node scripts/fable-review.mjs --check
   node scripts/fable-review.mjs --self-test
   PowerShell 7: Get-Content -Raw -Encoding utf8 turn.md | node scripts/fable-review.mjs --append-turn --task <TASK-ID>
-  node scripts/fable-review.mjs --task <TASK-ID> [--round <1..999>] [--timeout-ms <ms>]
+  node scripts/fable-review.mjs --task <TASK-ID> [--round <1..999>] [--timeout-ms <ms>] [--max-budget-usd <0.01..10.00>]
 
 검수 패킷:
   docs/ai-review/tasks/<TASK-ID>/task.json
@@ -2299,7 +2326,7 @@ function killProcessTree(child) {
   return child.kill('SIGKILL');
 }
 
-async function runClaude({ cli, cwd, prompt, schema, timeoutMs }) {
+async function runClaude({ cli, cwd, prompt, schema, timeoutMs, maxBudgetUsd }) {
   const args = [
     '-p',
     '--model', CLAUDE_MODEL,
@@ -2307,7 +2334,7 @@ async function runClaude({ cli, cwd, prompt, schema, timeoutMs }) {
     '--output-format', 'json',
     '--json-schema', JSON.stringify(schema),
     '--max-turns', '12',
-    '--max-budget-usd', MAX_BUDGET_USD,
+    '--max-budget-usd', maxBudgetUsd,
     '--no-session-persistence',
     '--restricted',
     '--safe-mode',
@@ -4195,7 +4222,14 @@ async function executeReview(args) {
       assertPlainRuntimeDirectory(runtime, logDir, '검수 log');
       createReviewSnapshot(runtime, reviewPath, inputFiles);
       const prompt = buildPrompt({ task, collaborationText, snapshot, manifest, mode, previous });
-      claudeOutput = await runClaude({ cli, cwd: reviewPath, prompt, schema, timeoutMs: args.timeoutMs });
+      claudeOutput = await runClaude({
+        cli,
+        cwd: reviewPath,
+        prompt,
+        schema,
+        timeoutMs: args.timeoutMs,
+        maxBudgetUsd: args.maxBudgetUsd,
+      });
       writeFileSync(join(logDir, 'stderr.meta.json'), `${JSON.stringify({
         sha256: sha256(claudeOutput.stderr),
         bytes: claudeOutput.stderr.length,
@@ -4357,7 +4391,7 @@ async function executeReview(args) {
         cli_executable_sha256: cliInfo.executable_sha256,
         model: CLAUDE_MODEL,
         effort: 'high',
-        max_budget_usd: MAX_BUDGET_USD,
+        max_budget_usd: args.maxBudgetUsd,
         exit_code: finalError.exitCode,
         claude_exit_code: claudeOutput?.code ?? null,
         ...safeClaudeFailureRunFields(envelope),
@@ -4423,7 +4457,7 @@ async function executeReview(args) {
       cli_executable_sha256: cliInfo.executable_sha256,
       model: CLAUDE_MODEL,
       effort: 'high',
-      max_budget_usd: MAX_BUDGET_USD,
+      max_budget_usd: args.maxBudgetUsd,
       exit_code: exitCode,
       claude_exit_code: claudeOutput.code,
       terminal_reason: safeClaudeTerminalReason(envelope.terminal_reason),
@@ -4715,6 +4749,28 @@ function runSelfTests() {
     action();
     completed.push(name);
   };
+
+  test('review-budget-default-and-explicit-cap', () => {
+    const defaultArgs = parseArgs(['--task', 'SELF-TASK-001']);
+    const approvedArgs = parseArgs([
+      '--task', 'SELF-TASK-001', '--max-budget-usd', '4',
+    ]);
+    selfTestAssert(
+      defaultArgs.maxBudgetUsd === '2.00'
+        && !defaultArgs.maxBudgetProvided
+        && approvedArgs.maxBudgetUsd === '4.00'
+        && approvedArgs.maxBudgetProvided,
+      '기본 예산은 유지하고 승인 실행만 명시 상한 사용',
+    );
+    expectReviewError(
+      () => parseArgs(['--task', 'SELF-TASK-001', '--max-budget-usd', '10.01']),
+      { exitCode: 64, messageIncludes: '0.01~10.00' },
+    );
+    expectReviewError(
+      () => parseArgs(['--self-test', '--max-budget-usd', '4']),
+      { exitCode: 64, messageIncludes: '--task 검수 실행에서만' },
+    );
+  });
 
   test('claude-envelope-and-failed-run-are-allowlisted', () => {
     const envelope = {
@@ -6608,7 +6664,17 @@ function runSelfTests() {
         collaborationRaw: collaborationBefore,
       });
       const sequence = predecessorChain.manualHistory.nextSequence;
-      const handoffTurnId = 'turn-o001';
+      const usedGateTurnIds = new Set(
+        predecessorChain.manualHistory.records
+          .map((record) => record.identity.turnId)
+          .filter((turnId) => /^turn-o\d{3}$/.test(turnId)),
+      );
+      let handoffTurnNumber = 1;
+      while (usedGateTurnIds.has(`turn-o${String(handoffTurnNumber).padStart(3, '0')}`)) {
+        handoffTurnNumber += 1;
+      }
+      selfTestAssert(handoffTurnNumber <= 999, 'self-test successor handoff turn ID 여유');
+      const handoffTurnId = `turn-o${String(handoffTurnNumber).padStart(3, '0')}`;
       const successorTaskId = 'SELF-SUCCESSOR-INTEGRATION-002';
       const handoffBody = Buffer.from([
         `## AI_DEPUTY_SUCCESSOR_HANDOFF · ${handoffTurnId} · r001`,
