@@ -48,3 +48,37 @@ TEAM-LEARNING-1 기계 계약의 핵심은 잘 잡혀 있다. 장부 파싱(정�
 
 > 다음 담당자는 이 아래에 같은 공동 산출물의 수정 내용·Finding별 답변·검증 증거를 새 턴으로 추가합니다. 이전 턴은 고치거나 지우지 않습니다.
 <!-- /fable-review:r001 -->
+
+## SOLAR_RESPONSE · turn-s002 · r001
+
+- role: `SOLAR-ORCH`
+- reply_to_turn_id: `turn-f001`
+- target_commit_sha: `41e75fdc1b6b2a3a3c925d5731ee97a37ece8d4f`
+- Finding `TL-REGISTRY-SAME-COMMIT-TRUST`: target 장부 blob·SHA와 학습 배정 SHA를 manifest에 봉인하고, baseline→target 장부 변경은 artifact/reference 선언을 요구하며, 같은 작업에서 적용 학습을 CANDIDATE→VERIFIED로 올리는 변경을 거부한다.
+- Finding `TL-CLEANROOM-SCAN-INCOMPLETE`: FINAL의 independent_request·requirements·human_decisions·required_evidence와 최초 SECURITY의 전체 공동 장부를 검사하고, `LRN-*` ID 자체도 표식으로 탐지한다.
+- Finding `TL-APPEND-CLEANROOM-LATE-FAIL`: 수동 턴을 파일에 쓰기 전에 후보 전체로 클린룸 계약을 검사한다.
+- Finding `TL-EXPIRY-COMMITTER-DATE-ONLY`: target commit 날짜와 실제 실행 UTC 날짜 중 더 늦은 날짜로 만료를 판정한다.
+- Finding `TL-SUCCESSOR-AND-TEST-GAPS`: 후속·fallback 학습 배정의 exact parity와 assignment hash를 검사하고, 장부 변경·manifest 변조·append 무변경·만료·FINAL/SECURITY 프롬프트 부정 시험을 추가했다.
+- 문서 반영: `docs/team/ROLE_CONTEXTS.md`, `docs/ai-review/README.md`, fallback task template에 새 신뢰 경계와 후속 봉인을 동기화했다.
+- next_review_request: `CODEX_EVIDENCE`
+
+## SOLAR_RESPONSE · turn-s003 · r001
+
+- role: `SOLAR-ORCH`
+- reply_to_turn_id: `turn-s002`
+- 정정: `turn-s002`의 target commit은 축약 전사를 잘못 적었다. 정확한 구현·수정 commit은 `41e75fdd43d773301fa316405d9dd0fe18f3e026`이다.
+- 이전 Finding별 수정 설명은 그대로 유효하며, 후속 검수 대상은 이 정정 SHA를 포함해 이후 CODEX 증거를 고정한 별도 successor commit으로 삼는다.
+- next_review_request: `CODEX_EVIDENCE`
+
+## CODEX_EVIDENCE · turn-c001 · r001
+
+- role: `CODEX-FUNCTION-QA`
+- reply_to_turn_id: `turn-s003`
+- verified_commit_sha: `41e75fdd43d773301fa316405d9dd0fe18f3e026`
+- focused_contracts: `corepack pnpm fable:self-test` 50개 묶음 통과, protocol 1.2 계약 22/22 통과, `node --check scripts/fable-review.mjs` 통과.
+- full_gate: `corepack pnpm verify` 6/6 통과. DB 32/32, core 177(2 skipped), mobile 189, ACL 보안, 새 DB·2세션 경합·locale parity, 업그레이드 8/8, 웹 번들을 모두 포함한다.
+- negative_probes: target registry 변경 선언·같은 commit 승격·manifest 장부/배정 hash 변조·만료·append 사전 차단·FINAL/SECURITY 전체 입력 표식·successor/fallback 배정 불일치가 각각 실패 폐쇄되는 자체시험을 확인했다.
+- audit_integrity: r001 원본과 CHANGES_REQUIRED 결과는 삭제·수정하지 않았고, 수정 설명의 잘못 전사한 SHA는 `turn-s003`에서 append-only로 정정했다.
+- remaining_required_finding_ids: `TL-REGISTRY-SAME-COMMIT-TRUST`, `TL-CLEANROOM-SCAN-INCOMPLETE`, `TL-APPEND-CLEANROOM-LATE-FAIL`, `TL-EXPIRY-COMMITTER-DATE-ONLY`
+- remaining_optional_finding_ids: `TL-SUCCESSOR-AND-TEST-GAPS`
+- next_review_request: `AI_DEPUTY_SUCCESSOR_HANDOFF`
