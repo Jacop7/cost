@@ -1,0 +1,99 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "TEAM-LEARNING-IMPL-003",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R3",
+  "author_role": "SOLAR-ORCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "a4fd66c4e9452000f32ac5786769e777f7af624f",
+  "target_commit_sha": "6f3fb154d65099be678686c39ddb5a701755f854",
+  "target_tree_oid": "756ed6af4d91baba56143edd919e685e6ae51d82",
+  "agents_blob_oid": "64b82275832bb6ce981b419294a428e77383be3e",
+  "agents_sha256": "0f1dd530a46174aeff884146569b2e2534f6ec8b544b531054f48e86b84c0f97",
+  "requirements": [
+    "TEAM-LEARNING-1-1: 최초 SECURITY의 Task 요청·요구·사람 결정·필수 증거와 공동 장부 전체가 학습 클린룸이어야 한다.",
+    "TEAM-LEARNING-1-2: predecessor r001의 Finding 6건을 같은 finding_id로 재확인한다.",
+    "TEAM-LEARNING-1-3: predecessor가 있는 SECURITY 후속의 ID-only 전달은 계속 허용한다.",
+    "TEAM-LEARNING-1-4: 앞서 VERIFIED된 장부 봉인·append 사전 차단·만료·successor/fallback 계약이 회귀하지 않는다.",
+    "TEAM-LEARNING-1-5: protocol 1.1 및 기존 protocol 1.2 감사 원본 호환을 유지한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:single-canonical-artifact",
+    "AGENTS:fable-append-only-ledger",
+    "AGENTS:team-learning-context",
+    "WORK-QUEUE:TEAM-LEARNING-1",
+    "AI-REVIEW:immutable-rounds",
+    "AI-REVIEW:independent-clean-room"
+  ],
+  "artifact_paths": [
+    "scripts/fable-review.mjs",
+    "docs/team/TEAM_LEARNING.md",
+    "docs/team/ROLE_CONTEXTS.md",
+    "docs/ai-review/README.md",
+    "docs/ai-review/templates/task-v12-primary.example.json",
+    "docs/ai-review/templates/task-v12-fallback.example.json",
+    "docs/팀구성_상세기획안.md",
+    "docs/작업큐.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "scripts/fable-review/schema-v1.json",
+    "scripts/fable-review/protocol-v12.mjs",
+    "scripts/fable-review/protocol-v12.test.mjs"
+  ],
+  "evidence_paths": [],
+  "excluded_paths": [],
+  "required_evidence": [
+    "predecessor r001의 Finding 6건을 동일 finding_id와 previous_finding_id로 재확인",
+    "fable:self-test 50개 묶음과 protocol 1.2 계약 22/22",
+    "corepack pnpm verify 6/6",
+    "최초 SECURITY human_decisions의 LRN 표식 거부와 SECURITY 후속 ID-only 허용 부정·양성 시험"
+  ],
+  "human_decisions": [
+    "2026-08-29 사용자가 기획안의 남은 작업을 승인 없이 자동으로 진행하도록 승인했다.",
+    "기존 Claude Code Max 로그인 세션을 사용하고 Fable 검수 비용 표시는 실행 상한으로만 관리한다.",
+    "predecessor 감사 원본과 CHANGES_REQUIRED 결과를 보존하고 immutable successor에서 재검수한다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": {
+    "task_id": "TEAM-LEARNING-IMPL-002",
+    "source_commit_sha": "42b03f3964ba4b77f234f658c8900603650ed602",
+    "round": "r001",
+    "task_sha256": "4d42e236be71e0346d2dac05cb8c3db5845a7dc4658e73d5a37f2857a2731111",
+    "manifest_sha256": "13422a0cf5e391d050083e5faccd7a1b83259f97d7b48efe6e0c89b667586eaa",
+    "run_sha256": "c5217ffa8b369b1a9b7013c142a07596aa4277490422e204d50227008a852e08",
+    "review_sha256": "829d90fbb9e9f391c218eb6c71fdde4cbc3c2e12a6d93d44c764d2d79868bf0d",
+    "finding_registry_sha256": "d712622f68786ce67d7c8705dc59e3c5b8b557fd66160dfde63425d417fd2df4",
+    "handoff_turn_id": "turn-o001",
+    "handoff_entry_sha256": "38fd26451da565b603a30ef737ba8d314144d618c26e6ba4361d6f445ae65c83",
+    "handoff_run_sha256": "56b393adfb9bc453e28bf923c7b5145ba319c11a135855354c85bdd91d9da4b4"
+  },
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "4.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [
+    "LRN-ORCH-CI-001"
+  ],
+  "excluded_learning_ids": [
+    {
+      "learning_id": "LRN-CODEX-TIME-001",
+      "reason": "DB 영업일 시간 독립 시험은 이번 AI 검수 실행기 변경 범위와 직접 관련이 없다."
+    },
+    {
+      "learning_id": "LRN-OPS-BACKUP-001",
+      "reason": "개발 DB 백업·복구 절차는 이번 학습 컨텍스트 계약 변경에 적용되지 않는다."
+    },
+    {
+      "learning_id": "LRN-AUDIT-PIN-001",
+      "reason": "아직 CANDIDATE이고 이번 구현은 선택 fixture pin 잔여 자체를 변경하지 않는다."
+    }
+  ]
+}
