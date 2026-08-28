@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "TEAM-LEARNING-IMPL-002",
+  "sequence": "t0003",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-08-28T20:00:05.805Z",
+  "turn_id": "turn-o001",
+  "turn_type": "AI_DEPUTY_SUCCESSOR_HANDOFF",
+  "role": "AI-DEPUTY-ORCHESTRATOR",
+  "task_sha256": "4d42e236be71e0346d2dac05cb8c3db5845a7dc4658e73d5a37f2857a2731111",
+  "runner_sha256": "59c2d0194b5578b0c2e18da15b1be040228daa60c98090500b7acf992345ac4e",
+  "previous_manual_run_sha256": "6887e56092185bf8dad66b58643c09eb22120af9c1b05c5cfe6bd3b6deed77d0",
+  "collaboration_before_sha256": "76431a382aa48e31dd7351461432c8d61f240219dc353a30c955e900de8f197f",
+  "collaboration_before_bytes": 6969,
+  "collaboration_entry_sha256": "38fd26451da565b603a30ef737ba8d314144d618c26e6ba4361d6f445ae65c83",
+  "collaboration_entry_bytes": 797,
+  "collaboration_after_sha256": "071d12b645287a50cd23c05bae8f1d0786af1ca5e54ec6e05fe57bffde287061",
+  "collaboration_after_bytes": 7766
+}
