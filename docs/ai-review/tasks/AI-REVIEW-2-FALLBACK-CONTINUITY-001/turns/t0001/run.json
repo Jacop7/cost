@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-REVIEW-2-FALLBACK-CONTINUITY-001",
+  "sequence": "t0001",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-08-28T13:08:16.072Z",
+  "turn_id": "turn-s002",
+  "turn_type": "SOLAR_RESPONSE",
+  "role": "SOLAR-ARCH",
+  "task_sha256": "a49addd45badfd8c3b476d216a20b2257c62220d111f1f6ce4bde89431acc288",
+  "runner_sha256": "ec55964d6fde910d04e1d41109705b583cac76d41d9921ba2ed16d685f6adc9d",
+  "previous_manual_run_sha256": null,
+  "collaboration_before_sha256": "23b3c9547782b28f4ddb5902663bb8188abcd55e0dfa6e5ba7045c7023905d30",
+  "collaboration_before_bytes": 6702,
+  "collaboration_entry_sha256": "1be82a0c11207ebc1d01d885daf2200ad850604f3811fcca402118306c3bcf01",
+  "collaboration_entry_bytes": 4899,
+  "collaboration_after_sha256": "a90ff247935d251aa18579f8d5ec831a1053d44e5bb8dab8bf8801c750ae9ed5",
+  "collaboration_after_bytes": 11601
+}
