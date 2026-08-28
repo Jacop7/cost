@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "TEAM-CONFIG-GROWTH-004",
+  "sequence": "t0003",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-08-28T09:49:35.945Z",
+  "turn_id": "turn-s003",
+  "turn_type": "SOLAR_RESPONSE",
+  "role": "SOLAR-ORCH",
+  "task_sha256": "8946c4e8764ea149c9b93c273c28595787d02309525997b4771c3324ab415ca0",
+  "runner_sha256": "1e09d053693e46b03a27bc34c443a4ac258ff6358eda1d33e0a76b160e97bf8b",
+  "previous_manual_run_sha256": "ea7a094a6f158b80d1f67b2825d10d855f2c6963419f0938cb81910132c14103",
+  "collaboration_before_sha256": "88455a6cfc63440eff1d86877f7ccb67592a6ad38f3e13735235f31aab24d81c",
+  "collaboration_before_bytes": 12884,
+  "collaboration_entry_sha256": "31b0432a64fb632ce3d61466cf0f1c38da14ec2692d78bb8026411c7df265649",
+  "collaboration_entry_bytes": 1310,
+  "collaboration_after_sha256": "f069022747da22e09626b00a2449280960cea8f6d31ecbb0a2df06d534df6379",
+  "collaboration_after_bytes": 14194
+}

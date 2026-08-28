@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "TEAM-CONFIG-GROWTH-004",
+  "sequence": "t0002",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-08-28T09:46:28.122Z",
+  "turn_id": "turn-c001",
+  "turn_type": "CODEX_EVIDENCE",
+  "role": "CODEX-FUNCTION-QA",
+  "task_sha256": "8946c4e8764ea149c9b93c273c28595787d02309525997b4771c3324ab415ca0",
+  "runner_sha256": "1e09d053693e46b03a27bc34c443a4ac258ff6358eda1d33e0a76b160e97bf8b",
+  "previous_manual_run_sha256": "82b07f686d0f4a65b3cdcf50418d926c784ad0fbbb9aef83f44f44e0c58b0080",
+  "collaboration_before_sha256": "a1bc1fd0079c218c2678618e279c7e890982822122e53c51a4cef97923096f93",
+  "collaboration_before_bytes": 8137,
+  "collaboration_entry_sha256": "88d612fb0dcef0f0a4583bfb42da4832ba9d20839142e6534b0871e2125406cd",
+  "collaboration_entry_bytes": 1407,
+  "collaboration_after_sha256": "fb6b68fb6290dd90de0b651dccebae7993462c67b8a2d65ae82e84271f252daa",
+  "collaboration_after_bytes": 9544
+}

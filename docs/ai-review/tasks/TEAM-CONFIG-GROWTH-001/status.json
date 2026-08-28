@@ -1,0 +1,26 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "TEAM-CONFIG-GROWTH-001",
+  "predecessor_review": null,
+  "updated_at": "2026-08-28T09:18:13.696Z",
+  "latest_round": "r001",
+  "review_state": "OPEN",
+  "workflow_state": "FIXING",
+  "gate_state": "OPEN",
+  "run_state": "RESULT_RECEIVED",
+  "defect_state": "NOT_APPLICABLE",
+  "verdict": "CHANGES_REQUIRED",
+  "latest_run_sha256": "5458a0589b2974f48a0531b96b0136d19881672baab5ff667dad0aaf959f886e",
+  "open_required_finding_ids": [
+    "TCG-001-SUCCESSOR-CONTRACT-GAP",
+    "TCG-001-EXHAUSTION-ALLOWLIST-AMBIGUITY",
+    "TCG-001-ENGINE-IDENTITY-SCHEMA",
+    "TCG-001-LEARNING-PACKET-PROTOCOL",
+    "TCG-001-LEARNING-AUDIT-LANE-VERIFIER"
+  ],
+  "open_optional_finding_ids": [],
+  "closed_finding_ids": [],
+  "candidate_review_state": null,
+  "candidate_review_sha256": null,
+  "backlog_dispositions": []
+}
