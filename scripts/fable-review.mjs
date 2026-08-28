@@ -762,6 +762,14 @@ function isReviewControlPath(path) {
   return normalized === 'docs/ai-review/tasks' || normalized.startsWith('docs/ai-review/tasks/');
 }
 
+function isDeclaredReviewEvidencePath(task, path) {
+  return isReviewControlPath(path) && pathMatches(path, task.evidence_paths);
+}
+
+function isExcludedReviewControlPath(task, path) {
+  return isReviewControlPath(path) && !isDeclaredReviewEvidencePath(task, path);
+}
+
 function pathRole(task, path) {
   const roles = [];
   if (pathMatches(path, task.artifact_paths)) roles.push('ARTIFACT');
@@ -805,7 +813,7 @@ function collectCommitInputFiles(repoRoot, targetSha, task) {
   const entries = parseTreeEntries(gitBuffer(['ls-tree', '-r', '-l', '-z', targetSha], repoRoot));
   const matched = entries.filter((entry) => (
     entry.type === 'blob'
-    && !isReviewControlPath(entry.path)
+    && !isExcludedReviewControlPath(task, entry.path)
     && pathMatches(entry.path, task.allowed_paths)
     && !pathMatches(entry.path, task.excluded_paths)
   ));
@@ -843,7 +851,7 @@ function collectWorkingInputFiles(repoRoot, targetSha, task) {
   ).toString('utf8').split('\0').filter(Boolean).map(normalizeRepoPath);
   const baselineEntries = parseTreeEntries(gitBuffer(['ls-tree', '-r', '-l', '-z', targetSha], repoRoot))
     .filter((entry) => entry.type === 'blob')
-    .filter((entry) => !isReviewControlPath(entry.path))
+    .filter((entry) => !isExcludedReviewControlPath(task, entry.path))
     .filter((entry) => pathMatches(entry.path, task.allowed_paths) && !pathMatches(entry.path, task.excluded_paths));
   for (const entry of baselineEntries) {
     if (!['100644', '100755'].includes(entry.mode)) {
@@ -852,7 +860,7 @@ function collectWorkingInputFiles(repoRoot, targetSha, task) {
   }
   const baselineByPath = new Map(baselineEntries.map((entry) => [entry.path, entry]));
   const matched = [...new Set([...currentPaths, ...baselineByPath.keys()])]
-    .filter((path) => !isReviewControlPath(path))
+    .filter((path) => !isExcludedReviewControlPath(task, path))
     .filter((path) => pathMatches(path, task.allowed_paths) && !pathMatches(path, task.excluded_paths))
     .filter((path) => path !== 'AGENTS.md')
     .sort((a, b) => a.localeCompare(b));
@@ -948,7 +956,7 @@ function validateStoredInputFiles(files, task, label) {
       }
     }
     const path = validateRepoPath(file.path, `${label}[${index}].path`);
-    if (path !== file.path || seen.has(path) || isReviewControlPath(path)) {
+    if (path !== file.path || seen.has(path) || isExcludedReviewControlPath(task, path)) {
       throw new ReviewError(`${label}에 중복·비정규·제어 경로가 있습니다: ${file.path}`, { exitCode: 75, runState: 'STALE' });
     }
     seen.add(path);
@@ -1952,6 +1960,14 @@ function assertStrictGitAncestor(repoRoot, ancestor, descendant, label) {
   assertGitAncestor(repoRoot, ancestor, descendant, label);
 }
 
+function samePredecessorReviewLane(sourceTask, task) {
+  return sourceTask.route === task.route
+    && sourceTask.review_mode === task.review_mode
+    && sourceTask.snapshot_mode === 'COMMIT'
+    && task.snapshot_mode === 'COMMIT'
+    && sourceTask.reviewer_role === task.reviewer_role;
+}
+
 function assertHandoffOnlyDelta(repoRoot, targetCommit, sourceCommit, predecessorTaskId, handoffTurnId) {
   assertGitAncestor(repoRoot, targetCommit, sourceCommit, 'successor target commit');
   if (!/^turn-o\d{3}$/.test(handoffTurnId)) {
@@ -2055,17 +2071,9 @@ function loadPinnedPredecessorReview({ repoRoot, runtime, task, seenTaskIds = ne
     if (sha256(sourceTaskRaw) !== contract.task_sha256) {
       throw new ReviewError('predecessor task.json hash가 task packet과 다릅니다.', { exitCode: 75, runState: 'STALE' });
     }
-    if (
-      sourceTask.route !== 'FINAL_INDEPENDENT'
-      || task.route !== 'FINAL_INDEPENDENT'
-      || sourceTask.review_mode !== 'FINAL'
-      || task.review_mode !== 'FINAL'
-      || sourceTask.snapshot_mode !== 'COMMIT'
-      || task.snapshot_mode !== 'COMMIT'
-      || sourceTask.reviewer_role !== task.reviewer_role
-    ) {
+    if (!samePredecessorReviewLane(sourceTask, task)) {
       throw new ReviewError(
-        'predecessor 승계는 같은 FABLE-FINAL COMMIT 검수 경로에서만 허용합니다.',
+        'predecessor 승계는 같은 route·review mode·reviewer의 COMMIT 검수 경로에서만 허용합니다.',
         { exitCode: 75, runState: 'STALE' },
       );
     }
@@ -2650,9 +2658,13 @@ function assertClosureExecutionBlocked(repoRoot, task) {
 }
 
 function fallbackFailureDisposition(engine, classification) {
-  return engine === FALLBACK_REVIEWER_ENGINE
-    ? { eligible: false, reason: 'FALLBACK_UNAVAILABLE' }
-    : { eligible: classification.eligible, reason: classification.reason };
+  if (engine !== FALLBACK_REVIEWER_ENGINE) {
+    return { eligible: classification.eligible, reason: classification.reason };
+  }
+  return {
+    eligible: false,
+    reason: classification.eligible ? 'FALLBACK_UNAVAILABLE' : classification.reason,
+  };
 }
 
 function fallbackFailureStatusFields(reason) {
@@ -5602,6 +5614,16 @@ function runSelfTests() {
       fallbackFailureStatusFields(result.reason).fallback_reason === 'FALLBACK_UNAVAILABLE',
       'Opus 실패 상태 요약도 같은 종료 사유를 기록',
     );
+    for (const reason of ['TASK_CAP_APPROVAL_REQUIRED', 'NOT_FALLBACK_ELIGIBLE']) {
+      const rejected = fallbackFailureDisposition(FALLBACK_REVIEWER_ENGINE, {
+        eligible: false,
+        reason,
+      });
+      selfTestAssert(
+        rejected.eligible === false && rejected.reason === reason,
+        `Opus 비승계 실패 사유 보존: ${reason}`,
+      );
+    }
     const primaryFailure = fallbackFailureDisposition(PRIMARY_REVIEWER_ENGINE, {
       eligible: false,
       reason: 'TASK_CAP_APPROVAL_REQUIRED',
@@ -7875,6 +7897,21 @@ function runSelfTests() {
       JSON.parse(JSON.stringify(packet)),
       packet.task_id,
     );
+    selfTestAssert(
+      samePredecessorReviewLane(packet, validatedPacket),
+      'FINAL predecessor 경로 일치',
+    );
+    const securityLane = {
+      route: 'SECURITY', review_mode: 'SECURITY', snapshot_mode: 'COMMIT', reviewer_role: 'FABLE-SEC',
+    };
+    selfTestAssert(
+      samePredecessorReviewLane(securityLane, { ...securityLane }),
+      'SECURITY predecessor 경로 일치',
+    );
+    selfTestAssert(
+      !samePredecessorReviewLane(securityLane, { ...securityLane, reviewer_role: 'FABLE-FINAL' }),
+      '다른 reviewer predecessor 경로는 거부',
+    );
     const previous = {
       value: { findings: [] },
       predecessor: { contract: predecessorReview },
@@ -7924,6 +7961,29 @@ function runSelfTests() {
         validatedPacket,
       ),
       { exitCode: 65, messageIncludes: 'machine-readable' },
+    );
+  });
+
+  test('declared-task-evidence-is-materialized', () => {
+    const head = git(['rev-parse', 'HEAD'], SCRIPT_ROOT);
+    const evidencePath = 'docs/ai-review/tasks/P1-1-REMOTE-ACL-AUDIT-001/task.json';
+    const packet = taskPacketFixture({
+      task_id: 'SELF-EVIDENCE-001',
+      snapshot_mode: 'COMMIT',
+      target_commit_sha: head,
+      artifact_paths: ['scripts/fable-review/protocol-v12.mjs'],
+      reference_paths: ['AGENTS.md'],
+      evidence_paths: [evidencePath],
+    });
+    const task = validateTask(packet, packet.task_id);
+    const files = collectCommitInputFiles(SCRIPT_ROOT, head, task);
+    selfTestAssert(
+      files.some((file) => file.path === evidencePath && file.path_role === 'EVIDENCE'),
+      '선언한 task 제어 파일을 읽기 전용 증거로 물질화',
+    );
+    selfTestAssert(
+      files.every((file) => !isReviewControlPath(file.path) || file.path === evidencePath),
+      '선언하지 않은 task 제어 파일은 스냅샷에서 제외',
     );
   });
 
@@ -8401,15 +8461,34 @@ function runSelfTests() {
       selfTestAssert(imported.contract.task_id === sourceTaskId && imported.registryFindings.length === 0, 'fallback source 성공 승계');
 
       const rejectsPin = (patch, messageIncludes) => {
-        const packet = structuredClone(successorPacket);
-        Object.assign(packet.fallback_review, patch);
-        const tampered = validateTask(packet, successorTaskId);
-        expectReviewError(() => loadPinnedFallbackReview({ repoRoot, runtime, task: tampered }), {
-          exitCode: 75, runState: 'STALE', messageIncludes,
+        const tampered = structuredClone(successor);
+        Object.defineProperty(tampered, 'engine_contract', {
+          value: structuredClone(successor.engine_contract),
+          enumerable: false,
         });
+        Object.assign(tampered.fallback_review, patch);
+        Object.assign(tampered.engine_contract.fallback, patch);
+        try {
+          expectReviewError(() => loadPinnedFallbackReview({ repoRoot, runtime, task: tampered }), {
+            exitCode: 75, runState: 'STALE', messageIncludes,
+          });
+        } catch (error) {
+          throw new Error(`fallback pin 변조를 잡지 못했습니다 (${Object.keys(patch).join(', ')}): ${error.message}`);
+        }
       };
       rejectsPin({ from_run_sha256: '0'.repeat(64) }, '실패 원본');
       rejectsPin({ handoff_entry_sha256: '0'.repeat(64) }, 'terminal fallback handoff');
+      rejectsPin({ handoff_run_sha256: '0'.repeat(64) }, 'terminal fallback handoff');
+      rejectsPin({ input_files_sha256: '0'.repeat(64) }, '대상·입력·산출물 hash');
+      rejectsPin({ artifact_set_sha256: '0'.repeat(64) }, '대상·입력·산출물 hash');
+      rejectsPin({ finding_registry_sha256: '0'.repeat(64) }, 'registry ID/hash');
+      rejectsPin({ inherited_finding_ids: ['GHOST-001'] }, 'registry ID/hash');
+      rejectsPin({ collaboration_sha256: '0'.repeat(64) }, '장부 bytes/hash');
+      rejectsPin({ collaboration_bytes: collaborationAfter.length + 1 }, '장부 bytes/hash');
+      rejectsPin({ target_commit_sha: '0'.repeat(40) }, '대상·입력·산출물 hash');
+      rejectsPin({ handoff_base_commit_sha: '0'.repeat(40) }, 'successor target');
+      rejectsPin({ from_round: 'r002' }, '최신 공개 회차');
+      rejectsPin({ handoff_turn_id: 'turn-o002' }, 'terminal fallback handoff');
       rejectsPin({ spent_usd: '0.26', remaining_usd: '3.74' }, 'handoff 내용');
       rejectsPin({ reason: 'MODEL_CAPACITY_UNAVAILABLE' }, '실패 원본');
       writeFileSync(join(repoRoot, 'outside-fallback.txt'), 'contaminated\n');
