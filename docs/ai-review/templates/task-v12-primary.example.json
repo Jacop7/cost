@@ -30,5 +30,7 @@
   "reviewer_model": "claude-fable-5",
   "task_budget_usd": "4.00",
   "fallback_review": null,
-  "closure_review": null
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
 }
