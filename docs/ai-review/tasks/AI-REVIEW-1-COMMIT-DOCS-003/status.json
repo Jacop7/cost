@@ -1,0 +1,39 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "AI-REVIEW-1-COMMIT-DOCS-003",
+  "predecessor_review": {
+    "task_id": "AI-REVIEW-1-COMMIT-DOCS-001",
+    "source_commit_sha": "6c184731e78d8733aba716a89b4be8201b5ce44b",
+    "round": "r001",
+    "task_sha256": "d97ffdaec473ac01549cd8a454e3856bfdbb198dadeba01b59563cc959dc12f2",
+    "manifest_sha256": "d5374bf5148beee2329355ef0537f92fc93f9979f673638afda22120491af6c2",
+    "run_sha256": "91329c122b814522420141368060cb1518dff8ece5ee99ba74ed5a0fc2424fe9",
+    "review_sha256": "a314ff8edc74e339ff29460ed45e93859111def72172a7e1c0fc18104389e3ef",
+    "finding_registry_sha256": "2d7e28296542ec836da4b5891bfb34ce8ae299ca40210ee3d3f5a11bb846102c",
+    "handoff_turn_id": "turn-o002",
+    "handoff_entry_sha256": "4b70bb8489746f5dda5790aca97547744472042bf5f6c664eac4bbcc78bfde54",
+    "handoff_run_sha256": "8168dc167272b31c48c933f3904b4ba636f195197d0dea9a8c6c6581a540c784"
+  },
+  "updated_at": "2026-08-28T06:27:38.002Z",
+  "latest_round": "r001",
+  "review_state": "OPEN",
+  "workflow_state": "READY_FOR_REVIEW",
+  "gate_state": "OPEN",
+  "run_state": "RUN_FAILED",
+  "defect_state": "NOT_APPLICABLE",
+  "verdict": null,
+  "latest_run_sha256": "fb6b73232cda83a02aba035d65ec3596a8a28815f4c9185c40a19cf1ec498605",
+  "open_required_finding_ids": [
+    "FINAL-DOCS-001-CMD-004",
+    "FINAL-DOCS-001-STATE-001",
+    "FINAL-DOCS-001-STRUCT-002",
+    "FINAL-DOCS-001-TEMPLATE-003"
+  ],
+  "open_optional_finding_ids": [
+    "FINAL-DOCS-001-ATTR-005"
+  ],
+  "closed_finding_ids": [],
+  "candidate_review_state": null,
+  "candidate_review_sha256": null,
+  "backlog_dispositions": []
+}
