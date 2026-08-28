@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-REVIEW-2-FALLBACK-CONTINUITY-SECURITY-005",
+  "sequence": "t0003",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-08-28T18:33:49.868Z",
+  "turn_id": "turn-o002",
+  "turn_type": "AI_DEPUTY_GATE_DECISION",
+  "role": "AI-DEPUTY-ORCHESTRATOR",
+  "task_sha256": "623625ff9bdd64ba3951a16a3a4b867d9d3da1e5337a51c3e830cc959d713e61",
+  "runner_sha256": "dbce9b78f0053259d17b188efe373d4e87162a2cf3069f4b2ac04f541105a93b",
+  "previous_manual_run_sha256": "7d3eb5ad8d61ec3ded0cab84f66e71778c2d3b00e29e228710805631a099768a",
+  "collaboration_before_sha256": "e23d431f85d83036ae05e80e325cf5ce13e84745377d8a23caaed9595e34b94a",
+  "collaboration_before_bytes": 7310,
+  "collaboration_entry_sha256": "1b81347b4460636596aa85ff763a539308ef8a2cd6a1c5ff3eb32a16fc3279ed",
+  "collaboration_entry_bytes": 1228,
+  "collaboration_after_sha256": "1d246d8be227ec0f65c460526a4e01a72d00cad9709ca19fc34fe80b50bbcbb4",
+  "collaboration_after_bytes": 8538
+}
