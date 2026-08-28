@@ -1,0 +1,84 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-REVIEW-2-FALLBACK-CONTINUITY-SECURITY-005",
+  "route": "SECURITY",
+  "risk_level": "R3",
+  "author_role": "AI-DEPUTY-ORCHESTRATOR",
+  "reviewer_role": "FABLE-SEC",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "SECURITY",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "f1db6cc4bca7b9f3ca80620098610b09174bb126",
+  "target_commit_sha": "bbcb3690f60fbbd5da7c9e20ad36b45f6a3b8f74",
+  "target_tree_oid": "3a0b681911f652b5227a600e5b2c49f6dc72c0ed",
+  "agents_blob_oid": "64b82275832bb6ce981b419294a428e77383be3e",
+  "agents_sha256": "0f1dd530a46174aeff884146569b2e2534f6ec8b544b531054f48e86b84c0f97",
+  "requirements": [
+    "SEC-FB-FINAL-001: 명시적으로 선언한 docs/ai-review/tasks 증거만 EVIDENCE 역할로 물질화되고 input_files_sha256에 포함돼야 한다.",
+    "SEC-FB-FINAL-002: Opus 비승계 실패는 원래 사유를 보존하고 실제 모델 소진만 FALLBACK_UNAVAILABLE로 기록해야 한다.",
+    "SEC-FB-FINAL-003: fallback_review의 모든 pin 변조가 75/STALE로 실패 폐쇄돼야 한다.",
+    "SEC-FB-FINAL-004: 회차 비용은 문서와 코드가 합의한 센트 반올림 규칙을 유지해야 한다.",
+    "predecessor의 전체 Finding registry를 같은 ID와 previous_finding_id로 재검증해야 한다.",
+    "protocol 1.1 기록과 제품 검증 6단계를 깨뜨리지 않아야 한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:ai-review-shared-ledger",
+    "AGENTS:local-verification-gate",
+    "WORK-QUEUE:AI-REVIEW-2",
+    "AI-REVIEW:append-only-audit",
+    "AI-REVIEW:fable-primary-opus-fallback"
+  ],
+  "artifact_paths": [
+    "scripts/fable-review.mjs",
+    "scripts/fable-review/protocol-v12.mjs",
+    "scripts/fable-review/protocol-v12.test.mjs",
+    "docs/ai-review/README.md",
+    "docs/팀구성_상세기획안.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/ai-review/schema-v1.json"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/tasks/AI-REVIEW-2-FALLBACK-CONTINUITY-001/rounds/r001/review.json",
+    "docs/ai-review/tasks/AI-REVIEW-2-FALLBACK-CONTINUITY-001/rounds/r001/run.json",
+    "docs/ai-review/tasks/AI-REVIEW-2-FALLBACK-CONTINUITY-001/turns/t0001/entry.md",
+    "docs/ai-review/tasks/AI-REVIEW-2-FALLBACK-CONTINUITY-RECHECK-002/rounds/r001/run.json"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "predecessor의 네 Finding을 같은 finding_id와 previous_finding_id로 재검증한 결과",
+    "manifest.input_files에 선언한 task evidence 4건이 EVIDENCE 역할로 존재하는 증거",
+    "fallback-successor-import-rejects-any-tampered-pin 전체 pin 부정 시험",
+    "Opus 소진·비승계 실패 사유 분리 시험",
+    "Fable wrapper self-test 40개 묶음과 protocol 1.2 계약 20/20",
+    "corepack pnpm verify 6/6"
+  ],
+  "human_decisions": [
+    "2026-08-29 사용자는 Fable 재검수를 진행하도록 승인했다.",
+    "Fable은 기존 Claude Code Max 로그인 세션을 사용하며 Opus는 사용하지 않는다.",
+    "기존 검수·실패·수정 장부는 삭제하거나 덮어쓰지 않는다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": {
+    "task_id": "AI-REVIEW-2-FALLBACK-CONTINUITY-FINAL-003",
+    "source_commit_sha": "6a1b4f34575d124e62b489574911dd03aba53cba",
+    "round": "r001",
+    "task_sha256": "8937b88c3242cdf84a342c58d17b4b2c0dc7e8557dfe9bdce50428cb61e4eef9",
+    "manifest_sha256": "9d43aaefb7ec856aa63583b9110870fbf4eb8964e89035198c7b63578922ddb9",
+    "run_sha256": "4ab2cea192d5bfb53da665788808d38455c70ce071d65907342d87339f283ac0",
+    "review_sha256": "69414da9fceace85cf941d201cb4338d5fadb97202bcf2f6f518c523d4cd5ad7",
+    "finding_registry_sha256": "fc46b737421436dc1c75de193c69575a33d41168d128bf247a5b0068e822a693",
+    "handoff_turn_id": "turn-o001",
+    "handoff_entry_sha256": "d261c72a3a71508036dc39212527d096aa1f9e58b571140c4140ee17c5847e76",
+    "handoff_run_sha256": "885bb20ca5bfa3fa3d4441340c9b520707df41eb5220f8701b80f400cefb6e45"
+  },
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "4.00",
+  "fallback_review": null,
+  "closure_review": null
+}
