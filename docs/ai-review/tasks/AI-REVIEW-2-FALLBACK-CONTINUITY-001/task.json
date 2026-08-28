@@ -13,7 +13,7 @@
   "target_commit_sha": "4eadc9a185204ae8bf27a69cd9c40f25e0ed05ba",
   "target_tree_oid": "bec1abc06c4c9e33bf157eb44bdd4d5bccd25432",
   "agents_blob_oid": "64b82275832bb6ce981b419294a428e77383be3e",
-  "agents_sha256": "9254d2542c8be32b199151b643a6a6c90cbe2bcd172b7a28320949c7b43f1506",
+  "agents_sha256": "0f1dd530a46174aeff884146569b2e2534f6ec8b544b531054f48e86b84c0f97",
   "requirements": [
     "AI-REVIEW-2-1: Fable은 1차 검수자이며 Opus는 구조화된 모델 소진 allowlist에서만 protocol 1.2 successor로 실행한다.",
     "AI-REVIEW-2-2: 실패 run, handoff-only commit, 장부·입력·산출물·Finding registry hash와 실제 사용액을 위조 없이 상호 검증한다.",
