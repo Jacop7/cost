@@ -1,0 +1,287 @@
+{
+  "schema_version": "2.0",
+  "task_id": "AI-REVIEW-2-FALLBACK-CONTINUITY-SECURITY-005",
+  "reviewer_role": "FABLE-SEC",
+  "review_mode": "RECHECK",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "f1db6cc4bca7b9f3ca80620098610b09174bb126",
+  "target_commit_sha": "293a2d50d4af17d3c5c604b67cc7c746fd6e6296",
+  "target_tree_oid": "679a3835a9e3a7a18e51836f8184add921c63793",
+  "agents_blob_oid": "64b82275832bb6ce981b419294a428e77383be3e",
+  "agents_sha256": "0f1dd530a46174aeff884146569b2e2534f6ec8b544b531054f48e86b84c0f97",
+  "task_sha256": "623625ff9bdd64ba3951a16a3a4b867d9d3da1e5337a51c3e830cc959d713e61",
+  "collaboration_sha256": "1394541a68522804050b4fe0b23a6ea0b0607c57b06a7bcc75ed7672031ddcea",
+  "input_files_sha256": "2fce50fc6afd7a703dd325380dac726b45843c404fc24ca2b79554e1aa808c9b",
+  "schema_sha256": "82a94ddcfd1c12f139066e57c1231bdcfdf8528639f7f02aaa6cd44a5bbed12b",
+  "runner_sha256": "dbce9b78f0053259d17b188efe373d4e87162a2cf3069f4b2ac04f541105a93b",
+  "verdict": "PASS",
+  "summary": "FINAL-003의 Finding registry 4건을 같은 ID로 RECHECK했다. (1) SEC-FB-FINAL-001: 이번 스냅샷 manifest에는 패킷 evidence_paths 4건(CONTINUITY-001 r001 review.json/run.json, t0001 entry.md, RECHECK-002 r001 run.json)이 모두 path_role=EVIDENCE로 물질화됐고 input_files_sha256에 포함된다. 실행기는 docs/ai-review/tasks/** 제어 경로를 기본 제외하되 선언한 정확한 경로만 EVIDENCE로 물질화하며(fable-review.mjs 760-782, 812-819, 959-966), self-test declared-task-evidence-is-materialized(7967-7988)와 README 27-30이 이를 고정한다. 동일 SECURITY lane 승계는 samePredecessorReviewLane(1963-1969)과 predecessor_review 계약(2040-2215)으로 registry hash를 봉인해 같은 ID 재검증이 가능해졌다. 증거 실물에서 run.json review_sha256(56fc88…)이 물질화된 review.json sha256과 일치함을 교차 확인했고, RECHECK-002 run.json은 Fable 엔진 실패에서 fallback_eligible=false·TASK_CAP_APPROVAL_REQUIRED가 그대로 보존됨을 보여 준다. (2) SEC-FB-FINAL-002: fallbackFailureDisposition(2660-2668)은 Opus에서 eligible=true 소진만 FALLBACK_UNAVAILABLE로 바꾸고 비승계 사유는 보존하며, 시험(5604-5634)이 TASK_CAP_APPROVAL_REQUIRED·NOT_FALLBACK_ELIGIBLE 두 케이스를 단언한다. status.json 재조정(4437-4439, 4455)은 run.fallback_reason을 항등 매핑한다. (3) SEC-FB-FINAL-003: rejectsPin이 16개 호출로 확장돼 fallback_review 18개 키 중 from_task_id를 제외한 모든 sha256·oid·정수·배열·금액 pin을 75/STALE로 거부하는지 검사한다(8463-8497). (4) SEC-FB-FINAL-004: README 379-381과 팀구성 621-624가 ‘센트 반올림 합산, null 비용만 상한 전액 보수 차감’으로 합의했고 self-test(5583-5593)가 1.005×2=202센트 규칙을 고정한다. 네 건 모두 VERIFIED로 기록한다. 잔여 사항으로 fixture self-test가 읽는 CONTINUITY-001 task.json/manifest.json/runner-source.mjs/schema-source.json이 evidence_paths에 없고, rejectsPin에 from_task_id·handoff 뒤 추가 턴 케이스가 없다는 점을 새 Improvement로 남긴다. self-test 40개·protocol 1.2 시험 20개는 소스 계수로 확인했으나 실행 결과(verify 6/6 포함)는 packet·장부 진술이며 이 스냅샷에서 재현하지 않았고, 장부에 CODEX_EVIDENCE 턴은 아직 없다. 판정은 PASS이며 gate_state는 OPEN을 유지하고 CLOSED 전이는 없다.",
+  "findings": [
+    {
+      "finding_id": "SEC-FB-FINAL-001-EVIDENCE-NOT-MATERIALIZED",
+      "severity": "Major",
+      "review_state": "VERIFIED",
+      "category": "OTHER",
+      "requirement_or_invariant_ids": [
+        "AI-REVIEW:append-only-audit",
+        "AGENTS:ai-review-shared-ledger",
+        "WORK-QUEUE:AI-REVIEW-2",
+        "SEC-FB-FINAL-001"
+      ],
+      "evidence": [
+        {
+          "path": "COLLABORATION_LOG",
+          "line_start": 0,
+          "line_end": 0,
+          "observation": "이번 packet input_files 10건 중 evidence_paths 4건이 모두 path_role=EVIDENCE·change_type=COMMIT으로 물질화됐고 input_files_sha256(2fce50fc…)에 포함된다. predecessor_review 계약이 FINAL-003 r001 registry hash(fc46b737…)와 handoff turn-o002를 봉인해 같은 ID 재검증 근거가 생겼다."
+        },
+        {
+          "path": "scripts/fable-review.mjs",
+          "line_start": 760,
+          "line_end": 782,
+          "observation": "isDeclaredReviewEvidencePath/isExcludedReviewControlPath가 docs/ai-review/tasks/** 중 evidence_paths로 선언한 경로만 통과시키고 pathRole은 EVIDENCE 단일 역할을 강제한다."
+        },
+        {
+          "path": "scripts/fable-review.mjs",
+          "line_start": 812,
+          "line_end": 819,
+          "observation": "collectCommitInputFiles가 제어 경로 제외 필터를 적용해 선언한 증거만 blob으로 읽고 sha256·line_count를 manifest에 넣는다. validateStoredInputFiles(959-966)도 미선언 제어 경로와 역할 불일치를 75/STALE로 거부한다."
+        },
+        {
+          "path": "scripts/fable-review.mjs",
+          "line_start": 7967,
+          "line_end": 7988,
+          "observation": "self-test declared-task-evidence-is-materialized가 선언 증거의 EVIDENCE 물질화와 미선언 제어 파일 제외를 단언한다."
+        },
+        {
+          "path": "scripts/fable-review.mjs",
+          "line_start": 1963,
+          "line_end": 1969,
+          "observation": "samePredecessorReviewLane은 route·review_mode·reviewer_role·COMMIT 동일성만 요구해 SECURITY lane의 FABLE-SEC predecessor registry 승계를 허용한다."
+        },
+        {
+          "path": "docs/ai-review/tasks/AI-REVIEW-2-FALLBACK-CONTINUITY-001/rounds/r001/run.json",
+          "line_start": 22,
+          "line_end": 23,
+          "observation": "run.json review_sha256(56fc8813…)이 물질화된 review.json의 input_files sha256과 일치해 증거 실물의 정합을 교차 확인했다."
+        },
+        {
+          "path": "docs/ai-review/README.md",
+          "line_start": 27,
+          "line_end": 30,
+          "observation": "README가 선언한 증거만 EVIDENCE로 물질화하고 bytes/hash를 input_files_sha256에 포함한다고 문서화한다."
+        }
+      ],
+      "impact": "완료 조건 1·2 충족: 증거가 실물로 봉인되고 predecessor registry가 같은 ID로 승계됐다. 조건 3(fixture 파일 집합과 evidence_paths 일치)은 부분 충족이며 잔여를 SEC-FB-SEC005-FIXTURE-SET-AND-PIN-RESIDUAL로 분리했다.",
+      "acceptance_criteria": [
+        "evidence_paths에 선언한 파일이 스냅샷 input_files에 EVIDENCE 역할로 실제 물질화된다.",
+        "predecessor의 SEC-FB-001~005를 같은 ID로 재검증하려면 predecessor_review 또는 fallback_review 계약으로 registry hash를 봉인한 RECHECK 의미 Task로 발행하거나, required_evidence에서 동일 ID 재검증 요구를 제거한다.",
+        "fixture 기반 self-test가 참조하는 파일 집합이 evidence_paths와 일치한다."
+      ],
+      "required_tests": [
+        "스냅샷 물질화기가 evidence_paths 누락 시 실행을 거부(또는 input_files_sha256에 반영)하는 부정 시험",
+        "동일 ID 재검증 요구가 있는 Task는 predecessor/fallback 계약 없이는 validateTask에서 거부되는 시험"
+      ],
+      "previous_finding_id": "SEC-FB-FINAL-001-EVIDENCE-NOT-MATERIALIZED",
+      "verified_by_engine": "FABLE"
+    },
+    {
+      "finding_id": "SEC-FB-FINAL-002-OPUS-FAILURE-REASON-COLLAPSED",
+      "severity": "Minor",
+      "review_state": "VERIFIED",
+      "category": "DATA_INTEGRITY",
+      "requirement_or_invariant_ids": [
+        "AI-REVIEW:fable-primary-opus-fallback",
+        "AI-REVIEW:append-only-audit",
+        "SEC-FB-FINAL-002"
+      ],
+      "evidence": [
+        {
+          "path": "scripts/fable-review.mjs",
+          "line_start": 2660,
+          "line_end": 2668,
+          "observation": "fallbackFailureDisposition은 Opus 엔진에서 eligible=false를 유지하되 classification.eligible이 true(소진)일 때만 FALLBACK_UNAVAILABLE로 바꾸고 그 외 원 사유를 보존한다. 5136·5150-5151에서 run.json fallback_eligible/fallback_reason에 그대로 기록된다."
+        },
+        {
+          "path": "scripts/fable-review.mjs",
+          "line_start": 5604,
+          "line_end": 5634,
+          "observation": "opus-failure-is-fallback-unavailable이 소진→FALLBACK_UNAVAILABLE, TASK_CAP_APPROVAL_REQUIRED·NOT_FALLBACK_ELIGIBLE 보존, Fable 상한 실패 status 필드 보존을 단언한다."
+        },
+        {
+          "path": "scripts/fable-review.mjs",
+          "line_start": 4437,
+          "line_end": 4455,
+          "observation": "status.json 재조정은 record.run.fallback_reason을 fallbackFailureStatusFields로 항등 매핑해 비교하므로 Opus 비승계 사유가 status에 그대로 보존된다."
+        },
+        {
+          "path": "docs/ai-review/tasks/AI-REVIEW-2-FALLBACK-CONTINUITY-RECHECK-002/rounds/r001/run.json",
+          "line_start": 7,
+          "line_end": 15,
+          "observation": "실물 증거: 회차 상한 소진(budget_exhausted)이 fallback_eligible=false·TASK_CAP_APPROVAL_REQUIRED로 보존된 RUN_FAILED run."
+        },
+        {
+          "path": "docs/ai-review/README.md",
+          "line_start": 405,
+          "line_end": 410,
+          "observation": "README 계약(모델 결과 없는 소진만 FALLBACK_UNAVAILABLE, 비승계 오류는 NOT_FALLBACK_ELIGIBLE)과 코드가 일치한다."
+        }
+      ],
+      "impact": "Opus successor의 상한·인증·계약 위반 실패가 모델 소진으로 오보고되는 경로가 닫혔다.",
+      "acceptance_criteria": [
+        "Opus 엔진 실패 시 classification.eligible=false인 경우 원 사유(TASK_CAP_APPROVAL_REQUIRED, NOT_FALLBACK_ELIGIBLE)를 유지하고 eligible=true(소진)인 경우에만 FALLBACK_UNAVAILABLE로 변환한다.",
+        "fallback_eligible은 Opus에서 항상 false를 유지한다."
+      ],
+      "required_tests": [
+        "opus-failure-is-fallback-unavailable에 TASK_CAP_APPROVAL_REQUIRED·NOT_FALLBACK_ELIGIBLE 입력 케이스 추가",
+        "status.json 재조정(4425-4444)이 Opus 비승계 사유를 그대로 보존하는 시험"
+      ],
+      "previous_finding_id": "SEC-FB-FINAL-002-OPUS-FAILURE-REASON-COLLAPSED",
+      "verified_by_engine": "FABLE"
+    },
+    {
+      "finding_id": "SEC-FB-FINAL-003-TAMPERED-PIN-TEST-PARTIAL",
+      "severity": "Minor",
+      "review_state": "VERIFIED",
+      "category": "TEST_GAP",
+      "requirement_or_invariant_ids": [
+        "AI-REVIEW:fable-primary-opus-fallback",
+        "SEC-FB-FINAL-003"
+      ],
+      "evidence": [
+        {
+          "path": "scripts/fable-review.mjs",
+          "line_start": 8463,
+          "line_end": 8497,
+          "observation": "rejectsPin이 fallback_review와 engine_contract.fallback을 함께 변조해 16개 호출로 from_run_sha256, handoff_entry/run_sha256, input_files/artifact_set/finding_registry_sha256, inherited_finding_ids, collaboration_sha256/bytes, target_commit_sha, handoff_base_commit_sha, from_round, handoff_turn_id, spent/remaining_usd, reason, source_commit_sha 변조를 각각 75/STALE로 거부하는지 검사한다."
+        },
+        {
+          "path": "scripts/fable-review.mjs",
+          "line_start": 2717,
+          "line_end": 2749,
+          "observation": "거부 분기(실패 원본, 대상·입력·산출물 hash, registry ID/hash, 장부 bytes/hash)가 각각 시험 메시지와 대응한다."
+        },
+        {
+          "path": "scripts/fable-review.mjs",
+          "line_start": 2759,
+          "line_end": 2771,
+          "observation": "terminal handoff hash/순서 분기가 handoff_entry_sha256·handoff_run_sha256·handoff_turn_id 변조 시험으로 보호된다."
+        },
+        {
+          "path": "scripts/fable-review/protocol-v12.mjs",
+          "line_start": 54,
+          "line_end": 61,
+          "observation": "FALLBACK_KEYS 18개 중 from_task_id만 rejectsPin 대상에서 빠져 있다(잔여는 새 Improvement로 기록)."
+        }
+      ],
+      "impact": "‘any tampered pin’ 부정 시험이 sha256·oid·정수·배열·금액 pin 전체로 확장돼 SEC-FB-003 증거력이 회복됐다.",
+      "acceptance_criteria": [
+        "fallback_review의 모든 sha256·oid·정수·배열 필드 각각에 대해 변조 시 exitCode 75/STALE 거부를 확인한다.",
+        "handoff_turn_id 변경·handoff 뒤 추가 턴·from_round 불일치 케이스를 포함한다."
+      ],
+      "required_tests": [
+        "rejectsPin 확장(handoff_run_sha256, input_files_sha256, artifact_set_sha256, finding_registry_sha256, collaboration_sha256, collaboration_bytes, target_commit_sha, handoff_base_commit_sha, from_round, inherited_finding_ids, handoff_turn_id)"
+      ],
+      "previous_finding_id": "SEC-FB-FINAL-003-TAMPERED-PIN-TEST-PARTIAL",
+      "verified_by_engine": "FABLE"
+    },
+    {
+      "finding_id": "SEC-FB-FINAL-004-COST-ROUNDING-NOT-CEIL",
+      "severity": "Improvement",
+      "review_state": "VERIFIED",
+      "category": "CODE",
+      "requirement_or_invariant_ids": [
+        "AI-REVIEW:fable-primary-opus-fallback",
+        "SEC-FB-FINAL-004"
+      ],
+      "evidence": [
+        {
+          "path": "scripts/fable-review.mjs",
+          "line_start": 2593,
+          "line_end": 2610,
+          "observation": "usdCents는 Math.round(센트) 규칙을 유지하고 conservativeRunCostCents는 total_cost_usd null일 때만 max_budget_usd 전액을 차감한다."
+        },
+        {
+          "path": "scripts/fable-review.mjs",
+          "line_start": 5583,
+          "line_end": 5593,
+          "observation": "self-test가 1.005 USD 두 회차=202센트(반올림)와 null 비용=상한 전액 200센트를 고정한다."
+        },
+        {
+          "path": "docs/ai-review/README.md",
+          "line_start": 379,
+          "line_end": 381,
+          "observation": "README는 ‘센트로 반올림해 정수로 합산’을 명시하고 ‘보수적’은 null 비용 회차의 상한 전액 차감에만 붙인다."
+        },
+        {
+          "path": "docs/팀구성_상세기획안.md",
+          "line_start": 621,
+          "line_end": 624,
+          "observation": "기획안도 ‘센트 단위 정수 합산, envelope 없으면 max_budget_usd 전액’으로 README와 같은 규칙을 기술한다."
+        }
+      ],
+      "impact": "문서·코드·시험이 반올림 규칙으로 합의돼 명명 불일치가 해소됐다.",
+      "acceptance_criteria": [
+        "실사용액은 Math.ceil(센트)로 차감하거나 README에서 ‘보수적’ 표현을 ‘반올림’으로 정정한다."
+      ],
+      "required_tests": [
+        "1.004→101센트(ceil) 또는 100센트(round) 중 채택한 규칙을 고정하는 self-test"
+      ],
+      "previous_finding_id": "SEC-FB-FINAL-004-COST-ROUNDING-NOT-CEIL",
+      "verified_by_engine": "FABLE"
+    },
+    {
+      "finding_id": "SEC-FB-SEC005-FIXTURE-SET-AND-PIN-RESIDUAL",
+      "severity": "Improvement",
+      "review_state": "OPEN",
+      "category": "TEST_GAP",
+      "requirement_or_invariant_ids": [
+        "AI-REVIEW:append-only-audit",
+        "AI-REVIEW:fable-primary-opus-fallback"
+      ],
+      "evidence": [
+        {
+          "path": "scripts/fable-review.mjs",
+          "line_start": 8286,
+          "line_end": 8291,
+          "observation": "fallback-successor-import-rejects-any-tampered-pin은 CONTINUITY-001의 task.json·r001 manifest.json·run.json을 읽고 8369-8370에서 runner-source.mjs·schema-source.json도 복사하지만, 이번 evidence_paths는 review.json·run.json·entry.md·RECHECK-002 run.json만 선언해 fixture 파일 집합이 일치하지 않는다."
+        },
+        {
+          "path": "scripts/fable-review.mjs",
+          "line_start": 8479,
+          "line_end": 8497,
+          "observation": "rejectsPin은 FALLBACK_KEYS 18개 중 from_task_id를 변조하지 않고, ‘handoff 뒤 추가 턴’ 케이스는 파일 오염 commit(outside-fallback.txt)으로만 대체돼 추가 manual 턴 commit 시나리오가 없다."
+        }
+      ],
+      "impact": "감사자가 스냅샷만으로 fixture manifest/runner-source 무결성을 확인할 수 없고, from_task_id 변조·handoff 뒤 추가 턴 회귀는 self-test로 보호되지 않는다. 보안 결함이 아니라 감사 가시성·회귀 커버리지 잔여다.",
+      "acceptance_criteria": [
+        "후속 Task의 evidence_paths에 self-test가 읽는 CONTINUITY-001 task.json·r001 manifest.json·runner-source.mjs·schema-source.json을 포함하거나 fixture 참조 집합을 evidence_paths와 같게 줄인다.",
+        "rejectsPin에 from_task_id 변조와 handoff 뒤 manual 턴 하나를 더 commit한 source_commit_sha 케이스를 추가한다."
+      ],
+      "required_tests": [
+        "rejectsPin({ from_task_id }) 및 handoff 뒤 추가 턴 commit을 source_commit_sha로 지정했을 때 75/STALE 거부 시험"
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    }
+  ],
+  "proposed_edits": [
+    {
+      "edit_id": "EDIT-SEC005-PIN-RESIDUAL-CASES",
+      "path": "scripts/fable-review.mjs",
+      "anchor": "      rejectsPin({ reason: 'MODEL_CAPACITY_UNAVAILABLE' }, '실패 원본');",
+      "operation": "COMMENT",
+      "proposed_text": "from_task_id 변조 케이스와, handoff 뒤 SOLAR_RESPONSE 같은 manual 턴을 하나 더 append·commit한 뒤 그 commit을 source_commit_sha로 지정하는 케이스를 추가해 '지정 handoff 턴 하나만 추가' 분기를 파일 오염이 아닌 턴 추가로도 검증하도록 제안한다. 거부 메시지는 assertHandoffOnlyDelta/materializeTaskFromCommit의 실제 문자열에 맞춰 확정한다.",
+      "rationale": "FALLBACK_KEYS 18개 중 유일하게 미시험인 from_task_id와 ‘handoff 뒤 추가 턴’ 완료 조건을 회귀 보호한다.",
+      "finding_ids": [
+        "SEC-FB-SEC005-FIXTURE-SET-AND-PIN-RESIDUAL"
+      ]
+    }
+  ],
+  "closed_finding_ids": [],
+  "reopened_finding_ids": [],
+  "remaining_required_finding_ids": [],
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5"
+}
