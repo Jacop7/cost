@@ -27,7 +27,16 @@
       "Bash(unzip -o \"C:/Users/jacop/Downloads/식재료 잔여 복사 요청.zip\" -d ing_zip)",
       "Bash(echo \"exit: $?\")",
       "Bash(python -)",
-      "Bash(echo \"종료=$?\")"
+      "Bash(echo \"종료=$?\")",
+      "Bash(grep -oE \"stateNav|상태[^<]{0,20}|data-[a-z-]*state[a-z-]*=\\\\\"[^\\\\\"]*\\\\\"\" docs/prototypes/business-hours-negative-stock-flow.html)",
+      "Bash(docker exec supabase_db_sikjae psql -U postgres -d postgres -c ' *)",
+      "Bash(docker exec supabase_db_sikjae psql -At -U postgres -d postgres -c ' *)",
+      "Bash(node tests/run.mjs)",
+      "Bash(docker exec *)",
+      "Bash(awk -F: '{print $1\" :\"$3}')",
+      "Bash(sort -t: -k2)",
+      "Bash(cd \"c:/Users/jacop/프로젝트/식자재관리앱/apps/mobile/src\" && echo \"=== sales dir ===\" && ls -R features/sales | head -60 && echo \"=== app routes sales ===\" && ls -R ../app 2>/dev/null | head -80)",
+      "Read(//c/Users/jacop/프로젝트/**)"
     ]
   }
 }
