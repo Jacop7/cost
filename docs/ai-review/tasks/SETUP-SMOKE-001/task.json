@@ -1,0 +1,37 @@
+{
+  "protocol_version": "1.0",
+  "task_id": "SETUP-SMOKE-001",
+  "route": "SMOKE",
+  "risk_level": "R0",
+  "author_role": "CODEX-ORCHESTRATOR",
+  "reviewer_role": "FABLE-SEC",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "SMOKE",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "77c9148ca30d9a5423fd48a7056e5c58ccdc62ae",
+  "target_commit_sha": "77c9148ca30d9a5423fd48a7056e5c58ccdc62ae",
+  "target_tree_oid": "9cad53864ef8ef35568f1342e6c9f908c0934e79",
+  "agents_blob_oid": "b8ffe513f1ecca3b947a7148b3944f4e1f3f8f8c",
+  "agents_sha256": "539d410c59511d94a87dfba43851111231a26ab5b36878dbb0c55cbab31ff394",
+  "requirements": [
+    "SMOKE-1: 정확한 AGENTS.md 판본을 읽을 수 있다",
+    "SMOKE-2: 구조화 결과의 판본 hash를 그대로 되돌린다"
+  ],
+  "invariant_ids": [
+    "AGENTS:project-title",
+    "AGENTS:required-local-gate"
+  ],
+  "allowed_paths": [
+    "AGENTS.md"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "AGENTS.md 제목의 식자재 관리 앱",
+    "필수 로컬 게이트 corepack pnpm verify"
+  ],
+  "human_decisions": [
+    "2026-08-28 저장소 읽기 전용 Claude Code 상호검수 호출 승인"
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW"
+}

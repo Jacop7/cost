@@ -1,0 +1,11 @@
+{
+  "protocol_version": "1.0",
+  "task_id": "SETUP-SMOKE-001",
+  "updated_at": "2026-08-27T23:27:42.934Z",
+  "latest_round": "r003",
+  "review_state": "VERIFIED",
+  "run_state": "RESULT_RECEIVED",
+  "defect_state": "NOT_APPLICABLE",
+  "verdict": "PASS",
+  "remaining_required_finding_ids": []
+}

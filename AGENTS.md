@@ -11,8 +11,21 @@
 - 현재 원장·계산·전파: `ARCHITECTURE.md`
 - 화면 ID·라우트·구현 상태: `apps/mobile/src/features/README.md`
 - 작업 순서·완료 기록: `docs/작업큐.md`
+- 솔라·페이블 공동 작성·검수: `docs/ai-review/README.md`
 - 브랜치·DB 배포·복구: `docs/브랜치-DB-운영-기획안.md`
 - 서버 구성·확장 판단: `docs/서버-확장-아키텍처-기획안.md`
+
+역할별 AI 컨텍스트를 분리해도 공식 산출물은 분리하지 않는다. 주제별 요구사항·설계·UX·소스·
+테스트의 공식 경로는 하나이며, 솔라와 페이블은 `docs/ai-review/README.md`의 매개형 공동 작성
+절차로 같은 파일을 개선한다. 역할명이나 수정 단계를 붙인 경쟁 공식 문서를 만들지 않는다.
+공동 장부의 비-Fable 턴은 `pnpm fable:append`로만 추가하고 `collaboration.md`를 직접 편집하지 않는다.
+
+검수 기록과 `proposed_edits`는 공식 정책의 대체본이 아니다. 제안이 같은 공식 파일에 반영되고
+판본·실행 증거·재검수가 연결돼야 현재 기준 후보가 된다. 권위 작업 루트는
+`C:\Users\jacop\프로젝트\식자재관리앱` 하나다. OneDrive에는 저장소를 복사·동기화·미러링하지
+않으며 OneDrive 파일·링크·작업공간과 그 밖의 사본을 작업·검수·판정·복구 입력으로 사용하지 않는다.
+단, 보호 원격 CI가 origin의 정확한 decision commit SHA를 임시 읽기 전용 checkout해 hash-chain과
+게이트 조건만 검증하고 폐기하는 환경은 예외다. 이 환경은 공동 작성·Fable 입력·공식 작업본이 아니다.
 
 ## 절대 원칙
 
@@ -99,6 +112,9 @@ corepack pnpm verify
 실행 순서는 ① 타입 ② core·DB·mobile 시험 ③ ACL 셸 보안 ④ 새 DB 전체 migration·DB 스위트·
 2세션 경합·locale parity ⑤ 업그레이드 경로 ⑥ 웹 번들이다. 건너뛴 단계가 있으면 전체 통과라고
 표현하지 않는다.
+
+솔라↔페이블 상호검수는 `corepack pnpm fable:review -- --task <TASK-ID> --round <N>`으로
+별도 실행한다. 검수 원본을 삭제·덮어쓰지 않으며 `pnpm verify` 통과를 대신하지 않는다.
 
 ```bash
 corepack pnpm verify --no-db

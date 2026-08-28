@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "SETUP-V11-FINAL-001",
+  "updated_at": "2026-08-28T03:42:39.639Z",
+  "latest_round": "r001",
+  "review_state": "OPEN",
+  "workflow_state": "OPEN",
+  "gate_state": "OPEN",
+  "run_state": "RUN_FAILED",
+  "defect_state": "NOT_APPLICABLE",
+  "verdict": null,
+  "latest_run_sha256": "d491d00ce23be3c9de9944976cbaa4b3b6e97b4edc74795c97619de7f5b59e26",
+  "open_required_finding_ids": [],
+  "open_optional_finding_ids": [],
+  "closed_finding_ids": [],
+  "candidate_review_state": null,
+  "candidate_review_sha256": null,
+  "backlog_dispositions": []
+}

@@ -1,0 +1,65 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "SETUP-V11-COLLAB-001",
+  "round": "r003",
+  "created_at": "2026-08-28T00:18:01.777Z",
+  "review_mode": "RECHECK",
+  "baseline_commit_sha": "77c9148ca30d9a5423fd48a7056e5c58ccdc62ae",
+  "target_commit_sha": "77c9148ca30d9a5423fd48a7056e5c58ccdc62ae",
+  "target_tree_oid": "9cad53864ef8ef35568f1342e6c9f908c0934e79",
+  "agents_blob_oid": "b8ffe513f1ecca3b947a7148b3944f4e1f3f8f8c",
+  "agents_sha256": "539d410c59511d94a87dfba43851111231a26ab5b36878dbb0c55cbab31ff394",
+  "task_sha256": "4084def230d08e18edf31210231ffd2c178edd33d62d6d7afb2a85f771e2fde5",
+  "collaboration_sha256": "efd843c9cf07fe6225f4cf266f9aba9c6b70b67f719697a621a3b003934cb164",
+  "collaboration_bytes": 11279,
+  "input_files_sha256": "458ef58a54a67d98e604d8b640cc587f63fef2a543fec3249ce4f5c97113ab62",
+  "schema_sha256": "b088e160631605408e41da34148cfc68da3a39352d5a968fafb8aab56a8dbf5d",
+  "runner_sha256": "1420520592d0c74a2f8c0e70165843c2a26d640d9d7d5b8909d160bb9ae04af0",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "previous_review_sha256": "99fd822cf4057c1e7d67bb4960cb4e757ad6fd54ca5fd9bbc0451464840ed6f5",
+  "previous_run_sha256": "0568c0533974f490ad0f10c0b6d04ae1ee584f97cdee3f9d533d4d2d7bb11009",
+  "retry_of_failed_round": null,
+  "artifact_paths": [
+    "docs/ai-review/fixtures/shared-coauthoring-smoke.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/ai-review/README.md"
+  ],
+  "evidence_paths": [],
+  "allowed_paths": [
+    "docs/ai-review/fixtures/shared-coauthoring-smoke.md",
+    "AGENTS.md",
+    "docs/ai-review/README.md"
+  ],
+  "excluded_paths": [],
+  "input_files": [
+    {
+      "path": "AGENTS.md",
+      "path_role": "REFERENCE",
+      "change_type": "UNCHANGED",
+      "size": 8697,
+      "git_blob_oid": "b8ffe513f1ecca3b947a7148b3944f4e1f3f8f8c",
+      "sha256": "539d410c59511d94a87dfba43851111231a26ab5b36878dbb0c55cbab31ff394",
+      "line_count": 133
+    },
+    {
+      "path": "docs/ai-review/fixtures/shared-coauthoring-smoke.md",
+      "path_role": "ARTIFACT",
+      "change_type": "ADDED",
+      "size": 1841,
+      "git_blob_oid": "b6dd99bbe9c62f44484cd74ec7cb2eb7f05a24aa",
+      "sha256": "64c0b747c04f7e1c0194502268d58cd19e1e50d8e7a27d8deecdcce1f8655e99",
+      "line_count": 28
+    },
+    {
+      "path": "docs/ai-review/README.md",
+      "path_role": "REFERENCE",
+      "change_type": "ADDED",
+      "size": 16749,
+      "git_blob_oid": "00a7d671f86d42acf4d04ef994809e126ae381eb",
+      "sha256": "7450e2b845131bc01c8856d33f8ec81af3708420c92cc9fe6b311aec20b0d9a2",
+      "line_count": 286
+    }
+  ]
+}

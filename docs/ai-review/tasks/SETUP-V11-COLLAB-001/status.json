@@ -1,0 +1,21 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "SETUP-V11-COLLAB-001",
+  "updated_at": "2026-08-28T00:23:19.465Z",
+  "latest_round": "r004",
+  "review_state": "VERIFIED",
+  "workflow_state": "VERIFIED",
+  "gate_state": "OPEN",
+  "run_state": "RESULT_RECEIVED",
+  "defect_state": "NOT_APPLICABLE",
+  "verdict": "PASS",
+  "open_required_finding_ids": [],
+  "open_optional_finding_ids": [],
+  "closed_finding_ids": [
+    "SMOKE-COAUTHOR-CLOSE-RULE-001",
+    "SMOKE-COAUTHOR-PASS-GATE-002"
+  ],
+  "candidate_review_state": null,
+  "candidate_review_sha256": null,
+  "backlog_dispositions": []
+}
