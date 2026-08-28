@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "P1-1-REMOTE-ACL-AUDIT-001",
+  "sequence": "t0003",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-08-28T10:05:41.779Z",
+  "turn_id": "turn-o001",
+  "turn_type": "AI_DEPUTY_SUCCESSOR_HANDOFF",
+  "role": "AI-DEPUTY-ORCHESTRATOR",
+  "task_sha256": "a3c93545595b5facdd17b83b0e13f0ac94ed70bf3d640292fdf0df68fabce2fc",
+  "runner_sha256": "1e09d053693e46b03a27bc34c443a4ac258ff6358eda1d33e0a76b160e97bf8b",
+  "previous_manual_run_sha256": "5ab1a0e31ee02bc5fdf0538fba8a1b9e6bd1a14aa3a7b23b77777b20ff70999a",
+  "collaboration_before_sha256": "079861dea023d9633e4595850e25859398af186b039571b36eff4cdb6dd9bda9",
+  "collaboration_before_bytes": 19656,
+  "collaboration_entry_sha256": "5326aad9181ea15864a4a306979d567766f0b7dcf0dd0097b429e82411b9946b",
+  "collaboration_entry_bytes": 811,
+  "collaboration_after_sha256": "e01352f19bc8f0e37e9ce0740d0eceb9c82f7dd53358a4a63828aed9f1b54de9",
+  "collaboration_after_bytes": 20467
+}
