@@ -144,8 +144,10 @@ SOLAR_REQUEST + 같은 공식본 수정
 → SOLAR_RESPONSE + 같은 공식본 반영 또는 반론
 → CODEX_EVIDENCE + 실행·회귀 증거
 → FABLE_RECHECK(같은 finding_id)
-↺ 필수 Finding이 `VERIFIED` 또는 P0-2 구축 뒤 `CLOSED`가 될 때까지 반복
-→ AI 부 오케스트레이터 종결 결정 → 보호 원격/외부 attestation 게이트 검증
+↺ 필수 Finding이 모두 `VERIFIED`가 될 때까지 반복
+→ AI 부 오케스트레이터 종결 결정(anchor·decision commit)
+→ 보호 원격/외부 attestation 게이트 검증
+→ P0-2 구축 뒤 최초 발견 역할의 closure successor 재검수에서만 `CLOSED`
 ```
 
 ### 페이블 선행 제안
@@ -156,8 +158,10 @@ FABLE_REVIEW + Finding/수정 문구
 → 같은 공식본 반영 또는 근거 있는 반론
 → CODEX_EVIDENCE
 → FABLE_RECHECK(같은 finding_id)
-↺ 완료 조건을 만족할 때까지 반복
-→ AI 부 오케스트레이터 종결 결정 → 보호 원격/외부 attestation 게이트 검증
+↺ 필수 Finding이 모두 `VERIFIED`가 될 때까지 반복
+→ AI 부 오케스트레이터 종결 결정(anchor·decision commit)
+→ 보호 원격/외부 attestation 게이트 검증
+→ P0-2 구축 뒤 최초 발견 역할의 closure successor 재검수에서만 `CLOSED`
 ```
 
 사람을 거치는 업무도 상호검수 회전을 먼저 끝낸 뒤 결정 패킷을 올린다. 다만 사람의 정책 선택,
@@ -240,6 +244,15 @@ commit이어야 한다. 두 Task는 같은 `FABLE-FINAL` 경로·검수 범위�
 이 상호 handoff가 없거나 hash·범위·회차가 다르면 실행기는 실패 폐쇄한다. `status.json`은 권위 입력이
 아니라 봉인된 회차에서 재생해 대조하는
 요약일 뿐이다.
+
+보호 체크 성공 뒤 `CLOSED` 재검수는 위 `FABLE-FINAL` 전용 commit 변경 successor나 §8 소진
+successor와 별도인 closure successor 계약을 사용한다. 모든 `reviewer_role`에서 원 route·역할·검수
+범위를 유지하고, predecessor 최신 성공 회차의 전체 Finding registry hash를 승계하며, target은
+보호 체크가 성공한 정확한 decision commit 또는 그 commit을 포함하는 승인된 후속 commit인 `COMMIT`
+snapshot이어야 한다. 보호 체크의 정확한 SHA·check context·성공 결과와 보호 ref 포함 증거를
+입력으로 봉인하지 않으면 `CLOSED` 반환을 거부한다. 이 계약의 protocol 1.2 schema·runner 구현은
+`AI-REVIEW-2`, 보호 원격 validator·ruleset 결합과 부정 시험은 `P0-2`가 소유한다. 두 작업 완료
+전에는 FINAL 외 route를 포함한 어떤 Finding도 `CLOSED`로 전환하지 않는다.
 
 신규 실행 가능한 Task는 protocol `1.1`만 허용한다. 과거 protocol `1.0` 디렉터리는 당시 감사
 원본으로 보존하지만 새 회차를 실행하지 않는다. task protocol 버전과 Claude 구조화 결과의
@@ -353,6 +366,9 @@ protocol 1.2 Task에 predecessor task·round·run hash와 실패 사유를 봉�
 
 여기서 `INITIAL`·`RECHECK`는 inherited registry 유무에 따른 승계 의미다. `FABLE-SEC`·
 `FABLE-FINAL` successor의 실제 `task.review_mode`는 route가 정한 `SECURITY`·`FINAL`을 유지한다.
+`MANDATORY_MUTUAL`·`CONDITIONAL` successor의 `task.review_mode`는 route 기본값 `INITIAL`을 유지하고,
+결과·manifest의 `RECHECK`는 inherited registry에서 실행기가 파생한다. successor가
+`task.review_mode=RECHECK`를 직접 선언하면 거부한다.
 `FINAL_INDEPENDENT` route successor는 registry 승계 여부와 무관하게 predecessor 장부를 받지 않고
 `independent_request`와 predecessor registry hash 블록만 받는다. 그 밖의 `MANDATORY_MUTUAL`·
 `CONDITIONAL`·`SECURITY` route에서는 registry를 승계한 successor가 봉인된 predecessor 장부 전체를
@@ -410,7 +426,8 @@ PASS 뒤 AI 부 오케스트레이터는 같은 판본을 `COMMIT` 모드로 최
 승인이 필요하면 먼저 `HUMAN_DECISION`을 decision commit에 포함한다. 현재 `P0-2`의 GitHub ruleset과
 필수 체크가 구축되기 전에는 Finding `review_state`를 `VERIFIED`까지만 올리고 `CLOSED`로 전환하지
 않으며 공식 gate `CLOSED`도 선언하지 않는다. `CLOSED` 전환은 decision commit의 보호 원격 필수
-체크 성공 기록이 있는 뒤 최초 발견 역할의 재검수에서만 허용한다.
+체크 성공 기록이 있는 뒤 최초 발견 역할이 §6의 closure successor(`COMMIT`, registry hash 승계)로
+재검수할 때만 허용한다.
 
 ## 10. 보존과 정정
 
