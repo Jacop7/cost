@@ -1,0 +1,56 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "P1-1-ACL-SUPPORT-SOURCE-003",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R3",
+  "author_role": "SOLAR-DB",
+  "reviewer_role": "FABLE-SEC",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "d0051c17bb6f842e28b48813616114fefc50913c",
+  "target_commit_sha": "474d087fa341a70bb792cd10bd9f6907985e6617",
+  "target_tree_oid": "e460095a78d92428ab0009d8f0e663abb7d92c17",
+  "agents_blob_oid": "64b82275832bb6ce981b419294a428e77383be3e",
+  "agents_sha256": "0f1dd530a46174aeff884146569b2e2534f6ec8b544b531054f48e86b84c0f97",
+  "requirements": [
+    "P1-1-SUPPORT-FINAL-1: 마이그레이션 장부 존재 여부와 migrations 0/2 기대값이 같이 움직인다.",
+    "P1-1-SUPPORT-FINAL-2: src·app의 TS/JS 소스를 스캔하고 소스 0개·동적 이름·요소 접근·RPC 별칭을 실패시킨다.",
+    "P1-1-SUPPORT-FINAL-3: 부채 metric은 숫자 정수 문자열만 받고 32/87 증가를 차단한다.",
+    "P1-1-SUPPORT-FINAL-4: 독립 EVIDENCE 파일이 원문 SHA·사보타주 exit 1·verify 6/6·fresh DB 0개를 실체화한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:inspection-execution",
+    "P1-1-SUPPORT-002-EVIDENCE-NOT-MATERIALIZED",
+    "P1-1-SUPPORT-002-MIGRATIONS-ZERO-AMBIGUOUS",
+    "P1-1-SUPPORT-002-RPC-SCAN-EVASION",
+    "P1-1-SUPPORT-002-DEBT-VALUE-PARSING"
+  ],
+  "artifact_paths": [
+    "packages/db/scripts/admin-acl-audit.test.mjs"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "packages/db/scripts/admin-acl-audit.sql",
+    "scripts/verify.mjs"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/evidence/P1-1-ACL-SUPPORT-SOURCE-002.md"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "빈 마이그레이션 장부·요소 접근 RPC·RPC 별칭·빈 부채 값 사보타주의 exit 1 결과",
+    "이전 검수 원문 경로와 SHA-256 연결",
+    "최종 corepack pnpm verify 6/6 exit 0와 fresh DB 0개",
+    "복구 후 admin-acl-audit.sql 원본 SHA-256"
+  ],
+  "human_decisions": [
+    "2026-08-28 사용자가 페이블 문제 제기를 함께 반영하며 계속 진행하도록 승인했다.",
+    "Task 제어 경로는 실행기 보안 규칙상 입력에서 제외되므로 독립 증거 파일로 원문 해시와 실행 결과를 전진 보존한다.",
+    "실제 호스티드 audit와 32/87 권한 축소는 별도 P0-5 R3이다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null
+}
