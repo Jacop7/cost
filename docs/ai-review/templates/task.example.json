@@ -36,5 +36,6 @@
   ],
   "human_decisions": [],
   "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
-  "independent_request": null
+  "independent_request": null,
+  "predecessor_review": null
 }

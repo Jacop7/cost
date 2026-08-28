@@ -102,4 +102,18 @@
 > 보호 ref 반영 기록, 또는 사전 승인된 외부 서명/attestation이 공식 gate 종결 증거다. 자기 자신을
 > commit 안에 기록하지 않는다. 정확한 decision commit SHA는 저장소 밖 check-run·보호 ref 이벤트·
 > attestation이 해당 실행의 `GITHUB_SHA` 또는 동등한 불변 식별자로 기록한다.
+
+## AI_DEPUTY_SUCCESSOR_HANDOFF · turn-o003 · r001
+
+- role: `AI-DEPUTY-ORCHESTRATOR`
+- predecessor_task_id: `TASK-ID`
+- predecessor_round: `r001`
+- predecessor_task_sha256: `<64-hex>`
+- predecessor_manifest_sha256: `<64-hex>`
+- predecessor_review_sha256: `<64-hex>`
+- predecessor_run_sha256: `<64-hex>`
+- finding_registry_sha256: `<64-hex>`
+- successor_task_id: `TASK-ID-002`
+- successor_target_commit_sha: `<40-hex>`
+- next_review_request: `FABLE_RECHECK`
 -->

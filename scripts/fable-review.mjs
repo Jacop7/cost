@@ -93,6 +93,8 @@ const MAX_ARTIFACT_SNAPSHOT_BYTES = 10 * 1024 * 1024;
 const MAX_WORKING_INPUT_SNAPSHOT_BYTES = 25 * 1024 * 1024;
 const MAX_STDOUT_BYTES = 16 * 1024 * 1024;
 const MAX_STDERR_BYTES = 4 * 1024 * 1024;
+const MAX_PREDECESSOR_ARCHIVE_BYTES = 50 * 1024 * 1024;
+const MAX_PREDECESSOR_FILES = 500;
 const DEFAULT_TIMEOUT_MS = 15 * 60 * 1000;
 const MAX_TIMEOUT_MS = 60 * 60 * 1000;
 const MAX_BUDGET_USD = '2.00';
@@ -108,6 +110,12 @@ const LEGACY_UNARCHIVED_ROUNDS = new Map([
 ]);
 const UTF8_DECODER = new TextDecoder('utf-8', { fatal: true });
 const FINDING_RESOLUTION_SEMANTICS = 'VERIFIED_RESOLVED_V1';
+const PREDECESSOR_REVIEW_KEYS = new Set([
+  'task_id', 'source_commit_sha', 'round', 'task_sha256', 'manifest_sha256',
+  'run_sha256', 'review_sha256', 'finding_registry_sha256', 'handoff_turn_id',
+  'handoff_entry_sha256', 'handoff_run_sha256',
+]);
+const MAX_PREDECESSOR_DEPTH = 8;
 const SAFE_CLAUDE_SUBTYPES = new Set(['success', 'error_max_budget_usd']);
 const SAFE_CLAUDE_TERMINAL_REASONS = new Set(['completed', 'budget_exhausted']);
 
@@ -128,6 +136,7 @@ const TASK_KEYS_V11 = new Set([
   'target_commit_sha', 'target_tree_oid', 'agents_blob_oid', 'agents_sha256', 'requirements',
   'invariant_ids', 'artifact_paths', 'reference_paths', 'evidence_paths', 'excluded_paths',
   'required_evidence', 'human_decisions', 'authorization_scope', 'independent_request',
+  'predecessor_review',
 ]);
 const SECRET_PATTERNS = [
   { name: 'private key', pattern: /-----BEGIN (?:RSA |EC |OPENSSH |DSA )?PRIVATE KEY-----/ },
@@ -552,6 +561,7 @@ function validateTask(task, taskId) {
   }
   ensureString(task.task_id, 'task_id', { pattern: TASK_ID_RE, max: 64 });
   if (task.task_id !== taskId) throw new ReviewError('경로의 작업 ID와 task.json task_id가 다릅니다.', { exitCode: 65 });
+  task.predecessor_review = validatePredecessorReviewContract(task.predecessor_review, task.task_id);
   ensureString(task.route, 'route', {
     values: new Set(['MANDATORY_MUTUAL', 'CONDITIONAL', 'SECURITY', 'FINAL_INDEPENDENT', 'SMOKE']),
   });
@@ -619,6 +629,9 @@ function validateTask(task, taskId) {
   }
   if (task.route === 'SMOKE' && task.review_mode !== 'SMOKE') {
     throw new ReviewError('SMOKE 경로는 review_mode SMOKE여야 합니다.', { exitCode: 65 });
+  }
+  if (task.predecessor_review && task.snapshot_mode !== 'COMMIT') {
+    throw new ReviewError('predecessor_review 승계는 COMMIT snapshot에서만 허용합니다.', { exitCode: 65 });
   }
   Object.defineProperty(task, 'trusted_packet', {
     value: trustedPacket,
@@ -1444,7 +1457,7 @@ function assertWorkingInputsUnchanged(repoRoot, task, expectedInputHash, collabo
 }
 
 function effectiveReviewMode(task, round, previous) {
-  return round > 1 && previous.value ? 'RECHECK' : task.review_mode;
+  return previous.value && (round > 1 || previous.predecessor) ? 'RECHECK' : task.review_mode;
 }
 
 function loadRoundRecord(roundsDir, roundNumber, task) {
@@ -1500,6 +1513,12 @@ function loadRoundRecord(roundsDir, roundNumber, task) {
       )
     ) {
       throw new ReviewError(`${roundName} manifest/run의 계약 hash가 일치하지 않습니다.`, { exitCode: 75, runState: 'STALE' });
+    }
+    if (!sameJsonValue(manifest.predecessor_review ?? null, task.predecessor_review ?? null)) {
+      throw new ReviewError(`${roundName} manifest의 predecessor_review가 Task와 다릅니다.`, {
+        exitCode: 75,
+        runState: 'STALE',
+      });
     }
     if (
       !Number.isInteger(run.collaboration_after_bytes)
@@ -1656,18 +1675,19 @@ function loadRoundRecord(roundsDir, roundNumber, task) {
   return { roundName, manifest, manifestRaw, manifestHash, run, runRaw, runHash, raw, value, hash: reviewHash };
 }
 
-function previousResult(roundDir, round, task) {
+function previousResult(roundDir, round, task, predecessor = null) {
   if (round === 1) {
     return {
-      value: null,
-      raw: null,
-      hash: null,
-      runHash: null,
+      value: predecessor?.value ?? null,
+      raw: predecessor?.raw ?? null,
+      hash: predecessor?.reviewHash ?? null,
+      runHash: predecessor?.runHash ?? null,
       manifest: null,
-      resultManifest: null,
+      resultManifest: predecessor?.manifest ?? null,
       run: null,
       history: [],
-      registryFindings: [],
+      registryFindings: predecessor?.registryFindings ?? [],
+      predecessor,
     };
   }
   const roundsDir = dirname(roundDir);
@@ -1677,10 +1697,18 @@ function previousResult(roundDir, round, task) {
     history.push(loadRoundRecord(roundsDir, candidateRound, task));
   }
   const chronologicalHistory = [...history].sort((a, b) => a.roundName.localeCompare(b.roundName));
-  let base = null;
-  let priorRunHash = null;
+  let base = predecessor ? {
+    value: predecessor.value,
+    raw: predecessor.raw,
+    hash: predecessor.reviewHash,
+    manifest: predecessor.manifest,
+    roundName: `${predecessor.contract.task_id}/${predecessor.contract.round}`,
+  } : null;
+  let priorRunHash = predecessor?.runHash ?? null;
   let priorCollaborationAfterBytes = null;
-  const findingRegistry = new Map();
+  const findingRegistry = new Map(
+    (predecessor?.registryFindings || []).map((finding) => [finding.finding_id, finding]),
+  );
   for (const record of chronologicalHistory) {
     if (task.protocol_version === '1.1') {
       if (record.manifest.previous_run_sha256 !== priorRunHash) {
@@ -1740,7 +1768,391 @@ function previousResult(roundDir, round, task) {
     runHash: immediate.runHash,
     history,
     registryFindings: [...findingRegistry.values()],
+    predecessor,
   };
+}
+
+function canonicalFindingRegistryRaw(findings) {
+  const sorted = [...findings]
+    .map((finding) => JSON.parse(JSON.stringify(finding)))
+    .sort((left, right) => left.finding_id.localeCompare(right.finding_id));
+  return Buffer.from(`${JSON.stringify(sorted, null, 2)}\n`, 'utf8');
+}
+
+function materializeTaskFromCommit(repoRoot, runtime, commitSha, taskId) {
+  const prefix = `docs/ai-review/tasks/${taskId}`;
+  const raw = gitBuffer(['ls-tree', '-r', '-z', commitSha, '--', prefix], repoRoot);
+  const records = raw.toString('utf8').split('\0').filter(Boolean);
+  if (!records.length || records.length > MAX_PREDECESSOR_FILES) {
+    throw new ReviewError(
+      `${taskId} predecessor archive 파일 수가 허용 범위를 벗어납니다.`,
+      { exitCode: 75, runState: 'STALE' },
+    );
+  }
+  const archiveRoot = join(runtime, 'predecessors');
+  mkdirSync(archiveRoot, { recursive: true });
+  assertSafeDirectory(archiveRoot, runtime, 'predecessor archive 루트');
+  const destination = mkdtempSync(join(archiveRoot, `${taskId}-`));
+  let totalBytes = 0;
+  const seen = new Set();
+  try {
+    for (const record of records) {
+      const match = /^(100644|100755) blob ([0-9a-f]{40})\t(.+)$/.exec(record);
+      if (!match) {
+        throw new ReviewError(
+          `${taskId} predecessor archive에 일반 blob이 아닌 항목이 있습니다.`,
+          { exitCode: 77, runState: 'STALE' },
+        );
+      }
+      const [, , oid, gitPath] = match;
+      const normalized = normalizeRepoPath(gitPath);
+      if (normalized !== prefix && !normalized.startsWith(`${prefix}/`)) {
+        throw new ReviewError('predecessor archive 경로가 Task 범위를 벗어납니다.', { exitCode: 77, runState: 'STALE' });
+      }
+      const relativePath = normalized.slice(prefix.length + 1);
+      if (!relativePath || seen.has(relativePath)) {
+        throw new ReviewError('predecessor archive에 비어 있거나 중복된 경로가 있습니다.', { exitCode: 77, runState: 'STALE' });
+      }
+      seen.add(relativePath);
+      const content = gitBuffer(['cat-file', 'blob', oid], repoRoot);
+      totalBytes += content.length;
+      if (totalBytes > MAX_PREDECESSOR_ARCHIVE_BYTES) {
+        throw new ReviewError('predecessor archive가 안전 크기 제한을 넘습니다.', { exitCode: 74, runState: 'STALE' });
+      }
+      const outputPath = resolve(destination, ...relativePath.split('/'));
+      if (!isPathInside(destination, outputPath)) {
+        throw new ReviewError('predecessor archive 출력 경로가 임시 루트를 벗어납니다.', { exitCode: 77, runState: 'STALE' });
+      }
+      immutableWrite(outputPath, content);
+    }
+    for (const requiredPath of ['task.json', 'collaboration.md', 'status.json']) {
+      if (!seen.has(requiredPath)) {
+        throw new ReviewError(`${taskId} predecessor archive에 ${requiredPath}가 없습니다.`, { exitCode: 75, runState: 'STALE' });
+      }
+    }
+    return destination;
+  } catch (error) {
+    rmSync(destination, { recursive: true, force: true });
+    throw error;
+  }
+}
+
+function assertGitAncestor(repoRoot, ancestor, descendant, label) {
+  const result = spawnSync('git', ['merge-base', '--is-ancestor', ancestor, descendant], {
+    cwd: repoRoot,
+    windowsHide: true,
+    shell: false,
+    stdio: 'ignore',
+  });
+  if (result.error || result.status !== 0) {
+    throw new ReviewError(`${label}가 successor target의 조상이 아닙니다.`, { exitCode: 75, runState: 'STALE' });
+  }
+}
+
+function assertStrictGitAncestor(repoRoot, ancestor, descendant, label) {
+  if (ancestor === descendant) {
+    throw new ReviewError(`${label}는 같은 commit이 아니라 실제 후속 commit이어야 합니다.`, {
+      exitCode: 75,
+      runState: 'STALE',
+    });
+  }
+  assertGitAncestor(repoRoot, ancestor, descendant, label);
+}
+
+function assertHandoffOnlyDelta(repoRoot, targetCommit, sourceCommit, predecessorTaskId, handoffTurnId) {
+  assertGitAncestor(repoRoot, targetCommit, sourceCommit, 'successor target commit');
+  if (!/^turn-o\d{3}$/.test(handoffTurnId)) {
+    throw new ReviewError('predecessor handoff turn id 형식이 잘못됐습니다.', { exitCode: 75, runState: 'STALE' });
+  }
+  const raw = gitBuffer(
+    ['diff', '--name-status', '--no-renames', '-z', targetCommit, sourceCommit],
+    repoRoot,
+  );
+  const fields = raw.toString('utf8').split('\0');
+  if (fields.at(-1) === '') fields.pop();
+  if (fields.length % 2 !== 0) {
+    throw new ReviewError('predecessor source commit의 Git 변경 목록을 해석할 수 없습니다.', {
+      exitCode: 75,
+      runState: 'STALE',
+    });
+  }
+  const taskPrefix = `docs/ai-review/tasks/${predecessorTaskId}`;
+  const actual = new Map();
+  for (let index = 0; index < fields.length; index += 2) {
+    const status = fields[index];
+    const path = normalizeRepoPath(fields[index + 1]);
+    if (actual.has(path)) {
+      throw new ReviewError('predecessor source commit의 Git 변경 목록에 중복 경로가 있습니다.', {
+        exitCode: 75,
+        runState: 'STALE',
+      });
+    }
+    actual.set(path, status);
+  }
+  const newTurnPaths = [...actual]
+    .filter(([path, status]) => (
+      status === 'A'
+      && new RegExp(`^${escapeRegExp(taskPrefix)}/turns/t\\d{4}/(?:entry\\.md|run\\.json|runner-source\\.mjs)$`).test(path)
+    ))
+    .map(([path]) => path);
+  const newTurnDirs = new Set(newTurnPaths.map((path) => path.slice(0, path.lastIndexOf('/'))));
+  const turnDir = newTurnDirs.size === 1 ? [...newTurnDirs][0] : null;
+  const handoffSequence = turnDir?.slice(turnDir.lastIndexOf('/') + 1) ?? null;
+  const expected = turnDir ? new Map([
+    [`${taskPrefix}/collaboration.md`, 'M'],
+    [`${turnDir}/entry.md`, 'A'],
+    [`${turnDir}/run.json`, 'A'],
+    [`${turnDir}/runner-source.mjs`, 'A'],
+  ]) : new Map();
+  const exact = expected.size === 4 && actual.size === expected.size && [...expected].every(
+    ([path, status]) => actual.get(path) === status,
+  );
+  if (!exact) {
+    throw new ReviewError(
+      'predecessor source commit에는 기존 이력을 고치지 않고 지정 handoff 턴 하나만 추가해야 합니다.',
+      { exitCode: 75, runState: 'STALE' },
+    );
+  }
+  return handoffSequence;
+}
+
+function sameJsonValue(left, right) {
+  return JSON.stringify(left) === JSON.stringify(right);
+}
+
+function escapeRegExp(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function sortedStrings(values) {
+  return [...values].sort((left, right) => left.localeCompare(right));
+}
+
+function loadPinnedPredecessorReview({ repoRoot, runtime, task, seenTaskIds = new Set(), depth = 0 }) {
+  const contract = task.predecessor_review;
+  if (!contract) return null;
+  if (depth >= MAX_PREDECESSOR_DEPTH || seenTaskIds.has(contract.task_id)) {
+    throw new ReviewError('predecessor_review 연결이 순환하거나 깊이 제한을 넘습니다.', { exitCode: 75, runState: 'STALE' });
+  }
+  const nextSeen = new Set(seenTaskIds);
+  nextSeen.add(task.task_id);
+  nextSeen.add(contract.task_id);
+  const handoffSequence = assertHandoffOnlyDelta(
+    repoRoot,
+    task.target_commit_sha,
+    contract.source_commit_sha,
+    contract.task_id,
+    contract.handoff_turn_id,
+  );
+  const sourceDir = materializeTaskFromCommit(
+    repoRoot,
+    runtime,
+    contract.source_commit_sha,
+    contract.task_id,
+  );
+  try {
+    const taskPath = join(sourceDir, 'task.json');
+    const collaborationPath = join(sourceDir, 'collaboration.md');
+    const statusPath = join(sourceDir, 'status.json');
+    const sourceTaskRaw = readBounded(taskPath, `${contract.task_id} predecessor task.json`);
+    const sourceTask = validateTask(
+      parseJson(sourceTaskRaw, `${contract.task_id} predecessor task.json`),
+      contract.task_id,
+    );
+    if (sha256(sourceTaskRaw) !== contract.task_sha256) {
+      throw new ReviewError('predecessor task.json hash가 task packet과 다릅니다.', { exitCode: 75, runState: 'STALE' });
+    }
+    if (
+      sourceTask.route !== 'FINAL_INDEPENDENT'
+      || task.route !== 'FINAL_INDEPENDENT'
+      || sourceTask.review_mode !== 'FINAL'
+      || task.review_mode !== 'FINAL'
+      || sourceTask.snapshot_mode !== 'COMMIT'
+      || task.snapshot_mode !== 'COMMIT'
+      || sourceTask.reviewer_role !== task.reviewer_role
+    ) {
+      throw new ReviewError(
+        'predecessor 승계는 같은 FABLE-FINAL COMMIT 검수 경로에서만 허용합니다.',
+        { exitCode: 75, runState: 'STALE' },
+      );
+    }
+    for (const field of ['artifact_paths', 'reference_paths', 'evidence_paths', 'excluded_paths']) {
+      if (!sameJsonValue(sourceTask[field], task[field])) {
+        throw new ReviewError(`predecessor와 successor의 ${field} 범위가 다릅니다.`, {
+          exitCode: 75,
+          runState: 'STALE',
+        });
+      }
+    }
+    if (task.baseline_commit_sha !== sourceTask.target_commit_sha) {
+      throw new ReviewError('successor baseline은 predecessor가 검수한 target commit이어야 합니다.', {
+        exitCode: 75,
+        runState: 'STALE',
+      });
+    }
+    assertStrictGitAncestor(
+      repoRoot,
+      sourceTask.target_commit_sha,
+      task.target_commit_sha,
+      'predecessor target commit',
+    );
+    const inherited = loadPinnedPredecessorReview({
+      repoRoot,
+      runtime,
+      task: sourceTask,
+      seenTaskIds: nextSeen,
+      depth: depth + 1,
+    });
+    const sourceRoundsDir = join(sourceDir, 'rounds');
+    const sourceRoundNames = readdirSync(sourceRoundsDir);
+    const publishedRounds = sourceRoundNames.filter((name) => /^r\d{3}$/.test(name)).sort();
+    const preparedRounds = sourceRoundNames.filter((name) => /^\.r\d{3}\.stage-/.test(name));
+    const unknownRounds = sourceRoundNames.filter((name) => (
+      !/^r\d{3}$/.test(name) && !/^\.r\d{3}\.stage-/.test(name)
+    ));
+    if (
+      preparedRounds.length
+      || unknownRounds.length
+      || publishedRounds.at(-1) !== contract.round
+    ) {
+      throw new ReviewError('predecessor round는 stage가 없는 최신 공개 회차여야 합니다.', {
+        exitCode: 75,
+        runState: 'STALE',
+      });
+    }
+    const sourceRoundNumber = Number(contract.round.slice(1));
+    const loaded = previousResult(
+      join(sourceDir, 'rounds', `r${String(sourceRoundNumber + 1).padStart(3, '0')}`),
+      sourceRoundNumber + 1,
+      sourceTask,
+      inherited,
+    );
+    if (loaded.baseRound !== contract.round || !loaded.value) {
+      throw new ReviewError('predecessor round가 최신 성공 검수 회차가 아닙니다.', { exitCode: 75, runState: 'STALE' });
+    }
+    const sourceRecord = loaded.history.find((record) => record.roundName === contract.round);
+    if (!sourceRecord || sourceRecord.run.run_state !== 'RESULT_RECEIVED') {
+      throw new ReviewError('predecessor round는 성공한 검수 결과여야 합니다.', { exitCode: 75, runState: 'STALE' });
+    }
+    const sourceSemantics = findingResolutionSemantics(
+      sourceRecord.manifest,
+      `${contract.task_id}/${contract.round} manifest.json`,
+    );
+    const collaborationRaw = readBounded(collaborationPath, `${contract.task_id} predecessor collaboration.md`);
+    const statusRaw = readBounded(statusPath, `${contract.task_id} predecessor status.json`);
+    if (
+      sourceRecord.manifestHash !== contract.manifest_sha256
+      || sourceRecord.runHash !== contract.run_sha256
+      || sourceRecord.hash !== contract.review_sha256
+    ) {
+      throw new ReviewError('predecessor review pin 중 하나가 target commit 원본과 다릅니다.', { exitCode: 75, runState: 'STALE' });
+    }
+    const sourceRegistry = [...loaded.registryFindings].sort((left, right) => left.finding_id.localeCompare(right.finding_id));
+    const closedFinding = sourceRegistry.find((finding) => finding.review_state === 'CLOSED');
+    if (closedFinding) {
+      throw new ReviewError(
+        `${contract.task_id}/${contract.round}에 P0-2 전에 승계할 수 없는 CLOSED Finding이 있습니다: ${closedFinding.finding_id}`,
+        { exitCode: 75, runState: 'STALE' },
+      );
+    }
+    const registryHash = sha256(canonicalFindingRegistryRaw(sourceRegistry));
+    if (registryHash !== contract.finding_registry_sha256) {
+      throw new ReviewError('predecessor Finding registry가 task packet의 ID/hash와 다릅니다.', { exitCode: 75, runState: 'STALE' });
+    }
+    const chain = validateUnifiedCollaborationChain({
+      roundsDir: sourceRoundsDir,
+      turnsDir: join(sourceDir, 'turns'),
+      task: sourceTask,
+      taskRaw: sourceTaskRaw,
+      collaborationRaw,
+      predecessor: inherited,
+    });
+    if (chain.fableStages.length || chain.manualHistory.stages.length) {
+      throw new ReviewError('predecessor 장부에 복구되지 않은 prepared transaction이 있습니다.', {
+        exitCode: 75,
+        runState: 'STALE',
+      });
+    }
+    const handoffRecord = chain.manualHistory.records.find(
+      (record) => record.identity.turnId === contract.handoff_turn_id,
+    );
+    const terminalEvent = chain.events.at(-1);
+    if (
+      !handoffRecord
+      || handoffRecord.identity.turnType !== 'AI_DEPUTY_SUCCESSOR_HANDOFF'
+      || handoffRecord.run.sequence !== handoffSequence
+      || terminalEvent?.type !== 'MANUAL'
+      || terminalEvent.id !== handoffRecord.run.sequence
+      || sha256(handoffRecord.entryRaw) !== contract.handoff_entry_sha256
+      || sha256(handoffRecord.runRaw) !== contract.handoff_run_sha256
+    ) {
+      throw new ReviewError('predecessor 장부의 terminal successor handoff pin이 올바르지 않습니다.', {
+        exitCode: 75,
+        runState: 'STALE',
+      });
+    }
+    const handoff = parseSuccessorHandoff(handoffRecord.entryRaw);
+    const expectedHandoff = {
+      turn_id: contract.handoff_turn_id,
+      role: sourceTask.gate_owner,
+      predecessor_task_id: contract.task_id,
+      predecessor_round: contract.round,
+      predecessor_task_sha256: contract.task_sha256,
+      predecessor_manifest_sha256: contract.manifest_sha256,
+      predecessor_review_sha256: contract.review_sha256,
+      predecessor_run_sha256: contract.run_sha256,
+      finding_registry_sha256: contract.finding_registry_sha256,
+      successor_task_id: task.task_id,
+      successor_target_commit_sha: task.target_commit_sha,
+      next_review_request: 'FABLE_RECHECK',
+    };
+    if (!sameJsonValue(handoff, expectedHandoff)) {
+      throw new ReviewError('predecessor handoff 내용이 successor Task 계약과 다릅니다.', {
+        exitCode: 75,
+        runState: 'STALE',
+      });
+    }
+    const status = parseJson(statusRaw, `${contract.task_id} predecessor status.json`);
+    ensureObject(status, `${contract.task_id} predecessor status.json`);
+    const expectedStatus = findingStatusLists(
+      { findings: sourceRegistry },
+      null,
+      sourceSemantics,
+    );
+    if (
+      status.latest_round !== contract.round
+      || status.latest_run_sha256 !== contract.run_sha256
+      || status.run_state !== 'RESULT_RECEIVED'
+      || status.verdict !== sourceRecord.value.verdict
+      || !sameJsonValue(
+        sortedStrings(status.open_required_finding_ids || []),
+        sortedStrings(expectedStatus.open_required_finding_ids),
+      )
+      || !sameJsonValue(
+        sortedStrings(status.open_optional_finding_ids || []),
+        sortedStrings(expectedStatus.open_optional_finding_ids),
+      )
+      || !sameJsonValue(
+        sortedStrings(status.closed_finding_ids || []),
+        sortedStrings(expectedStatus.closed_finding_ids),
+      )
+      || expectedStatus.closed_finding_ids.length > 0
+    ) {
+      throw new ReviewError('predecessor status.json이 검증된 Finding registry의 파생 상태와 다릅니다.', { exitCode: 75, runState: 'STALE' });
+    }
+    return {
+      contract,
+      value: JSON.parse(JSON.stringify(sourceRecord.value)),
+      raw: sourceRecord.raw,
+      reviewHash: sourceRecord.hash,
+      runHash: sourceRecord.runHash,
+      manifest: sourceRecord.manifest,
+      registryFindings: JSON.parse(JSON.stringify(sourceRegistry)),
+      registryHash,
+    };
+  } finally {
+    rmSync(sourceDir, { recursive: true, force: true });
+  }
 }
 
 function validatePreviousRoundIntegrity(previous, snapshot, collaborationRaw, task) {
@@ -1815,7 +2227,10 @@ function buildPrompt({ task, collaborationText, snapshot, manifest, mode, previo
   const previousBlock = previous.value
     ? `\n<previous_result sha256="${previous.hash}">\n${JSON.stringify(previous.value, null, 2)}\n</previous_result>\n`
     : '';
-  const collaborationBlock = task.route === 'FINAL_INDEPENDENT' && mode === 'FINAL'
+  const predecessorRegistryBlock = previous.predecessor
+    ? `\n<predecessor_finding_registry sha256="${previous.predecessor.registryHash}">\n${JSON.stringify(previous.predecessor.registryFindings, null, 2)}\n</predecessor_finding_registry>\n`
+    : '';
+  const collaborationBlock = task.route === 'FINAL_INDEPENDENT'
     ? `<independent_audit_request>\n${task.independent_request}\n</independent_audit_request>`
     : `<shared_collaboration_log sha256="${snapshot.collaboration_sha256}">\n${collaborationText}\n</shared_collaboration_log>`;
   return `# Trusted Fable review control instructions
@@ -1855,6 +2270,7 @@ ${JSON.stringify({
     review_mode: mode,
     ...snapshot,
     previous_review_sha256: previous.hash,
+    predecessor_review: task.predecessor_review,
     artifact_paths: task.artifact_paths,
     reference_paths: task.reference_paths,
     evidence_paths: task.evidence_paths,
@@ -1867,7 +2283,7 @@ ${JSON.stringify(task.trusted_packet || task, null, 2)}
 </trusted_task_packet>
 
 ${collaborationBlock}
-${previousBlock}`;
+${previousBlock}${predecessorRegistryBlock}`;
 }
 
 function killProcessTree(child) {
@@ -1964,6 +2380,40 @@ async function runClaude({ cli, cwd, prompt, schema, timeoutMs }) {
 
 function safeClaudeEnum(value, allowed) {
   return typeof value === 'string' && allowed.has(value) ? value : null;
+}
+
+function validatePredecessorReviewContract(value, currentTaskId) {
+  if (value === undefined || value === null) return null;
+  ensureObject(value, 'predecessor_review');
+  ensureExactKeys(value, PREDECESSOR_REVIEW_KEYS, 'predecessor_review');
+  for (const field of PREDECESSOR_REVIEW_KEYS) {
+    if (!(field in value)) {
+      throw new ReviewError(`predecessor_review 필수 필드가 없습니다: ${field}`, { exitCode: 65 });
+    }
+  }
+  ensureString(value.task_id, 'predecessor_review.task_id', { pattern: TASK_ID_RE, max: 64 });
+  if (value.task_id === currentTaskId) {
+    throw new ReviewError('predecessor_review는 자기 Task를 참조할 수 없습니다.', { exitCode: 65 });
+  }
+  ensureString(value.source_commit_sha, 'predecessor_review.source_commit_sha', {
+    pattern: GIT_OID_RE,
+    max: 40,
+  });
+  ensureString(value.round, 'predecessor_review.round', { pattern: /^r\d{3}$/, max: 4 });
+  if (value.round === 'r000') {
+    throw new ReviewError('predecessor_review.round는 r001 이상이어야 합니다.', { exitCode: 65 });
+  }
+  for (const field of [
+    'task_sha256', 'manifest_sha256', 'run_sha256', 'review_sha256',
+    'finding_registry_sha256', 'handoff_entry_sha256', 'handoff_run_sha256',
+  ]) {
+    ensureString(value[field], `predecessor_review.${field}`, { pattern: SHA256_RE, max: 64 });
+  }
+  ensureString(value.handoff_turn_id, 'predecessor_review.handoff_turn_id', {
+    pattern: /^turn-o\d{3}$/,
+    max: 9,
+  });
+  return JSON.parse(JSON.stringify(value));
 }
 
 function safeClaudeSubtype(value) {
@@ -2399,7 +2849,56 @@ const MANUAL_TURN_ROLES = new Map([
   ['HUMAN_DECISION', { idPrefix: 'h', roleKind: 'HUMAN' }],
   ['BACKLOG_DISPOSITION', { idPrefix: 'o', roleKind: 'GATE_OWNER' }],
   ['AI_DEPUTY_GATE_DECISION', { idPrefix: 'o', roleKind: 'GATE_OWNER' }],
+  ['AI_DEPUTY_SUCCESSOR_HANDOFF', { idPrefix: 'o', roleKind: 'GATE_OWNER' }],
 ]);
+
+function parseSuccessorHandoff(entryRaw, label = 'successor handoff') {
+  const text = decodeSafeText(entryRaw, label, MAX_INPUT_BYTES).trim();
+  const pattern = new RegExp([
+    '^## AI_DEPUTY_SUCCESSOR_HANDOFF · (turn-o\\d{3}) · (r\\d{3})',
+    '',
+    '- role: `([^`\\r\\n]+)`',
+    '- predecessor_task_id: `([A-Z0-9][A-Z0-9_-]{2,63})`',
+    '- predecessor_round: `(r\\d{3})`',
+    '- predecessor_task_sha256: `([0-9a-f]{64})`',
+    '- predecessor_manifest_sha256: `([0-9a-f]{64})`',
+    '- predecessor_review_sha256: `([0-9a-f]{64})`',
+    '- predecessor_run_sha256: `([0-9a-f]{64})`',
+    '- finding_registry_sha256: `([0-9a-f]{64})`',
+    '- successor_task_id: `([A-Z0-9][A-Z0-9_-]{2,63})`',
+    '- successor_target_commit_sha: `([0-9a-f]{40})`',
+    '- next_review_request: `FABLE_RECHECK`$',
+  ].join('\\n'));
+  const match = pattern.exec(text);
+  if (!match) {
+    throw new ReviewError(
+      'AI_DEPUTY_SUCCESSOR_HANDOFF는 정해진 필드·순서의 machine-readable 턴이어야 합니다.',
+      { exitCode: 65 },
+    );
+  }
+  const [
+    , turnId, headingRound, role, predecessorTaskId, predecessorRound,
+    predecessorTaskSha256, predecessorManifestSha256, predecessorReviewSha256,
+    predecessorRunSha256, findingRegistrySha256, successorTaskId, successorTargetCommitSha,
+  ] = match;
+  if (headingRound !== predecessorRound) {
+    throw new ReviewError('successor handoff heading 회차와 predecessor_round가 다릅니다.', { exitCode: 65 });
+  }
+  return {
+    turn_id: turnId,
+    role,
+    predecessor_task_id: predecessorTaskId,
+    predecessor_round: predecessorRound,
+    predecessor_task_sha256: predecessorTaskSha256,
+    predecessor_manifest_sha256: predecessorManifestSha256,
+    predecessor_review_sha256: predecessorReviewSha256,
+    predecessor_run_sha256: predecessorRunSha256,
+    finding_registry_sha256: findingRegistrySha256,
+    successor_task_id: successorTaskId,
+    successor_target_commit_sha: successorTargetCommitSha,
+    next_review_request: 'FABLE_RECHECK',
+  };
+}
 
 function normalizeManualTurn(raw, current, task = null) {
   if (raw.length > MAX_INPUT_BYTES) {
@@ -2416,7 +2915,7 @@ function normalizeManualTurn(raw, current, task = null) {
   }
   const secondLevelHeadings = text.match(/^[ \t]{0,3}##\s+/gm) || [];
   const firstLine = text.split('\n', 1)[0];
-  const heading = /^## (SOLAR_REQUEST|SOLAR_RESPONSE|CODEX_EVIDENCE|HUMAN_DECISION|BACKLOG_DISPOSITION|AI_DEPUTY_GATE_DECISION)\s+·\s+(turn-([scho])\d{3})(?:\s+·\s+r\d{3})?[ \t]*$/.exec(firstLine);
+  const heading = /^## (SOLAR_REQUEST|SOLAR_RESPONSE|CODEX_EVIDENCE|HUMAN_DECISION|BACKLOG_DISPOSITION|AI_DEPUTY_GATE_DECISION|AI_DEPUTY_SUCCESSOR_HANDOFF)\s+·\s+(turn-([scho])\d{3})(?:\s+·\s+r\d{3})?[ \t]*$/.exec(firstLine);
   if (!heading || secondLevelHeadings.length !== 1) {
     throw new ReviewError('장부 턴은 허용된 유형·turn ID를 가진 단일 ## heading으로 시작해야 합니다.', { exitCode: 65 });
   }
@@ -2436,6 +2935,9 @@ function normalizeManualTurn(raw, current, task = null) {
   if (roleLines.length !== 1 || !allowedRoles.has(roleLines[0][1])) {
     throw new ReviewError(`${turnType}의 role은 다음 중 하나여야 합니다: ${[...allowedRoles].join(', ')}`, { exitCode: 65 });
   }
+  if (turnType === 'AI_DEPUTY_SUCCESSOR_HANDOFF') {
+    parseSuccessorHandoff(Buffer.from(text, 'utf8'));
+  }
   const currentText = decodeSafeText(current, 'collaboration.md');
   const duplicateHeading = new RegExp(`^[ \\t]{0,3}## [^\\r\\n]+ · ${turnId}(?: · [^\\r\\n]+)?[ \\t]*$`, 'm');
   if (duplicateHeading.test(currentText)) {
@@ -2447,13 +2949,13 @@ function normalizeManualTurn(raw, current, task = null) {
 
 function manualTurnIdentity(entryRaw) {
   const text = decodeSafeText(entryRaw, '수동 역할 장부 entry', MAX_INPUT_BYTES).trim();
-  const heading = /^## (SOLAR_REQUEST|SOLAR_RESPONSE|CODEX_EVIDENCE|HUMAN_DECISION|BACKLOG_DISPOSITION|AI_DEPUTY_GATE_DECISION)\s+·\s+(turn-[scho]\d{3})(?:\s+·\s+r\d{3})?[ \t]*$/.exec(text.split('\n', 1)[0]);
+  const heading = /^## (SOLAR_REQUEST|SOLAR_RESPONSE|CODEX_EVIDENCE|HUMAN_DECISION|BACKLOG_DISPOSITION|AI_DEPUTY_GATE_DECISION|AI_DEPUTY_SUCCESSOR_HANDOFF)\s+·\s+(turn-[scho]\d{3})(?:\s+·\s+r\d{3})?[ \t]*$/.exec(text.split('\n', 1)[0]);
   const role = /^[ \t]{0,3}- role: `([^`\r\n]+)`[ \t]*$/m.exec(text)?.[1];
   if (!heading || !role) throw new ReviewError('정규화된 수동 장부 턴의 identity를 확인할 수 없습니다.', { exitCode: 75, runState: 'STALE' });
   return { turnType: heading[1], turnId: heading[2], role };
 }
 
-function validatePublishedRoundHistoryForAppend({ roundsDir, task, taskRaw, collaborationRaw }) {
+function validatePublishedRoundHistoryForAppend({ roundsDir, task, taskRaw, collaborationRaw, predecessor = null }) {
   if (!existsSync(roundsDir)) return;
   const names = readdirSync(roundsDir);
   const prepared = names.filter((name) => /^\.r\d{3}\.stage-/.test(name));
@@ -2469,7 +2971,12 @@ function validatePublishedRoundHistoryForAppend({ roundsDir, task, taskRaw, coll
   }
   if (!published.length) return;
   const nextRound = published.length + 1;
-  const previous = previousResult(join(roundsDir, `r${String(nextRound).padStart(3, '0')}`), nextRound, task);
+  const previous = previousResult(
+    join(roundsDir, `r${String(nextRound).padStart(3, '0')}`),
+    nextRound,
+    task,
+    predecessor,
+  );
   validatePreviousRoundIntegrity(previous, {
     task_sha256: sha256(taskRaw),
     schema_sha256: previous.manifest.schema_sha256,
@@ -2605,6 +3112,7 @@ function validateUnifiedCollaborationChain({
   taskRaw,
   collaborationRaw,
   allowPreparedTail = false,
+  predecessor = null,
 }) {
   let fableRecords = [];
   let fableStages = [];
@@ -2621,7 +3129,12 @@ function validateUnifiedCollaborationChain({
     }
     if (published.length) {
       const nextRound = published.length + 1;
-      const previous = previousResult(join(roundsDir, `r${String(nextRound).padStart(3, '0')}`), nextRound, task);
+      const previous = previousResult(
+        join(roundsDir, `r${String(nextRound).padStart(3, '0')}`),
+        nextRound,
+        task,
+        predecessor,
+      );
       validatePreviousRoundIntegrity(previous, {
         task_sha256: sha256(taskRaw),
         schema_sha256: previous.manifest.schema_sha256,
@@ -2765,6 +3278,7 @@ function executeAppendTurn(args) {
     assertSafeControlFile(collaborationPath, tasksRoot, 'collaboration.md');
     const taskRaw = readBounded(taskPath, 'task.json');
     const task = validateTask(parseJson(taskRaw, 'task.json'), args.taskId);
+    const predecessor = loadPinnedPredecessorReview({ repoRoot, runtime, task });
     if (LEGACY_UNARCHIVED_ROUNDS.has(task.task_id)) {
       throw new ReviewError('역사적 무-archive Task에는 새 장부 턴을 추가할 수 없습니다.', { exitCode: 73 });
     }
@@ -2781,6 +3295,7 @@ function executeAppendTurn(args) {
       taskRaw,
       collaborationRaw: current,
       allowPreparedTail: true,
+      predecessor,
     });
     if (chain.fableStages.length) {
       throw new ReviewError(`Fable prepared transaction 복구 전에는 수동 턴을 추가할 수 없습니다: ${chain.fableStages.join(', ')}`, { exitCode: 73 });
@@ -2801,6 +3316,7 @@ function executeAppendTurn(args) {
         task,
         taskRaw,
         collaborationRaw: recoveredRaw,
+        predecessor,
       });
       return;
     }
@@ -2810,6 +3326,7 @@ function executeAppendTurn(args) {
       task,
       taskRaw,
       collaborationRaw: current,
+      predecessor,
     });
     if (process.stdin.isTTY) {
       throw new ReviewError('--append-turn은 UTF-8 턴 본문을 표준입력으로 받아야 합니다.', { exitCode: 64 });
@@ -3116,6 +3633,12 @@ function validatePreparedManifestContract({ manifest, task, taskRaw, previous, r
       throw new ReviewError(`staging manifest의 ${field}가 현재 task/이전 회차 계약과 다릅니다.`, { exitCode: 75, runState: 'STALE' });
     }
   }
+  if (!sameJsonValue(manifest.predecessor_review ?? null, task.predecessor_review ?? null)) {
+    throw new ReviewError('staging manifest의 predecessor_review가 현재 task 계약과 다릅니다.', {
+      exitCode: 75,
+      runState: 'STALE',
+    });
+  }
   for (const field of ['artifact_paths', 'reference_paths', 'evidence_paths', 'allowed_paths', 'excluded_paths']) {
     if (JSON.stringify(manifest[field]) !== JSON.stringify(task[field])) {
       throw new ReviewError(`staging manifest의 ${field}가 현재 task 경로 계약과 다릅니다.`, { exitCode: 75, runState: 'STALE' });
@@ -3141,6 +3664,18 @@ function validatePreparedManifestContract({ manifest, task, taskRaw, previous, r
   };
   validatePreviousRoundIntegrity(previous, snapshot, collaborationRaw, task);
   return { roundNumber, snapshot, semantics };
+}
+
+function predecessorStatusFields(task) {
+  return { predecessor_review: task.predecessor_review ?? null };
+}
+
+function sameFindingStatusFields(status, expected) {
+  return ['open_required_finding_ids', 'open_optional_finding_ids', 'closed_finding_ids'].every((field) => (
+    Array.isArray(status?.[field])
+    && Array.isArray(expected?.[field])
+    && sameJsonValue(sortedStrings(status[field]), sortedStrings(expected[field]))
+  ));
 }
 
 function reconcilePublishedRound({
@@ -3201,16 +3736,21 @@ function reconcilePublishedRound({
     history: [record],
   }, contract.snapshot, collaborationRaw, task);
   decodeSafeText(collaborationRaw, 'collaboration.md');
+  const expectedFindingStatus = review
+    ? findingStatusLists(review, previousStatusValue, contract.semantics)
+    : carriedStatus;
   if (existsSync(statusPath)) {
     try {
       const status = parseJson(readBounded(statusPath, 'status.json'), 'status.json');
       if (
         status.protocol_version === task.protocol_version
         && status.task_id === task.task_id
+        && sameJsonValue(status.predecessor_review ?? null, task.predecessor_review ?? null)
         && status.latest_round === roundName
         && status.latest_run_sha256 === record.runHash
         && status.run_state === record.run.run_state
         && status.verdict === (review?.verdict ?? null)
+        && sameFindingStatusFields(status, expectedFindingStatus)
       ) {
         console.log(`${task.task_id} ${roundName}: 공개 회차와 status가 이미 일치합니다.`);
         return { exitCode: record.run.exit_code, review, statusPreserved: true };
@@ -3223,6 +3763,7 @@ function reconcilePublishedRound({
     replaceJson(statusPath, {
       protocol_version: task.protocol_version,
       task_id: task.task_id,
+      ...predecessorStatusFields(task),
       updated_at: record.run.finished_at,
       latest_round: roundName,
       review_state: reviewStateFor(review.verdict),
@@ -3232,7 +3773,7 @@ function reconcilePublishedRound({
       defect_state: 'NOT_APPLICABLE',
       verdict: review.verdict,
       latest_run_sha256: record.runHash,
-      ...findingStatusLists(review, previousStatusValue, contract.semantics),
+      ...expectedFindingStatus,
       candidate_review_state: null,
       candidate_review_sha256: null,
       backlog_dispositions: [],
@@ -3241,6 +3782,7 @@ function reconcilePublishedRound({
     replaceJson(statusPath, {
       protocol_version: task.protocol_version,
       task_id: task.task_id,
+      ...predecessorStatusFields(task),
       updated_at: record.run.finished_at,
       latest_round: roundName,
       review_state: 'OPEN',
@@ -3250,7 +3792,7 @@ function reconcilePublishedRound({
       defect_state: 'NOT_APPLICABLE',
       verdict: null,
       latest_run_sha256: record.runHash,
-      ...carriedStatus,
+      ...expectedFindingStatus,
       candidate_review_state: record.run.candidate_review_state ?? null,
       candidate_review_sha256: record.run.candidate_review_state === 'NOT_MERGED' ? record.run.review_sha256 : null,
       backlog_dispositions: [],
@@ -3390,6 +3932,7 @@ function recoverPreparedRound({
     replaceJson(statusPath, {
       protocol_version: task.protocol_version,
       task_id: task.task_id,
+      ...predecessorStatusFields(task),
       updated_at: run.finished_at,
       latest_round: roundName,
       review_state: reviewStateFor(review.verdict),
@@ -3408,6 +3951,7 @@ function recoverPreparedRound({
     replaceJson(statusPath, {
       protocol_version: task.protocol_version,
       task_id: task.task_id,
+      ...predecessorStatusFields(task),
       updated_at: run.finished_at,
       latest_round: roundName,
       review_state: 'OPEN',
@@ -3462,6 +4006,7 @@ async function executeReview(args) {
     let collaborationRaw = readBounded(collaborationPath, 'collaboration.md');
     const taskText = decodeSafeText(taskRaw, 'task.json');
     const task = validateTask(parseJson(taskRaw, 'task.json'), args.taskId);
+    const predecessor = loadPinnedPredecessorReview({ repoRoot, runtime, task });
     if (LEGACY_UNARCHIVED_ROUNDS.has(task.task_id)) {
       throw new ReviewError(
         `${task.task_id}는 무-archive 역사 기록으로 종결되어 새 회차를 실행할 수 없습니다. 새 Task ID를 사용하세요.`,
@@ -3477,6 +4022,7 @@ async function executeReview(args) {
       taskRaw,
       collaborationRaw,
       allowPreparedTail: true,
+      predecessor,
     });
     if (chain.manualHistory.stages.length) {
       if (chain.fableStages.length) {
@@ -3498,9 +4044,10 @@ async function executeReview(args) {
         taskRaw,
         collaborationRaw,
         allowPreparedTail: true,
+        predecessor,
       });
     }
-    const previous = previousResult(roundDir, args.round, task);
+    const previous = previousResult(roundDir, args.round, task, predecessor);
     const mode = effectiveReviewMode(task, args.round, previous);
     const previousStatusValue = previous.value
       ? { findings: previous.registryFindings || previous.value.findings }
@@ -3521,7 +4068,14 @@ async function executeReview(args) {
       if (chain.fableStages.length) {
         throw new ReviewError('공개 회차와 Fable prepared staging이 함께 존재합니다.', { exitCode: 73 });
       }
-      validateUnifiedCollaborationChain({ roundsDir, turnsDir, task, taskRaw, collaborationRaw });
+      validateUnifiedCollaborationChain({
+        roundsDir,
+        turnsDir,
+        task,
+        taskRaw,
+        collaborationRaw,
+        predecessor,
+      });
       const reconciled = reconcilePublishedRound({
         roundsDir,
         roundName,
@@ -3552,14 +4106,28 @@ async function executeReview(args) {
     });
     if (recovered) {
       collaborationRaw = readBounded(collaborationPath, 'collaboration.md');
-      validateUnifiedCollaborationChain({ roundsDir, turnsDir, task, taskRaw, collaborationRaw });
+      validateUnifiedCollaborationChain({
+        roundsDir,
+        turnsDir,
+        task,
+        taskRaw,
+        collaborationRaw,
+        predecessor,
+      });
       process.exitCode = recovered.exitCode;
       return;
     }
     if (chain.fableStages.length) {
       throw new ReviewError(`다른 Fable 회차의 prepared transaction 복구가 필요합니다: ${chain.fableStages.join(', ')}`, { exitCode: 73 });
     }
-    validateUnifiedCollaborationChain({ roundsDir, turnsDir, task, taskRaw, collaborationRaw });
+    validateUnifiedCollaborationChain({
+      roundsDir,
+      turnsDir,
+      task,
+      taskRaw,
+      collaborationRaw,
+      predecessor,
+    });
     const collaborationText = decodeSafeText(collaborationRaw, 'collaboration.md').trim();
     if (!collaborationText) throw new ReviewError('collaboration.md가 비어 있습니다.', { exitCode: 65 });
     const schemaPath = join(repoRoot, 'scripts', 'fable-review', 'schema-v1.json');
@@ -3591,6 +4159,7 @@ async function executeReview(args) {
       ...snapshot,
       previous_review_sha256: previous.hash,
       previous_run_sha256: previous.runHash,
+      predecessor_review: task.predecessor_review,
       retry_of_failed_round: previous.retryOfFailedRound ?? null,
       artifact_paths: task.artifact_paths,
       reference_paths: task.reference_paths,
@@ -3819,6 +4388,7 @@ async function executeReview(args) {
       replaceJson(statusPath, {
         protocol_version: task.protocol_version,
         task_id: task.task_id,
+        ...predecessorStatusFields(task),
         updated_at: finishedAt,
         latest_round: roundName,
         review_state: 'OPEN',
@@ -3944,6 +4514,7 @@ async function executeReview(args) {
         replaceJson(statusPath, {
           protocol_version: task.protocol_version,
           task_id: task.task_id,
+          ...predecessorStatusFields(task),
           updated_at: nowIso(),
           latest_round: roundName,
           review_state: 'OPEN',
@@ -3980,6 +4551,7 @@ async function executeReview(args) {
     replaceJson(statusPath, {
       protocol_version: task.protocol_version,
       task_id: task.task_id,
+      ...predecessorStatusFields(task),
       updated_at: completedAt,
       latest_round: roundName,
       review_state: reviewStateFor(validated.verdict),
@@ -5459,6 +6031,36 @@ function runSelfTests() {
       selfTestAssert(reconciled.exitCode === 0, '공개 뒤 status 중단 회차 재조정 종료 코드');
       const reconciledStatus = parseJson(readFileSync(statusPath), 'reconciled status');
       selfTestAssert(reconciledStatus.verdict === 'PASS' && reconciledStatus.latest_round === 'r001', '공개 회차에서 status 재생성');
+      writeFileSync(statusPath, `${JSON.stringify({
+        ...reconciledStatus,
+        open_required_finding_ids: ['STALE-FINDING'],
+      }, null, 2)}\n`);
+      const findingStatusReconciled = reconcilePublishedRound({
+        roundsDir,
+        roundName: 'r001',
+        roundDir,
+        collaborationPath,
+        statusPath,
+        task,
+        taskRaw,
+        previous: { value: null, hash: null, runHash: null, retryOfFailedRound: null, manifest: null },
+        previousStatusValue: null,
+        carriedStatus: {
+          open_required_finding_ids: [],
+          open_optional_finding_ids: [],
+          closed_finding_ids: [],
+        },
+      });
+      const repairedFindingStatus = parseJson(readFileSync(statusPath), 'finding status reconciled');
+      selfTestAssert(
+        !findingStatusReconciled.statusPreserved
+          && sameFindingStatusFields(repairedFindingStatus, {
+            open_required_finding_ids: [],
+            open_optional_finding_ids: [],
+            closed_finding_ids: [],
+          }),
+        '핵심 필드가 맞아도 오염된 Finding 상태 배열은 공개 회차에서 재생성',
+      );
       const tamperedLedger = Buffer.from(afterRaw);
       tamperedLedger[0] = '!'.charCodeAt(0);
       writeFileSync(collaborationPath, tamperedLedger);
@@ -5890,6 +6492,362 @@ function runSelfTests() {
     selfTestAssert(anchorPattern === '^[^\\r\\n]+$', 'proposed edit anchor 단일행 schema 계약');
     const anchorRegex = new RegExp(anchorPattern);
     selfTestAssert(anchorRegex.test('## 단일행 anchor') && !anchorRegex.test('첫 줄\n둘째 줄'), 'anchor 개행을 schema에서 거부');
+  });
+
+  test('successor-handoff-and-predecessor-packet-are-exact', () => {
+    const predecessorReview = {
+      task_id: 'SELF-PREDECESSOR-001',
+      source_commit_sha: '1'.repeat(40),
+      round: 'r001',
+      task_sha256: '2'.repeat(64),
+      manifest_sha256: '3'.repeat(64),
+      run_sha256: '4'.repeat(64),
+      review_sha256: '5'.repeat(64),
+      finding_registry_sha256: '6'.repeat(64),
+      handoff_turn_id: 'turn-o003',
+      handoff_entry_sha256: '7'.repeat(64),
+      handoff_run_sha256: '8'.repeat(64),
+    };
+    const packet = taskPacketFixture({
+      task_id: 'SELF-SUCCESSOR-002',
+      route: 'FINAL_INDEPENDENT',
+      author_role: 'AI-DEPUTY-ORCHESTRATOR',
+      reviewer_role: 'FABLE-FINAL',
+      review_mode: 'FINAL',
+      snapshot_mode: 'COMMIT',
+      independent_request: '독립 재검수',
+      predecessor_review: predecessorReview,
+    });
+    const validatedPacket = validateTask(
+      JSON.parse(JSON.stringify(packet)),
+      packet.task_id,
+    );
+    const previous = {
+      value: { findings: [] },
+      predecessor: { contract: predecessorReview },
+    };
+    selfTestAssert(
+      effectiveReviewMode(validatedPacket, 1, previous) === 'RECHECK',
+      'successor 첫 회차는 RECHECK',
+    );
+    const handoffBody = Buffer.from([
+      '## AI_DEPUTY_SUCCESSOR_HANDOFF · turn-o003 · r001',
+      '',
+      '- role: `AI-DEPUTY-ORCHESTRATOR`',
+      '- predecessor_task_id: `SELF-PREDECESSOR-001`',
+      '- predecessor_round: `r001`',
+      `- predecessor_task_sha256: \`${'2'.repeat(64)}\``,
+      `- predecessor_manifest_sha256: \`${'3'.repeat(64)}\``,
+      `- predecessor_review_sha256: \`${'5'.repeat(64)}\``,
+      `- predecessor_run_sha256: \`${'4'.repeat(64)}\``,
+      `- finding_registry_sha256: \`${'6'.repeat(64)}\``,
+      '- successor_task_id: `SELF-SUCCESSOR-002`',
+      `- successor_target_commit_sha: \`${'a'.repeat(40)}\``,
+      '- next_review_request: `FABLE_RECHECK`',
+      '',
+    ].join('\n'));
+    const normalized = normalizeManualTurn(
+      handoffBody,
+      Buffer.from('# predecessor ledger\n'),
+      validatedPacket,
+    );
+    const parsed = parseSuccessorHandoff(normalized);
+    selfTestAssert(
+      parsed.successor_task_id === packet.task_id
+        && parsed.finding_registry_sha256 === predecessorReview.finding_registry_sha256,
+      'machine-readable successor handoff 파싱',
+    );
+    expectReviewError(
+      () => validateTask({
+        ...JSON.parse(JSON.stringify(packet)),
+        predecessor_review: { ...predecessorReview, unexpected: true },
+      }, packet.task_id),
+      { exitCode: 65, messageIncludes: '허용되지 않은 필드' },
+    );
+    expectReviewError(
+      () => normalizeManualTurn(
+        Buffer.from(`${handoffBody.toString('utf8').trim()}\n- hidden: \`value\`\n`),
+        Buffer.from('# predecessor ledger\n'),
+        validatedPacket,
+      ),
+      { exitCode: 65, messageIncludes: 'machine-readable' },
+    );
+  });
+
+  test('pinned-successor-review-import-is-reciprocal-and-scope-bound', () => {
+    const temporaryRoot = mkdtempSync(join(tmpdir(), 'fable-successor-import-selftest-'));
+    try {
+      const repoRoot = join(temporaryRoot, 'repo');
+      git(['clone', '--shared', '--quiet', SCRIPT_ROOT, repoRoot], temporaryRoot);
+      git(['config', 'user.name', 'Fable Self Test'], repoRoot);
+      git(['config', 'user.email', 'fable-self-test@example.invalid'], repoRoot);
+      const targetCommit = git(['rev-parse', 'HEAD'], repoRoot);
+      const predecessorTaskId = 'AI-REVIEW-1-COMMIT-DOCS-001';
+      const predecessorTaskDir = join(repoRoot, 'docs', 'ai-review', 'tasks', predecessorTaskId);
+      const predecessorTaskRaw = readBounded(join(predecessorTaskDir, 'task.json'), 'self-test predecessor task');
+      const predecessorTaskPacket = parseJson(predecessorTaskRaw, 'self-test predecessor task');
+      const predecessorTask = validateTask(
+        JSON.parse(JSON.stringify(predecessorTaskPacket)),
+        predecessorTaskId,
+      );
+      const predecessorRoundsDir = join(predecessorTaskDir, 'rounds');
+      const predecessorLoaded = previousResult(join(predecessorRoundsDir, 'r002'), 2, predecessorTask);
+      const predecessorRecord = predecessorLoaded.history.find((record) => record.roundName === 'r001');
+      selfTestAssert(Boolean(predecessorRecord), '공식 predecessor r001 fixture 존재');
+      const registryFindings = [...predecessorLoaded.registryFindings]
+        .sort((left, right) => left.finding_id.localeCompare(right.finding_id));
+      const registryHash = sha256(canonicalFindingRegistryRaw(registryFindings));
+      const collaborationPath = join(predecessorTaskDir, 'collaboration.md');
+      const collaborationBefore = readBounded(collaborationPath, 'self-test predecessor collaboration');
+      const turnsDir = join(predecessorTaskDir, 'turns');
+      const predecessorChain = validateUnifiedCollaborationChain({
+        roundsDir: predecessorRoundsDir,
+        turnsDir,
+        task: predecessorTask,
+        taskRaw: predecessorTaskRaw,
+        collaborationRaw: collaborationBefore,
+      });
+      const sequence = predecessorChain.manualHistory.nextSequence;
+      const handoffTurnId = 'turn-o001';
+      const successorTaskId = 'SELF-SUCCESSOR-INTEGRATION-002';
+      const handoffBody = Buffer.from([
+        `## AI_DEPUTY_SUCCESSOR_HANDOFF · ${handoffTurnId} · r001`,
+        '',
+        `- role: \`${predecessorTask.gate_owner}\``,
+        `- predecessor_task_id: \`${predecessorTaskId}\``,
+        '- predecessor_round: `r001`',
+        `- predecessor_task_sha256: \`${sha256(predecessorTaskRaw)}\``,
+        `- predecessor_manifest_sha256: \`${predecessorRecord.manifestHash}\``,
+        `- predecessor_review_sha256: \`${predecessorRecord.hash}\``,
+        `- predecessor_run_sha256: \`${predecessorRecord.runHash}\``,
+        `- finding_registry_sha256: \`${registryHash}\``,
+        `- successor_task_id: \`${successorTaskId}\``,
+        `- successor_target_commit_sha: \`${targetCommit}\``,
+        '- next_review_request: `FABLE_RECHECK`',
+        '',
+      ].join('\n'));
+      const handoffEntryRaw = normalizeManualTurn(handoffBody, collaborationBefore, predecessorTask);
+      const collaborationAfter = Buffer.concat([collaborationBefore, handoffEntryRaw]);
+      const runnerRaw = readFileSync(fileURLToPath(import.meta.url));
+      const handoffRun = {
+        protocol_version: '1.1',
+        task_id: predecessorTaskId,
+        sequence,
+        run_state: 'APPEND_COMMITTED',
+        created_at: '2026-08-28T00:00:00.000Z',
+        turn_id: handoffTurnId,
+        turn_type: 'AI_DEPUTY_SUCCESSOR_HANDOFF',
+        role: predecessorTask.gate_owner,
+        task_sha256: sha256(predecessorTaskRaw),
+        runner_sha256: sha256(runnerRaw),
+        previous_manual_run_sha256: predecessorChain.manualHistory.previousManualRunHash,
+        collaboration_before_sha256: sha256(collaborationBefore),
+        collaboration_before_bytes: collaborationBefore.length,
+        collaboration_entry_sha256: sha256(handoffEntryRaw),
+        collaboration_entry_bytes: handoffEntryRaw.length,
+        collaboration_after_sha256: sha256(collaborationAfter),
+        collaboration_after_bytes: collaborationAfter.length,
+      };
+      const handoffRunRaw = Buffer.from(`${JSON.stringify(handoffRun, null, 2)}\n`, 'utf8');
+      const handoffDir = join(turnsDir, sequence);
+      mkdirSync(handoffDir, { recursive: false });
+      immutableWrite(join(handoffDir, 'entry.md'), handoffEntryRaw);
+      immutableWrite(join(handoffDir, 'run.json'), handoffRunRaw);
+      immutableWrite(join(handoffDir, 'runner-source.mjs'), runnerRaw);
+      writeFileSync(collaborationPath, collaborationAfter);
+      git(['add', `docs/ai-review/tasks/${predecessorTaskId}`], repoRoot);
+      git(['commit', '--quiet', '-m', 'test: authorize synthetic successor'], repoRoot);
+      const sourceCommit = git(['rev-parse', 'HEAD'], repoRoot);
+      const predecessorReview = {
+        task_id: predecessorTaskId,
+        source_commit_sha: sourceCommit,
+        round: 'r001',
+        task_sha256: sha256(predecessorTaskRaw),
+        manifest_sha256: predecessorRecord.manifestHash,
+        run_sha256: predecessorRecord.runHash,
+        review_sha256: predecessorRecord.hash,
+        finding_registry_sha256: registryHash,
+        handoff_turn_id: handoffTurnId,
+        handoff_entry_sha256: sha256(handoffEntryRaw),
+        handoff_run_sha256: sha256(handoffRunRaw),
+      };
+      const successorPacket = {
+        ...JSON.parse(JSON.stringify(predecessorTaskPacket)),
+        task_id: successorTaskId,
+        baseline_commit_sha: predecessorTask.target_commit_sha,
+        target_commit_sha: targetCommit,
+        target_tree_oid: git(['rev-parse', `${targetCommit}^{tree}`], repoRoot),
+        agents_blob_oid: git(['rev-parse', `${targetCommit}:AGENTS.md`], repoRoot),
+        agents_sha256: sha256(gitBuffer(['show', `${targetCommit}:AGENTS.md`], repoRoot)),
+        independent_request: '같은 문서 범위에서 predecessor Finding을 독립 재검수하라.',
+        predecessor_review: predecessorReview,
+      };
+      const successorTask = validateTask(
+        JSON.parse(JSON.stringify(successorPacket)),
+        successorTaskId,
+      );
+      const runtime = join(temporaryRoot, 'runtime');
+      mkdirSync(runtime);
+      const imported = loadPinnedPredecessorReview({ repoRoot, runtime, task: successorTask });
+      selfTestAssert(
+        imported.reviewHash === predecessorRecord.hash
+          && imported.registryHash === registryHash
+          && sameJsonValue(imported.value, predecessorRecord.value),
+        '원본 review hash와 별도 registry hash를 변형 없이 승계',
+      );
+      const previous = previousResult(join(temporaryRoot, 'successor-r001'), 1, successorTask, imported);
+      selfTestAssert(
+        effectiveReviewMode(successorTask, 1, previous) === 'RECHECK'
+          && previous.hash === predecessorRecord.hash
+          && previous.runHash === predecessorRecord.runHash,
+        'successor r001은 predecessor review/run을 잇는 RECHECK',
+      );
+
+      expectReviewError(() => loadPinnedPredecessorReview({
+        repoRoot,
+        runtime,
+        task: validateTask({
+          ...JSON.parse(JSON.stringify(successorPacket)),
+          predecessor_review: { ...predecessorReview, source_commit_sha: targetCommit },
+        }, successorTaskId),
+      }), { exitCode: 75, runState: 'STALE', messageIncludes: '지정 handoff 턴 하나만 추가' });
+      expectReviewError(() => loadPinnedPredecessorReview({
+        repoRoot,
+        runtime,
+        task: validateTask({
+          ...JSON.parse(JSON.stringify(successorPacket)),
+          predecessor_review: { ...predecessorReview, handoff_entry_sha256: '0'.repeat(64) },
+        }, successorTaskId),
+      }), { exitCode: 75, runState: 'STALE', messageIncludes: 'terminal successor handoff pin' });
+      expectReviewError(() => loadPinnedPredecessorReview({
+        repoRoot,
+        runtime,
+        task: validateTask({
+          ...JSON.parse(JSON.stringify(successorPacket)),
+          artifact_paths: [...successorPacket.artifact_paths, 'docs/extra.md'],
+        }, successorTaskId),
+      }), { exitCode: 75, runState: 'STALE', messageIncludes: 'artifact_paths 범위' });
+      expectReviewError(() => loadPinnedPredecessorReview({
+        repoRoot,
+        runtime,
+        task: validateTask({
+          ...JSON.parse(JSON.stringify(successorPacket)),
+          baseline_commit_sha: targetCommit,
+        }, successorTaskId),
+      }), { exitCode: 75, runState: 'STALE', messageIncludes: 'successor baseline' });
+
+      const successorInputFiles = collectInputFiles(repoRoot, targetCommit, successorTask);
+      const successorTaskRaw = Buffer.from(`${JSON.stringify(successorPacket, null, 2)}\n`, 'utf8');
+      const successorSnapshot = {
+        snapshot_mode: 'COMMIT',
+        baseline_commit_sha: successorTask.baseline_commit_sha,
+        target_commit_sha: targetCommit,
+        target_tree_oid: successorTask.target_tree_oid,
+        agents_blob_oid: successorTask.agents_blob_oid,
+        agents_sha256: successorTask.agents_sha256,
+        task_sha256: sha256(successorTaskRaw),
+        collaboration_sha256: '9'.repeat(64),
+        input_files_sha256: inputFilesSha256(successorInputFiles),
+        schema_sha256: sha256(readFileSync(join(SCRIPT_ROOT, 'scripts', 'fable-review', 'schema-v1.json'))),
+        runner_sha256: sha256(runnerRaw),
+      };
+      const resultBase = {
+        schema_version: '1.0',
+        task_id: successorTaskId,
+        reviewer_role: successorTask.reviewer_role,
+        review_mode: 'RECHECK',
+        ...successorSnapshot,
+        verdict: 'PASS',
+        summary: 'predecessor Finding 재검수',
+        proposed_edits: [],
+        closed_finding_ids: [],
+        reopened_finding_ids: [],
+        remaining_required_finding_ids: [],
+      };
+      expectReviewError(() => validateResult({ ...resultBase, findings: [] }, {
+        task: successorTask,
+        snapshot: successorSnapshot,
+        mode: 'RECHECK',
+        inputFiles: successorInputFiles,
+        previous,
+        verifiedIsResolved: true,
+        allowClosedTransitions: false,
+      }), { exitCode: 76, messageIncludes: '사라졌습니다' });
+      const proofPath = successorTask.artifact_paths[0];
+      const verifiedFindings = registryFindings.map((finding) => ({
+        ...JSON.parse(JSON.stringify(finding)),
+        review_state: 'VERIFIED',
+        evidence: [{ path: proofPath, line_start: 1, line_end: 1, observation: '수정된 공식본 확인' }],
+        previous_finding_id: finding.finding_id,
+      }));
+      validateResult({ ...resultBase, findings: verifiedFindings }, {
+        task: successorTask,
+        snapshot: successorSnapshot,
+        mode: 'RECHECK',
+        inputFiles: successorInputFiles,
+        previous,
+        verifiedIsResolved: true,
+        allowClosedTransitions: false,
+      });
+
+      writeFileSync(join(repoRoot, 'outside.txt'), 'unexpected handoff commit change\n');
+      git(['add', 'outside.txt'], repoRoot);
+      git(['commit', '--quiet', '-m', 'test: contaminate handoff commit'], repoRoot);
+      const contaminatedCommit = git(['rev-parse', 'HEAD'], repoRoot);
+      expectReviewError(() => loadPinnedPredecessorReview({
+        repoRoot,
+        runtime,
+        task: validateTask({
+          ...JSON.parse(JSON.stringify(successorPacket)),
+          predecessor_review: { ...predecessorReview, source_commit_sha: contaminatedCommit },
+        }, successorTaskId),
+      }), { exitCode: 75, runState: 'STALE', messageIncludes: '지정 handoff 턴 하나만 추가' });
+
+      git(['switch', '--detach', '--quiet', sourceCommit], repoRoot);
+      const existingTurnPath = join(
+        predecessorTaskDir,
+        'turns',
+        't0001',
+        'entry.md',
+      );
+      writeFileSync(existingTurnPath, Buffer.concat([
+        readFileSync(existingTurnPath),
+        Buffer.from('\n<!-- rewritten -->\n'),
+      ]));
+      git(['add', `docs/ai-review/tasks/${predecessorTaskId}/turns/t0001/entry.md`], repoRoot);
+      git(['commit', '--quiet', '-m', 'test: rewrite existing predecessor turn'], repoRoot);
+      const rewrittenTurnCommit = git(['rev-parse', 'HEAD'], repoRoot);
+      expectReviewError(() => loadPinnedPredecessorReview({
+        repoRoot,
+        runtime,
+        task: validateTask({
+          ...JSON.parse(JSON.stringify(successorPacket)),
+          predecessor_review: { ...predecessorReview, source_commit_sha: rewrittenTurnCommit },
+        }, successorTaskId),
+      }), { exitCode: 75, runState: 'STALE', messageIncludes: '기존 이력을 고치지 않고' });
+
+      git(['switch', '--detach', '--quiet', sourceCommit], repoRoot);
+      const originalHandoffDir = join(predecessorTaskDir, 'turns', sequence);
+      const wrongSequence = `t${String(Number(sequence.slice(1)) + 1).padStart(4, '0')}`;
+      const wrongHandoffDir = join(predecessorTaskDir, 'turns', wrongSequence);
+      renameSync(originalHandoffDir, wrongHandoffDir);
+      git(['add', `docs/ai-review/tasks/${predecessorTaskId}/turns`], repoRoot);
+      git(['commit', '--quiet', '-m', 'test: misplace successor handoff sequence'], repoRoot);
+      const misplacedHandoffCommit = git(['rev-parse', 'HEAD'], repoRoot);
+      expectReviewError(() => loadPinnedPredecessorReview({
+        repoRoot,
+        runtime,
+        task: validateTask({
+          ...JSON.parse(JSON.stringify(successorPacket)),
+          predecessor_review: { ...predecessorReview, source_commit_sha: misplacedHandoffCommit },
+        }, successorTaskId),
+      }), { exitCode: 75, runState: 'STALE' });
+    } finally {
+      if (!isPathInside(tmpdir(), temporaryRoot) || resolve(temporaryRoot) === resolve(tmpdir())) {
+        throw new Error(`self-test 임시 경로 안전 검사 실패: ${temporaryRoot}`);
+      }
+      rmSync(temporaryRoot, { recursive: true, force: true });
+    }
   });
 
   test('legacy-markerless-published-round-replays-byte-exact', () => {

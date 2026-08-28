@@ -178,6 +178,7 @@ FABLE_REVIEW + Finding/수정 문구
 - `FABLE_RECHECK`
 - `BACKLOG_DISPOSITION`
 - `AI_DEPUTY_GATE_DECISION`
+- `AI_DEPUTY_SUCCESSOR_HANDOFF` — 새 COMMIT Task가 이전 Finding을 재검수하도록 승인하는 기계 판독 턴
 
 솔라 응답은 각 Finding마다 `APPLIED | PARTIAL | REJECTED | NEEDS_HUMAN_DECISION`을 표시한다.
 Codex 증거는 명령, 종료 결과, 검증한 SHA, 증거 경로를 기록한다. Improvement를 즉시 반영하지
@@ -223,6 +224,18 @@ CI 하나나 로컬 Git ref만으로는 외부 봉인이 아니다.
 
 `FINAL_INDEPENDENT`는 `AI-DEPUTY-ORCHESTRATOR / FABLE-FINAL / FINAL / COMMIT` 조합과 별도
 `independent_request`를 강제한다. 다른 route의 `independent_request`는 반드시 `null`이다.
+
+확정 commit을 바꿔 같은 Finding을 재검수해야 하면 기존 `task.json`을 고치지 않고 successor Task를
+만든다. 먼저 successor가 검수할 target commit을 고정한 뒤 predecessor 장부 끝에
+`AI_DEPUTY_SUCCESSOR_HANDOFF`를 `fable:append`로 추가한다. successor의 `predecessor_review`는 그
+handoff만 추가한 별도 source commit, predecessor 최신 성공 회차의 task/manifest/run/review/전체
+Finding registry hash, handoff turn/entry/run hash를 모두 고정한다. source commit은 successor target
+이후 기존 턴을 수정·삭제하지 않고 predecessor의 `collaboration.md`와 지정 handoff 턴 파일 3개만 추가한
+commit이어야 한다. 두 Task는 같은 `FABLE-FINAL` 경로·검수 범위여야
+하고 successor baseline은 predecessor target이어야 한다. successor가 `predecessor_review`를 선언했는데
+이 상호 handoff가 없거나 hash·범위·회차가 다르면 실행기는 실패 폐쇄한다. `status.json`은 권위 입력이
+아니라 봉인된 회차에서 재생해 대조하는
+요약일 뿐이다.
 
 신규 실행 가능한 Task는 protocol `1.1`만 허용한다. 과거 protocol `1.0` 디렉터리는 당시 감사
 원본으로 보존하지만 새 회차를 실행하지 않는다. task protocol 버전과 Claude 구조화 결과의
@@ -337,6 +350,12 @@ PASS 뒤 AI 부 오케스트레이터는 같은 판본을 `COMMIT` 모드로 최
 공동 장부를 보내지 않고, 별도 `independent_request`, 승인 명세, 권위 문서, 소스와 원시 테스트
 증거만 제공한다. 최초 보고서를 불변 원본으로 봉인한 뒤 솔라가 같은 공식 산출물을 수정하고 장부에
 답변한다. 다음 회차부터 페이블이 기존 Finding ID로 재감사한다.
+
+수정 commit이 기존 Task의 불변 target과 달라 새 successor Task를 쓰는 경우에도 첫 successor 회차는
+`RECHECK`다. 독립 감사 요청은 계속 사용하되 predecessor 원본 review hash와 전체 Finding registry
+hash를 서로 다른 블록으로 제공한다. 원본 review를 변형한 뒤 옛 hash를 붙이지 않으며, predecessor의
+모든 non-CLOSED Finding을 같은 ID·심각도·범주로 다시 반환해야 한다. P0-2 전에는 CLOSED Finding을
+successor로 승계하지 않는다.
 
 독립 감사 보고서는 경쟁 제품 문서가 아니라 공동 편집 전의 독립 증거다. 출시 Go/No-Go와 잔여
 위험 수용은 사람이 결정한다.
