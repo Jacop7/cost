@@ -43,7 +43,8 @@ SHA를 임시 읽기 전용 checkout해 hash-chain만 검증하고 폐기하는 
 - `input-snapshot.json`: WORKING 검수에 실제 전송한 artifact/reference/evidence 원문 전체
 - `collaboration-entry.md`: 장부 원자 합류 전에 보존한 prepared Fable 턴
 - `manifest.json`, `run.json`: 입력·실행·hash-chain 증거
-- `candidate-review.*`: 결과는 유효하지만 입력 판본·정리·합류 게이트가 실패해 반영되지 않은 원본
+- `candidate-review.*`: 공식 합류 전 실패 후보 원본. `NOT_MERGED`는 의미 검증을 통과한 결과이고,
+  `VALIDATION_REJECTED`는 JSON Schema 뒤 저장소 의미 계약에서 거부된 격리 진단값이다.
 
 `solar-*`, `fable-*`, `revised-*`처럼 역할명이나 수정 단계를 붙인 경쟁 공식 문서를 만들지 않는다.
 한 작업이 여러 연동 파일을 가질 수는 있지만 각 파일의 공식 경로는 하나다.
@@ -71,7 +72,7 @@ docs/ai-review/
    │  ├─ review.json              합류된 페이블 구조화 원본
    │  ├─ review.md                사람이 읽는 합류 검수 원본
    │  ├─ collaboration-entry.md   장부 합류 전에 보존한 prepared Fable 턴
-   │  ├─ candidate-review.*       검증됐지만 합류되지 않은 후보 원본
+   │  ├─ candidate-review.*       합류 실패 유효 후보 또는 의미 검증 거부 진단 원본
    │  └─ run.json                 CLI·모델·종료·사용량·장부 hash-chain
    └─ turns/tNNNN/
       ├─ entry.md                 정규화해 장부에 합류한 비-Fable 턴 원문
@@ -338,6 +339,9 @@ PASS 뒤 AI 부 오케스트레이터는 같은 판본을 `COMMIT` 모드로 최
   `CLOSED`로 전환하거나 재개방·분쟁 처리한다.
 - 유효한 Claude 결과 뒤 입력 STALE 또는 snapshot 정리 실패가 나면 `candidate-review.*`로 보존하고
   공식 장부에는 합류하지 않는다.
+- JSON Schema는 통과했지만 저장소 의미 계약에서 거부된 결과는 `VALIDATION_REJECTED`로 별도 보존한다.
+  이 값은 정규 JSON과 안전 코드만 진단에 쓰며 `review.json`·Finding registry·공동 장부·후속 입력으로
+  승격하지 않는다. 민감정보 또는 파일 크기 검사를 통과하지 못하면 원문은 보존하지 않는다.
 - 후보·읽기용 review·prepared entry·WORKING snapshot도 run/manifest hash에 연결하며 다음 회차가
   존재·내용을 다시 확인한다.
 - `review.json`이 자동 처리 권위 원본이고 `review.md`는 같은 결과의 읽기용 렌더링이다.
