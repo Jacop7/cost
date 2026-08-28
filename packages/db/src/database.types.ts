@@ -1604,108 +1604,65 @@ export type Database = {
     Functions: {
       add_to_day_basis: {
         Args: {
-          p_store: string
+          p_allow_closed?: boolean
           p_date: string
           p_recipe: string
-          p_allow_closed?: boolean
+          p_store: string
         }
         Returns: Json
       }
       amend_ended_business_day: {
         Args: {
-          p_store: string
-          p_date: string
           p_base_revision: number
-          p_items?: Json
+          p_date: string
           p_etc_items?: Json
           p_extra_items?: Json
+          p_items?: Json
           p_reason?: string
+          p_store: string
         }
         Returns: Json
       }
-      apply_due_breaks: {
-        Args: Record<PropertyKey, never>
-        Returns: Json
-      }
+      apply_due_breaks: { Args: never; Returns: Json }
       apply_operating_hours: {
         Args: {
-          p_store: string
-          p_weekly_hours: Json
-          p_weekly_breaks?: Json
-          p_base_rule_id?: string
           p_base_revision?: number
+          p_base_rule_id?: string
+          p_store: string
+          p_weekly_breaks?: Json
+          p_weekly_hours: Json
         }
         Returns: Json
       }
       apply_sale_items: {
         Args: {
-          p_store: string
+          p_allow_closed?: boolean
           p_date: string
-          p_sales: string
-          p_items: Json
           p_etc_items: Json
           p_extra_items: Json
-          p_allow_closed?: boolean
-        }
-        Returns: Json
-      }
-      assert_my_store: {
-        Args: {
-          p_store: string
-        }
-        Returns: undefined
-      }
-      assert_no_rpc_overloads: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
-      assert_tax_items: {
-        Args: {
           p_items: Json
+          p_sales: string
+          p_store: string
         }
         Returns: Json
       }
-      assert_weekly_breaks: {
-        Args: {
-          p: Json
-        }
-        Returns: boolean
-      }
-      assert_weekly_hours: {
-        Args: {
-          p: Json
-        }
-        Returns: boolean
-      }
+      assert_my_store: { Args: { p_store: string }; Returns: undefined }
+      assert_no_rpc_overloads: { Args: never; Returns: undefined }
+      assert_tax_items: { Args: { p_items: Json }; Returns: Json }
+      assert_weekly_breaks: { Args: { p: Json }; Returns: boolean }
+      assert_weekly_hours: { Args: { p: Json }; Returns: boolean }
       assert_weekly_schedule: {
-        Args: {
-          p_hours: Json
-          p_breaks: Json
-        }
+        Args: { p_breaks: Json; p_hours: Json }
         Returns: boolean
       }
-      auto_close_grace: {
-        Args: Record<PropertyKey, never>
-        Returns: unknown
-      }
-      base_unit_price: {
-        Args: {
-          p_ingredient: string
-        }
-        Returns: number
-      }
+      auto_close_grace: { Args: never; Returns: string }
+      base_unit_price: { Args: { p_ingredient: string }; Returns: number }
       build_day_snapshot: {
-        Args: {
-          p_store: string
-          p_date: string
-        }
+        Args: { p_date: string; p_store: string }
         Returns: Json
       }
       business_day_of: {
-        Args: {
-          p_store: string
-          p_date: string
-        }
+        Args: { p_date: string; p_store: string }
         Returns: {
           basis_quality: Database["public"]["Enums"]["day_basis_quality"]
           business_date: string
@@ -1725,52 +1682,35 @@ export type Database = {
           status: Database["public"]["Enums"]["business_day_status"]
           store_id: string
         }
-      }
-      business_day_state: {
-        Args: {
-          p_store: string
+        SetofOptions: {
+          from: "*"
+          to: "business_days"
+          isOneToOne: true
+          isSetofReturn: false
         }
-        Returns: Json
       }
-      business_month: {
-        Args: {
-          p_at?: string
-        }
-        Returns: string
-      }
-      business_tz: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
-      category_name: {
-        Args: {
-          p_id: string
-        }
-        Returns: string
-      }
+      business_day_state: { Args: { p_store: string }; Returns: Json }
+      business_month: { Args: { p_at?: string }; Returns: string }
+      business_tz: { Args: never; Returns: string }
+      category_name: { Args: { p_id: string }; Returns: string }
       change_event_json: {
         Args: {
-          p_event: unknown
+          p_event: Database["public"]["Tables"]["entity_change_events"]["Row"]
         }
         Returns: Json
       }
       change_line: {
         Args: {
-          p_key: string
-          p_label: string
-          p_before: unknown
           p_after: unknown
-          p_unit?: string
+          p_before: unknown
+          p_key: string
           p_kind?: string
+          p_label: string
+          p_unit?: string
         }
         Returns: Json
       }
-      close_business_day: {
-        Args: {
-          p_store: string
-        }
-        Returns: Json
-      }
+      close_business_day: { Args: { p_store: string }; Returns: Json }
       close_business_day_row: {
         Args: {
           p_day_id: string
@@ -1778,29 +1718,21 @@ export type Database = {
         }
         Returns: Json
       }
-      close_due_business_days: {
-        Args: Record<PropertyKey, never>
-        Returns: Json
-      }
+      close_due_business_days: { Args: never; Returns: Json }
       consume_stock: {
         Args: {
-          p_ingredient: string
-          p_amount: number
           p_allow_negative?: boolean
+          p_amount: number
+          p_ingredient: string
         }
         Returns: number
       }
       create_store: {
-        Args: {
-          p_name: string
-          p_timezone?: string
-        }
+        Args: { p_name: string; p_timezone?: string }
         Returns: Json
       }
       current_business_day: {
-        Args: {
-          p_store: string
-        }
+        Args: { p_store: string }
         Returns: {
           basis_quality: Database["public"]["Enums"]["day_basis_quality"]
           business_date: string
@@ -1820,392 +1752,235 @@ export type Database = {
           status: Database["public"]["Enums"]["business_day_status"]
           store_id: string
         }
+        SetofOptions: {
+          from: "*"
+          to: "business_days"
+          isOneToOne: true
+          isSetofReturn: false
+        }
       }
       day_etc_tax_rate: {
-        Args: {
-          p_store: string
-          p_date: string
-        }
+        Args: { p_date: string; p_store: string }
         Returns: number
       }
       day_fixed_items: {
-        Args: {
-          p_store: string
-          p_date: string
-        }
+        Args: { p_date: string; p_store: string }
         Returns: Json
       }
       day_fixed_rate: {
-        Args: {
-          p_store: string
-          p_date: string
-        }
+        Args: { p_date: string; p_store: string }
         Returns: number
       }
       day_fixed_total: {
-        Args: {
-          p_store: string
-          p_date: string
-        }
+        Args: { p_date: string; p_store: string }
         Returns: number
       }
       day_ingredient_needs: {
         Args: {
-          p_store: string
           p_date: string
           p_recipe: string
           p_servings: number
+          p_store: string
         }
         Returns: {
-          ingredient_id: string
           amount: number
+          ingredient_id: string
         }[]
       }
       day_menu_basis: {
-        Args: {
-          p_store: string
-          p_date?: string
-        }
+        Args: { p_date?: string; p_store: string }
         Returns: Json
       }
       day_menu_detail: {
-        Args: {
-          p_store: string
-          p_date: string
-          p_recipe: string
-        }
+        Args: { p_date: string; p_recipe: string; p_store: string }
         Returns: Json
       }
       day_recipe_snapshot: {
-        Args: {
-          p_store: string
-          p_date: string
-          p_recipe: string
-        }
+        Args: { p_date: string; p_recipe: string; p_store: string }
         Returns: Json
       }
       day_revenue: {
-        Args: {
-          p_store: string
-          p_date: string
-        }
+        Args: { p_date: string; p_store: string }
         Returns: number
       }
       day_sales_detail: {
-        Args: {
-          p_store: string
-          p_date: string
-        }
+        Args: { p_date: string; p_store: string }
         Returns: Json
       }
-      day_snapshot: {
-        Args: {
-          p_store: string
-          p_date: string
-        }
-        Returns: Json
-      }
+      day_snapshot: { Args: { p_date: string; p_store: string }; Returns: Json }
       day_unit_price: {
-        Args: {
-          p_store: string
-          p_date: string
-          p_ingredient: string
-        }
+        Args: { p_date: string; p_ingredient: string; p_store: string }
         Returns: number
       }
       deactivate_ingredient: {
-        Args: {
-          p_ingredient: string
-        }
+        Args: { p_ingredient: string }
         Returns: undefined
       }
-      deactivate_material: {
-        Args: {
-          p_id: string
-        }
-        Returns: undefined
-      }
-      deactivate_recipe: {
-        Args: {
-          p_recipe: string
-        }
-        Returns: undefined
-      }
-      delete_category: {
-        Args: {
-          p_id: string
-        }
-        Returns: undefined
-      }
-      delete_purchase_option: {
-        Args: {
-          p_id: string
-        }
-        Returns: undefined
-      }
-      delete_vendor: {
-        Args: {
-          p_id: string
-        }
-        Returns: undefined
-      }
-      discard_delete_days: {
-        Args: Record<PropertyKey, never>
-        Returns: number
-      }
+      deactivate_material: { Args: { p_id: string }; Returns: undefined }
+      deactivate_recipe: { Args: { p_recipe: string }; Returns: undefined }
+      delete_category: { Args: { p_id: string }; Returns: undefined }
+      delete_purchase_option: { Args: { p_id: string }; Returns: undefined }
+      delete_vendor: { Args: { p_id: string }; Returns: undefined }
+      discard_delete_days: { Args: never; Returns: number }
       e1_confirm_inbound: {
         Args: {
-          p_order: string
           p_actual_qty?: number
           p_idempotency_key?: string
           p_occurred_at?: string
+          p_order: string
         }
         Returns: Json
       }
       e10_sale_recorded: {
         Args: {
-          p_store: string
+          p_allow_closed?: boolean
           p_date: string
-          p_recipe: string
-          p_qty_hall?: number
           p_qty_delivery?: number
+          p_qty_hall?: number
           p_qty_takeout?: number
           p_qty_waste?: number
-          p_allow_closed?: boolean
+          p_recipe: string
+          p_store: string
         }
         Returns: Json
       }
       e11_inbound_reverted: {
-        Args: {
-          p_order: string
-          p_reason?: string
-        }
+        Args: { p_order: string; p_reason?: string }
         Returns: Json
       }
       e12_order_canceled: {
-        Args: {
-          p_order: string
-          p_reason?: string
-        }
+        Args: { p_order: string; p_reason?: string }
         Returns: Json
       }
       e2_discard: {
         Args: {
           p_ingredient: string
-          p_remain_volume: number
           p_occurred_at?: string
+          p_remain_volume: number
         }
         Returns: Json
       }
       e2_discard_reverted: {
-        Args: {
-          p_event: string
-          p_reason?: string
-        }
+        Args: { p_event: string; p_reason?: string }
         Returns: Json
       }
       e3_recipe_saved: {
-        Args: {
-          p_recipe: string
-          p_occurred_at?: string
-        }
+        Args: { p_occurred_at?: string; p_recipe: string }
         Returns: undefined
       }
       e4_fixed_cost_saved: {
-        Args: {
-          p_store: string
-          p_month: string
-          p_prev_rate?: number
-        }
+        Args: { p_month: string; p_prev_rate?: number; p_store: string }
         Returns: Json
       }
       e5_stock_adjusted: {
         Args: {
           p_ingredient: string
-          p_stock_total: number
-          p_soon: boolean
           p_note?: string
           p_occurred_at?: string
+          p_soon: boolean
+          p_stock_total: number
         }
         Returns: Json
       }
       e7_place_order: {
         Args: {
-          p_store: string
-          p_ingredient: string
-          p_vendor: string
-          p_brand: string
-          p_volume: number
           p_amount: number
-          p_qty: number
+          p_brand: string
           p_expected: string
-          p_source?: Database["public"]["Enums"]["order_source"]
+          p_ingredient: string
           p_ordered_at?: string
+          p_qty: number
+          p_source?: Database["public"]["Enums"]["order_source"]
+          p_store: string
+          p_vendor: string
+          p_volume: number
         }
         Returns: string
       }
-      e8_sales_consumed: {
-        Args: {
-          p_sales_item: string
-        }
-        Returns: Json
-      }
-      e9_sales_reverted: {
-        Args: {
-          p_sales_item: string
-        }
-        Returns: Json
-      }
+      e8_sales_consumed: { Args: { p_sales_item: string }; Returns: Json }
+      e9_sales_reverted: { Args: { p_sales_item: string }; Returns: Json }
       entity_change_history: {
         Args: {
-          p_store: string
-          p_entity_type: string
-          p_entity_id: string
           p_cursor?: string
-          p_limit?: number
           p_days?: number
+          p_entity_id: string
+          p_entity_type: string
+          p_limit?: number
+          p_store: string
         }
         Returns: Json
       }
       entity_change_state: {
         Args: {
-          p_event: unknown
+          p_event: Database["public"]["Tables"]["entity_change_events"]["Row"]
         }
         Returns: string
       }
       fixed_cost_rate: {
-        Args: {
-          p_store: string
-          p_month: string
-        }
+        Args: { p_month: string; p_store: string }
         Returns: number
       }
       fixed_cost_revenue_check: {
-        Args: {
-          p_store: string
-          p_month: string
-        }
+        Args: { p_month: string; p_store: string }
         Returns: Json
       }
-      get_settings: {
-        Args: {
-          p_store: string
-        }
-        Returns: Json
-      }
-      ingredient_detail: {
-        Args: {
-          p_ingredient: string
-        }
-        Returns: Json
-      }
+      get_settings: { Args: { p_store: string }; Returns: Json }
+      ingredient_detail: { Args: { p_ingredient: string }; Returns: Json }
       ingredient_list: {
-        Args: {
-          p_store: string
-        }
+        Args: { p_store: string }
         Returns: {
-          id: string
-          name: string
-          category_name: string
+          base_price: number
           base_unit: Database["public"]["Enums"]["base_unit"]
+          category_name: string
+          id: string
+          last_inbound_at: string
+          memo: string
+          name: string
           per_volume: number
           safety_stock: number
-          vendor_name: string
-          memo: string
-          stock_total: number
-          base_price: number
           soon_out: boolean
-          last_inbound_at: string
+          stock_total: number
+          vendor_name: string
         }[]
       }
-      ingredient_loss: {
-        Args: {
-          p_ingredient: string
-        }
-        Returns: Json
-      }
+      ingredient_loss: { Args: { p_ingredient: string }; Returns: Json }
       last_entity_change: {
-        Args: {
-          p_store: string
-          p_entity_type: string
-          p_entity_id: string
-        }
+        Args: { p_entity_id: string; p_entity_type: string; p_store: string }
         Returns: Json
       }
       late_close_at: {
-        Args: {
-          p_date: string
-          p_close: string
-          p_tz: string
-          p_now: string
-        }
+        Args: { p_close: string; p_date: string; p_now: string; p_tz: string }
         Returns: string
       }
       locale_combo_ok: {
-        Args: {
-          p_locale: string
-          p_currency: string
-          p_money_digits: number
-        }
+        Args: { p_currency: string; p_locale: string; p_money_digits: number }
         Returns: boolean
       }
       locale_defaults: {
-        Args: {
-          p_locale: string
-        }
+        Args: { p_locale: string }
         Returns: {
           currency: string
           money_digits: number
         }[]
       }
-      lock_business_scope: {
-        Args: {
-          p_store: string
-        }
-        Returns: undefined
-      }
-      money_short: {
-        Args: {
-          p: number
-        }
-        Returns: string
-      }
-      my_store_ids: {
-        Args: Record<PropertyKey, never>
-        Returns: string[]
-      }
+      lock_business_scope: { Args: { p_store: string }; Returns: undefined }
+      money_short: { Args: { p: number }; Returns: string }
+      my_store_ids: { Args: never; Returns: string[] }
       next_scheduled_open: {
-        Args: {
-          p_store: string
-          p_after: string
-        }
+        Args: { p_after: string; p_store: string }
         Returns: string
       }
       normalize_day_times: {
-        Args: {
-          p: Json
-        }
+        Args: { p: Json; p_keys: string[] }
         Returns: Json
       }
       open_business_day: {
-        Args: {
-          p_store: string
-          p_date?: string
-          p_close_time?: string
-        }
+        Args: { p_close_time?: string; p_date?: string; p_store: string }
         Returns: Json
       }
-      operating_hours_status: {
-        Args: {
-          p_store: string
-        }
-        Returns: Json
-      }
+      operating_hours_status: { Args: { p_store: string }; Returns: Json }
       operating_rule_at: {
-        Args: {
-          p_store: string
-          p_date: string
-        }
+        Args: { p_date: string; p_store: string }
         Returns: {
           created_at: string
           created_by: string | null
@@ -2217,588 +1992,389 @@ export type Database = {
           weekly_breaks: Json
           weekly_hours: Json
         }
-      }
-      order_board: {
-        Args: {
-          p_store: string
+        SetofOptions: {
+          from: "*"
+          to: "operating_rules"
+          isOneToOne: true
+          isSetofReturn: false
         }
-        Returns: Json
       }
+      order_board: { Args: { p_store: string }; Returns: Json }
       planned_close: {
-        Args: {
-          p_store: string
-          p_date: string
-        }
+        Args: { p_date: string; p_store: string }
         Returns: string
       }
       profit_delta_cause: {
         Args: {
-          p_prev: unknown
-          p_cur: unknown
+          p_cur: Database["public"]["Tables"]["profit_trends"]["Row"]
+          p_prev: Database["public"]["Tables"]["profit_trends"]["Row"]
         }
         Returns: Json
       }
       profit_event_title: {
-        Args: {
-          p_source_type: string
-          p_label: string
-        }
+        Args: { p_label: string; p_source_type: string }
         Returns: string
       }
       purchase_history: {
-        Args: {
-          p_ingredient: string
-          p_from?: string
-          p_to?: string
-        }
+        Args: { p_from?: string; p_ingredient: string; p_to?: string }
         Returns: {
+          amount: number
+          expected_at: string
           id: string
           ordered_at: string
-          expected_at: string
-          status: Database["public"]["Enums"]["order_status"]
-          vendor_name: string
-          volume: number
-          amount: number
           qty: number
           received_qty: number
+          status: Database["public"]["Enums"]["order_status"]
           unit_price: number
+          vendor_name: string
+          volume: number
         }[]
       }
-      purge_entity_changes: {
-        Args: Record<PropertyKey, never>
-        Returns: number
-      }
+      purge_entity_changes: { Args: never; Returns: number }
       quick_inbound: {
         Args: {
-          p_store: string
-          p_ingredient: string
-          p_volume: number
           p_amount: number
-          p_qty?: number
-          p_vendor?: string
-          p_occurred_at?: string
           p_idempotency_key?: string
+          p_ingredient: string
+          p_occurred_at?: string
+          p_qty?: number
+          p_store: string
+          p_vendor?: string
+          p_volume: number
         }
         Returns: Json
       }
       quick_inbound_preview: {
         Args: {
-          p_store: string
-          p_ingredient: string
-          p_volume: number
           p_amount: number
+          p_ingredient: string
           p_qty?: number
+          p_store: string
+          p_volume: number
         }
         Returns: Json
       }
       range_menu_detail: {
         Args: {
-          p_store: string
           p_from: string
-          p_to: string
           p_recipe: string
+          p_store: string
+          p_to: string
         }
         Returns: Json
       }
-      recipe_blocked_by: {
-        Args: {
-          p_recipe: string
-        }
-        Returns: string
-      }
+      recipe_blocked_by: { Args: { p_recipe: string }; Returns: string }
       recipe_change_state: {
         Args: {
-          p_store: string
-          p_recipe: string
-          p_occurred_at: string
-          p_business_day: string
           p_affects: boolean
+          p_business_day: string
+          p_occurred_at: string
+          p_recipe: string
+          p_store: string
         }
         Returns: string
       }
-      recipe_detail: {
-        Args: {
-          p_recipe: string
-        }
-        Returns: Json
-      }
+      recipe_detail: { Args: { p_recipe: string }; Returns: Json }
       recipe_ingredient_needs: {
-        Args: {
-          p_recipe: string
-          p_servings: number
-          p_depth?: number
-        }
+        Args: { p_depth?: number; p_recipe: string; p_servings: number }
         Returns: {
-          ingredient_id: string
           amount: number
+          ingredient_id: string
         }[]
       }
       recipe_list: {
-        Args: {
-          p_store: string
-        }
+        Args: { p_store: string }
         Returns: {
-          id: string
-          name: string
-          price: number
-          tax_mode: Database["public"]["Enums"]["tax_mode"]
-          base_servings: number
-          target_profit_rate: number
-          avg_monthly_sales: number
           active: boolean
+          avg_monthly_sales: number
+          base_servings: number
+          blocked_by: string
           category_id: string
           category_name: string
-          material_cost: number
           extra_cost: number
-          tax: number
           fixed_cost: number
+          id: string
+          material_cost: number
+          material_rate: number
+          name: string
+          price: number
           profit: number
           profit_rate: number
-          material_rate: number
+          target_profit_rate: number
+          tax: number
+          tax_mode: Database["public"]["Enums"]["tax_mode"]
           unknown_cost_lines: number
-          blocked_by: string
         }[]
       }
       recipe_material_cost: {
-        Args: {
-          p_recipe: string
-          p_depth?: number
-        }
+        Args: { p_depth?: number; p_recipe: string }
         Returns: number
       }
       recipe_pick_list: {
-        Args: {
-          p_store: string
-          p_exclude?: string
-        }
+        Args: { p_exclude?: string; p_store: string }
         Returns: {
+          active: boolean
+          base_servings: number
           id: string
           name: string
-          base_servings: number
           unit_cost: number
-          active: boolean
         }[]
       }
       recipe_profit_history: {
         Args: {
-          p_recipe: string
           p_before?: string
           p_before_id?: string
           p_limit?: number
-        }
-        Returns: Json
-      }
-      recipe_shortages: {
-        Args: {
-          p_store: string
-        }
-        Returns: Json
-      }
-      recipe_snapshot_entry: {
-        Args: {
           p_recipe: string
         }
         Returns: Json
       }
-      recipe_tax: {
-        Args: {
-          p_recipe: string
-        }
-        Returns: number
-      }
-      recipe_tax_items: {
-        Args: {
-          p_recipe: string
-        }
-        Returns: Json
-      }
+      recipe_shortages: { Args: { p_store: string }; Returns: Json }
+      recipe_snapshot_entry: { Args: { p_recipe: string }; Returns: Json }
+      recipe_tax: { Args: { p_recipe: string }; Returns: number }
+      recipe_tax_items: { Args: { p_recipe: string }; Returns: Json }
       recompute_recipe: {
         Args: {
-          p_recipe: string
           p_cause: Database["public"]["Enums"]["trend_cause"]
           p_occurred_at?: string
+          p_recipe: string
           p_source?: string
         }
         Returns: undefined
       }
       reconcile_sales_consumption: {
-        Args: {
-          p_sales_item: string
-          p_zero?: boolean
-        }
+        Args: { p_sales_item: string; p_zero?: boolean }
         Returns: Json
       }
       record_entity_change: {
         Args: {
-          p_store: string
-          p_entity_type: string
-          p_entity_id: string
-          p_source: Database["public"]["Enums"]["change_source"]
-          p_title: string
-          p_changes: Json
           p_affects?: boolean
-          p_source_entity?: string
+          p_changes: Json
           p_correlation?: string
+          p_entity_id: string
+          p_entity_type: string
+          p_source: Database["public"]["Enums"]["change_source"]
+          p_source_entity?: string
+          p_store: string
           p_summary?: string
+          p_title: string
         }
         Returns: string
       }
       record_state_transition: {
         Args: {
-          p_day: unknown
+          p_day: Database["public"]["Tables"]["business_days"]["Row"]
           p_from: Database["public"]["Enums"]["business_day_status"]
-          p_to: Database["public"]["Enums"]["business_day_status"]
           p_method: string
+          p_to: Database["public"]["Enums"]["business_day_status"]
         }
         Returns: undefined
       }
       refresh_order_candidate: {
-        Args: {
-          p_ingredient: string
-        }
+        Args: { p_ingredient: string }
         Returns: undefined
       }
       reorder_categories: {
-        Args: {
-          p_store: string
-          p_ids: string[]
-        }
+        Args: { p_ids: string[]; p_store: string }
         Returns: undefined
       }
       resolve_sales_business_context: {
-        Args: {
-          p_store: string
-          p_at?: string
-        }
+        Args: { p_at?: string; p_store: string }
         Returns: Database["public"]["CompositeTypes"]["sales_business_context"]
+        SetofOptions: {
+          from: "*"
+          to: "sales_business_context"
+          isOneToOne: true
+          isSetofReturn: false
+        }
       }
       restore_stock: {
-        Args: {
-          p_ingredient: string
-          p_amount: number
-        }
+        Args: { p_amount: number; p_ingredient: string }
         Returns: number
       }
-      retire_channel: {
-        Args: {
-          p_id: string
-        }
-        Returns: undefined
-      }
-      rule_hours_on: {
-        Args: {
-          p_rule: string
-          p_date: string
-        }
-        Returns: Json
-      }
+      retire_channel: { Args: { p_id: string }; Returns: undefined }
+      rule_hours_on: { Args: { p_date: string; p_rule: string }; Returns: Json }
       sale_date_allowed: {
-        Args: {
-          p_store: string
-          p_date: string
-        }
+        Args: { p_date: string; p_store: string }
         Returns: boolean
       }
       sale_shortages: {
-        Args: {
-          p_store: string
-          p_date: string
-          p_items: Json
-        }
+        Args: { p_date: string; p_items: Json; p_store: string }
         Returns: Json
       }
       sales_channel_fixed: {
-        Args: {
-          p_store: string
-          p_from: string
-          p_to: string
-        }
+        Args: { p_from: string; p_store: string; p_to: string }
         Returns: Json
       }
-      sales_day: {
-        Args: {
-          p_store: string
-          p_date: string
-        }
-        Returns: Json
-      }
+      sales_day: { Args: { p_date: string; p_store: string }; Returns: Json }
       sales_etc_by_channel: {
-        Args: {
-          p_store: string
-          p_from: string
-          p_to: string
-        }
+        Args: { p_from: string; p_store: string; p_to: string }
         Returns: Json
       }
       sales_extra_usage: {
-        Args: {
-          p_store: string
-          p_from: string
-          p_to: string
-        }
+        Args: { p_from: string; p_store: string; p_to: string }
         Returns: Json
       }
       sales_fixed_breakdown: {
-        Args: {
-          p_store: string
-          p_from: string
-          p_to: string
-        }
+        Args: { p_from: string; p_store: string; p_to: string }
         Returns: Json
       }
       sales_material_usage: {
-        Args: {
-          p_store: string
-          p_from: string
-          p_to: string
-        }
+        Args: { p_from: string; p_store: string; p_to: string }
         Returns: Json
       }
       sales_range: {
-        Args: {
-          p_store: string
-          p_from: string
-          p_to: string
-        }
+        Args: { p_from: string; p_store: string; p_to: string }
         Returns: Json
       }
       sales_summary: {
-        Args: {
-          p_store: string
-          p_from: string
-          p_to: string
-        }
+        Args: { p_from: string; p_store: string; p_to: string }
         Returns: Json
       }
       sales_tax_breakdown: {
-        Args: {
-          p_store: string
-          p_from: string
-          p_to: string
-        }
+        Args: { p_from: string; p_store: string; p_to: string }
         Returns: Json
       }
       sales_waste_breakdown: {
-        Args: {
-          p_store: string
-          p_from: string
-          p_to: string
-        }
+        Args: { p_from: string; p_store: string; p_to: string }
         Returns: Json
       }
       save_category: {
-        Args: {
-          p_store: string
-          p_payload: Json
-        }
+        Args: { p_payload: Json; p_store: string }
         Returns: string
       }
       save_channel: {
-        Args: {
-          p_store: string
-          p_payload: Json
-        }
+        Args: { p_payload: Json; p_store: string }
         Returns: string
       }
       save_fixed_costs: {
         Args: {
-          p_store: string
-          p_month: string
-          p_total_revenue: number
           p_items: Json
+          p_month: string
+          p_store: string
+          p_total_revenue: number
         }
         Returns: Json
       }
       save_ingredient: {
-        Args: {
-          p_store: string
-          p_payload: Json
-        }
+        Args: { p_payload: Json; p_store: string }
         Returns: string
       }
       save_material: {
-        Args: {
-          p_store: string
-          p_payload: Json
-        }
+        Args: { p_payload: Json; p_store: string }
         Returns: string
       }
       save_purchase_option: {
-        Args: {
-          p_store: string
-          p_payload: Json
-        }
+        Args: { p_payload: Json; p_store: string }
         Returns: string
       }
       save_recipe: {
-        Args: {
-          p_store: string
-          p_payload: Json
-        }
+        Args: { p_payload: Json; p_store: string }
         Returns: string
       }
       save_sale: {
         Args: {
-          p_store: string
+          p_base_revision?: number
           p_date: string
-          p_items: Json
           p_etc_items?: Json
           p_extra_items?: Json
-          p_base_revision?: number
-          p_open_day?: boolean
+          p_items: Json
           p_open_close_time?: string
+          p_open_day?: boolean
+          p_store: string
         }
         Returns: Json
       }
       save_settings: {
-        Args: {
-          p_store: string
-          p_payload: Json
-          p_base_revision?: number
-        }
+        Args: { p_base_revision?: number; p_payload: Json; p_store: string }
         Returns: Json
       }
       save_store_tax: {
         Args: {
-          p_store: string
-          p_mode: Database["public"]["Enums"]["tax_mode"]
-          p_items: Json
           p_base_revision?: number
+          p_items: Json
+          p_mode: Database["public"]["Enums"]["tax_mode"]
+          p_store: string
         }
         Returns: Json
       }
       save_vendor: {
-        Args: {
-          p_store: string
-          p_payload: Json
-        }
+        Args: { p_payload: Json; p_store: string }
         Returns: string
       }
       scheduled_open_at: {
-        Args: {
-          p_store: string
-          p_date: string
-        }
+        Args: { p_date: string; p_store: string }
         Returns: string
       }
       set_break_row: {
-        Args: {
-          p_day_id: string
-          p_on: boolean
-          p_method: string
-        }
+        Args: { p_day_id: string; p_method: string; p_on: boolean }
         Returns: Json
       }
       set_operating_hours: {
         Args: {
-          p_store: string
-          p_weekly_hours: Json
-          p_weekly_breaks?: Json
-          p_base_rule_id?: string
           p_base_revision?: number
+          p_base_rule_id?: string
+          p_store: string
+          p_weekly_breaks?: Json
+          p_weekly_hours: Json
         }
         Returns: Json
       }
       set_store_timezone: {
-        Args: {
-          p_store: string
-          p_timezone: string
-        }
+        Args: { p_store: string; p_timezone: string }
         Returns: Json
       }
-      settings_lists: {
-        Args: {
-          p_store: string
-        }
-        Returns: Json
-      }
+      settings_lists: { Args: { p_store: string }; Returns: Json }
       stock_history: {
-        Args: {
-          p_ingredient: string
-          p_from?: string
-          p_to?: string
-        }
+        Args: { p_from?: string; p_ingredient: string; p_to?: string }
         Returns: {
-          id: string
-          occurred_on: string
-          type: Database["public"]["Enums"]["inventory_event_type"]
-          count_delta: number
-          volume_delta: number
-          note: string
           balance: number
+          count_delta: number
+          id: string
+          note: string
+          occurred_on: string
           reverted: boolean
+          type: Database["public"]["Enums"]["inventory_event_type"]
+          volume_delta: number
           waste: boolean
         }[]
       }
-      stock_total_base: {
-        Args: {
-          p_ingredient: string
-        }
-        Returns: number
-      }
+      stock_total_base: { Args: { p_ingredient: string }; Returns: number }
       store_hours_on: {
-        Args: {
-          p_store: string
-          p_date: string
-        }
+        Args: { p_date: string; p_store: string }
         Returns: Json
       }
       store_local_date: {
-        Args: {
-          p_store: string
-          p_at?: string
-        }
+        Args: { p_at?: string; p_store: string }
         Returns: string
       }
       store_local_month: {
-        Args: {
-          p_store: string
-          p_at?: string
-        }
+        Args: { p_at?: string; p_store: string }
         Returns: string
       }
-      store_tax_rate: {
-        Args: {
-          p_store: string
-        }
-        Returns: number
-      }
-      store_timezone: {
-        Args: {
-          p_store: string
-        }
-        Returns: string
-      }
+      store_tax_rate: { Args: { p_store: string }; Returns: number }
+      store_timezone: { Args: { p_store: string }; Returns: string }
       tax_breakdown: {
         Args: {
-          p_price: number
-          p_mode: Database["public"]["Enums"]["tax_mode"]
           p_items: Json
+          p_mode: Database["public"]["Enums"]["tax_mode"]
+          p_price: number
         }
         Returns: Json
       }
       tax_of: {
         Args: {
-          p_price: number
-          p_mode: Database["public"]["Enums"]["tax_mode"]
           p_items: Json
+          p_mode: Database["public"]["Enums"]["tax_mode"]
+          p_price: number
         }
         Returns: number
       }
       transition_business_state: {
-        Args: {
-          p_store: string
-          p_action: string
-          p_close_time?: string
-        }
+        Args: { p_action: string; p_close_time?: string; p_store: string }
         Returns: Json
       }
-      vendor_name: {
-        Args: {
-          p_id: string
-        }
-        Returns: string
-      }
+      vendor_name: { Args: { p_id: string }; Returns: string }
     }
     Enums: {
       base_unit: "g" | "ml" | "ea"
@@ -2839,27 +2415,33 @@ export type Database = {
   }
 }
 
-type PublicSchema = Database[Extract<keyof Database, "public">]
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
+
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
 
 export type Tables<
-  PublicTableNameOrOptions extends
-    | keyof (PublicSchema["Tables"] & PublicSchema["Views"])
-    | { schema: keyof Database },
-  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
-    ? keyof (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
-        Database[PublicTableNameOrOptions["schema"]]["Views"])
+  DefaultSchemaTableNameOrOptions extends
+    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
     : never = never,
-> = PublicTableNameOrOptions extends { schema: keyof Database }
-  ? (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
-      Database[PublicTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
       Row: infer R
     }
     ? R
     : never
-  : PublicTableNameOrOptions extends keyof (PublicSchema["Tables"] &
-        PublicSchema["Views"])
-    ? (PublicSchema["Tables"] &
-        PublicSchema["Views"])[PublicTableNameOrOptions] extends {
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
         Row: infer R
       }
       ? R
@@ -2867,20 +2449,24 @@ export type Tables<
     : never
 
 export type TablesInsert<
-  PublicTableNameOrOptions extends
-    | keyof PublicSchema["Tables"]
-    | { schema: keyof Database },
-  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
-    ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
-> = PublicTableNameOrOptions extends { schema: keyof Database }
-  ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Insert: infer I
     }
     ? I
     : never
-  : PublicTableNameOrOptions extends keyof PublicSchema["Tables"]
-    ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
         Insert: infer I
       }
       ? I
@@ -2888,20 +2474,24 @@ export type TablesInsert<
     : never
 
 export type TablesUpdate<
-  PublicTableNameOrOptions extends
-    | keyof PublicSchema["Tables"]
-    | { schema: keyof Database },
-  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
-    ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
-> = PublicTableNameOrOptions extends { schema: keyof Database }
-  ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Update: infer U
     }
     ? U
     : never
-  : PublicTableNameOrOptions extends keyof PublicSchema["Tables"]
-    ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
         Update: infer U
       }
       ? U
@@ -2909,30 +2499,64 @@ export type TablesUpdate<
     : never
 
 export type Enums<
-  PublicEnumNameOrOptions extends
-    | keyof PublicSchema["Enums"]
-    | { schema: keyof Database },
-  EnumName extends PublicEnumNameOrOptions extends { schema: keyof Database }
-    ? keyof Database[PublicEnumNameOrOptions["schema"]]["Enums"]
+  DefaultSchemaEnumNameOrOptions extends
+    | keyof DefaultSchema["Enums"]
+    | { schema: keyof DatabaseWithoutInternals },
+  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
     : never = never,
-> = PublicEnumNameOrOptions extends { schema: keyof Database }
-  ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
-  : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
-    ? PublicSchema["Enums"][PublicEnumNameOrOptions]
+> = DefaultSchemaEnumNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
+    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
     : never
 
 export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
-    | keyof PublicSchema["CompositeTypes"]
-    | { schema: keyof Database },
+    | keyof DefaultSchema["CompositeTypes"]
+    | { schema: keyof DatabaseWithoutInternals },
   CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
-    schema: keyof Database
+    schema: keyof DatabaseWithoutInternals
   }
-    ? keyof Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
     : never = never,
-> = PublicCompositeTypeNameOrOptions extends { schema: keyof Database }
-  ? Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
-  : PublicCompositeTypeNameOrOptions extends keyof PublicSchema["CompositeTypes"]
-    ? PublicSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+> = PublicCompositeTypeNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
+    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never
+
+export const Constants = {
+  public: {
+    Enums: {
+      base_unit: ["g", "ml", "ea"],
+      business_close_method: ["manual", "auto"],
+      business_day_status: ["open", "break", "closed"],
+      candidate_reason: ["safety_stock", "soon_out", "manual"],
+      candidate_status: ["pending", "ordered", "excluded"],
+      category_kind: ["ingredient", "recipe", "material"],
+      change_source: ["direct", "inbound", "ingredient", "fixed_cost"],
+      day_basis_quality: ["exact", "estimated_current"],
+      fixed_cost_mode: ["total", "detail"],
+      inventory_event_type: [
+        "inbound",
+        "consume",
+        "discard",
+        "stocktake",
+        "adjust",
+      ],
+      order_source: ["manual", "ocr", "option", "recipe"],
+      order_status: ["ordered", "partial", "received", "canceled"],
+      stock_badge: ["ok", "low", "out"],
+      tax_mode: ["included", "separate", "exempt"],
+      trend_cause: ["material", "recipe", "fixed", "tax"],
+    },
+  },
+} as const
 

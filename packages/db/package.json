@@ -7,7 +7,7 @@
   "scripts": {
     "start": "supabase start",
     "stop": "supabase stop",
-    "reset": "supabase db reset",
+    "reset": "node scripts/reset-local.mjs",
     "diff": "supabase db diff",
     "push": "supabase db push",
     "gen:types": "supabase gen types typescript --local > src/database.types.ts",
@@ -15,6 +15,6 @@
     "fresh-db": "bash scripts/fresh-db.sh"
   },
   "devDependencies": {
-    "supabase": "^1.207.9"
+    "supabase": "2.116.0"
   }
 }
