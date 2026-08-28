@@ -192,7 +192,7 @@ const LEARNING_LANES = new Set(['ORCHESTRATION', 'SOLAR', 'CODEX', 'INDEPENDENT-
 const LEARNING_STATES = new Set(['CANDIDATE', 'VERIFIED', 'RETIRED']);
 const LEARNING_VERIFIERS = new Set(['ORCHESTRATION', 'SOLAR', 'CODEX', 'INDEPENDENT-AUDIT', 'OPERATIONS', 'HUMAN']);
 const LEARNING_PROMOTION_TARGETS = new Set(['task_packet', 'test', 'template', 'runbook', 'canonical_policy']);
-const LEARNING_SUMMARY_MARKER_RE = /(?:\bLearning\s+IDs?\b|\bapplied_learning_ids\b|\bexcluded_learning_ids\b|\bTEAM_LEARNING\b|학습\s*(?:ID|요약|규칙|교훈))/i;
+const LEARNING_SUMMARY_MARKER_RE = /(?:\bLRN-[A-Z0-9][A-Z0-9_-]{2,63}\b|\bLearning\s+IDs?\b|\bapplied_learning_ids\b|\bexcluded_learning_ids\b|\bTEAM_LEARNING\b|학습\s*(?:ID|요약|규칙|교훈))/i;
 const SECRET_PATTERNS = [
   { name: 'private key', pattern: /-----BEGIN (?:RSA |EC |OPENSSH |DSA )?PRIVATE KEY-----/ },
   { name: 'AWS access key', pattern: /\bAKIA[0-9A-Z]{16}\b/ },
@@ -574,17 +574,24 @@ function parseLearningRegistry(raw, label = LEARNING_REGISTRY_PATH) {
   return { registry, byId };
 }
 
-function validateLearningAssignment(task, parsedRegistry, targetDate) {
+function learningAssignmentSha256(task) {
+  return sha256(Buffer.from(`${JSON.stringify({
+    applied_learning_ids: task.applied_learning_ids ?? [],
+    excluded_learning_ids: task.excluded_learning_ids ?? [],
+  })}\n`, 'utf8'));
+}
+
+function validateLearningAssignment(task, parsedRegistry, evaluationDate) {
   if (!Object.prototype.hasOwnProperty.call(task, 'applied_learning_ids')
       || !Object.prototype.hasOwnProperty.call(task, 'excluded_learning_ids')) {
     throw new ReviewError('학습 장부가 활성화된 protocol 1.2 Task에는 applied_learning_ids와 excluded_learning_ids가 필요합니다.', { exitCode: 65 });
   }
-  validIsoDate(targetDate, 'target commit date');
+  validIsoDate(evaluationDate, 'learning evaluation date');
   const applied = task.applied_learning_ids.map((learningId) => {
     const item = parsedRegistry.byId.get(learningId);
     if (!item) throw new ReviewError(`등록되지 않은 Learning ID입니다: ${learningId}`, { exitCode: 65 });
     if (item.status !== 'VERIFIED') throw new ReviewError(`${learningId}은 VERIFIED가 아니므로 주입할 수 없습니다: ${item.status}`, { exitCode: 65 });
-    if (item.review_by < targetDate) throw new ReviewError(`${learningId}의 재검토 기한이 지나 주입할 수 없습니다: ${item.review_by}`, { exitCode: 65 });
+    if (item.review_by < evaluationDate) throw new ReviewError(`${learningId}의 재검토 기한이 지나 주입할 수 없습니다: ${item.review_by}`, { exitCode: 65 });
     return item;
   });
   for (const exclusion of task.excluded_learning_ids) {
@@ -603,13 +610,13 @@ function validateLearningAssignment(task, parsedRegistry, targetDate) {
     throw new ReviewError('독립 종합 감사와 최초 보안 감사의 학습 필드는 모두 비어 있어야 합니다.', { exitCode: 65 });
   }
   return {
-    target_date: targetDate,
+    evaluation_date: evaluationDate,
     applied,
     excluded: task.excluded_learning_ids.map((item) => ({ ...item, status: parsedRegistry.byId.get(item.learning_id).status })),
   };
 }
 
-function loadLearningContext(repoRoot, task) {
+function loadLearningContext(repoRoot, task, executionDate = nowIso().slice(0, 10)) {
   if (task.protocol_version === '1.1') return null;
   const listing = git(['ls-tree', '--name-only', task.target_commit_sha, '--', LEARNING_REGISTRY_PATH], repoRoot);
   if (listing !== LEARNING_REGISTRY_PATH) {
@@ -621,7 +628,41 @@ function loadLearningContext(repoRoot, task) {
   const registryRaw = gitBuffer(['show', `${task.target_commit_sha}:${LEARNING_REGISTRY_PATH}`], repoRoot);
   const parsed = parseLearningRegistry(registryRaw);
   const targetDate = git(['show', '-s', '--format=%cs', task.target_commit_sha], repoRoot);
-  const context = validateLearningAssignment(task, parsed, targetDate);
+  validIsoDate(executionDate, 'learning execution date');
+  const registryBlobOid = git(['rev-parse', `${task.target_commit_sha}:${LEARNING_REGISTRY_PATH}`], repoRoot);
+  const baselineListing = git(['ls-tree', '--name-only', task.baseline_commit_sha, '--', LEARNING_REGISTRY_PATH], repoRoot);
+  const registryChanged = baselineListing !== LEARNING_REGISTRY_PATH
+    || git(['rev-parse', `${task.baseline_commit_sha}:${LEARNING_REGISTRY_PATH}`], repoRoot) !== registryBlobOid;
+  if (registryChanged) {
+    const declared = task.artifact_paths.includes(LEARNING_REGISTRY_PATH)
+      || task.reference_paths.includes(LEARNING_REGISTRY_PATH);
+    if (!declared) {
+      throw new ReviewError('baseline과 target 사이에 바뀐 TEAM_LEARNING 장부는 artifact_paths 또는 reference_paths에 포함해야 합니다.', { exitCode: 65 });
+    }
+    if (baselineListing !== LEARNING_REGISTRY_PATH && !task.artifact_paths.includes(LEARNING_REGISTRY_PATH)) {
+      throw new ReviewError('TEAM_LEARNING 장부를 처음 도입한 Task는 그 파일을 artifact_paths에 포함해야 합니다.', { exitCode: 65 });
+    }
+    if (baselineListing === LEARNING_REGISTRY_PATH) {
+      const baseline = parseLearningRegistry(
+        gitBuffer(['show', `${task.baseline_commit_sha}:${LEARNING_REGISTRY_PATH}`], repoRoot),
+        `${LEARNING_REGISTRY_PATH} at baseline`,
+      );
+      for (const learningId of task.applied_learning_ids) {
+        if (!baseline.byId.has(learningId) || !sameJsonValue(baseline.byId.get(learningId), parsed.byId.get(learningId))) {
+          throw new ReviewError(`${learningId}은 baseline과 target 사이에 바뀌어 같은 Task에 적용할 수 없습니다.`, { exitCode: 65 });
+        }
+      }
+    }
+  }
+  const evaluationDate = targetDate > executionDate ? targetDate : executionDate;
+  const context = {
+    ...validateLearningAssignment(task, parsed, evaluationDate),
+    target_date: targetDate,
+    execution_date: executionDate,
+    registry_blob_oid: registryBlobOid,
+    registry_sha256: sha256(registryRaw),
+    assignment_sha256: learningAssignmentSha256(task),
+  };
   Object.defineProperty(task, 'learning_context', {
     value: context,
     enumerable: false,
@@ -632,17 +673,49 @@ function loadLearningContext(repoRoot, task) {
 }
 
 function assertLearningCleanRoom(task, collaborationRaw) {
-  const mustBeClean = task.route === 'FINAL_INDEPENDENT'
-    || (task.route === 'SECURITY' && task.predecessor_review === null && task.fallback_review === null && task.closure_review === null);
+  const firstSecurity = task.route === 'SECURITY'
+    && task.predecessor_review === null && task.fallback_review === null && task.closure_review === null;
+  const mustBeClean = task.route === 'FINAL_INDEPENDENT' || firstSecurity;
   if (!mustBeClean) return;
   const text = decodeSafeText(collaborationRaw, 'collaboration.md');
-  const headings = [...text.matchAll(/^## ([A-Z_]+)\b.*$/gm)];
-  for (let index = 0; index < headings.length; index += 1) {
-    if (headings[index][1] !== 'SOLAR_REQUEST') continue;
-    const start = headings[index].index;
-    const end = index + 1 < headings.length ? headings[index + 1].index : text.length;
-    if (LEARNING_SUMMARY_MARKER_RE.test(text.slice(start, end))) {
-      throw new ReviewError('독립 종합 감사와 최초 보안 감사의 SOLAR_REQUEST에는 Learning ID·학습 요약을 넣을 수 없습니다.', { exitCode: 65 });
+  const collaborationMatch = LEARNING_SUMMARY_MARKER_RE.exec(text);
+  if (collaborationMatch) {
+    const prefix = text.slice(0, collaborationMatch.index);
+    const turn = [...prefix.matchAll(/^## ([A-Z_]+)\s+·\s+(turn-[scho]\d{3})/gm)].at(-1)?.[2] ?? '장부 머리말';
+    throw new ReviewError(`독립 종합 감사와 최초 보안 감사의 ${turn}에 학습 표식(${collaborationMatch[0]})을 넣을 수 없습니다.`, { exitCode: 65 });
+  }
+  if (task.route === 'FINAL_INDEPENDENT') {
+    for (const [field, values] of [
+      ['independent_request', [task.independent_request]],
+      ['requirements', task.requirements],
+      ['human_decisions', task.human_decisions],
+      ['required_evidence', task.required_evidence],
+    ]) {
+      const match = LEARNING_SUMMARY_MARKER_RE.exec((values ?? []).filter(Boolean).join('\n'));
+      if (match) {
+        throw new ReviewError(`FINAL_INDEPENDENT ${field}에 학습 표식(${match[0]})을 넣을 수 없습니다.`, { exitCode: 65 });
+      }
+    }
+  }
+}
+
+function assertLearningAppendCandidate(task, current, entryRaw) {
+  assertLearningCleanRoom(task, Buffer.concat([current, entryRaw]));
+}
+
+function learningManifestFields(task) {
+  return {
+    learning_registry_blob_oid: task.learning_context?.registry_blob_oid ?? null,
+    learning_registry_sha256: task.learning_context?.registry_sha256 ?? null,
+    learning_assignment_sha256: task.learning_context?.assignment_sha256 ?? null,
+    learning_target_date: task.learning_context?.evaluation_date ?? null,
+  };
+}
+
+function assertLearningManifestContract(manifest, task) {
+  for (const [field, expected] of Object.entries(learningManifestFields(task))) {
+    if ((manifest[field] ?? null) !== expected) {
+      throw new ReviewError(`staging manifest의 ${field}가 현재 학습 장부 계약과 다릅니다.`, { exitCode: 75, runState: 'STALE' });
     }
   }
 }
@@ -2556,6 +2629,16 @@ function buildPrompt({ task, collaborationText, snapshot, manifest, mode, previo
       review_by: item.review_by,
     })), null, 2)}\n</verified_learning_context>\n`
     : '';
+  const taskPacketSource = task.trusted_packet || task;
+  const trustedTaskPacket = task.route === 'SECURITY'
+    ? {
+      ...taskPacketSource,
+      excluded_learning_ids: (taskPacketSource.excluded_learning_ids ?? []).map((item) => item.learning_id),
+    }
+    : taskPacketSource;
+  const promptExcludedLearningIds = task.route === 'SECURITY'
+    ? (task.excluded_learning_ids ?? []).map((item) => item.learning_id)
+    : (task.excluded_learning_ids ?? null);
   return `# Trusted independent review control instructions
 
 You are the independent ${manifest.reviewer_engine} reviewer for the Sikjae repository. Review only; never modify files.
@@ -2607,12 +2690,12 @@ ${JSON.stringify({
     evidence_paths: task.evidence_paths,
     excluded_paths: task.excluded_paths,
     applied_learning_ids: task.applied_learning_ids ?? null,
-    excluded_learning_ids: task.excluded_learning_ids ?? null,
+    excluded_learning_ids: promptExcludedLearningIds,
     input_files: manifest.input_files,
   }, null, 2)}
 
 <trusted_task_packet>
-${JSON.stringify(task.trusted_packet || task, null, 2)}
+${JSON.stringify(trustedTaskPacket, null, 2)}
 </trusted_task_packet>
 
 ${collaborationBlock}
@@ -2859,6 +2942,22 @@ function assertFallbackTaskParity(sourceTask, task) {
       runState: 'STALE',
     });
   }
+  if (
+    !sameJsonValue(sourceTask.applied_learning_ids ?? null, task.applied_learning_ids ?? null)
+    || !sameJsonValue(sourceTask.excluded_learning_ids ?? null, task.excluded_learning_ids ?? null)
+  ) {
+    throw new ReviewError('fallback predecessor와 successor의 학습 ID 집합이 다릅니다.', { exitCode: 75, runState: 'STALE' });
+  }
+}
+
+function assertFallbackLearningAssignment(sourceTask, task, contract) {
+  assertFallbackTaskParity(sourceTask, task);
+  if (
+    Object.prototype.hasOwnProperty.call(sourceTask, 'applied_learning_ids')
+    && contract.learning_assignment_sha256 !== learningAssignmentSha256(sourceTask)
+  ) {
+    throw new ReviewError('fallback predecessor의 학습 ID 집합 hash가 Task와 다릅니다.', { exitCode: 75, runState: 'STALE' });
+  }
 }
 
 function assertClosureExecutionBlocked(repoRoot, task) {
@@ -2917,7 +3016,7 @@ function loadPinnedFallbackReview({ repoRoot, runtime, task }) {
   try {
     const sourceTaskRaw = readBounded(join(sourceDir, 'task.json'), 'fallback predecessor task.json');
     const sourceTask = validateTask(parseJson(sourceTaskRaw, 'fallback predecessor task.json'), contract.from_task_id);
-    assertFallbackTaskParity(sourceTask, task);
+    assertFallbackLearningAssignment(sourceTask, task, contract);
     for (const field of ['artifact_paths', 'reference_paths', 'evidence_paths', 'excluded_paths']) {
       if (!sameJsonValue(sourceTask[field], task[field])) {
         throw new ReviewError(`fallback predecessor와 successor의 ${field} 범위가 다릅니다.`, { exitCode: 75, runState: 'STALE' });
@@ -4092,6 +4191,7 @@ function executeAppendTurn(args) {
       throw new ReviewError('수동 턴 준비 전에 collaboration.md가 변경되었습니다.', { exitCode: 75, runState: 'STALE' });
     }
     const entryRaw = normalizeManualTurn(raw, latest, task);
+    assertLearningAppendCandidate(task, latest, entryRaw);
     if (latest.length + entryRaw.length > MAX_INPUT_BYTES) {
       throw new ReviewError('collaboration.md가 후속 회차 읽기 제한을 넘게 됩니다. 새 Task ID로 이어가세요.', { exitCode: 74 });
     }
@@ -4575,6 +4675,7 @@ function validatePreparedManifestContract({ manifest, task, taskRaw, previous, r
       throw new ReviewError(`staging manifest의 ${field}가 현재 task 학습 계약과 다릅니다.`, { exitCode: 75, runState: 'STALE' });
     }
   }
+  assertLearningManifestContract(manifest, task);
   try {
     validateStoredInputFiles(manifest.input_files, task, 'staging manifest.input_files');
   } catch (error) {
@@ -5168,6 +5269,7 @@ async function executeReview(args) {
       excluded_paths: task.excluded_paths,
       applied_learning_ids: task.applied_learning_ids ?? null,
       excluded_learning_ids: task.excluded_learning_ids ?? null,
+      ...learningManifestFields(task),
       input_files: publicInputFiles(inputFiles),
       source_archive_version: 1,
       finding_resolution_semantics: FINDING_RESOLUTION_SEMANTICS,
@@ -5928,9 +6030,113 @@ function runSelfTests() {
     });
     expectReviewError(
       () => assertLearningCleanRoom(securityTask, Buffer.from('# log\n## SOLAR_REQUEST · turn-s001 · r001\n- 학습 요약: 결론', 'utf8')),
-      { exitCode: 65, messageIncludes: 'SOLAR_REQUEST' },
+      { exitCode: 65, messageIncludes: 'turn-s001' },
+    );
+    expectReviewError(
+      () => assertLearningCleanRoom(securityTask, Buffer.from('# log\n## CODEX_EVIDENCE · turn-c001 · r001\n- 증거: LRN-ORCH-TEST-001', 'utf8')),
+      { exitCode: 65, messageIncludes: 'turn-c001' },
+    );
+    expectReviewError(
+      () => assertLearningCleanRoom({
+        ...finalTask,
+        applied_learning_ids: [],
+        independent_request: 'LRN-ORCH-TEST-001을 적용하라',
+      }, Buffer.from('# clean log\n', 'utf8')),
+      { exitCode: 65, messageIncludes: 'independent_request' },
     );
     assertLearningCleanRoom({ ...securityTask, predecessor_review: {} }, Buffer.from('# log\n## SOLAR_REQUEST · turn-s001 · r001\n- applied_learning_ids: LRN-ORCH-TEST-001', 'utf8'));
+  });
+
+  test('clean-room-append-rejects-before-ledger-change', () => {
+    const task = taskPacketV12Fixture({
+      route: 'SECURITY', reviewer_role: 'FABLE-SEC', review_mode: 'SECURITY',
+    });
+    const before = Buffer.from('# immutable ledger\n', 'utf8');
+    const entry = Buffer.from('\n## HUMAN_DECISION · turn-h001 · r001\n\n- role: `HUMAN`\n- 결정: LRN-ORCH-TEST-001 적용\n', 'utf8');
+    expectReviewError(
+      () => assertLearningAppendCandidate(task, before, entry),
+      { exitCode: 65, messageIncludes: 'turn-h001' },
+    );
+    selfTestAssert(before.equals(Buffer.from('# immutable ledger\n', 'utf8')), '거부 전 장부 불변');
+  });
+
+  test('learning-expiry-uses-later-of-commit-and-execution-date', () => {
+    const parsed = parseLearningRegistry(learningRegistryFixture([
+      learningEntryFixture({ reviewed_on: '2026-08-28', review_by: '2026-08-29' }),
+    ]));
+    expectReviewError(
+      () => validateLearningAssignment(
+        taskPacketV12Fixture({ applied_learning_ids: ['LRN-ORCH-TEST-001'] }),
+        parsed,
+        '2026-08-30',
+      ),
+      { exitCode: 65, messageIncludes: '재검토 기한' },
+    );
+  });
+
+  test('learning-registry-delta-and-manifest-are-sealed', () => {
+    const temporaryRoot = mkdtempSync(join(tmpdir(), 'fable-learning-registry-selftest-'));
+    try {
+      const repoRoot = join(temporaryRoot, 'repo');
+      mkdirSync(join(repoRoot, 'docs', 'team'), { recursive: true });
+      git(['init', '--quiet'], repoRoot);
+      git(['config', 'user.name', 'Fable Self Test'], repoRoot);
+      git(['config', 'user.email', 'fable-self-test@example.invalid'], repoRoot);
+      writeFileSync(join(repoRoot, 'README.md'), 'baseline\n');
+      git(['add', 'README.md'], repoRoot);
+      git(['commit', '--quiet', '-m', 'baseline'], repoRoot);
+      const baseline = git(['rev-parse', 'HEAD'], repoRoot);
+      writeFileSync(join(repoRoot, LEARNING_REGISTRY_PATH), learningRegistryFixture());
+      git(['add', LEARNING_REGISTRY_PATH], repoRoot);
+      git(['commit', '--quiet', '-m', 'add learning registry'], repoRoot);
+      const target = git(['rev-parse', 'HEAD'], repoRoot);
+      const task = taskPacketV12Fixture({
+        baseline_commit_sha: baseline,
+        target_commit_sha: target,
+        artifact_paths: [LEARNING_REGISTRY_PATH],
+        applied_learning_ids: ['LRN-ORCH-TEST-001'],
+      });
+      const context = loadLearningContext(repoRoot, task, '2026-08-29');
+      selfTestAssert(context.registry_blob_oid === git(['rev-parse', `${target}:${LEARNING_REGISTRY_PATH}`], repoRoot), 'target 장부 blob 봉인');
+      const manifest = learningManifestFields(task);
+      assertLearningManifestContract(manifest, task);
+      expectReviewError(
+        () => assertLearningManifestContract({ ...manifest, learning_registry_sha256: '0'.repeat(64) }, task),
+        { exitCode: 75, runState: 'STALE', messageIncludes: 'learning_registry_sha256' },
+      );
+      const hidden = taskPacketV12Fixture({
+        baseline_commit_sha: baseline, target_commit_sha: target,
+        applied_learning_ids: ['LRN-ORCH-TEST-001'],
+      });
+      expectReviewError(
+        () => loadLearningContext(repoRoot, hidden, '2026-08-29'),
+        { exitCode: 65, messageIncludes: 'artifact_paths 또는 reference_paths' },
+      );
+
+      const candidate = learningEntryFixture({ status: 'CANDIDATE', validation_evidence: [] });
+      writeFileSync(join(repoRoot, LEARNING_REGISTRY_PATH), learningRegistryFixture([candidate]));
+      git(['add', LEARNING_REGISTRY_PATH], repoRoot);
+      git(['commit', '--quiet', '-m', 'candidate learning'], repoRoot);
+      const candidateCommit = git(['rev-parse', 'HEAD'], repoRoot);
+      writeFileSync(join(repoRoot, LEARNING_REGISTRY_PATH), learningRegistryFixture());
+      git(['add', LEARNING_REGISTRY_PATH], repoRoot);
+      git(['commit', '--quiet', '-m', 'promote learning'], repoRoot);
+      const promotedTarget = git(['rev-parse', 'HEAD'], repoRoot);
+      expectReviewError(
+        () => loadLearningContext(repoRoot, taskPacketV12Fixture({
+          baseline_commit_sha: candidateCommit,
+          target_commit_sha: promotedTarget,
+          artifact_paths: [LEARNING_REGISTRY_PATH],
+          applied_learning_ids: ['LRN-ORCH-TEST-001'],
+        }), '2026-08-29'),
+        { exitCode: 65, messageIncludes: '같은 Task에 적용할 수 없습니다' },
+      );
+    } finally {
+      if (!isPathInside(tmpdir(), temporaryRoot) || resolve(temporaryRoot) === resolve(tmpdir())) {
+        throw new Error('학습 장부 self-test 임시 경로가 안전하지 않습니다.');
+      }
+      rmSync(temporaryRoot, { recursive: true, force: true });
+    }
   });
 
   test('normal-review-gets-rule-but-security-successor-gets-ids-only', () => {
@@ -5953,6 +6159,7 @@ function runSelfTests() {
     const security = taskPacketV12Fixture({
       route: 'SECURITY', reviewer_role: 'FABLE-SEC', review_mode: 'SECURITY', predecessor_review: {},
       applied_learning_ids: [learning.learning_id],
+      excluded_learning_ids: [{ learning_id: 'LRN-OPS-OTHER-001', reason: '비밀 요약을 포함한 제외 사유' }],
     });
     Object.defineProperty(security, 'learning_context', { value: { applied: [learning], excluded: [] }, enumerable: false });
     const securityPrompt = makePrompt(security);
@@ -5961,6 +6168,35 @@ function runSelfTests() {
         && !securityPrompt.includes('<verified_learning_context>')
         && !securityPrompt.includes(learning.reusable_rule),
       '보안 후속 검수는 ID만 주입',
+    );
+    selfTestAssert(!securityPrompt.includes('비밀 요약을 포함한 제외 사유'), '보안 후속 제외 사유 제거');
+    const finalTask = taskPacketV12Fixture({
+      route: 'FINAL_INDEPENDENT', reviewer_role: 'FABLE-FINAL', review_mode: 'FINAL',
+      author_role: 'AI-DEPUTY-ORCHESTRATOR', independent_request: '독립 검토',
+    });
+    const finalPrompt = makePrompt(finalTask);
+    selfTestAssert(!finalPrompt.includes('<verified_learning_context>') && !/\bLRN-/.test(finalPrompt), '최종 독립 프롬프트 학습 클린룸');
+  });
+
+  test('fallback-successor-learning-assignment-is-pinned', () => {
+    const source = taskPacketV12Fixture({
+      applied_learning_ids: ['LRN-ORCH-TEST-001'],
+      excluded_learning_ids: [{ learning_id: 'LRN-OPS-OUT-001', reason: '범위 밖' }],
+    });
+    const successor = structuredClone(source);
+    successor.task_id = 'SELF-SUCCESSOR-002';
+    const contract = { learning_assignment_sha256: learningAssignmentSha256(source) };
+    assertFallbackLearningAssignment(source, successor, contract);
+    expectReviewError(
+      () => assertFallbackLearningAssignment(source, {
+        ...successor,
+        applied_learning_ids: [],
+      }, contract),
+      { exitCode: 75, runState: 'STALE', messageIncludes: '학습 ID 집합' },
+    );
+    expectReviewError(
+      () => assertFallbackLearningAssignment(source, successor, { learning_assignment_sha256: '0'.repeat(64) }),
+      { exitCode: 75, runState: 'STALE', messageIncludes: '집합 hash' },
     );
   });
 
@@ -6084,7 +6320,10 @@ function runSelfTests() {
       ...fixture.task,
       protocol_version: '1.2',
       applied_learning_ids: ['LRN-ORCH-TEST-001'],
-      excluded_learning_ids: [{ learning_id: 'LRN-CODEX-CANDIDATE-001', reason: 'CANDIDATE' }],
+      excluded_learning_ids: [
+        { learning_id: 'LRN-CODEX-CANDIDATE-001', reason: 'CANDIDATE' },
+        { learning_id: 'LRN-OPS-OUT-001', reason: '범위 밖' },
+      ],
     };
     Object.defineProperty(task, 'engine_contract', {
       value: { engine: PRIMARY_REVIEWER_ENGINE, model: PRIMARY_MODEL_ID, fallback: null },
@@ -6137,6 +6376,16 @@ function runSelfTests() {
       inputFiles: fixture.inputFiles,
       previous: { value: null, registryFindings: [] },
     }), { exitCode: 76, messageIncludes: 'applied_learning_ids' });
+    expectReviewError(() => validateResult({
+      ...result,
+      excluded_learning_ids: [...result.excluded_learning_ids].reverse(),
+    }, {
+      task,
+      snapshot: fixture.snapshot,
+      mode: 'INITIAL',
+      inputFiles: fixture.inputFiles,
+      previous: { value: null, registryFindings: [] },
+    }), { exitCode: 76, messageIncludes: 'excluded_learning_ids' });
   });
 
   test('protocol-v12-task-templates-match-runner-contract', () => {

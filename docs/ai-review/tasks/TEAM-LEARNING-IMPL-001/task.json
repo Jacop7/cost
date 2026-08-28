@@ -1,0 +1,90 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "TEAM-LEARNING-IMPL-001",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R3",
+  "author_role": "SOLAR-ORCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "b196cda2f2363f5bb8e49ea8abbb1c9a0e9141fe",
+  "target_commit_sha": "e799f42676aa607b9f7a6ce1f3739bed99fe9b5e",
+  "target_tree_oid": "039a547bb0159d6c2e5d61c6805ec07fc6207015",
+  "agents_blob_oid": "64b82275832bb6ce981b419294a428e77383be3e",
+  "agents_sha256": "0f1dd530a46174aeff884146569b2e2534f6ec8b544b531054f48e86b84c0f97",
+  "requirements": [
+    "TEAM-LEARNING-1-1: CANDIDATE·VERIFIED·RETIRED 수명주기와 반대 레인 검증을 기계 판정 가능한 단일 장부로 둔다.",
+    "TEAM-LEARNING-1-2: protocol 1.2 Task·manifest·result가 적용·제외 학습 ID를 함께 봉인하고 부분 선언·변조·충돌을 거부한다.",
+    "TEAM-LEARNING-1-3: 현재 VERIFIED이고 유효기간 안이며 충돌하지 않는 학습만 정상 검수에 최소 컨텍스트로 주입한다.",
+    "TEAM-LEARNING-1-4: FINAL_INDEPENDENT 전 회차와 최초 SECURITY 검수는 학습 ID·요약이 없는 클린룸으로 유지한다.",
+    "TEAM-LEARNING-1-5: 보안 후속 검수에는 ID만 전달하고 재사용 요약은 전달하지 않는다.",
+    "TEAM-LEARNING-1-6: protocol 1.1 및 기존 protocol 1.2 감사 원본은 새 필드 없이 계속 검증된다.",
+    "TEAM-LEARNING-1-7: 학습은 정책 대체본이 아니며 공식 파일·판본·실행 증거·재검수 연결을 요구한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:single-canonical-artifact",
+    "AGENTS:fable-append-only-ledger",
+    "AGENTS:team-learning-context",
+    "WORK-QUEUE:TEAM-LEARNING-1",
+    "AI-REVIEW:immutable-rounds",
+    "AI-REVIEW:independent-clean-room"
+  ],
+  "artifact_paths": [
+    "scripts/fable-review.mjs",
+    "docs/team/TEAM_LEARNING.md",
+    "docs/team/ROLE_CONTEXTS.md",
+    "docs/ai-review/README.md",
+    "docs/ai-review/templates/task-v12-primary.example.json",
+    "docs/ai-review/templates/task-v12-fallback.example.json",
+    "docs/팀구성_상세기획안.md",
+    "docs/작업큐.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "scripts/fable-review/schema-v1.json",
+    "scripts/fable-review/protocol-v12.mjs",
+    "scripts/fable-review/protocol-v12.test.mjs"
+  ],
+  "evidence_paths": [],
+  "excluded_paths": [],
+  "required_evidence": [
+    "fable:self-test 46개 묶음과 protocol 1.2 계약 20/20",
+    "corepack pnpm verify 6/6",
+    "정상·보안 후속·최초 보안·FINAL_INDEPENDENT 컨텍스트 분리에 대한 부정 시험",
+    "CANDIDATE·RETIRED·만료·충돌·알 수 없는 ID·result 변조 거부 시험",
+    "실제 target commit의 TEAM_LEARNING registry를 읽은 Fable 결과의 applied/excluded ID echo"
+  ],
+  "human_decisions": [
+    "2026-08-29 사용자가 기획안의 남은 작업을 승인 없이 자동으로 진행하도록 승인했다.",
+    "기존 Claude Code Max 로그인 세션을 사용하고 Fable 검수 비용 표시는 실행 상한으로만 관리한다.",
+    "학습 장부는 공식 정책을 대신하지 않고 검증된 재사용 체크리스트만 제공한다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "4.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [
+    "LRN-ORCH-CI-001"
+  ],
+  "excluded_learning_ids": [
+    {
+      "learning_id": "LRN-CODEX-TIME-001",
+      "reason": "DB 영업일 시간 독립 시험은 이번 AI 검수 실행기 변경 범위와 직접 관련이 없다."
+    },
+    {
+      "learning_id": "LRN-OPS-BACKUP-001",
+      "reason": "개발 DB 백업·복구 절차는 이번 학습 컨텍스트 계약 변경에 적용되지 않는다."
+    },
+    {
+      "learning_id": "LRN-AUDIT-PIN-001",
+      "reason": "아직 CANDIDATE이고 이번 구현은 선택 fixture pin 잔여 자체를 변경하지 않는다."
+    }
+  ]
+}

@@ -24,13 +24,20 @@
 }
 ```
 
-- 적용 ID는 장부에서 `VERIFIED`이고 `review_by`가 지나지 않아야 한다.
+- 적용 ID는 장부에서 `VERIFIED`이고, target commit 날짜와 실행 UTC 날짜 중 늦은 날짜를 기준으로
+  `review_by`가 지나지 않아야 한다.
 - 적용·제외 ID는 모두 장부에 있어야 하고 서로 겹칠 수 없다.
 - 상호 충돌 ID를 함께 적용하지 않는다.
+- baseline과 target 사이에 `TEAM_LEARNING.md`가 바뀌면 그 파일을 Task의 `artifact_paths` 또는
+  `reference_paths`에 포함한다. 장부 최초 도입은 `artifact_paths`에 포함해야 하며, 같은 commit에서
+  바뀐 학습 항목은 그 Task에 적용할 수 없다. manifest는 target 장부 blob·내용 hash와 적용 집합
+  hash를 봉인한다.
 - protocol 1.1과 TEAM-LEARNING-1 이전 protocol 1.2 Task는 당시 원본으로 보존한다.
 - `FINAL_INDEPENDENT` 모든 Task와 predecessor가 없는 최초 `SECURITY` Task는 두 배열이 모두
-  비어 있어야 하며 `SOLAR_REQUEST`에도 Learning ID·학습 요약을 넣지 않는다.
-- predecessor가 있는 보안 후속 Task는 `VERIFIED` ID 목록만 받을 수 있고 학습 요약 본문은 받지 않는다.
+  비어 있어야 한다. 최종 독립 감사의 요청·요구·사람 결정·필수 증거와 두 경로의 공동 장부 전체에도
+  Learning ID·학습 요약을 넣지 않는다.
+- predecessor가 있는 보안 후속 Task는 `VERIFIED` 적용·제외 ID 목록만 받을 수 있고 제외 사유를
+  포함한 학습 요약 본문은 받지 않는다.
 
 ## 재사용 측정
 
