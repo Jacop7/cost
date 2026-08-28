@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "AI-REVIEW-1-COMMIT-DOCS-001",
+  "sequence": "t0001",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-08-28T05:38:11.835Z",
+  "turn_id": "turn-s001",
+  "turn_type": "SOLAR_RESPONSE",
+  "role": "AI-DEPUTY-ORCHESTRATOR",
+  "task_sha256": "d97ffdaec473ac01549cd8a454e3856bfdbb198dadeba01b59563cc959dc12f2",
+  "runner_sha256": "11f297890f3a8d5161905c92f91d3781c36fa6c4cf66ce35b2dd8a9de46b7a97",
+  "previous_manual_run_sha256": null,
+  "collaboration_before_sha256": "066b2d969df0aa7f589f9bddce9a46b07866d7f7266694bbdbaeebbf9affc4b4",
+  "collaboration_before_bytes": 4071,
+  "collaboration_entry_sha256": "1a16077586856b0aea5a77d2c1107038f5fcffa7807d6b716db9dcb9cd6642c2",
+  "collaboration_entry_bytes": 3627,
+  "collaboration_after_sha256": "0423b566c97eb959054cfb117835539609b46255af3847f69e7c9b14288a50a8",
+  "collaboration_after_bytes": 7698
+}

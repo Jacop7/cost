@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "AI-REVIEW-1-COMMIT-DOCS-001",
+  "sequence": "t0002",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-08-28T05:38:12.615Z",
+  "turn_id": "turn-c001",
+  "turn_type": "CODEX_EVIDENCE",
+  "role": "CODEX-FUNCTION-QA",
+  "task_sha256": "d97ffdaec473ac01549cd8a454e3856bfdbb198dadeba01b59563cc959dc12f2",
+  "runner_sha256": "11f297890f3a8d5161905c92f91d3781c36fa6c4cf66ce35b2dd8a9de46b7a97",
+  "previous_manual_run_sha256": "afbddd032a8ed7cac2a35181090efec715ffa71942cf66fd248c75863e6f8a3d",
+  "collaboration_before_sha256": "0423b566c97eb959054cfb117835539609b46255af3847f69e7c9b14288a50a8",
+  "collaboration_before_bytes": 7698,
+  "collaboration_entry_sha256": "1a1b64f6c45c028488c419a93d452c4f036eefe37de03a5b1f1d48144ee04ee9",
+  "collaboration_entry_bytes": 2229,
+  "collaboration_after_sha256": "05e88c6f7df72a75fa34062f959ab49cd6aae755b47fdb023d9addacc34be5c8",
+  "collaboration_after_bytes": 9927
+}
