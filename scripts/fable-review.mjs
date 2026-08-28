@@ -2289,7 +2289,9 @@ Hard rules:
 3. This is a hash-sealed snapshot. Echo every supplied SHA/hash and snapshot mode exactly.
 4. Cite an allowed file and real 1-based line range. Use COLLABORATION_LOG with lines 0..0 only
    when the evidence exists solely in the supplied task packet or shared collaboration log.
-5. Keep the same finding_id during RECHECK. Only the original reviewer role may verify its finding.
+5. Keep the same finding_id during RECHECK. For every inherited finding, previous_finding_id must
+   equal that same finding_id. Only a genuinely new finding may use previous_finding_id=null, and it
+   must be OPEN. Only the original reviewer role may verify its finding.
 6. In an initial review, every finding is OPEN. In RECHECK, use VERIFIED when acceptance criteria and
    Codex evidence are satisfied. VERIFIED is locally resolved and is excluded from
    remaining_required_finding_ids, but it is not formal closure. P0-2 protected required checks do not
@@ -5240,6 +5242,29 @@ function runSelfTests() {
       inputFiles: fixture.inputFiles,
       previous: { value: { findings: [fixture.priorFinding] } },
     }), { exitCode: 76, messageIncludes: '사라졌습니다' });
+  });
+
+  test('recheck-prompt-requires-explicit-previous-finding-link', () => {
+    const fixture = validationSelfTestFixture();
+    const prompt = buildPrompt({
+      task: fixture.task,
+      collaborationText: '',
+      snapshot: fixture.snapshot,
+      manifest: {
+        input_files: fixture.inputFiles.map(({ content: _content, ...file }) => file),
+      },
+      mode: 'RECHECK',
+      previous: {
+        value: { findings: [fixture.priorFinding] },
+        hash: 'f'.repeat(64),
+        predecessor: null,
+      },
+    });
+    selfTestAssert(
+      prompt.includes('previous_finding_id must\n   equal that same finding_id')
+        && prompt.includes('Only a genuinely new finding may use previous_finding_id=null'),
+      'RECHECK 프롬프트가 기존 finding 연결 필드와 신규 finding의 null 규칙을 명시',
+    );
   });
 
   test('verified-required-finding-is-resolved-but-not-closed', () => {
