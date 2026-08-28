@@ -1,0 +1,128 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P1-1-ACL-EVIDENCE-BINDING-004",
+  "reviewer_role": "FABLE-SEC",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "474d087fa341a70bb792cd10bd9f6907985e6617",
+  "target_commit_sha": "d1942efdbe5ebaa01e858cc9813ef9763ffd9b61",
+  "target_tree_oid": "6acebf973c9b74cb748ed9a38bf52793a0f542cd",
+  "agents_blob_oid": "64b82275832bb6ce981b419294a428e77383be3e",
+  "agents_sha256": "0f1dd530a46174aeff884146569b2e2534f6ec8b544b531054f48e86b84c0f97",
+  "task_sha256": "fe8d8bd6d6b385bb2e3346bc82d3af271809fdce1344b97337a353e349dfb351",
+  "collaboration_sha256": "4accfe17c27f49dc91df92119f56a22402bb1ae29d22ef2674c1d359794a6cd9",
+  "input_files_sha256": "9c6adc7a947449121a4dd60f6ac50dcafd063395451760f60852d06969d76f9f",
+  "schema_sha256": "f8860ea87aacde86f541f7b1a1640729bf516dcdaf78e168c0e2e01f0edfac5c",
+  "runner_sha256": "1e09d053693e46b03a27bc34c443a4ac258ff6358eda1d33e0a76b160e97bf8b",
+  "verdict": "CHANGES_REQUIRED",
+  "summary": "증거 문서의 판본·해시·stderr 결속을 스냅샷 기준으로 대조했다. (1) V2 시험 SHA `380afade…`는 target commit의 `admin-acl-audit.test.mjs` blob SHA-256과 정확히 일치하고, 복구 후 SQL SHA `c47665ca…`도 target의 `admin-acl-audit.sql`과 일치한다(P1-1-EVIDENCE-1·3 전반 충족). (2) V2 행 4건(migrations 장부, `client['rpc']` 요소 접근, `client.rpc` 별칭, `ledger_write_paths` 빈 문자열)의 stderr는 현재 `fail()` 문구(test.mjs 133·181·212행)와 글자 단위로 일치하며, V1 행 10건도 현재 문구와 형식이 같다. 단 V1 38행의 `부채가 기준선을 넘었습니다`는 현재 문구(`넘었거나 정수가 아닙니다`)와 다른데, 이는 V1(`d0051c17…`)이 정수 검사 이전 판본이면 자연스럽지만 이 스냅샷에는 V1 blob이 없어 Codex가 `git show`로 실측해야 한다(P1-1-EVIDENCE-2는 V2 범위에서 충족, V1은 검증자 확인 필요). (3) 필수 지적 1건: `## 최종 검증` 절(55~71행)은 `corepack pnpm verify` 6/6·exit 0·fresh DB 0개·보안 관측값을 기록하면서도 어느 판본(V2 commit·시험 SHA)에서 실행했는지 명시하지 않아 P1-1-EVIDENCE-3의 \"최종 verify 결과가 V2에 연결된다\"를 문서만으로 입증하지 못한다. 관측값 87·32가 V2 DEBT_CEILING과 같다는 간접 정황만 있다. 해당 절에 V2 결속 문장을 추가하면 해소된다. 비차단 Improvement 1건(V1 38행 문구 차이 주석)은 별도 후속 범위다.",
+  "findings": [
+    {
+      "finding_id": "P1-1-BINDING-004-FINAL-VERIFY-V2-UNBOUND",
+      "severity": "Major",
+      "review_state": "OPEN",
+      "category": "DATA_INTEGRITY",
+      "requirement_or_invariant_ids": [
+        "P1-1-EVIDENCE-3",
+        "AGENTS:inspection-execution",
+        "P1-1-SUPPORT-003-EVIDENCE-VERBATIM-BINDING"
+      ],
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/P1-1-ACL-SUPPORT-SOURCE-002.md",
+          "line_start": 55,
+          "line_end": 71,
+          "observation": "최종 검증 절은 verify 6/6·exit 0·fresh DB 0개·관측값을 적지만 실행 판본(V2 commit 474d087f…, 시험 SHA 380afade…)을 어디에도 명시하지 않는다."
+        },
+        {
+          "path": "docs/ai-review/evidence/P1-1-ACL-SUPPORT-SOURCE-002.md",
+          "line_start": 25,
+          "line_end": 30,
+          "observation": "V1·V2 판본 표는 사보타주 표에만 연결되며('아래 표의 V1·V2'), 최종 검증 절과의 연결 문장이 없다."
+        },
+        {
+          "path": "packages/db/scripts/admin-acl-audit.test.mjs",
+          "line_start": 204,
+          "line_end": 207,
+          "observation": "관측값 ledger_write_paths=32·unapproved_authenticated_rpc=87이 V2 DEBT_CEILING과 같다는 간접 정황만 있고, V1에서도 같은 값이 나올 수 있어 판본 식별 근거가 되지 못한다."
+        },
+        {
+          "path": "AGENTS.md",
+          "line_start": 24,
+          "line_end": 25,
+          "observation": "판본·실행 증거·재검수가 연결돼야 현재 기준 후보가 된다는 정책상, 최종 verify는 실행 commit·시험 SHA에 결속돼야 한다."
+        }
+      ],
+      "impact": "최종 verify 통과 증거가 V1(정수 검사 없는 옛 판본)에서 나온 것인지 V2에서 나온 것인지 문서만으로 구분할 수 없어, 요구사항 P1-1-EVIDENCE-3의 후반부와 required_evidence 'V2에서 실행한 corepack pnpm verify 6/6 exit 0'를 검증자가 독립적으로 확인할 수 없다.",
+      "acceptance_criteria": [
+        "`## 최종 검증` 절에 실행 판본이 V2(commit 474d087fa341a70bb792cd10bd9f6907985e6617, admin-acl-audit.test.mjs SHA-256 380afade0352ace4165f52487b701bac037b4575400cc5843b2b6407cd0a6575)임을 명시한다.",
+        "fresh_% DB 0개와 보안 관측값 3종도 같은 V2 실행에서 나온 값임을 같은 절에서 밝힌다.",
+        "실제 실행 판본이 V2가 아니었다면 V2에서 재실행한 결과로 교체하고, 그 사실을 공동 장부 턴에 기록한다."
+      ],
+      "required_tests": [
+        "Codex: `git show 474d087fa341a70bb792cd10bd9f6907985e6617:packages/db/scripts/admin-acl-audit.test.mjs` SHA-256 = 380afade… 실측",
+        "Codex: `git show d0051c17bb6f842e28b48813616114fefc50913c:packages/db/scripts/admin-acl-audit.test.mjs` SHA-256 = 0596e56a… 실측 및 해당 blob에 `부채가 기준선을 넘었습니다: 관측=` 문구 존재 확인",
+        "Codex: V2 작업 트리에서 `corepack pnpm verify` 6/6 exit 0 재현 및 종료 후 `fresh_%` DB 0개 확인"
+      ],
+      "previous_finding_id": null
+    },
+    {
+      "finding_id": "P1-1-BINDING-004-V1-WORDING-NOTE",
+      "severity": "Improvement",
+      "review_state": "OPEN",
+      "category": "UX",
+      "requirement_or_invariant_ids": [
+        "P1-1-EVIDENCE-2"
+      ],
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/P1-1-ACL-SUPPORT-SOURCE-002.md",
+          "line_start": 38,
+          "line_end": 38,
+          "observation": "V1 행의 stderr `부채가 기준선을 넘었습니다`는 현재 fail() 문구와 다르다."
+        },
+        {
+          "path": "packages/db/scripts/admin-acl-audit.test.mjs",
+          "line_start": 208,
+          "line_end": 213,
+          "observation": "현재(V2) 문구는 `부채가 기준선을 넘었거나 정수가 아닙니다`로, 정수 검사가 추가되며 바뀐 문구다."
+        }
+      ],
+      "impact": "V1 blob이 없는 독자는 이 차이를 의역으로 오해할 수 있다. 판본 표 아래에 한 줄 주석을 두면 원문성 의심을 예방한다. 비차단.",
+      "acceptance_criteria": [
+        "판본 표 근처에 V1 38행 문구가 V1 시험의 원문이며 V2에서 정수 검사 추가로 문구가 바뀌었음을 한 줄로 명시한다."
+      ],
+      "required_tests": [],
+      "previous_finding_id": null
+    }
+  ],
+  "proposed_edits": [
+    {
+      "edit_id": "P1-1-BINDING-004-EDIT-FINAL-VERIFY-V2",
+      "path": "docs/ai-review/evidence/P1-1-ACL-SUPPORT-SOURCE-002.md",
+      "anchor": "`corepack pnpm verify` 종료 코드는 0이었다.",
+      "operation": "REPLACE",
+      "proposed_text": "최종 검증은 V2(target commit `474d087fa341a70bb792cd10bd9f6907985e6617`,\n`admin-acl-audit.test.mjs` SHA-256 `380afade0352ace4165f52487b701bac037b4575400cc5843b2b6407cd0a6575`)\n작업 트리에서 모든 사보타주를 복구한 뒤 실행했고, 아래 fresh DB 개수와 보안 관측값도 같은 실행의 값이다.\n`corepack pnpm verify` 종료 코드는 0이었다.",
+      "rationale": "P1-1-EVIDENCE-3의 '최종 verify 결과가 V2에 연결된다'를 문서 자체로 입증한다. 실제 실행 판본이 V2가 아니었다면 저자가 V2에서 재실행한 실측값으로 바꿔야 한다.",
+      "finding_ids": [
+        "P1-1-BINDING-004-FINAL-VERIFY-V2-UNBOUND"
+      ]
+    },
+    {
+      "edit_id": "P1-1-BINDING-004-EDIT-V1-WORDING-NOTE",
+      "path": "docs/ai-review/evidence/P1-1-ACL-SUPPORT-SOURCE-002.md",
+      "anchor": "`실제 stderr`는 `admin-acl audit 회귀시험 실패:` 접두사부터 검수가 출력한 문자열을 그대로 적었다.",
+      "operation": "ADD",
+      "proposed_text": "V1 행의 `부채가 기준선을 넘었습니다`는 V1 시험 원문이며, V2에서 정수 검사가 추가되어\n`부채가 기준선을 넘었거나 정수가 아닙니다`로 바뀌었다(V2 마지막 행이 그 검사를 확인한다).",
+      "rationale": "V1 blob이 없는 독자가 문구 차이를 의역으로 오해하지 않도록 한 줄로 밝힌다. 비차단 Improvement.",
+      "finding_ids": [
+        "P1-1-BINDING-004-V1-WORDING-NOTE"
+      ]
+    }
+  ],
+  "closed_finding_ids": [],
+  "reopened_finding_ids": [],
+  "remaining_required_finding_ids": [
+    "P1-1-BINDING-004-FINAL-VERIFY-V2-UNBOUND"
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "P1-1-ACL-EVIDENCE-BINDING-004",
+  "sequence": "t0002",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-08-28T11:32:03.991Z",
+  "turn_id": "turn-c002",
+  "turn_type": "CODEX_EVIDENCE",
+  "role": "CODEX-FUNCTION-QA",
+  "task_sha256": "fe8d8bd6d6b385bb2e3346bc82d3af271809fdce1344b97337a353e349dfb351",
+  "runner_sha256": "1e09d053693e46b03a27bc34c443a4ac258ff6358eda1d33e0a76b160e97bf8b",
+  "previous_manual_run_sha256": "fd51a906631f62faddd8d94b180817ac9493e827c94bab480008e6aba0e729e4",
+  "collaboration_before_sha256": "ef45126ae23f4af1df0008ecaca8c9034ec442195e667d242f513b359362a755",
+  "collaboration_before_bytes": 4426,
+  "collaboration_entry_sha256": "b0333448b8fc9958ccf4684810431462495294a6d3d355fc3bc8b3fb7fd83360",
+  "collaboration_entry_bytes": 549,
+  "collaboration_after_sha256": "4cbe3b5a5685ad53a0dcc09681de49cf0fc022890d6969192fdd53cb3d5af62c",
+  "collaboration_after_bytes": 4975
+}

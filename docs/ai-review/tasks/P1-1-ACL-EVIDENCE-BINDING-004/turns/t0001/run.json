@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "P1-1-ACL-EVIDENCE-BINDING-004",
+  "sequence": "t0001",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-08-28T11:32:03.283Z",
+  "turn_id": "turn-s002",
+  "turn_type": "SOLAR_RESPONSE",
+  "role": "SOLAR-DB",
+  "task_sha256": "fe8d8bd6d6b385bb2e3346bc82d3af271809fdce1344b97337a353e349dfb351",
+  "runner_sha256": "1e09d053693e46b03a27bc34c443a4ac258ff6358eda1d33e0a76b160e97bf8b",
+  "previous_manual_run_sha256": null,
+  "collaboration_before_sha256": "3fb6fd878f272d3e0186bb1b5978b31b4306dd8e968ce4eac3fa15316250a35e",
+  "collaboration_before_bytes": 3875,
+  "collaboration_entry_sha256": "657ed371f13a3f693fd1b5dc0d0827b49ba3be6e5121ca2241db7af2ebcdc941",
+  "collaboration_entry_bytes": 551,
+  "collaboration_after_sha256": "ef45126ae23f4af1df0008ecaca8c9034ec442195e667d242f513b359362a755",
+  "collaboration_after_bytes": 4426
+}
