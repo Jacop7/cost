@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-REVIEW-2-FALLBACK-CONTINUITY-001",
+  "sequence": "t0002",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-08-28T17:47:57.808Z",
+  "turn_id": "turn-o001",
+  "turn_type": "AI_DEPUTY_SUCCESSOR_HANDOFF",
+  "role": "AI-DEPUTY-ORCHESTRATOR",
+  "task_sha256": "a49addd45badfd8c3b476d216a20b2257c62220d111f1f6ce4bde89431acc288",
+  "runner_sha256": "fd7e71822ed0f020df82b15f4320f8dfe06af7bc538b68ec590b045a00f587a1",
+  "previous_manual_run_sha256": "988144fc154148b373555fe50e241496637284360a22286a94f3d26edac40d85",
+  "collaboration_before_sha256": "a90ff247935d251aa18579f8d5ec831a1053d44e5bb8dab8bf8801c750ae9ed5",
+  "collaboration_before_bytes": 11601,
+  "collaboration_entry_sha256": "9505bb0720eb193baff494d6e40d068212ab6b87fd2614391782e6fb59ac122b",
+  "collaboration_entry_bytes": 829,
+  "collaboration_after_sha256": "0dbe429feab0cae7bd467a9b8ee5d17761c68d9219a889ebd2c8477ff6247186",
+  "collaboration_after_bytes": 12430
+}
