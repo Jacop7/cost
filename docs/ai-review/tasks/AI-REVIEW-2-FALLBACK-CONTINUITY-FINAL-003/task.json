@@ -66,7 +66,7 @@
   "independent_request": null,
   "predecessor_review": {
     "task_id": "AI-REVIEW-2-FALLBACK-CONTINUITY-001",
-    "source_commit_sha": "02c202a5d65459335624b40837913494a2325867",
+    "source_commit_sha": "02c202a2620897e023e1b7752d60efcdcb476c69",
     "round": "r001",
     "task_sha256": "a49addd45badfd8c3b476d216a20b2257c62220d111f1f6ce4bde89431acc288",
     "manifest_sha256": "cffd9ba037b9462f807b7a64a452c4e68cf1a79e0a34e2499fb494a05725b211",
