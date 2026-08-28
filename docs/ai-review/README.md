@@ -254,13 +254,14 @@ snapshot이어야 한다. 보호 체크의 정확한 SHA·check context·성공 
 `AI-REVIEW-2`, 보호 원격 validator·ruleset 결합과 부정 시험은 `P0-2`가 소유한다. 두 작업 완료
 전에는 FINAL 외 route를 포함한 어떤 Finding도 `CLOSED`로 전환하지 않는다.
 
-신규 실행 가능한 Task는 protocol `1.1`만 허용한다. 과거 protocol `1.0` 디렉터리는 당시 감사
-원본으로 보존하지만 새 회차를 실행하지 않는다. task protocol 버전과 Claude 구조화 결과의
-`schema_version`은 서로 독립적인 계약이므로 현재 값이 각각 `1.1`, `1.0`인 것은 정상이다.
+신규 Task는 protocol `1.1` 또는 `1.2`를 허용한다. `1.2`는 reviewer engine·model·작업 전체 상한과
+fallback/closure 계약을 추가하고 구조화 결과 schema `2.0`을 사용한다. 기존 protocol `1.1` Task와
+결과 schema `1.0`은 당시 감사 원본으로 byte 단위 보존하며 필드를 덧붙여 재사용하지 않는다. 과거
+protocol `1.0` 디렉터리도 원본으로만 보존하고 새 회차를 실행하지 않는다.
 
-`AI-REVIEW-2`와 `TEAM-LEARNING-1`은 protocol `1.2` 후보 계약이다. 구현 전에는
-`fallback_from_*`, `fallback_reason`, `applied_learning_ids`, `excluded_learning_ids`를 유효한
-`task.json` 필드로 간주하지 않으며 protocol 1.1 실행기는 계속 미지 필드로 거부한다. 구현 뒤에도
+`AI-REVIEW-2`가 protocol `1.2`의 reviewer engine·fallback·closure 기반 계약을 구현했다.
+`TEAM-LEARNING-1`의 `applied_learning_ids`, `excluded_learning_ids`는 아직 후속 확장 필드이며 현재
+실행기는 이를 미지 필드로 거부한다. 구현 뒤에도
 기존 protocol 1.1 Task는 당시 감사 원본으로만 보존하고 필드를 덧붙여 재사용하지 않는다. 새 필드가
 필요한 작업은 protocol 1.2 Task로 새로 발행하고, 적용 Learning ID는 `VERIFIED`만 허용한다.
 `CANDIDATE`·`RETIRED` ID가 있거나 `FABLE-SEC` r001·`FABLE-FINAL` 모든 회차에 학습 필드가 비어
@@ -326,7 +327,8 @@ PowerShell 진입점도 같은 실행기를 호출한다.
 | `124` | 시간 제한 초과 |
 
 현재 자동 경로는 로컬에서 격리 옵션을 확인한 공식 Claude Code `2.1.248` 또는 `2.1.250` allowlist,
-`claude-fable-5`, high effort, 회차당 최대 `$2.00`, 새 세션, 빈 MCP, `Read/Glob/Grep`만 사용한다.
+기본 `claude-fable-5`와 소진 시 `claude-opus-5`, high effort, 기본 회차 상한 `$2.00`, 작업 전체
+기본 상한 `$4.00`, 새 세션, 빈 MCP, `Read/Glob/Grep`만 사용한다.
 실제 실행 버전과 실행 파일 hash는 매 run에 기록한다. `--restricted`, `--safe-mode`를 해제하지 않는다.
 
 ### 페이블 소진과 Opus 연속성 경로
@@ -352,17 +354,22 @@ terminal reason 또는 오류 코드로 소진됐다는 뜻이다. runner가 정
 - Opus의 정확한 model ID와 작업 전체 사용 상한의 남은 범위
 - 고위험 `FABLE-SEC`·`FABLE-FINAL` 결과의 페이블 복구 후 표본 재감사 조건
 - predecessor `collaboration.md`의 append 후 bytes/hash, `AI_DEPUTY_FALLBACK_HANDOFF`
-  turn/entry/run hash와 handoff만 추가한 source commit SHA
+  turn/entry/run hash, handoff 직전 base commit과 handoff만 추가한 source commit SHA
 
 이 소진 승계는 §6의 `predecessor_review`와 다른 별도 handoff 계약이다. §6은 확정 commit을 바꿔
 `FABLE-FINAL` Finding을 재검수하는 경로이고, 소진 승계는 모든 `reviewer_role`에서 predecessor와
 같은 baseline·target commit을 유지한 채 allowlist 사유의 `RUN_FAILED` run을 기점으로 이어진다.
-구현 시 predecessor 장부 끝에 `AI_DEPUTY_FALLBACK_HANDOFF` 턴을 `fable:append`로 추가하고 successor
+predecessor 장부 끝에 `AI_DEPUTY_FALLBACK_HANDOFF` 턴을 `fable:append`로 추가하고 successor
 protocol 1.2 Task에 predecessor task·round·run hash와 실패 사유를 봉인한다. predecessor에 성공
 회차가 있으면 최신 성공 회차의 전체 Finding registry hash를 승계해 `RECHECK`로 실행하고, 첫 회차가
 소진되어 성공 회차가 없으면 inherited Finding 0건인 `INITIAL`로 실행한다. 실패 run의 실제 사용액은
-작업 전체 상한에서 먼저 차감한다. 이 handoff와 필드는 `AI-REVIEW-2` 완료 전에는 실행 가능한
-`task.json` 계약이 아니다.
+작업 전체 상한에서 먼저 차감한다. 예시는 `templates/task-v12-primary.example.json`과
+`templates/task-v12-fallback.example.json`에 있으며 protocol 1.1 장부는 fallback handoff를 거부한다.
+
+`artifact_set_sha256`은 실패 회차 `manifest.json`의 `input_files` 중 `path_role=ARTIFACT`인 항목만
+`path` 오름차순으로 정렬하고, 각 항목을 `path`, `change_type`, `size`, `git_blob_oid`, `sha256`
+순서의 객체로 만든 배열을 JSON 직렬화한 뒤 끝에 LF 한 바이트를 붙인 UTF-8 bytes의 SHA-256이다.
+사람이 파일 목록을 다시 해석해 만든 값이나 다른 JSON 정렬 규칙은 받지 않는다.
 
 여기서 `INITIAL`·`RECHECK`는 inherited registry 유무에 따른 승계 의미다. `FABLE-SEC`·
 `FABLE-FINAL` successor의 실제 `task.review_mode`는 route가 정한 `SECURITY`·`FINAL`을 유지한다.
@@ -388,8 +395,10 @@ ID(`FABLE-ARCH` 등)를 유지하고 `OPUS-FALLBACK`은 컨텍스트 ID일 뿐 �
 `verified_by_engine`을 남기며, `FABLE-SEC`·`FABLE-FINAL` 결과는 페이블 복구 후 표본 재감사 전까지
 게이트 종결 요청의 근거로 쓰지 않는다. 엔진 필드 누락이나 primary 엔진 위장은 검증 거부 대상이다.
 
-이 절은 `AI-REVIEW-2`의 구현 계약이다. runner·schema·task template·사보타주 시험이 함께 반영되기
-전에는 수동으로 model을 바꾼 결과를 공식 검수로 합류하거나 Opus 승계를 성공으로 보고하지 않는다.
+수동으로 model만 바꾼 결과는 공식 검수로 합류할 수 없다. 실행기는 실패 run·handoff-only source
+commit·장부 bytes/hash·입력/산출물/registry hash·실사용액을 검증한 새 protocol 1.2 successor만 받는다.
+closure 구조 계약도 protocol 1.2가 소유하지만 실제 실행은 P0-2 보호 원격 validator가 결합될 때까지
+명시적으로 중단한다.
 
 `fable:review`는 네트워크·모델 판단이 포함된 상호검수다. 재현 가능한 기계 게이트
 `corepack pnpm verify`에 합치지 않으며, 둘 다 필요한 작업은 각각의 증거를 남긴다.
