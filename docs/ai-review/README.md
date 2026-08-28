@@ -242,6 +242,14 @@ commit이어야 한다. 두 Task는 같은 `FABLE-FINAL` 경로·검수 범위�
 원본으로 보존하지만 새 회차를 실행하지 않는다. task protocol 버전과 Claude 구조화 결과의
 `schema_version`은 서로 독립적인 계약이므로 현재 값이 각각 `1.1`, `1.0`인 것은 정상이다.
 
+`AI-REVIEW-2`와 `TEAM-LEARNING-1`은 protocol `1.2` 후보 계약이다. 구현 전에는
+`fallback_from_*`, `fallback_reason`, `applied_learning_ids`, `excluded_learning_ids`를 유효한
+`task.json` 필드로 간주하지 않으며 protocol 1.1 실행기는 계속 미지 필드로 거부한다. 구현 뒤에도
+기존 protocol 1.1 Task는 당시 감사 원본으로만 보존하고 필드를 덧붙여 재사용하지 않는다. 새 필드가
+필요한 작업은 protocol 1.2 Task로 새로 발행하고, 적용 Learning ID는 `VERIFIED`만 허용한다.
+`CANDIDATE`·`RETIRED` ID가 있거나 `FABLE-SEC`·`FABLE-FINAL`의 `INITIAL` 클린룸 회차에 학습 필드가
+비어 있지 않으면 실행기는 실패 폐쇄한다.
+
 ## 7. 격리 스냅샷
 
 ### `WORKING_TREE_HASHED` — 공동 초안
@@ -305,8 +313,12 @@ PowerShell 진입점도 같은 실행기를 호출한다.
 `primary_reviewer_engine`, `reviewer_engine`, 정확한 model ID와 CLI·runner hash를 기록한다.
 
 허용되는 승계 사유는 `MODEL_BUDGET_EXHAUSTED`, `MODEL_RATE_LIMITED`,
-`MODEL_CAPACITY_UNAVAILABLE`뿐이다. 인증 실패, 권위 경로·target commit·hash-chain 불일치, 허용 경로
-위반, schema·저장소 의미 계약 위반은 승계 사유가 아니며 Opus로 우회하지 않는다.
+`MODEL_CAPACITY_UNAVAILABLE`뿐이다. `MODEL_BUDGET_EXHAUSTED`는 모델 제공자·구독 한도가 구조화된
+terminal reason 또는 오류 코드로 소진됐다는 뜻이다. runner가 정한 회차 `--max-budget-usd` 상한의
+`budget_exhausted`는 승계 사유가 아니며 재실행 또는 사람 승인에 따른 상한 조정 대상이다. 공식 CLI의
+일시적 모델 미제공도 구조화된 `MODEL_CAPACITY_UNAVAILABLE`로 보고된 경우에만 포함한다. 자유 텍스트
+매칭은 금지한다. 인증 실패, CLI 버전 allowlist·모델 ID 설정 오류, 권위 경로·target commit·hash-chain
+불일치, 허용 경로 위반, schema·저장소 의미 계약 위반은 승계 사유가 아니며 Opus로 우회하지 않는다.
 
 승계는 실패한 회차를 덮어쓰거나 같은 Task의 모델만 바꾸는 방식이 아니다. 불변 실패 run을 남기고
 새 successor Task에 다음을 봉인한다.
@@ -317,10 +329,27 @@ PowerShell 진입점도 같은 실행기를 호출한다.
 - Opus의 정확한 model ID와 작업 전체 사용 상한의 남은 범위
 - 고위험 `FABLE-SEC`·`FABLE-FINAL` 결과의 페이블 복구 후 표본 재감사 조건
 
+이 소진 승계는 §6의 `predecessor_review`와 다른 별도 handoff 계약이다. §6은 확정 commit을 바꿔
+`FABLE-FINAL` Finding을 재검수하는 경로이고, 소진 승계는 모든 `reviewer_role`에서 predecessor와
+같은 baseline·target commit을 유지한 채 allowlist 사유의 `RUN_FAILED` run을 기점으로 이어진다.
+구현 시 predecessor 장부 끝에 `AI_DEPUTY_FALLBACK_HANDOFF` 턴을 `fable:append`로 추가하고 successor
+protocol 1.2 Task에 predecessor task·round·run hash와 실패 사유를 봉인한다. predecessor에 성공
+회차가 있으면 최신 성공 회차의 전체 Finding registry hash를 승계해 `RECHECK`로 실행하고, 첫 회차가
+소진되어 성공 회차가 없으면 inherited Finding 0건인 `INITIAL`로 실행한다. 실패 run의 실제 사용액은
+작업 전체 상한에서 먼저 차감한다. 이 handoff와 필드는 `AI-REVIEW-2` 완료 전에는 실행 가능한
+`task.json` 계약이 아니다.
+
 Opus도 기존과 같은 새 세션, 빈 MCP, `Read/Glob/Grep`, `--restricted`, `--safe-mode`, 제품 파일 쓰기
 금지 규칙을 사용한다. 결과가 같은 구조·의미 계약을 통과하면 실제 엔진 출처를 표시한 채 로컬
 `VERIFIED`까지 진행할 수 있지만 보호 원격·사람 승인·`CLOSED` 규칙을 바꾸지 않는다. Opus도 사용할
 수 없으면 더 약한 모델로 연쇄 하향하지 않고 `BLOCKED`로 보고한다.
+
+엔진 출처는 결과 schema 승격 뒤 `review.json`, `run.json`, `status.json`의 회차 요약과 장부
+`FABLE_REVIEW`·`FABLE_RECHECK` 턴 헤더에 모두 필수로 기록한다. `reviewer_role`은 승계한 원 역할
+ID(`FABLE-ARCH` 등)를 유지하고 `OPUS-FALLBACK`은 컨텍스트 ID일 뿐 역할 값이 아니다. Finding의
+`VERIFIED` 권한은 엔진이 아니라 원 `reviewer_role`을 따른다. Opus가 검증한 Finding에는
+`verified_by_engine`을 남기며, `FABLE-SEC`·`FABLE-FINAL` 결과는 페이블 복구 후 표본 재감사 전까지
+게이트 종결 요청의 근거로 쓰지 않는다. 엔진 필드 누락이나 primary 엔진 위장은 검증 거부 대상이다.
 
 이 절은 `AI-REVIEW-2`의 구현 계약이다. runner·schema·task template·사보타주 시험이 함께 반영되기
 전에는 수동으로 model을 바꾼 결과를 공식 검수로 합류하거나 Opus 승계를 성공으로 보고하지 않는다.
