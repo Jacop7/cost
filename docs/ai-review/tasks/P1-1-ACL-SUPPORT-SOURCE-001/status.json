@@ -1,0 +1,26 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "P1-1-ACL-SUPPORT-SOURCE-001",
+  "predecessor_review": null,
+  "updated_at": "2026-08-28T10:14:26.083Z",
+  "latest_round": "r001",
+  "review_state": "OPEN",
+  "workflow_state": "FIXING",
+  "gate_state": "OPEN",
+  "run_state": "RESULT_RECEIVED",
+  "defect_state": "NOT_APPLICABLE",
+  "verdict": "CHANGES_REQUIRED",
+  "latest_run_sha256": "69cb2a516c83ca49bfec52e49f599db96b4494c84c4b02e96a8fe0248f9c83ae",
+  "open_required_finding_ids": [
+    "P1-1-SUPPORT-SEC-METRIC-VALUES-UNSEALED",
+    "P1-1-SUPPORT-SEC-DYNAMIC-RPC-SKIPPED",
+    "P1-1-SUPPORT-SEC-EVIDENCE-NOT-MATERIALIZED"
+  ],
+  "open_optional_finding_ids": [
+    "P1-1-SUPPORT-SEC-ALLOWLIST-REGEX-EXTRACTION"
+  ],
+  "closed_finding_ids": [],
+  "candidate_review_state": null,
+  "candidate_review_sha256": null,
+  "backlog_dispositions": []
+}

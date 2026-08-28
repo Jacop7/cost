@@ -3,7 +3,8 @@
  *
  * 배포 audit 자체는 현재 미승인 authenticated RPC를 실패시킨다. 이 시험은 그 위험을
  * 성공으로 바꾸지 않고, 새 DB에서 SQL이 끝까지 실행되어 정확한 metric을 한 번씩 내며
- * 프로브를 rollback하는지와 모바일 .rpc 호출 이름이 허용 목록과 양방향 일치하는지를 잰다.
+ * 이미 닫힌 사후조건 값을 유지하는지를 잰다. 프로브 rollback과 모바일 .rpc 호출 이름↔허용 목록의
+ * 양방향 일치도 확인하며, 대조할 수 없는 동적 .rpc 이름은 허용하지 않는다.
  */
 import { readFileSync, readdirSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
@@ -18,6 +19,10 @@ const MOBILE_SRC = join(ROOT, 'apps', 'mobile', 'src');
 const CONTAINER = process.env.SUPABASE_DB_CONTAINER ?? 'supabase_db_sikjae';
 const DATABASE = process.argv[2] ?? process.env.PGDATABASE;
 
+if (!/^[A-Za-z0-9_.-]{1,128}$/.test(CONTAINER)) {
+  console.error('SUPABASE_DB_CONTAINER 형식이 아닙니다');
+  process.exit(2);
+}
 if (!DATABASE || !/^[a-z_][a-z0-9_]{0,62}$/.test(DATABASE)) {
   console.error('사용법: node packages/db/scripts/admin-acl-audit.test.mjs <DB 식별자>');
   process.exit(2);
@@ -80,20 +85,27 @@ function filesBelow(dir) {
 
 function mobileRpcNames() {
   const names = new Set();
+  const dynamic = [];
   for (const path of filesBelow(MOBILE_SRC)) {
     const source = ts.createSourceFile(path, readFileSync(path, 'utf8'), ts.ScriptTarget.Latest, true);
     const visit = (node) => {
       if (ts.isCallExpression(node)
           && ts.isPropertyAccessExpression(node.expression)
-          && node.expression.name.text === 'rpc'
-          && node.arguments.length > 0
-          && ts.isStringLiteralLike(node.arguments[0])) {
-        names.add(node.arguments[0].text);
+          && node.expression.name.text === 'rpc') {
+        const first = node.arguments[0];
+        // StringLiteral과 NoSubstitutionTemplateLiteral만 허용한다.
+        if (first && ts.isStringLiteralLike(first)) {
+          names.add(first.text);
+        } else {
+          const { line } = source.getLineAndCharacterOfPosition(node.getStart(source));
+          dynamic.push(`${path}:${line + 1}`);
+        }
       }
       ts.forEachChild(node, visit);
     };
     visit(source);
   }
+  if (dynamic.length) fail(`리터럴이 아닌 .rpc 이름 — 허용 목록 대조 불가: ${dynamic.join(', ')}`);
   return names;
 }
 
@@ -119,20 +131,58 @@ for (const metric of seen.keys()) if (!EXPECTED_METRICS.has(metric)) fail(`알 �
 if (seen.get('probe_owner').value !== 'postgres') fail(`프로브 소유자: ${seen.get('probe_owner').value}`);
 if (seen.get('facade_rpc_missing').value !== '0') fail(`허용 facade가 DB에 없습니다: ${seen.get('facade_rpc_missing').value}`);
 
+// 새 DB가 이미 만족하는 사후조건은 값까지 고정해 후속 migration의 GRANT·RLS 회귀를 즉시 잡는다.
+const FRESH_DB_VALUES = new Map([
+  ['probe_dangerous', '0'],
+  ['public_dangerous', '0'],
+  ['rls_disabled_app_tables', '0'],
+  ['protected_objects', '6'],
+  ['protected_writes', '0'],
+  ['source_schema_grants', '0'],
+  ['supabase_admin_objects', '0'],
+  ['anon_rpc', '0'],
+  ['blocked_internal_rpc', '0'],
+  ['blocked_internal_rpc_objects', '11'],
+]);
+for (const [metric, expectedValue] of FRESH_DB_VALUES) {
+  const observed = seen.get(metric).value;
+  if (observed !== expectedValue) fail(`${metric} 사후조건 불일치: 관측=${observed} 기대=${expectedValue}`);
+}
+
+// psql fresh harness는 CLI 장부가 없어 0, CLI로 구축한 DB는 둘 모두 적용돼 2다.
+if (!['0', '2'].includes(seen.get('migrations').value)) {
+  fail(`migrations 값이 하네스 계약 밖입니다: ${seen.get('migrations').value}`);
+}
+
 const probe = psql("select coalesce(to_regclass('public._acl_probe_postgres')::text, 'absent');").trim();
 if (probe !== 'absent') fail(`rollback 뒤 프로브가 남았습니다: ${probe}`);
 
 const approvedSignatures = signaturesFromInsert(sql, '_acl_approved_rpc(signature)');
 const nonMobileSignatures = signaturesFromInsert(sql, '_acl_non_mobile_rpc(signature, consumer)');
+if (approvedSignatures.length === 0) fail('허용 RPC 시그니처를 하나도 추출하지 못했습니다');
 if (new Set(approvedSignatures).size !== approvedSignatures.length) fail('허용 RPC 시그니처가 중복됐습니다');
 const approvedNames = new Set(approvedSignatures.map((signature) => signature.slice(0, signature.indexOf('('))));
 const nonMobileNames = new Set(nonMobileSignatures.map((signature) => signature.slice(0, signature.indexOf('('))));
+const strayNonMobile = difference(nonMobileNames, approvedNames);
+if (strayNonMobile.length) fail(`비-mobile 예외가 허용 목록에 없습니다: ${strayNonMobile.join(', ')}`);
 const expectedMobileNames = new Set([...approvedNames].filter((name) => !nonMobileNames.has(name)));
 const sourceNames = mobileRpcNames();
 const missingFromAllowlist = difference(sourceNames, expectedMobileNames);
 const unusedAllowlist = difference(expectedMobileNames, sourceNames);
 if (missingFromAllowlist.length || unusedAllowlist.length) {
   fail(`모바일 RPC↔허용 목록 불일치 — 미허용=[${missingFromAllowlist.join(', ')}] 미사용=[${unusedAllowlist.join(', ')}]`);
+}
+
+// P0-5 부채는 아직 0으로 위장하지 않는다. 확정한 fresh DB 기준선 이하의 축소만 허용한다.
+const DEBT_CEILING = new Map([
+  ['ledger_write_paths', 32],
+  ['unapproved_authenticated_rpc', 87],
+]);
+for (const [metric, ceiling] of DEBT_CEILING) {
+  const observed = Number(seen.get(metric).value);
+  if (!Number.isInteger(observed) || observed < 0 || observed > ceiling) {
+    fail(`${metric} 부채가 기준선을 넘었습니다: 관측=${seen.get(metric).value} 기준선=${ceiling}`);
+  }
 }
 
 console.log(`admin-acl audit 실제 DB 계약 통과 — metric ${seen.size}개 · 모바일 RPC ${sourceNames.size}개 · 비-mobile 예외 ${nonMobileNames.size}개`);
