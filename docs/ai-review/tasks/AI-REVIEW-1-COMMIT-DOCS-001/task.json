@@ -1,0 +1,55 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "AI-REVIEW-1-COMMIT-DOCS-001",
+  "route": "FINAL_INDEPENDENT",
+  "risk_level": "R1",
+  "author_role": "AI-DEPUTY-ORCHESTRATOR",
+  "reviewer_role": "FABLE-FINAL",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "FINAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "36f8c6ce36c4c24266ccf77b1dad3e53c4655041",
+  "target_commit_sha": "3637a36b43ddf31d8b991254e36b6f2c4440f142",
+  "target_tree_oid": "b64c06c0a098c2e094f12652d2cbc9e2de015634",
+  "agents_blob_oid": "35001543ec3d5a84ff328620f1c85eeb571141fc",
+  "agents_sha256": "a5667526727635dbb4f95ffc13159277d4cca8b222f554145c77eb87b961e384",
+  "requirements": [
+    "README, fixture와 template가 단일 공식 산출물, append-only 역할과 최종 독립 감사 절차를 같은 뜻으로 설명한다.",
+    "package script, PowerShell wrapper, CI 증거와 사용 명령이 실제 파일과 일치한다.",
+    "P0-2 전에는 PASS와 공식 CLOSED를 분리하고 보호 게이트 부재를 숨기지 않는다."
+  ],
+  "invariant_ids": [
+    "AGENTS:project-and-authority",
+    "AI-REVIEW:single-canonical-artifact",
+    "AI-REVIEW:pass-is-not-gate-closure"
+  ],
+  "artifact_paths": [
+    ".gitattributes",
+    "CLAUDE.md",
+    "package.json",
+    "scripts/fable-review.ps1",
+    "docs/ai-review/README.md",
+    "docs/ai-review/fixtures/shared-coauthoring-smoke.md",
+    "docs/ai-review/templates/collaboration.md",
+    "docs/ai-review/templates/task.example.json"
+  ],
+  "reference_paths": [
+    "AGENTS.md"
+  ],
+  "evidence_paths": [
+    ".github/workflows/verify.yml",
+    "scripts/verify.mjs"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "문서의 명령, 역할, 상태 상한과 실제 package/CI 파일의 대조",
+    "WORKING r003 PASS와 선택 Finding VERIFIED, gate OPEN의 문서 계약",
+    "target commit, tree, AGENTS blob과 입력 SHA 고정"
+  ],
+  "human_decisions": [
+    "2026-08-28 사용자가 공식 Claude Code 읽기 전용 검수와 후속 진행을 승인했다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": "AI-REVIEW-1의 공식 문서·명령 계약만 최종 독립 감사하라. README, fixture, template, package script, wrapper, CI와 AGENTS를 대조하여 단일 공식 산출물, append-only 공동 장부, WORKING/COMMIT, 독립 FINAL, Codex 증거, Finding 상태와 P0-2 이전 VERIFIED 상한이 서로 모순되지 않는지 확인하라. 실행기 내부 구현은 다른 독립 Task가 감사하므로 이 범위를 넓히지 마라. WORKING r003은 PASS, 선택 Finding FINAL-SMOKE-002-IMP-001은 VERIFIED, gate는 OPEN이다. P0-2 ruleset/필수 validator가 없으므로 공식 CLOSED를 선언하면 결함이다. 결과는 문서/명령의 실제 불일치만 간결히 반환하라."
+}

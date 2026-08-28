@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "AI-REVIEW-1-COMMIT-001",
+  "updated_at": "2026-08-28T04:16:26.403Z",
+  "latest_round": "r002",
+  "review_state": "OPEN",
+  "workflow_state": "OPEN",
+  "gate_state": "OPEN",
+  "run_state": "RUN_FAILED",
+  "defect_state": "NOT_APPLICABLE",
+  "verdict": null,
+  "latest_run_sha256": "edfd826edcbad5c0907759ed4b9d4c10734137df5a77928f525158717361220a",
+  "open_required_finding_ids": [],
+  "open_optional_finding_ids": [],
+  "closed_finding_ids": [],
+  "candidate_review_state": null,
+  "candidate_review_sha256": null,
+  "backlog_dispositions": []
+}

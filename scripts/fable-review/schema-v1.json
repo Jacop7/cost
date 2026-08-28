@@ -61,6 +61,7 @@
     "summary": { "type": "string", "minLength": 1, "maxLength": 4000 },
     "findings": {
       "type": "array",
+      "description": "Full active finding registry for this task. During RECHECK, repeat every prior non-CLOSED finding, including locally resolved VERIFIED findings, until formal closure.",
       "maxItems": 100,
       "items": { "$ref": "#/$defs/finding" }
     },
@@ -71,7 +72,7 @@
     },
     "closed_finding_ids": {
       "type": "array",
-      "description": "Only IDs transitioning from non-CLOSED to CLOSED in this round; never repeat IDs already CLOSED in the prior result.",
+      "description": "Reserved for a future P0-2 protected-gate-backed non-CLOSED to CLOSED transition. The current local runner rejects new CLOSED transitions.",
       "uniqueItems": true,
       "maxItems": 100,
       "items": { "$ref": "#/$defs/finding_id" }
@@ -85,7 +86,7 @@
     },
     "remaining_required_finding_ids": {
       "type": "array",
-      "description": "Exact set of currently unresolved non-Improvement finding IDs.",
+      "description": "Exact set of OPEN or DISPUTED non-Improvement finding IDs. VERIFIED is locally resolved and excluded; CLOSED is formal external closure.",
       "uniqueItems": true,
       "maxItems": 100,
       "items": { "$ref": "#/$defs/finding_id" }
@@ -143,7 +144,8 @@
         },
         "review_state": {
           "type": "string",
-          "enum": ["OPEN", "VERIFIED", "CLOSED", "DISPUTED"]
+          "enum": ["OPEN", "VERIFIED", "CLOSED", "DISPUTED"],
+          "description": "OPEN and DISPUTED are unresolved. VERIFIED means acceptance criteria were locally confirmed and does not close the external gate. CLOSED requires the future P0-2 protected gate."
         },
         "category": {
           "type": "string",

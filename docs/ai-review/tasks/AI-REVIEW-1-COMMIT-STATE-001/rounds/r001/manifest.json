@@ -1,0 +1,68 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "AI-REVIEW-1-COMMIT-STATE-001",
+  "round": "r001",
+  "created_at": "2026-08-28T04:28:42.668Z",
+  "review_mode": "FINAL",
+  "baseline_commit_sha": "36f8c6ce36c4c24266ccf77b1dad3e53c4655041",
+  "target_commit_sha": "3637a36b43ddf31d8b991254e36b6f2c4440f142",
+  "target_tree_oid": "b64c06c0a098c2e094f12652d2cbc9e2de015634",
+  "agents_blob_oid": "35001543ec3d5a84ff328620f1c85eeb571141fc",
+  "agents_sha256": "a5667526727635dbb4f95ffc13159277d4cca8b222f554145c77eb87b961e384",
+  "task_sha256": "b0ffec93c344b8eae6417041d44034f7e11e3b23beed7d8c753d50b418adfe16",
+  "collaboration_sha256": "93fcb964f985e47cb6fcef2d7eeb8e60affab58c94378b72c4bb7cef727a2e2e",
+  "collaboration_bytes": 226,
+  "input_files_sha256": "8c63955850ffba48cade8cda290f8323bc3ed30cc5d5c2ece3a66f7a32abe0c2",
+  "schema_sha256": "96196975ad07cb57b1147d58900197a3ecd42812397a91bd0dd024f9d2a7d674",
+  "runner_sha256": "ce4512b71312f5b3b3f8bc16bae77fd29fb1dbe637676bf6b96b7401f115b8d3",
+  "snapshot_mode": "COMMIT",
+  "previous_review_sha256": null,
+  "previous_run_sha256": null,
+  "retry_of_failed_round": null,
+  "artifact_paths": [
+    "scripts/fable-review.mjs",
+    "scripts/fable-review/schema-v1.json"
+  ],
+  "reference_paths": [
+    "AGENTS.md"
+  ],
+  "evidence_paths": [],
+  "allowed_paths": [
+    "scripts/fable-review.mjs",
+    "scripts/fable-review/schema-v1.json",
+    "AGENTS.md"
+  ],
+  "excluded_paths": [],
+  "input_files": [
+    {
+      "path": "AGENTS.md",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 10242,
+      "git_blob_oid": "35001543ec3d5a84ff328620f1c85eeb571141fc",
+      "sha256": "a5667526727635dbb4f95ffc13159277d4cca8b222f554145c77eb87b961e384",
+      "line_count": 149
+    },
+    {
+      "path": "scripts/fable-review.mjs",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 238728,
+      "git_blob_oid": "ede1f79246f5348d0dbca1fd12c898f0d4daf7ee",
+      "sha256": "c5104239932e358802b77ac93cbb003a11981fbea70c297a6f5e821fde4927a7",
+      "line_count": 5180
+    },
+    {
+      "path": "scripts/fable-review/schema-v1.json",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 6611,
+      "git_blob_oid": "26904d5f4d3f4189fb4262274b8aa6b23e76871d",
+      "sha256": "65f4ed8319b4a64f5a21c402c6ded06c704c8eb848b2ab0e1dae5ca0e7d7ac98",
+      "line_count": 231
+    }
+  ],
+  "source_archive_version": 1,
+  "artifact_snapshot_sha256": null,
+  "input_snapshot_sha256": null
+}

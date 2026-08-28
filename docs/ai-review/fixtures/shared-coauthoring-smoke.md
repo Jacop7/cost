@@ -9,8 +9,9 @@
 페이블이 필수 Finding(Blocker·Critical·Major·Minor)을 남기면 즉시 완료 처리하지 않는다. 솔라가 같은
 공식 산출물에 수정을 반영하고 공동 장부에 Finding별 응답(`APPLIED | PARTIAL | REJECTED |
 NEEDS_HUMAN_DECISION`)을 남긴 뒤, Codex가 수정 판본의 SHA-256과 검증 결과를 `CODEX_EVIDENCE`로
-기록하고, 최초 검수 역할인 페이블이 같은 `finding_id`로 재검수해 완료 조건이 충족된 때만 해당
-Finding을 `CLOSED`로 전환한다.
+기록하고, 최초 검수 역할인 페이블이 같은 `finding_id`로 재검수해 완료 조건이 충족된 때 해당
+Finding을 `VERIFIED`로 전환한다. `CLOSED` 전환은 `P0-2` 보호 원격 필수 체크가 구축·성공한 뒤의
+재검수에서만 허용한다.
 
 페이블 `PASS`는 필수 Finding이 0건이라는 검수 판정일 뿐이며 task/gate의 자동 종결이 아니다.
 AI 부 오케스트레이터는 검증 hash·Codex 증거·anchor commit을 참조한 `AI_DEPUTY_GATE_DECISION`
@@ -27,6 +28,7 @@ AI 부 오케스트레이터는 검증 hash·Codex 증거·anchor commit을 참�
 - Codex는 수정 판본의 hash와 함께 실행한 명령·종료 결과·검증한 SHA·증거 경로를 공동 장부에 남긴다.
 - 실행기는 회차마다 당시 runner/schema 원본, WORKING 전체 입력 원문 snapshot, prepared
   `collaboration-entry.md`와 `run.json` hash-chain을 보존해 재검수 판본을 재현할 수 있게 한다.
-- 페이블은 같은 Finding ID로 재검수하고 완료 조건이 충족된 때만 Finding을 닫는다.
+- 페이블은 같은 Finding ID로 재검수하고 완료 조건이 충족된 때 `VERIFIED`로 확인하며, `CLOSED`는
+  `P0-2` 보호 원격 필수 체크가 구축·성공한 뒤에만 허용한다.
 - 페이블 PASS, AI 부 오케스트레이터의 종결 결정, 보호 원격/외부 attestation의 공식 gate 종결은
   별도 상태로 유지한다.
