@@ -266,20 +266,20 @@ fallback/closure 계약을 추가하고 구조화 결과 schema `2.0`을 사용�
 결과 schema `1.0`은 당시 감사 원본으로 byte 단위 보존하며 필드를 덧붙여 재사용하지 않는다. 과거
 protocol `1.0` 디렉터리도 원본으로만 보존하고 새 회차를 실행하지 않는다.
 
-`AI-REVIEW-2`가 protocol `1.2`의 reviewer engine·fallback·closure 기반 계약을 구현했다.
-`TEAM-LEARNING-1`의 `applied_learning_ids`, `excluded_learning_ids`는 아직 후속 확장 필드이며 현재
-실행기는 이를 미지 필드로 거부한다. 구현 뒤에도
-기존 protocol 1.1 Task는 당시 감사 원본으로만 보존하고 필드를 덧붙여 재사용하지 않는다. 새 필드가
-필요한 작업은 protocol 1.2 Task로 새로 발행하고, 적용 Learning ID는 `VERIFIED`만 허용한다.
-`CANDIDATE`·`RETIRED` ID가 있거나 `FABLE-SEC` r001·`FABLE-FINAL` 모든 회차에 학습 필드가 비어
-있지 않으면 실행기는 실패 폐쇄한다. protocol 1.1 과도기에는 다른 역할도 `VERIFIED` Learning
-ID만 `SOLAR_REQUEST` 본문에 기록한다. 공동 장부가 입력되는 `SECURITY` route 첫 회차와
-`FABLE-FINAL` Task의 `SOLAR_REQUEST`에는 Learning ID·학습 요약을 넣지 않으며, protocol 1.2의
-기계 차단 전에는 사람 또는 AI 부 오케스트레이터의 수동 확인만이 이 제한을 통제한다.
+`AI-REVIEW-2`가 protocol `1.2`의 reviewer engine·fallback·closure 기반 계약을 구현했고,
+`TEAM-LEARNING-1`은 같은 버전에 `applied_learning_ids`와 `{ learning_id, reason }` 배열인
+`excluded_learning_ids`를 추가했다. 대상 commit에 `docs/team/TEAM_LEARNING.md`가 존재하는 신규
+protocol 1.2 Task는 두 필드를 모두 선언하고, 결과 schema 2.0·manifest·task hash가 같은 값을
+봉인한다. 기존 protocol 1.1과 활성화 전 protocol 1.2 Task는 당시 감사 원본으로만 보존하며 필드를
+덧붙여 재사용하지 않는다.
 
-protocol 1.2 task 버전과 결과 schema 승격의 소유 작업은 `AI-REVIEW-2`다. `TEAM-LEARNING-1`은 그
-작업이 고정한 새 필드·호환 규칙 위에 학습 장부와 주입 검사를 구현하며 `AI-REVIEW-2` 완료 뒤에
-진행한다.
+실행기는 대상 commit의 장부를 읽어 등록 여부·`VERIFIED` 상태·`review_by`·상호 충돌과 제외 사유를
+검증한다. `CANDIDATE`·`RETIRED`·기한 초과·충돌 ID는 실패 폐쇄한다. 일반 검수에는 검증된 ID의
+범위·금지 재사용·체크리스트만 주입한다. predecessor가 있는 보안 후속 Task에는 ID 목록만 전달하고
+학습 요약은 전달하지 않는다. `FINAL_INDEPENDENT` 모든 Task와 predecessor가 없는 최초 `SECURITY`
+Task는 적용·제외 배열이 모두 비어 있어야 하며, 해당 `SOLAR_REQUEST`에 Learning ID·학습 요약 표식이
+있어도 실행기가 거부한다. 상세 역할 규칙은 [`docs/team/ROLE_CONTEXTS.md`](../team/ROLE_CONTEXTS.md),
+학습 원장은 [`docs/team/TEAM_LEARNING.md`](../team/TEAM_LEARNING.md)가 소유한다.
 
 ## 7. 격리 스냅샷
 

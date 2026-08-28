@@ -49,5 +49,7 @@
     "spent_usd": "0.00",
     "remaining_usd": "4.00"
   },
-  "closure_review": null
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
 }
