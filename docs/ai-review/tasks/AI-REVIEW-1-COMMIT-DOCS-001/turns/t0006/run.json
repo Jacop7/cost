@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "AI-REVIEW-1-COMMIT-DOCS-001",
+  "sequence": "t0006",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-08-28T06:37:14.919Z",
+  "turn_id": "turn-o004",
+  "turn_type": "AI_DEPUTY_SUCCESSOR_HANDOFF",
+  "role": "AI-DEPUTY-ORCHESTRATOR",
+  "task_sha256": "d97ffdaec473ac01549cd8a454e3856bfdbb198dadeba01b59563cc959dc12f2",
+  "runner_sha256": "771d7fdf9de6829bb892c1b451773bec3773ba29de0bfbed15a47f6d6ada9ef6",
+  "previous_manual_run_sha256": "6531cb6391d36700cbb12356df7b882180a9dda171d4fa1b0cd7852f4f7fccc7",
+  "collaboration_before_sha256": "c91d0dde3dfe58e2deab11235a61831f4c32ca4bab797bc9f638227fdd3b18e6",
+  "collaboration_before_bytes": 12348,
+  "collaboration_entry_sha256": "5e8fc93f700a94690b4ea3af770df0a74ed3989076fa7479e26041f5bfe4791c",
+  "collaboration_entry_bytes": 807,
+  "collaboration_after_sha256": "2e9d417d3d54d21e1a1a767015263dcdb18d94a7a08058ab2414c9a5659af7c7",
+  "collaboration_after_bytes": 13155
+}
