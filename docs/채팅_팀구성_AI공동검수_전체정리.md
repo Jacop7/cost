@@ -508,16 +508,17 @@ OneDrive 사본을 작업·검수·실행·복구 입력으로 사용하지 않�
 
 ## 14. 2026-08-28 후속 반영 상태
 
-- 브랜치: `codex/security-remote-acl-audit`
+- 브랜치: `main` (`P1-1` 기록 갱신은 후속 짧은 docs 브랜치에서 수행)
 - P1-1 구현 기준: `c0b832d`, 지원 시험 V2 `474d087`, 최종 증거 검수 `6901784`
 - Claude Code: `2.1.250`
 - 전체 프로젝트 `corepack pnpm verify`: P1-1 V2 코드에서 6/6·exit 0, 개발/새 DB 32/32,
   `fresh_%` 0개
 - P1-1 페이블 검수: 이전 `CHANGES_REQUIRED` 이력은 보존하고 successor
   `P1-1-ACL-EVIDENCE-BINDING-005` r001에서 최종 `PASS`
-- P1-1 운영 상태: 로컬 구현·상호검수 완료, 호스티드 `--remote audit`·동일 SHA CI·`main` 병합 대기
+- P1-1 운영 상태: `0407629`로 `main` fast-forward 병합, feature/main CI 모두 성공,
+  호스티드 `--remote audit` 접속 자격 대기
 - `.claude/settings.json`: 사용자 승인에 따라 `ef1b6c2`에서 공유 작업 권한을 커밋
-- push: 이 후속 브랜치는 아직 푸시하지 않음
+- push: P1-1 `main` 반영 완료. 운영 DB에는 미적용
 
 과거 실패 Task와 run은 감사 이력이라 삭제·수정하지 않는다. 후속 `PASS`는 과거 판정을 덮어쓰는
 것이 아니라 새 확정 commit을 재검수한 결과다.
@@ -527,12 +528,11 @@ OneDrive 사본을 작업·검수·실행·복구 입력으로 사용하지 않�
 정확한 순서와 상태는 [`작업큐.md`](./작업큐.md)가 단일 권위다. 이 문서를 갱신한 시점의 다음
 작업은 다음과 같다.
 
-1. `P1-1` 브랜치의 공식 문서 반영과 로컬 커밋 정리
-2. 동일 SHA CI를 확인한 뒤 승인 범위에서 병합·원격 감사 수행
-3. 사람 R3 승인 뒤 `P0-5` authenticated RPC·원장 직접 쓰기 최소 권한
-4. `AI-REVIEW-2` 페이블 소진 시 Opus 연속성 감사
-5. `TEAM-LEARNING-1`, `P1-2`, `P0-1`~`P0-4` 순으로 진행
-6. 비차단 ACL 시험·증거 보강은 작업큐 `P2-6`에서 처리
+1. 호스티드 Supabase 접속 자격이 준비되면 P1-1 `--remote audit` 실행
+2. 사람 R3 승인 뒤 `P0-5` authenticated RPC·원장 직접 쓰기 최소 권한
+3. 승인 대기 동안 `AI-REVIEW-2` 페이블 소진 시 Opus 연속성 감사
+4. `TEAM-LEARNING-1`, `P1-2`, `P0-1`~`P0-4` 순으로 진행
+5. 비차단 ACL 시험·증거 보강은 작업큐 `P2-6`에서 처리
 
 `P0-2` 전까지 공식 상태는 최대 `VERIFIED`이며 `CLOSED`가 아니다.
 
