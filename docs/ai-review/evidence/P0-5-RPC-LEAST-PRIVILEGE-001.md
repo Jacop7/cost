@@ -327,3 +327,61 @@ checkout하고 `corepack pnpm verify`를 한 번 실행했다.
 
 종료 코드는 `0`, 최종 출력은 `전체 검증 통과`, 종료 뒤 `fresh_%` DB는 `0개`였다. 이 결과도
 스테이징 재적용이나 원격 ACL 감사 완료를 뜻하지 않는다.
+
+## 스테이징 3차 적용 중단과 settings 읽기 권한 부트스트랩
+
+- 확인 시각: `2026-08-29T20:39:48+09:00`
+- 직전 승인·병합 SHA: `4454a7988a8bfd60982a7b787b2a1f0943691cb3`
+- 보정 구현 commit: `fb5b4b08cb8f2ce4b323520ea0c87297759b491e`
+- 스테이징 project ref: `cvfvmpzcldyqurcrappu`
+- 운영 project ref: `smxaozdgoxbafjldoayb` — 계획·적용·변경 없음.
+
+직전 구현은 feature CI run `33249054394`와 main CI run `33249371530`에서 Node 20.19.4,
+Node 24, full DB, `protected-gate`가 모두 성공한 뒤 main에 fast-forward됐다. 깨끗한 스테이징 전용
+checkout에서 산출한 계획은 `0137~0174` 정확히 `38개`였다. 배포 가드로 스테이징에만 적용한 결과
+`0137~0163`은 성공했고, `0164`가 다음 사후조건에서 실패 폐쇄됐다.
+
+```text
+0164: settings 읽기까지 막혔습니다 — 표시 폼을 못 읽습니다
+```
+
+성공 배포 증거는 생성되지 않았다. 중단 뒤 새 계획은 `0164~0174` 정확히 `11개`이며,
+스테이징 장부는 `0163`까지다. 호스티드 스테이징에는 로컬 fresh DB가 우연히 갖고 있던
+`authenticated`의 `settings SELECT` 권한이 없었다. 따라서 쓰기 권한만 회수한 뒤 SELECT 존재를
+가정한 옛 `0164` 사후조건이 정확히 중단한 것이다.
+
+보정은 아직 스테이징에 적용되지 않은 `0164` 한 파일에서 읽기 계약을 명시적으로 부트스트랩한다.
+
+1. `authenticated`에 `public.settings SELECT`를 명시적으로 부여한다.
+2. `INSERT`·`UPDATE`·`DELETE`·`TRUNCATE`는 명시적으로 회수한다.
+3. 기존 RLS 읽기 정책과 쓰기 RPC 경계는 바꾸지 않는다.
+
+### 판별력과 업그레이드 회귀
+
+`0163`까지만 올린 일회용 DB에서 `authenticated`의 `settings` 권한을 모두 회수해 호스티드 상태를
+재현했다. 보정 전 권한은 `f|t|t|t|t`(SELECT 없음, 쓰기 네 종 열림)였고, 보정된 `0164` 뒤에는
+`t|f|f|f|f`(SELECT만 열림)였다. 같은 상태에서 보정 전 `0164`를 적용하면 위 호스티드 오류와 같은
+문구로 종료 코드 `3`을 반환했다.
+
+`packages/db/scripts/upgrade-check.sh`에는 이 경로를 독립 시나리오 ⑩으로 추가했다. 따라서 다음
+회귀를 한 번에 잡는다.
+
+- SELECT 부여 누락
+- 쓰기 권한 하나라도 잔존
+- `0164`가 호스티드와 같은 사전 권한 상태에서 적용되지 않음
+
+### 정확한 commit 전체 검증
+
+깨끗한 별도 checkout에서 정확한 구현 commit `fb5b4b08cb8f2ce4b323520ea0c87297759b491e`을
+checkout하고 `corepack pnpm verify`를 한 번 실행했다.
+
+1. 타입 검사 통과
+2. DB `34/34` · core `177`(2 skip) · mobile `199` 통과
+3. CLI 계약·ACL 셸 보안 통과
+4. 새 DB 전체 migration·seed·DB `34/34`·2세션 경합·locale parity 통과
+5. 업그레이드 경로 `10/10` 통과
+6. 웹 번들 통과
+
+종료 코드는 `0`, 최종 출력은 `전체 검증 통과`, 종료 뒤 `fresh_%` DB는 `0개`였다. 현재 스테이징은
+여전히 `0163`까지이며 이 보정은 아직 원격에 적용하지 않았다. 다음 단계는 이 정확한 변경의
+FABLE-SEC 재검수와 보호 CI 성공을 고정한 뒤, 새 계획에서 `0164~0174` 11개를 다시 확인하는 것이다.
