@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-08-29T12:51:42.000Z",
+  "status": "AUDITED",
+  "target": "staging",
+  "project_ref": "cvfvmpzcldyqurcrappu",
+  "schema_deploy_sha": "f165e2373d35063f9b29bb2ea71e93c20d9e0ecb",
+  "execution": {
+    "surface": "Supabase dashboard SQL Editor",
+    "source": "packages/db/scripts/admin-acl-audit.sql",
+    "source_sha256": "c18d8ed8b7e22a33ee78936f1b17d34c7cc159316c3f6bdf06dcd97a7d44683f",
+    "transaction_end": "rollback",
+    "wrapper_exercised": false,
+    "wrapper_note": "Direct libpq credentials were unavailable; the repository audit SQL and WHO query were run read-only in the staging dashboard."
+  },
+  "who": {
+    "current_user": "postgres",
+    "rolsuper": false,
+    "can_assume_supabase_admin": false
+  },
+  "metrics": {
+    "anon_rpc": "0|expected=0",
+    "blocked_internal_rpc_objects": "11|expected=11",
+    "blocked_internal_rpc": "0|expected=0",
+    "facade_rpc_missing": "0|expected=0",
+    "facade_rpc_objects": "64|expected=64",
+    "ledger_write_paths": "0|expected=0",
+    "migrations": "2|expected=2",
+    "platform_default_open": "1|informational",
+    "probe_dangerous": "0|expected=0",
+    "probe_owner": "postgres|expected=postgres",
+    "protected_objects": "6|expected=6",
+    "protected_writes": "0|expected=0",
+    "public_dangerous": "0|expected=0",
+    "rls_disabled_app_tables": "0|expected=0",
+    "rls_policy_helper_calls": "0|expected=0",
+    "rpc_executor_facades_invalid": "0|expected=0",
+    "rpc_executor_privileged_maintenance": "0|expected=0",
+    "rpc_executor_role": "1|expected=1",
+    "source_schema_grants": "0|expected=0",
+    "supabase_admin_objects": "0|expected=0",
+    "unapproved_authenticated_rpc": "0|expected=0"
+  },
+  "interpretation": {
+    "application_acl": "pass",
+    "platform_default_acl": "informational_exception",
+    "production": "not_audited"
+  }
+}
