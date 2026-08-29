@@ -1,0 +1,82 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "P0-5-PENDING-ROLE-RESTORES-001",
+  "route": "SECURITY",
+  "risk_level": "R3",
+  "author_role": "SOLAR-DB",
+  "reviewer_role": "FABLE-SEC",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "SECURITY",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "9e4f502506c11c359beae2bd42cec1dc1dac4293",
+  "target_commit_sha": "1bb11fe6aff1446a486dd05fd7caef770fb26db6",
+  "target_tree_oid": "ca7a5718b76afb6e01fc14869daf2e57db74efd6",
+  "agents_blob_oid": "bf9b9aeccabdc1055005c7f9bcb188ed8c05eb2a",
+  "agents_sha256": "485c7cb1cbb9143748a6028393723986201d9ff944ad9d3127e5c5f6f243c531",
+  "requirements": [
+    "0137·0138·0139·0144의 역할 검사 뒤에는 reset role 대신 migration 시작 current_user를 명시 복원하고 복원 사후조건을 확인해야 한다.",
+    "역할 전환 실패와 대상 함수·테이블 행동 거부를 같은 42501 성공 조건으로 세지 않아야 하며, 거부가 정확한 대상에서 발생했는지 확인해야 한다.",
+    "스테이징에 이미 적용된 0001~0136은 불변이어야 하고 보정은 아직 미적용인 0137 이후 migration에만 한정돼야 한다.",
+    "0139·0145·0150·0151·0158·0163·0165의 함수 정의 치환·사후 확인은 LF와 CRLF clean checkout에서 같은 코드를 인식해야 한다.",
+    "0139의 적용 표식은 주석이나 부분 문자열이 아니라 실제 연속 코드 줄을 판별하고 재적용 계약을 유지해야 한다.",
+    "역할·줄끝 보정은 제품 계산·RPC·원장·판본 계약을 바꾸지 않아야 한다.",
+    "최종 구현 commit의 Windows clean checkout에서 전체 migration·seed와 corepack pnpm verify 6/6이 통과하고 fresh 임시 DB가 남지 않아야 한다.",
+    "스테이징 재적용과 원격 ACL audit 전에는 P0-5 원격 게이트가 완료됐다고 표현하지 않아야 한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:server-calculation-authority",
+    "AGENTS:ledger-write-paths",
+    "AGENTS:local-verification-gate",
+    "AGENTS:hosted-staging-only",
+    "WORK-QUEUE:P0-5",
+    "P1-1:REMOTE-ACL-AUDIT"
+  ],
+  "artifact_paths": [
+    "packages/db/supabase/migrations/20260826000137_close_due_cron.sql",
+    "packages/db/supabase/migrations/20260826000138_close_hardening.sql",
+    "packages/db/supabase/migrations/20260826000139_close_method_and_deadline.sql",
+    "packages/db/supabase/migrations/20260826000144_amend_foundation.sql",
+    "packages/db/supabase/migrations/20260826000145_amend_ended_business_day.sql",
+    "packages/db/supabase/migrations/20260826000150_amend_boundaries.sql",
+    "packages/db/supabase/migrations/20260826000151_basis_backfill_and_guard.sql",
+    "packages/db/supabase/migrations/20260826000158_retire_activity_tracking.sql",
+    "packages/db/supabase/migrations/20260826000163_rule_token_required_and_dst.sql",
+    "packages/db/supabase/migrations/20260826000165_store_bootstrap_and_acl.sql",
+    "docs/ai-review/evidence/P0-5-RPC-LEAST-PRIVILEGE-001.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/브랜치-DB-운영-기획안.md",
+    "packages/db/supabase/migrations/20260826000135_purge_and_anon_grants.sql",
+    "packages/db/supabase/migrations/20260826000136_function_default_grants.sql"
+  ],
+  "evidence_paths": [],
+  "excluded_paths": [],
+  "required_evidence": [
+    "스테이징 0135·0136 적용 성공과 0137 SQLSTATE 42501 중단, 성공 배포 증거 미생성, 운영 미접근 기록",
+    "호스티드 사전 관측 session_user·current_user·anon 전환 가능·public USAGE 값",
+    "NOINHERIT 로그인 역할 체인에서 0137~0144가 migration 시작 역할로 복원되는 집중 시험",
+    "각 CRLF 보정 파일의 직전 migration 상태 첫 적용과 지원되는 파일의 재적용 시험",
+    "Windows clean checkout의 0001~0174 전체 migration·seed 성공",
+    "정확한 최종 구현 commit에서 corepack pnpm verify 6/6, 업그레이드 9/9, fresh_% 0개",
+    "baseline 이후 migration 변경이 아직 스테이징에 미적용인 10개뿐이라는 Git diff"
+  ],
+  "human_decisions": [
+    "2026-08-29 사용자는 P0-5 보안 보정·Fable 재검수·스테이징 검증을 계속 진행하도록 승인했다.",
+    "2026-08-29 사용자는 Fable 재검수에 기존 Claude Max CLI 로그인 세션을 사용하고 Task 상한 4.00 USD를 적용하도록 승인했다.",
+    "운영 DB에는 적용하지 않고 스테이징에서만 검증한다.",
+    "기존 실패 기록과 감사 이력은 삭제·덮어쓰지 않는다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "4.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}
