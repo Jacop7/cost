@@ -18,7 +18,7 @@
     "core": "corepack pnpm --filter @sikjae/core",
     "typecheck": "corepack pnpm -r typecheck",
     "test": "corepack pnpm -r test",
-    "verify": "node scripts/verify.mjs",
+    "verify": "node -e \"process.exit(1)\"",
     "fable:check": "node scripts/fable-review.mjs --check",
     "fable:self-test": "node scripts/fable-review.mjs --self-test && node scripts/fable-review/protocol-v12.test.mjs",
     "fable:append": "node scripts/fable-review.mjs --append-turn",
