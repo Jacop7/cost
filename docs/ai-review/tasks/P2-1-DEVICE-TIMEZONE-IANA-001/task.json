@@ -1,0 +1,77 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "P2-1-DEVICE-TIMEZONE-IANA-001",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R1",
+  "author_role": "SOLAR-ARCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "9db1bb470a6b9c38660fcffa9cde7f8fb27b6721",
+  "target_commit_sha": "471d17d87b2bfd4d3711b59557004b45f3968798",
+  "target_tree_oid": "d5a3557fb3e9c605693e49a07253cfcd8b91dea1",
+  "agents_blob_oid": "bf9b9aeccabdc1055005c7f9bcb188ed8c05eb2a",
+  "agents_sha256": "485c7cb1cbb9143748a6028393723986201d9ff944ad9d3127e5c5f6f243c531",
+  "requirements": [
+    "P2-1-1: Intl이 UTC를 반환할 때 기기 시간대 제안과 set_store_timezone 입력에 그대로 전달되는 기존 시험을 보존한다.",
+    "P2-1-2: Intl이 Asia/Seoul처럼 슬래시가 있는 IANA 시간대를 반환할 때 제안 문구와 서버 저장 인자에 같은 값을 그대로 전달한다.",
+    "P2-1-3: 제품 구현이나 시간대 정책을 바꾸지 않고 회귀시험만 보강한다.",
+    "P2-1-4: 사용자 소유의 미커밋 UI·프로토타입 변경은 검수 입력과 커밋에서 제외한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:server-business-time-authority",
+    "AGENTS:global-timezone-input",
+    "WORK-QUEUE:P2-1",
+    "TEST:UTC-and-slash-IANA-forms"
+  ],
+  "artifact_paths": [
+    "apps/mobile/tests/myHours.test.tsx"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "apps/mobile/src/features/my/screens/MyHoursScreen.tsx",
+    "apps/mobile/src/features/settings/hooks.ts",
+    "docs/작업큐.md",
+    "docs/team/TEAM_LEARNING.md"
+  ],
+  "evidence_paths": [],
+  "excluded_paths": [],
+  "required_evidence": [
+    "기존 UTC 시험과 새 Asia/Seoul 시험이 함께 비슬래시·슬래시 IANA 형식을 보존하는지 검토",
+    "새 시험이 제안 문구뿐 아니라 useSetStoreTimezone mutation에 전달되는 정확한 문자열까지 단언하는지 검토",
+    "변경 범위가 시험 한 파일 16줄 추가뿐이고 제품 로직 변경이 없는지 검토",
+    "myHours.test.tsx 16/16 및 corepack pnpm verify 6/6 통과 증거"
+  ],
+  "human_decisions": [
+    "2026-08-30 사용자가 P2-1 로컬 구현의 독립 검토 후 공식 페이블 검수를 요청했다.",
+    "페이블은 기존 Claude Code Max 로그인 세션을 사용하고 4.00 USD는 실행 상한으로만 적용한다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "4.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [
+    "LRN-ORCH-CI-001"
+  ],
+  "excluded_learning_ids": [
+    {
+      "learning_id": "LRN-CODEX-TIME-001",
+      "reason": "DB 영업일 상태 전이 fixture 교훈이며 Intl 기기 시간대 UI 시험에는 적용하지 않는다."
+    },
+    {
+      "learning_id": "LRN-OPS-BACKUP-001",
+      "reason": "파괴적 DB 재구축·백업 경로와 무관한 앱 시험 변경이다."
+    },
+    {
+      "learning_id": "LRN-AUDIT-PIN-001",
+      "reason": "CANDIDATE 상태이므로 신규 Task 정책 입력으로 적용하지 않는다."
+    }
+  ]
+}

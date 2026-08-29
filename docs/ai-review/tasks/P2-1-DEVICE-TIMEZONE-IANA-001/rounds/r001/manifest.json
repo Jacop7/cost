@@ -1,0 +1,130 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "P2-1-DEVICE-TIMEZONE-IANA-001",
+  "round": "r001",
+  "created_at": "2026-08-29T19:02:45.543Z",
+  "review_mode": "INITIAL",
+  "baseline_commit_sha": "9db1bb470a6b9c38660fcffa9cde7f8fb27b6721",
+  "target_commit_sha": "471d17d87b2bfd4d3711b59557004b45f3968798",
+  "target_tree_oid": "d5a3557fb3e9c605693e49a07253cfcd8b91dea1",
+  "agents_blob_oid": "bf9b9aeccabdc1055005c7f9bcb188ed8c05eb2a",
+  "agents_sha256": "485c7cb1cbb9143748a6028393723986201d9ff944ad9d3127e5c5f6f243c531",
+  "task_sha256": "61b4f19130b42a7bab2aa2acc09b6c06a9d8885d54bb2d312f6a0d89c0d0c639",
+  "collaboration_sha256": "c59bebc5763de0105d9fce204d5058909ebdcf01d858a014f34e1af895883481",
+  "collaboration_bytes": 1951,
+  "input_files_sha256": "f4465c37dc40713390f364ea6106659cf0ecff230ea1c0a8d21fdda955fd0332",
+  "schema_sha256": "6512fc4a849902367313c43028f2a610a8687a7a92c122fda6ceb4c56f1895e0",
+  "runner_sha256": "dc78d5183405344a2fcadf9b4db56734b7cae60ab88385d857fd02e0d434c633",
+  "snapshot_mode": "COMMIT",
+  "previous_review_sha256": null,
+  "previous_run_sha256": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "fallback_review": null,
+  "closure_review": null,
+  "fallback_input_scope": null,
+  "retry_of_failed_round": null,
+  "artifact_paths": [
+    "apps/mobile/tests/myHours.test.tsx"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "apps/mobile/src/features/my/screens/MyHoursScreen.tsx",
+    "apps/mobile/src/features/settings/hooks.ts",
+    "docs/작업큐.md",
+    "docs/team/TEAM_LEARNING.md"
+  ],
+  "evidence_paths": [],
+  "allowed_paths": [
+    "apps/mobile/tests/myHours.test.tsx",
+    "AGENTS.md",
+    "apps/mobile/src/features/my/screens/MyHoursScreen.tsx",
+    "apps/mobile/src/features/settings/hooks.ts",
+    "docs/작업큐.md",
+    "docs/team/TEAM_LEARNING.md"
+  ],
+  "excluded_paths": [],
+  "applied_learning_ids": [
+    "LRN-ORCH-CI-001"
+  ],
+  "excluded_learning_ids": [
+    {
+      "learning_id": "LRN-CODEX-TIME-001",
+      "reason": "DB 영업일 상태 전이 fixture 교훈이며 Intl 기기 시간대 UI 시험에는 적용하지 않는다."
+    },
+    {
+      "learning_id": "LRN-OPS-BACKUP-001",
+      "reason": "파괴적 DB 재구축·백업 경로와 무관한 앱 시험 변경이다."
+    },
+    {
+      "learning_id": "LRN-AUDIT-PIN-001",
+      "reason": "CANDIDATE 상태이므로 신규 Task 정책 입력으로 적용하지 않는다."
+    }
+  ],
+  "learning_registry_blob_oid": "77f00167d790c82373c1aa803d91874952c3334a",
+  "learning_registry_sha256": "4717fe99c86319d7c0abc5c8dd38e68e3a55722d7cfa56b8de173ed05ca1388f",
+  "learning_assignment_sha256": "e93fce789a9101bea4ba1adeafe94221ead659d5a2f16b5bab8aa258c79aed16",
+  "learning_target_date": "2026-08-30",
+  "input_files": [
+    {
+      "path": "AGENTS.md",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 11054,
+      "git_blob_oid": "bf9b9aeccabdc1055005c7f9bcb188ed8c05eb2a",
+      "sha256": "485c7cb1cbb9143748a6028393723986201d9ff944ad9d3127e5c5f6f243c531",
+      "line_count": 155
+    },
+    {
+      "path": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 29975,
+      "git_blob_oid": "22b459bed273d82fe7ded842a549ad58dab02d23",
+      "sha256": "ec0812beb4783cb0e726046633c4a80e4f44b64ab6535178bec5e0b2629fa87b",
+      "line_count": 580
+    },
+    {
+      "path": "apps/mobile/src/features/settings/hooks.ts",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 25498,
+      "git_blob_oid": "a6abca0413d7ea8bfe2334aa618abeb5c55e41be",
+      "sha256": "49c96e45d911062008affd7657ef22c3a5c69d239a72fe5afbcd8dd203759832",
+      "line_count": 512
+    },
+    {
+      "path": "apps/mobile/tests/myHours.test.tsx",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 15348,
+      "git_blob_oid": "a2f7f48d44768a0f7f12c027ea7648eb9219771e",
+      "sha256": "132134ec776a1c67b1a6d0a3ec92ee4aaa54b44b8edaeaea1f12cc8ba1266fa4",
+      "line_count": 298
+    },
+    {
+      "path": "docs/작업큐.md",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 66097,
+      "git_blob_oid": "f0cf2041c9c4ffed36505361eb93501130926e6c",
+      "sha256": "f0a496026918d67b8ec5cad0dbaa5e0bf8eeda791bbcf0bd3549f921abd8c34a",
+      "line_count": 1039
+    },
+    {
+      "path": "docs/team/TEAM_LEARNING.md",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 7985,
+      "git_blob_oid": "77f00167d790c82373c1aa803d91874952c3334a",
+      "sha256": "4717fe99c86319d7c0abc5c8dd38e68e3a55722d7cfa56b8de173ed05ca1388f",
+      "line_count": 149
+    }
+  ],
+  "source_archive_version": 1,
+  "finding_resolution_semantics": "VERIFIED_RESOLVED_V1",
+  "artifact_snapshot_sha256": null,
+  "input_snapshot_sha256": null
+}

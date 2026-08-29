@@ -1,0 +1,137 @@
+{
+  "schema_version": "2.0",
+  "task_id": "P2-1-DEVICE-TIMEZONE-IANA-001",
+  "reviewer_role": "FABLE-ARCH",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "9db1bb470a6b9c38660fcffa9cde7f8fb27b6721",
+  "target_commit_sha": "471d17d87b2bfd4d3711b59557004b45f3968798",
+  "target_tree_oid": "d5a3557fb3e9c605693e49a07253cfcd8b91dea1",
+  "agents_blob_oid": "bf9b9aeccabdc1055005c7f9bcb188ed8c05eb2a",
+  "agents_sha256": "485c7cb1cbb9143748a6028393723986201d9ff944ad9d3127e5c5f6f243c531",
+  "task_sha256": "61b4f19130b42a7bab2aa2acc09b6c06a9d8885d54bb2d312f6a0d89c0d0c639",
+  "collaboration_sha256": "c59bebc5763de0105d9fce204d5058909ebdcf01d858a014f34e1af895883481",
+  "input_files_sha256": "f4465c37dc40713390f364ea6106659cf0ecff230ea1c0a8d21fdda955fd0332",
+  "schema_sha256": "6512fc4a849902367313c43028f2a610a8687a7a92c122fda6ceb4c56f1895e0",
+  "runner_sha256": "dc78d5183405344a2fcadf9b4db56734b7cae60ab88385d857fd02e0d434c633",
+  "verdict": "PASS",
+  "summary": "P2-1 기기 시간대 IANA 형식 회귀시험 보강을 읽기 전용으로 검토했다. 제품 경로는 deviceTimezone()이 Intl.DateTimeFormat().resolvedOptions().timeZone을 변형 없이 반환하고(MyHoursScreen.tsx 45-54), 배너 문구 \"기기 시간대는 {deviceTz} 예요.\"(335) → chooseTz(deviceTz)(337) → saveTz.mutate(tz)(263-265) → set_store_timezone의 p_timezone(hooks.ts 503-505)까지 같은 문자열이 그대로 흐른다. 새 시험(myHours.test.tsx 277-291)은 서버 timezone을 'UTC'로 두고 기기를 'Asia/Seoul'로 mock해 제안 값의 출처가 서버 상태가 아니라 Intl임을 구분하며, 제안 문구와 useSetStoreTimezone mutate 첫 인자를 toBe('Asia/Seoul')로 엄격 단언한다(P2-1-2 충족). 기존 UTC 시험(259-275)은 그대로 보존됐고(P2-1-1), 두 시험이 비슬래시·슬래시 IANA 두 대표 형태를 함께 막는다(TEST:UTC-and-slash-IANA-forms). 변경은 시험 한 파일의 공백 포함 16줄(276-291)이며 제품 소스·시간대 정책 변경은 없다(P2-1-3, AGENTS 원칙 7 서버 권위 유지). 입력 파일은 패킷의 6개뿐이고 artifact는 시험 파일 하나로 미커밋 UI 변경이 섞인 흔적은 없다(P2-1-4). 차단 결함은 없어 PASS다. 비차단 Improvement 2건: (1) UTC 시험은 저장 인자만 확인하고 배너 문구는 단언하지 않아 새 시험과 비대칭이므로 한 줄 추가를 제안한다. (2) 정확한 feature SHA의 Node 20.19.4·24 원격 CI는 아직 미확인이고 작업큐 P2-1은 status: 대기이며 완료 조건에 CI 통과가 포함돼 있어, LRN-ORCH-CI-001에 따라 CI 성공 확인 뒤 main fast-forward와 완료 기록 갱신이 별도 절차로 남는다. PASS는 외부 게이트를 닫지 않는다.",
+  "findings": [
+    {
+      "finding_id": "P2-1-TEST-UTC-BANNER-TEXT-SYMMETRY",
+      "severity": "Improvement",
+      "review_state": "OPEN",
+      "category": "TEST_GAP",
+      "requirement_or_invariant_ids": [
+        "P2-1-1",
+        "TEST:UTC-and-slash-IANA-forms"
+      ],
+      "evidence": [
+        {
+          "path": "apps/mobile/tests/myHours.test.tsx",
+          "line_start": 259,
+          "line_end": 275,
+          "observation": "기존 UTC 시험은 헤더 문구와 saveTz 인자('UTC')만 단언하고 배너의 '기기 시간대는 UTC 예요.' 표시는 단언하지 않는다."
+        },
+        {
+          "path": "apps/mobile/tests/myHours.test.tsx",
+          "line_start": 277,
+          "line_end": 291,
+          "observation": "새 Asia/Seoul 시험은 제안 문구와 저장 인자를 모두 단언해 두 시험의 검증 깊이가 비대칭이다."
+        },
+        {
+          "path": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx",
+          "line_start": 335,
+          "line_end": 337,
+          "observation": "배너 문구와 버튼이 같은 deviceTz 값을 사용하므로 UTC에서도 문구 단언이 한 줄로 가능하다."
+        }
+      ],
+      "impact": "비슬래시 형태의 표시 문구 회귀(예: UTC를 빈 문자열이나 다른 값으로 표시)는 현재 UTC 시험이 잡지 못한다. 저장 인자는 보호되므로 기능 결함은 아니며 시험 대칭성 개선 항목이다.",
+      "acceptance_criteria": [
+        "UTC 시험에 expect(screen.getByText('기기 시간대는 UTC 예요.')).toBeTruthy() 단언을 추가한다.",
+        "myHours.test.tsx 전체가 여전히 통과한다."
+      ],
+      "required_tests": [
+        "corepack pnpm --filter @sikjae/mobile test -- myHours.test.tsx"
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    },
+    {
+      "finding_id": "P2-1-OPS-REMOTE-CI-AND-QUEUE-RECORD-PENDING",
+      "severity": "Improvement",
+      "review_state": "OPEN",
+      "category": "OPERATIONS",
+      "requirement_or_invariant_ids": [
+        "WORK-QUEUE:P2-1",
+        "LRN-ORCH-CI-001"
+      ],
+      "evidence": [
+        {
+          "path": "docs/작업큐.md",
+          "line_start": 810,
+          "line_end": 826,
+          "observation": "P2-1은 status: 대기이며 완료 조건에 'Node 20.19.4·24 CI에서 통과한다'가 포함돼 있다."
+        },
+        {
+          "path": "AGENTS.md",
+          "line_start": 124,
+          "line_end": 126,
+          "observation": "두 CI job이 모두 성공한 정확한 SHA에만 protected-gate가 붙고 main ruleset이 이를 필수로 요구한다."
+        },
+        {
+          "path": "COLLABORATION_LOG",
+          "line_start": 0,
+          "line_end": 0,
+          "observation": "솔라 turn-s001: 정확한 feature SHA의 원격 CI는 push 전이라 미확인이며 push·main fast-forward는 별도 절차로 수행한다고 기록했다."
+        }
+      ],
+      "impact": "검수 자체의 결함은 아니지만 작업큐 완료 조건 중 원격 CI 통과가 미충족 상태이고 완료 기록도 갱신되지 않았다. 게이트 소유자가 471d17d 정확 SHA의 CI 성공을 확인한 뒤 fast-forward와 작업큐 완료 기록을 남겨야 한다.",
+      "acceptance_criteria": [
+        "471d17d87b2bfd4d3711b59557004b45f3968798 정확 SHA의 verify --no-db(Node 20.19.4·24)와 full-db-required job이 completed/success로 기록된다.",
+        "같은 SHA의 main CI 결과와 함께 docs/작업큐.md P2-1 완료 기록이 갱신된다."
+      ],
+      "required_tests": [
+        "GitHub Actions 정확 SHA CI 결과 확인(별도 게이트 절차)"
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    }
+  ],
+  "proposed_edits": [
+    {
+      "edit_id": "P2-1-EDIT-UTC-BANNER-ASSERT",
+      "path": "apps/mobile/tests/myHours.test.tsx",
+      "anchor": "      expect(screen.getByText('매장 시간대를 정해 주세요')).toBeTruthy();",
+      "operation": "ADD",
+      "proposed_text": "      expect(screen.getByText('기기 시간대는 UTC 예요.')).toBeTruthy();",
+      "rationale": "UTC 시험도 새 Asia/Seoul 시험과 같이 제안 문구까지 단언해 비슬래시 형태의 표시 회귀를 막는다. 앵커 바로 다음 줄에 추가한다.",
+      "finding_ids": [
+        "P2-1-TEST-UTC-BANNER-TEXT-SYMMETRY"
+      ]
+    }
+  ],
+  "closed_finding_ids": [],
+  "reopened_finding_ids": [],
+  "remaining_required_finding_ids": [],
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "applied_learning_ids": [
+    "LRN-ORCH-CI-001"
+  ],
+  "excluded_learning_ids": [
+    {
+      "learning_id": "LRN-CODEX-TIME-001",
+      "reason": "DB 영업일 상태 전이 fixture 교훈이며 Intl 기기 시간대 UI 시험에는 적용하지 않는다."
+    },
+    {
+      "learning_id": "LRN-OPS-BACKUP-001",
+      "reason": "파괴적 DB 재구축·백업 경로와 무관한 앱 시험 변경이다."
+    },
+    {
+      "learning_id": "LRN-AUDIT-PIN-001",
+      "reason": "CANDIDATE 상태이므로 신규 Task 정책 입력으로 적용하지 않는다."
+    }
+  ]
+}
