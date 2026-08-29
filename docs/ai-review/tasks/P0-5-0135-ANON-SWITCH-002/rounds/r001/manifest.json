@@ -1,0 +1,118 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "P0-5-0135-ANON-SWITCH-002",
+  "round": "r001",
+  "created_at": "2026-08-29T08:29:35.682Z",
+  "review_mode": "RECHECK",
+  "baseline_commit_sha": "03cd3634f18e1d2314c204fcfd7a33bb0c385ccc",
+  "target_commit_sha": "325c3a477c6d529e928cd25996f7b3c5d8b3f362",
+  "target_tree_oid": "a2d0346b349656bfb1b0c4cc096b547d8f1cf962",
+  "agents_blob_oid": "bf9b9aeccabdc1055005c7f9bcb188ed8c05eb2a",
+  "agents_sha256": "485c7cb1cbb9143748a6028393723986201d9ff944ad9d3127e5c5f6f243c531",
+  "task_sha256": "8e37a29765cbc790a019b22de70ba4a1c5a20786922fe29510d53099af0a3ce0",
+  "collaboration_sha256": "bdf59016868e71942872e3bc1deb04521ff3e21e113f3ca05c19ff513c231e10",
+  "collaboration_bytes": 1620,
+  "input_files_sha256": "4d676da9eca27733d1a6937b6330e8bac72635aae555a90b17f5e01821442f9a",
+  "schema_sha256": "a903be542752bdf90fbbd49657860a7ec175f6ddd987a6295194d1f3bb1c85e0",
+  "runner_sha256": "dc78d5183405344a2fcadf9b4db56734b7cae60ab88385d857fd02e0d434c633",
+  "snapshot_mode": "COMMIT",
+  "previous_review_sha256": "9603071201067921b627ec74cf7ca3d9adb5f6299cd69ad5174afad213988857",
+  "previous_run_sha256": "aad406b0ccb882241fa02aecd51d84a8ef1852e8abea60da2640b6cce39c8bff",
+  "predecessor_review": {
+    "task_id": "P0-5-0135-ANON-SWITCH-001",
+    "source_commit_sha": "1c8f4bea53c87145607bfefe69d9a38b59e67ebb",
+    "round": "r001",
+    "task_sha256": "6aff8a3994294e0266e4c22e607f93a36f8a8c225ed4ba6950f0f7dce250bd20",
+    "manifest_sha256": "eed5ae16dabf00a6bd3fddbe3adb81df4a54a7c86aea1958ddea014cfa896d2c",
+    "run_sha256": "aad406b0ccb882241fa02aecd51d84a8ef1852e8abea60da2640b6cce39c8bff",
+    "review_sha256": "9603071201067921b627ec74cf7ca3d9adb5f6299cd69ad5174afad213988857",
+    "finding_registry_sha256": "21e162a6a9d49d387a7a01577683dc17ca859784fca1b63f4af64f6a97ea638f",
+    "handoff_turn_id": "turn-o001",
+    "handoff_entry_sha256": "4114383af113c233208be66c07affd5c9ac3e00ac05703b73b7a8d0f3acc39db",
+    "handoff_run_sha256": "64fd6a60e303618928e6cb37e9b484ca3dfcbac92b9ba3f9885985066c3612de"
+  },
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "fallback_review": null,
+  "closure_review": null,
+  "fallback_input_scope": null,
+  "retry_of_failed_round": null,
+  "artifact_paths": [
+    "packages/db/supabase/migrations/20260826000135_purge_and_anon_grants.sql",
+    "docs/ai-review/evidence/P0-5-RPC-LEAST-PRIVILEGE-001.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/브랜치-DB-운영-기획안.md",
+    "docs/ai-review/tasks/P0-5-RPC-LEAST-PRIVILEGE-006/rounds/r002/candidate-review.json",
+    "packages/db/supabase/migrations/20260826000136_function_default_grants.sql"
+  ],
+  "evidence_paths": [],
+  "allowed_paths": [
+    "packages/db/supabase/migrations/20260826000135_purge_and_anon_grants.sql",
+    "docs/ai-review/evidence/P0-5-RPC-LEAST-PRIVILEGE-001.md",
+    "AGENTS.md",
+    "docs/브랜치-DB-운영-기획안.md",
+    "docs/ai-review/tasks/P0-5-RPC-LEAST-PRIVILEGE-006/rounds/r002/candidate-review.json",
+    "packages/db/supabase/migrations/20260826000136_function_default_grants.sql"
+  ],
+  "excluded_paths": [],
+  "applied_learning_ids": [],
+  "excluded_learning_ids": [],
+  "learning_registry_blob_oid": "77f00167d790c82373c1aa803d91874952c3334a",
+  "learning_registry_sha256": "4717fe99c86319d7c0abc5c8dd38e68e3a55722d7cfa56b8de173ed05ca1388f",
+  "learning_assignment_sha256": "4660bb32207bcae3246801d71aa6a052eab7b0a7cef357bd5984f706fe3dcbfe",
+  "learning_target_date": "2026-08-29",
+  "input_files": [
+    {
+      "path": "AGENTS.md",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 11054,
+      "git_blob_oid": "bf9b9aeccabdc1055005c7f9bcb188ed8c05eb2a",
+      "sha256": "485c7cb1cbb9143748a6028393723986201d9ff944ad9d3127e5c5f6f243c531",
+      "line_count": 155
+    },
+    {
+      "path": "docs/브랜치-DB-운영-기획안.md",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 41888,
+      "git_blob_oid": "3eb0bf1a13e690028059da7d7fc581464af1e042",
+      "sha256": "17817b17d08166ed164fee773390486b35931072628c9e5b5f3c4fb5611fcf48",
+      "line_count": 706
+    },
+    {
+      "path": "docs/ai-review/evidence/P0-5-RPC-LEAST-PRIVILEGE-001.md",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 10828,
+      "git_blob_oid": "7f5d09f8a65726d5823c4537c518de2400d79cb3",
+      "sha256": "3c98cd9cb7d6f5952c336429009f2254437438bd9a5fd55ad188a5b8238daa41",
+      "line_count": 181
+    },
+    {
+      "path": "packages/db/supabase/migrations/20260826000135_purge_and_anon_grants.sql",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 10585,
+      "git_blob_oid": "034a47fb0af9c9f0820dcb08a76205f1e4a74a87",
+      "sha256": "009190fa5825ed7f7a33155178209e8bf7ffc6f2c6af5d8426f6b5138d9dc733",
+      "line_count": 189
+    },
+    {
+      "path": "packages/db/supabase/migrations/20260826000136_function_default_grants.sql",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 7098,
+      "git_blob_oid": "017fdeccace4b9d5c9e0b014d695b40e2b641f66",
+      "sha256": "d5c9714a6490c1907dfebb48488a390b742d5cea484ec02baf566188a485def2",
+      "line_count": 127
+    }
+  ],
+  "source_archive_version": 1,
+  "finding_resolution_semantics": "VERIFIED_RESOLVED_V1",
+  "artifact_snapshot_sha256": null,
+  "input_snapshot_sha256": null
+}
