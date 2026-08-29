@@ -47,6 +47,7 @@ const EXPECTED_METRICS = new Map([
   ['blocked_internal_rpc_objects', 'expected=11'],
   ['rpc_executor_role', 'expected=1'],
   ['rpc_executor_facades_invalid', 'expected=0'],
+  ['rpc_executor_privileged_maintenance', 'expected=0'],
   ['rls_policy_helper_calls', 'expected=0'],
   ['facade_rpc_objects', 'expected=64'],
   ['facade_rpc_missing', 'expected=0'],
@@ -174,6 +175,7 @@ const FRESH_DB_VALUES = new Map([
   ['blocked_internal_rpc_objects', '11'],
   ['rpc_executor_role', '1'],
   ['rpc_executor_facades_invalid', '0'],
+  ['rpc_executor_privileged_maintenance', '0'],
   ['rls_policy_helper_calls', '0'],
   ['facade_rpc_objects', '64'],
 ]);
