@@ -19,6 +19,7 @@ declare
 begin
   select pg_get_functiondef(p.oid) into v_def
     from pg_proc p where p.pronamespace = 'public'::regnamespace and p.proname = 'e10_sale_recorded';
+  v_def := replace(v_def, chr(13) || chr(10), chr(10));
   v_old := array_to_string(array[
     '  /*',
     '   * ⚠ 과거 정정 중에는 **오늘 영업일을 건드리지 않는다**(0148).',
@@ -79,6 +80,7 @@ begin
   -- business_day_state 의 응답 키
   select pg_get_functiondef(p.oid) into v_def
     from pg_proc p where p.pronamespace = 'public'::regnamespace and p.proname = 'business_day_state';
+  v_def := replace(v_def, chr(13) || chr(10), chr(10));
   v_old := array_to_string(array[
     '    ''close_method'', v_done.close_method,',
     '    ''last_activity_at'', coalesce(v_day.last_activity_at, v_done.last_activity_at),'
@@ -91,6 +93,7 @@ begin
   -- close_business_day_row 의 반환 키
   select pg_get_functiondef(p.oid) into v_def
     from pg_proc p where p.pronamespace = 'public'::regnamespace and p.proname = 'close_business_day_row';
+  v_def := replace(v_def, chr(13) || chr(10), chr(10));
   v_old := array_to_string(array[
     '    ''planned_close_at'', v_day.planned_close_at,',
     '    ''last_activity_at'', v_day.last_activity_at,'
