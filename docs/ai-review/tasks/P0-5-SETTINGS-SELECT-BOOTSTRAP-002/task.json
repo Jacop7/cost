@@ -1,0 +1,82 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "P0-5-SETTINGS-SELECT-BOOTSTRAP-002",
+  "route": "SECURITY",
+  "risk_level": "R3",
+  "author_role": "SOLAR-DB",
+  "reviewer_role": "FABLE-SEC",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "SECURITY",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "ff342e0890c4d05562d62ebfd14c6bd9246f4dd2",
+  "target_commit_sha": "e1da2a5c7402a082d4ed374844da9d4d7d7e85f5",
+  "target_tree_oid": "8bdf426261e035eaaa80e472bd7ce35f12e9c605",
+  "agents_blob_oid": "bf9b9aeccabdc1055005c7f9bcb188ed8c05eb2a",
+  "agents_sha256": "485c7cb1cbb9143748a6028393723986201d9ff944ad9d3127e5c5f6f243c531",
+  "requirements": [
+    "P0-5-SSB-001-SEC-001: 정확한 보정 구현 commit의 verify 6/6, blob OID·SHA-256, baseline migration diff가 증거 문서에 결속돼야 한다.",
+    "P0-5-SSB-001-SEC-002: 0164가 authenticated의 INSERT·UPDATE·DELETE·TRUNCATE 유효 권한을 모두 폐쇄하고 사후조건으로 단언해야 한다.",
+    "P0-5-SSB-001-SEC-003: settings SELECT 부여 전제인 RLS 활성과 읽기 정책 존재를 0164가 사후조건으로 단언해야 한다.",
+    "P0-5-SSB-001-SEC-004: 업그레이드 시나리오가 0163의 정확한 사전 권한 f|t|t|t|t를 확인해 회수 검증의 공허 통과를 막아야 한다.",
+    "predecessor의 Finding 4건을 같은 finding_id와 previous_finding_id로 재검증해야 한다.",
+    "0001~0163과 운영 DB는 건드리지 않고 아직 스테이징에 미적용인 0164 보정만 검수해야 한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:server-calculation-authority",
+    "AGENTS:local-verification-gate",
+    "AGENTS:hosted-staging-only",
+    "WORK-QUEUE:P0-5",
+    "P1-1:REMOTE-ACL-AUDIT"
+  ],
+  "artifact_paths": [
+    "packages/db/supabase/migrations/20260826000164_settings_lockdown.sql",
+    "packages/db/scripts/upgrade-check.sh",
+    "docs/ai-review/evidence/P0-5-RPC-LEAST-PRIVILEGE-001.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/브랜치-DB-운영-기획안.md",
+    "packages/db/supabase/migrations/20260826000163_rule_token_required_and_dst.sql",
+    "packages/db/supabase/migrations/20260826000165_store_bootstrap_and_acl.sql"
+  ],
+  "evidence_paths": [],
+  "excluded_paths": [],
+  "required_evidence": [
+    "predecessor의 네 Finding을 같은 finding_id와 previous_finding_id로 재검증한 결과",
+    "정확한 710176c 구현 commit에서 corepack pnpm verify 6/6, DB 34/34, 업그레이드 10/10, fresh_% 0개",
+    "0164와 upgrade-check.sh의 710176c Git blob OID·SHA-256 및 baseline 이후 migration 변경 0164 한 개",
+    "PUBLIC TRUNCATE·RLS 비활성 사보타주에서 0164 사후조건 실패",
+    "업그레이드 사전 권한 f|t|t|t|t와 최종 t|f|f|f|f, 쓰기 선회수 시 전제 실패",
+    "스테이징은 0163까지, 운영은 미접근·미변경이라는 실패 폐쇄 상태"
+  ],
+  "human_decisions": [
+    "2026-08-29 사용자는 Fable 문제 제기 반영과 후속 재검수를 승인했다.",
+    "2026-08-29 사용자는 기존 Claude Code Max 로그인 세션으로 검수를 계속하도록 승인했다.",
+    "운영 DB에는 적용하지 않고 보호 CI 통과 뒤 스테이징에서만 검증한다.",
+    "기존 실패 기록과 감사 이력은 삭제하거나 덮어쓰지 않는다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": {
+    "task_id": "P0-5-SETTINGS-SELECT-BOOTSTRAP-001",
+    "source_commit_sha": "0fadbb32bf5b85d4464b67dbfaeffd14e1edadeb",
+    "round": "r001",
+    "task_sha256": "61086ce68706df8c45fad3c12b53f5e4f2865ab885f5c4b2cd21ba4c3b94ba24",
+    "manifest_sha256": "4fd0a8e7dea8d2bfedbce27c7fc88ed77d24c846f0e9714ac7d44013b25a8e4b",
+    "run_sha256": "d84cbced89253a11f0ad6881121365d830173f236180900da83fda3bce617699",
+    "review_sha256": "ca371309c71647464c619e9b9e3715d7d107bc2b345acf77e3ab3976b2e6ee0f",
+    "finding_registry_sha256": "b00966ae46cd122584580c8ba24c110df127745c269ed579359e8934aa16a638",
+    "handoff_turn_id": "turn-o001",
+    "handoff_entry_sha256": "54e2f058207fff140bee4e2fcb9887c4c031464fa46c4182386124d02685b907",
+    "handoff_run_sha256": "290c40f20b2178d2454eae5262d4e552e2ae6d273331d30d30e02e9f0a18a82e"
+  },
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "4.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}
