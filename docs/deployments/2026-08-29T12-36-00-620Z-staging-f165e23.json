@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-08-29T12:36:00.618Z",
+  "status": "APPLIED",
+  "target": "staging",
+  "project_ref": "cvfvmpzcldyqurcrappu",
+  "deploy_sha": "f165e2373d35063f9b29bb2ea71e93c20d9e0ecb",
+  "branch": "main",
+  "protected_gate": {
+    "sha": "f165e2373d35063f9b29bb2ea71e93c20d9e0ecb",
+    "conclusion": "success",
+    "workflowRunId": 33252562343,
+    "checkRunId": 99101400635
+  },
+  "migration_count": 163,
+  "pending_migrations": [
+    "20260826000164_settings_lockdown.sql",
+    "20260826000165_store_bootstrap_and_acl.sql",
+    "20260826000166_truncate_and_single_store.sql",
+    "20260826000167_single_store_and_settings_contract.sql",
+    "20260826000168_settings_values_and_locale_defaults.sql",
+    "20260826000169_settings_locale_combo_check.sql",
+    "20260826000170_get_settings_cup_volume.sql",
+    "20260826000171_settings_revision.sql",
+    "20260826000172_settings_revision_noop_tax.sql",
+    "20260829000173_account_retention.sql",
+    "20260829000174_rpc_least_privilege.sql"
+  ],
+  "applied_migrations": [
+    "20260826000164_settings_lockdown.sql",
+    "20260826000165_store_bootstrap_and_acl.sql",
+    "20260826000166_truncate_and_single_store.sql",
+    "20260826000167_single_store_and_settings_contract.sql",
+    "20260826000168_settings_values_and_locale_defaults.sql",
+    "20260826000169_settings_locale_combo_check.sql",
+    "20260826000170_get_settings_cup_volume.sql",
+    "20260826000171_settings_revision.sql",
+    "20260826000172_settings_revision_noop_tax.sql",
+    "20260829000173_account_retention.sql",
+    "20260829000174_rpc_least_privilege.sql"
+  ],
+  "evidence_hashes": {
+    "migration_list_before_sha256": "f3ca22272884ea70ae34ba46349c2d9ade707e994d40cf7d6ba544b7e275e40c",
+    "dry_run_before_sha256": "2d801fe295127dcdecc3f1aeb8afed4e7aeb8d280e3c1677088b470a0cdf1f09",
+    "migration_list_after_sha256": "0abaa953dd5b17143213490b44f89be1440ef147df6e251e70c532de96cc7f3a",
+    "dry_run_after_sha256": "de2776a73c06e6a0516fc5da1ff1506ce10d0c8b10a8429f951d4da5ef19ea25"
+  }
+}
