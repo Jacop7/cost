@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
-const workflow = readFileSync(new URL('../.github/workflows/verify.yml', import.meta.url), 'utf8');
+const workflow = readFileSync(new URL('../.github/workflows/verify.yml', import.meta.url), 'utf8').replace(/\r\n/g, '\n');
 const has = (needle) => assert.ok(workflow.includes(needle), `verify.yml 계약 누락: ${needle}`);
 
 has("node: ['20.19.4', 24]");
