@@ -1,0 +1,96 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "P0-5-PENDING-ROLE-RESTORES-003",
+  "route": "SECURITY",
+  "risk_level": "R3",
+  "author_role": "SOLAR-DB",
+  "reviewer_role": "FABLE-SEC",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "SECURITY",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "8466d12f20572c4590c5678f96130d080cd717ef",
+  "target_commit_sha": "515845aa9c382c41f456bd9cf3a04e30b63ef608",
+  "target_tree_oid": "e3c580d44242081d349425e59b5d4b3ee99cbc96",
+  "agents_blob_oid": "bf9b9aeccabdc1055005c7f9bcb188ed8c05eb2a",
+  "agents_sha256": "485c7cb1cbb9143748a6028393723986201d9ff944ad9d3127e5c5f6f243c531",
+  "requirements": [
+    "0137·0138·0139·0144의 역할 검사 뒤에는 reset role 대신 migration 시작 current_user를 명시 복원하고 복원 사후조건을 확인해야 한다.",
+    "역할 전환 실패와 대상 함수·테이블 행동 거부를 같은 42501 성공 조건으로 세지 않아야 하며, 거부가 정확한 대상에서 발생했는지 확인해야 한다.",
+    "스테이징에 이미 적용된 0001~0136은 불변이고 보정은 아직 미적용인 0137 이후 migration에만 한정돼야 한다.",
+    "0139·0145·0150·0151·0158·0163·0165의 함수 정의 치환·사후 확인은 LF와 CRLF clean checkout에서 같은 코드를 인식해야 한다.",
+    "0139의 적용 표식은 주석이나 부분 문자열이 아니라 실제 연속 코드 줄을 판별하고 재적용 계약을 유지해야 한다.",
+    "역할·줄끝 보정은 제품 계산·RPC·원장·판본 계약을 바꾸지 않아야 한다.",
+    "최종 구현 commit의 Windows clean checkout에서 전체 migration·seed와 corepack pnpm verify 6/6이 통과하고 fresh 임시 DB가 남지 않아야 한다.",
+    "스테이징 재적용과 원격 ACL audit 전에는 P0-5 원격 게이트가 완료됐다고 표현하지 않아야 한다.",
+    "predecessor r001의 Finding 네 건을 같은 finding_id·severity·category로 빠짐없이 재검수해야 한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:server-calculation-authority",
+    "AGENTS:ledger-write-paths",
+    "AGENTS:local-verification-gate",
+    "AGENTS:hosted-staging-only",
+    "WORK-QUEUE:P0-5",
+    "P1-1:REMOTE-ACL-AUDIT"
+  ],
+  "artifact_paths": [
+    "packages/db/supabase/migrations/20260826000137_close_due_cron.sql",
+    "packages/db/supabase/migrations/20260826000138_close_hardening.sql",
+    "packages/db/supabase/migrations/20260826000139_close_method_and_deadline.sql",
+    "packages/db/supabase/migrations/20260826000144_amend_foundation.sql",
+    "packages/db/supabase/migrations/20260826000145_amend_ended_business_day.sql",
+    "packages/db/supabase/migrations/20260826000150_amend_boundaries.sql",
+    "packages/db/supabase/migrations/20260826000151_basis_backfill_and_guard.sql",
+    "packages/db/supabase/migrations/20260826000158_retire_activity_tracking.sql",
+    "packages/db/supabase/migrations/20260826000163_rule_token_required_and_dst.sql",
+    "packages/db/supabase/migrations/20260826000165_store_bootstrap_and_acl.sql",
+    "docs/ai-review/evidence/P0-5-RPC-LEAST-PRIVILEGE-001.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/브랜치-DB-운영-기획안.md",
+    "packages/db/supabase/migrations/20260826000135_purge_and_anon_grants.sql",
+    "packages/db/supabase/migrations/20260826000136_function_default_grants.sql"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/tasks/P0-5-PENDING-ROLE-RESTORES-001/rounds/r001/run.json"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "predecessor r001 Finding 네 건의 수정 위치와 같은 ID 재판정",
+    "매장 0개 NOINHERIT 로그인 역할 체인에서 0144가 authenticated 전환·거부 검사 뒤 시작 역할로 복원된 관측값",
+    "구현 commit의 보정 migration 10개 Git blob OID·SHA-256과 baseline diff",
+    "정확한 구현 commit에서 corepack pnpm verify 6/6, 업그레이드 9/9, fresh_% 0개",
+    "스테이징은 0136까지이며 보정 미적용, 운영 미접근이라는 실패 폐쇄 상태"
+  ],
+  "human_decisions": [
+    "2026-08-29 사용자는 P0-5 보안 보정·Fable 재검수·스테이징 검증을 계속 진행하도록 승인했다.",
+    "2026-08-29 사용자는 predecessor Task에 승인한 6.00 USD 상한 중 남은 범위 안에서 successor 재검수를 진행하도록 승인했다.",
+    "운영 DB에는 적용하지 않고 스테이징에서만 검증한다.",
+    "기존 실패 기록과 감사 이력은 삭제·덮어쓰지 않는다.",
+    "predecessor 장부의 AI_DEPUTY_SUCCESSOR_HANDOFF가 같은 SECURITY lane의 후속 재검수를 승인했다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": {
+    "task_id": "P0-5-PENDING-ROLE-RESTORES-002",
+    "source_commit_sha": "33c31f24089932bb768c6102a744bf84541db2bd",
+    "round": "r001",
+    "task_sha256": "fd173bd731f7deaf7a06645750ba439529a5cbf5cf0bd44d17d84d2ba7f8ae78",
+    "manifest_sha256": "1c7dfb6181a133f199093268b792d791b6cff1e7f1f6c76a1db0327b6bb6c3c3",
+    "run_sha256": "e62bc50b34040e5604b4459db3716c45ea342ebb390254bb58813cb7ecc37e28",
+    "review_sha256": "c91e44fcc1970bdbe280d911bf888a7c6dc1e6a33b95d5096bff6e50a195c3a5",
+    "finding_registry_sha256": "9a72b4e14d9883b4e1b367da698c7c1b52c7d6566f7fbf4e63a840ae4a66c794",
+    "handoff_turn_id": "turn-o001",
+    "handoff_entry_sha256": "33424f9a30d6b32418092eeaf6959635fb5ff01e377600b605849bcf3d51a6a0",
+    "handoff_run_sha256": "3000bc0a5cc3e048d612db58979999a985e2c9f6a6c2f0b17fb7ef5325366596"
+  },
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "6.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}
