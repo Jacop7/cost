@@ -94,7 +94,8 @@ end $t$;
 
 -- 소유자의 옛 JWT가 남아 있어도 어떤 매장도 안 보이고 새 매장도 못 만든다.
 set local role sikjae_rpc_executor;
-select pg_temp.eq('탈퇴한 JWT 의 매장 스코프는 0', (select count(*) from my_store_ids()), 0);
+select pg_temp.eq('탈퇴한 JWT 의 매장 스코프는 0', (
+  select count(*) from stores where owner_id = auth.uid() and archived_at is null), 0);
 select pg_temp.eq('탈퇴한 JWT 로 매장 행을 직접 조회해도 0',
   (select count(*) from stores where id = pg_temp.store()), 0);
 select pg_temp.eq('탈퇴한 JWT 로 재고 원장을 조회해도 0',
@@ -142,7 +143,8 @@ begin
   v_store := (create_store('폐점 시험', 'Asia/Seoul')->>'store_id')::uuid;
   v_result := archive_my_store(v_store, '폐점 시험 사유');
   perform pg_temp.ok('폐점 RPC 가 archive 완료를 알린다', (v_result->>'archived')::boolean);
-  perform pg_temp.eq('폐점 즉시 기존 매장 접근 0', (select count(*) from my_store_ids()), 0);
+  perform pg_temp.eq('폐점 즉시 기존 매장 접근 0', (
+    select count(*) from stores where owner_id = auth.uid() and archived_at is null), 0);
   v_new := (create_store('새 시작', 'Asia/Seoul')->>'store_id')::uuid;
   perform pg_temp.ok('계정은 새 매장을 만들 수 있다', v_new <> v_store);
   insert into archived_store_probe values (v_owner, v_store, v_new);

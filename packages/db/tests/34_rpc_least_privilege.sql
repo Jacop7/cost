@@ -9,8 +9,6 @@
 
 select pg_temp.ok('RPC 실행 역할은 로그인할 수 없다', not (
   select rolcanlogin from pg_roles where rolname = 'sikjae_rpc_executor'));
-select pg_temp.ok('RPC 실행 역할은 RLS를 우회하지 않는다', not (
-  select rolbypassrls from pg_roles where rolname = 'sikjae_rpc_executor'));
 select pg_temp.ok('RPC 실행 역할은 authenticated 권한을 상속한다',
   pg_has_role('sikjae_rpc_executor', 'authenticated', 'member'));
 select pg_temp.ok('authenticated는 RPC 실행 역할로 전환할 수 없다', not
@@ -26,16 +24,35 @@ select pg_temp.ok('RLS 정책은 닫힌 my_store_ids 몸통을 호출하지 않�
    where coalesce(pg_get_expr(pol.polqual, pol.polrelid), '') like '%my_store_ids()%'
       or coalesce(pg_get_expr(pol.polwithcheck, pol.polrelid), '') like '%my_store_ids()%'));
 
+select pg_temp.eq('RPC 실행 역할에 postgres 유지보수 definer가 열린 건수는 0이다', (
+  select count(*)
+    from pg_proc p
+    join pg_namespace n on n.oid = p.pronamespace
+    join pg_roles owner_role on owner_role.oid = p.proowner
+   where n.nspname = 'public' and p.prokind in ('f', 'p') and p.prosecdef
+     and owner_role.rolname = 'postgres'
+     and has_function_privilege('sikjae_rpc_executor', p.oid, 'execute')
+     and not has_function_privilege('authenticated', p.oid, 'execute')
+)::numeric, 0);
+
+select pg_temp.raises('RPC 실행 역할은 전 매장 자료 삭제 몸통을 부를 수 없다',
+  format('select purge_archived_store(%L, %L)', pg_temp.store(), 'invalid-token'), '42501');
+
 -- RLS가 실제로 다른 사장님의 매장을 숨기는지 재기 위한 두 번째 매장.
 do $t$
 declare
   v_owner uuid;
   v_store uuid;
+  v_ingredient uuid;
 begin
   v_owner := pg_temp.new_owner();
   perform pg_temp.as_owner(v_owner);
   v_store := (create_store('P0-5 다른 사장님', 'Asia/Seoul')->>'store_id')::uuid;
   perform set_config('sikjae.test.foreign_store', v_store::text, true);
+  v_ingredient := save_ingredient(v_store, jsonb_build_object(
+    'name', 'P0-5 다른 매장 식재료', 'base_unit', 'g', 'per_volume', 1,
+    'safety_stock', 0, 'min_order_qty', 1));
+  perform set_config('sikjae.test.foreign_ingredient', v_ingredient::text, true);
   perform pg_temp.as_owner(pg_temp.owner());
 end
 $t$;
@@ -75,6 +92,16 @@ select pg_temp.eq('RLS로 내 매장은 한 줄 보인다',
 select pg_temp.eq('RLS로 다른 사장님 매장은 보이지 않는다',
   (select count(*) from stores
     where id = current_setting('sikjae.test.foreign_store')::uuid), 0);
+
+select pg_temp.ok('facade도 다른 사장님 매장 설정을 돌려주지 않는다',
+  get_settings(current_setting('sikjae.test.foreign_store')::uuid) is null);
+select pg_temp.raises('facade도 다른 사장님 매장에 쓰지 못한다',
+  format('select save_category(%L, %L::jsonb)', current_setting('sikjae.test.foreign_store'),
+         '{"name":"P0-5 교차 매장 침입","sort_order":1}'), '42501');
+select pg_temp.ok('RLS에 기대는 상세 facade는 다른 매장 식재료를 돌려주지 않는다',
+  ingredient_detail(current_setting('sikjae.test.foreign_ingredient')::uuid) is null);
+select pg_temp.ok('RPC 실행 역할은 RLS를 우회하지 않는다', not (
+  select rolbypassrls from pg_roles where rolname = 'sikjae_rpc_executor'));
 
 -- ── 3. 내부 몸통은 PostgREST에서 직접 호출할 수 없다 ───────────────────────
 

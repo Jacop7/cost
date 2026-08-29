@@ -212,6 +212,17 @@ select 'rpc_executor_facades_invalid' || '|' || count(*) || '|expected=0'
  where n.nspname = 'public' and r.rolname = 'sikjae_rpc_executor'
    and (not p.prosecdef or not coalesce(p.proconfig, '{}'::text[]) @> array['search_path=public, pg_temp']);
 
+-- executor-owned facade는 RLS를 지키는 내부 도우미만 부른다. 앱에 열리지 않은
+-- postgres SECURITY DEFINER는 전 매장 스위프·파괴 경계이므로 executor에도 닫힌다.
+select 'rpc_executor_privileged_maintenance' || '|' || count(*) || '|expected=0'
+  from pg_proc p
+  join pg_namespace n on n.oid = p.pronamespace
+  join pg_roles owner_role on owner_role.oid = p.proowner
+ where n.nspname = 'public' and p.prokind in ('f', 'p') and p.prosecdef
+   and owner_role.rolname = 'postgres'
+   and has_function_privilege('sikjae_rpc_executor', p.oid, 'EXECUTE')
+   and not has_function_privilege('authenticated', p.oid, 'EXECUTE');
+
 select 'rls_policy_helper_calls' || '|' || count(*) || '|expected=0'
   from pg_policy pol
  where coalesce(pg_get_expr(pol.polqual, pol.polrelid), '') like '%my_store_ids()%'

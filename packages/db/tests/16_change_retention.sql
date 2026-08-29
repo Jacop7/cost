@@ -8,6 +8,18 @@
 -- 그게 사실인지 여기서 확인한다. 사실이 아니라면 지우면 안 되는 데이터다.
 -- ════════════════════════════════════════════════════════════════
 
+-- 청소는 전 매장 유지보수 문이라 service_role/소유자만 부른다. 시험 본문이
+-- executor 권한을 넓히지 않도록 소유자 호출을 헬퍼 하나로 고정한다.
+create function pg_temp.purge_changes_for_test() returns integer
+language plpgsql as $h$
+declare v_n integer;
+begin
+  set local role postgres;
+  v_n := purge_entity_changes();
+  set local role sikjae_rpc_executor;
+  return v_n;
+end $h$;
+
 do $t$
 declare
   v_ing  uuid := pg_temp.ing('대파');
@@ -53,7 +65,7 @@ begin
      set occurred_at = clock_timestamp() - interval '40 days'
    where store_id = pg_temp.store();
   execute 'set local role sikjae_rpc_executor';
-  v_n := purge_entity_changes();
+  v_n := pg_temp.purge_changes_for_test();
   perform pg_temp.ok('청소가 실제로 지운다', v_n > 0);
   perform pg_temp.eq('내역이 비었다',
     (select count(*) from entity_change_events where store_id = pg_temp.store()), 0, 0);
@@ -114,7 +126,7 @@ begin
      set occurred_at = clock_timestamp() - interval '40 days'
    where id = v_old;
   execute 'set local role sikjae_rpc_executor';
-  v_n := purge_entity_changes();
+  v_n := pg_temp.purge_changes_for_test();
   perform pg_temp.eq('40일 지난 것만 지워진다', v_n, 1, 0);
   perform pg_temp.eq('나머지는 남는다',
     (select count(*) from entity_change_events where store_id = pg_temp.store()), v_new - 1, 0);
@@ -126,7 +138,7 @@ begin
    where id = (select id from entity_change_events
                 where store_id = pg_temp.store() order by occurred_at desc limit 1);
   execute 'set local role sikjae_rpc_executor';
-  perform pg_temp.eq('29일 된 것은 안 지운다', purge_entity_changes(), 0, 0);
+  perform pg_temp.eq('29일 된 것은 안 지운다', pg_temp.purge_changes_for_test(), 0, 0);
 
   -- ⚠ 청소가 실패해도 영업 시작이 막히면 안 된다 — 곁일이다.
   perform pg_temp.ok('영업 시작에 청소가 붙어 있다',
@@ -179,7 +191,7 @@ begin
    where id = v_old;
   execute 'set local role sikjae_rpc_executor';
 
-  v_n := purge_entity_changes();
+  v_n := pg_temp.purge_changes_for_test();
   perform pg_temp.ok('20일 된 기록은 살아 있다',
     exists (select 1 from entity_change_events where id = v_old));
 
@@ -284,8 +296,10 @@ begin
     not has_function_privilege('anon', 'public.zz_grant_probe()', 'execute'));
   perform pg_temp.ok('새 함수는 인증 사용자에게 자동 공개되지 않는다',
     not has_function_privilege('authenticated', 'public.zz_grant_probe()', 'execute'));
-  perform pg_temp.ok('새 함수는 전용 실행 역할이 부를 수 있다',
-    has_function_privilege('sikjae_rpc_executor', 'public.zz_grant_probe()', 'execute'));
+  perform pg_temp.ok('새 함수는 전용 실행 역할에도 자동 공개되지 않는다',
+    not has_function_privilege('sikjae_rpc_executor', 'public.zz_grant_probe()', 'execute'));
+  perform pg_temp.ok('새 함수는 service_role에는 열린다',
+    has_function_privilege('service_role', 'public.zz_grant_probe()', 'execute'));
   execute 'drop function public.zz_grant_probe()';
   execute 'set local role sikjae_rpc_executor';
 end $t$;

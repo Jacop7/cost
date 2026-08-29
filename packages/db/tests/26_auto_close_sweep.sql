@@ -186,7 +186,9 @@ begin
    *   않아서 확인이 먼저 돌 수 있다 — 실제로 그래서 빨갛게 떴다.
    *   지우고, 그다음에 본다.
    */
+  set local role postgres;
   v_n := purge_entity_changes();
+  set local role sikjae_rpc_executor;
   perform pg_temp.ok('청소가 뭔가 지웠다', v_n >= 1);
   perform pg_temp.ok('40일 된 기록이 사라졌다',
     not exists (select 1 from entity_change_events where id = v_old));
