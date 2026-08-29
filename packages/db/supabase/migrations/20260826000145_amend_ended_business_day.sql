@@ -401,7 +401,8 @@ begin
   if not exists (
     select 1 from pg_proc p join pg_namespace n on n.oid = p.pronamespace
      where n.nspname = 'public' and p.proname = 'save_sale'
-       and pg_get_functiondef(p.oid) like '%begin' || chr(10) || '  perform assert_my_store(p_store);%')
+       and replace(pg_get_functiondef(p.oid), chr(13) || chr(10), chr(10))
+           like '%begin' || chr(10) || '  perform assert_my_store(p_store);%')
   then
     raise exception '0145: save_sale 의 첫 줄이 권한 확인이 아닙니다';
   end if;
