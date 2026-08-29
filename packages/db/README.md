@@ -122,3 +122,26 @@ integration·ops·Queue 원본 노출, 내부 RPC 권한과 앱이 직접 쓰는
 Supabase CLI는 P1-2 검증을 통과한 `2.116.0`으로 정확히 고정한다. 원격 프로젝트를 연결하기 전에
 `migration list`의 로컬·원격 이력을 대조하고, `db push` 대상·SHA·백업·복구 절차를
 [브랜치·DB 배포 운영 기획안](../../docs/브랜치-DB-운영-기획안.md)에 따라 확인한다.
+
+### 원격 배포 가드
+
+일반 `db push` 편의 명령은 두지 않는다. 스테이징과 운영은 각각 계획 명령으로 적용 예정 파일을 먼저
+확인하고, 같은 가드를 적용 모드로 다시 실행한다.
+
+```bash
+# 공통: 정확한 main SHA와 대상 project ref를 승인값으로 고정
+export SIKJAE_APPROVED_DEPLOY_SHA=<40자리-main-SHA>
+export SIKJAE_STAGING_PROJECT_REF=<20자리-project-ref>
+corepack pnpm db:deploy:staging:plan
+
+# 계획 출력과 확인 문구를 대조한 뒤에만 적용
+export SIKJAE_DEPLOY_CONFIRM=APPLY:staging:<project-ref>:<40자리-main-SHA>
+corepack pnpm db:deploy:staging:apply
+```
+
+운영은 `SIKJAE_PRODUCTION_PROJECT_REF`와 `db:deploy:production:plan` / `db:deploy:production:apply`를
+사용한다. 가드는 실제 링크 ref, 깨끗한 `main`, `origin/main`, 승인 SHA와 동일 SHA의
+`protected-gate` 성공을 모두 확인한다. 계획 모드도 DB를 바꾸지 않는 `--dry-run`만 수행하고 출력만
+남긴다. 실제 적용이 성공하면 `docs/deployments/`에 `status: APPLIED` 기록이 생성된다.
+
+프로젝트 링크·접속 자격·스테이징 검증·백업/복구 확인 없이 적용 명령을 실행하지 않는다.

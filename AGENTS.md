@@ -144,6 +144,8 @@ corepack pnpm verify --no-db
   `db reset` · `migration list` · `db push --local --dry-run` · `db:types` · 전체 `verify`를 다시 통과한다.
 - 운영·스테이징에 적용된 migration은 불변이며 새 migration으로 전진 복구한다.
 - 운영에는 `main`에 포함된 승인 이력만 적용한다. 로컬·스테이징·운영을 같은 DB로 쓰지 않는다.
+- 일반 `db push`를 쓰지 않는다. 원격 적용은 대상별 `db:deploy:*:plan`으로 링크·SHA·예정 파일을
+  확인한 뒤 같은 배포 가드의 apply 명령만 사용한다.
 
 ## 작업 시
 

@@ -17,6 +17,13 @@ assert(dbPackage.devDependencies?.supabase === '2.116.0', 'Supabase CLI must sta
 assert(!/^\[inbucket\]$/m.test(config), 'deprecated [inbucket] config must not return');
 assert(/^\[local_smtp\]$/m.test(config), '[local_smtp] config is required for CLI v2');
 assert(dbPackage.scripts?.reset === 'node scripts/reset-local.mjs', 'db reset must use the ACL-aware wrapper');
+assert(!Object.hasOwn(dbPackage.scripts ?? {}, 'push'), 'ambiguous db push script must not return');
+for (const name of ['deploy:staging:plan', 'deploy:staging:apply', 'deploy:production:plan', 'deploy:production:apply']) {
+  assert(dbPackage.scripts?.[name]?.includes('deploy-guard.mjs'), `explicit deploy script missing: ${name}`);
+  assert(rootPackage.scripts?.[`db:${name}`]?.includes(`@sikjae/db ${name}`), `root deploy alias missing: db:${name}`);
+}
+assert(!Object.keys(dbPackage.scripts ?? {}).some((name) => /^deploy:(staging|production)$/.test(name)),
+  'a mutating deployment command must end with :apply');
 assert(/\['fix', 'check'\]/.test(resetScript), 'db reset must finish with admin ACL fix/check');
 
 for (const [name, command] of Object.entries(rootPackage.scripts ?? {})) {

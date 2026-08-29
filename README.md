@@ -115,7 +115,9 @@ GitHub Actions는 Node `20.19.4`·`24`에서 이 빠른 범위를 실행한다. 
 현재 1차 계약은 `stores.owner_id UNIQUE`, 즉 계정 하나당 매장 하나다. 다매장·직원 권한은 미래 확장
 범위이며 현재 지원 기능으로 간주하지 않는다.
 
-`supabase db push`를 로컬 관성으로 운영에 실행하지 않는다. Supabase CLI는 로컬 절차를 완주한
+`supabase db push`를 로컬 관성으로 운영에 실행하지 않는다. 대상별 계획 명령
+`db:deploy:staging:plan`·`db:deploy:production:plan`으로 실제 링크·승인 SHA·적용 예정 파일을 먼저
+확인하고, 동일한 배포 가드의 적용 명령만 사용한다. Supabase CLI는 로컬 절차를 완주한
 `2.116.0`으로 고정했다(P1-2). 첫 원격 프로젝트 연결 전에는 원격 ACL 읽기 전용 감사(P1-1)를
 실측해야 한다. 브랜치·마이그레이션·배포·
 복구 절차는 [브랜치·DB 배포 운영 기획안](./docs/브랜치-DB-운영-기획안.md), 서버 분리 판단은
