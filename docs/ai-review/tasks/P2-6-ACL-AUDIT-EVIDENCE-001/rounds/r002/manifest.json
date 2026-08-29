@@ -1,0 +1,181 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "P2-6-ACL-AUDIT-EVIDENCE-001",
+  "round": "r002",
+  "created_at": "2026-08-29T21:51:19.032Z",
+  "review_mode": "SECURITY",
+  "baseline_commit_sha": "2276fa050b71d47b8b221eecec59c1b4c7474025",
+  "target_commit_sha": "e4118d1fae1b05fd94ba27ffd78893f84dc4e8b4",
+  "target_tree_oid": "d9f9f930067a7ac8a48f87c25dbc66eb9533b0aa",
+  "agents_blob_oid": "bf9b9aeccabdc1055005c7f9bcb188ed8c05eb2a",
+  "agents_sha256": "485c7cb1cbb9143748a6028393723986201d9ff944ad9d3127e5c5f6f243c531",
+  "task_sha256": "68e40f984c91735ef4110a1f8a9add839e9795c75a9569e49a4498844792f6ac",
+  "collaboration_sha256": "55ee96aab60415477ca907f092ea866383e6842dc8f62b22cfff0d5d7016ceaa",
+  "collaboration_bytes": 1734,
+  "input_files_sha256": "1aef875799476d33117b4776eb08ca3f29a49b340ea142c86c36f98f133075be",
+  "schema_sha256": "f8860ea87aacde86f541f7b1a1640729bf516dcdaf78e168c0e2e01f0edfac5c",
+  "runner_sha256": "dc78d5183405344a2fcadf9b4db56734b7cae60ab88385d857fd02e0d434c633",
+  "snapshot_mode": "COMMIT",
+  "previous_review_sha256": null,
+  "previous_run_sha256": "767ed5f32bf6d249effc3525a32754f561935ec192948e197b54bc61090b7f66",
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "fallback_review": null,
+  "fallback_input_scope": null,
+  "retry_of_failed_round": "r001",
+  "artifact_paths": [
+    "packages/db/scripts/admin-acl-audit.test.mjs",
+    "packages/db/scripts/admin-acl-source-scan.mjs",
+    "packages/db/scripts/admin-acl-source-scan.test.mjs",
+    "packages/db/scripts/admin-acl-audit.sql",
+    "scripts/verify.mjs",
+    "docs/ai-review/evidence/P1-1-ACL-SUPPORT-SOURCE-002.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/ai-review/README.md",
+    "docs/작업큐.md",
+    "packages/db/README.md"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/tasks/P1-1-ACL-SUPPORT-SOURCE-003/rounds/r001/review.md",
+    "docs/ai-review/tasks/P1-1-ACL-EVIDENCE-BINDING-005/rounds/r001/review.md"
+  ],
+  "allowed_paths": [
+    "packages/db/scripts/admin-acl-audit.test.mjs",
+    "packages/db/scripts/admin-acl-source-scan.mjs",
+    "packages/db/scripts/admin-acl-source-scan.test.mjs",
+    "packages/db/scripts/admin-acl-audit.sql",
+    "scripts/verify.mjs",
+    "docs/ai-review/evidence/P1-1-ACL-SUPPORT-SOURCE-002.md",
+    "AGENTS.md",
+    "docs/ai-review/README.md",
+    "docs/작업큐.md",
+    "packages/db/README.md",
+    "docs/ai-review/tasks/P1-1-ACL-SUPPORT-SOURCE-003/rounds/r001/review.md",
+    "docs/ai-review/tasks/P1-1-ACL-EVIDENCE-BINDING-005/rounds/r001/review.md"
+  ],
+  "excluded_paths": [],
+  "applied_learning_ids": null,
+  "excluded_learning_ids": null,
+  "learning_registry_blob_oid": null,
+  "learning_registry_sha256": null,
+  "learning_assignment_sha256": null,
+  "learning_target_date": null,
+  "input_files": [
+    {
+      "path": "AGENTS.md",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 11054,
+      "git_blob_oid": "bf9b9aeccabdc1055005c7f9bcb188ed8c05eb2a",
+      "sha256": "485c7cb1cbb9143748a6028393723986201d9ff944ad9d3127e5c5f6f243c531",
+      "line_count": 155
+    },
+    {
+      "path": "docs/작업큐.md",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 68301,
+      "git_blob_oid": "561f6c8e0746c20224371ee3b5355e4ab89ed848",
+      "sha256": "9711f7d1385f1ec8a0fa974e15c34475f44afe37ffffb901de5f6643037ad564",
+      "line_count": 1079
+    },
+    {
+      "path": "docs/ai-review/evidence/P1-1-ACL-SUPPORT-SOURCE-002.md",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 8563,
+      "git_blob_oid": "14e3cb75e2f6b3915d070140a1d8851310dc534a",
+      "sha256": "a0fb31100294641cb044b04e68c486fa3805171be83fb281f8b56bf0463511cd",
+      "line_count": 123
+    },
+    {
+      "path": "docs/ai-review/README.md",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 39460,
+      "git_blob_oid": "dcf3e7f62f132b309359b3dab7d4977ec87f3f0e",
+      "sha256": "55aeacb17034ac0e46281651b2dd97fa5fd2f3df565b9624a2476ea68a8b9999",
+      "line_count": 536
+    },
+    {
+      "path": "docs/ai-review/tasks/P1-1-ACL-EVIDENCE-BINDING-005/rounds/r001/review.md",
+      "path_role": "EVIDENCE",
+      "change_type": "COMMIT",
+      "size": 4604,
+      "git_blob_oid": "f7e8806f025b1a6d766989942fec8539b32ce522",
+      "sha256": "cd09cc177a48a1e564ee622f6b63eb21ed9f468826529ea836cecdb3a617a080",
+      "line_count": 56
+    },
+    {
+      "path": "docs/ai-review/tasks/P1-1-ACL-SUPPORT-SOURCE-003/rounds/r001/review.md",
+      "path_role": "EVIDENCE",
+      "change_type": "COMMIT",
+      "size": 9843,
+      "git_blob_oid": "c68824a6157b67dc4071af23cbbf25b4274c27e0",
+      "sha256": "622cae6101d0175e833f4727db42d0114a34863800abe8bd3f0beb6ed1061b2e",
+      "line_count": 111
+    },
+    {
+      "path": "packages/db/README.md",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 8700,
+      "git_blob_oid": "f8cc5ebe9ed52cdba09d8c79d6972e06969344eb",
+      "sha256": "232065cbc86ee64abd6973e9f35e89e622150ce5fa8a50eed004eb0225cbc6d5",
+      "line_count": 155
+    },
+    {
+      "path": "packages/db/scripts/admin-acl-audit.sql",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 15550,
+      "git_blob_oid": "aed306cdf87a3bf017220f6f2a617fc1a0592361",
+      "sha256": "ed096d04f8010a0eaaadc5f8073929f0569812c3514f3f490c81edfa44c47220",
+      "line_count": 260
+    },
+    {
+      "path": "packages/db/scripts/admin-acl-audit.test.mjs",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 9011,
+      "git_blob_oid": "38a74b1ef1e2dcf48b046e1250bf112bb915039a",
+      "sha256": "5db66c6495b22cca08f69f6c1297d767806b2db9f0d1c73f03b3938e1646fb4a",
+      "line_count": 178
+    },
+    {
+      "path": "packages/db/scripts/admin-acl-source-scan.mjs",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 3764,
+      "git_blob_oid": "08f490ddec42cf7cb6f94b842abcb22981d5c78c",
+      "sha256": "71d6edfe664669419b7bebbc43167808df27107e7049a4f9db87d19a9cb208f2",
+      "line_count": 91
+    },
+    {
+      "path": "packages/db/scripts/admin-acl-source-scan.test.mjs",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 3041,
+      "git_blob_oid": "17bd3bac1e0798ddfa6747502e1c52b37e46b1c2",
+      "sha256": "300bfc242e047bb71bdca7d64520fb400adb3af9607d4f61cf275830230863ba",
+      "line_count": 75
+    },
+    {
+      "path": "scripts/verify.mjs",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 10483,
+      "git_blob_oid": "612f6ba026cac12c7d5276c2f09a0baf34c9e8e3",
+      "sha256": "b64662b869da68cd8303770494aea33b0334bf690a708c861fc0d0a80259fecb",
+      "line_count": 219
+    }
+  ],
+  "source_archive_version": 1,
+  "finding_resolution_semantics": "VERIFIED_RESOLVED_V1",
+  "artifact_snapshot_sha256": null,
+  "input_snapshot_sha256": null
+}

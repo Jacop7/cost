@@ -1,0 +1,63 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "P2-6-ACL-AUDIT-EVIDENCE-001",
+  "route": "SECURITY",
+  "risk_level": "R3",
+  "author_role": "SOLAR-DB",
+  "reviewer_role": "FABLE-SEC",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "SECURITY",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "2276fa050b71d47b8b221eecec59c1b4c7474025",
+  "target_commit_sha": "e4118d1fae1b05fd94ba27ffd78893f84dc4e8b4",
+  "target_tree_oid": "d9f9f930067a7ac8a48f87c25dbc66eb9533b0aa",
+  "agents_blob_oid": "bf9b9aeccabdc1055005c7f9bcb188ed8c05eb2a",
+  "agents_sha256": "485c7cb1cbb9143748a6028393723986201d9ff944ad9d3127e5c5f6f243c531",
+  "requirements": [
+    "P2-6-1: 모바일 RPC 소스 검사가 구조 분해 별칭과 client 계산 키 호출을 조용히 건너뛰지 않는다.",
+    "P2-6-2: 필수 모바일 소스 루트가 없으면 정확한 누락 경로를 진단하고 실패한다.",
+    "P2-6-3: SQL RPC 허용 목록은 SQL 문자열 정규식이 아니라 PostgreSQL이 인식한 임시 표의 실제 행을 사용한다.",
+    "P2-6-4: 증거 문서는 실제 stdout과 V1·V2·P2-6 Git blob OID를 연결하며 전체 verify 6/6 실행 판본을 식별한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:inspection-execution",
+    "AGENTS:acl-environment-deployment",
+    "P1-1-SUPPORT-003-RPC-SCAN-RESIDUAL-EVASION",
+    "P1-1-SUPPORT-003-MOBILE-ROOT-MISSING-UNCAUGHT",
+    "P1-1-SUPPORT-003-ALLOWLIST-REGEX-PARSE",
+    "P1-1-BINDING-005-OBSERVED-STDOUT-VERBATIM"
+  ],
+  "artifact_paths": [
+    "packages/db/scripts/admin-acl-audit.test.mjs",
+    "packages/db/scripts/admin-acl-source-scan.mjs",
+    "packages/db/scripts/admin-acl-source-scan.test.mjs",
+    "packages/db/scripts/admin-acl-audit.sql",
+    "scripts/verify.mjs",
+    "docs/ai-review/evidence/P1-1-ACL-SUPPORT-SOURCE-002.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/ai-review/README.md",
+    "docs/작업큐.md",
+    "packages/db/README.md"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/tasks/P1-1-ACL-SUPPORT-SOURCE-003/rounds/r001/review.md",
+    "docs/ai-review/tasks/P1-1-ACL-EVIDENCE-BINDING-005/rounds/r001/review.md"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "admin-acl-source-scan.test.mjs의 Docker 없는 6개 회귀시험과 verify ③ 연결",
+    "admin-acl-audit.test.mjs가 실제 DB 임시 표에서 허용 서명을 읽고 comment_only_rpc 주석 표식을 배제하는 구현",
+    "실제 DB audit stdout 두 줄과 V1·V2·P2-6 Git blob OID를 고정한 독립 증거",
+    "P2-6 target commit에서 corepack pnpm verify 6/6, fresh DB 0개"
+  ],
+  "human_decisions": [
+    "2026-08-30 사용자가 작업큐 완료까지 순차적으로 계속 진행하고 필수 Fable 검수를 실행하도록 승인했다.",
+    "호스티드 원격 ACL 적용·운영 배포는 이 로컬 지원 시험 보강 범위가 아니다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null
+}
