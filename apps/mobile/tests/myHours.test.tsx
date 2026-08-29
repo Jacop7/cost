@@ -274,6 +274,22 @@ describe('매장 시간대', () => {
     }
   });
 
+  it('슬래시가 있는 IANA 기기 시간대를 제안하고 서버 저장 인자에 그대로 전달한다 (P2-1)', () => {
+    const current = Intl.DateTimeFormat().resolvedOptions();
+    const timezone = vi.spyOn(Intl.DateTimeFormat.prototype, 'resolvedOptions')
+      .mockReturnValue({ ...current, timeZone: 'Asia/Seoul' });
+    try {
+      hoursStatus.mockReturnValue(status({ timezone: 'UTC', timezoneConfirmed: false }));
+      render(<MyHoursScreen />);
+      expect(screen.getByText('기기 시간대는 Asia/Seoul 예요.')).toBeTruthy();
+      fireEvent.click(screen.getByText('기기 시간대 사용'));
+      expect(saveTz).toHaveBeenCalledTimes(1);
+      expect(saveTz.mock.calls[0]![0]).toBe('Asia/Seoul');
+    } finally {
+      timezone.mockRestore();
+    }
+  });
+
   it('정해 둔 매장은 제안 배너가 없다', () => {
     render(<MyHoursScreen />);
     expect(screen.queryByText('매장 시간대를 정해 주세요')).toBeNull();
