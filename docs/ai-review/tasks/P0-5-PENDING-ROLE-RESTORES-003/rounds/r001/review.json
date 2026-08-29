@@ -1,0 +1,173 @@
+{
+  "schema_version": "2.0",
+  "task_id": "P0-5-PENDING-ROLE-RESTORES-003",
+  "reviewer_role": "FABLE-SEC",
+  "review_mode": "RECHECK",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "8466d12f20572c4590c5678f96130d080cd717ef",
+  "target_commit_sha": "515845aa9c382c41f456bd9cf3a04e30b63ef608",
+  "target_tree_oid": "e3c580d44242081d349425e59b5d4b3ee99cbc96",
+  "agents_blob_oid": "bf9b9aeccabdc1055005c7f9bcb188ed8c05eb2a",
+  "agents_sha256": "485c7cb1cbb9143748a6028393723986201d9ff944ad9d3127e5c5f6f243c531",
+  "task_sha256": "b8b3b29a2a1b5d61349c9a937eff73850b9f53689f3bb09681cba99e9abb15b6",
+  "collaboration_sha256": "733a9c760dbd9d29b83921222499fb15beda716a9ba3375b9ad3fadd3917ea42",
+  "input_files_sha256": "3debd47989eb7d155b49133348453bd1237a0f6b1f93d48be8bf527e5c2dbb35",
+  "schema_sha256": "a903be542752bdf90fbbd49657860a7ec175f6ddd987a6295194d1f3bb1c85e0",
+  "runner_sha256": "dc78d5183405344a2fcadf9b4db56734b7cae60ab88385d857fd02e0d434c633",
+  "verdict": "PASS",
+  "summary": "predecessor r001의 Finding 네 건을 같은 ID·severity·category로 재검수했고 모두 target `515845a`에서 충족돼 VERIFIED로 판정한다.\n\n① SEC-001(0144 매장 의존): 사후 확인 DO 블록에서 authenticated 전환 → `current_user` 확인 → `business_day_revisions` insert 거부(sqlerrm에 표 이름 필수) → `set local role %I` 명시 복원 → 복원 사후조건 검사가 179~200행으로 옮겨져 `select id into v_store … if v_store is null then return`(202~203행)보다 앞에 놓였다. fresh DB·매장 0개 스테이징에서도 반드시 실행된다. 증거 문서 276~292행은 `0143`까지 올린 일회용 DB에서 `stores=0`을 확인하고 `LOGIN NOINHERIT` 역할 체인(`cli_p0144_probe → set role postgres`)으로 0144를 적용해 전후 `current_user=postgres` 관측값을 기록했으며, 183행의 자체 단언이 통과했으므로 전환 분기가 실제 실행됐음이 증명된다.\n\n② SEC-002(판본 결속): 증거 문서 299~310행의 10개 migration blob OID·SHA-256 표를 이번 입력 manifest(target `515845a`)와 대조한 결과 10개 모두 정확히 일치한다. predecessor 검수 target `8466d12`의 blob과 비교하면 0137·0144·0145 세 파일만 바뀌었고(문서 314행 기술과 일치), 0138·0139·0150·0151·0158·0163·0165는 동일하다. `git diff --name-only 9e4f502..022b476 -- migrations`가 10개뿐이며 0001~0136이 포함되지 않음도 기록됐다. 구현 commit `022b476`과 target 사이의 차이는 blob 동일성으로 결속된다.\n\n③ SEC-003(0137 분리자): 246~247행이 `pg_get_functiondef` 결과의 CRLF를 LF로 정규화한 뒤 `chr(10)`으로 분리하도록 바뀌어 checkout 줄끝과 무관하다.\n\n④ SEC-004(0145 치환 무효): 229~232행이 `v_old || chr(10) || '       and v_status <> ''closed'''` 두 줄 결합 anchor의 존재를 먼저 확인하고 없으면 예외로 중단한다. 0139가 `concat_ws(chr(10), …)`로 같은 두 줄(267~268행, 7칸 들여쓰기)을 LF로 넣으므로 첫 적용은 일치하고, 226행의 조기 return으로 재적용 계약도 유지된다.\n\n세 파일의 변경은 사후 확인·표식 검사에 국한돼 제품 계산·RPC·원장·판본 계약을 바꾸지 않는다. 증거 문서 316~329행은 정확한 구현 commit clean checkout에서 verify 6/6·업그레이드 9/9·`fresh_%` 0개를 기록했고, 스테이징은 `0136`까지·보정 미적용·운영 미접근이라는 실패 폐쇄 상태를 정직하게 적었다(264~265행, 328~329행).\n\nPASS는 로컬 검수 통과일 뿐이며 스테이징 재적용·원격 ACL audit(P1-1:REMOTE-ACL-AUDIT)·보호 CI 게이트는 여전히 OPEN이다. 새 Finding은 없다.",
+  "findings": [
+    {
+      "finding_id": "P0-5-PRR-002-SEC-001",
+      "severity": "Minor",
+      "review_state": "VERIFIED",
+      "category": "TEST_GAP",
+      "requirement_or_invariant_ids": [
+        "AGENTS:local-verification-gate",
+        "WORK-QUEUE:P0-5"
+      ],
+      "evidence": [
+        {
+          "path": "packages/db/supabase/migrations/20260826000144_amend_foundation.sql",
+          "line_start": 179,
+          "line_end": 200,
+          "observation": "authenticated 전환 → current_user 확인 → business_day_revisions insert 거부(sqlerrm에 표 이름 필수) → `set local role %I` 명시 복원 → 복원 사후조건 검사가 매장 조회보다 앞으로 옮겨졌다."
+        },
+        {
+          "path": "packages/db/supabase/migrations/20260826000144_amend_foundation.sql",
+          "line_start": 202,
+          "line_end": 203,
+          "observation": "`select id into v_store … if v_store is null then return`이 역할 검사 뒤에 위치해, 매장 0개에서도 역할 전환·복원 경로가 실행된 뒤에만 조기 반환한다."
+        },
+        {
+          "path": "docs/ai-review/evidence/P0-5-RPC-LEAST-PRIVILEGE-001.md",
+          "line_start": 276,
+          "line_end": 292,
+          "observation": "0143까지 적용한 일회용 DB에서 `stores=0` 확인 후 LOGIN NOINHERIT 역할 체인으로 0144를 적용해 `before|cli_p0144_probe|postgres|stores=0` / `after|cli_p0144_probe|postgres|stores=0` 관측값을 기록했고 0145 첫 적용·재적용도 통과했다."
+        }
+      ],
+      "impact": "수용 기준 두 번째 항(검사를 매장 조건 앞으로 이동 + fresh DB 전체 migration·verify 6/6 재통과)과 첫 번째 항(매장 0개 역할 체인 관측값)이 모두 충족됐다. 0144의 183행 자체 단언이 통과했으므로 전환 분기가 실제로 실행됐음이 증명된다.",
+      "acceptance_criteria": [
+        "증거 문서에 0144 집중 시험 당시 `stores` 행이 존재해 `set local role authenticated` 분기가 실제 실행·복원됐음을 관측값(전환 전후 current_user)과 함께 기록한다.",
+        "또는 0144 사후 확인에서 감사 기록 쓰기 거부·역할 복원 검사를 `if v_store is null then return` 앞으로 옮겨 매장 유무와 무관하게 실행되게 하고, 그 상태에서 fresh DB 전체 migration과 verify 6/6을 다시 통과시킨다."
+      ],
+      "required_tests": [
+        "NOINHERIT 로그인 역할 체인 + 매장 1개가 있는 일회용 DB에서 0144 단독 적용 뒤 current_user 복원 확인",
+        "매장이 없는 fresh DB에서 0144 적용 시 역할 전환 분기 실행 여부를 notice 또는 관측값으로 확인"
+      ],
+      "previous_finding_id": "P0-5-PRR-002-SEC-001",
+      "verified_by_engine": "FABLE"
+    },
+    {
+      "finding_id": "P0-5-PRR-002-SEC-002",
+      "severity": "Minor",
+      "review_state": "VERIFIED",
+      "category": "DATA_INTEGRITY",
+      "requirement_or_invariant_ids": [
+        "AGENTS:local-verification-gate",
+        "AGENTS:hosted-staging-only",
+        "WORK-QUEUE:P0-5"
+      ],
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/P0-5-RPC-LEAST-PRIVILEGE-001.md",
+          "line_start": 294,
+          "line_end": 310,
+          "observation": "보정 migration 10개의 Git blob OID·SHA-256 표. 이번 입력 manifest(target 515845a)의 10개 값과 정확히 일치한다 — 0137 `8f99fe4b…`, 0144 `194d5017…`, 0145 `a94f3d7c…`, 나머지 7개는 predecessor target과 동일."
+        },
+        {
+          "path": "docs/ai-review/evidence/P0-5-RPC-LEAST-PRIVILEGE-001.md",
+          "line_start": 312,
+          "line_end": 314,
+          "observation": "`git diff --name-only 9e4f502..022b476 -- migrations` 결과가 위 10개와 같고 0001~0136이 포함되지 않으며, 8466d12 이후 변경은 0137·0144·0145뿐임을 명시했다. predecessor 표의 OID와 대조해 사실임을 확인했다."
+        },
+        {
+          "path": "docs/ai-review/evidence/P0-5-RPC-LEAST-PRIVILEGE-001.md",
+          "line_start": 316,
+          "line_end": 329,
+          "observation": "정확한 구현 commit clean checkout에서 verify 6/6·업그레이드 9/9·fresh_% 0개를 기록했고, 스테이징 재적용·원격 audit 완료를 뜻하지 않는다고 적었다."
+        }
+      ],
+      "impact": "검수 target·구현 commit·baseline 사이의 migration 변경 범위가 blob OID·SHA-256으로 결속돼 문서만으로 '정확한 commit에서 verify 6/6'과 '스테이징 적용분 불변'을 판정할 수 있다.",
+      "acceptance_criteria": [
+        "증거 문서에 10개 보정 migration의 Git blob OID·SHA-256 표를 추가하고, `e41a927`과 검수 target `8466d12`에서 blob이 동일함(target과의 차이는 docs·장부뿐)을 명시한다.",
+        "`git diff --name-only 9e4f502..<target> -- packages/db/supabase/migrations` 결과가 정확히 10개 파일이며 0001~0136이 포함되지 않음을 문서에 기록한다."
+      ],
+      "required_tests": [
+        "git ls-tree로 두 commit의 10개 migration blob OID 비교",
+        "baseline↔target migration diff 파일 목록 확인"
+      ],
+      "previous_finding_id": "P0-5-PRR-002-SEC-002",
+      "verified_by_engine": "FABLE"
+    },
+    {
+      "finding_id": "P0-5-PRR-002-SEC-003",
+      "severity": "Improvement",
+      "review_state": "VERIFIED",
+      "category": "CODE",
+      "requirement_or_invariant_ids": [
+        "WORK-QUEUE:P0-5"
+      ],
+      "evidence": [
+        {
+          "path": "packages/db/supabase/migrations/20260826000137_close_due_cron.sql",
+          "line_start": 246,
+          "line_end": 247,
+          "observation": "`regexp_split_to_table(replace(pg_get_functiondef(p.oid), chr(13) || chr(10), chr(10)), chr(10))`로 바뀌어 raw 개행 대신 CRLF 정규화 + chr(10) 분리를 쓴다."
+        }
+      ],
+      "impact": "주석 제외 필터가 checkout 줄끝과 무관하게 동작한다. 검사 로직만 바뀌고 함수 정의·계약은 그대로다.",
+      "acceptance_criteria": [
+        "분리자를 `chr(10)`으로 바꾸고 `pg_get_functiondef` 결과의 CRLF를 LF로 정규화한 뒤 분리한다."
+      ],
+      "required_tests": [
+        "LF·CRLF clean checkout에서 0137 첫 적용 통과"
+      ],
+      "previous_finding_id": "P0-5-PRR-002-SEC-003",
+      "verified_by_engine": "FABLE"
+    },
+    {
+      "finding_id": "P0-5-PRR-002-SEC-004",
+      "severity": "Improvement",
+      "review_state": "VERIFIED",
+      "category": "CODE",
+      "requirement_or_invariant_ids": [
+        "AGENTS:server-calculation-authority",
+        "WORK-QUEUE:P0-5"
+      ],
+      "evidence": [
+        {
+          "path": "packages/db/supabase/migrations/20260826000145_amend_ended_business_day.sql",
+          "line_start": 226,
+          "line_end": 234,
+          "observation": "첫 줄 부재 시 조기 return(재적용 계약)을 유지한 채, 두 줄 결합 anchor `v_old || chr(10) || '       and v_status <> ''closed'''` 부재 시 예외로 중단한 뒤에만 치환을 실행한다."
+        },
+        {
+          "path": "packages/db/supabase/migrations/20260826000139_close_method_and_deadline.sql",
+          "line_start": 267,
+          "line_end": 268,
+          "observation": "0139가 `concat_ws(chr(10), …)`로 넣는 두 줄이 0145 anchor와 동일한 텍스트·들여쓰기(7칸)이며 LF로 결합되므로 첫 적용 시 정확히 일치한다."
+        }
+      ],
+      "impact": "치환 무효가 조용히 통과하는 경로가 사라져 기한 검사의 역할 조건 제거가 보장되거나 migration이 중단된다.",
+      "acceptance_criteria": [
+        "두 줄 결합 anchor의 존재를 먼저 확인해 없으면 예외로 중단하거나, 치환 후 `current_user in` 줄이 save_sale 코드 줄에 남아 있지 않음을 사후 확인에 추가한다."
+      ],
+      "required_tests": [
+        "0139→0145 순서 첫 적용과 0145 재적용 통과",
+        "DB 스위트 26번(기한 경과 시 저장 거부) 통과"
+      ],
+      "previous_finding_id": "P0-5-PRR-002-SEC-004",
+      "verified_by_engine": "FABLE"
+    }
+  ],
+  "proposed_edits": [],
+  "closed_finding_ids": [],
+  "reopened_finding_ids": [],
+  "remaining_required_finding_ids": [],
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}
