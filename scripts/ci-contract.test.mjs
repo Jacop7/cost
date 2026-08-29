@@ -13,6 +13,7 @@ has('bash packages/db/scripts/admin-acl.sh --local postgres check');
 has('run: pnpm verify\n');
 has('protected-gate:');
 has('needs: [verify, full-db-required]');
+has('if: always()');
 has('name: protected-gate');
 has('node scripts/protected-gate-validator.mjs --ci --output protected-gate-evidence.json');
 has('name: protected-gate-${{ github.sha }}');
