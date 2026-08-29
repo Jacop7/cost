@@ -1,0 +1,179 @@
+{
+  "schema_version": "2.0",
+  "task_id": "P0-5-0135-ANON-SWITCH-001",
+  "reviewer_role": "FABLE-SEC",
+  "review_mode": "SECURITY",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "9559b3bd7b7205663b067edfc5367bbfd5623d21",
+  "target_commit_sha": "03cd3634f18e1d2314c204fcfd7a33bb0c385ccc",
+  "target_tree_oid": "81dace7e07c0c8ec8d753cf6fba88e695df0ce59",
+  "agents_blob_oid": "bf9b9aeccabdc1055005c7f9bcb188ed8c05eb2a",
+  "agents_sha256": "485c7cb1cbb9143748a6028393723986201d9ff944ad9d3127e5c5f6f243c531",
+  "task_sha256": "6aff8a3994294e0266e4c22e607f93a36f8a8c225ed4ba6950f0f7dce250bd20",
+  "collaboration_sha256": "402b6d4a54d94e793df7d96276fda581902788d2224202419e5cb3aa15495a41",
+  "input_files_sha256": "33cfb34cd1c4fb4b0bb3726c353c2c39c0d8a7bda1e2cdf7cbbfa59715ec3ee3",
+  "schema_sha256": "a903be542752bdf90fbbd49657860a7ec175f6ddd987a6295194d1f3bb1c85e0",
+  "runner_sha256": "dc78d5183405344a2fcadf9b4db56734b7cae60ab88385d857fd02e0d434c633",
+  "verdict": "CHANGES_REQUIRED",
+  "summary": "0135 사후 확인 블록의 anon 전환 판별력 보정은 보안 관점에서 올바르다. `set local role anon`(l.141)이 예외 서브블록 밖으로 나왔으므로 전환 자체의 42501은 더 이상 `v_ok`를 세우지 못하고 migration을 즉시 중단시키며, `current_user <> 'anon'` 사후조건(l.142-144)이 남은 틈을 막는다. `v_ok`를 true로 바꿀 수 있는 유일한 경로는 서브블록 안의 `perform public.purge_entity_changes()`(l.145-149)뿐이라 공허한 통과는 제거됐다. 서브트랜잭션 의미론도 맞다 — role GUC를 서브블록 이전에 바꿨으므로 42501 롤백이 role을 되돌리지 않고, `set local role %I` 명시 복원과 복원 사후조건(l.153-156)이 `session_user`가 아닌 시작 역할로 돌아간다. SET ROLE 멤버십은 session_user 기준으로 검사되므로 login(NOINHERIT)→postgres→anon→postgres 체인은 login이 postgres의, postgres가 anon의 멤버이면 성립한다. 파괴 경로 분석: l.146이 실제로 행을 지우려면 anon에 EXECUTE가 있어야 하는데 l.127-129 정적 검사가 그 전에 중단시키고, 설령 도달해도 `v_ok=false`로 l.157에서 예외가 나 migration 트랜잭션 전체가 롤백된다. anon·PUBLIC 회수(l.74-75, 82-85, 108-109)와 authenticated·service_role 실행 계약(l.77, 110, 133-135, 168-175)은 약화되지 않았다. 0136(참조)의 기본권한 보정과도 충돌하지 않는다.\n\n한계와 남은 항목: (1) 참조 경로 `P0-5-RPC-LEAST-PRIVILEGE-006/r002/candidate-review.json`은 스냅샷에 실체화되지 않아 읽지 못했고, 스냅샷에는 0135·0136만 있어 0001~0134 불변은 코드로 확인할 수 없고 증거 문서 진술에 의존한다. (2) 그 증거 문서의 새 절(l.112-138)은 verify 6/6, \"0135 한 파일뿐\" diff, 역할 체인 관측을 기술하지만 같은 문서의 앞 절(l.4-6, 67-76, 100)과 달리 commit SHA·blob OID·관측값을 전혀 결속하지 않았고 l.6의 \"기준 commit\"은 이 과제의 baseline과 다른 `817b6b3`이다 — Minor 1건으로 등록하고 결속 문안을 proposed_edits로 제안했다. (3) 개선 2건: 호스티드 세션 역할 체인 사전 관측(스테이징 재적용 전), 잡은 42501을 `sqlerrm`으로 청소 함수에 고정. Minor 1건이 남아 CHANGES_REQUIRED이며, 코드 자체의 보안 속성은 충족됐다.",
+  "findings": [
+    {
+      "finding_id": "P05-0135-EVIDENCE-SHA-BINDING-001",
+      "severity": "Minor",
+      "review_state": "OPEN",
+      "category": "POLICY",
+      "requirement_or_invariant_ids": [
+        "AGENTS:local-verification-gate",
+        "P05-SEC-0135-ANON-SWITCH-NONDISCRIMINATING",
+        "WORK-QUEUE:P0-5"
+      ],
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/P0-5-RPC-LEAST-PRIVILEGE-001.md",
+          "line_start": 112,
+          "line_end": 138,
+          "observation": "후속 보정 절이 정상·사보타주 역할 체인, 0134 DB에서의 0135 전체 실행, '0135 한 파일뿐' diff, verify 6/6을 진술하지만 commit SHA·0135 blob OID·관측된 session_user/current_user 값·확인 시각을 하나도 적지 않았다."
+        },
+        {
+          "path": "docs/ai-review/evidence/P0-5-RPC-LEAST-PRIVILEGE-001.md",
+          "line_start": 3,
+          "line_end": 6,
+          "observation": "문서 머리의 확인 시각·검증 commit·기준 commit(817b6b3)은 첫 구현 기준이며 이 과제의 baseline 9559b3b/target 03cd363과 다르다. 새 절의 '기준 commit'이 어느 SHA인지 문서만으로 판정할 수 없다."
+        },
+        {
+          "path": "docs/ai-review/evidence/P0-5-RPC-LEAST-PRIVILEGE-001.md",
+          "line_start": 67,
+          "line_end": 76,
+          "observation": "같은 문서의 앞 절은 Git blob OID와 SHA-256으로 파일을 결속하는 기준을 세웠다. 새 절은 이 기준보다 낮다."
+        },
+        {
+          "path": "AGENTS.md",
+          "line_start": 24,
+          "line_end": 25,
+          "observation": "제안이 공식 파일에 반영되고 '판본·실행 증거·재검수가 연결돼야' 현재 기준 후보가 된다는 정책. 판본 미결속 증거는 이 연결을 만들지 못한다."
+        },
+        {
+          "path": "COLLABORATION_LOG",
+          "line_start": 0,
+          "line_end": 0,
+          "observation": "과제 패킷 required_evidence 1·5는 session_user/current_user 관측값과 '0135 하나뿐' diff를 요구한다. 스냅샷에는 0135·0136만 실체화돼 0001~0134 불변을 코드로 검증할 수 없어 증거 문서 결속이 유일한 근거다."
+        }
+      ],
+      "impact": "이 과제의 보안 판정 근거(정상 체인 통과·사보타주 42501·0134 DB 전체 실행·verify 6/6·0001~0134 불변)가 어느 commit·blob에 대한 것인지 재현·감사할 수 없다. 스테이징 재적용과 P0-5-6 원격 audit가 이 문서를 근거로 진행되므로, 결속이 없으면 이후 수정본과 증거가 뒤섞여도 구분되지 않는다.",
+      "acceptance_criteria": [
+        "후속 보정 절에 baseline 9559b3bd7b7205663b067edfc5367bbfd5623d21, target 03cd3634f18e1d2314c204fcfd7a33bb0c385ccc, 0135 blob OID 8eb9f577adcf21e7a86c7d66146ae75e708dd340과 SHA-256을 명시한다.",
+        "정상 체인의 관측된 (session_user, current_user) 4단계와 사보타주 역할의 정확한 오류 문구·SQLSTATE를 실제 출력 그대로 적는다.",
+        "'기준 commit 이후 migration 변경 파일이 0135 하나뿐' 주장을 비교한 두 SHA와 함께 적고, 후속 보정 상태 verify 6/6의 확인 시각을 기록한다.",
+        "문서 머리(l.3-6)의 확인 시각·검증 commit이 최신 절과 일치하거나 절별 SHA로 구분된다."
+      ],
+      "required_tests": [
+        "Codex: 결속된 target SHA에서 0135 blob OID가 8eb9f577adcf21e7a86c7d66146ae75e708dd340인지 확인",
+        "Codex: baseline↔target 사이 packages/db/supabase/migrations 변경 파일 목록이 0135 하나인지 확인",
+        "Codex: 결속된 SHA에서 corepack pnpm verify 6/6과 fresh_% 잔여 0개 재실행"
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    },
+    {
+      "finding_id": "P05-0135-HOSTED-ROLE-CHAIN-PRECHECK-001",
+      "severity": "Improvement",
+      "review_state": "OPEN",
+      "category": "SECURITY",
+      "requirement_or_invariant_ids": [
+        "P1-1:REMOTE-ACL-AUDIT",
+        "P05-SEC-0135-ANON-SWITCH-NONDISCRIMINATING"
+      ],
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/P0-5-RPC-LEAST-PRIVILEGE-001.md",
+          "line_start": 91,
+          "line_end": 98,
+          "observation": "'CLI가 별도 NOINHERIT 로그인 역할로 접속한 뒤 postgres로 전환한다'는 원인 설명은 스테이징 실패 증상에서 추론한 것이며, 스테이징 세션의 session_user·current_user·anon 멤버십 실측값은 적혀 있지 않다."
+        },
+        {
+          "path": "packages/db/supabase/migrations/20260826000135_purge_and_anon_grants.sql",
+          "line_start": 141,
+          "line_end": 144,
+          "observation": "보정 코드는 이제 anon 전환 실패를 fail-closed로 처리한다. 호스티드 세션의 session_user가 anon 멤버십 체인(login→postgres→anon)을 갖지 않으면 0135가 여기서 중단돼 남은 40개 적용이 막힌다(의도된 안전 실패이지만 재적용 전 확인 가능)."
+        },
+        {
+          "path": "docs/브랜치-DB-운영-기획안.md",
+          "line_start": 284,
+          "line_end": 288,
+          "observation": "첫 원격 연결 절차는 current_user·rolsuper·supabase_admin 멤버십 관측을 요구한다. 같은 방식으로 anon 전환 가능성도 사전 관측하면 재적용 실패를 미리 알 수 있다."
+        }
+      ],
+      "impact": "스테이징 재적용이 0135 l.141에서 42501로 중단될지 여부가 실제 적용 시점에야 드러난다. 안전 방향(fail-closed)이라 보안 위험은 아니지만 배포 계획 가시성이 낮다.",
+      "acceptance_criteria": [
+        "스테이징 재적용 계획 단계에서 같은 접속 경로로 session_user, current_user, pg_has_role(session_user,'anon','member'), pg_has_role(session_user,'postgres','member')를 읽기 전용으로 관측해 기록한다.",
+        "관측 결과 anon 전환이 불가능하면 0135를 적용하기 전에 별도 결정으로 회부한다."
+      ],
+      "required_tests": [
+        "스테이징 읽기 전용 세션에서 위 4개 값 조회(변경 없음)"
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    },
+    {
+      "finding_id": "P05-0135-DENIAL-SOURCE-PIN-001",
+      "severity": "Improvement",
+      "review_state": "OPEN",
+      "category": "TEST_GAP",
+      "requirement_or_invariant_ids": [
+        "P05-SEC-0135-ANON-SWITCH-NONDISCRIMINATING"
+      ],
+      "evidence": [
+        {
+          "path": "packages/db/supabase/migrations/20260826000135_purge_and_anon_grants.sql",
+          "line_start": 145,
+          "line_end": 149,
+          "observation": "서브블록은 SQLSTATE 42501 전체를 받는다. 전환 실패는 이미 분리됐지만, 스키마 USAGE 거부 등 청소 함수 EXECUTE가 아닌 다른 42501도 여전히 성공으로 센다. 정적 검사(l.127-129)가 EXECUTE 속성을 별도로 고정하므로 보안 속성 자체는 유지된다."
+        }
+      ],
+      "impact": "행동 증거가 '청소 함수 실행 거부'가 아니라 '어떤 권한 거부'를 증명하는 수준에 머문다. 정적 검사와 결합하면 보안 결론은 유지되므로 차단 사유는 아니다.",
+      "acceptance_criteria": [
+        "insufficient_privilege 처리에서 sqlerrm에 'purge_entity_changes'가 포함될 때만 v_ok를 세우고, 그렇지 않으면 원문 메시지를 포함해 예외로 중단한다.",
+        "로컬 fresh DB와 업그레이드 경로에서 0135가 그대로 통과한다."
+      ],
+      "required_tests": [
+        "anon의 public 스키마 USAGE를 일시 회수한 사보타주에서 0135가 '청소 함수가 아닌 곳'으로 실패하는지 확인 후 원복"
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    }
+  ],
+  "proposed_edits": [
+    {
+      "edit_id": "P05-0135-EVIDENCE-BIND-EDIT-001",
+      "path": "docs/ai-review/evidence/P0-5-RPC-LEAST-PRIVILEGE-001.md",
+      "anchor": "### anon 전환과 실행 거부를 분리한 후속 보정",
+      "operation": "ADD",
+      "proposed_text": "\n- 기준 commit: `9559b3bd7b7205663b067edfc5367bbfd5623d21`\n- 후속 보정 target commit: `03cd3634f18e1d2314c204fcfd7a33bb0c385ccc`\n- `20260826000135_purge_and_anon_grants.sql` Git blob OID: `8eb9f577adcf21e7a86c7d66146ae75e708dd340`, SHA-256: `c9a12f03b7a16431479eb8fa26c37cbd40c999257174f1f689df1299836a0865`\n- 기준↔target 사이 `packages/db/supabase/migrations` 변경 파일: `20260826000135_purge_and_anon_grants.sql` 1개 (`git diff --name-only 9559b3b..03cd363 -- packages/db/supabase/migrations` 결과)\n- 후속 보정 상태 `corepack pnpm verify` 6/6 확인 시각: `<작성자가 실제 실행 시각으로 채움>`\n\n정상 체인 관측값(`select session_user, current_user` 실제 출력):\n\n| 단계 | session_user | current_user |\n|---|---|---|\n| 접속 직후 | `cli_role_chain_probe` | `cli_role_chain_probe` |\n| `set role postgres` | `cli_role_chain_probe` | `postgres` |\n| `set local role anon` | `cli_role_chain_probe` | `anon` |\n| `set local role postgres` (0135 복원) | `cli_role_chain_probe` | `postgres` |\n\n사보타주 관측값: `cli_anon_switch_probe`(postgres 미부여)에서 `set local role anon` → `ERROR: permission denied to set role \"anon\"` (SQLSTATE `42501`), 0135는 l.141에서 중단되고 `v_ok`는 설정되지 않음.\n",
+      "rationale": "required_evidence 1·5와 AGENTS.md l.24-25의 판본 연결 요구를 충족하도록 SHA·blob·관측값을 결속한다. SHA·blob 값은 과제 패킷의 확정값이며, 표의 관측값은 문서 l.126-132 진술을 옮긴 것이므로 작성자가 실제 출력과 다르면 실제 값으로 교체해야 한다.",
+      "finding_ids": [
+        "P05-0135-EVIDENCE-SHA-BINDING-001"
+      ]
+    },
+    {
+      "edit_id": "P05-0135-DENIAL-PIN-EDIT-001",
+      "path": "packages/db/supabase/migrations/20260826000135_purge_and_anon_grants.sql",
+      "anchor": "  exception when insufficient_privilege then",
+      "operation": "REPLACE",
+      "proposed_text": "  exception when insufficient_privilege then\n    -- 스키마 USAGE 거부 같은 다른 42501과 구분해, 청소 함수의 실행 거부만 센다.\n    if position('purge_entity_changes' in sqlerrm) = 0 then\n      raise exception '0135: anon 권한 거부가 청소 함수가 아닌 곳에서 났습니다: %', sqlerrm;\n    end if;",
+      "rationale": "잡은 42501이 purge_entity_changes EXECUTE 거부임을 메시지로 고정해 행동 증거의 특이성을 높인다. 다음 줄 `v_ok := true;`는 그대로 둔다. 0135는 스테이징 미적용이라 제자리 수정 가능(브랜치-DB-운영-기획안 §4.2 l.215-217).",
+      "finding_ids": [
+        "P05-0135-DENIAL-SOURCE-PIN-001"
+      ]
+    }
+  ],
+  "closed_finding_ids": [],
+  "reopened_finding_ids": [],
+  "remaining_required_finding_ids": [
+    "P05-0135-EVIDENCE-SHA-BINDING-001"
+  ],
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}
