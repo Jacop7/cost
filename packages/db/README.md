@@ -142,6 +142,7 @@ corepack pnpm db:deploy:staging:apply
 운영은 `SIKJAE_PRODUCTION_PROJECT_REF`와 `db:deploy:production:plan` / `db:deploy:production:apply`를
 사용한다. 가드는 실제 링크 ref, 깨끗한 `main`, `origin/main`, 승인 SHA와 동일 SHA의
 `protected-gate` 성공을 모두 확인한다. 계획 모드도 DB를 바꾸지 않는 `--dry-run`만 수행하고 출력만
-남긴다. 실제 적용이 성공하면 `docs/deployments/`에 `status: APPLIED` 기록이 생성된다.
+남긴다. 링크를 대조한 뒤 CLI에도 같은 `--project-ref`를 명시하므로 검증 뒤 재링크가 대상을 바꾸지
+못한다. 실제 적용이 성공하면 `docs/deployments/`에 `status: APPLIED` 기록이 생성된다.
 
 프로젝트 링크·접속 자격·스테이징 검증·백업/복구 확인 없이 적용 명령을 실행하지 않는다.

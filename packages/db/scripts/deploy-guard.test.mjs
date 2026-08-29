@@ -33,8 +33,15 @@ rejects('다른 SHA의 protected gate 거부', { protectedGate: { sha: 'd'.repea
 rejects('실패 protected gate 거부', { protectedGate: { sha, conclusion: 'failure' } }, /protected-gate/);
 ok('정확한 main·SHA·gate 수용', () => assert.equal(validateDeployContext(good).sha, sha));
 ok('확인 문구가 대상·ref·SHA를 모두 묶는다', () => assert.equal(confirmationPhrase({ target: 'production', projectRef: ref, sha }), `APPLY:production:${ref}:${sha}`));
-ok('plan은 list와 dry-run뿐', () => assert.deepEqual(deploymentCommands('plan'), [['migration', 'list', '--linked'], ['db', 'push', '--linked', '--dry-run']]));
-ok('apply는 계획 뒤 적용·재대조', () => assert.equal(deploymentCommands('apply').length, 5));
+ok('plan은 ref가 고정된 list와 dry-run뿐', () => assert.deepEqual(deploymentCommands('plan', ref), [
+  ['migration', 'list', '--project-ref', ref],
+  ['db', 'push', '--project-ref', ref, '--dry-run'],
+]));
+ok('apply는 같은 ref의 계획 뒤 적용·재대조', () => {
+  const commands = deploymentCommands('apply', ref);
+  assert.equal(commands.length, 5);
+  assert(commands.every((command) => command.includes(ref)));
+});
 ok('dry-run에서 저장소 migration 파일만 추린다', () => assert.deepEqual(pendingMigrationFiles('Apply 20260801000001 and 20260801000003', [
   '20260801000001_one.sql', '20260801000002_two.sql', '20260801000003_three.sql',
 ]), ['20260801000001_one.sql', '20260801000003_three.sql']));
