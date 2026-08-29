@@ -86,9 +86,9 @@ Docker DB가 없는 환경에서는 아래 범위만 확인할 수 있다. 출�
 corepack pnpm verify --no-db
 ```
 
-GitHub Actions는 Node `20.19.4`·`24`에서 이 `--no-db` 범위를 실행한다. 새 DB와 업그레이드 경로는
-아직 로컬 관리 게이트이며, 이를 병합 필수 CI로 옮기는 작업은
-[작업큐 P0-2](./docs/작업큐.md#p0-2-db-전체-검증을-병합-필수-체크로-이전)에 남아 있다.
+GitHub Actions는 Node `20.19.4`·`24`에서 이 빠른 범위를 실행한다. 별도 `full-db-required` job은
+격리된 Supabase를 띄워 `pnpm verify` 6/6(새 DB·경합·parity·업그레이드 포함)을 실행하며,
+둘 다 성공한 정확한 SHA에만 `protected-gate`가 붙는다. `main` ruleset은 이 context를 필수로 요구한다.
 
 ## 핵심 데이터 규칙
 

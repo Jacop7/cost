@@ -2960,7 +2960,7 @@ function assertFallbackLearningAssignment(sourceTask, task, contract) {
   }
 }
 
-function assertClosureExecutionBlocked(repoRoot, task) {
+function assertClosureExecutionReady(repoRoot, task) {
   if (!task.closure_contract) return;
   assertGitAncestor(
     repoRoot,
@@ -2968,10 +2968,90 @@ function assertClosureExecutionBlocked(repoRoot, task) {
     task.target_commit_sha,
     'closure decision commit',
   );
-  throw new ReviewError(
-    'closure successor 계약은 유효하지만 P0-2 보호 원격 validator 결합 전에는 실행할 수 없습니다.',
-    { exitCode: 65 },
+  const validator = spawnSync(process.execPath, [
+    join(repoRoot, 'scripts', 'protected-gate-validator.mjs'),
+    '--closure-task', task.task_id,
+  ], { cwd: repoRoot, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
+  if (validator.status !== 0) {
+    const detail = String(validator.stderr || validator.stdout || '보호 원격 증거 검증 실패').trim();
+    throw new ReviewError(`closure 보호 원격 증거를 확인하지 못했습니다: ${detail}`, { exitCode: 65 });
+  }
+}
+
+function loadPinnedClosureReview({ repoRoot, runtime, task }) {
+  const contract = task.closure_contract;
+  if (!contract) return null;
+  const sourceDir = materializeTaskFromCommit(
+    repoRoot,
+    runtime,
+    contract.decision_commit_sha,
+    contract.from_task_id,
   );
+  try {
+    const sourceTaskRaw = readBounded(join(sourceDir, 'task.json'), 'closure predecessor task.json');
+    const sourceTask = validateTask(parseJson(sourceTaskRaw, 'closure predecessor task.json'), contract.from_task_id);
+    if (
+      sourceTask.route !== task.route
+      || sourceTask.reviewer_role !== task.reviewer_role
+      || sourceTask.author_role !== task.author_role
+      || sourceTask.verifier_role !== task.verifier_role
+      || sourceTask.gate_owner !== task.gate_owner
+    ) {
+      throw new ReviewError('closure successor가 원 route·역할을 바꿨습니다.', { exitCode: 75, runState: 'STALE' });
+    }
+    for (const field of ['artifact_paths', 'reference_paths', 'excluded_paths']) {
+      if (!sameJsonValue(sourceTask[field], task[field])) {
+        throw new ReviewError(`closure successor의 ${field} 범위가 predecessor와 다릅니다.`, {
+          exitCode: 75,
+          runState: 'STALE',
+        });
+      }
+    }
+    const ordinary = loadPinnedPredecessorReview({ repoRoot, runtime, task: sourceTask });
+    const fallback = loadPinnedFallbackReview({ repoRoot, runtime, task: sourceTask });
+    if (ordinary && fallback) throw new ReviewError('closure predecessor의 승계 계약이 중복됐습니다.', { exitCode: 75, runState: 'STALE' });
+    const inherited = fallback ?? ordinary;
+    const roundsDir = join(sourceDir, 'rounds');
+    const names = readdirSync(roundsDir);
+    const rounds = names.filter((name) => /^r\d{3}$/.test(name)).sort();
+    if (names.some((name) => /^\.r\d{3}\.stage-/.test(name)) || rounds.at(-1) !== contract.from_round) {
+      throw new ReviewError('closure predecessor 회차는 stage 없는 최신 공개 회차여야 합니다.', { exitCode: 75, runState: 'STALE' });
+    }
+    const roundNumber = Number(contract.from_round.slice(1));
+    const loaded = previousResult(
+      join(roundsDir, `r${String(roundNumber + 1).padStart(3, '0')}`),
+      roundNumber + 1,
+      sourceTask,
+      inherited,
+    );
+    const record = loaded.history.find((item) => item.roundName === contract.from_round);
+    if (!record || record.run.run_state !== 'RESULT_RECEIVED'
+      || record.runHash !== contract.from_run_sha256 || record.hash !== contract.from_review_sha256) {
+      throw new ReviewError('closure predecessor의 review/run pin이 다릅니다.', { exitCode: 75, runState: 'STALE' });
+    }
+    const registryFindings = [...loaded.registryFindings]
+      .sort((left, right) => left.finding_id.localeCompare(right.finding_id));
+    const registryHash = sha256(canonicalFindingRegistryRaw(registryFindings));
+    if (registryHash !== contract.finding_registry_sha256) {
+      throw new ReviewError('closure predecessor의 Finding registry hash가 다릅니다.', { exitCode: 75, runState: 'STALE' });
+    }
+    if (record.review.remaining_required_finding_ids.length !== 0) {
+      throw new ReviewError('closure predecessor에 필수 미해결 Finding이 남았습니다.', { exitCode: 75, runState: 'STALE' });
+    }
+    return {
+      contract: { ...contract, task_id: contract.from_task_id, round: contract.from_round },
+      value: loaded.value,
+      raw: loaded.raw,
+      reviewHash: record.hash,
+      runHash: record.runHash,
+      manifest: record.manifest,
+      registryFindings,
+      registryHash,
+      collaborationRaw: readBounded(join(sourceDir, 'collaboration.md'), 'closure predecessor collaboration.md'),
+    };
+  } finally {
+    rmSync(sourceDir, { recursive: true, force: true });
+  }
 }
 
 function fallbackFailureDisposition(engine, classification) {
@@ -5060,7 +5140,7 @@ async function executeReview(args) {
     const engineContract = task.protocol_version === '1.2'
       ? task.engine_contract
       : { engine: PRIMARY_REVIEWER_ENGINE, model: PRIMARY_MODEL_ID, fallback: null };
-    assertClosureExecutionBlocked(repoRoot, task);
+    assertClosureExecutionReady(repoRoot, task);
     if (
       engineContract.fallback
       && Number(args.maxBudgetUsd) > Number(engineContract.fallback.remaining_usd)
@@ -5069,10 +5149,11 @@ async function executeReview(args) {
     }
     const ordinaryPredecessor = loadPinnedPredecessorReview({ repoRoot, runtime, task });
     const fallbackPredecessor = loadPinnedFallbackReview({ repoRoot, runtime, task });
-    if (ordinaryPredecessor && fallbackPredecessor) {
-      throw new ReviewError('일반 successor와 fallback successor 계약을 동시에 사용할 수 없습니다.', { exitCode: 65 });
+    const closurePredecessor = loadPinnedClosureReview({ repoRoot, runtime, task });
+    if ([ordinaryPredecessor, fallbackPredecessor, closurePredecessor].filter(Boolean).length > 1) {
+      throw new ReviewError('일반·fallback·closure successor 계약을 동시에 사용할 수 없습니다.', { exitCode: 65 });
     }
-    const predecessor = fallbackPredecessor ?? ordinaryPredecessor;
+    const predecessor = closurePredecessor ?? fallbackPredecessor ?? ordinaryPredecessor;
     if (LEGACY_UNARCHIVED_ROUNDS.has(task.task_id)) {
       throw new ReviewError(
         `${task.task_id}는 무-archive 역사 기록으로 종결되어 새 회차를 실행할 수 없습니다. 새 Task ID를 사용하세요.`,
@@ -5352,6 +5433,7 @@ async function executeReview(args) {
           mode,
           inputFiles,
           previous,
+          allowClosedTransitions: Boolean(task.closure_contract),
           validationDiagnostics,
         });
       } catch (error) {
@@ -6264,12 +6346,13 @@ function runSelfTests() {
     );
   });
 
-  test('closure-successor-halts-before-p0-2', () => {
+  test('closure-successor-requires-protected-evidence', () => {
     const head = git(['rev-parse', 'HEAD'], SCRIPT_ROOT);
-    expectReviewError(() => assertClosureExecutionBlocked(SCRIPT_ROOT, {
+    expectReviewError(() => assertClosureExecutionReady(SCRIPT_ROOT, {
+      task_id: 'SELF-CLOSURE-NO-EVIDENCE-001',
       target_commit_sha: head,
       closure_contract: { decision_commit_sha: head },
-    }), { exitCode: 65, messageIncludes: 'P0-2 보호 원격 validator' });
+    }), { exitCode: 65, messageIncludes: 'closure 보호 원격 증거' });
   });
 
   test('opus-failure-is-fallback-unavailable', () => {

@@ -34,7 +34,8 @@
 
 1. 병합 전 저장소를 다시 측정했다: `main` 대비 189커밋, 마이그레이션 161개(~0172), DB 회귀
    시험 32개. 병합 후 결과는 §9.1에 갱신했다.
-2. `pnpm verify`의 로컬 6단계와 GitHub Actions의 `--no-db` 4단계를 구분했다.
+2. `pnpm verify`의 6단계를 로컬과 GitHub Actions `full-db-required`에서 실행하고,
+   Node 20.19.4·24의 `--no-db` 4단계 빠른 검사와 구분했다.
 3. 운영 DB 적용 여부를 단정하지 않고 원격 프로젝트 링크와 `migration list` 확인 전까지
    **미확인**으로 명시했다.
 4. `main`이 직접 조상임을 확인하고 squash/rebase 없는 **fast-forward 병합**을 완료했다.
@@ -231,14 +232,10 @@ acceptance:
 ⑥ 웹 번들
 ```
 
-GitHub Actions는 현재 Node 20.19.4·24에서 `pnpm verify --no-db`를 실행한다. 따라서 ①, ②의
-core/mobile, ③, ⑥만 실행하며 **④ 새 DB와 ⑤ 업그레이드는 CI에서 돌지 않는다**. “CI 통과”를
-“전체 6단계 통과”로 표현하지 않는다.
-
-공개 서비스 전에는 다음 중 하나로 ④·⑤도 병합 필수 체크로 옮긴다.
-
-1. CI에서 로컬 Supabase 스택을 기동한다.
-2. 관리된 self-hosted runner에서 전체 `pnpm verify`를 실행한다.
+GitHub Actions는 Node 20.19.4·24에서 `pnpm verify --no-db` 빠른 검사를 실행하고, 별도
+`full-db-required` job이 격리된 Supabase에서 `pnpm verify` 6단계를 실행한다. `protected-gate`는
+두 선행 job이 모두 성공한 정확한 SHA에만 성공하며, `main` ruleset의 유일한 required context다.
+`--no-db` 결과만을 전체 6단계 통과라고 표현하지 않는 원칙은 그대로 유지한다.
 
 그전까지 PR에는 로컬 전체 검증 실행 환경·시각·결과를 기록한다.
 
@@ -335,7 +332,7 @@ outbox 생성·Queue enqueue·외부 요청이 0건이라는 사후조건을 둔
 ### 5.3 스테이징 배포
 
 1. 브랜치에서 로컬 `pnpm verify` 6단계 통과
-2. 대상 SHA의 CI(feature branch push 또는 PR) 통과와 변경 범위 확인
+2. 대상 SHA의 `protected-gate` `completed/success`와 변경 범위 확인
 3. 스테이징 백업·마이그레이션 상태 확인
 4. 추가형 DB·Queue 구조를 **비활성 상태**로 적용
 5. Vault·Project Secrets·Storage 정책과 비밀값 준비
@@ -362,6 +359,11 @@ outbox 생성·Queue enqueue·외부 요청이 0건이라는 사후조건을 둔
 12. 핵심 사용자 흐름과 Cron·Queue·오류율 점검
 13. 성공한 배포 SHA에 annotated tag `deploy-YYYYMMDD-<shortSHA>` 생성·push
 14. 앱 버전·DB 태그·마이그레이션 범위·담당자·검증 결과 기록
+
+`main` ruleset의 저장소 선언은 `.github/rulesets/main-required.json`이다. `corepack pnpm ruleset:check`로
+원격과 대조하고, 선언을 바꿀 때만 정확한 현재 SHA의 `protected-gate` 성공 뒤
+`corepack pnpm ruleset:fix`를 실행한다. ruleset은 bypass 없이 `protected-gate`를 required context로
+요구하고 force-push와 삭제를 막는다. 실패한 검사, 다른 SHA의 성공 검사나 로컬 보고로 우회하지 않는다.
 
 운영 ACL 스크립트는 비밀번호 없는 명시적 접속 변수와 `ADMIN_DB_PASSWORD` 또는 `PGPASSFILE`을
 사용한다. 실제 운영 연결은 현재 환경에서 검증되지 않았으므로 첫 운영 배포 전에 §4.5의 `audit` 우선
@@ -478,11 +480,11 @@ git pull --ff-only origin main
 ```
 
 조상 확인이 실패하거나 원격 보호 규칙이 직접 push를 막으면 강제 push하지 않는다. 일반 merge
-commit으로 이력을 보존하거나 보호 규칙에 맞는 별도 절차를 사용한다. 현재 CI는 모든 브랜치 push와
-pull request에 실행된다. **feature HEAD의 workflow matrix job이 모두 `completed/success`인 것을
-확인하기 전에는 `main`을 이동하지 않는다.** `queued`·`in_progress`는 통과가 아니다. 현재는 이
-수동 게이트를 사용하며, GitHub required check와 직접 push 제한은 `docs/작업큐.md`의 P0-2에서
-자동화한다. `main` push 뒤 같은 SHA의 결과도 다시 확인한다. 로컬 `main`을 원격과 fast-forward한
+commit으로 이력을 보존하거나 보호 규칙에 맞는 별도 절차를 사용한다. 현재 CI는 모든 브랜치 push에
+실행된다. **feature HEAD의 `protected-gate`가 `completed/success`인 것을 확인하기 전에는 `main`을
+이동하지 않는다.** `queued`·`in_progress`는 통과가 아니다. GitHub ruleset은 `protected-gate`가
+없는 SHA의 직접 push, force-push와 삭제를 차단한다. `main` push 뒤 같은 SHA의 결과도 다시 확인한다.
+로컬 `main`을 원격과 fast-forward한
 뒤에만 로컬 feature 브랜치를 삭제한다.
 
 ## 9. 대형 브랜치 병합 결과와 후속 정리
@@ -672,7 +674,7 @@ DB hotfix도 Dashboard 직접 SQL이 아니라 마이그레이션으로 남긴�
 5. 기능 브랜치에서 운영 DB에 push하지 않는다.
 6. 운영에는 `main` 이력만 적용한다.
 7. 운영·스테이징 DB에 적용된 마이그레이션은 수정하지 않는다.
-8. 로컬 전체 검증은 6단계이고 현재 CI는 4단계라는 차이를 숨기지 않는다.
+8. 로컬과 `full-db-required`의 전체 검증은 6단계이며 `--no-db` 빠른 검사는 4단계라는 차이를 숨기지 않는다.
 9. 서버 구조 변경도 한 개의 세로 기능 브랜치로 앱·DB·계약·시험·문서를 함께 변경한다.
 10. 계산·원장·잠금의 권위는 DB RPC에 유지한다.
 11. 외부 I/O와 긴 작업의 실행 위치는 서버 확장 아키텍처 기획안에서 결정한다.
