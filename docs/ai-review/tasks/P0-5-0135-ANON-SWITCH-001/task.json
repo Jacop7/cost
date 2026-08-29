@@ -1,0 +1,65 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "P0-5-0135-ANON-SWITCH-001",
+  "route": "SECURITY",
+  "risk_level": "R3",
+  "author_role": "SOLAR-DB",
+  "reviewer_role": "FABLE-SEC",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "SECURITY",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "9559b3bd7b7205663b067edfc5367bbfd5623d21",
+  "target_commit_sha": "03cd3634f18e1d2314c204fcfd7a33bb0c385ccc",
+  "target_tree_oid": "81dace7e07c0c8ec8d753cf6fba88e695df0ce59",
+  "agents_blob_oid": "bf9b9aeccabdc1055005c7f9bcb188ed8c05eb2a",
+  "agents_sha256": "485c7cb1cbb9143748a6028393723986201d9ff944ad9d3127e5c5f6f243c531",
+  "requirements": [
+    "P05-SEC-0135-ANON-SWITCH-NONDISCRIMINATING: anon 역할 전환 실패와 purge_entity_changes 실행 거부를 같은 42501 성공 조건으로 세지 않아야 한다.",
+    "set local role anon 성공과 current_user='anon'을 확인한 뒤 함수 실행의 insufficient_privilege만 익명 실행 거부로 세어야 한다.",
+    "migration 시작 역할 명시 복원과 복원 사후조건, anon·PUBLIC 회수 및 authenticated 실행 계약을 유지해야 한다.",
+    "NOINHERIT 로그인 역할의 postgres→anon→postgres 정상 체인과 전환 권한 제거 사보타주가 서로 다른 결과를 내야 한다.",
+    "스테이징에 이미 적용된 0001~0134는 바뀌지 않고 아직 미적용인 0135만 보정해야 한다.",
+    "보정 상태에서 로컬 fresh DB 34/34, ACL metric 21, 업그레이드 9/9를 포함한 pnpm verify 6/6이 통과해야 한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:local-verification-gate",
+    "WORK-QUEUE:P0-5",
+    "P1-1:REMOTE-ACL-AUDIT"
+  ],
+  "artifact_paths": [
+    "packages/db/supabase/migrations/20260826000135_purge_and_anon_grants.sql",
+    "docs/ai-review/evidence/P0-5-RPC-LEAST-PRIVILEGE-001.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/브랜치-DB-운영-기획안.md",
+    "docs/ai-review/tasks/P0-5-RPC-LEAST-PRIVILEGE-006/rounds/r002/candidate-review.json",
+    "packages/db/supabase/migrations/20260826000136_function_default_grants.sql"
+  ],
+  "evidence_paths": [],
+  "excluded_paths": [],
+  "required_evidence": [
+    "정상 역할 체인의 session_user와 current_user가 login/login→login/postgres→login/anon→login/postgres로 관측됨",
+    "전환 권한이 없는 역할은 set local role anon에서 permission denied로 즉시 중단됨",
+    "0134 상태 일회용 DB에서 수정된 0135 전체 실행과 마지막 assert_no_rpc_overloads 통과",
+    "후속 보정 상태의 corepack pnpm verify 6/6과 fresh_% 잔여 0개",
+    "기준 commit 이후 migration 변경 파일이 0135 하나뿐이라는 diff"
+  ],
+  "human_decisions": [
+    "2026-08-29 사용자는 Fable 문제 제기를 반영하고 보안 검수와 스테이징 검증을 계속 진행하도록 승인했다.",
+    "운영 DB에는 적용하지 않고 스테이징에서만 검증한다.",
+    "P0-5-RPC-LEAST-PRIVILEGE-006 r002의 계약 거부 후보는 공식 verdict가 아니며 원문 그대로 참고 증거로만 보존한다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "4.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}
