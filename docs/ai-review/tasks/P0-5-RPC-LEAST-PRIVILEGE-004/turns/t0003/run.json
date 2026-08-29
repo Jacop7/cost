@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "P0-5-RPC-LEAST-PRIVILEGE-004",
+  "sequence": "t0003",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-08-29T06:38:55.531Z",
+  "turn_id": "turn-s002",
+  "turn_type": "SOLAR_RESPONSE",
+  "role": "SOLAR-DB",
+  "task_sha256": "c982b3d1d38cdc962bf064993c93d02d62111465b5a5b97756f16956c9c63329",
+  "runner_sha256": "dc78d5183405344a2fcadf9b4db56734b7cae60ab88385d857fd02e0d434c633",
+  "previous_manual_run_sha256": "ef4e339d02fe9bb20ecd31a3bcb8e27482f57cec32024579f26d10e0f88a396b",
+  "collaboration_before_sha256": "ff186454f527971f49972bdd4da1432ca65ea5351c63a4f8290ffea2df5b2a93",
+  "collaboration_before_bytes": 6357,
+  "collaboration_entry_sha256": "094cd4cd9590e675c2c56d0030fc7f55ecce1dd6eda6fa90d8eb2360d6dbe1ce",
+  "collaboration_entry_bytes": 2318,
+  "collaboration_after_sha256": "06087099a27f4f07923c73398ea4ece7d62369dfc6f6633468d152d5fdae2292",
+  "collaboration_after_bytes": 8675
+}
