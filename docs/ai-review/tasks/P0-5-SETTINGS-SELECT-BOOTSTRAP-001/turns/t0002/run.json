@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "P0-5-SETTINGS-SELECT-BOOTSTRAP-001",
+  "sequence": "t0002",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-08-29T12:12:15.648Z",
+  "turn_id": "turn-c001",
+  "turn_type": "CODEX_EVIDENCE",
+  "role": "CODEX-FUNCTION-QA",
+  "task_sha256": "61086ce68706df8c45fad3c12b53f5e4f2865ab885f5c4b2cd21ba4c3b94ba24",
+  "runner_sha256": "dc78d5183405344a2fcadf9b4db56734b7cae60ab88385d857fd02e0d434c633",
+  "previous_manual_run_sha256": "d48b3013f9ab8c650ee389e19cb2cc7116909bf1c498876c5e76e136a49d7d07",
+  "collaboration_before_sha256": "dd1473b6c590e48d06804c45b344f281a4bfc5cfe17878c1313c665c27f0c899",
+  "collaboration_before_bytes": 7444,
+  "collaboration_entry_sha256": "2791242c40abc9d70f131cbb5de9dcdd509234fb43e6a9766326ab09340ba322",
+  "collaboration_entry_bytes": 1161,
+  "collaboration_after_sha256": "d824010c34027b1653b47b266742e6a0196b509b66d8087e48c5218004b89bb5",
+  "collaboration_after_bytes": 8605
+}

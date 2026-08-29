@@ -1,0 +1,231 @@
+{
+  "schema_version": "2.0",
+  "task_id": "P0-5-SETTINGS-SELECT-BOOTSTRAP-001",
+  "reviewer_role": "FABLE-SEC",
+  "review_mode": "SECURITY",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "4454a7988a8bfd60982a7b787b2a1f0943691cb3",
+  "target_commit_sha": "ff342e0890c4d05562d62ebfd14c6bd9246f4dd2",
+  "target_tree_oid": "78f7d83782ffc8d97656bf70310a4f207427d064",
+  "agents_blob_oid": "bf9b9aeccabdc1055005c7f9bcb188ed8c05eb2a",
+  "agents_sha256": "485c7cb1cbb9143748a6028393723986201d9ff944ad9d3127e5c5f6f243c531",
+  "task_sha256": "61086ce68706df8c45fad3c12b53f5e4f2865ab885f5c4b2cd21ba4c3b94ba24",
+  "collaboration_sha256": "faebf4fad4d1b3effcfce69caa8735be83a4cffef3a9ac57dac71c44bd464061",
+  "input_files_sha256": "5f4438f72008f6fee2cc14b56c6a52aff4750beb63b9b06f1c49e00164f4ad34",
+  "schema_sha256": "a903be542752bdf90fbbd49657860a7ec175f6ddd987a6295194d1f3bb1c85e0",
+  "runner_sha256": "dc78d5183405344a2fcadf9b4db56734b7cae60ab88385d857fd02e0d434c633",
+  "verdict": "CHANGES_REQUIRED",
+  "summary": "0164의 권한 부트스트랩 자체는 보안상 건전하다. `grant select` 뒤 `revoke insert, update, delete, truncate`를 anon·authenticated 모두에서 수행하고, 쓰기 정책 3개와 동기화 트리거를 제거하며, save_settings·save_store_tax는 SECURITY DEFINER + `set search_path` + 첫 줄 `assert_my_store`로 매장 경계를 유지한다. `has_table_privilege`는 PUBLIC 경유 권한까지 반영하므로 사후조건이 호스티드 역할 구성에서도 실질 권한을 판정한다. 직접 쓰기 문 재개방이나 RLS 우회는 발견되지 않았고, 스테이징 0163 상태·보정 미적용·운영 미접근 기록은 과장 없이 정직하다. 그러나 (1) 증거 문서는 verify 6/6·업그레이드 10/10을 `fb5b4b08`에 결속하고 있어 task target `ff342e08`과 다르며, 0164·upgrade-check.sh의 Git blob OID·SHA-256 결속도 없다 — 요구사항 6 \"정확한 target commit의 verify 6/6 증거\"가 문서상 충족되지 않는다(Major). (2) 0164 사후조건은 TRUNCATE를 검사하지 않아 요구사항 2의 네 종 폐쇄를 migration 스스로 증명하지 못한다(Minor). (3) SELECT 부여가 의존하는 settings RLS 활성·읽기 정책 존재를 사후조건이 단언하지 않는다(Minor). (4) 업그레이드 ⑩은 사전 상태를 SELECT=f만 확인하고 쓰기 4종 열림(f|t|t|t|t)을 단언하지 않아 회수 절반이 공허 통과할 여지가 있다(Minor). Major 1건으로 CHANGES_REQUIRED.",
+  "findings": [
+    {
+      "finding_id": "P0-5-SSB-001-SEC-001",
+      "severity": "Major",
+      "review_state": "OPEN",
+      "category": "OPERATIONS",
+      "requirement_or_invariant_ids": [
+        "AGENTS:local-verification-gate",
+        "AGENTS:hosted-staging-only",
+        "P1-1:REMOTE-ACL-AUDIT"
+      ],
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/P0-5-RPC-LEAST-PRIVILEGE-001.md",
+          "line_start": 333,
+          "line_end": 337,
+          "observation": "3차 절의 보정 구현 commit이 `fb5b4b08cb8f2ce4b323520ea0c87297759b491e`로 기록돼 있다. task packet의 target은 `ff342e0890c4d05562d62ebfd14c6bd9246f4dd2`다."
+        },
+        {
+          "path": "docs/ai-review/evidence/P0-5-RPC-LEAST-PRIVILEGE-001.md",
+          "line_start": 373,
+          "line_end": 385,
+          "observation": "verify 6/6·업그레이드 10/10·fresh_% 0개가 `fb5b4b08` checkout에 결속돼 있고, target `ff342e08`에서의 재실행 기록이 없다."
+        },
+        {
+          "path": "docs/ai-review/evidence/P0-5-RPC-LEAST-PRIVILEGE-001.md",
+          "line_start": 294,
+          "line_end": 314,
+          "observation": "직전 절(P0-5-PRR-002-SEC-002 반영)은 보정 migration의 Git blob OID·SHA-256과 baseline diff를 고정했으나, 이번 절에는 0164·upgrade-check.sh의 blob·SHA 결속과 baseline diff 확인이 없다."
+        },
+        {
+          "path": "COLLABORATION_LOG",
+          "line_start": 0,
+          "line_end": 0,
+          "observation": "공동 장부는 '정확한 target clean checkout의 corepack pnpm verify 6/6'을 주장하지만 artifact 증거 문서는 다른 commit을 가리켜 장부와 문서가 모순된다."
+        }
+      ],
+      "impact": "요구사항 6 '정확한 target commit의 verify 6/6 증거'가 문서상 충족되지 않는다. target과 증거 commit 사이의 변경이 문서뿐인지 migration까지인지 검수자가 판별할 수 없고, 보호 CI·스테이징 계획이 참조할 판본 결속이 끊긴다.",
+      "acceptance_criteria": [
+        "증거 문서 3차 절에 정확한 target commit `ff342e08…`(또는 그 후속 보정 commit)의 `corepack pnpm verify` 6/6, DB 34/34, 업그레이드 10/10, fresh_% 0개 재실행 결과를 commit SHA와 함께 기록한다.",
+        "0164와 upgrade-check.sh의 해당 commit Git blob OID·SHA-256을 표로 고정하고, baseline `4454a79`→target의 `git diff --name-only -- packages/db/supabase/migrations` 결과가 0164 한 파일임을 명시한다.",
+        "fb5b4b08과 target 사이 변경 내용을 한 줄로 설명해 장부와 문서의 모순을 해소한다."
+      ],
+      "required_tests": [
+        "정확한 target checkout에서 `corepack pnpm verify` 6/6 종료 코드 0",
+        "검증 종료 뒤 `fresh_%` 임시 DB 0개 확인"
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    },
+    {
+      "finding_id": "P0-5-SSB-001-SEC-002",
+      "severity": "Minor",
+      "review_state": "OPEN",
+      "category": "SECURITY",
+      "requirement_or_invariant_ids": [
+        "AGENTS:server-calculation-authority",
+        "WORK-QUEUE:P0-5"
+      ],
+      "evidence": [
+        {
+          "path": "packages/db/supabase/migrations/20260826000164_settings_lockdown.sql",
+          "line_start": 21,
+          "line_end": 22,
+          "observation": "회수 문은 truncate를 포함한다."
+        },
+        {
+          "path": "packages/db/supabase/migrations/20260826000164_settings_lockdown.sql",
+          "line_start": 178,
+          "line_end": 185,
+          "observation": "사후조건은 insert·update·delete와 select만 검사하고 truncate 잔존을 검사하지 않는다."
+        },
+        {
+          "path": "packages/db/scripts/upgrade-check.sh",
+          "line_start": 454,
+          "line_end": 461,
+          "observation": "truncate 검사는 로컬 업그레이드 시험에만 있고 호스티드 적용 시점의 migration 자체 판정에는 없다."
+        }
+      ],
+      "impact": "요구사항 2(네 종 쓰기 폐쇄)를 0164가 호스티드 적용 시 스스로 증명하지 못한다. PUBLIC 경유 TRUNCATE 권한이 남아 있어도 0164가 통과하며, 0165가 나중에 `revoke all`로 덮지만 0164 단독 계약과 어긋난다.",
+      "acceptance_criteria": [
+        "0164 사후조건에 `has_table_privilege('authenticated','public.settings','truncate')` 검사를 추가하고 실패 시 명확한 문구로 중단한다."
+      ],
+      "required_tests": [
+        "0163 DB에서 `grant truncate on public.settings to public` 사보타주 후 0164가 사후조건에서 중단되는지 확인"
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    },
+    {
+      "finding_id": "P0-5-SSB-001-SEC-003",
+      "severity": "Minor",
+      "review_state": "OPEN",
+      "category": "SECURITY",
+      "requirement_or_invariant_ids": [
+        "AGENTS:hosted-staging-only",
+        "P1-1:REMOTE-ACL-AUDIT"
+      ],
+      "evidence": [
+        {
+          "path": "packages/db/supabase/migrations/20260826000164_settings_lockdown.sql",
+          "line_start": 19,
+          "line_end": 26,
+          "observation": "호스티드 사전 상태가 로컬과 다를 수 있음을 인정하면서 SELECT를 부여하되, 읽기 정책 `settings_select`는 '그대로'라고 가정만 한다."
+        },
+        {
+          "path": "packages/db/supabase/migrations/20260826000164_settings_lockdown.sql",
+          "line_start": 183,
+          "line_end": 189,
+          "observation": "사후조건은 쓰기 정책 0개만 검사하고, settings의 `relrowsecurity`와 polcmd='r' 정책 존재를 단언하지 않는다."
+        },
+        {
+          "path": "packages/db/supabase/migrations/20260826000165_store_bootstrap_and_acl.sql",
+          "line_start": 29,
+          "line_end": 30,
+          "observation": "0165도 'RLS가 행을 가른다'는 전제로 select만 다시 준다."
+        }
+      ],
+      "impact": "SELECT 부여의 안전성은 RLS 활성과 읽기 정책에 전적으로 의존한다. 이번 사고처럼 호스티드 사전 상태가 로컬과 다를 때, RLS가 꺼져 있거나 읽기 정책이 없으면 교차 매장 설정 읽기(세금 항목·알림 설정) 또는 전면 읽기 불능이 조용히 통과한다.",
+      "acceptance_criteria": [
+        "0164 사후조건에 `pg_class.relrowsecurity` = true와 `pg_policy`에 polcmd='r'인 settings 정책 1개 이상 존재를 단언한다."
+      ],
+      "required_tests": [
+        "0163 DB에서 `alter table settings disable row level security` 사보타주 후 0164가 중단되는지 확인"
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    },
+    {
+      "finding_id": "P0-5-SSB-001-SEC-004",
+      "severity": "Minor",
+      "review_state": "OPEN",
+      "category": "TEST_GAP",
+      "requirement_or_invariant_ids": [
+        "AGENTS:local-verification-gate",
+        "WORK-QUEUE:P0-5"
+      ],
+      "evidence": [
+        {
+          "path": "packages/db/scripts/upgrade-check.sh",
+          "line_start": 445,
+          "line_end": 450,
+          "observation": "⑩ 사전 상태는 SELECT=f만 단언한다. 쓰기 4종이 열려 있음(f|t|t|t|t)은 단언하지 않는다."
+        },
+        {
+          "path": "docs/ai-review/evidence/P0-5-RPC-LEAST-PRIVILEGE-001.md",
+          "line_start": 361,
+          "line_end": 371,
+          "observation": "문서는 f|t|t|t|t 관측과 '쓰기 권한 하나라도 잔존' 회귀 포착을 주장하지만, 그 전제는 스크립트가 아니라 수동 관측에만 있다."
+        }
+      ],
+      "impact": "fresh-db.sh의 기본 ACL이 바뀌어 0163 상태에서 이미 쓰기가 닫혀 있으면 ⑩의 회수 검증이 공허하게 통과한다. '업그레이드 시험이 SELECT 부재와 쓰기 잔존을 실제로 구별하는가'라는 검토 질문에 스크립트 자체로는 답하지 못한다.",
+      "acceptance_criteria": [
+        "⑩ 사전 상태를 select·insert·update·delete·truncate 5튜플로 읽어 정확히 `f|t|t|t|t`인지 단언하고, 아니면 '전제가 안 섰다'로 FAIL 처리한다."
+      ],
+      "required_tests": [
+        "upgrade-check.sh 10/10 재통과",
+        "0163 DB에서 쓰기를 미리 회수한 상태로 ⑩ 전제 FAIL이 나는지 확인"
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    }
+  ],
+  "proposed_edits": [
+    {
+      "edit_id": "P0-5-SSB-001-EDIT-001",
+      "path": "packages/db/supabase/migrations/20260826000164_settings_lockdown.sql",
+      "anchor": "  if not has_table_privilege('authenticated', 'public.settings', 'select') then",
+      "operation": "ADD",
+      "proposed_text": "  if has_table_privilege('authenticated', 'public.settings', 'truncate') then\n    raise exception '0164: settings TRUNCATE 가 아직 열려 있습니다';\n  end if;\n  if not (select relrowsecurity from pg_class where oid = 'public.settings'::regclass) then\n    raise exception '0164: settings 에 RLS 가 꺼져 있습니다 — SELECT 부여가 매장 경계를 넘습니다';\n  end if;\n  if not exists (select 1 from pg_policy where polrelid = 'public.settings'::regclass and polcmd = 'r') then\n    raise exception '0164: settings 읽기 정책이 없습니다 — 표시 폼을 못 읽습니다';\n  end if;",
+      "rationale": "요구사항 2의 TRUNCATE 폐쇄와 SELECT 부여가 의존하는 RLS 전제를 migration 자체가 호스티드에서 단언한다(SEC-002·SEC-003).",
+      "finding_ids": [
+        "P0-5-SSB-001-SEC-002",
+        "P0-5-SSB-001-SEC-003"
+      ]
+    },
+    {
+      "edit_id": "P0-5-SSB-001-EDIT-002",
+      "path": "packages/db/scripts/upgrade-check.sh",
+      "anchor": "  \"select has_table_privilege('authenticated','public.settings','select');\")",
+      "operation": "REPLACE",
+      "proposed_text": "  \"select concat_ws('|',\n     has_table_privilege('authenticated','public.settings','select'),\n     has_table_privilege('authenticated','public.settings','insert'),\n     has_table_privilege('authenticated','public.settings','update'),\n     has_table_privilege('authenticated','public.settings','delete'),\n     has_table_privilege('authenticated','public.settings','truncate'));\")\nif [ \"$before\" != \"f|t|t|t|t\" ]; then\n  say \"   FAIL 전제가 안 섰다 — 호스티드 사전 상태(f|t|t|t|t)가 아니다: $before\"",
+      "rationale": "사전 상태를 5튜플로 단언해 쓰기 회수 검증이 공허 통과하지 않게 한다. 이어지는 기존 `if [ \"$before\" != \"f\" ]` 줄은 이 REPLACE에 맞춰 제거해야 한다(SEC-004).",
+      "finding_ids": [
+        "P0-5-SSB-001-SEC-004"
+      ]
+    },
+    {
+      "edit_id": "P0-5-SSB-001-EDIT-003",
+      "path": "docs/ai-review/evidence/P0-5-RPC-LEAST-PRIVILEGE-001.md",
+      "anchor": "### 정확한 commit 전체 검증",
+      "operation": "ADD",
+      "proposed_text": "### target commit 판본 결속\n\n- 검수 target commit: `ff342e0890c4d05562d62ebfd14c6bd9246f4dd2`\n- `fb5b4b08…` 이후 변경: (여기에 실제 diff 요약을 적는다 — 문서만인지 migration 포함인지)\n- `git diff --name-only 4454a7988a8bfd60982a7b787b2a1f0943691cb3..ff342e0890c4d05562d62ebfd14c6bd9246f4dd2 -- packages/db/supabase/migrations` 결과: `20260826000164_settings_lockdown.sql` 1개\n\n| 파일 | Git blob OID | SHA-256 |\n|---|---|---|\n| `20260826000164_settings_lockdown.sql` | `78e48031ed3a4e44c7ae967dbabe53ee5eebfba9` | `a5dbb315bbafee7fb87a218496ec8d22d902911a57435d055d46649a68b3447c` |\n| `upgrade-check.sh` | `9a1d9ae082d1f97823bf51d235aef5574f79851b` | `495e46e4314e1d59c3a174c8bbcb4016ee46b970fbc2bb024664cb44d177531b` |\n\n위 target commit의 깨끗한 checkout에서 `corepack pnpm verify`를 재실행한 결과를 아래 절에 commit SHA와 함께 기록한다.",
+      "rationale": "증거를 정확한 target commit에 결속하고 blob·SHA 표를 고정한다. blob OID·SHA-256은 검수 입력 manifest 값이며, 실제 diff 요약과 재실행 결과는 SOLAR가 채워야 한다(SEC-001).",
+      "finding_ids": [
+        "P0-5-SSB-001-SEC-001"
+      ]
+    }
+  ],
+  "closed_finding_ids": [],
+  "reopened_finding_ids": [],
+  "remaining_required_finding_ids": [
+    "P0-5-SSB-001-SEC-001",
+    "P0-5-SSB-001-SEC-002",
+    "P0-5-SSB-001-SEC-003",
+    "P0-5-SSB-001-SEC-004"
+  ],
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}

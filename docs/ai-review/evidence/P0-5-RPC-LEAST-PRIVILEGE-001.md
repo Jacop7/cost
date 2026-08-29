@@ -385,3 +385,67 @@ checkout하고 `corepack pnpm verify`를 한 번 실행했다.
 종료 코드는 `0`, 최종 출력은 `전체 검증 통과`, 종료 뒤 `fresh_%` DB는 `0개`였다. 현재 스테이징은
 여전히 `0163`까지이며 이 보정은 아직 원격에 적용하지 않았다. 다음 단계는 이 정확한 변경의
 FABLE-SEC 재검수와 보호 CI 성공을 고정한 뒤, 새 계획에서 `0164~0174` 11개를 다시 확인하는 것이다.
+
+### FABLE-SEC r001 지적 보정과 판본 결속
+
+- 확인 시각: `2026-08-29T21:11:05+09:00`
+- Fable Task: `P0-5-SETTINGS-SELECT-BOOTSTRAP-001/r001`
+- 최초 검수 target: `ff342e0890c4d05562d62ebfd14c6bd9246f4dd2`
+- 최종 보정 구현 commit: `710176c267a9874e58152880ade135970738f76a`
+- 스테이징 상태: `0163`까지 적용. 보정은 아직 원격에 적용하지 않았다.
+- 운영 상태: 계획·적용·변경 없음.
+
+Fable Finding 네 건을 모두 반영했다.
+
+| Finding | 반영 |
+|---|---|
+| `P0-5-SSB-001-SEC-001` | 정확한 보정 구현 commit의 전체 verify를 다시 실행하고, 아래 blob·SHA-256·migration diff를 고정했다. |
+| `P0-5-SSB-001-SEC-002` | `0164` 사후조건이 authenticated의 `TRUNCATE` 유효 권한까지 검사한다. |
+| `P0-5-SSB-001-SEC-003` | SELECT 부여 뒤 `settings`의 RLS 활성과 읽기 정책 존재를 단언한다. |
+| `P0-5-SSB-001-SEC-004` | 업그레이드 ⑩이 사전 5튜플 `f|t|t|t|t`를 정확히 요구한다. |
+
+최초 구현 commit `fb5b4b08`과 최초 검수 target `ff342e08` 사이 변경은 이 증거 문서 한 파일뿐이었다.
+따라서 그 target에서 migration과 업그레이드 시험 blob은 `fb5b4b08`의 전체 검증 대상과 같았지만,
+문서가 그 차이와 blob을 명시하지 않아 판본 결속 증거가 부족했다. Fable 보정 뒤에는 구현 파일이
+바뀌었으므로 새 구현 commit `710176c`에서 전체 검증을 처음부터 다시 실행했다.
+
+아래 값은 워킹트리가 아니라 `710176c267a9874e58152880ade135970738f76a`의 Git blob bytes를
+직접 읽어 계산했다.
+
+| 파일 | Git blob OID | SHA-256 |
+|---|---|---|
+| `20260826000164_settings_lockdown.sql` | `3f0cb47680ad21181e41388f5ae92ede09444708` | `f9151ab0d60817d2ac3e1f90d22670d99dda1980637de91a9ee10adf4bb436bf` |
+| `upgrade-check.sh` | `1754c17924f741f5b573620a5b74b3dcebe24ba4` | `3c82982f160411d7fe97af3b409635d0ad4ba93c3ab7ed4f6abe2b33299970af` |
+
+`git diff --name-only 4454a7988a8bfd60982a7b787b2a1f0943691cb3..710176c267a9874e58152880ade135970738f76a -- packages/db/supabase/migrations`
+결과는 `20260826000164_settings_lockdown.sql` 한 파일뿐이다. 스테이징에 적용된 `0001~0163`은
+포함되지 않는다.
+
+#### 집중 사보타주
+
+`0163`까지만 적용한 일회용 DB를 기준으로 다음을 확인했다.
+
+- 정상: 사전 `f|t|t|t|t` → `0164` 뒤 `t|f|f|f|f`.
+- `PUBLIC`에 `settings TRUNCATE` 부여: `0164`가 종료 코드 `3`,
+  `settings 직접 쓰기가 아직 열려 있습니다`로 중단.
+- `settings` RLS 비활성: `0164`가 종료 코드 `3`,
+  `settings 에 RLS 가 꺼져 있습니다`로 중단.
+- 쓰기 네 종을 미리 회수: 사전값이 `f|f|f|f|f`가 되어 업그레이드 ⑩의
+  `f|t|t|t|t` 전제와 일치하지 않음. 회수 시험이 공허하게 통과할 수 없다.
+
+일회용 DB는 모두 제거했다.
+
+#### 정확한 보정 구현 commit 전체 검증
+
+깨끗한 별도 checkout에서 정확한 `710176c267a9874e58152880ade135970738f76a`를 checkout하고
+`corepack pnpm verify`를 한 번 실행했다.
+
+1. 타입 검사 통과
+2. DB `34/34` · core `177`(2 skip) · mobile `199` 통과
+3. CLI 계약·ACL 셸 보안 통과
+4. 새 DB 전체 migration·seed·DB `34/34`·2세션 경합·locale parity 통과
+5. 업그레이드 경로 `10/10` 통과
+6. 웹 번들 통과
+
+종료 코드는 `0`, 최종 출력은 `전체 검증 통과`, 종료 뒤 `fresh_%` DB는 `0개`였다. 이 결과는
+Fable Finding 보정의 로컬 검증이며 스테이징 재적용·원격 ACL audit·운영 배포 완료를 뜻하지 않는다.
