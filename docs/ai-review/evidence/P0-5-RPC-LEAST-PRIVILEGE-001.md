@@ -254,3 +254,76 @@ Windows clean checkout에서는 이전에 로컬 LF 작업본과 이미 만들�
 이 결과는 스테이징 재적용 성공이나 원격 ACL 감사 완료를 뜻하지 않는다. 다음 단계는 이 정확한
 commit의 FABLE-SEC 재검수와 보호 CI 성공을 고정한 뒤, 새 스테이징 계획에서 `38개`를 확인하고
 스테이징에만 적용하는 것이다.
+
+## FABLE-SEC r001 지적 보정과 최종 재검증
+
+- 확인 시각: `2026-08-29T20:08:00+09:00`
+- Fable 검수 Task: `P0-5-PENDING-ROLE-RESTORES-002/r001`
+- 검수 target: `8466d12f20572c4590c5678f96130d080cd717ef`
+- 보정 구현 commit: `022b476fc332c312bd79461f006190eeb7e8331e`
+- 스테이징 상태: `0136`까지 적용. 이 절의 보정은 아직 원격에 적용하지 않았다.
+- 운영 상태: 계획·적용·변경 없음.
+
+Fable이 반환한 Finding 네 건을 모두 반영했다.
+
+| Finding | 판정 | 반영 |
+|---|---|---|
+| `P0-5-PRR-002-SEC-001` | 필수 | `0144`의 역할 전환·감사 표 쓰기 거부·원래 역할 복원을 매장 조회보다 앞으로 옮겨 매장 0개에서도 실행되게 했다. |
+| `P0-5-PRR-002-SEC-002` | 필수 | 아래에 정확한 보정 migration 10개의 Git blob OID·SHA-256과 baseline diff를 고정했다. |
+| `P0-5-PRR-002-SEC-003` | 개선 | `0137`의 함수 정의를 LF로 정규화하고 `chr(10)`으로 줄을 분리한다. |
+| `P0-5-PRR-002-SEC-004` | 개선 | `0145`가 두 줄 결합 anchor를 못 찾으면 조용히 재실행하지 않고 예외로 중단한다. |
+
+### 매장 0개 역할 체인 집중 시험
+
+`0143`까지만 적용한 일회용 DB에서 매장 행을 모두 지우고 `stores=0`을 먼저 확인했다. 별도
+`LOGIN NOINHERIT` 역할 `cli_p0144_probe`를 만들고 `supabase_admin`으로 접속한 뒤
+`session authorization`을 그 로그인 역할로 바꾸고 `set role postgres`를 수행했다. 그 세션에서
+보정된 `0144`를 적용한 실제 관측값은 다음과 같다.
+
+```text
+before|cli_p0144_probe|postgres|stores=0
+after|cli_p0144_probe|postgres|stores=0
+```
+
+즉 매장이 하나도 없는 migration 시점에도 `authenticated` 전환과
+`business_day_revisions` 직접 쓰기 거부 검사가 실행되고, 종료 시 `current_user=postgres`로
+복원됐다. 이어서 `0145`를 두 번 적용해 첫 적용과 재적용이 모두 성공하는 것도 확인했다.
+일회용 DB와 역할은 확인 직후 제거했다. 처음 시도한 잘못된 역할 체인과 peer 인증 실패는 증거로
+세지 않았고, 위 관측값이 나온 정식 역할 체인만 수용했다.
+
+### 보정 migration 판본 결속
+
+아래 값은 워킹트리가 아니라 구현 commit `022b476fc332c312bd79461f006190eeb7e8331e`의
+Git blob bytes를 직접 읽어 계산했다.
+
+| 파일 | Git blob OID | SHA-256 |
+|---|---|---|
+| `20260826000137_close_due_cron.sql` | `8f99fe4b38bb1dd02233ef1ca58c8f894327930c` | `ffd9d5d2537bb44e29577cfd8fda5b80e67f32cb8448fe8f4d60742aca891185` |
+| `20260826000138_close_hardening.sql` | `ce3f5db76ccd49fbfa42fe316df6a0703b19760a` | `f95ce332334b9ff39c6c3e8aa079e7a9a47a4c6c52bbf2c5b3765d008967b642` |
+| `20260826000139_close_method_and_deadline.sql` | `cfc94578b3ee426048964ae95935938412b8e1cd` | `18da749f154e574ae65fba77e989542b4fda75dcb31dfae39d736115e04b4ac4` |
+| `20260826000144_amend_foundation.sql` | `194d50173417da56ee11a80616996b6de09d3925` | `aac3d4c49c9f4415484c8f1e8842bb6a3ca7def76b96e6706da9a3032d0f7488` |
+| `20260826000145_amend_ended_business_day.sql` | `a94f3d7c830a173acef9c09b82f9e7266dcce583` | `e59b5e118e447f412efb33bd534b845288985aab724bb3e7bf35d4e371f966dc` |
+| `20260826000150_amend_boundaries.sql` | `60020cd6c3218711636d945784b4a1162774fcb7` | `66ae3dfe5ec388846d439bc7d51a3afb0095c7b3606424365bbff6a4ea4ba95b` |
+| `20260826000151_basis_backfill_and_guard.sql` | `67aaaf62ec29f1684135bbd73d562d94c8f62446` | `5a88536378982d0cf242052fc54f0daee2b343a3dc246904184616a524605e83` |
+| `20260826000158_retire_activity_tracking.sql` | `184e070fce44bd019f6d29cdbdd899ee4fc6be4e` | `3f3de1f261a822e3bc9b02111fecb23a18ea52fff8a46c4e36a2905149272c32` |
+| `20260826000163_rule_token_required_and_dst.sql` | `2d0ec6b5cb82b922181a744e18511f5d3acb22c0` | `f3aaaa9edaedd0753957f00d6a9e9a65d115949835fde3c68e814a38bc1af139` |
+| `20260826000165_store_bootstrap_and_acl.sql` | `9f2934ef1c833540c9626c8ddde9ea7a9eccbad5` | `b388ade2c245a5b2f2814c1d1dc9e13f2873bd0adba12967300684ac45614660` |
+
+`git diff --name-only 9e4f502506c11c359beae2bd42cec1dc1dac4293..022b476fc332c312bd79461f006190eeb7e8331e -- packages/db/supabase/migrations`
+결과는 위 10개와 정확히 같고, 스테이징에 적용된 `0001~0136`은 포함되지 않는다. Fable 검수
+target `8466d12` 이후 migration 변경은 Finding 보정 대상인 `0137`·`0144`·`0145` 세 파일뿐이다.
+
+### 보정 구현 commit 전체 검증
+
+깨끗한 별도 checkout에서 정확한 구현 commit `022b476fc332c312bd79461f006190eeb7e8331e`을
+checkout하고 `corepack pnpm verify`를 한 번 실행했다.
+
+1. 타입 검사 통과
+2. DB `34/34` · core `177`(2 skip) · mobile `199` 통과
+3. CLI 계약·ACL 셸 보안 통과
+4. 새 DB 전체 migration·seed·DB `34/34`·2세션 경합·locale parity 통과
+5. 업그레이드 경로 `9/9` 통과
+6. 웹 번들 통과
+
+종료 코드는 `0`, 최종 출력은 `전체 검증 통과`, 종료 뒤 `fresh_%` DB는 `0개`였다. 이 결과도
+스테이징 재적용이나 원격 ACL 감사 완료를 뜻하지 않는다.

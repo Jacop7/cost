@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "P0-5-PENDING-ROLE-RESTORES-002",
+  "sequence": "t0001",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-08-29T10:23:10.687Z",
+  "turn_id": "turn-h001",
+  "turn_type": "HUMAN_DECISION",
+  "role": "HUMAN",
+  "task_sha256": "fd173bd731f7deaf7a06645750ba439529a5cbf5cf0bd44d17d84d2ba7f8ae78",
+  "runner_sha256": "dc78d5183405344a2fcadf9b4db56734b7cae60ab88385d857fd02e0d434c633",
+  "previous_manual_run_sha256": null,
+  "collaboration_before_sha256": "af78bfdea7e6c7cb823ff08d419eb55a445ae79ced153ba041d7e9707d39cd6b",
+  "collaboration_before_bytes": 2396,
+  "collaboration_entry_sha256": "b8a6719e314ecc8270823707a3179e771f36443bf349764cdbc53788b9d2cb79",
+  "collaboration_entry_bytes": 634,
+  "collaboration_after_sha256": "0e0e431830be4e7d851b267ac5164db18e1302609aaa7709694b1fab385f9b52",
+  "collaboration_after_bytes": 3030
+}
