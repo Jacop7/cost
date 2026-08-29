@@ -444,9 +444,14 @@ STEP10="$(cd "$MIG_DIR" && ls 20260826000164_*.sql)"
 bash "$SCRIPT_DIR/fresh-db.sh" --until "$BASE10" "$D" >/dev/null
 psql_d "$D" -c "revoke select on public.settings from anon, authenticated;" >/dev/null
 before=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c \
-  "select has_table_privilege('authenticated','public.settings','select');")
-if [ "$before" != "f" ]; then
-  say "   FAIL 전제가 안 섰다 — authenticated SELECT가 닫히지 않았다"
+  "select concat_ws('|',
+     has_table_privilege('authenticated','public.settings','select'),
+     has_table_privilege('authenticated','public.settings','insert'),
+     has_table_privilege('authenticated','public.settings','update'),
+     has_table_privilege('authenticated','public.settings','delete'),
+     has_table_privilege('authenticated','public.settings','truncate'));")
+if [ "$before" != "f|t|t|t|t" ]; then
+  say "   FAIL 전제가 안 섰다 — 호스티드 사전 상태(f|t|t|t|t)가 아니다: $before"
   fail=1
 elif ! err="$(psql_d "$D" < "$MIG_DIR/$STEP10" 2>&1 1>/dev/null)"; then
   say "   FAIL 선행 SELECT가 없으면 0164가 멈춘다"; say "        $(printf '%s' "$err" | head -3)"; fail=1
