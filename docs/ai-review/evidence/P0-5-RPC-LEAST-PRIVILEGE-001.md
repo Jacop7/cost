@@ -77,3 +77,34 @@ rls_policy_helper_calls=0
 
 이 문서는 로컬 검증 결과를 요약한 증거다. 운영·스테이징 적용 승인, 원격 ACL 통과 또는
 P0-5-6 완료를 뜻하지 않는다.
+
+## 스테이징 첫 적용과 0135 역할 복원 보정
+
+- 대상: 스테이징 `cvfvmpzcldyqurcrappu` (운영 `smxaozdgoxbafjldoayb`에는 접근·적용하지 않음)
+- 최초 승인 SHA: `630f2d1421b5fe65349493fa1f865f3a48f41990`
+- 최초 계획: 원격 장부가 비어 있어 migration `163개`가 적용 예정이었다.
+- 실제 결과: `0001~0134`는 적용·기록됐고, `0135` 마지막 사후 확인에서
+  `permission denied for function assert_no_rpc_overloads (SQLSTATE 42501)`로 중단됐다.
+- 중단 뒤 재계획: 원격 장부는 `0134`까지이며 `0135~0174` 정확히 `40개`가 남았다.
+- 실패 폐쇄: 배포 가드는 성공 증거를 만들지 않았고 운영 DB에는 아무 변경도 없었다.
+
+원인은 Supabase CLI가 별도 `NOINHERIT` 로그인 역할로 접속한 뒤 `postgres`로 전환해 migration을
+실행하는데, `0135`의 `reset role`이 migration 시작 역할이 아니라 로그인 역할로 돌아간 것이었다.
+로컬에서 같은 역할 구조를 만들어 다음을 재현했다.
+
+1. `cli_login_probe LOGIN NOINHERIT`를 만들고 `postgres` 멤버십을 부여한다.
+2. 로그인 역할에서 `set role postgres` 후 `set local role anon`을 실행한다.
+3. 옛 `reset role` 뒤에는 `current_user=cli_login_probe`가 되어 마지막 사후 확인이 `42501`로 실패한다.
+4. 시작 시점의 `current_user`를 보존하고 그 역할로 명시적으로 복원하면 전체 `0135`가 통과한다.
+
+보정 commit `36761e3`은 `0135` 안에서 시작 역할을 `v_original_role`로 보존하고 익명 실행 검사가
+끝난 뒤 정확히 그 역할로 복원하며, 복원 실패 자체도 예외로 중단한다. 이미 스테이징에 적용된
+`0001~0134`는 수정하지 않았다. 보정 상태에서 다음을 확인했다.
+
+- 위 `NOINHERIT` 역할 재현: 옛 코드 실패, 보정 코드 통과
+- 로컬 DB 전체 reset과 seed 성공
+- `corepack pnpm verify` 6/6: DB `34/34`, ACL metric `21`, 업그레이드 `9/9`, 웹 번들 포함
+- 검증 종료 뒤 `fresh_%` 임시 DB `0개`
+
+이 절도 스테이징 재적용 성공이나 P0-5-6 원격 audit 통과를 뜻하지 않는다. 보정 commit의 FABLE-SEC
+재검수와 동일 SHA 보호 CI가 끝난 뒤 스테이징의 남은 `40개`를 다시 계획·적용한다.
