@@ -243,8 +243,8 @@ begin
     select 1
       from pg_proc p
       join pg_namespace n on n.oid = p.pronamespace
-      cross join lateral regexp_split_to_table(pg_get_functiondef(p.oid), E'
-') as line
+      cross join lateral regexp_split_to_table(
+        replace(pg_get_functiondef(p.oid), chr(13) || chr(10), chr(10)), chr(10)) as line
      where n.nspname = 'public' and p.proname = 'close_due_business_days'
        and line like '%last_activity_at%'
        and btrim(line) not like '--%'

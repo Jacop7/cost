@@ -176,27 +176,8 @@ declare
   v_ok boolean;
   v_original_role name := current_user;
 begin
-  select id into v_store from public.stores limit 1;
-  if v_store is null then return; end if;
-  v_today := public.store_local_date(v_store);
-
-  -- 허용 기간이 §6.4 예시대로인가.
-  if not public.sale_date_allowed(v_store, v_today) then
-    raise exception '0144: 오늘이 허용 기간 밖입니다';
-  end if;
-  if not public.sale_date_allowed(v_store,
-       (date_trunc('month', v_today)::date - interval '1 month')::date) then
-    raise exception '0144: 지난달 1일이 허용 기간 밖입니다';
-  end if;
-  if public.sale_date_allowed(v_store,
-       (date_trunc('month', v_today)::date - interval '1 month' - interval '1 day')::date) then
-    raise exception '0144: 지난달 1일 하루 전이 허용 기간 안입니다';
-  end if;
-  if public.sale_date_allowed(v_store, v_today + 1) then
-    raise exception '0144: 내일이 허용 기간 안입니다';
-  end if;
-
   -- 감사 기록을 앱 롤이 직접 못 쓴다. 권한 값이 아니라 **실제로** 확인한다.
+  -- 매장 유무와 무관한 검사라 매장 의존 구간보다 앞에 둔다 — fresh DB에서도 돈다.
   v_ok := false;
   set local role authenticated;
   if current_user <> 'authenticated' then
@@ -217,6 +198,26 @@ begin
     raise exception '0144: 감사 기록 검사 뒤 원래 역할을 복원하지 못했습니다';
   end if;
   if not v_ok then raise exception '0144: 앱 롤이 감사 기록을 직접 씁니다'; end if;
+
+  select id into v_store from public.stores limit 1;
+  if v_store is null then return; end if;
+  v_today := public.store_local_date(v_store);
+
+  -- 허용 기간이 §6.4 예시대로인가.
+  if not public.sale_date_allowed(v_store, v_today) then
+    raise exception '0144: 오늘이 허용 기간 밖입니다';
+  end if;
+  if not public.sale_date_allowed(v_store,
+       (date_trunc('month', v_today)::date - interval '1 month')::date) then
+    raise exception '0144: 지난달 1일이 허용 기간 밖입니다';
+  end if;
+  if public.sale_date_allowed(v_store,
+       (date_trunc('month', v_today)::date - interval '1 month' - interval '1 day')::date) then
+    raise exception '0144: 지난달 1일 하루 전이 허용 기간 안입니다';
+  end if;
+  if public.sale_date_allowed(v_store, v_today + 1) then
+    raise exception '0144: 내일이 허용 기간 안입니다';
+  end if;
 
   -- 결과 코드 이름이 붙었는가.
   if not exists (
