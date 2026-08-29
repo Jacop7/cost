@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "P0-5-SETTINGS-SELECT-BOOTSTRAP-002",
+  "sequence": "t0001",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-08-29T12:18:29.461Z",
+  "turn_id": "turn-c001",
+  "turn_type": "CODEX_EVIDENCE",
+  "role": "CODEX-FUNCTION-QA",
+  "task_sha256": "52ba02249680bb94c98db6054141d8bd120e20e809aeded8660173d819ed3bb4",
+  "runner_sha256": "dc78d5183405344a2fcadf9b4db56734b7cae60ab88385d857fd02e0d434c633",
+  "previous_manual_run_sha256": null,
+  "collaboration_before_sha256": "09e8bd4e16ed555c35c300e50f70c55f60aaa9019488326554e2dfa08c5d6689",
+  "collaboration_before_bytes": 5034,
+  "collaboration_entry_sha256": "eba5cbc5741d2fa02e36ec0fdd74ce3845b7babfaa217429bc522d557ab88ace",
+  "collaboration_entry_bytes": 850,
+  "collaboration_after_sha256": "e245845624037f84208bde8865d434f584cd726602f50802979eb769f5deb744",
+  "collaboration_after_bytes": 5884
+}
