@@ -202,7 +202,9 @@ end $c$;
 
 -- ── 사후 확인 ────────────────────────────────────────────────────
 do $v$
-declare v_ok boolean;
+declare
+  v_ok boolean;
+  v_original_role name := current_user;
 begin
   -- 스윕은 사람이 못 부른다.
   if has_function_privilege('authenticated', 'public.close_due_business_days()', 'execute') then
@@ -214,13 +216,22 @@ begin
 
   -- 실제로 내려가서도 막히는지.
   v_ok := false;
+  set local role authenticated;
+  if current_user <> 'authenticated' then
+    raise exception '0137: authenticated 역할로 전환하지 못했습니다';
+  end if;
   begin
-    set local role authenticated;
     perform public.close_due_business_days();
   exception when insufficient_privilege then
+    if position('close_due_business_days' in sqlerrm) = 0 then
+      raise exception '0137: 인증 권한 거부가 스윕 함수가 아닌 곳에서 났습니다: %', sqlerrm;
+    end if;
     v_ok := true;
   end;
-  reset role;
+  execute format('set local role %I', v_original_role);
+  if current_user <> v_original_role then
+    raise exception '0137: 스윕 실행 검사 뒤 원래 역할을 복원하지 못했습니다';
+  end if;
   if not v_ok then raise exception '0137: 인증 사용자가 실제로 스윕을 돌렸습니다'; end if;
 
   /*

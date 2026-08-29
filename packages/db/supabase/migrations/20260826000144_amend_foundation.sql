@@ -170,7 +170,11 @@ end $m$;
 
 -- ── 사후 확인 ────────────────────────────────────────────────────
 do $v$
-declare v_store uuid; v_today date; v_ok boolean;
+declare
+  v_store uuid;
+  v_today date;
+  v_ok boolean;
+  v_original_role name := current_user;
 begin
   select id into v_store from public.stores limit 1;
   if v_store is null then return; end if;
@@ -194,14 +198,24 @@ begin
 
   -- 감사 기록을 앱 롤이 직접 못 쓴다. 권한 값이 아니라 **실제로** 확인한다.
   v_ok := false;
+  set local role authenticated;
+  if current_user <> 'authenticated' then
+    raise exception '0144: authenticated 역할로 전환하지 못했습니다';
+  end if;
   begin
-    set local role authenticated;
     insert into public.business_day_revisions
       (business_day_id, revision_no, before_summary, after_summary)
     values (gen_random_uuid(), 1, '{}'::jsonb, '{}'::jsonb);
-  exception when insufficient_privilege then v_ok := true;
+  exception when insufficient_privilege then
+    if position('business_day_revisions' in sqlerrm) = 0 then
+      raise exception '0144: 인증 권한 거부가 감사 기록 표가 아닌 곳에서 났습니다: %', sqlerrm;
+    end if;
+    v_ok := true;
   end;
-  reset role;
+  execute format('set local role %I', v_original_role);
+  if current_user <> v_original_role then
+    raise exception '0144: 감사 기록 검사 뒤 원래 역할을 복원하지 못했습니다';
+  end if;
   if not v_ok then raise exception '0144: 앱 롤이 감사 기록을 직접 씁니다'; end if;
 
   -- 결과 코드 이름이 붙었는가.

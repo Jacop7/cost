@@ -290,7 +290,10 @@ end $c$;
 
 -- ── 사후 확인 ────────────────────────────────────────────────────
 do $v$
-declare v_ok boolean; v_def text;
+declare
+  v_ok boolean;
+  v_def text;
+  v_original_role name := current_user;
 begin
   -- ① 방식을 고를 수 있는 공개 문이 남아 있으면 안 된다.
   if exists (select 1 from pg_proc p join pg_namespace n on n.oid = p.pronamespace
@@ -300,12 +303,22 @@ begin
   end if;
 
   v_ok := false;
+  set local role authenticated;
+  if current_user <> 'authenticated' then
+    raise exception '0139: authenticated 역할로 전환하지 못했습니다';
+  end if;
   begin
-    set local role authenticated;
     perform public.close_business_day_row(gen_random_uuid(), 'auto');
-  exception when insufficient_privilege then v_ok := true;
+  exception when insufficient_privilege then
+    if position('close_business_day_row' in sqlerrm) = 0 then
+      raise exception '0139: 인증 권한 거부가 마감 몸통이 아닌 곳에서 났습니다: %', sqlerrm;
+    end if;
+    v_ok := true;
   end;
-  reset role;
+  execute format('set local role %I', v_original_role);
+  if current_user <> v_original_role then
+    raise exception '0139: 마감 몸통 검사 뒤 원래 역할을 복원하지 못했습니다';
+  end if;
   if not v_ok then raise exception '0139: 인증 사용자가 몸통을 직접 부릅니다'; end if;
 
   -- ② 몸통이 시각 인자를 안 받는다.
