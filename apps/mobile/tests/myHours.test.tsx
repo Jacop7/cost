@@ -266,6 +266,7 @@ describe('매장 시간대', () => {
       hoursStatus.mockReturnValue(status({ timezoneConfirmed: false }));
       render(<MyHoursScreen />);
       expect(screen.getByText('매장 시간대를 정해 주세요')).toBeTruthy();
+      expect(screen.getByText('기기 시간대는 UTC 예요.')).toBeTruthy();
       fireEvent.click(screen.getByText('기기 시간대 사용'));
       expect(saveTz).toHaveBeenCalledTimes(1);
       expect(saveTz.mock.calls[0]![0]).toBe('UTC');
