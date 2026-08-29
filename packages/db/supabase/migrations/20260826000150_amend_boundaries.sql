@@ -114,6 +114,7 @@ begin
     from pg_proc p join pg_namespace n on n.oid = p.pronamespace
    where n.nspname = 'public' and p.proname = 'e10_sale_recorded';
   if v_def is null then raise exception '0150: e10_sale_recorded 가 없습니다'; end if;
+  v_def := replace(v_def, chr(13) || chr(10), chr(10));
   if position('if v_item is null and v_total = 0 then' in v_def) > 0 then return; end if;
 
   -- ②-1 기준 해석을 통째로 들어낸다. 수량 합계만 남긴다.
@@ -150,6 +151,7 @@ begin
     --   부족은 응답의 shortages 로 알린다.
   end if;
 ';
+  v_old := replace(v_old, chr(13) || chr(10), chr(10));
   if position(v_old in v_def) = 0 then
     raise exception '0150: e10 의 기준 해석 구간을 못 찾았습니다';
   end if;
@@ -169,6 +171,7 @@ begin
       return jsonb_build_object(''daily_sales_id'', v_ds, ''sales_item_id'', null, ''skipped'', true);
     end if;
     insert into daily_sales_items';
+  v_old := replace(v_old, chr(13) || chr(10), chr(10));
   if position(v_old in v_def) = 0 then
     raise exception '0150: e10 의 판매행 조회 구간을 못 찾았습니다';
   end if;
@@ -247,6 +250,7 @@ begin
     from pg_proc p join pg_namespace n on n.oid = p.pronamespace
    where n.nspname = 'public' and p.proname = 'amend_ended_business_day';
   if v_def is null then raise exception '0150: 정정 RPC 가 없습니다'; end if;
+  v_def := replace(v_def, chr(13) || chr(10), chr(10));
   if position('v_bq0' in v_def) > 0 then return; end if;
 
   v_old := '  v_changed boolean;';
@@ -283,6 +287,7 @@ begin
     (business_day_id, revision_no, reason,
      before_summary, after_summary, before_detail, after_detail, changed_by)
   values (v_day.id, v_audit, p_reason, v_before, v_after, v_bdet, v_adet, auth.uid());';
+  v_old := replace(v_old, chr(13) || chr(10), chr(10));
   if position(v_old in v_def) = 0 then
     raise exception '0150: 정정 RPC 의 감사 기록 삽입을 못 찾았습니다';
   end if;
