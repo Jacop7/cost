@@ -1,0 +1,79 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "P0-5-0135-ANON-SWITCH-002",
+  "route": "SECURITY",
+  "risk_level": "R3",
+  "author_role": "SOLAR-DB",
+  "reviewer_role": "FABLE-SEC",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "SECURITY",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "03cd3634f18e1d2314c204fcfd7a33bb0c385ccc",
+  "target_commit_sha": "325c3a477c6d529e928cd25996f7b3c5d8b3f362",
+  "target_tree_oid": "a2d0346b349656bfb1b0c4cc096b547d8f1cf962",
+  "agents_blob_oid": "bf9b9aeccabdc1055005c7f9bcb188ed8c05eb2a",
+  "agents_sha256": "485c7cb1cbb9143748a6028393723986201d9ff944ad9d3127e5c5f6f243c531",
+  "requirements": [
+    "P05-SEC-0135-ANON-SWITCH-NONDISCRIMINATING: anon 역할 전환 실패와 purge_entity_changes 실행 거부를 같은 42501 성공 조건으로 세지 않아야 한다.",
+    "set local role anon 성공과 current_user='anon'을 확인한 뒤 함수 실행의 insufficient_privilege만 익명 실행 거부로 세어야 한다.",
+    "잡힌 42501이 purge_entity_changes 실행 거부에서 발생했는지 확인하고 다른 권한 거부를 성공으로 세지 않아야 한다.",
+    "migration 시작 역할 명시 복원과 복원 사후조건, anon·PUBLIC 회수 및 authenticated 실행 계약을 유지해야 한다.",
+    "후속 증거는 정확한 구현 commit, Git blob, SHA-256, 역할 체인 출력과 전체 검증 결과에 결속돼야 한다.",
+    "스테이징에 이미 적용된 0001~0134는 바뀌지 않고 아직 미적용인 0135만 보정해야 한다.",
+    "보정 상태에서 로컬 fresh DB 34/34, ACL metric 21, 업그레이드 9/9를 포함한 pnpm verify 6/6이 통과해야 한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:local-verification-gate",
+    "WORK-QUEUE:P0-5",
+    "P1-1:REMOTE-ACL-AUDIT"
+  ],
+  "artifact_paths": [
+    "packages/db/supabase/migrations/20260826000135_purge_and_anon_grants.sql",
+    "docs/ai-review/evidence/P0-5-RPC-LEAST-PRIVILEGE-001.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/브랜치-DB-운영-기획안.md",
+    "docs/ai-review/tasks/P0-5-RPC-LEAST-PRIVILEGE-006/rounds/r002/candidate-review.json",
+    "packages/db/supabase/migrations/20260826000136_function_default_grants.sql"
+  ],
+  "evidence_paths": [],
+  "excluded_paths": [],
+  "required_evidence": [
+    "정상 역할 체인의 session_user와 current_user가 login/login→login/postgres→login/anon→login/postgres로 관측됨",
+    "전환 권한이 없는 역할은 set local role anon에서 SQLSTATE 42501로 즉시 중단됨",
+    "다른 42501 사보타주가 청소 함수 거부 성공으로 계산되지 않음",
+    "0134 상태 일회용 DB에서 수정된 0135 전체 실행과 마지막 assert_no_rpc_overloads 통과",
+    "후속 보정 상태의 corepack pnpm verify 6/6과 fresh_% 잔여 0개",
+    "기준 commit 이후 migration 변경 파일이 0135 하나뿐이라는 diff와 구현 commit·blob·SHA-256 결속"
+  ],
+  "human_decisions": [
+    "2026-08-29 사용자는 Fable 문제 제기를 반영하고 보안 검수와 스테이징 검증을 계속 진행하도록 승인했다.",
+    "운영 DB에는 적용하지 않고 스테이징에서만 검증한다.",
+    "P0-5-0135-ANON-SWITCH-001 r001의 Finding 3건을 같은 ID로 재검수한다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": "predecessor P0-5-0135-ANON-SWITCH-001 r001의 Finding 3건(P05-0135-EVIDENCE-SHA-BINDING-001, P05-0135-HOSTED-ROLE-CHAIN-PRECHECK-001, P05-0135-DENIAL-SOURCE-PIN-001)을 같은 ID로 재검수하라. 정확한 구현 SHA·blob·SHA-256 결속, anon 역할 전환 성공과 함수 실행 거부의 분리, 다른 42501의 성공 오인 방지를 확인하라. 스테이징 역할 체인 사전 관측은 아직 적용 전 운영 단계이므로 코드 검수와 구분해 판정하고, 충족되지 않은 개선 항목은 OPEN으로 유지하라. 공식 CLOSED는 선언하지 마라.",
+  "predecessor_review": {
+    "task_id": "P0-5-0135-ANON-SWITCH-001",
+    "source_commit_sha": "1c8f4bea53c87145607bfefe69d9a38b59e67ebb",
+    "round": "r001",
+    "task_sha256": "6aff8a3994294e0266e4c22e607f93a36f8a8c225ed4ba6950f0f7dce250bd20",
+    "manifest_sha256": "eed5ae16dabf00a6bd3fddbe3adb81df4a54a7c86aea1958ddea014cfa896d2c",
+    "run_sha256": "aad406b0ccb882241fa02aecd51d84a8ef1852e8abea60da2640b6cce39c8bff",
+    "review_sha256": "9603071201067921b627ec74cf7ca3d9adb5f6299cd69ad5174afad213988857",
+    "finding_registry_sha256": "21e162a6a9d49d387a7a01577683dc17ca859784fca1b63f4af64f6a97ea638f",
+    "handoff_turn_id": "turn-o001",
+    "handoff_entry_sha256": "4114383af113c233208be66c07affd5c9ac3e00ac05703b73b7a8d0f3acc39db",
+    "handoff_run_sha256": "64fd6a60e303618928e6cb37e9b484ca3dfcbac92b9ba3f9885985066c3612de"
+  },
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "4.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}
