@@ -90,6 +90,9 @@ jobs:
   protected-gate:
     name: protected-gate
     needs: [verify, full-db-required]
+    # GitHub는 skipped required check도 통과로 취급한다. 선행 실패 때도 실행해
+    # validator가 failure를 반환해야 보호 규칙을 우회할 수 없다.
+    if: always()
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
