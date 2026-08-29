@@ -136,8 +136,13 @@ begin
 
   -- ⚠ 권한만 보지 않는다. **실제로 anon 으로 내려가서** 막히는지 본다.
   v_ok := false;
+  -- 전환 실패와 함수 실행 거부는 둘 다 42501이다. 전환을 예외 블록 밖에서
+  -- 먼저 끝내고 역할을 확인해야 함수 권한 거부만 성공 조건으로 셀 수 있다.
+  set local role anon;
+  if current_user <> 'anon' then
+    raise exception '0135: anon 역할로 전환하지 못했습니다';
+  end if;
   begin
-    set local role anon;
     perform public.purge_entity_changes();
   exception when insufficient_privilege then
     v_ok := true;
