@@ -1515,6 +1515,80 @@ export type Database = {
           },
         ]
       }
+      store_lifecycle_events: {
+        Row: {
+          actor_user_id: string | null
+          approval_reference: string | null
+          backup_reference: string | null
+          event_type: string
+          former_owner_id: string | null
+          id: number
+          metadata: Json
+          occurred_at: string
+          reason: string
+          store_id: string
+        }
+        Insert: {
+          actor_user_id?: string | null
+          approval_reference?: string | null
+          backup_reference?: string | null
+          event_type: string
+          former_owner_id?: string | null
+          id?: never
+          metadata?: Json
+          occurred_at?: string
+          reason: string
+          store_id: string
+        }
+        Update: {
+          actor_user_id?: string | null
+          approval_reference?: string | null
+          backup_reference?: string | null
+          event_type?: string
+          former_owner_id?: string | null
+          id?: never
+          metadata?: Json
+          occurred_at?: string
+          reason?: string
+          store_id?: string
+        }
+        Relationships: []
+      }
+      store_purge_schedules: {
+        Row: {
+          approval_reference: string
+          approved_by: string
+          purge_after: string
+          reason: string
+          scheduled_at: string
+          store_id: string
+        }
+        Insert: {
+          approval_reference: string
+          approved_by: string
+          purge_after: string
+          reason: string
+          scheduled_at?: string
+          store_id: string
+        }
+        Update: {
+          approval_reference?: string
+          approved_by?: string
+          purge_after?: string
+          reason?: string
+          scheduled_at?: string
+          store_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "store_purge_schedules_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: true
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       store_time_settings: {
         Row: {
           confirmed: boolean
@@ -1549,22 +1623,31 @@ export type Database = {
       }
       stores: {
         Row: {
+          archive_note: string | null
+          archive_reason: string | null
+          archived_at: string | null
           created_at: string
           id: string
           name: string
-          owner_id: string
+          owner_id: string | null
         }
         Insert: {
+          archive_note?: string | null
+          archive_reason?: string | null
+          archived_at?: string | null
           created_at?: string
           id?: string
           name: string
-          owner_id: string
+          owner_id?: string | null
         }
         Update: {
+          archive_note?: string | null
+          archive_reason?: string | null
+          archived_at?: string | null
           created_at?: string
           id?: string
           name?: string
-          owner_id?: string
+          owner_id?: string | null
         }
         Relationships: []
       }
@@ -1644,6 +1727,10 @@ export type Database = {
           p_sales: string
           p_store: string
         }
+        Returns: Json
+      }
+      archive_my_store: {
+        Args: { p_reason: string; p_store: string }
         Returns: Json
       }
       assert_my_store: { Args: { p_store: string }; Returns: undefined }
@@ -2030,6 +2117,10 @@ export type Database = {
           volume: number
         }[]
       }
+      purge_archived_store: {
+        Args: { p_backup_reference: string; p_store: string }
+        Returns: Json
+      }
       purge_entity_changes: { Args: never; Returns: number }
       quick_inbound: {
         Args: {
@@ -2193,6 +2284,7 @@ export type Database = {
         Returns: number
       }
       retire_channel: { Args: { p_id: string }; Returns: undefined }
+      retire_my_account: { Args: never; Returns: Json }
       rule_hours_on: { Args: { p_date: string; p_rule: string }; Returns: Json }
       sale_date_allowed: {
         Args: { p_date: string; p_store: string }
@@ -2301,6 +2393,16 @@ export type Database = {
       save_vendor: {
         Args: { p_payload: Json; p_store: string }
         Returns: string
+      }
+      schedule_store_purge: {
+        Args: {
+          p_approval_reference: string
+          p_approved_by: string
+          p_purge_after: string
+          p_reason: string
+          p_store: string
+        }
+        Returns: Json
       }
       scheduled_open_at: {
         Args: { p_date: string; p_store: string }

@@ -2,7 +2,8 @@
  * 세션·매장 컨텍스트 프로바이더 — 모든 실데이터 조회의 전제.
  *
  * RLS 가 `store_id in (select my_store_ids())` 이고 `my_store_ids()` 는
- * `stores where owner_id = auth.uid()` 다. **로그인하지 않으면 어떤 행도 보이지 않는다.**
+ * `stores where owner_id = auth.uid() and archived_at is null` 다. 로그인하지 않았거나
+ * 탈퇴·폐점으로 매장이 아카이브되면 어떤 업무 행도 보이지 않는다.
  * 그래서 화면의 "데이터가 없어요"는 대개 빈 테이블이 아니라 세션이 없는 것이다 —
  * 이 둘을 반드시 구분해서 보여줘야 한다(가이드 §9.8).
  *

@@ -387,5 +387,53 @@ EOF
   fi
 fi
 
+# ── 시나리오 9 · 0172 기존 원장 → 계정 삭제 수명주기 분리 (P0-1) ──────────────
+# 0173 이전의 실제 FK는 auth.users 삭제를 stores와 전 업무 원장으로 cascade 했다.
+# 0172 상태의 시드 원장 수를 먼저 굳힌 뒤 0173을 태우고, 인증 계정을 지워도 같은 수인지 잰다.
+say "⑨ 0172 상태 + 기존 판매·재고 원장 → 0173 뒤 계정 삭제에도 원장 보존"
+BASE9=20260826000172
+STEP9="$(cd "$MIG_DIR" && ls 20260829000173_*.sql)"
+bash "$SCRIPT_DIR/fresh-db.sh" --until "$BASE9" "$D" >/dev/null
+psql_d "$D" <<'EOF' >/dev/null
+create table public._expect_0173 as
+select s.id as store_id, s.owner_id,
+       (select count(*) from inventory_events e where e.store_id=s.id) as inventory_count,
+       (select count(*) from daily_sales d where d.store_id=s.id) as sales_count
+  from stores s order by s.created_at, s.id limit 1;
+EOF
+n=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c "
+  select count(*) from public._expect_0173 where inventory_count > 0 and sales_count > 0;")
+if [ "$n" != "1" ]; then
+  say "   FAIL 전제가 안 섰다 — 보존할 판매·재고 원장이 없다"
+  fail=1
+elif ! err="$(psql_d "$D" < "$MIG_DIR/$STEP9" 2>&1 1>/dev/null)"; then
+  say "   FAIL 0173 적용이 막혔다"; say "        $(printf '%s' "$err" | head -3)"; fail=1
+elif ! err="$(psql_d "$D" <<'EOF' 2>&1 1>/dev/null
+do $test$
+declare
+  v public._expect_0173%rowtype;
+begin
+  select * into v from public._expect_0173;
+  delete from auth.users where id = v.owner_id;
+  if not exists (select 1 from stores where id=v.store_id and owner_id is null
+                   and archived_at is not null and archive_reason='account_deleted') then
+    raise exception '⑨ 계정 삭제 뒤 매장이 archive 상태로 남지 않았습니다';
+  end if;
+  if (select count(*) from inventory_events where store_id=v.store_id) <> v.inventory_count
+     or (select count(*) from daily_sales where store_id=v.store_id) <> v.sales_count then
+    raise exception '⑨ 계정 삭제로 판매·재고 원장 수가 바뀌었습니다';
+  end if;
+  if not exists (select 1 from store_lifecycle_events where store_id=v.store_id
+                   and event_type='account_deleted' and former_owner_id=v.owner_id) then
+    raise exception '⑨ 계정 삭제 감사 이벤트가 없습니다';
+  end if;
+end $test$;
+EOF
+)"; then
+  say "   FAIL 계정 삭제 보존 계약이 깨졌다"; say "        $(printf '%s' "$err" | head -3)"; fail=1
+else
+  say "   ok   매장은 archive · 판매·재고 행 수 불변 · 계정 삭제 감사 원장 보존"
+fi
+
 say ""
-if [ "$fail" = "0" ]; then say "업그레이드 경로 8/8 통과"; else say "업그레이드 경로 실패"; exit 1; fi
+if [ "$fail" = "0" ]; then say "업그레이드 경로 9/9 통과"; else say "업그레이드 경로 실패"; exit 1; fi
