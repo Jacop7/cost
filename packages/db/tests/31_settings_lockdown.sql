@@ -33,7 +33,7 @@ begin
    */
   set local role postgres;
   execute $f$create or replace function pg_temp_probe_trg() returns trigger language plpgsql as $b$ begin return new; end $b$$f$;
-  set local role authenticated;
+  set local role sikjae_rpc_executor;
   perform pg_temp.raises('settings 에 트리거를 못 붙인다',
     'create trigger probe_trg before update on public.settings for each row execute function pg_temp_probe_trg()', '42501');
   perform pg_temp.raises('operating_rules 에도 못 붙인다',
@@ -71,7 +71,7 @@ begin
     not exists (select 1 from pg_trigger where tgname = 'settings_sync_operating_rule_trg'));
   set local role postgres;
   update settings set open_time = '03:00', close_time = '04:00' where store_id = v_store;
-  set local role authenticated;
+  set local role sikjae_rpc_executor;
   select id, revision, weekly_hours into v_rule1
     from operating_rules where store_id = v_store and effective_to is null;
   perform pg_temp.ok('표시 폼을 바꿔도 규칙 시간표는 그대로 — 실측 우회가 닫혔다',
@@ -102,7 +102,7 @@ begin
   set local role postgres;
   insert into stores (owner_id, name) values (v_owner, '시험 매장 신규직접')
     returning id into v_id;
-  set local role authenticated;
+  set local role sikjae_rpc_executor;
   perform pg_temp.as_owner(v_owner);   -- 이 매장의 사장님으로 세금을 저장한다
   perform pg_temp.eq('직접 생성: 설정 행이 생긴다',
     (select count(*) from settings where store_id = v_id), 1, 0);
@@ -133,7 +133,7 @@ begin
   v_other := pg_temp.new_owner();
   set local role postgres;
   perform set_config('request.jwt.claims', json_build_object('sub', v_other, 'role', 'authenticated')::text, true);
-  set local role authenticated;
+  set local role sikjae_rpc_executor;
   -- 이름 검사는 **만들 때** 한다 — 매장이 이미 있으면 이름은 쓰이지 않고 그 매장이 온다.
   perform pg_temp.raises('공식 문: 이름이 비면 거부', $q$select create_store('   ')$q$, '22000');
   v_res := create_store('시험 매장 공식문', 'America/New_York');
@@ -150,7 +150,7 @@ begin
     ((create_store('   '))->>'store_id')::uuid = v_id);
   set local role postgres;
   perform set_config('request.jwt.claims', json_build_object('sub', pg_temp.owner(), 'role', 'authenticated')::text, true);
-  set local role authenticated;
+  set local role sikjae_rpc_executor;
 end $t$;
 
 
@@ -175,14 +175,14 @@ begin
   -- 미래 테이블도 닫힌 채 태어난다 — 기본 권한(alter default privileges)이 걸렸는가.
   set local role postgres;
   create table public._probe_future_acl (id int);
-  set local role authenticated;
+  set local role sikjae_rpc_executor;
   perform pg_temp.ok('새로 만든 테이블도 TRUNCATE/TRIGGER/REFERENCES 가 닫혀 있다',
     not has_table_privilege('authenticated', 'public._probe_future_acl', 'TRUNCATE')
     and not has_table_privilege('authenticated', 'public._probe_future_acl', 'TRIGGER')
     and not has_table_privilege('authenticated', 'public._probe_future_acl', 'REFERENCES'));
   set local role postgres;
   drop table public._probe_future_acl;
-  set local role authenticated;
+  set local role sikjae_rpc_executor;
 end $t$;
 
 
@@ -233,7 +233,7 @@ begin
    where s.store_id = r.store_id and r.store_id = v_store
      and r.effective_to is null and r.revision = 1
      and (r.weekly_hours -> '1' ->> 'open') is distinct from s.open_time::text;
-  set local role authenticated;
+  set local role sikjae_rpc_executor;
   perform pg_temp.as_owner(v_owner_bf);   -- 그 매장은 다른 사장님 것 — 그 사장님으로 읽는다(RLS)
   perform pg_temp.eq_t('백필이 표시 폼(06:00~14:00)을 보존한다',
     (store_hours_on(v_store, store_local_date(v_store))->>'open_time') || '~' ||
@@ -276,7 +276,7 @@ begin
   set local role postgres;
   perform pg_temp.raises('같은 계정의 두 번째 매장은 23505 (UNIQUE)',
     format($q$insert into stores (owner_id, name) values (%L, '둘째')$q$, pg_temp.owner()), '23505');
-  set local role authenticated;
+  set local role sikjae_rpc_executor;
   perform pg_temp.ok('stores.owner_id 에 UNIQUE 제약이 있다 — 트리거가 아니라 제약이다',
     exists (select 1 from pg_constraint c
              where c.conrelid = 'public.stores'::regclass and c.contype = 'u'
@@ -290,12 +290,12 @@ begin
   v_other := pg_temp.new_owner();
   set local role postgres;
   perform set_config('request.jwt.claims', json_build_object('sub', v_other, 'role', 'authenticated')::text, true);
-  set local role authenticated;
+  set local role sikjae_rpc_executor;
   v_res := create_store('남의 매장');
   perform pg_temp.ok('남의 계정은 새 매장을 만든다', (v_res->>'created')::boolean is true);
   set local role postgres;
   perform set_config('request.jwt.claims', json_build_object('sub', pg_temp.owner(), 'role', 'authenticated')::text, true);
-  set local role authenticated;
+  set local role sikjae_rpc_executor;
 end $t$;
 
 
@@ -396,7 +396,7 @@ begin
     format($q$update settings set locale = 'en-US' where store_id = %L$q$, pg_temp.store()), '23514');
   perform pg_temp.raises('통화만 바꿔도 조합 위반',
     format($q$update settings set currency = 'USD' where store_id = %L$q$, pg_temp.store()), '23514');
-  set local role authenticated;
+  set local role sikjae_rpc_executor;
   perform pg_temp.eq_t('조합 위반이 거부된 뒤에도 행은 그대로',
     (select locale || '/' || currency || '/' || money_digits from settings where store_id = pg_temp.store()), 'ko/KRW/0');
   perform pg_temp.eq_t('기본 언어 키는 ko (예전 ko-KR 은 0168 이 옮겼다)',

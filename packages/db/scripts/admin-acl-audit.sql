@@ -197,9 +197,31 @@ select 'blocked_internal_rpc_objects' || '|' || count(*) || '|expected=11'
                      'apply_operating_hours', 'set_break_row', 'record_state_transition',
                      'open_business_day', 'close_business_day');
 
+-- 0174 실행 역할은 로그인·RLS 우회가 불가능하고 authenticated의 권한만 상속한다.
+-- 반대 방향 멤버십이 생기면 앱이 SET ROLE로 내부 권한을 직접 얻을 수 있으므로 실패다.
+select 'rpc_executor_role' || '|' || count(*) || '|expected=1'
+  from pg_roles r
+ where r.rolname = 'sikjae_rpc_executor'
+   and not r.rolcanlogin and not r.rolbypassrls
+   and pg_has_role(r.oid, 'authenticated'::regrole, 'member')
+   and not pg_has_role('authenticated'::regrole, r.oid, 'member');
+
+select 'rpc_executor_facades_invalid' || '|' || count(*) || '|expected=0'
+  from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+  join pg_roles r on r.oid = p.proowner
+ where n.nspname = 'public' and r.rolname = 'sikjae_rpc_executor'
+   and (not p.prosecdef or not coalesce(p.proconfig, '{}'::text[]) @> array['search_path=public, pg_temp']);
+
+select 'rls_policy_helper_calls' || '|' || count(*) || '|expected=0'
+  from pg_policy pol
+ where coalesce(pg_get_expr(pol.polqual, pol.polrelid), '') like '%my_store_ids()%'
+    or coalesce(pg_get_expr(pol.polwithcheck, pol.polrelid), '') like '%my_store_ids()%';
+
 -- PostgREST로 앱이 직접 부르는 공식 문만 정확한 시그니처로 고정한다. 이름만 비교하면 같은 이름의
 -- 새 오버로드가 자동으로 허용되므로 regprocedure 전체를 비교한다. 이 목록에 없는 authenticated
 -- 함수는 내부 도우미라도 Data API에서 직접 호출할 수 있으므로 감사 실패다.
+select 'facade_rpc_objects' || '|' || count(*) || '|expected=64' from _acl_approved_rpc;
+
 with actual as (
   select p.oid::regprocedure::text signature
     from pg_proc p join pg_namespace n on n.oid = p.pronamespace

@@ -222,9 +222,9 @@ begin
    where recipe_id = v_rcp and profit_amount is not null
    order by occurred_at desc, id desc limit 1;
 
-  update profit_trends set summary = '고칠 수 없어야 한다' where id = v_id;
-  get diagnostics v_cnt = row_count;
-  perform pg_temp.eq('원장 갱신은 조용히 0건이다 — 오류도 안 난다', v_cnt, 0);
+  perform pg_temp.raises('앱 롤은 원장 갱신 권한 자체가 없다',
+    format('set local role authenticated; update profit_trends set summary = %L where id = %L',
+           '고칠 수 없어야 한다', v_id), '42501');
 
   -- 반쪽 행은 **쌓아서** 만든다. 실제로 나올 수 있는 모양은 이쪽이다.
   insert into profit_trends (

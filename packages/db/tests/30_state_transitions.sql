@@ -104,7 +104,7 @@ begin
 
   set local role postgres;
   v_res := apply_due_breaks();
-  set local role authenticated;
+  set local role sikjae_rpc_executor;
   perform pg_temp.ok('창 안이면 자동으로 브레이크', (v_res->>'break_started')::int >= 1);
   perform pg_temp.eq_t('상태가 브레이크다',
     (select status::text from business_days where id = v_id), 'break');
@@ -116,7 +116,7 @@ begin
   perform transition_business_state(v_store, 'resume');
   set local role postgres;
   v_res := apply_due_breaks();
-  set local role authenticated;
+  set local role sikjae_rpc_executor;
   perform pg_temp.eq_t('재개 뒤에도 크론이 다시 브레이크를 안 건다',
     (select status::text from business_days where id = v_id), 'open');
 
@@ -133,7 +133,7 @@ begin
   update business_state_transitions set at = v_start - interval '1 hour'
    where business_day_id = v_id;
   v_res := apply_due_breaks();
-  set local role authenticated;
+  set local role sikjae_rpc_executor;
   perform pg_temp.ok('창이 끝나면 자동으로 재개', (v_res->>'resumed')::int >= 1);
   perform pg_temp.eq_t('상태가 다시 영업 중',
     (select status::text from business_days where id = v_id), 'open');
@@ -147,11 +147,13 @@ end $t$;
 -- ── ③ 감사 표는 앱 롤이 못 쓴다 ────────────────────────────────
 do $t$
 begin
+  set local role authenticated;
   perform pg_temp.raises('감사 표 직접 쓰기는 막혔다',
     format($q$insert into business_state_transitions
              (store_id, business_day_id, from_status, to_status, method)
            select %L, id, 'open', 'break', 'manual' from business_days limit 1$q$,
            pg_temp.store()), '42501');
+  set local role sikjae_rpc_executor;
   perform pg_temp.ok('읽기는 된다 — 내 매장 것',
     (select count(*) from business_state_transitions) >= 0);
 end $t$;
@@ -165,6 +167,7 @@ end $t$;
  */
 do $t$
 begin
+  set local role authenticated;
   perform pg_temp.raises('과거 날짜 직접 열기는 권한부터 없다',
     format('select open_business_day(%L, %L)', pg_temp.store(), '2020-01-01'), '42501');
   perform pg_temp.raises('오늘도 몸통 직접 호출은 막혔다',
@@ -174,6 +177,7 @@ begin
   -- 앱 문은 살아 있다 — 문을 좁히다 문 자체를 잠그면 장사를 못 연다.
   perform pg_temp.ok('전이 문은 열려 있다',
     has_function_privilege('authenticated', 'public.transition_business_state(uuid, text, time)', 'execute'));
+  set local role sikjae_rpc_executor;
 end $t$;
 
 
@@ -201,7 +205,7 @@ begin
                            from generate_series(0, 6) d),
          weekly_breaks = '{}'::jsonb
    where store_id = v_store;
-  set local role authenticated;
+  set local role sikjae_rpc_executor;
   perform pg_temp.as_owner(v_owner);
 
   v_today := store_local_date(v_store);
@@ -274,7 +278,7 @@ begin
 
   set local role postgres;
   update store_time_settings set timezone = v_tz where store_id = v_store;
-  set local role authenticated;
+  set local role sikjae_rpc_executor;
   perform pg_temp.eq_t('시간대를 바꿔도 목표 현지 날짜는 그대로다',
     store_local_date(v_store)::text, v_day::text);
 
@@ -297,7 +301,7 @@ begin
          scheduled_open_at = clock_timestamp() + interval '1 hour',
          planned_close_at = clock_timestamp() + interval '2 hours'
    where id = v_old_id;
-  set local role authenticated;
+  set local role sikjae_rpc_executor;
 
   perform pg_temp.ok('오늘 행을 옛 날짜로 옮겨 늦은 개점 경로를 만든다',
     not exists (select 1 from business_days
@@ -330,7 +334,7 @@ begin
          closed_at = null,
          close_method = null
    where id = v_old_id;
-  set local role authenticated;
+  set local role sikjae_rpc_executor;
 
   perform pg_temp.open_today();
   perform pg_temp.eq_t('종료 장부가 있어도 다른 날짜 장부는 먼저 종료된다',

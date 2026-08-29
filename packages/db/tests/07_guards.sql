@@ -132,7 +132,7 @@ begin
     create function public.change_line(p_a int) returns int
     language sql immutable as 'select p_a'
   $q$;
-  execute 'set local role authenticated';
+  execute 'set local role sikjae_rpc_executor';
 
   -- 이제 change_line 이 둘이다 — 가드가 반드시 터져야 한다.
   perform pg_temp.raises('오버로드를 만들면 가드가 막는다',
@@ -141,7 +141,7 @@ begin
   -- 치우면 다시 통과한다.
   execute 'reset role';
   execute 'drop function public.change_line(int)';
-  execute 'set local role authenticated';
+  execute 'set local role sikjae_rpc_executor';
   perform assert_no_rpc_overloads();
   perform pg_temp.ok('치우면 다시 통과한다', true);
 
@@ -153,12 +153,12 @@ begin
     create function public.store_local_date(p_a int) returns int
     language sql immutable as 'select p_a'
   $q$;
-  execute 'set local role authenticated';
+  execute 'set local role sikjae_rpc_executor';
   perform pg_temp.raises('전파 RPC 가 아닌 이름도 잡는다',
     'select assert_no_rpc_overloads()', null);
   execute 'reset role';
   execute 'drop function public.store_local_date(int)';
-  execute 'set local role authenticated';
+  execute 'set local role sikjae_rpc_executor';
 end $t$;
 
 -- ════════════════════════════════════════════════════════════════
