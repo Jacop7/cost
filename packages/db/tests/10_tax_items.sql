@@ -123,7 +123,7 @@ begin
     update settings set updated_at = clock_timestamp() + interval '1 hour' where store_id = pg_temp.store();
     alter table settings enable trigger settings_touch;
     select updated_at into v_stamp from settings where store_id = pg_temp.store();
-    set local role authenticated;
+    set local role sikjae_rpc_executor;
 
     v_res := save_store_tax(pg_temp.store(), 'included',
       '[{"name":"부가세","rate":9.0909090909},{"name":"카드 수수료","rate":2.5}]'::jsonb,

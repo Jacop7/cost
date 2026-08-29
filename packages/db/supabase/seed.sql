@@ -215,7 +215,7 @@ begin
   --
   -- ⚠ 개업 재고만 앞에 둔다. **보충 입고는 영업 시작 뒤**가 맞다 —
   --   장사 중에 들어온 물건이 그날 스냅샷을 흔들면 안 된다(0048).
-  v_day := store_local_date(v_store) - 21;
+  v_day := ((business_day_state(v_store)->>'local_date')::date) - 21;
     o := e7_place_order(v_store, i_pork,      vd_chuk,   null, 5000, 65000, 4, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 4, 'S1-PORK',   v_day);
     o := e7_place_order(v_store, i_pa,        vd_nong,   null, 1000,  4000, 8, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 8, 'S1-PA',     v_day);
     o := e7_place_order(v_store, i_onion,     vd_nong,   null, 1200,  2268,10, v_day, 'manual', v_day); perform e1_confirm_inbound(o,10, 'S1-ONION',  v_day);
@@ -281,8 +281,8 @@ begin
                            jsonb_build_object('name','전단·SNS','amount',73000)))
     ))  -- 2,400,000 + 603,000 + 380,000 + 120,000 + 253,000 = 3,756,000
   from (select distinct m from unnest(array[
-          to_char((store_local_date(v_store) - 30)::date, 'YYYY-MM'),
-          business_month()]) m) months;
+          to_char(((business_day_state(v_store)->>'local_date')::date - 30)::date, 'YYYY-MM'),
+          to_char((business_day_state(v_store)->>'local_date')::date, 'YYYY-MM')]) m) months;
 
   -- ══════════════════════════════════════════════════════════
   -- 세금 (0090) — 매장 하나에 하나
@@ -403,7 +403,7 @@ begin
   -- 최근 3주 재생 — 입고와 판매를 **날짜 순서대로**
   -- ══════════════════════════════════════════════════════════
   for d in reverse 21 .. 0 loop
-    v_day := store_local_date(v_store) - d;
+    v_day := (business_day_state(v_store)->>'local_date')::date - d;
     v_seq := v_seq + 1;
 
     -- ── 영업 시작 (0048) ─────────────────────────────────────
@@ -544,9 +544,11 @@ begin
     -- 폐기 손실로만 잡힌다. 그래서 어느 재료에 폐기를 넣든 검산값이 흔들리지 않는다
     -- (이전에는 폐기 한 건이 추정 로스율을 통째로 대체해 단가가 내려앉았다).
     if d = 9 then
-      perform e2_discard(i_hobak, greatest(stock_total_base(i_hobak) - 220, 0), v_day);
+      perform e2_discard(i_hobak, greatest(
+        coalesce((select stock_total from inventory_states where ingredient_id = i_hobak), 0) - 220, 0), v_day);
     elsif d = 4 then
-      perform e2_discard(i_cheong, greatest(stock_total_base(i_cheong) - 120, 0), v_day);
+      perform e2_discard(i_cheong, greatest(
+        coalesce((select stock_total from inventory_states where ingredient_id = i_cheong), 0) - 120, 0), v_day);
     end if;
 
     -- ── 영업 종료 ────────────────────────────────────────────
@@ -572,9 +574,9 @@ begin
 
   -- ── 진행 중인 발주 (ORD 대기 탭) ────────────────────────────
   -- 아직 도착하지 않은 주문이 있어야 "입고 대기" 탭이 빈 화면이 아니다.
-  o := e7_place_order(v_store, i_pork,  vd_chuk,   null, 5000, 65000, 2, store_local_date(v_store) + 1, 'manual', v_day);
-  o := e7_place_order(v_store, i_kimchi,vd_online, null,10000, 33500, 2, store_local_date(v_store) + 2, 'manual', v_day);
-  o := e7_place_order(v_store, i_egg,   vd_mart,   null,   30,  9100, 3, store_local_date(v_store) + 1, 'manual', v_day);
+  o := e7_place_order(v_store, i_pork,  vd_chuk,   null, 5000, 65000, 2, (business_day_state(v_store)->>'local_date')::date + 1, 'manual', v_day);
+  o := e7_place_order(v_store, i_kimchi,vd_online, null,10000, 33500, 2, (business_day_state(v_store)->>'local_date')::date + 2, 'manual', v_day);
+  o := e7_place_order(v_store, i_egg,   vd_mart,   null,   30,  9100, 3, (business_day_state(v_store)->>'local_date')::date + 1, 'manual', v_day);
 
   raise notice '시드 완료 — 식재료 19 · 메뉴 7 · 22일치 매출·입고';
 end $$;

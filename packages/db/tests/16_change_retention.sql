@@ -52,7 +52,7 @@ begin
   update entity_change_events
      set occurred_at = clock_timestamp() - interval '40 days'
    where store_id = pg_temp.store();
-  execute 'set local role authenticated';
+  execute 'set local role sikjae_rpc_executor';
   v_n := purge_entity_changes();
   perform pg_temp.ok('청소가 실제로 지운다', v_n > 0);
   perform pg_temp.eq('내역이 비었다',
@@ -113,7 +113,7 @@ begin
   update entity_change_events
      set occurred_at = clock_timestamp() - interval '40 days'
    where id = v_old;
-  execute 'set local role authenticated';
+  execute 'set local role sikjae_rpc_executor';
   v_n := purge_entity_changes();
   perform pg_temp.eq('40일 지난 것만 지워진다', v_n, 1, 0);
   perform pg_temp.eq('나머지는 남는다',
@@ -125,7 +125,7 @@ begin
      set occurred_at = clock_timestamp() - interval '29 days'
    where id = (select id from entity_change_events
                 where store_id = pg_temp.store() order by occurred_at desc limit 1);
-  execute 'set local role authenticated';
+  execute 'set local role sikjae_rpc_executor';
   perform pg_temp.eq('29일 된 것은 안 지운다', purge_entity_changes(), 0, 0);
 
   -- ⚠ 청소가 실패해도 영업 시작이 막히면 안 된다 — 곁일이다.
@@ -177,7 +177,7 @@ begin
   update entity_change_events
      set occurred_at = clock_timestamp() - interval '20 days'
    where id = v_old;
-  execute 'set local role authenticated';
+  execute 'set local role sikjae_rpc_executor';
 
   v_n := purge_entity_changes();
   perform pg_temp.ok('20일 된 기록은 살아 있다',
@@ -187,7 +187,7 @@ begin
   execute 'reset role';
   update entity_change_events set occurred_at = clock_timestamp() - interval '40 days'
    where id = v_old;
-  execute 'set local role authenticated';
+  execute 'set local role sikjae_rpc_executor';
 
   /*
    * ⚠ 닫았다 다시 여는 것으로는 확인이 안 된다. 그 경로는 `reopen_business_day` 라
@@ -198,7 +198,7 @@ begin
   execute 'reset role';
   update business_days set business_date = date '2020-01-02', status = 'closed'
    where store_id = pg_temp.store() and business_date = pg_temp.today();
-  execute 'set local role authenticated';
+  execute 'set local role sikjae_rpc_executor';
 
   perform pg_temp.open_today();          -- 여기서 청소가 곁일로 돈다
   perform pg_temp.ok('영업 시작이 40일 된 기록을 정리한다',
@@ -238,48 +238,15 @@ begin
     coalesce('anon 이 부를 수 있는 함수: ' || v_names, 'anon 이 부를 수 있는 함수 없음'),
     v_n, 0, 0);
 
-  /*
-   * 반대쪽도 본다. 다 걷어 버리면 앱이 통째로 죽는다.
-   *
-   * ⚠ 다만 **일부러 막은 것**이 있다. 사람 없이 도는 함수는 사람이 부르면 안 된다 —
-   *   `close_due_business_days` 는 매장을 안 가리는 definer 라, 인증 사용자에게 열면
-   *   남의 매장 영업일까지 닫을 수 있다(0137). 크론(service_role)만 부른다.
-   *   목록에 이름이 늘면 그때마다 **왜 막았는지**를 여기 적는다.
-   */
-  select count(*), string_agg(p.proname, ', ' order by p.proname)
-    into v_n, v_names
-    from pg_proc p join pg_namespace n on n.oid = p.pronamespace
-   where n.nspname = 'public' and p.prokind = 'f'
-     and not has_function_privilege('authenticated', p.oid, 'execute')
-     and p.proname not in (
-       -- 크론 전용: 매장을 안 가리는 definer 다(0137)
-       'close_due_business_days',
-       -- 몸통 계열: 문지기가 없다. 문은 close_business_day / save_sale / amend 다.
-       'close_business_day_row',   -- 0138
-       'apply_sale_items',         -- 0145
-       'e10_sale_recorded',        -- 0145 — p_allow_closed 가 열려 있으면 그게 곧 문이다
-       -- 0149 — p_allow_closed => true 면 종료된 장부의 기준을 바꾸고 basis_quality 를
-       --        내릴 수 있다. 판본 검사도 감사 기록도 없이. 문은 정정 RPC 다.
-       'add_to_day_basis',
-       'apply_due_breaks',         -- 0157 — 매장을 안 가린다. 크론(service_role)만.
-       'apply_operating_hours',    -- 0163 — 무판본 저장 몸통. 앱 문은 set_operating_hours(토큰 필수).
-       'set_break_row',            -- 0157 — 매장 검사 없는 몸통. 문은 전이 RPC 다.
-       'record_state_transition',  -- 0157 — 감사 기록 도우미. 함수 안에서만 돈다.
-       -- 0173 — 수명주기 트리거와 service_role 전용 물리 삭제 절차다.
-       -- 앱 문은 archive_my_store / retire_my_account 둘뿐이다.
-       'store_owner_lifecycle_guard',
-       'record_store_owner_detached',
-       'reject_store_direct_delete',
-       'reject_store_lifecycle_mutation',
-       'schedule_store_purge',
-       'purge_archived_store',
-       -- 0160 — 날짜 인자가 있어 앱에 열면 과거 장부를 open 으로 만들 수 있다(§6.4 우회).
-       --        앱 문은 transition_business_state · save_sale(p_open_day)뿐이다.
-       'open_business_day',
-       'close_business_day');      -- 0160 — 같은 이유. 문은 전이 RPC 다.
-  perform pg_temp.eq(
-    coalesce('인증 사용자가 못 부르는 함수: ' || v_names, '인증 사용자는 전부 부를 수 있다'),
-    v_n, 0, 0);
+  -- 0174부터 반대 계약이다. 앱은 공식 facade만 호출하며 내부 계산·몸통은 실행 역할에만 연다.
+  perform pg_temp.ok('정상 facade는 인증 사용자가 부를 수 있다',
+    has_function_privilege('authenticated',
+      'public.transition_business_state(uuid, text, time)', 'execute'));
+  perform pg_temp.ok('내부 계산은 인증 사용자에게 닫혀 있다',
+    not has_function_privilege('authenticated',
+      'public.base_unit_price(uuid)', 'execute'));
+  perform pg_temp.ok('RLS 도우미도 Data API 문이 아니다',
+    not has_function_privilege('authenticated', 'public.my_store_ids()', 'execute'));
 
   -- 그리고 그 예외는 **정말로** 막혀 있어야 한다. 목록에만 적고 열려 있으면 의미가 없다.
   perform pg_temp.ok('크론 전용 함수는 인증 사용자도 못 부른다',
@@ -315,10 +282,12 @@ begin
     not has_function_privilege('public', 'public.zz_grant_probe()', 'execute'));
   perform pg_temp.ok('새로 만든 함수는 anon 도 못 부른다',
     not has_function_privilege('anon', 'public.zz_grant_probe()', 'execute'));
-  perform pg_temp.ok('그래도 인증 사용자는 부를 수 있다',
-    has_function_privilege('authenticated', 'public.zz_grant_probe()', 'execute'));
+  perform pg_temp.ok('새 함수는 인증 사용자에게 자동 공개되지 않는다',
+    not has_function_privilege('authenticated', 'public.zz_grant_probe()', 'execute'));
+  perform pg_temp.ok('새 함수는 전용 실행 역할이 부를 수 있다',
+    has_function_privilege('sikjae_rpc_executor', 'public.zz_grant_probe()', 'execute'));
   execute 'drop function public.zz_grant_probe()';
-  execute 'set local role authenticated';
+  execute 'set local role sikjae_rpc_executor';
 end $t$;
 
 
@@ -379,7 +348,8 @@ begin
                     ' | ' order by p.proname, pg_get_function_identity_arguments(p.oid))
     into v_now
     from pg_proc p join pg_namespace n on n.oid = p.pronamespace
-   where n.nspname = 'public' and p.prokind = 'f' and p.prosecdef;
+   where n.nspname = 'public' and p.prokind = 'f' and p.prosecdef
+     and pg_get_userbyid(p.proowner) = 'postgres';
 
   v_want := concat_ws(' | ',
     'amend_ended_business_day(p_store uuid, p_date date, p_base_revision integer, p_items jsonb, p_etc_items jsonb, p_extra_items jsonb, p_reason text)',
@@ -405,7 +375,12 @@ begin
     'stores_default_time_settings()',
     'transition_business_state(p_store uuid, p_action text, p_close_time time without time zone)');
 
-  perform pg_temp.eq_t('SECURITY DEFINER 함수 목록이 그대로다', coalesce(v_now, '(없음)'), v_want);
+  perform pg_temp.eq_t('postgres 권한의 SECURITY DEFINER 목록이 그대로다', coalesce(v_now, '(없음)'), v_want);
+
+  perform pg_temp.ok('전용 실행 역할 소유 함수는 모두 SECURITY DEFINER다', not exists (
+    select 1 from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+     where n.nspname = 'public' and pg_get_userbyid(p.proowner) = 'sikjae_rpc_executor'
+       and not p.prosecdef));
 
   -- 그리고 그중 anon 이 부를 수 있는 건 하나도 없어야 한다.
   perform pg_temp.eq('definer 함수 중 anon 이 부를 수 있는 것',

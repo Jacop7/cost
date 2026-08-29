@@ -547,5 +547,5 @@ begin
       (select basis_quality::text from business_days
         where store_id = pg_temp.store() and business_date = v_day), 'exact');
   end;
-  set local role authenticated;
+  set local role sikjae_rpc_executor;
 end $t$;

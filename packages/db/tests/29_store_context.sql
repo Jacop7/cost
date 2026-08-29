@@ -44,7 +44,7 @@ begin
   if (select count(*) from operating_rules where store_id = v_b) <> 1 then
     raise exception '준비 실패: 뉴욕 매장 규칙이 1개가 아닙니다';
   end if;
-  set local role authenticated;
+  set local role sikjae_rpc_executor;
   insert into _ny values (v_b, v_owner);
 end $t$;
 
@@ -132,7 +132,7 @@ begin
                '2026-04-05 18:00:00'::timestamp at time zone 'America/New_York',
                '2026-04-06 05:00:00'::timestamp at time zone 'America/New_York')
     returning id into v_id;
-  set local role authenticated;
+  set local role sikjae_rpc_executor;
 
   perform pg_temp.eq_t('굳은 종료 전 새벽 판매는 열린 그 날 장사다',
     (resolve_sales_business_context(v_b, '2026-04-06 03:00:00'::timestamp at time zone 'America/New_York')).sales_date::text,
@@ -149,7 +149,7 @@ begin
   set local role postgres;
   delete from business_state_transitions where business_day_id = v_id;
   delete from business_days where id = v_id;
-  set local role authenticated;
+  set local role sikjae_rpc_executor;
   perform pg_temp.as_owner(pg_temp.owner());
 end $t$;
 
@@ -173,7 +173,7 @@ begin
      set business_date = '2020-01-15',
          planned_close_at = '2020-01-16 02:00:00+09'::timestamptz
    where id = v_id;
-  set local role authenticated;
+  set local role sikjae_rpc_executor;
 
   v_ctx := resolve_sales_business_context(v_store);
   perform pg_temp.ok('컨텍스트가 기한 지남을 표시한다', v_ctx.open_expired is true);
@@ -263,7 +263,7 @@ begin
   delete from business_state_transitions t using business_days d
    where t.business_day_id = d.id and d.store_id = v_store and d.business_date = v_day;
   delete from business_days where store_id = v_store and business_date = v_day;
-  set local role authenticated;
+  set local role sikjae_rpc_executor;
 
   -- 그냥 저장하면 예전처럼 45001 — 화면이 "영업을 시작할까요?" 를 물을 자리다.
   perform pg_temp.raises('영업 전 저장은 여전히 45001',

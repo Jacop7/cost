@@ -24,7 +24,7 @@ declare v_res jsonb;
 begin
   set local role postgres;
   v_res := close_due_business_days();
-  set local role authenticated;
+  set local role sikjae_rpc_executor;
   return v_res;
 end $h$;
 
@@ -35,7 +35,7 @@ begin
   set local role postgres;
   update business_days set planned_close_at = p_at
    where store_id = pg_temp.store() and business_date = pg_temp.today();
-  set local role authenticated;
+  set local role sikjae_rpc_executor;
 end $h$;
 
 
@@ -64,7 +64,7 @@ begin
    */
   set local role postgres;
   update business_days set last_activity_at = now() where id = v_id;
-  set local role authenticated;
+  set local role sikjae_rpc_executor;
 
   v_res := pg_temp.sweep();
   perform pg_temp.eq('기한이 지난 영업일을 닫는다', (v_res->>'closed')::int, 1, 0);
@@ -115,7 +115,7 @@ begin
   -- 브레이크 중이어도 기한이 지나면 닫는다. 브레이크는 마감을 미루는 장치가 아니다(§2.6).
   set local role postgres;
   update business_days set status = 'break' where id = v_id;
-  set local role authenticated;
+  set local role sikjae_rpc_executor;
   perform pg_temp.set_close(now() - interval '3 hours');
   perform pg_temp.eq('브레이크 중이어도 닫는다', (pg_temp.sweep()->>'closed')::int, 1, 0);
 end $t$;
@@ -144,10 +144,12 @@ end $t$;
 -- ── ⑥ 사람은 못 부른다 ───────────────────────────────────────
 do $t$
 begin
+  set local role authenticated;
   perform pg_temp.raises('인증 사용자는 스윕을 못 부른다',
     'select close_due_business_days()', '42501');
   perform pg_temp.raises('anon 도 못 부른다',
     'set local role anon; select close_due_business_days()', '42501');
+  set local role sikjae_rpc_executor;
 end $t$;
 
 
@@ -177,7 +179,7 @@ begin
    where store_id = pg_temp.store() order by occurred_at desc limit 1;
   update entity_change_events set occurred_at = clock_timestamp() - interval '40 days'
    where id = v_old;
-  set local role authenticated;
+  set local role sikjae_rpc_executor;
 
   /*
    * ⚠ 청소와 확인을 **한 식에** 넣으면 안 된다. `a and b` 의 평가 순서는 보장되지

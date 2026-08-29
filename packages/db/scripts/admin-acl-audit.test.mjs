@@ -45,6 +45,10 @@ const EXPECTED_METRICS = new Map([
   ['anon_rpc', 'expected=0'],
   ['blocked_internal_rpc', 'expected=0'],
   ['blocked_internal_rpc_objects', 'expected=11'],
+  ['rpc_executor_role', 'expected=1'],
+  ['rpc_executor_facades_invalid', 'expected=0'],
+  ['rls_policy_helper_calls', 'expected=0'],
+  ['facade_rpc_objects', 'expected=64'],
   ['facade_rpc_missing', 'expected=0'],
   ['unapproved_authenticated_rpc', 'expected=0'],
   ['platform_default_open', 'informational'],
@@ -168,6 +172,10 @@ const FRESH_DB_VALUES = new Map([
   ['anon_rpc', '0'],
   ['blocked_internal_rpc', '0'],
   ['blocked_internal_rpc_objects', '11'],
+  ['rpc_executor_role', '1'],
+  ['rpc_executor_facades_invalid', '0'],
+  ['rls_policy_helper_calls', '0'],
+  ['facade_rpc_objects', '64'],
 ]);
 for (const [metric, expectedValue] of FRESH_DB_VALUES) {
   const observed = seen.get(metric).value;
@@ -200,17 +208,10 @@ if (missingFromAllowlist.length || unusedAllowlist.length) {
   fail(`모바일 RPC↔허용 목록 불일치 — 미허용=[${missingFromAllowlist.join(', ')}] 미사용=[${unusedAllowlist.join(', ')}]`);
 }
 
-// P0-5 부채는 아직 0으로 위장하지 않는다. 확정한 fresh DB 기준선 이하의 축소만 허용한다.
-const DEBT_CEILING = new Map([
-  ['ledger_write_paths', 32],
-  ['unapproved_authenticated_rpc', 87],
-]);
-for (const [metric, ceiling] of DEBT_CEILING) {
-  const raw = seen.get(metric).value;
-  // Number('')=0 같은 느슨한 변환으로 부채를 0으로 위장하지 않는다.
-  if (!/^\d+$/.test(raw) || Number(raw) > ceiling) {
-    fail(`${metric} 부채가 기준선을 넘었거나 정수가 아닙니다: 관측=${raw} 기준선=${ceiling}`);
-  }
+// P0-5 이후에는 부채 상한이 아니라 0이 계약이다. 하나라도 다시 열리면 즉시 실패한다.
+for (const metric of ['ledger_write_paths', 'unapproved_authenticated_rpc']) {
+  const observed = seen.get(metric).value;
+  if (observed !== '0') fail(`${metric} 최소 권한 회귀: 관측=${observed} 기대=0`);
 }
 
 console.log(`admin-acl audit 실제 DB 계약 통과 — metric ${seen.size}개 · 모바일 RPC ${sourceNames.size}개 · 비-mobile 예외 ${nonMobileNames.size}개`);

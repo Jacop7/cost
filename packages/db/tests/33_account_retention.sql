@@ -48,7 +48,7 @@ begin
       into v_count using pg_temp.store();
     insert into account_retention_counts values (r.child_table, r.fk_column, v_count);
   end loop;
-  set local role authenticated;
+  set local role sikjae_rpc_executor;
 end $t$;
 
 select pg_temp.ok('시드에 보존할 재고 원장이 실제로 있다',
@@ -93,7 +93,7 @@ begin
 end $t$;
 
 -- 소유자의 옛 JWT가 남아 있어도 어떤 매장도 안 보이고 새 매장도 못 만든다.
-set local role authenticated;
+set local role sikjae_rpc_executor;
 select pg_temp.eq('탈퇴한 JWT 의 매장 스코프는 0', (select count(*) from my_store_ids()), 0);
 select pg_temp.eq('탈퇴한 JWT 로 매장 행을 직접 조회해도 0',
   (select count(*) from stores where id = pg_temp.store()), 0);
@@ -123,7 +123,7 @@ begin
   perform pg_temp.ok('외부 auth 삭제도 감사 이벤트를 남긴다', exists (
     select 1 from store_lifecycle_events where store_id = v_store
       and event_type = 'account_deleted' and former_owner_id = v_owner));
-  set local role authenticated;
+  set local role sikjae_rpc_executor;
 end $t$;
 
 -- ── 4. 폐점은 계정을 유지하고 기존 매장 접근만 끊는다 ──────────────────────────────
@@ -189,4 +189,4 @@ select pg_temp.ok('매장 물리 삭제 후에도 감사 원장은 남는다', e
      and e.approval_reference = 'APPROVAL-TEST-001'
      and e.backup_reference = 'BACKUP-SHA256-TEST'));
 
-set local role authenticated;
+set local role sikjae_rpc_executor;
