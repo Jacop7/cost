@@ -8,6 +8,8 @@ has("node: ['20.19.4', 24]");
 has('full-db-required:');
 has('name: full-db-required');
 has('pnpm --filter @sikjae/db start');
+has('bash packages/db/scripts/admin-acl.sh --local postgres fix');
+has('bash packages/db/scripts/admin-acl.sh --local postgres check');
 has('run: pnpm verify\n');
 has('protected-gate:');
 has('needs: [verify, full-db-required]');
@@ -16,5 +18,6 @@ has('node scripts/protected-gate-validator.mjs --ci --output protected-gate-evid
 has('name: protected-gate-${{ github.sha }}');
 assert.ok(!workflow.includes('pull_request:'), '같은 SHA에 중복 check를 만드는 pull_request 트리거를 두지 않습니다.');
 assert.ok(workflow.indexOf('pnpm --filter @sikjae/db start') < workflow.indexOf('run: pnpm verify\n', workflow.indexOf('full-db-required:')), 'Supabase 시작이 전체 검증보다 먼저여야 합니다.');
+assert.ok(workflow.indexOf('admin-acl.sh --local postgres check') < workflow.indexOf('run: pnpm verify\n', workflow.indexOf('full-db-required:')), '개발 DB ACL 정규화가 전체 검증보다 먼저여야 합니다.');
 
 console.log('CI 필수 게이트 계약 통과');
