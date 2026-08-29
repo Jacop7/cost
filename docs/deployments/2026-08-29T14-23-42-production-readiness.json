@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-08-29T14:23:42.495Z",
+  "status": "BLOCKED",
+  "target": "production",
+  "project_ref": "smxaozdgoxbafjldoayb",
+  "repository_sha": "8f2940290bb2bae66d80effdef44fe3f0dc74756",
+  "deployment": {
+    "applied": false,
+    "remote_migrations": 0,
+    "planned_migrations": 163,
+    "guarded_plan": "pass"
+  },
+  "platform": {
+    "plan": "Pro",
+    "region": "ap-northeast-2",
+    "health": "healthy",
+    "ssl_enforcement": true,
+    "spend_cap": true,
+    "network_restrictions": "0.0.0.0/0, ::/0",
+    "network_note": "The source PC can change and no stable egress IP or VPN has been chosen. Restrict database access only after a stable administration path is available.",
+    "organization_members": 1,
+    "owners": 1,
+    "owner_mfa": "disabled"
+  },
+  "backups": {
+    "scheduled_backup_id": 1511549153,
+    "scheduled_backup_status": "completed",
+    "scheduled_backup_at": "2026-08-29T03:52:22.397Z",
+    "scheduled_backup_type": "physical",
+    "daily_retention_days": 7,
+    "pitr": false,
+    "logical_backup_dir": "%LOCALAPPDATA%\\Sikjae\\db-backups\\production-before-first-deploy-20260829-141516",
+    "files": [
+      {
+        "name": "data.sql",
+        "bytes": 9643,
+        "sha256": "2DDDAE59A8210F8D4218D4796DC9F771151A03CF531BB4C49AFD71DBFF78497A"
+      },
+      {
+        "name": "roles.sql",
+        "bytes": 370,
+        "sha256": "168A95A9C745AF5ED4679751F90419AC9DC434240A213B03E32A06D5664C2308"
+      },
+      {
+        "name": "schema.sql",
+        "bytes": 3076,
+        "sha256": "862613C1072315C8C500084B9835EAD6E45979C4E9E6ABDFF6BE4B7174DF3422"
+      }
+    ]
+  },
+  "restore_drill": {
+    "result": "pass_with_scope_limit",
+    "target": "fresh_restore_prod_20260829",
+    "target_disposition": "dropped",
+    "successful_run_seconds": 3.7,
+    "platform_scaffold": "local Supabase auth/storage schemas",
+    "role_restore": "validated as supabase_admin inside a transaction and rolled back",
+    "postconditions": {
+      "public.rls_auto_enable": 1,
+      "auth.users": 0,
+      "storage.objects": 0,
+      "public_tables": 0
+    },
+    "rpo": "logical snapshot at 2026-08-29T05:15:16Z; production contained no application rows",
+    "rto": "3.7 seconds for the scoped local logical restore only; hosted physical restore duration is not measured",
+    "missing": "Hosted restore-to-new-project and non-empty Storage object recovery were not exercised"
+  },
+  "blockers": [
+    "Add a second organization administrator",
+    "Enable MFA for the current owner and require it for administrators",
+    "Choose whether up to 24 hours of data loss from daily backups is acceptable or enable PITR",
+    "Define and exercise non-empty Storage object backup and recovery",
+    "Deploy the schema before production ACL, Cron, and RPC observability can be audited"
+  ]
+}
