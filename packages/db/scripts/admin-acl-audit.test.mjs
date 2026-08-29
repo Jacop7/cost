@@ -6,11 +6,11 @@
  * 이미 닫힌 사후조건 값을 유지하는지를 잰다. 프로브 rollback과 모바일 .rpc 호출 이름↔허용 목록의
  * 양방향 일치도 확인하며, 대조할 수 없는 동적 .rpc 이름은 허용하지 않는다.
  */
-import { readFileSync, readdirSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import ts from 'typescript';
+import { scanMobileRpcNames } from './admin-acl-source-scan.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(HERE, '..', '..', '..');
@@ -70,73 +70,16 @@ function psql(input) {
   return String(result.stdout ?? '');
 }
 
-function sqlInsertBody(sql, tableName) {
-  const marker = `insert into ${tableName}`;
-  const start = sql.indexOf(marker);
-  if (start < 0) fail(`${tableName} insert를 찾지 못했습니다`);
-  const end = sql.indexOf(';', start);
-  if (end < 0) fail(`${tableName} insert 종료를 찾지 못했습니다`);
-  return sql.slice(start, end);
-}
-
-function signaturesFromInsert(sql, tableName) {
-  return [...sqlInsertBody(sql, tableName).matchAll(/\('([^']+)'(?:\s*,\s*'[^']+')?\)/g)].map((m) => m[1]);
-}
-
-function filesBelow(dir) {
-  return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
-    const path = join(dir, entry.name);
-    if (entry.isDirectory()) return filesBelow(path);
-    return /\.(?:[cm]?[jt]sx?)$/.test(entry.name) ? [path] : [];
-  });
-}
-
-function mobileRpcNames() {
-  const names = new Set();
-  const dynamic = [];
-  const files = MOBILE_ROOTS.flatMap(filesBelow);
-  if (files.length === 0) {
-    fail(`모바일 소스를 하나도 찾지 못했습니다: ${MOBILE_ROOTS.join(', ')}`);
-  }
-  for (const path of files) {
-    const source = ts.createSourceFile(path, readFileSync(path, 'utf8'), ts.ScriptTarget.Latest, true);
-    const visit = (node) => {
-      if (ts.isCallExpression(node)) {
-        const callee = node.expression;
-        const isRpcProperty = ts.isPropertyAccessExpression(callee) && callee.name.text === 'rpc';
-        const isRpcElement = ts.isElementAccessExpression(callee)
-          && ts.isStringLiteralLike(callee.argumentExpression)
-          && callee.argumentExpression.text === 'rpc';
-        if (isRpcProperty || isRpcElement) {
-          const first = node.arguments[0];
-          if (isRpcProperty && first && ts.isStringLiteralLike(first)) {
-            names.add(first.text);
-          } else {
-            const { line } = source.getLineAndCharacterOfPosition(node.getStart(source));
-            dynamic.push(`${path}:${line + 1}`);
-          }
-        }
-      }
-      // `const call = client.rpc` 처럼 별칭으로 빼는 경로도 조용히 건너뛰지 않는다.
-      if (ts.isPropertyAccessExpression(node)
-          && node.name.text === 'rpc'
-          && !(ts.isCallExpression(node.parent) && node.parent.expression === node)) {
-        const { line } = source.getLineAndCharacterOfPosition(node.getStart(source));
-        dynamic.push(`${path}:${line + 1}`);
-      }
-      if (ts.isElementAccessExpression(node)
-          && ts.isStringLiteralLike(node.argumentExpression)
-          && node.argumentExpression.text === 'rpc'
-          && !(ts.isCallExpression(node.parent) && node.parent.expression === node)) {
-        const { line } = source.getLineAndCharacterOfPosition(node.getStart(source));
-        dynamic.push(`${path}:${line + 1}`);
-      }
-      ts.forEachChild(node, visit);
-    };
-    visit(source);
-  }
-  if (dynamic.length) fail(`리터럴이 아닌 .rpc 이름 — 허용 목록 대조 불가: ${dynamic.join(', ')}`);
-  return names;
+function auditSqlWithAllowlistExports(sql) {
+  const finalRollback = /rollback;\s*$/i.exec(sql);
+  if (!finalRollback) fail('감사 SQL의 마지막 rollback을 찾지 못했습니다');
+  const beforeRollback = sql.slice(0, finalRollback.index);
+  return `${beforeRollback}
+select '__acl_approved_rpc|' || signature from _acl_approved_rpc order by signature;
+select '__acl_non_mobile_rpc|' || signature || '|' || consumer
+  from _acl_non_mobile_rpc order by signature;
+rollback;
+`;
 }
 
 function difference(left, right) {
@@ -144,8 +87,18 @@ function difference(left, right) {
 }
 
 const sql = readFileSync(SQL_PATH, 'utf8');
-const raw = psql(`set search_path to pg_catalog;\n${sql}`);
-const rows = raw.split(/\r?\n/).filter(Boolean).map((line) => line.split('|'));
+const raw = psql(`set search_path to pg_catalog;\n${auditSqlWithAllowlistExports(sql)}`);
+const outputLines = raw.split(/\r?\n/).filter(Boolean);
+const approvedSignatures = outputLines
+  .filter((line) => line.startsWith('__acl_approved_rpc|'))
+  .map((line) => line.slice('__acl_approved_rpc|'.length));
+const nonMobileRows = outputLines
+  .filter((line) => line.startsWith('__acl_non_mobile_rpc|'))
+  .map((line) => line.split('|'));
+const nonMobileSignatures = nonMobileRows.map(([, signature]) => signature);
+const rows = outputLines
+  .filter((line) => !line.startsWith('__acl_approved_rpc|') && !line.startsWith('__acl_non_mobile_rpc|'))
+  .map((line) => line.split('|'));
 const seen = new Map();
 
 for (const [metric, value, expected, ...extra] of rows) {
@@ -194,16 +147,21 @@ if (seen.get('migrations').value !== expectedMigrations) {
 const probe = psql("select coalesce(to_regclass('public._acl_probe_postgres')::text, 'absent');").trim();
 if (probe !== 'absent') fail(`rollback 뒤 프로브가 남았습니다: ${probe}`);
 
-const approvedSignatures = signaturesFromInsert(sql, '_acl_approved_rpc(signature)');
-const nonMobileSignatures = signaturesFromInsert(sql, '_acl_non_mobile_rpc(signature, consumer)');
 if (approvedSignatures.length === 0) fail('허용 RPC 시그니처를 하나도 추출하지 못했습니다');
 if (new Set(approvedSignatures).size !== approvedSignatures.length) fail('허용 RPC 시그니처가 중복됐습니다');
+if (nonMobileRows.some((row) => row.length !== 3 || !row[1] || !row[2])) fail('비-mobile RPC 출력 형식이 잘못됐습니다');
 const approvedNames = new Set(approvedSignatures.map((signature) => signature.slice(0, signature.indexOf('('))));
+if (approvedNames.has('comment_only_rpc')) fail('SQL 주석을 허용 RPC로 잘못 읽었습니다');
 const nonMobileNames = new Set(nonMobileSignatures.map((signature) => signature.slice(0, signature.indexOf('('))));
 const strayNonMobile = difference(nonMobileNames, approvedNames);
 if (strayNonMobile.length) fail(`비-mobile 예외가 허용 목록에 없습니다: ${strayNonMobile.join(', ')}`);
 const expectedMobileNames = new Set([...approvedNames].filter((name) => !nonMobileNames.has(name)));
-const sourceNames = mobileRpcNames();
+let sourceNames;
+try {
+  sourceNames = scanMobileRpcNames(MOBILE_ROOTS);
+} catch (error) {
+  fail(error instanceof Error ? error.message : String(error));
+}
 const missingFromAllowlist = difference(sourceNames, expectedMobileNames);
 const unusedAllowlist = difference(expectedMobileNames, sourceNames);
 if (missingFromAllowlist.length || unusedAllowlist.length) {

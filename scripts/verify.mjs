@@ -109,6 +109,7 @@ step(skipDb ? '② 시험 (core · mobile — DB 제외)' : '② 시험 (pnpm -r
 step('③ CLI 계약 · ACL 보안', () => {
   if (!run('node', ['packages/db/scripts/cli-contract.test.mjs'])) return false;
   if (!run('node', ['packages/db/scripts/deploy-guard.test.mjs'])) return false;
+  if (!run('node', ['packages/db/scripts/admin-acl-source-scan.test.mjs'])) return false;
   if (!run('node', ['scripts/ci-contract.test.mjs'])) return false;
   if (!run('node', ['scripts/protected-gate-validator.test.mjs'])) return false;
   if (!run('node', ['scripts/github-ruleset.test.mjs'])) return false;

@@ -10,6 +10,7 @@ create table public._acl_probe_postgres (id int);
 create temporary table _acl_approved_rpc (signature text primary key) on commit drop;
 create temporary table _acl_non_mobile_rpc (signature text primary key, consumer text not null) on commit drop;
 insert into _acl_approved_rpc(signature) values
+  -- P2-6 회귀 표식: ('comment_only_rpc(uuid)')는 주석이며 허용 목록으로 읽으면 안 된다.
   ('amend_ended_business_day(uuid,date,integer,jsonb,jsonb,jsonb,text)'),
   ('archive_my_store(uuid,text)'),
   ('business_day_state(uuid)'), ('create_store(text,text)'), ('day_menu_basis(uuid,date)'),
