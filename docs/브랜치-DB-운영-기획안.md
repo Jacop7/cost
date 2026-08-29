@@ -246,6 +246,8 @@ GitHub Actions는 Node 20.19.4·24에서 `pnpm verify --no-db` 빠른 검사를 
   `migration list`와 dry-run의 적용 예정 파일을 먼저 확인한다.
 - 배포 가드는 실제 링크 project ref와 환경별 기대 ref, 깨끗한 `main`, `origin/main`, 사람이 승인한
   40자리 SHA, 동일 SHA의 `protected-gate` 성공을 모두 대조한다. 하나라도 없거나 다르면 실패한다.
+- 링크를 대조한 뒤 CLI에도 같은 `--project-ref`를 명시해 검증과 실행 사이 재링크로 대상이 바뀌는
+  것을 막는다.
 - 실제 적용은 계획과 같은 가드에서 대상·project ref·SHA를 모두 포함한 확인 문구를 추가로 요구한다.
 - 운영 프로젝트 링크, 대상 프로젝트 ref, 배포 SHA를 배포 기록에 남긴다.
 - Dashboard에서 직접 SQL을 고치지 않는다. 긴급 수정도 마이그레이션으로 남긴다.

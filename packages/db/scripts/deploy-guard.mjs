@@ -65,12 +65,18 @@ export function pendingMigrationFiles(dryRunOutput, migrationFiles) {
   return migrationFiles.filter((name) => versions.has(name.slice(0, 14))).sort();
 }
 
-export function deploymentCommands(mode) {
+export function deploymentCommands(mode, projectRef) {
+  if (!REF_RE.test(projectRef ?? '')) fail('CLI 명령을 만들 project ref가 없거나 형식이 아닙니다.');
+  const target = ['--project-ref', projectRef];
   const base = [
-    ['migration', 'list', '--linked'],
-    ['db', 'push', '--linked', '--dry-run'],
+    ['migration', 'list', ...target],
+    ['db', 'push', ...target, '--dry-run'],
   ];
-  return mode === 'apply' ? [...base, ['db', 'push', '--linked', '--yes'], ['migration', 'list', '--linked'], ['db', 'push', '--linked', '--dry-run']] : base;
+  return mode === 'apply' ? [...base,
+    ['db', 'push', ...target, '--yes'],
+    ['migration', 'list', ...target],
+    ['db', 'push', ...target, '--dry-run'],
+  ] : base;
 }
 
 function git(args) {
@@ -172,7 +178,9 @@ async function main() {
     protectedGate: await protectedGateFor(headSha),
   });
   const files = migrationFiles();
-  const commands = deploymentCommands(mode);
+  // 링크 파일을 승인값과 대조한 뒤, CLI에도 같은 ref를 명시해 검증과 실행 사이
+  // 재링크가 대상 DB를 바꾸지 못하게 한다.
+  const commands = deploymentCommands(mode, context.projectRef);
   console.log(`배포 계획 — target=${target} · project_ref=${context.projectRef} · sha=${context.sha} · mode=${mode}`);
   const migrationListBefore = runSupabase(commands[0]);
   const dryRunBefore = runSupabase(commands[1]);
