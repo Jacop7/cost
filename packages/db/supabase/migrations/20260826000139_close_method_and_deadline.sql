@@ -239,7 +239,10 @@ begin
    where n.nspname = 'public' and p.proname = 'save_sale';
   if v_def is null then raise exception '0139: save_sale 이 없습니다'; end if;
 
-  if position('앱 롤에만' in v_def) > 0 then return; end if;   -- 이미 적용됨
+  -- 설명문에 같은 말이 있어도 적용 완료로 오인하지 않는다. 실제로 넣는 코드 줄만 본다.
+  if position('if current_user in (''authenticated'', ''anon'')' in v_def) > 0 then
+    return;
+  end if;
 
   v_i := position('    -- ⚠ 자동 마감 기한이 지났으면' in v_def);
   if v_i = 0 then raise exception '0139: 0138 이 넣은 기한 검사를 못 찾았습니다'; end if;
