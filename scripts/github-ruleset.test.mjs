@@ -12,4 +12,8 @@ assert.deepEqual(canonical.rules.map((rule) => rule.type), ['deletion', 'non_fas
 assert.deepEqual(canonical.rules.at(-1).parameters.required_status_checks, [{ context: 'protected-gate' }]);
 assert.equal(canonical.rules.at(-1).parameters.strict_required_status_checks_policy, true);
 assert.equal(canonical.rules.at(-1).parameters.do_not_enforce_on_create, false);
+assert.equal(JSON.stringify(canonicalRuleset({
+  ...config,
+  conditions: { ref_name: { exclude: [], include: ['refs/heads/main'] } },
+})), JSON.stringify(canonical), 'GitHub가 JSON 키 순서를 바꿔도 같은 선언이다.');
 console.log('GitHub ruleset 선언 계약 통과');

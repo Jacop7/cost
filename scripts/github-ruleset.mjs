@@ -14,7 +14,12 @@ export function canonicalRuleset(value) {
     target: value.target,
     enforcement: value.enforcement,
     bypass_actors: value.bypass_actors ?? [],
-    conditions: value.conditions,
+    conditions: {
+      ref_name: {
+        include: [...(value.conditions?.ref_name?.include ?? [])].sort(),
+        exclude: [...(value.conditions?.ref_name?.exclude ?? [])].sort(),
+      },
+    },
     rules: [
       ...value.rules.filter((rule) => rule.type !== 'required_status_checks')
         .map((rule) => ({ type: rule.type })).sort((a, b) => a.type.localeCompare(b.type)),
@@ -108,8 +113,9 @@ async function main() {
     console.log(`ruleset 적용 — SHA ${gate.sha} · verify run ${gate.runId}`);
   }
   if (!actual) throw new Error(`ruleset이 없습니다: ${desired.name}`);
-  if (JSON.stringify(canonicalRuleset(actual)) !== JSON.stringify(desired)) {
-    throw new Error('원격 ruleset이 선언 파일과 다릅니다.');
+  const actualCanonical = canonicalRuleset(actual);
+  if (JSON.stringify(actualCanonical) !== JSON.stringify(desired)) {
+    throw new Error(`원격 ruleset이 선언 파일과 다릅니다.\n기대: ${JSON.stringify(desired)}\n실제: ${JSON.stringify(actualCanonical)}`);
   }
   console.log(`ruleset ${mode} 통과 — ${desired.name} · required=protected-gate · bypass=0`);
 }
