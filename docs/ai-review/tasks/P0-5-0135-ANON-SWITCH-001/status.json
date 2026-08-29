@@ -1,0 +1,29 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "P0-5-0135-ANON-SWITCH-001",
+  "predecessor_review": null,
+  "updated_at": "2026-08-29T08:06:19.419Z",
+  "latest_round": "r001",
+  "review_state": "OPEN",
+  "workflow_state": "FIXING",
+  "gate_state": "OPEN",
+  "run_state": "RESULT_RECEIVED",
+  "defect_state": "NOT_APPLICABLE",
+  "verdict": "CHANGES_REQUIRED",
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "fallback_reason": null,
+  "latest_run_sha256": "aad406b0ccb882241fa02aecd51d84a8ef1852e8abea60da2640b6cce39c8bff",
+  "open_required_finding_ids": [
+    "P05-0135-EVIDENCE-SHA-BINDING-001"
+  ],
+  "open_optional_finding_ids": [
+    "P05-0135-HOSTED-ROLE-CHAIN-PRECHECK-001",
+    "P05-0135-DENIAL-SOURCE-PIN-001"
+  ],
+  "closed_finding_ids": [],
+  "candidate_review_state": null,
+  "candidate_review_sha256": null,
+  "backlog_dispositions": []
+}
