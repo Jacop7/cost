@@ -73,6 +73,13 @@ jobs:
       - name: Start isolated Supabase stack
         run: pnpm --filter @sikjae/db start
 
+      - name: Normalize local admin ACL
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash packages/db/scripts/admin-acl.sh --local postgres fix
+          bash packages/db/scripts/admin-acl.sh --local postgres check
+
       - name: Full six-stage verification
         run: pnpm verify
 
