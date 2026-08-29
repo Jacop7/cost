@@ -1,0 +1,235 @@
+{
+  "schema_version": "2.0",
+  "task_id": "P0-5-RPC-LEAST-PRIVILEGE-003",
+  "reviewer_role": "FABLE-SEC",
+  "review_mode": "SECURITY",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "817b6b305352ad297289cd8270daba5e4b30d9ad",
+  "target_commit_sha": "bebf4488306d0d6e4b3fe49169cde0298717e459",
+  "target_tree_oid": "2228cda41602056ff5904227ddb6452df2eb62f2",
+  "agents_blob_oid": "bf9b9aeccabdc1055005c7f9bcb188ed8c05eb2a",
+  "agents_sha256": "485c7cb1cbb9143748a6028393723986201d9ff944ad9d3127e5c5f6f243c531",
+  "task_sha256": "1308954d4164b8e9900f8d58dcbbb7abcd7eae544c8d39277c5d093a6ddd8433",
+  "collaboration_sha256": "e6985696694d0babe4cd91e8edeafe12b17b50321771a2c814fd776b9201c0b5",
+  "input_files_sha256": "0dc06cd3b0fabcefbdd0ca8b3433dffd9c6bbc95b3749c23ce984aee1dddf363",
+  "schema_sha256": "a903be542752bdf90fbbd49657860a7ec175f6ddd987a6295194d1f3bb1c85e0",
+  "runner_sha256": "dc78d5183405344a2fcadf9b4db56734b7cae60ab88385d857fd02e0d434c633",
+  "verdict": "CHANGES_REQUIRED",
+  "summary": "0174 설계 자체는 건전하다. sikjae_rpc_executor는 NOLOGIN·NOBYPASSRLS이고 authenticated→executor 멤버십이 없어 앱이 SET ROLE로 전환할 수 없으며, executor가 authenticated를 INHERIT하므로 `to authenticated` RLS 정책이 executor definer facade 안에서도 그대로 적용된다. 표 소유자는 postgres라 executor에 RLS가 강제되고, auth.uid()는 요청 GUC를 읽어 definer 전환 후에도 원 사용자를 식별한다. my_store_ids() 인라인은 0173의 정의(owner_id = auth.uid() and archived_at is null)와 동일 술어이며, 사후조건이 잔존 호출·소유 facade의 prosecdef/search_path·64개 정확 시그니처·미래 함수 기본 권한을 실제 객체로 검증한다. 함수 몸통에 동적 SQL(execute format)이 없어 definer 승격 후 주입 경로도 확인되지 않았다.\n\n그러나 세 가지를 요구한다. (1) Major: 증거 문서가 구현 커밋 59077f01을 가리키고, admin-acl-audit.sql·.test.mjs의 SHA-256(7f08…, 226f…)이 이번 봉인 대상 blob(069ea4…, 198ff1…)과 다르다. 즉 34/34·metric 20개·사보타주 3종은 검수 대상과 다른 감사 스크립트로 얻은 결과이며, 원격 적용도 없어 P0-5-6은 증거상 판정 불가다. 같은 target commit에서 증거를 재생성해야 한다. (2) Minor: `grant execute on all functions … to sikjae_rpc_executor`와 기본 권한이 purge_archived_store·schedule_store_purge·purge_entity_changes·close_due_business_days 같은 postgres definer 유지보수 함수까지 실행 역할에 열어 최소 권한 원칙에 어긋난다. 현재 facade 몸통이 이를 부르지 않아 즉시 우회로는 아니지만, 60여 facade의 실행 컨텍스트가 매장 파괴 함수 실행권을 가질 이유가 없다. (3) Minor: 34번은 authenticated로 facade를 통과한 교차 매장 거부(P0-5-4의 핵심 성질)를 재지 않고 stores 직접 SELECT만 확인한다. 사보타주도 플래그 검사에 그쳐 executor에 bypassrls가 붙었을 때 행동 단언이 잡는지 증거가 없다. 운영 참고: PG16+ 호스티드에서 `grant authenticated to sikjae_rpc_executor`는 postgres의 ADMIN OPTION에 의존하므로 스테이징 적용 시 rpc_executor_role=1을 먼저 확인해야 한다.",
+  "findings": [
+    {
+      "finding_id": "P05-SEC-EVIDENCE-HASH-MISMATCH",
+      "severity": "Major",
+      "review_state": "OPEN",
+      "category": "POLICY",
+      "requirement_or_invariant_ids": [
+        "AGENTS:local-verification-gate",
+        "P0-5-5",
+        "P0-5-6",
+        "P1-1:REMOTE-ACL-AUDIT"
+      ],
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/P0-5-RPC-LEAST-PRIVILEGE-001.md",
+          "line_start": 3,
+          "line_end": 6,
+          "observation": "증거는 구현 commit 59077f01을 기준으로 작성됐고 원격 적용은 없다고 명시한다. 검수 대상은 bebf4488이다."
+        },
+        {
+          "path": "docs/ai-review/evidence/P0-5-RPC-LEAST-PRIVILEGE-001.md",
+          "line_start": 59,
+          "line_end": 64,
+          "observation": "admin-acl-audit.sql SHA 7f08…, admin-acl-audit.test.mjs SHA 226f…로 기록됐으나 봉인된 target blob의 sha256은 각각 069ea46e…, 198ff1a5…이다. 감사 스크립트가 증거 생성 이후 변경됐다."
+        },
+        {
+          "path": "packages/db/scripts/admin-acl-audit.test.mjs",
+          "line_start": 34,
+          "line_end": 53,
+          "observation": "현재 harness가 기대하는 metric 목록·값이 증거 문서의 실행과 동일 버전인지 확인할 수 없다."
+        },
+        {
+          "path": "COLLABORATION_LOG",
+          "line_start": 0,
+          "line_end": 0,
+          "observation": "task packet input_files의 admin-acl-audit.sql sha256=069ea46e…, admin-acl-audit.test.mjs sha256=198ff1a5…; 증거 문서 값과 불일치."
+        }
+      ],
+      "impact": "34/34·ACL metric 20개·사보타주 3종 통과 주장이 검수 대상 커밋의 감사 스크립트에 대해 성립한다는 보장이 없다. P0-5-6(원격 audit 4개 metric 0)은 원격 실행이 없어 판정 불가다. 로컬 검증 게이트 불변식상 동일 SHA 증거가 필요하다.",
+      "acceptance_criteria": [
+        "target commit bebf4488(또는 그 이후 동일 artifact 해시)에서 pnpm verify 6/6, DB 34/34, ACL metric 20개를 재실행하고 증거 문서의 파일 SHA-256이 봉인 blob과 일치해야 한다.",
+        "증거 문서에 사보타주 3종(내부 RPC 재개방·원장 UPDATE 재개방·역방향 멤버십)이 현재 34번·감사 SQL에서 실패로 잡힌 로그를 포함해야 한다.",
+        "P0-5-6은 스테이징 동일 SHA 적용 후 --remote audit 결과(facade_rpc_missing·unapproved_authenticated_rpc·rls_disabled_app_tables·ledger_write_paths=0)로 별도 증거를 남기거나, 인간 결정으로 보류 상태를 명시해야 한다."
+      ],
+      "required_tests": [
+        "동일 커밋 pnpm verify 6/6 재실행 및 SHA 대조",
+        "admin-acl-audit.test.mjs fresh DB 값 20개 통과"
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    },
+    {
+      "finding_id": "P05-SEC-EXECUTOR-BLANKET-EXECUTE",
+      "severity": "Minor",
+      "review_state": "OPEN",
+      "category": "SECURITY",
+      "requirement_or_invariant_ids": [
+        "AGENTS:server-calculation-authority",
+        "AGENTS:ledger-write-paths",
+        "WORK-QUEUE:P0-5",
+        "P0-5-2"
+      ],
+      "evidence": [
+        {
+          "path": "packages/db/supabase/migrations/20260829000174_rpc_least_privilege.sql",
+          "line_start": 84,
+          "line_end": 85,
+          "observation": "public 스키마의 모든 함수 EXECUTE를 sikjae_rpc_executor에 일괄 부여한다."
+        },
+        {
+          "path": "packages/db/supabase/migrations/20260829000174_rpc_least_privilege.sql",
+          "line_start": 26,
+          "line_end": 27,
+          "observation": "기본 권한으로 향후 postgres가 만드는 모든 함수도 executor에 자동 개방된다."
+        },
+        {
+          "path": "packages/db/supabase/migrations/20260829000173_account_retention.sql",
+          "line_start": 346,
+          "line_end": 350,
+          "observation": "purge_archived_store는 postgres SECURITY DEFINER로 RLS를 우회하는 매장 파괴 함수다."
+        },
+        {
+          "path": "packages/db/supabase/migrations/20260829000173_account_retention.sql",
+          "line_start": 397,
+          "line_end": 404,
+          "observation": "0173은 schedule_store_purge 등 보존 정책 함수의 EXECUTE를 개별 grant로 제한했으나 0174의 일괄 grant가 이를 무력화한다."
+        },
+        {
+          "path": "packages/db/tests/_prelude.sql",
+          "line_start": 373,
+          "line_end": 384,
+          "observation": "close_due_business_days는 앱 롤에 열지 않은 매장 무관 definer라는 관례가 있으나 executor는 이제 이를 실행할 수 있다."
+        }
+      ],
+      "impact": "60여 개 facade의 실행 컨텍스트(executor)가 purge_archived_store·schedule_store_purge·purge_entity_changes·close_due_business_days 등 RLS 우회 유지보수 함수 실행권을 가진다. 현재 facade 몸통에 동적 SQL이 없어 즉시 악용 경로는 확인되지 않았으나, 향후 facade 결함 하나가 매장 파괴·전 매장 스윕으로 직결되는 폭발 반경을 만든다.",
+      "acceptance_criteria": [
+        "executor의 EXECUTE는 facade가 실제로 호출하는 내부 도우미로 한정하거나, 최소한 purge_*·schedule_store_purge·close_due_business_days 등 postgres definer 유지보수 함수는 executor에서 명시적으로 revoke해야 한다.",
+        "admin-acl-audit에 executor가 유지보수·RLS 우회 함수를 실행할 수 없음을 재는 metric(expected=0)을 추가하고 34번에 동일 단언을 넣어야 한다.",
+        "기본 권한 자동 개방 범위에 대한 설계 근거를 README 또는 마이그레이션 주석에 기록해야 한다."
+      ],
+      "required_tests": [
+        "set local role sikjae_rpc_executor 후 purge_archived_store·schedule_store_purge·close_due_business_days 호출이 42501",
+        "기존 34/34 회귀 통과"
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    },
+    {
+      "finding_id": "P05-SEC-FACADE-CROSS-STORE-TEST-GAP",
+      "severity": "Minor",
+      "review_state": "OPEN",
+      "category": "TEST_GAP",
+      "requirement_or_invariant_ids": [
+        "AGENTS:store-scope-rls",
+        "P0-5-4"
+      ],
+      "evidence": [
+        {
+          "path": "packages/db/tests/34_rpc_least_privilege.sql",
+          "line_start": 43,
+          "line_end": 77,
+          "observation": "authenticated로 전환한 뒤 facade는 자기 매장에서만 호출하고, 교차 매장 검사는 stores 직접 SELECT(RLS)만 수행한다. executor definer facade를 통한 다른 매장 접근 거부는 재지 않는다."
+        },
+        {
+          "path": "packages/db/tests/34_rpc_least_privilege.sql",
+          "line_start": 10,
+          "line_end": 17,
+          "observation": "executor의 bypassrls·멤버십은 카탈로그 플래그로만 확인한다."
+        },
+        {
+          "path": "docs/ai-review/evidence/P0-5-RPC-LEAST-PRIVILEGE-001.md",
+          "line_start": 49,
+          "line_end": 55,
+          "observation": "사보타주 3종에 facade RLS 붕괴(예: executor bypassrls 부여)를 행동으로 잡는 항목이 없다."
+        }
+      ],
+      "impact": "P0-5-4의 핵심 성질(definer 전환 후에도 facade가 다른 매장 행을 만지지 못함)이 앱 실제 역할 시험에서 직접 증명되지 않는다. 향후 executor에 bypassrls가 붙거나 정책 roles가 바뀌어도 플래그 검사 외에 행동 단언이 없다.",
+      "acceptance_criteria": [
+        "34번에 authenticated로 get_settings(foreign_store) 및 save_category(foreign_store, …) 호출이 거부(또는 빈 결과)됨을 단언해야 한다.",
+        "사보타주 증거에 `alter role sikjae_rpc_executor bypassrls` 후 위 단언이 실패하는 로그를 추가해야 한다."
+      ],
+      "required_tests": [
+        "authenticated facade 교차 매장 거부 2건",
+        "executor bypassrls 사보타주 행동 실패 증거"
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    },
+    {
+      "finding_id": "P05-SEC-HOSTED-ADMIN-OPTION-NOTE",
+      "severity": "Improvement",
+      "review_state": "OPEN",
+      "category": "OPERATIONS",
+      "requirement_or_invariant_ids": [
+        "P1-1:REMOTE-ACL-AUDIT"
+      ],
+      "evidence": [
+        {
+          "path": "packages/db/supabase/migrations/20260829000174_rpc_least_privilege.sql",
+          "line_start": 19,
+          "line_end": 20,
+          "observation": "grant authenticated to sikjae_rpc_executor는 PG16+에서 실행 롤(postgres)의 authenticated ADMIN OPTION에 의존한다."
+        },
+        {
+          "path": "docs/ai-review/evidence/P0-5-RPC-LEAST-PRIVILEGE-001.md",
+          "line_start": 6,
+          "line_end": 6,
+          "observation": "호스티드 적용 증거가 없다."
+        }
+      ],
+      "impact": "스테이징 적용 시 권한 부족으로 마이그레이션이 중단될 수 있으며, 실패 시 사후조건이 롤백을 보장하지만 배포 절차가 막힌다.",
+      "acceptance_criteria": [
+        "스테이징 동일 SHA 적용 후 rpc_executor_role=1과 사후조건 통과를 기록한다."
+      ],
+      "required_tests": [],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    }
+  ],
+  "proposed_edits": [
+    {
+      "edit_id": "P05-EDIT-EXECUTOR-REVOKE-MAINT",
+      "path": "packages/db/supabase/migrations/20260829000174_rpc_least_privilege.sql",
+      "anchor": "  grant execute on all functions in schema public to sikjae_rpc_executor, service_role;",
+      "operation": "ADD",
+      "proposed_text": "  -- 실행 역할은 RLS 우회·매장 파괴 유지보수 함수를 실행할 이유가 없다.\n  revoke execute on function\n    public.purge_archived_store(uuid, text),\n    public.schedule_store_purge(uuid, timestamptz, text, text, text),\n    public.purge_entity_changes(),\n    public.close_due_business_days()\n  from sikjae_rpc_executor;",
+      "rationale": "executor의 폭발 반경을 facade가 실제로 필요로 하는 내부 도우미로 좁힌다(시그니처는 0173/0135/0137 정의와 대조 필요).",
+      "finding_ids": [
+        "P05-SEC-EXECUTOR-BLANKET-EXECUTE"
+      ]
+    },
+    {
+      "edit_id": "P05-EDIT-TEST34-CROSS-STORE",
+      "path": "packages/db/tests/34_rpc_least_privilege.sql",
+      "anchor": "-- ── 3. 내부 몸통은 PostgREST에서 직접 호출할 수 없다 ───────────────────────",
+      "operation": "ADD",
+      "proposed_text": "-- ── 2b. definer facade를 통해서도 다른 사장님 매장은 닿지 않는다 ───────────\n\nselect pg_temp.raises('facade 경유 다른 매장 설정 조회 거부',\n  format('select get_settings(%L)', current_setting('sikjae.test.foreign_store')), 'P0001');\nselect pg_temp.raises('facade 경유 다른 매장 쓰기 거부',\n  format('select save_category(%L, %L::jsonb)', current_setting('sikjae.test.foreign_store'),\n         '{\"name\":\"P0-5 침입\",\"sort_order\":1}'), 'P0001');\nselect pg_temp.raises('실행 역할 유지보수 함수 직접 호출 거부',\n  format('select purge_archived_store(%L, %L)', current_setting('sikjae.test.foreign_store'), 'x'), '42501');",
+      "rationale": "P0-5-4를 앱 실제 역할에서 행동으로 증명한다. 기대 SQLSTATE는 assert_my_store의 실제 예외 코드에 맞춰 조정한다.",
+      "finding_ids": [
+        "P05-SEC-FACADE-CROSS-STORE-TEST-GAP",
+        "P05-SEC-EXECUTOR-BLANKET-EXECUTE"
+      ]
+    }
+  ],
+  "closed_finding_ids": [],
+  "reopened_finding_ids": [],
+  "remaining_required_finding_ids": [
+    "P05-SEC-EVIDENCE-HASH-MISMATCH",
+    "P05-SEC-EXECUTOR-BLANKET-EXECUTE",
+    "P05-SEC-FACADE-CROSS-STORE-TEST-GAP"
+  ],
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}
