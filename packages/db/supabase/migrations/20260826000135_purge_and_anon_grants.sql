@@ -112,7 +112,10 @@ grant execute on all functions in schema public to authenticated, service_role;
 
 -- ── 사후 확인 ────────────────────────────────────────────────────
 do $v$
-declare v_n int; v_ok boolean;
+declare
+  v_n int;
+  v_ok boolean;
+  v_original_role name := current_user;
 begin
   -- 인자 있는 옛 함수가 남아 있으면 그리로 다시 샌다.
   select count(*) into v_n
@@ -139,7 +142,13 @@ begin
   exception when insufficient_privilege then
     v_ok := true;
   end;
-  reset role;
+  -- Supabase CLI는 별도 로그인 롤로 접속한 뒤 `postgres`로 전환해 migration을
+  -- 실행한다. 여기서 `reset role`을 쓰면 전환 전 로그인 롤로 돌아가 이후
+  -- 사후 검증 함수의 EXECUTE 권한이 사라진다. 시작 역할을 정확히 복원한다.
+  execute format('set local role %I', v_original_role);
+  if current_user <> v_original_role then
+    raise exception '0135: 익명 실행 검사 뒤 원래 역할을 복원하지 못했습니다';
+  end if;
   if not v_ok then raise exception '0135: anon 이 실제로 청소를 실행했습니다'; end if;
 
   -- anon 이 부를 수 있는 함수가 하나도 없어야 한다.
