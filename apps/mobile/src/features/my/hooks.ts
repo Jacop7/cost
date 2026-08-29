@@ -4,10 +4,50 @@
  */
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { invalidate, invalidateOn, qk } from '@/lib/queryClient';
-import { supabase } from '@/lib/supabase';
+import { rpcError, supabase } from '@/lib/supabase';
 import { asJson } from '@/lib/json';
 import { useStoreId } from '@/lib/SessionProvider';
 import { rpcNumber as num } from '@/lib/rpcValue';
+
+// ── 계정 관리 (MY-10) ────────────────────────────────────────
+export interface RetireAccountResult {
+  deleted: true;
+  archivedStoreCount: number;
+}
+
+/** 탈퇴 성공은 계정 삭제와 원장 아카이브 수를 모두 확인해야 한다. 빈 응답을 성공으로 보지 않는다. */
+export function parseRetireAccountResult(value: unknown): RetireAccountResult {
+  if (value === null || typeof value !== 'object' || Array.isArray(value)) {
+    throw new Error('서버가 계정 탈퇴 결과를 주지 않았어요.');
+  }
+  const row = value as Record<string, unknown>;
+  const archived = Number(row.archived_store_count);
+  if (row.deleted !== true || !Number.isSafeInteger(archived) || archived < 0) {
+    throw new Error('서버의 계정 탈퇴 결과를 확인하지 못했어요.');
+  }
+  return { deleted: true, archivedStoreCount: archived };
+}
+
+/**
+ * 인증 계정만 삭제하고 매장·판매·입고·재고 원장은 서버의 archive 상태로 보존한다.
+ * 화면은 Supabase를 직접 부르지 않고 이 문만 사용한다.
+ */
+export function useRetireAccount() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (): Promise<RetireAccountResult> => {
+      const { data, error } = await supabase.rpc('retire_my_account');
+      if (error) throw rpcError(error);
+      return parseRetireAccountResult(data);
+    },
+    onSuccess: async () => {
+      // 탈퇴한 계정의 매장 데이터가 다음 로그인 화면 뒤에 남지 않게 먼저 비운다.
+      qc.clear();
+      // 서버 계정은 이미 삭제됐다. 이 호출은 기기에 남은 세션만 정리해 SessionGate를 signed-out으로 보낸다.
+      await supabase.auth.signOut({ scope: 'local' });
+    },
+  });
+}
 
 // ── 고정지출 (MY-05) ──────────────────────────────────────────
 export interface FixedCostLine { name: string; amount: number }

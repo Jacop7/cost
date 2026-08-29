@@ -265,6 +265,14 @@ begin
        'apply_operating_hours',    -- 0163 — 무판본 저장 몸통. 앱 문은 set_operating_hours(토큰 필수).
        'set_break_row',            -- 0157 — 매장 검사 없는 몸통. 문은 전이 RPC 다.
        'record_state_transition',  -- 0157 — 감사 기록 도우미. 함수 안에서만 돈다.
+       -- 0173 — 수명주기 트리거와 service_role 전용 물리 삭제 절차다.
+       -- 앱 문은 archive_my_store / retire_my_account 둘뿐이다.
+       'store_owner_lifecycle_guard',
+       'record_store_owner_detached',
+       'reject_store_direct_delete',
+       'reject_store_lifecycle_mutation',
+       'schedule_store_purge',
+       'purge_archived_store',
        -- 0160 — 날짜 인자가 있어 앱에 열면 과거 장부를 open 으로 만들 수 있다(§6.4 우회).
        --        앱 문은 transition_business_state · save_sale(p_open_day)뿐이다.
        'open_business_day',
@@ -354,6 +362,10 @@ end $t$;
  *                                close_due_business_days 와 같은 자세.
  *   apply_operating_hours        무판본 저장 몸통(0163). 앱 롤엔 안 열린다 — 토큰 필수 문
  *                                set_operating_hours 만 여기로 온다.
+ *   archive_my_store · retire_my_account
+ *                                auth.uid() 소유 매장만 아카이브하고 원장을 보존하는 앱 문(0173).
+ *   schedule_store_purge · purge_archived_store
+ *                                보존 종료·승인·백업 근거가 필요한 service_role 전용 문(0173).
  */
 do $t$
 declare v_now text; v_want text;
@@ -373,15 +385,19 @@ begin
     'amend_ended_business_day(p_store uuid, p_date date, p_base_revision integer, p_items jsonb, p_etc_items jsonb, p_extra_items jsonb, p_reason text)',
     'apply_due_breaks()',
     'apply_operating_hours(p_store uuid, p_weekly_hours jsonb, p_weekly_breaks jsonb, p_base_rule_id uuid, p_base_revision integer)',
+    'archive_my_store(p_store uuid, p_reason text)',
     'close_business_day(p_store uuid)',
     'close_due_business_days()',
     'create_store(p_name text, p_timezone text)',
     'my_store_ids()',
     'open_business_day(p_store uuid, p_date date, p_close_time time without time zone)',
+    'purge_archived_store(p_store uuid, p_backup_reference text)',
     'purge_entity_changes()',
+    'retire_my_account()',
     'save_sale(p_store uuid, p_date date, p_items jsonb, p_etc_items jsonb, p_extra_items jsonb, p_base_revision integer, p_open_day boolean, p_open_close_time time without time zone)',
     'save_settings(p_store uuid, p_payload jsonb, p_base_revision integer)',
     'save_store_tax(p_store uuid, p_mode tax_mode, p_items jsonb, p_base_revision integer)',
+    'schedule_store_purge(p_store uuid, p_purge_after timestamp with time zone, p_approved_by text, p_approval_reference text, p_reason text)',
     'set_operating_hours(p_store uuid, p_weekly_hours jsonb, p_weekly_breaks jsonb, p_base_rule_id uuid, p_base_revision integer)',
     'set_store_timezone(p_store uuid, p_timezone text)',
     'stores_default_operating_rule()',

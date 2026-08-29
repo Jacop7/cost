@@ -5,9 +5,9 @@
 
 ## 현재 기준
 
-- 마이그레이션 161개, 최신 `20260826000172_settings_revision_noop_tax.sql`
-- 번호가 붙은 DB 회귀 스위트 32개
-- public 업무 테이블 28개
+- 마이그레이션 162개, 최신 `20260829000173_account_retention.sql`
+- 번호가 붙은 DB 회귀 스위트 33개
+- public 업무 테이블 30개
 - 자동 종료·자동 브레이크·변경 이력 청소 pg_cron 3종
 - 로컬 마이그레이션 장부와 파일 161/161 일치(2026-08-28 재구축 확인)
 
@@ -30,7 +30,7 @@ scripts/
   admin-acl-audit.test.mjs 실제 DB metric·rollback·모바일 RPC 허용 목록 대조
 tests/
   _prelude.sql            공통 픽스처·사후조건
-  01_…32_*.sql            트랜잭션 DB 회귀 스위트
+  01_…33_*.sql            트랜잭션 DB 회귀 스위트
   concurrency.mjs         판매 저장과 마감·브레이크의 2세션 경합
 src/database.types.ts     `pnpm db:types` 생성 타입
 ```
@@ -43,6 +43,8 @@ src/database.types.ts     `pnpm db:types` 생성 타입
 - `business_day_revisions`: 종료된 날의 판매 정정 전후 감사.
 - `business_state_transitions`: 시작·브레이크·재개·종료·자동 전이 감사.
 - `entity_change_events`: 식재료·레시피 직접 변경과 파생 전파 감사.
+- `store_lifecycle_events`: 계정 삭제·폐점·물리 삭제 절차를 매장 삭제 뒤에도 보존하는 감사 원장.
+- `store_purge_schedules`: 보존 종료 시각·승인 주체·승인 근거가 있는 service role 전용 삭제 예약.
 - `price_trends`·`profit_trends`: 단가·손익 시점 스냅샷.
 
 전파 이벤트 E1~E12(E6 없음)와 고정 검산값은 루트 [ARCHITECTURE.md](../../ARCHITECTURE.md)가 설명한다.

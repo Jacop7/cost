@@ -28,6 +28,7 @@ const sections = (d: {
   { icon: 'receipt', bg: '#FDECEF', fg: '#D94A5E', t: '판매 채널', d: d.channel, route: '/my/channels' as Href },
   { icon: 'calendar', bg: '#EDF3FF', fg: '#3A6FD8', t: '영업시간', d: d.hours, route: '/my/hours' as Href },
   { icon: 'bell', bg: '#FFF5E0', fg: '#D99A1C', t: '알림 설정', d: d.alert, route: '/my/notifications' as Href },
+  { icon: 'user', bg: T.redTint, fg: T.red, t: '계정 관리', d: '계정 탈퇴 · 원장 보존 안내', route: '/my/account' as Href },
 ];
 
 export default function MyHomeScreen() {

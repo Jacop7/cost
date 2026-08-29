@@ -4,8 +4,8 @@
 > 미래 Queue·Edge·Worker 분리는 [서버 확장 아키텍처 기획안](./docs/서버-확장-아키텍처-기획안.md),
 > 브랜치·DB 배포·복구는 [운영 기획안](./docs/브랜치-DB-운영-기획안.md)을 따른다.
 
-- 기준일: 2026-08-28
-- 기준 migration: `20260826000172_settings_revision_noop_tax.sql`
+- 기준일: 2026-08-29
+- 기준 migration: `20260829000173_account_retention.sql`
 - 현재 물리 구조: Expo 앱 + Supabase Primary Postgres/Auth/Data API/RLS/pg_cron
 - 미도입: Supabase Queue, Edge Function, 외부 Worker, Read Replica, 외부 OLAP
 
@@ -137,6 +137,10 @@ E6은 제거된 번호이며 뒤 번호를 당기지 않는다.
 - 모든 업무 데이터는 `store_id`를 가진다.
 - RLS와 SECURITY DEFINER 함수 내부 `assert_my_store`/명시적 매장 검사를 함께 사용한다.
 - 현재 1차 계약은 `stores.owner_id UNIQUE`, 즉 계정 하나당 매장 하나다.
+- 인증 계정과 영업 원장의 수명주기는 분리한다. 계정 탈퇴·매장 폐점은 `stores.owner_id = null`과
+  `archived_at`으로 접근을 끊고, 매장·판매·입고·재고 행은 보존한다.
+- `store_lifecycle_events`는 계정 삭제·폐점·삭제 예약·물리 삭제를 append-only로 기록한다.
+  물리 삭제는 service role 전용 예약과 보존 종료·승인·백업 근거가 모두 있어야 한다.
 - settings와 영업 규칙은 앱 직접 DML을 닫고 판본 있는 RPC만 허용한다.
 - 원장·규칙·감사 테이블의 UPDATE/DELETE/TRUNCATE/TRIGGER/REFERENCES 권한을 제한한다.
 - service role과 DB 비밀번호는 모바일 번들에 넣지 않는다.
@@ -153,8 +157,8 @@ E6은 제거된 번호이며 뒤 번호를 당기지 않는다.
 타입
 → core·DB·mobile 시험
 → CLI 고정 계약·ACL 셸 보안 시험
-→ 빈 DB 전체 migration + DB 32/32 + 2세션 경합 + locale parity
-→ 업그레이드 경로 8/8
+→ 빈 DB 전체 migration + DB 33/33 + 2세션 경합 + locale parity
+→ 업그레이드 경로 9/9
 → Expo 웹 번들
 ```
 

@@ -11,6 +11,7 @@ create temporary table _acl_approved_rpc (signature text primary key) on commit 
 create temporary table _acl_non_mobile_rpc (signature text primary key, consumer text not null) on commit drop;
 insert into _acl_approved_rpc(signature) values
   ('amend_ended_business_day(uuid,date,integer,jsonb,jsonb,jsonb,text)'),
+  ('archive_my_store(uuid,text)'),
   ('business_day_state(uuid)'), ('create_store(text,text)'), ('day_menu_basis(uuid,date)'),
   ('day_menu_detail(uuid,date,uuid)'), ('deactivate_ingredient(uuid)'),
   ('deactivate_material(uuid)'), ('deactivate_recipe(uuid)'), ('delete_category(uuid)'),
@@ -28,6 +29,7 @@ insert into _acl_approved_rpc(signature) values
   ('range_menu_detail(uuid,date,date,uuid)'), ('recipe_detail(uuid)'), ('recipe_list(uuid)'),
   ('recipe_pick_list(uuid,uuid)'), ('recipe_profit_history(uuid,timestamp with time zone,uuid,integer)'),
   ('recipe_shortages(uuid)'), ('reorder_categories(uuid,uuid[])'), ('retire_channel(uuid)'),
+  ('retire_my_account()'),
   ('sale_shortages(uuid,date,jsonb)'), ('sales_channel_fixed(uuid,date,date)'),
   ('sales_day(uuid,date)'), ('sales_etc_by_channel(uuid,date,date)'),
   ('sales_extra_usage(uuid,date,date)'), ('sales_fixed_breakdown(uuid,date,date)'),
@@ -42,9 +44,12 @@ insert into _acl_approved_rpc(signature) values
   ('set_store_timezone(uuid,text)'), ('settings_lists(uuid)'), ('stock_history(uuid,date,date)'),
   ('transition_business_state(uuid,text,time without time zone)');
 
--- create_store는 현재 모바일 소스의 .rpc 호출은 아니지만 신규 계정 온보딩을 위한 공식 문이다.
--- 모바일 호출 집합과의 자동 대조에서는 이 명시적 비-mobile 예외만 제외한다.
-insert into _acl_non_mobile_rpc(signature, consumer) values ('create_store(text,text)', 'onboarding');
+-- create_store와 archive_my_store는 현재 모바일 소스의 .rpc 호출은 아니지만 각각 신규 계정
+-- 온보딩과 폐점 보존 정책의 공식 문이다. 모바일 호출 집합과의 자동 대조에서는 이 명시적
+-- 비-mobile 예외만 제외한다.
+insert into _acl_non_mobile_rpc(signature, consumer) values
+  ('create_store(text,text)', 'onboarding'),
+  ('archive_my_store(uuid,text)', 'store-retention-policy');
 
 -- psql 기반 fresh harness에는 CLI 장부 스키마가 없을 수 있다. 그 경우 SQL 자체가 중단돼
 -- 나머지 공격면 metric이 사라지지 않도록 0을 내고, 셸 게이트가 migrations=0으로 실패시킨다.

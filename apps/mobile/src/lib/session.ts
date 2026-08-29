@@ -3,7 +3,7 @@
  *
  * 왜 필요한가:
  *   RLS 정책이 `store_id in (select my_store_ids())` 이고, `my_store_ids()` 는
- *   `select id from stores where owner_id = auth.uid()` 다(20260608000001_tenancy.sql).
+ *   `select id from stores where owner_id = auth.uid() and archived_at is null` 다(0173).
  *   즉 **로그인하지 않으면 auth.uid() 가 null 이라 어떤 행도 보이지 않는다.**
  *   화면이 "데이터 없음"으로 보이면 대개 빈 테이블이 아니라 세션이 없는 것이다 —
  *   이 둘을 구분해서 보여줘야 한다(가이드 §9.8).
