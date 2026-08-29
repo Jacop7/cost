@@ -43,6 +43,7 @@ declare
 begin
   select pg_get_functiondef(p.oid) into v_def
     from pg_proc p where p.pronamespace = 'public'::regnamespace and p.proname = 'open_business_day';
+  v_def := replace(v_def, chr(13) || chr(10), chr(10));
   v_old := array_to_string(array[
     '    v_planned := (v_date::timestamp + p_close_time) at time zone ctx.timezone;',
     '    -- 고른 시각이 이미 지났으면 다음 날 그 시각이다(새벽 마감).',
