@@ -177,11 +177,22 @@ declare v_n int;
 begin
   if has_table_privilege('authenticated', 'public.settings', 'insert')
      or has_table_privilege('authenticated', 'public.settings', 'update')
-     or has_table_privilege('authenticated', 'public.settings', 'delete') then
+     or has_table_privilege('authenticated', 'public.settings', 'delete')
+     or has_table_privilege('authenticated', 'public.settings', 'truncate') then
     raise exception '0164: settings 직접 쓰기가 아직 열려 있습니다';
   end if;
   if not has_table_privilege('authenticated', 'public.settings', 'select') then
     raise exception '0164: settings 읽기까지 막혔습니다 — 표시 폼을 못 읽습니다';
+  end if;
+  if not (select relrowsecurity from pg_class where oid = 'public.settings'::regclass) then
+    raise exception '0164: settings 에 RLS 가 꺼져 있습니다 — SELECT 부여가 매장 경계를 넘습니다';
+  end if;
+  if not exists (
+    select 1 from pg_policy
+     where polrelid = 'public.settings'::regclass
+       and polcmd = 'r'
+  ) then
+    raise exception '0164: settings 읽기 정책이 없습니다 — 표시 폼을 못 읽습니다';
   end if;
   select count(*) into v_n from pg_policy where polrelid = 'public.settings'::regclass and polcmd <> 'r';
   if v_n > 0 then
