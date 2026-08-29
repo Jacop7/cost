@@ -343,8 +343,7 @@ begin
   if exists (
     select 1 from pg_proc p
       join pg_namespace n on n.oid = p.pronamespace
-      cross join lateral regexp_split_to_table(pg_get_functiondef(p.oid), E'
-') as line
+      cross join lateral regexp_split_to_table(pg_get_functiondef(p.oid), chr(10)) as line
      where n.nspname = 'public' and p.proname = 'save_sale'
        and line like '%p_date = business_day()%'
        and btrim(line) not like '--%')
@@ -355,8 +354,7 @@ begin
   if not exists (
     select 1 from pg_proc p
       join pg_namespace n on n.oid = p.pronamespace
-      cross join lateral regexp_split_to_table(pg_get_functiondef(p.oid), E'
-') as line
+      cross join lateral regexp_split_to_table(pg_get_functiondef(p.oid), chr(10)) as line
      where n.nspname = 'public' and p.proname = 'save_sale'
        and line like '%clock_timestamp() >= v_bday.planned_close_at%'
        and btrim(line) not like '--%')
