@@ -258,8 +258,24 @@ successor와 별도인 closure successor 계약을 사용한다. 모든 `reviewe
 보호 체크가 성공한 정확한 decision commit 또는 그 commit을 포함하는 승인된 후속 commit인 `COMMIT`
 snapshot이어야 한다. 보호 체크의 정확한 SHA·check context·성공 결과와 보호 ref 포함 증거를
 입력으로 봉인하지 않으면 `CLOSED` 반환을 거부한다. 이 계약의 protocol 1.2 schema·runner 구현은
-`AI-REVIEW-2`, 보호 원격 validator·ruleset 결합과 부정 시험은 `P0-2`가 소유한다. 두 작업 완료
-전에는 FINAL 외 route를 포함한 어떤 Finding도 `CLOSED`로 전환하지 않는다.
+`AI-REVIEW-2`, 보호 원격 validator·ruleset 결합과 부정 시험은 `P0-2`가 소유한다.
+
+P0-2 이후 decision commit은 해당 SHA의 `protected-gate` 성공과 `refs/heads/main` 포함을 외부 증거로
+가져야 한다. 보호 게이트는 Node 20.19.4·24 빠른 검사와 `full-db-required` 6단계가 모두 성공한 뒤
+review/run/input/artifact 봉인, 전 회차 run/review hash-chain, anchor 조상 관계와 필수 Finding 0건을
+재검증한다. decision commit이 `main`에 반영된 뒤 아래처럼 check 증거를 물질화한다.
+
+```bash
+node scripts/protected-gate-validator.mjs --capture-checks <decision_commit_sha> \
+  --protected-ref refs/heads/main \
+  --output docs/ai-review/gate-evidence/<decision_commit_sha>
+```
+
+같은 디렉터리에는 해당 workflow artifact의 `protected-gate-evidence.json` 원본도 둔다. closure Task의
+`checks_evidence_sha256`와 `p0_2_validator_run_sha256`은 이 두 파일을 각각 봉인한다. 실행 전에는
+`node scripts/protected-gate-validator.mjs --closure-task <TASK-ID>`가 저장 증거와 GitHub 현재 상태를
+다시 대조하며, 실패하면 Fable/Opus 호출 전에 중단한다. 옛 decision commit은 당시 정확한 SHA에 새
+보호 check가 없으므로 소급 종결하지 않고, P0-2 이후 새 decision successor를 발행한다.
 
 신규 Task는 protocol `1.1` 또는 `1.2`를 허용한다. `1.2`는 reviewer engine·model·작업 전체 상한과
 fallback/closure 계약을 추가하고 구조화 결과 schema `2.0`을 사용한다. 기존 protocol `1.1` Task와

@@ -1,18 +1,17 @@
-# 전체 검증을 자동으로 돌린다 — 지금까지는 손으로만 돌렸다.
-#
-# ⚠ **DB 두 단계는 여기서 못 돈다.** `fresh-db.sh` 는 로컬 supabase 컨테이너에
-#   `docker exec` 하고, 거기서 `auth.users` 모양을 그대로 베껴 온다. CI 에 그 스택이
-#   없으므로 `--no-db` 로 뺀다. 스크립트가 끝에 "건너뛴 것" 을 적으므로 초록이
-#   "전부 통과" 로 읽히지 않는다.
-#
-#   DB·업그레이드 경로는 로컬에서 `pnpm verify` 로 돌린다. 그 둘을 CI 로 옮기려면
-#   supabase 스택을 띄우는 단계가 먼저 필요하다(아직 없다).
+# 빠른 Node 하한/개발 버전 검사와 Docker 기반 전체 DB 검사를 같은 commit SHA에 붙인다.
+# `protected-gate`는 두 선행 job이 모두 성공한 뒤에만 성공하므로 ruleset의 단일 필수 문이다.
 name: verify
 
 on:
   push:
     branches: ['**']
-  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   verify:
@@ -45,3 +44,70 @@ jobs:
 
       # ① 타입 · ② 시험 2종(DB 제외) · ③ ACL 보안 · ⑥ 웹 번들
       - run: pnpm verify --no-db
+
+  full-db-required:
+    name: full-db-required
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Exact SHA checkout
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test -z "$(git status --porcelain)"
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.12.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Start isolated Supabase stack
+        run: pnpm --filter @sikjae/db start
+
+      - name: Full six-stage verification
+        run: pnpm verify
+
+      - name: Stop Supabase stack
+        if: always()
+        run: pnpm --filter @sikjae/db exec supabase stop --no-backup
+
+  protected-gate:
+    name: protected-gate
+    needs: [verify, full-db-required]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Gate anchor와 과거 COMMIT snapshot의 blob을 재검증한다.
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.12.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Review protocol self-test
+        run: corepack pnpm fable:self-test
+      - name: Bind successful gates to the exact commit
+        shell: bash
+        env:
+          REQUIRED_RESULTS: ${{ toJSON(needs) }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          node scripts/protected-gate-validator.mjs --ci --output protected-gate-evidence.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: protected-gate-${{ github.sha }}
+          path: protected-gate-evidence.json
+          if-no-files-found: error
+          retention-days: 90

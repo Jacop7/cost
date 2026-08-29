@@ -121,8 +121,9 @@ corepack pnpm verify
 corepack pnpm verify --no-db
 ```
 
-위 명령은 Docker DB가 없는 CI용 4/6 선택 범위다. GitHub Actions는 Node `20.19.4`와 `24`에서
-이 범위를 실행한다. DB 전체 게이트의 CI 이전은 아직 P0-2다.
+위 명령은 Docker DB가 없는 빠른 CI용 4/6 선택 범위다. GitHub Actions는 Node `20.19.4`와 `24`에서
+이 범위를 실행하고, 별도 `full-db-required` job이 Node 24에서 `pnpm verify` 6/6을 실행한다. 두 job이
+모두 성공한 정확한 SHA에만 `protected-gate`가 붙으며 `main` ruleset은 이 context 하나를 필수로 요구한다.
 
 - 앱 시험은 `apps/mobile/tests/*.test.{ts,tsx}`의 vitest다.
 - UI 시험은 react-native-web+jsdom으로 글자·접근성·상호작용을 재며 실제 번들은 ⑥이 확인한다.
