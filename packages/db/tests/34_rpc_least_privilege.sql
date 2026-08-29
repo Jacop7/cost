@@ -24,6 +24,16 @@ select pg_temp.ok('RLS 정책은 닫힌 my_store_ids 몸통을 호출하지 않�
    where coalesce(pg_get_expr(pol.polqual, pol.polrelid), '') like '%my_store_ids()%'
       or coalesce(pg_get_expr(pol.polwithcheck, pol.polrelid), '') like '%my_store_ids()%'));
 
+-- purge_archived_store는 예약이 없으면 몸통이 스스로 42501(PURGE_NOT_SCHEDULED)을
+-- 던지므로 권한 판별력이 없다. 자체 42501이 없는 유지보수 문으로 권한 거부를 잰다.
+select pg_temp.raises('RPC 실행 역할은 전 매장 자동 마감 스윕을 부를 수 없다',
+  'select close_due_business_days()', '42501');
+select pg_temp.raises('RPC 실행 역할은 전 매장 변경 이력 청소를 부를 수 없다',
+  'select purge_entity_changes()', '42501');
+select pg_temp.ok('RPC 실행 역할에 매장 삭제 몸통 EXECUTE가 없다', not
+  has_function_privilege('sikjae_rpc_executor',
+    'public.purge_archived_store(uuid,text)', 'execute'));
+
 select pg_temp.eq('RPC 실행 역할에 postgres 유지보수 definer가 열린 건수는 0이다', (
   select count(*)
     from pg_proc p
@@ -34,9 +44,6 @@ select pg_temp.eq('RPC 실행 역할에 postgres 유지보수 definer가 열린 
      and has_function_privilege('sikjae_rpc_executor', p.oid, 'execute')
      and not has_function_privilege('authenticated', p.oid, 'execute')
 )::numeric, 0);
-
-select pg_temp.raises('RPC 실행 역할은 전 매장 자료 삭제 몸통을 부를 수 없다',
-  format('select purge_archived_store(%L, %L)', pg_temp.store(), 'invalid-token'), '42501');
 
 -- RLS가 실제로 다른 사장님의 매장을 숨기는지 재기 위한 두 번째 매장.
 do $t$

@@ -20,11 +20,15 @@ grant authenticated to sikjae_rpc_executor;
 grant sikjae_rpc_executor to postgres;
 grant usage on schema public to sikjae_rpc_executor;
 
--- 새 함수도 명시적으로 facade에 넣기 전에는 authenticated에 열리지 않는다.
+-- 새 함수도 명시적으로 facade에 넣기 전에는 앱과 executor에 열리지 않는다.
+-- executor는 0174 적용 시점의 내부 호출 그래프만 일괄 부여한 뒤 아래에서 전 매장
+-- 유지보수 definer를 회수한다. 이후 함수는 검토한 migration이 필요한 역할에만 연다.
 alter default privileges for role postgres in schema public
   revoke execute on functions from authenticated;
 alter default privileges for role postgres in schema public
-  grant execute on functions to sikjae_rpc_executor, service_role;
+  revoke execute on functions from sikjae_rpc_executor;
+alter default privileges for role postgres in schema public
+  grant execute on functions to service_role;
 
 create temporary table _p05_approved_rpc (
   signature text primary key
@@ -105,6 +109,30 @@ begin
   end loop;
 end
 $facades$;
+
+-- 0174의 일괄 grant는 기존 invoker facade가 호출하던 내부 도우미를 보존하기 위한
+-- 부트스트랩이다. 앱에 열리지 않은 postgres SECURITY DEFINER는 전 매장 삭제·스위프처럼
+-- facade가 가질 이유가 없는 유지보수 문이므로 즉시 executor에서 회수한다.
+do $revoke_maintenance$
+declare
+  r record;
+begin
+  for r in
+    select p.oid
+      from pg_proc p
+      join pg_namespace n on n.oid = p.pronamespace
+      join pg_roles owner_role on owner_role.oid = p.proowner
+     where n.nspname = 'public'
+       and p.prokind in ('f', 'p')
+       and p.prosecdef
+       and owner_role.rolname = 'postgres'
+       and has_function_privilege('sikjae_rpc_executor', p.oid, 'execute')
+       and not has_function_privilege('authenticated', p.oid, 'execute')
+  loop
+    execute format('revoke execute on function %s from sikjae_rpc_executor', r.oid::regprocedure);
+  end loop;
+end
+$revoke_maintenance$;
 
 -- my_store_ids()를 정책 안에서 호출하면 앱 롤의 EXECUTE를 회수할 수 없다. 같은 조건을 정책에
 -- 직접 넣어 RLS 결과는 유지하고 함수의 Data API 문만 닫는다.
@@ -256,6 +284,31 @@ begin
      or has_function_privilege('authenticated', 'public.my_store_ids()', 'execute') then
     raise exception '0174: 내부 도우미를 authenticated가 직접 실행할 수 있습니다';
   end if;
+
+  select count(*) into v_bad
+    from pg_proc p
+    join pg_namespace n on n.oid = p.pronamespace
+    join pg_roles owner_role on owner_role.oid = p.proowner
+   where n.nspname = 'public'
+     and p.prokind in ('f', 'p')
+     and p.prosecdef
+     and owner_role.rolname = 'postgres'
+     and has_function_privilege('sikjae_rpc_executor', p.oid, 'execute')
+     and not has_function_privilege('authenticated', p.oid, 'execute');
+  if v_bad <> 0 then
+    raise exception '0174: RPC 실행 역할에 유지보수 definer가 %개 남았습니다', v_bad;
+  end if;
+
+  if has_function_privilege('sikjae_rpc_executor',
+       'public.purge_archived_store(uuid,text)', 'execute')
+     or has_function_privilege('sikjae_rpc_executor',
+       'public.schedule_store_purge(uuid,timestamp with time zone,text,text,text)', 'execute')
+     or has_function_privilege('sikjae_rpc_executor',
+       'public.purge_entity_changes()', 'execute')
+     or has_function_privilege('sikjae_rpc_executor',
+       'public.close_due_business_days()', 'execute') then
+    raise exception '0174: 매장 파괴·전역 스위프 함수가 RPC 실행 역할에 열려 있습니다';
+  end if;
 end
 $verify$;
 
@@ -266,9 +319,11 @@ begin
   if has_function_privilege('authenticated', 'public.zz_rpc_grant_probe_0174()', 'execute') then
     raise exception '0174: 새 함수가 authenticated에 자동 공개됩니다';
   end if;
-  if not has_function_privilege('sikjae_rpc_executor', 'public.zz_rpc_grant_probe_0174()', 'execute')
-     or not has_function_privilege('service_role', 'public.zz_rpc_grant_probe_0174()', 'execute') then
-    raise exception '0174: 새 함수의 내부 실행 권한이 빠졌습니다';
+  if has_function_privilege('sikjae_rpc_executor', 'public.zz_rpc_grant_probe_0174()', 'execute') then
+    raise exception '0174: 새 함수가 RPC 실행 역할에 자동 공개됩니다';
+  end if;
+  if not has_function_privilege('service_role', 'public.zz_rpc_grant_probe_0174()', 'execute') then
+    raise exception '0174: 새 함수의 service_role 기본 권한이 빠졌습니다';
   end if;
 end
 $probe$;

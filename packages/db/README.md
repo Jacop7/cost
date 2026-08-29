@@ -5,11 +5,11 @@
 
 ## 현재 기준
 
-- 마이그레이션 164개, 최신 `20260829000175_rpc_executor_narrowing.sql`
+- 마이그레이션 163개, 최신 `20260829000174_rpc_least_privilege.sql`
 - 번호가 붙은 DB 회귀 스위트 34개
 - public 업무 테이블 30개
 - 자동 종료·자동 브레이크·변경 이력 청소 pg_cron 3종
-- 로컬 마이그레이션 장부와 파일 164/164 일치(2026-08-29 0175 적용 뒤 확인)
+- 로컬 마이그레이션 장부와 파일 163/163 일치(2026-08-29 0174 통합 뒤 확인)
 
 개수는 현재 스냅샷이다. 실제 판단은 파일과 시험 실행 결과를 우선한다.
 
@@ -109,7 +109,7 @@ integration·ops·Queue 원본 노출, 내부 RPC 권한과 앱이 직접 쓰는
 실행하며, 내부 함수와 원장 표 쓰기는 로그인할 수 없고 RLS를 우회하지 않는
 `sikjae_rpc_executor`만 사용한다. 기존 01~33 백색상자 시험은 이 실행 역할과 실제 JWT를 쓰고,
 34번은 실제 `authenticated` 역할의 facade·RLS·직접 공격면을 검증한다.
-0175부터 executor에는 앱에 열리지 않은 postgres SECURITY DEFINER가 `0개`이며,
+0174 적용 뒤 executor에는 앱에 열리지 않은 postgres SECURITY DEFINER가 `0개`이며,
 새 함수도 executor에 자동 공개하지 않는다. 새 facade가 내부 도우미를 필요로 하면
 호출 그래프를 검토한 같은 migration에서 정확한 시그니처만 명시적으로 grant한다.
 
