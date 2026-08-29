@@ -145,6 +145,10 @@ begin
   begin
     perform public.purge_entity_changes();
   exception when insufficient_privilege then
+    -- 스키마 USAGE 같은 다른 42501과 구분해 청소 함수의 실행 거부만 센다.
+    if position('purge_entity_changes' in sqlerrm) = 0 then
+      raise exception '0135: anon 권한 거부가 청소 함수가 아닌 곳에서 났습니다: %', sqlerrm;
+    end if;
     v_ok := true;
   end;
   -- Supabase CLI는 별도 로그인 롤로 접속한 뒤 `postgres`로 전환해 migration을
