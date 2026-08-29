@@ -1,8 +1,8 @@
 # P0-5 RPC 최소 권한 검증 증거
 
-- 확인 시각: `2026-08-29T15:02:46+09:00`
+- 확인 시각: `2026-08-29T15:36:00+09:00`
 - 최초 구현 commit: `59077f01ec369a1683b5dbb1fba0dd717824d577`
-- Fable 지적 보완·검증 commit: `e8e22dbce1b778a74061d5c1fb801eec2402d906`
+- Fable 지적 보완·검증 commit: `84c7c60f6eed2ccac964d356a97e3b0910a74a4c`
 - 기준 commit: `817b6b305352ad297289cd8270daba5e4b30d9ad`
 - 원격 적용: 없음. 개발 DB와 일회용 로컬 DB만 사용했다.
 - 원격 감사 결정: P0-5-6은 이 문서에서 통과로 간주하지 않는다. 동일 SHA 보호 CI와
@@ -22,7 +22,7 @@
 
 ## 정확한 commit에서 재현한 검증
 
-`e8e22dbce1b778a74061d5c1fb801eec2402d906`에서 `corepack pnpm verify` 한 실행으로 다음
+`84c7c60f6eed2ccac964d356a97e3b0910a74a4c`에서 `corepack pnpm verify` 한 실행으로 다음
 6단계가 모두 종료 코드 `0`으로 통과했다.
 
 1. 타입 검사
@@ -33,7 +33,7 @@
 6. 웹 번들
 
 같은 실행과 종료 뒤 `fresh_%` 임시 DB는 `0개`였다. 개발 DB의 마이그레이션 파일과 장부는
-`164/164`, 최신 버전은 `20260829000175`다. 생성 타입은 재생성했으며 공개 시그니처 변화가 없어
+`163/163`, 최신 버전은 `20260829000174`다. 생성 타입은 재생성했으며 공개 시그니처 변화가 없어
 Git 변경은 생기지 않았다.
 
 ACL 감사의 핵심 관측값은 다음과 같다.
@@ -58,21 +58,20 @@ rls_policy_helper_calls=0
 | `consume_stock`을 `authenticated`에 재개방 | 공식 facade 64개뿐이다 |
 | `inventory_states UPDATE`를 재개방 | 원장 10개 × 쓰기 4종 권한 0개 |
 | 실행 역할 상속 방향을 반대로 변경 | 실행 역할은 authenticated 권한을 상속한다 |
-| `purge_archived_store`를 실행 역할에 재개방 | 유지보수 definer 0개 및 직접 호출 42501 |
+| `close_due_business_days`를 실행 역할에 재개방 | 전 매장 자동 마감 행동 단언이 “성공했다”로 실패 |
 | 실행 역할에 `BYPASSRLS` 부여 | 실제 `get_settings(foreign_store)` 교차 매장 행동 단언 실패 |
 
-마지막 두 사보타주는 0175 보완 뒤 새로 실행했다. 각 원복 후
+마지막 두 사보타주는 유지보수 회수를 0174에 통합한 뒤 새로 실행했다. 각 원복 후
 `34_rpc_least_privilege.sql`과 ACL 감사는 다시 통과했고 실행 역할의 `rolbypassrls=false`를 확인했다.
 
 ## Git blob·SHA-256 결속
 
-아래 값은 워킹트리 파일이 아니라 검증 commit `e8e22db`의 Git blob bytes를 직접 읽어 계산했다.
+아래 값은 워킹트리 파일이 아니라 검증 commit `84c7c60`의 Git blob bytes를 직접 읽어 계산했다.
 
 | 파일 | Git blob OID | SHA-256 |
 |---|---|---|
-| `20260829000174_rpc_least_privilege.sql` | `a0f7e51e15fbe6f2d2ebad41726d20273c37688d` | `f3d4f111458ec9c2150fc15030d50039411e8b36ca1fe5f1176096018f5a4e34` |
-| `20260829000175_rpc_executor_narrowing.sql` | `63347d89dae6d84de3f4c5d734451a2d6cf95397` | `13a42e1e5f68663002f994d3a5cb68853a147b058370d0c8ace39ccdd2315ae7` |
-| `34_rpc_least_privilege.sql` | `b61c514f9362b8b885f06187c34df7d7e50646f1` | `fb7c34b3e9fb3e91da2803ecf0d3ba52463ba18966cab4ec971690b3a6d7ad85` |
+| `20260829000174_rpc_least_privilege.sql` | `bd026a9d013da09580b2fe331ae51c173a8c2661` | `9cb317a3fb4d695752e24efe5c1a0d015cae711fa61ea8094f0db473a0db6591` |
+| `34_rpc_least_privilege.sql` | `c398c1b25e5a874ebb02801f3e3e368181916a94` | `9b7202bac68fe433b0025dc6c7f71be1f6a777009578f6cf8a7592ea61ba8a6d` |
 | `admin-acl-audit.sql` | `526abbd27b3bb6ff4c53f117e85b71f428e8b194` | `09fa1ece52d7e2ff6cc06355fd23c5b0b6ca57343623fba7cb33348b90cc827f` |
 | `admin-acl-audit.test.mjs` | `0b670ad863698bba40944550771f77ca5f467bbd` | `dcaadd9a993b3f9cab0b92abd95b827efa883ca6c156cacf5b863ae696bd1e29` |
 
