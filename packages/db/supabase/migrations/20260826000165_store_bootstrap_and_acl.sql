@@ -172,6 +172,7 @@ declare
 begin
   select pg_get_functiondef(p.oid) into v_def
     from pg_proc p where p.pronamespace = 'public'::regnamespace and p.proname = 'save_store_tax';
+  v_def := replace(v_def, chr(13) || chr(10), chr(10));
 
   -- 선언부의 날짜 계산이 assert_my_store 보다 먼저 돈다 — 남의 매장 id 로도 계산이 일어난다.
   v_old := array_to_string(array[
