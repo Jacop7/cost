@@ -1,0 +1,126 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "P0-5-SETTINGS-SELECT-BOOTSTRAP-001",
+  "round": "r001",
+  "created_at": "2026-08-29T11:41:38.026Z",
+  "review_mode": "SECURITY",
+  "baseline_commit_sha": "4454a7988a8bfd60982a7b787b2a1f0943691cb3",
+  "target_commit_sha": "ff342e0890c4d05562d62ebfd14c6bd9246f4dd2",
+  "target_tree_oid": "78f7d83782ffc8d97656bf70310a4f207427d064",
+  "agents_blob_oid": "bf9b9aeccabdc1055005c7f9bcb188ed8c05eb2a",
+  "agents_sha256": "485c7cb1cbb9143748a6028393723986201d9ff944ad9d3127e5c5f6f243c531",
+  "task_sha256": "61086ce68706df8c45fad3c12b53f5e4f2865ab885f5c4b2cd21ba4c3b94ba24",
+  "collaboration_sha256": "faebf4fad4d1b3effcfce69caa8735be83a4cffef3a9ac57dac71c44bd464061",
+  "collaboration_bytes": 2197,
+  "input_files_sha256": "5f4438f72008f6fee2cc14b56c6a52aff4750beb63b9b06f1c49e00164f4ad34",
+  "schema_sha256": "a903be542752bdf90fbbd49657860a7ec175f6ddd987a6295194d1f3bb1c85e0",
+  "runner_sha256": "dc78d5183405344a2fcadf9b4db56734b7cae60ab88385d857fd02e0d434c633",
+  "snapshot_mode": "COMMIT",
+  "previous_review_sha256": null,
+  "previous_run_sha256": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "fallback_review": null,
+  "closure_review": null,
+  "fallback_input_scope": null,
+  "retry_of_failed_round": null,
+  "artifact_paths": [
+    "packages/db/supabase/migrations/20260826000164_settings_lockdown.sql",
+    "packages/db/scripts/upgrade-check.sh",
+    "docs/ai-review/evidence/P0-5-RPC-LEAST-PRIVILEGE-001.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/브랜치-DB-운영-기획안.md",
+    "packages/db/supabase/migrations/20260826000163_rule_token_required_and_dst.sql",
+    "packages/db/supabase/migrations/20260826000165_store_bootstrap_and_acl.sql"
+  ],
+  "evidence_paths": [],
+  "allowed_paths": [
+    "packages/db/supabase/migrations/20260826000164_settings_lockdown.sql",
+    "packages/db/scripts/upgrade-check.sh",
+    "docs/ai-review/evidence/P0-5-RPC-LEAST-PRIVILEGE-001.md",
+    "AGENTS.md",
+    "docs/브랜치-DB-운영-기획안.md",
+    "packages/db/supabase/migrations/20260826000163_rule_token_required_and_dst.sql",
+    "packages/db/supabase/migrations/20260826000165_store_bootstrap_and_acl.sql"
+  ],
+  "excluded_paths": [],
+  "applied_learning_ids": [],
+  "excluded_learning_ids": [],
+  "learning_registry_blob_oid": "77f00167d790c82373c1aa803d91874952c3334a",
+  "learning_registry_sha256": "4717fe99c86319d7c0abc5c8dd38e68e3a55722d7cfa56b8de173ed05ca1388f",
+  "learning_assignment_sha256": "4660bb32207bcae3246801d71aa6a052eab7b0a7cef357bd5984f706fe3dcbfe",
+  "learning_target_date": "2026-08-29",
+  "input_files": [
+    {
+      "path": "AGENTS.md",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 11054,
+      "git_blob_oid": "bf9b9aeccabdc1055005c7f9bcb188ed8c05eb2a",
+      "sha256": "485c7cb1cbb9143748a6028393723986201d9ff944ad9d3127e5c5f6f243c531",
+      "line_count": 155
+    },
+    {
+      "path": "docs/브랜치-DB-운영-기획안.md",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 41888,
+      "git_blob_oid": "3eb0bf1a13e690028059da7d7fc581464af1e042",
+      "sha256": "17817b17d08166ed164fee773390486b35931072628c9e5b5f3c4fb5611fcf48",
+      "line_count": 706
+    },
+    {
+      "path": "docs/ai-review/evidence/P0-5-RPC-LEAST-PRIVILEGE-001.md",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 23584,
+      "git_blob_oid": "7193597405932279932b5897cf2b37188bed929f",
+      "sha256": "48502ed89443769cbbda966907b4201536b5f9b6d2bf8d4886eda90a4a82e010",
+      "line_count": 387
+    },
+    {
+      "path": "packages/db/scripts/upgrade-check.sh",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 26364,
+      "git_blob_oid": "9a1d9ae082d1f97823bf51d235aef5574f79851b",
+      "sha256": "495e46e4314e1d59c3a174c8bbcb4016ee46b970fbc2bb024664cb44d177531b",
+      "line_count": 470
+    },
+    {
+      "path": "packages/db/supabase/migrations/20260826000163_rule_token_required_and_dst.sql",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 13315,
+      "git_blob_oid": "2d0ec6b5cb82b922181a744e18511f5d3acb22c0",
+      "sha256": "f3aaaa9edaedd0753957f00d6a9e9a65d115949835fde3c68e814a38bc1af139",
+      "line_count": 266
+    },
+    {
+      "path": "packages/db/supabase/migrations/20260826000164_settings_lockdown.sql",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 11698,
+      "git_blob_oid": "78e48031ed3a4e44c7ae967dbabe53ee5eebfba9",
+      "sha256": "a5dbb315bbafee7fb87a218496ec8d22d902911a57435d055d46649a68b3447c",
+      "line_count": 214
+    },
+    {
+      "path": "packages/db/supabase/migrations/20260826000165_store_bootstrap_and_acl.sql",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 13247,
+      "git_blob_oid": "9f2934ef1c833540c9626c8ddde9ea7a9eccbad5",
+      "sha256": "b388ade2c245a5b2f2814c1d1dc9e13f2873bd0adba12967300684ac45614660",
+      "line_count": 285
+    }
+  ],
+  "source_archive_version": 1,
+  "finding_resolution_semantics": "VERIFIED_RESOLVED_V1",
+  "artifact_snapshot_sha256": null,
+  "input_snapshot_sha256": null
+}

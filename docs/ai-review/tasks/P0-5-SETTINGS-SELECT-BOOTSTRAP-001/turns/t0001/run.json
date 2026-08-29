@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "P0-5-SETTINGS-SELECT-BOOTSTRAP-001",
+  "sequence": "t0001",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-08-29T12:12:14.219Z",
+  "turn_id": "turn-s002",
+  "turn_type": "SOLAR_RESPONSE",
+  "role": "SOLAR-DB",
+  "task_sha256": "61086ce68706df8c45fad3c12b53f5e4f2865ab885f5c4b2cd21ba4c3b94ba24",
+  "runner_sha256": "dc78d5183405344a2fcadf9b4db56734b7cae60ab88385d857fd02e0d434c633",
+  "previous_manual_run_sha256": null,
+  "collaboration_before_sha256": "fba38085044e1d4eb5e6fc234d4c238cd3e36558ae4881d98040afccf448b484",
+  "collaboration_before_bytes": 5298,
+  "collaboration_entry_sha256": "cb441e91f9f8ddff5d7c83c23635a00486c5103e68519fa132ac51dd31744efd",
+  "collaboration_entry_bytes": 2146,
+  "collaboration_after_sha256": "dd1473b6c590e48d06804c45b344f281a4bfc5cfe17878c1313c665c27f0c899",
+  "collaboration_after_bytes": 7444
+}

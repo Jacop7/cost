@@ -1,0 +1,70 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "P0-5-SETTINGS-SELECT-BOOTSTRAP-001",
+  "route": "SECURITY",
+  "risk_level": "R3",
+  "author_role": "SOLAR-DB",
+  "reviewer_role": "FABLE-SEC",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "SECURITY",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "4454a7988a8bfd60982a7b787b2a1f0943691cb3",
+  "target_commit_sha": "ff342e0890c4d05562d62ebfd14c6bd9246f4dd2",
+  "target_tree_oid": "78f7d83782ffc8d97656bf70310a4f207427d064",
+  "agents_blob_oid": "bf9b9aeccabdc1055005c7f9bcb188ed8c05eb2a",
+  "agents_sha256": "485c7cb1cbb9143748a6028393723986201d9ff944ad9d3127e5c5f6f243c531",
+  "requirements": [
+    "호스티드 DB에 authenticated의 settings SELECT 권한이 없어도 0164가 표시 폼 읽기 계약을 명시적으로 부트스트랩해야 한다.",
+    "0164 적용 뒤 authenticated에는 settings SELECT만 있고 INSERT·UPDATE·DELETE·TRUNCATE는 없어야 한다.",
+    "RLS 읽기 정책과 판본 검사 쓰기 RPC 경계는 유지하고 테이블 직접 쓰기 문을 다시 열지 않아야 한다.",
+    "스테이징에 이미 적용된 0001~0163은 불변이고 보정은 아직 미적용인 0164와 그 업그레이드 회귀 시험에만 한정돼야 한다.",
+    "업그레이드 시험은 0163 상태에서 SELECT 부재를 실제로 만든 뒤 0164 결과를 t|f|f|f|f로 확인해야 한다.",
+    "보정 전 0164가 호스티드와 같은 사전 상태에서 실패하는 판별력과 정확한 target commit의 verify 6/6 증거가 있어야 한다.",
+    "스테이징은 0163까지이고 보정 미적용이며 운영은 미접근이라는 실패 폐쇄 상태를 과장 없이 기록해야 한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:server-calculation-authority",
+    "AGENTS:local-verification-gate",
+    "AGENTS:hosted-staging-only",
+    "WORK-QUEUE:P0-5",
+    "P1-1:REMOTE-ACL-AUDIT"
+  ],
+  "artifact_paths": [
+    "packages/db/supabase/migrations/20260826000164_settings_lockdown.sql",
+    "packages/db/scripts/upgrade-check.sh",
+    "docs/ai-review/evidence/P0-5-RPC-LEAST-PRIVILEGE-001.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/브랜치-DB-운영-기획안.md",
+    "packages/db/supabase/migrations/20260826000163_rule_token_required_and_dst.sql",
+    "packages/db/supabase/migrations/20260826000165_store_bootstrap_and_acl.sql"
+  ],
+  "evidence_paths": [],
+  "excluded_paths": [],
+  "required_evidence": [
+    "스테이징 0137~0163 적용 성공과 0164 SELECT 사후조건 중단, 재계획 0164~0174 11개",
+    "0163 일회용 DB에서 권한 전후 f|t|t|t|t → t|f|f|f|f 관측값",
+    "보정 전 0164가 같은 상태에서 호스티드 오류로 실패하는 사보타주",
+    "정확한 target commit에서 corepack pnpm verify 6/6, DB 34/34, 업그레이드 10/10, fresh_% 0개",
+    "운영 미접근·미변경과 스테이징 보정 미적용 상태"
+  ],
+  "human_decisions": [
+    "2026-08-29 사용자는 브랜치·DB 운영 기획안 완료까지 자동 진행하도록 승인했다.",
+    "2026-08-29 사용자는 필수 route의 공식 Claude Code CLI 재검수를 호출마다 다시 묻지 않고 진행하도록 승인했다.",
+    "운영 DB에는 적용하지 않고 스테이징에서만 검증한다.",
+    "기존 실패 기록과 감사 이력은 삭제·덮어쓰지 않는다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "4.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}
