@@ -108,3 +108,31 @@ P0-5-6 완료를 뜻하지 않는다.
 
 이 절도 스테이징 재적용 성공이나 P0-5-6 원격 audit 통과를 뜻하지 않는다. 보정 commit의 FABLE-SEC
 재검수와 동일 SHA 보호 CI가 끝난 뒤 스테이징의 남은 `40개`를 다시 계획·적용한다.
+
+### anon 전환과 실행 거부를 분리한 후속 보정
+
+Fable 후보 검수에서 첫 보정의 행동 검사가 `set local role anon` 실패와
+`purge_entity_changes()` 실행 거부를 같은 `insufficient_privilege`로 셀 수 있음을 지적했다.
+보안 속성은 정적 권한 검사도 별도로 고정하지만, 행동 증거가 공허하게 통과하지 않도록 다음처럼
+분리했다.
+
+1. `set local role anon`을 함수 호출의 예외 블록 밖에서 실행한다.
+2. 즉시 `current_user = 'anon'`을 확인한다.
+3. 그 뒤 함수 호출에서 발생한 `insufficient_privilege`만 익명 실행 거부 성공으로 센다.
+4. 시작 역할 명시 복원과 복원 사후조건은 그대로 유지한다.
+
+로컬 PG 역할 체인에서 두 갈래를 별도로 확인했다.
+
+- 정상 구조: `cli_role_chain_probe LOGIN NOINHERIT`에 `postgres` 역할을 부여한 뒤
+  `session_user=cli_role_chain_probe` 상태에서 `postgres → anon → postgres` 전환이 모두 성공했다.
+  `0134`까지만 올린 일회용 DB에서 수정된 `0135` 전체 파일을 같은 세션 구조로 실행했고,
+  `current_user=postgres`로 복원된 상태에서 마지막 `assert_no_rpc_overloads()`까지 통과했다.
+- 전환 권한 제거 사보타주: `postgres` 역할을 받지 않은 `cli_anon_switch_probe`로 실행하면
+  `set local role anon`에서 `permission denied to set role "anon"`으로 즉시 중단됐다. 함수 실행
+  거부 성공으로 잘못 세지 않았다.
+
+기준 commit과 후속 보정 target 사이 DB 변경은 아직 스테이징에 적용되지 않은 `0135` 한 파일뿐이며,
+스테이징에 이미 적용된 `0001~0134`의 blob은 바뀌지 않았다. 일회용 역할과 DB는 확인 직후 제거했고
+`fresh_%` 잔여 DB는 `0개`다. 이 후속 보정 상태에서도 `corepack pnpm verify`를 다시 실행해 타입,
+core·DB·mobile 시험, CLI·ACL 보안, 새 DB `34/34`·2세션 경합·locale parity, 업그레이드 `9/9`,
+웹 번들까지 6/6으로 통과했다.
