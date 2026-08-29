@@ -136,3 +136,46 @@ Fable 후보 검수에서 첫 보정의 행동 검사가 `set local role anon` �
 `fresh_%` 잔여 DB는 `0개`다. 이 후속 보정 상태에서도 `corepack pnpm verify`를 다시 실행해 타입,
 core·DB·mobile 시험, CLI·ACL 보안, 새 DB `34/34`·2세션 경합·locale parity, 업그레이드 `9/9`,
 웹 번들까지 6/6으로 통과했다.
+
+#### 후속 보정 판본 결속과 판별력
+
+- 증거 재확인 시각: `2026-08-29T17:25:53+09:00`
+- 기준 commit: `9559b3bd7b7205663b067edfc5367bbfd5623d21`
+- 첫 역할 분리 commit: `03cd3634f18e1d2314c204fcfd7a33bb0c385ccc`
+- 최종 구현 commit: `bb1ecc5a483cec263f0ce0b4dce84ea73739c5d2`
+- 대상 파일: `packages/db/supabase/migrations/20260826000135_purge_and_anon_grants.sql`
+- Git blob OID: `034a47fb0af9c9f0820dcb08a76205f1e4a74a87`
+- SHA-256: `009190fa5825ed7f7a33155178209e8bf7ffc6f2c6af5d8426f6b5138d9dc733`
+
+기준 commit과 최종 구현 commit 사이 migration 변경은 위 `0135` 한 파일뿐이다. 최종 구현
+commit에서 `corepack pnpm verify`를 다시 실행해 6단계 전체가 종료 코드 `0`으로 통과했다.
+세부 결과는 타입, core·DB·mobile 시험, CLI·ACL 보안, 새 DB `34/34`·2세션 경합·locale parity,
+업그레이드 `9/9`, 웹 번들이며 종료 뒤 `fresh_%` DB는 `0개`였다.
+
+정상 역할 체인의 실제 관측값은 다음과 같다.
+
+```text
+session=cli_role_chain_probe,current=cli_role_chain_probe
+set-postgres=cli_role_chain_probe,current=postgres
+set-anon=cli_role_chain_probe,current=anon
+restore=cli_role_chain_probe,current=postgres
+```
+
+전환 권한이 없는 별도 역할은 함수 호출 전에 다음 오류로 중단됐다.
+
+```text
+ERROR:  42501: permission denied to set role "anon"
+```
+
+또한 익명 역할의 `public` 스키마 사용 권한만 제거해 다른 `42501`을 먼저 만들면 최종 구현은 이를
+청소 함수 실행 거부로 세지 않고 다음 자체 오류로 실패했다.
+
+```text
+0135: anon 권한 거부가 청소 함수가 아닌 곳에서 났습니다:
+permission denied for schema public
+```
+
+권한을 원복한 같은 일회용 DB에서는 `0135` 전체가 다시 통과했다. 따라서 행동 단언은
+`anon` 전환 성공과 `purge_entity_changes()` 실행 거부를 각각 증명하며, 다른 권한 오류를 성공으로
+오인하지 않는다. 이 절의 정확한 대상은 최종 구현 commit이며, 위쪽 최초 검증 commit의 증거를
+소급해 바꾼 것이 아니다.
