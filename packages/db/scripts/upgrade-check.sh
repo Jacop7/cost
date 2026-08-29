@@ -435,5 +435,36 @@ else
   say "   ok   매장은 archive · 판매·재고 행 수 불변 · 계정 삭제 감사 원장 보존"
 fi
 
+# ── 시나리오 10 · 호스티드처럼 settings 선행 SELECT가 없는 0163 상태 ────────
+# 로컬 fresh DB는 기본 ACL 때문에 authenticated SELECT가 열려 있어 0164의 암묵적 전제를 가렸다.
+# 권한을 명시적으로 걷은 0163 DB에서 0164 하나만 태워 읽기 전용 계약을 migration 자체가 만드는지 잰다.
+say "⑩ 0163 상태 + settings 읽기 권한 없음 → 0164가 읽기만 명시적으로 연다"
+BASE10=20260826000163
+STEP10="$(cd "$MIG_DIR" && ls 20260826000164_*.sql)"
+bash "$SCRIPT_DIR/fresh-db.sh" --until "$BASE10" "$D" >/dev/null
+psql_d "$D" -c "revoke select on public.settings from anon, authenticated;" >/dev/null
+before=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c \
+  "select has_table_privilege('authenticated','public.settings','select');")
+if [ "$before" != "f" ]; then
+  say "   FAIL 전제가 안 섰다 — authenticated SELECT가 닫히지 않았다"
+  fail=1
+elif ! err="$(psql_d "$D" < "$MIG_DIR/$STEP10" 2>&1 1>/dev/null)"; then
+  say "   FAIL 선행 SELECT가 없으면 0164가 멈춘다"; say "        $(printf '%s' "$err" | head -3)"; fail=1
+else
+  after=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c "
+    select concat_ws('|',
+      has_table_privilege('authenticated','public.settings','select'),
+      has_table_privilege('authenticated','public.settings','insert'),
+      has_table_privilege('authenticated','public.settings','update'),
+      has_table_privilege('authenticated','public.settings','delete'),
+      has_table_privilege('authenticated','public.settings','truncate'));" )
+  if [ "$after" = "t|f|f|f|f" ]; then
+    say "   ok   settings 권한 = SELECT만 열림 ($after)"
+  else
+    say "   FAIL 0164 뒤 settings 권한이 읽기 전용이 아니다: $after"
+    fail=1
+  fi
+fi
+
 say ""
-if [ "$fail" = "0" ]; then say "업그레이드 경로 9/9 통과"; else say "업그레이드 경로 실패"; exit 1; fi
+if [ "$fail" = "0" ]; then say "업그레이드 경로 10/10 통과"; else say "업그레이드 경로 실패"; exit 1; fi

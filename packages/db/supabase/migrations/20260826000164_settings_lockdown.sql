@@ -16,6 +16,9 @@
  */
 
 -- ── ① settings — 읽기만 ─────────────────────────────────────────
+-- 호스티드 DB는 로컬 fresh DB와 달리 선행 blanket grant가 없을 수 있다.
+-- '읽기만'은 기존 권한에 기대지 않고 이 migration이 직접 만든다.
+grant select on public.settings to authenticated;
 revoke insert, update, delete, truncate on public.settings from anon, authenticated;
 drop policy if exists settings_insert on public.settings;
 drop policy if exists settings_update on public.settings;
