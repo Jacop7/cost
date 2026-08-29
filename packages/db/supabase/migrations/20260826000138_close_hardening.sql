@@ -204,7 +204,10 @@ end $c$;
 
 -- ── 사후 확인 ────────────────────────────────────────────────────
 do $v$
-declare v_ok boolean; v_def text;
+declare
+  v_ok boolean;
+  v_def text;
+  v_original_role name := current_user;
 begin
   -- ① 몸통은 아무도 못 부른다(소유자 제외).
   if has_function_privilege('authenticated',
@@ -215,12 +218,22 @@ begin
   then raise exception '0138: service_role 이 마감 몸통을 직접 부를 수 있습니다'; end if;
 
   v_ok := false;
+  set local role authenticated;
+  if current_user <> 'authenticated' then
+    raise exception '0138: authenticated 역할로 전환하지 못했습니다';
+  end if;
   begin
-    set local role authenticated;
     perform public.close_business_day_row(gen_random_uuid(), 'manual', now());
-  exception when insufficient_privilege then v_ok := true;
+  exception when insufficient_privilege then
+    if position('close_business_day_row' in sqlerrm) = 0 then
+      raise exception '0138: 인증 권한 거부가 마감 몸통이 아닌 곳에서 났습니다: %', sqlerrm;
+    end if;
+    v_ok := true;
   end;
-  reset role;
+  execute format('set local role %I', v_original_role);
+  if current_user <> v_original_role then
+    raise exception '0138: 마감 몸통 검사 뒤 원래 역할을 복원하지 못했습니다';
+  end if;
   if not v_ok then raise exception '0138: 인증 사용자가 실제로 몸통을 불렀습니다'; end if;
 
   -- 그래도 정상 문은 열려 있어야 한다.
