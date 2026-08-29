@@ -45,6 +45,16 @@ ok('apply는 같은 ref의 계획 뒤 적용·재대조', () => {
 ok('dry-run에서 저장소 migration 파일만 추린다', () => assert.deepEqual(pendingMigrationFiles('Apply 20260801000001 and 20260801000003', [
   '20260801000001_one.sql', '20260801000002_two.sql', '20260801000003_three.sql',
 ]), ['20260801000001_one.sql', '20260801000003_three.sql']));
+ok('실제 CLI 파일명처럼 버전 뒤에 밑줄이 와도 추린다', () => assert.deepEqual(pendingMigrationFiles(
+  'Would push these migrations:\n • 20260801000001_one.sql\n • 20260801000003_three.sql', [
+    '20260801000001_one.sql', '20260801000002_two.sql', '20260801000003_three.sql',
+  ],
+), ['20260801000001_one.sql', '20260801000003_three.sql']));
+ok('CLI JSON의 migration 파일명에서도 추린다', () => assert.deepEqual(pendingMigrationFiles(
+  '{"upToDate":false,"dryRun":true,"migrations":["20260801000002_two.sql"]}', [
+    '20260801000001_one.sql', '20260801000002_two.sql',
+  ],
+), ['20260801000002_two.sql']));
 ok('긴 숫자 일부를 migration 버전으로 오인하지 않는다', () => assert.deepEqual(pendingMigrationFiles(
   'unrelated 1202608010000019', ['20260801000001_one.sql'],
 ), []));

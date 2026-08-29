@@ -61,7 +61,10 @@ export function validateDeployContext({ target, mode, expectedRef, linkedRef, ap
 }
 
 export function pendingMigrationFiles(dryRunOutput, migrationFiles) {
-  const versions = new Set(dryRunOutput.match(/\b\d{14}\b/g) ?? []);
+  // 실제 CLI dry-run은 `20260829000173_account_retention.sql`처럼 버전 바로 뒤에
+  // `_`를 붙인다. `\b`는 숫자와 `_`를 모두 word 문자로 보므로 이 형식을 한 건도
+  // 찾지 못한다. 앞뒤가 숫자만 아니면 버전으로 인정해 긴 숫자의 부분 일치도 막는다.
+  const versions = new Set(dryRunOutput.match(/(?<!\d)\d{14}(?!\d)/g) ?? []);
   return migrationFiles.filter((name) => versions.has(name.slice(0, 14))).sort();
 }
 
