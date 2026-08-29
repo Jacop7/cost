@@ -226,6 +226,10 @@ begin
   if position(v_old in v_def) = 0 then return; end if;   -- 이미 적용됨
 
   -- 조건 첫 줄을 통째로 바꾼다. 뒤의 `and v_status <> 'closed'` 부터는 그대로다.
+  -- 두 줄 결합 anchor가 없으면 치환이 조용히 무효가 되고 기한 검사가 죽는다 — 중단한다.
+  if position(v_old || chr(10) || '       and v_status <> ''closed''' in v_def) = 0 then
+    raise exception '0145: 기한 검사의 역할 조건 두 줄을 못 찾았습니다';
+  end if;
   execute replace(v_def, v_old || chr(10) || '       and v_status <> ''closed''',
                          '    if v_status <> ''closed''');
 end $m3$;
