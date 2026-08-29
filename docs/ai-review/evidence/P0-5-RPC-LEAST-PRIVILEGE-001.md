@@ -179,3 +179,78 @@ permission denied for schema public
 `anon` 전환 성공과 `purge_entity_changes()` 실행 거부를 각각 증명하며, 다른 권한 오류를 성공으로
 오인하지 않는다. 이 절의 정확한 대상은 최종 구현 commit이며, 위쪽 최초 검증 commit의 증거를
 소급해 바꾼 것이 아니다.
+
+## 스테이징 2차 적용 중단과 미적용 migration 전진 보정
+
+- 확인 시각: `2026-08-29T19:07:22+09:00`
+- 스테이징에 승인·적용을 시도한 SHA: `9e4f502506c11c359beae2bd42cec1dc1dac4293`
+- 스테이징 project ref: `cvfvmpzcldyqurcrappu`
+- 운영 project ref: `smxaozdgoxbafjldoayb` — 이 작업에서 계획·적용하지 않았다.
+- 최종 구현 commit: `e41a927efec49a195f528881f9f8dadc5767244a`
+
+첫 중단 뒤 계획은 `0135~0174` 정확히 `40개`였다. 같은 SHA를 다시 적용하기 전에 호스티드
+스테이징을 읽기 전용으로 확인한 결과는 다음과 같았다.
+
+```text
+session_user=postgres
+current_user=postgres
+session_can_anon=true
+session_can_postgres=true
+anon_public_usage=true
+```
+
+2차 적용에서 보정된 `0135`와 기존 `0136`은 성공했고, `0137` 마지막 사후 확인이 다시
+`permission denied for function assert_no_rpc_overloads (SQLSTATE 42501)`로 중단됐다. 원인은
+`0135`와 같았다. migration이 `NOINHERIT` 로그인 역할에서 `postgres`로 전환된 세션으로 실행되는데,
+검사 뒤 `reset role`이 migration 시작 역할인 `postgres`가 아니라 로그인 역할로 돌아갔다. 성공
+배포 증거는 생성되지 않았으며 스테이징 장부는 `0136`까지다. 다음 원격 계획은 실행 전에 새로
+산출해야 하며 예상값은 `0137~0174` 정확히 `38개`다.
+
+아직 스테이징에 적용되지 않은 파일만 전진 보정했다.
+
+- `0137`·`0138`·`0139`·`0144`: 시작 `current_user`를 보존하고, 역할 전환과 거부 대상 행동을
+  분리하고, 거부가 정확한 함수·테이블에서 났는지 확인한 뒤 보존한 역할로 명시 복원한다.
+- `0139`: 코드 적용 표식을 연속된 실제 코드 줄로 고정하고 CRLF/LF와 무관하게 검사한다.
+- `0145`·`0150`·`0151`·`0158`·`0163`·`0165`: Windows clean checkout의 CRLF에서도
+  `pg_get_functiondef()` 조각 치환·사후 확인이 같은 코드를 인식하도록 비교 문자열을 LF로 정규화한다.
+
+위 변경은 제품 계산·RPC 계약을 바꾸지 않는다. 스테이징에 이미 적용된 `0001~0136`은 수정하지
+않았고, 변경 범위는 아직 미적용인 migration 10개뿐이다. commit 연속은 다음과 같다.
+
+```text
+c809491  역할 복원·전환/행동 분리 (0137·0138·0139·0144)
+7aef3e6  0139 적용 표식 1차 보정
+289d2b1  0139 실제 코드 연속 표식 고정
+e084fb7  0139 CRLF/LF 안전 검사
+b95f9df  0145 함수 정의 검사 정규화
+e878536  0150 치환 anchor 정규화
+f38ff86  0151 치환 anchor 정규화
+c7ab314  0158 응답 치환 정규화
+0460461  0163 DST 치환 anchor 정규화
+e41a927  0165 설정 저장 치환 anchor 정규화
+```
+
+NOINHERIT 로그인 역할을 사용한 일회용 역할 체인에서 `0137~0144`를 실행해 각 migration이
+`current_user=postgres`로 복원된 뒤 다음 파일로 진행하는 것을 확인했다. 전환 권한이나 복원 코드를
+제거하면 해당 migration에서 즉시 실패했다. 일회용 역할과 DB는 확인 뒤 제거했다.
+
+Windows clean checkout에서는 이전에 로컬 LF 작업본과 이미 만들어진 개발 DB가 가렸던 CRLF 의존
+검사를 실제로 재현했다. 각 보정 파일은 바로 전 migration까지만 적용한 새 DB에서 첫 적용을
+통과시켰다. 원래부터 재적용을 지원하는 `0139`·`0145`·`0150`·`0151`은 두 번째 적용도 통과했고,
+나머지는 최초 적용 경로로 검증했다. 같은 clean checkout에서 `0001~0174` 전체 migration과 seed도
+성공했다.
+
+최종 구현 commit `e41a927efec49a195f528881f9f8dadc5767244a`의 깨끗한 checkout에서
+`corepack pnpm verify` 한 실행을 완료했다.
+
+1. 타입 검사 통과
+2. core·DB·mobile 시험 통과
+3. CLI 계약·ACL 셸 보안 통과
+4. 새 DB 전체 migration·DB 스위트·2세션 경합·locale parity 통과
+5. 업그레이드 경로 `9/9` 통과
+6. 웹 번들 통과
+
+실행 종료 코드는 `0`이며 결과는 `전체 검증 통과`였다. 종료 뒤 `fresh_%` 임시 DB는 `0개`다.
+이 결과는 스테이징 재적용 성공이나 원격 ACL 감사 완료를 뜻하지 않는다. 다음 단계는 이 정확한
+commit의 FABLE-SEC 재검수와 보호 CI 성공을 고정한 뒤, 새 스테이징 계획에서 `38개`를 확인하고
+스테이징에만 적용하는 것이다.
