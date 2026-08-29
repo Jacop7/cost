@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "P0-5-RPC-LEAST-PRIVILEGE-005",
+  "sequence": "t0002",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-08-29T06:41:18.764Z",
+  "turn_id": "turn-h001",
+  "turn_type": "HUMAN_DECISION",
+  "role": "HUMAN",
+  "task_sha256": "6220e404b5974aad2b522c1d776cc28121169c177779925e7af11de61047137a",
+  "runner_sha256": "dc78d5183405344a2fcadf9b4db56734b7cae60ab88385d857fd02e0d434c633",
+  "previous_manual_run_sha256": "46cc88972253fdca3ee3b6433b0c86eb79b590ee072ce9010b8075d6f4016355",
+  "collaboration_before_sha256": "478f50a2fab06fb73b23f088321edb40447fc1374f4f3eecd36c2ca46b35e02f",
+  "collaboration_before_bytes": 1933,
+  "collaboration_entry_sha256": "b15255ce967fa69178085109a58495c54885ced063710b7111e4110455d2b5d4",
+  "collaboration_entry_bytes": 873,
+  "collaboration_after_sha256": "44ffbd34078f6a47f0f5fa2cea1130ea540309322703b7f7e58ce446d65d19e5",
+  "collaboration_after_bytes": 2806
+}

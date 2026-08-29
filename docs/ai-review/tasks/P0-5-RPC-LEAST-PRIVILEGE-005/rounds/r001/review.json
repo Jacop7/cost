@@ -1,0 +1,340 @@
+{
+  "schema_version": "2.0",
+  "task_id": "P0-5-RPC-LEAST-PRIVILEGE-005",
+  "reviewer_role": "FABLE-SEC",
+  "review_mode": "RECHECK",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "6c30ebbb2ba3063d9107bdc50f923d8b031039c1",
+  "target_commit_sha": "87be0b81735bf15a475bdc229f08ad4f5633e992",
+  "target_tree_oid": "b1946199adc1521d193a2b91c91c901bf307e313",
+  "agents_blob_oid": "bf9b9aeccabdc1055005c7f9bcb188ed8c05eb2a",
+  "agents_sha256": "485c7cb1cbb9143748a6028393723986201d9ff944ad9d3127e5c5f6f243c531",
+  "task_sha256": "6220e404b5974aad2b522c1d776cc28121169c177779925e7af11de61047137a",
+  "collaboration_sha256": "44ffbd34078f6a47f0f5fa2cea1130ea540309322703b7f7e58ce446d65d19e5",
+  "input_files_sha256": "52b75d7c088b5f0317095a76f9688a4233a54501c9eeed30a5ed6aa08a656821",
+  "schema_sha256": "a903be542752bdf90fbbd49657860a7ec175f6ddd987a6295194d1f3bb1c85e0",
+  "runner_sha256": "dc78d5183405344a2fcadf9b4db56734b7cae60ab88385d857fd02e0d434c633",
+  "verdict": "PASS",
+  "summary": "predecessor Finding 6건을 같은 ID로 재검수했다. (1) P05-SEC-0175-OUTSIDE-PACKET → VERIFIED: 스냅샷 migration glob에 0175가 없고 README(163개, 최신 0174)·증거 문서(163/163)가 일치한다. 회수 로직은 봉인된 0174 안에 통합됐다 — executor 대상 기본 EXECUTE 회수(26–29행), 부트스트랩 일괄 grant 직후 앱에 닫힌 postgres definer를 executor에서 회수하는 루프(113–135행), 사후조건(288–311행: 카운트 0 + purge_archived_store·schedule_store_purge·purge_entity_changes·close_due_business_days 정확한 시그니처 4개), 실제 probe 함수로 미래 함수 executor 미공개 확인(316–330행). 회수는 정확한 시그니처 나열 대신 술어 루프지만 사후조건이 시그니처를 고정하고, assert_my_store(0173:163–178)는 my_store_ids()에 의존하지 않아 회수된 my_store_ids가 facade 호출 그래프를 깨지 않는다. 0174 blob bd026a9d…/SHA 9cb317a3…가 증거 문서 73행 및 봉인 input_files와 일치한다. (2) P05-SEC-EXECUTOR-BLANKET-EXECUTE → VERIFIED: 수용 기준 1(명시 회수 migration이 packet 안)·2(metric rpc_executor_privileged_maintenance=0 + 34번 동일 단언)·3(README 112–114행·0174 주석 23–25·113–115행 설계 근거) 모두 충족. (3) P05-SEC-PURGE-42501-NONDISCRIMINATING → VERIFIED: 34번 27–35행이 prelude의 sikjae_rpc_executor 역할에서 close_due_business_days()·purge_entity_changes() 호출 42501과 purge_archived_store has_function_privilege=false를 단언한다. purge_entity_changes 몸통(0135:27–43)은 자체 42501이 없고, 증거 61행은 close_due_business_days 재개방 사보타주가 '성공했다'로 실패했음을 기록해 몸통 예외가 아닌 권한 거부를 잰다는 것이 행동으로 증명된다. (4) P05-SEC-EVIDENCE-HASH-MISMATCH·P05-SEC-FACADE-CROSS-STORE-TEST-GAP은 새 검증 commit 84c7c60의 4개 파일 blob OID·SHA-256이 봉인 input_files와 정확히 일치하고 교차 매장 행동 단언(34번 103–109행)이 유지돼 VERIFIED를 유지한다. (5) P05-SEC-HOSTED-ADMIN-OPTION-NOTE는 인간 결정대로 스테이징 원격 audit 전 OPEN(Improvement) 유지. P0-5-6은 통과로 표현하지 않는다. 필수 미해결 Finding이 없어 PASS이나, 외부 게이트·스테이징 적용 승인을 뜻하지 않는다.",
+  "findings": [
+    {
+      "finding_id": "P05-SEC-EVIDENCE-HASH-MISMATCH",
+      "severity": "Major",
+      "review_state": "VERIFIED",
+      "category": "POLICY",
+      "requirement_or_invariant_ids": [
+        "AGENTS:local-verification-gate",
+        "P0-5-5",
+        "P0-5-6",
+        "P1-1:REMOTE-ACL-AUDIT"
+      ],
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/P0-5-RPC-LEAST-PRIVILEGE-001.md",
+          "line_start": 69,
+          "line_end": 76,
+          "observation": "검증 commit 84c7c60의 Git blob bytes로 계산한 표. 0174 bd026a9d/9cb317a3…, 34번 c398c1b2/9b7202ba…, admin-acl-audit.sql 526abbd2/09fa1ece…, admin-acl-audit.test.mjs 0b670ad8/dcaadd9a…가 이번 봉인 input_files와 정확히 일치한다."
+        },
+        {
+          "path": "docs/ai-review/evidence/P0-5-RPC-LEAST-PRIVILEGE-001.md",
+          "line_start": 23,
+          "line_end": 50,
+          "observation": "84c7c60에서 pnpm verify 6/6, DB 34/34, ACL metric 21개, 163/163 최신 0174, 핵심 관측값(ledger_write_paths=0, unapproved_authenticated_rpc=0, rpc_executor_privileged_maintenance=0)을 기록했다."
+        },
+        {
+          "path": "packages/db/scripts/admin-acl-audit.test.mjs",
+          "line_start": 34,
+          "line_end": 56,
+          "observation": "EXPECTED_METRICS가 정확히 21개다."
+        },
+        {
+          "path": "docs/ai-review/evidence/P0-5-RPC-LEAST-PRIVILEGE-001.md",
+          "line_start": 52,
+          "line_end": 65,
+          "observation": "사보타주 5종과 잡힌 단언, 원복 후 재통과·rolbypassrls=false를 기록했다. 유지보수 행은 close_due_business_days 행동 단언으로 갱신됐다."
+        },
+        {
+          "path": "docs/ai-review/evidence/P0-5-RPC-LEAST-PRIVILEGE-001.md",
+          "line_start": 7,
+          "line_end": 9,
+          "observation": "원격 적용 없음과 P0-5-6 보류를 명시했고 task packet human_decisions가 같은 보류를 승인했다."
+        }
+      ],
+      "impact": "증거 문서의 SHA가 봉인 blob과 일치해 34/34·metric 21·사보타주 결과가 검수 대상 artifact에 대해 성립한다. 재개방할 새 증거가 없다.",
+      "acceptance_criteria": [
+        "target commit(또는 그 이후 동일 artifact 해시)에서 pnpm verify 6/6, DB 34/34, ACL metric을 재실행하고 증거 문서의 파일 SHA-256이 봉인 blob과 일치해야 한다.",
+        "증거 문서에 사보타주 3종이 현재 34번·감사 SQL에서 실패로 잡힌 기록을 포함해야 한다.",
+        "P0-5-6은 스테이징 동일 SHA 적용 후 --remote audit 결과로 별도 증거를 남기거나, 인간 결정으로 보류 상태를 명시해야 한다."
+      ],
+      "required_tests": [
+        "동일 커밋 pnpm verify 6/6 재실행 및 SHA 대조",
+        "admin-acl-audit.test.mjs fresh DB metric 21개 통과"
+      ],
+      "previous_finding_id": "P05-SEC-EVIDENCE-HASH-MISMATCH",
+      "verified_by_engine": "FABLE"
+    },
+    {
+      "finding_id": "P05-SEC-EXECUTOR-BLANKET-EXECUTE",
+      "severity": "Minor",
+      "review_state": "VERIFIED",
+      "category": "SECURITY",
+      "requirement_or_invariant_ids": [
+        "AGENTS:server-calculation-authority",
+        "AGENTS:ledger-write-paths",
+        "WORK-QUEUE:P0-5",
+        "P0-5-2"
+      ],
+      "evidence": [
+        {
+          "path": "packages/db/supabase/migrations/20260829000174_rpc_least_privilege.sql",
+          "line_start": 23,
+          "line_end": 31,
+          "observation": "postgres 기본 권한에서 authenticated와 sikjae_rpc_executor의 미래 함수 EXECUTE를 회수하고 service_role만 남긴다. 설계 근거 주석 포함."
+        },
+        {
+          "path": "packages/db/supabase/migrations/20260829000174_rpc_least_privilege.sql",
+          "line_start": 113,
+          "line_end": 135,
+          "observation": "일괄 grant를 부트스트랩으로 명시하고, 앱에 열리지 않은 postgres SECURITY DEFINER를 executor에서 즉시 revoke하는 루프가 봉인 artifact 안에 있다."
+        },
+        {
+          "path": "packages/db/supabase/migrations/20260829000174_rpc_least_privilege.sql",
+          "line_start": 288,
+          "line_end": 311,
+          "observation": "사후조건: executor 유지보수 definer 카운트 0과 purge_archived_store·schedule_store_purge·purge_entity_changes·close_due_business_days 정확한 시그니처 4개의 executor EXECUTE 부재를 migration 안에서 검증한다."
+        },
+        {
+          "path": "packages/db/supabase/migrations/20260829000174_rpc_least_privilege.sql",
+          "line_start": 316,
+          "line_end": 330,
+          "observation": "실제 probe 함수를 만들어 authenticated·executor 자동 미공개, service_role 공개를 확인하고 삭제한다."
+        },
+        {
+          "path": "packages/db/scripts/admin-acl-audit.sql",
+          "line_start": 215,
+          "line_end": 224,
+          "observation": "rpc_executor_privileged_maintenance metric(expected=0)이 같은 술어로 회귀를 잰다."
+        },
+        {
+          "path": "packages/db/tests/34_rpc_least_privilege.sql",
+          "line_start": 27,
+          "line_end": 46,
+          "observation": "executor 역할에서 행동 단언 2건·has_function_privilege 단언·카운트 0 단언이 있다."
+        },
+        {
+          "path": "packages/db/README.md",
+          "line_start": 112,
+          "line_end": 114,
+          "observation": "0174 적용 뒤 executor 유지보수 definer 0개, 새 함수 자동 미공개, 필요한 도우미는 검토한 migration에서 정확한 시그니처로 grant한다는 설계 근거."
+        }
+      ],
+      "impact": "수용 기준 1·2·3이 모두 봉인 packet 안에서 확인된다. 회수는 술어 루프이지만 사후조건이 정확한 시그니처를 고정하고 34/34·metric 21 통과가 facade 호출 그래프 보존을 증명한다.",
+      "acceptance_criteria": [
+        "executor의 EXECUTE는 facade가 실제로 호출하는 내부 도우미로 한정하거나, 최소한 purge_*·schedule_store_purge·close_due_business_days 등 postgres definer 유지보수 함수는 executor에서 명시적으로 revoke해야 하며 그 migration이 검수 packet에 포함돼야 한다.",
+        "admin-acl-audit에 executor가 유지보수·RLS 우회 함수를 실행할 수 없음을 재는 metric(expected=0)을 추가하고 34번에 동일 단언을 넣어야 한다.",
+        "기본 권한 자동 개방 범위에 대한 설계 근거를 README 또는 마이그레이션 주석에 기록해야 한다."
+      ],
+      "required_tests": [
+        "set local role sikjae_rpc_executor 후 purge_archived_store·schedule_store_purge·close_due_business_days 호출이 42501",
+        "기존 34/34 회귀 통과"
+      ],
+      "previous_finding_id": "P05-SEC-EXECUTOR-BLANKET-EXECUTE",
+      "verified_by_engine": "FABLE"
+    },
+    {
+      "finding_id": "P05-SEC-FACADE-CROSS-STORE-TEST-GAP",
+      "severity": "Minor",
+      "review_state": "VERIFIED",
+      "category": "TEST_GAP",
+      "requirement_or_invariant_ids": [
+        "AGENTS:store-scope-rls",
+        "P0-5-4"
+      ],
+      "evidence": [
+        {
+          "path": "packages/db/tests/34_rpc_least_privilege.sql",
+          "line_start": 48,
+          "line_end": 68,
+          "observation": "다른 사장님의 매장·식재료를 만들고 소유자 JWT로 되돌린 뒤 실제 authenticated 역할로 전환한다."
+        },
+        {
+          "path": "packages/db/tests/34_rpc_least_privilege.sql",
+          "line_start": 103,
+          "line_end": 111,
+          "observation": "authenticated로 get_settings(foreign_store) null, save_category(foreign_store) 42501, ingredient_detail(foreign_ingredient) null, rolbypassrls=false를 단언한다."
+        },
+        {
+          "path": "docs/ai-review/evidence/P0-5-RPC-LEAST-PRIVILEGE-001.md",
+          "line_start": 62,
+          "line_end": 65,
+          "observation": "BYPASSRLS 사보타주가 get_settings(foreign_store) 교차 매장 행동 단언에서 실패했고 원복 후 통과했다."
+        }
+      ],
+      "impact": "P0-5-4가 앱 실제 역할에서 행동으로 증명되며 재개방할 새 증거가 없다.",
+      "acceptance_criteria": [
+        "34번에 authenticated로 get_settings(foreign_store) 및 save_category(foreign_store, …) 호출이 거부(또는 빈 결과)됨을 단언해야 한다.",
+        "사보타주 증거에 alter role sikjae_rpc_executor bypassrls 후 위 단언이 실패하는 기록을 추가해야 한다."
+      ],
+      "required_tests": [
+        "authenticated facade 교차 매장 거부 2건",
+        "executor bypassrls 사보타주 행동 실패 증거"
+      ],
+      "previous_finding_id": "P05-SEC-FACADE-CROSS-STORE-TEST-GAP",
+      "verified_by_engine": "FABLE"
+    },
+    {
+      "finding_id": "P05-SEC-HOSTED-ADMIN-OPTION-NOTE",
+      "severity": "Improvement",
+      "review_state": "OPEN",
+      "category": "OPERATIONS",
+      "requirement_or_invariant_ids": [
+        "P1-1:REMOTE-ACL-AUDIT"
+      ],
+      "evidence": [
+        {
+          "path": "packages/db/supabase/migrations/20260829000174_rpc_least_privilege.sql",
+          "line_start": 19,
+          "line_end": 20,
+          "observation": "grant authenticated to sikjae_rpc_executor는 PG16+ 호스티드에서 postgres의 authenticated ADMIN OPTION에 의존한다."
+        },
+        {
+          "path": "docs/ai-review/evidence/P0-5-RPC-LEAST-PRIVILEGE-001.md",
+          "line_start": 7,
+          "line_end": 9,
+          "observation": "원격 적용 없음. 인간 결정에 따라 스테이징 원격 audit 전에는 통과로 표현하지 않는다."
+        }
+      ],
+      "impact": "스테이징 적용 시 권한 부족으로 마이그레이션이 중단될 수 있다. 사후조건이 롤백을 보장하지만 배포 절차가 막힌다.",
+      "acceptance_criteria": [
+        "스테이징 동일 SHA 적용 후 rpc_executor_role=1과 사후조건 통과를 기록한다."
+      ],
+      "required_tests": [],
+      "previous_finding_id": "P05-SEC-HOSTED-ADMIN-OPTION-NOTE",
+      "verified_by_engine": null
+    },
+    {
+      "finding_id": "P05-SEC-0175-OUTSIDE-PACKET",
+      "severity": "Major",
+      "review_state": "VERIFIED",
+      "category": "POLICY",
+      "requirement_or_invariant_ids": [
+        "AGENTS:local-verification-gate",
+        "WORK-QUEUE:P0-5",
+        "P0-5-2",
+        "P0-5-4"
+      ],
+      "evidence": [
+        {
+          "path": "packages/db/README.md",
+          "line_start": 8,
+          "line_end": 12,
+          "observation": "마이그레이션 163개, 최신 0174, 장부 163/163. 0175는 제거됐고 스냅샷 migration glob에도 0173·0174만 있다."
+        },
+        {
+          "path": "docs/ai-review/evidence/P0-5-RPC-LEAST-PRIVILEGE-001.md",
+          "line_start": 35,
+          "line_end": 36,
+          "observation": "개발 DB 163/163, 최신 20260829000174로 증거가 README와 일치한다."
+        },
+        {
+          "path": "docs/ai-review/evidence/P0-5-RPC-LEAST-PRIVILEGE-001.md",
+          "line_start": 73,
+          "line_end": 73,
+          "observation": "통합 0174의 blob bd026a9d…/SHA 9cb317a3…가 봉인 input_files와 일치해 수용 기준 1의 취지(회수 migration이 봉인 packet 안)를 충족한다."
+        },
+        {
+          "path": "packages/db/supabase/migrations/20260829000174_rpc_least_privilege.sql",
+          "line_start": 26,
+          "line_end": 29,
+          "observation": "alter default privileges for role postgres in schema public으로 authenticated·executor의 미래 EXECUTE를 회수한다."
+        },
+        {
+          "path": "packages/db/supabase/migrations/20260829000174_rpc_least_privilege.sql",
+          "line_start": 116,
+          "line_end": 135,
+          "observation": "앱에 닫힌 postgres definer를 executor에서 revoke한다. 술어 루프이나 사후조건(302–311행)이 유지보수 함수 4개를 정확한 시그니처로 고정한다."
+        },
+        {
+          "path": "packages/db/supabase/migrations/20260829000173_account_retention.sql",
+          "line_start": 163,
+          "line_end": 178,
+          "observation": "assert_my_store는 invoker이며 stores를 직접 조회해 my_store_ids()에 의존하지 않으므로, 회수된 my_store_ids가 facade 문지기를 깨지 않는다."
+        },
+        {
+          "path": "packages/db/tests/16_change_retention.sql",
+          "line_start": 368,
+          "line_end": 390,
+          "observation": "postgres definer 목록 중 64개 facade 밖은 apply_due_breaks·apply_operating_hours·close_business_day·close_due_business_days·my_store_ids·open_business_day·purge_*·schedule_store_purge·트리거 3종이며, 이들은 postgres definer facade나 cron·트리거에서만 호출된다. 34/34 통과가 호출 그래프 보존을 뒷받침한다."
+        }
+      ],
+      "impact": "R3 회수 migration이 SECURITY 경로의 봉인 검수 집합 안에 들어와 회수 범위·사후조건·기본 권한 회수 방식을 독립 검수했다. 예정된 0175 blob 63347d89…는 통합으로 폐기됐고 그 대체물이 검수됐다.",
+      "acceptance_criteria": [
+        "0175를 artifact_paths에 포함한 successor packet을 봉인하고 그 blob OID가 증거 문서의 63347d89dae6d84de3f4c5d734451a2d6cf95397과 일치해야 한다.",
+        "0175가 executor 대상 기본 EXECUTE를 alter default privileges로 회수하고 postgres definer 유지보수 함수를 정확한 시그니처로 revoke하며 사후조건(rpc_executor_privileged_maintenance=0, probe 함수로 미래 함수 executor 미공개)을 migration 안에서 검증해야 한다.",
+        "0175가 facade 호출 그래프에 필요한 내부 도우미 EXECUTE를 유지한다는 근거(주석 또는 34/34 통과)를 같은 packet에서 확인할 수 있어야 한다."
+      ],
+      "required_tests": [
+        "0175 포함 fresh DB 34/34 및 ACL metric 21개",
+        "업그레이드 경로 9/9에 0175 포함"
+      ],
+      "previous_finding_id": "P05-SEC-0175-OUTSIDE-PACKET",
+      "verified_by_engine": "FABLE"
+    },
+    {
+      "finding_id": "P05-SEC-PURGE-42501-NONDISCRIMINATING",
+      "severity": "Minor",
+      "review_state": "VERIFIED",
+      "category": "TEST_GAP",
+      "requirement_or_invariant_ids": [
+        "P0-5-2",
+        "AGENTS:ledger-write-paths"
+      ],
+      "evidence": [
+        {
+          "path": "packages/db/tests/34_rpc_least_privilege.sql",
+          "line_start": 27,
+          "line_end": 35,
+          "observation": "purge_archived_store 직접 호출 단언을 제거하고 close_due_business_days()·purge_entity_changes() 42501 행동 단언과 purge_archived_store has_function_privilege=false 단언으로 교체했다."
+        },
+        {
+          "path": "packages/db/tests/_prelude.sql",
+          "line_start": 17,
+          "line_end": 20,
+          "observation": "prelude가 sikjae_rpc_executor 역할과 authenticated JWT로 시작하므로 위 단언은 executor 권한을 잰다."
+        },
+        {
+          "path": "packages/db/supabase/migrations/20260826000135_purge_and_anon_grants.sql",
+          "line_start": 27,
+          "line_end": 43,
+          "observation": "purge_entity_changes 몸통은 나이 조건 delete만 하며 자체 42501이 없다."
+        },
+        {
+          "path": "docs/ai-review/evidence/P0-5-RPC-LEAST-PRIVILEGE-001.md",
+          "line_start": 61,
+          "line_end": 64,
+          "observation": "close_due_business_days를 executor에 재개방하는 사보타주가 행동 단언에서 '성공했다'로 실패했다고 기록해, 몸통이 자체 42501을 만들지 않고 권한 거부만 잰다는 것이 행동으로 증명된다."
+        }
+      ],
+      "impact": "행동 단언이 권한 재개방을 몸통 예외와 구별해 잡으며 증거 문서의 사보타주 표도 실제 잡은 단언으로 갱신됐다.",
+      "acceptance_criteria": [
+        "executor 직접 호출 단언은 몸통이 42501을 자체 발생시키지 않는 유지보수 함수(예: close_due_business_days(), purge_entity_changes())를 쓰거나, permission denied 메시지/PURGE_NOT_SCHEDULED detail을 구분해 권한 거부만 통과시켜야 한다.",
+        "증거 문서의 사보타주 표는 실제로 잡은 단언(카운트)만 기재하거나 보강된 행동 단언으로 갱신해야 한다."
+      ],
+      "required_tests": [
+        "executor로 close_due_business_days() 호출 42501",
+        "executor에 purge_archived_store EXECUTE 재부여 시 보강 단언이 실패하는 사보타주"
+      ],
+      "previous_finding_id": "P05-SEC-PURGE-42501-NONDISCRIMINATING",
+      "verified_by_engine": "FABLE"
+    }
+  ],
+  "proposed_edits": [],
+  "closed_finding_ids": [],
+  "reopened_finding_ids": [],
+  "remaining_required_finding_ids": [],
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}
