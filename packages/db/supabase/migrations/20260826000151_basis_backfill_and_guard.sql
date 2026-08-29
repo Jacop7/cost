@@ -111,12 +111,14 @@ begin
     from pg_proc p join pg_namespace n on n.oid = p.pronamespace
    where n.nspname = 'public' and p.proname = 'e10_sale_recorded';
   if v_def is null then raise exception '0151: e10_sale_recorded 가 없습니다'; end if;
+  v_def := replace(v_def, chr(13) || chr(10), chr(10));
   if position('store_id <> p_store' in v_def) > 0 then return; end if;
 
   v_old := '  if v_bday.status = ''closed'' and not p_allow_closed then
     raise exception ''% 영업이 종료되어 판매를 저장할 수 없어요'', p_date
       using errcode = ''45002'', detail = ''DAY_CLOSED'';
   end if;';
+  v_old := replace(v_old, chr(13) || chr(10), chr(10));
   if position(v_old in v_def) = 0 then
     raise exception '0151: e10 의 종료 검사를 못 찾았습니다';
   end if;
