@@ -74,3 +74,50 @@ VERIFY_EXIT=0
 
 종료 후 `fresh_%` DB는 0개였다. 보안 관측값은
 `rls_disabled_app_tables=0`, `ledger_write_paths=32`, `unapproved_authenticated_rpc=87`이다.
+
+## P2-6 후속 보강 — 2026-08-30 KST
+
+Fable 후속 지적 네 건을 반영했다. 모바일 RPC 소스 검사는 별도 모듈로 분리해 구조 분해
+별칭(`const { rpc } = client`, `const { rpc: call } = client`)과 비리터럴 계산 키
+(`client[key](...)`)를 실패로 처리한다. 필수 소스 루트가 하나라도 없으면 누락 경로를 명시하고,
+일반 객체의 계산 키 호출은 RPC로 오인하지 않는다. Docker 없는 회귀시험 6개를 verify ③에 연결했다.
+
+SQL 허용 목록은 더 이상 SQL 문자열을 정규식으로 읽지 않는다. 감사 SQL이 만든 임시 표를 같은
+트랜잭션의 PostgreSQL이 직접 읽어 서명과 비-mobile 소비자를 내보내며, 마지막에 rollback한다.
+`admin-acl-audit.sql`의 주석 안 `comment_only_rpc(uuid)` 표식이 허용 목록에 들어오지 않는 것도
+명시적으로 단언한다.
+
+### 판본 고정
+
+파일 SHA-256만으로는 어떤 Git 판본을 검수했는지 되짚기 어려우므로, 기존 V1·V2와 P2-6 판본의
+Git blob OID를 함께 고정한다.
+
+| 판본 | target commit | `admin-acl-audit.test.mjs` Git blob OID |
+| --- | --- | --- |
+| V1 | `d0051c17bb6f842e28b48813616114fefc50913c` | `43f2ae0e01f93cebf115b8294acdd20e13c05f55` |
+| V2 | `474d087fa341a70bb792cd10bd9f6907985e6617` | `9da5001f312deb7a6a291a1e334059f0e22fca26` |
+| P2-6 | `af0940c3e63a4ba663e055e0752ee470b9adc09b` | `38a74b1ef1e2dcf48b046e1250bf112bb915039a` |
+
+P2-6 작업 트리의 SHA-256은 다음과 같다. Git blob OID는 줄 끝 정규화 이후 저장소 객체를 가리키고,
+SHA-256은 Windows 작업 트리에서 실제 실행한 바이트를 가리킨다.
+
+| 파일 | SHA-256 |
+| --- | --- |
+| `packages/db/scripts/admin-acl-audit.test.mjs` | `69e81135c842a16bb126d08afb7fe7a2a15dda1891265f7ad06ab646a2548910` |
+| `packages/db/scripts/admin-acl-source-scan.mjs` | `71d6edfe664669419b7bebbc43167808df27107e7049a4f9db87d19a9cb208f2` |
+| `packages/db/scripts/admin-acl-source-scan.test.mjs` | `300bfc242e047bb71bdca7d64520fb400adb3af9607d4f61cf275830230863ba` |
+| `packages/db/scripts/admin-acl-audit.sql` | `b66f7a474d958c73753b7f72537dc2bd75cdbe9399387562e4ba33058b1802ff` |
+
+### 실제 실행 출력
+
+`node packages/db/scripts/admin-acl-audit.test.mjs postgres`의 stdout 마지막 두 줄을 가공하지 않고
+그대로 보존한다.
+
+```text
+admin-acl audit 실제 DB 계약 통과 — metric 21개 · 모바일 RPC 62개 · 비-mobile 예외 2개
+  관측값: rls_disabled_app_tables=0 ledger_write_paths=0 unapproved_authenticated_rpc=0
+```
+
+같은 P2-6 판본에서 `corepack pnpm verify`를 실행해 ① 타입, ② 시험, ③ CLI 계약·ACL 보안,
+④ 새 DB 전체 migration·DB 34/34·2세션 경합·locale parity, ⑤ 업그레이드 경로 10/10,
+⑥ 웹 번들을 모두 통과했다. 종료 코드는 0이고 `fresh_%` 일회용 DB는 남지 않았다.
