@@ -242,11 +242,28 @@ GitHub Actions는 Node 20.19.4·24에서 `pnpm verify --no-db` 빠른 검사를 
 ### 4.4 운영 push 사고 방지
 
 - 기능 브랜치에서 운영 프로젝트로 `db push`하지 않는다.
-- 운영 적용 전 `supabase migration list`와 적용 예정 파일을 확인한다.
-- `packages/db/package.json`의 현재 `push` 스크립트는 의도가 모호하므로 `push:prod`처럼 명시적인
-  이름으로 바꾸는 작업을 `docs/작업큐.md`에 등록한다.
+- 일반 `push` 명령은 두지 않는다. `db:deploy:staging:plan`·`db:deploy:production:plan`으로
+  `migration list`와 dry-run의 적용 예정 파일을 먼저 확인한다.
+- 배포 가드는 실제 링크 project ref와 환경별 기대 ref, 깨끗한 `main`, `origin/main`, 사람이 승인한
+  40자리 SHA, 동일 SHA의 `protected-gate` 성공을 모두 대조한다. 하나라도 없거나 다르면 실패한다.
+- 실제 적용은 계획과 같은 가드에서 대상·project ref·SHA를 모두 포함한 확인 문구를 추가로 요구한다.
 - 운영 프로젝트 링크, 대상 프로젝트 ref, 배포 SHA를 배포 기록에 남긴다.
 - Dashboard에서 직접 SQL을 고치지 않는다. 긴급 수정도 마이그레이션으로 남긴다.
+
+```bash
+# 스테이징 계획 예시. 운영은 STAGING/staging을 PRODUCTION/production으로 바꾼다.
+SIKJAE_APPROVED_DEPLOY_SHA=<40자리-main-SHA> \
+SIKJAE_STAGING_PROJECT_REF=<20자리-project-ref> \
+corepack pnpm db:deploy:staging:plan
+
+# 위 계획을 검토한 뒤에만 추가한다.
+SIKJAE_DEPLOY_CONFIRM=APPLY:staging:<project-ref>:<40자리-main-SHA> \
+corepack pnpm db:deploy:staging:apply
+```
+
+계획 실행은 출력만 남기고 저장소를 바꾸지 않는다. 계획 기록이 worktree를 더럽혀 동일 SHA의 적용을
+막지 않기 위해서다. 실제 적용 성공 뒤에만 `docs/deployments/`에 `APPLIED` 기록을 만든다. 기록은
+CLI 출력 원문 대신 SHA-256과 migration 파일명을 저장하며 비밀번호·토큰·DB URL을 포함하지 않는다.
 
 ### 4.5 호스티드 Supabase ACL 능력 분기
 
@@ -349,7 +366,7 @@ outbox 생성·Queue enqueue·외부 요청이 0건이라는 사후조건을 둔
 2. `main` 병합 후 배포 대상 SHA를 기록하고 이후 배포 범위를 고정
 3. 운영 자동 백업 생성 여부와 복구 가능 시점 확인
 4. `supabase migration list`로 로컬·운영 이력 대조
-5. 가능하면 dry-run 또는 적용 목록 검토
+5. `db:deploy:production:plan`으로 dry-run과 적용 목록 검토
 6. 추가형 DB·Queue 구조를 **비활성 상태**로 적용
 7. Vault·Project Secrets·Storage 정책과 비밀값 준비
 8. §4.5의 원격 ACL 능력 분기와 해당 게이트 통과
@@ -359,6 +376,9 @@ outbox 생성·Queue enqueue·외부 요청이 0건이라는 사후조건을 둔
 12. 핵심 사용자 흐름과 Cron·Queue·오류율 점검
 13. 성공한 배포 SHA에 annotated tag `deploy-YYYYMMDD-<shortSHA>` 생성·push
 14. 앱 버전·DB 태그·마이그레이션 범위·담당자·검증 결과 기록
+
+2~5단계의 대상 고정과 DB 적용은 §4.4의 배포 가드를 사용한다. 계획 출력은 적용 증거가 아니며,
+`APPLIED` 기록도 1단계 스테이징과 3단계 백업·복구 확인을 대신하지 않는다.
 
 `main` ruleset의 저장소 선언은 `.github/rulesets/main-required.json`이다. `corepack pnpm ruleset:check`로
 원격과 대조하고, 선언을 바꿀 때만 정확한 현재 SHA의 `protected-gate` 성공 뒤

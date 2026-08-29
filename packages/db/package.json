@@ -9,7 +9,10 @@
     "stop": "supabase stop",
     "reset": "node scripts/reset-local.mjs",
     "diff": "supabase db diff",
-    "push": "supabase db push",
+    "deploy:staging:plan": "node scripts/deploy-guard.mjs --target staging --mode plan",
+    "deploy:staging:apply": "node scripts/deploy-guard.mjs --target staging --mode apply",
+    "deploy:production:plan": "node scripts/deploy-guard.mjs --target production --mode plan",
+    "deploy:production:apply": "node scripts/deploy-guard.mjs --target production --mode apply",
     "gen:types": "supabase gen types typescript --local > src/database.types.ts",
     "test": "node tests/run.mjs",
     "fresh-db": "bash scripts/fresh-db.sh"

@@ -31,7 +31,11 @@
     "db:start": "corepack pnpm --filter @sikjae/db start",
     "db:reset": "corepack pnpm --filter @sikjae/db reset",
     "db:types": "corepack pnpm --filter @sikjae/db gen:types",
-    "db:test": "corepack pnpm --filter @sikjae/db test"
+    "db:test": "corepack pnpm --filter @sikjae/db test",
+    "db:deploy:staging:plan": "corepack pnpm --filter @sikjae/db deploy:staging:plan",
+    "db:deploy:staging:apply": "corepack pnpm --filter @sikjae/db deploy:staging:apply",
+    "db:deploy:production:plan": "corepack pnpm --filter @sikjae/db deploy:production:plan",
+    "db:deploy:production:apply": "corepack pnpm --filter @sikjae/db deploy:production:apply"
   },
   "devDependencies": {
     "typescript": "^5.6.3",
