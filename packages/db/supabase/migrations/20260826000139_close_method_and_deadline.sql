@@ -239,8 +239,11 @@ begin
    where n.nspname = 'public' and p.proname = 'save_sale';
   if v_def is null then raise exception '0139: save_sale 이 없습니다'; end if;
 
-  -- 설명문에 같은 말이 있어도 적용 완료로 오인하지 않는다. 실제로 넣는 코드 줄만 본다.
-  if position('if current_user in (''authenticated'', ''anon'')' in v_def) > 0 then
+  -- 설명문이나 다른 권한 분기에 같은 말이 있어도 적용 완료로 오인하지 않는다.
+  -- 이 migration이 연속해서 넣는 두 코드 줄을 함께 확인한다.
+  if position(concat_ws(chr(10),
+       '    if current_user in (''authenticated'', ''anon'')',
+       '       and v_status <> ''closed''') in v_def) > 0 then
     return;
   end if;
 
