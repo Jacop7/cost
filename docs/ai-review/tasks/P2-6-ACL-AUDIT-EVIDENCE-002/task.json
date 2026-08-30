@@ -1,0 +1,57 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "P2-6-ACL-AUDIT-EVIDENCE-002",
+  "route": "SECURITY",
+  "risk_level": "R3",
+  "author_role": "SOLAR-DB",
+  "reviewer_role": "FABLE-SEC",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "SECURITY",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "2276fa050b71d47b8b221eecec59c1b4c7474025",
+  "target_commit_sha": "513686b86c915ebc4a6d6c78a57237cdfbb08a6f",
+  "target_tree_oid": "80163bdbdc9753f4c4840f83495ff474085611ae",
+  "agents_blob_oid": "bf9b9aeccabdc1055005c7f9bcb188ed8c05eb2a",
+  "agents_sha256": "485c7cb1cbb9143748a6028393723986201d9ff944ad9d3127e5c5f6f243c531",
+  "requirements": [
+    "P2-6-1: 구조 분해 rpc 별칭과 client 계산 키 RPC 호출은 실패 폐쇄하고 일반 객체 계산 키는 오인하지 않는다.",
+    "P2-6-2: 필수 모바일 소스 루트 누락을 정확한 경로와 함께 실패로 진단한다.",
+    "P2-6-3: 허용 RPC 서명과 비-mobile 예외는 PostgreSQL 임시 표의 실제 행에서 읽으며 SQL 주석을 허용 목록으로 오인하지 않는다.",
+    "P2-6-4: 증거 문서는 실제 stdout 두 줄, V1·V2·P2-6 commit과 Git blob OID, 전체 verify 실행 결과를 결속한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:inspection-execution",
+    "AGENTS:acl-environment-deployment",
+    "P1-1-SUPPORT-003-RPC-SCAN-RESIDUAL-EVASION",
+    "P1-1-SUPPORT-003-MOBILE-ROOT-MISSING-UNCAUGHT",
+    "P1-1-SUPPORT-003-ALLOWLIST-REGEX-PARSE",
+    "P1-1-BINDING-005-OBSERVED-STDOUT-VERBATIM"
+  ],
+  "artifact_paths": [
+    "packages/db/scripts/admin-acl-source-scan.mjs",
+    "packages/db/scripts/admin-acl-source-scan.test.mjs",
+    "packages/db/scripts/admin-acl-audit.test.mjs",
+    "packages/db/scripts/admin-acl-audit.sql",
+    "scripts/verify.mjs",
+    "docs/ai-review/evidence/P1-1-ACL-SUPPORT-SOURCE-002.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/작업큐.md"
+  ],
+  "evidence_paths": [],
+  "excluded_paths": [],
+  "required_evidence": [
+    "Docker 없는 소스 스캔 회귀시험 6/6과 실제 DB 감사 계약 통과 stdout",
+    "corepack pnpm verify 6/6, DB 34/34, 업그레이드 10/10, fresh DB 0개",
+    "앞선 동일 범위 Task r001·r002가 구조화 결과 없이 budget_exhausted로 끝나 PASS를 합성하지 않았다는 작업큐 기록"
+  ],
+  "human_decisions": [
+    "2026-08-30 사용자가 앞선 두 실패 회차를 보존하고 범위를 줄인 추가 Fable 호출 한 번에 최대 3.00 USD를 승인했다.",
+    "호스티드 원격 ACL 적용과 운영 배포는 이 지원 시험 보강 범위가 아니다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null
+}
