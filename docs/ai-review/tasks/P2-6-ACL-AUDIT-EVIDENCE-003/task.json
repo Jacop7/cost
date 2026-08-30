@@ -1,0 +1,80 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "P2-6-ACL-AUDIT-EVIDENCE-003",
+  "route": "SECURITY",
+  "risk_level": "R3",
+  "author_role": "SOLAR-DB",
+  "reviewer_role": "FABLE-SEC",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "SECURITY",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "513686b86c915ebc4a6d6c78a57237cdfbb08a6f",
+  "target_commit_sha": "beefc06025126f210a61b56ece492a3e55c8f1b5",
+  "target_tree_oid": "81b7d630c17914a6d171d49fa50abc024338b7c5",
+  "agents_blob_oid": "bf9b9aeccabdc1055005c7f9bcb188ed8c05eb2a",
+  "agents_sha256": "485c7cb1cbb9143748a6028393723986201d9ff944ad9d3127e5c5f6f243c531",
+  "requirements": [
+    "P2-6-SEC-001-RPC-SCAN-LITERAL-KEY-EVASION: 문자열 리터럴 rpc 구조 분해와 별칭 계산 키 RPC 호출이 실패 폐쇄되고 일반 객체 계산 키는 오인되지 않아야 한다.",
+    "P2-6-SEC-002-SOURCE-SCAN-TEST-COVERAGE: bracket literal, rpc 함수 별칭, 비리터럴·spread 인자, 빈 소스 루트와 앞선 두 우회가 Docker 없는 회귀시험에서 직접 검증돼야 한다.",
+    "P2-6-SEC-003-EVIDENCE-SQL-HASH-BINDING: 증거 문서가 최종 Git blob OID·blob SHA-256, P0-5 전환 근거, 전체 verify 원문과 정확히 결속돼야 한다.",
+    "predecessor의 필수 Finding 3건을 같은 finding_id와 previous_finding_id로 재검증하고 해결된 경우에만 VERIFIED로 반환해야 한다.",
+    "기존 CHANGES_REQUIRED와 budget_exhausted 기록을 삭제·덮어쓰지 않고 제품 검증 6단계를 유지해야 한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:inspection-execution",
+    "AGENTS:acl-environment-deployment",
+    "P2-6-SEC-001-RPC-SCAN-LITERAL-KEY-EVASION",
+    "P2-6-SEC-002-SOURCE-SCAN-TEST-COVERAGE",
+    "P2-6-SEC-003-EVIDENCE-SQL-HASH-BINDING"
+  ],
+  "artifact_paths": [
+    "packages/db/scripts/admin-acl-source-scan.mjs",
+    "packages/db/scripts/admin-acl-source-scan.test.mjs",
+    "packages/db/scripts/admin-acl-audit.test.mjs",
+    "packages/db/scripts/admin-acl-audit.sql",
+    "scripts/verify.mjs",
+    "docs/ai-review/evidence/P1-1-ACL-SUPPORT-SOURCE-002.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/작업큐.md"
+  ],
+  "evidence_paths": [],
+  "excluded_paths": [],
+  "required_evidence": [
+    "predecessor의 세 Finding을 같은 finding_id와 previous_finding_id로 재검증한 결과",
+    "Docker 없는 소스 스캔 회귀시험 13/13과 실제 DB 감사 계약 통과 stdout",
+    "문자열 rpc 구조 분해·별칭 계산 키·bracket literal·함수 별칭·비리터럴·spread·빈 루트 부정 시험",
+    "최종 구현 commit의 Git blob OID·blob bytes SHA-256과 증거 문서의 일치",
+    "corepack pnpm verify 6/6, DB 34/34, 업그레이드 10/10, fresh DB 0개"
+  ],
+  "human_decisions": [
+    "2026-08-30 사용자는 predecessor Finding 반영 후 Fable successor 재검수를 최대 3.00 USD 상한으로 승인했다.",
+    "기존 Claude Code Max 로그인 세션을 사용하며 Opus fallback과 별도 API 결제는 사용하지 않는다.",
+    "호스티드 원격 ACL 적용과 운영 배포는 이 지원 시험 보강 범위가 아니다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": {
+    "task_id": "P2-6-ACL-AUDIT-EVIDENCE-002",
+    "source_commit_sha": "aa494af0a1dc255d25418dbacfbf6d31d25c6e71",
+    "round": "r001",
+    "task_sha256": "18c582a1370fddb20771b42cd424667a5ba43b4a27e7c30d5115474fab18df93",
+    "manifest_sha256": "2563cd6ad67f5c02188e5af08fc1c68b24dfa80b11ef4d6db101afe17001c791",
+    "run_sha256": "c3f5adf01e0964c0630fd40aaf0ddc4ffbd0281bd3c3aad6d2ef165fe6ace96f",
+    "review_sha256": "a801e4e7af621c9c16e74cad04284bf658fdfdf51c5d31977280b4efb1313a42",
+    "finding_registry_sha256": "e0c416ee8fada01ce0c8a766915e9e34ee9101617009e3364278f9508fb279ec",
+    "handoff_turn_id": "turn-o001",
+    "handoff_entry_sha256": "9fe02abe64d33baf2da2c04d8c04d549577d6eb345db91605999aa9fbab7f115",
+    "handoff_run_sha256": "ebec83ee5ba6f883e90a3288c0db45e8760a1f52ef31c31a0099dd7ab272031e"
+  },
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "3.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}
