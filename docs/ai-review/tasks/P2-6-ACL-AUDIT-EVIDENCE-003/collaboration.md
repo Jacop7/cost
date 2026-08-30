@@ -45,3 +45,66 @@ P2-6 successor RECHECK(SECURITY 경로, target beefc060). predecessor 필수 Fin
 
 > 다음 담당자는 이 아래에 같은 공동 산출물의 수정 내용·Finding별 답변·검증 증거를 새 턴으로 추가합니다. 이전 턴은 고치거나 지우지 않습니다.
 <!-- /fable-review:r001 -->
+
+## SOLAR_RESPONSE · turn-s002 · r001
+
+- role: `SOLAR-DB`
+- reply_to_turn_id: `turn-f001`
+- reply_to_review_sha256: `8cbc06cbeac3b7c8bd00452a559e00059d886770e36e187a94caf2b4f632bdf9`
+- target_commit_sha: `7354c5a`
+- changed_artifact_paths: `docs/ai-review/evidence/P1-1-ACL-SUPPORT-SOURCE-002.md`
+- resulting_input_files_sha256: `필수 Finding은 봉인 target beefc060에서 VERIFIED; 비차단 Improvement는 후속 문서 commit 7354c5a에 반영`
+
+### P2-6-SEC-004-EVIDENCE-COMMIT-REF-AND-VERBATIM-BLOCK
+
+- disposition: `APPLIED`
+- 적용 위치: `docs/ai-review/evidence/P1-1-ACL-SUPPORT-SOURCE-002.md`
+- 적용 내용: Finding 반영 commit을 `52a32b5ef7037c66e92282dabf6e89c48b876d9c` 40자 SHA로 고정하고 Fable target `beefc06025126f210a61b56ece492a3e55c8f1b5`가 같은 네 blob을 포함하는 후속 commit임을 명시했다. verify 실행기 원문 블록에서 `fresh_db_count=0`을 분리해 별도 쿼리·별도 블록으로 기록했다.
+- 실행한 테스트: `git merge-base --is-ancestor 52a32b5 beefc06` exit 0, 네 blob OID 대조, `git diff --check` 통과.
+- 필요한 재검수: 비차단 Improvement이며 필수 Finding 3건의 PASS·VERIFIED 판정을 바꾸지 않는다. 다음 증거 감사 시 문서의 40자 SHA와 분리 블록을 대조한다.
+
+- next_review_request: `CODEX_EVIDENCE`
+
+## CODEX_EVIDENCE · turn-c001 · r001
+
+- role: `CODEX-FUNCTION-QA`
+- reply_to_turn_id: `turn-s002`
+- target_commit_sha: `beefc06025126f210a61b56ece492a3e55c8f1b5`
+- verified_input_files_sha256: `7ff41214d5aed5660bc04173a9b330c0745352ae14011233cca38d5edb550d4a`
+- artifact_hashes: `target manifest와 증거 문서의 네 Git blob OID·blob SHA-256을 대조해 일치`
+- finding_ids: `P2-6-SEC-001-RPC-SCAN-LITERAL-KEY-EVASION`, `P2-6-SEC-002-SOURCE-SCAN-TEST-COVERAGE`, `P2-6-SEC-003-EVIDENCE-SQL-HASH-BINDING`, `P2-6-SEC-004-EVIDENCE-COMMIT-REF-AND-VERBATIM-BLOCK`
+- 실행 명령: `node packages/db/scripts/admin-acl-source-scan.test.mjs`; `node packages/db/scripts/admin-acl-audit.test.mjs postgres`; `corepack pnpm verify`; Git blob OID·SHA-256 대조.
+- 종료 코드·결과: source scan 13/13, 실제 DB audit metric 21·모바일 RPC 62·비-mobile 2, 전체 verify 6/6 exit 0, DB 34/34, 업그레이드 10/10, 웹 번들 통과.
+- 증거 파일·로그 위치: `docs/ai-review/evidence/P1-1-ACL-SUPPORT-SOURCE-002.md`; Fable r001 review/run SHA `8cbc06cbeac3b7c8bd00452a559e00059d886770e36e187a94caf2b4f632bdf9` / `8279333079d19d7cf611e533a4824c3b491d20e8f9240d444ed3fd38dfd5f543`.
+- 미실행 항목과 이유: 호스티드 원격 ACL 적용·운영 배포는 Task 범위 밖. `fresh_%` 일회용 DB는 0개.
+- Fable 판정: PASS, predecessor 필수 Finding 3건 모두 같은 ID로 VERIFIED, 필수 미해결 0건. 비차단 Improvement는 후속 문서 commit `7354c5a`에 반영했다.
+- next_review_request: `AI_DEPUTY_GATE_REVIEW`
+
+## BACKLOG_DISPOSITION · turn-o001
+
+- role: `AI-DEPUTY-ORCHESTRATOR`
+- reply_to_turn_id: `turn-f001`
+- optional_finding_ids: `P2-6-SEC-004-EVIDENCE-COMMIT-REF-AND-VERBATIM-BLOCK`
+- backlog_id: `P2-6-SEC-004-POST-PASS-EVIDENCE-CLEANUP`
+- owner: `SOLAR-DB`
+- 재검토 조건·시점: 제안된 문서 수정은 commit `7354c5a`에 즉시 반영했다. 다음 ACL 증거 감사에서 40자 commit과 분리된 fresh DB 쿼리 블록을 대조한다.
+- 공식 산출물 반영 여부: `docs/ai-review/evidence/P1-1-ACL-SUPPORT-SOURCE-002.md`에 반영 완료.
+- review_state_effect: `NON_BLOCKING`
+
+## AI_DEPUTY_GATE_DECISION · turn-o002
+
+- role: `AI-DEPUTY-ORCHESTRATOR`
+- reply_to_turn_id: `turn-c001`
+- verified_review_sha256: `8cbc06cbeac3b7c8bd00452a559e00059d886770e36e187a94caf2b4f632bdf9`
+- verified_run_sha256: `8279333079d19d7cf611e533a4824c3b491d20e8f9240d444ed3fd38dfd5f543`
+- verified_input_files_sha256: `7ff41214d5aed5660bc04173a9b330c0745352ae14011233cca38d5edb550d4a`
+- artifact_hashes: `target manifest와 evidence의 Git blob OID·SHA-256으로 봉인·대조`
+- gate_anchor_commit_sha: `beefc06025126f210a61b56ece492a3e55c8f1b5`
+- required_external_gate: `protected ref + required check on exact decision commit SHA`
+- open_required_finding_ids: `[]`
+- optional_finding_backlog_ids: `P2-6-SEC-004-POST-PASS-EVIDENCE-CLEANUP`
+- Codex 실행 증거: `turn-c001`; verify 6/6·source scan 13/13·DB 34/34·upgrade 10/10·fresh DB 0개. Improvement는 commit 7354c5a에 반영.
+- requested_outcome: `CLOSE`
+- 종결 요청 또는 사람 이관 근거: 필수 Finding 3건이 모두 VERIFIED이고 Fable PASS다. 이 턴을 포함한 최종 feature SHA의 보호 원격 필수 체크가 성공한 뒤 main fast-forward로 종결한다.
+
+> 이 턴 자체는 로컬 status를 닫지 않는다. 정확한 최종 decision commit의 보호 원격 체크와 main 반영이 외부 종결 증거다.
