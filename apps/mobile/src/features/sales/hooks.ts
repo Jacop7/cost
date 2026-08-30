@@ -604,7 +604,7 @@ export function useAmendPastSale() {
     onSuccess: (_r, input) => invalidate(qc, [...invalidateOn.e10(), qk.salesDay(input.date)]),
   });
 }
-// ── 지출 내역 되짚기 (SALES-13/15/17) ─────────────────────────
+// ── 지출 내역 되짚기 (SALES-11/13/15) ─────────────────────────
 // 합계만 보여주면 사장님은 확인할 방법이 없다. 내역은 이미 원장에 있으므로 되읽어 온다.
 
 export interface MaterialUsageMenu { menuName: string; qty: number; amount: number }

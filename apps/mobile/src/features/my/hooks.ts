@@ -143,7 +143,7 @@ export function useStoreName() {
   });
 }
 
-/** 채널별 고정지출 배분 (SALES-18). 항목 비중이 있으면 그대로, 없으면 매출 비중. */
+/** 채널별 고정지출 배분 (SALES-04). 항목 비중이 있으면 그대로, 없으면 매출 비중. */
 export function useChannelFixed(from: string, to: string, enabled = true) {
   const storeId = useStoreId();
   return useQuery({

@@ -1,5 +1,5 @@
 /**
- * 수정 내역 — 식재료·레시피가 **같은 화면**을 쓰고 데이터만 바꾼다.
+ * ING-11 / RCP-02b 수정 내역 — 식재료·레시피가 **같은 화면**을 쓰고 데이터만 바꾼다.
  *
  * 기획: docs/식재료-레시피-수정내역-최종기획.md (개정)
  * 프로토타입: docs/prototypes/unified-change-history-all-cases.html
