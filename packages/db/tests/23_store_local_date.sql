@@ -35,7 +35,7 @@ begin
   -- 없어 규칙에 닿지 않는다. 그래도 날짜 해석이 흔들리지 않는지가 이 블록의 단언이다.
   set local role postgres;
   update settings set open_time = '18:00', close_time = '02:00';
-  set local role sikjae_rpc_executor;
+  set local role margincook_rpc_executor;
 
   v_ld1 := store_local_date(pg_temp.store(), v_at);
   v_sd1 := (resolve_sales_business_context(pg_temp.store(), v_at)).sales_date;
@@ -54,7 +54,7 @@ begin
   -- 되돌린다(표시 폼).
   set local role postgres;
   update settings set open_time = '11:00', close_time = '22:00';
-  set local role sikjae_rpc_executor;
+  set local role margincook_rpc_executor;
 end $t$;
 
 
@@ -72,7 +72,7 @@ begin
   set local role postgres;
   insert into store_time_settings (store_id, timezone) values (pg_temp.store(), 'America/New_York')
   on conflict (store_id) do update set timezone = excluded.timezone;
-  set local role sikjae_rpc_executor;
+  set local role margincook_rpc_executor;
   -- 뉴욕(UTC-4, 서머타임)이면 아직 같은 날 18:30 이다.
   perform pg_temp.eq_t('뉴욕에서는 같은 날',
     store_local_date(pg_temp.store(), v_at)::text, '2026-08-25');
@@ -80,7 +80,7 @@ begin
   -- 등록이 없어도 멈추지 않는다. 날짜 계산이 설정 때문에 죽으면 안 된다.
   set local role postgres;
   delete from store_time_settings where store_id = pg_temp.store();
-  set local role sikjae_rpc_executor;
+  set local role margincook_rpc_executor;
   perform pg_temp.eq_t('시간대가 없으면 서울로 떨어진다',
     store_local_date(pg_temp.store(), v_at)::text, '2026-08-26');
 end $t$;
@@ -174,7 +174,7 @@ begin
   set local role postgres;
   insert into store_time_settings (store_id, timezone) values (pg_temp.store(), 'Asia/Seoul')
   on conflict (store_id) do update set timezone = excluded.timezone;
-  set local role sikjae_rpc_executor;
+  set local role margincook_rpc_executor;
 
   perform pg_temp.ok('발주일에 전역 기본값이 없다',
     not exists (select 1 from information_schema.columns
@@ -207,7 +207,7 @@ begin
   set local role postgres;
   update store_time_settings set updated_at = '2000-01-01'::timestamptz, confirmed = false
    where store_id = pg_temp.store();
-  set local role sikjae_rpc_executor;
+  set local role margincook_rpc_executor;
   perform set_store_timezone(pg_temp.store(), 'America/New_York');
   perform pg_temp.ok('updated_at 이 자동으로 갱신된다',
     (select updated_at from store_time_settings where store_id = pg_temp.store()) > now() - interval '1 minute');
@@ -230,7 +230,7 @@ begin
    */
   set local role postgres;
   update store_time_settings set confirmed = false where store_id = pg_temp.store();
-  set local role sikjae_rpc_executor;
+  set local role margincook_rpc_executor;
   perform pg_temp.ok('백필로 들어간 시간대는 confirmed 가 아니다',
     not (select confirmed from store_time_settings where store_id = pg_temp.store()));
   perform pg_temp.eq_t('operating_hours_status 도 그걸 그대로 말한다',
@@ -365,7 +365,7 @@ begin
   set local role postgres;
   insert into store_time_settings (store_id, timezone) values (pg_temp.store(), 'America/New_York')
   on conflict (store_id) do update set timezone = excluded.timezone;
-  set local role sikjae_rpc_executor;
+  set local role margincook_rpc_executor;
 
   -- 같은 순간인데 달이 다르다.
   perform pg_temp.eq_t('뉴욕에서는 아직 8월', store_local_month(pg_temp.store(), v_at), '2026-08');
@@ -436,7 +436,7 @@ begin
   set local role postgres;
   insert into store_time_settings (store_id, timezone) values (pg_temp.store(), 'America/New_York')
   on conflict (store_id) do update set timezone = excluded.timezone;
-  set local role sikjae_rpc_executor;
+  set local role margincook_rpc_executor;
   v_s := business_day_state(pg_temp.store());
   perform pg_temp.eq_t('시간대를 바꾸면 local_date 도 따라간다',
     v_s->>'local_date', store_local_date(pg_temp.store())::text);
@@ -446,7 +446,7 @@ begin
   set local role postgres;
   insert into store_time_settings (store_id, timezone) values (pg_temp.store(), 'Asia/Seoul')
   on conflict (store_id) do update set timezone = excluded.timezone;
-  set local role sikjae_rpc_executor;
+  set local role margincook_rpc_executor;
 
   /*
    * ⚠ 앱은 `local_date` 가 없을 때 `today` 로 **조용히 대신 메우지 않는다**

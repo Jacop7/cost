@@ -5,7 +5,7 @@
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { getLocale } from '@sikjae/core';
+import { getLocale } from '@margincook/core';
 import { Card, Icon, IconName } from '@/components/kit';
 import { T } from '@/theme/tokens';
 import { useSettings, useUnitDigits } from '../store';

@@ -36,7 +36,7 @@ export function parseDeployArgs(args) {
 }
 
 export function expectedRefEnv(target) {
-  return target === 'production' ? 'SIKJAE_PRODUCTION_PROJECT_REF' : 'SIKJAE_STAGING_PROJECT_REF';
+  return target === 'production' ? 'MARGINCOOK_PRODUCTION_PROJECT_REF' : 'MARGINCOOK_STAGING_PROJECT_REF';
 }
 
 export function confirmationPhrase({ target, projectRef, sha }) {
@@ -49,7 +49,7 @@ export function validateDeployContext({ target, mode, expectedRef, linkedRef, ap
   if (!REF_RE.test(expectedRef ?? '')) fail(`${expectedRefEnv(target)}가 없거나 project ref 형식이 아닙니다.`);
   if (!REF_RE.test(linkedRef ?? '')) fail('현재 Supabase 링크의 project ref가 없거나 형식이 아닙니다.');
   if (linkedRef !== expectedRef) fail('현재 Supabase 링크와 승인된 대상 project ref가 다릅니다.');
-  if (!SHA_RE.test(approvedSha ?? '')) fail('SIKJAE_APPROVED_DEPLOY_SHA가 없거나 40자리 SHA가 아닙니다.');
+  if (!SHA_RE.test(approvedSha ?? '')) fail('MARGINCOOK_APPROVED_DEPLOY_SHA가 없거나 40자리 SHA가 아닙니다.');
   if (!SHA_RE.test(headSha ?? '') || !SHA_RE.test(remoteMainSha ?? '')) fail('Git SHA를 확인하지 못했습니다.');
   if (branch !== 'main') fail('운영·스테이징 배포는 main 브랜치에서만 실행합니다.');
   if (!clean) fail('배포 전 worktree가 깨끗해야 합니다.');
@@ -105,7 +105,7 @@ function repository() {
 async function api(path) {
   const response = await fetch(`https://api.github.com/repos/${repository()}${path}`, {
     headers: { Accept: 'application/vnd.github+json', Authorization: `Bearer ${githubToken()}`,
-      'User-Agent': 'sikjae-deploy-guard', 'X-GitHub-Api-Version': '2022-11-28' },
+      'User-Agent': 'margincook-deploy-guard', 'X-GitHub-Api-Version': '2022-11-28' },
   });
   if (!response.ok) fail(`GitHub API ${response.status}: 보호 게이트를 확인하지 못했습니다.`);
   return response.json();
@@ -173,7 +173,7 @@ async function main() {
     mode,
     expectedRef: process.env[expectedRefEnv(target)],
     linkedRef: readFileSync(PROJECT_REF_PATH, 'utf8').trim(),
-    approvedSha: process.env.SIKJAE_APPROVED_DEPLOY_SHA,
+    approvedSha: process.env.MARGINCOOK_APPROVED_DEPLOY_SHA,
     headSha,
     remoteMainSha: remoteMainSha(),
     branch,
@@ -195,8 +195,8 @@ async function main() {
   let dryRunAfter = '';
   if (mode === 'apply') {
     const expected = confirmationPhrase({ target, projectRef: context.projectRef, sha: context.sha });
-    if (process.env.SIKJAE_DEPLOY_CONFIRM !== expected) {
-      fail(`실제 적용 확인값이 다릅니다. 계획 검토 후 SIKJAE_DEPLOY_CONFIRM=${expected} 를 명시하세요.`);
+    if (process.env.MARGINCOOK_DEPLOY_CONFIRM !== expected) {
+      fail(`실제 적용 확인값이 다릅니다. 계획 검토 후 MARGINCOOK_DEPLOY_CONFIRM=${expected} 를 명시하세요.`);
     }
     runSupabase(commands[2]);
     migrationListAfter = runSupabase(commands[3]);

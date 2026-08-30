@@ -3,7 +3,7 @@
  * Toss/Cashnote 스타일: primary=블루, 긍정=초록, 주의=앰버, 위험=레드, 비용=그레이.
  */
 
-import { formatNumber, getLocale, type StockState } from '@sikjae/core';
+import { formatNumber, getLocale, type StockState } from '@margincook/core';
 
 export const T = {
   // surfaces
@@ -93,7 +93,7 @@ export const cardShadow = {
 /**
  * 금액 표기 (kit won) — 통화기호 없이 숫자만. 호출부가 뒤에 '원'을 붙인다.
  *
- * 서식 규칙은 `@sikjae/core` locale.ts 단일 출처를 쓴다. `toLocaleString('ko-KR')` 은
+ * 서식 규칙은 `@margincook/core` locale.ts 단일 출처를 쓴다. `toLocaleString('ko-KR')` 은
  * Hermes 의 Intl 구현에 의존해 기기마다 결과가 달라질 수 있는데, 금액은 기기와 무관해야 한다.
  *
  * ⚠ 지금은 **'ko' 고정**이다. 언어·통화 설정(MY-08)의 선택값을 여기 연결하면 앱 전체 금액 표기가

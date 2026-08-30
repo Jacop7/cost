@@ -7,8 +7,8 @@ import { invalidate, invalidateOn, qk } from '@/lib/queryClient';
 import { rpcError, supabase } from '@/lib/supabase';
 import { asJson } from '@/lib/json';
 import { useStoreId } from '@/lib/SessionProvider';
-import type { TaxMode } from '@sikjae/types';
-import { LOCALES } from '@sikjae/core';
+import type { TaxMode } from '@margincook/types';
+import { LOCALES } from '@margincook/core';
 import { rpcNumber } from '@/lib/rpcValue';
 
 // ── 매장 설정 (MY-06 단위 · MY-08 언어/통화 · 알림) ───────────

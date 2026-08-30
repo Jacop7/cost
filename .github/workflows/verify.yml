@@ -71,7 +71,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
 
       - name: Start isolated Supabase stack
-        run: pnpm --filter @sikjae/db start
+        run: pnpm --filter @margincook/db start
 
       - name: Normalize local admin ACL
         shell: bash
@@ -85,7 +85,7 @@ jobs:
 
       - name: Stop Supabase stack
         if: always()
-        run: pnpm --filter @sikjae/db exec supabase stop --no-backup
+        run: pnpm --filter @margincook/db exec supabase stop --no-backup
 
   protected-gate:
     name: protected-gate

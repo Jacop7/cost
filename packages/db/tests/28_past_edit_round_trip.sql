@@ -56,7 +56,7 @@ begin
     update business_days set status = 'closed'
      where store_id = pg_temp.store() and business_date = v_day;
   end if;
-  set local role sikjae_rpc_executor;
+  set local role margincook_rpc_executor;
   return v_day;
 end $h$;
 
@@ -99,7 +99,7 @@ begin
                       where s.store_id = v_store and s.sale_date = d::date)
    order by d desc
    limit 1;
-  set local role sikjae_rpc_executor;
+  set local role margincook_rpc_executor;
   perform pg_temp.ok('전제: 기록도 장부도 없는 과거 날을 찾았다', v_day is not null);
 
   -- ⓐ 화면이 연다.
@@ -142,7 +142,7 @@ begin
   set local role postgres;
   update daily_sales set revision = revision + 7
    where store_id = v_store and sale_date = v_day;
-  set local role sikjae_rpc_executor;
+  set local role margincook_rpc_executor;
   v_s1 := pg_temp.screen(v_day);
   perform pg_temp.ok('전제: 판매 판본과 감사 판본이 서로 다르다',
     (v_s1->>'revision')::int <> (select revision_no from business_days
@@ -179,7 +179,7 @@ begin
   set local role postgres;
   update daily_sales set revision = revision + 7
    where store_id = v_store and sale_date = v_day;
-  set local role sikjae_rpc_executor;
+  set local role margincook_rpc_executor;
   v_s0 := pg_temp.screen(v_day);
   perform pg_temp.ok('전제: 판매 판본과 감사 판본이 서로 다르다',
     (v_s0->>'revision')::int <> (select revision_no from business_days

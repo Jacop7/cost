@@ -9,7 +9,7 @@ import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Card, Icon, QueryState } from '../../../components/kit';
 import { T, tnum } from '../../../theme/tokens';
-import { formatQuantity } from '@sikjae/core';
+import { formatQuantity } from '@margincook/core';
 import { safeBack } from '@/lib/nav';
 import { useStoreLocalDate } from '@/features/business-day/businessDay';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';

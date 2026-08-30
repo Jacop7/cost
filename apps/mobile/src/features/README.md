@@ -3,8 +3,8 @@
 탭별 화면 도메인은 주로 `screens/`(화면·시트) + `hooks.ts`(조회·저장)로 구성한다.
 여러 화면 도메인이 함께 쓰는 영업일·설정·마스터 데이터는 아래 공용 논리 경계가 소유한다.
 **`demoData.ts` 는 전부 제거됐다** — 모든 화면이 Supabase 실데이터를 쓴다.
-공통 UI 킷은 `src/components/kit`, 계산은 `@sikjae/core`가 맡는다. Supabase 생성 타입은
-`@sikjae/db`, `TaxItem`·`StockBadge` 같은 소형 수기 계약은 `@sikjae/types`가 맡는다.
+공통 UI 킷은 `src/components/kit`, 계산은 `@margincook/core`가 맡는다. Supabase 생성 타입은
+`@margincook/db`, `TaxItem`·`StockBadge` 같은 소형 수기 계약은 `@margincook/types`가 맡는다.
 
 화면은 Supabase를 직접 부르지 않는다. 서버 접근은 `features/*/hooks.ts`와
 `features/business-day/businessDay.ts`가 소유한다. 공유 쿼리 루트와 전파 이벤트별 무효화 범위는
@@ -138,7 +138,7 @@
 - 재고는 최소단위(g/ml/개)의 **총량 하나**로 저장·표시한다. 미개봉/개봉분을 별도 상태로 관리하지 않는다.
 - 재고 상태: **여유 / 소진 임박 / 소진** 3단계. 0 이하는 소진이며 음수 수량을 그대로 표시한다.
   발주 후보는 별도로 안전재고 미달·곧 소진 사유를 가진다.
-- 숫자 서식은 `@sikjae/core` 의 `locale.ts` 가 단일 출처(`formatMoney`·`formatUnitPrice`·`formatPercent`·`parseNumber`). 축이 둘로 나뉜다:
+- 숫자 서식은 `@margincook/core` 의 `locale.ts` 가 단일 출처(`formatMoney`·`formatUnitPrice`·`formatPercent`·`parseNumber`). 축이 둘로 나뉜다:
   - **로케일이 정함**(MY-08 언어·통화): 자릿수 구분자 · 소수점 문자 · 통화기호 · **금액** 소수 자릿수(원·엔·동=0, 그 외=2). 선택지가 아니라 사실이라 사용자는 언어만 고른다.
   - **사용자가 정함**(MY-04 단위 설정): **단가** 소수 자릿수 0~4. 기본값 = 금액 자릿수 + 2 (한국 4.71원/g · 미국 $0.0047/g). 기본값과 같은 값을 고르면 override 를 지워(null) 언어를 바꿔도 새 기본값을 따라간다.
   - 비율(%)은 **소수 1자리 · 절사 고정**(설정 대상 아님) — 4,046.69/12,000 = 33.72% → 33.7%. 반올림하면 검산 기준값과 어긋난다.

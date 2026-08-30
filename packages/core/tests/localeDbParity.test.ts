@@ -3,15 +3,15 @@
  * 정규식으로 SQL 파일을 읽는 시험(localeSqlParity)은 대소문자·문자열 안 문구·quoted identifier 에 속을 수
  * 있다. 여기서는 실제 함수를 **호출한 결과**를 core 목록과 비교한다 — 값이 하나라도 다르면 빨개진다.
  *
- * 실행 조건: SIKJAE_PARITY_DB=<db 이름> (로컬 supabase 컨테이너의 DB). 없으면 건너뛰되 그 사실을 남긴다 —
+ * 실행 조건: MARGINCOOK_PARITY_DB=<db 이름> (로컬 supabase 컨테이너의 DB). 없으면 건너뛰되 그 사실을 남긴다 —
  * `pnpm verify` ③ 이 새 DB 이름으로 이 시험을 돌린다. CI(--no-db)에서는 돌지 않는다.
  */
 import { describe, expect, it } from 'vitest';
 import { spawnSync } from 'node:child_process';
 import { LOCALES } from '../src/locale';
 
-const DB = process.env.SIKJAE_PARITY_DB;
-const CT = process.env.SUPABASE_DB_CONTAINER ?? 'supabase_db_sikjae';
+const DB = process.env.MARGINCOOK_PARITY_DB;
+const CT = process.env.SUPABASE_DB_CONTAINER ?? 'supabase_db_margincook';
 
 function q(sql: string): string {
   const r = spawnSync('docker', ['exec', '-i', CT, 'psql', '-U', 'postgres', '-d', DB!, '-v', 'ON_ERROR_STOP=1', '-At', '-c', sql], { encoding: 'utf8' });
@@ -45,7 +45,7 @@ d(`locale_defaults(DB=${DB ?? '없음'}) ↔ LOCALES(core)`, () => {
 });
 
 if (!DB) {
-  it('SIKJAE_PARITY_DB 가 없어 살아 있는 DB 대조는 건너뛴다 (pnpm verify ③ 이 돌린다)', () => {
+  it('MARGINCOOK_PARITY_DB 가 없어 살아 있는 DB 대조는 건너뛴다 (pnpm verify ③ 이 돌린다)', () => {
     expect(true).toBe(true);
   });
 }

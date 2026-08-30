@@ -9,7 +9,7 @@
  * 단가 자릿수는 "미설정 = 로케일 기본값 따라감" 으로 두어, 언어를 바꾸면 명시 설정이 없는 한
  * 새 로케일 기본값(금액+2)으로 자연스럽게 따라간다.
  */
-import { DEFAULT_LOCALE, LOCALES, type LocaleKey, unitPriceDigits } from '@sikjae/core';
+import { DEFAULT_LOCALE, LOCALES, type LocaleKey, unitPriceDigits } from '@margincook/core';
 import { useSaveSettings, useStoreSettings, type SettingsSaveResult } from '@/features/settings/hooks';
 
 /** 우리가 아는 언어 키인가 — LOCALES 의 키 집합으로 직접 본다. */

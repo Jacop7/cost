@@ -1,4 +1,4 @@
-# @sikjae/db — Supabase 데이터 레이어
+# @margincook/db — Supabase 데이터 레이어
 
 스키마·RLS·권위 RPC·Cron·시드·DB 회귀시험의 단일 출처다. 앱과 Worker는 재고·단가·손익을 직접
 고치지 않고 이 패키지의 공개 RPC를 통과해야 한다.
@@ -107,7 +107,7 @@ integration·ops·Queue 원본 노출, 내부 RPC 권한과 앱이 직접 쓰는
 `0개`이고, 0174 적용 전에는 원장 직접 쓰기 조합 `32개`, 허용 목록 밖 authenticated 함수
 `87개`였다. 0174 이후 계약은 두 값 모두 `0개`다. 앱 롤은 감사 SQL의 정확한 64개 facade만
 실행하며, 내부 함수와 원장 표 쓰기는 로그인할 수 없고 RLS를 우회하지 않는
-`sikjae_rpc_executor`만 사용한다. 기존 01~33 백색상자 시험은 이 실행 역할과 실제 JWT를 쓰고,
+`margincook_rpc_executor`만 사용한다. 기존 01~33 백색상자 시험은 이 실행 역할과 실제 JWT를 쓰고,
 34번은 실제 `authenticated` 역할의 facade·RLS·직접 공격면을 검증한다.
 0174 적용 뒤 executor에는 앱에 열리지 않은 postgres SECURITY DEFINER가 `0개`이며,
 새 함수도 executor에 자동 공개하지 않는다. 새 facade가 내부 도우미를 필요로 하면
@@ -137,16 +137,16 @@ Supabase CLI는 P1-2 검증을 통과한 `2.116.0`으로 정확히 고정한다.
 
 ```bash
 # 공통: 정확한 main SHA와 대상 project ref를 승인값으로 고정
-export SIKJAE_APPROVED_DEPLOY_SHA=<40자리-main-SHA>
-export SIKJAE_STAGING_PROJECT_REF=<20자리-project-ref>
+export MARGINCOOK_APPROVED_DEPLOY_SHA=<40자리-main-SHA>
+export MARGINCOOK_STAGING_PROJECT_REF=<20자리-project-ref>
 corepack pnpm db:deploy:staging:plan
 
 # 계획 출력과 확인 문구를 대조한 뒤에만 적용
-export SIKJAE_DEPLOY_CONFIRM=APPLY:staging:<project-ref>:<40자리-main-SHA>
+export MARGINCOOK_DEPLOY_CONFIRM=APPLY:staging:<project-ref>:<40자리-main-SHA>
 corepack pnpm db:deploy:staging:apply
 ```
 
-운영은 `SIKJAE_PRODUCTION_PROJECT_REF`와 `db:deploy:production:plan` / `db:deploy:production:apply`를
+운영은 `MARGINCOOK_PRODUCTION_PROJECT_REF`와 `db:deploy:production:plan` / `db:deploy:production:apply`를
 사용한다. 가드는 실제 링크 ref, 깨끗한 `main`, `origin/main`, 승인 SHA와 동일 SHA의
 `protected-gate` 성공을 모두 확인한다. 계획 모드도 DB를 바꾸지 않는 `--dry-run`만 수행하고 출력만
 남긴다. 링크를 대조한 뒤 CLI에도 같은 `--project-ref`를 명시하므로 검증 뒤 재링크가 대상을 바꾸지

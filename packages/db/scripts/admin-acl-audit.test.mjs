@@ -19,7 +19,7 @@ const MOBILE_ROOTS = [
   join(ROOT, 'apps', 'mobile', 'src'),
   join(ROOT, 'apps', 'mobile', 'app'),
 ];
-const CONTAINER = process.env.SUPABASE_DB_CONTAINER ?? 'supabase_db_sikjae';
+const CONTAINER = process.env.SUPABASE_DB_CONTAINER ?? 'supabase_db_margincook';
 const DATABASE = process.argv[2] ?? process.env.PGDATABASE;
 
 if (!/^[A-Za-z0-9_.-]{1,128}$/.test(CONTAINER)) {

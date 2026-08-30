@@ -377,7 +377,7 @@ Get-Content -Raw .\turn.md | corepack pnpm fable:append -- --task TASK-ID
 - OneDrive, symlink, junction, hardlink, 저장소 밖 입력을 차단한다.
 - Claude에는 명시된 파일의 격리 읽기 전용 snapshot만 제공한다.
 - `.env`, 키, 자격증명, DB dump와 비밀 패턴을 거부한다.
-- 원시 로그·잠금·임시 snapshot은 `%LOCALAPPDATA%\Sikjae\ClaudeReview\`에 둔다.
+- 원시 로그·잠금·임시 snapshot은 `%LOCALAPPDATA%\MarginCook\ClaudeReview\`에 둔다.
 - 작업별 공통 lock과 단일 OS append를 사용한다.
 - Fable 회차와 비-Fable 수동 턴 모두 prepared record와 hash anchor로 보존한다.
 - 부분 append가 발생하면 검증된 suffix만 복구한다.

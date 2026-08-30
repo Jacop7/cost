@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "식자재 관리",
-    "slug": "sikjae",
-    "scheme": "sikjae",
+    "name": "MarginCook",
+    "slug": "margincook",
+    "scheme": "margincook",
     "version": "0.1.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
@@ -14,10 +14,10 @@
     ],
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "co.smartolive.sikjae"
+      "bundleIdentifier": "co.smartolive.margincook"
     },
     "android": {
-      "package": "co.smartolive.sikjae"
+      "package": "co.smartolive.margincook"
     },
     "web": {
       "bundler": "metro",

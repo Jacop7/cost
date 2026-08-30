@@ -2,7 +2,7 @@
  * 레시피 조회·저장 훅.
  *
  * 손익(재료비·세금·고정지출·순이익률)은 **서버가 권위**다(절대원칙 3).
- * 앱은 받아서 그리기만 하고, 미리보기 계산이 필요하면 `@sikjae/core` 의 같은 공식을 쓴다.
+ * 앱은 받아서 그리기만 하고, 미리보기 계산이 필요하면 `@margincook/core` 의 같은 공식을 쓴다.
  */
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { invalidate, invalidateOn, qk } from '@/lib/queryClient';

@@ -22,7 +22,7 @@ import {
   getLocale,
   localeSample,
   type LocaleKey,
-} from '@sikjae/core';
+} from '@margincook/core';
 import { AppHeader, Button, Card, Icon, Notice, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { RpcError } from '@/lib/supabase';

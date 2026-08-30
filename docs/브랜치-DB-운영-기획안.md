@@ -254,12 +254,12 @@ GitHub Actions는 Node 20.19.4·24에서 `pnpm verify --no-db` 빠른 검사를 
 
 ```bash
 # 스테이징 계획 예시. 운영은 STAGING/staging을 PRODUCTION/production으로 바꾼다.
-SIKJAE_APPROVED_DEPLOY_SHA=<40자리-main-SHA> \
-SIKJAE_STAGING_PROJECT_REF=<20자리-project-ref> \
+MARGINCOOK_APPROVED_DEPLOY_SHA=<40자리-main-SHA> \
+MARGINCOOK_STAGING_PROJECT_REF=<20자리-project-ref> \
 corepack pnpm db:deploy:staging:plan
 
 # 위 계획을 검토한 뒤에만 추가한다.
-SIKJAE_DEPLOY_CONFIRM=APPLY:staging:<project-ref>:<40자리-main-SHA> \
+MARGINCOOK_DEPLOY_CONFIRM=APPLY:staging:<project-ref>:<40자리-main-SHA> \
 corepack pnpm db:deploy:staging:apply
 ```
 
@@ -345,8 +345,8 @@ canary 단계에서 정확한 `jobname`만 `active := true`로 바꾸고 전후 
 Producer·Webhook도 기본값 `false`인 integration feature flag를 사용한다.
 
 `cron.database_name` 일치 여부는 실행 환경 선택이지 기능 활성화 장치가 아니다. Consumer 활성화 전에는
-outbox 생성·Queue enqueue·외부 요청이 0건이라는 사후조건을 둔다. 기존 `sikjae-close-due`,
-`sikjae-apply-breaks`, `sikjae-purge-changes`는 이 신규 integration Cron 활성화 규칙의 대상이 아니다.
+outbox 생성·Queue enqueue·외부 요청이 0건이라는 사후조건을 둔다. 기존 `margincook-close-due`,
+`margincook-apply-breaks`, `margincook-purge-changes`는 이 신규 integration Cron 활성화 규칙의 대상이 아니다.
 
 ### 5.3 스테이징 배포
 

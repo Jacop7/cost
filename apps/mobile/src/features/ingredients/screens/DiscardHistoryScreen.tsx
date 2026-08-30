@@ -17,7 +17,7 @@ import { Alert, Modal, Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Badge, Card, Icon, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { formatQuantity } from '@sikjae/core';
+import { formatQuantity } from '@margincook/core';
 import { T, tnum, won } from '@/theme/tokens';
 import { dispUnit } from '../ledger';
 import { PeriodSheet, periodRange, type HistoryPeriod } from './HistoryFilterSheet';

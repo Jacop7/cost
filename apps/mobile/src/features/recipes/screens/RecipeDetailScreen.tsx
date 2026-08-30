@@ -10,7 +10,7 @@ import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { AppHeader, Badge, Card, Donut, Icon, MemoEditSheet, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { RecentChangeRow, changeStamp } from '@/features/changes';
-import { formatPercent, formatQuantity, formatUnitPrice, isNegativeStock, recommendedPrice, round, stockStateOf, STOCK_STATE_LABEL, taxAmount, taxRate } from '@sikjae/core';
+import { formatPercent, formatQuantity, formatUnitPrice, isNegativeStock, recommendedPrice, round, stockStateOf, STOCK_STATE_LABEL, taxAmount, taxRate } from '@margincook/core';
 import { T, won } from '@/theme/tokens';
 import { PriceSimSheet } from '../components/PriceSimSheet';
 import { useDeactivateRecipe, useRecipeDetail, useSaveRecipe } from '../hooks';

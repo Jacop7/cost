@@ -21,7 +21,7 @@
  * ⚠ 이 파일은 **앱 의존이 없다.** 그래야 시험이 화면을 띄우지 않고 이 함수만 돌려
  *   좋은 응답·나쁜 응답을 실제로 넣어 볼 수 있다 — 시험이 복사본을 재면 본체가 바뀌어도
  *   초록으로 남는다. 시험은 `tests/salesDayContract.test.ts` 이고
- *   `pnpm --filter @sikjae/mobile test` 로 돈다.
+ *   `pnpm --filter @margincook/mobile test` 로 돈다.
  */
 export const CONTRACT_HINT = '앱과 서버 버전이 맞지 않아요. 잠시 뒤 다시 시도해 주세요.';
 

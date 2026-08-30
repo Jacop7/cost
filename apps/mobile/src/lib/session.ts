@@ -15,7 +15,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { isSupabaseConfigured, supabase } from './supabase';
 
 /** 로컬 시드 계정 (packages/db/supabase/seed.sql). 운영 빌드에서는 쓰이지 않는다. */
-const DEV_EMAIL = 'demo@sikjae.local';
+const DEV_EMAIL = 'demo@margincook.local';
 const DEV_PASSWORD = 'demo1234';
 
 export type SessionPhase =

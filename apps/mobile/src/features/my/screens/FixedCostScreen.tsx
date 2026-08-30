@@ -9,7 +9,7 @@ import { Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
 import { AppHeader, Badge, Button, Card, FilterButton, Icon, QueryState, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { formatPercent } from '@sikjae/core';
+import { formatPercent } from '@margincook/core';
 import { T, won } from '@/theme/tokens';
 import { useStoreLocalDate } from '@/features/business-day/businessDay';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';

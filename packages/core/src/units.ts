@@ -2,7 +2,7 @@
  * 단위 환산 (① 4.8). 입력 구매단위 → 기준단위(g/ml/개) 정규화.
  * 1차: 미터법만. 컵/스푼·미국/영국식은 2차(toMl 의 cup/tbsp 분기 자리만 둠).
  */
-import type { BaseUnit } from '@sikjae/types';
+import type { BaseUnit } from '@margincook/types';
 import { isNonNegativeFinite } from './guards';
 
 export type InputUnit = 'g' | 'kg' | 'ml' | 'L' | 'ea' | 'cup' | 'tbsp' | 'tsp';

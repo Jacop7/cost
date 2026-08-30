@@ -11,10 +11,10 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "paths": {
-      "@sikjae/types": ["./packages/types/src/index.ts"],
-      "@sikjae/types/*": ["./packages/types/src/*"],
-      "@sikjae/core": ["./packages/core/src/index.ts"],
-      "@sikjae/core/*": ["./packages/core/src/*"]
+      "@margincook/types": ["./packages/types/src/index.ts"],
+      "@margincook/types/*": ["./packages/types/src/*"],
+      "@margincook/core": ["./packages/core/src/index.ts"],
+      "@margincook/core/*": ["./packages/core/src/*"]
     }
   }
 }

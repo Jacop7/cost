@@ -13,7 +13,7 @@ import { ScrollView, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Card, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { formatQuantity } from '@sikjae/core';
+import { formatQuantity } from '@margincook/core';
 import { T, won } from '@/theme/tokens';
 import { DetailRow, DetailSection, DetailSummary } from '../components/ProfitBlocks';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';

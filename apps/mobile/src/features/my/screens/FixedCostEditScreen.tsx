@@ -10,7 +10,7 @@ import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Button, Card, Field, Icon, Input, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { formatPercent } from '@sikjae/core';
+import { formatPercent } from '@margincook/core';
 import { useStoreLocalDate } from '@/features/business-day/businessDay';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
 import { T, won } from '@/theme/tokens';

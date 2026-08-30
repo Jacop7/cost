@@ -13,7 +13,7 @@
 import { useEffect, useState } from 'react';
 import { Text, View } from 'react-native';
 import { Badge, Button, Card, Icon, Sheet, Slider } from '@/components/kit';
-import { formatPercent, recommendedPrice, round } from '@sikjae/core';
+import { formatPercent, recommendedPrice, round } from '@margincook/core';
 import { T, won } from '@/theme/tokens';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };

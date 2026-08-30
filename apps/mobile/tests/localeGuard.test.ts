@@ -3,7 +3,7 @@
  * 'xx-XX' 도 유효한 것처럼 통과했다. 판정은 LOCALES 의 키 집합으로만 한다.
  */
 import { describe, expect, it } from 'vitest';
-import { DEFAULT_LOCALE, LOCALES } from '@sikjae/core';
+import { DEFAULT_LOCALE, LOCALES } from '@margincook/core';
 import { asLocale, isLocaleKey } from '@/features/my/store';
 
 describe('isLocaleKey', () => {

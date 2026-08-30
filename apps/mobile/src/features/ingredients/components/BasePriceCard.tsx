@@ -14,7 +14,7 @@
  */
 import { Pressable, Text, View } from 'react-native';
 import { Icon } from '@/components/kit';
-import { formatQuantity, formatUnitPrice } from '@sikjae/core';
+import { formatQuantity, formatUnitPrice } from '@margincook/core';
 import { T, tnum } from '@/theme/tokens';
 import { packSummary } from '@/lib/num';
 

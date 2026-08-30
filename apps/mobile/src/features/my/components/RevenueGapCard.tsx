@@ -8,7 +8,7 @@
  */
 import { Pressable, Text, View } from 'react-native';
 import { Badge, Card, Icon } from '@/components/kit';
-import { formatPercent } from '@sikjae/core';
+import { formatPercent } from '@margincook/core';
 import { T, won } from '@/theme/tokens';
 import type { RevenueCheck } from '../hooks';
 

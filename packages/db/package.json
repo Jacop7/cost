@@ -1,5 +1,5 @@
 {
-  "name": "@sikjae/db",
+  "name": "@margincook/db",
   "version": "0.1.0",
   "private": true,
   "main": "./src/database.types.ts",

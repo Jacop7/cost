@@ -13,7 +13,7 @@
  */
 import { Pressable, Text, View } from 'react-native';
 import { Badge, Card, Icon } from '@/components/kit';
-import { formatQuantity } from '@sikjae/core';
+import { formatQuantity } from '@margincook/core';
 import { T, tnum, won } from '@/theme/tokens';
 import type { IngredientLoss, LedgerEntry } from '../hooks';
 import { dispUnit } from '../ledger';

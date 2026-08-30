@@ -4,7 +4,7 @@
  * 순이익 = 판매가 − 세금 − 재료 − 고정 − 추가.
  * 권장 판매가 = (재료+추가) ÷ (1 − 세금비율 − 고정지출률 − 목표).
  */
-import type { TaxItem } from '@sikjae/types';
+import type { TaxItem } from '@margincook/types';
 import { isNonNegativeFinite, isPositiveFinite } from './guards';
 
 /**

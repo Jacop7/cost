@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { STOCK_STATE_LABEL, stockStateOf, type StockState } from '@sikjae/core';
+import { STOCK_STATE_LABEL, stockStateOf, type StockState } from '@margincook/core';
 import { STATUS } from '../src/theme/tokens';
 
 const mobileRoot = resolve('.').endsWith('apps\\mobile') || resolve('.').endsWith('apps/mobile')

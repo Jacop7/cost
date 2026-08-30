@@ -176,7 +176,7 @@ begin
            v_store, date '2092-01-01', pg_temp.hours('09:00','18:00')::text,
            '{"1":{"start":"15:00"}}'),
     '22000');
-  set local role sikjae_rpc_executor;   -- 다음 블록은 다시 앱 사용자로 돈다
+  set local role margincook_rpc_executor;   -- 다음 블록은 다시 앱 사용자로 돈다
 end $t$;
 
 
@@ -237,7 +237,7 @@ begin
     'truncate business_days cascade', '42501');
 
   -- 그 상태에서도 RPC 는 통과해야 한다. 막기만 하고 길이 없으면 그건 고장이다.
-  set local role sikjae_rpc_executor;
+  set local role margincook_rpc_executor;
   perform pg_temp.ok('그 상태에서도 RPC 는 통과',
     (pg_temp.set_hours(pg_temp.hours('13:00','23:30'))->>'rule_id') is not null);
 end $t$;
@@ -276,7 +276,7 @@ begin
     raise exception '⑩ 출발점: 규칙이 %개입니다 — 1개여야 합니다',
       (select count(*) from operating_rules where store_id = v_store);
   end if;
-  set local role sikjae_rpc_executor;
+  set local role margincook_rpc_executor;
 
   v_res := operating_hours_status(v_store);
 
@@ -504,7 +504,7 @@ begin
   set local role authenticated;
   perform pg_temp.raises('무판본 몸통은 앱 롤이 못 부른다',
     format('select apply_operating_hours(%L, %L::jsonb)', v_store, v_hours::text), '42501');
-  set local role sikjae_rpc_executor;
+  set local role margincook_rpc_executor;
 
   -- 상태 RPC 가 편집 기준의 판본을 준다 — 화면이 여기서 토큰을 얻는다.
   perform pg_temp.ok('상태 응답에 편집 기준 판본이 있다',

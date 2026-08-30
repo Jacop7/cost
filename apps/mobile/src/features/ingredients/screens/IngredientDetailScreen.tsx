@@ -4,14 +4,14 @@ import { Alert, Modal, Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { AppHeader, Badge, Card, Icon, MemoEditSheet, QueryState } from '../../../components/kit';
 import { T, tnum } from '../../../theme/tokens';
-import { formatQuantity, formatUnitPrice } from '@sikjae/core';
+import { formatQuantity, formatUnitPrice } from '@margincook/core';
 import { safeBack } from '@/lib/nav';
 import { RecentChangeRow } from '@/features/changes';
 import { BasePriceCard } from '../components/BasePriceCard';
 import { LedgerRow } from '../components/LedgerRow';
 import { LossCard } from '../components/LossCard';
 import { belowSafety, stockLabel, stockStateOf } from '../components/IngCard';
-import { isNegativeStock, shortageOf } from '@sikjae/core';
+import { isNegativeStock, shortageOf } from '@margincook/core';
 import { StockEditSheet } from './StockEditSheet';
 import { dispUnit, toLedgerView } from '../ledger';
 import {

@@ -5,7 +5,7 @@ set local search_path = pg_catalog, public;
 
 -- P1-1 · 호스티드 Supabase 앱 롤 공격면 감사. 영구 변경은 하지 않고 프로브도 rollback한다.
 -- 이 파일은 admin-acl.sh --remote audit와 verify ④의 admin-acl-audit.test.mjs가 함께 사용한다.
-select pg_advisory_xact_lock(hashtextextended('sikjae:admin-acl-audit', 0));
+select pg_advisory_xact_lock(hashtextextended('margincook:admin-acl-audit', 0));
 create table public._acl_probe_postgres (id int);
 create temporary table _acl_approved_rpc (signature text primary key) on commit drop;
 create temporary table _acl_non_mobile_rpc (signature text primary key, consumer text not null) on commit drop;
@@ -202,7 +202,7 @@ select 'blocked_internal_rpc_objects' || '|' || count(*) || '|expected=11'
 -- 반대 방향 멤버십이 생기면 앱이 SET ROLE로 내부 권한을 직접 얻을 수 있으므로 실패다.
 select 'rpc_executor_role' || '|' || count(*) || '|expected=1'
   from pg_roles r
- where r.rolname = 'sikjae_rpc_executor'
+ where r.rolname = 'margincook_rpc_executor'
    and not r.rolcanlogin and not r.rolbypassrls
    and pg_has_role(r.oid, 'authenticated'::regrole, 'member')
    and not pg_has_role('authenticated'::regrole, r.oid, 'member');
@@ -210,7 +210,7 @@ select 'rpc_executor_role' || '|' || count(*) || '|expected=1'
 select 'rpc_executor_facades_invalid' || '|' || count(*) || '|expected=0'
   from pg_proc p join pg_namespace n on n.oid = p.pronamespace
   join pg_roles r on r.oid = p.proowner
- where n.nspname = 'public' and r.rolname = 'sikjae_rpc_executor'
+ where n.nspname = 'public' and r.rolname = 'margincook_rpc_executor'
    and (not p.prosecdef or not coalesce(p.proconfig, '{}'::text[]) @> array['search_path=public, pg_temp']);
 
 -- executor-owned facade는 RLS를 지키는 내부 도우미만 부른다. 앱에 열리지 않은
@@ -221,7 +221,7 @@ select 'rpc_executor_privileged_maintenance' || '|' || count(*) || '|expected=0'
   join pg_roles owner_role on owner_role.oid = p.proowner
  where n.nspname = 'public' and p.prokind in ('f', 'p') and p.prosecdef
    and owner_role.rolname = 'postgres'
-   and has_function_privilege('sikjae_rpc_executor', p.oid, 'EXECUTE')
+   and has_function_privilege('margincook_rpc_executor', p.oid, 'EXECUTE')
    and not has_function_privilege('authenticated', p.oid, 'EXECUTE');
 
 select 'rls_policy_helper_calls' || '|' || count(*) || '|expected=0'

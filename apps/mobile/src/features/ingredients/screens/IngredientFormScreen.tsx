@@ -10,7 +10,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
-import { displayToBase, formatQuantity, isDisplayUnit, previewBaseUnitPrice, rawUnitPrice, roundOrNull } from '@sikjae/core';
+import { displayToBase, formatQuantity, isDisplayUnit, previewBaseUnitPrice, rawUnitPrice, roundOrNull } from '@margincook/core';
 import { AppHeader, Button, Field, Icon, Input, QueryState, Select } from '../../../components/kit';
 import { T } from '../../../theme/tokens';
 import { UnitPickerSheet } from '../components/UnitPickerSheet';
@@ -86,11 +86,11 @@ export function IngredientFormScreen({ id }: { id?: string }) {
   const base = baseUnitOf(unit);
   const dispBase = base === 'ea' ? '개' : base;
 
-  // 개당 용량(기준단위). 환산은 @sikjae/core displayToBase 한 곳에서만 한다.
+  // 개당 용량(기준단위). 환산은 @margincook/core displayToBase 한 곳에서만 한다.
   const perBase = unit === '박스' ? num(boxQty) : isDisplayUnit(unit) ? displayToBase(num(vol), unit) : num(vol);
 
   // 산출 불가(용량 0·로스율 100% 이상)는 null 로 둔다. 0원으로 위장하면 원가가 0이 되어
-  // 순이익이 과대 계상되고 그대로 저장된다(@sikjae/core 경계 계약).
+  // 순이익이 과대 계상되고 그대로 저장된다(@margincook/core 경계 계약).
   const rawPer = roundOrNull(rawUnitPrice(num(price), perBase), 2);
   const realPer = roundOrNull(previewBaseUnitPrice(num(price), perBase), 2);
 

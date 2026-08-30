@@ -19,7 +19,7 @@ import {
   isNegativeStock,
   stockStateOf,
   STOCK_STATE_LABEL,
-} from '@sikjae/core';
+} from '@margincook/core';
 import { T, won } from '@/theme/tokens';
 import { clampDecimals } from '@/lib/num';
 import { useIngredientList } from '@/features/ingredients/hooks';

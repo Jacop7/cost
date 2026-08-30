@@ -1,5 +1,5 @@
 {
-  "name": "sikjae-platform",
+  "name": "margincook-platform",
   "version": "0.1.0",
   "private": true,
   "description": "식자재 원가 계산 및 발주 관리 앱 — 데이터 플랫폼 (Expo + Supabase 모노레포)",
@@ -13,9 +13,9 @@
     }
   },
   "scripts": {
-    "mobile": "corepack pnpm --filter @sikjae/mobile",
-    "db": "corepack pnpm --filter @sikjae/db",
-    "core": "corepack pnpm --filter @sikjae/core",
+    "mobile": "corepack pnpm --filter @margincook/mobile",
+    "db": "corepack pnpm --filter @margincook/db",
+    "core": "corepack pnpm --filter @margincook/core",
     "typecheck": "corepack pnpm -r typecheck",
     "test": "corepack pnpm -r test",
     "verify": "node scripts/verify.mjs",
@@ -28,14 +28,14 @@
     "ruleset:check": "node scripts/github-ruleset.mjs check",
     "ruleset:fix": "node scripts/github-ruleset.mjs fix",
     "lint": "corepack pnpm -r lint",
-    "db:start": "corepack pnpm --filter @sikjae/db start",
-    "db:reset": "corepack pnpm --filter @sikjae/db reset",
-    "db:types": "corepack pnpm --filter @sikjae/db gen:types",
-    "db:test": "corepack pnpm --filter @sikjae/db test",
-    "db:deploy:staging:plan": "corepack pnpm --filter @sikjae/db deploy:staging:plan",
-    "db:deploy:staging:apply": "corepack pnpm --filter @sikjae/db deploy:staging:apply",
-    "db:deploy:production:plan": "corepack pnpm --filter @sikjae/db deploy:production:plan",
-    "db:deploy:production:apply": "corepack pnpm --filter @sikjae/db deploy:production:apply"
+    "db:start": "corepack pnpm --filter @margincook/db start",
+    "db:reset": "corepack pnpm --filter @margincook/db reset",
+    "db:types": "corepack pnpm --filter @margincook/db gen:types",
+    "db:test": "corepack pnpm --filter @margincook/db test",
+    "db:deploy:staging:plan": "corepack pnpm --filter @margincook/db deploy:staging:plan",
+    "db:deploy:staging:apply": "corepack pnpm --filter @margincook/db deploy:staging:apply",
+    "db:deploy:production:plan": "corepack pnpm --filter @margincook/db deploy:production:plan",
+    "db:deploy:production:apply": "corepack pnpm --filter @margincook/db deploy:production:apply"
   },
   "devDependencies": {
     "typescript": "^5.6.3",

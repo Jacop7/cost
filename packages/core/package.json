@@ -1,5 +1,5 @@
 {
-  "name": "@sikjae/core",
+  "name": "@margincook/core",
   "version": "0.1.0",
   "private": true,
   "main": "./src/index.ts",
@@ -10,7 +10,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@sikjae/types": "workspace:*"
+    "@margincook/types": "workspace:*"
   },
   "devDependencies": {
     "vitest": "^2.1.4"

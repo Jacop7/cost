@@ -20,7 +20,7 @@ assert(dbPackage.scripts?.reset === 'node scripts/reset-local.mjs', 'db reset mu
 assert(!Object.hasOwn(dbPackage.scripts ?? {}, 'push'), 'ambiguous db push script must not return');
 for (const name of ['deploy:staging:plan', 'deploy:staging:apply', 'deploy:production:plan', 'deploy:production:apply']) {
   assert(dbPackage.scripts?.[name]?.includes('deploy-guard.mjs'), `explicit deploy script missing: ${name}`);
-  assert(rootPackage.scripts?.[`db:${name}`]?.includes(`@sikjae/db ${name}`), `root deploy alias missing: db:${name}`);
+  assert(rootPackage.scripts?.[`db:${name}`]?.includes(`@margincook/db ${name}`), `root deploy alias missing: db:${name}`);
 }
 assert(!Object.keys(dbPackage.scripts ?? {}).some((name) => /^deploy:(staging|production)$/.test(name)),
   'a mutating deployment command must end with :apply');

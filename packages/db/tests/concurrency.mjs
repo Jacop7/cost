@@ -25,7 +25,7 @@
  */
 import { spawnSync, spawn } from 'node:child_process';
 
-const CONTAINER = process.env.SUPABASE_DB_CONTAINER ?? 'supabase_db_sikjae';
+const CONTAINER = process.env.SUPABASE_DB_CONTAINER ?? 'supabase_db_margincook';
 const DB = process.argv[2] ?? process.env.PGDATABASE;
 const STORE = '00000000-0000-0000-0000-0000000000b1';
 const CLAIMS = '{"sub":"00000000-0000-0000-0000-0000000000a1","role":"authenticated"}';

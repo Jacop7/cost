@@ -9,7 +9,7 @@ import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Badge, Button, Card, Field, Icon, Input, QueryState, SearchBar, Sheet } from '@/components/kit';
-import { formatQuantity, formatUnitPrice, isNegativeStock } from '@sikjae/core';
+import { formatQuantity, formatUnitPrice, isNegativeStock } from '@margincook/core';
 import { T, won } from '@/theme/tokens';
 import { clampDecimals, packSummary } from '@/lib/num';
 import { makeInboundKey } from '@/lib/supabase';
