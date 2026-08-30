@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-08-30T17:11:13+09:00",
+  "status": "PARTIAL_PASS",
+  "repository_sha": "bc45324488615f61b76047aaa663e2b6c2f00e5f",
+  "method": "staging-only Realtime service restart, Inspector channel connection, and dashboard log verification",
+  "staging": {
+    "project_ref": "cvfvmpzcldyqurcrappu",
+    "health_before": "unhealthy",
+    "health_after": "healthy",
+    "region": "ap-northeast-2",
+    "compute": "micro",
+    "realtime_enabled_before": true,
+    "realtime_enabled_after": true,
+    "recovery_actions": [
+      "Disabled and re-enabled the Realtime service from Realtime Settings",
+      "Joined the ephemeral Inspector channel sikjae-health-check to force a fresh tenant connection"
+    ],
+    "verification": {
+      "inspector_connection": "Listening; presence join and sync messages received",
+      "postgres_log_at": "2026-08-30T17:10:08+09:00",
+      "postgres_log_evidence": [
+        "logical decoding found consistent point",
+        "starting logical decoding for supabase_realtime_messages_replication_slot"
+      ],
+      "dashboard_realtime_errors_last_24h": 0,
+      "dashboard_realtime_warnings_last_24h": 4,
+      "dashboard_postgres_errors_last_24h_after_recovery": 1,
+      "product_cron": "close_due_business_days and apply_due_breaks continued to complete with 1 row"
+    }
+  },
+  "root_cause_boundary": {
+    "classification": "Supabase-managed Realtime tenant initialization state, not a product migration",
+    "reason": "realtime.schema_migrations and realtime.subscription are Realtime-owned internal objects; repository search found no statements that create, alter, or drop them",
+    "official_sources": [
+      "https://supabase.com/docs/guides/realtime/concepts",
+      "https://github.com/supabase/realtime/blob/main/lib/realtime/tenants/migrations.ex",
+      "https://supabase.com/changelog/realtime-schema-locked-down-against-modification"
+    ]
+  },
+  "production": {
+    "project_ref": "smxaozdgoxbafjldoayb",
+    "deployment_applied": false,
+    "settings_changed": false
+  },
+  "remaining_blockers": [
+    "Add a second organization administrator",
+    "Enable MFA for the current owner and require it for administrators",
+    "Choose whether daily-backup RPO is acceptable or enable PITR",
+    "Define and exercise non-empty Storage object backup and recovery",
+    "Add alerting for Cron failures and core RPC error rates before production deployment"
+  ],
+  "actions_not_taken": [
+    "No production migration, deployment, or setting change was applied",
+    "No SQL was submitted through the dashboard",
+    "The Realtime setup wizard was not used",
+    "No application table, trigger, policy, or publication was changed"
+  ]
+}
