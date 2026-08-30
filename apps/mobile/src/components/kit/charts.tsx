@@ -5,7 +5,7 @@
 import { ReactNode } from 'react';
 import { View } from 'react-native';
 import Svg, { Circle, Defs, LinearGradient, Line, Path, Stop, Text as SvgText } from 'react-native-svg';
-import { Txt } from './index';
+import { Txt } from './Txt';
 import { T } from '@/theme/tokens';
 
 export interface DonutSeg {

@@ -5,7 +5,7 @@
 import { ReactElement, ReactNode } from 'react';
 import { Modal, Pressable, ScrollView, Text, View } from 'react-native';
 import { T } from '@/theme/tokens';
-import { Button } from './index';
+import { Button } from './Button';
 
 export function Sheet({ visible, onClose, children, title, sub, height, headerRight, scroll = true }: {
   visible: boolean;

@@ -10,7 +10,7 @@
  */
 import type { ReactNode } from 'react';
 import { ActivityIndicator, Text, View } from 'react-native';
-import { Button } from './index';
+import { Button } from './Button';
 import { T } from '@/theme/tokens';
 
 function Box({ children }: { children: ReactNode }) {
