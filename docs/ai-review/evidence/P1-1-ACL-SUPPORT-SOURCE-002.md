@@ -80,7 +80,9 @@ VERIFY_EXIT=0
 Fable 후속 지적 네 건을 반영했다. 모바일 RPC 소스 검사는 별도 모듈로 분리해 구조 분해
 별칭(`const { rpc } = client`, `const { rpc: call } = client`)과 비리터럴 계산 키
 (`client[key](...)`)를 실패로 처리한다. 필수 소스 루트가 하나라도 없으면 누락 경로를 명시하고,
-일반 객체의 계산 키 호출은 RPC로 오인하지 않는다. Docker 없는 회귀시험 6개를 verify ③에 연결했다.
+일반 객체의 계산 키 호출은 RPC로 오인하지 않는다. 첫 Fable 검수 뒤 문자열 속성명 구조 분해,
+별칭 변수 계산 키, bracket 리터럴, `.rpc` 함수 별칭, 비리터럴·spread 인자와 빈 소스 루트까지
+추가해 Docker 없는 회귀시험 13개를 verify ③에 연결했다.
 
 SQL 허용 목록은 더 이상 SQL 문자열을 정규식으로 읽지 않는다. 감사 SQL이 만든 임시 표를 같은
 트랜잭션의 PostgreSQL이 직접 읽어 서명과 비-mobile 소비자를 내보내며, 마지막에 rollback한다.
@@ -96,17 +98,23 @@ Git blob OID를 함께 고정한다.
 | --- | --- | --- |
 | V1 | `d0051c17bb6f842e28b48813616114fefc50913c` | `43f2ae0e01f93cebf115b8294acdd20e13c05f55` |
 | V2 | `474d087fa341a70bb792cd10bd9f6907985e6617` | `9da5001f312deb7a6a291a1e334059f0e22fca26` |
-| P2-6 | `af0940c3e63a4ba663e055e0752ee470b9adc09b` | `38a74b1ef1e2dcf48b046e1250bf112bb915039a` |
+| P2-6 최초 구현 | `af0940c3e63a4ba663e055e0752ee470b9adc09b` | `38a74b1ef1e2dcf48b046e1250bf112bb915039a` |
+| P2-6 Finding 반영 | `52a32b5` | `38a74b1ef1e2dcf48b046e1250bf112bb915039a` |
 
-P2-6 작업 트리의 SHA-256은 다음과 같다. Git blob OID는 줄 끝 정규화 이후 저장소 객체를 가리키고,
-SHA-256은 Windows 작업 트리에서 실제 실행한 바이트를 가리킨다.
+아래 SHA-256은 **Git LF blob bytes** 기준이다. Windows 작업 트리 CRLF SHA가 아니며,
+`git cat-file blob <OID>`의 bytes를 SHA-256으로 계산해 재현한다. `admin-acl-audit.test.mjs`와
+`admin-acl-audit.sql`은 Finding 반영에서 바뀌지 않아 최초 P2-6와 blob OID가 같다.
 
-| 파일 | SHA-256 |
-| --- | --- |
-| `packages/db/scripts/admin-acl-audit.test.mjs` | `69e81135c842a16bb126d08afb7fe7a2a15dda1891265f7ad06ab646a2548910` |
-| `packages/db/scripts/admin-acl-source-scan.mjs` | `71d6edfe664669419b7bebbc43167808df27107e7049a4f9db87d19a9cb208f2` |
-| `packages/db/scripts/admin-acl-source-scan.test.mjs` | `300bfc242e047bb71bdca7d64520fb400adb3af9607d4f61cf275830230863ba` |
-| `packages/db/scripts/admin-acl-audit.sql` | `b66f7a474d958c73753b7f72537dc2bd75cdbe9399387562e4ba33058b1802ff` |
+| 파일 | `52a32b5` Git blob OID | blob SHA-256 |
+| --- | --- | --- |
+| `packages/db/scripts/admin-acl-audit.test.mjs` | `38a74b1ef1e2dcf48b046e1250bf112bb915039a` | `5db66c6495b22cca08f69f6c1297d767806b2db9f0d1c73f03b3938e1646fb4a` |
+| `packages/db/scripts/admin-acl-source-scan.mjs` | `08532d91758a916061e85b145d0d911ad201d914` | `c58d3d5cfc7139a158d0e22c7baaa543d88abe8d3286ff952eec590b97561946` |
+| `packages/db/scripts/admin-acl-source-scan.test.mjs` | `9b19ce303cf18d7674b0a286aea1a4d685b44734` | `e926b2529623f4f3d58428f7702805c13e620647488cb314d3ff5cc17acc91f6` |
+| `packages/db/scripts/admin-acl-audit.sql` | `aed306cdf87a3bf017220f6f2a617fc1a0592361` | `ed096d04f8010a0eaaadc5f8073929f0569812c3514f3f490c81edfa44c47220` |
+
+V2의 `ledger_write_paths=32`·`unapproved_authenticated_rpc=87`은 당시의 권한 부채 기준선이다.
+이후 P0-5 최소 권한 폐쇄가 원장 직접 쓰기와 허용 목록 밖 authenticated RPC를 모두 회수했고,
+P2-6은 두 값을 0으로 고정 검사한다. 아래 stdout의 `0`·`0`은 그 변경된 계약의 실측값이다.
 
 ### 실제 실행 출력
 
@@ -118,6 +126,21 @@ admin-acl audit 실제 DB 계약 통과 — metric 21개 · 모바일 RPC 62개 
   관측값: rls_disabled_app_tables=0 ledger_write_paths=0 unapproved_authenticated_rpc=0
 ```
 
-같은 P2-6 판본에서 `corepack pnpm verify`를 실행해 ① 타입, ② 시험, ③ CLI 계약·ACL 보안,
-④ 새 DB 전체 migration·DB 34/34·2세션 경합·locale parity, ⑤ 업그레이드 경로 10/10,
-⑥ 웹 번들을 모두 통과했다. 종료 코드는 0이고 `fresh_%` 일회용 DB는 남지 않았다.
+Finding 반영 판본 `52a32b5`에서 `corepack pnpm verify`를 다시 실행했다. 아래 블록은 실행기의
+최종 결과 원문이며, 종료 직후 별도 쿼리로 `fresh_%` DB가 0개임을 확인했다.
+
+```text
+════ 검증 결과 ════
+  ok     ① 타입 (pnpm -r typecheck)  (5.5s)
+  ok     ② 시험 (pnpm -r test)  (21.7s)
+  ok     ③ CLI 계약 · ACL 보안  (16.3s)
+  ok     ④ 새 DB (마이그레이션 전체 + 시험)  (134.4s)
+  ok     ⑤ 업그레이드 경로  (954.9s)
+  ok     ⑥ 웹 번들 (Metro export)  (7.2s)
+
+전체 검증 통과
+VERIFY_EXIT=0
+fresh_db_count=0
+```
+
+④ 안에서 DB 34/34, 2세션 경합, locale parity가 통과했고 ⑤는 10/10이었다.
