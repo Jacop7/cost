@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-08-30T18:10:37.089+09:00",
+  "status": "PASS",
+  "repository_sha": "76da2491eff8aac691147bf01fc022d94ec292e7",
+  "method": "staging-only synthetic Storage object upload, verified download backup, deletion, restore, and post-restore hash verification",
+  "staging": {
+    "project_ref": "cvfvmpzcldyqurcrappu",
+    "bucket": {
+      "name": "p0-4-restore-drill",
+      "public": false
+    },
+    "object": {
+      "key": "sikjae-p0-4-storage-drill.txt",
+      "bytes": 126,
+      "sha256": "6825C4C4FD680F43506594EFA8199D3AF035F67FBA4143FCBBD2AAA821C0DE72",
+      "data_classification": "synthetic, non-user, non-production"
+    },
+    "backup": {
+      "path": "%LOCALAPPDATA%\\Sikjae\\storage-backups\\staging-p0-4-restore-drill-20260830-175109.txt",
+      "bytes": 126,
+      "sha256": "6825C4C4FD680F43506594EFA8199D3AF035F67FBA4143FCBBD2AAA821C0DE72"
+    },
+    "restore_window": {
+      "started_at": "2026-08-30T18:09:43.067+09:00",
+      "completed_at": "2026-08-30T18:10:37.089+09:00",
+      "rto_seconds": 54.022,
+      "rpo_bytes": 0,
+      "missing_objects": 0
+    },
+    "verification": [
+      "Initial object downloaded successfully from the private staging bucket",
+      "Source, first download, and durable local backup were 126 bytes with identical SHA-256",
+      "The staging object was deleted and absence was confirmed in the dashboard",
+      "The durable backup was uploaded and renamed to the original object key",
+      "The restored object was downloaded again and matched the original byte length and SHA-256"
+    ],
+    "final_state": "private bucket retained with one restored synthetic object for follow-up verification"
+  },
+  "scope_boundary": {
+    "production_project_ref": "smxaozdgoxbafjldoayb",
+    "production_changed": false,
+    "database_changed": false,
+    "application_data_used": false
+  },
+  "interpretation": {
+    "rpo": "0 bytes for this single synthetic object because the verified external copy restored the full payload",
+    "rto": "54.022 seconds from deletion start through restored-object download verification",
+    "limit": "This is not evidence for bulk Storage recovery, regional disaster recovery, or Supabase platform-wide restore time"
+  },
+  "remaining_blockers": [
+    "Add a second organization administrator",
+    "Enable MFA for the current owner and require it for administrators",
+    "Choose whether daily-backup RPO is acceptable or enable PITR",
+    "Add alerting for Cron failures and core RPC error rates before production deployment"
+  ]
+}
