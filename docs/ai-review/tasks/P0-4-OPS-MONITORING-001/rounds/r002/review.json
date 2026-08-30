@@ -1,0 +1,323 @@
+{
+  "schema_version": "2.0",
+  "task_id": "P0-4-OPS-MONITORING-001",
+  "reviewer_role": "FABLE-SEC",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "95e521eb33eb9297801df3f724f80394315f6cb0",
+  "target_commit_sha": "95e521eb33eb9297801df3f724f80394315f6cb0",
+  "target_tree_oid": "0c750984593bc8fdedb1df1e468ad26646b6ccfb",
+  "agents_blob_oid": "bf9b9aeccabdc1055005c7f9bcb188ed8c05eb2a",
+  "agents_sha256": "485c7cb1cbb9143748a6028393723986201d9ff944ad9d3127e5c5f6f243c531",
+  "task_sha256": "bef8ab409174cc7432106ce9af08eb916aa72e11b2b004854b8da6cfc544ccb7",
+  "collaboration_sha256": "b9f3fce71c538aff9826c10b078d4ce7a886497cdb89c7fe0f99dfeffe49df38",
+  "input_files_sha256": "75bfca6033ca2cc2ef8ca8fc9711367e6e99badd2d1f05a5a73e979cb0dc911b",
+  "schema_sha256": "3314018a19e84a926c352d3c52a14734983c13a264a4ce9ba26614d8cffc40b1",
+  "runner_sha256": "80dae1d06c89af056e9d8c210b571e978ee534fc128a5fe3b9867610b5ae447b",
+  "verdict": "CHANGES_REQUIRED",
+  "summary": "보안 경계는 대체로 견고하다. ops 스키마·테이블·ops_health_status는 service_role 전용으로 잠겨 있고 migration 자체 검증과 시험 36·ACL 감사가 이를 고정한다. Edge 함수는 토큰 미설정·불일치 시 401, 하위 오류는 모두 503 'unavailable'로 접어 service/secret 키나 내부 오류를 노출하지 않으며, 워크플로는 continue-on-error 뒤 별도 단계로 최종 실패시켜 장애를 성공으로 위장하지 않는다. 문서도 오류율이 아닌 client-reported 건수로 한정한다. 그러나 차단급 결함 1건이 있다. report_client_rpc_error는 코드가 비어 있는 오류를 'NO_CODE'→'BAD_CODE'로 정규화하는데 두 값 모두 밑줄을 포함해 error_code 체크 제약 '^[A-Z0-9]{3,10}$'을 위반한다. 따라서 네트워크·전송 계층 실패처럼 SQLSTATE가 없는 예상 밖 오류(앱이 'NO_CODE'로 보내는 바로 그 부류)는 서버에서 23514 예외로 끝나 한 건도 기록되지 않고, fire-and-forget이라 앱에서도 조용히 사라진다. 시험 36·앱 시험 모두 코드 없는 보고의 서버 반영을 검증하지 않아 놓쳤다. 그 밖에 pg_cron의 과도 상태(starting/sending/connecting)를 실패로 세어 거짓 degraded 이슈가 열릴 수 있는 점, 앱이 원문 details를 형태 검사 없이 전송하는 점, GitHub 이슈 조회가 최근 100건으로 한정돼 장기적으로 회복 종료가 실패할 수 있는 점을 Minor로 남긴다. Major 수정과 시험 추가 뒤 RECHECK가 필요하다.",
+  "findings": [
+    {
+      "finding_id": "P0-4-OPS-SEC-001",
+      "severity": "Major",
+      "review_state": "OPEN",
+      "category": "CODE",
+      "requirement_or_invariant_ids": [
+        "P0-4-OPS-2",
+        "P0-4-OPS-3",
+        "P0-4-OPS-6",
+        "ARCH:operations-observability"
+      ],
+      "evidence": [
+        {
+          "path": "packages/db/supabase/migrations/20260830000176_operations_monitoring.sql",
+          "line_start": 23,
+          "line_end": 23,
+          "observation": "error_code 체크 제약이 '^[A-Z0-9]{3,10}$'로 밑줄을 허용하지 않는다."
+        },
+        {
+          "path": "packages/db/supabase/migrations/20260830000176_operations_monitoring.sql",
+          "line_start": 84,
+          "line_end": 84,
+          "observation": "빈 코드의 기본값이 'NO_CODE'로 밑줄을 포함한다."
+        },
+        {
+          "path": "packages/db/supabase/migrations/20260830000176_operations_monitoring.sql",
+          "line_start": 99,
+          "line_end": 101,
+          "observation": "형태 불일치 시 대체값 'BAD_CODE' 역시 밑줄을 포함해 제약과 충돌한다. 'NO_CODE'는 이 분기에서 'BAD_CODE'가 된 뒤 insert에서 23514로 실패한다."
+        },
+        {
+          "path": "packages/db/supabase/migrations/20260830000176_operations_monitoring.sql",
+          "line_start": 123,
+          "line_end": 127,
+          "observation": "정규화된 v_code가 그대로 insert되어 제약 위반 예외가 호출자에게 전파된다."
+        },
+        {
+          "path": "apps/mobile/src/lib/rpcMonitoring.ts",
+          "line_start": 27,
+          "line_end": 31,
+          "observation": "앱은 코드 없는 오류를 p_code='NO_CODE'로 보내고 실패를 삼키므로 보고 누락이 조용히 발생한다."
+        },
+        {
+          "path": "packages/db/tests/36_operations_monitoring.sql",
+          "line_start": 20,
+          "line_end": 34,
+          "observation": "시험은 항상 유효한 SQLSTATE(45009·22000·42501·XX001)만 넘겨 코드 없음·형태 불일치 경로를 검증하지 않는다."
+        },
+        {
+          "path": "apps/mobile/tests/rpcMonitoring.test.ts",
+          "line_start": 23,
+          "line_end": 31,
+          "observation": "앱 시험은 'NO_CODE' 전송만 확인하고 서버가 이를 수용하는지는 계약에 없다."
+        }
+      ],
+      "impact": "SQLSTATE가 없는 예상 밖 실패(fetch 실패·게이트웨이 오류·비구조 코드)는 서버에서 예외로 끝나 ops.rpc_error_buckets에 한 건도 남지 않는다. 운영 안전망이 가장 필요한 전송 계층 장애가 관측에서 완전히 빠져 거짓 초록을 만들고, 앱은 오류를 삼키므로 아무도 알아채지 못한다.",
+      "acceptance_criteria": [
+        "코드 없음·형태 불일치 대체값이 error_code 체크 제약과 일치한다(예: 'NOCODE'·'BADCODE' 또는 제약에 '_' 허용).",
+        "앱 기본값(rpcMonitoring.ts)과 서버 기본값이 같은 문자열로 정렬된다.",
+        "report_client_rpc_error(null, null, 'web')과 report_client_rpc_error('bad code!', null, 'web')이 reported=true를 반환하고 버킷 1행이 생긴다."
+      ],
+      "required_tests": [
+        "36_operations_monitoring.sql에 p_code null·빈 문자열·형태 불일치 입력의 reported=true와 저장된 error_code 값 검증 추가",
+        "rpcMonitoring.test.ts 기본값 문자열을 서버 대체값과 동일하게 갱신",
+        "upgrade-check.sh 12번째 경로에 코드 없는 보고 1건 추가"
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    },
+    {
+      "finding_id": "P0-4-OPS-SEC-002",
+      "severity": "Minor",
+      "review_state": "OPEN",
+      "category": "OPERATIONS",
+      "requirement_or_invariant_ids": [
+        "P0-4-OPS-1",
+        "P0-4-OPS-5"
+      ],
+      "evidence": [
+        {
+          "path": "packages/db/supabase/migrations/20260830000176_operations_monitoring.sql",
+          "line_start": 184,
+          "line_end": 187,
+          "observation": "last_failure_at은 status not in ('succeeded','running')으로 계산되어 pg_cron의 과도 상태 starting·sending·connecting도 실패로 센다."
+        },
+        {
+          "path": "packages/db/supabase/migrations/20260830000176_operations_monitoring.sql",
+          "line_start": 192,
+          "line_end": 194,
+          "observation": "healthy는 last_success_at >= last_failure_at을 요구하므로 매분 실행 직후 과도 상태 행이 있으면 순간적으로 unhealthy가 된다."
+        },
+        {
+          "path": ".github/workflows/operations-health.yml",
+          "line_start": 3,
+          "line_end": 6,
+          "observation": "10분마다 한 번 표본을 뽑으므로 과도 상태와 겹치면 곧바로 장애 이슈가 생성된다."
+        }
+      ],
+      "impact": "실제 장애 없이 degraded 503과 GitHub 이슈 생성·재오픈이 반복될 수 있어 알림 신뢰가 떨어지고 진짜 장애 신호가 묻힌다.",
+      "acceptance_criteria": [
+        "실패 판정은 status = 'failed'만 사용하거나 과도 상태를 running과 같이 제외한다.",
+        "1분 Cron이 방금 시작된 상태(starting)에서 ops_health_status가 healthy=true를 유지한다."
+      ],
+      "required_tests": [
+        "36 시험에 job_run_details에 status='starting' 행을 삽입한 뒤 healthy=true를 확인하는 케이스 추가"
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    },
+    {
+      "finding_id": "P0-4-OPS-SEC-003",
+      "severity": "Minor",
+      "review_state": "OPEN",
+      "category": "SECURITY",
+      "requirement_or_invariant_ids": [
+        "P0-4-OPS-2"
+      ],
+      "evidence": [
+        {
+          "path": "apps/mobile/src/lib/supabase.ts",
+          "line_start": 124,
+          "line_end": 132,
+          "observation": "모든 supabase 오류 객체를 그대로 reportRpcFailure에 넘긴다."
+        },
+        {
+          "path": "apps/mobile/src/lib/rpcMonitoring.ts",
+          "line_start": 27,
+          "line_end": 31,
+          "observation": "error.details를 형태 검사 없이 p_detail로 전송한다. PostgREST details는 제약 위반 시 'Key (name)=(사용자값)' 같은 사용자 입력을 담을 수 있다."
+        },
+        {
+          "path": "packages/db/supabase/migrations/20260830000176_operations_monitoring.sql",
+          "line_start": 102,
+          "line_end": 104,
+          "observation": "서버는 형태 불일치를 'UNSTRUCTURED'로 바꿔 저장하지 않지만, 비저장 보장이 전송 후 서버 정규화에만 의존한다."
+        }
+      ],
+      "impact": "저장은 막히지만 사용자 입력이 섞인 원문 details가 네트워크·게이트웨이·요청 로그를 거친다. 요구사항의 '원문·사용자 입력 비전송' 취지를 앱 경계에서 보장하지 못한다.",
+      "acceptance_criteria": [
+        "앱이 전송 전 details를 '^[A-Z0-9_]{1,80}$'로 검사해 불일치 시 'UNSTRUCTURED'로 대체한다.",
+        "서버 정규화는 방어선으로 유지한다."
+      ],
+      "required_tests": [
+        "rpcMonitoring.test.ts에 details='Key (name)=(홍길동)' 입력 시 p_detail이 'UNSTRUCTURED'이고 호출 인자에 원문이 없음을 확인"
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    },
+    {
+      "finding_id": "P0-4-OPS-SEC-004",
+      "severity": "Minor",
+      "review_state": "OPEN",
+      "category": "OPERATIONS",
+      "requirement_or_invariant_ids": [
+        "P0-4-OPS-5"
+      ],
+      "evidence": [
+        {
+          "path": "scripts/sync-ops-health-issue.mjs",
+          "line_start": 27,
+          "line_end": 28,
+          "observation": "이슈 조회가 state=all&per_page=100 한 페이지에서 제목 일치로만 찾는다. 라벨·작성자 필터나 페이지네이션이 없다."
+        },
+        {
+          "path": "scripts/sync-ops-health-issue.mjs",
+          "line_start": 47,
+          "line_end": 54,
+          "observation": "못 찾으면 새 이슈를 만들고, 회복 시에는 열린 이슈를 못 찾으면 'unchanged'로 끝난다."
+        }
+      ],
+      "impact": "저장소 이슈·PR이 100건을 넘으면 기존 장애 이슈를 놓쳐 중복 이슈가 생기거나 회복 시 닫히지 않은 채 남는다. 요구사항의 '회복 시 닫는다' 계약이 장기적으로 깨진다.",
+      "acceptance_criteria": [
+        "전용 라벨(예: ops-health)을 붙여 labels 필터로 조회하거나 open 상태를 우선 조회한다.",
+        "회복 시 열린 대상 이슈를 100건 이후에도 찾아 닫는다."
+      ],
+      "required_tests": [
+        "ops-monitoring.test.mjs에 조회 URL이 라벨 필터를 포함하는지와 생성 요청에 라벨이 포함되는지 확인"
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    },
+    {
+      "finding_id": "P0-4-OPS-SEC-005",
+      "severity": "Improvement",
+      "review_state": "OPEN",
+      "category": "SECURITY",
+      "requirement_or_invariant_ids": [
+        "P0-4-OPS-5"
+      ],
+      "evidence": [
+        {
+          "path": ".github/workflows/operations-health.yml",
+          "line_start": 21,
+          "line_end": 25,
+          "observation": "actions/checkout@v4·setup-node@v4를 태그로 참조한다. 이 워크플로는 STAGING_OPS_HEALTH_TOKEN과 issues:write 토큰을 다룬다."
+        }
+      ],
+      "impact": "태그 참조는 상류 액션 변경에 노출된다. 비밀 토큰을 다루는 정기 워크플로이므로 커밋 SHA 고정이 바람직하다.",
+      "acceptance_criteria": [
+        "사용 액션을 커밋 SHA로 고정하고 주석에 버전을 남긴다."
+      ],
+      "required_tests": [],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    }
+  ],
+  "proposed_edits": [
+    {
+      "edit_id": "P0-4-OPS-SEC-E001",
+      "path": "packages/db/supabase/migrations/20260830000176_operations_monitoring.sql",
+      "anchor": "  v_code text := upper(coalesce(nullif(btrim(p_code), ''), 'NO_CODE'));",
+      "operation": "REPLACE",
+      "proposed_text": "  v_code text := upper(coalesce(nullif(btrim(p_code), ''), 'NOCODE'));",
+      "rationale": "기본값이 error_code 체크 제약 '^[A-Z0-9]{3,10}$'에 맞아야 코드 없는 오류가 저장된다.",
+      "finding_ids": [
+        "P0-4-OPS-SEC-001"
+      ]
+    },
+    {
+      "edit_id": "P0-4-OPS-SEC-E002",
+      "path": "packages/db/supabase/migrations/20260830000176_operations_monitoring.sql",
+      "anchor": "    v_code := 'BAD_CODE';",
+      "operation": "REPLACE",
+      "proposed_text": "    v_code := 'BADCODE';",
+      "rationale": "형태 불일치 대체값도 제약을 통과해야 insert가 23514로 실패하지 않는다.",
+      "finding_ids": [
+        "P0-4-OPS-SEC-001"
+      ]
+    },
+    {
+      "edit_id": "P0-4-OPS-SEC-E003",
+      "path": "apps/mobile/src/lib/rpcMonitoring.ts",
+      "anchor": "      p_code: error.code ?? 'NO_CODE',",
+      "operation": "REPLACE",
+      "proposed_text": "      p_code: error.code ?? 'NOCODE',\n      p_detail: /^[A-Z0-9_]{1,80}$/.test(error.details ?? '') ? (error.details as string) : (error.details ? 'UNSTRUCTURED' : 'NONE'),",
+      "rationale": "앱 기본값을 서버와 정렬하고, 원문 details를 전송 전에 형태 검사해 사용자 입력이 경계를 넘지 않게 한다. 바로 아래 기존 p_detail 줄은 제거한다.",
+      "finding_ids": [
+        "P0-4-OPS-SEC-001",
+        "P0-4-OPS-SEC-003"
+      ]
+    },
+    {
+      "edit_id": "P0-4-OPS-SEC-E004",
+      "path": "packages/db/tests/36_operations_monitoring.sql",
+      "anchor": "select pg_temp.eq_t('같은 오류는 같은 버킷에 합친다',",
+      "operation": "ADD",
+      "proposed_text": "select pg_temp.eq_t('코드 없는 전송 실패도 예상 밖 신호로 기록한다',\n  report_client_rpc_error(null, null, 'web')->>'reported', 'true');\nselect pg_temp.eq_t('형태가 깨진 코드는 대체값으로 기록한다',\n  report_client_rpc_error('bad code!', 'Key (name)=(user)', 'ios')->>'reported', 'true');",
+      "rationale": "코드 없음·형태 불일치 경로가 제약과 충돌하지 않음을 회귀시험으로 고정한다. 뒤따르는 버킷 행 수·합계 기대값은 함께 조정한다.",
+      "finding_ids": [
+        "P0-4-OPS-SEC-001"
+      ]
+    },
+    {
+      "edit_id": "P0-4-OPS-SEC-E005",
+      "path": "packages/db/supabase/migrations/20260830000176_operations_monitoring.sql",
+      "anchor": "                   (where d.status not in ('succeeded', 'running')) last_failure_at,",
+      "operation": "REPLACE",
+      "proposed_text": "                   (where d.status = 'failed') last_failure_at,",
+      "rationale": "pg_cron 과도 상태(starting·sending·connecting)를 실패로 세지 않아 거짓 degraded를 막는다.",
+      "finding_ids": [
+        "P0-4-OPS-SEC-002"
+      ]
+    },
+    {
+      "edit_id": "P0-4-OPS-SEC-E006",
+      "path": "scripts/sync-ops-health-issue.mjs",
+      "anchor": "  const issues = await api('/issues?state=all&per_page=100');",
+      "operation": "REPLACE",
+      "proposed_text": "  const issues = await api('/issues?state=all&labels=ops-health&per_page=100');",
+      "rationale": "전용 라벨로 조회 범위를 좁혀 이슈가 100건을 넘어도 기존 장애 이슈를 찾는다. 생성 body에 labels: ['ops-health']를 함께 추가한다.",
+      "finding_ids": [
+        "P0-4-OPS-SEC-004"
+      ]
+    }
+  ],
+  "closed_finding_ids": [],
+  "reopened_finding_ids": [],
+  "remaining_required_finding_ids": [
+    "P0-4-OPS-SEC-001",
+    "P0-4-OPS-SEC-002",
+    "P0-4-OPS-SEC-003",
+    "P0-4-OPS-SEC-004"
+  ],
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "applied_learning_ids": [
+    "LRN-ORCH-CI-001"
+  ],
+  "excluded_learning_ids": [
+    {
+      "learning_id": "LRN-CODEX-TIME-001",
+      "reason": "영업일 시험 fixture의 벽시계 독립 규칙이며 운영 헬스·외부 알림 경계와 직접 관련이 없다."
+    },
+    {
+      "learning_id": "LRN-OPS-BACKUP-001",
+      "reason": "파괴적 DB 재구축과 백업 물리 경로 규칙이며 전진 migration·스테이징 관측 배포 범위와 직접 관련이 없다."
+    },
+    {
+      "learning_id": "LRN-AUDIT-PIN-001",
+      "reason": "아직 CANDIDATE이므로 신규 Task 정책 입력으로 적용하지 않는다."
+    }
+  ]
+}

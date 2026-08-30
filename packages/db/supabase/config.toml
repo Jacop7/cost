@@ -41,3 +41,9 @@ enabled = false
 [storage]
 enabled = true
 # OCR 캡처 이미지(2차) · 영수증 보관용 버킷은 마이그레이션에서 생성.
+
+# 외부 GitHub 스케줄러가 전용 공유 토큰으로 부른다. JWT를 끄는 대신 함수 안에서
+# x-ops-health-token을 상수 시간 비교하고, 최소 운영 상태만 반환한다.
+[functions.ops-health]
+verify_jwt = false
+entrypoint = "./functions/ops-health/index.mjs"

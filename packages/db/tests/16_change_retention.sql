@@ -349,6 +349,9 @@ end $t$;
  *                                auth.uid() 소유 매장만 아카이브하고 원장을 보존하는 앱 문(0173).
  *   schedule_store_purge · purge_archived_store
  *                                보존 종료·승인·백업 근거가 필요한 service_role 전용 문(0173).
+ *   report_client_rpc_error      auth.uid()별 5분 버킷에 최소 오류 지문만 기록하는 앱 문(0176).
+ *                                ops 원본 표는 앱 롤에 닫혀 있고 서버가 예상 오류를 다시 거른다.
+ *   ops_health_status            매장 원장을 읽지 않고 Cron·집계 신호만 내는 service_role 전용 문(0176).
  */
 do $t$
 declare v_now text; v_want text;
@@ -375,8 +378,10 @@ begin
     'create_store(p_name text, p_timezone text)',
     'my_store_ids()',
     'open_business_day(p_store uuid, p_date date, p_close_time time without time zone)',
+    'ops_health_status()',
     'purge_archived_store(p_store uuid, p_backup_reference text)',
     'purge_entity_changes()',
+    'report_client_rpc_error(p_code text, p_detail text, p_client_platform text)',
     'retire_my_account()',
     'save_sale(p_store uuid, p_date date, p_items jsonb, p_etc_items jsonb, p_extra_items jsonb, p_base_revision integer, p_open_day boolean, p_open_close_time time without time zone)',
     'save_settings(p_store uuid, p_payload jsonb, p_base_revision integer)',

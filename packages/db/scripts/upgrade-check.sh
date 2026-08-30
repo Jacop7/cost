@@ -537,5 +537,41 @@ else
   fi
 fi
 
+# ── 시나리오 12 · 0175 업무 원장 → 운영 관측 추가 ───────────────────────────
+say "⑫ 0175 상태 + 기존 판매·재고 원장 → 0176이 원장 불변으로 관측 경계만 추가"
+BASE12=20260830000175
+STEP12="$(cd "$MIG_DIR" && ls 20260830000176_*.sql)"
+bash "$SCRIPT_DIR/fresh-db.sh" --until "$BASE12" "$D" >/dev/null
+before12=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c \
+  "select concat_ws('|',(select count(*) from inventory_events),(select count(*) from daily_sales));")
+if ! err="$(psql_d "$D" < "$MIG_DIR/$STEP12" 2>&1 1>/dev/null)"; then
+  say "   FAIL 0176 적용이 막혔다"; say "        $(printf '%s' "$err" | head -3)"; fail=1
+else
+  after12=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c \
+    "select concat_ws('|',(select count(*) from inventory_events),(select count(*) from daily_sales));")
+  state12=$(docker exec -i "$CT" psql -U postgres -d "$D" -q -t -A -c "
+    select set_config('request.jwt.claims',
+      jsonb_build_object('sub', owner_id, 'role', 'authenticated')::text, false)
+      from stores order by created_at, id limit 1;
+    set role authenticated;
+    select report_client_rpc_error('45009','REVISION_CONFLICT','web')->>'reason';
+    select report_client_rpc_error('XX001','INTERNAL_FAILURE','web')->>'reported';
+    select report_client_rpc_error(null,null,'web')->>'reported';
+    reset role;
+    select concat_ws('|',
+      to_regclass('ops.rpc_error_buckets') is not null,
+      to_regclass('ops.monitoring_config') is not null,
+      has_function_privilege('authenticated','public.report_client_rpc_error(text,text,text)','execute'),
+      not has_function_privilege('authenticated','public.ops_health_status()','execute'),
+      not has_schema_privilege('authenticated','ops','usage'),
+      (ops_health_status()#>>'{rpc,unexpected_count}')::integer = 2);" | tail -1)
+  if [ "$before12" = "$after12" ] && [ "$state12" = "t|t|t|t|t|t" ]; then
+    say "   ok   판매·재고 행 수 불변 · ops 원본 폐쇄 · 보고/상태 권한 분리 · 코드 없는 오류 포함 2건"
+  else
+    say "   FAIL 원장 전=$before12 후=$after12 관측 상태=$state12"
+    fail=1
+  fi
+fi
+
 say ""
-if [ "$fail" = "0" ]; then say "업그레이드 경로 11/11 통과"; else say "업그레이드 경로 실패"; exit 1; fi
+if [ "$fail" = "0" ]; then say "업그레이드 경로 12/12 통과"; else say "업그레이드 경로 실패"; exit 1; fi
