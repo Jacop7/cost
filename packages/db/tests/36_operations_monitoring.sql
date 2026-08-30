@@ -18,7 +18,8 @@ select pg_temp.ok('운영 상태 문은 service_role 전용이다',
 select pg_temp.ok('운영 관측 definer 함수 둘은 고정 search_path를 쓴다',
   (select count(*) = 2
           and bool_and(p.prosecdef)
-          and bool_and(p.proconfig @> array['search_path=pg_catalog, public, ops']::text[])
+          and bool_and(coalesce(p.proconfig, '{}'::text[])
+                       @> array['search_path=pg_catalog, public, ops']::text[])
      from pg_proc p
     where p.oid in (
       'public.ops_health_status()'::regprocedure,
