@@ -241,20 +241,21 @@ describe('REF-1 도메인 폴더 경계', () => {
     expect(cyclic).toEqual([]);
   });
 
-  it('kit 하위 모듈은 공개 배럴을 역참조하지 않고 전체 kit 순환이 없다', () => {
+  it('kit 하위 모듈은 공개 배럴을 역참조하지 않고 앱 전체에 순환이 없다', () => {
     const kitRoot = join(srcRoot, 'components/kit');
     const kitFiles = walk(kitRoot);
+    const sourceFiles = walk(srcRoot);
     const barrel = join(kitRoot, 'index.tsx');
     const reverseImports = kitFiles
       .filter((path) => path !== barrel)
       .flatMap((path) => moduleStrings(path)
         .filter((specifier) => specifier === './index' || specifier === '@/components/kit')
         .map((specifier) => `${slash(relative(srcRoot, path))}: ${specifier}`));
-    const graph = new Map(kitFiles.map((path) => [
+    const graph = new Map(sourceFiles.map((path) => [
       path,
-      localImports(path).filter((target) => target.startsWith(kitRoot)),
+      localImports(path),
     ]));
-    const cyclic = kitFiles
+    const cyclic = sourceFiles
       .filter((path) => cycleFrom(path, graph))
       .map((path) => slash(relative(srcRoot, path)));
 
