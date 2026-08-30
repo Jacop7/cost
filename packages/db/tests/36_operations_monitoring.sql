@@ -15,6 +15,16 @@ select pg_temp.ok('운영 상태 문은 service_role 전용이다',
   and not has_function_privilege('authenticated', 'public.ops_health_status()', 'execute')
   and not has_function_privilege('margincook_rpc_executor', 'public.ops_health_status()', 'execute'));
 
+select pg_temp.ok('운영 관측 definer 함수 둘은 고정 search_path를 쓴다',
+  (select count(*) = 2
+          and bool_and(p.prosecdef)
+          and bool_and(p.proconfig @> array['search_path=pg_catalog, public, ops']::text[])
+     from pg_proc p
+    where p.oid in (
+      'public.ops_health_status()'::regprocedure,
+      'public.report_client_rpc_error(text,text,text)'::regprocedure
+    )));
+
 set local role authenticated;
 
 select pg_temp.eq_t('업무 분기 45009는 장애로 저장하지 않는다',
