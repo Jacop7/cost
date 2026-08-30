@@ -43,7 +43,7 @@
 | `ingredients` | ING-04 | 식재료 수정 (용량·안전재고·최소발주·구매옵션) | `ingredients/edit/[id]` (`IngredientEditScreen`) | ✅ |
 | `ingredients` | ING-03b | 재고 추가 (빠른 입고 · 구매 옵션 자동 채움 · 서버 미리보기) → **E7+E1** | `ingredients/add-stock/[id]` (`QuickInboundScreen`) | ✅ |
 | `ingredients` | ING-05 | 재고 수정 (수량 조정·완전 소진·폐기) → **E2/E5** | `StockEditSheet`(시트) | ✅ |
-| `ingredients` | ING-05 | 구매 링크·옵션 수정 (**재고 수정과 ID 중복 — [작업큐 P2-4](../../../../docs/작업큐.md#p2-4-화면-id-전수-정리)에서 결정**) | `ingredients/option` (`PurchaseOptionScreen`) | ✅ |
+| `ingredients` | ING-06 | 구매 링크·옵션 수정 | `ingredients/option` (`PurchaseOptionScreen`) | ✅ |
 | `ingredients` | ING-07 | 재고 내역 (변동 원장·기간 필터) | `ingredients/history/[id]` (`StockHistoryScreen`) | ✅ |
 | `ingredients` | ING-08 | 조회 설정 (기간·유형·정렬 필터) | `HistoryFilterSheet`(시트) | ✅ |
 | `ingredients` | ING-09 | 구매 이력 전체 (건별 단가·단가 범위·기준단가 대조) | `ingredients/purchases/[id]` (`PurchaseHistoryScreen`) | ✅ |
@@ -59,7 +59,7 @@
 | `recipes` | RCP-16 | 손익 변동 (금액 목록 → 원인·결과 시트, 커서 20건) | `recipes/profit-history` (`ProfitHistoryScreen`) | ✅ |
 | `recipes` | RCP-12 | 레시피 카테고리 설정 (추가·수정·삭제) | `recipes/category` (`CategoryScreen`) | ✅ |
 | `recipes`→`my` | MY-05 | 고정 지출 자세히 (자세히 보기 진입) | `recipes/fixed-cost` (`my/FixedCostScreen`) | ✅ |
-| `recipes`→`my` | MY-05 | 고정 지출 수정 (항목/카드 추가·삭제) → **E4** | `recipes/fixed-cost-edit` (`my/FixedCostEditScreen`) | ✅ |
+| `recipes`→`my` | MY-05b | 고정 지출 수정 (항목/카드 추가·삭제) → **E4** | `recipes/fixed-cost-edit` (`my/FixedCostEditScreen`) | ✅ |
 | `recipes` | RCP-05 | 판매가 시뮬레이션 (상세 내 시트·슬라이더 라이브 재계산) | `recipes/PriceSimSheet`(시트) | ✅ |
 | `recipes`→`my` | RCP-15 | 적용 채널·비중 (고정지출 수정 내 시트·슬라이더·합계 검증) | `my/ChannelWeightSheet`(시트) | ✅ |
 | `orders` | ORD-01 | 발주 현황 (발주 후보/입고 예정/입고 완료) | `orders/index` | ✅ |
@@ -69,31 +69,31 @@
 | `orders` | ORD-03 | 입고 확정 (실제 수량·부분 입고·멱등키) → **E1** | (OrdersHome 내 시트) | ✅ |
 | `orders` | ORD-07 | 발주 취소 → **E12** / 입고 취소 → **E11** | (OrdersHome 카드 버튼) | ✅ |
 | `my` | MY-01 | 마이페이지 홈 (사업장 + 설정 메뉴) | `my/index` (`MyHomeScreen`) | ✅ |
-| `my` | MY-TAX | 세금 (부가세 · 추가 항목 → 전 레시피 손익 반영) | `my/tax` (`MyTaxScreen`) | ✅ |
+| `my` | MY-02 | 세금 (부가세 · 추가 항목 → 전 레시피 손익 반영) | `my/tax` (`MyTaxScreen`) | ✅ |
 | `my` | MY-03 | 카테고리 관리 허브 | `my/categories` (`MyCategoryHubScreen`) | ✅ |
-| `my` | MY-03 | 카테고리 편집 | `my/category` (`MyCategoryScreen`) | ✅ |
-| `my` | MY-04 | 구매처·브랜드 (**단위 설정과 ID 중복 — [작업큐 P2-4](../../../../docs/작업큐.md#p2-4-화면-id-전수-정리)에서 결정**) | `my/vendors` (`MyVendorsScreen`) | ✅ |
+| `my` | MY-03a | 카테고리 편집 | `my/category` (`MyCategoryScreen`) | ✅ |
+| `my` | MY-11 | 구매처·브랜드 | `my/vendors` (`MyVendorsScreen`) | ✅ |
 | `my` | MY-06 | 알림 설정 | `my/notifications` (`MyNotificationsScreen`) | ✅ |
 | `my` | MY-07 | 판매 채널 이름·사용 여부 | `my/channels` (`MyChannelsScreen`) | ✅ |
 | `recipes` | RCP-12b | 부자재 카테고리 | `recipes/material-category` (`MaterialCategoryScreen`) | ✅ |
-| `sales` | SALES-06 | 기타 매출 추가 (항목·단가·수량) | (SalesHome 내 시트) | ✅ |
-| `sales` | SALES-06 | 기타 매출 추가에 **판매 채널** 선택(매장·배달·포장) | `SalesHomeScreen` 시트 | ✅ |
+| `sales` | SALES-06 | 기타 매출 추가 (항목·단가·수량·**판매 채널** 선택) | `SalesHomeScreen` 시트 | ✅ |
 | `sales` | SALES-17 | 폐기 손실 자세히 (조리 폐기 · 식재료 폐기) | `sales/waste` (`SalesWasteScreen`) | ✅ |
 | `sales` | SALES-18 | 세금 자세히 (항목별 · 메뉴분/기타분) | `sales/tax` (`SalesTaxScreen`) | ✅ |
 | `sales` | SALES-07 | 당일 지출 추가 (항목·금액·메모) | (SalesHome 내 시트) | ✅ |
 | `sales` | SALES-05b | 판매 수량 입력 (매장/배달/포장 + **조리 폐기**) → **E10/E8** | (SalesHome 내 시트) | ✅ |
 | `sales` | SALES-01 | 매출관리 홈 (일일 판매 입력 + **영업 상태 바**) | `sales/index` (`SalesHomeScreen`) | ✅ |
-| `changes` | ING-03b / RCP-02b | 수정 내역 (식재료·레시피 공용 · 전후값·자동 전파·매출 반영 상태) | `ingredients/changes/[id]` · `recipes/changes/[id]` | ✅ |
+| `changes` | ING-11 | 식재료 수정 내역 (전후값·자동 전파·매출 반영 상태) | `ingredients/changes/[id]` (`ChangeHistoryScreen`) | ✅ |
+| `changes` | RCP-02b | 레시피 수정 내역 (전후값·자동 전파·매출 반영 상태) | `recipes/changes/[id]` (`ChangeHistoryScreen`) | ✅ |
 | `sales` | SALES-01b | 영업중·브레이크타임·영업종료 (전이 한 문 · 자동 브레이크는 서버 크론) | (SalesHome 내 `BusinessDayBar`) | ✅ |
 | `sales` | SALES-02 | 매출 분석 (기간 선택·캘린더·손익) | `sales/analytics` (`SalesAnalyticsScreen`) | ✅ |
 | `sales` | SALES-03 | 일 손익 상세 | `sales/day` (`SalesDayDetailScreen`) | ✅ |
 | `sales` | SALES-10 | 손익 전체 자세히 | `sales/day-detail` (`SalesDayFullScreen`) | ✅ |
 | `sales` | SALES-12 | 매출 상세 | `sales/revenue` (`SalesRevenueScreen`) | ✅ |
 | `sales` | SALES-09 | 메뉴 손익 상세 (하루=그날 스냅샷 · 기간=날짜별 **합**) | `sales/menu` (`SalesMenuDetailScreen`) | ✅ |
-| `sales` | SALES-18 | 채널별 손익 (**세금 화면과 ID 중복 — [작업큐 P2-4](../../../../docs/작업큐.md#p2-4-화면-id-전수-정리)에서 결정**) | `sales/channel` (`SalesChannelScreen`) | ✅ |
+| `sales` | SALES-04 | 채널별 손익 | `sales/channel` (`SalesChannelScreen`) | ✅ |
 | `sales` | SALES-13 | 재료 원가 상세 (+ SALES-14 재료별 사용 메뉴 시트) | `sales/material` (`SalesMaterialScreen`) | ✅ |
 | `sales` | SALES-15 | 부자재 상세 (+ SALES-16 부자재별 사용 메뉴 시트) | `sales/extra` (`SalesExtraScreen`) | ✅ |
-| `sales` | SALES-17 | 고정 지출 상세 (**폐기 손실과 ID 중복 — [작업큐 P2-4](../../../../docs/작업큐.md#p2-4-화면-id-전수-정리)에서 결정**) | `sales/fixed` (`SalesFixedScreen`) | ✅ |
+| `sales` | SALES-11 | 고정 지출 상세 | `sales/fixed` (`SalesFixedScreen`) | ✅ |
 | `sales` | SALES-20 | 추가 지출 | `sales/expense` (`SalesExpenseScreen`) | ✅ |
 | `sales` | SALES-19 | 부족 메뉴·식재료 재고 확인 | `sales/stock-check` (`SalesStockCheckScreen`) | ✅ |
 | `sales` | SALES-21 | 과거 판매 내역 수정·추가 (§6.4 · 다시 열지 않고 정정) | `sales/past` (`SalesPastEditScreen`) | ✅ |

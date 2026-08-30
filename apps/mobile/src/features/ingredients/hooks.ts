@@ -444,7 +444,7 @@ export interface PurchaseOptionInput {
   url: string | null;
 }
 
-/** 구매 옵션 등록·수정 (ING-05). */
+/** 구매 옵션 등록·수정 (ING-06). */
 export function useSavePurchaseOption() {
   const qc = useQueryClient();
   const storeId = useStoreId();
