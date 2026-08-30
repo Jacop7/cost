@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-08-30T14:25:13+09:00",
+  "status": "BLOCKED",
+  "repository_sha": "14801c59999d6474fb906597e15bbbbd90c8a0c3",
+  "method": "read-only Supabase dashboard inspection",
+  "production": {
+    "project_ref": "smxaozdgoxbafjldoayb",
+    "health": "healthy",
+    "region": "ap-northeast-2",
+    "compute": "micro",
+    "remote_migrations": 0,
+    "latest_scheduled_backup_at": "2026-08-29T21:03:48Z",
+    "previous_scheduled_backup_at": "2026-08-29T03:52:22Z",
+    "pitr": false,
+    "advisor_summary": "No security or performance issues found",
+    "deployment_applied": false
+  },
+  "organization": {
+    "members": 1,
+    "owners": 1,
+    "owner_mfa": "disabled"
+  },
+  "staging": {
+    "project_ref": "cvfvmpzcldyqurcrappu",
+    "health": "unhealthy",
+    "region": "ap-northeast-2",
+    "compute": "micro",
+    "last_migration": "rpc_least_privilege",
+    "dashboard_window": "last 24 hours",
+    "total_requests": 6900,
+    "success_rate_percent": 87.0,
+    "postgres_warnings": 6864,
+    "postgres_errors": 893,
+    "observed_error_examples": [
+      {
+        "sqlstate": "42P01",
+        "message": "relation realtime.subscription does not exist",
+        "pattern": "repeated around each minute boundary"
+      },
+      {
+        "sqlstate": "42P01",
+        "message": "relation realtime.schema_migrations does not exist",
+        "pattern": "observed in recent Postgres logs"
+      }
+    ],
+    "product_cron_observation": {
+      "observed_at": "2026-08-30T14:24:00Z",
+      "close_due_business_days": "completed: 1 row",
+      "apply_due_breaks": "completed: 1 row"
+    },
+    "repository_realtime_schema_drop_matches": 0
+  },
+  "blockers": [
+    "Add a second organization administrator",
+    "Enable MFA for the current owner and require it for administrators",
+    "Choose whether daily-backup RPO is acceptable or enable PITR",
+    "Define and exercise non-empty Storage object backup and recovery",
+    "Diagnose and clear staging Realtime 42P01 errors before treating staging as healthy",
+    "Add alerting for Cron failures and core RPC error rates before production deployment"
+  ],
+  "actions_not_taken": [
+    "No production migration or deployment was applied",
+    "No Supabase settings, Realtime setup, backup restore, or access control was changed",
+    "No SQL was submitted through the dashboard"
+  ]
+}
