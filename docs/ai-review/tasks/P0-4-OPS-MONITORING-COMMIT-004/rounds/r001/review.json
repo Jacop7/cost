@@ -1,0 +1,262 @@
+{
+  "schema_version": "2.0",
+  "task_id": "P0-4-OPS-MONITORING-COMMIT-004",
+  "reviewer_role": "FABLE-SEC",
+  "review_mode": "RECHECK",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "53e6799ac3ad968b93d7b76c23551770db9b3186",
+  "target_commit_sha": "d3f25214ad43e06513b16570d223b6f6517e8c66",
+  "target_tree_oid": "5fb50a26225915a5c7a6de4f745e8e8cee73bb2e",
+  "agents_blob_oid": "bf9b9aeccabdc1055005c7f9bcb188ed8c05eb2a",
+  "agents_sha256": "485c7cb1cbb9143748a6028393723986201d9ff944ad9d3127e5c5f6f243c531",
+  "task_sha256": "2d079584782020b99e9cccc7ad3a95b2fbcb1290cf50c7d9eb7f7a082c6178b3",
+  "collaboration_sha256": "a904528b4694bfce77c038c37cca1e346aab591c3d0fbf2df44f64216263b96e",
+  "input_files_sha256": "db7fa633f1108577a8f158865f9eb522fb18e35da36b4e0c1223aba36bfc48d8",
+  "schema_sha256": "d8ffdb13e6b1e38279355d9ffd592cfb91dc023d287976adf7892e85dbfaf0d7",
+  "runner_sha256": "80dae1d06c89af056e9d8c210b571e978ee534fc128a5fe3b9867610b5ae447b",
+  "verdict": "PASS",
+  "summary": "predecessor COMMIT-003의 SEC-006·007·008을 commit d3f2521의 봉인 입력으로 재검증했다. SEC-006(실패-only Cron 거짓 초록): 시험 36의 $failed_only$ 블록(133~164행)이 성공 이력 없이 failed 행만 넣고 purge 작업 healthy가 boolean false, cron.healthy=false, status=degraded임을 확인하고, $health$ 블록(97~103행)은 jobs 배열의 모든 healthy가 jsonb boolean임을 고정한다. 업그레이드 ⑬(577~649행)은 0176 상태에 실패-only 행과 앱 RPC 보고를 넣은 뒤 0177을 적용해 'false|degraded|true|t' → 실패 행 제거 후 'true|ok|true'를 요구하므로 NULL healthy 회귀가 마이그레이션 경로에서도 잡힌다. Edge(57~61행)와 CLI safeBody(11~16행)는 healthy·warning이 boolean이 아니거나 status와 cron 판정이 어긋나면 503 unavailable로 접어 fail-closed다. SEC-007(RPC 신호 분리): 시험 36(85~90행)이 버킷 20건에도 status는 Cron만 따르고 rpc.warning=true임을 확인하고, Edge는 warning=true에도 cron 정상이면 200, CLI ok=true, GitHub 동기화는 '[ops-health] staging rpc warning' 별도 제목·'Cron 장애나 정확한 오류율이 아닙니다' 본문으로 분리되며 workflow 실패는 health 단계(Cron)만 결정한다. 문서(cron-rpc-alerting.md 9~11·26·39~41행)가 판정 기준을 기술한다. 자가 가입 계정의 반복 보고는 이제 warning 이슈 갱신에 그치고 status·workflow를 바꾸지 못하므로 수용 기준을 충족한다. SEC-008: 계약 시험이 토큰 미설정 401(fetch 미호출), 설정 누락 503, 하위 500 본문에 sb_secret·eyJ가 있어도 503 {status:'unavailable'} deepEqual, throw 메시지에 secret이 있어도 동일 본문임을 고정한다. 세 Finding 모두 VERIFIED다. 한계: 실제 보정 SQL인 20260831000177_operations_health_signal_separation.sql은 artifact_paths·input_files에 없어 봉인 스냅샷에 존재하지 않는다. 판정은 봉인된 행동 시험·업그레이드 ⑬·Edge/CLI 방어와 장부의 4a2cbe2 실행 결과(verify 6/6, DB 36/36, 업그레이드 13/13)에 근거하며 0177 원문의 definer·search_path·grant 하이진은 직접 읽지 못했다(시험 36 7~16행이 ops_health_status의 service_role 전용 권한을 새 DB에서 고정한다). 현재 장부에는 SOLAR 턴만 있고 CODEX-FUNCTION-QA 턴이 없다. 이를 Improvement SEC-009로 남겨 다음 봉인 Task(스테이징 훈련 게이트)에 0177 원문을 포함하도록 요청한다. production 미접근·미적용 기록과 원장 불변(⑬ before/after 비교)은 범위 내 증거와 일치한다. PASS이나 외부 게이트는 열려 있다.",
+  "findings": [
+    {
+      "finding_id": "P0-4-OPS-SEC-006",
+      "severity": "Major",
+      "review_state": "VERIFIED",
+      "category": "DATA_INTEGRITY",
+      "requirement_or_invariant_ids": [
+        "P0-4-OPS-1",
+        "P0-4-OPS-5",
+        "P0-4-OPS-SEC-006",
+        "ARCH:operations-observability"
+      ],
+      "evidence": [
+        {
+          "path": "packages/db/tests/36_operations_monitoring.sql",
+          "line_start": 133,
+          "line_end": 164,
+          "observation": "성공 이력을 지우고 failed 행만 넣은 뒤 purge 작업 healthy가 jsonb boolean이며 false, cron.healthy='false', status='degraded'임을 확인하는 $failed_only$ 블록이 추가됐다."
+        },
+        {
+          "path": "packages/db/tests/36_operations_monitoring.sql",
+          "line_start": 97,
+          "line_end": 103,
+          "observation": "jobs 배열의 모든 healthy가 jsonb_typeof='boolean'이어야 통과한다."
+        },
+        {
+          "path": "packages/db/scripts/upgrade-check.sh",
+          "line_start": 610,
+          "line_end": 649,
+          "observation": "0176 상태에 실패-only 행을 넣고 0177 적용 뒤 'false|degraded|true|t', 실패 행 제거 뒤 'true|ok|true'와 업무 원장 행 수 불변을 요구한다."
+        },
+        {
+          "path": "packages/db/supabase/functions/ops-health/index.mjs",
+          "line_start": 55,
+          "line_end": 62,
+          "observation": "cron.healthy가 boolean이 아니거나 status와 cron 판정이 어긋나면 503 unavailable로 fail-closed한다."
+        },
+        {
+          "path": "scripts/check-ops-health.mjs",
+          "line_start": 11,
+          "line_end": 16,
+          "observation": "CLI safeBody도 healthy·warning 비boolean 응답을 unavailable로 접는다."
+        }
+      ],
+      "impact": "실패만 있는 Cron이 NULL healthy로 초록 위장되던 경로가 행동 시험·업그레이드 경로·Edge/CLI 방어로 고정됐다. 0177 원문은 봉인 입력에 없어 SEC-009로 후속 봉인을 요청한다.",
+      "acceptance_criteria": [
+        "healthy 식이 NULL을 만들지 않는다: last_success_at이 NULL이고 last_failure_at이 있으면 false로 평가한다.",
+        "전체 판정이 bool_and(coalesce(healthy,false))처럼 NULL 무시에 기대지 않고, 작업 하나라도 healthy가 아니면 cron.healthy=false·status=degraded다.",
+        "응답 jobs 배열의 healthy 값이 항상 boolean이다."
+      ],
+      "required_tests": [
+        "36_operations_monitoring.sql: 유예 기간 안에서 성공 이력 없이 status='failed' 행만 삽입한 뒤 해당 작업 healthy=false, cron.healthy=false, status='degraded'를 확인하는 케이스 추가",
+        "36_operations_monitoring.sql: 응답 jobs 배열의 모든 healthy가 jsonb_typeof='boolean'인지 확인"
+      ],
+      "previous_finding_id": "P0-4-OPS-SEC-006",
+      "verified_by_engine": "FABLE"
+    },
+    {
+      "finding_id": "P0-4-OPS-SEC-007",
+      "severity": "Minor",
+      "review_state": "VERIFIED",
+      "category": "SECURITY",
+      "requirement_or_invariant_ids": [
+        "P0-4-OPS-3",
+        "P0-4-OPS-5",
+        "P0-4-OPS-SEC-007"
+      ],
+      "evidence": [
+        {
+          "path": "packages/db/tests/36_operations_monitoring.sql",
+          "line_start": 85,
+          "line_end": 90,
+          "observation": "버킷 20건이 있어도 status는 cron.monitored·cron.healthy만으로 결정되고 rpc.warning='true'로 분리된다."
+        },
+        {
+          "path": "packages/db/supabase/functions/ops-health/index.mjs",
+          "line_start": 53,
+          "line_end": 62,
+          "observation": "HTTP 코드는 cronOk만으로 200/503을 정하고 rpc.warning은 boolean 형태만 검증한다."
+        },
+        {
+          "path": "scripts/ops-monitoring.test.mjs",
+          "line_start": 107,
+          "line_end": 123,
+          "observation": "rpc warning만 있는 응답은 ok=true·status ok, Cron degraded 응답은 ok=false로 계약이 고정됐다."
+        },
+        {
+          "path": "scripts/sync-ops-health-issue.mjs",
+          "line_start": 7,
+          "line_end": 8,
+          "observation": "Cron 장애와 RPC 경고 이슈 제목이 분리된다."
+        },
+        {
+          "path": "scripts/sync-ops-health-issue.mjs",
+          "line_start": 61,
+          "line_end": 77,
+          "observation": "RPC 경고 이슈는 별도 본문으로 upsert·회복 종료되며 workflow 성공 여부(healthy)에 영향을 주지 않는다."
+        },
+        {
+          "path": "scripts/ops-monitoring.test.mjs",
+          "line_start": 131,
+          "line_end": 167,
+          "observation": "cron 생성/rpc unchanged, 회복 종료, rpc 경고 단독 생성의 세 흐름과 본문 문구가 시험된다."
+        },
+        {
+          "path": "docs/operations/cron-rpc-alerting.md",
+          "line_start": 9,
+          "line_end": 11,
+          "observation": "RPC는 비권위 warning이며 status·workflow를 바꾸지 않는다고 기술한다."
+        },
+        {
+          "path": ".github/workflows/operations-health.yml",
+          "line_start": 36,
+          "line_end": 44,
+          "observation": "최종 실패는 health 단계 outcome(Cron)만으로 결정된다."
+        }
+      ],
+      "impact": "자가 가입 계정의 report_client_rpc_error 반복 호출은 warning 이슈 갱신에 그치고 status·503·workflow 실패를 만들지 못한다. 알림 피로 잔여 위험은 별도 제목으로 격리됐다.",
+      "acceptance_criteria": [
+        "status 판정에서 Cron 장애와 client-reported RPC 신호를 분리한다(예: rpc는 별도 'warning' 필드로 두고 status는 Cron이 결정하거나, 영향 사용자 수·건수 임계값을 넘을 때만 degraded).",
+        "GitHub 이슈 본문 또는 제목에서 Cron 장애와 RPC 경고를 구분해 운영자가 실제 장애를 식별할 수 있다.",
+        "문서(cron-rpc-alerting.md)가 새 임계값과 판정 기준을 기술한다."
+      ],
+      "required_tests": [
+        "36_operations_monitoring.sql: 사용자 1명·소수 건 보고만으로는 status가 ok(또는 warning)이고 Cron이 정상인지 확인",
+        "ops-monitoring.test.mjs: rpc 경고만 있는 응답과 Cron 장애 응답의 체크·이슈 동작 차이 계약 추가"
+      ],
+      "previous_finding_id": "P0-4-OPS-SEC-007",
+      "verified_by_engine": "FABLE"
+    },
+    {
+      "finding_id": "P0-4-OPS-SEC-008",
+      "severity": "Improvement",
+      "review_state": "VERIFIED",
+      "category": "TEST_GAP",
+      "requirement_or_invariant_ids": [
+        "P0-4-OPS-4",
+        "P0-4-OPS-SEC-008"
+      ],
+      "evidence": [
+        {
+          "path": "scripts/ops-monitoring.test.mjs",
+          "line_start": 18,
+          "line_end": 24,
+          "observation": "OPS_HEALTH_TOKEN 미설정 시 401 {status:'unauthorized'}이고 하위 fetch가 호출되지 않는다."
+        },
+        {
+          "path": "scripts/ops-monitoring.test.mjs",
+          "line_start": 34,
+          "line_end": 36,
+          "observation": "URL·키 미설정 시 503 {status:'unavailable'}만 반환한다."
+        },
+        {
+          "path": "scripts/ops-monitoring.test.mjs",
+          "line_start": 75,
+          "line_end": 81,
+          "observation": "하위 500 본문에 sb_secret·eyJ 문자열이 있어도 503 {status:'unavailable'} deepEqual로 비노출을 고정한다."
+        },
+        {
+          "path": "scripts/ops-monitoring.test.mjs",
+          "line_start": 91,
+          "line_end": 97,
+          "observation": "fetch throw 메시지에 secret이 있어도 503 {status:'unavailable'}만 반환한다."
+        }
+      ],
+      "impact": "Edge 비밀정보 비노출 계약이 회귀시험으로 고정됐다.",
+      "acceptance_criteria": [
+        "ops-monitoring.test.mjs에 OPS_HEALTH_TOKEN 미설정 401, fetch 예외와 non-OK 응답의 503 본문이 {status:'unavailable'}뿐이며 키·URL·오류 문구를 포함하지 않는 계약을 추가한다."
+      ],
+      "required_tests": [
+        "ops-monitoring.test.mjs: 토큰 미설정 401 / 하위 500 및 throw → 503 본문 문자열에 'sb_secret'·'eyJ'·Error 메시지가 없음을 확인"
+      ],
+      "previous_finding_id": "P0-4-OPS-SEC-008",
+      "verified_by_engine": "FABLE"
+    },
+    {
+      "finding_id": "P0-4-OPS-SEC-009",
+      "severity": "Improvement",
+      "review_state": "OPEN",
+      "category": "OTHER",
+      "requirement_or_invariant_ids": [
+        "AGENTS:required-local-gate",
+        "P0-4-OPS-SEC-006"
+      ],
+      "evidence": [
+        {
+          "path": "packages/db/README.md",
+          "line_start": 8,
+          "line_end": 8,
+          "observation": "최신 migration이 20260831000177_operations_health_signal_separation.sql이라고 기술하지만 이 파일은 artifact_paths·input_files에 없어 봉인 스냅샷에 존재하지 않는다."
+        },
+        {
+          "path": "packages/db/scripts/upgrade-check.sh",
+          "line_start": 578,
+          "line_end": 579,
+          "observation": "⑬은 20260831000177_*.sql을 ls로 찾아 적용하므로 실제 보정 SQL은 저장소에 있으나 이번 검수 입력에서 빠졌다."
+        },
+        {
+          "path": "packages/db/tests/36_operations_monitoring.sql",
+          "line_start": 89,
+          "line_end": 90,
+          "observation": "rpc.warning 필드는 0176에 없고 0177이 만든다. 봉인된 0176(231~242행)만으로는 시험 36이 통과할 수 없어 0177 원문 검토 없이 행동 시험에만 의존했다."
+        },
+        {
+          "path": "COLLABORATION_LOG",
+          "line_start": 0,
+          "line_end": 0,
+          "observation": "현재 장부에는 SOLAR_REQUEST turn-s001만 있고 CODEX-FUNCTION-QA 증거 턴이 없다. 실행 수치는 4a2cbe2 기준 SOLAR 보고다."
+        }
+      ],
+      "impact": "SECURITY DEFINER 함수를 다시 정의하는 0177의 search_path·grant·definer 하이진을 보안 lane이 원문으로 검토하지 못했다. 시험 36(7~16행)이 ops_health_status의 service_role 전용 권한을 새 DB에서 고정하고 ⑬이 행동을 고정하므로 차단 사유는 아니나, 후속 봉인 Task에 원문을 포함해야 한다.",
+      "acceptance_criteria": [
+        "스테이징 훈련 게이트 이전의 다음 봉인 Task artifact_paths에 packages/db/supabase/migrations/20260831000177_operations_health_signal_separation.sql을 포함해 FABLE-SEC가 원문(definer·set search_path·revoke/grant·자체 검증 블록)을 확인한다.",
+        "해당 Task 장부에 CODEX-FUNCTION-QA 턴으로 target commit 기준 verify 6/6·DB 36/36·업그레이드 13/13 결과를 기록한다."
+      ],
+      "required_tests": [
+        "36_operations_monitoring.sql 또는 34_rpc_least_privilege.sql: public.ops_health_status()·report_client_rpc_error의 prosecdef=true와 proconfig에 search_path가 고정돼 있음을 확인"
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    }
+  ],
+  "proposed_edits": [
+    {
+      "edit_id": "P0-4-OPS-SEC-E010",
+      "path": "packages/db/tests/36_operations_monitoring.sql",
+      "anchor": "select pg_temp.ok('청소 함수가 ops 버킷도 30일 뒤 지운다',",
+      "operation": "ADD",
+      "proposed_text": "select pg_temp.ok('운영 상태·보고 문은 definer이며 search_path가 고정돼 있다',\n  (select bool_and(p.prosecdef and exists (\n     select 1 from unnest(coalesce(p.proconfig, '{}'::text[])) c where c like 'search_path=%'))\n     from pg_proc p\n    where p.oid in ('public.ops_health_status()'::regprocedure,\n                    'public.report_client_rpc_error(text,text,text)'::regprocedure)));\n",
+      "rationale": "0177이 봉인 입력 밖에 있어 definer search_path 하이진을 원문으로 확인하지 못했으므로 새 DB 시험으로 고정한다.",
+      "finding_ids": [
+        "P0-4-OPS-SEC-009"
+      ]
+    }
+  ],
+  "closed_finding_ids": [],
+  "reopened_finding_ids": [],
+  "remaining_required_finding_ids": [],
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}

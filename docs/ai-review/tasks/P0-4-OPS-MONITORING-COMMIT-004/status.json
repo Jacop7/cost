@@ -1,0 +1,38 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "P0-4-OPS-MONITORING-COMMIT-004",
+  "predecessor_review": {
+    "task_id": "P0-4-OPS-MONITORING-COMMIT-003",
+    "source_commit_sha": "c5b6f65962dd144f22502fa028c4eafd3e9eb0c3",
+    "round": "r001",
+    "task_sha256": "5cab861b4566ebbd9779bbcd73b2c71db3f9231214ede44a7289246ae3c4f517",
+    "manifest_sha256": "25c753dc7f1b09349ef48d50e538e2611ee06071dd846a6f39888f5f663b366b",
+    "run_sha256": "b49d09c4b514aa4b91567193ceb8db4f90bb7ed2e6d26b4952fc068493e69ed8",
+    "review_sha256": "8ff65925d6bb7b6048ed84f7676143cd2c704997087612c5c79cb250a7559b41",
+    "finding_registry_sha256": "3acec82095cdcf0f5ef57a846e2fceac8893d17348191a6a315696c148504aa4",
+    "handoff_turn_id": "turn-o001",
+    "handoff_entry_sha256": "56fe515ae8fa2f6e8f50b33156f4048b9c32daa3f16a79f632baacca1da8f23b",
+    "handoff_run_sha256": "b5f5458ecf4e86bc1034d126b495d9d0d82d0bb363b5159248eb6e9c2bb405eb"
+  },
+  "updated_at": "2026-08-30T18:16:07.950Z",
+  "latest_round": "r001",
+  "review_state": "VERIFIED",
+  "workflow_state": "VERIFIED",
+  "gate_state": "OPEN",
+  "run_state": "RESULT_RECEIVED",
+  "defect_state": "NOT_APPLICABLE",
+  "verdict": "PASS",
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "fallback_reason": null,
+  "latest_run_sha256": "97836aa89a258fe6bb48478fd5861e1bf8728bbf7e35f6e3a6c4476ce9e0f2b5",
+  "open_required_finding_ids": [],
+  "open_optional_finding_ids": [
+    "P0-4-OPS-SEC-009"
+  ],
+  "closed_finding_ids": [],
+  "candidate_review_state": null,
+  "candidate_review_sha256": null,
+  "backlog_dispositions": []
+}
