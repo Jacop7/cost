@@ -9,14 +9,14 @@ import { useIngredientList, type IngredientRow } from '../hooks';
 import { useSettingsLists } from '@/features/master-data/hooks';
 import { IngCard, stockStateOf } from '../components/IngCard';
 
-// 추천순: 소진 임박 → 부족 → 여유. 배지와 **같은 판정**을 쓴다.
+// 추천순: 소진 → 소진 임박 → 여유. 배지와 **같은 core 판정**을 쓴다.
 const ORDER = { out: 0, low: 1, ok: 2 } as const;
 const rank = (g: IngredientRow) => ORDER[stockStateOf(g)];
 
 type SortKey = 'recommended' | 'name' | 'stockLow' | 'priceHigh';
 
 const SORTS: readonly SortOption<SortKey>[] = [
-  { key: 'recommended', label: '추천순', hint: '소진 임박 → 안전재고 미달 → 여유' },
+  { key: 'recommended', label: '추천순', hint: '소진 → 소진 임박 → 여유' },
   { key: 'stockLow', label: '잔여 적은 순', hint: '지금 남은 양이 적은 것부터' },
   { key: 'priceHigh', label: '단가 높은 순', hint: '기준단가(원/최소단위) 기준' },
   { key: 'name', label: '이름순', hint: '가나다순' },
@@ -67,9 +67,8 @@ export function IngredientListScreen() {
     }
   }, [items, cat, selCat, query, sort]);
 
-  // 상단 배너는 **지금 사야 하는 것**만 센다. '부족'까지 넣으면 배너가 늘 떠 있어
-  // 아무도 안 본다. 부족은 목록에서 노란 배지로 이미 보인다.
-  const soonList = sorted.filter((g) => stockStateOf(g) === 'out');
+  // 상단 배너는 이미 소진된 것만 크게 알린다. 소진 임박은 같은 core 판정으로 세어 부제로 설명한다.
+  const outList = sorted.filter((g) => stockStateOf(g) === 'out');
   const lowCount = sorted.filter((g) => stockStateOf(g) === 'low').length;
   const sortLabel = SORTS.find((s) => s.key === sort)?.label ?? '추천순';
   const isSearch = searching && query.trim() !== '';
@@ -114,7 +113,7 @@ export function IngredientListScreen() {
         <SortChip label={sortLabel} onPress={() => setSortOpen(true)} />
       </View>
       <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 104, gap: 10 }} showsVerticalScrollIndicator={false}>
-        {soonList.length > 0 ? (
+        {outList.length > 0 ? (
           <View
             style={{
               flexDirection: 'row',
@@ -131,12 +130,12 @@ export function IngredientListScreen() {
             <Icon name="warn" size={16} color={T.red} />
             <View style={{ flex: 1, minWidth: 0 }}>
               <Text style={{ fontSize: 16, fontWeight: '700', color: T.red }} numberOfLines={1}>
-                소진 임박 {soonList.length} — {soonList.map((g) => g.name).join(', ')}
+                소진 {outList.length} — {outList.map((g) => g.name).join(', ')}
               </Text>
-              {/* 부족은 급하지 않다. 같은 줄에서 색만 달리해 "오늘 살 것"과 구분한다. */}
+              {/* 소진 임박은 같은 줄에서 색을 달리해 이미 소진된 재료와 구분한다. */}
               {lowCount > 0 ? (
                 <Text style={{ fontSize: 14, fontWeight: '600', color: T.amberText, marginTop: 2 }}>
-                  안전재고 미달 {lowCount}종은 슬슬 시켜 두세요
+                  소진 임박 {lowCount}종은 슬슬 시켜 두세요
                 </Text>
               ) : null}
             </View>

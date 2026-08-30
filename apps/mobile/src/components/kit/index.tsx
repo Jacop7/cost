@@ -25,7 +25,7 @@ export { Donut, TrendChart } from './charts';
 export type { DonutSeg, TrendPoint } from './charts';
 
 // ── 상태 뱃지 ─────────────────────────────────────────────────
-export function StatusBadge({ status, sm }: { status: 'ok' | 'low' | 'out'; sm?: boolean }) {
+export function StatusBadge({ status, sm }: { status: keyof typeof STATUS; sm?: boolean }) {
   const s = STATUS[status];
   return (
     <View style={{ alignSelf: 'flex-start', backgroundColor: s.bar, paddingHorizontal: sm ? 7 : 9, paddingVertical: sm ? 4 : 5, borderRadius: 7 }}>

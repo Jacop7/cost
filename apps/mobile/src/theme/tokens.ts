@@ -3,7 +3,7 @@
  * Toss/Cashnote 스타일: primary=블루, 긍정=초록, 주의=앰버, 위험=레드, 비용=그레이.
  */
 
-import { formatNumber, getLocale } from '@sikjae/core';
+import { formatNumber, getLocale, type StockState } from '@sikjae/core';
 
 export const T = {
   // surfaces
@@ -62,24 +62,20 @@ export const TYPE = {
   captionSm: { fontSize: 13, fontWeight: '600' }, // 칩·탭 라벨
 } as const;
 
-/** legacy kit 상태 키 — core `StockState`와 의미가 아직 다르며 재고 판정에 쓰지 않는다(P2-3). */
-export type StatusKey = 'ok' | 'low' | 'out';
+/** kit 공개 상태 키는 core 재고 상태 계약을 그대로 쓴다. */
+export type StatusKey = StockState;
 
 /** 숫자 정렬용 tabular-nums 스타일 (kit tnum). */
 export const tnum = { fontVariant: ['tabular-nums'] } as { fontVariant: ('tabular-nums')[] };
 
-/**
- * kit의 옛 범용 상태색. core 재고 계약(여유/소진 임박/소진)의 단일 판정처가 아니며,
- * 키·라벨 통합은 작업큐 P2-3에서 수행한다.
- */
+/** 상태 판정은 core가 하고 kit은 같은 키의 라벨·색만 표시한다. */
 export const STATUS: Record<
   StatusKey,
   { label: string; fg: string; bg: string; bar: string }
 > = {
   ok: { label: '여유', fg: T.green, bg: T.greenTint, bar: T.green },
-  // low(안전재고 미달)는 별도 단계 없이 여유로 표시
-  low: { label: '여유', fg: T.green, bg: T.greenTint, bar: T.green },
-  out: { label: '소진 임박', fg: T.red, bg: T.redTint, bar: T.red },
+  low: { label: '소진 임박', fg: T.amberText, bg: T.amberTint, bar: T.amberText },
+  out: { label: '소진', fg: T.red, bg: T.redTint, bar: T.red },
 };
 
 export const space = { xs: 4, sm: 8, md: 12, lg: 16, xl: 20, xxl: 24 } as const;
