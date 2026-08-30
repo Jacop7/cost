@@ -11,7 +11,7 @@
 | 영역 | 현재 채택 | 비고 |
 |---|---|---|
 | 앱 | Expo SDK 54 · React 19 · RN 0.81 · expo-router 6 | 식재료·레시피·발주·매출관리·MY 5탭 |
-| 서버 | Supabase Postgres · Auth · Data API/RPC · RLS · pg_cron | Queue·Edge Function·외부 Worker는 아직 미도입 |
+| 서버 | Supabase Postgres · Auth · Data API/RPC · RLS · pg_cron · Edge Function | Edge는 운영 헬스 체크 1개만, Queue·외부 Worker는 아직 미도입 |
 | 계산 | DB RPC(확정) + `packages/core`(미리보기·검산) | 같은 공식을 시험으로 대조 |
 | 저장소 | pnpm 9.12 모노레포 · `node-linker=hoisted` | RN/Metro 호환 |
 
@@ -75,7 +75,7 @@ corepack pnpm verify
 1. 전 패키지 타입 검사
 2. core · DB · mobile 시험
 3. ACL 스크립트의 비밀번호·인자·환경 격리 시험
-4. 빈 DB에 전체 마이그레이션 적용 + DB 33개 스위트 + 2세션 경합 + 로케일 실측 대조
+4. 빈 DB에 전체 마이그레이션 적용 + DB 36개 스위트 + 2세션 경합 + 로케일 실측 대조
 5. 중간 버전에서 최신까지의 업그레이드 경로
 6. Expo 웹 번들
 

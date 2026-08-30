@@ -2086,6 +2086,7 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      ops_health_status: { Args: never; Returns: Json }
       order_board: { Args: { p_store: string }; Returns: Json }
       planned_close: {
         Args: { p_date: string; p_store: string }
@@ -2268,6 +2269,10 @@ export type Database = {
       reorder_categories: {
         Args: { p_ids: string[]; p_store: string }
         Returns: undefined
+      }
+      report_client_rpc_error: {
+        Args: { p_client_platform: string; p_code: string; p_detail: string }
+        Returns: Json
       }
       resolve_sales_business_context: {
         Args: { p_at?: string; p_store: string }

@@ -5,11 +5,11 @@
 
 ## 현재 기준
 
-- 마이그레이션 163개, 최신 `20260829000174_rpc_least_privilege.sql`
-- 번호가 붙은 DB 회귀 스위트 34개
+- 마이그레이션 165개, 최신 `20260830000176_operations_monitoring.sql`
+- 번호가 붙은 DB 회귀 스위트 36개
 - public 업무 테이블 30개
 - 자동 종료·자동 브레이크·변경 이력 청소 pg_cron 3종
-- 로컬 마이그레이션 장부와 파일 163/163 일치(2026-08-29 0174 통합 뒤 확인)
+- 로컬 마이그레이션 장부와 파일 165/165 일치(2026-08-30 0176 적용 뒤 확인)
 
 개수는 현재 스냅샷이다. 실제 판단은 파일과 시험 실행 결과를 우선한다.
 
@@ -20,7 +20,7 @@ supabase/
   config.toml             로컬 Supabase 설정
   migrations/             순서가 있는 전진 마이그레이션
   seed.sql                검산용 합성 매장·입고·레시피·판매
-  functions/              현재 함수 없음(Edge Function 미도입)
+  functions/ops-health/   전용 토큰으로 Cron·client-reported RPC 상태만 내는 Edge Function
 scripts/
   fresh-db.sh             격리 DB 생성·중간 버전 재생
   upgrade-check.sh        실제 마이그레이션 순서의 업그레이드 검사
@@ -30,7 +30,7 @@ scripts/
   admin-acl-audit.test.mjs 실제 DB metric·rollback·모바일 RPC 허용 목록 대조
 tests/
   _prelude.sql            공통 픽스처·사후조건
-  01_…34_*.sql            트랜잭션 DB 회귀 스위트
+  01_…36_*.sql            트랜잭션 DB 회귀 스위트
   concurrency.mjs         판매 저장과 마감·브레이크의 2세션 경합
 src/database.types.ts     `pnpm db:types` 생성 타입
 ```

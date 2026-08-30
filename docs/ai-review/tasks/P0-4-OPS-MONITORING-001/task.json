@@ -1,0 +1,113 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "P0-4-OPS-MONITORING-001",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R3",
+  "author_role": "SOLAR-DB",
+  "reviewer_role": "FABLE-SEC",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "95e521eb33eb9297801df3f724f80394315f6cb0",
+  "target_commit_sha": "95e521eb33eb9297801df3f724f80394315f6cb0",
+  "target_tree_oid": "0c750984593bc8fdedb1df1e468ad26646b6ccfb",
+  "agents_blob_oid": "bf9b9aeccabdc1055005c7f9bcb188ed8c05eb2a",
+  "agents_sha256": "485c7cb1cbb9143748a6028393723986201d9ff944ad9d3127e5c5f6f243c531",
+  "requirements": [
+    "P0-4-OPS-1: Cron 3종의 존재·활성·스케줄·최근 성공·실패·지연을 service_role 전용 상태 응답으로 판정한다.",
+    "P0-4-OPS-2: 앱은 예상 밖 RPC 오류의 코드·안정 detail·플랫폼만 보고하며 정상 업무 오류와 원문 메시지·사용자 입력은 저장하지 않는다.",
+    "P0-4-OPS-3: 오류 보고는 사용자별 상한과 동시 호출 직렬화를 갖고, 보고 실패가 원래 앱 오류 처리를 덮지 않는다.",
+    "P0-4-OPS-4: Edge 헬스 문은 별도 비밀 토큰을 확인하고 최소 상태만 반환하며 service/secret 키나 내부 오류를 노출하지 않는다.",
+    "P0-4-OPS-5: GitHub 정기 작업은 스테이징을 10분마다 확인해 장애 이슈를 생성·갱신하고 회복 시 닫으며, 실패한 헬스 체크를 성공으로 위장하지 않는다.",
+    "P0-4-OPS-6: 정확한 RPC 오류율을 주장하지 않고 client-reported 예상 밖 건수로 한정하며 Log Drain 기반 오류율은 후속 확장으로 남긴다.",
+    "P0-4-OPS-7: production에는 적용하지 않고 정확한 feature SHA 검수·CI 뒤 스테이징에서 실패와 회복을 실제로 훈련한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:server-calculation-authority",
+    "AGENTS:acl-environment-deployment",
+    "AGENTS:required-local-gate",
+    "WORK-QUEUE:P0-4",
+    "ARCH:operations-observability"
+  ],
+  "artifact_paths": [
+    ".github/workflows/operations-health.yml",
+    "README.md",
+    "apps/mobile/src/lib/rpcMonitoring.ts",
+    "apps/mobile/src/lib/supabase.ts",
+    "apps/mobile/tests/rpcMonitoring.test.ts",
+    "docs/operations/cron-rpc-alerting.md",
+    "docs/서버-확장-아키텍처-기획안.md",
+    "docs/작업큐.md",
+    "packages/db/README.md",
+    "packages/db/scripts/admin-acl-audit.sql",
+    "packages/db/scripts/admin-acl-audit.test.mjs",
+    "packages/db/scripts/upgrade-check.sh",
+    "packages/db/supabase/config.toml",
+    "packages/db/supabase/functions/ops-health/index.mjs",
+    "packages/db/supabase/migrations/20260830000176_operations_monitoring.sql",
+    "packages/db/tests/16_change_retention.sql",
+    "packages/db/tests/34_rpc_least_privilege.sql",
+    "packages/db/tests/36_operations_monitoring.sql",
+    "scripts/check-ops-health.mjs",
+    "scripts/ops-monitoring.test.mjs",
+    "scripts/sync-ops-health-issue.mjs",
+    "scripts/verify.mjs"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "ARCHITECTURE.md",
+    "docs/ai-review/README.md",
+    "docs/브랜치-DB-운영-기획안.md"
+  ],
+  "evidence_paths": [
+    "packages/db/src/database.types.ts",
+    "packages/db/supabase/migrations/20260826000137_server_auto_close.sql",
+    "packages/db/supabase/migrations/20260826000157_business_state_transitions.sql",
+    "packages/db/supabase/migrations/20260829000174_rpc_least_privilege.sql",
+    "packages/db/tests/26_server_auto_close.sql",
+    "packages/db/tests/concurrency.mjs"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "DB 시험 16·34·36과 새 DB 전체 마이그레이션·업그레이드 12번째 경로의 통과 결과",
+    "앱 오류 보고의 메시지 비전송·동기/비동기 실패 격리 시험",
+    "Edge 토큰 실패 401·정상 200·degraded 503과 비밀정보 비노출 계약 시험",
+    "GitHub 장애 이슈 생성·갱신·회복 종료와 실패 단계 최종 실패 계약 시험",
+    "실제 로컬 Edge Runtime에서 Cron 3종 healthy=true와 무토큰 401 확인",
+    "corepack pnpm verify 6/6과 정확한 SHA의 보호 CI 결과"
+  ],
+  "human_decisions": [
+    "2026-08-30 사용자는 남은 운영 게이트를 순차적으로 계속 진행하도록 승인했다.",
+    "7일 PITR 추가 결제는 미루고 실제 사용자 데이터 전까지 최대 RPO 24시간을 임시 정책으로 수용했다.",
+    "정확한 RPC 오류율을 위한 유료 Log Drain은 지금 도입하지 않고 최소 운영 안전망부터 구축한다.",
+    "production 적용은 별도 운영 배포 승인 전까지 금지하고 이번 작업은 스테이징 검증까지만 수행한다.",
+    "페이블은 기존 Claude Code Max 로그인 세션을 사용하며 4.00 USD는 실행 상한으로만 적용한다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "4.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [
+    "LRN-ORCH-CI-001"
+  ],
+  "excluded_learning_ids": [
+    {
+      "learning_id": "LRN-CODEX-TIME-001",
+      "reason": "영업일 시험 fixture의 벽시계 독립 규칙이며 운영 헬스·외부 알림 경계와 직접 관련이 없다."
+    },
+    {
+      "learning_id": "LRN-OPS-BACKUP-001",
+      "reason": "파괴적 DB 재구축과 백업 물리 경로 규칙이며 전진 migration·스테이징 관측 배포 범위와 직접 관련이 없다."
+    },
+    {
+      "learning_id": "LRN-AUDIT-PIN-001",
+      "reason": "아직 CANDIDATE이므로 신규 Task 정책 입력으로 적용하지 않는다."
+    }
+  ]
+}

@@ -113,6 +113,7 @@ step('③ CLI 계약 · ACL 보안', () => {
   if (!run('node', ['scripts/ci-contract.test.mjs'])) return false;
   if (!run('node', ['scripts/protected-gate-validator.test.mjs'])) return false;
   if (!run('node', ['scripts/github-ruleset.test.mjs'])) return false;
+  if (!run('node', ['scripts/ops-monitoring.test.mjs'])) return false;
   if (!BASH) { console.error('bash 를 못 찾았습니다 (Git Bash 필요).'); return false; }
   return run(BASH, ['packages/db/scripts/admin-acl.test.sh']);
 });

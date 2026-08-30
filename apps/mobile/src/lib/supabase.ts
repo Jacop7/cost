@@ -10,6 +10,7 @@ import { createClient } from '@supabase/supabase-js';
 import type { Database } from '@margincook/db';
 import { Platform } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
+import { reportRpcFailure } from './rpcMonitoring';
 
 /**
  * 세션 저장소는 플랫폼마다 다르다.
@@ -121,5 +122,12 @@ export class RpcError extends Error {
 
 /** supabase-js 의 오류를 `RpcError` 로 옮긴다. 문구는 그대로 두고 코드를 살린다. */
 export function rpcError(e: { message: string; code?: string | null; details?: string | null }): RpcError {
+  if (isSupabaseConfigured) {
+    reportRpcFailure(
+      (payload) => supabase.rpc('report_client_rpc_error', payload),
+      e,
+      Platform.OS,
+    );
+  }
   return new RpcError(e.message, e.code ?? null, e.details ?? null);
 }
