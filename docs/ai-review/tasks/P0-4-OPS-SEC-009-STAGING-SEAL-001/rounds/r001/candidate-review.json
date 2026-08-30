@@ -1,0 +1,141 @@
+{
+  "schema_version": "2.0",
+  "task_id": "P0-4-OPS-SEC-009-STAGING-SEAL-001",
+  "reviewer_role": "FABLE-SEC",
+  "review_mode": "SECURITY",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "c3896ec591d5049fae3945b8c97cd6b29380842f",
+  "target_commit_sha": "43cd98a88e91d441cc9acf8d3898ae9716874422",
+  "target_tree_oid": "006ec573a3bd828ceac0cfeee2da74c2bb309893",
+  "agents_blob_oid": "bf9b9aeccabdc1055005c7f9bcb188ed8c05eb2a",
+  "agents_sha256": "485c7cb1cbb9143748a6028393723986201d9ff944ad9d3127e5c5f6f243c531",
+  "task_sha256": "cce254982834f012b33ba8331fcfffe109e3f7e7be6051c0211bc58e1774ffc6",
+  "collaboration_sha256": "ce8c8e02f5822163ec3d7b2ede16e50d994d244cae5e8336ff882cdf40649486",
+  "input_files_sha256": "a9109c89b6ffc9e57215af42fd6b4e380d288583b6bcf85abcf2b7acea0bab3a",
+  "schema_sha256": "d8ffdb13e6b1e38279355d9ffd592cfb91dc023d287976adf7892e85dbfaf0d7",
+  "runner_sha256": "80dae1d06c89af056e9d8c210b571e978ee534fc128a5fe3b9867610b5ae447b",
+  "verdict": "CHANGES_REQUIRED",
+  "summary": "선행 P0-4-OPS-MONITORING-COMMIT-004 r001이 남긴 SEC-009를 target 43cd98a의 봉인 입력으로 재검증했다. 이번 Task에서 처음으로 20260831000177_operations_health_signal_separation.sql 원문이 artifact로 봉인되어 직접 읽었다. 0177의 public.ops_health_status()는 security definer + set search_path = pg_catalog, public, ops(9~13행)이고, public·anon·authenticated·margincook_rpc_executor에서 EXECUTE를 회수한 뒤 service_role에만 부여하며(125~127행), 자체 검증 블록(132~149행)이 authenticated 부재·service_role 보유·boolean 응답 형태를 마이그레이션 시점에 강제한다. 0176의 report_client_rpc_error(text,text,text)도 definer + 동일 고정 search_path(70~78행)이고 authenticated·service_role에만 열리며(138~141행) auth.uid() 필수·기대 오류 필터·형태 정규화·advisory lock 직렬화·15분 20건 상한으로 자가 가입 계정의 남용을 제한한다. 두 함수의 관계 참조(ops.*, cron.*, auth.uid)는 전부 스키마 한정이라 pg_temp 암묵 우선 검색에 의한 섀도잉 여지도 없다. pg_catalog 선두 배치로 내장 함수 섀도잉도 차단된다. 시험 36의 새 단언(18~26행)은 count(*)=2 AND bool_and(prosecdef) AND bool_and(proconfig @> …)로, SECURITY INVOKER 전환과 잘못된 search_path 값 사보타주는 확실히 FAIL시키며 CODEX turn-c001이 두 사보타주 적중과 정확한 target 분리 checkout verify 6/6, DB 36/36, core 178, mobile 212, 업그레이드 13/13, migration 장부 166/166·최신 0177·fresh_% 0개, staging·production 미접근을 기록했다. 따라서 SEC-009의 수용 기준(0177 원문 봉인 + CODEX 턴 증거)은 충족되어 같은 finding_id로 VERIFIED다. 다만 새 Minor SEC-010을 연다: proconfig가 NULL이면(향후 migration이 SET search_path 절 없이 함수를 재정의하는 회귀) NULL @> 배열이 NULL로 평가되고 bool_and가 NULL 입력을 건너뛰므로, 한 함수만 search_path 고정을 잃는 회귀가 이 봉인 단언을 그대로 통과한다. 두 함수 모두 잃으면 식 전체가 NULL이 되어 실패 보장이 pg_temp.ok의 NULL 처리에 좌우된다. search_path 미고정 definer는 이 봉인이 막으려는 대표 취약 유형이고, 선행 검수의 제안 E010은 coalesce(p.proconfig,'{}')를 포함했으나 구현에서 빠졌다. coalesce 한 줄 교체와 SET 절 제거(reset search_path) 사보타주 2종 FAIL 확인을 요구하며 proposed_edits로 정확한 수정안을 제공했다. 제품 원장·계산·Edge 동작 변경은 관찰되지 않았고(장부: 시험 36 단언 1개 추가), staging·production 미적용 기록은 범위 내 증거와 일치한다. Minor 1건 미해결로 CHANGES_REQUIRED이며, 이 판정과 무관하게 외부 게이트는 열려 있다.",
+  "findings": [
+    {
+      "finding_id": "P0-4-OPS-SEC-009",
+      "severity": "Improvement",
+      "review_state": "VERIFIED",
+      "category": "OTHER",
+      "requirement_or_invariant_ids": [
+        "AGENTS:required-local-gate",
+        "P0-4-OPS-SEC-006",
+        "WORK-QUEUE:P0-4-OPS-SEC-009-STAGING-SEAL"
+      ],
+      "evidence": [
+        {
+          "path": "packages/db/supabase/migrations/20260831000177_operations_health_signal_separation.sql",
+          "line_start": 9,
+          "line_end": 13,
+          "observation": "0177 원문을 봉인 입력으로 직접 확인: ops_health_status()가 security definer이며 set search_path = pg_catalog, public, ops로 고정돼 있다."
+        },
+        {
+          "path": "packages/db/supabase/migrations/20260831000177_operations_health_signal_separation.sql",
+          "line_start": 125,
+          "line_end": 149,
+          "observation": "public·anon·authenticated·margincook_rpc_executor EXECUTE 회수, service_role 부여, 그리고 authenticated 부재·service_role 보유·boolean 형태를 강제하는 자체 검증 블록이 원문에 있다."
+        },
+        {
+          "path": "packages/db/supabase/migrations/20260830000176_operations_monitoring.sql",
+          "line_start": 70,
+          "line_end": 78,
+          "observation": "report_client_rpc_error(text,text,text)도 security definer + set search_path = pg_catalog, public, ops이며, 138~141행에서 authenticated·service_role에만 EXECUTE가 열린다."
+        },
+        {
+          "path": "packages/db/tests/36_operations_monitoring.sql",
+          "line_start": 18,
+          "line_end": 26,
+          "observation": "요구된 시험이 추가됐다: 두 함수의 prosecdef=true와 proconfig의 정확한 search_path=pg_catalog, public, ops를 카탈로그에서 단언한다."
+        },
+        {
+          "path": "COLLABORATION_LOG",
+          "line_start": 0,
+          "line_end": 0,
+          "observation": "CODEX-FUNCTION-QA turn-c001이 정확한 target 43cd98a 분리 checkout verify 6/6, DB 36/36, 업그레이드 13/13, prosecdef=t·proconfig 실측, 사보타주 2종 FAIL 적중, migration 166/166, staging·production 미접근을 기록했다."
+        }
+      ],
+      "impact": "선행 검수에서 봉인 입력에 빠졌던 0177 원문의 definer·search_path·revoke/grant·자체 검증 하이진을 이번 Task에서 보안 lane이 직접 확인했고, CODEX 실행 증거 턴도 장부에 존재한다. 수용 기준이 모두 충족되어 VERIFIED다. 단, 새 단언의 NULL proconfig 회귀 방어 공백은 별도 SEC-010으로 분리했다.",
+      "acceptance_criteria": [
+        "스테이징 훈련 게이트 이전의 다음 봉인 Task artifact_paths에 packages/db/supabase/migrations/20260831000177_operations_health_signal_separation.sql을 포함해 FABLE-SEC가 원문(definer·set search_path·revoke/grant·자체 검증 블록)을 확인한다.",
+        "해당 Task 장부에 CODEX-FUNCTION-QA 턴으로 target commit 기준 verify 6/6·DB 36/36·업그레이드 13/13 결과를 기록한다."
+      ],
+      "required_tests": [
+        "36_operations_monitoring.sql 또는 34_rpc_least_privilege.sql: public.ops_health_status()·report_client_rpc_error의 prosecdef=true와 proconfig에 search_path가 고정돼 있음을 확인"
+      ],
+      "previous_finding_id": "P0-4-OPS-SEC-009",
+      "verified_by_engine": "FABLE"
+    },
+    {
+      "finding_id": "P0-4-OPS-SEC-010",
+      "severity": "Minor",
+      "review_state": "OPEN",
+      "category": "TEST_GAP",
+      "requirement_or_invariant_ids": [
+        "WORK-QUEUE:P0-4-OPS-SEC-009-STAGING-SEAL",
+        "AGENTS:required-local-gate",
+        "ARCH:operations-observability"
+      ],
+      "evidence": [
+        {
+          "path": "packages/db/tests/36_operations_monitoring.sql",
+          "line_start": 18,
+          "line_end": 26,
+          "observation": "새 봉인 단언이 bool_and(p.proconfig @> array['search_path=pg_catalog, public, ops']::text[])를 쓴다. proconfig가 NULL이면 NULL @> 배열이 NULL로 평가되고 bool_and 집계는 NULL 입력을 건너뛰므로, 한 함수가 SET search_path 절 없이 재정의되는 회귀(proconfig NULL)는 다른 함수가 정상이면 단언이 TRUE로 통과한다. 두 함수 모두 NULL이면 식 전체가 NULL이 되어 실패 보장이 pg_temp.ok의 NULL 처리 방식에 의존한다."
+        },
+        {
+          "path": "docs/ai-review/tasks/P0-4-OPS-MONITORING-COMMIT-004/rounds/r001/review.json",
+          "line_start": 243,
+          "line_end": 252,
+          "observation": "선행 제안 P0-4-OPS-SEC-E010은 coalesce(p.proconfig, '{}'::text[])로 NULL을 방어했으나, 실제 구현된 단언에서는 coalesce가 빠졌다."
+        },
+        {
+          "path": "COLLABORATION_LOG",
+          "line_start": 0,
+          "line_end": 0,
+          "observation": "실행된 사보타주는 SECURITY INVOKER 전환과 잘못된 search_path 값 2종뿐이며, SET 절 자체를 제거하는(proconfig NULL) 사보타주는 검증되지 않았다."
+        }
+      ],
+      "impact": "요구사항은 두 함수 중 하나라도 search_path가 달라지면 시험 36이 실패해야 한다고 명시한다. 그러나 가장 위험한 형태인 search_path 미고정(definer 함수의 고전적 취약 유형)으로의 회귀는 향후 migration이 SET 절 없이 create or replace할 때 이 봉인 단언을 조용히 통과할 수 있어, 스테이징·운영 전 회귀 방어가 불완전하다. 현재 0176·0177 원문 자체는 안전하므로 즉시 취약점은 아니다.",
+      "acceptance_criteria": [
+        "시험 36의 봉인 단언이 proconfig NULL을 실패로 취급한다(예: bool_and(coalesce(p.proconfig, '{}'::text[]) @> array['search_path=pg_catalog, public, ops']::text[])).",
+        "사보타주 검증: 한 함수만 SET search_path 절 없이 재정의(또는 alter function ... reset search_path)한 트랜잭션에서 시험 36이 FAIL하고, 두 함수 모두 제거한 경우에도 FAIL함을 확인 후 롤백한다.",
+        "기존 SECURITY INVOKER·잘못된 search_path 값 사보타주 FAIL 동작은 그대로 유지된다."
+      ],
+      "required_tests": [
+        "36_operations_monitoring.sql 사보타주(비커밋): alter function public.ops_health_status() reset search_path 후 시험 36 실행 → FAIL 확인",
+        "36_operations_monitoring.sql 사보타주(비커밋): 두 함수 모두 reset search_path 후 시험 36 실행 → FAIL 확인",
+        "수정 후 baseline: 정상 상태에서 DB 스위트 36/36과 corepack pnpm verify 6/6 재통과"
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    }
+  ],
+  "proposed_edits": [
+    {
+      "edit_id": "P0-4-OPS-SEC-E011",
+      "path": "packages/db/tests/36_operations_monitoring.sql",
+      "anchor": "          and bool_and(p.proconfig @> array['search_path=pg_catalog, public, ops']::text[])",
+      "operation": "REPLACE",
+      "proposed_text": "          and bool_and(coalesce(p.proconfig, '{}'::text[]) @> array['search_path=pg_catalog, public, ops']::text[])",
+      "rationale": "proconfig가 NULL인 회귀(SET search_path 절 제거)에서 NULL @> 배열이 NULL로 평가되어 bool_and가 해당 행을 건너뛰는 공백을 막는다. coalesce로 NULL을 빈 배열로 접으면 미고정 함수가 확실히 false가 되어 단언이 실패한다.",
+      "finding_ids": [
+        "P0-4-OPS-SEC-010"
+      ]
+    }
+  ],
+  "closed_finding_ids": [],
+  "reopened_finding_ids": [],
+  "remaining_required_finding_ids": [
+    "P0-4-OPS-SEC-010"
+  ],
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}
