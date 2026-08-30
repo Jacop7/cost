@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "P2-6-ACL-AUDIT-EVIDENCE-002",
+  "sequence": "t0001",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-08-30T00:47:15.982Z",
+  "turn_id": "turn-s002",
+  "turn_type": "SOLAR_RESPONSE",
+  "role": "SOLAR-DB",
+  "task_sha256": "18c582a1370fddb20771b42cd424667a5ba43b4a27e7c30d5115474fab18df93",
+  "runner_sha256": "dc78d5183405344a2fcadf9b4db56734b7cae60ab88385d857fd02e0d434c633",
+  "previous_manual_run_sha256": null,
+  "collaboration_before_sha256": "ea4ac7f4f155a9dea960b154f24caca105fd4a02a069450462ce927f53ce293b",
+  "collaboration_before_bytes": 5075,
+  "collaboration_entry_sha256": "42328121ffeff8971cc8b279a7199b2e00b3beffeaf1ef66fc261652f2729c28",
+  "collaboration_entry_bytes": 2433,
+  "collaboration_after_sha256": "67e71906b42a01588a13ad3b39655486ef173a334899d6c911f5d4b61c912d10",
+  "collaboration_after_bytes": 7508
+}
