@@ -137,8 +137,8 @@ export function computeProfit(input: ProfitInput): ProfitResult {
 
 /**
  * 권장 판매가 (② 3.6) = (재료+추가) ÷ (1 − 세금비율 − 고정지출률 − 목표순이익률).
- * 호환 기본값은 과거 검산 시나리오의 부가세 포함분 1/11(=10/110)이다. 실제 앱 호출자는
- * 매장 세금 항목의 `taxRate(items)`를 명시적으로 넘긴다. 이 기본 인자 정리는 작업큐 P2-5다.
+ * 세금 항목이 비면 0, 부가세 포함 가격이면 1/11(=10/110)처럼 호출자가 매장 기준을
+ * 명시적으로 넘긴다. 기본값을 두면 "세금 없음"을 과거 부가세 시나리오로 오인한다.
  * 분모 ≤ 0이면 산출 불가(null).
  * 검산: 제육 (2835+300)/(1−1/11−0.313−0.40) ≈ 15,986 → 16,000
  */
@@ -146,7 +146,7 @@ export function recommendedPrice(
   materialPlusExtra: number,
   fixedRate: number,
   targetProfitRate: number,
-  taxRatio: number = 10 / 110,
+  taxRatio: number,
 ): number | null {
   const denom = 1 - taxRatio - fixedRate - targetProfitRate;
   return denom > 0 ? materialPlusExtra / denom : null;
