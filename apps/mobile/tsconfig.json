@@ -13,13 +13,13 @@
       "@/*": [
         "./src/*"
       ],
-      "@sikjae/db": [
+      "@margincook/db": [
         "../../packages/db/src/database.types.ts"
       ],
-      "@sikjae/types": [
+      "@margincook/types": [
         "../../packages/types/src/index.ts"
       ],
-      "@sikjae/core": [
+      "@margincook/core": [
         "../../packages/core/src/index.ts"
       ]
     },

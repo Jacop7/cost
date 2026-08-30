@@ -88,7 +88,7 @@ case "$TARGET" in
     # 식별자만 — `postgresql://…` 같은 접속 문자열을 psql -d 가 URI 로 읽는다(검토 재현). 값은 되풀이하지 않는다.
     [[ "$D" =~ ^[a-z_][a-z0-9_]{0,62}$ ]] \
       || { echo "admin-acl: --local 의 DB 이름은 식별자(영소문자·숫자·_)만 됩니다 (받은 값 ${#D}자, 되풀이하지 않음)" >&2; exit 2; }
-    CT="${SUPABASE_DB_CONTAINER:-supabase_db_sikjae}"
+    CT="${SUPABASE_DB_CONTAINER:-supabase_db_margincook}"
     [[ "$CT" =~ ^[A-Za-z0-9_.-]{1,128}$ ]] || { echo "admin-acl: SUPABASE_DB_CONTAINER 형식이 아닙니다" >&2; exit 2; }
     LPW="${SUPABASE_ADMIN_PASSWORD:-postgres}"
     # 격리된 서브셸: 환경을 비우고 PGPASSWORD 만 export 한 뒤 exec. docker 에는 -e PGPASSWORD(이름만)로 넘긴다 —

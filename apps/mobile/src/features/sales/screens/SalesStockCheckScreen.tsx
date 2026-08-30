@@ -23,7 +23,7 @@ import { Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { AppHeader, Card, Icon, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { formatQuantity, isNegativeStock } from '@sikjae/core';
+import { formatQuantity, isNegativeStock } from '@margincook/core';
 import { T } from '@/theme/tokens';
 import { useRecipeShortages, useSaleShortages, type ShortageIngredient, type ShortageMode } from '../hooks';
 import { getPendingSale } from '../pendingSale';

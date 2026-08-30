@@ -7,7 +7,7 @@
  */
 import { useEffect, useRef, useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
-import { UNIT_PRICE_DIGIT_OPTIONS, formatUnitPrice, getLocale, unitPriceDigits } from '@sikjae/core';
+import { UNIT_PRICE_DIGIT_OPTIONS, formatUnitPrice, getLocale, unitPriceDigits } from '@margincook/core';
 import { AppHeader, Button, Card, Field, Input, Notice } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { clampDecimals } from '@/lib/num';

@@ -10,7 +10,7 @@ import { type Href, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Badge, Card, Chip, FAB, Icon, QueryState, ScrollTabs, SearchBar, Sheet } from '@/components/kit';
 import { T, won } from '@/theme/tokens';
-import { formatPercent } from '@sikjae/core';
+import { formatPercent } from '@margincook/core';
 import { useSettingsLists } from '@/features/master-data/hooks';
 import { useRecipeList, type RecipeRow } from '../hooks';
 

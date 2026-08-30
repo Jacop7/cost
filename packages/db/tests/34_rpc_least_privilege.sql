@@ -1,18 +1,18 @@
 -- ═══════════════════════════════════════════════════════════════
 -- 34 · 앱 롤은 공식 RPC만 실행하고 원장·내부 몸통을 직접 건드리지 못한다
 --
--- 기존 01~33은 내부 공식까지 재는 백색상자 시험이라 sikjae_rpc_executor로 돈다.
+-- 기존 01~33은 내부 공식까지 재는 백색상자 시험이라 margincook_rpc_executor로 돈다.
 -- 이 파일은 실제 Data API 역할(authenticated)로 전환해 외부 공격면을 따로 잰다.
 -- ═══════════════════════════════════════════════════════════════
 
 -- ── 1. 전용 실행 역할은 로그인·RLS 우회·앱의 SET ROLE 경로가 없다 ──────────────
 
 select pg_temp.ok('RPC 실행 역할은 로그인할 수 없다', not (
-  select rolcanlogin from pg_roles where rolname = 'sikjae_rpc_executor'));
+  select rolcanlogin from pg_roles where rolname = 'margincook_rpc_executor'));
 select pg_temp.ok('RPC 실행 역할은 authenticated 권한을 상속한다',
-  pg_has_role('sikjae_rpc_executor', 'authenticated', 'member'));
+  pg_has_role('margincook_rpc_executor', 'authenticated', 'member'));
 select pg_temp.ok('authenticated는 RPC 실행 역할로 전환할 수 없다', not
-  pg_has_role('authenticated', 'sikjae_rpc_executor', 'member'));
+  pg_has_role('authenticated', 'margincook_rpc_executor', 'member'));
 
 select pg_temp.eq('authenticated에 열린 public 함수는 공식 facade 64개뿐이다', (
   select count(*) from pg_proc p join pg_namespace n on n.oid = p.pronamespace
@@ -31,7 +31,7 @@ select pg_temp.raises('RPC 실행 역할은 전 매장 자동 마감 스윕을 �
 select pg_temp.raises('RPC 실행 역할은 전 매장 변경 이력 청소를 부를 수 없다',
   'select purge_entity_changes()', '42501');
 select pg_temp.ok('RPC 실행 역할에 매장 삭제 몸통 EXECUTE가 없다', not
-  has_function_privilege('sikjae_rpc_executor',
+  has_function_privilege('margincook_rpc_executor',
     'public.purge_archived_store(uuid,text)', 'execute'));
 
 select pg_temp.eq('RPC 실행 역할에 postgres 유지보수 definer가 열린 건수는 0이다', (
@@ -41,7 +41,7 @@ select pg_temp.eq('RPC 실행 역할에 postgres 유지보수 definer가 열린 
     join pg_roles owner_role on owner_role.oid = p.proowner
    where n.nspname = 'public' and p.prokind in ('f', 'p') and p.prosecdef
      and owner_role.rolname = 'postgres'
-     and has_function_privilege('sikjae_rpc_executor', p.oid, 'execute')
+     and has_function_privilege('margincook_rpc_executor', p.oid, 'execute')
      and not has_function_privilege('authenticated', p.oid, 'execute')
 )::numeric, 0);
 
@@ -55,11 +55,11 @@ begin
   v_owner := pg_temp.new_owner();
   perform pg_temp.as_owner(v_owner);
   v_store := (create_store('P0-5 다른 사장님', 'Asia/Seoul')->>'store_id')::uuid;
-  perform set_config('sikjae.test.foreign_store', v_store::text, true);
+  perform set_config('margincook.test.foreign_store', v_store::text, true);
   v_ingredient := save_ingredient(v_store, jsonb_build_object(
     'name', 'P0-5 다른 매장 식재료', 'base_unit', 'g', 'per_volume', 1,
     'safety_stock', 0, 'min_order_qty', 1));
-  perform set_config('sikjae.test.foreign_ingredient', v_ingredient::text, true);
+  perform set_config('margincook.test.foreign_ingredient', v_ingredient::text, true);
   perform pg_temp.as_owner(pg_temp.owner());
 end
 $t$;
@@ -98,17 +98,17 @@ select pg_temp.eq('RLS로 내 매장은 한 줄 보인다',
   (select count(*) from stores where id = pg_temp.store()), 1);
 select pg_temp.eq('RLS로 다른 사장님 매장은 보이지 않는다',
   (select count(*) from stores
-    where id = current_setting('sikjae.test.foreign_store')::uuid), 0);
+    where id = current_setting('margincook.test.foreign_store')::uuid), 0);
 
 select pg_temp.ok('facade도 다른 사장님 매장 설정을 돌려주지 않는다',
-  get_settings(current_setting('sikjae.test.foreign_store')::uuid) is null);
+  get_settings(current_setting('margincook.test.foreign_store')::uuid) is null);
 select pg_temp.raises('facade도 다른 사장님 매장에 쓰지 못한다',
-  format('select save_category(%L, %L::jsonb)', current_setting('sikjae.test.foreign_store'),
+  format('select save_category(%L, %L::jsonb)', current_setting('margincook.test.foreign_store'),
          '{"name":"P0-5 교차 매장 침입","sort_order":1}'), '42501');
 select pg_temp.ok('RLS에 기대는 상세 facade는 다른 매장 식재료를 돌려주지 않는다',
-  ingredient_detail(current_setting('sikjae.test.foreign_ingredient')::uuid) is null);
+  ingredient_detail(current_setting('margincook.test.foreign_ingredient')::uuid) is null);
 select pg_temp.ok('RPC 실행 역할은 RLS를 우회하지 않는다', not (
-  select rolbypassrls from pg_roles where rolname = 'sikjae_rpc_executor'));
+  select rolbypassrls from pg_roles where rolname = 'margincook_rpc_executor'));
 
 -- ── 3. 내부 몸통은 PostgREST에서 직접 호출할 수 없다 ───────────────────────
 

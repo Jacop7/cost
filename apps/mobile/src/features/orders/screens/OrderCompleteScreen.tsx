@@ -12,7 +12,7 @@ import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Badge, Button, Card, Field, Icon, Input, QueryState, SearchBar, Select, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { formatQuantity, formatUnitPrice, previewBaseUnitPrice, rawUnitPrice, roundOrNull } from '@sikjae/core';
+import { formatQuantity, formatUnitPrice, previewBaseUnitPrice, rawUnitPrice, roundOrNull } from '@margincook/core';
 import { T, won } from '@/theme/tokens';
 import { clampDecimals, dash } from '@/lib/num';
 import { useIngredientDetail, useIngredientList } from '@/features/ingredients/hooks';

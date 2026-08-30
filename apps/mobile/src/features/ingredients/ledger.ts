@@ -3,7 +3,7 @@
  *
  * 같은 사건을 화면마다 다르게 부르면(‘판매 소진’ vs ‘소진’) 사장님은 다른 일이 벌어졌다고 읽는다.
  */
-import { formatQuantity, isNegativeStock } from '@sikjae/core';
+import { formatQuantity, isNegativeStock } from '@margincook/core';
 import type { LedgerEntry } from './hooks';
 
 export type LedgerType = LedgerEntry['type'];

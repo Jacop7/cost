@@ -11,14 +11,14 @@ import {
   stockStateOf,
   STOCK_STATE_LABEL,
   type StockState,
-} from '@sikjae/core';
+} from '@margincook/core';
 import type { IngredientRow } from '../hooks';
 
 /** DB 기준단위(ea) → 화면 표기(개). */
 const dispUnit = (u: IngredientRow['baseUnit']) => (u === 'ea' ? '개' : u);
 
 /**
- * 재고 상태 판정은 **`@sikjae/core` 한 곳**에 있다(0108).
+ * 재고 상태 판정은 **`@margincook/core` 한 곳**에 있다(0108).
  *
  * ⚠ 예전엔 여기에도 한 벌이 있었고 core 와 **뜻이 달랐다** —
  *   core 는 `soonOut` 을 'out' 으로 보냈고 여기는 'low' 로 봤다.

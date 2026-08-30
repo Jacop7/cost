@@ -1,4 +1,4 @@
-import type { Json } from '@sikjae/db';
+import type { Json } from '@margincook/db';
 
 /**
  * jsonb 인자로 넘길 값의 타입 다리.

@@ -34,7 +34,7 @@ begin
                           phone_change, phone_change_token, reauthentication_token,
                           raw_app_meta_data, raw_user_meta_data)
   values (v_user, '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated',
-          'demo@sikjae.local', crypt('demo1234', gen_salt('bf')), now(), now(), now(),
+          'demo@margincook.local', crypt('demo1234', gen_salt('bf')), now(), now(), now(),
           '', '', '', '', '', '', '', '',
           '{"provider":"email","providers":["email"]}'::jsonb, '{}'::jsonb)
   on conflict (id) do nothing;
@@ -42,7 +42,7 @@ begin
   -- 이메일 로그인은 identities 행도 있어야 provider 매칭이 된다.
   insert into auth.identities (id, user_id, provider_id, identity_data, provider, last_sign_in_at, created_at, updated_at)
   values (gen_random_uuid(), v_user, v_user::text,
-          jsonb_build_object('sub', v_user::text, 'email', 'demo@sikjae.local', 'email_verified', true),
+          jsonb_build_object('sub', v_user::text, 'email', 'demo@margincook.local', 'email_verified', true),
           'email', now(), now(), now())
   on conflict do nothing;
 

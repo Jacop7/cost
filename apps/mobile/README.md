@@ -1,4 +1,4 @@
-# @sikjae/mobile — Expo 앱
+# @margincook/mobile — Expo 앱
 
 사장님용 Expo SDK 54 앱. React 19 · RN 0.81 · expo-router 6을 사용하며 하단 탭은
 **식재료 · 레시피 · 발주 · 매출관리 · MY** 5개다.
@@ -27,10 +27,10 @@ tests/                     vitest + jsdom 컴포넌트·계약·경계 시험
 
 ## 원칙
 
-- 확정 계산은 DB RPC, 앱 미리보기는 `@sikjae/core`를 사용한다.
+- 확정 계산은 DB RPC, 앱 미리보기는 `@margincook/core`를 사용한다.
 - 저장은 구매단위·N인분 입력을 g/ml/개·1인분 기준으로 환산한 뒤 수행한다.
 - 서버 날짜를 받기 전 기기 시계로 영업일을 추정하지 않는다.
-- 재고 상태는 `@sikjae/core`의 `stockStateOf` 한 곳에서 판정한다.
+- 재고 상태는 `@margincook/core`의 `stockStateOf` 한 곳에서 판정한다.
 - 공용 논리 경계에서 화면 도메인을 역참조하지 않는다.
 - 각 탭 폴더는 `_layout.tsx`를 가지며 자체 `AppHeader`를 사용한다.
 
@@ -54,8 +54,8 @@ Node 하한은 루트 `package.json`의 `>=20.19.4`, pnpm은 `9.12.0`이다. 루
 
 ```bash
 # 앱만 빠르게
-corepack pnpm --filter @sikjae/mobile typecheck
-corepack pnpm --filter @sikjae/mobile test
+corepack pnpm --filter @margincook/mobile typecheck
+corepack pnpm --filter @margincook/mobile test
 
 # 저장소 전체 6단계
 corepack pnpm verify

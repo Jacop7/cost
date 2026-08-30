@@ -101,7 +101,7 @@ run hash와 장부 전·후 hash·bytes를 보존하고, Fable 회차와 수동 
 하나의 연속 chain으로 다시 검증한다. append 뒤 중단되면 같은 명령이 부분 entry의 안전한 suffix만
 이어 붙이고 prepared 디렉터리를 공개하며, 이미 살아 있거나 다른 tail과 섞인 경우는 자동 수정하지 않는다.
 
-원시 CLI 로그·잠금·임시 snapshot은 저장소 밖 `%LOCALAPPDATA%\Sikjae\ClaudeReview\`에 둔다.
+원시 CLI 로그·잠금·임시 snapshot은 저장소 밖 `%LOCALAPPDATA%\MarginCook\ClaudeReview\`에 둔다.
 `LOCALAPPDATA`가 `%USERPROFILE%\AppData\Local`과 다르거나 실제 경로가 symlink/junction·OneDrive·
 제품 저장소와 겹치면 실행하지 않는다.
 task lock에는 로컬 host·PID·고유 token을 기록한다. 강제 종료 뒤 같은 host의 PID가 확실히 종료된

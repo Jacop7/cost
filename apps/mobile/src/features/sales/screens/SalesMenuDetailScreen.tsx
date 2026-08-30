@@ -17,7 +17,7 @@ import { SalesRow, SecLabel } from '../components/ProfitBlocks';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
 import { safeBack } from '@/lib/nav';
 import { T, won } from '@/theme/tokens';
-import { formatQuantity, formatUnitPrice } from '@sikjae/core';
+import { formatQuantity, formatUnitPrice } from '@margincook/core';
 import { useRecipeDetail } from '@/features/recipes/hooks';
 import { useDayMenuDetail, useRangeMenuDetail, useSalesRange } from '../hooks';
 import { rangeLabel } from '@/lib/date';

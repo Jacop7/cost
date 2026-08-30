@@ -41,7 +41,7 @@ begin
     update business_days set status = 'closed'
      where store_id = pg_temp.store() and business_date = v_day;
   end if;
-  set local role sikjae_rpc_executor;
+  set local role margincook_rpc_executor;
   return v_day;
 end $h$;
 
@@ -240,7 +240,7 @@ begin
      values (gen_random_uuid(), 1, ''{}''::jsonb, ''{}''::jsonb)', '42501');
   perform pg_temp.raises('정정 기록은 지울 수도 없다',
     'delete from business_day_revisions', '42501');
-  set local role sikjae_rpc_executor;
+  set local role margincook_rpc_executor;
 end $t$;
 
 
@@ -313,7 +313,7 @@ begin
   set local role postgres;
   update business_days set business_date = v_today - 400, status = 'closed'
    where store_id = v_store and business_date = v_today;
-  set local role sikjae_rpc_executor;
+  set local role margincook_rpc_executor;
 
   perform pg_temp.raises('장부 없는 오늘은 이 문으로 못 만든다',
     format('select amend_ended_business_day(%L, %L, 0, %L::jsonb)', v_store, v_today,
@@ -359,7 +359,7 @@ begin
   set local role postgres;
   insert into daily_sales (store_id, sale_date) values (v_store, v_day)
   on conflict (store_id, sale_date) do update set revision = daily_sales.revision + 7;
-  set local role sikjae_rpc_executor;
+  set local role margincook_rpc_executor;
 
   v_a := amend_ended_business_day(v_store, v_day, pg_temp.rev(v_day),
            jsonb_build_array(jsonb_build_object('recipe_id', v_r, 'qty_hall', 6)));
@@ -433,7 +433,7 @@ begin
     update daily_sales set updated_at = now() - interval '1 hour'
      where store_id = v_store and sale_date = v_day;
     alter table daily_sales enable trigger daily_sales_touch;
-    set local role sikjae_rpc_executor;
+    set local role margincook_rpc_executor;
 
     v_upd0 := (select updated_at from daily_sales
                 where store_id = v_store and sale_date = v_day);
@@ -494,7 +494,7 @@ begin
   begin
     set local role postgres;
     update recipes set name = '이름을 바꿔 봤다' where id = v_r;
-    set local role sikjae_rpc_executor;
+    set local role margincook_rpc_executor;
 
     -- 이름을 바꾼 **뒤에** 새 정정을 만든다.
     v_d := amend_ended_business_day(v_store, v_day, pg_temp.rev(v_day),
@@ -515,7 +515,7 @@ begin
 
     set local role postgres;
     update recipes set name = v_old_name where id = v_r;
-    set local role sikjae_rpc_executor;
+    set local role margincook_rpc_executor;
   end;
 end $t$;
 
@@ -548,7 +548,7 @@ begin
   set local role postgres;
   update business_days set last_activity_at = now() - interval '1 hour'
    where store_id = v_store and status::text <> 'closed';
-  set local role sikjae_rpc_executor;
+  set local role margincook_rpc_executor;
 
   v_act0 := (select last_activity_at from business_days
               where store_id = v_store and status::text <> 'closed'
@@ -612,7 +612,7 @@ begin
      set snapshot = jsonb_set(snapshot, '{etc_tax_rate}', to_jsonb(0.05::numeric)),
          basis_quality = 'exact'
    where store_id = v_store and business_date = v_day;
-  set local role sikjae_rpc_executor;
+  set local role margincook_rpc_executor;
   perform pg_temp.eq('전제: 그날 세율이 5%다', day_etc_tax_rate(v_store, v_day), 0.05, 0);
 
   -- 그날 세율로 기타 매출을 하나 남긴다.
@@ -627,7 +627,7 @@ begin
   set local role postgres;
   update settings set tax_items = '[{"name":"시험세","rate":20}]'::jsonb
    where store_id = v_store;
-  set local role sikjae_rpc_executor;
+  set local role margincook_rpc_executor;
   -- ⚠ `is distinct from` 만 쓰면 그날 세율이 **없을 때도** 참이다. 둘 다 있고 다름을 잰다.
   perform pg_temp.ok('전제: 그날 세율이 기록에 있다', day_etc_tax_rate(v_store, v_day) is not null);
   perform pg_temp.ok('전제: 현재 세율이 그날 세율과 다르다',
@@ -694,7 +694,7 @@ begin
   update business_days
      set snapshot = snapshot - 'etc_tax_rate', basis_quality = 'exact'
    where store_id = v_store and business_date = v_day;
-  set local role sikjae_rpc_executor;
+  set local role margincook_rpc_executor;
   perform pg_temp.ok('전제: 그날 세율이 기록에 없다',
     day_etc_tax_rate(v_store, v_day) is null);
 
@@ -760,7 +760,7 @@ declare
 begin
   set local role postgres;
   update recipes set active = false where id = v_r;
-  set local role sikjae_rpc_executor;
+  set local role margincook_rpc_executor;
   perform pg_temp.ok('전제: 지금은 판매 중지된 메뉴다',
     not (select active from recipes where id = v_r));
 
@@ -779,7 +779,7 @@ begin
 
   set local role postgres;
   update recipes set active = true where id = v_r;
-  set local role sikjae_rpc_executor;
+  set local role margincook_rpc_executor;
 end $t$;
 
 
@@ -804,7 +804,7 @@ begin
      set snapshot = jsonb_set(snapshot, '{recipes}', (snapshot->'recipes') - v_r::text),
          basis_quality = 'exact'
    where store_id = v_store and business_date = v_day;
-  set local role sikjae_rpc_executor;
+  set local role margincook_rpc_executor;
   perform pg_temp.ok('전제: 그날 기준에 그 메뉴가 없다',
     (select snapshot #> array['recipes', v_r::text] from business_days
       where store_id = v_store and business_date = v_day) is null);
@@ -866,7 +866,7 @@ begin
   -- 전제는 소유자로 본다 — 앱 롤에는 남의 매장 메뉴가 RLS 로 안 보인다(그게 정상이다).
   perform pg_temp.ok('전제: 그 메뉴는 우리 매장 것이 아니다',
     (select store_id from recipes where id = v_other) <> v_store);
-  set local role sikjae_rpc_executor;
+  set local role margincook_rpc_executor;
 
   perform pg_temp.raises('남의 매장 메뉴는 안정된 코드로 거절한다',
     format('select amend_ended_business_day(%L, %L, %s, %L::jsonb)',
@@ -915,7 +915,7 @@ begin
   insert into recipes select * from _new_recipe;
   update business_days set basis_quality = 'exact'
    where store_id = v_store and business_date = v_day;
-  set local role sikjae_rpc_executor;
+  set local role margincook_rpc_executor;
 
   select basis_quality::text, revision_no into v_bq0, v_aud0
     from business_days where store_id = v_store and business_date = v_day;
@@ -1000,7 +1000,7 @@ begin
   -- 영업 중에 사장님이 세율을 바꾼다.
   set local role postgres;
   update settings set tax_items = '[{"name":"시험세","rate":37}]'::jsonb where store_id = v_store;
-  set local role sikjae_rpc_executor;
+  set local role margincook_rpc_executor;
   perform pg_temp.ok('전제: 현재 세율이 그날 세율과 달라졌다', store_tax_rate(v_store) <> v_rate);
 
   perform save_sale(v_store, v_today, '[]'::jsonb,
@@ -1053,7 +1053,7 @@ begin
      set snapshot = jsonb_set(snapshot, '{recipes}', (snapshot->'recipes') - v_r::text),
          basis_quality = 'exact'
    where store_id = v_store and business_date = v_day;
-  set local role sikjae_rpc_executor;
+  set local role margincook_rpc_executor;
 
   v_bdet0 := day_sales_detail(v_store, v_day);
   v_sum0  := sales_summary(v_store, v_day, v_day);
@@ -1115,7 +1115,7 @@ begin
      set snapshot = jsonb_set(snapshot, array['recipes', v_other::text],
                               recipe_snapshot_entry(v_other), true)
    where store_id = v_store and business_date = v_day;
-  set local role sikjae_rpc_executor;
+  set local role margincook_rpc_executor;
   perform pg_temp.ok('전제: 우리 장부 기준에 남의 메뉴가 섞여 있다',
     (select snapshot #> array['recipes', v_other::text] from business_days
       where store_id = v_store and business_date = v_day) is not null);
@@ -1140,14 +1140,14 @@ begin
   set local role postgres;
   perform pg_temp.raises('기준 함수도 남의 매장 메뉴를 직접 거절한다',
     format('select add_to_day_basis(%L, %L, %L, true)', v_store, v_day, v_other), '45013');
-  set local role sikjae_rpc_executor;
+  set local role margincook_rpc_executor;
 
   -- 치워 둔다. 다음 블록이 깨끗한 장부에서 재야 한다.
   set local role postgres;
   update business_days
      set snapshot = jsonb_set(snapshot, '{recipes}', (snapshot->'recipes') - v_other::text)
    where store_id = v_store and business_date = v_day;
-  set local role sikjae_rpc_executor;
+  set local role margincook_rpc_executor;
 end $t$;
 
 
@@ -1167,13 +1167,13 @@ begin
                                                  'material_cost', 1000, 'extra_cost', 0,
                                                  'tax', 0, 'tax_mode', 'included'), true)
    where store_id = v_store and business_date = v_day;
-  set local role sikjae_rpc_executor;
+  set local role margincook_rpc_executor;
   perform pg_temp.ok('전제: 그 메뉴는 지금 레시피에 없다',
     not exists (select 1 from recipes where id = v_gone));
 
   set local role postgres;
   v_entry := add_to_day_basis(v_store, v_day, v_gone, true);
-  set local role sikjae_rpc_executor;
+  set local role margincook_rpc_executor;
   perform pg_temp.eq_t('지운 메뉴라도 그날 기준이 있으면 그대로 준다',
     v_entry->>'name', '지운 메뉴');
 
@@ -1181,7 +1181,7 @@ begin
   update business_days
      set snapshot = jsonb_set(snapshot, '{recipes}', (snapshot->'recipes') - v_gone::text)
    where store_id = v_store and business_date = v_day;
-  set local role sikjae_rpc_executor;
+  set local role margincook_rpc_executor;
 end $t$;
 
 

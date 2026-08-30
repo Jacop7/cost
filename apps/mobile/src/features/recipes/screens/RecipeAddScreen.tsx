@@ -1,7 +1,7 @@
 /**
  * RCP-03 레시피 추가 / RCP-04 수정 — 같은 폼이다(`?id=` 유무로 갈린다).
  *
- * 손익 미리보기는 `@sikjae/core` 공식으로 즉시 계산하고, **확정값은 저장 시 서버**가 낸다.
+ * 손익 미리보기는 `@margincook/core` 공식으로 즉시 계산하고, **확정값은 저장 시 서버**가 낸다.
  * 두 공식이 어긋나면 저장 전후 숫자가 달라지므로 core 와 SQL 의 식이 같아야 한다(절대원칙 3).
  */
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
@@ -9,7 +9,7 @@ import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { AppHeader, Badge, Button, Card, Field, Icon, Input, QueryState, Select, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { formatPercent, formatQuantity, formatUnitPrice, recommendedPrice, round, taxAmount, taxRate } from '@sikjae/core';
+import { formatPercent, formatQuantity, formatUnitPrice, recommendedPrice, round, taxAmount, taxRate } from '@margincook/core';
 import { T, won } from '@/theme/tokens';
 import { clampDecimals } from '@/lib/num';
 import { useSettingsLists } from '@/features/master-data/hooks';

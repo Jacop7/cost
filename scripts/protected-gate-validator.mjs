@@ -240,7 +240,7 @@ export function validateCheckRuns({ decisionSha, requiredContexts, checkRuns, pr
 
 async function githubJson(path) {
   const repository = process.env.GITHUB_REPOSITORY ?? 'Jacop7/cost';
-  const headers = { Accept: 'application/vnd.github+json', 'User-Agent': 'sikjae-protected-gate' };
+  const headers = { Accept: 'application/vnd.github+json', 'User-Agent': 'margincook-protected-gate' };
   if (process.env.GITHUB_TOKEN) headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
   const response = await fetch(`https://api.github.com/repos/${repository}${path}`, { headers });
   if (!response.ok) fail(`GitHub API ${response.status}: ${path}`);

@@ -20,7 +20,7 @@
  *
  * 총량 계산과 변경은 서버가 권위이며 클라이언트는 상태만 미리 본다.
  */
-import type { StockBadge } from '@sikjae/types';
+import type { StockBadge } from '@margincook/types';
 
 export type StockState = StockBadge; // 'out' | 'low' | 'ok'
 

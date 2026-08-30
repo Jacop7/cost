@@ -23,7 +23,7 @@ import { AppHeader, Button, Card, ConfirmSheet, Field, Icon, Input, QueryState, 
 import { safeBack } from '@/lib/nav';
 import { useStoreLocalDate } from '@/features/business-day/businessDay';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
-import { formatQuantity, formatUnitPrice, isNegativeStock } from '@sikjae/core';
+import { formatQuantity, formatUnitPrice, isNegativeStock } from '@margincook/core';
 import { T, won } from '@/theme/tokens';
 import { clampDecimals } from '@/lib/num';
 

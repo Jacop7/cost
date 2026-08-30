@@ -16,7 +16,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const DIR = dirname(fileURLToPath(import.meta.url));
-const CONTAINER = process.env.SUPABASE_DB_CONTAINER ?? 'supabase_db_sikjae';
+const CONTAINER = process.env.SUPABASE_DB_CONTAINER ?? 'supabase_db_margincook';
 
 /*
  * 어느 DB 에 붙을지. 기본은 개발 DB(`postgres`).

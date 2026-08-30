@@ -22,7 +22,7 @@
 # ════════════════════════════════════════════════════════════════
 set -euo pipefail
 
-CT="${SUPABASE_DB_CONTAINER:-supabase_db_sikjae}"
+CT="${SUPABASE_DB_CONTAINER:-supabase_db_margincook}"
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 DB_DIR="$(cd -- "$SCRIPT_DIR/.." && pwd)"
 MIG_DIR="$DB_DIR/supabase/migrations"
@@ -471,5 +471,71 @@ else
   fi
 fi
 
+# ── 시나리오 11 · 0174 실행 역할·Cron·내부 키 → MarginCook 네임스페이스 ────
+say "⑪ 0174 상태 → 0175가 실행 역할·Cron·삭제 가드 키를 MarginCook으로 전환"
+BASE11=20260829000174
+STEP11="$(cd "$MIG_DIR" && ls 20260830000175_*.sql)"
+bash "$SCRIPT_DIR/fresh-db.sh" --until "$BASE11" "$D" >/dev/null
+old_role=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c \
+  "select count(*) from pg_roles where rolname='sikjae_rpc_executor';")
+old_cron=$(docker exec -i "$CT" psql -U postgres -d "$D" -q -t -A -c \
+  "create temp table brand_cron_count(value integer);
+   do \$\$
+   declare
+     v_count integer := 0;
+   begin
+     if to_regclass('cron.job') is null then
+       insert into brand_cron_count values (0);
+     else
+       execute 'select count(*) from cron.job where jobname in
+         (''sikjae-close-due'',''sikjae-apply-breaks'',''sikjae-purge-changes'')'
+         into strict v_count;
+       insert into brand_cron_count values (v_count);
+     end if;
+   end
+   \$\$;
+   select value from brand_cron_count;")
+if [ "$old_role" != "1" ]; then
+  say "   FAIL 전제가 안 섰다 — 이전 실행 역할이 정확히 1개가 아니다 ($old_role)"
+  fail=1
+elif ! err="$(psql_d "$D" < "$MIG_DIR/$STEP11" 2>&1 1>/dev/null)"; then
+  say "   FAIL 0175 적용이 막혔다"; say "        $(printf '%s' "$err" | head -3)"; fail=1
+else
+  state=$(docker exec -i "$CT" psql -U postgres -d "$D" -q -t -A -c "
+    create temp table brand_cron_state(old_count integer, new_count integer);
+    do \$\$
+    declare
+      v_old integer := 0;
+      v_new integer := 0;
+    begin
+      if to_regclass('cron.job') is not null then
+        execute 'select count(*) from cron.job where jobname like ''sikjae-%'''
+          into v_old;
+        execute 'select count(*) from cron.job where jobname in
+          (''margincook-close-due'',''margincook-apply-breaks'',''margincook-purge-changes'')'
+          into v_new;
+      end if;
+      insert into brand_cron_state values (v_old, v_new);
+    end
+    \$\$;
+    select concat_ws('|',
+      (select count(*) from pg_roles where rolname='sikjae_rpc_executor'),
+      (select count(*) from pg_roles where rolname='margincook_rpc_executor'),
+      position('margincook.store_purge_id' in pg_get_functiondef('public.reject_store_direct_delete()'::regprocedure)) > 0,
+      position('sikjae.store_purge_id' in pg_get_functiondef('public.reject_store_direct_delete()'::regprocedure)) = 0,
+      old_count,
+      new_count)
+      from brand_cron_state;" )
+  IFS='|' read -r old_after new_after new_key old_key_gone old_cron_after new_cron <<< "$state"
+  if [ "$old_after" = "0" ] && [ "$new_after" = "1" ] \
+     && [ "$new_key" = "t" ] && [ "$old_key_gone" = "t" ] \
+     && [ "$old_cron_after" = "0" ] && [ "$new_cron" = "$old_cron" ]; then
+    say "   ok   역할 OID 전진 · 이전 키/작업명 0 · 기존 Cron ${old_cron}건 이름 보존 전환"
+  else
+    say "   FAIL 전환 상태가 맞지 않다: $state (기존 Cron=$old_cron)"
+    fail=1
+  fi
+fi
+
 say ""
-if [ "$fail" = "0" ]; then say "업그레이드 경로 10/10 통과"; else say "업그레이드 경로 실패"; exit 1; fi
+if [ "$fail" = "0" ]; then say "업그레이드 경로 11/11 통과"; else say "업그레이드 경로 실패"; exit 1; fi

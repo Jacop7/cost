@@ -29,13 +29,13 @@ importers:
       '@expo/metro-runtime':
         specifier: ~6.1.2
         version: 6.1.2(expo@54.0.35)(react-dom@19.1.0(react@19.1.0))(react-native@0.81.5(@babel/core@7.29.7)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
-      '@sikjae/core':
+      '@margincook/core':
         specifier: workspace:*
         version: link:../../packages/core
-      '@sikjae/db':
+      '@margincook/db':
         specifier: workspace:*
         version: link:../../packages/db
-      '@sikjae/types':
+      '@margincook/types':
         specifier: workspace:*
         version: link:../../packages/types
       '@supabase/supabase-js':
@@ -114,7 +114,7 @@ importers:
 
   packages/core:
     dependencies:
-      '@sikjae/types':
+      '@margincook/types':
         specifier: workspace:*
         version: link:../types
     devDependencies:

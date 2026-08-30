@@ -23,10 +23,10 @@
 # ════════════════════════════════════════════════════════════════
 set -euo pipefail
 
-CT="${SUPABASE_DB_CONTAINER:-supabase_db_sikjae}"
+CT="${SUPABASE_DB_CONTAINER:-supabase_db_margincook}"
 
 # ── 경로 ────────────────────────────────────────────────────────
-# ⚠ 상대경로를 쓰지 않는다. `pnpm --filter @sikjae/db fresh-db` 는 **패키지 디렉터리**
+# ⚠ 상대경로를 쓰지 않는다. `pnpm --filter @margincook/db fresh-db` 는 **패키지 디렉터리**
 #   에서 돌기 때문에, `packages/db/supabase/...` 로 적으면
 #   `packages/db/packages/db/supabase/...` 를 찾는다. 실제로 그랬다.
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"

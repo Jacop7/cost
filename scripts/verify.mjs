@@ -101,7 +101,7 @@ step('① 타입 (pnpm -r typecheck)', () => pnpmRun(['-r', 'typecheck']));
  */
 step(skipDb ? '② 시험 (core · mobile — DB 제외)' : '② 시험 (pnpm -r test)', () => (
   skipDb
-    ? pnpmRun(['--filter', '@sikjae/core', '--filter', '@sikjae/mobile', 'test'])
+    ? pnpmRun(['--filter', '@margincook/core', '--filter', '@margincook/mobile', 'test'])
     : pnpmRun(['-r', 'test'])
 ));
 
@@ -151,9 +151,9 @@ if (skipDb) {
        * 시험은 대소문자·문자열 안 문구에 속을 수 있다. 여기서는 새 DB 의 **실제 함수 결과**와 비교한다.
        */
       if (ok) {
-        process.env.SIKJAE_PARITY_DB = db;
-        try { ok = pnpmRun(['--filter', '@sikjae/core', 'exec', 'vitest', 'run', 'tests/localeDbParity.test.ts']); }
-        finally { delete process.env.SIKJAE_PARITY_DB; }
+        process.env.MARGINCOOK_PARITY_DB = db;
+        try { ok = pnpmRun(['--filter', '@margincook/core', 'exec', 'vitest', 'run', 'tests/localeDbParity.test.ts']); }
+        finally { delete process.env.MARGINCOOK_PARITY_DB; }
       }
     } finally {
       if (!run(BASH, ['packages/db/scripts/fresh-db.sh', '--drop', db])) {

@@ -10,7 +10,7 @@
  *   판매가를 500원 올려도 순이익은 500원 오르지 않는다(세금·고정지출이 따라 움직인다).
  */
 import { useInfiniteQuery } from '@tanstack/react-query';
-import type { ProfitCauseKey } from '@sikjae/core';
+import type { ProfitCauseKey } from '@margincook/core';
 import { supabase } from '@/lib/supabase';
 import { qk } from '@/lib/queryClient';
 import { rpcNullableString } from '@/lib/rpcValue';

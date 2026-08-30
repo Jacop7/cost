@@ -17,7 +17,7 @@ function ok(name, fn) {
 }
 
 function fixture(files, { includeApp = true } = {}) {
-  const root = mkdtempSync(join(tmpdir(), 'sikjae-acl-source-'));
+  const root = mkdtempSync(join(tmpdir(), 'margincook-acl-source-'));
   const src = join(root, 'src');
   const app = join(root, 'app');
   mkdirSync(src);

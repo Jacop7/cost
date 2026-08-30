@@ -16,7 +16,7 @@ declare v_n integer;
 begin
   set local role postgres;
   v_n := purge_entity_changes();
-  set local role sikjae_rpc_executor;
+  set local role margincook_rpc_executor;
   return v_n;
 end $h$;
 
@@ -64,7 +64,7 @@ begin
   update entity_change_events
      set occurred_at = clock_timestamp() - interval '40 days'
    where store_id = pg_temp.store();
-  execute 'set local role sikjae_rpc_executor';
+  execute 'set local role margincook_rpc_executor';
   v_n := pg_temp.purge_changes_for_test();
   perform pg_temp.ok('청소가 실제로 지운다', v_n > 0);
   perform pg_temp.eq('내역이 비었다',
@@ -125,7 +125,7 @@ begin
   update entity_change_events
      set occurred_at = clock_timestamp() - interval '40 days'
    where id = v_old;
-  execute 'set local role sikjae_rpc_executor';
+  execute 'set local role margincook_rpc_executor';
   v_n := pg_temp.purge_changes_for_test();
   perform pg_temp.eq('40일 지난 것만 지워진다', v_n, 1, 0);
   perform pg_temp.eq('나머지는 남는다',
@@ -137,7 +137,7 @@ begin
      set occurred_at = clock_timestamp() - interval '29 days'
    where id = (select id from entity_change_events
                 where store_id = pg_temp.store() order by occurred_at desc limit 1);
-  execute 'set local role sikjae_rpc_executor';
+  execute 'set local role margincook_rpc_executor';
   perform pg_temp.eq('29일 된 것은 안 지운다', pg_temp.purge_changes_for_test(), 0, 0);
 
   -- ⚠ 청소가 실패해도 영업 시작이 막히면 안 된다 — 곁일이다.
@@ -189,7 +189,7 @@ begin
   update entity_change_events
      set occurred_at = clock_timestamp() - interval '20 days'
    where id = v_old;
-  execute 'set local role sikjae_rpc_executor';
+  execute 'set local role margincook_rpc_executor';
 
   v_n := pg_temp.purge_changes_for_test();
   perform pg_temp.ok('20일 된 기록은 살아 있다',
@@ -199,7 +199,7 @@ begin
   execute 'reset role';
   update entity_change_events set occurred_at = clock_timestamp() - interval '40 days'
    where id = v_old;
-  execute 'set local role sikjae_rpc_executor';
+  execute 'set local role margincook_rpc_executor';
 
   /*
    * ⚠ 닫았다 다시 여는 것으로는 확인이 안 된다. 그 경로는 `reopen_business_day` 라
@@ -210,7 +210,7 @@ begin
   execute 'reset role';
   update business_days set business_date = date '2020-01-02', status = 'closed'
    where store_id = pg_temp.store() and business_date = pg_temp.today();
-  execute 'set local role sikjae_rpc_executor';
+  execute 'set local role margincook_rpc_executor';
 
   perform pg_temp.open_today();          -- 여기서 청소가 곁일로 돈다
   perform pg_temp.ok('영업 시작이 40일 된 기록을 정리한다',
@@ -297,11 +297,11 @@ begin
   perform pg_temp.ok('새 함수는 인증 사용자에게 자동 공개되지 않는다',
     not has_function_privilege('authenticated', 'public.zz_grant_probe()', 'execute'));
   perform pg_temp.ok('새 함수는 전용 실행 역할에도 자동 공개되지 않는다',
-    not has_function_privilege('sikjae_rpc_executor', 'public.zz_grant_probe()', 'execute'));
+    not has_function_privilege('margincook_rpc_executor', 'public.zz_grant_probe()', 'execute'));
   perform pg_temp.ok('새 함수는 service_role에는 열린다',
     has_function_privilege('service_role', 'public.zz_grant_probe()', 'execute'));
   execute 'drop function public.zz_grant_probe()';
-  execute 'set local role sikjae_rpc_executor';
+  execute 'set local role margincook_rpc_executor';
 end $t$;
 
 
@@ -393,7 +393,7 @@ begin
 
   perform pg_temp.ok('전용 실행 역할 소유 함수는 모두 SECURITY DEFINER다', not exists (
     select 1 from pg_proc p join pg_namespace n on n.oid = p.pronamespace
-     where n.nspname = 'public' and pg_get_userbyid(p.proowner) = 'sikjae_rpc_executor'
+     where n.nspname = 'public' and pg_get_userbyid(p.proowner) = 'margincook_rpc_executor'
        and not p.prosecdef));
 
   -- 그리고 그중 anon 이 부를 수 있는 건 하나도 없어야 한다.

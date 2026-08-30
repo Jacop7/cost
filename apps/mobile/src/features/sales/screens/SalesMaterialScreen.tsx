@@ -10,7 +10,7 @@ import { useLocalSearchParams, useRouter, type Href } from 'expo-router';
 import { AppHeader, Card, Icon, QueryState, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { T, won } from '@/theme/tokens';
-import { formatQuantity, formatUnitPrice } from '@sikjae/core';
+import { formatQuantity, formatUnitPrice } from '@margincook/core';
 import { useMaterialUsage, useSalesRange, type MaterialUsageItem } from '../hooks';
 import { rangeLabel } from '@/lib/date';
 import { useSalesBusinessDate } from '@/features/business-day/businessDay';

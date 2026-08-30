@@ -3,7 +3,7 @@
 --
 -- 원칙 3가지
 --  1. 트랜잭션 안에서만 돌고 **롤백한다**. 시드를 더럽히지 않으니 순서에 무관하다.
---  2. 내부 공식까지 재는 백색상자 스위트는 `sikjae_rpc_executor` + 실제 JWT 클레임으로 돈다.
+--  2. 내부 공식까지 재는 백색상자 스위트는 `margincook_rpc_executor` + 실제 JWT 클레임으로 돈다.
 --     이 역할은 RLS를 우회하지 않는다. 앱 롤의 직접 공격면은 34번이 `authenticated`로 따로 잰다.
 --  3. 실패는 예외로 던진다. psql 이 ON_ERROR_STOP 으로 즉시 비정상 종료한다.
 --
@@ -16,7 +16,7 @@
 
 begin;
 
-set local role sikjae_rpc_executor;
+set local role margincook_rpc_executor;
 set local request.jwt.claims = '{"sub":"00000000-0000-0000-0000-0000000000a1","role":"authenticated"}';
 
 -- ── 시드 고정 ID (바뀌면 테스트가 먼저 터진다 — 그게 맞다) ──────
@@ -40,7 +40,7 @@ declare v uuid := gen_random_uuid();
 begin
   set local role postgres;
   insert into auth.users (id) values (v);
-  set local role sikjae_rpc_executor;
+  set local role margincook_rpc_executor;
   return v;
 end $h$;
 
@@ -54,7 +54,7 @@ language plpgsql as $h$
 begin
   set local role postgres;
   perform set_config('request.jwt.claims', json_build_object('sub', p_uid, 'role', 'authenticated')::text, true);
-  set local role sikjae_rpc_executor;
+  set local role margincook_rpc_executor;
 end $h$;
 
 /*
@@ -289,7 +289,7 @@ begin
      and status::text <> 'closed'
      and planned_close_at is not null
      and planned_close_at <= clock_timestamp();
-  set local role sikjae_rpc_executor;
+  set local role margincook_rpc_executor;
 
   return v_day;
 end $h$;
@@ -379,7 +379,7 @@ declare v_res jsonb;
 begin
   set local role postgres;
   v_res := close_due_business_days();
-  set local role sikjae_rpc_executor;
+  set local role margincook_rpc_executor;
   return v_res;
 end $h$;
 
@@ -402,7 +402,7 @@ begin
      set status = 'open', closed_at = null, close_method = null
    where store_id = pg_temp.store() and business_date = p_day;
   get diagnostics v_n = row_count;
-  set local role sikjae_rpc_executor;
+  set local role margincook_rpc_executor;
 
   /*
    * ⚠ 사후조건. 대상 행이 없어도 조용히 성공하면 **시험 준비가 실패한 걸 모른 채**
@@ -437,6 +437,6 @@ begin
   set local role postgres;
   v := e10_sale_recorded(p_store, p_date, p_recipe,
                          p_qty_hall, p_qty_delivery, p_qty_takeout, p_qty_waste, p_allow_closed);
-  set local role sikjae_rpc_executor;
+  set local role margincook_rpc_executor;
   return v;
 end $h$;

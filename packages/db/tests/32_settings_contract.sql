@@ -84,7 +84,7 @@ begin
   update settings set updated_at = clock_timestamp() + interval '1 hour' where store_id = pg_temp.store();
   alter table settings enable trigger settings_touch;
   select updated_at into v_stamp from settings where store_id = pg_temp.store();
-  set local role sikjae_rpc_executor;
+  set local role margincook_rpc_executor;
 
   v_res := save_settings(pg_temp.store(), jsonb_build_object('quantity_digits', v_same), v_rev);
   perform pg_temp.ok('같은 값 저장은 changed=false', (v_res ->> 'changed')::boolean is false);

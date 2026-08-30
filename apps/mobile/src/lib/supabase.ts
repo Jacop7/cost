@@ -7,7 +7,7 @@
  *   훅이 생기면서 같은 호출을 두 군데서 하게 되어 무효화 규칙이 갈라졌다. 래퍼는 걷어냈다.
  */
 import { createClient } from '@supabase/supabase-js';
-import type { Database } from '@sikjae/db';
+import type { Database } from '@margincook/db';
 import { Platform } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 

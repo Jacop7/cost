@@ -15,7 +15,7 @@ import { AppHeader, Badge, Card, Icon, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { useStoreLocalDate } from '@/features/business-day/businessDay';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
-import { formatQuantity, formatUnitPrice } from '@sikjae/core';
+import { formatQuantity, formatUnitPrice } from '@margincook/core';
 import { T, tnum, won } from '@/theme/tokens';
 import { packSummary } from '@/lib/num';
 import { dispUnit } from '../ledger';
