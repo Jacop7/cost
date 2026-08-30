@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "P0-4-OPS-SEC-009-STAGING-SEAL-002",
+  "sequence": "t0001",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-08-30T22:58:30.318Z",
+  "turn_id": "turn-c001",
+  "turn_type": "CODEX_EVIDENCE",
+  "role": "CODEX-FUNCTION-QA",
+  "task_sha256": "eb14ecbd7ec4b1dfcbb128b53fffc19ec572c937af136e8975d53a6bcce5d01a",
+  "runner_sha256": "80dae1d06c89af056e9d8c210b571e978ee534fc128a5fe3b9867610b5ae447b",
+  "previous_manual_run_sha256": null,
+  "collaboration_before_sha256": "e282a7ac098fb30e00a5a21a3599a337c1650d8be43a8f6dfbac317c624e82f6",
+  "collaboration_before_bytes": 1439,
+  "collaboration_entry_sha256": "2793f3650194f0bd48454f8cfff180e8e20d5e6f09872ec4ab7a1854062d96df",
+  "collaboration_entry_bytes": 1755,
+  "collaboration_after_sha256": "c77f0a17d73bccd5944048da0b83a274232915a558ee01174a1002ebcceccf34",
+  "collaboration_after_bytes": 3194
+}
