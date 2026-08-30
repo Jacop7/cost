@@ -82,7 +82,12 @@ declare
 begin
   perform pg_temp.ok('운영 상태 응답은 status·checked_at·cron·rpc를 모두 준다',
     v ?& array['status', 'checked_at', 'cron', 'rpc']);
-  perform pg_temp.eq_t('최근 예상 밖 오류가 있으면 degraded다', v->>'status', 'degraded');
+  perform pg_temp.eq_t('전체 상태는 client-reported 오류가 아니라 Cron 판정만 따른다',
+    v->>'status',
+    case when (v#>>'{cron,monitored}')::boolean and (v#>>'{cron,healthy}')::boolean
+      then 'ok' else 'degraded' end);
+  perform pg_temp.eq_t('client-reported 오류는 별도 warning으로 보인다',
+    v#>>'{rpc,warning}', 'true');
   perform pg_temp.eq('운영 상태의 RPC 합계는 버킷 합계다',
     (v#>>'{rpc,unexpected_count}')::numeric, 20);
   perform pg_temp.eq('운영 상태는 사용자 ID 대신 영향 사용자 수만 준다',
@@ -91,7 +96,11 @@ begin
     v#>>'{rpc,source}', 'client_reported');
   perform pg_temp.ok('Cron 응답은 모니터링 여부·건강·세 작업 배열을 준다',
     (v->'cron') ?& array['monitored', 'healthy', 'jobs']
-    and jsonb_typeof(v#>'{cron,jobs}') = 'array');
+    and jsonb_typeof(v#>'{cron,jobs}') = 'array'
+    and not exists (
+      select 1 from jsonb_array_elements(v#>'{cron,jobs}') j
+       where jsonb_typeof(j->'healthy') <> 'boolean'
+    ));
 end;
 $health$;
 
@@ -120,6 +129,39 @@ begin
   end if;
 end;
 $starting$;
+
+do $failed_only$
+declare
+  v_job_id bigint;
+  v_run_id bigint;
+  v jsonb;
+begin
+  if current_setting('cron.database_name', true) is distinct from current_database() then
+    return;
+  end if;
+  select jobid into v_job_id from cron.job where jobname = 'margincook-purge-changes';
+  if v_job_id is not null then
+    delete from cron.job_run_details where jobid = v_job_id;
+    insert into cron.job_run_details
+      (jobid, runid, database, username, command, status, start_time, end_time)
+    select jobid, coalesce((select max(runid) from cron.job_run_details), 0) + 2000000,
+           database, username, command, 'failed', clock_timestamp(), clock_timestamp()
+      from cron.job where jobid = v_job_id
+    returning runid into v_run_id;
+    v := ops_health_status();
+    perform pg_temp.ok('유예 중이라도 성공 없이 실패만 있는 Cron은 healthy=false다',
+      exists (select 1 from jsonb_array_elements(v#>'{cron,jobs}') j
+               where j->>'name' = 'margincook-purge-changes'
+                 and jsonb_typeof(j->'healthy') = 'boolean'
+                 and (j->>'healthy')::boolean is false));
+    perform pg_temp.eq_t('실패만 있는 작업이 있으면 전체 Cron도 degraded다',
+      v#>>'{cron,healthy}', 'false');
+    perform pg_temp.eq_t('Cron 실패는 전체 상태를 degraded로 만든다',
+      v->>'status', 'degraded');
+    delete from cron.job_run_details where runid = v_run_id;
+  end if;
+end;
+$failed_only$;
 
 do $grace$
 declare
