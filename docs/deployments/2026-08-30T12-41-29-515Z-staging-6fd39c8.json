@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-08-30T12:41:29.513Z",
+  "status": "APPLIED",
+  "target": "staging",
+  "project_ref": "cvfvmpzcldyqurcrappu",
+  "deploy_sha": "6fd39c886b17088bf25349769e4229d7f9c66b5c",
+  "branch": "main",
+  "protected_gate": {
+    "sha": "6fd39c886b17088bf25349769e4229d7f9c66b5c",
+    "conclusion": "success",
+    "workflowRunId": 33311616124,
+    "checkRunId": 99258452157
+  },
+  "migration_count": 164,
+  "pending_migrations": [
+    "20260830000175_margincook_brand_namespace.sql"
+  ],
+  "applied_migrations": [
+    "20260830000175_margincook_brand_namespace.sql"
+  ],
+  "evidence_hashes": {
+    "migration_list_before_sha256": "29f5ca6421ecba755c03e1a44258508e5ced70634231979e87e5a1325c9ed9f8",
+    "dry_run_before_sha256": "3fdea3768bb6f5809a8fcfb5eae7ca9592d3121a43c2cb5a029ad1729eadeae4",
+    "migration_list_after_sha256": "7bf7311e19925bec66489a91babf1a8acbc732e6934282c3a87c3e6dad1a5938",
+    "dry_run_after_sha256": "de2776a73c06e6a0516fc5da1ff1506ce10d0c8b10a8429f951d4da5ef19ea25"
+  }
+}
