@@ -1,0 +1,230 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P2-6-ACL-AUDIT-EVIDENCE-002",
+  "reviewer_role": "FABLE-SEC",
+  "review_mode": "SECURITY",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "2276fa050b71d47b8b221eecec59c1b4c7474025",
+  "target_commit_sha": "513686b86c915ebc4a6d6c78a57237cdfbb08a6f",
+  "target_tree_oid": "80163bdbdc9753f4c4840f83495ff474085611ae",
+  "agents_blob_oid": "bf9b9aeccabdc1055005c7f9bcb188ed8c05eb2a",
+  "agents_sha256": "485c7cb1cbb9143748a6028393723986201d9ff944ad9d3127e5c5f6f243c531",
+  "task_sha256": "18c582a1370fddb20771b42cd424667a5ba43b4a27e7c30d5115474fab18df93",
+  "collaboration_sha256": "3c12d1a080799e0d02a4411fe9e5300fd5ea7038be4487bde03ae82a5f3a56a1",
+  "input_files_sha256": "7c4c11d315b2a5ed263021cd4e4b7c3570fe16be0f6c2e03d6cf9d6c54bf8dfd",
+  "schema_sha256": "f8860ea87aacde86f541f7b1a1640729bf516dcdaf78e168c0e2e01f0edfac5c",
+  "runner_sha256": "dc78d5183405344a2fcadf9b4db56734b7cae60ab88385d857fd02e0d434c633",
+  "verdict": "CHANGES_REQUIRED",
+  "summary": "P2-6 보안 검수(SECURITY, target 513686b8). 요구사항 4건의 핵심은 충족됐다. (P2-6-1) 구조 분해 `{ rpc }`·`{ rpc: call }`, `client[key]`, `.rpc` 별칭 추출, 비리터럴 첫 인자가 모두 실패 폐쇄되고 `handlers[key]()`는 오인하지 않는다. (P2-6-2) 누락 루트를 경로와 함께 던진다. (P2-6-3) 허용 목록은 감사 SQL의 마지막 rollback 앞에 임시 표 export를 끼워 같은 트랜잭션의 실제 행으로 읽고, `comment_only_rpc` 주석 표식 미포함을 단언하며, SQL 값 64개=facade_rpc_objects 64=모바일 62+비-mobile 2로 정합한다. (P2-6-4) stdout 두 줄은 test.mjs 177-178의 출력 형식과 원문 일치하고, P2-6 blob OID 38a74b1e는 봉인 입력과 같으며, 작업큐 954-957은 r001·r002 budget_exhausted를 PASS로 합성하지 않았다. 남은 Minor 3건: ① `const { 'rpc': call } = client`처럼 문자열 리터럴 속성명 구조 분해는 isIdentifier 검사만 있어 통과하고, 계산 키 감지가 객체 식 텍스트의 supabase/client 정규식에 의존해 `const sb = supabase; sb[key](...)`가 우회된다. ② Docker 없는 회귀시험 6개에 `client['rpc']('x')`·`const call = client.rpc`·spread 인자 사례가 없어 V2 사보타주 표에만 존재한다. ③ 증거 문서의 admin-acl-audit.sql SHA-256(b66f7a47)이 봉인 blob의 SHA-256(ed096d04)과 다르고 blob OID가 없어 CRLF 설명을 스냅샷에서 재현할 수 없으며, 32/87→0/0 전환 근거(P0-5)와 P2-6 verify 원문 블록도 빠져 있다. 원격 ACL 적용·운영 배포는 범위 밖임을 확인했다.",
+  "findings": [
+    {
+      "finding_id": "P2-6-SEC-001-RPC-SCAN-LITERAL-KEY-EVASION",
+      "severity": "Minor",
+      "review_state": "OPEN",
+      "category": "SECURITY",
+      "requirement_or_invariant_ids": [
+        "P2-6-1",
+        "P1-1-SUPPORT-003-RPC-SCAN-RESIDUAL-EVASION"
+      ],
+      "evidence": [
+        {
+          "path": "packages/db/scripts/admin-acl-source-scan.mjs",
+          "line_start": 65,
+          "line_end": 68,
+          "observation": "구조 분해 검사가 `ts.isIdentifier(bound)`만 허용해 `const { 'rpc': call } = client`(StringLiteral propertyName)는 dynamic에 들어가지 않고 `call('x')`가 허용 목록 대조 없이 통과한다."
+        },
+        {
+          "path": "packages/db/scripts/admin-acl-source-scan.mjs",
+          "line_start": 18,
+          "line_end": 21,
+          "observation": "계산 키 RPC 후보 판정이 객체 식 원문의 /(?:supabase|client)/i 정규식이라 `const sb = supabase; const key = 'rpc'; sb[key]('x')`는 후보로 잡히지 않는다."
+        },
+        {
+          "path": "packages/db/scripts/admin-acl-source-scan.mjs",
+          "line_start": 56,
+          "line_end": 61,
+          "observation": "비리터럴 계산 키 호출은 looksLikeRpcClient가 참일 때만 실패 폐쇄된다."
+        }
+      ],
+      "impact": "모바일 소스가 문자열 리터럴 속성명 구조 분해나 supabase/client가 아닌 이름의 별칭 변수로 rpc를 부르면 스캐너가 이름을 수집하지 못한 채 통과해, 허용 목록↔모바일 호출 양방향 일치 검증이 조용히 약화된다.",
+      "acceptance_criteria": [
+        "BindingElement 검사에서 propertyName이 StringLiteralLike 'rpc'인 경우도 dynamic으로 처리한다.",
+        "값 위치의 문자열 리터럴 'rpc'(예: `const key = 'rpc'`, `Reflect.get(x, 'rpc')`)를 대조 불가로 실패 폐쇄하되, 이미 처리한 `x['rpc']` argumentExpression은 중복 보고하지 않는다.",
+        "admin-acl-source-scan.test.mjs에 위 두 사례의 실패 회귀시험을 추가하고 기존 `handlers[key]()` 무오인 시험은 유지한다."
+      ],
+      "required_tests": [
+        "`const { 'rpc': call } = client; call('business_day_state');` → 리터럴이 아닌 .rpc 이름 오류",
+        "`const sb = supabase; const key = 'rpc'; sb[key]('business_day_state');` → 리터럴이 아닌 .rpc 이름 오류",
+        "`const key = 'save'; handlers[key](); client.rpc('get_settings');` → get_settings만 수집"
+      ],
+      "previous_finding_id": null
+    },
+    {
+      "finding_id": "P2-6-SEC-002-SOURCE-SCAN-TEST-COVERAGE",
+      "severity": "Minor",
+      "review_state": "OPEN",
+      "category": "TEST_GAP",
+      "requirement_or_invariant_ids": [
+        "P2-6-1",
+        "AGENTS:inspection-execution"
+      ],
+      "evidence": [
+        {
+          "path": "packages/db/scripts/admin-acl-source-scan.test.mjs",
+          "line_start": 42,
+          "line_end": 72,
+          "observation": "회귀시험 6개는 리터럴 수집·구조 분해 2종·client 계산 키·일반 객체 무오인·루트 누락만 다룬다. `client['rpc']('x')`, `const call = client.rpc`, spread/비리터럴 첫 인자, 파일 0개 사례가 없다."
+        },
+        {
+          "path": "packages/db/scripts/admin-acl-source-scan.mjs",
+          "line_start": 50,
+          "line_end": 54,
+          "observation": "`client['rpc']('x')`는 isRpcElement로 dynamic 처리되고 첫 인자가 비리터럴이면 dynamic이지만 Docker 없는 시험이 이를 고정하지 않는다."
+        },
+        {
+          "path": "docs/ai-review/evidence/P1-1-ACL-SUPPORT-SOURCE-002.md",
+          "line_start": 49,
+          "line_end": 50,
+          "observation": "bracket 리터럴·property 별칭 사례는 V2 시점 DB 결속 사보타주 표에만 존재하며 현재 스캐너 모듈 분리 이후 재현되지 않았다."
+        },
+        {
+          "path": "scripts/verify.mjs",
+          "line_start": 112,
+          "line_end": 112,
+          "observation": "verify ③이 소스 스캔 시험을 실행하므로 이 파일에 추가된 사례만 CI --no-db 경로에서 보호된다."
+        }
+      ],
+      "impact": "스캐너 리팩터링 시 bracket 리터럴·별칭 추출·비리터럴 인자 실패 폐쇄가 회귀해도 --no-db CI와 verify ③에서 감지되지 않고, 실제 DB 단계(④)까지 가야만 드러난다.",
+      "acceptance_criteria": [
+        "admin-acl-source-scan.test.mjs에 `client['rpc']('x')`, `const call = client.rpc`, `client.rpc(...args)`/`client.rpc(name)`, 루트는 있으나 파일 0개 사례의 실패 회귀시험을 추가한다.",
+        "시험 총계 출력이 실제 통과 수를 반영하고 verify ③에서 실행된다."
+      ],
+      "required_tests": [
+        "`client['rpc']('business_day_state')` → 리터럴이 아닌 .rpc 이름 오류",
+        "`const call = client.rpc; call('business_day_state')` → 리터럴이 아닌 .rpc 이름 오류",
+        "`client.rpc(name)` → 리터럴이 아닌 .rpc 이름 오류",
+        "src·app 디렉토리만 있고 소스 파일이 없을 때 → 모바일 소스를 하나도 찾지 못했습니다 오류"
+      ],
+      "previous_finding_id": null
+    },
+    {
+      "finding_id": "P2-6-SEC-003-EVIDENCE-SQL-HASH-BINDING",
+      "severity": "Minor",
+      "review_state": "OPEN",
+      "category": "DATA_INTEGRITY",
+      "requirement_or_invariant_ids": [
+        "P2-6-4",
+        "P1-1-BINDING-005-OBSERVED-STDOUT-VERBATIM"
+      ],
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/P1-1-ACL-SUPPORT-SOURCE-002.md",
+          "line_start": 104,
+          "line_end": 110,
+          "observation": "admin-acl-audit.sql SHA-256을 b66f7a47…로 적었으나 봉인 입력의 blob SHA-256은 ed096d04…이고, admin-acl-audit.test.mjs도 69e81135… vs 봉인 5db66c64…로 다르다. 소스 스캔 두 파일은 봉인 값과 정확히 일치한다."
+        },
+        {
+          "path": "docs/ai-review/evidence/P1-1-ACL-SUPPORT-SOURCE-002.md",
+          "line_start": 95,
+          "line_end": 102,
+          "observation": "판본 고정 표는 admin-acl-audit.test.mjs의 blob OID(38a74b1e…, 봉인 입력과 일치)만 기록하고 SQL·스캐너 두 파일의 blob OID는 없다. 줄 끝 정규화 설명은 SQL에 대해 재현 근거가 없다."
+        },
+        {
+          "path": "docs/ai-review/evidence/P1-1-ACL-SUPPORT-SOURCE-002.md",
+          "line_start": 75,
+          "line_end": 76,
+          "observation": "V2 관측값은 ledger_write_paths=32·unapproved_authenticated_rpc=87인데 P2-6 stdout(117-118)은 0·0이며 전환 근거가 문서에 없다."
+        },
+        {
+          "path": "packages/db/scripts/admin-acl-audit.test.mjs",
+          "line_start": 171,
+          "line_end": 175,
+          "observation": "현재 계약은 P0-5 이후 두 metric 0 고정이다. 증거 문서는 이 계약 전환을 명시하지 않는다."
+        },
+        {
+          "path": "docs/ai-review/evidence/P1-1-ACL-SUPPORT-SOURCE-002.md",
+          "line_start": 121,
+          "line_end": 123,
+          "observation": "P2-6 verify 6/6은 산문 요약만 있고 V2처럼 검증 결과 블록 원문(64-73 형식)이 없다."
+        }
+      ],
+      "impact": "봉인 스냅샷에서 감사 SQL의 실행 바이트를 되짚을 수 없어 `git cat-file` 대조 재현이라는 P2-6 완료 조건이 SQL에 대해 성립하지 않고, 32/87→0/0 전환 근거 부재는 보안 기준선 변경을 독자가 추적할 수 없게 한다.",
+      "acceptance_criteria": [
+        "판본 고정 표에 네 파일 모두의 Git blob OID를 기록하거나 최소 admin-acl-audit.sql·스캐너 두 파일의 blob OID를 추가한다.",
+        "SHA-256 표의 각 값이 LF blob 기준인지 CRLF 작업 트리 기준인지 파일별로 명시한다.",
+        "V2 32/87에서 P2-6 0/0으로 바뀐 근거(P0-5 최소 권한 폐쇄)를 한 문장으로 연결한다.",
+        "P2-6 `corepack pnpm verify` 검증 결과 블록을 V2와 같은 원문 형식으로 보존한다."
+      ],
+      "required_tests": [
+        "증거 표의 blob OID가 target commit의 `git ls-tree` 값과 일치",
+        "증거 표의 SHA-256이 명시된 기준(blob 또는 작업 트리)으로 재계산 시 일치"
+      ],
+      "previous_finding_id": null
+    }
+  ],
+  "proposed_edits": [
+    {
+      "edit_id": "P2-6-SEC-E001-SCAN-STRING-PROPERTY-NAME",
+      "path": "packages/db/scripts/admin-acl-source-scan.mjs",
+      "anchor": "        if (ts.isIdentifier(bound) && bound.text === 'rpc') dynamic.push(location(source, path, node));",
+      "operation": "REPLACE",
+      "proposed_text": "        if ((ts.isIdentifier(bound) || ts.isStringLiteralLike(bound)) && bound.text === 'rpc') {\n          dynamic.push(location(source, path, node));\n        }",
+      "rationale": "`const { 'rpc': call } = client`의 StringLiteral propertyName도 구조 분해 별칭으로 실패 폐쇄한다.",
+      "finding_ids": [
+        "P2-6-SEC-001-RPC-SCAN-LITERAL-KEY-EVASION"
+      ]
+    },
+    {
+      "edit_id": "P2-6-SEC-E002-SCAN-RPC-LITERAL-VALUE",
+      "path": "packages/db/scripts/admin-acl-source-scan.mjs",
+      "anchor": "      ts.forEachChild(node, visit);",
+      "operation": "ADD",
+      "proposed_text": "      // 'rpc' 문자열이 값으로 흘러가면(`const key = 'rpc'; sb[key](...)`, `Reflect.get(x, 'rpc')`)\n      // 어떤 객체에서 호출되는지 정적으로 알 수 없으므로 대조 불가로 본다. `x['rpc']`는 위에서 처리했다.\n      if (ts.isStringLiteralLike(node) && node.text === 'rpc'\n          && !(ts.isElementAccessExpression(node.parent) && node.parent.argumentExpression === node)\n          && !(ts.isBindingElement(node.parent) && node.parent.propertyName === node)) {\n        dynamic.push(location(source, path, node));\n      }",
+      "rationale": "객체 이름 정규식에 의존하지 않는 보조 규칙으로 별칭 변수 계산 키 우회를 닫는다. forEachChild 앞에 삽입한다.",
+      "finding_ids": [
+        "P2-6-SEC-001-RPC-SCAN-LITERAL-KEY-EVASION"
+      ]
+    },
+    {
+      "edit_id": "P2-6-SEC-E003-SCAN-TESTS",
+      "path": "packages/db/scripts/admin-acl-source-scan.test.mjs",
+      "anchor": "ok('일반 객체의 계산 키 호출은 RPC로 오인하지 않는다', () => withFixture(",
+      "operation": "ADD",
+      "proposed_text": "ok('문자열 속성명 구조 분해 별칭도 거부한다', () => expectFailure(\n  { 'destructure-string.ts': `const { 'rpc': call } = client; call('business_day_state');\\n` },\n  /리터럴이 아닌 \\.rpc 이름/,\n));\n0 && ok('별칭 변수의 rpc 리터럴 계산 키를 거부한다', () => expectFailure(\n  { 'alias-computed.ts': `const sb = supabase; const key = 'rpc'; sb[key]('business_day_state');\\n` },\n  /리터럴이 아닌 \\.rpc 이름/,\n));\nok('bracket 리터럴 rpc 호출을 거부한다', () => expectFailure(\n  { 'bracket.ts': `client['rpc']('business_day_state');\\n` },\n  /리터럴이 아닌 \\.rpc 이름/,\n));\nok('.rpc 함수 별칭 추출을 거부한다', () => expectFailure(\n  { 'alias.ts': `const call = client.rpc; call('business_day_state');\\n` },\n  /리터럴이 아닌 \\.rpc 이름/,\n));\nok('비리터럴 첫 인자를 거부한다', () => expectFailure(\n  { 'dynamic-arg.ts': `const name = 'business_day_state'; client.rpc(name);\\n` },\n  /리터럴이 아닌 \\.rpc 이름/,\n));",
+      "rationale": "이 블록 앞에 삽입한다. `0 &&`로 비활성화한 별칭 계산 키 시험은 E001·E002 반영 후 `0 && `를 제거해 활성화한다. 나머지는 현재 스캐너에서 즉시 통과해야 한다.",
+      "finding_ids": [
+        "P2-6-SEC-001-RPC-SCAN-LITERAL-KEY-EVASION",
+        "P2-6-SEC-002-SOURCE-SCAN-TEST-COVERAGE"
+      ]
+    },
+    {
+      "edit_id": "P2-6-SEC-E004-EVIDENCE-BLOB-OIDS",
+      "path": "docs/ai-review/evidence/P1-1-ACL-SUPPORT-SOURCE-002.md",
+      "anchor": "| `packages/db/scripts/admin-acl-audit.sql` | `b66f7a474d958c73753b7f72537dc2bd75cdbe9399387562e4ba33058b1802ff` |",
+      "operation": "ADD",
+      "proposed_text": "\n위 SHA-256 중 `admin-acl-audit.test.mjs`·`admin-acl-audit.sql`은 CRLF 작업 트리 바이트이고, 소스 스캔 두 파일은\nLF blob 바이트와 같다. 저장소 객체로 대조할 수 있도록 검수 봉인 target `513686b86c915ebc4a6d6c78a57237cdfbb08a6f`\n기준 Git blob OID를 함께 고정한다(`git ls-tree 513686b8 -- <path>`로 재현).\n\n| 파일 | Git blob OID | blob SHA-256 |\n| --- | --- | --- |\n| `packages/db/scripts/admin-acl-audit.test.mjs` | `38a74b1ef1e2dcf48b046e1250bf112bb915039a` | `5db66c6495b22cca08f69f6c1297d767806b2db9f0d1c73f03b3938e1646fb4a` |\n| `packages/db/scripts/admin-acl-source-scan.mjs` | `08f490ddec42cf7cb6f94b842abcb22981d5c78c` | `71d6edfe664669419b7bebbc43167808df27107e7049a4f9db87d19a9cb208f2` |\n| `packages/db/scripts/admin-acl-source-scan.test.mjs` | `17bd3bac1e0798ddfa6747502e1c52b37e46b1c2` | `300bfc242e047bb71bdca7d64520fb400adb3af9607d4f61cf275830230863ba` |\n| `packages/db/scripts/admin-acl-audit.sql` | `aed306cdf87a3bf017220f6f2a617fc1a0592361` | `ed096d04f8010a0eaaadc5f8073929f0569812c3514f3f490c81edfa44c47220` |\n\nV2의 `ledger_write_paths=32`·`unapproved_authenticated_rpc=87`은 P0-5 최소 권한 폐쇄 이후 0이 계약이며\n(`admin-acl-audit.test.mjs`의 0 고정 검사), P2-6 stdout의 `0`·`0`은 그 계약 아래의 실측값이다.",
+      "rationale": "봉인 입력 메타데이터의 blob OID·SHA-256으로 SQL 포함 네 파일의 재현 대조를 가능하게 하고 32/87→0/0 전환 근거를 연결한다. 작성자는 실제 `git ls-tree` 결과로 값을 재확인해야 한다.",
+      "finding_ids": [
+        "P2-6-SEC-003-EVIDENCE-SQL-HASH-BINDING"
+      ]
+    },
+    {
+      "edit_id": "P2-6-SEC-E005-EVIDENCE-VERIFY-VERBATIM",
+      "path": "docs/ai-review/evidence/P1-1-ACL-SUPPORT-SOURCE-002.md",
+      "anchor": "⑥ 웹 번들을 모두 통과했다. 종료 코드는 0이고 `fresh_%` 일회용 DB는 남지 않았다.",
+      "operation": "COMMENT",
+      "proposed_text": "V2 절(64-73)과 같은 형식으로 P2-6 `corepack pnpm verify`의 `════ 검증 결과 ════` 블록 원문(③ 라벨은 현재 `③ CLI 계약 · ACL 보안`)과 `VERIFY_EXIT=0`, `fresh_%` 개수 쿼리 결과를 코드 블록으로 보존해 달라. 산문 요약만으로는 P1-1-BINDING-005의 원문성 요구를 만족하지 않는다.",
+      "rationale": "P2-6 verify 실행 결과를 원문으로 결속한다.",
+      "finding_ids": [
+        "P2-6-SEC-003-EVIDENCE-SQL-HASH-BINDING"
+      ]
+    }
+  ],
+  "closed_finding_ids": [],
+  "reopened_finding_ids": [],
+  "remaining_required_finding_ids": [
+    "P2-6-SEC-001-RPC-SCAN-LITERAL-KEY-EVASION",
+    "P2-6-SEC-002-SOURCE-SCAN-TEST-COVERAGE",
+    "P2-6-SEC-003-EVIDENCE-SQL-HASH-BINDING"
+  ]
+}
