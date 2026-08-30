@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "P0-4-OPS-MONITORING-COMMIT-004",
+  "sequence": "t0003",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-08-30T18:27:12.933Z",
+  "turn_id": "turn-o002",
+  "turn_type": "AI_DEPUTY_GATE_DECISION",
+  "role": "AI-DEPUTY-ORCHESTRATOR",
+  "task_sha256": "2d079584782020b99e9cccc7ad3a95b2fbcb1290cf50c7d9eb7f7a082c6178b3",
+  "runner_sha256": "80dae1d06c89af056e9d8c210b571e978ee534fc128a5fe3b9867610b5ae447b",
+  "previous_manual_run_sha256": "5d2f63fc1375f7792ee4497326fc8aa4c037628cff44b9d22e2fa1e3891e860f",
+  "collaboration_before_sha256": "2ef5389b2a3a3606e5879fa8c9bea080c23f16cd6d94d4d706d7a6fa6c239111",
+  "collaboration_before_bytes": 7735,
+  "collaboration_entry_sha256": "639494b5bc6065dbebd4e058e303455a85256b0804dcc247d1f25d743aa92c03",
+  "collaboration_entry_bytes": 1576,
+  "collaboration_after_sha256": "7066bda0ec89f87a43a8824d72677c7217bafaf38662dfff8d49e5b4eb717490",
+  "collaboration_after_bytes": 9311
+}
