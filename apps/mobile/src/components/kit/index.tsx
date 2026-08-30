@@ -4,12 +4,14 @@
  * backdropFilter blur→반투명 배경, fontVariantNumeric→fontVariant.
  */
 import { ReactNode, useState } from 'react';
-import { ActivityIndicator, KeyboardTypeOptions, Pressable, ScrollView, StyleProp, StyleSheet, Text, TextInput, TextInputProps, TextStyle, View, ViewStyle } from 'react-native';
+import { KeyboardTypeOptions, Pressable, ScrollView, StyleProp, Text, TextInput, TextInputProps, TextStyle, View, ViewStyle } from 'react-native';
 import { Icon, IconName } from './Icon';
 import { cardShadow, FONT, STATUS, T, won } from '@/theme/tokens';
 
 const NUM: TextStyle = { fontVariant: FONT.num as unknown as TextStyle['fontVariant'] };
 export { Icon };
+export { Button } from './Button';
+export { Txt } from './Txt';
 export { MemoEditSheet } from './MemoEditSheet';
 export type { IconName } from './Icon';
 export { AppHeader } from './AppHeader';
@@ -21,15 +23,6 @@ export type { SortOption } from './SortSheet';
 export { Slider } from './Slider';
 export { Donut, TrendChart } from './charts';
 export type { DonutSeg, TrendPoint } from './charts';
-
-// ── 텍스트 헬퍼 ───────────────────────────────────────────────
-export function Txt({ children, style, num, n }: { children: ReactNode; style?: StyleProp<TextStyle>; num?: boolean; n?: number }) {
-  return (
-    <Text numberOfLines={n} style={[num ? NUM : null, style]}>
-      {children}
-    </Text>
-  );
-}
 
 // ── 상태 뱃지 ─────────────────────────────────────────────────
 export function StatusBadge({ status, sm }: { status: 'ok' | 'low' | 'out'; sm?: boolean }) {
@@ -84,100 +77,6 @@ export function Notice({ children, style }: { children: ReactNode; style?: Style
 }
 
 // ── 버튼 ──────────────────────────────────────────────────────
-type Kind = 'primary' | 'tint' | 'gray' | 'ghost' | 'danger';
-type Size = 'sm' | 'md' | 'lg';
-
-/**
- * Button — 상태 계약(가이드 §9.7): Default / Pressed / Disabled / Loading.
- *
- * 데이터를 바꾸는 버튼(전파 이벤트·저장·삭제)은 탭 즉시 `loading` 으로 전환해 중복 제출을 막는다.
- * 단, debounce 만으로 데이터 무결성을 보장하지 않는다 — 서버 멱등성(예: E1 의 idempotency key)과
- * 함께 써야 한다. 여기서 막는 것은 "사용자 눈에 보이는 연타"까지다.
- *
- * `loading` 중에도 **버튼 너비가 변하지 않게** 라벨을 자리에 두고 투명하게 만든 뒤 spinner 를 겹친다.
- * 너비가 출렁이면 옆 버튼 위치가 밀려 오터치가 난다.
- */
-export function Button({
-  children, kind = 'primary', size = 'md', full, icon, iconRight, onPress, style,
-  disabled = false, loading = false, accessibilityLabel, accessibilityHint,
-}: {
-  children: ReactNode;
-  kind?: Kind;
-  size?: Size;
-  full?: boolean;
-  icon?: IconName;
-  iconRight?: boolean;
-  onPress?: () => void;
-  style?: StyleProp<ViewStyle>;
-  /** 조건 미충족으로 실행할 수 없는 상태. 터치가 차단되고 접근성에도 전달된다. */
-  disabled?: boolean;
-  /** 제출 진행 중. 터치가 차단되고 spinner 가 표시된다. */
-  loading?: boolean;
-  /** 아이콘만 있는 버튼은 필수 — 스크린리더가 행동을 읽을 수 있어야 한다. */
-  accessibilityLabel?: string;
-  accessibilityHint?: string;
-}) {
-  const kinds: Record<Kind, { bg: string; fg: string; border?: string }> = {
-    primary: { bg: T.blue, fg: T.onColor },
-    tint: { bg: T.blueTint, fg: T.blue },
-    gray: { bg: T.line2, fg: T.ink2 },
-    ghost: { bg: 'transparent', fg: T.sub, border: T.line },
-    danger: { bg: T.redTint, fg: T.red },
-  };
-  const c = kinds[kind];
-  const sizes: Record<Size, { pv: number; ph: number; fs: number; r: number }> = {
-    sm: { pv: 8, ph: 12, fs: 14, r: 9 },
-    md: { pv: 13, ph: 16, fs: 16, r: 12 },
-    lg: { pv: 16, ph: 18, fs: 17, r: 14 },
-  };
-  const s = sizes[size];
-  // 진행 중에도 눌린 것처럼 보이면 안 되므로 두 상태를 함께 잠근다.
-  const blocked = disabled || loading;
-  const iconEl = icon && !loading ? <Icon name={icon} size={s.fs + 3} color={c.fg} sw={2} /> : null;
-
-  return (
-    <Pressable
-      onPress={blocked ? undefined : onPress}
-      disabled={blocked}
-      accessibilityRole="button"
-      accessibilityLabel={accessibilityLabel}
-      accessibilityHint={accessibilityHint}
-      accessibilityState={{ disabled: blocked, busy: loading }}
-      style={({ pressed }) => [
-        {
-          flexDirection: iconRight ? 'row-reverse' : 'row',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: 6,
-          alignSelf: full ? 'stretch' : 'flex-start',
-          backgroundColor: kind === 'primary' && pressed && !blocked ? T.bluePressed : c.bg,
-          borderWidth: c.border ? 1 : 0,
-          borderColor: c.border,
-          paddingVertical: s.pv,
-          paddingHorizontal: s.ph,
-          borderRadius: s.r,
-          // 비활성은 색만이 아니라 접근성 state 로도 전달된다(색만으로 상태를 알리지 않는다).
-          opacity: disabled ? 0.4 : pressed && kind !== 'primary' ? 0.85 : 1,
-        },
-        style,
-      ]}
-    >
-      {iconEl}
-      {/* 라벨은 자리를 유지한 채 투명해지고, spinner 가 그 위에 겹친다 → 너비 불변 */}
-      <Text style={{ color: c.fg, fontSize: s.fs, fontWeight: '700', letterSpacing: -0.2, opacity: loading ? 0 : 1 }}>
-        {children}
-      </Text>
-      {loading ? (
-        <View style={StyleSheet.absoluteFillObject} pointerEvents="none">
-          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <ActivityIndicator size="small" color={c.fg} />
-          </View>
-        </View>
-      ) : null}
-    </Pressable>
-  );
-}
-
 // ── 칩 ────────────────────────────────────────────────────────
 export function Chip({ children, active, tone, onPress }: { children: ReactNode; active?: boolean; tone?: 'blue'; onPress?: () => void }) {
   return (

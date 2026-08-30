@@ -8,7 +8,8 @@
  */
 import { useEffect, useState } from 'react';
 import { Text, TextInput, View } from 'react-native';
-import { Button, Sheet } from '@/components/kit';
+import { Button } from './Button';
+import { Sheet } from './Sheet';
 import { T } from '@/theme/tokens';
 
 export function MemoEditSheet({ visible, value, maxLength = 100, saving = false, onClose, onSave }: {

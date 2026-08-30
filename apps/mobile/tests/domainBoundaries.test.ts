@@ -240,4 +240,25 @@ describe('REF-1 도메인 폴더 경계', () => {
       .map((path) => slash(relative(srcRoot, path)));
     expect(cyclic).toEqual([]);
   });
+
+  it('kit 하위 모듈은 공개 배럴을 역참조하지 않고 전체 kit 순환이 없다', () => {
+    const kitRoot = join(srcRoot, 'components/kit');
+    const kitFiles = walk(kitRoot);
+    const barrel = join(kitRoot, 'index.tsx');
+    const reverseImports = kitFiles
+      .filter((path) => path !== barrel)
+      .flatMap((path) => moduleStrings(path)
+        .filter((specifier) => specifier === './index' || specifier === '@/components/kit')
+        .map((specifier) => `${slash(relative(srcRoot, path))}: ${specifier}`));
+    const graph = new Map(kitFiles.map((path) => [
+      path,
+      localImports(path).filter((target) => target.startsWith(kitRoot)),
+    ]));
+    const cyclic = kitFiles
+      .filter((path) => cycleFrom(path, graph))
+      .map((path) => slash(relative(srcRoot, path)));
+
+    expect(reverseImports).toEqual([]);
+    expect(cyclic).toEqual([]);
+  });
 });
