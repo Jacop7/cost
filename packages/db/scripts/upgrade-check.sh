@@ -573,5 +573,81 @@ else
   fi
 fi
 
+# ── 시나리오 13 · 0176 관측 신호 → Cron 장애와 앱 RPC 경고 분리 ─────────────
+say "⑬ 0176 상태 + 실패만 있는 Cron·앱 RPC 보고 → 0177이 장애와 경고를 분리"
+BASE13=20260830000176
+STEP13="$(cd "$MIG_DIR" && ls 20260831000177_*.sql)"
+bash "$SCRIPT_DIR/fresh-db.sh" --until "$BASE13" "$D" >/dev/null
+psql_d "$D" <<'EOF' >/dev/null
+create schema if not exists cron;
+create table if not exists cron.job (
+  jobid bigint primary key,
+  schedule text not null,
+  command text not null,
+  database text not null,
+  username text not null,
+  active boolean not null,
+  jobname text not null
+);
+create table if not exists cron.job_run_details (
+  jobid bigint not null,
+  runid bigint primary key,
+  database text not null,
+  username text not null,
+  command text not null,
+  status text not null,
+  return_message text,
+  start_time timestamptz,
+  end_time timestamptz
+);
+insert into cron.job (jobid, schedule, command, database, username, active, jobname) values
+  (910001, '* * * * *', 'select public.close_due_business_days()', current_database(), current_user, true, 'margincook-close-due'),
+  (910002, '* * * * *', 'select public.apply_due_breaks()', current_database(), current_user, true, 'margincook-apply-breaks'),
+  (910003, '17 4 * * *', 'select public.purge_entity_changes()', current_database(), current_user, true, 'margincook-purge-changes');
+EOF
+before13=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c \
+  "select concat_ws('|',(select count(*) from inventory_events),(select count(*) from daily_sales));")
+psql_d "$D" <<'EOF' >/dev/null
+select set_config('request.jwt.claims',
+  jsonb_build_object('sub', owner_id, 'role', 'authenticated')::text, false)
+  from stores order by created_at, id limit 1;
+set role authenticated;
+select report_client_rpc_error('XX001','INTERNAL_FAILURE','web');
+reset role;
+delete from cron.job_run_details
+ where jobid = (select jobid from cron.job where jobname = 'margincook-purge-changes');
+insert into cron.job_run_details
+  (jobid, runid, database, username, command, status, start_time, end_time)
+select jobid, coalesce((select max(runid) from cron.job_run_details), 0) + 3000000,
+       database, username, command, 'failed', clock_timestamp(), clock_timestamp()
+  from cron.job where jobname = 'margincook-purge-changes';
+EOF
+if ! err="$(psql_d "$D" < "$MIG_DIR/$STEP13" 2>&1 1>/dev/null)"; then
+  say "   FAIL 0177 적용이 막혔다"; say "        $(printf '%s' "$err" | head -3)"; fail=1
+else
+  failed13=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c "
+    with v as (select ops_health_status() x)
+    select concat_ws('|', x#>>'{cron,healthy}', x->>'status', x#>>'{rpc,warning}',
+      exists (select 1 from jsonb_array_elements(x#>'{cron,jobs}') j
+               where j->>'name'='margincook-purge-changes'
+                 and jsonb_typeof(j->'healthy')='boolean'
+                 and (j->>'healthy')::boolean is false)) from v;")
+  docker exec -i "$CT" psql -U postgres -d "$D" -q -c \
+    "delete from cron.job_run_details where jobid=(select jobid from cron.job where jobname='margincook-purge-changes');" >/dev/null
+  warning13=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c "
+    with v as (select ops_health_status() x)
+    select concat_ws('|', x#>>'{cron,healthy}', x->>'status', x#>>'{rpc,warning}') from v;")
+  after13=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c \
+    "select concat_ws('|',(select count(*) from inventory_events),(select count(*) from daily_sales));")
+  if [ "$failed13" = "false|degraded|true|t" ] \
+     && [ "$warning13" = "true|ok|true" ] \
+     && [ "$before13" = "$after13" ]; then
+    say "   ok   실패만 있는 Cron은 degraded · 앱 보고만 있으면 ok+warning · 업무 원장 불변"
+  else
+    say "   FAIL 실패 상태=$failed13 경고 상태=$warning13 원장 전=$before13 후=$after13"
+    fail=1
+  fi
+fi
+
 say ""
-if [ "$fail" = "0" ]; then say "업그레이드 경로 12/12 통과"; else say "업그레이드 경로 실패"; exit 1; fi
+if [ "$fail" = "0" ]; then say "업그레이드 경로 13/13 통과"; else say "업그레이드 경로 실패"; exit 1; fi

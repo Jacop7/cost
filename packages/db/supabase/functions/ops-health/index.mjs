@@ -50,10 +50,16 @@ export async function handleOpsHealth(req, env, fetchImpl = fetch) {
     });
     if (!response.ok) return json({ status: 'unavailable' }, 503);
     const body = await response.json();
-    if (!body || !['ok', 'degraded'].includes(body.status)) {
+    const cron = body?.cron;
+    const rpc = body?.rpc;
+    const cronOk = cron?.monitored === true && cron?.healthy === true;
+    if (!body || !['ok', 'degraded'].includes(body.status)
+        || typeof cron?.monitored !== 'boolean' || typeof cron?.healthy !== 'boolean'
+        || !Array.isArray(cron?.jobs) || typeof rpc?.warning !== 'boolean'
+        || (body.status === 'ok') !== cronOk) {
       return json({ status: 'unavailable' }, 503);
     }
-    return json(body, body.status === 'ok' ? 200 : 503);
+    return json(body, cronOk ? 200 : 503);
   } catch {
     return json({ status: 'unavailable' }, 503);
   }

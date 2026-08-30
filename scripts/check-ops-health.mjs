@@ -8,10 +8,13 @@ const safeBody = (value) => {
   if (!value || typeof value !== 'object') return { status: 'unavailable' };
   const cron = value.cron && typeof value.cron === 'object' ? value.cron : null;
   const rpc = value.rpc && typeof value.rpc === 'object' ? value.rpc : null;
-  if (!['ok', 'degraded'].includes(value.status) || !cron || !rpc) {
+  if (!['ok', 'degraded'].includes(value.status) || !cron || !rpc
+      || typeof cron.monitored !== 'boolean' || typeof cron.healthy !== 'boolean'
+      || !Array.isArray(cron.jobs) || rpc.source !== 'client_reported'
+      || typeof rpc.warning !== 'boolean' || !Array.isArray(rpc.fingerprints)) {
     return { status: 'unavailable' };
   }
-  return {
+  const result = {
     status: value.status,
     checked_at: typeof value.checked_at === 'string' ? value.checked_at : null,
     cron: {
@@ -20,13 +23,18 @@ const safeBody = (value) => {
       jobs: Array.isArray(cron.jobs) ? cron.jobs : [],
     },
     rpc: {
-      source: rpc.source === 'client_reported' ? rpc.source : 'unknown',
+      source: rpc.source,
+      warning: rpc.warning,
       window_minutes: Number(rpc.window_minutes) || 0,
       unexpected_count: Number(rpc.unexpected_count) || 0,
       affected_users: Number(rpc.affected_users) || 0,
-      fingerprints: Array.isArray(rpc.fingerprints) ? rpc.fingerprints : [],
+      fingerprints: rpc.fingerprints,
     },
   };
+  if ((result.status === 'ok') !== (result.cron.monitored && result.cron.healthy)) {
+    return { status: 'unavailable' };
+  }
+  return result;
 };
 
 export async function checkOpsHealth({
@@ -47,7 +55,10 @@ export async function checkOpsHealth({
     const raw = await response.json().catch(() => null);
     const body = safeBody(raw);
     const result = { target, http_status: response.status, ...body };
-    return { ok: response.ok && body.status === 'ok', result };
+    return {
+      ok: response.ok && body.status === 'ok' && body.cron?.monitored === true && body.cron?.healthy === true,
+      result,
+    };
   } catch {
     return { ok: false, result: { status: 'unavailable', target, reason: 'network' } };
   }
