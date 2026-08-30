@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "P0-4-OPS-MONITORING-COMMIT-003",
+  "sequence": "t0001",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-08-30T18:09:22.915Z",
+  "turn_id": "turn-s002",
+  "turn_type": "SOLAR_RESPONSE",
+  "role": "SOLAR-DB",
+  "task_sha256": "5cab861b4566ebbd9779bbcd73b2c71db3f9231214ede44a7289246ae3c4f517",
+  "runner_sha256": "80dae1d06c89af056e9d8c210b571e978ee534fc128a5fe3b9867610b5ae447b",
+  "previous_manual_run_sha256": null,
+  "collaboration_before_sha256": "2f54a1a2ef06ba43b7b5490ee4055112d575310eafe339fd6d8e4a3da54ae6a4",
+  "collaboration_before_bytes": 6185,
+  "collaboration_entry_sha256": "2692dffc562ce606ca617f1713590a3af60cb42dee9096396ff99c32fb8cad98",
+  "collaboration_entry_bytes": 2682,
+  "collaboration_after_sha256": "82d2caf6949a3994c3818afdb7d280b32b1a0d80cf30316d335eda0e59deb290",
+  "collaboration_after_bytes": 8867
+}
