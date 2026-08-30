@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "P2-6-ACL-AUDIT-EVIDENCE-003",
+  "sequence": "t0004",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-08-30T00:56:54.934Z",
+  "turn_id": "turn-o002",
+  "turn_type": "AI_DEPUTY_GATE_DECISION",
+  "role": "AI-DEPUTY-ORCHESTRATOR",
+  "task_sha256": "200a22f122d6458206e4c6f74de1e8610f25dfa0e8229a2c16d0413f99249082",
+  "runner_sha256": "dc78d5183405344a2fcadf9b4db56734b7cae60ab88385d857fd02e0d434c633",
+  "previous_manual_run_sha256": "8f043b093fb0d9018cd376490cec1d58f53adf8fde9d19ece414d1ada1523a23",
+  "collaboration_before_sha256": "b5e4ef40dec2434995fdebd3fd29eea0786c41ea3652df945a52a1ae10def16a",
+  "collaboration_before_bytes": 8934,
+  "collaboration_entry_sha256": "abf557cdb1041d71232c3786ce8ff7a6b383391fda4043dc0c08974d0837b985",
+  "collaboration_entry_bytes": 1309,
+  "collaboration_after_sha256": "b7995d42570a105026d779c86d504772cb143d3e91c98538fbd2f319957548b5",
+  "collaboration_after_bytes": 10243
+}
