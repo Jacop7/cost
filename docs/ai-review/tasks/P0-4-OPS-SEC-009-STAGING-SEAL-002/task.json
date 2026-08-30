@@ -1,0 +1,74 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "P0-4-OPS-SEC-009-STAGING-SEAL-002",
+  "route": "SECURITY",
+  "risk_level": "R3",
+  "author_role": "SOLAR-DB",
+  "reviewer_role": "FABLE-SEC",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "SECURITY",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "c3896ec591d5049fae3945b8c97cd6b29380842f",
+  "target_commit_sha": "379dd6cb0ce09814cfdb2671205e22ce1d965fd1",
+  "target_tree_oid": "dfaa82f68978ff7467166926807986df0219e041",
+  "agents_blob_oid": "bf9b9aeccabdc1055005c7f9bcb188ed8c05eb2a",
+  "agents_sha256": "485c7cb1cbb9143748a6028393723986201d9ff944ad9d3127e5c5f6f243c531",
+  "requirements": [
+    "0176·0177 원문과 현재 시험을 독립적으로 검토해 두 운영 관측 SECURITY DEFINER 함수의 고정 search_path와 권한 경계가 안전한지 판정한다.",
+    "ops_health_status()와 report_client_rpc_error(text,text,text)는 prosecdef=true이고 proconfig에 정확한 search_path=pg_catalog, public, ops가 있어야 한다.",
+    "DB 시험 36은 두 함수 중 하나만 proconfig가 NULL이어도, 둘 다 NULL이어도, SECURITY INVOKER여도, search_path가 달라도 실패해야 한다.",
+    "공식 predecessor Finding을 승계하지 않는 독립 보안 검수이므로 문제가 없으면 findings 없이 PASS하고, 새 문제만 previous_finding_id=null로 보고한다.",
+    "제품 원장·계산·migration·Edge 동작은 바꾸지 않고 시험만 보강했으며 staging과 production에는 적용하지 않는다."
+  ],
+  "invariant_ids": [
+    "AGENTS:server-calculation-authority",
+    "AGENTS:acl-environment-deployment",
+    "AGENTS:required-local-gate",
+    "WORK-QUEUE:P0-4-OPS-SEC-009-STAGING-SEAL",
+    "ARCH:operations-observability"
+  ],
+  "artifact_paths": [
+    "packages/db/supabase/migrations/20260830000176_operations_monitoring.sql",
+    "packages/db/supabase/migrations/20260831000177_operations_health_signal_separation.sql",
+    "packages/db/tests/34_rpc_least_privilege.sql",
+    "packages/db/tests/36_operations_monitoring.sql"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "ARCHITECTURE.md",
+    "docs/ai-review/README.md",
+    "docs/작업큐.md",
+    "docs/브랜치-DB-운영-기획안.md"
+  ],
+  "evidence_paths": [
+    "packages/db/scripts/upgrade-check.sh",
+    "packages/db/tests/run.mjs"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "0176·0177 함수 원문에서 SECURITY DEFINER와 set search_path = pg_catalog, public, ops를 직접 확인한 결과",
+    "0177의 ops_health_status EXECUTE 권한 회수·service_role 부여와 자체 검증 블록 검토 결과",
+    "정확한 코드 commit ecdcd33f539e3172b6e0a593f63f38bead2b5020 분리 checkout의 corepack pnpm verify 6/6, DB 36/36, core 178, mobile 212, 업그레이드 13/13",
+    "한 함수 proconfig NULL·두 함수 proconfig NULL·SECURITY INVOKER·잘못된 search_path 네 사보타주가 모두 새 단언에서 실패한 결과",
+    "target 379dd6cb0ce09814cfdb2671205e22ce1d965fd1은 코드 commit 뒤 실패 검수 원본만 append-only로 보존했고 제품 코드는 동일하다는 diff",
+    "migration 파일·개발 DB 장부 166/166, 최신 0177, fresh_% 0개",
+    "staging·production 미접근·미적용 기록"
+  ],
+  "human_decisions": [
+    "2026-08-31 사용자는 SEC-009 봉인 작업과 로컬 검증 지속을 승인했다.",
+    "이 Task의 새 유료 Fable 호출은 이전 3.00 USD 상한과 별개이며 실행 전 추가 승인이 필요하다.",
+    "staging 장애 훈련과 production 배포는 이 검수와 정확한 SHA 보호 CI 전까지 금지한다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "3.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}
