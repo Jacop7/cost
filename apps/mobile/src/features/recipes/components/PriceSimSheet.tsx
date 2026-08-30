@@ -13,13 +13,13 @@
 import { useEffect, useState } from 'react';
 import { Text, View } from 'react-native';
 import { Badge, Button, Card, Icon, Sheet, Slider } from '@/components/kit';
-import { formatPercent, round } from '@sikjae/core';
+import { formatPercent, recommendedPrice, round } from '@sikjae/core';
 import { T, won } from '@/theme/tokens';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 
 export function PriceSimSheet({
-  visible, onClose, price, material, extra, fixedRate, target, taxRatio = 10 / 110,
+  visible, onClose, price, material, extra, fixedRate, target, taxRatio,
 }: {
   visible: boolean;
   onClose: () => void;
@@ -31,7 +31,7 @@ export function PriceSimSheet({
   /** 0~1 비율 */
   target: number;
   /** 판매가 대비 세금 비율(0~1). 부가세 + 세금 항목(0052). */
-  taxRatio?: number;
+  taxRatio: number;
 }) {
   const min = Math.max(100, Math.round((price * 0.75) / 100) * 100);
   const max = Math.round(((price * 5) / 3) / 100) * 100;
@@ -53,9 +53,8 @@ export function PriceSimSheet({
   const diff = temp - price;
 
   // 목표 달성 권장가(100원 단위). 분모가 0 이하면 어떤 가격으로도 목표를 못 맞춘다.
-  const denom = 1 - target - fixedRate - taxRatio;
-  const recRaw = denom > 0 ? (material + extra) / denom : NaN;
-  const rec = Number.isFinite(recRaw) && recRaw > 0 ? Math.round(recRaw / 100) * 100 : null;
+  const recRaw = recommendedPrice(material + extra, fixedRate, target, taxRatio);
+  const rec = recRaw !== null && recRaw > 0 ? Math.round(recRaw / 100) * 100 : null;
 
   return (
     <Sheet visible={visible} onClose={onClose} title="판매가 시뮬레이션" sub="판매가를 바꿔 순이익을 미리 확인해요" height={560}>

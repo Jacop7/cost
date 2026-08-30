@@ -63,8 +63,16 @@ describe('레시피 손익 (② 3장) — 제육볶음', () => {
   });
 
   it('권장가 16,000원 (목표 40%)', () => {
-    const rec = recommendedPrice(2835 + 300, 0.313, 0.4);
+    const rec = recommendedPrice(2835 + 300, 0.313, 0.4, 10 / 110);
     expect(round(rec! / 1000) * 1000).toBe(16000);
+  });
+
+  it('세금 항목 없음(0)과 부가세 항목(10/110)의 권장가는 다르다', () => {
+    const noTax = recommendedPrice(2835 + 300, 0.313, 0.4, 0)!;
+    const vatIncluded = recommendedPrice(2835 + 300, 0.313, 0.4, 10 / 110)!;
+    expect(round(noTax / 100) * 100).toBe(10900);
+    expect(round(vatIncluded / 100) * 100).toBe(16000);
+    expect(vatIncluded).toBeGreaterThan(noTax);
   });
 });
 
