@@ -64,7 +64,9 @@ export function scanMobileRpcNames(roots) {
       // `const { rpc } = client` / `const { rpc: call } = client`도 허용 목록과 대조할 수 없다.
       if (ts.isBindingElement(node)) {
         const bound = node.propertyName ?? node.name;
-        if (ts.isIdentifier(bound) && bound.text === 'rpc') dynamic.push(location(source, path, node));
+        if ((ts.isIdentifier(bound) || ts.isStringLiteralLike(bound)) && bound.text === 'rpc') {
+          dynamic.push(location(source, path, node));
+        }
       }
 
       // `const call = client.rpc`처럼 호출 함수를 별칭으로 빼는 경로도 막는다.
@@ -77,6 +79,15 @@ export function scanMobileRpcNames(roots) {
           && ts.isStringLiteralLike(node.argumentExpression)
           && node.argumentExpression.text === 'rpc'
           && !(ts.isCallExpression(node.parent) && node.parent.expression === node)) {
+        dynamic.push(location(source, path, node));
+      }
+
+      // `'rpc'`가 값으로 흘러가면(`const key = 'rpc'`, `Reflect.get(x, 'rpc')`) 호출 대상을
+      // 정적으로 확정할 수 없다. `x['rpc']`와 구조 분해 속성명은 위에서 이미 처리한다.
+      if (ts.isStringLiteralLike(node)
+          && node.text === 'rpc'
+          && !(ts.isElementAccessExpression(node.parent) && node.parent.argumentExpression === node)
+          && !(ts.isBindingElement(node.parent) && node.parent.propertyName === node)) {
         dynamic.push(location(source, path, node));
       }
       ts.forEachChild(node, visit);

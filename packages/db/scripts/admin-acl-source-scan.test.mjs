@@ -58,6 +58,30 @@ ok('client 계산 키 호출을 거부한다', () => expectFailure(
   { 'computed.ts': `const key = 'rpc'; client[key]('business_day_state');\n` },
   /리터럴이 아닌 \.rpc 이름/,
 ));
+ok('문자열 속성명 구조 분해 별칭도 거부한다', () => expectFailure(
+  { 'destructure-string.ts': `const { 'rpc': call } = client; call('business_day_state');\n` },
+  /리터럴이 아닌 \.rpc 이름/,
+));
+ok('별칭 변수의 rpc 리터럴 계산 키를 거부한다', () => expectFailure(
+  { 'alias-computed.ts': `const sb = supabase; const key = 'rpc'; sb[key]('business_day_state');\n` },
+  /리터럴이 아닌 \.rpc 이름/,
+));
+ok('bracket 리터럴 rpc 호출을 거부한다', () => expectFailure(
+  { 'bracket.ts': `client['rpc']('business_day_state');\n` },
+  /리터럴이 아닌 \.rpc 이름/,
+));
+ok('.rpc 함수 별칭 추출을 거부한다', () => expectFailure(
+  { 'alias.ts': `const call = client.rpc; call('business_day_state');\n` },
+  /리터럴이 아닌 \.rpc 이름/,
+));
+ok('비리터럴 첫 인자를 거부한다', () => expectFailure(
+  { 'dynamic-arg.ts': `const name = 'business_day_state'; client.rpc(name);\n` },
+  /리터럴이 아닌 \.rpc 이름/,
+));
+ok('spread 첫 인자를 거부한다', () => expectFailure(
+  { 'spread-arg.ts': `const args = ['business_day_state']; client.rpc(...args);\n` },
+  /리터럴이 아닌 \.rpc 이름/,
+));
 ok('일반 객체의 계산 키 호출은 RPC로 오인하지 않는다', () => withFixture(
   { 'handler.ts': `const key = 'save'; handlers[key]();\nclient.rpc('get_settings');\n` },
   ({ roots }) => {
@@ -69,6 +93,16 @@ ok('필수 모바일 루트 누락을 경로와 함께 진단한다', () => expe
   { 'literal.ts': `client.rpc('get_settings');\n` },
   /모바일 소스 루트가 없습니다: .*app/,
   { includeApp: false },
+));
+ok('필수 루트는 있지만 소스 파일이 없으면 실패한다', () => withFixture(
+  {},
+  ({ roots }) => {
+    let message = '';
+    try { scanMobileRpcNames(roots); } catch (error) { message = error instanceof Error ? error.message : String(error); }
+    if (!/모바일 소스를 하나도 찾지 못했습니다/.test(message)) {
+      throw new Error(`기대 오류와 다릅니다: ${message || '(오류 없음)'}`);
+    }
+  },
 ));
 
 if (process.exitCode) process.exit(process.exitCode);
