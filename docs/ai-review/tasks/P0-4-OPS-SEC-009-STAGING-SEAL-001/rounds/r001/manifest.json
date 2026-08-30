@@ -1,0 +1,204 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "P0-4-OPS-SEC-009-STAGING-SEAL-001",
+  "round": "r001",
+  "created_at": "2026-08-30T22:24:30.568Z",
+  "review_mode": "SECURITY",
+  "baseline_commit_sha": "c3896ec591d5049fae3945b8c97cd6b29380842f",
+  "target_commit_sha": "43cd98a88e91d441cc9acf8d3898ae9716874422",
+  "target_tree_oid": "006ec573a3bd828ceac0cfeee2da74c2bb309893",
+  "agents_blob_oid": "bf9b9aeccabdc1055005c7f9bcb188ed8c05eb2a",
+  "agents_sha256": "485c7cb1cbb9143748a6028393723986201d9ff944ad9d3127e5c5f6f243c531",
+  "task_sha256": "cce254982834f012b33ba8331fcfffe109e3f7e7be6051c0211bc58e1774ffc6",
+  "collaboration_sha256": "ce8c8e02f5822163ec3d7b2ede16e50d994d244cae5e8336ff882cdf40649486",
+  "collaboration_bytes": 3210,
+  "input_files_sha256": "a9109c89b6ffc9e57215af42fd6b4e380d288583b6bcf85abcf2b7acea0bab3a",
+  "schema_sha256": "d8ffdb13e6b1e38279355d9ffd592cfb91dc023d287976adf7892e85dbfaf0d7",
+  "runner_sha256": "80dae1d06c89af056e9d8c210b571e978ee534fc128a5fe3b9867610b5ae447b",
+  "snapshot_mode": "COMMIT",
+  "previous_review_sha256": null,
+  "previous_run_sha256": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "fallback_review": null,
+  "closure_review": null,
+  "fallback_input_scope": null,
+  "retry_of_failed_round": null,
+  "artifact_paths": [
+    "packages/db/supabase/migrations/20260830000176_operations_monitoring.sql",
+    "packages/db/supabase/migrations/20260831000177_operations_health_signal_separation.sql",
+    "packages/db/tests/34_rpc_least_privilege.sql",
+    "packages/db/tests/36_operations_monitoring.sql"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "ARCHITECTURE.md",
+    "docs/ai-review/README.md",
+    "docs/작업큐.md",
+    "docs/브랜치-DB-운영-기획안.md"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/tasks/P0-4-OPS-MONITORING-COMMIT-004/rounds/r001/review.json",
+    "docs/ai-review/tasks/P0-4-OPS-MONITORING-COMMIT-004/rounds/r001/review.md",
+    "docs/ai-review/tasks/P0-4-OPS-MONITORING-COMMIT-004/collaboration.md",
+    "packages/db/scripts/upgrade-check.sh",
+    "packages/db/tests/run.mjs"
+  ],
+  "allowed_paths": [
+    "packages/db/supabase/migrations/20260830000176_operations_monitoring.sql",
+    "packages/db/supabase/migrations/20260831000177_operations_health_signal_separation.sql",
+    "packages/db/tests/34_rpc_least_privilege.sql",
+    "packages/db/tests/36_operations_monitoring.sql",
+    "AGENTS.md",
+    "ARCHITECTURE.md",
+    "docs/ai-review/README.md",
+    "docs/작업큐.md",
+    "docs/브랜치-DB-운영-기획안.md",
+    "docs/ai-review/tasks/P0-4-OPS-MONITORING-COMMIT-004/rounds/r001/review.json",
+    "docs/ai-review/tasks/P0-4-OPS-MONITORING-COMMIT-004/rounds/r001/review.md",
+    "docs/ai-review/tasks/P0-4-OPS-MONITORING-COMMIT-004/collaboration.md",
+    "packages/db/scripts/upgrade-check.sh",
+    "packages/db/tests/run.mjs"
+  ],
+  "excluded_paths": [],
+  "applied_learning_ids": [],
+  "excluded_learning_ids": [],
+  "learning_registry_blob_oid": "77f00167d790c82373c1aa803d91874952c3334a",
+  "learning_registry_sha256": "4717fe99c86319d7c0abc5c8dd38e68e3a55722d7cfa56b8de173ed05ca1388f",
+  "learning_assignment_sha256": "4660bb32207bcae3246801d71aa6a052eab7b0a7cef357bd5984f706fe3dcbfe",
+  "learning_target_date": "2026-08-31",
+  "input_files": [
+    {
+      "path": "AGENTS.md",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 11054,
+      "git_blob_oid": "bf9b9aeccabdc1055005c7f9bcb188ed8c05eb2a",
+      "sha256": "485c7cb1cbb9143748a6028393723986201d9ff944ad9d3127e5c5f6f243c531",
+      "line_count": 155
+    },
+    {
+      "path": "ARCHITECTURE.md",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 11497,
+      "git_blob_oid": "314daf8b1ba87af0cc38fbe96521cc0b0da1ce16",
+      "sha256": "cd368b756d7d9d0534cae13c765e637a6b04303fe8e650eebca4520e36c02c97",
+      "line_count": 175
+    },
+    {
+      "path": "docs/브랜치-DB-운영-기획안.md",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 41912,
+      "git_blob_oid": "7dd7fb5df15cd576f573f6cdbc29b55449a8a0c9",
+      "sha256": "db69677c74eb01e586c249cc411d39ddc009d29f84a5148c672c1faeeb7b828b",
+      "line_count": 706
+    },
+    {
+      "path": "docs/작업큐.md",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 80463,
+      "git_blob_oid": "841a3f46aa527d55b25e5ce150b5f4d8ed1ca53f",
+      "sha256": "f26673dce3f9a7d01c67b6834c0e8ac5fd5893bfdfd79b5f31d4ba7e24118c32",
+      "line_count": 1221
+    },
+    {
+      "path": "docs/ai-review/README.md",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 39464,
+      "git_blob_oid": "7df2a216e73b4eea76966ff082c0cfaa61a1a31e",
+      "sha256": "390721ad0a5ec54a961ebd238833e0d9f48050444519bffa290ad5bf1447ff91",
+      "line_count": 536
+    },
+    {
+      "path": "docs/ai-review/tasks/P0-4-OPS-MONITORING-COMMIT-004/collaboration.md",
+      "path_role": "EVIDENCE",
+      "change_type": "COMMIT",
+      "size": 9311,
+      "git_blob_oid": "7b9ae227e270d8f739fb7d8eba70b70044051fb2",
+      "sha256": "7066bda0ec89f87a43a8824d72677c7217bafaf38662dfff8d49e5b4eb717490",
+      "line_count": 92
+    },
+    {
+      "path": "docs/ai-review/tasks/P0-4-OPS-MONITORING-COMMIT-004/rounds/r001/review.json",
+      "path_role": "EVIDENCE",
+      "change_type": "COMMIT",
+      "size": 15996,
+      "git_blob_oid": "0a970a3e6b364b2ab09516eae3deb0d1d5fde09d",
+      "sha256": "e925e37eebb6b65e996c2cf54ac7d250da05010432092f9cc7e4fdd8420fa65e",
+      "line_count": 262
+    },
+    {
+      "path": "docs/ai-review/tasks/P0-4-OPS-MONITORING-COMMIT-004/rounds/r001/review.md",
+      "path_role": "EVIDENCE",
+      "change_type": "COMMIT",
+      "size": 8680,
+      "git_blob_oid": "45ed99ff2056b6b1f8d472b85dd7abd98ce1c5ae",
+      "sha256": "559335f758afa484eff8f54dd754b8b940fc29d4dd4619f79e832ed9448d1be4",
+      "line_count": 75
+    },
+    {
+      "path": "packages/db/scripts/upgrade-check.sh",
+      "path_role": "EVIDENCE",
+      "change_type": "COMMIT",
+      "size": 35906,
+      "git_blob_oid": "f2c67a9f38c71f5ed107d7286a50b53bde82ad19",
+      "sha256": "57c0baff96ed11022ae47c833648b83775783fb7815b6ff24b92736c4896ceeb",
+      "line_count": 653
+    },
+    {
+      "path": "packages/db/supabase/migrations/20260830000176_operations_monitoring.sql",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 12509,
+      "git_blob_oid": "bbd85c146a47ee264dce7deb2b45047bca0c0a0f",
+      "sha256": "59aa90b4cbe695b237240ace954c4c520bacaf12bc9dce427066c234df805870",
+      "line_count": 303
+    },
+    {
+      "path": "packages/db/supabase/migrations/20260831000177_operations_health_signal_separation.sql",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 6025,
+      "git_blob_oid": "eaf32d8b2c0448b6ca723b17d2f121c466438732",
+      "sha256": "44f2ce308d3f4d9d294fe80e7977d9c90cebc3708d89513916d0ef024b227675",
+      "line_count": 151
+    },
+    {
+      "path": "packages/db/tests/34_rpc_least_privilege.sql",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 8230,
+      "git_blob_oid": "28c0b0f7fc17be1efdade0f3220f4b10a10b1dcc",
+      "sha256": "b86a64fdd7f082cbbc89eda1321bd316d7c3e4edda559a9932ed5aac4646ff12",
+      "line_count": 146
+    },
+    {
+      "path": "packages/db/tests/36_operations_monitoring.sql",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 9284,
+      "git_blob_oid": "8705dfa1d7312308068fa4d50ce19447853886a0",
+      "sha256": "4797f14e93ac57a51b42e4595c1d486562f06f91c3cb0682ab9a7467726bf160",
+      "line_count": 201
+    },
+    {
+      "path": "packages/db/tests/run.mjs",
+      "path_role": "EVIDENCE",
+      "change_type": "COMMIT",
+      "size": 2827,
+      "git_blob_oid": "b7f056f9294797cc7967817d92b001dab83c4c7a",
+      "sha256": "ad15c63e658d7f63d49662dacb96d4f3f239f921ec56706b41d515bcade54056",
+      "line_count": 69
+    }
+  ],
+  "source_archive_version": 1,
+  "finding_resolution_semantics": "VERIFIED_RESOLVED_V1",
+  "artifact_snapshot_sha256": null,
+  "input_snapshot_sha256": null
+}
