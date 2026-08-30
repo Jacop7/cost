@@ -1,0 +1,149 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "P2-6-ACL-AUDIT-EVIDENCE-003",
+  "round": "r001",
+  "created_at": "2026-08-30T00:51:50.314Z",
+  "review_mode": "RECHECK",
+  "baseline_commit_sha": "513686b86c915ebc4a6d6c78a57237cdfbb08a6f",
+  "target_commit_sha": "beefc06025126f210a61b56ece492a3e55c8f1b5",
+  "target_tree_oid": "81b7d630c17914a6d171d49fa50abc024338b7c5",
+  "agents_blob_oid": "bf9b9aeccabdc1055005c7f9bcb188ed8c05eb2a",
+  "agents_sha256": "485c7cb1cbb9143748a6028393723986201d9ff944ad9d3127e5c5f6f243c531",
+  "task_sha256": "200a22f122d6458206e4c6f74de1e8610f25dfa0e8229a2c16d0413f99249082",
+  "collaboration_sha256": "8956cc6f0f8b0a8d57b4730deca6f6af251786375a21b5e66893b4d6cc15f895",
+  "collaboration_bytes": 1839,
+  "input_files_sha256": "7ff41214d5aed5660bc04173a9b330c0745352ae14011233cca38d5edb550d4a",
+  "schema_sha256": "a903be542752bdf90fbbd49657860a7ec175f6ddd987a6295194d1f3bb1c85e0",
+  "runner_sha256": "dc78d5183405344a2fcadf9b4db56734b7cae60ab88385d857fd02e0d434c633",
+  "snapshot_mode": "COMMIT",
+  "previous_review_sha256": "a801e4e7af621c9c16e74cad04284bf658fdfdf51c5d31977280b4efb1313a42",
+  "previous_run_sha256": "c3f5adf01e0964c0630fd40aaf0ddc4ffbd0281bd3c3aad6d2ef165fe6ace96f",
+  "predecessor_review": {
+    "task_id": "P2-6-ACL-AUDIT-EVIDENCE-002",
+    "source_commit_sha": "aa494af0a1dc255d25418dbacfbf6d31d25c6e71",
+    "round": "r001",
+    "task_sha256": "18c582a1370fddb20771b42cd424667a5ba43b4a27e7c30d5115474fab18df93",
+    "manifest_sha256": "2563cd6ad67f5c02188e5af08fc1c68b24dfa80b11ef4d6db101afe17001c791",
+    "run_sha256": "c3f5adf01e0964c0630fd40aaf0ddc4ffbd0281bd3c3aad6d2ef165fe6ace96f",
+    "review_sha256": "a801e4e7af621c9c16e74cad04284bf658fdfdf51c5d31977280b4efb1313a42",
+    "finding_registry_sha256": "e0c416ee8fada01ce0c8a766915e9e34ee9101617009e3364278f9508fb279ec",
+    "handoff_turn_id": "turn-o001",
+    "handoff_entry_sha256": "9fe02abe64d33baf2da2c04d8c04d549577d6eb345db91605999aa9fbab7f115",
+    "handoff_run_sha256": "ebec83ee5ba6f883e90a3288c0db45e8760a1f52ef31c31a0099dd7ab272031e"
+  },
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "fallback_review": null,
+  "closure_review": null,
+  "fallback_input_scope": null,
+  "retry_of_failed_round": null,
+  "artifact_paths": [
+    "packages/db/scripts/admin-acl-source-scan.mjs",
+    "packages/db/scripts/admin-acl-source-scan.test.mjs",
+    "packages/db/scripts/admin-acl-audit.test.mjs",
+    "packages/db/scripts/admin-acl-audit.sql",
+    "scripts/verify.mjs",
+    "docs/ai-review/evidence/P1-1-ACL-SUPPORT-SOURCE-002.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/작업큐.md"
+  ],
+  "evidence_paths": [],
+  "allowed_paths": [
+    "packages/db/scripts/admin-acl-source-scan.mjs",
+    "packages/db/scripts/admin-acl-source-scan.test.mjs",
+    "packages/db/scripts/admin-acl-audit.test.mjs",
+    "packages/db/scripts/admin-acl-audit.sql",
+    "scripts/verify.mjs",
+    "docs/ai-review/evidence/P1-1-ACL-SUPPORT-SOURCE-002.md",
+    "AGENTS.md",
+    "docs/작업큐.md"
+  ],
+  "excluded_paths": [],
+  "applied_learning_ids": [],
+  "excluded_learning_ids": [],
+  "learning_registry_blob_oid": "77f00167d790c82373c1aa803d91874952c3334a",
+  "learning_registry_sha256": "4717fe99c86319d7c0abc5c8dd38e68e3a55722d7cfa56b8de173ed05ca1388f",
+  "learning_assignment_sha256": "4660bb32207bcae3246801d71aa6a052eab7b0a7cef357bd5984f706fe3dcbfe",
+  "learning_target_date": "2026-08-30",
+  "input_files": [
+    {
+      "path": "AGENTS.md",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 11054,
+      "git_blob_oid": "bf9b9aeccabdc1055005c7f9bcb188ed8c05eb2a",
+      "sha256": "485c7cb1cbb9143748a6028393723986201d9ff944ad9d3127e5c5f6f243c531",
+      "line_count": 155
+    },
+    {
+      "path": "docs/작업큐.md",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 69529,
+      "git_blob_oid": "ad9bceffed0962013b8a1082d34dcef160d899b3",
+      "sha256": "aaf8ef8428698f7fc306caff68f6aaf660a3d001945436ebd6fd8a669215221b",
+      "line_count": 1091
+    },
+    {
+      "path": "docs/ai-review/evidence/P1-1-ACL-SUPPORT-SOURCE-002.md",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 9894,
+      "git_blob_oid": "db1e650493b9d2520fce5940df382845981c8004",
+      "sha256": "148ad11cf4b8765f4e03019787818bdb8c33b32b2c7ec9af6995896b7f005b71",
+      "line_count": 146
+    },
+    {
+      "path": "packages/db/scripts/admin-acl-audit.sql",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 15550,
+      "git_blob_oid": "aed306cdf87a3bf017220f6f2a617fc1a0592361",
+      "sha256": "ed096d04f8010a0eaaadc5f8073929f0569812c3514f3f490c81edfa44c47220",
+      "line_count": 260
+    },
+    {
+      "path": "packages/db/scripts/admin-acl-audit.test.mjs",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 9011,
+      "git_blob_oid": "38a74b1ef1e2dcf48b046e1250bf112bb915039a",
+      "sha256": "5db66c6495b22cca08f69f6c1297d767806b2db9f0d1c73f03b3938e1646fb4a",
+      "line_count": 178
+    },
+    {
+      "path": "packages/db/scripts/admin-acl-source-scan.mjs",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 4366,
+      "git_blob_oid": "08532d91758a916061e85b145d0d911ad201d914",
+      "sha256": "c58d3d5cfc7139a158d0e22c7baaa543d88abe8d3286ff952eec590b97561946",
+      "line_count": 102
+    },
+    {
+      "path": "packages/db/scripts/admin-acl-source-scan.test.mjs",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 4683,
+      "git_blob_oid": "9b19ce303cf18d7674b0a286aea1a4d685b44734",
+      "sha256": "e926b2529623f4f3d58428f7702805c13e620647488cb314d3ff5cc17acc91f6",
+      "line_count": 109
+    },
+    {
+      "path": "scripts/verify.mjs",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 10483,
+      "git_blob_oid": "612f6ba026cac12c7d5276c2f09a0baf34c9e8e3",
+      "sha256": "b64662b869da68cd8303770494aea33b0334bf690a708c861fc0d0a80259fecb",
+      "line_count": 219
+    }
+  ],
+  "source_archive_version": 1,
+  "finding_resolution_semantics": "VERIFIED_RESOLVED_V1",
+  "artifact_snapshot_sha256": null,
+  "input_snapshot_sha256": null
+}

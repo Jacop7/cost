@@ -1,0 +1,244 @@
+{
+  "schema_version": "2.0",
+  "task_id": "P2-6-ACL-AUDIT-EVIDENCE-003",
+  "reviewer_role": "FABLE-SEC",
+  "review_mode": "RECHECK",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "513686b86c915ebc4a6d6c78a57237cdfbb08a6f",
+  "target_commit_sha": "beefc06025126f210a61b56ece492a3e55c8f1b5",
+  "target_tree_oid": "81b7d630c17914a6d171d49fa50abc024338b7c5",
+  "agents_blob_oid": "bf9b9aeccabdc1055005c7f9bcb188ed8c05eb2a",
+  "agents_sha256": "485c7cb1cbb9143748a6028393723986201d9ff944ad9d3127e5c5f6f243c531",
+  "task_sha256": "200a22f122d6458206e4c6f74de1e8610f25dfa0e8229a2c16d0413f99249082",
+  "collaboration_sha256": "8956cc6f0f8b0a8d57b4730deca6f6af251786375a21b5e66893b4d6cc15f895",
+  "input_files_sha256": "7ff41214d5aed5660bc04173a9b330c0745352ae14011233cca38d5edb550d4a",
+  "schema_sha256": "a903be542752bdf90fbbd49657860a7ec175f6ddd987a6295194d1f3bb1c85e0",
+  "runner_sha256": "dc78d5183405344a2fcadf9b4db56734b7cae60ab88385d857fd02e0d434c633",
+  "verdict": "PASS",
+  "summary": "P2-6 successor RECHECK(SECURITY 경로, target beefc060). predecessor 필수 Finding 3건을 같은 ID로 재검증했고 모두 VERIFIED다. (SEC-001) admin-acl-source-scan.mjs 67행이 BindingElement propertyName의 StringLiteralLike 'rpc'를 dynamic으로 잡고, 87-92행이 값 위치의 'rpc' 문자열(`const key = 'rpc'`, `Reflect.get(x,'rpc')`)을 실패 폐쇄하되 ElementAccess argumentExpression·BindingElement propertyName은 중복 보고에서 제외한다. `const sb = supabase; sb[key]('x')`는 객체 이름 정규식과 무관하게 문자열 규칙으로 닫히고, `handlers[key]()` 무오인 시험(85-91)은 유지된다. (SEC-002) 시험 파일이 13개(문자열 속성명 구조 분해·별칭 계산 키·bracket literal·.rpc 함수 별칭·비리터럴 인자·spread 인자·빈 루트 포함)로 늘었고 verify.mjs 112행의 ③ 단계에서 Docker 없이 실행된다. (SEC-003) 증거 문서 108-113행의 네 파일 Git blob OID(38a74b1e·08532d91·9b19ce30·aed306cd)와 blob SHA-256(5db66c64·c58d3d5c·e926b252·ed096d04)이 봉인 input_files와 정확히 일치하고, 104-106행이 LF blob 기준임을 명시하며, 115-117행이 32/87→0/0 전환을 P0-5 최소 권한 폐쇄와 test.mjs 171-175 0 고정 계약으로 연결하고, 132-144행이 verify 결과 블록을 verify.mjs 199-217 출력 형식 그대로 보존한다(③ 라벨 `CLI 계약 · ACL 보안` 일치). 실제 DB stdout 두 줄(125-126)은 test.mjs 177-178 형식과 일치한다. 작업큐 954-957의 r001·r002 budget_exhausted 기록은 보존됐고 verify 6단계도 유지된다. 새 Improvement 1건(비차단): 증거 표의 Finding 반영 commit이 7자 약식 `52a32b5`이고 target beefc060과 다른 commit이라 스냅샷만으로 commit 결속을 재현할 수 없으며, verify 원문 블록 안의 `fresh_db_count=0`은 verify.mjs가 출력하지 않는 별도 쿼리 값이라 \"실행기 원문\"과 섞여 있다. blob OID 대조는 성립하므로 판정을 막지 않는다. 잔여 위험으로 `sb['r'+'pc']`처럼 문자열 연결로 만든 계산 키는 정적 스캐너가 원리상 잡지 못하며, 이는 P1-1-SUPPORT-003에서 이미 수용한 잔여 우회 범주다. 호스티드 원격 ACL 적용·운영 배포는 범위 밖이다. PASS는 외부 게이트를 닫지 않으며 gate_state는 OPEN으로 남는다.",
+  "findings": [
+    {
+      "finding_id": "P2-6-SEC-001-RPC-SCAN-LITERAL-KEY-EVASION",
+      "severity": "Minor",
+      "review_state": "VERIFIED",
+      "category": "SECURITY",
+      "requirement_or_invariant_ids": [
+        "P2-6-1",
+        "P1-1-SUPPORT-003-RPC-SCAN-RESIDUAL-EVASION",
+        "P2-6-SEC-001-RPC-SCAN-LITERAL-KEY-EVASION"
+      ],
+      "evidence": [
+        {
+          "path": "packages/db/scripts/admin-acl-source-scan.mjs",
+          "line_start": 65,
+          "line_end": 70,
+          "observation": "BindingElement 검사가 `ts.isIdentifier(bound) || ts.isStringLiteralLike(bound)`로 확장돼 `const { 'rpc': call } = client`가 dynamic에 들어간다."
+        },
+        {
+          "path": "packages/db/scripts/admin-acl-source-scan.mjs",
+          "line_start": 85,
+          "line_end": 92,
+          "observation": "값 위치의 'rpc' 문자열 리터럴을 실패 폐쇄하고, ElementAccess argumentExpression과 BindingElement propertyName은 제외해 중복 보고를 막는다. 객체 이름 정규식에 의존하지 않으므로 `const sb = supabase; const key = 'rpc'; sb[key](...)`가 닫힌다."
+        },
+        {
+          "path": "packages/db/scripts/admin-acl-source-scan.test.mjs",
+          "line_start": 61,
+          "line_end": 68,
+          "observation": "문자열 속성명 구조 분해와 별칭 변수 계산 키 두 사례의 실패 회귀시험이 추가됐다."
+        },
+        {
+          "path": "packages/db/scripts/admin-acl-source-scan.test.mjs",
+          "line_start": 85,
+          "line_end": 91,
+          "observation": "`const key = 'save'; handlers[key]()` 무오인 시험이 유지되고 get_settings만 수집한다."
+        }
+      ],
+      "impact": "세 수용 기준이 모두 충족돼 문자열 리터럴 속성명 구조 분해와 별칭 변수 계산 키 우회가 닫혔다. 문자열 연결로 만든 키(`sb['r'+'pc']`)는 정적 스캐너의 원리적 잔여 범주로 남는다.",
+      "acceptance_criteria": [
+        "BindingElement 검사에서 propertyName이 StringLiteralLike 'rpc'인 경우도 dynamic으로 처리한다.",
+        "값 위치의 문자열 리터럴 'rpc'(예: `const key = 'rpc'`, `Reflect.get(x, 'rpc')`)를 대조 불가로 실패 폐쇄하되, 이미 처리한 `x['rpc']` argumentExpression은 중복 보고하지 않는다.",
+        "admin-acl-source-scan.test.mjs에 위 두 사례의 실패 회귀시험을 추가하고 기존 `handlers[key]()` 무오인 시험은 유지한다."
+      ],
+      "required_tests": [
+        "`const { 'rpc': call } = client; call('business_day_state');` → 리터럴이 아닌 .rpc 이름 오류",
+        "`const sb = supabase; const key = 'rpc'; sb[key]('business_day_state');` → 리터럴이 아닌 .rpc 이름 오류",
+        "`const key = 'save'; handlers[key](); client.rpc('get_settings');` → get_settings만 수집"
+      ],
+      "previous_finding_id": "P2-6-SEC-001-RPC-SCAN-LITERAL-KEY-EVASION",
+      "verified_by_engine": "FABLE"
+    },
+    {
+      "finding_id": "P2-6-SEC-002-SOURCE-SCAN-TEST-COVERAGE",
+      "severity": "Minor",
+      "review_state": "VERIFIED",
+      "category": "TEST_GAP",
+      "requirement_or_invariant_ids": [
+        "P2-6-1",
+        "AGENTS:inspection-execution",
+        "P2-6-SEC-002-SOURCE-SCAN-TEST-COVERAGE"
+      ],
+      "evidence": [
+        {
+          "path": "packages/db/scripts/admin-acl-source-scan.test.mjs",
+          "line_start": 69,
+          "line_end": 84,
+          "observation": "bracket 리터럴 `client['rpc']`, `.rpc` 함수 별칭 `const call = client.rpc`, 비리터럴 첫 인자 `client.rpc(name)`, spread 인자 `client.rpc(...args)` 실패 회귀시험이 추가됐다."
+        },
+        {
+          "path": "packages/db/scripts/admin-acl-source-scan.test.mjs",
+          "line_start": 97,
+          "line_end": 106,
+          "observation": "src·app 루트만 있고 소스 파일이 없는 사례가 `모바일 소스를 하나도 찾지 못했습니다` 오류로 고정됐다."
+        },
+        {
+          "path": "packages/db/scripts/admin-acl-source-scan.test.mjs",
+          "line_start": 42,
+          "line_end": 109,
+          "observation": "ok 블록이 13개이며 108행에서 실패 시 exit한 뒤 109행이 통과 수를 출력한다. 장부의 13/13과 일치한다."
+        },
+        {
+          "path": "scripts/verify.mjs",
+          "line_start": 109,
+          "line_end": 118,
+          "observation": "③ `CLI 계약 · ACL 보안` 단계 112행이 admin-acl-source-scan.test.mjs를 실행해 --no-db 경로에서도 보호된다."
+        }
+      ],
+      "impact": "스캐너 리팩터링 시 bracket 리터럴·별칭 추출·비리터럴/spread 인자·빈 루트 실패 폐쇄 회귀가 verify ③과 --no-db CI에서 감지된다.",
+      "acceptance_criteria": [
+        "admin-acl-source-scan.test.mjs에 `client['rpc']('x')`, `const call = client.rpc`, `client.rpc(...args)`/`client.rpc(name)`, 루트는 있으나 파일 0개 사례의 실패 회귀시험을 추가한다.",
+        "시험 총계 출력이 실제 통과 수를 반영하고 verify ③에서 실행된다."
+      ],
+      "required_tests": [
+        "`client['rpc']('business_day_state')` → 리터럴이 아닌 .rpc 이름 오류",
+        "`const call = client.rpc; call('business_day_state')` → 리터럴이 아닌 .rpc 이름 오류",
+        "`client.rpc(name)` → 리터럴이 아닌 .rpc 이름 오류",
+        "src·app 디렉토리만 있고 소스 파일이 없을 때 → 모바일 소스를 하나도 찾지 못했습니다 오류"
+      ],
+      "previous_finding_id": "P2-6-SEC-002-SOURCE-SCAN-TEST-COVERAGE",
+      "verified_by_engine": "FABLE"
+    },
+    {
+      "finding_id": "P2-6-SEC-003-EVIDENCE-SQL-HASH-BINDING",
+      "severity": "Minor",
+      "review_state": "VERIFIED",
+      "category": "DATA_INTEGRITY",
+      "requirement_or_invariant_ids": [
+        "P2-6-4",
+        "P1-1-BINDING-005-OBSERVED-STDOUT-VERBATIM",
+        "P2-6-SEC-003-EVIDENCE-SQL-HASH-BINDING"
+      ],
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/P1-1-ACL-SUPPORT-SOURCE-002.md",
+          "line_start": 108,
+          "line_end": 113,
+          "observation": "네 파일의 Git blob OID(38a74b1e…, 08532d91…, 9b19ce30…, aed306cd…)와 blob SHA-256(5db66c64…, c58d3d5c…, e926b252…, ed096d04…)이 target tree의 봉인 input_files 값과 모두 정확히 일치한다."
+        },
+        {
+          "path": "docs/ai-review/evidence/P1-1-ACL-SUPPORT-SOURCE-002.md",
+          "line_start": 104,
+          "line_end": 106,
+          "observation": "SHA-256이 Git LF blob bytes 기준임을 명시하고 `git cat-file blob <OID>` 재현 절차를 적었다. 실제 값이 blob SHA-256과 일치하므로 기준 표기가 정확하다."
+        },
+        {
+          "path": "docs/ai-review/evidence/P1-1-ACL-SUPPORT-SOURCE-002.md",
+          "line_start": 115,
+          "line_end": 117,
+          "observation": "V2 32/87 → P2-6 0/0 전환을 P0-5 최소 권한 폐쇄와 0 고정 계약으로 연결했다."
+        },
+        {
+          "path": "packages/db/scripts/admin-acl-audit.test.mjs",
+          "line_start": 171,
+          "line_end": 178,
+          "observation": "0 고정 계약과 stdout 두 줄의 출력 형식이 증거 문서 125-126행 원문과 일치한다."
+        },
+        {
+          "path": "docs/ai-review/evidence/P1-1-ACL-SUPPORT-SOURCE-002.md",
+          "line_start": 132,
+          "line_end": 144,
+          "observation": "verify 결과 블록이 verify.mjs 199-217행의 `════ 검증 결과 ════`·단계 라벨·`전체 검증 통과` 형식과 일치하고 VERIFY_EXIT=0을 보존한다."
+        }
+      ],
+      "impact": "봉인 스냅샷에서 감사 SQL을 포함한 네 파일의 blob OID·SHA-256을 되짚을 수 있고, 보안 기준선 32/87→0/0 전환 근거와 verify 원문이 문서에 결속됐다.",
+      "acceptance_criteria": [
+        "판본 고정 표에 네 파일 모두의 Git blob OID를 기록하거나 최소 admin-acl-audit.sql·스캐너 두 파일의 blob OID를 추가한다.",
+        "SHA-256 표의 각 값이 LF blob 기준인지 CRLF 작업 트리 기준인지 파일별로 명시한다.",
+        "V2 32/87에서 P2-6 0/0으로 바뀐 근거(P0-5 최소 권한 폐쇄)를 한 문장으로 연결한다.",
+        "P2-6 `corepack pnpm verify` 검증 결과 블록을 V2와 같은 원문 형식으로 보존한다."
+      ],
+      "required_tests": [
+        "증거 표의 blob OID가 target commit의 `git ls-tree` 값과 일치",
+        "증거 표의 SHA-256이 명시된 기준(blob 또는 작업 트리)으로 재계산 시 일치"
+      ],
+      "previous_finding_id": "P2-6-SEC-003-EVIDENCE-SQL-HASH-BINDING",
+      "verified_by_engine": "FABLE"
+    },
+    {
+      "finding_id": "P2-6-SEC-004-EVIDENCE-COMMIT-REF-AND-VERBATIM-BLOCK",
+      "severity": "Improvement",
+      "review_state": "OPEN",
+      "category": "DATA_INTEGRITY",
+      "requirement_or_invariant_ids": [
+        "P1-1-BINDING-005-OBSERVED-STDOUT-VERBATIM",
+        "P2-6-SEC-003-EVIDENCE-SQL-HASH-BINDING"
+      ],
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/P1-1-ACL-SUPPORT-SOURCE-002.md",
+          "line_start": 102,
+          "line_end": 102,
+          "observation": "P2-6 Finding 반영 판본의 commit이 7자 약식 `52a32b5`로만 기록됐고 같은 표의 다른 행은 40자 SHA다. 검수 target은 beefc060…이라 이 commit과 target의 관계(조상 여부)를 스냅샷만으로 재현할 수 없다."
+        },
+        {
+          "path": "docs/ai-review/evidence/P1-1-ACL-SUPPORT-SOURCE-002.md",
+          "line_start": 129,
+          "line_end": 130,
+          "observation": "블록을 `실행기의 최종 결과 원문`이라 설명하면서 `fresh_%` 0개는 `별도 쿼리`로 확인했다고 적었다."
+        },
+        {
+          "path": "docs/ai-review/evidence/P1-1-ACL-SUPPORT-SOURCE-002.md",
+          "line_start": 143,
+          "line_end": 143,
+          "observation": "원문 블록 마지막 줄 `fresh_db_count=0`은 verify.mjs가 출력하지 않는 줄이라 실행기 원문과 별도 쿼리 결과가 한 블록에 섞였다."
+        },
+        {
+          "path": "scripts/verify.mjs",
+          "line_start": 199,
+          "line_end": 219,
+          "observation": "실행기의 최종 출력은 검증 결과 표·건너뜀·`전체 검증 통과`까지이며 VERIFY_EXIT나 fresh_db_count 줄은 없다(VERIFY_EXIT는 V2 관례상 호출 셸이 덧붙인 값)."
+        }
+      ],
+      "impact": "blob OID 대조가 성립해 판정을 막지 않지만, 약식 commit과 혼합 원문 블록은 장기 재현성과 P1-1-BINDING-005의 원문성 관례를 약화한다.",
+      "acceptance_criteria": [
+        "판본 고정 표의 Finding 반영 commit을 40자 SHA로 적고 target beefc060…과의 관계(같은 blob을 포함하는 후속 commit 등)를 한 줄로 명시한다.",
+        "verify 원문 블록에는 실행기 출력과 호출 셸이 남긴 VERIFY_EXIT까지만 두고, `fresh_db_count=0`은 별도 쿼리 결과로 블록 밖 또는 별도 코드 블록에 분리한다."
+      ],
+      "required_tests": [
+        "증거 표의 40자 commit SHA에서 `git ls-tree`로 네 blob OID가 재현됨"
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    }
+  ],
+  "proposed_edits": [
+    {
+      "edit_id": "P2-6-SEC-E006-EVIDENCE-FULL-COMMIT-AND-SPLIT-BLOCK",
+      "path": "docs/ai-review/evidence/P1-1-ACL-SUPPORT-SOURCE-002.md",
+      "anchor": "| P2-6 Finding 반영 | `52a32b5` | `38a74b1ef1e2dcf48b046e1250bf112bb915039a` |",
+      "operation": "COMMENT",
+      "proposed_text": "① 이 행과 108행 표 머리글의 `52a32b5`를 40자 commit SHA로 바꾸고, 검수 target `beefc06025126f210a61b56ece492a3e55c8f1b5`가 같은 네 blob을 포함하는 후속 commit임을 한 줄로 적어 달라(`git ls-tree beefc060 -- packages/db/scripts/...`로 동일 OID 재현). ② 132-144행 코드 블록에서 `fresh_db_count=0` 줄을 빼고, 블록 뒤에 `select count(*) from pg_database where datname like 'fresh_%';` 결과 `0`을 별도 코드 블록으로 두어 실행기 원문과 별도 쿼리 결과를 분리해 달라. 값 자체는 작성자가 실제 실행 결과로 재확인해야 한다.",
+      "rationale": "약식 commit과 혼합 원문 블록을 분리해 장기 재현성과 원문성을 맞춘다. 비차단 개선 제안이다.",
+      "finding_ids": [
+        "P2-6-SEC-004-EVIDENCE-COMMIT-REF-AND-VERBATIM-BLOCK"
+      ]
+    }
+  ],
+  "closed_finding_ids": [],
+  "reopened_finding_ids": [],
+  "remaining_required_finding_ids": [],
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}
