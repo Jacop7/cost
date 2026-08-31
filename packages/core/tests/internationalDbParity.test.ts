@@ -6,6 +6,7 @@ import {
   BUSINESS_LOCALE_CODES,
   INTERNATIONAL_SALES_CHANNEL_CODES,
   INTERNATIONAL_TAX_CALCULATION_VERSIONS,
+  LAUNCH_TAX_REGIONS,
   LAUNCH_COUNTRY_CODES,
   LAUNCH_CURRENCY_CODES,
   LAUNCH_MARKETS,
@@ -110,6 +111,22 @@ dbDescribe(`app_capabilities(DB=${DB ?? '없음'}) ↔ TypeScript 기준선`, ()
     `) as Record<string, number>;
     const expected = expectedMinorUnits();
     expect(minorUnits).toEqual(expected);
+  });
+
+  it('INTL-1C 미국·캐나다 관할 카탈로그가 공용 타입과 같다', () => {
+    const raw = queryJson(`
+      select coalesce(jsonb_agg(jsonb_build_object(
+        'countryCode', country_code,
+        'regionCode', region_code,
+        'name', name,
+        'jurisdictionLevel', jurisdiction_level
+      ) order by country_code::text, region_code), '[]'::jsonb)
+        from public.tax_region_catalog
+       where country_code in ('US', 'CA')
+    `);
+    const expected = [...LAUNCH_TAX_REGIONS].sort((a, b) =>
+      a.countryCode.localeCompare(b.countryCode) || a.regionCode.localeCompare(b.regionCode));
+    expect(raw).toEqual(expected);
   });
 });
 

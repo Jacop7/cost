@@ -5,6 +5,7 @@ import {
   LAUNCH_COUNTRY_CODES,
   LAUNCH_CURRENCY_CODES,
   LAUNCH_MARKETS,
+  LAUNCH_TAX_REGIONS,
 } from '@margincook/types';
 
 describe('국제 출시 계약 기준선', () => {
@@ -34,5 +35,15 @@ describe('국제 출시 계약 기준선', () => {
         minimumWriteAppVersion: null,
       },
     });
+  });
+
+  it('INTL-1C 관할 카탈로그는 미국 51개·캐나다 13개 ISO 3166-2 코드를 중복 없이 가진다', () => {
+    expect(LAUNCH_TAX_REGIONS.filter((region) => region.countryCode === 'US')).toHaveLength(51);
+    expect(LAUNCH_TAX_REGIONS.filter((region) => region.countryCode === 'CA')).toHaveLength(13);
+    expect(new Set(LAUNCH_TAX_REGIONS.map((region) => region.regionCode)).size)
+      .toBe(LAUNCH_TAX_REGIONS.length);
+    for (const region of LAUNCH_TAX_REGIONS) {
+      expect(region.regionCode.startsWith(`${region.countryCode}-`)).toBe(true);
+    }
   });
 });

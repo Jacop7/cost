@@ -309,6 +309,7 @@ export type Database = {
           etc_items: Json
           etc_revenue: number
           etc_tax: number
+          etc_tax_calculation_version: Database["public"]["Enums"]["international_tax_calculation_version"]
           extra_items: Json
           id: string
           note: string | null
@@ -324,6 +325,7 @@ export type Database = {
           etc_items?: Json
           etc_revenue?: number
           etc_tax?: number
+          etc_tax_calculation_version?: Database["public"]["Enums"]["international_tax_calculation_version"]
           extra_items?: Json
           id?: string
           note?: string | null
@@ -339,6 +341,7 @@ export type Database = {
           etc_items?: Json
           etc_revenue?: number
           etc_tax?: number
+          etc_tax_calculation_version?: Database["public"]["Enums"]["international_tax_calculation_version"]
           extra_items?: Json
           id?: string
           note?: string | null
@@ -551,6 +554,13 @@ export type Database = {
             foreignKeyName: "daily_sales_item_tax_snapshots_tax_profile_id_store_id_fkey"
             columns: ["tax_profile_id", "store_id"]
             isOneToOne: false
+            referencedRelation: "store_tax_profile_contract"
+            referencedColumns: ["id", "store_id"]
+          },
+          {
+            foreignKeyName: "daily_sales_item_tax_snapshots_tax_profile_id_store_id_fkey"
+            columns: ["tax_profile_id", "store_id"]
+            isOneToOne: false
             referencedRelation: "store_tax_profiles"
             referencedColumns: ["id", "store_id"]
           },
@@ -573,6 +583,7 @@ export type Database = {
           unit_material_cost: number | null
           unit_price: number
           unit_tax: number | null
+          unit_tax_calculation_version: Database["public"]["Enums"]["international_tax_calculation_version"]
         }
         Insert: {
           created_at?: string
@@ -590,6 +601,7 @@ export type Database = {
           unit_material_cost?: number | null
           unit_price: number
           unit_tax?: number | null
+          unit_tax_calculation_version?: Database["public"]["Enums"]["international_tax_calculation_version"]
         }
         Update: {
           created_at?: string
@@ -607,6 +619,7 @@ export type Database = {
           unit_material_cost?: number | null
           unit_price?: number
           unit_tax?: number | null
+          unit_tax_calculation_version?: Database["public"]["Enums"]["international_tax_calculation_version"]
         }
         Relationships: [
           {
@@ -808,6 +821,75 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      international_tax_migration_audits: {
+        Row: {
+          audited_at: string
+          decision: string
+          future_effective_from: string | null
+          id: string
+          legacy_calculation_version: Database["public"]["Enums"]["international_tax_calculation_version"]
+          market_profile_id: string | null
+          reason_codes: string[]
+          source_currency: string | null
+          source_daily_sales_count: number
+          source_etc_revenue_total: number
+          source_etc_tax_total: number
+          source_locale: string | null
+          source_menu_tax_total: number
+          source_money_digits: number | null
+          source_recipe_mismatch_count: number
+          source_sales_item_count: number
+          source_tax_items: Json
+          source_tax_mode: Database["public"]["Enums"]["tax_mode"] | null
+          store_id: string
+          tax_profile_id: string | null
+        }
+        Insert: {
+          audited_at?: string
+          decision: string
+          future_effective_from?: string | null
+          id?: string
+          legacy_calculation_version?: Database["public"]["Enums"]["international_tax_calculation_version"]
+          market_profile_id?: string | null
+          reason_codes: string[]
+          source_currency?: string | null
+          source_daily_sales_count: number
+          source_etc_revenue_total: number
+          source_etc_tax_total: number
+          source_locale?: string | null
+          source_menu_tax_total: number
+          source_money_digits?: number | null
+          source_recipe_mismatch_count: number
+          source_sales_item_count: number
+          source_tax_items: Json
+          source_tax_mode?: Database["public"]["Enums"]["tax_mode"] | null
+          store_id: string
+          tax_profile_id?: string | null
+        }
+        Update: {
+          audited_at?: string
+          decision?: string
+          future_effective_from?: string | null
+          id?: string
+          legacy_calculation_version?: Database["public"]["Enums"]["international_tax_calculation_version"]
+          market_profile_id?: string | null
+          reason_codes?: string[]
+          source_currency?: string | null
+          source_daily_sales_count?: number
+          source_etc_revenue_total?: number
+          source_etc_tax_total?: number
+          source_locale?: string | null
+          source_menu_tax_total?: number
+          source_money_digits?: number | null
+          source_recipe_mismatch_count?: number
+          source_sales_item_count?: number
+          source_tax_items?: Json
+          source_tax_mode?: Database["public"]["Enums"]["tax_mode"] | null
+          store_id?: string
+          tax_profile_id?: string | null
+        }
+        Relationships: []
       }
       inventory_events: {
         Row: {
@@ -1047,6 +1129,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "stores"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "menu_tax_overrides_tax_profile_id_store_id_fkey"
+            columns: ["tax_profile_id", "store_id"]
+            isOneToOne: false
+            referencedRelation: "store_tax_profile_contract"
+            referencedColumns: ["id", "store_id"]
           },
           {
             foreignKeyName: "menu_tax_overrides_tax_profile_id_store_id_fkey"
@@ -2049,6 +2138,13 @@ export type Database = {
             foreignKeyName: "store_tax_components_tax_profile_id_store_id_fkey"
             columns: ["tax_profile_id", "store_id"]
             isOneToOne: false
+            referencedRelation: "store_tax_profile_contract"
+            referencedColumns: ["id", "store_id"]
+          },
+          {
+            foreignKeyName: "store_tax_components_tax_profile_id_store_id_fkey"
+            columns: ["tax_profile_id", "store_id"]
+            isOneToOne: false
             referencedRelation: "store_tax_profiles"
             referencedColumns: ["id", "store_id"]
           },
@@ -2207,6 +2303,13 @@ export type Database = {
             foreignKeyName: "tax_category_catalog_tax_profile_id_store_id_fkey"
             columns: ["tax_profile_id", "store_id"]
             isOneToOne: false
+            referencedRelation: "store_tax_profile_contract"
+            referencedColumns: ["id", "store_id"]
+          },
+          {
+            foreignKeyName: "tax_category_catalog_tax_profile_id_store_id_fkey"
+            columns: ["tax_profile_id", "store_id"]
+            isOneToOne: false
             referencedRelation: "store_tax_profiles"
             referencedColumns: ["id", "store_id"]
           },
@@ -2278,7 +2381,46 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      store_tax_profile_contract: {
+        Row: {
+          country_code:
+            | Database["public"]["Enums"]["international_country_code"]
+            | null
+          created_at: string | null
+          created_by: string | null
+          default_treatment: Database["public"]["Enums"]["tax_treatment"] | null
+          effective_from: string | null
+          effective_to: string | null
+          id: string | null
+          market_profile_id: string | null
+          region_code: string | null
+          revision: number | null
+          store_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "store_market_profiles_country_code_region_code_fkey"
+            columns: ["country_code", "region_code"]
+            isOneToOne: false
+            referencedRelation: "tax_region_catalog"
+            referencedColumns: ["country_code", "region_code"]
+          },
+          {
+            foreignKeyName: "store_tax_profiles_market_profile_id_store_id_fkey"
+            columns: ["market_profile_id", "store_id"]
+            isOneToOne: false
+            referencedRelation: "store_market_profiles"
+            referencedColumns: ["id", "store_id"]
+          },
+          {
+            foreignKeyName: "store_tax_profiles_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       add_to_day_basis: {
