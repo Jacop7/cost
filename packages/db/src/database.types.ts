@@ -265,6 +265,42 @@ export type Database = {
           },
         ]
       }
+      channel_tax_remittance: {
+        Row: {
+          remittance_owner: Database["public"]["Enums"]["tax_remittance_owner"]
+          sales_channel_code: Database["public"]["Enums"]["international_sales_channel_code"]
+          store_id: string
+          tax_component_id: string
+        }
+        Insert: {
+          remittance_owner: Database["public"]["Enums"]["tax_remittance_owner"]
+          sales_channel_code: Database["public"]["Enums"]["international_sales_channel_code"]
+          store_id: string
+          tax_component_id: string
+        }
+        Update: {
+          remittance_owner?: Database["public"]["Enums"]["tax_remittance_owner"]
+          sales_channel_code?: Database["public"]["Enums"]["international_sales_channel_code"]
+          store_id?: string
+          tax_component_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "channel_tax_remittance_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "channel_tax_remittance_tax_component_id_store_id_fkey"
+            columns: ["tax_component_id", "store_id"]
+            isOneToOne: false
+            referencedRelation: "store_tax_components"
+            referencedColumns: ["id", "store_id"]
+          },
+        ]
+      }
       daily_sales: {
         Row: {
           business_day_id: string | null
@@ -325,6 +361,198 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "stores"
             referencedColumns: ["id"]
+          },
+        ]
+      }
+      daily_sales_item_tax_component_snapshots: {
+        Row: {
+          applies_to_treatments: Database["public"]["Enums"]["tax_treatment"][]
+          calculation_basis: Database["public"]["Enums"]["tax_calculation_basis"]
+          component_id_snapshot: string
+          id: string
+          jurisdiction_level: Database["public"]["Enums"]["tax_jurisdiction_level"]
+          kind: Database["public"]["Enums"]["tax_component_kind"]
+          name: string
+          rate_pct: number
+          remittance_owner: Database["public"]["Enums"]["tax_remittance_owner"]
+          rounded_amount: number
+          sales_tax_snapshot_id: string
+          store_id: string
+          unrounded_amount: number
+        }
+        Insert: {
+          applies_to_treatments: Database["public"]["Enums"]["tax_treatment"][]
+          calculation_basis: Database["public"]["Enums"]["tax_calculation_basis"]
+          component_id_snapshot: string
+          id?: string
+          jurisdiction_level: Database["public"]["Enums"]["tax_jurisdiction_level"]
+          kind: Database["public"]["Enums"]["tax_component_kind"]
+          name: string
+          rate_pct: number
+          remittance_owner: Database["public"]["Enums"]["tax_remittance_owner"]
+          rounded_amount: number
+          sales_tax_snapshot_id: string
+          store_id: string
+          unrounded_amount: number
+        }
+        Update: {
+          applies_to_treatments?: Database["public"]["Enums"]["tax_treatment"][]
+          calculation_basis?: Database["public"]["Enums"]["tax_calculation_basis"]
+          component_id_snapshot?: string
+          id?: string
+          jurisdiction_level?: Database["public"]["Enums"]["tax_jurisdiction_level"]
+          kind?: Database["public"]["Enums"]["tax_component_kind"]
+          name?: string
+          rate_pct?: number
+          remittance_owner?: Database["public"]["Enums"]["tax_remittance_owner"]
+          rounded_amount?: number
+          sales_tax_snapshot_id?: string
+          store_id?: string
+          unrounded_amount?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "daily_sales_item_tax_componen_sales_tax_snapshot_id_store__fkey"
+            columns: ["sales_tax_snapshot_id", "store_id"]
+            isOneToOne: false
+            referencedRelation: "daily_sales_item_tax_snapshots"
+            referencedColumns: ["id", "store_id"]
+          },
+          {
+            foreignKeyName: "daily_sales_item_tax_component_snapshots_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      daily_sales_item_tax_snapshots: {
+        Row: {
+          amount_snapshot: Json
+          calculation_version: Database["public"]["Enums"]["international_tax_calculation_version"]
+          country_code: Database["public"]["Enums"]["international_country_code"]
+          created_at: string
+          currency_code: Database["public"]["Enums"]["international_currency_code"]
+          customer_total: number
+          daily_sales_item_id: string
+          final_quantity: number
+          id: string
+          input_snapshot: Json
+          listed_total: number
+          market_profile_id: string
+          market_profile_revision: number
+          marketplace_tax_liability: number
+          merchant_tax_liability: number
+          minor_unit: number
+          net_sales: number
+          price_basis: Database["public"]["Enums"]["tax_price_basis"]
+          region_code: string | null
+          sales_channel_code: Database["public"]["Enums"]["international_sales_channel_code"]
+          store_id: string
+          tax_category: string | null
+          tax_profile_id: string
+          tax_profile_revision: number
+          tax_total: number
+          treatment: Database["public"]["Enums"]["tax_treatment"]
+          unit_price: number
+          updated_at: string
+        }
+        Insert: {
+          amount_snapshot: Json
+          calculation_version: Database["public"]["Enums"]["international_tax_calculation_version"]
+          country_code: Database["public"]["Enums"]["international_country_code"]
+          created_at?: string
+          currency_code: Database["public"]["Enums"]["international_currency_code"]
+          customer_total: number
+          daily_sales_item_id: string
+          final_quantity: number
+          id?: string
+          input_snapshot: Json
+          listed_total: number
+          market_profile_id: string
+          market_profile_revision: number
+          marketplace_tax_liability: number
+          merchant_tax_liability: number
+          minor_unit: number
+          net_sales: number
+          price_basis: Database["public"]["Enums"]["tax_price_basis"]
+          region_code?: string | null
+          sales_channel_code: Database["public"]["Enums"]["international_sales_channel_code"]
+          store_id: string
+          tax_category?: string | null
+          tax_profile_id: string
+          tax_profile_revision: number
+          tax_total: number
+          treatment: Database["public"]["Enums"]["tax_treatment"]
+          unit_price: number
+          updated_at?: string
+        }
+        Update: {
+          amount_snapshot?: Json
+          calculation_version?: Database["public"]["Enums"]["international_tax_calculation_version"]
+          country_code?: Database["public"]["Enums"]["international_country_code"]
+          created_at?: string
+          currency_code?: Database["public"]["Enums"]["international_currency_code"]
+          customer_total?: number
+          daily_sales_item_id?: string
+          final_quantity?: number
+          id?: string
+          input_snapshot?: Json
+          listed_total?: number
+          market_profile_id?: string
+          market_profile_revision?: number
+          marketplace_tax_liability?: number
+          merchant_tax_liability?: number
+          minor_unit?: number
+          net_sales?: number
+          price_basis?: Database["public"]["Enums"]["tax_price_basis"]
+          region_code?: string | null
+          sales_channel_code?: Database["public"]["Enums"]["international_sales_channel_code"]
+          store_id?: string
+          tax_category?: string | null
+          tax_profile_id?: string
+          tax_profile_revision?: number
+          tax_total?: number
+          treatment?: Database["public"]["Enums"]["tax_treatment"]
+          unit_price?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "daily_sales_item_tax_snapshot_daily_sales_item_id_store_id_fkey"
+            columns: ["daily_sales_item_id", "store_id"]
+            isOneToOne: false
+            referencedRelation: "daily_sales_items"
+            referencedColumns: ["id", "store_id"]
+          },
+          {
+            foreignKeyName: "daily_sales_item_tax_snapshots_country_code_region_code_fkey"
+            columns: ["country_code", "region_code"]
+            isOneToOne: false
+            referencedRelation: "tax_region_catalog"
+            referencedColumns: ["country_code", "region_code"]
+          },
+          {
+            foreignKeyName: "daily_sales_item_tax_snapshots_market_profile_id_store_id_fkey"
+            columns: ["market_profile_id", "store_id"]
+            isOneToOne: false
+            referencedRelation: "store_market_profiles"
+            referencedColumns: ["id", "store_id"]
+          },
+          {
+            foreignKeyName: "daily_sales_item_tax_snapshots_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "daily_sales_item_tax_snapshots_tax_profile_id_store_id_fkey"
+            columns: ["tax_profile_id", "store_id"]
+            isOneToOne: false
+            referencedRelation: "store_tax_profiles"
+            referencedColumns: ["id", "store_id"]
           },
         ]
       }
@@ -774,6 +1002,65 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "stores"
             referencedColumns: ["id"]
+          },
+        ]
+      }
+      menu_tax_overrides: {
+        Row: {
+          created_at: string
+          recipe_id: string
+          store_id: string
+          tax_category: string | null
+          tax_profile_id: string
+          treatment: Database["public"]["Enums"]["tax_treatment"] | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          recipe_id: string
+          store_id: string
+          tax_category?: string | null
+          tax_profile_id: string
+          treatment?: Database["public"]["Enums"]["tax_treatment"] | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          recipe_id?: string
+          store_id?: string
+          tax_category?: string | null
+          tax_profile_id?: string
+          treatment?: Database["public"]["Enums"]["tax_treatment"] | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "menu_tax_overrides_recipe_id_store_id_fkey"
+            columns: ["recipe_id", "store_id"]
+            isOneToOne: false
+            referencedRelation: "recipes"
+            referencedColumns: ["id", "store_id"]
+          },
+          {
+            foreignKeyName: "menu_tax_overrides_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "menu_tax_overrides_tax_profile_id_store_id_fkey"
+            columns: ["tax_profile_id", "store_id"]
+            isOneToOne: false
+            referencedRelation: "store_tax_profiles"
+            referencedColumns: ["id", "store_id"]
+          },
+          {
+            foreignKeyName: "menu_tax_overrides_tax_profile_id_tax_category_fkey"
+            columns: ["tax_profile_id", "tax_category"]
+            isOneToOne: false
+            referencedRelation: "tax_category_catalog"
+            referencedColumns: ["tax_profile_id", "code"]
           },
         ]
       }
@@ -1435,6 +1722,70 @@ export type Database = {
           },
         ]
       }
+      sales_tax_events: {
+        Row: {
+          business_day_revision_no: number
+          calculation_version: Database["public"]["Enums"]["international_tax_calculation_version"]
+          component_id_snapshot: string
+          created_at: string
+          daily_sales_item_id: string
+          delta_amount: number
+          id: string
+          reverses_event_id: string | null
+          sales_channel_code: Database["public"]["Enums"]["international_sales_channel_code"]
+          store_id: string
+          target_quantity: number
+        }
+        Insert: {
+          business_day_revision_no: number
+          calculation_version: Database["public"]["Enums"]["international_tax_calculation_version"]
+          component_id_snapshot: string
+          created_at?: string
+          daily_sales_item_id: string
+          delta_amount: number
+          id?: string
+          reverses_event_id?: string | null
+          sales_channel_code: Database["public"]["Enums"]["international_sales_channel_code"]
+          store_id: string
+          target_quantity: number
+        }
+        Update: {
+          business_day_revision_no?: number
+          calculation_version?: Database["public"]["Enums"]["international_tax_calculation_version"]
+          component_id_snapshot?: string
+          created_at?: string
+          daily_sales_item_id?: string
+          delta_amount?: number
+          id?: string
+          reverses_event_id?: string | null
+          sales_channel_code?: Database["public"]["Enums"]["international_sales_channel_code"]
+          store_id?: string
+          target_quantity?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_tax_events_daily_sales_item_id_store_id_fkey"
+            columns: ["daily_sales_item_id", "store_id"]
+            isOneToOne: false
+            referencedRelation: "daily_sales_items"
+            referencedColumns: ["id", "store_id"]
+          },
+          {
+            foreignKeyName: "sales_tax_events_reverses_event_id_fkey"
+            columns: ["reverses_event_id"]
+            isOneToOne: false
+            referencedRelation: "sales_tax_events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sales_tax_events_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       settings: {
         Row: {
           alert_inbound_delay: boolean
@@ -1554,6 +1905,66 @@ export type Database = {
         }
         Relationships: []
       }
+      store_market_profiles: {
+        Row: {
+          business_locale_code: Database["public"]["Enums"]["business_locale_code"]
+          country_code: Database["public"]["Enums"]["international_country_code"]
+          created_at: string
+          created_by: string | null
+          currency_code: Database["public"]["Enums"]["international_currency_code"]
+          effective_from: string
+          effective_to: string | null
+          id: string
+          price_basis: Database["public"]["Enums"]["tax_price_basis"]
+          region_code: string | null
+          revision: number
+          store_id: string
+        }
+        Insert: {
+          business_locale_code: Database["public"]["Enums"]["business_locale_code"]
+          country_code: Database["public"]["Enums"]["international_country_code"]
+          created_at?: string
+          created_by?: string | null
+          currency_code: Database["public"]["Enums"]["international_currency_code"]
+          effective_from: string
+          effective_to?: string | null
+          id?: string
+          price_basis: Database["public"]["Enums"]["tax_price_basis"]
+          region_code?: string | null
+          revision?: number
+          store_id: string
+        }
+        Update: {
+          business_locale_code?: Database["public"]["Enums"]["business_locale_code"]
+          country_code?: Database["public"]["Enums"]["international_country_code"]
+          created_at?: string
+          created_by?: string | null
+          currency_code?: Database["public"]["Enums"]["international_currency_code"]
+          effective_from?: string
+          effective_to?: string | null
+          id?: string
+          price_basis?: Database["public"]["Enums"]["tax_price_basis"]
+          region_code?: string | null
+          revision?: number
+          store_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "store_market_profiles_country_code_region_code_fkey"
+            columns: ["country_code", "region_code"]
+            isOneToOne: false
+            referencedRelation: "tax_region_catalog"
+            referencedColumns: ["country_code", "region_code"]
+          },
+          {
+            foreignKeyName: "store_market_profiles_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       store_purge_schedules: {
         Row: {
           approval_reference: string
@@ -1584,6 +1995,111 @@ export type Database = {
             foreignKeyName: "store_purge_schedules_store_id_fkey"
             columns: ["store_id"]
             isOneToOne: true
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      store_tax_components: {
+        Row: {
+          applies_to_treatments: Database["public"]["Enums"]["tax_treatment"][]
+          calculation_basis: Database["public"]["Enums"]["tax_calculation_basis"]
+          id: string
+          jurisdiction_level: Database["public"]["Enums"]["tax_jurisdiction_level"]
+          kind: Database["public"]["Enums"]["tax_component_kind"]
+          name: string
+          rate_pct: number
+          sort_order: number
+          store_id: string
+          tax_profile_id: string
+        }
+        Insert: {
+          applies_to_treatments: Database["public"]["Enums"]["tax_treatment"][]
+          calculation_basis: Database["public"]["Enums"]["tax_calculation_basis"]
+          id?: string
+          jurisdiction_level: Database["public"]["Enums"]["tax_jurisdiction_level"]
+          kind: Database["public"]["Enums"]["tax_component_kind"]
+          name: string
+          rate_pct: number
+          sort_order?: number
+          store_id: string
+          tax_profile_id: string
+        }
+        Update: {
+          applies_to_treatments?: Database["public"]["Enums"]["tax_treatment"][]
+          calculation_basis?: Database["public"]["Enums"]["tax_calculation_basis"]
+          id?: string
+          jurisdiction_level?: Database["public"]["Enums"]["tax_jurisdiction_level"]
+          kind?: Database["public"]["Enums"]["tax_component_kind"]
+          name?: string
+          rate_pct?: number
+          sort_order?: number
+          store_id?: string
+          tax_profile_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "store_tax_components_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "store_tax_components_tax_profile_id_store_id_fkey"
+            columns: ["tax_profile_id", "store_id"]
+            isOneToOne: false
+            referencedRelation: "store_tax_profiles"
+            referencedColumns: ["id", "store_id"]
+          },
+        ]
+      }
+      store_tax_profiles: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          default_treatment: Database["public"]["Enums"]["tax_treatment"]
+          effective_from: string
+          effective_to: string | null
+          id: string
+          market_profile_id: string
+          revision: number
+          store_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          default_treatment: Database["public"]["Enums"]["tax_treatment"]
+          effective_from: string
+          effective_to?: string | null
+          id?: string
+          market_profile_id: string
+          revision?: number
+          store_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          default_treatment?: Database["public"]["Enums"]["tax_treatment"]
+          effective_from?: string
+          effective_to?: string | null
+          id?: string
+          market_profile_id?: string
+          revision?: number
+          store_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "store_tax_profiles_market_profile_id_store_id_fkey"
+            columns: ["market_profile_id", "store_id"]
+            isOneToOne: false
+            referencedRelation: "store_market_profiles"
+            referencedColumns: ["id", "store_id"]
+          },
+          {
+            foreignKeyName: "store_tax_profiles_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
             referencedRelation: "stores"
             referencedColumns: ["id"]
           },
@@ -1650,6 +2166,86 @@ export type Database = {
           owner_id?: string | null
         }
         Relationships: []
+      }
+      tax_category_catalog: {
+        Row: {
+          active: boolean
+          code: string
+          id: string
+          name: string
+          store_id: string
+          tax_profile_id: string
+          treatment: Database["public"]["Enums"]["tax_treatment"]
+        }
+        Insert: {
+          active?: boolean
+          code: string
+          id?: string
+          name: string
+          store_id: string
+          tax_profile_id: string
+          treatment: Database["public"]["Enums"]["tax_treatment"]
+        }
+        Update: {
+          active?: boolean
+          code?: string
+          id?: string
+          name?: string
+          store_id?: string
+          tax_profile_id?: string
+          treatment?: Database["public"]["Enums"]["tax_treatment"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tax_category_catalog_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tax_category_catalog_tax_profile_id_store_id_fkey"
+            columns: ["tax_profile_id", "store_id"]
+            isOneToOne: false
+            referencedRelation: "store_tax_profiles"
+            referencedColumns: ["id", "store_id"]
+          },
+        ]
+      }
+      tax_region_catalog: {
+        Row: {
+          active: boolean
+          country_code: Database["public"]["Enums"]["international_country_code"]
+          jurisdiction_level: Database["public"]["Enums"]["tax_jurisdiction_level"]
+          name: string
+          parent_region_code: string | null
+          region_code: string
+        }
+        Insert: {
+          active?: boolean
+          country_code: Database["public"]["Enums"]["international_country_code"]
+          jurisdiction_level: Database["public"]["Enums"]["tax_jurisdiction_level"]
+          name: string
+          parent_region_code?: string | null
+          region_code: string
+        }
+        Update: {
+          active?: boolean
+          country_code?: Database["public"]["Enums"]["international_country_code"]
+          jurisdiction_level?: Database["public"]["Enums"]["tax_jurisdiction_level"]
+          name?: string
+          parent_region_code?: string | null
+          region_code?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tax_region_catalog_country_code_parent_region_code_fkey"
+            columns: ["country_code", "parent_region_code"]
+            isOneToOne: false
+            referencedRelation: "tax_region_catalog"
+            referencedColumns: ["country_code", "region_code"]
+          },
+        ]
       }
       vendors: {
         Row: {
@@ -2032,6 +2628,12 @@ export type Database = {
         }[]
       }
       ingredient_loss: { Args: { p_ingredient: string }; Returns: Json }
+      international_currency_minor_unit: {
+        Args: {
+          p_currency: Database["public"]["Enums"]["international_currency_code"]
+        }
+        Returns: number
+      }
       last_entity_change: {
         Args: { p_entity_id: string; p_entity_type: string; p_store: string }
         Returns: Json
@@ -2488,12 +3090,19 @@ export type Database = {
       base_unit: "g" | "ml" | "ea"
       business_close_method: "manual" | "auto"
       business_day_status: "open" | "break" | "closed"
+      business_locale_code: "ko-KR" | "en-US" | "en-GB" | "en-AU" | "en-CA"
       candidate_reason: "safety_stock" | "soon_out" | "manual"
       candidate_status: "pending" | "ordered" | "excluded"
       category_kind: "ingredient" | "recipe" | "material"
       change_source: "direct" | "inbound" | "ingredient" | "fixed_cost"
       day_basis_quality: "exact" | "estimated_current"
       fixed_cost_mode: "total" | "detail"
+      international_country_code: "KR" | "US" | "GB" | "AU" | "CA"
+      international_currency_code: "KRW" | "USD" | "GBP" | "AUD" | "CAD"
+      international_sales_channel_code: "hall" | "delivery" | "takeout"
+      international_tax_calculation_version:
+        | "international_tax_v1"
+        | "legacy_effective_rate_v1"
       inventory_event_type:
         | "inbound"
         | "consume"
@@ -2503,7 +3112,20 @@ export type Database = {
       order_source: "manual" | "ocr" | "option" | "recipe"
       order_status: "ordered" | "partial" | "received" | "canceled"
       stock_badge: "ok" | "low" | "out"
+      tax_calculation_basis: "primary_tax_exclusive" | "primary_tax_inclusive"
+      tax_component_kind: "primary" | "additional"
+      tax_jurisdiction_level:
+        | "national"
+        | "state"
+        | "province"
+        | "county"
+        | "city"
+        | "special"
+        | "custom"
       tax_mode: "included" | "separate" | "exempt"
+      tax_price_basis: "tax_inclusive" | "tax_exclusive"
+      tax_remittance_owner: "merchant" | "marketplace"
+      tax_treatment: "taxable" | "zero_rated" | "exempt"
       trend_cause: "material" | "recipe" | "fixed" | "tax"
     }
     CompositeTypes: {
@@ -2646,12 +3268,20 @@ export const Constants = {
       base_unit: ["g", "ml", "ea"],
       business_close_method: ["manual", "auto"],
       business_day_status: ["open", "break", "closed"],
+      business_locale_code: ["ko-KR", "en-US", "en-GB", "en-AU", "en-CA"],
       candidate_reason: ["safety_stock", "soon_out", "manual"],
       candidate_status: ["pending", "ordered", "excluded"],
       category_kind: ["ingredient", "recipe", "material"],
       change_source: ["direct", "inbound", "ingredient", "fixed_cost"],
       day_basis_quality: ["exact", "estimated_current"],
       fixed_cost_mode: ["total", "detail"],
+      international_country_code: ["KR", "US", "GB", "AU", "CA"],
+      international_currency_code: ["KRW", "USD", "GBP", "AUD", "CAD"],
+      international_sales_channel_code: ["hall", "delivery", "takeout"],
+      international_tax_calculation_version: [
+        "international_tax_v1",
+        "legacy_effective_rate_v1",
+      ],
       inventory_event_type: [
         "inbound",
         "consume",
@@ -2662,7 +3292,21 @@ export const Constants = {
       order_source: ["manual", "ocr", "option", "recipe"],
       order_status: ["ordered", "partial", "received", "canceled"],
       stock_badge: ["ok", "low", "out"],
+      tax_calculation_basis: ["primary_tax_exclusive", "primary_tax_inclusive"],
+      tax_component_kind: ["primary", "additional"],
+      tax_jurisdiction_level: [
+        "national",
+        "state",
+        "province",
+        "county",
+        "city",
+        "special",
+        "custom",
+      ],
       tax_mode: ["included", "separate", "exempt"],
+      tax_price_basis: ["tax_inclusive", "tax_exclusive"],
+      tax_remittance_owner: ["merchant", "marketplace"],
+      tax_treatment: ["taxable", "zero_rated", "exempt"],
       trend_cause: ["material", "recipe", "fixed", "tax"],
     },
   },

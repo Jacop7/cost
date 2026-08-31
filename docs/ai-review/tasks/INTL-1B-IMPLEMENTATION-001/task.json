@@ -1,0 +1,105 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "INTL-1B-IMPLEMENTATION-001",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R3",
+  "author_role": "SOLAR-ARCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "d39f0e4441434e1bc9713ecd71379d69f2828b8a",
+  "target_commit_sha": "d39f0e4441434e1bc9713ecd71379d69f2828b8a",
+  "target_tree_oid": "50dcc8ded9312aaf26e99298f3d2c5102eacd9d3",
+  "agents_blob_oid": "9264927700bd7cfcb60460a8279ad72625b505df",
+  "agents_sha256": "bfb2e19944917b86251e998caf929aaac0b12051168c5ad3f42d209f9c04df16",
+  "requirements": [
+    "INTL-1B-001: 시장 프로필은 국가·지역·통화·업무 로케일·가격 기준과 적용 구간·revision을 매장별로 보존한다.",
+    "INTL-1B-002: 세금 프로필은 과세 기본값·적용 구간·revision과 구성 항목, 불변 과세 카테고리, 메뉴 override를 분리한다.",
+    "INTL-1B-003: 납부 주체는 세금 구성 항목×판매 채널로 저장하고 판매 snapshot이 판매 시점 값을 보존한다.",
+    "INTL-1B-004: 판매 계산선·구성 항목 snapshot과 sales_tax_events는 원본 프로필·구성 항목 경계를 검증하며 이벤트는 append-only다.",
+    "INTL-1B-005: 새 표는 앱 롤에 직접 공개하지 않고 기존 RPC 공격면과 승인 facade 계약을 넓히지 않는다.",
+    "INTL-1B-006: 0179는 기존 한국 데이터·0090 세금 계산·판매·재고 원장을 이관하거나 변경하지 않고 국제 capability read/write를 false로 유지한다.",
+    "INTL-1B-007: DB enum과 TypeScript 상수, 생성 타입, 새 DB, 0178→0179 upgrade, ACL과 원장 불변을 자동 검증한다.",
+    "INTL-1B-008: 문서는 Fable과 정확한 SHA 보호 CI 이전 상태를 병합 완료로 과장하지 않는다."
+  ],
+  "invariant_ids": [
+    "AGENTS:server-calculation-authority",
+    "AGENTS:point-in-time-preservation",
+    "AGENTS:forward-only-migrations",
+    "AGENTS:rpc-least-privilege",
+    "ARCHITECTURE:current-0090-tax-contract",
+    "WORK-QUEUE:INTL-1B"
+  ],
+  "artifact_paths": [
+    "packages/types/src/international.ts",
+    "packages/core/tests/internationalDbParity.test.ts",
+    "packages/db/supabase/migrations/20260831000179_international_tax_schema.sql",
+    "packages/db/tests/38_international_tax_schema.sql",
+    "packages/db/tests/34_rpc_least_privilege.sql",
+    "packages/db/scripts/admin-acl-audit.sql",
+    "packages/db/scripts/upgrade-check.sh",
+    "packages/db/src/database.types.ts",
+    "packages/db/README.md",
+    "docs/국가-통화-세금-국제출시-기획안.md",
+    "docs/작업큐.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "ARCHITECTURE.md",
+    "docs/ai-review/README.md",
+    "docs/브랜치-DB-운영-기획안.md",
+    "docs/서버-확장-아키텍처-기획안.md",
+    "packages/db/supabase/migrations/20260821000090_tax_items_only.sql",
+    "packages/db/supabase/migrations/20260831000178_international_contract_capabilities.sql"
+  ],
+  "evidence_paths": [
+    "packages/db/tests/37_international_contract_capabilities.sql",
+    "docs/ai-review/tasks/INTL-1A-IMPLEMENTATION-001/rounds/r002/review.json",
+    "docs/ai-review/tasks/INTL-1A-COMMIT-001/rounds/r001/review.json"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "시장·세금 프로필의 매장 경계, 적용 구간 비중첩, revision과 5개국 국가·통화·업무 로케일 조합",
+    "세금 구성 항목·과세 카테고리·메뉴 override·항목×채널 납부 주체의 값 영역과 교차 매장 차단",
+    "판매 계산선·구성 항목 snapshot의 프로필 source 검증, 금액 합계와 append-only 세금 이벤트 원장",
+    "authenticated·anon의 새 표 직접 권한 0건, 새 세금 원장 ACL 감사와 기존 RPC 허용 목록 불변",
+    "0178→0179 전후 현재 0090 세금 결과·기존 판매/재고 행 수 불변, capability read/write false, 새 표 초기 0건",
+    "DB enum↔TypeScript 상수 parity, 생성 타입과 DB 시험 38, upgrade 시나리오 15",
+    "corepack pnpm verify 6/6: DB 38/38, core 183(4 skipped), mobile 212, upgrade 15/15, 웹 번들",
+    "문서가 Fable과 정확한 SHA 보호 CI를 아직 남은 게이트로 기록하는지 검토"
+  ],
+  "human_decisions": [
+    "2026-08-31 사용자는 국제 출시 기획안을 Fable 검수 뒤 단계별로 자동 구현하도록 승인했다.",
+    "INTL-1B는 확장 schema와 저장 경계만 만들고 기존 한국 데이터 이관은 INTL-1C, 계산·원장 쓰기는 INTL-1D가 담당한다.",
+    "국제 세금 capability는 INTL-1E 전환 전까지 읽기·쓰기 모두 비활성으로 유지한다.",
+    "Fable은 기존 Claude Code Max 로그인 세션을 사용하며 4.00 USD는 이번 Task 실행 상한이다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "4.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [
+    "LRN-ORCH-CI-001"
+  ],
+  "excluded_learning_ids": [
+    {
+      "learning_id": "LRN-CODEX-TIME-001",
+      "reason": "영업일 fixture 시간 독립은 이번 국제 세금 schema 저장 경계와 무관하다."
+    },
+    {
+      "learning_id": "LRN-OPS-BACKUP-001",
+      "reason": "개발 DB는 공식 reset으로 시드 재생성했으며 사용자 데이터나 운영 DB 파괴 작업은 하지 않는다."
+    },
+    {
+      "learning_id": "LRN-AUDIT-PIN-001",
+      "reason": "CANDIDATE 학습이며 검증된 재주입 기준으로 승격되지 않았다."
+    }
+  ]
+}

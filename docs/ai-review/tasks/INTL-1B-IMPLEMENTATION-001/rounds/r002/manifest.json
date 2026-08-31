@@ -1,0 +1,296 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "INTL-1B-IMPLEMENTATION-001",
+  "round": "r002",
+  "created_at": "2026-08-31T10:20:48.232Z",
+  "review_mode": "RECHECK",
+  "baseline_commit_sha": "d39f0e4441434e1bc9713ecd71379d69f2828b8a",
+  "target_commit_sha": "d39f0e4441434e1bc9713ecd71379d69f2828b8a",
+  "target_tree_oid": "50dcc8ded9312aaf26e99298f3d2c5102eacd9d3",
+  "agents_blob_oid": "9264927700bd7cfcb60460a8279ad72625b505df",
+  "agents_sha256": "bfb2e19944917b86251e998caf929aaac0b12051168c5ad3f42d209f9c04df16",
+  "task_sha256": "f34bc915c0256027c7699cb818130f460b3a39fc5dbd7e3d38b81b7222e971ce",
+  "collaboration_sha256": "77f071e67be5d8ed3df53dee49229adb514afc455afb21f3c38d96da40b50328",
+  "collaboration_bytes": 12710,
+  "input_files_sha256": "e552782b6fdc66e1fffd20e14d192623d2ab3e41f84b92a95fa53e411b6b792d",
+  "schema_sha256": "83e73f90d0f81704a35a68af3dbe56f70634779d030d4cef3c955145191ccb79",
+  "runner_sha256": "80dae1d06c89af056e9d8c210b571e978ee534fc128a5fe3b9867610b5ae447b",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "previous_review_sha256": "7d073b300b12971b70b638e1a3c5d407f9329db4845bd197e54a3ac8d603a47d",
+  "previous_run_sha256": "aa894c27ff7ff6cfad22a69a3c8e7536dbc4aa432d46863bbae983296647a9eb",
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "fallback_review": null,
+  "closure_review": null,
+  "fallback_input_scope": null,
+  "retry_of_failed_round": null,
+  "artifact_paths": [
+    "packages/types/src/international.ts",
+    "packages/core/tests/internationalDbParity.test.ts",
+    "packages/db/supabase/migrations/20260831000179_international_tax_schema.sql",
+    "packages/db/tests/38_international_tax_schema.sql",
+    "packages/db/tests/34_rpc_least_privilege.sql",
+    "packages/db/scripts/admin-acl-audit.sql",
+    "packages/db/scripts/upgrade-check.sh",
+    "packages/db/src/database.types.ts",
+    "packages/db/README.md",
+    "docs/국가-통화-세금-국제출시-기획안.md",
+    "docs/작업큐.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "ARCHITECTURE.md",
+    "docs/ai-review/README.md",
+    "docs/브랜치-DB-운영-기획안.md",
+    "docs/서버-확장-아키텍처-기획안.md",
+    "packages/db/supabase/migrations/20260821000090_tax_items_only.sql",
+    "packages/db/supabase/migrations/20260831000178_international_contract_capabilities.sql"
+  ],
+  "evidence_paths": [
+    "packages/db/tests/37_international_contract_capabilities.sql",
+    "docs/ai-review/tasks/INTL-1A-IMPLEMENTATION-001/rounds/r002/review.json",
+    "docs/ai-review/tasks/INTL-1A-COMMIT-001/rounds/r001/review.json"
+  ],
+  "allowed_paths": [
+    "packages/types/src/international.ts",
+    "packages/core/tests/internationalDbParity.test.ts",
+    "packages/db/supabase/migrations/20260831000179_international_tax_schema.sql",
+    "packages/db/tests/38_international_tax_schema.sql",
+    "packages/db/tests/34_rpc_least_privilege.sql",
+    "packages/db/scripts/admin-acl-audit.sql",
+    "packages/db/scripts/upgrade-check.sh",
+    "packages/db/src/database.types.ts",
+    "packages/db/README.md",
+    "docs/국가-통화-세금-국제출시-기획안.md",
+    "docs/작업큐.md",
+    "AGENTS.md",
+    "ARCHITECTURE.md",
+    "docs/ai-review/README.md",
+    "docs/브랜치-DB-운영-기획안.md",
+    "docs/서버-확장-아키텍처-기획안.md",
+    "packages/db/supabase/migrations/20260821000090_tax_items_only.sql",
+    "packages/db/supabase/migrations/20260831000178_international_contract_capabilities.sql",
+    "packages/db/tests/37_international_contract_capabilities.sql",
+    "docs/ai-review/tasks/INTL-1A-IMPLEMENTATION-001/rounds/r002/review.json",
+    "docs/ai-review/tasks/INTL-1A-COMMIT-001/rounds/r001/review.json"
+  ],
+  "excluded_paths": [],
+  "applied_learning_ids": [
+    "LRN-ORCH-CI-001"
+  ],
+  "excluded_learning_ids": [
+    {
+      "learning_id": "LRN-CODEX-TIME-001",
+      "reason": "영업일 fixture 시간 독립은 이번 국제 세금 schema 저장 경계와 무관하다."
+    },
+    {
+      "learning_id": "LRN-OPS-BACKUP-001",
+      "reason": "개발 DB는 공식 reset으로 시드 재생성했으며 사용자 데이터나 운영 DB 파괴 작업은 하지 않는다."
+    },
+    {
+      "learning_id": "LRN-AUDIT-PIN-001",
+      "reason": "CANDIDATE 학습이며 검증된 재주입 기준으로 승격되지 않았다."
+    }
+  ],
+  "learning_registry_blob_oid": "77f00167d790c82373c1aa803d91874952c3334a",
+  "learning_registry_sha256": "4717fe99c86319d7c0abc5c8dd38e68e3a55722d7cfa56b8de173ed05ca1388f",
+  "learning_assignment_sha256": "c1579257eed8c0e9035806c372f8d622f5bd5c32dab4357ae73b40b3cdc4f5bd",
+  "learning_target_date": "2026-08-31",
+  "input_files": [
+    {
+      "path": "AGENTS.md",
+      "path_role": "REFERENCE",
+      "change_type": "UNCHANGED",
+      "size": 11423,
+      "git_blob_oid": "9264927700bd7cfcb60460a8279ad72625b505df",
+      "sha256": "bfb2e19944917b86251e998caf929aaac0b12051168c5ad3f42d209f9c04df16",
+      "line_count": 158
+    },
+    {
+      "path": "ARCHITECTURE.md",
+      "path_role": "REFERENCE",
+      "change_type": "MODIFIED",
+      "size": 12603,
+      "git_blob_oid": "0653bdadc97bcf7b7a3d381c89f238eb528c8ed2",
+      "sha256": "8ec58ac394d4f8060c253674f3919e2bc8b7a0d7bdf0b5567cf308c4927622ba",
+      "line_count": 184
+    },
+    {
+      "path": "docs/국가-통화-세금-국제출시-기획안.md",
+      "path_role": "ARTIFACT",
+      "change_type": "MODIFIED",
+      "size": 28680,
+      "git_blob_oid": "65e476fd60bb1e7313488a6ec8b03cfefb3c40e9",
+      "sha256": "404e557e5bff5fbb76cfad529b6a2f11d8a91b504ff8e8c65e27a82e217f60dd",
+      "line_count": 518
+    },
+    {
+      "path": "docs/브랜치-DB-운영-기획안.md",
+      "path_role": "REFERENCE",
+      "change_type": "MODIFIED",
+      "size": 51025,
+      "git_blob_oid": "1d1afe3b9637dcd914db4d635a9c30fff71851b0",
+      "sha256": "cd62bf4e81049b4428ea2a2ba6a96f30b6e8a879b1deed720ea0ac9047e764fa",
+      "line_count": 824
+    },
+    {
+      "path": "docs/서버-확장-아키텍처-기획안.md",
+      "path_role": "REFERENCE",
+      "change_type": "MODIFIED",
+      "size": 53787,
+      "git_blob_oid": "e6360e9d00fb72af3e9c54d79ddf3e3b4748e232",
+      "sha256": "ee533ba72d536365746cb04c7585630a19b8dc722d29b3c5a3318115466ca098",
+      "line_count": 972
+    },
+    {
+      "path": "docs/작업큐.md",
+      "path_role": "ARTIFACT",
+      "change_type": "MODIFIED",
+      "size": 99212,
+      "git_blob_oid": "762f2aa1f11d027e691cb9e2fe072d82df40e1d5",
+      "sha256": "ad559b6addf57d72563c0e288b2aed02cdcadcfd888c0109504f83a7bf4ae221",
+      "line_count": 1470
+    },
+    {
+      "path": "docs/ai-review/README.md",
+      "path_role": "REFERENCE",
+      "change_type": "MODIFIED",
+      "size": 39999,
+      "git_blob_oid": "f153ef957ed3b61654bed2aa4b747c47308ab7d7",
+      "sha256": "f353c0a4a51a8f80ccbfd413784913643aa2b1ba240599fcdd31e37bc46c004c",
+      "line_count": 536
+    },
+    {
+      "path": "docs/ai-review/tasks/INTL-1A-COMMIT-001/rounds/r001/review.json",
+      "path_role": "EVIDENCE",
+      "change_type": "UNCHANGED",
+      "size": 4049,
+      "git_blob_oid": "017d85278667bc6c4e3eb37b4f425e236eb124cb",
+      "sha256": "600002504807ce2830a374ec69973cf2adc792a85316ed210e7ad6ebd283a082",
+      "line_count": 44
+    },
+    {
+      "path": "docs/ai-review/tasks/INTL-1A-IMPLEMENTATION-001/rounds/r002/review.json",
+      "path_role": "EVIDENCE",
+      "change_type": "UNCHANGED",
+      "size": 6678,
+      "git_blob_oid": "6be7814168181285764bd1ec63c1728619d559d3",
+      "sha256": "b250abbcae4e0ffc6d5958b40bbf95297f40a4cf036038f83c98904ee3ba97d0",
+      "line_count": 85
+    },
+    {
+      "path": "packages/core/tests/internationalDbParity.test.ts",
+      "path_role": "ARTIFACT",
+      "change_type": "MODIFIED",
+      "size": 4117,
+      "git_blob_oid": "764a213b00277341316de8817ff67a02f7ff46a6",
+      "sha256": "c9ed44a2437582fcbd4399984da4da46ee51e255bd33c5055ecdd3a978612341",
+      "line_count": 102
+    },
+    {
+      "path": "packages/db/README.md",
+      "path_role": "ARTIFACT",
+      "change_type": "MODIFIED",
+      "size": 9642,
+      "git_blob_oid": "b75c40dc0f6dd9f8991192cd9fec6fe78fd5d693",
+      "sha256": "33e8d1407e1de16d9bdf73e515934c7defef8fb33fd1b623db1dc4e4d7006099",
+      "line_count": 161
+    },
+    {
+      "path": "packages/db/scripts/admin-acl-audit.sql",
+      "path_role": "ARTIFACT",
+      "change_type": "MODIFIED",
+      "size": 16120,
+      "git_blob_oid": "f0ee1e544678917f906258a4c3273ae850db51aa",
+      "sha256": "0185203d06fb230a540060f12bfc0f6e5ea78e2abf56d7d5a1dd0ec3ff67d297",
+      "line_count": 265
+    },
+    {
+      "path": "packages/db/scripts/upgrade-check.sh",
+      "path_role": "ARTIFACT",
+      "change_type": "MODIFIED",
+      "size": 40941,
+      "git_blob_oid": "843e79342aec29682261be088652995726e2c971",
+      "sha256": "ceb6b3bb8120e389dca0877e8be5735a4f72dbf8f26fc0cb6078718857cbbb92",
+      "line_count": 730
+    },
+    {
+      "path": "packages/db/src/database.types.ts",
+      "path_role": "ARTIFACT",
+      "change_type": "MODIFIED",
+      "size": 105024,
+      "git_blob_oid": "99a438e75953f4f969b9df5f47c6f7af9d16d7c8",
+      "sha256": "7ad7ea6ef57407ab41bca4093ced04a84c3e93ed63d96a8cd8eacf0f079b2087",
+      "line_count": 3314
+    },
+    {
+      "path": "packages/db/supabase/migrations/20260821000090_tax_items_only.sql",
+      "path_role": "REFERENCE",
+      "change_type": "UNCHANGED",
+      "size": 4521,
+      "git_blob_oid": "7998b86bf319038ef079bd259ff08da1d4a207c8",
+      "sha256": "251861dda0f518175c1ab3ae16c2c1bab64a7ceceaa2e481cc04a91ddbffd820",
+      "line_count": 78
+    },
+    {
+      "path": "packages/db/supabase/migrations/20260831000178_international_contract_capabilities.sql",
+      "path_role": "REFERENCE",
+      "change_type": "MODIFIED",
+      "size": 2043,
+      "git_blob_oid": "a79cd8379ca14ab9de85817454a3d71482e8cc9f",
+      "sha256": "afac9a49d2527a3304cb7e8cdb1bd6ac50c26eadba835a2cc2dd71b87fe0f476",
+      "line_count": 56
+    },
+    {
+      "path": "packages/db/supabase/migrations/20260831000179_international_tax_schema.sql",
+      "path_role": "ARTIFACT",
+      "change_type": "ADDED",
+      "size": 35924,
+      "git_blob_oid": "ccdd0f09a1abdb5b1574b18140a6c0cde942376a",
+      "sha256": "d866199b7109803b9d7ccf23c30448ac92f540f96bed0453911632c3787b568c",
+      "line_count": 720
+    },
+    {
+      "path": "packages/db/tests/34_rpc_least_privilege.sql",
+      "path_role": "ARTIFACT",
+      "change_type": "MODIFIED",
+      "size": 8497,
+      "git_blob_oid": "ab21c1ea5ecc1f7081e93d4e137f1f89e74ce89b",
+      "sha256": "b4eeb3a0b0c8e2ba7a2aee56d936f5ef1732760bd97810a6906087546021ee00",
+      "line_count": 148
+    },
+    {
+      "path": "packages/db/tests/37_international_contract_capabilities.sql",
+      "path_role": "EVIDENCE",
+      "change_type": "MODIFIED",
+      "size": 2034,
+      "git_blob_oid": "bee66ccbed4698a58142c039ac1b01d7fe5c8ef0",
+      "sha256": "c9079fc2d9370111698dd69fb40d127ac667d7c9a9e4390ff10b79a560490029",
+      "line_count": 29
+    },
+    {
+      "path": "packages/db/tests/38_international_tax_schema.sql",
+      "path_role": "ARTIFACT",
+      "change_type": "ADDED",
+      "size": 21123,
+      "git_blob_oid": "1a84abd85d3a9bf6912cd1cc694ae6f81f42372c",
+      "sha256": "e8ce9d64b794b1f619c087af1bb8af1f08a208eac47c7cb52e0cb71c67dec767",
+      "line_count": 418
+    },
+    {
+      "path": "packages/types/src/international.ts",
+      "path_role": "ARTIFACT",
+      "change_type": "MODIFIED",
+      "size": 8159,
+      "git_blob_oid": "cdf81629d60e68aadbd37ff2dd27e3593863d138",
+      "sha256": "60e37816cf09156c6c4ce35ae5222f72cf6ed811128259f974c99784452ab706",
+      "line_count": 181
+    }
+  ],
+  "source_archive_version": 1,
+  "finding_resolution_semantics": "VERIFIED_RESOLVED_V1",
+  "artifact_snapshot_sha256": "5ebd1787016dd4afccf7fff24781bfa4d27beb9f009b3a68423123d3a35c5f04",
+  "input_snapshot_sha256": "76426109a04fe6de4a14771826417f909da3d0f749e97098f7a957a266357a46"
+}

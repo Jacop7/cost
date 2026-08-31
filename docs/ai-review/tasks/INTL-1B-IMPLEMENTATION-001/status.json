@@ -1,0 +1,30 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "INTL-1B-IMPLEMENTATION-001",
+  "predecessor_review": null,
+  "updated_at": "2026-08-31T10:22:34.522Z",
+  "latest_round": "r002",
+  "review_state": "OPEN",
+  "workflow_state": "READY_FOR_REVIEW",
+  "gate_state": "OPEN",
+  "run_state": "RUN_FAILED",
+  "defect_state": "NOT_APPLICABLE",
+  "verdict": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "fallback_reason": "TASK_CAP_APPROVAL_REQUIRED",
+  "latest_run_sha256": "e4ee228e76ee4b61582bffdf3642f6b9ce840740a68f8d9deb4ebf6c1ec4b7b7",
+  "open_required_finding_ids": [
+    "INTL1B-EVENTS-CASCADE-PURGE-CONFLICT",
+    "INTL1B-PROFILE-REVISION-MUTABILITY",
+    "INTL1B-TEST-CROSS-STORE-GAP"
+  ],
+  "open_optional_finding_ids": [
+    "INTL1B-MINORUNIT-DUAL-SOURCE"
+  ],
+  "closed_finding_ids": [],
+  "candidate_review_state": null,
+  "candidate_review_sha256": null,
+  "backlog_dispositions": []
+}
