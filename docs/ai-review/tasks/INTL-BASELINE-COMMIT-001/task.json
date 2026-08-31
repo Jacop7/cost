@@ -1,0 +1,93 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "INTL-BASELINE-COMMIT-001",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R2",
+  "author_role": "SOLAR-ARCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "eb78b650f65c0f3abb83500433ae7ed6ca0bf00c",
+  "target_commit_sha": "9467c97c14fc757948bf715d6a1b73bb8c80d82c",
+  "target_tree_oid": "6c4b8a600d787cafdb5fff2544534ff35960f225",
+  "agents_blob_oid": "9264927700bd7cfcb60460a8279ad72625b505df",
+  "agents_sha256": "bfb2e19944917b86251e998caf929aaac0b12051168c5ad3f42d209f9c04df16",
+  "requirements": [
+    "INTL-BASELINE-001: 국제 출시 구현 전에 최신 main의 0177 운영 구조와 스테이징 증거를 공식 문서 기준선에 반영한다.",
+    "INTL-BASELINE-002: 국가·통화·세금 계약, 브랜치·DB 배포 순서, 서버 확장 조건, 작업큐가 같은 구현 선행조건을 말한다.",
+    "INTL-BASELINE-003: 현재 제품 RPC 권위와 운영 전용 ops-health Edge Function을 구별하고 존재하지 않는 제품 BFF를 현재 구조로 서술하지 않는다.",
+    "INTL-BASELINE-004: 앞선 WORKING 검수의 프로토타입 상대 링크 개선사항을 포함해 공식 문서의 모든 상대 링크가 실제 경로를 가리킨다.",
+    "INTL-BASELINE-005: 로컬 전체 verify 6/6과 정확한 feature SHA 보호 원격 CI를 구현 착수 게이트로 유지한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:server-calculation-authority",
+    "AGENTS:forward-only-migrations",
+    "AGENTS:exact-feature-ci-before-main",
+    "ARCHITECTURE:current-vs-planned-contract",
+    "WORK-QUEUE:INTL-BASELINE-1",
+    "AI-REVIEW:single-canonical-artifact"
+  ],
+  "artifact_paths": [
+    "ARCHITECTURE.md",
+    "docs/국가-통화-세금-국제출시-기획안.md",
+    "docs/브랜치-DB-운영-기획안.md",
+    "docs/서버-확장-아키텍처-기획안.md",
+    "docs/작업큐.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "scripts/verify.mjs",
+    "packages/db/supabase/migrations/20260830000176_operations_monitoring.sql",
+    "packages/db/supabase/migrations/20260831000177_operations_health_signal_separation.sql",
+    "packages/db/supabase/functions/ops-health/index.mjs",
+    ".github/workflows/operations-health.yml"
+  ],
+  "evidence_paths": [
+    "docs/deployments/2026-08-31T01-06-33-310Z-staging-803ac0a.json",
+    "docs/deployments/2026-08-31T01-12-23-staging-operations-drill.json",
+    "docs/ai-review/tasks/INTL-LAUNCH-CONTRACT-HARDENING-001/rounds/r002/review.json",
+    "docs/ai-review/tasks/INTL-LAUNCH-CONTRACT-HARDENING-001/rounds/r002/run.json"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "다섯 공식 문서의 기준 SHA·migration 수·시험 수·스테이징 상태가 target commit의 실제 파일과 일치",
+    "ops-health Edge Function과 operations-health workflow가 운영 감시 전용이고 제품 요청 BFF가 아님",
+    "국제 출시 구현은 INTL-BASELINE-1과 COMMIT Fable·정확한 SHA CI가 끝난 뒤 시작하도록 문서 간 순서 일치",
+    "ARCHITECTURE와 네 기획 문서의 상대 링크가 target commit에서 모두 해석됨",
+    "앞선 WORKING Fable PASS의 선택 개선사항이 작업큐 링크 검사 범위에 반영됨",
+    "corepack pnpm verify 6/6: DB 36/36, core 178(2 skipped), mobile 212, upgrade 13/13, 웹 번들"
+  ],
+  "human_decisions": [
+    "2026-08-31 사용자는 국제 출시 기획안을 면밀히 수정하고 Fable 검수를 마친 뒤 구현하도록 승인했다.",
+    "1차 제품 계산 권위는 Supabase DB RPC에 유지하고 운영 감시 Edge Function을 제품 BFF로 확장하지 않는다.",
+    "기존 Claude Code Max 로그인 세션을 사용하며 4.00 USD는 이 Task의 실행 상한이다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "4.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [
+    "LRN-ORCH-CI-001"
+  ],
+  "excluded_learning_ids": [
+    {
+      "learning_id": "LRN-CODEX-TIME-001",
+      "reason": "영업일 fixture 시간 독립 변경은 이번 문서 기준선 COMMIT 검수 범위가 아니다."
+    },
+    {
+      "learning_id": "LRN-OPS-BACKUP-001",
+      "reason": "파괴적 DB 재구축이나 백업 복구를 실행하지 않는다."
+    },
+    {
+      "learning_id": "LRN-AUDIT-PIN-001",
+      "reason": "CANDIDATE 학습이며 이번 국제 출시 문서 기준선 검수와 직접 관련이 없다."
+    }
+  ]
+}

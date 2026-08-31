@@ -1,0 +1,84 @@
+{
+  "schema_version": "2.0",
+  "task_id": "INTL-BASELINE-COMMIT-001",
+  "reviewer_role": "FABLE-ARCH",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "eb78b650f65c0f3abb83500433ae7ed6ca0bf00c",
+  "target_commit_sha": "9467c97c14fc757948bf715d6a1b73bb8c80d82c",
+  "target_tree_oid": "6c4b8a600d787cafdb5fff2544534ff35960f225",
+  "agents_blob_oid": "9264927700bd7cfcb60460a8279ad72625b505df",
+  "agents_sha256": "bfb2e19944917b86251e998caf929aaac0b12051168c5ad3f42d209f9c04df16",
+  "task_sha256": "74c8d7a715f30607ddd36a298cbcde301221b46e57b2d4b2da73b5f22cab292a",
+  "collaboration_sha256": "06a86cf68141bab399fdd5271eb33e044ebf218efded1d609104d0877cc34ba4",
+  "input_files_sha256": "dc92af5d0de50627532f239cad477b222193ea2f23ae676efb4df149656e9f8f",
+  "schema_sha256": "a81ecec49ccfefd4e1688d34235b2e1810afcf1fdb07d6fadf3f537772cb6c78",
+  "runner_sha256": "80dae1d06c89af056e9d8c210b571e978ee534fc128a5fe3b9867610b5ae447b",
+  "verdict": "PASS",
+  "summary": "INITIAL COMMIT 검수 결과 PASS. (1) INTL-BASELINE-001: 다섯 공식 문서가 최신 main `eb78b650`·migration 166개(최신 0177)·DB 시험 파일 39개·verify 6/6(DB 36/36, core 178·2 skipped, mobile 212, upgrade 13/13, 웹 번들)·스테이징 0177 pending 0·운영 관측 장애/회복 훈련 완료·production 미적용을 동일 수치로 서술하며, 스테이징 배포 증거 JSON(`803ac0a`, protected-gate success, migration_count 166, 0176·0177 적용)과 운영 drill 증거가 문서 주장과 일치한다. (2) INTL-BASELINE-002: 국제 출시 기획안 상태 블록, 브랜치·DB 기획안 개정 4판·§3.3, 서버 확장 기획안 채택 상태 표, 작업큐 INTL-1(depends_on: [INTL-BASELINE-1])이 모두 “COMMIT Fable 검수와 동일 SHA 보호 CI 완료 전 DB 구현 금지”라는 같은 선행 게이트와 확장→이관→전환→정리 배포 순서를 말하며 모순이 없다. (3) INTL-BASELINE-003: ARCHITECTURE는 ops-health를 운영 상태 조회 전용, 제품 BFF·Webhook Edge Function을 미도입으로 구분하고, 실제 ops-health 소스는 전용 OPS_HEALTH_TOKEN 상수시간 비교 후 Cron 상태만 반환하는 GET 전용 함수이며 workflow는 10분 주기 외부 점검·이슈 관리 전용이라 서술이 실제 구조와 일치한다. 서버 확장 기획안의 BFF 토폴로지는 목표 구조로 명시적으로 구분된다. (4) INTL-BASELINE-004: 직전 WORKING Fable r002 PASS의 유일한 Improvement(프로토타입 docs/prototypes/ 경로를 링크 검사 범위에 명시)가 작업큐 INTL-BASELINE-1 완료 조건에 제안 문구 그대로 반영됐고, 스냅샷 내부에서 해석 가능한 상대 링크(두 2026-08-31 배포 증거, 문서 간 상호 참조)는 모두 유효하다. (5) INTL-BASELINE-005: AGENTS 검사 실행 절, ARCHITECTURE §9, 운영 기획안 §4.3·§8.2, 작업큐 공통 규칙이 로컬 verify 6/6과 정확한 feature SHA protected-gate를 동일하게 구현 착수 게이트로 유지한다. 서버 계산 권위(DB RPC)·전진 migration·단일 공식 문서 불변식도 다섯 문서에서 일관된다. 비차단 Improvement 1건: 프로토타입 HTML과 2026-08-29/30 배포 증거 JSON 등 일부 상대 링크 대상이 이번 봉인 스냅샷의 물질화 범위 밖이라 실존을 독립 확인하지 못했고 SOLAR 선언 링크 검사에 의존한다. PASS·VERIFIED는 외부 게이트를 닫지 않으며 gate_state는 OPEN으로 유지된다.",
+  "findings": [
+    {
+      "finding_id": "INTL-BASE-F001-UNMATERIALIZED-LINK-TARGETS",
+      "severity": "Improvement",
+      "review_state": "OPEN",
+      "category": "OTHER",
+      "requirement_or_invariant_ids": [
+        "INTL-BASELINE-004",
+        "AI-REVIEW:single-canonical-artifact"
+      ],
+      "evidence": [
+        {
+          "path": "docs/국가-통화-세금-국제출시-기획안.md",
+          "line_start": 13,
+          "line_end": 13,
+          "observation": "프로토타입 상대 링크 ./prototypes/international-tax-settings.html의 대상 파일이 이번 봉인 스냅샷의 artifact/reference/evidence 물질화 범위 밖이라 존재를 독립 확인할 수 없다."
+        },
+        {
+          "path": "docs/브랜치-DB-운영-기획안.md",
+          "line_start": 358,
+          "line_end": 362,
+          "observation": "2026-08-29 스테이징 배포·ACL 감사 증거 JSON 두 건의 상대 링크 대상이 스냅샷에 물질화되지 않아 SOLAR가 선언한 링크 검사 결과에 의존한다."
+        },
+        {
+          "path": "docs/작업큐.md",
+          "line_start": 173,
+          "line_end": 175,
+          "observation": "INTL-BASELINE-1 완료 조건이 프로토타입(docs/prototypes/) 경로를 포함한 상대 링크 검사를 명시해 직전 WORKING r002 Improvement 제안이 반영됐으나, 검사 실행 자체는 SOLAR 로컬 선언이다."
+        }
+      ],
+      "impact": "스냅샷 내부 링크와 2026-08-31 증거 2건은 모두 유효함을 확인했으나, 물질화되지 않은 링크 대상(프로토타입 HTML, 과거 배포 증거 JSON)의 실존은 독립 재현되지 않았다. 계산 계약·배포 순서·게이트 일관성에는 영향이 없는 비차단 개선 항목이다.",
+      "acceptance_criteria": [
+        "다음 COMMIT 회차의 evidence_paths에 docs/prototypes/international-tax-settings.html 또는 과거 배포 증거 대표 파일이 물질화되어 링크 대상 실존이 독립 확인되거나, 링크 검사 실행 로그가 증거로 봉인된다."
+      ],
+      "required_tests": [
+        "target commit 기준 다섯 문서 전체 상대 링크(프로토타입·docs/deployments 포함) 유효성 검사"
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    }
+  ],
+  "proposed_edits": [],
+  "closed_finding_ids": [],
+  "reopened_finding_ids": [],
+  "remaining_required_finding_ids": [],
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "applied_learning_ids": [
+    "LRN-ORCH-CI-001"
+  ],
+  "excluded_learning_ids": [
+    {
+      "learning_id": "LRN-CODEX-TIME-001",
+      "reason": "영업일 fixture 시간 독립 변경은 이번 문서 기준선 COMMIT 검수 범위가 아니다."
+    },
+    {
+      "learning_id": "LRN-OPS-BACKUP-001",
+      "reason": "파괴적 DB 재구축이나 백업 복구를 실행하지 않는다."
+    },
+    {
+      "learning_id": "LRN-AUDIT-PIN-001",
+      "reason": "CANDIDATE 학습이며 이번 국제 출시 문서 기준선 검수와 직접 관련이 없다."
+    }
+  ]
+}
