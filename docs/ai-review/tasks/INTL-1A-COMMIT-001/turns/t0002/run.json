@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "INTL-1A-COMMIT-001",
+  "sequence": "t0002",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-08-31T06:57:45.018Z",
+  "turn_id": "turn-o001",
+  "turn_type": "AI_DEPUTY_GATE_DECISION",
+  "role": "AI-DEPUTY-ORCHESTRATOR",
+  "task_sha256": "feaea701e1e82b5352ae660a035639fb4b6cc7c023009eb84b979aed691e063c",
+  "runner_sha256": "80dae1d06c89af056e9d8c210b571e978ee534fc128a5fe3b9867610b5ae447b",
+  "previous_manual_run_sha256": "7ef0b0ae82629e7e0772547e9922f4358959836f7eaeae28da2f7d4c368ae32e",
+  "collaboration_before_sha256": "528a49b2cff61b2aa5dc8174c37707841b991cb32037fd16afd0e197a78176e6",
+  "collaboration_before_bytes": 6418,
+  "collaboration_entry_sha256": "61570b45cd19300ce74fd7c0108ff81d7a336453602eb60dbc04c1eb429808f7",
+  "collaboration_entry_bytes": 1449,
+  "collaboration_after_sha256": "b509f97535df5789a305a212567f22fc6c6ee455f4586236e3e374b228d701c4",
+  "collaboration_after_bytes": 7867
+}
