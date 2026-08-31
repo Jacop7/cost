@@ -313,7 +313,7 @@ end $t$;
  * 여기 목록을 못 박아 두면, 새 definer 함수가 생길 때 시험이 빨개진다.
  * 그때 할 일은 목록에 이름을 더하는 게 아니라 **그 함수가 매장을 가리는지 보는 것**이다.
  *
- * 지금 다섯의 근거:
+ * 현재 허용 항목의 근거:
  *   my_store_ids                 auth.uid() 로 자기 매장만. 이게 RLS 의 뿌리다.
  *   purge_entity_changes         매장을 안 가린다. 대신 30일 고정 + anon 차단(0135).
  *   set_operating_hours          첫 줄이 assert_my_store 다(0132).
@@ -355,6 +355,10 @@ end $t$;
  *   apply_international_tax_for_sales_item · reconcile_international_tax_after_sale_item
  *                                INTL-1D 판매행 trigger 전용 몸통. 앱·service_role·RPC 실행 역할에는
  *                                모두 닫혀 있고, capability가 꺼져 있으면 쓰지 않는다(0181).
+ *   assert_sales_tax_line_balanced
+ *                                INTL-1D deferred constraint trigger의 검사 몸통. 앱 세션 commit에서도
+ *                                RLS/표 SELECT 권한에 막히지 않는다. 매장을 고르거나 값을 반환하지 않고
+ *                                trigger가 건드린 한 계산선만 검사하며 직접 실행 문은 모든 앱 역할에 닫힌다.
  */
 do $t$
 declare v_now text; v_want text;
@@ -377,6 +381,7 @@ begin
     'apply_international_tax_for_sales_item(p_sales_item uuid, p_force boolean)',
     'apply_operating_hours(p_store uuid, p_weekly_hours jsonb, p_weekly_breaks jsonb, p_base_rule_id uuid, p_base_revision integer)',
     'archive_my_store(p_store uuid, p_reason text)',
+    'assert_sales_tax_line_balanced()',
     'close_business_day(p_store uuid)',
     'close_due_business_days()',
     'create_store(p_name text, p_timezone text)',
