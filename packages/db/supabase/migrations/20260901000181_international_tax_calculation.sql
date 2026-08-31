@@ -233,7 +233,7 @@ declare
 begin
   if p_force and (
        session_user <> 'postgres'
-       or current_setting('sikjae.international_tax_force', true) is distinct from 'owner_test'
+       or current_setting('margincook.international_tax_force', true) is distinct from 'owner_test'
      ) then
     raise exception '국제 세금 강제 계산은 소유자 시험 경로에서만 실행할 수 있어요'
       using errcode='42501', detail='INTERNATIONAL_TAX_FORCE_FORBIDDEN';
@@ -252,7 +252,9 @@ begin
     raise exception '국제 세금 계산에 연결된 영업일을 찾을 수 없어요'
       using errcode = '22000', detail = 'BUSINESS_DAY_REQUIRED';
   end if;
-  if not p_force then
+  -- 앱의 직접 호출만 소유 매장 검사를 통과해야 한다. AFTER trigger는 원래 쓰기 RPC가
+  -- 이미 매장 경계를 검사한 뒤이며, JWT가 없는 소유자 백필까지 auth.uid()로 막지 않는다.
+  if not p_force and pg_trigger_depth() = 0 then
     perform public.assert_my_store(v_sales.store_id);
   end if;
   select * into v_day from public.business_days where id = v_sales.business_day_id for update;
@@ -286,9 +288,10 @@ begin
       if v_market.id is null then
         select min(m.effective_from) into v_first_market_date
           from public.store_market_profiles m where m.store_id=v_item.store_id;
-        if v_first_market_date is not null and v_sales.sale_date < v_first_market_date then
-          -- 국제 계산 적용 전 판매는 0090 legacy 합계를 그대로 보존한다. 과거 정정도
-          -- 국제 snapshot을 새로 만들거나 현재 프로필로 추정하지 않는다.
+        if v_first_market_date is null or v_sales.sale_date < v_first_market_date then
+          -- 수동 검토 대상이라 프로필이 아직 없거나 국제 계산 적용 전인 판매는 0090
+          -- legacy 합계를 그대로 보존한다. 과거 정정도 국제 snapshot을 새로 만들거나
+          -- 현재 프로필로 추정하지 않으며, INTL-1E 활성화 전에 수동 검토 매장을 해소한다.
           continue;
         end if;
         raise exception '% 판매일의 시장 프로필을 찾을 수 없어요', v_sales.sale_date

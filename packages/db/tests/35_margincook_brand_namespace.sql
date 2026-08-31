@@ -26,6 +26,15 @@ select pg_temp.ok('승인 삭제 함수는 MarginCook 내부 키만 쓴다',
   position('margincook.store_purge_id' in pg_get_functiondef('public.purge_archived_store(uuid,text)'::regprocedure)) > 0
   and position('sikjae.store_purge_id' in pg_get_functiondef('public.purge_archived_store(uuid,text)'::regprocedure)) = 0);
 
+select pg_temp.ok('활성 public 함수의 사용자 정의 GUC에 이전 브랜드 접두사가 없다', not exists(
+  select 1
+    from pg_proc p
+    join pg_namespace n on n.oid=p.pronamespace
+   where n.nspname='public'
+     and p.prokind='f'
+     and position('sikjae.' in lower(pg_get_functiondef(p.oid))) > 0
+));
+
 do $test$
 declare
   v_named_old integer := 0;
