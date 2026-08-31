@@ -352,6 +352,9 @@ end $t$;
  *   report_client_rpc_error      auth.uid()별 5분 버킷에 최소 오류 지문만 기록하는 앱 문(0176).
  *                                ops 원본 표는 앱 롤에 닫혀 있고 서버가 예상 오류를 다시 거른다.
  *   ops_health_status            매장 원장을 읽지 않고 Cron·집계 신호만 내는 service_role 전용 문(0176).
+ *   apply_international_tax_for_sales_item · reconcile_international_tax_after_sale_item
+ *                                INTL-1D 판매행 trigger 전용 몸통. 앱·service_role·RPC 실행 역할에는
+ *                                모두 닫혀 있고, capability가 꺼져 있으면 쓰지 않는다(0181).
  */
 do $t$
 declare v_now text; v_want text;
@@ -371,6 +374,7 @@ begin
   v_want := concat_ws(' | ',
     'amend_ended_business_day(p_store uuid, p_date date, p_base_revision integer, p_items jsonb, p_etc_items jsonb, p_extra_items jsonb, p_reason text)',
     'apply_due_breaks()',
+    'apply_international_tax_for_sales_item(p_sales_item uuid, p_force boolean)',
     'apply_operating_hours(p_store uuid, p_weekly_hours jsonb, p_weekly_breaks jsonb, p_base_rule_id uuid, p_base_revision integer)',
     'archive_my_store(p_store uuid, p_reason text)',
     'close_business_day(p_store uuid)',
@@ -381,6 +385,7 @@ begin
     'ops_health_status()',
     'purge_archived_store(p_store uuid, p_backup_reference text)',
     'purge_entity_changes()',
+    'reconcile_international_tax_after_sale_item()',
     'report_client_rpc_error(p_code text, p_detail text, p_client_platform text)',
     'retire_my_account()',
     'save_sale(p_store uuid, p_date date, p_items jsonb, p_etc_items jsonb, p_extra_items jsonb, p_base_revision integer, p_open_day boolean, p_open_close_time time without time zone)',

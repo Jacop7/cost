@@ -148,7 +148,7 @@ fi
 [[ "$sql" == *"rollback;"* ]] || { echo "AUDIT_NO_ROLLBACK" >&2; exit 9; }
 echo "AUDIT_SQL_OK" >&2
 
-migrations=2; dangerous=0; owner="${PGUSER:-postgres}"; rls_off=0; ledger_direct=0
+migrations=2; dangerous=0; owner="${PGUSER:-postgres}"; rls_off=0; ledger_direct=0; view_open=0
 executor_role=1; executor_invalid=0; omit_executor=0
 case "${PGDATABASE:-}" in
   audit_missing) migrations=1 ;;
@@ -156,6 +156,7 @@ case "${PGDATABASE:-}" in
   audit_rpc_open) rpc_open=1 ;;
   audit_rls_off) rls_off=1 ;;
   audit_ledger_direct) ledger_direct=1 ;;
+  audit_view_open) view_open=1 ;;
   audit_executor_bad) executor_invalid=1 ;;
   audit_executor_missing) omit_executor=1 ;;
   audit_partial) printf 'migrations|2|expected=2\nprobe_owner|%s|expected=postgres\n' "$owner"; exit 0 ;;
@@ -172,6 +173,7 @@ rls_disabled_app_tables|$rls_off|expected=0
 protected_objects|6|expected=6
 protected_writes|0|expected=0
 ledger_write_paths|$ledger_direct|expected=0
+international_contract_view_acl_invalid|$view_open|expected=0
 source_schema_grants|0|expected=0
 supabase_admin_objects|0|expected=0
 anon_rpc|0|expected=0
@@ -239,6 +241,11 @@ out="$(PATH="$SHIM:$PATH" ADMIN_DB_HOST=prod.invalid ADMIN_DB_NAME=audit_ledger_
        bash "$ACL" --remote audit 2>&1)"; rc=$?
 [ "$rc" -eq 1 ] && has "$out" 'ledger_write_paths=1' \
   && ok "원장 직접 쓰기 한 건이면 실패" || bad "원장 직접 쓰기를 통과시킴(exit $rc)"
+
+out="$(PATH="$SHIM:$PATH" ADMIN_DB_HOST=prod.invalid ADMIN_DB_NAME=audit_view_open ADMIN_DB_USER=postgres \
+       bash "$ACL" --remote audit 2>&1)"; rc=$?
+[ "$rc" -eq 1 ] && has "$out" 'international_contract_view_acl_invalid=1' \
+  && ok "국제 세금 계약 view GRANT면 실패" || bad "국제 세금 계약 view GRANT를 통과시킴(exit $rc)"
 
 out="$(PATH="$SHIM:$PATH" ADMIN_DB_HOST=prod.invalid ADMIN_DB_NAME=audit_executor_bad ADMIN_DB_USER=postgres \
        bash "$ACL" --remote audit 2>&1)"; rc=$?

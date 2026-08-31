@@ -1828,7 +1828,6 @@ export type Database = {
           daily_sales_item_id: string
           delta_amount: number
           id: string
-          reverses_event_id: string | null
           sales_channel_code: Database["public"]["Enums"]["international_sales_channel_code"]
           store_id: string
           target_quantity: number
@@ -1841,7 +1840,6 @@ export type Database = {
           daily_sales_item_id: string
           delta_amount: number
           id?: string
-          reverses_event_id?: string | null
           sales_channel_code: Database["public"]["Enums"]["international_sales_channel_code"]
           store_id: string
           target_quantity: number
@@ -1854,7 +1852,6 @@ export type Database = {
           daily_sales_item_id?: string
           delta_amount?: number
           id?: string
-          reverses_event_id?: string | null
           sales_channel_code?: Database["public"]["Enums"]["international_sales_channel_code"]
           store_id?: string
           target_quantity?: number
@@ -1866,13 +1863,6 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "daily_sales_items"
             referencedColumns: ["id", "store_id"]
-          },
-          {
-            foreignKeyName: "sales_tax_events_reverses_event_id_fkey"
-            columns: ["reverses_event_id"]
-            isOneToOne: false
-            referencedRelation: "sales_tax_events"
-            referencedColumns: ["id"]
           },
           {
             foreignKeyName: "sales_tax_events_store_id_fkey"
@@ -2454,6 +2444,10 @@ export type Database = {
       }
       app_capabilities: { Args: never; Returns: Json }
       apply_due_breaks: { Args: never; Returns: Json }
+      apply_international_tax_for_sales_item: {
+        Args: { p_force: boolean; p_sales_item: string }
+        Returns: Json
+      }
       apply_operating_hours: {
         Args: {
           p_base_revision?: number
@@ -2526,6 +2520,16 @@ export type Database = {
       business_day_state: { Args: { p_store: string }; Returns: Json }
       business_month: { Args: { p_at?: string }; Returns: string }
       business_tz: { Args: never; Returns: string }
+      calculate_international_tax: {
+        Args: {
+          p_components: Json
+          p_listed_total: number
+          p_minor_unit: number
+          p_price_basis: Database["public"]["Enums"]["tax_price_basis"]
+          p_treatment: Database["public"]["Enums"]["tax_treatment"]
+        }
+        Returns: Json
+      }
       category_name: { Args: { p_id: string }; Returns: string }
       change_event_json: {
         Args: {
