@@ -1,0 +1,109 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "INTL-LAUNCH-CONTRACT-HARDENING-001",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R2",
+  "author_role": "SOLAR-ARCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "062e313d664dd9cdf914fcc85047ae2257d5ebf5",
+  "target_commit_sha": "062e313d664dd9cdf914fcc85047ae2257d5ebf5",
+  "target_tree_oid": "911e30426df953e01954bdf303f55783ef767d51",
+  "agents_blob_oid": "9264927700bd7cfcb60460a8279ad72625b505df",
+  "agents_sha256": "bfb2e19944917b86251e998caf929aaac0b12051168c5ad3f42d209f9c04df16",
+  "requirements": [
+    "INTL-HARDEN-001: 현재 영수증 원장이 없는 판매 집계 구조와 국제 세금 결과의 제품 경계를 명시한다.",
+    "INTL-HARDEN-002: 메뉴×채널×구성 항목 계산선, 통화 minor unit 반올림, 목표 수량 재호출·부분 감소·전체 취소를 결정적으로 정의한다.",
+    "INTL-HARDEN-003: 시장·세금 프로필의 불변 ID·적용 구간·revision을 한 트랜잭션에서 선택하고 판매 시점에 고정한다.",
+    "INTL-HARDEN-004: 메뉴별 과세 상태와 구성 항목×채널별 납부 주체를 지원하고 판매 전체 단일 납부 주체를 금지한다.",
+    "INTL-HARDEN-005: 기존 판매·영업일·기타 매출 세액을 역산하지 않고 legacy 계산 판본과 저장 합계 그대로 보존한다.",
+    "INTL-HARDEN-006: 금액 원장 생성 뒤 국가·통화 변경을 금지하고 현재 10개 locale의 자동 이관·수동 확인 경계를 정의한다.",
+    "INTL-HARDEN-007: 구 앱 세금 쓰기를 capability와 최소 버전으로 실패 폐쇄하고 cutover 뒤 구 계산 rollback을 금지한다.",
+    "INTL-HARDEN-008: 최신 main과 스테이징 0177 운영 증거를 구현 전에 합류시키는 선행 게이트를 작업큐와 배포 문서에 일관되게 둔다.",
+    "INTL-HARDEN-009: 1차 서버는 Supabase RPC 권위를 유지하고 해외 지연 측정 위치·경로·표본·초기 SLO·승급 조건을 명시한다.",
+    "INTL-HARDEN-010: SQL↔core 숫자 검산, E9 취소·정정, 지역 변형, upgrade, 구 앱 차단을 검증 행렬과 구현 순서에 연결한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:server-calculation-authority",
+    "AGENTS:point-in-time-preservation",
+    "AGENTS:forward-only-migrations",
+    "AGENTS:settings-revision-noop",
+    "AGENTS:sales-target-reconciliation",
+    "ARCHITECTURE:current-vs-planned-contract",
+    "WORK-QUEUE:INTL-1"
+  ],
+  "artifact_paths": [
+    "docs/국가-통화-세금-국제출시-기획안.md",
+    "docs/브랜치-DB-운영-기획안.md",
+    "docs/서버-확장-아키텍처-기획안.md",
+    "docs/작업큐.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "ARCHITECTURE.md",
+    "apps/mobile/src/features/README.md",
+    "docs/ai-review/README.md",
+    "docs/team/TEAM_LEARNING.md",
+    "packages/core/src/locale.ts",
+    "packages/core/src/recipe.ts",
+    "packages/db/supabase/migrations/20260819000014_sales_schema.sql",
+    "packages/db/supabase/migrations/20260821000090_tax_items_only.sql",
+    "packages/db/supabase/migrations/20260826000149_past_basis_holds.sql",
+    "packages/db/supabase/migrations/20260826000152_no_rate_guessing.sql",
+    "packages/db/supabase/migrations/20260826000168_settings_values_and_locale_defaults.sql",
+    "packages/db/supabase/migrations/20260826000172_settings_revision_noop_tax.sql"
+  ],
+  "evidence_paths": [
+    "docs/deployments/2026-08-31T01-06-33-310Z-staging-803ac0a.json",
+    "docs/deployments/2026-08-31T01-12-23-staging-operations-drill.json"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "네 문서의 기준선·상태·작업 ID·상대 링크 일치와 git diff --check",
+    "현재 daily_sales_items 메뉴별·채널 수량 누계 구조와 문서 계산선의 대응",
+    "현재 0090 tax_of 및 0149~0152 기타 매출 세율 보존 계약과 legacy 이관 경계의 대응",
+    "현재 0168·0172 locale→currency 결합 계약과 10개 locale 이관 계획의 대응",
+    "KRW 포함가 12000원과 USD 포함·미포함 10.00/11.55 숫자 검산",
+    "시장·세금 프로필 중복 방지, 판매 스냅샷, 세금 이벤트 합계 불변식 검토",
+    "cutover 전후 rollback·최소 앱 버전·전진 migration 단계의 일치",
+    "해외 지역별 지연 측정과 서버 승급 조건이 과도한 선제 분리를 만들지 않는지 검토"
+  ],
+  "human_decisions": [
+    "2026-08-31 사용자는 기획안을 면밀히 수정한 뒤에만 구현하고 Fable 검수를 거치도록 요청했다.",
+    "1차 출시 국가는 한국·미국·영국·호주·캐나다이고 앱 언어는 한국어·영어다.",
+    "1차에는 자동 세율 법률 판정·신고 대행·환율·한 매장 다중 통화를 포함하지 않는다.",
+    "국가·지역별 실제 세무 적용은 출시 전 공식 기관과 현지 전문가 확인이 필요하다.",
+    "Fable은 기존 Claude Code Max 로그인 세션을 사용하며 4.00 USD는 이번 Task 실행 상한이다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "4.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": [
+    {
+      "learning_id": "LRN-ORCH-CI-001",
+      "reason": "이번 회차는 WORKING 기획 문서 검수이며 main 통합·원격 CI 게이트는 INTL-BASELINE-1 이후다."
+    },
+    {
+      "learning_id": "LRN-CODEX-TIME-001",
+      "reason": "영업일 fixture 시간 독립 규칙은 국제 세금 문서 계산 계약 검수와 직접 관련이 없다."
+    },
+    {
+      "learning_id": "LRN-OPS-BACKUP-001",
+      "reason": "파괴적 DB 재구축을 실행하지 않는다."
+    },
+    {
+      "learning_id": "LRN-AUDIT-PIN-001",
+      "reason": "CANDIDATE 학습이며 이번 신규 제품 계약에 적용하지 않는다."
+    }
+  ]
+}
