@@ -488,7 +488,7 @@
         recipe_sort:['정렬 기준','',prototypeChoices([['최신순'],['순이익률 낮은순'],['순이익률 높은순'],['판매량 많은순'],['판매가 높은순'],['판매가 낮은순']])],
         recipe_status:['판매 상태','',prototypeChoices([['전체'],['판매중'],['판매중지']])],
         recipe_target:['목표','',prototypeChoices([['전체'],['목표 미달'],['목표 달성']])],
-        recipe_memo:['메모 편집','',prototypeForm([['메모','','메모를 입력하세요']])+'<div class="memo-count">0 / 100</div>'+prototypeConfirm('','완료')],
+        recipe_memo:['메모 편집','',`<div class="expense-form"><div class="date-field"><input type="text" aria-label="메모" placeholder="메모를 입력하세요"></div></div><div class="memo-count">0 / 100</div>`+prototypeConfirm('','완료')],
         recipe_price_sim:['판매가 시뮬레이션','판매가를 바꿔 순이익을 미리 확인해요',`${expoRows([['임시 판매가','현재 12,000원에서 +0원','12,000원'],['순이익률','목표 미달','33.7%'],['순이익','','4,047원'],['목표 40.0% 달성 권장가','','15,800원']])}<button class="primary filter-apply">닫기</button>`],
         recipe_stop:['판매 중지','제육볶음',prototypeConfirm('판매를 중지할까요? 과거 매출 기록은 그대로 남아요.','판매 중지',true)],
         recipe_category_pick:['카테고리 선택','',prototypeChoices([['지정 안 함'],['찌개·전골'],['볶음·구이'],['밥·면'],['사이드']])+actualButton('카테고리 관리','category_edit')],
