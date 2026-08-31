@@ -215,6 +215,88 @@ dbDescribe(`app_capabilities(DB=${DB ?? '없음'}) ↔ TypeScript 기준선`, ()
     },
   );
 
+  it('INTL-1D KRW 포함가 역산도 SQL numeric과 core가 같다', () => {
+    const component: InternationalTaxComponentInput = {
+      id: '00000000-0000-0000-0000-0000000000c1',
+      kind: 'primary',
+      ratePct: 10,
+      calculationBasis: 'primary_tax_exclusive',
+      appliesToTreatments: ['taxable'],
+      remittanceOwner: 'merchant',
+    };
+    const dbComponent = {
+      component_id: component.id,
+      kind: component.kind,
+      rate_pct: component.ratePct,
+      calculation_basis: component.calculationBasis,
+      applies_to_treatments: component.appliesToTreatments,
+      remittance_owner: component.remittanceOwner,
+    };
+    const db = queryJson(`select public.calculate_international_tax(
+      'tax_inclusive',0::smallint,'taxable',12000,
+      '${JSON.stringify([dbComponent])}'::jsonb)::text`) as Record<string, unknown>;
+    const core = calculateInternationalTax({
+      priceBasis: 'tax_inclusive',
+      minorUnit: 0,
+      treatment: 'taxable',
+      unitPrice: 12000,
+      quantity: 1,
+      components: [component],
+    });
+    expect({
+      netSales: core.netSales,
+      customerTotal: core.customerTotal,
+      taxTotal: core.taxTotal,
+    }).toEqual({
+      netSales: Number(db.net_sales),
+      customerTotal: Number(db.customer_total),
+      taxTotal: Number(db.tax_total),
+    });
+    expect(core).toMatchObject({ netSales: 10909, customerTotal: 12000, taxTotal: 1091 });
+  });
+
+  it.each(['zero_rated', 'exempt'] as const)(
+    'INTL-1D %s 비과세 의미도 SQL numeric과 core가 같다',
+    (treatment) => {
+      const component: InternationalTaxComponentInput = {
+        id: '00000000-0000-0000-0000-0000000000c1',
+        kind: 'primary',
+        ratePct: 10,
+        calculationBasis: 'primary_tax_exclusive',
+        appliesToTreatments: ['taxable'],
+        remittanceOwner: 'merchant',
+      };
+      const dbComponent = {
+        component_id: component.id,
+        kind: component.kind,
+        rate_pct: component.ratePct,
+        calculation_basis: component.calculationBasis,
+        applies_to_treatments: component.appliesToTreatments,
+        remittance_owner: component.remittanceOwner,
+      };
+      const db = queryJson(`select public.calculate_international_tax(
+        'tax_inclusive',2::smallint,'${treatment}',10,
+        '${JSON.stringify([dbComponent])}'::jsonb)::text`) as Record<string, unknown>;
+      const core = calculateInternationalTax({
+        priceBasis: 'tax_inclusive',
+        minorUnit: 2,
+        treatment,
+        unitPrice: 10,
+        quantity: 1,
+        components: [component],
+      });
+      expect({
+        netSales: core.netSales,
+        customerTotal: core.customerTotal,
+        taxTotal: core.taxTotal,
+      }).toEqual({
+        netSales: Number(db.net_sales),
+        customerTotal: Number(db.customer_total),
+        taxTotal: Number(db.tax_total),
+      });
+    },
+  );
+
   it('INTL-1D 십진 절반 반올림 경계도 SQL numeric과 core가 같다', () => {
     const component: InternationalTaxComponentInput = {
       id: '00000000-0000-0000-0000-0000000000c1',

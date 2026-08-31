@@ -830,6 +830,7 @@ export type Database = {
           id: string
           legacy_calculation_version: Database["public"]["Enums"]["international_tax_calculation_version"]
           market_profile_id: string | null
+          original_future_effective_from: string | null
           reason_codes: string[]
           source_currency: string | null
           source_daily_sales_count: number
@@ -852,6 +853,7 @@ export type Database = {
           id?: string
           legacy_calculation_version?: Database["public"]["Enums"]["international_tax_calculation_version"]
           market_profile_id?: string | null
+          original_future_effective_from?: string | null
           reason_codes: string[]
           source_currency?: string | null
           source_daily_sales_count: number
@@ -874,6 +876,7 @@ export type Database = {
           id?: string
           legacy_calculation_version?: Database["public"]["Enums"]["international_tax_calculation_version"]
           market_profile_id?: string | null
+          original_future_effective_from?: string | null
           reason_codes?: string[]
           source_currency?: string | null
           source_daily_sales_count?: number

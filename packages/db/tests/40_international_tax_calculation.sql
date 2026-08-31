@@ -3,6 +3,7 @@
 -- ═══════════════════════════════════════════════════════════════
 
 set local role postgres;
+select set_config('sikjae.international_tax_force','owner_test',true);
 
 do $formula$
 declare
@@ -46,12 +47,16 @@ begin
   perform pg_temp.raises('기본세가 없으면 실패 폐쇄한다',
     format('select calculate_international_tax(''tax_inclusive'',0::smallint,''taxable'',1,%L::jsonb)',
       jsonb_build_array(v_components->1)::text), '22000');
+  perform pg_temp.raises('세율 키가 빠진 구성 항목은 NULL 합계로 통과하지 않는다',
+    format('select calculate_international_tax(''tax_inclusive'',0::smallint,''taxable'',1,%L::jsonb)',
+      (jsonb_build_array((v_components->0)-'rate_pct'))::text), '22000');
 end
 $formula$;
 
 do $reconcile$
 declare
   v_item uuid;
+  v_legacy_item uuid;
   v_date date;
   v_market uuid;
   v_tax uuid;
@@ -72,11 +77,11 @@ begin
 
   insert into store_market_profiles(
     store_id,country_code,currency_code,business_locale_code,price_basis,effective_from,revision)
-  values(pg_temp.store(),'KR','KRW','ko-KR','tax_inclusive','-infinity',1)
+  values(pg_temp.store(),'KR','KRW','ko-KR','tax_inclusive',v_date,1)
   returning id into v_market;
   insert into store_tax_profiles(
     store_id,market_profile_id,default_treatment,effective_from,revision)
-  values(pg_temp.store(),v_market,'taxable','-infinity',1)
+  values(pg_temp.store(),v_market,'taxable',v_date,1)
   returning id into v_tax;
   insert into store_tax_components(
     store_id,tax_profile_id,kind,name,rate_pct,jurisdiction_level,
@@ -88,6 +93,17 @@ begin
   values(pg_temp.store(),v_primary,'hall','merchant'),
         (pg_temp.store(),v_primary,'delivery','merchant'),
         (pg_temp.store(),v_primary,'takeout','merchant');
+
+  select i.id into v_legacy_item
+    from daily_sales_items i join daily_sales ds on ds.id=i.daily_sales_id
+   where i.store_id=pg_temp.store() and ds.sale_date<v_date
+     and i.qty_hall+i.qty_delivery+i.qty_takeout>0
+   order by ds.sale_date desc limit 1;
+  if v_legacy_item is null then raise exception 'FAIL  국제 적용 전 legacy 판매행이 없다'; end if;
+  v_result := apply_international_tax_for_sales_item(v_legacy_item,true);
+  perform pg_temp.ok('국제 프로필 적용 전 legacy 판매 정정은 추정 snapshot 없이 건너뛴다',
+    not (v_result->>'changed')::boolean
+    and not exists(select 1 from daily_sales_item_tax_snapshots where daily_sales_item_id=v_legacy_item));
 
   update daily_sales_items set unit_price=12000,qty_hall=1,qty_delivery=0,qty_takeout=0 where id=v_item;
   perform pg_temp.ok('capability가 꺼진 실제 판매 trigger는 국제 snapshot·이벤트를 만들지 않는다',
@@ -153,6 +169,26 @@ begin
 end
 $reconcile$;
 
+-- deferred 제약은 호출 함수가 끝난 뒤 앱 세션 역할에서 실행된다. 유효한 계산선을
+-- authenticated 문맥에서 즉시 검사해도 테이블 SELECT 42501로 판매 전체가 깨지면 안 된다.
+create or replace function pg_temp.exercise_authenticated_tax_constraint()
+returns void language plpgsql security definer set search_path=public,pg_temp as $$
+declare v_item uuid;
+begin
+  select daily_sales_item_id into v_item from public.daily_sales_item_tax_snapshots limit 1;
+  update public.daily_sales_items set qty_hall=0.25 where id=v_item;
+  perform set_config('sikjae.international_tax_force','owner_test',true);
+  perform public.apply_international_tax_for_sales_item(v_item,true);
+end
+$$;
+grant execute on function pg_temp.exercise_authenticated_tax_constraint() to authenticated;
+set local role authenticated;
+select pg_temp.exercise_authenticated_tax_constraint();
+set constraints all immediate;
+select pg_temp.ok('authenticated commit 문맥에서도 국제 세금 deferred 불변식이 권한 오류 없이 실행된다',true);
+set constraints all deferred;
+reset role;
+
 select pg_temp.ok('국제 세금 계산·쓰기·검증 몸통은 앱·서비스 역할에 닫혀 있다',
   not exists (
     select 1
@@ -165,6 +201,10 @@ select pg_temp.ok('국제 세금 계산·쓰기·검증 몸통은 앱·서비스
            ]) signature
      where has_function_privilege(role_name,signature,'execute')
   ));
+
+select pg_temp.ok('deferred 국제 세금 불변식은 앱 세션 권한이 아니라 정의자 권한으로 검사한다',
+  (select p.prosecdef from pg_proc p join pg_namespace n on n.oid=p.pronamespace
+    where n.nspname='public' and p.proname='assert_sales_tax_line_balanced'));
 
 select pg_temp.ok('국제 세금 capability는 계산 몸통 뒤에도 꺼져 있다',
   not (app_capabilities()#>>'{international_tax,read_enabled}')::boolean

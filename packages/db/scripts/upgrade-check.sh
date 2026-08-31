@@ -889,13 +889,15 @@ else
          join store_market_profiles m on m.id=t.market_profile_id limit 1),
       (select a.future_effective_from=m.effective_from from international_tax_migration_audits a
          join store_market_profiles m on m.id=a.market_profile_id limit 1),
+      (select a.original_future_effective_from=store_local_date(a.store_id)+1
+         from international_tax_migration_audits a where a.decision='auto_profile_created' limit 1),
       to_regprocedure('public.calculate_international_tax(tax_price_basis,smallint,tax_treatment,numeric,jsonb)') is not null,
       not exists(select 1 from information_schema.columns where table_schema='public'
         and table_name='sales_tax_events' and column_name='reverses_event_id'),
       app_capabilities()#>>'{international_tax,read_enabled}',
       app_capabilities()#>>'{international_tax,write_enabled}');")
-  if [ "$before17" = "$after17" ] && [ "$state17" = "t|t|t|t|t|false|false" ]; then
-    say "   ok   미래 장부 뒤로 시장·세금·감사 경계 동기화 · 기존 합계 불변 · capability 비활성"
+  if [ "$before17" = "$after17" ] && [ "$state17" = "t|t|t|t|t|t|false|false" ]; then
+    say "   ok   0180 최초 경계 보존 · 미래 장부 뒤로 실제 경계 동기화 · 기존 합계 불변 · capability 비활성"
   else
     say "   FAIL 원본 전=$before17 후=$after17 계산 경계=$state17"
     fail=1
