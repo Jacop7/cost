@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "INTL-1B-IMPLEMENTATION-001",
+  "sequence": "t0006",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-08-31T13:47:28.244Z",
+  "turn_id": "turn-h001",
+  "turn_type": "HUMAN_DECISION",
+  "role": "HUMAN",
+  "task_sha256": "f34bc915c0256027c7699cb818130f460b3a39fc5dbd7e3d38b81b7222e971ce",
+  "runner_sha256": "80dae1d06c89af056e9d8c210b571e978ee534fc128a5fe3b9867610b5ae447b",
+  "previous_manual_run_sha256": "240fee036a05cca3a273a0a13aab28769c932a0f30c82121cb8998cfcf82b61f",
+  "collaboration_before_sha256": "0cf554512c52ffff2702273099856789686dc7c3afe0e409d3f265388954fd29",
+  "collaboration_before_bytes": 18656,
+  "collaboration_entry_sha256": "d3289e61324ea3fd14bd21d05e215156bae512b5d6180816102e75e9bf3d8ead",
+  "collaboration_entry_bytes": 1102,
+  "collaboration_after_sha256": "b5a96bfe48c8088e407aee3518ae25afc1df9cf01357475deea9f1b421e66680",
+  "collaboration_after_bytes": 19758
+}
