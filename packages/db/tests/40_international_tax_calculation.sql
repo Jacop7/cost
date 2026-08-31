@@ -3,7 +3,6 @@
 -- ═══════════════════════════════════════════════════════════════
 
 set local role postgres;
-select set_config('sikjae.international_tax_force','owner_test',true);
 
 do $formula$
 declare
@@ -74,6 +73,14 @@ begin
      and ds.business_day_id is not null
    order by ds.sale_date desc limit 1;
   if v_item is null then raise exception 'FAIL  국제 세금 계산 시험 판매행이 없다'; end if;
+
+  perform pg_temp.raises('강제 계산은 명시적 소유자 시험 표식 없이는 닫혀 있다',
+    format('select apply_international_tax_for_sales_item(%L::uuid,true)',v_item), '42501');
+  perform set_config('margincook.international_tax_force','owner_test',true);
+  v_result := apply_international_tax_for_sales_item(v_item,true);
+  perform pg_temp.ok('수동 검토 대상이라 프로필이 없는 매장은 legacy 판매를 막지 않는다',
+    not (v_result->>'changed')::boolean
+    and not exists(select 1 from daily_sales_item_tax_snapshots where daily_sales_item_id=v_item));
 
   insert into store_market_profiles(
     store_id,country_code,currency_code,business_locale_code,price_basis,effective_from,revision)
@@ -177,7 +184,7 @@ declare v_item uuid;
 begin
   select daily_sales_item_id into v_item from public.daily_sales_item_tax_snapshots limit 1;
   update public.daily_sales_items set qty_hall=0.25 where id=v_item;
-  perform set_config('sikjae.international_tax_force','owner_test',true);
+  perform set_config('margincook.international_tax_force','owner_test',true);
   perform public.apply_international_tax_for_sales_item(v_item,true);
 end
 $$;
