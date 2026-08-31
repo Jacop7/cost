@@ -83,17 +83,25 @@ export interface StoreMarketProfile {
   revision: number;
 }
 
-/** 시장 프로필 안에서 일정 시점부터 적용되는 세금 프로필. */
-export interface StoreTaxProfile {
+/** DB `store_tax_profiles`에 직접 저장되는 세금 프로필 행. 국가·지역을 중복 저장하지 않는다. */
+export interface StoredStoreTaxProfile {
   id: string;
   storeId: string;
   marketProfileId: string;
-  countryCode: LaunchCountryCode;
-  regionCode: TaxRegionCode | null;
   defaultTreatment: TaxTreatment;
   effectiveFrom: string;
   effectiveTo: string | null;
   revision: number;
+}
+
+/**
+ * 시장 프로필 안에서 일정 시점부터 적용되는 세금 프로필 조회 계약.
+ * `countryCode`와 `regionCode`는 `store_market_profiles`에서 파생한 조회값이며
+ * `store_tax_profiles`에 중복 저장하지 않는다.
+ */
+export interface StoreTaxProfile extends StoredStoreTaxProfile {
+  countryCode: LaunchCountryCode;
+  regionCode: TaxRegionCode | null;
   components: readonly TaxRateComponent[];
   remittanceRules: readonly TaxComponentChannelRemittance[];
 }

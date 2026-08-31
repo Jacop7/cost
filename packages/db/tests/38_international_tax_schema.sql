@@ -50,6 +50,14 @@ select pg_temp.ok('프로필 판본 가드는 모든 BEFORE trigger 중 마지�
   and (select max(tgname) from pg_trigger where tgrelid = 'store_tax_profiles'::regclass
     and not tgisinternal and (tgtype & 2) = 2) = 'store_tax_profiles_90_version_guard');
 
+-- 0180은 명확한 시드 매장에 미래 프로필을 만든다. 이 파일은 0179 자체의 빈 조립 경계를
+-- 재므로 해당 미래 프로필의 하위행부터 지운다. 감사 원본은 FK가 없고 시험은 롤백된다.
+delete from channel_tax_remittance where store_id = pg_temp.store();
+delete from tax_category_catalog where store_id = pg_temp.store();
+delete from store_tax_components where store_id = pg_temp.store();
+delete from store_tax_profiles where store_id = pg_temp.store();
+delete from store_market_profiles where store_id = pg_temp.store();
+
 do $owner_truncate_guards$
 begin
   set local role postgres;

@@ -6,3 +6,4 @@ export * from './enums';
 export * from './entities';
 export * from './derived';
 export * from './international';
+export * from './internationalRegions';

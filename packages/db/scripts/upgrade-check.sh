@@ -726,5 +726,60 @@ else
   fi
 fi
 
+# ── 시나리오 16 · 0179 빈 확장 스키마 → 감사·명확한 미래 프로필만 이관 ─────
+say "⑯ 0179 상태 + 명확/모호 매장·과거 세금 → 0180이 합계 불변으로 판정을 가른다"
+BASE16=20260831000179
+STEP16="$(cd "$MIG_DIR" && ls 20260831000180_*.sql)"
+bash "$SCRIPT_DIR/fresh-db.sh" --until "$BASE16" "$D" >/dev/null
+psql_d "$D" <<'EOF' >/dev/null
+insert into auth.users(id) values ('00000000-0000-0000-0000-0000000000c9');
+insert into stores(id,owner_id,name)
+values ('00000000-0000-0000-0000-0000000000d9','00000000-0000-0000-0000-0000000000c9','수동 확인 매장');
+update settings
+   set locale='en-US', currency='USD', money_digits=2, tax_mode='separate',
+       tax_items='[{"name":"City fee","rate":7}]'::jsonb
+ where store_id='00000000-0000-0000-0000-0000000000d9';
+EOF
+before16=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c "
+  select concat_ws('|',
+    (select count(*) from settings),
+    (select md5(jsonb_agg(to_jsonb(s) order by store_id)::text) from settings s),
+    (select coalesce(sum(unit_tax*(qty_hall+qty_delivery+qty_takeout)),0) from daily_sales_items),
+    (select coalesce(sum(etc_revenue),0) from daily_sales),
+    (select coalesce(sum(etc_tax),0) from daily_sales));")
+if ! err="$(psql_d "$D" < "$MIG_DIR/$STEP16" 2>&1 1>/dev/null)"; then
+  say "   FAIL 0180 적용이 막혔다"; say "        $(printf '%s' "$err" | head -3)"; fail=1
+else
+  after16=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c "
+    select concat_ws('|',
+      (select count(*) from settings),
+      (select md5(jsonb_agg(to_jsonb(s) order by store_id)::text) from settings s),
+      (select coalesce(sum(unit_tax*(qty_hall+qty_delivery+qty_takeout)),0) from daily_sales_items),
+      (select coalesce(sum(etc_revenue),0) from daily_sales),
+      (select coalesce(sum(etc_tax),0) from daily_sales));")
+  state16=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c "
+    select concat_ws('|',
+      (select count(*) from international_tax_migration_audits),
+      (select count(*) from international_tax_migration_audits where decision='auto_profile_created'),
+      (select count(*) from international_tax_migration_audits where decision='manual_review_required'),
+      (select reason_codes @> array['locale_not_ko','currency_contract_not_krw','price_basis_not_inclusive','standard_vat_not_exact']
+         from international_tax_migration_audits where store_id='00000000-0000-0000-0000-0000000000d9'),
+      (select count(*) from store_market_profiles),
+      (select count(*) from tax_region_catalog where country_code in ('US','CA')),
+      (select count(*) from daily_sales_item_tax_snapshots),
+      (select count(*) from daily_sales_item_tax_component_snapshots),
+      (select count(*) from sales_tax_events),
+      not exists (select 1 from daily_sales_items where unit_tax_calculation_version<>'legacy_effective_rate_v1'),
+      app_capabilities()#>>'{international_tax,read_enabled}',
+      app_capabilities()#>>'{international_tax,write_enabled}');")
+  if [ "$before16" = "$after16" ] \
+     && [ "$state16" = "2|1|1|t|1|64|0|0|0|t|false|false" ]; then
+    say "   ok   현행 설정·세액 불변 · 명확 1/수동 1 · 관할 64 · 상세 역산 0 · capability 비활성"
+  else
+    say "   FAIL 원본 전=$before16 후=$after16 이관 상태=$state16"
+    fail=1
+  fi
+fi
+
 say ""
-if [ "$fail" = "0" ]; then say "업그레이드 경로 15/15 통과"; else say "업그레이드 경로 실패"; exit 1; fi
+if [ "$fail" = "0" ]; then say "업그레이드 경로 16/16 통과"; else say "업그레이드 경로 실패"; exit 1; fi

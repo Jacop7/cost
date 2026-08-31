@@ -5,11 +5,11 @@
 
 ## 현재 기준
 
-- 마이그레이션 168개, 최신 `20260831000179_international_tax_schema.sql`
-- 번호가 붙은 DB 회귀 스위트 38개
-- public 업무 테이블 40개
+- 마이그레이션 169개, 최신 `20260831000180_international_tax_audit_migration.sql`
+- 번호가 붙은 DB 회귀 스위트 39개
+- public 업무 테이블 41개
 - 자동 종료·자동 브레이크·변경 이력 청소 pg_cron 3종
-- 로컬 마이그레이션 장부와 파일 일치는 전체 검증에서 확인한다. 현재 파일 기준은 168개다.
+- 로컬 마이그레이션 장부와 파일 일치는 전체 검증에서 확인한다. 현재 파일 기준은 169개다.
 
 개수는 현재 스냅샷이다. 실제 판단은 파일과 시험 실행 결과를 우선한다.
 
@@ -30,7 +30,7 @@ scripts/
   admin-acl-audit.test.mjs 실제 DB metric·rollback·모바일 RPC 허용 목록 대조
 tests/
   _prelude.sql            공통 픽스처·사후조건
-  01_…38_*.sql            트랜잭션 DB 회귀 스위트
+  01_…39_*.sql            트랜잭션 DB 회귀 스위트
   concurrency.mjs         판매 저장과 마감·브레이크의 2세션 경합
 src/database.types.ts     `pnpm db:types` 생성 타입
 ```
@@ -47,7 +47,10 @@ src/database.types.ts     `pnpm db:types` 생성 타입
 - `store_purge_schedules`: 보존 종료 시각·승인 주체·승인 근거가 있는 service role 전용 삭제 예약.
 - `price_trends`·`profit_trends`: 단가·손익 시점 스냅샷.
 - `store_market_profiles`·`store_tax_profiles`·`store_tax_components`: INTL-1B 시장·세금 판본과
-  법정 표면 세율 구성. `0179`에서는 비어 있고 계산·이관은 아직 켜지 않는다.
+  법정 표면 세율 구성. `0180`은 명확한 한국 표준 부가세 매장에만 다음 미개장 영업일부터 적용할
+  미래 프로필을 만들며, 모호한 매장은 감사 결과만 남긴다. 계산·앱 읽기·쓰기는 아직 켜지 않는다.
+- `international_tax_migration_audits`: INTL-1C 현행 locale·세금 설정·판매/기타매출 합계와 자동 이관/
+  수동 확인 판정을 보존하는 불변 감사 원본. 과거 세율이나 구성 항목을 역산하지 않는다.
 - `daily_sales_item_tax_snapshots`·`daily_sales_item_tax_component_snapshots`: 영업일×메뉴×채널의
   세금 입력·합계와 구성 항목별 당시 값. `sales_tax_events`는 목표 세액 변화 append-only 원장이며,
   판매행만 지워 없앨 수 없다. 보존 종료·승인·백업을 확인한 `purge_archived_store`의 매장 물리 삭제에서만
