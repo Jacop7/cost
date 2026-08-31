@@ -40,6 +40,10 @@ vi.mock('@/features/my/store', async (importOriginal) => ({
   useSettingsActions: () => ({ setUnitDigits, setCupVolume, saving: unitSaving }),
   useUnitDigits: () => 2,
 }));
+vi.mock('@/features/international-tax', () => ({
+  useAppCapabilities: () => ({ data: { internationalTax: { readEnabled: false, writeEnabled: false } }, isLoading: false, isError: false }),
+  useInternationalTaxState: vi.fn(),
+}));
 
 import MyNotificationsScreen from '@/features/my/screens/MyNotificationsScreen';
 import MyTaxScreen from '@/features/my/screens/MyTaxScreen';

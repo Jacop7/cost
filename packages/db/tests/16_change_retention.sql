@@ -359,6 +359,11 @@ end $t$;
  *                                INTL-1D deferred constraint trigger의 검사 몸통. 앱 세션 commit에서도
  *                                RLS/표 SELECT 권한에 막히지 않는다. 매장을 고르거나 값을 반환하지 않고
  *                                trigger가 건드린 한 계산선만 검사하며 직접 실행 문은 모든 앱 역할에 닫힌다.
+ *   initialize_user_preferences  auth.users 트리거 전용. 앱 언어 표는 직접 열지 않는다(0182).
+ *   get_user_preferences · save_app_language
+ *                                auth.uid() 한 사람의 언어와 판본만 읽고 쓴다(0182).
+ *   international_tax_app_state · international_tax_regions · recipe_tax_app_state ·
+ *   sales_tax_app_detail         모두 assert_my_store로 매장 경계를 고정하는 INTL-1E facade다.
  */
 do $t$
 declare v_now text; v_want text;
@@ -385,14 +390,21 @@ begin
     'close_business_day(p_store uuid)',
     'close_due_business_days()',
     'create_store(p_name text, p_timezone text)',
+    'get_user_preferences()',
+    'initialize_user_preferences()',
+    'international_tax_app_state(p_store uuid)',
+    'international_tax_regions(p_store uuid, p_country international_country_code)',
     'my_store_ids()',
     'open_business_day(p_store uuid, p_date date, p_close_time time without time zone)',
     'ops_health_status()',
     'purge_archived_store(p_store uuid, p_backup_reference text)',
     'purge_entity_changes()',
+    'recipe_tax_app_state(p_store uuid, p_recipe uuid)',
     'reconcile_international_tax_after_sale_item()',
     'report_client_rpc_error(p_code text, p_detail text, p_client_platform text)',
     'retire_my_account()',
+    'sales_tax_app_detail(p_store uuid, p_from date, p_to date)',
+    'save_app_language(p_language text, p_base_revision integer)',
     'save_sale(p_store uuid, p_date date, p_items jsonb, p_etc_items jsonb, p_extra_items jsonb, p_base_revision integer, p_open_day boolean, p_open_close_time time without time zone)',
     'save_settings(p_store uuid, p_payload jsonb, p_base_revision integer)',
     'save_store_tax(p_store uuid, p_mode tax_mode, p_items jsonb, p_base_revision integer)',

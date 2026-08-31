@@ -26,10 +26,11 @@ import {
   type ChannelCode, type EtcItem, type ExtraItem, type SaleItemInput,
 } from '../hooks';
 import { CHANNEL_LABEL, channelName } from '../channels';
-import { isDateOutOfRange, isDayLive, isRevisionConflict, useSalesBusinessDate } from '@/features/business-day/businessDay';
+import { isClientUpgradeRequired, isDateOutOfRange, isDayLive, isRevisionConflict, useSalesBusinessDate } from '@/features/business-day/businessDay';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
 import { SaleStepper } from '../components/SaleStepper';
 import { dayLabel } from '@/lib/date';
+import { useAppCapabilities, useSalesTaxDetail } from '@/features/international-tax';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 
@@ -54,6 +55,9 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
   const day = useSalesDay(date);
   const recipes = useRecipeList();
   const amend = useAmendPastSale();
+  const capabilities = useAppCapabilities();
+  const internationalEnabled = Boolean(capabilities.data?.internationalTax.readEnabled);
+  const internationalTax = useSalesTaxDetail(date, date, internationalEnabled);
 
   const s = day.data;
 
@@ -123,6 +127,10 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
     }));
 
   const onError = (e: unknown) => {
+    if (isClientUpgradeRequired(e)) {
+      setToast({ text: '세금 계산 방식이 바뀌었어요. 앱을 최신 버전으로 업데이트한 뒤 다시 저장해 주세요.' });
+      return;
+    }
     if (isDayLive(e)) {
       setToast({ text: '아직 영업 중인 날이에요. 매출관리 화면에서 저장해 주세요.', goHome: true });
       return;
@@ -192,6 +200,21 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
       />
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 2, paddingBottom: 24 + insets.bottom + 64, gap: 11 }}>
+        {internationalEnabled ? (
+          <QueryState
+            isLoading={internationalTax.isLoading}
+            error={internationalTax.error}
+            isEmpty={false}
+            onRetry={() => void internationalTax.refetch()}
+            emptyTitle=""
+          >
+            <Notice>
+              {internationalTax.data?.lines.length
+                ? `이 날 판매에는 당시 세금 프로필 판본이 ${internationalTax.data.lines.length}개 계산선에 고정돼 있어요. 수량을 고치면 그 기록을 그대로 사용해요.`
+                : '이 날은 기존 세금 계약으로 기록됐어요. 국제 세금 구성 항목을 추정하지 않고 기존 장부 기준으로 고쳐요.'}
+            </Notice>
+          </QueryState>
+        ) : null}
         <QueryState
           isLoading={day.isLoading || recipes.isLoading}
           error={day.error ?? recipes.error}

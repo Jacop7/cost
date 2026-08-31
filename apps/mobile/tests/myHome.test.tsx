@@ -31,6 +31,10 @@ vi.mock('@/features/my/hooks', async (importOriginal) => ({
   ...(await importOriginal<Record<string, unknown>>()),
   useStoreName: () => ({ data: '시험 매장', isLoading: false, error: null }),
 }));
+vi.mock('@/features/international-tax', () => ({
+  useInternationalTaxState: () => ({ data: { onboardingStatus: 'country_confirmation_required', marketProfile: null }, isLoading: false, isError: false, error: null }),
+  useUserPreferences: () => ({ data: { appLanguage: 'ko' }, isLoading: false, isError: false, error: null }),
+}));
 
 import MyHomeScreen from '@/features/my/screens/MyHomeScreen';
 

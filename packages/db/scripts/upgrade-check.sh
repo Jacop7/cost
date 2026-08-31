@@ -904,5 +904,60 @@ else
   fi
 fi
 
+# ── 시나리오 18 · 0181 계산 몸통 → 비활성 앱 계약·사용자 언어 분리 ───────
+say "⑱ 0181 상태 + 한국어/영어/기타 로케일 → 0182 사용자 언어 분리·읽기 facade·capability 비활성"
+BASE18=20260901000181
+STEP18="$(cd "$MIG_DIR" && ls 20260901000182_*.sql)"
+bash "$SCRIPT_DIR/fresh-db.sh" --until "$BASE18" "$D" >/dev/null
+psql_d "$D" <<'EOF' >/dev/null
+insert into auth.users(id) values ('00000000-0000-0000-0000-0000000000e8');
+insert into stores(id,owner_id,name)
+values ('00000000-0000-0000-0000-0000000000f8','00000000-0000-0000-0000-0000000000e8','영어 앱 매장');
+update settings set locale='en-US',currency='USD',money_digits=2
+ where store_id='00000000-0000-0000-0000-0000000000f8';
+insert into auth.users(id) values ('00000000-0000-0000-0000-0000000000e9');
+insert into stores(id,owner_id,name)
+values ('00000000-0000-0000-0000-0000000000f9','00000000-0000-0000-0000-0000000000e9','확인 필요 매장');
+update settings set locale='ja',currency='JPY',money_digits=0
+ where store_id='00000000-0000-0000-0000-0000000000f9';
+EOF
+before18=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c "
+  select concat_ws('|',
+    (select count(*) from auth.users),
+    (select md5(jsonb_agg(to_jsonb(s) order by store_id)::text) from settings s),
+    (select coalesce(sum(unit_tax*(qty_hall+qty_delivery+qty_takeout)),0) from daily_sales_items),
+    app_capabilities()#>>'{international_tax,read_enabled}',
+    app_capabilities()#>>'{international_tax,write_enabled}');")
+if ! err="$(psql_d "$D" < "$MIG_DIR/$STEP18" 2>&1 1>/dev/null)"; then
+  say "   FAIL 0182 적용이 막혔다"; say "        $(printf '%s' "$err" | head -3)"; fail=1
+else
+  after18=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c "
+    select concat_ws('|',
+      (select count(*) from auth.users),
+      (select md5(jsonb_agg(to_jsonb(s) order by store_id)::text) from settings s),
+      (select coalesce(sum(unit_tax*(qty_hall+qty_delivery+qty_takeout)),0) from daily_sales_items),
+      app_capabilities()#>>'{international_tax,read_enabled}',
+      app_capabilities()#>>'{international_tax,write_enabled}');")
+  state18=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c "
+    select concat_ws('|',
+      (select count(*) from user_preferences)=(select count(*) from auth.users),
+      (select app_language='en' and source_locale='en-US' from user_preferences where user_id='00000000-0000-0000-0000-0000000000e8'),
+      (select app_language is null and source_locale='ja' from user_preferences where user_id='00000000-0000-0000-0000-0000000000e9'),
+      to_regprocedure('public.get_user_preferences()') is not null,
+      to_regprocedure('public.international_tax_app_state(uuid)') is not null,
+      to_regprocedure('public.recipe_tax_app_state(uuid,uuid)') is not null,
+      to_regprocedure('public.sales_tax_app_detail(uuid,date,date)') is not null,
+      not has_table_privilege('authenticated','public.user_preferences','select'),
+      not has_function_privilege('anon','public.international_tax_app_state(uuid)','execute'),
+      app_capabilities()#>>'{international_tax,read_enabled}',
+      app_capabilities()#>>'{international_tax,write_enabled}');")
+  if [ "$before18" = "$after18" ] && [ "$state18" = "t|t|t|t|t|t|t|t|t|false|false" ]; then
+    say "   ok   사용자별 ko/en 분리·기타 언어 확인 필요 · 기존 설정/세액 불변 · facade 권한 폐쇄 · capability 비활성"
+  else
+    say "   FAIL 원본 전=$before18 후=$after18 앱 계약=$state18"
+    fail=1
+  fi
+fi
+
 say ""
-if [ "$fail" = "0" ]; then say "업그레이드 경로 17/17 통과"; else say "업그레이드 경로 실패"; exit 1; fi
+if [ "$fail" = "0" ]; then say "업그레이드 경로 18/18 통과"; else say "업그레이드 경로 실패"; exit 1; fi

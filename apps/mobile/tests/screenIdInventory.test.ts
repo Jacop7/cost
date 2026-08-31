@@ -38,6 +38,7 @@ describe('P2-4 화면 ID 단일 인벤토리', () => {
       ['ING-06', '구매 링크·옵션 수정', 'ingredients/option', 'src/features/ingredients/screens/PurchaseOptionScreen.tsx'],
       ['ING-11', '식재료 수정 내역', 'ingredients/changes/[id]', 'src/features/changes/screens/ChangeHistoryScreen.tsx'],
       ['MY-02', '세금', 'my/tax', 'src/features/my/screens/MyTaxScreen.tsx'],
+      ['MY-12', '국가·통화 확인', 'my/country', 'src/features/my/screens/MyCountryScreen.tsx'],
       ['MY-03a', '카테고리 편집', 'my/category', 'src/features/my/screens/MyCategoryScreen.tsx'],
       ['MY-05b', '고정 지출 수정', 'recipes/fixed-cost-edit', 'src/features/my/screens/FixedCostEditScreen.tsx'],
       ['MY-11', '구매처·브랜드', 'my/vendors', 'src/features/my/screens/MyVendorsScreen.tsx'],

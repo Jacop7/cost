@@ -5,24 +5,25 @@
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { getLocale } from '@margincook/core';
 import { Card, Icon, IconName } from '@/components/kit';
 import { T } from '@/theme/tokens';
-import { useSettings, useUnitDigits } from '../store';
+import { useUnitDigits } from '../store';
 import { useSettingsLists } from '@/features/master-data/hooks';
 import { useHoursStatus, useStoreSettings } from '@/features/settings/hooks';
 import { useStoreName } from '../hooks';
+import { useInternationalTaxState, useUserPreferences } from '@/features/international-tax';
 
 interface MenuItem { icon: IconName; bg: string; fg: string; t: string; d: string; route: Href | null; }
 /** 언어·통화·단위는 현재 선택값을 설명줄에 보여야 해서 함수로 둔다(나머지는 정적). */
 const sections = (d: {
-  locale: string; unit: string; category: string; vendor: string; channel: string; hours: string; alert: string;
+  locale: string; country: string; unit: string; category: string; vendor: string; channel: string; hours: string; alert: string;
 }): MenuItem[] => [
   { icon: 'won', bg: T.blueTint, fg: T.blue, t: '고정 지출 (월)', d: '인건비·수수료·포장 등 → 고정지출률', route: '/recipes/fixed-cost' as Href },
   // 세금은 매장 하나에 하나다(0087). 고치면 전 메뉴 손익이 다시 계산된다.
   { icon: 'receipt', bg: T.blueTint, fg: T.blue, t: '세금', d: '부가세 · 카드 수수료 등 판매가에서 빠지는 몫', route: '/my/tax' as Href },
+  { icon: 'globe', bg: '#E8F1FB', fg: '#2E6FD0', t: '국가 · 통화', d: d.country, route: '/my/country' as Href },
   { icon: 'grid', bg: '#F0EDFB', fg: '#7C5CE0', t: '카테고리 관리', d: d.category, route: '/my/categories' as Href },
-  { icon: 'globe', bg: '#E8F1FB', fg: '#2E6FD0', t: '언어 · 통화', d: d.locale, route: '/my/language' as Href },
+  { icon: 'globe', bg: '#E8F1FB', fg: '#2E6FD0', t: '앱 언어', d: d.locale, route: '/my/language' as Href },
   { icon: 'ruler', bg: '#FEF1E6', fg: '#E08A2B', t: '단위 설정', d: d.unit, route: '/my/units' as Href },
   { icon: 'store', bg: '#EAF6F0', fg: '#179E6B', t: '구매처', d: d.vendor, route: '/my/vendors' as Href },
   { icon: 'receipt', bg: '#FDECEF', fg: '#D94A5E', t: '판매 채널', d: d.channel, route: '/my/channels' as Href },
@@ -35,13 +36,23 @@ export default function MyHomeScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const go = (r: Href | null) => r && router.push(r);
-  const L = getLocale(useSettings().locale);
   const unitDigits = useUnitDigits();
   const lists = useSettingsLists();
   const settings = useStoreSettings();
   // 요일별 규칙(0156)을 알아야 '월요일 값'을 전체인 양 말하지 않는다.
   const hoursStatus = useHoursStatus();
   const storeName = useStoreName();
+  const internationalTax = useInternationalTaxState();
+  const preferences = useUserPreferences();
+  const languageLabel = preferences.isLoading
+    ? '확인 중…'
+    : preferences.isError
+      ? '언어를 불러오지 못했어요'
+      : preferences.data?.appLanguage === 'en'
+        ? 'English'
+        : preferences.data?.appLanguage === 'ko'
+          ? '한국어'
+          : '언어 확인 필요';
 
   // 수수료는 고정 지출에서 관리한다(0043). 여기서는 어떤 채널을 쓰는지만 보인다.
   const activeChannels = (lists.data?.channels ?? []).filter((c) => c.active);
@@ -91,7 +102,16 @@ export default function MyHomeScreen() {
     : 0;
 
   const SECTIONS = sections({
-    locale: `${L.label} · ${L.currencyName} (${L.currency})`,
+    locale: languageLabel,
+    country: internationalTax.isLoading
+      ? '확인 중…'
+      : internationalTax.isError
+        ? '국가 정보를 불러오지 못했어요'
+        : internationalTax.data?.marketProfile
+          ? `${internationalTax.data.marketProfile.countryCode} · ${internationalTax.data.marketProfile.currencyCode}`
+          : internationalTax.data?.onboardingStatus === 'manual_review_required'
+            ? '기존 세금 설정 수동 확인 필요'
+            : '국가 확인 필요',
     unit: `미터법 · 단가 소수 ${unitDigits}자리`,
     category: `식재료 ${lists.data?.categories.length ?? 0} · 레시피 ${lists.data?.recipeCategories.length ?? 0} · 부자재 ${lists.data?.materials.length ?? 0}`,
     vendor: `${lists.data?.vendors.length ?? 0}곳 등록`,
@@ -118,7 +138,7 @@ export default function MyHomeScreen() {
           </View>
           <View style={{ flex: 1 }}>
             <Text style={{ fontSize: 18, fontWeight: '800', color: T.ink }}>{storeName.data ?? '매장'}</Text>
-            <Text style={{ fontSize: 14, color: T.ter, marginTop: 2 }}>{L.label} · 미터법</Text>
+            <Text style={{ fontSize: 14, color: T.ter, marginTop: 2 }}>{languageLabel} · 미터법</Text>
           </View>
         </Card>
 

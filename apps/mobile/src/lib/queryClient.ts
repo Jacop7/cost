@@ -47,6 +47,10 @@ export const qk = {
   /** 카테고리·거래처·판매채널 — settings_lists 한 번에 받는다. */
   settingsLists: ['settings', 'lists'] as const,
   storeSettings: ['settings', 'store'] as const,
+  userPreferences: ['settings', 'user-preferences'] as const,
+  internationalTax: ['settings', 'international-tax'] as const,
+  recipeTax: (id: string) => ['settings', 'international-tax', 'recipe', id] as const,
+  salesTaxDetail: (from: string, to: string) => ['sales', 'international-tax', from, to] as const,
   fixedCosts: (month: string) => ['settings', 'fixed-costs', month] as const,
 
   /** 수정 내역(0063) — 식재료·레시피가 같은 원장을 쓴다. */

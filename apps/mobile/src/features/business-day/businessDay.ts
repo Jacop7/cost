@@ -338,6 +338,9 @@ export const isDateOutOfRange = (e: unknown): boolean => codeOf(e) === '45010';
 /** 45011 DAY_IS_LIVE — 그날은 아직 살아 있다. 보통 저장 경로로 가야 한다(0145). */
 export const isDayLive = (e: unknown): boolean => codeOf(e) === '45011';
 
+/** 새 국제 세금 쓰기가 열린 뒤 구 앱의 저장을 실패 폐쇄하는 결과 코드(INTL-1F). */
+export const isClientUpgradeRequired = (e: unknown): boolean => codeOf(e) === '45016';
+
 /**
  * '2026-08-20T13:00:00+00:00' → '22:00' — **매장 시간대 기준**(검토 P2-6).
  *

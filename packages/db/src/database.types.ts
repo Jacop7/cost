@@ -2351,6 +2351,33 @@ export type Database = {
           },
         ]
       }
+      user_preferences: {
+        Row: {
+          app_language: string | null
+          created_at: string
+          revision: number
+          source_locale: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          app_language?: string | null
+          created_at?: string
+          revision?: number
+          source_locale?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          app_language?: string | null
+          created_at?: string
+          revision?: number
+          source_locale?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       vendors: {
         Row: {
           hidden: boolean
@@ -2766,6 +2793,7 @@ export type Database = {
         Returns: Json
       }
       get_settings: { Args: { p_store: string }; Returns: Json }
+      get_user_preferences: { Args: never; Returns: Json }
       ingredient_detail: { Args: { p_ingredient: string }; Returns: Json }
       ingredient_list: {
         Args: { p_store: string }
@@ -2790,6 +2818,14 @@ export type Database = {
           p_currency: Database["public"]["Enums"]["international_currency_code"]
         }
         Returns: number
+      }
+      international_tax_app_state: { Args: { p_store: string }; Returns: Json }
+      international_tax_regions: {
+        Args: {
+          p_country: Database["public"]["Enums"]["international_country_code"]
+          p_store: string
+        }
+        Returns: Json
       }
       last_entity_change: {
         Args: { p_entity_id: string; p_entity_type: string; p_store: string }
@@ -2984,6 +3020,10 @@ export type Database = {
       recipe_shortages: { Args: { p_store: string }; Returns: Json }
       recipe_snapshot_entry: { Args: { p_recipe: string }; Returns: Json }
       recipe_tax: { Args: { p_recipe: string }; Returns: number }
+      recipe_tax_app_state: {
+        Args: { p_recipe: string; p_store: string }
+        Returns: Json
+      }
       recipe_tax_items: { Args: { p_recipe: string }; Returns: Json }
       recompute_recipe: {
         Args: {
@@ -3088,12 +3128,20 @@ export type Database = {
         Args: { p_from: string; p_store: string; p_to: string }
         Returns: Json
       }
+      sales_tax_app_detail: {
+        Args: { p_from: string; p_store: string; p_to: string }
+        Returns: Json
+      }
       sales_tax_breakdown: {
         Args: { p_from: string; p_store: string; p_to: string }
         Returns: Json
       }
       sales_waste_breakdown: {
         Args: { p_from: string; p_store: string; p_to: string }
+        Returns: Json
+      }
+      save_app_language: {
+        Args: { p_base_revision: number; p_language: string }
         Returns: Json
       }
       save_category: {
