@@ -889,7 +889,15 @@ export type Database = {
           store_id?: string
           tax_profile_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "international_tax_migration_audits_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: true
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       inventory_events: {
         Row: {
