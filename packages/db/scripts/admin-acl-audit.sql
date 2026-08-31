@@ -124,7 +124,8 @@ with ledger(name) as (values
   ('business_day_revisions'), ('business_state_transitions'), ('entity_change_events'),
   ('price_trends'), ('profit_trends'),
   ('daily_sales_item_tax_snapshots'),
-  ('daily_sales_item_tax_component_snapshots'), ('sales_tax_events')
+  ('daily_sales_item_tax_component_snapshots'), ('sales_tax_events'),
+  ('international_tax_migration_audits')
 )
 select 'ledger_write_paths' || '|' || count(*) || '|expected=0'
   from ledger l join pg_class c on c.oid = to_regclass('public.' || l.name)

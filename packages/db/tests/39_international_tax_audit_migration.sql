@@ -48,21 +48,48 @@ select pg_temp.ok('이관 감사 원본은 앱·서비스·RPC 실행 역할에 
   and not has_table_privilege('service_role','international_tax_migration_audits','SELECT')
   and not has_table_privilege('margincook_rpc_executor','international_tax_migration_audits','SELECT'));
 
+select pg_temp.ok('세금 프로필 파생 조회도 capability 전에는 앱·서비스 역할에 닫혀 있다',
+  not has_table_privilege('authenticated','store_tax_profile_contract','SELECT')
+  and not has_table_privilege('anon','store_tax_profile_contract','SELECT')
+  and not has_table_privilege('service_role','store_tax_profile_contract','SELECT'));
+
 do $audit_immutable$
-declare v_audit uuid;
+declare
+  v_owner uuid;
+  v_store uuid;
+  v_audit uuid;
 begin
+  v_owner := pg_temp.new_owner();
+  perform pg_temp.as_owner(v_owner);
+  v_store := (create_store('이관 감사 삭제 시험', 'Asia/Seoul')->>'store_id')::uuid;
+  set local role postgres;
   insert into international_tax_migration_audits(
     store_id,source_tax_items,source_recipe_mismatch_count,source_daily_sales_count,
     source_sales_item_count,source_menu_tax_total,source_etc_revenue_total,source_etc_tax_total,
     decision,reason_codes
   ) values (
-    gen_random_uuid(),'[]',0,0,0,0,0,0,'manual_review_required',array['test_fixture']
+    v_store,'[]',0,0,0,0,0,0,'manual_review_required',array['settings_missing']
   ) returning id into v_audit;
   perform pg_temp.raises('소유자도 이관 감사 행을 수정할 수 없다',
     format('update international_tax_migration_audits set source_etc_tax_total=1 where id=%L', v_audit),
     '42501');
+  perform pg_temp.raises('소유자도 이관 감사 행을 직접 지울 수 없다',
+    format('delete from international_tax_migration_audits where id=%L', v_audit),
+    '42501');
   perform pg_temp.raises('소유자도 이관 감사 원본을 비울 수 없다',
     'truncate international_tax_migration_audits', '42501');
+
+  perform pg_temp.as_owner(v_owner);
+  perform archive_my_store(v_store, '이관 감사 수명주기 시험');
+  set local role service_role;
+  perform schedule_store_purge(
+    v_store, clock_timestamp(), '운영책임자',
+    'INTL-1C-AUDIT-PURGE-APPROVAL', '보존 기간 종료');
+  perform purge_archived_store(v_store, 'INTL-1C-AUDIT-PURGE-BACKUP');
+  set local role postgres;
+  perform pg_temp.ok('승인·백업을 확인한 매장 물리 삭제는 이관 감사도 함께 지운다',
+    not exists (select 1 from international_tax_migration_audits where store_id = v_store));
+  perform pg_temp.as_owner(pg_temp.owner());
 end
 $audit_immutable$;
 

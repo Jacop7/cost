@@ -124,14 +124,15 @@ select pg_temp.raises('my_store_ids 직접 호출 거부',
 
 -- ── 4. 원장·확정값 표는 직접 쓰기 권한이 전부 닫혀 있다 ────────────────────
 
-select pg_temp.eq('원장·확정값 13개 × 쓰기 4종의 앱 롤 권한은 0개다', (
+select pg_temp.eq('원장·확정값 14개 × 쓰기 4종의 앱 롤 권한은 0개다', (
   with ledger(name) as (values
     ('inventory_events'), ('inventory_states'), ('business_days'),
     ('daily_sales'), ('daily_sales_items'), ('business_day_revisions'),
     ('business_state_transitions'), ('entity_change_events'),
     ('price_trends'), ('profit_trends'),
     ('daily_sales_item_tax_snapshots'),
-    ('daily_sales_item_tax_component_snapshots'), ('sales_tax_events')
+    ('daily_sales_item_tax_component_snapshots'), ('sales_tax_events'),
+    ('international_tax_migration_audits')
   )
   select count(*) from ledger
   cross join (values ('INSERT'), ('UPDATE'), ('DELETE'), ('TRUNCATE')) p(privilege_name)

@@ -101,7 +101,7 @@ comment on view public.store_tax_profile_contract is
 
 create table public.international_tax_migration_audits (
   id                         uuid primary key default gen_random_uuid(),
-  store_id                   uuid not null unique,
+  store_id                   uuid not null unique references public.stores(id) on delete cascade,
   audited_at                 timestamptz not null default clock_timestamp(),
   source_locale              text,
   source_currency            text,
@@ -122,6 +122,12 @@ create table public.international_tax_migration_audits (
   legacy_calculation_version public.international_tax_calculation_version not null
     default 'legacy_effective_rate_v1',
   check (jsonb_typeof(source_tax_items) = 'array'),
+  check (reason_codes <@ array[
+    'settings_missing', 'store_archived', 'locale_not_ko',
+    'currency_contract_not_krw', 'price_basis_not_inclusive',
+    'tax_item_count_not_one', 'standard_vat_not_exact',
+    'recipe_tax_mismatch', 'profile_already_exists'
+  ]::text[]),
   check ((decision = 'auto_profile_created'
           and cardinality(reason_codes) = 0
           and future_effective_from is not null
@@ -144,6 +150,24 @@ language plpgsql
 set search_path = public
 as $$
 begin
+  if tg_op = 'TRUNCATE' then
+    raise exception '국제 세금 이관 감사 기록은 비울 수 없어요'
+      using errcode = '42501', detail = 'INTERNATIONAL_TAX_MIGRATION_AUDIT_IMMUTABLE';
+  end if;
+  if tg_op = 'DELETE'
+     and current_setting('margincook.store_purge_id', true) = old.store_id::text then
+    if exists (
+      select 1 from public.store_lifecycle_events e
+       where e.store_id = old.store_id
+         and e.event_type = 'physical_purge'
+         and coalesce(btrim(e.approval_reference), '') <> ''
+         and coalesce(btrim(e.backup_reference), '') <> ''
+    ) then
+      return old;
+    end if;
+    raise exception '승인·백업 감사 없는 매장 물리 삭제는 국제 세금 이관 감사를 지울 수 없어요'
+      using errcode = '42501', detail = 'STORE_PURGE_AUDIT_REQUIRED';
+  end if;
   raise exception '국제 세금 이관 감사 기록은 수정하거나 지울 수 없어요'
     using errcode = '42501', detail = 'INTERNATIONAL_TAX_MIGRATION_AUDIT_IMMUTABLE';
 end;
@@ -158,7 +182,7 @@ revoke all on function public.reject_international_tax_migration_audit_mutation(
   from public, anon, authenticated, service_role, margincook_rpc_executor;
 
 comment on table public.international_tax_migration_audits is
-  'INTL-1C 읽기 전용 이관 판정. 현행 설정·판매/기타매출 합계를 기록하며 모호한 세율을 역산하지 않는다.';
+  'INTL-1C 읽기 전용 이관 판정. 현행 설정·판매/기타매출 합계를 기록하며 모호한 세율을 역산하지 않는다. 승인·백업을 확인한 매장 물리 삭제에서만 함께 제거한다.';
 comment on column public.international_tax_migration_audits.source_menu_tax_total is
   '기존 daily_sales_items.unit_tax×채널 수량 합. 구성 항목으로 역산하지 않는 legacy 합계다.';
 comment on column public.international_tax_migration_audits.source_etc_tax_total is
@@ -194,7 +218,7 @@ declare
   v_single_item jsonb;
 begin
   for s in
-    select stores.id store_id, st.locale, st.currency, st.money_digits,
+    select stores.id store_id, stores.archived_at, st.locale, st.currency, st.money_digits,
            st.tax_mode, coalesce(st.tax_items, '[]'::jsonb) tax_items,
            st.store_id is not null settings_present
       from public.stores
@@ -205,6 +229,7 @@ begin
     v_single_item := case when jsonb_array_length(s.tax_items) = 1 then s.tax_items->0 end;
 
     if not s.settings_present then v_reasons := v_reasons || array['settings_missing']; end if;
+    if s.archived_at is not null then v_reasons := v_reasons || array['store_archived']; end if;
     if s.locale is distinct from 'ko' then v_reasons := v_reasons || array['locale_not_ko']; end if;
     if s.currency is distinct from 'KRW' or s.money_digits is distinct from 0 then
       v_reasons := v_reasons || array['currency_contract_not_krw'];
@@ -246,7 +271,9 @@ begin
       from public.daily_sales_items i where i.store_id = s.store_id;
 
     if cardinality(v_reasons) = 0 then
-      v_effective := public.store_local_date(s.store_id);
+      -- 오늘 아직 장부가 없어도 오늘을 선택하지 않는다. 이관 뒤 같은 날 열리는 영업일이
+      -- legacy와 국제 계산 구간에 동시에 걸리지 않도록 최소 내일부터 빈 날짜를 찾는다.
+      v_effective := public.store_local_date(s.store_id) + 1;
       while exists (
         select 1 from public.business_days d
          where d.store_id = s.store_id and d.business_date = v_effective
@@ -376,6 +403,31 @@ begin
   ) then
     raise exception '0180: 자동 이관 프로필은 법정 표면 세율 10의 기본세 하나여야 합니다';
   end if;
+  if exists (
+    select 1 from public.international_tax_migration_audits a
+     where a.decision = 'auto_profile_created'
+       and (
+         (select count(*) from public.store_tax_components c
+           where c.tax_profile_id = a.tax_profile_id
+             and c.kind = 'primary' and c.name = '부가세' and c.rate_pct = 10
+             and c.jurisdiction_level = 'national'
+             and c.calculation_basis = 'primary_tax_exclusive'
+             and c.applies_to_treatments = array['taxable'::public.tax_treatment]) <> 1
+         or (select count(*) from public.tax_category_catalog c
+              where c.tax_profile_id = a.tax_profile_id
+                and (c.code, c.treatment) in (
+                  ('standard', 'taxable'::public.tax_treatment),
+                  ('zero_rated', 'zero_rated'::public.tax_treatment),
+                  ('exempt', 'exempt'::public.tax_treatment))) <> 3
+         or (select count(*) from public.channel_tax_remittance r
+              join public.store_tax_components c on c.id = r.tax_component_id
+             where c.tax_profile_id = a.tax_profile_id
+               and r.remittance_owner = 'merchant'
+               and r.sales_channel_code in ('hall','delivery','takeout')) <> 3
+       )
+  ) then
+    raise exception '0180: 자동 이관 프로필의 기본세·과세 분류·채널 납부 계약이 완결되지 않았습니다';
+  end if;
   if exists (select 1 from public.daily_sales_item_tax_snapshots)
      or exists (select 1 from public.daily_sales_item_tax_component_snapshots)
      or exists (select 1 from public.sales_tax_events) then
@@ -389,6 +441,11 @@ begin
      or has_table_privilege('anon','public.international_tax_migration_audits','SELECT')
      or has_table_privilege('service_role','public.international_tax_migration_audits','SELECT') then
     raise exception '0180: 이관 감사 원본이 앱·서비스 롤에 열렸습니다';
+  end if;
+  if has_table_privilege('authenticated','public.store_tax_profile_contract','SELECT')
+     or has_table_privilege('anon','public.store_tax_profile_contract','SELECT')
+     or has_table_privilege('service_role','public.store_tax_profile_contract','SELECT') then
+    raise exception '0180: 세금 프로필 파생 조회가 앱·서비스 롤에 열렸습니다';
   end if;
   if (v_cap#>>'{international_tax,read_enabled}')::boolean
      or (v_cap#>>'{international_tax,write_enabled}')::boolean then

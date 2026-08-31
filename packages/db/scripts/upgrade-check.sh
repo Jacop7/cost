@@ -735,10 +735,17 @@ psql_d "$D" <<'EOF' >/dev/null
 insert into auth.users(id) values ('00000000-0000-0000-0000-0000000000c9');
 insert into stores(id,owner_id,name)
 values ('00000000-0000-0000-0000-0000000000d9','00000000-0000-0000-0000-0000000000c9','수동 확인 매장');
+insert into auth.users(id) values ('00000000-0000-0000-0000-0000000000c8');
+insert into stores(id,owner_id,name)
+values ('00000000-0000-0000-0000-0000000000d8','00000000-0000-0000-0000-0000000000c8','오늘 미개장 명확 매장');
 update settings
    set locale='en-US', currency='USD', money_digits=2, tax_mode='separate',
        tax_items='[{"name":"City fee","rate":7}]'::jsonb
  where store_id='00000000-0000-0000-0000-0000000000d9';
+update settings
+   set locale='ko', currency='KRW', money_digits=0, tax_mode='included',
+       tax_items='[{"name":"부가세","rate":9.0909090909}]'::jsonb
+ where store_id='00000000-0000-0000-0000-0000000000d8';
 EOF
 before16=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c "
   select concat_ws('|',
@@ -762,10 +769,35 @@ else
       (select count(*) from international_tax_migration_audits),
       (select count(*) from international_tax_migration_audits where decision='auto_profile_created'),
       (select count(*) from international_tax_migration_audits where decision='manual_review_required'),
+      (select future_effective_from = store_local_date(store_id) + 1
+         from international_tax_migration_audits
+        where store_id='00000000-0000-0000-0000-0000000000d8'),
       (select reason_codes @> array['locale_not_ko','currency_contract_not_krw','price_basis_not_inclusive','standard_vat_not_exact']
          from international_tax_migration_audits where store_id='00000000-0000-0000-0000-0000000000d9'),
       (select count(*) from store_market_profiles),
       (select count(*) from tax_region_catalog where country_code in ('US','CA')),
+      not exists (
+        select 1 from international_tax_migration_audits a
+         where a.decision='auto_profile_created' and (
+           (select count(*) from store_tax_components c
+             where c.tax_profile_id=a.tax_profile_id and c.kind='primary' and c.name='부가세'
+               and c.rate_pct=10 and c.jurisdiction_level='national'
+               and c.calculation_basis='primary_tax_exclusive'
+               and c.applies_to_treatments=array['taxable'::tax_treatment]) <> 1
+           or (select count(*) from tax_category_catalog c
+                where c.tax_profile_id=a.tax_profile_id
+                  and (c.code,c.treatment) in (
+                    ('standard','taxable'::tax_treatment),
+                    ('zero_rated','zero_rated'::tax_treatment),
+                    ('exempt','exempt'::tax_treatment))) <> 3
+           or (select count(*) from channel_tax_remittance r
+                join store_tax_components c on c.id=r.tax_component_id
+               where c.tax_profile_id=a.tax_profile_id
+                 and r.remittance_owner='merchant'
+                 and r.sales_channel_code in ('hall','delivery','takeout')) <> 3)),
+      not has_table_privilege('authenticated','store_tax_profile_contract','SELECT')
+        and not has_table_privilege('anon','store_tax_profile_contract','SELECT')
+        and not has_table_privilege('service_role','store_tax_profile_contract','SELECT'),
       (select count(*) from daily_sales_item_tax_snapshots),
       (select count(*) from daily_sales_item_tax_component_snapshots),
       (select count(*) from sales_tax_events),
@@ -773,8 +805,8 @@ else
       app_capabilities()#>>'{international_tax,read_enabled}',
       app_capabilities()#>>'{international_tax,write_enabled}');")
   if [ "$before16" = "$after16" ] \
-     && [ "$state16" = "2|1|1|t|1|64|0|0|0|t|false|false" ]; then
-    say "   ok   현행 설정·세액 불변 · 명확 1/수동 1 · 관할 64 · 상세 역산 0 · capability 비활성"
+     && [ "$state16" = "3|2|1|t|t|2|64|t|t|0|0|0|t|false|false" ]; then
+    say "   ok   현행 설정·세액 불변 · 명확 2/수동 1 · 내일부터 적용 · 자동 하위 계약 · 관할 64 · 상세 역산 0 · capability 비활성"
   else
     say "   FAIL 원본 전=$before16 후=$after16 이관 상태=$state16"
     fail=1

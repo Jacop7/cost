@@ -119,13 +119,17 @@ dbDescribe(`app_capabilities(DB=${DB ?? '없음'}) ↔ TypeScript 기준선`, ()
         'countryCode', country_code,
         'regionCode', region_code,
         'name', name,
-        'jurisdictionLevel', jurisdiction_level
+        'jurisdictionLevel', jurisdiction_level,
+        'parentRegionCode', parent_region_code,
+        'active', active
       ) order by country_code::text, region_code), '[]'::jsonb)
         from public.tax_region_catalog
        where country_code in ('US', 'CA')
     `);
-    const expected = [...LAUNCH_TAX_REGIONS].sort((a, b) =>
-      a.countryCode.localeCompare(b.countryCode) || a.regionCode.localeCompare(b.regionCode));
+    const expected = [...LAUNCH_TAX_REGIONS]
+      .map((region) => ({ ...region, parentRegionCode: null, active: true }))
+      .sort((a, b) =>
+        a.countryCode.localeCompare(b.countryCode) || a.regionCode.localeCompare(b.regionCode));
     expect(raw).toEqual(expected);
   });
 });
