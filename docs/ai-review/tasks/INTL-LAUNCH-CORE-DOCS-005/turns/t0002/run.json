@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "INTL-LAUNCH-CORE-DOCS-005",
+  "sequence": "t0002",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-08-31T02:02:33.620Z",
+  "turn_id": "turn-h001",
+  "turn_type": "HUMAN_DECISION",
+  "role": "HUMAN",
+  "task_sha256": "8f0efa186fb8133ae9cea889ca358ac776e867984acccd7c0382bd59798ad3f0",
+  "runner_sha256": "80dae1d06c89af056e9d8c210b571e978ee534fc128a5fe3b9867610b5ae447b",
+  "previous_manual_run_sha256": "4f576c4f445875397f6ac732b29993c10df5d5e7e7a0c45759a0c827fb6ee3d3",
+  "collaboration_before_sha256": "3f53177fb8f0c218720f83ee1eab3c1759c2b533c0fd9facc93d69c725c6b9c0",
+  "collaboration_before_bytes": 1843,
+  "collaboration_entry_sha256": "d617a23777999fd0f106d5743b847a66fb400f257ff42f24ee05cb870cd5f5f8",
+  "collaboration_entry_bytes": 717,
+  "collaboration_after_sha256": "9b1cb3e1135732bfc2524bc888a39498cf7f1ce8fcac8adb04ec4855eec07b2c",
+  "collaboration_after_bytes": 2560
+}
