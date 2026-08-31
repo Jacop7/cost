@@ -10,7 +10,8 @@
 - **현재 상태**: 개정 4판. 개정 3판의 배포·복구 원칙을 유지하면서 국제 출시 `INTL-1`의
   확장→이관→전환→정리 순서와 구 앱 호환 게이트를 추가했다. 문서 개정 시작 기준 `main`은
   `803ac0a`, migration은 166개(최신 `0177`), DB 시험 파일은 39개다. 작업큐 기준 스테이징은
-  `0164~0174` 적용·ACL 실측까지 완료했고 production 적용은 확인되지 않았다.
+  `0164~0174` 적용과 SQL Editor 경로의 앱 ACL 감사까지 완료했다. 직접 접속 자격이 필요한
+  `admin-acl.sh --remote audit` 셸 경로는 대기 중이고 production 적용은 확인되지 않았다.
 
 ## 문서 책임
 
@@ -103,11 +104,13 @@
 
 ```text
 main                         항상 배포 가능한 기준
-└─ feat/* · fix/* · refactor/*   짧은 작업 브랜치
+└─ feat/* · fix/* · refactor/* · codex/*   짧은 작업 브랜치
 ```
 
 - 기능 브랜치는 `main`에서 만들고 완료 후 `main`으로 병합한다.
 - `docs/*`, `test/*`, `chore/*`도 실제 작업을 시작할 때만 만든다.
+- Codex가 만드는 짧은 작업 브랜치는 제품 변경 종류와 무관하게 `codex/<기능영역>-<변경목적>`을
+  사용할 수 있다. `codex/`는 장기 통합 브랜치가 아니라 작업 주체를 표시하는 허용 접두어다.
 - 별도 스테이징은 Git 브랜치가 아니라 **독립 Supabase 환경**으로 먼저 도입할 수 있다.
 - `dev`는 여러 기능을 다음 배포 묶음으로 장기간 통합해야 하고, 그 브랜치만 보는 지속 스테이징이
   실제로 준비됐을 때만 검토한다.
@@ -334,10 +337,25 @@ CLI 출력 원문 대신 SHA-256과 migration 파일명을 저장하며 비밀�
 `admin-acl.sh --remote audit`과 회귀시험은 P1-1에서 구현했다. 이 모드는 `supabase_admin`으로
 전환하거나 영구 객체를 남기지 않고 앱 롤 공격면을 판정하며, 프로브는 같은 트랜잭션에서
 rollback한다. 정확한 facade RPC 시그니처 외 authenticated 실행 권한, RLS 비활성 앱 표, 원장
-직접 쓰기 경로도 실패로 판정한다. 2026-08-28 개발 DB 실측은 RLS 비활성 앱 표 `0개`, 원장 직접
-쓰기 조합 `32개`, 미승인 함수 `87개`였다. 뒤의 두 항목은 `P0-5`에서 권한을 줄여야 할 배포 차단
-사유다. 접근 가능한 호스티드 프로젝트가 아직 없어 **실제 원격 실행은 미확인**이다.
-첫 원격 배포의 ACL 단계는 아래 순서의 실측 결과가 없으면 중단한다.
+직접 쓰기 경로도 실패로 판정한다. 2026-08-28 개발 DB 최초 실측은 RLS 비활성 앱 표 `0개`, 원장
+직접 쓰기 조합 `32개`, 미승인 함수 `87개`였고, P0-5가 뒤의 두 공격면을 폐쇄했다.
+
+2026-08-29 스테이징 `cvfvmpzcldyqurcrappu`에는 `0164~0174`를 배포 가드로 적용했고, 저장소 감사
+SQL을 SQL Editor에서 트랜잭션·rollback 경계로 실행해 `facade_rpc_missing=0`,
+`unapproved_authenticated_rpc=0`, `rls_disabled_app_tables=0`, `ledger_write_paths=0`을 확인했다.
+배포 증거는
+[`2026-08-29T12-36-00-620Z-staging-f165e23.json`](./deployments/2026-08-29T12-36-00-620Z-staging-f165e23.json),
+ACL 증거는
+[`2026-08-29T12-51-42-staging-acl-audit.json`](./deployments/2026-08-29T12-51-42-staging-acl-audit.json)에
+고정했다. 이는 스테이징 앱 공격면의 SQL 실측 완료를 뜻하지만 `supabase_admin ACL 통과`나 셸 래퍼
+검증 완료를 뜻하지 않는다. 직접 libpq 자격이 필요한 `admin-acl.sh --remote audit` 셸 경로는
+[작업큐 P1-1](./작업큐.md#p1-1-원격-acl-읽기-전용-감사)에 대기로 남고, production은 접근·적용하지
+않았다. 따라서 production 배포의 ACL 단계는 아래 순서의 실측 결과가 없으면 중단한다.
+
+`ARCHITECTURE.md`의 옛 "스테이징 적용 이력 미확인" 기준선은 이 문서에서 소급 수정하지 않는다.
+[작업큐 `INTL-DOC-SYNC-1`](./작업큐.md#intl-doc-sync-1-국제-출시-운영-기준선-동기화)에 문서 전용
+동기화 과업으로 등록했으며, 위 두 배포 증거를 근거로 스테이징 SQL 실측과 production 미확인,
+원격 셸 경로 대기를 분리해 반영한다.
 
 구현 후 첫 원격 연결에서는 다음 순서로 확인한다.
 
@@ -532,6 +550,10 @@ Queue에 저장된 메시지는 삭제하지 않고 원인을 고친 뒤 재처�
 
 예: `feat/supplier-order-submit`, `fix/tax-rounding`, `refactor/domain-boundaries`,
 `docs/server-evolution`, `test/webhook-idempotency`.
+
+허용 작업유형은 `feat`·`fix`·`refactor`·`docs`·`test`·`chore`와 Codex가 만드는 단명 작업의
+`codex`다. `codex/international-launch`와 `codex/international-tax-legacy-cleanup`도 이 규칙을
+따르며 `/` 뒤 slug는 아래 길이·표기 규칙을 그대로 적용한다.
 
 - `/` 뒤 2~4개 단어, 20~40자 권장
 - 화면 ID와 전체 경로를 브랜치명에 넣지 않음

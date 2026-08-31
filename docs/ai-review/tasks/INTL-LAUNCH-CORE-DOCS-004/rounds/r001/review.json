@@ -1,0 +1,349 @@
+{
+  "schema_version": "2.0",
+  "task_id": "INTL-LAUNCH-CORE-DOCS-004",
+  "reviewer_role": "FABLE-ARCH",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "803ac0ae1f79ec3310ca4b091989ef0d4f287572",
+  "target_commit_sha": "99cd21f272d08465e91b685b80989a04a0c5d6af",
+  "target_tree_oid": "11cc50cce1dd33cc18ea7f836713d0582857e02c",
+  "agents_blob_oid": "9264927700bd7cfcb60460a8279ad72625b505df",
+  "agents_sha256": "bfb2e19944917b86251e998caf929aaac0b12051168c5ad3f42d209f9c04df16",
+  "task_sha256": "65c017e5a4502d9d2c6cec5d752ac0ff9b674ff7d2db3970be3b8b68789b82cd",
+  "collaboration_sha256": "9285a918882cf1a82c27a1724933e9476bb9957d095631f60ef72f281ac94824",
+  "input_files_sha256": "9060e51e12ff45d9cf1f18b82795968e915d0d2122ba06770692cf8e7904ce1e",
+  "schema_sha256": "7488cbf99f6234bd4bfbc14ecfcbb9dd9dcaa72439df1991337566cecbed4b35",
+  "runner_sha256": "80dae1d06c89af056e9d8c210b571e978ee534fc128a5fe3b9867610b5ae447b",
+  "verdict": "CHANGES_REQUIRED",
+  "summary": "INTL-LAUNCH-CORE-DOCS-004 초기 FABLE-ARCH 검수 결과 CHANGES_REQUIRED. 세 기획안은 한국·미국·영국·호주·캐나다 5개국과 한국어·영어 출시 범위, DB RPC 계산 권위, 0090 현재 계약과 INTL-1 향후 계약의 구분, 전진 migration·명시적 전환, 1차 서버 확장 보류와 향후 분리 조건, 세무 자동 판정·신고 대행 부인 경계를 서로 모순 없이 유지한다(INTL-CORE-001·002·004·006·007·008 충족). §3.4 공통 공식은 M=1+r0+Σ(ri×bi) 구조로 세금 포함·미포함 순방향·역산이 내부 정합하며, 추가세 간 중첩을 배제해 이중 과세를 막고, §4.3 판매 시점 스냅샷과 §5.3 revision·무변경 계약이 시점 보존 불변식을 지킨다. 다만 (1) Major: 브랜치 문서 머리말과 서버 문서 채택 상태의 \"스테이징 0164~0174 적용·ACL 실측·P0-5 폐쇄 완료\" 선언이 같은 브랜치 문서 §4.5의 \"접근 가능한 호스티드 프로젝트 없음·원격 실행 미확인·P0-5 배포 차단 사유\" 서술, 서버 문서의 \"원격 셸 감사 자격 대기·호스티드 audit 실측 별도 필요\" 서술, ARCHITECTURE.md의 \"스테이징 적용 이력 미확인\"과 모순돼 배포·복구 단일 출처의 게이트 판단 기준이 갈린다(INTL-CORE-005 위험). (2) Minor: 과세 상태 zero_rated·exempt가 §3.4 공식과 어떻게 결합하는지(유효 r0 치환, bi·M 변화, 추가세 부과 여부)와 과세 상태의 소유 단위가 미정의이고 §10 구현 전 확정 게이트에도 없다. (3) Minor: codex/international-launch·codex/international-tax-legacy-cleanup 브랜치명이 브랜치 문서 §2.2·§8.1 명명 체계에 없는 접두어라 같은 문서 안에서 규칙과 계획이 어긋난다. Improvement 2건: §5.1 현재 tax_of() 서술의 ÷100 누락(요율은 퍼센트 포인트), price_basis의 시장·세금 프로필 이중 기재로 인한 소유 불명. 산출물 3종에 앵커 기반 proposed_edits 8건(모순 지점 코멘트 2건, 공식·게이트·명명·서술 보강 6건)을 제안한다. PASS·VERIFIED가 외부 게이트를 닫지 않으며 gate_state는 OPEN으로 유지된다.",
+  "findings": [
+    {
+      "finding_id": "ARCH-INTL004-OPS-STATUS-CONTRADICTION",
+      "severity": "Major",
+      "review_state": "OPEN",
+      "category": "OPERATIONS",
+      "requirement_or_invariant_ids": [
+        "INTL-CORE-005",
+        "ARCHITECTURE:current-vs-planned-contract",
+        "AGENTS:forward-only-migrations"
+      ],
+      "evidence": [
+        {
+          "path": "docs/브랜치-DB-운영-기획안.md",
+          "line_start": 10,
+          "line_end": 13,
+          "observation": "개정 4판 머리말이 작업큐 기준 스테이징 `0164~0174` 적용과 ACL 실측 완료를 선언한다."
+        },
+        {
+          "path": "docs/브랜치-DB-운영-기획안.md",
+          "line_start": 337,
+          "line_end": 340,
+          "observation": "§4.5 본문은 P0-5 두 공격면(원장 직접 쓰기 32개·미승인 함수 87개)을 아직 줄여야 할 배포 차단 사유로 서술하고, 접근 가능한 호스티드 프로젝트가 없어 실제 원격 실행이 미확인이라고 말해 머리말과 정면으로 모순된다."
+        },
+        {
+          "path": "docs/서버-확장-아키텍처-기획안.md",
+          "line_start": 27,
+          "line_end": 33,
+          "observation": "서버 문서 채택 상태는 스테이징 0164~0174 적용·ACL 실측 완료와 P0-5 공격면 폐쇄·main·스테이징 검증 완료를 선언하면서, 같은 문단에서 원격 ACL 감사 도구가 원격 셸 감사 자격을 기다린다고 서술한다."
+        },
+        {
+          "path": "docs/서버-확장-아키텍처-기획안.md",
+          "line_start": 36,
+          "line_end": 38,
+          "observation": "같은 절이 P1-1 도구 구현은 원격 ACL 적용 완료가 아니며 호스티드 프로젝트 audit 실측을 별도로 남겨야 한다고 말해 위 완료 선언과 충돌한다."
+        },
+        {
+          "path": "ARCHITECTURE.md",
+          "line_start": 153,
+          "line_end": 155,
+          "observation": "참조 문서(기준일 2026-08-29, 기준 migration 0173)는 운영·스테이징 Supabase의 링크·적용 이력이 미확인이라고 서술해 개정판의 스테이징 적용 선언과 어긋난다. 참조 문서 동기화는 별도 과업이 필요하다."
+        }
+      ],
+      "impact": "배포·복구의 단일 출처인 브랜치 문서가 같은 판 안에서 스테이징 적용·ACL 실측·P0-5 상태를 상반되게 서술하므로, INTL-1 schema 변경 배포 시 §5.3·§5.4 게이트(원격 ACL 분기, 배포 차단 사유)를 어느 서술 기준으로 판정할지 갈린다. 오래된 서술을 믿으면 완료된 게이트를 다시 막고, 머리말만 믿으면 §4.5가 요구하는 원격 audit 실측 없이 배포를 진행할 수 있다. \"확인할 수 없으면 미확인으로 기록한다\"는 §14-15 자체 원칙과도 충돌한다.",
+      "acceptance_criteria": [
+        "브랜치 문서 머리말·§4.5와 서버 문서 채택 상태가 스테이징 적용 범위, ACL 실측 수행 경로, P0-5 완료·잔여 범위, 원격 audit 잔여 확인 항목을 하나의 사실로 서술한다.",
+        "확인되지 않은 상태는 모두 '미확인'으로 표기하고 작업큐·배포 기록의 실측 근거를 링크한다.",
+        "ARCHITECTURE.md 기준선(0173·스테이징 미확인)과의 동기화가 별도 과업으로 등록된다."
+      ],
+      "required_tests": [
+        "세 산출물과 작업큐·배포 기록의 스테이징 적용·ACL·P0-5 상태 서술 전수 대조 검토"
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    },
+    {
+      "finding_id": "ARCH-INTL004-TAX-TREATMENT-FORMULA",
+      "severity": "Minor",
+      "review_state": "OPEN",
+      "category": "ARCHITECTURE",
+      "requirement_or_invariant_ids": [
+        "INTL-CORE-003",
+        "AGENTS:server-calculation-authority",
+        "AGENTS:point-in-time-preservation"
+      ],
+      "evidence": [
+        {
+          "path": "docs/국가-통화-세금-국제출시-기획안.md",
+          "line_start": 99,
+          "line_end": 107,
+          "observation": "§3.2는 zero_rated·exempt의 계산 금액을 0원으로 정의하지만 어느 세금(기본세만인지 추가세 포함인지)에 적용되는지 명시하지 않는다."
+        },
+        {
+          "path": "docs/국가-통화-세금-국제출시-기획안.md",
+          "line_start": 119,
+          "line_end": 148,
+          "observation": "§3.4 공통 공식은 r0·bi·M을 정의하지만 treatment가 유효 r0를 0으로 치환하는지, 그때 bi(=1+r0)와 포함가 역산 분모 M이 어떻게 변하는지 정의하지 않는다. exempt 매장의 포함가 역산이 미정의 상태다."
+        },
+        {
+          "path": "docs/국가-통화-세금-국제출시-기획안.md",
+          "line_start": 324,
+          "line_end": 333,
+          "observation": "§10 구현 전 확정 게이트 여섯 항목에 과세 상태와 공식의 결합·과세 상태 소유 단위(매장·메뉴·채널)가 없다."
+        },
+        {
+          "path": "docs/국가-통화-세금-국제출시-기획안.md",
+          "line_start": 285,
+          "line_end": 287,
+          "observation": "검증 행렬은 일반 과세·0% 과세·면세 조합 시험을 요구하지만 대응하는 공식 계약이 본문에 없어 시험 기준이 비어 있다."
+        }
+      ],
+      "impact": "SQL↔core 검산의 기준이 되는 공식 계약에 과세 상태 분기가 빠져 있어, INTL-1 구현 시 exempt·zero_rated 매장의 포함가 역산(N=결제액÷M)과 기본세 포함 기준 추가세(bi)가 구현자 재량으로 갈릴 수 있다. 스냅샷이 treatment를 당시 값으로 보존하더라도 확정 금액의 계산 규칙이 문서에 없으면 검증 행렬의 과세 상태 시험을 작성할 수 없다.",
+      "acceptance_criteria": [
+        "§3.4에 과세 상태별 유효 r0 치환 규칙과 그때의 bi·M 변화가 명시된다.",
+        "과세 상태가 추가세 부과 여부에 미치는 영향과 과세 상태의 소유 단위(매장·메뉴·채널)가 §10 확정 게이트 항목으로 등록된다.",
+        "검증 행렬의 일반 과세·0% 과세·면세 조합이 명시된 공식과 1:1로 대응한다."
+      ],
+      "required_tests": [
+        "INTL-1 구현 시 zero_rated·exempt × 포함·미포함 가격 × 추가세 기준(포함·미포함) 조합의 SQL↔core 검산 시험"
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    },
+    {
+      "finding_id": "ARCH-INTL004-BRANCH-NAMING",
+      "severity": "Minor",
+      "review_state": "OPEN",
+      "category": "POLICY",
+      "requirement_or_invariant_ids": [
+        "INTL-CORE-005"
+      ],
+      "evidence": [
+        {
+          "path": "docs/국가-통화-세금-국제출시-기획안.md",
+          "line_start": 10,
+          "line_end": 10,
+          "observation": "구현 브랜치 후보를 `codex/international-launch`로 지정한다."
+        },
+        {
+          "path": "docs/국가-통화-세금-국제출시-기획안.md",
+          "line_start": 300,
+          "line_end": 300,
+          "observation": "§8 배포 단위도 같은 `codex/international-launch` 브랜치를 사용한다."
+        },
+        {
+          "path": "docs/브랜치-DB-운영-기획안.md",
+          "line_start": 211,
+          "line_end": 249,
+          "observation": "§3.3 INTL-1의 planned_branch가 `codex/international-launch`이고 정리 작업은 `codex/international-tax-legacy-cleanup`이다."
+        },
+        {
+          "path": "docs/브랜치-DB-운영-기획안.md",
+          "line_start": 529,
+          "line_end": 534,
+          "observation": "§8.1 명명 규칙은 `<작업유형>/<기능영역>-<변경목적>`이며 예시는 feat/fix/refactor/docs/test 접두어뿐이고, §2.2도 feat·fix·refactor·docs·test·chore만 열거해 `codex/` 접두어의 근거가 없다."
+        }
+      ],
+      "impact": "배포·브랜치 운영의 단일 출처 문서가 정의한 명명 체계와 같은 문서의 INTL-1 계획 브랜치명이 어긋난다. 브랜치 생성·병합·정리 자동화나 후속 검수가 명명 규칙을 기준으로 판정하면 계획 브랜치가 규칙 위반으로 취급되거나, 반대로 규칙이 사문화된다.",
+      "acceptance_criteria": [
+        "§8.1(및 §2.2) 명명 규칙과 INTL-1 계획 브랜치명이 일치한다: `codex/` 접두어를 허용 작업유형으로 등록하거나 두 브랜치명을 기존 규칙에 맞게 변경한다.",
+        "국제 출시 기획안과 브랜치 문서의 브랜치명 표기가 동일하게 유지된다."
+      ],
+      "required_tests": [
+        "두 산출물의 브랜치명 표기와 §8.1 규칙의 문자열 대조 검토"
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    },
+    {
+      "finding_id": "ARCH-INTL004-LEGACY-FORMULA-DESC",
+      "severity": "Improvement",
+      "review_state": "OPEN",
+      "category": "OTHER",
+      "requirement_or_invariant_ids": [
+        "INTL-CORE-004"
+      ],
+      "evidence": [
+        {
+          "path": "docs/국가-통화-세금-국제출시-기획안.md",
+          "line_start": 224,
+          "line_end": 226,
+          "observation": "§5.1이 현재 계약을 `판매가 × Σ(tax_items.rate)`로 서술해 ÷100이 빠져 있다."
+        },
+        {
+          "path": "AGENTS.md",
+          "line_start": 54,
+          "line_end": 55,
+          "observation": "권위 계약은 `판매가 × (Σ 매장 세금 항목 요율 ÷ 100)`이며 요율은 퍼센트 포인트다."
+        }
+      ],
+      "impact": "0090 현재 계약과 INTL-1 계약을 엄격히 구분하는 문서에서 현재 계약 서술이 부정확하면, 이관 감사(§5.2)나 검산 작성 시 요율 단위를 오독할 여지가 생긴다. 계산 권위 자체에는 영향이 없어 Improvement로 둔다.",
+      "acceptance_criteria": [
+        "§5.1의 현재 tax_of() 서술이 AGENTS.md·ARCHITECTURE.md의 '요율 ÷ 100(퍼센트 포인트)' 계약과 일치한다."
+      ],
+      "required_tests": [],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    },
+    {
+      "finding_id": "ARCH-INTL004-PRICE-BASIS-OWNER",
+      "severity": "Improvement",
+      "review_state": "OPEN",
+      "category": "ARCHITECTURE",
+      "requirement_or_invariant_ids": [
+        "INTL-CORE-002",
+        "INTL-CORE-003",
+        "AGENTS:settings-revision-noop"
+      ],
+      "evidence": [
+        {
+          "path": "docs/국가-통화-세금-국제출시-기획안.md",
+          "line_start": 166,
+          "line_end": 174,
+          "observation": "§4.1 시장 프로필이 price_basis를 포함한다."
+        },
+        {
+          "path": "docs/국가-통화-세금-국제출시-기획안.md",
+          "line_start": 181,
+          "line_end": 203,
+          "observation": "§4.2 세금 프로필도 price_basis를 포함하며 두 프로필 중 어느 쪽이 소유 원본인지, 다른 쪽이 파생인지 정의가 없다."
+        }
+      ],
+      "impact": "price_basis가 두 프로필에 중복 기재되면 revision이 각각 도는 두 계약에서 값이 갈릴 수 있고, 판매 스냅샷이 어느 쪽 값을 굳히는지 모호해진다. 개념 계약 단계이므로 Improvement로 두되 구현 전 소유를 한 곳으로 확정하는 편이 안전하다.",
+      "acceptance_criteria": [
+        "price_basis의 소유 프로필이 하나로 확정되고 다른 쪽은 파생·검증 값임이 §4에 명시된다."
+      ],
+      "required_tests": [],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    }
+  ],
+  "proposed_edits": [
+    {
+      "edit_id": "EDIT-OPS-STATUS-BRANCH-DOC",
+      "path": "docs/브랜치-DB-운영-기획안.md",
+      "anchor": "사유다. 접근 가능한 호스티드 프로젝트가 아직 없어 **실제 원격 실행은 미확인**이다.",
+      "operation": "COMMENT",
+      "proposed_text": "개정 4판 머리말은 작업큐 기준 스테이징 `0164~0174` 적용과 ACL 실측 완료를 선언하는데, 이 절은 P0-5 두 공격면을 아직 줄여야 할 배포 차단 사유로 두고 '접근 가능한 호스티드 프로젝트가 아직 없어 실제 원격 실행은 미확인'이라고 서술한다. 같은 판 안에서 두 서술이 모순된다. 작업큐·배포 기록의 실측 증거를 기준으로 어느 쪽이 현재 사실인지 확정하고, P0-5 상태(완료 여부·잔여 범위)와 스테이징 ACL 실측 수행 경로, 남은 원격 확인 항목을 이 절과 머리말에서 같은 값으로 갱신해 달라. 확인할 수 없는 항목은 §14-15 원칙대로 '미확인'으로 통일한다.",
+      "rationale": "배포 게이트의 단일 출처 문서 내부 모순을 실측 근거 기준으로 해소하기 위한 코멘트다. 어느 상태가 사실인지 스냅샷만으로 검증할 수 없어 특정 상태를 단정하는 대체 문안을 제안하지 않는다.",
+      "finding_ids": [
+        "ARCH-INTL004-OPS-STATUS-CONTRADICTION"
+      ]
+    },
+    {
+      "edit_id": "EDIT-OPS-STATUS-SERVER-DOC",
+      "path": "docs/서버-확장-아키텍처-기획안.md",
+      "anchor": "authenticated 함수 87개를 실측했다. P0-5가 뒤의 두 공격면을 폐쇄해 `main`·스테이징 검증을",
+      "operation": "COMMENT",
+      "proposed_text": "채택 상태 문단이 상충한다. 같은 절에서 '스테이징 0164~0174 적용·ACL 실측 완료'와 'P0-5 공격면 폐쇄·main·스테이징 검증 완료'를 선언하면서, 바로 위아래에서 '원격 셸 감사 자격을 기다린다', '호스티드 프로젝트에서 audit 실측을 별도로 남겨야 한다'고 서술한다. 스테이징 ACL 실측이 어떤 경로(원격 audit, 배포 가드, 기타)로 수행됐는지와 아직 남은 원격 확인 범위를 분리해 한 가지 사실로 기술해 달라. 짝 문서 §4.5의 '호스티드 프로젝트 없음' 서술과 ARCHITECTURE.md(기준일 2026-08-29, 스테이징 적용 이력 미확인)의 동기화는 참조 문서 수정 권한이 없으므로 별도 과업 등록이 필요하다.",
+      "rationale": "서버 문서와 짝 문서·참조 문서 사이의 운영 상태 서술을 하나의 사실로 정렬하도록 요청한다.",
+      "finding_ids": [
+        "ARCH-INTL004-OPS-STATUS-CONTRADICTION"
+      ]
+    },
+    {
+      "edit_id": "EDIT-TAX-TREATMENT-FORMULA",
+      "path": "docs/국가-통화-세금-국제출시-기획안.md",
+      "anchor": "공식의 입력 미리보기와 SQL 대조 시험만 제공한다.",
+      "operation": "ADD",
+      "proposed_text": "\n과세 상태와 공식의 결합: `treatment`가 `zero_rated` 또는 `exempt`이면 계산에 쓰는 유효 기본세율을 `r0 = 0`으로 치환해 같은 공식을 적용한다. 이때 `bi = 1 + r0 = 1`이므로 `primary_tax_inclusive` 추가세도 세금 제외 판매가를 과세표준으로 사용하며, 포함가 역산의 분모는 `M = 1 + Σ ri`가 된다. 과세 상태가 추가세 각각의 부과 여부에도 영향을 주는지와 과세 상태의 소유 단위(매장·메뉴·채널)는 §10 구현 전 확정 게이트에서 결정한다.",
+      "rationale": "검증 행렬이 요구하는 일반 과세·0% 과세·면세 조합 시험의 기준이 되도록 treatment와 공식의 결합 계약을 명문화하고, 제품 결정이 필요한 잔여 항목은 게이트로 넘긴다.",
+      "finding_ids": [
+        "ARCH-INTL004-TAX-TREATMENT-FORMULA"
+      ]
+    },
+    {
+      "edit_id": "EDIT-TAX-TREATMENT-GATE-ITEM",
+      "path": "docs/국가-통화-세금-국제출시-기획안.md",
+      "anchor": "6. 구 앱 쓰기 호환 기간 또는 최소 앱 버전 차단 정책",
+      "operation": "ADD",
+      "proposed_text": "7. 과세 상태(`zero_rated`·`exempt`)와 공식의 결합: 유효 `r0` 치환 규칙, 추가세 부과 여부, 과세 상태의 소유 단위(매장·메뉴·채널)",
+      "rationale": "과세 상태 관련 미결 사항을 DB migration 작성 전 확정 게이트에 포함해 구현 재량 분기를 막는다.",
+      "finding_ids": [
+        "ARCH-INTL004-TAX-TREATMENT-FORMULA"
+      ]
+    },
+    {
+      "edit_id": "EDIT-TAX-GATE-COUNT",
+      "path": "docs/국가-통화-세금-국제출시-기획안.md",
+      "anchor": "이 여섯 항목과 DB 스키마 초안, SQL↔core 검산 예시가 승인되면 `INTL-1`을 구현 단계로 전환한다.",
+      "operation": "REPLACE",
+      "proposed_text": "이 일곱 항목과 DB 스키마 초안, SQL↔core 검산 예시가 승인되면 `INTL-1`을 구현 단계로 전환한다.",
+      "rationale": "게이트 항목이 7개로 늘어나는 EDIT-TAX-TREATMENT-GATE-ITEM과 개수 표기를 일치시킨다.",
+      "finding_ids": [
+        "ARCH-INTL004-TAX-TREATMENT-FORMULA"
+      ]
+    },
+    {
+      "edit_id": "EDIT-BRANCH-NAMING-RULE",
+      "path": "docs/브랜치-DB-운영-기획안.md",
+      "anchor": "`docs/server-evolution`, `test/webhook-idempotency`.",
+      "operation": "ADD",
+      "proposed_text": "\n`INTL-1`은 `codex/international-launch`·`codex/international-tax-legacy-cleanup`처럼 `codex/` 접두어를 사용한다. 이 접두어를 AI 구현 세로 기능의 허용 작업유형으로 여기에 등록하거나, 두 계획 브랜치명을 `feat/*` 규칙으로 바꿔 §2.2·§3.3과 국제 출시 기획안을 함께 갱신한다. 어느 쪽이든 이 절의 규칙과 실제 계획 브랜치명이 일치해야 한다.",
+      "rationale": "명명 규칙과 INTL-1 계획 브랜치명의 불일치를 문서 소유자가 한 방향으로 정리하도록 선택지를 명시한다.",
+      "finding_ids": [
+        "ARCH-INTL004-BRANCH-NAMING"
+      ]
+    },
+    {
+      "edit_id": "EDIT-LEGACY-FORMULA-DESC",
+      "path": "docs/국가-통화-세금-국제출시-기획안.md",
+      "anchor": "- 현재 `tax_of()`는 `판매가 × Σ(tax_items.rate)`로 계산한다.",
+      "operation": "REPLACE",
+      "proposed_text": "- 현재 `tax_of()`는 `판매가 × (Σ tax_items.rate ÷ 100)`로 계산한다. `rate`는 퍼센트 포인트다.",
+      "rationale": "현재 0090 계약 서술을 AGENTS.md·ARCHITECTURE.md의 권위 공식(요율 ÷ 100)과 일치시켜 이관 감사 시 단위 오독을 막는다.",
+      "finding_ids": [
+        "ARCH-INTL004-LEGACY-FORMULA-DESC"
+      ]
+    },
+    {
+      "edit_id": "EDIT-PRICE-BASIS-OWNER",
+      "path": "docs/국가-통화-세금-국제출시-기획안.md",
+      "anchor": "기본세의 `calculation_basis`는 항상 세금 제외 판매가이므로 저장하지 않거나 고정값으로 검증할 수 있다.",
+      "operation": "ADD",
+      "proposed_text": "\n`price_basis`는 시장 프로필과 세금 프로필 중 한쪽을 소유 원본으로 확정하고, 다른 쪽은 파생 사본 또는 정합성 검증 값임을 명시한다. 두 프로필의 revision이 따로 돌 때 값이 갈리지 않아야 하며, 판매 스냅샷이 굳히는 값의 출처도 소유 원본 하나로 고정한다.",
+      "rationale": "price_basis의 이중 기재로 인한 소유 모호성을 구현 전에 해소해 스냅샷 출처를 단일화한다.",
+      "finding_ids": [
+        "ARCH-INTL004-PRICE-BASIS-OWNER"
+      ]
+    }
+  ],
+  "closed_finding_ids": [],
+  "reopened_finding_ids": [],
+  "remaining_required_finding_ids": [
+    "ARCH-INTL004-OPS-STATUS-CONTRADICTION",
+    "ARCH-INTL004-TAX-TREATMENT-FORMULA",
+    "ARCH-INTL004-BRANCH-NAMING"
+  ],
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "applied_learning_ids": [],
+  "excluded_learning_ids": [
+    {
+      "learning_id": "LRN-ORCH-CI-001",
+      "reason": "이 검수는 main 통합이나 원격 CI 실행이 아닌 기획 문서 검토다."
+    },
+    {
+      "learning_id": "LRN-CODEX-TIME-001",
+      "reason": "영업일 시간 fixture 규칙은 국제 출시 기획 문서의 직접 범위가 아니다."
+    },
+    {
+      "learning_id": "LRN-OPS-BACKUP-001",
+      "reason": "DB 재구축을 실행하지 않으므로 로컬 백업 규칙을 적용하지 않는다."
+    },
+    {
+      "learning_id": "LRN-AUDIT-PIN-001",
+      "reason": "CANDIDATE 상태이며 제품 기획 검수 범위와 직접 관련이 없다."
+    }
+  ]
+}
