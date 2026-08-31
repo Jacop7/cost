@@ -15,23 +15,26 @@ export type BusinessLocaleCode = (typeof BUSINESS_LOCALE_CODES)[number];
 /** 사용자별 UI 언어. 매장 국가·통화의 기본값으로 저장하지 않는다. */
 export type AppLanguageCode = 'ko' | 'en';
 /** 메뉴판 가격에 세금이 이미 들어 있는지 여부. */
-export type TaxPriceBasis = 'tax_inclusive' | 'tax_exclusive';
+export const TAX_PRICE_BASES = ['tax_inclusive', 'tax_exclusive'] as const;
+export type TaxPriceBasis = (typeof TAX_PRICE_BASES)[number];
 /** 일반 과세와 0% 과세는 신고 의미가 달라 금액이 0이어도 구분한다. */
-export type TaxTreatment = 'taxable' | 'zero_rated' | 'exempt';
-export type TaxRemittanceOwner = 'merchant' | 'marketplace';
-export type SalesChannelCode = 'hall' | 'delivery' | 'takeout';
-export type TaxComponentKind = 'primary' | 'additional';
-export type TaxCalculationBasis = 'primary_tax_exclusive' | 'primary_tax_inclusive';
+export const TAX_TREATMENTS = ['taxable', 'zero_rated', 'exempt'] as const;
+export type TaxTreatment = (typeof TAX_TREATMENTS)[number];
+export const TAX_REMITTANCE_OWNERS = ['merchant', 'marketplace'] as const;
+export type TaxRemittanceOwner = (typeof TAX_REMITTANCE_OWNERS)[number];
+export const INTERNATIONAL_SALES_CHANNEL_CODES = ['hall', 'delivery', 'takeout'] as const;
+export type SalesChannelCode = (typeof INTERNATIONAL_SALES_CHANNEL_CODES)[number];
+export const TAX_COMPONENT_KINDS = ['primary', 'additional'] as const;
+export type TaxComponentKind = (typeof TAX_COMPONENT_KINDS)[number];
+export const TAX_CALCULATION_BASES = ['primary_tax_exclusive', 'primary_tax_inclusive'] as const;
+export type TaxCalculationBasis = (typeof TAX_CALCULATION_BASES)[number];
+export const INTERNATIONAL_TAX_CALCULATION_VERSIONS = ['international_tax_v1', 'legacy_effective_rate_v1'] as const;
 export type InternationalTaxCalculationVersion = 'international_tax_v1';
 export type LegacyTaxCalculationVersion = 'legacy_effective_rate_v1';
-export type TaxJurisdictionLevel =
-  | 'national'
-  | 'state'
-  | 'province'
-  | 'county'
-  | 'city'
-  | 'special'
-  | 'custom';
+export const TAX_JURISDICTION_LEVELS = [
+  'national', 'state', 'province', 'county', 'city', 'special', 'custom',
+] as const;
+export type TaxJurisdictionLevel = (typeof TAX_JURISDICTION_LEVELS)[number];
 
 /**
  * 하위 관할 코드. 사용자 자유 입력값이 아니다. INTL-1B의 관할 카탈로그가 소유하며,
@@ -122,7 +125,8 @@ export interface TaxComponentAmountSnapshot {
   calculationBasis: TaxCalculationBasis;
   appliesToTreatments: readonly TaxTreatment[];
   remittanceOwner: TaxRemittanceOwner;
-  amount: number;
+  unroundedAmount: number;
+  roundedAmount: number;
 }
 
 /** 판매 계산선(영업일×메뉴×채널)에 고정되는 국제 세금 입력·결과. */
@@ -137,7 +141,8 @@ export interface SaleTaxSnapshot {
   minorUnit: 0 | 2;
   priceBasis: TaxPriceBasis;
   treatment: TaxTreatment;
-  taxCategory: TaxCategoryCode;
+  /** 명시적 treatment override를 쓴 판매는 카테고리가 null이다. */
+  taxCategory: TaxCategoryCode | null;
   salesChannel: SalesChannelCode;
   calculationVersion: InternationalTaxCalculationVersion;
   unitPrice: number;

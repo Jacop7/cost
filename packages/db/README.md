@@ -5,11 +5,11 @@
 
 ## 현재 기준
 
-- 마이그레이션 166개, 최신 `20260831000177_operations_health_signal_separation.sql`
-- 번호가 붙은 DB 회귀 스위트 36개
-- public 업무 테이블 30개
+- 마이그레이션 168개, 최신 `20260831000179_international_tax_schema.sql`
+- 번호가 붙은 DB 회귀 스위트 38개
+- public 업무 테이블 40개
 - 자동 종료·자동 브레이크·변경 이력 청소 pg_cron 3종
-- 로컬 마이그레이션 장부와 파일 일치는 전체 검증에서 확인한다. 현재 파일 기준은 166개다.
+- 로컬 마이그레이션 장부와 파일 일치는 전체 검증에서 확인한다. 현재 파일 기준은 168개다.
 
 개수는 현재 스냅샷이다. 실제 판단은 파일과 시험 실행 결과를 우선한다.
 
@@ -30,7 +30,7 @@ scripts/
   admin-acl-audit.test.mjs 실제 DB metric·rollback·모바일 RPC 허용 목록 대조
 tests/
   _prelude.sql            공통 픽스처·사후조건
-  01_…36_*.sql            트랜잭션 DB 회귀 스위트
+  01_…38_*.sql            트랜잭션 DB 회귀 스위트
   concurrency.mjs         판매 저장과 마감·브레이크의 2세션 경합
 src/database.types.ts     `pnpm db:types` 생성 타입
 ```
@@ -46,6 +46,12 @@ src/database.types.ts     `pnpm db:types` 생성 타입
 - `store_lifecycle_events`: 계정 삭제·폐점·물리 삭제 절차를 매장 삭제 뒤에도 보존하는 감사 원장.
 - `store_purge_schedules`: 보존 종료 시각·승인 주체·승인 근거가 있는 service role 전용 삭제 예약.
 - `price_trends`·`profit_trends`: 단가·손익 시점 스냅샷.
+- `store_market_profiles`·`store_tax_profiles`·`store_tax_components`: INTL-1B 시장·세금 판본과
+  법정 표면 세율 구성. `0179`에서는 비어 있고 계산·이관은 아직 켜지 않는다.
+- `daily_sales_item_tax_snapshots`·`daily_sales_item_tax_component_snapshots`: 영업일×메뉴×채널의
+  세금 입력·합계와 구성 항목별 당시 값. `sales_tax_events`는 목표 세액 변화 append-only 원장이며,
+  판매행만 지워 없앨 수 없다. 보존 종료·승인·백업을 확인한 `purge_archived_store`의 매장 물리 삭제에서만
+  해당 매장의 세금 이벤트를 함께 제거하고 `store_lifecycle_events`의 승인 감사는 계속 보존한다.
 
 전파 이벤트 E1~E12(E6 없음)와 고정 검산값은 루트 [ARCHITECTURE.md](../../ARCHITECTURE.md)가 설명한다.
 
@@ -105,7 +111,7 @@ integration·ops·Queue 원본 노출, 내부 RPC 권한과 앱이 직접 쓰는
 허용 목록을 검사한다. 플랫폼 내부
 롤의 기본 권한은 앱 감사와 분리해 예외로 보고한다. 2026-08-28 개발 DB 실측은 RLS 비활성 앱 표
 `0개`이고, 0174 적용 전에는 원장 직접 쓰기 조합 `32개`, 허용 목록 밖 authenticated 함수
-`87개`였다. 0174 이후 계약은 두 값 모두 `0개`다. 앱 롤은 감사 SQL의 정확한 64개 facade만
+`87개`였다. 0174 이후 계약은 두 값 모두 `0개`다. 앱 롤은 감사 SQL의 정확한 66개 facade만
 실행하며, 내부 함수와 원장 표 쓰기는 로그인할 수 없고 RLS를 우회하지 않는
 `margincook_rpc_executor`만 사용한다. 기존 01~33 백색상자 시험은 이 실행 역할과 실제 JWT를 쓰고,
 34번은 실제 `authenticated` 역할의 facade·RLS·직접 공격면을 검증한다.

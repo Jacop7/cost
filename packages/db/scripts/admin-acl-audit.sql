@@ -122,7 +122,9 @@ select 'protected_writes' || '|' || count(*) || '|expected=0'
 with ledger(name) as (values
   ('inventory_events'), ('inventory_states'), ('business_days'), ('daily_sales'), ('daily_sales_items'),
   ('business_day_revisions'), ('business_state_transitions'), ('entity_change_events'),
-  ('price_trends'), ('profit_trends')
+  ('price_trends'), ('profit_trends'),
+  ('daily_sales_item_tax_snapshots'),
+  ('daily_sales_item_tax_component_snapshots'), ('sales_tax_events')
 )
 select 'ledger_write_paths' || '|' || count(*) || '|expected=0'
   from ledger l join pg_class c on c.oid = to_regclass('public.' || l.name)

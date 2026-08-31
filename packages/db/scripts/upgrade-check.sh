@@ -681,5 +681,50 @@ else
   fi
 fi
 
+# ── 시나리오 15 · 0178 비활성 capability → 국제 세금 확장 스키마 ───────────
+say "⑮ 0178 상태 + 현행 세금/원장 → 0179 빈 확장 스키마 추가 뒤 값·capability 불변"
+BASE15=20260831000178
+STEP15="$(cd "$MIG_DIR" && ls 20260831000179_*.sql)"
+bash "$SCRIPT_DIR/fresh-db.sh" --until "$BASE15" "$D" >/dev/null
+before15=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c \
+  "select concat_ws('|',
+     tax_of(12000, 'included', '[{\"name\":\"부가세\",\"rate\":9.0909090909}]'::jsonb),
+     (select count(*) from inventory_events),
+     (select count(*) from daily_sales_items));")
+if ! err="$(psql_d "$D" < "$MIG_DIR/$STEP15" 2>&1 1>/dev/null)"; then
+  say "   FAIL 0179 적용이 막혔다"; say "        $(printf '%s' "$err" | head -3)"; fail=1
+else
+  after15=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c \
+    "select concat_ws('|',
+       tax_of(12000, 'included', '[{\"name\":\"부가세\",\"rate\":9.0909090909}]'::jsonb),
+       (select count(*) from inventory_events),
+       (select count(*) from daily_sales_items));")
+  state15=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c "
+    with tables(name) as (values
+      ('tax_region_catalog'),('store_market_profiles'),('store_tax_profiles'),
+      ('store_tax_components'),('tax_category_catalog'),('menu_tax_overrides'),
+      ('channel_tax_remittance'),('daily_sales_item_tax_snapshots'),
+      ('daily_sales_item_tax_component_snapshots'),('sales_tax_events')
+    ), privileges as (
+      select count(*) n from tables t,
+        unnest(array['SELECT','INSERT','UPDATE','DELETE','TRUNCATE','TRIGGER','REFERENCES']) p(privilege_name)
+       where has_table_privilege('authenticated','public.'||t.name,p.privilege_name)
+          or has_table_privilege('anon','public.'||t.name,p.privilege_name)
+    )
+    select concat_ws('|',
+      (select count(*) from tables where to_regclass('public.'||name) is not null),
+      (select n from privileges),
+      (select count(*) from store_market_profiles),
+      (select count(*) from sales_tax_events),
+      app_capabilities()#>>'{international_tax,read_enabled}',
+      app_capabilities()#>>'{international_tax,write_enabled}');")
+  if [ "$before15" = "$after15" ] && [ "$state15" = "10|0|0|0|false|false" ]; then
+    say "   ok   기존 세금·판매·재고 불변 · 빈 확장 표 10개 · 앱 직접 권한 0 · capability 비활성"
+  else
+    say "   FAIL 원장 전=$before15 후=$after15 확장 상태=$state15"
+    fail=1
+  fi
+fi
+
 say ""
-if [ "$fail" = "0" ]; then say "업그레이드 경로 14/14 통과"; else say "업그레이드 경로 실패"; exit 1; fi
+if [ "$fail" = "0" ]; then say "업그레이드 경로 15/15 통과"; else say "업그레이드 경로 실패"; exit 1; fi
