@@ -149,12 +149,15 @@ fi
 echo "AUDIT_SQL_OK" >&2
 
 migrations=2; dangerous=0; owner="${PGUSER:-postgres}"; rls_off=0; ledger_direct=0
+executor_role=1; executor_invalid=0; omit_executor=0
 case "${PGDATABASE:-}" in
   audit_missing) migrations=1 ;;
   audit_open) dangerous=1 ;;
   audit_rpc_open) rpc_open=1 ;;
   audit_rls_off) rls_off=1 ;;
   audit_ledger_direct) ledger_direct=1 ;;
+  audit_executor_bad) executor_invalid=1 ;;
+  audit_executor_missing) omit_executor=1 ;;
   audit_partial) printf 'migrations|2|expected=2\nprobe_owner|%s|expected=postgres\n' "$owner"; exit 0 ;;
   audit_empty) exit 0 ;;
   audit_duplicate) duplicate=1 ;;
@@ -174,6 +177,11 @@ supabase_admin_objects|0|expected=0
 anon_rpc|0|expected=0
 blocked_internal_rpc|0|expected=0
 blocked_internal_rpc_objects|11|expected=11
+$(if [ "$omit_executor" = "0" ]; then printf 'rpc_executor_role|%s|expected=1\n' "$executor_role"; fi)
+rpc_executor_facades_invalid|$executor_invalid|expected=0
+rpc_executor_privileged_maintenance|0|expected=0
+rls_policy_helper_calls|0|expected=0
+facade_rpc_objects|65|expected=65
 facade_rpc_missing|0|expected=0
 unapproved_authenticated_rpc|$rpc_open|expected=0
 platform_default_open|1|informational
@@ -231,6 +239,16 @@ out="$(PATH="$SHIM:$PATH" ADMIN_DB_HOST=prod.invalid ADMIN_DB_NAME=audit_ledger_
        bash "$ACL" --remote audit 2>&1)"; rc=$?
 [ "$rc" -eq 1 ] && has "$out" 'ledger_write_paths=1' \
   && ok "원장 직접 쓰기 한 건이면 실패" || bad "원장 직접 쓰기를 통과시킴(exit $rc)"
+
+out="$(PATH="$SHIM:$PATH" ADMIN_DB_HOST=prod.invalid ADMIN_DB_NAME=audit_executor_bad ADMIN_DB_USER=postgres \
+       bash "$ACL" --remote audit 2>&1)"; rc=$?
+[ "$rc" -eq 1 ] && has "$out" 'rpc_executor_facades_invalid=1' \
+  && ok "실행자 facade 한 건이 어긋나면 실패" || bad "실행자 facade 위반을 통과시킴(exit $rc)"
+
+out="$(PATH="$SHIM:$PATH" ADMIN_DB_HOST=prod.invalid ADMIN_DB_NAME=audit_executor_missing ADMIN_DB_USER=postgres \
+       bash "$ACL" --remote audit 2>&1)"; rc=$?
+[ "$rc" -eq 1 ] && has "$out" 'missing_metric=rpc_executor_role' \
+  && ok "실행자 metric 누락이면 실패" || bad "실행자 metric 누락을 통과시킴(exit $rc)"
 
 out="$(PATH="$SHIM:$PATH" ADMIN_DB_HOST=prod.invalid ADMIN_DB_USER=limited \
        bash "$ACL" --remote audit 2>&1)"; rc=$?
