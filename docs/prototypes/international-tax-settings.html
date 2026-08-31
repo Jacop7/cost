@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>5개국 공통 세금 설정 프로토타입</title>
+  <style>
+    :root{--bg:#eef1f4;--app:#f2f4f6;--surface:#fff;--ink:#191f28;--sub:#4e5968;--ter:#8b95a1;--line:#e5e8eb;--blue:#3182f6;--blue2:#eaf3ff;--red:#f04452;--green:#0e9f6e}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;padding:20px 14px 36px;background:var(--bg);color:var(--ink);font-family:Pretendard,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}button,input,select{font:inherit}
+    .workspace{width:min(960px,100%);margin:auto}.intro{width:min(680px,100%);margin:0 auto 14px;padding:15px 16px;border:1px solid rgba(25,31,40,.08);border-radius:18px;background:rgba(255,255,255,.88)}.intro h1{margin:0;font-size:18px}.intro p{margin:7px 0 0;color:var(--sub);font-size:13px;line-height:1.5}.country-tabs{display:flex;gap:7px;margin-top:13px;overflow-x:auto;scrollbar-width:none}.country-tab{flex:0 0 auto;min-height:38px;padding:8px 13px;border:1px solid var(--line);border-radius:20px;background:#fff;color:var(--sub);font-size:13px;font-weight:800;cursor:pointer}.country-tab.active{border-color:var(--ink);background:var(--ink);color:#fff}
+    .phone{position:relative;width:min(390px,100%);height:min(820px,calc(100vh - 190px));min-height:650px;margin:auto;overflow:hidden;border:1px solid rgba(25,31,40,.12);border-radius:30px;background:var(--app);box-shadow:0 24px 72px rgba(25,31,40,.16)}.status{height:27px;display:flex;align-items:center;justify-content:space-between;padding:0 19px;background:#fff;font-size:11px;font-weight:800}.header{height:56px;display:flex;align-items:center;padding:0 16px;background:#fff}.back{margin-right:6px;font-size:27px}.header-title{font-size:18px;font-weight:850}.market-badge{margin-left:auto;padding:5px 8px;border-radius:8px;background:var(--blue2);color:var(--blue);font-size:11px;font-weight:850}
+    .content{height:calc(100% - 151px);overflow-y:auto;padding:13px 16px 30px}.section-label{display:flex;align-items:center;margin:15px 2px 8px;color:var(--sub);font-size:13px;font-weight:800}.section-label:first-child{margin-top:0}.section-label strong{font:inherit}.section-label span{margin-left:auto;color:var(--ter);font-size:11px}.card{overflow:hidden;margin-bottom:11px;border:1px solid var(--line);border-radius:15px;background:#fff}.card-pad{padding:14px}.field-label{display:block;margin-bottom:7px;color:var(--sub);font-size:12px;font-weight:750}.select,.price-input,.tax-input{width:100%;height:44px;border:1px solid var(--line);border-radius:11px;background:#fff;color:var(--ink);font-weight:750;outline:none}.select{padding:0 11px}.price-wrap{display:flex;align-items:center;padding:0 12px;border:1px solid var(--line);border-radius:11px}.currency-symbol{color:var(--ter);font-weight:800}.price-input{height:42px;padding:0 8px;border:0;text-align:right;font-variant-numeric:tabular-nums}.radio-group{min-width:0;margin:0;padding:0;border:0}.radio-group+.radio-group{margin-top:15px;padding-top:15px;border-top:1px solid #f2f4f6}.radio-title{display:block;margin-bottom:9px;color:var(--sub);font-size:12px;font-weight:750}.radio-options{display:flex;align-items:center;gap:11px 18px;flex-wrap:wrap}.radio-choice{display:inline-flex;align-items:center;gap:7px;min-height:28px;color:var(--ink);font-size:13px;font-weight:750;cursor:pointer}.radio-choice input{width:18px;height:18px;margin:0;accent-color:var(--blue);cursor:pointer}.hint{margin:9px 1px 0;color:var(--ter);font-size:12px;font-weight:650;line-height:1.45}.basis-preview{margin-top:11px;padding:4px 11px;border-radius:11px;background:var(--blue2)}.basis-preview-row{min-height:35px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(49,130,246,.12);color:var(--sub);font-size:12px;font-weight:750}.basis-preview-row:last-child{border-bottom:0}.basis-preview-row.hidden{display:none}.basis-preview-row b{margin-left:auto;color:var(--ink);font-size:13px;font-variant-numeric:tabular-nums}.basis-preview-row.tax b{color:var(--red)}.basis-preview-row.result{color:var(--blue);font-weight:850}.basis-preview-row.result b{color:var(--blue);font-size:15px}
+    .primary-tax-rate{margin-top:14px}.tax-rows{padding:12px}.tax-item{padding:12px;border:1px solid var(--line);border-radius:12px;background:#fff}.tax-item+.tax-item{margin-top:10px}.tax-item-head{display:flex;align-items:center;min-height:24px;margin-bottom:10px}.tax-item-title{font-size:13px;font-weight:850}.tax-fields{display:grid;grid-template-columns:1fr;gap:11px;margin-top:12px}.tax-field-label{display:block;margin-bottom:9px;color:var(--sub);font-size:12px;font-weight:750}.tax-input{height:40px;padding:0 10px;font-size:13px}.rate-wrap{position:relative}.rate-wrap .tax-input{padding-right:23px;text-align:right;font-variant-numeric:tabular-nums}.rate-wrap span{position:absolute;top:11px;right:9px;color:var(--ter);font-size:12px}.tax-basis{min-width:0;margin:0;padding:0;border:0;background:transparent}.remove{width:auto;min-height:28px;margin-left:auto;padding:0 4px;border:0;background:transparent;color:var(--red);font-size:12px;font-weight:750;cursor:pointer}.add{width:100%;min-height:41px;margin-top:10px;border:1px dashed var(--blue);border-radius:11px;background:#fff;color:var(--blue);font-size:13px;font-weight:850;cursor:pointer}.empty{padding:10px 2px;color:var(--ter);font-size:12px;text-align:center}
+    .summary{padding:3px 14px}.sum-row{display:flex;align-items:center;min-height:42px;border-bottom:1px solid #f2f4f6;color:var(--sub);font-size:13px;font-weight:700}.sum-row:last-child{border-bottom:0}.sum-row b{margin-left:auto;color:var(--ink);font-size:14px;font-variant-numeric:tabular-nums}.sum-row.tax b{color:var(--red)}.sum-row.net{color:var(--ink);font-weight:850}.sum-row.net b{font-size:16px}.owner-note{display:flex;gap:7px;margin:2px 2px 14px;color:var(--ter);font-size:12px;line-height:1.45}.dot{width:6px;height:6px;margin-top:6px;border-radius:50%;background:var(--green);flex:0 0 auto}
+    .bottom{position:absolute;right:0;bottom:0;left:0;padding:11px 18px 18px;border-top:1px solid var(--line);background:rgba(255,255,255,.98)}.save{width:100%;height:50px;border:0;border-radius:13px;background:var(--blue);color:#fff;font-size:16px;font-weight:850;cursor:pointer}.toast{position:absolute;z-index:3;right:18px;bottom:82px;left:18px;padding:12px 14px;border-radius:12px;background:rgba(25,31,40,.92);color:#fff;font-size:13px;font-weight:750;text-align:center;opacity:0;transform:translateY(8px);transition:.2s;pointer-events:none}.toast.show{opacity:1;transform:none}
+    @media(max-height:760px){body{padding-top:10px}.intro{padding:11px 13px}.intro p{display:none}.country-tabs{margin-top:8px}.phone{height:650px}}
+  </style>
+</head>
+<body>
+  <main class="workspace">
+    <section class="intro">
+      <h1>5개국 공통 세금 설정</h1>
+      <p>국가는 기본 가격 방식을 제안하고, 사장님은 관할 지역과 법정 세율을 확인해 저장합니다. 아래 세율은 계산 흐름을 보기 위한 예시입니다.</p>
+      <nav id="country-tabs" class="country-tabs" aria-label="출시 국가"></nav>
+    </section>
+
+    <section class="phone" aria-label="세금 설정 모바일 프로토타입">
+      <div class="status"><span>9:41</span><span>●●● 100%</span></div>
+      <header class="header"><span class="back">‹</span><span class="header-title">세금</span><span id="market-badge" class="market-badge"></span></header>
+      <div class="content">
+        <div class="section-label">국가</div>
+        <section class="card card-pad">
+          <select id="region" class="select" aria-label="국가"></select>
+        </section>
+
+        <div class="section-label"><strong id="price-basis-title">부가세 계산 기준</strong></div>
+        <section class="card card-pad">
+          <fieldset id="price-basis" class="radio-group">
+            <legend class="radio-title">가격 기준</legend>
+            <div class="radio-options">
+              <label class="radio-choice"><input type="radio" name="price-basis" value="tax_inclusive"><span id="tax-inclusive-option">부가세 포함</span></label>
+              <label class="radio-choice"><input type="radio" name="price-basis" value="tax_exclusive"><span id="tax-exclusive-option">부가세 미포함</span></label>
+            </div>
+          </fieldset>
+          <div class="primary-tax-rate">
+            <label id="primary-tax-rate-label" class="field-label" for="primary-tax-rate">부가세 세율</label>
+            <div class="rate-wrap"><input id="primary-tax-rate" class="tax-input" type="number" min="0" max="99.9999" step="0.0001" value="10" aria-label="부가세 세율"><span>%</span></div>
+          </div>
+          <div class="basis-preview" aria-live="polite">
+            <div class="basis-preview-row tax"><span id="basis-tax-label"></span><b id="basis-tax-value"></b></div>
+            <div class="basis-preview-row result"><span id="basis-result-label"></span><b id="basis-result-value"></b></div>
+            <div id="basis-tax-excluded-row" class="basis-preview-row"><span id="basis-tax-excluded-label"></span><b id="basis-tax-excluded-value"></b></div>
+          </div>
+        </section>
+
+        <div class="section-label">과세 및 납부 설정</div>
+        <section class="card card-pad">
+          <fieldset id="treatment" class="radio-group">
+            <legend class="radio-title">과세 상태</legend>
+            <div class="radio-options">
+              <label class="radio-choice"><input type="radio" name="treatment" value="taxable">일반 과세</label>
+              <label class="radio-choice"><input type="radio" name="treatment" value="zero_rated">0% 과세</label>
+              <label class="radio-choice"><input type="radio" name="treatment" value="exempt">면세</label>
+            </div>
+          </fieldset>
+          <fieldset id="owner" class="radio-group">
+            <legend class="radio-title">세금 납부 주체</legend>
+            <div class="radio-options">
+              <label class="radio-choice"><input type="radio" name="owner" value="merchant">매장 직접 납부</label>
+              <label class="radio-choice"><input type="radio" name="owner" value="marketplace">플랫폼 대납</label>
+            </div>
+          </fieldset>
+        </section>
+
+        <div class="section-label">추가 세금 항목</div>
+        <section class="card">
+          <div id="tax-rows" class="tax-rows"></div>
+        </section>
+
+        <div class="section-label">판매 금액 미리보기</div>
+        <section class="card summary">
+          <div class="sum-row"><span>레시피 판매가</span><b id="listed-price"></b></div>
+          <div class="sum-row tax"><span>세금</span><b id="tax-amount"></b></div>
+          <div class="sum-row"><span>고객 결제액</span><b id="gross-collected"></b></div>
+          <div class="sum-row net"><span>손익 계산 기준 순매출</span><b id="net-sales"></b></div>
+          <div class="sum-row"><span id="liability-label">매장 납부 예정 세금</span><b id="liability"></b></div>
+        </section>
+        <div class="owner-note"><span class="dot"></span><span id="owner-note"></span></div>
+      </div>
+      <div id="toast" class="toast">프로토타입 설정을 저장했어요</div>
+      <footer class="bottom"><button id="save" class="save">저장</button></footer>
+    </section>
+  </main>
+
+  <script>
+    const markets={
+      KR:{label:'한국',taxName:'부가세',currency:'KRW',symbol:'₩',locale:'ko-KR',basis:'tax_inclusive',price:12000,regions:[{code:'KR',label:'대한민국',taxes:[['부가세',10,'national']]}]},
+      US:{label:'미국',taxName:'Sales tax',currency:'USD',symbol:'$',locale:'en-US',basis:'tax_exclusive',price:10,regions:[
+        {code:'CA-DEMO',label:'California · 예시',taxes:[['State base tax',7.25,'state'],['District tax',1,'city']]},
+        {code:'TX-DEMO',label:'Texas · 예시',taxes:[['State tax',6.25,'state'],['Local tax',2,'city']]},
+        {code:'NY-DEMO',label:'New York · 예시',taxes:[['State tax',4,'state'],['Local tax',4.875,'city']]}
+      ]},
+      GB:{label:'영국',taxName:'VAT',currency:'GBP',symbol:'£',locale:'en-GB',basis:'tax_inclusive',price:12,regions:[{code:'GB',label:'United Kingdom',taxes:[['VAT',20,'national']]}]},
+      AU:{label:'호주',taxName:'GST',currency:'AUD',symbol:'A$',locale:'en-AU',basis:'tax_inclusive',price:15,regions:[{code:'AU',label:'Australia',taxes:[['GST',10,'national']]}]},
+      CA:{label:'캐나다',taxName:'GST/HST',currency:'CAD',symbol:'C$',locale:'en-CA',basis:'tax_exclusive',price:12,regions:[
+        {code:'ON',label:'Ontario',taxes:[['HST',13,'province']]},
+        {code:'AB',label:'Alberta',taxes:[['GST',5,'national']]},
+        {code:'NS',label:'Nova Scotia',taxes:[['HST',14,'province']]}
+      ]}
+    };
+    let country='KR',regionIndex=0,priceBasis='tax_inclusive',treatment='taxable',owner='merchant',examplePrice=12000,primaryTax={id:'KR-0',name:'부가세',rate:10,level:'national'},rows=[];
+    const $=id=>document.getElementById(id);
+    const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const market=()=>markets[country];
+    const money=value=>{
+      const digits=market().currency==='KRW'?0:2;
+      const body=new Intl.NumberFormat(market().locale,{minimumFractionDigits:digits,maximumFractionDigits:digits}).format(Number.isFinite(value)?value:0);
+      return `${market().symbol}${body}`;
+    };
+    function selectIn(root,value){root.querySelectorAll('input[type="radio"]').forEach(input=>{input.checked=input.value===value})}
+    function loadTaxes(taxes,prefix){
+      const [primary,...additional]=taxes;
+      primaryTax=primary?{id:`${prefix}-0`,name:primary[0],rate:Number(primary[1]),level:primary[2]}:{id:`${prefix}-0`,name:market().taxName,rate:0,level:'primary'};
+      rows=additional.map((t,i)=>({id:`${prefix}-${i+1}`,name:t[0],rate:Number(t[1]),level:t[2],basis:'primary_tax_exclusive'}));
+    }
+    function loadCountry(next){
+      country=next;regionIndex=0;const m=market();priceBasis=m.basis;treatment='taxable';owner='merchant';examplePrice=m.price;loadTaxes(m.regions[0].taxes,country);
+      $('market-badge').textContent=`${m.currency} · ${country}`;$('price-basis-title').textContent=`${m.taxName} 계산 기준`;
+      $('tax-inclusive-option').textContent=`${m.taxName} 포함`;$('tax-exclusive-option').textContent=`${m.taxName} 미포함`;
+      $('region').innerHTML=m.regions.map((r,i)=>`<option value="${i}">${esc(r.label)}</option>`).join('');
+      document.querySelectorAll('.country-tab').forEach(b=>b.classList.toggle('active',b.dataset.country===country));render();
+    }
+    function renderRows(){
+      const disabled=treatment!=='taxable';
+      $('tax-rows').innerHTML=(rows.length?rows.map((r,i)=>`<div class="tax-item"><div class="tax-item-head"><strong class="tax-item-title">추가세 ${i+1}</strong><button class="remove" data-remove="${i}" ${disabled?'disabled':''} aria-label="${esc(r.name)} 삭제">삭제</button></div><fieldset class="tax-basis"><legend class="radio-title">추가세 계산 기준</legend><div class="radio-options"><label class="radio-choice"><input class="tax-basis-option" data-i="${i}" type="radio" name="tax-basis-${esc(r.id)}" value="primary_tax_inclusive" ${r.basis==='primary_tax_inclusive'?'checked':''} ${disabled?'disabled':''}>${esc(market().taxName)} 포함 금액</label><label class="radio-choice"><input class="tax-basis-option" data-i="${i}" type="radio" name="tax-basis-${esc(r.id)}" value="primary_tax_exclusive" ${r.basis!=='primary_tax_inclusive'?'checked':''} ${disabled?'disabled':''}>${esc(market().taxName)} 미포함 금액</label></div></fieldset><div class="tax-fields"><label><span class="tax-field-label">이름</span><input class="tax-input tax-name" data-i="${i}" value="${esc(r.name)}" ${disabled?'disabled':''} aria-label="추가 세금 항목 ${i+1} 이름"></label><label><span class="tax-field-label">세율</span><div class="rate-wrap"><input class="tax-input tax-rate" data-i="${i}" type="number" min="0" max="99.9999" step="0.0001" value="${r.rate}" ${disabled?'disabled':''} aria-label="추가 세금 항목 ${i+1} 세율"><span>%</span></div></label></div></div>`).join(''):'<div class="empty">추가 세금 항목이 없어요</div>')+`<button id="add-row" class="add" ${disabled?'disabled':''}>＋ 추가 세금 항목</button>`;
+      document.querySelectorAll('.tax-name').forEach(el=>el.addEventListener('input',e=>{rows[Number(e.target.dataset.i)].name=e.target.value}));
+      document.querySelectorAll('.tax-rate').forEach(el=>el.addEventListener('input',e=>{rows[Number(e.target.dataset.i)].rate=Math.max(0,Number(e.target.value)||0);calculate()}));
+      document.querySelectorAll('.tax-basis-option').forEach(el=>el.addEventListener('change',e=>{rows[Number(e.target.dataset.i)].basis=e.target.value;calculate()}));
+      document.querySelectorAll('[data-remove]').forEach(el=>el.addEventListener('click',e=>{rows.splice(Number(e.currentTarget.dataset.remove),1);render()}));
+      $('add-row').addEventListener('click',()=>{rows.push({id:`custom-${Date.now()}`,name:'추가 세금',rate:0,level:'custom',basis:'primary_tax_exclusive'});render()});
+    }
+    function calculate(){
+      const listed=examplePrice;
+      const primaryRate=treatment==='taxable'?(Number(primaryTax.rate)||0)/100:0;
+      const additionalRates=treatment==='taxable'?rows.map(r=>({rate:(Number(r.rate)||0)/100,basis:r.basis||'primary_tax_exclusive'})):[];
+      const multiplier=1+primaryRate+additionalRates.reduce((sum,r)=>sum+r.rate*(r.basis==='primary_tax_inclusive'?1+primaryRate:1),0);
+      let net,gross;if(priceBasis==='tax_inclusive'){gross=listed;net=multiplier>0?gross/multiplier:gross}else{net=listed;gross=net*multiplier}
+      const primaryTaxAmount=net*primaryRate;
+      const additionalTaxAmount=additionalRates.reduce((sum,r)=>sum+net*r.rate*(r.basis==='primary_tax_inclusive'?1+primaryRate:1),0);
+      const tax=primaryTaxAmount+additionalTaxAmount;
+      const merchant=owner==='merchant'?tax:0,marketplace=owner==='marketplace'?tax:0;
+      $('listed-price').textContent=money(listed);$('tax-amount').textContent=money(tax);$('gross-collected').textContent=money(gross);$('net-sales').textContent=money(net);
+      $('liability-label').textContent=owner==='merchant'?'매장 납부 예정 세금':'플랫폼 대납 예정 세금';$('liability').textContent=money(owner==='merchant'?merchant:marketplace);
+      $('basis-tax-label').textContent=market().taxName;
+      $('basis-tax-value').textContent=money(tax);
+      $('basis-result-label').textContent='결제금액';$('basis-result-value').textContent=money(gross);
+      $('basis-tax-excluded-label').textContent=`${market().taxName} 제외`;$('basis-tax-excluded-value').textContent=money(net);
+      $('basis-tax-excluded-row').classList.toggle('hidden',priceBasis==='tax_exclusive');
+      $('owner-note').textContent=owner==='merchant'?'고객에게 받은 세금은 매장의 납부 예정 금액으로 분리합니다.':'배달 플랫폼 등이 대신 납부하는 세금은 매장 납부액에서 제외하되 판매 스냅샷에는 남깁니다.';
+    }
+    function render(){
+      const disabled=treatment!=='taxable';
+      $('primary-tax-rate-label').textContent=`${market().taxName} 세율`;$('primary-tax-rate').value=primaryTax.rate;$('primary-tax-rate').disabled=disabled;$('primary-tax-rate').setAttribute('aria-label',`${market().taxName} 세율`);
+      selectIn($('price-basis'),priceBasis);selectIn($('treatment'),treatment);selectIn($('owner'),owner);renderRows();calculate();
+    }
+    $('country-tabs').innerHTML=Object.entries(markets).map(([code,m])=>`<button class="country-tab" data-country="${code}">${m.label} · ${m.currency}</button>`).join('');
+    document.querySelectorAll('.country-tab').forEach(b=>b.addEventListener('click',()=>loadCountry(b.dataset.country)));
+    $('region').addEventListener('change',e=>{regionIndex=Number(e.target.value);loadTaxes(market().regions[regionIndex].taxes,`${country}-${regionIndex}`);render()});
+    $('primary-tax-rate').addEventListener('input',e=>{primaryTax.rate=Math.max(0,Number(e.target.value)||0);calculate()});
+    $('price-basis').addEventListener('change',e=>{if(e.target.type!=='radio')return;priceBasis=e.target.value;render()});
+    $('treatment').addEventListener('change',e=>{if(e.target.type!=='radio')return;treatment=e.target.value;render()});
+    $('owner').addEventListener('change',e=>{if(e.target.type!=='radio')return;owner=e.target.value;render()});
+    $('save').addEventListener('click',()=>{const t=$('toast');t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1700)});
+    loadCountry('KR');
+  </script>
+</body>
+</html>
