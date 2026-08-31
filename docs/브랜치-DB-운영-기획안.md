@@ -8,10 +8,13 @@
 - **문서 위치**: `docs/브랜치-DB-운영-기획안.md`
 - **최종 수정**: 2026-08-31
 - **현재 상태**: 개정 4판. 개정 3판의 배포·복구 원칙을 유지하면서 국제 출시 `INTL-1`의
-  확장→이관→전환→정리 순서와 구 앱 호환 게이트를 추가했다. 문서 개정 시작 기준 `main`은
-  `803ac0a`, migration은 166개(최신 `0177`), DB 시험 파일은 39개다. 작업큐 기준 스테이징은
-  `0164~0174` 적용과 SQL Editor 경로의 앱 ACL 감사까지 완료했다. 직접 접속 자격이 필요한
-  `admin-acl.sh --remote audit` 셸 경로는 대기 중이고 production 적용은 확인되지 않았다.
+  확장→이관→전환→정리 순서와 구 앱 호환 게이트를 추가했다. 2026-08-31 재검토 기준 최신
+  `origin/main`은 `eb78b650`, migration은 166개(최신 `0177`), DB 시험 파일은 39개다. 현재 국제 출시
+  기획 브랜치는 이전 `803ac0a`에서 시작해 최신 main보다 뒤에 있으므로 구현 전에
+  `INTL-BASELINE-1`로 최신 main을 반영하고 운영 증거를 보존해야 한다. 스테이징에는 `0177`까지
+  적용돼 pending 0개이며 운영 관측 실패→경보→회복 훈련까지 완료했다. 직접 접속 자격이 필요한
+  `admin-acl.sh --remote audit` 셸 경로, 두 번째 관리자의 MFA, 실제 사용자 시작 전 PITR/RPO 최종
+  결정은 남아 있고 production migration은 적용하지 않았다.
 
 ## 문서 책임
 
@@ -213,11 +216,11 @@ acceptance:
 
 ```yaml
 title: 한국·영어권 4개국 국가·통화·세금 출시
-status: 제품·UX 방향 확정 · 구현 게이트 대기
+status: 구현 계약 확정안 · 최신 main 반영과 Fable 재검수 대기
 planned_branch: codex/international-launch
 base: main
-screen_ids: [MY-02, MY-08, RCP-02, SALES-18]
-depends_on: []
+screen_ids: [MY-02, MY-08, MY-12, RCP-02, SALES-18, SALES-21]
+depends_on: [INTL-BASELINE-1]
 touches:
   - apps/mobile/src/features/settings
   - apps/mobile/src/features/my
@@ -230,26 +233,34 @@ environment_targets: [local, staging, production]
 migration: required
 development_db_target: local-only
 rollback:
-  - 새 국제 세금 경로 비활성화
-  - 구 읽기 계약 유지
+  - cutover 전에는 새 국제 세금 경로를 비활성화하고 구 읽기 계약 유지
+  - cutover 후 확정 판매가 있으면 구 계산으로 rollback하지 않고 새 calculation_version으로 전진 수정
   - 새 migration으로 전진 복구
 acceptance:
   - 5개국·5개 통화·한국어/영어 독립 조합이 저장된다
   - 법정 세율과 포함가 역산이 SQL·core에서 일치한다
   - 추가세마다 기본세 포함·미포함 계산 기준을 보존한다
   - 과거 판매와 영업일 스냅샷이 설정 변경 뒤에도 불변이다
+  - 메뉴×채널 계산선의 반올림·일부 감소·전체 취소가 당시 세액으로 복구된다
+  - 기존 기타 매출 세액과 legacy 유효 세율을 추정 없이 보존한다
   - 기존 한국 데이터 upgrade와 구 앱 호환 게이트가 검증된다
   - pnpm verify 6단계가 통과한다
 ```
 
 배포는 다음 순서를 지킨다.
 
-1. 국가·시장·세금 프로필 schema와 새 계산 계약을 **추가**한다.
-2. 기존 한국 매장과 세금 항목을 읽기 전용 감사하고, 확실한 행만 자동 이관한다.
-3. 새 RPC를 배포하되 구 앱의 읽기 계약을 유지한다.
-4. 5개국 스테이징 합성 매장 검산 후 새 앱을 배포한다.
-5. 구 앱 쓰기 소멸과 지표 안정성을 확인한다.
-6. 구 컬럼·함수 제거는 별도 `codex/international-tax-legacy-cleanup` 작업으로 수행한다.
+1. `INTL-BASELINE-1`에서 최신 main을 반영하고 0176·0177 운영 관측과 배포 증거가 사라지지 않았는지
+   대조한다.
+2. 서버 capability와 최소 앱 버전 게이트를 먼저 추가한다. 이 시점에는 새 계산을 쓰지 않는다.
+3. 국가·시장·세금 프로필 schema와 새 계산 계약을 **추가**한다.
+4. 기존 한국 매장·세금·기타 매출을 읽기 전용 감사하고, 확실한 미래 프로필만 자동 이관한다. 과거
+   세금 상세는 만들지 않는다.
+5. 새 RPC를 배포하되 구 앱의 읽기 계약은 유지하고 구 앱의 세금 쓰기는 실패 폐쇄한다.
+6. 5개국 스테이징 합성 매장과 취소·정정·반올림 검산 후 새 앱을 배포한다.
+7. 새 계약 판매가 생긴 뒤에는 구 계산 rollback을 금지하고 새 migration·calculation_version으로만
+   전진 수정한다.
+8. 구 앱 쓰기 소멸과 지표 안정성을 확인한 뒤 구 컬럼·함수 제거는 별도
+   `codex/international-tax-legacy-cleanup` 작업으로 수행한다.
 
 ## 4. 마이그레이션과 DB 적용 게이트
 
@@ -340,7 +351,7 @@ rollback한다. 정확한 facade RPC 시그니처 외 authenticated 실행 권�
 직접 쓰기 경로도 실패로 판정한다. 2026-08-28 개발 DB 최초 실측은 RLS 비활성 앱 표 `0개`, 원장
 직접 쓰기 조합 `32개`, 미승인 함수 `87개`였고, P0-5가 뒤의 두 공격면을 폐쇄했다.
 
-2026-08-29 스테이징 `cvfvmpzcldyqurcrappu`에는 `0164~0174`를 배포 가드로 적용했고, 저장소 감사
+2026-08-29 스테이징 `cvfvmpzcldyqurcrappu`에는 먼저 `0164~0174`를 배포 가드로 적용했고, 저장소 감사
 SQL을 SQL Editor에서 트랜잭션·rollback 경계로 실행해 `facade_rpc_missing=0`,
 `unapproved_authenticated_rpc=0`, `rls_disabled_app_tables=0`, `ledger_write_paths=0`을 확인했다.
 배포 증거는
@@ -350,12 +361,16 @@ ACL 증거는
 고정했다. 이는 스테이징 앱 공격면의 SQL 실측 완료를 뜻하지만 `supabase_admin ACL 통과`나 셸 래퍼
 검증 완료를 뜻하지 않는다. 직접 libpq 자격이 필요한 `admin-acl.sh --remote audit` 셸 경로는
 [작업큐 P1-1](./작업큐.md#p1-1-원격-acl-읽기-전용-감사)에 대기로 남고, production은 접근·적용하지
-않았다. 따라서 production 배포의 ACL 단계는 아래 순서의 실측 결과가 없으면 중단한다.
+않았다. 2026-08-31에는 보호 게이트가 성공한 `main` `803ac0a`에서 `0176`·`0177`을 추가 적용해
+원격 migration 166개·최신 0177·pending 0개를 확인했다. `ops-health`와 GitHub 10분 workflow의
+정상 호출, Cron 강제 실패 이슈 생성, 회복 후 이슈 종료까지 실측했고 증거는
+[`2026-08-31T01-06-33-310Z-staging-803ac0a.json`](./deployments/2026-08-31T01-06-33-310Z-staging-803ac0a.json)과
+[`2026-08-31T01-12-23-staging-operations-drill.json`](./deployments/2026-08-31T01-12-23-staging-operations-drill.json)에
+고정했다. 따라서 production 배포의 ACL 단계는 아래 순서의 실측 결과가 없으면 중단한다.
 
-`ARCHITECTURE.md`의 옛 "스테이징 적용 이력 미확인" 기준선은 이 문서에서 소급 수정하지 않는다.
-[작업큐 `INTL-DOC-SYNC-1`](./작업큐.md#intl-doc-sync-1-국제-출시-운영-기준선-동기화)에 문서 전용
-동기화 과업으로 등록했으며, 위 두 배포 증거를 근거로 스테이징 SQL 실측과 production 미확인,
-원격 셸 경로 대기를 분리해 반영한다.
+`ARCHITECTURE.md`와 작업큐의 옛 `0164~0174` 기준선은 구현 시작 전에
+[작업큐 `INTL-BASELINE-1`](./작업큐.md#intl-baseline-1-최신-main과-운영-기준선-합류)에서 최신 main의
+0176·0177 적용·운영 관측 증거, production 미적용, 원격 셸 경로 대기를 분리해 반영한다.
 
 구현 후 첫 원격 연결에서는 다음 순서로 확인한다.
 
@@ -423,6 +438,25 @@ Producer·Webhook도 기본값 `false`인 integration feature flag를 사용한�
 `cron.database_name` 일치 여부는 실행 환경 선택이지 기능 활성화 장치가 아니다. Consumer 활성화 전에는
 outbox 생성·Queue enqueue·외부 요청이 0건이라는 사후조건을 둔다. 기존 `margincook-close-due`,
 `margincook-apply-breaks`, `margincook-purge-changes`는 이 신규 integration Cron 활성화 규칙의 대상이 아니다.
+
+#### 5.2.1 국제 세금 cutover 순서
+
+`INTL-1`은 DB와 앱을 한 번에 뒤집지 않는다.
+
+```text
+A  capability/minimum-write-version 추가     구 앱 세금 쓰기 차단은 아직 비활성
+B  확장형 프로필·스냅샷·계산 함수 추가      기존 읽기·계산은 그대로
+C  읽기 전용 감사·명시적 미래 프로필 이관   과거 세금 상세 역산 금지
+D  스테이징 합성 매장 dual-read 대조         새 경로는 shadow 결과만 기록
+E  최소 앱 버전 게이트 활성                  구 앱 세금 쓰기 실패 폐쇄
+F  새 앱 쓰기와 새 계산 활성                 이 시점부터 구 계산 rollback 금지
+G  관측·과거 정정·취소 확인                  calculation_version별 지표 분리
+H  구 계약 제거 별도 브랜치                  구 앱 쓰기 0과 보존 기간 확인 뒤
+```
+
+단계 D의 dual-read는 같은 입력을 두 공식으로 비교하는 관측이며 두 결과를 업무 테이블에 동시에 쓰는
+dual-write가 아니다. E 이후 구 앱 요청은 명시적 결과 코드로 거부한다. F 이후 결함은 구 공식을 다시
+켜지 않고 새 migration과 새 계산 판본으로 고친다.
 
 ### 5.3 스테이징 배포
 
