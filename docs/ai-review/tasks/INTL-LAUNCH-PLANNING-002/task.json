@@ -1,0 +1,103 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "INTL-LAUNCH-PLANNING-002",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R2",
+  "author_role": "SOLAR-ARCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "803ac0ae1f79ec3310ca4b091989ef0d4f287572",
+  "target_commit_sha": "99cd21f272d08465e91b685b80989a04a0c5d6af",
+  "target_tree_oid": "11cc50cce1dd33cc18ea7f836713d0582857e02c",
+  "agents_blob_oid": "9264927700bd7cfcb60460a8279ad72625b505df",
+  "agents_sha256": "bfb2e19944917b86251e998caf929aaac0b12051168c5ad3f42d209f9c04df16",
+  "requirements": [
+    "INTL-REQ-001: 1차 동시 출시 범위를 한국·미국·영국·호주·캐나다와 한국어·영어로 일관되게 고정한다.",
+    "INTL-REQ-002: 앱 언어, 매장 국가, 업무 로케일, 통화, 시간대, 세금 관할을 서로 독립된 설정으로 정의한다.",
+    "INTL-REQ-003: 국가별 기본 세금 명칭과 법정 세율, 판매가의 기본세 포함·미포함, 과세 상태와 납부 주체를 저장할 수 있어야 한다.",
+    "INTL-REQ-004: 각 추가 세금 항목이 고객 결제금액 기준 또는 국가별 기본세 제외 금액 기준을 독립적으로 선택할 수 있어야 한다.",
+    "INTL-REQ-005: 기본세와 추가세의 포함·미포함 계산식이 서로 모순 없이 정의되고 현재 0090 판매가 비례 합산식과 향후 계약을 명확히 구분한다.",
+    "INTL-REQ-006: 확정 판매·손익에는 국가·통화·세금 설정과 계산 결과 스냅샷을 남기며 DB RPC를 최종 계산 권위로 유지한다.",
+    "INTL-REQ-007: 기존 데이터는 추측으로 소급 변환하지 않고 새 migration과 명시적 기본값·확인 절차로 전진 적용한다.",
+    "INTL-REQ-008: 국제 출시 1차에는 새 서버·Edge Function·상시 worker를 추가하지 않고 Supabase RPC·RLS 경계를 유지한다.",
+    "INTL-REQ-009: 제품·UX 방향 확정과 DB·앱 구현 전 상태를 문서 전반에서 혼동하지 않는다.",
+    "INTL-REQ-010: 국가별 법정 세율 자동 결정이나 신고 대행으로 오인되지 않도록 매장 입력·검증 책임과 공식 출처 확인 게이트를 명시한다.",
+    "INTL-REQ-011: 프로토타입의 용어·입력 순서·추가세 계산 기준 UI가 공식 국제 출시 기획안과 일치한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:server-calculation-authority",
+    "AGENTS:point-in-time-preservation",
+    "AGENTS:store-date-from-server",
+    "AGENTS:forward-only-migrations",
+    "AGENTS:settings-revision-noop",
+    "ARCHITECTURE:current-vs-planned-contract",
+    "WORK-QUEUE:INTL-1"
+  ],
+  "artifact_paths": [
+    "ARCHITECTURE.md",
+    "README.md",
+    "apps/mobile/src/features/README.md",
+    "docs/prototypes/international-tax-settings.html",
+    "docs/국가-통화-세금-국제출시-기획안.md",
+    "docs/브랜치-DB-운영-기획안.md",
+    "docs/서버-확장-아키텍처-기획안.md",
+    "docs/작업큐.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/team/TEAM_LEARNING.md",
+    "packages/core/src/recipe.ts",
+    "packages/db/supabase/migrations/20260821000087_store_tax.sql",
+    "packages/db/supabase/migrations/20260821000088_save_store_tax.sql",
+    "packages/db/supabase/migrations/20260821000090_tax_items_only.sql"
+  ],
+  "evidence_paths": [],
+  "excluded_paths": [],
+  "required_evidence": [
+    "출시 국가·언어·통화·업무 로케일·시간대·세금 관할의 문서 간 일치",
+    "기본세 포함·미포함과 추가세별 계산 기준의 수식·용어·예시 정합성",
+    "현재 0087·0088·0090 세금 저장·계산 계약과 INTL-1 계획 상태의 명시적 분리",
+    "확정 판매 스냅샷·설정 revision·멱등성·RLS·DB RPC 권위 보존",
+    "브랜치·DB migration·검증·배포·복구 계획과 서버 확장 보류 판단의 일치",
+    "프로토타입 UI와 공식 기획안의 입력 구조·국가별 명칭 일치",
+    "법정 세율 자동 판정·세무 신고 대행으로 확대 해석하지 않는 운영 경계"
+  ],
+  "human_decisions": [
+    "2026-08-31 사용자가 1차 동시 출시 범위를 한국·미국·영국·호주·캐나다로 정했다.",
+    "2026-08-31 사용자가 초기 지원 언어를 한국어·영어로 정했다.",
+    "2026-08-31 사용자가 추가 세금 항목마다 계산 기준 라디오 버튼을 두도록 정했다.",
+    "2026-08-31 사용자가 기존 기획안을 백업 개념의 개정판으로 작성하고 페이블 검증을 요청했다.",
+    "국가·지역별 실제 세무 적용과 신고 책임은 출시 전 현지 전문가·공식 기관 확인이 필요하다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "4.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": [
+    {
+      "learning_id": "LRN-ORCH-CI-001",
+      "reason": "이번 범위는 문서 개정판의 구조 검수이며 main 통합·원격 CI 게이트는 수행하지 않는다."
+    },
+    {
+      "learning_id": "LRN-CODEX-TIME-001",
+      "reason": "영업일 시간 fixture 규칙은 국제 세금 기획 문서 검수와 직접 관련이 없다."
+    },
+    {
+      "learning_id": "LRN-OPS-BACKUP-001",
+      "reason": "로컬 DB 파괴적 재구축을 실행하지 않으므로 백업 복구 규칙을 적용하지 않는다."
+    },
+    {
+      "learning_id": "LRN-AUDIT-PIN-001",
+      "reason": "CANDIDATE 상태이며 이번 제품 기획 검수 범위와도 직접 관련이 없다."
+    }
+  ]
+}

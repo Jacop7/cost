@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "INTL-LAUNCH-PLANNING-002",
+  "sequence": "t0001",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-08-31T01:31:52.406Z",
+  "turn_id": "turn-s001",
+  "turn_type": "SOLAR_REQUEST",
+  "role": "SOLAR-ARCH",
+  "task_sha256": "7ece66d80cb0bf1634cb33328b1c1d3a15ec41186ea39ed93b30f9643d8b79e8",
+  "runner_sha256": "80dae1d06c89af056e9d8c210b571e978ee534fc128a5fe3b9867610b5ae447b",
+  "previous_manual_run_sha256": null,
+  "collaboration_before_sha256": "19cfb04d4e034457f8a3ba280d68980001104576bdfc712cb8f4899e4fb8796f",
+  "collaboration_before_bytes": 299,
+  "collaboration_entry_sha256": "58e136c1a634772221fb4075dc6bb70e0ab279784957b1331e29cfe1083299cd",
+  "collaboration_entry_bytes": 2664,
+  "collaboration_after_sha256": "545138f8437f51a44b781aa23e330d2c1dd22504ad7c760b0d6a169d70e32665",
+  "collaboration_after_bytes": 2963
+}
