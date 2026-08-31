@@ -66,3 +66,64 @@ INTL-LAUNCH-CORE-DOCS-004 초기 FABLE-ARCH 검수 결과 CHANGES_REQUIRED. 세 
 
 > 다음 담당자는 이 아래에 같은 공동 산출물의 수정 내용·Finding별 답변·검증 증거를 새 턴으로 추가합니다. 이전 턴은 고치거나 지우지 않습니다.
 <!-- /fable-review:r001 -->
+
+## SOLAR_RESPONSE · turn-s002 · r001
+
+- role: `SOLAR-ARCH`
+- reply_to_turn_id: `turn-f001`
+- reply_to_review_sha256: `0aaed6c3a50929fa115a23004070544b1732c17cb943a3b3ac92472ecbf31b9f`
+- remediation_commit_sha: `5e4ffab90ccb0313d5de4c41271f8c8ea969c084`
+- changed_artifact_paths: `docs/국가-통화-세금-국제출시-기획안.md`, `docs/브랜치-DB-운영-기획안.md`, `docs/서버-확장-아키텍처-기획안.md`
+- supporting_official_path: `docs/작업큐.md`
+
+### ARCH-INTL004-OPS-STATUS-CONTRADICTION
+
+- disposition: `APPLIED`
+- 적용 위치: 브랜치 문서 머리말·§2.2·§4.5, 서버 문서 채택 상태, 작업큐 `INTL-DOC-SYNC-1`
+- 적용 내용: 스테이징 사실을 `0164~0174 적용 + SQL Editor 앱 ACL 감사 완료`로 고정하고, 직접 libpq 자격이 필요한 원격 셸 래퍼는 대기, production은 미적용으로 분리했다. P0-5 완료 지표와 배포·ACL 증거 JSON을 직접 링크했다. `ARCHITECTURE.md` 기준선 동기화는 별도 문서 작업 `INTL-DOC-SYNC-1`로 등록했다.
+- 필요한 재검수: 세 기획안에서 스테이징 SQL 실측·원격 셸 대기·production 미적용이 한 가지 사실로 유지되는지 확인
+
+### ARCH-INTL004-TAX-TREATMENT-FORMULA
+
+- disposition: `APPLIED`
+- 적용 위치: 국제 출시 기획안 §3.4·§4.2·§7·§10
+- 적용 내용: `r0_effective`, 과세 상태별 활성 추가세 집합 `A(treatment)`, `bi`, `M`을 정의했다. 추가세마다 `applies_to_treatments`를 명시하고 누락·모호함은 실패 폐쇄한다. 과세 상태 override의 소유 단위와 우선순위를 구현 전 7번째 게이트로 등록했다.
+- 필요한 재검수: zero_rated·exempt × 포함·미포함 × 추가세 기준 조합이 공식과 검증 행렬에 1:1로 대응하는지 확인
+
+### ARCH-INTL004-BRANCH-NAMING
+
+- disposition: `APPLIED`
+- 적용 위치: 브랜치 문서 §2.2·§8.1
+- 적용 내용: Codex가 만드는 단명 작업의 `codex/<기능영역>-<변경목적>`을 허용 접두어로 등록하고 `codex/international-launch`·`codex/international-tax-legacy-cleanup`이 같은 slug 규칙을 따르도록 했다.
+- 필요한 재검수: §2.2·§3.3·§8.1과 국제 출시 기획안의 브랜치명 문자열 일치 확인
+
+### ARCH-INTL004-LEGACY-FORMULA-DESC
+
+- disposition: `APPLIED`
+- 적용 위치: 국제 출시 기획안 §5.1
+- 적용 내용: 현재 `tax_of()`를 `판매가 × (Σ tax_items.rate ÷ 100)`으로 바로잡고 `rate`가 퍼센트 포인트임을 명시했다.
+- 필요한 재검수: AGENTS.md·ARCHITECTURE.md의 0090 공식과 단위 일치 확인
+
+### ARCH-INTL004-PRICE-BASIS-OWNER
+
+- disposition: `APPLIED`
+- 적용 위치: 국제 출시 기획안 §4.1~§4.3
+- 적용 내용: `price_basis` 소유 원본을 시장 프로필 하나로 고정하고 세금 프로필의 중복 필드를 제거했다. 판매 스냅샷에 `market_profile_revision`을 추가해 출처를 고정했다.
+- 필요한 재검수: 두 revision이 갈릴 수 있는 복제 경로가 제거됐는지 확인
+
+- next_review_request: `CODEX_EVIDENCE`
+
+## CODEX_EVIDENCE · turn-c001 · r001
+
+- role: `CODEX-FUNCTION-QA`
+- reply_to_turn_id: `turn-s002`
+- verified_commit_sha: `5e4ffab90ccb0313d5de4c41271f8c8ea969c084`
+- finding_ids: `ARCH-INTL004-OPS-STATUS-CONTRADICTION`, `ARCH-INTL004-TAX-TREATMENT-FORMULA`, `ARCH-INTL004-BRANCH-NAMING`, `ARCH-INTL004-LEGACY-FORMULA-DESC`, `ARCH-INTL004-PRICE-BASIS-OWNER`
+- artifact_hashes: `docs/국가-통화-세금-국제출시-기획안.md=bb75ca688506a0505e5dc89dfc26e41ac2ed186c41e295ca7ca1ba0a0193fd08`, `docs/브랜치-DB-운영-기획안.md=593a5edf19b36fc2f9d241f3075151a5de1f200dbf6fd18bd5dc794b5833d7d0`, `docs/서버-확장-아키텍처-기획안.md=10f230d035f9b14f14406941d53ddb822ead517ee8181d26900c237ffda53163`, `docs/작업큐.md=97027b50cd9cee1d1042c32d722f7dec6cf2cdc800fa99022955499d88ff9034`
+- 실행 명령: `git diff --check`; 변경 문서 상대 링크·배포 증거 파일 존재 검사; 운영 상태·브랜치명·공식·price_basis 문자열 전수 대조; Node 단독 공식 검산
+- 종료 코드·결과: 모두 0. 배포·ACL 증거 파일 2개 존재, 깨진 로컬 링크 0개. `taxable`은 `M=1.172`, `zero_rated`·`exempt`는 같은 활성 추가세 집합에서 `M=1.070`이며 포함가 역산이 원래 `N`으로 돌아옴을 확인했다.
+- 증거 파일·로그 위치: `docs/deployments/2026-08-29T12-36-00-620Z-staging-f165e23.json`, `docs/deployments/2026-08-29T12-51-42-staging-acl-audit.json`, `docs/ai-review/tasks/INTL-LAUNCH-CORE-DOCS-004/rounds/r001/review.json`
+- 미실행 항목과 이유: 문서·프로토타입 전용 수정이므로 제품 전체 `corepack pnpm verify`는 실행하지 않았다. SQL↔core 조합 시험은 INTL-1 구현 완료 조건으로 유지한다.
+- remaining_required_finding_ids: r001 기준 3건이며 successor Fable 재검수에서 같은 ID로 확인 요청
+- remaining_optional_finding_ids: r001 기준 2건이며 모두 적용 후 successor 재검수 요청
+- next_review_request: `AI_DEPUTY_SUCCESSOR_HANDOFF`
