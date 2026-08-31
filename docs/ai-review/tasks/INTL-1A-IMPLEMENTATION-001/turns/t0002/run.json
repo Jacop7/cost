@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "INTL-1A-IMPLEMENTATION-001",
+  "sequence": "t0002",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-08-31T06:41:57.408Z",
+  "turn_id": "turn-c001",
+  "turn_type": "CODEX_EVIDENCE",
+  "role": "CODEX-FUNCTION-QA",
+  "task_sha256": "66d3bca801159d84d844dac610d07b99e185a59a69a313725b758d3ea6db0bc6",
+  "runner_sha256": "80dae1d06c89af056e9d8c210b571e978ee534fc128a5fe3b9867610b5ae447b",
+  "previous_manual_run_sha256": "630e87fb8c2d6a6168a89d98a0f1c248cf1ec98de6c1f7e5e34358a0654f8c48",
+  "collaboration_before_sha256": "9a9309bcee0bd7c8abe9444714a89b5d938616519f4c500b52c064f1e518b719",
+  "collaboration_before_bytes": 6361,
+  "collaboration_entry_sha256": "a0ee63f6305279ae57d8ff6a69d94107678668d5e7c0ba3a7763d1be78c54ae9",
+  "collaboration_entry_bytes": 922,
+  "collaboration_after_sha256": "f7083c1c3f3e99960576d370a4585c4ef5bbd13504e8c325ba00a2c22e5d1de8",
+  "collaboration_after_bytes": 7283
+}

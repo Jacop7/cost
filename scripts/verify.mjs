@@ -153,7 +153,12 @@ if (skipDb) {
        */
       if (ok) {
         process.env.MARGINCOOK_PARITY_DB = db;
-        try { ok = pnpmRun(['--filter', '@margincook/core', 'exec', 'vitest', 'run', 'tests/localeDbParity.test.ts']); }
+        try {
+          ok = pnpmRun([
+            '--filter', '@margincook/core', 'exec', 'vitest', 'run',
+            'tests/localeDbParity.test.ts', 'tests/internationalDbParity.test.ts',
+          ]);
+        }
         finally { delete process.env.MARGINCOOK_PARITY_DB; }
       }
     } finally {

@@ -1706,6 +1706,7 @@ export type Database = {
         }
         Returns: Json
       }
+      app_capabilities: { Args: never; Returns: Json }
       apply_due_breaks: { Args: never; Returns: Json }
       apply_operating_hours: {
         Args: {

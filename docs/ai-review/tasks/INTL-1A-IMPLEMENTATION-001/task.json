@@ -1,0 +1,106 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "INTL-1A-IMPLEMENTATION-001",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R2",
+  "author_role": "SOLAR-ARCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "e09b858fd9f8f3786d49245569f5eb31d4d64aaa",
+  "target_commit_sha": "e09b858fd9f8f3786d49245569f5eb31d4d64aaa",
+  "target_tree_oid": "48e1b39258c8ea22e396572d14df2031762a0697",
+  "agents_blob_oid": "9264927700bd7cfcb60460a8279ad72625b505df",
+  "agents_sha256": "bfb2e19944917b86251e998caf929aaac0b12051168c5ad3f42d209f9c04df16",
+  "requirements": [
+    "INTL-1A-001: 한국·미국·영국·호주·캐나다의 국가·통화·업무 로케일과 minor unit 계약을 공용 타입 한 곳에 고정한다.",
+    "INTL-1A-002: 사용자 앱 언어를 매장 국가·통화·업무 로케일 metadata와 분리한다.",
+    "INTL-1A-003: 시장/세금 프로필 ID·revision·적용 구간, 구성 항목 계산 기준, 항목×채널 납부 주체, 판매 세금 스냅샷의 다음 단계 타입을 정의한다.",
+    "INTL-1A-004: app_capabilities()는 계약 판본과 최소 지원 앱 버전을 인증 클라이언트에 공개하되 국제 세금 읽기·쓰기를 모두 비활성으로 둔다.",
+    "INTL-1A-005: 0178은 현행 0090 tax_of/save_store_tax/판매·손익 계산과 저장을 바꾸지 않는다.",
+    "INTL-1A-006: capability RPC를 정확한 ACL 허용 목록에 추가하고 anon과 미승인 authenticated RPC 공격면을 열지 않는다.",
+    "INTL-1A-007: 새 DB, 0177→0178 upgrade, DB↔TypeScript parity, 타입 생성과 전체 verify에서 계약과 불변을 자동 검증한다.",
+    "INTL-1A-008: 문서는 구현 상태와 남은 Fable·동일 SHA CI 게이트를 완료된 것처럼 과장하지 않는다."
+  ],
+  "invariant_ids": [
+    "AGENTS:server-calculation-authority",
+    "AGENTS:point-in-time-preservation",
+    "AGENTS:forward-only-migrations",
+    "AGENTS:rpc-least-privilege",
+    "ARCHITECTURE:current-0090-tax-contract",
+    "WORK-QUEUE:INTL-1A"
+  ],
+  "artifact_paths": [
+    "packages/types/src/index.ts",
+    "packages/types/src/international.ts",
+    "packages/core/tests/internationalContract.test.ts",
+    "packages/core/tests/internationalDbParity.test.ts",
+    "packages/db/supabase/migrations/20260831000178_international_contract_capabilities.sql",
+    "packages/db/tests/37_international_contract_capabilities.sql",
+    "packages/db/tests/34_rpc_least_privilege.sql",
+    "packages/db/scripts/admin-acl-audit.sql",
+    "packages/db/scripts/admin-acl-audit.test.mjs",
+    "packages/db/scripts/upgrade-check.sh",
+    "scripts/verify.mjs",
+    "docs/국가-통화-세금-국제출시-기획안.md",
+    "docs/작업큐.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "ARCHITECTURE.md",
+    "docs/ai-review/README.md",
+    "docs/브랜치-DB-운영-기획안.md",
+    "docs/서버-확장-아키텍처-기획안.md",
+    "packages/db/supabase/migrations/20260821000090_tax_items_only.sql",
+    "packages/db/supabase/migrations/20260831000177_operations_health_signal_separation.sql"
+  ],
+  "evidence_paths": [
+    "packages/db/src/database.types.ts",
+    "docs/ai-review/tasks/INTL-LAUNCH-CONTRACT-HARDENING-001/rounds/r002/review.json",
+    "docs/ai-review/tasks/INTL-BASELINE-COMMIT-001/rounds/r001/review.json"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "5개국·5개 통화·5개 업무 로케일의 순서·유일성, KRW 0자리와 나머지 2자리, 앱 언어 분리",
+    "app_capabilities() DB JSON과 APP_CAPABILITIES_BASELINE의 실제 parity 및 쓰기 비활성 상태",
+    "authenticated·service_role 허용, anon·PUBLIC 거부, 승인 facade 66개와 미승인 authenticated RPC 0개",
+    "0177→0178 전후 12000원 포함가의 현행 10/110 세금 계산 불변과 새 DB 37/37",
+    "INTL-1A가 시장/세금 저장 표나 새 금액 원장을 만들지 않고 다음 단계 타입만 정의하는지 검토",
+    "corepack pnpm verify 6/6: DB 37/37, core 183(3 skipped), mobile 212, upgrade 14/14, 웹 번들",
+    "문서가 Fable과 정확한 SHA 보호 CI를 아직 남은 게이트로 기록하는지 검토"
+  ],
+  "human_decisions": [
+    "2026-08-31 사용자는 국제 출시 기획안을 먼저 확정하고 Fable 검수를 거친 뒤 순서대로 구현하도록 승인했다.",
+    "INTL-1A는 계약과 비활성 capability만 구현하며 현행 세금 계산·저장 동작을 바꾸지 않는다.",
+    "앱 언어는 사용자 선호이고 국가·통화·업무 로케일은 매장 시장 프로필이 소유한다.",
+    "Fable은 기존 Claude Code Max 로그인 세션을 사용하며 4.00 USD는 이번 Task 실행 상한이다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "4.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [
+    "LRN-ORCH-CI-001"
+  ],
+  "excluded_learning_ids": [
+    {
+      "learning_id": "LRN-CODEX-TIME-001",
+      "reason": "영업일 fixture 시간 독립은 이번 국제 계약·capability 변경 범위가 아니다."
+    },
+    {
+      "learning_id": "LRN-OPS-BACKUP-001",
+      "reason": "파괴적 DB 재구축이나 백업 복구를 실행하지 않는다."
+    },
+    {
+      "learning_id": "LRN-AUDIT-PIN-001",
+      "reason": "CANDIDATE 학습이며 이번 신규 계약 구현의 검수 입력으로 승격하지 않는다."
+    }
+  ]
+}

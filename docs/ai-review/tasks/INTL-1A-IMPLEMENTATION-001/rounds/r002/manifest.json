@@ -1,0 +1,318 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "INTL-1A-IMPLEMENTATION-001",
+  "round": "r002",
+  "created_at": "2026-08-31T06:42:08.678Z",
+  "review_mode": "RECHECK",
+  "baseline_commit_sha": "e09b858fd9f8f3786d49245569f5eb31d4d64aaa",
+  "target_commit_sha": "e09b858fd9f8f3786d49245569f5eb31d4d64aaa",
+  "target_tree_oid": "48e1b39258c8ea22e396572d14df2031762a0697",
+  "agents_blob_oid": "9264927700bd7cfcb60460a8279ad72625b505df",
+  "agents_sha256": "bfb2e19944917b86251e998caf929aaac0b12051168c5ad3f42d209f9c04df16",
+  "task_sha256": "66d3bca801159d84d844dac610d07b99e185a59a69a313725b758d3ea6db0bc6",
+  "collaboration_sha256": "f7083c1c3f3e99960576d370a4585c4ef5bbd13504e8c325ba00a2c22e5d1de8",
+  "collaboration_bytes": 7283,
+  "input_files_sha256": "bcd4d37cdee5f0005671fba9c1c9ae86255fd47299914e64b0358196561a1ded",
+  "schema_sha256": "094abd790e5e223cfab7e245f0ef9c1a70f9ad927c3c54f10d1a0579e70dd150",
+  "runner_sha256": "80dae1d06c89af056e9d8c210b571e978ee534fc128a5fe3b9867610b5ae447b",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "previous_review_sha256": "f0d466c6c4a967a3076d96c274b50a7aeb096cbcc495161f2b5255cb2fc93dfd",
+  "previous_run_sha256": "91be7fc96f5be27d00b2cf8cb093989246ecca8e0e4a51df4434c42b6445c45e",
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "fallback_review": null,
+  "closure_review": null,
+  "fallback_input_scope": null,
+  "retry_of_failed_round": null,
+  "artifact_paths": [
+    "packages/types/src/index.ts",
+    "packages/types/src/international.ts",
+    "packages/core/tests/internationalContract.test.ts",
+    "packages/core/tests/internationalDbParity.test.ts",
+    "packages/db/supabase/migrations/20260831000178_international_contract_capabilities.sql",
+    "packages/db/tests/37_international_contract_capabilities.sql",
+    "packages/db/tests/34_rpc_least_privilege.sql",
+    "packages/db/scripts/admin-acl-audit.sql",
+    "packages/db/scripts/admin-acl-audit.test.mjs",
+    "packages/db/scripts/upgrade-check.sh",
+    "scripts/verify.mjs",
+    "docs/국가-통화-세금-국제출시-기획안.md",
+    "docs/작업큐.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "ARCHITECTURE.md",
+    "docs/ai-review/README.md",
+    "docs/브랜치-DB-운영-기획안.md",
+    "docs/서버-확장-아키텍처-기획안.md",
+    "packages/db/supabase/migrations/20260821000090_tax_items_only.sql",
+    "packages/db/supabase/migrations/20260831000177_operations_health_signal_separation.sql"
+  ],
+  "evidence_paths": [
+    "packages/db/src/database.types.ts",
+    "docs/ai-review/tasks/INTL-LAUNCH-CONTRACT-HARDENING-001/rounds/r002/review.json",
+    "docs/ai-review/tasks/INTL-BASELINE-COMMIT-001/rounds/r001/review.json"
+  ],
+  "allowed_paths": [
+    "packages/types/src/index.ts",
+    "packages/types/src/international.ts",
+    "packages/core/tests/internationalContract.test.ts",
+    "packages/core/tests/internationalDbParity.test.ts",
+    "packages/db/supabase/migrations/20260831000178_international_contract_capabilities.sql",
+    "packages/db/tests/37_international_contract_capabilities.sql",
+    "packages/db/tests/34_rpc_least_privilege.sql",
+    "packages/db/scripts/admin-acl-audit.sql",
+    "packages/db/scripts/admin-acl-audit.test.mjs",
+    "packages/db/scripts/upgrade-check.sh",
+    "scripts/verify.mjs",
+    "docs/국가-통화-세금-국제출시-기획안.md",
+    "docs/작업큐.md",
+    "AGENTS.md",
+    "ARCHITECTURE.md",
+    "docs/ai-review/README.md",
+    "docs/브랜치-DB-운영-기획안.md",
+    "docs/서버-확장-아키텍처-기획안.md",
+    "packages/db/supabase/migrations/20260821000090_tax_items_only.sql",
+    "packages/db/supabase/migrations/20260831000177_operations_health_signal_separation.sql",
+    "packages/db/src/database.types.ts",
+    "docs/ai-review/tasks/INTL-LAUNCH-CONTRACT-HARDENING-001/rounds/r002/review.json",
+    "docs/ai-review/tasks/INTL-BASELINE-COMMIT-001/rounds/r001/review.json"
+  ],
+  "excluded_paths": [],
+  "applied_learning_ids": [
+    "LRN-ORCH-CI-001"
+  ],
+  "excluded_learning_ids": [
+    {
+      "learning_id": "LRN-CODEX-TIME-001",
+      "reason": "영업일 fixture 시간 독립은 이번 국제 계약·capability 변경 범위가 아니다."
+    },
+    {
+      "learning_id": "LRN-OPS-BACKUP-001",
+      "reason": "파괴적 DB 재구축이나 백업 복구를 실행하지 않는다."
+    },
+    {
+      "learning_id": "LRN-AUDIT-PIN-001",
+      "reason": "CANDIDATE 학습이며 이번 신규 계약 구현의 검수 입력으로 승격하지 않는다."
+    }
+  ],
+  "learning_registry_blob_oid": "77f00167d790c82373c1aa803d91874952c3334a",
+  "learning_registry_sha256": "4717fe99c86319d7c0abc5c8dd38e68e3a55722d7cfa56b8de173ed05ca1388f",
+  "learning_assignment_sha256": "05f314edbc7e9e81b2582ebd5339cd7e8e065734495c5f441e5d000e9c336645",
+  "learning_target_date": "2026-08-31",
+  "input_files": [
+    {
+      "path": "AGENTS.md",
+      "path_role": "REFERENCE",
+      "change_type": "UNCHANGED",
+      "size": 11423,
+      "git_blob_oid": "9264927700bd7cfcb60460a8279ad72625b505df",
+      "sha256": "bfb2e19944917b86251e998caf929aaac0b12051168c5ad3f42d209f9c04df16",
+      "line_count": 158
+    },
+    {
+      "path": "ARCHITECTURE.md",
+      "path_role": "REFERENCE",
+      "change_type": "MODIFIED",
+      "size": 12603,
+      "git_blob_oid": "0653bdadc97bcf7b7a3d381c89f238eb528c8ed2",
+      "sha256": "8ec58ac394d4f8060c253674f3919e2bc8b7a0d7bdf0b5567cf308c4927622ba",
+      "line_count": 184
+    },
+    {
+      "path": "docs/국가-통화-세금-국제출시-기획안.md",
+      "path_role": "ARTIFACT",
+      "change_type": "MODIFIED",
+      "size": 27447,
+      "git_blob_oid": "22024ccab7c80ed1fff06e9dc4225c2c86a9e042",
+      "sha256": "7a8cceb88df0f334b7bc17cc1494e84b8a015757a50cd615b772a465dfcedb56",
+      "line_count": 507
+    },
+    {
+      "path": "docs/브랜치-DB-운영-기획안.md",
+      "path_role": "REFERENCE",
+      "change_type": "MODIFIED",
+      "size": 51025,
+      "git_blob_oid": "1d1afe3b9637dcd914db4d635a9c30fff71851b0",
+      "sha256": "cd62bf4e81049b4428ea2a2ba6a96f30b6e8a879b1deed720ea0ac9047e764fa",
+      "line_count": 824
+    },
+    {
+      "path": "docs/서버-확장-아키텍처-기획안.md",
+      "path_role": "REFERENCE",
+      "change_type": "MODIFIED",
+      "size": 53787,
+      "git_blob_oid": "e6360e9d00fb72af3e9c54d79ddf3e3b4748e232",
+      "sha256": "ee533ba72d536365746cb04c7585630a19b8dc722d29b3c5a3318115466ca098",
+      "line_count": 972
+    },
+    {
+      "path": "docs/작업큐.md",
+      "path_role": "ARTIFACT",
+      "change_type": "MODIFIED",
+      "size": 96601,
+      "git_blob_oid": "57bf7021e149044abe2e82ce1a2bd977b3ff0cad",
+      "sha256": "208d7096cfcae6bb1a1930070cb77c4e83fe1199f5528014610b7b7970e7569a",
+      "line_count": 1440
+    },
+    {
+      "path": "docs/ai-review/README.md",
+      "path_role": "REFERENCE",
+      "change_type": "MODIFIED",
+      "size": 39999,
+      "git_blob_oid": "f153ef957ed3b61654bed2aa4b747c47308ab7d7",
+      "sha256": "f353c0a4a51a8f80ccbfd413784913643aa2b1ba240599fcdd31e37bc46c004c",
+      "line_count": 536
+    },
+    {
+      "path": "docs/ai-review/tasks/INTL-BASELINE-COMMIT-001/rounds/r001/review.json",
+      "path_role": "EVIDENCE",
+      "change_type": "UNCHANGED",
+      "size": 6617,
+      "git_blob_oid": "eb83872da820724f4cf8d68f9173f22fe01f3de7",
+      "sha256": "be388f095a41c82104f9cdd7e178655352d991597c445eea667ba5a97efa2deb",
+      "line_count": 84
+    },
+    {
+      "path": "docs/ai-review/tasks/INTL-LAUNCH-CONTRACT-HARDENING-001/rounds/r002/review.json",
+      "path_role": "EVIDENCE",
+      "change_type": "UNCHANGED",
+      "size": 6980,
+      "git_blob_oid": "549d1a7db74047c2fd16ce2088a5b86e710f8673",
+      "sha256": "df6f4d1b5a7ef81b01f3d485ded3bb6639bffce8475306bb46868301e0c3926f",
+      "line_count": 92
+    },
+    {
+      "path": "packages/core/tests/internationalContract.test.ts",
+      "path_role": "ARTIFACT",
+      "change_type": "ADDED",
+      "size": 1480,
+      "git_blob_oid": "00c65b2ce33ab9b4b62cac675ca8b4d8ae1ccae5",
+      "sha256": "b5246d7019f97fda47d36cd87d7a7d52a97c3d15a047c326c1d420a1c002a195",
+      "line_count": 38
+    },
+    {
+      "path": "packages/core/tests/internationalDbParity.test.ts",
+      "path_role": "ARTIFACT",
+      "change_type": "ADDED",
+      "size": 1700,
+      "git_blob_oid": "1a101b042092ac55879849437615ed29ef6dd8af",
+      "sha256": "413d7bf5aa403b4dbeca6ea45fac58fd9e6fe42db40d47ce1edf5b829d198720",
+      "line_count": 43
+    },
+    {
+      "path": "packages/db/scripts/admin-acl-audit.sql",
+      "path_role": "ARTIFACT",
+      "change_type": "MODIFIED",
+      "size": 15999,
+      "git_blob_oid": "48043927faf83d77e42f8eaf855d692199df08cd",
+      "sha256": "b94c5e4232f23cfb8e6930840d406a43d933156e74ad789b793e0fc191c56a97",
+      "line_count": 263
+    },
+    {
+      "path": "packages/db/scripts/admin-acl-audit.test.mjs",
+      "path_role": "ARTIFACT",
+      "change_type": "MODIFIED",
+      "size": 9191,
+      "git_blob_oid": "9c7c68528060fde9281ea5cca7d5dbc117161d2f",
+      "sha256": "ac3cdcb972662dc20d3ec783d3c3cbe2041bcb4d0e6cd24458f87b072a8241ed",
+      "line_count": 178
+    },
+    {
+      "path": "packages/db/scripts/upgrade-check.sh",
+      "path_role": "ARTIFACT",
+      "change_type": "MODIFIED",
+      "size": 38193,
+      "git_blob_oid": "285e75d227cb929d3b12a9268b36853ede29f99b",
+      "sha256": "d99ae1c1f12615b40b772acd2fd7d45e024e3c7f022294d51a7e8a70038e71af",
+      "line_count": 685
+    },
+    {
+      "path": "packages/db/src/database.types.ts",
+      "path_role": "EVIDENCE",
+      "change_type": "MODIFIED",
+      "size": 80328,
+      "git_blob_oid": "66730e8d500fc7ce9a5dc7b94f0141444389eefa",
+      "sha256": "46fb73cf799e8f3966a2945a21f02af2b4e9eb855526eed8ff009451fb42b144",
+      "line_count": 2670
+    },
+    {
+      "path": "packages/db/supabase/migrations/20260821000090_tax_items_only.sql",
+      "path_role": "REFERENCE",
+      "change_type": "UNCHANGED",
+      "size": 4521,
+      "git_blob_oid": "7998b86bf319038ef079bd259ff08da1d4a207c8",
+      "sha256": "251861dda0f518175c1ab3ae16c2c1bab64a7ceceaa2e481cc04a91ddbffd820",
+      "line_count": 78
+    },
+    {
+      "path": "packages/db/supabase/migrations/20260831000177_operations_health_signal_separation.sql",
+      "path_role": "REFERENCE",
+      "change_type": "UNCHANGED",
+      "size": 6025,
+      "git_blob_oid": "eaf32d8b2c0448b6ca723b17d2f121c466438732",
+      "sha256": "44f2ce308d3f4d9d294fe80e7977d9c90cebc3708d89513916d0ef024b227675",
+      "line_count": 151
+    },
+    {
+      "path": "packages/db/supabase/migrations/20260831000178_international_contract_capabilities.sql",
+      "path_role": "ARTIFACT",
+      "change_type": "ADDED",
+      "size": 1987,
+      "git_blob_oid": "f88374a63e480f438378d92cb0b8a6209407dfef",
+      "sha256": "fc31d6be6871f8fd9102c268195165c19cb8def2be28021df23d66285fa19d3c",
+      "line_count": 56
+    },
+    {
+      "path": "packages/db/tests/34_rpc_least_privilege.sql",
+      "path_role": "ARTIFACT",
+      "change_type": "MODIFIED",
+      "size": 8374,
+      "git_blob_oid": "1215906668f249c7121f52f57a7483642d68283d",
+      "sha256": "b3638027ed707257926def610748db2e242461628acec24586b8a2b926793cce",
+      "line_count": 146
+    },
+    {
+      "path": "packages/db/tests/37_international_contract_capabilities.sql",
+      "path_role": "ARTIFACT",
+      "change_type": "ADDED",
+      "size": 2005,
+      "git_blob_oid": "f609ba1ea394ef90fcbf19b69a997a114381a04d",
+      "sha256": "81438da05833963510fa4e16c4e0c35836423ef0fe1d6f44838ec0cfcee321b5",
+      "line_count": 29
+    },
+    {
+      "path": "packages/types/src/index.ts",
+      "path_role": "ARTIFACT",
+      "change_type": "MODIFIED",
+      "size": 281,
+      "git_blob_oid": "67b335057e1c3d97c49e27095790c4c2712561e4",
+      "sha256": "39d55b80a43909f6c7865eed39d97873500c394dd9f81d054a9d1ecb1cab28ef",
+      "line_count": 8
+    },
+    {
+      "path": "packages/types/src/international.ts",
+      "path_role": "ARTIFACT",
+      "change_type": "ADDED",
+      "size": 7177,
+      "git_blob_oid": "46426642cb6df4dac8ba0ac67594ce28883ed28d",
+      "sha256": "39456261ba5585d1de55c7a192078f7234160f9c20f45c20a6305c566ad6bbbf",
+      "line_count": 176
+    },
+    {
+      "path": "scripts/verify.mjs",
+      "path_role": "ARTIFACT",
+      "change_type": "MODIFIED",
+      "size": 10885,
+      "git_blob_oid": "c4803a21aad9d00f599dbde37db51f8b74506aee",
+      "sha256": "27c84f01502e0e7ca6713b71248f2c5ad47dfbfd9be92bc9e0649add4b91dc89",
+      "line_count": 225
+    }
+  ],
+  "source_archive_version": 1,
+  "finding_resolution_semantics": "VERIFIED_RESOLVED_V1",
+  "artifact_snapshot_sha256": "1fc12924ec4b3827334b07fdcec8a7d3d90e339585f0b53e5a95c727add92bf6",
+  "input_snapshot_sha256": "22449c475c24fd275c0f36c9ce6dbe07bccead27b952f1f8bf1627098859cc84"
+}

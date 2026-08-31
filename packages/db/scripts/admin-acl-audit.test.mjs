@@ -49,7 +49,7 @@ const EXPECTED_METRICS = new Map([
   ['rpc_executor_facades_invalid', 'expected=0'],
   ['rpc_executor_privileged_maintenance', 'expected=0'],
   ['rls_policy_helper_calls', 'expected=0'],
-  ['facade_rpc_objects', 'expected=65'],
+  ['facade_rpc_objects', 'expected=66'],
   ['facade_rpc_missing', 'expected=0'],
   ['unapproved_authenticated_rpc', 'expected=0'],
   ['platform_default_open', 'informational'],
@@ -130,7 +130,7 @@ const FRESH_DB_VALUES = new Map([
   ['rpc_executor_facades_invalid', '0'],
   ['rpc_executor_privileged_maintenance', '0'],
   ['rls_policy_helper_calls', '0'],
-  ['facade_rpc_objects', '65'],
+  ['facade_rpc_objects', '66'],
 ]);
 for (const [metric, expectedValue] of FRESH_DB_VALUES) {
   const observed = seen.get(metric).value;
