@@ -32,6 +32,10 @@
 7. 작업의 최종 `active=true`, 마지막 `succeeded`, 실행 시각과 workflow run·issue URL을 배포 증거에
    남긴다. 실패 상태를 남긴 채 종료하지 않는다.
 
+스테이징 최초 실측은
+[`2026-08-31T01-12-23-staging-operations-drill.json`](../deployments/2026-08-31T01-12-23-staging-operations-drill.json)에
+고정했다. 운영 프로젝트에는 같은 migration·함수·비밀값을 적용하지 않았다.
+
 ## 대응
 
 - 두 1분 Cron이 함께 stale이면 pg_cron scheduler와 DB 상태부터 확인한다.

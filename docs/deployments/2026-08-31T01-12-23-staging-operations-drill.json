@@ -1,0 +1,126 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-08-31T01:12:23.000Z",
+  "status": "VERIFIED",
+  "target": "staging",
+  "project_ref": "cvfvmpzcldyqurcrappu",
+  "deploy_sha": "803ac0ae1f79ec3310ca4b091989ef0d4f287572",
+  "production_touched": false,
+  "schema": {
+    "migration_count": 166,
+    "latest": "20260831000177",
+    "pending_after_apply": 0,
+    "deployment_record": "2026-08-31T01-06-33-310Z-staging-803ac0a.json"
+  },
+  "edge_function": {
+    "name": "ops-health",
+    "id": "5cbb3a8e-e388-476c-8fbb-47a71d301f4a",
+    "status": "ACTIVE",
+    "version": 1,
+    "verify_jwt": false,
+    "deployed_bundle_sha256": "68e3398b0ba5889edfef194d20eb082af4b5aa89e3b687df6d334f015790f856",
+    "source_sha256": "BE997576E71330F5FC69FDAE02CBCD8CDA0E6AC2E47B6FB5EEBA9E392164861D",
+    "unauthenticated_http": 401,
+    "authenticated_http": 200,
+    "initial_status": "ok",
+    "initial_cron_monitored": true,
+    "initial_cron_healthy": true,
+    "initial_rpc_warning": false
+  },
+  "github_monitoring": {
+    "secret_names": [
+      "STAGING_OPS_HEALTH_URL",
+      "STAGING_OPS_HEALTH_TOKEN"
+    ],
+    "secret_values_recorded": false,
+    "healthy_run": {
+      "id": 33346738796,
+      "conclusion": "success",
+      "url": "https://github.com/Jacop7/cost/actions/runs/33346738796"
+    },
+    "degraded_run": {
+      "id": 33346823645,
+      "conclusion": "failure",
+      "direct_http": 503,
+      "job_active": false,
+      "job_healthy": false,
+      "url": "https://github.com/Jacop7/cost/actions/runs/33346823645"
+    },
+    "incident": {
+      "number": 2,
+      "title": "[ops-health] staging cron degraded",
+      "url": "https://github.com/Jacop7/cost/issues/2",
+      "created": true,
+      "final_state": "CLOSED",
+      "closed_at": "2026-08-31T01:12:23Z"
+    },
+    "recovery_run": {
+      "id": 33346870634,
+      "conclusion": "success",
+      "url": "https://github.com/Jacop7/cost/actions/runs/33346870634"
+    }
+  },
+  "cron_recovery": {
+    "margincook_close_due": {
+      "active": true,
+      "latest_status": "succeeded",
+      "latest_start_at": "2026-08-31T01:12:00.019911Z",
+      "latest_end_at": "2026-08-31T01:12:00.023478Z"
+    },
+    "margincook_apply_breaks": {
+      "active": true,
+      "latest_status": "succeeded",
+      "latest_start_at": "2026-08-31T01:12:00.022210Z",
+      "latest_end_at": "2026-08-31T01:12:00.028172Z"
+    },
+    "margincook_purge_changes": {
+      "active": true,
+      "latest_status": null,
+      "interpretation": "30시간 최초 실행 유예 안에서 healthy"
+    }
+  },
+  "remote_acl_audit": {
+    "surface": "Supabase CLI 2.116.0 Management API db query",
+    "source": "packages/db/scripts/admin-acl-audit.sql",
+    "source_sha256": "CBD4C0CE39E939090DAA57E2653BAAA4CD0BE626F4977739A60AFDE44801F348",
+    "transaction_end": "rollback",
+    "wrapper_exercised": false,
+    "wrapper_note": "Direct libpq credential was not available. The repository audit SQL was transformed only to collect all result rows in one Management API response; every authoritative predicate was unchanged.",
+    "identity": {
+      "current_user": "postgres",
+      "rolsuper": false,
+      "supabase_admin_member": false
+    },
+    "metrics": {
+      "anon_rpc": "0|expected=0",
+      "blocked_internal_rpc_objects": "11|expected=11",
+      "blocked_internal_rpc": "0|expected=0",
+      "facade_rpc_missing": "0|expected=0",
+      "facade_rpc_objects": "65|expected=65",
+      "ledger_write_paths": "0|expected=0",
+      "migrations": "2|expected=2",
+      "platform_default_open": "1|informational",
+      "probe_dangerous": "0|expected=0",
+      "probe_owner": "postgres|expected=postgres",
+      "protected_objects": "6|expected=6",
+      "protected_writes": "0|expected=0",
+      "public_dangerous": "0|expected=0",
+      "rls_disabled_app_tables": "0|expected=0",
+      "rls_policy_helper_calls": "0|expected=0",
+      "rpc_executor_facades_invalid": "0|expected=0",
+      "rpc_executor_privileged_maintenance": "0|expected=0",
+      "rpc_executor_role": "1|expected=1",
+      "source_schema_grants": "0|expected=0",
+      "supabase_admin_objects": "0|expected=0",
+      "unapproved_authenticated_rpc": "0|expected=0"
+    },
+    "application_acl": "pass",
+    "platform_default_acl": "informational_exception",
+    "remote_shell_audit": "not_exercised_without_direct_libpq_credential"
+  },
+  "cleanup": {
+    "cron_restored_active": true,
+    "temporary_plaintext_token_deleted": true,
+    "temporary_audit_sql_deleted": true
+  }
+}

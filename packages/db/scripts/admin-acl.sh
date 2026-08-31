@@ -162,7 +162,11 @@ if [ "$MODE" = "audit" ]; then
       probe_owner) [ "$value" = "postgres" ] || failed="${failed}${failed:+, }$metric=$value" ;;
       protected_objects) [ "$value" = "6" ] || failed="${failed}${failed:+, }$metric=$value" ;;
       blocked_internal_rpc_objects) [ "$value" = "11" ] || failed="${failed}${failed:+, }$metric=$value" ;;
+      rpc_executor_role) [ "$value" = "1" ] || failed="${failed}${failed:+, }$metric=$value" ;;
+      facade_rpc_objects) [ "$value" = "65" ] || failed="${failed}${failed:+, }$metric=$value" ;;
       probe_dangerous|public_dangerous|protected_writes|source_schema_grants|supabase_admin_objects|anon_rpc|blocked_internal_rpc|facade_rpc_missing|unapproved_authenticated_rpc|rls_disabled_app_tables|ledger_write_paths)
+        [ "$value" = "0" ] || failed="${failed}${failed:+, }$metric=$value" ;;
+      rpc_executor_facades_invalid|rpc_executor_privileged_maintenance|rls_policy_helper_calls)
         [ "$value" = "0" ] || failed="${failed}${failed:+, }$metric=$value" ;;
       *) failed="${failed}${failed:+, }unknown_metric=$metric" ;;
     esac
@@ -172,7 +176,9 @@ if [ "$MODE" = "audit" ]; then
   # 필수 metric이 하나라도 없으면 실패한다. 빈 출력·부분 출력·중복 행은 성공으로 위장할 수 없다.
   for required in migrations probe_owner probe_dangerous public_dangerous protected_objects protected_writes \
                   source_schema_grants supabase_admin_objects anon_rpc blocked_internal_rpc blocked_internal_rpc_objects \
-                  facade_rpc_missing unapproved_authenticated_rpc rls_disabled_app_tables ledger_write_paths platform_default_open; do
+                  rpc_executor_role rpc_executor_facades_invalid rpc_executor_privileged_maintenance \
+                  rls_policy_helper_calls facade_rpc_objects facade_rpc_missing unapproved_authenticated_rpc \
+                  rls_disabled_app_tables ledger_write_paths platform_default_open; do
     case "$seen" in *" $required "*) ;; *) failed="${failed}${failed:+, }missing_metric=$required" ;; esac
   done
 

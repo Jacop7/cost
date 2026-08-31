@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-08-31T01:06:33.308Z",
+  "status": "APPLIED",
+  "target": "staging",
+  "project_ref": "cvfvmpzcldyqurcrappu",
+  "deploy_sha": "803ac0ae1f79ec3310ca4b091989ef0d4f287572",
+  "branch": "main",
+  "protected_gate": {
+    "sha": "803ac0ae1f79ec3310ca4b091989ef0d4f287572",
+    "conclusion": "success",
+    "workflowRunId": 33342991512,
+    "checkRunId": 99342650161
+  },
+  "migration_count": 166,
+  "pending_migrations": [
+    "20260830000176_operations_monitoring.sql",
+    "20260831000177_operations_health_signal_separation.sql"
+  ],
+  "applied_migrations": [
+    "20260830000176_operations_monitoring.sql",
+    "20260831000177_operations_health_signal_separation.sql"
+  ],
+  "evidence_hashes": {
+    "migration_list_before_sha256": "8ad6d5324f2aae6607f71914a5e95a32d9ac9d33d0e5f900d6f6589acdecdc4d",
+    "dry_run_before_sha256": "d0a5a664462b80640dd6a8b0ca71d3782eb7757c70fbfc5338598289f6459ebb",
+    "migration_list_after_sha256": "c8bf3a2f64aa8ab789d0d045f865353c83465ba744f5e4c33ac6db171f04103b",
+    "dry_run_after_sha256": "de2776a73c06e6a0516fc5da1ff1506ce10d0c8b10a8429f951d4da5ef19ea25"
+  }
+}
