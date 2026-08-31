@@ -48,6 +48,10 @@ vi.mock('@/features/recipes/hooks', () => ({
     refetch: vi.fn(),
   }),
 }));
+vi.mock('@/features/international-tax', () => ({
+  useAppCapabilities: () => ({ data: { internationalTax: { readEnabled: false, writeEnabled: false } }, isLoading: false, error: null }),
+  useSalesTaxDetail: () => ({ data: undefined, isLoading: false, error: null, refetch: vi.fn() }),
+}));
 
 import SalesPastEditScreen from '@/features/sales/screens/SalesPastEditScreen';
 
@@ -278,6 +282,12 @@ describe('결과 코드별 화면 처리', () => {
     failWith('45013');
     editAndSave();
     expect(await screen.findByText('서버 문구')).toBeTruthy();
+  });
+
+  it('45016 CLIENT_UPGRADE_REQUIRED — 최신 앱으로 업데이트하라고 알린다', async () => {
+    failWith('45016');
+    editAndSave();
+    expect(await screen.findByText('세금 계산 방식이 바뀌었어요. 앱을 최신 버전으로 업데이트한 뒤 다시 저장해 주세요.')).toBeTruthy();
   });
 });
 

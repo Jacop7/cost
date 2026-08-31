@@ -23,13 +23,16 @@ insert into _acl_approved_rpc(signature) values
   ('e5_stock_adjusted(uuid,numeric,boolean,text,date)'),
   ('e7_place_order(uuid,uuid,uuid,uuid,numeric,numeric,numeric,date,order_source,date)'),
   ('entity_change_history(uuid,text,uuid,text,integer,integer)'),
-  ('fixed_cost_revenue_check(uuid,text)'), ('get_settings(uuid)'), ('ingredient_detail(uuid)'),
-  ('ingredient_list(uuid)'), ('operating_hours_status(uuid)'), ('order_board(uuid)'),
+  ('fixed_cost_revenue_check(uuid,text)'), ('get_settings(uuid)'), ('get_user_preferences()'),
+  ('ingredient_detail(uuid)'),
+  ('ingredient_list(uuid)'), ('international_tax_regions(uuid,international_country_code)'),
+  ('operating_hours_status(uuid)'), ('order_board(uuid)'),
   ('purchase_history(uuid,date,date)'),
   ('quick_inbound(uuid,uuid,numeric,numeric,numeric,uuid,date,text)'),
   ('quick_inbound_preview(uuid,uuid,numeric,numeric,numeric)'),
   ('range_menu_detail(uuid,date,date,uuid)'), ('recipe_detail(uuid)'), ('recipe_list(uuid)'),
   ('recipe_pick_list(uuid,uuid)'), ('recipe_profit_history(uuid,timestamp with time zone,uuid,integer)'),
+  ('recipe_tax_app_state(uuid,uuid)'),
   ('recipe_shortages(uuid)'), ('reorder_categories(uuid,uuid[])'), ('retire_channel(uuid)'),
   ('retire_my_account()'),
   ('report_client_rpc_error(text,text,text)'),
@@ -37,23 +40,26 @@ insert into _acl_approved_rpc(signature) values
   ('sales_day(uuid,date)'), ('sales_etc_by_channel(uuid,date,date)'),
   ('sales_extra_usage(uuid,date,date)'), ('sales_fixed_breakdown(uuid,date,date)'),
   ('sales_material_usage(uuid,date,date)'), ('sales_range(uuid,date,date)'),
+  ('sales_tax_app_detail(uuid,date,date)'),
   ('sales_tax_breakdown(uuid,date,date)'), ('sales_waste_breakdown(uuid,date,date)'),
   ('save_category(uuid,jsonb)'), ('save_channel(uuid,jsonb)'),
+  ('save_app_language(text,integer)'),
   ('save_fixed_costs(uuid,text,numeric,jsonb)'), ('save_ingredient(uuid,jsonb)'),
   ('save_material(uuid,jsonb)'), ('save_purchase_option(uuid,jsonb)'), ('save_recipe(uuid,jsonb)'),
   ('save_sale(uuid,date,jsonb,jsonb,jsonb,integer,boolean,time without time zone)'),
   ('save_settings(uuid,jsonb,integer)'), ('save_store_tax(uuid,tax_mode,jsonb,integer)'),
   ('save_vendor(uuid,jsonb)'), ('set_operating_hours(uuid,jsonb,jsonb,uuid,integer)'),
   ('set_store_timezone(uuid,text)'), ('settings_lists(uuid)'), ('stock_history(uuid,date,date)'),
+  ('international_tax_app_state(uuid)'),
   ('transition_business_state(uuid,text,time without time zone)');
 
 -- create_store와 archive_my_store는 각각 신규 계정 온보딩과 폐점 보존 정책의 공식 문이고,
--- app_capabilities는 INTL-1A가 먼저 고정한 서버 계약이라 아직 모바일 호출부가 없다. 모바일
--- 호출 집합과의 자동 대조에서는 이 명시적 비-mobile 예외만 제외한다.
+-- international_tax_regions는 capability 활성 뒤 국가·지역 선택기가 사용할 INTL-1F 준비 계약이다.
+-- 모바일 호출 집합과의 자동 대조에서는 이 명시적 비-mobile 예외만 제외한다.
 insert into _acl_non_mobile_rpc(signature, consumer) values
   ('create_store(text,text)', 'onboarding'),
   ('archive_my_store(uuid,text)', 'store-retention-policy'),
-  ('app_capabilities()', 'international-contract-bootstrap');
+  ('international_tax_regions(uuid,international_country_code)', 'INTL-1F-country-region-picker');
 
 -- psql 기반 fresh harness에는 CLI 장부 스키마가 없을 수 있다. 그 경우 SQL 자체가 중단돼
 -- 나머지 공격면 metric이 사라지지 않도록 0을 내고, 셸 게이트가 migrations=0으로 실패시킨다.
@@ -249,7 +255,7 @@ select 'rls_policy_helper_calls' || '|' || count(*) || '|expected=0'
 -- PostgREST로 앱이 직접 부르는 공식 문만 정확한 시그니처로 고정한다. 이름만 비교하면 같은 이름의
 -- 새 오버로드가 자동으로 허용되므로 regprocedure 전체를 비교한다. 이 목록에 없는 authenticated
 -- 함수는 내부 도우미라도 Data API에서 직접 호출할 수 있으므로 감사 실패다.
-select 'facade_rpc_objects' || '|' || count(*) || '|expected=66' from _acl_approved_rpc;
+select 'facade_rpc_objects' || '|' || count(*) || '|expected=72' from _acl_approved_rpc;
 
 with actual as (
   select p.oid::regprocedure::text signature

@@ -8,7 +8,7 @@
  *   있던 걸 **카드 하나**로 줄였다. 항목 줄이 이미 `매출 669,000원`과 `9.09%`를
  *   달고 있어서 '무엇에 붙었나'를 따로 말할 필요가 없다.
  */
-import { ScrollView, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Card, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
@@ -18,6 +18,7 @@ import { BusinessDateGate } from '@/features/business-day/components/BusinessDat
 import { useSalesRange, useTaxBreakdown } from '../hooks';
 import { rangeLabel } from '@/lib/date';
 import { useSalesBusinessDate } from '@/features/business-day/businessDay';
+import { useAppCapabilities, useSalesTaxDetail } from '@/features/international-tax';
 
 /** 9.0909090909 → `9.09%`. 화면은 두 자리면 충분하다. */
 const pct2 = (v: number) => `${(Math.round(v * 100) / 100).toFixed(2)}%`;
@@ -42,6 +43,9 @@ function SalesTaxScreenBody({ serverToday }: { serverToday: string }) {
 
   const q = useTaxBreakdown(from, to);
   const range = useSalesRange(from, to);
+  const capabilities = useAppCapabilities();
+  const internationalEnabled = Boolean(capabilities.data?.internationalTax.readEnabled);
+  const international = useSalesTaxDetail(from, to, internationalEnabled);
   const d = q.data;
 
   const revenue = range.data?.summary.revenue ?? 0;
@@ -88,8 +92,52 @@ function SalesTaxScreenBody({ serverToday }: { serverToday: string }) {
               </View>
             </Card>
           ) : null}
+          {internationalEnabled ? (
+            <QueryState
+              isLoading={international.isLoading}
+              error={international.error}
+              isEmpty={false}
+              onRetry={() => void international.refetch()}
+              emptyTitle=""
+            >
+              <InternationalTaxDetail detail={international.data} />
+            </QueryState>
+          ) : null}
         </QueryState>
       </ScrollView>
     </View>
+  );
+}
+
+function InternationalTaxDetail({ detail }: { detail: ReturnType<typeof useSalesTaxDetail>['data'] }) {
+  if (!detail) return null;
+  if (detail.lines.length === 0) {
+    return (
+      <Card style={{ marginTop: 12 }}>
+        <Text style={{ fontSize: 15, fontWeight: '800', color: T.ink }}>판매 시점 국제 세금 기록</Text>
+        <Text style={{ fontSize: 14, color: T.sub2, marginTop: 5, lineHeight: 20 }}>
+          이 날은 기존 세금 계약으로 기록되어 국제 세금 구성 항목을 추정하지 않아요.
+        </Text>
+      </Card>
+    );
+  }
+  return (
+    <Card pad={0} style={{ overflow: 'hidden', marginTop: 12 }}>
+      <DetailSection title="판매 시점 국제 세금" />
+      <View style={{ paddingHorizontal: 14, paddingBottom: 4 }}>
+        {detail.lines.map((line, index) => {
+          const amount = `${line.currencyCode} ${line.taxAmount.toFixed(line.minorUnit)}`;
+          return (
+            <DetailRow
+              key={`${line.dailySalesItemId}:${line.salesChannel}`}
+              name={`${line.menuName} · ${line.salesChannel}`}
+              sub={`${detail.from === detail.to ? '' : `${line.saleDate} · `}프로필 판본 ${line.taxProfileRevision} · ${line.components.length}개 항목`}
+              amount={amount}
+              last={index === detail.lines.length - 1}
+            />
+          );
+        })}
+      </View>
+    </Card>
   );
 }

@@ -15,6 +15,7 @@ import { T, won } from '@/theme/tokens';
 import { PriceSimSheet } from '../components/PriceSimSheet';
 import { useDeactivateRecipe, useRecipeDetail, useSaveRecipe } from '../hooks';
 import { deltaTone, useProfitHistory } from '../profitHistory';
+import { RecipeTaxStatusCard } from '@/features/international-tax/RecipeTaxStatusCard';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 
@@ -468,6 +469,8 @@ export default function RecipeDetailScreen() {
                     ) : null}
                   </View>
                 </Card>
+
+                <RecipeTaxStatusCard recipeId={r.id} />
 
                 {/* 손익 미리보기 */}
                 <Card onLine pad={0} style={{ overflow: 'hidden' }}>

@@ -107,7 +107,7 @@ export const makeInboundKey = (orderId: string): string =>
  *   `code` 가 SQLSTATE, `details` 가 서버가 붙인 안정된 이름이다(0144).
  */
 export class RpcError extends Error {
-  /** SQLSTATE. 45001 BEFORE_OPEN · 45002 DAY_CLOSED · 45009 REVISION_CONFLICT · 45010 SALE_DATE_OUT_OF_RANGE · 45011 DAY_IS_LIVE */
+  /** SQLSTATE. 45001 BEFORE_OPEN · 45002 DAY_CLOSED · 45009 REVISION_CONFLICT · 45010 SALE_DATE_OUT_OF_RANGE · 45011 DAY_IS_LIVE · 45016 CLIENT_UPGRADE_REQUIRED */
   readonly code: string | null;
   /** 서버가 `detail` 로 붙인 이름. 로그에서 읽기 좋다. */
   readonly detail: string | null;

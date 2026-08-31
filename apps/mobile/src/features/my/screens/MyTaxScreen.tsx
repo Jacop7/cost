@@ -13,7 +13,7 @@
  * ⚠ 배달 중개 수수료는 여기가 아니라 **고정 지출**이다(0043).
  *   두 곳에 넣으면 같은 돈이 손익에서 두 번 빠진다(실측 19일 503,397원).
  */
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { AppHeader, Button, Card, Icon, Input, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
@@ -21,10 +21,34 @@ import { clampDecimals } from '@/lib/num';
 import { RpcError } from '@/lib/supabase';
 import { T, tnum } from '@/theme/tokens';
 import { useSaveStoreTax, useStoreSettings } from '@/features/settings/hooks';
+import { useAppCapabilities, useInternationalTaxState } from '@/features/international-tax';
+import { LAUNCH_MARKETS } from '@margincook/types';
 
 interface Row { name: string; rate: string }
 
-export default function MyTaxScreen() {
+export default function MyTaxScreen(){
+  const capabilities=useAppCapabilities();
+  if(capabilities.isLoading)return <TaxShell><Text style={{color:T.ter}}>불러오는 중…</Text></TaxShell>;
+  if(capabilities.isError||!capabilities.data)return <TaxShell><QueryState isLoading={false} error={capabilities.error??new Error('capabilities missing')} isEmpty={false} onRetry={()=>void capabilities.refetch()} emptyTitle="세금 계약이 없어요"><View/></QueryState></TaxShell>;
+  return capabilities.data.internationalTax.readEnabled?<InternationalTaxScreen/>:<LegacyTaxScreen/>;
+}
+
+function TaxShell({children}:{children:ReactNode}){return <View style={{flex:1,backgroundColor:T.bg}}><AppHeader title="세금" onBack={()=>safeBack('/my')}/><View style={{padding:16}}>{children}</View></View>;}
+
+function InternationalTaxScreen(){
+  const state=useInternationalTaxState();const market=state.data?.marketProfile;const profile=state.data?.taxProfile;
+  return <View style={{flex:1,backgroundColor:T.bg}}><AppHeader title="세금" onBack={()=>safeBack('/my')}/><ScrollView contentContainerStyle={{padding:16,paddingBottom:32,gap:12}}>
+    <QueryState isLoading={state.isLoading} error={state.error} isEmpty={false} onRetry={()=>void state.refetch()} emptyTitle="세금 프로필이 없어요">
+      {market&&profile?<><Card><Text style={{fontSize:14,fontWeight:'700',color:T.ter}}>{LAUNCH_MARKETS[market.countryCode].countryNameKo} · {market.currencyCode}</Text><Text style={{fontSize:19,fontWeight:'800',color:T.ink,marginTop:5}}>{market.priceBasis==='tax_inclusive'?'세금 포함 가격':'세금 별도 가격'}</Text><Text style={{fontSize:13,color:T.sub2,marginTop:5}}>{profile.effectiveFrom}부터 적용 · 프로필 판본 {profile.revision}</Text></Card><Card pad={0} style={{overflow:'hidden'}}>{profile.components.map((c,i)=><View key={c.id} style={{padding:15,borderBottomWidth:i<profile.components.length-1?1:0,borderBottomColor:T.line2}}><Text style={{fontSize:16,fontWeight:'800',color:T.ink}}>{c.name} · {c.ratePct}%</Text><Text style={{fontSize:13,color:T.sub2,marginTop:3}}>{c.kind==='primary'?'기본세':'추가세'} · {c.calculationBasis==='primary_tax_inclusive'?'기본세 포함 기준':'세금 제외 기준'}</Text></View>)}</Card></>:<Card><Text style={{fontSize:16,fontWeight:'800',color:T.ink}}>국가·세금 확인이 필요해요</Text><Text style={{fontSize:14,color:T.sub2,marginTop:5}}>국가 화면에서 매장 기준을 먼저 확인해 주세요.</Text></Card>}
+      {!state.data?.capabilities.internationalTax.writeEnabled?<View role="status"><Text style={{color:T.sub2,fontWeight:'700'}}>국제 세금 쓰기는 아직 비활성 상태예요. 기존 계산과 기록은 바뀌지 않습니다.</Text></View>:null}
+      <Button kind="primary" size="lg" full disabled accessibilityLabel="국제 세금 프로필 저장">
+        {state.data?.capabilities.internationalTax.writeEnabled?'이 앱 판본에서는 아직 저장할 수 없어요':'스테이징 전환 후 저장할 수 있어요'}
+      </Button>
+    </QueryState>
+  </ScrollView></View>;
+}
+
+function LegacyTaxScreen() {
   const settings = useStoreSettings();
   const save = useSaveStoreTax();
 
