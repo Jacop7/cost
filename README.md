@@ -26,6 +26,9 @@ ARCHITECTURE.md             현재 원장·계산·전파 구조
 
 화면과 모듈의 실제 인벤토리는
 [apps/mobile/src/features/README.md](./apps/mobile/src/features/README.md)를 단일 출처로 사용한다.
+한국·미국·영국·호주·캐나다의 다음 국가·통화·세금 계약은
+[국가·통화·세금 국제 출시 기획안](./docs/국가-통화-세금-국제출시-기획안.md)에 있으며, 새 migration과
+검산 시험이 반영되기 전까지는 현재 구현 설명이 아니다.
 
 ## 필수 런타임
 
