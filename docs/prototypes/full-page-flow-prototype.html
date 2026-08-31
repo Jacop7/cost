@@ -669,6 +669,9 @@
     function bindOptionCardMenus(){document.querySelectorAll('[data-option-card-menu]:not([data-card-menu-bound])').forEach(button=>{button.dataset.cardMenuBound='true';button.addEventListener('click',()=>openOptionCardMenu(Number(button.dataset.optionCardMenu)))})}
     const optionCardMenuObserver=new MutationObserver(bindOptionCardMenus);
     optionCardMenuObserver.observe($('content'),{childList:true,subtree:true});
+    function ensureTaxTotalSubtotal(){if(active!=='my_tax')return;const label=[...document.querySelectorAll('.tax-section-label')].find(node=>node.textContent.trim()==='세금 총액');const card=label?.nextElementSibling;if(!card||card.querySelector('.tax-total-subtotal'))return;const totals=taxPreviewTotals();card.insertAdjacentHTML('beforeend',`<div class="subtotal tax-total-subtotal"><span>합계</span><b>${taxMoney(totals.amount)}<small>${totals.rate.toFixed(1)}%</small></b></div>`)}
+    const taxTotalSubtotalObserver=new MutationObserver(ensureTaxTotalSubtotal);
+    taxTotalSubtotalObserver.observe($('content'),{childList:true,subtree:true});
     $('overlay').onclick=e=>{if(e.target===$('overlay'))$('overlay').classList.remove('open')};
     $('back').onclick=()=>{if(active==='options'&&optionEditIndex!==null){optionEditIndex=null;render();$('content').scrollTop=0;return}if(parentScreens[active])setScreen(parentScreens[active])};
     const initialParams=new URLSearchParams(location.search);const initialPopup=initialParams.get('popup');setScreen(initialParams.get('screen')||'ingredient_main');if(initialPopup&&(popupTabs[active]||[]).some(item=>item[0]===initialPopup))openPopupTab(initialPopup);
