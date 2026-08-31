@@ -649,5 +649,37 @@ else
   fi
 fi
 
+# ── 시나리오 14 · 0177 현행 세금 → 국제 계약 capability 비활성 기준선 ──────
+say "⑭ 0177 상태 + 현행 세금 계산 → 0178 capability 추가 뒤 계산 불변·새 쓰기 비활성"
+BASE14=20260831000177
+STEP14="$(cd "$MIG_DIR" && ls 20260831000178_*.sql)"
+bash "$SCRIPT_DIR/fresh-db.sh" --until "$BASE14" "$D" >/dev/null
+before14=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c \
+  "select tax_of(12000, 'included', '[{\"name\":\"부가세\",\"rate\":9.0909090909}]'::jsonb);")
+if ! err="$(psql_d "$D" < "$MIG_DIR/$STEP14" 2>&1 1>/dev/null)"; then
+  say "   FAIL 0178 적용이 막혔다"; say "        $(printf '%s' "$err" | head -3)"; fail=1
+else
+  state14=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c "
+    with v as (select app_capabilities() x)
+    select concat_ws('|',
+      x->>'contract_version',
+      x->>'minimum_supported_app_version',
+      x#>>'{international_tax,contract_version}',
+      x#>>'{international_tax,read_enabled}',
+      x#>>'{international_tax,write_enabled}',
+      jsonb_typeof(x#>'{international_tax,minimum_write_app_version}'),
+      has_function_privilege('authenticated','public.app_capabilities()','execute'),
+      not has_function_privilege('anon','public.app_capabilities()','execute')) from v;")
+  after14=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c \
+    "select tax_of(12000, 'included', '[{\"name\":\"부가세\",\"rate\":9.0909090909}]'::jsonb);")
+  if [ "$before14" = "$after14" ] \
+     && [ "$state14" = "1|0.1.0|international_tax_v1|false|false|null|t|t" ]; then
+    say "   ok   현행 세금 계산 불변 · capability 계약/권한 고정 · 국제 세금 읽기·쓰기 비활성"
+  else
+    say "   FAIL 세금 전=$before14 후=$after14 capability=$state14"
+    fail=1
+  fi
+fi
+
 say ""
-if [ "$fail" = "0" ]; then say "업그레이드 경로 13/13 통과"; else say "업그레이드 경로 실패"; exit 1; fi
+if [ "$fail" = "0" ]; then say "업그레이드 경로 14/14 통과"; else say "업그레이드 경로 실패"; exit 1; fi

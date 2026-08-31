@@ -14,10 +14,10 @@ select pg_temp.ok('RPC 실행 역할은 authenticated 권한을 상속한다',
 select pg_temp.ok('authenticated는 RPC 실행 역할로 전환할 수 없다', not
   pg_has_role('authenticated', 'margincook_rpc_executor', 'member'));
 
-select pg_temp.eq('authenticated에 열린 public 함수는 공식 facade 65개뿐이다', (
+select pg_temp.eq('authenticated에 열린 public 함수는 공식 facade 66개뿐이다', (
   select count(*) from pg_proc p join pg_namespace n on n.oid = p.pronamespace
    where n.nspname = 'public' and p.prokind in ('f', 'p')
-     and has_function_privilege('authenticated', p.oid, 'execute'))::numeric, 65);
+     and has_function_privilege('authenticated', p.oid, 'execute'))::numeric, 66);
 
 select pg_temp.ok('RLS 정책은 닫힌 my_store_ids 몸통을 호출하지 않는다', not exists (
   select 1 from pg_policy pol
