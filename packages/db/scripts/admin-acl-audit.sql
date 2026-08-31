@@ -145,6 +145,17 @@ select 'ledger_write_paths' || '|' || count(*) || '|expected=0'
      )
    );
 
+-- INTL capability가 꺼진 동안 파생 계약 view는 Data API·service 역할에 닫고,
+-- RLS 적용 내부 실행 역할의 정확한 SELECT만 유지한다. 테이블만 감사하면 배포 뒤 view GRANT
+-- 드리프트가 기존 원장을 읽는 우회로가 되거나 이후 facade의 정상 읽기 경로가 사라질 수 있다.
+select 'international_contract_view_acl_invalid' || '|' || case
+  when to_regclass('public.store_tax_profile_contract') is null then 1
+  when has_table_privilege('anon','public.store_tax_profile_contract','SELECT')
+    or has_table_privilege('authenticated','public.store_tax_profile_contract','SELECT')
+    or has_table_privilege('service_role','public.store_tax_profile_contract','SELECT')
+    or not has_table_privilege('margincook_rpc_executor','public.store_tax_profile_contract','SELECT')
+  then 1 else 0 end || '|expected=0';
+
 -- 미래 integration/ops/Queue 원본은 앱 롤이 스키마나 표·함수를 직접 사용할 수 없다.
 with source_schemas(name) as (values ('integration'), ('ops'), ('pgmq'), ('pgmq_public')),
 schema_grants as (

@@ -738,6 +738,15 @@ values ('00000000-0000-0000-0000-0000000000d9','00000000-0000-0000-0000-00000000
 insert into auth.users(id) values ('00000000-0000-0000-0000-0000000000c8');
 insert into stores(id,owner_id,name)
 values ('00000000-0000-0000-0000-0000000000d8','00000000-0000-0000-0000-0000000000c8','오늘 미개장 명확 매장');
+insert into auth.users(id) values ('00000000-0000-0000-0000-0000000000c7');
+insert into stores(id,owner_id,name)
+values ('00000000-0000-0000-0000-0000000000d7','00000000-0000-0000-0000-0000000000c7','보관된 수동 확인 매장');
+insert into auth.users(id) values ('00000000-0000-0000-0000-0000000000c6');
+insert into stores(id,owner_id,name)
+values ('00000000-0000-0000-0000-0000000000d6','00000000-0000-0000-0000-0000000000c6','허용 오차 안 매장');
+insert into auth.users(id) values ('00000000-0000-0000-0000-0000000000c5');
+insert into stores(id,owner_id,name)
+values ('00000000-0000-0000-0000-0000000000d5','00000000-0000-0000-0000-0000000000c5','허용 오차 밖 매장');
 update settings
    set locale='en-US', currency='USD', money_digits=2, tax_mode='separate',
        tax_items='[{"name":"City fee","rate":7}]'::jsonb
@@ -746,6 +755,22 @@ update settings
    set locale='ko', currency='KRW', money_digits=0, tax_mode='included',
        tax_items='[{"name":"부가세","rate":9.0909090909}]'::jsonb
  where store_id='00000000-0000-0000-0000-0000000000d8';
+update settings
+   set locale='ko', currency='KRW', money_digits=0, tax_mode='included',
+       tax_items='[{"name":"부가세","rate":9.0909090909}]'::jsonb
+ where store_id='00000000-0000-0000-0000-0000000000d7';
+update stores
+   set owner_id=null,
+       archived_at=clock_timestamp(),
+       archive_reason='store_archived',
+       archive_note='upgrade archived fixture'
+ where id='00000000-0000-0000-0000-0000000000d7';
+update settings set locale='ko',currency='KRW',money_digits=0,tax_mode='included',
+  tax_items='[{"name":"부가세","rate":9.0909095}]'::jsonb
+ where store_id='00000000-0000-0000-0000-0000000000d6';
+update settings set locale='ko',currency='KRW',money_digits=0,tax_mode='included',
+  tax_items='[{"name":"부가세","rate":9.090911}]'::jsonb
+ where store_id='00000000-0000-0000-0000-0000000000d5';
 EOF
 before16=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c "
   select concat_ws('|',
@@ -774,6 +799,12 @@ else
         where store_id='00000000-0000-0000-0000-0000000000d8'),
       (select reason_codes @> array['locale_not_ko','currency_contract_not_krw','price_basis_not_inclusive','standard_vat_not_exact']
          from international_tax_migration_audits where store_id='00000000-0000-0000-0000-0000000000d9'),
+      (select decision='manual_review_required' and reason_codes @> array['store_archived']
+         from international_tax_migration_audits where store_id='00000000-0000-0000-0000-0000000000d7'),
+      (select decision='auto_profile_created' and cardinality(reason_codes)=0
+         from international_tax_migration_audits where store_id='00000000-0000-0000-0000-0000000000d6'),
+      (select decision='manual_review_required' and reason_codes @> array['standard_vat_not_exact']
+         from international_tax_migration_audits where store_id='00000000-0000-0000-0000-0000000000d5'),
       (select count(*) from store_market_profiles),
       (select count(*) from tax_region_catalog where country_code in ('US','CA')),
       not exists (
@@ -805,13 +836,71 @@ else
       app_capabilities()#>>'{international_tax,read_enabled}',
       app_capabilities()#>>'{international_tax,write_enabled}');")
   if [ "$before16" = "$after16" ] \
-     && [ "$state16" = "3|2|1|t|t|2|64|t|t|0|0|0|t|false|false" ]; then
-    say "   ok   현행 설정·세액 불변 · 명확 2/수동 1 · 내일부터 적용 · 자동 하위 계약 · 관할 64 · 상세 역산 0 · capability 비활성"
+     && [ "$state16" = "6|3|3|t|t|t|t|t|3|64|t|t|0|0|0|t|false|false" ]; then
+    say "   ok   현행 설정·세액 불변 · 명확 3/수동 3(보관·허용 오차 경계 포함) · 내일부터 적용 · 자동 하위 계약 · 관할 64 · 상세 역산 0 · capability 비활성"
   else
     say "   FAIL 원본 전=$before16 후=$after16 이관 상태=$state16"
     fail=1
   fi
 fi
 
+# ── 시나리오 17 · 0180 자동 프로필 뒤의 기존 미래 영업일을 삼키지 않는다 ─────
+say "⑰ 0179 상태 + 내일은 비었지만 그 뒤 미래 영업일 존재 → 0181이 마지막 장부 다음으로 경계를 전진"
+BASE17=20260831000179
+STEP17A="$(cd "$MIG_DIR" && ls 20260831000180_*.sql)"
+STEP17B="$(cd "$MIG_DIR" && ls 20260901000181_*.sql)"
+bash "$SCRIPT_DIR/fresh-db.sh" --until "$BASE17" "$D" >/dev/null
+psql_d "$D" <<'EOF' >/dev/null
+do $fixture$
+declare v_store uuid; v_future date;
+begin
+  select id into v_store from stores order by created_at,id limit 1;
+  update settings set locale='ko',currency='KRW',money_digits=0,tax_mode='included',
+    tax_items='[{"name":"부가세","rate":9.0909090909}]'::jsonb where store_id=v_store;
+  v_future := store_local_date(v_store)+3;
+  insert into business_days(
+    store_id,business_date,status,opened_at,planned_close_at,closed_at,close_method,
+    last_activity_at,snapshot,basis_quality,revision_no)
+  values(v_store,v_future,'closed',clock_timestamp()-interval '1 hour',
+    clock_timestamp(),clock_timestamp(),'manual',clock_timestamp(),'{}','exact',0);
+end
+$fixture$;
+EOF
+before17=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c "
+  select concat_ws('|',
+    (select coalesce(sum(unit_tax*(qty_hall+qty_delivery+qty_takeout)),0) from daily_sales_items),
+    (select coalesce(sum(etc_tax),0) from daily_sales),
+    (select count(*) from business_days));")
+if ! err="$(psql_d "$D" < "$MIG_DIR/$STEP17A" 2>&1 1>/dev/null)"; then
+  say "   FAIL 0180 적용이 막혔다"; say "        $(printf '%s' "$err" | head -3)"; fail=1
+elif ! err="$(psql_d "$D" < "$MIG_DIR/$STEP17B" 2>&1 1>/dev/null)"; then
+  say "   FAIL 0181 적용이 막혔다"; say "        $(printf '%s' "$err" | head -3)"; fail=1
+else
+  after17=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c "
+    select concat_ws('|',
+      (select coalesce(sum(unit_tax*(qty_hall+qty_delivery+qty_takeout)),0) from daily_sales_items),
+      (select coalesce(sum(etc_tax),0) from daily_sales),
+      (select count(*) from business_days));")
+  state17=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c "
+    select concat_ws('|',
+      (select p.effective_from=(select max(business_date)+1 from business_days where store_id=p.store_id)
+         from store_market_profiles p limit 1),
+      (select t.effective_from=m.effective_from from store_tax_profiles t
+         join store_market_profiles m on m.id=t.market_profile_id limit 1),
+      (select a.future_effective_from=m.effective_from from international_tax_migration_audits a
+         join store_market_profiles m on m.id=a.market_profile_id limit 1),
+      to_regprocedure('public.calculate_international_tax(tax_price_basis,smallint,tax_treatment,numeric,jsonb)') is not null,
+      not exists(select 1 from information_schema.columns where table_schema='public'
+        and table_name='sales_tax_events' and column_name='reverses_event_id'),
+      app_capabilities()#>>'{international_tax,read_enabled}',
+      app_capabilities()#>>'{international_tax,write_enabled}');")
+  if [ "$before17" = "$after17" ] && [ "$state17" = "t|t|t|t|t|false|false" ]; then
+    say "   ok   미래 장부 뒤로 시장·세금·감사 경계 동기화 · 기존 합계 불변 · capability 비활성"
+  else
+    say "   FAIL 원본 전=$before17 후=$after17 계산 경계=$state17"
+    fail=1
+  fi
+fi
+
 say ""
-if [ "$fail" = "0" ]; then say "업그레이드 경로 16/16 통과"; else say "업그레이드 경로 실패"; exit 1; fi
+if [ "$fail" = "0" ]; then say "업그레이드 경로 17/17 통과"; else say "업그레이드 경로 실패"; exit 1; fi
