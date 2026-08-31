@@ -4,10 +4,11 @@
 > 미래 Queue·Edge·Worker 분리는 [서버 확장 아키텍처 기획안](./docs/서버-확장-아키텍처-기획안.md),
 > 브랜치·DB 배포·복구는 [운영 기획안](./docs/브랜치-DB-운영-기획안.md)을 따른다.
 
-- 기준일: 2026-08-29
-- 기준 migration: `20260829000173_account_retention.sql`
-- 현재 물리 구조: Expo 앱 + Supabase Primary Postgres/Auth/Data API/RLS/pg_cron
-- 미도입: Supabase Queue, Edge Function, 외부 Worker, Read Replica, 외부 OLAP
+- 기준일: 2026-08-31
+- 기준 migration: `20260831000177_operations_health_signal_separation.sql`
+- 현재 물리 구조: Expo 앱 + Supabase Primary Postgres/Auth/Data API/RLS/pg_cron + 운영 상태 조회용
+  `ops-health` Edge Function + GitHub Actions 10분 점검
+- 미도입: Supabase Queue, 제품 BFF·Webhook용 Edge Function, 외부 Worker, Read Replica, 외부 OLAP
 
 ## 1. 책임 레이어
 
@@ -150,9 +151,11 @@ E6은 제거된 번호이며 뒤 번호를 당기지 않는다.
 - 원장·규칙·감사 테이블의 UPDATE/DELETE/TRUNCATE/TRIGGER/REFERENCES 권한을 제한한다.
 - service role과 DB 비밀번호는 모바일 번들에 넣지 않는다.
 
-운영·스테이징 Supabase는 아직 링크·적용 이력이 확인되지 않았다. Supabase CLI는 P1-2에서
-`2.116.0`으로 고정했으며, 호스티드 원격 ACL 읽기 전용 감사(P1-1)를 실제 프로젝트에서 통과하기
-전에는 운영 배포 준비가 완료된 것이 아니다.
+스테이징 Supabase에는 `0177`까지 166개 migration이 적용돼 pending 0개이며, SQL Editor 앱 ACL
+감사와 운영 관측의 정상 호출·Cron 강제 실패 경보·회복 종료를 확인했다. production migration은
+적용하지 않았다. Supabase CLI는 P1-2에서 `2.116.0`으로 고정했다. 호스티드 원격 ACL 읽기 전용
+감사의 SQL 경로는 확인했지만 직접 libpq 자격이 필요한 셸 래퍼 실측, 두 번째 관리자 MFA,
+실사용 전 PITR/RPO 결정은 운영 게이트로 남는다.
 
 ## 9. 검증 구조
 
@@ -162,13 +165,14 @@ E6은 제거된 번호이며 뒤 번호를 당기지 않는다.
 타입
 → core·DB·mobile 시험
 → CLI 고정 계약·ACL 셸 보안 시험
-→ 빈 DB 전체 migration + DB 33/33 + 2세션 경합 + locale parity
-→ 업그레이드 경로 9/9
+→ 빈 DB 전체 migration + DB 36/36 + 2세션 경합 + locale parity
+→ 업그레이드 경로 13/13
 → Expo 웹 번들
 ```
 
-GitHub Actions는 Docker DB가 없어 `--no-db` 4/6 범위만 Node 20.19.4·24에서 실행한다. 전체 DB
-게이트를 CI로 옮기는 일은 작업큐 P0-2이며 아직 완료되지 않았다.
+GitHub Actions는 Node 20.19.4·24에서 Docker 없는 `--no-db` 4/6을 실행하고, Node 24의
+`full-db-required`가 전체 6/6을 별도로 실행한다. 두 결과와 Fable hash-chain을 결합한
+`protected-gate`가 정확한 SHA에서 성공해야 보호된 `main`에 반영할 수 있다.
 
 ## 10. 확장 경계
 
