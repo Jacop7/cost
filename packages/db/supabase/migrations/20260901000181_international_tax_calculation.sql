@@ -10,6 +10,11 @@ begin;
 -- nullable·미검증 연결을 남기지 않고 계산선+구성 항목의 합계 원장으로 계약을 확정한다.
 alter table public.sales_tax_events drop column reverses_event_id;
 
+-- 0180의 감사 판정 시점은 불변 원본으로 남기고, 이후 기존 미래 장부 때문에 실제 적용
+-- 경계를 전진시킨 값은 future_effective_from에 따로 반영한다.
+alter table public.international_tax_migration_audits
+  add column original_future_effective_from date;
+
 -- 0180은 "내일부터 처음 비어 있는 날"을 골랐지만, 그 뒤 날짜에 이미 예약성 영업일이
 -- 있으면 새 프로필 구간이 그 기존 장부를 삼킨다. 아직 국제 snapshot이 0건인 이 단계에서만
 -- 자동 생성 프로필을 마지막 기존 영업일 다음 날로 전진시킨다. 사람이 만든 프로필은 건드리지 않는다.
@@ -17,7 +22,8 @@ do $future_boundary$
 begin
   if exists (
     select 1 from public.international_tax_migration_audits a
-    join public.daily_sales_item_tax_snapshots s on s.tax_profile_id=a.tax_profile_id
+    join public.daily_sales_item_tax_snapshots s
+      on s.tax_profile_id=a.tax_profile_id or s.market_profile_id=a.market_profile_id
    where a.decision='auto_profile_created'
   ) then
     raise exception '0181: 자동 이관 프로필에 이미 판매 snapshot이 있어 적용 경계를 옮길 수 없습니다';
@@ -27,6 +33,9 @@ $future_boundary$;
 alter table public.store_market_profiles disable trigger user;
 alter table public.store_tax_profiles disable trigger user;
 alter table public.international_tax_migration_audits disable trigger user;
+update public.international_tax_migration_audits
+   set original_future_effective_from=future_effective_from
+ where decision='auto_profile_created';
 with desired as (
   select a.market_profile_id,a.tax_profile_id,
          greatest(a.future_effective_from,
@@ -58,6 +67,20 @@ update public.international_tax_migration_audits a set future_effective_from=x.e
 alter table public.international_tax_migration_audits enable trigger user;
 alter table public.store_tax_profiles enable trigger user;
 alter table public.store_market_profiles enable trigger user;
+alter table public.international_tax_migration_audits
+  add constraint international_tax_migration_audits_boundary_ck check (
+    (decision='auto_profile_created'
+      and original_future_effective_from is not null
+      and original_future_effective_from <= future_effective_from)
+    or
+    (decision='manual_review_required' and original_future_effective_from is null)
+  );
+comment on column public.international_tax_migration_audits.original_future_effective_from is
+  '0180 감사 판정 당시의 최초 미래 적용일. 0181이 기존 미래 장부 뒤로 실제 적용 경계를 전진해도 바꾸지 않는다.';
+comment on column public.international_tax_migration_audits.future_effective_from is
+  '실제 자동 프로필 적용 경계. original_future_effective_from보다 앞설 수 없으며 0181에서 기존 미래 장부 뒤로만 전진할 수 있다.';
+comment on table public.international_tax_migration_audits is
+  'INTL-1C 이관 판정 감사. 0180 원본 경계는 original_future_effective_from에 불변 보존하고, 기존 미래 장부와 충돌하지 않도록 전진한 실제 경계만 future_effective_from에 기록한다.';
 
 create or replace function public.calculate_international_tax(
   p_price_basis public.tax_price_basis,
@@ -119,7 +142,7 @@ begin
        or v_component->>'kind' not in ('primary', 'additional')
        or v_component->>'calculation_basis' not in ('primary_tax_exclusive', 'primary_tax_inclusive')
        or v_component->>'remittance_owner' not in ('merchant', 'marketplace')
-       or v_rate < 0 or v_rate >= 1
+       or v_rate is null or v_rate < 0 or v_rate >= 1
        or jsonb_typeof(v_component->'applies_to_treatments') is distinct from 'array' then
       raise exception '세금 구성 항목의 모양이 올바르지 않아요'
         using errcode = '22000', detail = 'INVALID_TAX_COMPONENT';
@@ -205,8 +228,16 @@ declare
   v_revision integer;
   v_expected integer;
   v_joined integer;
+  v_first_market_date date;
   v_results jsonb := '[]'::jsonb;
 begin
+  if p_force and (
+       session_user <> 'postgres'
+       or current_setting('sikjae.international_tax_force', true) is distinct from 'owner_test'
+     ) then
+    raise exception '국제 세금 강제 계산은 소유자 시험 경로에서만 실행할 수 있어요'
+      using errcode='42501', detail='INTERNATIONAL_TAX_FORCE_FORBIDDEN';
+  end if;
   if not p_force and not (v_cap#>>'{international_tax,write_enabled}')::boolean then
     return jsonb_build_object('enabled', false, 'changed', false, 'lines', v_results);
   end if;
@@ -220,6 +251,9 @@ begin
   if v_sales.id is null or v_sales.business_day_id is null then
     raise exception '국제 세금 계산에 연결된 영업일을 찾을 수 없어요'
       using errcode = '22000', detail = 'BUSINESS_DAY_REQUIRED';
+  end if;
+  if not p_force then
+    perform public.assert_my_store(v_sales.store_id);
   end if;
   select * into v_day from public.business_days where id = v_sales.business_day_id for update;
   select * into v_item from public.daily_sales_items where id = p_sales_item for update;
@@ -250,6 +284,13 @@ begin
          and v_sales.sale_date >= m.effective_from
          and (m.effective_to is null or v_sales.sale_date <= m.effective_to);
       if v_market.id is null then
+        select min(m.effective_from) into v_first_market_date
+          from public.store_market_profiles m where m.store_id=v_item.store_id;
+        if v_first_market_date is not null and v_sales.sale_date < v_first_market_date then
+          -- 국제 계산 적용 전 판매는 0090 legacy 합계를 그대로 보존한다. 과거 정정도
+          -- 국제 snapshot을 새로 만들거나 현재 프로필로 추정하지 않는다.
+          continue;
+        end if;
         raise exception '% 판매일의 시장 프로필을 찾을 수 없어요', v_sales.sale_date
           using errcode = '45013', detail = 'MARKET_PROFILE_NOT_AVAILABLE';
       end if;
@@ -434,6 +475,7 @@ for each row execute function public.reconcile_international_tax_after_sale_item
 create or replace function public.assert_sales_tax_line_balanced()
 returns trigger
 language plpgsql
+security definer
 set search_path = public
 as $$
 declare
@@ -512,6 +554,21 @@ begin
   if not exists(select 1 from pg_trigger where tgrelid='public.daily_sales_items'::regclass
                   and tgname='daily_sales_items_80_international_tax' and not tgisinternal) then
     raise exception '0181: 판매 저장과 국제 세금 계산 몸통이 연결되지 않았습니다';
+  end if;
+  if not exists (
+    select 1 from pg_proc p join pg_namespace n on n.oid=p.pronamespace
+     where n.nspname='public' and p.proname='assert_sales_tax_line_balanced'
+       and p.prosecdef
+  ) then
+    raise exception '0181: deferred 세금 불변식이 앱 세션 권한에 기대고 있습니다';
+  end if;
+  if exists (
+    select 1 from public.international_tax_migration_audits
+     where decision='auto_profile_created'
+       and (original_future_effective_from is null
+         or original_future_effective_from > future_effective_from)
+  ) then
+    raise exception '0181: 감사 당시 최초 적용 경계가 보존되지 않았습니다';
   end if;
   if exists (
     select 1

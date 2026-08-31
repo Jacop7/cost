@@ -48,10 +48,12 @@ src/database.types.ts     `pnpm db:types` 생성 타입
 - `price_trends`·`profit_trends`: 단가·손익 시점 스냅샷.
 - `store_market_profiles`·`store_tax_profiles`·`store_tax_components`: INTL-1B 시장·세금 판본과
   법정 표면 세율 구성. `0180`은 명확한 한국 표준 부가세 매장에만 미래 프로필을 만들고,
-  `0181`은 이미 존재하는 마지막 영업일 다음 날로 그 적용 경계를 전진 보정한다. 모호한 매장은 감사
+  `0181`은 이미 존재하는 마지막 영업일 다음 날로 그 적용 경계를 전진 보정하되, 0180 감사 당시 경계는
+  `original_future_effective_from`으로 보존한다. 모호한 매장은 감사
   결과만 남기며 앱 읽기·쓰기는 아직 켜지 않는다.
 - `international_tax_migration_audits`: INTL-1C 현행 locale·세금 설정·판매/기타매출 합계와 자동 이관/
-  수동 확인 판정을 보존하는 불변 감사 원본. 과거 세율이나 구성 항목을 역산하지 않는다.
+  수동 확인 판정을 보존하는 감사 원본. 과거 세율이나 구성 항목을 역산하지 않는다. 0181이 기존 미래
+  장부 뒤로 실제 적용일을 전진할 때도 `original_future_effective_from`에 최초 판정 경계를 남긴다.
 - `daily_sales_item_tax_snapshots`·`daily_sales_item_tax_component_snapshots`: 영업일×메뉴×채널의
   세금 입력·합계와 구성 항목별 당시 값. `sales_tax_events`는 목표 세액 변화 append-only 원장이며,
   `calculate_international_tax`와 내부 reconciliation 몸통이 구성 항목별 minor unit 반올림·동일 목표
