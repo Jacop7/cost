@@ -503,7 +503,7 @@
         recipe_target:['목표','',prototypeChoices([['전체'],['목표 미달'],['목표 달성']])],
         recipe_memo:['메모 편집','',`<div class="expense-form"><div class="date-field"><input type="text" aria-label="메모" placeholder="메모를 입력하세요"></div></div><div class="memo-count">0 / 100</div>`+prototypeConfirm('','완료')],
         recipe_price_sim:['판매가 시뮬레이션','판매가를 바꿔 순이익을 미리 확인해요',`${expoRows([['임시 판매가','현재 12,000원에서 +0원','12,000원'],['순이익률','목표 미달','33.7%'],['순이익','','4,047원'],['목표 40.0% 달성 권장가','','15,800원']])}<button class="primary filter-apply">닫기</button>`],
-        recipe_stop:['판매 상태','',`<div class="prototype-sheet-group recipe-status-actions"><button class="prototype-sheet-row ${recipeSelling?'danger':''}" type="button" data-recipe-sale-toggle>${recipeSelling?'판매 중지':'판매 시작'}</button></div><button class="prototype-sheet-close" type="button" data-sheet-close>닫기</button>`],
+        recipe_stop:[recipeSelling?'판매를 중지하시겠습니까?':'판매중으로 상태를 변경하시겠습니까?','',`<div class="confirm-actions"><button class="confirm-cancel" type="button" data-sheet-close>아니오</button><button class="${recipeSelling?'confirm-delete':'primary'}" type="button" data-recipe-sale-toggle>예</button></div>`],
         recipe_category_pick:['카테고리 선택','',prototypeChoices([['지정 안 함'],['찌개·전골'],['볶음·구이'],['밥·면'],['사이드']])+actualButton('카테고리 관리','category_edit')],
         recipe_avg_help:['월 평균 판매량','',`<p class="confirm-copy">손익 미리보기의 월평균 기준 계산에 사용해요. 최근 실제 판매량과 별도로 직접 정할 수 있어요.</p>`],
         recipe_target_help:['목표 순이익률','',`<p class="confirm-copy">판매가 대비 남기고 싶은 순이익 비율이에요. 권장 판매가 계산에 사용합니다.</p>`],
