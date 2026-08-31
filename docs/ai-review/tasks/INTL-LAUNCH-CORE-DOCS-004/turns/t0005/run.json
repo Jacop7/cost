@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "INTL-LAUNCH-CORE-DOCS-004",
+  "sequence": "t0005",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-08-31T01:59:54.455Z",
+  "turn_id": "turn-o001",
+  "turn_type": "AI_DEPUTY_SUCCESSOR_HANDOFF",
+  "role": "AI-DEPUTY-ORCHESTRATOR",
+  "task_sha256": "65c017e5a4502d9d2c6cec5d752ac0ff9b674ff7d2db3970be3b8b68789b82cd",
+  "runner_sha256": "80dae1d06c89af056e9d8c210b571e978ee534fc128a5fe3b9867610b5ae447b",
+  "previous_manual_run_sha256": "a7e80451c59f21b113c16aced2c233c06888b00b5866a29ea92e5baaf715cc5f",
+  "collaboration_before_sha256": "a56ed695f2016304345d837eb88b9c56e16c8752b2e9c0d4ddb18d75ae7a164a",
+  "collaboration_before_bytes": 13097,
+  "collaboration_entry_sha256": "37d2bed95b0815b5ebe818000ef900020c8cce5706b3488fc03a15b19455f3b4",
+  "collaboration_entry_bytes": 803,
+  "collaboration_after_sha256": "cbb70b123c906c5f1a216deb011c25698c6eb0e436b1d7a7e55bbbdadde67181",
+  "collaboration_after_bytes": 13900
+}
