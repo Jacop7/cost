@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "INTL-BASELINE-COMMIT-001",
+  "sequence": "t0002",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-08-31T04:30:20.242Z",
+  "turn_id": "turn-o001",
+  "turn_type": "BACKLOG_DISPOSITION",
+  "role": "AI-DEPUTY-ORCHESTRATOR",
+  "task_sha256": "74c8d7a715f30607ddd36a298cbcde301221b46e57b2d4b2da73b5f22cab292a",
+  "runner_sha256": "80dae1d06c89af056e9d8c210b571e978ee534fc128a5fe3b9867610b5ae447b",
+  "previous_manual_run_sha256": "eae4e1c6c032467c234fece65d88c85a074dfab364a640ca37ee7078b86fbcdc",
+  "collaboration_before_sha256": "08a56b19583172d216c43b4285f2a4d13cefa689cccab1aaaa17b6f0ff0c6468",
+  "collaboration_before_bytes": 7178,
+  "collaboration_entry_sha256": "38a89548c4a4cd69c5e86c4553e61797b38fe630522381fe5915631b8f64ebd4",
+  "collaboration_entry_bytes": 673,
+  "collaboration_after_sha256": "0811c0e6b8cdbe9f31abd1f7b1bf2fb0a881c63dac59c5e2b574c6e37f99f31a",
+  "collaboration_after_bytes": 7851
+}

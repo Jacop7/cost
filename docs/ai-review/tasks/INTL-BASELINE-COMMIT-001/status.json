@@ -1,0 +1,26 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "INTL-BASELINE-COMMIT-001",
+  "predecessor_review": null,
+  "updated_at": "2026-08-31T04:26:18.787Z",
+  "latest_round": "r001",
+  "review_state": "VERIFIED",
+  "workflow_state": "VERIFIED",
+  "gate_state": "OPEN",
+  "run_state": "RESULT_RECEIVED",
+  "defect_state": "NOT_APPLICABLE",
+  "verdict": "PASS",
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "fallback_reason": null,
+  "latest_run_sha256": "11172d72cb993aeb171397eb3b5c1e34779a8edd8ea480c3e8945d8bd11c12d4",
+  "open_required_finding_ids": [],
+  "open_optional_finding_ids": [
+    "INTL-BASE-F001-UNMATERIALIZED-LINK-TARGETS"
+  ],
+  "closed_finding_ids": [],
+  "candidate_review_state": null,
+  "candidate_review_sha256": null,
+  "backlog_dispositions": []
+}
