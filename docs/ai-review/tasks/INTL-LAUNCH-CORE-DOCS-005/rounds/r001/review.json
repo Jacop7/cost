@@ -1,0 +1,274 @@
+{
+  "schema_version": "2.0",
+  "task_id": "INTL-LAUNCH-CORE-DOCS-005",
+  "reviewer_role": "FABLE-ARCH",
+  "review_mode": "RECHECK",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "99cd21f272d08465e91b685b80989a04a0c5d6af",
+  "target_commit_sha": "e7a7fd0811257cb34dd3b55f3453542d97e73df5",
+  "target_tree_oid": "542b5a1e0b7bde6fd5632e70ebf72d821a4cb3e8",
+  "agents_blob_oid": "9264927700bd7cfcb60460a8279ad72625b505df",
+  "agents_sha256": "bfb2e19944917b86251e998caf929aaac0b12051168c5ad3f42d209f9c04df16",
+  "task_sha256": "8f0efa186fb8133ae9cea889ca358ac776e867984acccd7c0382bd59798ad3f0",
+  "collaboration_sha256": "9b1cb3e1135732bfc2524bc888a39498cf7f1ce8fcac8adb04ec4855eec07b2c",
+  "input_files_sha256": "dd84c6bd7e758e4f3e5c240f85d383b129344e818a60d8df53dd1611906dc6b3",
+  "schema_sha256": "7488cbf99f6234bd4bfbc14ecfcbb9dd9dcaa72439df1991337566cecbed4b35",
+  "runner_sha256": "80dae1d06c89af056e9d8c210b571e978ee534fc128a5fe3b9867610b5ae447b",
+  "verdict": "PASS",
+  "summary": "INTL-LAUNCH-CORE-DOCS-005 FABLE-ARCH RECHECK 결과 PASS. predecessor r001의 Finding 5건이 커밋 e7a7fd0의 세 기획안에서 모두 수용 기준을 충족해 VERIFIED로 전환한다. (1) ARCH-INTL004-OPS-STATUS-CONTRADICTION: 브랜치 문서 머리말·§4.5와 서버 문서 채택 상태가 '스테이징 cvfvmpzcldyqurcrappu에 0164~0174 배포 가드 적용, SQL Editor 경로 앱 ACL 감사 4개 지표 0건 실측(배포·ACL 증거 JSON 링크 고정), admin-acl.sh --remote audit 셸 경로는 작업큐 P1-1 대기, production 접근·적용 없음·실측 없으면 배포 중단'이라는 하나의 사실로 통일됐고, ARCHITECTURE.md 옛 기준선은 소급 수정 없이 작업큐 INTL-DOC-SYNC-1 별도 동기화 과업으로 등록됐다. 단 스냅샷에는 산출물·참조 6개 파일만 실체화돼 docs/deployments/*.json과 작업큐.md 링크 대상의 실재는 SOLAR가 협업 장부에 보고한 상대 링크·증거 존재 검사 통과에 의존했다. (2) ARCH-INTL004-TAX-TREATMENT-FORMULA: §3.4가 r0_effective(taxable→r0, zero_rated·exempt→0)·A(treatment)·bi(미포함 1, 포함 1+r0_effective)·M=1+r0_effective+Σ(i∈A)(ri×bi)를 정의하고 applies_to_treatments 명시·빈 값 실패 폐쇄, override 소유 단위·우선순위는 §10 7번 게이트로 등록됐으며 항목 수 표기도 '일곱 항목'으로 일치한다. 숫자 검산 정합: r0=10%·추가세 5% 기본세 포함이면 M=1.155로 미포함 10,000→결제 11,550, 포함 11,550→N 10,000이고 zero_rated는 bi=1·M=1.05, exempt에 적용 추가세가 없으면 M=1이다. 검증 행렬(298행)이 r0_effective·A(treatment)와 1:1 대응한다. (3) ARCH-INTL004-BRANCH-NAMING: §2.2·§8.1이 codex/를 허용 작업유형으로 등록하고 두 INTL-1 계획 브랜치가 slug 규칙(2~4단어, 20~40자)을 따르며 두 문서의 표기가 동일하다. (4) ARCH-INTL004-LEGACY-FORMULA-DESC: §5.1이 판매가 × (Σ tax_items.rate ÷ 100)·퍼센트 포인트로 AGENTS.md 권위 계약과 일치한다. (5) ARCH-INTL004-PRICE-BASIS-OWNER: §4.2가 price_basis 소유 원본을 시장 프로필 하나로 확정하고 세금 프로필 중복 저장을 금지하며 판매 스냅샷도 시장 프로필 값을 굳힌다. DB RPC 계산 권위·시점 스냅샷·전진 migration·현재/계획 상태 분리 불변식은 유지되고 새 모순은 발견하지 못했다. VERIFIED는 로컬 확인이며 PASS·VERIFIED가 외부 게이트를 닫지 않고 gate_state는 OPEN으로 유지된다. 정식 CLOSED 전환은 향후 P0-2 보호 게이트 절차의 몫이다.",
+  "findings": [
+    {
+      "finding_id": "ARCH-INTL004-OPS-STATUS-CONTRADICTION",
+      "severity": "Major",
+      "review_state": "VERIFIED",
+      "category": "OPERATIONS",
+      "requirement_or_invariant_ids": [
+        "INTL-CORE-005",
+        "INTL-RECHECK-002",
+        "ARCHITECTURE:current-vs-planned-contract",
+        "AGENTS:forward-only-migrations"
+      ],
+      "evidence": [
+        {
+          "path": "docs/브랜치-DB-운영-기획안.md",
+          "line_start": 10,
+          "line_end": 14,
+          "observation": "개정 4판 머리말이 '작업큐 기준 스테이징 0164~0174 적용과 SQL Editor 경로의 앱 ACL 감사 완료, 직접 접속 자격이 필요한 admin-acl.sh --remote audit 셸 경로 대기, production 적용 미확인'으로 세 상태를 분리해 서술한다."
+        },
+        {
+          "path": "docs/브랜치-DB-운영-기획안.md",
+          "line_start": 343,
+          "line_end": 353,
+          "observation": "§4.5가 2026-08-29 스테이징 cvfvmpzcldyqurcrappu에 0164~0174를 배포 가드로 적용하고 SQL Editor 트랜잭션·rollback 경계에서 4개 지표 0건을 실측했다고 서술하며, 배포·ACL 증거 JSON 2건을 링크하고, 이것이 셸 래퍼 검증 완료를 뜻하지 않으며 셸 경로는 작업큐 P1-1 대기, production은 접근·적용하지 않았고 실측 없으면 배포를 중단한다고 명시해 머리말과 하나의 사실로 일치한다."
+        },
+        {
+          "path": "docs/브랜치-DB-운영-기획안.md",
+          "line_start": 355,
+          "line_end": 358,
+          "observation": "ARCHITECTURE.md의 옛 '스테이징 적용 이력 미확인' 기준선을 소급 수정하지 않고 작업큐 INTL-DOC-SYNC-1 문서 전용 동기화 과업으로 등록했다고 명시해 수용 기준 3(별도 과업 등록)을 충족한다."
+        },
+        {
+          "path": "docs/서버-확장-아키텍처-기획안.md",
+          "line_start": 27,
+          "line_end": 45,
+          "observation": "서버 문서 채택 상태가 스테이징 0164~0174 적용·SQL Editor 앱 ACL 감사 완료·production 미확인·셸 래퍼 실측 대기·ACL 증거 JSON 링크·INTL-DOC-SYNC-1 별도 등록을 브랜치 문서와 같은 값으로 서술하고, supabase_admin 전환 불가 분기와 platform_default_open=1 예외를 성공으로 위장하지 않는다고 명시해 이전 완료 선언과 대기 서술의 모순이 사라졌다."
+        },
+        {
+          "path": "ARCHITECTURE.md",
+          "line_start": 153,
+          "line_end": 155,
+          "observation": "참조 문서 기준선은 여전히 '링크·적용 이력 미확인'이지만, 두 산출물이 이를 옛 기준선으로 명시하고 별도 동기화 과업으로 처리해 서술 충돌이 관리된 상태다. 참조 문서 수정은 이 검수 범위 밖이다."
+        },
+        {
+          "path": "COLLABORATION_LOG",
+          "line_start": 0,
+          "line_end": 0,
+          "observation": "스냅샷에는 산출물·참조 6개 파일만 실체화돼 docs/deployments/*.json 증거 2건과 작업큐.md 앵커의 실재는 직접 열어 확인할 수 없었다. turn-s001에서 SOLAR가 보고한 '상대 링크·배포 증거 존재 검사 통과'에 의존해 판정했다."
+        }
+      ],
+      "impact": "배포·복구 단일 출처의 내부 모순이 해소돼 INTL-1 schema 배포 시 §5.3·§5.4 게이트 판정 기준이 하나의 사실(스테이징 SQL 실측 완료·셸 경로 대기·production 미확인·실측 없으면 중단)로 고정됐다. 잔여 위험은 링크된 증거 파일 실재를 이 스냅샷에서 독립 확인하지 못한 점뿐이다.",
+      "acceptance_criteria": [
+        "브랜치 문서 머리말·§4.5와 서버 문서 채택 상태가 스테이징 적용 범위, ACL 실측 수행 경로, P0-5 완료·잔여 범위, 원격 audit 잔여 확인 항목을 하나의 사실로 서술한다.",
+        "확인되지 않은 상태는 모두 '미확인'으로 표기하고 작업큐·배포 기록의 실측 근거를 링크한다.",
+        "ARCHITECTURE.md 기준선(0173·스테이징 미확인)과의 동기화가 별도 과업으로 등록된다."
+      ],
+      "required_tests": [
+        "세 산출물과 작업큐·배포 기록의 스테이징 적용·ACL·P0-5 상태 서술 전수 대조 검토",
+        "docs/deployments/ 증거 JSON 2건과 작업큐.md INTL-DOC-SYNC-1·P1-1 앵커의 실재 확인(전체 저장소 스냅샷에서)"
+      ],
+      "previous_finding_id": "ARCH-INTL004-OPS-STATUS-CONTRADICTION",
+      "verified_by_engine": "FABLE"
+    },
+    {
+      "finding_id": "ARCH-INTL004-TAX-TREATMENT-FORMULA",
+      "severity": "Minor",
+      "review_state": "VERIFIED",
+      "category": "ARCHITECTURE",
+      "requirement_or_invariant_ids": [
+        "INTL-CORE-003",
+        "INTL-RECHECK-003",
+        "AGENTS:server-calculation-authority",
+        "AGENTS:point-in-time-preservation"
+      ],
+      "evidence": [
+        {
+          "path": "docs/국가-통화-세금-국제출시-기획안.md",
+          "line_start": 119,
+          "line_end": 150,
+          "observation": "§3.4가 r0_effective(taxable→r0, zero_rated·exempt→0), A(treatment), bi(기본세 미포함 1, 포함 1+r0_effective), M=1+r0_effective+Σ(i∈A(treatment))(ri×bi)를 정의하고 순방향·역산 공식이 같은 기호를 사용한다. 숫자 검산 정합: r0=10%·추가세 5% primary_tax_inclusive이면 M=1.155, N=10,000→결제 11,550, 역산 11,550÷1.155=10,000. zero_rated는 bi=1·M=1.05, exempt에 적용 추가세가 없으면 M=1이다."
+        },
+        {
+          "path": "docs/국가-통화-세금-국제출시-기획안.md",
+          "line_start": 152,
+          "line_end": 157,
+          "observation": "zero_rated·exempt의 유효 세율 0 치환과 bi=1을 명시하고, 추가세는 과세 상태로 임의 면제·부과하지 않으며 applies_to_treatments 명시·빈 값 실패 폐쇄, 유효 과세 상태의 판매 스냅샷 고정, override 소유 단위·우선순위의 §10 게이트 이관을 서술한다."
+        },
+        {
+          "path": "docs/국가-통화-세금-국제출시-기획안.md",
+          "line_start": 296,
+          "line_end": 298,
+          "observation": "검증 행렬이 '일반 과세·0% 과세·면세와 과세 상태별 r0_effective·A(treatment)'를 요구해 §3.4 공식과 1:1로 대응한다."
+        },
+        {
+          "path": "docs/국가-통화-세금-국제출시-기획안.md",
+          "line_start": 334,
+          "line_end": 346,
+          "observation": "§10에 7번 항목(과세 상태 override의 소유 단위와 우선순위)이 추가됐고 마감 문구가 '이 일곱 항목'으로 개수 표기와 일치한다."
+        }
+      ],
+      "impact": "SQL↔core 검산의 기준 공식에 과세 상태 분기가 명문화돼 exempt·zero_rated 매장의 포함가 역산과 기본세 포함 기준 추가세 계산이 구현자 재량 없이 결정된다. 검증 행렬의 과세 상태 시험을 작성할 수 있는 상태다.",
+      "acceptance_criteria": [
+        "§3.4에 과세 상태별 유효 r0 치환 규칙과 그때의 bi·M 변화가 명시된다.",
+        "과세 상태가 추가세 부과 여부에 미치는 영향과 과세 상태의 소유 단위(매장·메뉴·채널)가 §10 확정 게이트 항목으로 등록된다.",
+        "검증 행렬의 일반 과세·0% 과세·면세 조합이 명시된 공식과 1:1로 대응한다."
+      ],
+      "required_tests": [
+        "INTL-1 구현 시 zero_rated·exempt × 포함·미포함 가격 × 추가세 기준(포함·미포함) × applies_to_treatments 조합의 SQL↔core 검산 시험"
+      ],
+      "previous_finding_id": "ARCH-INTL004-TAX-TREATMENT-FORMULA",
+      "verified_by_engine": "FABLE"
+    },
+    {
+      "finding_id": "ARCH-INTL004-BRANCH-NAMING",
+      "severity": "Minor",
+      "review_state": "VERIFIED",
+      "category": "POLICY",
+      "requirement_or_invariant_ids": [
+        "INTL-CORE-005",
+        "INTL-RECHECK-004"
+      ],
+      "evidence": [
+        {
+          "path": "docs/브랜치-DB-운영-기획안.md",
+          "line_start": 105,
+          "line_end": 114,
+          "observation": "§2.2 브랜치 구조 다이어그램에 codex/*가 포함되고, codex/는 장기 통합 브랜치가 아니라 작업 주체를 표시하는 허용 접두어로 codex/<기능영역>-<변경목적> 형식을 사용한다고 명시한다."
+        },
+        {
+          "path": "docs/브랜치-DB-운영-기획안.md",
+          "line_start": 554,
+          "line_end": 560,
+          "observation": "§8.1이 허용 작업유형에 codex를 등록하고 codex/international-launch·codex/international-tax-legacy-cleanup이 이 규칙을 따르며 slug 길이·표기 규칙(2~4단어, 20~40자)을 그대로 적용한다고 명시한다. 두 slug는 각각 2단어 20자, 4단어 32자로 규칙에 부합한다."
+        },
+        {
+          "path": "docs/국가-통화-세금-국제출시-기획안.md",
+          "line_start": 10,
+          "line_end": 10,
+          "observation": "구현 브랜치 후보 codex/international-launch가 브랜치 문서 §3.3 planned_branch(217행)·§8.1과 동일한 표기를 유지한다."
+        },
+        {
+          "path": "docs/국가-통화-세금-국제출시-기획안.md",
+          "line_start": 312,
+          "line_end": 312,
+          "observation": "§8 배포 단위도 같은 codex/international-launch 표기를 사용해 두 산출물 간 브랜치명이 일치한다."
+        }
+      ],
+      "impact": "명명 규칙과 INTL-1 계획 브랜치명이 일치해 브랜치 생성·병합·정리 자동화나 후속 검수가 규칙 기준으로 판정해도 충돌이 없다.",
+      "acceptance_criteria": [
+        "§8.1(및 §2.2) 명명 규칙과 INTL-1 계획 브랜치명이 일치한다: codex/ 접두어를 허용 작업유형으로 등록하거나 두 브랜치명을 기존 규칙에 맞게 변경한다.",
+        "국제 출시 기획안과 브랜치 문서의 브랜치명 표기가 동일하게 유지된다."
+      ],
+      "required_tests": [
+        "두 산출물의 브랜치명 표기와 §8.1 규칙의 문자열 대조 검토"
+      ],
+      "previous_finding_id": "ARCH-INTL004-BRANCH-NAMING",
+      "verified_by_engine": "FABLE"
+    },
+    {
+      "finding_id": "ARCH-INTL004-LEGACY-FORMULA-DESC",
+      "severity": "Improvement",
+      "review_state": "VERIFIED",
+      "category": "OTHER",
+      "requirement_or_invariant_ids": [
+        "INTL-CORE-004",
+        "INTL-RECHECK-005"
+      ],
+      "evidence": [
+        {
+          "path": "docs/국가-통화-세금-국제출시-기획안.md",
+          "line_start": 238,
+          "line_end": 238,
+          "observation": "§5.1이 현재 tax_of()를 '판매가 × (Σ tax_items.rate ÷ 100)'로 서술하고 rate가 퍼센트 포인트임을 명시한다."
+        },
+        {
+          "path": "AGENTS.md",
+          "line_start": 54,
+          "line_end": 55,
+          "observation": "권위 계약 '판매가 × (Σ 매장 세금 항목 요율 ÷ 100), 요율은 퍼센트 포인트, 포함가 요율 10/110=9.0909…%'와 §5.1 서술이 일치한다."
+        }
+      ],
+      "impact": "현재 0090 계약 서술이 권위 공식과 일치해 이관 감사(§5.2)와 검산 작성 시 요율 단위 오독 여지가 사라졌다.",
+      "acceptance_criteria": [
+        "§5.1의 현재 tax_of() 서술이 AGENTS.md·ARCHITECTURE.md의 '요율 ÷ 100(퍼센트 포인트)' 계약과 일치한다."
+      ],
+      "required_tests": [],
+      "previous_finding_id": "ARCH-INTL004-LEGACY-FORMULA-DESC",
+      "verified_by_engine": "FABLE"
+    },
+    {
+      "finding_id": "ARCH-INTL004-PRICE-BASIS-OWNER",
+      "severity": "Improvement",
+      "review_state": "VERIFIED",
+      "category": "ARCHITECTURE",
+      "requirement_or_invariant_ids": [
+        "INTL-CORE-002",
+        "INTL-CORE-003",
+        "INTL-RECHECK-005",
+        "AGENTS:settings-revision-noop"
+      ],
+      "evidence": [
+        {
+          "path": "docs/국가-통화-세금-국제출시-기획안.md",
+          "line_start": 175,
+          "line_end": 183,
+          "observation": "§4.1 시장 프로필만 price_basis 필드를 보유한다."
+        },
+        {
+          "path": "docs/국가-통화-세금-국제출시-기획안.md",
+          "line_start": 190,
+          "line_end": 198,
+          "observation": "§4.2 세금 프로필 필드 목록에서 price_basis가 제거됐다."
+        },
+        {
+          "path": "docs/국가-통화-세금-국제출시-기획안.md",
+          "line_start": 213,
+          "line_end": 215,
+          "observation": "price_basis의 소유 원본이 시장 프로필 하나임을 명시하고, 세금 프로필은 중복 저장 없이 같은 revision의 시장 프로필 값을 계산 입력으로 받으며, 판매 스냅샷도 시장 프로필 값을 굳혀 두 revision이 따로 돌아도 값이 갈리는 복제 경로를 만들지 않는다고 서술한다."
+        }
+      ],
+      "impact": "price_basis 소유가 단일화돼 두 프로필의 revision이 독립적으로 돌아도 값 분기 위험이 없고 판매 스냅샷의 출처가 하나로 고정됐다.",
+      "acceptance_criteria": [
+        "price_basis의 소유 프로필이 하나로 확정되고 다른 쪽은 파생·검증 값임이 §4에 명시된다."
+      ],
+      "required_tests": [],
+      "previous_finding_id": "ARCH-INTL004-PRICE-BASIS-OWNER",
+      "verified_by_engine": "FABLE"
+    }
+  ],
+  "proposed_edits": [],
+  "closed_finding_ids": [],
+  "reopened_finding_ids": [],
+  "remaining_required_finding_ids": [],
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "applied_learning_ids": [],
+  "excluded_learning_ids": [
+    {
+      "learning_id": "LRN-ORCH-CI-001",
+      "reason": "이 검수는 main 통합이나 원격 CI 실행이 아닌 기획 문서 검토다."
+    },
+    {
+      "learning_id": "LRN-CODEX-TIME-001",
+      "reason": "영업일 시간 fixture 규칙은 국제 출시 기획 문서의 직접 범위가 아니다."
+    },
+    {
+      "learning_id": "LRN-OPS-BACKUP-001",
+      "reason": "DB 재구축을 실행하지 않으므로 로컬 백업 규칙을 적용하지 않는다."
+    },
+    {
+      "learning_id": "LRN-AUDIT-PIN-001",
+      "reason": "CANDIDATE 상태이며 제품 기획 검수 범위와 직접 관련이 없다."
+    }
+  ]
+}

@@ -1,0 +1,98 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "INTL-LAUNCH-CORE-DOCS-005",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R2",
+  "author_role": "SOLAR-ARCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "99cd21f272d08465e91b685b80989a04a0c5d6af",
+  "target_commit_sha": "e7a7fd0811257cb34dd3b55f3453542d97e73df5",
+  "target_tree_oid": "542b5a1e0b7bde6fd5632e70ebf72d821a4cb3e8",
+  "agents_blob_oid": "9264927700bd7cfcb60460a8279ad72625b505df",
+  "agents_sha256": "bfb2e19944917b86251e998caf929aaac0b12051168c5ad3f42d209f9c04df16",
+  "requirements": [
+    "INTL-RECHECK-001: predecessor r001의 필수 Finding 3건과 Improvement 2건을 같은 finding_id로 재확인한다.",
+    "INTL-RECHECK-002: 스테이징 0164~0174 적용·SQL Editor ACL 실측, 원격 셸 경로 대기, production 미적용 상태를 세 문서에서 일관되게 구분한다.",
+    "INTL-RECHECK-003: zero_rated·exempt의 r0_effective, A(treatment), bi, M과 추가세 적용 상태가 검증 행렬에 대응한다.",
+    "INTL-RECHECK-004: codex/ 접두어와 두 INTL-1 계획 브랜치가 브랜치 명명 규칙에 포함된다.",
+    "INTL-RECHECK-005: 현재 tax_of()의 퍼센트 포인트 ÷100 계약과 price_basis 단일 소유가 명확하다.",
+    "INTL-RECHECK-006: DB RPC 계산 권위·시점 스냅샷·전진 migration·현재와 계획 상태 분리를 유지한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:server-calculation-authority",
+    "AGENTS:point-in-time-preservation",
+    "AGENTS:store-date-from-server",
+    "AGENTS:forward-only-migrations",
+    "AGENTS:settings-revision-noop",
+    "ARCHITECTURE:current-vs-planned-contract"
+  ],
+  "artifact_paths": [
+    "docs/국가-통화-세금-국제출시-기획안.md",
+    "docs/브랜치-DB-운영-기획안.md",
+    "docs/서버-확장-아키텍처-기획안.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "ARCHITECTURE.md",
+    "docs/team/TEAM_LEARNING.md"
+  ],
+  "evidence_paths": [],
+  "excluded_paths": [],
+  "required_evidence": [
+    "predecessor r001 Finding 5건을 동일 finding_id와 previous_finding_id로 재확인",
+    "세 기획안의 운영 상태·브랜치명·공식·프로필 소유 문자열 대조",
+    "배포·ACL 증거 링크와 별도 ARCHITECTURE 동기화 과업 등록 확인",
+    "과세 상태별 공식 순방향·역산의 숫자 검산",
+    "git diff --check와 변경 문서 상대 링크 검사"
+  ],
+  "human_decisions": [
+    "2026-08-31 사용자가 1차 출시 국가를 한국·미국·영국·호주·캐나다, 언어를 한국어·영어로 정했다.",
+    "2026-08-31 사용자가 추가 세금 항목마다 계산 기준을 선택하도록 정했다.",
+    "2026-08-31 사용자가 Fable r001 지적 반영 뒤 최종 재검수를 위해 추가 실행 한도 최대 4.00 USD를 승인했다.",
+    "국가·지역별 실제 세율과 신고 규칙은 출시 전 공식 기관·현지 전문가 확인이 필요하다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": {
+    "task_id": "INTL-LAUNCH-CORE-DOCS-004",
+    "source_commit_sha": "234add28858fb17e4ca5e5d6501659788f7c1a6f",
+    "round": "r001",
+    "task_sha256": "65c017e5a4502d9d2c6cec5d752ac0ff9b674ff7d2db3970be3b8b68789b82cd",
+    "manifest_sha256": "3c956adce0d4c94c0fe59f1ec57de782bbb0fc7f93bf1808ceef65942825f993",
+    "run_sha256": "c5a595e32835f7bc5ce2154b94ad41bb912547300e4555c3d043f48bef685734",
+    "review_sha256": "0aaed6c3a50929fa115a23004070544b1732c17cb943a3b3ac92472ecbf31b9f",
+    "finding_registry_sha256": "49ffa45551ca5821ddee8715aff524edd127cc43d592e06471293c9143fa25c8",
+    "handoff_turn_id": "turn-o001",
+    "handoff_entry_sha256": "37d2bed95b0815b5ebe818000ef900020c8cce5706b3488fc03a15b19455f3b4",
+    "handoff_run_sha256": "953bb51b43c112191fa069ac178a2ee75b7db279e6256a7804c130d2e254c65d"
+  },
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "4.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": [
+    {
+      "learning_id": "LRN-ORCH-CI-001",
+      "reason": "이 검수는 main 통합이나 원격 CI 실행이 아닌 기획 문서 검토다."
+    },
+    {
+      "learning_id": "LRN-CODEX-TIME-001",
+      "reason": "영업일 시간 fixture 규칙은 국제 출시 기획 문서의 직접 범위가 아니다."
+    },
+    {
+      "learning_id": "LRN-OPS-BACKUP-001",
+      "reason": "DB 재구축을 실행하지 않으므로 로컬 백업 규칙을 적용하지 않는다."
+    },
+    {
+      "learning_id": "LRN-AUDIT-PIN-001",
+      "reason": "CANDIDATE 상태이며 제품 기획 검수 범위와 직접 관련이 없다."
+    }
+  ]
+}
