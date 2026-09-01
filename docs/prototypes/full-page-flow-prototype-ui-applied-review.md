@@ -254,6 +254,30 @@ Opus가 지정한 후속 위험은 다음과 같다.
   지적했다. 수정 후 2차에서 counter 중복 낭독만 `CONDITIONAL`, 최종 보완 재검수에서 `PASS`.
 - Codex 판정: `PASS`; Opus 판정: `PASS`; 최종 판정: `PASS`.
 
+### ING-06 · `screen:options`와 구매 링크 9개 상태
+
+- 병합안: 목록·추가·수정은 `renderOptions`에서, 폼 하단 단가·행동은 `renderOptionBottomAction`에서
+  공유한다. `hydrateOptionDraft`가 신규/수정 초깃값을 한 경로로 만들고 `bindOptionFormControls`가
+  필드 검증·단가 계산·저장을 함께 담당한다.
+- 목록: 왼쪽은 최저/최고 배지·구매처·금액, 오른쪽은 용량·단가다. 화살표나 편집 아이콘은 두지
+  않고 카드 전체를 누르면 작업 시트가 열린다. 접근성 이름도 화면에 보이는 정보 순서와 일치한다.
+- 추가/수정: 링크 이름·구매처·용량·금액·구매 링크는 모두 필수다. 구매처가 없을 때 `＋ 추가`로
+  새 구매처 입력을 열며 자동 포커스한다. 저장 구매처를 바꾸면 저장된 링크의 도메인만 입력하고
+  사용자가 전체 상품 URL로 계속 수정할 수 있다. 같은 구매처 재선택은 작성 중인 URL을 보존한다.
+- 계산/검증: kg·L은 g·ml로 환산해 구매 단가를 입력 즉시 갱신하며 live status로 알린다. 점이 있는
+  유효한 웹 호스트만 링크로 인정하고 5개 필수값이 모두 유효할 때만 추가/저장이 활성화된다.
+- 카드/더보기/삭제: 카드 시트는 구매처와 `상품명 · 금액 (단가)`를 보여주고 링크 열기·수정 2개
+  버튼을 하단 고정한다. 무효 링크는 빈 href 대신 비활성 `구매 링크 없음`으로 표시한다. `•••`는
+  헤더 우측 popover이며 초기 포커스·방향키·Escape·포커스 복귀를 지원한다. 삭제는 중앙
+  ConfirmDialog에서 확인하며 실제 행 제거 후 최저/최고 배지를 다시 계산한다.
+- Codex 검수: 모바일에서 신규 등록, 저장 구매처 선택, 도메인 자동 입력, 잘못된 URL 차단, 27.00원/g
+  계산, 목록 반영, 카드→수정, popover Escape, 삭제 Escape 복귀, back URL 정리를 실제 조작했다.
+  PC에서는 입력 폭·단위 2열·하단 단가/저장 고정·겹침을 확인했다.
+- Opus 1차: URL 형식, 구매처 변경 URL 소실, 단가 live, popover 키보드/잔존, 삭제 미적용과 contract를
+  지적했다. 보완 후 2차에서 card 무효 href와 delete Escape 범위만 `CONDITIONAL`, 최종 재검수에서
+  두 항목 모두 `PASS`.
+- Codex 판정: `PASS`; Opus 판정: `PASS`; 최종 판정: `PASS`.
+
 ## 전체 target 장부
 
 아래 목록은 숨긴 폐기 전용 페이지를 제외한 활성 screen 61개와 popup/state host 123개다.
@@ -270,7 +294,7 @@ Opus가 지정한 후속 위험은 다음과 같다.
 | screen:memo_edit | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
 | screen:purchase | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
 | screen:ingredient_changes | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
-| screen:options | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:options | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
 | screen:ingredient_delete | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
 | screen:recipe_main | recipe | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
 | screen:recipe_detail | recipe | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
@@ -334,15 +358,15 @@ Opus가 지정한 후속 위험은 다음과 같다.
 | popup:stock_option@stock_change | ingredient | PickerSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
 | popup:stock_confirm@stock_change | ingredient | ConfirmDialog | COMMON | PASS | PASS | PASS | PASS | PASS |
 | popup:stock_error@stock_change | ingredient | ErrorDialog | COMMON | PASS | PASS | PASS | PASS | PASS |
-| popup:option_list@options | ingredient | PageState | COMMON | TODO | TODO | TODO | TODO | TODO |
-| popup:option_add@options | ingredient | PageState | COMMON | TODO | TODO | TODO | TODO | TODO |
-| popup:option_edit@options | ingredient | PageState | COMMON | TODO | TODO | TODO | TODO | TODO |
-| popup:option_vendor@options | ingredient | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
-| popup:option_vendor_new@options | ingredient | PageState | COMMON | TODO | TODO | TODO | TODO | TODO |
-| popup:option_unit@options | ingredient | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
-| popup:option_card_menu@options | ingredient | ActionSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
-| popup:option_more@options | ingredient | PopoverMenu | COMMON | TODO | TODO | TODO | TODO | TODO |
-| popup:option_delete@options | ingredient | ConfirmDialog | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:option_list@options | ingredient | PageState | COMMON | PASS | PASS | PASS | PASS | PASS |
+| popup:option_add@options | ingredient | PageState | COMMON | PASS | PASS | PASS | PASS | PASS |
+| popup:option_edit@options | ingredient | PageState | COMMON | PASS | PASS | PASS | PASS | PASS |
+| popup:option_vendor@options | ingredient | PickerSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
+| popup:option_vendor_new@options | ingredient | PageState | COMMON | PASS | PASS | PASS | PASS | PASS |
+| popup:option_unit@options | ingredient | PickerSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
+| popup:option_card_menu@options | ingredient | ActionSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
+| popup:option_more@options | ingredient | PopoverMenu | COMMON | PASS | PASS | PASS | PASS | PASS |
+| popup:option_delete@options | ingredient | ConfirmDialog | COMMON | PASS | PASS | PASS | PASS | PASS |
 | popup:stock_period@stock | ingredient | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
 | popup:stock_type@stock | ingredient | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
 | popup:stock_order@stock | ingredient | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
