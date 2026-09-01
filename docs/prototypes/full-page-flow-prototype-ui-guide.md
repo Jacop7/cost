@@ -462,6 +462,40 @@ Form은 입력 순서·검증·dirty·제출·실패 복구를 소유하는 조�
 | Data state | `QueryState` | 기존 | refreshing·offline·stale·partial·notEntered·draft 확장 |
 | Notice | `Notice` | 기존 | 읽어야 하는 정보 안내에 사용 |
 
+**박스·표면 요소 분류**
+
+`박스`는 컴포넌트 이름이 아니다. 화면에 배경·경계·모서리가 있는 사각형을 추가할 때는 아래 역할 중
+하나를 먼저 선택한다. 한 요소에 Card+Button, Badge+Chip, FieldControl+ResultField처럼 두 역할을
+합치지 않는다. 새 `.box`·`.panel`·`.tile`을 화면별로 만들지 않고 공용 역할의 variant로 매핑한다.
+
+| 역할 | 목적 | 기본 표면·경계 | 상호작용 | 사용하지 않는 경우 |
+|---|---|---|---|---|
+| LayoutContainer | 폭·정렬·스크롤·간격 소유 | 배경·경계·모서리 없음 | 없음 | 정보를 묶어 강조해야 할 때 |
+| Section | 제목과 한 업무 구획 연결 | 기본적으로 별도 표면 없음 | 제목 행동은 별도 Button | 단순 여백을 만들기 위한 빈 박스 |
+| Card | 함께 읽고 판단할 요약·상태·정보 묶음 | `T.surface`, 약한 경계·표면 차이·승인된 `cardShadow` 중 최소 신호, `radius.lg` | `interactive`일 때만 전체 클릭 | 반복 Row 각각, 입력 하나마다, 장식용 강조 |
+| RowGroup·Row | 반복 기록·설정·선택지 | Card 안 투명 표면, `T.line2` 구분선 | 행 전체 이동 또는 한 개의 후행 행동 | 같은 행에 이동·편집·메뉴를 중복 제공할 때 |
+| FieldControl | 사용자가 입력·선택하는 값 | `T.surface`, `T.line`, `radius.md` | focus·error·disabled·readonly 상태 | 계산 결과나 단순 설명 표시 |
+| ResultField·ResultGroup | 미리보기·변경 후·확정 계산값 | `T.surface2`, 약한 경계, `radius.md`; 대표 그룹 한 곳만 tint | 기본 비조작, 상세 이동은 별도 행동 | Input처럼 보이게 하거나 각 결과를 파란 카드로 분리할 때 |
+| Notice | 읽어야 할 정보·주의·오류와 다음 행동 | 중립 또는 의미 tint, `radius.md` | 본문은 비조작, 행동은 별도 Button | 짧은 상태를 Badge 대신 긴 박스로 반복할 때 |
+| PrimaryKPI·SummaryKPI | 기간·기준이 있는 핵심 수치 | 중립 표면 우선, 채움 Primary 표면은 화면당 최대 한 곳 | 상세 이동은 명시적 링크·행동 | 모든 숫자를 동일한 KPI 카드로 만들 때 |
+| EmptyState | 최초 데이터 없음·검색 결과 없음·필터 결과 없음 | Page·Section·Card Body의 현재 상위 표면 재사용 | 대표 복구·추가 행동 최대 한 개 | 실제 값 `0`, loading, 오류를 빈 상태로 대체할 때 |
+| Badge | 짧은 상태·비교·메타 | 작은 tint 또는 중립 표면, `radius.full` | 비조작 | 선택·필터·버튼 행동 |
+| Chip·Filter | 보기·선택 조건 | 경계 또는 선택 표면, `radius.full` | selected·focused·disabled | 비조작 상태 표시 |
+| Button·IconButton | 즉시 행동·이동 | variant별 표면, `radius.md` 또는 원형 | 모든 조작 상태와 접근 가능한 이름 | 설명·값·상태를 버튼처럼 꾸밀 때 |
+| Sheet·Dialog·Popover | 현재 화면 위의 선택·입력·확인·문맥 행동 | `T.surface`, 유형별 radius와 승인된 공용 elevation | 모달·포커스·닫기 정책 소유 | 페이지 콘텐츠를 단순히 카드처럼 띄우기 위해 사용할 때 |
+
+- `Surface`는 `T.surface*`를 적용하는 저수준 시각 재료이며 독립 제품 요소가 아니다. 화면은 반드시
+  Card·FieldControl·ResultField·Notice·Layer처럼 목적이 드러나는 이름으로 사용한다.
+- 이 표는 새 시각 variant 목록이 아니라 역할 선택 기준이다. 색·간격·상태·내부 anatomy는 기존
+  해당 절을 따르며 이 표에서 화면별 예외나 추가 박스 유형을 만들지 않는다.
+- 경계·배경·그림자 중 필요한 최소 신호만 사용한다. 일반 Card는 강한 경계와 그림자를 함께 쓰지 않고,
+  실제로 떠 있는 Sheet·Dialog·Popover·FAB에만 명확한 elevation을 사용한다.
+- 동일한 사각형의 selected·focused·error 상태가 경계 두께나 padding을 바꿔 크기를 흔들지 않게 한다.
+- 조작 가능한 표면만 hover·pressed·focus를 가진다. Badge·ResultField·Notice처럼 비조작 요소에는
+  chevron·pressed·손가락 커서를 주지 않는다.
+- 프로토타입 검수에서는 각 사각형을 `card / row-group / field / result / notice / kpi / empty /
+  control / layer` 중 하나로 매핑한다. 두 역할로 동시에 판정되면 중첩 또는 책임 혼합으로 실패 처리한다.
+
 기준일·기간·갱신 시각·적용 시점이 필요한 값에는 출처를 함께 표시한다. 음수와 0을 숨기지 않는다.
 
 운영 메인은 `범위·기록 상태 → PrimaryKPI → 확인이 필요한 항목 → 기록·상세 행동 → 보조 정보`
@@ -881,6 +915,8 @@ Card는 임의 padding 조합 대신 `Header / Body 또는 RowGroup / Footer` �
     `space.xs~xxl` 값만 사용하고 gutter·섹션·Card의 이중 여백이 0건이다.
 20. Card는 Header·Body/RowGroup·Footer 중 필요한 부분만 사용하고 제목·값·행동을 중복하지 않는다.
 21. 입력값 정렬은 내용 variant 계약과 일치하며 숫자·suffix·아이콘이 겹치거나 줄바꿈되지 않는다.
+22. 배경·경계·모서리가 있는 모든 요소가 4.1의 단일 역할로 분류되고, 목적 없는 generic box와
+    Card 중첩이 0건이다.
 
 ### 9.2 적용 순서
 
@@ -1215,6 +1251,7 @@ HTML 등록 전체는 호스트 상태 125개, 고유 ID 99개다. 이 중 `disc
 | F-31 | `Hero`·`Live` 명칭과 파란 ResultField·FieldLabel 굵기가 목표 시각 톤과 충돌 | 1.3, 3.2, 4.4, A, C.1 | 문서 정리 · 구현 미적용 |
 | F-32 | 마지막 기록·최근 수정, 팝업 닫기, 비교 가능 조건과 이상 판정 출처가 결정 가능한 값으로 부족 | 5.2, 6.4~6.5, B.7 | 문서 정리 · 구현 미적용 |
 | F-33 | 페이지·카드·필드의 관계별 여백과 입력 내용별 start/end 정렬이 결정되지 않음 | 1.4, 3.3, 4.3, 5.2 | 문서 정리 · 구현 미적용 |
+| F-34 | `box`·`panel`·`tile` 형태를 목적 없이 재사용해 Card·Field·Result·Notice의 의미가 혼재할 수 있음 | 4.1 | 문서 정리 · 구현 미적용 |
 
 ### C.3 토큰·컴포넌트 적용 매핑 형식
 
@@ -1238,8 +1275,10 @@ HTML 등록 전체는 호스트 상태 125개, 고유 ID 99개다. 이 중 `disc
 - `T`, `TYPE`, `space`, `radius`, 공용 shadow, `tnum`, `STATUS`, formatter 진입점.
 - kit 배럴의 모든 export와 이 문서의 역할명.
 - 프로토타입의 공용 CSS 변수·핵심 selector·화면 renderer.
+- 기존 `.edit-form-box`·`.stock-total-card`·`.callout`·`.empty-inline`처럼 모양 또는 도메인으로
+  이름 붙은 selector와 위 단일 역할의 대응.
 - 신규 필요 `IconButton`, `Toggle`, `StickyAction`, `Row`, `Table`, `KPI`, `ResultField`,
-  `ManagementList`, `ConfirmDialog`, `PopoverMenu`.
+  `ManagementList`, `ConfirmDialog`, `PopoverMenu`와 저수준 `Surface`, `Section`, `EmptyState`.
 - 구성 패턴 `OperationalSummary`, `ExceptionFirstList`, `BusinessDayState`, `RecordedEntryList`,
   `NotEnteredNotice`와 실제 화면 renderer.
 
