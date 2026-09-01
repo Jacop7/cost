@@ -239,6 +239,21 @@ Opus가 지정한 후속 위험은 다음과 같다.
 - Opus 2차: 화면과 6개 상태/팝업 모두 `PASS`; 1차 지적 해소와 신규 회귀 없음.
 - Codex 판정: `PASS`; Opus 판정: `PASS`; 최종 판정: `PASS`.
 
+### ING-05a · `screen:memo_edit`, `popup=recipe_memo` 병합 메모 편집
+
+- 병합안: 식재료와 레시피가 `memoEditorMarkup`·`bindMemoEditor` 한 요소를 공유한다. 화면별로는
+  저장값과 완료 후 복귀 경로만 분리하며 입력칸·글자수·하단 행동·검증 규칙은 같다.
+- 입력 상태: 입력 중 draft는 확정값을 바꾸지 않는다. 취소하면 입력을 버리고, 완료했을 때만 해당
+  상세의 메모에 반영한다. 줄바꿈을 보존하고 빈 값은 상세 화면별 빈 상태 문구로 표시한다.
+- 접근성: 입력칸은 최대 글자수 고정 안내만 `aria-describedby`로 참조한다. 시각적 글자수는 실시간
+  갱신하되 `aria-live=off`로 두어 타이핑마다 중복 낭독되지 않는다. 식재료·레시피의 안내 ID도
+  scope별로 분리한다.
+- Codex 검수: 모바일에서 입력·취소·저장·재진입·100자 카운터를, PC에서 줄바꿈 저장과 상세 반영을
+  실제 조작했다. 레시피 팝업 취소 시 popup 상태와 URL이 함께 정리되는 것도 확인했다.
+- Opus 1차: 저장 전 확정값 변경, recipe 취소 URL, recipe 상세 반영, counter와 전역 버튼 조회를
+  지적했다. 수정 후 2차에서 counter 중복 낭독만 `CONDITIONAL`, 최종 보완 재검수에서 `PASS`.
+- Codex 판정: `PASS`; Opus 판정: `PASS`; 최종 판정: `PASS`.
+
 ## 전체 target 장부
 
 아래 목록은 숨긴 폐기 전용 페이지를 제외한 활성 screen 61개와 popup/state host 123개다.
@@ -252,7 +267,7 @@ Opus가 지정한 후속 위험은 다음과 같다.
 | screen:ingredient_edit | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
 | screen:stock | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
 | screen:stock_change | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
-| screen:memo_edit | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:memo_edit | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
 | screen:purchase | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
 | screen:ingredient_changes | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
 | screen:options | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
@@ -338,7 +353,7 @@ Opus가 지정한 후속 위험은 다음과 같다.
 | popup:recipe_sort@recipe_main | recipe | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
 | popup:recipe_status@recipe_main | recipe | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
 | popup:recipe_target@recipe_main | recipe | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
-| popup:recipe_memo@recipe_detail | recipe | FormSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:recipe_memo@recipe_detail | recipe | FormSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
 | popup:recipe_stop@recipe_detail | recipe | ConfirmDialog | COMMON | TODO | TODO | TODO | TODO | TODO |
 | popup:recipe_category_pick@recipe_add | recipe | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
 | popup:recipe_target_help@recipe_add | recipe | InfoSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
