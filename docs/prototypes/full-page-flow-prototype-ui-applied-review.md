@@ -40,6 +40,7 @@
 | 닫기 정책 | Confirm·Error 바깥 닫기 차단 | 샘플 PASS | 나머지 미검증 | COMMON |
 | 접근성 | Confirm `alertdialog`, 제목 연결, focus-visible | 샘플 PASS | trap·focus 복귀 미검증 | COMMON |
 | 반응형 | PC + 390×844 샘플 렌더 | 샘플 PASS | 320px·큰 글꼴·키보드 필요 | COMMON |
+| 선 위계 | 외곽선·내부선·강조선 소유권 분리 | 재고 내역 샘플 PASS | 샘플 PASS | COMMON |
 
 ### 공통 재구축 근거 · 2026-09-01
 
@@ -79,7 +80,7 @@ Opus가 지정한 후속 위험은 다음과 같다.
 
 | 도메인 | 화면 | popup/state host | 공통 | 화면별 Codex | 화면별 Opus | PC | 모바일 | 최종 |
 |---|---:|---:|---|---|---|---|---|---|
-| 식재료 | 12 | 26 | 적용 | PASS | PASS | PASS | PASS | PASS |
+| 식재료 | 12 | 26 | 적용 | TODO | TODO | 재검수 | 재검수 | TODO |
 | 레시피 | 14 | 26 | 적용 | TODO | TODO | 미검수 | 미검수 | TODO |
 | 발주 | 4 | 13 | 적용 | TODO | TODO | 미검수 | 미검수 | TODO |
 | 매출관리 | 15 | 28 | 적용 | TODO | TODO | 미검수 | 미검수 | TODO |
@@ -335,6 +336,21 @@ Opus가 지정한 후속 위험은 다음과 같다.
   보완 후 사용자 철회 규칙과 runtime 시드 잔량까지 포함한 최종 재검수에서 모두 `PASS`.
 - Codex 판정: `PASS`; Opus 판정: `PASS`; 최종 판정: `PASS`.
 
+#### 2026-09-01 재검수 2 · 공통 선과 InfoSheet 재개방
+
+- 문제점: 재고 요약 카드의 외곽선, 2×2 지표 셀 선, 목록 행 선이 모두 같은 강도로 보여 핵심 값보다
+  구획이 먼저 보였다. `stock_event_more`도 개별 CSS가 하단 구분선과 여백을 소유해 공통 팝업 규격과
+  다른 값이 계산됐다.
+- 수정안: 공통 컴포넌트에 `line / line-subtle / line-strong` 3계층과 선 소유권을 추가했다. 카드만
+  외곽선을 소유하고, 요약 셀과 목록 행은 `#F2F4F6` 내부선만 소유한다. 최근 기록 팝업은 공통
+  `detail-block`과 `layer-footer` 역할로 편입해 외곽선 없는 회색 정보 블록과 2열 하단 고정 액션을 쓴다.
+- Codex 중간 확인: 기존 `.row + .row` 위쪽 선과 공통 행 아래쪽 선이 겹치던 원인을 찾아, 행 구분선은
+  앞 행의 아래쪽 한 면만 소유하도록 보완했다. PC 계산값에서 카드 외곽선 `#E5E8EB`, 헤더·셀·행
+  내부선 `#F2F4F6`를 확인했다. 팝업 정보 블록은 border 0, radius 12px, 하단 버튼 44px·2열이다.
+- 재검수: PC와 390×844에서 가로 넘침 0, 행 경계 중복 0, 콘솔 오류 0을 확인했다. 교차검수는
+  날짜·구매처의 실제 계산값까지 재확인한 뒤 선 규칙과 `stock_event_more` 구현을 `PASS`로 판정했다.
+  `stock_event_more`는 PASS이며, `screen:stock` 전체는 나머지 필터 상태 재검수 전까지 TODO를 유지한다.
+
 ### ING-09 · `screen:purchase`, `popup=purchase_period`
 
 - 문구/정보: 기준단가의 `지출` 보조문구와 단가 차이 설명문을 삭제했다. 각 행은 입고일·구매처·
@@ -541,7 +557,7 @@ Opus가 지정한 후속 위험은 다음과 같다.
 | popup:stock_period@stock | ingredient | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
 | popup:stock_type@stock | ingredient | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
 | popup:stock_order@stock | ingredient | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
-| popup:stock_event_more@stock | ingredient | InfoSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:stock_event_more@stock | ingredient | InfoSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
 | popup:stock_event_revert@stock | ingredient | ConfirmDialog | COMMON | TODO | TODO | TODO | TODO | TODO |
 | popup:purchase_period@purchase | ingredient | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
 | popup:ingredient_change_detail@ingredient_changes | ingredient | InfoSheet | COMMON | TODO | TODO | TODO | TODO | TODO |

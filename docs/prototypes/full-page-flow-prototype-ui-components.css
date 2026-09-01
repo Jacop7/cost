@@ -6,6 +6,7 @@
   --mc-text-sub:#4e5968;
   --mc-text-muted:#8b95a1;
   --mc-line:#e5e8eb;
+  --mc-line-subtle:#f2f4f6;
   --mc-line-strong:#d1d6db;
   --mc-primary:#3182f6;
   --mc-primary-soft:#eaf3ff;
@@ -40,27 +41,29 @@
 [data-ui~="row"]{
   min-height:64px;
   padding:var(--mc-space-3) var(--mc-space-4);
-  border-bottom:1px solid var(--mc-line);
+  border-bottom:1px solid var(--mc-line-subtle);
   background:var(--mc-surface);
 }
 [data-ui~="row"]:last-child{border-bottom:0}
+[data-ui~="row"] + [data-ui~="row"]{border-top:0}
 [data-ui~="row-group"]{overflow:hidden;background:var(--mc-surface)}
 [data-ui~="choice-row"]{
   width:100%;
   min-height:64px;
   padding:var(--mc-space-3) var(--mc-space-4);
   border:0;
-  border-bottom:1px solid var(--mc-line);
+  border-bottom:1px solid var(--mc-line-subtle);
   border-radius:0;
   background:var(--mc-surface);
   color:var(--mc-text);
   text-align:left;
 }
 [data-ui~="choice-row"]:last-child{border-bottom:0}
+[data-ui~="choice-row"] + [data-ui~="choice-row"]{border-top:0}
 [data-ui~="section-header"]{
   min-height:52px;
   padding:0 var(--mc-space-4);
-  border-bottom:1px solid var(--mc-line);
+  border-bottom:1px solid var(--mc-line-subtle);
   background:var(--mc-surface);
 }
 [data-ui~="section-header"] strong{font-size:16px;font-weight:700}
@@ -242,13 +245,25 @@
   line-height:28px;
 }
 [data-ui~="layer-footer"]{
+  position:sticky;
+  z-index:2;
+  bottom:calc(-1 * var(--mc-space-6));
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:var(--mc-space-2);
   padding:var(--mc-space-3) var(--mc-space-4) calc(var(--mc-space-3) + env(safe-area-inset-bottom));
-  border-top:1px solid var(--mc-line);
+  border-top:1px solid var(--mc-line-subtle);
   background:rgba(255,255,255,.97);
+}
+#sheet-body > [data-ui~="layer-footer"]{
+  bottom:calc(-1 * (var(--mc-space-5) + env(safe-area-inset-bottom)));
+  margin:var(--mc-space-5) calc(-1 * var(--mc-space-5)) calc(-1 * (var(--mc-space-5) + env(safe-area-inset-bottom)));
+  padding:var(--mc-space-3) var(--mc-space-5) calc(var(--mc-space-3) + env(safe-area-inset-bottom));
+  border-top:1px solid var(--mc-line-subtle);
 }
 [data-ui~="sticky-action"]{
   padding:var(--mc-space-3) var(--mc-space-4) calc(var(--mc-space-3) + env(safe-area-inset-bottom));
-  border-top:1px solid var(--mc-line);
+  border-top:1px solid var(--mc-line-subtle);
   background:rgba(255,255,255,.97);
 }
 
@@ -260,6 +275,36 @@
 [data-ui~="summary"][data-ui~="nested"]{border:0;border-radius:0;background:transparent;overflow:visible}
 [data-ui~="summary-row"]{min-height:52px;padding:var(--mc-space-3) var(--mc-space-4);border-bottom:1px solid var(--mc-line)}
 [data-ui~="summary-row"]:last-child{border-bottom:0}
+
+/* 선은 표면과 내부 구조가 각각 한 번만 소유한다. */
+[data-ui~="metric-grid"]{
+  display:grid;
+  border-top:0;
+  background:var(--mc-surface);
+}
+[data-ui~="metric-cell"]{
+  border:0;
+  border-top:1px solid var(--mc-line-subtle);
+  background:var(--mc-surface);
+}
+[data-ui~="metric-cell"]:nth-child(odd){border-right:1px solid var(--mc-line-subtle)}
+[data-ui~="metric-cell"]:nth-child(-n+2){border-top:0}
+[data-ui~="metric-cell"]:nth-child(n+3){border-top-color:var(--mc-line-subtle)}
+[data-ui~="card"] > [data-ui~="section-header"] + [data-ui~="metric-grid"]{
+  border-top:0;
+}
+
+[data-ui~="detail-block"]{
+  margin:var(--mc-space-4) 0 var(--mc-space-5);
+  padding:var(--mc-space-4);
+  border:0;
+  border-radius:var(--mc-radius-field);
+  background:var(--mc-surface-sub);
+  box-shadow:none;
+}
+[data-ui~="layer-footer"] > [data-ui~="button"]{width:100%;margin:0}
+
+[data-ui~="summary-row"]{border-bottom-color:var(--mc-line-subtle)}
 
 @media(max-width:520px){
   html,body{width:100%;height:100%;overflow:hidden}

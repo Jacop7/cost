@@ -5,6 +5,8 @@
     'row-group':'.expo-rows,.detail-list,.category-list,.sales-live-list,.past-list,.sales-breakdown,.revenue-summary,.option-link-list,.expo-manage-list,.expo-pick-list,.settings-list,.change-list,.prototype-sheet-group',
     'choice-row':'.expo-pick-card,.prototype-sheet-row,.past-row,.option-link-item,.tax-choice,.sheet-choice',
     'section-header':'.expo-section-head,.card-head,.summary-head,.inbound-head,.price-card-head,.channel-profit-head,.profit-detail-head,.menu-summary-title,.detail-head',
+    'metric-grid':'.summary-grid',
+    'metric-cell':'.metric',
     field:'.edit-form-box,.stock-add-box,.stock-add-select,.prototype-input-shell,.date-field input,.expense-form input,.avg-input,.sheet-input-preview,.tax-rate-box,.order-empty-select,.recipe-sim-price-input',
     'field-multiline':'.expense-form textarea,.memo-preview textarea,.recipe-memo-edit textarea',
     'field-label':'.edit-form-label,.stock-add-label,.prototype-field-label,.date-field,.avg-field-label,.sheet-field-label,.tax-field-label',
@@ -25,6 +27,7 @@
     layer:'.sheet,.delete-preview,.option-popover',
     'layer-title':'#sheet-body>h2,.prototype-sheet-title h2,.option-more-title',
     'layer-footer':'.prototype-actions,.sheet-actions,.option-card-actions,.stock-option-actions,.confirm-actions',
+    'detail-block':'.stock-event-summary,.stock-confirm-summary,.delete-target,.confirm-target',
     'sticky-action':'.bottom-action',
     'row-title':'.row-title,.setting-copy strong,.stock-option-copy strong,.expo-row-copy strong,.expo-manage-copy strong,.change-list-copy strong,.expo-pick-title,.sales-menu-name,.option-link-name,.category-copy strong,.detail-list-copy strong,.choice-card-copy strong',
     'row-sub':'.row-sub,.setting-copy small,.stock-option-copy small,.expo-row-copy small,.expo-manage-copy small,.change-list-copy small,.sales-menu-sub,.detail-list-copy small,.choice-card-copy small,.fixed-ledger-sub,.past-day',
@@ -88,6 +91,7 @@
   }
 
   function applyPrototypeUiRoles(root=document){
+    if(!root)return;
     for(const [role,selector] of Object.entries(roleSelectors)){
       if(root.nodeType===1&&root.matches?.(selector))addRole(root,role);
       root.querySelectorAll?.(selector).forEach(element=>addRole(element,role));
