@@ -108,6 +108,8 @@ export interface StoreTaxProfile extends StoredStoreTaxProfile {
 
 export interface TaxRateComponent {
   id: string;
+  /** 프로필 판본 안에서 UI 초안과 채널 납부 설정을 연결하는 안정 키. */
+  configKey: string;
   kind: TaxComponentKind;
   name: string;
   /** 법정 표면 세율(%). 10은 10%이며 포함가의 10/110을 직접 입력하지 않는다. */
@@ -115,6 +117,7 @@ export interface TaxRateComponent {
   jurisdictionLevel: TaxJurisdictionLevel;
   calculationBasis: TaxCalculationBasis;
   appliesToTreatments: readonly TaxTreatment[];
+  sortOrder: number;
 }
 
 /** 납부 주체는 판매 전체가 아니라 세금 구성 항목×판매 채널로 정한다. */
