@@ -7,9 +7,12 @@
 - 상태: 서비스 기준 재검토 개정안
 - 개정일: 2026-09-01
 - 적용 대상: `docs/prototypes/full-page-flow-prototype.html`과 향후 Expo 공용 UI
-- 검수 범위: 제품 화면 62개, 팝업·조건 상태 호스트 125개, 고유 ID 99개
+- 등록 인벤토리: 프로토타입 `screen` 키 62개, 팝업·조건 상태 호스트 125개, 고유 ID 99개
+- 활성 도달성 검수: `screen` 키 61개, 팝업·조건 상태 호스트 123개, 고유 ID 97개
+- 숨김 보존: `discard` 화면 키 1개와 `discard_type`·`discard_period` 상태 2개
 - 이번 개정 제외: 실제 Expo 화면, 프로토타입 HTML, DB, RPC
-- 공동 검토: Codex 전수검수 + 사용자 요청 기반 `claude-opus-5` 독립 검토 2회
+- 공동 검토: Codex 전수검수 + `claude-opus-5` 도메인 대조·UI 가이드·서비스 관점·최종 회귀
+  독립 검토. 회차별 범위와 판정은 현재 확정안과 변경 기록에서 관리한다.
 
 이 문서는 같은 역할의 요소가 화면마다 다른 크기·굵기·색상·배치·동작을 갖지 않도록 공통 UI 계약을
 정의한다. 화면 문구와 노출 조건은 `full-page-flow-prototype-current-spec.md`, 변경 과정은
@@ -144,6 +147,8 @@
 - `TYPE.display`는 화면에서 가장 중요한 매출·재고·순이익 수치에만 사용한다. 마케팅 문장과 일반
   화면 제목을 키우는 용도로 사용하지 않는다.
 - `800` 굵기는 제목·핵심값·최종 합계처럼 제한된 요소에만 사용하고 반복 Row 전체에 적용하지 않는다.
+- `FieldLabel`은 `TYPE.caption`의 `14 / 600`을 기본으로 하며 강조가 필요한 경우에도 `700`까지만
+  허용한다. 필수 여부는 굵기 대신 라벨 뒤 `*`와 의미 속성으로 전달한다.
 
 ### 1.4 간격·크기·모서리
 
@@ -250,6 +255,10 @@
 | 매출관리 | 오늘 어디까지 기록했고 얼마가 남았는가 | 판매 기록·영업 종료·과거 정정 |
 | MY | 계산과 운영에 필요한 설정이 준비됐는가 | 누락 설정 보완·기간 보고서 진입 |
 
+`PrimaryKPI → 우선 이상징후 → 대표 행동` 구성은 `ingredient_main`, `recipe_main`, `order_main`,
+`sales_main`에 적용한다. `my_main`은 설정 준비 상태와 누락 항목을 SettingsList·Notice로 보여주며
+PrimaryKPI 의무 대상에서는 제외한다.
+
 - 같은 탭을 다시 누르면 탭 메인으로 이동하고, 이미 메인이면 목록 상단으로 이동한다.
 - 탭 전환 중 dirty 폼이 있으면 이탈 확인을 먼저 수행한다.
 - 기본 계층은 `메인 → 상세 → 상세의 상세`다.
@@ -304,7 +313,8 @@
 - 현재 `gray`는 `secondary` alias로 정리한다.
 - 한 화면·팝업의 대표 Primary는 원칙적으로 하나다.
 - 채움 Primary와 파란색 강조는 대표 행동·현재 선택·명시적 링크에만 사용한다. 일반 숫자·합계·
-  섹션 제목·장식 아이콘·일반 카드 테두리를 파란색으로 만들지 않는다.
+  섹션 제목·장식 아이콘·일반 카드 테두리를 파란색으로 만들지 않는다. 계산 결과의 제한적 예외는
+  4.4의 ResultField 규칙을 따른다.
 - 삭제·철회·계정 해지는 danger를 사용하며 Primary 색을 재사용하지 않는다.
 - loading 중 라벨을 유지하고 진행 표시 때문에 폭이 바뀌지 않게 한다.
 - 단독 아이콘 행동은 `IconButton`으로 통합하고 문자 아이콘을 넣지 않는다.
@@ -427,9 +437,13 @@ Form은 입력 순서·검증·dirty·제출·실패 복구를 소유하는 조�
 - loading·값 없음·기록 없음·집계 불가를 모두 0으로 표시하지 않는다.
 - 서버 확정 집계인지 화면 미리보기인지 표시한다.
 - 자동 수집 근거가 없는 KPI에 `실시간`, `LIVE`, `자동 집계` 라벨을 붙이지 않는다.
-- 채움 Primary 색을 쓰는 요약 표면은 화면당 하나 이하이며 장식 목적으로 사용하지 않는다.
+- 채움 Primary 색을 쓰는 비행동 요약 표면은 화면당 하나 이하이며 장식 목적으로 사용하지 않는다.
 - ResultField는 `preview / afterChange / warning / negative / confirmed / empty / loading / error`를 갖는다.
 - ResultField의 라벨은 영역 밖에 두고 영역 안에는 핵심 값을 우선한다.
+- ResultField의 기본 표면과 값은 중립색이다. 사용자가 방금 바꾼 값의 대표 계산 결과만 파란 tint를
+  사용할 수 있으며, 같은 페이지·시트에서는 하나의 ResultGroup 안에 묶는다. 대표 Primary 행동은
+  별도 한 개까지 둘 수 있지만, 비행동 파란 표면은 채움 요약 표면과 tint ResultGroup을 합쳐 한 개만
+  허용한다.
 - 계산 실패를 0으로 대체하지 않는다.
 
 ### 4.5 차트·관리 목록·점진적 공개
@@ -472,12 +486,16 @@ Form은 입력 순서·검증·dirty·제출·실패 복구를 소유하는 조�
 | InfoSheet | 허용 | 허용 | 중요한 읽기 확인은 명시적 닫기 |
 | ActionSheet | 허용 | 허용 | 실행 전 상태 변경 없음 |
 | ConfirmDialog | 금지 | 취소와 같은 결과 | loading 중 닫기 금지 |
-| SuccessDialog | 정책별 | 확인과 같은 결과 | 다음 단계가 필수면 바깥 닫기 금지 |
-| ErrorDialog | 정책별 | 닫기와 같은 결과 | 결정이 필수면 바깥 닫기 금지 |
+| SuccessDialog | 기본 금지 | 확인과 같은 결과 | 결과가 이미 확정되고 다음 행동이 없는 단순 완료만 허용 |
+| ErrorDialog | 금지 | 기본 금지 | 명시적 닫기·재시도 전까지 닫기 금지 |
 | PopoverMenu | 허용 | 허용 | 닫힌 뒤 기준 버튼 복귀 |
 
 위험 행동은 ActionSheet에서 즉시 실행하지 않고 ConfirmDialog로 전환한다. 판매 부족처럼 진행이
 허용되는 경고는 ErrorDialog가 아니라 계속할지를 묻는 ConfirmDialog다.
+
+팝업별 예외는 부록 B에 `dismissPolicy`로 기록한다. 현재 `tax_saved`는 저장이 이미 완료된 단순
+안내이므로 바깥 닫기를 허용하고, `stock_error`는 명시적 닫기 또는 재시도 전까지 바깥 닫기를
+허용하지 않는다. `stock_error`에서는 Android Back과 Escape도 비활성화한다.
 
 ### 5.3 유형별 핵심 규칙
 
@@ -548,8 +566,9 @@ Form은 입력 순서·검증·dirty·제출·실패 복구를 소유하는 조�
 안전재고 미달과 판매 부족을 같은 판정으로 쓰지 않는다. 판매 부족은 음수 재고 기록을 계속할지
 확인하되 자동으로 판매를 막지 않는다.
 
-영업 상태와 마감은 자동으로 감지하지 않는다. 상태 전환과 확정은 사장님의 명시적 행동으로만
-일어나며 마감 후 값은 일반 입력 폼이 아니라 판본 정정 흐름으로 수정한다.
+앱은 기기 시각으로 영업 상태를 자동 감지·전환하지 않는다. 상태 전환과 확정은 사장님의 명시적
+행동 또는 예정 종료와 고정 유예 뒤 실행되는 서버 자동 마감 응답만 따른다. 마감 후 값은 일반 입력
+폼이 아니라 판본 정정 흐름으로 수정한다.
 
 ### 6.4 감사·출처·적용 시점
 
@@ -562,6 +581,11 @@ Form은 입력 순서·검증·dirty·제출·실패 복구를 소유하는 조�
   맥락은 필요한 화면에만 표시한다.
 - 집계값은 구성별 상세와 원천 기록으로 내려갈 수 있고, 원천 기록에서도 영향받은 집계로 돌아갈 수
   있어야 한다. 이동 전후의 영업일·기간·합계 기준은 바뀌지 않는다.
+- `마지막 기록`은 현재 집계에 포함된 원천 수기 기록·원장 사건 중 가장 최근의 서버 확정 시각이다.
+  기기 시각·화면 렌더 시각·단순 조회 시각을 사용하지 않으며 해당 기록이 없으면 시각 대신 `미입력`을
+  표시한다.
+- `최근 수정`은 기존 값의 직접 수정 또는 서버 재계산이 발생한 감사·변경 사건의 최신 시각이다.
+  최근 7일 수정 링크에 사용하며 `마지막 기록`이나 데이터 신선도를 대신하지 않는다.
 
 ### 6.5 운영 홈, 이상 신호, 리포트
 
@@ -576,17 +600,31 @@ Form은 입력 순서·검증·dirty·제출·실패 복구를 소유하는 조�
 | 확인 완료 | 무엇이 바뀌었나 | 저장 결과와 영향받은 재고·단가·손익을 표시 |
 | 증명·정정 | 나중에 확인하거나 되돌릴 수 있나 | 원장·수정 이력·판본 정정·조건부 철회로 연결 |
 
-- 이상 항목은 `신호 이름 + 근거 값 + 영향 + 다음 행동 한 개`를 같은 영역에 제공한다.
-- 현재 기본 이상 항목은 `미입력 영업일·매출`, `소진·소진 임박·음수 재고`, `입고 예정 미처리`,
-  `목표 미달`, `구매 단가 급등`, `저장·원장 실패`다. 새 이상 항목은 데이터 출처·판정 기준·해결
-  행동이 함께 확정될 때만 추가한다.
+- 이상 항목은 `신호 이름 + 근거 값 + 영향 + 다음 행동 한 개`를 같은 영역에 제공한다. 앱 화면이
+  임의 임계값을 계산하지 않고 다음 권위가 내린 판정이나 서버 응답을 표시한다.
+
+| 이상 유형 | 판정 권위 | 기본 행동 |
+|---|---|---|
+| 미입력 영업일·매출 | 서버 영업일 상태 + 해당 영업일 기록 존재 여부 | 매출 기록 |
+| 소진·소진 임박·음수 재고 | `packages/core.stockStateOf`와 서버 재고 원장 | 재고 확인·수정 |
+| 입고 예정 미처리 | E7 잔여 입고 수량이 있고 도착 예정 영업일이 서버 현재 영업일 이하이며 E1 입고·E12 취소로 끝나지 않은 상태 | 입고 처리·발주 취소 |
+| 목표 미달 | 서버 확정 손익·목표 순이익률 | 판매가 시뮬레이션·레시피 수정 |
+| 구매 단가 급등 | 서버/RPC가 제공하는 판정과 비교 기준 | 구매 이력·발주 확인 |
+| 저장·원장 실패 | mutation·RPC 실패 상태 | 재시도·오류 확인 |
+
+구매 단가 급등처럼 임계값이 공식 도메인 계약에 없는 항목은 앱이 추정하지 않는다. 서버가 판정과
+비교 기준을 제공하기 전에는 운영 이상 목록에서 숨긴다. 새 이상 항목도 데이터 출처·판정 기준·영향·
+해결 행동이 함께 확정될 때만 추가한다.
 - 조치가 필요 없는 상태는 `확인만`, 처리 대기 상태는 `반영 대기`처럼 구분하고 불필요한 위험색을 쓰지 않는다.
 - 요약과 상세는 같은 지표명·영업일·기간·합계 기준을 유지한다.
 - 알림은 방금 행동의 실패, 당일 조치가 필요한 이상, 마감 확인, 기간 리포트로 목적을 분리한다.
   같은 사건을 푸시·홈·카드에서 각각 새 경고처럼 중복 생성하지 않는다.
 - 운영 알림과 홍보·구매 유도는 같은 우선순위와 시각 형태로 섞지 않는다.
 - 일 손익은 영업 중 `작성 중` 값과 영업 종료 후 `마감 완료` 스냅샷을 분리한다. 주·월 비교는
-  누적 기록이 충분할 때만 제공하며 새 리포트 화면은 별도 화면 계약을 승인받아 추가한다.
+  리포트별 계약이 정한 최소 마감 영업일 수를 충족하고 DB/RPC가 `comparison_available=true`를
+  반환할 때만 제공한다. 도메인 훅은 이를 `comparisonAvailable`로 변환한다. 최소 일수 계약이 아직
+  없으면 서버 값은 `false`로 두고 비교를 숨기며 `비교할 기록이 부족해요` 상태를 표시한다. 새
+  리포트 화면은 별도 화면 계약을 승인받아 추가한다.
 - 홈을 금융 자산 스택, 상품 추천 피드, POS 실시간 현황판 구조로 만들지 않는다.
 
 ---
@@ -696,20 +734,24 @@ Form은 입력 순서·검증·dirty·제출·실패 복구를 소유하는 조�
 1. 본문은 10장, 추적성은 부록 A~C로 관리한다.
 2. 코드 심볼이 있는 값은 가이드가 다른 현재값을 선언하지 않는다.
 3. 변경 대상 CSS 변수·셀렉터·생성 함수·kit export가 부록 C에 연결된다.
-4. 62개 화면과 호스트 상태 125개가 PC·모바일에서 모두 열린다.
-5. 고유 popup/state ID 99개가 의도한 유형과 닫기 정책을 따른다.
-6. Compact·Mobile·Tablet·Prototype desktop 폭에서 잘림·겹침이 없다.
-7. Web·Android·iOS 접근성 출시 게이트를 통과한다.
-8. 미정의 CSS 변수와 금지 굵기가 0건이다.
-9. 로딩·저장·빈 상태·오류·오프라인의 필수 상태가 검증된다.
-10. current-spec·changelog에 판정·예외·증거가 연결된다.
-11. 실제 Expo 구현 변경은 저장소 필수 검사를 별도로 통과한다.
-12. 운영 요약이 필요한 탭 메인의 첫 화면에서 PrimaryKPI 한 개와 우선 이상징후 3개 이하, 대표
-    행동 한 개가 구분된다.
-13. 이상 항목에서 근거 상세와 처리 화면까지 두 단계 이내로 이동하고 원천 기록까지 추적할 수 있다.
-14. 기록 없음과 0, 작성 중과 마감 완료, 미리보기와 서버 확정값이 각각 구분된다.
-15. 자동 수집 근거가 없는 `실시간·LIVE·자동 연동·자동 집계` 사용자 노출 문구가 0건이다.
-16. 반복 Row를 개별 Card로 감싸지 않고 채움 Primary 행동·표면은 화면 또는 시트당 하나 이하이다.
+4. 등록 인벤토리 `screen 62 / popup·state host 125 / unique ID 99`가 HTML 레지스트리와 일치한다.
+5. 활성 도달성 대상 `screen 61 / popup·state host 123 / unique ID 97`이 PC·모바일에서 모두 열린다.
+6. 숨김 보존 `discard / discard_type / discard_period`는 활성 목록에 노출되지 않고 직접 진입 시
+   `stock`의 폐기 상태로 치환되며 활성 도달성 게이트에서 제외된다.
+7. 활성 popup/state ID 97개가 의도한 유형·host·닫기 정책을 따른다.
+8. Compact·Mobile·Tablet·Prototype desktop 폭에서 잘림·겹침이 없다.
+9. Web·Android·iOS 접근성 출시 게이트를 통과한다.
+10. 미정의 CSS 변수와 금지 굵기가 0건이다.
+11. 로딩·저장·빈 상태·오류·오프라인의 필수 상태가 검증된다.
+12. current-spec·changelog에 판정·예외·증거가 연결된다.
+13. 실제 Expo 구현 변경은 저장소 필수 검사를 별도로 통과한다.
+14. `ingredient_main / recipe_main / order_main / sales_main` 첫 화면에서 PrimaryKPI 한 개와 우선
+    이상징후 3개 이하, 대표 행동 한 개가 구분된다. `my_main`은 명시적 면제다.
+15. 이상 항목에서 근거 상세와 처리 화면까지 두 단계 이내로 이동하고 원천 기록까지 추적할 수 있다.
+16. 기록 없음과 0, 작성 중과 마감 완료, 미리보기와 서버 확정값이 각각 구분된다.
+17. 자동 수집 근거가 없는 `실시간·LIVE·자동 연동·자동 집계` 사용자 노출 문구가 0건이다.
+18. 반복 Row를 개별 Card로 감싸지 않는다. 대표 Primary 행동은 화면·시트당 하나 이하이고,
+    비행동 파란 표면은 채움 요약 표면과 tint ResultGroup을 합쳐 하나 이하이다.
 
 ### 9.2 적용 순서
 
@@ -743,8 +785,8 @@ Form은 입력 순서·검증·dirty·제출·실패 복구를 소유하는 조�
 
 | 필드 | 내용 |
 |---|---|
-| Rule/Finding | 가이드 항목 또는 F-01~F-28 |
-| Screen/Popup | 화면 키·화면 ID·popup ID·host |
+| Rule/Finding | 가이드 항목 또는 F-01~F-32 |
+| Target | `screen:{key}` 또는 `popup:{id}@{host}`. bare ID는 사용하지 않음 |
 | Platform | Web / Android / iOS |
 | Viewport/설정 | 폭·글자 크기·키보드·locale |
 | Expected | 목표 토큰·variant·행동 |
@@ -764,23 +806,33 @@ Form은 입력 순서·검증·dirty·제출·실패 복구를 소유하는 조�
 
 ---
 
-## 부록 A. 화면 패턴 레지스트리 · 62개
+## 부록 A. 프로토타입 screen 키 레지스트리 · 62개
 
 화면 존재·라우트의 권위는 `apps/mobile/src/features/README.md`다. 이 부록은 UI 패턴 연결만 소유한다.
+`screen` 키는 PC·모바일에서 각 상태를 독립 검수하기 위한 주소 단위이며 제품의 독립 페이지 수를
+뜻하지 않는다. 실제 표시 형태는 기능 README와 현재 확정안이 소유한다. 아래 `기획·프로토타입 ID`는
+검수 문서 안의 추적 라벨이며 제품 화면 ID·라우트로 인용하지 않는다.
+
+| popup 성격의 screen 키 | 제품 표시 형태 | 프로토타입 역할 |
+|---|---|---|
+| `ingredient_edit_menu` | ActionSheet | 상세 위 수정 행동 검수 host |
+| `memo_edit` | FormSheet | 메모 수정 검수 host |
+| `ingredient_delete` | ConfirmDialog | 삭제 확인 검수 host |
+| `order_receive` | OrdersHome 내 FormSheet | 독립 screen host와 popup host를 모두 제공 |
 
 ### A.1 식재료
 
-| 화면 키 | 화면 ID | 주요 패턴 |
+| 화면 키 | 기획·프로토타입 ID | 주요 패턴 |
 |---|---|---|
 | `ingredient_main` | ING-01 | MainHeader, OperationalSummary, CategoryTabs, SortFilter, ExceptionFirstList, FAB |
 | `ingredient_add` | ING-02 | ChildHeader, Field, PickerSheet, ResultField, StickyAction |
-| `ingredient_detail` | ING-03 | ChildActionHeader, DetailHero, KPI, PreviewCard, ConditionalEmpty |
-| `ingredient_edit_menu` | ING-03a | ChildHeader, ActionList, DangerAction |
+| `ingredient_detail` | ING-03 | ChildActionHeader, DetailSummary, KPI, PreviewCard, ConditionalEmpty |
+| `ingredient_edit_menu` | ING-03a | ActionSheet, ActionList, DangerAction |
 | `ingredient_edit` | ING-04 | ChildHeader, Field, PickerSheet, ResultField, StickyAction |
 | `stock_change` | ING-05 | ChildHeader, SegmentedControl, DependentForm, Stepper, ResultField, ConfirmDialog |
-| `memo_edit` | ING-03c | ChildHeader, TextareaField, Counter, StickyAction |
+| `memo_edit` | ING-03c | FormSheet, TextareaField, Counter, SheetAction |
 | `options` | ING-06 | ChildActionHeader, ManagementList, Field, PopoverMenu, ActionSheet |
-| `ingredient_delete` | ING-03d | ChildHeader, DangerPreview, ConfirmDialog |
+| `ingredient_delete` | ING-03d | ConfirmDialog, DangerPreview |
 | `stock` | ING-07 | ChildHeader, Filter, KPI, EventList, ActionSheet, ConfirmDialog |
 | `purchase` | ING-09 | ChildHeader, Filter, KPI, ComparisonBadgeList |
 | `ingredient_changes` | ING-03b | ChildHeader, AuditKPI, ChangeList, BeforeAfterSheet |
@@ -788,11 +840,11 @@ Form은 입력 순서·검증·dirty·제출·실패 복구를 소유하는 조�
 
 ### A.2 레시피
 
-| 화면 키 | 화면 ID | 주요 패턴 |
+| 화면 키 | 기획·프로토타입 ID | 주요 패턴 |
 |---|---|---|
 | `recipe_main` | RCP-01 | MainHeader, OperationalSummary, CategoryTabs, Filter, ExceptionFirstList, FAB |
 | `recipe_detail` | RCP-02 | ChildActionHeader, StatusSelect, KPI, Donut, CostTable, PreviewCard |
-| `recipe_price_sim` | RCP-02c | ChildHeader, NumericField, SegmentedControl, ProfitTable, LiveResult |
+| `recipe_price_sim` | RCP-02c | ChildHeader, NumericField, SegmentedControl, ProfitTable, CalculatedPreview |
 | `recipe_add` | RCP-03 | ChildHeader, Field, EmptyState, AddAction, CostPreview, StickyAction |
 | `recipe_edit` | RCP-03 | ChildHeader, FilledForm, EditableIngredientList, UsageFormSheet, StickyAction |
 | `recipe_ingredient_search` | RCP-10 | ChildHeader, Search, IngredientPickList, UsageFormSheet |
@@ -807,16 +859,16 @@ Form은 입력 순서·검증·dirty·제출·실패 복구를 소유하는 조�
 
 ### A.3 발주
 
-| 화면 키 | 화면 ID | 주요 패턴 |
+| 화면 키 | 기획·프로토타입 ID | 주요 패턴 |
 |---|---|---|
 | `order_main` | ORD-01 | MainHeader, OperationalSummary, StateTabs, ExceptionFirstList, ActionSheet, ConfirmDialog |
 | `order_detail` | ORD-02 | ChildHeader, OrderSummary, DependentForm, StickyAction |
-| `order_receive` | ORD-03 | ChildHeader, OrderSummary, ResultField, ConfirmDialog, InfoSheet warning variant |
+| `order_receive` | ORD-03 | FormSheet, OrderSummary, ResultField, ConfirmDialog, InfoSheet warning variant |
 | `order_direct` | ORD-02 | ChildHeader, PickerField, NumericField, StickyAction |
 
 ### A.4 매출관리
 
-| 화면 키 | 화면 ID | 주요 패턴 |
+| 화면 키 | 기획·프로토타입 ID | 주요 패턴 |
 |---|---|---|
 | `sales_main` | SALES-01 | SalesMainHeader, BusinessDayState, PrimaryKPI, EntryActions, RecordedEntryList, NotEnteredNotice |
 | `analytics` | SALES-02 | ChildHeader, PeriodFilter, SummaryKPI, DataTable |
@@ -836,7 +888,7 @@ Form은 입력 순서·검증·dirty·제출·실패 복구를 소유하는 조�
 
 ### A.5 MY
 
-| 화면 키 | 화면 ID | 주요 패턴 |
+| 화면 키 | 기획·프로토타입 ID | 주요 패턴 |
 |---|---|---|
 | `my_main` | MY-01 | MYMainHeader, StoreCard, SettingsList |
 | `my_fixed` | MY-05 | ChildHeader, PeriodFilter, KPI, CostTable |
@@ -857,9 +909,14 @@ Form은 입력 순서·검증·dirty·제출·실패 복구를 소유하는 조�
 
 ### A.6 식별자 감사 메모
 
-- 화면 키는 62개이며 카탈로그에는 61개를 노출한다. 숨김 `discard`가 나머지 1개다.
+- 등록 screen 키는 62개이며 카탈로그에는 활성 61개를 노출한다. 숨김 `discard`가 나머지 1개다.
+- `discard` 직접 진입은 `stock`의 폐기 필터 상태로 치환하며 독립 화면 열림 게이트에는 포함하지 않는다.
+- `ingredient_edit_menu`, `memo_edit`, `ingredient_delete`, `order_receive`는 독립 페이지 수가 아니라
+  popup 성격의 검수 host다. Expo 화면 수를 계산할 때 중복 합산하지 않는다.
 - `ORD-02`는 `order_detail`과 `order_direct`가 함께 사용한다.
+- `RCP-03`은 `recipe_add`와 `recipe_edit`가 함께 사용한다.
 - `SALES-18`은 `channel`과 `tax`가 함께 사용한다.
+- `MY-02`는 `fixed_average`와 `my_tax`가 함께 사용한다.
 - `MY-05`는 `my_fixed`와 `my_units`가 함께 사용한다.
 - 레시피·부자재 관리 재사용 화면은 `RCP-12`, `RCP-12b`, `RCP-13`을 유지한다.
 - UI 매핑은 화면 키를 기준으로 하며 중복 ID는 기능 README에서 별도로 정리한다.
@@ -868,23 +925,25 @@ Form은 입력 순서·검증·dirty·제출·실패 복구를 소유하는 조�
 
 ## 부록 B. 팝업·조건 상태 레지스트리
 
-호스트 상태 125개는 중복 제거 시 고유 ID 99개다.
+HTML 등록 전체는 호스트 상태 125개, 고유 ID 99개다. 이 중 `discard_type`·`discard_period`는
+숨김 보존 상태라 활성 도달성 검수에서는 제외한다. 활성 대상은 호스트 상태 123개, 고유 ID 97개다.
 
-| 유형 | 고유 ID | 호스트 상태 |
-|---|---:|---:|
-| PickerSheet | 27 | 32 |
-| FormSheet | 27 | 42 |
-| InfoSheet | 16 | 17 |
-| ActionSheet | 2 | 2 |
-| ConfirmDialog | 15 | 20 |
-| SuccessDialog | 1 | 1 |
-| ErrorDialog | 1 | 1 |
-| PopoverMenu | 1 | 1 |
-| PageState | 9 | 9 |
-| 합계 | 99 | 125 |
+| 유형 | 등록 고유 ID | 등록 호스트 | 활성 고유 ID | 활성 호스트 |
+|---|---:|---:|---:|---:|
+| PickerSheet | 27 | 32 | 25 | 30 |
+| FormSheet | 27 | 42 | 27 | 42 |
+| InfoSheet | 16 | 17 | 16 | 17 |
+| ActionSheet | 2 | 2 | 2 | 2 |
+| ConfirmDialog | 15 | 20 | 15 | 20 |
+| SuccessDialog | 1 | 1 | 1 | 1 |
+| ErrorDialog | 1 | 1 | 1 | 1 |
+| PopoverMenu | 1 | 1 | 1 | 1 |
+| PageState | 9 | 9 | 9 | 9 |
+| 합계 | 99 | 125 | 97 | 123 |
 
-검산식: 고유 ID `27+27+16+2+15+1+1+1+9=99`, 호스트 상태
-`32+42+17+2+20+1+1+1+9=125`.
+등록 검산식은 고유 ID `27+27+16+2+15+1+1+1+9=99`, 호스트 상태
+`32+42+17+2+20+1+1+1+9=125`다. 활성 검산식은 PickerSheet에서 숨김 2개를 뺀
+고유 ID `97`, 호스트 상태 `123`이다.
 
 ### B.1 PageState · 9개
 
@@ -892,7 +951,8 @@ Form은 입력 순서·검증·dirty·제출·실패 복구를 소유하는 조�
 - `stock_inbound`, `stock_deduct`, `stock_discard`
 - `option_list`, `option_add`, `option_edit`, `option_vendor_new`
 
-`discard_type`, `discard_period`는 숨김 폐기 화면의 옛 상태다. 새 PageState로 사용하지 않는다.
+`discard_type`, `discard_period`는 숨김 폐기 화면의 옛 상태다. 새 PageState로 사용하지 않으며
+직접 URL에서 열 수 없는 휴면 보존 항목이다.
 
 ### B.2 PickerSheet · 27개
 
@@ -903,7 +963,8 @@ Form은 입력 순서·검증·dirty·제출·실패 복구를 소유하는 조�
 - 발주: `order_ingredient`, `order_vendor`.
 - 매출관리: `sales_sort`, `sales_period`.
 - MY: `fixed_period`, `tax_country`, `hours_break_start`, `hours_break_end`.
-- 숨김 옛 상태: `discard_type`, `discard_period`.
+- 숨김 옛 상태: `discard_type`, `discard_period`. 등록 계수에는 남기고 활성 도달성·닫기 정책
+  게이트에서는 제외한다.
 
 `order_ingredient`는 검색형, `sales_period`는 적용형 변형이다.
 
@@ -919,7 +980,9 @@ Form은 입력 순서·검증·dirty·제출·실패 복구를 소유하는 조�
   `hours_timezone`, `account_delete`.
 
 복합형 `fixed_channel`, `order_receive`, 시간 선택은 선택과 입력을 점진 노출한다. `account_delete`는
-확인 문구 입력 FormSheet 다음에 최종 ConfirmDialog를 둔다.
+확인 문구 입력 FormSheet 다음에 최종 ConfirmDialog를 둔다. `order_receive`는 screen 키와 popup ID가
+같으므로 검수 증거에는 반드시 `screen:order_receive`, `popup:order_receive@order_main`,
+`popup:order_receive@order_receive`처럼 namespace와 host를 함께 기록한다.
 
 ### B.4 InfoSheet · 16개
 
@@ -948,8 +1011,8 @@ Form은 입력 순서·검증·dirty·제출·실패 복구를 소유하는 조�
 
 ### B.7 단일 유형
 
-- SuccessDialog: `tax_saved`.
-- ErrorDialog: `stock_error`.
+- SuccessDialog: `tax_saved` — `dismissPolicy=outsideAllowedAfterCommit`.
+- ErrorDialog: `stock_error` — `dismissPolicy=explicitActionOnly`.
 - PopoverMenu: `option_more`.
 
 ---
@@ -970,16 +1033,23 @@ Form은 입력 순서·검증·dirty·제출·실패 복구를 소유하는 조�
 | 포커스 표시 | 없음 | 모든 조작 필수 |
 | Safe Area | 없음 | 상·하단 소유권 적용 |
 | 로딩 상태 | 없음 | 페이지·섹션·행·버튼 단위 |
-| 자동·실시간 암시 | 패턴명·CSS 클래스에 복수 존재 | 기록 기반 명칭과 상태로 교체 |
+| 자동·실시간 암시 | HTML 클래스·옛 렌더러명에 복수 존재 | 기록 기반 명칭과 상태로 교체 |
+| 필드 라벨 굵기 | 현재 확정안 `14 / 800` | `14 / 600`, 강조 시 최대 `700` |
+| 계산 결과 강조 | 파란 ResultField 반복 | 중립 기본 + 대표 ResultGroup 한 곳만 tint |
 
 프로토타입에는 `safe-area-inset`, `focus-visible`, `prefers-reduced-motion`, `100dvh`가 없고 `100vh`와
 단일 media query에 의존한다. 실제 적용 때 다시 측정하고 판본·명령·결과를 기록한다.
 
-`sales-hero`, `sales-live-*`, `business-state`처럼 자동 연동 서비스의 문법에서 유래한 클래스와
-`HeroKPI`, `LiveList`, `BusinessStateCard` 패턴명이 남아 있다. 이번 문서에서는 목표 패턴명을 기록
-기반으로 교체했으며 HTML 클래스와 렌더러는 후속 적용 단계에서 함께 정리한다.
+`sales-hero`, `sales-live-*`, `business-state`처럼 자동 연동 서비스의 문법에서 유래한 HTML 클래스와
+옛 렌더러 이름이 남아 있다. 부록 A의 목표 매핑은 `DetailSummary`, `CalculatedPreview`, `PrimaryKPI`,
+`RecordedEntryList`처럼 기록 기반 이름을 사용한다. HTML 클래스와 렌더러는 후속 적용 단계에서 함께
+정리한다.
 
 ### C.2 공동 검토 Finding 반영표
+
+`문서 정리`는 목표 계약을 이 가이드에 명시했다는 뜻이며 프로토타입·Expo 적용 완료를 뜻하지 않는다.
+`미적용`은 목표는 정해졌지만 구현이 아직 따르지 않는 상태, `일부 문서 정리`는 계약 일부가 남은
+상태, `후속 매핑 필요`는 실제 셀렉터·kit export 연결이 남은 상태다.
 
 | ID | 확인된 격차 | 본문 처리 | 구현 상태 |
 |---|---|---|---|
@@ -1011,6 +1081,10 @@ Form은 입력 순서·검증·dirty·제출·실패 복구를 소유하는 조�
 | F-26 | 요약 → 구성 상세 → 원천 기록의 기준 유지·양방향 추적 부재 | 6.4~6.5 | 문서 정리 |
 | F-27 | 토스 톤을 거대 hero·전면 카드화·파란색 남용으로 오해할 위험 | 1.3~1.5, 3.2, 4.3~4.4 | 문서 정리 |
 | F-28 | 운영 알림·마감·기간 리포트의 목적과 중복 방지 계약 부재 | 6.5 | 문서 정리 |
+| F-29 | 등록 인벤토리와 활성 도달성 계수가 섞이고 popup 성격의 screen 키를 제품 페이지로 오인할 위험 | 0.1, 9.1, A.6, B | 문서 정리 |
+| F-30 | screen 키와 popup ID `order_receive` 중복으로 검수 증거 식별이 모호함 | 9.3, B.3 | 문서 정리 |
+| F-31 | `Hero`·`Live` 명칭과 파란 ResultField·FieldLabel 굵기가 목표 시각 톤과 충돌 | 1.3, 3.2, 4.4, A, C.1 | 문서 정리 · 구현 미적용 |
+| F-32 | 마지막 기록·최근 수정, 팝업 닫기, 비교 가능 조건과 이상 판정 출처가 결정 가능한 값으로 부족 | 5.2, 6.4~6.5, B.7 | 문서 정리 · 구현 미적용 |
 
 ### C.3 토큰·컴포넌트 적용 매핑 형식
 
