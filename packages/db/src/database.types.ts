@@ -2833,6 +2833,10 @@ export type Database = {
         }
         Returns: Json
       }
+      international_tax_shadow_compare: {
+        Args: { p_date: string; p_store: string }
+        Returns: Json
+      }
       last_entity_change: {
         Args: { p_entity_id: string; p_entity_type: string; p_store: string }
         Returns: Json

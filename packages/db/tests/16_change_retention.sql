@@ -364,6 +364,9 @@ end $t$;
  *                                auth.uid() 한 사람의 언어와 판본만 읽고 쓴다(0182).
  *   international_tax_app_state · international_tax_regions · recipe_tax_app_state ·
  *   sales_tax_app_detail         모두 assert_my_store로 매장 경계를 고정하는 INTL-1E facade다.
+ *   international_tax_shadow_compare
+ *                                INTL-1F 스테이징 관측 전용. 전 매장 ID를 받으므로 앱에는 닫고
+ *                                service_role만 실행하며 업무 테이블은 쓰지 않는다.
  */
 do $t$
 declare v_now text; v_want text;
@@ -394,6 +397,7 @@ begin
     'initialize_user_preferences()',
     'international_tax_app_state(p_store uuid)',
     'international_tax_regions(p_store uuid, p_country international_country_code)',
+    'international_tax_shadow_compare(p_store uuid, p_date date)',
     'my_store_ids()',
     'open_business_day(p_store uuid, p_date date, p_close_time time without time zone)',
     'ops_health_status()',
