@@ -73,7 +73,17 @@
 | P0 | 핵심 행동 불가, 데이터 오해·손실, 고정 제품 계약 위반, 접근성 차단, 국제화로 핵심 정보 소실 |
 | P1 | 값과 동작은 정확하지만 공통 UI 일관성·탐색성·효율 저하 |
 | P2 | 현재 흐름에 영향이 없는 확장·고급 반응형·보조 모션 |
-| 검수 셸 | 제품 UI가 아닌 화면 카탈로그·PC 작업 프레임 전용 규칙 |
+| 검수 셸 | 제품 UI가 아닌 화면 카탈로그·PC 작업 프레임·시연 substrate 전용 규칙 |
+
+검수 셸 제외는 제품을 보여 주기 위한 바깥 구조에만 적용한다. `.workspace`, `.catalog*`, `.nav-*`,
+`.phone` 프레임, `.status`, `.route`, `.edit-menu-stage`, `.sheet-preview-stage`, 두 stage의 backdrop,
+`.edit-underlay*`는 `shell-excluded`로 분류한다. 반면 그 안에서 실제 제품 팝업을 표현하는
+정확한 wrapper `.prototype-sheet`, `.sheet-preview-card`, `.delete-preview`는 Layer로, Header·Body는
+`layer:part`, 내부 행·버튼은 RowGroup·Control, 고정 행동은 LayerFooter로 검수한다. 시연 배경이라는
+이유로 실제 제품 표면까지 제외하지 않으며 `.prototype-sheet*` wildcard로 자손까지 Layer 처리하지 않는다.
+`shell-excluded`는 해당 selector의 프레임·배경·배치 선언에만 붙으며 자손에게 상속되는 면제가 아니다.
+예를 들어 `.phone` 자체의 기기 프레임은 제외하되 `.phone` 안의 제품 Header·본문·하단 탭은 다시
+정규 역할로 순회한다.
 
 ### 0.4 절대 UI 계약
 
@@ -149,6 +159,9 @@
 - `800` 굵기는 제목·핵심값·최종 합계처럼 제한된 요소에만 사용하고 반복 Row 전체에 적용하지 않는다.
 - `FieldLabel`은 `TYPE.caption`의 `14 / 600`을 기본으로 하며 강조가 필요한 경우에도 `700`까지만
   허용한다. 필수 여부는 굵기 대신 라벨 뒤 `*`와 의미 속성으로 전달한다.
+- Badge·Chip·Filter·짧은 메타는 `TYPE.captionSm`을 공유한다. Badge만을 위한 별도 글자 토큰을
+  만들지 않는다. 현재 프로토타입의 `10~12px` Badge·차트 메타는 목표 적용 때 `captionSm`으로
+  매핑하며, `13px` 미만을 유지해야 할 근거가 실제 기기 검증에서 생기기 전에는 예외를 추가하지 않는다.
 
 ### 1.4 간격·크기·모서리
 
@@ -255,7 +268,7 @@ padding과 margin을 중복 적용하지 않는다. 목록의 마지막 행, 폼
 | 상단 | 공용 Header |
 | 하단 탭 | expo-router 탭 셸 |
 | 화면 하단 고정 행동 | 목표 `StickyAction` |
-| 바텀시트 하단 행동 | 공용 `Sheet` |
+| Sheet·Dialog 내부 고정 행동 | 해당 Layer의 `LayerFooter` |
 | FAB | 공용 FAB 배치 컨테이너 |
 
 - inset은 화면과 공용 컴포넌트가 중복 적용하지 않는다.
@@ -263,6 +276,11 @@ padding과 margin을 중복 적용하지 않는다. 목록의 마지막 행, 폼
 - 하단 탭 자체를 키보드 위로 올리지 않는다.
 - 가로모드와 작은 높이에서도 고정 행동이 본문을 가리지 않아야 한다.
 - 현재 `Sheet`의 하단 Safe Area·키보드 회피 부재는 P0 격차다.
+- Page `StickyAction`은 제품 페이지 셸이 소유하며 하단 탭 위에 배치하고 페이지 Safe Area만 계산한다.
+  `LayerFooter`는 overlay 내부의 Sheet·Dialog가 소유하며 자신의 Safe Area를 계산하고 하단 탭 offset을
+  다시 더하지 않는다. 두 고정 행동을 같은 화면 상태에서 동시에 노출하지 않는다.
+- Card Footer는 기본적으로 스크롤 콘텐츠이며 고정하지 않는다. Sheet 안에서 Footer가 sticky가 되면
+  Card Footer가 아니라 `LayerFooter` 역할로 승격하고 5장의 팝업 계약을 따른다.
 
 ### 2.3 스크롤과 위치 복원
 
@@ -351,6 +369,10 @@ PrimaryKPI 의무 대상에서는 제외한다.
 - 삭제·철회·계정 해지는 danger를 사용하며 Primary 색을 재사용하지 않는다.
 - loading 중 라벨을 유지하고 진행 표시 때문에 폭이 바뀌지 않게 한다.
 - 단독 아이콘 행동은 `IconButton`으로 통합하고 문자 아이콘을 넣지 않는다.
+- 전체가 한 경로로 이동하는 interactive Card·Row는 접근성을 위해 semantic `<button>` 또는 link로
+  구현한다. 이는 Button **시각 역할**을 Card·Row에 합친 것이 아니다. 금지 대상은 Card·Row 표면 위에
+  채움 Primary·danger 같은 Button variant의 표면을 다시 덧입히거나 동일 행동을 별도 Button으로
+  중복하는 경우다.
 
 ### 3.3 Form·Field·Input
 
@@ -465,24 +487,28 @@ Form은 입력 순서·검증·dirty·제출·실패 복구를 소유하는 조�
 **박스·표면 요소 분류**
 
 `박스`는 컴포넌트 이름이 아니다. 화면에 배경·경계·모서리가 있는 사각형을 추가할 때는 아래 역할 중
-하나를 먼저 선택한다. 한 요소에 Card+Button, Badge+Chip, FieldControl+ResultField처럼 두 역할을
-합치지 않는다. 새 `.box`·`.panel`·`.tile`을 화면별로 만들지 않고 공용 역할의 variant로 매핑한다.
+하나를 먼저 선택한다. 한 요소에 Card+Button, Badge+Chip, FieldControl+ResultField처럼 두 **시각
+역할**을 합치지 않는다. interactive Card·Row가 semantic button/link를 사용하는 것은 역할 혼합이
+아니다. 새 `.box`·`.panel`·`.tile`을 화면별로 만들지 않고 공용 역할의 variant로 매핑한다.
 
 | 역할 | 목적 | 기본 표면·경계 | 상호작용 | 사용하지 않는 경우 |
 |---|---|---|---|---|
 | LayoutContainer | 폭·정렬·스크롤·간격 소유 | 배경·경계·모서리 없음 | 없음 | 정보를 묶어 강조해야 할 때 |
 | Section | 제목과 한 업무 구획 연결 | 기본적으로 별도 표면 없음 | 제목 행동은 별도 Button | 단순 여백을 만들기 위한 빈 박스 |
 | Card | 함께 읽고 판단할 요약·상태·정보 묶음 | `T.surface`, 약한 경계·표면 차이·승인된 `cardShadow` 중 최소 신호, `radius.lg` | `interactive`일 때만 전체 클릭 | 반복 Row 각각, 입력 하나마다, 장식용 강조 |
+| CardPart | Card의 Header·Body·RowGroup·Footer 내부 구획 | 부모 Card 표면 재사용, 필요한 한쪽 구분선만 사용 | 행동은 별도 Control | 독립 Card처럼 경계·radius·shadow를 다시 줄 때 |
 | RowGroup·Row | 반복 기록·설정·선택지 | Card 안 투명 표면, `T.line2` 구분선 | 행 전체 이동 또는 한 개의 후행 행동 | 같은 행에 이동·편집·메뉴를 중복 제공할 때 |
 | FieldControl | 사용자가 입력·선택하는 값 | `T.surface`, `T.line`, `radius.md` | focus·error·disabled·readonly 상태 | 계산 결과나 단순 설명 표시 |
 | ResultField·ResultGroup | 미리보기·변경 후·확정 계산값 | `T.surface2`, 약한 경계, `radius.md`; 대표 그룹 한 곳만 tint | 기본 비조작, 상세 이동은 별도 행동 | Input처럼 보이게 하거나 각 결과를 파란 카드로 분리할 때 |
 | Notice | 읽어야 할 정보·주의·오류와 다음 행동 | 중립 또는 의미 tint, `radius.md` | 본문은 비조작, 행동은 별도 Button | 짧은 상태를 Badge 대신 긴 박스로 반복할 때 |
 | PrimaryKPI·SummaryKPI | 기간·기준이 있는 핵심 수치 | 중립 표면 우선, 채움 Primary 표면은 화면당 최대 한 곳 | 상세 이동은 명시적 링크·행동 | 모든 숫자를 동일한 KPI 카드로 만들 때 |
+| Chart | 시간·비율·구성의 관계를 시각화 | 상위 Section·Card 표면 재사용, mark 자체에 별도 Card 표면 없음 | 데이터 point focus·설명만 제공 | 텍스트 목록·표 없이 핵심값을 차트만으로 전달할 때 |
 | EmptyState | 최초 데이터 없음·검색 결과 없음·필터 결과 없음 | Page·Section·Card Body의 현재 상위 표면 재사용 | 대표 복구·추가 행동 최대 한 개 | 실제 값 `0`, loading, 오류를 빈 상태로 대체할 때 |
 | Badge | 짧은 상태·비교·메타 | 작은 tint 또는 중립 표면, `radius.full` | 비조작 | 선택·필터·버튼 행동 |
 | Chip·Filter | 보기·선택 조건 | 경계 또는 선택 표면, `radius.full` | selected·focused·disabled | 비조작 상태 표시 |
 | Button·IconButton | 즉시 행동·이동 | variant별 표면, `radius.md` 또는 원형 | 모든 조작 상태와 접근 가능한 이름 | 설명·값·상태를 버튼처럼 꾸밀 때 |
 | Sheet·Dialog·Popover | 현재 화면 위의 선택·입력·확인·문맥 행동 | `T.surface`, 유형별 radius와 승인된 공용 elevation | 모달·포커스·닫기 정책 소유 | 페이지 콘텐츠를 단순히 카드처럼 띄우기 위해 사용할 때 |
+| StickyAction·LayerFooter | 페이지 또는 Layer의 대표 행동 묶음 | 소유 셸의 표면·상단 구분선·Safe Area | 내부 Button만 조작 | 일반 Card Footer를 임의로 sticky 처리할 때 |
 
 - `Surface`는 `T.surface*`를 적용하는 저수준 시각 재료이며 독립 제품 요소가 아니다. 화면은 반드시
   Card·FieldControl·ResultField·Notice·Layer처럼 목적이 드러나는 이름으로 사용한다.
@@ -493,8 +519,15 @@ Form은 입력 순서·검증·dirty·제출·실패 복구를 소유하는 조�
 - 동일한 사각형의 selected·focused·error 상태가 경계 두께나 padding을 바꿔 크기를 흔들지 않게 한다.
 - 조작 가능한 표면만 hover·pressed·focus를 가진다. Badge·ResultField·Notice처럼 비조작 요소에는
   chevron·pressed·손가락 커서를 주지 않는다.
-- 프로토타입 검수에서는 각 사각형을 `card / row-group / field / result / notice / kpi / empty /
-  control / layer` 중 하나로 매핑한다. 두 역할로 동시에 판정되면 중첩 또는 책임 혼합으로 실패 처리한다.
+- 프로토타입 검수의 정규 역할 어휘는 `shell-excluded / layout / section / card / card-part /
+  row-group / field / result / notice / kpi / empty / badge / control / chart / layer / sticky-action`이다.
+  `control`은 `button·icon-button·chip·filter·page-tabs·segmented·select·toggle`, `layer`는
+  `sheet·dialog·popover`, `sticky-action`은 `page·layer-footer` subtype을 기록한다. C.3의
+  `layer:part`, `row-group:choice-row`, `chart:wrapper·primitive` 표기는 상위 역할을 늘리는 것이 아니라
+  wrapper와 내부 anatomy를 구분하는 감사 qualifier다. subtype·qualifier는 새 시각 체계가 아니라 같은
+  상위 역할의 동작·구성 계약이다. 두 상위 역할로 동시에 판정되면 중첩 또는 책임 혼합으로 실패 처리한다.
+- `shell-excluded`는 0.3에 지정한 시연 substrate만 사용한다. 제품을 실제로 표현하는 Sheet·Dialog·
+  Card·Control을 검수에서 빼기 위한 면제 역할로 사용하지 않는다.
 
 기준일·기간·갱신 시각·적용 시점이 필요한 값에는 출처를 함께 표시한다. 음수와 0을 숨기지 않는다.
 
@@ -514,6 +547,8 @@ Form은 입력 순서·검증·dirty·제출·실패 복구를 소유하는 조�
 - 한 항목의 Badge 수를 제한하고 의미가 겹치면 본문 값으로 내린다.
 - Badge와 Button·Chip은 형태와 상태에서 구분돼야 한다. 조작할 수 없는 Badge에는 pressed·hover
   표현이나 chevron을 주지 않는다.
+- Badge의 글자는 `TYPE.captionSm`을 사용한다. 상태별 색·tint는 variant가 소유하지만 글자 크기·굵기를
+  StatusBadge·ComparisonBadge·MetadataBadge마다 다시 선언하지 않는다.
 - 음수 재고는 Badge로 숨기지 않고 `−750g`처럼 실제 값을 표시한다.
 - solid 배경은 흰색 전경 대비가 검증된 조합에서만 허용한다.
 
@@ -561,6 +596,8 @@ Card는 임의 padding 조합 대신 `Header / Body 또는 RowGroup / Footer` �
   예약하거나 inset 표현을 사용한다. loading skeleton도 실제 콘텐츠와 같은 padding·높이를 유지한다.
 - Footer의 단일 행동은 전체 폭, 동등한 두 행동은 `1:1`, 취소와 대표 행동은 기본 `1:2`로 배치한다.
   2열 버튼이 번역문을 수용하지 못하면 1열로 쌓되 대표 행동을 마지막에 둔다.
+- Card Footer는 기본적으로 Card와 함께 스크롤한다. Layer 안에서 화면 아래에 고정되는 순간
+  `LayerFooter`로 분류하고 Card padding·하단 탭 offset이 아니라 2.2와 5.2의 Layer 소유 규칙을 적용한다.
 - 빈 상태는 Card Body에서 start 정렬을 기본으로 하며 block `space.xl`, inline `space.lg`를 사용한다.
   추가 행동이 있으면 문장 안 링크가 아니라 Footer의 한 가지 행동으로 분리한다.
 - Card 안에 다시 Card를 넣지 않는다. 계산 결과 묶음은 같은 Body의 `ResultGroup`, 반복 항목은
@@ -588,7 +625,10 @@ Card는 임의 padding 조합 대신 `Header / Body 또는 RowGroup / Footer` �
 ### 4.5 차트·관리 목록·점진적 공개
 
 - 현재 공식 차트는 레시피 상세의 `Donut`이다. 텍스트 목록이나 데이터 표를 함께 제공한다.
-- `TrendChart`는 데이터·화면 계약 확정 전 보류다.
+- Chart wrapper는 정규 역할 `chart`로 매핑한다. legend·축·라벨·dot·bar·arc는 Chart의 내부 primitive이며
+  별도 Card·Badge 역할로 세지 않는다. 데이터 point는 키보드·스크린리더로 같은 값을 확인할 수 있어야 한다.
+- `TrendChart`는 데이터·화면 계약 확정 전 보류다. 보류 차트와 현재 프로토타입의 임시 chart selector도
+  감사에서는 `chart`로 표기하되, 데이터 계약·텍스트 대체·접근성 검증 전에는 제품 적용 PASS로 판정하지 않는다.
 - 관리 행은 이름·사용 정보·편집·삭제 구조를 통일한다.
 - 사용 중이라 삭제할 수 없으면 이유를 함께 표시한다.
 - 재정렬은 버튼과 드래그 중 화면 단위로 하나만 사용하고 결과를 접근성 알림으로 전달한다.
@@ -613,6 +653,12 @@ Card는 임의 padding 조합 대신 `Header / Body 또는 RowGroup / Footer` �
 
 `PageState`는 팝업이 아니라 같은 페이지의 조건부 표시다. 현재 `ConfirmSheet`는 하단 Sheet이므로
 중앙 `ConfirmDialog`로 간주하지 않는다. 웹에서는 `Alert.alert`를 확인창으로 사용하지 않는다.
+
+팝업 유형은 제목 문구, 본문의 버튼 수, CSS `:has()` 또는 DOM 모양으로 추론하지 않는다. 각 popup ID는
+레지스트리에 `host / layerType / dismissPolicy / footerPolicy / renderer`를 명시하고 renderer는
+`layerType`에서 결정한다. 공용 `.sheet` 마크업을 사용했다는 사실만으로 Picker·Form·Info·Action·
+Confirm·Success·Error를 같은 유형으로 처리하지 않는다. `PageState`는 `layerType`을 갖지 않고 페이지
+renderer의 조건 상태로만 등록한다.
 
 ### 5.2 공통 구조와 닫기 정책
 
@@ -649,6 +695,9 @@ Card는 임의 padding 조합 대신 `Header / Body 또는 RowGroup / Footer` �
   만든다. 설명이 필요하면 제목 아래 Body 첫 문단으로 분리하며 제목을 반복하는 작은 소제목은 넣지 않는다.
 - 긴 Sheet는 Header와 Footer를 유지하고 Body만 스크롤한다. Footer 높이와 하단 inset만큼 Body
   마지막 여백을 확보해 입력·오류·결과가 버튼 아래에 가려지지 않게 한다.
+- `LayerFooter`는 overlay 내부에서 해당 Layer만 소유한다. 페이지 `StickyAction`의 하단 탭 offset을
+  더하지 않으며 `.option-card-actions`·`.stock-option-actions`·`.prototype-actions`·`.sheet-actions`
+  같은 기존 sticky action은 적용 때 하나의 `LayerFooter` variant로 수렴시킨다.
 - FormSheet는 3.3의 Field 규격을 그대로 사용하며 팝업 전용 입력 padding을 새로 만들지 않는다.
 - 중앙 Dialog의 질문·영향 문장은 start 정렬을 기본으로 하되 짧은 단일 문장만 중앙 정렬할 수 있다.
   버튼은 `아니오/취소 → 예/확정` 순서로 두고 위험 확정만 danger를 사용한다.
@@ -897,10 +946,12 @@ Card는 임의 padding 조합 대신 `Header / Body 또는 RowGroup / Footer` �
 5. 활성 도달성 대상 `screen 61 / popup·state host 123 / unique ID 97`이 PC·모바일에서 모두 열린다.
 6. 숨김 보존 `discard / discard_type / discard_period`는 활성 목록에 노출되지 않고 직접 진입 시
    `stock`의 폐기 상태로 치환되며 활성 도달성 게이트에서 제외된다.
-7. 활성 popup/state ID 97개가 의도한 유형·host·닫기 정책을 따른다.
+7. 활성 popup ID는 레지스트리의 `host / layerType / dismissPolicy / footerPolicy / renderer`를,
+   PageState ID는 `host / stateRenderer`를 따르며 제목·DOM·CSS로 유형을 추론하지 않는다. 두 집합의
+   합계가 활성 popup/state 고유 ID 97개와 일치한다.
 8. Compact·Mobile·Tablet·Prototype desktop 폭에서 잘림·겹침이 없다.
 9. Web·Android·iOS 접근성 출시 게이트를 통과한다.
-10. 미정의 CSS 변수와 금지 굵기가 0건이다.
+10. 미정의 CSS 변수, 금지 굵기, `TYPE` 역할에 매핑되지 않은 제품 글자 크기가 0건이다.
 11. 로딩·저장·빈 상태·오류·오프라인의 필수 상태가 검증된다.
 12. current-spec·changelog에 판정·예외·증거가 연결된다.
 13. 실제 Expo 구현 변경은 저장소 필수 검사를 별도로 통과한다.
@@ -915,8 +966,15 @@ Card는 임의 padding 조합 대신 `Header / Body 또는 RowGroup / Footer` �
     `space.xs~xxl` 값만 사용하고 gutter·섹션·Card의 이중 여백이 0건이다.
 20. Card는 Header·Body/RowGroup·Footer 중 필요한 부분만 사용하고 제목·값·행동을 중복하지 않는다.
 21. 입력값 정렬은 내용 variant 계약과 일치하며 숫자·suffix·아이콘이 겹치거나 줄바꿈되지 않는다.
-22. 배경·경계·모서리가 있는 모든 요소가 4.1의 단일 역할로 분류되고, 목적 없는 generic box와
-    Card 중첩이 0건이다.
+22. 배경·경계·모서리가 있는 모든 제품 요소가 4.1의 정규 상위 역할 하나로 분류되고, 목적 없는
+    generic box와 Card 중첩이 0건이다.
+23. C.3의 각 적용 대상이 실제 `Guide role / Code symbol / Prototype target / Authority / Gap /
+    Action / Priority / Coverage / Evidence` 행으로 연결된다. 매핑할 대상 이름만 나열한 체크리스트는
+    완료 증거가 아니다.
+24. `shell-excluded`는 0.3의 stage·backdrop·underlay·카탈로그 substrate에만 쓰고, 실제 제품 Sheet·
+    Dialog·Card·Control을 제외한 사례가 0건이다.
+25. Chart wrapper는 `chart`로, 내부 mark는 Chart primitive로 분류되며 핵심값의 텍스트 대체가 존재한다.
+26. Page `StickyAction`과 `LayerFooter`가 동시에 노출되지 않고 각자 하나의 Safe Area·offset 소유자만 가진다.
 
 ### 9.2 적용 순서
 
@@ -924,6 +982,7 @@ Card는 임의 padding 조합 대신 `Header / Body 또는 RowGroup / Footer` �
 
 - 토큰 권위·미정의 변수·색상 대비
 - 중앙 ConfirmDialog와 Sheet 유형 분리
+- popup 레지스트리의 명시적 `layerType`·닫기·Footer·renderer 연결
 - Safe Area·키보드·최소 터치 영역
 - 접근 가능한 이름·상태·모달 포커스
 - 오류·저장 중·오프라인 상태
@@ -935,6 +994,8 @@ Card는 임의 padding 조합 대신 `Header / Body 또는 RowGroup / Footer` �
 
 - 타이포·Badge·FieldMessage 규격
 - Card·Row·KPI·ResultField
+- 정규 역할 어휘와 selector·renderer 실제 매핑
+- Page StickyAction·LayerFooter·Card Footer 소유권 분리
 - Picker·Filter·Stepper·Toggle
 - 관리 목록·재정렬·전체보기
 - 반응형과 긴 번역
@@ -950,7 +1011,7 @@ Card는 임의 padding 조합 대신 `Header / Body 또는 RowGroup / Footer` �
 
 | 필드 | 내용 |
 |---|---|
-| Rule/Finding | 가이드 항목 또는 F-01~F-32 |
+| Rule/Finding | 가이드 항목 또는 F-01~F-40 |
 | Target | `screen:{key}` 또는 `popup:{id}@{host}`. bare ID는 사용하지 않음 |
 | Platform | Web / Android / iOS |
 | Viewport/설정 | 폭·글자 크기·키보드·locale |
@@ -1064,7 +1125,7 @@ Card는 임의 padding 조합 대신 `Header / Body 또는 RowGroup / Footer` �
 | `my_material_categories` | RCP-12b | ChildActionHeader, ReorderList, FormSheet, ConfirmDialog |
 | `my_materials` | RCP-13 | ChildActionHeader, ManagementList, FormSheet, ConfirmDialog |
 | `my_tax` | MY-02 | ContextHeader, TaxForm, RadioGroup, ResultField, StickyAction |
-| `my_language` | MY-04 | ChildHeader, RadioList, InfoSheet, StickyAction |
+| `my_language` | MY-04 | ChildHeader, RadioList, FormSheet, StickyAction |
 | `my_units` | MY-05 | ChildHeader, SettingsList |
 | `my_vendors` | MY-06 | ChildActionHeader, ManagementList, FormSheet, ConfirmDialog |
 | `my_channels` | MY-07 | ChildHeader, SettingsList, FormSheet, ConfirmDialog |
@@ -1096,8 +1157,8 @@ HTML 등록 전체는 호스트 상태 125개, 고유 ID 99개다. 이 중 `disc
 | 유형 | 등록 고유 ID | 등록 호스트 | 활성 고유 ID | 활성 호스트 |
 |---|---:|---:|---:|---:|
 | PickerSheet | 27 | 32 | 25 | 30 |
-| FormSheet | 27 | 42 | 27 | 42 |
-| InfoSheet | 16 | 17 | 16 | 17 |
+| FormSheet | 28 | 43 | 28 | 43 |
+| InfoSheet | 15 | 16 | 15 | 16 |
 | ActionSheet | 2 | 2 | 2 | 2 |
 | ConfirmDialog | 15 | 20 | 15 | 20 |
 | SuccessDialog | 1 | 1 | 1 | 1 |
@@ -1106,8 +1167,8 @@ HTML 등록 전체는 호스트 상태 125개, 고유 ID 99개다. 이 중 `disc
 | PageState | 9 | 9 | 9 | 9 |
 | 합계 | 99 | 125 | 97 | 123 |
 
-등록 검산식은 고유 ID `27+27+16+2+15+1+1+1+9=99`, 호스트 상태
-`32+42+17+2+20+1+1+1+9=125`다. 활성 검산식은 PickerSheet에서 숨김 2개를 뺀
+등록 검산식은 고유 ID `27+28+15+2+15+1+1+1+9=99`, 호스트 상태
+`32+43+16+2+20+1+1+1+9=125`다. 활성 검산식은 PickerSheet에서 숨김 2개를 뺀
 고유 ID `97`, 호스트 상태 `123`이다.
 
 ### B.1 PageState · 9개
@@ -1133,7 +1194,7 @@ HTML 등록 전체는 호스트 상태 125개, 고유 ID 99개다. 이 중 `disc
 
 `order_ingredient`는 검색형, `sales_period`는 적용형 변형이다.
 
-### B.3 FormSheet · 27개
+### B.3 FormSheet · 28개
 
 - 레시피: `recipe_memo`, `recipe_ingredient_usage`, `recipe_material_usage`, `material_add`,
   `material_edit`, `category_add`, `category_edit`.
@@ -1142,17 +1203,17 @@ HTML 등록 전체는 호스트 상태 125개, 고유 ID 99개다. 이 중 `disc
 - 매출관리: `sales_qty`, `sales_etc`, `sales_expense`, `sales_direct_period`, `expense_add`,
   `past_sale_qty`, `past_etc`, `past_expense`.
 - MY: `tax_item_add`, `vendor_add`, `vendor_edit`, `channel_edit`, `hours_start`, `hours_end`,
-  `hours_timezone`, `account_delete`.
+  `hours_timezone`, `account_delete`, `language_preview`.
 
 복합형 `fixed_channel`, `order_receive`, 시간 선택은 선택과 입력을 점진 노출한다. `account_delete`는
 확인 문구 입력 FormSheet 다음에 최종 ConfirmDialog를 둔다. `order_receive`는 screen 키와 popup ID가
 같으므로 검수 증거에는 반드시 `screen:order_receive`, `popup:order_receive@order_main`,
 `popup:order_receive@order_receive`처럼 namespace와 host를 함께 기록한다.
 
-### B.4 InfoSheet · 16개
+### B.4 InfoSheet · 15개
 
 - 변경·이력: `stock_event_more`, `ingredient_change_detail`, `recipe_change_detail`, `profit_detail`.
-- 안내: `recipe_target_help`, `order_price_spike`, `language_preview`.
+- 안내: `recipe_target_help`, `order_price_spike`.
 - 발주 목록: `order_candidates`, `order_waiting`, `order_received`.
 - 매출 상세: `sales_menu_profit`, `sales_revenue_all`, `sales_material_detail`,
   `sales_extra_detail`, `sales_fixed_expand`, `stock_check_all`.
@@ -1176,9 +1237,196 @@ HTML 등록 전체는 호스트 상태 125개, 고유 ID 99개다. 이 중 `disc
 
 ### B.7 단일 유형
 
-- SuccessDialog: `tax_saved` — `dismissPolicy=outsideAllowedAfterCommit`.
-- ErrorDialog: `stock_error` — `dismissPolicy=explicitActionOnly`.
+- SuccessDialog: `tax_saved` — `dismissPolicy=successAfterCommit`.
+- ErrorDialog: `stock_error` — `dismissPolicy=errorExplicit`.
 - PopoverMenu: `option_more`.
+
+### B.8 활성 ID별 목표 구현 레지스트리
+
+아래 표가 popup 유형과 PageState renderer의 실제 목표 레지스트리다. B.1~B.7의 유형별 이름 목록은
+검산용 인벤토리이며 이 표를 대신하지 않는다. 현재 HTML은 대부분의 popup을 generic `.sheet`와
+바깥 클릭 닫기로 처리하고 중앙형도 DOM 구조로 추론하므로 아직 이 목표 계약을 구현한 상태가 아니다.
+
+정책 코드는 다음 의미로만 사용한다.
+
+| 구분 | 코드 | 계약 |
+|---|---|---|
+| dismiss | `pickerImmediate` | 단일 선택 즉시 반영·닫기. 바깥·Back·Escape 허용, 임시값이 생기면 폐기 확인 |
+| dismiss | `pickerApplyGuarded` | 적용 전 임시 선택 보존. 바깥·Back·Escape에서 폐기 확인 |
+| dismiss | `formDirtyGuard` | pristine이면 닫기 허용, dirty면 변경 폐기 ConfirmDialog |
+| dismiss | `infoDismissible` | 바깥·Back·Escape 허용 |
+| dismiss | `actionDismissible` | 바깥·Back·Escape 허용, 실행 전 상태 변경 없음 |
+| dismiss | `confirmGuarded` | 바깥 닫기 금지, Back·Escape는 취소 결과, loading 중 모든 닫기 금지 |
+| dismiss | `successAfterCommit` | 확정 완료 뒤 바깥 닫기 허용, 명시적 확인도 제공 |
+| dismiss | `errorExplicit` | 바깥·Back·Escape 금지, 명시적 닫기·재시도만 허용 |
+| dismiss | `popoverDismissible` | 바깥·Back·Escape 허용, 닫힌 뒤 기준 Button으로 focus 복귀 |
+| footer | `none` | LayerFooter 없음 |
+| footer | `formCancelPrimary` | 취소 + 대표 저장·추가·적용, 기본 `1:2` |
+| footer | `pickerCancelApply` | 취소 + 적용, 기본 `1:2` |
+| footer | `confirmPair` | 취소 + 확정, 기본 `1:1`; 위험 확정만 danger |
+| footer | `infoSingleClose` | 명시적 닫기 한 개 |
+| footer | `infoCloseAction` | 닫기 + 후속 행동 |
+| footer | `actionItems` | Body의 각 항목이 행동이며 별도 LayerFooter 없음 |
+| footer | `actionPairFooter` | 요약 아래 동등한 행동 두 개를 LayerFooter에 고정 |
+| footer | `acknowledge` | 확인·닫기 한 개 |
+| footer | `errorAction` | 닫기 또는 재시도 한 개 이상 |
+| footer | `popoverItems` | 메뉴 항목 자체가 행동이며 별도 LayerFooter 없음 |
+| footer | `formNextThenConfirm` | 1단계 취소·다음 뒤 2단계 `confirmPair`로 전환 |
+
+**PageState · 활성 9개**
+
+PageState에는 `layerType / dismissPolicy / footerPolicy`를 두지 않는다. 페이지의 하단 행동은
+`LayerFooter`가 아니라 2.2의 Page `StickyAction` 계약을 따른다.
+
+| ID | host | stateRenderer |
+|---|---|---|
+| `ingredient_option_filled` | `ingredient_detail` | `IngredientDetailOptionsState(filled)` |
+| `ingredient_option_empty` | `ingredient_detail` | `IngredientDetailOptionsState(empty)` |
+| `stock_inbound` | `stock_change` | `StockChangeModeState(inbound)` |
+| `stock_deduct` | `stock_change` | `StockChangeModeState(deduct)` |
+| `stock_discard` | `stock_change` | `StockChangeModeState(discard)` |
+| `option_list` | `options` | `PurchaseOptionPageState(list)` |
+| `option_add` | `options` | `PurchaseOptionPageState(add)` |
+| `option_edit` | `options` | `PurchaseOptionPageState(edit)` |
+| `option_vendor_new` | `options` | `PurchaseOptionPageState(vendorNew)` |
+
+**식재료·구매 링크·재고 · popup 20개**
+
+| ID | host 전체 | layerType | dismissPolicy | footerPolicy | renderer |
+|---|---|---|---|---|---|
+| `sort` | `ingredient_main` | PickerSheet | `pickerImmediate` | `none` | `PickerSheet` |
+| `add_category` | `ingredient_add` | PickerSheet | `pickerImmediate` | `none` | `PickerSheet` |
+| `add_unit` | `ingredient_add` | PickerSheet | `pickerImmediate` | `none` | `PickerSheet` |
+| `edit_category` | `ingredient_edit` | PickerSheet | `pickerImmediate` | `none` | `PickerSheet` |
+| `edit_unit` | `ingredient_edit` | PickerSheet | `pickerImmediate` | `none` | `PickerSheet` |
+| `stock_option` | `stock_change` | PickerSheet | `pickerImmediate` | `none` | `PickerSheet` |
+| `stock_confirm` | `stock_change` | ConfirmDialog | `confirmGuarded` | `confirmPair` | `ConfirmDialog` |
+| `stock_error` | `stock_change` | ErrorDialog | `errorExplicit` | `errorAction` | `ErrorDialog` |
+| `option_vendor` | `options` | PickerSheet | `pickerImmediate` | `none` | `PickerSheet` |
+| `option_unit` | `options` | PickerSheet | `pickerImmediate` | `none` | `PickerSheet` |
+| `option_card_menu` | `options` | ActionSheet | `actionDismissible` | `actionPairFooter` | `ActionSheet` |
+| `option_more` | `options` | PopoverMenu | `popoverDismissible` | `popoverItems` | `PopoverMenu` |
+| `option_delete` | `options` | ConfirmDialog | `confirmGuarded` | `confirmPair` | `ConfirmDialog` |
+| `stock_period` | `stock` | PickerSheet | `pickerImmediate` | `none` | `PickerSheet` |
+| `stock_type` | `stock` | PickerSheet | `pickerImmediate` | `none` | `PickerSheet` |
+| `stock_order` | `stock` | PickerSheet | `pickerImmediate` | `none` | `PickerSheet` |
+| `stock_event_more` | `stock` | InfoSheet | `infoDismissible` | `infoCloseAction` | `InfoSheet` |
+| `stock_event_revert` | `stock` | ConfirmDialog | `confirmGuarded` | `confirmPair` | `ConfirmDialog` |
+| `purchase_period` | `purchase` | PickerSheet | `pickerImmediate` | `none` | `PickerSheet` |
+| `ingredient_change_detail` | `ingredient_changes` | InfoSheet | `infoDismissible` | `none` | `InfoSheet` |
+
+**레시피·마스터 공용 · popup 18개**
+
+| ID | host 전체 | layerType | dismissPolicy | footerPolicy | renderer |
+|---|---|---|---|---|---|
+| `recipe_sort` | `recipe_main` | PickerSheet | `pickerImmediate` | `none` | `PickerSheet` |
+| `recipe_status` | `recipe_main` | PickerSheet | `pickerImmediate` | `none` | `PickerSheet` |
+| `recipe_target` | `recipe_main` | PickerSheet | `pickerImmediate` | `none` | `PickerSheet` |
+| `recipe_memo` | `recipe_detail` | FormSheet | `formDirtyGuard` | `formCancelPrimary` | `FormSheet` |
+| `recipe_stop` | `recipe_detail` | ConfirmDialog | `confirmGuarded` | `confirmPair` | `ConfirmDialog` |
+| `recipe_category_pick` | `recipe_add`, `recipe_edit` | PickerSheet | `pickerImmediate` | `none` | `PickerSheet` |
+| `recipe_target_help` | `recipe_add`, `recipe_edit` | InfoSheet | `infoDismissible` | `none` | `InfoSheet` |
+| `recipe_ingredient_usage` | `recipe_edit`, `recipe_ingredient_search` | FormSheet | `formDirtyGuard` | `formCancelPrimary` | `FormSheet` |
+| `recipe_material_usage` | `recipe_material_search` | FormSheet | `formDirtyGuard` | `formCancelPrimary` | `FormSheet` |
+| `material_add` | `recipe_materials`, `my_materials` | FormSheet | `formDirtyGuard` | `formCancelPrimary` | `FormSheet` |
+| `material_edit` | `recipe_materials`, `my_materials` | FormSheet | `formDirtyGuard` | `formCancelPrimary` | `FormSheet` |
+| `material_category_pick` | `recipe_materials`, `my_materials` | PickerSheet | `pickerImmediate` | `none` | `PickerSheet` |
+| `material_delete` | `recipe_materials`, `my_materials` | ConfirmDialog | `confirmGuarded` | `confirmPair` | `ConfirmDialog` |
+| `category_add` | `recipe_category`, `recipe_material_category`, `my_ingredient_categories`, `my_recipe_categories`, `my_material_categories` | FormSheet | `formDirtyGuard` | `formCancelPrimary` | `FormSheet` |
+| `category_edit` | `recipe_category`, `recipe_material_category`, `my_ingredient_categories`, `my_recipe_categories`, `my_material_categories` | FormSheet | `formDirtyGuard` | `formCancelPrimary` | `FormSheet` |
+| `category_delete` | `recipe_category`, `recipe_material_category`, `my_ingredient_categories`, `my_recipe_categories`, `my_material_categories` | ConfirmDialog | `confirmGuarded` | `confirmPair` | `ConfirmDialog` |
+| `recipe_change_detail` | `recipe_changes` | InfoSheet | `infoDismissible` | `none` | `InfoSheet` |
+| `profit_detail` | `profit` | InfoSheet | `infoDismissible` | `infoSingleClose` | `InfoSheet` |
+
+**고정 지출·발주 · popup 13개**
+
+| ID | host 전체 | layerType | dismissPolicy | footerPolicy | renderer |
+|---|---|---|---|---|---|
+| `fixed_period` | `fixed_average`, `fixed_actual`, `my_fixed`, `my_fixed_edit` | PickerSheet | `pickerImmediate` | `none` | `PickerSheet` |
+| `fixed_channel` | `fixed_actual`, `my_fixed_edit` | FormSheet | `formDirtyGuard` | `formCancelPrimary` | `FormSheet` |
+| `fixed_item_add` | `fixed_actual`, `my_fixed_edit` | FormSheet | `formDirtyGuard` | `formCancelPrimary` | `FormSheet` |
+| `order_candidates` | `order_main` | InfoSheet | `infoDismissible` | `none` | `InfoSheet` |
+| `order_waiting` | `order_main` | InfoSheet | `infoDismissible` | `none` | `InfoSheet` |
+| `order_received` | `order_main` | InfoSheet | `infoDismissible` | `none` | `InfoSheet` |
+| `order_order` | `order_main`, `order_detail` | FormSheet | `formDirtyGuard` | `formCancelPrimary` | `FormSheet` |
+| `order_receive` | `order_main`, `order_receive` | FormSheet | `formDirtyGuard` | `formCancelPrimary` | `FormSheet` |
+| `order_cancel` | `order_main` | ConfirmDialog | `confirmGuarded` | `confirmPair` | `ConfirmDialog` |
+| `order_revert` | `order_main` | ConfirmDialog | `confirmGuarded` | `confirmPair` | `ConfirmDialog` |
+| `order_price_spike` | `order_main` | InfoSheet | `infoDismissible` | `infoSingleClose` | `InfoSheet.warning` |
+| `order_ingredient` | `order_direct` | PickerSheet | `pickerImmediate` | `none` | `PickerSheet.search` |
+| `order_vendor` | `order_direct` | PickerSheet | `pickerImmediate` | `none` | `PickerSheet` |
+
+**매출관리 · popup 22개**
+
+| ID | host 전체 | layerType | dismissPolicy | footerPolicy | renderer |
+|---|---|---|---|---|---|
+| `sales_state` | `sales_main` | ActionSheet | `actionDismissible` | `actionItems` | `ActionSheet` |
+| `sales_break` | `sales_main` | ConfirmDialog | `confirmGuarded` | `confirmPair` | `ConfirmDialog` |
+| `sales_close` | `sales_main` | ConfirmDialog | `confirmGuarded` | `confirmPair` | `ConfirmDialog` |
+| `sales_sort` | `sales_main` | PickerSheet | `pickerImmediate` | `none` | `PickerSheet` |
+| `sales_qty` | `sales_main` | FormSheet | `formDirtyGuard` | `formCancelPrimary` | `FormSheet` |
+| `sales_shortage` | `sales_main` | ConfirmDialog | `confirmGuarded` | `confirmPair` | `ConfirmDialog` |
+| `sales_etc` | `sales_main` | FormSheet | `formDirtyGuard` | `formCancelPrimary` | `FormSheet` |
+| `sales_expense` | `sales_main` | FormSheet | `formDirtyGuard` | `formCancelPrimary` | `FormSheet` |
+| `sales_period` | `analytics` | PickerSheet | `pickerApplyGuarded` | `pickerCancelApply` | `PickerSheet.apply` |
+| `sales_direct_period` | `analytics` | FormSheet | `formDirtyGuard` | `formCancelPrimary` | `FormSheet` |
+| `sales_menu_profit` | `day` | InfoSheet | `infoDismissible` | `none` | `InfoSheet` |
+| `sales_revenue_all` | `revenue` | InfoSheet | `infoDismissible` | `none` | `InfoSheet` |
+| `sales_material_detail` | `material` | InfoSheet | `infoDismissible` | `none` | `InfoSheet` |
+| `sales_extra_detail` | `extra` | InfoSheet | `infoDismissible` | `none` | `InfoSheet` |
+| `sales_fixed_expand` | `sales_fixed` | InfoSheet | `infoDismissible` | `none` | `InfoSheet` |
+| `expense_add` | `expense` | FormSheet | `formDirtyGuard` | `formCancelPrimary` | `FormSheet` |
+| `expense_delete` | `expense` | ConfirmDialog | `confirmGuarded` | `confirmPair` | `ConfirmDialog` |
+| `past_sale_qty` | `sales_past` | FormSheet | `formDirtyGuard` | `formCancelPrimary` | `FormSheet` |
+| `past_etc` | `sales_past` | FormSheet | `formDirtyGuard` | `formCancelPrimary` | `FormSheet` |
+| `past_expense` | `sales_past` | FormSheet | `formDirtyGuard` | `formCancelPrimary` | `FormSheet` |
+| `past_save` | `sales_past` | ConfirmDialog | `confirmGuarded` | `confirmPair` | `ConfirmDialog` |
+| `stock_check_all` | `stock_check` | InfoSheet | `infoDismissible` | `none` | `InfoSheet` |
+
+**MY · popup 15개**
+
+| ID | host 전체 | layerType | dismissPolicy | footerPolicy | renderer |
+|---|---|---|---|---|---|
+| `tax_country` | `my_tax` | PickerSheet | `pickerImmediate` | `none` | `PickerSheet` |
+| `tax_item_add` | `my_tax` | FormSheet | `formDirtyGuard` | `formCancelPrimary` | `FormSheet` |
+| `tax_saved` | `my_tax` | SuccessDialog | `successAfterCommit` | `acknowledge` | `SuccessDialog` |
+| `language_preview` | `my_language` | FormSheet | `formDirtyGuard` | `formCancelPrimary` | `FormSheet` |
+| `vendor_add` | `my_vendors` | FormSheet | `formDirtyGuard` | `formCancelPrimary` | `FormSheet` |
+| `vendor_edit` | `my_vendors` | FormSheet | `formDirtyGuard` | `formCancelPrimary` | `FormSheet` |
+| `vendor_delete` | `my_vendors` | ConfirmDialog | `confirmGuarded` | `confirmPair` | `ConfirmDialog` |
+| `channel_edit` | `my_channels` | FormSheet | `formDirtyGuard` | `formCancelPrimary` | `FormSheet` |
+| `channel_disable` | `my_channels` | ConfirmDialog | `confirmGuarded` | `confirmPair` | `ConfirmDialog` |
+| `hours_start` | `my_hours` | FormSheet | `formDirtyGuard` | `formCancelPrimary` | `FormSheet` |
+| `hours_end` | `my_hours` | FormSheet | `formDirtyGuard` | `formCancelPrimary` | `FormSheet` |
+| `hours_break_start` | `my_hours` | PickerSheet | `pickerImmediate` | `none` | `PickerSheet` |
+| `hours_break_end` | `my_hours` | PickerSheet | `pickerImmediate` | `none` | `PickerSheet` |
+| `hours_timezone` | `my_hours` | FormSheet | `formDirtyGuard` | `formCancelPrimary` | `FormSheet` |
+| `account_delete` | `my_account` | FormSheet → ConfirmDialog | `formDirtyGuard` → `confirmGuarded` | `formNextThenConfirm` | `AccountDeleteFlow` |
+
+`language_preview`는 저장 행동이 있으므로 B.4의 옛 InfoSheet 분류 대신 FormSheet로 정정한다.
+`account_delete`는 하나의 URL ID 안에서 `form / confirm` 내부 단계를 명시적으로 갖는 흐름이며,
+renderer가 현재 단계를 소유한다. `order_receive`처럼 screen 키와 popup ID가 같은 경우 증거 키에는
+항상 `screen:order_receive`와 `popup:order_receive@{host}` namespace를 구분한다.
+
+| `account_delete` 내부 단계 | layerType | dismissPolicy | footerPolicy | renderer |
+|---|---|---|---|---|
+| `account_delete/form` | FormSheet | `formDirtyGuard` | 취소 + 다음 | `AccountDeleteFlow.form` |
+| `account_delete/confirm` | ConfirmDialog | `confirmGuarded` | `confirmPair` | `AccountDeleteFlow.confirm` |
+
+활성 레지스트리 검산은 PageState `9` + popup `20+18+13+22+15=88`, 합계 고유 ID `97`이다.
+각 ID의 host를 펼치면 활성 host 상태 `123`과 일치해야 한다. 숨김 `discard_type`·`discard_period`는
+B.1~B.2에만 보존하고 이 활성 레지스트리에는 넣지 않는다.
+
+### B.9 popupTabs 밖의 제품 Layer 시연 host
+
+아래 화면 키는 URL popup ID가 아니라 Layer를 전체 화면 안에서 시연하는 host다. 활성 popup ID 97개
+검산에는 더하지 않지만 `shell-excluded`의 자손 제품 검수에서는 제외하지 않는다.
+
+| screen key | 제품 역할 | dismissPolicy | footerPolicy | 목표 renderer |
+|---|---|---|---|---|
+| `ingredient_edit_menu` | ActionSheet | `actionDismissible` | `actionItems` | `ActionSheet` |
+| `memo_edit` | FormSheet | `formDirtyGuard` | `formCancelPrimary` | `FormSheet` |
+| `ingredient_delete` | ConfirmDialog | `confirmGuarded` | `confirmPair` | `ConfirmDialog` |
 
 ---
 
@@ -1252,10 +1500,16 @@ HTML 등록 전체는 호스트 상태 125개, 고유 ID 99개다. 이 중 `disc
 | F-32 | 마지막 기록·최근 수정, 팝업 닫기, 비교 가능 조건과 이상 판정 출처가 결정 가능한 값으로 부족 | 5.2, 6.4~6.5, B.7 | 문서 정리 · 구현 미적용 |
 | F-33 | 페이지·카드·필드의 관계별 여백과 입력 내용별 start/end 정렬이 결정되지 않음 | 1.4, 3.3, 4.3, 5.2 | 문서 정리 · 구현 미적용 |
 | F-34 | `box`·`panel`·`tile` 형태를 목적 없이 재사용해 Card·Field·Result·Notice의 의미가 혼재할 수 있음 | 4.1 | 문서 정리 · 구현 미적용 |
+| F-35 | 시연 stage·backdrop·underlay와 실제 제품 Layer의 검수 제외 경계가 없음 | 0.3, 4.1, 9.1 | 문서 정리 · 구현 미적용 |
+| F-36 | Card+Button 금지가 interactive Card의 semantic button까지 금지하는 것으로 읽힘 | 3.2, 4.1 | 문서 정리 |
+| F-37 | Chart는 kit 표에 있으나 정규 단일 역할 어휘에서 빠져 selector 판정 불가 | 4.1, 4.5, 9.1 | 문서 정리 · 구현 미적용 |
+| F-38 | Page StickyAction·LayerFooter·Card Footer의 Safe Area·offset 소유권이 연결되지 않음 | 2.2, 4.3, 5.2 | 문서 정리 · 구현 미적용 |
+| F-39 | C.3가 매핑 대상만 나열하고 실제 selector·renderer별 역할·격차·조치 행을 갖지 않음 | 9.1, C.3 | 1차 매핑 · 전수 확장 필요 |
+| F-40 | popup 유형을 generic Sheet·제목·DOM 구조로 추론해 닫기·배치 정책이 달라질 수 있음 | 5.1~5.2, B | 문서 정리 · 구현 미적용 |
 
 ### C.3 토큰·컴포넌트 적용 매핑 형식
 
-실제 적용 전 각 행을 다음 구조로 채운다.
+실제 적용 전 각 행을 다음 구조로 채운다. 이 문서에 대상 이름을 적는 것만으로는 매핑 완료가 아니다.
 
 | 필드 | 의미 |
 |---|---|
@@ -1270,6 +1524,35 @@ HTML 등록 전체는 호스트 상태 125개, 고유 ID 99개다. 이 중 `disc
 | Coverage | 화면 키·popup ID |
 | Evidence | 파일·줄·검증 결과 |
 
+현재 프로토타입에서 충돌 위험이 큰 공용 selector·renderer의 **1차 확정 매핑**은 다음과 같다.
+이 표는 적용 출발점이며 전체 182개 시각 class token과 145개 표면 규칙은 같은 형식으로 확장해야 한다.
+
+| Guide role | Code symbol | Prototype target | Authority | 현재 Gap | Action | Priority | Coverage | Evidence |
+|---|---|---|---|---|---|---|---|---|
+| `shell-excluded` | 제품 kit 없음 | `.workspace`, `.catalog*`, `.nav-*`, `.phone`의 프레임 선언, `.status`, `.route`, `.edit-menu-stage`, `.sheet-preview-stage`, 두 stage backdrop, `.edit-underlay*` | 검수 셸 | 제품 외 substrate와 실제 Layer가 같은 phone DOM에 있음 | substrate 선언만 감사 제외하고 자손 제품 표면은 다시 순회 | P0 | 전체 카탈로그 | HTML 10~14, 48~49행 |
+| `layer:sheet-wrapper` | 현재 `Sheet`; 목표 Picker·Form·Info·Action Sheet renderer | `.overlay > .sheet`, `showPrototypeSheet()`, `openPopupTab()` | 가이드 목표 | 하나의 generic Sheet renderer가 여러 `layerType`을 혼합 | popup registry의 `layerType`으로 Sheet renderer를 분기하고 wrapper만 `layer`로 매핑 | P0 | Picker·Form·Info·Action Sheet 전체 | HTML 27, 511, 585행 |
+| `layer:dialog-wrapper` | 목표 `ConfirmDialog`, `SuccessDialog`, `ErrorDialog` | `.overlay.confirm-alert > .sheet`, `.delete-preview` | 가이드 목표 | 중앙 Dialog가 Sheet selector·DOM 판정 또는 별도 preview CSS를 사용 | 공용 중앙 Dialog wrapper로 수렴하고 registry 값으로 유형 분기 | P0 | Confirm 15·Success 1·Error 1 ID와 삭제 preview | HTML 28, 48, 734행 |
+| `layer:popover-wrapper` | 목표 `PopoverMenu` | `.option-popover-layer > .option-popover`, `openOptionMore()` | 가이드 목표 | 독립 DOM 생성으로 공용 focus·닫기 계약과 분리 | anchor·focus 복귀·작은 화면 ActionSheet 전환을 Popover renderer가 소유 | P0 | `popup:option_more@options` | HTML 53, 499행 |
+| `layer:preview-wrapper` | 제품 kit 없음; 목표 Action·Form Sheet preview renderer | 정확한 wrapper `.prototype-sheet`, `.sheet-preview-card` | 가이드 목표 | stage substrate와 같은 구획에 있어 실제 Layer까지 제외될 위험 | wrapper만 `layer`로 매핑하고 `.prototype-sheet*` wildcard 사용 금지 | P1 | `ingredient_edit_menu`, `memo_edit`, 재고 변경 preview | HTML 48행 |
+| `layer:part` | 목표 Layer Header·Body anatomy | `.prototype-sheet-title`, `.sheet-preview-title`, `.sheet-preview-body` | 가이드 목표 | Layer 내부 anatomy가 CardPart 또는 독립 Layer로 중복 집계될 수 있음 | 부모 Layer 표면을 재사용하고 Header·Body subtype으로만 기록 | P1 | 시연 Layer 내부 | HTML 48, 73행 |
+| `row-group` | 목표 `Row` | Layer 내부 `.prototype-sheet-group` | 가이드 목표 | ActionSheet 메뉴 그룹이 Layer wildcard에 흡수될 수 있음 | Layer Body 안의 투명 RowGroup으로 분류 | P1 | `ingredient_edit_menu` ActionSheet | HTML 48행 |
+| `control:layer-action` | `Button`; 목표 `IconButton`, Layer item variant | `.prototype-sheet-row`, `.prototype-sheet-close`, `.sheet-preview-tab`, `.sheet-choice`, `.sheet-actions button`, `.delete-preview-actions button`, `.option-popover button` | 코드 권위+가이드 목표 | Layer wildcard가 Action·Tab·Close까지 Layer로 흡수할 수 있음 | button·icon-button·page-tabs·choice·menu-item subtype으로 각각 기록 | P1 | 시연 Sheet·Dialog·Popover 내부 행동 | HTML 48, 53, 65, 73행 |
+| `sticky-action:page` | 목표 `StickyAction` | `.bottom-action` | 가이드 목표 | 페이지 행동과 Layer 행동의 offset 소유권 혼재 | 하단 탭 위에 배치하고 페이지 Safe Area만 계산 | P0 | CTA가 고정된 PageState | HTML 20, 43행 |
+| `sticky-action:layer-footer` | 목표 `LayerFooter` | `.option-card-actions`, `.stock-option-actions`, `.prototype-actions`, `.sheet-actions` | 가이드 목표 | 서로 다른 sticky CSS와 Sheet padding 보정 | 공용 LayerFooter로 수렴하고 하단 탭 offset 금지 | P0 | Form·Action Layer | HTML 20, 48, 59, 73행 |
+| `card` | `Card` | `.card`, interactive `.expo-list-card`, `.business-card`, `.change-overview`, `.profit-detail-card` | 코드 권위+가이드 목표 | 독립 정보 묶음과 interactive 요약이 공용 Card 규격으로 수렴하지 않음 | wrapper만 Card로 매핑하고 전체 이동 시 semantic button/link는 허용 | P1 | 메인·상세·이력·손익 | HTML 17, 43~46, 73행 |
+| `card-part` | 목표 Card Header·Body·RowGroup·Footer anatomy | `.card-head`, `.summary-head`, `.summary-grid`, `.expo-card-top`, `.expo-card-foot`, `.price-card-head` | 가이드 목표 | 내부 구획이 독립 Card처럼 border·radius·shadow를 가질 수 있음 | 각 selector에 anatomy subtype을 주고 부모 Card 표면과 필요한 한쪽 구분선만 사용 | P1 | 요약·상세·목록 Card 내부 | HTML 17, 43~45행 |
+| `row-group:choice-row` | 목표 `Row` choice variant | `.expo-pick-list > .expo-pick-card`, `expoPickCard()` | 가이드 목표 | 반복 검색 선택지를 개별 Card로 오인할 수 있음 | 목록 부모가 간격을 소유하고 각 항목은 전체 button semantics의 choice Row로 수렴 | P1 | 재료·부자재 검색 | HTML 54, 401행 |
+| `row-group` | 목표 `Row` | `.row`, `.expo-manage-row`, `.setting-row`, `.change-list > button` | 가이드 목표 | 반복 Row가 개별 Card 또는 복수 행동을 가짐 | 상위 RowGroup 한 표면과 단일 진입 방식으로 수렴 | P1 | 전 도메인 목록 | selector 전수 인벤토리 |
+| `field` | `Field`, `Input`, `Select` | `.edit-form-box`, `.prototype-input-shell`, `.date-field input`, `.sheet-input-preview`, `prototypeField()`, `prototypeForm()` | 코드 권위+가이드 목표 | 같은 selector가 input·select·readonly span을 겸하고 `prototypeForm()`이 expense/stock 이름을 재사용 | `FieldControl` subtype으로 분리하고 중립 공용 helper로 교체 | P0 | 모든 폼 | HTML 48, 53, 73, 402, 513행 |
+| `result` | 목표 `ResultField` | `.stock-total-card`, `.stock-total-result`, `.prototype-result-card`, `.avg-convert`, `.sheet-result`, `prototypeResult()` | 가이드 목표 | 도메인 이름과 Input 유사 표면을 여러 계산 결과에 재사용 | 중립 `ResultField/ResultGroup`으로 분리하고 대표 그룹 한 곳만 tint | P1 | 계산 폼 전체 | HTML 20, 48, 54, 73, 514행 |
+| `notice` | `Notice` | `.callout`, `.danger-box`, 안내형 `.ingredient-option-note` | 코드 권위+가이드 목표 | 중립 요약과 위험 안내가 같은 표면 또는 이름을 공유 | 정보·주의·오류 variant를 의미로 분리하고 단순 결과는 Result로 이동 | P1 | 안내·오류 상태 | selector 전수 인벤토리 |
+| `empty` | 목표 `EmptyState` | `.empty-inline`, 빈 `Card Body` | 가이드 목표 | 단순 텍스트·강조문·행동 유무가 화면별로 다름 | Page·Section·Card Body subtype과 대표 행동 최대 한 개로 수렴 | P1 | 최초·검색·필터 빈 상태 | selector 전수 인벤토리 |
+| `badge` | `Badge`, `StatusBadge` | `.badge`, `.expo-status`, `.expo-target`, `.profit-badge` | 코드 권위+가이드 목표 | 10~12px·여러 굵기와 상태·목표·비교 의미 혼재 | 세 의미 variant와 `TYPE.captionSm`을 공유하고 별도 `TYPE.badge`는 만들지 않음 | P1 | 상태·목표·비교 표시 | HTML 18, 43~44행 |
+| `control` | `Button`, `ScrollTabs`, `SegTabs`, Filter 계열 | `.tab`, `.condition-filter`, `.chip`, `.filter-option`, `.choice-card`, `.toggle`, `.business-state` | 코드 권위+가이드 목표 | tab·filter·select·상태 표시가 모양으로 구분되지 않거나 비조작 span임 | subtype을 명시하고 `.business-state`는 행동이면 Select, 표시뿐이면 StatusBadge로 selector 분리 | P0 | 전 조작 요소 | selector 전수 인벤토리 |
+| `chart:wrapper` | `Donut`; `TrendChart` 보류 | `.donut`, `.donut-static`, `.menu-donut`, `.chart` | 코드 권위+가이드 목표 | 임시 Chart wrapper와 공식 Donut이 혼재 | wrapper만 정규 `chart`로 매핑하고 텍스트 표·데이터 계약 없이는 PASS 금지 | P1 | 손익·매출 시각화 | HTML 24~25, 36, 45행 |
+| `chart:primitive` | Chart 내부 mark; 독립 kit export 없음 | `.donut::after`, `.donut-center`, `.dot`, `.legend*`, `.menu-legend*`, `.bar`, `.bar i`, `.chart svg`, `.chart-labels` | 코드 권위+가이드 목표 | mark가 Card·Badge·독립 Chart로 중복 집계될 수 있음 | 상위 Chart의 내부 primitive로만 기록하고 독립 상위 역할은 부여하지 않음 | P1 | 위 Chart wrapper 내부 전체 | HTML 24~26, 36, 45행 |
+| `kpi` | 목표 `PrimaryKPI`, `SummaryKPI` | `.sales-hero`, `.hero`, `.kpi`, `.analysis-summary` | 가이드 목표 | Hero·Live 이름과 여러 숫자의 동일 강조 | 화면당 PrimaryKPI 하나, 나머지는 SummaryKPI·Row로 낮추고 기록 기준 표시 | P1 | 탭 메인·상세 요약 | selector 전수 인벤토리 |
+
 필수 매핑 대상:
 
 - `T`, `TYPE`, `space`, `radius`, 공용 shadow, `tnum`, `STATUS`, formatter 진입점.
@@ -1281,6 +1564,10 @@ HTML 등록 전체는 호스트 상태 125개, 고유 ID 99개다. 이 중 `disc
   `ManagementList`, `ConfirmDialog`, `PopoverMenu`와 저수준 `Surface`, `Section`, `EmptyState`.
 - 구성 패턴 `OperationalSummary`, `ExceptionFirstList`, `BusinessDayState`, `RecordedEntryList`,
   `NotEnteredNotice`와 실제 화면 renderer.
+
+전수 매핑은 selector 하나가 여러 역할을 갖는 경우를 그대로 승인하지 않는다. 상태·host에 따라 역할이
+달라지면 selector 또는 공용 컴포넌트 variant를 분리하고, renderer가 역할을 결정한다. 위 1차 표에 없는
+selector도 적용 대상 화면에서 처음 발견되는 즉시 같은 행 구조로 추가한 뒤에만 PASS로 전환한다.
 
 ### C.4 이번 개정에서 수정하지 않은 항목
 

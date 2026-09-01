@@ -14,6 +14,55 @@
 
 ## 변경 내역
 
+### PRT-150 · Opus 교차검수 후 UI 역할·팝업·고정 행동 계약 보완
+
+- 날짜: 2026-09-01
+- 적용 범위: `full-page-flow-prototype-ui-guide.md`, 현재 확정안 문서
+- 상태: 가이드안 개정 · 프로토타입 및 Expo 미적용
+- 변경 내용:
+  - `claude-opus-5` 보조 교차검수와 Codex·병렬 사실검증을 대조해 실제 근거가 있는 항목만 반영했다.
+  - 카탈로그·stage·backdrop·underlay를 `shell-excluded`로 한정하고, 시연 안의 실제 Sheet·Dialog·
+    Card·Control은 계속 제품 역할 검수 대상으로 남겼다. `.phone`도 프레임 선언만 제외하고 자손의
+    제품 Header·본문·하단 탭은 다시 정규 역할로 순회하도록 경계를 명시했다.
+  - Card·Row가 semantic button/link를 사용하는 것과 Button 시각 variant를 합치는 것을 구분해
+    interactive Card의 접근성 구현이 역할 혼합으로 오인되지 않게 했다.
+  - 정규 감사 역할을 상위 역할+subtype 구조로 정리하고 `card-part`, `chart`, Page/Layer
+    `sticky-action`을 추가했다. 차트 mark는 상위 Chart의 내부 primitive로 분류했다.
+  - Page StickyAction, LayerFooter, 일반 Card Footer의 Safe Area·하단 탭 offset·sticky 소유권을
+    분리했다.
+  - 활성 고유 ID 97개를 PageState 9개와 popup 88개로 나누고, popup마다 `host / layerType /
+    dismissPolicy / footerPolicy / renderer`, PageState마다 `host / stateRenderer`를 실제 행으로 채웠다.
+    host를 펼친 123개 활성 상태도 검산했다. 제목·DOM·generic Sheet 모양으로 유형을 추론하지 않게 했다.
+  - 저장 행동이 있는 `language_preview`는 InfoSheet가 아니라 FormSheet로 정정하고, URL popup 밖에서
+    Layer를 시연하는 `ingredient_edit_menu / memo_edit / ingredient_delete`도 별도 제품 검수 host로
+    기록했다.
+  - C.3의 형식·대상 체크리스트만으로는 매핑 완료가 아니라는 점을 명시하고, 검수 셸·Layer·Footer·
+    Card·Field·Result·Notice·EmptyState·Badge·Control·Chart·KPI와 공용 renderer의 고위험 1차
+    selector 매핑표를 채웠다. Layer wrapper와 내부 action, Card와 CardPart, 검색 choice Row, Chart
+    wrapper와 primitive를 각각 분리하고 역할·코드 심볼·대상·권위·격차·조치·우선순위·범위·증거를
+    별도 열로 기록한다.
+  - Opus가 제안한 별도 `TYPE.badge`는 과분화로 판정해 추가하지 않고 Badge·Chip·Filter·짧은 메타를
+    기존 `TYPE.captionSm`에 수렴시켰다.
+  - Finding `F-35~F-40`과 Definition of Done 23~26을 추가했다.
+- 변경 이유:
+  - 기존 가이드는 역할 정의는 상세했지만 실제 selector·renderer 연결과 검수 제외 경계가 비어 있어,
+    187개 등록 상태에 일괄 적용할 때 실제 팝업을 제외하거나 같은 sticky 행동에 서로 다른 offset을
+    적용할 위험이 있었다.
+- 기획안 반영 포인트:
+  - 시각 역할과 HTML/RN semantic 요소를 구분한다.
+  - 팝업 유형과 닫기 정책은 명시적 레지스트리가 소유한다.
+  - 매핑 대상 목록이 아니라 selector·renderer별 실제 행과 증거가 있어야 적용 완료다.
+  - 새 역할 토큰보다 기존 상위 역할과 subtype 재사용을 우선한다.
+- 검수 판정:
+  - Opus 원판정은 `CHANGES_REQUIRED`였다.
+  - `prototype-sheet` 전체 제외와 `TYPE.badge` 신설은 교차검증에서 각각 범위 과다·과분화로 기각했다.
+  - stage substrate 경계, interactive Card 문구, Chart 역할, sticky 소유권, 실제 selector 매핑 부족은
+    유효 Finding으로 반영했다.
+- 주의:
+  - 이번 항목은 문서 계약만 수정했다. 기존 `full-page-flow-prototype.html`과 실제 Expo 소스는
+    변경하지 않았다.
+  - Opus 검수는 공식 Fable 게이트가 아닌 보조 교차검수다.
+
 ### PRT-149 · 박스·표면 요소 역할 분류 추가
 
 - 날짜: 2026-09-01
