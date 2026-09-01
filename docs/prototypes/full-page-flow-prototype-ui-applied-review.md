@@ -304,6 +304,24 @@ Opus가 지정한 후속 위험은 다음과 같다.
   보완 후 사용자 철회 규칙과 runtime 시드 잔량까지 포함한 최종 재검수에서 모두 `PASS`.
 - Codex 판정: `PASS`; Opus 판정: `PASS`; 최종 판정: `PASS`.
 
+### ING-09 · `screen:purchase`, `popup=purchase_period`
+
+- 문구/정보: 기준단가의 `지출` 보조문구와 단가 차이 설명문을 삭제했다. 각 행은 입고일·구매처·
+  총 입고량·포장 구성·총 금액·당시 단가만 표시한다.
+- 최저/최고: 기간 최저와 최고가 같으면 최신 08/27 행에 `최저`·`최고`를 함께 표시한다. 같은 단가의
+  과거 행에는 배지를 반복하지 않는다.
+- 병합: 재고 내역과 `historyRows`·`historyControls`·`historyMonthSections`·`openHistoryFilter`를
+  공유한다. 기간은 동일한 즉시 선택 PickerSheet/radiogroup을 사용하고 선택 후 URL과 목록을 함께
+  갱신한다.
+- 시맨틱: 이동 기능이 없는 구매 행은 더 이상 빈 button으로 렌더하지 않고 `div.row`를 사용한다.
+  실제 상세 이동이 있는 행만 button/data-detail을 사용한다. 필터 버튼 접근성 이름에는 현재
+  `최근 3개월` 값까지 포함한다.
+- Codex 검수: 모바일에서 텍스트·배지·포장 구성·기간 radiogroup·URL 복귀와 비활성 행 시맨틱을
+  확인했고 공용 토큰 기반 PC 배치도 확인했다.
+- Opus 1차: 이동하지 않는 button 행과 필터 현재값 누락을 지적했다. 보완 후 화면·기간 팝업 모두
+  `PASS`.
+- Codex 판정: `PASS`; Opus 판정: `PASS`; 최종 판정: `PASS`.
+
 ## 전체 target 장부
 
 아래 목록은 숨긴 폐기 전용 페이지를 제외한 활성 screen 61개와 popup/state host 123개다.
@@ -318,7 +336,7 @@ Opus가 지정한 후속 위험은 다음과 같다.
 | screen:stock | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
 | screen:stock_change | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
 | screen:memo_edit | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
-| screen:purchase | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:purchase | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
 | screen:ingredient_changes | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
 | screen:options | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
 | screen:ingredient_delete | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
@@ -398,7 +416,7 @@ Opus가 지정한 후속 위험은 다음과 같다.
 | popup:stock_order@stock | ingredient | PickerSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
 | popup:stock_event_more@stock | ingredient | InfoSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
 | popup:stock_event_revert@stock | ingredient | ConfirmDialog | COMMON | PASS | PASS | PASS | PASS | PASS |
-| popup:purchase_period@purchase | ingredient | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:purchase_period@purchase | ingredient | PickerSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
 | popup:ingredient_change_detail@ingredient_changes | ingredient | InfoSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
 | popup:recipe_sort@recipe_main | recipe | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
 | popup:recipe_status@recipe_main | recipe | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
