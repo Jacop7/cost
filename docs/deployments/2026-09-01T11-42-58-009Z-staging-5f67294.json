@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-09-01T11:42:58.007Z",
+  "status": "APPLIED",
+  "target": "staging",
+  "project_ref": "cvfvmpzcldyqurcrappu",
+  "deploy_sha": "5f67294254221fc5ea25904be063895cb67f5d8d",
+  "branch": "main",
+  "protected_gate": {
+    "sha": "5f67294254221fc5ea25904be063895cb67f5d8d",
+    "conclusion": "success",
+    "workflowRunId": 33503030209,
+    "checkRunId": 99843022872
+  },
+  "migration_count": 180,
+  "pending_migrations": [
+    "20260901000189_international_tax_release_cutover.sql",
+    "20260901000190_international_tax_recipe_profit.sql",
+    "20260901000191_international_tax_accounting_totals.sql"
+  ],
+  "applied_migrations": [
+    "20260901000189_international_tax_release_cutover.sql",
+    "20260901000190_international_tax_recipe_profit.sql",
+    "20260901000191_international_tax_accounting_totals.sql"
+  ],
+  "evidence_hashes": {
+    "migration_list_before_sha256": "193eef9265b89f5afcd763502ac6ff809db083f31e91935ed98a72349cc49ae1",
+    "dry_run_before_sha256": "03338cc33df24c07bd81fba60f97a78c16d5b00b3c8fc61fd9385c71ded6dd68",
+    "migration_list_after_sha256": "57393ec71adced251592fc6414274b6054749fbd9c7b046258831c2de81e602f",
+    "dry_run_after_sha256": "de2776a73c06e6a0516fc5da1ff1506ce10d0c8b10a8429f951d4da5ef19ea25"
+  }
+}
