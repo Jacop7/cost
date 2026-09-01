@@ -959,5 +959,43 @@ else
   fi
 fi
 
+# ── 시나리오 19 · 0182 앱 facade → 0183 검토 보완·기존 권한 보존 ─────
+say "⑲ 0182 상태 + 비활성 앱 facade → 0183 응답 의미 보완·실행 권한/capability 보존"
+BASE19=20260901000182
+STEP19="$(cd "$MIG_DIR" && ls 20260901000183_*.sql)"
+bash "$SCRIPT_DIR/fresh-db.sh" --until "$BASE19" "$D" >/dev/null
+before19=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c "
+  select concat_ws('|',
+    (select count(*) from stores),
+    (select count(*) from daily_sales),
+    (select coalesce(sum(unit_tax*(qty_hall+qty_delivery+qty_takeout)),0) from daily_sales_items),
+    app_capabilities()#>>'{international_tax,read_enabled}',
+    app_capabilities()#>>'{international_tax,write_enabled}');")
+if ! err="$(psql_d "$D" < "$MIG_DIR/$STEP19" 2>&1 1>/dev/null)"; then
+  say "   FAIL 0183 적용이 막혔다"; say "        $(printf '%s' "$err" | head -3)"; fail=1
+else
+  after19=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c "
+    select concat_ws('|',
+      (select count(*) from stores),
+      (select count(*) from daily_sales),
+      (select coalesce(sum(unit_tax*(qty_hall+qty_delivery+qty_takeout)),0) from daily_sales_items),
+      app_capabilities()#>>'{international_tax,read_enabled}',
+      app_capabilities()#>>'{international_tax,write_enabled}');")
+  state19=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c "
+    select concat_ws('|',
+      has_function_privilege('authenticated','public.international_tax_app_state(uuid)','execute'),
+      has_function_privilege('authenticated','public.recipe_tax_app_state(uuid,uuid)','execute'),
+      has_function_privilege('authenticated','public.sales_tax_app_detail(uuid,date,date)','execute'),
+      not has_function_privilege('anon','public.sales_tax_app_detail(uuid,date,date)','execute'),
+      app_capabilities()#>>'{international_tax,read_enabled}',
+      app_capabilities()#>>'{international_tax,write_enabled}');")
+  if [ "$before19" = "$after19" ] && [ "$state19" = "t|t|t|t|false|false" ]; then
+    say "   ok   업무 합계 불변 · facade 실행 권한 보존 · anon 폐쇄 · capability 비활성"
+  else
+    say "   FAIL 원본 전=$before19 후=$after19 권한/capability=$state19"
+    fail=1
+  fi
+fi
+
 say ""
-if [ "$fail" = "0" ]; then say "업그레이드 경로 18/18 통과"; else say "업그레이드 경로 실패"; exit 1; fi
+if [ "$fail" = "0" ]; then say "업그레이드 경로 19/19 통과"; else say "업그레이드 경로 실패"; exit 1; fi
