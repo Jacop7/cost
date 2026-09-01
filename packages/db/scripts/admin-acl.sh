@@ -163,7 +163,7 @@ if [ "$MODE" = "audit" ]; then
       protected_objects) [ "$value" = "6" ] || failed="${failed}${failed:+, }$metric=$value" ;;
       blocked_internal_rpc_objects) [ "$value" = "11" ] || failed="${failed}${failed:+, }$metric=$value" ;;
       rpc_executor_role) [ "$value" = "1" ] || failed="${failed}${failed:+, }$metric=$value" ;;
-      facade_rpc_objects) [ "$value" = "65" ] || failed="${failed}${failed:+, }$metric=$value" ;;
+      facade_rpc_objects) [ "$value" = "75" ] || failed="${failed}${failed:+, }$metric=$value" ;;
       probe_dangerous|public_dangerous|protected_writes|source_schema_grants|supabase_admin_objects|anon_rpc|blocked_internal_rpc|facade_rpc_missing|unapproved_authenticated_rpc|rls_disabled_app_tables|ledger_write_paths|international_contract_view_acl_invalid)
         [ "$value" = "0" ] || failed="${failed}${failed:+, }$metric=$value" ;;
       rpc_executor_facades_invalid|rpc_executor_privileged_maintenance|rls_policy_helper_calls)

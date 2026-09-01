@@ -46,8 +46,11 @@ insert into _acl_approved_rpc(signature) values
   ('save_app_language(text,integer)'),
   ('save_fixed_costs(uuid,text,numeric,jsonb)'), ('save_ingredient(uuid,jsonb)'),
   ('save_material(uuid,jsonb)'), ('save_purchase_option(uuid,jsonb)'), ('save_recipe(uuid,jsonb)'),
+  ('save_menu_tax_override(uuid,uuid,uuid,text,tax_treatment,integer)'),
   ('save_sale(uuid,date,jsonb,jsonb,jsonb,integer,boolean,time without time zone)'),
   ('save_settings(uuid,jsonb,integer)'), ('save_store_tax(uuid,tax_mode,jsonb,integer)'),
+  ('save_store_market_profile(uuid,jsonb,uuid,integer)'),
+  ('save_store_tax_profile(uuid,jsonb,uuid,integer)'),
   ('save_vendor(uuid,jsonb)'), ('set_operating_hours(uuid,jsonb,jsonb,uuid,integer)'),
   ('set_store_timezone(uuid,text)'), ('settings_lists(uuid)'), ('stock_history(uuid,date,date)'),
   ('international_tax_app_state(uuid)'),
@@ -255,7 +258,7 @@ select 'rls_policy_helper_calls' || '|' || count(*) || '|expected=0'
 -- PostgREST로 앱이 직접 부르는 공식 문만 정확한 시그니처로 고정한다. 이름만 비교하면 같은 이름의
 -- 새 오버로드가 자동으로 허용되므로 regprocedure 전체를 비교한다. 이 목록에 없는 authenticated
 -- 함수는 내부 도우미라도 Data API에서 직접 호출할 수 있으므로 감사 실패다.
-select 'facade_rpc_objects' || '|' || count(*) || '|expected=72' from _acl_approved_rpc;
+select 'facade_rpc_objects' || '|' || count(*) || '|expected=75' from _acl_approved_rpc;
 
 with actual as (
   select p.oid::regprocedure::text signature

@@ -367,6 +367,9 @@ end $t$;
  *   international_tax_shadow_compare
  *                                INTL-1F 스테이징 관측 전용. 전 매장 ID를 받으므로 앱에는 닫고
  *                                service_role만 실행하며 업무 테이블은 쓰지 않는다.
+ *   save_store_market_profile · save_store_tax_profile · save_menu_tax_override
+ *                                INTL-1F 판본 검사 쓰기 facade. capability와 앱 판본을 먼저
+ *                                확인하고, 표 직접 쓰기는 앱에 열지 않는다.
  */
 do $t$
 declare v_now text; v_want text;
@@ -409,9 +412,12 @@ begin
     'retire_my_account()',
     'sales_tax_app_detail(p_store uuid, p_from date, p_to date)',
     'save_app_language(p_language text, p_base_revision integer)',
+    'save_menu_tax_override(p_store uuid, p_recipe uuid, p_tax_profile uuid, p_tax_category text, p_treatment tax_treatment, p_base_revision integer)',
     'save_sale(p_store uuid, p_date date, p_items jsonb, p_etc_items jsonb, p_extra_items jsonb, p_base_revision integer, p_open_day boolean, p_open_close_time time without time zone)',
     'save_settings(p_store uuid, p_payload jsonb, p_base_revision integer)',
+    'save_store_market_profile(p_store uuid, p_payload jsonb, p_base_profile_id uuid, p_base_revision integer)',
     'save_store_tax(p_store uuid, p_mode tax_mode, p_items jsonb, p_base_revision integer)',
+    'save_store_tax_profile(p_store uuid, p_payload jsonb, p_base_profile_id uuid, p_base_revision integer)',
     'schedule_store_purge(p_store uuid, p_purge_after timestamp with time zone, p_approved_by text, p_approval_reference text, p_reason text)',
     'set_operating_hours(p_store uuid, p_weekly_hours jsonb, p_weekly_breaks jsonb, p_base_rule_id uuid, p_base_revision integer)',
     'set_store_timezone(p_store uuid, p_timezone text)',
