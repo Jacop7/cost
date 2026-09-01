@@ -155,6 +155,40 @@
 간격은 `space.xs / sm / md / lg / xl / xxl`, 모서리는
 `radius.sm / md / lg / xl / full`을 사용한다. 같은 이름에 다른 값을 문서에서 다시 선언하지 않는다.
 
+Expo 코드의 현재 값을 그대로 사용한다.
+
+| 토큰 | 값 | 기본 사용처 |
+|---|---:|---|
+| `space.xs` | 4 | 제목과 보조문구, 값과 단위처럼 한 덩어리인 요소 |
+| `space.sm` | 8 | 라벨과 입력, 아이콘과 텍스트, 버튼 사이 |
+| `space.md` | 12 | 카드 사이, 행의 상하, 관련 컨트롤 묶음 |
+| `space.lg` | 16 | 모바일 본문 좌우, 카드 내부, 필드 사이 |
+| `space.xl` | 20 | 서로 다른 필드 그룹·섹션 사이, 빈 상태 상하 |
+| `space.xxl` | 24 | 큰 업무 구획, 팝업 제목과 독립 본문 구획 사이 |
+
+형제 간격은 관계를 소유한 부모의 `gap`이 담당하고 자식 margin으로 보정하지 않는다. 같은 경계에
+padding과 margin을 중복 적용하지 않는다. 목록의 마지막 행, 폼의 마지막 필드, 팝업 본문의 마지막
+요소에는 다음 형제용 여백을 남기지 않는다. 레이아웃 여백은 `4 / 8 / 12 / 16 / 20 / 24`만 사용한다.
+`1px` 구분선, Safe Area, 컨트롤 고정 크기는 간격 예외이며 새 임의 여백의 근거가 되지 않는다.
+
+| 관계 | 기본값 | 예외·전환 |
+|---|---:|---|
+| 제품 본문 좌우 gutter | `space.lg` | Compact 320~359는 `space.md`; 넓은 화면은 간격 확대 대신 콘텐츠 최대폭·중앙 정렬 |
+| 같은 데이터 그룹 내부 | `space.sm~md` | 제목과 보조문구는 `space.xs` |
+| 카드·목록 그룹 사이 | `space.md` | 독립 섹션 경계이면 `space.xl` |
+| 필드 사이 / 필드 그룹 사이 | `space.lg / space.xl` | 오류 노출로 다음 필드 간격이 중복되지 않음 |
+| 일반 섹션 / 큰 업무 구획 | `space.xl / space.xxl` | 장식 여백으로 첫 화면 핵심 정보를 밀어내지 않음 |
+
+- Header·하단 탭·StickyAction은 각각 자신의 Safe Area를 소유하고 본문 gutter에 inset을 중복해서
+  더하지 않는다.
+- 페이지 첫 요소는 Header 아래 `space.md`, 마지막 요소는 일반 화면에서 `space.xxl`을 기본으로 한다.
+  StickyAction이 있으면 마지막 요소 뒤에 `행동 높이 + space.md + 하단 inset`만큼을 확보한다.
+- 2열 입력·요약은 열 사이 `space.md`를 사용하고, Compact·200% 글자 확대·긴 번역에서 잘리면
+  순서를 유지한 채 1열로 전환한다. 글자 크기를 줄여 2열을 강제로 유지하지 않는다.
+- 입력·버튼·작은 표면은 `radius.md`, 일반 Card는 `radius.lg`, Sheet 상단과 큰 강조 표면은
+  `radius.xl`, Badge·Chip·원형 조작은 `radius.full`을 기본으로 한다. `radius.sm`은 내부의 작은
+  표면에만 사용하며 중첩 표면이 바깥과 같은 모서리를 갖지 않게 한다.
+
 현재 kit에는 공용 크기 객체가 없으므로 다음 의미 토큰은 **목표 신규 토큰**이다.
 
 | 목표 토큰 | 목표값 | 의미 |
@@ -171,8 +205,7 @@
 컨테이너 자체를 키운다. 현재 literal 모서리는 기존 `radius`로 수렴시키고, 정말 필요한 예외만 의미
 토큰으로 승격한다.
 
-운영 화면의 여백은 정보 구분을 만들되 업무 밀도를 희생하지 않는다. 같은 데이터 그룹은
-`space.sm~md`, 카드·섹션 사이는 `space.md~lg`, 큰 업무 구획은 `space.xl~xxl`을 우선한다.
+운영 화면의 여백은 정보 구분을 만들되 업무 밀도를 희생하지 않는다. 세부 관계값은 위 표를 따르며,
 핵심 값이나 행동을 첫 화면 밖으로 밀어내는 큰 공백은 빈 상태·초기 안내 외에는 사용하지 않는다.
 
 ### 1.5 그림자·레이어·모션
@@ -329,9 +362,47 @@ Form은 입력 순서·검증·dirty·제출·실패 복구를 소유하는 조�
 - 제출 시 첫 오류로 이동하고 저장 실패 후 입력값과 선택값을 유지한다.
 - Input은 `empty / filled / focused / disabled / readonly / error / warning / validating / success`를 지원한다.
 - readonly는 값을 유지하되 편집 단서와 열림 행동을 제거한다.
-- 입력을 다시 Card 안에 감싸지 않는다. 포커스는 경계 변화로 표현하고 glow·강한 그림자를 쓰지 않는다.
+- 입력 하나마다 개별 Card를 만들지 않는다. 여러 입력이 하나의 업무 단위를 이루면 한 FormGroup 또는
+  Card로 묶을 수 있다. 포커스는 경계 변화로 표현하고 glow·강한 그림자를 쓰지 않는다.
 - 단위는 suffix, 통화 위치는 locale formatter 결과를 사용한다.
 - 계산 결과를 Input처럼 만들지 않고 `ResultField`를 사용한다.
+
+**필드 치수와 세로 리듬**
+
+| 부분 | 규칙 |
+|---|---|
+| Field 사이 | `space.lg` |
+| FieldLabel → Control | `space.sm` |
+| Control → FieldMessage | `space.sm`; 메시지가 없으면 빈 높이를 예약하지 않음 |
+| Input·Select·Search | 최소 높이 `size.controlDefault`, inline padding `space.lg`, `radius.md`; 큰 글자·긴 번역에서는 높이 확장 |
+| 여러 줄 입력 | inline `space.lg`, block `space.md`, 첫 줄 상단 정렬 |
+| 2열 Field | 열 사이 `space.md`; Compact·긴 번역·큰 글자에서는 1열 |
+
+입력 내부는 `leading / value / trailing` 세 영역으로 나눈다. `leading`은 아이콘·prefix, `value`는
+입력값·placeholder, `trailing`은 단위·suffix·상태·보조 행동을 소유한다. `value`만 남은 폭을 사용하고
+`trailing`은 축소되거나 줄바꿈되지 않는다. 글로벌 대응을 위해 구현은 `left/right` 대신 논리 방향
+`start/end`와 `padding-inline`을 사용한다. 한국어 LTR 화면에서 start는 좌측, end는 우측이다.
+
+| 입력 내용 | 값 정렬 | leading·trailing 구성 |
+|---|---|---|
+| 이름·메모·검색어·URL·도메인 | start | 지우기·검색 같은 단일 IconButton만 end |
+| 날짜·시각·카테고리·구매처·단위 Select | start | 상태 아이콘 또는 chevron을 end에 한 개 |
+| 수량·용량·금액·비율·판매가 | end | `g`, `ml`, `개`, `%` 등 suffix를 값 바로 뒤에 고정 |
+| locale이 통화 기호를 앞에 두는 금액 | 숫자 묶음 전체를 end | 통화 기호는 숫자의 prefix로 함께 정렬 |
+| 읽기 전용 계산 결과 | Input 사용 금지 | 외부 라벨 + `ResultField` 값 end 정렬 |
+
+- 일반 입력값은 `TYPE.body`, placeholder는 `TYPE.bodyWeak`, suffix·prefix는 `TYPE.caption`을 사용한다.
+  placeholder도 실제 값과 같은 방향으로 정렬해 입력 시작 시 값이 움직이지 않게 한다.
+- 숫자 입력 variant는 `tnum`과 목적에 맞는 `inputMode`를 사용한다. 같은 종류의 수량·금액·비율은
+  한 화면에서 같은 끝선에 맞추며 화면별 임의 정렬을 허용하지 않는다.
+- 값과 suffix 사이에는 `space.sm` 이하의 한 덩어리 간격만 두고 suffix를 입력 반대편 끝으로 떼어
+  놓지 않는다. 값·suffix·아이콘은 서로 겹치거나 두 줄로 갈라지지 않는다.
+- 앞·뒤 아이콘은 각각 `size.touchMin` 이상의 유효 영역을 확보하고 값 영역에 그 폭을 예약한다.
+  suffix와 행동 아이콘이 함께 있으면 별도 trailing 하위 영역으로 분리한다.
+- `value`에는 `min-width: 0`을 보장한다. 긴 숫자·URL은 글자 크기를 줄이지 않고 편집 중 가로 이동
+  또는 전체 선택이 가능해야 하며, 200% 글자 확대에서도 필수 단위·오류·행동을 말줄임하지 않는다.
+- 필수 표시는 FieldLabel 뒤에 둔다. 도움말·오류·글자 수는 입력 바깥 start에 두고 오류가 도움말을
+  대체하며, 오류 아이콘만으로 오류를 전달하지 않는다.
 
 ### 3.4 Select·Search·Stepper·Toggle
 
@@ -427,6 +498,40 @@ Form은 입력 순서·검증·dirty·제출·실패 복구를 소유하는 조�
 - Table은 웹의 열 의미와 모바일 행 카드의 열 순서·단위·소계·총계를 동일하게 유지한다.
 - 정렬 가능한 열은 현재 방향을 의미 속성으로 전달한다.
 
+Card는 임의 padding 조합 대신 `Header / Body 또는 RowGroup / Footer` 구조를 사용한다.
+
+| 부분 | 내부 구성 | 간격·정렬 |
+|---|---|---|
+| Card 외곽 | 표면·약한 경계·`radius.lg` | 폭 100%, Card 목록 부모의 gap `space.md` |
+| Header | 제목 묶음, 선택적 상태·행동 한 개 | inline `space.lg`, block `space.md`; 제목 start·행동 end |
+| Body | 설명·요약처럼 자유 배치되는 콘텐츠 | 사방 `space.lg`, 관련 항목 `space.sm~md` |
+| RowGroup | 반복 Row 묶음 | Body padding 없이 Row가 자체 여백 소유 |
+| Row | leading / primary / secondary / trailing | inline `space.lg`, block `space.md`, 기본 최소 `size.rowMin` |
+| Footer | 전체보기·추가·보조 행동 | 위 구분선, inline `space.lg`, 최소 `size.controlDefault` |
+
+- Header의 우측에는 현재 상태 또는 한 가지 행동만 둔다. 본문에 이미 있는 재고량·건수·합계를
+  반복하지 않고 행동이 없다면 빈 placeholder를 두지 않는다. 제목과 보조문구는 `space.xs`로 묶는다.
+- Header와 Body가 연속되면 경계 간격은 Header 하단 또는 Body 상단 한쪽만 소유한다. Header 단독은
+  block `space.md`, Body 단독은 사방 `space.lg`를 사용한다.
+- RowGroup Card는 바깥 Body padding을 두지 않는다. 각 Row가 block `space.md`, inline `space.lg`를
+  소유하고 인접 Row 사이에는 `T.line2` 한 개만 둔다. 내부 Row에 개별 radius를 주지 않는다.
+- Row의 `primary`는 `flex: 1; min-width: 0`으로 남은 폭을 차지하고 제목·보조문구를 최대 두 줄로
+  쌓는다. `trailing`의 수량·금액·비율·상태·행동은 축소하지 않고 end 정렬하며 숫자는 `tnum`을 쓴다.
+- 한쪽이 두 줄이면 첫 줄끼리 맞도록 상단 정렬하고, 단일 값 행은 세로 중앙 정렬한다. 값과 단위는
+  같은 baseline에 두며 단위만 다음 줄로 떨어지지 않는다.
+- Badge는 이름 또는 상태 줄 옆에 붙인다. 카드 모서리나 값 열 위에 독립적으로 띄워 소유 대상을
+  모호하게 만들지 않는다.
+- 행 전체가 이동할 때만 chevron을 end에 둔다. 외부 링크·편집·복수 메뉴 행동은 목적에 맞는 한
+  진입 방식만 사용하고 chevron·편집·메뉴를 같은 행에 함께 나열하지 않는다.
+- selected·focused·error 전환에서 경계 두께 때문에 Card·Row 크기가 변하지 않게 기본 경계를
+  예약하거나 inset 표현을 사용한다. loading skeleton도 실제 콘텐츠와 같은 padding·높이를 유지한다.
+- Footer의 단일 행동은 전체 폭, 동등한 두 행동은 `1:1`, 취소와 대표 행동은 기본 `1:2`로 배치한다.
+  2열 버튼이 번역문을 수용하지 못하면 1열로 쌓되 대표 행동을 마지막에 둔다.
+- 빈 상태는 Card Body에서 start 정렬을 기본으로 하며 block `space.xl`, inline `space.lg`를 사용한다.
+  추가 행동이 있으면 문장 안 링크가 아니라 Footer의 한 가지 행동으로 분리한다.
+- Card 안에 다시 Card를 넣지 않는다. 계산 결과 묶음은 같은 Body의 `ResultGroup`, 반복 항목은
+  `RowGroup`, 안내는 `Notice`로 표현한다.
+
 ### 4.4 KPI와 ResultField
 
 - `PrimaryKPI`는 화면당 최대 하나이며 라벨·값·단위·기준 기간 또는 비교 기준을 함께 가진다.
@@ -496,6 +601,26 @@ Form은 입력 순서·검증·dirty·제출·실패 복구를 소유하는 조�
 팝업별 예외는 부록 B에 `dismissPolicy`로 기록한다. 현재 `tax_saved`는 저장이 이미 완료된 단순
 안내이므로 바깥 닫기를 허용하고, `stock_error`는 명시적 닫기 또는 재시도 전까지 바깥 닫기를
 허용하지 않는다. `stock_error`에서는 Android Back과 Escape도 비활성화한다.
+
+팝업의 Header·Body·Footer가 각자 여백을 소유하며 첫·마지막 자식 margin으로 보정하지 않는다.
+
+| 부분 | Sheet | 중앙 Dialog | PopoverMenu |
+|---|---|---|---|
+| 외곽 | 상단 `radius.xl`, 화면 좌우 0 | 화면 좌우 최소 `space.xxl`, `radius.lg` | 기준 버튼과 `space.sm`, `radius.md` |
+| Header | inline `space.lg`, 상단 `space.xl`, 하단 `space.md` | 사방 `space.xl` | 별도 Header 없이 접근 가능한 메뉴 이름 |
+| Body | inline `space.lg`, 요소 `space.lg`, 폼 그룹 `space.xl` | inline `space.xl`, 행동 전 `space.xl` | 항목 inline `space.md` |
+| Footer | 위 구분선, block `space.md`, inline `space.lg`, 하단 inset 추가 | block-start `space.md`, inline `space.xl`, block-end `space.xl`, 버튼 gap `space.sm` | 항목 자체가 행동이며 별도 Footer 없음 |
+
+- Sheet Header는 제목 start, 닫기 IconButton end로 두고 닫기 유효 영역을 `size.touchMin` 이상으로
+  만든다. 설명이 필요하면 제목 아래 Body 첫 문단으로 분리하며 제목을 반복하는 작은 소제목은 넣지 않는다.
+- 긴 Sheet는 Header와 Footer를 유지하고 Body만 스크롤한다. Footer 높이와 하단 inset만큼 Body
+  마지막 여백을 확보해 입력·오류·결과가 버튼 아래에 가려지지 않게 한다.
+- FormSheet는 3.3의 Field 규격을 그대로 사용하며 팝업 전용 입력 padding을 새로 만들지 않는다.
+- 중앙 Dialog의 질문·영향 문장은 start 정렬을 기본으로 하되 짧은 단일 문장만 중앙 정렬할 수 있다.
+  버튼은 `아니오/취소 → 예/확정` 순서로 두고 위험 확정만 danger를 사용한다.
+- PopoverMenu 항목의 텍스트는 start, 보조 단축키·상태는 end에 둔다. 위험 항목은 색과 문구로
+  구분하고 즉시 삭제하지 않고 ConfirmDialog로 전환한다. 각 항목은 inline `space.md`, block
+  `space.sm`, 최소 높이 `size.touchMin`을 사용한다.
 
 ### 5.3 유형별 핵심 규칙
 
@@ -752,6 +877,10 @@ Form은 입력 순서·검증·dirty·제출·실패 복구를 소유하는 조�
 17. 자동 수집 근거가 없는 `실시간·LIVE·자동 연동·자동 집계` 사용자 노출 문구가 0건이다.
 18. 반복 Row를 개별 Card로 감싸지 않는다. 대표 Primary 행동은 화면·시트당 하나 이하이고,
     비행동 파란 표면은 채움 요약 표면과 tint ResultGroup을 합쳐 하나 이하이다.
+19. `1px` 구분선·Safe Area·의미 크기 토큰을 제외한 레이아웃 gap·padding·margin은
+    `space.xs~xxl` 값만 사용하고 gutter·섹션·Card의 이중 여백이 0건이다.
+20. Card는 Header·Body/RowGroup·Footer 중 필요한 부분만 사용하고 제목·값·행동을 중복하지 않는다.
+21. 입력값 정렬은 내용 variant 계약과 일치하며 숫자·suffix·아이콘이 겹치거나 줄바꿈되지 않는다.
 
 ### 9.2 적용 순서
 
@@ -1085,6 +1214,7 @@ HTML 등록 전체는 호스트 상태 125개, 고유 ID 99개다. 이 중 `disc
 | F-30 | screen 키와 popup ID `order_receive` 중복으로 검수 증거 식별이 모호함 | 9.3, B.3 | 문서 정리 |
 | F-31 | `Hero`·`Live` 명칭과 파란 ResultField·FieldLabel 굵기가 목표 시각 톤과 충돌 | 1.3, 3.2, 4.4, A, C.1 | 문서 정리 · 구현 미적용 |
 | F-32 | 마지막 기록·최근 수정, 팝업 닫기, 비교 가능 조건과 이상 판정 출처가 결정 가능한 값으로 부족 | 5.2, 6.4~6.5, B.7 | 문서 정리 · 구현 미적용 |
+| F-33 | 페이지·카드·필드의 관계별 여백과 입력 내용별 start/end 정렬이 결정되지 않음 | 1.4, 3.3, 4.3, 5.2 | 문서 정리 · 구현 미적용 |
 
 ### C.3 토큰·컴포넌트 적용 매핑 형식
 
