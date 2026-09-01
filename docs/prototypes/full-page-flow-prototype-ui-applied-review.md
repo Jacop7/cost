@@ -145,6 +145,38 @@ Opus가 지정한 후속 위험은 다음과 같다.
   선택 즉시 닫기와 draft 보존을 확인했다.
 - Codex 판정: `PASS`; Opus 판정: `PASS`; 최종 판정: `PASS`.
 
+### ING-03 · `screen:ingredient_detail`
+
+- 문제점: 미리보기 카드마다 `expoRows + 전체보기`가 반복됐고, 3개 이하에서도 전체보기 버튼이
+  노출됐다. 버튼 문구에 화살표가 남았으며 동일 단가의 최저·최고 badge가 여러 입고에 반복됐다.
+- 수정안: `detailPreviewRows`와 `detailPreviewSection` 병합 요소를 만들었다. 3개까지만 본문에 표시하고
+  4개 이상일 때만 `전체보기`를 노출한다. 구매 링크·기준 단가·최근 입고·폐기 내역·현재 재고의
+  순서를 유지하고 전체보기 문구에서 화살표를 제거했다. 같은 단가의 최저·최고는 최신 입고 한 건에만
+  함께 표시한다.
+- Codex 검수: 구매 링크 4개 중 3개+전체보기, 최근 입고 3개·폐기 2개에는 버튼 없음, 현재 재고
+  4개 중 3개+전체보기를 확인했다. 수정→수정 메뉴, 구매 링크 전체보기→options, 재고 전체보기→stock
+  연결을 확인했다. 최근 수정은 7일 내 기록이 있을 때만 `recentChangeButton`이 반환한다.
+- 시각 검수: 모바일 폭에서 상단 정보·재고 summary·구매 링크·기준 단가 카드의 위계와 하단 탭
+  가림을 확인했다. 구매 링크 행은 왼쪽 구매처/금액, 오른쪽 용량/단가로 유지되고 화살표가 없다.
+- Opus 1차: `CONDITIONAL`. 폐기 전체보기의 숨김 route 의존, 재고 summary의 전체 문자열 replace,
+  빈 상태 action과 전체보기의 스타일 혼용, 고정된 최근 수정 기준일을 지적했다. 폐기 링크를 명시적으로
+  `stock`과 `폐기` filter에 연결하고, stock summary를 직접 renderer로 통합했으며, 빈 상태 전용
+  `empty-action`과 현재 날짜 기준 7일 판정을 적용했다. PageState URL 복원이 없다는 지적은 실제
+  `openPopupTab`의 선행 URL 기록과 직접 URL 재진입 테스트로 반증했다.
+- Opus 2차: 두 PageState의 `PASS`를 확인했다. 폐기 표본이 2개라 4개 이상 연결을 실제 검증할 수 없는
+  점과 stock filter 누수, 연말·연초 날짜 판정을 지적했다. 폐기 표본을 4개로 구성해 3개+전체보기
+  상태를 노출하고, 폐기는 `폐기`, 현재 재고는 `전체` filter를 명시했다. 월이 현재 월보다 크면
+  전년도 기록으로 판정하도록 연도 경계도 보완했다.
+- Opus 3차: screen과 구매 링크 PageState 2개 모두 `PASS`. 폐기·전체 filter와 연도 경계를 확인했다.
+- Codex 판정: `PASS`; Opus 판정: `PASS`; 최종 판정: `PASS`.
+
+### ING-03 · 구매 링크 PageState 2개
+
+- `ingredient_option_filled`: 최대 3개를 보여주고 4개 이상이면 전체보기를 노출한다.
+- `ingredient_option_empty`: `등록된 구매 링크가 없어요`와 `＋ 구매 링크 추가`를 노출한다.
+- Codex 검수: 빈 상태의 추가 버튼이 `options&popup=option_add`로 연결되는 것을 확인했다.
+- Codex 판정: `PASS`; Opus 판정: `PASS`; 최종 판정: `PASS`.
+
 ## 전체 target 장부
 
 아래 목록은 숨긴 폐기 전용 페이지를 제외한 활성 screen 61개와 popup/state host 123개다.
@@ -153,7 +185,7 @@ Opus가 지정한 후속 위험은 다음과 같다.
 |---|---|---|---|---|---|---|---|---|
 | screen:ingredient_main | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
 | screen:ingredient_add | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
-| screen:ingredient_detail | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:ingredient_detail | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
 | screen:ingredient_edit_menu | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
 | screen:ingredient_edit | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
 | screen:stock | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
@@ -213,8 +245,8 @@ Opus가 지정한 후속 위험은 다음과 같다.
 | screen:my_notifications | my | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
 | screen:my_account | my | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
 | popup:sort@ingredient_main | ingredient | PickerSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
-| popup:ingredient_option_filled@ingredient_detail | ingredient | PageState | COMMON | TODO | TODO | TODO | TODO | TODO |
-| popup:ingredient_option_empty@ingredient_detail | ingredient | PageState | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:ingredient_option_filled@ingredient_detail | ingredient | PageState | COMMON | PASS | PASS | PASS | PASS | PASS |
+| popup:ingredient_option_empty@ingredient_detail | ingredient | PageState | COMMON | PASS | PASS | PASS | PASS | PASS |
 | popup:add_category@ingredient_add | ingredient | PickerSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
 | popup:add_unit@ingredient_add | ingredient | PickerSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
 | popup:edit_category@ingredient_edit | ingredient | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
