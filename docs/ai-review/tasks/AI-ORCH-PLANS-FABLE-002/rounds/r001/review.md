@@ -1,0 +1,45 @@
+# AI-ORCH-PLANS-FABLE-002 Fable 검수 — r001
+
+- 판정: **PASS**
+- 역할: `FABLE-ARCH`
+- 검수 엔진: `FABLE`
+- 검수 모델: `claude-fable-5`
+- 모드: `RECHECK`
+- 스냅샷: `COMMIT`
+- 대상 SHA: `399cd39ab5d312c31055b9bdc101ea0300447b51`
+
+## 요약
+
+공식 Fable RECHECK(FABLE-ARCH)로 target 399cd39(tree f41445f)에서 predecessor AI-ORCH-PLANS-FABLE-001 r003의 두 Finding을 동일 finding_id로 재검수했다. ① PLAN-ROUTE-SWITCH-91 → VERIFIED: 오케스트레이션 §8.2(349–353행)가 사람 결정 ID AI-ORCH-PLANS-FABLE-R2-20260902를 인용해 누적 집합 외부 교차검수를 공식 Fable 경로로 전환하고, 결정 전 직접 Opus advisory의 비용·실패·원본은 역사적 증거로 보존하되 공식 Fable gate를 종결하지 않음을 명시했다. §13 완료 조건(510–511행)은 '현재 누적 집합 전체 외부 교차검수 2회, 결정 이후 공식 Fable 유효 회차만 완료 회차로 센다'로, 평가안 §11(388–392행)은 검수 엔진·경로를 §8.2의 현재 사람 결정에 위임하고 'Opus' 표기를 결정 전 advisory 기록에 한정하는 방식으로, 평가안 §15(480–481행)와 디렉터리안 단계 6(350–351행)도 같은 취지로 갱신돼 다섯 문서의 완료·활성화 조건이 사람 결정과 일치한다. 누적 집합 문서 수·파일 목록의 §8.2 단일 소유(340–341행), OPUS_DIRECT_ADVISORY 비게이트 표기와 evidence 불변 보존(364–367행), 회차 유효성 규칙(360–362행)은 모두 유지된다. ② ROLECTX-SCOPE-92 → VERIFIED: 팀구성 §11(1723–1724행)이 ROLE_CONTEXTS.md 기록 범위를 '활성 컨텍스트 식별자·판본 hash와 평가 기획안 §8이 정의하는 route별 현재 자율성 단계·승인 Decision ID·적용 시각·정책·컨텍스트 hash만'으로 수정해 평가안 §8(325–330행)의 단일 현재값 계약과 정합하며, 역할 설명 복사 금지 원칙은 유지된다. AUTO-BASELINE-81 해소 장치(단일 현재값 레지스트리)의 구현 저해 요인이 제거됐다. ③ 비재개방 확인: 다섯 기획안 전수 grep에서 잔존 'Opus 2회/누적 Opus' 필수 요건은 0건이고, 남은 Opus 언급은 페이블 소진 시 연속성 승계(팀구성 §3.10.1 등)·사람 승인 직접 advisory 비게이트 원칙(팀구성 §3.10.2, 평가 §2 49행, 온톨로지 77행)·역사적 advisory 예산 기록(오케 374–380행)뿐이라 기존 Stage 4 r2·r3 Finding 10건의 해소와 advisory 비게이트 불변식을 훼손하지 않는다. 새 필수 모순은 발견되지 않았다. 잔여 필수 Finding 0건으로 verdict는 PASS이나, VERIFIED는 로컬 확인일 뿐 공식 종결(CLOSED)이 아니며 gate_state는 OPEN으로 유지된다.
+
+## Findings
+
+### PLAN-ROUTE-SWITCH-91 — Minor / VERIFIED
+
+- 범주: POLICY
+- 검증 엔진: FABLE
+- 영향: 다섯 기획안의 완료·활성화 조건이 2026-09-02 사람 결정과 일치하도록 갱신돼, 소진된 Opus advisory 회차 재시도나 기획안 묶음 영구 미완료 판정의 실행 혼선 위험이 해소됐다. 수용 기준 3건이 target commit에서 모두 충족돼 VERIFIED로 로컬 해소한다(공식 종결 아님).
+- 근거: docs/AI-오케스트레이션-상세기획안.md:349, docs/AI-오케스트레이션-상세기획안.md:510, docs/AI-품질-학습-자율성-평가기획안.md:388, docs/AI-품질-학습-자율성-평가기획안.md:480, docs/디렉터리-문서신경망-재설계-기획안.md:350, docs/AI-오케스트레이션-상세기획안.md:360, docs/AI-오케스트레이션-상세기획안.md:340
+- 완료 조건: 오케스트레이션 §8.2에 사람 결정 ID(AI-ORCH-PLANS-FABLE-R2-20260902)를 인용해 외부 교차검수 경로가 공식 Fable 경로로 전환됐음을 기록한다. / 오케스트레이션 §13, 평가안 §11·§15, 디렉터리안 §11 단계 6의 'Opus 2회' 요건을 '결정 이후에는 같은 누적 범위의 공식 Fable 유효 회차로 충족'하도록 갱신하되, 기존 Opus 증거·비용·실패 보존 규칙은 기록된 회차에 그대로 적용한다. / 갱신 후에도 누적 집합의 문서 수·파일 목록 단일 소유(오케 §8.2)와 advisory-비게이트 원칙이 유지된다.
+- 필요한 테스트: docs-graph-check 도입 시 누적 검수 경로 표기의 문서 간 중복·모순 검사 fixture 추가
+
+### ROLECTX-SCOPE-92 — Minor / VERIFIED
+
+- 범주: ARCHITECTURE
+- 검증 엔진: FABLE
+- 영향: 팀구성 §11과 평가안 §8의 ROLE_CONTEXTS.md 기록 범위 계약이 일치해, ACTIVE 승격 시 A단계·승인 Decision ID·적용 시각 누락으로 route별 자율성 단일 권위(AUTO-BASELINE-81 해소 장치)가 무력화될 위험이 제거됐다. 수용 기준이 target commit에서 충족돼 VERIFIED로 로컬 해소한다(공식 종결 아님).
+- 근거: docs/팀구성_상세기획안.md:1723, docs/AI-품질-학습-자율성-평가기획안.md:325, docs/ai-review/evidence/AI-PLANS-STAGE4-OPUS-R2.md:30
+- 완료 조건: 팀구성 §11의 ROLE_CONTEXTS.md 기록 범위 문구를 평가안 §8이 정의한 필드(route·현재 A단계·승인 Decision ID·적용 시각·정책·컨텍스트 hash)를 배제하지 않게 수정하거나, 해당 필드 소유를 평가안 §8에 위임함을 명시한다. / 역할 설명 복사 금지 원칙은 유지한다.
+- 필요한 테스트: docs-graph-check 도입 시 같은 파일 기록 범위에 대한 문서 간 계약 충돌 검사
+
+## 공동 편집 제안
+
+없음
+
+## 상태 변경
+
+- 닫힘: 없음
+- 재개방: 없음
+- 필수 미해결: 없음
+
+> 이 문서는 Claude의 원시 출력을 복사한 것이 아니라, Codex 실행기가 판본·스키마·증거 경로를 검증해 정규화한 기록입니다.
