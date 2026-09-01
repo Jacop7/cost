@@ -162,6 +162,10 @@
 - Badge·Chip·Filter·짧은 메타는 `TYPE.captionSm`을 공유한다. Badge만을 위한 별도 글자 토큰을
   만들지 않는다. 현재 프로토타입의 `10~12px` Badge·차트 메타는 목표 적용 때 `captionSm`으로
   매핑하며, `13px` 미만을 유지해야 할 근거가 실제 기기 검증에서 생기기 전에는 예외를 추가하지 않는다.
+- 내역 Row의 일시는 공용 `HistoryDateTime` 역할 하나를 사용한다. 한국어 기본 표기는
+  `MM/DD · HH:mm`, `TYPE.captionSm`(`13 / 600`), `T.ter`, 한 줄, tabular numeral이다. 날짜와 시각의
+  순서·구분점·색·굵기·Row 안의 위치를 화면별로 다시 선언하지 않는다. 월 그룹 제목은
+  `YYYY년 M월`, `TYPE.caption`(`14 / 700`), `T.ter`를 사용한다.
 
 ### 1.4 간격·크기·모서리
 
@@ -241,6 +245,22 @@ padding과 margin을 중복 적용하지 않는다. 목록의 마지막 행, 폼
 - 아이콘 버튼의 접근 가능한 이름은 `대상 + 행동` 형식으로 작성한다.
 - 방향 아이콘은 RTL에서 반전하고 장식 아이콘은 스크린리더에서 제외한다.
 - 가이드 이름과 kit `IconName`의 대응 및 누락 아이콘은 부록 C에서 관리한다.
+
+### 1.7 적용본의 단일 공통 레이어
+
+- 적용본의 시각 단일 출처는 `full-page-flow-prototype-ui-components.css`, 역할 매핑 단일 출처는
+  `full-page-flow-prototype-ui-components.js`다. 화면별 클래스에 같은 Card·Row·Field 규격을 다시
+  선언하지 않는다.
+- 공통 역할은 `card / summary / summary-row / section-header / row-group / row / choice-row / field /
+  field-multiline / field-label / result / badge / filter / scroll-tabs / segmented / tab / button /
+  primary / icon-button / notice / empty / layer / sheet / dialog / popover / layer-title / layer-footer /
+  sticky-action / meta / date-time / section-title / row-title / row-sub / value / value-label`로 제한한다.
+- 기존 마크업은 이행 기간 동안 역할 매핑 파일이 `data-ui` 토큰을 부여한다. 새 마크업은 처음부터
+  같은 `data-ui` 역할을 사용하며 화면 전용 클래스는 구조·도메인 상태만 소유한다.
+- 동적으로 생성되는 Sheet·Dialog·Popover에도 같은 역할을 자동 부여해야 한다. 정적 화면만 공통
+  규격이고 팝업은 별도 규격인 상태를 허용하지 않는다.
+- 공통 CSS 연결, 역할 0개 화면 0건, 활성 popup/state의 레이어 유형 연결, PC·모바일 대표 렌더와
+  화면별 재검수가 끝나기 전에는 `공통 적용 PASS` 또는 개별 화면 PASS로 판정하지 않는다.
 
 ---
 

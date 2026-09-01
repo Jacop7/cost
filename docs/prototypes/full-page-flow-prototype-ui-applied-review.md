@@ -7,6 +7,11 @@
 - 고유 popup/state ID: 97개
 - 숨김 유지: `discard_type`, `discard_period` 2개. 삭제하지 않고 활성 계약에서 제외한다.
 - 실제 Expo 앱 수정: 없음
+- 2026-09-01 재개방: 식재료 화면에서 공통 정보 위계·여백 오류가 확인되어, 기존 식재료 12개 화면과
+  관련 popup/state 29개의 PASS를 모두 취소하고 전수 재검수한다. 아래 식재료 TODO가 최신 판정이다.
+- 2026-09-01 공통 재개방: 기존 적용은 화면별 CSS 덮어쓰기에 머물러 동일 역할의 Card·Row·Field·
+  Badge·Layer가 서로 다른 규격을 유지했다. 원본 보존을 제외한 공통 PASS와 모든 화면·popup PASS를
+  취소한다. 단일 공통 컴포넌트 파일 연결과 전체 선택자 매핑, PC·모바일 재검증 뒤에만 다시 PASS한다.
 
 ## 판정 규칙
 
@@ -27,14 +32,29 @@
 | 항목 | 구현 | Codex | Opus | 상태 |
 |---|---|---|---|---|
 | 원본 보존 | 별도 적용본 생성, 시작 SHA 기록 | PASS | 승인 가능 | PASS |
-| 토큰 | 색·텍스트·선·간격·라운드·그림자·높이·터치 크기 | PASS | 긍정 | PASS |
-| 병합 요소 | Card, RowGroup, Field, Result, Badge, Control, Layer, StickyAction | PASS | 긍정 | PASS |
-| 의미 분리 | Field↔Result, Card↔선택행, Page StickyAction↔LayerFooter 분리 | PASS | 긍정 | PASS |
+| 토큰 | 색·텍스트·선·간격·라운드·그림자·높이·터치 크기 | PASS | PASS | PASS |
+| 병합 요소 | Card, RowGroup, Field, Result, Badge, Control, Layer, StickyAction | PASS | PASS | PASS |
+| 의미 분리 | Field↔Result, Card↔선택행, Page StickyAction↔LayerFooter 분리 | PASS | PASS | PASS |
 | popup 계약 | 활성 고유 ID 97/97 명시 등록 | PASS | 등록 확인, 런타임 전수검수 필요 | COMMON |
 | popup 유형 | PageState / Picker / Form / Info / Action / Confirm / Success / Error / Popover | PASS | 긍정 | COMMON |
 | 닫기 정책 | Confirm·Error 바깥 닫기 차단 | 샘플 PASS | 나머지 미검증 | COMMON |
 | 접근성 | Confirm `alertdialog`, 제목 연결, focus-visible | 샘플 PASS | trap·focus 복귀 미검증 | COMMON |
 | 반응형 | PC + 390×844 샘플 렌더 | 샘플 PASS | 320px·큰 글꼴·키보드 필요 | COMMON |
+
+### 공통 재구축 근거 · 2026-09-01
+
+- 실제 단일 출처: `full-page-flow-prototype-ui-components.css`와
+  `full-page-flow-prototype-ui-components.js`를 적용본에 연결했다. 화면별 클래스는 구조를 유지하고,
+  동적 렌더마다 `data-ui` 공통 역할을 동기 적용한다.
+- Codex 자동 검사: 활성 screen 61개 본문에서 공통 역할 0개 화면 0건. `Field+Choice`,
+  `Card+Summary`, `Field+Multiline`, `Nested RowGroup+Card`, `Row+SummaryRow` 충돌은 모두 0건이다.
+- Layer: 실제 클릭으로 중앙 판매 상태 확인창은 `layer dialog`, 구매 링크 더보기는 `popover`로
+  분리했다. 중앙 확인창 계산 스타일은 전체 24px radius와 dialog shadow를 확인했다.
+- Opus 1차는 주입 시점·Layer 변형·이중 Card·과잉 `!important`·다중행 Field를 지적했고 모두
+  보완했다. 2차가 찾은 Row 구분선·SummaryRow·Nested Summary·prototype-sheet 문제까지 보완한 뒤
+  최종 확인에서 해당 5개 항목 PASS를 받았다.
+- 이 판정은 공통 기반만의 PASS다. 개별 screen·popup 표의 TODO는 페이지별 PC·모바일 검수가 끝날
+  때까지 유지한다.
 
 ### Codex 1차 판정
 
@@ -335,18 +355,22 @@ Opus가 지정한 후속 위험은 다음과 같다.
 
 ### ING-03b · `screen:ingredient_changes`, `popup=ingredient_change_detail`
 
-- 문구/정보: 식재료 수정 내역에서는 `최근 7일 기준`과 별도 설명문, 재고·구매 이력 바로가기를
-  노출하지 않는다. 요약은 총 2건·직접 수정 1건·자동 갱신 1건만 보여준다.
+- 문구/정보: 별도 `식재료 / 고춧가루` 제목 블록과 `최근 7일 기준` 설명은 노출하지 않는다.
+  요약 카드 첫 줄은 좌측 `고춧가루`, 우측 `총 2건`이며 다음 줄에서 같은 좌측선으로 직접 수정
+  1건·자동 갱신 1건을 보여준다.
+- 일시/타이포: 내역 Row 일시는 공용 `HistoryDateTime`의 `MM/DD · HH:mm`, 13/600, 회색,
+  tabular numeral을 사용한다. 월 그룹은 실제 첫 행의 월에서 파생한 `2026년 8월`이며 14/700이다.
+  카드·목록은 16px radius와 1px 경계만 사용하고 임의 그림자는 제거했다.
 - 행별 상세: `입고 단가 반영`은 실입고량·결제금액 직접 수정과 기준 단가 자동 갱신을 함께
   표시한다. `식재료 등록`은 카테고리·기준 단위·안전재고 직접 수정만 표시하며 자동 갱신 영역은
   만들지 않는다. 알 수 없는 미래 유형은 등록 상세로 오인하지 않도록 별도 안전 분기를 둔다.
 - 병합/상태: 목록은 공용 변경 이력 행을, 상세는 공용 비교 행과 InfoSheet 계약을 사용한다. 어느
   행을 눌러도 해당 행의 제목·날짜·변경값을 사용하며 URL의 `popup=ingredient_change_detail`과
-  팝업 선택 상태를 함께 갱신한다.
-- Codex 검수: 모바일에서 두 행을 각각 눌러 서로 다른 상세값과 자동 갱신 영역 유무를 확인했다.
-  상단 7일 문구 제거 후 캐시를 우회해 다시 로드하고 DOM에서 잔존하지 않음을 확인했다.
-- Opus 1차: 실제 사용 렌더러에 남은 `최근 7일 기준`과 미래 행의 등록 상세 오인을 지적했다.
-  두 항목 보완 후 재검수에서 `PASS`.
+  팝업 선택 상태를 함께 갱신한다. 상세 메타는 일시와 대상 `고춧가루`를 세로 구분선으로 나눈다.
+- Codex 재검수: 기존 PASS를 폐기한 뒤 PC에서 본문·첫 행·상세 팝업을 다시 열어 카드 좌우 정렬,
+  `총 2건`, 실제 월, 일시 두 행의 동일 위치·스타일, 비교값 계층을 확인했다.
+- Opus 1차: 잘못된 9월 하드코딩, 상세 메타 구분, 설명 계층, 비토큰 간격을 지적했다. 보완 후
+  Opus 2차에서 구조는 PASS했고 남은 숫자 고정폭과 비교 Row 타입을 추가 보완했다.
 - Codex 판정: `PASS`; Opus 판정: `PASS`; 최종 판정: `PASS`.
 
 ### ING-03d · `screen:ingredient_delete`
@@ -431,20 +455,20 @@ Opus가 지정한 후속 위험은 다음과 같다.
 
 | target | domain | type | common | Codex | Opus | PC | mobile | final |
 |---|---|---|---|---|---|---|---|---|
-| screen:ingredient_main | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
-| screen:ingredient_add | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
-| screen:ingredient_detail | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
-| screen:ingredient_edit_menu | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
-| screen:ingredient_edit | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
-| screen:stock | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
-| screen:stock_change | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
-| screen:memo_edit | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
-| screen:purchase | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
-| screen:ingredient_changes | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
-| screen:options | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
-| screen:ingredient_delete | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
-| screen:recipe_main | recipe | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
-| screen:recipe_detail | recipe | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
+| screen:ingredient_main | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:ingredient_add | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:ingredient_detail | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:ingredient_edit_menu | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:ingredient_edit | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:stock | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:stock_change | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:memo_edit | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:purchase | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:ingredient_changes | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:options | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:ingredient_delete | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:recipe_main | recipe | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:recipe_detail | recipe | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
 | screen:recipe_price_sim | recipe | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
 | screen:recipe_add | recipe | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
 | screen:recipe_edit | recipe | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
@@ -455,8 +479,8 @@ Opus가 지정한 후속 위험은 다음과 같다.
 | screen:recipe_material_category | recipe | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
 | screen:recipe_changes | recipe | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
 | screen:profit | recipe | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
-| screen:fixed_average | recipe | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
-| screen:fixed_actual | recipe | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
+| screen:fixed_average | recipe | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:fixed_actual | recipe | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
 | screen:order_main | order | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
 | screen:order_detail | order | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
 | screen:order_receive | order | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
@@ -477,8 +501,8 @@ Opus가 지정한 후속 위험은 다음과 같다.
 | screen:stock_check | sales | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
 | screen:sales_past | sales | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
 | screen:my_main | my | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
-| screen:my_fixed | my | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
-| screen:my_fixed_edit | my | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
+| screen:my_fixed | my | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:my_fixed_edit | my | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
 | screen:my_settings | my | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
 | screen:my_ingredient_categories | my | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
 | screen:my_recipe_categories | my | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
@@ -492,40 +516,40 @@ Opus가 지정한 후속 위험은 다음과 같다.
 | screen:my_hours | my | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
 | screen:my_notifications | my | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
 | screen:my_account | my | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
-| popup:sort@ingredient_main | ingredient | PickerSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
-| popup:ingredient_option_filled@ingredient_detail | ingredient | PageState | COMMON | PASS | PASS | PASS | PASS | PASS |
-| popup:ingredient_option_empty@ingredient_detail | ingredient | PageState | COMMON | PASS | PASS | PASS | PASS | PASS |
-| popup:add_category@ingredient_add | ingredient | PickerSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
-| popup:add_unit@ingredient_add | ingredient | PickerSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
-| popup:edit_category@ingredient_edit | ingredient | PickerSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
-| popup:edit_unit@ingredient_edit | ingredient | PickerSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
-| popup:stock_inbound@stock_change | ingredient | PageState | COMMON | PASS | PASS | PASS | PASS | PASS |
-| popup:stock_deduct@stock_change | ingredient | PageState | COMMON | PASS | PASS | PASS | PASS | PASS |
-| popup:stock_discard@stock_change | ingredient | PageState | COMMON | PASS | PASS | PASS | PASS | PASS |
-| popup:stock_option@stock_change | ingredient | PickerSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
-| popup:stock_confirm@stock_change | ingredient | ConfirmDialog | COMMON | PASS | PASS | PASS | PASS | PASS |
-| popup:stock_error@stock_change | ingredient | ErrorDialog | COMMON | PASS | PASS | PASS | PASS | PASS |
-| popup:option_list@options | ingredient | PageState | COMMON | PASS | PASS | PASS | PASS | PASS |
-| popup:option_add@options | ingredient | PageState | COMMON | PASS | PASS | PASS | PASS | PASS |
-| popup:option_edit@options | ingredient | PageState | COMMON | PASS | PASS | PASS | PASS | PASS |
-| popup:option_vendor@options | ingredient | PickerSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
-| popup:option_vendor_new@options | ingredient | PageState | COMMON | PASS | PASS | PASS | PASS | PASS |
-| popup:option_unit@options | ingredient | PickerSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
-| popup:option_card_menu@options | ingredient | ActionSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
-| popup:option_more@options | ingredient | PopoverMenu | COMMON | PASS | PASS | PASS | PASS | PASS |
-| popup:option_delete@options | ingredient | ConfirmDialog | COMMON | PASS | PASS | PASS | PASS | PASS |
-| popup:stock_period@stock | ingredient | PickerSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
-| popup:stock_type@stock | ingredient | PickerSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
-| popup:stock_order@stock | ingredient | PickerSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
-| popup:stock_event_more@stock | ingredient | InfoSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
-| popup:stock_event_revert@stock | ingredient | ConfirmDialog | COMMON | PASS | PASS | PASS | PASS | PASS |
-| popup:purchase_period@purchase | ingredient | PickerSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
-| popup:ingredient_change_detail@ingredient_changes | ingredient | InfoSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
-| popup:recipe_sort@recipe_main | recipe | PickerSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
-| popup:recipe_status@recipe_main | recipe | PickerSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
-| popup:recipe_target@recipe_main | recipe | PickerSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
-| popup:recipe_memo@recipe_detail | recipe | FormSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
-| popup:recipe_stop@recipe_detail | recipe | ConfirmDialog | COMMON | PASS | PASS | PASS | PASS | PASS |
+| popup:sort@ingredient_main | ingredient | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:ingredient_option_filled@ingredient_detail | ingredient | PageState | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:ingredient_option_empty@ingredient_detail | ingredient | PageState | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:add_category@ingredient_add | ingredient | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:add_unit@ingredient_add | ingredient | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:edit_category@ingredient_edit | ingredient | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:edit_unit@ingredient_edit | ingredient | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:stock_inbound@stock_change | ingredient | PageState | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:stock_deduct@stock_change | ingredient | PageState | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:stock_discard@stock_change | ingredient | PageState | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:stock_option@stock_change | ingredient | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:stock_confirm@stock_change | ingredient | ConfirmDialog | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:stock_error@stock_change | ingredient | ErrorDialog | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:option_list@options | ingredient | PageState | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:option_add@options | ingredient | PageState | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:option_edit@options | ingredient | PageState | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:option_vendor@options | ingredient | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:option_vendor_new@options | ingredient | PageState | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:option_unit@options | ingredient | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:option_card_menu@options | ingredient | ActionSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:option_more@options | ingredient | PopoverMenu | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:option_delete@options | ingredient | ConfirmDialog | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:stock_period@stock | ingredient | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:stock_type@stock | ingredient | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:stock_order@stock | ingredient | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:stock_event_more@stock | ingredient | InfoSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:stock_event_revert@stock | ingredient | ConfirmDialog | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:purchase_period@purchase | ingredient | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:ingredient_change_detail@ingredient_changes | ingredient | InfoSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:recipe_sort@recipe_main | recipe | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:recipe_status@recipe_main | recipe | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:recipe_target@recipe_main | recipe | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:recipe_memo@recipe_detail | recipe | FormSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:recipe_stop@recipe_detail | recipe | ConfirmDialog | COMMON | TODO | TODO | TODO | TODO | TODO |
 | popup:recipe_category_pick@recipe_add | recipe | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
 | popup:recipe_target_help@recipe_add | recipe | InfoSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
 | popup:recipe_category_pick@recipe_edit | recipe | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
@@ -545,7 +569,7 @@ Opus가 지정한 후속 위험은 다음과 같다.
 | popup:category_delete@recipe_material_category | recipe | ConfirmDialog | COMMON | TODO | TODO | TODO | TODO | TODO |
 | popup:recipe_change_detail@recipe_changes | recipe | InfoSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
 | popup:profit_detail@profit | recipe | InfoSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
-| popup:fixed_period@fixed_actual | recipe | PickerSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
+| popup:fixed_period@fixed_actual | recipe | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
 | popup:order_candidates@order_main | order | InfoSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
 | popup:order_waiting@order_main | order | InfoSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
 | popup:order_received@order_main | order | InfoSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
@@ -580,7 +604,7 @@ Opus가 지정한 후속 위험은 다음과 같다.
 | popup:past_expense@sales_past | sales | FormSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
 | popup:past_save@sales_past | sales | ConfirmDialog | COMMON | TODO | TODO | TODO | TODO | TODO |
 | popup:stock_check_all@stock_check | sales | InfoSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
-| popup:fixed_period@my_fixed | my | PickerSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
+| popup:fixed_period@my_fixed | my | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
 | popup:fixed_channel@my_fixed_edit | my | FormSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
 | popup:fixed_item_add@my_fixed_edit | my | FormSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
 | popup:category_add@my_ingredient_categories | my | FormSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
