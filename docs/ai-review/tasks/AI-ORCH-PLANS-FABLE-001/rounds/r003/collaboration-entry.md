@@ -1,46 +1,3 @@
-# AI-ORCH-PLANS-FABLE-001 공동 작업 장부
-
-> 다섯 핵심 기획안의 현재 커밋을 공식 Fable 경로로 독립 재검수한다.
-> 이전 Opus 직접 자문은 참고 증거이며 이 장부의 Fable 판정을 대체하지 않는다.
-> Fable 턴은 공식 검수 실행기만 추가하고, 그 밖의 턴은
-> `corepack pnpm fable:append -- --task AI-ORCH-PLANS-FABLE-001`로만 추가한다.
-
-## SOLAR_REQUEST · turn-s001 · r001
-
-- role: `SOLAR-ORCH`
-- reply_to_turn_id: `null`
-- target_commit_sha: `5f6929095424b9fe53a2005ef5c4136ca2175f50`
-- changed_artifact_paths: `docs/팀구성_상세기획안.md`, `docs/AI-지식-온톨로지-기획안.md`, `docs/AI-오케스트레이션-상세기획안.md`, `docs/디렉터리-문서신경망-재설계-기획안.md`, `docs/AI-품질-학습-자율성-평가기획안.md`
-- 충족해야 할 요구사항·불변식: 단일 공식 산출물, 저장소 권위, 다중 채팅 요청 유실 방지, 잠금 순서, append-only 증거, 실패 폐쇄, 검증 가능한 학습 전이
-- 이번에 바꾼 내용: Stage 1~4 Opus 교차검수와 r3 후속 Finding을 같은 다섯 공식 기획안에 반영하고 증거를 고정했다.
-- 집중 검토 질문: 기존 Finding 10건이 모두 해소됐고 다섯 기획안 사이에 잔여 Critical·Major·명세상 필수 모순이 없는가?
-- 실행한 테스트·현재 증거: 대상 커밋 전 단계에서 `pnpm verify --no-db` 4/6 통과, 이전 exact SHA `006000b` protected gate 통과, r2·r3 증거와 승인 장부 포함
-- 사람 결정이 필요한 항목: 없음
-- next_review_request: `FABLE_REVIEW`
-
-## HUMAN_DECISION · turn-h001 · r001
-
-- role: `HUMAN`
-- reply_to_turn_id: `turn-s001`
-- finding_ids: `[]`
-- decision_id: `AI-ORCH-PLANS-FABLE-R2-20260902`
-- 결정: 앞으로 외부 교차검수는 Opus가 아니라 공식 Fable 경로를 사용하며, 실패한 r001 원본을 보존한 채 r002를 실행한다.
-- 허용 범위·기한: `AI-ORCH-PLANS-FABLE-001` 읽기 전용 r002 검수 1회, `max_budget_usd=4.00`, 2026-09-02 현재 작업 완료까지.
-- 근거: 사용자가 “지금부터 페이블 사용하면돼”라고 명시했다.
-- 승인자·시각: `USER · 2026-09-02 Asia/Seoul`
-- next_review_request: `FABLE_REVIEW`
-
-## HUMAN_DECISION · turn-h002 · r002
-
-- role: `HUMAN`
-- reply_to_turn_id: `turn-h001`
-- finding_ids: `[]`
-- decision_id: `AI-ORCH-PLANS-FABLE-R3-20260902`
-- 결정: 동일한 고정 커밋의 공식 Fable 구조 감사를 계속 진행한다.
-- 허용 범위·기한: `AI-ORCH-PLANS-FABLE-001` 읽기 전용 r003 검수 1회, `max_budget_usd=6.00`, 2026-09-02 현재 작업 완료까지.
-- 근거: 사용자가 “페이블 진행해줘”라고 명시했다.
-- 승인자·시각: `USER · 2026-09-02 Asia/Seoul`
-- next_review_request: `FABLE_REVIEW`
 
 <!-- fable-review:r003 sha256=b9717ada84e0acb95e3c731a5bf73c36425685541b9382bd7287fd87aa116337 -->
 ## FABLE_REVIEW · turn-f003 · r003
@@ -73,28 +30,3 @@
 
 > 다음 담당자는 이 아래에 같은 공동 산출물의 수정 내용·Finding별 답변·검증 증거를 새 턴으로 추가합니다. 이전 턴은 고치거나 지우지 않습니다.
 <!-- /fable-review:r003 -->
-
-## SOLAR_RESPONSE · turn-s002 · r003
-
-- role: `SOLAR-ORCH`
-- reply_to_turn_id: `turn-f003`
-- target_commit_sha: `PENDING_SUCCESSOR_COMMIT`
-- changed_artifact_paths: `docs/팀구성_상세기획안.md`, `docs/AI-지식-온톨로지-기획안.md`, `docs/AI-오케스트레이션-상세기획안.md`, `docs/디렉터리-문서신경망-재설계-기획안.md`, `docs/AI-품질-학습-자율성-평가기획안.md`
-
-### PLAN-ROUTE-SWITCH-91
-
-- disposition: `APPLIED`
-- 적용 위치: 오케스트레이션 §8.2·§13, 평가 §11·§15·§16, 디렉터리 §11·§15, 온톨로지 §13
-- 적용 내용: 사람 결정 `AI-ORCH-PLANS-FABLE-R2-20260902` 이후 누적 외부 교차검수는 공식 Fable 유효 회차로 센다는 단일 경로를 기록하고, 기존 Opus 직접 자문은 역사적 비게이트 증거로만 보존했다.
-- 추가 정리: Fable 제안 위치 밖에 남아 있던 온톨로지·디렉터리·평가 완료 문구도 같은 §8.2 단일 소유 표현으로 맞췄다.
-- 필요한 재검수: successor Fable RECHECK
-
-### ROLECTX-SCOPE-92
-
-- disposition: `APPLIED`
-- 적용 위치: 팀 구성안 §11
-- 적용 내용: `ROLE_CONTEXTS.md`가 활성 컨텍스트 식별자·판본 hash뿐 아니라 평가안 §8의 route별 현재 자율성 단계·승인 Decision ID·적용 시각·정책·컨텍스트 hash를 기록하도록 범위를 통일했다. 역할 설명 복사 금지는 유지했다.
-- 필요한 재검수: successor Fable RECHECK
-
-- 검증: `git diff --check` 통과, 낡은 완료 조건 표현을 다섯 문서 전체에서 재검색
-- next_review_request: `FABLE_RECHECK`
