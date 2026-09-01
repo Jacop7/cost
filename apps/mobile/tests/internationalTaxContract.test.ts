@@ -15,6 +15,11 @@ describe('국제 세금 앱 응답 계약',()=>{
     const r=parseInternationalTaxState(STATE);expect(r.marketProfile?.currencyCode).toBe('KRW');expect(r.taxProfile?.components[0]?.ratePct).toBe(10);expect(r.taxProfile?.categories[0]?.code).toBe('standard');
   });
   it('프로필 준비 상태인데 시장 프로필이 없으면 거부한다',()=>expect(()=>parseInternationalTaxState({...STATE,market_profile:null})).toThrow(/시장 프로필 없음/));
+  it('시장 프로필만 있으면 세금 프로필 필요 상태를 구분한다',()=>{
+    const parsed=parseInternationalTaxState({...STATE,onboarding_status:'tax_profile_required',tax_profile:null});
+    expect(parsed.marketProfile?.currencyCode).toBe('KRW');expect(parsed.taxProfile).toBeNull();
+    expect(()=>parseInternationalTaxState({...STATE,onboarding_status:'tax_profile_required'})).toThrow(/상태 조합/);
+  });
   it('서로 다른 매장의 시장·세금 프로필을 한 화면으로 섞지 않는다',()=>expect(()=>parseInternationalTaxState({...STATE,tax_profile:{...STATE.tax_profile,store_id:'00000000-0000-0000-0000-000000000002'}})).toThrow(/매장 불일치/));
   it('사용자 언어 null은 확인 필요일 때만 허용한다',()=>{
     expect(parseUserPreferences({app_language:null,needs_confirmation:true,source_locale:'ja',revision:1}).appLanguage).toBeNull();

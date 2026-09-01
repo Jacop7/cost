@@ -16,6 +16,7 @@ export default function MyCountryScreen(){
       <QueryState isLoading={state.isLoading} error={state.error} isEmpty={false} onRetry={()=>void state.refetch()} emptyTitle="국가 정보가 없어요">
         {state.data?.onboardingStatus==='manual_review_required'?<Notice>기존 세금 설정을 자동으로 해석할 수 없어요. 국제 세금 전환 전에 직접 확인해야 해요.</Notice>:null}
         {state.data?.onboardingStatus==='country_confirmation_required'?<Notice>매장이 영업하는 국가를 확인해야 해요. 국가는 통화와 세금 계산 기준을 정하지만 앱 언어와 시간대를 바꾸지는 않아요.</Notice>:null}
+        {state.data?.onboardingStatus==='tax_profile_required'?<Notice>국가와 통화는 확인됐어요. 세금 기준을 설정해야 국제 세금 기록을 시작할 수 있어요.</Notice>:null}
         <Card>
           <Text style={{fontSize:14,fontWeight:'700',color:T.ter}}>현재 적용 예정 기준</Text>
           <Text style={{fontSize:20,fontWeight:'800',color:T.ink,marginTop:7}}>{definition?.countryNameKo??'아직 확인하지 않음'}</Text>
@@ -26,7 +27,7 @@ export default function MyCountryScreen(){
         <Button kind="primary" size="lg" full disabled accessibilityLabel="국가 확인 저장">
           {state.data?.capabilities.internationalTax.writeEnabled
             ? '이 앱 판본에서는 아직 저장할 수 없어요'
-            : '스테이징 전환 후 확인할 수 있어요'}
+            : '국가·통화 설정은 준비 중이에요'}
         </Button>
       </QueryState>
     </ScrollView>

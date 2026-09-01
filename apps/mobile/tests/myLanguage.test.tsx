@@ -25,13 +25,14 @@ describe('사용자 앱 언어',()=>{
     preferenceQuery.mockReturnValue({data:undefined,isLoading:false,isError:true,error:new Error('fail'),refetch:vi.fn()});rerender(<MyLanguageScreen/>);expect(screen.getByText('정보를 불러오지 못했어요')).toBeTruthy();
   });
   it('한국어·영어만 고르고 통화는 바꾸지 않는다고 설명한다',()=>{
-    render(<MyLanguageScreen/>);expect(screen.getByLabelText('한국어 선택').getAttribute('aria-checked')).toBe('true');expect(screen.getByText(/매장 국가·통화·세금·시간대는 바뀌지 않아요/)).toBeTruthy();expect(screen.queryByText('日本語')).toBeNull();
+    render(<MyLanguageScreen/>);expect(screen.getByLabelText('한국어 선택').getAttribute('aria-checked')).toBe('true');expect(screen.getByText(/지금은 언어 선호만 저장해요/)).toBeTruthy();expect(screen.getAllByText(/화면 번역은 준비 중이에요/).length).toBeGreaterThan(0);expect(screen.getByText(/매장 국가·통화·세금·시간대는 바뀌지 않아요/)).toBeTruthy();expect(screen.queryByText('日本語')).toBeNull();
   });
   it('확인 필요 이관은 선택 전 저장할 수 없다',()=>{
     preferenceQuery.mockReturnValue(loaded(null));render(<MyLanguageScreen/>);expect(screen.getByText(/자동으로 옮길 수 없었어요/)).toBeTruthy();expect(disabled('저장')).toBe(true);
   });
   it('편집 기준 판본과 사용자 언어만 저장하고 성공 뒤 이동한다',async()=>{
     render(<MyLanguageScreen/>);fireEvent.click(screen.getByLabelText('English 선택'));fireEvent.click(screen.getByLabelText('저장'));fireEvent.click(screen.getByLabelText('앱 언어 저장 확정'));
+    expect(screen.getByText(/언어 선호를 English로 저장합니다/)).toBeTruthy();expect(screen.getAllByText(/화면 번역은 준비 중/).length).toBeGreaterThan(0);
     expect(mutate.mock.calls[0]![0]).toEqual({appLanguage:'en',baseRevision:4});expect(safeBack).not.toHaveBeenCalled();callbacks().onSuccess({appLanguage:'en',needsConfirmation:false,sourceLocale:null,revision:5});await waitFor(()=>expect(safeBack).toHaveBeenCalledWith('/my'));
   });
   it('실패는 화면 안에 남고 저장 중에는 이탈·연타를 막는다',async()=>{

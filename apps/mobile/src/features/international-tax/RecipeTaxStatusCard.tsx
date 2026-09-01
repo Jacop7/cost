@@ -16,6 +16,7 @@ export function RecipeTaxStatusCard({ recipeId }: { recipeId: string }) {
   const state = useRecipeTaxState(recipeId, enabled);
 
   if (!enabled) return null;
+  const categoryName = state.data?.categories.find((category) => category.code === state.data?.taxCategory)?.name;
   return (
     <Card>
       <Text style={{ fontSize: 16, fontWeight: '800', color: T.ink }}>국제 과세 상태</Text>
@@ -32,12 +33,12 @@ export function RecipeTaxStatusCard({ recipeId }: { recipeId: string }) {
           </Text>
           <Text style={{ fontSize: 13, color: T.sub2, marginTop: 4 }}>
             {state.data?.taxCategory
-              ? `카테고리 ${state.data.taxCategory}`
+              ? `카테고리 ${categoryName ?? '확인 필요'}`
               : '판매할 때 적용되는 프로필과 카테고리를 서버가 확정해요.'}
           </Text>
           {!state.data?.capabilities.internationalTax.writeEnabled ? (
             <Text style={{ fontSize: 13, color: T.ter, marginTop: 7 }}>
-              스테이징 전환 전에는 이 화면에서 과세 상태를 바꿀 수 없어요.
+              과세 상태 변경 기능은 준비 중이에요.
             </Text>
           ) : null}
         </View>

@@ -94,10 +94,8 @@ export interface SaveCallbacks {
 }
 
 /**
- * 설정 변경 — 서버에 저장한다.
- *
- * ⚠ 언어를 바꾸면 단가 자릿수의 "기본값"이 함께 바뀐다. 명시 설정이 없던 상태라면
- *   새 로케일 기본값으로 같이 저장해 화면과 저장값이 어긋나지 않게 한다.
+ * 설정 변경 — 서버에 저장한다. 앱 언어는 사용자별 `save_app_language`가 별도로 소유하며,
+ * 매장 로케일 편집은 국제 시장 프로필 쓰기 문이 열리는 INTL-1F에서 다시 연결한다.
  * ⚠ 화면은 **onSuccess 에서만** 이동한다 — 요청을 보내자마자 닫으면 실패를 못 본다(검토 지적).
  */
 export function useSettingsActions() {
@@ -106,18 +104,6 @@ export function useSettingsActions() {
 
   return {
     saving: save.isPending,
-    setLocale: (next: LocaleKey, baseRevision: number, cb: SaveCallbacks = {}) =>
-      save.mutate(
-        {
-          values: {
-            locale: next,
-            // 통화·금액 자릿수는 **서버가 언어에서 파생**한다(0168 locale_defaults).
-            unitPriceDigits: unitDigits ?? unitPriceDigits(next),
-          },
-          baseRevision,
-        },
-        { onSuccess: cb.onSuccess, onError: cb.onError },
-      ),
     setUnitDigits: (next: number | null, baseRevision: number, cb: SaveCallbacks = {}) =>
       save.mutate(
         { values: { unitPriceDigits: next ?? unitPriceDigits(locale) }, baseRevision },
