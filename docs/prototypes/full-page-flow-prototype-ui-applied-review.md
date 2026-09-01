@@ -3,7 +3,7 @@
 - 적용본: `full-page-flow-prototype-ui-applied.html`
 - 보존 원본: `full-page-flow-prototype.html`
 - 작업 시작 원본 SHA-256: `9B538CE9ACD1D93AA75845EB1851391B8EB4C5732DF7094214E8AC5662428414`
-- 검수 범위: 활성 화면 61개 + 활성 popup/state host 123개 = 약 184개 host 단위
+- 검수 범위: 활성 화면 61개 + 활성 popup/state host 119개 = 약 180개 host 단위
 - 고유 popup/state ID: 97개
 - 숨김 유지: `discard_type`, `discard_period` 2개. 삭제하지 않고 활성 계약에서 제외한다.
 - 실제 Expo 앱 수정: 없음
@@ -405,9 +405,29 @@ Opus가 지정한 후속 위험은 다음과 같다.
   헤더 액션 제거 후 재검수 `PASS`.
 - Codex 판정: `PASS`; Opus 판정: `PASS`; 최종 판정: `PASS`.
 
+### MY-05 · 고정 지출 초기 평균·1개월 실제·수정
+
+- 기준: `all-detail-history-screens.html`의 `고정 지출 · 초기 평균`과 `고정 지출 · 1개월 실제`을
+  보존된 상세·내역 기준 화면으로 삼았다. 현재 Expo는 읽기 전용으로 조회·수정 기능 범위만 대조했다.
+- 정보 위계: 조회 화면은 `전체 매출·고정 지출/고정지출율` 요약 카드와 `고정 지출 항목` 카드 두
+  장으로 병합했다. 초기 평균은 `최근 3개월 평균`, 1개월 실제와 MY 조회는 월 선택만 다르게 표시한다.
+- 데이터/상태: 2026년 8·7·6월의 매출·합계·비율·항목을 한 `fixedActuals`에서 조회와 수정이 함께
+  사용한다. 월 선택 즉시 카드가 갱신되고 `고정지출 입력`은 선택한 월을 유지한 채 MY 수정으로 간다.
+- 역할 분리: 레시피에서는 초기 평균과 1개월 실제를 읽고, MY에서는 같은 실제 월을 조회한 뒤 별도
+  편집 폼으로 진입한다. recipe/MY 카탈로그의 MY-05·MY-05b 중복 표시는 동일 실제 라우트의 의도적
+  진입 별칭이며 prototype URL은 고유 screen key로 구분한다.
+- 병합 요소: 네 화면은 `renderFixed`, `fixedItemsCard`, `fixedActuals`를 공유하고 월 선택은 공용
+  `immediatePickerMarkup`·`bindImmediatePicker`를 사용한다. 평균 화면에는 의미 없는 월 Picker를
+  노출하지 않는다.
+- Codex 검수: 기준 화면의 모든 문구·값·순서를 비교했고, 8월→7월 변경, URL popup 정리, 월 버튼
+  포커스 복귀, 선택 월 수정 폼의 제목·매출·항목·합계를 실제 조작했다. PC와 모바일 주소도 확인했다.
+- Opus 1차: 수정 폼의 월별 값 불일치, 선택 후 포커스 유실, 기준 화면의 condition 래퍼 누락을
+  지적했다. 월별 단일 데이터 사용·명시적 포커스 복귀·래퍼 복원 후 2차 재검수 `PASS`.
+- Codex 판정: `PASS`; Opus 판정: `PASS`; 최종 판정: `PASS`.
+
 ## 전체 target 장부
 
-아래 목록은 숨긴 폐기 전용 페이지를 제외한 활성 screen 61개와 popup/state host 123개다.
+아래 목록은 숨긴 폐기 전용 페이지를 제외한 활성 screen 61개와 popup/state host 119개다.
 
 | target | domain | type | common | Codex | Opus | PC | mobile | final |
 |---|---|---|---|---|---|---|---|---|
@@ -435,8 +455,8 @@ Opus가 지정한 후속 위험은 다음과 같다.
 | screen:recipe_material_category | recipe | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
 | screen:recipe_changes | recipe | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
 | screen:profit | recipe | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
-| screen:fixed_average | recipe | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
-| screen:fixed_actual | recipe | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:fixed_average | recipe | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
+| screen:fixed_actual | recipe | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
 | screen:order_main | order | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
 | screen:order_detail | order | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
 | screen:order_receive | order | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
@@ -457,8 +477,8 @@ Opus가 지정한 후속 위험은 다음과 같다.
 | screen:stock_check | sales | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
 | screen:sales_past | sales | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
 | screen:my_main | my | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
-| screen:my_fixed | my | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
-| screen:my_fixed_edit | my | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:my_fixed | my | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
+| screen:my_fixed_edit | my | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
 | screen:my_settings | my | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
 | screen:my_ingredient_categories | my | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
 | screen:my_recipe_categories | my | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
@@ -525,10 +545,7 @@ Opus가 지정한 후속 위험은 다음과 같다.
 | popup:category_delete@recipe_material_category | recipe | ConfirmDialog | COMMON | TODO | TODO | TODO | TODO | TODO |
 | popup:recipe_change_detail@recipe_changes | recipe | InfoSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
 | popup:profit_detail@profit | recipe | InfoSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
-| popup:fixed_period@fixed_average | recipe | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
-| popup:fixed_period@fixed_actual | recipe | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
-| popup:fixed_channel@fixed_actual | recipe | FormSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
-| popup:fixed_item_add@fixed_actual | recipe | FormSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:fixed_period@fixed_actual | recipe | PickerSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
 | popup:order_candidates@order_main | order | InfoSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
 | popup:order_waiting@order_main | order | InfoSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
 | popup:order_received@order_main | order | InfoSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
@@ -563,8 +580,7 @@ Opus가 지정한 후속 위험은 다음과 같다.
 | popup:past_expense@sales_past | sales | FormSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
 | popup:past_save@sales_past | sales | ConfirmDialog | COMMON | TODO | TODO | TODO | TODO | TODO |
 | popup:stock_check_all@stock_check | sales | InfoSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
-| popup:fixed_period@my_fixed | my | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
-| popup:fixed_period@my_fixed_edit | my | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:fixed_period@my_fixed | my | PickerSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
 | popup:fixed_channel@my_fixed_edit | my | FormSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
 | popup:fixed_item_add@my_fixed_edit | my | FormSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
 | popup:category_add@my_ingredient_categories | my | FormSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
