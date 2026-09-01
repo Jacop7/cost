@@ -15,6 +15,10 @@
 - 프로토타입: `docs/prototypes/full-page-flow-prototype.html`
 - 전체 변경 이력: `docs/prototypes/full-page-flow-prototype-changelog.md`
 - 현재 확정안: `docs/prototypes/full-page-flow-prototype-current-spec.md`
+- UI 디자인 시스템 목표안: `docs/prototypes/full-page-flow-prototype-ui-guide.md`
+
+UI 가이드는 전체 화면을 공통화하기 위한 적용 목표안이다. 일괄 적용과 전수 재검수가 끝나기 전까지
+현재 실제 렌더 판정은 이 문서를 우선한다.
 
 현재 반영 범위:
 
