@@ -26,6 +26,14 @@ UI 가이드의 현재 판본은 세분화된 항목을 `문서 계약 · 기초
 호스트 125개와 고유 ID 99개의 매핑을 보존한다. 이 판본 역시 실제 Expo와 프로토타입 HTML에
 아직 일괄 적용한 상태는 아니다.
 
+현재 UI 가이드는 `shell-excluded / layout / section / card / card-part / row-group / field / result /
+notice / kpi / empty / badge / control / chart / layer / sticky-action`을 정규 감사 역할로 사용한다.
+시연용 카탈로그·stage·backdrop·underlay만 제품 검수에서 제외하며, 그 안에 표시된 실제 제품
+Sheet·Dialog·Card·Control은 계속 검수한다. 팝업은 ID마다 `host / layerType / dismissPolicy /
+footerPolicy / renderer`를 명시하고, 페이지 고정 행동·Layer 고정 행동·일반 Card Footer의 소유권과
+Safe Area 계산을 분리한다. 부록 C.3의 고위험 selector·renderer 매핑은 전수 매핑의 출발점이며,
+전체 매핑과 화면별 적용 검수 전에는 적용 완료로 판정하지 않는다.
+
 서비스 기준은 `캐시노트·오늘얼마 = 정보 구조·디자인 로직·업무 프로세스`, `토스 = 시각 디자인
 톤`으로 분리한다. 디자인 로직은 무엇을 먼저 보여주고 상세·기록·수정·철회로 어떻게 이어지는지를
 뜻한다. 따라서 각 탭 메인은 사장님의 첫 질문과 확인할 이상 항목, 다음 행동을 우선하지만
@@ -1248,16 +1256,28 @@ PC:
 15. `목표 순이익률 안내` 팝업 상태는 존재하지만 레시피 추가 화면의 목표 순이익률 라벨이나 입력 영역에서 여는 진입점이 없다.
 16. 사용자에게는 최신 레시피 메인 렌더가 노출되지만, 코드 안에는 카드 수와 필터 문구가 다른 옛 레시피 메인 렌더 분기가 휴면 상태로 남아 있다.
 
-## 5.3 Opus 독립 검수 기록
+## 5.3 Opus 보조 교차검수 기록
 
 - 검수 모델: `claude-opus-5`
 - 실행 방식: 새 세션·읽기 전용·제품 파일 쓰기 금지
 - 성공 검수 1: 식재료 화면·팝업과 현재 확정안 대조
 - 성공 검수 2: 레시피 핵심 4개 화면·직접 연결 팝업·최신 변경 기록 대조
+- 성공 검수 3: UI 가이드의 정규 역할·팝업 유형·고정 행동 소유권과 실제 selector 연결 대조
 - 1차 지적은 실제 최종 렌더와 다시 대조했다. 휴면 렌더나 후처리 이전 코드만 근거로 한 항목은 확정안에 반영하지 않았다.
 - 2차에서 확인된 유효 항목은 `소계` 문구 정정, 재료 사용량 10배 불일치, 표시 행 합계 반올림 계약, 목표 순이익률 안내 진입 누락, 휴면 레시피 메인 분기다.
 - 레시피 추가 판매 손익에 세금·부자재 행을 넣자는 제안은 현재 사용자 확정안과 다르므로 반영하지 않았다.
-- 실제 Expo 앱과 앱 소스는 두 회차 모두 수정하지 않았다.
+- 3차 원판정은 `CHANGES_REQUIRED`였다. 검수 셸과 실제 제품 Layer의 경계, interactive Card의
+  semantic 요소와 Button 시각 역할 구분, Chart 정규 역할, Page StickyAction·LayerFooter·Card
+  Footer 소유권, C.3의 실제 selector 매핑 부족, popup 유형 추론 문제를 유효 항목으로 반영했다.
+- 3차 제안 중 `.prototype-sheet` 전체를 검수에서 제외하는 안은 실제 제품 Sheet까지 빠지므로
+  기각했다. 별도 `TYPE.badge` 신설도 토큰 과분화이므로 기각하고 Badge·Chip·Filter·짧은 메타를
+  기존 `TYPE.captionSm`에 수렴시켰다.
+- 후속 독립 사실검수의 초기 판정은 `BLOCKER 0 / MAJOR 2 / MINOR 1`이었다. 복합 selector·wildcard
+  역할 매핑을 Layer wrapper/part/action, Card/CardPart/choice Row, Chart wrapper/primitive로 분리하고,
+  활성 ID 97개에 대한 실제 per-ID 레지스트리를 채워 지적을 해소했다. 문서 ID 97개와 HTML 활성 ID
+  97개, 펼친 host 상태 123개가 일치하는지 다시 검산했다.
+- Opus 검수는 공식 Fable 게이트를 대신하지 않는 보조 교차검수다.
+- 실제 Expo 앱, 앱 소스와 기존 프로토타입 HTML은 세 회차 모두 수정하지 않았다.
 
 # 6. 갱신 체크리스트
 
