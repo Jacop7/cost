@@ -76,3 +76,230 @@ Opus가 지정한 후속 위험은 다음과 같다.
 
 검수 중 다시 수정하면 이전 결론을 지우지 않고 같은 target 아래 `재검수 N`을 추가한다. 확정안 문서에는
 마지막 PASS만 반영하고 이 장부에는 변경 과정을 남긴다.
+
+## 식재료 페이지별 검수
+
+### ING-01 · `screen:ingredient_main`
+
+- 문제점: 실제 Expo에 있는 카테고리 중 6개가 프로토타입에서 빠졌고, 공통 Tabs에 접근 가능한 이름과
+  선택 상태가 없었다. 정렬 버튼을 화면에서 눌렀을 때 URL·popup 계약이 설정되지 않아 제목 없는 generic
+  dialog로 열렸다. 안전재고 기준값의 시각 위계도 너무 약했다.
+- 수정안: 카테고리 13개를 `Tabs` 병합 요소 한 개로 구성하고 가로 스크롤을 유지했다. 확정 정렬 4개만
+  유지하고 `SortButton → PickerSheet` 흐름을 명시적 `popup:sort` 계약에 연결했다. 식재료 목록은
+  `ingredientInventoryCard` 병합 요소를 재사용하며 안전재고 값만 amber 보조 강조로 정리했다. 이전
+  4카테고리·요약 카드형 `ingredient_main` 중복 renderer도 제거했다.
+- Codex 검수: DOM에서 Header, 카테고리 nav, 정렬 aria-label, 각 카드의 필수 6개 정보와 조건부
+  안전재고 정보, FAB, BottomTab을
+  확인했다. FAB는 `ingredient_add`로 이동하고 정렬 버튼은 이름 있는 PickerSheet와 popup URL을 연다.
+- 시각 검수: 실제 Expo와 적용본을 나란히 확인했다. 모바일 390×844에서 가로 카테고리, 카드, FAB,
+  BottomTab 겹침이 없다. 공통 적용 전 PC 기본 폭에서도 phone frame·catalog 배치를 확인했다.
+- Opus 1차: `CONDITIONAL`. 안전재고 강조·표본 카드 개수 표현·중복 renderer·인라인 카드 반복을
+  지적했다. 실제 후행 CSS의 amber override를 확인하고, 문서 표현을 `5개 표본 카드의 각 7개 정보`로
+  정정했으며, 중복 renderer 삭제와 `ingredientInventoryCard` 추출을 완료했다. 재검수 대기 중이다.
+- Opus 2차: `CONDITIONAL`. 병합 요소와 중복 renderer 문제 해소를 확인했고, 남은 문제로 amber의
+  하드코딩 색상과 조건부 안전재고를 7개 고정 정보처럼 기록한 문구를 지적했다. amber를 기존
+  `--amber` 토큰으로 연결하고 문서를 `필수 6개 + 조건부 안전재고`로 정정했다.
+- Opus 3차: `CONDITIONAL`. 위 두 문제 해소를 확인하고, 정렬 버튼이 공통 popup 연결 속성을 직접
+  갖지 않은 점을 마지막 결함으로 지적했다. `data-popup-link="sort"`를 추가해 공통 popup 연결로 묶었다.
+- Opus 4차: `PASS`. `renderIngredientMain → data-popup-link=sort → openPopupTab → openSortPicker`와
+  선택 동작을 확인했다.
+- Codex 판정: `PASS`; Opus 판정: `PASS`; 최종 판정: `PASS`.
+
+### ING-01 · `popup:sort@ingredient_main`
+
+- 문제점: 화면 직접 진입에서는 명시적 popup ID가 없어 dialog 제목 연결과 닫기 정책이 빠졌다.
+- 수정안: `activePopup=sort`, URL, PickerSheet 계약, 제목 연결, 선택 즉시 적용·닫기를 한 흐름으로 묶었다.
+- Codex 검수: 이름 있는 `dialog \"정렬 기준\"`, 최신순·재고 적은 순·단가 높은 순·이름순, 현재 선택
+  check, 선택 즉시 닫기를 확인했다.
+- Codex 판정: `PASS`; Opus 판정: `PASS`; 최종 판정: `PASS`.
+
+## 전체 target 장부
+
+아래 목록은 숨긴 폐기 전용 페이지를 제외한 활성 screen 61개와 popup/state host 123개다.
+
+| target | domain | type | common | Codex | Opus | PC | mobile | final |
+|---|---|---|---|---|---|---|---|---|
+| screen:ingredient_main | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
+| screen:ingredient_add | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:ingredient_detail | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:ingredient_edit_menu | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:ingredient_edit | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:stock | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:stock_change | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:memo_edit | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:purchase | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:ingredient_changes | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:options | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:ingredient_delete | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:recipe_main | recipe | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:recipe_detail | recipe | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:recipe_price_sim | recipe | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:recipe_add | recipe | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:recipe_edit | recipe | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:recipe_ingredient_search | recipe | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:recipe_material_search | recipe | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:recipe_materials | recipe | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:recipe_category | recipe | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:recipe_material_category | recipe | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:recipe_changes | recipe | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:profit | recipe | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:fixed_average | recipe | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:fixed_actual | recipe | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:order_main | order | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:order_detail | order | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:order_receive | order | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:order_direct | order | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:sales_main | sales | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:analytics | sales | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:day | sales | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:day_full | sales | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:revenue | sales | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:menu | sales | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:channel | sales | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:material | sales | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:extra | sales | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:waste | sales | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:sales_fixed | sales | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:expense | sales | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:tax | sales | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:stock_check | sales | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:sales_past | sales | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:my_main | my | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:my_fixed | my | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:my_fixed_edit | my | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:my_settings | my | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:my_ingredient_categories | my | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:my_recipe_categories | my | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:my_material_categories | my | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:my_materials | my | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:my_tax | my | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:my_language | my | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:my_units | my | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:my_vendors | my | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:my_channels | my | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:my_hours | my | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:my_notifications | my | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:my_account | my | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:sort@ingredient_main | ingredient | PickerSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
+| popup:ingredient_option_filled@ingredient_detail | ingredient | PageState | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:ingredient_option_empty@ingredient_detail | ingredient | PageState | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:add_category@ingredient_add | ingredient | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:add_unit@ingredient_add | ingredient | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:edit_category@ingredient_edit | ingredient | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:edit_unit@ingredient_edit | ingredient | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:stock_inbound@stock_change | ingredient | PageState | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:stock_deduct@stock_change | ingredient | PageState | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:stock_discard@stock_change | ingredient | PageState | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:stock_option@stock_change | ingredient | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:stock_confirm@stock_change | ingredient | ConfirmDialog | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:stock_error@stock_change | ingredient | ErrorDialog | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:option_list@options | ingredient | PageState | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:option_add@options | ingredient | PageState | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:option_edit@options | ingredient | PageState | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:option_vendor@options | ingredient | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:option_vendor_new@options | ingredient | PageState | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:option_unit@options | ingredient | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:option_card_menu@options | ingredient | ActionSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:option_more@options | ingredient | PopoverMenu | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:option_delete@options | ingredient | ConfirmDialog | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:stock_period@stock | ingredient | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:stock_type@stock | ingredient | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:stock_order@stock | ingredient | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:stock_event_more@stock | ingredient | InfoSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:stock_event_revert@stock | ingredient | ConfirmDialog | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:purchase_period@purchase | ingredient | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:ingredient_change_detail@ingredient_changes | ingredient | InfoSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:recipe_sort@recipe_main | recipe | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:recipe_status@recipe_main | recipe | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:recipe_target@recipe_main | recipe | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:recipe_memo@recipe_detail | recipe | FormSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:recipe_stop@recipe_detail | recipe | ConfirmDialog | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:recipe_category_pick@recipe_add | recipe | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:recipe_target_help@recipe_add | recipe | InfoSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:recipe_category_pick@recipe_edit | recipe | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:recipe_target_help@recipe_edit | recipe | InfoSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:recipe_ingredient_usage@recipe_edit | recipe | FormSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:recipe_ingredient_usage@recipe_ingredient_search | recipe | FormSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:recipe_material_usage@recipe_material_search | recipe | FormSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:material_add@recipe_materials | recipe | FormSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:material_edit@recipe_materials | recipe | FormSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:material_category_pick@recipe_materials | recipe | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:material_delete@recipe_materials | recipe | ConfirmDialog | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:category_add@recipe_category | recipe | FormSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:category_edit@recipe_category | recipe | FormSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:category_delete@recipe_category | recipe | ConfirmDialog | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:category_add@recipe_material_category | recipe | FormSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:category_edit@recipe_material_category | recipe | FormSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:category_delete@recipe_material_category | recipe | ConfirmDialog | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:recipe_change_detail@recipe_changes | recipe | InfoSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:profit_detail@profit | recipe | InfoSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:fixed_period@fixed_average | recipe | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:fixed_period@fixed_actual | recipe | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:fixed_channel@fixed_actual | recipe | FormSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:fixed_item_add@fixed_actual | recipe | FormSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:order_candidates@order_main | order | InfoSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:order_waiting@order_main | order | InfoSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:order_received@order_main | order | InfoSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:order_order@order_main | order | FormSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:order_receive@order_main | order | FormSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:order_cancel@order_main | order | ConfirmDialog | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:order_revert@order_main | order | ConfirmDialog | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:order_price_spike@order_main | order | InfoSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:order_order@order_detail | order | FormSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:order_receive@order_receive | order | FormSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:order_ingredient@order_direct | order | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:order_vendor@order_direct | order | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:sales_state@sales_main | sales | ActionSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:sales_break@sales_main | sales | ConfirmDialog | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:sales_close@sales_main | sales | ConfirmDialog | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:sales_sort@sales_main | sales | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:sales_qty@sales_main | sales | FormSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:sales_shortage@sales_main | sales | ConfirmDialog | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:sales_etc@sales_main | sales | FormSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:sales_expense@sales_main | sales | FormSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:sales_period@analytics | sales | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:sales_direct_period@analytics | sales | FormSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:sales_menu_profit@day | sales | InfoSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:sales_revenue_all@revenue | sales | InfoSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:sales_material_detail@material | sales | InfoSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:sales_extra_detail@extra | sales | InfoSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:sales_fixed_expand@sales_fixed | sales | InfoSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:expense_add@expense | sales | FormSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:expense_delete@expense | sales | ConfirmDialog | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:past_sale_qty@sales_past | sales | FormSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:past_etc@sales_past | sales | FormSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:past_expense@sales_past | sales | FormSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:past_save@sales_past | sales | ConfirmDialog | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:stock_check_all@stock_check | sales | InfoSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:fixed_period@my_fixed | my | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:fixed_period@my_fixed_edit | my | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:fixed_channel@my_fixed_edit | my | FormSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:fixed_item_add@my_fixed_edit | my | FormSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:category_add@my_ingredient_categories | my | FormSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:category_edit@my_ingredient_categories | my | FormSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:category_delete@my_ingredient_categories | my | ConfirmDialog | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:category_add@my_recipe_categories | my | FormSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:category_edit@my_recipe_categories | my | FormSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:category_delete@my_recipe_categories | my | ConfirmDialog | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:category_add@my_material_categories | my | FormSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:category_edit@my_material_categories | my | FormSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:category_delete@my_material_categories | my | ConfirmDialog | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:material_add@my_materials | my | FormSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:material_edit@my_materials | my | FormSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:material_category_pick@my_materials | my | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:material_delete@my_materials | my | ConfirmDialog | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:tax_country@my_tax | my | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:tax_item_add@my_tax | my | FormSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:tax_saved@my_tax | my | SuccessDialog | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:language_preview@my_language | my | FormSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:vendor_add@my_vendors | my | FormSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:vendor_edit@my_vendors | my | FormSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:vendor_delete@my_vendors | my | ConfirmDialog | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:channel_edit@my_channels | my | FormSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:channel_disable@my_channels | my | ConfirmDialog | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:hours_start@my_hours | my | FormSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:hours_end@my_hours | my | FormSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:hours_break_start@my_hours | my | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:hours_break_end@my_hours | my | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:hours_timezone@my_hours | my | FormSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:account_delete@my_account | my | FormSheet→ConfirmDialog | COMMON | TODO | TODO | TODO | TODO | TODO |
