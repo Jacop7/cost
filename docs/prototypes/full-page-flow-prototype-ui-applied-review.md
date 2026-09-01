@@ -322,6 +322,22 @@ Opus가 지정한 후속 위험은 다음과 같다.
   `PASS`.
 - Codex 판정: `PASS`; Opus 판정: `PASS`; 최종 판정: `PASS`.
 
+### ING-03b · `screen:ingredient_changes`, `popup=ingredient_change_detail`
+
+- 문구/정보: 식재료 수정 내역에서는 `최근 7일 기준`과 별도 설명문, 재고·구매 이력 바로가기를
+  노출하지 않는다. 요약은 총 2건·직접 수정 1건·자동 갱신 1건만 보여준다.
+- 행별 상세: `입고 단가 반영`은 실입고량·결제금액 직접 수정과 기준 단가 자동 갱신을 함께
+  표시한다. `식재료 등록`은 카테고리·기준 단위·안전재고 직접 수정만 표시하며 자동 갱신 영역은
+  만들지 않는다. 알 수 없는 미래 유형은 등록 상세로 오인하지 않도록 별도 안전 분기를 둔다.
+- 병합/상태: 목록은 공용 변경 이력 행을, 상세는 공용 비교 행과 InfoSheet 계약을 사용한다. 어느
+  행을 눌러도 해당 행의 제목·날짜·변경값을 사용하며 URL의 `popup=ingredient_change_detail`과
+  팝업 선택 상태를 함께 갱신한다.
+- Codex 검수: 모바일에서 두 행을 각각 눌러 서로 다른 상세값과 자동 갱신 영역 유무를 확인했다.
+  상단 7일 문구 제거 후 캐시를 우회해 다시 로드하고 DOM에서 잔존하지 않음을 확인했다.
+- Opus 1차: 실제 사용 렌더러에 남은 `최근 7일 기준`과 미래 행의 등록 상세 오인을 지적했다.
+  두 항목 보완 후 재검수에서 `PASS`.
+- Codex 판정: `PASS`; Opus 판정: `PASS`; 최종 판정: `PASS`.
+
 ## 전체 target 장부
 
 아래 목록은 숨긴 폐기 전용 페이지를 제외한 활성 screen 61개와 popup/state host 123개다.
@@ -337,7 +353,7 @@ Opus가 지정한 후속 위험은 다음과 같다.
 | screen:stock_change | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
 | screen:memo_edit | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
 | screen:purchase | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
-| screen:ingredient_changes | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:ingredient_changes | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
 | screen:options | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
 | screen:ingredient_delete | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
 | screen:recipe_main | recipe | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
@@ -417,7 +433,7 @@ Opus가 지정한 후속 위험은 다음과 같다.
 | popup:stock_event_more@stock | ingredient | InfoSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
 | popup:stock_event_revert@stock | ingredient | ConfirmDialog | COMMON | PASS | PASS | PASS | PASS | PASS |
 | popup:purchase_period@purchase | ingredient | PickerSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
-| popup:ingredient_change_detail@ingredient_changes | ingredient | InfoSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:ingredient_change_detail@ingredient_changes | ingredient | InfoSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
 | popup:recipe_sort@recipe_main | recipe | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
 | popup:recipe_status@recipe_main | recipe | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
 | popup:recipe_target@recipe_main | recipe | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
