@@ -387,6 +387,24 @@ Opus가 지정한 후속 위험은 다음과 같다.
   불명확한 명칭을 지적했다. 전용 검색 소유권·중복 제거·`recipeDetailSelling` 분리 후 재검수 `PASS`.
 - Codex 판정: `PASS`; Opus 판정: `PASS`; 최종 판정: `PASS`.
 
+### RCP-02 · `screen:recipe_detail`, 판매 상태 ConfirmDialog
+
+- Expo 대조/확정안: 목표 상태를 메뉴명 위에 두고 메뉴명 우측에는 판매 상태 버튼만 둔다. 헤더의
+  중복 편집 버튼은 제거했으며, `10인분·1인분` 탭은 사용자 확정 문구대로 `기준`을 생략한다.
+- 정보 위계: 요약 → 판매가 구성 → 재료 → 부자재 → 고정 지출 → 세금 → 판매 손익 → 손익 변동을
+  유지한다. 부자재 보조문구는 `해당 메뉴 전용 비용`, 고정 지출은 `(인분당 환산)`, 손익 제목은
+  `판매 손익`으로 통일했다. 7일 안의 수정 기록이 있을 때만 최근 수정 바로가기를 표시한다.
+- 상호작용: 재료 행은 식재료 상세로 이동하며 뒤로 가면 레시피 상세로 복귀한다. 메모는 공용
+  `FormSheet`, 판매중·판매중지는 중앙 `ConfirmDialog`로 처리하고 취소 초기 포커스·Escape·호출 버튼
+  포커스 복귀를 공통 계약으로 적용한다.
+- 병합 요소: 모든 인분 탭은 `recipeDetailTabs`, 값 행은 링크 유무를 판별하는 `expoRows`, 판매 상태
+  전환은 공용 `prototypeConfirm`과 레이어 닫기 계약을 사용한다. 의미 없는 화살표는 렌더하지 않는다.
+- Codex 검수: 판매 중지·판매 재개 확인 문구, 아니오·Escape 취소, 상태 전환 후 포커스 복귀, 재료
+  상세 왕복, 인분 탭에 따른 고정비 설명·판매량 기준 갱신을 PC 화면에서 실제 조작했다.
+- Opus 1차: 재료 행의 비활성 화살표, 잘못된 복귀 경로, 헤더 편집 중복을 지적했다. 링크 행·문맥 복귀·
+  헤더 액션 제거 후 재검수 `PASS`.
+- Codex 판정: `PASS`; Opus 판정: `PASS`; 최종 판정: `PASS`.
+
 ## 전체 target 장부
 
 아래 목록은 숨긴 폐기 전용 페이지를 제외한 활성 screen 61개와 popup/state host 123개다.
@@ -406,7 +424,7 @@ Opus가 지정한 후속 위험은 다음과 같다.
 | screen:options | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
 | screen:ingredient_delete | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
 | screen:recipe_main | recipe | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
-| screen:recipe_detail | recipe | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:recipe_detail | recipe | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
 | screen:recipe_price_sim | recipe | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
 | screen:recipe_add | recipe | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
 | screen:recipe_edit | recipe | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
@@ -487,7 +505,7 @@ Opus가 지정한 후속 위험은 다음과 같다.
 | popup:recipe_status@recipe_main | recipe | PickerSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
 | popup:recipe_target@recipe_main | recipe | PickerSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
 | popup:recipe_memo@recipe_detail | recipe | FormSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
-| popup:recipe_stop@recipe_detail | recipe | ConfirmDialog | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:recipe_stop@recipe_detail | recipe | ConfirmDialog | COMMON | PASS | PASS | PASS | PASS | PASS |
 | popup:recipe_category_pick@recipe_add | recipe | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
 | popup:recipe_target_help@recipe_add | recipe | InfoSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
 | popup:recipe_category_pick@recipe_edit | recipe | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
