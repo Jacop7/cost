@@ -355,6 +355,9 @@ end $t$;
  *   apply_international_tax_for_sales_item · reconcile_international_tax_after_sale_item
  *                                INTL-1D 판매행 trigger 전용 몸통. 앱·service_role·RPC 실행 역할에는
  *                                모두 닫혀 있고, capability가 꺼져 있으면 쓰지 않는다(0181).
+ *   apply_international_tax_for_sales_item_body · initialize_international_tax_activation_boundary
+ *                                INTL-1F 활성일 검사 뒤 계산하는 몸통과 신규 프로필 활성 경계
+ *                                트리거다. 둘 다 Data API에 직접 열지 않는다(0187).
  *   assert_sales_tax_line_balanced
  *                                INTL-1D deferred constraint trigger의 검사 몸통. 앱 세션 commit에서도
  *                                RLS/표 SELECT 권한에 막히지 않는다. 매장을 고르거나 값을 반환하지 않고
@@ -390,6 +393,7 @@ begin
     'amend_ended_business_day(p_store uuid, p_date date, p_base_revision integer, p_items jsonb, p_etc_items jsonb, p_extra_items jsonb, p_reason text)',
     'apply_due_breaks()',
     'apply_international_tax_for_sales_item(p_sales_item uuid, p_force boolean)',
+    'apply_international_tax_for_sales_item_body(p_sales_item uuid, p_force boolean)',
     'apply_operating_hours(p_store uuid, p_weekly_hours jsonb, p_weekly_breaks jsonb, p_base_rule_id uuid, p_base_revision integer)',
     'archive_my_store(p_store uuid, p_reason text)',
     'assert_sales_tax_line_balanced()',
@@ -397,6 +401,7 @@ begin
     'close_due_business_days()',
     'create_store(p_name text, p_timezone text)',
     'get_user_preferences()',
+    'initialize_international_tax_activation_boundary()',
     'initialize_user_preferences()',
     'international_tax_app_state(p_store uuid)',
     'international_tax_regions(p_store uuid, p_country international_country_code)',

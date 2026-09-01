@@ -822,6 +822,38 @@ export type Database = {
           },
         ]
       }
+      international_tax_activation_boundaries: {
+        Row: {
+          activated_at: string
+          activation_date: string
+          minimum_app_version: string
+          reason: string
+          store_id: string
+        }
+        Insert: {
+          activated_at?: string
+          activation_date: string
+          minimum_app_version: string
+          reason: string
+          store_id: string
+        }
+        Update: {
+          activated_at?: string
+          activation_date?: string
+          minimum_app_version?: string
+          reason?: string
+          store_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "international_tax_activation_boundaries_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: true
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       international_tax_migration_audits: {
         Row: {
           audited_at: string
@@ -2485,6 +2517,10 @@ export type Database = {
       }
       apply_due_breaks: { Args: never; Returns: Json }
       apply_international_tax_for_sales_item: {
+        Args: { p_force: boolean; p_sales_item: string }
+        Returns: Json
+      }
+      apply_international_tax_for_sales_item_body: {
         Args: { p_force: boolean; p_sales_item: string }
         Returns: Json
       }
