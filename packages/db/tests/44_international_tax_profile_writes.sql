@@ -2,6 +2,8 @@
 -- 44 · INTL-1F 국제 시장·세금·메뉴 과세 설정 쓰기 계약
 -- ═══════════════════════════════════════════════════════════════
 
+select pg_temp.clear_international_tax_fixture();
+
 create function pg_temp.market_payload(
   p_country text,p_region text,p_currency text,p_locale text,p_basis text default 'tax_inclusive'
 ) returns jsonb language sql immutable as $h$
@@ -25,13 +27,14 @@ language sql immutable as $h$
       jsonb_build_object('code','exempt','name','Exempt','treatment','exempt','active',true)))
 $h$;
 
-do $disabled$
+do $enabled$
 begin
-  perform pg_temp.raises('capability 전에는 국제 설정 쓰기가 실패 폐쇄된다',format(
-    'select save_store_market_profile(%L::uuid,%L::jsonb,null,null)',pg_temp.store(),
-    pg_temp.market_payload('KR',null,'KRW','ko-KR')),'22000');
+  perform pg_temp.ok('제품 활성 뒤 국제 설정 읽기·쓰기가 함께 열린다',
+    (app_capabilities()#>>'{international_tax,read_enabled}')::boolean
+    and (app_capabilities()#>>'{international_tax,write_enabled}')::boolean
+    and app_capabilities()#>>'{international_tax,minimum_write_app_version}'='0.2.0');
 end
-$disabled$;
+$enabled$;
 
 select set_config('margincook.international_tax_force','owner_test',true);
 

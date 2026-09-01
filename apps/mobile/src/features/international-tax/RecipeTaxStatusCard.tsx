@@ -41,6 +41,9 @@ export function RecipeTaxStatusCard({ recipeId }: { recipeId: string }) {
               ? `카테고리 ${categoryName ?? '확인 필요'}`
               : '판매할 때 적용되는 프로필과 카테고리를 서버가 확정해요.'}
           </Text>
+          {state.data?.effectiveFrom ? <Text style={{ fontSize: 13, color: T.blue, marginTop: 4 }}>
+            변경한 과세 상태는 {state.data.effectiveFrom}부터 적용돼요.
+          </Text> : null}
           {state.data?.quote&&state.data.currencyCode&&state.data.minorUnit!==null?<Text style={{fontSize:14,fontWeight:'700',color:T.ink2,marginTop:7}}>
             현재 판매가 세금 {state.data.currencyCode} {formatNumber(state.data.quote.taxAmount,{digits:state.data.minorUnit,group:',',decimal:'.'})} · 순매출 {state.data.currencyCode} {formatNumber(state.data.quote.netSales,{digits:state.data.minorUnit,group:',',decimal:'.'})}
           </Text>:null}

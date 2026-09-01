@@ -49,6 +49,19 @@ trap cleanup EXIT
 
 fail=0
 say() { printf '%s\n' "$*"; }
+apply_after() {
+  local database="$1" base="$2" migration name version
+  for migration in "$MIG_DIR"/*.sql; do
+    name="$(basename "$migration")"
+    version="${name%%_*}"
+    if [[ "$version" > "$base" ]]; then
+      if ! psql_d "$database" < "$migration"; then
+        printf 'migration failed: %s\n' "$name" >&2
+        return 1
+      fi
+    fi
+  done
+}
 
 # ── 시나리오 1 · 어긋난 장부는 **막혀야** 한다 ──────────────────
 say "① 0150 상태 + 어긋난 열린 장부 → 업그레이드가 멈춰야 한다"
@@ -252,7 +265,7 @@ fi
 # ── 시나리오 8 · 0170 기존 2매장 → 판본 마이그레이션 전체 (검토 O 후속) ─────────
 # 특정 마지막 파일을 박지 않는다. 0170 뒤에 있는 마이그레이션을 실행 시점의 최신까지 순서대로
 # 태운다 — 0172 처럼 0171 계약을 완결하는 후속이 생겨도 이 경로가 빠뜨리지 않는다.
-say "⑧ 0170 상태 + 서로 다른 2매장 설정 → 최신까지 값 보존·일반/세금 판본 계약"
+say "⑧ 0170 상태 + 서로 다른 2매장 설정 → 최신까지 값 보존·일반 판본/옛 세금 문 계약"
 BASE8=20260826000170
 STEPS8=()
 while IFS= read -r m; do
@@ -324,7 +337,10 @@ EOF
         fail=1
       fi
 
-      # 앱이 밟는 문으로 무변경→변경→낡은 판본 거부를 잰다. 전부 롤백해 보존 검산과 분리한다.
+      # 앱이 밟는 일반 설정 문의 무변경→변경→낡은 판본 거부를 잰다.
+      # 이 픽스처의 두 매장은 의도적으로 자동 국제 프로필 대상이 아니므로 새 프로필 판본은
+      # DB 시험 44·47이 맡고, 여기서는 cutover 뒤 옛 세금 저장 문이 45017로 닫히는지만 잰다.
+      # 전부 롤백해 보존 검산과 분리한다.
       if ! err="$(psql_d "$D" <<'EOF' 2>&1 1>/dev/null
 begin;
 select set_config('request.jwt.claims',
@@ -336,7 +352,6 @@ declare
   v settings%rowtype;
   v_r jsonb;
   v_time timestamptz;
-  v_mode tax_mode;
 begin
   select s.* into v from settings s join stores st on st.id=s.store_id order by st.created_at, st.id limit 1;
   v_time := v.updated_at;
@@ -345,10 +360,11 @@ begin
   if (v_r->>'changed')::boolean or (v_r->>'revision')::int <> v.revision then
     raise exception '⑧ save_settings 무변경 응답이 틀렸습니다: %', v_r;
   end if;
-  v_r := save_store_tax(v.store_id, v.tax_mode, v.tax_items, v.revision);
-  if (v_r->>'changed')::boolean or (v_r->>'revision')::int <> v.revision then
-    raise exception '⑧ save_store_tax 무변경 응답이 틀렸습니다: %', v_r;
-  end if;
+  begin
+    perform save_store_tax(v.store_id, v.tax_mode, v.tax_items, v.revision);
+    raise exception '⑧ 옛 세금 저장 문이 통과했습니다';
+  exception when sqlstate '45017' then null;
+  end;
   if (select updated_at from settings where store_id=v.store_id) is distinct from v_time then
     raise exception '⑧ 무변경 저장이 updated_at 을 바꿨습니다';
   end if;
@@ -363,23 +379,13 @@ begin
   exception when sqlstate '45009' then null;
   end;
 
-  v_mode := case when v.tax_mode = 'exempt' then 'included'::tax_mode else 'exempt'::tax_mode end;
-  v_r := save_store_tax(v.store_id, v_mode, '[]'::jsonb, v.revision + 1);
-  if not (v_r->>'changed')::boolean or (v_r->>'revision')::int <> v.revision + 2 then
-    raise exception '⑧ save_store_tax 변경 판본이 틀렸습니다: %', v_r;
-  end if;
-  begin
-    perform save_store_tax(v.store_id, v_mode, '[]'::jsonb, v.revision + 1);
-    raise exception '⑧ save_store_tax 낡은 판본이 통과했습니다';
-  exception when sqlstate '45009' then null;
-  end;
 end $test$;
 rollback;
 EOF
       )"; then
         say "   FAIL 일반/세금 판본 행동 계약이 깨졌다"; say "        $(printf '%s' "$err" | head -3)"; fail=1
       else
-        say "   ok   일반·세금 무변경은 자국 0, 변경은 +1, 낡은 판본은 45009"
+        say "   ok   일반 설정 무변경은 자국 0, 변경은 +1, 낡은 판본은 45009, 옛 세금 문은 45017"
       fi
     else
       fail=1
@@ -997,5 +1003,99 @@ else
   fi
 fi
 
+# ── 시나리오 20 · 0180 자동 프로필의 구성행 → 0186 config_key 백필 ─────
+say "⑳ 0179 상태 + 한국 자동 이관 프로필 구성행 → 0186 이후 최신까지 중단 없이 백필"
+BASE20=20260831000179
+bash "$SCRIPT_DIR/fresh-db.sh" --until "$BASE20" "$D" >/dev/null
+if ! err="$(apply_after "$D" "$BASE20" 2>&1 1>/dev/null)"; then
+  say "   FAIL 자동 이관 프로필이 있는 업그레이드가 막혔다"
+  say "        $(printf '%s' "$err" | head -3)"
+  fail=1
+else
+  state20=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c "
+    select concat_ws('|',
+      exists(select 1 from international_tax_migration_audits where decision='auto_profile_created'),
+      exists(select 1 from store_tax_components),
+      not exists(select 1 from store_tax_components where config_key is null),
+      (select count(*) from store_tax_components)=
+        (select count(distinct (tax_profile_id,config_key)) from store_tax_components));")
+  if [ "$state20" = "t|t|t|t" ]; then
+    say "   ok   기존 자동 프로필 구성행을 config_key로 안전하게 백필했다"
+  else
+    say "   FAIL 자동 프로필·config_key 사후조건이 틀렸다: $state20"
+    fail=1
+  fi
+fi
+
+# ── 시나리오 21 · main의 0183 스키마 → 메뉴 과세 적용일 전진 이관 ─────
+say "㉑ 0183 main 상태 → 0186이 effective_from·PK·판매일 선택을 전진 추가"
+BASE21=20260901000183
+bash "$SCRIPT_DIR/fresh-db.sh" --until "$BASE21" "$D" >/dev/null
+before21=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c "
+  select exists(select 1 from information_schema.columns
+    where table_schema='public' and table_name='menu_tax_overrides'
+      and column_name='effective_from');")
+if [ "$before21" != "f" ]; then
+  say "   FAIL 0183 기준선에 아직 없어야 할 effective_from이 있다"
+  fail=1
+elif ! err="$(apply_after "$D" "$BASE21" 2>&1 1>/dev/null)"; then
+  say "   FAIL 0183 main 상태에서 최신까지 적용이 막혔다"
+  say "        $(printf '%s' "$err" | head -3)"
+  fail=1
+else
+  state21=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c "
+    select concat_ws('|',
+      exists(select 1 from information_schema.columns
+        where table_schema='public' and table_name='menu_tax_overrides'
+          and column_name='effective_from' and is_nullable='NO'),
+      (select count(*) from pg_attribute a
+         join pg_index i on i.indrelid='public.menu_tax_overrides'::regclass
+          and i.indisprimary and a.attrelid=i.indrelid and a.attnum=any(i.indkey)),
+      position('o.effective_from <= v_sales.sale_date' in
+        pg_get_functiondef('public.apply_international_tax_for_sales_item_body(uuid,boolean)'::regprocedure))>0,
+      position('o.effective_from<=p_date' in
+        pg_get_functiondef('public.international_tax_shadow_compare(uuid,date)'::regprocedure))>0,
+      position('effective_from <= d.sale_date' in
+        pg_get_functiondef('public.guard_sales_tax_snapshot_source()'::regprocedure))>0);")
+  if [ "$state21" != "t|3|t|t|t" ]; then
+    say "   FAIL 메뉴 과세 적용일 스키마·PK·계산·shadow·스냅샷 가드가 어긋났다: $state21"
+    fail=1
+  elif ! test21="$(cd "$DB_DIR" && PGDATABASE="$D" node tests/run.mjs 50 2>&1)"; then
+    say "   FAIL 0183→최신 DB에서 메뉴 적용일 행동 시험이 실패했다"
+    say "        $(printf '%s' "$test21" | tail -8)"
+    fail=1
+  else
+    say "   ok   main 기준 DB에 적용일 스키마와 판매일 선택을 추가하고 행동 회귀가 통과한다"
+  fi
+fi
+
+# ── 시나리오 22 · 0185 중간 상태의 shadow 실행 가능 계약 ─────────
+say "㉒ 0185 중간 상태 → effective_from 없이 shadow 비교 함수가 실제로 실행됨"
+BASE22=20260901000185
+bash "$SCRIPT_DIR/fresh-db.sh" --until "$BASE22" "$D" >/dev/null
+state22=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A <<'EOF'
+with target as (
+  select id,owner_id from public.stores order by created_at,id limit 1
+), claims as (
+  select set_config('request.jwt.claims',
+    jsonb_build_object('sub',owner_id::text,'role','authenticated')::text,false)
+  from target
+)
+select concat_ws('|',
+  position('o.effective_from' in pg_get_functiondef(
+    'public.international_tax_shadow_compare(uuid,date)'::regprocedure))=0,
+  coalesce((public.international_tax_shadow_compare(
+    target.id,(public.resolve_sales_business_context(target.id,clock_timestamp())).sales_date)
+      ->>'status') in ('complete','not_comparable','no_sales','partial'),false))
+from target,claims;
+EOF
+)
+if [ "$state22" = "t|t" ]; then
+  say "   ok   0185 단독 상태에서 적용일 열 없이 shadow 비교가 실행된다"
+else
+  say "   FAIL 0185 중간 상태의 shadow 실행 계약이 깨졌다: $state22"
+  fail=1
+fi
+
 say ""
-if [ "$fail" = "0" ]; then say "업그레이드 경로 19/19 통과"; else say "업그레이드 경로 실패"; exit 1; fi
+if [ "$fail" = "0" ]; then say "업그레이드 경로 22/22 통과"; else say "업그레이드 경로 실패"; exit 1; fi

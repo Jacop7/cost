@@ -151,12 +151,13 @@ const parseQuote=(v:unknown):InternationalTaxQuote|null=>{if(v===null)return nul
   }}),
 };};
 
-export interface RecipeTaxState { capabilities: AppCapabilities; taxProfileId: string|null; taxProfileRevision:number|null; defaultTreatment:'taxable'|'zero_rated'|'exempt'|null; overrideRevision:number; taxCategory: string|null; treatment: 'taxable'|'zero_rated'|'exempt'|null; currencyCode:typeof LAUNCH_CURRENCY_CODES[number]|null;minorUnit:0|2|null;priceBasis:typeof TAX_PRICE_BASES[number]|null;quote:InternationalTaxQuote|null; categories: TaxCategoryOption[] }
+export interface RecipeTaxState { capabilities: AppCapabilities; taxProfileId: string|null; taxProfileRevision:number|null; defaultTreatment:'taxable'|'zero_rated'|'exempt'|null; overrideRevision:number; effectiveFrom:string|null; taxCategory: string|null; treatment: 'taxable'|'zero_rated'|'exempt'|null; currencyCode:typeof LAUNCH_CURRENCY_CODES[number]|null;minorUnit:0|2|null;priceBasis:typeof TAX_PRICE_BASES[number]|null;quote:InternationalTaxQuote|null; categories: TaxCategoryOption[] }
 export function parseRecipeTaxState(v:unknown):RecipeTaxState{const r=obj(v,'메뉴 과세');return{
   capabilities:parseAppCapabilities(r.capabilities),taxProfileId:r.tax_profile_id===null?null:uuid(r.tax_profile_id,'tax_profile_id'),
   taxProfileRevision:r.tax_profile_revision===null?null:int(r.tax_profile_revision,'tax_profile_revision',1),
   defaultTreatment:r.default_treatment===null?null:oneOf(r.default_treatment,TAX_TREATMENTS,'default_treatment'),
   overrideRevision:int(r.override_revision,'override_revision'),
+  effectiveFrom:r.effective_from===null?null:ymd(r.effective_from,'effective_from'),
   taxCategory:nullableStr(r.tax_category,'tax_category'),treatment:r.treatment===null?null:oneOf(r.treatment,TAX_TREATMENTS,'treatment'),
   currencyCode:r.currency_code===null?null:oneOf(r.currency_code,LAUNCH_CURRENCY_CODES,'currency_code'),
   minorUnit:r.minor_unit===null?null:(()=>{const n=int(r.minor_unit,'minor_unit');return n===0||n===2?n:bad('minor_unit 값')})(),
@@ -180,7 +181,22 @@ export interface SalesTaxLine extends SaleTaxSnapshot {
   menuName: string;
   saleDate: string;
 }
-export interface SalesTaxDetail { capabilities: AppCapabilities; from:string; to:string; lines:SalesTaxLine[] }
+export interface EtcTaxLine extends InternationalTaxQuote {
+  dailySalesId:string;
+  saleDate:string;
+  name:string;
+  salesChannel:typeof INTERNATIONAL_SALES_CHANNEL_CODES[number];
+  countryCode:typeof LAUNCH_COUNTRY_CODES[number];
+  regionCode:string|null;
+  currencyCode:typeof LAUNCH_CURRENCY_CODES[number];
+  minorUnit:0|2;
+  priceBasis:typeof TAX_PRICE_BASES[number];
+  treatment:typeof TAX_TREATMENTS[number];
+  marketProfileRevision:number;
+  taxProfileRevision:number;
+  calculationVersion:'international_tax_v1';
+}
+export interface SalesTaxDetail { capabilities: AppCapabilities; from:string; to:string; lines:SalesTaxLine[];etcLines:EtcTaxLine[] }
 export function parseSalesTaxDetail(v:unknown):SalesTaxDetail{const r=obj(v,'판매 세금 상세');const from=ymd(r.from,'from');const to=ymd(r.to,'to');if(from>to)bad('조회 기간 순서');return{
   capabilities:parseAppCapabilities(r.capabilities),from,to,
   lines:arr(r.lines,'lines').map((x,i)=>{const s=obj(x,`line ${i}`);return{
@@ -201,5 +217,14 @@ export function parseSalesTaxDetail(v:unknown):SalesTaxDetail{const r=obj(v,'판
       appliesToTreatments:arr(c.applies_to_treatments,'applies').map(z=>oneOf(z,TAX_TREATMENTS,'treatment')),
       remittanceOwner:oneOf(c.remittance_owner,TAX_REMITTANCE_OWNERS,'remittance_owner'),unroundedAmount:num(c.unrounded_amount,'unrounded_amount'),roundedAmount:num(c.rounded_amount,'rounded_amount'),
     }}),
+  }}),
+  etcLines:arr(r.etc_lines,'etc_lines').map((x,i)=>{const s=obj(x,`etc line ${i}`);const quote=parseQuote(s);if(!quote)return bad('기타매출 quote 없음');return{
+    dailySalesId:uuid(s.daily_sales_id,'daily_sales_id'),saleDate:ymd(s.sale_date,'sale_date'),name:str(s.name,'name'),
+    salesChannel:oneOf(s.sales_channel_code,INTERNATIONAL_SALES_CHANNEL_CODES,'sales_channel'),
+    countryCode:oneOf(s.country_code,LAUNCH_COUNTRY_CODES,'country_code'),regionCode:nullableStr(s.region_code,'region_code'),
+    currencyCode:oneOf(s.currency_code,LAUNCH_CURRENCY_CODES,'currency_code'),minorUnit:(()=>{const n=int(s.minor_unit,'minor_unit');return n===0||n===2?n:bad('minor_unit 값')})(),
+    priceBasis:oneOf(s.price_basis,TAX_PRICE_BASES,'price_basis'),treatment:oneOf(s.treatment,TAX_TREATMENTS,'treatment'),
+    marketProfileRevision:int(s.market_profile_revision,'market_profile_revision',1),taxProfileRevision:int(s.tax_profile_revision,'tax_profile_revision',1),
+    calculationVersion:oneOf(s.calculation_version,['international_tax_v1'] as const,'calculation_version'),...quote,
   }}),
 };}

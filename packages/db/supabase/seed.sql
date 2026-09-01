@@ -92,6 +92,7 @@ declare
   v_sale_etc    jsonb;
   v_sale_extra  jsonb;
   v_tax_result  jsonb;
+  v_international_write boolean := false;
 begin
   if exists (select 1 from ingredients where store_id = v_store) then
     raise notice '시드 생략 — 이미 데이터가 있습니다';
@@ -304,7 +305,41 @@ begin
   -- 0172 전에는 settings.revision 과 4인자 함수가 없으므로, 존재하는 계약을 동적으로
   -- 선택한다. 정적 SQL 로 두 형태를 함께 적으면 없는 컬럼/시그니처가 먼저 해석돼
   -- 중간 버전 DB 를 만들 수 없다.
-  if to_regprocedure('public.save_store_tax(uuid,tax_mode,jsonb,integer)') is not null then
+  -- 0189 이후 옛 세금 RPC는 구 앱 경계라 의도적으로 닫혀 있다. 과거 3주 fixture는
+  -- legacy 계산판본을 재현해야 하므로 소유자 시드만 표시 폼을 직접 채운다. 제품 앱은
+  -- 이 길을 쓸 수 없고 국제 시장·세금 프로필 화면으로만 저장한다.
+  -- 중간 버전 DB에서는 함수가 아예 없다. IF의 뒤 조건도 PL/pgSQL이 먼저 해석하므로
+  -- 정적으로 app_capabilities()를 적지 않고 존재할 때만 동적 SQL로 값을 읽는다.
+  if to_regprocedure('public.app_capabilities()') is not null then
+    execute 'select (public.app_capabilities()#>>''{international_tax,write_enabled}'')::boolean'
+      into v_international_write;
+  end if;
+  if v_international_write then
+    execute 'set local role postgres';
+    update public.settings
+       set tax_mode='included',
+           tax_items=jsonb_build_array(jsonb_build_object('name','부가세','rate',9.0909090909))
+     where store_id=v_store;
+    execute 'set local role authenticated';
+    v_tax_result:=jsonb_build_object('changed',true,'seed_legacy_fixture',true);
+    -- 활성 capability 아래 새 매장은 0180 이관 시점에 존재하지 않아 프로필·활성 경계가 없다.
+    -- 화면과 같은 두 RPC로 미래 프로필을 만들고, 아래 3주 과거 fixture는 경계 전 legacy로 보존한다.
+    execute 'select public.save_store_market_profile($1,$2,null,null)'
+       into v_tax_result using v_store,jsonb_build_object(
+         'country_code','KR','region_code',null,'currency_code','KRW',
+         'business_locale_code','ko-KR','price_basis','tax_inclusive');
+    execute 'select public.save_store_tax_profile($1,$2,null,null)'
+       into v_tax_result using v_store,jsonb_build_object(
+         'default_treatment','taxable',
+         'components',jsonb_build_array(jsonb_build_object(
+           'key','primary','kind','primary','name','부가세','rate_pct',10,
+           'jurisdiction_level','national','calculation_basis','primary_tax_exclusive',
+           'applies_to_treatments',jsonb_build_array('taxable'),'sort_order',0,
+           'remittance',jsonb_build_object(
+             'hall','merchant','delivery','merchant','takeout','merchant'))),
+         'categories',jsonb_build_array(jsonb_build_object(
+           'code','standard','name','일반 과세','treatment','taxable','active',true)));
+  elsif to_regprocedure('public.save_store_tax(uuid,tax_mode,jsonb,integer)') is not null then
     execute 'select public.save_store_tax($1, $2, $3,
                   (select revision from public.settings where store_id = $1))'
        into v_tax_result

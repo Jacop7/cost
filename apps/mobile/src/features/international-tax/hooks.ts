@@ -49,4 +49,4 @@ export function useSaveTaxProfile(){const storeId=useStoreId();const qc=useQuery
 
 export function useSaveMenuTaxOverride(recipeId:string){const storeId=useStoreId();const qc=useQueryClient();return useMutation({mutationFn:async(input:{taxProfileId:string;taxCategory:string|null;treatment:TaxTreatment|null;baseRevision:number})=>{
   const {data,error}=await supabase.rpc('save_menu_tax_override',{p_store:storeId,p_recipe:recipeId,p_tax_profile:input.taxProfileId,p_tax_category:input.taxCategory as string,p_treatment:input.treatment as TaxTreatment,p_base_revision:input.baseRevision});if(error)throw rpcError(error);return parseMenuTaxSaveResult(data);
-},onSuccess:()=>{invalidate(qc,[qk.recipeTax(recipeId),qk.internationalTax]);}});}
+},onSuccess:()=>{invalidate(qc,[qk.recipeTax(recipeId),qk.internationalTax,qk.recipes,qk.sales]);}});}

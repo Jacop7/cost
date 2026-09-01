@@ -48,9 +48,21 @@ function SalesTaxScreenBody({ serverToday }: { serverToday: string }) {
   const internationalEnabled = Boolean(capabilities.data?.internationalTax.readEnabled);
   const international = useSalesTaxDetail(from, to, internationalEnabled);
   const d = q.data;
+  const hasInternationalRecords = Boolean(
+    international.data
+    && (international.data.lines.length > 0 || (international.data.etcLines?.length ?? 0) > 0),
+  );
+  const showLegacy = !internationalEnabled
+    || Boolean(international.data && !hasInternationalRecords);
 
   const revenue = range.data?.summary.revenue ?? 0;
   const share = revenue > 0 ? Math.round(((d?.total ?? 0) / revenue) * 1000) / 10 : 0;
+  const activeLoading = internationalEnabled
+    ? international.isLoading || (showLegacy && q.isLoading)
+    : q.isLoading;
+  const activeError = internationalEnabled
+    ? international.error ?? (showLegacy ? q.error : null)
+    : q.error;
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
@@ -58,13 +70,19 @@ function SalesTaxScreenBody({ serverToday }: { serverToday: string }) {
 
       <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 2, paddingBottom: 28 }} showsVerticalScrollIndicator={false}>
         <QueryState
-          isLoading={q.isLoading}
-          error={q.error}
+          isLoading={activeLoading}
+          error={activeError}
           isEmpty={false}
-          onRetry={() => void q.refetch()}
+          onRetry={() => {
+            if (internationalEnabled) {
+              void Promise.all([international.refetch(), q.refetch()]);
+            } else {
+              void q.refetch();
+            }
+          }}
           emptyTitle=""
         >
-          {d ? (
+          {showLegacy && d ? (
             <Card pad={0} style={{ overflow: 'hidden' }}>
               <DetailSummary
                 rows={[
@@ -93,17 +111,7 @@ function SalesTaxScreenBody({ serverToday }: { serverToday: string }) {
               </View>
             </Card>
           ) : null}
-          {internationalEnabled ? (
-            <QueryState
-              isLoading={international.isLoading}
-              error={international.error}
-              isEmpty={false}
-              onRetry={() => void international.refetch()}
-              emptyTitle=""
-            >
-              <InternationalTaxDetail detail={international.data} />
-            </QueryState>
-          ) : null}
+          {internationalEnabled ? <InternationalTaxDetail detail={international.data} /> : null}
         </QueryState>
       </ScrollView>
     </View>
@@ -112,7 +120,19 @@ function SalesTaxScreenBody({ serverToday }: { serverToday: string }) {
 
 function InternationalTaxDetail({ detail }: { detail: ReturnType<typeof useSalesTaxDetail>['data'] }) {
   if (!detail) return null;
-  if (detail.lines.length === 0) {
+  const lines = [
+    ...detail.lines.map((line) => ({
+      key:`menu:${line.dailySalesItemId}:${line.salesChannel}`,name:`${line.menuName} · ${line.salesChannel}`,
+      saleDate:line.saleDate,currencyCode:line.currencyCode,minorUnit:line.minorUnit,taxAmount:line.taxAmount,
+      taxProfileRevision:line.taxProfileRevision,componentCount:line.components.length,
+    })),
+    ...detail.etcLines.map((line,index) => ({
+      key:`etc:${line.dailySalesId}:${index}`,name:`${line.name} · ${line.salesChannel}`,
+      saleDate:line.saleDate,currencyCode:line.currencyCode,minorUnit:line.minorUnit,taxAmount:line.taxAmount,
+      taxProfileRevision:line.taxProfileRevision,componentCount:line.components.length,
+    })),
+  ];
+  if (lines.length === 0) {
     return (
       <Card style={{ marginTop: 12 }}>
         <Text style={{ fontSize: 15, fontWeight: '800', color: T.ink }}>판매 시점 국제 세금 기록</Text>
@@ -122,19 +142,27 @@ function InternationalTaxDetail({ detail }: { detail: ReturnType<typeof useSales
       </Card>
     );
   }
+  const total=lines.reduce((sum,line)=>sum+line.taxAmount,0);
+  const currency=lines[0]?.currencyCode ?? '';
+  const digits=lines[0]?.minorUnit ?? 0;
   return (
-    <Card pad={0} style={{ overflow: 'hidden', marginTop: 12 }}>
+    <Card pad={0} style={{ overflow: 'hidden' }}>
+      <DetailSummary rows={[
+        ['영업일',rangeLabel(detail.from,detail.to)],
+        ['세금 합계',`${currency} ${formatNumber(total,{digits,group:',',decimal:'.'})}`],
+        ['계산 기준','판매 시점 프로필'],
+      ]}/>
       <DetailSection title="판매 시점 국제 세금" />
       <View style={{ paddingHorizontal: 14, paddingBottom: 4 }}>
-        {detail.lines.map((line, index) => {
+        {lines.map((line, index) => {
           const amount = `${line.currencyCode} ${formatNumber(line.taxAmount, { digits: line.minorUnit, group: ',', decimal: '.' })}`;
           return (
             <DetailRow
-              key={`${line.dailySalesItemId}:${line.salesChannel}`}
-              name={`${line.menuName} · ${line.salesChannel}`}
-              sub={`${detail.from === detail.to ? '' : `${line.saleDate} · `}프로필 판본 ${line.taxProfileRevision} · ${line.components.length}개 항목`}
+              key={line.key}
+              name={line.name}
+              sub={`${detail.from === detail.to ? '' : `${line.saleDate} · `}프로필 판본 ${line.taxProfileRevision} · ${line.componentCount}개 항목`}
               amount={amount}
-              last={index === detail.lines.length - 1}
+              last={index === lines.length - 1}
             />
           );
         })}

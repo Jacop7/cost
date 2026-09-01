@@ -49,8 +49,8 @@ begin
     select activation_date into v_boundary
       from public.international_tax_activation_boundaries where store_id=v_store;
     if v_boundary is null then
-      raise exception '국제 세금 활성 경계를 찾을 수 없어요'
-        using errcode='45013',detail='ACTIVATION_BOUNDARY_NOT_AVAILABLE';
+      return jsonb_build_object('enabled',true,'changed',false,
+        'reason','not_activated','lines','[]'::jsonb);
     end if;
     if v_date<v_boundary then
       return jsonb_build_object('enabled',true,'changed',false,
@@ -119,8 +119,7 @@ begin
   select activation_date into v_boundary
     from public.international_tax_activation_boundaries where store_id=v_sales.store_id;
   if v_boundary is null then
-    raise exception '국제 세금 활성 경계를 찾을 수 없어요'
-      using errcode='45013',detail='ACTIVATION_BOUNDARY_NOT_AVAILABLE';
+    return jsonb_build_object('enabled',true,'changed',false,'reason','not_activated');
   end if;
   if v_sales.sale_date<v_boundary then
     return jsonb_build_object('enabled',true,'changed',false,'reason','before_activation');
@@ -141,11 +140,15 @@ begin
     begin
       v_price:=coalesce((v_item->>'price')::numeric,0);
       v_qty:=coalesce((v_item->>'qty')::numeric,1);
-      v_channel:=coalesce(v_item->>'channel','hall')::public.international_sales_channel_code;
+      v_channel:=(v_item->>'channel')::public.international_sales_channel_code;
     exception when others then
       raise exception '기타매출 세금 입력이 올바르지 않아요'
         using errcode='22000',detail='INVALID_ETC_TAX_INPUT';
     end;
+    if v_channel is null then
+      raise exception '국제 세금 적용 뒤 기타매출에는 판매 채널이 필요해요'
+        using errcode='22000',detail='ETC_SALES_CHANNEL_REQUIRED';
+    end if;
     if v_price<0 or v_qty<0 then
       raise exception '기타매출 금액과 수량은 음수일 수 없어요'
         using errcode='22000',detail='INVALID_ETC_TAX_INPUT';
@@ -238,6 +241,7 @@ declare
   v_market public.store_market_profiles%rowtype;
   v_tax public.store_tax_profiles%rowtype;
   v_override public.menu_tax_overrides%rowtype;
+  v_calc_override public.menu_tax_overrides%rowtype;
   v_treatment public.tax_treatment;
   v_category text;
   v_components jsonb;
@@ -258,13 +262,18 @@ begin
   end if;
   if v_tax.id is not null then
     select * into v_override from public.menu_tax_overrides
-     where recipe_id=p_recipe and tax_profile_id=v_tax.id;
-    v_category:=v_override.tax_category;
+     where recipe_id=p_recipe and tax_profile_id=v_tax.id
+     order by effective_from desc limit 1;
+    select * into v_calc_override from public.menu_tax_overrides
+     where recipe_id=p_recipe and tax_profile_id=v_tax.id
+       and effective_from<=public.store_local_date(p_store)
+     order by effective_from desc limit 1;
+    v_category:=v_calc_override.tax_category;
     if v_category is not null then
       select treatment into v_treatment from public.tax_category_catalog
        where tax_profile_id=v_tax.id and code=v_category and active;
     else
-      v_treatment:=coalesce(v_override.treatment,v_tax.default_treatment);
+      v_treatment:=coalesce(v_calc_override.treatment,v_tax.default_treatment);
     end if;
     select jsonb_agg(jsonb_build_object(
       'component_id',c.id,'kind',c.kind,'name',c.name,'rate_pct',c.rate_pct,
@@ -285,7 +294,9 @@ begin
     'capabilities',public.app_capabilities(),'tax_profile_id',v_tax.id,
     'tax_profile_revision',v_tax.revision,'default_treatment',v_tax.default_treatment,
     'override_revision',coalesce(v_override.revision,0),
-    'tax_category',v_category,'treatment',v_override.treatment,
+    'effective_from',case when v_override.effective_from='-infinity'::date then null
+                          else v_override.effective_from end,
+    'tax_category',v_override.tax_category,'treatment',v_override.treatment,
     'currency_code',v_market.currency_code,'minor_unit',
       case when v_market.id is null then null else public.international_currency_minor_unit(v_market.currency_code) end,
     'price_basis',v_market.price_basis,'quote',v_quote,

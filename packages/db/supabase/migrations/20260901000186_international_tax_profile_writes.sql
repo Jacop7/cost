@@ -8,6 +8,9 @@ begin;
 
 alter table public.store_tax_components add column config_key text;
 
+-- 0179의 판본 불변 트리거는 config_key 백필도 일반 수정으로 본다.
+-- 배포 전 기존 자동 이관 프로필에 행이 있을 수 있으므로 이 일회성 백필만 명시적으로 연다.
+alter table public.store_tax_components disable trigger store_tax_components_version_guard;
 with numbered as (
   select id,
          case when kind='primary' then 'primary'
@@ -17,12 +20,82 @@ with numbered as (
 )
 update public.store_tax_components c set config_key=n.config_key
   from numbered n where n.id=c.id;
+alter table public.store_tax_components enable trigger store_tax_components_version_guard;
 
 alter table public.store_tax_components
   alter column config_key set not null,
   add constraint store_tax_components_config_key_ck
     check (config_key ~ '^[a-z0-9][a-z0-9_-]{0,63}$'),
   add constraint store_tax_components_profile_key_uniq unique (tax_profile_id,config_key);
+
+alter table public.menu_tax_overrides
+  add column effective_from date not null default '-infinity'::date;
+alter table public.menu_tax_overrides
+  drop constraint menu_tax_overrides_pkey,
+  add primary key (recipe_id,tax_profile_id,effective_from);
+
+-- 0181의 계산 몸통은 main·스테이징에 이미 존재하므로 제자리 수정하지 않는다.
+-- 이 전진 migration에서 판매일 이하의 마지막 메뉴 예외만 고르도록 정의를 교체한다.
+do $patch_sales_override_date$
+declare v_def text;v_new text;
+begin
+  v_def:=replace(pg_get_functiondef(
+    'public.apply_international_tax_for_sales_item(uuid,boolean)'::regprocedure),chr(13),'');
+  v_new:=replace(v_def,
+    $old$      select * into v_override from public.menu_tax_overrides o
+       where o.recipe_id = v_item.recipe_id and o.tax_profile_id = v_profile.id;$old$,
+    $new$      select * into v_override from public.menu_tax_overrides o
+       where o.recipe_id = v_item.recipe_id and o.tax_profile_id = v_profile.id
+         and o.effective_from <= v_sales.sale_date
+       order by o.effective_from desc limit 1;$new$);
+  if v_new=v_def or position('o.effective_from <= v_sales.sale_date' in v_new)=0 then
+    raise exception '0186: 판매 계산의 메뉴 과세 적용일 조각 교체 실패';
+  end if;
+  execute v_new;
+end
+$patch_sales_override_date$;
+
+-- 0185 shadow도 0186 전에는 한 행뿐이라 적용일 열을 읽지 않는다. 열을 만든 뒤에만
+-- 같은 판매일 선택 규칙으로 전진시켜 0185 단독 중간 상태도 실행 가능하게 유지한다.
+do $patch_shadow_override_date$
+declare v_def text;v_new text;
+begin
+  v_def:=replace(pg_get_functiondef(
+    'public.international_tax_shadow_compare(uuid,date)'::regprocedure),chr(13),'');
+  v_new:=replace(v_def,
+    $old$      select * into v_override from public.menu_tax_overrides o
+       where o.recipe_id=v_item.recipe_id and o.tax_profile_id=v_profile.id;$old$,
+    $new$      select * into v_override from public.menu_tax_overrides o
+       where o.recipe_id=v_item.recipe_id and o.tax_profile_id=v_profile.id
+         and o.effective_from<=p_date
+       order by o.effective_from desc limit 1;$new$);
+  if v_new=v_def or position('o.effective_from<=p_date' in v_new)=0 then
+    raise exception '0186: shadow 계산의 메뉴 과세 적용일 조각 교체 실패';
+  end if;
+  execute v_new;
+end
+$patch_shadow_override_date$;
+
+-- 0179의 스냅샷 출처 가드도 같은 메뉴 예외를 다시 읽는다. 계산 몸통만 고치면
+-- 미래 적용 예외 또는 이력 2건 이상에서 계산과 가드가 서로 다른 행을 골라 판매를 막는다.
+do $patch_snapshot_guard_override_date$
+declare v_def text;v_new text;
+begin
+  v_def:=replace(pg_get_functiondef(
+    'public.guard_sales_tax_snapshot_source()'::regprocedure),chr(13),'');
+  v_new:=replace(v_def,
+    $old$      select * into o from public.menu_tax_overrides
+       where recipe_id = i.recipe_id and tax_profile_id = new.tax_profile_id;$old$,
+    $new$      select * into o from public.menu_tax_overrides
+       where recipe_id = i.recipe_id and tax_profile_id = new.tax_profile_id
+         and effective_from <= d.sale_date
+       order by effective_from desc limit 1;$new$);
+  if v_new=v_def or position('effective_from <= d.sale_date' in v_new)=0 then
+    raise exception '0186: 판매 스냅샷 가드의 메뉴 과세 적용일 조각 교체 실패';
+  end if;
+  execute v_new;
+end
+$patch_snapshot_guard_override_date$;
 
 alter table public.menu_tax_overrides
   add column revision integer not null default 1 check (revision > 0);
@@ -415,6 +488,7 @@ declare
   v_category text:=nullif(btrim(p_tax_category),'');
   v_treatment public.tax_treatment:=p_treatment;
   v_revision integer;
+  v_effective date;
 begin
   perform public.assert_my_store(p_store);
   perform public.assert_international_tax_write_enabled();
@@ -448,17 +522,19 @@ begin
     v_treatment:=v_profile.default_treatment;
   end if;
 
+  v_effective:=greatest(public.next_unopened_business_date(p_store),v_profile.effective_from);
   select * into v_row from public.menu_tax_overrides
-   where recipe_id=p_recipe and tax_profile_id=p_tax_profile for update;
+   where recipe_id=p_recipe and tax_profile_id=p_tax_profile
+   order by effective_from desc limit 1 for update;
   if v_row.recipe_id is null then
     if p_base_revision<>0 then
       raise exception '다른 기기에서 메뉴 과세 설정이 변경됐어요'
         using errcode='45009',detail='REVISION_CONFLICT';
     end if;
     insert into public.menu_tax_overrides(
-      recipe_id,store_id,tax_profile_id,tax_category,treatment,revision)
+      recipe_id,store_id,tax_profile_id,tax_category,treatment,effective_from,revision)
     values(p_recipe,p_store,p_tax_profile,v_category,
-      case when v_category is null then v_treatment else null end,1);
+      case when v_category is null then v_treatment else null end,v_effective,1);
     v_revision:=1;
   else
     if p_base_revision is distinct from v_row.revision then
@@ -471,15 +547,25 @@ begin
       return jsonb_build_object('changed',false,'revision',v_row.revision,
         'tax_category',v_row.tax_category,'treatment',v_row.treatment);
     end if;
-    update public.menu_tax_overrides
-       set tax_category=v_category,
-           treatment=case when v_category is null then v_treatment else null end,
-           revision=revision+1,updated_at=clock_timestamp()
-     where recipe_id=p_recipe and tax_profile_id=p_tax_profile
-     returning revision into v_revision;
+    if v_row.effective_from=v_effective then
+      update public.menu_tax_overrides
+         set tax_category=v_category,
+             treatment=case when v_category is null then v_treatment else null end,
+             revision=revision+1,updated_at=clock_timestamp()
+       where recipe_id=p_recipe and tax_profile_id=p_tax_profile
+         and effective_from=v_effective
+       returning revision into v_revision;
+    else
+      v_revision:=v_row.revision+1;
+      insert into public.menu_tax_overrides(
+        recipe_id,store_id,tax_profile_id,tax_category,treatment,effective_from,revision)
+      values(p_recipe,p_store,p_tax_profile,v_category,
+        case when v_category is null then v_treatment else null end,v_effective,v_revision);
+    end if;
   end if;
   return jsonb_build_object('changed',true,'revision',v_revision,
-    'tax_category',v_category,'treatment',case when v_category is null then v_treatment else null end);
+    'effective_from',v_effective,'tax_category',v_category,
+    'treatment',case when v_category is null then v_treatment else null end);
 end
 $$;
 
@@ -509,7 +595,8 @@ begin
   end if;
   if v_tax.id is not null then
     select * into v_override from public.menu_tax_overrides
-     where recipe_id=p_recipe and tax_profile_id=v_tax.id;
+     where recipe_id=p_recipe and tax_profile_id=v_tax.id
+     order by effective_from desc limit 1;
   end if;
   return jsonb_build_object(
     'capabilities',public.app_capabilities(),'tax_profile_id',v_tax.id,
@@ -556,6 +643,10 @@ begin
   end if;
   select count(*) into v_count from public.store_tax_components where config_key is null;
   if v_count<>0 then raise exception '0186: 세금 구성 안정 키가 없는 행이 %개입니다',v_count; end if;
+  if position('effective_from <= d.sale_date' in pg_get_functiondef(
+      'public.guard_sales_tax_snapshot_source()'::regprocedure))=0 then
+    raise exception '0186: 판매 스냅샷 가드에 메뉴 과세 적용일 선택이 없습니다';
+  end if;
 end
 $verify$;
 

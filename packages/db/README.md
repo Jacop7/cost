@@ -5,11 +5,11 @@
 
 ## 현재 기준
 
-- 마이그레이션 172개, 최신 `20260901000183_international_tax_app_contract_review.sql`
-- 번호가 붙은 DB 회귀 스위트 41개
-- public 업무 테이블 42개
+- 마이그레이션 180개, 최신 `20260901000191_international_tax_accounting_totals.sql`
+- 번호가 붙은 DB 회귀 스위트 50개
+- public 업무 테이블 43개
 - 자동 종료·자동 브레이크·변경 이력 청소 pg_cron 3종
-- 로컬 마이그레이션 장부와 파일 일치는 전체 검증에서 확인한다. 현재 파일 기준은 172개다.
+- 로컬 마이그레이션 장부와 파일 일치는 전체 검증에서 확인한다. 현재 파일 기준은 180개다.
 
 개수는 현재 스냅샷이다. 실제 판단은 파일과 시험 실행 결과를 우선한다.
 
@@ -30,7 +30,7 @@ scripts/
   admin-acl-audit.test.mjs 실제 DB metric·rollback·모바일 RPC 허용 목록 대조
 tests/
   _prelude.sql            공통 픽스처·사후조건
-  01_…41_*.sql            트랜잭션 DB 회귀 스위트
+  01_…50_*.sql            트랜잭션 DB 회귀 스위트
   concurrency.mjs         판매 저장과 마감·브레이크의 2세션 경합
 src/database.types.ts     `pnpm db:types` 생성 타입
 ```
@@ -50,7 +50,7 @@ src/database.types.ts     `pnpm db:types` 생성 타입
   법정 표면 세율 구성. `0180`은 명확한 한국 표준 부가세 매장에만 미래 프로필을 만들고,
   `0181`은 이미 존재하는 마지막 영업일 다음 날로 그 적용 경계를 전진 보정하되, 0180 감사 당시 경계는
   `original_future_effective_from`으로 보존한다. 모호한 매장은 감사
-  결과만 남기며 앱 읽기·쓰기는 아직 켜지 않는다.
+  결과만 남긴다. `0189` cutover 뒤에는 확인된 프로필의 앱 읽기·쓰기가 활성화된다.
 - `international_tax_migration_audits`: INTL-1C 현행 locale·세금 설정·판매/기타매출 합계와 자동 이관/
   수동 확인 판정을 보존하는 감사 원본. 과거 세율이나 구성 항목을 역산하지 않는다. 0181이 기존 미래
   장부 뒤로 실제 적용일을 전진할 때도 `original_future_effective_from`에 최초 판정 경계를 남긴다.

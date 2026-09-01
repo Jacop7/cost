@@ -60,11 +60,10 @@ begin
   -- 금액 자릿수는 통화가 정한다(0168) — 사장님이 고치는 자릿수는 수량 쪽이다.
   perform save_settings(v_store, jsonb_build_object('quantity_digits', 2), pg_temp.settings_rev(v_store));
   perform pg_temp.eq_t('save_settings 는 definer 로 통과', (select quantity_digits::text from settings where store_id = v_store), '2');
-  perform save_store_tax(v_store,
-    (select tax_mode from settings where store_id = v_store),
-    (select coalesce(tax_items, '[]'::jsonb) from settings where store_id = v_store),
-    pg_temp.settings_rev(v_store));
-  perform pg_temp.ok('save_store_tax 도 definer 로 통과', true);
+  perform pg_temp.raises('제품 활성 뒤 옛 save_store_tax 문은 definer여도 닫힌다',format(
+    'select save_store_tax(%L,(select tax_mode from settings where store_id=%L),'
+      ||'(select coalesce(tax_items,''[]''::jsonb) from settings where store_id=%L),%s)',
+    v_store,v_store,v_store,pg_temp.settings_rev(v_store)),'45017');
 
   -- ⑤ 동기화 트리거가 없다 — 소유자가 표시 폼을 바꿔도 규칙은 안 움직인다.
   perform pg_temp.ok('동기화 트리거가 없다',
@@ -116,13 +115,22 @@ begin
   perform pg_temp.eq_t('규칙과 표시 폼이 안 갈린다',
     (select open_time::text || '~' || close_time::text from settings where store_id = v_id),
     '11:00:00~22:00:00');
-  -- ② 세금 저장이 실제로 저장된다 — 0행에 성공을 돌려주지 않는다.
-  v_res := save_store_tax(v_id, (select tax_mode from settings where store_id = v_id),
-                          '[{"name":"부가세","rate":9.0909}]'::jsonb,
-                          pg_temp.settings_rev(v_id));
-  perform pg_temp.ok('세금 저장이 changed 를 답한다', v_res ? 'changed');
-  perform pg_temp.eq('저장된 세금 항목이 실제로 있다',
-    (select jsonb_array_length(tax_items) from settings where store_id = v_id), 1, 0);
+  -- ② 제품 활성 뒤 신규 매장은 국가·통화와 세금 프로필을 새 두 문으로 저장한다.
+  v_res:=save_store_market_profile(v_id,jsonb_build_object(
+    'country_code','KR','region_code',null,'currency_code','KRW',
+    'business_locale_code','ko-KR','price_basis','tax_inclusive'),null,null);
+  v_res:=save_store_tax_profile(v_id,jsonb_build_object(
+    'default_treatment','taxable',
+    'components',jsonb_build_array(jsonb_build_object(
+      'key','primary','kind','primary','name','부가세','rate_pct',10,
+      'jurisdiction_level','national','calculation_basis','primary_tax_exclusive',
+      'applies_to_treatments',jsonb_build_array('taxable'),'sort_order',0,
+      'remittance',jsonb_build_object('hall','merchant','delivery','merchant','takeout','merchant'))),
+    'categories',jsonb_build_array()),null,null);
+  perform pg_temp.ok('신규 매장 국제 세금 프로필 저장이 changed를 답한다',
+    (v_res->>'changed')::boolean);
+  perform pg_temp.eq('저장된 국제 기본세 항목이 실제로 하나다',
+    (select count(*) from store_tax_components where store_id=v_id),1,0);
   /*
    * ③ 공식 문(create_store) — 1차 범위는 매장 하나라, 이미 있으면 **그 매장**을 답하고
    *   시간대도 안 만진다(0166·0167). 그래서 새 매장의 시간대 계약은 **매장이 없는 계정**으로

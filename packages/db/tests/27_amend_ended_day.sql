@@ -1113,7 +1113,7 @@ begin
   -- 오염된 장부를 손으로 만든다 — 0150 이전에 들어왔을 수 있는 모습.
   update business_days
      set snapshot = jsonb_set(snapshot, array['recipes', v_other::text],
-                              recipe_snapshot_entry(v_other), true)
+                              recipe_snapshot_entry(v_other, v_day), true)
    where store_id = v_store and business_date = v_day;
   set local role margincook_rpc_executor;
   perform pg_temp.ok('전제: 우리 장부 기준에 남의 메뉴가 섞여 있다',

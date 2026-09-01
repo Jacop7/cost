@@ -376,6 +376,8 @@ end $t$;
  *   save_store_market_profile · save_store_tax_profile · save_menu_tax_override
  *                                INTL-1F 판본 검사 쓰기 facade. capability와 앱 판본을 먼저
  *                                확인하고, 표 직접 쓰기는 앱에 열지 않는다.
+ *   current_recipe_tax_quote     레시피 목록·손익 추이가 같은 국제 quote를 쓰는 내부 문.
+ *                                앱에는 닫고 비로그인 RPC 실행 역할만 호출한다.
  */
 do $t$
 declare v_now text; v_want text;
@@ -404,6 +406,8 @@ begin
     'close_business_day(p_store uuid)',
     'close_due_business_days()',
     'create_store(p_name text, p_timezone text)',
+    'current_recipe_tax_quote(p_recipe uuid, p_date date)',
+    'daily_sales_etc_accounting_totals(p_sales uuid)',
     'get_user_preferences()',
     'initialize_international_tax_activation_boundary()',
     'initialize_user_preferences()',
@@ -416,10 +420,12 @@ begin
     'purge_archived_store(p_store uuid, p_backup_reference text)',
     'purge_entity_changes()',
     'recipe_tax_app_state(p_store uuid, p_recipe uuid)',
+    'recipe_tax_quote_for_price(p_recipe uuid, p_date date, p_price numeric)',
     'reconcile_international_tax_after_daily_sales()',
     'reconcile_international_tax_after_sale_item()',
     'report_client_rpc_error(p_code text, p_detail text, p_client_platform text)',
     'retire_my_account()',
+    'sales_item_accounting_totals(p_item uuid)',
     'sales_tax_app_detail(p_store uuid, p_from date, p_to date)',
     'save_app_language(p_language text, p_base_revision integer)',
     'save_menu_tax_override(p_store uuid, p_recipe uuid, p_tax_profile uuid, p_tax_category text, p_treatment tax_treatment, p_base_revision integer)',

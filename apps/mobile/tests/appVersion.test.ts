@@ -5,6 +5,7 @@ import { APP_VERSION, APP_VERSION_HEADER } from '@/lib/appVersion';
 describe('클라이언트 앱 판본 헤더', () => {
   it('app.json의 세 자리 판본을 단일 원본으로 사용한다', () => {
     expect(APP_VERSION).toBe(appConfig.expo.version);
+    expect(APP_VERSION).toBe('0.2.0');
     expect(APP_VERSION).toMatch(/^\d+\.\d+\.\d+$/);
   });
 

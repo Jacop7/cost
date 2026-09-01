@@ -206,11 +206,11 @@ begin
       where table_schema = 'public' and table_name = 'sales_channels'
         and column_name in ('fee_rate', 'fee_note')), 0, 0);
 
-  -- 손익 항등식 — 빠지는 항목이 정확히 이것뿐이다.
-  perform pg_temp.eq('순이익 = 매출 − 재료 − 부자재 − 세금 − 폐기 − 일일추가 − 고정비',
+  -- 손익 항등식 — 포함가는 세금 차감 뒤, 미포함가는 판매가 그대로인 확정 순매출을 쓴다.
+  perform pg_temp.eq('순이익 = 순매출 − 재료 − 부자재 − 폐기 − 일일추가 − 고정비',
     (j->>'profit')::numeric,
-    (j->>'revenue')::numeric - (j->>'material_cost')::numeric
-      - (j->>'extra_material_cost')::numeric - (j->>'tax')::numeric
+    (j->>'net_sales')::numeric - (j->>'material_cost')::numeric
+      - (j->>'extra_material_cost')::numeric
       - (j->>'waste_loss')::numeric - (j->>'daily_extra')::numeric
       - (j->>'fixed_cost')::numeric, 0.01);
 

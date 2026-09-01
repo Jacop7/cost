@@ -2,6 +2,8 @@
 -- 40 · INTL-1D SQL 권위 계산·당시 프로필·목표 수량 세금 원장
 -- ═══════════════════════════════════════════════════════════════
 
+select pg_temp.clear_international_tax_fixture();
+
 set local role postgres;
 
 do $formula$
@@ -91,9 +93,9 @@ begin
   values(pg_temp.store(),v_market,'taxable',v_date,1)
   returning id into v_tax;
   insert into store_tax_components(
-    store_id,tax_profile_id,kind,name,rate_pct,jurisdiction_level,
+    store_id,tax_profile_id,config_key,kind,name,rate_pct,jurisdiction_level,
     calculation_basis,applies_to_treatments)
-  values(pg_temp.store(),v_tax,'primary','부가세',10,'national',
+  values(pg_temp.store(),v_tax,'primary','primary','부가세',10,'national',
          'primary_tax_exclusive',array['taxable'::tax_treatment])
   returning id into v_primary;
   insert into channel_tax_remittance(store_id,tax_component_id,sales_channel_code,remittance_owner)
@@ -112,8 +114,12 @@ begin
     not (v_result->>'changed')::boolean
     and not exists(select 1 from daily_sales_item_tax_snapshots where daily_sales_item_id=v_legacy_item));
 
+  -- 이 블록은 계산 몸통 자체를 잰다. 활성 제품 trigger 행동은 46번이 별도로 확인하므로
+  -- fixture 갱신 한 번만 trigger를 끄고 첫 계산의 changed=true를 구별한다.
+  alter table daily_sales_items disable trigger daily_sales_items_80_international_tax;
   update daily_sales_items set unit_price=12000,qty_hall=1,qty_delivery=0,qty_takeout=0 where id=v_item;
-  perform pg_temp.ok('capability가 꺼진 실제 판매 trigger는 국제 snapshot·이벤트를 만들지 않는다',
+  alter table daily_sales_items enable trigger daily_sales_items_80_international_tax;
+  perform pg_temp.ok('명시 계산 전 fixture에는 국제 snapshot·이벤트가 없다',
     not exists(select 1 from daily_sales_item_tax_snapshots where daily_sales_item_id=v_item)
     and not exists(select 1 from sales_tax_events where daily_sales_item_id=v_item));
   v_result := apply_international_tax_for_sales_item(v_item,true);
@@ -144,9 +150,9 @@ begin
   insert into store_tax_profiles(store_id,market_profile_id,default_treatment,effective_from,revision)
   values(pg_temp.store(),v_new_market,'taxable',v_date+1,2) returning id into v_new_tax;
   insert into store_tax_components(
-    store_id,tax_profile_id,kind,name,rate_pct,jurisdiction_level,
+    store_id,tax_profile_id,config_key,kind,name,rate_pct,jurisdiction_level,
     calculation_basis,applies_to_treatments)
-  values(pg_temp.store(),v_new_tax,'primary','새 세율',20,'national',
+  values(pg_temp.store(),v_new_tax,'primary','primary','새 세율',20,'national',
          'primary_tax_exclusive',array['taxable'::tax_treatment]);
 
   update daily_sales_items set qty_hall=0.5 where id=v_item;
@@ -213,6 +219,6 @@ select pg_temp.ok('deferred 국제 세금 불변식은 앱 세션 권한이 아�
   (select p.prosecdef from pg_proc p join pg_namespace n on n.oid=p.pronamespace
     where n.nspname='public' and p.proname='assert_sales_tax_line_balanced'));
 
-select pg_temp.ok('국제 세금 capability는 계산 몸통 뒤에도 꺼져 있다',
-  not (app_capabilities()#>>'{international_tax,read_enabled}')::boolean
-  and not (app_capabilities()#>>'{international_tax,write_enabled}')::boolean);
+select pg_temp.ok('제품 활성 뒤에도 국제 세금 capability는 계산 몸통과 일치한다',
+  (app_capabilities()#>>'{international_tax,read_enabled}')::boolean
+  and (app_capabilities()#>>'{international_tax,write_enabled}')::boolean);

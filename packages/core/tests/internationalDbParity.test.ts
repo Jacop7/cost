@@ -73,7 +73,7 @@ describe('국제 출시 통화 minor unit 단일 계약', () => {
 const dbDescribe = DB ? describe : describe.skip;
 
 dbDescribe(`app_capabilities(DB=${DB ?? '없음'}) ↔ TypeScript 기준선`, () => {
-  it('서버와 공용 타입이 같은 판본·최소 버전·비활성 상태다', () => {
+  it('서버와 공용 타입이 같은 판본·최소 버전·활성 상태다', () => {
     const raw = queryCapabilities() as Record<string, unknown>;
     const tax = raw.international_tax as Record<string, unknown>;
     expect({
