@@ -19,6 +19,7 @@ import { useSalesRange, useTaxBreakdown } from '../hooks';
 import { rangeLabel } from '@/lib/date';
 import { useSalesBusinessDate } from '@/features/business-day/businessDay';
 import { useAppCapabilities, useSalesTaxDetail } from '@/features/international-tax';
+import { formatNumber } from '@margincook/core';
 
 /** 9.0909090909 → `9.09%`. 화면은 두 자리면 충분하다. */
 const pct2 = (v: number) => `${(Math.round(v * 100) / 100).toFixed(2)}%`;
@@ -126,7 +127,7 @@ function InternationalTaxDetail({ detail }: { detail: ReturnType<typeof useSales
       <DetailSection title="판매 시점 국제 세금" />
       <View style={{ paddingHorizontal: 14, paddingBottom: 4 }}>
         {detail.lines.map((line, index) => {
-          const amount = `${line.currencyCode} ${line.taxAmount.toFixed(line.minorUnit)}`;
+          const amount = `${line.currencyCode} ${formatNumber(line.taxAmount, { digits: line.minorUnit, group: ',', decimal: '.' })}`;
           return (
             <DetailRow
               key={`${line.dailySalesItemId}:${line.salesChannel}`}

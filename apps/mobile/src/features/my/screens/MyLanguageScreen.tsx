@@ -12,8 +12,8 @@ import { RpcError } from '@/lib/supabase';
 import { T } from '@/theme/tokens';
 
 const OPTIONS = [
-  { code: 'ko' as const, title: '한국어', sample: '메뉴와 안내를 한국어로 표시해요' },
-  { code: 'en' as const, title: 'English', sample: 'Show menus and guidance in English' },
+  { code: 'ko' as const, title: '한국어', sample: '한국어 선호로 저장해요' },
+  { code: 'en' as const, title: 'English', sample: '영어 선호로 저장해요 · 화면 번역은 준비 중이에요' },
 ];
 
 export default function MyLanguageScreen() {
@@ -120,7 +120,7 @@ function LanguageEditor({
   return (
     <>
       <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 32, gap: 12 }}>
-        <Notice>앱 언어만 바뀌어요. 매장 국가·통화·세금·시간대는 바뀌지 않아요.</Notice>
+        <Notice>지금은 언어 선호만 저장해요. 화면 번역은 준비 중이며 매장 국가·통화·세금·시간대는 바뀌지 않아요.</Notice>
         {accepted.needsConfirmation ? (
           <Notice>기존 언어를 자동으로 옮길 수 없었어요. 사용할 언어를 확인해 주세요.</Notice>
         ) : null}
@@ -187,7 +187,7 @@ function LanguageEditor({
         title="앱 언어를 바꿀까요?"
       >
         <Text style={{ fontSize: 15, color: T.sub2, lineHeight: 22, marginBottom: 16 }}>
-          이 계정의 앱 표시 언어만 {draft === 'ko' ? '한국어' : 'English'}로 바뀝니다. 매장 통화와 세금 기록은 그대로예요.
+          이 계정의 언어 선호를 {draft === 'ko' ? '한국어' : 'English'}로 저장합니다. 화면 번역은 준비 중이며 매장 통화와 세금 기록은 그대로예요.
         </Text>
         <Button
           kind="primary"

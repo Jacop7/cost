@@ -26,7 +26,7 @@ vi.mock('@/features/international-tax', async (importOriginal) => ({
 }));
 vi.mock('@/features/international-tax/hooks', () => ({
   useAppCapabilities: () => capabilities(),
-  useRecipeTaxState: () => recipeState(),
+  useRecipeTaxState: (...args: unknown[]) => recipeState(...args),
 }));
 
 vi.mock('@/features/settings/hooks', () => ({
@@ -43,6 +43,7 @@ import SalesTaxScreen from '@/features/sales/screens/SalesTaxScreen';
 import { RecipeTaxStatusCard } from '@/features/international-tax/RecipeTaxStatusCard';
 
 const CAP_ON = { internationalTax: { readEnabled: true, writeEnabled: false } };
+const CAP_OFF = { internationalTax: { readEnabled: false, writeEnabled: false } };
 const query = <T,>(data: T) => ({ data, isLoading: false, isError: false, error: null, refetch: vi.fn() });
 
 beforeEach(() => {
@@ -76,10 +77,11 @@ describe('국제 세금 전환 화면', () => {
       capabilities: CAP_ON,
       treatment: 'zero_rated',
       taxCategory: 'zero_rated',
+      categories: [{ code: 'zero_rated', name: '0% 식품', treatment: 'zero_rated' }],
     }));
     render(<RecipeTaxStatusCard recipeId="recipe-1" />);
     expect(screen.getByText('0% 과세')).toBeTruthy();
-    expect(screen.getByText('카테고리 zero_rated')).toBeTruthy();
+    expect(screen.getByText('카테고리 0% 식품')).toBeTruthy();
   });
 
   it('SALES-18은 판매 시점 프로필 판본과 확정 세액을 표시한다', () => {
@@ -94,7 +96,7 @@ describe('국제 세금 전환 화면', () => {
     render(<SalesTaxScreen />);
     expect(screen.getByText('판매 시점 국제 세금')).toBeTruthy();
     expect(screen.getByText('제육볶음 · hall')).toBeTruthy();
-    expect(screen.getByText('KRW 1091')).toBeTruthy();
+    expect(screen.getByText('KRW 1,091')).toBeTruthy();
     expect(screen.getByText(/프로필 판본 4/)).toBeTruthy();
     expect(salesTax).toHaveBeenCalledWith('2026-09-01', '2026-09-01', true);
   });
@@ -112,5 +114,21 @@ describe('국제 세금 전환 화면', () => {
     render(<SalesTaxScreen />);
     expect(salesTax).toHaveBeenCalledWith('2026-08-31', '2026-09-01', true);
     expect(screen.getByText(/2026-08-31 · 프로필 판본 4/)).toBeTruthy();
+  });
+
+  it('capability가 꺼지면 RCP-02 국제 과세 카드를 렌더링하지 않는다', () => {
+    capabilities.mockReturnValue(query(CAP_OFF));
+    render(<RecipeTaxStatusCard recipeId="recipe-1" />);
+    expect(screen.queryByText('국제 과세 상태')).toBeNull();
+    expect(recipeState).toHaveBeenCalledWith('recipe-1', false);
+  });
+
+  it('capability가 꺼지면 SALES-18 국제 상세를 조회하지 않고 기존 세금만 보인다', () => {
+    capabilities.mockReturnValue(query(CAP_OFF));
+    salesTax.mockReturnValue(query({ from: '2026-09-01', to: '2026-09-01', lines: [] }));
+    render(<SalesTaxScreen />);
+    expect(salesTax).toHaveBeenCalledWith('2026-09-01', '2026-09-01', false);
+    expect(screen.queryByText('판매 시점 국제 세금')).toBeNull();
+    expect(screen.getByText('기존 세금')).toBeTruthy();
   });
 });

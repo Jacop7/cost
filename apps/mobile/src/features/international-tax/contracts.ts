@@ -82,7 +82,7 @@ export interface TaxCategoryOption { code: TaxCategoryCode; name: string; treatm
 export interface InternationalTaxState {
   capabilities: AppCapabilities;
   localDate: string;
-  onboardingStatus: 'profile_ready'|'manual_review_required'|'country_confirmation_required';
+  onboardingStatus: 'profile_ready'|'tax_profile_required'|'manual_review_required'|'country_confirmation_required';
   migration: { decision: string; reasonCodes: string[]; futureEffectiveFrom: string | null } | null;
   marketProfile: StoreMarketProfile | null;
   taxProfile: (StoreTaxProfile & { categories: TaxCategoryOption[] }) | null;
@@ -126,8 +126,9 @@ export function parseInternationalTaxState(v: unknown): InternationalTaxState {
       treatment:oneOf(c.treatment,TAX_TREATMENTS,'category.treatment'),active:bool(c.active,'category.active'),
     }}),
   } : null;
-  const onboardingStatus=oneOf(r.onboarding_status,['profile_ready','manual_review_required','country_confirmation_required'] as const,'onboarding_status');
+  const onboardingStatus=oneOf(r.onboarding_status,['profile_ready','tax_profile_required','manual_review_required','country_confirmation_required'] as const,'onboarding_status');
   if(onboardingStatus==='profile_ready'&&(!marketProfile||!taxProfile))bad('준비 완료인데 시장·세금 프로필 없음');
+  if(onboardingStatus==='tax_profile_required'&&(!marketProfile||taxProfile))bad('세금 프로필 필요 상태 조합');
   if(taxProfile&&marketProfile&&taxProfile.storeId!==marketProfile.storeId)bad('시장·세금 프로필 매장 불일치');
   return {
     capabilities:parseAppCapabilities(r.capabilities),localDate:ymd(r.local_date,'local_date'),
