@@ -338,6 +338,23 @@ Opus가 지정한 후속 위험은 다음과 같다.
   두 항목 보완 후 재검수에서 `PASS`.
 - Codex 판정: `PASS`; Opus 판정: `PASS`; 최종 판정: `PASS`.
 
+### ING-03d · `screen:ingredient_delete`
+
+- Expo 대조: 실제 화면은 `Alert.alert`로 `고춧가루 삭제`와 “과거 입고·판매 기록은 남고 목록에서만
+  사라져요.”를 표시하고, 취소/삭제를 분리한다. 실제 Expo는 읽기만 했으며 삭제는 실행하지 않았다.
+- 중앙 확인창: 복사 프로토타입은 흐린 상세 배경 중앙에 alertdialog를 표시한다. 취소는 수정 메뉴,
+  삭제 확정은 식재료 목록으로 이동한다. 실제 데이터 삭제나 Expo 변경은 발생하지 않는다.
+- 병합 요소: `centralConfirmPreview`가 별도 버튼 마크업을 만들지 않고 기존 공용
+  `prototypeConfirm`을 사용한다. 공용 확인 요소는 위험 여부·버튼 클래스·라벨·속성·목적지를 옵션으로
+  받아 일반 확인과 위험 확인을 함께 수용한다.
+- 접근성: 제목·설명 연결, 취소 초기 포커스, Escape→취소를 제공한다. 라우트형 확인 화면이므로 실제
+  포커스 트랩 없이 `aria-modal`을 선언하지 않는다.
+- Codex 검수: 수정 메뉴에서 진입해 취소 초기 포커스와 취소 클릭·Escape의 수정 메뉴 복귀를 실제
+  조작했다. 삭제 확정 버튼은 연결 목적지만 코드로 확인하고 누르지 않았다.
+- Opus 1차: SPA 진입 포커스, Escape, 거짓 modal 선언, 헬퍼 재사용성을 지적했다. 공용 확인 요소로
+  병합하고 명시적 포커스·Escape를 보완한 뒤 재검수에서 `PASS`.
+- Codex 판정: `PASS`; Opus 판정: `PASS`; 최종 판정: `PASS`.
+
 ## 전체 target 장부
 
 아래 목록은 숨긴 폐기 전용 페이지를 제외한 활성 screen 61개와 popup/state host 123개다.
@@ -355,7 +372,7 @@ Opus가 지정한 후속 위험은 다음과 같다.
 | screen:purchase | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
 | screen:ingredient_changes | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
 | screen:options | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
-| screen:ingredient_delete | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:ingredient_delete | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
 | screen:recipe_main | recipe | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
 | screen:recipe_detail | recipe | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
 | screen:recipe_price_sim | recipe | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
