@@ -1,0 +1,58 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "AI-ORCH-PLANS-FABLE-001",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R0",
+  "author_role": "SOLAR-ORCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "006000bdcb60783cf34f96d83e298e54277d2e0b",
+  "target_commit_sha": "5f6929095424b9fe53a2005ef5c4136ca2175f50",
+  "target_tree_oid": "49b3850bcd53d9f36f2bf6b525649ee1e396739d",
+  "agents_blob_oid": "4c31bbf9be81871c4dfb1699e057c8303d4e2fae",
+  "agents_sha256": "5628177d442547e868acc3e0446e6513b65bf713f2cfd82cc78e0e6dedc4c860",
+  "requirements": [
+    "다섯 핵심 기획안의 역할·권위·상태·다중 채팅·실패·학습 계약이 서로 모순되지 않는다.",
+    "Stage 4 r2의 Finding 7건과 r3의 Finding 3건이 공식 문서와 증거에서 해소됐는지 재검증한다.",
+    "잔여 Critical·Major·명세상 필수 Finding이 0건인지 공식 Fable 경로로 판정한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:single-canonical-artifact",
+    "AGENTS:fable-append-only-ledger",
+    "AI-ORCH:multi-chat-repository-authority",
+    "AI-ORCH:official-fable-review-independent-from-opus-advisory"
+  ],
+  "artifact_paths": [
+    "docs/팀구성_상세기획안.md",
+    "docs/AI-지식-온톨로지-기획안.md",
+    "docs/AI-오케스트레이션-상세기획안.md",
+    "docs/디렉터리-문서신경망-재설계-기획안.md",
+    "docs/AI-품질-학습-자율성-평가기획안.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/ai-review/README.md"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/evidence/AI-PLANS-STAGE4-OPUS-R2.md",
+    "docs/ai-review/evidence/AI-PLANS-STAGE4-OPUS-R3.md",
+    "docs/ai-review/tasks/AI-ORCH-PLANS-1/collaboration.md",
+    "docs/ai-review/tasks/AI-ORCH-PLANS-1/turns/t0001/run.json"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "Stage 4 r2·r3 Finding ID별 반영 위치와 잔여 여부",
+    "대상 commit·tree·AGENTS hash",
+    "다중 채팅의 요청 수신부터 Task 잠금·편집 lease·증거 고정까지의 폐쇄된 상태 전이",
+    "직접 Opus advisory와 공식 Fable gate가 분리됐다는 증거"
+  ],
+  "human_decisions": [
+    "2026-09-02 사용자가 사용량 초기화 후 이번 검수를 공식 Fable 경로로 진행하라고 지시했다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null
+}
