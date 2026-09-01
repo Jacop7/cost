@@ -4,12 +4,12 @@
 
 ### 0.1 역할과 범위
 
-- 상태: 병합 개정안
+- 상태: 서비스 기준 재검토 개정안
 - 개정일: 2026-09-01
 - 적용 대상: `docs/prototypes/full-page-flow-prototype.html`과 향후 Expo 공용 UI
 - 검수 범위: 제품 화면 62개, 팝업·조건 상태 호스트 125개, 고유 ID 99개
 - 이번 개정 제외: 실제 Expo 화면, 프로토타입 HTML, DB, RPC
-- 공동 검토: Codex 전수검수 + 사용자 요청 기반 `claude-opus-5` 독립 검토
+- 공동 검토: Codex 전수검수 + 사용자 요청 기반 `claude-opus-5` 독립 검토 2회
 
 이 문서는 같은 역할의 요소가 화면마다 다른 크기·굵기·색상·배치·동작을 갖지 않도록 공통 UI 계약을
 정의한다. 화면 문구와 노출 조건은 `full-page-flow-prototype-current-spec.md`, 변경 과정은
@@ -23,6 +23,29 @@
 | UI 목표 행동과 출시 검수 기준 | 이 가이드 |
 | 화면별 확정 문구·배치 | 현재 확정안 문서 |
 | 프로토타입 HTML | 검수용 표현과 상호작용 예시 |
+
+벤치마크는 제품 권위를 대체하지 않으며 역할을 다음처럼 분리한다.
+
+| 기준 | 가져올 범위 | 가져오지 않을 범위 |
+|---|---|---|
+| 캐시노트·오늘얼마 | 정보 구조·디자인 로직·업무 프로세스: 사장님의 첫 질문, 운영 홈의 우선순위, 요약 → 이상징후 → 근거 상세 → 행동 → 리포트 흐름 | POS·카드사 자동 연동, 정산·미지급 추정, 마켓·커뮤니티, 브랜드 자산 |
+| 토스 | 타이포 위계, 중립 표면, 절제된 Primary, 컴포넌트 일관성, 가벼운 모션과 접근성 | 금융앱 정보 구조, 금융 업무 퍼널, 거대 마케팅 hero, 추천 피드, TDS 전용 자산 |
+| 이 제품 | 5개 탭, 수기 기록, 원장·계산·마감·철회 계약 | 근거 없는 자동화 표현과 외부 서비스 기능 복제 |
+
+여기서 `디자인 로직`은 시각 스타일이 아니라 무엇을 먼저 보여주고, 어디서 상세로 들어가며,
+어떤 상태를 확인한 뒤 기록·수정·철회하는지에 관한 화면 구조와 행동 순서를 뜻한다.
+
+벤치마크 근거는 2026-09-01 공개 자료 스냅샷이다. 캐시노트의
+[공식 서비스 소개](https://info.cashnote.kr/main)와
+[App Store](https://apps.apple.com/kr/app/id1459090715), 오늘얼마의
+[공식 사이트](https://www.todaysales.co.kr/)와
+[App Store](https://apps.apple.com/kr/app/id1605931675), 토스의
+[디자인 시스템 소개](https://toss.tech/article/toss-design-system)와
+[인터랙션 시스템 글](https://toss.tech/article/interaction)을 참고한다. 공개 원칙만 참고하며 화면·문구·아이콘·그래픽 자산을 복제하지 않는다.
+
+이 제품은 현재 POS 자동 연동 앱이 아니다. 식재료·재고·발주·입고·매출·손익은 사장님이 직접
+기록하고 서버가 그 기록을 확정·계산한다. 기준 서비스의 `실시간·자동` 문법을 그대로 가져오지
+않고 `마지막 기록 시각 · 미입력 구간 · 작성/확정 상태`로 같은 수준의 신뢰를 만든다.
 
 프로토타입 CSS 값을 Expo 토큰보다 우선하지 않는다. HTML에만 존재하는 색상·굵기·간격은 자동으로
 제품 토큰이 되지 않는다. 이 문서도 `tokens.ts`와 다른 두 번째 원시 토큰 체계를 만들지 않는다.
@@ -61,6 +84,9 @@
 8. 키보드와 Safe Area가 현재 입력이나 주요 행동을 가리지 않아야 한다.
 9. 모든 조작은 공용 최소 터치 영역과 접근 가능한 이름을 갖는다.
 10. 반복 예외는 화면별 CSS가 아니라 공용 variant로 승격한다.
+11. 정보 구조와 업무 흐름은 캐시노트·오늘얼마 관점으로 검토하고, 토스는 시각 표현 톤에만 적용한다.
+12. 자동 수집 근거가 없는 값에 `실시간`, `LIVE`, `자동 연동`, `자동 집계`를 사용하지 않는다.
+13. 집계·요약·손익은 값과 함께 마지막 기록 시각, 미입력 구간, 작성/확정 상태 중 해당 정보를 제공한다.
 
 ---
 
@@ -115,6 +141,9 @@
 - 도움말과 오류는 같은 `FieldMessage` 역할을 사용하고 글자보다 충분히 큰 행간을 보장한다.
 - 비교표·목록·KPI의 숫자는 `tnum`을 사용한다. 단일 편집 입력은 폰트 렌더 검증 전 제외한다.
 - 200% 글자 확대에서도 제목·값·입력·행동이 사라지지 않아야 한다.
+- `TYPE.display`는 화면에서 가장 중요한 매출·재고·순이익 수치에만 사용한다. 마케팅 문장과 일반
+  화면 제목을 키우는 용도로 사용하지 않는다.
+- `800` 굵기는 제목·핵심값·최종 합계처럼 제한된 요소에만 사용하고 반복 Row 전체에 적용하지 않는다.
 
 ### 1.4 간격·크기·모서리
 
@@ -137,6 +166,10 @@
 컨테이너 자체를 키운다. 현재 literal 모서리는 기존 `radius`로 수렴시키고, 정말 필요한 예외만 의미
 토큰으로 승격한다.
 
+운영 화면의 여백은 정보 구분을 만들되 업무 밀도를 희생하지 않는다. 같은 데이터 그룹은
+`space.sm~md`, 카드·섹션 사이는 `space.md~lg`, 큰 업무 구획은 `space.xl~xxl`을 우선한다.
+핵심 값이나 행동을 첫 화면 밖으로 밀어내는 큰 공백은 빈 상태·초기 안내 외에는 사용하지 않는다.
+
 ### 1.5 그림자·레이어·모션
 
 - 그림자는 `cardShadow`, `sheetShadow`, `fabShadow`, `sliderThumbShadow`만 공용 원천으로 사용한다.
@@ -144,6 +177,9 @@
 - 레이어 순서는 `base → sticky → navigation → floating → overlay → dialog → popover → toast`다.
 - 현재 z 토큰은 없으므로 공용 z 객체 추가 전까지 화면별 새 값을 늘리지 않는다.
 - 모션은 `press / popover / dialog / toast / sheet` 역할로 통일하고 reduced motion을 지원한다.
+- 모션은 화면별 연출이 아니라 상황별 공용 컴포넌트와 플랫폼 공통 스펙으로만 정의한다.
+- 정적 UI만으로 상태와 결과를 이해할 수 있으면 인터랙션을 추가하지 않는다.
+- 반복 Row 순차 등장, KPI count-up, 장식용 bounce·pulse, 차트 자동 재생을 사용하지 않는다.
 - 저장 중 진행 표시가 버튼 폭과 라벨 위치를 바꾸지 않아야 한다.
 
 ### 1.6 아이콘
@@ -203,6 +239,17 @@
 
 하단 탭은 `식재료 · 레시피 · 발주 · 매출관리 · MY` 순서를 유지한다.
 
+별도의 여섯 번째 홈을 추가하지 않는다. 각 탭 메인이 해당 업무의 운영 시작점이 되며 기능 링크
+목록보다 사장님의 첫 질문에 먼저 답한다.
+
+| 탭 메인 | 첫 질문 | 우선 행동 |
+|---|---|---|
+| 식재료 | 지금 부족하거나 소진된 재료가 무엇인가 | 재고 수정·발주 이동 |
+| 레시피 | 목표에 못 미치거나 판매를 멈춘 메뉴가 무엇인가 | 판매가 시뮬레이션·레시피 수정 |
+| 발주 | 지금 처리할 발주·입고가 무엇인가 | 입고 처리·취소 |
+| 매출관리 | 오늘 어디까지 기록했고 얼마가 남았는가 | 판매 기록·영업 종료·과거 정정 |
+| MY | 계산과 운영에 필요한 설정이 준비됐는가 | 누락 설정 보완·기간 보고서 진입 |
+
 - 같은 탭을 다시 누르면 탭 메인으로 이동하고, 이미 메인이면 목록 상단으로 이동한다.
 - 탭 전환 중 dirty 폼이 있으면 이탈 확인을 먼저 수행한다.
 - 기본 계층은 `메인 → 상세 → 상세의 상세`다.
@@ -256,6 +303,8 @@
 - 공식 의미 variant는 `primary / secondary / outline / ghost / danger / tint`다.
 - 현재 `gray`는 `secondary` alias로 정리한다.
 - 한 화면·팝업의 대표 Primary는 원칙적으로 하나다.
+- 채움 Primary와 파란색 강조는 대표 행동·현재 선택·명시적 링크에만 사용한다. 일반 숫자·합계·
+  섹션 제목·장식 아이콘·일반 카드 테두리를 파란색으로 만들지 않는다.
 - 삭제·철회·계정 해지는 danger를 사용하며 Primary 색을 재사용하지 않는다.
 - loading 중 라벨을 유지하고 진행 표시 때문에 폭이 바뀌지 않게 한다.
 - 단독 아이콘 행동은 `IconButton`으로 통합하고 문자 아이콘을 넣지 않는다.
@@ -270,6 +319,7 @@ Form은 입력 순서·검증·dirty·제출·실패 복구를 소유하는 조�
 - 제출 시 첫 오류로 이동하고 저장 실패 후 입력값과 선택값을 유지한다.
 - Input은 `empty / filled / focused / disabled / readonly / error / warning / validating / success`를 지원한다.
 - readonly는 값을 유지하되 편집 단서와 열림 행동을 제거한다.
+- 입력을 다시 Card 안에 감싸지 않는다. 포커스는 경계 변화로 표현하고 glow·강한 그림자를 쓰지 않는다.
 - 단위는 suffix, 통화 위치는 locale formatter 결과를 사용한다.
 - 계산 결과를 Input처럼 만들지 않고 `ResultField`를 사용한다.
 
@@ -321,17 +371,21 @@ Form은 입력 순서·검증·dirty·제출·실패 복구를 소유하는 조�
 | 가이드 역할 | 현재 kit | 상태 | 목표 |
 |---|---|---|---|
 | Badge | `Badge`, `StatusBadge` | 기존 | 상태·비교·메타 변형 및 대비 정리 |
-| Card | `Card` | 기존 | interactive·selected·warning·loading 보강 |
+| Card | `Card` | 기존 | group·interactive·selected·loading 보강 |
 | Row | `PLRow`만 존재 | 신규 필요 | 일반 행 변형 공통화 |
 | Table | 없음 | 신규 계약 | 동일 데이터 모델의 웹 표·모바일 행 |
-| KPI | 없음 | 신규 필요 | hero·summary·target·delta |
+| KPI | 없음 | 신규 필요 | primary·summary·target·delta·notEntered |
 | ResultField | 없음 | 신규 필요 | 입력과 분리한 preview·confirmed 결과 |
 | Chart | `Donut`, `TrendChart` | 일부 | Donut만 현재 공식, TrendChart 보류 |
 | ManagementList | 없음 | 신규 필요 | 관리·재정렬·행동 구조 공통화 |
-| Data state | `QueryState` | 기존 | refreshing·offline·stale·partial 확장 |
+| Data state | `QueryState` | 기존 | refreshing·offline·stale·partial·notEntered·draft 확장 |
 | Notice | `Notice` | 기존 | 읽어야 하는 정보 안내에 사용 |
 
 기준일·기간·갱신 시각·적용 시점이 필요한 값에는 출처를 함께 표시한다. 음수와 0을 숨기지 않는다.
+
+운영 메인은 `범위·기록 상태 → PrimaryKPI → 확인이 필요한 항목 → 기록·상세 행동 → 보조 정보`
+순서를 기본으로 한다. 첫 화면에는 PrimaryKPI 한 개, 우선 이상징후 3개 이하, 대표 행동 한 개를
+먼저 두고 나머지는 Row 또는 상세 화면으로 내린다. 모든 기능과 숫자를 같은 무게의 카드로 나열하지 않는다.
 
 ### 4.2 Badge와 상태 표시
 
@@ -343,12 +397,19 @@ Form은 입력 순서·검증·dirty·제출·실패 복구를 소유하는 조�
 
 - 일반 카테고리·구매처를 불필요하게 Badge로 만들지 않는다.
 - 한 항목의 Badge 수를 제한하고 의미가 겹치면 본문 값으로 내린다.
+- Badge와 Button·Chip은 형태와 상태에서 구분돼야 한다. 조작할 수 없는 Badge에는 pressed·hover
+  표현이나 chevron을 주지 않는다.
 - 음수 재고는 Badge로 숨기지 않고 `−750g`처럼 실제 값을 표시한다.
 - solid 배경은 흰색 전경 대비가 검증된 조합에서만 허용한다.
 
 ### 4.3 Card·Row·Table
 
-- Card는 `default / interactive / selected / information / warning / danger / loading` 변형을 갖는다.
+- Card의 구조 변형은 `group / interactive / selected / loading`으로 제한한다.
+- 반복 데이터는 Row 하나마다 Card를 만드는 대신 하나의 Card 안의 Row 또는 배경 없는 섹션을 우선한다.
+- 정보·주의·위험은 기본적으로 Badge·값·Notice로 전달한다. Card 전체 tint는 영역 전체가 같은
+  상태일 때만 사용하고 Card 안에 Card를 중첩하지 않는다.
+- 일반 Card는 표면 차이 또는 구분선을 우선하며 Popover·Sheet·FAB처럼 실제로 떠 있는 요소에만
+  강한 elevation을 사용한다.
 - 제목·값·상태를 카드 헤더와 본문에 반복하지 않는다.
 - Row는 `primary / labelValue / valuePercent / countAmount / hierarchy / beforeAfter / event / management`
   변형으로 공통화한다.
@@ -358,9 +419,15 @@ Form은 입력 순서·검증·dirty·제출·실패 복구를 소유하는 조�
 
 ### 4.4 KPI와 ResultField
 
-- KPI는 라벨·값·단위·기준 기간 또는 비교 기준을 함께 가진다.
-- loading·값 없음·집계 불가를 0으로 표시하지 않는다.
-- 서버 확정 집계인지 미리보기인지 표시한다.
+- `PrimaryKPI`는 화면당 최대 하나이며 라벨·값·단위·기준 기간 또는 비교 기준을 함께 가진다.
+- `PrimaryKPI`에는 대형 홍보 문장·그라데이션·장식 그래픽을 함께 두지 않는다. 나머지 수치는
+  SummaryKPI 또는 Row로 낮춘다.
+- KPI는 `마지막 기록 시각 · 미입력 기간 · 작성/확정 상태` 중 해당하는 기록 신뢰 정보를 제공한다.
+- 기록이 없는 기간은 0이 아니라 `미입력`으로 표시하고 해당 기록 화면으로 가는 행동을 제공한다.
+- loading·값 없음·기록 없음·집계 불가를 모두 0으로 표시하지 않는다.
+- 서버 확정 집계인지 화면 미리보기인지 표시한다.
+- 자동 수집 근거가 없는 KPI에 `실시간`, `LIVE`, `자동 집계` 라벨을 붙이지 않는다.
+- 채움 Primary 색을 쓰는 요약 표면은 화면당 하나 이하이며 장식 목적으로 사용하지 않는다.
 - ResultField는 `preview / afterChange / warning / negative / confirmed / empty / loading / error`를 갖는다.
 - ResultField의 라벨은 영역 밖에 두고 영역 안에는 핵심 값을 우선한다.
 - 계산 실패를 0으로 대체하지 않는다.
@@ -446,6 +513,8 @@ Form은 입력 순서·검증·dirty·제출·실패 복구를 소유하는 조�
 | Saving | 라벨 유지 + 진행 표시 + 중복 제출 차단 |
 | Success | 짧은 토스트 또는 필요한 완료창 |
 | Empty | 이유와 가능한 첫 행동 |
+| Not entered | 대상은 있으나 해당 기간 기록이 없음을 0과 구분하고 기록 행동 제공 |
+| Draft | 아직 마감하지 않은 영업일임을 표시하고 마감 또는 계속 기록 행동 제공 |
 | Filtered empty | 적용 필터와 초기화 행동 |
 | Search empty | 검색어와 지우기 행동 |
 | Error | 문제 요약·다시 시도·기존 값 유지 |
@@ -454,8 +523,9 @@ Form은 입력 순서·검증·dirty·제출·실패 복구를 소유하는 조�
 | Permission denied | 필요한 권한과 설정 이동 |
 | Partial | 실패 영역만 재시도, 성공 영역 유지 |
 
-최초 빈 상태, 필터 결과 없음, 검색 결과 없음을 같은 문구로 합치지 않는다. 중요한 오류를 자동으로
-사라지는 토스트만으로 전달하지 않는다.
+최초 빈 상태, 필터 결과 없음, 검색 결과 없음, 기록 없음을 같은 문구로 합치지 않는다. 등록할 대상이
+없는 상태와 대상은 있지만 아직 기록하지 않은 상태는 다르다. 중요한 오류를 자동으로 사라지는
+토스트만으로 전달하지 않는다.
 
 ### 6.2 미저장·철회·복구
 
@@ -470,7 +540,7 @@ Form은 입력 순서·검증·dirty·제출·실패 복구를 소유하는 조�
 | 업무 | 상태 흐름 | UI 계약 |
 |---|---|---|
 | 발주 | 후보 → 입고 예정 → 입고 완료 | 발주는 기록만, 재고 반영 시점 분리 |
-| 매출 | 영업 중 → 브레이크 → 영업 종료 | 종료 영업일은 다시 열지 않음 |
+| 매출 | 영업 중 → 브레이크 → 영업 종료 | 상태는 사장님이 직접 전환하고, 확정 전 `작성 중`과 확정 후 `마감 완료`를 구분하며 종료 영업일은 다시 열지 않음 |
 | 레시피 | 판매중 ↔ 판매중지 | 재고 부족과 판매 중지 구분 |
 | 재고 | 입고·차감·폐기 → 조건부 철회 | 음수 재고를 숨기지 않음 |
 | 목표 | 목표 미달 ↔ 목표 달성 | 색 외 텍스트·부호 병행 |
@@ -478,13 +548,46 @@ Form은 입력 순서·검증·dirty·제출·실패 복구를 소유하는 조�
 안전재고 미달과 판매 부족을 같은 판정으로 쓰지 않는다. 판매 부족은 음수 재고 기록을 계속할지
 확인하되 자동으로 판매를 막지 않는다.
 
+영업 상태와 마감은 자동으로 감지하지 않는다. 상태 전환과 확정은 사장님의 명시적 행동으로만
+일어나며 마감 후 값은 일반 입력 폼이 아니라 판본 정정 흐름으로 수정한다.
+
 ### 6.4 감사·출처·적용 시점
 
-- 변경 원천은 `직접 수정 / 자동 갱신 / 원장 사건 / 계산 파생`으로 구분한다.
+- 변경 원천은 `직접 기록 / 계산 파생 / 원장 사건 / 시스템 보정`으로 구분한다. `계산 파생`은
+  저장된 기록에서 서버가 계산한 결과이며 외부 데이터 자동 수집을 뜻하지 않는다.
 - 적용 시점은 `현재 반영 / 다음 영업일부터 / 과거 스냅샷 유지`처럼 표시한다.
 - 감사 상세는 날짜·시간·대상·수정자·판본과 이전 값 → 이후 값을 제공한다.
 - 오프라인·지연 데이터는 서버 확정값처럼 보이지 않게 한다.
-- 기준 영업일·기준 월·마지막 갱신 시각은 필요한 화면에만 표시한다.
+- 마지막 기록 시각과 기준 영업일은 집계·요약·손익 화면에서 생략하지 않는다. 기준 월과 그 밖의
+  맥락은 필요한 화면에만 표시한다.
+- 집계값은 구성별 상세와 원천 기록으로 내려갈 수 있고, 원천 기록에서도 영향받은 집계로 돌아갈 수
+  있어야 한다. 이동 전후의 영업일·기간·합계 기준은 바뀌지 않는다.
+
+### 6.5 운영 홈, 이상 신호, 리포트
+
+각 탭 메인은 `오늘 상태 → 핵심 수치 → 확인이 필요한 항목 → 기록·상세 행동` 순서를 유지한다.
+홈은 통계 전시장이나 기능 링크 모음이 아니라 업무를 시작하는 화면이다.
+
+| 단계 | 사장님의 질문 | 화면 책임 |
+|---|---|---|
+| 확인 | 지금 무슨 상태인가 | 기준 영업일·기록 상태·PrimaryKPI를 먼저 표시 |
+| 진단 | 왜 이런 상태인가 | 판정 기준·영향 수량/금액·발생 시점·출처를 표시 |
+| 행동 | 지금 무엇을 해야 하나 | 문맥에 맞는 다음 행동 한 개를 우선 제공 |
+| 확인 완료 | 무엇이 바뀌었나 | 저장 결과와 영향받은 재고·단가·손익을 표시 |
+| 증명·정정 | 나중에 확인하거나 되돌릴 수 있나 | 원장·수정 이력·판본 정정·조건부 철회로 연결 |
+
+- 이상 항목은 `신호 이름 + 근거 값 + 영향 + 다음 행동 한 개`를 같은 영역에 제공한다.
+- 현재 기본 이상 항목은 `미입력 영업일·매출`, `소진·소진 임박·음수 재고`, `입고 예정 미처리`,
+  `목표 미달`, `구매 단가 급등`, `저장·원장 실패`다. 새 이상 항목은 데이터 출처·판정 기준·해결
+  행동이 함께 확정될 때만 추가한다.
+- 조치가 필요 없는 상태는 `확인만`, 처리 대기 상태는 `반영 대기`처럼 구분하고 불필요한 위험색을 쓰지 않는다.
+- 요약과 상세는 같은 지표명·영업일·기간·합계 기준을 유지한다.
+- 알림은 방금 행동의 실패, 당일 조치가 필요한 이상, 마감 확인, 기간 리포트로 목적을 분리한다.
+  같은 사건을 푸시·홈·카드에서 각각 새 경고처럼 중복 생성하지 않는다.
+- 운영 알림과 홍보·구매 유도는 같은 우선순위와 시각 형태로 섞지 않는다.
+- 일 손익은 영업 중 `작성 중` 값과 영업 종료 후 `마감 완료` 스냅샷을 분리한다. 주·월 비교는
+  누적 기록이 충분할 때만 제공하며 새 리포트 화면은 별도 화면 계약을 승인받아 추가한다.
+- 홈을 금융 자산 스택, 상품 추천 피드, POS 실시간 현황판 구조로 만들지 않는다.
 
 ---
 
@@ -500,12 +603,21 @@ Form은 입력 순서·검증·dirty·제출·실패 복구를 소유하는 조�
 | 도움말 | 짧은 해요체 | `식재료 상세에서 추가할 수 있어요.` |
 | 확인 | 결과가 드러나는 질문 | `판매를 중지하시겠습니까?` |
 | 오류 | 문제 + 다음 행동 | `입고하지 못했어요. 잠시 후 다시 시도해 주세요.` |
+| 기록 신뢰 | 기준 + 시각 | `마지막 기록 09/01 21:30` |
+| 미입력 | 기간 + 상태, 행동 동반 | `8/31 매출이 미입력이에요.` + `매출 기록` |
+| 마감 상태 | 짧은 명사형 | `작성 중`, `마감 완료` |
 
 - 라벨·버튼·Badge에는 마침표를 붙이지 않는다.
 - 제목과 같은 보조 설명을 바로 아래에서 반복하지 않는다.
 - 의미를 늘리지 않는 `옵션`, `관리`, `미리보기`, `기준`은 제거한다.
 - 동일 개념은 현재 확정안의 최종 명칭을 사용한다.
 - 비활성 버튼만으로 필수값 누락이나 실행 불가 이유를 설명하지 않는다.
+- 작업 화면은 값과 행동을 먼저 말한다. `사장님,`, `쉽고 빠르게`, `한눈에` 같은 홍보 문장을
+  화면마다 반복하지 않고 대화형 문장은 빈 상태·도움말·오류·확인에만 제한한다.
+- `실시간`, `LIVE`, `자동 연동`, `자동 집계`는 실제 자동 수집 기능과 출처가 있을 때만 사용한다.
+  현재는 `오늘 기록 기준`, `마지막 기록`, `기록한 값 합계`를 사용한다.
+- 토스식 문구 톤은 짧고 구체적인 평이한 문장이라는 뜻이며, 금융 용어·가벼운 농담·이모지·
+  소비자용 마케팅 카피를 복제한다는 뜻이 아니다.
 
 ### 7.2 숫자·단위
 
@@ -561,6 +673,10 @@ Form은 입력 순서·검증·dirty·제출·실패 복구를 소유하는 조�
 - 동적 계산값·수량 변화·저장 결과를 알 수 없음
 - 200% 글자 확대에서 정보나 행동이 사라짐
 - 차트에 텍스트 요약이나 데이터 표가 없음
+- 기록하지 않은 기간을 `0` 또는 마감 완료로 표시함
+- 자동 수집 근거가 없는 값에 `실시간`, `LIVE`, `자동 연동`, `자동 집계`를 표시함
+- 집계·요약·손익에서 기준 영업일과 기록 상태를 확인할 수 없음
+- 이상 항목에 판정 근거 또는 다음 행동이 없음
 
 ### 8.3 최소 검수 조합
 
@@ -588,6 +704,12 @@ Form은 입력 순서·검증·dirty·제출·실패 복구를 소유하는 조�
 9. 로딩·저장·빈 상태·오류·오프라인의 필수 상태가 검증된다.
 10. current-spec·changelog에 판정·예외·증거가 연결된다.
 11. 실제 Expo 구현 변경은 저장소 필수 검사를 별도로 통과한다.
+12. 운영 요약이 필요한 탭 메인의 첫 화면에서 PrimaryKPI 한 개와 우선 이상징후 3개 이하, 대표
+    행동 한 개가 구분된다.
+13. 이상 항목에서 근거 상세와 처리 화면까지 두 단계 이내로 이동하고 원천 기록까지 추적할 수 있다.
+14. 기록 없음과 0, 작성 중과 마감 완료, 미리보기와 서버 확정값이 각각 구분된다.
+15. 자동 수집 근거가 없는 `실시간·LIVE·자동 연동·자동 집계` 사용자 노출 문구가 0건이다.
+16. 반복 Row를 개별 Card로 감싸지 않고 채움 Primary 행동·표면은 화면 또는 시트당 하나 이하이다.
 
 ### 9.2 적용 순서
 
@@ -599,6 +721,8 @@ Form은 입력 순서·검증·dirty·제출·실패 복구를 소유하는 조�
 - 접근 가능한 이름·상태·모달 포커스
 - 오류·저장 중·오프라인 상태
 - locale formatter 연결
+- 수기 기록 신뢰 표기, `미입력`, 작성/마감 경계
+- 이상 신호의 근거·영향·다음 행동 연결
 
 **P1**
 
@@ -619,7 +743,7 @@ Form은 입력 순서·검증·dirty·제출·실패 복구를 소유하는 조�
 
 | 필드 | 내용 |
 |---|---|
-| Rule/Finding | 가이드 항목 또는 F-01~F-20 |
+| Rule/Finding | 가이드 항목 또는 F-01~F-28 |
 | Screen/Popup | 화면 키·화면 ID·popup ID·host |
 | Platform | Web / Android / iOS |
 | Viewport/설정 | 폭·글자 크기·키보드·locale |
@@ -648,7 +772,7 @@ Form은 입력 순서·검증·dirty·제출·실패 복구를 소유하는 조�
 
 | 화면 키 | 화면 ID | 주요 패턴 |
 |---|---|---|
-| `ingredient_main` | ING-01 | MainHeader, CategoryTabs, SortFilter, IngredientCardList, FAB |
+| `ingredient_main` | ING-01 | MainHeader, OperationalSummary, CategoryTabs, SortFilter, ExceptionFirstList, FAB |
 | `ingredient_add` | ING-02 | ChildHeader, Field, PickerSheet, ResultField, StickyAction |
 | `ingredient_detail` | ING-03 | ChildActionHeader, DetailHero, KPI, PreviewCard, ConditionalEmpty |
 | `ingredient_edit_menu` | ING-03a | ChildHeader, ActionList, DangerAction |
@@ -666,7 +790,7 @@ Form은 입력 순서·검증·dirty·제출·실패 복구를 소유하는 조�
 
 | 화면 키 | 화면 ID | 주요 패턴 |
 |---|---|---|
-| `recipe_main` | RCP-01 | MainHeader, CategoryTabs, Filter, RecipeCardList, FAB |
+| `recipe_main` | RCP-01 | MainHeader, OperationalSummary, CategoryTabs, Filter, ExceptionFirstList, FAB |
 | `recipe_detail` | RCP-02 | ChildActionHeader, StatusSelect, KPI, Donut, CostTable, PreviewCard |
 | `recipe_price_sim` | RCP-02c | ChildHeader, NumericField, SegmentedControl, ProfitTable, LiveResult |
 | `recipe_add` | RCP-03 | ChildHeader, Field, EmptyState, AddAction, CostPreview, StickyAction |
@@ -685,7 +809,7 @@ Form은 입력 순서·검증·dirty·제출·실패 복구를 소유하는 조�
 
 | 화면 키 | 화면 ID | 주요 패턴 |
 |---|---|---|
-| `order_main` | ORD-01 | MainHeader, StateTabs, OrderCardList, ActionSheet, ConfirmDialog |
+| `order_main` | ORD-01 | MainHeader, OperationalSummary, StateTabs, ExceptionFirstList, ActionSheet, ConfirmDialog |
 | `order_detail` | ORD-02 | ChildHeader, OrderSummary, DependentForm, StickyAction |
 | `order_receive` | ORD-03 | ChildHeader, OrderSummary, ResultField, ConfirmDialog, InfoSheet warning variant |
 | `order_direct` | ORD-02 | ChildHeader, PickerField, NumericField, StickyAction |
@@ -694,7 +818,7 @@ Form은 입력 순서·검증·dirty·제출·실패 복구를 소유하는 조�
 
 | 화면 키 | 화면 ID | 주요 패턴 |
 |---|---|---|
-| `sales_main` | SALES-01 | SalesMainHeader, BusinessStateCard, HeroKPI, QuickActions, LiveList |
+| `sales_main` | SALES-01 | SalesMainHeader, BusinessDayState, PrimaryKPI, EntryActions, RecordedEntryList, NotEnteredNotice |
 | `analytics` | SALES-02 | ChildHeader, PeriodFilter, SummaryKPI, DataTable |
 | `day` | SALES-03 | ChildHeader, ProfitKPI, CostTable, InfoSheet |
 | `day_full` | SALES-10 | ChildHeader, HierarchicalProfitTable |
@@ -846,11 +970,16 @@ Form은 입력 순서·검증·dirty·제출·실패 복구를 소유하는 조�
 | 포커스 표시 | 없음 | 모든 조작 필수 |
 | Safe Area | 없음 | 상·하단 소유권 적용 |
 | 로딩 상태 | 없음 | 페이지·섹션·행·버튼 단위 |
+| 자동·실시간 암시 | 패턴명·CSS 클래스에 복수 존재 | 기록 기반 명칭과 상태로 교체 |
 
 프로토타입에는 `safe-area-inset`, `focus-visible`, `prefers-reduced-motion`, `100dvh`가 없고 `100vh`와
 단일 media query에 의존한다. 실제 적용 때 다시 측정하고 판본·명령·결과를 기록한다.
 
-### C.2 Opus 공동 검토 Finding 반영표
+`sales-hero`, `sales-live-*`, `business-state`처럼 자동 연동 서비스의 문법에서 유래한 클래스와
+`HeroKPI`, `LiveList`, `BusinessStateCard` 패턴명이 남아 있다. 이번 문서에서는 목표 패턴명을 기록
+기반으로 교체했으며 HTML 클래스와 렌더러는 후속 적용 단계에서 함께 정리한다.
+
+### C.2 공동 검토 Finding 반영표
 
 | ID | 확인된 격차 | 본문 처리 | 구현 상태 |
 |---|---|---|---|
@@ -874,6 +1003,14 @@ Form은 입력 순서·검증·dirty·제출·실패 복구를 소유하는 조�
 | F-18 | spacing·radius·shadow·z 체계 충돌 | 1.4~1.5 | 일부 문서 정리 |
 | F-19 | Web 규칙과 RN 등가 연결 부족 | 8.1 대응표 | 문서 정리 |
 | F-20 | 셀렉터별 완료 기준 부족 | 9.1, 9.3 | 후속 매핑 필요 |
+| F-21 | 캐시노트·오늘얼마의 업무 로직과 토스 시각 톤 역할이 불명확 | 0.1, 0.4 | 문서 정리 |
+| F-22 | `sales-live-*`·`LiveList`가 자동 실시간 문법을 암시 | 0.4, 4.4, A.4 | 미적용 |
+| F-23 | 기록 없음과 실제 0을 구분하는 상태 부재 | 4.4, 6.1 | 미적용 |
+| F-24 | 마지막 기록 시각·작성/마감 상태가 선택 사항 | 4.4, 6.3~6.4 | 미적용 |
+| F-25 | 이상 신호와 근거·영향·다음 행동 연결 계약 부재 | 6.5 | 문서 정리 |
+| F-26 | 요약 → 구성 상세 → 원천 기록의 기준 유지·양방향 추적 부재 | 6.4~6.5 | 문서 정리 |
+| F-27 | 토스 톤을 거대 hero·전면 카드화·파란색 남용으로 오해할 위험 | 1.3~1.5, 3.2, 4.3~4.4 | 문서 정리 |
+| F-28 | 운영 알림·마감·기간 리포트의 목적과 중복 방지 계약 부재 | 6.5 | 문서 정리 |
 
 ### C.3 토큰·컴포넌트 적용 매핑 형식
 
@@ -899,6 +1036,8 @@ Form은 입력 순서·검증·dirty·제출·실패 복구를 소유하는 조�
 - 프로토타입의 공용 CSS 변수·핵심 selector·화면 renderer.
 - 신규 필요 `IconButton`, `Toggle`, `StickyAction`, `Row`, `Table`, `KPI`, `ResultField`,
   `ManagementList`, `ConfirmDialog`, `PopoverMenu`.
+- 구성 패턴 `OperationalSummary`, `ExceptionFirstList`, `BusinessDayState`, `RecordedEntryList`,
+  `NotEnteredNotice`와 실제 화면 renderer.
 
 ### C.4 이번 개정에서 수정하지 않은 항목
 
