@@ -1097,5 +1097,72 @@ else
   fail=1
 fi
 
+# ── 시나리오 23 · 과거 Windows CRLF 함수 본문 → 0189 cutover 전진 ────
+say "㉓ 0188 상태 + CRLF 함수 본문 → 0189~0191이 줄끝과 무관하게 전진"
+BASE23=20260901000188
+bash "$SCRIPT_DIR/fresh-db.sh" --until "$BASE23" "$D" >/dev/null
+psql_d "$D" <<'EOF' >/dev/null
+do $crlf$
+declare
+  v_fn record;
+  v_def text;
+begin
+  for v_fn in
+    select p.oid
+      from pg_proc p
+      join pg_namespace n on n.oid=p.pronamespace
+      join pg_language l on l.oid=p.prolang
+     where n.nspname='public' and l.lanname='plpgsql' and p.prokind in ('f','p')
+  loop
+    v_def:=replace(pg_get_functiondef(v_fn.oid),E'\r\n',E'\n');
+    execute replace(v_def,E'\n',E'\r\n');
+  end loop;
+end
+$crlf$;
+EOF
+before23=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c "
+  select concat_ws('|',count(*),count(*) filter(where position(E'\\r\\n' in p.prosrc)>0))
+    from pg_proc p
+    join pg_namespace n on n.oid=p.pronamespace
+    join pg_language l on l.oid=p.prolang
+   where n.nspname='public' and l.lanname='plpgsql' and p.prokind in ('f','p');")
+if [ "${before23%%|*}" = "0" ] || [ "${before23%%|*}" != "${before23##*|}" ]; then
+  say "   FAIL public PL/pgSQL 함수 전체 CRLF 전제가 성립하지 않았다: $before23"
+  fail=1
+elif ! err="$(apply_after "$D" "$BASE23" 2>&1 1>/dev/null)"; then
+  say "   FAIL CRLF 함수가 있는 0188 DB에서 최신까지 적용이 막혔다"
+  say "        $(printf '%s' "$err" | head -3)"
+  fail=1
+else
+  state23=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c "
+    select concat_ws('|',
+      app_capabilities()#>>'{international_tax,read_enabled}',
+      app_capabilities()#>>'{international_tax,write_enabled}',
+      position('perform assert_write_app_version();' in pg_get_functiondef(
+        'public.save_sale(uuid,date,jsonb,jsonb,jsonb,integer,boolean,time without time zone)'::regprocedure))>0,
+      position('perform assert_write_app_version();' in pg_get_functiondef(
+        'public.amend_ended_business_day(uuid,date,integer,jsonb,jsonb,jsonb,text)'::regprocedure))>0,
+      position('LEGACY_TAX_WRITE_DISABLED' in pg_get_functiondef(
+        'public.save_store_tax(uuid,tax_mode,jsonb,integer)'::regprocedure))>0);")
+  if [ "$state23" = "true|true|t|t|t" ]; then
+    test23_ok=1
+    for test_no in 47 48 49 50; do
+      if ! test23="$(cd "$DB_DIR" && PGDATABASE="$D" node tests/run.mjs "$test_no" 2>&1)"; then
+        say "   FAIL CRLF cutover DB 행동 시험 ${test_no}가 실패했다"
+        say "        $(printf '%s' "$test23" | tail -8)"
+        test23_ok=0
+        fail=1
+        break
+      fi
+    done
+    if [ "$test23_ok" = "1" ]; then
+      say "   ok   전체 CRLF 본문을 정규화하고 세 공개 쓰기 문·행동 시험 47~50을 닫았다"
+    fi
+  else
+    say "   FAIL CRLF cutover 사후조건이 어긋났다: $state23"
+    fail=1
+  fi
+fi
+
 say ""
-if [ "$fail" = "0" ]; then say "업그레이드 경로 22/22 통과"; else say "업그레이드 경로 실패"; exit 1; fi
+if [ "$fail" = "0" ]; then say "업그레이드 경로 23/23 통과"; else say "업그레이드 경로 실패"; exit 1; fi

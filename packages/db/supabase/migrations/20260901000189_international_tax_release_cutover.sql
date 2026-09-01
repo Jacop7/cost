@@ -51,27 +51,25 @@ $$;
 do $gate_sales$
 declare v_def text;v_new text;
 begin
-  v_def:=pg_get_functiondef('public.save_sale(uuid,date,jsonb,jsonb,jsonb,integer,boolean,time without time zone)'::regprocedure);
-  v_new:=replace(v_def,$old$  perform assert_my_store(p_store);
-
-  v_ctx$old$,$new$  perform assert_my_store(p_store);
-  perform assert_write_app_version();
-
-  v_ctx$new$);
+  -- 과거 Windows 환경에서 적용된 함수는 본문 줄끝이 CRLF로 저장돼 있다. 치환 전에
+  -- LF로 정규화해 새 DB와 기존 원격 DB가 같은 전진 경로를 타게 한다.
+  v_def:=replace(pg_get_functiondef('public.save_sale(uuid,date,jsonb,jsonb,jsonb,integer,boolean,time without time zone)'::regprocedure),chr(13),'');
+  v_new:=replace(v_def,
+    '  perform assert_my_store(p_store);'||chr(10)||chr(10)||'  v_ctx',
+    '  perform assert_my_store(p_store);'||chr(10)||
+    '  perform assert_write_app_version();'||chr(10)||chr(10)||'  v_ctx');
   if v_new=v_def then raise exception '0189: save_sale 판본 문 삽입 위치를 찾지 못했습니다'; end if;
   execute v_new;
 
-  v_def:=pg_get_functiondef('public.amend_ended_business_day(uuid,date,integer,jsonb,jsonb,jsonb,text)'::regprocedure);
-  v_new:=replace(v_def,$old$  perform assert_my_store(p_store);   -- ⚠ 반드시 첫 줄
-
-  -- 보낸 것이$old$,$new$  perform assert_my_store(p_store);   -- ⚠ 반드시 첫 줄
-  perform assert_write_app_version();
-
-  -- 보낸 것이$new$);
+  v_def:=replace(pg_get_functiondef('public.amend_ended_business_day(uuid,date,integer,jsonb,jsonb,jsonb,text)'::regprocedure),chr(13),'');
+  v_new:=replace(v_def,
+    '  perform assert_my_store(p_store);   -- ⚠ 반드시 첫 줄'||chr(10)||chr(10)||'  -- 보낸 것이',
+    '  perform assert_my_store(p_store);   -- ⚠ 반드시 첫 줄'||chr(10)||
+    '  perform assert_write_app_version();'||chr(10)||chr(10)||'  -- 보낸 것이');
   if v_new=v_def then raise exception '0189: amend_ended_business_day 판본 문 삽입 위치를 찾지 못했습니다'; end if;
   execute v_new;
 
-  v_def:=pg_get_functiondef('public.save_store_tax(uuid,tax_mode,jsonb,integer)'::regprocedure);
+  v_def:=replace(pg_get_functiondef('public.save_store_tax(uuid,tax_mode,jsonb,integer)'::regprocedure),chr(13),'');
   v_new:=replace(v_def,$old$  perform assert_my_store(p_store);$old$,$new$  perform assert_my_store(p_store);
   perform assert_write_app_version();
   raise exception '새 세금 설정 화면에서 저장해 주세요'
