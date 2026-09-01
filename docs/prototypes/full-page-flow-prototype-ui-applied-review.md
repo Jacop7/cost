@@ -195,6 +195,25 @@ Opus가 지정한 후속 위험은 다음과 같다.
   사용량 sheet의 오래된 중복 CSS는 해당 레시피 화면 검수 항목으로 이관한다.
 - Codex 판정: `PASS`; Opus 판정: `PASS`; 최종 판정: `PASS`.
 
+### ING-04 · `screen:ingredient_edit`, `popup=edit_category`, `popup=edit_unit`
+
+- 문제점: 추가/수정 화면의 겉모양은 병합돼 있었지만 수정 폼에는 별도 draft·검증 연결이 없어 picker
+  왕복 시 입력값이 초기화되고 구매 단가·저장 가능 상태가 실시간으로 동기화되지 않았다.
+- 수정안: `renderIngredientForm`과 `bindIngredientForm`을 추가/수정 공용 병합 요소로 완성하고, 각
+  화면의 draft만 분리했다. 입력값→단가 계산→필수값 검증→저장 연결이 한 규칙을 사용한다.
+- 제품 문구/구조: 기본 거래처·메모·구매 링크 관리·입력칸 아래 중복 설명은 수정 폼에 노출하지
+  않는다. 구매 단가는 라벨이 입력칸 위에 있고 결과만 강조 영역에 우측 정렬한다.
+- 상태 검수: 이름에 따옴표·꺾쇠를 포함해도 picker 왕복 후 보존된다. kg/L은 g/ml 기준으로 환산하고
+  g/ml/개/모는 입력 단위를 유지한다. 필수값이 비면 저장이 비활성화되고 유효하면 상세로 이동한다.
+- picker 병합: `immediatePickerMarkup`과 `bindImmediatePicker`를 만들어 카테고리·단위가 동일한
+  radiogroup, 현재값 체크, 즉시 적용, 초기 포커스, 방향키/Home/End 이동 규칙을 사용한다. 단위
+  항목의 작은 무게·부피·수량 설명은 제거했다.
+- Opus 1차: `CONDITIONAL`. attribute escape, 현재 선택값 접근성 이름, label/button 구조, 단가
+  live status, 초기 CTA guard, radio semantics와 포커스, 단위 보조문구를 지적했다.
+- Opus 2차: 세 target 모두 `PASS`. 1차 지적 해소와 추가/수정 draft 분리, picker 왕복 재바인딩에
+  신규 회귀가 없음을 확인했다.
+- Codex 판정: `PASS`; Opus 판정: `PASS`; 최종 판정: `PASS`.
+
 ## 전체 target 장부
 
 아래 목록은 숨긴 폐기 전용 페이지를 제외한 활성 screen 61개와 popup/state host 123개다.
@@ -205,7 +224,7 @@ Opus가 지정한 후속 위험은 다음과 같다.
 | screen:ingredient_add | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
 | screen:ingredient_detail | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
 | screen:ingredient_edit_menu | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
-| screen:ingredient_edit | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:ingredient_edit | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
 | screen:stock | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
 | screen:stock_change | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
 | screen:memo_edit | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
@@ -267,8 +286,8 @@ Opus가 지정한 후속 위험은 다음과 같다.
 | popup:ingredient_option_empty@ingredient_detail | ingredient | PageState | COMMON | PASS | PASS | PASS | PASS | PASS |
 | popup:add_category@ingredient_add | ingredient | PickerSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
 | popup:add_unit@ingredient_add | ingredient | PickerSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
-| popup:edit_category@ingredient_edit | ingredient | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
-| popup:edit_unit@ingredient_edit | ingredient | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:edit_category@ingredient_edit | ingredient | PickerSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
+| popup:edit_unit@ingredient_edit | ingredient | PickerSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
 | popup:stock_inbound@stock_change | ingredient | PageState | COMMON | TODO | TODO | TODO | TODO | TODO |
 | popup:stock_deduct@stock_change | ingredient | PageState | COMMON | TODO | TODO | TODO | TODO | TODO |
 | popup:stock_discard@stock_change | ingredient | PageState | COMMON | TODO | TODO | TODO | TODO | TODO |
