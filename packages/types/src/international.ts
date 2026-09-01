@@ -167,6 +167,17 @@ export interface SaleTaxSnapshot {
   components: readonly TaxComponentAmountSnapshot[];
 }
 
+/** DB numeric이 확정한 현재 가격의 국제 세금 견적. 앱은 이 금액을 재계산하지 않는다. */
+export interface InternationalTaxQuote {
+  listedTotal: number;
+  netSales: number;
+  customerTotal: number;
+  taxAmount: number;
+  merchantTaxLiability: number;
+  marketplaceTaxLiability: number;
+  components: readonly TaxComponentAmountSnapshot[];
+}
+
 export type SemanticAppVersion = `${number}.${number}.${number}`;
 export interface AppCapabilities {
   contractVersion: 1;

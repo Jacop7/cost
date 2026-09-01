@@ -310,6 +310,7 @@ export type Database = {
           etc_revenue: number
           etc_tax: number
           etc_tax_calculation_version: Database["public"]["Enums"]["international_tax_calculation_version"]
+          etc_tax_snapshot: Json | null
           extra_items: Json
           id: string
           note: string | null
@@ -326,6 +327,7 @@ export type Database = {
           etc_revenue?: number
           etc_tax?: number
           etc_tax_calculation_version?: Database["public"]["Enums"]["international_tax_calculation_version"]
+          etc_tax_snapshot?: Json | null
           extra_items?: Json
           id?: string
           note?: string | null
@@ -342,6 +344,7 @@ export type Database = {
           etc_revenue?: number
           etc_tax?: number
           etc_tax_calculation_version?: Database["public"]["Enums"]["international_tax_calculation_version"]
+          etc_tax_snapshot?: Json | null
           extra_items?: Json
           id?: string
           note?: string | null
@@ -2516,6 +2519,10 @@ export type Database = {
         Returns: boolean
       }
       apply_due_breaks: { Args: never; Returns: Json }
+      apply_international_tax_for_daily_sales: {
+        Args: { p_sales: string }
+        Returns: Json
+      }
       apply_international_tax_for_sales_item: {
         Args: { p_force: boolean; p_sales_item: string }
         Returns: Json
