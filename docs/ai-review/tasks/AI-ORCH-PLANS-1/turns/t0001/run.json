@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "AI-ORCH-PLANS-1",
+  "sequence": "t0001",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-01T20:33:05.193Z",
+  "turn_id": "turn-h001",
+  "turn_type": "HUMAN_DECISION",
+  "role": "HUMAN",
+  "task_sha256": "4292aaa532cfc5c0f9817b3a777040cb57176b0f6d8f4f3ce50295835152c715",
+  "runner_sha256": "80dae1d06c89af056e9d8c210b571e978ee534fc128a5fe3b9867610b5ae447b",
+  "previous_manual_run_sha256": null,
+  "collaboration_before_sha256": "f6afa7af58d69deb543790fe389a5889da127a4669540e05e922bdc66729729d",
+  "collaboration_before_bytes": 1506,
+  "collaboration_entry_sha256": "2d72ca5aa170abe4ddca710c8d3c6be88da227657a405e15e8a29c3bde91b87c",
+  "collaboration_entry_bytes": 718,
+  "collaboration_after_sha256": "7d17c8e7728252f6b56f4d92defd47bcb9bc61136ec927ddc3f2d54c96f314b5",
+  "collaboration_after_bytes": 2224
+}

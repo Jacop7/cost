@@ -1,0 +1,55 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "AI-ORCH-PLANS-1",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R0",
+  "author_role": "SOLAR-ORCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "59738f43d300e8febc119744b122b4d399f3f15b",
+  "target_commit_sha": "006000bdcb60783cf34f96d83e298e54277d2e0b",
+  "target_tree_oid": "5e7da399e5a1f845188873f66d6af4a332df266f",
+  "agents_blob_oid": "4c31bbf9be81871c4dfb1699e057c8303d4e2fae",
+  "agents_sha256": "f04aeb2f02d254eeff8e27014d57470214770c5be9fcf35a3d39033acfd0dd75",
+  "requirements": [
+    "다섯 핵심 기획안의 역할·권위·상태·다중 채팅·실패·학습 계약이 서로 모순되지 않는다.",
+    "Stage 4 r2 필수 Finding 3건과 선택 Finding 4건의 반영 결과를 재확인한다.",
+    "잔여 Critical·Major·명세상 필수 Finding이 0건인지 읽기 전용 Opus advisory로 확인한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:single-canonical-artifact",
+    "AGENTS:fable-append-only-ledger",
+    "AI-ORCH:multi-chat-repository-authority",
+    "AI-ORCH:opus-direct-advisory-not-fable-gate"
+  ],
+  "artifact_paths": [
+    "docs/팀구성_상세기획안.md",
+    "docs/AI-지식-온톨로지-기획안.md",
+    "docs/AI-오케스트레이션-상세기획안.md",
+    "docs/디렉터리-문서신경망-재설계-기획안.md",
+    "docs/AI-품질-학습-자율성-평가기획안.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/ai-review/README.md"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/evidence/AI-PLANS-STAGE4-OPUS-R2.md",
+    "docs/ai-review/evidence/AI-PLANS-STAGE4-OPUS-FINAL-FAILED.md"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "Stage 4 r2 Finding ID별 반영 위치와 잔여 여부",
+    "대상 commit·tree·AGENTS hash",
+    "직접 Opus advisory 실제 모델·세션·사용량·종료 사유"
+  ],
+  "human_decisions": [
+    "2026-09-02 사용자가 누적 핵심 기획안 최종 Opus 재검수의 추가 상한 2.00 USD를 승인했다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null
+}
