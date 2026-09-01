@@ -278,6 +278,32 @@ Opus가 지정한 후속 위험은 다음과 같다.
   두 항목 모두 `PASS`.
 - Codex 판정: `PASS`; Opus 판정: `PASS`; 최종 판정: `PASS`.
 
+### ING-07 · `screen:stock`와 필터·최근 기록 철회
+
+- Expo 대조: 실제 Expo의 `조정`, 입고 `1개` 표기를 확정안에 맞춰 `차감`,
+  `식자재쇼핑몰 · 1kg × 1개`로 바꿨다. 폐기 전용 페이지 대신 입고·판매 소진·차감·폐기를 한
+  재고 내역에서 확인한다.
+- 필터 병합: 기간·유형·정렬 모두 `immediatePickerMarkup`·`bindImmediatePicker`를 공유한다. 기간은
+  최근 1/3/6개월·전체, 유형은 전체/입고/판매 소진/차감/폐기, 정렬은 최신순/오래된순이다. 폐기
+  구분 필터는 노출하지 않는다. 필터 결과는 월별로 그룹하고 월별 건수를 표시한다.
+- 빠른 철회 규칙: 전체 원본에서 입고·차감·폐기 유형별 최신 1건이고 최근 7일 미만이며 아직 철회되지
+  않았을 때만 `⋮`를 노출한다. 화면 필터·정렬 순서가 달라도 event key로 같은 원장 행을 찾는다.
+  최신을 철회한 뒤 과거 기록을 연쇄 철회 대상으로 승격하지 않는다는 사용자 확정 규칙을 적용했다.
+- 더보기: 날짜와 구매처를 한 줄 검정 텍스트로, `입고 1kg (1kg × 1개)`를 연한 회색 중앙 요약
+  카드로 표시한다. 제목은 `입고 내역`처럼 띄어 쓰고 닫기·철회를 하단 고정한다. 닫기·Escape·배경
+  탭은 모두 열림 상태를 해제하고 원래 `⋮`로 포커스를 돌려준다.
+- 철회: 중앙 ConfirmDialog에서 취소/Escape 시 더보기로 복귀한다. 확인은 기존 행을 삭제하지 않고
+  반대 부호 철회 행을 추가한다. 현재 재고·유형 합계·폐기 조리 전/후·전체 합계·새 행 잔량을 함께
+  갱신하며 음수 재고도 그대로 표시한다.
+- 시드 정합: 현재 재고 812g을 기준으로 이벤트를 역산해 행별 잔량을 일관되게 맞췄다. 최신 1kg
+  입고를 철회하면 −188g이 되며, 이는 음수 재고 허용 제품 규칙과 일치한다.
+- Codex 검수: 실제 Expo와 텍스트를 대조하고 모바일에서 3개 필터 radiogroup, 유형별 `⋮` 3개,
+  더보기 배치, 철회 중앙 알럿, 취소/Escape 복귀, 초기/복귀 포커스를 조작했다. PC에서도 회색 요약
+  카드와 하단 행동, 중앙 알럿 위치를 확인했다.
+- Opus 1차: 기간 미적용, 철회행 필터 비대칭, 딥링크 대상, 포커스, 월 헤더, 요약 재계산을 지적했다.
+  보완 후 사용자 철회 규칙과 runtime 시드 잔량까지 포함한 최종 재검수에서 모두 `PASS`.
+- Codex 판정: `PASS`; Opus 판정: `PASS`; 최종 판정: `PASS`.
+
 ## 전체 target 장부
 
 아래 목록은 숨긴 폐기 전용 페이지를 제외한 활성 screen 61개와 popup/state host 123개다.
@@ -289,7 +315,7 @@ Opus가 지정한 후속 위험은 다음과 같다.
 | screen:ingredient_detail | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
 | screen:ingredient_edit_menu | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
 | screen:ingredient_edit | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
-| screen:stock | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:stock | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
 | screen:stock_change | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
 | screen:memo_edit | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
 | screen:purchase | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
@@ -367,11 +393,11 @@ Opus가 지정한 후속 위험은 다음과 같다.
 | popup:option_card_menu@options | ingredient | ActionSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
 | popup:option_more@options | ingredient | PopoverMenu | COMMON | PASS | PASS | PASS | PASS | PASS |
 | popup:option_delete@options | ingredient | ConfirmDialog | COMMON | PASS | PASS | PASS | PASS | PASS |
-| popup:stock_period@stock | ingredient | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
-| popup:stock_type@stock | ingredient | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
-| popup:stock_order@stock | ingredient | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
-| popup:stock_event_more@stock | ingredient | InfoSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
-| popup:stock_event_revert@stock | ingredient | ConfirmDialog | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:stock_period@stock | ingredient | PickerSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
+| popup:stock_type@stock | ingredient | PickerSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
+| popup:stock_order@stock | ingredient | PickerSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
+| popup:stock_event_more@stock | ingredient | InfoSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
+| popup:stock_event_revert@stock | ingredient | ConfirmDialog | COMMON | PASS | PASS | PASS | PASS | PASS |
 | popup:purchase_period@purchase | ingredient | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
 | popup:ingredient_change_detail@ingredient_changes | ingredient | InfoSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
 | popup:recipe_sort@recipe_main | recipe | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
