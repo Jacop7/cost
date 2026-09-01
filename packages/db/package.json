@@ -11,6 +11,7 @@
     "diff": "supabase db diff",
     "deploy:staging:plan": "node scripts/deploy-guard.mjs --target staging --mode plan",
     "deploy:staging:apply": "node scripts/deploy-guard.mjs --target staging --mode apply",
+    "smoke:staging:international": "node scripts/staging-international-smoke.mjs",
     "deploy:production:plan": "node scripts/deploy-guard.mjs --target production --mode plan",
     "deploy:production:apply": "node scripts/deploy-guard.mjs --target production --mode apply",
     "gen:types": "supabase gen types typescript --local > src/database.types.ts",

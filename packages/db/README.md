@@ -28,6 +28,7 @@ scripts/
   admin-acl-audit.sql     원격 audit의 rollback 전용 앱 롤 공격면 감사 SQL
   admin-acl.test.sh       비밀번호·argv·환경 격리 회귀시험
   admin-acl-audit.test.mjs 실제 DB metric·rollback·모바일 RPC 허용 목록 대조
+  staging-international-smoke.mjs/.sql 스테이징 5개국 국제 세금 facade·계산 rollback 검산
 tests/
   _prelude.sql            공통 픽스처·사후조건
   01_…50_*.sql            트랜잭션 DB 회귀 스위트
@@ -136,7 +137,7 @@ integration·ops·Queue 원본 노출, 내부 RPC 권한과 앱이 직접 쓰는
 ## 환경별 적용
 
 - 로컬: 파괴적 reset과 합성 데이터 시험 허용.
-- 스테이징: 유료 프로젝트를 만들고 로컬 링크·계획 확인까지 마쳤다. P0-5 승인 전에는 원격 적용하지 않는다.
+- 스테이징: `0191`까지 적용했고, 배포 뒤 5개국 국제 세금 rollback 검산과 pending 0을 확인했다.
 - 운영: 별도 프로젝트를 만들었지만 이 작업 루트는 스테이징에만 링크한다. `main`의 승인된 migration만
   대상별 배포 가드로 순서대로 적용한다.
 
@@ -158,6 +159,10 @@ corepack pnpm db:deploy:staging:plan
 # 계획 출력과 확인 문구를 대조한 뒤에만 적용
 export MARGINCOOK_DEPLOY_CONFIRM=APPLY:staging:<project-ref>:<40자리-main-SHA>
 corepack pnpm db:deploy:staging:apply
+
+# 적용 뒤 합성 계정·매장을 남기지 않는 5개국 국제 세금 검산
+export MARGINCOOK_PRODUCTION_PROJECT_REF=<운영-project-ref>
+corepack pnpm db:smoke:staging:international
 ```
 
 운영은 `MARGINCOOK_PRODUCTION_PROJECT_REF`와 `db:deploy:production:plan` / `db:deploy:production:apply`를
