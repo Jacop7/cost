@@ -113,6 +113,38 @@ Opus가 지정한 후속 위험은 다음과 같다.
   check, 선택 즉시 닫기를 확인했다.
 - Codex 판정: `PASS`; Opus 판정: `PASS`; 최종 판정: `PASS`.
 
+### ING-02 · `screen:ingredient_add`
+
+- 문제점: 필드처럼 보이는 `span`이어서 입력할 수 없었고, 별도 메모 수정 흐름이 있는데 메모 필드가
+  중복 노출됐다. 필수값이 비어도 추가 버튼이 활성 상태였으며 카테고리·단위를 고르면 입력값이
+  사라질 수 있었다.
+- 수정안: `Field` 병합 요소를 실제 text/number input, 선택 Button, suffix로 구성했다. 메모와 기본
+  거래처를 제거하고 `구매 단가`는 `Result` 병합 요소로 분리했다. 구매 링크 안내는 입력 폭과 같은
+  notice로 유지했다. draft 상태, 필수 검증, 기준단위 환산 구매단가 미리보기를 연결했다.
+- Codex 검수: 초기 추가 버튼 disabled, 식재료명·용량·안전재고·최소 발주·카테고리 필수, 구매 가격
+  선택 입력을 확인했다. 대파/1kg/4,000원 입력 시 `4.00원/g`, g로 변경 시 `4,000.00원/g`이 계산된다.
+  카테고리·단위 선택 뒤에도 입력 draft가 유지되고 필수값 충족 뒤 버튼이 활성화된다.
+- 시각 검수: 모바일 폭에서 label 위/값 아래, 숫자 우측 정렬, suffix 우측, 구매단가 Result,
+  notice, StickyAction, BottomTab이 겹치지 않는다. 웹 숫자 spinner를 공통 제거했다.
+- Opus 1차: `CONDITIONAL`. Picker의 12개 등록 카테고리를 전체 탭 포함 13개로 잘못 기록한 점,
+  notice가 행동 링크 스타일을 상속한 점, 제거된 필드를 다시 문자열 치환하던 죽은 코드 3건, 음수
+  안전재고 검증 허점을 지적했다. 문서를 12개로 정정하고 전용 `role=note` 스타일을 만들었으며,
+  죽은 치환을 제거하고 안전재고를 0 이상으로 검증하도록 수정했다.
+- Opus 2차: 두 PickerSheet의 `PASS`를 확인하고, 선택 입력인 구매 가격이 음수일 때 음수 구매단가를
+  만들 수 있는 결함과 불필요한 전달용 wrapper를 지적했다. 구매 가격을 0 이상으로 clamp하고 wrapper를
+  제거했다.
+- Opus 3차: `PASS`. 음수 구매 가격 clamp와 직접 renderer 위임을 확인했다.
+- Codex 판정: `PASS`; Opus 판정: `PASS`; 최종 판정: `PASS`.
+
+### ING-02 · `popup:add_category@ingredient_add`, `popup:add_unit@ingredient_add`
+
+- 문제점: 화면 내 선택 버튼으로 열 때 popup ID·URL·제목 연결이 빠졌다.
+- 수정안: 두 PickerSheet가 직접 진입과 카탈로그 진입에서 같은 `activePopup`, URL, 제목, 즉시 선택
+  계약을 사용하도록 묶었다.
+- Codex 검수: 이름 있는 카테고리·단위 dialog, 등록 가능한 카테고리 12개, kg/g/L/ml/개/모, check,
+  선택 즉시 닫기와 draft 보존을 확인했다.
+- Codex 판정: `PASS`; Opus 판정: `PASS`; 최종 판정: `PASS`.
+
 ## 전체 target 장부
 
 아래 목록은 숨긴 폐기 전용 페이지를 제외한 활성 screen 61개와 popup/state host 123개다.
@@ -120,7 +152,7 @@ Opus가 지정한 후속 위험은 다음과 같다.
 | target | domain | type | common | Codex | Opus | PC | mobile | final |
 |---|---|---|---|---|---|---|---|---|
 | screen:ingredient_main | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
-| screen:ingredient_add | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:ingredient_add | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
 | screen:ingredient_detail | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
 | screen:ingredient_edit_menu | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
 | screen:ingredient_edit | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
@@ -183,8 +215,8 @@ Opus가 지정한 후속 위험은 다음과 같다.
 | popup:sort@ingredient_main | ingredient | PickerSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
 | popup:ingredient_option_filled@ingredient_detail | ingredient | PageState | COMMON | TODO | TODO | TODO | TODO | TODO |
 | popup:ingredient_option_empty@ingredient_detail | ingredient | PageState | COMMON | TODO | TODO | TODO | TODO | TODO |
-| popup:add_category@ingredient_add | ingredient | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
-| popup:add_unit@ingredient_add | ingredient | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:add_category@ingredient_add | ingredient | PickerSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
+| popup:add_unit@ingredient_add | ingredient | PickerSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
 | popup:edit_category@ingredient_edit | ingredient | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
 | popup:edit_unit@ingredient_edit | ingredient | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
 | popup:stock_inbound@stock_change | ingredient | PageState | COMMON | TODO | TODO | TODO | TODO | TODO |
