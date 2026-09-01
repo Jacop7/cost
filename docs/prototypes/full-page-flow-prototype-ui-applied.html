@@ -122,6 +122,7 @@
     .edit-form-with-suffix>span{flex:0 0 auto;color:var(--ui-text-sub);font-size:15px;font-weight:600}
     .ingredient-option-note{min-height:48px;display:flex;align-items:center;padding:10px 14px;border:1px solid #b8d4ff;border-radius:var(--ui-radius-field);background:#f4f8ff;color:var(--ui-primary);font-size:14px;font-weight:600;line-height:1.45;cursor:default}
     .empty-action{width:100%;min-height:48px;border:0;border-top:1px solid var(--ui-line);background:var(--ui-surface);color:var(--ui-primary);font-size:15px;font-weight:650}
+    .edit-menu-close{width:100%;min-height:52px;margin-top:10px;border:0;border-radius:var(--ui-radius-card);background:var(--ui-surface);color:var(--ui-text);font-size:16px;font-weight:650;text-align:center}
     .edit-form-label,.stock-add-label,.date-field{font-size:14px;font-weight:650;color:var(--ui-text-sub)}
     input::placeholder,textarea::placeholder{color:var(--ui-text-muted);opacity:1}
     input[type="number"]{-moz-appearance:textfield}
@@ -477,7 +478,7 @@
       return `<section class="card detail-top-card"><div class="detail-tags"><span class="detail-tag">향신료·허브</span></div><strong class="detail-name">고춧가루</strong><div class="detail-divider"></div><div class="detail-memo">▣&nbsp; 메모<p>메모를 입력하세요</p></div>${recentChangeButton('ingredient_changes')}</section>${stockSummary}${optionSection}${basePrice}${detailPreviewSection('폐기 내역',discardRecent,{screen:'stock',ariaLabel:'폐기 내역 전체보기',filterType:'폐기'})}${detailPreviewSection('현재 재고',stock,{screen:'stock',ariaLabel:'재고 내역 전체보기',filterType:'전체'})}`
     }
     function editUnderlay(){return `<div class="edit-underlay"><div class="edit-underlay-card short"></div><div class="edit-underlay-card"></div><div class="edit-underlay-card"></div><div class="edit-underlay-card short"></div></div>`}
-    function renderIngredientEditMenu(){return `<div class="edit-menu-stage">${editUnderlay()}<div class="prototype-sheet"><div class="prototype-sheet-group"><button class="prototype-sheet-row" type="button" data-screen-link="ingredient_edit">식재료 수정</button><button class="prototype-sheet-row" type="button" data-screen-link="stock_change">재고 수정</button><button class="prototype-sheet-row" type="button" data-screen-link="memo_edit">메모 수정</button><button class="prototype-sheet-row" type="button" data-screen-link="options">구매 링크 수정</button><button class="prototype-sheet-row danger" type="button" data-screen-link="ingredient_delete">식재료 삭제</button></div><button class="prototype-sheet-close" type="button" data-screen-link="ingredient_detail">닫기</button></div></div>`}
+    function renderIngredientEditMenu(){return `<div class="edit-menu-stage">${editUnderlay()}<div class="prototype-sheet"><div class="prototype-sheet-group"><button class="prototype-sheet-row" type="button" data-screen-link="ingredient_edit">식재료 수정</button><button class="prototype-sheet-row" type="button" data-screen-link="stock_change">재고 수정</button><button class="prototype-sheet-row" type="button" data-screen-link="memo_edit">메모 수정</button><button class="prototype-sheet-row" type="button" data-screen-link="options">구매 링크 수정</button><button class="prototype-sheet-row danger" type="button" data-screen-link="ingredient_delete">식재료 삭제</button></div><button class="edit-menu-close" type="button" data-screen-link="ingredient_detail">닫기</button></div></div>`}
     function renderIngredientForm(isAdd=false){
       const category=isAdd?ingredientAddCategory:ingredientCategory;
       const unit=isAdd?ingredientAddUnit:ingredientUnit;
@@ -775,7 +776,7 @@
         if(id==='stock_error')document.querySelector('[data-stock-confirm]')?.click();
       }
     }
-    function setScreen(k){const from=active;if(k==='recipe_avg_sales')k='recipe_add';if(k==='discard'){historyFilters.stock.type='폐기';historyFilters.stock.discardType='전체';k='stock'}if(!screens[k])k='ingredient_main';if(['recipe_ingredient_search','recipe_material_search'].includes(k)&&['recipe_add','recipe_edit'].includes(from))parentScreens[k]=from;optionEditIndex=null;activePopup=null;active=k;if(k==='ingredient_detail')ingredientOptionState='filled';$('overlay').classList.remove('open');history.replaceState(null,'',`${location.pathname}?screen=${k}`);render();$('content').scrollTop=0}
+    function setScreen(k){const from=active;if(k==='recipe_avg_sales')k='recipe_add';if(k==='discard'){historyFilters.stock.type='폐기';historyFilters.stock.discardType='전체';k='stock'}if(!screens[k])k='ingredient_main';if(k==='options'&&['ingredient_detail','ingredient_edit_menu'].includes(from))parentScreens.options=from;if(['recipe_ingredient_search','recipe_material_search'].includes(k)&&['recipe_add','recipe_edit'].includes(from))parentScreens[k]=from;optionEditIndex=null;activePopup=null;active=k;if(k==='ingredient_detail')ingredientOptionState='filled';$('overlay').classList.remove('open');history.replaceState(null,'',`${location.pathname}?screen=${k}`);render();$('content').scrollTop=0}
     function stockPurchaseReady(){return stockAddOption.mode==='saved'||(stockAddOption.mode==='direct'&&stockAddVendor.trim().length>0)}
     const purchasePlaceTitleObserver=new MutationObserver(()=>{
       const body=$('sheet-body');
@@ -867,6 +868,12 @@
     function bindStockFilterLinks(){document.querySelectorAll('[data-stock-filter-type]:not([data-stock-filter-bound])').forEach(button=>{button.dataset.stockFilterBound='true';button.addEventListener('click',()=>{historyFilters.stock.type=button.dataset.stockFilterType},{capture:true})})}
     const stockFilterLinkObserver=new MutationObserver(bindStockFilterLinks);
     stockFilterLinkObserver.observe($('content'),{childList:true,subtree:true});
+    function bindEditMenuBackdrop(){const stage=document.querySelector('.edit-menu-stage:not([data-backdrop-bound])');if(!stage)return;stage.dataset.backdropBound='true';stage.addEventListener('click',event=>{if(!event.target.closest('.prototype-sheet'))setScreen('ingredient_detail')})}
+    const editMenuBackdropObserver=new MutationObserver(bindEditMenuBackdrop);
+    editMenuBackdropObserver.observe($('content'),{childList:true,subtree:true});
+    function bindOptionEntryContext(){document.querySelectorAll('[data-purchase-link-add]:not([data-option-context-bound])').forEach(button=>{button.dataset.optionContextBound='true';button.addEventListener('click',()=>{parentScreens.options='ingredient_detail'},{capture:true})})}
+    const optionEntryContextObserver=new MutationObserver(bindOptionEntryContext);
+    optionEntryContextObserver.observe($('content'),{childList:true,subtree:true});
     function ensureTaxTotalSubtotal(){if(active!=='my_tax')return;const labels=[...document.querySelectorAll('.tax-section-label')];const previewLabel=labels.find(node=>node.textContent.trim()==='판매 금액 미리보기');const previewRows=previewLabel?.nextElementSibling?.querySelectorAll('.tax-summary-row>span');['판매가','세금 총액','결제금액','세금 제외 금액'].forEach((text,index)=>{if(previewRows?.[index]&&previewRows[index].textContent!==text)previewRows[index].textContent=text});const label=labels.find(node=>node.textContent.trim()==='세금 총액');const card=label?.nextElementSibling;if(!card||card.querySelector('.tax-total-subtotal'))return;const totals=taxPreviewTotals();card.insertAdjacentHTML('beforeend',`<div class="subtotal tax-total-subtotal"><span>합계</span><b>${taxMoney(totals.amount)}<small>${totals.rate.toFixed(1)}%</small></b></div>`)}
     const taxTotalSubtotalObserver=new MutationObserver(ensureTaxTotalSubtotal);
     taxTotalSubtotalObserver.observe($('content'),{childList:true,subtree:true});

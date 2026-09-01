@@ -177,6 +177,24 @@ Opus가 지정한 후속 위험은 다음과 같다.
 - Codex 검수: 빈 상태의 추가 버튼이 `options&popup=option_add`로 연결되는 것을 확인했다.
 - Codex 판정: `PASS`; Opus 판정: `PASS`; 최종 판정: `PASS`.
 
+### ING-03a · `screen:ingredient_edit_menu`
+
+- 문제점: 메뉴 항목은 확정안과 맞았지만 닫기 버튼이 내용 폭을 갖지 못해 글자가 세로로 줄바꿈됐다.
+- 수정안: `prototype-sheet-group`에 5개 행동을 유지하고 `prototype-sheet-close`를 별도 병합 요소로
+  분리해 전체 폭·52px·독립 카드 형태로 고정했다.
+- Codex 검수: 식재료 수정→`ingredient_edit`, 재고 수정→`stock_change`, 메모 수정→`memo_edit`,
+  구매 링크 수정→`options`, 삭제→`ingredient_delete`, 닫기→`ingredient_detail` 6개 연결을 모두 눌러
+  확인했다. 과거 재고 추가·실사 메뉴와 구매 링크·옵션 명칭은 노출되지 않는다.
+- 시각 검수: 모바일 폭에서 underlay, 5개 action group, danger 색상, 분리된 닫기 버튼과 BottomTab이
+  겹치지 않는다.
+- Opus 1차: `CONDITIONAL`. `prototype-sheet-close` 이름 충돌로 다른 sheet의 34×34 X 버튼을 깨는
+  회귀, 배경 탭 닫기 부재, options 뒤로가기 맥락 고정을 지적했다. 메뉴 전용 `edit-menu-close`로
+  이름을 분리하고 배경 탭 닫기를 연결했으며, options 진입 출처를 상세/수정 메뉴별로 기록하도록
+  수정했다. 두 출처에서 뒤로가기와 배경 탭 닫기를 실제로 눌러 확인했다.
+- Opus 2차: `PASS`. selector 충돌 해소, 배경 닫기, options 출처별 뒤로가기를 확인했다. 레시피
+  사용량 sheet의 오래된 중복 CSS는 해당 레시피 화면 검수 항목으로 이관한다.
+- Codex 판정: `PASS`; Opus 판정: `PASS`; 최종 판정: `PASS`.
+
 ## 전체 target 장부
 
 아래 목록은 숨긴 폐기 전용 페이지를 제외한 활성 screen 61개와 popup/state host 123개다.
@@ -186,7 +204,7 @@ Opus가 지정한 후속 위험은 다음과 같다.
 | screen:ingredient_main | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
 | screen:ingredient_add | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
 | screen:ingredient_detail | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
-| screen:ingredient_edit_menu | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:ingredient_edit_menu | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
 | screen:ingredient_edit | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
 | screen:stock | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
 | screen:stock_change | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
