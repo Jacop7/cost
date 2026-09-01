@@ -112,10 +112,11 @@ export function parseInternationalTaxState(v: unknown): InternationalTaxState {
     effectiveFrom:ymd(t.effective_from,'tax effective_from'),effectiveTo:t.effective_to===null?null:ymd(t.effective_to,'tax effective_to'),
     revision:int(t.revision,'tax revision',1),
     components:arr(t.components,'components').map((x,i)=>{const c=obj(x,`component ${i}`);return{
-      id:uuid(c.id,'component.id'),kind:oneOf(c.kind,TAX_COMPONENT_KINDS,'kind'),name:str(c.name,'name'),
+      id:uuid(c.id,'component.id'),configKey:str(c.key,'component.key'),kind:oneOf(c.kind,TAX_COMPONENT_KINDS,'kind'),name:str(c.name,'name'),
       ratePct:num(c.rate_pct,'rate_pct'),jurisdictionLevel:oneOf(c.jurisdiction_level,TAX_JURISDICTION_LEVELS,'jurisdiction_level'),
       calculationBasis:oneOf(c.calculation_basis,TAX_CALCULATION_BASES,'calculation_basis'),
       appliesToTreatments:arr(c.applies_to_treatments,'applies_to_treatments').map(y=>oneOf(y,TAX_TREATMENTS,'treatment')),
+      sortOrder:int(c.sort_order,'sort_order'),
     }}),
     remittanceRules:arr(t.remittance,'remittance').map((x,i)=>{const q=obj(x,`remittance ${i}`);return{
       taxComponentId:uuid(q.tax_component_id,'tax_component_id'),salesChannel:oneOf(q.sales_channel_code,INTERNATIONAL_SALES_CHANNEL_CODES,'sales_channel'),
@@ -138,11 +139,24 @@ export function parseInternationalTaxState(v: unknown): InternationalTaxState {
   };
 }
 
-export interface RecipeTaxState { capabilities: AppCapabilities; taxProfileId: string|null; taxCategory: string|null; treatment: 'taxable'|'zero_rated'|'exempt'|null; categories: TaxCategoryOption[] }
+export interface RecipeTaxState { capabilities: AppCapabilities; taxProfileId: string|null; taxProfileRevision:number|null; defaultTreatment:'taxable'|'zero_rated'|'exempt'|null; overrideRevision:number; taxCategory: string|null; treatment: 'taxable'|'zero_rated'|'exempt'|null; categories: TaxCategoryOption[] }
 export function parseRecipeTaxState(v:unknown):RecipeTaxState{const r=obj(v,'메뉴 과세');return{
   capabilities:parseAppCapabilities(r.capabilities),taxProfileId:r.tax_profile_id===null?null:uuid(r.tax_profile_id,'tax_profile_id'),
+  taxProfileRevision:r.tax_profile_revision===null?null:int(r.tax_profile_revision,'tax_profile_revision',1),
+  defaultTreatment:r.default_treatment===null?null:oneOf(r.default_treatment,TAX_TREATMENTS,'default_treatment'),
+  overrideRevision:int(r.override_revision,'override_revision'),
   taxCategory:nullableStr(r.tax_category,'tax_category'),treatment:r.treatment===null?null:oneOf(r.treatment,TAX_TREATMENTS,'treatment'),
   categories:arr(r.categories,'categories').map((x,i)=>{const c=obj(x,`category ${i}`);return{code:str(c.code,'code'),name:str(c.name,'name'),treatment:oneOf(c.treatment,TAX_TREATMENTS,'treatment')}}),
+};}
+
+export interface ProfileSaveResult { changed:boolean; profileId:string; revision:number; effectiveFrom:string }
+export function parseProfileSaveResult(v:unknown):ProfileSaveResult{const r=obj(v,'프로필 저장 결과');return{
+  changed:bool(r.changed,'changed'),profileId:uuid(r.profile_id,'profile_id'),revision:int(r.revision,'revision',1),effectiveFrom:ymd(r.effective_from,'effective_from'),
+};}
+export interface MenuTaxSaveResult { changed:boolean; revision:number; taxCategory:string|null; treatment:'taxable'|'zero_rated'|'exempt'|null }
+export function parseMenuTaxSaveResult(v:unknown):MenuTaxSaveResult{const r=obj(v,'메뉴 과세 저장 결과');return{
+  changed:bool(r.changed,'changed'),revision:int(r.revision,'revision',1),taxCategory:nullableStr(r.tax_category,'tax_category'),
+  treatment:r.treatment===null?null:oneOf(r.treatment,TAX_TREATMENTS,'treatment'),
 };}
 
 export interface SalesTaxLine extends SaleTaxSnapshot {

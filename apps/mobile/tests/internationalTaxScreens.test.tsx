@@ -17,16 +17,20 @@ const capabilities = vi.fn();
 const internationalState = vi.fn();
 const recipeState = vi.fn();
 const salesTax = vi.fn();
+const saveTax = vi.fn();
+const saveMenuTax = vi.fn();
 vi.mock('@/features/international-tax', async (importOriginal) => ({
   ...(await importOriginal<Record<string, unknown>>()),
   useAppCapabilities: () => capabilities(),
   useInternationalTaxState: () => internationalState(),
   useRecipeTaxState: () => recipeState(),
   useSalesTaxDetail: (...args: unknown[]) => salesTax(...args),
+  useSaveTaxProfile: () => saveTax(),
 }));
 vi.mock('@/features/international-tax/hooks', () => ({
   useAppCapabilities: () => capabilities(),
   useRecipeTaxState: (...args: unknown[]) => recipeState(...args),
+  useSaveMenuTaxOverride: () => saveMenuTax(),
 }));
 
 vi.mock('@/features/settings/hooks', () => ({
@@ -51,9 +55,11 @@ beforeEach(() => {
   internationalState.mockReset();
   recipeState.mockReset();
   salesTax.mockReset();
+  saveTax.mockReset();saveMenuTax.mockReset();
   routeParams.from = '2026-09-01';
   routeParams.to = '2026-09-01';
   capabilities.mockReturnValue(query(CAP_ON));
+  saveTax.mockReturnValue({mutate:vi.fn(),isPending:false});saveMenuTax.mockReturnValue({mutate:vi.fn(),isPending:false});
 });
 
 describe('국제 세금 전환 화면', () => {
@@ -63,18 +69,21 @@ describe('국제 세금 전환 화면', () => {
       marketProfile: { countryCode: 'KR', currencyCode: 'KRW', priceBasis: 'tax_inclusive' },
       taxProfile: {
         effectiveFrom: '2026-09-02', revision: 3,
-        components: [{ id: 'c1', kind: 'primary', name: '부가세', ratePct: 10, calculationBasis: 'primary_tax_exclusive' }],
+        defaultTreatment:'taxable',remittanceRules:[],categories:[],
+        components: [{ id: 'c1', configKey:'primary',kind: 'primary', name: '부가세', ratePct: 10,jurisdictionLevel:'national',calculationBasis: 'primary_tax_exclusive',appliesToTreatments:['taxable'],sortOrder:0 }],
       },
     }));
     render(<MyTaxScreen />);
     expect(screen.getByText('한국 · KRW')).toBeTruthy();
-    expect(screen.getByText('부가세 · 10%')).toBeTruthy();
+    expect((screen.getByLabelText('primary 세금 이름') as HTMLInputElement).value).toBe('부가세');
+    expect((screen.getByLabelText('primary 세율') as HTMLInputElement).value).toBe('10');
     expect(screen.getByLabelText('국제 세금 프로필 저장').getAttribute('aria-disabled')).toBe('true');
   });
 
   it('RCP-02는 서버가 확정한 메뉴 과세 상태만 표시한다', () => {
     recipeState.mockReturnValue(query({
       capabilities: CAP_ON,
+      taxProfileId:'11111111-1111-1111-1111-111111111111',taxProfileRevision:1,defaultTreatment:'taxable',overrideRevision:1,
       treatment: 'zero_rated',
       taxCategory: 'zero_rated',
       categories: [{ code: 'zero_rated', name: '0% 식품', treatment: 'zero_rated' }],
