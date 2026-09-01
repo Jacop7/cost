@@ -11,6 +11,7 @@ import type { Database } from '@margincook/db';
 import { Platform } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 import { reportRpcFailure } from './rpcMonitoring';
+import { APP_VERSION, APP_VERSION_HEADER } from './appVersion';
 
 /**
  * 세션 저장소는 플랫폼마다 다르다.
@@ -77,6 +78,9 @@ export const supabase = createClient<Database>(
   SUPABASE_URL || 'http://localhost:54321',
   SUPABASE_ANON_KEY,
   {
+    global: {
+      headers: { [APP_VERSION_HEADER]: APP_VERSION },
+    },
     auth: {
       storage: sessionStorage,
       autoRefreshToken: true,

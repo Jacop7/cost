@@ -2473,6 +2473,10 @@ export type Database = {
         Returns: Json
       }
       app_capabilities: { Args: never; Returns: Json }
+      app_version_at_least: {
+        Args: { p_actual: string; p_minimum: string }
+        Returns: boolean
+      }
       apply_due_breaks: { Args: never; Returns: Json }
       apply_international_tax_for_sales_item: {
         Args: { p_force: boolean; p_sales_item: string }
@@ -2513,6 +2517,7 @@ export type Database = {
         Args: { p_breaks: Json; p_hours: Json }
         Returns: boolean
       }
+      assert_write_app_version: { Args: never; Returns: undefined }
       auto_close_grace: { Args: never; Returns: string }
       base_unit_price: { Args: { p_ingredient: string }; Returns: number }
       build_day_snapshot: {
@@ -2627,6 +2632,7 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      current_client_app_version: { Args: never; Returns: string }
       day_etc_tax_rate: {
         Args: { p_date: string; p_store: string }
         Returns: number
