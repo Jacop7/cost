@@ -1,0 +1,79 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-FABLE-002",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R0",
+  "author_role": "SOLAR-ORCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "5f6929095424b9fe53a2005ef5c4136ca2175f50",
+  "target_commit_sha": "399cd39ab5d312c31055b9bdc101ea0300447b51",
+  "target_tree_oid": "f41445f0a874391bd84abf9f989fd78d34ec2efe",
+  "agents_blob_oid": "4c31bbf9be81871c4dfb1699e057c8303d4e2fae",
+  "agents_sha256": "5628177d442547e868acc3e0446e6513b65bf713f2cfd82cc78e0e6dedc4c860",
+  "requirements": [
+    "PLAN-ROUTE-SWITCH-91을 같은 finding_id로 재확인하고, 사람 결정 이후 공식 Fable 유효 회차가 누적 교차검수 완료 조건의 단일 경로인지 검증한다.",
+    "ROLECTX-SCOPE-92를 같은 finding_id로 재확인하고, ROLE_CONTEXTS.md 기록 범위가 평가안 §8과 일치하는지 검증한다.",
+    "기존 Stage 4 r2·r3 Finding 10건의 해소와 직접 Opus advisory의 비게이트 원칙을 재개방하지 않는다."
+  ],
+  "invariant_ids": [
+    "AGENTS:single-canonical-artifact",
+    "AGENTS:fable-append-only-ledger",
+    "AI-ORCH:multi-chat-repository-authority",
+    "AI-ORCH:official-fable-review-independent-from-opus-advisory"
+  ],
+  "artifact_paths": [
+    "docs/팀구성_상세기획안.md",
+    "docs/AI-지식-온톨로지-기획안.md",
+    "docs/AI-오케스트레이션-상세기획안.md",
+    "docs/디렉터리-문서신경망-재설계-기획안.md",
+    "docs/AI-품질-학습-자율성-평가기획안.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/ai-review/README.md"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/evidence/AI-PLANS-STAGE4-OPUS-R2.md",
+    "docs/ai-review/evidence/AI-PLANS-STAGE4-OPUS-R3.md",
+    "docs/ai-review/tasks/AI-ORCH-PLANS-1/collaboration.md",
+    "docs/ai-review/tasks/AI-ORCH-PLANS-1/turns/t0001/run.json"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "predecessor r003의 두 Finding을 동일 finding_id·previous_finding_id로 재확인",
+    "사람 결정 ID와 누적 외부 교차검수 완료 조건의 다섯 문서 대조",
+    "ROLE_CONTEXTS.md 필드 소유와 역할 설명 복사 금지의 동시 유지",
+    "target commit·tree·AGENTS hash 및 predecessor handoff hash 검증"
+  ],
+  "human_decisions": [
+    "2026-09-02 사용자가 앞으로 외부 교차검수에 공식 Fable 경로를 사용하도록 결정했다.",
+    "2026-09-02 사용자가 Fable r003 Finding 반영 뒤 후속 Fable 재검수를 진행하도록 지시했다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": {
+    "task_id": "AI-ORCH-PLANS-FABLE-001",
+    "source_commit_sha": "ff2fd318edecc0db9a7ee02ed8c530e52af60e5d",
+    "round": "r003",
+    "task_sha256": "8c70517060ef733ae0eba0b6cda6bc83c29424677d59dcd7bb3ce030c45959fb",
+    "manifest_sha256": "178c884d9384e64a99a9006dee18de54f57edb4d4bca12c1a872ed4889f6c6e5",
+    "run_sha256": "54be4ef4d4ec1d8b9a9dc36a84f656e8047e6568dd840f5f7f46d5ef25ca4218",
+    "review_sha256": "b9717ada84e0acb95e3c731a5bf73c36425685541b9382bd7287fd87aa116337",
+    "finding_registry_sha256": "365929859bb50a72abbd01561a19ba3db60d0911790ccc86a5151e7659ba9db4",
+    "handoff_turn_id": "turn-o001",
+    "handoff_entry_sha256": "fdfce9801647c865640cbc962f50f627e715f2900afc78d05032adca48077e92",
+    "handoff_run_sha256": "770615e019ff4da25baaed7f231178e544a139fc8a9608361b555545894000da"
+  },
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "4.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}
