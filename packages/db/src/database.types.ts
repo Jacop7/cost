@@ -1102,6 +1102,7 @@ export type Database = {
         Row: {
           created_at: string
           recipe_id: string
+          revision: number
           store_id: string
           tax_category: string | null
           tax_profile_id: string
@@ -1111,6 +1112,7 @@ export type Database = {
         Insert: {
           created_at?: string
           recipe_id: string
+          revision?: number
           store_id: string
           tax_category?: string | null
           tax_profile_id: string
@@ -1120,6 +1122,7 @@ export type Database = {
         Update: {
           created_at?: string
           recipe_id?: string
+          revision?: number
           store_id?: string
           tax_category?: string | null
           tax_profile_id?: string
@@ -2094,6 +2097,7 @@ export type Database = {
         Row: {
           applies_to_treatments: Database["public"]["Enums"]["tax_treatment"][]
           calculation_basis: Database["public"]["Enums"]["tax_calculation_basis"]
+          config_key: string
           id: string
           jurisdiction_level: Database["public"]["Enums"]["tax_jurisdiction_level"]
           kind: Database["public"]["Enums"]["tax_component_kind"]
@@ -2106,6 +2110,7 @@ export type Database = {
         Insert: {
           applies_to_treatments: Database["public"]["Enums"]["tax_treatment"][]
           calculation_basis: Database["public"]["Enums"]["tax_calculation_basis"]
+          config_key: string
           id?: string
           jurisdiction_level: Database["public"]["Enums"]["tax_jurisdiction_level"]
           kind: Database["public"]["Enums"]["tax_component_kind"]
@@ -2118,6 +2123,7 @@ export type Database = {
         Update: {
           applies_to_treatments?: Database["public"]["Enums"]["tax_treatment"][]
           calculation_basis?: Database["public"]["Enums"]["tax_calculation_basis"]
+          config_key?: string
           id?: string
           jurisdiction_level?: Database["public"]["Enums"]["tax_jurisdiction_level"]
           kind?: Database["public"]["Enums"]["tax_component_kind"]
@@ -2508,6 +2514,10 @@ export type Database = {
         Args: { p_reason: string; p_store: string }
         Returns: Json
       }
+      assert_international_tax_write_enabled: {
+        Args: never
+        Returns: undefined
+      }
       assert_my_store: { Args: { p_store: string }; Returns: undefined }
       assert_no_rpc_overloads: { Args: never; Returns: undefined }
       assert_tax_items: { Args: { p_items: Json }; Returns: Json }
@@ -2863,6 +2873,10 @@ export type Database = {
         Args: { p_after: string; p_store: string }
         Returns: string
       }
+      next_unopened_business_date: {
+        Args: { p_store: string }
+        Returns: string
+      }
       normalize_day_times: {
         Args: { p: Json; p_keys: string[] }
         Returns: Json
@@ -3179,6 +3193,17 @@ export type Database = {
         Args: { p_payload: Json; p_store: string }
         Returns: string
       }
+      save_menu_tax_override: {
+        Args: {
+          p_base_revision: number
+          p_recipe: string
+          p_store: string
+          p_tax_category: string
+          p_tax_profile: string
+          p_treatment: Database["public"]["Enums"]["tax_treatment"]
+        }
+        Returns: Json
+      }
       save_purchase_option: {
         Args: { p_payload: Json; p_store: string }
         Returns: string
@@ -3204,11 +3229,29 @@ export type Database = {
         Args: { p_base_revision?: number; p_payload: Json; p_store: string }
         Returns: Json
       }
+      save_store_market_profile: {
+        Args: {
+          p_base_profile_id: string
+          p_base_revision: number
+          p_payload: Json
+          p_store: string
+        }
+        Returns: Json
+      }
       save_store_tax: {
         Args: {
           p_base_revision?: number
           p_items: Json
           p_mode: Database["public"]["Enums"]["tax_mode"]
+          p_store: string
+        }
+        Returns: Json
+      }
+      save_store_tax_profile: {
+        Args: {
+          p_base_profile_id: string
+          p_base_revision: number
+          p_payload: Json
           p_store: string
         }
         Returns: Json
@@ -3265,6 +3308,7 @@ export type Database = {
         }[]
       }
       stock_total_base: { Args: { p_ingredient: string }; Returns: number }
+      store_has_money_ledger: { Args: { p_store: string }; Returns: boolean }
       store_hours_on: {
         Args: { p_date: string; p_store: string }
         Returns: Json
@@ -3295,6 +3339,7 @@ export type Database = {
         }
         Returns: number
       }
+      tax_profile_payload: { Args: { p_profile: string }; Returns: Json }
       transition_business_state: {
         Args: { p_action: string; p_close_time?: string; p_store: string }
         Returns: Json
