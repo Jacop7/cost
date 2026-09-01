@@ -366,6 +366,27 @@ Opus가 지정한 후속 위험은 다음과 같다.
   병합하고 명시적 포커스·Escape를 보완한 뒤 재검수에서 `PASS`.
 - Codex 판정: `PASS`; Opus 판정: `PASS`; 최종 판정: `PASS`.
 
+## 레시피 페이지별 검수
+
+### RCP-01 · `screen:recipe_main`, 정렬·판매 상태·목표 PickerSheet
+
+- Expo 대조/확정안: 실제 Expo의 카드 정보 위계를 유지하고, 사용자 확정에 따라 정렬에 `최신순`을
+  추가했다. 최신순은 최근 등록일 기준이다. 판매 상태가 전체면 버튼은 `판매 상태`, 목표가 전체면
+  `목표 상태`로 표시하며 목표 팝업 제목은 `목표`다. 추가 버튼은 `＋레시피 추가`를 유지한다.
+- 데이터/상태: 하드코딩 문자열 교체 방식 대신 구조화한 레시피 픽스처 한 벌을 사용한다. 카테고리,
+  판매중/판매중지, 목표 미달/달성, 메뉴·카테고리 검색, 6개 정렬이 실제 카드 목록과 빈 상태를
+  갱신한다. 판매중지와 목표 달성 카드의 배지·투명도·이익 색도 실제 Expo 규칙과 맞췄다.
+- 병합 요소: 정렬·판매 상태·목표는 식재료 정렬과 같은 `immediatePickerMarkup`과
+  `bindImmediatePicker`를 사용한다. 모두 제목 아래 작은 설명문 없이 radiogroup 한 벌로 렌더하고,
+  선택 즉시 닫히며 popup URL을 제거한다.
+- 헤더: 검색 버튼은 열림 상태를 알리고 입력창에 포커스를 둔다. 공백을 무시해 메뉴명·카테고리를
+  검색하며 결과 없음 문구를 표시한다. 알림 버튼은 MY 알림 설정으로 이동한다.
+- Codex 검수: 기본 7개 카드, 최신순 첫 카드, 전체 판매 상태 8개와 판매중지 배지, 목표 달성 1개,
+  밥·면 카테고리, 공백 포함 검색, 검색 빈 상태, 세 PickerSheet와 URL 정리를 실제 조작했다.
+- Opus 1차: 메인 검색의 이중 핸들러, 사용되지 않는 팝업 정의, 상세 판매 상태와 메인 필터 변수의
+  불명확한 명칭을 지적했다. 전용 검색 소유권·중복 제거·`recipeDetailSelling` 분리 후 재검수 `PASS`.
+- Codex 판정: `PASS`; Opus 판정: `PASS`; 최종 판정: `PASS`.
+
 ## 전체 target 장부
 
 아래 목록은 숨긴 폐기 전용 페이지를 제외한 활성 screen 61개와 popup/state host 123개다.
@@ -384,7 +405,7 @@ Opus가 지정한 후속 위험은 다음과 같다.
 | screen:ingredient_changes | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
 | screen:options | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
 | screen:ingredient_delete | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
-| screen:recipe_main | recipe | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:recipe_main | recipe | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
 | screen:recipe_detail | recipe | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
 | screen:recipe_price_sim | recipe | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
 | screen:recipe_add | recipe | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
@@ -462,9 +483,9 @@ Opus가 지정한 후속 위험은 다음과 같다.
 | popup:stock_event_revert@stock | ingredient | ConfirmDialog | COMMON | PASS | PASS | PASS | PASS | PASS |
 | popup:purchase_period@purchase | ingredient | PickerSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
 | popup:ingredient_change_detail@ingredient_changes | ingredient | InfoSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
-| popup:recipe_sort@recipe_main | recipe | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
-| popup:recipe_status@recipe_main | recipe | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
-| popup:recipe_target@recipe_main | recipe | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:recipe_sort@recipe_main | recipe | PickerSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
+| popup:recipe_status@recipe_main | recipe | PickerSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
+| popup:recipe_target@recipe_main | recipe | PickerSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
 | popup:recipe_memo@recipe_detail | recipe | FormSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
 | popup:recipe_stop@recipe_detail | recipe | ConfirmDialog | COMMON | TODO | TODO | TODO | TODO | TODO |
 | popup:recipe_category_pick@recipe_add | recipe | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
