@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { parseAppCapabilities, parseInternationalTaxState, parseSalesTaxDetail, parseUserPreferences } from '@/features/international-tax/contracts';
+import { parseAppCapabilities, parseInternationalTaxState, parseRecipeTaxState, parseSalesTaxDetail, parseUserPreferences } from '@/features/international-tax/contracts';
 
 const CAP={contract_version:1,minimum_supported_app_version:'0.1.0',international_tax:{contract_version:'international_tax_v1',read_enabled:false,write_enabled:false,minimum_write_app_version:null}};
 const ID='00000000-0000-0000-0000-000000000001';
-const STATE={capabilities:CAP,local_date:'2026-09-01',onboarding_status:'profile_ready',migration:null,market_profile:{id:ID,store_id:ID,country_code:'KR',region_code:null,currency_code:'KRW',business_locale_code:'ko-KR',price_basis:'tax_inclusive',effective_from:'2026-09-02',effective_to:null,revision:1},tax_profile:{id:ID,store_id:ID,market_profile_id:ID,default_treatment:'taxable',effective_from:'2026-09-02',effective_to:null,revision:1,components:[{id:ID,kind:'primary',name:'부가세',rate_pct:10,jurisdiction_level:'national',calculation_basis:'primary_tax_exclusive',applies_to_treatments:['taxable'],sort_order:0}],categories:[{code:'standard',name:'일반 과세',treatment:'taxable',active:true}],remittance:[{tax_component_id:ID,sales_channel_code:'hall',remittance_owner:'merchant'}]}};
+const STATE={capabilities:CAP,local_date:'2026-09-01',onboarding_status:'profile_ready',migration:null,market_profile:{id:ID,store_id:ID,country_code:'KR',region_code:null,currency_code:'KRW',business_locale_code:'ko-KR',price_basis:'tax_inclusive',effective_from:'2026-09-02',effective_to:null,revision:1},tax_profile:{id:ID,store_id:ID,market_profile_id:ID,default_treatment:'taxable',effective_from:'2026-09-02',effective_to:null,revision:1,components:[{id:ID,config_key:'primary',kind:'primary',name:'부가세',rate_pct:10,jurisdiction_level:'national',calculation_basis:'primary_tax_exclusive',applies_to_treatments:['taxable'],sort_order:0}],categories:[{code:'standard',name:'일반 과세',treatment:'taxable',active:true}],remittance:[{tax_component_id:ID,sales_channel_code:'hall',remittance_owner:'merchant'}]}};
 
 describe('국제 세금 앱 응답 계약',()=>{
   it('비활성 capability를 false 그대로 읽는다',()=>expect(parseAppCapabilities(CAP).internationalTax).toEqual({contractVersion:'international_tax_v1',readEnabled:false,writeEnabled:false,minimumWriteAppVersion:null}));
@@ -37,5 +37,11 @@ describe('국제 세금 앱 응답 계약',()=>{
         jurisdiction_level:'national',calculation_basis:'primary_tax_exclusive',applies_to_treatments:['taxable'],remittance_owner:'merchant',unrounded_amount:1090.9,rounded_amount:1091}]};
     const parsed=parseSalesTaxDetail({capabilities:CAP,from:'2026-09-01',to:'2026-09-01',lines:[line]});
     expect(parsed.lines[0]).toMatchObject({saleDate:'2026-09-01',unitPrice:12000,taxProfileRevision:2,taxAmount:1091});
+  });
+  it('메뉴 현재 세금 quote를 앱에서 다시 계산하지 않고 읽는다',()=>{
+    const quote={listed_total:12000,net_sales:10909,customer_total:12000,tax_total:1091,merchant_tax_liability:1091,marketplace_tax_liability:0,
+      components:[{component_id:ID,kind:'primary',name:'부가세',rate_pct:10,jurisdiction_level:'national',calculation_basis:'primary_tax_exclusive',applies_to_treatments:['taxable'],remittance_owner:'merchant',unrounded_amount:1090.9,rounded_amount:1091}]};
+    const parsed=parseRecipeTaxState({capabilities:CAP,tax_profile_id:ID,tax_profile_revision:1,default_treatment:'taxable',override_revision:0,tax_category:null,treatment:null,currency_code:'KRW',minor_unit:0,price_basis:'tax_inclusive',quote,categories:[]});
+    expect(parsed.quote).toMatchObject({taxAmount:1091,netSales:10909});
   });
 });

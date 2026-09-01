@@ -11,6 +11,7 @@ import {
   TAX_TREATMENTS,
   type AppCapabilities,
   type AppLanguageCode,
+  type InternationalTaxQuote,
   type SaleTaxSnapshot,
   type StoreMarketProfile,
   type StoreTaxProfile,
@@ -112,7 +113,7 @@ export function parseInternationalTaxState(v: unknown): InternationalTaxState {
     effectiveFrom:ymd(t.effective_from,'tax effective_from'),effectiveTo:t.effective_to===null?null:ymd(t.effective_to,'tax effective_to'),
     revision:int(t.revision,'tax revision',1),
     components:arr(t.components,'components').map((x,i)=>{const c=obj(x,`component ${i}`);return{
-      id:uuid(c.id,'component.id'),configKey:str(c.key,'component.key'),kind:oneOf(c.kind,TAX_COMPONENT_KINDS,'kind'),name:str(c.name,'name'),
+      id:uuid(c.id,'component.id'),configKey:str(c.config_key,'component.config_key'),kind:oneOf(c.kind,TAX_COMPONENT_KINDS,'kind'),name:str(c.name,'name'),
       ratePct:num(c.rate_pct,'rate_pct'),jurisdictionLevel:oneOf(c.jurisdiction_level,TAX_JURISDICTION_LEVELS,'jurisdiction_level'),
       calculationBasis:oneOf(c.calculation_basis,TAX_CALCULATION_BASES,'calculation_basis'),
       appliesToTreatments:arr(c.applies_to_treatments,'applies_to_treatments').map(y=>oneOf(y,TAX_TREATMENTS,'treatment')),
@@ -139,13 +140,27 @@ export function parseInternationalTaxState(v: unknown): InternationalTaxState {
   };
 }
 
-export interface RecipeTaxState { capabilities: AppCapabilities; taxProfileId: string|null; taxProfileRevision:number|null; defaultTreatment:'taxable'|'zero_rated'|'exempt'|null; overrideRevision:number; taxCategory: string|null; treatment: 'taxable'|'zero_rated'|'exempt'|null; categories: TaxCategoryOption[] }
+const parseQuote=(v:unknown):InternationalTaxQuote|null=>{if(v===null)return null;const q=obj(v,'quote');return{
+  listedTotal:num(q.listed_total,'quote.listed_total'),netSales:num(q.net_sales,'quote.net_sales'),customerTotal:num(q.customer_total,'quote.customer_total'),
+  taxAmount:num(q.tax_total,'quote.tax_total'),merchantTaxLiability:num(q.merchant_tax_liability,'quote.merchant_tax_liability'),marketplaceTaxLiability:num(q.marketplace_tax_liability,'quote.marketplace_tax_liability'),
+  components:arr(q.components,'quote.components').map((x,i)=>{const c=obj(x,`quote component ${i}`);return{
+    taxComponentId:uuid(c.component_id,'component_id'),kind:oneOf(c.kind,TAX_COMPONENT_KINDS,'kind'),name:str(c.name,'name'),ratePct:num(c.rate_pct,'rate_pct'),
+    jurisdictionLevel:oneOf(c.jurisdiction_level,TAX_JURISDICTION_LEVELS,'jurisdiction_level'),calculationBasis:oneOf(c.calculation_basis,TAX_CALCULATION_BASES,'calculation_basis'),
+    appliesToTreatments:arr(c.applies_to_treatments,'applies').map(z=>oneOf(z,TAX_TREATMENTS,'treatment')),
+    remittanceOwner:oneOf(c.remittance_owner,TAX_REMITTANCE_OWNERS,'remittance_owner'),unroundedAmount:num(c.unrounded_amount,'unrounded_amount'),roundedAmount:num(c.rounded_amount,'rounded_amount'),
+  }}),
+};};
+
+export interface RecipeTaxState { capabilities: AppCapabilities; taxProfileId: string|null; taxProfileRevision:number|null; defaultTreatment:'taxable'|'zero_rated'|'exempt'|null; overrideRevision:number; taxCategory: string|null; treatment: 'taxable'|'zero_rated'|'exempt'|null; currencyCode:typeof LAUNCH_CURRENCY_CODES[number]|null;minorUnit:0|2|null;priceBasis:typeof TAX_PRICE_BASES[number]|null;quote:InternationalTaxQuote|null; categories: TaxCategoryOption[] }
 export function parseRecipeTaxState(v:unknown):RecipeTaxState{const r=obj(v,'메뉴 과세');return{
   capabilities:parseAppCapabilities(r.capabilities),taxProfileId:r.tax_profile_id===null?null:uuid(r.tax_profile_id,'tax_profile_id'),
   taxProfileRevision:r.tax_profile_revision===null?null:int(r.tax_profile_revision,'tax_profile_revision',1),
   defaultTreatment:r.default_treatment===null?null:oneOf(r.default_treatment,TAX_TREATMENTS,'default_treatment'),
   overrideRevision:int(r.override_revision,'override_revision'),
   taxCategory:nullableStr(r.tax_category,'tax_category'),treatment:r.treatment===null?null:oneOf(r.treatment,TAX_TREATMENTS,'treatment'),
+  currencyCode:r.currency_code===null?null:oneOf(r.currency_code,LAUNCH_CURRENCY_CODES,'currency_code'),
+  minorUnit:r.minor_unit===null?null:(()=>{const n=int(r.minor_unit,'minor_unit');return n===0||n===2?n:bad('minor_unit 값')})(),
+  priceBasis:r.price_basis===null?null:oneOf(r.price_basis,TAX_PRICE_BASES,'price_basis'),quote:parseQuote(r.quote),
   categories:arr(r.categories,'categories').map((x,i)=>{const c=obj(x,`category ${i}`);return{code:str(c.code,'code'),name:str(c.name,'name'),treatment:oneOf(c.treatment,TAX_TREATMENTS,'treatment')}}),
 };}
 
