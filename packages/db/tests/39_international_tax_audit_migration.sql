@@ -129,6 +129,6 @@ begin
 end
 $regional_profile_path$;
 
-select pg_temp.ok('감사·이관 뒤에도 국제 세금 읽기·쓰기는 비활성이다',
-  (app_capabilities()#>>'{international_tax,read_enabled}')::boolean is false
-  and (app_capabilities()#>>'{international_tax,write_enabled}')::boolean is false);
+select pg_temp.ok('제품 전환 뒤 감사·이관 계약과 국제 세금 capability가 함께 활성이다',
+  (app_capabilities()#>>'{international_tax,read_enabled}')::boolean
+  and (app_capabilities()#>>'{international_tax,write_enabled}')::boolean);

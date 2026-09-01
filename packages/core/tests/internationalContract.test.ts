@@ -24,15 +24,15 @@ describe('국제 출시 계약 기준선', () => {
     for (const code of ['US', 'GB', 'AU', 'CA'] as const) expect(LAUNCH_MARKETS[code].minorUnit).toBe(2);
   });
 
-  it('INTL-1A에서는 국제 세금 읽기·쓰기를 활성화하지 않는다', () => {
+  it('INTL-1F 제품 판본에서 국제 세금 읽기·쓰기를 함께 활성화한다', () => {
     expect(APP_CAPABILITIES_BASELINE).toEqual({
       contractVersion: 1,
-      minimumSupportedAppVersion: '0.1.0',
+      minimumSupportedAppVersion: '0.2.0',
       internationalTax: {
         contractVersion: 'international_tax_v1',
-        readEnabled: false,
-        writeEnabled: false,
-        minimumWriteAppVersion: null,
+        readEnabled: true,
+        writeEnabled: true,
+        minimumWriteAppVersion: '0.2.0',
       },
     });
   });

@@ -190,14 +190,14 @@ export interface AppCapabilities {
   };
 }
 
-/** INTL-1A에서는 새 계산·쓰기를 아직 켜지 않는다. 서버 응답과 DB 시험도 같은 값이다. */
+/** INTL-1F 제품 활성 기준선. 서버 응답·앱 배포 판본·DB parity 시험이 같은 값이다. */
 export const APP_CAPABILITIES_BASELINE: AppCapabilities = {
   contractVersion: 1,
-  minimumSupportedAppVersion: '0.1.0',
+  minimumSupportedAppVersion: '0.2.0',
   internationalTax: {
     contractVersion: 'international_tax_v1',
-    readEnabled: false,
-    writeEnabled: false,
-    minimumWriteAppVersion: null,
+    readEnabled: true,
+    writeEnabled: true,
+    minimumWriteAppVersion: '0.2.0',
   },
 };

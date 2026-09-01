@@ -16,6 +16,7 @@ import { PriceSimSheet } from '../components/PriceSimSheet';
 import { useDeactivateRecipe, useRecipeDetail, useSaveRecipe } from '../hooks';
 import { deltaTone, useProfitHistory } from '../profitHistory';
 import { RecipeTaxStatusCard } from '@/features/international-tax/RecipeTaxStatusCard';
+import { useAppCapabilities, useRecipeTaxState } from '@/features/international-tax';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 
@@ -78,6 +79,9 @@ export default function RecipeDetailScreen() {
   const profitQ = useProfitHistory(id, 3);
   const saveRecipe = useSaveRecipe();
   const deactivate = useDeactivateRecipe();
+  const capabilities = useAppCapabilities();
+  const internationalEnabled = Boolean(capabilities.data?.internationalTax.readEnabled);
+  const internationalTax = useRecipeTaxState(id, internationalEnabled);
 
   const [costMode, setCostMode] = useState<'batch' | 'one'>('one');
   const [view, setView] = useState<'batch' | 'one' | 'month'>('one');
@@ -89,21 +93,25 @@ export default function RecipeDetailScreen() {
 
   const calc = useMemo(() => {
     if (!r) return null;
+    if (internationalEnabled && !internationalTax.data?.quote) return null;
     const price = r.price;
     const material = r.materialCost;
     const extra = r.extraCost;
-    // 세금 = 부가세 + 사장님이 더한 항목(0052). 서버 tax_of() 와 같은 공식이다.
-    const tax = round(taxAmount(price, r.taxItems));
+    const quote = internationalEnabled ? internationalTax.data?.quote ?? null : null;
+    // 국제 세금이 켜지면 DB numeric quote가 유일한 권위다. 앱에서 법정 세율을 다시 곱하지 않는다.
+    const tax = quote?.taxAmount ?? round(taxAmount(price, r.taxItems));
+    const netSales = quote?.netSales ?? price - tax;
     const fixed = round(r.fixedRate * price);
-    const profit = price - tax - material - fixed - extra;
+    const profit = netSales - material - fixed - extra;
     const profitRate = price > 0 ? profit / price : 0;
     const target = r.targetProfitRate / 100;
-    const recRaw = recommendedPrice(material + extra, r.fixedRate, target, taxRate(r.taxItems));
+    // 국제 포함/미포함 가격은 역산식이 달라 기존 단일 세율 권장가 공식을 쓰면 안 된다.
+    const recRaw = quote ? null : recommendedPrice(material + extra, r.fixedRate, target, taxRate(r.taxItems));
     return {
-      price, material, extra, tax, fixed, profit, profitRate, target,
+      price, material, extra, tax, fixed, profit, profitRate, target, quote,
       recommended: recRaw == null ? null : Math.round(recRaw / 100) * 100,
     };
-  }, [r]);
+  }, [internationalEnabled, internationalTax.data?.quote, r]);
 
   /**
    * 메모만 고친다. 재료·부자재·세금 항목은 보내지 않는다 —
@@ -169,14 +177,14 @@ export default function RecipeDetailScreen() {
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 2, paddingBottom: 28, gap: 11 }}>
         <QueryState
-          isLoading={detail.isLoading}
-          error={detail.error}
+          isLoading={detail.isLoading || (internationalEnabled && internationalTax.isLoading)}
+          error={detail.error ?? (internationalEnabled ? internationalTax.error : null)}
           isEmpty={detail.isFetched && !r}
-          onRetry={() => void detail.refetch()}
+          onRetry={() => { void detail.refetch(); if (internationalEnabled) void internationalTax.refetch(); }}
           emptyTitle="메뉴를 찾을 수 없어요"
         >
           {r && calc ? (() => {
-            const { price, material, extra, tax, fixed, profit, profitRate, target, recommended } = calc;
+            const { price, material, extra, tax, fixed, profit, profitRate, target, quote, recommended } = calc;
             const warn = r.active && profitRate < target;
             const PROFIT = warn ? T.red : T.green;
             const cm = costMode === 'batch' ? r.baseServings : 1;
@@ -431,34 +439,36 @@ export default function RecipeDetailScreen() {
                   </Pressable>
                 </Card>
 
-                {/* 세금 — 부가세 + 사장님이 더한 항목(0052) */}
+                {/* 국제 활성 뒤에는 DB quote의 구성 항목만 쓴다. 활성 전에는 기존 스냅샷 계약을 유지한다. */}
                 <Card pad={0} style={{ overflow: 'hidden' }}>
                   <SecHead
                     title="세금"
-                    sub={r.taxMode === 'included' ? '(판매가 포함)' : r.taxMode === 'separate' ? '(별도)' : '(면세)'}
+                    sub={quote
+                      ? (internationalTax.data?.priceBasis === 'tax_inclusive' ? '(판매가 포함)' : '(판매가 별도)')
+                      : r.taxMode === 'included' ? '(판매가 포함)' : r.taxMode === 'separate' ? '(별도)' : '(면세)'}
                   />
                   <CostTabs value={costMode} onChange={setCostMode} servings={r.baseServings} />
                   <View style={{ paddingHorizontal: 15, paddingTop: 4, paddingBottom: 15 }}>
-                    {r.taxBreakdown.length === 0 ? (
+                    {(quote?.components ?? r.taxBreakdown).length === 0 ? (
                       <Text style={{ fontSize: 16, color: T.ter, paddingVertical: 13 }}>
                         빠지는 세금이 없어요.
                       </Text>
                     ) : (
-                      r.taxBreakdown.map((t, i) => (
+                      (quote?.components ?? r.taxBreakdown).map((t, i, all) => (
                         <View
                           key={`${t.name}-${i}`}
-                          style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 11, borderBottomWidth: i < r.taxBreakdown.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}
+                          style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 11, borderBottomWidth: i < all.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}
                         >
                           <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.ink2 }}>{t.name}</Text>
                           <View style={{ alignItems: 'flex-end' }}>
-                            <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{won(Math.round(t.amount * cm))}원</Text>
-                            <Text style={[{ fontSize: 14, color: T.ter, fontWeight: '600', marginTop: 2 }, NUM]}>{formatPercent(t.rate / 100)}</Text>
+                            <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{won(Math.round(('roundedAmount' in t ? t.roundedAmount : t.amount) * cm))}원</Text>
+                            <Text style={[{ fontSize: 14, color: T.ter, fontWeight: '600', marginTop: 2 }, NUM]}>{formatPercent(('ratePct' in t ? t.ratePct : t.rate) / 100)}</Text>
                           </View>
                         </View>
                       ))
                     )}
                     {/* 항목이 둘 이상일 때만 소계 — 한 줄이면 같은 숫자를 두 번 보여 주는 셈이다. */}
-                    {r.taxBreakdown.length > 1 ? (
+                    {(quote?.components ?? r.taxBreakdown).length > 1 ? (
                       <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, paddingTop: 10, borderTopWidth: 1, borderTopColor: T.line }}>
                         <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.ink2 }}>소계</Text>
                         <View style={{ alignItems: 'flex-end' }}>
@@ -553,14 +563,20 @@ export default function RecipeDetailScreen() {
                     여기서 바꿔 볼 값(판매가)의 결과가 바로 위에 있으니 붙어 있어야 한다.
                     다른 카드의 '자세히 보기'와 같은 자리·같은 형태다.
                   */}
-                  <Pressable
-                    onPress={() => setSimOpen(true)}
-                    accessibilityRole="button" accessibilityLabel="판매가 시뮬레이션"
-                    style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, margin: 15, marginTop: 0, paddingVertical: 13, borderRadius: 12, borderWidth: 1, borderColor: T.blue, backgroundColor: T.blueTint }}
-                  >
-                    <Icon name="trend" size={18} color={T.blue} sw={2.1} />
-                    <Text style={{ fontSize: 16, fontWeight: '700', color: T.blue }}>판매가 시뮬레이션</Text>
-                  </Pressable>
+                  {!quote ? (
+                    <Pressable
+                      onPress={() => setSimOpen(true)}
+                      accessibilityRole="button" accessibilityLabel="판매가 시뮬레이션"
+                      style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, margin: 15, marginTop: 0, paddingVertical: 13, borderRadius: 12, borderWidth: 1, borderColor: T.blue, backgroundColor: T.blueTint }}
+                    >
+                      <Icon name="trend" size={18} color={T.blue} sw={2.1} />
+                      <Text style={{ fontSize: 16, fontWeight: '700', color: T.blue }}>판매가 시뮬레이션</Text>
+                    </Pressable>
+                  ) : (
+                    <Text style={{ margin: 15, marginTop: 0, color: T.ter, fontSize: 14, lineHeight: 20 }}>
+                      국제 세금 판매가 시뮬레이션은 서버 확정 계산을 연결한 뒤 제공해요.
+                    </Text>
+                  )}
                 </Card>
 
                 {/* 손익 변동 — 금액 스냅샷(0083). RCP-16 과 같은 한 줄 구조다. */}
@@ -635,7 +651,7 @@ export default function RecipeDetailScreen() {
         />
       ) : null}
 
-      {r && calc ? (
+      {r && calc && !calc.quote ? (
         <PriceSimSheet
           visible={simOpen}
           onClose={() => setSimOpen(false)}

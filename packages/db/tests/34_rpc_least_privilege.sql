@@ -14,10 +14,10 @@ select pg_temp.ok('RPC 실행 역할은 authenticated 권한을 상속한다',
 select pg_temp.ok('authenticated는 RPC 실행 역할로 전환할 수 없다', not
   pg_has_role('authenticated', 'margincook_rpc_executor', 'member'));
 
-select pg_temp.eq('authenticated에 열린 public 함수는 공식 facade 72개뿐이다', (
+select pg_temp.eq('authenticated에 열린 public 함수는 공식 facade 75개뿐이다', (
   select count(*) from pg_proc p join pg_namespace n on n.oid = p.pronamespace
    where n.nspname = 'public' and p.prokind in ('f', 'p')
-     and has_function_privilege('authenticated', p.oid, 'execute'))::numeric, 72);
+     and has_function_privilege('authenticated', p.oid, 'execute'))::numeric, 75);
 
 select pg_temp.ok('RLS 정책은 닫힌 my_store_ids 몸통을 호출하지 않는다', not exists (
   select 1 from pg_policy pol
@@ -34,7 +34,7 @@ select pg_temp.ok('RPC 실행 역할에 매장 삭제 몸통 EXECUTE가 없다',
   has_function_privilege('margincook_rpc_executor',
     'public.purge_archived_store(uuid,text)', 'execute'));
 
-select pg_temp.eq('RPC 실행 역할에 postgres 유지보수 definer가 열린 건수는 0이다', (
+select pg_temp.eq('허용한 국제 세금 회계 도우미 밖 postgres definer 노출은 0이다', (
   select count(*)
     from pg_proc p
     join pg_namespace n on n.oid = p.pronamespace
@@ -43,7 +43,29 @@ select pg_temp.eq('RPC 실행 역할에 postgres 유지보수 definer가 열린 
      and owner_role.rolname = 'postgres'
      and has_function_privilege('margincook_rpc_executor', p.oid, 'execute')
      and not has_function_privilege('authenticated', p.oid, 'execute')
+     and p.oid not in (
+       'public.current_recipe_tax_quote(uuid,date)'::regprocedure,
+       'public.daily_sales_etc_accounting_totals(uuid)'::regprocedure,
+       'public.recipe_tax_quote_for_price(uuid,date,numeric)'::regprocedure,
+       'public.sales_item_accounting_totals(uuid)'::regprocedure)
 )::numeric, 0);
+select pg_temp.ok('국제 세금 회계 도우미는 비로그인 실행 역할에만 열리고 앱에는 닫혀 있다',
+  has_function_privilege('margincook_rpc_executor',
+    'public.current_recipe_tax_quote(uuid,date)','execute')
+  and not has_function_privilege('authenticated',
+    'public.current_recipe_tax_quote(uuid,date)','execute')
+  and has_function_privilege('margincook_rpc_executor',
+    'public.daily_sales_etc_accounting_totals(uuid)','execute')
+  and not has_function_privilege('authenticated',
+    'public.daily_sales_etc_accounting_totals(uuid)','execute')
+  and has_function_privilege('margincook_rpc_executor',
+    'public.recipe_tax_quote_for_price(uuid,date,numeric)','execute')
+  and not has_function_privilege('authenticated',
+    'public.recipe_tax_quote_for_price(uuid,date,numeric)','execute')
+  and has_function_privilege('margincook_rpc_executor',
+    'public.sales_item_accounting_totals(uuid)','execute')
+  and not has_function_privilege('authenticated',
+    'public.sales_item_accounting_totals(uuid)','execute'));
 
 -- RLS가 실제로 다른 사장님의 매장을 숨기는지 재기 위한 두 번째 매장.
 do $t$

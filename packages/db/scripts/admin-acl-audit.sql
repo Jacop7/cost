@@ -56,13 +56,12 @@ insert into _acl_approved_rpc(signature) values
   ('international_tax_app_state(uuid)'),
   ('transition_business_state(uuid,text,time without time zone)');
 
--- create_store와 archive_my_store는 각각 신규 계정 온보딩과 폐점 보존 정책의 공식 문이고,
--- international_tax_regions는 capability 활성 뒤 국가·지역 선택기가 사용할 INTL-1F 준비 계약이다.
--- 모바일 호출 집합과의 자동 대조에서는 이 명시적 비-mobile 예외만 제외한다.
+-- create_store와 archive_my_store는 각각 신규 계정 온보딩과 폐점 보존 정책의 공식 문이다.
+-- international_tax_regions는 INTL-1F 국가 화면이 실제로 쓰므로 더 이상 예외가 아니다.
+-- 모바일 호출 집합과의 자동 대조에서는 아래 명시적 비-mobile 예외만 제외한다.
 insert into _acl_non_mobile_rpc(signature, consumer) values
   ('create_store(text,text)', 'onboarding'),
-  ('archive_my_store(uuid,text)', 'store-retention-policy'),
-  ('international_tax_regions(uuid,international_country_code)', 'INTL-1F-country-region-picker');
+  ('archive_my_store(uuid,text)', 'store-retention-policy');
 
 -- psql 기반 fresh harness에는 CLI 장부 스키마가 없을 수 있다. 그 경우 SQL 자체가 중단돼
 -- 나머지 공격면 metric이 사라지지 않도록 0을 내고, 셸 게이트가 migrations=0으로 실패시킨다.
@@ -240,7 +239,9 @@ select 'rpc_executor_facades_invalid' || '|' || count(*) || '|expected=0'
    and (not p.prosecdef or not coalesce(p.proconfig, '{}'::text[]) @> array['search_path=public, pg_temp']);
 
 -- executor-owned facade는 RLS를 지키는 내부 도우미만 부른다. 앱에 열리지 않은
--- postgres SECURITY DEFINER는 전 매장 스위프·파괴 경계이므로 executor에도 닫힌다.
+-- postgres SECURITY DEFINER는 원칙적으로 전 매장 스위프·파괴 경계이므로 executor에도 닫힌다.
+-- 아래 네 함수만 판매·손익 facade가 같은 국제 세금 snapshot을 읽기 위한 순수 회계 도우미다.
+-- 앱 롤에는 닫혀 있고 업무 표를 쓰지 않는다는 계약은 DB 시험 34·49가 따로 고정한다.
 select 'rpc_executor_privileged_maintenance' || '|' || count(*) || '|expected=0'
   from pg_proc p
   join pg_namespace n on n.oid = p.pronamespace
@@ -248,7 +249,12 @@ select 'rpc_executor_privileged_maintenance' || '|' || count(*) || '|expected=0'
  where n.nspname = 'public' and p.prokind in ('f', 'p') and p.prosecdef
    and owner_role.rolname = 'postgres'
    and has_function_privilege('margincook_rpc_executor', p.oid, 'EXECUTE')
-   and not has_function_privilege('authenticated', p.oid, 'EXECUTE');
+   and not has_function_privilege('authenticated', p.oid, 'EXECUTE')
+   and p.oid not in (
+     to_regprocedure('public.current_recipe_tax_quote(uuid,date)'),
+     to_regprocedure('public.recipe_tax_quote_for_price(uuid,date,numeric)'),
+     to_regprocedure('public.sales_item_accounting_totals(uuid)'),
+     to_regprocedure('public.daily_sales_etc_accounting_totals(uuid)'));
 
 select 'rls_policy_helper_calls' || '|' || count(*) || '|expected=0'
   from pg_policy pol

@@ -1,3 +1,7 @@
 # Fable audit records are byte-addressed and may preserve archived source whitespace.
 # Git must neither rewrite their checkout bytes nor report the preserved bytes as new whitespace errors.
 docs/ai-review/tasks/** -text -whitespace
+
+# SQL migration의 함수 본문 조각 교체는 줄끝까지 판본 계약의 일부다.
+# Windows 새 clone에서도 CRLF가 섞여 전진 migration이 잘못 멈추지 않게 한다.
+*.sql text eol=lf

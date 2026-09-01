@@ -1,7 +1,9 @@
 -- ═══════════════════════════════════════════════════════════════
+
+select pg_temp.clear_international_tax_fixture();
 -- 38 · INTL-1B 국제 시장·세금 프로필과 판매 세금 원장 스키마
 --
--- 계산과 이관은 아직 하지 않는다. 저장 자리의 의미·경계·불변식과 비활성 capability를 잰다.
+-- 저장 자리의 의미·경계·불변식과 제품 활성 뒤 capability를 함께 잰다.
 -- ═══════════════════════════════════════════════════════════════
 
 select pg_temp.ok('INTL-1B 표 열 개가 모두 있다', (
@@ -122,19 +124,19 @@ begin
   ) returning id into v_tax;
 
   insert into store_tax_components(
-    store_id, tax_profile_id, kind, name, rate_pct,
+    store_id, tax_profile_id, config_key, kind, name, rate_pct,
     jurisdiction_level, calculation_basis, applies_to_treatments, sort_order
   ) values (
-    pg_temp.store(), v_tax, 'primary', '부가세', 10,
+    pg_temp.store(), v_tax, 'primary', 'primary', '부가세', 10,
     'national', 'primary_tax_exclusive', array['taxable'::tax_treatment], 0
   ) returning id into v_primary;
 
   begin
     insert into store_tax_components(
-      store_id, tax_profile_id, kind, name, rate_pct,
+      store_id, tax_profile_id, config_key, kind, name, rate_pct,
       jurisdiction_level, calculation_basis, applies_to_treatments
     ) values (
-      pg_temp.store(), v_tax, 'primary', '중복 기본세', 1,
+      pg_temp.store(), v_tax, 'duplicate_primary', 'primary', '중복 기본세', 1,
       'national', 'primary_tax_exclusive', array['taxable'::tax_treatment]
     );
     raise exception 'FAIL  한 세금 프로필에 기본세가 둘 들어갔다';
@@ -143,10 +145,10 @@ begin
   end;
 
   insert into store_tax_components(
-    store_id, tax_profile_id, kind, name, rate_pct,
+    store_id, tax_profile_id, config_key, kind, name, rate_pct,
     jurisdiction_level, calculation_basis, applies_to_treatments, sort_order
   ) values (
-    pg_temp.store(), v_tax, 'additional', '추가세', 5,
+    pg_temp.store(), v_tax, 'additional', 'additional', '추가세', 5,
     'special', 'primary_tax_inclusive',
     array['taxable'::tax_treatment, 'zero_rated'::tax_treatment], 1
   ) returning id into v_additional;
@@ -251,7 +253,7 @@ begin
      array['taxable'::tax_treatment, 'zero_rated'::tax_treatment], 'marketplace', 3, 3);
 
   perform pg_temp.raises('판매에 사용한 프로필에는 세금 구성 항목을 더 넣을 수 없다', format(
-    'insert into store_tax_components(store_id,tax_profile_id,kind,name,rate_pct,jurisdiction_level,calculation_basis,applies_to_treatments) values (%L,%L,''additional'',''뒤늦은 세금'',1,''custom'',''primary_tax_exclusive'',array[''taxable''::tax_treatment])',
+    'insert into store_tax_components(store_id,tax_profile_id,config_key,kind,name,rate_pct,jurisdiction_level,calculation_basis,applies_to_treatments) values (%L,%L,''late_tax'',''additional'',''뒤늦은 세금'',1,''custom'',''primary_tax_exclusive'',array[''taxable''::tax_treatment])',
     pg_temp.store(), v_tax), '23514');
   perform pg_temp.raises('판매에 사용한 프로필의 세금 구성 항목을 지울 수 없다',
     format('delete from store_tax_components where id=%L', v_additional), '23514');
@@ -267,14 +269,16 @@ begin
     pg_temp.store(), v_primary), '23514');
   perform pg_temp.raises('판매에 사용한 프로필의 채널 납부 주체를 지울 수 없다',
     format('delete from channel_tax_remittance where tax_component_id=%L and sales_channel_code=''hall''', v_primary), '23514');
-  perform pg_temp.raises('판매에 사용한 프로필에는 메뉴 override를 더 넣을 수 없다', format(
-    'insert into menu_tax_overrides(recipe_id,store_id,tax_profile_id,treatment) values (%L,%L,%L,''exempt'')',
-    v_recipe2, pg_temp.store(), v_tax), '23514');
-  perform pg_temp.raises('판매에 사용한 프로필의 메뉴 override를 지울 수 없다',
-    format('delete from menu_tax_overrides where recipe_id=%L and tax_profile_id=%L', v_recipe, v_tax), '23514');
-  perform pg_temp.raises('메뉴 override 계산 의미는 같은 판본에서 바꿀 수 없다', format(
-    'update menu_tax_overrides set tax_category=null,treatment=''exempt'' where recipe_id=%L and tax_profile_id=%L',
-    v_recipe, v_tax), '23514');
+  -- 0186부터 메뉴 예외는 프로필 정의가 아니라 미래 판매의 선택값이다. 과거 판매는
+  -- snapshot에 이미 굳었으므로 같은 프로필 안에서도 예외 판본을 바꿀 수 있다.
+  insert into menu_tax_overrides(recipe_id,store_id,tax_profile_id,treatment)
+  values(v_recipe2,pg_temp.store(),v_tax,'exempt');
+  update menu_tax_overrides set tax_category=null,treatment='exempt',revision=revision+1
+   where recipe_id=v_recipe and tax_profile_id=v_tax;
+  delete from menu_tax_overrides where recipe_id=v_recipe2 and tax_profile_id=v_tax;
+  perform pg_temp.ok('메뉴 예외를 바꿔도 과거 판매 snapshot의 과세 의미는 그대로다',
+    exists(select 1 from daily_sales_item_tax_snapshots
+      where id=v_snapshot and treatment='taxable'));
 
   perform pg_temp.raises('스냅샷 통화 소수 자릿수는 시장 원본과 달라질 수 없다',
     format('update daily_sales_item_tax_snapshots set minor_unit=2 where id=%L', v_snapshot), '23514');
@@ -293,7 +297,7 @@ begin
       v_snapshot, v_primary), '42501');
   set local role margincook_rpc_executor;
   perform pg_temp.raises('스냅샷 삭제가 막힌 뒤에도 사용된 프로필의 자식 봉인은 유지된다', format(
-    'insert into store_tax_components(store_id,tax_profile_id,kind,name,rate_pct,jurisdiction_level,calculation_basis,applies_to_treatments) values (%L,%L,''additional'',''삭제 우회 세금'',1,''custom'',''primary_tax_exclusive'',array[''taxable''::tax_treatment])',
+    'insert into store_tax_components(store_id,tax_profile_id,config_key,kind,name,rate_pct,jurisdiction_level,calculation_basis,applies_to_treatments) values (%L,%L,''delete_bypass'',''additional'',''삭제 우회 세금'',1,''custom'',''primary_tax_exclusive'',array[''taxable''::tax_treatment])',
     pg_temp.store(), v_tax), '23514');
   update daily_sales_item_tax_snapshots
      set input_snapshot = input_snapshot || '{"reconciled":true}'::jsonb
@@ -331,9 +335,16 @@ begin
   perform pg_temp.raises('세금 이벤트 TRUNCATE는 막힌다',
     'truncate sales_tax_events', '42501');
 
+  -- 이 블록은 원장 제약을 손으로 조립한다. 활성 제품 trigger 행동은 46번이 잰다.
+  set local role postgres;
+  alter table daily_sales_items disable trigger daily_sales_items_80_international_tax;
+  set local role margincook_rpc_executor;
   update daily_sales_items
      set qty_hall=0, qty_delivery=0, qty_takeout=0, qty_waste=0
    where id = v_item;
+  set local role postgres;
+  alter table daily_sales_items enable trigger daily_sales_items_80_international_tax;
+  set local role margincook_rpc_executor;
   update daily_sales_item_tax_snapshots
      set final_quantity=0, listed_total=0, net_sales=0, customer_total=0,
          tax_total=0, merchant_tax_liability=0, marketplace_tax_liability=0,
@@ -378,10 +389,10 @@ begin
     pg_temp.store(), v_market2, 'taxable', v_sale_date + 1, 2
   ) returning id into v_tax2;
   insert into store_tax_components(
-    store_id, tax_profile_id, kind, name, rate_pct,
+    store_id, tax_profile_id, config_key, kind, name, rate_pct,
     jurisdiction_level, calculation_basis, applies_to_treatments
   ) values (
-    pg_temp.store(), v_tax2, 'primary', '새 판본 부가세', 10,
+    pg_temp.store(), v_tax2, 'primary', 'primary', '새 판본 부가세', 10,
     'national', 'primary_tax_exclusive', array['taxable'::tax_treatment]
   );
   perform pg_temp.ok('계산 의미 변경은 새 프로필과 새 revision에서 가능하다',
@@ -391,6 +402,9 @@ begin
   insert into daily_sales(store_id, sale_date, etc_revenue, daily_extra, note)
   values (pg_temp.store(), v_late_date, 0, 0, 'INTL-1B 기간 밖 스냅샷 시험')
   returning id into v_late_sales;
+  set local role postgres;
+  alter table daily_sales_items disable trigger daily_sales_items_80_international_tax;
+  set local role margincook_rpc_executor;
   insert into daily_sales_items(
     store_id, daily_sales_id, recipe_id, menu_name, unit_price,
     qty_hall, qty_delivery, qty_takeout, unit_material_cost, unit_extra_cost, qty_waste
@@ -398,6 +412,9 @@ begin
     pg_temp.store(), v_late_sales, v_recipe, 'INTL-1B 기간 밖 메뉴', 100,
     1, 0, 0, 0, 0, 0
   ) returning id into v_late_item;
+  set local role postgres;
+  alter table daily_sales_items enable trigger daily_sales_items_80_international_tax;
+  set local role margincook_rpc_executor;
   perform pg_temp.raises('판매일 범위 밖의 닫힌 프로필로 스냅샷을 만들 수 없다', format(
     $sql$insert into daily_sales_item_tax_snapshots(
       store_id,daily_sales_item_id,sales_channel_code,
@@ -450,10 +467,10 @@ begin
   insert into tax_category_catalog(store_id, tax_profile_id, code, name, treatment)
   values (v_foreign_store, v_foreign_tax, 'foreign_only', '다른 매장 전용', 'taxable');
   insert into store_tax_components(
-    store_id, tax_profile_id, kind, name, rate_pct,
+    store_id, tax_profile_id, config_key, kind, name, rate_pct,
     jurisdiction_level, calculation_basis, applies_to_treatments
   ) values (
-    v_foreign_store, v_foreign_tax, 'primary', '부가세', 10,
+    v_foreign_store, v_foreign_tax, 'primary', 'primary', '부가세', 10,
     'national', 'primary_tax_exclusive', array['taxable'::tax_treatment]
   ) returning id into v_foreign_component;
   insert into channel_tax_remittance(store_id, tax_component_id, sales_channel_code, remittance_owner)
@@ -523,9 +540,9 @@ begin
 end
 $rls$;
 
-select pg_temp.ok('schema 단계에서도 국제 세금 capability는 꺼져 있다',
-  (app_capabilities()#>>'{international_tax,read_enabled}')::boolean is false
-  and (app_capabilities()#>>'{international_tax,write_enabled}')::boolean is false);
+select pg_temp.ok('제품 전환 뒤 schema와 국제 세금 capability가 함께 활성이다',
+  (app_capabilities()#>>'{international_tax,read_enabled}')::boolean
+  and (app_capabilities()#>>'{international_tax,write_enabled}')::boolean);
 
 select pg_temp.eq('schema 단계에서 현행 0090 세금 계산은 불변',
   tax_of(12000, 'included', '[{"name":"부가세","rate":9.0909090909}]'::jsonb),
@@ -554,6 +571,9 @@ begin
   insert into daily_sales(store_id, sale_date, etc_revenue, daily_extra, note)
   values (v_store, current_date, 0, 0, 'INTL-1B purge 전용 판매')
   returning id into v_sales;
+  set local role postgres;
+  alter table daily_sales_items disable trigger daily_sales_items_80_international_tax;
+  set local role margincook_rpc_executor;
   insert into daily_sales_items(
     store_id, daily_sales_id, recipe_id, menu_name, unit_price,
     qty_hall, qty_delivery, qty_takeout, unit_material_cost, unit_extra_cost, qty_waste
@@ -561,6 +581,9 @@ begin
     v_store, v_sales, null, 'INTL-1B purge 전용 행', 100,
     1, 0, 0, 0, 0, 0
   ) returning id into v_item;
+  set local role postgres;
+  alter table daily_sales_items enable trigger daily_sales_items_80_international_tax;
+  set local role margincook_rpc_executor;
   insert into daily_sales_item_tax_snapshots(
     store_id, daily_sales_item_id, sales_channel_code,
     market_profile_id, market_profile_revision, tax_profile_id, tax_profile_revision,

@@ -6,7 +6,7 @@
 > 서버 구성, 실행 위치, Queue·Edge Function·외부 Worker의 책임과 분리 조건은 짝 문서를 따른다.
 
 - **문서 위치**: `docs/브랜치-DB-운영-기획안.md`
-- **최종 수정**: 2026-08-31
+- **최종 수정**: 2026-09-01
 - **현재 상태**: 개정 4판. 개정 3판의 배포·복구 원칙을 유지하면서 국제 출시 `INTL-1`의
   확장→이관→전환→정리 순서와 구 앱 호환 게이트를 추가했다. 2026-08-31 재검토 기준 최신
   `origin/main` `3c043b1`에 국제 출시 기준선을 선형 반영했고, migration은 166개(최신
@@ -14,7 +14,9 @@
   mobile 212 · upgrade 13/13) 통과했으며 0176·0177 운영 증거도 보존했다. 스테이징에는 `0177`까지
   적용돼 pending 0개이며 운영 관측 실패→경보→회복 훈련까지 완료했다. 직접 접속 자격이 필요한
   `admin-acl.sh --remote audit` 셸 경로, 두 번째 관리자의 MFA, 실제 사용자 시작 전 PITR/RPO 최종
-  결정은 남아 있고 production migration은 적용하지 않았다. 기준선 COMMIT Fable 검수는
+  결정은 남아 있고 production migration은 적용하지 않았다. 국제 세금 cutover 후보는 별도 브랜치에서
+  `0191`까지 구현됐으며 로컬 전체 검증·Opus 검수·정확한 SHA 보호 CI·스테이징 적용을 순서대로
+  통과시킨 뒤에만 main으로 승격한다. 기준선 COMMIT Fable 검수는
   `INTL-BASELINE-COMMIT-001/r001` PASS이며 정확한 feature/main SHA의 Node 20.19.4·24·full DB·
   `protected-gate`도 성공했다. 따라서 `INTL-1A` 로컬 구현은 시작할 수 있지만 스테이징·production
   적용은 각 환경 배포 게이트를 별도로 통과해야 한다.

@@ -1,6 +1,8 @@
 -- ═══════════════════════════════════════════════════════════════
--- 41 · INTL-1E 비활성 앱 계약·사용자별 언어·상세 facade
+-- 41 · INTL-1E 앱 계약·사용자별 언어·상세 facade
 -- ═══════════════════════════════════════════════════════════════
+
+select pg_temp.clear_international_tax_fixture();
 
 do $preferences$
 declare v jsonb; v_rev integer; v_stamp timestamptz;
@@ -39,10 +41,10 @@ declare
   v_market uuid; v_tax uuid; v_primary uuid; v_from date; v_sale_date date; v_item uuid;
 begin
   v := international_tax_app_state(pg_temp.store());
-  perform pg_temp.ok('앱 상태는 비활성 capability와 이관·프로필 계약을 함께 준다',
+  perform pg_temp.ok('앱 상태는 활성 capability와 이관·프로필 계약을 함께 준다',
     v ? 'capabilities' and v ? 'migration' and v ? 'market_profile' and v ? 'tax_profile'
-    and not (v#>>'{capabilities,international_tax,read_enabled}')::boolean
-    and not (v#>>'{capabilities,international_tax,write_enabled}')::boolean);
+    and (v#>>'{capabilities,international_tax,read_enabled}')::boolean
+    and (v#>>'{capabilities,international_tax,write_enabled}')::boolean);
   perform pg_temp.ok('마이그레이션 뒤 신규 매장은 프로필을 지어내지 않고 국가 확인을 요구한다',
     v->>'onboarding_status'='country_confirmation_required'
     and v->'market_profile'='null'::jsonb and v->'tax_profile'='null'::jsonb);
@@ -59,8 +61,8 @@ begin
   execute 'reset role';
   insert into store_tax_profiles(store_id,market_profile_id,default_treatment,effective_from)
   values(pg_temp.store(),v_market,'taxable',v_from) returning id into v_tax;
-  insert into store_tax_components(store_id,tax_profile_id,kind,name,rate_pct,jurisdiction_level,calculation_basis,applies_to_treatments)
-  values(pg_temp.store(),v_tax,'primary','부가세',10,'national','primary_tax_exclusive',array['taxable'::tax_treatment])
+  insert into store_tax_components(store_id,tax_profile_id,config_key,kind,name,rate_pct,jurisdiction_level,calculation_basis,applies_to_treatments)
+  values(pg_temp.store(),v_tax,'primary','primary','부가세',10,'national','primary_tax_exclusive',array['taxable'::tax_treatment])
   returning id into v_primary;
   insert into tax_category_catalog(store_id,tax_profile_id,code,name,treatment) values
     (pg_temp.store(),v_tax,'standard','일반 과세','taxable'),
@@ -92,6 +94,7 @@ begin
     v ? 'tax_profile_id' and v ? 'tax_category' and v ? 'treatment'
     and jsonb_array_length(v->'categories')=3);
 
+  set constraints all immediate;
   execute 'reset role';
   alter table store_market_profiles disable trigger store_market_profiles_20_children_guard;
   alter table store_market_profiles disable trigger store_market_profiles_90_version_guard;
@@ -108,6 +111,7 @@ begin
   update store_market_profiles set effective_to=null where id=v_market;
   alter table store_market_profiles enable trigger store_market_profiles_90_version_guard;
   alter table store_market_profiles enable trigger store_market_profiles_20_children_guard;
+  set constraints all deferred;
   execute 'set local role margincook_rpc_executor';
 
   v := sales_tax_app_detail(pg_temp.store(),pg_temp.today(),pg_temp.today());

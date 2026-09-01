@@ -48,6 +48,23 @@ end $h$;
 create function pg_temp.settings_rev(p_store uuid) returns integer
 language sql stable as $h$ select revision from settings where store_id = p_store $h$;
 
+/**
+ * 국제 세금 빈 상태가 출발점인 시험용 정리.
+ * 0189 이후 새 시드 매장은 정상 제품 경로로 미래 프로필·활성 경계를 가지므로,
+ * 구 스키마·최초 저장 시험은 자기 트랜잭션 안에서만 그 fixture를 비운다.
+ */
+create function pg_temp.clear_international_tax_fixture(p_store uuid default pg_temp.store()) returns void
+language plpgsql as $h$
+begin
+  set local role postgres;
+  alter table public.international_tax_activation_boundaries disable trigger user;
+  delete from public.international_tax_activation_boundaries where store_id=p_store;
+  alter table public.international_tax_activation_boundaries enable trigger user;
+  delete from public.store_tax_profiles where store_id=p_store;
+  delete from public.store_market_profiles where store_id=p_store;
+  set local role margincook_rpc_executor;
+end $h$;
+
 /** 세션의 사장님을 바꾼다(JWT 클레임). 블록 끝에 pg_temp.as_owner(pg_temp.owner()) 로 되돌릴 것. */
 create function pg_temp.as_owner(p_uid uuid) returns void
 language plpgsql as $h$

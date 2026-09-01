@@ -60,6 +60,16 @@ begin
     not exists (select 1 from pg_proc p join pg_namespace n on n.oid = p.pronamespace
                  where n.nspname = 'public' and p.proname = 'save_recipe_tax_items'));
 
+  -- 0189 제품 전환 뒤 이 함수는 과거 앱 호환용 읽기 계산만 남고 저장 문은 닫힌다.
+  -- 국제 프로필의 형식·판본 검사는 44번이 잰다.
+  if (app_capabilities()#>>'{international_tax,write_enabled}')::boolean then
+    perform pg_temp.raises('제품 활성 뒤 옛 세금 저장 문은 닫혀 있다',
+      format('select save_store_tax(%L,%L,%L::jsonb,%s)',pg_temp.store(),'included',
+        '[{"name":"부가세","rate":9.0909090909}]',pg_temp.settings_rev(pg_temp.store())),
+      '45017');
+    return;
+  end if;
+
   -- 저장이 값을 검사한다.
   perform pg_temp.raises('이름 빈 항목 거부',
     format('select save_store_tax(%L, %L, %L::jsonb, %s)', pg_temp.store(), 'included',
@@ -171,6 +181,9 @@ declare
   b1    jsonb;
   v_tx0 numeric;
 begin
+  if (app_capabilities()#>>'{international_tax,write_enabled}')::boolean then
+    return;
+  end if;
   perform pg_temp.open_today();   -- 닫혀 있어도 열어 준다(프렐류드 헬퍼)
   perform pg_temp.e10(pg_temp.store(), v_day, v_rcp, 10, 0, 0, 0);
   b0 := day_menu_detail(pg_temp.store(), v_day, v_rcp);

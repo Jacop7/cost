@@ -1,5 +1,7 @@
 \echo '--- 43 국제 세금 shadow read ---'
 
+select pg_temp.clear_international_tax_fixture();
+
 set local role postgres;
 
 do $t$
@@ -18,17 +20,22 @@ begin
     from daily_sales_items i join daily_sales d on d.id=i.daily_sales_id
    where i.store_id=pg_temp.store() and i.recipe_id=pg_temp.rcp('제육볶음')
    order by d.sale_date desc limit 1;
-  update daily_sales_items set unit_price=12000,unit_tax=tax_of(12000,'included','[{"name":"부가세","rate":9.0909090909}]'),
-    qty_hall=1,qty_delivery=0,qty_takeout=0 where id=v_item;
   insert into store_market_profiles(store_id,country_code,currency_code,business_locale_code,price_basis,effective_from)
   values(pg_temp.store(),'KR','KRW','ko-KR','tax_inclusive',v_date) returning id into v_market;
   insert into store_tax_profiles(store_id,market_profile_id,default_treatment,effective_from)
   values(pg_temp.store(),v_market,'taxable',v_date) returning id into v_tax;
-  insert into store_tax_components(store_id,tax_profile_id,kind,name,rate_pct,jurisdiction_level,calculation_basis,applies_to_treatments)
-  values(pg_temp.store(),v_tax,'primary','부가세',10,'national','primary_tax_exclusive',array['taxable'::tax_treatment])
+  insert into store_tax_components(store_id,tax_profile_id,config_key,kind,name,rate_pct,jurisdiction_level,calculation_basis,applies_to_treatments)
+  values(pg_temp.store(),v_tax,'primary','primary','부가세',10,'national','primary_tax_exclusive',array['taxable'::tax_treatment])
   returning id into v_primary;
   insert into channel_tax_remittance(store_id,tax_component_id,sales_channel_code,remittance_owner)
   values(pg_temp.store(),v_primary,'hall','merchant'),(pg_temp.store(),v_primary,'delivery','merchant'),(pg_temp.store(),v_primary,'takeout','merchant');
+
+  -- shadow는 전환 전 legacy 값을 비교하는 도구다. 제품 활성 trigger가 먼저 새 값을
+  -- 투영하지 않도록 이 픽스처 UPDATE 한 번에만 trigger를 멈춘다(트랜잭션 롤백).
+  alter table daily_sales_items disable trigger daily_sales_items_80_international_tax;
+  update daily_sales_items set unit_price=12000,unit_tax=tax_of(12000,'included','[{"name":"부가세","rate":9.0909090909}]'),
+    qty_hall=1,qty_delivery=0,qty_takeout=0 where id=v_item;
+  alter table daily_sales_items enable trigger daily_sales_items_80_international_tax;
 
   select count(*) into v_snapshot_count from daily_sales_item_tax_snapshots;
   select count(*) into v_event_count from sales_tax_events;

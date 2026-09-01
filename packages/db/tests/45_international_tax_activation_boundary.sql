@@ -2,6 +2,8 @@
 -- 45 · INTL-1F 국제 세금 활성일 이전 과거 정정 차단
 -- ═══════════════════════════════════════════════════════════════
 
+select pg_temp.clear_international_tax_fixture();
+
 do $boundary$
 declare
   v_min date;
@@ -24,6 +26,9 @@ begin
   insert into store_market_profiles(
     store_id,country_code,currency_code,business_locale_code,price_basis,effective_from)
   values(pg_temp.store(),'KR','KRW','ko-KR','tax_inclusive',v_min) returning id into v_market;
+  insert into international_tax_activation_boundaries(
+    store_id,activation_date,minimum_app_version,reason)
+  values(pg_temp.store(),v_max,'0.2.0','release_cutover');
   insert into store_tax_profiles(store_id,market_profile_id,default_treatment,effective_from)
   values(pg_temp.store(),v_market,'taxable',v_min) returning id into v_tax;
   insert into store_tax_components(
@@ -35,9 +40,6 @@ begin
   values(pg_temp.store(),v_component,'hall','merchant'),
         (pg_temp.store(),v_component,'delivery','merchant'),
         (pg_temp.store(),v_component,'takeout','merchant');
-  insert into international_tax_activation_boundaries(
-    store_id,activation_date,minimum_app_version,reason)
-  values(pg_temp.store(),v_max,'0.2.0','release_cutover');
   perform set_config('margincook.international_tax_force','owner_test',true);
   perform set_config('margincook.international_tax_activation_test','on',true);
 

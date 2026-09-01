@@ -2,6 +2,8 @@
 -- 46 · INTL-1F 국제 세금 확정값과 기존 손익 합계의 단일 권위
 -- ═══════════════════════════════════════════════════════════════
 
+select pg_temp.clear_international_tax_fixture();
+
 do $authority$
 declare
   v_date date;
@@ -41,9 +43,6 @@ begin
         (pg_temp.store(),v_component,'takeout','merchant');
   insert into tax_category_catalog(store_id,tax_profile_id,code,name,treatment)
   values(pg_temp.store(),v_tax,'standard','일반 과세','taxable');
-  insert into international_tax_activation_boundaries(
-    store_id,activation_date,minimum_app_version,reason)
-  values(pg_temp.store(),v_date,'0.2.0','release_cutover');
   perform set_config('margincook.international_tax_force','owner_test',true);
   perform set_config('margincook.international_tax_activation_test','on',true);
 
@@ -65,6 +64,12 @@ begin
           and etc_tax_snapshot#>>'{tax_profile_revision}'='1'
           and jsonb_array_length(etc_tax_snapshot->'lines')=1
          from daily_sales where id=v_sales));
+
+  v:=sales_tax_app_detail(pg_temp.store(),v_date,v_date);
+  perform pg_temp.ok('세금 상세가 기타매출 snapshot도 추정 없이 돌려준다',
+    jsonb_array_length(v->'etc_lines')=1
+    and v#>>'{etc_lines,0,name}'='음료'
+    and (v#>>'{etc_lines,0,tax_total}')::numeric=91);
 
   v:=recipe_tax_app_state(pg_temp.store(),v_recipe);
   perform pg_temp.ok('메뉴 현재 세금도 DB numeric quote로 반환한다',

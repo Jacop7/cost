@@ -1136,6 +1136,7 @@ export type Database = {
       menu_tax_overrides: {
         Row: {
           created_at: string
+          effective_from: string
           recipe_id: string
           revision: number
           store_id: string
@@ -1146,6 +1147,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          effective_from?: string
           recipe_id: string
           revision?: number
           store_id: string
@@ -1156,6 +1158,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          effective_from?: string
           recipe_id?: string
           revision?: number
           store_id?: string
@@ -2686,6 +2689,14 @@ export type Database = {
         }
       }
       current_client_app_version: { Args: never; Returns: string }
+      current_recipe_tax_quote: {
+        Args: { p_date: string; p_recipe: string }
+        Returns: Json
+      }
+      daily_sales_etc_accounting_totals: {
+        Args: { p_sales: string }
+        Returns: Json
+      }
       day_etc_tax_rate: {
         Args: { p_date: string; p_store: string }
         Returns: number
@@ -3085,13 +3096,20 @@ export type Database = {
         Returns: Json
       }
       recipe_shortages: { Args: { p_store: string }; Returns: Json }
-      recipe_snapshot_entry: { Args: { p_recipe: string }; Returns: Json }
+      recipe_snapshot_entry: {
+        Args: { p_date: string; p_recipe: string }
+        Returns: Json
+      }
       recipe_tax: { Args: { p_recipe: string }; Returns: number }
       recipe_tax_app_state: {
         Args: { p_recipe: string; p_store: string }
         Returns: Json
       }
       recipe_tax_items: { Args: { p_recipe: string }; Returns: Json }
+      recipe_tax_quote_for_price: {
+        Args: { p_date: string; p_price: number; p_recipe: string }
+        Returns: Json
+      }
       recompute_recipe: {
         Args: {
           p_cause: Database["public"]["Enums"]["trend_cause"]
@@ -3183,6 +3201,7 @@ export type Database = {
         Args: { p_from: string; p_store: string; p_to: string }
         Returns: Json
       }
+      sales_item_accounting_totals: { Args: { p_item: string }; Returns: Json }
       sales_material_usage: {
         Args: { p_from: string; p_store: string; p_to: string }
         Returns: Json
