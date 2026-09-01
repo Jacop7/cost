@@ -214,6 +214,31 @@ Opus가 지정한 후속 위험은 다음과 같다.
   신규 회귀가 없음을 확인했다.
 - Codex 판정: `PASS`; Opus 판정: `PASS`; 최종 판정: `PASS`.
 
+### ING-05 · `screen:stock_change`와 입고·차감·폐기 상태
+
+- 문제점: 입고/차감/폐기가 별도 문자열 치환과 MutationObserver 후처리에 의존해 입력값·계산 결과·
+  접근성 상태가 서로 달랐다. 시연용 입고 확인은 성공 없이 항상 실패 팝업으로 이동했다.
+- 병합안: `renderStockChangeBase`, `stockResultField`, `bindRadioButtons`, `stockDecreaseReady`를 공용
+  요소로 사용한다. 탭·입력·결과·하단 행동은 같은 위치/크기/검증 순서를 공유한다.
+- 입고: 구매처 미선택에서는 구매처 필드만 보인다. 저장 링크 선택 시 `구매처 · 상품명`과 등록된
+  용량·금액을 표시하고 두 값은 읽기 전용이다. 직접 입력은 구매처명·용량·수량·금액·입고일이 모두
+  유효해야 하단 버튼이 활성화된다.
+- 구매처 선택: `미선택`, 저장 링크의 검정 첫 줄/회색 둘째 줄, 현재값 체크를 radiogroup으로 구성했다.
+  `＋ 직접 입력`, `＋ 구매 링크 추가`는 하단 고정 2열이다. 링크 추가 후 옵션 목록을 거쳐 두 번
+  뒤로가면 재고 수정 입력값이 보존된 채 복귀한다.
+- 계산 결과: 총 입고량·입고 후 기준단가·차감 후 재고·폐기 후 재고·예상 손실은 라벨을 카드 밖 위에
+  두고 값만 파란 결과 카드에 우측 정렬한다. 모든 값은 입력 즉시 live 갱신된다.
+- 차감/폐기: 수량과 사유가 필수다. 0 이하 또는 현재 재고 초과, 빈 사유는 최초 렌더부터 CTA를
+  비활성화하고 숨은 live 오류 사유와 `aria-invalid`를 제공한다.
+- 확인/실패: 입고 확인은 중앙 ConfirmDialog에서 `08/30  식자재쇼핑몰`과
+  `입고 1kg (1kg × 1개)`를 회색 요약 카드에 표시한다. 정상 입고는 상세로 이동한다. 입고 실패는
+  별도 ErrorDialog 사례이며 확인으로만 닫힌다.
+- Codex 검수: 미선택/저장 링크/직접 입력, 수량 stepper, 차감 812g 초과, 폐기 50g 손실 1,400원,
+  확인·성공·실패, 구매 링크 추가와 복귀를 모바일에서 실제 조작했다.
+- Opus 1차: 탭 semantics, 차감·폐기 초기 CTA guard와 오류 이유, 정상 입고 성공 경로를 지적했다.
+- Opus 2차: 화면과 6개 상태/팝업 모두 `PASS`; 1차 지적 해소와 신규 회귀 없음.
+- Codex 판정: `PASS`; Opus 판정: `PASS`; 최종 판정: `PASS`.
+
 ## 전체 target 장부
 
 아래 목록은 숨긴 폐기 전용 페이지를 제외한 활성 screen 61개와 popup/state host 123개다.
@@ -226,7 +251,7 @@ Opus가 지정한 후속 위험은 다음과 같다.
 | screen:ingredient_edit_menu | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
 | screen:ingredient_edit | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
 | screen:stock | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
-| screen:stock_change | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
+| screen:stock_change | ingredient | Screen | COMMON | PASS | PASS | PASS | PASS | PASS |
 | screen:memo_edit | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
 | screen:purchase | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
 | screen:ingredient_changes | ingredient | Screen | COMMON | TODO | TODO | TODO | TODO | TODO |
@@ -288,12 +313,12 @@ Opus가 지정한 후속 위험은 다음과 같다.
 | popup:add_unit@ingredient_add | ingredient | PickerSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
 | popup:edit_category@ingredient_edit | ingredient | PickerSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
 | popup:edit_unit@ingredient_edit | ingredient | PickerSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
-| popup:stock_inbound@stock_change | ingredient | PageState | COMMON | TODO | TODO | TODO | TODO | TODO |
-| popup:stock_deduct@stock_change | ingredient | PageState | COMMON | TODO | TODO | TODO | TODO | TODO |
-| popup:stock_discard@stock_change | ingredient | PageState | COMMON | TODO | TODO | TODO | TODO | TODO |
-| popup:stock_option@stock_change | ingredient | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
-| popup:stock_confirm@stock_change | ingredient | ConfirmDialog | COMMON | TODO | TODO | TODO | TODO | TODO |
-| popup:stock_error@stock_change | ingredient | ErrorDialog | COMMON | TODO | TODO | TODO | TODO | TODO |
+| popup:stock_inbound@stock_change | ingredient | PageState | COMMON | PASS | PASS | PASS | PASS | PASS |
+| popup:stock_deduct@stock_change | ingredient | PageState | COMMON | PASS | PASS | PASS | PASS | PASS |
+| popup:stock_discard@stock_change | ingredient | PageState | COMMON | PASS | PASS | PASS | PASS | PASS |
+| popup:stock_option@stock_change | ingredient | PickerSheet | COMMON | PASS | PASS | PASS | PASS | PASS |
+| popup:stock_confirm@stock_change | ingredient | ConfirmDialog | COMMON | PASS | PASS | PASS | PASS | PASS |
+| popup:stock_error@stock_change | ingredient | ErrorDialog | COMMON | PASS | PASS | PASS | PASS | PASS |
 | popup:option_list@options | ingredient | PageState | COMMON | TODO | TODO | TODO | TODO | TODO |
 | popup:option_add@options | ingredient | PageState | COMMON | TODO | TODO | TODO | TODO | TODO |
 | popup:option_edit@options | ingredient | PageState | COMMON | TODO | TODO | TODO | TODO | TODO |
