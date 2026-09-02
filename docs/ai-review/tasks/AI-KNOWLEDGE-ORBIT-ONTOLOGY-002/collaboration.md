@@ -41,3 +41,15 @@
 - 증거 파일·로그 위치: `rounds/r001/run.json`, `status.json`; 안전 진단은 `is_error=true`, `structured_output_present=false`, permission denial 0을 기록했다.
 - 판정: 남은 승인 범위 USD 0.927495로 같은 범위의 유효 구조 감사를 완료할 근거가 없으므로 추가 외부 호출을 만들지 않는다. 실패 원본을 보존하고 사람 결정으로 다음 전략과 상한을 정한다.
 - next_review_request: `HUMAN_DECISION`
+
+## CODEX_EVIDENCE · turn-c002 · r001
+
+- role: `CODEX-FUNCTION-QA`
+- reply_to_turn_id: `turn-c001`
+- target_commit_sha: `6deaf4d1beca913dde06af9721c70ada5d927577`
+- finding_ids: `[]`
+- 실행 명령: `corepack pnpm fable:check`; `corepack pnpm fable:self-test`
+- 종료 코드·결과: Claude Code 2.1.250 로그인·연결 정상. Fable wrapper self-test 50개 묶음과 protocol 1.2 fallback 계약 22/22 통과.
+- 진단: 로컬 runner·장부·schema 계약 실패는 재현되지 않았다. 외부 회차는 permission denial 0 상태에서 구조화 결과 없이 종료됐으므로 모델 실행 결과 부재로 제한해 기록한다.
+- 다음 조치: 남은 승인 범위에서 재호출하지 않고 사람 결정 뒤 축소 범위 검수 또는 별도 실행기 진단 Task로 진행한다.
+- next_review_request: `HUMAN_DECISION`
