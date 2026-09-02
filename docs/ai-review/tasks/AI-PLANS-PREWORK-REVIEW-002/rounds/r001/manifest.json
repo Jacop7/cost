@@ -1,0 +1,172 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-PLANS-PREWORK-REVIEW-002",
+  "round": "r001",
+  "created_at": "2026-09-02T13:34:46.555Z",
+  "review_mode": "INITIAL",
+  "baseline_commit_sha": "022840ab627b1653e94c97e8208b9268399e36ea",
+  "target_commit_sha": "0517f06900da6c3e7dd0ed472e10fda851978697",
+  "target_tree_oid": "60495bc284da4a3b454385fe3fe27d4133aaa2cb",
+  "agents_blob_oid": "c32214b5528752a91f0f1545fea8c735d5fae7fa",
+  "agents_sha256": "de18fc8524afa350d3d0806f40150b9397dfd45a91ff471b5e1f6d6bf95fc681",
+  "task_sha256": "4a735e23ddf6a90c80526c36b4d8e43da379b6834ea964aa8826ce374308dc66",
+  "collaboration_sha256": "dffc854c6d3810a7267babbb212fbda96320109a43d85675256428812f21fc22",
+  "collaboration_bytes": 1895,
+  "input_files_sha256": "335a311e62c5e8a3a839e554d050290d6ea7359b56807abb6883df2ffd134f95",
+  "schema_sha256": "d8ffdb13e6b1e38279355d9ffd592cfb91dc023d287976adf7892e85dbfaf0d7",
+  "runner_sha256": "80dae1d06c89af056e9d8c210b571e978ee534fc128a5fe3b9867610b5ae447b",
+  "snapshot_mode": "COMMIT",
+  "previous_review_sha256": null,
+  "previous_run_sha256": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "fallback_review": null,
+  "closure_review": null,
+  "fallback_input_scope": null,
+  "retry_of_failed_round": null,
+  "artifact_paths": [
+    "docs/ai-review/evidence/AI-PLANS-PREWORK-BASELINE.md",
+    "docs/ai-review/evidence/AI-PLANS-PREWORK-PATCH-MAP.md",
+    "docs/ai-review/evidence/AI-PLANS-PREWORK-DECISIONS.md",
+    "docs/ai-review/evidence/AI-PLANS-PREWORK-VERIFICATION-V3.md",
+    "docs/ai-review/evidence/AI-PLANS-PREWORK-OPUS-R3.md",
+    "docs/ai-review/evidence/AI-PLANS-PREWORK-USER-STATE.json",
+    "scripts/ai-plan-prework-status-check.mjs",
+    "docs/작업큐.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/ai-review/README.md"
+  ],
+  "evidence_paths": [],
+  "allowed_paths": [
+    "docs/ai-review/evidence/AI-PLANS-PREWORK-BASELINE.md",
+    "docs/ai-review/evidence/AI-PLANS-PREWORK-PATCH-MAP.md",
+    "docs/ai-review/evidence/AI-PLANS-PREWORK-DECISIONS.md",
+    "docs/ai-review/evidence/AI-PLANS-PREWORK-VERIFICATION-V3.md",
+    "docs/ai-review/evidence/AI-PLANS-PREWORK-OPUS-R3.md",
+    "docs/ai-review/evidence/AI-PLANS-PREWORK-USER-STATE.json",
+    "scripts/ai-plan-prework-status-check.mjs",
+    "docs/작업큐.md",
+    "AGENTS.md",
+    "docs/ai-review/README.md"
+  ],
+  "excluded_paths": [
+    "docs/AI-지식-온톨로지-기획안.md",
+    "docs/AI-오케스트레이션-상세기획안.md",
+    "docs/디렉터리-문서신경망-재설계-기획안.md",
+    "docs/AI-품질-학습-자율성-평가기획안.md",
+    "docs/팀구성_상세기획안.md",
+    "docs/ai-review/evidence/AI-CONTEXT-CROSS-STUDY-*.md",
+    "apps/mobile/**",
+    "scripts/prototype_server.py",
+    "docs/prototypes/**",
+    "docs/ai-review/tasks/PROTOTYPE-TERMINOLOGY-001/**",
+    ".codex-share/**",
+    ".tmp/**"
+  ],
+  "applied_learning_ids": [],
+  "excluded_learning_ids": [],
+  "learning_registry_blob_oid": "77f00167d790c82373c1aa803d91874952c3334a",
+  "learning_registry_sha256": "4717fe99c86319d7c0abc5c8dd38e68e3a55722d7cfa56b8de173ed05ca1388f",
+  "learning_assignment_sha256": "4660bb32207bcae3246801d71aa6a052eab7b0a7cef357bd5984f706fe3dcbfe",
+  "learning_target_date": "2026-09-02",
+  "input_files": [
+    {
+      "path": "AGENTS.md",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 11697,
+      "git_blob_oid": "c32214b5528752a91f0f1545fea8c735d5fae7fa",
+      "sha256": "de18fc8524afa350d3d0806f40150b9397dfd45a91ff471b5e1f6d6bf95fc681",
+      "line_count": 160
+    },
+    {
+      "path": "docs/작업큐.md",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 149825,
+      "git_blob_oid": "8c5019f15c2b00f9d5d7612f17afc1eb2a548e71",
+      "sha256": "b793b82abb4e2cd857676abb383489ee725a7fe76ca9cc54a6a47b87736f1753",
+      "line_count": 2207
+    },
+    {
+      "path": "docs/ai-review/evidence/AI-PLANS-PREWORK-BASELINE.md",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 6049,
+      "git_blob_oid": "97376b6079d7171d422f4ebe52dca32bd90b94f1",
+      "sha256": "172afdf872714fa5f8b981929be2e55bdc87db8cfa4513f6b46694c6c9d506e8",
+      "line_count": 108
+    },
+    {
+      "path": "docs/ai-review/evidence/AI-PLANS-PREWORK-DECISIONS.md",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 2540,
+      "git_blob_oid": "51ec87789bf3e9e9c0b8cd057842c520e5a47398",
+      "sha256": "dec1810babff7c47adcf18993a6286464fd659db1630fb5174dff4dfa064042d",
+      "line_count": 22
+    },
+    {
+      "path": "docs/ai-review/evidence/AI-PLANS-PREWORK-OPUS-R3.md",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 3054,
+      "git_blob_oid": "7b4f1d5e238b830bbc23c5292e0c22a9315fffe3",
+      "sha256": "ee95f1a2d7ec793a4b718ff840fec92000638f9450bbabde8524782dd470f704",
+      "line_count": 56
+    },
+    {
+      "path": "docs/ai-review/evidence/AI-PLANS-PREWORK-PATCH-MAP.md",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 4614,
+      "git_blob_oid": "47b3bc1cd44aa3c231e44f5f5c2a3adba00f8270",
+      "sha256": "e6b92ec9cecbc08474bfaa2ea97df23e267e266a4a4cc8552b71895a5365f4b0",
+      "line_count": 54
+    },
+    {
+      "path": "docs/ai-review/evidence/AI-PLANS-PREWORK-USER-STATE.json",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 13021,
+      "git_blob_oid": "9520f02cd5db7ad1001d23632c2d01c8a78859f1",
+      "sha256": "14420be51fa7894241122aabec883b7f014bcf6f1d3cff2c13e1a1804798c748",
+      "line_count": 349
+    },
+    {
+      "path": "docs/ai-review/evidence/AI-PLANS-PREWORK-VERIFICATION-V3.md",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 2056,
+      "git_blob_oid": "c19a920d9d4e1e5dd6e0f6b41baac88eb78294cc",
+      "sha256": "ca8739ee87a86f61af2b536e33777a9299dfdaeecd5b205e1d1104326a380799",
+      "line_count": 36
+    },
+    {
+      "path": "docs/ai-review/README.md",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 39933,
+      "git_blob_oid": "2cda811cbff63647824a6cbf351f4b8bc8b555f0",
+      "sha256": "25480618cc4658aaa457c125b64569350e14bc03abaf05490807d37ba0f30dad",
+      "line_count": 540
+    },
+    {
+      "path": "scripts/ai-plan-prework-status-check.mjs",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 6488,
+      "git_blob_oid": "2c1ba25ecb8ab0315866284847876dc7a4b3f90c",
+      "sha256": "a9a71a2378dec60d6a2f1905b5ed2b0b091ec206a292b2978a446aa674469eb3",
+      "line_count": 178
+    }
+  ],
+  "source_archive_version": 1,
+  "finding_resolution_semantics": "VERIFIED_RESOLVED_V1",
+  "artifact_snapshot_sha256": null,
+  "input_snapshot_sha256": null
+}
