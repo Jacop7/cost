@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-PLANS-V02-ORCHESTRATION-002",
+  "sequence": "t0002",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-02T09:39:10.248Z",
+  "turn_id": "turn-s002",
+  "turn_type": "SOLAR_RESPONSE",
+  "role": "SOLAR-ORCH",
+  "task_sha256": "b89f0a01b632a5a4ab6c53fd1db862886fa11a8ae01665b9dfff3ad1edb650c2",
+  "runner_sha256": "80dae1d06c89af056e9d8c210b571e978ee534fc128a5fe3b9867610b5ae447b",
+  "previous_manual_run_sha256": "a32c4491afabf14a9c93504fd6dbc44f43f3d86e761c1ecc2a091920519b42d7",
+  "collaboration_before_sha256": "0f2f7873bf6cc34f2f3f6b7441053fa65de64a3fe4ac601a67f6c34d47467aa8",
+  "collaboration_before_bytes": 1331,
+  "collaboration_entry_sha256": "717b7af4d38243c7daf891ed19cfc61b7969e659614ac22de94b02b0c6e0ed53",
+  "collaboration_entry_bytes": 546,
+  "collaboration_after_sha256": "57adceb5b06d78d1dc21cf95a8eaa5e46ca47804a68b0fe3b7efac47df7afd80",
+  "collaboration_after_bytes": 1877
+}

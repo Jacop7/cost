@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-PLANS-V02-DIRECTORY-002",
+  "sequence": "t0002",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-02T09:39:11.899Z",
+  "turn_id": "turn-s002",
+  "turn_type": "SOLAR_RESPONSE",
+  "role": "SOLAR-ARCH",
+  "task_sha256": "e367fc7d8b824c6e3d01609bd78367a233d941a39c1a6c5f2ed1c491f18f25a5",
+  "runner_sha256": "80dae1d06c89af056e9d8c210b571e978ee534fc128a5fe3b9867610b5ae447b",
+  "previous_manual_run_sha256": "71913c01393151e8726be508fcc96d3245590590551ff69ecabab6cb9da654e1",
+  "collaboration_before_sha256": "27340a8210a28bed3b12b60e6642e6f4f3b0c43ed7450db0ea921143c3d72845",
+  "collaboration_before_bytes": 1322,
+  "collaboration_entry_sha256": "5ff06a883782b4e16bd5d9753f9f706de2a830aad43545039fe022a5cb946700",
+  "collaboration_entry_bytes": 546,
+  "collaboration_after_sha256": "1cd5c54de675a9345f0b1f435ef2b9dd506f5ff94c1e71c8e33fc5a0c1bac423",
+  "collaboration_after_bytes": 1868
+}
