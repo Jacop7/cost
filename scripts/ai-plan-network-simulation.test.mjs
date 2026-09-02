@@ -1359,6 +1359,27 @@ test('새 채팅 복원은 L0~L4 순서와 동일·낮은 HANDOFF 판본 거부�
     'successor가 전달받은 판본으로 실행한다.',
   );
   assert.throws(() => validateDocumentNetwork(acceptsStale), /ontology 필수 계약 누락/);
+
+  const missingVersion = loadPlanDocuments();
+  missingVersion.ontology = missingVersion.ontology.replace(
+    'Task별로 1부터 단조 증가하는 정수 `handoff_version`',
+    '생성 시각 기반 HANDOFF 순서',
+  );
+  assert.throws(() => validateDocumentNetwork(missingVersion), /ontology 필수 계약 누락/);
+
+  const mutableHandoff = loadPlanDocuments();
+  mutableHandoff.ontology = mutableHandoff.ontology.replace(
+    '`docs/team/handoffs/<TASK-ID>/*.md`',
+    '`docs/작업큐.md`',
+  );
+  assert.throws(() => validateDocumentNetwork(mutableHandoff), /ontology 필수 계약 누락/);
+
+  const signalTakeover = loadPlanDocuments();
+  signalTakeover.ontology = signalTakeover.ontology.replace(
+    'rollover 신호나 경과 시간만으로 소유권을 얻지 않는다',
+    'rollover 신호 뒤 소유권을 얻는다',
+  );
+  assert.throws(() => validateDocumentNetwork(signalTakeover), /ontology 필수 계약 누락/);
 });
 
 test('온톨로지 Fable 축소 패킷은 두 공식 문서를 유지하며 원시 시뮬레이터를 다시 싣지 않는다', () => {
@@ -1589,4 +1610,35 @@ test('HANDOFF는 현재 Task snapshot이나 source SHA가 바뀌면 복원을 �
   });
   state.tasks[input.taskId].nextSafeAction = '검증되지 않은 다른 행동';
   expectCode(() => restoreTaskHandoff(state, 'chat-b', input.taskId, handoff), 'HANDOFF_SNAPSHOT_MISMATCH');
+});
+
+test('HANDOFF 계보는 같은 predecessor 분기와 기존 원본 변조를 거부한다', () => {
+  const state = createSimulationState();
+  const input = taskInput();
+  recordRequestPair(state, input);
+  acquireQueueLock(state, 'chat-a');
+  acquireTaskLock(state, 'chat-a', input.taskId);
+  registerTask(state, 'chat-a', input);
+  signalContextRollover(state, {
+    taskId: input.taskId, stewardRole: 'CONTEXT-STEWARD', reasons: ['컨텍스트 전환'],
+    observedAt: '2026-09-02T18:00:00+09:00',
+    requestedSuccessorRoleContextId: 'ROLE_CONTEXT:SOLAR-ORCH:2',
+  });
+  const first = checkpointTaskHandoff(state, 'chat-a', input.taskId, {
+    sourceCommitSha: input.lastVerifiedSha,
+    successorRoleContextId: 'ROLE_CONTEXT:SOLAR-ORCH:2',
+    createdAt: '2026-09-02T18:01:00+09:00',
+  });
+
+  state.handoffs[input.taskId].push({
+    ...first,
+    handoffId: `HANDOFF:${input.taskId}:BRANCH`,
+    version: 2,
+    predecessorHandoffId: null,
+  });
+  assert.throws(() => validateTrace(state), /predecessor chain/);
+
+  state.handoffs[input.taskId].pop();
+  state.handoffs[input.taskId][0].taskSnapshotSha256 = '0'.repeat(64);
+  assert.throws(() => validateTrace(state), /감사 사건 누락·변조/);
 });

@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-PLANS-V02-ONTOLOGY-003",
+  "sequence": "t0002",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-02T09:07:04.867Z",
+  "turn_id": "turn-s002",
+  "turn_type": "SOLAR_RESPONSE",
+  "role": "SOLAR-ARCH",
+  "task_sha256": "2124c5bfb5afb528559f4b052ceb383336edf335457048531aead749916a9ae1",
+  "runner_sha256": "80dae1d06c89af056e9d8c210b571e978ee534fc128a5fe3b9867610b5ae447b",
+  "previous_manual_run_sha256": "f6ffb0d7884ee647aa7c7d262fed32f5464da2097d88028c49760c609a6ac032",
+  "collaboration_before_sha256": "239ad9d5d747ed071e46c0c29a743bb1e669aa0014a9bdcb5f285bbeda09f560",
+  "collaboration_before_bytes": 5090,
+  "collaboration_entry_sha256": "da819a15553b228bff5d029a3906b5b7f866df105d8019215f9285973c095d50",
+  "collaboration_entry_bytes": 1005,
+  "collaboration_after_sha256": "45dc348e437054c1bda02c4c60880aebc604fcdcad89a1954fc16857ab8da812",
+  "collaboration_after_bytes": 6095
+}

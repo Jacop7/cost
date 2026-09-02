@@ -1,0 +1,216 @@
+{
+  "schema_version": "2.0",
+  "task_id": "AI-PLANS-V02-ONTOLOGY-003",
+  "reviewer_role": "FABLE-ARCH",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "00b7ce3d3d9a18838fa920238a369657957b4431",
+  "target_commit_sha": "6cc6c654036cce8b5cb360a33db5ab0df81d6e12",
+  "target_tree_oid": "884d1682a7ce391f731775a071aa142329721b56",
+  "agents_blob_oid": "4c31bbf9be81871c4dfb1699e057c8303d4e2fae",
+  "agents_sha256": "5628177d442547e868acc3e0446e6513b65bf713f2cfd82cc78e0e6dedc4c860",
+  "task_sha256": "2124c5bfb5afb528559f4b052ceb383336edf335457048531aead749916a9ae1",
+  "collaboration_sha256": "7a2cf1cf12a67035696e5504182f8a6e9ac5d94df6ea771a094f0fb17e590135",
+  "input_files_sha256": "1608387247ed8557943e2608a13c6cad69f6a925dff6830045a261279866e078",
+  "schema_sha256": "d8ffdb13e6b1e38279355d9ffd592cfb91dc023d287976adf7892e85dbfaf0d7",
+  "runner_sha256": "80dae1d06c89af056e9d8c210b571e978ee534fc128a5fe3b9867610b5ae447b",
+  "verdict": "CHANGES_REQUIRED",
+  "summary": "온톨로지 v0.2 원문을 AGENTS.md·축소 증거와 대조한 INITIAL 검수 결과, 요구된 반례 상한(최대 3건) 안에서 Major 3건을 보고한다. (1) §6.4-3·§11-14·§13은 HANDOFF의 \"동일·낮은 판본\" 복원을 거부하라고 요구하지만 §3 HANDOFF 최소 필드 목록에는 비교 대상인 단조 판본 필드가 없다. 생성 시각은 세션 간 시계 오차로 순서를 보증하지 못하고 직전 HANDOFF ID 체인은 같은 predecessor에서 분기한 두 HANDOFF를 판정하지 못해 AI-ONTOLOGY:handoff-monotonic을 기계적으로 집행할 수 없다. 축소 증거 fixture(53~54행 \"동일·낮은 HANDOFF 판본 거부\", 37행 \"더 높은 HANDOFF 판본\")가 전제하는 판본 개념이 문서 계약에 부재한다. (2) §6.4 복원 검사 2는 다른 소유자의 lease가 \"유효\"할 때만 중단을 요구하고, lease 만료·부재 시 successor의 edit_owner 인수 조건이 없다. §6.3의 팀 구성안 §11 위임은 \"새 Task 최초 edit_owner 지정\"만 다루므로, 축소 증거 56행이 단언하는 \"유효 HANDOFF 복원+사람 인계 Decision 소비 뒤에만 lease 획득\" 계약이 온톨로지 원문에 없어 신호·시간 경과만으로 권한을 얻는 lease 탈취 경로가 문서상 열려 있다. (3) HANDOFF 권위 위치가 가변 현재 상태 장부인 docs/작업큐.md의 Task snapshot이고 §14가 물리 저장 형식·보존 기간을 미결로 남겨, 일반 Task HANDOFF에 append-only 보존 계약이 없다. 이 경우 §6.4-3의 \"더 최신 HANDOFF 존재\" 거부가 변조 가능한 기록 위에서 수행되어 stale 복원 방어와 AI-ONTOLOGY:append-only-authority가 약화된다. 그 외 축(단일 권위 위임 §5, 판정 enum 단일 정의 §6.3, request_dispositions hash 체인, Finding 동일 ID 승계, Learning 충돌 배제 §7·§9, SUPERSEDES의 ACTIVE Decision 근거 §11-11, AGENTS 권위 목록 비추가 §14)은 AGENTS:single-canonical-artifact·AGENTS:fable-required-review와 모순이 없음을 확인했다. 세 건 모두에 대해 §3 handoff_version 정수 추가, §6.4 검사 2의 만료 lease 인수 조건 명시, HANDOFF 기록 append-only 보존 문장 추가를 proposed_edits로 제안한다. 판정: CHANGES_REQUIRED.",
+  "findings": [
+    {
+      "finding_id": "ONT-003-HANDOFF-VERSION-GAP",
+      "severity": "Major",
+      "review_state": "OPEN",
+      "category": "ARCHITECTURE",
+      "requirement_or_invariant_ids": [
+        "AI-ONTOLOGY:handoff-monotonic"
+      ],
+      "evidence": [
+        {
+          "path": "docs/AI-지식-온톨로지-기획안.md",
+          "line_start": 103,
+          "line_end": 109,
+          "observation": "HANDOFF 최소 필드 계약에 handoff_id·생성 시각·source commit SHA·snapshot hash·직전 HANDOFF ID만 있고 단조 증가 판본 필드가 없다."
+        },
+        {
+          "path": "docs/AI-지식-온톨로지-기획안.md",
+          "line_start": 302,
+          "line_end": 303,
+          "observation": "§6.4 검사 3은 successor가 '동일·낮은 판본'을 받으면 실행 거부를 요구하지만 비교할 필드가 스키마에 정의되지 않았다."
+        },
+        {
+          "path": "docs/AI-지식-온톨로지-기획안.md",
+          "line_start": 462,
+          "line_end": 463,
+          "observation": "§11 검사 14도 동일·낮은 판본 복원 거부를 검사 항목으로 요구한다."
+        },
+        {
+          "path": "docs/ai-review/evidence/AI-PLANS-V02-FABLE-COMPACT-EVIDENCE.md",
+          "line_start": 37,
+          "line_end": 37,
+          "observation": "상호작용 축은 rollover 뒤 '더 높은 HANDOFF 판본'을 먼저 만들라고 전제하나 그 판본 개념의 소유 정의가 온톨로지에 없다."
+        },
+        {
+          "path": "docs/ai-review/evidence/AI-PLANS-V02-FABLE-COMPACT-EVIDENCE.md",
+          "line_start": 53,
+          "line_end": 54,
+          "observation": "fixture는 판본 비교로 stale 복원을 거부하지만 문서 계약에는 대응 필드가 없어 시뮬레이션과 명세가 불일치한다."
+        }
+      ],
+      "impact": "생성 시각은 세션·기기 간 시계 오차로 전순서를 보증하지 못하고 직전 HANDOFF ID 체인은 같은 predecessor에서 동시 분기한 두 HANDOFF의 우열을 판정하지 못한다. 그 결과 stale HANDOFF 복원 거부(handoff-monotonic 불변식)를 기계적으로 집행할 수 없고 §11 검사 14가 검사할 대상 필드 자체가 없다.",
+      "acceptance_criteria": [
+        "§3 HANDOFF 최소 필드에 Task별 단조 증가 정수 판본(예: handoff_version)이 추가된다.",
+        "§6.4-3과 §11-14의 '동일·낮은 판본' 판정이 생성 시각이 아니라 해당 판본 필드 비교로 정의된다.",
+        "같은 predecessor에서 분기한 동시 HANDOFF의 판정 규칙이 명시되거나 분기 자체가 금지된다."
+      ],
+      "required_tests": [
+        "docs-graph-check 사보타주 fixture: 판본 필드 누락 HANDOFF 거부",
+        "시뮬레이션 fixture: 동일 판본·낮은 판본·동시 분기 HANDOFF 복원 거부"
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    },
+    {
+      "finding_id": "ONT-003-LEASE-TAKEOVER-GAP",
+      "severity": "Major",
+      "review_state": "OPEN",
+      "category": "ARCHITECTURE",
+      "requirement_or_invariant_ids": [
+        "AI-ONTOLOGY:handoff-monotonic",
+        "AGENTS:single-canonical-artifact"
+      ],
+      "evidence": [
+        {
+          "path": "docs/AI-지식-온톨로지-기획안.md",
+          "line_start": 300,
+          "line_end": 301,
+          "observation": "§6.4 검사 2는 '다른 소유자의 lease가 유효하면' 중단만 규정하고 lease 만료·부재 시 인수 조건을 정의하지 않는다."
+        },
+        {
+          "path": "docs/AI-지식-온톨로지-기획안.md",
+          "line_start": 270,
+          "line_end": 271,
+          "observation": "팀 구성안 §11 위임은 '비소유 채팅의 판정 append와 새 Task 최초 edit_owner 지정'만 다루며 기존 Task lease 인수는 위임 범위에 없다."
+        },
+        {
+          "path": "docs/ai-review/evidence/AI-PLANS-V02-FABLE-COMPACT-EVIDENCE.md",
+          "line_start": 56,
+          "line_end": 56,
+          "observation": "fixture는 '유효 HANDOFF 복원 후 사람 인계 Decision을 소비한 뒤에만 successor가 lease를 얻는다'를 단언하나 온톨로지 원문에 이 전제 조건이 없다."
+        },
+        {
+          "path": "docs/ai-review/evidence/AI-PLANS-V02-FABLE-COMPACT-EVIDENCE.md",
+          "line_start": 52,
+          "line_end": 52,
+          "observation": "rollover 신호만으로 edit owner가 바뀌지 않는다는 계약도 시뮬레이션에만 있고 문서 계약에는 대응 조항이 없다."
+        }
+      ],
+      "impact": "lease_expires_at 경과를 관찰한 세션이 rollover 신호·시간 경과만 근거로 edit_owner를 자체 지정할 수 있는 경로가 문서상 열려 있다. 최신 HANDOFF 복원과 사람 인계 Decision 소비 없이 권한을 얻으면 lease 탈취와 경쟁 편집 권위가 생겨 단일 권위 계약과 충돌한다.",
+      "acceptance_criteria": [
+        "§6.4에 lease 만료·부재 시에도 신호·경과 시간만으로 소유권을 얻지 못한다는 조항이 추가된다.",
+        "successor의 edit_owner 인수 전제(최신 유효 HANDOFF 복원 + 팀 구성안 §11 queue ledger lock 계약 + 사람 인계 Decision 소비)가 명시되거나 해당 계약이 팀 구성안 §11로 명시적으로 위임된다."
+      ],
+      "required_tests": [
+        "시뮬레이션 fixture: 만료 lease를 신호만으로 인수 시도 시 거부",
+        "시뮬레이션 fixture: 인계 Decision 미소비 successor의 lease 획득 거부"
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    },
+    {
+      "finding_id": "ONT-003-HANDOFF-MUTABLE-STORE",
+      "severity": "Major",
+      "review_state": "OPEN",
+      "category": "DATA_INTEGRITY",
+      "requirement_or_invariant_ids": [
+        "AI-ONTOLOGY:append-only-authority",
+        "AI-ONTOLOGY:handoff-monotonic"
+      ],
+      "evidence": [
+        {
+          "path": "docs/AI-지식-온톨로지-기획안.md",
+          "line_start": 96,
+          "line_end": 96,
+          "observation": "HANDOFF의 권위 위치가 'docs/작업큐.md의 Task snapshot 또는 검수 collaboration.md의 전용 인계 턴'으로, 일반 Task 경로는 가변 장부 안이다."
+        },
+        {
+          "path": "docs/AI-지식-온톨로지-기획안.md",
+          "line_start": 83,
+          "line_end": 83,
+          "observation": "작업큐는 '현재 상태·의존성·다음 행동의 단일 장부'로 정의된 가변 현재 상태 문서다."
+        },
+        {
+          "path": "docs/AI-지식-온톨로지-기획안.md",
+          "line_start": 520,
+          "line_end": 520,
+          "observation": "§14는 일반 Task HANDOFF snapshot의 물리 저장 형식·보존 기간을 미결로 남기며, append-only 보존 계약이 그 전까지 존재하지 않는다."
+        },
+        {
+          "path": "docs/AI-지식-온톨로지-기획안.md",
+          "line_start": 302,
+          "line_end": 303,
+          "observation": "'같은 Task에서 더 최신 HANDOFF가 있으면 거부' 검사는 HANDOFF 기록 자체의 불변성이 없으면 변조 가능한 데이터 위에서 수행된다."
+        }
+      ],
+      "impact": "검수 레인 HANDOFF는 append-only 턴으로 보호되지만 일반 Task HANDOFF는 가변 작업큐 안에 있어, 더 최신 HANDOFF를 편집·삭제한 뒤 stale snapshot을 최신으로 제시해도 §6.4-3 검사가 이를 탐지할 근거가 없다. append-only 감사 불변식이 HANDOFF 노드 종류에서 깨진다.",
+      "acceptance_criteria": [
+        "물리 저장 형식 확정 전에도 발행된 HANDOFF 기록을 append-only로 보존하고 수정·삭제 대신 더 높은 판본의 새 HANDOFF로만 대체한다는 계약이 §3에 추가된다.",
+        "가변 작업큐 본문에는 최신 HANDOFF 참조·hash만 두고 봉인된 snapshot 원본은 불변 기록 위치에 남긴다는 저장 원칙이 명시된다."
+      ],
+      "required_tests": [
+        "docs-graph-check fixture: HANDOFF 체인에서 기존 기록 수정·삭제 탐지",
+        "시뮬레이션 fixture: HANDOFF 발행 후 snapshot 변조 시 복원 거부(기존 55행 fixture의 문서 계약 결속 확인)"
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    }
+  ],
+  "proposed_edits": [
+    {
+      "edit_id": "EDIT-ONT-HANDOFF-VERSION",
+      "path": "docs/AI-지식-온톨로지-기획안.md",
+      "anchor": "`handoff_id`, `task_id`, 비식별 predecessor/successor reference, 생성 시각, source commit SHA,",
+      "operation": "REPLACE",
+      "proposed_text": "`handoff_id`, `task_id`, Task별로 1부터 단조 증가하는 정수 `handoff_version`, 비식별 predecessor/successor reference, 생성 시각, source commit SHA,",
+      "rationale": "동일·낮은 판본 거부(§6.4-3·§11-14)가 비교할 단조 판본 필드를 HANDOFF 최소 계약에 추가한다.",
+      "finding_ids": [
+        "ONT-003-HANDOFF-VERSION-GAP"
+      ]
+    },
+    {
+      "edit_id": "EDIT-ONT-HANDOFF-IMMUTABLE",
+      "path": "docs/AI-지식-온톨로지-기획안.md",
+      "anchor": "확정하지 않으며, successor는 아래 §6.4 순서로 원 권위를 다시 확인한다.",
+      "operation": "ADD",
+      "proposed_text": "§6.4·§11의 `동일·낮은 판본` 판정은 생성 시각 비교가 아니라 같은 Task의 `handoff_version` 정수 비교로만 한다. 같은 predecessor에서 두 HANDOFF가 분기하면 더 높은 판본을 발행하기 전에 사람 결정으로 하나만 유효화한다. 발행된 HANDOFF 기록은 물리 저장 형식이 확정되기 전에도 append-only로 보존하며, 수정·삭제 대신 더 높은 `handoff_version`의 새 HANDOFF로만 대체한다. 가변 장부인 `docs/작업큐.md` 본문에는 최신 HANDOFF 참조와 hash만 두고, 봉인된 snapshot 원본은 불변 기록 위치에 남긴다.",
+      "rationale": "판본 비교 의미를 확정하고 일반 Task HANDOFF에 append-only 보존·분기 처리 계약을 부여해 stale 복원 검사의 근거 데이터를 불변으로 만든다.",
+      "finding_ids": [
+        "ONT-003-HANDOFF-VERSION-GAP",
+        "ONT-003-HANDOFF-MUTABLE-STORE"
+      ]
+    },
+    {
+      "edit_id": "EDIT-ONT-LEASE-TAKEOVER",
+      "path": "docs/AI-지식-온톨로지-기획안.md",
+      "anchor": "   유효하면 상태·인계 요청만 남기고 `stop_conditions`를 발동한다.",
+      "operation": "REPLACE",
+      "proposed_text": "   유효하면 상태·인계 요청만 남기고 `stop_conditions`를 발동한다. lease가 만료됐거나 비어 있어도 rollover\n   신호·경과 시간만으로 소유권을 얻지 않는다. successor는 최신 유효 HANDOFF를 복원하고 팀 구성안 §11의\n   전역 queue ledger lock 계약에 따라 사람 인계 Decision을 소비한 뒤에만 `edit_owner`·`owner_session_ref`·\n   `lease_expires_at`을 인수한다.",
+      "rationale": "만료 lease 인수 경로를 닫아 신호만으로 권한을 얻는 lease 탈취 반례를 문서 계약 수준에서 차단하고 fixture 단언(증거 52·56행)과 명세를 일치시킨다.",
+      "finding_ids": [
+        "ONT-003-LEASE-TAKEOVER-GAP"
+      ]
+    }
+  ],
+  "closed_finding_ids": [],
+  "reopened_finding_ids": [],
+  "remaining_required_finding_ids": [
+    "ONT-003-HANDOFF-VERSION-GAP",
+    "ONT-003-LEASE-TAKEOVER-GAP",
+    "ONT-003-HANDOFF-MUTABLE-STORE"
+  ],
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}

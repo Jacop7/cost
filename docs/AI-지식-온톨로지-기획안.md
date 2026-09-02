@@ -103,10 +103,23 @@ review_by: 2026-10-01
 `HANDOFF`는 별도 공식 문서가 아니다. 일반 Task 인계는 `docs/작업큐.md`의 현재 Task에서 팀 구성안
 §11 필수 복원 필드 전체를 읽어 만든 snapshot이고, 검수 엔진·commit successor 인계는 팀 구성안
 §5.3과 `docs/ai-review/README.md`가 정한 append-only 턴을 사용한다. 두 경우 모두 최소한
-`handoff_id`, `task_id`, 비식별 predecessor/successor reference, 생성 시각, source commit SHA,
-§11 Task snapshot hash, `next_safe_action`, 미해결 Decision·Finding ID, 사용자 소유 변경·제외 경로,
-직전 HANDOFF ID 또는 `null`을 기록한다. snapshot은 작업큐 현재 상태를 덮어쓰거나 정책을 새로
-확정하지 않으며, successor는 아래 §6.4 순서로 원 권위를 다시 확인한다.
+`handoff_id`, `task_id`, Task별로 1부터 단조 증가하는 정수 `handoff_version`, 비식별
+predecessor/successor reference, 생성 시각, source commit SHA, §11 Task snapshot hash,
+`next_safe_action`, 미해결 Decision·Finding ID, 사용자 소유 변경·제외 경로, 직전 HANDOFF ID 또는
+`null`을 기록한다. snapshot은 작업큐 현재 상태를 덮어쓰거나 정책을 새로 확정하지 않으며,
+successor는 아래 §6.4 순서로 원 권위를 다시 확인한다.
+
+`handoff_version`은 생성 시각이 아니라 같은 Task 안에서만 비교하는 정수다. HANDOFF 발행자는
+queue ledger lock과 해당 Task lock을 함께 잡고 현재 최신 판본을 읽은 뒤 정확히 1을 더한다. 같은
+predecessor를 가리키는 두 successor 분기는 발행 단계에서 거부한다. 외부 이력 이관 중 분기가 발견되면
+어느 쪽도 실행 권위를 얻지 못하며, 사람 Decision이 유효 계보 하나를 선택한 뒤 그 계보의 최신 판본보다
+높은 새 HANDOFF를 발행해야 한다.
+
+발행된 일반 Task HANDOFF 원본은 물리 구조가 만들어지기 전에도 append-only 기록으로 보존하고 수정·
+삭제하지 않는다. 정정은 더 높은 `handoff_version`의 새 원본으로만 남긴다. 물질화 뒤 봉인 원본의 단일
+위치는 `docs/team/handoffs/<TASK-ID>/*.md`이며, 가변 장부인 `docs/작업큐.md`에는 최신
+`handoff_id`·`handoff_version`·원본 경로·content hash만 둔다. 검수 successor HANDOFF는 계속
+`collaboration.md`의 전용 append 명령을 사용한다.
 
 `ROLE_CONTEXT`는 역할 설명을 복사하지 않고 팀 구성안 §11이 정한 실제 활성 컨텍스트 레지스트리만
 표현한다. `RELEASE`도 배포 JSON을 복사하지 않고 대상 SHA와 증거 경로를 잇는다. 두 노드의 실제
@@ -298,9 +311,13 @@ ledger lock 계약만 따른다. 이 문서는 허용 필드나 최초 지정 �
 
 1. Git branch·HEAD·origin 관계·worktree와 HANDOFF의 source commit SHA를 확인한다.
 2. Task의 `edit_owner`·`owner_session_ref`·`lease_expires_at`을 확인한다. 다른 소유자의 lease가
-   유효하면 상태·인계 요청만 남기고 `stop_conditions`를 발동한다.
+   유효하면 상태·인계 요청만 남기고 `stop_conditions`를 발동한다. lease가 만료됐거나 비어 있어도
+   rollover 신호나 경과 시간만으로 소유권을 얻지 않는다. successor는 최신 유효 HANDOFF를 복원하고,
+   팀 구성안 §11의 queue ledger lock과 Task lock을 잡아 사람 인계 Decision을 소비한 뒤에만
+   `edit_owner`·`owner_session_ref`·`lease_expires_at`을 인수한다.
 3. HANDOFF의 Task snapshot hash와 현재 §11 필드 집합을 대조한다. 같은 Task에서 더 최신 HANDOFF가
-   있거나 successor가 동일·낮은 판본을 받으면 실행을 거부한다.
+   있거나 successor가 동일·낮은 판본을 받으면 실행을 거부한다. 여기서 판본은 같은 Task의
+   `handoff_version` 정수이며 비교에 생성 시각을 사용하지 않는다.
 4. 사용자 소유 변경과 작업 대상이 겹치는지 확인한다.
 5. 마지막 시험·검수·CI·배포 증거의 SHA를 대조한다.
 6. 사용자 소유 변경 또는 요청받지 않은 미추적 파일이 대상 경로와 겹치면 해당 경로를
@@ -459,8 +476,10 @@ DRAFT → REVIEWED → ACTIVE → SUPERSEDED → HISTORICAL
     기존 `pnpm verify`의 Docker 없는 한 단계 안에 편입한다. 6단계 분모는 임의로 바꾸지 않는다.
 13. §3·§4 허용 어휘 밖 node·edge, `TOUCHES` 같은 중복 후보와 출처·SHA·상태가 없는 기억 캡슐을
     거부한다.
-14. HANDOFF의 predecessor/successor 연결, source commit·Task snapshot hash·직전 HANDOFF ID를
-    검사하고 동일·낮은 판본 복원을 거부한다.
+14. HANDOFF의 Task별 단조 증가 정수 `handoff_version`, predecessor/successor 연결, source commit·
+    Task snapshot hash·직전 HANDOFF ID를 검사하고 동일·낮은 판본과 같은 predecessor 분기를 거부한다.
+15. 발행된 HANDOFF 원본의 content hash와 append-only 계보를 검사하고 기존 판본의 수정·삭제를
+    거부한다.
 
 검사기는 문서 내용을 자동 승인하지 않는다. 구조적 연결과 기계적으로 판별 가능한 계약만 확인한다.
 
@@ -517,7 +536,7 @@ DRAFT → REVIEWED → ACTIVE → SUPERSEDED → HISTORICAL
 - `docs-graph-check`가 관리할 문서 ID 형식과 §3·§4 어휘를 코드로 생성하는 형식
 - `docs-graph-check`를 현행 verify ③에 넣을지 다른 기존 단계에 넣을지
 - Codex 여러 채팅의 thread 참조를 자동 수집할 수 없는 환경에서 쓸 비식별 수동 참조 형식
-- 일반 Task HANDOFF snapshot의 물리 저장 형식과 보존 기간
+- 일반 Task HANDOFF 원본의 장기 보존 기간과 아카이브 매체
 - 문서 검토 기한 알림을 CI 경고로 둘지 작업큐 생성으로 둘지
 - 컨텍스트 크기·관련성의 초기 기준선
 

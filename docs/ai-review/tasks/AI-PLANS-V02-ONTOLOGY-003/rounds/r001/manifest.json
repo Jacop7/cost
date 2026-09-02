@@ -1,0 +1,93 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-PLANS-V02-ONTOLOGY-003",
+  "round": "r001",
+  "created_at": "2026-09-02T08:59:12.611Z",
+  "review_mode": "INITIAL",
+  "baseline_commit_sha": "00b7ce3d3d9a18838fa920238a369657957b4431",
+  "target_commit_sha": "6cc6c654036cce8b5cb360a33db5ab0df81d6e12",
+  "target_tree_oid": "884d1682a7ce391f731775a071aa142329721b56",
+  "agents_blob_oid": "4c31bbf9be81871c4dfb1699e057c8303d4e2fae",
+  "agents_sha256": "5628177d442547e868acc3e0446e6513b65bf713f2cfd82cc78e0e6dedc4c860",
+  "task_sha256": "2124c5bfb5afb528559f4b052ceb383336edf335457048531aead749916a9ae1",
+  "collaboration_sha256": "7a2cf1cf12a67035696e5504182f8a6e9ac5d94df6ea771a094f0fb17e590135",
+  "collaboration_bytes": 1141,
+  "input_files_sha256": "1608387247ed8557943e2608a13c6cad69f6a925dff6830045a261279866e078",
+  "schema_sha256": "d8ffdb13e6b1e38279355d9ffd592cfb91dc023d287976adf7892e85dbfaf0d7",
+  "runner_sha256": "80dae1d06c89af056e9d8c210b571e978ee534fc128a5fe3b9867610b5ae447b",
+  "snapshot_mode": "COMMIT",
+  "previous_review_sha256": null,
+  "previous_run_sha256": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "fallback_review": null,
+  "closure_review": null,
+  "fallback_input_scope": null,
+  "retry_of_failed_round": null,
+  "artifact_paths": [
+    "docs/AI-지식-온톨로지-기획안.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/evidence/AI-PLANS-V02-FABLE-COMPACT-EVIDENCE.md"
+  ],
+  "allowed_paths": [
+    "docs/AI-지식-온톨로지-기획안.md",
+    "AGENTS.md",
+    "docs/ai-review/evidence/AI-PLANS-V02-FABLE-COMPACT-EVIDENCE.md"
+  ],
+  "excluded_paths": [
+    "docs/팀구성_상세기획안.md",
+    "docs/AI-오케스트레이션-상세기획안.md",
+    "docs/디렉터리-문서신경망-재설계-기획안.md",
+    "docs/AI-품질-학습-자율성-평가기획안.md",
+    "scripts/ai-plan-network-simulation.mjs",
+    "scripts/ai-plan-network-simulation.test.mjs",
+    "apps/mobile/**",
+    "scripts/prototype_server.py",
+    "docs/prototypes/**"
+  ],
+  "applied_learning_ids": [],
+  "excluded_learning_ids": [],
+  "learning_registry_blob_oid": "77f00167d790c82373c1aa803d91874952c3334a",
+  "learning_registry_sha256": "4717fe99c86319d7c0abc5c8dd38e68e3a55722d7cfa56b8de173ed05ca1388f",
+  "learning_assignment_sha256": "4660bb32207bcae3246801d71aa6a052eab7b0a7cef357bd5984f706fe3dcbfe",
+  "learning_target_date": "2026-09-02",
+  "input_files": [
+    {
+      "path": "AGENTS.md",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 11345,
+      "git_blob_oid": "4c31bbf9be81871c4dfb1699e057c8303d4e2fae",
+      "sha256": "5628177d442547e868acc3e0446e6513b65bf713f2cfd82cc78e0e6dedc4c860",
+      "line_count": 157
+    },
+    {
+      "path": "docs/AI-지식-온톨로지-기획안.md",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 30554,
+      "git_blob_oid": "548f54e25dc46a5f353c4919d4e7ee8e751b7c3e",
+      "sha256": "0acaec2766c18418413800ba565c7c6a0ee02c3733c11ea510ee5ae6cc348270",
+      "line_count": 525
+    },
+    {
+      "path": "docs/ai-review/evidence/AI-PLANS-V02-FABLE-COMPACT-EVIDENCE.md",
+      "path_role": "EVIDENCE",
+      "change_type": "COMMIT",
+      "size": 5615,
+      "git_blob_oid": "bfe246341050097c7bfc1564299e568e29e9d426",
+      "sha256": "12f76afce99fc44ed838719ecf8ff0f9f6d5d35794dc47fd115e896ba3d85650",
+      "line_count": 77
+    }
+  ],
+  "source_archive_version": 1,
+  "finding_resolution_semantics": "VERIFIED_RESOLVED_V1",
+  "artifact_snapshot_sha256": null,
+  "input_snapshot_sha256": null
+}
