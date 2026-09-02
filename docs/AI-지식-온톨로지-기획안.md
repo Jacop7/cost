@@ -1,7 +1,21 @@
+---
+doc_id: ontology
+doc_type: ai_governance_plan
+status: DRAFT
+authority: knowledge_relations_request_normalization
+owner: SOLAR-ARCH
+approver: HUMAN-CHIEF
+version: 0.1
+depends_on: [team]
+supersedes: []
+verified_by: []
+review_by: 2026-10-01
+---
+
 # MarginCook AI 지식 온톨로지 기획안
 
 > 버전: 0.1
-> 상태: 교차검수 대상 초안
+> 상태: 누적 교차검수 대상 초안(`DRAFT`)
 > 작성일: 2026-09-01
 > 최종 책임자: 사람 주 오케스트레이터
 > 관계 문서: [`팀구성_상세기획안.md`](./팀구성_상세기획안.md)
@@ -74,6 +88,7 @@
 | `REVIEW_ROUND` | `docs/ai-review/tasks/*/rounds/rNNN/` | 불변 manifest·검수 원본·실행 증거 |
 | `REVIEW_LEDGER` | `docs/ai-review/tasks/*/collaboration.md` | 전용 명령으로만 늘어나는 append-only 공동 장부 |
 | `REVIEW_STATUS` | `docs/ai-review/tasks/*/status.json` | 실행기만 갱신하는 파생 상태 |
+| `FINDING` | `docs/ai-review/tasks/*/rounds/rNNN/review.json` | 특정 Task·검수 회차·판본에서 발견해 같은 ID로 승계하며 실행기가 registry hash를 계산하는 결함 |
 | `ADVISORY_REVIEW` | `docs/ai-review/evidence/` | 사람 승인 직접 자문의 불변 요약·실패 기록. 공식 Fable 게이트 종결 불가 |
 | `DEPLOYMENT_EVIDENCE` | `docs/deployments/` | 정확한 SHA의 환경 적용 증거 |
 | `INCIDENT` | `docs/operations/POSTMORTEMS/` | 운영 사고 원본과 재발 방지 |
@@ -89,6 +104,7 @@
 | `OWNS` | 주제의 단일 권위 | `ARCHITECTURE` OWNS 판매 전파 |
 | `DEPENDS_ON` | 성립에 필요한 상위 전제 | Task DEPENDS_ON Decision |
 | `NORMALIZES` | 원시 요청을 업무 계약으로 변환 | Normalized Request NORMALIZES Chat Input |
+| `ROUTES_TO` | 정규화된 요청을 기존 또는 신규 Task에 배치 | Normalized Request ROUTES_TO Task |
 | `IMPLEMENTS` | 설계·결정을 코드로 구현 | Migration IMPLEMENTS Decision |
 | `VERIFIED_BY` | 판별력 있는 시험·검수 | RPC VERIFIED_BY DB test |
 | `EVIDENCED_BY` | 실행 결과를 봉인 | Release Gate EVIDENCED_BY deployment JSON |
@@ -97,10 +113,16 @@
 | `LEARNED_FROM` | 학습의 원시 근거 | Learning LEARNED_FROM Finding/Test |
 | `APPLIES_TO` | 허용 범위 | Learning APPLIES_TO DB migration |
 | `EXCLUDES` | 명시적 비범위 | Task EXCLUDES user-owned files |
+| `POINTS_TO` | 권위를 만들지 않는 탐색 링크 | Domain Guide POINTS_TO Source/Test |
 
 `SUPERSEDES` 없이 나중에 작성됐다는 이유만으로 기존 결정이 폐기되지 않는다. 서로 다른 채팅의
 요청이 충돌하면 `CONFLICTS_WITH` 상태로 사람 결정에 올리고, 승인된 대체 결정이 생긴 뒤에만
 `SUPERSEDES`를 기록한다.
+
+문서를 찾기 위한 참조 그래프와 권위·의존 그래프는 분리한다. 탐색 참조는 어느 핵심 문서에서
+시작해도 필요한 권위로 이동할 수 있도록 순환을 허용하지만, `OWNS`와 `DEPENDS_ON`으로 만든 권위
+그래프는 DAG여야 한다. `docs-graph-check`는 참조 도달 가능성과 권위 순환을 서로 다른 단언으로
+검사한다.
 
 ## 5. 권위와 충돌 적용
 
@@ -151,6 +173,7 @@ open_findings: []
 acceptance_criteria: []
 depends_on: []
 risk_level: R0
+risk_basis: 문서 변경만 수행하며 제품·DB·배포는 범위 밖이다.
 roles: []
 artifact_paths: []
 reference_paths: []
@@ -165,11 +188,14 @@ worktree_state: null
 next_safe_action: null
 stop_conditions: []
 request_dispositions:
-  - kind: STATUS_ONLY
+  - seq: 1
+    kind: STATUS_ONLY
     evidence_conversation_ref: CHAT-LOCAL-001
     observed_at: 2026-09-01T00:00:00+09:00
     requires_human_approval: false
     decision_id: null
+    previous_hash: GENESIS
+    item_hash: sha256-of-canonical-item
 edit_owner: null
 owner_session_ref: null
 lease_expires_at: null
@@ -193,11 +219,11 @@ lease_expires_at: null
 | 결정 | fixed_decisions/open_decisions | human_decisions/decision IDs/questions |
 | 미결 Finding | open_findings | inherited/open Finding IDs와 closure successor 상태 |
 | 가정 | assumptions | Assumptions·검증 책임자·무효화 조건 |
-| 위험 | risk_level | risk_level/classification evidence |
+| 위험 | risk_level/risk_basis | risk_level/classification evidence |
 | 경로 | artifact/reference/evidence/excluded paths | 같은 이름의 경로 배열 |
 | 사용자 변경 | user_owned_changes | excluded_paths와 overlap disposition |
 | 실행 제어 | next_safe_action/stop_conditions | required outputs/tests와 stop conditions |
-| 요청 판정 이력 | request_dispositions[] | 판정·근거 conversation reference·확인 시각·승인·Decision ID |
+| 요청 판정 이력 | request_dispositions[] | Task별 seq·판정·근거 conversation reference·확인 시각·승인·Decision ID·직전/item hash |
 | 편집 소유권 | edit_owner/owner_session_ref/lease_expires_at | 발행 시점 lease 스냅샷. 현재 권위는 작업큐 |
 
 작업큐는 팀 구성안 §11이 정의한 현재 상태와 필수 복원 필드의 단일 권위이고, `task.json`은 특정
@@ -298,11 +324,11 @@ front matter는 후속 `docs-graph-check` 도입 Task와 같은 commit부터 다
 ```yaml
 ---
 doc_id: EXAMPLE-DOMAIN-GUIDE
-doc_type: PLAN
+doc_type: ai_governance_plan
 authority: PLAN_CANDIDATE
-status: DRAFT | REVIEWED | ACTIVE | SUPERSEDED | RETIRED | HISTORICAL
+status: DRAFT | REVIEWED | CONFIRMED | ACTIVE | SUPERSEDED | RETIRED | HISTORICAL
 owner: AI-DEPUTY-ORCHESTRATOR
-approver: HUMAN-ORCHESTRATOR
+approver: HUMAN-CHIEF
 version: "0.1"
 depends_on: []
 supersedes: []
@@ -313,7 +339,10 @@ review_by: 2026-12-01
 
 필드가 비어 있는데 형식만 채우는 것을 금지한다. Git commit·blob·SHA-256처럼 실행기가 계산해야 하는
 값은 사람이 front matter에 복사하지 않고 Task manifest와 배포 증거가 소유한다.
-`status != ACTIVE`인 문서는 `authority` 값과 무관하게 현재 권위로 사용하지 않는다.
+`status`가 `CONFIRMED | ACTIVE`가 아닌 문서는 `authority` 값과 무관하게 현재 권위로
+사용하지 않는다. `CONFIRMED`는 사람이 확정한 현재 기준선이지만, 후속 자동화·디렉터리
+물질화까지 활성했다는 뜻은 아니다. `ACTIVE`는 해당 계획의 활성화 게이트까지 완료한
+상태다.
 활성 문서가 아직 DRAFT인 후속 설계에 상세화를 맡기는 전이 링크는 `AUTHORITY_REF`가 아니라
 `DELEGATED_PENDING`으로 기록한다. 활성 문서 자체에 최소 안전 게이트와 전이 소유자가 있을 때만
 허용하며, 후속 문서가 `ACTIVE`가 된 뒤 `AUTHORITY_REF`로 전환한다.
@@ -355,6 +384,7 @@ review_by: 2026-12-01
 
 ```text
 DRAFT → REVIEWED → ACTIVE → SUPERSEDED → HISTORICAL
+           CONFIRMED → ACTIVE
                            └→ RETIRED
 ```
 
@@ -362,7 +392,9 @@ DRAFT → REVIEWED → ACTIVE → SUPERSEDED → HISTORICAL
 - 실행 증거만 필요한 문서는 정해진 기술 게이트 후 `ACTIVE`가 될 수 있다.
 - 정책 문서는 승인자와 날짜가 있어야 `ACTIVE`다.
 - 새 문서가 생겼다는 이유만으로 옛 문서는 폐기되지 않는다.
-- `SUPERSEDED` 문서는 대체 문서 ID와 이유를 가리킨다.
+- 새 권위 문서는 `supersedes`에 같은 `doc_id`의 이전 `doc_id@version`을 기록한다. 대체된 판본의
+  상태는 Git 이력과 사람 Decision에서 `SUPERSEDED`로 보존하며, 현재 파일이 자기 현재 판본이나 다른
+  권위 주제를 가리키지 않는다.
 - 감사·배포·사고 원본은 상태를 고치지 않고 후속 기록으로 정정한다.
 - `review_by`가 지난 문서는 즉시 무효가 아니라 재검토 대기다. 다만 보안·운영 절차는 게이트에 쓰기
   전에 재확인한다.
