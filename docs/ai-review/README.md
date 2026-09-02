@@ -362,8 +362,10 @@ PowerShell 진입점도 같은 실행기를 호출한다.
 ### 페이블 소진과 Opus 연속성 경로
 
 팀 운영 목표는 페이블 모델의 예산·사용량·속도·용량이 소진됐을 때 Opus 신규 클린 컨텍스트가
-같은 독립 감사 역할을 이어받는 것이다. 감사 역할과 실행 모델을 분리하며, 실제 결과에는
-`primary_reviewer_engine`, `reviewer_engine`, 정확한 model ID와 CLI·runner hash를 기록한다.
+같은 독립 감사 관점의 임시 자문을 이어받아 작업 연속성을 지키는 것이다. 이 승계 결과는 Fable
+검수 완료나 게이트 통과로 세지 않으며, 해당 Task는 Fable 복구 후 같은 대상 판본을 재검수해야
+완료된다. 감사 역할과 실행 모델을 분리하며, 실제 결과에는 `primary_reviewer_engine`,
+`reviewer_engine`, 정확한 model ID와 CLI·runner hash를 기록한다.
 
 허용되는 승계 사유는 `MODEL_BUDGET_EXHAUSTED`, `MODEL_RATE_LIMITED`,
 `MODEL_CAPACITY_UNAVAILABLE`뿐이다. `MODEL_BUDGET_EXHAUSTED`는 모델 제공자·구독 한도가 구조화된
@@ -380,7 +382,8 @@ terminal reason 또는 오류 코드로 소진됐다는 뜻이다. runner가 정
 - 동일 target commit, artifact/input hash와 Finding registry hash
 - inherited finding ID, 허용·제외 경로와 읽기 전용 권한
 - Opus의 정확한 model ID와 작업 전체 사용 상한의 남은 범위
-- 고위험 `FABLE-SEC`·`FABLE-FINAL` 결과의 페이블 복구 후 표본 재감사 조건
+- 모든 successor 결과의 페이블 복구 후 재검수 조건. 고위험 `FABLE-SEC`·`FABLE-FINAL`은 별도
+  클린 컨텍스트 전문 재감사를 추가한다.
 - predecessor `collaboration.md`의 append 후 bytes/hash, `AI_DEPUTY_FALLBACK_HANDOFF`
   turn/entry/run hash, handoff 직전 base commit과 handoff만 추가한 source commit SHA
 
@@ -518,8 +521,9 @@ successor로 승계하지 않는다. 기존 Finding의 `previous_finding_id`는 
 
 ## 12. 사용자 승인 범위 — 2026-08-28
 
-사용자는 이 권위 저장소의 필수·조건부 검수 route가 발동할 때 Codex가 호출마다 다시 묻지 않고
-공식 Claude Code CLI를 실행하는 것을 승인했다.
+사용자는 이 권위 저장소의 모든 작업 완료 검수 route에서 Codex가 호출마다 다시 묻지 않고 공식
+Claude Code CLI의 Fable route를 실행하는 것을 승인했다. 위험 등급은 검수 깊이와 전문 역할을
+조정할 뿐 Fable 실행 여부를 바꾸지 않으며, 비용은 입력 축소와 중복 제거로 최소화한다.
 
 승인 범위:
 

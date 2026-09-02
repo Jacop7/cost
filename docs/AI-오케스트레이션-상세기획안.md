@@ -344,24 +344,27 @@ DISCOVER → DEFINE → DESIGN → IMPLEMENT → VERIFY → AUDIT → DECIDE →
 
 | 변경 | 제작 | 실행 검증 | 독립 감사 |
 |---|---|---|---|
-| 문서 인덱스·링크 | AI 부 O/솔라 | Codex 정적 검사 | 조건부 |
-| 제품 요구·도메인 정책 | SOLAR-PO | Codex 시나리오 | Fable 또는 원 역할을 승계한 OPUS-FALLBACK 반례 |
-| 구조·디렉터리 | SOLAR-ARCH/App | Codex 동등성·경계 시험 | Fable 또는 원 역할을 승계한 OPUS-FALLBACK 구조 감사 |
+| 문서 인덱스·링크 | AI 부 O/솔라 | Codex 정적 검사 | Fable 계약·링크 누락 검수 |
+| 제품 요구·도메인 정책 | SOLAR-PO | Codex 시나리오 | Fable 반례 검수 |
+| 구조·디렉터리 | SOLAR-ARCH/App | Codex 동등성·경계 시험 | Fable 구조 감사 |
 | DB/RPC/RLS | SOLAR-DEV-DB | Codex DB·경합·권한 시험 | FABLE-SEC |
 | Core 공식 | SOLAR-DEV-CORE | Codex SQL parity | FABLE-ARCH |
-| Mobile | SOLAR-DEV-APP | Codex UI·Android·iOS | 조건부 |
+| Mobile | SOLAR-DEV-APP | Codex UI·Android·iOS | Fable 요구사항·접근성·시험 누락 검수 |
 | 운영 배포·복구 | SOLAR-OPS + 사람 | Codex smoke·검산 | Fable 고위험 감사 + 사람 |
 
-모델 이름은 역할이 아니다. Fable과 Opus의 엔진 출처·승계 조건은 `docs/ai-review/README.md`를 따르며
-Opus 결과를 Fable 결과라고 표시하지 않는다. 독립 감사 칸은 `FABLE-*` 또는 그 역할을 승계한
-`OPUS-FALLBACK` successor만 충족한다. `OPUS_DIRECT_ADVISORY`는 비게이트 자문이며 이 칸을 대체하지 않는다.
+모델 이름은 역할이 아니다. Fable과 Opus의 엔진 출처·승계 조건은 `docs/ai-review/README.md`를 따른다.
+독립 감사 칸은 유효한 `FABLE-*` 결과만 완료 처리한다. `OPUS-FALLBACK` successor와
+`OPUS_DIRECT_ADVISORY`는 Fable 장애·소진 중 작업 연속성을 위한 임시 비게이트 자문이며, 후속 Fable
+재검수 전에는 이 칸과 Task 완료 조건을 충족하지 않는다. 실제 엔진 출처를 숨기거나 Fable 결과로
+표시하지 않는다.
 
 ### 6.2 역할 호출 최소화
 
-- R0 기계 변경은 제작+Codex 검증으로 충분할 수 있다.
-- R1은 영향 경계와 기존 회귀에 따라 조건부 감사를 선택한다.
-- R2는 설계 반례와 Codex 실행 검증을 요구한다.
-- R3는 사람 결정과 독립 보안·아키텍처 감사를 유지한다.
+- 모든 R0~R3 완료 route는 Codex 실행 검증과 Fable 검수를 함께 요구한다.
+- R0는 한 공식 산출물과 최소 교차계약 투영으로 Fable 입력을 축소한다.
+- R1은 영향 경계와 기존 회귀를 중심으로 Fable 검수 깊이를 조절한다.
+- R2는 설계 반례와 전문 Fable 감사 역할을 추가한다.
+- R3는 사람 결정과 분리된 Fable 보안·아키텍처 감사를 유지한다.
 - 같은 역할을 이름만 바꿔 중복 호출하지 않는다.
 - 앞 역할의 자기평가를 다음 독립 역할의 결론으로 주입하지 않는다.
 
