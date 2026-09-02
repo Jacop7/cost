@@ -1,0 +1,182 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-KNOWLEDGE-ORBIT-TEAM-001",
+  "round": "r001",
+  "created_at": "2026-09-02T07:07:40.622Z",
+  "review_mode": "INITIAL",
+  "baseline_commit_sha": "b577510ec5e039f7acfe8dadb298a1ccadc9f747",
+  "target_commit_sha": "37659fb82f5b192d49e8753e7235df4fc4b527c9",
+  "target_tree_oid": "f3037f206e80de613d470b0264b0b341a55c1234",
+  "agents_blob_oid": "4c31bbf9be81871c4dfb1699e057c8303d4e2fae",
+  "agents_sha256": "5628177d442547e868acc3e0446e6513b65bf713f2cfd82cc78e0e6dedc4c860",
+  "task_sha256": "512912ccb5f6d7c7fae42889a906ad328cf270b639a40bee98032daf340c35b6",
+  "collaboration_sha256": "a6c6681c78e56dc95ec7faaff0bfdb635f83a93526826d494697c6eb88e48267",
+  "collaboration_bytes": 1499,
+  "input_files_sha256": "27d28fd3337cb395ca4c2da13383decc9033e132a189042421e3a0aa9e110b35",
+  "schema_sha256": "d8ffdb13e6b1e38279355d9ffd592cfb91dc023d287976adf7892e85dbfaf0d7",
+  "runner_sha256": "80dae1d06c89af056e9d8c210b571e978ee534fc128a5fe3b9867610b5ae447b",
+  "snapshot_mode": "COMMIT",
+  "previous_review_sha256": null,
+  "previous_run_sha256": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "fallback_review": null,
+  "closure_review": null,
+  "fallback_input_scope": null,
+  "retry_of_failed_round": null,
+  "artifact_paths": [
+    "docs/팀구성_상세기획안.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/AI-지식-온톨로지-기획안.md",
+    "docs/AI-오케스트레이션-상세기획안.md",
+    "docs/디렉터리-문서신경망-재설계-기획안.md",
+    "docs/AI-품질-학습-자율성-평가기획안.md",
+    "docs/ai-review/evidence/AI-TEAM-KNOWLEDGE-ORBIT-PREPLAN.md",
+    "docs/ai-review/README.md",
+    "docs/작업큐.md"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/tasks/AI-TEAM-KNOWLEDGE-ORBIT-AUDIT-002/rounds/r003/review.md",
+    "docs/ai-review/tasks/AI-TEAM-KNOWLEDGE-ORBIT-AUDIT-002/rounds/r003/review.json",
+    "scripts/ai-plan-network-simulation.test.mjs"
+  ],
+  "allowed_paths": [
+    "docs/팀구성_상세기획안.md",
+    "AGENTS.md",
+    "docs/AI-지식-온톨로지-기획안.md",
+    "docs/AI-오케스트레이션-상세기획안.md",
+    "docs/디렉터리-문서신경망-재설계-기획안.md",
+    "docs/AI-품질-학습-자율성-평가기획안.md",
+    "docs/ai-review/evidence/AI-TEAM-KNOWLEDGE-ORBIT-PREPLAN.md",
+    "docs/ai-review/README.md",
+    "docs/작업큐.md",
+    "docs/ai-review/tasks/AI-TEAM-KNOWLEDGE-ORBIT-AUDIT-002/rounds/r003/review.md",
+    "docs/ai-review/tasks/AI-TEAM-KNOWLEDGE-ORBIT-AUDIT-002/rounds/r003/review.json",
+    "scripts/ai-plan-network-simulation.test.mjs"
+  ],
+  "excluded_paths": [],
+  "applied_learning_ids": [],
+  "excluded_learning_ids": [],
+  "learning_registry_blob_oid": "77f00167d790c82373c1aa803d91874952c3334a",
+  "learning_registry_sha256": "4717fe99c86319d7c0abc5c8dd38e68e3a55722d7cfa56b8de173ed05ca1388f",
+  "learning_assignment_sha256": "4660bb32207bcae3246801d71aa6a052eab7b0a7cef357bd5984f706fe3dcbfe",
+  "learning_target_date": "2026-09-02",
+  "input_files": [
+    {
+      "path": "AGENTS.md",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 11345,
+      "git_blob_oid": "4c31bbf9be81871c4dfb1699e057c8303d4e2fae",
+      "sha256": "5628177d442547e868acc3e0446e6513b65bf713f2cfd82cc78e0e6dedc4c860",
+      "line_count": 157
+    },
+    {
+      "path": "docs/디렉터리-문서신경망-재설계-기획안.md",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 24191,
+      "git_blob_oid": "a37a966d8dad476db02d0fadd44a30e83aa9a3de",
+      "sha256": "059ebaab6429035598d2ec876861107c555fd6c348c341267d2ff000c758af48",
+      "line_count": 450
+    },
+    {
+      "path": "docs/작업큐.md",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 137339,
+      "git_blob_oid": "14cbcfcd1e7b32afa95032935694f1a122a76cd9",
+      "sha256": "c8165bd53543044acac0299ce4c2d511b6f14d9b78af267b3cb8cc17787b758a",
+      "line_count": 2019
+    },
+    {
+      "path": "docs/팀구성_상세기획안.md",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 113096,
+      "git_blob_oid": "3fe0663a09eb1b74442d48403ee4c50f9f52e037",
+      "sha256": "067f97aff014da0c0c78e79f3992141e4fb7d72e7e6ae6f70c565612376dd23a",
+      "line_count": 2006
+    },
+    {
+      "path": "docs/AI-오케스트레이션-상세기획안.md",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 26529,
+      "git_blob_oid": "f844ba8d04a21bc843b788a898428b830b9e6c51",
+      "sha256": "83b14cba83a919d32072c3dbb14e6fc4013b2e5dc2b61e7d6c706ba0d6986f9c",
+      "line_count": 546
+    },
+    {
+      "path": "docs/AI-지식-온톨로지-기획안.md",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 26059,
+      "git_blob_oid": "be3e7ff630312a1274214ff20c5be72e55e133dc",
+      "sha256": "8c0de404951dd133c9757163bdc1f273759482f919392363cf2c10590a454111",
+      "line_count": 479
+    },
+    {
+      "path": "docs/AI-품질-학습-자율성-평가기획안.md",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 27957,
+      "git_blob_oid": "21e81230e178f4fb6f4b9f94024d38588378b577",
+      "sha256": "1ccbe0db830e11d3d6ea12eef584bb3f014f2a51a7e565b8dfdd5c79a16aecfc",
+      "line_count": 519
+    },
+    {
+      "path": "docs/ai-review/evidence/AI-TEAM-KNOWLEDGE-ORBIT-PREPLAN.md",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 32865,
+      "git_blob_oid": "2cbfb7a6e574e8e4575072e7b63542d5b183019d",
+      "sha256": "a35414b16180b2bdf5e52d8e63fd73294f848d8605376cbe070b69d3b2a36c67",
+      "line_count": 608
+    },
+    {
+      "path": "docs/ai-review/README.md",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 39464,
+      "git_blob_oid": "7df2a216e73b4eea76966ff082c0cfaa61a1a31e",
+      "sha256": "390721ad0a5ec54a961ebd238833e0d9f48050444519bffa290ad5bf1447ff91",
+      "line_count": 536
+    },
+    {
+      "path": "docs/ai-review/tasks/AI-TEAM-KNOWLEDGE-ORBIT-AUDIT-002/rounds/r003/review.json",
+      "path_role": "EVIDENCE",
+      "change_type": "COMMIT",
+      "size": 15626,
+      "git_blob_oid": "63f05dd3dab020966137217d1a60ec461a4b1ce0",
+      "sha256": "e9710e57259f4c246e905c6af5941f39b24f2ce78e80d188b6add3731e13709a",
+      "line_count": 197
+    },
+    {
+      "path": "docs/ai-review/tasks/AI-TEAM-KNOWLEDGE-ORBIT-AUDIT-002/rounds/r003/review.md",
+      "path_role": "EVIDENCE",
+      "change_type": "COMMIT",
+      "size": 8944,
+      "git_blob_oid": "0d055e2739dfb0a04bdd855bdb029d2c1a5389b0",
+      "sha256": "44f2555d79464ebf1b5a6ca726635b879a49c4e482f4679ac32d6daee1936e77",
+      "line_count": 69
+    },
+    {
+      "path": "scripts/ai-plan-network-simulation.test.mjs",
+      "path_role": "EVIDENCE",
+      "change_type": "COMMIT",
+      "size": 66592,
+      "git_blob_oid": "bf30cea84c7e5b4c3869ff654629c81e3b53fdc3",
+      "sha256": "6a0a525391fd56de4036b6952a52b5e92329f8c7d55d642a7327caeb54aebfa8",
+      "line_count": 1371
+    }
+  ],
+  "source_archive_version": 1,
+  "finding_resolution_semantics": "VERIFIED_RESOLVED_V1",
+  "artifact_snapshot_sha256": null,
+  "input_snapshot_sha256": null
+}

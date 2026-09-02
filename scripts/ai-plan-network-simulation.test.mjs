@@ -294,6 +294,41 @@ test('중앙 권위 표에서 다섯 노드 소유권 하나를 빼면 잡는다
   assert.throws(() => validateDocumentNetwork(docs), /directory 필수 계약 누락/);
 });
 
+test('팀 그룹은 라우팅 경계이고 승인·판정 주체가 아니다', () => {
+  const { team } = loadPlanDocuments();
+  assert.match(team, /팀 그룹은 기존 역할을 대체하는 새 승인 주체가 아니라 관련 역할과 Task를 묶는 라우팅 경계다/);
+  assert.match(team, /승인·독립성·최종 판정은 §1\.1과 §4를 그대로 따른다/);
+
+  const privileged = team.replace(
+    '팀 그룹은 기존 역할을 대체하는 새 승인 주체가 아니라 관련 역할과 Task를 묶는 라우팅 경계다.',
+    '팀 그룹은 작업을 승인하고 최종 판정하는 주체다.',
+  );
+  assert.doesNotMatch(privileged, /팀 그룹은 기존 역할을 대체하는 새 승인 주체가 아니라 관련 역할과 Task를 묶는 라우팅 경계다/);
+});
+
+test('Context Steward는 전용 컨텍스트에서 관측·신호만 수행한다', () => {
+  const { team } = loadPlanDocuments();
+  assert.match(team, /\| 컨텍스트·토큰 관측 \| `CONTEXT-STEWARD` 전용 컨텍스트\(§3\.2\.1\)/);
+  assert.match(team, /CONTEXT-STEWARD\s+컨텍스트 압력·외부 검수 예산·HANDOFF 완결성 관측과 전환 신호 전용/);
+  assert.match(team, /이 컨텍스트를 제작·검수·복원 컨텍스트와 겸용하지 않는다/);
+  for (const forbidden of [
+    '제품 정책·공식 수치·Task 범위 변경',
+    '필수 증거·시험·독립 감사 제외',
+    'Quality verdict 또는 사람 Go/No-Go 변경',
+    '사람 승인 없는 예산 상향·외부 호출·배포',
+  ]) assert.match(team, new RegExp(forbidden.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+
+  const overpowered = team.replace('- Quality verdict 또는 사람 Go/No-Go 변경', '- Quality verdict 확정');
+  assert.doesNotMatch(overpowered, /- Quality verdict 또는 사람 Go\/No-Go 변경/);
+});
+
+test('채팅은 공식 기억이 아니며 Task Packet과 현재 복원 권위를 구분한다', () => {
+  const { team } = loadPlanDocuments();
+  assert.match(team, /채팅은 작업을 발견하고 조정하는 공간이지 공식 기억이나 승인 장부가 아니다/);
+  assert.match(team, /§5\.2의 같은 Task Packet, §11의 작업큐 필수 필드·현재 복원 권위/);
+  assert.match(team, /`04 Quality · Review`는 감사 일정·차단·결과 링크를\s*조정할 뿐 실제 독립 검증 컨텍스트가 아니다/);
+});
+
 test('중앙 권위 표에서 소유자를 바꾸거나 같은 주제를 복제하면 잡는다', () => {
   const wrongOwner = loadPlanDocuments();
   wrongOwner.directory = wrongOwner.directory.replace(
