@@ -1433,6 +1433,27 @@ test('Fable 비용 절감은 문서별 축소 입력과 최종 네트워크 결�
     '승계 fallback도 검수 완료로 셈',
   );
   assert.throws(() => validateDocumentNetwork(fallbackCompletes), /directory 필수 계약 누락/);
+
+  const conditionalTeamReview = loadPlanDocuments();
+  conditionalTeamReview.team = conditionalTeamReview.team.replace(
+    'R0~R3는 검수 깊이와 전문 감사 route만 바꾸며 Fable 호출 여부를 바꾸지 않는다.',
+    'R0는 Codex 검증만으로 완료하고 R1부터 Fable을 선택한다.',
+  );
+  assert.throws(() => validateDocumentNetwork(conditionalTeamReview), /team 필수 계약 누락/);
+
+  const codexOnlyRoute = loadPlanDocuments();
+  codexOnlyRoute.orchestration = codexOnlyRoute.orchestration.replace(
+    '모든 R0~R3 완료 route는 Codex 실행 검증과 Fable 검수를 함께 요구한다.',
+    'R0 기계 변경은 Codex 실행 검증만으로 완료할 수 있다.',
+  );
+  assert.throws(() => validateDocumentNetwork(codexOnlyRoute), /orchestration 필수 계약 누락/);
+
+  const opusClosesGate = loadPlanDocuments();
+  opusClosesGate.orchestration = opusClosesGate.orchestration.replace(
+    '`OPUS_DIRECT_ADVISORY`는 Fable 장애·소진 중 작업 연속성을 위한 임시 비게이트 자문이며, 후속 Fable\n재검수 전에는 이 칸과 Task 완료 조건을 충족하지 않는다.',
+    '`OPUS_DIRECT_ADVISORY`는 Fable 장애·소진 중 이 칸과 Task 완료 조건을 충족한다.',
+  );
+  assert.throws(() => validateDocumentNetwork(opusClosesGate), /orchestration 필수 계약 누락/);
 });
 
 test('필수 계약·소유 위임·중앙 권위를 코드 블록과 HTML 주석으로 위조할 수 없다', () => {

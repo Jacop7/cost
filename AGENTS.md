@@ -118,6 +118,9 @@ corepack pnpm verify
 
 솔라↔페이블 상호검수는 `corepack pnpm fable:review -- --task <TASK-ID> --round <N>`으로
 별도 실행한다. 검수 원본을 삭제·덮어쓰지 않으며 `pnpm verify` 통과를 대신하지 않는다.
+모든 작업 완료 검수에는 Fable을 포함한다. 위험 등급은 검수 깊이와 전문 감사 route만 바꾸며,
+Codex 실행 검증이나 Opus 임시 자문은 Fable 완료 검수를 대신하지 않는다. 비용은 문서별 최소 입력,
+교차계약 투영과 중복 호출 제거로 줄이고 Fable 생략으로 줄이지 않는다.
 
 ```bash
 corepack pnpm verify --no-db
