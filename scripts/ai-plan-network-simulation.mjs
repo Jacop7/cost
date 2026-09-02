@@ -148,6 +148,11 @@ function sha(value) {
   return createHash('sha256').update(value).digest('hex');
 }
 
+export function canonicalArtifactSha(value) {
+  const bytes = Buffer.isBuffer(value) ? value : Buffer.from(value);
+  return sha(Buffer.from(bytes.toString('utf8').replace(/\r\n/g, '\n'), 'utf8'));
+}
+
 export function hashDispositionItem(entry) {
   const payload = {
     seq: entry.seq,
@@ -1947,7 +1952,7 @@ export function validateLiveTaskLedger(text, taskId = 'AI-ORCH-PLANS-SIM-1') {
   const artifactPaths = listOf(block, 'artifact_paths');
   const manifestEntries = artifactPaths.filter((path) => path !== 'docs/작업큐.md').sort().map((path) => {
     assert.ok(isSafeRepoRelative(path) && existsSync(join(root, path)), `실제 Task artifact path가 없거나 안전하지 않습니다: ${path}`);
-    return `${path}:${sha(readFileSync(join(root, path)))}`;
+    return `${path}:${canonicalArtifactSha(readFileSync(join(root, path)))}`;
   });
   assert.equal(fieldOf(block, 'candidate_manifest_sha256'), sha(JSON.stringify(manifestEntries)),
     'mixed worktree 후보 manifest가 현재 artifact 바이트와 어긋났습니다.');
