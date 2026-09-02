@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-KNOWLEDGE-ORBIT-ONTOLOGY-002",
+  "sequence": "t0003",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-02T08:13:21.789Z",
+  "turn_id": "turn-c001",
+  "turn_type": "CODEX_EVIDENCE",
+  "role": "CODEX-FUNCTION-QA",
+  "task_sha256": "ba95a7a988e84062489ab9ae0eb8920a45f2dd9eccac4a69345edd1ea3b55ca0",
+  "runner_sha256": "80dae1d06c89af056e9d8c210b571e978ee534fc128a5fe3b9867610b5ae447b",
+  "previous_manual_run_sha256": "a3e45ac1e6f4f6b442ea5a68f5aed73e049e41feecf55f8ba8cb50f3f83e6df9",
+  "collaboration_before_sha256": "ac59e572b096d866e4360790ebf9284d459435b787b9496e20b66d652df5d887",
+  "collaboration_before_bytes": 2283,
+  "collaboration_entry_sha256": "07c71e5e0d2b47aad09f732d0b885a82db7f121b7bef01dd061ba0cbdd34e5df",
+  "collaboration_entry_bytes": 1117,
+  "collaboration_after_sha256": "29dca90d2134e9599b1c8050728c21c7a7abe4403b18daa0dba5069e244156a4",
+  "collaboration_after_bytes": 3400
+}
