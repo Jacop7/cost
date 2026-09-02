@@ -1,20 +1,3 @@
-# AI-TEAM-KNOWLEDGE-ORBIT-AUDIT-002 공동 작업 장부
-
-> predecessor `AI-TEAM-KNOWLEDGE-ORBIT-AUDIT-001` r001의 3개 Finding을 수정 commit에서
-> 재검수한다. 과거 장부와 Finding ID를 바꾸지 않으며 Fable 턴은 공식 실행기만 추가한다.
-
-## SOLAR_REQUEST · turn-s001 · r001
-
-- role: `SOLAR-ORCH`
-- reply_to_turn_id: `null`
-- target_commit_sha: `faf52565cb7ef3482367c84866d976a94e64e593`
-- changed_artifact_paths: `docs/ai-review/evidence/AI-TEAM-KNOWLEDGE-ORBIT-PREPLAN.md`
-- 충족해야 할 요구사항·불변식: predecessor Finding 3건 동일 ID 재확인, 요청 enum·지표 registry·재개 절차 단일 권위, 기존 7개 해소 비재개방
-- 이번에 바꾼 내용: §4.2 요청 판정 enum을 온톨로지 §6.3으로 통일하고, §12 지표를 평가안 §5에 매핑했으며, §8.3 L0~L4를 온톨로지 §6.4 복원 절차 안의 조립 순서로 한정했다.
-- 집중 검토 질문: 세 Finding이 target commit에서 해소됐는가? 새 중복 권위·권한 우회·측정 공백이 남았는가?
-- 실행한 테스트·현재 증거: `git diff --check`, `corepack pnpm ai:plans:simulate` 59/59 통과
-- 사람 결정이 필요한 항목: PASS 뒤 패킷 §16의 방향 결정 후보를 사람이 확정한다.
-- next_review_request: `FABLE_RECHECK`
 
 <!-- fable-review:r003 sha256=e9710e57259f4c246e905c6af5941f39b24f2ce78e80d188b6add3731e13709a -->
 ## FABLE_RECHECK · turn-f003 · r003
@@ -44,34 +27,3 @@ predecessor AI-TEAM-KNOWLEDGE-ORBIT-AUDIT-001 r001의 3개 Finding을 수정 com
 
 > 다음 담당자는 이 아래에 같은 공동 산출물의 수정 내용·Finding별 답변·검증 증거를 새 턴으로 추가합니다. 이전 턴은 고치거나 지우지 않습니다.
 <!-- /fable-review:r003 -->
-
-## SOLAR_RESPONSE · turn-s002 · r003
-
-- role: `SOLAR-ORCH`
-- reply_to_turn_id: `turn-f001`
-- reply_to_review_sha256: `e9710e57259f4c246e905c6af5941f39b24f2ce78e80d188b6add3731e13709a`
-- target_commit_sha: `faf52565cb7ef3482367c84866d976a94e64e593`
-- changed_artifact_paths: `docs/ai-review/evidence/AI-TEAM-KNOWLEDGE-ORBIT-PREPLAN.md`
-- artifact_hashes: `[{ path: docs/ai-review/evidence/AI-TEAM-KNOWLEDGE-ORBIT-PREPLAN.md, sha256: a35414b16180b2bdf5e52d8e63fd73294f848d8605376cbe070b69d3b2a36c67, change_type: MODIFIED }]`
-
-### ORBIT-AUDIT-METRIC-ESCAPED-004
-
-- disposition: `APPLIED`
-- 적용 위치: §12 측정과 학습
-- 적용 내용: `escaped defect`를 평가 기획안 §5.2 `review escape` 중 핵심 불변식·보안·데이터 손실 결함 부분집합의 개명 후보로, `cross-team blocker latency`를 §5.4 신규 후보로 명시했다. 개정 대응표가 표의 모든 지표를 빠짐없이 분류하도록 했다.
-- 실행한 테스트: `git diff --check`; `corepack pnpm ai:plans:simulate` 59/59
-- 판정 해석: r003 PASS와 필수 미해결 0건을 유지한다. 이 비차단 Improvement 반영의 formal closure는 주장하지 않는다.
-- next_review_request: `CODEX_EVIDENCE`
-
-## CODEX_EVIDENCE · turn-c001 · r003
-
-- role: `CODEX-FUNCTION-QA`
-- reply_to_turn_id: `turn-s002`
-- target_commit_sha: `faf52565cb7ef3482367c84866d976a94e64e593`
-- artifact_hashes: `[{ path: docs/ai-review/evidence/AI-TEAM-KNOWLEDGE-ORBIT-PREPLAN.md, sha256: a35414b16180b2bdf5e52d8e63fd73294f848d8605376cbe070b69d3b2a36c67, change_type: MODIFIED }]`
-- finding_ids: `ORBIT-AUDIT-METRIC-ESCAPED-004`
-- 실행 명령: `git diff --check -- docs/ai-review/evidence/AI-TEAM-KNOWLEDGE-ORBIT-PREPLAN.md docs/ai-review/tasks/AI-TEAM-KNOWLEDGE-ORBIT-AUDIT-002`; `corepack pnpm ai:plans:simulate`
-- 종료 코드·결과: 전부 0; 문서 네트워크 시뮬레이션 59/59 통과
-- 검증 내용: §12 대응 문단이 `escaped defect`와 `cross-team blocker latency`를 기존 평가 지표 registry에 명시적으로 분류하며 모든 표 지표의 대응 의무를 보존한다.
-- 미실행 항목과 이유: formal closure 재검수는 방향성 선작업 범위가 아니며 r003 자체가 필수 미해결 0건으로 PASS했다.
-- next_review_request: `AI_DEPUTY_GATE_REVIEW`

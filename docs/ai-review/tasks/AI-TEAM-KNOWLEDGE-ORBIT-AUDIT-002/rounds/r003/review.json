@@ -1,0 +1,197 @@
+{
+  "schema_version": "2.0",
+  "task_id": "AI-TEAM-KNOWLEDGE-ORBIT-AUDIT-002",
+  "reviewer_role": "FABLE-ARCH",
+  "review_mode": "RECHECK",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "21a368b0da12acbb1c1534f8df8a2163a54ee98a",
+  "target_commit_sha": "faf52565cb7ef3482367c84866d976a94e64e593",
+  "target_tree_oid": "832fd2865b2ccb85533016432d71e321cfe1494c",
+  "agents_blob_oid": "4c31bbf9be81871c4dfb1699e057c8303d4e2fae",
+  "agents_sha256": "5628177d442547e868acc3e0446e6513b65bf713f2cfd82cc78e0e6dedc4c860",
+  "task_sha256": "047f1c05ec99967e6ce104d20fff4dbbfe5c652614bed5b2136b322d30817500",
+  "collaboration_sha256": "e58c5cde02cb36092087581ad60af031e225c52ff59650b7c21ace7c8f8b4c06",
+  "input_files_sha256": "0a8030b965fd00db6dc21e7bb6fbb8cc1e0c1b5a1aebf6bb6e5d4944111aba5b",
+  "schema_sha256": "d8ffdb13e6b1e38279355d9ffd592cfb91dc023d287976adf7892e85dbfaf0d7",
+  "runner_sha256": "80dae1d06c89af056e9d8c210b571e978ee534fc128a5fe3b9867610b5ae447b",
+  "verdict": "PASS",
+  "summary": "predecessor AI-TEAM-KNOWLEDGE-ORBIT-AUDIT-001 r001의 3개 Finding을 수정 commit faf52565에서 동일 finding_id로 재검수했다. (1) ORBIT-AUDIT-ENUM-001[Major]→VERIFIED: 패킷 §4.2(141~144행)가 요청 판정을 온톨로지 §6.3 소유의 단일 enum `ADD | SUPERSEDE_PROPOSAL | NEW_TASK | STATUS_ONLY`로 교체하고, SUPERSEDE_PROPOSAL의 '제안일 뿐 사람 승인 전 적용 금지' 의미를 보존하며, 패킷·후속 개정의 새 값·다른 이름 정의를 금지한다. grep으로 REPLACE·QUESTION 잔존이 없음을 확인했고, §17 오케스트레이션 행(572행)이 '요청 판정 enum 재정의'를 비반영 항목으로, '요청 판정 허용값의 온톨로지 단일 출처 검사'를 검증 연결로 명시해 세 수용 기준을 모두 충족한다. 온톨로지 §6.3(235~248행) 원문과 대조 확인. (2) ORBIT-AUDIT-METRIC-DUAL-002[Minor]→VERIFIED: §12(486~491행)가 지표 이름·계산 정의의 단일 권위를 평가 기획안 §5로 명시하고, handoff recovery success를 §5.3 resume success의 개명 후보로, duplicate work·handoff loss를 §5.3 동일 지표로 대응시키며, 신규 지표는 평가 기획안 개정으로만 추가하고 개정 Task에 §5.1~§5.4 동일·개명·신규 대응표를 요구하며 이 표를 별도 지표 권위로 쓰지 않는다. §17 평가 행(574행)이 대응표·지표 유일성 검사를 포함한다. 평가 기획안 §5.3(226~235행)과 대조해 매핑 주장의 사실성을 확인했다. (3) ORBIT-AUDIT-CAPSULE-003[Improvement]→VERIFIED: §8.3(382~384행)이 새 채팅 복원 절차의 단일 권위를 온톨로지 §6.4로 선언하고 L0~L4를 그 절차 안의 조립 우선순위로 한정하며 lease·사용자 변경·증거 SHA 단계를 대체하지 않고 개정 시 하나의 복원·조립 계약으로 통합함을 명시한다(온톨로지 §6.4 260~276행 대조). (4) 최초 7개 지적의 해소 근거(§3.2 검수 컨텍스트 분리, §4.1/4.1.1 Quality·팀 대응, §6.1~6.3 상태명·HANDOFF_REQUIRED 비공유, §7.1 §11 필드 보존, §8.1~8.2 어휘 대응, §10 docs/team 권위 재사용, §12/§17)는 전문 재독으로 모두 현재 commit에 그대로 남아 있어 재개방 모순이 없다. (5) §17 다섯 기획안 변경 설계는 각 행이 단일 소유·비반영 항목·검증 연결을 유지하고 §17.2가 이중 소유 시 개정 미시작을 강제해 경쟁 공식본·중복 권위·운영 승인 우회를 만들지 않는다. 시뮬레이션 증거 파일에서 test 블록 정확히 59개를 확인해 장부의 59/59 주장과 정합함을 확인했다(직접 실행은 범위 밖). 신규 발견 1건[Improvement, 비차단]: §12 표의 escaped defect(504행)가 평가 기획안 §5.2 review escape(218행)와 그 핵심 불변식·보안·데이터 손실 0건 요건(224행)과 실질 중복인데 §12 대응 문단이 escaped defect·cross-team blocker latency의 동일·개명·신규 분류를 명시하지 않는다. 개정 Task의 전체 대응표 의무와 유일성 검사가 봉합하므로 차단 사유는 아니며 한 문장 proposed_edit을 제공했다. 필수 미해결 Finding 없음 — 판정 PASS. VERIFIED는 국지 해소이며 formal closure와 gate_state OPEN은 외부 게이트 소관이다.",
+  "findings": [
+    {
+      "finding_id": "ORBIT-AUDIT-ENUM-001",
+      "severity": "Major",
+      "review_state": "VERIFIED",
+      "category": "ARCHITECTURE",
+      "requirement_or_invariant_ids": [
+        "AGENTS:single-canonical-artifact",
+        "AI-ORCH:multi-chat-repository-authority"
+      ],
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/AI-TEAM-KNOWLEDGE-ORBIT-PREPLAN.md",
+          "line_start": 141,
+          "line_end": 144,
+          "observation": "§4.2가 요청 판정을 온톨로지 §6.3 소유 단일 enum `ADD | SUPERSEDE_PROPOSAL | NEW_TASK | STATUS_ONLY`로 판정하고, SUPERSEDE_PROPOSAL의 사람 승인 전 적용 금지 의미를 보존하며, 패킷·후속 개정의 새 값·다른 이름 정의를 금지한다. REPLACE·QUESTION은 grep으로 파일 전체에서 부재 확인."
+        },
+        {
+          "path": "docs/AI-지식-온톨로지-기획안.md",
+          "line_start": 235,
+          "line_end": 248,
+          "observation": "온톨로지 §6.3의 단일 정의 네 값·SUPERSEDE_PROPOSAL 사람 승인 요건·타 문서의 새 값 정의 금지와 §4.2 교정 문구가 정확히 일치한다."
+        },
+        {
+          "path": "docs/ai-review/evidence/AI-TEAM-KNOWLEDGE-ORBIT-PREPLAN.md",
+          "line_start": 572,
+          "line_end": 572,
+          "observation": "§17 오케스트레이션 행이 '온톨로지 §6.3 요청 판정 enum의 사용'을 반영 계약으로, '요청 판정 enum 재정의'를 비반영으로, '요청 판정 허용값의 온톨로지 단일 출처 검사'를 검증 연결로 명시해 세 번째 수용 기준을 충족한다."
+        }
+      ],
+      "impact": "해소 확인: 요청 판정 enum의 단일 소유가 온톨로지 §6.3으로 복원되고 SUPERSEDE_PROPOSAL의 사람 결정 불변식이 보존되어, 개정 Task로의 잘못된 enum 전파와 §17.2 이중 소유 실패 폐쇄 저촉 위험이 제거됐다.",
+      "acceptance_criteria": [
+        "§4.2의 판정 어휘를 온톨로지 §6.3 단일 enum `ADD | SUPERSEDE_PROPOSAL | NEW_TASK | STATUS_ONLY`로 교체하고 enum 소유자가 온톨로지 §6.3임을 명시한다.",
+        "SUPERSEDE_PROPOSAL이 사람 승인 전 적용 금지 제안임을 같은 항목에서 보존한다.",
+        "§17의 오케스트레이션·팀구성 반영 행 또는 §17.2에 판정 enum을 새로 정의하지 않는다는 조건을 연결한다."
+      ],
+      "required_tests": [
+        "스키마·검사기 구현 단계에서 request disposition enum 허용 값이 온톨로지 §6.3 단일 출처에서 생성되는지 검사"
+      ],
+      "previous_finding_id": "ORBIT-AUDIT-ENUM-001",
+      "verified_by_engine": "FABLE"
+    },
+    {
+      "finding_id": "ORBIT-AUDIT-METRIC-DUAL-002",
+      "severity": "Minor",
+      "review_state": "VERIFIED",
+      "category": "ARCHITECTURE",
+      "requirement_or_invariant_ids": [
+        "AGENTS:single-canonical-artifact",
+        "AI-QUALITY:independent-review"
+      ],
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/AI-TEAM-KNOWLEDGE-ORBIT-PREPLAN.md",
+          "line_start": 486,
+          "line_end": 491,
+          "observation": "§12가 지표 이름·계산 정의의 단일 권위를 평가 기획안 §5로 명시하고 handoff recovery success를 §5.3 resume success의 개명 후보, duplicate work·handoff loss를 §5.3 동일 지표로 대응시키며, 신규 지표는 평가 기획안 개정으로만 추가하고 개정 Task에 §5.1~§5.4 동일·개명·신규 대응표를 요구하며 이 표를 별도 지표 권위로 쓰지 않는다."
+        },
+        {
+          "path": "docs/AI-품질-학습-자율성-평가기획안.md",
+          "line_start": 226,
+          "line_end": 235,
+          "observation": "평가 기획안 §5.3에 resume success·duplicate work·handoff loss가 실재해 §12 대응 주장(개명 1건·동일 2건)이 사실과 일치한다."
+        },
+        {
+          "path": "docs/ai-review/evidence/AI-TEAM-KNOWLEDGE-ORBIT-PREPLAN.md",
+          "line_start": 574,
+          "line_end": 574,
+          "observation": "§17 평가 기획안 행이 '§12와 기존 §5 지표의 동일·개명·신규 대응표'를 반영 계약으로, '별도 지표 어휘 권위'를 비반영으로, '지표 이름·계산 정의 유일성 검사'를 검증 연결로 포함한다."
+        }
+      ],
+      "impact": "해소 확인: 지표 어휘의 단일 권위가 평가 기획안 §5로 고정되고 개명·동일·신규 경계와 개정 경로가 명시되어 지표 이원화 위험이 봉합됐다. escaped defect의 명시 분류 공백은 신규 Improvement ORBIT-AUDIT-METRIC-ESCAPED-004로 분리 기록했다.",
+      "acceptance_criteria": [
+        "§12에 지표 이름의 단일 권위가 평가 기획안 §5임을 명시하고 각 지표를 §5.1~§5.4 기존 지표와 동일·개명·신규로 대응시킨다(예: handoff recovery success는 resume success의 개명 후보, duplicate work·handoff loss는 동일).",
+        "신규 지표는 평가 기획안 개정으로만 추가하며 이 패킷 표는 지표 권위가 아님을 명시한다.",
+        "§17 평가 기획안 반영 행 또는 검증 연결에 기존 지표 registry 대조를 포함한다."
+      ],
+      "required_tests": [
+        "평가 기획안 개정 시 지표 이름·계산 정의의 유일성(동일 계산에 복수 이름 금지) 대조 검사"
+      ],
+      "previous_finding_id": "ORBIT-AUDIT-METRIC-DUAL-002",
+      "verified_by_engine": "FABLE"
+    },
+    {
+      "finding_id": "ORBIT-AUDIT-CAPSULE-003",
+      "severity": "Improvement",
+      "review_state": "VERIFIED",
+      "category": "ARCHITECTURE",
+      "requirement_or_invariant_ids": [
+        "AI-KNOWLEDGE:typed-provenance"
+      ],
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/AI-TEAM-KNOWLEDGE-ORBIT-PREPLAN.md",
+          "line_start": 382,
+          "line_end": 384,
+          "observation": "§8.3이 새 채팅 상태 복원 절차의 단일 권위를 온톨로지 §6.4로 선언하고, L0~L4를 그 절차 안의 조립 우선순위로 한정하며 lease·사용자 변경·증거 SHA 확인 단계를 대체하지 않고, 온톨로지 개정 Task가 두 순서를 하나의 복원·조립 계약으로 통합함을 명시한다."
+        },
+        {
+          "path": "docs/AI-지식-온톨로지-기획안.md",
+          "line_start": 260,
+          "line_end": 276,
+          "observation": "온톨로지 §6.4의 9단계 새 채팅 복원 절차가 여전히 단일 소유로 남아 있고 §8.3 문구가 이를 대체하지 않는다."
+        },
+        {
+          "path": "docs/ai-review/evidence/AI-TEAM-KNOWLEDGE-ORBIT-PREPLAN.md",
+          "line_start": 571,
+          "line_end": 571,
+          "observation": "§17 온톨로지 행이 '출처·SHA·상태를 가진 기억 캡슐 L0~L4'를 온톨로지 기획안 반영 범위로 유지해 통합 개정 경로와 정합한다."
+        }
+      ],
+      "impact": "해소 확인: L0~L4와 온톨로지 §6.4 재개 절차의 병렬 순서 계약 위험이 단일 권위 선언과 통합 개정 지시로 제거됐다.",
+      "acceptance_criteria": [
+        "§8.3 또는 §17 온톨로지 행에 L0~L4가 온톨로지 §6.4 재개 절차를 대체하지 않으며 개정 시 하나의 복원·조립 계약으로 통합됨을 한 문장으로 명시한다."
+      ],
+      "required_tests": [],
+      "previous_finding_id": "ORBIT-AUDIT-CAPSULE-003",
+      "verified_by_engine": "FABLE"
+    },
+    {
+      "finding_id": "ORBIT-AUDIT-METRIC-ESCAPED-004",
+      "severity": "Improvement",
+      "review_state": "OPEN",
+      "category": "ARCHITECTURE",
+      "requirement_or_invariant_ids": [
+        "AGENTS:single-canonical-artifact",
+        "AI-QUALITY:independent-review"
+      ],
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/AI-TEAM-KNOWLEDGE-ORBIT-PREPLAN.md",
+          "line_start": 504,
+          "line_end": 504,
+          "observation": "§12 표의 escaped defect가 'Quality 이후 발견된 필수 불변식·보안·데이터 손실 결함'으로 정의되어 새 이름을 쓴다."
+        },
+        {
+          "path": "docs/AI-품질-학습-자율성-평가기획안.md",
+          "line_start": 218,
+          "line_end": 224,
+          "observation": "평가 기획안 §5.2가 이미 review escape(다음 역할·CI·운영에서 새로 발견된 이전 단계 필수 결함)를 소유하고 핵심 불변식·보안·데이터 손실 escape 0건 요건을 별도 명시해 escaped defect와 측정 사실이 실질 중복된다."
+        },
+        {
+          "path": "docs/ai-review/evidence/AI-TEAM-KNOWLEDGE-ORBIT-PREPLAN.md",
+          "line_start": 486,
+          "line_end": 491,
+          "observation": "§12 대응 문단이 handoff recovery success·duplicate work·handoff loss와 다섯 신규 지표만 명시 분류하고 escaped defect·cross-team blocker latency의 동일·개명·신규 분류를 남기지 않는다."
+        }
+      ],
+      "impact": "escaped defect는 §5.2 review escape의 핵심 불변식·보안·데이터 손실 부분집합과 사실상 같은 측정인데 §12 문단의 신규 지표 열거('등')에 묻혀 신규로 오분류될 수 있다. 개정 Task에 부과된 전체 대응표 의무와 §17의 지표 이름·계산 정의 유일성 검사가 이를 봉합하므로 차단 사유는 아니며, 한 문장 명시로 개정 시 오분류 여지를 제거할 수 있다.",
+      "acceptance_criteria": [
+        "§12 대응 문단에 escaped defect가 §5.2 review escape의 핵심 불변식·보안·데이터 손실 부분집합에 대한 개명 후보이고 cross-team blocker latency가 신규 후보임을 명시하거나, 개정 Task 대응표가 두 지표를 포함해 표의 모든 지표를 분류함을 명시한다."
+      ],
+      "required_tests": [],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    }
+  ],
+  "proposed_edits": [
+    {
+      "edit_id": "EDIT-AUDIT-METRIC-ESCAPED-004",
+      "path": "docs/ai-review/evidence/AI-TEAM-KNOWLEDGE-ORBIT-PREPLAN.md",
+      "anchor": "`token per completed task unit` 등 신규 지표는 평가 기획안 개정으로만 추가한다. 개정 Task는 아래",
+      "operation": "ADD",
+      "proposed_text": "`escaped defect`는 §5.2 `review escape` 중 핵심 불변식·보안·데이터 손실 결함 부분집합의 개명 후보이고 `cross-team blocker latency`는 §5.4 신규 후보다. 개정 Task의 대응표는 이 두 지표를 포함해 아래 표의 모든 지표를 동일·개명·신규로 분류한다.",
+      "rationale": "§12의 escaped defect가 평가 기획안 §5.2 review escape와 실질 중복인데 대응 문단에 분류가 없어 개정 시 신규로 오분류될 수 있는 여지를 한 문장으로 제거한다.",
+      "finding_ids": [
+        "ORBIT-AUDIT-METRIC-ESCAPED-004"
+      ]
+    }
+  ],
+  "closed_finding_ids": [],
+  "reopened_finding_ids": [],
+  "remaining_required_finding_ids": [],
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}

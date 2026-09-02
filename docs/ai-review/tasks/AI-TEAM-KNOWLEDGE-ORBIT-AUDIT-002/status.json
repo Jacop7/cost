@@ -14,25 +14,22 @@
     "handoff_entry_sha256": "fdbbecad8be4a1638ff8ed19fa00477dd6aaf94077ee199fef634e5f913c7a4e",
     "handoff_run_sha256": "58b282317e5c97abf1b2407b3db565e3090d3f8ecc9edc0c89c622c31752a3a8"
   },
-  "updated_at": "2026-09-02T04:51:42.251Z",
-  "latest_round": "r002",
-  "review_state": "OPEN",
-  "workflow_state": "READY_FOR_REVIEW",
+  "updated_at": "2026-09-02T07:00:50.283Z",
+  "latest_round": "r003",
+  "review_state": "VERIFIED",
+  "workflow_state": "VERIFIED",
   "gate_state": "OPEN",
-  "run_state": "RUN_FAILED",
+  "run_state": "RESULT_RECEIVED",
   "defect_state": "NOT_APPLICABLE",
-  "verdict": null,
+  "verdict": "PASS",
   "primary_reviewer_engine": "FABLE",
   "reviewer_engine": "FABLE",
   "reviewer_model": "claude-fable-5",
-  "fallback_reason": "NOT_FALLBACK_ELIGIBLE",
-  "latest_run_sha256": "adb3c93e30154bc77179689a53b3263dc47bd6e22be4fe3e6d6d78b08019826b",
-  "open_required_finding_ids": [
-    "ORBIT-AUDIT-ENUM-001",
-    "ORBIT-AUDIT-METRIC-DUAL-002"
-  ],
+  "fallback_reason": null,
+  "latest_run_sha256": "af00e78663f7813fcb90a160a63e2f3e912cb37e684f669f7332a30498cc6944",
+  "open_required_finding_ids": [],
   "open_optional_finding_ids": [
-    "ORBIT-AUDIT-CAPSULE-003"
+    "ORBIT-AUDIT-METRIC-ESCAPED-004"
   ],
   "closed_finding_ids": [],
   "candidate_review_state": null,
