@@ -20,10 +20,10 @@ const exactInScope = new Set([
   'docs/ai-review/evidence/AI-PLANS-PREWORK-PATCH-MAP.md',
   'docs/ai-review/evidence/AI-PLANS-PREWORK-DECISIONS.md',
   'docs/ai-review/evidence/AI-PLANS-PREWORK-VERIFICATION.md',
+  'docs/ai-review/evidence/AI-PLANS-PREWORK-VERIFICATION-V2.md',
   'docs/ai-review/evidence/AI-PLANS-PREWORK-OPUS-R1.md',
   'docs/ai-review/evidence/AI-PLANS-PREWORK-USER-STATE.json',
   'scripts/ai-plan-prework-status-check.mjs',
-  'package.json',
 ]);
 
 const prefixRules = [
