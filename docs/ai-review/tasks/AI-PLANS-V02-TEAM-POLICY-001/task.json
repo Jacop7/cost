@@ -1,0 +1,70 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-PLANS-V02-TEAM-POLICY-001",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R1",
+  "author_role": "SOLAR-AI-DEPUTY",
+  "reviewer_role": "FABLE-STRATEGY",
+  "verifier_role": "CODEX-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "c54e2163e771685f5a05363aa7bedb129d4c6ee7",
+  "target_commit_sha": "96e1963899862789717f2003e29ced2f1a393c64",
+  "target_tree_oid": "2613325c820dbfa5d3957fe5bf5d1dc12ffcbe70",
+  "agents_blob_oid": "c32214b5528752a91f0f1545fea8c735d5fae7fa",
+  "agents_sha256": "7c4b651732f5b973b38d033c7310fda062bf57eebfb64780ff57594156ab01cd",
+  "requirements": [
+    "R0~R3 모든 작업 완료 검수에 Fable이 참여하고 위험 등급은 검수 깊이와 전문 역할만 바꾸는지 검증한다.",
+    "Codex 실행 검증과 Fable 독립 검수가 서로를 대체하지 않으며 Opus 승계는 후속 Fable 전까지 비게이트인지 검증한다.",
+    "팀 권위·오케스트레이션·공동 검수 프로토콜의 교차계약에 남은 Critical·Major 반례만 최대 3개로 합쳐 보고한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:fable-required-review",
+    "TEAM:risk-controls-depth-not-presence",
+    "TEAM:codex-and-fable-non-substitution"
+  ],
+  "artifact_paths": [
+    "docs/팀구성_상세기획안.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/ai-review/README.md"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/evidence/AI-PLANS-V02-FABLE-COMPACT-EVIDENCE.md"
+  ],
+  "excluded_paths": [
+    "docs/AI-지식-온톨로지-기획안.md",
+    "docs/AI-오케스트레이션-상세기획안.md",
+    "docs/디렉터리-문서신경망-재설계-기획안.md",
+    "docs/AI-품질-학습-자율성-평가기획안.md",
+    "scripts/ai-plan-network-simulation.mjs",
+    "scripts/ai-plan-network-simulation.test.mjs",
+    "apps/mobile/**",
+    "scripts/prototype_server.py",
+    "docs/prototypes/**"
+  ],
+  "required_evidence": [
+    "팀 구성안 §3.11·§4.4·§5.4의 Fable 필수 계약 직접 대조",
+    "compact evidence의 70/70 적대 fixture와 다섯 문서 content hash 확인",
+    "target commit·tree·AGENTS hash 확인",
+    "잔여 Critical·Major 또는 명세상 필수 Finding 목록"
+  ],
+  "human_decisions": [
+    "2026-09-02 사용자는 모든 검수에 Fable을 필수로 사용하되 호출 입력과 중복을 최소화하도록 지시했다.",
+    "Opus는 Fable 장애 중 임시 자문이며 Fable 완료 검수를 대체하지 않는다.",
+    "유효 Fable 결과 전에는 DRAFT를 ACTIVE로 바꾸지 않는다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "2.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}
