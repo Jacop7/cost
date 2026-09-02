@@ -1,0 +1,81 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-PLANS-PREWORK-REVIEW-002",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R0",
+  "author_role": "CODEX-QA",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "022840ab627b1653e94c97e8208b9268399e36ea",
+  "target_commit_sha": "0517f06900da6c3e7dd0ed472e10fda851978697",
+  "target_tree_oid": "60495bc284da4a3b454385fe3fe27d4133aaa2cb",
+  "agents_blob_oid": "c32214b5528752a91f0f1545fea8c735d5fae7fa",
+  "agents_sha256": "de18fc8524afa350d3d0806f40150b9397dfd45a91ff471b5e1f6d6bf95fc681",
+  "requirements": [
+    "선작업 1~11 각각을 PASS 또는 CHANGES_REQUIRED로 판정하고 하나라도 미통과면 전체 PASS를 금지한다.",
+    "Git blob 기준선, 경로 3분할, 기존 브랜치 fast-forward, 사용자 57경로 manifest, SIM-1 lease 경계를 검증한다.",
+    "Fable 실패 원본 보존, RC-01~08 patch map, 사람 Decision 10건, 기계식 완료 조건, 70/70·4/6·연결 preflight 표현, exact SHA 봉인을 검증한다.",
+    "Opus r3 11/11 PASS를 참고하되 독립적으로 판단하고 Opus를 공식 Fable 결과로 합성하지 않는다.",
+    "Critical·Major 또는 명세상 필수 Finding만 최대 5개로 합쳐 반환한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:single-canonical-artifact",
+    "AGENTS:fable-required-review",
+    "TEAM:single-edit-lease",
+    "TEAM:user-owned-changes-preserved"
+  ],
+  "artifact_paths": [
+    "docs/ai-review/evidence/AI-PLANS-PREWORK-BASELINE.md",
+    "docs/ai-review/evidence/AI-PLANS-PREWORK-PATCH-MAP.md",
+    "docs/ai-review/evidence/AI-PLANS-PREWORK-DECISIONS.md",
+    "docs/ai-review/evidence/AI-PLANS-PREWORK-VERIFICATION-V3.md",
+    "docs/ai-review/evidence/AI-PLANS-PREWORK-OPUS-R3.md",
+    "docs/ai-review/evidence/AI-PLANS-PREWORK-USER-STATE.json",
+    "scripts/ai-plan-prework-status-check.mjs",
+    "docs/작업큐.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/ai-review/README.md"
+  ],
+  "evidence_paths": [],
+  "excluded_paths": [
+    "docs/AI-지식-온톨로지-기획안.md",
+    "docs/AI-오케스트레이션-상세기획안.md",
+    "docs/디렉터리-문서신경망-재설계-기획안.md",
+    "docs/AI-품질-학습-자율성-평가기획안.md",
+    "docs/팀구성_상세기획안.md",
+    "docs/ai-review/evidence/AI-CONTEXT-CROSS-STUDY-*.md",
+    "apps/mobile/**",
+    "scripts/prototype_server.py",
+    "docs/prototypes/**",
+    "docs/ai-review/tasks/PROTOTYPE-TERMINOLOGY-001/**",
+    ".codex-share/**",
+    ".tmp/**"
+  ],
+  "required_evidence": [
+    "target 0517f06, tree 60495bc, AGENTS blob c32214b의 exact 일치",
+    "최종 실행 commit e96a238과 영수증 seal 8d52e81의 분리 및 작업큐 binding",
+    "rename fixture 2개, 사용자 manifest 57개, 미분류·중복 0의 기계식 실패 조건",
+    "Opus r3 11/11 PASS와 Fable r001 RUN_FAILED·verdict null의 분리"
+  ],
+  "human_decisions": [
+    "2026-09-02 사용자는 새 브랜치 없이 선작업 1~11 자동 진행과 1~11 전부 Opus 검수를 지시했다.",
+    "본 Task는 저장소 헌법이 추가로 요구하는 공식 Fable 검수이며 본작업 lease 인계를 승인하지 않는다.",
+    "첫 Fable Task의 2 USD 상한 초과 실패는 PASS로 합성하지 않고, 상한 증액 없이 입력을 축소했다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "2.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}

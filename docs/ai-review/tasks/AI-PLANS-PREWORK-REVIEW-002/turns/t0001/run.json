@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-PLANS-PREWORK-REVIEW-002",
+  "sequence": "t0001",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-02T13:34:34.331Z",
+  "turn_id": "turn-s001",
+  "turn_type": "SOLAR_REQUEST",
+  "role": "CODEX-QA",
+  "task_sha256": "4a735e23ddf6a90c80526c36b4d8e43da379b6834ea964aa8826ce374308dc66",
+  "runner_sha256": "80dae1d06c89af056e9d8c210b571e978ee534fc128a5fe3b9867610b5ae447b",
+  "previous_manual_run_sha256": null,
+  "collaboration_before_sha256": "230eaed18ac94095f8a130cc7ac7d06360afbdb33ddbee112b93755094915784",
+  "collaboration_before_bytes": 245,
+  "collaboration_entry_sha256": "2a29c9757d4dca20bbf524d3fcdc7bf9a159e2d8182293a3ac72f0f5c60f39d0",
+  "collaboration_entry_bytes": 1650,
+  "collaboration_after_sha256": "dffc854c6d3810a7267babbb212fbda96320109a43d85675256428812f21fc22",
+  "collaboration_after_bytes": 1895
+}
