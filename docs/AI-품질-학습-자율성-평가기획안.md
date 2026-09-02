@@ -178,6 +178,26 @@ Context & Token Steward 자체도 평가 대상이다. 신호가 너무 늦어 �
 토큰 총량만으로 성패를 판정하지 않고 `사용자 재설명 없이 다음 안전 행동 복원`, `권위 누락 0`,
 `중복 비권위 입력 감소`를 함께 만족해야 개선으로 인정한다.
 
+#### 4.4.1 모델·토큰 운영계약 평가
+
+12단계 전환 작업은 오케스트레이션 기획안 §6.3의 상대 100점 envelope와 Terra→Sol→Opus 순서를
+평가 기준으로 사용한다. 점수는 공급자 간 토큰 등가값이 아니라 계획 비중이므로, 실제 평가는 모델별
+input·cached input·output·reasoning token과 외부 비용을 분리한다.
+
+- Terra가 12단계의 공식본 작성·구현과 실행 증거를 연속 소유했는지
+- Sol이 전체 재수행 없이 지정된 high/xhigh 구조 판정만 수행했는지
+- Opus 최초 검수에서 앞 모델의 결론·자기변호가 제외돼 독립성이 유지됐는지
+- 유효 Opus 구조화 결과가 없는 단계가 `REVIEW_PENDING`으로 멈추고 다음 단계로 전이하지 않았는지
+- 단계별 80%·100%·120% 조치와 재계획 Decision이 실제 사용량에 연결됐는지
+- 승인된 절대 envelope가 `UNSET`인 상태에서 Run이 시작되지 않았는지
+- 토큰 절감을 위해 필수 권위·시험·감사 route를 누락하지 않았는지
+- `DEFERRED_NOT_WAIVED`인 Fable을 생략 완료나 Opus 대체 PASS로 오인하지 않았는지
+- Fable 보류 중 1~7단계가 `DRAFT_READY` 후보를 넘지 않고 8단계 `ACTIVE` Decision과 9~12단계
+  materialize·파일럿·역반영이 차단됐는지
+
+비용 champion은 같은 acceptance criteria와 필수 Finding 재현율을 유지하면서 중복 입력·재호출·실패
+비용을 줄인 조합이다. 단순 총토큰 감소, 낮은 모델 사용, 미검수 상태는 champion 승격 근거가 아니다.
+
 ### 4.5 구현·검증 평가
 
 - 요구사항→소스→시험 traceability

@@ -2070,7 +2070,8 @@ export function validateLiveTaskLedger(text, taskId = 'AI-ORCH-PLANS-SIM-1') {
     'active_branch', 'worktree_state', 'untracked_in_scope_paths', 'applied_learning_ids',
     'excluded_learning_ids', 'domain_invariants', 'required_outputs', 'required_tests_evidence',
     'known_risks', 'questions_requiring_human_decision',
-    'candidate_manifest_sha256',
+    'candidate_manifest_sha256', 'candidate_manifest_target', 'candidate_manifest_algorithm',
+    'fable_budget_state', 'fable_budget_decision_id', 'advisory_budget_state', 'handoffs',
   ];
   for (const field of requiredFields) assert.match(block, new RegExp(`^${field}:`, 'm'), `실제 Task 필드 누락: ${field}`);
   const liveState = fieldOf(block, 'current_state') ?? '';
@@ -2109,6 +2110,19 @@ export function validateLiveTaskLedger(text, taskId = 'AI-ORCH-PLANS-SIM-1') {
   }
   const actualAgentsBlob = execFileSync('git', ['hash-object', 'AGENTS.md'], { cwd: root, encoding: 'utf8' }).trim();
   assert.equal(fieldOf(block, 'agents_md_blob_sha'), actualAgentsBlob, 'Task AGENTS blob이 현재 파일과 어긋났습니다.');
+  assert.equal(fieldOf(block, 'candidate_manifest_target'), 'WORKING_TREE_HASHED',
+    '모델·토큰 계약 후보 manifest는 working snapshot 대상을 명시해야 합니다.');
+  assert.match(fieldOf(block, 'candidate_manifest_algorithm') ?? '', /CRLF→LF.*SHA-256/,
+    '후보 manifest 계산 규칙이 누락됐습니다.');
+  assert.equal(fieldOf(block, 'fable_budget_state'), 'DEFERRED_NOT_WAIVED',
+    'Fable 예산 보류를 면제로 바꾸거나 누락할 수 없습니다.');
+  assert.match(fieldOf(block, 'fable_budget_decision_id') ?? '', /^DEC-/,
+    'Fable 예산 상태의 사람 Decision ID가 없습니다.');
+  assert.equal(fieldOf(block, 'advisory_budget_state'), 'UNSET_FOR_12_STAGE_EXECUTION',
+    '승인 pin 전 12단계 advisory budget은 UNSET이어야 합니다.');
+  assert.match(block,
+    /handoffs:\n[\s\S]*handoff_id: HANDOFF:AI-ORCH-PLANS-SIM-1:0001[\s\S]*handoff_version: 1[\s\S]*source_commit_sha: [0-9a-f]{40}[\s\S]*task_snapshot_hash: [0-9a-f]{64}[\s\S]*successor_role_context_id:/,
+    '검증된 HANDOFF v1의 source·snapshot·successor 결속이 없습니다.');
   const untrackedInScopePaths = listOf(block, 'untracked_in_scope_paths');
   for (const path of untrackedInScopePaths) {
     assert.ok(isSafeRepoRelative(path), `Task 미추적 경로가 안전하지 않습니다: ${path}`);

@@ -414,7 +414,7 @@ test('정상 업무는 요청→Task→Codex/Fable→사람 승인→배치→Le
 test('현재 시뮬레이션 Task는 실제 작업큐에서 복원 가능한 계약이다', () => {
   const result = validateLiveTaskLedger(loadWorkQueue());
   assert.equal(result.taskId, 'AI-ORCH-PLANS-SIM-1');
-  assert.equal(result.dispositionCount, 2);
+  assert.equal(result.dispositionCount, 4);
 });
 
 test('Task 필수 복원 필드나 risk 근거가 빠지면 환경 미검증이다', () => {
