@@ -212,12 +212,18 @@ Context & Token Steward 자체도 평가 대상이다. 신호가 너무 늦어 �
 모든 필수 검수 route는 Fable을 포함한다. 비용 최적화는 Fable을 생략하거나 다른 모델 결과로
 대체하는 것이 아니라, Codex 사전검수와 입력 manifest 축소로 유효 회차당 낭비를 줄이는 것이다.
 
-1. artifact에는 누적 대상 공식 문서 전체를 유지한다.
-2. 큰 구현·원시 로그는 content hash, 판별력 설명, 재현 명령, 결과가 있는 compact evidence로 바꿀 수 있다.
-3. 의미 축은 별도 Fable Task로 나눌 수 있지만 각 Task가 공식 문서의 상호작용을 검토한다.
-4. 실행 전 runner self-test, 로그인, 입력 바이트, 회차 상한, 작업 누적 잔여를 확인한다.
-5. `RUN_FAILED`·구조화 출력 없음·상한 소진은 유효 검수나 PASS로 세지 않는다.
-6. 같은 입력 실패 뒤 상한만 올린 재시도는 결함이며 실패 원인 또는 패킷 구조가 바뀌어야 한다.
+1. 문서별 Fable Task는 해당 공식 문서만 artifact로 두고, 나머지 누적 문서는 target commit/tree에
+   결속된 content hash와 기계 생성된 교차계약 투영(compact evidence)으로 검토한다.
+2. 교차계약 투영은 중앙 권위·관계·상태·Finding 연결을 전수 추출하며, 원문 대비 완전성 parity와
+   누락 사보타주가 같은 SHA에서 통과해야 한다.
+3. 큰 구현·원시 로그는 content hash, 판별력 설명, 재현 명령, 결과가 있는 compact evidence로 바꿀 수 있다.
+4. 문서별 회차는 그 문서의 검수일 뿐 최종 네트워크 closure로 세지 않는다. 최종 네트워크 Fable
+   Task는 문서별 유효 review/run/input hash, 전체 문서 content hash와 투영 검증 결과를 결속한다.
+5. 실행 전 runner self-test, 로그인, 입력 바이트, 회차 상한, 작업 누적 잔여를 확인한다.
+6. `RUN_FAILED`·구조화 출력 없음·상한 소진은 유효 검수나 PASS로 세지 않는다.
+7. 같은 입력 실패 뒤 상한만 올린 재시도는 결함이며 실패 원인 또는 패킷 구조가 바뀌어야 한다.
+8. 승계 fallback은 작업 연속성을 위한 임시 비게이트 증거이며, 후속 Fable 재검수 전에는 검수 완료로
+   세지 않는다.
 
 ## 5. 핵심 지표
 
@@ -425,7 +431,7 @@ champion/challenger 결과로 인정하지 않는다.
 | 평가 | 제작 | 검증 | 독립 감사 | 결정 |
 |---|---|---|---|---|
 | 요청·Task fixture | SOLAR-PO/AI 부 O | Codex | Fable 전략 표본 | 사람 |
-| 코드·DB 회귀 | 담당 SOLAR-DEV | Codex | 위험별 Fable/승계 fallback | 역할별 gate owner |
+| 코드·DB 회귀 | 담당 SOLAR-DEV | Codex | Fable 필수. 승계 fallback은 임시 비게이트이며 후속 Fable 필요 | 역할별 gate owner |
 | 다중 채팅·lease | AI 부 O | Codex 사보타주 | Fable 아키텍처 | 사람 자율성 승인 |
 | Learning 승격 | lane 소유자 | Codex 재현 | 독립 route 표본 | 지정 검증자/사람 |
 | 자율성 승격 | AI 부 O 제안 | Codex 지표 | Fable 최종·보안 | 사람 |
@@ -546,7 +552,7 @@ r2가, r2 수정은 추가 유효 재검수 또는 사람에게 명시한 미종
 - 여러 채팅의 중복 작업·stale SHA·lease 충돌·인계 손실을 자동 평가한다.
 - 오케스트레이션 기획안 §8.2가 정한 현재 누적 집합 전체의 외부 교차검수 유효 2회에서 잔여 필수
   Finding 0건을 확인한다. 2026-09-02 사람 결정 이후에는 공식 Fable 경로의 회차만 센다.
-- 공식 필요한 Fable route와 exact-SHA 보호 게이트는 별도로 유지된다.
+- 모든 검수의 필수 Fable route와 exact-SHA 보호 게이트는 별도로 유지된다.
 - Fable이 모든 필수 검수에 포함되면서도 사전검수·축소 패킷·실패 폐쇄로 유효 회차당 비용을 줄인다.
 - 실제 팀 MD·채팅 route·HANDOFF와 스타터 키트가 같은 평가 fixture를 통과한다.
 
