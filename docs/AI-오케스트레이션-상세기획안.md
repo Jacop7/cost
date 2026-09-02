@@ -5,7 +5,7 @@ status: DRAFT
 authority: request_intake_task_routing
 owner: AI-DEPUTY-ORCHESTRATOR
 approver: HUMAN-CHIEF
-version: 0.1
+version: 0.2
 depends_on: [team, ontology]
 supersedes: []
 verified_by: []
@@ -14,7 +14,7 @@ review_by: 2026-10-01
 
 # MarginCook AI 오케스트레이션 상세 기획안
 
-> 버전: 0.1
+> 버전: 0.2
 > 상태: 누적 교차검수 대상 초안(`DRAFT`)
 > 작성일: 2026-09-01
 > 최종 책임자: 사람 주 오케스트레이터
@@ -78,6 +78,40 @@ review_by: 2026-10-01
 | 학습 후보기 | 반복 가능한 교훈을 CANDIDATE로 제안 | AI 부 O, 독립 검증 필요 |
 
 하나의 모델이 여러 구성요소를 수행할 수 있어도 같은 컨텍스트에서 제작과 최종 검증을 겸하지 않는다.
+
+### 2.1 채팅 계층과 실행 컨텍스트
+
+채팅 이름과 AI 역할은 서로 다른 개념이다. 채팅은 요청·상태·결정을 라우팅하고, 역할은 Task가
+요구하는 책임을 수행한다. 어느 채팅도 그 안의 대화를 공식 기억이나 승인 근거로 사용하지 않는다.
+정식 이름과 소속은 팀 구성안 §1.4가 단일 소유하며, 본 문서는 다음 실행 흐름만 소유한다.
+
+```text
+MarginCook · 마스터 작업
+├─ 00 마스터 오케스트레이션             목표·우선순위·최종 사람 결정
+├─ 01 부 오케스트레이션 · 토큰/컨텍스트 관리
+│                                      요청 정규화·Task 라우팅·컨텍스트 압력 관측
+├─ 02 통합 작업큐 · 사람 결정            Task·Decision의 공식 경로 연결
+├─ 03 개발·스테이징 배포 검증            비운영 배포 증거와 차단 상태
+└─ 04 운영 배포 · 복구 게이트            운영 Go/No-Go·복구·사후 증거
+
+MarginCook · 부서 그룹
+├─ 00 모든 팀 상황실                     공식 상태 링크만 공지
+├─ 01 Product · Mobile                   제품·앱 업무 발견과 분해
+├─ 02 Data · Backend                     DB·RPC·원장·계산 업무 발견과 분해
+├─ 03 Server · Supabase · Operations     서버·Supabase·보안·배포 업무 발견과 분해
+├─ 04 Quality · Review                   검증·감사 일정과 차단 조정
+└─ 05 Knowledge · Orchestration          문서망·작업큐·Learning·컨텍스트 관리
+```
+
+부서 채팅은 장시간 구현 공간이 아니다. 한 목표·한 Task ID·한 edit lease를 가진 임시 Task 채팅에서
+실제 작업하고, 부서 채팅과 모든 팀 상황실에는 공식 Task·Decision·HANDOFF·Release 링크만 돌려준다.
+Context & Token Steward는 `05 Knowledge · Orchestration`에 속하지만 별도
+`CONTEXT-STEWARD` 관측 컨텍스트로 모든 채팅의 압력을 본다. 이 역할은 새 채팅 전환을 제안할 뿐
+Task 범위·정책·비용 상한·검수 생략을 결정하지 않는다.
+
+마스터 흐름은 `00 마스터 오케스트레이션`에서 시작해 `04 운영 배포 · 복구 게이트`까지 이어지고,
+부서 라우팅은 `00 모든 팀 상황실`에서 `05 Knowledge · Orchestration`까지의 여섯 채팅을 사용한다.
+이 이름은 탐색 앵커일 뿐 역할 ID나 승인 권한이 아니다.
 
 ## 3. 사용자 요청 수신
 
@@ -168,7 +202,9 @@ append한다. 기존 판정 이력을 덮어쓰지 않는다.
 
 ### 4.3 재개 패킷
 
-새 채팅은 온톨로지 §6.4 순서로 복원하고 다음 최소 상태를 확보한다.
+새 채팅은 온톨로지 §6.4의 L0~L4 기억 캡슐을 순서대로 복원하고 다음 최소 상태를 확보한다. 아래
+YAML은 별도 권위 스키마가 아니라 팀 구성안 §11의 Task 필드와 온톨로지의 HANDOFF 계약을 한 번에
+검사하기 위한 실행 표현이다.
 
 ```yaml
 task_id: string
@@ -210,11 +246,21 @@ excluded_paths: []
 edit_owner: null
 owner_session_ref: null
 lease_expires_at: null
+handoff:
+  handoff_id: HANDOFF:TASK-ID:0001
+  handoff_version: 1
+  predecessor_handoff_id: null
+  source_commit_sha: git-sha
+  task_snapshot_hash: sha256-of-canonical-task-snapshot
+  successor_role_context_id: ROLE_CONTEXT:role-id:version
+  created_at: 2026-09-01T00:00:00+09:00
 ```
 
 필수 필드 집합의 단일 권위는 팀 구성안 §11이며 위 YAML은 그 표현이다. 필드가 없거나 Git 상태와
 다르면 `환경 미검증`이며 이어서 수정하지 않는다. 읽기 전용 대조로 상태를
 복구하고, 정책 충돌 또는 사용자 변경 겹침만 사람에게 올린다.
+HANDOFF 검사는 `handoff_version`, `predecessor_handoff_id`, `task_snapshot_hash`, source commit,
+successor role context를 모두 대조하며 하나라도 없으면 실행 패킷으로 인정하지 않는다.
 
 ### 4.4 동시 작업 잠금
 
@@ -234,6 +280,31 @@ lease_expires_at: null
 - 다른 채팅의 lease가 유효하면 새 채팅은 수정하지 않고 상태·인계 요청만 남긴다.
 - 전용 lease 명령 구현 전에는 Task에 미리 지정된 한 `edit_owner`만 편집하며, `null`을 자동으로
   차지하거나 만료 lease를 자동 인수하지 않는다.
+
+### 4.5 현재 채팅 체크포인트와 새 채팅 전환
+
+현재 채팅의 효율은 원문을 오래 유지하는 것으로 판단하지 않는다. 다음 중 하나가 관측되면 Context &
+Token Steward가 `CONTEXT_ROLLOVER_REQUIRED` 신호를 남긴다.
+
+- 같은 사실·경로·결정을 반복해서 다시 읽는다.
+- 요약·도구 출력이 직접 권위보다 커져 현재 목표나 제외 경로를 놓칠 위험이 있다.
+- 독립된 다음 Task 또는 위험 단계로 넘어간다.
+- 모델·실행기·비용 envelope를 바꾸어야 한다.
+- 현재 채팅의 남은 컨텍스트가 다음 검증과 안전한 인계 둘을 모두 담기 어렵다.
+
+이 신호만으로 채팅을 바꾸지 않는다. AI 부 오케스트레이터는 먼저 현재 저장소·Task·lease를 대조하고
+`CHECKPOINT_REQUIRED`를 거쳐 다음을 수행한다.
+
+1. 완료된 결과와 미완료 결과를 분리하고 exact SHA·실행 증거를 기록한다.
+2. 사용자 소유 변경·미추적 제외 경로를 다시 봉인한다.
+3. `request_dispositions[]`, 열린 Finding·Decision, `next_safe_action`, stop condition을 최신화한다.
+4. 현재 Task canonical snapshot hash와 source commit SHA를 가진 새 HANDOFF를 append한다.
+5. predecessor보다 단조 증가한 `handoff_version`과 successor role context를 검증한다.
+6. 새 Task 채팅이 L0~L4를 복원해 같은 다음 행동을 산출한 뒤에만 edit lease를 인계한다.
+
+동일·낮은 HANDOFF 판본, source SHA 불일치, 누락된 제외 경로, 열린 편집 lease가 하나라도 있으면
+`HANDOFF_READY`로 전이하지 않는다. 이전 채팅 원문은 감사 원본도 공식 기억도 아니며, 필요한 비식별
+conversation reference만 L4 조건부 증거로 남긴다.
 
 ## 5. Task Graph
 
@@ -318,6 +389,11 @@ Opus 결과를 Fable 결과라고 표시하지 않는다. 독립 감사 칸은 `
 
 긴 문서 전체를 무조건 넣지 않는다. 다만 선택된 권위 문서의 일부만 읽어 결론을 왜곡하지 않도록,
 문서 단위 선택 후 전체 파일을 읽거나 명시된 절과 의존 절을 함께 제공한다.
+
+컨텍스트 조립기는 파일 수나 토큰 수 자체를 목표로 삼지 않는다. 각 입력에 `왜 필요한가`, `어떤
+권위를 제공하는가`, `어느 완료 조건을 검증하는가`를 연결하고, 같은 사실을 복제한 비권위 요약은
+제거한다. Context & Token Steward가 측정값과 rollover 신호를 제공하고 AI 부 오케스트레이터가
+Task 결과·위험·독립성에 맞춰 최종 입력 manifest를 정한다.
 
 ### 7.3 금지 입력
 
@@ -432,6 +508,12 @@ turn hash와 회차별 센트 올림 누적액을 인용해야 한다. 해당 �
 - 동일 실패를 같은 입력으로 무한 재시도하지 않는다.
 - 작업 전체 사용량과 실패 사용량도 기록한다.
 - 비용 절감을 위해 필수 역할을 생략하지 않고, 불필요한 중복 역할과 무관 컨텍스트를 줄인다.
+- 외부 실행 실패 뒤에는 같은 큰 입력으로 상한만 올려 재호출하지 않는다. 먼저 로컬 runner·인증을
+  self-test하고, 입력 manifest를 측정한 뒤 의미 축을 분리한다.
+- 의미 축을 나누더라도 검수 대상 공식 문서는 모두 artifact로 유지한다. 큰 구현·원시 로그만 hash와
+  판별력 있는 compact evidence로 대체하며, 감사자가 필요하면 원본을 요청할 수 있게 경로를 남긴다.
+- 외부 비용 envelope의 잔여가 유효 회차 하나를 끝낼 만큼 충분하지 않으면 호출하지 않는다. 실패
+  비용도 누적하고, 사람 승인 없는 상한 증액이나 다른 엔진으로의 위장 대체를 하지 않는다.
 
 ## 10. 게이트와 종결
 
@@ -521,10 +603,23 @@ turn hash와 회차별 센트 올림 누적액을 인용해야 한다. 해당 �
 - 역할·컨텍스트 조합을 champion/challenger로 비교한다.
 - 검증된 성과에 따라 제한된 자율성만 단계적으로 확대한다.
 
+### 단계 5 — 실제 채팅·디렉터리와 스타터 키트
+
+- 네 DRAFT 기획안의 유효 누적 외부 교차검수와 사람 `ACTIVE` Decision을 먼저 완료한다.
+- 팀별 역할 MD·HANDOFF·Release·Learning 장부와 채팅 그룹은 디렉터리 기획안의 preflight 뒤 한 번에
+  materialize한다. 계획 문서가 DRAFT인 동안 빈 권위 파일이나 사이드바 채팅을 미리 만들지 않는다.
+- 첫 실제 Task에서 상황실→부서 그룹→임시 Task 채팅→HANDOFF→Release 흐름을 관측한다.
+- 검증된 구조를 `AI-TEAM-STARTER-KIT-1`의 v0.1~v1.0 단계에 반영하고, 새 저장소가 제품 고유 경로를
+  갖지 않아도 부트스트랩 가능한 fresh-repo fixture로 검증한다.
+
 ## 13. 완료 조건
 
 - 여러 채팅의 같은 요청이 하나의 Task와 명시적 상태로 합쳐진다.
 - 새 채팅이 대화 기억 없이 저장소 증거로 안전하게 재개한다.
+- 마스터 5개 채팅·부서 6개 채팅·임시 Task 채팅이 같은 Task와 권위 링크를 공유하고 경쟁 장부를
+  만들지 않는다.
+- Context & Token Steward의 전환 신호가 정책·비용·검수 권한으로 확대되지 않는다.
+- 새 채팅은 검증된 HANDOFF의 더 높은 판본을 복원한 뒤에만 edit lease를 인수한다.
 - 사용자 요청을 담당 역할이 임의로 재정의하지 않는다.
 - 중요한 미결 선택은 사람에게 한 번의 결정 패킷으로 올라간다.
 - 같은 파일·DB 계약을 여러 역할이 동시에 수정하지 않는다.
@@ -542,5 +637,6 @@ turn hash와 회차별 센트 올림 누적액을 인용해야 한다. 해당 �
 - 저위험 R0·R1 위험 등급 표본 재판정 비율
 - 여러 Codex 채팅의 비식별 conversation reference 생성 방식
 - 오케스트레이션 사건의 최소 관측 스키마
+- 컨텍스트 압력의 기준선과 `CONTEXT_ROLLOVER_REQUIRED` 권고 임계
 
 이 결정은 디렉터리·문서 신경망안과 품질·학습·자율성 평가안을 추가한 누적 검수 뒤 확정한다.

@@ -67,6 +67,14 @@ const REQUIRED_CLAUSES = Object.freeze({
     /## 4\. 여러 채팅과 작업 연속성/,
     /## 5\. Task Graph/,
     /request_dispositions\[\].*전용 append/,
+    /00 마스터 오케스트레이션.*04 운영 배포 · 복구 게이트/s,
+    /00 모든 팀 상황실.*05 Knowledge · Orchestration/s,
+    /부서 채팅은 장시간 구현 공간이 아니다/,
+    /CONTEXT_ROLLOVER_REQUIRED.*CHECKPOINT_REQUIRED.*HANDOFF_READY/s,
+    /handoff_version.*predecessor_handoff_id.*task_snapshot_hash/s,
+    /동일·낮은 HANDOFF 판본.*HANDOFF_READY/s,
+    /외부 실행 실패 뒤에는 같은 큰 입력으로 상한만 올려 재호출하지 않는다/,
+    /큰 구현·원시 로그만 hash와.*compact evidence/s,
     /## 8\. 제작·검증·감사 루프/,
     /RUN_FAILED/,
   ],
@@ -82,6 +90,11 @@ const REQUIRED_CLAUSES = Object.freeze({
     /NORMALIZED_REQUEST ─ROUTES_TO→ TASK/,
     /SOURCE ─IMPLEMENTS→ DECISION/,
     /LEARNING ─APPLIES_TO→ 허용 route/,
+    /docs\/team\/handoffs\/<TASK-ID>\/\*\.md/,
+    /00 모든 팀 상황실.*구현 지시·원문·결정 복제/s,
+    /HANDOFF 파일 이름은.*source-short-sha/s,
+    /HANDOFF의 단조 판본.*source SHA 일치/s,
+    /단계 7 — 재사용 스타터 키트/,
   ],
   quality: [
     /## 4\. 평가 스위트/,
@@ -91,6 +104,10 @@ const REQUIRED_CLAUSES = Object.freeze({
     /즉시 한 단계 내린다/,
     /## 13\. 사보타주 목록/,
     /RUN_FAILED/,
+    /Context & Token Steward 자체도 평가 대상/,
+    /모든 필수 검수 route는 Fable을 포함한다/,
+    /Fable 필수 route를 비용 절감 이유로 Codex-only 완료 처리/,
+    /단계 6 — 스타터 키트 이식 평가/,
   ],
 });
 
@@ -472,6 +489,9 @@ export function createSimulationState() {
     requestInputs: {},
     normalizedRequests: {},
     tasks: {},
+    contextRolloverSignals: {},
+    handoffs: {},
+    restoredHandoffs: {},
     decisions: {},
     planStatus: {
       team: 'CONFIRMED', ontology: 'DRAFT', orchestration: 'DRAFT', directory: 'DRAFT', quality: 'DRAFT',
@@ -966,6 +986,14 @@ export function renewOrTransferLease(state, actor, taskId, { ttl = 5, handoffDec
     || decision.targetSha !== task.lastVerifiedSha)) {
     fail('HANDOFF_REQUIRED', taskId);
   }
+  const latestHandoff = state.handoffs[taskId]?.at(-1);
+  if (needsHandoff && latestHandoff) {
+    const restored = state.restoredHandoffs[`${actor}:${taskId}`];
+    if (!restored || restored.handoffId !== latestHandoff.handoffId
+      || restored.version !== latestHandoff.version) {
+      fail('HANDOFF_NOT_RESTORED', taskId);
+    }
+  }
   const conflict = Object.values(state.tasks).find((other) => (
     other.taskId !== taskId && other.currentState !== 'DONE'
     && other.artifactPaths.some((path) => task.artifactPaths.some((candidate) => artifactOverlaps(path, candidate)))
@@ -982,6 +1010,99 @@ export function renewOrTransferLease(state, actor, taskId, { ttl = 5, handoffDec
     });
   }
   appendAudit(state, { type: 'LEASE', actor, taskId, expires: task.leaseExpiresAt, handoffDecisionId });
+}
+
+function handoffSnapshot(task) {
+  return {
+    taskId: task.taskId,
+    currentState: task.currentState,
+    objective: task.objective,
+    inScope: task.inScope,
+    outOfScope: task.outOfScope,
+    acceptanceCriteria: task.acceptanceCriteria,
+    requestDispositions: task.requestDispositions,
+    lastVerifiedSha: task.lastVerifiedSha,
+    fixedDecisions: task.fixedDecisions,
+    openDecisions: task.openDecisions,
+    openFindings: task.openFindings,
+    nextSafeAction: task.nextSafeAction,
+    stopConditions: task.stopConditions,
+    userOwnedChanges: task.userOwnedChanges,
+    excludedPaths: task.excludedPaths,
+    editOwner: task.editOwner,
+    ownerSessionRef: task.ownerSessionRef,
+    leaseExpiresAt: task.leaseExpiresAt,
+    contractVersion: task.contractVersion,
+    contractSha256: task.contractSha256,
+  };
+}
+
+export function signalContextRollover(state, {
+  taskId, stewardRole, reasons, observedAt, requestedSuccessorRoleContextId,
+}) {
+  taskOf(state, taskId);
+  if (stewardRole !== 'CONTEXT-STEWARD' || !Array.isArray(reasons) || reasons.length === 0
+    || reasons.some((reason) => !String(reason).trim())
+    || !requestedSuccessorRoleContextId?.startsWith('ROLE_CONTEXT:')) {
+    fail('ROLLOVER_SIGNAL_INVALID', taskId);
+  }
+  const signal = {
+    taskId, stewardRole, reasons: clone(reasons), observedAt,
+    requestedSuccessorRoleContextId, authorityGranted: false,
+  };
+  state.contextRolloverSignals[taskId] = signal;
+  appendAudit(state, { type: 'CONTEXT_ROLLOVER_REQUIRED', ...signal });
+  return clone(signal);
+}
+
+export function checkpointTaskHandoff(state, actor, taskId, {
+  sourceCommitSha, successorRoleContextId, createdAt,
+}) {
+  assertQueueTaskLock(state, actor, taskId);
+  const task = taskOf(state, taskId);
+  assertLeaseMatchesAudit(state, task);
+  const signal = state.contextRolloverSignals[taskId];
+  if (!signal || signal.authorityGranted !== false) fail('ROLLOVER_SIGNAL_REQUIRED', taskId);
+  if (task.editOwner !== actor || task.ownerSessionRef !== `session:${actor}`
+    || task.leaseExpiresAt <= state.clock) fail('STALE_WRITER', actor);
+  if (!/^[0-9a-f]{40}$/.test(sourceCommitSha ?? '') || sourceCommitSha !== task.lastVerifiedSha) {
+    fail('HANDOFF_SOURCE_SHA_MISMATCH', taskId);
+  }
+  if (successorRoleContextId !== signal.requestedSuccessorRoleContextId) {
+    fail('HANDOFF_ROLE_CONTEXT_MISMATCH', taskId);
+  }
+  const chain = state.handoffs[taskId] ?? [];
+  const predecessor = chain.at(-1) ?? null;
+  const version = (predecessor?.version ?? 0) + 1;
+  const snapshotSha256 = sha(JSON.stringify(handoffSnapshot(task)));
+  const handoff = {
+    handoffId: `HANDOFF:${taskId}:${String(version).padStart(4, '0')}`,
+    taskId, version, predecessorHandoffId: predecessor?.handoffId ?? null,
+    sourceCommitSha, taskSnapshotSha256: snapshotSha256,
+    successorRoleContextId, createdAt, createdBy: actor, status: 'HANDOFF_READY',
+  };
+  state.handoffs[taskId] = [...chain, handoff];
+  appendAudit(state, { type: 'HANDOFF_READY', ...handoff });
+  return clone(handoff);
+}
+
+export function restoreTaskHandoff(state, actor, taskId, handoff) {
+  const task = taskOf(state, taskId);
+  const chain = state.handoffs[taskId] ?? [];
+  const latest = chain.at(-1);
+  if (!latest || handoff?.handoffId !== latest.handoffId || handoff.version !== latest.version) {
+    fail('HANDOFF_STALE_VERSION', taskId);
+  }
+  if (handoff.sourceCommitSha !== task.lastVerifiedSha
+    || handoff.taskSnapshotSha256 !== sha(JSON.stringify(handoffSnapshot(task)))) {
+    fail('HANDOFF_SNAPSHOT_MISMATCH', taskId);
+  }
+  const key = `${actor}:${taskId}`;
+  const previous = state.restoredHandoffs[key];
+  if (previous && handoff.version <= previous.version) fail('HANDOFF_STALE_VERSION', taskId);
+  state.restoredHandoffs[key] = { handoffId: handoff.handoffId, version: handoff.version };
+  appendAudit(state, { type: 'HANDOFF_RESTORED', actor, taskId, handoffId: handoff.handoffId, version: handoff.version });
+  return true;
 }
 
 export function appendCollaboration(state, actor, taskId, turnType) {
@@ -1689,6 +1810,20 @@ export function validateTrace(state) {
     'Task registry와 감사 사건 수가 어긋났습니다.');
   for (const entry of registeredTasks) {
     assert.ok(state.tasks[entry.taskId], `감사 원본의 Task가 registry에서 삭제됐습니다: ${entry.taskId}`);
+  }
+  for (const [taskId, signal] of Object.entries(state.contextRolloverSignals)) {
+    assert.equal(signal.authorityGranted, false, `rollover 신호가 권한으로 확대됐습니다: ${taskId}`);
+    assert.ok(hasExactAuditRecord(state, 'CONTEXT_ROLLOVER_REQUIRED', 'taskId', taskId, signal),
+      `rollover 신호 감사 사건 누락·변조: ${taskId}`);
+  }
+  for (const [taskId, chain] of Object.entries(state.handoffs)) {
+    chain.forEach((handoff, index) => {
+      assert.equal(handoff.version, index + 1, `HANDOFF 판본이 단조 증가하지 않습니다: ${taskId}`);
+      assert.equal(handoff.predecessorHandoffId, index ? chain[index - 1].handoffId : null,
+        `HANDOFF predecessor chain이 끊겼습니다: ${taskId}:${handoff.version}`);
+      assert.ok(hasExactAuditRecord(state, 'HANDOFF_READY', 'handoffId', handoff.handoffId, handoff),
+        `HANDOFF 감사 사건 누락·변조: ${handoff.handoffId}`);
+    });
   }
   for (const reviewTask of Object.values(state.reviewTasks)) {
     assert.ok(hasExactAuditRecord(state, 'REVIEW_TASK_REGISTERED', 'reviewTaskId', reviewTask.reviewTaskId, reviewTask),
