@@ -173,3 +173,21 @@ Knowledge Orbit Graph 방향성 패킷의 전체 구조는 건전하다. 채팅�
 - successor_task_id: `AI-TEAM-KNOWLEDGE-ORBIT-PREPLAN-002`
 - successor_target_commit_sha: `21a368b0da12acbb1c1534f8df8a2163a54ee98a`
 - next_review_request: `FABLE_RECHECK`
+
+## BACKLOG_DISPOSITION · turn-o002 · r001
+
+- role: `AI-DEPUTY-ORCHESTRATOR`
+- item: `AI-TEAM-KNOWLEDGE-ORBIT-PREPLAN-002 successor handoff`
+- disposition: `REJECTED`
+- reason: predecessor가 `WORKING_TREE_HASHED` snapshot이라 COMMIT successor의 동일 snapshot 검수 경로 조건을 만족하지 못했다. Fable 호출 전에 exit 75로 실패 폐쇄됐고 모델 실행·비용·review 산출물은 없었다.
+- preservation: 이미 append된 turn-o001과 handoff-only source commit은 실패 시도 감사 이력으로 보존한다. successor Task 파일은 실행 이력 생성 전이므로 공식 Task로 물질화하지 않는다.
+- next_review_request: `FABLE_RECHECK_SAME_TASK_R002`
+
+## BACKLOG_DISPOSITION · turn-o003 · r001
+
+- role: `AI-DEPUTY-ORCHESTRATOR`
+- item: `AI-TEAM-KNOWLEDGE-ORBIT-PREPLAN-001 r002 recheck`
+- disposition: `REJECTED`
+- reason: predecessor는 `WORKING_TREE_HASHED`이며 현재 HEAD가 불변 target commit과 달라 같은 Task r002도 모델 호출 전에 exit 75로 실패 폐쇄됐다. 비용·review 산출물은 없다.
+- preservation: r001 Finding과 모든 응답·증거·실패한 successor handoff 기록은 그대로 보존한다. 수정 commit은 별도 독립 COMMIT 감사가 전체 패킷과 r001 지적 해소 여부를 새로 판정한다.
+- next_review_request: `FABLE_INITIAL_INDEPENDENT_AUDIT`

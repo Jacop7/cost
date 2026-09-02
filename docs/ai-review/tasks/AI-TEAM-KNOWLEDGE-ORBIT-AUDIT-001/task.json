@@ -1,0 +1,76 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-TEAM-KNOWLEDGE-ORBIT-AUDIT-001",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R1",
+  "author_role": "SOLAR-ORCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "933262b1f193d1b4cacbb7c2fb08564592cdf419",
+  "target_commit_sha": "21a368b0da12acbb1c1534f8df8a2163a54ee98a",
+  "target_tree_oid": "5768ae8e9350e86f82c180b9247a72facac9599f",
+  "agents_blob_oid": "4c31bbf9be81871c4dfb1699e057c8303d4e2fae",
+  "agents_sha256": "5628177d442547e868acc3e0446e6513b65bf713f2cfd82cc78e0e6dedc4c860",
+  "requirements": [
+    "수정된 Knowledge Orbit Graph 결정 패킷이 기존 다섯 기획안을 대체하는 여섯 번째 공식본이 아닌지 전체 문서 기준으로 독립 감사한다.",
+    "기존 docs/team 권위와 생성 view, canonical HANDOFF 필드, 온톨로지 node·edge 후보의 경계가 단일 권위를 지키는지 검증한다.",
+    "Quality 증거·판정과 사람 Go/No-Go, 상설 조정 채팅과 회차별 클린 검수 컨텍스트가 분리되는지 검증한다.",
+    "상태·신호·lease 오류 코드, 다섯 팀 그룹·기존 역할·Context & Token Steward의 권한과 이름이 충돌하지 않는지 검증한다.",
+    "파일럿 지표에 출처·계산식·초기 실패 후보가 있고 §17의 다섯 문서 변경 설계가 실제 개정 순서로 이어지는지 검증한다.",
+    "이전 Fable r001의 7개 지적을 증거로 대조하되 formal predecessor 승계나 CLOSED를 주장하지 않고 현재 commit의 새 필수 Finding을 판정한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:single-canonical-artifact",
+    "AGENTS:fable-append-only-ledger",
+    "AGENTS:authoritative-root",
+    "AI-ORCH:multi-chat-repository-authority",
+    "AI-ORCH:token-context-budget",
+    "AI-QUALITY:independent-review",
+    "AI-KNOWLEDGE:typed-provenance"
+  ],
+  "artifact_paths": [
+    "docs/ai-review/evidence/AI-TEAM-KNOWLEDGE-ORBIT-PREPLAN.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/팀구성_상세기획안.md",
+    "docs/AI-지식-온톨로지-기획안.md",
+    "docs/AI-오케스트레이션-상세기획안.md",
+    "docs/디렉터리-문서신경망-재설계-기획안.md",
+    "docs/AI-품질-학습-자율성-평가기획안.md",
+    "docs/ai-review/README.md",
+    "docs/작업큐.md"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/tasks/AI-TEAM-KNOWLEDGE-ORBIT-PREPLAN-001/collaboration.md",
+    "docs/ai-review/tasks/AI-TEAM-KNOWLEDGE-ORBIT-PREPLAN-001/rounds/r001/review.md",
+    "docs/ai-review/tasks/AI-TEAM-KNOWLEDGE-ORBIT-PREPLAN-001/rounds/r001/review.json",
+    "scripts/ai-plan-network-simulation.test.mjs"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "패킷 §7·§8·§10·§12·§17과 기존 다섯 공식 기획안의 실제 절 대조",
+    "이전 r001 7개 지적 각각의 현재 해소 여부와 새 Finding 분리",
+    "문서 네트워크 시뮬레이션 59/59 및 구현 전 실패 폐쇄 조건 대조",
+    "target commit·tree·AGENTS hash 검증"
+  ],
+  "human_decisions": [
+    "2026-09-02 사용자가 Fable 지적을 반영한 권장 방향으로 진행하도록 승인했다.",
+    "2026-09-02 사용자가 다섯 공식 기획안 변경 설계와 Fable 재검토를 승인했다.",
+    "formal successor와 원 Task r002가 snapshot 불변식으로 모델 호출 전에 실패해 수정 commit 독립 감사를 사용하며, 이전 Finding의 CLOSED를 주장하지 않는다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "4.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}
