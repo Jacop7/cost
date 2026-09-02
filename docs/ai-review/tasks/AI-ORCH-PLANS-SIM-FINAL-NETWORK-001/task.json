@@ -13,7 +13,7 @@
   "target_commit_sha": "c1b595f74f2fc7824b480bf8457e3026c0f1d6dc",
   "target_tree_oid": "1c4bfab16cf633d4b2106df0b58f488929d1508c",
   "agents_blob_oid": "4c31bbf9be81871c4dfb1699e057c8303d4e2fae",
-  "agents_sha256": "f04aeb2f02d254eeff8e27014d57470214770c5be9fcf35a3d39033acfd0dd75",
+  "agents_sha256": "5628177d442547e868acc3e0446e6513b65bf713f2cfd82cc78e0e6dedc4c860",
   "requirements": [
     "다섯 기획안이 각자 단일 권위를 유지하면서 탐색 그래프는 강연결이고 권위 의존 그래프는 비순환이다.",
     "역할별 MD·팀 지식·작업큐·검수 증거가 경쟁 공식본을 만들지 않고 한 문서 신경망으로 이어진다.",

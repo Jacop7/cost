@@ -13,7 +13,7 @@
   "target_commit_sha": "c1b595f74f2fc7824b480bf8457e3026c0f1d6dc",
   "target_tree_oid": "1c4bfab16cf633d4b2106df0b58f488929d1508c",
   "agents_blob_oid": "4c31bbf9be81871c4dfb1699e057c8303d4e2fae",
-  "agents_sha256": "f04aeb2f02d254eeff8e27014d57470214770c5be9fcf35a3d39033acfd0dd75",
+  "agents_sha256": "5628177d442547e868acc3e0446e6513b65bf713f2cfd82cc78e0e6dedc4c860",
   "requirements": [
     "다중 채팅의 사용자 요청이 원 요청·정규화 요청·Task 계약에 결속되고 한 소유자와 lease를 통해 처리된다.",
     "정상·오류·장기 방치·운영 민감 업무가 요청부터 검수·사람 결정·학습까지 폐쇄된 상태 전이를 가진다.",
