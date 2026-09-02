@@ -1,0 +1,72 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-SIM-FINAL-NETWORK-004",
+  "route": "FINAL_INDEPENDENT",
+  "risk_level": "R1",
+  "author_role": "AI-DEPUTY-ORCHESTRATOR",
+  "reviewer_role": "FABLE-FINAL",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "FINAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "c1b595f74f2fc7824b480bf8457e3026c0f1d6dc",
+  "target_commit_sha": "b4f79a6e9e3bfc830b4686a7b6ab861a37b26cf3",
+  "target_tree_oid": "8afcb562aa8669c50b60e5d1a7c1adb3c6679903",
+  "agents_blob_oid": "4c31bbf9be81871c4dfb1699e057c8303d4e2fae",
+  "agents_sha256": "5628177d442547e868acc3e0446e6513b65bf713f2cfd82cc78e0e6dedc4c860",
+  "requirements": [
+    "다섯 기획안이 각자 단일 권위를 유지하면서 탐색 그래프는 강연결이고 권위 의존 그래프는 비순환이다.",
+    "역할별 MD·팀 지식·작업큐·검수 증거가 경쟁 공식본을 만들지 않고 한 문서 신경망으로 이어진다.",
+    "DRAFT 수명주기·supersedes·activation·retirement와 실제 디렉터리 물질화가 별도 사람 결정에 결속된다."
+  ],
+  "invariant_ids": [
+    "AGENTS:single-canonical-artifact",
+    "AI-ONTOLOGY:authority-dag",
+    "AI-DOC-NETWORK:strong-navigation-connectivity",
+    "AI-LIFECYCLE:draft-before-human-activation"
+  ],
+  "artifact_paths": [
+    "docs/팀구성_상세기획안.md",
+    "docs/AI-지식-온톨로지-기획안.md",
+    "docs/AI-오케스트레이션-상세기획안.md",
+    "docs/디렉터리-문서신경망-재설계-기획안.md",
+    "docs/AI-품질-학습-자율성-평가기획안.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/ai-review/README.md"
+  ],
+  "evidence_paths": [
+    "docs/작업큐.md",
+    "docs/ai-review/simulations/AI-PLANS-WORKFLOW-001.md",
+    "docs/ai-review/evidence/AI-PLANS-SIM-CODEX-R1.md",
+    "docs/ai-review/evidence/AI-PLANS-SIM-CODEX-ULTRA-R1.md",
+    "docs/ai-review/evidence/AI-PLANS-SIM-CODEX-ULTRA-R2.md",
+    "docs/ai-review/evidence/AI-PLANS-SIM-CODEX-ULTRA-R3.md",
+    "docs/ai-review/evidence/AI-PLANS-SIM-CODEX-ULTRA-R4.md",
+    "scripts/ai-plan-network-simulation.mjs",
+    "scripts/ai-plan-network-simulation.test.mjs"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "다섯 문서 front matter·본문 링크·중앙 권위 표·depends_on·supersedes 상호 대조",
+    "강연결 탐색 그래프와 비순환 권위 DAG를 깨뜨린 적대 시험의 실제 적중",
+    "CRLF와 LF 입력이 같은 git byte manifest를 만드는 b4f79a6 구현과 exact-commit 59/59",
+    "R1·Ultra R1~R4 및 exact-SHA 보호 검증을 포함한 독립 network closure 감사"
+  ],
+  "human_decisions": [
+    "2026-09-02 사용자가 워크플로 감사가 유효한 뒤 신규 독립 Fable 네트워크 감사 1회에 최대 4달러 사용을 승인했다.",
+    "다섯 문서의 ACTIVE 전환과 실제 디렉터리 재설계는 사람 최종 승인 전에는 금지된다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": "다섯 기획안을 하나의 문서·권위 네트워크로 처음부터 독립 감사하라. 이전 review 결론이나 Finding ID를 상속·재사용하지 말고, 결함은 이번 감사의 새 Finding ID로 발급하라. 각 문서의 단일 권위와 책임 중복, Markdown 왕복 링크, 권위 DAG, 역할 MD와 Task·Decision·Finding·Evidence·Learning 저장 위치를 실제 파일과 시뮬레이터에서 대조하라. R1·Ultra R1~R4는 증거로만 읽고 workflow 감사 결론을 재사용하지 마라. metadata·수명주기·supersedes·activation과 실제 디렉터리 미생성 경계를 확인하고 가상 증거를 보호 원격 증거로 승격하거나 DRAFT 문서를 ACTIVE로 간주하지 마라.",
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "4.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}
