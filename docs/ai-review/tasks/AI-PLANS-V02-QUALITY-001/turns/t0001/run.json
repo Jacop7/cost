@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-PLANS-V02-QUALITY-001",
+  "sequence": "t0001",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-02T09:27:46.870Z",
+  "turn_id": "turn-s001",
+  "turn_type": "SOLAR_REQUEST",
+  "role": "SOLAR-AI-DEPUTY",
+  "task_sha256": "01b6a756d52a6b4c803cdd9e46b473572a58d13ef4beb190b574cf2591acd06a",
+  "runner_sha256": "80dae1d06c89af056e9d8c210b571e978ee534fc128a5fe3b9867610b5ae447b",
+  "previous_manual_run_sha256": null,
+  "collaboration_before_sha256": "2db58894e8f38f0b2498aaa237ba04ff68acb9e4bf0c3c86144e6c50b749764c",
+  "collaboration_before_bytes": 235,
+  "collaboration_entry_sha256": "67d9dc156e74c12f50baeb4c9ee8d2077e33b9b999bffdeee561baca6343590a",
+  "collaboration_entry_bytes": 1072,
+  "collaboration_after_sha256": "b0d1d92e8859d8c6fca3657cb555b9a5a8a598f02acafddc87237dc69741e02e",
+  "collaboration_after_bytes": 1307
+}

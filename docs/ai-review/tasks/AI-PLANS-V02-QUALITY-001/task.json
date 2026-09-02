@@ -1,0 +1,71 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-PLANS-V02-QUALITY-001",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R1",
+  "author_role": "SOLAR-AI-DEPUTY",
+  "reviewer_role": "FABLE-STRATEGY",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "b91ce56d0e41319e48bd45644cec4bd972deaff3",
+  "target_commit_sha": "77bcda26057f3b5ec037826bc338899ef621ab4c",
+  "target_tree_oid": "66d3504bad3cc956afb0874877dca2e3092e919d",
+  "agents_blob_oid": "4c31bbf9be81871c4dfb1699e057c8303d4e2fae",
+  "agents_sha256": "5628177d442547e868acc3e0446e6513b65bf713f2cfd82cc78e0e6dedc4c860",
+  "requirements": [
+    "평가 사건 완전성·지표 분모·Learning 독립 검증·champion/hold-out 계약이 자기평가와 후행 삭제를 막는지 검증한다.",
+    "자율성 승격·강등이 route·표본·사람 Decision에 결속되고 보안·데이터 경계 사고에서 A0로 실패 폐쇄하는지 검증한다.",
+    "모든 검수의 Fable 필수 원칙과 문서별 축소·최종 네트워크 hash 결속이 비용 절감을 검수 생략으로 바꾸지 않는지 검증한다.",
+    "축소 증거의 다른 네 문서 계약과 충돌하는 Critical·Major 반례만 최대 3개로 합쳐 보고한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:single-canonical-artifact",
+    "AGENTS:fable-required-review",
+    "AI-QUALITY:learning-independent-verification",
+    "AI-QUALITY:autonomy-fail-closed"
+  ],
+  "artifact_paths": [
+    "docs/AI-품질-학습-자율성-평가기획안.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/evidence/AI-PLANS-V02-FABLE-COMPACT-EVIDENCE.md"
+  ],
+  "excluded_paths": [
+    "docs/팀구성_상세기획안.md",
+    "docs/AI-지식-온톨로지-기획안.md",
+    "docs/AI-오케스트레이션-상세기획안.md",
+    "docs/디렉터리-문서신경망-재설계-기획안.md",
+    "scripts/ai-plan-network-simulation.mjs",
+    "scripts/ai-plan-network-simulation.test.mjs",
+    "apps/mobile/**",
+    "scripts/prototype_server.py",
+    "docs/prototypes/**"
+  ],
+  "required_evidence": [
+    "평가 §3·§4·§6·§7·§8·§10·§13의 완전성·독립성·비용·권한 계약 직접 대조",
+    "compact evidence의 70/70 fixture와 다른 네 문서 상호작용 축 확인",
+    "target commit·tree·AGENTS hash 확인",
+    "잔여 Critical·Major 또는 명세상 필수 Finding 목록"
+  ],
+  "human_decisions": [
+    "2026-09-02 사용자는 모든 검수에 Fable을 필수로 사용하되 실제 사용량을 최소화하도록 지시했다.",
+    "승계 fallback과 직접 Opus 자문은 후속 Fable 전에는 검수 완료로 세지 않는다.",
+    "유효 Fable 결과 전에는 DRAFT를 ACTIVE로 바꾸지 않는다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "2.50",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}
