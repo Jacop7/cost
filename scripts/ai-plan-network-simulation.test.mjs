@@ -1283,16 +1283,55 @@ test('최초 활성화 뒤 권위별 수명주기는 독립적이고 supersedes�
 
   const replacement = structuredClone(active);
   replacement.ontology = replacement.ontology
-    .replace('version: 0.1', 'version: 0.2')
-    .replace('supersedes: []', 'supersedes: [ontology@0.1]');
-  assert.deepEqual(validateDocumentNetwork(replacement).planMetadata.ontology.supersedes, ['ontology@0.1']);
+    .replace('version: 0.2', 'version: 0.3')
+    .replace('supersedes: []', 'supersedes: [ontology@0.2]');
+  assert.deepEqual(validateDocumentNetwork(replacement).planMetadata.ontology.supersedes, ['ontology@0.2']);
 
   const crossAuthority = structuredClone(active);
   crossAuthority.ontology = crossAuthority.ontology.replace('supersedes: []', 'supersedes: [orchestration@0.1]');
   assert.throws(() => validateDocumentNetwork(crossAuthority), /같은 권위/);
   const selfVersion = structuredClone(active);
-  selfVersion.ontology = selfVersion.ontology.replace('supersedes: []', 'supersedes: [ontology@0.1]');
+  selfVersion.ontology = selfVersion.ontology.replace('supersedes: []', 'supersedes: [ontology@0.2]');
   assert.throws(() => validateDocumentNetwork(selfVersion), /현재 판본/);
+});
+
+test('온톨로지 node·edge registry는 HANDOFF 맥락을 포함하고 중복 TOUCHES를 거부한다', () => {
+  const docs = loadPlanDocuments();
+  assert.doesNotThrow(() => validateDocumentNetwork(docs));
+
+  const missingHandoff = loadPlanDocuments();
+  missingHandoff.ontology = missingHandoff.ontology.replace(/^\| `HANDOFF` \|.*\r?\n/m, '');
+  assert.throws(() => validateDocumentNetwork(missingHandoff), /ontology 필수 계약 누락/);
+
+  const missingRoleContext = loadPlanDocuments();
+  missingRoleContext.ontology = missingRoleContext.ontology.replace(/^\| `ROLE_CONTEXT` \|.*\r?\n/m, '');
+  assert.throws(() => validateDocumentNetwork(missingRoleContext), /ontology 필수 계약 누락/);
+
+  const inventedTouches = loadPlanDocuments();
+  inventedTouches.ontology = inventedTouches.ontology.replace(
+    '| `HANDOFF_TO` | 같은 Task의 predecessor snapshot을 successor Task·역할 컨텍스트로 연결 | Handoff HANDOFF_TO Role Context |',
+    '| `HANDOFF_TO` | 같은 Task의 predecessor snapshot을 successor Task·역할 컨텍스트로 연결 | Handoff HANDOFF_TO Role Context |\n| `TOUCHES` | 접촉 범위 | Task TOUCHES Source |',
+  );
+  assert.throws(() => validateDocumentNetwork(inventedTouches), /중복 TOUCHES 관계/);
+});
+
+test('새 채팅 복원은 L0~L4 순서와 동일·낮은 HANDOFF 판본 거부를 함께 보존한다', () => {
+  const docs = loadPlanDocuments();
+  assert.doesNotThrow(() => validateDocumentNetwork(docs));
+
+  const reordered = loadPlanDocuments();
+  reordered.ontology = reordered.ontology
+    .replace('**L1 — 현재 실행점:**', '**TEMP — 현재 실행점:**')
+    .replace('**L2 — 직접 권위:**', '**L1 — 직접 권위:**')
+    .replace('**TEMP — 현재 실행점:**', '**L2 — 현재 실행점:**');
+  assert.throws(() => validateDocumentNetwork(reordered), /ontology 필수 계약 누락/);
+
+  const acceptsStale = loadPlanDocuments();
+  acceptsStale.ontology = acceptsStale.ontology.replace(
+    'successor가 동일·낮은 판본을 받으면 실행을 거부한다.',
+    'successor가 전달받은 판본으로 실행한다.',
+  );
+  assert.throws(() => validateDocumentNetwork(acceptsStale), /ontology 필수 계약 누락/);
 });
 
 test('필수 계약·소유 위임·중앙 권위를 코드 블록과 HTML 주석으로 위조할 수 없다', () => {
