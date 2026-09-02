@@ -54,6 +54,13 @@ const REQUIRED_CLAUSES = Object.freeze({
     /\| `POINTS_TO` \| 권위를 만들지 않는 탐색 링크/,
     /\| `FINDING` \| `docs\/ai-review\/tasks\/\*\/rounds\/rNNN\/review\.json`/,
     /\| `ROUTES_TO` \| 정규화된 요청을 기존 또는 신규 Task에 배치/,
+    /\| `HANDOFF` \| `docs\/작업큐\.md`의 Task snapshot 또는 검수 `collaboration\.md`의 전용 인계 턴/,
+    /\| `ROLE_CONTEXT` \| `docs\/team\/ROLE_CONTEXTS\.md`/,
+    /\| `RELEASE` \| `docs\/team\/RELEASE_GATE\.md`/,
+    /\| `HANDOFF_TO` \| 같은 Task의 predecessor snapshot을 successor Task·역할 컨텍스트로 연결/,
+    /`TOUCHES`는 추가하지 않는다/,
+    /\*\*L0 — 헌법:\*\*.*\*\*L1 — 현재 실행점:\*\*.*\*\*L2 — 직접 권위:\*\*.*\*\*L3 — 1-hop 증거:\*\*.*\*\*L4 — 조건부 원시 이력:\*\*/s,
+    /동일·낮은 판본을 받으면 실행을 거부한다/,
   ],
   orchestration: [
     /## 3\. 사용자 요청 수신/,
@@ -438,6 +445,8 @@ export function validateDocumentNetwork(documents, authorityDependencies = AUTHO
   assert.equal(new Set(ids.map((id) => metadata[id].authority)).size, ids.length, '기획안 authority 주제가 중복됐습니다.');
   for (const [id, clause] of OWNER_BRIDGES) assert.match(navigableMarkdown(documents[id]), clause, `${id}의 단일 소유 위임 계약이 없습니다.`);
   const directoryNavigable = navigableMarkdown(documents.directory);
+  const ontologyNavigable = navigableMarkdown(documents.ontology);
+  assert.doesNotMatch(ontologyNavigable, /^\| `TOUCHES` \|/m, '중복 TOUCHES 관계를 온톨로지 어휘로 추가하면 안 됩니다.');
   assert.doesNotMatch(directoryNavigable, /§8\.2가 정한 다섯 문서/, '누적 문서 수를 디렉터리 기획안에 복제하면 안 됩니다.');
   assert.doesNotMatch(directoryNavigable, /REQUEST_INPUT ─NORMALIZES→/, '온톨로지의 NORMALIZES 방향을 뒤집으면 안 됩니다.');
   assertCentralAuthorityTable(directoryNavigable);

@@ -5,7 +5,7 @@ status: DRAFT
 authority: knowledge_relations_request_normalization
 owner: SOLAR-ARCH
 approver: HUMAN-CHIEF
-version: 0.1
+version: 0.2
 depends_on: [team]
 supersedes: []
 verified_by: []
@@ -14,7 +14,7 @@ review_by: 2026-10-01
 
 # MarginCook AI 지식 온톨로지 기획안
 
-> 버전: 0.1
+> 버전: 0.2
 > 상태: 누적 교차검수 대상 초안(`DRAFT`)
 > 작성일: 2026-09-01
 > 최종 책임자: 사람 주 오케스트레이터
@@ -93,9 +93,24 @@ review_by: 2026-10-01
 | `DEPLOYMENT_EVIDENCE` | `docs/deployments/` | 정확한 SHA의 환경 적용 증거 |
 | `INCIDENT` | `docs/operations/POSTMORTEMS/` | 운영 사고 원본과 재발 방지 |
 | `LEARNING` | `docs/team/TEAM_LEARNING.md` | 검증된 재사용 교훈과 폐기 조건 |
+| `HANDOFF` | `docs/작업큐.md`의 Task snapshot 또는 검수 `collaboration.md`의 전용 인계 턴 | 새 채팅·역할·검수 successor가 같은 Task를 복원하도록 기존 권위 상태를 봉인한 비권위 snapshot |
+| `ROLE_CONTEXT` | `docs/team/ROLE_CONTEXTS.md` | 활성 역할·컨텍스트 ID·판본 hash·자율성 단계의 레지스트리 항목 |
+| `RELEASE` | `docs/team/RELEASE_GATE.md` | 대상 SHA·환경·게이트·사람 승인과 실제 `DEPLOYMENT_EVIDENCE`를 연결하는 릴리스 인스턴스 |
 
 노드 종류는 새 문서를 만들라는 뜻이 아니다. 기존 권위 위치가 있으면 그 위치를 사용하고, 주제의
 현재 권위가 없을 때만 새 파일을 만든다.
+
+`HANDOFF`는 별도 공식 문서가 아니다. 일반 Task 인계는 `docs/작업큐.md`의 현재 Task에서 팀 구성안
+§11 필수 복원 필드 전체를 읽어 만든 snapshot이고, 검수 엔진·commit successor 인계는 팀 구성안
+§5.3과 `docs/ai-review/README.md`가 정한 append-only 턴을 사용한다. 두 경우 모두 최소한
+`handoff_id`, `task_id`, 비식별 predecessor/successor reference, 생성 시각, source commit SHA,
+§11 Task snapshot hash, `next_safe_action`, 미해결 Decision·Finding ID, 사용자 소유 변경·제외 경로,
+직전 HANDOFF ID 또는 `null`을 기록한다. snapshot은 작업큐 현재 상태를 덮어쓰거나 정책을 새로
+확정하지 않으며, successor는 아래 §6.4 순서로 원 권위를 다시 확인한다.
+
+`ROLE_CONTEXT`는 역할 설명을 복사하지 않고 팀 구성안 §11이 정한 실제 활성 컨텍스트 레지스트리만
+표현한다. `RELEASE`도 배포 JSON을 복사하지 않고 대상 SHA와 증거 경로를 잇는다. 두 노드의 실제
+파일 물질화는 본 문서가 `ACTIVE`가 된 뒤 별도 구현 Task에서만 한다.
 
 ## 4. 관계 모델
 
@@ -114,10 +129,16 @@ review_by: 2026-10-01
 | `APPLIES_TO` | 허용 범위 | Learning APPLIES_TO DB migration |
 | `EXCLUDES` | 명시적 비범위 | Task EXCLUDES user-owned files |
 | `POINTS_TO` | 권위를 만들지 않는 탐색 링크 | Domain Guide POINTS_TO Source/Test |
+| `HANDOFF_TO` | 같은 Task의 predecessor snapshot을 successor Task·역할 컨텍스트로 연결 | Handoff HANDOFF_TO Role Context |
 
 `SUPERSEDES` 없이 나중에 작성됐다는 이유만으로 기존 결정이 폐기되지 않는다. 서로 다른 채팅의
 요청이 충돌하면 `CONFLICTS_WITH` 상태로 사람 결정에 올리고, 승인된 대체 결정이 생긴 뒤에만
 `SUPERSEDES`를 기록한다.
+
+`TOUCHES`는 추가하지 않는다. 구현 관계는 `IMPLEMENTS`, 탐색·접촉 경로는 `POINTS_TO`, 수정 금지
+범위는 `EXCLUDES`와 Task의 경로 필드로 이미 표현되므로 같은 뜻의 두 번째 관계가 된다. `BLOCKS`,
+`DECIDED_BY`, `OWNED_BY`, `ANNOUNCED_IN`도 각각 `DEPENDS_ON`, `DEPENDS_ON`, `OWNS`, `POINTS_TO`의
+방향 또는 파생 view로 처리한다. 허용 노드·관계 어휘는 이 §3·§4에서만 생성한다.
 
 문서를 찾기 위한 참조 그래프와 권위·의존 그래프는 분리한다. 탐색 참조는 어느 핵심 문서에서
 시작해도 필요한 권위로 이동할 수 있도록 순환을 허용하지만, `OWNS`와 `DEPENDS_ON`으로 만든 권위
@@ -259,21 +280,40 @@ ledger lock 계약만 따른다. 이 문서는 허용 필드나 최초 지정 �
 
 ### 6.4 새 채팅 재개
 
-새 세션은 다음 순서로 상태를 복원한다.
+새 세션은 전체 과거를 먼저 읽지 않고 다음 L0~L4 기억 캡슐을 순서대로 조립한다. 이 계층은 읽기
+우선순위이며 아래 lease·사용자 변경·증거 SHA 검사를 생략하거나 대체하지 않는다.
 
-1. `AGENTS.md`와 관련 권위 문서를 읽고 `AGENTS.md` blob/content hash를 Task 계약에 기록한다. 이전
-   값과 다르면 영향받는 작업 패킷을 재발행한다.
-2. `docs/작업큐.md`의 Task 상태·의존성·다음 행동을 확인한다.
-3. Git branch·HEAD·origin 관계·worktree를 확인한다.
-4. Task의 `edit_owner`·`owner_session_ref`·`lease_expires_at`을 확인한다. 다른 소유자의 lease가
+1. **L0 — 헌법:** `AGENTS.md`와 절대 원칙을 읽고 blob/content hash를 Task 계약과 대조한다. 이전
+   값과 다르면 영향받는 Task Packet을 재발행한다.
+2. **L1 — 현재 실행점:** `docs/작업큐.md`의 현재 Task·상태·의존성·`next_safe_action`, 최신 유효
+   `HANDOFF`, 마지막 검증 SHA를 exact ID로 읽는다.
+3. **L2 — 직접 권위:** Task가 가리키는 현재 `ACTIVE`/`CONFIRMED` 권위 문서·Decision·Risk와 열린
+   Finding을 읽는다.
+4. **L3 — 1-hop 증거:** `DEPENDS_ON`으로 직접 연결된 Task와 관련 TEST·REVIEW_ROUND·
+   DEPLOYMENT_EVIDENCE만 읽는다.
+5. **L4 — 조건부 원시 이력:** L0~L3 사이 충돌이나 근거 부족이 있을 때만 원시 감사와 비식별 과거
+   conversation reference를 추가한다. 의미 유사도 검색은 후보 탐색에만 쓰고 권위로 승격하지 않는다.
+
+기억 캡슐을 조립한 뒤 다음 복원 검사를 순서대로 수행한다.
+
+1. Git branch·HEAD·origin 관계·worktree와 HANDOFF의 source commit SHA를 확인한다.
+2. Task의 `edit_owner`·`owner_session_ref`·`lease_expires_at`을 확인한다. 다른 소유자의 lease가
    유효하면 상태·인계 요청만 남기고 `stop_conditions`를 발동한다.
-5. 사용자 소유 변경과 작업 대상이 겹치는지 확인한다.
-6. 마지막 시험·검수·CI·배포 증거의 SHA를 대조한다.
-7. 사용자 소유 변경 또는 요청받지 않은 미추적 파일이 대상 경로와 겹치면 해당 경로를
-   `excluded_paths`로 봉인하고
-   `stop_conditions`를 발동한다. 사람 주 오케스트레이터의 명시적 처리 결정 전에는 수정·스테이징하지 않는다.
-8. 채팅 요약과 저장소가 다르면 사람 주 오케스트레이터에게 충돌을 알린다.
-9. 명시적 결정 또는 검증 가능한 정정 뒤에만 계약을 갱신하고 안전한 다음 행동을 수행한다.
+3. HANDOFF의 Task snapshot hash와 현재 §11 필드 집합을 대조한다. 같은 Task에서 더 최신 HANDOFF가
+   있거나 successor가 동일·낮은 판본을 받으면 실행을 거부한다.
+4. 사용자 소유 변경과 작업 대상이 겹치는지 확인한다.
+5. 마지막 시험·검수·CI·배포 증거의 SHA를 대조한다.
+6. 사용자 소유 변경 또는 요청받지 않은 미추적 파일이 대상 경로와 겹치면 해당 경로를
+   `excluded_paths`로 봉인하고 `stop_conditions`를 발동한다. 사람 주 오케스트레이터의 명시적 처리
+   결정 전에는 수정·스테이징하지 않는다.
+7. 채팅 요약·HANDOFF·저장소가 다르면 저장소 권위 상태를 보존하고 사람 주 오케스트레이터에게
+   충돌을 알린다.
+8. 명시적 결정 또는 검증 가능한 정정 뒤에만 계약을 갱신하고 안전한 다음 행동을 수행한다.
+
+정확한 Task ID, 화면 ID, RPC, migration, 파일 경로, Decision ID가 있으면 exact match를 먼저 하고,
+그 뒤 이 §4의 허용 관계만 따라간다. 새 채팅이 성공적으로 복원됐다는 판정은 대화가 자연스럽다는
+느낌이 아니라 사용자 재설명 없이 `next_safe_action`·미결 ID·제외 경로를 재현하고 첫 안전 행동을
+수행했는지로 평가한다. 지표 이름·계산·임계의 단일 권위는 평가 기획안 §5다.
 
 여기서 `사람 주 오케스트레이터`는 개발 요청자이자 최종 결정자를 뜻하고, 앱의 식당 사장님·셰프
 등은 `실사용자`라고 부른다.
@@ -417,6 +457,10 @@ DRAFT → REVIEWED → ACTIVE → SUPERSEDED → HISTORICAL
     종결 입력에서 제외된다.
 12. 사람 결정 뒤 `AGENTS.md` 검사 실행 절과 팀 구성안 G3를 함께 갱신하고, 문서 그래프 검사를
     기존 `pnpm verify`의 Docker 없는 한 단계 안에 편입한다. 6단계 분모는 임의로 바꾸지 않는다.
+13. §3·§4 허용 어휘 밖 node·edge, `TOUCHES` 같은 중복 후보와 출처·SHA·상태가 없는 기억 캡슐을
+    거부한다.
+14. HANDOFF의 predecessor/successor 연결, source commit·Task snapshot hash·직전 HANDOFF ID를
+    검사하고 동일·낮은 판본 복원을 거부한다.
 
 검사기는 문서 내용을 자동 승인하지 않는다. 구조적 연결과 기계적으로 판별 가능한 계약만 확인한다.
 
@@ -458,6 +502,7 @@ DRAFT → REVIEWED → ACTIVE → SUPERSEDED → HISTORICAL
 
 - 여러 채팅의 요청을 하나의 Task와 명시적 결정 관계로 복원할 수 있다.
 - 새 채팅에서 대화 기억 없이 권위 문서와 SHA만으로 안전하게 작업을 재개할 수 있다.
+- L0~L4 기억 캡슐로 필요한 맥락만 조립하고 HANDOFF의 동일·낮은 판본을 거부할 수 있다.
 - 모든 핵심 주제는 단일 `ACTIVE` 권위 소유자를 가진다.
 - 역할별 경쟁 공식 문서가 없다.
 - 문서 링크·ID·상태·검증 경로가 자동 검사된다.
@@ -469,9 +514,10 @@ DRAFT → REVIEWED → ACTIVE → SUPERSEDED → HISTORICAL
 ## 14. 미결 구현 결정
 
 - front matter를 적용할 첫 도메인 README 범위
-- `docs-graph-check`가 관리할 허용 enum과 문서 ID 형식
+- `docs-graph-check`가 관리할 문서 ID 형식과 §3·§4 어휘를 코드로 생성하는 형식
 - `docs-graph-check`를 현행 verify ③에 넣을지 다른 기존 단계에 넣을지
-- Codex 여러 채팅의 thread 참조를 자동 수집할 수 없는 환경에서 쓸 수동 참조 형식
+- Codex 여러 채팅의 thread 참조를 자동 수집할 수 없는 환경에서 쓸 비식별 수동 참조 형식
+- 일반 Task HANDOFF snapshot의 물리 저장 형식과 보존 기간
 - 문서 검토 기한 알림을 CI 경고로 둘지 작업큐 생성으로 둘지
 - 컨텍스트 크기·관련성의 초기 기준선
 
