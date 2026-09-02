@@ -1,0 +1,86 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-TEAM-KNOWLEDGE-ORBIT-AUDIT-002",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R1",
+  "author_role": "SOLAR-ORCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "21a368b0da12acbb1c1534f8df8a2163a54ee98a",
+  "target_commit_sha": "faf52565cb7ef3482367c84866d976a94e64e593",
+  "target_tree_oid": "832fd2865b2ccb85533016432d71e321cfe1494c",
+  "agents_blob_oid": "4c31bbf9be81871c4dfb1699e057c8303d4e2fae",
+  "agents_sha256": "5628177d442547e868acc3e0446e6513b65bf713f2cfd82cc78e0e6dedc4c860",
+  "requirements": [
+    "ORBIT-AUDIT-ENUM-001을 같은 finding_id로 재확인하고 요청 판정 enum이 온톨로지 §6.3 단일 정의와 사람 승인 의미를 보존하는지 검증한다.",
+    "ORBIT-AUDIT-METRIC-DUAL-002를 같은 finding_id로 재확인하고 §12 지표가 평가 기획안 §5의 동일·개명·신규 대응표로만 승격되는지 검증한다.",
+    "ORBIT-AUDIT-CAPSULE-003을 같은 finding_id로 재확인하고 L0~L4가 온톨로지 §6.4 복원 절차를 대체하지 않는지 검증한다.",
+    "이전 감사가 확인한 최초 7개 지적의 해소를 재개방하는 새 모순이 없는지 검증한다.",
+    "§17의 다섯 공식 기획안 변경 설계가 경쟁 공식본·중복 권위·운영 승인 우회를 만들지 않는지 최종 대조한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:single-canonical-artifact",
+    "AGENTS:fable-append-only-ledger",
+    "AGENTS:authoritative-root",
+    "AI-ORCH:multi-chat-repository-authority",
+    "AI-ORCH:token-context-budget",
+    "AI-QUALITY:independent-review",
+    "AI-KNOWLEDGE:typed-provenance"
+  ],
+  "artifact_paths": [
+    "docs/ai-review/evidence/AI-TEAM-KNOWLEDGE-ORBIT-PREPLAN.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/팀구성_상세기획안.md",
+    "docs/AI-지식-온톨로지-기획안.md",
+    "docs/AI-오케스트레이션-상세기획안.md",
+    "docs/디렉터리-문서신경망-재설계-기획안.md",
+    "docs/AI-품질-학습-자율성-평가기획안.md",
+    "docs/ai-review/README.md",
+    "docs/작업큐.md"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/tasks/AI-TEAM-KNOWLEDGE-ORBIT-PREPLAN-001/collaboration.md",
+    "docs/ai-review/tasks/AI-TEAM-KNOWLEDGE-ORBIT-PREPLAN-001/rounds/r001/review.md",
+    "docs/ai-review/tasks/AI-TEAM-KNOWLEDGE-ORBIT-PREPLAN-001/rounds/r001/review.json",
+    "scripts/ai-plan-network-simulation.test.mjs"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "predecessor r001의 3개 Finding을 동일 finding_id·previous_finding_id로 재확인",
+    "수정된 §4.2·§8.3·§12·§17과 기존 권위 절 대조",
+    "문서 네트워크 시뮬레이션 59/59와 새 중복 어휘 부재 확인",
+    "target commit·tree·AGENTS hash 및 predecessor handoff hash 검증"
+  ],
+  "human_decisions": [
+    "2026-09-02 사용자가 Fable 지적 반영과 후속 재검수를 승인했다.",
+    "이 successor는 formal predecessor registry를 승계하며 같은 3개 Finding의 현재 수정 commit 상태만 재검수한다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": {
+    "task_id": "AI-TEAM-KNOWLEDGE-ORBIT-AUDIT-001",
+    "source_commit_sha": "b9dc6422af72fef7e786735f937a903767f21822",
+    "round": "r001",
+    "task_sha256": "0ae47e24db75a7c81f407e49e3319b0abb63fc87dc902373b2ae201734d97846",
+    "manifest_sha256": "2560b5329241e64b2a4ece49ef83b042810b10649c1678b352c2b56930a46b4a",
+    "run_sha256": "2233779942d6a79f4728818fc19392339d66144160dbf3d5b2cbdc84a6e3b73f",
+    "review_sha256": "d122899ccc1f931d115aa8554fdfbac3d48bcd605c7e411dccf91900ad6f6ac1",
+    "finding_registry_sha256": "2956ea37ec04c995bcf7c249d13a753e66fdcedcfe542e0af2ed502d60b52e58",
+    "handoff_turn_id": "turn-o001",
+    "handoff_entry_sha256": "fdbbecad8be4a1638ff8ed19fa00477dd6aaf94077ee199fef634e5f913c7a4e",
+    "handoff_run_sha256": "58b282317e5c97abf1b2407b3db565e3090d3f8ecc9edc0c89c622c31752a3a8"
+  },
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "4.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}
