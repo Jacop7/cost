@@ -1,0 +1,196 @@
+{
+  "schema_version": "2.0",
+  "task_id": "AI-KNOWLEDGE-ORBIT-TEAM-002",
+  "reviewer_role": "FABLE-ARCH",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "b577510ec5e039f7acfe8dadb298a1ccadc9f747",
+  "target_commit_sha": "37659fb82f5b192d49e8753e7235df4fc4b527c9",
+  "target_tree_oid": "f3037f206e80de613d470b0264b0b341a55c1234",
+  "agents_blob_oid": "4c31bbf9be81871c4dfb1699e057c8303d4e2fae",
+  "agents_sha256": "5628177d442547e868acc3e0446e6513b65bf713f2cfd82cc78e0e6dedc4c860",
+  "task_sha256": "3c79741783628a8e6373059c0634c1cf74bf27415b38ffa09a4240c42ea4794e",
+  "collaboration_sha256": "7751c03f44193c555dd0aa534d1a234a812806d1bc20b43af22f14872990923d",
+  "input_files_sha256": "7040751744bed6538c9ec52943571fa8ea3ddb125e6669a7ae9aea3f2fa629ea",
+  "schema_sha256": "d8ffdb13e6b1e38279355d9ffd592cfb91dc023d287976adf7892e85dbfaf0d7",
+  "runner_sha256": "80dae1d06c89af056e9d8c210b571e978ee534fc128a5fe3b9867610b5ae447b",
+  "verdict": "CHANGES_REQUIRED",
+  "summary": "팀 구성안 1.3의 §1.3·§1.4·§3.2.1을 기존 §1.1·§4·§5·§11 및 사전기획 §3·§4·§17과 전문 대조했다. (1) 다섯 팀 그룹(§1.3)은 사전기획 §4.1/§4.1.1 대응을 누락·과장 없이 반영하고, 팀 그룹이 새 승인 주체가 아니라 라우팅 경계이며 승인·독립성은 §1.1·§4를 따른다고 명시한다. Data · Backend의 계산 권위와 Server · Supabase · Operations의 호스팅·운영 책임 분리, 세금·손익·원장 공식 불변경, 자격증명·백업·과금 단독 결정 금지, `server-supabase-operations` slug와 `Platform` 금지(145~149행)가 사전기획 §4.1(117~120행)·§4.1.1(134~137행)과 일치한다. (2) 채팅 라우팅(§1.4)은 마스터 5개·부서 6개·임시 Task 채팅을 사전기획 §3.1·§3.2와 동일하게 정의하고, 채팅이 공식 기억·승인 장부가 아니며 상태 변경은 권위 파일·증거로만 효력이 생긴다는 경계(153~154행), 채팅별 경쟁 공식 문서·`_shared` 권위 금지(179~181행)를 유지한다. (3) `04 Quality · Review`는 조정 전용이고 실제 감사는 §5.4의 회차별 클린 컨텍스트로 분리되며(175~177행), Quality verdict와 사람 Go/No-Go 분리도 §1.1·§3.2.1 금지 목록에서 보존된다. (4) Steward(§3.2.1)는 관측·전환 신호 전용으로 사전기획 §4.3의 허용·금지를 보수적으로 반영(금지 항목을 오히려 확대)하고, 복원·전이 책임을 AI 부 오케스트레이터에, 예산 상향·배포를 사람에 남긴다. (5) 증거 시뮬레이션 파일에서 test 블록 정확히 59개를 확인해 장부의 59/59 주장과 정합함을 확인했다(직접 실행은 범위 밖). 다만 필수 Finding 2건이 남는다. [Minor] ORBIT-TEAM-STEWARD-REG-001: Steward가 §3.2.1에 확정 역할로 기술되면서도 §1.1 최종 역할 배정표·§1.2 조직도·§5.1 필수 컨텍스트 분리 목록에 등록되지 않았다. 사전기획 §4.3은 확정 시 팀 구성안 개정으로 소속 컨텍스트를 지정하라고 요구했는데 채팅 소속만 있고 실행 컨텍스트 ID가 없어, SOLAR-ORCH 겸용 시 부 오케스트레이터의 Steward 신호 검토가 자기 검토가 되고 `ROLE_CONTEXTS.md`에 등록할 ID도 없다. [Minor] ORBIT-TEAM-XREF-PACKET-002: §1.4(179행)가 Task Packet의 정의 절을 §5.2가 아닌 §11로 잘못 참조해, 발행 시점 스냅샷(§5.2)과 현재값 권위(§11 작업큐)의 경계를 문서 스스로 흐린다. [Improvement, 비차단] ORBIT-TEAM-SIM-COVERAGE-003: 59개 테스트 중 신설 §1.3/§1.4/§3.2.1 계약(역할 책임 중복 검사·Steward 과권한 시뮬레이션)을 다루는 항목이 없다. 사전기획 §13·§17.3상 검사기 단계 후속 작업이므로 차단 사유는 아니다. 세 건 모두 같은 공식 파일에 반영 가능한 proposed_edits를 제공했다. VERIFIED·PASS는 외부 게이트를 종결하지 않으며 gate_state는 OPEN으로 유지된다.",
+  "findings": [
+    {
+      "finding_id": "ORBIT-TEAM-STEWARD-REG-001",
+      "severity": "Minor",
+      "review_state": "OPEN",
+      "category": "ARCHITECTURE",
+      "requirement_or_invariant_ids": [
+        "AGENTS:clean-independent-review",
+        "AI-ORCH:token-context-budget",
+        "REQ-3-STEWARD-OBSERVER-ONLY"
+      ],
+      "evidence": [
+        {
+          "path": "docs/팀구성_상세기획안.md",
+          "line_start": 318,
+          "line_end": 343,
+          "observation": "§3.2.1이 Steward를 확정 역할로 기술하고 독립성(부 오케스트레이터 대체 금지)·감사 주체(Quality · Review 또는 독립 감사 표본 검증)는 지정하지만, 실행 컨텍스트는 채팅 소속(05 Knowledge · Orchestration)만 있고 역할 컨텍스트 ID가 없다."
+        },
+        {
+          "path": "docs/팀구성_상세기획안.md",
+          "line_start": 69,
+          "line_end": 91,
+          "observation": "§1.1 최종 역할 배정표에 Steward 행이 없어 주 담당·독립 검증·승인 경계가 표에 등록되지 않았다. §1.2 조직도(95~128행)에도 없다."
+        },
+        {
+          "path": "docs/팀구성_상세기획안.md",
+          "line_start": 1052,
+          "line_end": 1072,
+          "observation": "§5.1 필수 컨텍스트 분리 목록에 Steward 컨텍스트 ID가 없어, 확정 역할이면서 분리 의무가 걸리지 않은 유일한 역할이 된다. §11의 ROLE_CONTEXTS.md 레지스트리에 등록할 식별자도 정의되지 않는다."
+        },
+        {
+          "path": "docs/ai-review/evidence/AI-TEAM-KNOWLEDGE-ORBIT-PREPLAN.md",
+          "line_start": 154,
+          "line_end": 159,
+          "observation": "사전기획 §4.3은 Steward 확정 시 팀 구성안 개정으로 소속 컨텍스트·독립성·감사 주체를 지정하라고 요구한다. 독립성·감사 주체는 반영됐으나 소속 컨텍스트 지정이 불완전하다."
+        }
+      ],
+      "impact": "Steward가 SOLAR-ORCH 등 복원·제작 컨텍스트와 겸용 실행될 여지가 남아, AI 부 오케스트레이터의 Steward 신호 검토가 자기 검토로 퇴화하고 관측자·행위자 분리가 약해진다. §5.1·ROLE_CONTEXTS.md 기준의 컨텍스트 등록·감사 표본 추출 대상도 특정할 수 없다.",
+      "acceptance_criteria": [
+        "§5.1 컨텍스트 목록에 Steward 전용 컨텍스트 ID를 추가하고 제작·검수·복원 컨텍스트와 겸용하지 않음을 명시한다.",
+        "§1.1 역할표에 Steward 행(주 담당 컨텍스트, 독립 검증 주체, 승인 경계)을 추가하거나, Steward가 §1.1 승인 대상이 아닌 이유와 활성화 전 임시 취급을 한 문장으로 명시한다.",
+        "§3.2.1에서 해당 컨텍스트 ID를 참조해 채팅 소속과 실행 컨텍스트를 구분한다."
+      ],
+      "required_tests": [
+        "문서 네트워크·역할 검사기 구현 단계에서 §3에 정의된 모든 활성 역할이 §1.1 표와 §5.1 컨텍스트 목록에 등록됐는지 대조 검사"
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    },
+    {
+      "finding_id": "ORBIT-TEAM-XREF-PACKET-002",
+      "severity": "Minor",
+      "review_state": "OPEN",
+      "category": "ARCHITECTURE",
+      "requirement_or_invariant_ids": [
+        "AGENTS:single-canonical-artifact",
+        "AI-ORCH:multi-chat-repository-authority",
+        "REQ-1-CHAT-BOUNDARY"
+      ],
+      "evidence": [
+        {
+          "path": "docs/팀구성_상세기획안.md",
+          "line_start": 179,
+          "line_end": 179,
+          "observation": "§1.4가 '마스터·부서·Task 채팅 모두 §11의 같은 Task Packet과 docs/team/ROLE_CONTEXTS.md를 참조한다'라고 기술하나 Task Packet 정의 절은 §5.2다."
+        },
+        {
+          "path": "docs/팀구성_상세기획안.md",
+          "line_start": 1074,
+          "line_end": 1077,
+          "observation": "§5.2가 Task Packet을 '공동 작업의 범위·판본을 고정하는 기계 계약'으로 정의하는 실제 소유 절이다."
+        },
+        {
+          "path": "docs/팀구성_상세기획안.md",
+          "line_start": 1742,
+          "line_end": 1751,
+          "observation": "§11은 Task Packet이 아니라 작업큐 Task 항목 필드와 새 채팅 필수 복원 필드 집합의 단일 권위를 소유하며, §5.2 스냅샷과 §11 현재값 권위의 구분은 1115~1117행·1783~1785행이 명시적으로 강제한다."
+        }
+      ],
+      "impact": "확정 거버넌스 문서의 잘못된 절 참조가 §5.2 발행 시점 스냅샷 계약과 §11 현재값 권위(lease·복원 필드)를 혼동하게 만들어, 채팅이 §11 작업큐 항목을 Task Packet 스키마로 오독하거나 스냅샷 값을 현재값 권위로 오용할 여지를 만든다.",
+      "acceptance_criteria": [
+        "§1.4의 해당 문장을 §5.2 Task Packet 참조로 수정하고, §11은 작업큐 필수 필드·복원 권위로 구분해 참조한다."
+      ],
+      "required_tests": [
+        "문서 네트워크 검사기 구현 단계에서 절 번호 상호 참조의 실제 절 제목 대조 검사"
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    },
+    {
+      "finding_id": "ORBIT-TEAM-SIM-COVERAGE-003",
+      "severity": "Improvement",
+      "review_state": "OPEN",
+      "category": "TEST_GAP",
+      "requirement_or_invariant_ids": [
+        "REQ-5-PREPLAN-17-COVERAGE",
+        "AGENTS:clean-independent-review"
+      ],
+      "evidence": [
+        {
+          "path": "scripts/ai-plan-network-simulation.test.mjs",
+          "line_start": 268,
+          "line_end": 1359,
+          "observation": "test 블록 정확히 59개를 확인해 장부의 59/59 주장과 정합하나, 신설 §1.3 팀 그룹 라우팅 비권위·역할 책임 중복·Steward 과권한을 다루는 테스트는 없다(Steward·팀 그룹 키워드 검색 결과 없음)."
+        },
+        {
+          "path": "docs/ai-review/evidence/AI-TEAM-KNOWLEDGE-ORBIT-PREPLAN.md",
+          "line_start": 570,
+          "line_end": 572,
+          "observation": "사전기획 §17 팀 구성안 행이 '역할 책임 중복 검사, Steward 과권한 시뮬레이션'을 검증 연결로 배정했다."
+        },
+        {
+          "path": "docs/팀구성_상세기획안.md",
+          "line_start": 339,
+          "line_end": 343,
+          "observation": "§3.2.1은 Steward 신호 품질·과권한을 Quality · Review 또는 독립 감사가 표본 검증한다고만 명시하고, 시뮬레이션·검사기 검증 연결의 구현 위치는 지정하지 않는다."
+        }
+      ],
+      "impact": "59/59 통과는 기존 문서 네트워크·작업큐·Learning 계약만 검증하므로 v1.3 신설 계약의 회귀 방어가 아직 없다. 사전기획 §13·§17.3상 검사기·파일럿 단계 후속 작업이므로 차단 사유는 아니나, 구현 위치를 명시하지 않으면 검증 연결이 유실될 수 있다.",
+      "acceptance_criteria": [
+        "팀 그룹 라우팅 비권위·역할 책임 중복·Steward 과권한 검사를 문서 네트워크 시뮬레이션 또는 후속 검사기의 검증 항목으로 추가하는 작업을 개정·검사기 Task에 명시적으로 연결한다."
+      ],
+      "required_tests": [
+        "§1.3 팀 그룹이 승인·판정 주체로 오용되는 시나리오 거부 테스트",
+        "Steward가 verdict 변경·필수 증거 제외·예산 상향을 시도하는 과권한 시뮬레이션 거부 테스트",
+        "§1.1 역할과 §1.3 팀 그룹 대응의 책임 중복·누락 대조 검사"
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    }
+  ],
+  "proposed_edits": [
+    {
+      "edit_id": "EDIT-TEAM-STEWARD-CONTEXT-A",
+      "path": "docs/팀구성_상세기획안.md",
+      "anchor": "OPUS-ADVISORY       사람이 승인한 문서 묶음을 파일·셸 권한 없이 검토하는 비게이트 자문 컨텍스트",
+      "operation": "ADD",
+      "proposed_text": "CONTEXT-STEWARD     컨텍스트 압력·외부 검수 예산 관측과 전환 신호 전용 컨텍스트. §3.2.1의 허용·금지를 따르며 제작·검수·복원 컨텍스트와 겸용하지 않는다",
+      "rationale": "§3.2.1의 확정 Steward 역할에 §5.1 필수 컨텍스트 분리 목록의 전용 ID를 부여해 SOLAR-ORCH 겸용과 자기 검토 여지를 제거하고 ROLE_CONTEXTS.md 등록 대상을 특정한다.",
+      "finding_ids": [
+        "ORBIT-TEAM-STEWARD-REG-001"
+      ]
+    },
+    {
+      "edit_id": "EDIT-TEAM-STEWARD-ROLE-ROW-B",
+      "path": "docs/팀구성_상세기획안.md",
+      "anchor": "| 부 오케스트레이션·문서 관리 | 솔라 울트라 전용 컨텍스트 | 페이블 정기 운영 감사 | AI 부 오케스트레이터, 정책 변경만 사람 |",
+      "operation": "ADD",
+      "proposed_text": "| 컨텍스트·토큰 관측(Steward) | `CONTEXT-STEWARD` 전용 컨텍스트(§3.2.1) | `Quality · Review` 또는 독립 감사 표본 검증 | 신호 발행까지만 AI, 전이·복원은 AI 부 오케스트레이터, 예산 상향·정책은 사람 |",
+      "rationale": "§1.1 최종 역할 배정표에 Steward의 주 담당·독립 검증·승인 경계를 등록해 §3.2.1과 역할표의 내부 정합성을 복원한다.",
+      "finding_ids": [
+        "ORBIT-TEAM-STEWARD-REG-001"
+      ]
+    },
+    {
+      "edit_id": "EDIT-TEAM-XREF-PACKET-C",
+      "path": "docs/팀구성_상세기획안.md",
+      "anchor": "마스터·부서·Task 채팅 모두 §11의 같은 Task Packet과 `docs/team/ROLE_CONTEXTS.md`를 참조한다.",
+      "operation": "REPLACE",
+      "proposed_text": "마스터·부서·Task 채팅 모두 §5.2의 같은 Task Packet과 §11의 작업큐 필수 필드, `docs/team/ROLE_CONTEXTS.md`를 참조한다.",
+      "rationale": "Task Packet의 정의 소유 절은 §5.2이므로 잘못된 절 참조를 바로잡고, §11은 작업큐 필수 필드·복원 권위로 구분해 스냅샷과 현재값 권위의 경계 혼동을 제거한다.",
+      "finding_ids": [
+        "ORBIT-TEAM-XREF-PACKET-002"
+      ]
+    }
+  ],
+  "closed_finding_ids": [],
+  "reopened_finding_ids": [],
+  "remaining_required_finding_ids": [
+    "ORBIT-TEAM-STEWARD-REG-001",
+    "ORBIT-TEAM-XREF-PACKET-002"
+  ],
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}

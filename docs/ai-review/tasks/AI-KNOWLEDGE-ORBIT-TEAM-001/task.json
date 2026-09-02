@@ -1,0 +1,75 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-KNOWLEDGE-ORBIT-TEAM-001",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R1",
+  "author_role": "SOLAR-ORCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "b577510ec5e039f7acfe8dadb298a1ccadc9f747",
+  "target_commit_sha": "37659fb82f5b192d49e8753e7235df4fc4b527c9",
+  "target_tree_oid": "f3037f206e80de613d470b0264b0b341a55c1234",
+  "agents_blob_oid": "4c31bbf9be81871c4dfb1699e057c8303d4e2fae",
+  "agents_sha256": "5628177d442547e868acc3e0446e6513b65bf713f2cfd82cc78e0e6dedc4c860",
+  "requirements": [
+    "다섯 팀 그룹이 기존 역할표를 대체하는 새 승인 주체가 아니라 라우팅 경계로만 정의됐는지 검증한다.",
+    "마스터 5개·부서 6개·임시 Task 채팅의 책임과 금지가 경쟁 공식 기억이나 승인 우회를 만들지 않는지 검증한다.",
+    "Data · Backend와 Server · Supabase · Operations의 계산 권위·호스팅 운영 경계가 분리됐는지 검증한다.",
+    "Context & Token Steward가 관측·전환 신호만 담당하고 AI 부 오케스트레이터의 상태 복원 및 사람·Quality 판정을 대체하지 않는지 검증한다.",
+    "상설 Quality 조정 채팅과 회차별 클린 독립 감사가 분리되고 기존 docs/team 권위 파일을 복제하지 않는지 검증한다.",
+    "이번 팀 구성안 변경이 나머지 네 기획안의 기존 권위와 상호 참조 계약을 깨지 않는지 검증한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:single-canonical-artifact",
+    "AGENTS:fable-append-only-ledger",
+    "AGENTS:authoritative-root",
+    "AI-TEAM:human-approval-boundary",
+    "AI-TEAM:clean-independent-review",
+    "AI-ORCH:multi-chat-repository-authority",
+    "AI-ORCH:token-context-budget"
+  ],
+  "artifact_paths": [
+    "docs/팀구성_상세기획안.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/AI-지식-온톨로지-기획안.md",
+    "docs/AI-오케스트레이션-상세기획안.md",
+    "docs/디렉터리-문서신경망-재설계-기획안.md",
+    "docs/AI-품질-학습-자율성-평가기획안.md",
+    "docs/ai-review/evidence/AI-TEAM-KNOWLEDGE-ORBIT-PREPLAN.md",
+    "docs/ai-review/README.md",
+    "docs/작업큐.md"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/tasks/AI-TEAM-KNOWLEDGE-ORBIT-AUDIT-002/rounds/r003/review.md",
+    "docs/ai-review/tasks/AI-TEAM-KNOWLEDGE-ORBIT-AUDIT-002/rounds/r003/review.json",
+    "scripts/ai-plan-network-simulation.test.mjs"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "팀 구성안 1.3의 §1.3·§1.4·§3.2.1과 기존 §1.1·§4·§5·§11의 권한 대조",
+    "사전기획 §3·§4·§17의 승인 방향과 실제 반영 문구 대조",
+    "문서 네트워크 시뮬레이션 59/59",
+    "target commit·tree·AGENTS hash 검증"
+  ],
+  "human_decisions": [
+    "2026-09-02 사용자가 다섯 공식 기획안을 순서대로 수정하고 각 단계마다 Fable 누적 검수를 진행하도록 승인했다.",
+    "팀 채팅은 마스터 5개와 부서 6개로 구성하고 Knowledge · Orchestration에 부 오케스트레이션과 토큰·컨텍스트 관리 역할을 두기로 했다.",
+    "Fable 검수는 공식 Claude Code CLI 로그인 세션을 사용하며 이 Task의 실행 상한은 USD 4.00이다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "4.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}
