@@ -1,0 +1,155 @@
+{
+  "schema_version": "2.0",
+  "task_id": "AI-ORCH-PLANS-SIM-FINAL-WORKFLOW-001",
+  "reviewer_role": "FABLE-FINAL",
+  "review_mode": "FINAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "8ab364e3330bbd7205572279fb5a4d6b969e2a51",
+  "target_commit_sha": "c1b595f74f2fc7824b480bf8457e3026c0f1d6dc",
+  "target_tree_oid": "1c4bfab16cf633d4b2106df0b58f488929d1508c",
+  "agents_blob_oid": "4c31bbf9be81871c4dfb1699e057c8303d4e2fae",
+  "agents_sha256": "5628177d442547e868acc3e0446e6513b65bf713f2cfd82cc78e0e6dedc4c860",
+  "task_sha256": "b810c48f72074d8133ba7140ecbd9b94def38ef740347cf6f21c83143353a503",
+  "collaboration_sha256": "62bf84ef650796dffcf39078ccc71e2448cc43245558de1d262112e364d0871e",
+  "input_files_sha256": "6e71463290d98bd37f699890deb80c3fa93b19eff4b05a360f11ba0a9c6fa621",
+  "schema_sha256": "d8ffdb13e6b1e38279355d9ffd592cfb91dc023d287976adf7892e85dbfaf0d7",
+  "runner_sha256": "80dae1d06c89af056e9d8c210b571e978ee534fc128a5fe3b9867610b5ae447b",
+  "verdict": "CHANGES_REQUIRED",
+  "summary": "FINAL 독립 감사 결과, 시뮬레이션 계약 자체는 건전하다. 적대 시험 파일에 test 케이스가 정확히 59개 존재해 59/59 주장과 일치하고, AI-PLANS-WORKFLOW-001과 시뮬레이터·시험 코드가 가상 protected gate를 VIRTUAL_SIMULATION/VIRTUAL_FIXTURE 경계로 봉인해 실제 배포 증거로 승격하지 않으며, 다섯 기획안 전체에 원 요청→정규화→Task 결속(request_dispositions hash chain), 단일 edit_owner·lease, append-only 감사, Finding·Decision·Learning·자율성 수명주기, 사람 전용 운영·비가역 결정 경계가 실재한다. 온톨로지·오케스트레이션·디렉터리·평가 기획안과 시뮬레이터·시험 파일의 SHA-256은 Codex 2차 증거의 고정값과 정확히 일치한다. 그러나 증거 결속에서 필수 결함 3건을 발견했다. (1) Major: Codex 2차 증거(AI-PLANS-SIM-CODEX-ULTRA-R2.md:42)는 팀구성_상세기획안.md를 FB695AC1…로 고정했으나 봉인된 target commit의 실제 파일은 4E8F33E0…이다. 2차 감사 후 문서가 변경됐고 재감사·변경 사유 기록이 스냅샷 어디에도 없어, 다섯 후보 문서 중 하나가 유효한 2차 Codex 증거 없이 최종 검수에 올라왔다. (2) Major: 패킷의 required_evidence인 \"pnpm verify 6/6·DB 50/50·경합·업그레이드 23/23 통과 기록\"은 이 Task가 아니라 INTL-1F(2026-09-01, SHA 5f67294/cd38b2b)의 기록이다. 본 Task의 작업큐 항목은 여전히 \"구현 exact commit 생성 대기\" 상태로 verify 기록이 없고, 선행 Task의 43a702a 실행은 명시적으로 5/6(개발 DB 44/50)이었다. target commit c1b595f에 결속된 전체 verify 증거가 스냅샷에 부재하므로 다른 Task의 통과 수치를 차용한 것으로 판정한다. (3) Minor: 작업큐가 참조하는 Codex 1차 증거 두 파일이 스냅샷에 없어 \"Codex 2회의 서로 다른 scope·세션·증거 hash\" 독립성 요건을 2차분만으로 교차 검증할 수 없다. 문서 활성화와 실제 디렉터리 생성은 승인하지 않으며, 가상 gate는 배포 증거가 아니라는 경계를 유지한다. 세 Finding 해소(팀구성안 최종본 재감사, target commit 결속 verify 기록, 1차 증거 포함) 전에는 PASS 불가.",
+  "findings": [
+    {
+      "finding_id": "FNL-EVIDENCE-BINDING-001",
+      "severity": "Major",
+      "review_state": "OPEN",
+      "category": "DATA_INTEGRITY",
+      "requirement_or_invariant_ids": [
+        "AGENTS:single-canonical-artifact",
+        "REQUIRED-EVIDENCE:candidate-doc-sha256-pinning"
+      ],
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/AI-PLANS-SIM-CODEX-ULTRA-R2.md",
+          "line_start": 40,
+          "line_end": 48,
+          "observation": "Codex 2차 증거는 팀 구성안 SHA-256을 FB695AC180F98C66EC9F5A2A3F4DCF863B32B238D6D5F2A6966F19D7B704296C으로 고정했다."
+        },
+        {
+          "path": "COLLABORATION_LOG",
+          "line_start": 0,
+          "line_end": 0,
+          "observation": "봉인된 task packet input_files의 docs/팀구성_상세기획안.md sha256은 4e8f33e0023e21140739ade1819130737fddd574a9e91d0f1b4a83376a5d75ba로, Codex 2차 증거의 고정값과 다르다. 나머지 4개 기획안과 시뮬레이터·시험 파일 hash는 일치한다."
+        },
+        {
+          "path": "docs/작업큐.md",
+          "line_start": 217,
+          "line_end": 299,
+          "observation": "AI-ORCH-PLANS-SIM-1 항목에 팀 구성안의 2차 감사 후 변경 사유나 재감사 기록이 없다."
+        }
+      ],
+      "impact": "다섯 최종 후보 문서 중 팀구성_상세기획안.md가 Codex 2차 적대 감사가 실제로 본 판본과 다르다. 감사 후 무기록 변경이 허용되면 '후보 문서 SHA-256 고정' 요건이 무력화되고, 검수되지 않은 내용이 사람 최종 승인 입력으로 흘러갈 수 있다.",
+      "acceptance_criteria": [
+        "target commit에 포함된 팀구성_상세기획안.md 판본(4e8f33e0…)에 대한 Codex 재감사 증거 또는 FB695AC1…→4e8f33e0… 변경 diff와 사유가 불변 증거 파일로 기록된다.",
+        "재감사 증거가 target commit·tree·문서 SHA-256을 함께 고정하고 작업큐 항목에서 연결된다."
+      ],
+      "required_tests": [
+        "재감사 후 corepack pnpm ai:plans:simulate 59/59 재실행 기록을 같은 판본에 결속한다."
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    },
+    {
+      "finding_id": "FNL-VERIFY-EVIDENCE-002",
+      "severity": "Major",
+      "review_state": "OPEN",
+      "category": "TEST_GAP",
+      "requirement_or_invariant_ids": [
+        "REQUIRED-EVIDENCE:pnpm-verify-6of6-db50-upgrade23"
+      ],
+      "evidence": [
+        {
+          "path": "docs/작업큐.md",
+          "line_start": 598,
+          "line_end": 613,
+          "observation": "verify 6/6·DB 50/50·업그레이드 23/23 기록은 INTL-1F 섹션의 2026-09-01 실행(복구 SHA 5f67294 계열)에 속하며 본 Task와 무관하다."
+        },
+        {
+          "path": "docs/작업큐.md",
+          "line_start": 228,
+          "line_end": 228,
+          "observation": "AI-ORCH-PLANS-SIM-1의 current_state는 '구현 exact commit 생성 대기'이며 이 Task에 결속된 verify 통과 기록이 없다."
+        },
+        {
+          "path": "docs/작업큐.md",
+          "line_start": 210,
+          "line_end": 213,
+          "observation": "선행 Task의 exact SHA 43a702a 실행은 개발 DB 44/50으로 전체 pnpm verify 5/6이었다."
+        },
+        {
+          "path": "COLLABORATION_LOG",
+          "line_start": 0,
+          "line_end": 0,
+          "observation": "task packet required_evidence는 '전체 pnpm verify 6/6과 DB 50/50·경합·업그레이드 23/23 통과 기록'을 본 Task 증거로 주장하나 스냅샷 내 어떤 기록도 target commit c1b595f에 결속되지 않는다."
+        }
+      ],
+      "impact": "다른 Task의 통과 수치를 본 Task의 필수 증거로 차용한 형태다. AGENTS.md의 '건너뛴 단계가 있으면 전체 통과라고 표현하지 않는다' 원칙과 충돌하며, target commit이 전체 게이트를 통과했다는 거짓 신뢰를 만든다.",
+      "acceptance_criteria": [
+        "target commit c1b595f(또는 그 후속 exact commit)에서 실행한 corepack pnpm verify 6/6 기록이 실행 시각·SHA·단계별 수치와 함께 작업큐 AI-ORCH-PLANS-SIM-1 항목 또는 불변 증거 파일에 기록된다.",
+        "required_evidence 문구가 실제 본 Task 기록만 인용하도록 정정된다."
+      ],
+      "required_tests": [
+        "corepack pnpm verify (target exact commit, 6/6 전체 범위)"
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    },
+    {
+      "finding_id": "FNL-CODEX-ROUND1-003",
+      "severity": "Minor",
+      "review_state": "OPEN",
+      "category": "TEST_GAP",
+      "requirement_or_invariant_ids": [
+        "REQUIRED-EVIDENCE:codex-2rounds-independence"
+      ],
+      "evidence": [
+        {
+          "path": "docs/작업큐.md",
+          "line_start": 318,
+          "line_end": 321,
+          "observation": "evidence_paths가 AI-PLANS-SIM-CODEX-R1.md와 AI-PLANS-SIM-CODEX-ULTRA-R1.md를 참조하지만 두 파일은 이 봉인 스냅샷에 포함되지 않았다."
+        },
+        {
+          "path": "docs/ai-review/simulations/AI-PLANS-WORKFLOW-001.md",
+          "line_start": 47,
+          "line_end": 47,
+          "observation": "정상 시나리오 8은 Codex 2회·Fable 2회가 서로 다른 scope·세션·review Task·증거 hash를 가져야 한다고 요구한다."
+        },
+        {
+          "path": "COLLABORATION_LOG",
+          "line_start": 0,
+          "line_end": 0,
+          "observation": "task packet evidence_paths에는 Codex 2차 증거(ULTRA-R2)만 포함되어 1차와의 독립성(증거 hash·세션 상이)을 교차 검증할 수 없다."
+        }
+      ],
+      "impact": "Codex 1차 증거가 감사 입력에 없어 '같은 증거를 이름만 바꿔 재사용'하는 적대 시나리오를 실제 증거 수준에서 배제하지 못한다. 2회 독립 검수 요건의 절반만 검증 가능하다.",
+      "acceptance_criteria": [
+        "Codex 1차 증거 파일(들)이 후속 검수 스냅샷의 evidence_paths에 포함되어 1차·2차의 scope·세션·증거 SHA-256 상이함이 확인된다."
+      ],
+      "required_tests": [],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    }
+  ],
+  "proposed_edits": [],
+  "closed_finding_ids": [],
+  "reopened_finding_ids": [],
+  "remaining_required_finding_ids": [
+    "FNL-EVIDENCE-BINDING-001",
+    "FNL-VERIFY-EVIDENCE-002",
+    "FNL-CODEX-ROUND1-003"
+  ],
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}
