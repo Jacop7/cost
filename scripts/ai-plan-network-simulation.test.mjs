@@ -1018,10 +1018,10 @@ test('자율성은 A0 읽기부터 한 단계씩만 승격되고 운영 실행�
 test('실제 작업큐 Task heading과 YAML ID가 갈리면 재개를 거부한다', () => {
   const tampered = loadWorkQueue().replace('task_id: AI-ORCH-PLANS-SIM-1', 'task_id: OTHER-TASK');
   assert.throws(() => validateLiveTaskLedger(tampered), /Task heading과 YAML task_id/);
-  const staleSha = loadWorkQueue().replace(
-    'last_verified_sha: 8ab364e3330bbd7205572279fb5a4d6b969e2a51',
+  const staleSha = mutateLiveSimulationTask(loadWorkQueue(), (block) => block.replace(
+    /last_verified_sha: [0-9a-f]{40}/,
     `last_verified_sha: ${'f'.repeat(40)}`,
-  );
+  ));
   assert.throws(() => validateLiveTaskLedger(staleSha), /유효한 조상이 아닙니다/);
   const wrongBranch = loadWorkQueue().replaceAll(
     'active_branch: codex/ai-team-knowledge-orchestration-plans', 'active_branch: codex/fake-branch',
