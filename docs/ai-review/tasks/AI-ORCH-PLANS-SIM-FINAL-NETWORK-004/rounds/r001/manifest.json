@@ -1,0 +1,226 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-SIM-FINAL-NETWORK-004",
+  "round": "r001",
+  "created_at": "2026-09-02T03:20:50.732Z",
+  "review_mode": "FINAL",
+  "baseline_commit_sha": "c1b595f74f2fc7824b480bf8457e3026c0f1d6dc",
+  "target_commit_sha": "b4f79a6e9e3bfc830b4686a7b6ab861a37b26cf3",
+  "target_tree_oid": "8afcb562aa8669c50b60e5d1a7c1adb3c6679903",
+  "agents_blob_oid": "4c31bbf9be81871c4dfb1699e057c8303d4e2fae",
+  "agents_sha256": "5628177d442547e868acc3e0446e6513b65bf713f2cfd82cc78e0e6dedc4c860",
+  "task_sha256": "7fb0e2eda8ef22893e98d84858344db1e2209a982e7cb8be7ea478bae2d12117",
+  "collaboration_sha256": "56ef5728b4212a481092cdacb7615c19226ed93f871c203c93c9ace3c2ed56cf",
+  "collaboration_bytes": 1511,
+  "input_files_sha256": "d4b02ac733eab0fd589c768026b88251d22d750a9c4a99c18f558aafcb149bfa",
+  "schema_sha256": "d8ffdb13e6b1e38279355d9ffd592cfb91dc023d287976adf7892e85dbfaf0d7",
+  "runner_sha256": "80dae1d06c89af056e9d8c210b571e978ee534fc128a5fe3b9867610b5ae447b",
+  "snapshot_mode": "COMMIT",
+  "previous_review_sha256": null,
+  "previous_run_sha256": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "fallback_review": null,
+  "closure_review": null,
+  "fallback_input_scope": null,
+  "retry_of_failed_round": null,
+  "artifact_paths": [
+    "docs/팀구성_상세기획안.md",
+    "docs/AI-지식-온톨로지-기획안.md",
+    "docs/AI-오케스트레이션-상세기획안.md",
+    "docs/디렉터리-문서신경망-재설계-기획안.md",
+    "docs/AI-품질-학습-자율성-평가기획안.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/ai-review/README.md"
+  ],
+  "evidence_paths": [
+    "docs/작업큐.md",
+    "docs/ai-review/simulations/AI-PLANS-WORKFLOW-001.md",
+    "docs/ai-review/evidence/AI-PLANS-SIM-CODEX-R1.md",
+    "docs/ai-review/evidence/AI-PLANS-SIM-CODEX-ULTRA-R1.md",
+    "docs/ai-review/evidence/AI-PLANS-SIM-CODEX-ULTRA-R2.md",
+    "docs/ai-review/evidence/AI-PLANS-SIM-CODEX-ULTRA-R3.md",
+    "docs/ai-review/evidence/AI-PLANS-SIM-CODEX-ULTRA-R4.md",
+    "scripts/ai-plan-network-simulation.mjs",
+    "scripts/ai-plan-network-simulation.test.mjs"
+  ],
+  "allowed_paths": [
+    "docs/팀구성_상세기획안.md",
+    "docs/AI-지식-온톨로지-기획안.md",
+    "docs/AI-오케스트레이션-상세기획안.md",
+    "docs/디렉터리-문서신경망-재설계-기획안.md",
+    "docs/AI-품질-학습-자율성-평가기획안.md",
+    "AGENTS.md",
+    "docs/ai-review/README.md",
+    "docs/작업큐.md",
+    "docs/ai-review/simulations/AI-PLANS-WORKFLOW-001.md",
+    "docs/ai-review/evidence/AI-PLANS-SIM-CODEX-R1.md",
+    "docs/ai-review/evidence/AI-PLANS-SIM-CODEX-ULTRA-R1.md",
+    "docs/ai-review/evidence/AI-PLANS-SIM-CODEX-ULTRA-R2.md",
+    "docs/ai-review/evidence/AI-PLANS-SIM-CODEX-ULTRA-R3.md",
+    "docs/ai-review/evidence/AI-PLANS-SIM-CODEX-ULTRA-R4.md",
+    "scripts/ai-plan-network-simulation.mjs",
+    "scripts/ai-plan-network-simulation.test.mjs"
+  ],
+  "excluded_paths": [],
+  "applied_learning_ids": [],
+  "excluded_learning_ids": [],
+  "learning_registry_blob_oid": "77f00167d790c82373c1aa803d91874952c3334a",
+  "learning_registry_sha256": "4717fe99c86319d7c0abc5c8dd38e68e3a55722d7cfa56b8de173ed05ca1388f",
+  "learning_assignment_sha256": "4660bb32207bcae3246801d71aa6a052eab7b0a7cef357bd5984f706fe3dcbfe",
+  "learning_target_date": "2026-09-02",
+  "input_files": [
+    {
+      "path": "AGENTS.md",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 11345,
+      "git_blob_oid": "4c31bbf9be81871c4dfb1699e057c8303d4e2fae",
+      "sha256": "5628177d442547e868acc3e0446e6513b65bf713f2cfd82cc78e0e6dedc4c860",
+      "line_count": 157
+    },
+    {
+      "path": "docs/디렉터리-문서신경망-재설계-기획안.md",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 24191,
+      "git_blob_oid": "a37a966d8dad476db02d0fadd44a30e83aa9a3de",
+      "sha256": "059ebaab6429035598d2ec876861107c555fd6c348c341267d2ff000c758af48",
+      "line_count": 450
+    },
+    {
+      "path": "docs/작업큐.md",
+      "path_role": "EVIDENCE",
+      "change_type": "COMMIT",
+      "size": 137272,
+      "git_blob_oid": "dec7adffd59518dfd622e9b11df8c971e8886f6f",
+      "sha256": "655ea5f457c372beec54c02a9e8fa173bebe1fbfdba6ff01b6d1fa1493afff5f",
+      "line_count": 2016
+    },
+    {
+      "path": "docs/팀구성_상세기획안.md",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 108019,
+      "git_blob_oid": "de7c8a5e2b21131594ce68748d84aef51495a87d",
+      "sha256": "4e8f33e0023e21140739ade1819130737fddd574a9e91d0f1b4a83376a5d75ba",
+      "line_count": 1928
+    },
+    {
+      "path": "docs/AI-오케스트레이션-상세기획안.md",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 26529,
+      "git_blob_oid": "f844ba8d04a21bc843b788a898428b830b9e6c51",
+      "sha256": "83b14cba83a919d32072c3dbb14e6fc4013b2e5dc2b61e7d6c706ba0d6986f9c",
+      "line_count": 546
+    },
+    {
+      "path": "docs/AI-지식-온톨로지-기획안.md",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 26059,
+      "git_blob_oid": "be3e7ff630312a1274214ff20c5be72e55e133dc",
+      "sha256": "8c0de404951dd133c9757163bdc1f273759482f919392363cf2c10590a454111",
+      "line_count": 479
+    },
+    {
+      "path": "docs/AI-품질-학습-자율성-평가기획안.md",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 27957,
+      "git_blob_oid": "21e81230e178f4fb6f4b9f94024d38588378b577",
+      "sha256": "1ccbe0db830e11d3d6ea12eef584bb3f014f2a51a7e565b8dfdd5c79a16aecfc",
+      "line_count": 519
+    },
+    {
+      "path": "docs/ai-review/evidence/AI-PLANS-SIM-CODEX-R1.md",
+      "path_role": "EVIDENCE",
+      "change_type": "COMMIT",
+      "size": 3530,
+      "git_blob_oid": "af9ee264cbb3947f55dc0eb51576325b2c2ac1ad",
+      "sha256": "92406549766834420faf309f40dbc7e76406c2fd5b7edcbf033a3b3dba292b15",
+      "line_count": 42
+    },
+    {
+      "path": "docs/ai-review/evidence/AI-PLANS-SIM-CODEX-ULTRA-R1.md",
+      "path_role": "EVIDENCE",
+      "change_type": "COMMIT",
+      "size": 3659,
+      "git_blob_oid": "ea71cba14645ffe5d4b686031bcbefd8f3b571f6",
+      "sha256": "464c0cd65fae45dc14c078d5f1832dd581be65cc81ea9d67f96b3392ae1f271c",
+      "line_count": 37
+    },
+    {
+      "path": "docs/ai-review/evidence/AI-PLANS-SIM-CODEX-ULTRA-R2.md",
+      "path_role": "EVIDENCE",
+      "change_type": "COMMIT",
+      "size": 4026,
+      "git_blob_oid": "e32fab80af3b2a3cd5ad7b83475d09ebfaa03347",
+      "sha256": "a8010bf5bd849d3d0207c5664893ab01be3d3312176e55a5f18724d3d84c075c",
+      "line_count": 54
+    },
+    {
+      "path": "docs/ai-review/evidence/AI-PLANS-SIM-CODEX-ULTRA-R3.md",
+      "path_role": "EVIDENCE",
+      "change_type": "COMMIT",
+      "size": 4851,
+      "git_blob_oid": "4fc3e0e0ae0f948275b466516d4a1494981aa315",
+      "sha256": "f6d766240461516bbfcfa4f897e3de88436dab3f0b746cb75eac8be9e38ddc85",
+      "line_count": 88
+    },
+    {
+      "path": "docs/ai-review/evidence/AI-PLANS-SIM-CODEX-ULTRA-R4.md",
+      "path_role": "EVIDENCE",
+      "change_type": "COMMIT",
+      "size": 3905,
+      "git_blob_oid": "e613c7f560f80d8d418d5031590ab1abe4d3feb0",
+      "sha256": "1de711c434848f37682511d79c5852721dc07de532e1f163d9f2c450fa48f0e8",
+      "line_count": 65
+    },
+    {
+      "path": "docs/ai-review/README.md",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 39464,
+      "git_blob_oid": "7df2a216e73b4eea76966ff082c0cfaa61a1a31e",
+      "sha256": "390721ad0a5ec54a961ebd238833e0d9f48050444519bffa290ad5bf1447ff91",
+      "line_count": 536
+    },
+    {
+      "path": "docs/ai-review/simulations/AI-PLANS-WORKFLOW-001.md",
+      "path_role": "EVIDENCE",
+      "change_type": "COMMIT",
+      "size": 7792,
+      "git_blob_oid": "de45c3240c2161da6d242f8b05a2417f6376e4e2",
+      "sha256": "1235dfb5e95ce1f166166f65a7df9408f6dfde10c1dedfe8ca0053a4814c3f3b",
+      "line_count": 108
+    },
+    {
+      "path": "scripts/ai-plan-network-simulation.mjs",
+      "path_role": "EVIDENCE",
+      "change_type": "COMMIT",
+      "size": 120617,
+      "git_blob_oid": "aa5ef6136e8d7829aa0a765bddd936c69cf91999",
+      "sha256": "04b74ad26a51bf854be19eefb3249b9b5b30f954638512e6a6e70e3987a5ec32",
+      "line_count": 2301
+    },
+    {
+      "path": "scripts/ai-plan-network-simulation.test.mjs",
+      "path_role": "EVIDENCE",
+      "change_type": "COMMIT",
+      "size": 66231,
+      "git_blob_oid": "4b43660ea2018e7ab872ff588de3cf46cce5374d",
+      "sha256": "16b0792868c5fdaf6973ee4627513058a723513317051ff6df5c04475a82db11",
+      "line_count": 1364
+    }
+  ],
+  "source_archive_version": 1,
+  "finding_resolution_semantics": "VERIFIED_RESOLVED_V1",
+  "artifact_snapshot_sha256": null,
+  "input_snapshot_sha256": null
+}
