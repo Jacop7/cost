@@ -1,0 +1,68 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-SIM-FINAL-WORKFLOW-001",
+  "route": "FINAL_INDEPENDENT",
+  "risk_level": "R1",
+  "author_role": "AI-DEPUTY-ORCHESTRATOR",
+  "reviewer_role": "FABLE-FINAL",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "FINAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "8ab364e3330bbd7205572279fb5a4d6b969e2a51",
+  "target_commit_sha": "c1b595f74f2fc7824b480bf8457e3026c0f1d6dc",
+  "target_tree_oid": "1c4bfab16cf633d4b2106df0b58f488929d1508c",
+  "agents_blob_oid": "4c31bbf9be81871c4dfb1699e057c8303d4e2fae",
+  "agents_sha256": "f04aeb2f02d254eeff8e27014d57470214770c5be9fcf35a3d39033acfd0dd75",
+  "requirements": [
+    "다중 채팅의 사용자 요청이 원 요청·정규화 요청·Task 계약에 결속되고 한 소유자와 lease를 통해 처리된다.",
+    "정상·오류·장기 방치·운영 민감 업무가 요청부터 검수·사람 결정·학습까지 폐쇄된 상태 전이를 가진다.",
+    "가상 시뮬레이션 증거와 실제 보호 원격·운영 증거를 혼동하지 않으며 사람 전용 결정을 AI가 대체하지 않는다."
+  ],
+  "invariant_ids": [
+    "AGENTS:single-canonical-artifact",
+    "AGENTS:fable-append-only-ledger",
+    "AI-ORCH:multi-chat-request-normalization",
+    "AI-ORCH:human-only-production-decisions"
+  ],
+  "artifact_paths": [
+    "docs/팀구성_상세기획안.md",
+    "docs/AI-지식-온톨로지-기획안.md",
+    "docs/AI-오케스트레이션-상세기획안.md",
+    "docs/디렉터리-문서신경망-재설계-기획안.md",
+    "docs/AI-품질-학습-자율성-평가기획안.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/ai-review/README.md"
+  ],
+  "evidence_paths": [
+    "docs/작업큐.md",
+    "docs/ai-review/simulations/AI-PLANS-WORKFLOW-001.md",
+    "docs/ai-review/evidence/AI-PLANS-SIM-CODEX-ULTRA-R2.md",
+    "scripts/ai-plan-network-simulation.mjs",
+    "scripts/ai-plan-network-simulation.test.mjs"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "59개 적대 시뮬레이션 중 요청 결속·Task lease·Finding·Decision·Learning·자율성 수명주기 대조",
+    "전체 pnpm verify 6/6과 DB 50/50·경합·업그레이드 23/23 통과 기록",
+    "target commit·tree·AGENTS hash와 후보 문서 SHA-256 고정"
+  ],
+  "human_decisions": [
+    "2026-09-02 사용자가 다섯 기획안을 실제 업무 시뮬레이션으로 Codex 2회·Fable 2회 검수하라고 지시했다.",
+    "2026-09-02 사용자가 Fable 사용량 초기화 뒤 공식 Fable 경로로 계속 진행하라고 승인했다.",
+    "DRAFT 기획안 활성화와 실제 디렉터리 생성은 검수 뒤 별도 사람 최종 승인을 받아야 한다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": "다섯 기획안을 실제 업무 처리 관점에서 독립 감사하라. 다중 채팅에서 들어온 원 요청이 정규화 요청과 Task로 결속되는지, 단일 편집 소유권·lease·append-only 감사·Finding·Decision·Learning·자율성 상태가 정상·실패·장기 방치 흐름에서 폐쇄되는지 검증하라. AI-PLANS-WORKFLOW-001과 59개 시뮬레이션을 코드와 대조해 거짓 PASS나 자기 증명은 없는지 확인하라. 가상 protected gate는 실제 배포 증거가 아니며 운영·비가역·비용 결정은 사람 전용이라는 경계를 유지하라. 필수 결함은 구체적 파일·계약·재현 조건과 함께 Finding으로 반환하고, 문서 활성화나 디렉터리 생성을 승인하지 마라.",
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "4.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}

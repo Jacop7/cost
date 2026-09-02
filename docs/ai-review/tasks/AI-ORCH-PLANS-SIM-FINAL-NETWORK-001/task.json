@@ -1,0 +1,68 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-SIM-FINAL-NETWORK-001",
+  "route": "FINAL_INDEPENDENT",
+  "risk_level": "R1",
+  "author_role": "AI-DEPUTY-ORCHESTRATOR",
+  "reviewer_role": "FABLE-FINAL",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "FINAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "8ab364e3330bbd7205572279fb5a4d6b969e2a51",
+  "target_commit_sha": "c1b595f74f2fc7824b480bf8457e3026c0f1d6dc",
+  "target_tree_oid": "1c4bfab16cf633d4b2106df0b58f488929d1508c",
+  "agents_blob_oid": "4c31bbf9be81871c4dfb1699e057c8303d4e2fae",
+  "agents_sha256": "f04aeb2f02d254eeff8e27014d57470214770c5be9fcf35a3d39033acfd0dd75",
+  "requirements": [
+    "다섯 기획안이 각자 단일 권위를 유지하면서 탐색 그래프는 강연결이고 권위 의존 그래프는 비순환이다.",
+    "역할별 MD·팀 지식·작업큐·검수 증거가 경쟁 공식본을 만들지 않고 한 문서 신경망으로 이어진다.",
+    "DRAFT 수명주기·supersedes·activation·retirement와 실제 디렉터리 물질화가 별도 사람 결정에 결속된다."
+  ],
+  "invariant_ids": [
+    "AGENTS:single-canonical-artifact",
+    "AI-ONTOLOGY:authority-dag",
+    "AI-DOC-NETWORK:strong-navigation-connectivity",
+    "AI-LIFECYCLE:draft-before-human-activation"
+  ],
+  "artifact_paths": [
+    "docs/팀구성_상세기획안.md",
+    "docs/AI-지식-온톨로지-기획안.md",
+    "docs/AI-오케스트레이션-상세기획안.md",
+    "docs/디렉터리-문서신경망-재설계-기획안.md",
+    "docs/AI-품질-학습-자율성-평가기획안.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/ai-review/README.md"
+  ],
+  "evidence_paths": [
+    "docs/작업큐.md",
+    "docs/ai-review/simulations/AI-PLANS-WORKFLOW-001.md",
+    "docs/ai-review/evidence/AI-PLANS-SIM-CODEX-ULTRA-R2.md",
+    "scripts/ai-plan-network-simulation.mjs",
+    "scripts/ai-plan-network-simulation.test.mjs"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "다섯 문서 front matter·본문 링크·중앙 권위 표·depends_on·supersedes의 상호 대조",
+    "강연결 탐색 그래프와 비순환 권위 DAG를 깨뜨린 적대 시험의 실제 적중",
+    "DRAFT 상태에서 실제 docs/team/roles·docs/plans가 생성되지 않았다는 경계"
+  ],
+  "human_decisions": [
+    "2026-09-02 사용자가 문서가 늘어날 때마다 전체 기획안의 상호작용을 누적 교차검수하라고 지시했다.",
+    "2026-09-02 사용자가 Codex 2회와 Fable 2회의 독립 검수를 요구했다.",
+    "다섯 문서의 ACTIVE 전환과 실제 디렉터리 재설계는 사람 최종 승인 전에는 금지된다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": "다섯 기획안을 하나의 문서·권위 네트워크로 독립 감사하라. 각 문서의 단일 권위와 책임이 중복되지 않는지, Markdown 탐색 링크는 모든 문서를 왕복 연결하는지, depends_on 권위 DAG는 순환하지 않는지, 팀 역할 MD와 Task·Decision·Finding·Evidence·Learning의 저장 위치가 문서별 계약과 일치하는지 대조하라. metadata·중앙 권위 표·수명주기·supersedes·activation을 시뮬레이터와 실제 파일에서 함께 확인하라. DRAFT 문서를 ACTIVE로 간주하거나 아직 만들지 않은 docs/team/roles·docs/plans를 실재한다고 가정하지 마라. 필수 결함은 파일·절·깨지는 네트워크 관계를 명시한 Finding으로 반환하라.",
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "4.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}
