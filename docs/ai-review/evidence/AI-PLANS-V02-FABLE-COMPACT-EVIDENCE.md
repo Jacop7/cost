@@ -7,7 +7,10 @@
 
 ## 1. 공식 artifact 결속
 
-다음 다섯 문서는 Fable 입력에서 모두 `ARTIFACT`로 유지해야 한다. 이 증거는 공식 문서를 대체하지 않는다.
+다음 다섯 문서는 누적 Fable 검수 범위다. 이 증거는 공식 문서를 대체하지 않는다. 다만 정확히 같은 Git blob이
+이미 유효한 Fable `VERIFIED/PASS`에 결속됐다면 successor 회차에서는 그 원문을 다시 보내지 않고, Task ID·
+review hash·blob을 증거로 고정할 수 있다. 바뀌었거나 아직 유효 PASS가 없는 문서는 반드시 `ARTIFACT` 원문으로
+보낸다.
 
 | 문서 | 상태·판본 | Git blob | bytes |
 |---|---|---|---:|
@@ -16,6 +19,14 @@
 | AI 오케스트레이션 | `DRAFT` v0.2 | `4f401f586bee0595d1f1863ecae50ce2eb8f7ec8` | 33,874 |
 | 디렉터리·문서 신경망 | `DRAFT` v0.2 | `b3664f96e52e6c10a14c80382e6407c5ea3d95e5` | 28,262 |
 | 품질·학습·자율성 평가 | `DRAFT` v0.2 | `320b8c423c5bed8d11ce5de66617e896508070e0` | 31,880 |
+
+이번 축소 successor에서 원문 재전송을 생략할 수 있는 것은 팀 구성안 하나뿐이다.
+
+- 선행 검수: `AI-KNOWLEDGE-ORBIT-TEAM-003/r001`
+- 상태: `RESULT_RECEIVED · VERIFIED · PASS`
+- review hash: `5d253e37d59f89668954d2bfa6a3f462b9a34f54e92299af7ee228948758b8fb`
+- 선행·현재 blob: `ce68e2cc85b8973bcb968a8f968a153b65c3dfa0`로 동일
+- 나머지 네 DRAFT 문서는 원문을 모두 싣는다. 과거 PASS 뒤 바뀌었거나 아직 유효 PASS가 없기 때문이다.
 
 ## 2. 이번 후보의 상호작용 축
 
@@ -58,7 +69,8 @@
 
 ## 5. 판정 제한
 
-- 이 파일만 읽은 결과는 유효한 누적 검수가 아니다. 다섯 공식 artifact 원문을 함께 읽어야 한다.
+- 이 파일만 읽은 결과는 유효한 누적 검수가 아니다. 이번 회차는 네 DRAFT artifact 원문과 위의 동일 blob
+  선행 PASS를 함께 읽어야 한다. blob이 달라지면 팀 구성안도 다시 원문 검수한다.
 - 실행 원본이 필요하면 위 blob과 저장소 경로를 요청한다. hash만으로 행동을 PASS 처리하지 않는다.
 - Fable CLI 실패, 구조화 결과 누락, budget exhaustion은 `RUN_FAILED`이며 검수 회차로 세지 않는다.
 - 유효 Fable 결과 전에는 네 DRAFT 문서를 `ACTIVE`로 바꾸거나 실제 팀 디렉터리·채팅을 만들지 않는다.
