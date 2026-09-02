@@ -102,6 +102,7 @@
 | 빠른 로컬 게이트 | `corepack pnpm verify --no-db` | 선택 범위 4/6 성공, skip 명시 | 실행 출력 + exact HEAD |
 | Fable 연결 | `corepack pnpm fable:check` | exit 0, 연결 정상, 로그인됨 | 실행 출력 |
 | 경로 분할 | status 분류 판정 | 미분류 0, 중복 0 | 이 파일 §3 + 실행 출력 |
+| rename 판정 | `node scripts/ai-plan-prework-status-check.mjs --self-test` | 새 경로 우선 fixture 2/2 | 실행 출력 |
 | Task 준비 | Task/hash 대조 | immutable 실패 보존, successor 필요 여부 명시 | 이 파일 §4 |
 
 `verify --no-db`는 전체 6/6 통과가 아니며 Docker DB·업그레이드 검사를 건너뛴 빠른 기준선으로만 쓴다.
