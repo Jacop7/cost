@@ -1299,6 +1299,13 @@ test('실제 Task 장부는 등록 역할·edit owner·완료된 의존성을 �
     block.replace(/^current_state:.*$/m, 'current_state: DONE')
   ));
   assert.throws(() => validateLiveTaskLedger(falseDone), /보호 gate/);
+  const trackedAsUntracked = mutateLiveSimulationTask(loadWorkQueue(), (block) => (
+    block.replace(
+      'untracked_in_scope_paths: []',
+      'untracked_in_scope_paths:\n  - docs/ai-review/evidence/AI-PLANS-SIM-CODEX-ULTRA-R4.md',
+    )
+  ));
+  assert.throws(() => validateLiveTaskLedger(trackedAsUntracked), /이미 추적된 경로를 미추적으로/);
 });
 
 test('Learning·자율성 현재 상태는 append-only 감사 원본을 벗어나 변조될 수 없다', () => {
