@@ -1,0 +1,72 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-SIM-FINAL-WORKFLOW-005",
+  "route": "FINAL_INDEPENDENT",
+  "risk_level": "R1",
+  "author_role": "AI-DEPUTY-ORCHESTRATOR",
+  "reviewer_role": "FABLE-FINAL",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "FINAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "c1b595f74f2fc7824b480bf8457e3026c0f1d6dc",
+  "target_commit_sha": "b4f79a6e9e3bfc830b4686a7b6ab861a37b26cf3",
+  "target_tree_oid": "8afcb562aa8669c50b60e5d1a7c1adb3c6679903",
+  "agents_blob_oid": "4c31bbf9be81871c4dfb1699e057c8303d4e2fae",
+  "agents_sha256": "5628177d442547e868acc3e0446e6513b65bf713f2cfd82cc78e0e6dedc4c860",
+  "requirements": [
+    "다중 채팅 요청·정규화·Task·단일 소유자·lease가 결속된다.",
+    "정상·오류·방치·운영 민감 흐름이 검수·사람 결정·Learning까지 폐쇄된다.",
+    "exact-SHA 증거·실패 회차·줄끝 안정 manifest가 실제 실행 결과와 일치한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:single-canonical-artifact",
+    "AGENTS:fable-append-only-ledger",
+    "AI-ORCH:multi-chat-request-normalization",
+    "AI-ORCH:human-only-production-decisions"
+  ],
+  "artifact_paths": [
+    "docs/팀구성_상세기획안.md",
+    "docs/AI-지식-온톨로지-기획안.md",
+    "docs/AI-오케스트레이션-상세기획안.md",
+    "docs/디렉터리-문서신경망-재설계-기획안.md",
+    "docs/AI-품질-학습-자율성-평가기획안.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/ai-review/README.md"
+  ],
+  "evidence_paths": [
+    "docs/작업큐.md",
+    "docs/ai-review/simulations/AI-PLANS-WORKFLOW-001.md",
+    "docs/ai-review/evidence/AI-PLANS-SIM-CODEX-R1.md",
+    "docs/ai-review/evidence/AI-PLANS-SIM-CODEX-ULTRA-R1.md",
+    "docs/ai-review/evidence/AI-PLANS-SIM-CODEX-ULTRA-R2.md",
+    "docs/ai-review/evidence/AI-PLANS-SIM-CODEX-ULTRA-R3.md",
+    "docs/ai-review/evidence/AI-PLANS-SIM-CODEX-ULTRA-R4.md",
+    "scripts/ai-plan-network-simulation.mjs",
+    "scripts/ai-plan-network-simulation.test.mjs"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "GitHub Actions 33582393050의 exact c1b595f Node 20·24·full-db-required 성공",
+    "b4f79a6의 줄끝 안정 manifest 구현과 exact-commit 격리 실행 59/59",
+    "과거 Fable 실패·예산 소진·결과 계약 거부 회차를 PASS로 세지 않고 보존한 R4 기록",
+    "요청→Task→lease→검수→사람 결정→Learning 상태 전이의 정상·오류·방치 시나리오"
+  ],
+  "human_decisions": [
+    "2026-09-02 사용자가 신규 독립 Fable 워크플로 감사 1회에 최대 4달러 사용을 승인했다.",
+    "DRAFT 활성화와 실제 디렉터리 생성은 별도 사람 최종 승인 사항이다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": "다섯 기획안의 실제 업무 흐름을 처음부터 독립 감사하라. 이전 review의 결론이나 Finding ID를 상속·재사용하지 말고, 결함을 발견하면 이번 감사의 새 Finding ID를 발급하라. R1·Ultra R1~R4와 exact-SHA CI·격리 실행 59/59를 실제 파일과 대조하되 과거 실패 회차는 증거 이력일 뿐 유효 판정으로 합성하지 마라. 요청→Task→lease→검수→사람 결정→Learning이 정상·오류·방치 흐름에서 폐쇄되는지 확인하라. 가상 gate를 실제 배포 증거로 취급하거나 DRAFT 활성화를 승인하지 마라.",
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "4.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}
