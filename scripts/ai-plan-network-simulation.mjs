@@ -1949,6 +1949,17 @@ export function validateLiveTaskLedger(text, taskId = 'AI-ORCH-PLANS-SIM-1') {
   }
   const actualAgentsBlob = execFileSync('git', ['hash-object', 'AGENTS.md'], { cwd: root, encoding: 'utf8' }).trim();
   assert.equal(fieldOf(block, 'agents_md_blob_sha'), actualAgentsBlob, 'Task AGENTS blob이 현재 파일과 어긋났습니다.');
+  const untrackedInScopePaths = listOf(block, 'untracked_in_scope_paths');
+  for (const path of untrackedInScopePaths) {
+    assert.ok(isSafeRepoRelative(path), `Task 미추적 경로가 안전하지 않습니다: ${path}`);
+    let tracked = true;
+    try {
+      execFileSync('git', ['ls-files', '--error-unmatch', '--', path], { cwd: root, stdio: 'ignore' });
+    } catch {
+      tracked = false;
+    }
+    assert.equal(tracked, false, `Task가 이미 추적된 경로를 미추적으로 기록했습니다: ${path}`);
+  }
   const artifactPaths = listOf(block, 'artifact_paths');
   const manifestEntries = artifactPaths.filter((path) => path !== 'docs/작업큐.md').sort().map((path) => {
     assert.ok(isSafeRepoRelative(path) && existsSync(join(root, path)), `실제 Task artifact path가 없거나 안전하지 않습니다: ${path}`);
