@@ -1,0 +1,75 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-KNOWLEDGE-ORBIT-TEAM-003",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R1",
+  "author_role": "SOLAR-ORCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "37659fb82f5b192d49e8753e7235df4fc4b527c9",
+  "target_commit_sha": "c1eca092424570c46e1e99be9698f9b86619e6da",
+  "target_tree_oid": "088b68fded0e1c2a9f5c77163e36ec9a2a0d4d8e",
+  "agents_blob_oid": "4c31bbf9be81871c4dfb1699e057c8303d4e2fae",
+  "agents_sha256": "5628177d442547e868acc3e0446e6513b65bf713f2cfd82cc78e0e6dedc4c860",
+  "requirements": [
+    "ORBIT-TEAM-STEWARD-REG-001을 같은 finding_id로 재확인하고 CONTEXT-STEWARD가 역할표·조직도·컨텍스트 목록에 등록되어 제작·검수·복원 컨텍스트와 분리됐는지 검증한다.",
+    "ORBIT-TEAM-XREF-PACKET-002를 같은 finding_id로 재확인하고 §5.2 발행 패킷과 §11 현재 복원 권위의 경계가 명확한지 검증한다.",
+    "ORBIT-TEAM-SIM-COVERAGE-003을 같은 finding_id로 재확인하고 새 팀·Steward·채팅 권한 회귀시험 3건이 실제 계약을 직접 검증하는지 확인한다.",
+    "수정이 기존 사람 승인·AI 부 오케스트레이터 복원·Quality 독립 감사 경계를 재개방하지 않았는지 검증한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:single-canonical-artifact",
+    "AGENTS:human-approval-boundary",
+    "AGENTS:clean-independent-review",
+    "AI-ORCH:multi-chat-repository-authority",
+    "AI-ORCH:token-context-budget"
+  ],
+  "artifact_paths": [
+    "docs/팀구성_상세기획안.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/ai-review/evidence/AI-TEAM-KNOWLEDGE-ORBIT-PREPLAN.md"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/tasks/AI-TEAM-KNOWLEDGE-ORBIT-AUDIT-002/rounds/r003/review.md",
+    "scripts/ai-plan-network-simulation.test.mjs"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "predecessor r001의 Finding 3건을 동일 finding_id·previous_finding_id로 재확인",
+    "수정된 §1.1·§1.2·§1.4·§3.2.1·§5.1과 기존 권한 경계 대조",
+    "새 회귀시험 3건을 포함한 문서 네트워크 시뮬레이션 62/62",
+    "target commit·tree·AGENTS hash와 predecessor handoff hash 검증"
+  ],
+  "human_decisions": [
+    "2026-09-02 사용자가 Fable 지적을 모두 반영하고 같은 발견 역할로 재검수하도록 승인했다.",
+    "이 successor는 TEAM-002 r001의 Finding 3건을 승계하며 수정 commit의 현재 상태만 재검수한다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": {
+    "task_id": "AI-KNOWLEDGE-ORBIT-TEAM-002",
+    "source_commit_sha": "8e6c977edd234ed4634d7a93165c833b10e3d8f0",
+    "round": "r001",
+    "task_sha256": "3c79741783628a8e6373059c0634c1cf74bf27415b38ffa09a4240c42ea4794e",
+    "manifest_sha256": "7c164ebc465c9d2efa7af24a94e4d2dcbb6988886fb8b9d6a49facf6701c593f",
+    "run_sha256": "3ae99da0a0073a26e31b12853db249070a06376d6307437f88394bfe221c4560",
+    "review_sha256": "37a303a758db68f4875318d336b37ed616ea3467e53a1dcae7d6bcadab78916f",
+    "finding_registry_sha256": "61c7dc1a7db75d8f6841d7697e397ecb25e534cc3072d9436a5a36e508042bab",
+    "handoff_turn_id": "turn-o001",
+    "handoff_entry_sha256": "48149bb5fc7ada748f426951c7ea84e6a02ff4b8c69d6add5147a13cf4ab7c9f",
+    "handoff_run_sha256": "43f28ff3a8787f621a0fca2b9dd680dbaaa48304d63adb2f18a4e68f9785de87"
+  },
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "4.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}
