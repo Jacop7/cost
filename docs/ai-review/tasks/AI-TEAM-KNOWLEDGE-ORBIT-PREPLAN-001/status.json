@@ -1,0 +1,32 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "AI-TEAM-KNOWLEDGE-ORBIT-PREPLAN-001",
+  "predecessor_review": null,
+  "updated_at": "2026-09-02T04:26:14.328Z",
+  "latest_round": "r001",
+  "review_state": "OPEN",
+  "workflow_state": "FIXING",
+  "gate_state": "OPEN",
+  "run_state": "RESULT_RECEIVED",
+  "defect_state": "NOT_APPLICABLE",
+  "verdict": "CHANGES_REQUIRED",
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "fallback_reason": null,
+  "latest_run_sha256": "d1d0acc8a4916146890f39255729b5240b8a21e7b1475f4a66d86f58f6d9cf60",
+  "open_required_finding_ids": [
+    "ORBIT-PREPLAN-DOCPLANE-001",
+    "ORBIT-PREPLAN-HANDOFF-002",
+    "ORBIT-PREPLAN-ONTOLOGY-003",
+    "ORBIT-PREPLAN-QUALITY-004",
+    "ORBIT-PREPLAN-STATE-005",
+    "ORBIT-PREPLAN-ROLE-006",
+    "ORBIT-PREPLAN-METRIC-007"
+  ],
+  "open_optional_finding_ids": [],
+  "closed_finding_ids": [],
+  "candidate_review_state": null,
+  "candidate_review_sha256": null,
+  "backlog_dispositions": []
+}

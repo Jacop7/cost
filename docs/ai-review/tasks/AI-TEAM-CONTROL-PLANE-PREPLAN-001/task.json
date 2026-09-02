@@ -1,0 +1,75 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "AI-TEAM-CONTROL-PLANE-PREPLAN-001",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R1",
+  "author_role": "SOLAR-ORCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "933262b1f193d1b4cacbb7c2fb08564592cdf419",
+  "target_commit_sha": "933262b1f193d1b4cacbb7c2fb08564592cdf419",
+  "target_tree_oid": "f04fa0356ff5f3241fb76f096a36b2bad3b14ec4",
+  "agents_blob_oid": "4c31bbf9be81871c4dfb1699e057c8303d4e2fae",
+  "agents_sha256": "5628177d442547e868acc3e0446e6513b65bf713f2cfd82cc78e0e6dedc4c860",
+  "requirements": [
+    "기존 다섯 기획안의 단일 공식본·역할·권위·학습 계약을 유지하면서 다중 채팅 운영 구조를 확장할 수 있어야 한다.",
+    "마스터 작업과 부서 그룹을 분리하되 같은 사실을 여러 채팅과 문서에 복제하지 않아야 한다.",
+    "모든 팀 상황실·부서 조정실·실제 Task 채팅의 쓰기 책임과 수명주기가 달라야 한다.",
+    "AI 부 오케스트레이터와 Context & Token Steward가 모든 팀에 적용되되 전체 컨텍스트를 매번 복제하지 않아야 한다.",
+    "Data Backend와 Server Supabase Operations의 책임 경계를 DB 제품 로직과 플랫폼 운영 경계로 명확히 나눠야 한다.",
+    "Quality Review는 구현·오케스트레이션·토큰 관리로부터 독립된 판정권을 유지해야 한다.",
+    "개발·스테이징 배포 검증과 운영 배포·복구 게이트를 분리하고 운영 반영에는 사람의 명시적 승인을 요구해야 한다.",
+    "무거워진 채팅의 종료·HANDOFF·새 Task 생성이 히스토리 보존과 최소 컨텍스트 원칙을 동시에 만족해야 한다.",
+    "저장소의 팀별 MD와 _shared 제어면은 권위 문서를 링크하고 현재 상태만 요약하며 경쟁 공식본을 만들지 않아야 한다.",
+    "초기 구조는 최소 파일로 시작하고 실제 업무 시뮬레이션과 측정 결과에 따라 확장해야 한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:single-canonical-artifact",
+    "AGENTS:fable-append-only-ledger",
+    "AGENTS:authoritative-root",
+    "AI-ORCH:multi-chat-repository-authority",
+    "AI-ORCH:token-context-budget",
+    "AI-QUALITY:independent-review"
+  ],
+  "artifact_paths": [
+    "docs/팀구성_상세기획안.md",
+    "docs/AI-지식-온톨로지-기획안.md",
+    "docs/AI-오케스트레이션-상세기획안.md",
+    "docs/디렉터리-문서신경망-재설계-기획안.md",
+    "docs/AI-품질-학습-자율성-평가기획안.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/ai-review/README.md",
+    "docs/작업큐.md"
+  ],
+  "evidence_paths": [
+    "scripts/ai-plan-network-simulation.test.mjs"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "다섯 공식 기획안의 현재 권위·역할·상태·학습 계약과 제안 구조의 항목별 대조",
+    "다중 채팅에서 동일 사실이 갈라지는 경로와 이를 막는 단일 제어면",
+    "부서 조정실과 실제 Task 채팅의 생성·체크포인트·HANDOFF·종료 수명주기",
+    "토큰 관리자의 허용 권한·금지 권한·상한 초과 중단 조건",
+    "DB 제품 로직·Supabase 플랫폼 운영·독립 품질 판정의 책임 분리",
+    "개발·스테이징 검증에서 운영 배포까지의 사람 승인 포함 승격 흐름",
+    "초기 최소 MD 집합과 향후 확장 조건"
+  ],
+  "human_decisions": [
+    "2026-09-02 사용자는 공식 기획안 작성 전에 현재까지의 채팅·팀·토큰 관리 구조를 정리하고 Fable과 검토하도록 요청했다.",
+    "기존 Codex 프로젝트는 MarginCook 마스터 작업으로 사용하고 별도 MarginCook 부서 그룹을 둔다.",
+    "마스터 작업은 마스터 오케스트레이션, 부 오케스트레이션·토큰/컨텍스트 관리, 통합 작업큐·사람 결정, 개발·스테이징 배포 검증, 운영 배포·복구 게이트로 나눈다.",
+    "부서 그룹은 모든 팀 상황실, Product Mobile, Data Backend, Server Supabase Operations, Quality Review, Knowledge Orchestration으로 나눈다.",
+    "AI 부 오케스트레이터와 Context & Token Steward는 모든 부서 채팅에 적용되며 Knowledge Orchestration을 기본 거점으로 삼는다.",
+    "모든 팀 상황실은 전체 공지와 교차 팀 차단 상태를 공유하지만 대형 구현 채팅으로 사용하지 않는다.",
+    "부서 채팅은 조정실이고 실제 구현은 별도 Task 채팅에서 수행한다.",
+    "운영 배포·복구는 개발·스테이징 검증과 분리하며 사람의 명시적 승인 없이는 진행하지 않는다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null
+}
