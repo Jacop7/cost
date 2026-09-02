@@ -1,0 +1,79 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-PLANS-V02-NETWORK-004",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R1",
+  "author_role": "SOLAR-ARCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "00b7ce3d3d9a18838fa920238a369657957b4431",
+  "target_commit_sha": "74a9f85f683bd18a3af8d7fcd544786766b758fe",
+  "target_tree_oid": "5a211d404e863e3e5890b40843bb85a3523fb575",
+  "agents_blob_oid": "4c31bbf9be81871c4dfb1699e057c8303d4e2fae",
+  "agents_sha256": "5628177d442547e868acc3e0446e6513b65bf713f2cfd82cc78e0e6dedc4c860",
+  "requirements": [
+    "네 DRAFT 기획안의 요청 정규화·HANDOFF·경로·평가 권위가 중복되지 않고 하나의 실행 네트워크로 이어지는지 검증한다.",
+    "마스터 5개·부서 6개 채팅과 임시 Task 채팅이 공식 기억을 복제하지 않으며 Context Steward가 관측·rollover 신호 권한을 넘지 않는지 검증한다.",
+    "L0~L4 복원, 단조 HANDOFF, source SHA·snapshot, edit lease 인계와 DRAFT→원자적 ACTIVE→materialization 순서의 반례를 찾는다.",
+    "동일 blob의 팀 구성안은 유효 Fable PASS 증거로 계승하되, 나머지 네 DRAFT 원문과의 교차 계약에 빈틈이 없는지 검증한다.",
+    "필수 Finding은 최대 5개로 우선순위화하고 같은 원인의 표현상 지적은 하나로 합친다."
+  ],
+  "invariant_ids": [
+    "AGENTS:single-canonical-artifact",
+    "AGENTS:fable-required-review",
+    "AI-ORCH:handoff-stale-version-rejection",
+    "AI-ORCH:context-steward-signal-only",
+    "AI-DIRECTORY:no-materialization-before-active"
+  ],
+  "artifact_paths": [
+    "docs/AI-지식-온톨로지-기획안.md",
+    "docs/AI-오케스트레이션-상세기획안.md",
+    "docs/디렉터리-문서신경망-재설계-기획안.md",
+    "docs/AI-품질-학습-자율성-평가기획안.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/evidence/AI-PLANS-V02-FABLE-COMPACT-EVIDENCE.md",
+    "docs/ai-review/tasks/AI-KNOWLEDGE-ORBIT-TEAM-003/status.json",
+    "docs/ai-review/tasks/AI-KNOWLEDGE-ORBIT-TEAM-003/rounds/r001/run.json",
+    "docs/ai-review/tasks/AI-KNOWLEDGE-ORBIT-TEAM-003/rounds/r001/review.json"
+  ],
+  "excluded_paths": [
+    "docs/팀구성_상세기획안.md",
+    "scripts/ai-plan-network-simulation.mjs",
+    "scripts/ai-plan-network-simulation.test.mjs",
+    "apps/mobile/**",
+    "scripts/prototype_server.py",
+    "docs/prototypes/**",
+    "docs/ai-review/tasks/PROTOTYPE-TERMINOLOGY-001/**"
+  ],
+  "required_evidence": [
+    "네 DRAFT artifact의 metadata 의존 DAG와 중앙 권위 표 직접 대조",
+    "축소 증거 §2 상호작용 축과 §3 HANDOFF 실행 fixture 확인",
+    "팀 구성안 blob이 선행 VERIFIED/PASS 검수의 artifact blob과 동일한지 확인",
+    "target commit·tree·AGENTS hash 확인",
+    "잔여 Critical·Major 또는 명세상 필수 Finding 목록"
+  ],
+  "human_decisions": [
+    "2026-09-02 사용자는 모든 검수에 Fable을 필수로 사용하되 실제 사용량을 최소화하도록 지시했다.",
+    "NETWORK-001은 외부 호출 전 hash 불일치, NETWORK-002와 NETWORK-003은 budget_exhausted로 끝났다. 실패 원본은 보존하고 유효 회차로 세지 않는다.",
+    "팀 구성안 현재 blob은 AI-KNOWLEDGE-ORBIT-TEAM-003/r001의 VERIFIED/PASS artifact와 동일하므로 원문 재전송을 생략하고 검증 증거만 싣는다.",
+    "유효 Fable 결과 전에는 네 DRAFT 문서를 ACTIVE로 바꾸거나 실제 팀 디렉터리·채팅을 만들지 않는다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "4.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}
