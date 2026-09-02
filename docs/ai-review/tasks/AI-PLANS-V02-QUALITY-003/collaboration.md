@@ -1,4 +1,4 @@
-# AI-PLANS-V02-QUALITY-002 공동 작업 장부
+# AI-PLANS-V02-QUALITY-003 공동 작업 장부
 
 > 품질·학습·자율성 원문 하나와 최신 교차계약 투영을 Fable이 집중 검수하는 장부다.
 > 비-Fable 턴은 전용 append 명령으로만 추가한다.
@@ -15,11 +15,3 @@
 - 실행한 테스트·현재 증거: `corepack pnpm ai:plans:simulate` 70/70; `corepack pnpm verify --no-db` 4/6. 다른 문서 계약은 compact evidence에 target commit·tree·blob·시험 hash로 결속했다.
 - 사람 결정이 필요한 항목: 다섯 문서 유효 Fable 검수와 최종 네트워크 결속 전에는 DRAFT 활성화·디렉터리 materialization을 하지 않는다.
 - next_review_request: `FABLE_REVIEW`
-
-## SOLAR_RESPONSE · turn-s002
-
-- role: `SOLAR-AI-DEPUTY`
-- reply_to_turn_id: `turn-s001`
-- 판정: 실행 전 정적 검사에서 `agents_sha256`이 commit blob이 아니라 CRLF worktree 바이트로 계산된 것을 확인했다.
-- 상태: task.json과 기존 append 기록은 수정하지 않고 이 Task를 실행 불가 원본으로 보존한다.
-- 후속: 동일 target commit·tree·범위를 유지하되 commit의 AGENTS blob SHA-256 `de18fc8524afa350d3d0806f40150b9397dfd45a91ff471b5e1f6d6bf95fc681`을 봉인한 새 Task를 발행한다.

@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-PLANS-V02-TEAM-POLICY-001",
+  "sequence": "t0002",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-02T09:39:08.542Z",
+  "turn_id": "turn-s002",
+  "turn_type": "SOLAR_RESPONSE",
+  "role": "SOLAR-AI-DEPUTY",
+  "task_sha256": "bfb57c59869ec22297fe4fcbcd1da6a4ce4b367dc4edebe150253fa47de3dc3b",
+  "runner_sha256": "80dae1d06c89af056e9d8c210b571e978ee534fc128a5fe3b9867610b5ae447b",
+  "previous_manual_run_sha256": "9d1b67d0d460b10030e4b5f95d54b4075044ef0d964325ed0f76480c7ede0dad",
+  "collaboration_before_sha256": "48e93c3267c5f169b856b40191aae8a799b49c75eafae7403a70c62c1c0a4f56",
+  "collaboration_before_bytes": 1271,
+  "collaboration_entry_sha256": "be13403ff50b0f492564a4a8a481b43b756be05c14918f490d1697334ad8a16c",
+  "collaboration_entry_bytes": 551,
+  "collaboration_after_sha256": "9aad38705a42753b98cb37f2576ca3402ad2701a1070c323fee33f2642c4ff78",
+  "collaboration_after_bytes": 1822
+}
