@@ -22,6 +22,7 @@ const exactInScope = new Set([
   'docs/ai-review/evidence/AI-PLANS-PREWORK-VERIFICATION.md',
   'docs/ai-review/evidence/AI-PLANS-PREWORK-VERIFICATION-V2.md',
   'docs/ai-review/evidence/AI-PLANS-PREWORK-OPUS-R1.md',
+  'docs/ai-review/evidence/AI-PLANS-PREWORK-OPUS-R2.md',
   'docs/ai-review/evidence/AI-PLANS-PREWORK-USER-STATE.json',
   'scripts/ai-plan-prework-status-check.mjs',
 ]);
@@ -55,33 +56,70 @@ function sha256(path) {
   return createHash('sha256').update(readFileSync(absolute)).digest('hex');
 }
 
+function parseStatusRecords(raw) {
+  const records = raw.toString('utf8').split('\0').filter(Boolean);
+  const entries = [];
+  for (let index = 0; index < records.length; index += 1) {
+    const record = records[index];
+    const status = record.slice(0, 2);
+    const path = record.slice(3).replaceAll('\\', '/');
+    let sourcePath = null;
+    if (status.includes('R') || status.includes('C')) {
+      const source = records[index + 1];
+      if (!source) throw new Error(`rename/copy source missing: ${path}`);
+      sourcePath = source.replaceAll('\\', '/');
+      index += 1;
+    }
+    const categories = classify(path);
+    entries.push({ path, sourcePath, status, categories, sha256: sha256(path) });
+  }
+  return entries.sort((left, right) => left.path.localeCompare(right.path, 'en'));
+}
+
 function loadEntries() {
   const raw = execFileSync(
     'git',
     ['-c', 'core.quotePath=false', 'status', '--porcelain=v1', '-z', '--untracked-files=all'],
     { cwd: root },
   );
-  const records = raw.toString('utf8').split('\0').filter(Boolean);
-  const entries = [];
-  for (let index = 0; index < records.length; index += 1) {
-    const record = records[index];
-    const status = record.slice(0, 2);
-    let path = record.slice(3).replaceAll('\\', '/');
-    if (status.includes('R') || status.includes('C')) {
-      const destination = records[index + 1];
-      if (!destination) throw new Error(`rename/copy destination missing: ${path}`);
-      path = destination.replaceAll('\\', '/');
-      index += 1;
+  return parseStatusRecords(raw);
+}
+
+function selfTestRenameParsing() {
+  const fixtures = [
+    {
+      name: 'in-scope to unclassified staged rename',
+      raw: Buffer.from('R  docs/unclassified/prework.md\0docs/작업큐.md\0', 'utf8'),
+      destination: 'docs/unclassified/prework.md',
+      source: 'docs/작업큐.md',
+    },
+    {
+      name: 'user-owned to unclassified staged rename',
+      raw: Buffer.from('R  moved-outside-rules.ts\0apps/mobile/src/theme/tokens.ts\0', 'utf8'),
+      destination: 'moved-outside-rules.ts',
+      source: 'apps/mobile/src/theme/tokens.ts',
+    },
+  ];
+  for (const fixture of fixtures) {
+    const [entry] = parseStatusRecords(fixture.raw);
+    if (entry.path !== fixture.destination || entry.sourcePath !== fixture.source) {
+      throw new Error(`rename fixture path order failed: ${fixture.name}`);
     }
-    const categories = classify(path);
-    entries.push({ path, status, categories, sha256: sha256(path) });
+    if (entry.categories.length !== 0) {
+      throw new Error(`rename fixture must classify the new path and fail unknown: ${fixture.name}`);
+    }
   }
-  return entries.sort((left, right) => left.path.localeCompare(right.path, 'en'));
+  console.log(JSON.stringify({ ok: true, renameFixtures: fixtures.length }, null, 2));
 }
 
 function fail(message, details) {
   console.error(JSON.stringify({ ok: false, message, details }, null, 2));
   process.exit(1);
+}
+
+if (process.argv.includes('--self-test')) {
+  selfTestRenameParsing();
+  process.exit(0);
 }
 
 const entries = loadEntries();
