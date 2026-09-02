@@ -1,0 +1,263 @@
+{
+  "schema_version": "2.0",
+  "task_id": "AI-ORCH-PLANS-SIM-FINAL-WORKFLOW-004",
+  "reviewer_role": "FABLE-FINAL",
+  "review_mode": "FINAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "c1b595f74f2fc7824b480bf8457e3026c0f1d6dc",
+  "target_commit_sha": "4881a31f45a349a9867b27272ad5b24bf0d0b636",
+  "target_tree_oid": "7a4055622521b9aeb72f59f196b5c0ce1aab5699",
+  "agents_blob_oid": "4c31bbf9be81871c4dfb1699e057c8303d4e2fae",
+  "agents_sha256": "5628177d442547e868acc3e0446e6513b65bf713f2cfd82cc78e0e6dedc4c860",
+  "task_sha256": "1dfeff6a1ae0c0a3c7408ebebc780c247112d45f47a16fde5720b3ab2defa151",
+  "collaboration_sha256": "486fbb81c7d2f2348a753155fe4cb70014d8732d71fd80e5b9aeaeaa60db2e99",
+  "input_files_sha256": "f2983d2fa2201f15f204d0ede733cca66e388629b9ba6658b010ce43630b9782",
+  "schema_sha256": "d8ffdb13e6b1e38279355d9ffd592cfb91dc023d287976adf7892e85dbfaf0d7",
+  "runner_sha256": "80dae1d06c89af056e9d8c210b571e978ee534fc128a5fe3b9867610b5ae447b",
+  "verdict": "CHANGES_REQUIRED",
+  "summary": "FINAL 독립 재감사 결과, 이전 WORKFLOW-001 필수 Finding 3건은 R3 증거로 해소를 확인해 같은 ID로 VERIFIED 처리하되(외부 gate는 계속 OPEN), 새 결함 2건(Major 1·Minor 1)을 발견해 PASS 불가다. (1) FNL-EVIDENCE-BINDING-001 VERIFIED: R3가 R2의 팀구성안 해시 불일치(FB695AC1…)를 커밋 전 CRLF 작업복사본 해시로 규명하고, git show c1b595f 원문 bytes로 일곱 파일을 재고정했으며(팀구성안 4E8F33E0…), 이 값은 봉인 스냅샷의 팀구성_상세기획안.md sha256과 정확히 일치한다. 같은 판본 59/59 재실행과 작업큐 결속(228행)도 확인했다. (2) FNL-VERIFY-EVIDENCE-002 VERIFIED: R3 §4가 본 Task 자체의 로컬 verify 6/6(단계별 수치, 비클린 작업 루트 한계를 정직하게 명시)과 exact SHA c1b595f의 GitHub Actions run 33582393050(Node 20.19.4·Node 24·full-db-required 모두 SUCCESS)을 불변 증거로 기록했고, 본 패킷 required_evidence가 INTL-1F 차용이 아닌 본 Task 기록만 인용한다. (3) FNL-CODEX-ROUND1-003 VERIFIED: Codex 1차 두 파일이 evidence_paths에 포함됐고 세 회차의 scope(정적 계약 기준선 16/19 실패 노출 / CXU1 적대 14건 / 수명주기·감사 역방향 공격)와 SHA-256(92406549…·464c0cd6…·a8010bf5…)이 서로 달라 재포장이 아님을 확인했다. 그러나 (4) 신규 Major FNL-TESTFILE-DRIFT-004: R2·R3가 F267D3A6…으로 고정하고 모든 Codex 감사·59/59 실행·exact-SHA CI가 결속된 적대 시험 파일이, 봉인된 target commit 4881a31에서는 다른 bytes(5e5cef71…)다. 다섯 기획안·시뮬레이터는 감사 판본과 byte 동일하고 현재 시험 파일에도 test 케이스가 정확히 59개 존재하지만, 시험 파일 변경의 diff·사유·4881a31 결속 59/59 실행 기록이 스냅샷 어디에도 없다. FNL-EVIDENCE-BINDING-001이 지적한 '감사 판본≠봉인 판본' 패턴이 검증 장치 자체에서 재발했고, 같은 개수의 시험 안에서 단언이 약화됐는지 재결속 증거 없이는 배제할 수 없다. (5) 신규 Minor FNL-WF-ROUNDS-LEDGER-005: 패킷 required_evidence가 WORKFLOW-003 budget_exhausted 실패 보존 기록을 요구하지만, 스냅샷 전체에 WORKFLOW-002·003의 어떤 기록도 없다(작업큐 228행은 'workflow r001'만 언급, 스냅샷 파일 목록에도 부재). 팀구성안 720행의 '실패 실행은 verdict 없는 원본으로 보존하고 유효 회차에 세지 않는다' 계약이 P1-2(작업큐 1866행)처럼 이행되지 않아 유효 Fable 회차 수와 누적 예산을 저장소에서 감사할 수 없다. 지시대로 WORKFLOW-003은 예산 소진 실패이며 유효 회차가 아님을 유지하고, 스냅샷 어디에도 이를 PASS로 세는 기록이 없음은 확인했으므로 Minor다(작업큐 362행의 R3 untracked 표기 낙후 포함). 업무 흐름 자체는 건전하다: 요청→정규화→Task(온톨로지 81~82·190·246행), 단일 edit_owner·lease·만료 자동 인수 금지(오케스트레이션 231~236행), 검수 provenance·예산, 사람 전용 활성화·운영 결정(평가안 331·341행), Learning CANDIDATE→VERIFIED→RETIRED가 다섯 문서와 59개 적대 시험(정상 폐쇄 312행, 요청 결속 339행, lease 418·430행, 실패 보존 446행, 사람 승인 560·577행, Learning 633~707행, 운영 사람 전용 997행)에 실재한다. 가상 gate는 VIRTUAL_SIMULATION fixture로만 취급했고 실제 배포 증거로 승격하지 않으며, DRAFT 활성화와 실제 디렉터리 생성은 승인하지 않는다. 시험 파일 재결속 증거와 workflow 회차 장부 기록 전에는 PASS 불가.",
+  "findings": [
+    {
+      "finding_id": "FNL-EVIDENCE-BINDING-001",
+      "severity": "Major",
+      "review_state": "VERIFIED",
+      "category": "DATA_INTEGRITY",
+      "requirement_or_invariant_ids": [
+        "AGENTS:single-canonical-artifact"
+      ],
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/AI-PLANS-SIM-CODEX-ULTRA-R3.md",
+          "line_start": 12,
+          "line_end": 25,
+          "observation": "R2의 FB695AC1… 해시가 커밋 전 CRLF 작업복사본 측정이며, LF 정규화 buffer와 git show c1b595f 원문이 4E8F33E0…으로 byte 동일함을 diff 사유와 함께 불변 증거로 기록했다."
+        },
+        {
+          "path": "docs/ai-review/evidence/AI-PLANS-SIM-CODEX-ULTRA-R3.md",
+          "line_start": 27,
+          "line_end": 42,
+          "observation": "target commit c1b595f·tree 1c4bfab에 결속해 일곱 파일 SHA-256을 재고정했고 같은 판본에서 corepack pnpm ai:plans:simulate 59/59 재실행을 기록했다."
+        },
+        {
+          "path": "docs/작업큐.md",
+          "line_start": 228,
+          "line_end": 228,
+          "observation": "AI-ORCH-PLANS-SIM-1 current_state가 Fable r001 필수 Finding 3건의 수정 근거를 R3에 봉인했다고 명시해 작업큐 항목과 연결된다."
+        },
+        {
+          "path": "COLLABORATION_LOG",
+          "line_start": 0,
+          "line_end": 0,
+          "observation": "봉인 스냅샷 manifest의 docs/팀구성_상세기획안.md sha256 4e8f33e0023e21140739ade1819130737fddd574a9e91d0f1b4a83376a5d75ba가 R3의 commit 원문 재고정 값과 정확히 일치한다."
+        }
+      ],
+      "impact": "Codex 2차가 실제로 본 판본과 target commit 판본의 불일치가 CRLF→LF 줄끝 정규화로 규명되고 재감사 증거가 commit·tree·문서 SHA에 결속되어, 무기록 감사 후 변경 우려가 해소됐다.",
+      "acceptance_criteria": [
+        "target commit 팀구성안 판본(4e8f33e0…)에 대한 재감사 증거 또는 FB695AC1…→4e8f33e0… 변경 diff와 사유가 불변 증거 파일로 기록된다. — R3 §1로 충족",
+        "재감사 증거가 target commit·tree·문서 SHA-256을 함께 고정하고 작업큐 항목에서 연결된다. — R3 헤더·§2와 작업큐 228행으로 충족"
+      ],
+      "required_tests": [
+        "재감사 후 corepack pnpm ai:plans:simulate 59/59 재실행 기록을 같은 판본에 결속한다. — R3 41행에 기록됨"
+      ],
+      "previous_finding_id": "FNL-EVIDENCE-BINDING-001",
+      "verified_by_engine": "FABLE"
+    },
+    {
+      "finding_id": "FNL-VERIFY-EVIDENCE-002",
+      "severity": "Major",
+      "review_state": "VERIFIED",
+      "category": "TEST_GAP",
+      "requirement_or_invariant_ids": [
+        "AGENTS:single-canonical-artifact"
+      ],
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/AI-PLANS-SIM-CODEX-ULTRA-R3.md",
+          "line_start": 55,
+          "line_end": 79,
+          "observation": "본 Task 자체의 corepack pnpm verify 6/6 실행(DB 50/50·mobile 233·업그레이드 23/23 등 단계별 수치)과 비클린 작업 루트 한계를 명시하고, exact SHA c1b595f의 GitHub Actions run 33582393050에서 Node 20.19.4·Node 24·full-db-required 3 job SUCCESS와 완료 시각을 기록했다."
+        },
+        {
+          "path": "docs/작업큐.md",
+          "line_start": 228,
+          "line_end": 228,
+          "observation": "작업큐 AI-ORCH-PLANS-SIM-1 항목이 로컬 verify 6/6과 exact-SHA CI 3 job 성공을 본 Task 기록으로 인용한다."
+        },
+        {
+          "path": "docs/ai-review/tasks/AI-ORCH-PLANS-SIM-FINAL-WORKFLOW-001/rounds/r001/review.md",
+          "line_start": 25,
+          "line_end": 31,
+          "observation": "원 Finding의 완료 조건은 c1b595f 또는 후속 exact commit의 verify 6/6 기록과 required_evidence 문구 정정이었고, 현재 패킷 required_evidence는 INTL-1F 차용이 아닌 run 33582393050의 본 Task 기록을 인용한다."
+        }
+      ],
+      "impact": "다른 Task(INTL-1F)의 통과 수치 차용이 제거되고 target exact SHA c1b595f에 결속된 전체 게이트 증거(로컬 6/6 + 원격 3 job)가 불변 증거로 마련됐다. 단, 이는 로컬 확인이며 외부 protected gate의 공식 종결은 아니다.",
+      "acceptance_criteria": [
+        "c1b595f(또는 후속 exact commit)에서 실행한 corepack pnpm verify 6/6 기록이 실행 정보·SHA·단계별 수치와 함께 작업큐 항목 또는 불변 증거 파일에 기록된다. — R3 §4로 충족",
+        "required_evidence 문구가 실제 본 Task 기록만 인용하도록 정정된다. — 본 패킷의 run 33582393050 인용으로 충족"
+      ],
+      "required_tests": [
+        "corepack pnpm verify (target exact commit, 6/6 전체 범위) — R3 §4와 exact-SHA CI로 기록됨"
+      ],
+      "previous_finding_id": "FNL-VERIFY-EVIDENCE-002",
+      "verified_by_engine": "FABLE"
+    },
+    {
+      "finding_id": "FNL-CODEX-ROUND1-003",
+      "severity": "Minor",
+      "review_state": "VERIFIED",
+      "category": "TEST_GAP",
+      "requirement_or_invariant_ids": [
+        "AGENTS:fable-append-only-ledger"
+      ],
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/AI-PLANS-SIM-CODEX-R1.md",
+          "line_start": 1,
+          "line_end": 14,
+          "observation": "1차 증거는 8ab364e 기준 정적 계약·기준 실행 검수로 19개 중 16개 통과·3개 실패를 드러낸 기준선이며, Ultra 회차들과 목적·내용이 다르다."
+        },
+        {
+          "path": "docs/ai-review/evidence/AI-PLANS-SIM-CODEX-ULTRA-R1.md",
+          "line_start": 9,
+          "line_end": 14,
+          "observation": "Ultra 1차는 기존 20개 시험 성공을 재사용하지 않고 권위·요청·lease·Finding 경계를 새로 변이한 별도 scope(CXU1 14건)임을 명시한다."
+        },
+        {
+          "path": "docs/ai-review/evidence/AI-PLANS-SIM-CODEX-ULTRA-R3.md",
+          "line_start": 44,
+          "line_end": 53,
+          "observation": "R3가 세 증거 파일의 서로 다른 scope를 선언하고 이 R3가 그것들을 대체·소급 수정하지 않음을 고정한다."
+        },
+        {
+          "path": "COLLABORATION_LOG",
+          "line_start": 0,
+          "line_end": 0,
+          "observation": "봉인 manifest에서 R1 92406549…, Ultra R1 464c0cd6…, Ultra R2 a8010bf5…로 세 증거의 SHA-256이 모두 상이해 같은 증거의 이름 바꾼 재사용이 아니다."
+        }
+      ],
+      "impact": "Codex 1차 증거가 감사 입력(evidence_paths)에 포함되어 1차·2차의 scope·증거 hash 상이함을 실제 파일 수준에서 교차 검증했고, 2회 독립 검수 요건의 재포장 시나리오를 배제했다.",
+      "acceptance_criteria": [
+        "Codex 1차 증거 파일(들)이 후속 검수 스냅샷의 evidence_paths에 포함되어 1차·2차의 scope·세션·증거 SHA-256 상이함이 확인된다. — 본 스냅샷에서 충족"
+      ],
+      "required_tests": [],
+      "previous_finding_id": "FNL-CODEX-ROUND1-003",
+      "verified_by_engine": "FABLE"
+    },
+    {
+      "finding_id": "FNL-TESTFILE-DRIFT-004",
+      "severity": "Major",
+      "review_state": "OPEN",
+      "category": "DATA_INTEGRITY",
+      "requirement_or_invariant_ids": [
+        "AGENTS:single-canonical-artifact",
+        "AGENTS:fable-append-only-ledger"
+      ],
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/AI-PLANS-SIM-CODEX-ULTRA-R2.md",
+          "line_start": 48,
+          "line_end": 48,
+          "observation": "Codex 2차가 적대 시험 파일을 F267D3A66F9981B89AE5C6AFA07A4FBFDFE150B77A11D85D68E8D5D888CA7042로 고정했다."
+        },
+        {
+          "path": "docs/ai-review/evidence/AI-PLANS-SIM-CODEX-ULTRA-R3.md",
+          "line_start": 38,
+          "line_end": 41,
+          "observation": "R3도 git show c1b595f 원문에서 적대 시험을 같은 F267D3A6…으로 재고정했고 59/59 재실행·exact-SHA CI가 모두 이 판본(c1b595f)에 결속된다."
+        },
+        {
+          "path": "COLLABORATION_LOG",
+          "line_start": 0,
+          "line_end": 0,
+          "observation": "봉인된 target commit 4881a31의 manifest는 scripts/ai-plan-network-simulation.test.mjs를 5e5cef71b73ce48da108cf4a716a7e5492c9ff90694c051b03f6f070c9a7d673으로 고정해 감사된 F267D3A6…과 다르다. 다섯 기획안·시뮬레이터는 감사 판본과 동일하다."
+        },
+        {
+          "path": "scripts/ai-plan-network-simulation.test.mjs",
+          "line_start": 267,
+          "line_end": 1350,
+          "observation": "현재 판본에도 test 케이스가 정확히 59개 존재하나, 감사 판본 대비 어떤 단언이 바뀌었는지 스냅샷 증거로 확인할 수 없다."
+        },
+        {
+          "path": "docs/작업큐.md",
+          "line_start": 349,
+          "line_end": 349,
+          "observation": "next_safe_action이 'R3·작업큐·대상 Task 사보타주 수정을 별도 exact commit으로 고정'을 예고해 시험 파일 변경이 계획된 것으로 보이나, 변경 diff·사유·재실행 기록이 불변 증거로 남아 있지 않다."
+        }
+      ],
+      "impact": "모든 Codex 감사·59/59 실행·exact-SHA CI 증거가 c1b595f의 시험 파일(F267D3A6…)에 결속된 반면, 봉인된 target commit 4881a31에는 다른 bytes의 시험 파일이 들어 있다. 검증 장치 자체에서 '감사 판본≠봉인 판본' 패턴이 재발했고, 같은 59개 개수 안에서 단언이 약화됐어도 재결속 증거 없이는 탐지할 수 없어 59개 적대 시뮬레이션 주장을 target commit 증거로 쓸 수 없다.",
+      "acceptance_criteria": [
+        "c1b595f→4881a31 시험 파일 변경의 diff 요약·사유가 불변 증거 파일로 기록되고 새 판본 sha256(5e5cef71…)을 target commit·tree에 결속해 고정한다.",
+        "4881a31(또는 그 후속 exact commit)에서 corepack pnpm ai:plans:simulate 59/59 실행 기록이 같은 증거에 결속된다.",
+        "작업큐 AI-ORCH-PLANS-SIM-1 항목이 해당 재결속 증거를 연결한다."
+      ],
+      "required_tests": [
+        "corepack pnpm ai:plans:simulate (target exact commit 4881a31 또는 후속 exact commit, 59/59)"
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    },
+    {
+      "finding_id": "FNL-WF-ROUNDS-LEDGER-005",
+      "severity": "Minor",
+      "review_state": "OPEN",
+      "category": "TEST_GAP",
+      "requirement_or_invariant_ids": [
+        "AGENTS:fable-append-only-ledger",
+        "AI-ORCH:human-only-production-decisions"
+      ],
+      "evidence": [
+        {
+          "path": "docs/팀구성_상세기획안.md",
+          "line_start": 720,
+          "line_end": 720,
+          "observation": "timeout·max_turns·예산 종료 실행은 verdict 없는 실패 원본으로 보존하고 유효 회차에 세지 않는다는 계약이 공식 기획안에 있다."
+        },
+        {
+          "path": "docs/작업큐.md",
+          "line_start": 228,
+          "line_end": 228,
+          "observation": "current_state는 'Fable workflow r001'만 언급하며, WORKFLOW-002·003 회차(패킷이 budget_exhausted 실패로 명시한 003 포함)의 기록이 작업큐와 스냅샷 파일 목록 어디에도 없다."
+        },
+        {
+          "path": "docs/작업큐.md",
+          "line_start": 1866,
+          "line_end": 1866,
+          "observation": "P1-2는 같은 계약을 'r001·r002 RUN_FAILED(budget_exhausted)·verdict 없음·OPEN 원본 보존'으로 이행한 선례가 있어 본 Task의 부재와 대비된다."
+        },
+        {
+          "path": "docs/작업큐.md",
+          "line_start": 361,
+          "line_end": 362,
+          "observation": "untracked_in_scope_paths가 R3 증거 파일을 미추적으로 표기하나 target commit 4881a31에는 이미 커밋되어 있어 장부 상태가 낙후됐다."
+        },
+        {
+          "path": "COLLABORATION_LOG",
+          "line_start": 0,
+          "line_end": 0,
+          "observation": "패킷 required_evidence와 human_decisions가 WORKFLOW-003 budget_exhausted 실패 보존 기록과 추가 Fable 재검수 승인을 명시하지만 해당 기록이 봉인 스냅샷에 실재하지 않는다. 스냅샷 어디에도 이를 PASS·유효 회차로 세는 기록이 없음은 확인했다."
+        }
+      ],
+      "impact": "WORKFLOW-002·003의 실패·비용·시각이 불변 장부에 없어 'Codex 2회·Fable 유효 2회' 요건의 유효 회차 계산과 실패 비용 포함 누적 예산(CXU1-BUDGET-008 계약)을 저장소에서 감사할 수 없다. WORKFLOW-003은 예산 소진 실패이며 유효 회차가 아니라는 판정은 유지하고 PASS 합성 시도는 발견되지 않았으나, 보존 계약 불이행은 이 기획안들 자신의 핵심 불변식 위반이다.",
+      "acceptance_criteria": [
+        "WORKFLOW-002·003 회차의 결과(budget_exhausted 등)·비용·시각·verdict 부재가 작업큐 AI-ORCH-PLANS-SIM-1 항목 또는 불변 증거 파일에 P1-2 선례와 같은 형식으로 기록되고 후속 검수 evidence_paths에 포함된다.",
+        "유효 Fable 회차 산정(WORKFLOW-003 미산입)과 누적 예산이 같은 기록에서 재계산 가능하다.",
+        "작업큐 362행의 R3 untracked 표기를 현재 커밋 상태로 정정한다."
+      ],
+      "required_tests": [],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    }
+  ],
+  "proposed_edits": [],
+  "closed_finding_ids": [],
+  "reopened_finding_ids": [],
+  "remaining_required_finding_ids": [
+    "FNL-TESTFILE-DRIFT-004",
+    "FNL-WF-ROUNDS-LEDGER-005"
+  ],
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}
