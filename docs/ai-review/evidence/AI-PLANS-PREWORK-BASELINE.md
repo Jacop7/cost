@@ -24,7 +24,7 @@
 
 | 문서 | 상태 | SHA-256 |
 |---|---|---|
-| `docs/팀구성_상세기획안.md` | `CONFIRMED v1.3` | `ef2916a713d7504883397a946126aca3709457d933f39a14877027cc438baf52` |
+| `docs/팀구성_상세기획안.md` | `CONFIRMED v1.3` | `29520df8333a62e87bde77405862dfe5c3ab0fbc7dd9c63d60bcfe792018ea3d` |
 | `docs/AI-지식-온톨로지-기획안.md` | `DRAFT v0.2` | `217a3d308bdad63940f8473318b992cc07df63664a27c26823bf10cf3f13f995` |
 | `docs/AI-오케스트레이션-상세기획안.md` | `DRAFT v0.2` | `25b53a068273268b6e820bdf77b85cd850cefe77b681e6db7caddb06ba4846ea` |
 | `docs/디렉터리-문서신경망-재설계-기획안.md` | `DRAFT v0.2` | `81796a6b5ccde312a1e4eb376728195dcca53fcbd630137f844f260495a7498c` |
@@ -62,8 +62,11 @@
 - `docs/ai-review/evidence/AI-PLANS-PREWORK-DECISIONS.md`
 - `docs/작업큐.md`
 
-분류 판정식은 `git status --porcelain=v1 -uall`의 각 경로가 위 세 집합 중 정확히 하나에 속하는지
-확인하고, 미분류·중복 분류가 모두 0일 때만 통과한다.
+표의 해시는 worktree 줄바꿈이 아니라 target commit의 Git blob 바이트를
+`git show <target>:<path>`로 읽어 SHA-256을 계산한다. 분류는
+`corepack pnpm ai:plans:prework-status -- --compare-user-manifest docs/ai-review/evidence/AI-PLANS-PREWORK-USER-STATE.json`
+으로 판정한다. 새 경로가 어떤 규칙에도 맞지 않으면 자동 실패하며, 미분류·중복 분류가 모두 0이고
+저장된 사용자 경로·status·해시가 현재 상태와 같을 때만 통과한다.
 
 ## 4. 검수 Task 기준선
 
@@ -102,4 +105,3 @@
 | Task 준비 | Task/hash 대조 | immutable 실패 보존, successor 필요 여부 명시 | 이 파일 §4 |
 
 `verify --no-db`는 전체 6/6 통과가 아니며 Docker DB·업그레이드 검사를 건너뛴 빠른 기준선으로만 쓴다.
-

@@ -1,0 +1,349 @@
+{
+  "schema_version": 1,
+  "scope": "AI-ORCH-PLANS-PREWORK-1 user-owned path/status/content fingerprint",
+  "entries_sha256": "9ad03c3420154ce94ad9c941ab1f71736231188a9beee38d22052702d31c12df",
+  "entries": [
+    {
+      "path": ".codex-share/ingredient-prototype/",
+      "status": "??",
+      "category": "USER_OWNED",
+      "sha256": null
+    },
+    {
+      "path": ".tmp/ai-plans-stage2-opus-r1-prompt.md",
+      "status": "??",
+      "category": "USER_OWNED",
+      "sha256": "d03dd7d5320df7ba2046decff79cf024b23fc597c137faae683746f782dd13fe"
+    },
+    {
+      "path": ".tmp/ai-plans-stage2-opus-r2-prompt.md",
+      "status": "??",
+      "category": "USER_OWNED",
+      "sha256": "869c33281c19aae4503c717690821352d5613a922733ecb61f5af41426596994"
+    },
+    {
+      "path": ".tmp/ai-plans-stage3-opus-r1-prompt.md",
+      "status": "??",
+      "category": "USER_OWNED",
+      "sha256": "86d4a16524d91954f4a38b2ca418f48ac0ac5c2eae3ef8fa0f50c9ea56dbd63a"
+    },
+    {
+      "path": ".tmp/ai-plans-stage3-opus-r2-prompt.md",
+      "status": "??",
+      "category": "USER_OWNED",
+      "sha256": "9fdfb156098a9501aa8ba4acc49a4e3fb6ad6641ce4692cbd29fe0f3c5330bb1"
+    },
+    {
+      "path": ".tmp/ai-plans-stage4-opus-final-prompt.md",
+      "status": "??",
+      "category": "USER_OWNED",
+      "sha256": "fd5fbe80869451dae47ff75c96ddf79a187122f665506bffe47b828571cf14ec"
+    },
+    {
+      "path": ".tmp/ai-plans-stage4-opus-r1-prompt.md",
+      "status": "??",
+      "category": "USER_OWNED",
+      "sha256": "ecd3d6d2440b4cb06bb2784079041c86db6a033c7fe36bb60428380f09561da4"
+    },
+    {
+      "path": ".tmp/ai-plans-stage4-opus-r2-prompt.md",
+      "status": "??",
+      "category": "USER_OWNED",
+      "sha256": "f8b26dacd76f0dd324c36f46d45a77787faee104b0c1bf86f4d29c670f949b64"
+    },
+    {
+      "path": "apps/mobile/src/components/kit/index.tsx",
+      "status": " M",
+      "category": "USER_OWNED",
+      "sha256": "72433b10bb413147e9f427e9dd95ee1f953f0e011ed037bc6ae97d33ba2033f1"
+    },
+    {
+      "path": "apps/mobile/src/components/kit/Sheet.tsx",
+      "status": " M",
+      "category": "USER_OWNED",
+      "sha256": "c51c17b23edc85ce4d793616da2a3031ea68d30d3905ff253588eb058f452bba"
+    },
+    {
+      "path": "apps/mobile/src/components/kit/Slider.tsx",
+      "status": " M",
+      "category": "USER_OWNED",
+      "sha256": "bde7155fa981d9faf00d6366c4ad83091253851521c1af756ad7406441e5c5a8"
+    },
+    {
+      "path": "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx",
+      "status": " M",
+      "category": "USER_OWNED",
+      "sha256": "8ab3bf109fda9a15fdc41396ac46915ebb2cdea1a97e5e047c9ae4bd2d2abd28"
+    },
+    {
+      "path": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx",
+      "status": " M",
+      "category": "USER_OWNED",
+      "sha256": "3f79d7e02b1535fa3aef416828344e86acb723a19dd6a6f229072b21beeb0955"
+    },
+    {
+      "path": "apps/mobile/src/features/ingredients/screens/IngredientFormScreen.tsx",
+      "status": " M",
+      "category": "USER_OWNED",
+      "sha256": "1716d0f8e886b70e442629ccee2fa026222cec0193125a002699fa3dc23cda67"
+    },
+    {
+      "path": "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx",
+      "status": " M",
+      "category": "USER_OWNED",
+      "sha256": "da03a53693a88cfabad6fef6da55ce60c2899df146a947af99f142595493adad"
+    },
+    {
+      "path": "apps/mobile/src/features/my/screens/FixedCostEditScreen.tsx",
+      "status": " M",
+      "category": "USER_OWNED",
+      "sha256": "1f114ab1174ee5410aec65de395208d30fc7f65182b13b922d553c7cad686be6"
+    },
+    {
+      "path": "apps/mobile/src/features/my/screens/MyChannelsScreen.tsx",
+      "status": " M",
+      "category": "USER_OWNED",
+      "sha256": "de447ee431f560e7a027970f811c9a5e23f535889d047e7cf08ecfebf28e33ba"
+    },
+    {
+      "path": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx",
+      "status": " M",
+      "category": "USER_OWNED",
+      "sha256": "1a35f0745704def5b8c01699848b4c80004a38d2bbf41b66308faf993021d65c"
+    },
+    {
+      "path": "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx",
+      "status": " M",
+      "category": "USER_OWNED",
+      "sha256": "113f6e3b25b04c3dee4417a899d1a0f6f082b557003f7126fa152303104bfb49"
+    },
+    {
+      "path": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
+      "status": " M",
+      "category": "USER_OWNED",
+      "sha256": "ef2e1992306ddcf6b11a9a0ed1be8ced6e383cdd1a47690b4fca573aaf676950"
+    },
+    {
+      "path": "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx",
+      "status": " M",
+      "category": "USER_OWNED",
+      "sha256": "9ed22a9ec3784794f9174fe8343de686add8e8781884baf29a28178865e413c6"
+    },
+    {
+      "path": "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx",
+      "status": " M",
+      "category": "USER_OWNED",
+      "sha256": "a53252cd36fdc7c93c7fe6bc60537fb977a8961bde0a2717666b28c5b811ea6f"
+    },
+    {
+      "path": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx",
+      "status": " M",
+      "category": "USER_OWNED",
+      "sha256": "e254cf45354e9442f043795f819074239e417df42a2d22ebb4816d03ab05c2e7"
+    },
+    {
+      "path": "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx",
+      "status": " M",
+      "category": "USER_OWNED",
+      "sha256": "a806b447edd6d69aae427639f4d69bb5dd73354582446bc50e066e458906b317"
+    },
+    {
+      "path": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx",
+      "status": " M",
+      "category": "USER_OWNED",
+      "sha256": "e583df529d526f5f9209237fdba16018c6f5b98bf60af3b4e5bec88edbde4d0a"
+    },
+    {
+      "path": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
+      "status": " M",
+      "category": "USER_OWNED",
+      "sha256": "9002100594f0b3d92cb5457d59095889bcd0ff0372ee53c273e6c73d95238e29"
+    },
+    {
+      "path": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
+      "status": " M",
+      "category": "USER_OWNED",
+      "sha256": "8bb27e4767e06629f688f3a16b09072ccb2ddd94567fd90f9b154e99636c4c72"
+    },
+    {
+      "path": "apps/mobile/src/features/sales/screens/SalesExpenseScreen.tsx",
+      "status": " M",
+      "category": "USER_OWNED",
+      "sha256": "6da08f06ef06e636a84b659883d2e81f3c41d0b254359de2f46756c0c835a4e7"
+    },
+    {
+      "path": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
+      "status": " M",
+      "category": "USER_OWNED",
+      "sha256": "b522cf54e1f1f3effdb49748bdb743ea65a4534597fb3a09c7f29a5360f63c77"
+    },
+    {
+      "path": "apps/mobile/src/lib/appAlert.ts",
+      "status": "??",
+      "category": "USER_OWNED",
+      "sha256": "fa4827e701551e35cf0fee485814c8b33bc32195efc35725696b480c1ae5d921"
+    },
+    {
+      "path": "apps/mobile/src/theme/tokens.ts",
+      "status": " M",
+      "category": "USER_OWNED",
+      "sha256": "9f9e3d16522839a6ace5965ea3a146f5c4ed1a6181f283bd89e3139d922896c6"
+    },
+    {
+      "path": "docs/ai-review/tasks/PROTOTYPE-TERMINOLOGY-001/collaboration.md",
+      "status": "??",
+      "category": "USER_OWNED",
+      "sha256": "bd87d35b34205eb035130ba5e46cb9e9a30d2258cfaeda53c81609fd5b6184c3"
+    },
+    {
+      "path": "docs/ai-review/tasks/PROTOTYPE-TERMINOLOGY-001/rounds/r001/artifact-snapshot.json",
+      "status": "??",
+      "category": "USER_OWNED",
+      "sha256": "9e7e633706349f63c55a32ebf0b5bd1f68987fbbb3f7160bdaa6cdc8d551ffbc"
+    },
+    {
+      "path": "docs/ai-review/tasks/PROTOTYPE-TERMINOLOGY-001/rounds/r001/input-snapshot.json",
+      "status": "??",
+      "category": "USER_OWNED",
+      "sha256": "370f04402725c2086aa3a2f0a43c64d40b07f1d7eba0ee6669b8ad03fe4017c4"
+    },
+    {
+      "path": "docs/ai-review/tasks/PROTOTYPE-TERMINOLOGY-001/rounds/r001/manifest.json",
+      "status": "??",
+      "category": "USER_OWNED",
+      "sha256": "9ac46e4e75f24ff122d63d5bf4e8263d27448f0ea87affbf254494446ebf66e2"
+    },
+    {
+      "path": "docs/ai-review/tasks/PROTOTYPE-TERMINOLOGY-001/rounds/r001/run.json",
+      "status": "??",
+      "category": "USER_OWNED",
+      "sha256": "53c1482cde08dbab6686d55d8d4c2a2d229ab82171dc38114d2e4c08adefa44c"
+    },
+    {
+      "path": "docs/ai-review/tasks/PROTOTYPE-TERMINOLOGY-001/rounds/r001/runner-source.mjs",
+      "status": "??",
+      "category": "USER_OWNED",
+      "sha256": "80dae1d06c89af056e9d8c210b571e978ee534fc128a5fe3b9867610b5ae447b"
+    },
+    {
+      "path": "docs/ai-review/tasks/PROTOTYPE-TERMINOLOGY-001/rounds/r001/schema-source.json",
+      "status": "??",
+      "category": "USER_OWNED",
+      "sha256": "300a5aba5e1b66af2f23837f2f12dd247fbba02f9f644f676b1e787d627c3ecf"
+    },
+    {
+      "path": "docs/ai-review/tasks/PROTOTYPE-TERMINOLOGY-001/rounds/r002/artifact-snapshot.json",
+      "status": "??",
+      "category": "USER_OWNED",
+      "sha256": "9e7e633706349f63c55a32ebf0b5bd1f68987fbbb3f7160bdaa6cdc8d551ffbc"
+    },
+    {
+      "path": "docs/ai-review/tasks/PROTOTYPE-TERMINOLOGY-001/rounds/r002/input-snapshot.json",
+      "status": "??",
+      "category": "USER_OWNED",
+      "sha256": "370f04402725c2086aa3a2f0a43c64d40b07f1d7eba0ee6669b8ad03fe4017c4"
+    },
+    {
+      "path": "docs/ai-review/tasks/PROTOTYPE-TERMINOLOGY-001/rounds/r002/manifest.json",
+      "status": "??",
+      "category": "USER_OWNED",
+      "sha256": "1c4a908b49a148ea04ce977907577c564398c21505f6b76e2a8d68c0ec0c3b44"
+    },
+    {
+      "path": "docs/ai-review/tasks/PROTOTYPE-TERMINOLOGY-001/rounds/r002/run.json",
+      "status": "??",
+      "category": "USER_OWNED",
+      "sha256": "b3bcaeddc389b02304e5df7316f953d3214664d14db6853af5c725088d807229"
+    },
+    {
+      "path": "docs/ai-review/tasks/PROTOTYPE-TERMINOLOGY-001/rounds/r002/runner-source.mjs",
+      "status": "??",
+      "category": "USER_OWNED",
+      "sha256": "80dae1d06c89af056e9d8c210b571e978ee534fc128a5fe3b9867610b5ae447b"
+    },
+    {
+      "path": "docs/ai-review/tasks/PROTOTYPE-TERMINOLOGY-001/rounds/r002/schema-source.json",
+      "status": "??",
+      "category": "USER_OWNED",
+      "sha256": "300a5aba5e1b66af2f23837f2f12dd247fbba02f9f644f676b1e787d627c3ecf"
+    },
+    {
+      "path": "docs/ai-review/tasks/PROTOTYPE-TERMINOLOGY-001/status.json",
+      "status": "??",
+      "category": "USER_OWNED",
+      "sha256": "33935befab94e4657ec17b42aa42391b0e655bcb5539ba07beb986eca9c138cd"
+    },
+    {
+      "path": "docs/ai-review/tasks/PROTOTYPE-TERMINOLOGY-001/task.json",
+      "status": "??",
+      "category": "USER_OWNED",
+      "sha256": "c72ec71095b01c82c24ebe4c73f86351ff0d6735105e5296901c1c453099acb5"
+    },
+    {
+      "path": "docs/ai-review/tasks/PROTOTYPE-TERMINOLOGY-001/turns/t0001/entry.md",
+      "status": "??",
+      "category": "USER_OWNED",
+      "sha256": "0b77103f2d7e117c6c0ee6745e383caa425976eb29cf0391a7f0605977b99785"
+    },
+    {
+      "path": "docs/ai-review/tasks/PROTOTYPE-TERMINOLOGY-001/turns/t0001/run.json",
+      "status": "??",
+      "category": "USER_OWNED",
+      "sha256": "ca60f542551c456aaf6215b43fe29f43fa5b9d95affb239f3c226ec809fb40c1"
+    },
+    {
+      "path": "docs/ai-review/tasks/PROTOTYPE-TERMINOLOGY-001/turns/t0001/runner-source.mjs",
+      "status": "??",
+      "category": "USER_OWNED",
+      "sha256": "80dae1d06c89af056e9d8c210b571e978ee534fc128a5fe3b9867610b5ae447b"
+    },
+    {
+      "path": "docs/prototypes/full-page-flow-prototype-changelog.md",
+      "status": "??",
+      "category": "USER_OWNED",
+      "sha256": "025778732b558fc9243d978544be63ceed8e74dd223aad6b282ce82c5f77eae7"
+    },
+    {
+      "path": "docs/prototypes/full-page-flow-prototype-current-spec.md",
+      "status": "??",
+      "category": "USER_OWNED",
+      "sha256": "f60730140ce7af267d5e07666293a3ffb1f5a1279edebdc0b25a5b6c5a84b332"
+    },
+    {
+      "path": "docs/prototypes/full-page-flow-prototype-design-context.md",
+      "status": "??",
+      "category": "USER_OWNED",
+      "sha256": "95077f04a9521212968280906fa9792117ac8ceff76dcf3768f17bebd4d16acc"
+    },
+    {
+      "path": "docs/prototypes/full-page-flow-prototype-design-work-plan.md",
+      "status": "??",
+      "category": "USER_OWNED",
+      "sha256": "7695cc4f96eeb54f08398faceef7f67d8857dff61f178a6df3190c4575084859"
+    },
+    {
+      "path": "docs/prototypes/full-page-flow-prototype-ui-applied-review.md",
+      "status": "??",
+      "category": "USER_OWNED",
+      "sha256": "292aff610ef94c6411afe915df902b592ff183ab8758e28ace40cb3175a89975"
+    },
+    {
+      "path": "docs/prototypes/full-page-flow-prototype-ui-guide.md",
+      "status": "??",
+      "category": "USER_OWNED",
+      "sha256": "d6567afb8afa85f6b1e540f3c86d72efd175508a900b51be753330e1d1a4de4d"
+    },
+    {
+      "path": "docs/prototypes/full-page-flow-prototype.html",
+      "status": "??",
+      "category": "USER_OWNED",
+      "sha256": "04ca2c7ab550be85d13068ac553a75329653ca16fa946c59d963768cd88b49f9"
+    },
+    {
+      "path": "scripts/prototype_server.py",
+      "status": " M",
+      "category": "USER_OWNED",
+      "sha256": "2a9104ae64574aab057e1fcae4be1e53b8bd6ddef05a61c0417eac0615131f78"
+    }
+  ]
+}
