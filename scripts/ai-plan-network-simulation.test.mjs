@@ -13,6 +13,7 @@ import {
   applyLearning,
   approvePlanActivation,
   authorizeAction,
+  canonicalArtifactSha,
   classifyRequest,
   closeFinding,
   createSimulationState,
@@ -1016,6 +1017,7 @@ test('자율성은 A0 읽기부터 한 단계씩만 승격되고 운영 실행�
 });
 
 test('실제 작업큐 Task heading과 YAML ID가 갈리면 재개를 거부한다', () => {
+  assert.equal(canonicalArtifactSha('같은 문서\r\n'), canonicalArtifactSha('같은 문서\n'));
   const tampered = loadWorkQueue().replace('task_id: AI-ORCH-PLANS-SIM-1', 'task_id: OTHER-TASK');
   assert.throws(() => validateLiveTaskLedger(tampered), /Task heading과 YAML task_id/);
   const staleSha = mutateLiveSimulationTask(loadWorkQueue(), (block) => block.replace(
