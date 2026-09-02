@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-KNOWLEDGE-ORBIT-TEAM-002",
+  "sequence": "t0003",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-02T07:25:58.148Z",
+  "turn_id": "turn-o001",
+  "turn_type": "AI_DEPUTY_SUCCESSOR_HANDOFF",
+  "role": "AI-DEPUTY-ORCHESTRATOR",
+  "task_sha256": "3c79741783628a8e6373059c0634c1cf74bf27415b38ffa09a4240c42ea4794e",
+  "runner_sha256": "80dae1d06c89af056e9d8c210b571e978ee534fc128a5fe3b9867610b5ae447b",
+  "previous_manual_run_sha256": "8368ae3fc1e1432a6037fab576cece70331f5b45b465941a478bb3c19e15aab1",
+  "collaboration_before_sha256": "9cad2c0f5e6d74c90764f4672be66ea4617fdb67c1d00b8d2e45451f01e1a466",
+  "collaboration_before_bytes": 9169,
+  "collaboration_entry_sha256": "48149bb5fc7ada748f426951c7ea84e6a02ff4b8c69d6add5147a13cf4ab7c9f",
+  "collaboration_entry_bytes": 807,
+  "collaboration_after_sha256": "acbdfa49448f38116d288767f07ee5f6ed6f70c2dcbe60e0c5f49196068dcec2",
+  "collaboration_after_bytes": 9976
+}
