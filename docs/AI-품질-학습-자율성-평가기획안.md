@@ -1,3 +1,17 @@
+---
+doc_id: quality
+doc_type: ai_governance_plan
+status: DRAFT
+authority: quality_learning_autonomy_evaluation
+owner: AI-DEPUTY-ORCHESTRATOR
+approver: HUMAN-CHIEF
+version: 0.1
+depends_on: [team, ontology, orchestration, directory]
+supersedes: []
+verified_by: []
+review_by: 2026-10-01
+---
+
 # MarginCook AI 품질·학습·자율성 평가 기획안
 
 > 버전: 0.1
@@ -90,7 +104,8 @@ Task 생성 전 채팅에서만 발생해 저장소 앵커가 없는 질문·정
 - 사용자 의도 수정: 사람의 명시적 정정·Decision
 - 코드 동작: 자동·수동 시험의 원시 결과
 - DB 정합성: 원장·스냅샷·경합·ACL 시험
-- 작업 완료: 같은 SHA의 보호 게이트와 필요한 closure successor
+- 로컬 기술 검증 완료: 같은 Task 계약·SHA의 필수 검수와 로컬 게이트
+- 공식 Task 종결: 같은 SHA의 보호 게이트와 필요한 closure successor
 - 실제 가치: 파일럿·현장 사용자 증거
 - 비용·시간: 실행기 envelope와 wall-clock
 
@@ -255,6 +270,13 @@ Learning은 정책·Decision·요구사항을 대체하지 않는다. 모델이 
 역할과 범위를 지정하며, `verifier_role`과 지정 Decision ID가 없거나 둘이 작성자·lane 소유자와
 같으면 승격을 실패 폐쇄한다.
 
+현재 `docs/team/TEAM_LEARNING.md`의 기계 schema와 `scripts/fable-review.mjs`는
+`independent_verifier`를 읽지만, 이 문서가 요구하는 `verifier_role`·사람 지정 Decision ID
+쌍을 아직 필수로 강제하지 않는다. 기존 `VERIFIED` 항목을 소급 정당화하지 않고,
+본 기획안 활성화 전 별도 schema 이관 Task에서 작성자·lane 소유자·독립 검증자·
+사람 Decision을 명시적으로 이관하고 실행기·사보타주 시험을 같이 올린다. 이 이관이
+끝나기 전에는 새 항목을 본 계약의 `VERIFIED`로 승격하지 않는다.
+
 ### 6.2 필수 필드
 
 - Learning ID와 lane
@@ -340,7 +362,9 @@ champion/challenger 결과로 인정하지 않는다.
 
 ### 8.2 자동 강등
 
-다음 중 하나면 해당 route를 즉시 한 단계 내린다.
+다음 중 하나면 해당 route를 즉시 한 단계 내린다. 다만 비밀 노출·매장 간 데이터
+경계 위반·사용자 파일 손실은 단계적 강등으로 남은 권한을 유지하지 않고 즉시 `A0`로
+내린 뒤 자동화를 중단하고 사람을 호출한다.
 
 - 사용자 파일 덮어쓰기·비밀 노출·매장 간 데이터 경계 위반
 - 핵심 계산·원장·권한 회귀 유출

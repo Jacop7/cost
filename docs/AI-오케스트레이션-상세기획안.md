@@ -1,7 +1,21 @@
+---
+doc_id: orchestration
+doc_type: ai_governance_plan
+status: DRAFT
+authority: request_intake_task_routing
+owner: AI-DEPUTY-ORCHESTRATOR
+approver: HUMAN-CHIEF
+version: 0.1
+depends_on: [team, ontology]
+supersedes: []
+verified_by: []
+review_by: 2026-10-01
+---
+
 # MarginCook AI 오케스트레이션 상세 기획안
 
 > 버전: 0.1
-> 상태: 누적 교차검수 대상 초안
+> 상태: 누적 교차검수 대상 초안(`DRAFT`)
 > 작성일: 2026-09-01
 > 최종 책임자: 사람 주 오케스트레이터
 > 관계 문서: [`팀구성_상세기획안.md`](./팀구성_상세기획안.md),
@@ -171,17 +185,21 @@ agents_md_blob_sha: git-blob-or-null
 fixed_decisions: []
 assumptions: []
 risk_level: R0 | R1 | R2 | R3
+risk_basis: string
 active_branch: string
 worktree_state: clean | user_changes | task_changes | mixed
 user_owned_changes: []
 open_findings: []
 open_decisions: []
 request_dispositions:
-  - kind: STATUS_ONLY
+  - seq: 1
+    kind: STATUS_ONLY
     evidence_conversation_ref: CHAT-LOCAL-001
     observed_at: 2026-09-01T00:00:00+09:00
     requires_human_approval: false
     decision_id: null
+    previous_hash: GENESIS
+    item_hash: sha256-of-canonical-item
 next_safe_action: string-or-null
 stop_conditions: []
 untracked_in_scope_paths: []
@@ -363,6 +381,11 @@ gate를 종결하지 않는다.
 - 모델·CLI·세션·사용 상한·보고 사용액·verdict·Finding ID를 증거에 기록한다.
 - 공식 Fable fallback handoff가 아닌 직접 Opus 검수는 `OPUS_DIRECT_ADVISORY`로 표시하고 Fable gate
   종결 근거로 사용하지 않는다.
+
+최종 활성화는 네 DRAFT 기획안의 상태, 사람 `ACTIVE` Decision, `AGENTS.md` 책임 목록을 하나의
+decision commit에서 함께 갱신한다. 일부 문서만 `ACTIVE`인 혼합 상태, 승인자·승인일·대상 hash가
+없는 Decision, 책임 목록이 빠진 commit은 활성화 실패다. 검수 `PASS`는 Run/Review 증거일 뿐 문서
+권위나 gate `CLOSED`를 자동으로 만들지 않는다.
 - 직접 advisory 원본·요약·실패 회차는 `docs/ai-review/evidence/`에 불변 파일로 보존한다. 실패 파일은
   `<STAGE>-OPUS-<ROUND>-FAILED.md`로 명명하고 유효 회차 수에는 포함하지 않으며 삭제·덮어쓰지 않는다.
 - 검수 증거, 상태 갱신, 생성 색인은 새 핵심 기획안이 아니므로 자기 자신을 다시 검수하는 재귀를
@@ -414,18 +437,20 @@ turn hash와 회차별 센트 올림 누적액을 인용해야 한다. 해당 �
 
 ### 10.1 기술 검증 완료와 게이트 종결
 
-`기술 검증 완료`는 팀 구성안 §4.4의 `workflow_state=VERIFIED`를 뜻한다. 다음을 모두 만족한다.
+`기술 검증 완료`는 팀 구성안 §4.4의 `workflow_state=VERIFIED`를 뜻하며, 보호 원격 게이트
+전의 로컬 상태다. 다음을 모두 만족한다.
 
 - 요구사항·완료 조건이 실제 구현과 연결됨
 - 필수 시험·사보타주가 판별력을 가짐
-- 정확한 SHA의 로컬·보호 원격 게이트 성공
+- 정확한 SHA의 필수 로컬 게이트 성공
 - 필수 Finding의 `OPEN`·`DISPUTED`가 0건
 - 사용자 소유 변경(추적 변경 + 요청받지 않은 미추적 파일) 미포함
 - 문서·코드·시험 경로가 현재 구조와 일치
 
-이는 `CLOSED`와 다르다. 공식 종결은 팀 구성안 §4.4의 `gate_state`와 최초 발견 역할의 closure
-successor 재검수 계약을 만족한 뒤에만 선언한다. `VERIFIED` 상태에서 successor가 남아 있으면 완료
-보고에 반드시 미종결로 표시한다.
+이는 `CLOSED`와 다르다. `VERIFIED` 후 anchor·decision commit을 만들고, 그 정확한 SHA에
+보호 원격 필수 게이트가 성공한 뒤 최초 발견 역할의 closure successor 재검수를 통과해야
+팀 구성안 §4.4의 `gate_state=CLOSED`를 선언한다. `VERIFIED` 상태에서 보호 게이트나 successor가
+남아 있으면 완료 보고에 반드시 미종결로 표시한다.
 
 ### 10.2 사람 결정
 

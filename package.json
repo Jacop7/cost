@@ -23,6 +23,7 @@
     "fable:self-test": "node scripts/fable-review.mjs --self-test && node scripts/fable-review/protocol-v12.test.mjs",
     "fable:append": "node scripts/fable-review.mjs --append-turn",
     "fable:review": "node scripts/fable-review.mjs",
+    "ai:plans:simulate": "node --test scripts/ai-plan-network-simulation.test.mjs",
     "gate:capture": "node scripts/protected-gate-validator.mjs --capture-checks",
     "gate:closure": "node scripts/protected-gate-validator.mjs --closure-task",
     "ruleset:check": "node scripts/github-ruleset.mjs check",
