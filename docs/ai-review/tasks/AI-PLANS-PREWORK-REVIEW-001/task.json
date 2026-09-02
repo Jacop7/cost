@@ -1,0 +1,88 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-PLANS-PREWORK-REVIEW-001",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R0",
+  "author_role": "CODEX-QA",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "022840ab627b1653e94c97e8208b9268399e36ea",
+  "target_commit_sha": "aa3c55441592552410ae41434a3f97cf871c9e26",
+  "target_tree_oid": "6af1a22af626aa08ef71b7fbdaf7c41766674eae",
+  "agents_blob_oid": "c32214b5528752a91f0f1545fea8c735d5fae7fa",
+  "agents_sha256": "de18fc8524afa350d3d0806f40150b9397dfd45a91ff471b5e1f6d6bf95fc681",
+  "requirements": [
+    "새 브랜치 없이 기존 AI 기획 브랜치를 사용했고 사용자 소유 변경이 보존됐는지 검증한다.",
+    "작업 트리 3분할·롤오버 v2 patch map·Decision 패킷·Task hash 대조가 12단계 착수 선작업으로 충분한지 검증한다.",
+    "ai:plans:simulate 70/70, verify --no-db 4/6, fable:check 증거의 표현이 실행 범위를 과장하지 않는지 검증한다.",
+    "기존 SIM-1 lease와 다섯 공식 기획안을 변경하지 않은 채 다음 안전 행동이 명확한지 검증한다.",
+    "선작업 1~11 각각에 대해 PASS 또는 CHANGES_REQUIRED를 명시하고 하나라도 미통과면 전체 PASS를 반환하지 않는다.",
+    "Critical·Major 또는 명세상 필수 Finding만 최대 5개로 합쳐 반환한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:single-canonical-artifact",
+    "AGENTS:fable-required-review",
+    "TEAM:single-edit-lease",
+    "TEAM:user-owned-changes-preserved"
+  ],
+  "artifact_paths": [
+    "docs/ai-review/evidence/AI-PLANS-PREWORK-BASELINE.md",
+    "docs/ai-review/evidence/AI-PLANS-PREWORK-PATCH-MAP.md",
+    "docs/ai-review/evidence/AI-PLANS-PREWORK-DECISIONS.md",
+    "docs/ai-review/evidence/AI-PLANS-PREWORK-VERIFICATION.md",
+    "docs/ai-review/evidence/AI-PLANS-PREWORK-VERIFICATION-V2.md",
+    "docs/ai-review/evidence/AI-PLANS-PREWORK-OPUS-R1.md",
+    "docs/ai-review/evidence/AI-PLANS-PREWORK-USER-STATE.json",
+    "scripts/ai-plan-prework-status-check.mjs",
+    "docs/작업큐.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/ai-review/README.md",
+    "docs/팀구성_상세기획안.md"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/evidence/AI-CONTEXT-MISSION-CONTINUITY-V1.md",
+    "docs/ai-review/evidence/AI-CONTEXT-MISSION-CONTINUITY-V2.md",
+    "docs/ai-review/evidence/AI-CONTEXT-MISSION-CONTINUITY-OPUS-R1.md"
+  ],
+  "excluded_paths": [
+    "docs/AI-지식-온톨로지-기획안.md",
+    "docs/AI-오케스트레이션-상세기획안.md",
+    "docs/디렉터리-문서신경망-재설계-기획안.md",
+    "docs/AI-품질-학습-자율성-평가기획안.md",
+    "docs/ai-review/evidence/AI-CONTEXT-CROSS-STUDY-*.md",
+    "apps/mobile/**",
+    "scripts/prototype_server.py",
+    "docs/prototypes/**",
+    "docs/ai-review/tasks/PROTOTYPE-TERMINOLOGY-001/**",
+    ".codex-share/**",
+    ".tmp/**"
+  ],
+  "required_evidence": [
+    "target commit·tree·AGENTS hash와 선작업 증거 파일을 직접 대조",
+    "작업큐 PREWORK-1과 SIM-1의 서로 다른 edit_owner·artifact 범위 대조",
+    "70/70·4/6·Fable 연결 표현이 완료와 미완료를 구분하는지 확인",
+    "미추적 사용자·별도 AI 스터디 경로가 검수 입력에서 제외됐는지 확인",
+    "Opus r1 F-01~04가 Git blob 해시·사용자 manifest·결정적 분류기·2단계 SHA 봉인으로 해소됐는지 확인"
+  ],
+  "human_decisions": [
+    "2026-09-02 사용자는 새 브랜치를 만들지 않고 선작업 1~11을 자동 진행하도록 지시했다.",
+    "이 Task는 선작업 검수이며 기존 SIM-1 lease 인계나 다섯 공식 기획안 변경을 승인하지 않는다.",
+    "Fable 실패·예산 소진·판정 부재는 PASS나 선작업 종결로 합성하지 않는다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "2.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}
