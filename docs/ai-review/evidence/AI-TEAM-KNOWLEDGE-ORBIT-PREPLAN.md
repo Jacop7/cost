@@ -138,7 +138,10 @@ Data는 제품 데이터의 의미와 계산을 소유하고, Server · Supabase
 
 ### 4.2 AI 부 오케스트레이터
 
-- 사용자 요청을 기존 Task의 `ADD | REPLACE | NEW_TASK | QUESTION`으로 판정
+- 사용자 요청을 온톨로지 §6.3이 소유하는 단일 enum
+  `ADD | SUPERSEDE_PROPOSAL | NEW_TASK | STATUS_ONLY`로 판정한다.
+  `SUPERSEDE_PROPOSAL`은 제안일 뿐 사람 승인 전에는 적용하지 않으며, 이 패킷과 후속 개정은
+  판정 enum에 새 값이나 다른 이름을 정의하지 않는다.
 - Task 목표·비목표·완료 조건·담당 팀·필요 권위 입력 정규화
 - 팀 간 의존성과 편집 소유권 조정
 - Context & Token Steward의 전환 신호 검토
@@ -376,6 +379,10 @@ created_by:
 
 새 Task는 전체 과거를 읽지 않고 다음 순서로 필요한 기억을 조립한다.
 
+새 채팅 상태 복원 절차의 단일 권위는 온톨로지 §6.4다. 아래 L0~L4는 그 절차 안에서 읽을 지식의
+조립 우선순위이며 §6.4의 lease·사용자 변경·증거 SHA 확인 단계를 대체하지 않는다. 온톨로지 개정
+Task는 두 순서를 하나의 복원·조립 계약으로 통합한다.
+
 1. L0 — `AGENTS.md`와 절대 원칙
 2. L1 — 현재 Task·최근 HANDOFF·마지막 검증 SHA
 3. L2 — 관련 권위 문서·Decision·열린 Finding
@@ -476,6 +483,13 @@ Quality는 구현팀이나 Steward의 비용 판단 때문에 필수 Finding을 
 
 아래 임계는 파일럿용 후보이며 §16의 사람 결정으로 확정한다.
 
+지표 이름·계산 정의의 단일 권위는 평가 기획안 §5다. `handoff recovery success`는 §5.3
+`resume success`의 개명 후보이고 `duplicate work`·`handoff loss`는 §5.3의 동일 지표다.
+`repeated discovery`·`stale fact reuse`·`retrieval provenance failure`·`context relevance ratio`·
+`token per completed task unit` 등 신규 지표는 평가 기획안 개정으로만 추가한다. 개정 Task는 아래
+표와 §5.1~§5.4 기존 지표의 동일·개명·신규 대응표를 포함하며 이 표를 별도 지표 권위로 사용하지
+않는다.
+
 | 지표 | 수집 위치·계산 | 초기 실패 후보 |
 |---|---|---|
 | handoff recovery success | HANDOFF와 successor 최초 상태에서 사용자 재설명 없이 `next_safe_action`을 복원한 비율 | 3건 중 1건이라도 복원 실패 |
@@ -555,9 +569,9 @@ Learning은 반복 관측만으로 자동 승격하지 않는다. `CANDIDATE →
 |---|---|---|---|
 | `팀구성_상세기획안.md` | 5개 팀 그룹과 기존 역할의 대응, `Server · Supabase · Operations` 명칭, Context & Token Steward 후보 역할의 관측·신호 권한, AI 부 지휘자의 상태 복원 책임, Quality와 사람 Go/No-Go의 분리 | Steward의 정책·품질 판정권, 채팅별 경쟁 공식 문서 | 역할 책임 중복 검사, Steward 과권한 시뮬레이션 |
 | `AI-지식-온톨로지-기획안.md` | 기존 node·edge 재사용 표, HANDOFF·ROLE_CONTEXT·Release 및 `TOUCHES`·`HANDOFF_TO`의 후보 상태, 출처·SHA·상태를 가진 기억 캡슐 L0~L4 | 검증 전 새 canonical node·edge, 일반 명사 기반 중복 온톨로지 | node/edge registry 대조, 고아·역링크·상태 검증 |
-| `AI-오케스트레이션-상세기획안.md` | master/department/Task 채팅 책임, `HANDOFF_READY` 전이, `CONTEXT_ROLLOVER_REQUIRED` 신호, canonical HANDOFF 필드, predecessor/successor 복원 절차, 작업 중 현재 맥락 조립 | 채팅을 공식 기억 저장소로 취급, 컨텍스트 압력만으로 자동 정책 변경 | 동일·낮은 판본 handoff 거부, successor 복원 시뮬레이션 |
+| `AI-오케스트레이션-상세기획안.md` | master/department/Task 채팅 책임, 온톨로지 §6.3 요청 판정 enum의 사용, `HANDOFF_READY` 전이, `CONTEXT_ROLLOVER_REQUIRED` 신호, canonical HANDOFF 필드, predecessor/successor 복원 절차, 작업 중 현재 맥락 조립 | 채팅을 공식 기억 저장소로 취급, 요청 판정 enum 재정의, 컨텍스트 압력만으로 자동 정책 변경 | 요청 판정 허용값의 온톨로지 단일 출처 검사, 동일·낮은 판본 handoff 거부, successor 복원 시뮬레이션 |
 | `디렉터리-문서신경망-재설계-기획안.md` | 팀 그룹별 가까운 README 후보, 기존 `docs/team/*` 권위 재사용, current/task/decision/release 생성 view 후보, 문서 그래프·context pressure·HANDOFF 필드 검사기 | 새 `_shared` 권위군, 현재 상태의 손작성 복제, 역할별 별도 공식본 | 생성 view 원본 대조, 문서 그래프·단일 소유권 검사 |
-| `AI-품질-학습-자율성-평가기획안.md` | §12 지표의 출처·계산식·초기 실패 후보, handoff 복원·중복 조사·낡은 사실·토큰 효율·escaped defect 평가, 독립 Quality/Fable 컨텍스트, Learning 승격 수명주기 | Quality의 운영 승인, 비용 절감을 이유로 한 필수 Finding 하향 | 실제 Task 3건 측정, 실패 임계 사보타주, 사람 최종 판정 |
+| `AI-품질-학습-자율성-평가기획안.md` | §12와 기존 §5 지표의 동일·개명·신규 대응표, 출처·계산식·초기 실패 후보, handoff 복원·중복 조사·낡은 사실·토큰 효율·escaped defect 평가, 독립 Quality/Fable 컨텍스트, Learning 승격 수명주기 | 별도 지표 어휘 권위, Quality의 운영 승인, 비용 절감을 이유로 한 필수 Finding 하향 | 지표 이름·계산 정의 유일성 검사, 실제 Task 3건 측정, 실패 임계 사보타주, 사람 최종 판정 |
 
 ### 17.1 공통 상호작용 계약
 
