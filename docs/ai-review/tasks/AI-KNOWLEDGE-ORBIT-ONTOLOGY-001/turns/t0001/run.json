@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-KNOWLEDGE-ORBIT-ONTOLOGY-001",
+  "sequence": "t0001",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-02T07:42:39.998Z",
+  "turn_id": "turn-s001",
+  "turn_type": "SOLAR_REQUEST",
+  "role": "SOLAR-ARCH",
+  "task_sha256": "445ec2f5d56436f4ba3aa3a9bc0e07d7ae21e4015db1ea703f4de0c1fd13535b",
+  "runner_sha256": "80dae1d06c89af056e9d8c210b571e978ee534fc128a5fe3b9867610b5ae447b",
+  "previous_manual_run_sha256": null,
+  "collaboration_before_sha256": "c1cac1f62490abc980516db0d59950376463b45addb97e4ba6b53602787bb81d",
+  "collaboration_before_bytes": 272,
+  "collaboration_entry_sha256": "6313455daa8235eb609b66872d3436ad721d2d59b08fe71a9f13f86741ceb079",
+  "collaboration_entry_bytes": 1595,
+  "collaboration_after_sha256": "3f8bb3e2ca81266ab16ad2110c5e33d3df994d303de5037c5f6346ae413295fa",
+  "collaboration_after_bytes": 1867
+}

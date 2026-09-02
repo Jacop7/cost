@@ -1,0 +1,78 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-KNOWLEDGE-ORBIT-ONTOLOGY-001",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R1",
+  "author_role": "SOLAR-ARCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "7455408be1d870e079ca397224d0c20f54a8df16",
+  "target_commit_sha": "6deaf4d1beca913dde06af9721c70ada5d927577",
+  "target_tree_oid": "1d911dbb2b946acdcabf1a68c7ac028549a089f5",
+  "agents_blob_oid": "4c31bbf9be81871c4dfb1699e057c8303d4e2fae",
+  "agents_sha256": "5628177d442547e868acc3e0446e6513b65bf713f2cfd82cc78e0e6dedc4c860",
+  "requirements": [
+    "팀 구성안 v1.3의 다섯 팀 그룹·채팅 라우팅·Context & Token Steward 경계와 온톨로지 v0.2의 node·edge·복원 계약이 모순 없이 연결되는지 검증한다.",
+    "기존 node·edge를 재사용하고 HANDOFF·ROLE_CONTEXT·RELEASE와 HANDOFF_TO만 필요한 새 어휘로 추가했으며 TOUCHES·BLOCKS·DECIDED_BY·OWNED_BY·ANNOUNCED_IN 중복 어휘를 만들지 않았는지 검증한다.",
+    "요청 판정 enum ADD | SUPERSEDE_PROPOSAL | NEW_TASK | STATUS_ONLY의 단일 권위가 온톨로지 §6.3에 있고 SUPERSEDE_PROPOSAL이 사람 승인 전 효력을 갖지 않는지 검증한다.",
+    "L0~L4 기억 캡슐이 팀 구성안 §11의 lease·사용자 소유 변경·증거 SHA 복원을 생략하지 않고 exact ID와 1-hop 증거를 우선하는지 검증한다.",
+    "HANDOFF가 기존 권위의 비권위 snapshot이며 동일·낮은 판본, 최신 HANDOFF 무시, source commit·Task snapshot hash 불일치를 실패 폐쇄하는지 검증한다.",
+    "ROLE_CONTEXT와 RELEASE가 역할 설명·배포 증거를 복제하지 않고 활성화 전 파일 물질화를 금지하는지 검증한다.",
+    "문서 네트워크 시뮬레이션의 신규 node·edge·L0~L4 사보타주가 실제 계약을 직접 검증하는지 확인한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:single-canonical-artifact",
+    "AGENTS:human-approval-boundary",
+    "AGENTS:repository-authoritative-memory",
+    "AI-ORCH:request-disposition-single-authority",
+    "AI-ORCH:handoff-stale-version-rejection",
+    "AI-ORCH:context-token-budget"
+  ],
+  "artifact_paths": [
+    "docs/팀구성_상세기획안.md",
+    "docs/AI-지식-온톨로지-기획안.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/ai-review/evidence/AI-TEAM-KNOWLEDGE-ORBIT-PREPLAN.md"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/tasks/AI-KNOWLEDGE-ORBIT-TEAM-003/rounds/r001/review.md",
+    "scripts/ai-plan-network-simulation.mjs",
+    "scripts/ai-plan-network-simulation.test.mjs"
+  ],
+  "excluded_paths": [
+    "docs/AI-오케스트레이션-상세기획안.md",
+    "docs/디렉터리-문서신경망-재설계-기획안.md",
+    "docs/AI-품질-학습-자율성-평가기획안.md",
+    "apps/mobile/**",
+    "docs/prototypes/**",
+    "scripts/prototype_server.py"
+  ],
+  "required_evidence": [
+    "온톨로지 §3·§4 node/edge registry와 사전기획 §8.1·§8.2 대응표 대조",
+    "온톨로지 §6.3·§6.4와 팀 구성안 §1.4·§3.2.1·§11 책임 경계 대조",
+    "TEAM-003 r001 PASS와 필수 Finding 2건 VERIFIED 확인",
+    "신규 사보타주를 포함한 문서 네트워크 시뮬레이션 65/65",
+    "target commit·tree·AGENTS hash 검증"
+  ],
+  "human_decisions": [
+    "2026-09-02 사용자는 다섯 공식 기획안을 순서대로 수정하고 문서가 추가될 때마다 Fable과 누적 교차검수하도록 승인했다.",
+    "팀 구성안 단계는 TEAM-002 CHANGES_REQUIRED와 TEAM-003 PASS 두 유효 Fable 검수를 거쳤으며, 온톨로지 단계는 완성된 팀 구성안과 함께 누적 검수한다.",
+    "Fable은 공식 Claude Code CLI 로그인 세션을 사용하며 이 Task 실행 상한은 USD 4.00이다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "4.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}
