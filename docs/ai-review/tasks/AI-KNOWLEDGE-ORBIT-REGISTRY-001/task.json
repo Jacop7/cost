@@ -1,0 +1,69 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-KNOWLEDGE-ORBIT-REGISTRY-001",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R1",
+  "author_role": "SOLAR-ARCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "7455408be1d870e079ca397224d0c20f54a8df16",
+  "target_commit_sha": "196f60c22b68daa9419991081b2fb8d1c64eeea0",
+  "target_tree_oid": "35a955e3b4dabff9443a375201b8c765eb12c9cf",
+  "agents_blob_oid": "4c31bbf9be81871c4dfb1699e057c8303d4e2fae",
+  "agents_sha256": "5628177d442547e868acc3e0446e6513b65bf713f2cfd82cc78e0e6dedc4c860",
+  "requirements": [
+    "팀 구성안 v1.3과 온톨로지 v0.2의 역할·그룹·사람 승인 경계와 node·edge registry 소유권이 경쟁 공식본을 만들지 않는지 검증한다.",
+    "HANDOFF·ROLE_CONTEXT·RELEASE와 HANDOFF_TO가 최소 어휘인지 검증하고, TOUCHES·BLOCKS·DECIDED_BY·OWNED_BY·ANNOUNCED_IN을 저장 관계로 추가하지 않은 판단을 확인한다.",
+    "요청 판정 enum의 단일 권위와 SUPERSEDE_PROPOSAL의 사람 승인 전 무효 계약을 두 문서에서 대조한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:single-canonical-artifact",
+    "AGENTS:human-approval-boundary",
+    "AI-ORCH:request-disposition-single-authority"
+  ],
+  "artifact_paths": [
+    "docs/팀구성_상세기획안.md",
+    "docs/AI-지식-온톨로지-기획안.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/evidence/AI-ONTOLOGY-FABLE-COMPACT-EVIDENCE.md",
+    "docs/ai-review/tasks/AI-KNOWLEDGE-ORBIT-TEAM-003/rounds/r001/review.md"
+  ],
+  "excluded_paths": [
+    "scripts/ai-plan-network-simulation.mjs",
+    "scripts/ai-plan-network-simulation.test.mjs",
+    "docs/AI-오케스트레이션-상세기획안.md",
+    "docs/디렉터리-문서신경망-재설계-기획안.md",
+    "docs/AI-품질-학습-자율성-평가기획안.md",
+    "apps/mobile/**",
+    "docs/prototypes/**"
+  ],
+  "required_evidence": [
+    "두 공식 문서의 registry와 중앙 권위 표 직접 대조",
+    "압축 증거 §3의 node·edge 사보타주 결과 확인",
+    "TEAM-003 PASS와 필수 Finding 2건 VERIFIED 확인",
+    "target commit·tree·AGENTS hash 확인"
+  ],
+  "human_decisions": [
+    "2026-09-02 사용자는 상한을 계속 올리지 말고 외부 호출 전에 Fable 검수 구조를 축소·최적화하도록 지시했다.",
+    "이 Task는 node·edge·권위 경계만 판정하며 HANDOFF 복원 동작은 별도 Task가 판정한다.",
+    "별도 사람 실행 승인 전에는 Fable을 호출하지 않는다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "4.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}

@@ -1,5 +1,7 @@
 import assert from 'node:assert/strict';
+import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
+import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import {
   acquireCollaborationLock,
@@ -56,6 +58,28 @@ function expectCode(fn, code) {
 }
 
 const digest = (value) => createHash('sha256').update(value).digest('hex');
+
+const repoRoot = new URL('../', import.meta.url);
+
+function loadReviewTask(taskId) {
+  return JSON.parse(readFileSync(
+    new URL(`../docs/ai-review/tasks/${taskId}/task.json`, import.meta.url),
+    'utf8',
+  ));
+}
+
+function committedInputBytes(task) {
+  const paths = [...new Set([
+    ...task.artifact_paths,
+    ...task.reference_paths,
+    ...task.evidence_paths,
+  ])];
+  return paths.reduce((total, path) => total + Number(execFileSync(
+    'git',
+    ['cat-file', '-s', `${task.target_commit_sha}:${path}`],
+    { cwd: repoRoot, encoding: 'utf8' },
+  ).trim()), 0);
+}
 
 function taskInput(taskId = 'TASK-1') {
   return {
@@ -1332,6 +1356,33 @@ test('새 채팅 복원은 L0~L4 순서와 동일·낮은 HANDOFF 판본 거부�
     'successor가 전달받은 판본으로 실행한다.',
   );
   assert.throws(() => validateDocumentNetwork(acceptsStale), /ontology 필수 계약 누락/);
+});
+
+test('온톨로지 Fable 축소 패킷은 두 공식 문서를 유지하며 원시 시뮬레이터를 다시 싣지 않는다', () => {
+  const registry = loadReviewTask('AI-KNOWLEDGE-ORBIT-REGISTRY-001');
+  const continuity = loadReviewTask('AI-KNOWLEDGE-ORBIT-CONTINUITY-001');
+  const expectedArtifacts = [
+    'docs/팀구성_상세기획안.md',
+    'docs/AI-지식-온톨로지-기획안.md',
+  ].sort();
+
+  assert.equal(registry.target_commit_sha, continuity.target_commit_sha);
+  for (const task of [registry, continuity]) {
+    assert.deepEqual([...task.artifact_paths].sort(), expectedArtifacts);
+    assert.ok(
+      task.evidence_paths.includes('docs/ai-review/evidence/AI-ONTOLOGY-FABLE-COMPACT-EVIDENCE.md'),
+    );
+    assert.equal(
+      [...task.reference_paths, ...task.evidence_paths].some(
+        (path) => path.startsWith('scripts/ai-plan-network-simulation'),
+      ),
+      false,
+    );
+    assert.ok(committedInputBytes(task) <= 180_000, `${task.task_id} 입력이 다시 비대해졌습니다.`);
+    assert.ok(task.human_decisions.some((decision) => decision.includes('승인 전에는 Fable을 호출하지 않는다')));
+  }
+  assert.ok(registry.requirements.some((requirement) => requirement.includes('node·edge')));
+  assert.ok(continuity.requirements.some((requirement) => requirement.includes('L0~L4')));
 });
 
 test('필수 계약·소유 위임·중앙 권위를 코드 블록과 HTML 주석으로 위조할 수 없다', () => {
