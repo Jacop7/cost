@@ -1,40 +1,14 @@
-# AI-PLANS-PREWORK-REVIEW-002 공동 작업 장부
+# AI-PLANS-PREWORK-REVIEW-002 Fable 검수 — r001
 
-> 첫 Task의 예산 실패를 PASS로 합성하지 않고, 축소 입력으로 선작업 1~11을 독립 검수하는 장부다.
-> 비-Fable 턴은 전용 append 명령으로만 추가한다.
+- 판정: **PASS**
+- 역할: `FABLE-ARCH`
+- 검수 엔진: `FABLE`
+- 검수 모델: `claude-fable-5`
+- 모드: `INITIAL`
+- 스냅샷: `COMMIT`
+- 대상 SHA: `0517f06900da6c3e7dd0ed472e10fda851978697`
 
-
-## SOLAR_REQUEST · turn-s001 · r001
-
-- role: `CODEX-QA`
-- reply_to_turn_id: `null`
-- target_commit_sha: `0517f06900da6c3e7dd0ed472e10fda851978697`
-- changed_artifact_paths: `docs/작업큐.md`, `docs/ai-review/evidence/AI-PLANS-PREWORK-BASELINE.md`, `docs/ai-review/evidence/AI-PLANS-PREWORK-PATCH-MAP.md`, `docs/ai-review/evidence/AI-PLANS-PREWORK-DECISIONS.md`, `docs/ai-review/evidence/AI-PLANS-PREWORK-VERIFICATION-V3.md`, `docs/ai-review/evidence/AI-PLANS-PREWORK-OPUS-R3.md`, `docs/ai-review/evidence/AI-PLANS-PREWORK-USER-STATE.json`, `scripts/ai-plan-prework-status-check.mjs`
-- 충족해야 할 요구사항·불변식: 선작업 1~11 개별 판정, 사용자 변경 불침범, Task별 lease 격리, 실패 원본 불변, Fable 공식 검수 독립성
-- 이번에 바꾼 내용: Opus r1/r2 Finding을 보완해 r3 11/11 PASS를 받았고, e96a238 실행 결과와 검사기 blob을 v3 영수증으로 봉인했다.
-- 집중 검토 질문: 1~11 각각이 현재 증거로 충족되는가? 각 번호에 PASS/CHANGES_REQUIRED를 부여하고 하나라도 미통과면 전체 PASS를 금지한다.
-- 실행한 테스트·현재 증거: rename fixture 2/2, 사용자 57경로 manifest 일치·미분류 0·중복 0, 시뮬레이션 70/70, verify --no-db 4/6, fable:check·diff-check exit 0
-- 사람 결정이 필요한 항목: SIM-1 lease 인계와 ONTOLOGY successor는 본작업 전 별도 HUMAN-CHIEF Decision/HANDOFF가 필요하다.
-- 검수 규칙: REVIEW-001 r001의 budget_exhausted·verdict null을 PASS로 재사용하지 않는다. Opus r3는 참고 증거이며 Fable이 독립 판정한다.
-- next_review_request: `FABLE_REVIEW`
-
-<!-- fable-review:r001 sha256=fc5d5404824bfec7ccbc95005f019f86e00eadeae8983e319ff45820e8123bbc -->
-## FABLE_REVIEW · turn-f001 · r001
-
-- role: `FABLE-ARCH`
-- reviewer_engine: `FABLE`
-- reviewer_model: `claude-fable-5`
-- verdict: `PASS`
-- review_sha256: `fc5d5404824bfec7ccbc95005f019f86e00eadeae8983e319ff45820e8123bbc`
-- target_commit_sha: `0517f06900da6c3e7dd0ed472e10fda851978697`
-- input_files_sha256: `335a311e62c5e8a3a839e554d050290d6ea7359b56807abb6883df2ffd134f95`
-- 원본 검수: [r001/review.md](./rounds/r001/review.md)
-- 필수 미종결 Finding: 없음
-- 선택 미종결 Finding: 없음
-- 닫힌 Finding: 없음
-- 재개방 Finding: 없음
-
-### 요약
+## 요약
 
 선작업 1~11을 산출물 원문 기준으로 독립 판정한 결과 11/11 PASS이며 전체 판정은 PASS다.
 [1] 기준선 PASS: BASELINE §1~2가 baseline 022840a·tree 4b1f093·AGENTS blob c32214b·다섯 문서의 Git blob SHA-256을 고정하고 exact-HEAD CI 미확인을 은폐 없이 보존한다(AI-PLANS-PREWORK-BASELINE.md 8~31행).
@@ -51,11 +25,26 @@
 Opus r3(OPUS_DIRECT_ADVISORY, 대상 e96a238)는 참고만 했고 Fable 결과로 합성하지 않았다. 읽기 전용 COMMIT 스냅숏 특성상 git 조상 선형성(aa3c554→e96a238)과 8d52e81 커밋 내용 자체는 명령 재실행으로 확증하지 못했으며 봉인 해시와 작업큐 binding으로 판정했다.
 Critical·Major 및 명세 필수 Finding은 0건이라 등록하지 않는다. 비차단 관찰 2건: (a) 검사기 exactInScope(14~28행)에 VERIFICATION-V3·OPUS-R3가 없어 두 파일이 미추적 상태인 워크트리에서는 --compare-user-manifest가 fail-closed로 실패한다. 안전 방향이지만 향후 영수증 개정 시 목록 갱신이 필요해 proposed_edits로 제안한다. (b) BASELINE §3의 `.claude/settings*.json` glob보다 검사기 정규식(43행)이 좁아 그 외 settings 변형은 미분류 실패로 떨어진다(역시 fail-closed). 본 PASS는 로컬 판정이며 외부 gate_state는 OPEN으로 유지되고, 본작업 전 SIM-1 lease 인계와 ONTOLOGY successor 발행은 여전히 HUMAN-CHIEF Decision/HANDOFF 전용이다.
 
-### 공동 편집 제안 색인
+## Findings
 
-- EDIT-PREWORK-STATUSCHECK-INSCOPE-V3R3: ADD `scripts/ai-plan-prework-status-check.mjs` ·   'docs/ai-review/evidence/AI-PLANS-PREWORK-VERIFICATION-V2.md', · 원문은 review.md 참조
+없음
 
-- next_review_request: `AI_DEPUTY_GATE_REVIEW`
+## 공동 편집 제안
 
-> 다음 담당자는 이 아래에 같은 공동 산출물의 수정 내용·Finding별 답변·검증 증거를 새 턴으로 추가합니다. 이전 턴은 고치거나 지우지 않습니다.
-<!-- /fable-review:r001 -->
+### EDIT-PREWORK-STATUSCHECK-INSCOPE-V3R3 — ADD
+
+- 대상: `scripts/ai-plan-prework-status-check.mjs`
+- 위치:   'docs/ai-review/evidence/AI-PLANS-PREWORK-VERIFICATION-V2.md',
+- 연결 Finding: 없음
+- 이유: exactInScope에 V3 영수증과 Opus r3 문서가 없어 두 파일이 미추적 상태인 워크트리에서는 --compare-user-manifest가 STATUS_CLASSIFICATION_FAILED로 실패한다. fail-closed라 안전하지만 향후 영수증 개정·재실행 시 기계식 조건이 자기 산출물 때문에 막히므로 IN_SCOPE 목록에 추가한다. 비차단 개선 제안이며 CODEX-QA가 통합 여부를 결정한다.
+
+      'docs/ai-review/evidence/AI-PLANS-PREWORK-VERIFICATION-V3.md',
+      'docs/ai-review/evidence/AI-PLANS-PREWORK-OPUS-R3.md',
+
+## 상태 변경
+
+- 닫힘: 없음
+- 재개방: 없음
+- 필수 미해결: 없음
+
+> 이 문서는 Claude의 원시 출력을 복사한 것이 아니라, Codex 실행기가 판본·스키마·증거 경로를 검증해 정규화한 기록입니다.
