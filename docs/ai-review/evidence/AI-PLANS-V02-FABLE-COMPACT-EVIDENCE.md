@@ -2,7 +2,7 @@
 
 > Task: `AI-ORCH-PLANS-SIM-1`
 > 상태: `CANDIDATE_EVIDENCE`
-> 대상 commit: `8f0533bf352f0a6259cafbbdaf11f26de3699123`
+> 대상 계획 수정 commit: `b91ce56d0e41319e48bd45644cec4bd972deaff3`
 > 목적: 다섯 공식 기획안의 누적 Fable 검수에서 큰 실행 원본을 다시 싣지 않고 판별력과 재현 경로를 제공한다.
 
 ## 1. 공식 artifact 결속
@@ -43,9 +43,9 @@ review hash·blob을 증거로 고정할 수 있다. 바뀌었거나 아직 유�
 ## 3. 실행형 검증
 
 - 실행: `corepack pnpm ai:plans:simulate`
-- 결과: `68/68 PASS`
-- 코드 blob: `4680ec8d9475048dcf7388775078564b74bdb970`
-- 시험 blob: `16c6d640a4a1004937a0bb4de3bcc52d1de38510`
+- 결과: `69/69 PASS`
+- 코드 blob: `76447caacc2038ff22fed3eff7f0fd0f628876ac`
+- 시험 blob: `20f0be7d40548559b9f056a5cbb31c8cbc027013`
 
 추가된 행동 fixture는 다음을 실제 상태 전이로 확인한다.
 
@@ -54,6 +54,8 @@ review hash·blob을 증거로 고정할 수 있다. 바뀌었거나 아직 유�
 - 동일·낮은 HANDOFF 판본은 복원되지 않는다.
 - HANDOFF 뒤 Task snapshot을 바꾸면 복원되지 않는다.
 - 유효 HANDOFF를 복원하고 사람 인계 Decision을 소비한 뒤에만 successor가 lease를 얻는다.
+- 같은 predecessor에서 분기한 HANDOFF 계보는 거부된다.
+- 발행된 HANDOFF 원본을 고치면 append-only 감사 원본과 달라져 거부된다.
 
 문서망 검사는 코드 블록·HTML 주석에 숨긴 가짜 계약, 중복 권위, 권위 DAG 순환, 끊긴 탐색 링크,
 누락된 역할·Task·Decision·Finding·Learning 감사 원본, 사용자 변경 경로 겹침을 거부한다.
