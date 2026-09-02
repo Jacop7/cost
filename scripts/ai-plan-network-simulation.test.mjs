@@ -306,6 +306,31 @@ test('팀 그룹은 라우팅 경계이고 승인·판정 주체가 아니다', 
   assert.doesNotMatch(privileged, /팀 그룹은 기존 역할을 대체하는 새 승인 주체가 아니라 관련 역할과 Task를 묶는 라우팅 경계다/);
 });
 
+test('§1.1 역할과 §1.3 다섯 팀 그룹 대응은 누락·중복 없이 등록된다', () => {
+  const { team } = loadPlanDocuments();
+  const section = team.match(/### 1\.3 다섯 팀 그룹\n([\s\S]*?)\n### 1\.4 채팅 라우팅 구조/)?.[1] ?? '';
+  const expected = [
+    'Product · Mobile',
+    'Data · Backend',
+    'Server · Supabase · Operations',
+    'Quality · Review',
+    'Knowledge · Orchestration',
+  ];
+  const rows = [...section.matchAll(/^\| `([^`]+)` \| ([^|]+) \| ([^|]+) \| ([^|]+) \|$/gm)];
+  assert.deepEqual(rows.map((match) => match[1]), expected);
+  assert.equal(new Set(rows.map((match) => match[1])).size, expected.length);
+  for (const [, , scope, roles, separation] of rows) {
+    assert.ok(scope.trim() && roles.trim() && separation.trim());
+  }
+  assert.match(team, /\| 컨텍스트·토큰 관측 \| `CONTEXT-STEWARD` 전용 컨텍스트\(§3\.2\.1\)/);
+
+  const missing = section.replace(/^\| `Quality · Review` .*\r?\n/m, '');
+  assert.equal([...missing.matchAll(/^\| `([^`]+)` \|/gm)].length, 4);
+  const duplicated = `${section}\n${rows[0]?.[0] ?? ''}`;
+  const duplicatedNames = [...duplicated.matchAll(/^\| `([^`]+)` \|/gm)].map((match) => match[1]);
+  assert.notEqual(new Set(duplicatedNames).size, duplicatedNames.length);
+});
+
 test('Context Steward는 전용 컨텍스트에서 관측·신호만 수행한다', () => {
   const { team } = loadPlanDocuments();
   assert.match(team, /\| 컨텍스트·토큰 관측 \| `CONTEXT-STEWARD` 전용 컨텍스트\(§3\.2\.1\)/);

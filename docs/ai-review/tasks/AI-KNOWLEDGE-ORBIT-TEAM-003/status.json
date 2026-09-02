@@ -1,0 +1,38 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-KNOWLEDGE-ORBIT-TEAM-003",
+  "predecessor_review": {
+    "task_id": "AI-KNOWLEDGE-ORBIT-TEAM-002",
+    "source_commit_sha": "8e6c977edd234ed4634d7a93165c833b10e3d8f0",
+    "round": "r001",
+    "task_sha256": "3c79741783628a8e6373059c0634c1cf74bf27415b38ffa09a4240c42ea4794e",
+    "manifest_sha256": "7c164ebc465c9d2efa7af24a94e4d2dcbb6988886fb8b9d6a49facf6701c593f",
+    "run_sha256": "3ae99da0a0073a26e31b12853db249070a06376d6307437f88394bfe221c4560",
+    "review_sha256": "37a303a758db68f4875318d336b37ed616ea3467e53a1dcae7d6bcadab78916f",
+    "finding_registry_sha256": "61c7dc1a7db75d8f6841d7697e397ecb25e534cc3072d9436a5a36e508042bab",
+    "handoff_turn_id": "turn-o001",
+    "handoff_entry_sha256": "48149bb5fc7ada748f426951c7ea84e6a02ff4b8c69d6add5147a13cf4ab7c9f",
+    "handoff_run_sha256": "43f28ff3a8787f621a0fca2b9dd680dbaaa48304d63adb2f18a4e68f9785de87"
+  },
+  "updated_at": "2026-09-02T07:32:26.474Z",
+  "latest_round": "r001",
+  "review_state": "VERIFIED",
+  "workflow_state": "VERIFIED",
+  "gate_state": "OPEN",
+  "run_state": "RESULT_RECEIVED",
+  "defect_state": "NOT_APPLICABLE",
+  "verdict": "PASS",
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "fallback_reason": null,
+  "latest_run_sha256": "5d253e37d59f89668954d2bfa6a3f462b9a34f54e92299af7ee228948758b8fb",
+  "open_required_finding_ids": [],
+  "open_optional_finding_ids": [
+    "ORBIT-TEAM-SIM-COVERAGE-003"
+  ],
+  "closed_finding_ids": [],
+  "candidate_review_state": null,
+  "candidate_review_sha256": null,
+  "backlog_dispositions": []
+}
