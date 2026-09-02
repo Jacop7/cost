@@ -24,7 +24,8 @@ review hash·blob을 증거로 고정할 수 있다. 바뀌었거나 아직 유�
 
 - 선행 검수: `AI-KNOWLEDGE-ORBIT-TEAM-003/r001`
 - 상태: `RESULT_RECEIVED · VERIFIED · PASS`
-- review hash: `5d253e37d59f89668954d2bfa6a3f462b9a34f54e92299af7ee228948758b8fb`
+- run hash: `5d253e37d59f89668954d2bfa6a3f462b9a34f54e92299af7ee228948758b8fb`
+- review hash: `4076d9738f4680ceadad4f6fe2e59b3691e799532a96c03e31f2fb6582c7afb7`
 - 선행·현재 blob: `ce68e2cc85b8973bcb968a8f968a153b65c3dfa0`로 동일
 - 나머지 네 DRAFT 문서는 원문을 모두 싣는다. 과거 PASS 뒤 바뀌었거나 아직 유효 PASS가 없기 때문이다.
 
