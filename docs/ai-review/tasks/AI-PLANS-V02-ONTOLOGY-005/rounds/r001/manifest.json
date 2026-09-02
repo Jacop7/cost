@@ -1,0 +1,105 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-PLANS-V02-ONTOLOGY-005",
+  "round": "r001",
+  "created_at": "2026-09-02T09:13:46.779Z",
+  "review_mode": "RECHECK",
+  "baseline_commit_sha": "6cc6c654036cce8b5cb360a33db5ab0df81d6e12",
+  "target_commit_sha": "7ff8b73707afe03bee5cb2f54b42ee7445ee6f94",
+  "target_tree_oid": "acc181f67c06d069672f17cee5e542e6dc0e00ff",
+  "agents_blob_oid": "4c31bbf9be81871c4dfb1699e057c8303d4e2fae",
+  "agents_sha256": "5628177d442547e868acc3e0446e6513b65bf713f2cfd82cc78e0e6dedc4c860",
+  "task_sha256": "a7e08013d0854f748b7dae4fb1674b63931eccaa95dc7f8ebb6b429b5ff62e6f",
+  "collaboration_sha256": "c5520e9756278c24ecf4bb09e27774681545a8ebc1091b584b1caecf6d2e1000",
+  "collaboration_bytes": 1160,
+  "input_files_sha256": "fbae6401db96ae675eb1036003dfd9c70ff1e86d884fb3e910813eb67b435466",
+  "schema_sha256": "d8ffdb13e6b1e38279355d9ffd592cfb91dc023d287976adf7892e85dbfaf0d7",
+  "runner_sha256": "80dae1d06c89af056e9d8c210b571e978ee534fc128a5fe3b9867610b5ae447b",
+  "snapshot_mode": "COMMIT",
+  "previous_review_sha256": "1eba971346a5b2316de37c690a4a6f7b17b17f148e4d347cc77e6b1ed9e15753",
+  "previous_run_sha256": "05f647761352edabcf2c6ac7e10fc15d75598d7fd62c27f9ef89c6e86aeaad32",
+  "predecessor_review": {
+    "task_id": "AI-PLANS-V02-ONTOLOGY-003",
+    "source_commit_sha": "ab912e53dfb9d431bbace8a823e8236a6e342d2b",
+    "round": "r001",
+    "task_sha256": "2124c5bfb5afb528559f4b052ceb383336edf335457048531aead749916a9ae1",
+    "manifest_sha256": "cebcffe547fe99fe8141fdcfae6aae287ec3a6723636ed5aadc53fcdd2242e29",
+    "run_sha256": "05f647761352edabcf2c6ac7e10fc15d75598d7fd62c27f9ef89c6e86aeaad32",
+    "review_sha256": "1eba971346a5b2316de37c690a4a6f7b17b17f148e4d347cc77e6b1ed9e15753",
+    "finding_registry_sha256": "4f8747ec44684c125f2cf78e7f992908ae8576583b56df14108fe75e5e7c1faf",
+    "handoff_turn_id": "turn-o002",
+    "handoff_entry_sha256": "d787c8914b87ee613a3fa0fe9c587c611415b0f02eb31ee2161e08ed8038ec77",
+    "handoff_run_sha256": "4bf508bb59f0546da48f2cf732fc8f3c0d2eefc11543d5df58dd3fb988c33538"
+  },
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "fallback_review": null,
+  "closure_review": null,
+  "fallback_input_scope": null,
+  "retry_of_failed_round": null,
+  "artifact_paths": [
+    "docs/AI-지식-온톨로지-기획안.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/evidence/AI-PLANS-V02-FABLE-COMPACT-EVIDENCE.md"
+  ],
+  "allowed_paths": [
+    "docs/AI-지식-온톨로지-기획안.md",
+    "AGENTS.md",
+    "docs/ai-review/evidence/AI-PLANS-V02-FABLE-COMPACT-EVIDENCE.md"
+  ],
+  "excluded_paths": [
+    "docs/팀구성_상세기획안.md",
+    "docs/AI-오케스트레이션-상세기획안.md",
+    "docs/디렉터리-문서신경망-재설계-기획안.md",
+    "docs/AI-품질-학습-자율성-평가기획안.md",
+    "scripts/ai-plan-network-simulation.mjs",
+    "scripts/ai-plan-network-simulation.test.mjs",
+    "apps/mobile/**",
+    "scripts/prototype_server.py",
+    "docs/prototypes/**"
+  ],
+  "applied_learning_ids": [],
+  "excluded_learning_ids": [],
+  "learning_registry_blob_oid": "77f00167d790c82373c1aa803d91874952c3334a",
+  "learning_registry_sha256": "4717fe99c86319d7c0abc5c8dd38e68e3a55722d7cfa56b8de173ed05ca1388f",
+  "learning_assignment_sha256": "4660bb32207bcae3246801d71aa6a052eab7b0a7cef357bd5984f706fe3dcbfe",
+  "learning_target_date": "2026-09-02",
+  "input_files": [
+    {
+      "path": "AGENTS.md",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 11345,
+      "git_blob_oid": "4c31bbf9be81871c4dfb1699e057c8303d4e2fae",
+      "sha256": "5628177d442547e868acc3e0446e6513b65bf713f2cfd82cc78e0e6dedc4c860",
+      "line_count": 157
+    },
+    {
+      "path": "docs/AI-지식-온톨로지-기획안.md",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 32401,
+      "git_blob_oid": "57fb2c564baf64202f66a66efdc9d21759b5c34a",
+      "sha256": "217a3d308bdad63940f8473318b992cc07df63664a27c26823bf10cf3f13f995",
+      "line_count": 544
+    },
+    {
+      "path": "docs/ai-review/evidence/AI-PLANS-V02-FABLE-COMPACT-EVIDENCE.md",
+      "path_role": "EVIDENCE",
+      "change_type": "COMMIT",
+      "size": 5791,
+      "git_blob_oid": "bcc4d636bd25227006ce3a14a5292308b0f51157",
+      "sha256": "3d02391f8c18f794b61873149b56e05f8ca26ff67992e018e67acfb25268f7f2",
+      "line_count": 79
+    }
+  ],
+  "source_archive_version": 1,
+  "finding_resolution_semantics": "VERIFIED_RESOLVED_V1",
+  "artifact_snapshot_sha256": null,
+  "input_snapshot_sha256": null
+}
