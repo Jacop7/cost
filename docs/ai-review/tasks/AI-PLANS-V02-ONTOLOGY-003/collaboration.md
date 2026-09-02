@@ -57,3 +57,30 @@
 - 검증: 문서 필수 조항 사보타주와 같은 predecessor 분기·기존 HANDOFF 변조 fixture를 추가했고 `corepack pnpm ai:plans:simulate` 69/69 통과했다.
 - 상태: 수정은 아직 새 exact commit으로 봉인하기 전이다. 봉인 후 동일 Finding ID를 승계하는 successor closure Task를 발행한다.
 - next_review_request: `SUCCESSOR_CLOSURE_TASK`
+
+## CODEX_EVIDENCE · turn-c001 · r001
+
+- role: `CODEX-FUNCTION-QA`
+- reply_to_turn_id: `turn-s002`
+- target_commit_sha: `b91ce56d0e41319e48bd45644cec4bd972deaff3`
+- artifact_hashes: `[{ path: docs/AI-지식-온톨로지-기획안.md, sha256: 217a3d308bdad63940f8473318b992cc07df63664a27c26823bf10cf3f13f995, change_type: MODIFIED }]`
+- finding_ids: `ONT-003-HANDOFF-VERSION-GAP, ONT-003-LEASE-TAKEOVER-GAP, ONT-003-HANDOFF-MUTABLE-STORE`
+- 실행 명령: `corepack pnpm ai:plans:simulate`; `git diff --check`
+- 종료 코드·결과: 전부 0; 문서 계약·업무 상태 전이·적대 fixture 69/69 통과
+- 검증 내용: 단조 정수 판본·동일 predecessor 분기 거부·append-only 원본 경로·만료 lease 인계 전제와 각 사보타주가 같은 exact commit에 결속됐다.
+- 미실행 항목과 이유: 전체 `pnpm verify`는 네 DRAFT별 Fable 검수와 최종 네트워크 결속 뒤 최종 게이트에서 실행한다.
+- next_review_request: `AI_DEPUTY_SUCCESSOR_HANDOFF`
+
+## AI_DEPUTY_SUCCESSOR_HANDOFF · turn-o001 · r001
+
+- role: `AI-DEPUTY-ORCHESTRATOR`
+- predecessor_task_id: `AI-PLANS-V02-ONTOLOGY-003`
+- predecessor_round: `r001`
+- predecessor_task_sha256: `2124c5bfb5afb528559f4b052ceb383336edf335457048531aead749916a9ae1`
+- predecessor_manifest_sha256: `cebcffe547fe99fe8141fdcfae6aae287ec3a6723636ed5aadc53fcdd2242e29`
+- predecessor_review_sha256: `1eba971346a5b2316de37c690a4a6f7b17b17f148e4d347cc77e6b1ed9e15753`
+- predecessor_run_sha256: `05f647761352edabcf2c6ac7e10fc15d75598d7fd62c27f9ef89c6e86aeaad32`
+- finding_registry_sha256: `4f8747ec44684c125f2cf78e7f992908ae8576583b56df14108fe75e5e7c1faf`
+- successor_task_id: `AI-PLANS-V02-ONTOLOGY-004`
+- successor_target_commit_sha: `b91ce56d0e41319e48bd45644cec4bd972deaff3`
+- next_review_request: `FABLE_RECHECK`
