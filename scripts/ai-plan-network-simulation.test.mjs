@@ -16,6 +16,7 @@ import {
   approvePlanActivation,
   authorizeAction,
   canonicalArtifactSha,
+  checkpointTaskHandoff,
   classifyRequest,
   closeFinding,
   createSimulationState,
@@ -40,8 +41,10 @@ import {
   registerClosureSuccessor,
   releaseQueueLock,
   releaseTaskLock,
+  restoreTaskHandoff,
   renewOrTransferLease,
   runHappyPathSimulation,
+  signalContextRollover,
   updateTask,
   validateDispositionChain,
   validateDocumentNetwork,
@@ -1518,4 +1521,72 @@ test('자율성 승격은 A1 최소 30개 표본을 boolean 하나로 우회할 
     to: 'A1', decisionId: 'DEC-A1-SAMPLES', evidencePassed: true, escapeCount: 0,
     evaluationWindows: 2, sampleCount: 29,
   }), 'AUTONOMY_PROMOTION_BLOCKED');
+});
+
+test('컨텍스트 rollover는 신호만으로 권한을 만들지 않고 검증된 HANDOFF 뒤에만 lease를 넘긴다', () => {
+  const state = createSimulationState();
+  const input = taskInput();
+  recordRequestPair(state, input);
+  acquireQueueLock(state, 'chat-a');
+  acquireTaskLock(state, 'chat-a', input.taskId);
+  registerTask(state, 'chat-a', input);
+
+  const signal = signalContextRollover(state, {
+    taskId: input.taskId,
+    stewardRole: 'CONTEXT-STEWARD',
+    reasons: ['권위 문서를 반복해서 다시 읽음'],
+    observedAt: '2026-09-02T16:00:00+09:00',
+    requestedSuccessorRoleContextId: 'ROLE_CONTEXT:SOLAR-ORCH:2',
+  });
+  assert.equal(signal.authorityGranted, false);
+  assert.equal(state.tasks[input.taskId].editOwner, 'chat-a');
+
+  const handoff = checkpointTaskHandoff(state, 'chat-a', input.taskId, {
+    sourceCommitSha: input.lastVerifiedSha,
+    successorRoleContextId: 'ROLE_CONTEXT:SOLAR-ORCH:2',
+    createdAt: '2026-09-02T16:01:00+09:00',
+  });
+  releaseTaskLock(state, 'chat-a', input.taskId);
+  releaseQueueLock(state, 'chat-a');
+
+  const stale = { ...handoff, version: 0, handoffId: `HANDOFF:${input.taskId}:0000` };
+  expectCode(() => restoreTaskHandoff(state, 'chat-b', input.taskId, stale), 'HANDOFF_STALE_VERSION');
+  assert.equal(restoreTaskHandoff(state, 'chat-b', input.taskId, handoff), true);
+  expectCode(() => restoreTaskHandoff(state, 'chat-b', input.taskId, handoff), 'HANDOFF_STALE_VERSION');
+
+  recordDecision(state, {
+    decisionId: 'DEC-HANDOFF-ROLLOVER', type: 'HANDOFF', approver: 'human-owner',
+    approvedAt: '2026-09-02T16:02:00+09:00', targetSha: input.lastVerifiedSha,
+    subjectTaskId: input.taskId, fromActor: 'chat-a', toActor: 'chat-b',
+  });
+  acquireQueueLock(state, 'chat-b');
+  acquireTaskLock(state, 'chat-b', input.taskId);
+  renewOrTransferLease(state, 'chat-b', input.taskId, {
+    ttl: 5, handoffDecisionId: 'DEC-HANDOFF-ROLLOVER',
+  });
+  assert.equal(state.tasks[input.taskId].editOwner, 'chat-b');
+});
+
+test('HANDOFF는 현재 Task snapshot이나 source SHA가 바뀌면 복원을 거부한다', () => {
+  const state = createSimulationState();
+  const input = taskInput();
+  recordRequestPair(state, input);
+  acquireQueueLock(state, 'chat-a');
+  acquireTaskLock(state, 'chat-a', input.taskId);
+  registerTask(state, 'chat-a', input);
+  signalContextRollover(state, {
+    taskId: input.taskId, stewardRole: 'CONTEXT-STEWARD', reasons: ['독립된 다음 위험 단계'],
+    observedAt: '2026-09-02T17:00:00+09:00',
+    requestedSuccessorRoleContextId: 'ROLE_CONTEXT:SOLAR-ORCH:2',
+  });
+  expectCode(() => checkpointTaskHandoff(state, 'chat-a', input.taskId, {
+    sourceCommitSha: 'f'.repeat(40), successorRoleContextId: 'ROLE_CONTEXT:SOLAR-ORCH:2',
+    createdAt: '2026-09-02T17:01:00+09:00',
+  }), 'HANDOFF_SOURCE_SHA_MISMATCH');
+  const handoff = checkpointTaskHandoff(state, 'chat-a', input.taskId, {
+    sourceCommitSha: input.lastVerifiedSha, successorRoleContextId: 'ROLE_CONTEXT:SOLAR-ORCH:2',
+    createdAt: '2026-09-02T17:02:00+09:00',
+  });
+  state.tasks[input.taskId].nextSafeAction = '검증되지 않은 다른 행동';
+  expectCode(() => restoreTaskHandoff(state, 'chat-b', input.taskId, handoff), 'HANDOFF_SNAPSHOT_MISMATCH');
 });

@@ -5,7 +5,7 @@ status: DRAFT
 authority: quality_learning_autonomy_evaluation
 owner: AI-DEPUTY-ORCHESTRATOR
 approver: HUMAN-CHIEF
-version: 0.1
+version: 0.2
 depends_on: [team, ontology, orchestration, directory]
 supersedes: []
 verified_by: []
@@ -14,7 +14,7 @@ review_by: 2026-10-01
 
 # MarginCook AI 품질·학습·자율성 평가 기획안
 
-> 버전: 0.1
+> 버전: 0.2
 > 상태: 누적 교차검수 대상 초안(`DRAFT`)
 > 작성일: 2026-09-01
 > 최종 책임자: 사람 주 오케스트레이터
@@ -141,6 +141,10 @@ AI가 “잘 이해했다”고 말한 문장은 증거가 아니다.
 8. lease 만료 → 자동 인수 금지, 인계 또는 사람 Decision 요구
 9. 사용자 추적 변경과 미추적 파일이 대상 경로와 겹침 → 제외·중단
 10. 계류 중 SUPERSEDE 뒤 STATUS_ONLY 입력 → 판정 이력과 대체 제안 모두 보존
+11. Context Steward의 rollover 신호 → Task checkpoint와 HANDOFF 준비 전 채팅 전환 금지
+12. 동일·낮은 HANDOFF 판본 또는 다른 source SHA → successor edit lease 인수 거부
+13. 마스터·부서 채팅의 공식 링크 → 임시 Task 채팅이 같은 Task·Decision·다음 행동 복원
+14. 모든 팀 상황실에 구현 원문·Decision 사본 주입 → 비권위 복제 탐지
 
 사보타주는 request_dispositions[]를 단수로 바꾸기, lease 확인 제거, stale SHA 허용, 미추적 파일 제외
 제거를 포함한다. lease 소유자가 lock 전 판본으로 Task 전체를 다시 써 다른 채팅의 append를 삭제·
@@ -168,6 +172,11 @@ AI가 “잘 이해했다”고 말한 문장은 증거가 아니다.
 
 정확도, 불필요 토큰, 잘못 인용한 권위, 누락 불변식, Finding 수를 잰다. 최소 컨텍스트가 정확도와
 재현성을 유지할 때만 champion으로 승격한다.
+
+Context & Token Steward 자체도 평가 대상이다. 신호가 너무 늦어 맥락 손실이 발생한 경우, 너무 일러
+불필요한 HANDOFF를 만든 경우, 필수 권위·시험을 토큰 절감 명목으로 제외한 경우를 분리해 잰다. 원시
+토큰 총량만으로 성패를 판정하지 않고 `사용자 재설명 없이 다음 안전 행동 복원`, `권위 누락 0`,
+`중복 비권위 입력 감소`를 함께 만족해야 개선으로 인정한다.
 
 ### 4.5 구현·검증 평가
 
@@ -197,6 +206,18 @@ AI가 “잘 이해했다”고 말한 문장은 증거가 아니다.
 
 어떤 경우에도 PASS·CLOSED·배포 완료로 합성하지 않고 `RUN_FAILED`, `STALE`, `환경 미검증` 또는
 `gate_state=OPEN`으로 남는지 확인한다.
+
+### 4.7 외부 Fable 검수 효율 평가
+
+모든 필수 검수 route는 Fable을 포함한다. 비용 최적화는 Fable을 생략하거나 다른 모델 결과로
+대체하는 것이 아니라, Codex 사전검수와 입력 manifest 축소로 유효 회차당 낭비를 줄이는 것이다.
+
+1. artifact에는 누적 대상 공식 문서 전체를 유지한다.
+2. 큰 구현·원시 로그는 content hash, 판별력 설명, 재현 명령, 결과가 있는 compact evidence로 바꿀 수 있다.
+3. 의미 축은 별도 Fable Task로 나눌 수 있지만 각 Task가 공식 문서의 상호작용을 검토한다.
+4. 실행 전 runner self-test, 로그인, 입력 바이트, 회차 상한, 작업 누적 잔여를 확인한다.
+5. `RUN_FAILED`·구조화 출력 없음·상한 소진은 유효 검수나 PASS로 세지 않는다.
+6. 같은 입력 실패 뒤 상한만 올린 재시도는 결함이며 실패 원인 또는 패킷 구조가 바뀌어야 한다.
 
 ## 5. 핵심 지표
 
@@ -233,12 +254,19 @@ AI가 “잘 이해했다”고 말한 문장은 증거가 아니다.
 | stale task start | 낡은 SHA·Decision·정책 hash로 시작한 Task |
 | handoff loss | 인계 전 존재했으나 재개에서 누락된 Decision/Finding/사용자 변경 |
 | queue overwrite | 한 Task 갱신이 다른 Task 필드를 되돌린 건수 |
+| handoff completeness | source SHA·snapshot hash·predecessor·successor context가 모두 유효한 HANDOFF / 전체 HANDOFF |
+| needless rollover | 같은 Task·컨텍스트로 계속할 수 있었는데 새 채팅을 만든 건 / 전체 rollover |
+| late rollover | 맥락 손실·중복 조사 뒤에야 신호가 난 건 / 전체 rollover |
+| team-chat authority copy | 상황실·부서 manifest에 공식 원문·Decision 사본이 발견된 건 / 검사 대상 |
 
 ### 5.4 비용·속도
 
 - Task 유형별 wall-clock·모델 사용량·외부 검수 사용액
 - 유효 결과 없는 실패 사용량
 - 읽은 파일·토큰 대비 발견한 필수 Finding
+- Fable 유효 회차당 입력 바이트·출력 토큰·비용 envelope
+- Fable 실패 비용 / 전체 Fable 기록 비용
+- compact evidence 적용 전후 입력 바이트와 필수 Finding 재현율
 - 사람 결정 대기 시간과 AI 불필요 대기 시간
 - 동일 실패 재시도 횟수
 
@@ -439,6 +467,7 @@ r2가, r2 수정은 추가 유효 재검수 또는 사람에게 명시한 미종
 - 평가 실행을 `pnpm verify`의 기존 6단계 안에 편입하고 분모를 몰래 늘리지 않는다.
 - 큰 모델이 없어도 계약·사보타주·상태 검사는 결정적으로 실행되게 한다.
 - 외부 모델 평가는 별도 증거이며 필수 CI의 비결정적 네트워크 의존으로 만들지 않는다.
+- Fable task preflight에 artifact 누적 집합·입력 바이트·compact evidence·비용 envelope 검사를 연결한다.
 
 ### 단계 4 — 제한된 자율성 파일럿
 
@@ -454,6 +483,14 @@ r2가, r2 수정은 추가 유효 재검수 또는 사람에게 명시한 미종
 - 모델·역할·컨텍스트 판본별 성과를 분리한다.
 - 사람 승인 뒤 route별 자율성을 유지·축소·확대한다.
 
+### 단계 6 — 스타터 키트 이식 평가
+
+- `AI-TEAM-STARTER-KIT-1`을 빈 저장소 fixture에 적용한다.
+- 제품 고유 profile 없이 공통 팀·Task·HANDOFF·검수·Release 흐름이 부팅되는지 확인한다.
+- MarginCook profile을 붙였을 때 브랜치·DB·Supabase·서버 adapter가 공식 권위를 덮어쓰지 않는지 잰다.
+- 새 프로젝트의 첫 세 Task에서 복원 성공률·권위 탐색 파일 수·필수 Fable 검수·사람 결정 경계를
+  재현하기 전에는 v1.0 완료로 판정하지 않는다.
+
 ## 13. 사보타주 목록
 
 - 새 채팅에서 낡은 `last_verified_sha`를 현재로 위장
@@ -463,6 +500,12 @@ r2가, r2 수정은 추가 유효 재검수 또는 사람에게 명시한 미종
 - collaboration Task lock을 가진 채 queue ledger lock을 역순 획득
 - `task.json`의 발행 시점 lease를 현재 권위로 오인
 - Fable 실패를 직접 Opus advisory PASS로 대체
+- Fable 필수 route를 비용 절감 이유로 Codex-only 완료 처리
+- 같은 대형 Fable 입력과 같은 실패 조건에서 상한만 올려 재호출
+- compact evidence에서 대상 공식 문서 하나 또는 실패 재현 명령 제거
+- rollover 신호만으로 HANDOFF 없이 새 채팅이 edit lease 인수
+- 동일 HANDOFF 판본을 두 successor 채팅이 동시에 채택
+- 모든 팀 상황실에 공식 Decision 본문을 복사해 두 번째 권위 생성
 - `full-db-required` 없이 attestation만으로 gate 종결
 - CANDIDATE Learning을 SECURITY 최초 감사에 주입
 - 사용자 미추적 파일을 자동 이동·스테이징
@@ -504,6 +547,8 @@ r2가, r2 수정은 추가 유효 재검수 또는 사람에게 명시한 미종
 - 오케스트레이션 기획안 §8.2가 정한 현재 누적 집합 전체의 외부 교차검수 유효 2회에서 잔여 필수
   Finding 0건을 확인한다. 2026-09-02 사람 결정 이후에는 공식 Fable 경로의 회차만 센다.
 - 공식 필요한 Fable route와 exact-SHA 보호 게이트는 별도로 유지된다.
+- Fable이 모든 필수 검수에 포함되면서도 사전검수·축소 패킷·실패 폐쇄로 유효 회차당 비용을 줄인다.
+- 실제 팀 MD·채팅 route·HANDOFF와 스타터 키트가 같은 평가 fixture를 통과한다.
 
 ## 16. 미결 구현 결정
 
