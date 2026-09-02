@@ -64,7 +64,7 @@
 
 표의 해시는 worktree 줄바꿈이 아니라 target commit의 Git blob 바이트를
 `git show <target>:<path>`로 읽어 SHA-256을 계산한다. 분류는
-`corepack pnpm ai:plans:prework-status -- --compare-user-manifest docs/ai-review/evidence/AI-PLANS-PREWORK-USER-STATE.json`
+`node scripts/ai-plan-prework-status-check.mjs --compare-user-manifest docs/ai-review/evidence/AI-PLANS-PREWORK-USER-STATE.json`
 으로 판정한다. 새 경로가 어떤 규칙에도 맞지 않으면 자동 실패하며, 미분류·중복 분류가 모두 0이고
 저장된 사용자 경로·status·해시가 현재 상태와 같을 때만 통과한다.
 
