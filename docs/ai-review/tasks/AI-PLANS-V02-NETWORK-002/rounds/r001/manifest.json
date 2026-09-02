@@ -1,0 +1,145 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-PLANS-V02-NETWORK-002",
+  "round": "r001",
+  "created_at": "2026-09-02T08:37:42.098Z",
+  "review_mode": "INITIAL",
+  "baseline_commit_sha": "00b7ce3d3d9a18838fa920238a369657957b4431",
+  "target_commit_sha": "3209b873d56d5914e1b05d9e04dee94108189f53",
+  "target_tree_oid": "81ab0ecb365740e9e8ce5ec2c25d33ee178d034e",
+  "agents_blob_oid": "4c31bbf9be81871c4dfb1699e057c8303d4e2fae",
+  "agents_sha256": "5628177d442547e868acc3e0446e6513b65bf713f2cfd82cc78e0e6dedc4c860",
+  "task_sha256": "4b4ea7a26de15b55e93b0cb9d6808e8e24a31d8e8b2831686659e5c0a8575ec3",
+  "collaboration_sha256": "aaedc66988752cc9719bbc84a27da59e6d226717bae66c3542a4b8f59629055e",
+  "collaboration_bytes": 1507,
+  "input_files_sha256": "9ea0d4ee275471cfdcb1d1baca4864392f3d53e7af57b2f6f978f135c7ea3f8e",
+  "schema_sha256": "d8ffdb13e6b1e38279355d9ffd592cfb91dc023d287976adf7892e85dbfaf0d7",
+  "runner_sha256": "80dae1d06c89af056e9d8c210b571e978ee534fc128a5fe3b9867610b5ae447b",
+  "snapshot_mode": "COMMIT",
+  "previous_review_sha256": null,
+  "previous_run_sha256": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "fallback_review": null,
+  "closure_review": null,
+  "fallback_input_scope": null,
+  "retry_of_failed_round": null,
+  "artifact_paths": [
+    "docs/팀구성_상세기획안.md",
+    "docs/AI-지식-온톨로지-기획안.md",
+    "docs/AI-오케스트레이션-상세기획안.md",
+    "docs/디렉터리-문서신경망-재설계-기획안.md",
+    "docs/AI-품질-학습-자율성-평가기획안.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/ai-review/README.md"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/evidence/AI-PLANS-V02-FABLE-COMPACT-EVIDENCE.md"
+  ],
+  "allowed_paths": [
+    "docs/팀구성_상세기획안.md",
+    "docs/AI-지식-온톨로지-기획안.md",
+    "docs/AI-오케스트레이션-상세기획안.md",
+    "docs/디렉터리-문서신경망-재설계-기획안.md",
+    "docs/AI-품질-학습-자율성-평가기획안.md",
+    "AGENTS.md",
+    "docs/ai-review/README.md",
+    "docs/ai-review/evidence/AI-PLANS-V02-FABLE-COMPACT-EVIDENCE.md"
+  ],
+  "excluded_paths": [
+    "scripts/ai-plan-network-simulation.mjs",
+    "scripts/ai-plan-network-simulation.test.mjs",
+    "apps/mobile/**",
+    "scripts/prototype_server.py",
+    "docs/prototypes/**",
+    "docs/ai-review/tasks/PROTOTYPE-TERMINOLOGY-001/**"
+  ],
+  "applied_learning_ids": [],
+  "excluded_learning_ids": [],
+  "learning_registry_blob_oid": "77f00167d790c82373c1aa803d91874952c3334a",
+  "learning_registry_sha256": "4717fe99c86319d7c0abc5c8dd38e68e3a55722d7cfa56b8de173ed05ca1388f",
+  "learning_assignment_sha256": "4660bb32207bcae3246801d71aa6a052eab7b0a7cef357bd5984f706fe3dcbfe",
+  "learning_target_date": "2026-09-02",
+  "input_files": [
+    {
+      "path": "AGENTS.md",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 11345,
+      "git_blob_oid": "4c31bbf9be81871c4dfb1699e057c8303d4e2fae",
+      "sha256": "5628177d442547e868acc3e0446e6513b65bf713f2cfd82cc78e0e6dedc4c860",
+      "line_count": 157
+    },
+    {
+      "path": "docs/디렉터리-문서신경망-재설계-기획안.md",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 28262,
+      "git_blob_oid": "b3664f96e52e6c10a14c80382e6407c5ea3d95e5",
+      "sha256": "cd88ffbbd8d767d0ade5df75af2b328d8745d98e0ea0e7ddf85808b3fe70f165",
+      "line_count": 498
+    },
+    {
+      "path": "docs/팀구성_상세기획안.md",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 113926,
+      "git_blob_oid": "ce68e2cc85b8973bcb968a8f968a153b65c3dfa0",
+      "sha256": "7c877fe2a2a38f14ccdb3c1113b43ab56681a031c632921ad02b10aad5aa5214",
+      "line_count": 2013
+    },
+    {
+      "path": "docs/AI-오케스트레이션-상세기획안.md",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 33874,
+      "git_blob_oid": "4f401f586bee0595d1f1863ecae50ce2eb8f7ec8",
+      "sha256": "05c92928569d4e98a63375e65ee55d1a3baac93f18d7bd56c7ed942d8c644a59",
+      "line_count": 642
+    },
+    {
+      "path": "docs/AI-지식-온톨로지-기획안.md",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 30554,
+      "git_blob_oid": "548f54e25dc46a5f353c4919d4e7ee8e751b7c3e",
+      "sha256": "0acaec2766c18418413800ba565c7c6a0ee02c3733c11ea510ee5ae6cc348270",
+      "line_count": 525
+    },
+    {
+      "path": "docs/AI-품질-학습-자율성-평가기획안.md",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 31880,
+      "git_blob_oid": "320b8c423c5bed8d11ce5de66617e896508070e0",
+      "sha256": "722508f4ae77386b0b8de9b35a71f5ec03419004ff8f29185496231c627a905a",
+      "line_count": 564
+    },
+    {
+      "path": "docs/ai-review/evidence/AI-PLANS-V02-FABLE-COMPACT-EVIDENCE.md",
+      "path_role": "EVIDENCE",
+      "change_type": "COMMIT",
+      "size": 4625,
+      "git_blob_oid": "30aa1cd72c247603c6a1a7500bfd5c10c5417123",
+      "sha256": "3340f28e2a91c13a688185555921356a4b30f65c3de1ffc8c9e89d40fa7f8c46",
+      "line_count": 64
+    },
+    {
+      "path": "docs/ai-review/README.md",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 39464,
+      "git_blob_oid": "7df2a216e73b4eea76966ff082c0cfaa61a1a31e",
+      "sha256": "390721ad0a5ec54a961ebd238833e0d9f48050444519bffa290ad5bf1447ff91",
+      "line_count": 536
+    }
+  ],
+  "source_archive_version": 1,
+  "finding_resolution_semantics": "VERIFIED_RESOLVED_V1",
+  "artifact_snapshot_sha256": null,
+  "input_snapshot_sha256": null
+}
