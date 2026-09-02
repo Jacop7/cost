@@ -2,7 +2,8 @@
 
 > Task: `AI-ORCH-PLANS-SIM-1`
 > 상태: `CANDIDATE_EVIDENCE`
-> 대상 계획 수정 commit: `0e8a1c320f01dafdd0af4dc13ca8fe012dfaa46e`
+> 대상 계획 수정 commit: `446be652dd297b62e8b4160165bbcae90d85127c`
+> 대상 tree: `301d5ea5632da63f4866e2c36ff9e7f60ff2ba83`
 > 목적: 다섯 공식 기획안의 누적 Fable 검수에서 큰 실행 원본을 다시 싣지 않고 판별력과 재현 경로를 제공한다.
 
 ## 1. 공식 artifact 결속
@@ -14,21 +15,16 @@ review/run/input hash와 전체 content hash·투영 완전성 시험을 함께 
 
 | 문서 | 상태·판본 | Git blob | bytes |
 |---|---|---|---:|
-| 팀 구성 및 운영 | `CONFIRMED` v1.3 | `ce68e2cc85b8973bcb968a8f968a153b65c3dfa0` | 113,926 |
+| 팀 구성 및 운영 | `CONFIRMED` v1.3 | `e57ed8ff73e8454f1d18195004c7086f200862a6` | 116,302 |
 | AI 지식 온톨로지 | `DRAFT` v0.2 | `57fb2c564baf64202f66a66efdc9d21759b5c34a` | 32,401 |
-| AI 오케스트레이션 | `DRAFT` v0.2 | `dc2ace81b3823d284e125763d29ae2387d7675be` | 34,516 |
+| AI 오케스트레이션 | `DRAFT` v0.2 | `1aec85c8e65203dc4e4e3bd9e5345e36b751e81a` | 34,772 |
 | 디렉터리·문서 신경망 | `DRAFT` v0.2 | `2c5b1602570c4f2ca8294006a5c4f55904b1a277` | 28,444 |
 | 품질·학습·자율성 평가 | `DRAFT` v0.2 | `e2e6fab00a15784182a9afd10dca886a0f2d61ae` | 32,563 |
 
-이번 축소 successor에서 원문 재전송을 생략할 수 있는 것은 팀 구성안 하나뿐이다.
-
-- 선행 검수: `AI-KNOWLEDGE-ORBIT-TEAM-003/r001`
-- 상태: `RESULT_RECEIVED · VERIFIED · PASS`
-- run hash: `5d253e37d59f89668954d2bfa6a3f462b9a34f54e92299af7ee228948758b8fb`
-- review hash: `4076d9738f4680ceadad4f6fe2e59b3691e799532a96c03e31f2fb6582c7afb7`
-- 선행·현재 blob: `ce68e2cc85b8973bcb968a8f968a153b65c3dfa0`로 동일
-- 네 DRAFT는 각각 자기 문서 검수에서 원문을 싣는다. 다른 문서의 원문 생략은 해당 문서 PASS를 뜻하지
-  않으며 이 표·교차계약 투영·시뮬레이션 hash가 어긋나면 회차를 시작하지 않는다.
+팀 구성안은 이전 `AI-KNOWLEDGE-ORBIT-TEAM-003/r001` PASS 뒤 Fable 의무 범위가 바뀌어 blob이
+달라졌다. 따라서 그 PASS를 현재 판본에 재사용하지 않고, 다섯 문서 모두 각각 자기 문서 검수에서 원문을
+싣는다. 다른 문서의 원문 생략은 해당 문서 PASS를 뜻하지 않으며 이 표·교차계약 투영·시뮬레이션 hash가
+어긋나면 회차를 시작하지 않는다.
 
 ## 2. 이번 후보의 상호작용 축
 
@@ -38,15 +34,16 @@ review/run/input hash와 전체 content hash·투영 완전성 시험을 함께 
 4. rollover 뒤에는 Task checkpoint와 더 높은 HANDOFF 판본을 먼저 만들고, successor가 L0~L4와 snapshot을 복원한 뒤 lease를 인수한다.
 5. 디렉터리안은 `docs/team/roles`, `teams`, `handoffs`, Role Context, Learning, Release의 물리 위치를 정하지만 DRAFT 동안 만들지 않는다.
 6. 평가안은 맥락 손실·불필요 rollover·권위 복제·HANDOFF 불완전과 Fable 실패 비용을 서로 다른 지표로 잰다.
-7. 모든 필수 검수 route는 Fable을 유지한다. 비용은 Codex 사전검수, 입력 manifest, compact evidence로 줄이며 실패를 PASS로 바꾸지 않는다.
+7. R0~R3 모든 작업 완료 검수 route는 Fable을 유지한다. 위험 등급은 깊이와 전문 역할만 바꾸며,
+   비용은 Codex 사전검수·입력 manifest·compact evidence로 줄이고 실패나 Opus 임시 자문을 PASS로 바꾸지 않는다.
 8. 실제 구조를 검증한 뒤에만 `AI-TEAM-STARTER-KIT-1`로 추출하고, MarginCook의 Git·DB·Supabase·서버 설정은 project profile/adapter로 분리한다.
 
 ## 3. 실행형 검증
 
 - 실행: `corepack pnpm ai:plans:simulate`
 - 결과: `70/70 PASS`
-- 코드 blob: `79f36400c91d3b7072149a72f379eeaa7b30a37e`
-- 시험 blob: `fed2374798b4e4ee6d6638a18136921d909cf198`
+- 코드 blob: `626d74b99d3d764e4115cb05f382c17c9a1c8e87`
+- 시험 blob: `a8811ff003303ac17fc7c4a334bc3508cbc23a81`
 
 추가된 행동 fixture는 다음을 실제 상태 전이로 확인한다.
 
@@ -58,6 +55,7 @@ review/run/input hash와 전체 content hash·투영 완전성 시험을 함께 
 - 같은 predecessor에서 분기한 HANDOFF 계보는 거부된다.
 - 발행된 HANDOFF 원본을 고치면 append-only 감사 원본과 달라져 거부된다.
 - 문서별 축소 검수를 최종 네트워크 closure로 세거나 승계 fallback으로 Fable 필수 검수를 대체하면 거부된다.
+- R0를 Codex-only로 종결하거나 Mobile·문서 링크 검수를 조건부로 되돌리면 거부된다.
 
 문서망 검사는 코드 블록·HTML 주석에 숨긴 가짜 계약, 중복 권위, 권위 DAG 순환, 끊긴 탐색 링크,
 누락된 역할·Task·Decision·Finding·Learning 감사 원본, 사용자 변경 경로 겹침을 거부한다.
