@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-KNOWLEDGE-ORBIT-ONTOLOGY-002",
+  "sequence": "t0002",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-02T08:07:30.031Z",
+  "turn_id": "turn-h001",
+  "turn_type": "HUMAN_DECISION",
+  "role": "HUMAN",
+  "task_sha256": "ba95a7a988e84062489ab9ae0eb8920a45f2dd9eccac4a69345edd1ea3b55ca0",
+  "runner_sha256": "80dae1d06c89af056e9d8c210b571e978ee534fc128a5fe3b9867610b5ae447b",
+  "previous_manual_run_sha256": "5ecea0a1d77e65357e9328a908b3f6590d94cf513bc28bd907b5ff40733d3412",
+  "collaboration_before_sha256": "c1d6f322461349783f6fd2eaf9b16601d94c5bbd3c6e017d61fa2f277d4bf96a",
+  "collaboration_before_bytes": 1541,
+  "collaboration_entry_sha256": "cb730eb732b15816af17722c033c7fd6b92b6c99cd00fd912c2142c1ec529e14",
+  "collaboration_entry_bytes": 742,
+  "collaboration_after_sha256": "ac59e572b096d866e4360790ebf9284d459435b787b9496e20b66d652df5d887",
+  "collaboration_after_bytes": 2283
+}
