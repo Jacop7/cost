@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "AI-TEAM-KNOWLEDGE-ORBIT-PREPLAN-001",
+  "sequence": "t0002",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-02T04:30:46.888Z",
+  "turn_id": "turn-c001",
+  "turn_type": "CODEX_EVIDENCE",
+  "role": "CODEX-FUNCTION-QA",
+  "task_sha256": "8cc35d0132dd81414570e776ce4a8d7e6b6a17fad2c635f7a62ce72587240e50",
+  "runner_sha256": "80dae1d06c89af056e9d8c210b571e978ee534fc128a5fe3b9867610b5ae447b",
+  "previous_manual_run_sha256": "8e8c3037cfe13803305af0220aab8071aebaffe3d769c86980912cc0f235ae6a",
+  "collaboration_before_sha256": "58640a1634fb7ba968f48060215bcfec7d89a7e1700ed8df753166b79838a04c",
+  "collaboration_before_bytes": 12468,
+  "collaboration_entry_sha256": "bcf3783999230174dbb1c98afad250f59d589d95514a51d4f4a3d25d2c772fd3",
+  "collaboration_entry_bytes": 1573,
+  "collaboration_after_sha256": "7a3a6921c55c6bc1d1722bbe2c730f75d9626573da99cdd3ff3a85cb71660172",
+  "collaboration_after_bytes": 14041
+}

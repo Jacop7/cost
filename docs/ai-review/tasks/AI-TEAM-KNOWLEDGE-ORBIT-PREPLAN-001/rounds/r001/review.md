@@ -1,0 +1,151 @@
+# AI-TEAM-KNOWLEDGE-ORBIT-PREPLAN-001 Fable 검수 — r001
+
+- 판정: **CHANGES_REQUIRED**
+- 역할: `FABLE-ARCH`
+- 모드: `INITIAL`
+- 스냅샷: `WORKING_TREE_HASHED`
+- 대상 SHA: `933262b1f193d1b4cacbb7c2fb08564592cdf419`
+
+## 요약
+
+Knowledge Orbit Graph 방향성 패킷의 전체 구조는 건전하다. 채팅은 권위가 아니라는 전제(25행), 마스터·부서·Task 채팅의 쓰기 책임·금지 구분(§3.3), Steward의 허용·금지선과 사람 승인 경계(§4.3·§6.3), HANDOFF 사후조건의 증거 보존과 채팅 원문 비승격(§7.2), 기억 캡슐 L0~L4의 exact-match 우선·출처·SHA 표시(§8.3), 개발·스테이징과 운영 승인 분리(§11), 검사기·파일럿 우선 도입 순서(§13), 사람 결정 후보(§16)는 요구사항 2~6·8~10과 불변식을 충족한다. 그러나 기존 다섯 기획안의 이미 확정된 권위와의 항목별 대조가 4곳에서 빠져 있어, 패킷이 선언한 "여섯 번째 공식본이 아니다"라는 전제를 스스로 위협한다. (1) §10 문서 제어면이 팀구성 §11이 이미 소유한 docs/team/ 구조(DECISIONS.md·RELEASE_GATE.md·ROLE_CONTEXTS.md·roles/)와 "역할별 추적 문서 신설 금지" 규칙을 언급하지 않은 채 _shared 5개 파일을 제안해 task-index·decision-index·release-state가 작업큐·DECISIONS·RELEASE_GATE의 중복 장부가 될 위험. (2) §7.1 HANDOFF 스키마가 새 채팅 복원 필드의 단일 권위인 팀구성 §11 및 오케스트레이션 §4.3 재개 패킷과 필드 대응 없이 다른 이름(goal↔objective, head_sha↔last_verified_sha)을 쓰고 risk_level·edit_owner/lease·request_dispositions·stop_conditions·agents_md_blob_sha를 누락. (3) §8.1~8.2 노드·관계 어휘가 온톨로지 §3·§4와 불일치하면서 신규·개명·기존 매핑 표가 없어 typed-provenance 어휘가 이원화될 위험. (4) §4.1이 Quality·Review 팀 소유에 "출시 판정"을 포함해 팀구성 §1.1의 사람 Go/No-Go·릴리스 소유와 충돌하고, 단일 04 Quality·Review 조정 채팅과 클린 독립 컨텍스트의 분리 방식이 미명시. 추가로 Minor 3건: 상태 기계 명칭 불일치(HANDOFF_READY vs HANDOFF_REQUIRED — 후자는 기존 lease 계약의 오류 코드로 이미 사용 중이라 의미 충돌), Steward 신설 역할·5팀 그룹의 팀구성 §1.1 역할표 매핑 부재와 Platform/Server·Supabase·Operations 명칭 혼용, §12 지표의 수집 위치·계산 방법·실패 임계 부재. 7건 모두 artifact 내 문구 수정으로 해소 가능하며 proposed_edits로 구체안을 제공했다. 판정: CHANGES_REQUIRED.
+
+## Findings
+
+### ORBIT-PREPLAN-DOCPLANE-001 — Major / OPEN
+
+- 범주: ARCHITECTURE
+- 영향: 패킷 §10의 task-index.md·decision-index.md·release-state.md는 각각 docs/작업큐.md·docs/team/DECISIONS.md·RELEASE_GATE.md와 주제가 겹친다. 기존 팀구성 §11 구조와의 대응 없이 승인되면 같은 사실의 손작성 이중 장부가 생겨 단일 권위 불변식과 '주제 하나, 권위 하나' 원칙이 깨진다.
+- 근거: docs/ai-review/evidence/AI-TEAM-KNOWLEDGE-ORBIT-PREPLAN.md:352, docs/팀구성_상세기획안.md:1657, docs/팀구성_상세기획안.md:1709, docs/디렉터리-문서신경망-재설계-기획안.md:150
+- 완료 조건: §10이 팀구성 §11의 기존 docs/team/ 구조(DECISIONS·RISKS·RELEASE_GATE·ROLE_CONTEXTS·TEAM_LEARNING·roles/)를 명시적으로 인용하고 _shared 후보 파일별로 기존 권위와의 대응(신규 주제/생성 view/미도입)을 표기한다. / task-index·decision-index·release-state는 손작성 권위가 아니라 생성 view 후보임을 명시하거나 도입 후보에서 제외한다. / 최종 디렉터리 구조 확정은 디렉터리 기획안·팀구성 §11 개정 Task 소유임을 §10에 명시한다.
+- 필요한 테스트: docs-graph-check 중복 권위 검사에 _shared 후보 경로를 포함한 시나리오 추가(구현 단계)
+
+### ORBIT-PREPLAN-HANDOFF-002 — Major / OPEN
+
+- 범주: ARCHITECTURE
+- 영향: HANDOFF 스키마가 팀구성 §11·오케스트레이션 §4.3과 필드 대응 없이 확정되면 동일 목적의 경쟁 복원 계약이 두 개가 된다. successor 복원 시 위험 등급·편집 소유권 lease·다중 채팅 요청 판정 체인·중단 조건이 유실될 수 있어 요구사항 5(작업·결정·증거·사용자 소유 변경 보존)가 깨진다.
+- 근거: docs/ai-review/evidence/AI-TEAM-KNOWLEDGE-ORBIT-PREPLAN.md:231, docs/팀구성_상세기획안.md:1664, docs/AI-오케스트레이션-상세기획안.md:169
+- 완료 조건: §7.1에 복원 필드 단일 권위가 팀구성 §11임을 명시하고 HANDOFF 필드와 §11 필드의 1:1 대응표(개명·신규·생략 사유)를 추가한다. / risk_level, edit_owner·owner_session_ref·lease_expires_at, request_dispositions, stop_conditions, agents_md_blob_sha의 보존 방식을 HANDOFF 스키마에 반영하거나 §11 개정 항목으로 표기한다.
+- 필요한 테스트: HANDOFF→successor 복원 시 §11 필수 필드 누락을 실패 폐쇄하는 시뮬레이션 케이스(단계 3~4 구현 시)
+
+### ORBIT-PREPLAN-ONTOLOGY-003 — Major / OPEN
+
+- 범주: DATA_INTEGRITY
+- 영향: 패킷이 온톨로지 소유권을 인정하면서도 다른 어휘 집합을 제시해, 승인 시 typed node·edge 어휘가 두 문서로 이원화된다. docs-graph-check와 권위 DAG 검사가 어느 어휘를 기준으로 하는지 모호해지고, OWNED_BY(패킷)와 OWNS(온톨로지)처럼 방향이 다른 유사 관계가 환각 연결·검사 누락을 유발할 수 있다.
+- 근거: docs/ai-review/evidence/AI-TEAM-KNOWLEDGE-ORBIT-PREPLAN.md:274, docs/AI-지식-온톨로지-기획안.md:75, docs/AI-지식-온톨로지-기획안.md:100
+- 완료 조건: §8.1~8.2의 각 노드·관계에 대해 온톨로지 §3·§4 기존 어휘와의 대응(동일/개명/신규 제안)을 표로 명시한다. / 신규 어휘는 온톨로지 기획안 개정으로만 추가되며 이 패킷 목록은 어휘 권위가 아님을 §8에 명시한다. / 기존 어휘(CONFLICTS_WITH·EXCLUDES·POINTS_TO 등)를 대체하지 않음을 확인한다.
+- 필요한 테스트: 단계 4 검사기에서 허용 어휘 화이트리스트가 온톨로지 기획안 단일 출처에서 생성되는지 확인
+
+### ORBIT-PREPLAN-QUALITY-004 — Major / OPEN
+
+- 범주: POLICY
+- 영향: '출시 판정' 소유 문구가 그대로 확정되면 사람 Go/No-Go·릴리스 승인 권위(팀구성 §1.1, G9)와 충돌하는 여섯 번째 권위 서술이 된다. 또한 상설 Quality 조정 채팅에 제작 측 조정과 독립 검증이 섞이면 클린 컨텍스트 요건이 훼손되어 독립 검수 오염 위험이 현실화된다.
+- 근거: docs/ai-review/evidence/AI-TEAM-KNOWLEDGE-ORBIT-PREPLAN.md:105, docs/팀구성_상세기획안.md:84, docs/ai-review/evidence/AI-TEAM-KNOWLEDGE-ORBIT-PREPLAN.md:76, docs/ai-review/evidence/AI-TEAM-KNOWLEDGE-ORBIT-PREPLAN.md:437
+- 완료 조건: §4.1 Quality·Review 소유를 '출시 게이트 증거·판정 보고'로 한정하고 Go/No-Go·운영 승인은 사람 소유임을 같은 절에 명시한다. / 04 Quality·Review 채팅은 조정 전용이며 Fable·Codex 독립 검증은 회차별 클린 컨텍스트에서 수행됨을 §3 또는 §4에 명시한다.
+- 필요한 테스트: 없음
+
+### ORBIT-PREPLAN-STATE-005 — Minor / OPEN
+
+- 범주: CODE
+- 영향: 단계 3에서 context pressure 스키마를 확정할 때 정의되지 않은 상태명이 그대로 계약이 되거나, 기존 lease 오류 코드 HANDOFF_REQUIRED와 이름이 겹쳐 서로 다른 의미(압력 임계 vs 소유권 인계 실패)가 한 식별자에 섞일 수 있다.
+- 근거: docs/ai-review/evidence/AI-TEAM-KNOWLEDGE-ORBIT-PREPLAN.md:193, scripts/ai-plan-network-simulation.test.mjs:427, scripts/ai-plan-network-simulation.test.mjs:869
+- 완료 조건: §6.2 표의 세 번째 단계명을 §6.1 상태 기계의 상태(HANDOFF_READY 진입)와 일치시키거나 HANDOFF_REQUIRED를 상태 기계에 정식 정의한다. / 기존 lease 오류 코드 HANDOFF_REQUIRED와의 명칭 충돌 여부를 스키마 확정 항목(§13 3단계)에 명시한다. / CONTEXT_ROLLOVER_REQUIRED 신호와 상태 기계 상태의 관계를 한 문장으로 정의한다.
+- 필요한 테스트: 스키마 확정 시 상태·신호·오류 코드 명칭 유일성 검사
+
+### ORBIT-PREPLAN-ROLE-006 — Minor / OPEN
+
+- 범주: ARCHITECTURE
+- 영향: 5팀 그룹·Steward 신설이 팀구성 §1.1의 엔진별 역할 배정(솔라 컨텍스트·Codex·페이블)과 매핑되지 않으면 후속 기획안 개정 범위(요구사항 10)가 불명확해지고, 팀 명칭 혼용은 채팅·디렉터리·문서 링크 생성 시 서로 다른 식별자를 낳는다.
+- 근거: docs/ai-review/evidence/AI-TEAM-KNOWLEDGE-ORBIT-PREPLAN.md:127, docs/팀구성_상세기획안.md:71, docs/ai-review/evidence/AI-TEAM-KNOWLEDGE-ORBIT-PREPLAN.md:42, docs/ai-review/evidence/AI-TEAM-KNOWLEDGE-ORBIT-PREPLAN.md:113
+- 완료 조건: §4에 5팀 그룹과 팀구성 §1.1 기존 역할·엔진 배정의 대응표(또는 개정 대상 절 목록)를 추가한다. / Steward의 공식 편입 위치(팀구성 개정)와 감사 주체, 오케스트레이션 §2 구성요소 소유(상태 복원기·컨텍스트 조립)와의 분담을 명시한다. / Platform/Server·Supabase·Operations/platform-operations 중 단일 정식 명칭을 정하고 문서 내에서 통일한다.
+- 필요한 테스트: 없음
+
+### ORBIT-PREPLAN-METRIC-007 — Minor / OPEN
+
+- 범주: TEST_GAP
+- 영향: 지표 정의 없이 파일럿(§13 5~6단계)에 진입하면 임계값 보정과 확장 판단이 주관 판단으로 흐르고, 방향성 패킷이 요구한 '검사기·파일럿 선행' 원칙이 측정 불가능한 선언에 그친다.
+- 근거: docs/ai-review/evidence/AI-TEAM-KNOWLEDGE-ORBIT-PREPLAN.md:396, docs/ai-review/evidence/AI-TEAM-KNOWLEDGE-ORBIT-PREPLAN.md:412, scripts/ai-plan-network-simulation.test.mjs:1
+- 완료 조건: §12 각 지표에 수집 위치(HANDOFF 기록·작업큐·검수 manifest 등)와 계산 방법, 파일럿 실패로 간주할 초기 임계 후보를 추가하거나 사람 결정 후보(§16)에 명시적으로 연결한다. / §13 4단계 검사기 범위에 컨텍스트 압력·HANDOFF 완결성 검사가 포함되는지 명시한다.
+- 필요한 테스트: 파일럿 단계에서 ai-plan-network-simulation 확장 또는 별도 검사기로 HANDOFF 완결성·지표 수집 가능성 검증
+
+## 공동 편집 제안
+
+### EDIT-DOCPLANE-001 — ADD
+
+- 대상: `docs/ai-review/evidence/AI-TEAM-KNOWLEDGE-ORBIT-PREPLAN.md`
+- 위치: - `_shared`는 기존 `docs/작업큐.md`, Architecture, 배포 기획안을 대체하지 않는다.
+- 연결 Finding: ORBIT-PREPLAN-DOCPLANE-001
+- 이유: 패킷 §10이 팀구성 §11의 기존 docs/team 권위 구조와 대조 없이 경쟁 파일 집합을 제안하는 문제를 봉합한다.
+
+    - `docs/team/`의 기존 권위 구조는 팀구성 §11(DECISIONS.md·RISKS.md·RELEASE_GATE.md·ROLE_CONTEXTS.md·TEAM_LEARNING.md·roles/)이 소유한다. `_shared`의 `task-index.md`·`decision-index.md`·`release-state.md`는 각각 `docs/작업큐.md`·`DECISIONS.md`·`RELEASE_GATE.md`와 주제가 겹치므로 손작성 권위가 아닌 생성 view 후보로만 다루고, 도입 여부·형식은 팀구성 §11과 디렉터리 기획안 개정 Task에서 항목별 대응표와 함께 결정한다. 역할별 추적 문서 신설 금지(팀구성 §11)를 위반하는 파일은 만들지 않는다.
+
+### EDIT-HANDOFF-002 — ADD
+
+- 대상: `docs/ai-review/evidence/AI-TEAM-KNOWLEDGE-ORBIT-PREPLAN.md`
+- 위치: ### 7.1 체크포인트 필수 필드
+- 연결 Finding: ORBIT-PREPLAN-HANDOFF-002
+- 이유: HANDOFF 스키마가 복원 필드 단일 권위(팀구성 §11)와 분리된 두 번째 계약이 되는 것을 차단한다.
+
+    새 채팅 필수 복원 필드 집합의 단일 권위는 팀구성 §11이며, 오케스트레이션 §4.3 재개 패킷이 그 표현이다. 아래 HANDOFF 필드는 §11에 대한 확장 제안이지 경쟁 스키마가 아니다. 확정 시 §11 목록과의 1:1 대응표를 만들고(개명 예: `goal`↔`objective`, `head_sha`↔`last_verified_sha`, `working_tree_ownership`↔`worktree_state`·`user_owned_changes`), §11이 요구하는 `risk_level`, `edit_owner`·`owner_session_ref`·`lease_expires_at`, `request_dispositions`, `stop_conditions`, `agents_md_blob_sha`의 보존 방식을 HANDOFF에 반영하거나 §11 개정 항목으로 명시한다.
+
+### EDIT-ONTOLOGY-003 — REPLACE
+
+- 대상: `docs/ai-review/evidence/AI-TEAM-KNOWLEDGE-ORBIT-PREPLAN.md`
+- 위치: 관계의 단일 의미는 온톨로지 기획안이 소유한다. 다른 문서는 관계를 사용만 한다.
+- 연결 Finding: ORBIT-PREPLAN-ONTOLOGY-003
+- 이유: typed node·edge 어휘가 두 문서로 이원화되는 것을 막고 온톨로지 단일 소유를 실질화한다.
+
+    관계의 단일 의미는 온톨로지 기획안이 소유한다. 위 목록 중 `BLOCKS`·`TOUCHES`·`DECIDED_BY`·`HANDOFF_TO`·`OWNED_BY`·`ANNOUNCED_IN`과 노드 `REQUEST`·`ARTIFACT`·`HANDOFF`·`ROLE_CONTEXT`·`RELEASE`는 온톨로지 §3·§4에 없는 신규 제안이며, 확정 시 온톨로지 기획안 개정으로만 추가한다. 기존 어휘(`OWNS`·`NORMALIZES`·`IMPLEMENTS`·`CONFLICTS_WITH`·`EXCLUDES`·`POINTS_TO`, `REQUEST_INPUT`·`NORMALIZED_REQUEST`·`SOURCE` 등)와의 동일·개명·신규 대응표를 개정에 포함하고, 이 패킷의 목록을 별도 어휘 권위로 사용하지 않는다.
+
+### EDIT-QUALITY-004 — REPLACE
+
+- 대상: `docs/ai-review/evidence/AI-TEAM-KNOWLEDGE-ORBIT-PREPLAN.md`
+- 위치: | Quality · Review | 독립 시험·경합·회귀·보안·Fable·출시 판정 |
+- 연결 Finding: ORBIT-PREPLAN-QUALITY-004
+- 이유: '출시 판정' 소유 문구가 팀구성 §1.1의 사람 Go/No-Go·릴리스 승인 권위와 충돌하지 않게 한정한다.
+
+    | Quality · Review | 독립 시험·경합·회귀·보안·Fable·출시 게이트 증거와 판정 보고. Go/No-Go·운영 승인은 팀구성 §1.1대로 사람이 소유한다 |
+
+### EDIT-QUALITY-CONTEXT-005 — ADD
+
+- 대상: `docs/ai-review/evidence/AI-TEAM-KNOWLEDGE-ORBIT-PREPLAN.md`
+- 위치: 6. `05 Knowledge · Orchestration`
+- 연결 Finding: ORBIT-PREPLAN-QUALITY-004
+- 이유: 상설 Quality 조정 채팅과 클린 독립 검증 컨텍스트의 분리를 채팅 구조 절에 명시해 독립 검수 오염 위험을 봉합한다.
+
+    `04 Quality · Review`는 검수 일정·차단·결과 링크의 조정 전용 채널이다. Fable·Codex의 실제 독립 검증은 팀구성 §1.1이 요구하는 회차별 전용·클린 컨텍스트에서 수행하며, 이 조정 채팅의 제작 측 대화를 독립 검증 입력으로 쓰지 않는다.
+
+### EDIT-STATE-006 — REPLACE
+
+- 대상: `docs/ai-review/evidence/AI-TEAM-KNOWLEDGE-ORBIT-PREPLAN.md`
+- 위치: | HANDOFF_REQUIRED | 추정 85% 이상 | 자동 compaction·명백한 맥락 손실·새 대형 범위 등장 |
+- 연결 Finding: ORBIT-PREPLAN-STATE-005
+- 이유: §6.1 상태 기계에 없는 HANDOFF_REQUIRED 명칭을 제거한다. 이 식별자는 기존 lease 계약 시뮬레이션에서 편집 소유권 인계 오류 코드로 이미 사용 중이라 의미 충돌도 방지한다.
+
+    | HANDOFF_READY 진입 | 추정 85% 이상 | 자동 compaction·명백한 맥락 손실·새 대형 범위 등장 |
+
+### EDIT-ROLE-007 — ADD
+
+- 대상: `docs/ai-review/evidence/AI-TEAM-KNOWLEDGE-ORBIT-PREPLAN.md`
+- 위치: ### 4.3 Context & Token Steward
+- 연결 Finding: ORBIT-PREPLAN-ROLE-006
+- 이유: 신설 역할의 공식 편입 경로와 팀 명칭 혼용(Platform/Server·Supabase·Operations/platform-operations)을 정리한다.
+
+    이 역할은 팀구성 §1.1 역할표에 없는 신설 제안이다. 확정 시 팀구성 개정으로 소속 컨텍스트·독립성·감사 주체(페이블 정기 운영 감사 포함 여부)를 지정하고, 오케스트레이션 §2의 상태 복원기·컨텍스트 조립 소유(AI 부 오케스트레이터)와의 분담을 같은 개정에서 명시한다. 또한 본 패킷의 팀 명칭은 `Server · Supabase · Operations` 하나로 통일하고 구 다이어그램의 `Platform`, §10의 `platform-operations`는 같은 팀의 표기 변형임을 명시한다.
+
+### EDIT-METRIC-008 — ADD
+
+- 대상: `docs/ai-review/evidence/AI-TEAM-KNOWLEDGE-ORBIT-PREPLAN.md`
+- 위치: | retrieval provenance failure | 출처·상태 없는 기억 사용 |
+- 연결 Finding: ORBIT-PREPLAN-METRIC-007
+- 이유: 지표 목적만 있고 측정 방법·임계가 없어 §13 6단계 판정이 성립하지 않는 공백을 봉합한다.
+
+    각 지표는 파일럿 진입 전에 수집 위치(HANDOFF 기록·작업큐 Task 항목·검수 manifest 등)·계산 방법·실패로 간주할 초기 임계 후보를 확정하며, 이 확정은 §16의 사람 결정 항목이다. 측정 불가능한 지표는 파일럿 판정 기준에서 제외하고, §13 4단계 검사기 범위에 HANDOFF 완결성·컨텍스트 압력 상태 검사를 포함한다.
+
+## 상태 변경
+
+- 닫힘: 없음
+- 재개방: 없음
+- 필수 미해결: ORBIT-PREPLAN-DOCPLANE-001, ORBIT-PREPLAN-HANDOFF-002, ORBIT-PREPLAN-ONTOLOGY-003, ORBIT-PREPLAN-QUALITY-004, ORBIT-PREPLAN-STATE-005, ORBIT-PREPLAN-ROLE-006, ORBIT-PREPLAN-METRIC-007
+
+> 이 문서는 Claude의 원시 출력을 복사한 것이 아니라, Codex 실행기가 판본·스키마·증거 경로를 검증해 정규화한 기록입니다.
