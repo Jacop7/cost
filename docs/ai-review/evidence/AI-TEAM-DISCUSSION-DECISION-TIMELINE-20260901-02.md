@@ -92,12 +92,12 @@
 1. `00 모든 팀 상황실`
 2. `01 Product · Mobile`
 3. `02 Data · Backend`
-4. `03 Platform · Operations`
+4. `03 Server · Supabase · Operations`
 5. `04 Quality · Review`
 6. `05 Knowledge · Orchestration`
 
 - DB·RPC·원장·계산은 Data · Backend에 포함된다.
-- Supabase·서버·배포·보안·모니터링은 Platform · Operations에 포함된다.
+- Supabase·서버·배포·보안·모니터링은 Server · Supabase · Operations에 포함된다.
 - 모든 팀이 알아야 하는 변경은 상황실에서 링크와 영향만 공유한다.
 - 팀 그룹 자체는 승인자나 공식 상태 저장소가 아니다.
 
@@ -108,7 +108,7 @@
 1. `00 마스터 오케스트레이션`
 2. `01 부 오케스트레이션 · 토큰/컨텍스트 관리`
 3. `02 통합 작업큐 · 사람 결정`
-4. `03 개발 서버 · 배포 테스트`
+4. `03 개발·스테이징 배포 검증`
 5. `04 운영 배포 · 복구 게이트`
 
 - 개발 서버 검증과 운영 배포는 분리한다.
@@ -168,7 +168,9 @@
 
 ### H-02 · `HISTORICAL`
 
-- Fable 세션 rate limit 회차는 비용 0의 실패로 보존됐다.
+- Fable 실행 실패 회차는 비용 0의 실패로 보존됐다. 당시 작업 기록에는 rate limit 진단이 남았지만,
+  보존된 원시 `run.json`에는 구조화된 `terminal_reason`·`provider_error_code`가 없으므로 원인을
+  저장소 증거만으로 확정하지 않는다.
 - 교훈: 실행 실패를 PASS나 검수 완료로 바꾸지 않는다.
 
 ### H-03 · `HISTORICAL`
