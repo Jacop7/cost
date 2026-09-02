@@ -1409,6 +1409,32 @@ test('온톨로지 Fable 축소 패킷은 두 공식 문서를 유지하며 원�
   assert.ok(continuity.requirements.some((requirement) => requirement.includes('L0~L4')));
 });
 
+test('Fable 비용 절감은 문서별 축소 입력과 최종 네트워크 결속을 나누되 필수 검수를 생략하지 않는다', () => {
+  const docs = loadPlanDocuments();
+  assert.doesNotThrow(() => validateDocumentNetwork(docs));
+
+  const fullArtifactsOnly = loadPlanDocuments();
+  fullArtifactsOnly.orchestration = fullArtifactsOnly.orchestration.replace(
+    '문서별 의미 축을 나누는 Fable 검수는 해당 공식 문서만 artifact로 두고',
+    '의미 축을 나누더라도 누적 공식 문서 전체를 artifact로 두고',
+  );
+  assert.throws(() => validateDocumentNetwork(fullArtifactsOnly), /orchestration 필수 계약 누락/);
+
+  const noFinalBinding = loadPlanDocuments();
+  noFinalBinding.quality = noFinalBinding.quality.replace(
+    '최종 네트워크 Fable\n   Task는 문서별 유효 review/run/input hash, 전체 문서 content hash와 투영 검증 결과를 결속한다.',
+    '문서별 회차를 최종 네트워크 검수로 사용한다.',
+  );
+  assert.throws(() => validateDocumentNetwork(noFinalBinding), /quality 필수 계약 누락/);
+
+  const fallbackCompletes = loadPlanDocuments();
+  fallbackCompletes.directory = fallbackCompletes.directory.replace(
+    '승계 fallback은 임시 비게이트이며 검수 완료로 세지 않음',
+    '승계 fallback도 검수 완료로 셈',
+  );
+  assert.throws(() => validateDocumentNetwork(fallbackCompletes), /directory 필수 계약 누락/);
+});
+
 test('필수 계약·소유 위임·중앙 권위를 코드 블록과 HTML 주석으로 위조할 수 없다', () => {
   const clause = loadPlanDocuments();
   clause.team = clause.team.replace('## 1. 운영 모델 요약', '## REMOVED')
