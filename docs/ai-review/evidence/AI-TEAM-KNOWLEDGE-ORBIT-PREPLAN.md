@@ -488,7 +488,9 @@ Quality는 구현팀이나 Steward의 비용 판단 때문에 필수 Finding을 
 `repeated discovery`·`stale fact reuse`·`retrieval provenance failure`·`context relevance ratio`·
 `token per completed task unit` 등 신규 지표는 평가 기획안 개정으로만 추가한다. 개정 Task는 아래
 표와 §5.1~§5.4 기존 지표의 동일·개명·신규 대응표를 포함하며 이 표를 별도 지표 권위로 사용하지
-않는다.
+않는다. `escaped defect`는 §5.2 `review escape` 중 핵심 불변식·보안·데이터 손실 결함 부분집합의
+개명 후보이고 `cross-team blocker latency`는 §5.4 신규 후보다. 대응표는 아래 표의 모든 지표를
+빠짐없이 분류한다.
 
 | 지표 | 수집 위치·계산 | 초기 실패 후보 |
 |---|---|---|

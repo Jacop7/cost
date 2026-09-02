@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-TEAM-KNOWLEDGE-ORBIT-AUDIT-002",
+  "sequence": "t0002",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-02T07:02:01.421Z",
+  "turn_id": "turn-c001",
+  "turn_type": "CODEX_EVIDENCE",
+  "role": "CODEX-FUNCTION-QA",
+  "task_sha256": "047f1c05ec99967e6ce104d20fff4dbbfe5c652614bed5b2136b322d30817500",
+  "runner_sha256": "80dae1d06c89af056e9d8c210b571e978ee534fc128a5fe3b9867610b5ae447b",
+  "previous_manual_run_sha256": "32ee8af7e49f7397c01adc9550a668814bd98c50020744f5719bab60d240ffad",
+  "collaboration_before_sha256": "f4fa12af800223e1b295d0fdd610e4bdace7fa566cd241bb39dbce00b5d4dba7",
+  "collaboration_before_bytes": 7099,
+  "collaboration_entry_sha256": "0bbfed1fa28b24998eb7880a2c1e5b935d96733efc3f85500672960cb7ddc52e",
+  "collaboration_entry_bytes": 1079,
+  "collaboration_after_sha256": "9e9266c19a470663abce7bd61bbd22f75c41f2607a5732898bf27cc4414789db",
+  "collaboration_after_bytes": 8178
+}
