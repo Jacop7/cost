@@ -14,4 +14,5 @@
 <!-- /release-gate-registry:v1 -->
 
 첫 릴리스 인스턴스는 대상 SHA의 보호 CI, 스테이징 증거, 백업·복구 근거와 `HUMAN-CHIEF`의 명시적
-운영 Go/No-Go가 모두 있을 때 추가한다.
+운영 Go/No-Go가 모두 있을 때 추가한다. 실행 순서는 [릴리스 런북](../operations/RUNBOOK_RELEASE.md),
+실패 시 복구 진입점은 [복구 런북](../operations/RUNBOOK_RECOVERY.md)을 따른다.
