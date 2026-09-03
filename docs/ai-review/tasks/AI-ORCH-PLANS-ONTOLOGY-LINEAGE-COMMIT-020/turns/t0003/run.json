@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-ONTOLOGY-LINEAGE-COMMIT-020",
+  "sequence": "t0003",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-03T04:54:47.763Z",
+  "turn_id": "turn-o001",
+  "turn_type": "AI_DEPUTY_SUCCESSOR_HANDOFF",
+  "role": "AI-DEPUTY-ORCHESTRATOR",
+  "task_sha256": "c4eb150291a69a05d6b5988bb0038c894a1eedbb50c1d6bf8b6908a94e2a68ed",
+  "runner_sha256": "3e3bdc2aa6c4874c360a1c64e678bbe168e14db556c133bbfa91e62c42c510f7",
+  "previous_manual_run_sha256": "f760c6911e8647096bdf4a039263dfa414dd4e74f47aa97063c6d386e1c54394",
+  "collaboration_before_sha256": "01c077f1163f596ee728870e7c900c203a863f0556f454a7da7dbf08ed648949",
+  "collaboration_before_bytes": 4694,
+  "collaboration_entry_sha256": "68d60dd3b509e112efd801636b100f40e96aa766f8951151f27802c7e12c9a45",
+  "collaboration_entry_bytes": 836,
+  "collaboration_after_sha256": "4ccc291d4da65a4df1d387e8a6dbaf29f3d50e5575d47243339d42e1d56693ca",
+  "collaboration_after_bytes": 5530
+}
