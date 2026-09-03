@@ -1,0 +1,91 @@
+{
+  "schema_version": "2.0",
+  "task_id": "AI-ORCH-PLANS-ONTOLOGY-LINEAGE-RECHECK-021",
+  "reviewer_role": "FABLE-ARCH",
+  "review_mode": "RECHECK",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "40c37c76f2b3af75a5fbca53b6d374178c63b25d",
+  "target_commit_sha": "ad966959b6228d837907b0c2b9e92dcccc6a9944",
+  "target_tree_oid": "d2141a8e44babd488b0221bac1b2907459bff6f9",
+  "agents_blob_oid": "c32214b5528752a91f0f1545fea8c735d5fae7fa",
+  "agents_sha256": "de18fc8524afa350d3d0806f40150b9397dfd45a91ff471b5e1f6d6bf95fc681",
+  "task_sha256": "679b2fd07a81906823cd9d6d97c44c2da68c6874f13bb7ba151e0d9623a00ba9",
+  "collaboration_sha256": "5866eafbf23eb7ff00f952385a989a690bc06675cea352023e28fe227546fb74",
+  "input_files_sha256": "c9d3deec3074edf8c6ec40d77aeb2b24b36a9a3de8b34e00ec30a054b402084c",
+  "schema_sha256": "d8ffdb13e6b1e38279355d9ffd592cfb91dc023d287976adf7892e85dbfaf0d7",
+  "runner_sha256": "3e3bdc2aa6c4874c360a1c64e678bbe168e14db556c133bbfa91e62c42c510f7",
+  "verdict": "PASS",
+  "summary": "수정 commit ad966959b6228d837907b0c2b9e92dcccc6a9944에서 predecessor Finding registry(sha256 ea1efb09b76f2c744abdb2c458a33687b7dda8a7d0b286ea62392f0c87df881c)의 유일한 OPEN Finding인 FAB-ARCH-019-HANDOFF-LOCATION-001을 같은 ID로 재검수했다. 수용 기준 4개를 모두 충족함을 확인했다. (1) §3 표의 HANDOFF 행(96행)이 일반 Task 봉인 원본의 물질화 뒤 단일 위치를 docs/team/handoffs/<TASK-ID>/*.md로 선언하고 docs/작업큐.md를 최신 판본 pointer 보유자로만 기술해 본문(118~122행)과 일치한다. (2) 신설 문단(124~127행)이 물질화 전 일반 Task HANDOFF 봉인 원본의 단일 임시 보존 위치를 §14 미결 구현 결정(555행)으로 등록하고, 사람 Decision 확정 전 일반 Task HANDOFF 파일 발행 금지와 작업큐 본문의 봉인 원본 사용 금지를 명시한다. (3) 문서 전체 재검색 결과 docs/작업큐.md는 HANDOFF 관련해 최신 handoff_id·handoff_version·원본 경로·content hash pointer 소유자로만 남았고, 103행의 작업큐 언급은 snapshot 생성 시 읽는 데이터 원천 설명일 뿐 봉인 원본 소유 선언이 아니다. (4) 검수 successor HANDOFF의 collaboration.md 전용 append 계약은 표(96행)와 본문(104~105·121~122·126~127행)에서 변경 없이 유지된다. 이에 따라 AGENTS:single-canonical-artifact와 AI-ONTOLOGY:handoff-lineage 위반 원인이 제거되어 해당 Finding을 VERIFIED로 전이하고 remaining_required_finding_ids에서 제외한다. VERIFIED는 국지 해소이며 보호 원격 게이트 전까지 CLOSED를 사용하지 않으므로 gate_state는 OPEN으로 유지된다. required_tests의 docs-graph-check 사보타주 fixture 검증은 후속 구현 Task 의무로 남는다. 미해결 필수 Finding이 없어 판정은 PASS다.",
+  "findings": [
+    {
+      "finding_id": "FAB-ARCH-019-HANDOFF-LOCATION-001",
+      "severity": "Major",
+      "review_state": "VERIFIED",
+      "category": "ARCHITECTURE",
+      "requirement_or_invariant_ids": [
+        "AGENTS:single-canonical-artifact",
+        "AI-ONTOLOGY:handoff-lineage"
+      ],
+      "evidence": [
+        {
+          "path": "docs/AI-지식-온톨로지-기획안.md",
+          "line_start": 96,
+          "line_end": 96,
+          "observation": "§3 표의 HANDOFF 행이 일반 Task 인계 봉인 원본의 물질화 뒤 단일 위치를 docs/team/handoffs/<TASK-ID>/*.md로 선언하고 docs/작업큐.md는 최신 판본 pointer만 보유한다고 명시해, predecessor가 지적한 표(작업큐 소유)와 본문(handoffs 디렉터리 소유)의 위치 충돌이 제거됐다. 검수 successor 인계는 계속 collaboration.md 전용 인계 턴으로 기술된다."
+        },
+        {
+          "path": "docs/AI-지식-온톨로지-기획안.md",
+          "line_start": 118,
+          "line_end": 122,
+          "observation": "본문이 물질화 뒤 봉인 원본 단일 위치를 docs/team/handoffs/<TASK-ID>/*.md로, 가변 장부 docs/작업큐.md의 보유 항목을 최신 handoff_id·handoff_version·원본 경로·content hash pointer로 규정해 96행 표와 완전히 일치하며, 검수 successor HANDOFF의 collaboration.md 전용 append 명령 사용도 유지된다."
+        },
+        {
+          "path": "docs/AI-지식-온톨로지-기획안.md",
+          "line_start": 124,
+          "line_end": 127,
+          "observation": "신설 문단이 물질화 전 일반 Task HANDOFF 봉인 원본의 단일 임시 보존 위치를 §14 미결 구현 결정으로 지정하고, 사람 Decision으로 위치가 확정되기 전에는 일반 Task HANDOFF 파일을 발행하지 않으며 docs/작업큐.md 본문을 봉인 원본 위치로 사용하지 않는다는 금지 규칙을 명시한다. 검수 successor의 append-only collaboration.md 계약은 이 미결 결정과 무관하게 유지된다고 못 박는다."
+        },
+        {
+          "path": "docs/AI-지식-온톨로지-기획안.md",
+          "line_start": 555,
+          "line_end": 555,
+          "observation": "§14 미결 구현 결정 목록에 '물질화 전 일반 Task HANDOFF 봉인 원본의 단일 임시 보존 위치' 항목이 명시적으로 등록되어 124~127행의 위임과 상호 참조가 성립하며, predecessor가 지적한 미등록 상태가 해소됐다."
+        },
+        {
+          "path": "docs/AI-지식-온톨로지-기획안.md",
+          "line_start": 103,
+          "line_end": 105,
+          "observation": "본문의 남은 작업큐 언급은 일반 Task 인계 snapshot이 docs/작업큐.md 현재 Task의 §11 필수 복원 필드를 읽어 만들어진다는 데이터 원천 설명이고, 검수 successor 인계는 팀 구성안 §5.3과 docs/ai-review/README.md의 append-only 턴을 사용한다고 기술해 봉인 원본 소유 위치 선언과 충돌하지 않는다."
+        },
+        {
+          "path": "AGENTS.md",
+          "line_start": 20,
+          "line_end": 23,
+          "observation": "AGENTS.md의 단일 권위 원본 불변식(주제별 공식 경로는 하나) 기준으로 표·본문·§14가 같은 HANDOFF 봉인 원본에 대해 단일 위치 선언과 단일 미결 결정 위임으로 정렬되어 불변식 위반이 남지 않는다."
+        }
+      ],
+      "impact": "predecessor commit에서는 일반 Task HANDOFF 봉인 원본 소유 위치가 §3 표(docs/작업큐.md)와 본문(docs/team/handoffs/)으로 갈려 successor 복원과 §11의 14·15항 계보 검증이 검사 대상을 잃었으나, 수정 commit에서 표·본문 단일 위치 일치, 물질화 전 위치의 §14 등록과 결정 전 발행 금지, 작업큐 pointer-only 기술, 검수 successor append 계약 유지가 모두 확인되어 AGENTS:single-canonical-artifact와 AI-ONTOLOGY:handoff-lineage 훼손 원인이 제거됐다.",
+      "acceptance_criteria": [
+        "§3 표의 HANDOFF 행과 §3 본문이 일반 Task HANDOFF 봉인 원본의 단일 위치로 같은 경로(docs/team/handoffs/<TASK-ID>/*.md)를 선언한다.",
+        "물질화 전 일반 Task HANDOFF의 append-only 원본 위치가 본문에 지정되거나, §14 미결 구현 결정 목록에 명시적 항목으로 등록된다.",
+        "docs/작업큐.md는 문서 전체에서 일반 HANDOFF 원본 소유자가 아니라 최신 handoff_id·handoff_version·원본 경로·content hash pointer 소유자로만 기술된다.",
+        "검수 successor HANDOFF의 collaboration.md 전용 append 계약은 표·본문 모두에서 변경 없이 유지된다."
+      ],
+      "required_tests": [
+        "후속 수정 commit에 대한 FABLE-ARCH successor RECHECK에서 §3 표·본문 위치 일치와 물질화 전 위치 지정(또는 §14 등록)을 같은 ID로 재검증한다. — 본 RECHECK에서 수행 완료.",
+        "후속 docs-graph-check 구현 Task에서 HANDOFF 노드의 권위 위치가 단일 경로인지와 append-only 계보 검사 대상 경로가 존재하는지를 사보타주 fixture로 확인한다. — 후속 구현 Task 의무로 유지."
+      ],
+      "previous_finding_id": "FAB-ARCH-019-HANDOFF-LOCATION-001",
+      "verified_by_engine": "FABLE"
+    }
+  ],
+  "proposed_edits": [],
+  "closed_finding_ids": [],
+  "reopened_finding_ids": [],
+  "remaining_required_finding_ids": [],
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}

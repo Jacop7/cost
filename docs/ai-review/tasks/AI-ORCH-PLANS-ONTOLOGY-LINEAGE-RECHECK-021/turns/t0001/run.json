@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-ONTOLOGY-LINEAGE-RECHECK-021",
+  "sequence": "t0001",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-03T04:55:39.723Z",
+  "turn_id": "turn-s001",
+  "turn_type": "SOLAR_REQUEST",
+  "role": "SOLAR-ORCH",
+  "task_sha256": "679b2fd07a81906823cd9d6d97c44c2da68c6874f13bb7ba151e0d9623a00ba9",
+  "runner_sha256": "3e3bdc2aa6c4874c360a1c64e678bbe168e14db556c133bbfa91e62c42c510f7",
+  "previous_manual_run_sha256": null,
+  "collaboration_before_sha256": "806b281812bb7269766f16710c4544acda8e80f5e632906d50472489da1be738",
+  "collaboration_before_bytes": 185,
+  "collaboration_entry_sha256": "5c4034e4ea6cb8136ca1f5c9b8269e6dc716eef0e99f075e5bf195f271551637",
+  "collaboration_entry_bytes": 790,
+  "collaboration_after_sha256": "f3c4d7ab0ecc9ac35003a659837075341c74be168bb3f3e1838211acf80351ba",
+  "collaboration_after_bytes": 975
+}
