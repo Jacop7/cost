@@ -1,0 +1,27 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-STAGE10-VERIFY-GRAPH-036",
+  "predecessor_review": null,
+  "updated_at": "2026-09-03T09:28:48.734Z",
+  "latest_round": "r001",
+  "review_state": "VERIFIED",
+  "workflow_state": "VERIFIED",
+  "gate_state": "OPEN",
+  "run_state": "RESULT_RECEIVED",
+  "defect_state": "NOT_APPLICABLE",
+  "verdict": "PASS",
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "fallback_reason": null,
+  "latest_run_sha256": "b1d7541b94314317f0d5197ab1afc36d5545c6265095dc2c12d118e96e344f91",
+  "open_required_finding_ids": [],
+  "open_optional_finding_ids": [
+    "VERIFY-GRAPH-036-EOL-MIXED",
+    "VERIFY-GRAPH-036-QA-EVIDENCE-PENDING"
+  ],
+  "closed_finding_ids": [],
+  "candidate_review_state": null,
+  "candidate_review_sha256": null,
+  "backlog_dispositions": []
+}

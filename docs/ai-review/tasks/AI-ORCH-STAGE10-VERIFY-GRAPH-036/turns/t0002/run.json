@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-STAGE10-VERIFY-GRAPH-036",
+  "sequence": "t0002",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-03T09:26:24.910Z",
+  "turn_id": "turn-h001",
+  "turn_type": "HUMAN_DECISION",
+  "role": "HUMAN",
+  "task_sha256": "1ddef6393d69e927fb84dea9fc7b702f9c58b0c492af71a283ab3c95b850edff",
+  "runner_sha256": "b11837ae93ef151b7db411aaf89aa1e60d8f828a6ac25aaf99858f19b7ff8f3d",
+  "previous_manual_run_sha256": "551823074dc33f7887fe1c2f0097ba1cd93f2a3fcf69c32190935da66e227025",
+  "collaboration_before_sha256": "d879e100e0ddb020bad3bf639bac92e287e24a2e866da1c565052856defc5bb7",
+  "collaboration_before_bytes": 640,
+  "collaboration_entry_sha256": "aa53d2b91ecda8c14ef9789e76eca30ea18c8c2e93500be8015bfe2052f8ad8c",
+  "collaboration_entry_bytes": 481,
+  "collaboration_after_sha256": "f4754e226a2ec16ae2cc3b613731e4ba8923b7a74d7dd6c42e7cad890251a16d",
+  "collaboration_after_bytes": 1121
+}
