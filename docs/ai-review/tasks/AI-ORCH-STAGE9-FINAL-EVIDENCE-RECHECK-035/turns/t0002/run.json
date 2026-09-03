@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-STAGE9-FINAL-EVIDENCE-RECHECK-035",
+  "sequence": "t0002",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-03T09:17:55.671Z",
+  "turn_id": "turn-h001",
+  "turn_type": "HUMAN_DECISION",
+  "role": "HUMAN",
+  "task_sha256": "d0f926559f7c71983ae89bbe065cb5bc537897f15ec73c9260aa08315fcc3328",
+  "runner_sha256": "b11837ae93ef151b7db411aaf89aa1e60d8f828a6ac25aaf99858f19b7ff8f3d",
+  "previous_manual_run_sha256": "9cc525168b481463285e959a00a918e7b8930847576b2539af22e3cdfe23bce7",
+  "collaboration_before_sha256": "1c2cf62e3309650de8d7352b417502f235ea1fe8227e91e8dbff6b8e35d28fda",
+  "collaboration_before_bytes": 901,
+  "collaboration_entry_sha256": "5051badeb681ca1e55ce8e4ed6fcbfc36f66aa28f7bba63b2d824d5e0a044e24",
+  "collaboration_entry_bytes": 856,
+  "collaboration_after_sha256": "fb143e3aab551af857f8aada77514c3e776895367524ce4ced64d107c20d315a",
+  "collaboration_after_bytes": 1757
+}

@@ -1,0 +1,145 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-STAGE9-FINAL-EVIDENCE-RECHECK-035",
+  "round": "r001",
+  "created_at": "2026-09-03T09:17:57.611Z",
+  "review_mode": "INITIAL",
+  "baseline_commit_sha": "d4ed81dc2092fff8692186d987268935e282e528",
+  "target_commit_sha": "ca354a4114fa540f38283f3b45c3ddaa3fef897f",
+  "target_tree_oid": "e38fd85c43d70b45e75e6a014189accea656da85",
+  "agents_blob_oid": "5208bcf26b7a494b3b747da4327e3cc8f18710df",
+  "agents_sha256": "13154e1351d07a9f10d0cb7f3dfebd10833f40fc835c22000113dd7b86e36d84",
+  "task_sha256": "d0f926559f7c71983ae89bbe065cb5bc537897f15ec73c9260aa08315fcc3328",
+  "collaboration_sha256": "fb143e3aab551af857f8aada77514c3e776895367524ce4ced64d107c20d315a",
+  "collaboration_bytes": 1757,
+  "input_files_sha256": "46047362e314d3564148af02d5c9d5f6661467060fc41a5b178de9aa0e4c2b51",
+  "schema_sha256": "d8ffdb13e6b1e38279355d9ffd592cfb91dc023d287976adf7892e85dbfaf0d7",
+  "runner_sha256": "b11837ae93ef151b7db411aaf89aa1e60d8f828a6ac25aaf99858f19b7ff8f3d",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "previous_review_sha256": null,
+  "previous_run_sha256": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "fallback_review": null,
+  "closure_review": null,
+  "fallback_input_scope": null,
+  "retry_of_failed_round": null,
+  "artifact_paths": [
+    "docs/ai-review/evidence/AI-PLANS-SIM-STAGE-9-MATERIALIZATION-EVIDENCE.md",
+    "scripts/docs-graph-check.mjs",
+    "scripts/docs-graph-check.test.mjs"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/ai-review/README.md"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/tasks/AI-ORCH-STAGE9-SINGLE-PASS-RECOVERY-034/rounds/r001/review.json",
+    "docs/ai-review/tasks/AI-ORCH-STAGE9-SINGLE-PASS-RECOVERY-034/rounds/r001/run.json",
+    "docs/ai-review/tasks/AI-ORCH-STAGE9-SINGLE-PASS-RECOVERY-034/collaboration.md"
+  ],
+  "allowed_paths": [
+    "docs/ai-review/evidence/AI-PLANS-SIM-STAGE-9-MATERIALIZATION-EVIDENCE.md",
+    "scripts/docs-graph-check.mjs",
+    "scripts/docs-graph-check.test.mjs",
+    "AGENTS.md",
+    "docs/ai-review/README.md",
+    "docs/ai-review/tasks/AI-ORCH-STAGE9-SINGLE-PASS-RECOVERY-034/rounds/r001/review.json",
+    "docs/ai-review/tasks/AI-ORCH-STAGE9-SINGLE-PASS-RECOVERY-034/rounds/r001/run.json",
+    "docs/ai-review/tasks/AI-ORCH-STAGE9-SINGLE-PASS-RECOVERY-034/collaboration.md"
+  ],
+  "excluded_paths": [
+    "apps/mobile/**",
+    "packages/**",
+    "docs/prototypes/**",
+    "scripts/prototype_server.py",
+    ".codex-share/**",
+    ".tmp/**"
+  ],
+  "applied_learning_ids": [],
+  "excluded_learning_ids": [],
+  "learning_registry_blob_oid": "fdbd6fb4b20e33fc45b56c25f57e0b1f9f2c8a9f",
+  "learning_registry_sha256": "2b240fcb2ec2363ddb914ffd5666ae9e167965977c4971fe94998bc3a3564f95",
+  "learning_assignment_sha256": "4660bb32207bcae3246801d71aa6a052eab7b0a7cef357bd5984f706fe3dcbfe",
+  "learning_target_date": "2026-09-03",
+  "input_files": [
+    {
+      "path": "AGENTS.md",
+      "path_role": "REFERENCE",
+      "change_type": "UNCHANGED",
+      "size": 12640,
+      "git_blob_oid": "5208bcf26b7a494b3b747da4327e3cc8f18710df",
+      "sha256": "13154e1351d07a9f10d0cb7f3dfebd10833f40fc835c22000113dd7b86e36d84",
+      "line_count": 168
+    },
+    {
+      "path": "docs/ai-review/evidence/AI-PLANS-SIM-STAGE-9-MATERIALIZATION-EVIDENCE.md",
+      "path_role": "ARTIFACT",
+      "change_type": "MODIFIED",
+      "size": 7540,
+      "git_blob_oid": "dff92893772ea7b2cdadb86a1e09e7a90c639d80",
+      "sha256": "7a415a470cc55073c90a623a095d4f69ff954f4d3127a16715665dec94d9d34b",
+      "line_count": 133
+    },
+    {
+      "path": "docs/ai-review/README.md",
+      "path_role": "REFERENCE",
+      "change_type": "MODIFIED",
+      "size": 45438,
+      "git_blob_oid": "fb579a4ca763be84d74678b0bffd9017eebda48c",
+      "sha256": "bb461a557cd1ea93fa1168f5a166f3eb0a472b2a4f73afc9b8784215c8652fa7",
+      "line_count": 595
+    },
+    {
+      "path": "docs/ai-review/tasks/AI-ORCH-STAGE9-SINGLE-PASS-RECOVERY-034/collaboration.md",
+      "path_role": "EVIDENCE",
+      "change_type": "UNCHANGED",
+      "size": 6659,
+      "git_blob_oid": "58a5b69be91910f60bf4946ea5a33074b21821f9",
+      "sha256": "581e1e0a29b2716990c8dcfc9cf5645cc8a36a0cba228a67239d79cf27e7f550",
+      "line_count": 74
+    },
+    {
+      "path": "docs/ai-review/tasks/AI-ORCH-STAGE9-SINGLE-PASS-RECOVERY-034/rounds/r001/review.json",
+      "path_role": "EVIDENCE",
+      "change_type": "UNCHANGED",
+      "size": 7853,
+      "git_blob_oid": "1df507d2422fae0dda44512aa751cedc717f75cd",
+      "sha256": "3eb76dc2d9d6997a6a0b20212996384422c55d74405ca605fdbc495e4176b033",
+      "line_count": 91
+    },
+    {
+      "path": "docs/ai-review/tasks/AI-ORCH-STAGE9-SINGLE-PASS-RECOVERY-034/rounds/r001/run.json",
+      "path_role": "EVIDENCE",
+      "change_type": "UNCHANGED",
+      "size": 2572,
+      "git_blob_oid": "30c0d2d13f6c23e148376fdd6915a6f4d383bfb2",
+      "sha256": "227570b4860283207a39b0de362533cda6f2d1bab4eb8107fb80fe22f7faba28",
+      "line_count": 60
+    },
+    {
+      "path": "scripts/docs-graph-check.mjs",
+      "path_role": "ARTIFACT",
+      "change_type": "MODIFIED",
+      "size": 20108,
+      "git_blob_oid": "4c911c18c08ac07156e919ac5da0ce92ff0d987c",
+      "sha256": "96b7b888267003540b55c52f043917eb00a98c838fdcb7f077a5d027dae1fbfa",
+      "line_count": 397
+    },
+    {
+      "path": "scripts/docs-graph-check.test.mjs",
+      "path_role": "ARTIFACT",
+      "change_type": "MODIFIED",
+      "size": 13081,
+      "git_blob_oid": "2d56cb8fb251353208bd91515b7e37f9665a1360",
+      "sha256": "048c6827041ededbcd17e5745abf0281fdcf98d5add51b783fb26ab01dfb9f35",
+      "line_count": 224
+    }
+  ],
+  "source_archive_version": 1,
+  "finding_resolution_semantics": "VERIFIED_RESOLVED_V1",
+  "artifact_snapshot_sha256": "2f42f05d6560e3d4ceb3c17cf4873caf3825a070db4658d3b5e84bd2d14894d0",
+  "input_snapshot_sha256": "d2203cb323e18299565a22693a47c1c2541f03e4d64cb7f6742e61e70092af97"
+}
