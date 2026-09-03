@@ -1,0 +1,58 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-MASTER-CHAT-FABLE-002",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R1",
+  "author_role": "SOLAR-ORCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "6e99bd93b737bf291f14a8d3a6465a1d5110fa6c",
+  "target_commit_sha": "6e99bd93b737bf291f14a8d3a6465a1d5110fa6c",
+  "target_tree_oid": "c516cebc1c57bcc0a5705dbb7f7a4a0a24f38d55",
+  "agents_blob_oid": "c32214b5528752a91f0f1545fea8c735d5fae7fa",
+  "agents_sha256": "de18fc8524afa350d3d0806f40150b9397dfd45a91ff471b5e1f6d6bf95fc681",
+  "requirements": [
+    "01은 사람 Decision 통합 보기, 02는 마스터 AI, 03은 부 AI, 04는 개발·스테이징, 05는 운영 배포·복구로 분리돼야 한다.",
+    "사람은 04와 05에서 각각 범위에 맞는 결정을 직접 한 번 말하고, 구조화 Decision이 01에 자동 연결돼야 한다.",
+    "04 결정은 운영 승인으로 확대되지 않으며 05 운영 실행은 사람의 명시적 승인 없이는 시작하지 않아야 한다.",
+    "마스터 AI와 부 AI는 사람 결정을 추정·대체하거나 반복 입력을 요구하지 않아야 한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:single-canonical-artifact",
+    "AGENTS:fable-required-review",
+    "AI-ORCH:human-production-gate"
+  ],
+  "artifact_paths": [
+    "docs/팀구성_상세기획안.md",
+    "docs/AI-오케스트레이션-상세기획안.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md"
+  ],
+  "evidence_paths": [],
+  "excluded_paths": [],
+  "required_evidence": [
+    "팀 구성안 v1.5와 오케스트레이션 초안 v0.4의 번호·권한 계약 직접 대조",
+    "04 운영 승인 비확대와 05 사람 명시 승인 필수 문구",
+    "01 자동 연결과 반복 입력 금지 문구"
+  ],
+  "human_decisions": [
+    "DEC-AI-MASTER-FOLDER-ORDER-001과 DEC-AI-GATE-LOCAL-HUMAN-DECISION-001을 적용한다.",
+    "DEC-AI-FABLE-BUDGET-RESUME-001의 전체 USD 4.00 중 실패 r001 사용액 USD 2.41174를 센트 올림한 USD 2.42를 제외하고, 본 Task 상한을 잔액 USD 1.58로 제한한다.",
+    "이전 AI-ORCH-PLANS-MASTER-CHAT-FABLE-001 r001은 budget_exhausted·verdict null이며 PASS로 재사용하지 않는다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "1.58",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}

@@ -1,0 +1,122 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-STAGE-7-STRUCTURE-A-FABLE-012",
+  "round": "r001",
+  "created_at": "2026-09-03T03:56:23.815Z",
+  "review_mode": "INITIAL",
+  "baseline_commit_sha": "6e99bd93b737bf291f14a8d3a6465a1d5110fa6c",
+  "target_commit_sha": "6e99bd93b737bf291f14a8d3a6465a1d5110fa6c",
+  "target_tree_oid": "c516cebc1c57bcc0a5705dbb7f7a4a0a24f38d55",
+  "agents_blob_oid": "c32214b5528752a91f0f1545fea8c735d5fae7fa",
+  "agents_sha256": "de18fc8524afa350d3d0806f40150b9397dfd45a91ff471b5e1f6d6bf95fc681",
+  "task_sha256": "135c63629a4d013e077d9c80344db9bd7744b86b6682009ba71c5bd13b20efb3",
+  "collaboration_sha256": "b8d5ac9583cc43f016489bccafff63ba1cf2f014c7470cd8fc93ec565e21c446",
+  "collaboration_bytes": 1862,
+  "input_files_sha256": "357bc76cd7acc7f8fc6ab28acc1415af02583b41d94b67ef8545a8a787812d01",
+  "schema_sha256": "d8ffdb13e6b1e38279355d9ffd592cfb91dc023d287976adf7892e85dbfaf0d7",
+  "runner_sha256": "3e3bdc2aa6c4874c360a1c64e678bbe168e14db556c133bbfa91e62c42c510f7",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "previous_review_sha256": null,
+  "previous_run_sha256": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "fallback_review": null,
+  "closure_review": null,
+  "fallback_input_scope": null,
+  "retry_of_failed_round": null,
+  "artifact_paths": [
+    "docs/팀구성_상세기획안.md",
+    "docs/AI-지식-온톨로지-기획안.md",
+    "docs/AI-오케스트레이션-상세기획안.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/evidence/AI-PLANS-SIM-STAGE-6-CROSS-REFERENCE-PASS.md",
+    "docs/ai-review/evidence/AI-PLANS-SIM-STAGES-1-5-FABLE-PASS.md"
+  ],
+  "allowed_paths": [
+    "docs/팀구성_상세기획안.md",
+    "docs/AI-지식-온톨로지-기획안.md",
+    "docs/AI-오케스트레이션-상세기획안.md",
+    "AGENTS.md",
+    "docs/ai-review/evidence/AI-PLANS-SIM-STAGE-6-CROSS-REFERENCE-PASS.md",
+    "docs/ai-review/evidence/AI-PLANS-SIM-STAGES-1-5-FABLE-PASS.md"
+  ],
+  "excluded_paths": [
+    "apps/mobile/**",
+    "packages/**",
+    "docs/prototypes/**",
+    ".codex-share/**",
+    ".tmp/**"
+  ],
+  "applied_learning_ids": [],
+  "excluded_learning_ids": [],
+  "learning_registry_blob_oid": "77f00167d790c82373c1aa803d91874952c3334a",
+  "learning_registry_sha256": "4717fe99c86319d7c0abc5c8dd38e68e3a55722d7cfa56b8de173ed05ca1388f",
+  "learning_assignment_sha256": "4660bb32207bcae3246801d71aa6a052eab7b0a7cef357bd5984f706fe3dcbfe",
+  "learning_target_date": "2026-09-03",
+  "input_files": [
+    {
+      "path": "AGENTS.md",
+      "path_role": "REFERENCE",
+      "change_type": "UNCHANGED",
+      "size": 11697,
+      "git_blob_oid": "c32214b5528752a91f0f1545fea8c735d5fae7fa",
+      "sha256": "de18fc8524afa350d3d0806f40150b9397dfd45a91ff471b5e1f6d6bf95fc681",
+      "line_count": 160
+    },
+    {
+      "path": "docs/팀구성_상세기획안.md",
+      "path_role": "ARTIFACT",
+      "change_type": "MODIFIED",
+      "size": 122629,
+      "git_blob_oid": "7379a92f70e63775452b8370712227b5dd422e2b",
+      "sha256": "8b6d94c5ec52fb040f5c527c6d22384ffa1e7b1acf3858f65ee79b31bf604d73",
+      "line_count": 2072
+    },
+    {
+      "path": "docs/AI-오케스트레이션-상세기획안.md",
+      "path_role": "ARTIFACT",
+      "change_type": "MODIFIED",
+      "size": 44783,
+      "git_blob_oid": "bd22d52b6bb5046c642ad5ac30c79925930cf94c",
+      "sha256": "794fab2d3842fa3d74a6f09f2485d19b69f21fc62b12cd371d8cb00b2f02b5da",
+      "line_count": 755
+    },
+    {
+      "path": "docs/AI-지식-온톨로지-기획안.md",
+      "path_role": "ARTIFACT",
+      "change_type": "MODIFIED",
+      "size": 32961,
+      "git_blob_oid": "475de4feccf9d5bda2ddb56c0dd792215081688b",
+      "sha256": "d6b82bef48cdffdf883b807ec809e27dcf496dd18365567c3e34988040a47d5e",
+      "line_count": 551
+    },
+    {
+      "path": "docs/ai-review/evidence/AI-PLANS-SIM-STAGE-6-CROSS-REFERENCE-PASS.md",
+      "path_role": "EVIDENCE",
+      "change_type": "ADDED",
+      "size": 1077,
+      "git_blob_oid": "12837f990ca8263a78207029c5392915d8aca527",
+      "sha256": "5b08941242eee856c9241da38152a82d2b1ae7c5267c67bbf5819a17f887aa06",
+      "line_count": 25
+    },
+    {
+      "path": "docs/ai-review/evidence/AI-PLANS-SIM-STAGES-1-5-FABLE-PASS.md",
+      "path_role": "EVIDENCE",
+      "change_type": "ADDED",
+      "size": 1751,
+      "git_blob_oid": "d2bead37fd778aefac5736fc0fb6edde514a64a2",
+      "sha256": "a8a67a5dee8f830d328c7ca9ccb513a0f3658298c969b759eb9d40a54e18f853",
+      "line_count": 36
+    }
+  ],
+  "source_archive_version": 1,
+  "finding_resolution_semantics": "VERIFIED_RESOLVED_V1",
+  "artifact_snapshot_sha256": "0e9221bb123e9da51a2a1e5da106aa9805818926545cccb39ccd3b0db8b296ca",
+  "input_snapshot_sha256": "e330b456f3c8f6a03d8f03812e8e55556a19f1a6b2051738ac893703d239b91a"
+}

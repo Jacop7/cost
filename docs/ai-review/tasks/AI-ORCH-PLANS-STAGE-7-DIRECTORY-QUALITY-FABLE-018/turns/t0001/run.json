@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-STAGE-7-DIRECTORY-QUALITY-FABLE-018",
+  "sequence": "t0001",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-03T04:25:38.725Z",
+  "turn_id": "turn-s001",
+  "turn_type": "SOLAR_REQUEST",
+  "role": "SOLAR-ORCH",
+  "task_sha256": "28237101f9db73089188449d5e840486bf43d3c5f0ef824b854483d98f442250",
+  "runner_sha256": "3e3bdc2aa6c4874c360a1c64e678bbe168e14db556c133bbfa91e62c42c510f7",
+  "previous_manual_run_sha256": null,
+  "collaboration_before_sha256": "ac0df1ce5c0b3ce93dd8f12146dd4c4fbd5c22bfe371b70b73fb0051f318e23e",
+  "collaboration_before_bytes": 177,
+  "collaboration_entry_sha256": "ced6c98384cbdb619152243e8dfa02864424e71a33e1cc7940dbd874616bb245",
+  "collaboration_entry_bytes": 569,
+  "collaboration_after_sha256": "f5da165a3ae542a41d91761775d48f9f9fb5a792332835ce006ed6ae1f3f8737",
+  "collaboration_after_bytes": 746
+}

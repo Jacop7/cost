@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-STAGE-7-DIRECTORY-QUALITY-FABLE-018",
+  "sequence": "t0002",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-03T04:25:39.792Z",
+  "turn_id": "turn-h001",
+  "turn_type": "HUMAN_DECISION",
+  "role": "HUMAN",
+  "task_sha256": "28237101f9db73089188449d5e840486bf43d3c5f0ef824b854483d98f442250",
+  "runner_sha256": "3e3bdc2aa6c4874c360a1c64e678bbe168e14db556c133bbfa91e62c42c510f7",
+  "previous_manual_run_sha256": "3f5b311e0c56a170aeeadb0f67b74a9a772530589d0ff9718fa111c0d0ac20f0",
+  "collaboration_before_sha256": "f5da165a3ae542a41d91761775d48f9f9fb5a792332835ce006ed6ae1f3f8737",
+  "collaboration_before_bytes": 746,
+  "collaboration_entry_sha256": "669c1a36accb90403cc6b3be85d51ff8b56d35353216582c86629cc637d40c7b",
+  "collaboration_entry_bytes": 830,
+  "collaboration_after_sha256": "bcde581ca514d9e00cac55adbe472333ee3cb96d694fc5976dc347a1d170802a",
+  "collaboration_after_bytes": 1576
+}

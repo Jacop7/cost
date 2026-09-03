@@ -1,0 +1,82 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-MASTER-CHAT-FABLE-002",
+  "round": "r001",
+  "created_at": "2026-09-02T22:33:05.642Z",
+  "review_mode": "INITIAL",
+  "baseline_commit_sha": "6e99bd93b737bf291f14a8d3a6465a1d5110fa6c",
+  "target_commit_sha": "6e99bd93b737bf291f14a8d3a6465a1d5110fa6c",
+  "target_tree_oid": "c516cebc1c57bcc0a5705dbb7f7a4a0a24f38d55",
+  "agents_blob_oid": "c32214b5528752a91f0f1545fea8c735d5fae7fa",
+  "agents_sha256": "de18fc8524afa350d3d0806f40150b9397dfd45a91ff471b5e1f6d6bf95fc681",
+  "task_sha256": "cf009bb0ef53750ba0278c32dcc650f8b44d63a529de4c0e6c477c46aa2c1e65",
+  "collaboration_sha256": "98e7a91af6bd0359e172b4256444661ac0fec1c6fe0ad7576df7d094a98f5c77",
+  "collaboration_bytes": 1673,
+  "input_files_sha256": "5377b5112f60d2b1964e5d3fd7e22f88abb7bd3c1885f4529e7b1ff6bee34c9a",
+  "schema_sha256": "d8ffdb13e6b1e38279355d9ffd592cfb91dc023d287976adf7892e85dbfaf0d7",
+  "runner_sha256": "80dae1d06c89af056e9d8c210b571e978ee534fc128a5fe3b9867610b5ae447b",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "previous_review_sha256": null,
+  "previous_run_sha256": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "fallback_review": null,
+  "closure_review": null,
+  "fallback_input_scope": null,
+  "retry_of_failed_round": null,
+  "artifact_paths": [
+    "docs/팀구성_상세기획안.md",
+    "docs/AI-오케스트레이션-상세기획안.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md"
+  ],
+  "evidence_paths": [],
+  "allowed_paths": [
+    "docs/팀구성_상세기획안.md",
+    "docs/AI-오케스트레이션-상세기획안.md",
+    "AGENTS.md"
+  ],
+  "excluded_paths": [],
+  "applied_learning_ids": [],
+  "excluded_learning_ids": [],
+  "learning_registry_blob_oid": "77f00167d790c82373c1aa803d91874952c3334a",
+  "learning_registry_sha256": "4717fe99c86319d7c0abc5c8dd38e68e3a55722d7cfa56b8de173ed05ca1388f",
+  "learning_assignment_sha256": "4660bb32207bcae3246801d71aa6a052eab7b0a7cef357bd5984f706fe3dcbfe",
+  "learning_target_date": "2026-09-03",
+  "input_files": [
+    {
+      "path": "AGENTS.md",
+      "path_role": "REFERENCE",
+      "change_type": "UNCHANGED",
+      "size": 11697,
+      "git_blob_oid": "c32214b5528752a91f0f1545fea8c735d5fae7fa",
+      "sha256": "de18fc8524afa350d3d0806f40150b9397dfd45a91ff471b5e1f6d6bf95fc681",
+      "line_count": 160
+    },
+    {
+      "path": "docs/팀구성_상세기획안.md",
+      "path_role": "ARTIFACT",
+      "change_type": "MODIFIED",
+      "size": 117510,
+      "git_blob_oid": "5a751177c3c606f313dd624d9f4e3709e9876772",
+      "sha256": "b2fb8be0fee93706c5413edd34bc6c01a28337f68a4873d3c8432293cdbac5e3",
+      "line_count": 2028
+    },
+    {
+      "path": "docs/AI-오케스트레이션-상세기획안.md",
+      "path_role": "ARTIFACT",
+      "change_type": "MODIFIED",
+      "size": 43894,
+      "git_blob_oid": "21665c4db0495985de3e6b13f2c9dcd331424499",
+      "sha256": "408de6db14f05d788052ab63a53f53e2a021245df7dd9b5704afbf0593f39e33",
+      "line_count": 755
+    }
+  ],
+  "source_archive_version": 1,
+  "finding_resolution_semantics": "VERIFIED_RESOLVED_V1",
+  "artifact_snapshot_sha256": "c33623f0310b13432613e6eb0b5f9d5b90cfae07a84d6541e762ee574ae0aec1",
+  "input_snapshot_sha256": "b807320f96feac29825e48c37815bdeba1edfe47539769c4ee98a537aae4ae7c"
+}

@@ -1,0 +1,79 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-MASTER-CHAT-FABLE-001",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R1",
+  "author_role": "SOLAR-ORCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "6e99bd93b737bf291f14a8d3a6465a1d5110fa6c",
+  "target_commit_sha": "6e99bd93b737bf291f14a8d3a6465a1d5110fa6c",
+  "target_tree_oid": "c516cebc1c57bcc0a5705dbb7f7a4a0a24f38d55",
+  "agents_blob_oid": "c32214b5528752a91f0f1545fea8c735d5fae7fa",
+  "agents_sha256": "de18fc8524afa350d3d0806f40150b9397dfd45a91ff471b5e1f6d6bf95fc681",
+  "requirements": [
+    "마스터 작업 채팅은 01 통합 작업큐·사람 결정, 02 마스터 AI, 03 부 AI·토큰/컨텍스트, 04 개발·스테이징, 05 운영 배포·복구 순서여야 한다.",
+    "사람은 04에서 진행·보류·재시험을, 05에서 운영 Go/No-Go·복구를 직접 결정하고 각 Decision은 01에 자동 연결돼야 한다.",
+    "04의 사람 결정은 운영 승인으로 확대되지 않고 05의 운영 실행은 그 채팅에서 나온 사람의 명시적 승인 없이는 시작하지 않아야 한다.",
+    "02 마스터 AI와 03 부 AI의 지휘·보조 경계, 01 사람 결정 통합 보기와 04·05 결정 발화 경계가 충돌하지 않아야 한다.",
+    "문서 네트워크 검사는 새 번호·사람 결정 자동 연결·Task request disposition hash chain을 실패 폐쇄로 검증해야 한다.",
+    "기존 Fable·Opus 감사 원본과 사용자 소유 모바일·프로토타입 변경은 수정·재분류하지 않아야 한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:single-canonical-artifact",
+    "AGENTS:fable-required-review",
+    "AGENTS:fable-append-only-ledger",
+    "AI-ORCH:human-production-gate",
+    "AI-ORCH:single-decision-with-automatic-queue-link"
+  ],
+  "artifact_paths": [
+    "docs/팀구성_상세기획안.md",
+    "docs/AI-오케스트레이션-상세기획안.md",
+    "docs/작업큐.md",
+    "scripts/ai-plan-network-simulation.mjs",
+    "scripts/ai-plan-network-simulation.test.mjs"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/ai-review/README.md",
+    "docs/AI-지식-온톨로지-기획안.md",
+    "docs/디렉터리-문서신경망-재설계-기획안.md",
+    "docs/AI-품질-학습-자율성-평가기획안.md"
+  ],
+  "evidence_paths": [],
+  "excluded_paths": [
+    "apps/mobile/**",
+    "scripts/prototype_server.py",
+    "docs/prototypes/**",
+    "docs/ai-review/evidence/AI-CONTEXT-CROSS-STUDY-*.md",
+    "docs/ai-review/tasks/PROTOTYPE-TERMINOLOGY-001/**",
+    ".codex-share/**",
+    ".tmp/**"
+  ],
+  "required_evidence": [
+    "팀 구성안 v1.5와 오케스트레이션 초안 v0.4의 동일 번호·역할·사람 결정 계약",
+    "04 결정의 운영 승인 비확대와 05 명시적 운영 승인 필수 문구",
+    "01 자동 연결과 사람의 반복 입력 금지 문구",
+    "ai:plans:simulate 70/70 및 request_dispositions 7개 hash-chain",
+    "Fable USD 4.00 승인 Decision과 초과 시 사람 재논의 조건"
+  ],
+  "human_decisions": [
+    "DEC-AI-MASTER-FOLDER-ORDER-001 — 사용자는 마스터 작업 채팅을 01 사람 결정, 02 마스터 AI, 03 부 AI, 04 개발·스테이징, 05 운영 순서로 지정했다.",
+    "DEC-AI-GATE-LOCAL-HUMAN-DECISION-001 — 사용자는 04와 05에서 사람이 결정을 직접 말하고 01에 자동 연결하도록 지정했다.",
+    "DEC-AI-FABLE-BUDGET-RESUME-001 — 사용자는 Opus 전면 교체를 실행 전에 철회하고 Fable 필수 게이트를 유지했으며 작업 전체 상한 USD 4.00을 승인했다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "4.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}

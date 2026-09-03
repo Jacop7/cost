@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-STAGE-7-STRUCTURE-B-FABLE-013",
+  "sequence": "t0002",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-03T03:56:17.012Z",
+  "turn_id": "turn-h001",
+  "turn_type": "HUMAN_DECISION",
+  "role": "HUMAN",
+  "task_sha256": "a71b4e85ce7aa52d29b925956db171823338a07c829ddcead6f9eb9c4481ca05",
+  "runner_sha256": "3e3bdc2aa6c4874c360a1c64e678bbe168e14db556c133bbfa91e62c42c510f7",
+  "previous_manual_run_sha256": "7f11b510dae658df1ed983a371896237522c3ebae8cdcfbe5f4195fe755eff5d",
+  "collaboration_before_sha256": "28a9358f845f55f360ffd320e199a35cca850c530e6c0ad7d1cc7666e8a8e3c2",
+  "collaboration_before_bytes": 1004,
+  "collaboration_entry_sha256": "ba65012f24d64ea2cd34e7bb97a8ea32695fa46c17bee1c757f68b556b448cfa",
+  "collaboration_entry_bytes": 897,
+  "collaboration_after_sha256": "f3f4053bbb0c1a54fafdb0543db7e355f4f681dc55041e7fb6854e274445d7e0",
+  "collaboration_after_bytes": 1901
+}

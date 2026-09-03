@@ -1,0 +1,77 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-FINDING-LINEAGE-RECHECK-016",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R1",
+  "author_role": "SOLAR-ORCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "6e99bd93b737bf291f14a8d3a6465a1d5110fa6c",
+  "target_commit_sha": "f02422883d4331d8b1006f5b708a135ecc5abcfb",
+  "target_tree_oid": "f70a3e5d11e77f0ac41ca0ade337914857273db1",
+  "agents_blob_oid": "c32214b5528752a91f0f1545fea8c735d5fae7fa",
+  "agents_sha256": "de18fc8524afa350d3d0806f40150b9397dfd45a91ff471b5e1f6d6bf95fc681",
+  "requirements": [
+    "predecessor의 FAB-ARCH-006-R0R1-DUPLICATE-COND-10-002가 수정 commit에서 해소됐는지 같은 ID로 재검수한다.",
+    "R0·R1 자동 종결 조건 원문 번호가 1~11로 중복 없이 이어지고 두 게이트 조건 내용이 보존돼야 한다.",
+    "수정된 두 공식 문서에서 사람·AI 마스터·AI 부 오케스트레이터 경계와 요청 정규화·Task 라우팅 소유권이 모순 없이 유지돼야 한다.",
+    "predecessor에서 재현되지 않은 과거 마스터/부 Finding을 새 registry에 거짓으로 종결하지 않는다.",
+    "필수 Finding이 해소됐으면 VERIFIED로 반환하고 CLOSED는 보호 원격 게이트 전까지 사용하지 않는다."
+  ],
+  "invariant_ids": [
+    "AGENTS:single-canonical-artifact",
+    "AGENTS:fable-required-review",
+    "AI-ORCH:master-deputy-boundary",
+    "AI-TEAM:r0-r1-completion-conditions"
+  ],
+  "artifact_paths": [
+    "docs/팀구성_상세기획안.md",
+    "docs/AI-오케스트레이션-상세기획안.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md"
+  ],
+  "evidence_paths": [],
+  "excluded_paths": [
+    "apps/mobile/**",
+    "packages/**",
+    "docs/prototypes/**",
+    ".codex-share/**",
+    ".tmp/**"
+  ],
+  "required_evidence": [
+    "predecessor Finding registry SHA-256 8ea0be797bf3113a4834b03aa2c0fdd9a99b9606b0e7a2d37a60a8b7150168e0",
+    "수정 target commit f02422883d4331d8b1006f5b708a135ecc5abcfb의 두 공식 문서",
+    "동일 Finding ID의 VERIFIED 전이 또는 잔여 OPEN 근거"
+  ],
+  "human_decisions": [
+    "DEC-AI-FABLE-AUTONOMOUS-BUDGET-009 — 사용자는 합리적인 예산 기준을 초과해도 추가 질문 없이 계속 진행하도록 위임했다.",
+    "DEC-AI-FABLE-FINDING-LINEAGE-RECHECK-BUDGET-015 — AI 부 오케스트레이터는 successor 재검수 soft cap을 USD 5.00으로 선택한다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": {
+    "task_id": "AI-ORCH-PLANS-FINDING-LINEAGE-COMMIT-015",
+    "source_commit_sha": "96d7b66dee727790c4654df88d8488753a27afd5",
+    "round": "r001",
+    "task_sha256": "39aaa5da344381080fb0e3b756d312d11bf772a3605bbd547a4842e1f5bf32b1",
+    "manifest_sha256": "0b7630bab51d4b973f80d64aac0e7410e0970ec4cee8db4dcf91a23f08b49bb7",
+    "run_sha256": "967463c9ef927ac5e9ea5f6099235bffac8da039af9367b3adf9794e4c292ecf",
+    "review_sha256": "0940f73a2c6ae481c63c5298c53fb177cb571c82057d18aaffb729e7b517b99a",
+    "finding_registry_sha256": "8ea0be797bf3113a4834b03aa2c0fdd9a99b9606b0e7a2d37a60a8b7150168e0",
+    "handoff_turn_id": "turn-o001",
+    "handoff_entry_sha256": "dd66f630837963bc8ba6c1ca3ba31db8761f3f06a0da8cf4912a5f95c94fba80",
+    "handoff_run_sha256": "36dbd7072966337f92b590123ba04a2d8eef4e987f0067751c64388fe35b4317"
+  },
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "5.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}

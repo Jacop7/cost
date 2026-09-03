@@ -1,0 +1,176 @@
+{
+  "schema_version": "2.0",
+  "task_id": "AI-ORCH-PLANS-STAGE-7-DIRECTORY-QUALITY-FABLE-018",
+  "reviewer_role": "FABLE-ARCH",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "4e1d23cf31b34483f5f66ee3d7dfeaea5d315019",
+  "target_commit_sha": "4e1d23cf31b34483f5f66ee3d7dfeaea5d315019",
+  "target_tree_oid": "fc6630c066ee6b10f6e97fc740b1c6895561f3e2",
+  "agents_blob_oid": "c32214b5528752a91f0f1545fea8c735d5fae7fa",
+  "agents_sha256": "de18fc8524afa350d3d0806f40150b9397dfd45a91ff471b5e1f6d6bf95fc681",
+  "task_sha256": "28237101f9db73089188449d5e840486bf43d3c5f0ef824b854483d98f442250",
+  "collaboration_sha256": "bcde581ca514d9e00cac55adbe472333ee3cb96d694fc5976dc347a1d170802a",
+  "input_files_sha256": "360018eb1f343cf6c0983d6ae389a1cd0303b4e7a7d3e0319374cef43334f0e1",
+  "schema_sha256": "d8ffdb13e6b1e38279355d9ffd592cfb91dc023d287976adf7892e85dbfaf0d7",
+  "runner_sha256": "3e3bdc2aa6c4874c360a1c64e678bbe168e14db556c133bbfa91e62c42c510f7",
+  "verdict": "CHANGES_REQUIRED",
+  "summary": "단계 7 구조 종합 감사(INITIAL, 현재 bytes)를 완료했다. 확인된 정합: (1) 권위 DAG(team→ontology→orchestration→directory→quality)는 기계 판독 블록에서 비순환·단일 소유이고 두 문서 frontmatter depends_on과 정확히 일치한다. (2) §6 관계 표는 정방향만 허용하고 탐색 링크가 DAG에 의존성을 더하지 않으며 DELEGATED_PENDING→AUTHORITY_REF 전환 계약이 방향 의미를 보존한다. (3) Finding·Learning·자율성 승격/강등은 사람 Decision·지정 독립 검증자·독립검수 게이트를 우회하지 않고, Opus advisory가 Fable 게이트를 대체하지 못하며 실패 폐쇄가 유지된다(AGENTS:fable-required-review, AI-QUALITY:human-autonomy-gate 충족). (4) 네 DRAFT 문서의 ACTIVE 승격은 사람 승인 뒤 단일 activation commit으로 제한되고 부분 ACTIVE는 거부된다. (5) 단계 6 누적 상호참조 증거(71/71 PASS)와 현재 bytes 사이에 구조 모순은 없다. 다만 두 문서 결합부에서 Minor 필수 결함 2건이 남았다. 첫째, 평가 기획안 §8이 `docs/team/DECISIONS.md`를 자율성 승격·강등 승인 이력의 단독 소유자로 지정하지만, 디렉터리 기획안의 §4.2 목표 트리, §5.1 중앙 권위 표, 단계 2 materialization preflight 생성 집합 어디에도 이 경로가 등재되지 않아 물리 경로·단일 소유권 매핑이 결손된다(ROLE_CONTEXTS.md도 §5.1 표에 권위 행이 없다). 둘째, 평가 기획안은 ACTIVE 전 기존 route 전수 등록(§8)과 TEAM_LEARNING schema 이관(§6.1)을 요구하는데, 디렉터리 기획안 단계 2는 사람 activation decision 전 docs/team/ 권위 장부 생성을 금지하므로 두 의무의 실행 창이 미정의다. 문자 그대로 실행하면 단계 8 승인 전 물질화(AI-DIRECTORY:materialization-after-approval 위반) 또는 'ACTIVE 전' 전제조건 불충족이 발생한다. 두 결함 모두 문장 단위 수정으로 해소 가능하며 proposed_edits 4건을 제안한다. verdict=CHANGES_REQUIRED이고, 본 검수는 로컬 판정일 뿐 gate_state=OPEN은 유지된다.",
+  "findings": [
+    {
+      "finding_id": "FAB-ARCH-018-TEAM-DECISIONS-PATH-001",
+      "severity": "Minor",
+      "review_state": "OPEN",
+      "category": "ARCHITECTURE",
+      "requirement_or_invariant_ids": [
+        "AI-DIRECTORY:materialization-after-approval",
+        "AI-QUALITY:human-autonomy-gate",
+        "AGENTS:single-canonical-artifact"
+      ],
+      "evidence": [
+        {
+          "path": "docs/AI-품질-학습-자율성-평가기획안.md",
+          "line_start": 412,
+          "line_end": 417,
+          "observation": "§8이 `docs/team/ROLE_CONTEXTS.md`를 현재 자율성 단계의 단일 권위로, `docs/team/DECISIONS.md`를 승격·강등 승인 이력의 단독 소유자로 지정한다."
+        },
+        {
+          "path": "docs/디렉터리-문서신경망-재설계-기획안.md",
+          "line_start": 116,
+          "line_end": 140,
+          "observation": "§4.2 목표 트리의 docs/team/ 자식은 README·ROLE_CONTEXTS·TEAM_LEARNING·RELEASE_GATE·handoffs·teams·roles뿐이며 DECISIONS.md가 없다. 상위 주석에 'Decision·Risk'가 언급되지만 대응 파일이 열거되지 않는다."
+        },
+        {
+          "path": "docs/디렉터리-문서신경망-재설계-기획안.md",
+          "line_start": 151,
+          "line_end": 170,
+          "observation": "§5.1 중앙 권위 표에 TEAM_LEARNING·roles·teams·handoffs 행은 있으나 자율성 현재 단계 장부(ROLE_CONTEXTS.md)와 승격·강등 승인 이력(DECISIONS.md) 행이 없다."
+        },
+        {
+          "path": "docs/디렉터리-문서신경망-재설계-기획안.md",
+          "line_start": 403,
+          "line_end": 407,
+          "observation": "단계 2에서 materialization preflight가 docs/team/ 권위 장부 집합을 '한 번에' 만드는데, 그 집합의 근거인 본 문서 트리에 DECISIONS.md가 없어 생성 대상이 모호하다."
+        }
+      ],
+      "impact": "단계 8 승인 뒤 materialization preflight가 디렉터리 기획안 트리대로 실행되면 사람 자율성 게이트의 승격·강등 승인 이력 장부가 생성 집합·중앙 권위 표에 없어, 승인 이력의 물리적 단일 소유 경로가 미정의가 되거나 단일 소유권·경로 존재 검사가 평가 기획안의 참조를 매핑하지 못한다. 두 문서의 물리 경로 결합 요구(requirement 1)를 충족하지 못한다.",
+      "acceptance_criteria": [
+        "디렉터리 기획안 §4.2 docs/team/ 트리에 DECISIONS.md가 등재된다.",
+        "§5.1 중앙 권위 표에 자율성 현재 단계 장부(docs/team/ROLE_CONTEXTS.md)와 승격·강등 승인 이력(docs/team/DECISIONS.md) 행이 추가되어 평가 기획안 §8의 경로·소유권 주장과 일치한다.",
+        "단계 2 materialization preflight 생성 집합에 두 장부가 포함됨이 문서상 확인된다."
+      ],
+      "required_tests": [
+        "문서 그래프 검사기: 평가 기획안이 참조하는 docs/team/* 권위 경로가 디렉터리 기획안 목표 트리와 §5.1 표에 모두 존재하는지 교차 검사",
+        "사보타주: 트리 또는 §5.1 표에서 DECISIONS.md 행을 제거하면 경로 교차 검사가 실패해야 함"
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    },
+    {
+      "finding_id": "FAB-ARCH-018-PRE-ACTIVE-ORDER-002",
+      "severity": "Minor",
+      "review_state": "OPEN",
+      "category": "ARCHITECTURE",
+      "requirement_or_invariant_ids": [
+        "AI-DIRECTORY:materialization-after-approval",
+        "AI-QUALITY:human-autonomy-gate"
+      ],
+      "evidence": [
+        {
+          "path": "docs/AI-품질-학습-자율성-평가기획안.md",
+          "line_start": 412,
+          "line_end": 417,
+          "observation": "§8이 '이 문서가 ACTIVE되기 전에 기존 route를 전수 등록'하도록 요구한다. 등록처인 ROLE_CONTEXTS.md는 디렉터리 기획안 기준으로 사람 activation decision 전에는 존재할 수 없다."
+        },
+        {
+          "path": "docs/AI-품질-학습-자율성-평가기획안.md",
+          "line_start": 338,
+          "line_end": 343,
+          "observation": "§6.1이 '본 기획안 활성화 전 별도 schema 이관 Task'로 docs/team/TEAM_LEARNING.md의 verifier_role·사람 Decision ID 이관을 요구하지만 실행 시점 창을 지정하지 않는다."
+        },
+        {
+          "path": "docs/디렉터리-문서신경망-재설계-기획안.md",
+          "line_start": 403,
+          "line_end": 407,
+          "observation": "단계 2가 'DRAFT인 동안 docs/team/ 권위 장부·역할/팀 manifest·handoff 디렉터리를 미리 만들지 않는다'고 금지하고, 사람 activation decision 뒤 preflight가 한 번에 만든다고만 정한다."
+        },
+        {
+          "path": "docs/디렉터리-문서신경망-재설계-기획안.md",
+          "line_start": 429,
+          "line_end": 437,
+          "observation": "단계 6이 사람 승인 뒤 네 기획안을 하나의 activation commit에서 ACTIVE로 바꾼다고 정해, 'ACTIVE 전' 등록·이관이 preflight 창에 놓이는지 activation commit과 동시인지가 미정의다."
+        }
+      ],
+      "impact": "ACTIVE 전 의무(route 전수 등록, TEAM_LEARNING schema 이관)의 실행 창이 두 문서 어디에도 고정되지 않아, 문자 그대로 수행하면 사람 단계 8 승인 전 docs/team/ 장부 물질화로 materialization-after-approval을 위반하거나, 반대로 materialization과 activation이 동시라면 'ACTIVE되기 전 전수 등록' 전제조건이 충족 불가능해진다. 등록되지 않은 자동화의 A0 강등 판정 시점도 함께 흔들려 수명주기 결합 요구(requirement 1·4)를 해친다.",
+      "acceptance_criteria": [
+        "두 문서가 route 전수 등록과 §6.1 schema 이관을 '사람 activation decision 이후, activation commit 이전'의 materialization preflight 창으로 동일하게 고정한다.",
+        "사람의 단계 8 승인 전 docs/team/ 장부 신규 생성 금지가 두 문서에서 모순 없이 유지된다.",
+        "이미 존재하는 TEAM_LEARNING.md schema 이관 Task의 실행 시점이 같은 창의 봉인된 별도 Task로 명시된다."
+      ],
+      "required_tests": [
+        "사보타주: 사람 activation decision 기록 없이 ROLE_CONTEXTS.md 또는 DECISIONS.md를 생성하면 preflight/물질화 검사가 실패해야 함",
+        "사보타주: activation commit 시점에 route 전수 등록이 비어 있으면 부분 ACTIVE 거부 검사가 실패로 잡아야 함"
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    }
+  ],
+  "proposed_edits": [
+    {
+      "edit_id": "EDIT-018-DIR-TREE-DECISIONS-001",
+      "path": "docs/디렉터리-문서신경망-재설계-기획안.md",
+      "anchor": "│  ├─ ROLE_CONTEXTS.md                활성 역할 컨텍스트 판본·hash 장부",
+      "operation": "ADD",
+      "proposed_text": "│  ├─ DECISIONS.md                    자율성 승격·강등 승인 이력 장부(평가 기획안 §8)",
+      "rationale": "평가 기획안 §8이 단독 소유자로 지정한 docs/team/DECISIONS.md를 디렉터리 기획안 목표 트리에 등재해 materialization 집합의 결손을 제거한다.",
+      "finding_ids": [
+        "FAB-ARCH-018-TEAM-DECISIONS-PATH-001"
+      ]
+    },
+    {
+      "edit_id": "EDIT-018-DIR-AUTHORITY-TABLE-002",
+      "path": "docs/디렉터리-문서신경망-재설계-기획안.md",
+      "anchor": "| Learning 인스턴스 단일 장부 | `docs/team/TEAM_LEARNING.md` |",
+      "operation": "ADD",
+      "proposed_text": "| 자율성 현재 단계 장부 | `docs/team/ROLE_CONTEXTS.md` |\n| 자율성 승격·강등 승인 이력 | `docs/team/DECISIONS.md` |",
+      "rationale": "§5.1 중앙 권위 표에 두 장부의 단일 소유권 행을 추가해 평가 기획안 §8의 권위 주장과 경로 매핑을 일치시킨다.",
+      "finding_ids": [
+        "FAB-ARCH-018-TEAM-DECISIONS-PATH-001"
+      ]
+    },
+    {
+      "edit_id": "EDIT-018-DIR-PREFLIGHT-WINDOW-003",
+      "path": "docs/디렉터리-문서신경망-재설계-기획안.md",
+      "anchor": "  않는다. 누적 외부 교차검수와 사람 activation decision 뒤 materialization preflight가 한 번에 만든다.",
+      "operation": "ADD",
+      "proposed_text": "- materialization preflight는 사람 activation decision 이후·네 문서 activation commit 이전 창에서만 실행하며, 평가 기획안 §6.1의 TEAM_LEARNING schema 이관 완료 확인과 §8의 기존 route 전수 등록(ROLE_CONTEXTS·DECISIONS 초기 장부 생성 포함)을 같은 preflight 산출로 처리한다. 이 의무를 이유로 사람의 단계 8 승인 전에 `docs/team/` 권위 장부를 만들지 않는다.",
+      "rationale": "ACTIVE 전 의무의 실행 창을 preflight(사람 결정 이후, activation commit 이전)로 고정해 승인 전 물질화 위반과 'ACTIVE 전' 조건 불충족의 모순을 동시에 해소한다.",
+      "finding_ids": [
+        "FAB-ARCH-018-PRE-ACTIVE-ORDER-002",
+        "FAB-ARCH-018-TEAM-DECISIONS-PATH-001"
+      ]
+    },
+    {
+      "edit_id": "EDIT-018-QUALITY-PREACTIVE-WINDOW-004",
+      "path": "docs/AI-품질-학습-자율성-평가기획안.md",
+      "anchor": "자동화는 A0으로 강등한다.",
+      "operation": "ADD",
+      "proposed_text": "기존 route 전수 등록과 §6.1의 schema 이관은 디렉터리 기획안 단계 2의 materialization preflight 창(사람 activation decision 이후, 네 문서 activation commit 이전)에서 수행한다. 이 등록·이관을 이유로 사람의 단계 8 승인 전에 `docs/team/` 장부를 새로 만들지 않으며, 이미 존재하는 장부의 schema 이관도 같은 창의 봉인된 별도 Task로 실행한다.",
+      "rationale": "평가 기획안 쪽에서도 동일한 실행 창을 명시해 두 문서의 수명주기 계약을 대칭으로 고정한다.",
+      "finding_ids": [
+        "FAB-ARCH-018-PRE-ACTIVE-ORDER-002"
+      ]
+    }
+  ],
+  "closed_finding_ids": [],
+  "reopened_finding_ids": [],
+  "remaining_required_finding_ids": [
+    "FAB-ARCH-018-TEAM-DECISIONS-PATH-001",
+    "FAB-ARCH-018-PRE-ACTIVE-ORDER-002"
+  ],
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}

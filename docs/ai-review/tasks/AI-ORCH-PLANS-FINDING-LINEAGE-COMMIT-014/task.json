@@ -1,0 +1,65 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-FINDING-LINEAGE-COMMIT-014",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R1",
+  "author_role": "SOLAR-ORCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "RECHECK",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "f3f79bc5e954f6bca81552eba6020d4464ecb4b3",
+  "target_commit_sha": "6e99bd93b737bf291f14a8d3a6465a1d5110fa6c",
+  "target_tree_oid": "c516cebc1c57bcc0a5705dbb7f7a4a0a24f38d55",
+  "agents_blob_oid": "c32214b5528752a91f0f1545fea8c735d5fae7fa",
+  "agents_sha256": "de18fc8524afa350d3d0806f40150b9397dfd45a91ff471b5e1f6d6bf95fc681",
+  "requirements": [
+    "현재 고정 commit에서 FAB-ARCH-006-MASTER-DEPUTY-BOUNDARY-001의 원인이 재현되는지 확인하고, 재현되면 같은 ID·OPEN·previous_finding_id null로 등록한다.",
+    "현재 고정 commit에서 FAB-ARCH-006-R0R1-DUPLICATE-COND-10-002의 원인이 재현되는지 확인하고, 재현되면 같은 ID·OPEN·previous_finding_id null로 등록한다.",
+    "첫 Finding의 기준은 AI 마스터 역할 미등록 또는 팀 구성안과 오케스트레이션 기획안 사이의 요청 정규화·Task 라우팅·팀 배정 소유권 불일치다.",
+    "둘째 Finding의 기준은 팀 구성안 R0·R1 자동 종결 조건에서 번호 10이 중복되고 1~11 단일 번호가 성립하지 않는 것이다.",
+    "이 Task는 과거 WORKING_TREE_HASHED 계보를 고정 commit 기반 predecessor→successor 계보로 재구축하기 위한 최초 고정점이다."
+  ],
+  "invariant_ids": [
+    "AGENTS:single-canonical-artifact",
+    "AGENTS:fable-required-review",
+    "AI-ORCH:master-deputy-boundary",
+    "AI-TEAM:r0-r1-completion-conditions"
+  ],
+  "artifact_paths": [
+    "docs/팀구성_상세기획안.md",
+    "docs/AI-오케스트레이션-상세기획안.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md"
+  ],
+  "evidence_paths": [],
+  "excluded_paths": [
+    "apps/mobile/**",
+    "packages/**",
+    "docs/prototypes/**",
+    ".codex-share/**",
+    ".tmp/**"
+  ],
+  "required_evidence": [
+    "target commit 6e99bd93b737bf291f14a8d3a6465a1d5110fa6c의 두 공식 문서 원문",
+    "두 기존 Finding ID의 원인 재현 여부",
+    "후속 수정 commit으로의 successor handoff 준비"
+  ],
+  "human_decisions": [
+    "DEC-AI-FABLE-AUTONOMOUS-BUDGET-009 — 사용자는 합리적인 예산 기준을 초과해도 추가 질문 없이 계속 진행하도록 위임했다.",
+    "DEC-AI-FABLE-FINDING-LINEAGE-PREDECESSOR-BUDGET-013 — AI 부 오케스트레이터는 고정 commit predecessor 검수 soft cap을 USD 6.00으로 선택한다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "6.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}

@@ -1,0 +1,63 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-BUNDLE-A-FABLE-SOFTCAP-004",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R1",
+  "author_role": "SOLAR-ORCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "6e99bd93b737bf291f14a8d3a6465a1d5110fa6c",
+  "target_commit_sha": "6e99bd93b737bf291f14a8d3a6465a1d5110fa6c",
+  "target_tree_oid": "c516cebc1c57bcc0a5705dbb7f7a4a0a24f38d55",
+  "agents_blob_oid": "c32214b5528752a91f0f1545fea8c735d5fae7fa",
+  "agents_sha256": "de18fc8524afa350d3d0806f40150b9397dfd45a91ff471b5e1f6d6bf95fc681",
+  "requirements": [
+    "1~5단계 다섯 공식 기획안의 권위·역할·상태·게이트가 서로 모순 없이 연결돼야 한다.",
+    "마스터 채팅은 01 사람 결정, 02 AI 마스터, 03 AI 부 오케스트레이션, 04 개발·스테이징, 05 운영 배포 순서다.",
+    "Terra 주 실행, Sol 구조검토, Fable 기본 독립검수, 제한된 Opus successor 경계를 지켜야 한다.",
+    "탐색 강연결, 권위 DAG 비순환, Task·Decision·HANDOFF·Finding·Evidence·Learning 방향이 일관돼야 한다.",
+    "사람 승인 전 팀 구성안은 CONFIRMED, 네 후보 문서는 DRAFT이며 실제 디렉터리 생성은 금지된다."
+  ],
+  "invariant_ids": ["AGENTS:single-canonical-artifact", "AGENTS:fable-required-review", "AI-ONTOLOGY:authority-dag", "AI-ORCH:human-production-gate", "AI-REVIEW:no-dual-engine-no-auto-increase"],
+  "artifact_paths": [
+    "docs/팀구성_상세기획안.md",
+    "docs/AI-지식-온톨로지-기획안.md",
+    "docs/AI-오케스트레이션-상세기획안.md",
+    "docs/디렉터리-문서신경망-재설계-기획안.md",
+    "docs/AI-품질-학습-자율성-평가기획안.md"
+  ],
+  "reference_paths": ["AGENTS.md"],
+  "evidence_paths": [
+    "docs/ai-review/evidence/AI-PLANS-SIM-STAGES-1-5-DRAFT-READY.md",
+    "docs/ai-review/evidence/AI-PLANS-SIM-FABLE-BUNDLE-A-R1-RUN-FAILED.md",
+    "docs/ai-review/evidence/AI-PLANS-SIM-FABLE-COMPACT-R1-RUN-FAILED.md",
+    "docs/ai-review/evidence/AI-PLANS-SIM-HARD-CAP-GUARD.md"
+  ],
+  "excluded_paths": ["apps/mobile/**", "packages/**", "docs/prototypes/**", ".codex-share/**", ".tmp/**"],
+  "required_evidence": [
+    "DRAFT_READY의 단계별 SHA-256과 artifact bytes 일치",
+    "Sol high 6건 Finding 반영 후 재검수 PASS",
+    "ai:plans:simulate 71/71 PASS",
+    "두 선행 Fable run은 verdict 없는 실패로 보존",
+    "DEC-AI-REVIEW-BUDGET-A-SOFTCAP-003의 외부 호출 1회 r001@4.00 승인"
+  ],
+  "human_decisions": [
+    "DEC-AI-REVIEW-BUDGET-A-SOFTCAP-003 — 사용자가 새 Fable 외부 호출 1회의 soft cap USD 4.00과 초과 가능성을 승인했다.",
+    "SOFTCAP-003은 provider 호출 전 commit 결속 오류로 종료되어 비용·외부 호출이 없었으므로 승인 1회를 SOFTCAP-004/r001에 결속한다.",
+    "자동 재시도·증액·동일 목적 Opus 호출은 금지된다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "4.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}

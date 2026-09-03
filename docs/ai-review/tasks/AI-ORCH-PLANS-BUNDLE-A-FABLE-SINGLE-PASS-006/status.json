@@ -1,0 +1,27 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-BUNDLE-A-FABLE-SINGLE-PASS-006",
+  "predecessor_review": null,
+  "updated_at": "2026-09-03T03:06:30.785Z",
+  "latest_round": "r002",
+  "review_state": "OPEN",
+  "workflow_state": "READY_FOR_REVIEW",
+  "gate_state": "OPEN",
+  "run_state": "RUN_FAILED",
+  "defect_state": "NOT_APPLICABLE",
+  "verdict": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "fallback_reason": "TASK_CAP_APPROVAL_REQUIRED",
+  "latest_run_sha256": "6aafb72cfb1e835b31713597d0ac48cd907823422dfbe8d7286a920f60b9b652",
+  "open_required_finding_ids": [
+    "FAB-ARCH-006-MASTER-DEPUTY-BOUNDARY-001",
+    "FAB-ARCH-006-R0R1-DUPLICATE-COND-10-002"
+  ],
+  "open_optional_finding_ids": [],
+  "closed_finding_ids": [],
+  "candidate_review_state": null,
+  "candidate_review_sha256": null,
+  "backlog_dispositions": []
+}

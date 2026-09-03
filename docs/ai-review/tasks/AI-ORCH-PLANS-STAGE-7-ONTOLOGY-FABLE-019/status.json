@@ -1,0 +1,29 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-STAGE-7-ONTOLOGY-FABLE-019",
+  "predecessor_review": null,
+  "updated_at": "2026-09-03T04:49:31.629Z",
+  "latest_round": "r002",
+  "review_state": "OPEN",
+  "workflow_state": "READY_FOR_REVIEW",
+  "gate_state": "OPEN",
+  "run_state": "RUN_FAILED",
+  "defect_state": "NOT_APPLICABLE",
+  "verdict": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "fallback_reason": "TASK_CAP_APPROVAL_REQUIRED",
+  "latest_run_sha256": "6c9f61ad844fbcdda152c7cb40aea763ea9f2030e81e4aa965a2961dc3b017e6",
+  "open_required_finding_ids": [
+    "FAB-ARCH-019-HANDOFF-LOCATION-001"
+  ],
+  "open_optional_finding_ids": [
+    "FAB-ARCH-019-AUTHORITY-VOCAB-002",
+    "FAB-ARCH-019-LIFECYCLE-DIAGRAM-003"
+  ],
+  "closed_finding_ids": [],
+  "candidate_review_state": null,
+  "candidate_review_sha256": null,
+  "backlog_dispositions": []
+}

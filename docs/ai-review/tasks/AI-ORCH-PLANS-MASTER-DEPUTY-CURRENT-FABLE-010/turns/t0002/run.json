@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-MASTER-DEPUTY-CURRENT-FABLE-010",
+  "sequence": "t0002",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-03T03:31:10.286Z",
+  "turn_id": "turn-h001",
+  "turn_type": "HUMAN_DECISION",
+  "role": "HUMAN",
+  "task_sha256": "d8b58f86595e5b8467388c3437d5cd2495af55150929f9bff7a25e5dfb78de92",
+  "runner_sha256": "3e3bdc2aa6c4874c360a1c64e678bbe168e14db556c133bbfa91e62c42c510f7",
+  "previous_manual_run_sha256": "565583ed10b13566a239e1392417703d279022f6d83990a52155d772b3c31c6f",
+  "collaboration_before_sha256": "149fc588325d7c167a07e9906af06eac4a33856c6fb60e00c8e9e48ce193602d",
+  "collaboration_before_bytes": 900,
+  "collaboration_entry_sha256": "d4ca4dc27fe574cb8960092517a50f6802bb5a10a0d041a9b173d3ceb5ed38a3",
+  "collaboration_entry_bytes": 944,
+  "collaboration_after_sha256": "aec2496da2826fb34bb215e0a074c18c21e96b2ebecb6f26da52c5d14d5ec4df",
+  "collaboration_after_bytes": 1844
+}

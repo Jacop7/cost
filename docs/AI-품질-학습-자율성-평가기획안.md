@@ -5,7 +5,7 @@ status: DRAFT
 authority: quality_learning_autonomy_evaluation
 owner: AI-DEPUTY-ORCHESTRATOR
 approver: HUMAN-CHIEF
-version: 0.2
+version: 0.4
 depends_on: [team, ontology, orchestration, directory]
 supersedes: []
 verified_by: []
@@ -14,7 +14,7 @@ review_by: 2026-10-01
 
 # MarginCook AI 품질·학습·자율성 평가 기획안
 
-> 버전: 0.2
+> 버전: 0.4
 > 상태: 누적 교차검수 대상 초안(`DRAFT`)
 > 작성일: 2026-09-01
 > 최종 책임자: 사람 주 오케스트레이터
@@ -180,20 +180,26 @@ Context & Token Steward 자체도 평가 대상이다. 신호가 너무 늦어 �
 
 #### 4.4.1 모델·토큰 운영계약 평가
 
-12단계 전환 작업은 오케스트레이션 기획안 §6.3의 상대 100점 envelope와 Terra→Sol→Opus 순서를
-평가 기준으로 사용한다. 점수는 공급자 간 토큰 등가값이 아니라 계획 비중이므로, 실제 평가는 모델별
-input·cached input·output·reasoning token과 외부 비용을 분리한다.
+12단계 전환 작업은 오케스트레이션 기획안 §6.3의 그룹형 실행계약을 평가 기준으로 사용한다. 기본
+호출 하한은 Terra xhigh 12회, Sol high/xhigh 4회, Fable 5회, Opus 0회로 총 21회다. 8단계 승인
+패킷의 bytes와 hash가 직전 독립검수 대상과 완전히 같을 때만 해당 Fable 1회를 생략해 총 20회로
+줄인다. 이 수치는 공급자 간 토큰 등가값이 아니라 호출 계획 하한이며, 실제 평가는 모델별 input·
+cached input·output·reasoning token과 외부 비용을 분리한다.
 
 - Terra가 12단계의 공식본 작성·구현과 실행 증거를 연속 소유했는지
-- Sol이 전체 재수행 없이 지정된 high/xhigh 구조 판정만 수행했는지
-- Opus 최초 검수에서 앞 모델의 결론·자기변호가 제외돼 독립성이 유지됐는지
-- 유효 Opus 구조화 결과가 없는 단계가 `REVIEW_PENDING`으로 멈추고 다음 단계로 전이하지 않았는지
-- 단계별 80%·100%·120% 조치와 재계획 Decision이 실제 사용량에 연결됐는지
-- 승인된 절대 envelope가 `UNSET`인 상태에서 Run이 시작되지 않았는지
+- Sol이 전체 재수행 없이 1~5·6~7·9~11·12단계의 지정된 high/xhigh 구조 checkpoint만 판정했는지
+- Fable이 기본 독립검수 엔진으로 사용되고, Opus는 허용된 소진 사유와 재시도 조건을 충족한
+  successor에서만 같은 역할을 승계했는지
+- 같은 목적에 Fable과 Opus를 동시에 호출하거나 실패 때 상한을 배수로 자동 증액하지 않았는지
+- 회차 기술 상한 `budget_exhausted`는 축소 패킷으로 한 번만 재시도하고, 다시 실패하면 Opus 우회나
+  상한 증액 없이 `RUN_FAILED`로 닫았는지
+- rate limit은 제공자의 `retry_after`로 최대 한 번, 값이 없거나 15분 초과일 때만 장기 불가로
+  판정했는지; capacity 오류는 60초 뒤 한 번 재시도한 뒤에만 fallback 후보로 삼았는지
+- 대상 bytes가 하나라도 바뀌면 이전 PASS를 무효화하고 변경 diff를 독립 재검수했는지
+- 프로젝트 검수 envelope가 `UNSET`인 상태에서 외부 Run이 시작되지 않았는지
 - 토큰 절감을 위해 필수 권위·시험·감사 route를 누락하지 않았는지
-- `DEFERRED_NOT_WAIVED`인 Fable을 생략 완료나 Opus 대체 PASS로 오인하지 않았는지
-- Fable 보류 중 1~7단계가 `DRAFT_READY` 후보를 넘지 않고 8단계 `ACTIVE` Decision과 9~12단계
-  materialize·파일럿·역반영이 차단됐는지
+- R0/R1은 계약 검증된 Opus fallback으로 로컬 완료할 수 있지만, R2/R3·운영 종결은 Fable 복구
+  표본 재감사 또는 사람이 정확한 SHA의 잔여 위험을 명시적으로 수용했는지
 
 비용 champion은 같은 acceptance criteria와 필수 Finding 재현율을 유지하면서 중복 입력·재호출·실패
 비용을 줄인 조합이다. 단순 총토큰 감소, 낮은 모델 사용, 미검수 상태는 champion 승격 근거가 아니다.
@@ -227,23 +233,28 @@ input·cached input·output·reasoning token과 외부 비용을 분리한다.
 어떤 경우에도 PASS·CLOSED·배포 완료로 합성하지 않고 `RUN_FAILED`, `STALE`, `환경 미검증` 또는
 `gate_state=OPEN`으로 남는지 확인한다.
 
-### 4.7 외부 Fable 검수 효율 평가
+### 4.7 외부 독립검수 효율 평가
 
-모든 필수 검수 route는 Fable을 포함한다. 비용 최적화는 Fable을 생략하거나 다른 모델 결과로
-대체하는 것이 아니라, Codex 사전검수와 입력 manifest 축소로 유효 회차당 낭비를 줄이는 것이다.
+모든 필수 검수 route는 독립 감사 엔진을 포함한다. 기본 엔진은 Fable이고, Opus는 팀 구성안
+§3.10.1의 구조화된 provider·구독 한도, 승인된 프로젝트 검수 envelope 소진, rate/capacity 재시도
+조건을 만족한 successor에서만 같은 역할을 승계한다. 비용 최적화는 Codex 사전검수, 입력 manifest
+축소, 그룹 checkpoint, 동일 bytes 재호출 제거로 유효 회차당 낭비를 줄인다.
 
 1. 문서별 Fable Task는 해당 공식 문서만 artifact로 두고, 나머지 누적 문서는 target commit/tree에
    결속된 content hash와 기계 생성된 교차계약 투영(compact evidence)으로 검토한다.
 2. 교차계약 투영은 중앙 권위·관계·상태·Finding 연결을 전수 추출하며, 원문 대비 완전성 parity와
    누락 사보타주가 같은 SHA에서 통과해야 한다.
 3. 큰 구현·원시 로그는 content hash, 판별력 설명, 재현 명령, 결과가 있는 compact evidence로 바꿀 수 있다.
-4. 문서별 회차는 그 문서의 검수일 뿐 최종 네트워크 closure로 세지 않는다. 최종 네트워크 Fable
-   Task는 문서별 유효 review/run/input hash, 전체 문서 content hash와 투영 검증 결과를 결속한다.
-5. 실행 전 runner self-test, 로그인, 입력 바이트, 회차 상한, 작업 누적 잔여를 확인한다.
+4. 문서별 회차는 그 문서의 검수일 뿐 최종 네트워크 closure로 세지 않는다. 최종 네트워크 독립검수
+   Task는 문서별 유효 review/run/input hash, 실제 reviewer engine, 전체 문서 content hash와 투영
+   검증 결과를 결속한다.
+5. 실행 전 runner self-test, 로그인, 입력 바이트, 회차 상한, 프로젝트 검수 envelope 잔여를 확인한다.
 6. `RUN_FAILED`·구조화 출력 없음·상한 소진은 유효 검수나 PASS로 세지 않는다.
-7. 같은 입력 실패 뒤 상한만 올린 재시도는 결함이며 실패 원인 또는 패킷 구조가 바뀌어야 한다.
-8. 승계 fallback은 작업 연속성을 위한 임시 비게이트 증거이며, 후속 Fable 재검수 전에는 검수 완료로
-   세지 않는다.
+7. 회차 기술 상한 실패는 축소 패킷으로 한 번만 재시도한다. 다시 실패하면 Opus로 우회하거나 상한을
+   자동 증액하지 않고 닫는다.
+8. 계약 검증된 Opus successor는 R0/R1을 로컬 완료할 수 있다. R2/R3·운영 종결에는 Fable 복구 표본
+   재감사 또는 사람의 exact-SHA 잔여 위험 수용이 추가로 필요하다.
+9. 같은 목적의 Fable·Opus 동시 호출과, 대상 bytes 변경 뒤 이전 PASS 재사용을 결함으로 센다.
 
 ## 5. 핵심 지표
 
@@ -327,7 +338,8 @@ Learning은 정책·Decision·요구사항을 대체하지 않는다. 모델이 
 현재 `docs/team/TEAM_LEARNING.md`의 기계 schema와 `scripts/fable-review.mjs`는
 `independent_verifier`를 읽지만, 이 문서가 요구하는 `verifier_role`·사람 지정 Decision ID
 쌍을 아직 필수로 강제하지 않는다. 기존 `VERIFIED` 항목을 소급 정당화하지 않고,
-본 기획안 활성화 전 별도 schema 이관 Task에서 작성자·lane 소유자·독립 검증자·
+사람 activation decision 이후·본 기획안 activation commit 이전 materialization preflight의 별도
+schema 이관 Task에서 작성자·lane 소유자·독립 검증자·
 사람 Decision을 명시적으로 이관하고 실행기·사보타주 시험을 같이 올린다. 이 이관이
 끝나기 전에는 새 항목을 본 계약의 `VERIFIED`로 승격하지 않는다.
 
@@ -405,6 +417,11 @@ champion/challenger 결과로 인정하지 않는다.
 이상에서만 허용된다. 이 문서가 `ACTIVE`되기 전에 기존 route를 전수 등록하고, 등록되지 않은 기존
 자동화는 A0으로 강등한다.
 
+기존 route 전수 등록과 §6.1의 schema 이관은 디렉터리 기획안 단계 2의 materialization preflight
+창(사람 activation decision 이후, 네 문서 activation commit 이전)에서 수행한다. 이 등록·이관을
+이유로 사람의 단계 8 승인 전에 `docs/team/` 장부를 새로 만들지 않으며, 이미 존재하는 장부의 schema
+이관도 같은 창의 봉인된 별도 Task로 실행한다.
+
 ### 8.1 승격
 
 - route와 파일 범위를 좁게 지정한다.
@@ -450,11 +467,11 @@ champion/challenger 결과로 인정하지 않는다.
 
 | 평가 | 제작 | 검증 | 독립 감사 | 결정 |
 |---|---|---|---|---|
-| 요청·Task fixture | SOLAR-PO/AI 부 O | Codex | Fable 전략 표본 | 사람 |
-| 코드·DB 회귀 | 담당 SOLAR-DEV | Codex | Fable 필수. 승계 fallback은 임시 비게이트이며 후속 Fable 필요 | 역할별 gate owner |
-| 다중 채팅·lease | AI 부 O | Codex 사보타주 | Fable 아키텍처 | 사람 자율성 승인 |
+| 요청·Task fixture | SOLAR-PO/AI 부 O | Codex | Fable 기본·Opus 유효 fallback 전략 표본 | 사람 |
+| 코드·DB 회귀 | 담당 SOLAR-DEV | Codex | Fable 기본·Opus 유효 fallback. R2/R3는 복구 표본 또는 사람 위험 수용 | 역할별 gate owner |
+| 다중 채팅·lease | AI 부 O | Codex 사보타주 | Fable 기본·Opus 유효 fallback 아키텍처 | 사람 자율성 승인 |
 | Learning 승격 | lane 소유자 | Codex 재현 | 독립 route 표본 | 지정 검증자/사람 |
-| 자율성 승격 | AI 부 O 제안 | Codex 지표 | Fable 최종·보안 | 사람 |
+| 자율성 승격 | AI 부 O 제안 | Codex 지표 | Fable 기본·Opus 유효 fallback 최종·보안 | 사람 |
 | champion/challenger | 역할 소유자 | Codex 재현·hold-out | route와 다른 독립 감사 역할 | 사람 |
 
 `OPUS_DIRECT_ADVISORY`는 기획안 상호작용 자문일 뿐 위 표의 공식 독립 감사 칸을 대체하지 않는다.
@@ -465,9 +482,9 @@ champion/challenger 결과로 인정하지 않는다.
 
 이 문서가 추가되면 오케스트레이션 기획안 §8.2가 단일 소유하는 현재 누적 집합 전체를 외부 감사
 엔진이 읽기 전용으로 두 번 검수한다. 검수 엔진·경로는 같은 절에 기록된 현재 사람 결정을 따른다.
-2026-09-02 결정 `AI-ORCH-PLANS-FABLE-R2-20260902` 이후에는 공식 Fable 경로를 사용하며, 이 문서의
-`Opus` 표기는 결정 전에 완료한 advisory 회차 기록에만 적용한다. 이 문서는 문서 수나 파일 목록을
-복제하지 않는다.
+2026-09-03 사람 결정 이후에는 Fable을 기본 경로로 사용하고, 허용 사유·재시도·successor 봉인을
+모두 충족한 Opus만 같은 독립 감사 역할을 승계한다. `OPUS_DIRECT_ADVISORY`는 여전히 공식 검수로
+세지 않는다. 이 문서는 문서 수나 파일 목록을 복제하지 않는다.
 
 최종 단계는 두 유효 회차에서 잔여 Critical·Major·명세상 필수 Finding이 0건이어야 한다. r1 수정은
 r2가, r2 수정은 추가 유효 재검수 또는 사람에게 명시한 미종결 상태가 확인한다. 비용·실패 보존·
@@ -514,7 +531,7 @@ r2가, r2 수정은 추가 유효 재검수 또는 사람에게 명시한 미종
 - `AI-TEAM-STARTER-KIT-1`을 빈 저장소 fixture에 적용한다.
 - 제품 고유 profile 없이 공통 팀·Task·HANDOFF·검수·Release 흐름이 부팅되는지 확인한다.
 - MarginCook profile을 붙였을 때 브랜치·DB·Supabase·서버 adapter가 공식 권위를 덮어쓰지 않는지 잰다.
-- 새 프로젝트의 첫 세 Task에서 복원 성공률·권위 탐색 파일 수·필수 Fable 검수·사람 결정 경계를
+- 새 프로젝트의 첫 세 Task에서 복원 성공률·권위 탐색 파일 수·필수 독립검수·사람 결정 경계를
   재현하기 전에는 v1.0 완료로 판정하지 않는다.
 
 ## 13. 사보타주 목록
@@ -525,9 +542,12 @@ r2가, r2 수정은 추가 유효 재검수 또는 사람에게 명시한 미종
 - lease 소유자의 stale Task 전체 쓰기가 다른 채팅의 요청 판정을 삭제·재정렬
 - collaboration Task lock을 가진 채 queue ledger lock을 역순 획득
 - `task.json`의 발행 시점 lease를 현재 권위로 오인
-- Fable 실패를 직접 Opus advisory PASS로 대체
-- Fable 필수 route를 비용 절감 이유로 Codex-only 완료 처리
-- 같은 대형 Fable 입력과 같은 실패 조건에서 상한만 올려 재호출
+- Fable 실패를 직접 Opus advisory PASS로 대체하거나 successor 봉인 없이 model만 변경
+- 독립검수 route를 비용 절감 이유로 Codex-only 완료 처리
+- 회차 기술 상한 실패 뒤 축소 1회 없이 Opus로 우회하거나 상한을 자동 증액
+- provider rate limit의 허용 재시도 전 또는 capacity 60초·1회 재시도 전에 fallback
+- 같은 목적에 Fable과 Opus를 동시에 호출
+- 대상 bytes가 바뀌었는데 이전 PASS 또는 동일-hash 생략 조건을 재사용
 - compact evidence에서 대상 공식 문서 하나 또는 실패 재현 명령 제거
 - rollover 신호만으로 HANDOFF 없이 새 채팅이 edit lease 인수
 - 동일 HANDOFF 판본을 두 successor 채팅이 동시에 채택
@@ -571,9 +591,10 @@ r2가, r2 수정은 추가 유효 재검수 또는 사람에게 명시한 미종
 - 외부 모델 실패가 검수 결과나 0원 사용으로 위장되지 않는다.
 - 여러 채팅의 중복 작업·stale SHA·lease 충돌·인계 손실을 자동 평가한다.
 - 오케스트레이션 기획안 §8.2가 정한 현재 누적 집합 전체의 외부 교차검수 유효 2회에서 잔여 필수
-  Finding 0건을 확인한다. 2026-09-02 사람 결정 이후에는 공식 Fable 경로의 회차만 센다.
-- 모든 검수의 필수 Fable route와 exact-SHA 보호 게이트는 별도로 유지된다.
-- Fable이 모든 필수 검수에 포함되면서도 사전검수·축소 패킷·실패 폐쇄로 유효 회차당 비용을 줄인다.
+  Finding 0건을 확인한다. Fable 기본 회차 또는 계약 검증된 Opus successor 회차만 센다.
+- 모든 검수의 필수 독립검수 route와 exact-SHA 보호 게이트는 별도로 유지된다.
+- Fable 기본·Opus 제한 fallback을 유지하면서 사전검수·축소 패킷·그룹 checkpoint·실패 폐쇄로
+  유효 회차당 비용을 줄인다.
 - 실제 팀 MD·채팅 route·HANDOFF와 스타터 키트가 같은 평가 fixture를 통과한다.
 
 ## 16. 미결 구현 결정

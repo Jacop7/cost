@@ -1,0 +1,72 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-BUNDLE-A-FABLE-SINGLE-PASS-006",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R1",
+  "author_role": "SOLAR-ORCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "6e99bd93b737bf291f14a8d3a6465a1d5110fa6c",
+  "target_commit_sha": "6e99bd93b737bf291f14a8d3a6465a1d5110fa6c",
+  "target_tree_oid": "c516cebc1c57bcc0a5705dbb7f7a4a0a24f38d55",
+  "agents_blob_oid": "c32214b5528752a91f0f1545fea8c735d5fae7fa",
+  "agents_sha256": "de18fc8524afa350d3d0806f40150b9397dfd45a91ff471b5e1f6d6bf95fc681",
+  "requirements": [
+    "다섯 기획안의 권위·역할·상태·게이트가 모순 없이 연결돼야 한다.",
+    "01 사람 결정·02 AI 마스터·03 AI 부 오케스트레이션·04 개발 스테이징·05 운영 배포 경계를 지켜야 한다.",
+    "탐색 강연결과 권위 DAG 비순환을 지켜야 한다.",
+    "사람 승인 전 네 후보는 DRAFT이며 디렉터리 물질화는 금지된다."
+  ],
+  "invariant_ids": [
+    "AGENTS:single-canonical-artifact",
+    "AGENTS:fable-required-review",
+    "AI-ONTOLOGY:authority-dag",
+    "AI-ORCH:human-production-gate"
+  ],
+  "artifact_paths": [
+    "docs/팀구성_상세기획안.md",
+    "docs/AI-지식-온톨로지-기획안.md",
+    "docs/AI-오케스트레이션-상세기획안.md",
+    "docs/디렉터리-문서신경망-재설계-기획안.md",
+    "docs/AI-품질-학습-자율성-평가기획안.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/evidence/AI-PLANS-SIM-STAGES-1-5-DRAFT-READY.md",
+    "docs/ai-review/evidence/AI-PLANS-SIM-FABLE-SINGLE-PASS-READY.md",
+    "docs/ai-review/evidence/AI-PLANS-SIM-FABLE-SINGLE-PASS-R1-RUN-FAILED.md"
+  ],
+  "excluded_paths": [
+    "apps/mobile/**",
+    "packages/**",
+    "docs/prototypes/**",
+    ".codex-share/**",
+    ".tmp/**"
+  ],
+  "required_evidence": [
+    "Sol high 재검수 PASS",
+    "ai:plans:simulate 71/71 PASS",
+    "single-pass self-test 52/52 PASS",
+    "직전 single-pass USD 4.00 soft cap 실행은 실제 USD 6.064928에서 verdict 없이 종료"
+  ],
+  "human_decisions": [
+    "DEC-AI-FABLE-SINGLE-PASS-BUDGET-006 — 사용자가 직전 초과 실패 고지 후 이 Task r001 한 회의 exact soft cap USD 8.00과 실제 청구 초과 가능성을 승인했다.",
+    "이 승인은 r001 한 회차에만 적용하며 자동 재시도·추가 증액·Opus 전환은 금지한다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "8.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}
