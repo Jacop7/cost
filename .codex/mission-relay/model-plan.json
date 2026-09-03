@@ -175,9 +175,9 @@
       }
     },
     "remainingContextCallsByProfile": {
-      "terra-xhigh": 5
+      "terra-xhigh": 4
     },
-    "remainingPlannedUnits": 466778.0,
+    "remainingPlannedUnits": 399778.0,
     "status": "MODEL_BUDGET_VALID",
     "transitionUpperWeightedUnits": 185280.0
   },
@@ -391,7 +391,7 @@
     ]
   },
   "schemaVersion": 1,
-  "sealedAt": "2026-09-03T07:24:09.225017+00:00",
+  "sealedAt": "2026-09-03T07:28:33.982913+00:00",
   "stages": [
     {
       "assignments": [
@@ -564,7 +564,7 @@
       ],
       "id": "8",
       "name": "사람 최종 승인",
-      "status": "active"
+      "status": "completed"
     },
     {
       "assignments": [
@@ -580,7 +580,7 @@
       ],
       "id": "9",
       "name": "팀별 디렉터리와 MD 파일 생성·내용 삽입",
-      "status": "pending"
+      "status": "active"
     },
     {
       "assignments": [
