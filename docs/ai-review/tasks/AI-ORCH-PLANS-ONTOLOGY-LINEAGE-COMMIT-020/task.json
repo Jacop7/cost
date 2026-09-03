@@ -1,0 +1,63 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-ONTOLOGY-LINEAGE-COMMIT-020",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R1",
+  "author_role": "SOLAR-ORCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "4e1d23cf31b34483f5f66ee3d7dfeaea5d315019",
+  "target_commit_sha": "40c37c76f2b3af75a5fbca53b6d374178c63b25d",
+  "target_tree_oid": "762cf16b21e1b1b0b6c86373fb5a246ad5a05a9f",
+  "agents_blob_oid": "c32214b5528752a91f0f1545fea8c735d5fae7fa",
+  "agents_sha256": "de18fc8524afa350d3d0806f40150b9397dfd45a91ff471b5e1f6d6bf95fc681",
+  "requirements": [
+    "고정 commit에서 FAB-ARCH-019-HANDOFF-LOCATION-001의 원인이 재현되는지 확인하고, 재현되면 같은 ID·OPEN·previous_finding_id null로 등록한다.",
+    "§3 HANDOFF 표와 본문의 일반 Task 봉인 원본 위치가 일치해야 한다.",
+    "물질화 전 일반 Task HANDOFF의 append-only 원본 위치가 지정되거나 명시적 미결 구현 결정으로 등록돼야 한다.",
+    "docs/작업큐.md는 일반 HANDOFF 원본이 아니라 최신 pointer만 소유해야 한다.",
+    "검수 successor HANDOFF의 collaboration.md 전용 append 계약은 유지돼야 한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:single-canonical-artifact",
+    "AGENTS:fable-required-review",
+    "AI-ONTOLOGY:handoff-lineage"
+  ],
+  "artifact_paths": [
+    "docs/AI-지식-온톨로지-기획안.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md"
+  ],
+  "evidence_paths": [],
+  "excluded_paths": [
+    "apps/mobile/**",
+    "packages/**",
+    "docs/prototypes/**",
+    ".codex-share/**",
+    ".tmp/**"
+  ],
+  "required_evidence": [
+    "target commit 40c37c76f2b3af75a5fbca53b6d374178c63b25d의 온톨로지 원문",
+    "FAB-ARCH-019-HANDOFF-LOCATION-001 원인 재현 여부",
+    "후속 수정 commit으로의 successor handoff 준비"
+  ],
+  "human_decisions": [
+    "DEC-AI-FABLE-AUTONOMOUS-BUDGET-009 — 사용자는 합리적인 예산 기준을 초과해도 추가 질문 없이 계속 진행하도록 위임했다.",
+    "DEC-AI-FABLE-ONTOLOGY-LINEAGE-PREDECESSOR-BUDGET-021 — AI 부 오케스트레이터는 고정 commit predecessor 검수 soft cap을 USD 4.00으로 선택한다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "4.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}

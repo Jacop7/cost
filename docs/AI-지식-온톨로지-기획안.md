@@ -93,7 +93,7 @@ review_by: 2026-10-01
 | `DEPLOYMENT_EVIDENCE` | `docs/deployments/` | 정확한 SHA의 환경 적용 증거 |
 | `INCIDENT` | `docs/operations/POSTMORTEMS/` | 운영 사고 원본과 재발 방지 |
 | `LEARNING` | `docs/team/TEAM_LEARNING.md` | 검증된 재사용 교훈과 폐기 조건 |
-| `HANDOFF` | `docs/작업큐.md`의 Task snapshot 또는 검수 `collaboration.md`의 전용 인계 턴 | 새 채팅·역할·검수 successor가 같은 Task를 복원하도록 기존 권위 상태를 봉인한 비권위 snapshot |
+| `HANDOFF` | 일반 Task 인계는 봉인 원본(물질화 뒤 단일 위치 `docs/team/handoffs/<TASK-ID>/*.md`, `docs/작업큐.md`는 최신 판본 pointer만 보유) · 검수 successor 인계는 검수 `collaboration.md`의 전용 인계 턴 | 새 채팅·역할·검수 successor가 같은 Task를 복원하도록 기존 권위 상태를 봉인한 비권위 snapshot |
 | `ROLE_CONTEXT` | `docs/team/ROLE_CONTEXTS.md` | 활성 역할·컨텍스트 ID·판본 hash·자율성 단계의 레지스트리 항목 |
 | `RELEASE` | `docs/team/RELEASE_GATE.md` | 대상 SHA·환경·게이트·사람 승인과 실제 `DEPLOYMENT_EVIDENCE`를 연결하는 릴리스 인스턴스 |
 
@@ -120,6 +120,11 @@ predecessor를 가리키는 두 successor 분기는 발행 단계에서 거부�
 위치는 `docs/team/handoffs/<TASK-ID>/*.md`이며, 가변 장부인 `docs/작업큐.md`에는 최신
 `handoff_id`·`handoff_version`·원본 경로·content hash만 둔다. 검수 successor HANDOFF는 계속
 `collaboration.md`의 전용 append 명령을 사용한다.
+
+물질화 전 일반 Task HANDOFF 봉인 원본의 단일 임시 보존 위치는 §14의 미결 구현 결정이다. 그 위치가
+사람 Decision으로 확정되기 전에는 일반 Task HANDOFF 파일을 발행하지 않고, 가변 장부인
+`docs/작업큐.md` 본문을 봉인 원본 위치로 사용하지 않는다. 검수 successor HANDOFF의 append-only
+`collaboration.md` 계약은 이 미결 결정과 무관하게 유지한다.
 
 `ROLE_CONTEXT`는 역할 설명을 복사하지 않고 팀 구성안 §11이 정한 실제 활성 컨텍스트 레지스트리만
 표현한다. `RELEASE`도 배포 JSON을 복사하지 않고 대상 SHA와 증거 경로를 잇는다. 두 노드의 실제
@@ -388,7 +393,7 @@ front matter는 후속 `docs-graph-check` 도입 Task와 같은 commit부터 다
 ---
 doc_id: EXAMPLE-DOMAIN-GUIDE
 doc_type: ai_governance_plan
-authority: PLAN_CANDIDATE
+authority: example_domain_guide
 status: DRAFT | REVIEWED | CONFIRMED | ACTIVE | SUPERSEDED | RETIRED | HISTORICAL
 owner: AI-DEPUTY-ORCHESTRATOR
 approver: HUMAN-CHIEF
@@ -402,6 +407,10 @@ review_by: 2026-12-01
 
 필드가 비어 있는데 형식만 채우는 것을 금지한다. Git commit·blob·SHA-256처럼 실행기가 계산해야 하는
 값은 사람이 front matter에 복사하지 않고 Task manifest와 배포 증거가 소유한다.
+`authority`는 lower_snake_case 단일 주제 키다. 현재 다섯 기획안의 허용 값은
+`people_roles_approvals`, `knowledge_relations_request_normalization`, `request_intake_task_routing`,
+`directory_readme_document_graph`, `quality_learning_autonomy_evaluation`이다. 새 값은 사람 Decision과
+디렉터리 기획안 §5.1 중앙 권위 표의 단일 소유 행을 같은 변경에서 추가한 뒤에만 허용한다.
 `status`가 `CONFIRMED | ACTIVE`가 아닌 문서는 `authority` 값과 무관하게 현재 권위로
 사용하지 않는다. `CONFIRMED`는 사람이 확정한 현재 기준선이지만, 후속 자동화·디렉터리
 물질화까지 활성했다는 뜻은 아니다. `ACTIVE`는 해당 계획의 활성화 게이트까지 완료한
@@ -448,11 +457,12 @@ review_by: 2026-12-01
 
 ```text
 DRAFT → REVIEWED → ACTIVE → SUPERSEDED → HISTORICAL
-           CONFIRMED → ACTIVE
+           └─ 사람 확정 → CONFIRMED → ACTIVE
                            └→ RETIRED
 ```
 
-- 기획안은 사람 승인 전 `DRAFT`다.
+- 기획안은 `DRAFT`로 시작하며 독립검수를 통과하면 사람 승인 전에도 `REVIEWED`가 될 수 있다.
+- `CONFIRMED`는 사람 승인 뒤에만 부여한다.
 - 실행 증거만 필요한 문서는 정해진 기술 게이트 후 `ACTIVE`가 될 수 있다.
 - 정책 문서는 승인자와 날짜가 있어야 `ACTIVE`다.
 - 새 문서가 생겼다는 이유만으로 옛 문서는 폐기되지 않는다.
@@ -542,6 +552,7 @@ DRAFT → REVIEWED → ACTIVE → SUPERSEDED → HISTORICAL
 - front matter를 적용할 첫 도메인 README 범위
 - `docs-graph-check`가 관리할 문서 ID 형식과 §3·§4 어휘를 코드로 생성하는 형식
 - `docs-graph-check`를 현행 verify ③에 넣을지 다른 기존 단계에 넣을지
+- 물질화 전 일반 Task HANDOFF 봉인 원본의 단일 임시 보존 위치
 - Codex 여러 채팅의 thread 참조를 자동 수집할 수 없는 환경에서 쓸 비식별 수동 참조 형식
 - 일반 Task HANDOFF 원본의 장기 보존 기간과 아카이브 매체
 - 문서 검토 기한 알림을 CI 경고로 둘지 작업큐 생성으로 둘지
