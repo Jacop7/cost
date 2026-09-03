@@ -1,0 +1,189 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-STAGE9-FINAL-DIFF-033",
+  "round": "r001",
+  "created_at": "2026-09-03T08:59:20.909Z",
+  "review_mode": "INITIAL",
+  "baseline_commit_sha": "84004577d060a8c4b8bcc1048dc1003a451410e3",
+  "target_commit_sha": "9fd3d54eb4184b488e5f67d705a7137716626a92",
+  "target_tree_oid": "68a1a00f18d2dd06ea6112b3bcd569d480164ea9",
+  "agents_blob_oid": "5208bcf26b7a494b3b747da4327e3cc8f18710df",
+  "agents_sha256": "13154e1351d07a9f10d0cb7f3dfebd10833f40fc835c22000113dd7b86e36d84",
+  "task_sha256": "9c28a3fec0bf2995bf435744209e41eaa5f3055309703ca59f69bbbf2dccbff5",
+  "collaboration_sha256": "0a11afe490fee2b88e99e8f2e30ff3054483ce1973478a57589803c5e6674ee8",
+  "collaboration_bytes": 2028,
+  "input_files_sha256": "887ede12e92e67da69458c49b37dfa67e09bcfb881d87220590b729a0dbc1236",
+  "schema_sha256": "d8ffdb13e6b1e38279355d9ffd592cfb91dc023d287976adf7892e85dbfaf0d7",
+  "runner_sha256": "b11837ae93ef151b7db411aaf89aa1e60d8f828a6ac25aaf99858f19b7ff8f3d",
+  "snapshot_mode": "COMMIT",
+  "previous_review_sha256": null,
+  "previous_run_sha256": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "fallback_review": null,
+  "closure_review": null,
+  "fallback_input_scope": null,
+  "retry_of_failed_round": null,
+  "artifact_paths": [
+    "docs/디렉터리-문서신경망-재설계-기획안.md",
+    "docs/AI-품질-학습-자율성-평가기획안.md",
+    "docs/ai-review/evidence/AI-PLANS-SIM-STAGE-9-MATERIALIZATION-EVIDENCE.md",
+    "docs/작업큐.md",
+    "scripts/docs-graph-check.mjs",
+    "scripts/docs-graph-check.test.mjs",
+    ".gitattributes"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/ai-review/README.md"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/tasks/AI-ORCH-STAGE9-COMPACT-RECOVERY-032/rounds/r001/review.json",
+    "docs/ai-review/tasks/AI-ORCH-STAGE9-COMPACT-RECOVERY-032/rounds/r002/run.json",
+    "docs/ai-review/tasks/AI-ORCH-STAGE9-COMPACT-RECOVERY-032/collaboration.md"
+  ],
+  "allowed_paths": [
+    "docs/디렉터리-문서신경망-재설계-기획안.md",
+    "docs/AI-품질-학습-자율성-평가기획안.md",
+    "docs/ai-review/evidence/AI-PLANS-SIM-STAGE-9-MATERIALIZATION-EVIDENCE.md",
+    "docs/작업큐.md",
+    "scripts/docs-graph-check.mjs",
+    "scripts/docs-graph-check.test.mjs",
+    ".gitattributes",
+    "AGENTS.md",
+    "docs/ai-review/README.md",
+    "docs/ai-review/tasks/AI-ORCH-STAGE9-COMPACT-RECOVERY-032/rounds/r001/review.json",
+    "docs/ai-review/tasks/AI-ORCH-STAGE9-COMPACT-RECOVERY-032/rounds/r002/run.json",
+    "docs/ai-review/tasks/AI-ORCH-STAGE9-COMPACT-RECOVERY-032/collaboration.md"
+  ],
+  "excluded_paths": [
+    "apps/mobile/**",
+    "packages/**",
+    "docs/prototypes/**",
+    "scripts/prototype_server.py",
+    ".codex-share/**",
+    ".tmp/**"
+  ],
+  "applied_learning_ids": [],
+  "excluded_learning_ids": [],
+  "learning_registry_blob_oid": "fdbd6fb4b20e33fc45b56c25f57e0b1f9f2c8a9f",
+  "learning_registry_sha256": "2b240fcb2ec2363ddb914ffd5666ae9e167965977c4971fe94998bc3a3564f95",
+  "learning_assignment_sha256": "4660bb32207bcae3246801d71aa6a052eab7b0a7cef357bd5984f706fe3dcbfe",
+  "learning_target_date": "2026-09-03",
+  "input_files": [
+    {
+      "path": ".gitattributes",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 734,
+      "git_blob_oid": "3d0fee23d1c9edc756e4bbce9b69cfb8fee6aa62",
+      "sha256": "76e9cae6eeddfe75cb620080a4b48f28c59c4a3b74c9d4d151ee806fcecb9d21",
+      "line_count": 12
+    },
+    {
+      "path": "AGENTS.md",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 12640,
+      "git_blob_oid": "5208bcf26b7a494b3b747da4327e3cc8f18710df",
+      "sha256": "13154e1351d07a9f10d0cb7f3dfebd10833f40fc835c22000113dd7b86e36d84",
+      "line_count": 168
+    },
+    {
+      "path": "docs/디렉터리-문서신경망-재설계-기획안.md",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 29592,
+      "git_blob_oid": "77bf7b9e43d824ac915f527592b7365bc6fa0171",
+      "sha256": "a83aba9ab926790616c35d371dd681b3c6ff74851ab5d9a2db320f30d94a0b51",
+      "line_count": 511
+    },
+    {
+      "path": "docs/작업큐.md",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 176302,
+      "git_blob_oid": "23ba6a390e8d87bfeeabc4d97a2201ff91382174",
+      "sha256": "ebc85e643de247a639801365153304b1a92a683412193de150ab286ad8815ee2",
+      "line_count": 2548
+    },
+    {
+      "path": "docs/AI-품질-학습-자율성-평가기획안.md",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 36508,
+      "git_blob_oid": "2f3dae91b31733af8441bd1a9cef28f509a9b8e5",
+      "sha256": "556062dc0380265fce16a013da584d981ee2355afd3769359ecb62792d024974",
+      "line_count": 613
+    },
+    {
+      "path": "docs/ai-review/evidence/AI-PLANS-SIM-STAGE-9-MATERIALIZATION-EVIDENCE.md",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 6770,
+      "git_blob_oid": "aa0b7bb669d6178e0723f01a0974075b31a6eccc",
+      "sha256": "89818291b5a34713b7758ba15cef9563a74db935b61ae5cbaf424d6970f60ef8",
+      "line_count": 126
+    },
+    {
+      "path": "docs/ai-review/README.md",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 44843,
+      "git_blob_oid": "872938048a4bd5ab1ec5f47bb276769b43bde16b",
+      "sha256": "c336877b267c4d891f8f670e539205dba3d5e390cee7e6b9fec20ff1eb0f3433",
+      "line_count": 595
+    },
+    {
+      "path": "docs/ai-review/tasks/AI-ORCH-STAGE9-COMPACT-RECOVERY-032/collaboration.md",
+      "path_role": "EVIDENCE",
+      "change_type": "COMMIT",
+      "size": 8454,
+      "git_blob_oid": "b040761d6d0545b7fa58bc650e17c5d3892b7d62",
+      "sha256": "5482cdd93c3ffdfc2fe8cd2cb2c48362ec15a057a723764eafd813aa4e0b64fa",
+      "line_count": 95
+    },
+    {
+      "path": "docs/ai-review/tasks/AI-ORCH-STAGE9-COMPACT-RECOVERY-032/rounds/r001/review.json",
+      "path_role": "EVIDENCE",
+      "change_type": "COMMIT",
+      "size": 9723,
+      "git_blob_oid": "b42875baa55d52b3353a4d6c53c5eb34bb29125b",
+      "sha256": "791798d4f6ac2a268030ce888d0966f6b06d2bccf262de5619043c870ee697ce",
+      "line_count": 116
+    },
+    {
+      "path": "docs/ai-review/tasks/AI-ORCH-STAGE9-COMPACT-RECOVERY-032/rounds/r002/run.json",
+      "path_role": "EVIDENCE",
+      "change_type": "COMMIT",
+      "size": 2694,
+      "git_blob_oid": "c2701c831e90fe269b44d9fbfc9f89c85fa23b8b",
+      "sha256": "2ef4174259ede75ad29ceb7b15278e14fd832e3bf1ff7cb08e536e28b2f76538",
+      "line_count": 69
+    },
+    {
+      "path": "scripts/docs-graph-check.mjs",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 19721,
+      "git_blob_oid": "7bd09d3b944a7b087a1fe95b3f4d7003eaaf68ee",
+      "sha256": "dd465e1f46ffc4b641b7b8266b9a5c217dae3f8d8bc63679fc4a319efaaac440",
+      "line_count": 397
+    },
+    {
+      "path": "scripts/docs-graph-check.test.mjs",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 12869,
+      "git_blob_oid": "0fbfedb59123eacdcb9ea37f4a141559fd350a53",
+      "sha256": "499a29aa6431a2a25719307434b6135c9bcbb0a2a8d0d7461571e1ff67e3d876",
+      "line_count": 224
+    }
+  ],
+  "source_archive_version": 1,
+  "finding_resolution_semantics": "VERIFIED_RESOLVED_V1",
+  "artifact_snapshot_sha256": null,
+  "input_snapshot_sha256": null
+}
