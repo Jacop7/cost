@@ -12,6 +12,10 @@ v0.5는 실제 R1 문서 그래프 verify 게이트 파일럿에서 확인한 �
 - [재사용 템플릿](./templates/README.md)
 - [프로젝트 adapter/profile 경계](./adapters/README.md)
 
+여러 장기 채팅을 쓸 때는 프로젝트마다 봉인 모델 계획 하나를 두고, 각 채팅은 자기 Mission Relay
+상태·1.7 경제성·HANDOFF 계보만 별도로 보존한다. 채팅마다 계획 사본을 만들거나 한 채팅의 rollover를
+다른 채팅으로 전파하지 않는다.
+
 ## 포함하지 않는 것
 
 - 제품 요구사항, 고객·계정 데이터, 비밀정보, 운영 credential

@@ -540,14 +540,19 @@ export function validateModelExecutionPlan(plan = loadModelExecutionPlan()) {
   assert.equal(canonicalArtifactSha(readFileSync(originalHistoryPath)), ORIGINAL_MODEL_PLAN_SHA,
     '83회 원 모델 계획 역사 원본 hash가 어긋났습니다.');
 
-  assert.deepEqual(plan.stages.map((stage) => stage.id),
+  const baseStages = plan.stages.filter((stage) => /^\d+$/.test(stage.id) && Number(stage.id) <= 12);
+  assert.deepEqual(baseStages.map((stage) => stage.id),
     Array.from({ length: 12 }, (_, index) => String(index + 1)), '모델 계획은 1~12단계를 정확히 한 번 가져야 합니다.');
-  assert.deepEqual(plan.stages.map((stage) => stage.status),
-    [...Array(8).fill('completed'), 'active', ...Array(3).fill('pending')],
-    '1~8단계 완료와 9단계 문서 물질화 진행 상태가 계획에 반영돼야 합니다.');
+  assert.deepEqual(baseStages.map((stage) => stage.status), Array(12).fill('completed'),
+    '1~12단계 v0.5 완료 상태가 계획에 반영돼야 합니다.');
+  const multiChatStage = plan.stages.find((stage) => stage.id === '13');
+  assert.ok(multiChatStage, '12단계 이후 다중 채팅 동기화 단계가 계획에 없습니다.');
+  assert.equal(multiChatStage.status, 'active', '다중 채팅 동기화 단계는 현재 active여야 합니다.');
+  assert.deepEqual(multiChatStage.assignments.map((assignment) => assignment.profileId),
+    ['terra-xhigh', 'sol-high', 'fable-high'], '다중 채팅 단계의 Terra·Sol·Fable 책임 경계가 어긋났습니다.');
   const calls = Object.fromEntries(plan.profiles.map((profile) => [profile.id, 0]));
   const stageProfiles = {};
-  for (const stage of plan.stages) {
+  for (const stage of baseStages) {
     stageProfiles[stage.id] = stage.assignments.map((assignment) => assignment.profileId);
     for (const assignment of stage.assignments) calls[assignment.profileId] += assignment.expectedCallsLowerBound;
   }
@@ -627,7 +632,18 @@ export function validateModelExecutionPlan(plan = loadModelExecutionPlan()) {
     '온톨로지 successor PASS Run 원본이 모델 계획에 결속돼야 합니다.');
   assert.match(plan.budgetGuard?.technicalBudgetExhaustedPolicy ?? '', /사용자 위임.*중복 호출.*동시 Opus.*무한 재시도는 금지/,
     '예산 재량 위임과 중복·동시·무한 재시도 금지 계약이 없습니다.');
-  return { calls, totalCalls: 21, stageProfiles };
+  const multiChatCalls = Object.fromEntries(plan.profiles.map((profile) => [profile.id, 0]));
+  for (const assignment of multiChatStage.assignments) {
+    multiChatCalls[assignment.profileId] += assignment.expectedCallsLowerBound;
+  }
+  assert.deepEqual(multiChatCalls, {
+    'terra-xhigh': 4,
+    'sol-high': 2,
+    'sol-xhigh': 0,
+    'opus-review': 0,
+    'fable-high': 1,
+  }, '다중 채팅 동기화 단계의 추가 호출 하한이 어긋났습니다.');
+  return { calls, totalCalls: 21, stageProfiles, multiChatCalls };
 }
 
 export function createSimulationState() {

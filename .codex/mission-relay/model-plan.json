@@ -177,7 +177,7 @@
     "remainingContextCallsByProfile": {
       "terra-xhigh": 4
     },
-    "remainingPlannedUnits": 399778.0,
+    "remainingPlannedUnits": 261080.0,
     "status": "MODEL_BUDGET_VALID",
     "transitionUpperWeightedUnits": 185280.0
   },
@@ -188,7 +188,7 @@
     "unit": "weighted_token_units"
   },
   "predecessorPlan": {
-    "reason": "단계 1~6 완료와 단계 7 Fable 구조 감사 계보를 보존하고 단계 8 사람 승인 게이트 착수를 반영함",
+    "reason": "12단계 v0.5 완료 증거와 다중 채팅 Mission Relay·Project Orchestrator 확장 착수를 반영함",
     "sha256": "b8b5474bd6190b5576e95fe2c0eaa725872bba78f5f8812baab82b8e9a7a73a1",
     "status": "HISTORICAL_SUPERSEDED"
   },
@@ -340,7 +340,7 @@
     }
   ],
   "project": {
-    "goal": "AI 팀 운영 스타터 키트 v0.5를 위한 12단계 문서 확정·구현·검증·역반영",
+    "goal": "AI 팀 운영 스타터 키트 v0.5 완료 뒤, 10개 채팅의 독립 Mission Relay 경제성·인계와 공통 Project Orchestrator 계획 동기화를 구현·검증한다.",
     "projectId": "margincook-ai-team-operations-v0.5",
     "root": "C:\\Users\\jacop\\프로젝트\\식자재관리앱"
   },
@@ -391,7 +391,7 @@
     ]
   },
   "schemaVersion": 1,
-  "sealedAt": "2026-09-03T07:28:33.982913+00:00",
+  "sealedAt": "2026-09-03T10:07:36.601104+00:00",
   "stages": [
     {
       "assignments": [
@@ -580,7 +580,7 @@
       ],
       "id": "9",
       "name": "팀별 디렉터리와 MD 파일 생성·내용 삽입",
-      "status": "active"
+      "status": "completed"
     },
     {
       "assignments": [
@@ -596,7 +596,7 @@
       ],
       "id": "10",
       "name": "문서 그래프 검사기를 pnpm verify에 연결",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "assignments": [
@@ -630,7 +630,7 @@
       ],
       "id": "11",
       "name": "실제 업무 파일럿 검증",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "assignments": [
@@ -664,7 +664,41 @@
       ],
       "id": "12",
       "name": "AI 팀 운영 스타터 키트 v0.5 역반영",
-      "status": "pending"
+      "status": "completed"
+    },
+    {
+      "assignments": [
+        {
+          "expectedCachedInputTokensPerCall": 16000,
+          "expectedCallsLowerBound": 4,
+          "expectedInputTokensPerCall": 24000,
+          "expectedOutputTokensPerCall": 3600,
+          "profileId": "terra-xhigh",
+          "responsibility": "다중 등록 Mission Relay·채팅별 1.7 판정·공통 계획 동기화 구현과 회귀 검증",
+          "threadScope": "active-thread"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 8000,
+          "expectedCallsLowerBound": 2,
+          "expectedInputTokensPerCall": 16000,
+          "expectedOutputTokensPerCall": 2400,
+          "profileId": "sol-high",
+          "responsibility": "다중 채팅 격리·공통 계획 참조·인계 충돌 경계 구조 검토",
+          "threadScope": "separate-task"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 0,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 14000,
+          "expectedOutputTokensPerCall": 2200,
+          "profileId": "fable-high",
+          "responsibility": "다중 미션·계획 동기화 계약의 독립검수",
+          "threadScope": "external-review"
+        }
+      ],
+      "id": "13",
+      "name": "다중 채팅 Mission Relay·Project Orchestrator 동기화",
+      "status": "active"
     }
   ],
   "status": "SEALED",
