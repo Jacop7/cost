@@ -1,0 +1,76 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-ONTOLOGY-LINEAGE-RECHECK-021",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R1",
+  "author_role": "SOLAR-ORCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "40c37c76f2b3af75a5fbca53b6d374178c63b25d",
+  "target_commit_sha": "ad966959b6228d837907b0c2b9e92dcccc6a9944",
+  "target_tree_oid": "d2141a8e44babd488b0221bac1b2907459bff6f9",
+  "agents_blob_oid": "c32214b5528752a91f0f1545fea8c735d5fae7fa",
+  "agents_sha256": "de18fc8524afa350d3d0806f40150b9397dfd45a91ff471b5e1f6d6bf95fc681",
+  "requirements": [
+    "predecessor의 FAB-ARCH-019-HANDOFF-LOCATION-001이 수정 commit에서 해소됐는지 같은 ID로 재검수한다.",
+    "§3 HANDOFF 표와 본문은 일반 Task 봉인 원본의 물질화 뒤 단일 위치를 docs/team/handoffs/<TASK-ID>/*.md로 일치시켜야 한다.",
+    "물질화 전 일반 Task HANDOFF 위치는 §14 미결 구현 결정으로 등록되고, 결정 전 파일 발행 금지 규칙이 명시돼야 한다.",
+    "docs/작업큐.md는 일반 HANDOFF 원본이 아니라 최신 pointer만 소유해야 한다.",
+    "검수 successor HANDOFF의 collaboration.md 전용 append 계약은 유지돼야 한다.",
+    "필수 Finding이 해소됐으면 VERIFIED로 반환하고 CLOSED는 보호 원격 게이트 전까지 사용하지 않는다."
+  ],
+  "invariant_ids": [
+    "AGENTS:single-canonical-artifact",
+    "AGENTS:fable-required-review",
+    "AI-ONTOLOGY:handoff-lineage"
+  ],
+  "artifact_paths": [
+    "docs/AI-지식-온톨로지-기획안.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md"
+  ],
+  "evidence_paths": [],
+  "excluded_paths": [
+    "apps/mobile/**",
+    "packages/**",
+    "docs/prototypes/**",
+    ".codex-share/**",
+    ".tmp/**"
+  ],
+  "required_evidence": [
+    "predecessor Finding registry SHA-256 ea1efb09b76f2c744abdb2c458a33687b7dda8a7d0b286ea62392f0c87df881c",
+    "수정 target commit ad966959b6228d837907b0c2b9e92dcccc6a9944의 온톨로지 원문",
+    "동일 Finding ID의 VERIFIED 전이 또는 잔여 OPEN 근거"
+  ],
+  "human_decisions": [
+    "DEC-AI-FABLE-AUTONOMOUS-BUDGET-009 — 사용자는 합리적인 예산 기준을 초과해도 추가 질문 없이 계속 진행하도록 위임했다.",
+    "DEC-AI-FABLE-ONTOLOGY-LINEAGE-RECHECK-BUDGET-022 — AI 부 오케스트레이터는 successor 재검수 soft cap을 USD 4.00으로 선택한다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": {
+    "task_id": "AI-ORCH-PLANS-ONTOLOGY-LINEAGE-COMMIT-020",
+    "source_commit_sha": "1f74ee786418ab65189f5531aa37a4762cbd9507",
+    "round": "r001",
+    "task_sha256": "c4eb150291a69a05d6b5988bb0038c894a1eedbb50c1d6bf8b6908a94e2a68ed",
+    "manifest_sha256": "fb4e1128a8e2b6bf0298e04fe745195ebe4f820ec27e94d75e162259fe5e1fca",
+    "run_sha256": "2a5e1d1d6547f4d96005a7749a85ef5e760154d3b1b21c396447a592baff1ed3",
+    "review_sha256": "d68e4995a2bbbe9de91441975302758de2a6c09cc05c143de27cacdd86958367",
+    "finding_registry_sha256": "ea1efb09b76f2c744abdb2c458a33687b7dda8a7d0b286ea62392f0c87df881c",
+    "handoff_turn_id": "turn-o001",
+    "handoff_entry_sha256": "68d60dd3b509e112efd801636b100f40e96aa766f8951151f27802c7e12c9a45",
+    "handoff_run_sha256": "c622641060bcc84e17b86a434f993b8ff2ce1069758c2184f50c0884ba01cc3f"
+  },
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "4.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}
