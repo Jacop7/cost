@@ -1,0 +1,55 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-MULTI-CHAT-RELAY-COMPACT-043",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R1",
+  "author_role": "SOLAR-ORCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "RECHECK",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "7b59a9fcfedacdf954d8809b9a559ee6c324a62a",
+  "target_commit_sha": "5e80adf311041bf0048eae31a182b996acac13ca",
+  "target_tree_oid": "86cf10cc3998000578afa01fed0d6cc47ff5be91",
+  "agents_blob_oid": "67b83fceda960e3c4428a0119b5d88c5c4331ed0",
+  "agents_sha256": "911f8c9afd1bc6458f6c96f2b8d8547086e5a79714e92a2c362bce532fccf7cf",
+  "requirements": [
+    "Stage 13은 완료된 1~12단계와 분리된 후속 단계여야 한다.",
+    "각 장기 채팅의 mission_id·상태·lock·1.7 경제성·HANDOFF 계보는 서로 격리되어야 한다.",
+    "모든 미션은 같은 봉인 model-plan SHA만 참조하며 계획 사본을 만들지 않아야 한다.",
+    "이 계약은 사람 승인·운영 배포 권한을 만들지 않아야 한다.",
+    "필수 OPEN Finding이 없으면 PASS를 반환한다."
+  ],
+  "invariant_ids": ["AGENTS:single-canonical-artifact", "AGENTS:fable-independent-review", "AI-OPERATIONS:human-gated"],
+  "artifact_paths": [
+    ".codex/mission-relay/model-plan.json",
+    ".codex/mission-relay/model-plan.json.sha256",
+    "docs/AI-오케스트레이션-상세기획안.md",
+    "scripts/ai-plan-network-simulation.mjs",
+    "scripts/ai-plan-network-simulation.test.mjs"
+  ],
+  "reference_paths": ["AGENTS.md", "docs/ai-review/README.md"],
+  "evidence_paths": [
+    "docs/ai-review/tasks/AI-TEAM-STARTER-KIT-V05-COMPACT-WORKING-040/rounds/r001/review.json",
+    "docs/ai-review/tasks/AI-MULTI-CHAT-RELAY-042/rounds/r001/run.json"
+  ],
+  "excluded_paths": ["apps/mobile/**", "packages/**", ".codex-share/**", ".tmp/**", "docs/ai-team-starter-kit/**", "docs/작업큐.md"],
+  "required_evidence": [
+    "ai:plans:simulate 71/71",
+    "Project Orchestrator model plan SHA verification",
+    "042/r001은 verdict 없는 budget_exhausted 원본이며 본 Task는 그 범위의 유일한 compact recheck"
+  ],
+  "human_decisions": ["DEC-AI-MULTI-CHAT-RELAY-COMPACT-043 — 사용자의 한도 상향 Fable 검수 지시에 따른 단일 compact recheck, 프로토콜 최대 soft cap USD 10.00."],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "10.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}

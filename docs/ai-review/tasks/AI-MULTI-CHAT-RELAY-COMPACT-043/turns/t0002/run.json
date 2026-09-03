@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-MULTI-CHAT-RELAY-COMPACT-043",
+  "sequence": "t0002",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-03T10:35:30.959Z",
+  "turn_id": "turn-h001",
+  "turn_type": "HUMAN_DECISION",
+  "role": "HUMAN",
+  "task_sha256": "ed7b9b3100a9311ac216efea48ce40c1879b27f1b9d0421c1d39ffc14bca24f5",
+  "runner_sha256": "b11837ae93ef151b7db411aaf89aa1e60d8f828a6ac25aaf99858f19b7ff8f3d",
+  "previous_manual_run_sha256": "9f7a9e083b631452ecd21a8f1b87f5995a8ed889d8b13b5f9e32e9faff0b63c7",
+  "collaboration_before_sha256": "fd18635b63919020da948bbea0b1c0d03a32415837faa9c16cb4c274e4db88f8",
+  "collaboration_before_bytes": 1341,
+  "collaboration_entry_sha256": "9863aee83c72d5359c35b035cf445385a23cbf7683881d939e98cc066fa04184",
+  "collaboration_entry_bytes": 671,
+  "collaboration_after_sha256": "392bfdab57ab3ea9be96813d2512003d4e2bd278025ae50d14af30f31cd05325",
+  "collaboration_after_bytes": 2012
+}
