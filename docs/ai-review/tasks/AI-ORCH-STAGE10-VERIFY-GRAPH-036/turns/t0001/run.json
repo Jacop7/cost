@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-STAGE10-VERIFY-GRAPH-036",
+  "sequence": "t0001",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-03T09:26:23.862Z",
+  "turn_id": "turn-s001",
+  "turn_type": "SOLAR_REQUEST",
+  "role": "SOLAR-ORCH",
+  "task_sha256": "1ddef6393d69e927fb84dea9fc7b702f9c58b0c492af71a283ab3c95b850edff",
+  "runner_sha256": "b11837ae93ef151b7db411aaf89aa1e60d8f828a6ac25aaf99858f19b7ff8f3d",
+  "previous_manual_run_sha256": null,
+  "collaboration_before_sha256": "fc274646261793f4a4770170cf1cd1df888feae11844778e3ca74c6a86141fe3",
+  "collaboration_before_bytes": 167,
+  "collaboration_entry_sha256": "3bb91ccd9238467924dd16f2dcf2cf15d654edc33a6284b136e0a98ecb04eb04",
+  "collaboration_entry_bytes": 473,
+  "collaboration_after_sha256": "d879e100e0ddb020bad3bf639bac92e287e24a2e866da1c565052856defc5bb7",
+  "collaboration_after_bytes": 640
+}
