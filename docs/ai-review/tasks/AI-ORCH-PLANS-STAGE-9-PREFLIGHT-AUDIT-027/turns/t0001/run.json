@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-STAGE-9-PREFLIGHT-AUDIT-027",
+  "sequence": "t0001",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-03T07:42:15.692Z",
+  "turn_id": "turn-s001",
+  "turn_type": "SOLAR_REQUEST",
+  "role": "SOLAR-ORCH",
+  "task_sha256": "8fcf1acdce241a392a7c2008ee7e412261751a79ecb826a048d3218c6038afe9",
+  "runner_sha256": "b11837ae93ef151b7db411aaf89aa1e60d8f828a6ac25aaf99858f19b7ff8f3d",
+  "previous_manual_run_sha256": null,
+  "collaboration_before_sha256": "c3f6c3730a385cd4ade00499affff5bed91a0ae67970f046975f4c6536393959",
+  "collaboration_before_bytes": 285,
+  "collaboration_entry_sha256": "15787d87aaa13d5ca43d17803b0631fac2ec98df1a05b139661bf17f7c1df6bd",
+  "collaboration_entry_bytes": 858,
+  "collaboration_after_sha256": "6583b821dd0afe19bb741a8b0f6b25b3bed302d51c853c7d3431bad696e874a0",
+  "collaboration_after_bytes": 1143
+}

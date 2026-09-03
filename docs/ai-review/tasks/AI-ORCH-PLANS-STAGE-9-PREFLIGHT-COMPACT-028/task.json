@@ -1,0 +1,94 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-STAGE-9-PREFLIGHT-COMPACT-028",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R1",
+  "author_role": "SOLAR-ORCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "d5aa2617966ed246b92c1e67e201c1804bca9b97",
+  "target_commit_sha": "d5aa2617966ed246b92c1e67e201c1804bca9b97",
+  "target_tree_oid": "13db4a62f2719c2c4b4c7c021d66d0d8d6bce613",
+  "agents_blob_oid": "3cf45cbcabeb756a4d12d16c62e681134df635bb",
+  "agents_sha256": "3ba1d03dedab3b7a810d0418ce1d08eb552e4f760ed636a250b033bece5cf341",
+  "requirements": [
+    "Task027은 budget_exhausted로 판정 없이 끝났으므로 PASS나 Finding으로 재사용하지 않고 실패 원본만 보존해야 한다.",
+    "기존 ROLE_CONTEXTS·TEAM_LEARNING 원문·ID·상태를 보존하고 19개 기존 컨텍스트를 activation Decision·정책 hash·version/hash에 결속된 A0로 등록해야 한다.",
+    "기존 Learning 4개와 verifier 이관 4개가 1:1이어야 하며 과거 VERIFIED에는 사람 Decision을 소급 생성하지 않고 LEGACY_READ_ONLY로 제한해야 한다.",
+    "역할 5개·팀 6개 manifest는 정책·현재 Task·플러그인 상태를 복제하지 않고 채팅명에 승인 권한을 주지 않아야 한다.",
+    "standalone checker와 사보타주는 planned DRAFT tree, ACTIVE tree, 누락, authority 중복, context hash 불일치, 채팅 권한 위조, RISKS 무권위 생성, 정책 복제를 실패 폐쇄로 검사해야 한다.",
+    "디렉터리 중앙 권위가 미수렴한 RISKS.md는 생성하지 않아야 하며 package/verify·제품·DB·배포·통합 플러그인은 범위 밖이어야 한다.",
+    "새 필수 OPEN Finding이 없으면 PASS를 반환하고, 결과 요약과 proposed edit는 중복 설명 없이 간결하게 작성해야 한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:single-canonical-artifact",
+    "AGENTS:user-owned-changes-excluded",
+    "AI-DIRECTORY:materialization-preflight",
+    "AI-QUALITY:a0-default",
+    "AI-QUALITY:learning-verifier-decision",
+    "AI-ORCH:chat-is-not-authority"
+  ],
+  "artifact_paths": [
+    "scripts/docs-graph-check.mjs",
+    "scripts/docs-graph-check.test.mjs",
+    "docs/team/README.md",
+    "docs/team/DECISIONS.md",
+    "docs/team/RELEASE_GATE.md",
+    "docs/team/ROLE_CONTEXTS.md",
+    "docs/team/TEAM_LEARNING.md",
+    "docs/team/handoffs/README.md",
+    "docs/team/roles/ORCHESTRATION.md",
+    "docs/team/roles/SOLAR.md",
+    "docs/team/roles/CODEX.md",
+    "docs/team/roles/INDEPENDENT-AUDIT.md",
+    "docs/team/roles/OPERATIONS.md",
+    "docs/team/teams/00-all-teams-room.md",
+    "docs/team/teams/01-product-mobile.md",
+    "docs/team/teams/02-data-backend.md",
+    "docs/team/teams/03-server-supabase-operations.md",
+    "docs/team/teams/04-quality-review.md",
+    "docs/team/teams/05-knowledge-orchestration.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/ai-review/evidence/AI-PLANS-SIM-STAGE-9-MATERIALIZATION-PLAN.md"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/tasks/AI-ORCH-PLANS-STAGE-9-PREFLIGHT-AUDIT-027/rounds/r001/run.json"
+  ],
+  "excluded_paths": [
+    "apps/mobile/**",
+    "packages/**",
+    "docs/prototypes/**",
+    "scripts/prototype_server.py",
+    ".codex-share/**",
+    ".tmp/**"
+  ],
+  "required_evidence": [
+    "planned-tree PASS contextCount 19",
+    "docs graph sabotage 8/8 PASS",
+    "Learning legacy/verifier registry 4:4",
+    "RISKS.md 부재와 조건부 상태",
+    "Task027 run_state RUN_FAILED·terminal_reason budget_exhausted·verdict null"
+  ],
+  "human_decisions": [
+    "DEC-AI-STAGE-8-ACTIVATION-APPROVAL-027 — stage 9 저장소 물질화와 A0 shell 범위를 승인했다.",
+    "DEC-AI-FABLE-AUTONOMOUS-BUDGET-009 — 사용자는 합리적 예산 선택과 필요 시 기준 초과 진행을 AI 부 오케스트레이터에게 위임했다.",
+    "DEC-AI-STAGE-9-PREFLIGHT-COMPACT-BUDGET-028 — Task027의 USD 6.338 실패 비용을 보존하고, 대형 참조를 제거한 단일 축소 successor에 USD 6.00 Task/soft cap을 승인한다.",
+    "이 검수는 activation commit·채팅 생성·운영 배포를 직접 승인하지 않는다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "6.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}

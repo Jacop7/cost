@@ -1,0 +1,121 @@
+{
+  "schema_version": "2.0",
+  "task_id": "AI-ORCH-PLANS-STAGE-9-PREFLIGHT-COMPACT-028",
+  "reviewer_role": "FABLE-ARCH",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "d5aa2617966ed246b92c1e67e201c1804bca9b97",
+  "target_commit_sha": "d5aa2617966ed246b92c1e67e201c1804bca9b97",
+  "target_tree_oid": "13db4a62f2719c2c4b4c7c021d66d0d8d6bce613",
+  "agents_blob_oid": "3cf45cbcabeb756a4d12d16c62e681134df635bb",
+  "agents_sha256": "3ba1d03dedab3b7a810d0418ce1d08eb552e4f760ed636a250b033bece5cf341",
+  "task_sha256": "7a74aa6fdf2e1b7ccb75f41df54396a7f479b89b8ef2eba075736d97e7b83c6a",
+  "collaboration_sha256": "c4d0e80814448324b8725d2bf710f14b098bd6f0c745bb997b56d96843edfd8b",
+  "input_files_sha256": "e5be09e880a71cea760065b603b617fd78a78f855e2279234d9ec649df07752d",
+  "schema_sha256": "d8ffdb13e6b1e38279355d9ffd592cfb91dc023d287976adf7892e85dbfaf0d7",
+  "runner_sha256": "b11837ae93ef151b7db411aaf89aa1e60d8f828a6ac25aaf99858f19b7ff8f3d",
+  "verdict": "PASS",
+  "summary": "봉인 입력 정적 감사 결과 PASS. (1) Task027 실패 보존: run.json이 run_state RUN_FAILED·terminal_reason budget_exhausted·review_sha256/candidate null로 판정 없이 원본 보존됐고, 이번 Task는 이를 PASS나 Finding으로 재사용하지 않았다. (2) 19개 A0 등록: ROLE_CONTEXTS 레지스트리에 정확히 19개 context가 모두 autonomy_stage A0, decision_id DEC-AI-STAGE-8-ACTIVATION-APPROVAL-027, 품질 기획안 policy_hash(66883bb4…), version 1·64hex context_hash로 결속됐으며, 역할 5개 manifest의 context_refs 19개가 레지스트리 hash와 문자열 단위로 1:1 일치한다. 기존 레인 표·Task Packet·재사용 측정 원문과 TEAM_LEARNING v1 장부 4개 항목의 ID·상태·본문은 보존됐다. (3) Learning 4:4 이관: VERIFIED 3건은 LEGACY_READ_ONLY+verifier_decision_id null로 사람 Decision을 소급 생성하지 않았고 CANDIDATE 1건은 CANDIDATE_UNASSIGNED이며, checker가 1:1 대응·중복·VERIFIED/CANDIDATE 계약을 실패 폐쇄로 강제한다. (4) 비권위 manifest: 역할 5·팀 6 manifest 모두 chat_is_approval_authority false이고 FORBIDDEN_MANIFEST_FIELDS 검사로 현재 Task·플러그인 상태·토큰 임계값 복제를 차단하며 정책 본문 복제가 없다. (5) checker 판별력: planned DRAFT tree와 ACTIVE tree 통과, manifest 누락, authority 중복, 미등록 context 참조(hash 불일치 경로), 채팅 권한 위조, 무권위 RISKS 생성, 플러그인 상태 복제의 8개 시험이 존재하고 CLI는 오류 시 exit 1로 실패 폐쇄한다. (6) RISKS.md는 부재하며 README가 권위 미수렴을 명시하고 checker가 UNOWNED_RISKS/MISSING_RISKS 양방향을 강제한다. package/verify 연결·제품·DB·배포·통합 플러그인 변경은 artifact에 없다. (7) 차단성 Finding 없음 → PASS. Improvement 2건만 기록: 레지스트리 내부 context_hash 재계산 실패 경로(CONTEXT_HASH_MISMATCH)의 직접 사보타주 시험 부재, parseRegistry의 route/policy_hash 형식 미검증 및 Learning 이관의 RETIRED/CANDIDATE decision 필드 미제약. 유의: planned-tree PASS(contextCount 19)·사보타주 8/8의 실행 증거는 공동 장부의 SOLAR 주장으로, 코드 정합성은 정적으로 확인했으나 실행 재현은 CODEX-FUNCTION-QA 검증 단계가 확인해야 한다. 본 PASS는 외부 게이트를 닫지 않으며 activation commit·채팅 생성·배포를 승인하지 않는다.",
+  "findings": [
+    {
+      "finding_id": "ARCH-028-REGISTRY-HASH-TAMPER-TEST-GAP",
+      "severity": "Improvement",
+      "review_state": "OPEN",
+      "category": "TEST_GAP",
+      "requirement_or_invariant_ids": [
+        "AI-DIRECTORY:materialization-preflight"
+      ],
+      "evidence": [
+        {
+          "path": "scripts/docs-graph-check.mjs",
+          "line_start": 190,
+          "line_end": 199,
+          "observation": "parseRegistry가 context_hash를 필드 재계산으로 대조해 CONTEXT_HASH_MISMATCH로 실패 폐쇄하는 경로가 구현되어 있다."
+        },
+        {
+          "path": "scripts/docs-graph-check.test.mjs",
+          "line_start": 158,
+          "line_end": 166,
+          "observation": "사보타주 시험은 미등록 context 참조(CTX-UNKNOWN)로 CONTEXT_REF_MISMATCH만 유발하며, 레지스트리 내부 항목의 context_hash 자체를 변조해 CONTEXT_HASH_MISMATCH를 직접 검증하는 시험이 없다."
+        }
+      ],
+      "impact": "레지스트리 내부 hash 재계산 검증이 회귀로 약화되어도 현재 시험 8개가 이를 잡지 못해, 위조된 context_hash가 planned-tree/activation 검사를 통과할 수 있는 잠재 회귀 공백이 남는다. 현재 코드 경로는 올바르므로 차단성은 아니다.",
+      "acceptance_criteria": [
+        "레지스트리 항목의 context_hash만 변조한 fixture가 /ROLE_CONTEXT hash가 내용과 다릅니다/ 실패를 유발하는 사보타주 시험 추가",
+        "기존 8개 시험과 함께 전체 시험 통과"
+      ],
+      "required_tests": [
+        "docs-graph-check.test.mjs에 CONTEXT_HASH_MISMATCH 직접 변조 부정 시험 1건"
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    },
+    {
+      "finding_id": "ARCH-028-CONTEXT-BINDING-VALIDATION-LOOSE",
+      "severity": "Improvement",
+      "review_state": "OPEN",
+      "category": "CODE",
+      "requirement_or_invariant_ids": [
+        "AI-QUALITY:a0-default",
+        "AI-QUALITY:learning-verifier-decision"
+      ],
+      "evidence": [
+        {
+          "path": "scripts/docs-graph-check.mjs",
+          "line_start": 183,
+          "line_end": 198,
+          "observation": "parseRegistry는 version·context_hash 형식·A0·decision_id는 검증하지만 route가 비어 있지 않은 문자열인지, policy_hash가 64자리 hex인지 검증하지 않는다. 작성자가 빈 policy_hash로 hash를 일관 계산하면 정책 hash 결속이 형식적으로 무력화될 수 있다."
+        },
+        {
+          "path": "scripts/docs-graph-check.mjs",
+          "line_start": 227,
+          "line_end": 240,
+          "observation": "checkLearningMigration은 VERIFIED·CANDIDATE 상태만 제약하고 RETIRED 항목의 contract_state, CANDIDATE 항목의 verifier_decision_id 값은 제약하지 않는다. 현재 장부에는 RETIRED가 없어 실해는 없다."
+        }
+      ],
+      "impact": "현재 실제 레지스트리와 장부는 모두 유효한 값을 가지므로 즉시 위험은 없으나, 향후 항목 추가 시 route/policy_hash 형식 위조나 RETIRED 이관 상태 누락이 실패 폐쇄되지 않는 검증 공백이 있다.",
+      "acceptance_criteria": [
+        "parseRegistry가 route 비어 있지 않은 문자열과 policy_hash 64hex를 실패 폐쇄로 검증",
+        "Learning 이관에서 RETIRED 상태의 contract_state 제약을 정의하거나 미정의 상태를 실패 폐쇄"
+      ],
+      "required_tests": [
+        "route 빈 문자열 또는 policy_hash 비hex fixture의 부정 시험",
+        "RETIRED Learning 이관 상태 부정 시험"
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    }
+  ],
+  "proposed_edits": [
+    {
+      "edit_id": "EDIT-028-HASH-TAMPER-SABOTAGE-TEST",
+      "path": "scripts/docs-graph-check.test.mjs",
+      "anchor": "test('소유권 미수렴 RISKS 파일 생성을 잡는다', () => withFixture((root) => {",
+      "operation": "ADD",
+      "proposed_text": "test('레지스트리 항목의 context_hash 변조를 잡는다', () => withFixture((root) => {\n  const hashAlgorithm = 'sha256(context_id|version|route|autonomy_stage|decision_id|policy_hash)';\n  const tampered = [{\n    context_id: 'CTX-ORCH',\n    version: 1,\n    route: 'NORMAL',\n    autonomy_stage: 'A0',\n    decision_id: 'DEC-ACTIVATION-001',\n    policy_hash: 'b'.repeat(64),\n    context_hash: 'c'.repeat(64),\n  }];\n  put(root, 'docs/team/ROLE_CONTEXTS.md', `# Contexts\\n\\n<!-- role-context-registry:v1 -->\\n\\`\\`\\`json\\n${JSON.stringify({ schema_version: '1.0', hash_algorithm: hashAlgorithm, contexts: tampered }, null, 2)}\\n\\`\\`\\`\\n<!-- /role-context-registry:v1 -->\\n`);\n  assert.throws(() => checkDocsGraph({ rootDir: root, requireActivation: true }), /ROLE_CONTEXT hash가 내용과 다릅니다/);\n}));\n",
+      "rationale": "앵커 시험 앞에 삽입. 레지스트리 내부 context_hash 위조가 CONTEXT_HASH_MISMATCH로 실패 폐쇄되는지 직접 검증하는 사보타주를 추가한다.",
+      "finding_ids": [
+        "ARCH-028-REGISTRY-HASH-TAMPER-TEST-GAP"
+      ]
+    },
+    {
+      "edit_id": "EDIT-028-REGISTRY-BINDING-VALIDATION",
+      "path": "scripts/docs-graph-check.mjs",
+      "anchor": "    if (context.autonomy_stage !== 'A0') fail('UNAPPROVED_AUTONOMY', `승인 없는 route는 A0이어야 합니다: ${context.context_id}`);",
+      "operation": "ADD",
+      "proposed_text": "    if (typeof context.route !== 'string' || !context.route || !/^[0-9a-f]{64}$/.test(context.policy_hash ?? '')) {\n      fail('INVALID_CONTEXT_BINDING', `ROLE_CONTEXT route/policy_hash 결속이 잘못됐습니다: ${context.context_id}`);\n    }\n",
+      "rationale": "앵커 줄 앞에 삽입. route 비어 있지 않은 문자열과 policy_hash 64hex를 실패 폐쇄로 강제해 정책 hash 결속의 형식적 무력화를 막는다.",
+      "finding_ids": [
+        "ARCH-028-CONTEXT-BINDING-VALIDATION-LOOSE"
+      ]
+    }
+  ],
+  "closed_finding_ids": [],
+  "reopened_finding_ids": [],
+  "remaining_required_finding_ids": [],
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}

@@ -1,0 +1,101 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-STAGE-9-PREFLIGHT-AUDIT-027",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R1",
+  "author_role": "SOLAR-ORCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "d5aa2617966ed246b92c1e67e201c1804bca9b97",
+  "target_commit_sha": "d5aa2617966ed246b92c1e67e201c1804bca9b97",
+  "target_tree_oid": "13db4a62f2719c2c4b4c7c021d66d0d8d6bce613",
+  "agents_blob_oid": "3cf45cbcabeb756a4d12d16c62e681134df635bb",
+  "agents_sha256": "3ba1d03dedab3b7a810d0418ce1d08eb552e4f760ed636a250b033bece5cf341",
+  "requirements": [
+    "stage 9 preflight 후보는 기존 ROLE_CONTEXTS와 TEAM_LEARNING 원문·ID·상태를 삭제하거나 소급 정당화하지 않아야 한다.",
+    "모든 기존 실행 컨텍스트는 사람 activation Decision과 정책 hash에 결속된 version/hash로 등록되고 신규 route는 A0이어야 한다.",
+    "다섯 역할 manifest와 여섯 팀 manifest는 정책·현재 Task·플러그인 상태를 복제하지 않고 입력·산출·인계·중단·검증 경계만 가져야 한다.",
+    "채팅 제목은 승인 권한이 아니며 실제 변경은 별도 sealed Task Packet과 edit lease를 요구해야 한다.",
+    "디렉터리 중앙 권위 표가 수렴하지 않은 RISKS.md는 생성하지 않고 별도 정합화 Task 대상으로 남겨야 한다.",
+    "standalone checker는 DRAFT planned tree와 ACTIVE tree를 분리해 검사하고 누락·권위 중복·context hash 불일치·채팅 권한 위조·정책 복제를 사보타주로 잡아야 한다.",
+    "package.json·scripts/verify.mjs·제품·DB·배포·비밀키·통합 플러그인·공용 hook은 이번 후보에서 바뀌지 않아야 한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:single-canonical-artifact",
+    "AGENTS:user-owned-changes-excluded",
+    "AI-DIRECTORY:materialization-preflight",
+    "AI-DIRECTORY:atomic-activation",
+    "AI-QUALITY:a0-default",
+    "AI-QUALITY:learning-verifier-decision",
+    "AI-ORCH:chat-is-not-authority",
+    "MISSION-RELAY:single-successor-study-gate"
+  ],
+  "artifact_paths": [
+    "scripts/docs-graph-check.mjs",
+    "scripts/docs-graph-check.test.mjs",
+    "docs/team/README.md",
+    "docs/team/DECISIONS.md",
+    "docs/team/RELEASE_GATE.md",
+    "docs/team/ROLE_CONTEXTS.md",
+    "docs/team/TEAM_LEARNING.md",
+    "docs/team/handoffs/README.md",
+    "docs/team/roles/ORCHESTRATION.md",
+    "docs/team/roles/SOLAR.md",
+    "docs/team/roles/CODEX.md",
+    "docs/team/roles/INDEPENDENT-AUDIT.md",
+    "docs/team/roles/OPERATIONS.md",
+    "docs/team/teams/00-all-teams-room.md",
+    "docs/team/teams/01-product-mobile.md",
+    "docs/team/teams/02-data-backend.md",
+    "docs/team/teams/03-server-supabase-operations.md",
+    "docs/team/teams/04-quality-review.md",
+    "docs/team/teams/05-knowledge-orchestration.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/팀구성_상세기획안.md",
+    "docs/AI-지식-온톨로지-기획안.md",
+    "docs/AI-오케스트레이션-상세기획안.md",
+    "docs/디렉터리-문서신경망-재설계-기획안.md",
+    "docs/AI-품질-학습-자율성-평가기획안.md",
+    "docs/ai-review/evidence/AI-PLANS-SIM-STAGE-9-MATERIALIZATION-PLAN.md"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/tasks/AI-ORCH-PLANS-STAGE-9-MATERIALIZATION-COMMIT-AUDIT-026/rounds/r001/review.json"
+  ],
+  "excluded_paths": [
+    "apps/mobile/**",
+    "packages/**",
+    "docs/prototypes/**",
+    "scripts/prototype_server.py",
+    ".codex-share/**",
+    ".tmp/**"
+  ],
+  "required_evidence": [
+    "node scripts/docs-graph-check.mjs --planned-tree PASS와 contextCount 19",
+    "node --test scripts/docs-graph-check.test.mjs 8/8 PASS",
+    "기존 Learning 4개와 verifier 이관 4개의 1:1 대응 및 VERIFIED 소급 Decision null 보존",
+    "역할 5개·팀 6개 inventory와 ROLE_CONTEXT version/hash 대조",
+    "RISKS.md 부재와 UNOWNED_RISKS 사보타주 실패"
+  ],
+  "human_decisions": [
+    "DEC-AI-STAGE-8-ACTIVATION-APPROVAL-027 — 사용자는 stage 9 저장소 물질화와 두 section·정확한 제목의 A0 shell 11개 생성을 승인했다.",
+    "DEC-AI-FABLE-AUTONOMOUS-BUDGET-009 — 사용자는 합리적 최소~중간 Fable 예산 선택과 필요 시 기준 초과 진행을 AI 부 오케스트레이터에게 위임했다.",
+    "DEC-AI-STAGE-9-PREFLIGHT-AUDIT-BUDGET-027 — AI 부 오케스트레이터는 19개 후보 파일의 단일 집중감사 soft cap을 USD 4.00으로 선택한다.",
+    "이 검수는 activation commit·채팅 생성·운영 배포를 직접 승인하지 않는다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "4.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}

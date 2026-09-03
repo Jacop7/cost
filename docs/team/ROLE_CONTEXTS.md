@@ -3,6 +3,43 @@
 이 문서는 역할마다 어떤 학습을 받을 수 있는지 정의한다. 역할별 공식 제품 문서를 만들지 않으며,
 공식 산출물·정책·테스트의 권위는 기존 단일 출처에 남는다.
 
+## 활성 컨텍스트 레지스트리
+
+모든 기존 route는 사람 activation 결정 `DEC-AI-STAGE-8-ACTIVATION-APPROVAL-027`에 따라 A0로
+등록했다. `context_hash`는 아래 `hash_algorithm`의 UTF-8 문자열을 SHA-256으로 계산한 식별자이며,
+권한을 부여하지 않는다. 더 높은 단계는 별도 사람 Decision과 이 레지스트리의 새 version이 모두
+있어야 효력이 생긴다.
+
+<!-- role-context-registry:v1 -->
+```json
+{
+  "schema_version": "1.0",
+  "hash_algorithm": "sha256(context_id|version|route|autonomy_stage|decision_id|policy_hash)",
+  "contexts": [
+    { "context_id": "SOLAR-MASTER-ORCH", "version": 1, "route": "ORCHESTRATION", "autonomy_stage": "A0", "decision_id": "DEC-AI-STAGE-8-ACTIVATION-APPROVAL-027", "effective_at": "2026-09-03T16:28:22+09:00", "policy_hash": "66883bb4ab9df23a7e44397a91f92d8e499b62fd70dce3ff0d90ac06acd9827a", "context_hash": "1e9f8217226fffc577e84198f323666ad8ac36fb7351b6150a4cdc17b203e96a" },
+    { "context_id": "SOLAR-ORCH", "version": 1, "route": "ORCHESTRATION", "autonomy_stage": "A0", "decision_id": "DEC-AI-STAGE-8-ACTIVATION-APPROVAL-027", "effective_at": "2026-09-03T16:28:22+09:00", "policy_hash": "66883bb4ab9df23a7e44397a91f92d8e499b62fd70dce3ff0d90ac06acd9827a", "context_hash": "cef6e53d5ee3b6321fce2bbffaf8ce38afd98c5107c35606cec3edffd46ce5e6" },
+    { "context_id": "CONTEXT-STEWARD", "version": 1, "route": "STATUS_ONLY", "autonomy_stage": "A0", "decision_id": "DEC-AI-STAGE-8-ACTIVATION-APPROVAL-027", "effective_at": "2026-09-03T16:28:22+09:00", "policy_hash": "66883bb4ab9df23a7e44397a91f92d8e499b62fd70dce3ff0d90ac06acd9827a", "context_hash": "9c0fcd11ad10e3a61e2c92e0007f96b721ce77c3802df8cd74424745709eaae4" },
+    { "context_id": "SOLAR-PO", "version": 1, "route": "PRODUCT_POLICY", "autonomy_stage": "A0", "decision_id": "DEC-AI-STAGE-8-ACTIVATION-APPROVAL-027", "effective_at": "2026-09-03T16:28:22+09:00", "policy_hash": "66883bb4ab9df23a7e44397a91f92d8e499b62fd70dce3ff0d90ac06acd9827a", "context_hash": "759acaf28d25a665b73a944adecfb2eb9b54cdf3a7983158f093b7f6ab371ca2" },
+    { "context_id": "SOLAR-ARCH", "version": 1, "route": "ARCHITECTURE", "autonomy_stage": "A0", "decision_id": "DEC-AI-STAGE-8-ACTIVATION-APPROVAL-027", "effective_at": "2026-09-03T16:28:22+09:00", "policy_hash": "66883bb4ab9df23a7e44397a91f92d8e499b62fd70dce3ff0d90ac06acd9827a", "context_hash": "3217c2ec4356ea59303742a931bd30f01a2e788c989b8bae4a4dba3a27d240e2" },
+    { "context_id": "SOLAR-DEV-DB", "version": 1, "route": "IMPLEMENTATION", "autonomy_stage": "A0", "decision_id": "DEC-AI-STAGE-8-ACTIVATION-APPROVAL-027", "effective_at": "2026-09-03T16:28:22+09:00", "policy_hash": "66883bb4ab9df23a7e44397a91f92d8e499b62fd70dce3ff0d90ac06acd9827a", "context_hash": "73de3b732054ab7bb486fdff59c74ee4f13606b204496c5e2c87899c7ae4bbb6" },
+    { "context_id": "SOLAR-DEV-CORE", "version": 1, "route": "IMPLEMENTATION", "autonomy_stage": "A0", "decision_id": "DEC-AI-STAGE-8-ACTIVATION-APPROVAL-027", "effective_at": "2026-09-03T16:28:22+09:00", "policy_hash": "66883bb4ab9df23a7e44397a91f92d8e499b62fd70dce3ff0d90ac06acd9827a", "context_hash": "6ef2e868554210b4231c98b321febc31c9abe0d98abfdab7a780c643b324008b" },
+    { "context_id": "SOLAR-DEV-APP", "version": 1, "route": "IMPLEMENTATION", "autonomy_stage": "A0", "decision_id": "DEC-AI-STAGE-8-ACTIVATION-APPROVAL-027", "effective_at": "2026-09-03T16:28:22+09:00", "policy_hash": "66883bb4ab9df23a7e44397a91f92d8e499b62fd70dce3ff0d90ac06acd9827a", "context_hash": "01146fbb5e77d2d47a2908239913c3c2f8eeb6b7b3d59554e8faf176e798ce39" },
+    { "context_id": "SOLAR-DEV-INT", "version": 1, "route": "IMPLEMENTATION", "autonomy_stage": "A0", "decision_id": "DEC-AI-STAGE-8-ACTIVATION-APPROVAL-027", "effective_at": "2026-09-03T16:28:22+09:00", "policy_hash": "66883bb4ab9df23a7e44397a91f92d8e499b62fd70dce3ff0d90ac06acd9827a", "context_hash": "d2cf95105ee3d2fbba5ac7d25cbe2975bf320900de73078003880794e623df7d" },
+    { "context_id": "SOLAR-UX", "version": 1, "route": "UX", "autonomy_stage": "A0", "decision_id": "DEC-AI-STAGE-8-ACTIVATION-APPROVAL-027", "effective_at": "2026-09-03T16:28:22+09:00", "policy_hash": "66883bb4ab9df23a7e44397a91f92d8e499b62fd70dce3ff0d90ac06acd9827a", "context_hash": "27a38c009ad4c6f2a0bf8fe9928be9461ea645ef999b21629f5a954c18276f47" },
+    { "context_id": "SOLAR-OPS", "version": 1, "route": "OPERATIONS", "autonomy_stage": "A0", "decision_id": "DEC-AI-STAGE-8-ACTIVATION-APPROVAL-027", "effective_at": "2026-09-03T16:28:22+09:00", "policy_hash": "66883bb4ab9df23a7e44397a91f92d8e499b62fd70dce3ff0d90ac06acd9827a", "context_hash": "8887326642dfd1f1e8bf841a33fa6407b25e017154abd89aee5df5edc737c482" },
+    { "context_id": "CODEX-FUNCTION-QA", "version": 1, "route": "FUNCTIONAL_QA", "autonomy_stage": "A0", "decision_id": "DEC-AI-STAGE-8-ACTIVATION-APPROVAL-027", "effective_at": "2026-09-03T16:28:22+09:00", "policy_hash": "66883bb4ab9df23a7e44397a91f92d8e499b62fd70dce3ff0d90ac06acd9827a", "context_hash": "5ee3a465195a5fbaaa136a19b7df23373e527d2932691a7345fcaeffd52671f4" },
+    { "context_id": "CODEX-FIELD-QA", "version": 1, "route": "FIELD_QA", "autonomy_stage": "A0", "decision_id": "DEC-AI-STAGE-8-ACTIVATION-APPROVAL-027", "effective_at": "2026-09-03T16:28:22+09:00", "policy_hash": "66883bb4ab9df23a7e44397a91f92d8e499b62fd70dce3ff0d90ac06acd9827a", "context_hash": "e61deebe641635629f06ba8901e9a4e1f0f131c7216ca914cc48c415483464dc" },
+    { "context_id": "FABLE-SEC", "version": 1, "route": "SECURITY", "autonomy_stage": "A0", "decision_id": "DEC-AI-STAGE-8-ACTIVATION-APPROVAL-027", "effective_at": "2026-09-03T16:28:22+09:00", "policy_hash": "66883bb4ab9df23a7e44397a91f92d8e499b62fd70dce3ff0d90ac06acd9827a", "context_hash": "b50c916c682a5d05b74082effaf201fbe7d3588c8c75ac3392abb60de1f1218c" },
+    { "context_id": "FABLE-ARCH", "version": 1, "route": "ARCHITECTURE_REVIEW", "autonomy_stage": "A0", "decision_id": "DEC-AI-STAGE-8-ACTIVATION-APPROVAL-027", "effective_at": "2026-09-03T16:28:22+09:00", "policy_hash": "66883bb4ab9df23a7e44397a91f92d8e499b62fd70dce3ff0d90ac06acd9827a", "context_hash": "3138317f194727a0a0cd98371a4e8b1a2e5e307f3b69a6107c800fe7c2b981c2" },
+    { "context_id": "FABLE-STRATEGY", "version": 1, "route": "STRATEGY", "autonomy_stage": "A0", "decision_id": "DEC-AI-STAGE-8-ACTIVATION-APPROVAL-027", "effective_at": "2026-09-03T16:28:22+09:00", "policy_hash": "66883bb4ab9df23a7e44397a91f92d8e499b62fd70dce3ff0d90ac06acd9827a", "context_hash": "5feb1f0cc3f51e1e42105e469c2495992b5c75122ae2dda7f768afa6882a816b" },
+    { "context_id": "FABLE-FINAL", "version": 1, "route": "FINAL_INDEPENDENT", "autonomy_stage": "A0", "decision_id": "DEC-AI-STAGE-8-ACTIVATION-APPROVAL-027", "effective_at": "2026-09-03T16:28:22+09:00", "policy_hash": "66883bb4ab9df23a7e44397a91f92d8e499b62fd70dce3ff0d90ac06acd9827a", "context_hash": "e3fd1a226660ed009c70c0a66d89cbfa2f97dbe989df9c57b50f4dc38c6c815b" },
+    { "context_id": "OPUS-FALLBACK", "version": 1, "route": "FALLBACK_REVIEW", "autonomy_stage": "A0", "decision_id": "DEC-AI-STAGE-8-ACTIVATION-APPROVAL-027", "effective_at": "2026-09-03T16:28:22+09:00", "policy_hash": "66883bb4ab9df23a7e44397a91f92d8e499b62fd70dce3ff0d90ac06acd9827a", "context_hash": "7647bfb98458561487c2e1d13256aa8b856ed529c627b1598843a28385e27257" },
+    { "context_id": "OPUS-ADVISORY", "version": 1, "route": "ADVISORY", "autonomy_stage": "A0", "decision_id": "DEC-AI-STAGE-8-ACTIVATION-APPROVAL-027", "effective_at": "2026-09-03T16:28:22+09:00", "policy_hash": "66883bb4ab9df23a7e44397a91f92d8e499b62fd70dce3ff0d90ac06acd9827a", "context_hash": "dc2c30f86cf29711a536877deda3d93c75e4dcfb5af2e019470d9d914edd04ed" }
+  ]
+}
+```
+<!-- /role-context-registry:v1 -->
+
 | 레인 | 받을 수 있는 학습 | 금지 |
 |---|---|---|
 | `ORCHESTRATION` | 작업 분해, 인계, exact-SHA 게이트, 복구 순서 | 제품 정책을 학습 장부만으로 변경 |
