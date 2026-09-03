@@ -5,3 +5,8 @@ docs/ai-review/tasks/** -text -whitespace
 # SQL migration의 함수 본문 조각 교체는 줄끝까지 판본 계약의 일부다.
 # Windows 새 clone에서도 CRLF가 섞여 전진 migration이 잘못 멈추지 않게 한다.
 *.sql text eol=lf
+
+# Project Orchestrator의 봉인 계획과 영수증은 SHA-256으로 결속된다.
+# Windows 자동 CRLF 변환이 이 검증을 무효화하지 않도록 작업본도 LF로 유지한다.
+.codex/mission-relay/model-plan.json text eol=lf
+.codex/mission-relay/model-plan.json.sha256 text eol=lf

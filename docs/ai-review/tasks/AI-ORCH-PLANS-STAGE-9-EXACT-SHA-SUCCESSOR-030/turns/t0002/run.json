@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-STAGE-9-EXACT-SHA-SUCCESSOR-030",
+  "sequence": "t0002",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-03T08:15:22.520Z",
+  "turn_id": "turn-h001",
+  "turn_type": "HUMAN_DECISION",
+  "role": "HUMAN",
+  "task_sha256": "a2d3af7b71f647933f61d4c8832dea76f00a2534fc89dbd80557c7a300af480c",
+  "runner_sha256": "b11837ae93ef151b7db411aaf89aa1e60d8f828a6ac25aaf99858f19b7ff8f3d",
+  "previous_manual_run_sha256": "cbd6e3f73f7553692273e45df028ee7a6806743cb38f219ce341a4646f3edd23",
+  "collaboration_before_sha256": "b6e00b94a56b627591dacb149ddcc61dccd186119d715f0868cc1e93b6ff34cd",
+  "collaboration_before_bytes": 1166,
+  "collaboration_entry_sha256": "afacb444232576fcd013521f8c132003b48e9d9972a33aa3e3518858f301dbe1",
+  "collaboration_entry_bytes": 865,
+  "collaboration_after_sha256": "00077b010807ce391eabcc4417abf28c80300724dab2a837ebcd0947dc1e1f3b",
+  "collaboration_after_bytes": 2031
+}

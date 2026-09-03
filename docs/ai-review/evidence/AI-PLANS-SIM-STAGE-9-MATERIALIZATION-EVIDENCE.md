@@ -82,9 +82,9 @@ SHA-256으로 비교하고 자체 시험을 실행했다.
 
 | 플러그인 | 설치 cache version | source/cache 확인 | 자체 시험 | 실행 상태 |
 |---|---|---|---:|---|
-| Account Continuity | `0.1.0+codex.20260903072936` | policy·hook·CLI 일치 | 10/10 | `ACCOUNT_CONTINUITY_READY`; raw account identifier 저장 없음 |
-| Mission Relay | `0.1.0+codex.20260903073720` | policy·hook·CLI 일치 | 29/29 | hook/CLI 신뢰 확인; 현재 미션 롤오버를 새로 만들지 않음 |
-| Project Orchestrator | `0.1.0+codex.20260903073010` | hook·CLI 일치; policy는 설치본 복제 없이 canonical 외부 경로 직접 사용 | 9/9 | `MODEL_PLAN_VERIFIED` |
+| Account Continuity | `0.1.0+codex.20260903082432` | policy·hook·CLI 일치 | 10/10 | `ACCOUNT_CONTINUITY_READY`; raw account identifier 저장 없음 |
+| Mission Relay | `0.1.0+codex.20260903082523` | policy·hook·CLI 일치 | 29/29 | hook/CLI 신뢰 확인; 현재 미션 롤오버를 새로 만들지 않음 |
+| Project Orchestrator | `0.1.0+codex.20260903082431` | hook·CLI 일치; policy는 설치본 복제 없이 canonical 외부 경로 직접 사용 | 9/9 | `MODEL_PLAN_VERIFIED` |
 
 확인한 hook SHA-256은 Account Continuity
 `ed83ddb504d216d3444a212ac715d67fc28ce88119ef81199ddc5c7ba450fd87`, Mission Relay
@@ -95,14 +95,25 @@ Project Orchestrator가 검증한 현재 model plan SHA-256은
 `da855b3632bad90bed880e770b8e5e83415c361c9e1186a67d178c10b07bfd69`이며 차이는 0개다. 이 결과는
 현재 앱의 모델 selector를 플러그인이 바꾼다는 뜻이 아니다.
 
+재부팅 뒤 전역 Git의 CRLF 변환이 이 byte-addressed plan의 SHA 검증을 막는 것을 확인했다. 이 저장소는
+`.gitattributes`와 local Git 설정으로 model plan·영수증을 LF로 유지하고, 동일 SHA의 계획을 다시
+검증했다. 계획을 재생성하거나 모델·예산·단계 배정을 바꾸지 않았다.
+
 ## 5. 독립검수·비용 계보
 
 - `AI-ORCH-PLANS-STAGE-9-PREFLIGHT-AUDIT-027/r001`: `budget_exhausted`, 판정 없음, 실제 USD
   `6.338000`; 실패 원본 보존
 - 축소 successor `AI-ORCH-PLANS-STAGE-9-PREFLIGHT-COMPACT-028/r001`: Fable PASS, 필수 OPEN
   Finding 0개, 실제 USD `2.677106`
+- `AI-ORCH-PLANS-STAGE-9-EXACT-SHA-SUCCESSOR-030/r001`: `budget_exhausted`, 판정 없음, 실제 USD
+  `7.502960`; 실패 원본 보존
+- `AI-ORCH-STAGE9-COMPACT-FINAL-031`: provider 호출·run.json·비용 기록 전 중단된 staging으로 보존
+- `AI-ORCH-STAGE9-COMPACT-RECOVERY-032/r001`: Fable `CHANGES_REQUIRED`, 필수 Finding 1개, 실제 USD
+  `3.568507`; Finding 보완은 로컬 검증을 통과했다.
+- `AI-ORCH-STAGE9-COMPACT-RECOVERY-032/r002`: `budget_exhausted`, 판정 없음, 실제 USD
+  `3.494104`; r001 Finding의 Fable 재검수 원본으로 보존
 - 선택 Improvement 2개는 checker와 사보타주에 반영했다.
-- 단계 9 현재 누적 Fable 실비: USD `9.015106`
+- 단계 9 현재 누적 Fable 실비: USD `23.580677`
 - 같은 목적의 Opus 동시 호출은 하지 않았다.
 
 이 증거가 결속된 commit을 대상으로 마지막 Fable exact-SHA 감사를 한 번 수행한다. 새 필수 Finding이

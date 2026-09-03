@@ -1,0 +1,99 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-STAGE9-COMPACT-FINAL-031",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R1",
+  "author_role": "SOLAR-ORCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "d14ce2a838e003a57983c3772fb8b3a5b730fc0a",
+  "target_commit_sha": "84004577d060a8c4b8bcc1048dc1003a451410e3",
+  "target_tree_oid": "5d8218794cdcbbf11486c97d4b72419e733acdb4",
+  "agents_blob_oid": "5208bcf26b7a494b3b747da4327e3cc8f18710df",
+  "agents_sha256": "13154e1351d07a9f10d0cb7f3dfebd10833f40fc835c22000113dd7b86e36d84",
+  "requirements": [
+    "Task030의 budget_exhausted·verdict null·USD 7.502960 원본을 PASS나 Finding으로 재사용하지 않아야 한다.",
+    "Task028에서 PASS한 preflight 전체를 재감사하지 말고 이후 보강된 checker, 운영 진입점, activation 증거의 모순만 감사해야 한다.",
+    "context content·route·policy hash와 Learning 상태, 운영 진입점 7개, RISKS 부재를 checker와 직접 사보타주가 실패 폐쇄해야 한다.",
+    "A0 셸·운영 게이트·플러그인 독립 경계가 AI 승인, 운영 실행, 통합 플러그인, 모델 selector 제어 권한을 만들지 않아야 한다.",
+    "외부 상태 증거는 제목·개수만 보존하고 thread ID·대화 원문·계정 식별자를 저장하지 않아야 한다.",
+    "현재 target의 필수 OPEN Finding이 없으면 간결한 PASS를 반환한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:single-canonical-artifact",
+    "AGENTS:fable-independent-review",
+    "AI-DIRECTORY:atomic-activation",
+    "AI-QUALITY:a0-default",
+    "AI-ORCH:chat-is-not-authority",
+    "AI-OPERATIONS:human-gated"
+  ],
+  "artifact_paths": [
+    "docs/ai-review/evidence/AI-PLANS-SIM-STAGE-9-MATERIALIZATION-EVIDENCE.md",
+    "scripts/docs-graph-check.mjs",
+    "scripts/docs-graph-check.test.mjs",
+    "docs/team/README.md",
+    "docs/team/DECISIONS.md",
+    "docs/team/RELEASE_GATE.md",
+    "docs/team/ROLE_CONTEXTS.md",
+    "docs/team/TEAM_LEARNING.md",
+    "docs/team/roles/ORCHESTRATION.md",
+    "docs/team/roles/INDEPENDENT-AUDIT.md",
+    "docs/team/roles/OPERATIONS.md",
+    "docs/team/teams/00-all-teams-room.md",
+    "docs/team/teams/03-server-supabase-operations.md",
+    "docs/team/teams/04-quality-review.md",
+    "docs/team/teams/05-knowledge-orchestration.md",
+    "docs/operations/RUNBOOK_RELEASE.md",
+    "docs/operations/RUNBOOK_INCIDENT.md",
+    "docs/operations/RUNBOOK_RECOVERY.md",
+    "docs/operations/DATA_CORRECTION_POLICY.md",
+    "docs/operations/MONITORING_CATALOG.md",
+    "docs/operations/SUPPORT_PLAYBOOK.md",
+    "docs/operations/PILOT_PLAN.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/디렉터리-문서신경망-재설계-기획안.md",
+    "docs/ai-review/evidence/AI-PLANS-SIM-STAGE-9-MATERIALIZATION-PLAN.md"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/tasks/AI-ORCH-PLANS-STAGE-9-PREFLIGHT-COMPACT-028/rounds/r001/review.json",
+    "docs/ai-review/tasks/AI-ORCH-PLANS-STAGE-9-PREFLIGHT-COMPACT-028/collaboration.md",
+    "docs/ai-review/tasks/AI-ORCH-PLANS-STAGE-9-EXACT-SHA-SUCCESSOR-030/rounds/r001/run.json"
+  ],
+  "excluded_paths": [
+    "apps/mobile/**",
+    "packages/**",
+    "docs/prototypes/**",
+    "scripts/prototype_server.py",
+    ".codex-share/**",
+    ".tmp/**"
+  ],
+  "required_evidence": [
+    "target SHA 8400457, graph PASS 29/19, sabotage 12/12, network 71/71",
+    "Task028 PASS와 두 Improvement 반영 증거",
+    "Task030 budget_exhausted·verdict null·USD 7.502960 실패 원본",
+    "section 2개·A0 shell 11개 비식별 목록과 plugin test 10·29·9",
+    "통합 plugin·POSTMORTEMS·RISKS.md·pnpm verify 연결 부재"
+  ],
+  "human_decisions": [
+    "DEC-AI-STAGE-8-ACTIVATION-APPROVAL-027 — 단계 9 물질화와 A0 shell 생성을 승인했다.",
+    "DEC-AI-FABLE-AUTONOMOUS-BUDGET-009 — 사용자는 최소~중간 예산 선택과 필요 시 기준 초과 진행을 위임했다.",
+    "DEC-AI-STAGE9-COMPACT-FINAL-BUDGET-031 — 대형 Task030 실패 뒤 변경분 중심 successor 1회에 USD 6.00 soft cap을 선택한다.",
+    "동일 목적 Opus를 동시에 호출하지 않고 결과는 단계 10이나 운영 실행을 승인하지 않는다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "6.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}
