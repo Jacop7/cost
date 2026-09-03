@@ -5,7 +5,7 @@ status: DRAFT
 authority: knowledge_relations_request_normalization
 owner: SOLAR-ARCH
 approver: HUMAN-CHIEF
-version: 0.2
+version: 0.3
 depends_on: [team]
 supersedes: []
 verified_by: []
@@ -14,7 +14,7 @@ review_by: 2026-10-01
 
 # MarginCook AI 지식 온톨로지 기획안
 
-> 버전: 0.2
+> 버전: 0.3
 > 상태: 누적 교차검수 대상 초안(`DRAFT`)
 > 작성일: 2026-09-01
 > 최종 책임자: 사람 주 오케스트레이터
@@ -152,6 +152,12 @@ predecessor를 가리키는 두 successor 분기는 발행 단계에서 거부�
 범위는 `EXCLUDES`와 Task의 경로 필드로 이미 표현되므로 같은 뜻의 두 번째 관계가 된다. `BLOCKS`,
 `DECIDED_BY`, `OWNED_BY`, `ANNOUNCED_IN`도 각각 `DEPENDS_ON`, `DEPENDS_ON`, `OWNS`, `POINTS_TO`의
 방향 또는 파생 view로 처리한다. 허용 노드·관계 어휘는 이 §3·§4에서만 생성한다.
+
+`AUTHORITY_REF | DELEGATED_PENDING`은 새 관계명이 아니라 `authority_link_state`의 상태 값이다.
+두 상태 모두 실제 탐색 관계는 `POINTS_TO`로 기록한다. `DELEGATED_PENDING`은 대상 문서가 아직
+`DRAFT | REVIEWED`라 현재 권위를 위임받지 못했음을 뜻하고, `AUTHORITY_REF`는 대상이
+`CONFIRMED | ACTIVE`이며 현재 권위 참조로 사용할 수 있음을 뜻한다. 따라서 상태 전환은 관계 방향이나
+권위 소유자를 새로 만들지 않는다.
 
 문서를 찾기 위한 참조 그래프와 권위·의존 그래프는 분리한다. 탐색 참조는 어느 핵심 문서에서
 시작해도 필요한 권위로 이동할 수 있도록 순환을 허용하지만, `OWNS`와 `DEPENDS_ON`으로 만든 권위
@@ -400,9 +406,10 @@ review_by: 2026-12-01
 사용하지 않는다. `CONFIRMED`는 사람이 확정한 현재 기준선이지만, 후속 자동화·디렉터리
 물질화까지 활성했다는 뜻은 아니다. `ACTIVE`는 해당 계획의 활성화 게이트까지 완료한
 상태다.
-활성 문서가 아직 DRAFT인 후속 설계에 상세화를 맡기는 전이 링크는 `AUTHORITY_REF`가 아니라
-`DELEGATED_PENDING`으로 기록한다. 활성 문서 자체에 최소 안전 게이트와 전이 소유자가 있을 때만
-허용하며, 후속 문서가 `ACTIVE`가 된 뒤 `AUTHORITY_REF`로 전환한다.
+활성 문서가 아직 DRAFT인 후속 설계에 상세화를 맡기는 `POINTS_TO` 링크는
+`authority_link_state=DELEGATED_PENDING`으로 기록한다. 활성 문서 자체에 최소 안전 게이트와 전이
+소유자가 있을 때만 허용하며, 후속 문서가 `ACTIVE`가 된 뒤 같은 링크의 상태를
+`authority_link_state=AUTHORITY_REF`로 전환한다.
 
 ## 9. 컨텍스트 조립
 
