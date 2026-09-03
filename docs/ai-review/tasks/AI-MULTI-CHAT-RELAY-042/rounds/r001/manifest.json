@@ -1,0 +1,176 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-MULTI-CHAT-RELAY-042",
+  "round": "r001",
+  "created_at": "2026-09-03T10:16:05.142Z",
+  "review_mode": "INITIAL",
+  "baseline_commit_sha": "6d850d410e7e3d9fbd9fad19410af86217090a75",
+  "target_commit_sha": "7b59a9fcfedacdf954d8809b9a559ee6c324a62a",
+  "target_tree_oid": "72fef998f491aeaad00c46ce93b260b2ceba065c",
+  "agents_blob_oid": "67b83fceda960e3c4428a0119b5d88c5c4331ed0",
+  "agents_sha256": "911f8c9afd1bc6458f6c96f2b8d8547086e5a79714e92a2c362bce532fccf7cf",
+  "task_sha256": "bc36251b7bfd35295dadb60489d036245ba1815a9fd11a6fbb79a92c6e796ee8",
+  "collaboration_sha256": "f8431ea3a8b9a8650d2d74c4205289eeee0597b4fde5e4c969eaf3aee41ddfca",
+  "collaboration_bytes": 1985,
+  "input_files_sha256": "2a5de6cc4e64e8d7c29f8173622052943cd91711c31187120ffae375f009cc52",
+  "schema_sha256": "d8ffdb13e6b1e38279355d9ffd592cfb91dc023d287976adf7892e85dbfaf0d7",
+  "runner_sha256": "b11837ae93ef151b7db411aaf89aa1e60d8f828a6ac25aaf99858f19b7ff8f3d",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "previous_review_sha256": null,
+  "previous_run_sha256": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "fallback_review": null,
+  "closure_review": null,
+  "fallback_input_scope": null,
+  "retry_of_failed_round": null,
+  "artifact_paths": [
+    ".codex/mission-relay/model-plan.json",
+    ".codex/mission-relay/model-plan.json.sha256",
+    "docs/AI-오케스트레이션-상세기획안.md",
+    "docs/ai-team-starter-kit/README.md",
+    "docs/ai-team-starter-kit/CORE-CONTRACT.md",
+    "docs/작업큐.md",
+    "scripts/ai-plan-network-simulation.mjs",
+    "scripts/ai-plan-network-simulation.test.mjs"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/ai-review/README.md"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/tasks/AI-TEAM-STARTER-KIT-V05-COMPACT-WORKING-040/rounds/r001/review.json"
+  ],
+  "allowed_paths": [
+    ".codex/mission-relay/model-plan.json",
+    ".codex/mission-relay/model-plan.json.sha256",
+    "docs/AI-오케스트레이션-상세기획안.md",
+    "docs/ai-team-starter-kit/README.md",
+    "docs/ai-team-starter-kit/CORE-CONTRACT.md",
+    "docs/작업큐.md",
+    "scripts/ai-plan-network-simulation.mjs",
+    "scripts/ai-plan-network-simulation.test.mjs",
+    "AGENTS.md",
+    "docs/ai-review/README.md",
+    "docs/ai-review/tasks/AI-TEAM-STARTER-KIT-V05-COMPACT-WORKING-040/rounds/r001/review.json"
+  ],
+  "excluded_paths": [
+    "apps/mobile/**",
+    "packages/**",
+    ".codex-share/**",
+    ".tmp/**"
+  ],
+  "applied_learning_ids": [],
+  "excluded_learning_ids": [],
+  "learning_registry_blob_oid": "fdbd6fb4b20e33fc45b56c25f57e0b1f9f2c8a9f",
+  "learning_registry_sha256": "2b240fcb2ec2363ddb914ffd5666ae9e167965977c4971fe94998bc3a3564f95",
+  "learning_assignment_sha256": "4660bb32207bcae3246801d71aa6a052eab7b0a7cef357bd5984f706fe3dcbfe",
+  "learning_target_date": "2026-09-03",
+  "input_files": [
+    {
+      "path": "AGENTS.md",
+      "path_role": "REFERENCE",
+      "change_type": "UNCHANGED",
+      "size": 12658,
+      "git_blob_oid": "67b83fceda960e3c4428a0119b5d88c5c4331ed0",
+      "sha256": "911f8c9afd1bc6458f6c96f2b8d8547086e5a79714e92a2c362bce532fccf7cf",
+      "line_count": 168
+    },
+    {
+      "path": ".codex/mission-relay/model-plan.json",
+      "path_role": "ARTIFACT",
+      "change_type": "UNCHANGED",
+      "size": 24948,
+      "git_blob_oid": "8d127eab52a047fd931f3e119ef1b89f29160683",
+      "sha256": "593b657c5a34062fecc6ad802b924efba1aef11d1e2d3bc1cd5a7a80a5b28bee",
+      "line_count": 723
+    },
+    {
+      "path": ".codex/mission-relay/model-plan.json.sha256",
+      "path_role": "ARTIFACT",
+      "change_type": "MODIFIED",
+      "size": 83,
+      "git_blob_oid": "2a66f1acfbcf5594d27f8c577063a5e77b48d4a4",
+      "sha256": "a7a18c4b6665e8e25bed4f306cc3cf3954399be1b6d1c1ff0eb3dddd2810b319",
+      "line_count": 1
+    },
+    {
+      "path": "docs/작업큐.md",
+      "path_role": "ARTIFACT",
+      "change_type": "MODIFIED",
+      "size": 179957,
+      "git_blob_oid": "253086d714799abd6f7a361a689cc079e2c9df53",
+      "sha256": "553506097efd29f6cefbbe2daa95ffbfa6bbd38e57f4c284486693f7cde7638d",
+      "line_count": 2549
+    },
+    {
+      "path": "docs/AI-오케스트레이션-상세기획안.md",
+      "path_role": "ARTIFACT",
+      "change_type": "MODIFIED",
+      "size": 48650,
+      "git_blob_oid": "3307a19b1d47a3bbb9dbabc7d23b9352672c2f4e",
+      "sha256": "627f7e43ed88aa3185b10307f55310cb9bd6de7f97847ee7d3c190e5302172bb",
+      "line_count": 794
+    },
+    {
+      "path": "docs/ai-review/README.md",
+      "path_role": "REFERENCE",
+      "change_type": "MODIFIED",
+      "size": 45438,
+      "git_blob_oid": "fb579a4ca763be84d74678b0bffd9017eebda48c",
+      "sha256": "bb461a557cd1ea93fa1168f5a166f3eb0a472b2a4f73afc9b8784215c8652fa7",
+      "line_count": 595
+    },
+    {
+      "path": "docs/ai-review/tasks/AI-TEAM-STARTER-KIT-V05-COMPACT-WORKING-040/rounds/r001/review.json",
+      "path_role": "EVIDENCE",
+      "change_type": "UNCHANGED",
+      "size": 6354,
+      "git_blob_oid": "c4a7981a74fa7706b234eeca7681b86f68dbe3cc",
+      "sha256": "cf731e539a7e4d2445ae621c6bbdd1444eaf9c75d223b667a50d1de265d3b8e7",
+      "line_count": 88
+    },
+    {
+      "path": "docs/ai-team-starter-kit/CORE-CONTRACT.md",
+      "path_role": "ARTIFACT",
+      "change_type": "UNCHANGED",
+      "size": 1956,
+      "git_blob_oid": "e360b133d3514ee153d3c4426bf7c44211474e52",
+      "sha256": "cdeb8b92f3c9fde54653b892e9b9ca67dffd31194234bdc9f237a370d55af304",
+      "line_count": 30
+    },
+    {
+      "path": "docs/ai-team-starter-kit/README.md",
+      "path_role": "ARTIFACT",
+      "change_type": "UNCHANGED",
+      "size": 1509,
+      "git_blob_oid": "de80bb2ae8aecaf7566e2cb996f91742d003a27f",
+      "sha256": "596cbb9716115ea4bc629323779484ca15001f861984a895d0a705905f611c6c",
+      "line_count": 27
+    },
+    {
+      "path": "scripts/ai-plan-network-simulation.mjs",
+      "path_role": "ARTIFACT",
+      "change_type": "MODIFIED",
+      "size": 147059,
+      "git_blob_oid": "930f0fabcfb757b44dde9ccbb07e39028b5b4135",
+      "sha256": "318388d7389b5ff3194ce2a48ad9f3472f0f302946ffe74877f7cc66ce91db41",
+      "line_count": 2667
+    },
+    {
+      "path": "scripts/ai-plan-network-simulation.test.mjs",
+      "path_role": "ARTIFACT",
+      "change_type": "MODIFIED",
+      "size": 85880,
+      "git_blob_oid": "dbf3d675cb39712f73de72b398b06fc072c68cf1",
+      "sha256": "b93a739488d444324b49bbd6eba413aac750ab9bce19266160782ecc35f4b3a3",
+      "line_count": 1730
+    }
+  ],
+  "source_archive_version": 1,
+  "finding_resolution_semantics": "VERIFIED_RESOLVED_V1",
+  "artifact_snapshot_sha256": "6be331e8c4c6d9277269bd8f60027c4148a0b4c058044ab6e3e148af25334599",
+  "input_snapshot_sha256": "7b0c315bda2aad377079c841c245c163ee2f7f74a0c9405bcf16ae7b692b5607"
+}

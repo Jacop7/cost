@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-MULTI-CHAT-RELAY-042",
+  "sequence": "t0001",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-03T10:15:58.496Z",
+  "turn_id": "turn-s001",
+  "turn_type": "SOLAR_REQUEST",
+  "role": "SOLAR-ORCH",
+  "task_sha256": "bc36251b7bfd35295dadb60489d036245ba1815a9fd11a6fbb79a92c6e796ee8",
+  "runner_sha256": "b11837ae93ef151b7db411aaf89aa1e60d8f828a6ac25aaf99858f19b7ff8f3d",
+  "previous_manual_run_sha256": null,
+  "collaboration_before_sha256": "fc3ddb00b88512c5e6555859a1f8887c24cdabccad8564fff9720cad03a032fa",
+  "collaboration_before_bytes": 287,
+  "collaboration_entry_sha256": "08d8aa41cbb80ce4fc62c52098714c284c93a6e9ce9abe118c33a8206f0e00ca",
+  "collaboration_entry_bytes": 1046,
+  "collaboration_after_sha256": "a6d32eeef49027f85ade4bcd1ca06c4da707473ba04ae7913c04e8872d6ce12c",
+  "collaboration_after_bytes": 1333
+}
