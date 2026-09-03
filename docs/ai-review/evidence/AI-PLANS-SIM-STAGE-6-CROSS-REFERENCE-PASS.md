@@ -15,8 +15,8 @@ SHA-256은 UTF-8 입력의 `CRLF→LF` 정규화 뒤 계산했다.
 - `docs/디렉터리-문서신경망-재설계-기획안.md`: `d7d7a4d94de4f3f8ef1a1b0bc05a216e6ab3d152c23c25fcd92eef83891e4108`
 - `docs/AI-품질-학습-자율성-평가기획안.md`: `66883bb4ab9df23a7e44397a91f92d8e499b62fd70dce3ff0d90ac06acd9827a`
 - `scripts/ai-plan-network-simulation.mjs`: `cf43d03a140390ab9ebb93de915d07f9130c83d4a819fc3d39c125462db576a5`
-- `scripts/ai-plan-network-simulation.test.mjs`: `b61ad94f7f47840c2abd2590f86e10b115a5d20c1f55bacf1a0254e2057585d9`
-- 위 7개 `path:sha256` 배열의 JSON SHA-256: `966cd3acb353af7d127d5f3d050f151d1bd2c580c044d3d1d932d13c8a318505`
+- `scripts/ai-plan-network-simulation.test.mjs`: `6fb0200f1c505fc64561eeee1aaeb82e3b9d9265e3ed28a5ab64e0f3cfca6c93`
+- 위 7개 `path:sha256` 배열의 JSON SHA-256: `5b3c0aa08623edbef4f5302992a5b7e4673deb4822216d382e758036d9ce4689`
 
 ## 실행 결과
 
