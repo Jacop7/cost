@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-STAGE9-SINGLE-PASS-RECOVERY-034",
+  "sequence": "t0003",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-03T09:16:51.721Z",
+  "turn_id": "turn-s002",
+  "turn_type": "SOLAR_RESPONSE",
+  "role": "SOLAR-ORCH",
+  "task_sha256": "e9ce9a84ba83a53de83f83524e66119abdc09a111cbf2936b767e88789d36143",
+  "runner_sha256": "b11837ae93ef151b7db411aaf89aa1e60d8f828a6ac25aaf99858f19b7ff8f3d",
+  "previous_manual_run_sha256": "115bfea78caf90a944734db184fb499baee012997f709ba9f2450fcc9d1bc9b6",
+  "collaboration_before_sha256": "a61eec4e004af1d52bd86f9f1d142790757125b54571ad46d8b1d6008faa7985",
+  "collaboration_before_bytes": 5665,
+  "collaboration_entry_sha256": "82d22ede6e9a644a7857bb9007496bab05b23fa45cd6053bae7840a76970d380",
+  "collaboration_entry_bytes": 994,
+  "collaboration_after_sha256": "581e1e0a29b2716990c8dcfc9cf5645cc8a36a0cba228a67239d79cf27e7f550",
+  "collaboration_after_bytes": 6659
+}
