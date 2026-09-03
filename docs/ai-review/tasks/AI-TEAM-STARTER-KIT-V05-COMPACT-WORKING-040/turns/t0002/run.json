@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-TEAM-STARTER-KIT-V05-COMPACT-WORKING-040",
+  "sequence": "t0002",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-03T09:56:05.384Z",
+  "turn_id": "turn-h001",
+  "turn_type": "HUMAN_DECISION",
+  "role": "HUMAN",
+  "task_sha256": "8f6075d49454693decb9376c860d2187a070adbc517cc2fcb8a665aa0ed69831",
+  "runner_sha256": "b11837ae93ef151b7db411aaf89aa1e60d8f828a6ac25aaf99858f19b7ff8f3d",
+  "previous_manual_run_sha256": "992cea42a96d6790b6718b875b4bccba55521cc0ae07e36beda8bd36c1ca4499",
+  "collaboration_before_sha256": "0a35c325fbf9c5b40505ca5b2e4af9c2fe6227b1996d25b9d14a56b0613b4f14",
+  "collaboration_before_bytes": 1315,
+  "collaboration_entry_sha256": "2d5ed17fd95e868575783d2745b513cef3cc315a7af4543ee79e3e738e07b8a6",
+  "collaboration_entry_bytes": 667,
+  "collaboration_after_sha256": "ef02a7d2d88217a73ba4a01e1bfe2304a7d3ca0f3ceb6f0fefa4bdb7e5d2f9d8",
+  "collaboration_after_bytes": 1982
+}

@@ -1,0 +1,88 @@
+{
+  "schema_version": "2.0",
+  "task_id": "AI-TEAM-STARTER-KIT-V05-COMPACT-WORKING-040",
+  "reviewer_role": "FABLE-ARCH",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "88a85f5affbd9c64c378402e7aa613b1835aeb17",
+  "target_commit_sha": "150bb69c6a2f9632e425728c55b42c7d804e08ce",
+  "target_tree_oid": "ede0f230519690ad02a6383b3acc6de8aa37da55",
+  "agents_blob_oid": "67b83fceda960e3c4428a0119b5d88c5c4331ed0",
+  "agents_sha256": "911f8c9afd1bc6458f6c96f2b8d8547086e5a79714e92a2c362bce532fccf7cf",
+  "task_sha256": "8f6075d49454693decb9376c860d2187a070adbc517cc2fcb8a665aa0ed69831",
+  "collaboration_sha256": "ef02a7d2d88217a73ba4a01e1bfe2304a7d3ca0f3ceb6f0fefa4bdb7e5d2f9d8",
+  "input_files_sha256": "513c3cf6b1a4baeff5e2a5ab325b8a1a59c2cd2fcb8337f16c4dfbfe8df6133d",
+  "schema_sha256": "d8ffdb13e6b1e38279355d9ffd592cfb91dc023d287976adf7892e85dbfaf0d7",
+  "runner_sha256": "b11837ae93ef151b7db411aaf89aa1e60d8f828a6ac25aaf99858f19b7ff8f3d",
+  "verdict": "PASS",
+  "summary": "v0.5 스타터 키트 compact WORKING_TREE_HASHED 단일 패스 검수 결과 PASS. (1) Task·HANDOFF·역할·팀 템플릿과 core/adapter 이식 경계가 모두 존재한다: templates/TASK-PACKET.md·HANDOFF.md·ROLE-CONTEXT.md·TEAM-MANIFEST.md, CORE-CONTRACT.md의 \"이식 경계\" 절, adapters/README.md의 adapter/profile 분리 규칙. (2) 공통 core에 제품·DB·운영 credential·사람 승인 권한·MarginCook 고유값이 복제·생성되지 않았다. 키트 9개 문서 전문을 확인했고 MarginCook/supabase_admin 등 프로젝트 식별자가 없으며, TEAM-MANIFEST는 chat_is_approval_authority: false를, CORE-CONTRACT는 사람 승인·운영 실행 권한 분리, 독립검수 병렬 호출 금지, 자동 배수 증액 금지를 명시한다. (3) README.md 6–7행이 \"빈 저장소 fixture와 프로젝트 adapter를 통한 전체 이식 검증은 v1.0 범위다\"라고 한정해 v1.0 이식 검증을 완료로 과장하지 않는다. (4) package.json에 ai:starter-kit:check·ai:plans:simulate 스크립트가 존재하고 제출된 증거(2/2, 71/71)와 정합한다. 필수 OPEN Finding은 없고 Improvement 1건만 기록: 검사기의 프로젝트 고유값 금지 스캔이 9개 키트 파일 중 4개만 대상으로 하고 첫 테스트의 필수 파일 목록에 templates/README.md가 빠져 있어, 전체 파일로 확장하는 proposed_edits 2건을 첨부했다. 부수 관찰로 package.json 26–27행이 LF, 나머지가 CRLF로 혼재하나 기능 영향이 없다. PASS는 외부 게이트를 닫지 않으며 gate_state는 OPEN으로 유지된다.",
+  "findings": [
+    {
+      "finding_id": "STARTER-KIT-040-TEST-COVERAGE-01",
+      "severity": "Improvement",
+      "review_state": "OPEN",
+      "category": "TEST_GAP",
+      "requirement_or_invariant_ids": [
+        "REQ-CORE-NO-PROJECT-VALUES",
+        "AGENTS:single-canonical-artifact"
+      ],
+      "evidence": [
+        {
+          "path": "scripts/ai-team-starter-kit.test.mjs",
+          "line_start": 26,
+          "line_end": 36,
+          "observation": "프로젝트 고유값 금지 스캔(doesNotMatch /MarginCook|margincook|supabase_admin/i)이 README.md·CORE-CONTRACT.md·TEAM-MANIFEST.md·adapters/README.md 4개 파일만 대상으로 한다. START-HERE.md, templates/README.md, TASK-PACKET.md, HANDOFF.md, ROLE-CONTEXT.md 5개 키트 파일은 스캔에서 제외되어 향후 해당 파일에 프로젝트 고유값이 유입돼도 회귀 검사가 잡지 못한다. 현재 내용 자체는 전 파일 규정 준수 상태다."
+        },
+        {
+          "path": "scripts/ai-team-starter-kit.test.mjs",
+          "line_start": 11,
+          "line_end": 20,
+          "observation": "첫 번째 테스트의 필수 파일 목록(required)에 공식 산출물인 docs/ai-team-starter-kit/templates/README.md가 포함되지 않아 해당 파일의 존재·비어있음 검사가 누락된다."
+        }
+      ],
+      "impact": "검사기 커버리지 부분 누락으로, 향후 편집에서 스캔 제외 5개 템플릿 파일에 프로젝트 고유값·credential 문구가 유입되거나 templates/README.md가 비워져도 ai:starter-kit:check가 통과할 수 있다. 현재 스냅샷의 실제 내용은 요구사항을 준수하므로 PASS를 막지 않는다.",
+      "acceptance_criteria": [
+        "두 번째 테스트의 sources 목록이 docs/ai-team-starter-kit 하위 공식 산출물 9개 파일 전체를 포함한다.",
+        "첫 번째 테스트의 required 목록에 templates/README.md가 포함된다.",
+        "확장 후 corepack pnpm ai:starter-kit:check가 통과한다."
+      ],
+      "required_tests": [
+        "corepack pnpm ai:starter-kit:check"
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    }
+  ],
+  "proposed_edits": [
+    {
+      "edit_id": "EDIT-040-SCAN-ALL-KIT-FILES",
+      "path": "scripts/ai-team-starter-kit.test.mjs",
+      "anchor": "  const sources = [",
+      "operation": "ADD",
+      "proposed_text": "    `${kit}/START-HERE.md`,\n    `${kit}/templates/README.md`,\n    `${kit}/templates/TASK-PACKET.md`,\n    `${kit}/templates/HANDOFF.md`,\n    `${kit}/templates/ROLE-CONTEXT.md`,",
+      "rationale": "프로젝트 고유값 금지 스캔을 4개 파일에서 키트 공식 산출물 9개 전체로 확장해, 스캔 제외 템플릿에 프로젝트 식별자·credential 문구가 유입되는 회귀를 결정적 검사로 차단한다.",
+      "finding_ids": [
+        "STARTER-KIT-040-TEST-COVERAGE-01"
+      ]
+    },
+    {
+      "edit_id": "EDIT-040-REQUIRED-TEMPLATES-README",
+      "path": "scripts/ai-team-starter-kit.test.mjs",
+      "anchor": "  const required = [",
+      "operation": "ADD",
+      "proposed_text": "    `${kit}/templates/README.md`,",
+      "rationale": "공식 artifact_paths에 포함된 templates/README.md의 존재·비어있음 검사를 필수 파일 목록에 추가해 커버리지 누락을 제거한다.",
+      "finding_ids": [
+        "STARTER-KIT-040-TEST-COVERAGE-01"
+      ]
+    }
+  ],
+  "closed_finding_ids": [],
+  "reopened_finding_ids": [],
+  "remaining_required_finding_ids": [],
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}

@@ -1,0 +1,186 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-TEAM-STARTER-KIT-V05-COMPACT-WORKING-040",
+  "round": "r001",
+  "created_at": "2026-09-03T09:56:16.101Z",
+  "review_mode": "INITIAL",
+  "baseline_commit_sha": "88a85f5affbd9c64c378402e7aa613b1835aeb17",
+  "target_commit_sha": "150bb69c6a2f9632e425728c55b42c7d804e08ce",
+  "target_tree_oid": "ede0f230519690ad02a6383b3acc6de8aa37da55",
+  "agents_blob_oid": "67b83fceda960e3c4428a0119b5d88c5c4331ed0",
+  "agents_sha256": "911f8c9afd1bc6458f6c96f2b8d8547086e5a79714e92a2c362bce532fccf7cf",
+  "task_sha256": "8f6075d49454693decb9376c860d2187a070adbc517cc2fcb8a665aa0ed69831",
+  "collaboration_sha256": "ef02a7d2d88217a73ba4a01e1bfe2304a7d3ca0f3ceb6f0fefa4bdb7e5d2f9d8",
+  "collaboration_bytes": 1982,
+  "input_files_sha256": "513c3cf6b1a4baeff5e2a5ab325b8a1a59c2cd2fcb8337f16c4dfbfe8df6133d",
+  "schema_sha256": "d8ffdb13e6b1e38279355d9ffd592cfb91dc023d287976adf7892e85dbfaf0d7",
+  "runner_sha256": "b11837ae93ef151b7db411aaf89aa1e60d8f828a6ac25aaf99858f19b7ff8f3d",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "previous_review_sha256": null,
+  "previous_run_sha256": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "fallback_review": null,
+  "closure_review": null,
+  "fallback_input_scope": null,
+  "retry_of_failed_round": null,
+  "artifact_paths": [
+    "docs/ai-team-starter-kit/README.md",
+    "docs/ai-team-starter-kit/START-HERE.md",
+    "docs/ai-team-starter-kit/CORE-CONTRACT.md",
+    "docs/ai-team-starter-kit/templates/README.md",
+    "docs/ai-team-starter-kit/templates/TASK-PACKET.md",
+    "docs/ai-team-starter-kit/templates/HANDOFF.md",
+    "docs/ai-team-starter-kit/templates/ROLE-CONTEXT.md",
+    "docs/ai-team-starter-kit/templates/TEAM-MANIFEST.md",
+    "docs/ai-team-starter-kit/adapters/README.md",
+    "scripts/ai-team-starter-kit.test.mjs",
+    "package.json"
+  ],
+  "reference_paths": [
+    "AGENTS.md"
+  ],
+  "evidence_paths": [],
+  "allowed_paths": [
+    "docs/ai-team-starter-kit/README.md",
+    "docs/ai-team-starter-kit/START-HERE.md",
+    "docs/ai-team-starter-kit/CORE-CONTRACT.md",
+    "docs/ai-team-starter-kit/templates/README.md",
+    "docs/ai-team-starter-kit/templates/TASK-PACKET.md",
+    "docs/ai-team-starter-kit/templates/HANDOFF.md",
+    "docs/ai-team-starter-kit/templates/ROLE-CONTEXT.md",
+    "docs/ai-team-starter-kit/templates/TEAM-MANIFEST.md",
+    "docs/ai-team-starter-kit/adapters/README.md",
+    "scripts/ai-team-starter-kit.test.mjs",
+    "package.json",
+    "AGENTS.md"
+  ],
+  "excluded_paths": [
+    "apps/mobile/**",
+    "packages/**",
+    ".codex-share/**",
+    ".tmp/**"
+  ],
+  "applied_learning_ids": [],
+  "excluded_learning_ids": [],
+  "learning_registry_blob_oid": "fdbd6fb4b20e33fc45b56c25f57e0b1f9f2c8a9f",
+  "learning_registry_sha256": "2b240fcb2ec2363ddb914ffd5666ae9e167965977c4971fe94998bc3a3564f95",
+  "learning_assignment_sha256": "4660bb32207bcae3246801d71aa6a052eab7b0a7cef357bd5984f706fe3dcbfe",
+  "learning_target_date": "2026-09-03",
+  "input_files": [
+    {
+      "path": "AGENTS.md",
+      "path_role": "REFERENCE",
+      "change_type": "UNCHANGED",
+      "size": 12658,
+      "git_blob_oid": "67b83fceda960e3c4428a0119b5d88c5c4331ed0",
+      "sha256": "911f8c9afd1bc6458f6c96f2b8d8547086e5a79714e92a2c362bce532fccf7cf",
+      "line_count": 168
+    },
+    {
+      "path": "docs/ai-team-starter-kit/adapters/README.md",
+      "path_role": "ARTIFACT",
+      "change_type": "UNCHANGED",
+      "size": 438,
+      "git_blob_oid": "2d198e7d985d67473bf481371923e4793534f18b",
+      "sha256": "0ed40eae271fa6ce5c4c2b3a5a3d5d66579986ddb8a46ebc39809f3cf878e7dd",
+      "line_count": 7
+    },
+    {
+      "path": "docs/ai-team-starter-kit/CORE-CONTRACT.md",
+      "path_role": "ARTIFACT",
+      "change_type": "UNCHANGED",
+      "size": 1193,
+      "git_blob_oid": "0dd48aec05cd926c985e938da59b136e4d26c821",
+      "sha256": "ed5f3608e80c0547346cbcf0513ea1af2a938d194d0548373f7dec367463e5a4",
+      "line_count": 19
+    },
+    {
+      "path": "docs/ai-team-starter-kit/README.md",
+      "path_role": "ARTIFACT",
+      "change_type": "UNCHANGED",
+      "size": 1202,
+      "git_blob_oid": "cf4b411b62cb240ae12314308bc0c4b8a65564b3",
+      "sha256": "94ab94e8d875a9751b4d07e50d5e8a84f286e83c3b45083869602669e3d97047",
+      "line_count": 23
+    },
+    {
+      "path": "docs/ai-team-starter-kit/START-HERE.md",
+      "path_role": "ARTIFACT",
+      "change_type": "UNCHANGED",
+      "size": 944,
+      "git_blob_oid": "6b3c982bb20c77e70b0db1bd29cdad09de89f74b",
+      "sha256": "8c3ba7727e67b80ae699379367c35b0ddb1e460357d18329064ecd21deb7fa2e",
+      "line_count": 10
+    },
+    {
+      "path": "docs/ai-team-starter-kit/templates/HANDOFF.md",
+      "path_role": "ARTIFACT",
+      "change_type": "UNCHANGED",
+      "size": 418,
+      "git_blob_oid": "2f152235db3995c00c02d89b589c02f1f9d7e59d",
+      "sha256": "f2d243d384ec7efcfae11fbb219181a554c4e1a34dd5dbdf6d898789c232c777",
+      "line_count": 11
+    },
+    {
+      "path": "docs/ai-team-starter-kit/templates/README.md",
+      "path_role": "ARTIFACT",
+      "change_type": "UNCHANGED",
+      "size": 406,
+      "git_blob_oid": "f3b0e6f1220f2157a205c52adc7fa894ac7c8984",
+      "sha256": "3aea7f596940e790d0b20f93d0fb3b683e6f5e09ea4049c4223f0c6434560682",
+      "line_count": 9
+    },
+    {
+      "path": "docs/ai-team-starter-kit/templates/ROLE-CONTEXT.md",
+      "path_role": "ARTIFACT",
+      "change_type": "UNCHANGED",
+      "size": 423,
+      "git_blob_oid": "ea965b88b334ed98ea3017991ddccbd9c3c003d6",
+      "sha256": "962b71e9671cc7ea2db67d18bb9b8d8850aff8ee00a1a68b29d1829b8c3bb551",
+      "line_count": 10
+    },
+    {
+      "path": "docs/ai-team-starter-kit/templates/TASK-PACKET.md",
+      "path_role": "ARTIFACT",
+      "change_type": "UNCHANGED",
+      "size": 526,
+      "git_blob_oid": "aabd0ab824f9f10b4374ff57946a1417ad295a14",
+      "sha256": "4f37c0f2e0c2ccbe31136164eeaaeb2cf5c5f348f933073d35950fe139bd29f7",
+      "line_count": 16
+    },
+    {
+      "path": "docs/ai-team-starter-kit/templates/TEAM-MANIFEST.md",
+      "path_role": "ARTIFACT",
+      "change_type": "UNCHANGED",
+      "size": 379,
+      "git_blob_oid": "ae626cd5cb4d1bde414d90b43eaa9e22c6532c21",
+      "sha256": "61eab3b920770a8c6e9f39ea1cd34f770c44fbc41b1c8b9a00d2e9d26d688d11",
+      "line_count": 10
+    },
+    {
+      "path": "package.json",
+      "path_role": "ARTIFACT",
+      "change_type": "MODIFIED",
+      "size": 2302,
+      "git_blob_oid": "42e82f54e901082a72ae671854e6a5065450d51d",
+      "sha256": "941a4e498efed4d6284161b8c0e1f6aa114d449d3596dbd27f5c62b414f127e6",
+      "line_count": 47
+    },
+    {
+      "path": "scripts/ai-team-starter-kit.test.mjs",
+      "path_role": "ARTIFACT",
+      "change_type": "UNCHANGED",
+      "size": 1425,
+      "git_blob_oid": "1ac3b6388a14ae50c3a305fea528bcdeb178fb52",
+      "sha256": "eefc90cc5ebc8720651a7999537aeb0e0e3a67e25a61bd8014d4e989edeff2d8",
+      "line_count": 36
+    }
+  ],
+  "source_archive_version": 1,
+  "finding_resolution_semantics": "VERIFIED_RESOLVED_V1",
+  "artifact_snapshot_sha256": "8d8ba92002925aa65eadd3f60115da7dc8cb1be5b1fa073b84af0942485b18f8",
+  "input_snapshot_sha256": "0d3d456b6bae83334dda425b404bacdce8c139e609fd03e55035bf1c318748c1"
+}
