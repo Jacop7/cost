@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-FINDING-LINEAGE-COMMIT-015",
+  "sequence": "t0004",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-03T04:18:30.510Z",
+  "turn_id": "turn-o002",
+  "turn_type": "AI_DEPUTY_SUCCESSOR_HANDOFF",
+  "role": "AI-DEPUTY-ORCHESTRATOR",
+  "task_sha256": "39aaa5da344381080fb0e3b756d312d11bf772a3605bbd547a4842e1f5bf32b1",
+  "runner_sha256": "3e3bdc2aa6c4874c360a1c64e678bbe168e14db556c133bbfa91e62c42c510f7",
+  "previous_manual_run_sha256": "36dbd7072966337f92b590123ba04a2d8eef4e987f0067751c64388fe35b4317",
+  "collaboration_before_sha256": "f1ca908d7addc2a62df6c47247c4d1282fe6db68d7997ec21b2c10378273cb13",
+  "collaboration_before_bytes": 6777,
+  "collaboration_entry_sha256": "de6b2fa6808eef56253f56c8bcd3564d04d7e740eeee3fa43c5bbc82b442a6e1",
+  "collaboration_entry_bytes": 834,
+  "collaboration_after_sha256": "2e335408d8040eb79ec88f44ea77c5765bc28f0ca5cd96124ffcf35c46888382",
+  "collaboration_after_bytes": 7611
+}
