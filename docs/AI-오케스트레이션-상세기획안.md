@@ -3,9 +3,9 @@ doc_id: orchestration
 doc_type: ai_governance_plan
 status: DRAFT
 authority: request_intake_task_routing
-owner: AI-DEPUTY-ORCHESTRATOR
+owner: AI-MASTER-ORCHESTRATOR
 approver: HUMAN-CHIEF
-version: 0.2
+version: 0.7
 depends_on: [team, ontology]
 supersedes: []
 verified_by: []
@@ -14,7 +14,7 @@ review_by: 2026-10-01
 
 # MarginCook AI 오케스트레이션 상세 기획안
 
-> 버전: 0.2
+> 버전: 0.7
 > 상태: 누적 교차검수 대상 초안(`DRAFT`)
 > 작성일: 2026-09-01
 > 최종 책임자: 사람 주 오케스트레이터
@@ -70,9 +70,10 @@ review_by: 2026-10-01
 | 상태 복원기 | 새 채팅에서 Task·SHA·worktree·증거 복원 | AI 부 오케스트레이터 |
 | 충돌 판정기 | 추가·대체·별도 작업과 사용자 변경 겹침 판정 | AI 부 O, 대체 승인은 사람 |
 | 위험 분류기 | R0~R3와 사람 승인·감사 route 후보 산정 | AI 부 O, 표본 재판정 Codex/사람 |
-| 작업 그래프 | 선행 조건·병렬 가능성·파일 소유권 배정 | AI 부 오케스트레이터 |
+| 작업 그래프 | 선행 조건·병렬 가능성·파일 소유권과 담당 팀/역할 배정 확정 | AI 마스터 오케스트레이터 |
 | 컨텍스트 조립기 | 역할별 최소 권위 입력과 적용 Learning 선택 | AI 부 O, 온톨로지 계약 적용 |
-| 실행 라우터 | 제작·QA·감사·운영 역할 선택 | AI 부 오케스트레이터 |
+| 라우팅 계획자 | 제작·QA·감사·운영 역할과 실행 순서 확정 | AI 마스터 오케스트레이터 |
+| 라우팅 실행기 | 확정된 Task·역할·컨텍스트 경로로 전달하고 HANDOFF 상태 유지 | AI 부 오케스트레이터 |
 | 증거 수집기 | 시험·CI·배포·Finding을 exact SHA에 연결 | Codex QA + AI 부 O |
 | 게이트 판정기 | 필수 증거 누락·다른 SHA·skip을 차단 | 역할별 판정자, 정책·운영은 사람 |
 | 학습 후보기 | 반복 가능한 교훈을 CANDIDATE로 제안 | AI 부 O, 독립 검증 필요 |
@@ -85,14 +86,18 @@ review_by: 2026-10-01
 요구하는 책임을 수행한다. 어느 채팅도 그 안의 대화를 공식 기억이나 승인 근거로 사용하지 않는다.
 정식 이름과 소속은 팀 구성안 §1.4가 단일 소유하며, 본 문서는 다음 실행 흐름만 소유한다.
 
+마스터 작업의 번호 계약은 `01 통합 작업큐 · 사람 결정`, `02 마스터 오케스트레이션`,
+`03 부 오케스트레이션 · 토큰/컨텍스트 관리`, `04 개발·스테이징 배포 검증`,
+`05 운영 배포 · 복구 게이트` 순서다.
+
 ```text
 MarginCook · 마스터 작업
-├─ 00 마스터 오케스트레이션             목표·우선순위·최종 사람 결정
-├─ 01 부 오케스트레이션 · 토큰/컨텍스트 관리
-│                                      요청 정규화·Task 라우팅·컨텍스트 압력 관측
-├─ 02 통합 작업큐 · 사람 결정            Task·Decision의 공식 경로 연결
-├─ 03 개발·스테이징 배포 검증            비운영 배포 증거와 차단 상태
-└─ 04 운영 배포 · 복구 게이트            운영 Go/No-Go·복구·사후 증거
+├─ 01 통합 작업큐 · 사람 결정            사람의 승인·반려·보류와 Decision 공식 연결
+├─ 02 마스터 오케스트레이션             AI 마스터의 전체 목표·순서·작업 그래프·담당 배정·결정 요청 통합
+├─ 03 부 오케스트레이션 · 토큰/컨텍스트 관리
+│                                      AI 부 O의 요청 정규화·확정 라우팅 실행·컨텍스트/HANDOFF 관측
+├─ 04 개발·스테이징 배포 검증            사람의 진행 결정·비운영 배포 증거·차단 상태
+└─ 05 운영 배포 · 복구 게이트            사람의 운영 Go/No-Go·복구 결정·사후 증거
 
 MarginCook · 부서 그룹
 ├─ 00 모든 팀 상황실                     공식 상태 링크만 공지
@@ -109,7 +114,22 @@ Context & Token Steward는 `05 Knowledge · Orchestration`에 속하지만 별�
 `CONTEXT-STEWARD` 관측 컨텍스트로 모든 채팅의 압력을 본다. 이 역할은 새 채팅 전환을 제안할 뿐
 Task 범위·정책·비용 상한·검수 생략을 결정하지 않는다.
 
-마스터 흐름은 `00 마스터 오케스트레이션`에서 시작해 `04 운영 배포 · 복구 게이트`까지 이어지고,
+`02 마스터 오케스트레이션`은 `AI-MASTER-ORCHESTRATOR` 역할과 `SOLAR-MASTER-ORCH` 전용
+컨텍스트가 소유한다. 마스터 AI는 사람이 승인한 목표 안에서 작업 분해·전체 순서·작업 그래프·담당
+팀/역할·라우팅 계획을 확정하고 사람 Decision 요청을 통합한다. `03 부 오케스트레이션 · 토큰/컨텍스트
+관리`는 `AI-DEPUTY-ORCHESTRATOR` 역할과 `SOLAR-ORCH` 전용 컨텍스트가 소유하며 요청 정규화,
+추가·대체·별도 예비 판정, 상태 복원, 확정된 라우팅의 실행, Task/lease/HANDOFF와 토큰·컨텍스트
+관측을 담당한다. `Task 라우팅`이라는 말은 이 두 단계 외의 공동 확정 권한을 뜻하지 않는다.
+
+마스터 AI의 실행 조정은 `02 마스터 오케스트레이션`에서 시작한다. 사람 결정이 필요하면
+`01 통합 작업큐 · 사람 결정`에 Decision을 올리고, 결정 증거를 받은 뒤 `04 개발·스테이징 배포 검증`과
+`05 운영 배포 · 복구 게이트`로 이어 간다. 사람은 `04 개발·스테이징 배포 검증`에서 진행·보류·재시험
+결정을 직접 말하며, 이 결정은 `01 통합 작업큐 · 사람 결정`에 자동 연결하되 운영 승인으로 확대하지
+않는다. 사람은 `05 운영 배포 · 복구 게이트`에서 운영 Go/No-Go·복구 방향을 명시적으로 결정하며,
+이 결정도 `01`에 자동 연결한다. 사람은 같은 결정을 다른 채팅에서 반복 입력하지 않는다.
+`01`은 미결·완료 Decision의 통합 보기이고 결정 발화의 독점 채팅이 아니다. `03`은 이 흐름과
+모든 팀의 상태·토큰·HANDOFF를 관측하고 마스터가 확정한 경로를 실행해 `02`를 보조하지만 사람
+결정, 작업 분해·담당 배정 또는 마스터의 라우팅 계획 확정을 대신하지 않는다.
 부서 라우팅은 `00 모든 팀 상황실`에서 `05 Knowledge · Orchestration`까지의 여섯 채팅을 사용한다.
 이 이름은 탐색 앵커일 뿐 역할 ID나 승인 권한이 아니다.
 
@@ -319,10 +339,10 @@ DISCOVER → DEFINE → DESIGN → IMPLEMENT → VERIFY → AUDIT → DECIDE →
 
 ### 5.2 의존성
 
-- `depends_on`: 선행 Task가 완료돼야 시작
-- `blocks`: 완료 전 다른 Task를 막음
+- `depends_on`: `TASK ─DEPENDS_ON→ TASK | DECISION`으로 선행 Task 완료 또는 선행 Decision 확정을 요구
+- `blocks`: 새 관계가 아니라 `DEPENDS_ON`의 역방향 파생 view. A가 B를 막으면 B가 A에 `DEPENDS_ON`
 - `conflicts_with`: 같은 자원·정책·결정을 동시에 바꿈
-- `evidences`: 실행 결과가 다른 Task의 근거가 됨
+- `evidences`: 새 관계가 아니라 `TASK ─EVIDENCED_BY→ EVIDENCE`의 표시용 파생 필드
 - `supersedes`: 사람 Decision으로 옛 Task 결과를 대체
 
 순환 의존성이 생기면 작업을 시작하지 않고 공통 선행 결정 또는 인터페이스 Task로 분리한다.
@@ -344,27 +364,27 @@ DISCOVER → DEFINE → DESIGN → IMPLEMENT → VERIFY → AUDIT → DECIDE →
 
 | 변경 | 제작 | 실행 검증 | 독립 감사 |
 |---|---|---|---|
-| 문서 인덱스·링크 | AI 부 O/솔라 | Codex 정적 검사 | Fable 계약·링크 누락 검수 |
-| 제품 요구·도메인 정책 | SOLAR-PO | Codex 시나리오 | Fable 반례 검수 |
-| 구조·디렉터리 | SOLAR-ARCH/App | Codex 동등성·경계 시험 | Fable 구조 감사 |
-| DB/RPC/RLS | SOLAR-DEV-DB | Codex DB·경합·권한 시험 | FABLE-SEC |
-| Core 공식 | SOLAR-DEV-CORE | Codex SQL parity | FABLE-ARCH |
-| Mobile | SOLAR-DEV-APP | Codex UI·Android·iOS | Fable 요구사항·접근성·시험 누락 검수 |
-| 운영 배포·복구 | SOLAR-OPS + 사람 | Codex smoke·검산 | Fable 고위험 감사 + 사람 |
+| 문서 인덱스·링크 | AI 부 O/솔라 | Codex 정적 검사 | Fable 기본·Opus 유효 fallback 계약·링크 누락 검수 |
+| 제품 요구·도메인 정책 | SOLAR-PO | Codex 시나리오 | Fable 기본·Opus 유효 fallback 반례 검수 |
+| 구조·디렉터리 | SOLAR-ARCH/App | Codex 동등성·경계 시험 | Fable 기본·Opus 유효 fallback 구조 감사 |
+| DB/RPC/RLS | SOLAR-DEV-DB | Codex DB·경합·권한 시험 | FABLE-SEC 역할(Fable 기본·Opus 유효 fallback) |
+| Core 공식 | SOLAR-DEV-CORE | Codex SQL parity | FABLE-ARCH 역할(Fable 기본·Opus 유효 fallback) |
+| Mobile | SOLAR-DEV-APP | Codex UI·Android·iOS | Fable 기본·Opus 유효 fallback 요구사항·접근성·시험 누락 검수 |
+| 운영 배포·복구 | SOLAR-OPS + 사람 | Codex smoke·검산 | Fable 기본·Opus 유효 fallback 고위험 감사 + 사람 |
 
 모델 이름은 역할이 아니다. Fable과 Opus의 엔진 출처·승계 조건은 `docs/ai-review/README.md`를 따른다.
-독립 감사 칸은 유효한 `FABLE-*` 결과만 완료 처리한다. `OPUS-FALLBACK` successor와
-`OPUS_DIRECT_ADVISORY`는 Fable 장애·소진 중 작업 연속성을 위한 임시 비게이트 자문이며, 후속 Fable
-재검수 전에는 이 칸과 Task 완료 조건을 충족하지 않는다. 실제 엔진 출처를 숨기거나 Fable 결과로
-표시하지 않는다.
+독립 감사 칸은 Fable 기본 결과 또는 계약 검증된 `OPUS-FALLBACK` successor 결과로 완료 처리한다.
+R0/R1은 Opus fallback으로 로컬 완료할 수 있고, R2/R3·운영 종결은 Fable 복구 표본 재감사 또는 사람의
+exact-SHA 잔여 위험 수용을 추가로 요구한다. `OPUS_DIRECT_ADVISORY`는 이 칸을 충족하지 않는다. 실제
+엔진 출처를 숨기거나 Opus 결과를 Fable 결과로 표시하지 않는다.
 
 ### 6.2 역할 호출 최소화
 
-- 모든 R0~R3 완료 route는 Codex 실행 검증과 Fable 검수를 함께 요구한다.
+- 모든 R0~R3 완료 route는 Codex 실행 검증과 Fable 기본 검수 또는 유효한 Opus fallback을 요구한다.
 - R0는 한 공식 산출물과 최소 교차계약 투영으로 Fable 입력을 축소한다.
 - R1은 영향 경계와 기존 회귀를 중심으로 Fable 검수 깊이를 조절한다.
-- R2는 설계 반례와 전문 Fable 감사 역할을 추가한다.
-- R3는 사람 결정과 분리된 Fable 보안·아키텍처 감사를 유지한다.
+- R2는 설계 반례와 전문 독립 감사 역할을 추가하고 Fable 재감사 또는 사람 위험 수용을 요구한다.
+- R3는 사람 결정과 분리된 보안·아키텍처 감사 및 Fable 재감사 또는 사람 위험 수용을 유지한다.
 - 같은 역할을 이름만 바꿔 중복 호출하지 않는다.
 - 앞 역할의 자기평가를 다음 독립 역할의 결론으로 주입하지 않는다.
 
@@ -376,90 +396,82 @@ DISCOVER → DEFINE → DESIGN → IMPLEMENT → VERIFY → AUDIT → DECIDE →
 사용량, 비용 envelope, terminal reason을 증거에 남긴다. 지정 모델을 사용할 수 없으면 조용히 다른
 모델로 낮추지 않고 `MODEL_UNAVAILABLE` 또는 `REVIEW_PENDING`으로 멈춘다.
 
-12단계의 한 단계는 다음 순서로 진행한다.
+12단계는 다음 기본 경로로 진행한다.
 
 ```text
 Terra xhigh가 권위·이전 증거를 복원하고 공식본을 작성·구현
 → Codex 실행 검증과 exact target/diff 증거 생성
-→ Sol high/xhigh가 구조 결정만 제한 검토
-→ Claude Opus가 앞 모델의 결론을 받지 않은 입력으로 독립 검수
+→ 묶음 경계에서 Sol high/xhigh가 구조 결정만 제한 검토
+→ Fable이 공식 독립검수
+→ Fable의 구조화된 소진 조건에서만 Opus가 같은 계약으로 승계
 → 제작자가 Finding을 반영하거나 근거 있는 disposition 기록
 → 필요한 재검증 뒤 단계 판정
 ```
 
-각 단계는 그 대상 판본에 대한 유효한 Opus 구조화 결과가 없으면 `단계 판정 완료`가 아니라
-`REVIEW_PENDING`으로 멈추며 다음 단계로 넘어가지 않는다. 12단계의 모든 Opus 호출은
-`OPUS_DIRECT_ADVISORY`이고 §8.2의 비용 계약에 귀속된다. 기존 누적 비용을 0으로 재설정하거나 이 표를
-별도 지출 승인으로 해석하지 않는다. 별도 12단계 envelope를 쓰려면 사람 `HUMAN_DECISION`이 공식
-공동 장부에 `advisory_budget_usd_approved`와 적용 Task·단계·기간을 먼저 pin하고 작업큐가 그 Decision
-ID를 참조해야 한다. 해당 pin이 없거나 승인 잔액이 1단계 상한보다 작으면 1단계도 시작하지 않는다.
+각 검수 묶음은 정확한 대상 bytes에 결속된 Fable 결과 또는 팀 구성안 §3.10.1을 통과한 Opus fallback
+결과가 없으면 `REVIEW_PENDING`으로 멈춘다. Fable과 Opus를 같은 검수 목적으로 동시에 호출하지 않고,
+단계별 상한을 반복 증액하지 않는다. 사람은 프로젝트 시작 시 `review_budget_envelope_approved`를 한 번
+pin하며 AI 부 오케스트레이터와 토큰 관리자는 그 봉투 안에서 묶음별 배분과 미사용분 이월을 수행한다.
+봉투가 없거나 잔액·사용률 기준을 위반하면 외부 검수 Run을 시작하지 않는다.
 
-Sol과 Opus는 Terra 작업을 처음부터 재수행하지 않는다. 최초 Sol 입력은 Task 계약, 대상 공식본·diff,
-관련 권위, 실행 증거, 미해결 질문만 포함한다. 최초 Opus 입력은 독립성을 위해 Terra·Sol의 결론과
-자기변호를 제외하고 같은 대상 판본·권위·검증 증거만 포함한다. 후속 회차에만 Finding과 제작자
-disposition을 추가한다. 단계 안에서 동일 판본을 다시 호출하려면 새 필수 Finding, 실행 증거 변경,
-입력 결함 중 하나가 있어야 한다.
+Sol과 외부 감사 엔진은 Terra 작업을 처음부터 재수행하지 않는다. Sol 입력은 Task 계약, 대상
+공식본·diff, 관련 권위, 실행 증거, 미해결 질문만 포함한다. Fable 또는 fallback Opus의 최초 입력은
+독립성을 위해 Terra·Sol의 결론과 자기변호를 제외하고 같은 대상 판본·권위·검증 증거만 포함한다.
+검수된 대상 bytes가 바뀌면 사유와 무관하게 이전 PASS는 새 판본을 대표하지 않으며 diff 재검수를
+받는다. 반대로 동일 bytes·동일 증거는 새 Finding·입력 결함 없이 반복 호출하지 않는다.
 
-다음 표의 `점수`는 전체 작업을 100으로 둔 상대 작업 envelope이며 공급자 간 청구 토큰의 등가 환산이
-아니다. 실제 총 토큰·금액 상한은 사람 Decision이 별도로 정한다. 각 칸은 해당 단계가 사용할 수 있는
-초기 배분점이고, 미사용분 이동은 전체 100점과 외부 비용 상한을 늘리지 않는 범위에서만 허용한다.
+호출 하한은 검수 묶음으로 계산한다. 스터디 횟수·실행 검증·외부 모델 호출을 같은 지표로 합산하지
+않으며, 조건부 diff 재검수는 기본 하한에 숨기지 않고 별도 계수한다.
 
-| 단계 | 결과 | Terra xhigh 상대 점수 | Sol 상대 점수·판단 | Opus 독립검수 상대 점수 | 합계 상대 점수 |
-|---:|---|---:|---|---:|---:|
-| 1 | 팀 구성안 확정 | 4 | 1 · high · 역할/승인 경계 | 2 | 7 |
-| 2 | 온톨로지 확정 | 6 | 2 · xhigh · 상태/관계/HANDOFF | 2 | 10 |
-| 3 | 오케스트레이션 확정 | 6 | 2 · xhigh · 라우팅/실패 전이 | 2 | 10 |
-| 4 | MD 위치·연결 방향 확정 | 5 | 1 · high · 단일 권위/그래프 | 2 | 8 |
-| 5 | 품질·학습·자율성 확정 | 6 | 1 · xhigh · 승격/강등/사람 경계 | 2 | 9 |
-| 6 | 다섯 문서 누적 상호참조 | 5 | 1 · high · 충돌/누락 판정 | 2 | 8 |
-| 7 | 구조 종합 감사 | 6 | 2 · xhigh · 네트워크 종합 | 2 | 10 |
-| 8 | 사람 최종 승인 | 1 | 1 · xhigh · 결정안/잔여 위험 | 1 | 3 |
-| 9 | 팀별 디렉터리·MD 생성 | 6 | 1 · high · 승인안 이탈 확인 | 2 | 9 |
-| 10 | 문서 그래프 검사기 연결 | 6 | 1 · high · 게이트/실패 폐쇄 | 2 | 9 |
-| 11 | 실제 업무 파일럿 | 7 | 2 · xhigh · 결과/회귀 판단 | 2 | 11 |
-| 12 | 스타터 키트 v0.5 역반영 | 3 | 1 · xhigh · 최종 종합 | 2 | 6 |
-| **합계** |  | **61** | **16** | **23** | **100** |
+| 묶음 | 단계·결과 | Terra xhigh | Sol 구조 검토 | Fable 기본 | Opus 기본 |
+|---|---|---:|---:|---:|---:|
+| A | 1~5 기획안 확정 | 단계별 1회 · 5 | high 1 | 1 | 0 |
+| B | 6~7 상호참조·종합 감사 | 단계별 1회 · 2 | xhigh 1 | 1 | 0 |
+| C | 8 사람 최종 승인 | 승인 자료 1 | 없음 | 신규 bytes diff 1 | 0 |
+| D | 9~11 생성·검사기·파일럿 | 단계별 1회 · 3 | high 1 | 1 | 0 |
+| E | 12 스타터 키트 역반영 | 단계 1 | xhigh 1 | 1 | 0 |
+| **기본 하한** |  | **12** | **4** | **5** | **0** |
 
-8단계의 AI 결과는 승인 자료와 권고일 뿐 사람 `HUMAN_DECISION`을 대체하지 않는다. Opus는 1~12단계
-각각에 독립검수로 참여하지만 `OPUS_DIRECT_ADVISORY`는 §6.1의 공식 독립 감사나 Fable 완료 게이트를
-대체하지 않는다. Fable 예산을 현재 배정하지 않기로 한 경우 `fable_budget_state`를
-`DEFERRED_NOT_WAIVED`로 기록하고 새 Fable 호출은 하지 않는다. 이 상태에서는 초안·Opus 자문·기계
-검증 중 1~7단계의 `DRAFT_READY` 후보까지만 진행할 수 있다. 8단계의 `ACTIVE` 승격 Decision과
-9~12단계의 materialize·검사기 연결·파일럿·역반영은 실행하지 않으며, `workflow_state=VERIFIED`,
-`gate_state=CLOSED`, 개별 확정 단계나 12단계 완료를 선언할 수 없다. 보류 해제는 새 Fable 예산과
-필수 검수 route를 복원하는 사람 Decision으로만 한다.
+기본 합계는 21회다. 묶음 C 승인 자료가 묶음 B의 검수 bytes와 hash로 동일하면 C의 Fable 호출을
+생략해 Fable 4회·총 20회가 된다. 기존 “Codex 2회·Fable 유효 2회”는 단계별 반복 호출이 아니라
+서로 다른 증거 축과 최종 네트워크 closure를 검증하는 최소 유효 회차 계약이다. Finding이나 대상
+bytes 변경에 따른 재검수만 조건부로 추가한다.
+
+8단계의 AI 결과는 승인 자료와 권고일 뿐 사람 `HUMAN_DECISION`을 대체하지 않는다. 승인 자료가 새
+bytes이면 사람에게 올리기 전에 Fable diff 검수 또는 유효한 Opus fallback을 거친다. Fable 소진
+승계는 팀 구성안 §3.10.1을 따르며 R0·R1은 Opus 결과로 로컬 완료할 수 있다. R2·R3·운영은 Fable
+복구 표본 재감사 또는 exact SHA 사람 위험 수용이 추가로 필요하다. `OPUS_DIRECT_ADVISORY`는 사람이
+별도로 요청한 비게이트 자문일 뿐 이 기본 호출표에 포함되지 않는다.
 
 #### 6.3.1 측정 단위와 상한 제어
 
 - OpenAI Run은 input, cached input, output, reasoning token을 가능한 범위에서 분리하고, Claude Run은
   CLI가 보고한 input/output/cache 사용량과 USD 비용을 별도 기록한다. 서로 다른 공급자의 원시 토큰을
   단순 합산해 모델 우열이나 비용을 판정하지 않는다.
-- 단계별 실제 상한은 `승인된 전체 envelope × 단계 점수/100`으로 계산한다. 승인된 전체 envelope가
-  없으면 절대 토큰 상한은 `UNSET`이며 상대 점수를 금액 지출 승인으로 해석하지 않는다. `UNSET`은
-  대체 상한이 아니라 실행 차단 상태이므로 12단계 Run을 시작하지 않는다.
-- 단계 배분의 80%에서 중복 원문·낡은 증거를 제거하고, 100%에서 새 광범위 독해와 동일 입력 재호출을
-  중단한다. 120%가 필요하면 필수 권위·시험·감사를 삭제하지 말고 원인, 남은 결과, 추가 상한을 사람
-  Decision으로 올린다.
+- 프로젝트 검수 봉투는 시작할 때 사람 Decision으로 한 번 고정한다. Task별 기술 상한은 남은 봉투
+  안에서 토큰 관리자가 정하며 단계마다 사람에게 증액을 요구하지 않는다. 봉투가 `UNSET`이면 외부
+  검수 Run만 차단하고 Terra의 읽기·초안·로컬 검증까지 다시 막지는 않는다.
+- 봉투 사용률 80%에서 중복 원문·낡은 증거를 제거하고, 100%에서 새 외부 호출과 동일 입력 재호출을
+  중단한다. 더 필요하면 자동 증액하지 않고 남은 결과·대체 경로·잔여 위험을 사람에게 보고한다.
 - 비용 절감 순서는 중복 요약 제거 → 역할별 allowlist 축소 → 큰 로그의 hash·판별력 있는 compact
   evidence화 → 출력 verbosity 축소다. 필수 권위, 사람 승인, 실행 검증, 필수 감사 route는 절감 대상이
   아니다.
-- Sol은 단계당 최초 구조 판정 1회를 기본으로 하고, 같은 Sol Finding을 반영한 판본 또는 권위 계약이
-  바뀐 경우에만 재호출한다. `xhigh`는 표에 지정된 상태·관계·HANDOFF, 라우팅·실패 전이,
-  승격·강등·사람 경계, 네트워크 종합, 사람 결정안의 잔여 위험, 파일럿 회귀, 최종 종합 판단에만
-  사용하고 나머지는 `high`다.
-- Opus 최초 회차는 새 세션·읽기 전용·빈 MCP·제한 도구로 실행한다. 유효 구조화 결과가 없거나 예산·
-  인증·시간 제한으로 끝나면 검수 횟수에 포함하지 않고 실패 원본과 사용량을 보존하며 해당 단계를
-  `REVIEW_PENDING`으로 차단한다.
+- Sol은 A·D 묶음에서 `high`, B·E 묶음에서 `xhigh`로 최초 구조 판정 1회만 수행한다. 같은 Sol Finding을
+  반영한 판본 또는 권위 계약이 바뀐 경우에만 재호출한다.
+- Fable 최초 회차는 묶음별 클린 컨텍스트·읽기 전용·제한 도구로 실행한다. rate limit은 제공자의
+  `retry_after`에 따른 최대 1회, capacity 오류는 60초 뒤 최대 1회 재시도한다. 개별 기술 상한 종료는
+  입력 축소 재시도 1회 뒤에도 실패하면 Opus로 우회하지 않고 실패로 닫는다.
+- Opus fallback은 구조화된 제공자·프로젝트 봉투 소진 또는 위 재시도 기준을 소진한 rate/capacity
+  오류에서만 새 클린 컨텍스트로 실행한다. 실패 원본·비용·실제 엔진을 숨기지 않는다.
 
 #### 6.3.2 단계 증거와 재계획
 
 각 단계는 `stage_id`, 대상 commit/tree 또는 working snapshot hash, 입력 manifest hash, 모델·effort,
-배분점·실사용량, 실행 검증, Finding, 사람 Decision 필요 여부, `fable_budget_state`와 근거 Decision ID,
+호출 하한·실사용량, 실행 검증, Finding, 사람 Decision 필요 여부, 검수 봉투 ID·잔액 snapshot과 근거 Decision ID,
 `independence_attestation`(앞 모델 결론·자기변호 등 주입 금지 항목과 부재 확인), 다음 안전 행동을
-남긴다. 단계 점수의
-120% 초과, Critical/Major 신규 Finding, 권위 문서 변경, 사용자 범위 변경, 반복 실패가 발생하면 남은
-단계의 점수와 모델 effort를 재산정한다. 재산정은 과거 사용량을 지우거나 실패를 0원으로 바꾸지 않으며,
-기존 100점을 넘거나 외부 비용을 늘리면 사람 승인을 요구한다.
+남긴다. 기본 호출 하한 초과, Critical/Major 신규 Finding, 권위 문서 변경, 사용자 범위 변경, 반복
+실패가 발생하면 남은 묶음의 호출·effort를 재산정한다. 재산정은 과거 사용량을 지우거나 실패를
+0원으로 바꾸지 않으며 외부 검수 봉투를 늘리면 사람 승인을 요구한다.
 
 ## 7. 컨텍스트 조립
 
@@ -537,10 +549,10 @@ Finding 원본은 수정하지 않고 같은 ID로 해결 증거를 연결한다
 5. AI 품질·학습·자율성 평가 기획안
 
 각 새 핵심 기획안이 추가되면 새 문서만 보지 않고 기존 완료 문서 전체와의 책임·입력·출력·상태·
-실패·학습 관계를 외부 감사 엔진이 읽기 전용으로 두 번 검수한다. 2026-09-02 사람 결정
-`AI-ORCH-PLANS-FABLE-R2-20260902` 이후 이 누적 집합의 외부 교차검수는 공식 Fable 경로로 수행한다.
-결정 전에 완료한 직접 Opus advisory의 비용·실패·원본은 역사적 증거로 계속 보존하지만 공식 Fable
-gate를 종결하지 않는다.
+실패·학습 관계를 외부 감사 엔진이 읽기 전용으로 두 번 검수한다. 2026-09-03 사람 결정 이후 Fable이
+기본 엔진이며 팀 구성안 §3.10.1의 구조화된 소진·재시도·successor 계약을 통과한 Opus만 같은 독립
+역할을 승계한다. 결정 전에 완료한 직접 Opus advisory의 비용·실패·원본은 역사적 증거로 계속 보존하지만
+공식 독립검수 gate를 종결하지 않는다.
 
 ```text
 누적 초안 → 외부 교차검수 r1 → 공식 문서 반영 → 외부 교차검수 r2 → 잔여 필수 Finding 반영
@@ -551,7 +563,7 @@ gate를 종결하지 않는다.
 - r2가 새 필수 Finding을 찾으면 수정하고 다음 누적 단계 r1에서 다시 확인한다.
 - 마지막 5문서 단계는 잔여 필수 Finding 0건인 유효 재검수를 얻기 전 완료하지 않는다.
 - 모델·CLI·세션·사용 상한·보고 사용액·verdict·Finding ID를 증거에 기록한다.
-- 공식 Fable fallback handoff가 아닌 직접 Opus 검수는 `OPUS_DIRECT_ADVISORY`로 표시하고 Fable gate
+- 공식 fallback handoff가 아닌 직접 Opus 검수는 `OPUS_DIRECT_ADVISORY`로 표시하고 독립검수 gate
   종결 근거로 사용하지 않는다.
 
 최종 활성화는 네 DRAFT 기획안의 상태, 사람 `ACTIVE` Decision, `AGENTS.md` 책임 목록을 하나의
@@ -566,13 +578,11 @@ decision commit에서 함께 갱신한다. 일부 문서만 `ACTIVE`인 혼합 �
 앞으로 이 목록에 핵심 기획안을 추가하려면 사람 Decision으로 범위를 갱신하고, 추가 직후 전체
 누적 집합 2회 검수를 실행한다.
 
-직접 advisory는 회차별 `$2.00` 상한과 이 기획안 묶음 전체 `$20.00` 하드 상한을 가진다. 사용량은
-CLI 보고값을 센트 단위로 올림해 성공·실패 회차 모두 먼저 합산하며, 비용 envelope가 없으면 회차
-상한 전액을 쓴 것으로 본다. 전체 상한을 넘기기 전에 중단하고, 상향은 사람의 `HUMAN_DECISION`에
-`advisory_budget_usd_approved`를 기록한 뒤에만 허용한다. 이번 누적 검수에 대한 사람의 “모든 검수는
-Opus와 함께” 결정은 route와 예정 회차를 승인하지만 `$20.00` 초과까지 승인하지 않는다.
-상향 pin은 `AI-ORCH-PLANS-1`의 `collaboration.md` `HUMAN_DECISION`에만 기록하며, 뒤 evidence가 해당
-turn hash와 회차별 센트 올림 누적액을 인용해야 한다. 해당 공식 장부가 없으면 상향하지 않는다.
+직접 advisory도 프로젝트 단위 `review_budget_envelope_approved` 안에서만 실행한다. 사용량은 CLI
+보고값을 센트 단위로 올림해 성공·실패 회차 모두 먼저 합산하며, 비용 envelope가 없으면 회차 기술
+상한 전액을 쓴 것으로 본다. 전체 envelope에 도달하면 중단하고 자동 증액하지 않는다. 증액이 필요하면
+사람이 별도 `HUMAN_DECISION`으로 프로젝트 envelope 자체를 한 번 갱신해야 하며, Task별·회차별 pin을
+누적해 배수 예산을 만들지 않는다. direct advisory는 기본 12단계 route가 아니며 명시 요청 때만 쓴다.
 
 ## 9. 실패와 변경 처리
 
@@ -729,8 +739,9 @@ turn hash와 회차별 센트 올림 누적액을 인용해야 한다. 해당 �
 - 컨텍스트 입력과 Learning 주입이 역할·route 계약을 따른다.
 - 외부 모델 실패를 검수 결과로 위장하지 않는다.
 - 모든 기술 완료가 정확한 SHA·시험·Finding·게이트 증거에 연결된다.
-- 핵심 기획안 추가마다 현재 누적 집합 전체의 외부 교차검수 2회가 실행된다. 2026-09-02 사람 결정
-  이후에는 공식 Fable 경로의 유효 회차만 완료 회차로 센다.
+- 핵심 기획안 추가마다 현재 누적 집합 전체의 외부 교차검수 2회가 실행된다. Fable 기본 회차 또는
+  계약 검증된 Opus successor 회차만 완료 회차로 센다. R2/R3·운영 종결에는 Fable 복구 표본 또는
+  사람 exact-SHA 잔여 위험 수용을 추가한다.
 
 ## 14. 미결 구현 결정
 

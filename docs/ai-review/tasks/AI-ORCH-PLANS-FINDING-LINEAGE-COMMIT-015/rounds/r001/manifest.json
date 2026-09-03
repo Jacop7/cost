@@ -1,0 +1,88 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-FINDING-LINEAGE-COMMIT-015",
+  "round": "r001",
+  "created_at": "2026-09-03T04:12:14.277Z",
+  "review_mode": "INITIAL",
+  "baseline_commit_sha": "f3f79bc5e954f6bca81552eba6020d4464ecb4b3",
+  "target_commit_sha": "6e99bd93b737bf291f14a8d3a6465a1d5110fa6c",
+  "target_tree_oid": "c516cebc1c57bcc0a5705dbb7f7a4a0a24f38d55",
+  "agents_blob_oid": "c32214b5528752a91f0f1545fea8c735d5fae7fa",
+  "agents_sha256": "de18fc8524afa350d3d0806f40150b9397dfd45a91ff471b5e1f6d6bf95fc681",
+  "task_sha256": "39aaa5da344381080fb0e3b756d312d11bf772a3605bbd547a4842e1f5bf32b1",
+  "collaboration_sha256": "b6600568704b085c17fb146c84ae8dea3ecd06d939ae5a0c23c766522d159d52",
+  "collaboration_bytes": 1852,
+  "input_files_sha256": "bc286b097dc825c5a61abda3f938031c02803340c18fe594120ebaf7126c10f9",
+  "schema_sha256": "d8ffdb13e6b1e38279355d9ffd592cfb91dc023d287976adf7892e85dbfaf0d7",
+  "runner_sha256": "3e3bdc2aa6c4874c360a1c64e678bbe168e14db556c133bbfa91e62c42c510f7",
+  "snapshot_mode": "COMMIT",
+  "previous_review_sha256": null,
+  "previous_run_sha256": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "fallback_review": null,
+  "closure_review": null,
+  "fallback_input_scope": null,
+  "retry_of_failed_round": null,
+  "artifact_paths": [
+    "docs/팀구성_상세기획안.md",
+    "docs/AI-오케스트레이션-상세기획안.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md"
+  ],
+  "evidence_paths": [],
+  "allowed_paths": [
+    "docs/팀구성_상세기획안.md",
+    "docs/AI-오케스트레이션-상세기획안.md",
+    "AGENTS.md"
+  ],
+  "excluded_paths": [
+    "apps/mobile/**",
+    "packages/**",
+    "docs/prototypes/**",
+    ".codex-share/**",
+    ".tmp/**"
+  ],
+  "applied_learning_ids": [],
+  "excluded_learning_ids": [],
+  "learning_registry_blob_oid": "77f00167d790c82373c1aa803d91874952c3334a",
+  "learning_registry_sha256": "4717fe99c86319d7c0abc5c8dd38e68e3a55722d7cfa56b8de173ed05ca1388f",
+  "learning_assignment_sha256": "4660bb32207bcae3246801d71aa6a052eab7b0a7cef357bd5984f706fe3dcbfe",
+  "learning_target_date": "2026-09-03",
+  "input_files": [
+    {
+      "path": "AGENTS.md",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 11697,
+      "git_blob_oid": "c32214b5528752a91f0f1545fea8c735d5fae7fa",
+      "sha256": "de18fc8524afa350d3d0806f40150b9397dfd45a91ff471b5e1f6d6bf95fc681",
+      "line_count": 160
+    },
+    {
+      "path": "docs/팀구성_상세기획안.md",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 114703,
+      "git_blob_oid": "e57ed8ff73e8454f1d18195004c7086f200862a6",
+      "sha256": "29520df8333a62e87bde77405862dfe5c3ab0fbc7dd9c63d60bcfe792018ea3d",
+      "line_count": 2017
+    },
+    {
+      "path": "docs/AI-오케스트레이션-상세기획안.md",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 42572,
+      "git_blob_oid": "b601bac1b75a93afb4056ed0654eceb664bb5db5",
+      "sha256": "eb63e4988253edb175e7b8948f3104184af351b64736053b50368c18110c2258",
+      "line_count": 744
+    }
+  ],
+  "source_archive_version": 1,
+  "finding_resolution_semantics": "VERIFIED_RESOLVED_V1",
+  "artifact_snapshot_sha256": null,
+  "input_snapshot_sha256": null
+}

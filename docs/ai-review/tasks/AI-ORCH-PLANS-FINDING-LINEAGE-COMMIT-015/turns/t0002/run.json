@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-FINDING-LINEAGE-COMMIT-015",
+  "sequence": "t0002",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-03T04:12:08.711Z",
+  "turn_id": "turn-h001",
+  "turn_type": "HUMAN_DECISION",
+  "role": "HUMAN",
+  "task_sha256": "39aaa5da344381080fb0e3b756d312d11bf772a3605bbd547a4842e1f5bf32b1",
+  "runner_sha256": "3e3bdc2aa6c4874c360a1c64e678bbe168e14db556c133bbfa91e62c42c510f7",
+  "previous_manual_run_sha256": "8d69809774cd3462d012734a83369e323a7e993d4be1203358f569403a266edc",
+  "collaboration_before_sha256": "87a535c3c23270bd674fae86eb58c703a5071d225f79d3494dde31d9cca43dbd",
+  "collaboration_before_bytes": 924,
+  "collaboration_entry_sha256": "474a4330fa5113ebddc610f7804bd9dd02d4aea936e782403c55ce183ce5aa1c",
+  "collaboration_entry_bytes": 928,
+  "collaboration_after_sha256": "b6600568704b085c17fb146c84ae8dea3ecd06d939ae5a0c23c766522d159d52",
+  "collaboration_after_bytes": 1852
+}
