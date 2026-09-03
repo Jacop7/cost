@@ -1,0 +1,80 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-STAGE9-FINAL-DIFF-033",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R1",
+  "author_role": "SOLAR-ORCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "84004577d060a8c4b8bcc1048dc1003a451410e3",
+  "target_commit_sha": "9fd3d54eb4184b488e5f67d705a7137716626a92",
+  "target_tree_oid": "68a1a00f18d2dd06ea6112b3bcd569d480164ea9",
+  "agents_blob_oid": "5208bcf26b7a494b3b747da4327e3cc8f18710df",
+  "agents_sha256": "13154e1351d07a9f10d0cb7f3dfebd10833f40fc835c22000113dd7b86e36d84",
+  "requirements": [
+    "Task032/r001의 CHANGES_REQUIRED Finding 두 건과 Task032/r002의 budget_exhausted·verdict null 원본을 정확히 구분해야 한다.",
+    "현재 target에서 ACTIVE 디렉터리·품질 기획안의 본문 자기 상태가 DRAFT와 모순되지 않고, docs graph checker가 같은 회귀를 실패 폐쇄해야 한다.",
+    "Stage 9 증거의 실패 비용 계보가 Task027, Task028, Task030, Task031, Task032/r001·r002를 누락하거나 PASS로 오인하지 않아야 한다.",
+    "검토 범위는 Finding 해소 diff, 관련 최소 참조, 그 실행 증거로 제한하며 Stage 9 전체·단계 10·제품·DB·배포·운영을 재감사하거나 승인하지 않는다.",
+    "현재 target의 필수 OPEN Finding이 없으면 간결한 PASS를 반환한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:single-canonical-artifact",
+    "AGENTS:fable-independent-review",
+    "AI-DIRECTORY:atomic-activation",
+    "AI-QUALITY:a0-default",
+    "AI-ORCH:chat-is-not-authority"
+  ],
+  "artifact_paths": [
+    "docs/디렉터리-문서신경망-재설계-기획안.md",
+    "docs/AI-품질-학습-자율성-평가기획안.md",
+    "docs/ai-review/evidence/AI-PLANS-SIM-STAGE-9-MATERIALIZATION-EVIDENCE.md",
+    "docs/작업큐.md",
+    "scripts/docs-graph-check.mjs",
+    "scripts/docs-graph-check.test.mjs",
+    ".gitattributes"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/ai-review/README.md"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/tasks/AI-ORCH-STAGE9-COMPACT-RECOVERY-032/rounds/r001/review.json",
+    "docs/ai-review/tasks/AI-ORCH-STAGE9-COMPACT-RECOVERY-032/rounds/r002/run.json",
+    "docs/ai-review/tasks/AI-ORCH-STAGE9-COMPACT-RECOVERY-032/collaboration.md"
+  ],
+  "excluded_paths": [
+    "apps/mobile/**",
+    "packages/**",
+    "docs/prototypes/**",
+    "scripts/prototype_server.py",
+    ".codex-share/**",
+    ".tmp/**"
+  ],
+  "required_evidence": [
+    "target SHA 9fd3d54와 tree 68a1a00의 commit snapshot",
+    "Task032/r001 CHANGES_REQUIRED·두 Finding, r002 budget_exhausted·verdict null·USD 3.494104 원본",
+    "graph activation PASS 29/19, graph test 13/13, network simulation 71/71, Project Orchestrator plan VERIFIED",
+    "Task027 USD 6.338000, Task028 PASS USD 2.677106, Task030 USD 7.502960, Task031 provider 이전 중단의 계보"
+  ],
+  "human_decisions": [
+    "DEC-AI-STAGE-8-ACTIVATION-APPROVAL-027 — 단계 9 물질화와 A0 shell 생성을 승인했다.",
+    "DEC-AI-FABLE-AUTONOMOUS-BUDGET-009 — 사용자는 최소~중간 예산 선택과 필요 시 기준 초과 진행을 위임했다.",
+    "DEC-AI-STAGE9-FINAL-DIFF-BUDGET-033 — 사용자의 재개 지시에 따라 수정 diff만 Fable 단일 감사 1회, soft cap USD 4.00을 승인한다.",
+    "동일 목적 Opus, 자동 재시도·자동 증액, 단계 10·제품·DB·배포·운영 실행은 이 감사 범위에 포함하지 않는다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "4.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}
