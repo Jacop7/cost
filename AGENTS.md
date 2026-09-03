@@ -116,7 +116,7 @@
 corepack pnpm verify
 ```
 
-실행 순서는 ① 타입 ② core·DB·mobile 시험 ③ CLI 고정 계약·ACL 셸 보안 ④ 새 DB 전체 migration·DB 스위트·
+실행 순서는 ① 타입 ② core·DB·mobile 시험 ③ CLI 고정 계약·ACL 셸 보안·문서 그래프 ④ 새 DB 전체 migration·DB 스위트·
 2세션 경합·locale parity ⑤ 업그레이드 경로 ⑥ 웹 번들이다. 건너뛴 단계가 있으면 전체 통과라고
 표현하지 않는다.
 
