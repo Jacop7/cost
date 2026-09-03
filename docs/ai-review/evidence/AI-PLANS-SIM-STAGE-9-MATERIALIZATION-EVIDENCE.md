@@ -112,8 +112,10 @@ Project Orchestrator가 검증한 현재 model plan SHA-256은
   `3.568507`; Finding 보완은 로컬 검증을 통과했다.
 - `AI-ORCH-STAGE9-COMPACT-RECOVERY-032/r002`: `budget_exhausted`, 판정 없음, 실제 USD
   `3.494104`; r001 Finding의 Fable 재검수 원본으로 보존
+- `AI-ORCH-STAGE9-FINAL-DIFF-033/r001`: `CLAUDE_EXECUTION_FAILED`, 판정 없음, 실제 USD
+  `2.314057`; 수정 diff Fable 감사의 실패 원본으로 보존
 - 선택 Improvement 2개는 checker와 사보타주에 반영했다.
-- 단계 9 현재 누적 Fable 실비: USD `23.580677`
+- 단계 9 현재 누적 Fable 실비: USD `25.894734`
 - 같은 목적의 Opus 동시 호출은 하지 않았다.
 
 이 증거가 결속된 commit을 대상으로 마지막 Fable exact-SHA 감사를 한 번 수행한다. 새 필수 Finding이
