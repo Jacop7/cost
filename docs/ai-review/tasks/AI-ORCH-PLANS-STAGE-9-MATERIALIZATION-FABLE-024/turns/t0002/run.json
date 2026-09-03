@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-STAGE-9-MATERIALIZATION-FABLE-024",
+  "sequence": "t0002",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-03T06:40:19.877Z",
+  "turn_id": "turn-h001",
+  "turn_type": "HUMAN_DECISION",
+  "role": "HUMAN",
+  "task_sha256": "b85a12f00968c855f544dd287b464cb95548b5f5615d682bfe787c97fb46f079",
+  "runner_sha256": "3e3bdc2aa6c4874c360a1c64e678bbe168e14db556c133bbfa91e62c42c510f7",
+  "previous_manual_run_sha256": "0627121e17250c47f239ca1ee42aaf70e13384fa034cd377dd1657f1cfb41c92",
+  "collaboration_before_sha256": "612ca0837c459ff37e64f7c706745745b5900c31bbedb1517e7bad47fb740798",
+  "collaboration_before_bytes": 1480,
+  "collaboration_entry_sha256": "00e0d0919a075cdecc3a52da7c5158ce8f15489d1524c0142293bf7a7a129edb",
+  "collaboration_entry_bytes": 838,
+  "collaboration_after_sha256": "f3b7f7e9d885a42b13280f3128c123073b8e8edcf0571410940122210e00f936",
+  "collaboration_after_bytes": 2318
+}

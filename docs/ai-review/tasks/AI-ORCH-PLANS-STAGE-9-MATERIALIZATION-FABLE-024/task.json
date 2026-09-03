@@ -1,0 +1,79 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-STAGE-9-MATERIALIZATION-FABLE-024",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R1",
+  "author_role": "SOLAR-ORCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "d14ce2a838e003a57983c3772fb8b3a5b730fc0a",
+  "target_commit_sha": "d14ce2a838e003a57983c3772fb8b3a5b730fc0a",
+  "target_tree_oid": "16ddf84f0237643bd0651f0c0de36ee63da8c0d1",
+  "agents_blob_oid": "3cf45cbcabeb756a4d12d16c62e681134df635bb",
+  "agents_sha256": "3ba1d03dedab3b7a810d0418ce1d08eb552e4f760ed636a250b033bece5cf341",
+  "requirements": [
+    "단계 9 실행기획안은 기존 다섯 기획안의 경로·권한·활성화 계약을 새로 정의하지 않고 실행 순서로만 투영해야 한다.",
+    "standalone graph checker, activation 전 preflight, 원자 ACTIVE commit, activation 뒤 manifest 구현의 선후가 모순 없이 닫혀야 한다.",
+    "기존 ROLE_CONTEXTS·TEAM_LEARNING 이력과 사용자 소유 변경을 보존해야 한다.",
+    "마스터 5개·부서 6개 채팅은 권한이 아닌 A0 shell이며 공식 상태와 원시 대화를 소유하지 않아야 한다.",
+    "Account Continuity·Project Orchestrator·Mission Relay는 독립 책임을 유지하고 새 통합 플러그인이나 공용 hook을 만들지 않아야 한다.",
+    "사람 Decision, Fable 독립성, 운영 Go/No-Go와 Mission Relay Study Gate를 우회하지 않아야 한다.",
+    "단계 10은 기존 checker의 pnpm verify 연결만 소유하고 단계 9의 선행 검사와 경계가 명확해야 한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:single-canonical-artifact",
+    "AGENTS:user-owned-changes-excluded",
+    "AGENTS:fable-independent-review",
+    "AI-DIRECTORY:materialization-preflight",
+    "AI-DIRECTORY:atomic-activation",
+    "AI-QUALITY:a0-default",
+    "AI-ORCH:chat-is-not-authority",
+    "MISSION-RELAY:single-successor-study-gate"
+  ],
+  "artifact_paths": [
+    "docs/ai-review/evidence/AI-PLANS-SIM-STAGE-9-MATERIALIZATION-PLAN.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/디렉터리-문서신경망-재설계-기획안.md"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/evidence/AI-PLANS-SIM-STAGE-6-CROSS-REFERENCE-PASS.md",
+    "docs/ai-review/evidence/AI-PLANS-SIM-STAGE-7-FABLE-AUDIT-PASS.md",
+    ".codex/mission-relay/model-plan.json"
+  ],
+  "excluded_paths": [
+    "apps/mobile/**",
+    "packages/**",
+    "docs/prototypes/**",
+    ".codex-share/**",
+    ".tmp/**"
+  ],
+  "required_evidence": [
+    "activation 전·후 파일 인벤토리와 commit 경계 대조",
+    "문서 graph checker가 단계 9 선행검사와 단계 10 verify 연결로 분리 가능한지 판정",
+    "11개 A0 chat shell과 Mission Relay successor/Study Gate 계약 충돌 분석",
+    "세 전역 플러그인·작업큐·팀 manifest의 상태 소유권 비중복 확인",
+    "사용자 소유 변경·사람 승인·Fable 독립성·운영 게이트 보존 확인"
+  ],
+  "human_decisions": [
+    "2026-09-03 사용자는 9단계에서 수행할 항목을 정리한 기획안을 만들고 Fable 검수를 수행하도록 요청했다.",
+    "DEC-AI-FABLE-AUTONOMOUS-BUDGET-009 — 사용자는 합리적 최소~중간 범위의 Fable 예산 선택과 필요 시 기준 초과 진행을 AI 부 오케스트레이터에게 위임했다.",
+    "DEC-AI-STAGE-9-PLAN-BUDGET-024 — AI 부 오케스트레이터는 240줄 단일 실행기획안과 최소 근거의 1회 검수 soft cap을 USD 4.00으로 선택한다.",
+    "이 검수는 단계 9 실행 승인이나 운영 배포 승인이 아니며 실행형 통합 플러그인 제작을 허용하지 않는다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "4.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}
