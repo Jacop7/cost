@@ -197,7 +197,7 @@ function directoryOwnsRisks(directoryText) {
   return /^\|[^\n|]*(?:미해결 위험|위험 인스턴스)[^\n|]*\|\s*`?docs\/team\/RISKS\.md`?\s*\|/m.test(directoryText);
 }
 
-export function checkDocsGraph({ rootDir = DEFAULT_ROOT, requireActivation = false } = {}) {
+export function checkDocsGraph({ rootDir = DEFAULT_ROOT, requireActivation = false, requirePlannedTree = false } = {}) {
   const planMetadata = PLAN_DOCS.map((path) => ({ path, fields: parseFrontMatter(readRequired(rootDir, path), path) }));
   const docIds = planMetadata.map(({ fields }) => fields.doc_id);
   const authorities = planMetadata.map(({ fields }) => fields.authority);
@@ -212,10 +212,11 @@ export function checkDocsGraph({ rootDir = DEFAULT_ROOT, requireActivation = fal
   if (new Set(activatedStatuses).size !== 1 || !['DRAFT', 'ACTIVE'].includes(activatedStatuses[0])) {
     fail('NON_ATOMIC_PLAN_STATUS', '네 후속 기획안은 모두 DRAFT 또는 모두 ACTIVE여야 합니다.');
   }
-  if (!requireActivation) {
+  if (!requireActivation && !requirePlannedTree) {
     return { status: 'PASS', mode: 'plan', planStatus: activatedStatuses[0], checkedFiles: PLAN_DOCS.length };
   }
-  if (activatedStatuses[0] !== 'ACTIVE') fail('ACTIVATION_REQUIRED', 'activation 검사에는 네 후속 기획안이 모두 ACTIVE여야 합니다.');
+  if (requireActivation && activatedStatuses[0] !== 'ACTIVE') fail('ACTIVATION_REQUIRED', 'activation 검사에는 네 후속 기획안이 모두 ACTIVE여야 합니다.');
+  if (requirePlannedTree && activatedStatuses[0] !== 'DRAFT') fail('DRAFT_TREE_REQUIRED', 'planned-tree 검사에는 네 후속 기획안이 모두 DRAFT여야 합니다.');
 
   for (const path of CENTRAL_PATHS) readRequired(rootDir, path);
   const directoryText = readRequired(rootDir, 'docs/디렉터리-문서신경망-재설계-기획안.md');
@@ -261,8 +262,8 @@ export function checkDocsGraph({ rootDir = DEFAULT_ROOT, requireActivation = fal
 
   return {
     status: 'PASS',
-    mode: 'activation',
-    planStatus: 'ACTIVE',
+    mode: requirePlannedTree ? 'planned-tree' : 'activation',
+    planStatus: activatedStatuses[0],
     risks: risksOwned ? 'OWNED_AND_PRESENT' : 'WITHHELD_PENDING_AUTHORITY_ALIGNMENT',
     checkedFiles: PLAN_DOCS.length + CENTRAL_PATHS.length + Object.keys(ROLE_FILES).length + Object.keys(TEAM_FILES).length,
     contextCount: contexts.size,
@@ -270,12 +271,14 @@ export function checkDocsGraph({ rootDir = DEFAULT_ROOT, requireActivation = fal
 }
 
 function cliArgs(argv) {
-  const result = { rootDir: DEFAULT_ROOT, requireActivation: false };
+  const result = { rootDir: DEFAULT_ROOT, requireActivation: false, requirePlannedTree: false };
   for (let index = 0; index < argv.length; index += 1) {
     if (argv[index] === '--activation') result.requireActivation = true;
+    else if (argv[index] === '--planned-tree') result.requirePlannedTree = true;
     else if (argv[index] === '--root') result.rootDir = resolve(argv[++index]);
     else fail('UNKNOWN_ARGUMENT', `알 수 없는 인자입니다: ${argv[index]}`);
   }
+  if (result.requireActivation && result.requirePlannedTree) fail('CONFLICTING_MODE', '--activation과 --planned-tree는 함께 쓸 수 없습니다.');
   return result;
 }
 
