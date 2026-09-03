@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-STAGE-9-MATERIALIZATION-COMMIT-AUDIT-026",
+  "sequence": "t0001",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-03T07:24:22.738Z",
+  "turn_id": "turn-s001",
+  "turn_type": "SOLAR_REQUEST",
+  "role": "SOLAR-ORCH",
+  "task_sha256": "7d1bfdb911d1a7d5963d250c9e1145218e604ec8fecfe9c95f7e1611af8081a8",
+  "runner_sha256": "b11837ae93ef151b7db411aaf89aa1e60d8f828a6ac25aaf99858f19b7ff8f3d",
+  "previous_manual_run_sha256": null,
+  "collaboration_before_sha256": "5fe161e8e07717a5f9a777075c316022a7fc282b830036b956d0cee69ab02971",
+  "collaboration_before_bytes": 387,
+  "collaboration_entry_sha256": "e860f5f18c9d6b540e7e55c1cfc55857831566d9ff0a406acecbf80822a39956",
+  "collaboration_entry_bytes": 1012,
+  "collaboration_after_sha256": "9570273450f4f5dc0ec76f1d805d4878709f009b2c27d6130e533f21950fd773",
+  "collaboration_after_bytes": 1399
+}

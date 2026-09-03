@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-STAGE-9-MATERIALIZATION-RECHECK-025",
+  "sequence": "t0001",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-03T07:04:26.343Z",
+  "turn_id": "turn-s001",
+  "turn_type": "SOLAR_REQUEST",
+  "role": "SOLAR-ORCH",
+  "task_sha256": "b682d4c473e1b8075826efbe88e840edaa6de60602e0b2d9a7f4fd3d34b21d8c",
+  "runner_sha256": "3e3bdc2aa6c4874c360a1c64e678bbe168e14db556c133bbfa91e62c42c510f7",
+  "previous_manual_run_sha256": null,
+  "collaboration_before_sha256": "5eb8cc20aa198674d440b0893e2bb5149392adb2adf0cb8dce9507144357369c",
+  "collaboration_before_bytes": 427,
+  "collaboration_entry_sha256": "926b3ebe8ea204fd65a678176e24e9164716f0d8732d47386a87f32deb0e297e",
+  "collaboration_entry_bytes": 1103,
+  "collaboration_after_sha256": "aee8b2d9487e4bfb1800e97354e26729eec1b0bdf12e51edd014ddd0705cf284",
+  "collaboration_after_bytes": 1530
+}

@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-STAGE-9-MATERIALIZATION-COMMIT-AUDIT-026",
+  "sequence": "t0002",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-03T07:24:23.715Z",
+  "turn_id": "turn-h001",
+  "turn_type": "HUMAN_DECISION",
+  "role": "HUMAN",
+  "task_sha256": "7d1bfdb911d1a7d5963d250c9e1145218e604ec8fecfe9c95f7e1611af8081a8",
+  "runner_sha256": "b11837ae93ef151b7db411aaf89aa1e60d8f828a6ac25aaf99858f19b7ff8f3d",
+  "previous_manual_run_sha256": "904d6f7e0998ea17c4ef8628c57b8a5711f3606b26244e8faeb2371dc77d0ac0",
+  "collaboration_before_sha256": "9570273450f4f5dc0ec76f1d805d4878709f009b2c27d6130e533f21950fd773",
+  "collaboration_before_bytes": 1399,
+  "collaboration_entry_sha256": "ab9ca953fa019bac0bbe9d81fef1db4618f36acb24a03c60b8d7381c803533ee",
+  "collaboration_entry_bytes": 887,
+  "collaboration_after_sha256": "2d9fb26bd3943155c69c8598603f84c5a3c6e0727b5fefd03cbe4b6adca1481e",
+  "collaboration_after_bytes": 2286
+}

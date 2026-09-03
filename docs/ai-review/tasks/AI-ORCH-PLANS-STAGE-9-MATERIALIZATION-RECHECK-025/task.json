@@ -1,0 +1,80 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-STAGE-9-MATERIALIZATION-RECHECK-025",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R1",
+  "author_role": "SOLAR-ORCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "d14ce2a838e003a57983c3772fb8b3a5b730fc0a",
+  "target_commit_sha": "1b3fd6767787adec6cd2a991b81d72b2d40c906f",
+  "target_tree_oid": "d16e0c35245c21383efeef1c69ea52b77d9d62ba",
+  "agents_blob_oid": "3cf45cbcabeb756a4d12d16c62e681134df635bb",
+  "agents_sha256": "3ba1d03dedab3b7a810d0418ce1d08eb552e4f760ed636a250b033bece5cf341",
+  "requirements": [
+    "predecessor의 FAB-ARCH-024-PREFLIGHT-MANIFEST-WINDOW-001이 수정 commit에서 해소됐는지 같은 ID로 재검수한다.",
+    "predecessor의 FAB-ARCH-024-CHAT-SHELL-DECISION-SCOPE-002가 수정 commit에서 해소됐는지 같은 ID로 재검수한다.",
+    "predecessor의 FAB-ARCH-024-RISKS-PATH-OWNER-003이 수정 commit에서 해소됐는지 같은 ID로 재검수한다.",
+    "predecessor의 FAB-ARCH-024-STAGE10-STEP-PIN-004가 수정 commit에서 해소됐는지 같은 ID로 재검수한다.",
+    "activation commit SHA에는 디렉터리 기획안의 필수 중앙 노드와 네 기획안 ACTIVE 전이가 함께 존재해야 한다.",
+    "Codex sidebar section·11개 A0 shell 생성은 그 범위가 명시된 사람 Decision 없이는 실행하지 않아야 한다.",
+    "RISKS.md 소유권 불일치는 activation 후보에서 수렴하거나 해당 파일 생성을 중단해야 한다.",
+    "단계 10의 pnpm verify 내 정확한 연결 위치는 단계 10 Task가 소유하고 6단계 분모만 보존해야 한다.",
+    "필수 Finding이 해소됐으면 VERIFIED로 반환하고 CLOSED는 보호 원격 게이트 전까지 사용하지 않는다."
+  ],
+  "invariant_ids": [
+    "AGENTS:single-canonical-artifact",
+    "AGENTS:user-owned-changes-excluded",
+    "AGENTS:fable-independent-review",
+    "AI-DIRECTORY:materialization-preflight",
+    "AI-DIRECTORY:atomic-activation",
+    "AI-QUALITY:a0-default",
+    "AI-ORCH:chat-is-not-authority",
+    "MISSION-RELAY:single-successor-study-gate"
+  ],
+  "artifact_paths": [
+    "docs/ai-review/evidence/AI-PLANS-SIM-STAGE-9-MATERIALIZATION-PLAN.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/디렉터리-문서신경망-재설계-기획안.md"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/tasks/AI-ORCH-PLANS-STAGE-9-MATERIALIZATION-FABLE-024/rounds/r001/review.json",
+    "docs/ai-review/evidence/AI-PLANS-SIM-STAGE-6-CROSS-REFERENCE-PASS.md",
+    "docs/ai-review/evidence/AI-PLANS-SIM-STAGE-7-FABLE-AUDIT-PASS.md",
+    ".codex/mission-relay/model-plan.json"
+  ],
+  "excluded_paths": [
+    "apps/mobile/**",
+    "packages/**",
+    "docs/prototypes/**",
+    ".codex-share/**",
+    ".tmp/**"
+  ],
+  "required_evidence": [
+    "이전 WORKING_TREE_HASHED 검수의 Finding registry SHA-256 53d8644cb1c5f610eaa220dcdd34ab5089ce5c8d9d50cbda534f20b289d6b52e와 review 원본",
+    "수정 target commit 1b3fd6767787adec6cd2a991b81d72b2d40c906f의 단계 9 실행기획안 원문",
+    "네 inherited Finding ID 각각의 VERIFIED 전이 또는 잔여 OPEN 근거",
+    "activation 전 planned tree와 activation SHA 검사·필수 manifest 부재 sabotage 계약",
+    "사람 Decision의 외부 상태 범위 누락 시 저장소 물질화와 9.6 중단 계약"
+  ],
+  "human_decisions": [
+    "DEC-AI-FABLE-AUTONOMOUS-BUDGET-009 — 사용자는 합리적인 예산 기준을 초과해도 추가 질문 없이 계속 진행하도록 위임했다.",
+    "DEC-AI-FABLE-STAGE-9-MATERIALIZATION-RECHECK-BUDGET-025 — AI 부 오케스트레이터는 successor 재검수 soft cap을 USD 4.00으로 선택한다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "4.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}
