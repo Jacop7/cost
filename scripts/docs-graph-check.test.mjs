@@ -41,11 +41,11 @@ function frontMatter(fields, body = '') {
   return `---\n${lines.join('\n')}\n---\n\n${body}\n`;
 }
 
-function makeFixture() {
+function makeFixture(planStatus = 'ACTIVE') {
   const root = mkdtempSync(join(tmpdir(), 'docs-graph-'));
   for (const [path, docId, authority] of planPaths) {
     const body = docId === 'directory' ? '# Directory\n\nRISKS는 아직 별도 정합화 대상이다.' : `# ${docId}`;
-    put(root, path, frontMatter({ doc_id: docId, status: docId === 'team' ? 'CONFIRMED' : 'ACTIVE', authority }, body));
+    put(root, path, frontMatter({ doc_id: docId, status: docId === 'team' ? 'CONFIRMED' : planStatus, authority }, body));
   }
   for (const path of ['README.md', 'DECISIONS.md', 'RELEASE_GATE.md', 'TEAM_LEARNING.md']) put(root, `docs/team/${path}`, `# ${path}\n`);
   put(root, 'docs/team/handoffs/README.md', '# HANDOFF\n');
@@ -104,6 +104,17 @@ test('완성된 activation 문서 그래프는 통과한다', () => withFixture(
   assert.equal(result.status, 'PASS');
   assert.equal(result.risks, 'WITHHELD_PENDING_AUTHORITY_ALIGNMENT');
 }));
+
+test('DRAFT 상태의 완성 후보 트리는 planned-tree 모드에서 통과한다', () => {
+  const root = makeFixture('DRAFT');
+  try {
+    const result = checkDocsGraph({ rootDir: root, requirePlannedTree: true });
+    assert.equal(result.mode, 'planned-tree');
+    assert.equal(result.planStatus, 'DRAFT');
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
 
 test('필수 역할 manifest 누락을 잡는다', () => withFixture((root) => {
   rmSync(join(root, 'docs/team/roles/CODEX.md'));
