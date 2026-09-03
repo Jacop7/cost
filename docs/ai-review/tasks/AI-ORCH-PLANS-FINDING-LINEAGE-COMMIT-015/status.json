@@ -1,0 +1,26 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-FINDING-LINEAGE-COMMIT-015",
+  "predecessor_review": null,
+  "updated_at": "2026-09-03T04:15:32.478Z",
+  "latest_round": "r001",
+  "review_state": "OPEN",
+  "workflow_state": "FIXING",
+  "gate_state": "OPEN",
+  "run_state": "RESULT_RECEIVED",
+  "defect_state": "NOT_APPLICABLE",
+  "verdict": "CHANGES_REQUIRED",
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "fallback_reason": null,
+  "latest_run_sha256": "967463c9ef927ac5e9ea5f6099235bffac8da039af9367b3adf9794e4c292ecf",
+  "open_required_finding_ids": [
+    "FAB-ARCH-006-R0R1-DUPLICATE-COND-10-002"
+  ],
+  "open_optional_finding_ids": [],
+  "closed_finding_ids": [],
+  "candidate_review_state": null,
+  "candidate_review_sha256": null,
+  "backlog_dispositions": []
+}
