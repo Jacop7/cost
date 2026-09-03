@@ -399,7 +399,7 @@ test('중앙 권위 표에서 소유자를 바꾸거나 같은 주제를 복제�
   assert.throws(() => validateDocumentNetwork(duplicated), /중앙 권위 주제가 중복/);
 });
 
-test('후속 모델 계획은 21회 그룹 경로와 제한된 Opus fallback을 봉인한다', () => {
+test('12단계 완료 뒤 다중 채팅 동기화 계획은 21회 기본 경로와 추가 검수 경계를 봉인한다', () => {
   const plan = loadModelExecutionPlan();
   const result = validateModelExecutionPlan(plan);
   assert.deepEqual(result.calls, {
@@ -410,6 +410,13 @@ test('후속 모델 계획은 21회 그룹 경로와 제한된 Opus fallback을 
     'fable-high': 5,
   });
   assert.equal(result.totalCalls, 21);
+  assert.deepEqual(result.multiChatCalls, {
+    'terra-xhigh': 4,
+    'sol-high': 2,
+    'sol-xhigh': 0,
+    'opus-review': 0,
+    'fable-high': 1,
+  });
 
   const dualEngine = structuredClone(plan);
   dualEngine.budgetGuard.samePurposeDualEngineCallsAllowed = true;
