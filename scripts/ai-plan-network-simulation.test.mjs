@@ -1291,7 +1291,10 @@ test('문서 metadata는 수명주기·검증자·재검토 계약을 실제 fro
   assert.throws(() => validateDocumentNetwork(missing), /metadata 필드 집합/);
 
   const ghost = loadPlanDocuments();
-  ghost.ontology = ghost.ontology.replace('verified_by: []', 'verified_by: [GHOST-REVIEWER]');
+  ghost.ontology = ghost.ontology.replace(
+    'verified_by: [CODEX-QA, FABLE-ARCH, HUMAN-CHIEF]',
+    'verified_by: [GHOST-REVIEWER]',
+  );
   assert.throws(() => validateDocumentNetwork(ghost), /verified_by 역할/);
 
   const mismatch = loadPlanDocuments();
@@ -1315,9 +1318,9 @@ test('네 후속 기획안은 metadata·본문을 함께 바꾼 원자적 ACTIVE
 
   const partial = loadPlanDocuments();
   partial.ontology = partial.ontology
-    .replace('status: DRAFT', 'status: ACTIVE')
-    .replace('verified_by: []', 'verified_by: [CODEX-QA]')
-    .replace(/^> 상태:.*$/m, '> 상태: ACTIVE');
+    .replace('status: ACTIVE', 'status: DRAFT')
+    .replace('verified_by: [CODEX-QA, FABLE-ARCH, HUMAN-CHIEF]', 'verified_by: []')
+    .replace(/^> 상태:.*$/m, '> 상태: 누적 교차검수 대상 초안(`DRAFT`)');
   assert.throws(() => validateDocumentNetwork(partial), /네 후보 기획안 상태/);
 });
 

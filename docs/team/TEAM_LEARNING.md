@@ -139,6 +139,27 @@
 ```
 <!-- /team-learning-registry:v1 -->
 
+## 독립검증 지정 이관
+
+기존 v1 장부와 상태는 감사 원본으로 그대로 보존한다. 다음 레지스트리는 새 평가 계약의
+`verifier_role`·사람 지정 Decision 필드를 보완하지만, 누락된 과거 사람 결정을 소급 생성하지 않는다.
+`LEGACY_READ_ONLY` 항목은 새 Task에 자동 주입할 수 없고, 별도 사람 Decision으로 검증 역할과 범위를
+지정한 새 판본이 생긴 뒤에만 새 계약의 재사용 후보가 된다.
+
+<!-- team-learning-verifier-registry:v1 -->
+```json
+{
+  "schema_version": "1.0",
+  "entries": [
+    { "learning_id": "LRN-ORCH-CI-001", "author_role": "LEGACY_UNKNOWN", "lane_owner_role": "ORCHESTRATION", "verifier_role": "CODEX-FUNCTION-QA", "verifier_decision_id": null, "contract_state": "LEGACY_READ_ONLY" },
+    { "learning_id": "LRN-CODEX-TIME-001", "author_role": "LEGACY_UNKNOWN", "lane_owner_role": "CODEX", "verifier_role": "SOLAR-ORCH", "verifier_decision_id": null, "contract_state": "LEGACY_READ_ONLY" },
+    { "learning_id": "LRN-OPS-BACKUP-001", "author_role": "LEGACY_UNKNOWN", "lane_owner_role": "OPERATIONS", "verifier_role": "CODEX-FUNCTION-QA", "verifier_decision_id": null, "contract_state": "LEGACY_READ_ONLY" },
+    { "learning_id": "LRN-AUDIT-PIN-001", "author_role": "LEGACY_UNKNOWN", "lane_owner_role": "INDEPENDENT-AUDIT", "verifier_role": "CODEX-FUNCTION-QA", "verifier_decision_id": null, "contract_state": "CANDIDATE_UNASSIGNED" }
+  ]
+}
+```
+<!-- /team-learning-verifier-registry:v1 -->
+
 ## 운영 규칙
 
 - 새 항목은 원본 증거를 링크하고 `CANDIDATE`로 시작한다.

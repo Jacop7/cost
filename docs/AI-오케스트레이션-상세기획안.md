@@ -1,23 +1,25 @@
 ---
 doc_id: orchestration
 doc_type: ai_governance_plan
-status: DRAFT
+status: ACTIVE
 authority: request_intake_task_routing
 owner: AI-MASTER-ORCHESTRATOR
 approver: HUMAN-CHIEF
 version: 0.7
 depends_on: [team, ontology]
 supersedes: []
-verified_by: []
+verified_by: [CODEX-QA, FABLE-ARCH, HUMAN-CHIEF]
 review_by: 2026-10-01
 ---
 
 # MarginCook AI 오케스트레이션 상세 기획안
 
 > 버전: 0.7
-> 상태: 누적 교차검수 대상 초안(`DRAFT`)
+> 상태: 활성 권위(`ACTIVE`)
 > 작성일: 2026-09-01
 > 최종 책임자: 사람 주 오케스트레이터
+> 활성화 결정: `DEC-AI-STAGE-8-ACTIVATION-APPROVAL-027`
+> 승인 대상 SHA-256: `794fab2d3842fa3d74a6f09f2485d19b69f21fc62b12cd371d8cb00b2f02b5da`
 > 관계 문서: [`팀구성_상세기획안.md`](./팀구성_상세기획안.md),
 > [`AI-지식-온톨로지-기획안.md`](./AI-지식-온톨로지-기획안.md)
 

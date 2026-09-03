@@ -44,6 +44,7 @@ const TEAM_FILES = Object.freeze({
 const REQUIRED_ROLE_FIELDS = Object.freeze([
   'role_id',
   'context_ids',
+  'context_refs',
   'allowed_routes',
   'input_allowlist',
   'authority_links',
@@ -171,6 +172,9 @@ function parseRegistry(text) {
   if (registry.schema_version !== '1.0' || !Array.isArray(registry.contexts)) {
     fail('INVALID_CONTEXT_REGISTRY', 'ROLE_CONTEXTS.md schema_version 또는 contexts가 잘못됐습니다.');
   }
+  if (registry.hash_algorithm !== 'sha256(context_id|version|route|autonomy_stage|decision_id|policy_hash)') {
+    fail('INVALID_CONTEXT_HASH_ALGORITHM', 'ROLE_CONTEXT hash_algorithm이 고정 계약과 다릅니다.');
+  }
   const contexts = new Map();
   for (const context of registry.contexts) {
     if (!context || typeof context.context_id !== 'string' || contexts.has(context.context_id)) {
@@ -179,13 +183,74 @@ function parseRegistry(text) {
     if (!Number.isInteger(context.version) || context.version < 1 || !/^[0-9a-f]{64}$/.test(context.context_hash ?? '')) {
       fail('INVALID_CONTEXT_VERSION', `ROLE_CONTEXT version/hash가 잘못됐습니다: ${context.context_id}`);
     }
+    if (typeof context.route !== 'string' || !context.route || !/^[0-9a-f]{64}$/.test(context.policy_hash ?? '')) {
+      fail('INVALID_CONTEXT_BINDING', `ROLE_CONTEXT route/policy_hash 결속이 잘못됐습니다: ${context.context_id}`);
+    }
     if (context.autonomy_stage !== 'A0') fail('UNAPPROVED_AUTONOMY', `승인 없는 route는 A0이어야 합니다: ${context.context_id}`);
     if (typeof context.decision_id !== 'string' || !context.decision_id) {
       fail('MISSING_CONTEXT_DECISION', `ROLE_CONTEXT Decision이 없습니다: ${context.context_id}`);
     }
+    const expectedHash = canonicalSha256([
+      context.context_id,
+      context.version,
+      context.route,
+      context.autonomy_stage,
+      context.decision_id,
+      context.policy_hash,
+    ].join('|'));
+    if (context.context_hash !== expectedHash) fail('CONTEXT_HASH_MISMATCH', `ROLE_CONTEXT hash가 내용과 다릅니다: ${context.context_id}`);
     contexts.set(context.context_id, context);
   }
   return contexts;
+}
+
+function parseJsonMarker(text, name) {
+  const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const match = text.match(new RegExp(`<!-- ${escaped}:v1 -->\\n\x60\x60\x60json\\n([\\s\\S]*?)\\n\x60\x60\x60\\n<!-- \\/${escaped}:v1 -->`));
+  if (!match) fail('MISSING_REGISTRY', `${name}:v1 기계 레지스트리가 없습니다.`);
+  try {
+    return JSON.parse(match[1]);
+  } catch {
+    fail('INVALID_REGISTRY', `${name}:v1 JSON이 유효하지 않습니다.`);
+  }
+}
+
+function checkLearningMigration(text) {
+  const legacy = parseJsonMarker(text, 'team-learning-registry');
+  const verifier = parseJsonMarker(text, 'team-learning-verifier-registry');
+  if (!Array.isArray(legacy.learnings) || !Array.isArray(verifier.entries)) fail('INVALID_LEARNING_MIGRATION', 'Learning 이관 배열이 없습니다.');
+  const legacyById = new Map(legacy.learnings.map((item) => [item.learning_id, item]));
+  const verifierById = new Map(verifier.entries.map((item) => [item.learning_id, item]));
+  if (legacyById.size !== legacy.learnings.length || verifierById.size !== verifier.entries.length) {
+    fail('DUPLICATE_LEARNING_ID', 'Learning ID 또는 verifier 이관 ID가 중복됐습니다.');
+  }
+  if ([...legacyById.keys()].sort().join('\n') !== [...verifierById.keys()].sort().join('\n')) {
+    fail('LEARNING_MIGRATION_COVERAGE', '기존 Learning과 verifier 이관표가 1:1로 대응하지 않습니다.');
+  }
+  for (const [id, item] of legacyById) {
+    const assignment = verifierById.get(id);
+    for (const field of ['author_role', 'lane_owner_role', 'verifier_role', 'contract_state']) {
+      if (typeof assignment[field] !== 'string' || !assignment[field]) fail('INVALID_LEARNING_ASSIGNMENT', `Learning 이관 필드가 없습니다: ${id}: ${field}`);
+    }
+    if (item.status === 'VERIFIED') {
+      const legacyReadOnly = assignment.contract_state === 'LEGACY_READ_ONLY' && assignment.verifier_decision_id === null;
+      const active = assignment.contract_state === 'ACTIVE' && typeof assignment.verifier_decision_id === 'string' && assignment.verifier_decision_id;
+      if (!legacyReadOnly && !active) fail('INVALID_VERIFIED_MIGRATION', `VERIFIED Learning의 Decision 계약이 잘못됐습니다: ${id}`);
+    }
+    if (item.status === 'CANDIDATE' && !['CANDIDATE_UNASSIGNED', 'CANDIDATE_ASSIGNED'].includes(assignment.contract_state)) {
+      fail('INVALID_CANDIDATE_MIGRATION', `CANDIDATE Learning의 이관 상태가 잘못됐습니다: ${id}`);
+    }
+    if (item.status === 'CANDIDATE') {
+      const unassigned = assignment.contract_state === 'CANDIDATE_UNASSIGNED' && assignment.verifier_decision_id === null;
+      const assigned = assignment.contract_state === 'CANDIDATE_ASSIGNED' && typeof assignment.verifier_decision_id === 'string' && assignment.verifier_decision_id;
+      if (!unassigned && !assigned) fail('INVALID_CANDIDATE_DECISION', `CANDIDATE Learning의 Decision 결속이 잘못됐습니다: ${id}`);
+    }
+    if (item.status === 'RETIRED') {
+      if (assignment.contract_state !== 'RETIRED' || typeof assignment.verifier_decision_id !== 'string' || !assignment.verifier_decision_id) {
+        fail('INVALID_RETIRED_MIGRATION', `RETIRED Learning의 폐기 Decision 결속이 잘못됐습니다: ${id}`);
+      }
+    }
+  }
 }
 
 function checkAuthorityLinks(rootDir, path, links) {
@@ -226,6 +291,7 @@ export function checkDocsGraph({ rootDir = DEFAULT_ROOT, requireActivation = fal
   if (!risksOwned && existsSync(risksPath)) fail('UNOWNED_RISKS', '중앙 권위 표가 수렴하지 않아 RISKS.md를 만들 수 없습니다.');
 
   const contexts = parseRegistry(readRequired(rootDir, 'docs/team/ROLE_CONTEXTS.md'));
+  checkLearningMigration(readRequired(rootDir, 'docs/team/TEAM_LEARNING.md'));
   const roleIds = new Set();
   for (const [expectedRoleId, path] of Object.entries(ROLE_FILES)) {
     const fields = parseFrontMatter(readRequired(rootDir, path), path);
@@ -233,6 +299,21 @@ export function checkDocsGraph({ rootDir = DEFAULT_ROOT, requireActivation = fal
     if (fields.role_id !== expectedRoleId || roleIds.has(fields.role_id)) fail('ROLE_ID_MISMATCH', `역할 ID가 파일 계약과 다릅니다: ${path}`);
     roleIds.add(fields.role_id);
     assertStringArray(fields.context_ids, path, 'context_ids');
+    assertStringArray(fields.context_refs, path, 'context_refs');
+    if (fields.context_refs.length !== fields.context_ids.length) fail('CONTEXT_REF_COVERAGE', `context ID와 version/hash 참조 수가 다릅니다: ${path}`);
+    const referencedIds = new Set();
+    for (const reference of fields.context_refs) {
+      const match = reference.match(/^(.+)@(\d+)#([0-9a-f]{64})$/);
+      if (!match) fail('INVALID_CONTEXT_REF', `context 참조 형식이 잘못됐습니다: ${path}: ${reference}`);
+      const context = contexts.get(match[1]);
+      if (!context || context.version !== Number(match[2]) || context.context_hash !== match[3]) {
+        fail('CONTEXT_REF_MISMATCH', `context version/hash가 레지스트리와 다릅니다: ${path}: ${reference}`);
+      }
+      referencedIds.add(match[1]);
+    }
+    if (referencedIds.size !== fields.context_ids.length || fields.context_ids.some((id) => !referencedIds.has(id))) {
+      fail('CONTEXT_REF_COVERAGE', `context ID와 version/hash 참조가 1:1이 아닙니다: ${path}`);
+    }
     for (const contextId of fields.context_ids) {
       if (!contexts.has(contextId)) fail('UNKNOWN_CONTEXT', `ROLE_CONTEXT 레지스트리에 없는 context입니다: ${path}: ${contextId}`);
     }

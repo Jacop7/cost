@@ -1,23 +1,25 @@
 ---
 doc_id: quality
 doc_type: ai_governance_plan
-status: DRAFT
+status: ACTIVE
 authority: quality_learning_autonomy_evaluation
 owner: AI-DEPUTY-ORCHESTRATOR
 approver: HUMAN-CHIEF
 version: 0.4
 depends_on: [team, ontology, orchestration, directory]
 supersedes: []
-verified_by: []
+verified_by: [CODEX-QA, FABLE-ARCH, HUMAN-CHIEF]
 review_by: 2026-10-01
 ---
 
 # MarginCook AI 품질·학습·자율성 평가 기획안
 
 > 버전: 0.4
-> 상태: 누적 교차검수 대상 초안(`DRAFT`)
+> 상태: 활성 권위(`ACTIVE`)
 > 작성일: 2026-09-01
 > 최종 책임자: 사람 주 오케스트레이터
+> 활성화 결정: `DEC-AI-STAGE-8-ACTIVATION-APPROVAL-027`
+> 승인 대상 SHA-256: `66883bb4ab9df23a7e44397a91f92d8e499b62fd70dce3ff0d90ac06acd9827a`
 > 관계 문서: [`팀구성_상세기획안.md`](./팀구성_상세기획안.md),
 > [`AI-지식-온톨로지-기획안.md`](./AI-지식-온톨로지-기획안.md),
 > [`AI-오케스트레이션-상세기획안.md`](./AI-오케스트레이션-상세기획안.md),

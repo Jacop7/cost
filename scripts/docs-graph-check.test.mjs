@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
@@ -41,26 +42,41 @@ function frontMatter(fields, body = '') {
   return `---\n${lines.join('\n')}\n---\n\n${body}\n`;
 }
 
+function fixtureContextHash(contextId) {
+  return createHash('sha256').update([
+    contextId, 1, 'NORMAL', 'A0', 'DEC-ACTIVATION-001', 'b'.repeat(64),
+  ].join('|')).digest('hex');
+}
+
 function makeFixture(planStatus = 'ACTIVE') {
   const root = mkdtempSync(join(tmpdir(), 'docs-graph-'));
   for (const [path, docId, authority] of planPaths) {
     const body = docId === 'directory' ? '# Directory\n\nRISKS는 아직 별도 정합화 대상이다.' : `# ${docId}`;
     put(root, path, frontMatter({ doc_id: docId, status: docId === 'team' ? 'CONFIRMED' : planStatus, authority }, body));
   }
-  for (const path of ['README.md', 'DECISIONS.md', 'RELEASE_GATE.md', 'TEAM_LEARNING.md']) put(root, `docs/team/${path}`, `# ${path}\n`);
+  for (const path of ['README.md', 'DECISIONS.md', 'RELEASE_GATE.md']) put(root, `docs/team/${path}`, `# ${path}\n`);
   put(root, 'docs/team/handoffs/README.md', '# HANDOFF\n');
   const contexts = Object.values(roleFiles).flatMap(([, ids]) => ids).map((contextId) => ({
     context_id: contextId,
     version: 1,
-    context_hash: 'a'.repeat(64),
+    route: 'NORMAL',
     autonomy_stage: 'A0',
     decision_id: 'DEC-ACTIVATION-001',
+    policy_hash: 'b'.repeat(64),
   }));
-  put(root, 'docs/team/ROLE_CONTEXTS.md', `# Contexts\n\n<!-- role-context-registry:v1 -->\n\`\`\`json\n${JSON.stringify({ schema_version: '1.0', contexts }, null, 2)}\n\`\`\`\n<!-- /role-context-registry:v1 -->\n`);
+  for (const context of contexts) {
+    context.context_hash = fixtureContextHash(context.context_id);
+  }
+  const hashAlgorithm = 'sha256(context_id|version|route|autonomy_stage|decision_id|policy_hash)';
+  put(root, 'docs/team/ROLE_CONTEXTS.md', `# Contexts\n\n<!-- role-context-registry:v1 -->\n\`\`\`json\n${JSON.stringify({ schema_version: '1.0', hash_algorithm: hashAlgorithm, contexts }, null, 2)}\n\`\`\`\n<!-- /role-context-registry:v1 -->\n`);
+  const learning = { learning_id: 'LRN-TEST-001', status: 'VERIFIED' };
+  const assignment = { learning_id: 'LRN-TEST-001', author_role: 'LEGACY_UNKNOWN', lane_owner_role: 'SOLAR', verifier_role: 'CODEX-FUNCTION-QA', verifier_decision_id: null, contract_state: 'LEGACY_READ_ONLY' };
+  put(root, 'docs/team/TEAM_LEARNING.md', `# Learning\n\n<!-- team-learning-registry:v1 -->\n\`\`\`json\n${JSON.stringify({ schema_version: '1.0', learnings: [learning] }, null, 2)}\n\`\`\`\n<!-- /team-learning-registry:v1 -->\n\n<!-- team-learning-verifier-registry:v1 -->\n\`\`\`json\n${JSON.stringify({ schema_version: '1.0', entries: [assignment] }, null, 2)}\n\`\`\`\n<!-- /team-learning-verifier-registry:v1 -->\n`);
   for (const [roleId, [filename, contextIds]] of Object.entries(roleFiles)) {
     put(root, `docs/team/roles/${filename}`, frontMatter({
       role_id: roleId,
       context_ids: contextIds,
+      context_refs: contextIds.map((id) => `${id}@1#${contexts.find((context) => context.context_id === id).context_hash}`),
       allowed_routes: ['NORMAL'],
       input_allowlist: ['Task Packet'],
       authority_links: ['docs/팀구성_상세기획안.md'],
@@ -142,11 +158,38 @@ test('채팅 이름을 승인 권한으로 위조하면 잡는다', () => withFi
 test('등록되지 않은 ROLE_CONTEXT 참조를 잡는다', () => withFixture((root) => {
   const path = 'docs/team/roles/SOLAR.md';
   put(root, path, frontMatter({
-    role_id: 'SOLAR', context_ids: ['CTX-UNKNOWN'], allowed_routes: ['NORMAL'], input_allowlist: ['Task Packet'],
+    role_id: 'SOLAR', context_ids: ['CTX-UNKNOWN'], context_refs: [`CTX-UNKNOWN@1#${'a'.repeat(64)}`], allowed_routes: ['NORMAL'], input_allowlist: ['Task Packet'],
     authority_links: ['docs/팀구성_상세기획안.md'], required_outputs: ['evidence'], verification_checklist: ['SHA'],
     handoff_in: ['predecessor'], handoff_out: ['successor'], stop_conditions: ['missing Decision'], human_escape: 'HUMAN-CHIEF',
   }, '# SOLAR'));
-  assert.throws(() => checkDocsGraph({ rootDir: root, requireActivation: true }), /레지스트리에 없는 context/);
+  assert.throws(() => checkDocsGraph({ rootDir: root, requireActivation: true }), /context version\/hash가 레지스트리와 다릅니다/);
+}));
+
+test('레지스트리 내부 context_hash 변조를 잡는다', () => withFixture((root) => {
+  const hashAlgorithm = 'sha256(context_id|version|route|autonomy_stage|decision_id|policy_hash)';
+  const tampered = [{
+    context_id: 'CTX-ORCH', version: 1, route: 'NORMAL', autonomy_stage: 'A0',
+    decision_id: 'DEC-ACTIVATION-001', policy_hash: 'b'.repeat(64), context_hash: 'c'.repeat(64),
+  }];
+  put(root, 'docs/team/ROLE_CONTEXTS.md', `# Contexts\n\n<!-- role-context-registry:v1 -->\n\`\`\`json\n${JSON.stringify({ schema_version: '1.0', hash_algorithm: hashAlgorithm, contexts: tampered }, null, 2)}\n\`\`\`\n<!-- /role-context-registry:v1 -->\n`);
+  assert.throws(() => checkDocsGraph({ rootDir: root, requireActivation: true }), /ROLE_CONTEXT hash가 내용과 다릅니다/);
+}));
+
+test('ROLE_CONTEXT의 빈 route나 잘못된 policy_hash를 잡는다', () => withFixture((root) => {
+  const hashAlgorithm = 'sha256(context_id|version|route|autonomy_stage|decision_id|policy_hash)';
+  const invalid = [{
+    context_id: 'CTX-ORCH', version: 1, route: '', autonomy_stage: 'A0',
+    decision_id: 'DEC-ACTIVATION-001', policy_hash: 'not-a-hash', context_hash: 'c'.repeat(64),
+  }];
+  put(root, 'docs/team/ROLE_CONTEXTS.md', `# Contexts\n\n<!-- role-context-registry:v1 -->\n\`\`\`json\n${JSON.stringify({ schema_version: '1.0', hash_algorithm: hashAlgorithm, contexts: invalid }, null, 2)}\n\`\`\`\n<!-- /role-context-registry:v1 -->\n`);
+  assert.throws(() => checkDocsGraph({ rootDir: root, requireActivation: true }), /route\/policy_hash 결속이 잘못됐습니다/);
+}));
+
+test('RETIRED Learning의 폐기 Decision 누락을 잡는다', () => withFixture((root) => {
+  const learning = { learning_id: 'LRN-TEST-001', status: 'RETIRED' };
+  const assignment = { learning_id: 'LRN-TEST-001', author_role: 'LEGACY_UNKNOWN', lane_owner_role: 'SOLAR', verifier_role: 'CODEX-FUNCTION-QA', verifier_decision_id: null, contract_state: 'LEGACY_READ_ONLY' };
+  put(root, 'docs/team/TEAM_LEARNING.md', `# Learning\n\n<!-- team-learning-registry:v1 -->\n\`\`\`json\n${JSON.stringify({ schema_version: '1.0', learnings: [learning] }, null, 2)}\n\`\`\`\n<!-- /team-learning-registry:v1 -->\n\n<!-- team-learning-verifier-registry:v1 -->\n\`\`\`json\n${JSON.stringify({ schema_version: '1.0', entries: [assignment] }, null, 2)}\n\`\`\`\n<!-- /team-learning-verifier-registry:v1 -->\n`);
+  assert.throws(() => checkDocsGraph({ rootDir: root, requireActivation: true }), /RETIRED Learning의 폐기 Decision 결속이 잘못됐습니다/);
 }));
 
 test('소유권 미수렴 RISKS 파일 생성을 잡는다', () => withFixture((root) => {
@@ -157,7 +200,7 @@ test('소유권 미수렴 RISKS 파일 생성을 잡는다', () => withFixture((
 test('manifest의 플러그인 실행 상태 복제를 잡는다', () => withFixture((root) => {
   const path = 'docs/team/roles/OPERATIONS.md';
   put(root, path, frontMatter({
-    role_id: 'OPERATIONS', context_ids: ['CTX-OPS'], allowed_routes: ['NORMAL'], input_allowlist: ['Task Packet'],
+    role_id: 'OPERATIONS', context_ids: ['CTX-OPS'], context_refs: [`CTX-OPS@1#${fixtureContextHash('CTX-OPS')}`], allowed_routes: ['NORMAL'], input_allowlist: ['Task Packet'],
     authority_links: ['docs/팀구성_상세기획안.md'], required_outputs: ['evidence'], verification_checklist: ['SHA'],
     handoff_in: ['predecessor'], handoff_out: ['successor'], stop_conditions: ['missing Decision'], human_escape: 'HUMAN-CHIEF',
     plugin_state: 'READY',

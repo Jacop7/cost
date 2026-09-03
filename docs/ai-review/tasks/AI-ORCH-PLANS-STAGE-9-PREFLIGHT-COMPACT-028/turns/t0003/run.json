@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-STAGE-9-PREFLIGHT-COMPACT-028",
+  "sequence": "t0003",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-03T07:56:43.182Z",
+  "turn_id": "turn-s002",
+  "turn_type": "SOLAR_RESPONSE",
+  "role": "SOLAR-ORCH",
+  "task_sha256": "7a74aa6fdf2e1b7ccb75f41df54396a7f479b89b8ef2eba075736d97e7b83c6a",
+  "runner_sha256": "b11837ae93ef151b7db411aaf89aa1e60d8f828a6ac25aaf99858f19b7ff8f3d",
+  "previous_manual_run_sha256": "2adba36e6b58ee3ef62b2e901d408a36371319c8513f0ce73c7ae7cc612ab3ad",
+  "collaboration_before_sha256": "ec08c20ca17d06f23d573cd5386ed9a8ad4e2c397d40f9f09f5a157daa05a863",
+  "collaboration_before_bytes": 5838,
+  "collaboration_entry_sha256": "b0216a24a4889df3cd681a2a4bb2dcabae1a770bcf691a17a042d2f45ce03920",
+  "collaboration_entry_bytes": 920,
+  "collaboration_after_sha256": "0bcabd76f8b3d31c58c59840fa2723becfb6bd87c8674dce1d416ea5c450b6c9",
+  "collaboration_after_bytes": 6758
+}

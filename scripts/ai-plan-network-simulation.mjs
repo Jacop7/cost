@@ -532,19 +532,19 @@ export function validateModelExecutionPlan(plan = loadModelExecutionPlan()) {
   const historyPath = join(root, '.codex', 'mission-relay', 'history',
     `model-plan.${PREDECESSOR_MODEL_PLAN_SHA}.json`);
   assert.ok(existsSync(historyPath), '직전 모델 계획 역사 원본이 없습니다.');
-  assert.equal(sha(readFileSync(historyPath)), PREDECESSOR_MODEL_PLAN_SHA,
+  assert.equal(canonicalArtifactSha(readFileSync(historyPath)), PREDECESSOR_MODEL_PLAN_SHA,
     '직전 모델 계획 역사 원본 hash가 어긋났습니다.');
   const originalHistoryPath = join(root, '.codex', 'mission-relay', 'history',
     `model-plan.${ORIGINAL_MODEL_PLAN_SHA}.json`);
   assert.ok(existsSync(originalHistoryPath), '83회 원 모델 계획 역사 원본이 없습니다.');
-  assert.equal(sha(readFileSync(originalHistoryPath)), ORIGINAL_MODEL_PLAN_SHA,
+  assert.equal(canonicalArtifactSha(readFileSync(originalHistoryPath)), ORIGINAL_MODEL_PLAN_SHA,
     '83회 원 모델 계획 역사 원본 hash가 어긋났습니다.');
 
   assert.deepEqual(plan.stages.map((stage) => stage.id),
     Array.from({ length: 12 }, (_, index) => String(index + 1)), '모델 계획은 1~12단계를 정확히 한 번 가져야 합니다.');
   assert.deepEqual(plan.stages.map((stage) => stage.status),
-    [...Array(7).fill('completed'), 'active', ...Array(4).fill('pending')],
-    '1~7단계 완료와 8단계 사람 승인 진행 상태가 계획에 반영돼야 합니다.');
+    [...Array(8).fill('completed'), 'active', ...Array(3).fill('pending')],
+    '1~8단계 완료와 9단계 문서 물질화 진행 상태가 계획에 반영돼야 합니다.');
   const calls = Object.fromEntries(plan.profiles.map((profile) => [profile.id, 0]));
   const stageProfiles = {};
   for (const stage of plan.stages) {

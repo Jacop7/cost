@@ -1,27 +1,29 @@
 ---
 doc_id: ontology
 doc_type: ai_governance_plan
-status: DRAFT
+status: ACTIVE
 authority: knowledge_relations_request_normalization
 owner: SOLAR-ARCH
 approver: HUMAN-CHIEF
 version: 0.3
 depends_on: [team]
 supersedes: []
-verified_by: []
+verified_by: [CODEX-QA, FABLE-ARCH, HUMAN-CHIEF]
 review_by: 2026-10-01
 ---
 
 # MarginCook AI 지식 온톨로지 기획안
 
 > 버전: 0.3
-> 상태: 누적 교차검수 대상 초안(`DRAFT`)
+> 상태: 활성 권위(`ACTIVE`)
 > 작성일: 2026-09-01
 > 최종 책임자: 사람 주 오케스트레이터
+> 활성화 결정: `DEC-AI-STAGE-8-ACTIVATION-APPROVAL-027`
+> 승인 대상 SHA-256: `b822a8798cea9c8b3651eb9483b77082d886ebf56d51ec74da7d18ae93e81b60`
 > 관계 문서: [`팀구성_상세기획안.md`](./팀구성_상세기획안.md)
 
-이 문서는 누적 교차검수와 사람 승인 뒤 `ACTIVE`가 될 때까지 권위 위임을 받지 않는다. 전이 기간의
-요청 정규화·역할·승인 규칙은 확정된 `팀구성_상세기획안.md`가 소유한다.
+이 문서는 누적 교차검수와 사람 승인 뒤 `ACTIVE`로 활성화됐다. 역할·승인 규칙의 상위 권위는
+확정된 `팀구성_상세기획안.md`가 계속 소유한다.
 
 ## 0. 목적
 
