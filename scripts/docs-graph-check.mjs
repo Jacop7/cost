@@ -24,6 +24,16 @@ const CENTRAL_PATHS = Object.freeze([
   'docs/team/handoffs/README.md',
 ]);
 
+const OPERATIONS_PATHS = Object.freeze([
+  'docs/operations/RUNBOOK_RELEASE.md',
+  'docs/operations/RUNBOOK_INCIDENT.md',
+  'docs/operations/RUNBOOK_RECOVERY.md',
+  'docs/operations/DATA_CORRECTION_POLICY.md',
+  'docs/operations/MONITORING_CATALOG.md',
+  'docs/operations/SUPPORT_PLAYBOOK.md',
+  'docs/operations/PILOT_PLAN.md',
+]);
+
 const ROLE_FILES = Object.freeze({
   ORCHESTRATION: 'docs/team/roles/ORCHESTRATION.md',
   SOLAR: 'docs/team/roles/SOLAR.md',
@@ -284,6 +294,12 @@ export function checkDocsGraph({ rootDir = DEFAULT_ROOT, requireActivation = fal
   if (requirePlannedTree && activatedStatuses[0] !== 'DRAFT') fail('DRAFT_TREE_REQUIRED', 'planned-tree 검사에는 네 후속 기획안이 모두 DRAFT여야 합니다.');
 
   for (const path of CENTRAL_PATHS) readRequired(rootDir, path);
+  if (requireActivation) {
+    for (const path of OPERATIONS_PATHS) readRequired(rootDir, path);
+    if (existsSync(safePath(rootDir, 'docs/operations/POSTMORTEMS'))) {
+      fail('PREMATURE_POSTMORTEMS', '실제 사고 전 POSTMORTEMS 경로를 물질화할 수 없습니다.');
+    }
+  }
   const directoryText = readRequired(rootDir, 'docs/디렉터리-문서신경망-재설계-기획안.md');
   const risksPath = safePath(rootDir, 'docs/team/RISKS.md');
   const risksOwned = directoryOwnsRisks(directoryText);
@@ -346,7 +362,8 @@ export function checkDocsGraph({ rootDir = DEFAULT_ROOT, requireActivation = fal
     mode: requirePlannedTree ? 'planned-tree' : 'activation',
     planStatus: activatedStatuses[0],
     risks: risksOwned ? 'OWNED_AND_PRESENT' : 'WITHHELD_PENDING_AUTHORITY_ALIGNMENT',
-    checkedFiles: PLAN_DOCS.length + CENTRAL_PATHS.length + Object.keys(ROLE_FILES).length + Object.keys(TEAM_FILES).length,
+    checkedFiles: PLAN_DOCS.length + CENTRAL_PATHS.length + Object.keys(ROLE_FILES).length + Object.keys(TEAM_FILES).length
+      + (requireActivation ? OPERATIONS_PATHS.length : 0),
     contextCount: contexts.size,
   };
 }

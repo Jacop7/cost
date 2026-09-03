@@ -55,6 +55,9 @@ function makeFixture(planStatus = 'ACTIVE') {
     put(root, path, frontMatter({ doc_id: docId, status: docId === 'team' ? 'CONFIRMED' : planStatus, authority }, body));
   }
   for (const path of ['README.md', 'DECISIONS.md', 'RELEASE_GATE.md']) put(root, `docs/team/${path}`, `# ${path}\n`);
+  for (const path of ['RUNBOOK_RELEASE.md', 'RUNBOOK_INCIDENT.md', 'RUNBOOK_RECOVERY.md', 'DATA_CORRECTION_POLICY.md', 'MONITORING_CATALOG.md', 'SUPPORT_PLAYBOOK.md', 'PILOT_PLAN.md']) {
+    put(root, `docs/operations/${path}`, `# ${path}\n`);
+  }
   put(root, 'docs/team/handoffs/README.md', '# HANDOFF\n');
   const contexts = Object.values(roleFiles).flatMap(([, ids]) => ids).map((contextId) => ({
     context_id: contextId,
@@ -134,6 +137,11 @@ test('DRAFT 상태의 완성 후보 트리는 planned-tree 모드에서 통과�
 
 test('필수 역할 manifest 누락을 잡는다', () => withFixture((root) => {
   rmSync(join(root, 'docs/team/roles/CODEX.md'));
+  assert.throws(() => checkDocsGraph({ rootDir: root, requireActivation: true }), /필수 문서가 없습니다/);
+}));
+
+test('activation 뒤 필수 운영 진입점 누락을 잡는다', () => withFixture((root) => {
+  rmSync(join(root, 'docs/operations/RUNBOOK_RECOVERY.md'));
   assert.throws(() => checkDocsGraph({ rootDir: root, requireActivation: true }), /필수 문서가 없습니다/);
 }));
 

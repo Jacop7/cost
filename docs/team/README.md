@@ -28,3 +28,10 @@ Learning, 릴리스 연결, 역할·팀 route manifest의 단일 탐색점이다
 
 현재 Task·담당·의존·다음 행동은 오직 [작업큐](../작업큐.md)가 소유한다. 채팅 제목과 이 manifest는
 승인 권한이나 edit lease를 만들지 않는다.
+
+## 운영 진입점
+
+[릴리스](../operations/RUNBOOK_RELEASE.md), [사고 대응](../operations/RUNBOOK_INCIDENT.md),
+[복구](../operations/RUNBOOK_RECOVERY.md), [데이터 정정](../operations/DATA_CORRECTION_POLICY.md),
+[관측](../operations/MONITORING_CATALOG.md), [지원](../operations/SUPPORT_PLAYBOOK.md),
+[파일럿](../operations/PILOT_PLAN.md)은 상위 정책을 복사하지 않는 실행 진입점이다.
