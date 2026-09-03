@@ -1551,7 +1551,7 @@ test('실제 Task 장부는 등록 역할·edit owner·완료된 의존성을 �
   assert.throws(() => validateLiveTaskLedger(falseDone), /보호 gate/);
   const trackedAsUntracked = mutateLiveSimulationTask(loadWorkQueue(), (block) => (
     block.replace(
-      /untracked_in_scope_paths:\n(?:  - .+\n)+/,
+      /^untracked_in_scope_paths:.*$/m,
       'untracked_in_scope_paths:\n  - docs/ai-review/evidence/AI-PLANS-SIM-CODEX-ULTRA-R4.md\n',
     )
   ));
