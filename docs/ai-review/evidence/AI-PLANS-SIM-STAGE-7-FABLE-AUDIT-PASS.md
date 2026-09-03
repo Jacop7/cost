@@ -33,7 +33,8 @@ Task 010은 당시 팀·오케스트레이션 바이트의 독립 PASS이고, Ta
 ## 단계 판정
 
 현재 다섯 문서의 필수 Finding은 0건이다. 단계 7은 완료됐고, 다음 상태는 단계 8 사람 최종 승인
-대기다. 사람 승인 전에는 문서 상태를 `DRAFT`에서 승격하거나 `docs/team/`을 물질화하지 않는다.
+대기다. 사람 승인 전에는 이미 `CONFIRMED`인 팀 구성안은 그대로 유지하고, 후속 네 문서를 `DRAFT`에서
+승격하거나 `docs/team/`을 물질화하지 않는다.
 
 - `corepack pnpm ai:plans:simulate`: `71/71 PASS`
 - `corepack pnpm fable:review -- --self-test`: `52개 묶음 PASS`
