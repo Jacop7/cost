@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-STAGE-9-MATERIALIZATION-FABLE-024",
+  "sequence": "t0004",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-03T07:00:42.010Z",
+  "turn_id": "turn-o001",
+  "turn_type": "AI_DEPUTY_SUCCESSOR_HANDOFF",
+  "role": "AI-DEPUTY-ORCHESTRATOR",
+  "task_sha256": "b85a12f00968c855f544dd287b464cb95548b5f5615d682bfe787c97fb46f079",
+  "runner_sha256": "3e3bdc2aa6c4874c360a1c64e678bbe168e14db556c133bbfa91e62c42c510f7",
+  "previous_manual_run_sha256": "c73f751d412f2ee4b103c1519933808da3a2836a646944c9675c15f9f825a3be",
+  "collaboration_before_sha256": "08e09988ecd3c3a454384d7479823370e1309002ab18b013e7356c7325ff4f05",
+  "collaboration_before_bytes": 10883,
+  "collaboration_entry_sha256": "4a4d6fefeab0a82d3a13cb39693db84649242147c09561e4a41d037ed85c8900",
+  "collaboration_entry_bytes": 849,
+  "collaboration_after_sha256": "71878e33a9dd2e14664ff63b554383520831e7d7d21ae3e1c34bfed2702327fc",
+  "collaboration_after_bytes": 11732
+}
