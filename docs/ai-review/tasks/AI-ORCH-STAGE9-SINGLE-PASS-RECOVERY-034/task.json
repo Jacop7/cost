@@ -1,0 +1,77 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-STAGE9-SINGLE-PASS-RECOVERY-034",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R1",
+  "author_role": "SOLAR-ORCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "84004577d060a8c4b8bcc1048dc1003a451410e3",
+  "target_commit_sha": "d4ed81dc2092fff8692186d987268935e282e528",
+  "target_tree_oid": "29a9ce9130e8e5f0b8bcf07e1da969a35b880a14",
+  "agents_blob_oid": "5208bcf26b7a494b3b747da4327e3cc8f18710df",
+  "agents_sha256": "13154e1351d07a9f10d0cb7f3dfebd10833f40fc835c22000113dd7b86e36d84",
+  "requirements": [
+    "Task032/r001의 두 Finding 해소와 Task033/r001 실패 비용 계보만 확인하고, 이전 실패 run을 PASS나 Finding으로 재사용하지 않아야 한다.",
+    "ACTIVE 디렉터리·품질 기획안의 본문 자기 상태가 DRAFT와 모순되지 않고, docs graph checker가 같은 회귀를 실패 폐쇄해야 한다.",
+    "Stage 9 증거의 누적 Fable 실비 USD 25.894734가 Task027, Task028, Task030, Task031, Task032/r001·r002, Task033/r001의 실제 결과와 정합해야 한다.",
+    "검토는 제시된 입력 bytes의 읽기 전용 단일 패스이고 단계 9 전체·단계 10·제품·DB·배포·운영을 재감사하거나 승인하지 않는다.",
+    "필수 OPEN Finding이 없으면 간결한 PASS를 반환한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:single-canonical-artifact",
+    "AGENTS:fable-independent-review",
+    "AI-DIRECTORY:atomic-activation",
+    "AI-QUALITY:a0-default"
+  ],
+  "artifact_paths": [
+    "docs/디렉터리-문서신경망-재설계-기획안.md",
+    "docs/AI-품질-학습-자율성-평가기획안.md",
+    "docs/ai-review/evidence/AI-PLANS-SIM-STAGE-9-MATERIALIZATION-EVIDENCE.md",
+    "scripts/docs-graph-check.mjs",
+    "scripts/docs-graph-check.test.mjs"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/ai-review/README.md"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/tasks/AI-ORCH-STAGE9-COMPACT-RECOVERY-032/rounds/r001/review.json",
+    "docs/ai-review/tasks/AI-ORCH-STAGE9-COMPACT-RECOVERY-032/rounds/r002/run.json",
+    "docs/ai-review/tasks/AI-ORCH-STAGE9-FINAL-DIFF-033/rounds/r001/run.json"
+  ],
+  "excluded_paths": [
+    "apps/mobile/**",
+    "packages/**",
+    "docs/prototypes/**",
+    "scripts/prototype_server.py",
+    ".codex-share/**",
+    ".tmp/**"
+  ],
+  "required_evidence": [
+    "target SHA d4ed81d와 working tree hash snapshot",
+    "Task032/r001 CHANGES_REQUIRED의 두 Finding과 r002 budget_exhausted·verdict null 원본",
+    "Task033/r001 CLAUDE_EXECUTION_FAILED·verdict null·USD 2.314057 원본",
+    "graph activation PASS 29/19, graph test 13/13, network simulation 71/71의 기존 실행 증거"
+  ],
+  "human_decisions": [
+    "DEC-AI-STAGE-8-ACTIVATION-APPROVAL-027 — 단계 9 물질화와 A0 shell 생성을 승인했다.",
+    "DEC-AI-FABLE-AUTONOMOUS-BUDGET-009 — 사용자는 최소~중간 예산 선택과 필요 시 기준 초과 진행을 위임했다.",
+    "DEC-AI-STAGE9-SINGLE-PASS-RECOVERY-BUDGET-034 — 사용자의 자동 진행 지시에 따라 단일 패스 Fable 감사 1회, soft cap USD 4.00을 승인한다.",
+    "동일 목적 Opus, 동일 입력의 병렬 호출, 제품·DB·배포·운영 실행은 이 감사 범위에 포함하지 않는다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "4.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}

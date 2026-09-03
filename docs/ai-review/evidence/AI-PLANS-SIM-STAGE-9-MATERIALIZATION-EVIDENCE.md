@@ -39,7 +39,8 @@ decision_id: DEC-AI-STAGE-8-ACTIVATION-APPROVAL-027
   - ROLE_CONTEXT 19개
   - 역할/팀 manifest의 context version·content hash·route hash·policy hash 재계산 검증
   - Learning migration 4:4와 legacy/candidate 상태 제약 검증
-- `node --test scripts/docs-graph-check.test.mjs`: 12/12 PASS
+- `node --test scripts/docs-graph-check.test.mjs`: 13/13 PASS
+  - ACTIVE 기획안 본문의 DRAFT 자기선언(`ACTIVE_SELF_DRAFT`) 실패 폐쇄
   - registry content hash 변조
   - route/policy hash 변조
   - 미승인 A단계 승격
@@ -114,8 +115,10 @@ Project Orchestrator가 검증한 현재 model plan SHA-256은
   `3.494104`; r001 Finding의 Fable 재검수 원본으로 보존
 - `AI-ORCH-STAGE9-FINAL-DIFF-033/r001`: `CLAUDE_EXECUTION_FAILED`, 판정 없음, 실제 USD
   `2.314057`; 수정 diff Fable 감사의 실패 원본으로 보존
+- `AI-ORCH-STAGE9-SINGLE-PASS-RECOVERY-034/r001`: Fable `CHANGES_REQUIRED`, 필수 Finding 1개,
+  실제 USD `3.457096`; Finding 보완은 아래 실행 증거를 통과했다.
 - 선택 Improvement 2개는 checker와 사보타주에 반영했다.
-- 단계 9 현재 누적 Fable 실비: USD `25.894734`
+- 단계 9 현재 누적 Fable 실비: USD `29.351830`
 - 같은 목적의 Opus 동시 호출은 하지 않았다.
 
 이 증거가 결속된 commit을 대상으로 마지막 Fable exact-SHA 감사를 한 번 수행한다. 새 필수 Finding이
