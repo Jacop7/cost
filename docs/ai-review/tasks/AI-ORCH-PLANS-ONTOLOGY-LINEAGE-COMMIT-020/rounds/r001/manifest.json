@@ -1,0 +1,77 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-ONTOLOGY-LINEAGE-COMMIT-020",
+  "round": "r001",
+  "created_at": "2026-09-03T04:51:05.451Z",
+  "review_mode": "INITIAL",
+  "baseline_commit_sha": "4e1d23cf31b34483f5f66ee3d7dfeaea5d315019",
+  "target_commit_sha": "40c37c76f2b3af75a5fbca53b6d374178c63b25d",
+  "target_tree_oid": "762cf16b21e1b1b0b6c86373fb5a246ad5a05a9f",
+  "agents_blob_oid": "c32214b5528752a91f0f1545fea8c735d5fae7fa",
+  "agents_sha256": "de18fc8524afa350d3d0806f40150b9397dfd45a91ff471b5e1f6d6bf95fc681",
+  "task_sha256": "c4eb150291a69a05d6b5988bb0038c894a1eedbb50c1d6bf8b6908a94e2a68ed",
+  "collaboration_sha256": "b02e64752d788f849ff42cfd5001c80257ed702d9c9666c50af1ce712bc5ea16",
+  "collaboration_bytes": 1588,
+  "input_files_sha256": "8ea448bd8d1e17fe9b7f5d7712dcc2bcac3d6c06e6c93c911793d3818ea3d213",
+  "schema_sha256": "d8ffdb13e6b1e38279355d9ffd592cfb91dc023d287976adf7892e85dbfaf0d7",
+  "runner_sha256": "3e3bdc2aa6c4874c360a1c64e678bbe168e14db556c133bbfa91e62c42c510f7",
+  "snapshot_mode": "COMMIT",
+  "previous_review_sha256": null,
+  "previous_run_sha256": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "fallback_review": null,
+  "closure_review": null,
+  "fallback_input_scope": null,
+  "retry_of_failed_round": null,
+  "artifact_paths": [
+    "docs/AI-지식-온톨로지-기획안.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md"
+  ],
+  "evidence_paths": [],
+  "allowed_paths": [
+    "docs/AI-지식-온톨로지-기획안.md",
+    "AGENTS.md"
+  ],
+  "excluded_paths": [
+    "apps/mobile/**",
+    "packages/**",
+    "docs/prototypes/**",
+    ".codex-share/**",
+    ".tmp/**"
+  ],
+  "applied_learning_ids": [],
+  "excluded_learning_ids": [],
+  "learning_registry_blob_oid": "77f00167d790c82373c1aa803d91874952c3334a",
+  "learning_registry_sha256": "4717fe99c86319d7c0abc5c8dd38e68e3a55722d7cfa56b8de173ed05ca1388f",
+  "learning_assignment_sha256": "4660bb32207bcae3246801d71aa6a052eab7b0a7cef357bd5984f706fe3dcbfe",
+  "learning_target_date": "2026-09-03",
+  "input_files": [
+    {
+      "path": "AGENTS.md",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 11697,
+      "git_blob_oid": "c32214b5528752a91f0f1545fea8c735d5fae7fa",
+      "sha256": "de18fc8524afa350d3d0806f40150b9397dfd45a91ff471b5e1f6d6bf95fc681",
+      "line_count": 160
+    },
+    {
+      "path": "docs/AI-지식-온톨로지-기획안.md",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 32961,
+      "git_blob_oid": "475de4feccf9d5bda2ddb56c0dd792215081688b",
+      "sha256": "d6b82bef48cdffdf883b807ec809e27dcf496dd18365567c3e34988040a47d5e",
+      "line_count": 551
+    }
+  ],
+  "source_archive_version": 1,
+  "finding_resolution_semantics": "VERIFIED_RESOLVED_V1",
+  "artifact_snapshot_sha256": null,
+  "input_snapshot_sha256": null
+}

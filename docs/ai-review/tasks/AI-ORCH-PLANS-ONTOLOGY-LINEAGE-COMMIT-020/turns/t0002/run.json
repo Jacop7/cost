@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-ONTOLOGY-LINEAGE-COMMIT-020",
+  "sequence": "t0002",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-03T04:51:03.243Z",
+  "turn_id": "turn-h001",
+  "turn_type": "HUMAN_DECISION",
+  "role": "HUMAN",
+  "task_sha256": "c4eb150291a69a05d6b5988bb0038c894a1eedbb50c1d6bf8b6908a94e2a68ed",
+  "runner_sha256": "3e3bdc2aa6c4874c360a1c64e678bbe168e14db556c133bbfa91e62c42c510f7",
+  "previous_manual_run_sha256": "7f246ad5b2145505a16f8830e6748467282a6cc53cefe9efce90d8438c0ee25e",
+  "collaboration_before_sha256": "9aea1a9741a5a2843301f754445653f3fd1ecd696207bd9de5e796e962066320",
+  "collaboration_before_bytes": 728,
+  "collaboration_entry_sha256": "5466c48eb425bfedf57767c2ceaa542358e0c6086b64a7d2e11db35766d68bd2",
+  "collaboration_entry_bytes": 860,
+  "collaboration_after_sha256": "b02e64752d788f849ff42cfd5001c80257ed702d9c9666c50af1ce712bc5ea16",
+  "collaboration_after_bytes": 1588
+}
