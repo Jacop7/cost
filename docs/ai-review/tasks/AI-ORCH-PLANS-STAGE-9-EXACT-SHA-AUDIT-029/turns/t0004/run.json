@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-STAGE-9-EXACT-SHA-AUDIT-029",
+  "sequence": "t0004",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-03T08:14:15.091Z",
+  "turn_id": "turn-h002",
+  "turn_type": "HUMAN_DECISION",
+  "role": "HUMAN",
+  "task_sha256": "4813f72871acac2f45ddf5f2a3e8e46e08eef5f714af5dd52b8057ae161d4e8e",
+  "runner_sha256": "b11837ae93ef151b7db411aaf89aa1e60d8f828a6ac25aaf99858f19b7ff8f3d",
+  "previous_manual_run_sha256": "005c85918d5b20b44c33032f3503aeb9553f89c546c929f2f221ad1f70b35ad3",
+  "collaboration_before_sha256": "5a0929f919ac06d51127143313375f94a80af75e0b4b0068bae0a6673668f404",
+  "collaboration_before_bytes": 2955,
+  "collaboration_entry_sha256": "4fc07a5ff5281fd5c2b3fc702bfb24479974aaef8473e7dbb5fb2df2beee0245",
+  "collaboration_entry_bytes": 822,
+  "collaboration_after_sha256": "6b0a0026d19df11f52aeea6d4a5d31ca3b3e8c9e82b53080d5febc8685b5f941",
+  "collaboration_after_bytes": 3777
+}

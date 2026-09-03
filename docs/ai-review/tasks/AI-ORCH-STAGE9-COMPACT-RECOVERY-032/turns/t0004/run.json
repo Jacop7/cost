@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-STAGE9-COMPACT-RECOVERY-032",
+  "sequence": "t0004",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-03T08:46:42.291Z",
+  "turn_id": "turn-h002",
+  "turn_type": "HUMAN_DECISION",
+  "role": "HUMAN",
+  "task_sha256": "0b82cfb2bbf1a82cbf73a776e137aa8158e6ebfc53bf858310da812822d4dc44",
+  "runner_sha256": "b11837ae93ef151b7db411aaf89aa1e60d8f828a6ac25aaf99858f19b7ff8f3d",
+  "previous_manual_run_sha256": "bd8518db2f97033472cde428a58839d664b41088422de3618b906229ef85ec74",
+  "collaboration_before_sha256": "98bff46e998aeb7cd53f08d76043e0a1bcf66dfec90f804aa3c4ceef63d2d395",
+  "collaboration_before_bytes": 7492,
+  "collaboration_entry_sha256": "6e0382c3595047a35a601db79bde1483f10b0b892c41e66e363e3c3c4f2c497a",
+  "collaboration_entry_bytes": 962,
+  "collaboration_after_sha256": "5482cdd93c3ffdfc2fe8cd2cb2c48362ec15a057a723764eafd813aa4e0b64fa",
+  "collaboration_after_bytes": 8454
+}

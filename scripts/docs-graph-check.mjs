@@ -273,7 +273,10 @@ function directoryOwnsRisks(directoryText) {
 }
 
 export function checkDocsGraph({ rootDir = DEFAULT_ROOT, requireActivation = false, requirePlannedTree = false } = {}) {
-  const planMetadata = PLAN_DOCS.map((path) => ({ path, fields: parseFrontMatter(readRequired(rootDir, path), path) }));
+  const planMetadata = PLAN_DOCS.map((path) => {
+    const text = readRequired(rootDir, path);
+    return { path, text, fields: parseFrontMatter(text, path) };
+  });
   const docIds = planMetadata.map(({ fields }) => fields.doc_id);
   const authorities = planMetadata.map(({ fields }) => fields.authority);
   if (docIds.some((id) => typeof id !== 'string') || new Set(docIds).size !== docIds.length) {
@@ -292,6 +295,9 @@ export function checkDocsGraph({ rootDir = DEFAULT_ROOT, requireActivation = fal
   }
   if (requireActivation && activatedStatuses[0] !== 'ACTIVE') fail('ACTIVATION_REQUIRED', 'activation 검사에는 네 후속 기획안이 모두 ACTIVE여야 합니다.');
   if (requirePlannedTree && activatedStatuses[0] !== 'DRAFT') fail('DRAFT_TREE_REQUIRED', 'planned-tree 검사에는 네 후속 기획안이 모두 DRAFT여야 합니다.');
+  if (requireActivation && planMetadata.some(({ fields, text }) => fields.status === 'ACTIVE' && /이 문서는\s+`?DRAFT`?다\./.test(text))) {
+    fail('ACTIVE_SELF_DRAFT', 'ACTIVE 기획안 본문에 현재 상태를 부정하는 DRAFT 자기선언이 있습니다.');
+  }
 
   for (const path of CENTRAL_PATHS) readRequired(rootDir, path);
   if (requireActivation) {

@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-STAGE9-COMPACT-FINAL-031",
+  "sequence": "t0002",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-03T08:24:43.669Z",
+  "turn_id": "turn-h001",
+  "turn_type": "HUMAN_DECISION",
+  "role": "HUMAN",
+  "task_sha256": "8c71b327c1913bda40667d9d4701ec28a0a1b23a2fd8b1cd77cdf334188c4e5f",
+  "runner_sha256": "b11837ae93ef151b7db411aaf89aa1e60d8f828a6ac25aaf99858f19b7ff8f3d",
+  "previous_manual_run_sha256": "0cf7ecb671c2dd344f3ce08900b85acabdbda9480a46e3cee050477ef2fd963d",
+  "collaboration_before_sha256": "c2c494371c2c7440cbb817a5ae36712f433f101f45c674fc59ee748c23be53e5",
+  "collaboration_before_bytes": 1099,
+  "collaboration_entry_sha256": "3b15e3c1657a8239272719a01629b1a073627789f00b72835ceea6407371de7a",
+  "collaboration_entry_bytes": 848,
+  "collaboration_after_sha256": "09392c0436e61da2a215c6a7fb6dcd9ca0522f0de90f6d56d26250d5775e5fc5",
+  "collaboration_after_bytes": 1947
+}

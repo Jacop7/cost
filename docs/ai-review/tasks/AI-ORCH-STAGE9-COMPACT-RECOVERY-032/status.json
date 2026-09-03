@@ -1,0 +1,28 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-STAGE9-COMPACT-RECOVERY-032",
+  "predecessor_review": null,
+  "updated_at": "2026-09-03T08:50:46.042Z",
+  "latest_round": "r002",
+  "review_state": "OPEN",
+  "workflow_state": "READY_FOR_REVIEW",
+  "gate_state": "OPEN",
+  "run_state": "RUN_FAILED",
+  "defect_state": "NOT_APPLICABLE",
+  "verdict": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "fallback_reason": "TASK_CAP_APPROVAL_REQUIRED",
+  "latest_run_sha256": "2ef4174259ede75ad29ceb7b15278e14fd832e3bf1ff7cb08e536e28b2f76538",
+  "open_required_finding_ids": [
+    "ARCH-032-DIR-ACTIVE-SELF-DRAFT"
+  ],
+  "open_optional_finding_ids": [
+    "ARCH-032-EVIDENCE-COST-LINEAGE-STALE"
+  ],
+  "closed_finding_ids": [],
+  "candidate_review_state": null,
+  "candidate_review_sha256": null,
+  "backlog_dispositions": []
+}

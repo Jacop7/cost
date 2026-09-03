@@ -124,6 +124,13 @@ test('완성된 activation 문서 그래프는 통과한다', () => withFixture(
   assert.equal(result.risks, 'WITHHELD_PENDING_AUTHORITY_ALIGNMENT');
 }));
 
+test('ACTIVE 기획안의 DRAFT 자기선언을 잡는다', () => withFixture((root) => {
+  put(root, 'docs/디렉터리-문서신경망-재설계-기획안.md', frontMatter({
+    doc_id: 'directory', status: 'ACTIVE', authority: 'directory_readme_document_graph',
+  }, '# Directory\n\n이 문서는 `DRAFT`다.'));
+  assert.throws(() => checkDocsGraph({ rootDir: root, requireActivation: true }), /DRAFT 자기선언/);
+}));
+
 test('DRAFT 상태의 완성 후보 트리는 planned-tree 모드에서 통과한다', () => {
   const root = makeFixture('DRAFT');
   try {
