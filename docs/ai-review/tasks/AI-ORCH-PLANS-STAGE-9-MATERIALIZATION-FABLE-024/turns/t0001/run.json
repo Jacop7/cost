@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-STAGE-9-MATERIALIZATION-FABLE-024",
+  "sequence": "t0001",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-03T06:40:18.967Z",
+  "turn_id": "turn-s001",
+  "turn_type": "SOLAR_REQUEST",
+  "role": "SOLAR-ORCH",
+  "task_sha256": "b85a12f00968c855f544dd287b464cb95548b5f5615d682bfe787c97fb46f079",
+  "runner_sha256": "3e3bdc2aa6c4874c360a1c64e678bbe168e14db556c133bbfa91e62c42c510f7",
+  "previous_manual_run_sha256": null,
+  "collaboration_before_sha256": "9c7d7143663c1145a451ef550eb29b1d80b28e4963c19cfa72f2806fb96f836d",
+  "collaboration_before_bytes": 377,
+  "collaboration_entry_sha256": "5446ac1101309f94ef6bcc3abbe60d9a352fcb409ab826795788b4946a5d1bd3",
+  "collaboration_entry_bytes": 1103,
+  "collaboration_after_sha256": "612ca0837c459ff37e64f7c706745745b5900c31bbedb1517e7bad47fb740798",
+  "collaboration_after_bytes": 1480
+}
