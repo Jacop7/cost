@@ -1,0 +1,118 @@
+{
+  "schema_version": "2.0",
+  "task_id": "AI-ORCH-STAGE11-PILOT-037",
+  "reviewer_role": "FABLE-ARCH",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "36a83f89811cdf0b40c594f5eb80ee6dc3085311",
+  "target_commit_sha": "bc8397ecda90d9ec54e834e59a73658684a769fe",
+  "target_tree_oid": "eb1325c6032ccc926f157f00edaa8895ac992fd9",
+  "agents_blob_oid": "67b83fceda960e3c4428a0119b5d88c5c4331ed0",
+  "agents_sha256": "911f8c9afd1bc6458f6c96f2b8d8547086e5a79714e92a2c362bce532fccf7cf",
+  "task_sha256": "fd3914f568112f5bc78e0ea4a4806ccb7b82cc46c9fc8c1d6d9f49bbb557296d",
+  "collaboration_sha256": "1c6db3063bfe952edb8523d26386b66b2cf8b88eec980436a7a6d3e8bc89814a",
+  "input_files_sha256": "db3a299e9196a5696ceeffbb4060a26c168bf546c9f73062ac62b6a2ec59181a",
+  "schema_sha256": "d8ffdb13e6b1e38279355d9ffd592cfb91dc023d287976adf7892e85dbfaf0d7",
+  "runner_sha256": "b11837ae93ef151b7db411aaf89aa1e60d8f828a6ac25aaf99858f19b7ff8f3d",
+  "verdict": "PASS",
+  "summary": "AI-ORCH-STAGE11-PILOT-037 초기 검수(FABLE-ARCH, 봉인 스냅샷 단일 패스) 결과 PASS. (1) pointer 결속: docs/operations/PILOT_PLAN.md의 파일럿 001 표는 요청·정규화(docs/작업큐.md의 AI-ORCH-PLANS-SIM-1·사용자 자동 진행 Decision), Task·사람 결정(Task036 collaboration.md), 구현 commit 36a83f89811cdf0b40c594f5eb80ee6dc3085311(scripts/verify.mjs·AGENTS.md), 독립검수(Task036/r001 Fable PASS·필수 OPEN Finding 0건), 결과·후속(작업큐 10단계 완료 기록·HANDOFF 한정)을 실제 R1 변경에 결속한다. Task036 review.json의 target_commit_sha·verdict PASS·remaining_required_finding_ids=[]와 run.json의 RESULT_RECEIVED·terminal_reason=completed, 작업큐 SIM-1 current_state의 Stage 10 기록(36a83f8, 3/6, 29/19, 13개 회귀시험)과 모두 일치함을 대조했다. (2) 권한 미창설: 문서는 제품·DB·스테이징·운영 범위를 별도 승인 Task로 분리하고, Learning 승격을 12단계 별도 판정으로 보류하며 \"이 파일 자체를 정책 권위나 운영 승인 근거로 사용하지 않는다\"를 명시해 AI-OPERATIONS:human-gated·AGENTS:fable-independent-review 불변을 침해하지 않는다. 남는 사항은 Improvement 2건뿐이다: (a) 표의 Codex 검증 행만 \"결속 원본\" 열에 실제 증거 경로 없이 명령·결과 문구만 있고, Task036/r001 Fable 검수 자체가 VERIFY-GRAPH-036-QA-EVIDENCE-PENDING으로 13개 시험 수·3/6 통과는 실행 증거로만 닫힌다고 명시했으므로, 이 행을 작업큐 Stage 10 기록 또는 CODEX-FUNCTION-QA 실행 증거 경로에 명시적으로 결속하는 보강이 필요하다(proposed_edit 제공, 본 Task의 verifier CODEX-FUNCTION-QA 실행 검증으로 자연히 닫힐 수 있는 비차단 항목). (b) 파일 앞부분(1~10행) CRLF와 추가된 파일럿 001 구간(11행 이후) LF의 줄끝 혼재. 두 건 모두 비차단이므로 remaining_required_finding_ids는 비어 있고 PASS를 반환한다. PASS·VERIFIED는 외부 게이트를 닫지 않으며 gate_state는 OPEN으로 유지된다.",
+  "findings": [
+    {
+      "finding_id": "PILOT-037-CODEX-EVIDENCE-POINTER",
+      "severity": "Improvement",
+      "review_state": "OPEN",
+      "category": "TEST_GAP",
+      "requirement_or_invariant_ids": [
+        "PILOT-037:REQ-POINTER-BINDING"
+      ],
+      "evidence": [
+        {
+          "path": "docs/operations/PILOT_PLAN.md",
+          "line_start": 24,
+          "line_end": 24,
+          "observation": "결속 표에서 Codex 검증 행만 `corepack pnpm verify --no-db --no-bundle` 선택 범위 3/6 통과·13개 회귀시험이라는 결과 문구만 담고, 다른 행과 달리 결속 원본(증거 파일 경로 또는 작업큐 기록 위치)을 가리키지 않는다."
+        },
+        {
+          "path": "docs/ai-review/tasks/AI-ORCH-STAGE10-VERIFY-GRAPH-036/rounds/r001/review.json",
+          "line_start": 45,
+          "line_end": 78,
+          "observation": "Task036/r001 Fable 검수의 VERIFY-GRAPH-036-QA-EVIDENCE-PENDING Finding이 13개 회귀시험 개수와 3/6 통과는 봉인 입력 밖이라 CODEX-FUNCTION-QA 실행 증거로만 확인 가능하다고 명시했다. 파일럿 문서는 같은 수치를 Codex 검증 결과로 서술하므로 그 실행 증거의 위치를 결속해야 일관된다."
+        },
+        {
+          "path": "docs/작업큐.md",
+          "line_start": 209,
+          "line_end": 209,
+          "observation": "AI-ORCH-PLANS-SIM-1 current_state가 Stage 10에서 36a83f8 기준 문서 그래프 activation 검사·13개 회귀시험 연결과 선택 범위 3/6 실행, Fable Task036/r001 PASS·필수 OPEN Finding 0건을 기록하고 있어 결속 가능한 원본이 이미 존재한다."
+        }
+      ],
+      "impact": "Codex 검증 단계만 증거 pointer 없이 결과 주장으로 남아, 파일럿의 요청→Task→구현→Codex→Fable→결과 결속 사슬에서 이 한 단계가 재현·감사 시 작업큐 서술이나 재실행에 의존하게 된다. 비차단이지만 본 Task의 CODEX-FUNCTION-QA 검증 증거가 생기면 그 경로로 결속을 닫는 것이 바람직하다.",
+      "acceptance_criteria": [
+        "PILOT_PLAN.md의 Codex 검증 행이 실행 증거의 결속 원본(작업큐 AI-ORCH-PLANS-SIM-1 Stage 10 기록 또는 CODEX-FUNCTION-QA 실행 증거 경로)을 명시한다.",
+        "명시된 수치(3/6, graph activation 29/19, 13개 회귀시험)가 결속된 원본의 기록과 일치한다."
+      ],
+      "required_tests": [
+        "CODEX-FUNCTION-QA: corepack pnpm verify --no-db --no-bundle 실행 로그로 ③단계 문서 그래프 포함·선택 범위 3/6 통과 확인",
+        "node --test scripts/docs-graph-check.test.mjs 출력에서 13개 시험 통과 확인"
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    },
+    {
+      "finding_id": "PILOT-037-EOL-MIXED",
+      "severity": "Improvement",
+      "review_state": "OPEN",
+      "category": "CODE",
+      "requirement_or_invariant_ids": [],
+      "evidence": [
+        {
+          "path": "docs/operations/PILOT_PLAN.md",
+          "line_start": 1,
+          "line_end": 13,
+          "observation": "기존 머리 부분(1~10행)은 CRLF 줄끝이고, 이번에 추가된 11행 이후 파일럿 001 구간은 LF 줄끝이라 한 파일 안에 줄끝이 혼재한다. Task036 검수의 scripts/verify.mjs EOL 지적(VERIFY-GRAPH-036-EOL-MIXED)과 같은 유형이다."
+        }
+      ],
+      "impact": "기능·의미 영향은 없으나 이후 편집기 자동 정규화로 diff가 부풀고 WORKING_TREE_HASHED 해시 봉인 비교가 번거로워질 수 있는 유지보수성 문제다.",
+      "acceptance_criteria": [
+        "docs/operations/PILOT_PLAN.md 전체가 단일 줄끝 규약(CRLF)으로 통일된다.",
+        "정규화가 문서 내용(문자 텍스트)을 바꾸지 않는다."
+      ],
+      "required_tests": [
+        "정규화 후 파일 전체 줄끝 단일 규약 확인(예: git diff --check 또는 hexdump 표본 확인)"
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    }
+  ],
+  "proposed_edits": [
+    {
+      "edit_id": "EDIT-PILOT-037-CODEX-ROW",
+      "path": "docs/operations/PILOT_PLAN.md",
+      "anchor": "| Codex 검증 | `corepack pnpm verify --no-db --no-bundle` 선택 범위 3/6 통과; ③단계 graph activation·13개 회귀시험 포함 |",
+      "operation": "REPLACE",
+      "proposed_text": "| Codex 검증 | `corepack pnpm verify --no-db --no-bundle` 선택 범위 3/6 통과; ③단계 graph activation 29/19·13개 회귀시험 포함 — 실행 기록은 `docs/작업큐.md`의 `AI-ORCH-PLANS-SIM-1` Stage 10 항목과 본 파일럿 Task의 CODEX-FUNCTION-QA 실행 증거에 결속한다 |",
+      "rationale": "표의 다른 행은 모두 결속 원본 경로를 가리키는데 Codex 검증 행만 결과 문구뿐이다. Task036/r001 Fable 검수가 13개 시험 수·3/6 통과를 실행 증거 확인 대상으로 남겼으므로, 그 증거의 위치를 행에 명시해 결속 사슬을 완성한다. 통합 시 이 행의 줄끝은 파일 정규화 규약(CRLF)을 따라 주기 바란다.",
+      "finding_ids": [
+        "PILOT-037-CODEX-EVIDENCE-POINTER"
+      ]
+    },
+    {
+      "edit_id": "EDIT-PILOT-037-EOL-NORMALIZE",
+      "path": "docs/operations/PILOT_PLAN.md",
+      "anchor": "## 파일럿 001 — 문서 그래프 verify 게이트 연결",
+      "operation": "COMMENT",
+      "proposed_text": "이번에 추가된 파일럿 001 구간(11행 이후)은 LF 줄끝이고 기존 머리 부분(1~10행)은 CRLF입니다. 통합 시 파일 전체를 CRLF 단일 규약으로 정규화해 주시기 바랍니다. 문서 내용 변경은 없습니다.",
+      "rationale": "한 파일 안 줄끝 혼재는 이후 자동 정규화로 인한 diff 잡음과 WORKING_TREE_HASHED 해시 비교 부담을 만든다. 의미 변화 없는 정리 제안이다.",
+      "finding_ids": [
+        "PILOT-037-EOL-MIXED"
+      ]
+    }
+  ],
+  "closed_finding_ids": [],
+  "reopened_finding_ids": [],
+  "remaining_required_finding_ids": [],
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}
