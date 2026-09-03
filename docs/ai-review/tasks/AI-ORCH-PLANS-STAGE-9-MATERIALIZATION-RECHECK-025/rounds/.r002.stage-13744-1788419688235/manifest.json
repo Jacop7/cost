@@ -1,0 +1,133 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-STAGE-9-MATERIALIZATION-RECHECK-025",
+  "round": "r002",
+  "created_at": "2026-09-03T07:14:48.234Z",
+  "review_mode": "INITIAL",
+  "baseline_commit_sha": "d14ce2a838e003a57983c3772fb8b3a5b730fc0a",
+  "target_commit_sha": "1b3fd6767787adec6cd2a991b81d72b2d40c906f",
+  "target_tree_oid": "d16e0c35245c21383efeef1c69ea52b77d9d62ba",
+  "agents_blob_oid": "3cf45cbcabeb756a4d12d16c62e681134df635bb",
+  "agents_sha256": "3ba1d03dedab3b7a810d0418ce1d08eb552e4f760ed636a250b033bece5cf341",
+  "task_sha256": "b682d4c473e1b8075826efbe88e840edaa6de60602e0b2d9a7f4fd3d34b21d8c",
+  "collaboration_sha256": "64e4a5fd6681ace9e0314fc774e42c1abd9aa8e8566e34d36be909af3d7b0500",
+  "collaboration_bytes": 4505,
+  "input_files_sha256": "f116586f2c6455d0ddbfe869e8bdba38d1e9fcbd1b40fc4adb55127042b8e663",
+  "schema_sha256": "d8ffdb13e6b1e38279355d9ffd592cfb91dc023d287976adf7892e85dbfaf0d7",
+  "runner_sha256": "3e3bdc2aa6c4874c360a1c64e678bbe168e14db556c133bbfa91e62c42c510f7",
+  "snapshot_mode": "COMMIT",
+  "previous_review_sha256": null,
+  "previous_run_sha256": "4ed9e24d7c512d668b02bb31a1274c8f123acb63e4bd5e3700fbfc827f1e9338",
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "fallback_review": null,
+  "closure_review": null,
+  "fallback_input_scope": null,
+  "retry_of_failed_round": "r001",
+  "artifact_paths": [
+    "docs/ai-review/evidence/AI-PLANS-SIM-STAGE-9-MATERIALIZATION-PLAN.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/디렉터리-문서신경망-재설계-기획안.md"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/tasks/AI-ORCH-PLANS-STAGE-9-MATERIALIZATION-FABLE-024/rounds/r001/review.json",
+    "docs/ai-review/evidence/AI-PLANS-SIM-STAGE-6-CROSS-REFERENCE-PASS.md",
+    "docs/ai-review/evidence/AI-PLANS-SIM-STAGE-7-FABLE-AUDIT-PASS.md",
+    ".codex/mission-relay/model-plan.json"
+  ],
+  "allowed_paths": [
+    "docs/ai-review/evidence/AI-PLANS-SIM-STAGE-9-MATERIALIZATION-PLAN.md",
+    "AGENTS.md",
+    "docs/디렉터리-문서신경망-재설계-기획안.md",
+    "docs/ai-review/tasks/AI-ORCH-PLANS-STAGE-9-MATERIALIZATION-FABLE-024/rounds/r001/review.json",
+    "docs/ai-review/evidence/AI-PLANS-SIM-STAGE-6-CROSS-REFERENCE-PASS.md",
+    "docs/ai-review/evidence/AI-PLANS-SIM-STAGE-7-FABLE-AUDIT-PASS.md",
+    ".codex/mission-relay/model-plan.json"
+  ],
+  "excluded_paths": [
+    "apps/mobile/**",
+    "packages/**",
+    "docs/prototypes/**",
+    ".codex-share/**",
+    ".tmp/**"
+  ],
+  "applied_learning_ids": [],
+  "excluded_learning_ids": [],
+  "learning_registry_blob_oid": "77f00167d790c82373c1aa803d91874952c3334a",
+  "learning_registry_sha256": "4717fe99c86319d7c0abc5c8dd38e68e3a55722d7cfa56b8de173ed05ca1388f",
+  "learning_assignment_sha256": "4660bb32207bcae3246801d71aa6a052eab7b0a7cef357bd5984f706fe3dcbfe",
+  "learning_target_date": "2026-09-03",
+  "input_files": [
+    {
+      "path": ".codex/mission-relay/model-plan.json",
+      "path_role": "EVIDENCE",
+      "change_type": "COMMIT",
+      "size": 23531,
+      "git_blob_oid": "be7edbbc24dff82a9222b6497382e3ee7ab5f215",
+      "sha256": "eac43ac882d62ab8e0e64ccc727deaa71323de864a0f2e49de87a99ae04cdcf2",
+      "line_count": 689
+    },
+    {
+      "path": "AGENTS.md",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 12248,
+      "git_blob_oid": "3cf45cbcabeb756a4d12d16c62e681134df635bb",
+      "sha256": "3ba1d03dedab3b7a810d0418ce1d08eb552e4f760ed636a250b033bece5cf341",
+      "line_count": 164
+    },
+    {
+      "path": "docs/디렉터리-문서신경망-재설계-기획안.md",
+      "path_role": "REFERENCE",
+      "change_type": "COMMIT",
+      "size": 29371,
+      "git_blob_oid": "3e18ab0f096cf013a33436ec2fdb2c3acc8129e2",
+      "sha256": "d7d7a4d94de4f3f8ef1a1b0bc05a216e6ab3d152c23c25fcd92eef83891e4108",
+      "line_count": 508
+    },
+    {
+      "path": "docs/ai-review/evidence/AI-PLANS-SIM-STAGE-6-CROSS-REFERENCE-PASS.md",
+      "path_role": "EVIDENCE",
+      "change_type": "COMMIT",
+      "size": 1716,
+      "git_blob_oid": "aeea5979931e5c11396944fb0751fa48ce7ecb81",
+      "sha256": "34d80818291df8064edcb5a7e34ec1863b9e4056d1a521dfd43d22db8036b3ca",
+      "line_count": 29
+    },
+    {
+      "path": "docs/ai-review/evidence/AI-PLANS-SIM-STAGE-7-FABLE-AUDIT-PASS.md",
+      "path_role": "EVIDENCE",
+      "change_type": "COMMIT",
+      "size": 2710,
+      "git_blob_oid": "22e8d72b7e05e3b928f265f908995215782b4f6c",
+      "sha256": "b688eaeca0c8bcaec9f878709a952e46c917dedf5c7c66d8226c59b0bdbe81df",
+      "line_count": 42
+    },
+    {
+      "path": "docs/ai-review/evidence/AI-PLANS-SIM-STAGE-9-MATERIALIZATION-PLAN.md",
+      "path_role": "ARTIFACT",
+      "change_type": "COMMIT",
+      "size": 19015,
+      "git_blob_oid": "41d336be5a16fd86279bec39b635d1dd49a81b8d",
+      "sha256": "9c41ba4383ab7133d5e25575fc97cec690ae219583de359a1e288c57398a76e3",
+      "line_count": 322
+    },
+    {
+      "path": "docs/ai-review/tasks/AI-ORCH-PLANS-STAGE-9-MATERIALIZATION-FABLE-024/rounds/r001/review.json",
+      "path_role": "EVIDENCE",
+      "change_type": "COMMIT",
+      "size": 23146,
+      "git_blob_oid": "93e78040502aab564c5de21100a4e2d042ebf6d1",
+      "sha256": "43ef20e4e397f2892326584d88d4685194858a05abb1db1f288f3e71e96fbb28",
+      "line_count": 318
+    }
+  ],
+  "source_archive_version": 1,
+  "finding_resolution_semantics": "VERIFIED_RESOLVED_V1",
+  "artifact_snapshot_sha256": null,
+  "input_snapshot_sha256": null
+}

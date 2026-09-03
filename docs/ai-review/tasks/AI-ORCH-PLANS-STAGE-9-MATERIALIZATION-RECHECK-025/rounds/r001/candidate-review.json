@@ -1,0 +1,279 @@
+{
+  "schema_version": "2.0",
+  "task_id": "AI-ORCH-PLANS-STAGE-9-MATERIALIZATION-RECHECK-025",
+  "reviewer_role": "FABLE-ARCH",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "d14ce2a838e003a57983c3772fb8b3a5b730fc0a",
+  "target_commit_sha": "1b3fd6767787adec6cd2a991b81d72b2d40c906f",
+  "target_tree_oid": "d16e0c35245c21383efeef1c69ea52b77d9d62ba",
+  "agents_blob_oid": "3cf45cbcabeb756a4d12d16c62e681134df635bb",
+  "agents_sha256": "3ba1d03dedab3b7a810d0418ce1d08eb552e4f760ed636a250b033bece5cf341",
+  "task_sha256": "b682d4c473e1b8075826efbe88e840edaa6de60602e0b2d9a7f4fd3d34b21d8c",
+  "collaboration_sha256": "e22838a91d9bf76dd484f1b7b74df487bb720e3f5c5198a578331b336dca3937",
+  "input_files_sha256": "f116586f2c6455d0ddbfe869e8bdba38d1e9fcbd1b40fc4adb55127042b8e663",
+  "schema_sha256": "d8ffdb13e6b1e38279355d9ffd592cfb91dc023d287976adf7892e85dbfaf0d7",
+  "runner_sha256": "3e3bdc2aa6c4874c360a1c64e678bbe168e14db556c133bbfa91e62c42c510f7",
+  "verdict": "PASS",
+  "summary": "수정 commit 1b3fd67의 단계 9 실행기획안(v0.2)에 대한 독립 COMMIT 재감사 결과 PASS. 이전 WORKING_TREE_HASHED 검수(FABLE-024/r001, review sha256 43ef20e4...)의 필수 Finding 4건을 같은 ID로 재검수했고 모두 VERIFIED다. (1) FAB-ARCH-024-PREFLIGHT-MANIFEST-WINDOW-001: §2가 README·RELEASE_GATE·역할/팀 manifest·handoffs 골격을 materialization preflight 창(사람 activation Decision 이후·activation commit 이전)에서 커밋되지 않은 후보로 한 번에 조립하고(9.2 별도 commit 금지), planned tree 검사 뒤 네 기획안 ACTIVE 전이와 같은 원자 activation commit에 포함한다(9.4·§5.2). checker가 planned tree와 activation commit SHA를 모두 검사하고 필수 manifest 부재 activation fixture를 실패시키는 사보타주 계약도 명시돼(§5.2 137~139행) 디렉터리 기획안 §11 단계 2 preflight 창·§5.1 필수 중앙 노드·단계 6 원자성과 정합하며, DRAFT+권위 파일·ACTIVE+필수 파일 부재 중간 commit이 모두 제거됐다. (2) FAB-ARCH-024-CHAT-SHELL-DECISION-SCOPE-002: §3.1 Decision 기록 스펙과 S9-G01이 두 sidebar section·11개 A0 shell 등 Codex 앱 외부 상태 생성 허용 범위의 명시를 요구하고, 범위 부재 시 저장소 물질화와 9.6을 각각 중단하는 fail-closed 계약이 §4·§7·§9·§11에 반복 명시됐다. 봉인 model plan 단계 9의 저장소 내부 범위와의 관계도 별도 사람 승인 결속으로 해소됐다. (3) FAB-ARCH-024-RISKS-PATH-OWNER-003: §2 투영 표가 위험 인스턴스 경로의 공식 소유 절(팀 구성안 §11·온톨로지 §3)을 인용하고, §5.1과 신설 S9-G08이 디렉터리 기획안 중앙 노드 목록과의 activation 후보 수렴을 생성 전제 조건으로 하며 수렴 실패 시 RISKS.md를 만들지 않고 공식 문서 정합화 Task로 분리한다. (4) FAB-ARCH-024-STAGE10-STEP-PIN-004: §12가 verify 연결 하위 단계 선택을 단계 10 Task 소유로 표기하고 6단계 분모 불변만 남겼으며, §10에 플러그인 상태·판정 복제 0과 새 통합 플러그인·공용 hook 0 검사가 추가됐다. 신규 비차단 Improvement 1건(OPEN): §5.3 목표 트리가 RISKS.md를 무조건 열거해 S9-G08 실패 분기와 표기상 어긋나므로 조건부 표기 문장을 proposed_edits로 제안했다. 요구사항 9에 따라 해소된 Finding은 VERIFIED로만 반환하며 CLOSED 전이는 사용하지 않았다. 이 PASS는 로컬 재검수 판정일 뿐 외부 게이트를 닫거나 단계 9 실행·activation을 승인하지 않는다.",
+  "findings": [
+    {
+      "finding_id": "FAB-ARCH-024-PREFLIGHT-MANIFEST-WINDOW-001",
+      "severity": "Major",
+      "review_state": "VERIFIED",
+      "category": "ARCHITECTURE",
+      "requirement_or_invariant_ids": [
+        "AI-DIRECTORY:materialization-preflight",
+        "AI-DIRECTORY:atomic-activation",
+        "AGENTS:single-canonical-artifact"
+      ],
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/AI-PLANS-SIM-STAGE-9-MATERIALIZATION-PLAN.md",
+          "line_start": 59,
+          "line_end": 66,
+          "observation": "수정판 §2가 README·RELEASE_GATE·역할/팀 manifest·handoffs/README를 디렉터리 기획안 §11 단계 2의 같은 materialization preflight 창에서 한 번에 커밋되지 않은 후보로 조립하고, planned tree 검사 통과 뒤 네 기획안 ACTIVE 변경과 같은 activation commit에 포함해 'DRAFT+실제 권위 파일'과 'ACTIVE+필수 파일 부재' 중간 commit을 모두 제거한다고 명시한다."
+        },
+        {
+          "path": "docs/ai-review/evidence/AI-PLANS-SIM-STAGE-9-MATERIALIZATION-PLAN.md",
+          "line_start": 129,
+          "line_end": 139,
+          "observation": "§5.2가 activation commit에 §5.1 preflight 산출물 전부(중앙 장부·역할/팀 manifest·handoffs 골격)를 원자 포함하고, standalone checker가 planned tree와 activation commit SHA를 모두 검사하며 필수 manifest 부재 activation fixture를 실패시키도록 계약해 §10 '필수 manifest 누락 0' 검사와의 자기모순을 해소했다."
+        },
+        {
+          "path": "docs/ai-review/evidence/AI-PLANS-SIM-STAGE-9-MATERIALIZATION-PLAN.md",
+          "line_start": 259,
+          "line_end": 266,
+          "observation": "§9 실행 순서에서 9.2가 manifest·README·RELEASE_GATE·handoffs 골격 조립을 '별도 commit 금지'로 수행하고, 9.3 planned tree 검사 뒤 9.4 activation commit이 네 문서·AGENTS·작업큐와 9.2 산출물을 원자 승격하며, 9.5는 docs/operations와 잔여 링크 보정으로 좁혀졌다."
+        },
+        {
+          "path": "docs/디렉터리-문서신경망-재설계-기획안.md",
+          "line_start": 409,
+          "line_end": 414,
+          "observation": "디렉터리 기획안 §11 단계 2는 사람 activation decision 이후·네 문서 activation commit 이전 창에서 materialization preflight가 docs/team 권위 장부·역할/팀 manifest·handoff 디렉터리를 한 번에 만들도록 규정하며, 수정판의 조립·원자 포함 순서가 이 창과 일치한다."
+        },
+        {
+          "path": "docs/디렉터리-문서신경망-재설계-기획안.md",
+          "line_start": 152,
+          "line_end": 170,
+          "observation": "§5.1 필수 중앙 노드(roles/*.md·teams/*.md·handoffs 등)가 activation commit SHA에서 모두 존재하게 되어 디렉터리 기획안이 ACTIVE가 되는 SHA의 필수 노드 부재 상태가 제거됐다."
+        },
+        {
+          "path": "docs/디렉터리-문서신경망-재설계-기획안.md",
+          "line_start": 440,
+          "line_end": 443,
+          "observation": "§11 단계 6의 'graph checker·사보타주 같은 SHA 통과 뒤 하나의 activation commit에서 네 문서 ACTIVE·부분 ACTIVE 거부' 계약이 수정판 9.3→9.4 순서와 §5.2 거부 조항으로 구현됐다."
+        }
+      ],
+      "impact": "이전 검수에서 지적한 activation commit SHA의 필수 중앙 노드 부재 중간 상태와 preflight '한 번에 생성' 계약 재정의가 수정 commit에서 제거됐다. 필수 산출물이 preflight 창에서 조립되어 ACTIVE 전이와 같은 원자 commit에 포함되고, checker가 planned tree·activation SHA·manifest 부재 사보타주를 모두 검사하므로 위반 잔여가 없다.",
+      "acceptance_criteria": [
+        "역할/팀 manifest·RELEASE_GATE·handoffs 골격의 생성 시점이 디렉터리 기획안 §11 단계 2의 preflight 창(사람 activation Decision 이후·activation commit 이전)과 일치하도록 §2·§5·§9가 수정되거나, 분할을 허용하는 공식 문서 개정과 사람 Decision이 exact 절 인용과 함께 계획에 기록된다.",
+        "activation commit SHA에서 §10 '필수 manifest 누락 0'·'ROLE_CONTEXT version/hash 존재' 검사와 실제 산출물 존재 상태가 모순되지 않음을 계획이 명시한다."
+      ],
+      "required_tests": [
+        "planned tree와 activation commit SHA 각각에서 standalone graph checker가 통과하는 stage 9 증거 제출",
+        "필수 manifest 부재 상태의 activation SHA에서 checker가 실패하는 사보타주 케이스"
+      ],
+      "previous_finding_id": "FAB-ARCH-024-PREFLIGHT-MANIFEST-WINDOW-001",
+      "verified_by_engine": "FABLE"
+    },
+    {
+      "finding_id": "FAB-ARCH-024-CHAT-SHELL-DECISION-SCOPE-002",
+      "severity": "Major",
+      "review_state": "VERIFIED",
+      "category": "POLICY",
+      "requirement_or_invariant_ids": [
+        "AI-ORCH:chat-is-not-authority",
+        "REQ:stage9-human-decision-binding",
+        "AI-QUALITY:a0-default"
+      ],
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/AI-PLANS-SIM-STAGE-9-MATERIALIZATION-PLAN.md",
+          "line_start": 72,
+          "line_end": 73,
+          "observation": "수정판 §3.1 Decision 기록 스펙이 exact SHA·다섯 문서 hash·시각과 함께 '두 sidebar section·11개 A0 채팅 shell 등 Codex 앱 외부 상태 생성 허용 범위의 명시 기록'을 포함하도록 확장됐다."
+        },
+        {
+          "path": "docs/ai-review/evidence/AI-PLANS-SIM-STAGE-9-MATERIALIZATION-PLAN.md",
+          "line_start": 94,
+          "line_end": 95,
+          "observation": "S9-G01 통과 기준이 다섯 문서 hash에 더해 두 sidebar section·11개 A0 shell 생성 범위를 명시한 HUMAN_DECISION을 요구하고, 실패 행동으로 '범위가 없으면 저장소 물질화와 9.6을 각각 중단'하는 fail-closed 계약을 명시한다."
+        },
+        {
+          "path": "docs/ai-review/evidence/AI-PLANS-SIM-STAGE-9-MATERIALIZATION-PLAN.md",
+          "line_start": 213,
+          "line_end": 215,
+          "observation": "§7이 9.0에 기록된 activation Decision이 두 section·11개 shell의 생성 범위를 명시한 경우에만 shell을 생성하고, 범위가 없으면 9.6을 실행하지 않고 사람 결정을 요청하도록 게이트한다."
+        },
+        {
+          "path": "docs/ai-review/evidence/AI-PLANS-SIM-STAGE-9-MATERIALIZATION-PLAN.md",
+          "line_start": 296,
+          "line_end": 296,
+          "observation": "§11 실패·중단 목록에도 '단계 8 Decision에 sidebar section·11개 shell 생성 범위가 없으면 9.6을 실행하지 않음'이 반복 명시됐다."
+        },
+        {
+          "path": ".codex/mission-relay/model-plan.json",
+          "line_start": 569,
+          "line_end": 583,
+          "observation": "봉인 model plan 단계 9 책임은 여전히 '승인된 팀별 디렉터리와 MD 물질화'로 저장소 내부에 한정되지만, 수정판이 채팅 물질화를 별도 사람 Decision 범위 명시에 결속해 acceptance criteria의 '별도 사람 승인 필요' 대안을 구현했다."
+        },
+        {
+          "path": "docs/ai-review/evidence/AI-PLANS-SIM-STAGE-9-MATERIALIZATION-PLAN.md",
+          "line_start": 103,
+          "line_end": 105,
+          "observation": "§4 말미가 현재 사용자의 '진행' 응답이 저장소 Decision으로 물질화되지 않았음을 인정하고, 정확한 SHA·hash와 함께 Decision을 먼저 기록하며 이를 생략한 ACTIVE 전환을 금지한다."
+        }
+      ],
+      "impact": "Codex 앱 sidebar section·11개 채팅 shell이라는 저장소 밖 외부 상태가 사람 승인 범위 명시 없이 생성될 수 있던 경로가 제거됐다. Decision 기록 스펙·진입 게이트·§7·§11 네 지점에서 범위 부재 시 9.6과 저장소 물질화를 중단하는 계약이 일관되게 강제된다.",
+      "acceptance_criteria": [
+        "§3.1 Decision 기록 스펙과 S9-G01(또는 신설 게이트) 통과 기준에 두 sidebar section·11개 A0 shell 등 Codex 앱 외부 상태 생성 허용 범위가 명시된다.",
+        "봉인 model plan 단계 9 범위와 채팅 물질화의 관계(같은 단계에 포함되는 공식 근거 또는 별도 사람 승인 필요)가 계획에 기록되고, 범위 미기재 시 9.6을 실행하지 않는 중단 규칙이 추가된다."
+      ],
+      "required_tests": [
+        "Decision 기록에 외부 상태 범위 문구가 없을 때 9.6이 중단되는 게이트 동작을 stage 9 증거로 제출"
+      ],
+      "previous_finding_id": "FAB-ARCH-024-CHAT-SHELL-DECISION-SCOPE-002",
+      "verified_by_engine": "FABLE"
+    },
+    {
+      "finding_id": "FAB-ARCH-024-RISKS-PATH-OWNER-003",
+      "severity": "Minor",
+      "review_state": "VERIFIED",
+      "category": "POLICY",
+      "requirement_or_invariant_ids": [
+        "AGENTS:single-canonical-artifact",
+        "AI-DIRECTORY:materialization-preflight"
+      ],
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/AI-PLANS-SIM-STAGE-9-MATERIALIZATION-PLAN.md",
+          "line_start": 42,
+          "line_end": 42,
+          "observation": "§2 공식 근거 투영 표에 위험 인스턴스 경로 행이 추가되어 팀 구성안 §11·온톨로지 §3을 소유 근거로 인용하고, 디렉터리 기획안 중앙 노드 목록과 activation 전에 수렴시키도록 명시한다."
+        },
+        {
+          "path": "docs/ai-review/evidence/AI-PLANS-SIM-STAGE-9-MATERIALIZATION-PLAN.md",
+          "line_start": 116,
+          "line_end": 116,
+          "observation": "§5.1의 RISKS.md 행이 '소유 근거를 디렉터리 기획안 중앙 노드 목록과 수렴시킨 뒤에만' 초기화하도록 조건화됐다."
+        },
+        {
+          "path": "docs/ai-review/evidence/AI-PLANS-SIM-STAGE-9-MATERIALIZATION-PLAN.md",
+          "line_start": 101,
+          "line_end": 101,
+          "observation": "신설 게이트 S9-G08이 팀 구성안 §11·온톨로지 §3의 RISKS.md와 디렉터리 기획안 중앙 노드 목록의 같은 activation 후보 내 일치를 통과 기준으로 하고, 실패 시 RISKS.md를 만들지 않고 공식 문서 정합화 Task로 분리한다."
+        },
+        {
+          "path": "docs/디렉터리-문서신경망-재설계-기획안.md",
+          "line_start": 116,
+          "line_end": 141,
+          "observation": "디렉터리 기획안 §4.2 docs/team 트리에는 여전히 RISKS.md가 없으나, 수정판이 이 불일치를 activation 후보 수렴 또는 생성 중단으로 fail-closed 처리하므로 소유 근거 없는 새 경로 물질화 위험이 제거됐다."
+        }
+      ],
+      "impact": "공식 소유 절 인용 없이 새 경로 계약이 물질화되던 위험이 해소됐다. 소유 절이 §2에 인용됐고, 디렉터리 기획안과의 소유권 불일치는 S9-G08에서 수렴하거나 파일 생성을 중단하고 별도 정합화 Task로 분리하는 두 분기 모두 구현됐다. 이는 본 Task 요구 '수렴하거나 생성 중단'을 직접 충족한다.",
+      "acceptance_criteria": [
+        "RISKS.md의 공식 소유 문서·절(예: 팀 구성안 또는 품질 기획안의 해당 절)이 §2 투영 표에 정확히 인용되거나, RISKS.md가 stage 9 preflight 산출물에서 제외되고 소유 문서의 별도 Task로 이관된다."
+      ],
+      "required_tests": [
+        "standalone checker의 중앙 권위 목록에서 RISKS.md 소유 근거 존재를 확인하는 검사"
+      ],
+      "previous_finding_id": "FAB-ARCH-024-RISKS-PATH-OWNER-003",
+      "verified_by_engine": "FABLE"
+    },
+    {
+      "finding_id": "FAB-ARCH-024-STAGE10-STEP-PIN-004",
+      "severity": "Improvement",
+      "review_state": "VERIFIED",
+      "category": "ARCHITECTURE",
+      "requirement_or_invariant_ids": [
+        "REQ:stage10-verify-ownership"
+      ],
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/AI-PLANS-SIM-STAGE-9-MATERIALIZATION-PLAN.md",
+          "line_start": 311,
+          "line_end": 312,
+          "observation": "§12의 단계 10 다음 행동이 'checker를 기존 pnpm verify에 연결하되 6단계 분모를 바꾸지 않기; 정확한 연결 단계 선택은 단계 10 Task가 소유'로 수정되어 하위 단계 사전 확정이 제거됐다."
+        },
+        {
+          "path": "docs/ai-review/evidence/AI-PLANS-SIM-STAGE-9-MATERIALIZATION-PLAN.md",
+          "line_start": 283,
+          "line_end": 284,
+          "observation": "§10 검사 목록에 'role/team manifest의 플러그인 상태·판정 알고리즘 복제 0'과 '새 통합 플러그인·공용 실행 hook 0' 항목이 추가되어 §8 금지 계약의 기계 검증 근거가 생겼다."
+        },
+        {
+          "path": "docs/ai-review/evidence/AI-PLANS-SIM-STAGE-9-MATERIALIZATION-PLAN.md",
+          "line_start": 65,
+          "line_end": 66,
+          "observation": "§2에서도 단계 10이 checker의 pnpm verify 연결 작업만 소유한다고 명시해 봉인 model plan의 단계 10 책임 경계와 일치한다."
+        },
+        {
+          "path": ".codex/mission-relay/model-plan.json",
+          "line_start": 585,
+          "line_end": 600,
+          "observation": "봉인 model plan 단계 10의 '문서 그래프 검사기 구현과 pnpm verify 연결' 소유권이 수정판의 표기와 정합한다."
+        }
+      ],
+      "impact": "단계 9 문서의 단계 10 소유권 침범(verify 연결 하위 단계 사전 확정)과 §10 검사 목록의 플러그인 금지 계약 탐지 공백이 모두 해소됐다. 두 acceptance criteria가 원문에 그대로 구현됐다.",
+      "acceptance_criteria": [
+        "§12에서 verify 연결의 정확한 하위 단계 선택을 단계 10 Task 소유로 표기하고 6단계 분모 불변만 계약으로 남긴다.",
+        "§10 검사 목록에 'role/team manifest의 플러그인 상태·판정 알고리즘 복제 0'과 '새 통합 플러그인·공용 실행 hook 0' 항목을 추가한다."
+      ],
+      "required_tests": [],
+      "previous_finding_id": "FAB-ARCH-024-STAGE10-STEP-PIN-004",
+      "verified_by_engine": "FABLE"
+    },
+    {
+      "finding_id": "FAB-ARCH-025-RISKS-TREE-CONDITIONAL-001",
+      "severity": "Improvement",
+      "review_state": "OPEN",
+      "category": "ARCHITECTURE",
+      "requirement_or_invariant_ids": [
+        "AI-DIRECTORY:materialization-preflight"
+      ],
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/AI-PLANS-SIM-STAGE-9-MATERIALIZATION-PLAN.md",
+          "line_start": 143,
+          "line_end": 166,
+          "observation": "§5.3의 activation commit 목표 트리가 RISKS.md를 무조건 열거해, S9-G08 수렴 실패 분기(파일 미생성·별도 Task 분리)와 표기상 어긋난다."
+        },
+        {
+          "path": "docs/ai-review/evidence/AI-PLANS-SIM-STAGE-9-MATERIALIZATION-PLAN.md",
+          "line_start": 101,
+          "line_end": 101,
+          "observation": "S9-G08은 수렴 실패 시 RISKS.md를 만들지 않도록 규정하므로, 그 분기에서는 §5.3 트리가 실제 activation commit 내용과 달라진다."
+        }
+      ],
+      "impact": "차단 사유는 아니나, S9-G08 실패 분기에서 §5.3 트리를 문자 그대로 검사 기준으로 삼으면 activation commit 내용과 문서가 어긋나 혼동을 줄 수 있다. 트리 아래에 RISKS.md의 조건부 포함을 한 문장으로 명시하면 해소된다.",
+      "acceptance_criteria": [
+        "§5.3에 RISKS.md가 S9-G08 수렴 게이트 통과 시에만 activation commit에 포함되고 수렴 실패 시 트리에서 제외됨을 명시하는 문장이 추가된다."
+      ],
+      "required_tests": [],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    }
+  ],
+  "proposed_edits": [
+    {
+      "edit_id": "E025-01-RISKS-TREE-CONDITIONAL-NOTE",
+      "path": "docs/ai-review/evidence/AI-PLANS-SIM-STAGE-9-MATERIALIZATION-PLAN.md",
+      "anchor": "실제 HANDOFF 원본은 단계 11 파일럿 Task에서 생성한다.",
+      "operation": "ADD",
+      "proposed_text": "위 트리의 `RISKS.md`는 S9-G08 수렴 게이트를 통과한 경우에만 activation commit에 포함한다. 수렴에 실패하면 이 트리에서 제외하고 공식 문서 정합화 Task로 분리하며, 그 부재를 §10 '필수 manifest 누락' 위반으로 계산하지 않는다.",
+      "rationale": "§5.3 목표 트리의 무조건 RISKS.md 열거와 S9-G08 fail-closed 분기 사이의 표기 불일치를 제거해 activation commit 검사 기준의 혼동을 막는다.",
+      "finding_ids": [
+        "FAB-ARCH-025-RISKS-TREE-CONDITIONAL-001"
+      ]
+    }
+  ],
+  "closed_finding_ids": [],
+  "reopened_finding_ids": [],
+  "remaining_required_finding_ids": [],
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}

@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-STAGE-9-MATERIALIZATION-RECHECK-025",
+  "sequence": "t0004",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-03T07:14:41.958Z",
+  "turn_id": "turn-h002",
+  "turn_type": "HUMAN_DECISION",
+  "role": "HUMAN",
+  "task_sha256": "b682d4c473e1b8075826efbe88e840edaa6de60602e0b2d9a7f4fd3d34b21d8c",
+  "runner_sha256": "3e3bdc2aa6c4874c360a1c64e678bbe168e14db556c133bbfa91e62c42c510f7",
+  "previous_manual_run_sha256": "e20690d737f1b78bc6f8deefcc631963f809778c60db66382347e798e0951d78",
+  "collaboration_before_sha256": "318a94ca04d70b3e14897a02f51fe56dbeaba880746bb39abc7008501daf5d3b",
+  "collaboration_before_bytes": 3713,
+  "collaboration_entry_sha256": "6c68280899368e4720e985389f942fd7a8f8e88f0547c846ea4afa78c1109b5b",
+  "collaboration_entry_bytes": 792,
+  "collaboration_after_sha256": "64e4a5fd6681ace9e0314fc774e42c1abd9aa8e8566e34d36be909af3d7b0500",
+  "collaboration_after_bytes": 4505
+}
