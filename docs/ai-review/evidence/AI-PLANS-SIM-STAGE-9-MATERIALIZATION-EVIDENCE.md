@@ -118,7 +118,9 @@ Project Orchestrator가 검증한 현재 model plan SHA-256은
 - `AI-ORCH-STAGE9-SINGLE-PASS-RECOVERY-034/r001`: Fable `CHANGES_REQUIRED`, 필수 Finding 1개,
   실제 USD `3.457096`; Finding 보완은 아래 실행 증거를 통과했다.
 - 선택 Improvement 2개는 checker와 사보타주에 반영했다.
-- 단계 9 현재 누적 Fable 실비: USD `29.351830`
+- Task034/r001까지 감사 원본에 기록된 단계 9 누적 Fable 실비: USD `29.351830`
+  - 이 문서에 결속될 다음 최종 감사의 실비·판정은 그 감사 Task 원본에만 후행 기록한다. 결과가 없는
+    미래 비용을 현재 누적에 추정해 넣지 않는다.
 - 같은 목적의 Opus 동시 호출은 하지 않았다.
 
 이 증거가 결속된 commit을 대상으로 마지막 Fable exact-SHA 감사를 한 번 수행한다. 새 필수 Finding이
