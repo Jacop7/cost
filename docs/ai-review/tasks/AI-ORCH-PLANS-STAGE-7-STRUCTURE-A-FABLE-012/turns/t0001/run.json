@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-STAGE-7-STRUCTURE-A-FABLE-012",
+  "sequence": "t0001",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-03T03:56:14.066Z",
+  "turn_id": "turn-s001",
+  "turn_type": "SOLAR_REQUEST",
+  "role": "SOLAR-ORCH",
+  "task_sha256": "135c63629a4d013e077d9c80344db9bd7744b86b6682009ba71c5bd13b20efb3",
+  "runner_sha256": "3e3bdc2aa6c4874c360a1c64e678bbe168e14db556c133bbfa91e62c42c510f7",
+  "previous_manual_run_sha256": null,
+  "collaboration_before_sha256": "4c75a78562ac86833f95b070ba0fbad758487b5383c469496040da9f74dbf4bd",
+  "collaboration_before_bytes": 295,
+  "collaboration_entry_sha256": "ee864032b7e805485bdfa1d5c85b9e4fcf9ca648a5db3fc07a65e1dbb7674aea",
+  "collaboration_entry_bytes": 677,
+  "collaboration_after_sha256": "3e62440e3ee157f7b1dc18cd9354074aa53d1169b347ac099911d3cdaa4a254e",
+  "collaboration_after_bytes": 972
+}

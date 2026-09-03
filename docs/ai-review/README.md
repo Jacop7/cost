@@ -355,25 +355,57 @@ PowerShell 진입점도 같은 실행기를 호출한다.
 | `124` | 시간 제한 초과 |
 
 현재 자동 경로는 로컬에서 격리 옵션을 확인한 공식 Claude Code `2.1.248` 또는 `2.1.250` allowlist,
-기본 `claude-fable-5`와 소진 시 `claude-opus-5`, high effort, 기본 회차 상한 `$2.00`, 작업 전체
-기본 상한 `$4.00`, 새 세션, 빈 MCP, `Read/Glob/Grep`만 사용한다.
+기본 `claude-fable-5`와 허용된 소진 시 `claude-opus-5`, high effort, 기본 회차 기술 상한 `$2.00`,
+현재 protocol 1.2 실행기의 Task 기술 상한 기본값 `$4.00`, 새 세션, 빈 MCP, `Read/Glob/Grep`만
+사용한다. 이 두 상한은 자동 증액 기준이나 프로젝트 예산 승인이 아니다. 외부 검수 총량은 작업큐의
+사람 Decision에 프로젝트 단위로 한 번 pin한 `review_budget_envelope_approved` 안에서 관리한다.
 실제 실행 버전과 실행 파일 hash는 매 run에 기록한다. `--restricted`, `--safe-mode`를 해제하지 않는다.
+
+`--max-budget-usd`는 Claude CLI에 전달하는 사후 정산형 **soft cap**이다. 실제 사용액이 이 값을
+넘은 실행이 관측됐으므로 결제 하드캡이나 프로젝트 envelope 보장으로 표현하지 않는다. 실행기는
+기본적으로 `PROVIDER_HARD_CAP_UNAVAILABLE`을 반환하며 모델 프로세스를 시작하지 않는다. 예외적으로
+사람이 초과 결제 위험을 받아들인 정확한 회차에만 `--allow-soft-budget`을 사용할 수 있다. 이때 같은
+Task의 `HUMAN_DECISION` 턴에 아래 pin이 정확히 하나 있어야 하며, 회차나 금액이 다르면
+`SOFT_BUDGET_RISK_APPROVAL_REQUIRED`로 외부 호출 전에 중단한다.
+
+```md
+- soft_budget_overrun_risk_accepted: `r002@1.50`
+```
+
+이 pin은 해당 회차의 soft cap 위험 수용일 뿐 Task·프로젝트 예산 증액이 아니다. 기존의 포괄적 Fable
+실행 승인, 계정 전환, 모델 승계, `task_budget_usd_approved`는 이를 대신하지 않는다. 제공자가 선불
+잔액·거래 단위 차단처럼 검증 가능한 하드캡을 제공하면 실행기 계약과 회귀 시험을 먼저 개정한 뒤
+기본 차단을 해제한다.
+
+비용 소진 전에 verdict를 받기 위한 축소 경로는 `--single-pass`다. 이 모드는
+`WORKING_TREE_HASHED`의 `input-snapshot.json` 원문과 SHA-256을 프롬프트에 직접 봉인하고,
+Claude 도구를 빈 목록으로 제한하며 `--max-turns 1`로 최종 구조화 JSON을 한 번에 요청한다. 입력
+snapshot이 없거나 전체 프롬프트가 2 MiB를 넘으면 provider 실행 전에 거부한다. 단일 턴은 반복
+cache read를 줄이는 실행 최적화일 뿐 결제 하드캡이 아니므로, 외부 호출에는 여전히 정확한
+`soft_budget_overrun_risk_accepted` 승인이 필요하다.
 
 ### 페이블 소진과 Opus 연속성 경로
 
 팀 운영 목표는 페이블 모델의 예산·사용량·속도·용량이 소진됐을 때 Opus 신규 클린 컨텍스트가
-같은 독립 감사 관점의 임시 자문을 이어받아 작업 연속성을 지키는 것이다. 이 승계 결과는 Fable
-검수 완료나 게이트 통과로 세지 않으며, 해당 Task는 Fable 복구 후 같은 대상 판본을 재검수해야
-완료된다. 감사 역할과 실행 모델을 분리하며, 실제 결과에는 `primary_reviewer_engine`,
+같은 독립 감사 역할을 이어받아 작업 연속성을 지키는 것이다. 계약 검증된 Opus successor는 R0/R1
+Task를 로컬 완료할 수 있다. R2/R3·운영 종결은 Fable 복구 표본 재감사 또는 사람이 정확한 대상
+SHA의 잔여 위험을 명시적으로 수용해야 한다. 감사 역할과 실행 모델을 분리하며, 실제 결과에는
+`primary_reviewer_engine`,
 `reviewer_engine`, 정확한 model ID와 CLI·runner hash를 기록한다.
 
 허용되는 승계 사유는 `MODEL_BUDGET_EXHAUSTED`, `MODEL_RATE_LIMITED`,
-`MODEL_CAPACITY_UNAVAILABLE`뿐이다. `MODEL_BUDGET_EXHAUSTED`는 모델 제공자·구독 한도가 구조화된
-terminal reason 또는 오류 코드로 소진됐다는 뜻이다. runner가 정한 회차 `--max-budget-usd` 상한의
-`budget_exhausted`는 승계 사유가 아니며 재실행 또는 사람 승인에 따른 상한 조정 대상이다. 공식 CLI의
-일시적 모델 미제공도 구조화된 `MODEL_CAPACITY_UNAVAILABLE`로 보고된 경우에만 포함한다. 자유 텍스트
+`MODEL_CAPACITY_UNAVAILABLE`뿐이다. `MODEL_BUDGET_EXHAUSTED`는 모델 제공자·구독 한도 또는 승인된
+프로젝트 Fable 검수 envelope가 구조화된 상태로 소진됐다는 뜻이다. runner가 정한 회차
+`--max-budget-usd` 상한의 `budget_exhausted`는 승계 사유가 아니다. 같은 기술 상한과 프로젝트
+envelope 안에서 입력을 줄인 compact packet으로 한 번만 재시도하고, 다시 실패하면 상한 증액이나
+Opus 우회 없이 `RUN_FAILED`로 닫는다. `MODEL_RATE_LIMITED`는 제공자의 `retry_after`에 따라 최대 한 번
+재시도하고, 값이 없거나 15분을 넘을 때만 장기 불가로 판정한다. `MODEL_CAPACITY_UNAVAILABLE`은 60초
+뒤 최대 한 번 재시도해 같은 구조화 오류가 반복될 때만 승계 후보가 된다. 공식 CLI의 일시적 모델
+미제공도 구조화된 사유로 보고된 경우에만 포함한다. 자유 텍스트
 매칭은 금지한다. 인증 실패, CLI 버전 allowlist·모델 ID 설정 오류, 권위 경로·target commit·hash-chain
 불일치, 허용 경로 위반, schema·저장소 의미 계약 위반은 승계 사유가 아니며 Opus로 우회하지 않는다.
+같은 목적에 Fable과 Opus를 동시에 호출하지 않으며, 대상 bytes가 하나라도 바뀌면 이전 PASS를
+무효화하고 변경 diff를 다시 독립검수한다.
 
 승계는 실패한 회차를 덮어쓰거나 같은 Task의 모델만 바꾸는 방식이 아니다. 불변 실패 run을 남기고
 새 successor Task에 다음을 봉인한다.
@@ -381,9 +413,9 @@ terminal reason 또는 오류 코드로 소진됐다는 뜻이다. runner가 정
 - predecessor task·round·run SHA-256과 승계 사유
 - 동일 target commit, artifact/input hash와 Finding registry hash
 - inherited finding ID, 허용·제외 경로와 읽기 전용 권한
-- Opus의 정확한 model ID와 작업 전체 사용 상한의 남은 범위
-- 모든 successor 결과의 페이블 복구 후 재검수 조건. 고위험 `FABLE-SEC`·`FABLE-FINAL`은 별도
-  클린 컨텍스트 전문 재감사를 추가한다.
+- Opus의 정확한 model ID와 프로젝트 검수 envelope의 남은 범위
+- R2/R3·운영 successor 결과의 페이블 복구 표본 재감사 또는 사람 exact-SHA 위험 수용 조건.
+  고위험 `FABLE-SEC`·`FABLE-FINAL`은 이 조건 없이 종결하지 않는다.
 - predecessor `collaboration.md`의 append 후 bytes/hash, `AI_DEPUTY_FALLBACK_HANDOFF`
   turn/entry/run hash, handoff 직전 base commit과 handoff만 추가한 source commit SHA
 
@@ -397,10 +429,13 @@ protocol 1.2 Task에 predecessor task·round·run hash와 실패 사유를 봉�
 작업 전체 상한에서 먼저 차감한다. 예시는 `templates/task-v12-primary.example.json`과
 `templates/task-v12-fallback.example.json`에 있으며 protocol 1.1 장부는 fallback handoff를 거부한다.
 
-successor의 `task_budget_usd`는 predecessor와 같아야 한다. 기본 상한 `4.00`을 넘는 Task는 실행 전에
-같은 Task 장부의 `HUMAN_DECISION` 턴에 `task_budget_usd_approved` 금액 pin이 정확히 하나 있어야 하며,
-fallback은 predecessor의 그 승인까지 검증한다. pin이 없거나 금액이 다르면
-`TASK_CAP_APPROVAL_REQUIRED`로 중단한다. 회차 비용은 각 값을 센트로 반올림해 정수로 합산하고,
+successor의 `task_budget_usd`는 predecessor와 같아야 하며 fallback을 이유로 올릴 수 없다. 프로젝트
+전체 외부 검수는 작업큐의 `review_budget_envelope_approved` 하나에 귀속하고 각 Task의 실사용액을
+차감한다. 현재 protocol 1.2 실행기는 호환성상 기본 Task 기술 상한 `4.00` 초과 시 같은 Task 장부의
+`HUMAN_DECISION`에 `task_budget_usd_approved`를 요구한다. 이 pin은 실행기 안전장치일 뿐 프로젝트
+envelope 증액 승인이 아니며, 새 자동 증액이나 여러 Task의 배수 예산을 만들 수 없다. 실행기 계약을
+프로젝트 envelope 단일 pin으로 이전하기 전까지 둘 중 더 낮은 한도가 적용된다. pin이 없거나 금액이
+다르면 `TASK_CAP_APPROVAL_REQUIRED`로 중단한다. 회차 비용은 각 값을 센트로 반올림해 정수로 합산하고,
 CLI envelope가 없어 `total_cost_usd=null`이면 그 회차의 `max_budget_usd` 전액을 사용한 것으로
 보수적으로 차감한다.
 
@@ -427,8 +462,9 @@ CLI envelope가 없어 `total_cost_usd=null`이면 그 회차의 `max_budget_usd
 읽기 전용 입력으로 받고, 성공 회차가 없는 successor는 predecessor `SOLAR_REQUEST`까지만 받는다.
 
 Opus도 기존과 같은 새 세션, 빈 MCP, `Read/Glob/Grep`, `--restricted`, `--safe-mode`, 제품 파일 쓰기
-금지 규칙을 사용한다. 결과가 같은 구조·의미 계약을 통과하면 실제 엔진 출처를 표시한 채 로컬
-`VERIFIED`까지 진행할 수 있지만 보호 원격·사람 승인·`CLOSED` 규칙을 바꾸지 않는다. Opus도 사용할
+금지 규칙을 사용한다. 결과가 같은 구조·의미 계약을 통과하면 실제 엔진 출처를 표시한 채 R0/R1은
+로컬 `VERIFIED`까지 진행할 수 있지만 보호 원격·사람 승인·`CLOSED` 규칙을 바꾸지 않는다. R2/R3·
+운영은 Fable 복구 표본 또는 사람 exact-SHA 위험 수용 없이는 종결하지 않는다. Opus도 사용할
 수 없으면 더 약한 모델로 연쇄 하향하지 않는다. 모델 결과 없는 실행은 `review.json`이나 verdict를
 합성하지 않고 `run_state=RUN_FAILED`, 사유 `FALLBACK_UNAVAILABLE`로 남겨 `status.json` 요약을 통해
 사람에게 보고한다. 비승계 오류도 `NOT_FALLBACK_ELIGIBLE` 사유의 `RUN_FAILED`로 남긴다.
@@ -437,8 +473,23 @@ Opus도 기존과 같은 새 세션, 빈 MCP, `Read/Glob/Grep`, `--restricted`, 
 `FABLE_REVIEW`·`FABLE_RECHECK` 턴 헤더에 모두 필수로 기록한다. `reviewer_role`은 승계한 원 역할
 ID(`FABLE-ARCH` 등)를 유지하고 `OPUS-FALLBACK`은 컨텍스트 ID일 뿐 역할 값이 아니다. Finding의
 `VERIFIED` 권한은 엔진이 아니라 원 `reviewer_role`을 따른다. Opus가 검증한 Finding에는
-`verified_by_engine`을 남기며, `FABLE-SEC`·`FABLE-FINAL` 결과는 페이블 복구 후 표본 재감사 전까지
-게이트 종결 요청의 근거로 쓰지 않는다. 엔진 필드 누락이나 primary 엔진 위장은 검증 거부 대상이다.
+`verified_by_engine`을 남기며, `FABLE-SEC`·`FABLE-FINAL` 결과는 페이블 복구 표본 재감사 또는 사람의
+exact-SHA 위험 수용 전까지 게이트 종결 요청의 근거로 쓰지 않는다. 엔진 필드 누락이나 primary 엔진
+위장은 검증 거부 대상이다.
+
+#### 현재 실행기 이관 경계 — 2026-09-03
+
+위 정책은 승인됐지만 현재 protocol 1.2 실행기가 기계적으로 수용하는 승계 시작점은 provider가
+구조화한 소진 사유가 있는 최신 `RUN_FAILED` 회차다. 아직 다음 두 계약은 실행기·schema에 구현되지
+않았다.
+
+- 유효 `RESULT_RECEIVED` 회차 뒤 프로젝트 Fable 검수 envelope가 소진된 사실만으로 successor handoff 생성
+- rate limit의 `retry_after` 1회와 capacity 60초·1회 재시도 횟수를 run/handoff에 봉인해 조기 fallback 차단
+
+따라서 구현·self-test·기존 원본 호환성 검증 전에는 이 두 사유를 수동 `RUN_FAILED`나 임의
+`OPUS-FALLBACK` Task로 합성하지 않는다. 현재 가능한 안전한 경로는 프로젝트 Fable envelope를 사람
+Decision으로 갱신해 기본 엔진을 계속 쓰거나, 별도 구현 Task에서 successor protocol을 만든 뒤 같은
+정확한 bytes를 독립 재검수하는 것이다. direct Opus advisory는 이 공백을 우회하지 않는다.
 
 수동으로 model만 바꾼 결과는 공식 검수로 합류할 수 없다. 실행기는 실패 run·handoff-only source
 commit·장부 bytes/hash·입력/산출물/registry hash·실사용액을 검증한 새 protocol 1.2 successor만 받는다.
@@ -522,8 +573,12 @@ successor로 승계하지 않는다. 기존 Finding의 `previous_finding_id`는 
 ## 12. 사용자 승인 범위 — 2026-08-28
 
 사용자는 이 권위 저장소의 모든 작업 완료 검수 route에서 Codex가 호출마다 다시 묻지 않고 공식
-Claude Code CLI의 Fable route를 실행하는 것을 승인했다. 위험 등급은 검수 깊이와 전문 역할을
-조정할 뿐 Fable 실행 여부를 바꾸지 않으며, 비용은 입력 축소와 중복 제거로 최소화한다.
+Claude Code CLI의 Fable 기본 route를 실행하는 것을 승인했다. 2026-09-03에는 구조화된 소진 사유와
+재시도 조건을 충족한 경우 Opus successor가 같은 독립 감사 역할을 승계하도록 승인했다. 위험 등급은
+검수 깊이와 종결 조건을 바꾸며, 비용은 입력 축소·그룹 checkpoint·중복 호출 제거로 최소화한다.
+Fable과 Opus를 같은 목적에 동시에 호출하거나 실패할 때 상한을 배수로 자동 증액하는 것은 승인하지
+않았다. 이 포괄 승인은 `--max-budget-usd` 초과 결제 위험 수용이 아니므로 §5의 회차별
+`soft_budget_overrun_risk_accepted` pin 없이는 외부 모델을 호출하지 않는다.
 
 승인 범위:
 

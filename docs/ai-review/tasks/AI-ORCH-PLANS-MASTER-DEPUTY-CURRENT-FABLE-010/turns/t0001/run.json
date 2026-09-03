@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-MASTER-DEPUTY-CURRENT-FABLE-010",
+  "sequence": "t0001",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-03T03:31:08.741Z",
+  "turn_id": "turn-s001",
+  "turn_type": "SOLAR_REQUEST",
+  "role": "SOLAR-ORCH",
+  "task_sha256": "d8b58f86595e5b8467388c3437d5cd2495af55150929f9bff7a25e5dfb78de92",
+  "runner_sha256": "3e3bdc2aa6c4874c360a1c64e678bbe168e14db556c133bbfa91e62c42c510f7",
+  "previous_manual_run_sha256": null,
+  "collaboration_before_sha256": "f98a111329d3ad7a966d9a627f31eb8669e16e8bfad56558f86af768d8607fc7",
+  "collaboration_before_bytes": 277,
+  "collaboration_entry_sha256": "02639bf383229582b04e83aeffc0e2efd19e6886a599fb58991634ba5839985b",
+  "collaboration_entry_bytes": 623,
+  "collaboration_after_sha256": "149fc588325d7c167a07e9906af06eac4a33856c6fb60e00c8e9e48ce193602d",
+  "collaboration_after_bytes": 900
+}

@@ -1,0 +1,167 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-MASTER-CHAT-FABLE-001",
+  "round": "r001",
+  "created_at": "2026-09-02T22:28:38.491Z",
+  "review_mode": "INITIAL",
+  "baseline_commit_sha": "6e99bd93b737bf291f14a8d3a6465a1d5110fa6c",
+  "target_commit_sha": "6e99bd93b737bf291f14a8d3a6465a1d5110fa6c",
+  "target_tree_oid": "c516cebc1c57bcc0a5705dbb7f7a4a0a24f38d55",
+  "agents_blob_oid": "c32214b5528752a91f0f1545fea8c735d5fae7fa",
+  "agents_sha256": "de18fc8524afa350d3d0806f40150b9397dfd45a91ff471b5e1f6d6bf95fc681",
+  "task_sha256": "374dba75f04a6fce8d29116c6939f72d9b6c715d879126de881bc832c8d8ff2b",
+  "collaboration_sha256": "232baf18a30eee73d02fcf726134b104f6fcdf29b9aba410a1698b5fb93dfd86",
+  "collaboration_bytes": 2299,
+  "input_files_sha256": "4455e7da51dd30e2f9c90e5b51c47bb9d7773ed0e12be34437051df466a42586",
+  "schema_sha256": "d8ffdb13e6b1e38279355d9ffd592cfb91dc023d287976adf7892e85dbfaf0d7",
+  "runner_sha256": "80dae1d06c89af056e9d8c210b571e978ee534fc128a5fe3b9867610b5ae447b",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "previous_review_sha256": null,
+  "previous_run_sha256": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "fallback_review": null,
+  "closure_review": null,
+  "fallback_input_scope": null,
+  "retry_of_failed_round": null,
+  "artifact_paths": [
+    "docs/팀구성_상세기획안.md",
+    "docs/AI-오케스트레이션-상세기획안.md",
+    "docs/작업큐.md",
+    "scripts/ai-plan-network-simulation.mjs",
+    "scripts/ai-plan-network-simulation.test.mjs"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/ai-review/README.md",
+    "docs/AI-지식-온톨로지-기획안.md",
+    "docs/디렉터리-문서신경망-재설계-기획안.md",
+    "docs/AI-품질-학습-자율성-평가기획안.md"
+  ],
+  "evidence_paths": [],
+  "allowed_paths": [
+    "docs/팀구성_상세기획안.md",
+    "docs/AI-오케스트레이션-상세기획안.md",
+    "docs/작업큐.md",
+    "scripts/ai-plan-network-simulation.mjs",
+    "scripts/ai-plan-network-simulation.test.mjs",
+    "AGENTS.md",
+    "docs/ai-review/README.md",
+    "docs/AI-지식-온톨로지-기획안.md",
+    "docs/디렉터리-문서신경망-재설계-기획안.md",
+    "docs/AI-품질-학습-자율성-평가기획안.md"
+  ],
+  "excluded_paths": [
+    "apps/mobile/**",
+    "scripts/prototype_server.py",
+    "docs/prototypes/**",
+    "docs/ai-review/evidence/AI-CONTEXT-CROSS-STUDY-*.md",
+    "docs/ai-review/tasks/PROTOTYPE-TERMINOLOGY-001/**",
+    ".codex-share/**",
+    ".tmp/**"
+  ],
+  "applied_learning_ids": [],
+  "excluded_learning_ids": [],
+  "learning_registry_blob_oid": "77f00167d790c82373c1aa803d91874952c3334a",
+  "learning_registry_sha256": "4717fe99c86319d7c0abc5c8dd38e68e3a55722d7cfa56b8de173ed05ca1388f",
+  "learning_assignment_sha256": "4660bb32207bcae3246801d71aa6a052eab7b0a7cef357bd5984f706fe3dcbfe",
+  "learning_target_date": "2026-09-03",
+  "input_files": [
+    {
+      "path": "AGENTS.md",
+      "path_role": "REFERENCE",
+      "change_type": "UNCHANGED",
+      "size": 11697,
+      "git_blob_oid": "c32214b5528752a91f0f1545fea8c735d5fae7fa",
+      "sha256": "de18fc8524afa350d3d0806f40150b9397dfd45a91ff471b5e1f6d6bf95fc681",
+      "line_count": 160
+    },
+    {
+      "path": "docs/디렉터리-문서신경망-재설계-기획안.md",
+      "path_role": "REFERENCE",
+      "change_type": "UNCHANGED",
+      "size": 28444,
+      "git_blob_oid": "2c5b1602570c4f2ca8294006a5c4f55904b1a277",
+      "sha256": "81796a6b5ccde312a1e4eb376728195dcca53fcbd630137f844f260495a7498c",
+      "line_count": 499
+    },
+    {
+      "path": "docs/작업큐.md",
+      "path_role": "ARTIFACT",
+      "change_type": "MODIFIED",
+      "size": 156658,
+      "git_blob_oid": "64ab4ed8f433f67fe87be858164d330ce67e911c",
+      "sha256": "e012e8d934df69825928a1005a477f0804721b1ff537bd17720fb147b0cc033b",
+      "line_count": 2284
+    },
+    {
+      "path": "docs/팀구성_상세기획안.md",
+      "path_role": "ARTIFACT",
+      "change_type": "MODIFIED",
+      "size": 117510,
+      "git_blob_oid": "5a751177c3c606f313dd624d9f4e3709e9876772",
+      "sha256": "b2fb8be0fee93706c5413edd34bc6c01a28337f68a4873d3c8432293cdbac5e3",
+      "line_count": 2028
+    },
+    {
+      "path": "docs/AI-오케스트레이션-상세기획안.md",
+      "path_role": "ARTIFACT",
+      "change_type": "MODIFIED",
+      "size": 43894,
+      "git_blob_oid": "21665c4db0495985de3e6b13f2c9dcd331424499",
+      "sha256": "408de6db14f05d788052ab63a53f53e2a021245df7dd9b5704afbf0593f39e33",
+      "line_count": 755
+    },
+    {
+      "path": "docs/AI-지식-온톨로지-기획안.md",
+      "path_role": "REFERENCE",
+      "change_type": "UNCHANGED",
+      "size": 32401,
+      "git_blob_oid": "57fb2c564baf64202f66a66efdc9d21759b5c34a",
+      "sha256": "217a3d308bdad63940f8473318b992cc07df63664a27c26823bf10cf3f13f995",
+      "line_count": 544
+    },
+    {
+      "path": "docs/AI-품질-학습-자율성-평가기획안.md",
+      "path_role": "REFERENCE",
+      "change_type": "UNCHANGED",
+      "size": 34162,
+      "git_blob_oid": "bb301916b21a77a784ca7a8351aac7e2c9b46ee5",
+      "sha256": "34a259755902bc0974b73219f5a95494e83149c6e891829343494882001360ec",
+      "line_count": 590
+    },
+    {
+      "path": "docs/ai-review/README.md",
+      "path_role": "REFERENCE",
+      "change_type": "MODIFIED",
+      "size": 40462,
+      "git_blob_oid": "99b174a7e545bb0888168b14cfa062662de94a6a",
+      "sha256": "71c42f1fc914c9c7c767a39e2edbac42fb1e5dc90fefaf0f4c4f41f6cf7efa42",
+      "line_count": 540
+    },
+    {
+      "path": "scripts/ai-plan-network-simulation.mjs",
+      "path_role": "ARTIFACT",
+      "change_type": "MODIFIED",
+      "size": 131521,
+      "git_blob_oid": "7f005d3c21bf02815cdb8c1a0fe7ff6093e4be3a",
+      "sha256": "6b80d79f4f6a29b2162713a85a80fd43ebe5c9c1c901a7770bfd479a9eb62c07",
+      "line_count": 2490
+    },
+    {
+      "path": "scripts/ai-plan-network-simulation.test.mjs",
+      "path_role": "ARTIFACT",
+      "change_type": "MODIFIED",
+      "size": 82761,
+      "git_blob_oid": "26819110d3b81dbcde3b0b08fb1e1060ea399dbb",
+      "sha256": "7fff67a06cd61094cad594d28915aa82e5232caca5c6ba3f8587886dccff4c92",
+      "line_count": 1691
+    }
+  ],
+  "source_archive_version": 1,
+  "finding_resolution_semantics": "VERIFIED_RESOLVED_V1",
+  "artifact_snapshot_sha256": "7d2f4d0e439b6f9d429b24bf76e19889489697646bfcab4705ae66e1db95bb63",
+  "input_snapshot_sha256": "ee19e1031e60b3dbcc6f55df6bcb5b16e862e1b29f26a7bb942a0ad22f291fb8"
+}

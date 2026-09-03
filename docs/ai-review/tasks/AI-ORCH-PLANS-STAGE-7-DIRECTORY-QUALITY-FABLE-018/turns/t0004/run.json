@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-STAGE-7-DIRECTORY-QUALITY-FABLE-018",
+  "sequence": "t0004",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-03T04:35:11.919Z",
+  "turn_id": "turn-c001",
+  "turn_type": "CODEX_EVIDENCE",
+  "role": "CODEX-FUNCTION-QA",
+  "task_sha256": "28237101f9db73089188449d5e840486bf43d3c5f0ef824b854483d98f442250",
+  "runner_sha256": "3e3bdc2aa6c4874c360a1c64e678bbe168e14db556c133bbfa91e62c42c510f7",
+  "previous_manual_run_sha256": "01264d9bb6b43bae2f78a802694f9485ad3829c513465193d453e93cb8746662",
+  "collaboration_before_sha256": "88fda2a9481732bb75d00b31949df908b8782007290f811b155b6ea81e88c6fe",
+  "collaboration_before_bytes": 7486,
+  "collaboration_entry_sha256": "173c86dcabc95b47a4d4e40d7ef537ded5e65ed7599a0df1fe8748e450a43712",
+  "collaboration_entry_bytes": 1000,
+  "collaboration_after_sha256": "750a9e0dc6761f5ffb6c0f1c2997a316e3df2226f74c273a62ee39c23523ee23",
+  "collaboration_after_bytes": 8486
+}

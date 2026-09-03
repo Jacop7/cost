@@ -1,0 +1,66 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-MASTER-DEPUTY-CURRENT-FABLE-010",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R1",
+  "author_role": "SOLAR-ORCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "6e99bd93b737bf291f14a8d3a6465a1d5110fa6c",
+  "target_commit_sha": "6e99bd93b737bf291f14a8d3a6465a1d5110fa6c",
+  "target_tree_oid": "c516cebc1c57bcc0a5705dbb7f7a4a0a24f38d55",
+  "agents_blob_oid": "c32214b5528752a91f0f1545fea8c735d5fae7fa",
+  "agents_sha256": "de18fc8524afa350d3d0806f40150b9397dfd45a91ff471b5e1f6d6bf95fc681",
+  "requirements": [
+    "현재 두 공식 문서에서 사람·AI 마스터·AI 부 오케스트레이터의 책임과 권한 경계가 단일하고 모순 없이 정의돼야 한다.",
+    "AI 마스터와 AI 부 오케스트레이터는 역할 ID·전용 컨텍스트·권한 상한에 등록돼야 한다.",
+    "사람의 정책·비용·위험 수용·운영 승인 권한은 어느 AI 역할에도 이관되면 안 된다.",
+    "R0·R1 자동 종결 조건 번호는 중복 없이 1~11이어야 한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:single-canonical-artifact",
+    "AGENTS:fable-required-review",
+    "AI-ORCH:master-deputy-boundary",
+    "AI-TEAM:r0-r1-completion-conditions"
+  ],
+  "artifact_paths": [
+    "docs/팀구성_상세기획안.md",
+    "docs/AI-오케스트레이션-상세기획안.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/evidence/AI-PLANS-SIM-MASTER-DEPUTY-CURRENT-READY.md"
+  ],
+  "excluded_paths": [
+    "apps/mobile/**",
+    "packages/**",
+    "docs/prototypes/**",
+    ".codex-share/**",
+    ".tmp/**"
+  ],
+  "required_evidence": [
+    "현재 두 artifact SHA-256",
+    "ai:plans:simulate 71/71 PASS",
+    "git diff --check 오류 없음"
+  ],
+  "human_decisions": [
+    "DEC-AI-FABLE-AUTONOMOUS-BUDGET-009 — 사용자는 합리적인 예산 기준을 초과해도 추가 질문 없이 계속 진행하도록 위임했다.",
+    "AI 부 오케스트레이터는 현재 축소 검수 1회의 soft cap을 USD 6.00으로 선택하며 provider 초과 가능성을 수용한다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "6.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}

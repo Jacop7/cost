@@ -1,0 +1,66 @@
+{
+  "schema_version": "2.0",
+  "task_id": "AI-ORCH-PLANS-FINDING-LINEAGE-RECHECK-017",
+  "reviewer_role": "FABLE-ARCH",
+  "review_mode": "RECHECK",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "6e99bd93b737bf291f14a8d3a6465a1d5110fa6c",
+  "target_commit_sha": "96d7b66dee727790c4654df88d8488753a27afd5",
+  "target_tree_oid": "6097c085895148e9b8899cc1df0b7d3ca686f36d",
+  "agents_blob_oid": "c32214b5528752a91f0f1545fea8c735d5fae7fa",
+  "agents_sha256": "de18fc8524afa350d3d0806f40150b9397dfd45a91ff471b5e1f6d6bf95fc681",
+  "task_sha256": "7e814a95812548d17f6a50a8cbbb5e5db3fe27be97e0a0608a66ebdf746faa5a",
+  "collaboration_sha256": "5b895aed5305e2187e01922e20f00551cc4a304eadebed00182e5eb72f2a8899",
+  "input_files_sha256": "81c82cf4a3a92fae56309cbb4bfc518bbc3b7cccdbdd1b3fcb1557188a6b4952",
+  "schema_sha256": "d8ffdb13e6b1e38279355d9ffd592cfb91dc023d287976adf7892e85dbfaf0d7",
+  "runner_sha256": "3e3bdc2aa6c4874c360a1c64e678bbe168e14db556c133bbfa91e62c42c510f7",
+  "verdict": "PASS",
+  "summary": "수정 commit 96d7b66dee727790c4654df88d8488753a27afd5에 대해 predecessor(AI-ORCH-PLANS-FINDING-LINEAGE-COMMIT-015, registry SHA-256 8ea0be797bf3113a4834b03aa2c0fdd9a99b9606b0e7a2d37a60a8b7150168e0)의 유일한 OPEN Finding을 같은 ID로 재검수했다.\n\n[VERIFIED] FAB-ARCH-006-R0R1-DUPLICATE-COND-10-002: docs/팀구성_상세기획안.md의 \"R0·R1 자동 종결 조건:\" 목록(현재 1079행 시작)이 원문 기준 1081~1092행에서 1~11의 엄격한 오름차순 단일 번호를 가지며 중복 \"10.\"이 없다. 기존 두 조건의 내용이 모두 보존됐다 — 1091행은 마지막 검수 review/run/장부·공식 산출물의 anchor commit 고정과 decision commit 참조 조건을 \"10.\"으로, 1092행은 decision commit 정확한 SHA의 보호 원격 필수 체크 성공·full-db-required·protected-gate run ID 봉인 조건을 \"11.\"로 유지하고, 1092행 본문은 predecessor의 proposed_edits(EDIT-R0R1-COND-RENUMBER-001) 문안과 정확히 일치한다. docs/ 전체에서 \"조건 10\"·\"조건 11\" 등 번호 인용을 grep한 결과 잔여 인용이 없어 세 가지 acceptance criteria와 required_tests가 모두 충족됐다.\n\n[경계 정합성] 수정에는 AI 마스터 오케스트레이터(AI-MASTER-ORCHESTRATOR/SOLAR-MASTER-ORCH)의 명시적 도입이 포함되는데, 두 문서에서 모순 없이 유지된다. 오케스트레이션안 §2 구성요소 표(67~79행)는 요청 해석자·상태 복원기·라우팅 실행기를 AI 부 오케스트레이터에, 작업 그래프·라우팅 계획자를 AI 마스터에 배정하고, §2.1(117~132행)과 팀구성안 §1.4(179~185행)는 \"Task 라우팅\"을 마스터의 라우팅 계획 확정과 부의 확정 경로 실행으로만 구분한다. 팀구성안 §3.2(265~296행), §4.3 경계 RACI(960~970행), §5.1 컨텍스트 등록(1115~1116행)이 같은 분담을 반복하며 두 역할 모두 권한 상한 L1로 사람의 L2·L3 결정을 대행하지 않는다. 요청 정규화·예비 판정은 부 소유, 작업 분해·담당 배정·라우팅 계획 확정은 마스터 소유, 정책·우선순위·위험 수용·대체 확정은 사람 소유로 문서 간 모순이 없다.\n\npredecessor registry에는 이 Finding 1건만 존재하므로 거짓 종결 대상이 없고, closed_finding_ids는 사용하지 않았다(CLOSED는 보호 원격 게이트 전까지 금지). 새 필수 결함은 발견되지 않았다. 판정: PASS, 잔여 필수 Finding 0건. gate_state는 OPEN으로 유지된다.",
+  "findings": [
+    {
+      "finding_id": "FAB-ARCH-006-R0R1-DUPLICATE-COND-10-002",
+      "severity": "Major",
+      "review_state": "VERIFIED",
+      "category": "POLICY",
+      "requirement_or_invariant_ids": [
+        "AI-TEAM:r0-r1-completion-conditions",
+        "AGENTS:single-canonical-artifact"
+      ],
+      "evidence": [
+        {
+          "path": "docs/팀구성_상세기획안.md",
+          "line_start": 1079,
+          "line_end": 1092,
+          "observation": "수정 commit에서 \"R0·R1 자동 종결 조건:\" 목록이 원문 기준 1081~1092행에 1.~11.로 중복 없이 엄격한 오름차순으로 이어진다. 1091행은 기존 첫 번째 \"10.\"(마지막 검수 review/run/장부·공식 산출물의 anchor commit 고정, AI 부 O 결정의 decision commit 참조)을 그대로 유지하고, 1092행은 기존 두 번째 \"10.\"이었던 보호 원격 필수 체크·full-db-required·protected-gate run ID 봉인 조건을 내용 변경 없이 \"11.\"로 재번호했다. 1092행 본문은 predecessor proposed_edits EDIT-R0R1-COND-RENUMBER-001의 proposed_text와 정확히 일치한다."
+        },
+        {
+          "path": "docs/팀구성_상세기획안.md",
+          "line_start": 1076,
+          "line_end": 1079,
+          "observation": "이 목록은 여전히 \"Fable 기본 또는 계약 검증된 Opus fallback 독립검수를 포함해 종결 조건을 충족한 R0·R1의 개발·스테이징 완료\"를 판정하는 규범 게이트 체크리스트이며, docs/ 전체에서 \"조건 10\"·\"조건 11\" 패턴의 번호 인용을 grep한 결과 어떤 문서에도 해당 조건을 번호로 인용하는 곳이 없어 잔여 모호 인용이 존재하지 않는다."
+        }
+      ],
+      "impact": "해소됨: R0·R1 자동 종결 체크리스트의 원문 번호가 1~11 단일 체계로 복구돼 \"조건 10\"(anchor/decision commit 고정)과 \"조건 11\"(보호 원격 게이트 성공 봉인)이 각각 유일한 조건을 가리킨다. 원문 기반 도구·diff·인용과 렌더링 기반 인용이 더 이상 서로 다른 조건을 지칭할 수 없다.",
+      "acceptance_criteria": [
+        "docs/팀구성_상세기획안.md의 R0·R1 자동 종결 조건 목록이 원문 기준 1~11의 엄격한 오름차순 단일 번호를 가진다.",
+        "기존 두 \"10.\" 항목의 조건 내용(anchor/decision commit 고정, 보호 원격 필수 체크·run ID 봉인)이 모두 내용 변경 없이 보존된다.",
+        "수정 후 문서 내·타 문서에서 해당 조건을 번호로 인용하는 곳이 없거나, 있다면 새 번호와 일치한다."
+      ],
+      "required_tests": [
+        "수정 commit에서 해당 목록 원문을 읽어 목록 항목 번호가 1~11 오름차순으로 중복 없이 이어지는지 확인",
+        "docs/ 전체에서 \"조건 10\"·\"조건 11\" 등 번호 인용을 grep해 잔여 모호 인용이 없는지 확인"
+      ],
+      "previous_finding_id": "FAB-ARCH-006-R0R1-DUPLICATE-COND-10-002",
+      "verified_by_engine": "FABLE"
+    }
+  ],
+  "proposed_edits": [],
+  "closed_finding_ids": [],
+  "reopened_finding_ids": [],
+  "remaining_required_finding_ids": [],
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}

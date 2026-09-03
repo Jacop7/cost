@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-FINDING-LINEAGE-RECHECK-017",
+  "sequence": "t0002",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-03T04:19:47.235Z",
+  "turn_id": "turn-h001",
+  "turn_type": "HUMAN_DECISION",
+  "role": "HUMAN",
+  "task_sha256": "7e814a95812548d17f6a50a8cbbb5e5db3fe27be97e0a0608a66ebdf746faa5a",
+  "runner_sha256": "3e3bdc2aa6c4874c360a1c64e678bbe168e14db556c133bbfa91e62c42c510f7",
+  "previous_manual_run_sha256": "3abb13124ce1197f94faa950aa7c124cd85570adca324caf11a1a5fc96ca1250",
+  "collaboration_before_sha256": "e85ff951bf83d3e8d7298bd3bcf265f57d6a5a6f618110cc3d6a7af450fcad0b",
+  "collaboration_before_bytes": 931,
+  "collaboration_entry_sha256": "c2615b742cc71044c5659f61d7fa84e270e2d50a13ff1a6b337837b3d2c130c8",
+  "collaboration_entry_bytes": 903,
+  "collaboration_after_sha256": "5b895aed5305e2187e01922e20f00551cc4a304eadebed00182e5eb72f2a8899",
+  "collaboration_after_bytes": 1834
+}

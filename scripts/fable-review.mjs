@@ -111,6 +111,7 @@ const MAX_ARTIFACT_SNAPSHOT_BYTES = 10 * 1024 * 1024;
 const MAX_WORKING_INPUT_SNAPSHOT_BYTES = 25 * 1024 * 1024;
 const MAX_STDOUT_BYTES = 16 * 1024 * 1024;
 const MAX_STDERR_BYTES = 4 * 1024 * 1024;
+const MAX_SINGLE_PASS_PROMPT_BYTES = 2 * 1024 * 1024;
 const MAX_PREDECESSOR_ARCHIVE_BYTES = 50 * 1024 * 1024;
 const MAX_PREDECESSOR_FILES = 500;
 const DEFAULT_TIMEOUT_MS = 15 * 60 * 1000;
@@ -409,6 +410,8 @@ function parseArgs(argv) {
     timeoutMs: DEFAULT_TIMEOUT_MS,
     maxBudgetUsd: DEFAULT_MAX_BUDGET_USD,
     maxBudgetProvided: false,
+    allowSoftBudget: false,
+    singlePass: false,
   };
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
@@ -423,6 +426,8 @@ function parseArgs(argv) {
       parsed.maxBudgetUsd = normalizeReviewBudget(argv[++i]);
       parsed.maxBudgetProvided = true;
     }
+    else if (arg === '--allow-soft-budget') parsed.allowSoftBudget = true;
+    else if (arg === '--single-pass') parsed.singlePass = true;
     else if (arg === '--help' || arg === '-h') parsed.help = true;
     else throw new ReviewError(`알 수 없는 인자입니다: ${arg}`, { exitCode: 64 });
   }
@@ -437,6 +442,12 @@ function parseArgs(argv) {
   }
   if (parsed.maxBudgetProvided && !parsed.taskId) {
     throw new ReviewError('--max-budget-usd는 --task 검수 실행에서만 사용할 수 있습니다.', { exitCode: 64 });
+  }
+  if (parsed.allowSoftBudget && !parsed.taskId) {
+    throw new ReviewError('--allow-soft-budget은 --task 검수 실행에서만 사용할 수 있습니다.', { exitCode: 64 });
+  }
+  if (parsed.singlePass && !parsed.taskId) {
+    throw new ReviewError('--single-pass는 --task 검수 실행에서만 사용할 수 있습니다.', { exitCode: 64 });
   }
   const selectedModes = Number(parsed.check) + Number(parsed.selfTest) + Number(Boolean(parsed.taskId));
   if (!parsed.help && selectedModes !== 1) {
@@ -455,7 +466,12 @@ function printHelp() {
   node scripts/fable-review.mjs --check
   node scripts/fable-review.mjs --self-test
   PowerShell 7: Get-Content -Raw -Encoding utf8 turn.md | node scripts/fable-review.mjs --append-turn --task <TASK-ID>
-  node scripts/fable-review.mjs --task <TASK-ID> [--round <1..999>] [--timeout-ms <ms>] [--max-budget-usd <0.01..10.00>]
+  node scripts/fable-review.mjs --task <TASK-ID> [--round <1..999>] [--timeout-ms <ms>] [--max-budget-usd <0.01..10.00>] [--allow-soft-budget] [--single-pass]
+
+예산 안전:
+  --max-budget-usd는 provider의 사후 정산형 soft cap이며 실제 결제 하드캡으로 간주하지 않는다.
+  기본값은 외부 호출 전 무비용 종료다. --allow-soft-budget은 collaboration 장부에
+  soft_budget_overrun_risk_accepted: \`rNNN@금액\` 사람 승인이 정확히 하나 있을 때만 허용한다.
 
 검수 패킷:
   docs/ai-review/tasks/<TASK-ID>/task.json
@@ -2702,6 +2718,18 @@ ${collaborationBlock}
 ${learningContextBlock}${previousBlock}${predecessorRegistryBlock}`;
 }
 
+function singlePassPrompt(basePrompt, inputSnapshotRaw) {
+  if (!inputSnapshotRaw) {
+    throw new ReviewError('--single-pass는 원문이 봉인된 WORKING_TREE_HASHED Task에서만 사용할 수 있습니다.', { exitCode: 64 });
+  }
+  const inputSnapshot = decodeSafeText(inputSnapshotRaw, 'single-pass input snapshot', MAX_WORKING_INPUT_SNAPSHOT_BYTES);
+  const prompt = `${basePrompt}\n\n# Single-pass sealed inputs\n\nDo not call tools. Every allowed input is embedded below. Return the final JSON in this one turn.\n<sealed_input_snapshot sha256="${sha256(inputSnapshotRaw)}">\n${inputSnapshot}\n</sealed_input_snapshot>`;
+  if (Buffer.byteLength(prompt, 'utf8') > MAX_SINGLE_PASS_PROMPT_BYTES) {
+    throw new ReviewError(`single-pass prompt가 ${MAX_SINGLE_PASS_PROMPT_BYTES}바이트 제한을 넘습니다.`, { exitCode: 65 });
+  }
+  return prompt;
+}
+
 function killProcessTree(child) {
   if (!child?.pid) return false;
   if (platform() === 'win32') {
@@ -2715,14 +2743,14 @@ function killProcessTree(child) {
   return child.kill('SIGKILL');
 }
 
-async function runClaude({ cli, cwd, prompt, schema, timeoutMs, maxBudgetUsd, model = CLAUDE_MODEL }) {
-  const args = [
+function claudeReviewArgs({ schema, maxBudgetUsd, model = CLAUDE_MODEL, singlePass = false }) {
+  return [
     '-p',
     '--model', model,
     '--effort', 'high',
     '--output-format', 'json',
     '--json-schema', JSON.stringify(schema),
-    '--max-turns', '12',
+    '--max-turns', singlePass ? '1' : '12',
     '--max-budget-usd', maxBudgetUsd,
     '--no-session-persistence',
     '--restricted',
@@ -2732,8 +2760,12 @@ async function runClaude({ cli, cwd, prompt, schema, timeoutMs, maxBudgetUsd, mo
     '--strict-mcp-config',
     '--mcp-config', '{"mcpServers":{}}',
     '--permission-mode', 'dontAsk',
-    '--tools', 'Read,Glob,Grep',
+    '--tools', singlePass ? '' : 'Read,Glob,Grep',
   ];
+}
+
+async function runClaude({ cli, cwd, prompt, schema, timeoutMs, maxBudgetUsd, model = CLAUDE_MODEL, singlePass = false }) {
+  const args = claudeReviewArgs({ schema, maxBudgetUsd, model, singlePass });
 
   return new Promise((resolvePromise, rejectPromise) => {
     const started = Date.now();
@@ -2917,6 +2949,31 @@ function approvedTaskBudget(manualHistory, taskBudgetUsd) {
       /^- task_budget_usd_approved: `((?:0|[1-9]\d*)(?:\.\d{1,2})?)`$/gm,
     )].map((match) => match[1]));
   return pins.length === 1 && usdCents(pins[0], '승인 상한') === usdCents(taskBudgetUsd, 'Task 상한');
+}
+
+function approvedSoftBudgetRisk(manualHistory, roundName, maxBudgetUsd) {
+  const expected = `${roundName}@${maxBudgetUsd}`;
+  const pins = manualHistory.records
+    .filter((record) => record.identity.turnType === 'HUMAN_DECISION')
+    .flatMap((record) => [...decodeSafeText(record.entryRaw, 'HUMAN_DECISION entry').matchAll(
+      /^- soft_budget_overrun_risk_accepted: `(r\d{3}@(?:0|[1-9]\d*)(?:\.\d{1,2})?)`$/gm,
+    )].map((match) => match[1]));
+  return pins.filter((pin) => pin === expected).length === 1;
+}
+
+function assertExternalBudgetEnforcement(args, manualHistory, roundName) {
+  if (!args.allowSoftBudget) {
+    throw new ReviewError(
+      'Claude Code --max-budget-usd는 실제 결제 하드캡으로 검증되지 않았으므로 외부 호출 전에 중단했습니다: PROVIDER_HARD_CAP_UNAVAILABLE',
+      { exitCode: 64 },
+    );
+  }
+  if (!approvedSoftBudgetRisk(manualHistory, roundName, args.maxBudgetUsd)) {
+    throw new ReviewError(
+      `soft cap 초과 결제 위험을 허용하려면 HUMAN_DECISION에 정확히 soft_budget_overrun_risk_accepted: \`${roundName}@${args.maxBudgetUsd}\` 승인이 필요합니다: SOFT_BUDGET_RISK_APPROVAL_REQUIRED`,
+      { exitCode: 64 },
+    );
+  }
 }
 
 function assertTaskBudgetApproval(task, manualHistory) {
@@ -5295,6 +5352,7 @@ async function executeReview(args) {
         );
       }
     }
+    assertExternalBudgetEnforcement(args, chain.manualHistory, roundName);
     const collaborationText = decodeSafeText(collaborationRaw, 'collaboration.md').trim();
     if (!collaborationText) throw new ReviewError('collaboration.md가 비어 있습니다.', { exitCode: 65 });
     const schemaPath = join(repoRoot, 'scripts', 'fable-review', 'schema-v1.json');
@@ -5381,7 +5439,8 @@ async function executeReview(args) {
       mkdirSync(logDir, { recursive: true });
       assertPlainRuntimeDirectory(runtime, logDir, '검수 log');
       createReviewSnapshot(runtime, reviewPath, inputFiles);
-      const prompt = buildPrompt({ task, collaborationText, snapshot, manifest, mode, previous });
+      const basePrompt = buildPrompt({ task, collaborationText, snapshot, manifest, mode, previous });
+      const prompt = args.singlePass ? singlePassPrompt(basePrompt, inputSnapshotRaw) : basePrompt;
       claudeOutput = await runClaude({
         cli,
         cwd: reviewPath,
@@ -5390,6 +5449,7 @@ async function executeReview(args) {
         timeoutMs: args.timeoutMs,
         maxBudgetUsd: args.maxBudgetUsd,
         model: engineContract.model,
+        singlePass: args.singlePass,
       });
       writeFileSync(join(logDir, 'stderr.meta.json'), `${JSON.stringify({
         sha256: sha256(claudeOutput.stderr),
@@ -6292,13 +6352,15 @@ function runSelfTests() {
   test('review-budget-default-and-explicit-cap', () => {
     const defaultArgs = parseArgs(['--task', 'SELF-TASK-001']);
     const approvedArgs = parseArgs([
-      '--task', 'SELF-TASK-001', '--max-budget-usd', '4',
+      '--task', 'SELF-TASK-001', '--max-budget-usd', '4', '--allow-soft-budget', '--single-pass',
     ]);
     selfTestAssert(
       defaultArgs.maxBudgetUsd === '2.00'
         && !defaultArgs.maxBudgetProvided
         && approvedArgs.maxBudgetUsd === '4.00'
-        && approvedArgs.maxBudgetProvided,
+        && approvedArgs.maxBudgetProvided
+        && approvedArgs.allowSoftBudget
+        && approvedArgs.singlePass,
       '기본 예산은 유지하고 승인 실행만 명시 상한 사용',
     );
     expectReviewError(
@@ -6308,6 +6370,54 @@ function runSelfTests() {
     expectReviewError(
       () => parseArgs(['--self-test', '--max-budget-usd', '4']),
       { exitCode: 64, messageIncludes: '--task 검수 실행에서만' },
+    );
+    expectReviewError(
+      () => parseArgs(['--self-test', '--allow-soft-budget']),
+      { exitCode: 64, messageIncludes: '--task 검수 실행에서만' },
+    );
+    expectReviewError(
+      () => parseArgs(['--self-test', '--single-pass']),
+      { exitCode: 64, messageIncludes: '--task 검수 실행에서만' },
+    );
+  });
+
+  test('single-pass-embeds-sealed-input-and-disables-tools', () => {
+    const inputRaw = Buffer.from('{"inputs":[{"path":"a.md","content_utf8":"hello"}]}\n', 'utf8');
+    const prompt = singlePassPrompt('base', inputRaw);
+    selfTestAssert(prompt.includes(sha256(inputRaw)) && prompt.includes('"content_utf8":"hello"'),
+      'single-pass prompt는 봉인 hash와 원문을 포함해야 함');
+    const cliArgs = claudeReviewArgs({ schema: { type: 'object' }, maxBudgetUsd: '1.00', singlePass: true });
+    selfTestAssert(cliArgs[cliArgs.indexOf('--max-turns') + 1] === '1', 'single-pass는 한 턴이어야 함');
+    selfTestAssert(cliArgs[cliArgs.indexOf('--tools') + 1] === '', 'single-pass는 도구를 비활성화해야 함');
+    expectReviewError(() => singlePassPrompt('base', null), {
+      exitCode: 64,
+      messageIncludes: 'WORKING_TREE_HASHED',
+    });
+  });
+
+  test('external-budget-is-fail-closed-with-exact-human-risk-pin', () => {
+    const defaultArgs = parseArgs(['--task', 'SELF-TASK-001', '--round', '2', '--max-budget-usd', '1.50']);
+    expectReviewError(
+      () => assertExternalBudgetEnforcement(defaultArgs, { records: [] }, 'r002'),
+      { exitCode: 64, messageIncludes: 'PROVIDER_HARD_CAP_UNAVAILABLE' },
+    );
+    const softArgs = parseArgs([
+      '--task', 'SELF-TASK-001', '--round', '2', '--max-budget-usd', '1.50', '--allow-soft-budget',
+    ]);
+    expectReviewError(
+      () => assertExternalBudgetEnforcement(softArgs, { records: [] }, 'r002'),
+      { exitCode: 64, messageIncludes: 'SOFT_BUDGET_RISK_APPROVAL_REQUIRED' },
+    );
+    const approvedHistory = {
+      records: [{
+        identity: { turnType: 'HUMAN_DECISION' },
+        entryRaw: Buffer.from('- soft_budget_overrun_risk_accepted: `r002@1.50`\n', 'utf8'),
+      }],
+    };
+    assertExternalBudgetEnforcement(softArgs, approvedHistory, 'r002');
+    expectReviewError(
+      () => assertExternalBudgetEnforcement(softArgs, approvedHistory, 'r003'),
+      { exitCode: 64, messageIncludes: 'r003@1.50' },
     );
   });
 

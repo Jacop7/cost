@@ -1,0 +1,100 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-STAGE-7-ONTOLOGY-FABLE-019",
+  "round": "r001",
+  "created_at": "2026-09-03T04:37:25.753Z",
+  "review_mode": "INITIAL",
+  "baseline_commit_sha": "4e1d23cf31b34483f5f66ee3d7dfeaea5d315019",
+  "target_commit_sha": "4e1d23cf31b34483f5f66ee3d7dfeaea5d315019",
+  "target_tree_oid": "fc6630c066ee6b10f6e97fc740b1c6895561f3e2",
+  "agents_blob_oid": "c32214b5528752a91f0f1545fea8c735d5fae7fa",
+  "agents_sha256": "de18fc8524afa350d3d0806f40150b9397dfd45a91ff471b5e1f6d6bf95fc681",
+  "task_sha256": "59ab1fa7545371025fcf8e2c027ee6b4322b1a82addc88c6ad92eb7837cc7513",
+  "collaboration_sha256": "1c9a332af0768e61bd332cc2669a6f44b44e4d0b47a21b7b8a39b9715421f2e2",
+  "collaboration_bytes": 1492,
+  "input_files_sha256": "07389047f2eae332711ff76c0de4fad21adc239b9dc83c50bb21c587fcfde633",
+  "schema_sha256": "d8ffdb13e6b1e38279355d9ffd592cfb91dc023d287976adf7892e85dbfaf0d7",
+  "runner_sha256": "3e3bdc2aa6c4874c360a1c64e678bbe168e14db556c133bbfa91e62c42c510f7",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "previous_review_sha256": null,
+  "previous_run_sha256": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "fallback_review": null,
+  "closure_review": null,
+  "fallback_input_scope": null,
+  "retry_of_failed_round": null,
+  "artifact_paths": [
+    "docs/AI-지식-온톨로지-기획안.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/evidence/AI-PLANS-SIM-STAGE-6-CROSS-REFERENCE-PASS.md",
+    "docs/ai-review/evidence/AI-PLANS-SIM-STAGES-1-5-FABLE-PASS.md"
+  ],
+  "allowed_paths": [
+    "docs/AI-지식-온톨로지-기획안.md",
+    "AGENTS.md",
+    "docs/ai-review/evidence/AI-PLANS-SIM-STAGE-6-CROSS-REFERENCE-PASS.md",
+    "docs/ai-review/evidence/AI-PLANS-SIM-STAGES-1-5-FABLE-PASS.md"
+  ],
+  "excluded_paths": [
+    "apps/mobile/**",
+    "packages/**",
+    "docs/prototypes/**",
+    ".codex-share/**",
+    ".tmp/**"
+  ],
+  "applied_learning_ids": [],
+  "excluded_learning_ids": [],
+  "learning_registry_blob_oid": "77f00167d790c82373c1aa803d91874952c3334a",
+  "learning_registry_sha256": "4717fe99c86319d7c0abc5c8dd38e68e3a55722d7cfa56b8de173ed05ca1388f",
+  "learning_assignment_sha256": "4660bb32207bcae3246801d71aa6a052eab7b0a7cef357bd5984f706fe3dcbfe",
+  "learning_target_date": "2026-09-03",
+  "input_files": [
+    {
+      "path": "AGENTS.md",
+      "path_role": "REFERENCE",
+      "change_type": "UNCHANGED",
+      "size": 11697,
+      "git_blob_oid": "c32214b5528752a91f0f1545fea8c735d5fae7fa",
+      "sha256": "de18fc8524afa350d3d0806f40150b9397dfd45a91ff471b5e1f6d6bf95fc681",
+      "line_count": 160
+    },
+    {
+      "path": "docs/AI-지식-온톨로지-기획안.md",
+      "path_role": "ARTIFACT",
+      "change_type": "MODIFIED",
+      "size": 32961,
+      "git_blob_oid": "475de4feccf9d5bda2ddb56c0dd792215081688b",
+      "sha256": "d6b82bef48cdffdf883b807ec809e27dcf496dd18365567c3e34988040a47d5e",
+      "line_count": 551
+    },
+    {
+      "path": "docs/ai-review/evidence/AI-PLANS-SIM-STAGE-6-CROSS-REFERENCE-PASS.md",
+      "path_role": "EVIDENCE",
+      "change_type": "ADDED",
+      "size": 1077,
+      "git_blob_oid": "12837f990ca8263a78207029c5392915d8aca527",
+      "sha256": "5b08941242eee856c9241da38152a82d2b1ae7c5267c67bbf5819a17f887aa06",
+      "line_count": 25
+    },
+    {
+      "path": "docs/ai-review/evidence/AI-PLANS-SIM-STAGES-1-5-FABLE-PASS.md",
+      "path_role": "EVIDENCE",
+      "change_type": "ADDED",
+      "size": 3930,
+      "git_blob_oid": "74b38a31156241330874e44265bee895f070206f",
+      "sha256": "f82b4960960429d4f56b0544a0c43736f5e99035a5574da2818c389a8ed43487",
+      "line_count": 61
+    }
+  ],
+  "source_archive_version": 1,
+  "finding_resolution_semantics": "VERIFIED_RESOLVED_V1",
+  "artifact_snapshot_sha256": "123dc347bcb1f22cbb3aea84c7006f4b3905eddfe72e0ebdb373246f895fd2e9",
+  "input_snapshot_sha256": "69fcee0b9a5077798508e9b76629e0fd13bb1b17d11f6b95754ca3a290d3e98c"
+}

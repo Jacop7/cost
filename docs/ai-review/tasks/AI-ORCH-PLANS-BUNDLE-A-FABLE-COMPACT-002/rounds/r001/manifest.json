@@ -1,0 +1,144 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-BUNDLE-A-FABLE-COMPACT-002",
+  "round": "r001",
+  "created_at": "2026-09-03T00:03:52.231Z",
+  "review_mode": "INITIAL",
+  "baseline_commit_sha": "6e99bd93b737bf291f14a8d3a6465a1d5110fa6c",
+  "target_commit_sha": "6e99bd93b737bf291f14a8d3a6465a1d5110fa6c",
+  "target_tree_oid": "c516cebc1c57bcc0a5705dbb7f7a4a0a24f38d55",
+  "agents_blob_oid": "c32214b5528752a91f0f1545fea8c735d5fae7fa",
+  "agents_sha256": "de18fc8524afa350d3d0806f40150b9397dfd45a91ff471b5e1f6d6bf95fc681",
+  "task_sha256": "fd66e0064e7df9127501ffc7911fe807f6f1084e8e250ae55255d40514a88b14",
+  "collaboration_sha256": "41eab8b0c76deaab5ad2d52554031dd69ee2b9f14c50e03b9287790a03617c10",
+  "collaboration_bytes": 1989,
+  "input_files_sha256": "563a969dfb944b1a58b6903ec80dd413f8bc66857833d4c6bfd51a40fa5e10ec",
+  "schema_sha256": "d8ffdb13e6b1e38279355d9ffd592cfb91dc023d287976adf7892e85dbfaf0d7",
+  "runner_sha256": "80dae1d06c89af056e9d8c210b571e978ee534fc128a5fe3b9867610b5ae447b",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "previous_review_sha256": null,
+  "previous_run_sha256": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "fallback_review": null,
+  "closure_review": null,
+  "fallback_input_scope": null,
+  "retry_of_failed_round": null,
+  "artifact_paths": [
+    "docs/팀구성_상세기획안.md",
+    "docs/AI-지식-온톨로지-기획안.md",
+    "docs/AI-오케스트레이션-상세기획안.md",
+    "docs/디렉터리-문서신경망-재설계-기획안.md",
+    "docs/AI-품질-학습-자율성-평가기획안.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/evidence/AI-PLANS-SIM-STAGES-1-5-DRAFT-READY.md",
+    "docs/ai-review/evidence/AI-PLANS-SIM-FABLE-BUNDLE-A-R1-RUN-FAILED.md"
+  ],
+  "allowed_paths": [
+    "docs/팀구성_상세기획안.md",
+    "docs/AI-지식-온톨로지-기획안.md",
+    "docs/AI-오케스트레이션-상세기획안.md",
+    "docs/디렉터리-문서신경망-재설계-기획안.md",
+    "docs/AI-품질-학습-자율성-평가기획안.md",
+    "AGENTS.md",
+    "docs/ai-review/evidence/AI-PLANS-SIM-STAGES-1-5-DRAFT-READY.md",
+    "docs/ai-review/evidence/AI-PLANS-SIM-FABLE-BUNDLE-A-R1-RUN-FAILED.md"
+  ],
+  "excluded_paths": [
+    "apps/mobile/**",
+    "packages/**",
+    "docs/prototypes/**",
+    ".codex-share/**",
+    ".tmp/**"
+  ],
+  "applied_learning_ids": [],
+  "excluded_learning_ids": [],
+  "learning_registry_blob_oid": "77f00167d790c82373c1aa803d91874952c3334a",
+  "learning_registry_sha256": "4717fe99c86319d7c0abc5c8dd38e68e3a55722d7cfa56b8de173ed05ca1388f",
+  "learning_assignment_sha256": "4660bb32207bcae3246801d71aa6a052eab7b0a7cef357bd5984f706fe3dcbfe",
+  "learning_target_date": "2026-09-03",
+  "input_files": [
+    {
+      "path": "AGENTS.md",
+      "path_role": "REFERENCE",
+      "change_type": "UNCHANGED",
+      "size": 11697,
+      "git_blob_oid": "c32214b5528752a91f0f1545fea8c735d5fae7fa",
+      "sha256": "de18fc8524afa350d3d0806f40150b9397dfd45a91ff471b5e1f6d6bf95fc681",
+      "line_count": 160
+    },
+    {
+      "path": "docs/디렉터리-문서신경망-재설계-기획안.md",
+      "path_role": "ARTIFACT",
+      "change_type": "MODIFIED",
+      "size": 28661,
+      "git_blob_oid": "314fe630e546f1d38b6e1d22769a227a2354a6b4",
+      "sha256": "9de09a13645a076d996cb17cae00f5012036a44557d7737566af8bed128d3ac7",
+      "line_count": 501
+    },
+    {
+      "path": "docs/팀구성_상세기획안.md",
+      "path_role": "ARTIFACT",
+      "change_type": "MODIFIED",
+      "size": 119646,
+      "git_blob_oid": "2eb40230d98149cab5a453a179af18e4033a93d3",
+      "sha256": "33ef9648d12719d37cfedbbb2898599fe73c2b76c29af6cd41d073efee77fa24",
+      "line_count": 2040
+    },
+    {
+      "path": "docs/AI-오케스트레이션-상세기획안.md",
+      "path_role": "ARTIFACT",
+      "change_type": "MODIFIED",
+      "size": 43753,
+      "git_blob_oid": "6589c65c4adc4d00107889626daf4198070dc447",
+      "sha256": "069344e6933911d9240f566f6d8e83894d3fe2feb8db5a6863a24f73297649b6",
+      "line_count": 746
+    },
+    {
+      "path": "docs/AI-지식-온톨로지-기획안.md",
+      "path_role": "ARTIFACT",
+      "change_type": "MODIFIED",
+      "size": 32961,
+      "git_blob_oid": "475de4feccf9d5bda2ddb56c0dd792215081688b",
+      "sha256": "d6b82bef48cdffdf883b807ec809e27dcf496dd18365567c3e34988040a47d5e",
+      "line_count": 551
+    },
+    {
+      "path": "docs/AI-품질-학습-자율성-평가기획안.md",
+      "path_role": "ARTIFACT",
+      "change_type": "MODIFIED",
+      "size": 35878,
+      "git_blob_oid": "04e27042db8e3e48d0b3388d9d911894f5635593",
+      "sha256": "98fc82d82cc6b6f78fffc148a8bf7dbbdb0e5b5816aa9c01f94c6f7e68434f9b",
+      "line_count": 605
+    },
+    {
+      "path": "docs/ai-review/evidence/AI-PLANS-SIM-FABLE-BUNDLE-A-R1-RUN-FAILED.md",
+      "path_role": "EVIDENCE",
+      "change_type": "ADDED",
+      "size": 2543,
+      "git_blob_oid": "df06e00a79a1b9338344bb261c62f5f4720cd823",
+      "sha256": "4aa1fd04f5d35e64841721d89582fcf9d0c949836760a2a884aa0b9d31926502",
+      "line_count": 46
+    },
+    {
+      "path": "docs/ai-review/evidence/AI-PLANS-SIM-STAGES-1-5-DRAFT-READY.md",
+      "path_role": "EVIDENCE",
+      "change_type": "ADDED",
+      "size": 8251,
+      "git_blob_oid": "5afa64608fb813fb45388388c14aad8f49ccfa39",
+      "sha256": "36c745206cbb323f6a1bb96e87c31ac243abb3d9f8af2d8334c4cc4d37f16e55",
+      "line_count": 120
+    }
+  ],
+  "source_archive_version": 1,
+  "finding_resolution_semantics": "VERIFIED_RESOLVED_V1",
+  "artifact_snapshot_sha256": "bd603d7128c2a4947b3079d0414409a4bf30df80fe523e31b348ef6ce08d4f47",
+  "input_snapshot_sha256": "f80969a280f006fcf33d2e7d947cec6845c82f0a19789689e0c053a674e5615a"
+}

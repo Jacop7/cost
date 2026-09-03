@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-BUNDLE-A-FABLE-SOFTCAP-004",
+  "sequence": "t0001",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-03T01:35:09.201Z",
+  "turn_id": "turn-h001",
+  "turn_type": "HUMAN_DECISION",
+  "role": "HUMAN",
+  "task_sha256": "f83f67e97292b66dff5ff417ad1c35df9186df383a99d14fb4e4939ec5fa17f7",
+  "runner_sha256": "3d19dd4592c9a262c387c8c03f9e3af6b372b2db196ddefc8fc7ea27e2c2becd",
+  "previous_manual_run_sha256": null,
+  "collaboration_before_sha256": "ea631876b8837458649ee08735aa1c042e59af387dadd1254fa86ac08351e55b",
+  "collaboration_before_bytes": 1409,
+  "collaboration_entry_sha256": "22ae1a8096da46291a7ef249446548a0cdb16be1e828c599ba717556e3ce1ba1",
+  "collaboration_entry_bytes": 830,
+  "collaboration_after_sha256": "e60c39c104863fc0e13d387ded32a2b2bcb1d3081581210b655d0a4d9f046321",
+  "collaboration_after_bytes": 2239
+}

@@ -1,0 +1,69 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-STAGE-7-DIRECTORY-QUALITY-FABLE-018",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R1",
+  "author_role": "SOLAR-ORCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "4e1d23cf31b34483f5f66ee3d7dfeaea5d315019",
+  "target_commit_sha": "4e1d23cf31b34483f5f66ee3d7dfeaea5d315019",
+  "target_tree_oid": "fc6630c066ee6b10f6e97fc740b1c6895561f3e2",
+  "agents_blob_oid": "c32214b5528752a91f0f1545fea8c735d5fae7fa",
+  "agents_sha256": "de18fc8524afa350d3d0806f40150b9397dfd45a91ff471b5e1f6d6bf95fc681",
+  "requirements": [
+    "디렉터리·문서 신경망과 품질·학습·자율성 기획안의 물리 경로·연결 방향·수명주기·평가 상태가 모순 없이 결합돼야 한다.",
+    "정책 권위 DAG는 비순환·단일 소유권이어야 하며 탐색 링크와 승인·증거 링크는 방향 의미를 보존해야 한다.",
+    "Finding·Learning·자율성 승격/강등은 사람 승인과 독립검수 게이트를 우회하면 안 된다.",
+    "사람의 단계 8 승인 전 팀별 디렉터리 물질화와 네 DRAFT 문서의 ACTIVE 승격이 금지돼야 한다.",
+    "단계 6 누적 상호참조 증거와 현재 두 문서 bytes 사이에 구조 모순이 없어야 한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:single-canonical-artifact",
+    "AGENTS:fable-required-review",
+    "AI-DIRECTORY:authority-dag",
+    "AI-DIRECTORY:materialization-after-approval",
+    "AI-QUALITY:human-autonomy-gate"
+  ],
+  "artifact_paths": [
+    "docs/디렉터리-문서신경망-재설계-기획안.md",
+    "docs/AI-품질-학습-자율성-평가기획안.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/evidence/AI-PLANS-SIM-STAGE-6-CROSS-REFERENCE-PASS.md",
+    "docs/ai-review/evidence/AI-PLANS-SIM-STAGES-1-5-FABLE-PASS.md"
+  ],
+  "excluded_paths": [
+    "apps/mobile/**",
+    "packages/**",
+    "docs/prototypes/**",
+    ".codex-share/**",
+    ".tmp/**"
+  ],
+  "required_evidence": [
+    "두 문서 현재 bytes의 경로·그래프·평가·자율성 구조 감사",
+    "사람 승인 전 DRAFT 및 디렉터리 물질화 금지 확인",
+    "새 필수 Finding과 verdict의 기계 검증"
+  ],
+  "human_decisions": [
+    "DEC-AI-FABLE-AUTONOMOUS-BUDGET-009 — 사용자는 합리적인 예산 기준을 초과해도 추가 질문 없이 계속 진행하도록 위임했다.",
+    "DEC-AI-FABLE-STAGE-7-DIRECTORY-QUALITY-BUDGET-017 — AI 부 오케스트레이터는 두 문서 감사 soft cap을 USD 5.00으로 선택한다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "5.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}

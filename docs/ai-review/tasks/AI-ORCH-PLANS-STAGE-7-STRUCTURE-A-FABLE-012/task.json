@@ -1,0 +1,71 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-STAGE-7-STRUCTURE-A-FABLE-012",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R1",
+  "author_role": "SOLAR-ORCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "6e99bd93b737bf291f14a8d3a6465a1d5110fa6c",
+  "target_commit_sha": "6e99bd93b737bf291f14a8d3a6465a1d5110fa6c",
+  "target_tree_oid": "c516cebc1c57bcc0a5705dbb7f7a4a0a24f38d55",
+  "agents_blob_oid": "c32214b5528752a91f0f1545fea8c735d5fae7fa",
+  "agents_sha256": "de18fc8524afa350d3d0806f40150b9397dfd45a91ff471b5e1f6d6bf95fc681",
+  "requirements": [
+    "팀·온톨로지·오케스트레이션 기획안의 권위 DAG와 사람·AI 마스터·AI 부 오케스트레이터 역할 경계가 단일하고 모순 없이 결합돼야 한다.",
+    "요청·Task·Decision·Finding·Handoff의 상태와 연결 규칙이 문서 간 동일한 의미를 유지해야 한다.",
+    "Fable 기본 검수·Opus 제한 승계·비용 봉투·사람 승인 게이트가 서로 우회 경로를 만들면 안 된다.",
+    "사람의 단계 8 승인 전 DRAFT 문서의 ACTIVE 승격과 실행 권한 확장이 금지돼야 한다.",
+    "단계 6 누적 상호참조 검증 증거가 이 세 문서의 현재 artifact bytes와 일치해야 한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:single-canonical-artifact",
+    "AGENTS:fable-required-review",
+    "AI-ONTOLOGY:authority-dag",
+    "AI-ORCH:master-deputy-boundary",
+    "AI-ORCH:human-production-gate"
+  ],
+  "artifact_paths": [
+    "docs/팀구성_상세기획안.md",
+    "docs/AI-지식-온톨로지-기획안.md",
+    "docs/AI-오케스트레이션-상세기획안.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/evidence/AI-PLANS-SIM-STAGE-6-CROSS-REFERENCE-PASS.md",
+    "docs/ai-review/evidence/AI-PLANS-SIM-STAGES-1-5-FABLE-PASS.md"
+  ],
+  "excluded_paths": [
+    "apps/mobile/**",
+    "packages/**",
+    "docs/prototypes/**",
+    ".codex-share/**",
+    ".tmp/**"
+  ],
+  "required_evidence": [
+    "ai:plans:simulate 71/71 PASS",
+    "단계 1~5 현재 bytes Fable PASS",
+    "세 문서 현재 bytes의 권위·역할·라우팅 구조 감사",
+    "사람 승인 전 DRAFT 및 실행 권한 확장 금지 확인"
+  ],
+  "human_decisions": [
+    "DEC-AI-FABLE-AUTONOMOUS-BUDGET-009 — 사용자는 합리적인 예산 기준을 초과해도 추가 질문 없이 계속 진행하도록 위임했다.",
+    "DEC-AI-FABLE-STAGE-7-SPLIT-A-BUDGET-011 — AI 부 오케스트레이터는 타임아웃 입력을 세 문서와 두 문서로 분할하고 A 검수 soft cap을 USD 6.00으로 선택한다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "6.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}

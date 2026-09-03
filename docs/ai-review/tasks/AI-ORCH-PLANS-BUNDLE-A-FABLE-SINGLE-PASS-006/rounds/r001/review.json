@@ -1,0 +1,145 @@
+{
+  "schema_version": "2.0",
+  "task_id": "AI-ORCH-PLANS-BUNDLE-A-FABLE-SINGLE-PASS-006",
+  "reviewer_role": "FABLE-ARCH",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "6e99bd93b737bf291f14a8d3a6465a1d5110fa6c",
+  "target_commit_sha": "6e99bd93b737bf291f14a8d3a6465a1d5110fa6c",
+  "target_tree_oid": "c516cebc1c57bcc0a5705dbb7f7a4a0a24f38d55",
+  "agents_blob_oid": "c32214b5528752a91f0f1545fea8c735d5fae7fa",
+  "agents_sha256": "de18fc8524afa350d3d0806f40150b9397dfd45a91ff471b5e1f6d6bf95fc681",
+  "task_sha256": "bfec4edfefb7fa3bafe0214ab2b6378664a01790ae050f4b2b57de92baabd3e8",
+  "collaboration_sha256": "8bea507f83ccc7587202a0b6c6263421f4dcd258b3b563efdb10ee5787b08a3a",
+  "input_files_sha256": "35053810f4916a224361494294cab7134a3a7bab0c8fb81b25e2d6e3654033c2",
+  "schema_sha256": "d8ffdb13e6b1e38279355d9ffd592cfb91dc023d287976adf7892e85dbfaf0d7",
+  "runner_sha256": "3e3bdc2aa6c4874c360a1c64e678bbe168e14db556c133bbfa91e62c42c510f7",
+  "verdict": "CHANGES_REQUIRED",
+  "summary": "봉인 스냅샷의 다섯 공식 기획안을 도구 없는 단일 패스로 교차 검수했다. [충족 확인] (1) 권위 DAG: 디렉터리 기획안 §6 authority-dag 기계 판독 블록(team→ontology→orchestration→directory→quality)과 다섯 문서 front matter의 depends_on이 완전히 일치하며 비순환이다. 탐색 참조 순환 허용과 권위 DAG 분리도 온톨로지 §4와 디렉터리 §6이 모순 없이 기술한다. (2) 상태·물질화: 팀 구성안은 CONFIRMED, 나머지 네 후보는 모두 DRAFT를 유지하고, 사람 승인 전 docs/team/ 권위 장부·역할/팀 manifest·handoff 디렉터리 물질화 금지가 팀 §11·디렉터리 단계 2·오케스트레이션 단계 5에서 일관되게 선언된다. 부분 ACTIVE 거부·원자적 활성화 계약도 세 문서가 동일하게 참조한다. (3) 게이트: gate_state=OPEN 유지, P0-2 전 CLOSED 금지, Fable 기본·Opus 구조화 소진 successor, R2/R3·운영의 복구 표본/사람 exact-SHA 위험 수용 요구가 팀 §3.10.1·§4.4, 오케스트레이션 §6·§8.2·§10, 품질 §4.7·§11에서 정합적이다. 필수 증거(simulate 71/71, self-test 52/52, Sol high 재검수 PASS, 직전 soft cap 초과 실패 보존)도 evidence 파일과 일치한다. [필수 Finding 2건] (Major) `02 마스터 오케스트레이션`/`03 부 오케스트레이션` 경계 모순: 팀 §1.4는 '마스터 AI'가 전체 목표·순서·팀 배정을 통합하고 부 AI는 관측·보조만 한다고 서술하지만, 오케스트레이션 §2.1 트리는 03에 '요청 정규화·Task 라우팅'을 배정하고 §2 구성요소 표와 팀 §3.2는 같은 책임을 AI 부 오케스트레이터 소유로 둔다. 또한 '마스터 AI'는 팀 §1.1 역할표(주 오케스트레이션 주 담당=사람)·§5.1 필수 컨텍스트 목록·RACI 어디에도 역할 ID·권한 등급이 없는 미등록 행위자다. 요구 1·2(권위·역할 무모순, 02/03 경계) 위반. (Minor) 팀 §4.5 R0·R1 자동 종결 조건에 번호 10이 두 번 부여돼 조건 참조가 모호하다. [판정] 잔여 필수 Finding 2건으로 CHANGES_REQUIRED. 본 결과는 로컬 검수이며 gate_state는 OPEN으로 유지되고 외부 보호 게이트를 종결하지 않는다.",
+  "findings": [
+    {
+      "finding_id": "FAB-ARCH-006-MASTER-DEPUTY-BOUNDARY-001",
+      "severity": "Major",
+      "review_state": "OPEN",
+      "category": "ARCHITECTURE",
+      "requirement_or_invariant_ids": [
+        "REQ-01-권위-역할-상태-게이트-무모순",
+        "REQ-02-01~05-채팅-경계",
+        "AGENTS:single-canonical-artifact"
+      ],
+      "evidence": [
+        {
+          "path": "docs/팀구성_상세기획안.md",
+          "line_start": 168,
+          "line_end": 177,
+          "observation": "§1.4: '마스터 AI는 전체 목표·순서·팀 배정과 사람 결정 요청을 통합하고 부 AI는 팀 상태·토큰·컨텍스트·HANDOFF를 관측해 마스터 AI를 보조한다'. 03의 부 AI를 관측·보조 전용으로 서술하고, 팀 배정 통합을 '마스터 AI'에 둔다."
+        },
+        {
+          "path": "docs/팀구성_상세기획안.md",
+          "line_start": 263,
+          "line_end": 276,
+          "observation": "§3.2 AI 부 오케스트레이터 주요 책임: 목표 분해, 여러 채팅 요청의 Task 정규화, 추가/대체/별도 판정, 선행 조건·담당 컨텍스트·허용 파일 지정 등 — §1.4가 마스터 AI에 배정한 통합·배정 책임과 겹치고, 03 부 AI를 관측 전용으로 축소한 서술과 충돌한다."
+        },
+        {
+          "path": "docs/AI-오케스트레이션-상세기획안.md",
+          "line_start": 92,
+          "line_end": 99,
+          "observation": "§2.1 트리: '02 마스터 오케스트레이션 — AI의 전체 목표·순서·팀 배정·결정 요청 통합', '03 부 오케스트레이션 · 토큰/컨텍스트 관리 — AI의 요청 정규화·Task 라우팅·컨텍스트 압력 관측'. 03에 요청 정규화·Task 라우팅을 배정해 팀 §1.4의 관측·보조 전용 서술과 불일치하며, 같은 문서 후속 산문('03은 상태·토큰·HANDOFF를 관측해 02를 보조')과도 내부 불일치."
+        },
+        {
+          "path": "docs/AI-오케스트레이션-상세기획안.md",
+          "line_start": 67,
+          "line_end": 78,
+          "observation": "§2 구성요소 표: 요청 해석자·상태 복원기·실행 라우터의 소유자는 AI 부 오케스트레이터다. '마스터 AI'라는 소유자는 없고, 팀 구성안 §1.1(주 오케스트레이션 주 담당=사람)·§5.1 필수 컨텍스트 목록·RACI 어디에도 마스터 AI의 역할 ID·권한 등급·컨텍스트가 등재되지 않았다."
+        }
+      ],
+      "impact": "요청 정규화·Task 라우팅·팀 배정의 소유 채팅(02 vs 03)과 수행 역할이 CONFIRMED 팀 구성안과 DRAFT 오케스트레이션안 사이·오케스트레이션안 내부에서 서로 다르게 기술되고, '마스터 AI'는 역할 카드·권한 등급·컨텍스트 ID·ROLE_CONTEXTS 계약이 없는 미등록 행위자다. 활성화 후 다중 채팅 운영에서 통합 판정·배정 권한의 소재가 모호해져 요구 1(무모순 연결)과 요구 2(02 AI 마스터·03 AI 부 오케스트레이션 경계)를 충족하지 못한다. 사람 승인 게이트 자체는 침해되지 않아 Blocker/Critical은 아니다.",
+      "acceptance_criteria": [
+        "팀 구성안 §1.2·§1.4·§3.2와 오케스트레이션 §2·§2.1이 요청 정규화·Task 라우팅·작업 분해·팀 배정의 소유 채팅과 역할을 단일하게 명시한다.",
+        "'마스터 AI'를 §5.1 컨텍스트 목록과 ROLE_CONTEXTS 계약에 역할 ID·권한 등급으로 등재하거나, 기존 사람 주 오케스트레이터·AI 부 오케스트레이터 역할로 환원해 미등록 행위자를 제거한다.",
+        "오케스트레이션 §2.1 트리 주석과 같은 절 산문 서술이 내부 모순 없이 일치한다.",
+        "부 AI 관측·권고가 사람 결정·통합 판정을 대체하지 않는다는 기존 안전 문장은 유지된다."
+      ],
+      "required_tests": [
+        "corepack pnpm ai:plans:simulate 재실행에서 채팅-역할 경계 단언 통과(71/71 이상 유지)",
+        "갱신된 두 문서의 변경 bytes에 대한 Fable diff 재검수"
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    },
+    {
+      "finding_id": "FAB-ARCH-006-R0R1-DUPLICATE-COND-10-002",
+      "severity": "Minor",
+      "review_state": "OPEN",
+      "category": "POLICY",
+      "requirement_or_invariant_ids": [
+        "REQ-01-권위-역할-상태-게이트-무모순",
+        "AI-ORCH:human-production-gate"
+      ],
+      "evidence": [
+        {
+          "path": "docs/팀구성_상세기획안.md",
+          "line_start": 1048,
+          "line_end": 1065,
+          "observation": "§4.5 'R0·R1 자동 종결 조건' 번호 목록에서 '10. 마지막 검수의 review/run/장부와 공식 산출물이 anchor commit에…'과 '10. decision commit의 정확한 SHA에서 보호 원격 필수 체크가 성공하고…' 두 조건이 같은 번호 10으로 중복 부여돼 있다(실제 조건은 11개)."
+        }
+      ],
+      "impact": "자동 종결 조건 목록은 다른 절·검사기·Task Packet이 번호로 참조할 수 있는 기계 계약인데 번호 10이 이중 부여돼 조건 참조·검사 매핑이 모호하다. 보호 원격 체크 조건이 anchor commit 조건과 병합 참조될 위험이 있다.",
+      "acceptance_criteria": [
+        "§4.5 R0·R1 자동 종결 조건의 번호를 중복 없이 1~11로 재부여한다.",
+        "해당 조건 번호를 참조하는 다른 절·문서·검사기가 있으면 같은 변경에서 함께 갱신한다."
+      ],
+      "required_tests": [
+        "문서 번호 중복 검사 또는 corepack pnpm ai:plans:simulate 재실행으로 회귀 없음 확인"
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    }
+  ],
+  "proposed_edits": [
+    {
+      "edit_id": "EDIT-006-MASTER-DEPUTY-TEAM-14",
+      "path": "docs/팀구성_상세기획안.md",
+      "anchor": "`02 마스터 오케스트레이션`과 `03 부 오케스트레이션 · 토큰/컨텍스트 관리`는 AI 컨텍스트이며,",
+      "operation": "COMMENT",
+      "proposed_text": "제안 문안: \"`02 마스터 오케스트레이션`과 `03 부 오케스트레이션 · 토큰/컨텍스트 관리`는 AI 컨텍스트다. `02`의 마스터 조정 기능은 §5.1에 등재한 전용 역할 컨텍스트 ID와 권한 등급으로 정의하며(또는 기존 사람 주 오케스트레이터·AI 부 오케스트레이터 역할로 환원해 '마스터 AI'라는 미등록 행위자를 제거한다), 전체 목표·순서·우선순위 통합과 사람 결정 요청 취합만 담당한다. 요청 정규화·Task 라우팅·작업 분해·담당 배정은 §3.2의 AI 부 오케스트레이터가 소유하고 `03`에서 수행한다. 부 AI의 관측·권고는 사람 결정이나 통합 판정을 대체하지 않는다.\"",
+      "rationale": "§1.4의 마스터 AI/부 AI 서술이 §1.1·§3.2·§5.1 및 오케스트레이션 §2·§2.1과 모순되므로 책임 소유를 단일화하고 미등록 행위자를 제거한다.",
+      "finding_ids": [
+        "FAB-ARCH-006-MASTER-DEPUTY-BOUNDARY-001"
+      ]
+    },
+    {
+      "edit_id": "EDIT-006-MASTER-DEPUTY-ORCH-21",
+      "path": "docs/AI-오케스트레이션-상세기획안.md",
+      "anchor": "├─ 03 부 오케스트레이션 · 토큰/컨텍스트 관리",
+      "operation": "COMMENT",
+      "proposed_text": "제안: 트리 주석을 팀 구성안 §1.4 확정 문안 및 같은 절 산문과 일치시킨다. 팀 구성안이 03을 부 오케스트레이터 실행 채팅으로 확정하면 \"AI 부 오케스트레이터의 요청 정규화·Task 라우팅·컨텍스트 압력 관측\"으로, 관측·보조 전용으로 확정하면 \"팀 상태·토큰·컨텍스트·HANDOFF 관측으로 02 보조\"로 수정하고 후자의 경우 요청 정규화·Task 라우팅의 수행 채팅을 별도 명시한다. 어느 쪽이든 §2 구성요소 표(소유자 AI 부 오케스트레이터)와 모순되지 않게 한다.",
+      "rationale": "§2.1 트리(03=정규화·라우팅)와 같은 절 산문(03=관측·보조) 및 팀 구성안 §1.4의 내부·교차 불일치 해소.",
+      "finding_ids": [
+        "FAB-ARCH-006-MASTER-DEPUTY-BOUNDARY-001"
+      ]
+    },
+    {
+      "edit_id": "EDIT-006-R0R1-COND-RENUMBER",
+      "path": "docs/팀구성_상세기획안.md",
+      "anchor": "10. decision commit의 정확한 SHA에서 보호 원격 필수 체크가 성공하고 보호 ref에 반영됐다. 외부 서명/attestation을 쓰더라도 같은 SHA의 `full-db-required`와 `protected-gate` 구성 job 성공 run ID·결론을 함께 봉인한다.",
+      "operation": "REPLACE",
+      "proposed_text": "11. decision commit의 정확한 SHA에서 보호 원격 필수 체크가 성공하고 보호 ref에 반영됐다. 외부 서명/attestation을 쓰더라도 같은 SHA의 `full-db-required`와 `protected-gate` 구성 job 성공 run ID·결론을 함께 봉인한다.",
+      "rationale": "§4.5 R0·R1 자동 종결 조건의 중복 번호 10을 11로 재부여해 조건 참조 모호성을 제거한다.",
+      "finding_ids": [
+        "FAB-ARCH-006-R0R1-DUPLICATE-COND-10-002"
+      ]
+    }
+  ],
+  "closed_finding_ids": [],
+  "reopened_finding_ids": [],
+  "remaining_required_finding_ids": [
+    "FAB-ARCH-006-MASTER-DEPUTY-BOUNDARY-001",
+    "FAB-ARCH-006-R0R1-DUPLICATE-COND-10-002"
+  ],
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}

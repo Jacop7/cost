@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-BUNDLE-A-FABLE-SINGLE-PASS-005",
+  "sequence": "t0001",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-03T02:04:27.603Z",
+  "turn_id": "turn-h001",
+  "turn_type": "HUMAN_DECISION",
+  "role": "HUMAN",
+  "task_sha256": "8a03533b126210952afe9b82a622488781b69152ec20cde2b54394df0b14ab00",
+  "runner_sha256": "3e3bdc2aa6c4874c360a1c64e678bbe168e14db556c133bbfa91e62c42c510f7",
+  "previous_manual_run_sha256": null,
+  "collaboration_before_sha256": "a98d2415596ac0cab52544c2fa1b1b03318de3b1fa8e02aa4df08a5c226eb78e",
+  "collaboration_before_bytes": 598,
+  "collaboration_entry_sha256": "df0149329b1f42475feb49398f0020a2187e44bed005e3b0ff1ccd34558cb686",
+  "collaboration_entry_bytes": 542,
+  "collaboration_after_sha256": "da6270fdc20f5e58d99d4f7b0da55288dd04050a4286cb6e8b84111a17d1fd82",
+  "collaboration_after_bytes": 1140
+}

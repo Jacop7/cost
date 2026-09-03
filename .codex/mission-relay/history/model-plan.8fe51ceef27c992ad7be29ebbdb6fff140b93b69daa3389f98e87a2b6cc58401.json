@@ -1,0 +1,895 @@
+{
+  "accountContinuity": {
+    "accountSwitchDoesNotRestartStudy": true,
+    "rawAccountIdentifiersStored": false,
+    "samePrincipalRequired": true,
+    "scopes": {
+      "anthropic": "owner-default-anthropic",
+      "openai": "owner-primary"
+    }
+  },
+  "budgetGuard": {
+    "additionalFableCallsRequireHumanDecision": true,
+    "fableApprovedUsd": 4,
+    "fableRemainingUsd": 0.07,
+    "fableUsedUsdActual": 3.921412,
+    "fableUsedUsdCentsRounded": 3.93,
+    "opusAdvisoryBudgetState": "UNSET_FOR_12_STAGE_EXECUTION",
+    "opusCallsRequireApprovedLedgerPin": true,
+    "stageExecutionBlockedUntilReviewBudgetsAreSufficient": true
+  },
+  "computedBudget": {
+    "economicUnit": "weighted_token_units",
+    "profiles": {
+      "fable-high": {
+        "availability": {
+          "accountScope": "owner-default-anthropic",
+          "source": "AI-ORCH-PLANS-MASTER-CHAT-FABLE-002 verified run",
+          "status": "verified",
+          "verifiedAt": "2026-09-03"
+        },
+        "calibration": {
+          "observedAt": "2026-09-03",
+          "source": "Fable verified run cost and token accounting evidence",
+          "status": "measured"
+        },
+        "model": "claude-fable-5",
+        "provider": "anthropic",
+        "reasoningEffort": "high",
+        "successorCalibration": {
+          "observedAt": "2026-09-03",
+          "source": "Independent review sessions receive exact artifact and diff packets",
+          "status": "manual-conservative"
+        },
+        "successorExpectedCachedInputTokens": 0,
+        "successorExpectedInputTokens": 0,
+        "weights": {
+          "cachedInput": 0.25,
+          "input": 2.5,
+          "output": 12
+        }
+      },
+      "opus-review": {
+        "availability": {
+          "accountScope": "owner-default-anthropic",
+          "source": "AI-PLANS-PREWORK-OPUS-R3 canonical model attestation",
+          "status": "verified",
+          "verifiedAt": "2026-09-03"
+        },
+        "calibration": {
+          "observedAt": "2026-09-03",
+          "source": "Observed Claude Opus advisory evidence and conservative Project Orchestrator weight",
+          "status": "manual-conservative"
+        },
+        "model": "claude-opus-5",
+        "provider": "anthropic",
+        "reasoningEffort": "high",
+        "successorCalibration": {
+          "observedAt": "2026-09-03",
+          "source": "Independent Opus review uses a clean bounded evidence packet",
+          "status": "manual-conservative"
+        },
+        "successorExpectedCachedInputTokens": 0,
+        "successorExpectedInputTokens": 0,
+        "weights": {
+          "cachedInput": 0.3,
+          "input": 3,
+          "output": 15
+        }
+      },
+      "sol-high": {
+        "availability": {
+          "accountScope": "owner-primary",
+          "source": "Codex host model catalog and same-principal account continuity scope",
+          "status": "verified",
+          "verifiedAt": "2026-09-03"
+        },
+        "calibration": {
+          "observedAt": "2026-09-03",
+          "source": "Project Orchestrator conservative structural-review relative weight",
+          "status": "manual-conservative"
+        },
+        "model": "gpt-5.6-sol",
+        "provider": "openai",
+        "reasoningEffort": "high",
+        "successorCalibration": {
+          "observedAt": "2026-09-03",
+          "source": "Separate structural review receives a reduced evidence packet",
+          "status": "manual-conservative"
+        },
+        "successorExpectedCachedInputTokens": 8000,
+        "successorExpectedInputTokens": 15000,
+        "weights": {
+          "cachedInput": 0.18,
+          "input": 1.8,
+          "output": 9
+        }
+      },
+      "sol-xhigh": {
+        "availability": {
+          "accountScope": "owner-primary",
+          "source": "Codex host model catalog and same-principal account continuity scope",
+          "status": "verified",
+          "verifiedAt": "2026-09-03"
+        },
+        "calibration": {
+          "observedAt": "2026-09-03",
+          "source": "Project Orchestrator conservative final-synthesis relative weight",
+          "status": "manual-conservative"
+        },
+        "model": "gpt-5.6-sol",
+        "provider": "openai",
+        "reasoningEffort": "xhigh",
+        "successorCalibration": {
+          "observedAt": "2026-09-03",
+          "source": "Separate final synthesis receives a bounded evidence packet",
+          "status": "manual-conservative"
+        },
+        "successorExpectedCachedInputTokens": 9000,
+        "successorExpectedInputTokens": 18000,
+        "weights": {
+          "cachedInput": 0.22,
+          "input": 2.2,
+          "output": 11
+        }
+      },
+      "terra-xhigh": {
+        "availability": {
+          "accountScope": "owner-primary",
+          "source": "Codex host model catalog and same-principal account continuity scope",
+          "status": "verified",
+          "verifiedAt": "2026-09-03"
+        },
+        "calibration": {
+          "observedAt": "2026-09-03",
+          "source": "Project Orchestrator conservative relative-weight baseline; no public route price assumed",
+          "status": "manual-conservative"
+        },
+        "model": "gpt-5.6-terra",
+        "provider": "openai",
+        "reasoningEffort": "xhigh",
+        "successorCalibration": {
+          "observedAt": "2026-09-03",
+          "source": "Mission Relay L0-L4 restoration estimate for this repository",
+          "status": "manual-conservative"
+        },
+        "successorExpectedCachedInputTokens": 14000,
+        "successorExpectedInputTokens": 22000,
+        "weights": {
+          "cachedInput": 0.1,
+          "input": 1,
+          "output": 6
+        }
+      }
+    },
+    "remainingContextCallsByProfile": {
+      "terra-xhigh": 33
+    },
+    "remainingPlannedUnits": 4153302.0,
+    "status": "MODEL_BUDGET_VALID",
+    "transitionUpperWeightedUnits": 185280.0
+  },
+  "createdAt": "2026-09-02T22:37:59.710135+00:00",
+  "economicPolicy": {
+    "maxPlanAgeHours": 168,
+    "rolloverThreshold": 1.7,
+    "unit": "weighted_token_units"
+  },
+  "profiles": [
+    {
+      "availability": {
+        "accountScope": "owner-primary",
+        "source": "Codex host model catalog and same-principal account continuity scope",
+        "status": "verified",
+        "verifiedAt": "2026-09-03"
+      },
+      "calibration": {
+        "observedAt": "2026-09-03",
+        "source": "Project Orchestrator conservative relative-weight baseline; no public route price assumed",
+        "status": "manual-conservative"
+      },
+      "id": "terra-xhigh",
+      "model": "gpt-5.6-terra",
+      "provider": "openai",
+      "reasoningEffort": "xhigh",
+      "successorCalibration": {
+        "observedAt": "2026-09-03",
+        "source": "Mission Relay L0-L4 restoration estimate for this repository",
+        "status": "manual-conservative"
+      },
+      "successorExpectedCachedInputTokens": 14000,
+      "successorExpectedInputTokens": 22000,
+      "weights": {
+        "cachedInput": 0.1,
+        "input": 1,
+        "output": 6
+      }
+    },
+    {
+      "availability": {
+        "accountScope": "owner-primary",
+        "source": "Codex host model catalog and same-principal account continuity scope",
+        "status": "verified",
+        "verifiedAt": "2026-09-03"
+      },
+      "calibration": {
+        "observedAt": "2026-09-03",
+        "source": "Project Orchestrator conservative structural-review relative weight",
+        "status": "manual-conservative"
+      },
+      "id": "sol-high",
+      "model": "gpt-5.6-sol",
+      "provider": "openai",
+      "reasoningEffort": "high",
+      "successorCalibration": {
+        "observedAt": "2026-09-03",
+        "source": "Separate structural review receives a reduced evidence packet",
+        "status": "manual-conservative"
+      },
+      "successorExpectedCachedInputTokens": 8000,
+      "successorExpectedInputTokens": 15000,
+      "weights": {
+        "cachedInput": 0.18,
+        "input": 1.8,
+        "output": 9
+      }
+    },
+    {
+      "availability": {
+        "accountScope": "owner-primary",
+        "source": "Codex host model catalog and same-principal account continuity scope",
+        "status": "verified",
+        "verifiedAt": "2026-09-03"
+      },
+      "calibration": {
+        "observedAt": "2026-09-03",
+        "source": "Project Orchestrator conservative final-synthesis relative weight",
+        "status": "manual-conservative"
+      },
+      "id": "sol-xhigh",
+      "model": "gpt-5.6-sol",
+      "provider": "openai",
+      "reasoningEffort": "xhigh",
+      "successorCalibration": {
+        "observedAt": "2026-09-03",
+        "source": "Separate final synthesis receives a bounded evidence packet",
+        "status": "manual-conservative"
+      },
+      "successorExpectedCachedInputTokens": 9000,
+      "successorExpectedInputTokens": 18000,
+      "weights": {
+        "cachedInput": 0.22,
+        "input": 2.2,
+        "output": 11
+      }
+    },
+    {
+      "availability": {
+        "accountScope": "owner-default-anthropic",
+        "source": "AI-PLANS-PREWORK-OPUS-R3 canonical model attestation",
+        "status": "verified",
+        "verifiedAt": "2026-09-03"
+      },
+      "calibration": {
+        "observedAt": "2026-09-03",
+        "source": "Observed Claude Opus advisory evidence and conservative Project Orchestrator weight",
+        "status": "manual-conservative"
+      },
+      "id": "opus-review",
+      "model": "claude-opus-5",
+      "provider": "anthropic",
+      "reasoningEffort": "high",
+      "successorCalibration": {
+        "observedAt": "2026-09-03",
+        "source": "Independent Opus review uses a clean bounded evidence packet",
+        "status": "manual-conservative"
+      },
+      "successorExpectedCachedInputTokens": 0,
+      "successorExpectedInputTokens": 0,
+      "weights": {
+        "cachedInput": 0.3,
+        "input": 3,
+        "output": 15
+      }
+    },
+    {
+      "availability": {
+        "accountScope": "owner-default-anthropic",
+        "source": "AI-ORCH-PLANS-MASTER-CHAT-FABLE-002 verified run",
+        "status": "verified",
+        "verifiedAt": "2026-09-03"
+      },
+      "calibration": {
+        "observedAt": "2026-09-03",
+        "source": "Fable verified run cost and token accounting evidence",
+        "status": "measured"
+      },
+      "id": "fable-high",
+      "model": "claude-fable-5",
+      "provider": "anthropic",
+      "reasoningEffort": "high",
+      "successorCalibration": {
+        "observedAt": "2026-09-03",
+        "source": "Independent review sessions receive exact artifact and diff packets",
+        "status": "manual-conservative"
+      },
+      "successorExpectedCachedInputTokens": 0,
+      "successorExpectedInputTokens": 0,
+      "weights": {
+        "cachedInput": 0.25,
+        "input": 2.5,
+        "output": 12
+      }
+    }
+  ],
+  "project": {
+    "goal": "AI 팀 운영 스타터 키트 v0.5를 위한 12단계 문서 확정·구현·검증·역반영",
+    "projectId": "margincook-ai-team-operations-v0.5",
+    "root": "C:\\Users\\jacop\\프로젝트\\식자재관리앱"
+  },
+  "reviewRequirements": [
+    {
+      "minimumRounds": 1,
+      "profileId": "opus-review",
+      "required": true
+    },
+    {
+      "minimumRounds": 2,
+      "profileId": "fable-high",
+      "required": true
+    }
+  ],
+  "routingPolicy": {
+    "automaticTransition": true,
+    "humanInterventionRequiredFor": [
+      "예산·범위·불변식 변경",
+      "모델 이용 불가로 계획 경로를 바꾸는 경우",
+      "운영 배포 Go/No-Go"
+    ],
+    "independentCompletionReviewProfileId": "fable-high",
+    "independentStageReviewProfileId": "opus-review",
+    "primaryExecutorProfileId": "terra-xhigh",
+    "silentDowngradeAllowed": false,
+    "structuralDecisionDefaultProfileId": "sol-high",
+    "structuralDecisionEscalationProfileId": "sol-xhigh"
+  },
+  "schemaVersion": 1,
+  "sealedAt": "2026-09-02T22:40:57.243975+00:00",
+  "stages": [
+    {
+      "assignments": [
+        {
+          "expectedCachedInputTokensPerCall": 14000,
+          "expectedCallsLowerBound": 2,
+          "expectedInputTokensPerCall": 22000,
+          "expectedOutputTokensPerCall": 3200,
+          "profileId": "terra-xhigh",
+          "responsibility": "주 실행·대량 독해·작성·구현·로컬 검증",
+          "threadScope": "active-thread"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 6300,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 14000,
+          "expectedOutputTokensPerCall": 2600,
+          "profileId": "sol-high",
+          "responsibility": "중요 구조 판단과 변경 경계 검토",
+          "threadScope": "separate-task"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 0,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 14000,
+          "expectedOutputTokensPerCall": 2200,
+          "profileId": "opus-review",
+          "responsibility": "앞 모델 결론을 제외한 단계별 독립검수",
+          "threadScope": "external-review"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 0,
+          "expectedCallsLowerBound": 2,
+          "expectedInputTokensPerCall": 12000,
+          "expectedOutputTokensPerCall": 2000,
+          "profileId": "fable-high",
+          "responsibility": "단계 완료 전 공식 독립검수",
+          "threadScope": "external-review"
+        }
+      ],
+      "id": "1",
+      "name": "팀 구성안 확정",
+      "status": "pending"
+    },
+    {
+      "assignments": [
+        {
+          "expectedCachedInputTokensPerCall": 17000,
+          "expectedCallsLowerBound": 3,
+          "expectedInputTokensPerCall": 26000,
+          "expectedOutputTokensPerCall": 3800,
+          "profileId": "terra-xhigh",
+          "responsibility": "주 실행·대량 독해·작성·구현·로컬 검증",
+          "threadScope": "active-thread"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 8100,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 18000,
+          "expectedOutputTokensPerCall": 3200,
+          "profileId": "sol-high",
+          "responsibility": "중요 구조 판단과 변경 경계 검토",
+          "threadScope": "separate-task"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 0,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 14000,
+          "expectedOutputTokensPerCall": 2200,
+          "profileId": "opus-review",
+          "responsibility": "앞 모델 결론을 제외한 단계별 독립검수",
+          "threadScope": "external-review"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 0,
+          "expectedCallsLowerBound": 2,
+          "expectedInputTokensPerCall": 12000,
+          "expectedOutputTokensPerCall": 2000,
+          "profileId": "fable-high",
+          "responsibility": "단계 완료 전 공식 독립검수",
+          "threadScope": "external-review"
+        }
+      ],
+      "id": "2",
+      "name": "온톨로지 확정",
+      "status": "pending"
+    },
+    {
+      "assignments": [
+        {
+          "expectedCachedInputTokensPerCall": 17000,
+          "expectedCallsLowerBound": 3,
+          "expectedInputTokensPerCall": 26000,
+          "expectedOutputTokensPerCall": 3800,
+          "profileId": "terra-xhigh",
+          "responsibility": "주 실행·대량 독해·작성·구현·로컬 검증",
+          "threadScope": "active-thread"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 8100,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 18000,
+          "expectedOutputTokensPerCall": 3200,
+          "profileId": "sol-high",
+          "responsibility": "중요 구조 판단과 변경 경계 검토",
+          "threadScope": "separate-task"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 0,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 14000,
+          "expectedOutputTokensPerCall": 2200,
+          "profileId": "opus-review",
+          "responsibility": "앞 모델 결론을 제외한 단계별 독립검수",
+          "threadScope": "external-review"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 0,
+          "expectedCallsLowerBound": 2,
+          "expectedInputTokensPerCall": 12000,
+          "expectedOutputTokensPerCall": 2000,
+          "profileId": "fable-high",
+          "responsibility": "단계 완료 전 공식 독립검수",
+          "threadScope": "external-review"
+        }
+      ],
+      "id": "3",
+      "name": "오케스트레이션 기획안 확정",
+      "status": "pending"
+    },
+    {
+      "assignments": [
+        {
+          "expectedCachedInputTokensPerCall": 16000,
+          "expectedCallsLowerBound": 3,
+          "expectedInputTokensPerCall": 25000,
+          "expectedOutputTokensPerCall": 3600,
+          "profileId": "terra-xhigh",
+          "responsibility": "주 실행·대량 독해·작성·구현·로컬 검증",
+          "threadScope": "active-thread"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 7650,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 17000,
+          "expectedOutputTokensPerCall": 3000,
+          "profileId": "sol-high",
+          "responsibility": "중요 구조 판단과 변경 경계 검토",
+          "threadScope": "separate-task"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 0,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 14000,
+          "expectedOutputTokensPerCall": 2200,
+          "profileId": "opus-review",
+          "responsibility": "앞 모델 결론을 제외한 단계별 독립검수",
+          "threadScope": "external-review"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 0,
+          "expectedCallsLowerBound": 2,
+          "expectedInputTokensPerCall": 12000,
+          "expectedOutputTokensPerCall": 2000,
+          "profileId": "fable-high",
+          "responsibility": "단계 완료 전 공식 독립검수",
+          "threadScope": "external-review"
+        }
+      ],
+      "id": "4",
+      "name": "디렉터리·문서 신경망 위치·연결 방향 확정",
+      "status": "pending"
+    },
+    {
+      "assignments": [
+        {
+          "expectedCachedInputTokensPerCall": 16000,
+          "expectedCallsLowerBound": 3,
+          "expectedInputTokensPerCall": 25000,
+          "expectedOutputTokensPerCall": 3600,
+          "profileId": "terra-xhigh",
+          "responsibility": "주 실행·대량 독해·작성·구현·로컬 검증",
+          "threadScope": "active-thread"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 7650,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 17000,
+          "expectedOutputTokensPerCall": 3000,
+          "profileId": "sol-high",
+          "responsibility": "중요 구조 판단과 변경 경계 검토",
+          "threadScope": "separate-task"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 0,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 14000,
+          "expectedOutputTokensPerCall": 2200,
+          "profileId": "opus-review",
+          "responsibility": "앞 모델 결론을 제외한 단계별 독립검수",
+          "threadScope": "external-review"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 0,
+          "expectedCallsLowerBound": 2,
+          "expectedInputTokensPerCall": 12000,
+          "expectedOutputTokensPerCall": 2000,
+          "profileId": "fable-high",
+          "responsibility": "단계 완료 전 공식 독립검수",
+          "threadScope": "external-review"
+        }
+      ],
+      "id": "5",
+      "name": "품질·학습·자율성 기획안 확정",
+      "status": "pending"
+    },
+    {
+      "assignments": [
+        {
+          "expectedCachedInputTokensPerCall": 19000,
+          "expectedCallsLowerBound": 2,
+          "expectedInputTokensPerCall": 28000,
+          "expectedOutputTokensPerCall": 3000,
+          "profileId": "terra-xhigh",
+          "responsibility": "주 실행·대량 독해·작성·구현·로컬 검증",
+          "threadScope": "active-thread"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 9900,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 22000,
+          "expectedOutputTokensPerCall": 3000,
+          "profileId": "sol-high",
+          "responsibility": "중요 구조 판단과 변경 경계 검토",
+          "threadScope": "separate-task"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 0,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 14000,
+          "expectedOutputTokensPerCall": 2200,
+          "profileId": "opus-review",
+          "responsibility": "앞 모델 결론을 제외한 단계별 독립검수",
+          "threadScope": "external-review"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 0,
+          "expectedCallsLowerBound": 2,
+          "expectedInputTokensPerCall": 12000,
+          "expectedOutputTokensPerCall": 2000,
+          "profileId": "fable-high",
+          "responsibility": "단계 완료 전 공식 독립검수",
+          "threadScope": "external-review"
+        }
+      ],
+      "id": "6",
+      "name": "다섯 문서 누적 상호 참조 검증",
+      "status": "pending"
+    },
+    {
+      "assignments": [
+        {
+          "expectedCachedInputTokensPerCall": 20000,
+          "expectedCallsLowerBound": 2,
+          "expectedInputTokensPerCall": 30000,
+          "expectedOutputTokensPerCall": 3600,
+          "profileId": "terra-xhigh",
+          "responsibility": "주 실행·대량 독해·작성·구현·로컬 검증",
+          "threadScope": "active-thread"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 10800,
+          "expectedCallsLowerBound": 2,
+          "expectedInputTokensPerCall": 24000,
+          "expectedOutputTokensPerCall": 3600,
+          "profileId": "sol-xhigh",
+          "responsibility": "중요 구조 판단·종합 감사·최종 통합",
+          "threadScope": "separate-task"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 0,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 18000,
+          "expectedOutputTokensPerCall": 3000,
+          "profileId": "opus-review",
+          "responsibility": "앞 모델 결론을 제외한 단계별 독립검수",
+          "threadScope": "external-review"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 0,
+          "expectedCallsLowerBound": 2,
+          "expectedInputTokensPerCall": 16000,
+          "expectedOutputTokensPerCall": 2600,
+          "profileId": "fable-high",
+          "responsibility": "단계 완료 전 공식 독립검수",
+          "threadScope": "external-review"
+        }
+      ],
+      "id": "7",
+      "name": "구조 종합 감사",
+      "status": "pending"
+    },
+    {
+      "assignments": [
+        {
+          "expectedCachedInputTokensPerCall": 12000,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 18000,
+          "expectedOutputTokensPerCall": 2200,
+          "profileId": "terra-xhigh",
+          "responsibility": "주 실행·대량 독해·작성·구현·로컬 검증",
+          "threadScope": "active-thread"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 6300,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 14000,
+          "expectedOutputTokensPerCall": 2200,
+          "profileId": "sol-high",
+          "responsibility": "중요 구조 판단과 변경 경계 검토",
+          "threadScope": "separate-task"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 0,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 14000,
+          "expectedOutputTokensPerCall": 2200,
+          "profileId": "opus-review",
+          "responsibility": "사람 승인 자료의 단계별 독립검수; 승인 결정 자체는 하지 않음",
+          "threadScope": "external-review"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 0,
+          "expectedCallsLowerBound": 2,
+          "expectedInputTokensPerCall": 12000,
+          "expectedOutputTokensPerCall": 2000,
+          "profileId": "fable-high",
+          "responsibility": "사람 승인 패킷의 공식 독립 완료 검증; 승인 결정 자체는 하지 않음",
+          "threadScope": "external-review"
+        }
+      ],
+      "id": "8",
+      "name": "사람 최종 승인",
+      "status": "pending"
+    },
+    {
+      "assignments": [
+        {
+          "expectedCachedInputTokensPerCall": 15000,
+          "expectedCallsLowerBound": 4,
+          "expectedInputTokensPerCall": 24000,
+          "expectedOutputTokensPerCall": 4200,
+          "profileId": "terra-xhigh",
+          "responsibility": "주 실행·대량 독해·작성·구현·로컬 검증",
+          "threadScope": "active-thread"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 8100,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 18000,
+          "expectedOutputTokensPerCall": 2800,
+          "profileId": "sol-high",
+          "responsibility": "중요 구조 판단과 변경 경계 검토",
+          "threadScope": "separate-task"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 0,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 14000,
+          "expectedOutputTokensPerCall": 2200,
+          "profileId": "opus-review",
+          "responsibility": "앞 모델 결론을 제외한 단계별 독립검수",
+          "threadScope": "external-review"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 0,
+          "expectedCallsLowerBound": 2,
+          "expectedInputTokensPerCall": 12000,
+          "expectedOutputTokensPerCall": 2000,
+          "profileId": "fable-high",
+          "responsibility": "단계 완료 전 공식 독립검수",
+          "threadScope": "external-review"
+        }
+      ],
+      "id": "9",
+      "name": "팀별 디렉터리와 MD 파일 생성·내용 삽입",
+      "status": "pending"
+    },
+    {
+      "assignments": [
+        {
+          "expectedCachedInputTokensPerCall": 15000,
+          "expectedCallsLowerBound": 4,
+          "expectedInputTokensPerCall": 24000,
+          "expectedOutputTokensPerCall": 4200,
+          "profileId": "terra-xhigh",
+          "responsibility": "주 실행·대량 독해·작성·구현·로컬 검증",
+          "threadScope": "active-thread"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 8100,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 18000,
+          "expectedOutputTokensPerCall": 2800,
+          "profileId": "sol-high",
+          "responsibility": "중요 구조 판단과 변경 경계 검토",
+          "threadScope": "separate-task"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 0,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 14000,
+          "expectedOutputTokensPerCall": 2200,
+          "profileId": "opus-review",
+          "responsibility": "앞 모델 결론을 제외한 단계별 독립검수",
+          "threadScope": "external-review"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 0,
+          "expectedCallsLowerBound": 2,
+          "expectedInputTokensPerCall": 12000,
+          "expectedOutputTokensPerCall": 2000,
+          "profileId": "fable-high",
+          "responsibility": "단계 완료 전 공식 독립검수",
+          "threadScope": "external-review"
+        }
+      ],
+      "id": "10",
+      "name": "문서 그래프 검사기를 pnpm verify에 연결",
+      "status": "pending"
+    },
+    {
+      "assignments": [
+        {
+          "expectedCachedInputTokensPerCall": 18000,
+          "expectedCallsLowerBound": 4,
+          "expectedInputTokensPerCall": 28000,
+          "expectedOutputTokensPerCall": 4500,
+          "profileId": "terra-xhigh",
+          "responsibility": "주 실행·대량 독해·작성·구현·로컬 검증",
+          "threadScope": "active-thread"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 9900,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 22000,
+          "expectedOutputTokensPerCall": 3200,
+          "profileId": "sol-high",
+          "responsibility": "중요 구조 판단과 변경 경계 검토",
+          "threadScope": "separate-task"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 0,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 14000,
+          "expectedOutputTokensPerCall": 2200,
+          "profileId": "opus-review",
+          "responsibility": "앞 모델 결론을 제외한 단계별 독립검수",
+          "threadScope": "external-review"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 0,
+          "expectedCallsLowerBound": 2,
+          "expectedInputTokensPerCall": 12000,
+          "expectedOutputTokensPerCall": 2000,
+          "profileId": "fable-high",
+          "responsibility": "단계 완료 전 공식 독립검수",
+          "threadScope": "external-review"
+        }
+      ],
+      "id": "11",
+      "name": "실제 업무 파일럿 검증",
+      "status": "pending"
+    },
+    {
+      "assignments": [
+        {
+          "expectedCachedInputTokensPerCall": 20000,
+          "expectedCallsLowerBound": 2,
+          "expectedInputTokensPerCall": 30000,
+          "expectedOutputTokensPerCall": 3600,
+          "profileId": "terra-xhigh",
+          "responsibility": "주 실행·대량 독해·작성·구현·로컬 검증",
+          "threadScope": "active-thread"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 10800,
+          "expectedCallsLowerBound": 2,
+          "expectedInputTokensPerCall": 24000,
+          "expectedOutputTokensPerCall": 3600,
+          "profileId": "sol-xhigh",
+          "responsibility": "중요 구조 판단·종합 감사·최종 통합",
+          "threadScope": "separate-task"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 0,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 18000,
+          "expectedOutputTokensPerCall": 3000,
+          "profileId": "opus-review",
+          "responsibility": "앞 모델 결론을 제외한 단계별 독립검수",
+          "threadScope": "external-review"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 0,
+          "expectedCallsLowerBound": 2,
+          "expectedInputTokensPerCall": 16000,
+          "expectedOutputTokensPerCall": 2600,
+          "profileId": "fable-high",
+          "responsibility": "단계 완료 전 공식 독립검수",
+          "threadScope": "external-review"
+        }
+      ],
+      "id": "12",
+      "name": "AI 팀 운영 스타터 키트 v0.5 역반영",
+      "status": "pending"
+    }
+  ],
+  "status": "SEALED",
+  "transitionComponents": [
+    {
+      "cachedInputTokensPerCall": 16000,
+      "callsUpperBound": 4,
+      "inputTokensPerCall": 24000,
+      "name": "Mission Relay L0-L4 복원·현재 단계 검증·후속 작업 인계",
+      "outputTokensPerCall": 3000,
+      "profileId": "terra-xhigh"
+    },
+    {
+      "cachedInputTokensPerCall": 8000,
+      "callsUpperBound": 2,
+      "inputTokensPerCall": 16000,
+      "name": "모델 경계용 축소 증거 패킷 재구성",
+      "outputTokensPerCall": 2400,
+      "profileId": "sol-high"
+    }
+  ]
+}

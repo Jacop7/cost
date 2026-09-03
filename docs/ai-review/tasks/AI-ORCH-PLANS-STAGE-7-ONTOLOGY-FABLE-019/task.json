@@ -1,0 +1,68 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-STAGE-7-ONTOLOGY-FABLE-019",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R1",
+  "author_role": "SOLAR-ORCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "4e1d23cf31b34483f5f66ee3d7dfeaea5d315019",
+  "target_commit_sha": "4e1d23cf31b34483f5f66ee3d7dfeaea5d315019",
+  "target_tree_oid": "fc6630c066ee6b10f6e97fc740b1c6895561f3e2",
+  "agents_blob_oid": "c32214b5528752a91f0f1545fea8c735d5fae7fa",
+  "agents_sha256": "de18fc8524afa350d3d0806f40150b9397dfd45a91ff471b5e1f6d6bf95fc681",
+  "requirements": [
+    "온톨로지 기획안의 지식 노드·관계 방향·권위 계층이 팀·오케스트레이션·디렉터리·품질 계약과 모순되지 않아야 한다.",
+    "REQUEST_INPUT·NORMALIZED_REQUEST·TASK·DECISION·FINDING·HANDOFF의 방향과 단일 소유권이 명확해야 한다.",
+    "탐색 강연결과 권위 DAG를 혼동하지 않고, 권위 DAG는 비순환이어야 한다.",
+    "동일·낮은 HANDOFF 판본, 같은 predecessor의 분기, rollover 신호만으로 권한 획득을 거부해야 한다.",
+    "사람의 단계 8 승인 전 DRAFT 상태와 물질화 금지 경계를 훼손하면 안 된다."
+  ],
+  "invariant_ids": [
+    "AGENTS:single-canonical-artifact",
+    "AGENTS:fable-required-review",
+    "AI-ONTOLOGY:authority-dag",
+    "AI-ONTOLOGY:handoff-lineage",
+    "AI-ONTOLOGY:human-decision-authority"
+  ],
+  "artifact_paths": [
+    "docs/AI-지식-온톨로지-기획안.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/evidence/AI-PLANS-SIM-STAGE-6-CROSS-REFERENCE-PASS.md",
+    "docs/ai-review/evidence/AI-PLANS-SIM-STAGES-1-5-FABLE-PASS.md"
+  ],
+  "excluded_paths": [
+    "apps/mobile/**",
+    "packages/**",
+    "docs/prototypes/**",
+    ".codex-share/**",
+    ".tmp/**"
+  ],
+  "required_evidence": [
+    "온톨로지 현재 bytes의 노드·관계·권위·HANDOFF 구조 감사",
+    "교차계약 투영과 사람 승인 경계 확인",
+    "새 필수 Finding과 verdict의 기계 검증"
+  ],
+  "human_decisions": [
+    "DEC-AI-FABLE-AUTONOMOUS-BUDGET-009 — 사용자는 합리적인 예산 기준을 초과해도 추가 질문 없이 계속 진행하도록 위임했다.",
+    "DEC-AI-FABLE-STAGE-7-ONTOLOGY-BUDGET-018 — AI 부 오케스트레이터는 온톨로지 단일 문서 감사 soft cap을 USD 4.00으로 선택한다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "4.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}

@@ -22,6 +22,7 @@ import {
   createSimulationState,
   demoteAutonomy,
   loadPlanDocuments,
+  loadModelExecutionPlan,
   loadWorkQueue,
   markFindingReady,
   materializeDirectory,
@@ -49,6 +50,7 @@ import {
   validateDispositionChain,
   validateDocumentNetwork,
   validateLiveTaskLedger,
+  validateModelExecutionPlan,
   validateTaskPacket,
   validateTrace,
   retireLearning,
@@ -397,6 +399,31 @@ test('중앙 권위 표에서 소유자를 바꾸거나 같은 주제를 복제�
   assert.throws(() => validateDocumentNetwork(duplicated), /중앙 권위 주제가 중복/);
 });
 
+test('후속 모델 계획은 21회 그룹 경로와 제한된 Opus fallback을 봉인한다', () => {
+  const plan = loadModelExecutionPlan();
+  const result = validateModelExecutionPlan(plan);
+  assert.deepEqual(result.calls, {
+    'terra-xhigh': 12,
+    'sol-high': 2,
+    'sol-xhigh': 2,
+    'opus-review': 0,
+    'fable-high': 5,
+  });
+  assert.equal(result.totalCalls, 21);
+
+  const dualEngine = structuredClone(plan);
+  dualEngine.budgetGuard.samePurposeDualEngineCallsAllowed = true;
+  assert.throws(() => validateModelExecutionPlan(dualEngine), /동시 호출/);
+
+  const stalePass = structuredClone(plan);
+  stalePass.routingPolicy.bytesChangeInvalidatesPass = false;
+  assert.throws(() => validateModelExecutionPlan(stalePass), /bytes 변경/);
+
+  const earlyFallback = structuredClone(plan);
+  earlyFallback.routingPolicy.capacityRetry.maximumRetries = 0;
+  assert.throws(() => validateModelExecutionPlan(earlyFallback), /capacity 재시도/);
+});
+
 test('정상 업무는 요청→Task→Codex/Fable→사람 승인→배치→Learning으로 이어진다', () => {
   const state = runHappyPathSimulation();
   assert.equal(state.executionBoundary, 'VIRTUAL_SIMULATION');
@@ -414,7 +441,7 @@ test('정상 업무는 요청→Task→Codex/Fable→사람 승인→배치→Le
 test('현재 시뮬레이션 Task는 실제 작업큐에서 복원 가능한 계약이다', () => {
   const result = validateLiveTaskLedger(loadWorkQueue());
   assert.equal(result.taskId, 'AI-ORCH-PLANS-SIM-1');
-  assert.equal(result.dispositionCount, 4);
+  assert.equal(result.dispositionCount, 13);
 });
 
 test('Task 필수 복원 필드나 risk 근거가 빠지면 환경 미검증이다', () => {
@@ -1309,16 +1336,18 @@ test('최초 활성화 뒤 권위별 수명주기는 독립적이고 supersedes�
   assert.equal(validateDocumentNetwork(independentlyRetired).planMetadata.ontology.status, 'RETIRED');
 
   const replacement = structuredClone(active);
+  const currentOntologyVersion = active.ontology.match(/^version: (.+)$/m)?.[1];
   replacement.ontology = replacement.ontology
-    .replace('version: 0.2', 'version: 0.3')
-    .replace('supersedes: []', 'supersedes: [ontology@0.2]');
-  assert.deepEqual(validateDocumentNetwork(replacement).planMetadata.ontology.supersedes, ['ontology@0.2']);
+    .replace(`version: ${currentOntologyVersion}`, 'version: 99.0')
+    .replace('supersedes: []', `supersedes: [ontology@${currentOntologyVersion}]`);
+  assert.deepEqual(validateDocumentNetwork(replacement).planMetadata.ontology.supersedes,
+    [`ontology@${currentOntologyVersion}`]);
 
   const crossAuthority = structuredClone(active);
   crossAuthority.ontology = crossAuthority.ontology.replace('supersedes: []', 'supersedes: [orchestration@0.1]');
   assert.throws(() => validateDocumentNetwork(crossAuthority), /같은 권위/);
   const selfVersion = structuredClone(active);
-  selfVersion.ontology = selfVersion.ontology.replace('supersedes: []', 'supersedes: [ontology@0.2]');
+  selfVersion.ontology = selfVersion.ontology.replace('supersedes: []', `supersedes: [ontology@${currentOntologyVersion}]`);
   assert.throws(() => validateDocumentNetwork(selfVersion), /현재 판본/);
 });
 
@@ -1409,7 +1438,7 @@ test('온톨로지 Fable 축소 패킷은 두 공식 문서를 유지하며 원�
   assert.ok(continuity.requirements.some((requirement) => requirement.includes('L0~L4')));
 });
 
-test('Fable 비용 절감은 문서별 축소 입력과 최종 네트워크 결속을 나누되 필수 검수를 생략하지 않는다', () => {
+test('독립검수 비용 절감은 축소 입력·최종 결속·제한된 Opus fallback을 함께 지킨다', () => {
   const docs = loadPlanDocuments();
   assert.doesNotThrow(() => validateDocumentNetwork(docs));
 
@@ -1422,36 +1451,36 @@ test('Fable 비용 절감은 문서별 축소 입력과 최종 네트워크 결�
 
   const noFinalBinding = loadPlanDocuments();
   noFinalBinding.quality = noFinalBinding.quality.replace(
-    '최종 네트워크 Fable\n   Task는 문서별 유효 review/run/input hash, 전체 문서 content hash와 투영 검증 결과를 결속한다.',
+    '최종 네트워크 독립검수\n   Task는 문서별 유효 review/run/input hash, 실제 reviewer engine, 전체 문서 content hash와 투영\n   검증 결과를 결속한다.',
     '문서별 회차를 최종 네트워크 검수로 사용한다.',
   );
   assert.throws(() => validateDocumentNetwork(noFinalBinding), /quality 필수 계약 누락/);
 
   const fallbackCompletes = loadPlanDocuments();
   fallbackCompletes.directory = fallbackCompletes.directory.replace(
-    '승계 fallback은 임시 비게이트이며 검수 완료로 세지 않음',
-    '승계 fallback도 검수 완료로 셈',
+    'Fable이 기본 엔진이며 허용된 소진 사유·재시도·successor 봉인을 충족한 Opus만 같은\n  역할을 승계한다.',
+    '아무 모델이나 즉시 같은 역할을 승계한다.',
   );
   assert.throws(() => validateDocumentNetwork(fallbackCompletes), /directory 필수 계약 누락/);
 
   const conditionalTeamReview = loadPlanDocuments();
   conditionalTeamReview.team = conditionalTeamReview.team.replace(
-    'R0~R3는 검수 깊이와 전문 감사 route만 바꾸며 Fable 호출 여부를 바꾸지 않는다.',
-    'R0는 Codex 검증만으로 완료하고 R1부터 Fable을 선택한다.',
+    '모든 작업 완료 검수는 Fable 기본 route 또는 §3.10.1의 Opus 승계 route를 통과한다.',
+    'R0는 Codex 검증만으로 완료한다.',
   );
   assert.throws(() => validateDocumentNetwork(conditionalTeamReview), /team 필수 계약 누락/);
 
   const codexOnlyRoute = loadPlanDocuments();
   codexOnlyRoute.orchestration = codexOnlyRoute.orchestration.replace(
-    '모든 R0~R3 완료 route는 Codex 실행 검증과 Fable 검수를 함께 요구한다.',
+    '모든 R0~R3 완료 route는 Codex 실행 검증과 Fable 기본 검수 또는 유효한 Opus fallback을 요구한다.',
     'R0 기계 변경은 Codex 실행 검증만으로 완료할 수 있다.',
   );
   assert.throws(() => validateDocumentNetwork(codexOnlyRoute), /orchestration 필수 계약 누락/);
 
   const opusClosesGate = loadPlanDocuments();
   opusClosesGate.orchestration = opusClosesGate.orchestration.replace(
-    '`OPUS_DIRECT_ADVISORY`는 Fable 장애·소진 중 작업 연속성을 위한 임시 비게이트 자문이며, 후속 Fable\n재검수 전에는 이 칸과 Task 완료 조건을 충족하지 않는다.',
-    '`OPUS_DIRECT_ADVISORY`는 Fable 장애·소진 중 이 칸과 Task 완료 조건을 충족한다.',
+    '`OPUS_DIRECT_ADVISORY`는 이 칸을 충족하지 않는다.',
+    '`OPUS_DIRECT_ADVISORY`도 이 칸을 충족한다.',
   );
   assert.throws(() => validateDocumentNetwork(opusClosesGate), /orchestration 필수 계약 누락/);
 });
@@ -1500,7 +1529,7 @@ test('실제 Task 장부는 등록 역할·edit owner·완료된 의존성을 �
   assert.throws(() => validateLiveTaskLedger(blockedDependency), /미완료 선행 Task/);
   const missingEvidence = mutateLiveSimulationTask(loadWorkQueue(), (block) => (
     block.replace(
-      'evidence_paths:\n  - docs/ai-review/evidence/AI-PLANS-SIM-CODEX-R1.md',
+      'evidence_paths:\n  - docs/ai-review/evidence/AI-PLANS-SIM-STAGES-1-5-DRAFT-READY.md',
       'evidence_paths:\n  - docs/ai-review/evidence/DOES-NOT-EXIST.md',
     )
   ));
@@ -1522,8 +1551,8 @@ test('실제 Task 장부는 등록 역할·edit owner·완료된 의존성을 �
   assert.throws(() => validateLiveTaskLedger(falseDone), /보호 gate/);
   const trackedAsUntracked = mutateLiveSimulationTask(loadWorkQueue(), (block) => (
     block.replace(
-      'untracked_in_scope_paths: []',
-      'untracked_in_scope_paths:\n  - docs/ai-review/evidence/AI-PLANS-SIM-CODEX-ULTRA-R4.md',
+      /untracked_in_scope_paths:\n(?:  - .+\n)+/,
+      'untracked_in_scope_paths:\n  - docs/ai-review/evidence/AI-PLANS-SIM-CODEX-ULTRA-R4.md\n',
     )
   ));
   assert.throws(() => validateLiveTaskLedger(trackedAsUntracked), /이미 추적된 경로를 미추적으로/);

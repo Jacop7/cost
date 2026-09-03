@@ -1,0 +1,70 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-BUNDLE-A-FABLE-DIFF-RECHECK-007",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R1",
+  "author_role": "SOLAR-ORCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "6e99bd93b737bf291f14a8d3a6465a1d5110fa6c",
+  "target_commit_sha": "6e99bd93b737bf291f14a8d3a6465a1d5110fa6c",
+  "target_tree_oid": "c516cebc1c57bcc0a5705dbb7f7a4a0a24f38d55",
+  "agents_blob_oid": "3cf45cbcabeb756a4d12d16c62e681134df635bb",
+  "agents_sha256": "90a271831e1ede2137a3784b30e84e65ee1f0aa61dacdbee0c79e71b598e08a7",
+  "requirements": [
+    "FAB-ARCH-006-MASTER-DEPUTY-BOUNDARY-001의 수용 기준이 현재 두 공식 문서에서 충족됐는지 독립적으로 재검수한다.",
+    "FAB-ARCH-006-R0R1-DUPLICATE-COND-10-002의 조건 번호 중복이 해소됐는지 독립적으로 재검수한다.",
+    "수정이 사람 결정·AI 마스터·AI 부 오케스트레이션의 권한 경계를 새로 모순되게 만들지 않았는지 확인한다.",
+    "이번 Task는 r001의 전체 검수를 반복하지 않고 두 Finding과 변경된 두 공식 문서에만 한정한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:single-canonical-artifact",
+    "AGENTS:fable-required-review",
+    "AI-ORCH:master-deputy-boundary",
+    "AI-TEAM:r0-r1-completion-conditions"
+  ],
+  "artifact_paths": [
+    "docs/팀구성_상세기획안.md",
+    "docs/AI-오케스트레이션-상세기획안.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/tasks/AI-ORCH-PLANS-BUNDLE-A-FABLE-SINGLE-PASS-006/rounds/r001/review.json",
+    "docs/ai-review/tasks/AI-ORCH-PLANS-BUNDLE-A-FABLE-SINGLE-PASS-006/collaboration.md",
+    "docs/ai-review/evidence/AI-PLANS-SIM-FABLE-SINGLE-PASS-R1-CHANGES-REQUIRED.md",
+    "docs/ai-review/evidence/AI-PLANS-SIM-STAGES-1-5-DRAFT-READY.md"
+  ],
+  "excluded_paths": [
+    "apps/mobile/**",
+    "packages/**",
+    "docs/prototypes/**",
+    ".codex-share/**",
+    ".tmp/**"
+  ],
+  "required_evidence": [
+    "source r001 review SHA-256 b803dc22f4816dcadcbddf6d7049c0f171e1ec36bb764365c6596ee067844a59",
+    "두 수정 문서의 현재 bytes와 SOLAR_RESPONSE의 artifact hash 일치",
+    "ai:plans:simulate 71/71 PASS",
+    "r002 budget_exhausted 실패는 verdict로 사용하지 않음"
+  ],
+  "human_decisions": [
+    "DEC-AI-FABLE-DIFF-RECHECK-RANGE-008 — 사용자는 최소~중간 범위에서 AI가 비용을 판단하고 필요 시 기준을 넘는 것을 허용했다.",
+    "AI 부 오케스트레이터는 반복 실패 실측을 근거로 이 축소 Task r001 한 회의 soft cap을 USD 8.00으로 선택하며 자동 재시도와 Opus 전환은 허용하지 않는다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "8.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}

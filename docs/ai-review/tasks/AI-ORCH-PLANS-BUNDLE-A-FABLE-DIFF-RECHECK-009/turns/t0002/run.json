@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-BUNDLE-A-FABLE-DIFF-RECHECK-009",
+  "sequence": "t0002",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-03T03:15:48.923Z",
+  "turn_id": "turn-h001",
+  "turn_type": "HUMAN_DECISION",
+  "role": "HUMAN",
+  "task_sha256": "6c361703033bd964ca424d1e53db666e6ace0923b4d0c381a118782792e30e7a",
+  "runner_sha256": "3e3bdc2aa6c4874c360a1c64e678bbe168e14db556c133bbfa91e62c42c510f7",
+  "previous_manual_run_sha256": "d623eb31595b892d5a748d1d53ee79d464b9ca4bea4de1acc43944c0f0340d8b",
+  "collaboration_before_sha256": "a30f4899ac95787f9e135816fcb390b05d4eddc2bc13177fc6a246c08e5a13a4",
+  "collaboration_before_bytes": 1211,
+  "collaboration_entry_sha256": "97a038f5d5fa4fb1f26184353a58162cea2fdf93c1cd1b53b89134bf4f4ae5d9",
+  "collaboration_entry_bytes": 1068,
+  "collaboration_after_sha256": "c1611fb543713329c3cf27debc2b81f6c0f8a9b0a3a7371e027fa2fdd737c27a",
+  "collaboration_after_bytes": 2279
+}

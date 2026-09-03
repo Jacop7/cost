@@ -1,0 +1,128 @@
+{
+  "schema_version": "2.0",
+  "task_id": "AI-ORCH-PLANS-BUNDLE-A-FABLE-DIFF-RECHECK-009",
+  "reviewer_role": "FABLE-ARCH",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "6e99bd93b737bf291f14a8d3a6465a1d5110fa6c",
+  "target_commit_sha": "6e99bd93b737bf291f14a8d3a6465a1d5110fa6c",
+  "target_tree_oid": "c516cebc1c57bcc0a5705dbb7f7a4a0a24f38d55",
+  "agents_blob_oid": "c32214b5528752a91f0f1545fea8c735d5fae7fa",
+  "agents_sha256": "de18fc8524afa350d3d0806f40150b9397dfd45a91ff471b5e1f6d6bf95fc681",
+  "task_sha256": "6c361703033bd964ca424d1e53db666e6ace0923b4d0c381a118782792e30e7a",
+  "collaboration_sha256": "c1611fb543713329c3cf27debc2b81f6c0f8a9b0a3a7371e027fa2fdd737c27a",
+  "input_files_sha256": "0c38e263de86ecec8b2f3cd9f3ece242760a9db6960e03bf8a6270b220af9dc5",
+  "schema_sha256": "d8ffdb13e6b1e38279355d9ffd592cfb91dc023d287976adf7892e85dbfaf0d7",
+  "runner_sha256": "3e3bdc2aa6c4874c360a1c64e678bbe168e14db556c133bbfa91e62c42c510f7",
+  "verdict": "PASS",
+  "summary": "source Task AI-ORCH-PLANS-BUNDLE-A-FABLE-SINGLE-PASS-006/r001(review SHA-256 b803dc22f4816dcadcbddf6d7049c0f171e1ec36bb764365c6596ee067844a59)의 필수 Finding 2건과 변경된 두 공식 문서에 한정한 diff 재검수 결과, 두 건 모두 수용 기준이 현재 봉인 bytes에서 충족되어 최초 reviewer role(FABLE-ARCH)로서 VERIFIED로 판정한다. (1) FAB-ARCH-006-MASTER-DEPUTY-BOUNDARY-001(Major): 팀 구성안 §3.2가 `AI-MASTER-ORCHESTRATOR`/`SOLAR-MASTER-ORCH`와 `AI-DEPUTY-ORCHESTRATOR`/`SOLAR-ORCH`를 역할 ID·전용 컨텍스트·권한 상한 L1로 등재하고 마스터(작업 분해·순서·작업 그래프·담당 배정·라우팅 계획 확정·Decision 요청 취합)와 부(요청 정규화·예비 판정·상태 복원·확정 라우팅 실행·토큰/컨텍스트/HANDOFF 관측)의 책임 목록을 분리했다. §1.1 역할표·§1.2 조직도·§1.4 채팅 경계·§4.3 신설 오케스트레이션 RACI·§5.1 필수 컨텍스트 목록이 같은 경계를 일관되게 기술해 '미등록 행위자 마스터 AI' 문제가 해소됐다. 오케스트레이션안도 §2 구성요소 표(작업 그래프·라우팅 계획자=AI 마스터, 라우팅 실행기=AI 부)와 §2.1 트리('02 — AI 마스터의 전체 목표·순서·작업 그래프·담당 배정·결정 요청 통합', '03 — AI 부 O의 요청 정규화·확정 라우팅 실행·컨텍스트/HANDOFF 관측')·산문(`Task 라우팅`=마스터의 라우팅 계획 확정 + 부의 확정 경로 실행)이 내부·교차 모순 없이 일치한다. '부 AI의 관측·권고·예비 판정은 사람 결정이나 마스터 AI의 통합 판정을 대체하지 않는다'는 안전 문장이 유지되고, 사람의 정책·우선순위·비용·위험 수용·운영 승인 권한(L2·L3)은 두 AI 어느 쪽으로도 이관되지 않았다. (2) FAB-ARCH-006-R0R1-DUPLICATE-COND-10-002(Minor): 팀 구성안 §4.5 R0·R1 자동 종결 조건이 중복 없이 1~11로 재부여됐고(두 번째 10→11), 두 공식 문서에서 옛 번호로 해당 조건을 참조하는 다른 절은 발견되지 않았다. [새 모순 검사] 수정이 사람-마스터-부 경계에 새 충돌을 만들지 않았다. §4.3 오케스트레이션 RACI가 사람 A(정책·비용·위험, 대체 확정, Decision), 마스터 A/R(분해·배정·계획 확정), 부 R(정규화·확정 경로 실행)로 단일 해석을 제공하며, 두 역할의 금지 사항(최종 승인·정책 변경·운영 배포 금지)도 유지된다. [필수 증거 정합] SOLAR_RESPONSE turn-s002의 artifact hash(팀 8b6d94c5ec52…, 오케스트레이션 794fab2d3842…)가 현재 입력 bytes와 일치하고, `corepack pnpm ai:plans:simulate` 71/71 PASS 증거가 제출됐다. r002 budget_exhausted 실패는 본 판정의 근거로 사용하지 않았다. [판정] 미해결 필수 Finding 0건으로 PASS. 본 결과는 로컬 VERIFIED이며 CLOSED 전환·closed_finding_ids는 사용하지 않고 gate_state는 OPEN으로 유지되며 외부 보호 게이트를 종결하지 않는다.",
+  "findings": [
+    {
+      "finding_id": "FAB-ARCH-006-MASTER-DEPUTY-BOUNDARY-001",
+      "severity": "Major",
+      "review_state": "VERIFIED",
+      "category": "ARCHITECTURE",
+      "requirement_or_invariant_ids": [
+        "REQ-01-권위-역할-상태-게이트-무모순",
+        "REQ-02-01~05-채팅-경계",
+        "AGENTS:single-canonical-artifact",
+        "AI-ORCH:master-deputy-boundary"
+      ],
+      "evidence": [
+        {
+          "path": "docs/팀구성_상세기획안.md",
+          "line_start": 173,
+          "line_end": 186,
+          "observation": "§1.4: `02`의 `AI-MASTER-ORCHESTRATOR`가 사람 승인 목표 안에서 전체 순서·작업 그래프·담당 팀/역할 배정과 Decision 요청을 통합·확정하고, `03`의 `AI-DEPUTY-ORCHESTRATOR`가 요청 정규화·예비 판정·상태 복원·확정 라우팅 실행·토큰/컨텍스트/HANDOFF 관측을 소유한다고 단일하게 명시한다. `Task 라우팅`을 마스터의 라우팅 계획 확정과 부의 확정 경로 실행으로만 구분하고, '부 AI의 관측·권고·예비 판정은 사람 결정이나 마스터 AI의 통합 판정을 대체하지 않는다'는 안전 문장이 유지된다. r001에서 지적된 '관측·보조 전용 부 AI' 대 '정규화·라우팅 소유 부 AI' 모순이 제거됐다."
+        },
+        {
+          "path": "docs/팀구성_상세기획안.md",
+          "line_start": 265,
+          "line_end": 296,
+          "observation": "§3.2: 마스터 역할 ID `AI-MASTER-ORCHESTRATOR`(컨텍스트 `SOLAR-MASTER-ORCH`)와 부 역할 ID `AI-DEPUTY-ORCHESTRATOR`(컨텍스트 `SOLAR-ORCH`)를 명시 등재하고 두 역할의 권한 상한을 §4.1 L1로 고정했다. '마스터 주요 책임'(목표 분해, 순서·병렬성 확정, 담당·edit lease 배정 확정, 예비 판정 통합, Decision 취합)과 '부 주요 책임'(정규화, 예비 판정, ID 발급, 마스터 확정 라우팅 실행, 상태·증거 관리)이 분리 목록으로 정의돼 미등록 행위자 문제가 해소됐다."
+        },
+        {
+          "path": "docs/팀구성_상세기획안.md",
+          "line_start": 967,
+          "line_end": 984,
+          "observation": "§4.3: 신설 오케스트레이션 RACI 표가 경계의 단일 해석을 제공한다. 제품 목표·비용·위험 수용=사람 A/R, 요청 접수·정규화·예비 판정=부 R(대체 확정은 사람 A), 작업 분해·담당·라우팅 계획 확정=마스터 A/R, 확정 라우팅 실행·Task/lease/HANDOFF=부 R, Decision 취합·상태 통합=마스터 R·사람 A(결정). 기존 RACI의 `AI 부 O` 의미도 '분해·배정·계획 확정 미포함'으로 명시됐다."
+        },
+        {
+          "path": "docs/팀구성_상세기획안.md",
+          "line_start": 1120,
+          "line_end": 1132,
+          "observation": "§5.1 필수 컨텍스트 분리 목록에 `SOLAR-MASTER-ORCH`(AI 마스터 오케스트레이터: 목표·순서·작업 그래프·담당 배정·라우팅 계획 확정, 권한 상한 L1)와 `SOLAR-ORCH`(AI 부 오케스트레이터: 요청 정규화·확정 라우팅 실행·상태/증거/HANDOFF, 권한 상한 L1)가 각각 등재됐다. 수용 기준 2(§5.1·ROLE_CONTEXTS 등재 또는 기존 역할 환원) 충족."
+        },
+        {
+          "path": "docs/AI-오케스트레이션-상세기획안.md",
+          "line_start": 67,
+          "line_end": 81,
+          "observation": "§2 구성요소 표: 작업 그래프(선행 조건·병렬성·파일 소유권·담당 배정 확정)와 라우팅 계획자는 AI 마스터 오케스트레이터, 요청 해석자·상태 복원기·라우팅 실행기는 AI 부 오케스트레이터 소유로 분리됐다. r001에서 지적된 '소유자 없는 마스터 AI' 불일치가 해소됐다."
+        },
+        {
+          "path": "docs/AI-오케스트레이션-상세기획안.md",
+          "line_start": 93,
+          "line_end": 122,
+          "observation": "§2.1: 트리 주석이 '02 — AI 마스터의 전체 목표·순서·작업 그래프·담당 배정·결정 요청 통합', '03 — AI 부 O의 요청 정규화·확정 라우팅 실행·컨텍스트/HANDOFF 관측'으로 갱신됐고, 이어지는 산문이 `02`를 `AI-MASTER-ORCHESTRATOR`/`SOLAR-MASTER-ORCH`, `03`을 `AI-DEPUTY-ORCHESTRATOR`/`SOLAR-ORCH` 소유로 명시하며 `Task 라우팅`이 두 단계 외의 공동 확정 권한을 뜻하지 않는다고 못박았다. 트리와 산문의 내부 모순이 제거됐다."
+        },
+        {
+          "path": "docs/AI-오케스트레이션-상세기획안.md",
+          "line_start": 124,
+          "line_end": 134,
+          "observation": "§2.1 후속 산문: `03`은 상태·토큰·HANDOFF를 관측하고 마스터가 확정한 경로를 실행해 `02`를 보조하되 사람 결정, 작업 분해·담당 배정, 마스터의 라우팅 계획 확정을 대신하지 않는다. 사람의 `04`·`05` 결정 권한과 `01` 연결 규칙도 팀 구성안 §1.4와 일치한다. 수용 기준 3·4 충족, 사람 승인 게이트에 새 모순 없음."
+        }
+      ],
+      "impact": "r001 시점에는 요청 정규화·Task 라우팅·팀 배정의 소유 채팅과 역할이 CONFIRMED 팀 구성안과 DRAFT 오케스트레이션안 사이 그리고 오케스트레이션안 내부에서 서로 다르게 기술되고 '마스터 AI'가 역할 ID·권한 등급 없는 미등록 행위자였다. 현재 bytes에서는 두 문서가 마스터(계획 확정)와 부(확정 경로 실행)의 경계를 단일하게 명시하고 역할·컨텍스트·권한 상한(L1)이 등재되어, 활성화 후 다중 채팅 운영에서 통합 판정·배정 권한의 소재 모호성이 제거됐다. 사람 승인 게이트(L2·L3, 운영 승인)에는 변화가 없다.",
+      "acceptance_criteria": [
+        "팀 구성안 §1.2·§1.4·§3.2와 오케스트레이션 §2·§2.1이 요청 정규화·Task 라우팅·작업 분해·팀 배정의 소유 채팅과 역할을 단일하게 명시한다. — 충족",
+        "'마스터 AI'를 §5.1 컨텍스트 목록과 ROLE_CONTEXTS 계약에 역할 ID·권한 등급으로 등재하거나 기존 역할로 환원해 미등록 행위자를 제거한다. — §3.2·§5.1 등재로 충족(ROLE_CONTEXTS 인스턴스 기록은 활성화 구현 Task 범위)",
+        "오케스트레이션 §2.1 트리 주석과 같은 절 산문 서술이 내부 모순 없이 일치한다. — 충족",
+        "부 AI 관측·권고가 사람 결정·통합 판정을 대체하지 않는다는 기존 안전 문장은 유지된다. — 충족"
+      ],
+      "required_tests": [
+        "corepack pnpm ai:plans:simulate 71/71 PASS — SOLAR_RESPONSE·evidence 파일에서 확인",
+        "갱신된 두 문서의 변경 bytes에 대한 FABLE-ARCH diff 재검수 — 본 회차로 수행"
+      ],
+      "previous_finding_id": "FAB-ARCH-006-MASTER-DEPUTY-BOUNDARY-001",
+      "verified_by_engine": "FABLE"
+    },
+    {
+      "finding_id": "FAB-ARCH-006-R0R1-DUPLICATE-COND-10-002",
+      "severity": "Minor",
+      "review_state": "VERIFIED",
+      "category": "POLICY",
+      "requirement_or_invariant_ids": [
+        "REQ-01-권위-역할-상태-게이트-무모순",
+        "AI-ORCH:human-production-gate",
+        "AI-TEAM:r0-r1-completion-conditions"
+      ],
+      "evidence": [
+        {
+          "path": "docs/팀구성_상세기획안.md",
+          "line_start": 1091,
+          "line_end": 1108,
+          "observation": "§4.5 'R0·R1 자동 종결 조건' 번호 목록이 1~11로 중복 없이 재부여됐다. 10번은 'anchor commit·decision commit 고정', 11번은 'decision commit의 정확한 SHA에서 보호 원격 필수 체크 성공과 보호 ref 반영(외부 서명/attestation 사용 시 같은 SHA의 full-db-required·protected-gate 구성 job 성공 run ID·결론 봉인)'으로 분리됐다. 두 공식 문서 내에서 이 조건 목록을 옛 번호로 참조하는 다른 절은 발견되지 않아 함께 갱신할 참조가 없음을 확인했다."
+        }
+      ],
+      "impact": "r001 시점에는 자동 종결 조건 목록의 번호 10이 이중 부여돼 조건 참조·검사 매핑이 모호하고 보호 원격 체크 조건이 anchor commit 조건과 병합 참조될 위험이 있었다. 현재 bytes에서는 번호가 1~11로 유일해 기계 계약으로서의 참조 모호성이 제거됐다.",
+      "acceptance_criteria": [
+        "§4.5 R0·R1 자동 종결 조건의 번호를 중복 없이 1~11로 재부여한다. — 충족",
+        "해당 조건 번호를 참조하는 다른 절·문서·검사기가 있으면 같은 변경에서 함께 갱신한다. — 허용 입력 범위(두 공식 문서) 내 옛 번호 참조 없음 확인"
+      ],
+      "required_tests": [
+        "corepack pnpm ai:plans:simulate 재실행 회귀 없음(71/71 PASS) — SOLAR_RESPONSE·evidence 파일에서 확인"
+      ],
+      "previous_finding_id": "FAB-ARCH-006-R0R1-DUPLICATE-COND-10-002",
+      "verified_by_engine": "FABLE"
+    }
+  ],
+  "proposed_edits": [],
+  "closed_finding_ids": [],
+  "reopened_finding_ids": [],
+  "remaining_required_finding_ids": [],
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}

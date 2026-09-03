@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-PLANS-STAGE-7-ONTOLOGY-FABLE-019",
+  "sequence": "t0005",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-03T04:47:15.635Z",
+  "turn_id": "turn-h002",
+  "turn_type": "HUMAN_DECISION",
+  "role": "HUMAN",
+  "task_sha256": "59ab1fa7545371025fcf8e2c027ee6b4322b1a82addc88c6ad92eb7837cc7513",
+  "runner_sha256": "3e3bdc2aa6c4874c360a1c64e678bbe168e14db556c133bbfa91e62c42c510f7",
+  "previous_manual_run_sha256": "3c331c98b5b1c4af57a0a02af7aceb52d3fb06b937d4d04c22a4b1f00683b8fa",
+  "collaboration_before_sha256": "bc63fde116405bdfa39d51504350f3d93d02fea2c129e7642b7c55b41065ef4a",
+  "collaboration_before_bytes": 8262,
+  "collaboration_entry_sha256": "b518b69a2237c7277c79564898749b23634db0fefb882de6a5a070a190e9288a",
+  "collaboration_entry_bytes": 944,
+  "collaboration_after_sha256": "7ee69101aeed607650be107f625b8ca63cce9ba03d4c1e0393dddfc933ca8958",
+  "collaboration_after_bytes": 9206
+}

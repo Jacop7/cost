@@ -6,6 +6,9 @@ import { dirname, isAbsolute, join, posix, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
+const MODEL_PLAN_PATH = '.codex/mission-relay/model-plan.json';
+const ORIGINAL_MODEL_PLAN_SHA = '8fe51ceef27c992ad7be29ebbdb6fff140b93b69daa3389f98e87a2b6cc58401';
+const PREDECESSOR_MODEL_PLAN_SHA = 'b8b5474bd6190b5576e95fe2c0eaa725872bba78f5f8812baab82b8e9a7a73a1';
 
 export const PLAN_DOCS = Object.freeze({
   team: 'docs/팀구성_상세기획안.md',
@@ -43,10 +46,13 @@ const REQUIRED_CLAUSES = Object.freeze({
     /TEAM_LEARNING\.md/,
     /docs\/team\/roles\/\*\.md/,
     /SOLAR-DEV-DB.*SOLAR-OPS/s,
-    /모든 작업 완료 검수에는 Fable이 참여한다/,
-    /R0~R3는 검수 깊이와 전문 감사 route만 바꾸며 Fable 호출 여부를 바꾸지 않는다/,
-    /Codex 실행 결과도 Fable을 대신하지 않는다/,
-    /비용 절감은 입력 축소·중복 제거로 수행하며 Fable 생략으로 수행하지 않는다/,
+    /모든 작업 완료 검수는 Fable 기본 route 또는 §3\.10\.1의 Opus 승계 route/,
+    /R0·R1은 로컬 `VERIFIED`와 완료까지.*R2·R3 및 운영 게이트는 페이블 복구 표본 재감사 또는 exact SHA/s,
+    /두 엔진의 동시 중복 호출과 자동 상한 증액은 금지한다/,
+    /프로젝트 `review_budget_envelope_approved`/,
+    /AI-MASTER-ORCHESTRATOR.*SOLAR-MASTER-ORCH.*AI-DEPUTY-ORCHESTRATOR.*SOLAR-ORCH/s,
+    /\| 작업 분해·선행 순서·담당 팀\/역할·라우팅 계획 확정 \| C \| A\/R \| C \|/,
+    /\| 확정 라우팅 실행·Task\/lease\/HANDOFF·상태\/증거 관리 \| I \| A\(통합 확인\) \| R \|/,
   ],
   ontology: [
     /## 3\. 지식 노드/,
@@ -58,7 +64,7 @@ const REQUIRED_CLAUSES = Object.freeze({
     /\| `POINTS_TO` \| 권위를 만들지 않는 탐색 링크/,
     /\| `FINDING` \| `docs\/ai-review\/tasks\/\*\/rounds\/rNNN\/review\.json`/,
     /\| `ROUTES_TO` \| 정규화된 요청을 기존 또는 신규 Task에 배치/,
-    /\| `HANDOFF` \| `docs\/작업큐\.md`의 Task snapshot 또는 검수 `collaboration\.md`의 전용 인계 턴/,
+    /\| `HANDOFF` \| 일반 Task 인계는 봉인 원본\(물질화 뒤 단일 위치 `docs\/team\/handoffs\/<TASK-ID>\/\*\.md`, `docs\/작업큐\.md`는 최신 판본 pointer만 보유\) · 검수 successor 인계는 검수 `collaboration\.md`의 전용 인계 턴/,
     /\| `ROLE_CONTEXT` \| `docs\/team\/ROLE_CONTEXTS\.md`/,
     /\| `RELEASE` \| `docs\/team\/RELEASE_GATE\.md`/,
     /\| `HANDOFF_TO` \| 같은 Task의 predecessor snapshot을 successor Task·역할 컨텍스트로 연결/,
@@ -66,6 +72,9 @@ const REQUIRED_CLAUSES = Object.freeze({
     /Task별로 1부터 단조 증가하는 정수 `handoff_version`/,
     /같은\s+predecessor를 가리키는 두 successor 분기는 발행 단계에서 거부한다/,
     /docs\/team\/handoffs\/<TASK-ID>\/\*\.md/,
+    /물질화 전 일반 Task HANDOFF 봉인 원본의 단일 임시 보존 위치는 §14의 미결 구현 결정/,
+    /`docs\/작업큐\.md` 본문을 봉인 원본 위치로 사용하지 않는다/,
+    /`authority`는 lower_snake_case 단일 주제 키/,
     /rollover 신호나 경과 시간만으로 소유권을 얻지 않는다/,
     /\*\*L0 — 헌법:\*\*.*\*\*L1 — 현재 실행점:\*\*.*\*\*L2 — 직접 권위:\*\*.*\*\*L3 — 1-hop 증거:\*\*.*\*\*L4 — 조건부 원시 이력:\*\*/s,
     /동일·낮은 판본을 받으면 실행을 거부한다/,
@@ -75,7 +84,9 @@ const REQUIRED_CLAUSES = Object.freeze({
     /## 4\. 여러 채팅과 작업 연속성/,
     /## 5\. Task Graph/,
     /request_dispositions\[\].*전용 append/,
-    /00 마스터 오케스트레이션.*04 운영 배포 · 복구 게이트/s,
+    /01 통합 작업큐 · 사람 결정.*02 마스터 오케스트레이션.*03 부 오케스트레이션 · 토큰\/컨텍스트 관리.*04 개발·스테이징 배포 검증.*05 운영 배포 · 복구 게이트/s,
+    /04 개발·스테이징 배포 검증.*사람.*결정.*01 통합 작업큐 · 사람 결정.*자동 연결/s,
+    /05 운영 배포 · 복구 게이트.*사람.*명시적.*결정.*01.*자동 연결/s,
     /00 모든 팀 상황실.*05 Knowledge · Orchestration/s,
     /부서 채팅은 장시간 구현 공간이 아니다/,
     /CONTEXT_ROLLOVER_REQUIRED.*CHECKPOINT_REQUIRED.*HANDOFF_READY/s,
@@ -85,8 +96,15 @@ const REQUIRED_CLAUSES = Object.freeze({
     /문서별 의미 축.*해당 공식 문서만 artifact.*교차계약 투영/s,
     /최종 네트워크 Fable 검수.*문서별 유효 review\/run\/input hash.*전체 문서 content hash.*완전성.*사보타주/s,
     /큰 구현·원시 로그만 hash와.*compact evidence/s,
-    /모든 R0~R3 완료 route는 Codex 실행 검증과 Fable 검수를 함께 요구한다/,
-    /OPUS-FALLBACK.*후속 Fable\s*재검수 전에는.*Task 완료 조건을 충족하지 않는다/s,
+    /모든 R0~R3 완료 route는 Codex 실행 검증과 Fable 기본 검수 또는 유효한 Opus fallback/,
+    /기본 합계는 21회.*동일하면.*총 20회/s,
+    /대상 bytes가 바뀌면.*이전 PASS.*diff 재검수/s,
+    /rate limit.*최대 1회.*capacity 오류는 60초 뒤 최대 1회/s,
+    /Fable과 Opus를 같은 검수 목적으로 동시에 호출하지 않고/,
+    /OPUS_DIRECT_ADVISORY.*이 칸을 충족하지 않는다/,
+    /AI-MASTER-ORCHESTRATOR.*SOLAR-MASTER-ORCH.*AI-DEPUTY-ORCHESTRATOR.*SOLAR-ORCH/s,
+    /마스터 AI는.*작업 분해·전체 순서·작업 그래프·담당.*라우팅 계획을 확정/s,
+    /부 오케스트레이션.*요청 정규화.*확정된 라우팅의 실행/s,
     /## 8\. 제작·검증·감사 루프/,
     /RUN_FAILED/,
   ],
@@ -106,7 +124,7 @@ const REQUIRED_CLAUSES = Object.freeze({
     /00 모든 팀 상황실.*구현 지시·원문·결정 복제/s,
     /HANDOFF 파일 이름은.*source-short-sha/s,
     /HANDOFF의 단조 판본.*source SHA 일치/s,
-    /Fable 필수.*승계 fallback.*검수 완료로 세지 않음/s,
+    /Fable이 기본 엔진.*Opus만 같은\s*역할을 승계/s,
     /단계 7 — 재사용 스타터 키트/,
   ],
   quality: [
@@ -118,11 +136,14 @@ const REQUIRED_CLAUSES = Object.freeze({
     /## 13\. 사보타주 목록/,
     /RUN_FAILED/,
     /Context & Token Steward 자체도 평가 대상/,
-    /모든 필수 검수 route는 Fable을 포함한다/,
+    /모든 필수 검수 route는 독립 감사 엔진을 포함한다/,
     /문서별 Fable Task.*해당 공식 문서만 artifact.*교차계약 투영/s,
-    /최종 네트워크 Fable.*문서별 유효 review\/run\/input hash.*전체 문서 content hash/s,
-    /승계 fallback.*후속 Fable 재검수 전에는 검수 완료로.*세지 않는다/s,
-    /Fable 필수 route를 비용 절감 이유로 Codex-only 완료 처리/,
+    /최종 네트워크 독립검수.*문서별 유효 review\/run\/input hash.*전체 문서 content hash/s,
+    /R0\/R1은 계약 검증된 Opus fallback.*R2\/R3·운영 종결에는 Fable 복구 표본/s,
+    /독립검수 route를 비용 절감 이유로 Codex-only 완료 처리/,
+    /Terra xhigh 12회, Sol high\/xhigh 4회, Fable 5회, Opus 0회로 총 21회/,
+    /대상 bytes가 하나라도 바뀌면 이전 PASS를 무효화/,
+    /같은 목적에 Fable과 Opus를 동시에 호출/,
     /단계 6 — 스타터 키트 이식 평가/,
   ],
 });
@@ -138,7 +159,8 @@ const OWNER_BRIDGES = Object.freeze([
 const DISPOSITIONS = new Set(['ADD', 'SUPERSEDE_PROPOSAL', 'NEW_TASK', 'STATUS_ONLY']);
 const AUTONOMY_STEPS = ['A0', 'A1', 'A2', 'A3', 'A4'];
 const TASK_ROLE_IDS = new Set([
-  'HUMAN-CHIEF', 'AI-DEPUTY-ORCHESTRATOR', 'SOLAR', 'SOLAR-AI-DEPUTY', 'SOLAR-ORCH',
+  'HUMAN-CHIEF', 'AI-MASTER-ORCHESTRATOR', 'AI-DEPUTY-ORCHESTRATOR', 'SOLAR',
+  'SOLAR-AI-DEPUTY', 'SOLAR-MASTER-ORCH', 'SOLAR-ORCH',
   'SOLAR-ARCH', 'SOLAR-DEV-DB', 'SOLAR-DEV-CORE', 'SOLAR-DEV-MOBILE',
   'SOLAR-DEV-INTEGRATION', 'SOLAR-OPS', 'CODEX', 'CODEX-QA', 'CODEX-FUNCTION-QA',
   'FABLE-STRATEGY', 'FABLE-ARCH', 'FABLE-SEC', 'FABLE-FINAL',
@@ -494,6 +516,118 @@ export function validateDocumentNetwork(documents, authorityDependencies = AUTHO
     authorityAcyclic: true,
     planMetadata: metadata,
   };
+}
+
+export function loadModelExecutionPlan() {
+  return JSON.parse(readFileSync(join(root, MODEL_PLAN_PATH), 'utf8'));
+}
+
+export function validateModelExecutionPlan(plan = loadModelExecutionPlan()) {
+  assert.equal(plan.status, 'SEALED', '후속 모델 계획은 SEALED여야 합니다.');
+  assert.equal(plan.predecessorPlan?.sha256, PREDECESSOR_MODEL_PLAN_SHA,
+    '후속 모델 계획이 직전 21회 predecessor를 정확히 참조하지 않습니다.');
+  assert.equal(plan.predecessorPlan?.status, 'HISTORICAL_SUPERSEDED',
+    '이전 83회 계획은 실행 계획이 아니라 역사 원본이어야 합니다.');
+
+  const historyPath = join(root, '.codex', 'mission-relay', 'history',
+    `model-plan.${PREDECESSOR_MODEL_PLAN_SHA}.json`);
+  assert.ok(existsSync(historyPath), '직전 모델 계획 역사 원본이 없습니다.');
+  assert.equal(sha(readFileSync(historyPath)), PREDECESSOR_MODEL_PLAN_SHA,
+    '직전 모델 계획 역사 원본 hash가 어긋났습니다.');
+  const originalHistoryPath = join(root, '.codex', 'mission-relay', 'history',
+    `model-plan.${ORIGINAL_MODEL_PLAN_SHA}.json`);
+  assert.ok(existsSync(originalHistoryPath), '83회 원 모델 계획 역사 원본이 없습니다.');
+  assert.equal(sha(readFileSync(originalHistoryPath)), ORIGINAL_MODEL_PLAN_SHA,
+    '83회 원 모델 계획 역사 원본 hash가 어긋났습니다.');
+
+  assert.deepEqual(plan.stages.map((stage) => stage.id),
+    Array.from({ length: 12 }, (_, index) => String(index + 1)), '모델 계획은 1~12단계를 정확히 한 번 가져야 합니다.');
+  assert.deepEqual(plan.stages.map((stage) => stage.status),
+    [...Array(7).fill('completed'), 'active', ...Array(4).fill('pending')],
+    '1~7단계 완료와 8단계 사람 승인 진행 상태가 계획에 반영돼야 합니다.');
+  const calls = Object.fromEntries(plan.profiles.map((profile) => [profile.id, 0]));
+  const stageProfiles = {};
+  for (const stage of plan.stages) {
+    stageProfiles[stage.id] = stage.assignments.map((assignment) => assignment.profileId);
+    for (const assignment of stage.assignments) calls[assignment.profileId] += assignment.expectedCallsLowerBound;
+  }
+  assert.deepEqual(calls, {
+    'terra-xhigh': 12,
+    'sol-high': 2,
+    'sol-xhigh': 2,
+    'opus-review': 0,
+    'fable-high': 5,
+  }, '모델별 기본 호출 하한은 Terra 12·Sol 4·Opus 0·Fable 5여야 합니다.');
+  assert.equal(Object.values(calls).reduce((sum, value) => sum + value, 0), 21,
+    '기본 호출 하한 합계는 21회여야 합니다.');
+  assert.deepEqual(stageProfiles, {
+    1: ['terra-xhigh'],
+    2: ['terra-xhigh'],
+    3: ['terra-xhigh'],
+    4: ['terra-xhigh'],
+    5: ['terra-xhigh', 'sol-high', 'fable-high'],
+    6: ['terra-xhigh'],
+    7: ['terra-xhigh', 'sol-xhigh', 'fable-high'],
+    8: ['terra-xhigh', 'fable-high'],
+    9: ['terra-xhigh'],
+    10: ['terra-xhigh'],
+    11: ['terra-xhigh', 'sol-high', 'fable-high'],
+    12: ['terra-xhigh', 'sol-xhigh', 'fable-high'],
+  }, '그룹형 Sol·Fable checkpoint 배치가 어긋났습니다.');
+
+  const routing = plan.routingPolicy ?? {};
+  assert.equal(routing.fableIsPrimaryIndependentReviewer, true, 'Fable 기본 독립검수 계약이 없습니다.');
+  assert.equal(routing.opusFallbackOnly, true, 'Opus는 기본 호출이 아니라 fallback이어야 합니다.');
+  assert.equal(routing.bytesChangeInvalidatesPass, true, 'bytes 변경은 이전 PASS를 무효화해야 합니다.');
+  assert.deepEqual(routing.opusFallbackEligibility, [
+    'MODEL_BUDGET_EXHAUSTED', 'MODEL_RATE_LIMITED', 'MODEL_CAPACITY_UNAVAILABLE',
+  ], 'Opus fallback 허용 사유가 어긋났습니다.');
+  assert.deepEqual(routing.rateLimitRetry, {
+    maximumRetries: 1, retryAfterMaximumMinutes: 15, missingRetryAfterIsLongUnavailable: true,
+  }, 'rate limit 재시도 경계가 어긋났습니다.');
+  assert.deepEqual(routing.capacityRetry, { delaySeconds: 60, maximumRetries: 1 },
+    'capacity 재시도 경계가 어긋났습니다.');
+  assert.equal(routing.stage8IdenticalBytesCallFloor, 20,
+    '8단계 identical bytes 예외의 호출 하한은 20회여야 합니다.');
+  assert.equal(plan.budgetGuard?.samePurposeDualEngineCallsAllowed, false,
+    '같은 목적의 Fable·Opus 동시 호출은 금지돼야 합니다.');
+  assert.equal(plan.budgetGuard?.automaticMultiplicativeIncreaseAllowed, false,
+    '검수 상한의 배수 자동 증액은 금지돼야 합니다.');
+  assert.equal(plan.budgetGuard?.projectEnvelopeState, 'PASS_COMMIT_SUCCESSOR',
+    '최신 Fable envelope는 고정 COMMIT successor PASS여야 합니다.');
+  assert.equal(plan.budgetGuard?.projectEnvelopeDecisionId, 'DEC-AI-FABLE-ONTOLOGY-LINEAGE-RECHECK-BUDGET-022',
+    '최신 successor soft cap이 사용자 위임 Decision에 결속돼야 합니다.');
+  assert.equal(plan.budgetGuard?.projectEnvelopeApprovedUsd, 4.0,
+    '최신 successor 승인 soft cap은 USD 4.00이어야 합니다.');
+  assert.equal(plan.budgetGuard?.projectEnvelopeActualUsd, 1.352134,
+    '최신 successor Run의 제공자 집계 실비가 보존돼야 합니다.');
+  assert.equal(plan.budgetGuard?.projectEnvelopeOverrunUsd, 0.0,
+    '축소 Fable 실행은 승인 soft cap을 넘지 않았습니다.');
+  assert.equal(plan.budgetGuard?.projectEnvelopeRemainingUsd, 2.647866,
+    '최신 successor 승인 잔액의 정밀 값이 보존돼야 합니다.');
+  assert.equal(plan.budgetGuard?.projectEnvelopeUnusedUsd, 2.647866,
+    '최신 successor 미사용 승인액이 보존돼야 합니다.');
+  assert.equal(plan.budgetGuard?.projectEnvelopeRetryLimit, 0,
+    '승인 회차 실패 뒤 자동 재시도는 금지돼야 합니다.');
+  assert.equal(plan.budgetGuard?.externalReviewCallsBlockedUntilProjectEnvelopeDecision, false,
+    '사용자 상시 예산 위임 뒤 예산 질문만을 이유로 외부 검수를 차단하면 안 됩니다.');
+  assert.equal(plan.budgetGuard?.externalReviewActualUsdObserved, 67.696706,
+    '실패 원본을 포함한 누적 Fable 실측 비용이 보존돼야 합니다.');
+  assert.equal(plan.budgetGuard?.providerBudgetCapCapability, 'SOFT_CAP_ONLY_OVERRUN_OBSERVED',
+    'provider 예산 옵션을 결제 하드캡으로 오인하면 안 됩니다.');
+  assert.equal(plan.budgetGuard?.hardCapEnforcementMode, 'SOFT_CAP_ONLY_OVERRUN_OBSERVED',
+    'provider soft cap 초과 관측을 하드캡 성공으로 기록하면 안 됩니다.');
+  assert.equal(plan.budgetGuard?.softBudgetExceptionRequiresExactHumanPin, true,
+    'soft cap 예외는 정확한 사람 위험 승인 pin을 요구해야 합니다.');
+  assert.equal(plan.budgetGuard?.projectEnvelopePredecessorFailureEvidence,
+    'docs/ai-review/tasks/AI-ORCH-PLANS-ONTOLOGY-LINEAGE-COMMIT-020/rounds/r001/run.json',
+    '온톨로지 predecessor CHANGES_REQUIRED Run 원본이 최신 재검수 계획에 결속돼야 합니다.');
+  assert.equal(plan.budgetGuard?.projectEnvelopeTerminalEvidence,
+    'docs/ai-review/tasks/AI-ORCH-PLANS-ONTOLOGY-LINEAGE-RECHECK-021/rounds/r001/run.json',
+    '온톨로지 successor PASS Run 원본이 모델 계획에 결속돼야 합니다.');
+  assert.match(plan.budgetGuard?.technicalBudgetExhaustedPolicy ?? '', /사용자 위임.*중복 호출.*동시 Opus.*무한 재시도는 금지/,
+    '예산 재량 위임과 중복·동시·무한 재시도 금지 계약이 없습니다.');
+  return { calls, totalCalls: 21, stageProfiles };
 }
 
 export function createSimulationState() {
@@ -2071,7 +2205,10 @@ export function validateLiveTaskLedger(text, taskId = 'AI-ORCH-PLANS-SIM-1') {
     'excluded_learning_ids', 'domain_invariants', 'required_outputs', 'required_tests_evidence',
     'known_risks', 'questions_requiring_human_decision',
     'candidate_manifest_sha256', 'candidate_manifest_target', 'candidate_manifest_algorithm',
-    'fable_budget_state', 'fable_budget_decision_id', 'advisory_budget_state', 'handoffs',
+    'fable_budget_state', 'fable_budget_decision_id', 'review_budget_envelope_state',
+    'review_budget_envelope_decision_id', 'advisory_budget_state', 'handoffs',
+    'review_budget_envelope_approved_usd', 'review_budget_envelope_used_usd',
+    'review_budget_envelope_remaining_usd',
   ];
   for (const field of requiredFields) assert.match(block, new RegExp(`^${field}:`, 'm'), `실제 Task 필드 누락: ${field}`);
   const liveState = fieldOf(block, 'current_state') ?? '';
@@ -2084,7 +2221,10 @@ export function validateLiveTaskLedger(text, taskId = 'AI-ORCH-PLANS-SIM-1') {
   assert.match(fieldOf(block, 'agents_md_blob_sha') ?? '', /^[0-9a-f]{40}$/);
   assert.match(fieldOf(block, 'edit_owner') ?? '', /^(?!null$|미확인$).+/);
   assert.match(fieldOf(block, 'owner_session_ref') ?? '', /^(?!null$|미확인$).+/);
-  assert.match(block, /roles:\s*\[[^\]]*FABLE-FINAL[^\]]*\]/);
+  assert.equal(fieldOf(block, 'route'), 'MANDATORY_MUTUAL', '현재 묶음 검수는 상호검수 route여야 합니다.');
+  assert.equal(fieldOf(block, 'reviewer_role'), 'FABLE-ARCH',
+    'MANDATORY_MUTUAL 묶음 검수는 독립 종합 감사 역할이 아니라 FABLE-ARCH를 사용해야 합니다.');
+  assert.match(block, /roles:\s*\[[^\]]*FABLE-ARCH[^\]]*\]/);
   const dependsRaw = fieldOf(block, 'depends_on');
   const dependsOn = dependsRaw === '[]'
     ? []
@@ -2114,12 +2254,30 @@ export function validateLiveTaskLedger(text, taskId = 'AI-ORCH-PLANS-SIM-1') {
     '모델·토큰 계약 후보 manifest는 working snapshot 대상을 명시해야 합니다.');
   assert.match(fieldOf(block, 'candidate_manifest_algorithm') ?? '', /CRLF→LF.*SHA-256/,
     '후보 manifest 계산 규칙이 누락됐습니다.');
-  assert.equal(fieldOf(block, 'fable_budget_state'), 'DEFERRED_NOT_WAIVED',
-    'Fable 예산 보류를 면제로 바꾸거나 누락할 수 없습니다.');
+  assert.equal(fieldOf(block, 'fable_budget_state'), 'STAGE_7_VALID_FABLE_PASSES',
+    '현재 Fable 상태는 단계 7 유효 PASS 계보를 반영해야 합니다.');
   assert.match(fieldOf(block, 'fable_budget_decision_id') ?? '', /^DEC-/,
     'Fable 예산 상태의 사람 Decision ID가 없습니다.');
-  assert.equal(fieldOf(block, 'advisory_budget_state'), 'UNSET_FOR_12_STAGE_EXECUTION',
-    '승인 pin 전 12단계 advisory budget은 UNSET이어야 합니다.');
+  assert.equal(fieldOf(block, 'fable_budget_usd_approved'), '"4.00"',
+    '최신 Fable successor 승인 soft cap은 USD 4.00이어야 합니다.');
+  assert.equal(fieldOf(block, 'fable_budget_used_usd_actual'), '"67.696706"',
+    'Fable 실패 비용을 포함한 누적 실제 관측 사용액이 어긋났습니다.');
+  assert.equal(fieldOf(block, 'fable_budget_used_usd_cents'), '"67.70"',
+    'Fable 실패 비용을 포함한 센트별 누적액이 어긋났습니다.');
+  assert.equal(fieldOf(block, 'fable_budget_remaining_usd'), '"2.65"',
+    '최신 Fable successor 승인 잔액은 센트 단위로 보존돼야 합니다.');
+  assert.equal(fieldOf(block, 'review_budget_envelope_state'), 'PASS_COMMIT_SUCCESSOR',
+    '최신 Fable envelope는 COMMIT successor PASS여야 합니다.');
+  assert.equal(fieldOf(block, 'review_budget_envelope_decision_id'), 'DEC-AI-FABLE-ONTOLOGY-LINEAGE-RECHECK-BUDGET-022',
+    '최신 successor envelope의 Decision ID가 어긋났습니다.');
+  assert.equal(fieldOf(block, 'review_budget_envelope_approved_usd'), '"4.00"',
+    '승인된 최신 Fable successor soft cap은 USD 4.00이어야 합니다.');
+  assert.equal(fieldOf(block, 'review_budget_envelope_used_usd'), '"1.352134"',
+    '최신 Fable successor Run의 제공자 집계 실비가 어긋났습니다.');
+  assert.equal(fieldOf(block, 'review_budget_envelope_remaining_usd'), '"2.647866"',
+    '최신 Fable successor envelope 잔액의 정밀 값이 어긋났습니다.');
+  assert.equal(fieldOf(block, 'advisory_budget_state'), 'NOT_REQUIRED_DEFAULT_ROUTE',
+    '직접 Opus advisory는 기본 12단계 route가 아니어야 합니다.');
   assert.match(block,
     /handoffs:\n[\s\S]*handoff_id: HANDOFF:AI-ORCH-PLANS-SIM-1:0001[\s\S]*handoff_version: 1[\s\S]*source_commit_sha: [0-9a-f]{40}[\s\S]*task_snapshot_hash: [0-9a-f]{64}[\s\S]*successor_role_context_id:/,
     '검증된 HANDOFF v1의 source·snapshot·successor 결속이 없습니다.');
@@ -2135,13 +2293,18 @@ export function validateLiveTaskLedger(text, taskId = 'AI-ORCH-PLANS-SIM-1') {
     assert.equal(tracked, false, `Task가 이미 추적된 경로를 미추적으로 기록했습니다: ${path}`);
   }
   const artifactPaths = listOf(block, 'artifact_paths');
+  const referencePaths = listOf(block, 'reference_paths');
+  const evidencePaths = listOf(block, 'evidence_paths');
+  assert.equal(new Set([...artifactPaths, ...referencePaths, ...evidencePaths]).size,
+    artifactPaths.length + referencePaths.length + evidencePaths.length,
+    'artifact_paths/reference_paths/evidence_paths 경로 역할은 서로 중복될 수 없습니다.');
+  assert.equal(artifactPaths.includes('AGENTS.md'), false, 'AGENTS.md는 reference-only여야 합니다.');
   const manifestEntries = artifactPaths.filter((path) => path !== 'docs/작업큐.md').sort().map((path) => {
     assert.ok(isSafeRepoRelative(path) && existsSync(join(root, path)), `실제 Task artifact path가 없거나 안전하지 않습니다: ${path}`);
     return `${path}:${canonicalArtifactSha(readFileSync(join(root, path)))}`;
   });
   assert.equal(fieldOf(block, 'candidate_manifest_sha256'), sha(JSON.stringify(manifestEntries)),
     'mixed worktree 후보 manifest가 현재 artifact 바이트와 어긋났습니다.');
-  const evidencePaths = listOf(block, 'evidence_paths');
   assert.ok(evidencePaths.length > 0, '실제 Task evidence_paths가 비어 있습니다.');
   assert.equal(new Set(evidencePaths).size, evidencePaths.length, '실제 Task evidence_paths는 고유해야 합니다.');
   for (const evidencePath of evidencePaths) {
@@ -2479,8 +2642,10 @@ export function runHappyPathSimulation() {
 const isDirectRun = process.argv[1] && fileURLToPath(import.meta.url).toLowerCase() === process.argv[1].toLowerCase();
 if (isDirectRun) {
   const network = validateDocumentNetwork(loadPlanDocuments());
+  const modelPlan = validateModelExecutionPlan();
   const state = runHappyPathSimulation();
   console.log(`AI 기획 문서 네트워크: ${network.nodeCount}개 노드 · 탐색 강연결=${network.referenceStronglyConnected} · 권위 DAG=${network.authorityAcyclic}`);
+  console.log(`모델 실행계획: 기본 호출 하한=${modelPlan.totalCalls}회 · Terra=${modelPlan.calls['terra-xhigh']} · Sol=${modelPlan.calls['sol-high'] + modelPlan.calls['sol-xhigh']} · Fable=${modelPlan.calls['fable-high']} · Opus=${modelPlan.calls['opus-review']}`);
   console.log(`업무 시뮬레이션: ${state.audit.length}개 사건 · Task=${Object.keys(state.tasks).length}`);
   console.log('AI 기획안 업무 네트워크 시뮬레이션 통과');
 }
