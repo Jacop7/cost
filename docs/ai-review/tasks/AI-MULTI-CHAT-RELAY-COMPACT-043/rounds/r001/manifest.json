@@ -1,0 +1,156 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-MULTI-CHAT-RELAY-COMPACT-043",
+  "round": "r001",
+  "created_at": "2026-09-03T10:35:37.404Z",
+  "review_mode": "RECHECK",
+  "baseline_commit_sha": "7b59a9fcfedacdf954d8809b9a559ee6c324a62a",
+  "target_commit_sha": "5e80adf311041bf0048eae31a182b996acac13ca",
+  "target_tree_oid": "86cf10cc3998000578afa01fed0d6cc47ff5be91",
+  "agents_blob_oid": "67b83fceda960e3c4428a0119b5d88c5c4331ed0",
+  "agents_sha256": "911f8c9afd1bc6458f6c96f2b8d8547086e5a79714e92a2c362bce532fccf7cf",
+  "task_sha256": "ed7b9b3100a9311ac216efea48ce40c1879b27f1b9d0421c1d39ffc14bca24f5",
+  "collaboration_sha256": "392bfdab57ab3ea9be96813d2512003d4e2bd278025ae50d14af30f31cd05325",
+  "collaboration_bytes": 2012,
+  "input_files_sha256": "07c4939d8693fe141022a4534fee848deae8019569e8aa12b6b9639bf4875f39",
+  "schema_sha256": "d8ffdb13e6b1e38279355d9ffd592cfb91dc023d287976adf7892e85dbfaf0d7",
+  "runner_sha256": "b11837ae93ef151b7db411aaf89aa1e60d8f828a6ac25aaf99858f19b7ff8f3d",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "previous_review_sha256": null,
+  "previous_run_sha256": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "fallback_review": null,
+  "closure_review": null,
+  "fallback_input_scope": null,
+  "retry_of_failed_round": null,
+  "artifact_paths": [
+    ".codex/mission-relay/model-plan.json",
+    ".codex/mission-relay/model-plan.json.sha256",
+    "docs/AI-오케스트레이션-상세기획안.md",
+    "scripts/ai-plan-network-simulation.mjs",
+    "scripts/ai-plan-network-simulation.test.mjs"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/ai-review/README.md"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/tasks/AI-TEAM-STARTER-KIT-V05-COMPACT-WORKING-040/rounds/r001/review.json",
+    "docs/ai-review/tasks/AI-MULTI-CHAT-RELAY-042/rounds/r001/run.json"
+  ],
+  "allowed_paths": [
+    ".codex/mission-relay/model-plan.json",
+    ".codex/mission-relay/model-plan.json.sha256",
+    "docs/AI-오케스트레이션-상세기획안.md",
+    "scripts/ai-plan-network-simulation.mjs",
+    "scripts/ai-plan-network-simulation.test.mjs",
+    "AGENTS.md",
+    "docs/ai-review/README.md",
+    "docs/ai-review/tasks/AI-TEAM-STARTER-KIT-V05-COMPACT-WORKING-040/rounds/r001/review.json",
+    "docs/ai-review/tasks/AI-MULTI-CHAT-RELAY-042/rounds/r001/run.json"
+  ],
+  "excluded_paths": [
+    "apps/mobile/**",
+    "packages/**",
+    ".codex-share/**",
+    ".tmp/**",
+    "docs/ai-team-starter-kit/**",
+    "docs/작업큐.md"
+  ],
+  "applied_learning_ids": [],
+  "excluded_learning_ids": [],
+  "learning_registry_blob_oid": "fdbd6fb4b20e33fc45b56c25f57e0b1f9f2c8a9f",
+  "learning_registry_sha256": "2b240fcb2ec2363ddb914ffd5666ae9e167965977c4971fe94998bc3a3564f95",
+  "learning_assignment_sha256": "4660bb32207bcae3246801d71aa6a052eab7b0a7cef357bd5984f706fe3dcbfe",
+  "learning_target_date": "2026-09-03",
+  "input_files": [
+    {
+      "path": "AGENTS.md",
+      "path_role": "REFERENCE",
+      "change_type": "UNCHANGED",
+      "size": 12658,
+      "git_blob_oid": "67b83fceda960e3c4428a0119b5d88c5c4331ed0",
+      "sha256": "911f8c9afd1bc6458f6c96f2b8d8547086e5a79714e92a2c362bce532fccf7cf",
+      "line_count": 168
+    },
+    {
+      "path": ".codex/mission-relay/model-plan.json",
+      "path_role": "ARTIFACT",
+      "change_type": "UNCHANGED",
+      "size": 24948,
+      "git_blob_oid": "8d127eab52a047fd931f3e119ef1b89f29160683",
+      "sha256": "593b657c5a34062fecc6ad802b924efba1aef11d1e2d3bc1cd5a7a80a5b28bee",
+      "line_count": 723
+    },
+    {
+      "path": ".codex/mission-relay/model-plan.json.sha256",
+      "path_role": "ARTIFACT",
+      "change_type": "MODIFIED",
+      "size": 83,
+      "git_blob_oid": "2a66f1acfbcf5594d27f8c577063a5e77b48d4a4",
+      "sha256": "a7a18c4b6665e8e25bed4f306cc3cf3954399be1b6d1c1ff0eb3dddd2810b319",
+      "line_count": 1
+    },
+    {
+      "path": "docs/AI-오케스트레이션-상세기획안.md",
+      "path_role": "ARTIFACT",
+      "change_type": "MODIFIED",
+      "size": 48650,
+      "git_blob_oid": "3307a19b1d47a3bbb9dbabc7d23b9352672c2f4e",
+      "sha256": "627f7e43ed88aa3185b10307f55310cb9bd6de7f97847ee7d3c190e5302172bb",
+      "line_count": 794
+    },
+    {
+      "path": "docs/ai-review/README.md",
+      "path_role": "REFERENCE",
+      "change_type": "MODIFIED",
+      "size": 45438,
+      "git_blob_oid": "fb579a4ca763be84d74678b0bffd9017eebda48c",
+      "sha256": "bb461a557cd1ea93fa1168f5a166f3eb0a472b2a4f73afc9b8784215c8652fa7",
+      "line_count": 595
+    },
+    {
+      "path": "docs/ai-review/tasks/AI-MULTI-CHAT-RELAY-042/rounds/r001/run.json",
+      "path_role": "EVIDENCE",
+      "change_type": "UNCHANGED",
+      "size": 2681,
+      "git_blob_oid": "62a2d1a28ed32d7ebaf2bb9d7957e9cef1ae3e92",
+      "sha256": "9ffeb9c77fe08c6e3aafbda6cc570fccc3f42e7e0c7c82e024c6650905055dcc",
+      "line_count": 69
+    },
+    {
+      "path": "docs/ai-review/tasks/AI-TEAM-STARTER-KIT-V05-COMPACT-WORKING-040/rounds/r001/review.json",
+      "path_role": "EVIDENCE",
+      "change_type": "UNCHANGED",
+      "size": 6354,
+      "git_blob_oid": "c4a7981a74fa7706b234eeca7681b86f68dbe3cc",
+      "sha256": "cf731e539a7e4d2445ae621c6bbdd1444eaf9c75d223b667a50d1de265d3b8e7",
+      "line_count": 88
+    },
+    {
+      "path": "scripts/ai-plan-network-simulation.mjs",
+      "path_role": "ARTIFACT",
+      "change_type": "MODIFIED",
+      "size": 147059,
+      "git_blob_oid": "930f0fabcfb757b44dde9ccbb07e39028b5b4135",
+      "sha256": "318388d7389b5ff3194ce2a48ad9f3472f0f302946ffe74877f7cc66ce91db41",
+      "line_count": 2667
+    },
+    {
+      "path": "scripts/ai-plan-network-simulation.test.mjs",
+      "path_role": "ARTIFACT",
+      "change_type": "MODIFIED",
+      "size": 85880,
+      "git_blob_oid": "dbf3d675cb39712f73de72b398b06fc072c68cf1",
+      "sha256": "b93a739488d444324b49bbd6eba413aac750ab9bce19266160782ecc35f4b3a3",
+      "line_count": 1730
+    }
+  ],
+  "source_archive_version": 1,
+  "finding_resolution_semantics": "VERIFIED_RESOLVED_V1",
+  "artifact_snapshot_sha256": "77e7e8c722fca43e8df209290144fe531d89bd5eba95665139b4ffe432b55cd4",
+  "input_snapshot_sha256": "cd916a62c1af20d095f8ce22405ad88638dc66eee4462f57619cdfac23459609"
+}
