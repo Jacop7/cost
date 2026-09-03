@@ -1,0 +1,110 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-ORCH-STAGE11-PILOT-037",
+  "round": "r001",
+  "created_at": "2026-09-03T09:31:05.001Z",
+  "review_mode": "INITIAL",
+  "baseline_commit_sha": "36a83f89811cdf0b40c594f5eb80ee6dc3085311",
+  "target_commit_sha": "bc8397ecda90d9ec54e834e59a73658684a769fe",
+  "target_tree_oid": "eb1325c6032ccc926f157f00edaa8895ac992fd9",
+  "agents_blob_oid": "67b83fceda960e3c4428a0119b5d88c5c4331ed0",
+  "agents_sha256": "911f8c9afd1bc6458f6c96f2b8d8547086e5a79714e92a2c362bce532fccf7cf",
+  "task_sha256": "fd3914f568112f5bc78e0ea4a4806ccb7b82cc46c9fc8c1d6d9f49bbb557296d",
+  "collaboration_sha256": "1c6db3063bfe952edb8523d26386b66b2cf8b88eec980436a7a6d3e8bc89814a",
+  "collaboration_bytes": 965,
+  "input_files_sha256": "db3a299e9196a5696ceeffbb4060a26c168bf546c9f73062ac62b6a2ec59181a",
+  "schema_sha256": "d8ffdb13e6b1e38279355d9ffd592cfb91dc023d287976adf7892e85dbfaf0d7",
+  "runner_sha256": "b11837ae93ef151b7db411aaf89aa1e60d8f828a6ac25aaf99858f19b7ff8f3d",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "previous_review_sha256": null,
+  "previous_run_sha256": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "fallback_review": null,
+  "closure_review": null,
+  "fallback_input_scope": null,
+  "retry_of_failed_round": null,
+  "artifact_paths": [
+    "docs/operations/PILOT_PLAN.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/작업큐.md"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/tasks/AI-ORCH-STAGE10-VERIFY-GRAPH-036/rounds/r001/review.json",
+    "docs/ai-review/tasks/AI-ORCH-STAGE10-VERIFY-GRAPH-036/rounds/r001/run.json"
+  ],
+  "allowed_paths": [
+    "docs/operations/PILOT_PLAN.md",
+    "AGENTS.md",
+    "docs/작업큐.md",
+    "docs/ai-review/tasks/AI-ORCH-STAGE10-VERIFY-GRAPH-036/rounds/r001/review.json",
+    "docs/ai-review/tasks/AI-ORCH-STAGE10-VERIFY-GRAPH-036/rounds/r001/run.json"
+  ],
+  "excluded_paths": [
+    "apps/mobile/**",
+    "packages/**",
+    ".codex-share/**",
+    ".tmp/**"
+  ],
+  "applied_learning_ids": [],
+  "excluded_learning_ids": [],
+  "learning_registry_blob_oid": "fdbd6fb4b20e33fc45b56c25f57e0b1f9f2c8a9f",
+  "learning_registry_sha256": "2b240fcb2ec2363ddb914ffd5666ae9e167965977c4971fe94998bc3a3564f95",
+  "learning_assignment_sha256": "4660bb32207bcae3246801d71aa6a052eab7b0a7cef357bd5984f706fe3dcbfe",
+  "learning_target_date": "2026-09-03",
+  "input_files": [
+    {
+      "path": "AGENTS.md",
+      "path_role": "REFERENCE",
+      "change_type": "UNCHANGED",
+      "size": 12658,
+      "git_blob_oid": "67b83fceda960e3c4428a0119b5d88c5c4331ed0",
+      "sha256": "911f8c9afd1bc6458f6c96f2b8d8547086e5a79714e92a2c362bce532fccf7cf",
+      "line_count": 168
+    },
+    {
+      "path": "docs/작업큐.md",
+      "path_role": "REFERENCE",
+      "change_type": "MODIFIED",
+      "size": 178867,
+      "git_blob_oid": "fa5ce7e40a1ae627a19b778ea65f22f4d522d2b9",
+      "sha256": "e8f8ccfcde01ded236ca796115dc90a9d8e06eb187f3f8cc67351a760cf44a01",
+      "line_count": 2548
+    },
+    {
+      "path": "docs/ai-review/tasks/AI-ORCH-STAGE10-VERIFY-GRAPH-036/rounds/r001/review.json",
+      "path_role": "EVIDENCE",
+      "change_type": "UNCHANGED",
+      "size": 7636,
+      "git_blob_oid": "2f88f226c6dd7bda150e82c351cfe4328adab927",
+      "sha256": "cfa1bb76645d40709cbc3de0eb364ef562a8285b1e18f58a3dbf5b52e2326b6c",
+      "line_count": 101
+    },
+    {
+      "path": "docs/ai-review/tasks/AI-ORCH-STAGE10-VERIFY-GRAPH-036/rounds/r001/run.json",
+      "path_role": "EVIDENCE",
+      "change_type": "UNCHANGED",
+      "size": 2539,
+      "git_blob_oid": "2a7f5a3609236cfae0ac09eef072be4a18a59830",
+      "sha256": "b1d7541b94314317f0d5197ab1afc36d5545c6265095dc2c12d118e96e344f91",
+      "line_count": 60
+    },
+    {
+      "path": "docs/operations/PILOT_PLAN.md",
+      "path_role": "ARTIFACT",
+      "change_type": "MODIFIED",
+      "size": 2147,
+      "git_blob_oid": "51c770581b7ccc83bd76fcc634db44f36623b487",
+      "sha256": "bf741c469a2f4fd99ba2992239d88da93dd9d13c6d224b4ed9f511e8c5c821de",
+      "line_count": 29
+    }
+  ],
+  "source_archive_version": 1,
+  "finding_resolution_semantics": "VERIFIED_RESOLVED_V1",
+  "artifact_snapshot_sha256": "5b2c1241248f69e25bc78196d5c4292f2d4da595b08cfda9d6ae4df55b18ba29",
+  "input_snapshot_sha256": "59fcea300c6faa59f4c4a5396c315d666bd4012452fc68b0eaadd67222e3656b"
+}

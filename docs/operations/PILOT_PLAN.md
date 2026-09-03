@@ -21,7 +21,7 @@ fail-closed로 연결한다.
 | 요청·정규화 | `docs/작업큐.md`의 `AI-ORCH-PLANS-SIM-1`과 사용자 자동 진행 Decision |
 | Task·사람 결정 | `docs/ai-review/tasks/AI-ORCH-STAGE10-VERIFY-GRAPH-036/collaboration.md` |
 | 구현 | commit `36a83f89811cdf0b40c594f5eb80ee6dc3085311` · `scripts/verify.mjs`, `AGENTS.md` |
-| Codex 검증 | `corepack pnpm verify --no-db --no-bundle` 선택 범위 3/6 통과; ③단계 graph activation·13개 회귀시험 포함 |
+| Codex 검증 | `corepack pnpm verify --no-db --no-bundle` 선택 범위 3/6 통과; ③단계 graph activation 29/19·13개 회귀시험 포함 — 실행 기록은 `docs/작업큐.md`의 `AI-ORCH-PLANS-SIM-1` Stage 10 항목에 결속 |
 | 독립검수 | Task036/r001 Fable PASS, 필수 OPEN Finding 0건 |
 | 결과·후속 | `docs/작업큐.md`에 10단계 완료 기록. 11단계 파일럿의 HANDOFF pointer는 이 문서와 Task036 원본으로 한정한다. |
 
