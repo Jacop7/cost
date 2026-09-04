@@ -590,9 +590,73 @@ foreach ($fileName in @($auditName, $auditScriptName, 'full-page-flow-prototype-
     'full-page-flow-prototype-token-map.json', 'full-page-flow-prototype-token-map-check.mjs',
     'full-page-flow-prototype-token-map-check.json', 'full-page-flow-prototype-i18n-known.json',
     'full-page-flow-prototype-contrast-fix.json', 'full-page-flow-prototype-contrast-fix.mjs',
-    'full-page-flow-prototype-atrisk-key-proof.json', 'full-page-flow-prototype-atrisk-key-proof.mjs')) {
+    'full-page-flow-prototype-atrisk-key-proof.json', 'full-page-flow-prototype-atrisk-key-proof.mjs',
+    'full-page-flow-prototype-design-sync-check.ps1',
+    '../디자인-토큰-3계층-값-매핑-기획서.md')) {
   $contents = Read-Utf8 (Join-Path $PrototypeDirectory $fileName)
   if ($null -ne $contents) { $hashes[$fileName] = Get-Sha256 $contents }
+}
+
+# --- 완료 조건마다 증거 경로 (PRT-203) ---
+# PRT-200 에서 빠진 것은 코드가 아니라 봉인 시점의 증거였다. 조건을 다 못 채운 채 -Finalize 를
+# 했고, 한 문단을 더하려고 회차를 하나 더 열어야 했다. 그래서 봉인 자체가 증거를 요구한다.
+#
+# 맥락 장부의 현재 ID 절에 다음 형태의 블록이 있어야 한다.
+#   - 완료 조건:
+#     - F05 · full-page-flow-prototype-render-audit-known.json
+#     - F01 · full-page-flow-prototype-atrisk-key-proof.json
+# 조건 ID 와 증거 경로를 ` · ` 로 잇는다. 형식은 장부의 기존 불릿 그대로다 — 새 스키마가 아니다.
+#
+# 거부 조건 셋:
+#   (가) 항목이 없거나 조건 ID·경로 중 하나가 비었다
+#   (나) 경로의 파일이 없다
+#   (다) 경로가 이 회차의 봉인 대상이 아니다
+# (다)를 "이번 커밋에 포함되지 않은 경로" 의 검사 가능한 형태로 읽었다. 봉인 해시 집합에
+# 들어가야 증거가 이 동기화 ID 에 묶이고, 묶이지 않으면 증거만 조용히 바뀔 수 있다.
+$ctxSection = $null
+$ctxHead = [regex]::Match($context, ('(?m)^###\s+' + [regex]::Escape($syncId) + '\s+·\s+.+$'))
+if ($ctxHead.Success) {
+  $after = $context.Substring($ctxHead.Index + $ctxHead.Length)
+  $nextHead = [regex]::Match($after, '(?m)^###\s+DS-\d{8}-\d{3}\s')
+  $ctxSection = if ($nextHead.Success) { $after.Substring(0, $nextHead.Index) } else { $after }
+}
+if ($null -eq $ctxSection) {
+  Add-Failure "$contextName : 현재 ID 절을 찾지 못해 완료 조건을 읽을 수 없다"
+}
+else {
+  $condHead = [regex]::Match($ctxSection, '(?m)^- 완료 조건:\s*$')
+  if (-not $condHead.Success) {
+    Add-Failure "$contextName : '- 완료 조건:' 블록이 없음 - 조건마다 증거 경로가 있어야 봉인한다"
+  }
+  else {
+    $rest = $ctxSection.Substring($condHead.Index + $condHead.Length)
+    $stop = [regex]::Match($rest, '(?m)^- \S')
+    $condBlock = if ($stop.Success) { $rest.Substring(0, $stop.Index) } else { $rest }
+    $items = [regex]::Matches($condBlock, '(?m)^  - (?<id>[^·\r\n]*)·(?<path>[^\r\n]*)$')
+    if ($items.Count -lt 1) {
+      Add-Failure "$contextName : 완료 조건 항목이 0건 - '  - <조건 ID> · <증거 경로>' 형태로 적는다"
+    }
+    foreach ($m in $items) {
+      $condId = $m.Groups['id'].Value.Trim()
+      $evPath = $m.Groups['path'].Value.Trim().Trim('`')
+      if ([string]::IsNullOrWhiteSpace($condId)) { Add-Failure "$contextName : 완료 조건 ID 가 빈 항목이 있음"; continue }
+      if ([string]::IsNullOrWhiteSpace($evPath)) { Add-Failure "$contextName : '$condId' 의 증거 경로가 비어 있음"; continue }
+      $evFull = Join-Path $PrototypeDirectory $evPath
+      if (-not (Test-Path -LiteralPath $evFull)) {
+        Add-Failure "$contextName : '$condId' 의 증거 '$evPath' 가 없는 파일이다"
+        continue
+      }
+      if (-not $hashes.Contains($evPath)) {
+        Add-Failure "$contextName : '$condId' 의 증거 '$evPath' 가 이 회차 봉인 대상이 아니다 - 묶이지 않은 증거는 조용히 바뀐다"
+      }
+    }
+  }
+}
+
+if ($failures.Count -gt 0) {
+  Write-Output "DESIGN DOC SYNC: FAIL ($syncId)"
+  $failures | ForEach-Object { Write-Output "- $_" }
+  exit 1
 }
 
 $previousState = if (Test-Path -LiteralPath $statePath) { Read-Utf8 $statePath | ConvertFrom-Json } else { $null }
