@@ -59,6 +59,22 @@
  *       "잘림 있음" 으로 보고돼 아무 정보가 없었다. **요소 단위로 모으고** 몇 개
  *       target 에 나타나는지를 함께 센다. 그리고 각 요소가 +30% 에서 깨지는지
  *       +50% 에서 깨지는지로 **여유(headroom)** 를 등급화한다.
+ *  [L7] 글자를 통째로 붙여 목표 폭을 넘기는 순간 멈추니 **마지막 한 글자만큼 넘쳤다.**
+ *       한글 한 글자가 약 11px 이므로 4글자짜리 탭 라벨(45px)에서는 +30%(58.5px) 를
+ *       요구했는데 실제로는 67.4px(+49.8%) 가 됐고, 그 3px 넘침이 "탭바 라벨이 +30%
+ *       에서 182개 target 전부 잘린다" 는 결론으로 보고될 뻔했다. 짧은 문자열일수록
+ *       오차가 커지는데 UI 에서 가장 빡빡한 자리가 바로 짧은 라벨이라 최악의 조합이다.
+ *       처음에는 채움 span 을 따로 붙여 되돌리려 했는데, 부모가 flex 인 자리에서 그 span 이
+ *       **새 flex 아이템이 되어 gap 까지 얻는 바람에** 오차가 300% 까지 튀었다. 측정 발판이
+ *       레이아웃을 바꾸면 재는 대상이 달라진다. 그래서 DOM 구조는 건드리지 않고,
+ *       텍스트가 host 의 유일한 자식일 때 **host 의 letter-spacing** 으로 되돌린다.
+ *       유일하지 않으면 목표에 더 가까운 글자 수를 고른다(오차 ≤ 반 글자).
+ *  [L8] 그 보정이 일부 자리에서 오차를 77~100% 로 키웠다. 원인은 폭 측정이었다 —
+ *       `Range.getBoundingClientRect()` 는 텍스트가 **두 줄에 걸치면 컨테이너 폭**을
+ *       돌려준다. 한 글자 붙였을 뿐인데 폭이 54px→118px 로 뛴 것처럼 보였고, 그
+ *       가짜 초과분을 letter-spacing 으로 되돌리려다 글자를 겹쳐 버렸다.
+ *       폭은 `getClientRects()` 의 **줄 조각 합**으로 잰다. 보정 후에도 오차가 5% 를
+ *       넘으면 보정을 되돌리고 글자 수 조정으로 내려간다.
  */
 import { chromium } from 'playwright';
 import { createHash } from 'node:crypto';
@@ -100,37 +116,60 @@ const STRETCH = ({ factor }) => {
   const GLYPH = /^[＋+−–—‹›⌄•⋮▸▾✓✗▣●◔▰×…\s]*$/;
   const LETTER = /[가-힣A-Za-z]/;           // 한글 또는 라틴 글자를 하나라도 포함해야 늘린다
   const phone = document.querySelector('.phone');
-  if (!phone) return { stretched: 0, skippedNumeric: 0, skippedGlyph: 0 };
+  if (!phone) return { stretched: 0, skippedNumeric: 0, skippedGlyph: 0, exact: 0, maxErrorPct: 0 };
   const walker = document.createTreeWalker(phone, NodeFilter.SHOW_TEXT);
   const nodes = []; while (walker.nextNode()) nodes.push(walker.currentNode);
   const range = document.createRange();
-  let stretched = 0, skippedNumeric = 0, skippedGlyph = 0;
+  // 줄이 바뀐 텍스트의 폭은 bounding rect 가 아니라 **줄 조각들의 합**이다 ([L8]).
+  // bounding rect 는 두 줄에 걸치면 컨테이너 폭을 그대로 돌려준다.
+  const widthOf = n => { range.selectNodeContents(n);
+    let w = 0; for (const r of range.getClientRects()) w += r.width; return w; };
+  let stretched = 0, skippedNumeric = 0, skippedGlyph = 0, exact = 0, maxErrorPct = 0;
   for (const n of nodes) {
     const raw = n.nodeValue; const t = raw.trim();
     if (!t) continue;
-    // 프로토타입 셸(상태바·화면 ID 배지·카탈로그)은 번역 대상이 아니다
     const host = n.parentElement;
     if (!host || host.closest('.status, .route, .catalog')) continue;
     if (GLYPH.test(t)) { skippedGlyph++; continue; }
     if (!LETTER.test(t)) { skippedNumeric++; continue; }
-    range.selectNodeContents(n);
-    const w0 = range.getBoundingClientRect().width;
+    const w0 = widthOf(n);
     if (!(w0 > 0)) continue;
     const goal = w0 * factor;
-    // 자기 글자를 순환해 덧붙인다 — 같은 글꼴·자간이라 폭 증가분이 정확하다
     const src = t.replace(/\s+/g, '');
     if (!src) continue;
-    let add = '', i = 0, guard = 0;
+
+    // 1) 자기 글자를 순환해 붙여 목표 폭을 넘는 지점까지 간다
+    let k = 0, w1 = w0, prevW = w0, guard = 0;
     while (guard++ < 400) {
-      range.selectNodeContents(n);
-      if (range.getBoundingClientRect().width >= goal) break;
-      add += src[i++ % src.length];
-      n.nodeValue = raw + add;
+      k++;
+      n.nodeValue = raw + Array.from({ length: k }, (_, i) => src[i % src.length]).join('');
+      prevW = w1; w1 = widthOf(n);
+      if (w1 >= goal) break;
     }
+    // 2) 통째 글자는 마지막 한 글자만큼 넘친다 ([L7]).
+    //    이 텍스트 노드가 host 의 유일한 자식이면 host 의 letter-spacing 으로 정확히 되돌린다.
+    //    (letter-spacing 은 host 안의 다른 텍스트까지 건드리므로 유일할 때만 안전하다.)
+    const soleChild = host.childNodes.length === 1 && host.firstChild === n;
+    let corrected = false;
+    if (soleChild && w1 > goal) {
+      const chars = n.nodeValue.length;
+      if (chars > 0) {
+        host.style.letterSpacing = ((goal - w1) / chars) + 'px';
+        // 보정이 오히려 빗나가면(줄바꿈이 바뀌는 등) 되돌리고 글자 수 조정으로 내려간다
+        if (Math.abs(widthOf(n) / goal - 1) * 100 <= 5) { exact++; corrected = true; }
+        else host.style.letterSpacing = '';
+      }
+    }
+    if (!corrected && k > 0 && Math.abs(prevW - goal) < Math.abs(w1 - goal)) {
+      // 3) 되돌릴 수 없으면 목표에 더 가까운 쪽을 고른다 (오차 ≤ 반 글자)
+      n.nodeValue = raw + Array.from({ length: k - 1 }, (_, i) => src[i % src.length]).join('');
+    }
+    const err = Math.abs(widthOf(n) / goal - 1) * 100;
+    if (err > maxErrorPct) maxErrorPct = err;
     stretched++;
   }
   range.detach?.();
-  return { stretched, skippedNumeric, skippedGlyph };
+  return { stretched, skippedNumeric, skippedGlyph, exact, maxErrorPct: Math.round(maxErrorPct * 100) / 100 };
 };
 
 const TEXT2X = () => {
@@ -218,13 +257,15 @@ const stretchStats = {};
 for (const pass of PASSES) {
   const page = await browser.newPage({ viewport: { width: 320, height: 720 } });
   const sum = { phoneOverflow: 0, clipped: 0, escapee: 0 };
-  const st = { stretched: 0, skippedNumeric: 0, skippedGlyph: 0, text2x: 0 };
+  const st = { stretched: 0, skippedNumeric: 0, skippedGlyph: 0, text2x: 0, exact: 0, maxErrorPct: 0 };
   for (const t of targets) {
     await page.goto(`${URLBASE}?screen=${t.screen}` + (t.popup ? `&popup=${t.popup}` : ''), { waitUntil: 'load' });
     await page.evaluate(() => document.fonts.ready);
     if (pass.factor) {
       const s = await page.evaluate(STRETCH, { factor: pass.factor });
       st.stretched += s.stretched; st.skippedNumeric += s.skippedNumeric; st.skippedGlyph += s.skippedGlyph;
+      st.exact += s.exact ?? 0;
+      st.maxErrorPct = Math.max(st.maxErrorPct, s.maxErrorPct ?? 0);
     }
     if (pass.text2x) st.text2x += await page.evaluate(TEXT2X);
     const m = await page.evaluate(MEASURE);
@@ -312,6 +353,7 @@ const result = {
     rules: {
       '번역문': '지어내지 않는다. 각 텍스트 노드의 글자를 순환해 붙여 렌더 폭을 목표 배수까지 늘린다',
       '단위': '글자 수가 아니라 폭. 레이아웃을 깨는 것은 폭이다',
+      '정확도': '통째 글자 붙이기는 마지막 한 글자만큼 넘친다. 텍스트가 host 의 유일한 자식이면 host 의 letter-spacing 으로 목표 폭에 정확히 맞추고(exact), 아니면 목표에 더 가까운 글자 수를 고른다(오차 ≤ 반 글자). 남은 최대 오차를 maxErrorPct 로 남긴다',
       '숫자': '글자(한글·라틴)를 포함하지 않은 노드는 늘리지 않는다. 번역해도 숫자는 안 길어진다',
       '아이콘': '문자 기호는 번역 대상이 아니므로 늘리지 않는다',
       '셸': '상태바·화면 ID 배지·카탈로그는 제품이 아니므로 제외한다',
