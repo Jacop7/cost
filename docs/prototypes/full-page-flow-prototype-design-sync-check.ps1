@@ -651,6 +651,20 @@ else {
   if ([int]$appCheck.summary.byBin.semantic -eq 0 -and [string]::IsNullOrWhiteSpace([string]$appCheck.summary.semanticEmptyReason)) {
     Add-Failure "$appCheckName : semantic 통이 0 인데 사유가 없다 - 구조적으로 빈 것인지 미완인지 구별되지 않는다"
   }
+  # 배정을 바꾼 회차는 무엇이 어디로 갔는지 대차를 내야 한다. 손으로 쓴 이동 서술은 어긋난다
+  # (PRT-206 에서 실제로 어긋났다). 검사기가 낸 대차가 통 변화와 맞는지 게이트가 다시 본다.
+  if ($null -eq $appCheck.summary.binMovementLedger) {
+    Add-Failure "$appCheckName : 통 이동 대차가 없음 - 이전 회차 매핑표를 함께 넣어 재실행해야 한다"
+  }
+  else {
+    foreach ($b in @('primitive', 'semantic', 'componentOwned', 'defect', 'pendingApproval', 'approvedException')) {
+      $r = $appCheck.summary.binMovementLedger.reconciliation.$b
+      if ($null -eq $r) { Add-Failure "$appCheckName : 대차에 '$b' 통이 없음"; continue }
+      if ([int]$r.계산 -ne [int]$r.실제) {
+        Add-Failure "$appCheckName : 대차 불일치 - $b 계산 $($r.계산) 실제 $($r.실제)"
+      }
+    }
+  }
   # 다중 일치 수는 반드시 기록돼야 한다. "첫 일치가 이긴다" 가 숨은 결정이 되지 않게 한다.
   if ($null -eq $appCheck.summary.multiMatchCount) {
     Add-Failure "$appCheckName : 다중 일치 수가 없음 - 규칙 순서가 배정을 바꾸는지 알 수 없다"
