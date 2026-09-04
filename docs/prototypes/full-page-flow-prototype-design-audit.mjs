@@ -25,6 +25,10 @@
  *       알 수 없었고, 그 결과 `.edit-form-label{margin:0 2px 7px}` 의 2px 을 "라벨과 입력
  *       사이 baseline 보정" 이라고 잘못 읽었다. 실제로 2px 은 좌우이고 아래는 7px 이다.
  *       간격은 방향이 곧 역할이므로 변을 키에 남긴다.
+ *  [L7] `source` 를 "여기 선언이 있나" 로만 판정해, 조상의 작성자 선언이 내려온 **상속값**을
+ *       브라우저 기본값과 같은 `ua` 로 묶었다. 색 `ua` 2,718 관측의 대부분은 브라우저가 고른
+ *       값이 아니라 상속된 작성자 색이다. 상속되는 속성에 한해 조상을 훑어 `inherited` 로
+ *       나눈다. 나누지 않으면 "아무도 고르지 않은 값" 이라는 정의가 거짓이 된다.
  *  [L4] **작성자가 선언한 값과 브라우저 기본값을 섞어 셌다.** `.expo-more` 는 `<button>` 인데
  *       padding 선언이 아예 없다. 그래서 Chrome 기본 `padding:1px 6px` 가 1px·6px 관측으로
  *       올라왔고, 그 둘이 "광학 보정 스케일" 의 최대 항목이 됐다. **아무도 고르지 않은 값을
@@ -122,13 +126,22 @@ const COLLECT=({SCALE})=>{
     'border-radius':['border-radius','border-top-left-radius','border-top-right-radius',
       'border-bottom-right-radius','border-bottom-left-radius'],
   };
+  // 상속되는 속성 — 여기 선언이 없어도 조상의 작성자 선언이 내려온 것일 수 있다.
+  const INHERITED=new Set(['color','font-weight','line-height','letter-spacing','font-size','font-family']);
   const sourceOf=(e,prop)=>{
-    const d=declaredProps(e);
     const names=[prop,...(SHORTHAND[prop]??[])];
     // 브라우저가 shorthand 를 longhand 로 펼쳐 열거하는 경우가 있어 접두 일치도 함께 본다
-    const pre=(set)=>[...set].some(n=>names.some(x=>n===x||n.startsWith(x+'-')));
-    if(names.some(n=>d.inline.has(n))||pre(d.inline)) return 'inline';
-    if(names.some(n=>d.author.has(n))||pre(d.author)) return 'author';
+    const hit=(set)=>names.some(n=>set.has(n))||[...set].some(n=>names.some(x=>n===x||n.startsWith(x+'-')));
+    const d=declaredProps(e);
+    if(hit(d.inline)) return 'inline';
+    if(hit(d.author)) return 'author';
+    if(INHERITED.has(prop)){
+      // 조상에 작성자 선언이 있으면 그건 브라우저가 고른 값이 아니라 **상속된 작성자 값**이다.
+      for(let x=e.parentElement;x;x=x.parentElement){
+        const dx=declaredProps(x);
+        if(hit(dx.inline)||hit(dx.author)) return 'inherited';
+      }
+    }
     return 'ua';
   };
 
@@ -248,7 +261,7 @@ const result={
       '슬롯':'요소의 첫 클래스(없으면 태그)',
       '카드':'가장 가까운 카드류 조상',
       '간격':'값만 세지 않고 부모 슬롯 > 자식 슬롯 관계와 변(top/right/bottom/left, row/col)을 함께 남긴다',
-      '출처':'모든 값에 source 를 붙인다 — author(스타일시트) · inline(요소 style) · ua(둘 다 없음 = 브라우저 기본). 아무도 고르지 않은 값이 토큰 후보로 올라가는 것을 막는다',
+      '출처':"모든 값에 source 를 붙인다 — author(이 요소에 걸린 스타일시트 규칙이 선언) · inline(요소 style 속성) · inherited(여기 선언은 없지만 조상의 작성자 선언이 내려온 것. 상속되는 속성에만 해당) · ua(아무도 선언하지 않은 브라우저 기본값). inherited 와 ua 를 나누지 않으면 '상속된 작성자 색' 을 '아무도 고르지 않은 값' 이라고 잘못 부르게 된다",
       '타이포':'키에 행간·자간을 포함한다. 버린 축은 미매핑 0 이라고 말할 수 없다',
       '컨트롤':'input 자신이 아니라 그것을 감싼 조작 상자를 컨트롤로 본다',
       'margin auto':'스타일시트 선언값이 auto 인 변은 뺀다. computed 픽셀은 레이아웃 결과라 간격 결정이 아니다' }},

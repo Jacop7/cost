@@ -24,7 +24,11 @@
  *  5. **브라우저 기본값(`source: 'ua'`)은 매핑 대상이 아니다.** 아무도 고르지 않은 값을
  *     토큰 후보로 올리면 안 된다. 빼되 개수를 남겨, 뺀 것이 얼마인지 보이게 한다.
  *  6. 행간·자간도 함께 센다. 버린 축은 "미매핑 0" 이라고 말할 수 없다.
- *  7. `status` 가 `PROVISIONAL` 이면 결과를 보고만 하고 종료 코드를 0 으로 둔다.
+ *  7. **열린 결정에 걸린 축의 값은 "매핑됨" 이 아니라 "잠정" 이다.** `open` 에 나열된
+ *     결정이 어느 축을 붙들고 있는지 읽어, 그 축의 값을 `provisionallyMapped` 로 따로 센다.
+ *     이걸 안 하면 열린 결정의 값을 잠정 primitive 로 넣어 두는 것만으로 미매핑이 0 이 되고,
+ *     **"미매핑 0" 이 "확정 0" 처럼 읽힌다.** 0 두 개는 다른 뜻이다.
+ *  8. `status` 가 `PROVISIONAL` 이면 결과를 보고만 하고 종료 코드를 0 으로 둔다.
  *     검수 확정 후 `CONFIRMED` 로 바꾸면 미매핑 1건에도 실패한다.
  *
  * 세는 단위
@@ -46,6 +50,19 @@ const audit = JSON.parse(auditBytes.toString('utf8'));
 const map = JSON.parse(mapBytes.toString('utf8'));
 
 const P = map.primitive, C = map.converge, O = map.componentOwned, D = map.defects;
+// tokens.ts 에 없는 값은 primitive 가 아니라 **확장 제안**이다 ([9]).
+// 목적지로 허용하되 따로 세어, 정본 확장 승인이 필요한 범위를 드러낸다.
+const X = map.proposedTokensExtension ?? {};
+const ext = { hits: {}, axes: new Set() };
+const inPrimitiveOrExt = (axis, value) => {
+  const prim = P[axis], pext = X[axis];
+  const has = (bag) => Array.isArray(bag) ? bag.includes(value)
+    : (bag && typeof bag === 'object') ? Object.values(bag).some(v => String(v) === String(value)) || Object.keys(bag).includes(String(value))
+    : false;
+  if (has(prim)) return 'primitive';
+  if (has(pext)) { ext.axes.add(axis); ext.hits[axis] = (ext.hits[axis] ?? 0) + 1; return 'extension'; }
+  return null;
+};
 const num = v => Number.parseFloat(v);
 const owned = (axis, v) => (O[axis] ?? []).some(x => String(x.value) === String(v));
 const nudgeUsed = new Set();
@@ -129,7 +146,8 @@ for (const [w, n] of weightValues) {
 }
 
 // --- 행간 · 자간 ---
-const lhAllowed = new Set(Object.keys(P.lineHeight ?? {}));
+const lhAllowed = new Set(Object.keys(X.lineHeight ?? P.lineHeight ?? {}));
+if (X.lineHeight) { ext.axes.add('lineHeight'); }
 for (const [v, n] of lineHeights) {
   if (String(D.unspecifiedLineHeight?.value) === v) continue;   // 정정 대상. 토큰 자리가 아니다
   if (Object.prototype.hasOwnProperty.call(C.lineHeight ?? {}, v)) {
@@ -138,7 +156,9 @@ for (const [v, n] of lineHeights) {
   }
   unmapped.lineHeight.push({ value: v, observations: n });
 }
-const lsAllowed = new Set(Object.values(P.letterSpacing ?? {}).map(x => x === 0 ? 'normal' : x + 'px'));
+const lsSrc = X.letterSpacing ?? P.letterSpacing ?? {};
+const lsAllowed = new Set(Object.values(lsSrc).filter(v => typeof v === 'number').map(x => x === 0 ? 'normal' : x + 'px'));
+if (X.letterSpacing) ext.axes.add('letterSpacing');
 for (const [v, n] of letterSpacings) if (!lsAllowed.has(v)) unmapped.letterSpacing.push({ value: v, observations: n });
 
 // --- 색 ---
@@ -163,12 +183,14 @@ for (const [v, n] of colorValues) {
 // --- 그림자 ---
 const shadowValues = new Map();
 for (const e of audit.shadow) shadowValues.set(e.key, (shadowValues.get(e.key) ?? 0) + e.n);
-const shadowAllowed = new Set(Object.values(P.shadow));
+const shadowAllowed = new Set([...Object.values(P.shadow ?? {}), ...Object.values(X.shadow ?? {})].filter(v => typeof v === 'string' && v.includes('px')));
+if (X.shadow) ext.axes.add('shadow');
 for (const [v, n] of shadowValues) {
   if (shadowAllowed.has(v)) continue;
   if (Object.prototype.hasOwnProperty.call(C.shadow, v)) {
     used.shadow.add(v);
-    if (!Object.prototype.hasOwnProperty.call(P.shadow, C.shadow[v])) failures.push(`shadow → ${C.shadow[v]} 는 primitive shadow 에 없다`);
+    const shadowRoles = { ...(P.shadow ?? {}), ...(X.shadow ?? {}) };
+    if (!Object.prototype.hasOwnProperty.call(shadowRoles, C.shadow[v])) failures.push(`shadow → ${C.shadow[v]} 는 primitive/확장 shadow 에 없다`);
     continue;
   }
   unmapped.shadow.push({ value: v, observations: n });
@@ -177,10 +199,12 @@ for (const [v, n] of shadowValues) {
 // --- 아이콘 · 컨트롤 높이 (역할 매핑이므로 '가장 가까운 단계' 로 판정하지 않고 목록만 낸다) ---
 const iconSizes = new Map();
 for (const e of audit.icon) { const s = e.key.split('|')[0].split('/')[0].replace('px', ''); iconSizes.set(s, (iconSizes.get(s) ?? 0) + e.n); }
+const iconAllowed = P.iconSize ?? X.iconSize ?? [];
+if (X.iconSize) ext.axes.add('iconSize');
 for (const [v, n] of iconSizes) {
-  if (P.iconSize.includes(num(v))) continue;
+  if (iconAllowed.includes(num(v))) continue;
   if (Object.prototype.hasOwnProperty.call(C.iconSize ?? {}, v)) {
-    if (!P.iconSize.includes(C.iconSize[v])) failures.push(`iconSize ${v} → ${C.iconSize[v]} 는 스케일에 없다`);
+    if (!iconAllowed.includes(C.iconSize[v])) failures.push(`iconSize ${v} → ${C.iconSize[v]} 는 스케일에 없다`);
     continue;
   }
   unmapped.icon.push({ value: v, observations: n });
@@ -196,13 +220,16 @@ const excludedHeights = new Set([
 for (const [v, n] of ctlHeights) {
   const x = num(v);
   if (excludedHeights.has(v)) continue;
-  if (P.controlHeight.includes(x) || (P.rowHeight ?? []).includes(x)) continue;
+  const ctlAllowed = P.controlHeight ?? X.controlHeight ?? [];
+  const rowAllowed = P.rowHeight ?? X.rowHeight ?? [];
+  if (X.controlHeight) ext.axes.add('controlHeight');
+  if (ctlAllowed.includes(x) || rowAllowed.includes(x)) continue;
   if (Object.prototype.hasOwnProperty.call(C.controlHeight ?? {}, v)) {
-    if (!P.controlHeight.includes(C.controlHeight[v])) failures.push(`controlHeight ${v} → ${C.controlHeight[v]} 는 스케일에 없다`);
+    if (!(P.controlHeight ?? X.controlHeight ?? []).includes(C.controlHeight[v])) failures.push(`controlHeight ${v} → ${C.controlHeight[v]} 는 스케일에 없다`);
     continue;
   }
   if (Object.prototype.hasOwnProperty.call(C.rowHeight ?? {}, v)) {
-    if (!(P.rowHeight ?? []).includes(C.rowHeight[v])) failures.push(`rowHeight ${v} → ${C.rowHeight[v]} 는 스케일에 없다`);
+    if (!(P.rowHeight ?? X.rowHeight ?? []).includes(C.rowHeight[v])) failures.push(`rowHeight ${v} → ${C.rowHeight[v]} 는 스케일에 없다`);
     continue;
   }
   if (owned('controlHeight', v) || owned('cardHeight', v)) continue;
@@ -226,6 +253,21 @@ for (const v of Object.keys(C.iconSize ?? {}))      if (!iconSizes.has(v))  stal
 for (const v of Object.keys(C.controlHeight ?? {})) if (!ctlHeights.has(v)) stale.push(`converge.controlHeight ${v} 는 측정에 없다`);
 for (const v of Object.keys(C.rowHeight ?? {}))     if (!ctlHeights.has(v)) stale.push(`converge.rowHeight ${v} 는 측정에 없다`);
 
+// 열린 결정이 붙들고 있는 축을 모은다 ([7])
+const openAxes = new Map();
+for (const [key, val] of Object.entries(map.open ?? {})) {
+  if (key === 'note' || typeof val !== 'object') continue;
+  for (const axis of (val['축'] ?? [])) {
+    if (!openAxes.has(axis)) openAxes.set(axis, []);
+    openAxes.get(axis).push(key);
+  }
+}
+const AXIS_COUNT = { color: colorValues.size, typeWeight: weightValues.size,
+  lineHeight: lineHeights.size, shadow: shadowValues.size, space: spaceValues.size,
+  radius: radiusValues.size, typeSize: sizeValues.size };
+const provisionallyMapped = [...openAxes].map(([axis, decisions]) => ({
+  axis, decisions, valueKinds: AXIS_COUNT[axis] ?? null }));
+
 const totalUnmapped = Object.values(unmapped).reduce((a, b) => a + b.length, 0);
 const result = {
   manifest: {
@@ -247,10 +289,14 @@ const result = {
     nudgeValuesUsed: [...nudgeUsed].sort((a, b) => num(a) - num(b)),
     uaExcluded: { spaceObservations: uaSpaceObs, spaceValues: [...uaSpaceValues].sort((a,b)=>num(a)-num(b)), colorObservations: uaColorObs },
     lineHeightKinds: lineHeights.size, letterSpacingKinds: letterSpacings.size,
+    provisionallyMapped,
+    tokensExtensionRequired: [...ext.axes].sort(),
+    confirmedAxes: ['space', 'radius', 'typeSize', 'icon', 'control']
+      .filter(a => !openAxes.has(a)),
     mapFailures: failures.length,
     staleMapEntries: stale.length,
   },
-  unmapped, failures, stale,
+  unmapped, failures, stale, openDecisions: map.open ?? {}, retiredDecisions: map.retired ?? {},
   lineHeight: [...lineHeights].sort((a, b) => b[1] - a[1]).map(([v, n]) => ({ value: v, observations: n })),
   letterSpacing: [...letterSpacings].sort((a, b) => b[1] - a[1]).map(([v, n]) => ({ value: v, observations: n })),
 };

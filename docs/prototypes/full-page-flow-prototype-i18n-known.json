@@ -1,0 +1,1557 @@
+{
+ "$schema": "i18n-atrisk-known/1",
+ "note": "현재 남아 있는 atRisk 의 정확한 잔여 목록이다. 무시 목록이 아니다. 게이트는 양방향으로 대조한다 — 목록에 없는 항목이 나오면 새 회귀이므로 FAIL, 목록에 있는데 재현되지 않으면 개선이므로 통과하되 지우라고 알린다. 유지되는 항목의 부족 폭(missing)이 커지면 악화이므로 FAIL. 개수만 비교하면 106건이 다른 106건으로 바뀌어도 통과한다.",
+ "boundTo": {
+  "target": "7d262c3e2cefc330e982b0777c5e612637a61ff6a016e2d6f96745d3784efdc1",
+  "designSyncId": "DS-20260904-017",
+  "script": "18dd7c64f2a8b9b695e6dcc215d50bfde715e2d683fb8d76fd4503249d6156e6"
+ },
+ "entries": {
+  "w130|screen:stock|card>row>row-main>row-title": {
+   "missing": 48.3,
+   "headroom": -84,
+   "nodes": 1
+  },
+  "w130|popup:stock_period@stock|card>row>row-main>row-title": {
+   "missing": 48.3,
+   "headroom": -84,
+   "nodes": 1
+  },
+  "w130|popup:stock_type@stock|card>row>row-main>row-title": {
+   "missing": 48.3,
+   "headroom": -84,
+   "nodes": 1
+  },
+  "w130|popup:stock_order@stock|card>row>row-main>row-title": {
+   "missing": 48.3,
+   "headroom": -84,
+   "nodes": 1
+  },
+  "w130|popup:stock_event_more@stock|card>row>row-main>row-title": {
+   "missing": 48.3,
+   "headroom": -84,
+   "nodes": 1
+  },
+  "w130|popup:stock_event_revert@stock|card>row>row-main>row-title": {
+   "missing": 48.3,
+   "headroom": -84,
+   "nodes": 1
+  },
+  "w130|screen:analytics|card>sales-menu-row>sales-menu-copy>sales-menu-sub": {
+   "missing": 26.8,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w130|screen:day|card>sales-menu-row>sales-menu-copy>sales-menu-sub": {
+   "missing": 26.8,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w130|popup:sales_period@analytics|card>sales-menu-row>sales-menu-copy>sales-menu-sub": {
+   "missing": 26.8,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w130|popup:sales_direct_period@analytics|card>sales-menu-row>sales-menu-copy>sales-menu-sub": {
+   "missing": 26.8,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w130|popup:sales_menu_profit@day|card>sales-menu-row>sales-menu-copy>sales-menu-sub": {
+   "missing": 26.8,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w130|screen:stock|card>row>row-main>row-sub": {
+   "missing": 29.7,
+   "headroom": -156,
+   "nodes": 1
+  },
+  "w130|popup:stock_period@stock|card>row>row-main>row-sub": {
+   "missing": 29.7,
+   "headroom": -156,
+   "nodes": 1
+  },
+  "w130|popup:stock_type@stock|card>row>row-main>row-sub": {
+   "missing": 29.7,
+   "headroom": -156,
+   "nodes": 1
+  },
+  "w130|popup:stock_order@stock|card>row>row-main>row-sub": {
+   "missing": 29.7,
+   "headroom": -156,
+   "nodes": 1
+  },
+  "w130|popup:stock_event_more@stock|card>row>row-main>row-sub": {
+   "missing": 29.7,
+   "headroom": -156,
+   "nodes": 1
+  },
+  "w130|popup:stock_event_revert@stock|card>row>row-main>row-sub": {
+   "missing": 29.7,
+   "headroom": -156,
+   "nodes": 1
+  },
+  "w130|screen:recipe_edit|card>row>row-main>row-title": {
+   "missing": 23.8,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w130|popup:recipe_category_pick@recipe_edit|card>row>row-main>row-title": {
+   "missing": 23.8,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w130|popup:recipe_ingredient_usage@recipe_edit|card>row>row-main>row-title": {
+   "missing": 23.8,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w130|screen:stock|condition>condition-actions>condition-filter>filter-text": {
+   "missing": 5,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w130|popup:stock_period@stock|condition>condition-actions>condition-filter>filter-text": {
+   "missing": 5,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w130|popup:stock_type@stock|condition>condition-actions>condition-filter>filter-text": {
+   "missing": 5,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w130|popup:stock_order@stock|condition>condition-actions>condition-filter>filter-text": {
+   "missing": 5,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w130|popup:stock_event_more@stock|condition>condition-actions>condition-filter>filter-text": {
+   "missing": 5,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w130|popup:stock_event_revert@stock|condition>condition-actions>condition-filter>filter-text": {
+   "missing": 5,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w130|screen:recipe_materials|expo-manage-row>expo-manage-copy>expo-pick-title>strong": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w130|screen:my_materials|expo-manage-row>expo-manage-copy>expo-pick-title>strong": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w130|popup:material_add@recipe_materials|expo-manage-row>expo-manage-copy>expo-pick-title>strong": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w130|popup:material_edit@recipe_materials|expo-manage-row>expo-manage-copy>expo-pick-title>strong": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w130|popup:material_category_pick@recipe_materials|expo-manage-row>expo-manage-copy>expo-pick-title>strong": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w130|popup:material_delete@recipe_materials|expo-manage-row>expo-manage-copy>expo-pick-title>strong": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w130|popup:material_add@my_materials|expo-manage-row>expo-manage-copy>expo-pick-title>strong": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w130|popup:material_edit@my_materials|expo-manage-row>expo-manage-copy>expo-pick-title>strong": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w130|popup:material_category_pick@my_materials|expo-manage-row>expo-manage-copy>expo-pick-title>strong": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w130|popup:material_delete@my_materials|expo-manage-row>expo-manage-copy>expo-pick-title>strong": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w130|popup:account_delete@my_account|overlay>sheet>div>confirm-copy": {
+   "missing": 6.2,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w130|screen:material|detail-list>detail-list-row>detail-list-copy>strong": {
+   "missing": 6.1,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w130|popup:option_delete@options|overlay>sheet>div>confirm-copy": {
+   "missing": 6.1,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w130|popup:sales_material_detail@material|detail-list>detail-list-row>detail-list-copy>strong": {
+   "missing": 6.1,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w130|screen:extra|detail-list>detail-list-row>detail-list-copy>small": {
+   "missing": 6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w130|popup:sales_extra_detail@extra|detail-list>detail-list-row>detail-list-copy>small": {
+   "missing": 6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w130|screen:recipe_detail|content>card>callout": {
+   "missing": 3.1,
+   "headroom": 0,
+   "nodes": 2
+  },
+  "w130|popup:recipe_memo@recipe_detail|content>card>callout": {
+   "missing": 3.1,
+   "headroom": 0,
+   "nodes": 2
+  },
+  "w130|popup:recipe_stop@recipe_detail|content>card>callout": {
+   "missing": 3.1,
+   "headroom": 0,
+   "nodes": 2
+  },
+  "w130|screen:recipe_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small": {
+   "missing": 0.9,
+   "headroom": 0,
+   "nodes": 2
+  },
+  "w130|screen:my_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small": {
+   "missing": 0.9,
+   "headroom": 0,
+   "nodes": 2
+  },
+  "w130|popup:material_add@recipe_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small": {
+   "missing": 0.9,
+   "headroom": 0,
+   "nodes": 2
+  },
+  "w130|popup:material_edit@recipe_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small": {
+   "missing": 0.9,
+   "headroom": 0,
+   "nodes": 2
+  },
+  "w130|popup:material_category_pick@recipe_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small": {
+   "missing": 0.9,
+   "headroom": 0,
+   "nodes": 2
+  },
+  "w130|popup:material_delete@recipe_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small": {
+   "missing": 0.9,
+   "headroom": 0,
+   "nodes": 2
+  },
+  "w130|popup:material_add@my_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small": {
+   "missing": 0.9,
+   "headroom": 0,
+   "nodes": 2
+  },
+  "w130|popup:material_edit@my_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small": {
+   "missing": 0.9,
+   "headroom": 0,
+   "nodes": 2
+  },
+  "w130|popup:material_category_pick@my_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small": {
+   "missing": 0.9,
+   "headroom": 0,
+   "nodes": 2
+  },
+  "w130|popup:material_delete@my_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small": {
+   "missing": 0.9,
+   "headroom": 0,
+   "nodes": 2
+  },
+  "w150|screen:day_full|header>title": {
+   "missing": 66.1,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:recipe_edit|card>row>row-main>row-title": {
+   "missing": 41.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:recipe_category_pick@recipe_edit|card>row>row-main>row-title": {
+   "missing": 41.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:recipe_ingredient_usage@recipe_edit|card>row>row-main>row-title": {
+   "missing": 41.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:purchase|card>row>row-main>row-sub": {
+   "missing": 37.1,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:purchase_period@purchase|card>row>row-main>row-sub": {
+   "missing": 37.1,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:stock|card>row>row-main>row-sub": {
+   "missing": 28.5,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:stock_period@stock|card>row>row-main>row-sub": {
+   "missing": 28.5,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:stock_type@stock|card>row>row-main>row-sub": {
+   "missing": 28.5,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:stock_order@stock|card>row>row-main>row-sub": {
+   "missing": 28.5,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:stock_event_more@stock|card>row>row-main>row-sub": {
+   "missing": 28.5,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:stock_event_revert@stock|card>row>row-main>row-sub": {
+   "missing": 28.5,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:recipe_material_search|expo-pick-card>expo-pick-copy>expo-pick-title>strong": {
+   "missing": 30.3,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:recipe_material_usage@recipe_material_search|expo-pick-card>expo-pick-copy>expo-pick-title>strong": {
+   "missing": 30.3,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:options|row>row-main>row-title>option-link-name": {
+   "missing": 27.7,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:option_list@options|row>row-main>row-title>option-link-name": {
+   "missing": 27.7,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:option_card_menu@options|row>row-main>row-title>option-link-name": {
+   "missing": 27.7,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:stock|card>row>row-main>row-title": {
+   "missing": 26.9,
+   "headroom": -156,
+   "nodes": 1
+  },
+  "w150|popup:stock_period@stock|card>row>row-main>row-title": {
+   "missing": 26.9,
+   "headroom": -156,
+   "nodes": 1
+  },
+  "w150|popup:stock_type@stock|card>row>row-main>row-title": {
+   "missing": 26.9,
+   "headroom": -156,
+   "nodes": 1
+  },
+  "w150|popup:stock_order@stock|card>row>row-main>row-title": {
+   "missing": 26.9,
+   "headroom": -156,
+   "nodes": 1
+  },
+  "w150|popup:stock_event_more@stock|card>row>row-main>row-title": {
+   "missing": 26.9,
+   "headroom": -156,
+   "nodes": 1
+  },
+  "w150|popup:stock_event_revert@stock|card>row>row-main>row-title": {
+   "missing": 26.9,
+   "headroom": -156,
+   "nodes": 1
+  },
+  "w150|screen:stock|condition>condition-actions>condition-filter>filter-text": {
+   "missing": 9.9,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:stock_period@stock|condition>condition-actions>condition-filter>filter-text": {
+   "missing": 9.9,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:stock_type@stock|condition>condition-actions>condition-filter>filter-text": {
+   "missing": 9.9,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:stock_order@stock|condition>condition-actions>condition-filter>filter-text": {
+   "missing": 9.9,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:stock_event_more@stock|condition>condition-actions>condition-filter>filter-text": {
+   "missing": 9.9,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:stock_event_revert@stock|condition>condition-actions>condition-filter>filter-text": {
+   "missing": 9.9,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:ingredient_main|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:ingredient_add|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:ingredient_detail|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:ingredient_edit_menu|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:ingredient_edit|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:stock|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:stock_change|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:memo_edit|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:purchase|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:ingredient_changes|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:options|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:ingredient_delete|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:recipe_main|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:recipe_detail|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:recipe_price_sim|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:recipe_add|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:recipe_edit|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:recipe_ingredient_search|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:recipe_material_search|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:recipe_materials|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:recipe_category|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:recipe_material_category|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:recipe_changes|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:profit|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:fixed_average|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:fixed_actual|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:order_main|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:order_detail|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:order_receive|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:order_direct|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:sales_main|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:analytics|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:day|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:day_full|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:revenue|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:menu|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:channel|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:material|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:extra|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:waste|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:sales_fixed|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:expense|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:tax|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:stock_check|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:sales_past|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:my_main|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:my_fixed|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:my_fixed_edit|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:my_settings|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:my_ingredient_categories|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:my_recipe_categories|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:my_material_categories|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:my_materials|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:my_tax|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:my_language|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:my_units|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:my_vendors|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:my_channels|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:my_hours|card>setting-row>setting-copy>small": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:my_hours|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:my_notifications|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:my_account|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:sort@ingredient_main|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:ingredient_option_filled@ingredient_detail|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:ingredient_option_empty@ingredient_detail|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:add_category@ingredient_add|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:add_unit@ingredient_add|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:edit_category@ingredient_edit|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:edit_unit@ingredient_edit|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:stock_inbound@stock_change|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:stock_deduct@stock_change|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:stock_discard@stock_change|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:stock_option@stock_change|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:stock_confirm@stock_change|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:stock_error@stock_change|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:option_list@options|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:option_add@options|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:option_edit@options|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:option_vendor@options|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:option_vendor_new@options|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:option_unit@options|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:option_card_menu@options|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:option_more@options|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:option_delete@options|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:stock_period@stock|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:stock_type@stock|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:stock_order@stock|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:stock_event_more@stock|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:stock_event_revert@stock|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:purchase_period@purchase|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:ingredient_change_detail@ingredient_changes|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:recipe_sort@recipe_main|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:recipe_status@recipe_main|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:recipe_target@recipe_main|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:recipe_memo@recipe_detail|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:recipe_stop@recipe_detail|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:recipe_category_pick@recipe_add|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:recipe_category_pick@recipe_edit|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:recipe_ingredient_usage@recipe_edit|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:recipe_ingredient_usage@recipe_ingredient_search|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:recipe_material_usage@recipe_material_search|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:material_add@recipe_materials|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:material_edit@recipe_materials|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:material_category_pick@recipe_materials|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:material_delete@recipe_materials|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:category_add@recipe_category|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:category_edit@recipe_category|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:category_delete@recipe_category|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:category_add@recipe_material_category|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:category_edit@recipe_material_category|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:category_delete@recipe_material_category|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:recipe_change_detail@recipe_changes|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:profit_detail@profit|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:fixed_period@fixed_average|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:fixed_period@fixed_actual|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:fixed_channel@fixed_actual|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:fixed_item_add@fixed_actual|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:order_candidates@order_main|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:order_waiting@order_main|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:order_received@order_main|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:order_order@order_main|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:order_receive@order_main|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:order_cancel@order_main|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:order_revert@order_main|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:order_price_spike@order_main|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:order_order@order_detail|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:order_receive@order_receive|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:order_ingredient@order_direct|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:order_vendor@order_direct|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:sales_state@sales_main|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:sales_break@sales_main|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:sales_close@sales_main|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:sales_sort@sales_main|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:sales_qty@sales_main|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:sales_shortage@sales_main|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:sales_etc@sales_main|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:sales_expense@sales_main|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:sales_period@analytics|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:sales_direct_period@analytics|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:sales_menu_profit@day|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:sales_revenue_all@revenue|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:sales_material_detail@material|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:sales_extra_detail@extra|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:sales_fixed_expand@sales_fixed|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:expense_add@expense|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:expense_delete@expense|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:past_sale_qty@sales_past|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:past_etc@sales_past|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:past_expense@sales_past|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:past_save@sales_past|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:stock_check_all@stock_check|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:fixed_period@my_fixed|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:fixed_period@my_fixed_edit|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:fixed_channel@my_fixed_edit|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:fixed_item_add@my_fixed_edit|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:category_add@my_ingredient_categories|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:category_edit@my_ingredient_categories|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:category_delete@my_ingredient_categories|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:category_add@my_recipe_categories|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:category_edit@my_recipe_categories|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:category_delete@my_recipe_categories|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:category_add@my_material_categories|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:category_edit@my_material_categories|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:category_delete@my_material_categories|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:material_add@my_materials|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:material_edit@my_materials|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:material_category_pick@my_materials|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:material_delete@my_materials|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:tax_country@my_tax|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:tax_item_add@my_tax|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:tax_saved@my_tax|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:language_preview@my_language|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:vendor_add@my_vendors|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:vendor_edit@my_vendors|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:vendor_delete@my_vendors|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:channel_edit@my_channels|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:channel_disable@my_channels|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:hours_start@my_hours|card>setting-row>setting-copy>small": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:hours_start@my_hours|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:hours_end@my_hours|card>setting-row>setting-copy>small": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:hours_end@my_hours|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:hours_break_start@my_hours|card>setting-row>setting-copy>small": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:hours_break_start@my_hours|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:hours_break_end@my_hours|card>setting-row>setting-copy>small": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:hours_break_end@my_hours|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:hours_timezone@my_hours|card>setting-row>setting-copy>small": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:hours_timezone@my_hours|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:account_delete@my_account|app-tabs>app-tab>app-tab-label": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:fixed_average|expo-rows>expo-row>expo-row-copy>strong": {
+   "missing": 9.1,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:fixed_actual|expo-rows>expo-row>expo-row-copy>strong": {
+   "missing": 9.1,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:my_fixed|expo-rows>expo-row>expo-row-copy>strong": {
+   "missing": 9.1,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:my_fixed_edit|expo-rows>expo-row>expo-row-copy>strong": {
+   "missing": 9.1,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:fixed_period@fixed_average|expo-rows>expo-row>expo-row-copy>strong": {
+   "missing": 9.1,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:fixed_period@fixed_actual|expo-rows>expo-row>expo-row-copy>strong": {
+   "missing": 9.1,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:fixed_channel@fixed_actual|expo-rows>expo-row>expo-row-copy>strong": {
+   "missing": 9.1,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:fixed_item_add@fixed_actual|expo-rows>expo-row>expo-row-copy>strong": {
+   "missing": 9.1,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:sales_shortage@sales_main|overlay>sheet>div>sales-shortage-copy": {
+   "missing": 9.1,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:fixed_period@my_fixed|expo-rows>expo-row>expo-row-copy>strong": {
+   "missing": 9.1,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:fixed_period@my_fixed_edit|expo-rows>expo-row>expo-row-copy>strong": {
+   "missing": 9.1,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:fixed_channel@my_fixed_edit|expo-rows>expo-row>expo-row-copy>strong": {
+   "missing": 9.1,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:fixed_item_add@my_fixed_edit|expo-rows>expo-row>expo-row-copy>strong": {
+   "missing": 9.1,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:stock_option@stock_change|div>stock-option-actions>stock-option-action>span": {
+   "missing": 9,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:my_account|content>card>p": {
+   "missing": 8.4,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:account_delete@my_account|content>card>p": {
+   "missing": 8.4,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:account_delete@my_account|overlay>sheet>div>confirm-copy": {
+   "missing": 8.2,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:my_notifications|card>choice-card>choice-card-copy>small": {
+   "missing": 7.7,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:language_preview@my_language|expo-rows>expo-row>expo-row-copy>small": {
+   "missing": 7.3,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:recipe_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small": {
+   "missing": 7,
+   "headroom": 0,
+   "nodes": 2
+  },
+  "w150|screen:my_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small": {
+   "missing": 7,
+   "headroom": 0,
+   "nodes": 2
+  },
+  "w150|popup:material_add@recipe_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small": {
+   "missing": 7,
+   "headroom": 0,
+   "nodes": 2
+  },
+  "w150|popup:material_edit@recipe_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small": {
+   "missing": 7,
+   "headroom": 0,
+   "nodes": 2
+  },
+  "w150|popup:material_category_pick@recipe_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small": {
+   "missing": 7,
+   "headroom": 0,
+   "nodes": 2
+  },
+  "w150|popup:material_delete@recipe_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small": {
+   "missing": 7,
+   "headroom": 0,
+   "nodes": 2
+  },
+  "w150|popup:material_add@my_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small": {
+   "missing": 7,
+   "headroom": 0,
+   "nodes": 2
+  },
+  "w150|popup:material_edit@my_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small": {
+   "missing": 7,
+   "headroom": 0,
+   "nodes": 2
+  },
+  "w150|popup:material_category_pick@my_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small": {
+   "missing": 7,
+   "headroom": 0,
+   "nodes": 2
+  },
+  "w150|popup:material_delete@my_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small": {
+   "missing": 7,
+   "headroom": 0,
+   "nodes": 2
+  },
+  "w150|screen:ingredient_detail|content>card>recent-change>expo-status": {
+   "missing": 7,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:ingredient_option_filled@ingredient_detail|content>card>recent-change>expo-status": {
+   "missing": 7,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:ingredient_option_empty@ingredient_detail|content>card>recent-change>expo-status": {
+   "missing": 7,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:my_language|card>choice-card>choice-card-copy>small": {
+   "missing": 6.5,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|popup:language_preview@my_language|card>choice-card>choice-card-copy>small": {
+   "missing": 6.5,
+   "headroom": 0,
+   "nodes": 1
+  },
+  "w150|screen:recipe_detail|content>card>callout": {
+   "missing": 6,
+   "headroom": 0,
+   "nodes": 2
+  },
+  "w150|popup:recipe_memo@recipe_detail|content>card>callout": {
+   "missing": 6,
+   "headroom": 0,
+   "nodes": 2
+  },
+  "w150|popup:recipe_stop@recipe_detail|content>card>callout": {
+   "missing": 6,
+   "headroom": 0,
+   "nodes": 2
+  }
+ },
+ "count": 309
+}

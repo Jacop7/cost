@@ -1,15 +1,15 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-04T18:14:56.236Z",
+  "generatedAt": "2026-09-04T18:51:16.785Z",
   "schemaVersion": 1,
   "script": {
    "name": "full-page-flow-prototype-design-audit.mjs",
-   "sha256": "766fb963e22d721da70152c766b39b908481691a5f18a03b4a1f7e70ffcba531"
+   "sha256": "7ed8ee499533cdc2dc657fa952776dab46339d044e14de16ec1565cb53a8feb4"
   },
   "target": {
    "path": "0_full-page-flow-prototype-ui-applied.html",
-   "sha256": "4379cf6eed97962031d376e946ad94ca81361170df4ec0cd7315147be9749929",
-   "designSyncId": "DS-20260904-016"
+   "sha256": "7d262c3e2cefc330e982b0777c5e612637a61ff6a016e2d6f96745d3784efdc1",
+   "designSyncId": "DS-20260904-017"
   },
   "runner": {
    "node": "v22.22.2",
@@ -28,7 +28,7 @@
    "슬롯": "요소의 첫 클래스(없으면 태그)",
    "카드": "가장 가까운 카드류 조상",
    "간격": "값만 세지 않고 부모 슬롯 > 자식 슬롯 관계와 변(top/right/bottom/left, row/col)을 함께 남긴다",
-   "출처": "모든 값에 source 를 붙인다 — author(스타일시트) · inline(요소 style) · ua(둘 다 없음 = 브라우저 기본). 아무도 고르지 않은 값이 토큰 후보로 올라가는 것을 막는다",
+   "출처": "모든 값에 source 를 붙인다 — author(이 요소에 걸린 스타일시트 규칙이 선언) · inline(요소 style 속성) · inherited(여기 선언은 없지만 조상의 작성자 선언이 내려온 것. 상속되는 속성에만 해당) · ua(아무도 선언하지 않은 브라우저 기본값). inherited 와 ua 를 나누지 않으면 '상속된 작성자 색' 을 '아무도 고르지 않은 값' 이라고 잘못 부르게 된다",
    "타이포": "키에 행간·자간을 포함한다. 버린 축은 미매핑 0 이라고 말할 수 없다",
    "컨트롤": "input 자신이 아니라 그것을 감싼 조작 상자를 컨트롤로 본다",
    "margin auto": "스타일시트 선언값이 auto 인 변은 뺀다. computed 픽셀은 레이아웃 결과라 간격 결정이 아니다"
@@ -2813,7 +2813,7 @@
  ],
  "color": [
   {
-   "key": "text|rgb(25, 31, 40)|ua",
+   "key": "text|rgb(25, 31, 40)|inherited",
    "n": 2216,
    "ex": [
     "expo-card-top.strong",
@@ -2885,7 +2885,7 @@
    ]
   },
   {
-   "key": "text|rgb(78, 89, 104)|ua",
+   "key": "text|rgb(78, 89, 104)|inherited",
    "n": 209,
    "ex": [
     "card.span",
@@ -2953,7 +2953,7 @@
    ]
   },
   {
-   "key": "text|rgb(139, 149, 161)|ua",
+   "key": "text|rgb(139, 149, 161)|inherited",
    "n": 90,
    "ex": [
     "expo-card-foot.span",
@@ -2962,7 +2962,7 @@
    ]
   },
   {
-   "key": "text|rgb(255, 255, 255)|ua",
+   "key": "text|rgb(255, 255, 255)|inherited",
    "n": 90,
    "ex": [
     "sales-hero.small",
@@ -2998,7 +2998,7 @@
    ]
   },
   {
-   "key": "text|rgb(51, 61, 75)|ua",
+   "key": "text|rgb(51, 61, 75)|inherited",
    "n": 50,
    "ex": [
     "(no-card).filter-text",
@@ -3034,7 +3034,7 @@
    ]
   },
   {
-   "key": "text|rgb(0, 0, 0)|ua",
+   "key": "text|rgb(0, 0, 0)|inherited",
    "n": 30,
    "ex": [
     "tax-choice.input"
@@ -3050,7 +3050,7 @@
    ]
   },
   {
-   "key": "text|rgb(49, 130, 246)|ua",
+   "key": "text|rgb(49, 130, 246)|inherited",
    "n": 27,
    "ex": [
     "edit-form.ingredient-note-icon",
@@ -3138,7 +3138,7 @@
    ]
   },
   {
-   "key": "text|rgb(240, 68, 82)|ua",
+   "key": "text|rgb(240, 68, 82)|inherited",
    "n": 6,
    "ex": [
     "expo-row-value.span"
