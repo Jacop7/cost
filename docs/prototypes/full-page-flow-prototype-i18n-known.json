@@ -2,8 +2,8 @@
  "$schema": "i18n-atrisk-known/1",
  "note": "현재 남아 있는 atRisk 의 정확한 잔여 목록. 키는 pass|target|selector|hostIndex 다 — selector 만 쓰면 같은 목록의 여러 행이 한 키로 뭉개져 다섯 행이 나빠져도 마지막 하나만 그대로면 통과한다. 게이트는 양방향 + 크기로 대조한다.",
  "boundTo": {
-  "target": "b7f22e44e09555c4f55a6e22d84b97e172ad70d555bae077d0da5433021d4dfc",
-  "designSyncId": "DS-20260904-020",
+  "target": "f358ae52b5a7f8ffa8c762632ade3f4dadb9fbfbd5623eb2d60be095c571c1bd",
+  "designSyncId": "DS-20260904-021",
   "script": "469c24b249741b99ea45d9c568f9ad057b3e3a2cab67040534f9fde54b40feaf"
  },
  "entries": {

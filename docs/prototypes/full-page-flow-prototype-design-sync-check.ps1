@@ -257,6 +257,21 @@ else {
     foreach ($k in $allowed.Keys) {
       if (-not $observed.ContainsKey($k)) { Add-Failure "$knownName : 재현되지 않는 예외 $($allowed[$k]) — $k. 해결됐다면 목록에서 지운다" }
     }
+    # 존재 여부만 대조하면 5px 넘침이 50px 이 돼도 같은 1건이라 통과한다.
+    # 항목마다 크기 상한(maxPx)을 두고 실측이 그보다 크면 악화로 본다 ([L11]).
+    foreach ($d in $known.knownDefects) {
+      if ($null -eq $d.maxPx) { Add-Failure "$knownName : $($d.id) 에 maxPx 가 없음 - 크기 없이는 악화를 못 잡는다"; continue }
+      $ps = $s.passes.($d.pass)
+      if ($null -eq $ps) { continue }
+      $actual = $null
+      if ($d.metric -eq 'phoneOverflow')         { $actual = [double]$ps.phoneOverflowMaxPx }
+      elseif ($d.metric -eq 'documentOverflow')  { $actual = [double]$ps.documentOverflowMaxPx }
+      elseif ($d.metric -eq 'viewportEscapees')  { $actual = [double]$ps.escapeeMaxPx }
+      if ($null -eq $actual) { continue }
+      if ($actual -gt ([double]$d.maxPx + 0.5)) {
+        Add-Failure "$auditName : $($d.id) 악화 - $($d.pass)/$($d.metric) 실측 $actual px 이 상한 $($d.maxPx) px 초과"
+      }
+    }
   }
 }
 
@@ -414,12 +429,22 @@ else {
       Add-Failure "$knownI18nName : 결속된 적용본 SHA 가 현재 감사와 다름. 재생성 필요"
     }
     $observed = @{}
+    $rawRows = 0
     foreach ($passId in @('w130', 'w150')) {
       foreach ($r in $iAudit.summary.stretch.$passId.atRisk) {
+        $rawRows++
         # 키에 host 색인을 넣어야 유일해진다. selector 만 쓰면 같은 목록의 여러 행이
         # 한 키로 뭉개져, 다섯 행이 나빠져도 마지막 하나만 그대로면 통과한다 ([L13]).
-        $observed["$passId|$($r.target)|$($r.sel)|$($r.hostIndex)"] = [double]$r.missing
+        $key = "$passId|$($r.target)|$($r.sel)|$($r.hostIndex)"
+        if ($observed.ContainsKey($key)) {
+          Add-Failure "$i18nName : atRisk 키 중복 - $key. 유일하지 않은 키는 조용히 행을 지운다"
+        }
+        $observed[$key] = [double]$r.missing
       }
+    }
+    # 원시 행 수와 키 수가 같아야 한다. 다르면 어딘가에서 행이 사라진 것이다.
+    if ($rawRows -ne $observed.Count) {
+      Add-Failure "$i18nName : atRisk 원시 행 $rawRows 과 고유 키 $($observed.Count) 불일치 - 덮어써진 행이 있다"
     }
     $knownKeys = @{}
     foreach ($prop in $knownI18n.entries.PSObject.Properties) { $knownKeys[$prop.Name] = [double]$prop.Value.missing }

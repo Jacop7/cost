@@ -259,7 +259,7 @@ const COLLECT=({SCALE})=>{
 };
 
 const SCALE=['22px','20px','18px','16px','14px','13px'];
-const agg={typo:{},color:{},space:{},radius:{},shadow:{},control:{},touch:{},icon:{},contrast:{}};
+const agg={typo:{},color:{},space:{},radius:{},shadow:{},control:{},touch:{},icon:{},contrast:{},contrastRole:{}};
 const push=(bucket,key,extra)=>{ const b=(agg[bucket][key]??={n:0,ex:new Set()}); b.n++;
   if(extra&&b.ex.size<3) b.ex.add(extra); };
 
@@ -278,8 +278,14 @@ for(const t of targets){
   r.control.forEach(x=>push('control',`${x.tag}|h${x.h}|${x.radius}|${x.size}/${x.weight}${x.innerTag?'|shell of '+x.innerTag:''}`,`${x.card}.${x.slot} "${x.label}"`));
   r.touch.forEach(x=>push('touch',`${x.card}.${x.slot}|${x.w}x${x.h}`,x.label));
   r.icon.forEach(x=>push('icon',`${x.size}/${x.weight}|${x.card}.${x.slot}`,x.glyph));
-  r.contrast.forEach(x=>push('contrast',`${x.fg} on ${x.bg}|${x.ratio}|${x.large?'large':'normal'}|${x.passAA?'AA':'FAIL'}`,
-    `${x.card}.${x.slot} ${x.size}/${x.weight} "${x.sample}"`));
+  r.contrast.forEach(x=>{
+    push('contrast',`${x.fg} on ${x.bg}|${x.ratio}|${x.large?'large':'normal'}|${x.passAA?'AA':'FAIL'}`,
+      `${x.card}.${x.slot} ${x.size}/${x.weight} "${x.sample}"`);
+    // 역할별로도 모은다. "이 색을 어떻게 고칠까" 가 아니라 **"이 자리가 대비 요건 대상인가"**
+    // 를 물으려면 색이 아니라 슬롯으로 봐야 한다. WCAG 1.4.3 은 비활성 컴포넌트와
+    // placeholder 를 요건에서 제외하므로, 같은 색이라도 자리에 따라 판단이 갈린다.
+    push('contrastRole',`${x.card}.${x.slot}|${x.fg}|${x.bg}|${x.ratio}|${x.passAA?'AA':'FAIL'}`,x.sample);
+  });
 }
 await browser.close();
 
@@ -299,12 +305,14 @@ const result={
       '출처':"모든 값에 source 를 붙인다 — author(이 요소에 걸린 스타일시트 규칙이 선언) · inline(요소 style 속성) · inherited(여기 선언은 없지만 조상의 작성자 선언이 내려온 것. 상속되는 속성에만 해당) · ua(아무도 선언하지 않은 브라우저 기본값). inherited 와 ua 를 나누지 않으면 '상속된 작성자 색' 을 '아무도 고르지 않은 값' 이라고 잘못 부르게 된다",
       '타이포':'키에 행간·자간을 포함한다. 버린 축은 미매핑 0 이라고 말할 수 없다',
       '컨트롤':'input 자신이 아니라 그것을 감싼 조작 상자를 컨트롤로 본다',
+      '대비 역할':'색 조합만이 아니라 **카드.슬롯 단위로도** 모은다. WCAG 1.4.3 은 비활성 컴포넌트와 placeholder 를 대비 요건에서 제외하므로, 같은 색이라도 자리에 따라 판단이 갈린다. 색을 고칠지 역할을 나눌지는 슬롯을 봐야 정해진다',
       '대비':'WCAG 2.x 상대 휘도로 대비비를 낸다. 배경은 투명하지 않은 가장 가까운 조상의 배경색이고, 반투명이 섞이면 알파 합성한다. 24px 이상 또는 18.66px 이상&700 이상은 큰 글자로 보아 기준을 3:1 로, 나머지는 4.5:1 로 적용한다',
       'margin auto':'스타일시트 선언값이 auto 인 변은 뺀다. computed 픽셀은 레이아웃 결과라 간격 결정이 아니다' }},
   summary:Object.fromEntries(Object.keys(agg).map(b=>[b,{종류:Object.keys(agg[b]).length,
     합계:Object.values(agg[b]).reduce((a,v)=>a+v.n,0)}])),
   typo:dump('typo'),color:dump('color'),space:dump('space'),radius:dump('radius'),contrast:dump('contrast'),
   shadow:dump('shadow'),control:dump('control'),touch:dump('touch'),icon:dump('icon'),
+  contrastRole:dump('contrastRole'),
 };
 writeFileSync(outPath,JSON.stringify(result,null,1)+'\n');
 console.log(JSON.stringify({manifest:result.manifest,summary:result.summary},null,1));
