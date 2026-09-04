@@ -416,7 +416,9 @@ else {
     $observed = @{}
     foreach ($passId in @('w130', 'w150')) {
       foreach ($r in $iAudit.summary.stretch.$passId.atRisk) {
-        $observed["$passId|$($r.target)|$($r.sel)"] = [double]$r.missing
+        # 키에 host 색인을 넣어야 유일해진다. selector 만 쓰면 같은 목록의 여러 행이
+        # 한 키로 뭉개져, 다섯 행이 나빠져도 마지막 하나만 그대로면 통과한다 ([L13]).
+        $observed["$passId|$($r.target)|$($r.sel)|$($r.hostIndex)"] = [double]$r.missing
       }
     }
     $knownKeys = @{}
