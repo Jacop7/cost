@@ -1,10 +1,10 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-04T21:39:45.476Z",
+  "generatedAt": "2026-09-04T21:59:02.286Z",
   "schemaVersion": 1,
   "script": {
    "name": "full-page-flow-prototype-app-map-check.mjs",
-   "sha256": "cc1b985b545fe8fe19e700d4e62507a5ed8301b2710218a9b0c5fa4e79d68835"
+   "sha256": "a47c4b800e75feb207c3865f1a3619340ed09105b94b1cd63e717792c46ad689"
   },
   "source": {
    "audit": {
@@ -14,7 +14,7 @@
    },
    "appMap": {
     "path": "full-page-flow-prototype-app-token-map.json",
-    "sha256": "d8da3eebbdfd3c16283d12af73eaa002af0fd04e68eb5781d2eddf467cf8ecae"
+    "sha256": "59767cf7d5a387831f2efd45f002e2a59354037a4276390fe39676d0f9f34663"
    },
    "prototypeMap": {
     "path": "full-page-flow-prototype-token-map.json",
@@ -45,14 +45,14 @@
   "multiMatchPairs": {
    "R-SP-TABBAR-INSET > R-SP-EDGE-INSET": 1,
    "R-TY-SIZE-PRIM > R-TY-SIZE-OFFSCALE": 718,
-   "R-SP-CONVERGE-GROW-H > R-SP-CONVERGE-UNDOCUMENTED": 150,
+   "R-SP-CONVERGE-GROW-H > R-SP-CONVERGE-UNDOCUMENTED": 106,
    "R-SP-CONVERGE-SHRINK > R-SP-CONVERGE-UNDOCUMENTED": 558,
    "R-TY-SIZE-15 > R-TY-SIZE-CONVERGE > R-TY-SIZE-OFFSCALE": 67,
    "R-TY-SIZE-CONVERGE > R-TY-SIZE-OFFSCALE": 33,
    "R-SZ-FLEX-RESET > R-SZ-MINWIDTH": 64,
+   "R-SP-CONVERGE-GROW-V > R-SP-CONVERGE-UNDOCUMENTED": 94,
    "R-SP-SCROLL-BOTTOM > R-SP-EMPTY-STATE": 49,
    "R-SP-INLINE-TIGHT > R-SP-EDGE-INSET": 10,
-   "R-SP-CONVERGE-GROW-V > R-SP-CONVERGE-UNDOCUMENTED": 50,
    "R-SP-CAPTION-GAP > R-SP-EDGE-INSET": 68,
    "R-SZ-HAIRLINE > R-SZ-CONTROL-BOX": 6,
    "R-SZ-FLEX-RESET > R-SZ-HAIRLINE > R-SZ-CONTROL-BOX": 2,
@@ -173,7 +173,7 @@
    {
     "decl": "spacing/marginBottom:7 @ apps/mobile/src/components/history/HistoryLayout.tsx:108",
     "rules": [
-     "R-SP-CONVERGE-GROW-H",
+     "R-SP-CONVERGE-GROW-V",
      "R-SP-CONVERGE-UNDOCUMENTED"
     ]
    },
@@ -222,7 +222,7 @@
    {
     "decl": "spacing/gap:6 @ apps/mobile/src/components/kit/Button.tsx:56",
     "rules": [
-     "R-SP-CONVERGE-GROW-H",
+     "R-SP-CONVERGE-GROW-V",
      "R-SP-CONVERGE-UNDOCUMENTED"
     ]
    },
@@ -398,7 +398,7 @@
    {
     "decl": "spacing/marginBottom:6 @ apps/mobile/src/components/kit/Sheet.tsx:79",
     "rules": [
-     "R-SP-CONVERGE-GROW-H",
+     "R-SP-CONVERGE-GROW-V",
      "R-SP-CONVERGE-UNDOCUMENTED"
     ]
    },
@@ -417,6 +417,91 @@
     ]
    }
   ],
+  "binMovementLedger": {
+   "previousMap": "prev-app-token-map.json",
+   "moves": {
+    "pendingApproval → defect": {
+     "count": 6,
+     "rules": {
+      "R-SZ-EXTENSION → R-SZ-SPACER": 6
+     }
+    },
+    "componentOwned → pendingApproval": {
+     "count": 30,
+     "rules": {
+      "R-SP-OPTICAL → R-SP-INLINE-TIGHT": 10,
+      "R-CL-SCRIM → R-CL-SHADOW": 3,
+      "R-SP-OPTICAL → R-SP-SCROLL-TOP": 17
+     }
+    },
+    "defect → pendingApproval": {
+     "count": 119,
+     "rules": {
+      "R-SP-CONVERGE → R-SP-CONVERGE-UNDOCUMENTED": 119
+     }
+    },
+    "pendingApproval → componentOwned": {
+     "count": 55,
+     "rules": {
+      "R-SZ-EXTENSION → R-SZ-HANDLE": 10,
+      "R-SZ-EXTENSION → R-SZ-FIXED-COL": 21,
+      "R-SZ-EXTENSION → R-SZ-HAIRLINE": 18,
+      "R-SZ-EXTENSION → R-SZ-MINWIDTH": 6
+     }
+    },
+    "componentOwned → defect": {
+     "count": 21,
+     "rules": {
+      "R-RD-SHAPE → R-RD-SHAPE": 18,
+      "R-SP-OPTICAL → R-SP-BADGE-PAD": 3
+     }
+    }
+   },
+   "reconciliation": {
+    "primitive": {
+     "이전": 2082,
+     "나감": 0,
+     "들어옴": 0,
+     "계산": 2082,
+     "실제": 2082
+    },
+    "semantic": {
+     "이전": 0,
+     "나감": 0,
+     "들어옴": 0,
+     "계산": 0,
+     "실제": 0
+    },
+    "componentOwned": {
+     "이전": 152,
+     "나감": 51,
+     "들어옴": 55,
+     "계산": 156,
+     "실제": 156
+    },
+    "defect": {
+     "이전": 1044,
+     "나감": 119,
+     "들어옴": 27,
+     "계산": 952,
+     "실제": 952
+    },
+    "pendingApproval": {
+     "이전": 399,
+     "나감": 61,
+     "들어옴": 149,
+     "계산": 487,
+     "실제": 487
+    },
+    "approvedException": {
+     "이전": 0,
+     "나감": 0,
+     "들어옴": 0,
+     "계산": 0,
+     "실제": 0
+    }
+   }
+  },
   "openQuestions": [
    {
     "id": "R-SP-CAPTION-GAP-VIEW",
@@ -788,40 +873,14 @@
    {
     "id": "R-SP-CONVERGE-GROW-V",
     "bin": "defect",
-    "declarations": 50,
+    "declarations": 94,
     "name": null,
-    "target": "4",
+    "target": "4 (값 3) · 8 (값 6·7)",
     "openDecision": null,
     "values": [
      [
       "marginTop:3",
       41
-     ],
-     [
-      "gap:3",
-      6
-     ],
-     [
-      "paddingVertical:3",
-      3
-     ]
-    ]
-   },
-   {
-    "id": "R-SP-CONVERGE-GROW-H",
-    "bin": "defect",
-    "declarations": 150,
-    "name": null,
-    "target": "8",
-    "openDecision": null,
-    "values": [
-     [
-      "gap:6",
-      69
-     ],
-     [
-      "gap:7",
-      22
      ],
      [
       "marginTop:6",
@@ -848,6 +907,48 @@
       4
      ],
      [
+      "paddingVertical:3",
+      3
+     ],
+     [
+      "gap:6",
+      2
+     ],
+     [
+      "gap:7",
+      2
+     ],
+     [
+      "gap:3",
+      1
+     ],
+     [
+      "paddingTop:7",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SP-CONVERGE-GROW-H",
+    "bin": "defect",
+    "declarations": 106,
+    "name": null,
+    "target": "4 (값 3) · 8 (값 6·7)",
+    "openDecision": null,
+    "values": [
+     [
+      "gap:6",
+      67
+     ],
+     [
+      "gap:7",
+      20
+     ],
+     [
+      "gap:3",
+      5
+     ],
+     [
       "paddingHorizontal:7",
       4
      ],
@@ -862,6 +963,22 @@
      [
       "marginRight:6",
       2
+     ],
+     [
+      "paddingRight:6",
+      1
+     ],
+     [
+      "marginHorizontal:7",
+      1
+     ],
+     [
+      "marginHorizontal:6",
+      1
+     ],
+     [
+      "marginLeft:6",
+      1
      ]
     ]
    },

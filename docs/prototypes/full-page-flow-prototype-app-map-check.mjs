@@ -67,7 +67,15 @@ const matches = (r, d) => {
     if (!table || !(String(num(d.value)) in table)) return false;
   }
   if (m.files && !m.files.some(f => d.file.includes(f))) return false;
-  if (m.at && !m.at.some(a => { const [f, ln] = a.split(':'); return d.file.endsWith(f) && Number(ln) === d.line; })) return false;
+  // at 항목은 `파일:줄` 또는 `파일:줄:속성` 이다. 한 줄에 같은 그룹의 선언이 둘 이상 있고
+  // 서로 다른 통에 가야 하면 줄만으로는 못 가른다 (축이 갈리는 gap/padding 이 그 경우다).
+  if (m.at && !m.at.some(a => {
+    const parts = a.split(':');
+    const prop = parts.length >= 3 ? parts.pop() : null;
+    const ln = parts.pop();
+    const f = parts.join(':');
+    return d.file.endsWith(f) && Number(ln) === d.line && (!prop || prop === d.prop);
+  })) return false;
   return true;
 };
 
@@ -111,6 +119,41 @@ if (assigned !== total) fail(`배정 합계 ${assigned} 이 선언 ${total} 과 
 if (binCount.approvedException !== 0) fail(`승인 예외 통이 ${binCount.approvedException}건 — W1 은 제안 단계다. 승인은 검수 뒤다`);
 for (const r of map.rules) if (hit[r.id] === 0) fail(`${r.id} : 걸리는 선언이 0건 — 낡은 규칙이다`);
 
+// --- 회차 간 통 이동 대차 (PRT-207) ---
+// 배정을 바꾼 회차에서 "무엇이 어디로 갔는지" 를 손으로 쓰면 어긋난다. PRT-206 의 서술이
+// 실제로 어긋났다. 이전 회차의 매핑표를 함께 주면 선언 단위로 대차를 내고, 그 합이
+// 통 변화와 맞지 않으면 FAIL 한다 (페이블 검수 조건).
+let ledger = null;
+const prevMapPath = process.argv.slice(2).filter(a => !a.startsWith('--'))[4];
+if (prevMapPath) {
+  const prevMap = JSON.parse(readFileSync(resolve(prevMapPath), 'utf8'));
+  const move = {};
+  const prevBin = {}, nowBin = {};
+  for (const d of audit.declarations) {
+    const pr = prevMap.rules.find(rule => matches(rule, d));
+    const nr = map.rules.find(rule => matches(rule, d));
+    const from = pr ? pr.bin : '(미분류)', to = nr ? nr.bin : '(미분류)';
+    prevBin[from] = (prevBin[from] || 0) + 1;
+    nowBin[to] = (nowBin[to] || 0) + 1;
+    if (from !== to) {
+      const k = `${from} → ${to}`;
+      (move[k] ??= { count: 0, rules: {} }).count++;
+      const rk = `${pr ? pr.id : '-'} → ${nr ? nr.id : '-'}`;
+      move[k].rules[rk] = (move[k].rules[rk] || 0) + 1;
+    }
+  }
+  // 대차 검산: 각 통의 (이전 - 나간 것 + 들어온 것) 이 현재와 같아야 한다
+  const recon = {};
+  for (const b of BINS) {
+    const out_ = Object.entries(move).filter(([k]) => k.startsWith(b + ' →')).reduce((a, [, v]) => a + v.count, 0);
+    const in_ = Object.entries(move).filter(([k]) => k.endsWith('→ ' + b)).reduce((a, [, v]) => a + v.count, 0);
+    const expected = (prevBin[b] || 0) - out_ + in_;
+    recon[b] = { 이전: prevBin[b] || 0, 나감: out_, 들어옴: in_, 계산: expected, 실제: binCount[b] };
+    if (expected !== binCount[b]) fail(`통 이동 대차 불일치 — ${b}: 이전 ${prevBin[b] || 0} - 나감 ${out_} + 들어옴 ${in_} = ${expected} 인데 실제는 ${binCount[b]}`);
+  }
+  ledger = { previousMap: basename(resolve(prevMapPath)), moves: move, reconciliation: recon };
+}
+
 const result = {
   manifest: {
     generatedAt: new Date().toISOString(),
@@ -137,6 +180,7 @@ const result = {
     multiMatchCount,
     multiMatchPairs,
     multiMatchSamples: multiMatch,
+    binMovementLedger: ledger,
     openQuestions: map.rules.filter(r => r.bin === 'pendingApproval')
       .map(r => ({ id: r.id, question: r.question, declarations: hit[r.id], evidence: r.evidence, ownerDecision: r.ownerDecision ?? null })),
     perRule: map.rules.map(r => ({
