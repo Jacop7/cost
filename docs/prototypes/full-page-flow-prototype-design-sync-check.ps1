@@ -207,11 +207,56 @@ else {
   if ($audit.manifest.script.sha256 -ne $auditScriptSha) {
     Add-Failure "$auditName : 측정 스크립트 SHA 불일치. 감사=$($audit.manifest.script.sha256) 현재=$auditScriptSha"
   }
-  if ($audit.summary.targetsMeasured -lt 1) {
-    Add-Failure "$auditName : 측정 target 이 없음"
+  # 결과 자체가 계약을 만족하는지 단언한다 (PRT-189).
+  # 결속만 맞고 내용이 실패인 JSON 도 -Finalize 되던 구멍을 막는다.
+  $s = $audit.summary
+  if ($s.targetsMeasured -lt 1) { Add-Failure "$auditName : 측정 target 이 없음" }
+  if ($s.duplicateTargets -ne 0) { Add-Failure "$auditName : target 중복 $($s.duplicateTargets)건" }
+  if ($s.activeTargets + $s.hiddenTargets -ne $s.targetsMeasured) {
+    Add-Failure "$auditName : 산식 불일치 활성 $($s.activeTargets) + 숨김 $($s.hiddenTargets) != 측정 $($s.targetsMeasured)"
   }
-  if ($audit.summary.noRendererIds.Count -gt 0) {
-    Add-Failure "$auditName : 렌더러 없는 활성 ID $($audit.summary.noRendererIds.Count)건 — 조사 필요"
+  if ($s.activeScreens + $s.activePopupPairs -ne $s.activeTargets) {
+    Add-Failure "$auditName : 산식 불일치 screen $($s.activeScreens) + popup쌍 $($s.activePopupPairs) != 활성 $($s.activeTargets)"
+  }
+  if ($s.activeUniquePopupIds -lt 1 -or $s.activeUniquePopupIds -gt $s.activePopupPairs) {
+    Add-Failure "$auditName : 고유 popup ID 수가 비정상 ($($s.activeUniquePopupIds))"
+  }
+  if ($s.noRendererIds.Count -gt 0) { Add-Failure "$auditName : 렌더러 없는 활성 ID $($s.noRendererIds.Count)건 — 조사 필요" }
+  if ($s.sheetBodyUnder3.Count -gt 0) { Add-Failure "$auditName : 시트 본문 3요소 미만 $($s.sheetBodyUnder3.Count)건" }
+  if ($s.offScaleOutsideShellAllowlist.Count -gt 0) {
+    Add-Failure "$auditName : 허용 목록 밖 스케일 위반 — $($s.offScaleOutsideShellAllowlist -join ', ')"
+  }
+  $requiredPasses = @('pc', 'mobile320', 'mobile320z2', 'mobile320t2')
+  foreach ($passId in $requiredPasses) {
+    if ($null -eq $s.passes.$passId) { Add-Failure "$auditName : 검수 패스 $passId 누락" }
+  }
+
+  # 0 이어야 하는 지표의 위반을 알려진 미해결 목록과 양방향 대조한다.
+  # 목록에 없는 위반 → 새 회귀이므로 FAIL. 목록에 있는데 재현 안 됨 → 낡은 예외이므로 FAIL.
+  # 그래서 이 목록은 '무시 목록'이 아니라 '고쳐야 할 것의 정확한 잔여 목록'이다.
+  $knownName = 'full-page-flow-prototype-render-audit-known.json'
+  $knownPath = Join-Path $PrototypeDirectory $knownName
+  if (-not (Test-Path -LiteralPath $knownPath)) {
+    Add-Failure "$knownName : 알려진 미해결 목록이 없음"
+  }
+  else {
+    $known = Read-Utf8 $knownPath | ConvertFrom-Json
+    $allowed = @{}
+    foreach ($d in $known.knownDefects) {
+      foreach ($t in $d.targets) { $allowed["$($d.pass)|$($d.metric)|$t"] = $d.id }
+    }
+    $observed = @{}
+    foreach ($passId in $s.violations.PSObject.Properties.Name) {
+      foreach ($metric in $s.violations.$passId.PSObject.Properties.Name) {
+        foreach ($t in $s.violations.$passId.$metric) { $observed["$passId|$metric|$t"] = $true }
+      }
+    }
+    foreach ($k in $observed.Keys) {
+      if (-not $allowed.ContainsKey($k)) { Add-Failure "$auditName : 알려지지 않은 위반 — $k" }
+    }
+    foreach ($k in $allowed.Keys) {
+      if (-not $observed.ContainsKey($k)) { Add-Failure "$knownName : 재현되지 않는 예외 $($allowed[$k]) — $k. 해결됐다면 목록에서 지운다" }
+    }
   }
 }
 
@@ -225,7 +270,7 @@ $hashes = [ordered]@{}
 foreach ($fileName in $contentsByFile.Keys) {
   $hashes[$fileName] = Get-Sha256 $contentsByFile[$fileName]
 }
-foreach ($fileName in @($auditName, $auditScriptName)) {
+foreach ($fileName in @($auditName, $auditScriptName, 'full-page-flow-prototype-render-audit-known.json')) {
   $contents = Read-Utf8 (Join-Path $PrototypeDirectory $fileName)
   if ($null -ne $contents) { $hashes[$fileName] = Get-Sha256 $contents }
 }

@@ -1875,3 +1875,53 @@ popup/state host **121개**(합 182), 그리고 레지스트리에 키가 없는
 - 재발 방지: **문서에 적는 측정값은 저장소에 보존된 산출물에서만 인용한다.**
   증거는 대상 파일 해시에 결속하고, 대상이 바뀌면 무효가 되게 한다.
   **측정 도구도 검증 대상이다** — 보존하면 검토받을 수 있고, 검토받으면 결함이 드러난다.
+
+## DS-20260904-011 · PRT-189 감사 검사기 6개 결함 정정 · 알려진 미해결 목록 신설
+
+- 대상: 렌더 감사 스크립트(전면 개정), 결과 JSON, `full-page-flow-prototype-render-audit-known.json`(신설),
+  동기화 검사 스크립트, 루트 `package.json`·`pnpm-lock.yaml`, UI 가이드 B.8a, 현재 확정안 2.14,
+  적용본 상단 동기화 표식 1줄. **적용본의 CSS·JS·마크업은 무변경.**
+  검수 범위 **총 185건 = 활성 182건(screen 61 + host 121) + 숨김 보존 3건**
+- 기대값: 검사기의 지표 이름이 실제 계약과 일치하고, 게이트가 결속뿐 아니라 결과 내용까지
+  단언하며, 재현 명령이 현재 checkout에서 그대로 실행돼야 한다.
+- 실제값: 검사기가 계약보다 좁게 재고 있었다. `zoom`은 CSS 전체 확대라 글자 확대 계약을
+  측정하지 못했고, `pageerror`만 구독하면서 `consoleErrors`로 보고했으며, `<input value>`와
+  선언 굵기 `900`을 안 봤고, `fonts.ready`는 대체 글꼴 정착도 통과시켰다. 게이트는 결속만
+  확인해 실패한 결과도 봉인할 수 있었고, `playwright`가 저장소에 없어 재현 명령이 안 돌았다.
+  여섯 건을 모두 고쳤다 — 패스 분리(`cssZoom2`/`textOnly2`) + viewport 경계 이탈 측정,
+  `pageErrors`/`consoleErrors` 분리, 입력값·contenteditable 포함과 선언/computed 굵기 분리,
+  face 명시 적재 후 `fonts.check()`와 실측 폭 구분, 게이트의 산식·중복·패스·위반 양방향 대조,
+  `playwright 1.62.1` lockfile 고정과 `pnpm prototype:audit`.
+- PC 검수: `file:///…` 1280×900, 185건 · 넘침 0 · viewport 이탈 0 · 미처리 예외 0 ·
+  `console.error` 0 · 폰트 실패 0 · face 단언 실패 0 · 금지 굵기(선언·computed) 0 · PASS
+- 모바일 검수: 같은 URL 320×720 185건, CSS 200% 확대 185건, **글자만 200% 확대 185건** ·
+  각 미처리 예외 0 · `console.error` 0 · 폰트 실패 0 · face 단언 실패 0 · 금지 굵기 0 · PASS.
+  분류 측정은 390×844 185건 전수
+- 측정 (전부 보존된 결과 JSON에서 인용):
+  - 185 = 활성 182 + 숨김 3, `duplicateTargets` 0
+  - 활성 고유 ID 96 — `overlay` 86 · `pageState` 9 · `independent` 1 · `noRendererIds` 0
+  - face 실측 폭 `400 1472.38 / 600 1492.48 / 700 1502.55 / 800 1512.89` — 넷 다 구분,
+    `fonts.check` 400·600·700·800 전부 true
+  - `violationCount` **5** = `KD-001` 4건 + `KD-002` 1건, 알려진 목록과 정확히 일치
+  - 스케일 밖은 허용 목록(`SPAN 11px`, `route 10px`)뿐
+  - 결속 — 스크립트 SHA `954d0ab0…f3ac3314` · 적용본 SHA `8e65d680…c64888e24` · `DS-20260904-011`
+  - 실행 환경 — node v22.22.2 · playwright 1.62.1 · chromium 141.0.7390.37 · linux
+  - **개정 검사기가 자기 결함 3건을 더 드러냈다** — face 지연 로드로 26개 화면 오탐,
+    가로 스크롤 컨테이너 안 요소를 이탈로 오계수, 글자 2배 패스에서 성립하지 않는 스케일 검사.
+    셋 다 정정하고 스크립트 주석([L8]~[L10])에 남겼다.
+- 미검수: 없음
+- 제약: 실기기 캡처는 수행하지 않았다. **새로 찾은 진짜 결함 2건은 이 회차에서 고치지 않는다.**
+  `KD-001`은 큰 글꼴에서 아이콘 글리프를 어떻게 다룰지가 디자인 결정이라 솔라가 임의로 정하지
+  않는다. `KD-002`는 공용 Layer 래퍼로 옮기는 구조 변경이라 별도 회차다. 둘 다 원인·근거·
+  판단 주체·추적처와 함께 알려진 미해결 목록에 등록했고 게이트가 양방향으로 대조한다.
+- 결과: PASS
+- 증거: `full-page-flow-prototype-render-audit.mjs`(SHA `954d0ab0…`),
+  결과 JSON(target 185건 원시 로그 + manifest + violations),
+  `full-page-flow-prototype-render-audit-known.json`, 게이트 실행 결과,
+  변경 전 사본 `백업/0_full-page-flow-prototype-ui-applied_pre-PRT189.html`
+- 지적 반영: F01(글자 확대) APPLIED · F02(console.error) APPLIED · F03(입력값·굵기 900) APPLIED ·
+  F04(face 검증) APPLIED · F05(게이트 단언) APPLIED · F06(재현 명령) APPLIED. 반박 0건
+- 재발 방지: **지표 이름이 계약을 정확히 말해야 한다** — 이름이 어긋나면 0이라는 숫자가
+  거짓말을 한다. **통과 조건은 "실패가 없다"가 아니라 "알려진 실패와 정확히 일치한다"다.**
+  검사기를 넓힐 때마다 새 결함이 나오며, 그것이 목적이다 — 나온 것은 덮지 말고 원인과
+  판단 주체를 적어 목록에 남긴다.

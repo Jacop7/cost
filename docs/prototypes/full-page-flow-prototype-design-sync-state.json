@@ -1,19 +1,20 @@
 {
-  "lastCompletedId": "DS-20260904-010",
-  "completedAt": "2026-09-04T22:55:37.7461045+09:00",
+  "lastCompletedId": "DS-20260904-011",
+  "completedAt": "2026-09-04T23:30:48.7896211+09:00",
   "overallUiStatus": "IN_PROGRESS",
   "commonChange": "예",
   "uiChange": "아니오",
-  "prt": "PRT-188",
+  "prt": "PRT-189",
   "hashes": {
-    "0_full-page-flow-prototype-ui-applied.html": "36a0074bd08eaba9700a4c6eda2ae0c00e72947c61633bfa67f07e3b9b18a38c",
-    "full-page-flow-prototype-current-spec.md": "f53d63d5ae105f90340c2dda8b6801c4b12e29672f29cea54ff4843d2863a3ae",
-    "full-page-flow-prototype-changelog.md": "2cb317e0990ab394b07dd9e4564ac3ed3347876a4a1de008e935d46d9b9d5021",
-    "0_full-page-flow-prototype-ui-applied-review.md": "503a2d3c034b09892ef7c6068f84c1f9fa0f3af4ad4af9ea55feb86f609afe18",
-    "full-page-flow-prototype-design-context.md": "437f3e48a56e50316f87e9a6808f88e3852a4b1a6ccff47b2d5c1af60f13d7ca",
-    "full-page-flow-prototype-ui-guide.md": "1145ff50acf0f9eb8279da89d9df06c0d89955f0591d013eb846f403f73447a1",
-    "full-page-flow-prototype-design-work-plan.md": "9c86800cf123aa8897bed82508c440824385731d3eaa22218a0184fb2000291f",
-    "full-page-flow-prototype-render-audit.json": "8256126109423cc7e93ce6c8ed7586169e119265c2a0251e19b409a203a753e6",
-    "full-page-flow-prototype-render-audit.mjs": "d51f3cea74856c88d8e61e6532391d0361c1f02640a2ef193fbe2430b1d7450a"
+    "0_full-page-flow-prototype-ui-applied.html": "8e65d680b55e4f11afbbe3a4a3564b6acd6a3edaf32b9f4ca818209c64888e24",
+    "full-page-flow-prototype-current-spec.md": "20659d4a5117f10a3679468da04873efe04657aef9941b5d558289f23a2fd107",
+    "full-page-flow-prototype-changelog.md": "b57e0512d451d4d3cc24beb974df745822d1477ba5e0c2f39444d6d97fe26be8",
+    "0_full-page-flow-prototype-ui-applied-review.md": "757c8df3df65acc6028c255f86797bb76dd3fa70bcaec097030371c72b3d6dd3",
+    "full-page-flow-prototype-design-context.md": "62744565b728322b0ebe544290e6ec44aa15235db3747d0adeccca88f2907df6",
+    "full-page-flow-prototype-ui-guide.md": "1a4faa1c48da0babb34fb1e33f522dd0de5fd3ee9adb9edb591b97c63e8a1b0f",
+    "full-page-flow-prototype-design-work-plan.md": "59b1f4838b3adf41e09aa4111814521eb5c4677fdd0d8d502e5fcdb0357483bc",
+    "full-page-flow-prototype-render-audit.json": "06442887ed95fb854d3a8def53ccaa80294293c00a196c16616abc2d7638c8dd",
+    "full-page-flow-prototype-render-audit.mjs": "954d0ab074e068c90a69fb78abb6659882ee4bc00357f7b3c9769e75f3ac3314",
+    "full-page-flow-prototype-render-audit-known.json": "56912c07310597f10e0b8630d40a8d1282dbacdc4524d99bcc033d06d6c69ea2"
   }
 }
