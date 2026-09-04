@@ -31,14 +31,26 @@
 
 상태 코드는 `TODO / COMMON / CODEX PASS / OPUS PASS / PASS / BLOCKED`만 사용한다.
 종합 상태 열에는 여기에 더해 진행 상태 `IN_PROGRESS / COMPLETE / CODEX_PASS`와
-`SPEC_ONLY`를 쓴다. `SPEC_ONLY`는 **UI 가이드 부록 A에 명세만 있고 HTML `screens`에는
-키가 없어 렌더 자체가 불가능한 target**이다. 실측 근거가 없으므로 7항목은 전부 `TODO`로 두고,
-구현되기 전에는 어떤 항목도 `PASS`로 올리지 않는다. 감사 이력 보존을 위해 행은 지우지 않는다.
+`SPEC_ONLY`와 `NO_RENDERER`를 쓴다. 셋은 원인이 달라 후속 작업도 다르므로 섞지 않는다.
 
-`TODO`와 `SPEC_ONLY`를 섞지 않는다. **`TODO`는 검수를 아직 하지 않았다는 뜻이지 구현이
-없다는 뜻이 아니다.** 렌더 부재를 주장하려면 popup map 등록 여부와 실렌더로 확인하고
-`SPEC_ONLY`로 적는다. 레지스트리에 있는데 이 장부에 없던 target은 장부 누락일 뿐이며,
-그 사실만으로 미구현을 추론하지 않는다.
+| 코드 | 뜻 | 판정 근거 | 후속 |
+|---|---|---|---|
+| `TODO` | **검수를 아직 하지 않았다.** 구현 여부와 무관하다 | 없음 — 기본값 | 7항목 검수를 수행한다 |
+| `SPEC_ONLY` | 문서(부록 A/B)에는 있으나 **레지스트리에 키 자체가 없다.** URL로 지정할 수도 없다 | `screens`·`popupTabs` 키 부재 | 구현할지 명세에서 내릴지 제품이 결정한다 |
+| `NO_RENDERER` | **레지스트리에는 등록됐으나** `openPopupTab()`·`render()`에 처리 분기가 없어 URL은 해석되는데 아무것도 렌더되지 않는다 | 분기 부재 + 실렌더 무반응 | 렌더러를 구현한다 |
+
+- `SPEC_ONLY`는 target 종류를 가리지 않는다. screen이든 popup이든 **레지스트리에 키가 없으면**
+  이 코드다. 현재 해당: `screen:my_country` 1건.
+- `NO_RENDERER`는 등록은 됐으나 렌더가 없는 **불완전 구현**이다. `SPEC_ONLY`와 다른 상태다.
+  현재 해당: **0건.** `PRT-186`에서 활성 96개 ID를 전부 URL로 열어 측정한 결과
+  모두 `openPopupTab()`에 처리 분기가 있고 실제로 렌더된다(UI 가이드 B.8a).
+- 어느 코드든 7항목은 `TODO`로 두고 실측 근거 없이 `PASS`로 올리지 않는다.
+  감사 이력 보존을 위해 행은 지우지 않는다.
+
+**렌더 부재는 주장하려면 증명해야 한다.** 근거는 두 가지뿐이다 — `openPopupTab()`·`render()`의
+처리 분기 부재와, URL 직접 진입 시 실렌더 무반응. 레지스트리·이 장부·가이드 어느 쪽의
+**누락**도 근거가 아니다. 장부에 행이 없는 것은 장부 누락일 뿐이며, 그 사실만으로 미구현을
+추론하지 않는다. (`PRT-184`가 이 추론을 해서 틀렸고 `PRT-185`·`PRT-186`이 정정했다.)
 
 ## 공통 적용 1차
 
@@ -876,10 +888,17 @@ Opus가 지정한 후속 위험은 다음과 같다.
 
 `PRT-184`에서 추가한 세 행(`tax_country@my_tax`, `language_preview@my_language`,
 `fixed_period@my_fixed_edit`)이 `TODO`인 이유는 **개별 렌더·상호작용 검수를 아직 하지 않았기
-때문**이며 구현이 없어서가 아니다. 세 팝업 모두 적용본의 popup map에 등록돼 있고
-`openPopupTab()` → `openActualPopup()` → `showPrototypeSheet()` 경로로 실제 렌더된다
-(`PRT-185`에서 `tax_country`·`language_preview`를 실렌더로 확인). `screen:my_country`만이
-`screens` 레지스트리에 키가 없는 `SPEC_ONLY`다.
+때문**이며 구현이 없어서가 아니다. 세 팝업 모두 실제로 렌더되지만 **경로는 같지 않다.**
+
+| target | 실행 경로 | 확인 |
+|---|---|---|
+| `tax_country@my_tax` | `openPopupTab()` → `openActualPopup()` map(HTML 995행) → `showPrototypeSheet()` | `PRT-185` 실렌더 |
+| `language_preview@my_language` | `openPopupTab()` → `openActualPopup()` map(HTML 998행) → `showPrototypeSheet()` | `PRT-185` 실렌더 |
+| `fixed_period@my_fixed_edit` | **map에 없다.** `openPopupTab()`의 전용 분기(HTML 1051행) → `openFixedPeriod()`(930행) | `PRT-186` 실렌더 |
+
+(`PRT-185`가 세 건을 한 경로로 묶어 적은 것은 틀렸다. `PRT-186`에서 96개 ID의 경로를
+전수 측정해 정정했다 — UI 가이드 B.8a.)
+`screen:my_country`만이 `screens` 레지스트리에 키가 없는 `SPEC_ONLY`다.
 
 ## 2026-09-01 · MY 1차 전수 검수 체크포인트
 
@@ -1713,3 +1732,45 @@ Opus가 지정한 후속 위험은 다음과 같다.
 - 지적 반영: 사실 오류(renderer 표기) APPLIED. 반박 0건
 - 재발 방지: 레지스트리·장부·가이드 어느 쪽의 **누락**도 구현 부재의 근거가 아니다.
   구현 여부는 popup map과 실렌더로만 판정한다.
+
+## DS-20260904-008 · PRT-186 잔존 오류 정정 · 96개 ID 렌더 경로 전수 실측
+
+- 대상: UI 가이드 B.8 검산 주석과 B.8a(신설), 이 장부의 판정 규칙과 신규 3행 주석,
+  적용본 상단 동기화 표식 1줄. **적용본의 CSS·JS·마크업은 무변경.**
+  검수 범위 **총 185건 = 활성 182건(screen 61 + host 121) + 숨김 보존 3건**
+- 기대값: 정정한 사실이 문서 전체에서 일치해야 하고, target별 실행 경로가 각각 확인된
+  근거 위에 서야 하며, 상태 코드가 원인별로 구분돼야 한다.
+- 실제값: `PRT-185`가 B.8 표만 고치고 검산 주석의 "두 ID는 현재 renderer가 없어 열리지
+  않는다"를 놓쳐 표와 본문이 모순됐다 — 문장을 삭제하고 정정 사실을 남겼다.
+  신규 3행의 실행 경로를 한 문장으로 묶은 것도 틀렸다 — `fixed_period`는
+  `openActualPopup` map에 없고 `openPopupTab()` 전용 분기(1051행)에서
+  `openFixedPeriod()`(930행)로 간다. target별 표로 나눴다.
+  `SPEC_ONLY`를 "렌더 없음"으로 일반화한 조항이 기존 정의와 충돌해 코드를 분리했다 —
+  `TODO`(검수 미실시) / `SPEC_ONLY`(레지스트리에 키 없음, target 종류 무관, 현재 1건) /
+  `NO_RENDERER`(등록됐으나 처리 분기 없음, 신설, 현재 0건).
+  근거를 부분 표본에 두지 않도록 활성 96개 ID의 실행 경로를 전수 측정해 가이드 B.8a에 남겼다.
+- PC 검수: `file:///…/0_full-page-flow-prototype-ui-applied.html` 1280×900, 185건 ·
+  넘침 0 · 콘솔 오류 0 · 폰트 실패 0 · 금지 굵기 렌더 0건 · PASS
+- 모바일 검수: 같은 `file://` URL 320×720 185건, 320px 200% 확대 185건 ·
+  각 넘침 0 · 콘솔 오류 0 · 폰트 실패 0 · PASS.
+  추가로 390×844에서 **활성 121쌍 / 고유 96 ID를 전부 URL로 직접 열어** 측정 · PASS
+- 측정:
+  - 렌더 경로 A(`openActualPopup` map → `showPrototypeSheet`) 61개 ·
+    B(단일 ID 전용 분기 → `open*()`) 20개 · C(복합 조건 분기 → 상태 변경 + `render()`) 15개.
+    **처리 분기가 없는 활성 ID는 0개다.**
+  - overlay를 열지 않고 `#content`만 바꾸는 ID 10개 = B.1 PageState 9 + `option_more`.
+    시트 본문이 3요소 미만인 경우 0건
+  - 적용본 diff는 2행 동기화 표식 1줄(`DS-20260904-007` → `-008`)
+- 미검수: 없음
+- 제약: 실기기 캡처는 수행하지 않았다. 이번 단위는 문서 정정과 경로 실측에 한정한다 —
+  `option_more`가 B.8에서 Layer 유형인데 현재 구현이 페이지 상태인 점은 목표 계약과
+  구현의 차이이며, B.8 서문이 이미 밝힌 범주다. 계약 자체는 바꾸지 않고 별도 회차로 남긴다.
+  세 신규 target의 개별 7항목 검수도 표의 `TODO`로 계속 추적한다.
+- 결과: PASS
+- 증거: 96개 ID 경로 분류 + 실렌더 로그, `openPopupTab` 원문 발췌(복합 조건 분기 15개 확인),
+  PC·320px·320px 200% 확대 각 185건 결과, 적용본 1줄 diff,
+  변경 전 사본 `백업/0_full-page-flow-prototype-ui-applied_pre-PRT186.html`
+- 지적 반영: Major(가이드 잔존 모순) APPLIED · Minor1(`fixed_period` 경로) APPLIED ·
+  Minor2(`SPEC_ONLY` 범위 충돌) APPLIED. 반박 0건
+- 재발 방지: 정정은 낱말이 아니라 **주장 단위**로 훑어 같은 사실이 적힌 곳을 전부 고친다.
+  표를 고치고 본문을 놓치면 문서가 스스로 모순된다. 경로·구현 여부는 target마다 확인한다.

@@ -6,7 +6,7 @@
 
 - 상태: 서비스 기준 재검토 개정안
 - 개정일: 2026-09-02
-- 현재 디자인 동기화 ID: `DS-20260904-007`
+- 현재 디자인 동기화 ID: `DS-20260904-008`
 - 적용 대상: `docs/prototypes/full-page-flow-prototype.html`, UI 적용 복사본과 향후 Expo 공용 UI
 - 등록 인벤토리: 프로토타입 `screen` 키 62개, 팝업·조건 상태 호스트 123개, 고유 ID 98개
   (PRT-182 정정: 이전 표기 `125 / 99`는 `PRT-151`이 `recipe_target_help`를 두 호스트에서
@@ -1564,8 +1564,32 @@ ID 수는 일치하지 않는다.
 (PRT-184 정정: 이전 표기 `9 + 88 = 97` / host `123`은 `PRT-151`의 `recipe_target_help`
 제거 이전 값이었다. 또한 `tax_country`·`language_preview`가 활성 `popupTabs`에 있는데
 B.2·B.3·B.8 이름 목록에서만 빠져 있었다 — 유형별 등록 계수에는 이미 포함돼 있었다.
-두 ID는 현재 renderer가 없어 열리지 않으므로 검수 장부에 `TODO`로 등록한다.) 숨김 `discard_type`·`discard_period`는
+두 ID는 검수 장부에 `TODO`로 등록한다.)
+(PRT-186 정정: 위 괄호에 있던 "두 ID는 현재 renderer가 없어 열리지 않는다"는 서술은
+**사실이 아니어서 삭제했다.** `PRT-185`가 B.8 표는 고쳤으나 이 문장을 놓쳤다.
+실제 경로는 아래 B.8a 실측표에 있다.) 숨김 `discard_type`·`discard_period`는
 B.1~B.2에만 보존하고 이 활성 레지스트리에는 넣지 않는다.
+
+### B.8a 활성 96개 ID의 실제 렌더 경로 · 실측
+
+`renderer` 열은 **목표** 계약이다. 아래는 현재 적용본이 실제로 타는 **구현** 경로이며,
+96개 ID를 전부 URL로 직접 열어 측정했다(PRT-186, `file://` 390×844). 목표와 구현의
+차이는 B.8 서문이 이미 밝힌 대로이며, 이 표는 "renderer가 없다"는 주장을 낼 때
+근거로 삼는 유일한 실측 자료다.
+
+| 경로 | 개수 | 진입 방식 | 해당 ID |
+|---|---:|---|---|
+| A | 61 | `openPopupTab()` → `openActualPopup()` map → `showPrototypeSheet()` | `tax_country`, `language_preview`, `tax_item_add` 등 |
+| B | 20 | `openPopupTab()`의 단일 ID 분기 → 전용 `open*()` | `sort`, `fixed_period`(→`openFixedPeriod()`), `sales_period`, `stock_period`·`stock_type`·`stock_order`·`purchase_period`(→`openHistoryFilter()`) 등 |
+| C | 15 | `openPopupTab()`의 복합 조건 분기 → 상태 변경 + `render()`, 일부는 이어서 `open*()` | `stock_inbound`·`stock_deduct`·`stock_discard`, `option_list`·`option_add`·`option_edit`·`option_vendor_new`·`option_more`·`option_delete`, `ingredient_option_filled`·`ingredient_option_empty`, `stock_confirm`·`stock_error`, `stock_event_more`·`stock_event_revert` |
+
+- **renderer가 없는 활성 ID는 0개다.** 96개 모두 `openPopupTab()`에 처리 분기가 있고
+  실제로 렌더된다. 어떤 ID에 대해서도 "미구현·renderer 없음"이라고 적을 근거가 없다.
+- 실측에서 overlay(`#overlay.open`)를 열지 않고 `#content`만 바꾸는 ID는 10개다 —
+  B.1의 PageState 9개와 `option_more`. `option_more`는 B.8에서 Layer 유형으로
+  분류돼 있으나 현재 구현은 페이지 상태다. B.8 서문의 "아직 목표 계약을 구현한 상태가
+  아니다"에 해당하는 사례이며, 목표 계약 자체는 바꾸지 않는다.
+- 나머지 86개는 overlay를 열고, 시트 본문이 3요소 미만인 경우는 0건이다.
 
 ### B.9 popupTabs 밖의 제품 Layer 시연 host
 
