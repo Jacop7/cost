@@ -333,6 +333,64 @@ else {
   }
 }
 
+# --- 글로벌 스트레스 증거 결속 (PRT-192) ---
+# 한국어는 같은 뜻을 가장 짧게 쓰는 언어에 가깝다. 한국어 320px 에서 딱 맞는 레이아웃은
+# 번역하면 거의 항상 깨진다. UI 가이드 `C-20` 의 "30~50% 긴 번역" 검수를 이 증거가 담는다.
+$i18nName = 'full-page-flow-prototype-i18n-stress.json'
+$i18nScriptName = 'full-page-flow-prototype-i18n-stress.mjs'
+$i18nPath = Join-Path $PrototypeDirectory $i18nName
+$i18nScriptPath = Join-Path $PrototypeDirectory $i18nScriptName
+if (-not (Test-Path -LiteralPath $i18nPath)) {
+  Add-Failure "$i18nName : 글로벌 스트레스 결과가 없음"
+}
+elseif (-not (Test-Path -LiteralPath $i18nScriptPath)) {
+  Add-Failure "$i18nScriptName : 글로벌 스트레스 스크립트가 없음"
+}
+else {
+  $iAudit = Read-Utf8 $i18nPath | ConvertFrom-Json
+  $iBytes = [System.IO.File]::ReadAllBytes((Join-Path $PrototypeDirectory '0_full-page-flow-prototype-ui-applied.html'))
+  $iSha = [System.Security.Cryptography.SHA256]::Create()
+  try { $iAppliedSha = ([System.BitConverter]::ToString($iSha.ComputeHash($iBytes))).Replace('-', '').ToLowerInvariant() }
+  finally { $iSha.Dispose() }
+  $iScriptBytes = [System.IO.File]::ReadAllBytes($i18nScriptPath)
+  $iSha2 = [System.Security.Cryptography.SHA256]::Create()
+  try { $iScriptSha = ([System.BitConverter]::ToString($iSha2.ComputeHash($iScriptBytes))).Replace('-', '').ToLowerInvariant() }
+  finally { $iSha2.Dispose() }
+  if ($iAudit.manifest.target.sha256 -ne $iAppliedSha) {
+    Add-Failure "$i18nName : 적용본 SHA 불일치. 감사=$($iAudit.manifest.target.sha256) 현재=$iAppliedSha. 재측정 필요"
+  }
+  if ($iAudit.manifest.target.designSyncId -ne $syncId) {
+    Add-Failure "$i18nName : 동기화 ID 불일치. 감사=$($iAudit.manifest.target.designSyncId) 현재=$syncId"
+  }
+  if ($iAudit.manifest.script.sha256 -ne $iScriptSha) {
+    Add-Failure "$i18nName : 측정 스크립트 SHA 불일치. 감사=$($iAudit.manifest.script.sha256) 현재=$iScriptSha"
+  }
+  foreach ($ruleKey in @('번역문', '단위', '숫자', '아이콘', '셸', '기준선', '가로 스크롤', '붙음', '집계 단위')) {
+    if ($null -eq $iAudit.manifest.rules.$ruleKey) { Add-Failure "$i18nName : 측정 규칙 '$ruleKey' 누락" }
+  }
+  if ($null -ne $audit -and $null -ne $audit.summary.activeTargets) {
+    if ($iAudit.manifest.targetsMeasured -ne $audit.summary.activeTargets) {
+      Add-Failure "$i18nName : 측정 target $($iAudit.manifest.targetsMeasured) 이 렌더 감사의 활성 target $($audit.summary.activeTargets) 과 불일치"
+    }
+  }
+  # 패스 4종이 다 있어야 한다. 기준선이 없으면 "번역 때문에 깨졌다"를 말할 수 없다.
+  foreach ($passId in @('base', 'w130', 'w150', 'w130t2')) {
+    if ($null -eq $iAudit.summary.passes.$passId) { Add-Failure "$i18nName : 검수 패스 $passId 누락" }
+  }
+  # 기준선(한국어 320px)은 깨끗해야 한다. 여기가 깨져 있으면 그건 번역 문제가 아니라
+  # 이미 있는 제품 결함이고, render-audit 이 먼저 잡았어야 한다.
+  $b = $iAudit.summary.passes.base
+  if ($null -ne $b) {
+    if ($b.targetsWithClipped -ne 0) { Add-Failure "$i18nName : 기준선에서 잘림 $($b.targetsWithClipped)건 — 번역 이전의 결함" }
+    if ($b.targetsWithEscapee -ne 0) { Add-Failure "$i18nName : 기준선에서 화면 이탈 $($b.targetsWithEscapee)건 — 번역 이전의 결함" }
+    if ($b.targetsWithPhoneOverflow -ne 0) { Add-Failure "$i18nName : 기준선에서 가로 넘침 $($b.targetsWithPhoneOverflow)건 — 번역 이전의 결함" }
+  }
+  # 확대가 실제로 일어났는지 단언한다. 0건이면 스트레스를 안 준 채로 통과할 수 있다.
+  if ($iAudit.summary.stretch.w130.stretched -lt 1) { Add-Failure "$i18nName : w130 에서 늘어난 텍스트가 없음 — 스트레스가 걸리지 않았다" }
+  if ($iAudit.summary.stretch.w130t2.text2x -lt 1) { Add-Failure "$i18nName : w130t2 에서 글자 확대가 적용되지 않았다" }
+  if ($iAudit.summary.stretch.w130.skippedNumeric -lt 1) { Add-Failure "$i18nName : 숫자 제외가 0건 — 숫자까지 늘렸을 가능성" }
+}
+
 if ($failures.Count -gt 0) {
   Write-Output "DESIGN DOC SYNC: FAIL ($syncId)"
   $failures | ForEach-Object { Write-Output "- $_" }
@@ -343,7 +401,7 @@ $hashes = [ordered]@{}
 foreach ($fileName in $contentsByFile.Keys) {
   $hashes[$fileName] = Get-Sha256 $contentsByFile[$fileName]
 }
-foreach ($fileName in @($auditName, $auditScriptName, 'full-page-flow-prototype-render-audit-known.json', $designAuditName, $designAuditScriptName)) {
+foreach ($fileName in @($auditName, $auditScriptName, 'full-page-flow-prototype-render-audit-known.json', $designAuditName, $designAuditScriptName, $i18nName, $i18nScriptName)) {
   $contents = Read-Utf8 (Join-Path $PrototypeDirectory $fileName)
   if ($null -ne $contents) { $hashes[$fileName] = Get-Sha256 $contents }
 }
