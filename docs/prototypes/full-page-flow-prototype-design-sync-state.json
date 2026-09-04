@@ -1,24 +1,24 @@
 {
-  "lastCompletedId": "DS-20260904-013",
-  "completedAt": "2026-09-05T01:48:16.3796246+09:00",
+  "lastCompletedId": "DS-20260904-014",
+  "completedAt": "2026-09-05T02:18:38.5410897+09:00",
   "overallUiStatus": "IN_PROGRESS",
   "commonChange": "예",
   "uiChange": "아니오",
-  "prt": "PRT-192",
+  "prt": "PRT-193",
   "hashes": {
-    "0_full-page-flow-prototype-ui-applied.html": "9897bd0a632fc15e36ef947f99c77d4aa624ddd2af9e5626411b3c185a0ee572",
-    "full-page-flow-prototype-current-spec.md": "d8841170f72d95bfd5cad2719c406258ca4d41cb1a262fd38afbd09eba600c68",
-    "full-page-flow-prototype-changelog.md": "dd79f4cdf533ad70f44b8df6ad12b80c49ad731fbab90280aed7c08ecc458d7f",
-    "0_full-page-flow-prototype-ui-applied-review.md": "c7fea8708e6748e647dce5220ae1499597a74f9eece6773d03f1026eb2e5ee60",
-    "full-page-flow-prototype-design-context.md": "362a8d276626ab43978d0fea9609a9ed6fcb2ef2c40f226e0be72c1800cb7b2d",
-    "full-page-flow-prototype-ui-guide.md": "394bc4792d4481674a5334edd5e4aa2f7bc12af8ddba03986e17c0ceafdebf6d",
-    "full-page-flow-prototype-design-work-plan.md": "504010652e3e878d4317c7e8c4cc8c507e76712c370fe4d52bc6c636e6a1b1b5",
-    "full-page-flow-prototype-render-audit.json": "f8dcb8c6dd6d88eec3571775af52ded7a60573cbf16632b61c8d97dde6ebe30d",
+    "0_full-page-flow-prototype-ui-applied.html": "2ea86cfa2e31134faab8575f8d1ba53998b8f52cc018433ccbef0eb68473b0ba",
+    "full-page-flow-prototype-current-spec.md": "6fcfd2a4bfcf7ddb764fead0501a8447a375abe42583d84250e5b499cc55f453",
+    "full-page-flow-prototype-changelog.md": "a5943e5aff90b1361824f85b71f64d6d868fabe54b5c3505521d168ebaf1430a",
+    "0_full-page-flow-prototype-ui-applied-review.md": "0cd44eafd653516c16be82af1c8acdee762fd34f6f85f7dd28db4770c2f82f38",
+    "full-page-flow-prototype-design-context.md": "a08c5a218f788c1e2c9d06c64d95f2798b5336f806728d82cbd78dcdc2f20ac6",
+    "full-page-flow-prototype-ui-guide.md": "f99c2adf145f5e38ec55ba10375c12c8a52736349eb6d45b6be5ab2952657a11",
+    "full-page-flow-prototype-design-work-plan.md": "33f66eb290a1795fd2f953fd032bc2e505929a0f85b239dd6cd2f2d6ef14b609",
+    "full-page-flow-prototype-render-audit.json": "2754441ea40de2715e8f47f866e75c1328eef4219beddc4489cf79dbb680113e",
     "full-page-flow-prototype-render-audit.mjs": "954d0ab074e068c90a69fb78abb6659882ee4bc00357f7b3c9769e75f3ac3314",
     "full-page-flow-prototype-render-audit-known.json": "56912c07310597f10e0b8630d40a8d1282dbacdc4524d99bcc033d06d6c69ea2",
-    "full-page-flow-prototype-design-audit.json": "342b5ea37dc1925b0a5c966d69dbfceeff543f7a1d89cf2a2edc374afcabe957",
+    "full-page-flow-prototype-design-audit.json": "f9c78300c422f8b7a5cff87906a7eaa696a5a8a6b66e2571867dc4a252a72f77",
     "full-page-flow-prototype-design-audit.mjs": "0d363d3a138f9594694eb980c22400f6a8e98e31504b2bed26ca066c95c3dcdc",
-    "full-page-flow-prototype-i18n-stress.json": "9684d58b80cd91354aaac62d468a158c54871746c91dbf157f5b1d2cbbcfea45",
-    "full-page-flow-prototype-i18n-stress.mjs": "7770fc19fc275093eb51093e432b7021273b22c420543e24c977a5b21a269e27"
+    "full-page-flow-prototype-i18n-stress.json": "74f3efed5c3c66a5d3c85cc5fe265cbd6ebd89d3204aabc8403bc83cd7834340",
+    "full-page-flow-prototype-i18n-stress.mjs": "bcabd4d5844d5f9c4474748d7d6b14d634d97f62713a0279c2d2eec356d7f7b6"
   }
 }

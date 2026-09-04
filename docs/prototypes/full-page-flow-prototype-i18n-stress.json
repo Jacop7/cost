@@ -1,15 +1,15 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-04T16:44:41.247Z",
+  "generatedAt": "2026-09-04T17:15:00.754Z",
   "schemaVersion": 1,
   "script": {
    "name": "full-page-flow-prototype-i18n-stress.mjs",
-   "sha256": "7770fc19fc275093eb51093e432b7021273b22c420543e24c977a5b21a269e27"
+   "sha256": "bcabd4d5844d5f9c4474748d7d6b14d634d97f62713a0279c2d2eec356d7f7b6"
   },
   "target": {
    "path": "0_full-page-flow-prototype-ui-applied.html",
-   "sha256": "9897bd0a632fc15e36ef947f99c77d4aa624ddd2af9e5626411b3c185a0ee572",
-   "designSyncId": "DS-20260904-013"
+   "sha256": "2ea86cfa2e31134faab8575f8d1ba53998b8f52cc018433ccbef0eb68473b0ba",
+   "designSyncId": "DS-20260904-014"
   },
   "runner": {
    "node": "v22.22.2",
@@ -25,6 +25,7 @@
   "rules": {
    "번역문": "지어내지 않는다. 각 텍스트 노드의 글자를 순환해 붙여 렌더 폭을 목표 배수까지 늘린다",
    "단위": "글자 수가 아니라 폭. 레이아웃을 깨는 것은 폭이다",
+   "정확도": "통째 글자 붙이기는 마지막 한 글자만큼 넘친다. 텍스트가 host 의 유일한 자식이면 host 의 letter-spacing 으로 목표 폭에 정확히 맞추고(exact), 아니면 목표에 더 가까운 글자 수를 고른다(오차 ≤ 반 글자). 남은 최대 오차를 maxErrorPct 로 남긴다",
    "숫자": "글자(한글·라틴)를 포함하지 않은 노드는 늘리지 않는다. 번역해도 숫자는 안 길어진다",
    "아이콘": "문자 기호는 번역 대상이 아니므로 늘리지 않는다",
    "셸": "상태바·화면 ID 배지·카탈로그는 제품이 아니므로 제외한다",
@@ -48,14 +49,14 @@
     "mode": "텍스트 폭 +30%",
     "targets": 182,
     "targetsWithPhoneOverflow": 0,
-    "targetsWithClipped": 182,
+    "targetsWithClipped": 0,
     "targetsWithEscapee": 0
    },
    "w150": {
     "mode": "텍스트 폭 +50%",
     "targets": 182,
     "targetsWithPhoneOverflow": 0,
-    "targetsWithClipped": 182,
+    "targetsWithClipped": 1,
     "targetsWithEscapee": 0
    },
    "w130t2": {
@@ -71,58 +72,66 @@
     "stretched": 0,
     "skippedNumeric": 0,
     "skippedGlyph": 0,
-    "text2x": 0
+    "text2x": 0,
+    "exact": 0,
+    "maxErrorPct": 0
    },
    "w130": {
     "stretched": 6986,
     "skippedNumeric": 958,
     "skippedGlyph": 889,
-    "text2x": 0
+    "text2x": 0,
+    "exact": 6190,
+    "maxErrorPct": 23.08
    },
    "w150": {
     "stretched": 6986,
     "skippedNumeric": 958,
     "skippedGlyph": 889,
-    "text2x": 0
+    "text2x": 0,
+    "exact": 5506,
+    "maxErrorPct": 33.33
    },
    "w130t2": {
     "stretched": 6986,
     "skippedNumeric": 958,
     "skippedGlyph": 889,
-    "text2x": 8531
+    "text2x": 8531,
+    "exact": 6190,
+    "maxErrorPct": 23.08
    }
   },
   "clippedElements": [
    {
     "key": "app-tab.app-tab-label",
-    "headroom": "+30%에서 깨짐",
+    "headroom": "+30%와 글자200% 겹칠 때만 깨짐",
     "targets": {
      "base": 0,
-     "w130": 182,
-     "w150": 182,
+     "w130": 0,
+     "w150": 0,
      "w130t2": 182
     },
-    "maxOver": 71,
+    "maxOver": 48,
     "samples": [
      "식재료식",
      "레시피레",
-     "발주발"
+     "매출관리매"
     ]
    },
    {
     "key": "header.title",
-    "headroom": "+50%에서 깨짐",
+    "headroom": "+30%와 글자200% 겹칠 때만 깨짐",
     "targets": {
      "base": 0,
      "w130": 0,
-     "w150": 1,
-     "w130t2": 51
+     "w150": 0,
+     "w130t2": 47
     },
-    "maxOver": 234,
+    "maxOver": 232,
     "samples": [
-     "식재료식",
      "판매가 시뮬레이션판매가",
-     "레시피 카테고리레시피"
+     "레시피 카테고리레시피",
+     "부자재 카테고리부자재"
     ]
    },
    {
@@ -140,48 +149,17 @@
     ]
    },
    {
-    "key": "(no-card).span",
-    "headroom": "+50%에서 깨짐",
-    "targets": {
-     "base": 0,
-     "w130": 0,
-     "w150": 1,
-     "w130t2": 1
-    },
-    "maxOver": 10,
-    "samples": [
-     "부자재부"
-    ]
-   },
-   {
     "key": "expo-row-copy.strong",
     "headroom": "+50%에서 깨짐",
     "targets": {
      "base": 0,
      "w130": 0,
      "w150": 1,
-     "w130t2": 1
+     "w130t2": 0
     },
-    "maxOver": 6,
+    "maxOver": 4,
     "samples": [
-     "매출매",
-     "순이익순"
-    ]
-   },
-   {
-    "key": "detail-list-copy.small",
-    "headroom": "+30%와 글자200% 겹칠 때만 깨짐",
-    "targets": {
-     "base": 0,
-     "w130": 0,
-     "w150": 0,
-     "w130t2": 2
-    },
-    "maxOver": 32,
-    "samples": [
-     "2026-08-17 · 동네마",
-     "2026-08-17 · 마장축",
-     "×26"
+     "채널 구성채널구"
     ]
    },
    {
@@ -193,9 +171,24 @@
      "w150": 0,
      "w130t2": 1
     },
-    "maxOver": 176,
+    "maxOver": 165,
     "samples": [
      "기준값과 기본 설정을 관리해요"
+    ]
+   },
+   {
+    "key": "detail-list-copy.small",
+    "headroom": "+30%와 글자200% 겹칠 때만 깨짐",
+    "targets": {
+     "base": 0,
+     "w130": 0,
+     "w150": 0,
+     "w130t2": 1
+    },
+    "maxOver": 21,
+    "samples": [
+     "2026-08-17 · 동네마",
+     "2026-08-17 · 마장축"
     ]
    },
    {
@@ -209,7 +202,7 @@
     },
     "maxOver": 23,
     "samples": [
-     "개개"
+     "개"
     ]
    },
    {
@@ -221,7 +214,7 @@
      "w150": 0,
      "w130t2": 1
     },
-    "maxOver": 45,
+    "maxOver": 33,
     "samples": [
      "5.2kg5.",
      "1.4kg1.4"
@@ -236,7 +229,7 @@
      "w150": 0,
      "w130t2": 1
     },
-    "maxOver": 35,
+    "maxOver": 27,
     "samples": [
      "주방 이모 (월급)주방이"
     ]
@@ -250,7 +243,7 @@
      "w150": 0,
      "w130t2": 1
     },
-    "maxOver": 94,
+    "maxOver": 92,
     "samples": [
      "Asia/SingaporeAs",
      "America/New_York",
@@ -284,9 +277,8 @@
    ]
   },
   "headroomTally": {
-   "+30%에서 깨짐": 1,
-   "+50%에서 깨짐": 3,
-   "+30%와 글자200% 겹칠 때만 깨짐": 7
+   "+30%와 글자200% 겹칠 때만 깨짐": 9,
+   "+50%에서 깨짐": 1
   }
  },
  "perTarget": {
@@ -299,20 +291,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 800,
-    "clipped": 1,
+    "contentHeight": 790,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 810,
-    "clipped": 1,
+    "contentHeight": 800,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 1550,
-    "clipped": 4,
+    "contentHeight": 1533,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -325,20 +317,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1099,
-    "clipped": 1,
+    "contentHeight": 763,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 1099,
-    "clipped": 1,
+    "contentHeight": 763,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 2536,
-    "clipped": 4,
+    "contentHeight": 1108,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -351,20 +343,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 5907,
-    "clipped": 1,
+    "contentHeight": 1617,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 9911,
-    "clipped": 1,
+    "contentHeight": 1833,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 33674,
-    "clipped": 5,
+    "contentHeight": 4647,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -378,19 +370,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 5,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -404,19 +396,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 693,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 693,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 934,
-    "clipped": 4,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -430,19 +422,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 1234,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 1234,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 1956,
-    "clipped": 4,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -456,19 +448,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 496,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 496,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 860,
-    "clipped": 4,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -482,19 +474,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 4,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -508,19 +500,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 605,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 624,
-    "clipped": 1,
+    "contentHeight": 605,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 1001,
-    "clipped": 4,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -533,20 +525,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1268,
-    "clipped": 1,
+    "contentHeight": 484,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 1500,
-    "clipped": 1,
+    "contentHeight": 540,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 17216,
-    "clipped": 4,
+    "contentHeight": 1698,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -560,19 +552,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 556,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 556,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 650,
-    "clipped": 4,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -586,19 +578,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 4,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -611,20 +603,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1316,
-    "clipped": 1,
+    "contentHeight": 1306,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 9044,
-    "clipped": 1,
+    "contentHeight": 1448,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 3752,
-    "clipped": 4,
+    "contentHeight": 3668,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -637,20 +629,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 40602,
-    "clipped": 1,
+    "contentHeight": 3235,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 45547,
-    "clipped": 1,
+    "contentHeight": 3349,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 87778,
-    "clipped": 4,
+    "contentHeight": 7182,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -664,19 +656,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 800,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 2931,
-    "clipped": 1,
+    "contentHeight": 800,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 1619,
-    "clipped": 5,
+    "contentHeight": 1576,
+    "clipped": 4,
     "escapee": 0
    }
   },
@@ -690,19 +682,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 1534,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 1534,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 2272,
-    "clipped": 4,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -716,19 +708,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 2018,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 2018,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 3394,
-    "clipped": 4,
+    "contentHeight": 3351,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -742,19 +734,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 1786,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 1786,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 2356,
-    "clipped": 4,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -767,20 +759,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 778,
-    "clipped": 1,
+    "contentHeight": 480,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 798,
-    "clipped": 1,
+    "contentHeight": 494,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 2044,
-    "clipped": 4,
+    "contentHeight": 718,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -793,20 +785,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1853,
-    "clipped": 1,
+    "contentHeight": 541,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 541,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 7242,
-    "clipped": 4,
+    "contentHeight": 1541,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -819,20 +811,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 771,
-    "clipped": 1,
+    "contentHeight": 515,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 771,
-    "clipped": 1,
+    "contentHeight": 515,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 1818,
-    "clipped": 5,
+    "contentHeight": 696,
+    "clipped": 4,
     "escapee": 0
    }
   },
@@ -845,20 +837,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 619,
-    "clipped": 1,
+    "contentHeight": 480,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 619,
-    "clipped": 1,
+    "contentHeight": 480,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 1648,
-    "clipped": 5,
+    "contentHeight": 526,
+    "clipped": 4,
     "escapee": 0
    }
   },
@@ -872,19 +864,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 530,
-    "clipped": 4,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -898,19 +890,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 4,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -923,20 +915,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 5118,
-    "clipped": 1,
+    "contentHeight": 1840,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 9276,
-    "clipped": 1,
+    "contentHeight": 1880,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 49015,
-    "clipped": 4,
+    "contentHeight": 7360,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -949,20 +941,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 10972,
-    "clipped": 1,
+    "contentHeight": 2590,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 13132,
-    "clipped": 1,
+    "contentHeight": 2610,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 59844,
-    "clipped": 5,
+    "contentHeight": 5814,
+    "clipped": 4,
     "escapee": 0
    }
   },
@@ -976,19 +968,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 546,
-    "clipped": 4,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -1001,20 +993,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1429,
-    "clipped": 1,
+    "contentHeight": 665,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 1429,
-    "clipped": 1,
+    "contentHeight": 665,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 3370,
-    "clipped": 4,
+    "contentHeight": 966,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -1027,20 +1019,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1116,
-    "clipped": 1,
+    "contentHeight": 636,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 1123,
-    "clipped": 1,
+    "contentHeight": 636,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 1977,
-    "clipped": 4,
+    "contentHeight": 954,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -1054,19 +1046,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 4,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -1079,20 +1071,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 8241,
-    "clipped": 1,
+    "contentHeight": 1276,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 12605,
-    "clipped": 1,
+    "contentHeight": 1566,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 67112,
-    "clipped": 4,
+    "contentHeight": 6811,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -1106,19 +1098,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 1810,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 1857,
-    "clipped": 1,
+    "contentHeight": 1846,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 3946,
-    "clipped": 4,
+    "contentHeight": 3980,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -1132,19 +1124,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 1530,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 1577,
-    "clipped": 1,
+    "contentHeight": 1566,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 3445,
-    "clipped": 5,
+    "contentHeight": 3483,
+    "clipped": 4,
     "escapee": 0
    }
   },
@@ -1157,20 +1149,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 3427,
-    "clipped": 1,
+    "contentHeight": 1262,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 4625,
-    "clipped": 2,
+    "contentHeight": 1275,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 25253,
-    "clipped": 5,
+    "contentHeight": 3457,
+    "clipped": 4,
     "escapee": 0
    }
   },
@@ -1184,19 +1176,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 907,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 907,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 1586,
-    "clipped": 4,
+    "contentHeight": 1548,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -1210,19 +1202,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 1633,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 2747,
-    "clipped": 1,
+    "contentHeight": 1648,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 4669,
-    "clipped": 4,
+    "contentHeight": 4241,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -1236,19 +1228,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 1806,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 2508,
-    "clipped": 1,
+    "contentHeight": 1806,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 4281,
-    "clipped": 4,
+    "contentHeight": 4021,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -1261,20 +1253,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1332,
-    "clipped": 1,
+    "contentHeight": 740,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 4315,
-    "clipped": 1,
+    "contentHeight": 789,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 17607,
-    "clipped": 5,
+    "contentHeight": 4029,
+    "clipped": 4,
     "escapee": 0
    }
   },
@@ -1287,20 +1279,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1066,
-    "clipped": 1,
+    "contentHeight": 503,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 1130,
-    "clipped": 1,
+    "contentHeight": 538,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 14917,
-    "clipped": 4,
+    "contentHeight": 2739,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -1314,19 +1306,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 751,
-    "clipped": 5,
+    "contentHeight": 675,
+    "clipped": 4,
     "escapee": 0
    }
   },
@@ -1339,20 +1331,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 7813,
-    "clipped": 1,
+    "contentHeight": 631,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 8908,
-    "clipped": 1,
+    "contentHeight": 709,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 16142,
-    "clipped": 4,
+    "contentHeight": 1778,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -1365,20 +1357,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 616,
-    "clipped": 1,
+    "contentHeight": 480,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 616,
-    "clipped": 1,
+    "contentHeight": 480,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 1795,
-    "clipped": 4,
+    "contentHeight": 571,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -1392,19 +1384,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 978,
-    "clipped": 4,
+    "contentHeight": 836,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -1417,20 +1409,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 661,
-    "clipped": 1,
+    "contentHeight": 480,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 1117,
-    "clipped": 1,
+    "contentHeight": 480,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 1188,
-    "clipped": 4,
+    "contentHeight": 480,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -1444,19 +1436,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 709,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 709,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 1047,
-    "clipped": 5,
+    "contentHeight": 971,
+    "clipped": 4,
     "escapee": 0
    }
   },
@@ -1469,20 +1461,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 2197,
-    "clipped": 1,
+    "contentHeight": 997,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 3043,
-    "clipped": 1,
+    "contentHeight": 1024,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 7069,
-    "clipped": 6,
+    "contentHeight": 1895,
+    "clipped": 5,
     "escapee": 0
    }
   },
@@ -1495,20 +1487,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 5118,
-    "clipped": 1,
+    "contentHeight": 1840,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 9276,
-    "clipped": 1,
+    "contentHeight": 1880,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 49015,
-    "clipped": 4,
+    "contentHeight": 7360,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -1521,20 +1513,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 10972,
-    "clipped": 1,
+    "contentHeight": 2590,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 13132,
-    "clipped": 1,
+    "contentHeight": 2610,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 59844,
-    "clipped": 5,
+    "contentHeight": 5814,
+    "clipped": 4,
     "escapee": 0
    }
   },
@@ -1548,19 +1540,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 882,
-    "clipped": 4,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -1573,20 +1565,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1379,
-    "clipped": 1,
+    "contentHeight": 1123,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 1379,
-    "clipped": 1,
+    "contentHeight": 1123,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 2992,
-    "clipped": 5,
+    "contentHeight": 1794,
+    "clipped": 4,
     "escapee": 0
    }
   },
@@ -1599,20 +1591,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 771,
-    "clipped": 1,
+    "contentHeight": 515,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 771,
-    "clipped": 1,
+    "contentHeight": 515,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 1818,
-    "clipped": 5,
+    "contentHeight": 696,
+    "clipped": 4,
     "escapee": 0
    }
   },
@@ -1625,20 +1617,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 619,
-    "clipped": 1,
+    "contentHeight": 480,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 619,
-    "clipped": 1,
+    "contentHeight": 480,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 1648,
-    "clipped": 5,
+    "contentHeight": 526,
+    "clipped": 4,
     "escapee": 0
    }
   },
@@ -1651,20 +1643,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1853,
-    "clipped": 1,
+    "contentHeight": 541,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 541,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 7242,
-    "clipped": 4,
+    "contentHeight": 1541,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -1677,20 +1669,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1347,
-    "clipped": 1,
+    "contentHeight": 1308,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 1425,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 1864,
-    "clipped": 4,
+    "contentHeight": 1802,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -1703,20 +1695,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 4898,
-    "clipped": 1,
+    "contentHeight": 1306,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 5207,
-    "clipped": 1,
+    "contentHeight": 1435,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 15804,
-    "clipped": 4,
+    "contentHeight": 3090,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -1729,20 +1721,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1629,
-    "clipped": 1,
+    "contentHeight": 1083,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 2120,
-    "clipped": 1,
+    "contentHeight": 1101,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 3938,
-    "clipped": 4,
+    "contentHeight": 1766,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -1756,19 +1748,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 950,
-    "clipped": 4,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -1781,20 +1773,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1079,
-    "clipped": 1,
+    "contentHeight": 619,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 1079,
-    "clipped": 1,
+    "contentHeight": 639,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 1679,
-    "clipped": 4,
+    "contentHeight": 719,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -1807,20 +1799,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 7254,
-    "clipped": 1,
+    "contentHeight": 1542,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 8947,
-    "clipped": 1,
+    "contentHeight": 1689,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 43312,
-    "clipped": 4,
+    "contentHeight": 4083,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -1833,20 +1825,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 2697,
-    "clipped": 1,
+    "contentHeight": 657,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 2697,
-    "clipped": 1,
+    "contentHeight": 675,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 9018,
-    "clipped": 4,
+    "contentHeight": 1252,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -1859,20 +1851,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1165,
-    "clipped": 1,
+    "contentHeight": 480,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 1165,
-    "clipped": 1,
+    "contentHeight": 480,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 4047,
-    "clipped": 4,
+    "contentHeight": 836,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -1885,20 +1877,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 800,
-    "clipped": 1,
+    "contentHeight": 790,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 810,
-    "clipped": 1,
+    "contentHeight": 800,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 1550,
-    "clipped": 4,
+    "contentHeight": 1533,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -1911,20 +1903,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 5907,
-    "clipped": 1,
+    "contentHeight": 1617,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 9911,
-    "clipped": 1,
+    "contentHeight": 1833,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 33674,
-    "clipped": 5,
+    "contentHeight": 4647,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -1937,20 +1929,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 5757,
-    "clipped": 1,
+    "contentHeight": 1466,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 9761,
-    "clipped": 1,
+    "contentHeight": 1683,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 33131,
-    "clipped": 5,
+    "contentHeight": 4105,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -1963,20 +1955,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1099,
-    "clipped": 1,
+    "contentHeight": 763,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 1099,
-    "clipped": 1,
+    "contentHeight": 763,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 2536,
-    "clipped": 4,
+    "contentHeight": 1108,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -1989,20 +1981,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1099,
-    "clipped": 1,
+    "contentHeight": 763,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 1099,
-    "clipped": 1,
+    "contentHeight": 763,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 2536,
-    "clipped": 4,
+    "contentHeight": 1108,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -2016,19 +2008,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 693,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 693,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 934,
-    "clipped": 4,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -2042,19 +2034,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 693,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 693,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 934,
-    "clipped": 4,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -2068,19 +2060,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 496,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 496,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 860,
-    "clipped": 4,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -2094,19 +2086,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 672,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 672,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 1105,
-    "clipped": 4,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -2120,19 +2112,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 757,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 757,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 1208,
-    "clipped": 4,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -2146,19 +2138,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 496,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 496,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 860,
-    "clipped": 4,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -2172,19 +2164,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 1024,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 1024,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 1595,
-    "clipped": 4,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -2198,19 +2190,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 1024,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 1024,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 1595,
-    "clipped": 4,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -2224,19 +2216,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 556,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 556,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 650,
-    "clipped": 4,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -2250,19 +2242,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 607,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 607,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 896,
-    "clipped": 4,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -2276,19 +2268,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 607,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 607,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 896,
-    "clipped": 5,
+    "clipped": 4,
     "escapee": 0
    }
   },
@@ -2302,19 +2294,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 607,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 607,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 896,
-    "clipped": 5,
+    "clipped": 4,
     "escapee": 0
    }
   },
@@ -2328,19 +2320,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 607,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 607,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 862,
-    "clipped": 5,
+    "clipped": 4,
     "escapee": 0
    }
   },
@@ -2354,19 +2346,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 607,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 607,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 896,
-    "clipped": 5,
+    "clipped": 4,
     "escapee": 0
    }
   },
@@ -2380,19 +2372,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 556,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 556,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 650,
-    "clipped": 4,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -2406,19 +2398,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 607,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 607,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 896,
-    "clipped": 5,
+    "clipped": 4,
     "escapee": 0
    }
   },
@@ -2432,19 +2424,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 607,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 607,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 896,
-    "clipped": 5,
+    "clipped": 4,
     "escapee": 0
    }
   },
@@ -2458,19 +2450,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 1234,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 1234,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 1956,
-    "clipped": 4,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -2484,19 +2476,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 1234,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 1234,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 1956,
-    "clipped": 4,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -2510,19 +2502,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 1234,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 1234,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 1956,
-    "clipped": 4,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -2536,19 +2528,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 1234,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 1234,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 1956,
-    "clipped": 4,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -2562,19 +2554,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 1234,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 1234,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 1956,
-    "clipped": 4,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -2588,19 +2580,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 605,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 624,
-    "clipped": 1,
+    "contentHeight": 605,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 1001,
-    "clipped": 4,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -2613,20 +2605,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1268,
-    "clipped": 1,
+    "contentHeight": 484,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 1500,
-    "clipped": 1,
+    "contentHeight": 540,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 17216,
-    "clipped": 7,
+    "contentHeight": 1698,
+    "clipped": 6,
     "escapee": 0
    }
   },
@@ -2639,20 +2631,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1316,
-    "clipped": 1,
+    "contentHeight": 1306,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 9044,
-    "clipped": 1,
+    "contentHeight": 1448,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 3752,
-    "clipped": 4,
+    "contentHeight": 3668,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -2665,20 +2657,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1316,
-    "clipped": 1,
+    "contentHeight": 1306,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 9044,
-    "clipped": 1,
+    "contentHeight": 1448,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 3752,
-    "clipped": 4,
+    "contentHeight": 3668,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -2691,20 +2683,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1316,
-    "clipped": 1,
+    "contentHeight": 1306,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 9044,
-    "clipped": 1,
+    "contentHeight": 1448,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 3752,
-    "clipped": 4,
+    "contentHeight": 3668,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -2717,20 +2709,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 40602,
-    "clipped": 1,
+    "contentHeight": 3235,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 45547,
-    "clipped": 1,
+    "contentHeight": 3349,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 87778,
-    "clipped": 4,
+    "contentHeight": 7182,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -2743,20 +2735,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 40602,
-    "clipped": 1,
+    "contentHeight": 3235,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 45547,
-    "clipped": 1,
+    "contentHeight": 3349,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 87778,
-    "clipped": 4,
+    "contentHeight": 7182,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -2770,19 +2762,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 1534,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 1534,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 2272,
-    "clipped": 4,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -2796,19 +2788,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 2018,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 2018,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 3394,
-    "clipped": 4,
+    "contentHeight": 3351,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -2822,19 +2814,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 2018,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 2018,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 3394,
-    "clipped": 4,
+    "contentHeight": 3351,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -2848,19 +2840,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 1786,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 1786,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 2356,
-    "clipped": 4,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -2873,20 +2865,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 778,
-    "clipped": 1,
+    "contentHeight": 480,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 798,
-    "clipped": 1,
+    "contentHeight": 494,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 2044,
-    "clipped": 4,
+    "contentHeight": 718,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -2899,20 +2891,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1853,
-    "clipped": 1,
+    "contentHeight": 541,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 541,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 7242,
-    "clipped": 4,
+    "contentHeight": 1541,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -2925,20 +2917,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1853,
-    "clipped": 1,
+    "contentHeight": 541,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 541,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 7242,
-    "clipped": 4,
+    "contentHeight": 1541,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -2951,20 +2943,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1853,
-    "clipped": 1,
+    "contentHeight": 541,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 541,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 7242,
-    "clipped": 4,
+    "contentHeight": 1541,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -2977,20 +2969,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1853,
-    "clipped": 1,
+    "contentHeight": 541,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 541,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 7242,
-    "clipped": 4,
+    "contentHeight": 1541,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -3003,20 +2995,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 771,
-    "clipped": 1,
+    "contentHeight": 515,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 771,
-    "clipped": 1,
+    "contentHeight": 515,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 1818,
-    "clipped": 5,
+    "contentHeight": 696,
+    "clipped": 4,
     "escapee": 0
    }
   },
@@ -3029,20 +3021,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 771,
-    "clipped": 1,
+    "contentHeight": 515,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 771,
-    "clipped": 1,
+    "contentHeight": 515,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 1818,
-    "clipped": 5,
+    "contentHeight": 696,
+    "clipped": 4,
     "escapee": 0
    }
   },
@@ -3055,20 +3047,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 771,
-    "clipped": 1,
+    "contentHeight": 515,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 771,
-    "clipped": 1,
+    "contentHeight": 515,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 1818,
-    "clipped": 5,
+    "contentHeight": 696,
+    "clipped": 4,
     "escapee": 0
    }
   },
@@ -3081,20 +3073,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 619,
-    "clipped": 1,
+    "contentHeight": 480,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 619,
-    "clipped": 1,
+    "contentHeight": 480,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 1648,
-    "clipped": 5,
+    "contentHeight": 526,
+    "clipped": 4,
     "escapee": 0
    }
   },
@@ -3107,20 +3099,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 619,
-    "clipped": 1,
+    "contentHeight": 480,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 619,
-    "clipped": 1,
+    "contentHeight": 480,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 1648,
-    "clipped": 5,
+    "contentHeight": 526,
+    "clipped": 4,
     "escapee": 0
    }
   },
@@ -3133,20 +3125,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 619,
-    "clipped": 1,
+    "contentHeight": 480,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 619,
-    "clipped": 1,
+    "contentHeight": 480,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 1648,
-    "clipped": 5,
+    "contentHeight": 526,
+    "clipped": 4,
     "escapee": 0
    }
   },
@@ -3160,19 +3152,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 2,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 530,
-    "clipped": 9,
+    "clipped": 7,
     "escapee": 0
    }
   },
@@ -3186,19 +3178,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 7,
+    "clipped": 6,
     "escapee": 0
    }
   },
@@ -3211,20 +3203,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 5118,
-    "clipped": 1,
+    "contentHeight": 1840,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 9276,
-    "clipped": 1,
+    "contentHeight": 1880,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 49015,
-    "clipped": 4,
+    "contentHeight": 7360,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -3237,20 +3229,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 10972,
-    "clipped": 1,
+    "contentHeight": 2590,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 13132,
-    "clipped": 1,
+    "contentHeight": 2610,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 59844,
-    "clipped": 5,
+    "contentHeight": 5814,
+    "clipped": 4,
     "escapee": 0
    }
   },
@@ -3263,20 +3255,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 10972,
-    "clipped": 1,
+    "contentHeight": 2590,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 13132,
-    "clipped": 1,
+    "contentHeight": 2610,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 59844,
-    "clipped": 5,
+    "contentHeight": 5814,
+    "clipped": 4,
     "escapee": 0
    }
   },
@@ -3289,20 +3281,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 10972,
-    "clipped": 1,
+    "contentHeight": 2590,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 13132,
-    "clipped": 1,
+    "contentHeight": 2610,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 59844,
-    "clipped": 5,
+    "contentHeight": 5814,
+    "clipped": 4,
     "escapee": 0
    }
   },
@@ -3316,19 +3308,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 546,
-    "clipped": 4,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -3342,19 +3334,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 546,
-    "clipped": 4,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -3368,19 +3360,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 546,
-    "clipped": 6,
+    "clipped": 5,
     "escapee": 0
    }
   },
@@ -3394,19 +3386,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 546,
-    "clipped": 4,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -3420,19 +3412,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 546,
-    "clipped": 4,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -3446,19 +3438,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 546,
-    "clipped": 4,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -3472,19 +3464,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 546,
-    "clipped": 4,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -3498,19 +3490,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 546,
-    "clipped": 4,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -3523,20 +3515,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1429,
-    "clipped": 1,
+    "contentHeight": 665,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 1429,
-    "clipped": 1,
+    "contentHeight": 665,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 3370,
-    "clipped": 4,
+    "contentHeight": 966,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -3549,20 +3541,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1116,
-    "clipped": 1,
+    "contentHeight": 636,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 1123,
-    "clipped": 1,
+    "contentHeight": 636,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 1977,
-    "clipped": 4,
+    "contentHeight": 954,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -3576,19 +3568,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 4,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -3602,19 +3594,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 4,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -3627,20 +3619,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 8241,
-    "clipped": 1,
+    "contentHeight": 1276,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 12605,
-    "clipped": 1,
+    "contentHeight": 1566,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 67112,
-    "clipped": 4,
+    "contentHeight": 6811,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -3653,20 +3645,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 8241,
-    "clipped": 1,
+    "contentHeight": 1276,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 12605,
-    "clipped": 1,
+    "contentHeight": 1566,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 67112,
-    "clipped": 4,
+    "contentHeight": 6811,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -3679,20 +3671,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 8241,
-    "clipped": 1,
+    "contentHeight": 1276,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 12605,
-    "clipped": 1,
+    "contentHeight": 1566,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 67112,
-    "clipped": 4,
+    "contentHeight": 6811,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -3705,20 +3697,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 8241,
-    "clipped": 1,
+    "contentHeight": 1276,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 12605,
-    "clipped": 1,
+    "contentHeight": 1566,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 67112,
-    "clipped": 4,
+    "contentHeight": 6811,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -3731,20 +3723,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 8241,
-    "clipped": 1,
+    "contentHeight": 1276,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 12605,
-    "clipped": 1,
+    "contentHeight": 1566,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 67112,
-    "clipped": 5,
+    "contentHeight": 6811,
+    "clipped": 4,
     "escapee": 0
    }
   },
@@ -3757,20 +3749,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 8241,
-    "clipped": 1,
+    "contentHeight": 1276,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 12605,
-    "clipped": 1,
+    "contentHeight": 1566,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 67112,
-    "clipped": 4,
+    "contentHeight": 6811,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -3783,20 +3775,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 8241,
-    "clipped": 1,
+    "contentHeight": 1276,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 12605,
-    "clipped": 1,
+    "contentHeight": 1566,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 67112,
-    "clipped": 4,
+    "contentHeight": 6811,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -3809,20 +3801,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 8241,
-    "clipped": 1,
+    "contentHeight": 1276,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 12605,
-    "clipped": 1,
+    "contentHeight": 1566,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 67112,
-    "clipped": 4,
+    "contentHeight": 6811,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -3836,19 +3828,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 1810,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 1857,
-    "clipped": 1,
+    "contentHeight": 1846,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 3946,
-    "clipped": 4,
+    "contentHeight": 3980,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -3862,19 +3854,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 1810,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 1857,
-    "clipped": 1,
+    "contentHeight": 1846,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 3946,
-    "clipped": 4,
+    "contentHeight": 3980,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -3888,19 +3880,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 1530,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 1577,
-    "clipped": 2,
+    "contentHeight": 1566,
+    "clipped": 1,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 3445,
-    "clipped": 7,
+    "contentHeight": 3483,
+    "clipped": 4,
     "escapee": 0
    }
   },
@@ -3914,19 +3906,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 907,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 907,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 1586,
-    "clipped": 6,
+    "contentHeight": 1548,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -3939,20 +3931,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1332,
-    "clipped": 1,
+    "contentHeight": 740,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 4315,
-    "clipped": 1,
+    "contentHeight": 789,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 17607,
-    "clipped": 7,
+    "contentHeight": 4029,
+    "clipped": 6,
     "escapee": 0
    }
   },
@@ -3965,20 +3957,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1066,
-    "clipped": 1,
+    "contentHeight": 503,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 1130,
-    "clipped": 1,
+    "contentHeight": 538,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 14917,
-    "clipped": 4,
+    "contentHeight": 2739,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -3991,20 +3983,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 7813,
-    "clipped": 1,
+    "contentHeight": 631,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 8908,
-    "clipped": 1,
+    "contentHeight": 709,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 16142,
-    "clipped": 5,
+    "contentHeight": 1778,
+    "clipped": 4,
     "escapee": 0
    }
   },
@@ -4017,20 +4009,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 616,
-    "clipped": 1,
+    "contentHeight": 480,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 616,
-    "clipped": 1,
+    "contentHeight": 480,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 1795,
-    "clipped": 4,
+    "contentHeight": 571,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -4044,19 +4036,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 1075,
-    "clipped": 4,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -4070,19 +4062,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 709,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 709,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 1047,
-    "clipped": 5,
+    "contentHeight": 971,
+    "clipped": 4,
     "escapee": 0
    }
   },
@@ -4096,19 +4088,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 709,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 709,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 1047,
-    "clipped": 5,
+    "contentHeight": 971,
+    "clipped": 4,
     "escapee": 0
    }
   },
@@ -4122,19 +4114,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 709,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 709,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 1047,
-    "clipped": 5,
+    "contentHeight": 971,
+    "clipped": 4,
     "escapee": 0
    }
   },
@@ -4148,19 +4140,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 709,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 709,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 1047,
-    "clipped": 5,
+    "contentHeight": 971,
+    "clipped": 4,
     "escapee": 0
    }
   },
@@ -4173,20 +4165,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 661,
-    "clipped": 1,
+    "contentHeight": 480,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 1117,
-    "clipped": 1,
+    "contentHeight": 480,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 1188,
-    "clipped": 4,
+    "contentHeight": 480,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -4199,20 +4191,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 5118,
-    "clipped": 1,
+    "contentHeight": 1840,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 9276,
-    "clipped": 1,
+    "contentHeight": 1880,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 49015,
-    "clipped": 4,
+    "contentHeight": 7360,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -4225,20 +4217,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 10972,
-    "clipped": 1,
+    "contentHeight": 2590,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 13132,
-    "clipped": 1,
+    "contentHeight": 2610,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 59844,
-    "clipped": 5,
+    "contentHeight": 5814,
+    "clipped": 4,
     "escapee": 0
    }
   },
@@ -4251,20 +4243,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 10972,
-    "clipped": 1,
+    "contentHeight": 2590,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 13132,
-    "clipped": 1,
+    "contentHeight": 2610,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 59844,
-    "clipped": 5,
+    "contentHeight": 5814,
+    "clipped": 4,
     "escapee": 0
    }
   },
@@ -4277,20 +4269,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 10972,
-    "clipped": 1,
+    "contentHeight": 2590,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 13132,
-    "clipped": 1,
+    "contentHeight": 2610,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 59844,
-    "clipped": 5,
+    "contentHeight": 5814,
+    "clipped": 4,
     "escapee": 0
    }
   },
@@ -4303,20 +4295,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1379,
-    "clipped": 1,
+    "contentHeight": 1123,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 1379,
-    "clipped": 1,
+    "contentHeight": 1123,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 2992,
-    "clipped": 5,
+    "contentHeight": 1794,
+    "clipped": 4,
     "escapee": 0
    }
   },
@@ -4329,20 +4321,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1379,
-    "clipped": 1,
+    "contentHeight": 1123,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 1379,
-    "clipped": 1,
+    "contentHeight": 1123,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 2992,
-    "clipped": 5,
+    "contentHeight": 1794,
+    "clipped": 4,
     "escapee": 0
    }
   },
@@ -4355,20 +4347,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1379,
-    "clipped": 1,
+    "contentHeight": 1123,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 1379,
-    "clipped": 1,
+    "contentHeight": 1123,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 2992,
-    "clipped": 5,
+    "contentHeight": 1794,
+    "clipped": 4,
     "escapee": 0
    }
   },
@@ -4381,20 +4373,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 771,
-    "clipped": 1,
+    "contentHeight": 515,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 771,
-    "clipped": 1,
+    "contentHeight": 515,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 1818,
-    "clipped": 5,
+    "contentHeight": 696,
+    "clipped": 4,
     "escapee": 0
    }
   },
@@ -4407,20 +4399,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 771,
-    "clipped": 1,
+    "contentHeight": 515,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 771,
-    "clipped": 1,
+    "contentHeight": 515,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 1818,
-    "clipped": 5,
+    "contentHeight": 696,
+    "clipped": 4,
     "escapee": 0
    }
   },
@@ -4433,20 +4425,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 771,
-    "clipped": 1,
+    "contentHeight": 515,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 771,
-    "clipped": 1,
+    "contentHeight": 515,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 1818,
-    "clipped": 5,
+    "contentHeight": 696,
+    "clipped": 4,
     "escapee": 0
    }
   },
@@ -4459,20 +4451,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 619,
-    "clipped": 1,
+    "contentHeight": 480,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 619,
-    "clipped": 1,
+    "contentHeight": 480,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 1648,
-    "clipped": 5,
+    "contentHeight": 526,
+    "clipped": 4,
     "escapee": 0
    }
   },
@@ -4485,20 +4477,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 619,
-    "clipped": 1,
+    "contentHeight": 480,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 619,
-    "clipped": 1,
+    "contentHeight": 480,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 1648,
-    "clipped": 5,
+    "contentHeight": 526,
+    "clipped": 4,
     "escapee": 0
    }
   },
@@ -4511,20 +4503,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 619,
-    "clipped": 1,
+    "contentHeight": 480,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 619,
-    "clipped": 1,
+    "contentHeight": 480,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 1648,
-    "clipped": 5,
+    "contentHeight": 526,
+    "clipped": 4,
     "escapee": 0
    }
   },
@@ -4537,20 +4529,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1853,
-    "clipped": 1,
+    "contentHeight": 541,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 541,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 7242,
-    "clipped": 4,
+    "contentHeight": 1541,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -4563,20 +4555,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1853,
-    "clipped": 1,
+    "contentHeight": 541,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 541,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 7242,
-    "clipped": 4,
+    "contentHeight": 1541,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -4589,20 +4581,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1853,
-    "clipped": 1,
+    "contentHeight": 541,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 541,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 7242,
-    "clipped": 4,
+    "contentHeight": 1541,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -4615,20 +4607,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1853,
-    "clipped": 1,
+    "contentHeight": 541,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 541,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 7242,
-    "clipped": 4,
+    "contentHeight": 1541,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -4641,20 +4633,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1347,
-    "clipped": 1,
+    "contentHeight": 1308,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 1425,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 1864,
-    "clipped": 4,
+    "contentHeight": 1802,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -4667,20 +4659,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1347,
-    "clipped": 1,
+    "contentHeight": 1308,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 1425,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 1864,
-    "clipped": 4,
+    "contentHeight": 1802,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -4693,20 +4685,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1347,
-    "clipped": 1,
+    "contentHeight": 1308,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 1425,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 1864,
-    "clipped": 4,
+    "contentHeight": 1802,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -4719,20 +4711,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 4898,
-    "clipped": 1,
+    "contentHeight": 1306,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 5207,
-    "clipped": 1,
+    "contentHeight": 1435,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 15804,
-    "clipped": 4,
+    "contentHeight": 3090,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -4746,19 +4738,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 950,
-    "clipped": 4,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -4772,19 +4764,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 950,
-    "clipped": 4,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -4798,19 +4790,19 @@
    "w130": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
     "contentHeight": 480,
-    "clipped": 1,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
     "contentHeight": 950,
-    "clipped": 4,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -4823,20 +4815,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1079,
-    "clipped": 1,
+    "contentHeight": 619,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 1079,
-    "clipped": 1,
+    "contentHeight": 639,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 1679,
-    "clipped": 4,
+    "contentHeight": 719,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -4849,20 +4841,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1079,
-    "clipped": 1,
+    "contentHeight": 619,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 1079,
-    "clipped": 1,
+    "contentHeight": 639,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 1679,
-    "clipped": 4,
+    "contentHeight": 719,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -4875,20 +4867,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 7254,
-    "clipped": 1,
+    "contentHeight": 1542,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 8947,
-    "clipped": 1,
+    "contentHeight": 1689,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 43312,
-    "clipped": 4,
+    "contentHeight": 4083,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -4901,20 +4893,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 7254,
-    "clipped": 1,
+    "contentHeight": 1542,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 8947,
-    "clipped": 1,
+    "contentHeight": 1689,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 43312,
-    "clipped": 4,
+    "contentHeight": 4083,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -4927,20 +4919,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 7254,
-    "clipped": 1,
+    "contentHeight": 1542,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 8947,
-    "clipped": 1,
+    "contentHeight": 1689,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 43312,
-    "clipped": 4,
+    "contentHeight": 4083,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -4953,20 +4945,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 7254,
-    "clipped": 1,
+    "contentHeight": 1542,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 8947,
-    "clipped": 1,
+    "contentHeight": 1689,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 43312,
-    "clipped": 4,
+    "contentHeight": 4083,
+    "clipped": 3,
     "escapee": 0
    }
   },
@@ -4979,20 +4971,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 7254,
-    "clipped": 1,
+    "contentHeight": 1542,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 8947,
-    "clipped": 1,
+    "contentHeight": 1689,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 43312,
-    "clipped": 7,
+    "contentHeight": 4083,
+    "clipped": 6,
     "escapee": 0
    }
   },
@@ -5005,20 +4997,20 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1165,
-    "clipped": 1,
+    "contentHeight": 480,
+    "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 1165,
-    "clipped": 1,
+    "contentHeight": 480,
+    "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 4047,
-    "clipped": 4,
+    "contentHeight": 836,
+    "clipped": 3,
     "escapee": 0
    }
   }
