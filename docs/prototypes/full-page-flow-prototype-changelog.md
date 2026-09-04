@@ -19,6 +19,72 @@
 
 ## 변경 내역
 
+### PRT-189 · 2026-09-04 감사 검사기 6개 결함 정정 · 알려진 미해결 목록 신설
+
+- 날짜: 2026-09-04
+- 디자인 동기화 ID: `DS-20260904-011`
+- 적용 범위: 렌더 감사 스크립트(전면 개정), 결과 JSON, 알려진 미해결 목록(신설),
+  동기화 검사 스크립트, 루트 `package.json`·`pnpm-lock.yaml`, UI 가이드 B.8a,
+  현재 확정안 2.14, 적용본 동기화 표식 1줄. **CSS·JS·마크업 변경 없음**
+- 상태: 검증 기반 정비 · 프로토타입 렌더 무변경
+- 근거: `PRT-188`에 대한 독립 검수 지적 6건(Major 4 · Minor 2) 반영. 반박 0건
+- 변경 내용:
+  - **F01 Major · 200% 검수가 글자 확대를 측정하지 않았다.** `documentElement.style.zoom = 2`는
+    CSS 전체 확대이지 큰 글꼴이 아니다. 두 계약을 패스로 분리했다 —
+    `mobile320z2`(`cssZoom2`)와 `mobile320t2`(`textOnly2`, 요소별 computed font-size를 2배).
+    또 `.phone` 내부 `scrollWidth` 비교만으로는 확대된 `.phone`이 화면 밖으로 나가는 경우를
+    놓치므로 **viewport 경계 이탈**(`documentOverflow`, `viewportEscapees`)을 함께 측정한다.
+  - **F02 Major · `consoleErrors`가 콘솔 오류가 아니었다.** `pageerror`만 구독해 미처리 예외만
+    잡으면서 이름은 `consoleErrors`였다. `page.on('console')`의 `type()==='error'`를 별도로
+    수집하고 `pageErrors`와 분리해 기록한다.
+  - **F03 Major · 입력값과 금지 굵기 검사가 계약보다 좁았다.** 직접 text node만 봐서
+    `<input value>`를 통째로 건너뛰었다 — 현재 확정안 2.15는 "text node와 입력값 전체"를
+    계약으로 못박는다. `<input>`·`<textarea>`의 값·placeholder와 `contenteditable`을 포함했다.
+    굵기는 **선언값과 computed를 분리**해, 선언값에서는 `900`을 포함한 여섯 값을 CSS 규칙과
+    인라인 `style` 양쪽에서 금지하고(`@font-face` at-rule 제외), computed에서는 `900`을 뺀
+    다섯을 금지한다 — computed `900`은 `b·strong`의 브라우저 `bolder` 파생이다.
+  - **F04 Major · 실제 face 검증이 없었다.** `document.fonts.ready`는 폰트가 실패해 대체
+    글꼴로 정착해도 resolve된다. `PRT-182`에서 실제로 있었던 `@font-face` descriptor 손상이
+    `fontFailures: 0`으로 통과할 수 있었다. 네 face를 명시 적재한 뒤 `document.fonts.check()`로
+    단언하고 100px 프로브의 실측 폭이 넷 다 구분되는지 확인해 target별로 보존한다.
+  - **F05 Minor · 게이트가 실패한 결과도 봉인할 수 있었다.** 산식(활성+숨김=측정,
+    screen+popup쌍=활성), target 중복 0, 4개 패스 존재를 단언하고,
+    0이어야 하는 지표의 위반을 **알려진 미해결 목록과 양방향 대조**한다 —
+    목록에 없는 위반은 새 회귀라 실패, 목록에 있는데 재현 안 되면 낡은 예외라 실패.
+  - **F06 Minor · 재현 명령이 실행되지 않았다.** `playwright 1.62.1`을 루트 devDependency로
+    고정하고 `pnpm-lock.yaml`에 잠갔다. `pnpm prototype:audit` / `pnpm prototype:audit:setup`을
+    추가했고 manifest에 playwright 판본도 기록한다.
+  - **개정한 검사기가 자기 자신의 결함 3건을 더 드러냈다.** 전부 정정하고 스크립트 주석에
+    남겼다 — face는 실제로 쓰일 때만 지연 로드되므로 `600`을 안 쓰는 화면 26곳이 오탐으로
+    잡혔고(명시 적재로 해결), 가로 스크롤 컨테이너 안 요소는 화면 밖으로 나가는 것이
+    정상인데 이탈로 셌으며, 글자 2배 패스에서 TYPE 스케일 검사는 성립하지 않는데 돌고 있었다.
+  - **개정한 검사기가 진짜 결함 2건을 새로 찾았다.** 임의로 고치지 않고
+    `full-page-flow-prototype-render-audit-known.json`에 원인·근거·상태·추적처와 함께 등록했다.
+    - `KD-001` — 글자 200%에서 `my_vendors` 계열 4개 target이 가로 5px 넘친다.
+      `.header-icon`이 고정 `40×40`인데 `＋` 글리프가 `53px`이 되고 축소·클립되지 않는다.
+      **큰 글꼴에서 아이콘 글리프를 어떻게 다룰지는 디자인 결정**이라 열어 뒀다.
+    - `KD-002` — CSS 200% 확대에서 `option_more` 팝오버가 화면 왼쪽 밖(`left -76`)으로 나간다.
+      독립 생성 레이어라 공용 Layer의 폭·경계 계약을 받지 않는다. 부록 C
+      `layer:popover-wrapper`로 이미 추적 중인 문제의 새 증거다.
+- 검증 (`file://`, 최종 파일. 아래 수치는 전부 보존된 결과 JSON에서 인용):
+  - 측정 185 = 활성 182(screen 61 + popup 쌍 121) + 숨김 3, target 중복 0
+  - 활성 고유 ID 96 — `overlay` 86 · `pageState` 9 · `independent` 1 · `none` 0
+  - 패스 4종 — `pageErrors` 0 · `consoleErrors` 0 · `fontFailures` 0 ·
+    `fontChecksFailed` 0 · `facesNotDistinct` 0 · `bannedComputed` 0 · `bannedDeclared` 0
+  - face 실측 폭 `400 1472.38 / 600 1492.48 / 700 1502.55 / 800 1512.89` — 넷 다 구분
+  - `violationCount` 5 = `KD-001` 4건 + `KD-002` 1건. **알려진 목록과 정확히 일치**
+  - 스케일 밖은 허용 목록(`SPAN 11px`, `route 10px`)뿐, 그 밖은 0건
+  - 결속 — 스크립트 SHA `954d0ab0…f3ac3314`, 적용본 SHA `8e65d680…c64888e24`,
+    `DS-20260904-011`. 실행 환경 node v22.22.2 · playwright 1.62.1 · chromium 141.0.7390.37
+- 기획안 반영 포인트:
+  - **지표 이름이 계약을 정확히 말해야 한다.** `zoom`은 글자 확대가 아니고
+    `pageerror`는 콘솔 오류가 아니다. 이름이 어긋나면 0이라는 숫자가 거짓말을 한다.
+  - **통과 조건은 "실패가 없다"가 아니라 "알려진 실패와 정확히 일치한다"여야 한다.**
+    양방향 대조라야 새 회귀도 막고 낡은 예외도 지우게 만든다.
+  - **재현 명령은 저장소에서 그대로 돌아야 한다.** 판본을 lockfile에 고정한다.
+  - 검사기를 고칠 때마다 새 결함이 나온다. **못 보던 것을 보게 만드는 것이 목적**이므로,
+    나온 결함은 덮지 말고 원인·판단 주체와 함께 목록에 남긴다.
+
 ### PRT-188 · 2026-09-04 렌더 감사 스크립트·원시 로그 보존 및 게이트 결속
 
 - 날짜: 2026-09-04

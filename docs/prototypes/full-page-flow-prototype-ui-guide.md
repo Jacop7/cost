@@ -6,7 +6,7 @@
 
 - 상태: 서비스 기준 재검토 개정안
 - 개정일: 2026-09-02
-- 현재 디자인 동기화 ID: `DS-20260904-010`
+- 현재 디자인 동기화 ID: `DS-20260904-011`
 - 적용 대상: `docs/prototypes/full-page-flow-prototype.html`, UI 적용 복사본과 향후 Expo 공용 UI
 - 등록 인벤토리: 프로토타입 `screen` 키 62개, 팝업·조건 상태 호스트 123개, 고유 ID 98개
   (PRT-182 정정: 이전 표기 `125 / 99`는 `PRT-151`이 `recipe_target_help`를 두 호스트에서
@@ -1583,12 +1583,49 @@ B.1~B.2에만 보존하고 이 활성 레지스트리에는 넣지 않는다.
 |---|---|
 | 측정 스크립트 | `full-page-flow-prototype-render-audit.mjs` |
 | 결과(target별 원시 로그) | `full-page-flow-prototype-render-audit.json` |
-| 재현 | `node full-page-flow-prototype-render-audit.mjs 0_full-page-flow-prototype-ui-applied.html` |
+| 알려진 미해결 목록 | `full-page-flow-prototype-render-audit-known.json` |
+| 재현 | 저장소 루트에서 `pnpm prototype:audit` (최초 1회 `pnpm prototype:audit:setup`) |
+
+`playwright`는 루트 `package.json`의 devDependency로 **정확한 판본을 고정**하고
+`pnpm-lock.yaml`에 잠갔다. 재현 명령이 현재 checkout에서 그대로 돈다.
 
 결과 JSON의 `manifest`가 측정 스크립트 SHA-256, 대상 적용본 SHA-256, 동기화 ID,
-node·chromium 판본, 뷰포트 정의를 함께 담는다. `full-page-flow-prototype-design-sync-check.ps1`이
-이 셋(적용본 SHA·동기화 ID·스크립트 SHA)의 일치를 검사하므로 **적용본이 바뀌면 증거가
-자동으로 무효가 되고 게이트가 막힌다.** 낡은 측정값을 그대로 인용할 수 없다.
+node·playwright·chromium 판본, 패스 정의를 담는다.
+`full-page-flow-prototype-design-sync-check.ps1`이 이 셋(적용본 SHA·동기화 ID·스크립트 SHA)을
+현재 파일에서 다시 계산해 대조하므로 **적용본이 바뀌면 증거가 자동으로 무효가 되고 게이트가
+막힌다.** 게이트는 나아가 산식(활성+숨김=측정, screen+popup쌍=활성), target 중복 0,
+4개 패스 존재, 그리고 **0이어야 하는 지표의 위반을 알려진 미해결 목록과 양방향으로 대조**한다 —
+목록에 없는 위반이 나오면 새 회귀이므로 실패하고, 목록에 있는데 재현되지 않으면 낡은 예외이므로
+실패한다. 그래서 그 목록은 무시 목록이 아니라 **고쳐야 할 것의 정확한 잔여 목록**이다.
+
+**검수 패스 4종** — 이름이 계약을 정확히 말한다.
+
+| 패스 | 뷰포트 | 모드 | 무엇을 보는가 |
+|---|---|---|---|
+| `pc` | 1280×900 | 원본 | 데스크톱 기본 |
+| `mobile320` | 320×720 | 원본 | 최소 폭 |
+| `mobile320z2` | 320×720 | `cssZoom2` | **CSS 전체 확대.** 레이아웃까지 함께 커진다 |
+| `mobile320t2` | 320×720 | `textOnly2` | **글자만 200%.** 큰 글꼴 계약은 이쪽이다 |
+
+`zoom`은 글자 확대가 아니다. 두 가지는 다른 계약이므로 패스를 나눠 각각 측정한다.
+각 패스에서 `.phone` 내부 넘침과 **viewport 경계 이탈**을 함께 본다 — 확대된 `.phone`이
+화면 밖으로 나가는 경우는 내부 `scrollWidth` 비교로 잡히지 않는다. 가로 스크롤 컨테이너
+안이거나 보이지 않는 요소는 이탈로 세지 않는다.
+
+**함께 단언하는 것**
+
+- 콘솔 — 미처리 예외(`pageErrors`)와 `console.error`(`consoleErrors`)를 **분리해** 센다.
+  `pageerror`만 구독하면 `console.error()`는 잡히지 않는다.
+- 숫자 — 직접 text node뿐 아니라 `<input>`·`<textarea>`의 값과 placeholder,
+  `contenteditable` 텍스트까지 검사한다(현재 확정안 2.15의 "text node와 입력값 전체").
+- 굵기 — **선언값과 computed를 분리한다.** 선언값은 `300·500·650·750·850·900`을 전부 금지하고
+  CSS 규칙과 인라인 `style` 양쪽에서 찾는다(`@font-face` at-rule은 계약 대상이 아니라 제외).
+  computed는 `900`을 뺀 나머지를 금지한다 — computed `900`은 `b·strong`의 브라우저 `bolder`
+  파생이며 렌더 face는 `800`과 같다.
+- 폰트 — `document.fonts.ready`는 **폰트가 실패해 대체 글꼴로 정착해도 resolve된다.**
+  네 face를 `document.fonts.load()`로 명시 적재한 뒤 `document.fonts.check()`로 단언하고,
+  100px 프로브의 실측 폭이 넷 다 구분되는지 확인한다. `PRT-182`에서 실제로 있었던
+  "`@font-face` descriptor 손상"은 이 검사로만 잡힌다.
 
 | 경로 | 개수 | 진입 방식 | 해당 ID |
 |---|---:|---|---|
