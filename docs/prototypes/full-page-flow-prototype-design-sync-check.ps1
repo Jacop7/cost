@@ -373,7 +373,14 @@ else {
   foreach ($passId in @('w130', 'w150', 'w130t2')) {
     $st = $iAudit.summary.stretch.$passId
     if ($null -eq $st) { Add-Failure "$i18nName : $passId 확대 통계 누락"; continue }
-    if ($null -eq $st.errorHistogram) { Add-Failure "$i18nName : $passId 오차 분포(errorHistogram) 누락" }
+    if ($null -eq $st.errorHistogram -and $passId -ne 'w130t2') { Add-Failure "$i18nName : $passId 오차 분포(errorHistogram) 누락" }
+    # 글자 확대 패스는 폭 목표가 성립하지 않아 오차·atRisk 를 재지 않는다(그 이유가 적혀 있어야 한다)
+    if ($passId -eq 'w130t2') {
+      if ([string]::IsNullOrWhiteSpace($st.widthErrorNote)) {
+        Add-Failure "$i18nName : w130t2 에서 폭 오차를 재지 않은 이유가 기록되지 않았다"
+      }
+      continue
+    }
     if ($null -eq $st.atRiskCount)    { Add-Failure "$i18nName : $passId atRisk 개수 누락 — 덜 늘어난 요소가 제대로 늘렸을 때 넘쳤을지 판정하지 않았다" }
     if ($null -eq $st.underStretched) { Add-Failure "$i18nName : $passId underStretched 누락" }
   }
@@ -394,9 +401,45 @@ else {
     if ($b.targetsWithEscapee -ne 0) { Add-Failure "$i18nName : 기준선에서 화면 이탈 $($b.targetsWithEscapee)건 — 번역 이전의 결함" }
     if ($b.targetsWithPhoneOverflow -ne 0) { Add-Failure "$i18nName : 기준선에서 가로 넘침 $($b.targetsWithPhoneOverflow)건 — 번역 이전의 결함" }
   }
+  # atRisk 를 개수로만 비교하면 106건이 다른 106건으로 바뀌어도 통과한다.
+  # 알려진 잔여 목록과 **양방향 + 크기**로 대조한다.
+  $knownI18nName = 'full-page-flow-prototype-i18n-known.json'
+  $knownI18nPath = Join-Path $PrototypeDirectory $knownI18nName
+  if (-not (Test-Path -LiteralPath $knownI18nPath)) {
+    Add-Failure "$knownI18nName : atRisk 알려진 잔여 목록이 없음"
+  }
+  else {
+    $knownI18n = Read-Utf8 $knownI18nPath | ConvertFrom-Json
+    if ($knownI18n.boundTo.target -ne $iAudit.manifest.target.sha256) {
+      Add-Failure "$knownI18nName : 결속된 적용본 SHA 가 현재 감사와 다름. 재생성 필요"
+    }
+    $observed = @{}
+    foreach ($passId in @('w130', 'w150')) {
+      foreach ($r in $iAudit.summary.stretch.$passId.atRisk) {
+        $observed["$passId|$($r.target)|$($r.sel)"] = [double]$r.missing
+      }
+    }
+    $knownKeys = @{}
+    foreach ($prop in $knownI18n.entries.PSObject.Properties) { $knownKeys[$prop.Name] = [double]$prop.Value.missing }
+    foreach ($k in $observed.Keys) {
+      if (-not $knownKeys.ContainsKey($k)) { Add-Failure "$i18nName : 알려지지 않은 atRisk — $k (새 회귀)" }
+      elseif ($observed[$k] -gt $knownKeys[$k] + 0.5) {
+        Add-Failure "$i18nName : atRisk 악화 — $k 부족 폭 $($knownKeys[$k]) → $($observed[$k])"
+      }
+    }
+    $goneCount = 0
+    foreach ($k in $knownKeys.Keys) { if (-not $observed.ContainsKey($k)) { $goneCount++ } }
+    if ($goneCount -gt 0) {
+      Write-Output "  NOTE: $knownI18nName 의 $goneCount 건이 재현되지 않습니다(개선). 목록에서 지우세요."
+    }
+  }
+
   # 확대가 실제로 일어났는지 단언한다. 0건이면 스트레스를 안 준 채로 통과할 수 있다.
   if ($iAudit.summary.stretch.w130.stretched -lt 1) { Add-Failure "$i18nName : w130 에서 늘어난 텍스트가 없음 — 스트레스가 걸리지 않았다" }
   if ($iAudit.summary.stretch.w130t2.text2x -lt 1) { Add-Failure "$i18nName : w130t2 에서 글자 확대가 적용되지 않았다" }
+  if ($iAudit.summary.stretch.w130t2.text2xMismatched -ne 0) {
+    Add-Failure "$i18nName : 글자 확대가 기준×2 와 어긋난 요소 $($iAudit.summary.stretch.w130t2.text2xMismatched)건 — 상속이 겹쳤거나 우선순위에 졌다"
+  }
   if ($iAudit.summary.stretch.w130.skippedNumeric -lt 1) { Add-Failure "$i18nName : 숫자 제외가 0건 — 숫자까지 늘렸을 가능성" }
 }
 
@@ -412,7 +455,7 @@ foreach ($fileName in $contentsByFile.Keys) {
 }
 foreach ($fileName in @($auditName, $auditScriptName, 'full-page-flow-prototype-render-audit-known.json', $designAuditName, $designAuditScriptName, $i18nName, $i18nScriptName,
     'full-page-flow-prototype-token-map.json', 'full-page-flow-prototype-token-map-check.mjs',
-    'full-page-flow-prototype-token-map-check.json')) {
+    'full-page-flow-prototype-token-map-check.json', 'full-page-flow-prototype-i18n-known.json')) {
   $contents = Read-Utf8 (Join-Path $PrototypeDirectory $fileName)
   if ($null -ne $contents) { $hashes[$fileName] = Get-Sha256 $contents }
 }

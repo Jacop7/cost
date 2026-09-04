@@ -4,14 +4,14 @@
   "note": "docs/디자인-토큰-3계층-값-매핑-기획서.md 의 결정을 기계가 읽을 수 있게 옮긴 것이다. 문서가 정본이고 이 파일은 그 사본이다. 검수(솔·페이블) 확정 전까지 status 는 PROVISIONAL 이며, 게이트는 이 파일이 PROVISIONAL 인 동안 미매핑을 FAIL 로 올리지 않고 보고만 한다. 2026-09-04 갱신: 검수(솔·페이블) 지적 반영. nudge 스케일은 폐기했다 — 1·6px 관측의 대부분이 브라우저 기본 버튼 padding 이었고, 남은 author 선언은 값·역할 모두 space 로 흡수된다.",
   "sourcePlan": "docs/디자인-토큰-3계층-값-매핑-기획서.md",
   "primitive": {
+    "_정본": "apps/mobile/src/theme/tokens.ts. 이 칸에는 코드에 실재하는 값만 넣는다. 없는 값을 여기 적으면 두 번째 정본이 생긴다.",
     "typeSize": [
       22,
       20,
       18,
       16,
       14,
-      13,
-      12
+      13
     ],
     "typeWeight": [
       400,
@@ -25,28 +25,15 @@
       12,
       16,
       20,
-      24,
-      32
+      24
     ],
     "radius": {
-      "sm": 6,
+      "sm": 8,
       "md": 12,
       "lg": 16,
       "xl": 20,
-      "full": 999,
-      "circle": "50%"
+      "full": 999
     },
-    "iconSize": [
-      16,
-      20,
-      24
-    ],
-    "controlHeight": [
-      32,
-      38,
-      44,
-      48
-    ],
     "color": {
       "ink.900": "rgb(25, 31, 40)",
       "ink.700": "rgb(51, 61, 75)",
@@ -72,26 +59,7 @@
       "chart.2": "rgb(197, 204, 211)"
     },
     "shadow": {
-      "card": "rgba(0, 0, 0, 0.04) 0px 1px 3px 0px",
-      "sheet": "rgba(25, 31, 40, 0.24) 0px 18px 50px 0px",
-      "fab": "rgba(49, 130, 246, 0.34) 0px 7px 20px 0px",
-      "bottomBar": "rgba(25, 31, 40, 0.12) 0px -8px 30px 0px"
-    },
-    "rowHeight": [
-      60,
-      76,
-      92
-    ],
-    "_rowHeightNote": "실행서 §3.4 — 3줄 기록 Row 92 / 2줄 관리 Row 76 / 1줄 단순 Row 60. 전부 min-height 로 계약하고 height 로 고정하지 않는다",
-    "lineHeight": {
-      "tight": 1.0,
-      "default": 1.4,
-      "relaxed": 1.5
-    },
-    "_lineHeightNote": "선언된 행간의 실측 비율은 1.35~1.4 에 몰려 있다(16px→21.6=1.35 · 13px→18.2=1.4 · 14px→19.6=1.4 · 19px→26.6=1.4). 뱃지만 1.0. 긴 본문용 1.5 는 가이드 요구.",
-    "letterSpacing": {
-      "none": 0,
-      "titleTight": -0.3
+      "card": "rgba(0, 0, 0, 0.04) 0px 1px 3px 0px"
     }
   },
   "converge": {
@@ -109,15 +77,13 @@
       "18": 16,
       "19": 20,
       "22": 24,
-      "1": 4,
-      "2": 4,
       "3": 4,
       "6": 8
     },
     "radius": {
-      "5": 6,
-      "7": 6,
-      "8": 12,
+      "5": 8,
+      "6": 8,
+      "7": 8,
       "9": 12,
       "10": 12,
       "11": 12,
@@ -129,8 +95,9 @@
       "28": 999
     },
     "typeSize": {
-      "10": 12,
+      "10": 13,
       "11": 13,
+      "12": 13,
       "15": "역할별 — caption 14 또는 body 16",
       "19": 20
     },
@@ -204,6 +171,11 @@
       "24.3px": "default",
       "20.3px": "default",
       "23px": "default"
+    },
+    "_spaceNote": {
+      "3→4": "값↔보조 설명 사이 margin-top 이 971회 중 대부분. 단일 역할이고 **세로**라 폭에 영향이 없다. 의도된 시각 변화이며 selector 별 전후 비교를 P2 승인 근거로 둔다",
+      "6→8": "gap(row) 이 대부분이고 flex 가로 gap 이므로 **폭이 는다**. 의도된 시각 변화이며 P2 후 글로벌 재측정에서 atRisk 증가 0 을 확인해야 확정된다",
+      "일괄 수렴 안 함": "1·2px 은 값이 아니라 관계로 판정했다. 둘 다 컴포넌트 소유 광학 보정이지 레이아웃 여백이 아니다"
     }
   },
   "componentOwned": {
@@ -223,6 +195,33 @@
         "value": 40,
         "owner": "order-empty-form > order-empty-message",
         "reason": "빈 상태 여백"
+      },
+      {
+        "value": 2,
+        "owner": "Field 라벨 좌우 정렬 — edit-form-row>edit-form-label(246) · stock-add-field>stock-add-label(58) · stock-result-field>stock-add-label(52) · content>tax-section-label(48) · content>sales-section(40)",
+        "side": "좌우(mr/ml)",
+        "observations": 444,
+        "reason": "입력 상자 자신의 안쪽 여백만큼 라벨을 좌우로 밀어 **글자 시작선을 맞추는 광학 정렬**이다. 4px 로 늘리면 라벨과 입력의 시작선이 어긋난다. 레이아웃 여백이 아니므로 space 로 보내지 않는다"
+      },
+      {
+        "value": 2,
+        "owner": "stock-option-choice 좌우 padding",
+        "side": "좌우(pr/pl)",
+        "observations": 336,
+        "reason": "칩 안쪽 좌우 인셋. 늘리면 본문 폭이 준다 — 기획서 §3 의 '가로 padding 은 줄이는 방향만 안전' 에 걸린다"
+      },
+      {
+        "value": 2,
+        "owner": "category-row>category-arrows gap",
+        "side": "row",
+        "observations": 96,
+        "reason": "위·아래 화살표 두 개 사이. 실행서 §3.6 이 28×20 규격을 명시적으로 허용한 자리다"
+      },
+      {
+        "value": 1,
+        "owner": "content>category-note(20) · div>sheet-section 좌우(8) · edit-form>expo-manage-link(3)",
+        "observations": 31,
+        "reason": "31관측 4관계뿐인 일회성 미세 여백. 스케일로 승격할 근거가 없다"
       }
     ],
     "radius": [
@@ -235,6 +234,11 @@
         "value": 4,
         "owner": "sheet-preview-handle",
         "reason": "핸들 고유 형태"
+      },
+      {
+        "value": "50%",
+        "owner": ".choice-check · .donut-static · .ingredient-note-icon",
+        "reason": "원형. 스케일 값이 아니라 형태다"
       }
     ],
     "controlHeight": [
@@ -274,7 +278,8 @@
         "rgb(239, 239, 239)"
       ],
       "reason": "<button> 인데 border:0·background·color:inherit 를 빼먹어 브라우저 기본 버튼 스타일이 남았다",
-      "declarations": 2
+      "declarations": 2,
+      "status": "RESOLVED — PRT-194 에서 고쳤다. 회귀 감시용으로 남긴다"
     },
     "uaCheckbox": {
       "values": [
@@ -301,15 +306,55 @@
     }
   },
   "open": {
-    "note": "기획서 §8 의 열린 결정. 확정 전까지 이 값들의 매핑은 잠정이다.",
-    "D-1": "색 정본 방향 — green·amberText·blueTint 3건",
-    "D-2": "하단 탭 라벨 글자 확대 상한",
-    "D-3": "typeSize 12 추가 vs 뱃지를 13 으로",
-    "D-4": "폐기 — nudge 분리 근거였던 1·6px 이 브라우저 기본값이었다. 남은 author 1(31회)·2(912, 좌우 인셋)·3(971, 값↔보조 세로)·6(368, gap)은 전부 space 역할이다",
-    "D-5": "19px Sheet 제목의 title 승격",
-    "D-6": "모션·z-index 범위",
-    "D-7": "inheritedBolder 188건을 어느 역할 굵기로 선언할 것인가 — 부모와 같게(600/700/800 유지)인가, 한 단계 위(700/800)인가",
-    "D-8": "행간 3단계(tight 1.0 / default 1.4 / relaxed 1.5)가 맞는가. 실측 선언은 1.35~1.4 에 몰려 있는데 1.4 하나로 합칠지, 1.35 와 1.4 를 나눌지"
+    "note": "기획서 §8 의 열린 결정. 여기 나열된 축의 값은 **잠정**이며, 검사기는 그 값들을 provisionallyMapped 로 따로 센다. 미매핑 0 이 곧 확정 0 은 아니다.",
+    "D-1": {
+      "제목": "색 정본 방향과 목표값",
+      "축": [
+        "color"
+      ],
+      "선행": "대비(contrast) 측정"
+    },
+    "D-2": {
+      "제목": "글자 확대 보상 수단과 header.title 2줄 흡수 여부",
+      "축": [],
+      "선행": "P2 재측정"
+    },
+    "D-7": {
+      "제목": "상속된 bolder 188건을 어느 굵기로 선언할 것인가",
+      "축": [
+        "typeWeight"
+      ],
+      "선행": null
+    },
+    "D-8": {
+      "제목": "행간 단계 — 1.35 와 1.4 를 나눌지",
+      "축": [
+        "lineHeight"
+      ],
+      "선행": null
+    },
+    "D-9": {
+      "제목": "그림자 bottomBar 처리와 미관측 sliderThumb",
+      "축": [
+        "shadow"
+      ],
+      "선행": null
+    },
+    "D-10": {
+      "제목": "P1a/P1b/P1c 범위 분할 승인",
+      "축": [],
+      "선행": null
+    },
+    "D-11": {
+      "제목": "tokens.ts 확장 승인 — lineHeight·letterSpacing·iconSize·controlHeight·rowHeight·shadow(sheet/fab/bottomBar)",
+      "축": [
+        "lineHeight",
+        "shadow",
+        "icon",
+        "control"
+      ],
+      "선행": "정본 소유자 승인"
+    }
   },
   "excluded": {
     "note": "컨트롤·행 규격이 아니어서 매핑 대상이 아닌 것. 제외 이유를 값마다 적는다.",
@@ -337,5 +382,51 @@
         148
       ]
     }
-  }
+  },
+  "retired": {
+    "note": "초판에서 열었다가 결론이 난 것. 다시 열지 않기 위해 남긴다.",
+    "D-3": "뱃지 12px 신설 → 폐기. 가이드가 captionSm 13/600 으로 이미 계약했다",
+    "D-4": "nudge 스케일 분리 → 폐기. 다만 '전부 space 로 보낸다' 는 결론은 아니다. 1·2px 은 컴포넌트 소유 광학 보정으로 남고 3·6px 만 space 로 간다",
+    "D-5": "19px Sheet 제목의 title 승격 → 승격으로 결론",
+    "D-6": "모션·z-index 범위 → P1c 로 분리하는 것으로 결론"
+  },
+  "proposedTokensExtension": {
+    "_note": "tokens.ts 에 **없는** 값이다. 필요하다고 판단했지만 정본 확장은 권위 변경이므로 승인 전까지 primitive 가 아니다. 검사기는 이 칸에 든 목적지를 따로 센다.",
+    "lineHeight": {
+      "tight": 1.0,
+      "default": 1.4,
+      "relaxed": 1.5,
+      "근거": "선언된 행간의 실측 비율이 1.35~1.4 에 몰려 있고 뱃지만 1.0. 관측의 84.7% 는 선언이 없어 브라우저 normal 을 쓴다",
+      "여는 결정": "D-8"
+    },
+    "letterSpacing": {
+      "none": 0,
+      "titleTight": -0.3,
+      "근거": "실측 2종"
+    },
+    "iconSize": [
+      16,
+      20,
+      24
+    ],
+    "controlHeight": [
+      32,
+      38,
+      44,
+      48
+    ],
+    "rowHeight": [
+      60,
+      76,
+      92
+    ],
+    "_rowHeightNote": "실행서 §3.4 가 문서로 계약한 값이지만 tokens.ts 에는 없다",
+    "shadow": {
+      "sheet": "rgba(25, 31, 40, 0.24) 0px 18px 50px 0px",
+      "fab": "rgba(49, 130, 246, 0.34) 0px 7px 20px 0px",
+      "bottomBar": "rgba(25, 31, 40, 0.12) 0px -8px 30px 0px",
+      "_note": "가이드 §1.5 가 sheet·fab 을 계약했으나 tokens.ts 에는 cardShadow 만 있다. bottomBar 는 가이드에도 없다 → D-9"
+    }
+  },
+  "sourcePlanNote": "이 파일은 기획서의 사본이다. 둘이 어긋나면 기획서가 옳다. 검사기가 어긋남을 잡지 못하므로 사람이 함께 고쳐야 한다."
 }

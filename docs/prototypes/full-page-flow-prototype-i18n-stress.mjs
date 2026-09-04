@@ -78,6 +78,21 @@
  *       짧은 라벨에서도 오차가 없다. 기존 자간에는 덮어쓰지 않고 **더한다.**
  *       대신 실제 번역이 만드는 **줄바꿈 기회**는 재현하지 않는다 — 이 방향의 오차는
  *       넘침을 과대 보고하는 쪽(보수적)이다. 노드마다 목표·실제·부호 있는 오차를 남긴다.
+ *  [L12] 두 변형을 겹친 패스에서 폭 오차를 재려 하자 6,986개 중 6개만 ±1% 안에 들었다.
+ *       당연하다 — **글자가 커지면 폭이 늘지 않고 줄이 늘어난다.** 상자 폭이 상한이기
+ *       때문이다. "목표 폭 = 원래 폭 × 자간배수 × 글자배수" 라는 모델 자체가 그 패스에서는
+ *       성립하지 않는다. 그 패스의 판정 근거는 폭 오차가 아니라 **직접 관측한 잘림·넘침**
+ *       이고, 그건 오차와 무관하게 확정이다(이미 잘린 것이 덜 늘렸다고 안 잘리지 않는다).
+ *       그래서 글자 확대 패스에서는 오차·`atRisk` 를 아예 재지 않고 그 이유를 남긴다.
+ *  [L11] `w130t2` 의 오차·`atRisk` 를 **글자 확대 전에** 재고 있었다. 확대와 검산이 한
+ *       함수에 있어 `TEXT2X` 가 그 뒤에 돌았기 때문이다. 두 변형이 겹친 결과를 재겠다고
+ *       패스를 만들어 놓고 하나만 적용된 상태를 쟀다. `STRETCH`(늘리기) 와
+ *       `VERIFY`(검산) 를 분리해 **둘 다 적용된 뒤** 잰다.
+ *       또 `TEXT2X` 가 DOM 순서대로 현재 크기를 읽고 즉시 2배로 써서, 부모와 자식이 각각
+ *       직접 텍스트를 가지면 **자식이 4배**가 됐다. 기준 크기를 먼저 전부 찍고 한 번만
+ *       적용하며, 전 요소에 `실제 = 기준 × 2` 를 단언한다(`text2xMismatched`).
+ *       그리고 `atRisk` 를 노드 하나씩이 아니라 **host 단위 부족 폭 합계**로 판정한다 —
+ *       각각은 여유 안이지만 합치면 넘는 경우를 놓치기 때문이다.
  *  [L10] 자간 방식으로 바꾼 뒤에도 일부 요소가 목표보다 **덜** 늘어났다. 원인은 두 가지다 —
  *       (가) `overflow:hidden` 상자 안에서는 Range 의 client rect 가 잘린 부분을 세지 않는다.
  *       (나) 자간이 커지면 줄바꿈 위치가 바뀌어 폭이 자간에 대해 단조롭지 않다.
@@ -208,50 +223,90 @@ const STRETCH = ({ factor }) => {
     host.style.letterSpacing = (info.base + info.best.ls) + 'px';
   }
 
-  // 검산 — 노드마다 목표 대비 부호 있는 오차를 남긴다
-  const slotOf = e => { const c = (typeof e.className === 'string' && e.className.trim()) || '';
-    return c.split(/\s+/)[0] || e.tagName.toLowerCase(); };
-  const pathOf = e => { const p = []; for (let x = e; x && x !== phone && p.length < 4; x = x.parentElement) p.unshift(slotOf(x)); return p.join('>'); };
-  const hist = {};
-  const worst = [];
-  const atRisk = [];      // 덜 늘어났는데 남은 여유보다 모자란 폭이 더 큰 요소
-  let stretched = 0;
-  for (const [host, info] of before) {
-    // 이 host 가 지금 얼마나 여유가 있는가. 음수면 이미 넘쳤다.
-    const headroom = host.clientWidth - host.scrollWidth;
-    for (const { node, w0 } of info.rows) {
-      const goal = w0 * factor, actual = widthOf(node);
-      const err = goal > 0 ? (actual / goal - 1) * 100 : 0;
-      const bucket = err < -5 ? '<-5%' : err < -1 ? '-5~-1%' : err <= 1 ? '±1%' : err <= 5 ? '1~5%' : '>5%';
-      hist[bucket] = (hist[bucket] ?? 0) + 1;
-      const row = { sel: pathOf(host), sample: node.nodeValue.trim().slice(0, 14),
-        w0: Math.round(w0 * 10) / 10, goal: Math.round(goal * 10) / 10,
-        actual: Math.round(actual * 10) / 10, errPct: Math.round(err * 100) / 100,
-        headroom: Math.round(headroom * 10) / 10 };
-      if (Math.abs(err) > 1) worst.push(row);
-      // **덜 늘어난 요소의 "잘림 0" 은 낙관적이다.** 제대로 늘렸다면 넘쳤을지 여기서 판정한다.
-      if (err < -1 && (goal - actual) > headroom) atRisk.push({ ...row, missing: Math.round((goal - actual) * 10) / 10 });
-      stretched++;
-    }
-  }
-  worst.sort((a, b) => Math.abs(b.errPct) - Math.abs(a.errPct));
-  range.detach?.();
-  return { stretched, skippedNumeric, skippedGlyph, errorHistogram: hist,
-           worst: worst.slice(0, 12), atRisk: atRisk.slice(0, 12), atRiskCount: atRisk.length };
+  // 검산은 VERIFY 가 한다 — 자간 확대와 글자 확대가 **모두** 적용된 뒤에 재야 하기 때문이다.
+  window.__i18nBefore = [...before].map(([host, info]) => ({
+    host, rows: info.rows.map((r, i) => ({ node: r.node, w0: r.w0, ord: i })),
+  }));
+  return { stretched: [...before].reduce((a, [, i]) => a + i.rows.length, 0),
+           skippedNumeric, skippedGlyph };
 };
 
 const TEXT2X = () => {
   const GLYPH = /^[＋+−–—‹›⌄•⋮▸▾✓✗▣●◔▰×…\s]*$/;
-  const phone = document.querySelector('.phone'); if (!phone) return 0;
-  let n = 0;
+  const phone = document.querySelector('.phone'); if (!phone) return { applied: 0, mismatched: 0 };
+  // 기준 크기를 **먼저 전부** 찍고 나서 적용한다 ([L11]).
+  // DOM 순서대로 읽고 바로 쓰면 부모를 2배로 만든 뒤 자식이 그 상속값을 다시 2배로 만들어
+  // 4배가 된다. 부모와 자식이 각각 직접 텍스트를 가지면 실제로 그렇게 된다.
+  const targets = [];
   for (const e of phone.querySelectorAll('*')) {
     let t = ''; e.childNodes.forEach(x => { if (x.nodeType === 3) t += x.nodeValue; });
     if (e.tagName === 'INPUT' || e.tagName === 'TEXTAREA') t += (e.value || '') + (e.placeholder || '');
     t = t.trim(); if (!t || GLYPH.test(t)) continue;
     const size = parseFloat(getComputedStyle(e).fontSize);
-    if (Number.isFinite(size) && size > 0) { e.style.fontSize = (size * 2) + 'px'; n++; }
+    if (Number.isFinite(size) && size > 0) targets.push({ el: e, base: size });
   }
-  return n;
+  // `!important` 로 선언된 크기는 인라인 스타일로 못 이긴다. 우선순위를 맞춰 준다.
+  for (const { el, base } of targets) el.style.setProperty('font-size', (base * 2) + 'px', 'important');
+  // 전 요소에 실제 = 기준 × 2 를 단언한다. 어긋나면 상속이 겹쳤거나 우선순위에 진 것이다.
+  let mismatched = 0;
+  for (const { el, base } of targets) {
+    const got = parseFloat(getComputedStyle(el).fontSize);
+    if (Math.abs(got - base * 2) > 0.5) mismatched++;
+  }
+  return { applied: targets.length, mismatched };
+};
+
+const VERIFY = ({ factor, sizeFactor }) => {
+  const phone = document.querySelector('.phone');
+  const store = window.__i18nBefore;
+  if (!phone || !store) return { errorHistogram: {}, worst: [], atRisk: [], atRiskCount: 0, stretched: 0 };
+  // 글자를 키운 패스에서는 폭 오차를 재지 않는다 ([L12]).
+  // 글자가 커지면 폭이 늘지 않고 **줄이 늘어난다** — 상자 폭이 상한이기 때문이다.
+  // 그래서 "목표 폭" 이라는 개념 자체가 성립하지 않고, 그 패스의 판정 근거는
+  // 폭 오차가 아니라 직접 관측한 잘림·넘침이다.
+  if (sizeFactor > 1) return { errorHistogram: null, worst: [], atRisk: [], atRiskCount: null,
+    stretched: store.reduce((a, i) => a + i.rows.length, 0),
+    note: '글자 확대 패스에서는 폭 목표가 성립하지 않아 오차·atRisk 를 재지 않는다. 판정은 잘림·넘침 직접 관측으로 한다' };
+  const range = document.createRange();
+  const widthOf = n => { range.selectNodeContents(n);
+    let w = 0; for (const r of range.getClientRects()) w += r.width; return w; };
+  const slotOf = e => { const c = (typeof e.className === 'string' && e.className.trim()) || '';
+    return c.split(/\s+/)[0] || e.tagName.toLowerCase(); };
+  const pathOf = e => { const p = []; for (let x = e; x && x !== phone && p.length < 4; x = x.parentElement) p.unshift(slotOf(x)); return p.join('>'); };
+  const hist = {}, worst = [], atRisk = [];
+  let stretched = 0;
+  for (const info of store) {
+    const host = info.host;
+    const headroom = host.clientWidth - host.scrollWidth;
+    // atRisk 는 **host 단위 부족 폭 합계**로 판정한다. 노드 하나씩 여유와 비교하면
+    // 각각은 여유 안이지만 합치면 넘는 경우를 놓친다.
+    let missingSum = 0;
+    const rows = [];
+    for (const r of info.rows) {
+      // 목표는 **적용한 변형을 모두 곱한 것**이다. 글자를 2배로 키운 패스에서 폭 목표를
+      // 자간 배수만으로 두면 전 노드가 "+130% 어긋남" 으로 나온다 — 설계상 그런 것이지
+      // 오차가 아니다.
+      const goal = r.w0 * factor * sizeFactor, actual = widthOf(r.node);
+      const err = goal > 0 ? (actual / goal - 1) * 100 : 0;
+      const bucket = err < -5 ? '<-5%' : err < -1 ? '-5~-1%' : err <= 1 ? '±1%' : err <= 5 ? '1~5%' : '>5%';
+      hist[bucket] = (hist[bucket] ?? 0) + 1;
+      const row = { sel: pathOf(host), ord: r.ord, sample: r.node.nodeValue.trim().slice(0, 14),
+        w0: Math.round(r.w0 * 10) / 10, goal: Math.round(goal * 10) / 10,
+        actual: Math.round(actual * 10) / 10, errPct: Math.round(err * 100) / 100,
+        headroom: Math.round(headroom * 10) / 10 };
+      if (Math.abs(err) > 1) worst.push(row);
+      if (err < -1) missingSum += goal - actual;
+      rows.push(row);
+      stretched++;
+    }
+    if (missingSum > 0 && missingSum > headroom) {
+      atRisk.push({ sel: pathOf(host), headroom: Math.round(headroom * 10) / 10,
+        missing: Math.round(missingSum * 10) / 10, nodes: rows.length,
+        samples: rows.slice(0, 2).map(r => r.sample) });
+    }
+  }
+  range.detach?.();
+  return { errorHistogram: hist, worst, atRisk, atRiskCount: atRisk.length, stretched };
 };
 
 const MEASURE = () => {
@@ -349,19 +404,28 @@ const stretchStats = {};
 for (const pass of PASSES) {
   const page = await browser.newPage({ viewport: { width: 320, height: 720 } });
   const sum = { phoneOverflow: 0, clipped: 0, escapee: 0 };
-  const st = { stretched: 0, skippedNumeric: 0, skippedGlyph: 0, text2x: 0, errorHistogram: {}, worst: [], atRisk: [], atRiskCount: 0 };
+  const st = { stretched: 0, skippedNumeric: 0, skippedGlyph: 0, text2x: 0, errorHistogram: {}, worst: [], atRisk: [], atRiskCount: 0, text2xMismatched: 0 };
   for (const t of targets) {
     await page.goto(`${URLBASE}?screen=${t.screen}` + (t.popup ? `&popup=${t.popup}` : ''), { waitUntil: 'load' });
     await page.evaluate(() => document.fonts.ready);
     if (pass.factor) {
-      const s = await page.evaluate(STRETCH, { factor: pass.factor });
-      st.stretched += s.stretched; st.skippedNumeric += s.skippedNumeric; st.skippedGlyph += s.skippedGlyph;
-      for (const [k, v] of Object.entries(s.errorHistogram ?? {})) st.errorHistogram[k] = (st.errorHistogram[k] ?? 0) + v;
-      for (const w of (s.worst ?? [])) st.worst.push({ target: t.t, ...w });
-      for (const w of (s.atRisk ?? [])) st.atRisk.push({ target: t.t, ...w });
-      st.atRiskCount += s.atRiskCount ?? 0;
+      const r0 = await page.evaluate(STRETCH, { factor: pass.factor });
+      st.skippedNumeric += r0.skippedNumeric; st.skippedGlyph += r0.skippedGlyph;
     }
-    if (pass.text2x) st.text2x += await page.evaluate(TEXT2X);
+    if (pass.text2x) {
+      const r1 = await page.evaluate(TEXT2X);
+      st.text2x += r1.applied; st.text2xMismatched += r1.mismatched;
+    }
+    if (pass.factor) {
+      // 두 변형이 모두 적용된 뒤에 잰다 ([L11])
+      const v = await page.evaluate(VERIFY, { factor: pass.factor, sizeFactor: pass.text2x ? 2 : 1 });
+      st.stretched += v.stretched;
+      if (v.errorHistogram) { for (const [k, n] of Object.entries(v.errorHistogram)) st.errorHistogram[k] = (st.errorHistogram[k] ?? 0) + n; }
+      else { st.errorHistogram = null; st.widthErrorNote = v.note; }
+      for (const w of v.worst) st.worst.push({ target: t.t, ...w });
+      for (const w of v.atRisk) st.atRisk.push({ target: t.t, ...w });
+      if (v.atRiskCount === null) st.atRiskCount = null; else if (st.atRiskCount !== null) st.atRiskCount += v.atRiskCount;
+    }
     if (pass.id === 'base' && tabHeadroom === null) tabHeadroom = await page.evaluate(TAB_HEADROOM);
     const m = await page.evaluate(MEASURE);
     (perTarget[t.t] ??= {})[pass.id] = m;
@@ -374,10 +438,10 @@ for (const pass of PASSES) {
     targetsWithPhoneOverflow: sum.phoneOverflow, targetsWithClipped: sum.clipped,
     targetsWithEscapee: sum.escapee };
   st.worst.sort((a, b) => Math.abs(b.errPct) - Math.abs(a.errPct));
-  st.underStretched = Object.entries(st.errorHistogram)
-    .filter(([k]) => k === '<-5%' || k === '-5~-1%').reduce((a, [, v]) => a + v, 0);
-  st.worst = st.worst.slice(0, 20);
-  st.atRisk = st.atRisk.slice(0, 20);
+  st.atRisk.sort((a, b) => b.missing - a.missing);
+  st.underStretched = st.errorHistogram ? Object.entries(st.errorHistogram)
+    .filter(([k]) => k === '<-5%' || k === '-5~-1%').reduce((a, [, v]) => a + v, 0) : null;
+  st.worstCount = st.worst.length;
   stretchStats[pass.id] = st;
 }
 await browser.close();
@@ -453,7 +517,8 @@ const result = {
     rules: {
       '번역문': '지어내지 않는다. 각 텍스트 노드의 글자를 순환해 붙여 렌더 폭을 목표 배수까지 늘린다',
       '단위': '글자 수가 아니라 폭. 레이아웃을 깨는 것은 폭이다',
-      '정확도': '자간만 늘려 목표 폭에 정확히 맞춘다. 글자 수 입자가 없다. 노드마다 목표·실제·부호 있는 오차를 남기고 분포를 errorHistogram 으로, 최악 20건을 worst 로 보존한다',
+      '정확도': '자간만 늘려 목표 폭에 정확히 맞춘다. 글자 수 입자가 없다. ±1% 안에 든 노드는 errorHistogram 분포로 요약하고, **1% 를 넘어 어긋난 노드는 전부** target·selector·원래 폭·목표 폭·실제 폭·부호 있는 오차와 함께 worst 에 남긴다. 표본만 남기면 노드마다 보존한 것이 아니다',
+      '글자 확대 패스': '글자가 커지면 폭이 아니라 줄이 는다. 폭 목표가 성립하지 않으므로 그 패스에서는 오차·atRisk 를 재지 않고, 판정은 잘림·넘침 직접 관측으로 한다',
       '오차 방향': '덜 늘어난 요소의 잘림 0 은 보수적이 아니라 낙관적이다. 그래서 underStretched 를 따로 세고, 그중 **제대로 늘렸다면 넘쳤을** 것(모자란 폭 > 남은 여유)을 atRisk 로 따로 센다. atRisk 가 0 이어야만 그 패스의 잘림 0 을 결론으로 쓸 수 있다',
       '재현하지 않는 것': '실제 번역이 만드는 줄바꿈 기회. 이 방향의 오차는 넘침을 과대 보고하는 쪽이라 보수적이다',
       '숫자': '글자(한글·라틴)를 포함하지 않은 노드는 늘리지 않는다. 번역해도 숫자는 안 길어진다',

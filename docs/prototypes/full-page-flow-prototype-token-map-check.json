@@ -1,20 +1,20 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-04T18:17:22.221Z",
+  "generatedAt": "2026-09-04T18:53:24.281Z",
   "schemaVersion": 1,
   "script": {
    "name": "full-page-flow-prototype-token-map-check.mjs",
-   "sha256": "27b2a7ef13e6bf962a840ae20a93339abc581f878c50aede793a2ae457972db5"
+   "sha256": "b634964eaa2bda2d91123273d2539e303ae142a7ea12a79d8c15ab58dd9e854c"
   },
   "designAudit": {
    "path": "design-audit.json",
-   "sha256": "6d77bf44fb217ec6dc9f1a72d95eecaae398a48f055947daac123d84b7137dee",
-   "targetSha256": "4379cf6eed97962031d376e946ad94ca81361170df4ec0cd7315147be9749929",
-   "designSyncId": "DS-20260904-016"
+   "sha256": "7dd5abfc048bf3ef8750da275aead42269e7772dbc9d0db7c5fd7417796fea14",
+   "targetSha256": "7d262c3e2cefc330e982b0777c5e612637a61ff6a016e2d6f96745d3784efdc1",
+   "designSyncId": "DS-20260904-017"
   },
   "tokenMap": {
    "path": "full-page-flow-prototype-token-map.json",
-   "sha256": "fa07e1e0ecd04f5bdd90220fe2beb47abb013a55758333b28711bfa23577849b",
+   "sha256": "e04453ebfd08c0460078a2294e7fd79f80d199b0810dd3b8b59b19d735353080",
    "status": "PROVISIONAL"
   },
   "rules": {
@@ -48,10 +48,68 @@
     "6",
     "14"
    ],
-   "colorObservations": 2718
+   "colorObservations": 0
   },
   "lineHeightKinds": 18,
   "letterSpacingKinds": 2,
+  "provisionallyMapped": [
+   {
+    "axis": "color",
+    "decisions": [
+     "D-1"
+    ],
+    "valueKinds": 32
+   },
+   {
+    "axis": "typeWeight",
+    "decisions": [
+     "D-7"
+    ],
+    "valueKinds": 5
+   },
+   {
+    "axis": "lineHeight",
+    "decisions": [
+     "D-8",
+     "D-11"
+    ],
+    "valueKinds": 18
+   },
+   {
+    "axis": "shadow",
+    "decisions": [
+     "D-9",
+     "D-11"
+    ],
+    "valueKinds": 6
+   },
+   {
+    "axis": "icon",
+    "decisions": [
+     "D-11"
+    ],
+    "valueKinds": null
+   },
+   {
+    "axis": "control",
+    "decisions": [
+     "D-11"
+    ],
+    "valueKinds": null
+   }
+  ],
+  "tokensExtensionRequired": [
+   "controlHeight",
+   "iconSize",
+   "letterSpacing",
+   "lineHeight",
+   "shadow"
+  ],
+  "confirmedAxes": [
+   "space",
+   "radius",
+   "typeSize"
+  ],
   "mapFailures": 0,
   "staleMapEntries": 0
  },
@@ -69,6 +127,64 @@
  },
  "failures": [],
  "stale": [],
+ "openDecisions": {
+  "note": "기획서 §8 의 열린 결정. 여기 나열된 축의 값은 **잠정**이며, 검사기는 그 값들을 provisionallyMapped 로 따로 센다. 미매핑 0 이 곧 확정 0 은 아니다.",
+  "D-1": {
+   "제목": "색 정본 방향과 목표값",
+   "축": [
+    "color"
+   ],
+   "선행": "대비(contrast) 측정"
+  },
+  "D-2": {
+   "제목": "글자 확대 보상 수단과 header.title 2줄 흡수 여부",
+   "축": [],
+   "선행": "P2 재측정"
+  },
+  "D-7": {
+   "제목": "상속된 bolder 188건을 어느 굵기로 선언할 것인가",
+   "축": [
+    "typeWeight"
+   ],
+   "선행": null
+  },
+  "D-8": {
+   "제목": "행간 단계 — 1.35 와 1.4 를 나눌지",
+   "축": [
+    "lineHeight"
+   ],
+   "선행": null
+  },
+  "D-9": {
+   "제목": "그림자 bottomBar 처리와 미관측 sliderThumb",
+   "축": [
+    "shadow"
+   ],
+   "선행": null
+  },
+  "D-10": {
+   "제목": "P1a/P1b/P1c 범위 분할 승인",
+   "축": [],
+   "선행": null
+  },
+  "D-11": {
+   "제목": "tokens.ts 확장 승인 — lineHeight·letterSpacing·iconSize·controlHeight·rowHeight·shadow(sheet/fab/bottomBar)",
+   "축": [
+    "lineHeight",
+    "shadow",
+    "icon",
+    "control"
+   ],
+   "선행": "정본 소유자 승인"
+  }
+ },
+ "retiredDecisions": {
+  "note": "초판에서 열었다가 결론이 난 것. 다시 열지 않기 위해 남긴다.",
+  "D-3": "뱃지 12px 신설 → 폐기. 가이드가 captionSm 13/600 으로 이미 계약했다",
+  "D-4": "nudge 스케일 분리 → 폐기. 다만 '전부 space 로 보낸다' 는 결론은 아니다. 1·2px 은 컴포넌트 소유 광학 보정으로 남고 3·6px 만 space 로 간다",
+  "D-5": "19px Sheet 제목의 title 승격 → 승격으로 결론",
+  "D-6": "모션·z-index 범위 → P1c 로 분리하는 것으로 결론"
+ },
  "lineHeight": [
   {
    "value": "normal",
