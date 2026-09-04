@@ -12,6 +12,9 @@
 
 브라우저로 열 때: `?screen=<화면키>` · `?screen=<화면키>&popup=<팝업ID>` · `?terms=1`(용어 사전)
 
+지원 파라미터는 이 셋뿐이다. **해시(`#…`)는 라우팅에 쓰지 않는다** — 앱이 로드 시
+`history.replaceState`로 주소를 다시 쓰며 해시를 버린다. 계약 전문은 현재 확정안 `2.16`.
+
 ## 2. 정본을 설명하는 문서 5종 — 함께 갱신한다
 
 | 파일 | 역할 |
@@ -41,7 +44,7 @@
 |---|---|
 | `full-page-flow-prototype.html` | **보존 원본.** 적용본이 갈라져 나온 기준점. 용어 사전 216개를 갖고 있지만 그 뒤의 화면 작업은 반영돼 있지 않다 |
 | `full-page-flow-prototype-ui-components.css` / `.js` | 공통 UI 레이어 시도분. **현재 적용본에 연결돼 있지 않다.** CSS 변수 28개는 토큰 매핑의 근거로만 참조 |
-| `full-page-flow-prototype-ui-applied.html` | **리다이렉트 스텁.** 내용 없음. 구 파일명 북마크를 `0_` 정본으로 넘겨주기만 한다. 쿼리스트링 유지 |
+| `full-page-flow-prototype-ui-applied.html` | **리다이렉트 스텁.** 내용 없음. 구 파일명 북마크를 `0_` 정본으로 넘겨주기만 한다. `location.search`만 전달하며 해시는 넘기지 않는다(PRT-184 URL 계약) |
 | `full-page-flow-prototype-design-work-plan.html` | 실행서 뷰어. 마크다운 파서가 체크박스·표 정렬을 잃고 `file://`에서는 열리지 않는다 |
 
 ## 5. 아카이브 — 통합 이전의 설계 근거 15개

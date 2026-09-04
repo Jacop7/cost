@@ -30,6 +30,10 @@
 7. 맥락: 이전·다음 페이지와 같은 정보 구조와 용어를 유지
 
 상태 코드는 `TODO / COMMON / CODEX PASS / OPUS PASS / PASS / BLOCKED`만 사용한다.
+종합 상태 열에는 여기에 더해 진행 상태 `IN_PROGRESS / COMPLETE / CODEX_PASS`와
+`SPEC_ONLY`를 쓴다. `SPEC_ONLY`는 **UI 가이드 부록 A에 명세만 있고 HTML `screens`에는
+키가 없어 렌더 자체가 불가능한 target**이다. 실측 근거가 없으므로 7항목은 전부 `TODO`로 두고,
+구현되기 전에는 어떤 항목도 `PASS`로 올리지 않는다. 감사 이력 보존을 위해 행은 지우지 않는다.
 
 ## 공통 적용 1차
 
@@ -735,7 +739,7 @@ Opus가 지정한 후속 위험은 다음과 같다.
 | screen:my_material_categories | my | Screen | COMMON | PASS | REVIEW | PASS | PASS | COMPLETE |
 | screen:my_materials | my | Screen | COMMON | PASS | REVIEW | PASS | TODO | IN_PROGRESS |
 | screen:my_tax | my | Screen | COMMON | PASS | REVIEW | PASS | TODO | IN_PROGRESS |
-| screen:my_country | my | Screen | COMMON | PASS | REVIEW | PASS | TODO | IN_PROGRESS |
+| screen:my_country | my | Screen(미구현) | COMMON | TODO | TODO | TODO | TODO | SPEC_ONLY |
 | screen:my_language | my | Screen | COMMON | PASS | REVIEW | PASS | TODO | IN_PROGRESS |
 | screen:my_units | my | Screen | COMMON | PASS | REVIEW | PASS | TODO | IN_PROGRESS |
 | screen:my_vendors | my | Screen | COMMON | PASS | REVIEW | PASS | TODO | IN_PROGRESS |
@@ -833,6 +837,7 @@ Opus가 지정한 후속 위험은 다음과 같다.
 | popup:past_save@sales_past | sales | ConfirmDialog | COMMON | PASS | REVIEW | PASS | TODO | IN_PROGRESS |
 | popup:stock_check_all@stock_check | sales | InfoSheet | COMMON | PASS | REVIEW | PASS | TODO | IN_PROGRESS |
 | popup:fixed_period@my_fixed | my | PickerSheet | COMMON | PASS | REVIEW | PASS | TODO | IN_PROGRESS |
+| popup:fixed_period@my_fixed_edit | my | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
 | popup:fixed_channel@my_fixed_edit | my | FormSheet | COMMON | PASS | REVIEW | PASS | TODO | IN_PROGRESS |
 | popup:fixed_item_add@my_fixed_edit | my | FormSheet | COMMON | PASS | REVIEW | PASS | TODO | IN_PROGRESS |
 | popup:category_add@my_ingredient_categories | my | FormSheet | COMMON | PASS | REVIEW | PASS | PASS | COMPLETE |
@@ -848,6 +853,7 @@ Opus가 지정한 후속 위험은 다음과 같다.
 | popup:material_edit@my_materials | my | FormSheet | COMMON | PASS | REVIEW | PASS | TODO | IN_PROGRESS |
 | popup:material_category_pick@my_materials | my | PickerSheet | COMMON | PASS | REVIEW | PASS | TODO | IN_PROGRESS |
 | popup:material_delete@my_materials | my | ConfirmDialog | COMMON | PASS | REVIEW | PASS | TODO | IN_PROGRESS |
+| popup:tax_country@my_tax | my | PickerSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
 | popup:tax_item_add@my_tax | my | FormSheet | COMMON | PASS | REVIEW | PASS | TODO | IN_PROGRESS |
 | popup:tax_saved@my_tax | my | SuccessDialog | COMMON | PASS | REVIEW | PASS | TODO | IN_PROGRESS |
 | popup:vendor_add@my_vendors | my | FormSheet | COMMON | PASS | REVIEW | PASS | TODO | IN_PROGRESS |
@@ -860,6 +866,7 @@ Opus가 지정한 후속 위험은 다음과 같다.
 | popup:hours_break_start@my_hours | my | PickerSheet | COMMON | PASS | REVIEW | PASS | TODO | IN_PROGRESS |
 | popup:hours_break_end@my_hours | my | PickerSheet | COMMON | PASS | REVIEW | PASS | TODO | IN_PROGRESS |
 | popup:hours_timezone@my_hours | my | FormSheet | COMMON | PASS | REVIEW | PASS | TODO | IN_PROGRESS |
+| popup:language_preview@my_language | my | FormSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
 | popup:account_delete@my_account | my | FormSheet→ConfirmDialog | COMMON | PASS | REVIEW | PASS | TODO | IN_PROGRESS |
 
 ## 2026-09-01 · MY 1차 전수 검수 체크포인트
@@ -1610,3 +1617,53 @@ Opus가 지정한 후속 위험은 다음과 같다.
 - 지적 반영: Major1(file:// 폰트) APPLIED · Major2(인벤토리 전수) APPLIED (반박 0건)
 - 범위 주석: `DS-20260904-004`의 측정은 HTTP 서버 기준이었다. HTTP 배포에는 유효하나
   `file://` 사용에는 적용되지 않았으므로, 이 항목에서 `file://` 기준으로 다시 취득했다.
+
+## DS-20260904-006 · PRT-184 (PRT-183 검수 지적 2건 + 후속 지시 3건)
+
+- 대상: UI 적용본 용어 사전 문구·동기화 표식, UI 가이드 부록 A·B.2·B.3·B.4·B.8,
+  현재 확정안 2.16(신설), 이 장부의 target 목록·판정 규칙, 구 파일명 스텁.
+  검수 범위 **총 185건 = 활성 182건(screen 61 + host 121) + 숨김 보존 3건**
+- 기대값: 인벤토리 수치가 문서와 화면 문구 전부에서 일치하고, 스텁의 폴백 안내가
+  실제 동작과 어긋나지 않아야 한다. 나아가 **B.8 그룹 소계·이 장부의 target 목록·URL 계약**이
+  각각 레지스트리 실측과 앱의 실제 동작을 근거로 서 있어야 한다.
+- 실제값: 적용본 용어 사전 문구 `호스트 125개` → `123개`.
+  B.8 검산식 `PageState 9 + popup 88 = 97` / host `123` → `9 + 87 = 96` / host `121`.
+  B.4 헤더 `15개` → `14개`. 스텁에서 `<meta refresh>`를 제거했다.
+  후속 1 — B.8 그룹 소계를 행 수 추정이 아니라 레지스트리 고유 ID·host 재산출로 맞췄다
+  (레시피·마스터 공용 `18→17`, MY `13→15`, B.2 `26→27`, B.3 `27→28`).
+  후속 2 — `tax_country@my_tax`·`language_preview@my_language`, 그리고 대조 중 찾은
+  `fixed_period@my_fixed_edit`을 이 장부 target 목록에 추가했다.
+  후속 3 — 지원 URL을 쿼리 `screen`·`popup`·`terms`로 한정하고 해시를 라우팅 계약에서 제외했다.
+  현재 확정안 `2.16 프로토타입 URL 계약` 신설, 스텁은 `location.search`만 전달한다.
+  부수 — `screen:my_country`는 부록 A와 이 장부에만 있고 HTML `screens`에 키가 없다.
+  실측 근거 없는 `PASS`였으므로 7항목을 `TODO`로 내리고 종합을 `SPEC_ONLY`로 바꿨다.
+  부록 A 헤더는 `등록 62개 + 미구현 명세 1개`로 정정했다. 동기화 표식을 `DS-20260904-006`으로 올렸다.
+- PC 검수: `file:///…/0_full-page-flow-prototype-ui-applied.html` 1280×900, 185건 ·
+  넘침 0 · 콘솔 오류 0 · 폰트 실패 0 · 금지 굵기 렌더 0건 · PASS
+- 모바일 검수: 같은 `file://` URL 320×720 185건, 320px 200% 확대 185건 ·
+  각 넘침 0 · 콘솔 오류 0 · 폰트 실패 0 · PASS
+- 측정:
+  - 레지스트리 실측 — screen 키 62(숨김 `discard` 1) · popup 쌍 123 · host 49 ·
+    활성 screen 61 · 활성 popup 쌍 121 · 활성 고유 popup ID 96
+    (B.1 PageState 11개 중 숨김 2개 제외 9개 + popup 87)
+  - 레지스트리 ↔ 이 장부 — popup 121행 = 활성 121건, **양방향 차집합 0**.
+    screen 62행 = 활성 61 + `my_country` 1. 장부에만 있는 것은 이 1건뿐이고 레지스트리에만
+    있는 것은 0건이다. 등록 62와 장부 62는 수가 같을 뿐 구성이 다르다
+    (장부는 숨김 `discard`를 세지 않고 `my_country`를 센다).
+  - 레지스트리 ↔ UI 가이드 B.8 — 고유 ID 96 = 96, ID 차집합 0,
+    **96개 ID 각각의 host 집합 불일치 0건**. 그룹 헤더 = 그룹 고유 ID 수
+    (PageState 9 / 식재료 20 / 레시피·마스터 공용 17 / 고정 지출·발주 13 / 매출관리 22 / MY 15 = 96)
+  - B.2~B.6 절 헤더 = 각 절 이름 목록 수 (27 / 28 / 14 / 2 / 15)
+  - 숫자 스케일 밖은 프로토타입 셸 2종(`SPAN 11px` 상태바 시각, `route 10px` 화면 ID 배지)
+- 미검수: 없음
+- 제약: 실기기 캡처는 수행하지 않았다. `my_country`(MY-12)를 구현할지 명세에서 내릴지는
+  제품 판단이 필요해 남겼다 — 현재 국가·통화 선택은 `popup:tax_country@my_tax`로만 도달한다.
+  해시 기반 진입이 필요해지면 앱의 `history.replaceState` 정책을 먼저 바꿔야 하며,
+  이번에는 계약에서 제외만 하고 앱 동작은 바꾸지 않았다.
+- 결과: PASS
+- 증거: 레지스트리 ↔ 장부 ↔ B.8 3자 차집합 대조 로그, PC·320px·320px 200% 확대 각 185건 결과,
+  스텁 JS 켜짐/꺼짐 동작 대조, 변경 전 사본 `백업/0_full-page-flow-prototype-ui-applied_pre-PRT184.html`
+- 지적 반영: Major(잔존 수치) APPLIED · Minor(스텁 폴백) APPLIED ·
+  후속1(B.8 소계 재산출) APPLIED · 후속2(target 누락) APPLIED · 후속3(해시 계약 제외) APPLIED.
+  반박 0건
+- 지적 반영: Major(잔존 수치 2곳) APPLIED · Minor(스텁 폴백) APPLIED (반박 0건)
