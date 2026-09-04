@@ -14,29 +14,82 @@
     {
       "id": "R-SP-PRIM",
       "bin": "primitive",
-      "match": { "group": "spacing", "numericIn": [4, 8, 12, 16, 20, 24] },
+      "match": {
+        "group": "spacing",
+        "numericIn": [
+          4,
+          8,
+          12,
+          16,
+          20,
+          24
+        ]
+      },
       "target": "space.*",
       "근거": "tokens.ts 의 space 스케일 4·8·12·16·20·24 에 그대로 있는 값"
     },
     {
+      "id": "R-SP-CAPTION-GAP-VIEW",
+      "bin": "pendingApproval",
+      "match": {
+        "group": "spacing",
+        "props": [
+          "marginTop"
+        ],
+        "numericIn": [
+          2
+        ],
+        "at": [
+          "BasePriceCard.tsx:155",
+          "PurchaseHistoryScreen.tsx:164",
+          "FixedCostScreen.tsx:133",
+          "MyChannelsScreen.tsx:105",
+          "OrdersHomeScreen.tsx:313"
+        ]
+      },
+      "question": "`marginTop:2` 중 `<Text` 가 아니라 `<View` 줄에 있는 5건. 이 5건의 관계가 '주값↔보조 줄'(→ space.xs 4)인지 '아이콘↔문구'(→ UI 가이드 §5.4 의 gap.inline 8)인지, 아니면 '안내 블록↔위 요소'인지.",
+      "evidence": "5건. BasePriceCard:155(gap 10 행) · PurchaseHistoryScreen:164 · FixedCostScreen:133 · MyChannelsScreen:105(셋 다 `gap:6, paddingHorizontal:2` 안내 아이콘+문구 행) · OrdersHomeScreen:313(`<View style={{marginTop:2}}>` 단독). 68건과 달리 육안 확인 전이고, 안내 아이콘+문구라면 목표값이 4 가 아니라 8 이다.",
+      "ownerDecision": "관계에 이름을 붙인 뒤에야 목표값이 정해진다. 육안 확인이 선행한다.",
+      "순서근거": "R-SP-CAPTION-GAP 보다 앞에 둔다 — 같은 `marginTop:2` 이지만 이 다섯 자리는 관계가 확인되지 않았으므로 결함으로 단정하지 않는다."
+    },
+    {
       "id": "R-SP-CAPTION-GAP",
       "bin": "defect",
-      "match": { "group": "spacing", "props": ["marginTop"], "numericIn": [2] },
+      "match": {
+        "group": "spacing",
+        "props": [
+          "marginTop"
+        ],
+        "numericIn": [
+          2
+        ]
+      },
       "target": 4,
-      "근거": "UI 가이드 §간격 — `space.xs`(4) 는 '제목과 보조문구, 값과 단위처럼 한 덩어리인 요소' 이고, §Card 는 '제목과 보조문구는 space.xs 로 묶는다' 로 못박았다. 앱은 같은 관계에 2px 을 쓴다. 표본 73건 중 68건이 `<Text` 줄(주값 아래 보조 줄)이고, 나머지 5건도 안내 아이콘+문구 줄을 같은 방식으로 붙인 자리다.",
-      "검수요청": "5건(View 줄)은 육안 확인이 필요하다 — BasePriceCard:155 · PurchaseHistoryScreen:164 · FixedCostScreen:133 · MyChannelsScreen:105 · OrdersHomeScreen:313"
+      "근거": "UI 가이드 §간격 — `space.xs`(4) 는 '제목과 보조문구, 값과 단위처럼 한 덩어리인 요소' 이고, §Card 는 '제목과 보조문구는 space.xs 로 묶는다' 로 못박았다. 앱은 같은 관계에 2px 을 쓴다. **소스에서 `<Text` 줄임을 확인한 68건만** 이 규칙에 든다 — `<View` 줄 5건은 R-SP-CAPTION-GAP-VIEW 로 뺐다.",
+      "순서근거": "R-SP-OPTICAL 은 값 1·2px 을 광학 보정으로 보는 규칙이다. **같은 2px 이라도 세로 `marginTop` 에서 주값↔보조 줄 관계면 UI 가이드가 이미 `space.xs` 로 잠가 놓은 자리**라 결함이고, 가로 라벨 정렬이면 컴포넌트 소유다. 값이 아니라 관계가 통을 정하므로 관계가 확인된 규칙이 앞선다. PRT-196 에서 프로토타입 쪽에 같은 함정이 있었다."
     },
     {
       "id": "R-SP-RESET",
       "bin": "componentOwned",
-      "match": { "group": "spacing", "numericIn": [0] },
+      "match": {
+        "group": "spacing",
+        "numericIn": [
+          0
+        ]
+      },
       "name": "reset.none",
       "근거": "0 은 스케일 값이 아니라 여백의 부재다. SearchBar·StockEditSheet 처럼 부모가 준 padding 을 끄는 자리이며, 스케일로 올릴 대상이 아니다."
     },
     {
       "id": "R-SP-OPTICAL",
       "bin": "componentOwned",
-      "match": { "group": "spacing", "numericIn": [1, 2] },
+      "match": {
+        "group": "spacing",
+        "numericIn": [
+          1,
+          2
+        ]
+      },
       "name": "optical.hairline",
       "근거": "marginTop 을 뺀 나머지 1·2px 은 전부 광학 보정이거나 컴포넌트 안쪽 인셋이다 — 콜아웃 아이콘을 첫 줄에 맞추는 marginTop:1(kit/index.tsx:73, 소스에 주석으로 명시), 헤더 우측 아이콘 사이 gap:2(AppHeader:37), 뱃지 안쪽 paddingVertical:2(BasePriceCard:136), 아이콘 버튼 padding:2(RecipeAddScreen:39, hitSlop 6 이 터치 영역을 따로 소유), 섹션 라벨 좌우 marginHorizontal:2(ProfitBlocks:35). 프로토타입 매핑표가 같은 판정을 이미 내렸다 — '1·2px 은 값이 아니라 관계로 판정했다'.",
       "검수요청": "이름을 하나(optical.hairline)로 묶었다. 소유 컴포넌트별로 쪼갤지는 검수 판단이다."
@@ -44,22 +97,35 @@
     {
       "id": "R-SP-CONVERGE",
       "bin": "defect",
-      "match": { "group": "spacing", "protoConverge": "space" },
+      "match": {
+        "group": "spacing",
+        "protoConverge": "space"
+      },
       "target": "프로토타입 매핑표 converge.space",
       "근거": "프로토타입에서 이미 수렴 대상을 정한 값들(3·5·6·7·9·10·11·13·14·15·17·18·19·22)이 앱에도 그대로 있다. 새 결정이 아니라 기존 결정의 적용이다."
     },
     {
       "id": "R-SP-SCROLL-BOTTOM",
       "bin": "pendingApproval",
-      "match": { "group": "spacing", "propPrefix": ["paddingBottom"], "numericGt": 24 },
+      "match": {
+        "group": "spacing",
+        "propPrefix": [
+          "paddingBottom"
+        ],
+        "numericGt": 24
+      },
       "question": "스크롤 컨테이너 하단 여유가 한 역할에 26·28·30·32·40·96·104 일곱 값을 쓴다. 하나로 수렴할지, 하단 탭바·FAB 유무로 역할을 나눌지.",
       "evidence": "ChangeHistoryScreen:149(28) · HistoryLayout:120(30) · MyChannelsScreen:69(32) · Sheet:44(40) · DiscardHistoryScreen:221(26) · IngredientListScreen:115(104) · MaterialManageScreen:119(96). 전부 ScrollView contentContainerStyle 의 하단 여유다. 프로토타입 매핑표는 104 를 '하단 탭바 회피 공간' 으로 컴포넌트 소유에 뒀다.",
-      "ownerDecision": "값 수렴이 아니라 역할 정의 문제다 — 탭바가 있는 화면과 없는 화면을 나눌 것인지가 제품 결정이다."
+      "ownerDecision": "값 수렴이 아니라 역할 정의 문제다 — 탭바가 있는 화면과 없는 화면을 나눌 것인지가 제품 결정이다.",
+      "순서근거": "R-SP-EMPTY-STATE 는 24 를 넘는 간격의 **포괄 규칙**이다. 스크롤 하단 여유는 '탭바 높이 + 안전 영역' 이라는 다른 근거를 갖는 별개 역할이라 먼저 가른다. 둘을 한 통에 넣으면 소유자가 서로 다른 두 질문을 하나로 받는다."
     },
     {
       "id": "R-SP-EMPTY-STATE",
       "bin": "pendingApproval",
-      "match": { "group": "spacing", "numericGt": 24 },
+      "match": {
+        "group": "spacing",
+        "numericGt": 24
+      },
       "question": "빈 상태·중앙 정렬 블록의 세로·좌우 여백이 28·40·48·72 와 32 를 쓴다. 스케일 밖 큰 값을 컴포넌트 소유로 잠글지, 스케일을 24 위로 늘릴지.",
       "evidence": "QueryState:18(paddingVertical 48 · paddingHorizontal 32) · PurchaseOptionScreen:254(40) · ChannelWeightSheet:60(28) · SalesDayDetailScreen:76(72). 전부 '결과 없음/불러오는 중' 계열의 중앙 정렬 블록이다.",
       "ownerDecision": "스케일 확장은 정본(tokens.ts) 변경이라 D-11 과 같은 성격이다."
@@ -67,36 +133,82 @@
     {
       "id": "R-TY-SIZE-PRIM",
       "bin": "primitive",
-      "match": { "group": "typography", "props": ["fontSize"], "numericIn": [22, 20, 18, 16, 14, 13] },
+      "match": {
+        "group": "typography",
+        "props": [
+          "fontSize"
+        ],
+        "numericIn": [
+          22,
+          20,
+          18,
+          16,
+          14,
+          13
+        ]
+      },
       "target": "typeSize.*",
-      "근거": "tokens.ts 의 typeSize 스케일에 그대로 있는 값"
+      "근거": "tokens.ts 의 typeSize 스케일에 그대로 있는 값",
+      "순서근거": "R-TY-SIZE-OFFSCALE 은 `fontSize` 의 **포괄 규칙**이다(값 조건이 없다). 정본 스케일 값이 포괄에 먼저 걸리면 스케일에 있는 값까지 '스케일 밖' 으로 분류된다. 그래서 정본 규칙이 앞선다."
     },
     {
       "id": "R-TY-WEIGHT-PRIM",
       "bin": "primitive",
-      "match": { "group": "typography", "props": ["fontWeight"], "numericIn": [400, 600, 700, 800] },
+      "match": {
+        "group": "typography",
+        "props": [
+          "fontWeight"
+        ],
+        "numericIn": [
+          400,
+          600,
+          700,
+          800
+        ]
+      },
       "target": "typeWeight.*",
       "근거": "tokens.ts 의 typeWeight 400·600·700·800 에 그대로 있는 값"
     },
     {
       "id": "R-TY-SIZE-15",
       "bin": "pendingApproval",
-      "match": { "group": "typography", "props": ["fontSize"], "numericIn": [15] },
+      "match": {
+        "group": "typography",
+        "props": [
+          "fontSize"
+        ],
+        "numericIn": [
+          15
+        ]
+      },
       "question": "`fontSize:15` 를 caption(14) 로 내릴지 body(16) 로 올릴지. 프로토타입 매핑표도 '역할별' 로 남겨 둔 자리다.",
       "evidence": "67건. Sheet 안내문(Sheet.tsx:77 · ShortageWarningSheet.tsx:44)처럼 본문에 가까운 자리와 목록 보조값이 섞여 있다. 크기를 올리면 폭이 늘어 `S3b`(폭 증가) 대상이 되고, 내리면 `S3a`(축소) 대상이라 실행 단계가 갈린다.",
-      "ownerDecision": "역할 판정이므로 자리마다 다를 수 있다. 일괄 수렴이 아니라 역할 배정이 필요하다."
+      "ownerDecision": "역할 판정이므로 자리마다 다를 수 있다. 일괄 수렴이 아니라 역할 배정이 필요하다.",
+      "순서근거": "`fontSize:15` 는 프로토타입 수렴표에 키가 있지만 목적지가 '역할별 — caption 14 또는 body 16' 이라 **실제 목표값이 아니다.** R-TY-SIZE-CONVERGE 가 먼저 잡으면 목표가 정해진 결함처럼 보인다. 사람 결정이 필요한 자리이므로 앞선다."
     },
     {
       "id": "R-TY-SIZE-CONVERGE",
       "bin": "defect",
-      "match": { "group": "typography", "props": ["fontSize"], "protoConverge": "typeSize" },
+      "match": {
+        "group": "typography",
+        "props": [
+          "fontSize"
+        ],
+        "protoConverge": "typeSize"
+      },
       "target": "프로토타입 매핑표 converge.typeSize",
-      "근거": "10·11·12 → 13, 19 → 20. 프로토타입에서 이미 정한 수렴이다."
+      "근거": "10·11·12 → 13, 19 → 20. 프로토타입에서 이미 정한 수렴이다.",
+      "순서근거": "R-TY-SIZE-OFFSCALE 포괄보다 앞선다. 수렴 목적지가 이미 정해진 값(10·11·12·19)을 '어디로 보낼지 모르는 값' 으로 분류하면 안 된다."
     },
     {
       "id": "R-TY-SIZE-OFFSCALE",
       "bin": "pendingApproval",
-      "match": { "group": "typography", "props": ["fontSize"] },
+      "match": {
+        "group": "typography",
+        "props": [
+          "fontSize"
+        ]
+      },
       "question": "스케일에도 수렴표에도 없는 글자 크기 12.5 · 13.5 · 14.5 · 17 · 25 를 어디로 보낼지.",
       "evidence": "11건. 13.5(6) 이 가장 많고 MyHoursScreen:348 같은 보조 설명에 쓰인다. 소수점 크기는 스케일에 없던 값이라 프로토타입 감사에서도 나오지 않았다 — 앱에만 있는 값이다.",
       "ownerDecision": "13 으로 내릴지 14 로 올릴지가 폭에 영향을 주므로 `S3a`/`S3b` 배정이 갈린다."
@@ -104,7 +216,12 @@
     {
       "id": "R-TY-LINEHEIGHT",
       "bin": "pendingApproval",
-      "match": { "group": "typography", "props": ["lineHeight"] },
+      "match": {
+        "group": "typography",
+        "props": [
+          "lineHeight"
+        ]
+      },
       "openDecision": "D-11",
       "question": "React Native 의 lineHeight 는 배수가 아니라 **줄 기준선 사이의 절대 거리**다. 기획서의 1.0/1.4/1.5 를 그대로 쓰면 1~1.5dp 행간이 된다. 이름을 lineHeightRatio 로 바꿔 TYPE 별 절대값을 파생할지, TYPE 역할마다 절대 lineHeight 를 저장할지.",
       "evidence": "62건 · 16·17·19·20·21·22·23. lineHeight:20(45) 이 대부분이고 fontSize 14~16 과 짝지어 쓰인다. 솔의 F02 지적이 이 자리다.",
@@ -113,14 +230,26 @@
     {
       "id": "R-SZ-FLEX-RESET",
       "bin": "componentOwned",
-      "match": { "group": "size", "props": ["minWidth", "width"], "numericIn": [0] },
+      "match": {
+        "group": "size",
+        "props": [
+          "minWidth",
+          "width"
+        ],
+        "numericIn": [
+          0
+        ]
+      },
       "name": "flex.minWidthReset",
-      "근거": "UI 가이드 §Row 가 'primary 는 flex: 1; min-width: 0 으로 남은 폭을 차지한다' 를 공통 규칙으로 잠갔다. `minWidth:0` 은 크기 값이 아니라 flex 축소를 허용하는 관용구다. 69건 전부 같은 자리다."
+      "근거": "UI 가이드 §Row 가 'primary 는 flex: 1; min-width: 0 으로 남은 폭을 차지한다' 를 공통 규칙으로 잠갔다. `minWidth:0` 은 크기 값이 아니라 flex 축소를 허용하는 관용구다. 69건 전부 같은 자리다.",
+      "순서근거": "R-SZ-EXTENSION 은 `size` 그룹의 **포괄 규칙**이다. `minWidth:0` 은 크기 값이 아니라 flex 축소를 허용하는 관용구이므로, 정본 확장 질문에 섞이기 전에 먼저 걷어낸다."
     },
     {
       "id": "R-SZ-EXTENSION",
       "bin": "pendingApproval",
-      "match": { "group": "size" },
+      "match": {
+        "group": "size"
+      },
       "openDecision": "D-11",
       "question": "아이콘 크기 · 컨트롤 높이 · 행 높이는 tokens.ts 에 없다. 정본을 확장할지, 컴포넌트 소유로 남길지.",
       "evidence": "167건. 프로토타입 매핑표의 proposedTokensExtension(iconSize · controlHeight · rowHeight)이 대응하는 자리이고, converge 표에 목적지가 이미 적혀 있지만 그 목적지가 tokens.ts 에 실재하지 않는다. 솔의 F02 — rowHeight 는 고정 높이가 아니라 rowMinHeight 여야 하고, controlHeight 32/38 은 시각 높이이므로 minTouchTarget 44 와 분리해야 한다.",
@@ -129,14 +258,31 @@
     {
       "id": "R-RD-PRIM",
       "bin": "primitive",
-      "match": { "group": "radius", "numericIn": [8, 12, 16, 20, 999] },
+      "match": {
+        "group": "radius",
+        "numericIn": [
+          8,
+          12,
+          16,
+          20,
+          999
+        ]
+      },
       "target": "radius.*",
       "근거": "tokens.ts 의 radius sm8 · md12 · lg16 · xl20 · full999 에 그대로 있는 값"
     },
     {
       "id": "R-RD-SHAPE",
       "bin": "componentOwned",
-      "match": { "group": "radius", "numericIn": [2, 3, 4, 15] },
+      "match": {
+        "group": "radius",
+        "numericIn": [
+          2,
+          3,
+          4,
+          15
+        ]
+      },
       "name": "shape.pill",
       "근거": "전부 스케일이 아니라 **형태**다. 3 은 시트 핸들(38×5, Sheet.tsx:32), 2 는 활성 탭 밑줄(높이 2.5, index.tsx:321), 4 는 7×7 점 뱃지(IngredientListScreen:100), 15 는 50×30 스위치 트랙(MyNotificationsScreen:32) — 넷 다 '짧은 변의 절반' 이라 완전한 알약 모양을 만드는 값이다. 프로토타입 매핑표도 sheet handle 3·4 와 원형을 형태로 보아 컴포넌트 소유에 뒀다.",
       "검수요청": "radius.full(999) 로 일괄 대체해도 같은 그림이 나온다. 그 편이 값을 하나 줄이지만, 형태 의도를 코드에서 읽기 어려워진다 — 어느 쪽이 나은지는 검수 판단이다."
@@ -144,21 +290,39 @@
     {
       "id": "R-RD-CONVERGE",
       "bin": "defect",
-      "match": { "group": "radius", "protoConverge": "radius" },
+      "match": {
+        "group": "radius",
+        "protoConverge": "radius"
+      },
       "target": "프로토타입 매핑표 converge.radius",
       "근거": "5·6·7 → 8, 9·10·11·13 → 12, 14 → 16, 17·18·22 → 20. 프로토타입에서 이미 정한 수렴이다."
     },
     {
       "id": "R-CL-PRIM",
       "bin": "primitive",
-      "match": { "group": "color", "valuesUpper": ["#FFF", "#FFFFFF", "#7A8694", "#C5CCD3", "#3182F6", "#8B95A1"] },
+      "match": {
+        "group": "color",
+        "valuesUpper": [
+          "#FFF",
+          "#FFFFFF",
+          "#7A8694",
+          "#C5CCD3",
+          "#3182F6",
+          "#8B95A1"
+        ]
+      },
       "target": "palette.*",
       "근거": "white · chart.1 · chart.2 · blue.500 · ink.300 에 그대로 있는 값"
     },
     {
       "id": "R-CL-SCRIM",
       "bin": "componentOwned",
-      "match": { "group": "color", "valuesUpper": ["#000"] },
+      "match": {
+        "group": "color",
+        "valuesUpper": [
+          "#000"
+        ]
+      },
       "name": "sheet.scrim",
       "근거": "Sheet.tsx:30 의 모달 배경. 팔레트의 scrim 은 rgba(0,0,0,0.42) 이고 여기서는 검정 원색에 투명도를 따로 준다. 색이 아니라 겹침 규칙이라 컴포넌트가 소유한다.",
       "검수요청": "scrim 토큰을 그대로 쓰도록 바꾸는 편이 나은지 검토 필요."
@@ -166,28 +330,61 @@
     {
       "id": "R-CL-CATEGORY-ACCENT",
       "bin": "pendingApproval",
-      "match": { "group": "color", "valuesUpper": ["#F0EDFB", "#7C5CE0", "#EAF6F0", "#179E6B", "#FEF1E6", "#E08A2B", "#E8F1FB", "#2E6FD0", "#FDECEF", "#D94A5E", "#EDF3FF", "#3A6FD8", "#FFF5E0", "#D99A1C"] },
-      "question": "MY 허브의 범주 타일 색 **7쌍**(tint 배경 + 진한 전경)을 브랜드 축으로 정식화할지, 팔레트로 수렴시킬 결함으로 볼지.",
-      "evidence": "22건. MyCategoryHubScreen:18~20 과 MyHomeScreen:24~31 에서 한 범주에 한 쌍씩 `{bg, fg}` 로 붙어 있다 — #F0EDFB/#7C5CE0(보라) · #EAF6F0/#179E6B(초록) · #FEF1E6/#E08A2B(주황) · #E8F1FB/#2E6FD0(파랑) · #FDECEF/#D94A5E(빨강) · #EDF3FF/#3A6FD8(파랑2) · #FFF5E0/#D99A1C(노랑). **본색+tint 쌍이 일관되게 반복되고 쓰이는 곳이 한 역할로 묶인다** — 페이블이 말한 '브랜드 축 후보' 의 모양이다. 누군가 골랐다.",
+      "match": {
+        "group": "color",
+        "valuesUpper": [
+          "#F0EDFB",
+          "#7C5CE0",
+          "#EAF6F0",
+          "#179E6B",
+          "#FEF1E6",
+          "#E08A2B",
+          "#E8F1FB",
+          "#2E6FD0",
+          "#FDECEF",
+          "#D94A5E",
+          "#EDF3FF",
+          "#3A6FD8",
+          "#FFF5E0",
+          "#D99A1C"
+        ]
+      },
+      "question": "MY 허브의 범주 타일 색 **7쌍**(tint 배경 + 진한 전경)을 브랜드 축으로 정식화할지, 팔레트로 수렴시킬 결함으로 볼지. **그리고 정식화한다면 상태색과의 충돌을 받아들일지, 범주 팔레트를 상태 색상대 밖으로 옮길지.**",
+      "evidence": "22건. MyCategoryHubScreen:18~20 과 MyHomeScreen:24~31 에서 한 범주에 한 쌍씩 `{bg, fg}` 로 붙어 있다 — #F0EDFB/#7C5CE0(보라) · #EAF6F0/#179E6B(초록) · #FEF1E6/#E08A2B(주황) · #E8F1FB/#2E6FD0(파랑) · #FDECEF/#D94A5E(빨강) · #EDF3FF/#3A6FD8(파랑2) · #FFF5E0/#D99A1C(노랑). **본색+tint 쌍이 일관되게 반복되고 쓰이는 곳이 한 역할로 묶인다** — 페이블이 말한 '브랜드 축 후보' 의 모양이다. 누군가 골랐다. 페이블 지적 — 7쌍 중 초록(#179E6B) · 빨강(#D94A5E) · 주황(#E08A2B)이 상태색(success · danger · warning)과 색상대가 겹친다. 범주 축을 정식화하면 '빨간 타일이 위험을 뜻하지 않는다' 를 사용자가 배워야 한다.",
       "ownerDecision": "브랜드 축으로 정식화하면 팔레트에 범주 강조색 7쌍이 추가되고, 결함으로 보면 26건이 기존 tint 계열로 수렴한다. 둘 다 제품 결정이다 — defect 로 분류하는 것도 '이 색을 없앤다' 는 결정이라 솔라 범위가 아니다."
     },
     {
       "id": "R-CL-NEAR-PALETTE",
       "bin": "pendingApproval",
-      "match": { "group": "color", "valuesUpper": ["#D5DAE0", "#B0B8C1", "#FFF9F0"] },
+      "match": {
+        "group": "color",
+        "valuesUpper": [
+          "#D5DAE0",
+          "#B0B8C1",
+          "#FFF9F0"
+        ]
+      },
       "openDecision": "D-1′",
       "question": "팔레트 값 바로 옆에 있는 색 셋을 팔레트로 당길지.",
       "evidence": "4건. #D5DAE0(MyNotificationsScreen:32 스위치 off 트랙)은 gray.300 #D5DBE1 과 **1비트 차이**다 — 오타에 가깝다. #B0B8C1(_layout.tsx:25 비활성 탭 아이콘, 2건)은 ink.300 #8B95A1 과 gray.300 사이에 있다. #FFF9F0(MyVendorsScreen:93 그룹 카드 배경)은 amber.tint #FFF4E5 옆이고 테두리는 이미 amberTint 토큰을 쓴다.",
-      "ownerDecision": "팔레트 수렴은 D-1′(팔레트 AA 수렴)과 같은 결정면이라 함께 올린다."
+      "ownerDecision": "팔레트 수렴은 D-1′(팔레트 AA 수렴)과 같은 결정면이라 함께 올린다.",
+      "권고": "#D5DAE0 → gray.300(#D5DBE1) 로 수렴을 권한다. 1비트 차이는 의도로 보기 어렵다. #FFF9F0 → amber.tint(#FFF4E5), 같은 카드의 테두리가 이미 amberTint 토큰이라 안팎이 갈려 있다. #B0B8C1 은 권고를 보류한다 — 비활성 탭 아이콘은 대비 요건 면제 대상이라 D-1′ 의 팔레트 결정에 딸려 가는 편이 낫다."
     },
     {
       "id": "R-CL-CHART",
       "bin": "pendingApproval",
-      "match": { "group": "color", "valuesUpper": ["#CDD3DA", "#5B6573"] },
+      "match": {
+        "group": "color",
+        "valuesUpper": [
+          "#CDD3DA",
+          "#5B6573"
+        ]
+      },
       "question": "차트 색이 팔레트에 두 단계(chart.1 · chart.2)뿐인데 앱은 네 단계를 쓴다. 단계를 늘릴지, 두 단계로 줄일지.",
       "evidence": "2건. SalesMenuDetailScreen:142~143 의 손익 분해 막대에서 '부자재' #CDD3DA · '고정 지출' #5B6573 을 chart.1 #7A8694 · chart.2 #C5CCD3 과 함께 쓴다. 항목이 넷이라 색도 넷이 필요했다.",
       "ownerDecision": "차트 색 단계 수는 팔레트 결정이다."
     }
   ],
-  "semanticNote": "semantic 통이 비어 있다. 앱 감사는 **값**을 기록하고 역할 이름을 기록하지 않는다 — 인라인 리터럴에는 역할이 붙어 있지 않기 때문이다. 의미 층 배정은 코드에 semantic 토큰이 생긴 뒤(`S1`·`P2`)에야 가능하다. 지금 비어 있는 것이 맞고, 이 칸을 억지로 채우면 값에 역할 이름을 지어 붙이는 일이 된다."
+  "semanticNote": "**구조적으로 빔.** 앱 감사는 **값**을 기록하고 역할 이름을 기록하지 않는다 — 인라인 리터럴에는 역할이 붙어 있지 않기 때문이다. 인라인 리터럴에 역할 이름을 붙이는 것은 값을 지어내지 않는다는 원칙의 이름 버전이다. semantic 배정은 `S1` 에서 semantic 토큰이 코드에 생긴 뒤 `P4` 에서 채워진다. 따라서 `W1` 완료 조건은 **'네 통 합 = 3,677 + semantic 0 명시'** 다 — 조건을 조용히 넘어가는 것이 아니라 실제와 맞게 개정한 것이다.",
+  "ruleOrderNote": "규칙은 순서대로 평가하고 첫 일치가 이긴다. **순서에 의존하는 배정이 있으면 앞선 규칙에 `순서근거` 를 적어야 하고, 검사기가 그것을 강제한다.** 다중 일치가 0 이면 순서는 장식이다 — 검사기가 다중 일치 수를 함께 낸다 (페이블 검수 조건 B)."
 }

@@ -63,6 +63,7 @@ const matches = (r, d) => {
     if (!table || !(String(num(d.value)) in table)) return false;
   }
   if (m.files && !m.files.some(f => d.file.includes(f))) return false;
+  if (m.at && !m.at.some(a => { const [f, ln] = a.split(':'); return d.file.endsWith(f) && Number(ln) === d.line; })) return false;
   return true;
 };
 
@@ -71,13 +72,31 @@ const binCount = Object.fromEntries(BINS.map(b => [b, 0]));
 const unmatched = [];
 const perRuleValues = Object.fromEntries(map.rules.map(r => [r.id, {}]));
 
+// "첫 일치가 이긴다" 는 숨은 결정이다. 한 선언이 규칙 둘 이상에 걸리면 그 배정의 근거는
+// 규칙이 아니라 **배치 순서**가 된다. 그래서 다중 일치를 세어 낸다 (페이블 검수 조건 B).
+// 0 이면 순서는 장식이고 안전하다. 0 이 아니면 그 행들과 이유를 표로 내야 한다.
+const multiMatch = [];
+const multiMatchPairs = {};
+
 for (const d of audit.declarations) {
-  const r = map.rules.find(rule => matches(rule, d));
+  const all = map.rules.filter(rule => matches(rule, d));
+  if (all.length > 1) {
+    const pair = all.map(r => r.id).join(' > ');
+    multiMatchPairs[pair] = (multiMatchPairs[pair] || 0) + 1;
+    if (multiMatch.length < 50) multiMatch.push({ decl: `${d.group}/${d.prop}:${d.value} @ ${d.file}:${d.line}`, rules: all.map(r => r.id) });
+  }
+  const r = all[0];
   if (!r) { unmatched.push(`${d.group}/${d.prop}:${d.value} @ ${d.file}:${d.line}`); continue; }
   hit[r.id]++;
   binCount[r.bin]++;
   const k = `${d.prop}:${d.value}`;
   perRuleValues[r.id][k] = (perRuleValues[r.id][k] || 0) + 1;
+}
+const multiMatchCount = Object.values(multiMatchPairs).reduce((a, b) => a + b, 0);
+// 순서 의존이 있는 경우, 그 순서가 규칙 자체에 근거로 적혀 있어야 한다.
+for (const pair of Object.keys(multiMatchPairs)) {
+  const first = map.rules.find(r => r.id === pair.split(' > ')[0]);
+  if (!first?.순서근거) fail(`${pair} : 순서 의존이 있는데 앞선 규칙에 순서근거가 없다 — 배정의 근거가 규칙이 아니라 배치다`);
 }
 
 // --- 완료 조건 -------------------------------------------------------------
@@ -108,8 +127,12 @@ const result = {
     status: failures.length ? 'FAIL' : 'PROPOSAL_COMPLETE',
     declarations: total,
     byBin: binCount,
+    semanticEmptyReason: map.semanticNote ?? null,
     unmatchedCount: unmatched.length,
     unmatched: unmatched.slice(0, 50),
+    multiMatchCount,
+    multiMatchPairs,
+    multiMatchSamples: multiMatch,
     openQuestions: map.rules.filter(r => r.bin === 'pendingApproval')
       .map(r => ({ id: r.id, question: r.question, declarations: hit[r.id], evidence: r.evidence, ownerDecision: r.ownerDecision ?? null })),
     perRule: map.rules.map(r => ({
@@ -121,5 +144,5 @@ const result = {
   },
 };
 writeFileSync(outPath, JSON.stringify(result, null, 1) + '\n');
-console.log(JSON.stringify({ status: result.summary.status, byBin: binCount, unmatched: unmatched.length, failures }, null, 1));
+console.log(JSON.stringify({ status: result.summary.status, byBin: binCount, unmatched: unmatched.length, multiMatch: multiMatchCount, failures }, null, 1));
 if (unmatched.length) console.log('미분류 예시:', unmatched.slice(0, 10));
