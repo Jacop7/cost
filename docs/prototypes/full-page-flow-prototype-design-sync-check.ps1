@@ -592,9 +592,64 @@ foreach ($fileName in @($auditName, $auditScriptName, 'full-page-flow-prototype-
     'full-page-flow-prototype-contrast-fix.json', 'full-page-flow-prototype-contrast-fix.mjs',
     'full-page-flow-prototype-atrisk-key-proof.json', 'full-page-flow-prototype-atrisk-key-proof.mjs',
     'full-page-flow-prototype-design-sync-check.ps1',
+    'full-page-flow-prototype-app-token-map.json', 'full-page-flow-prototype-app-map-check.mjs',
+    'full-page-flow-prototype-app-map-check.json', '../token-adoption-audit.json',
     '../디자인-토큰-3계층-값-매핑-기획서.md')) {
   $contents = Read-Utf8 (Join-Path $PrototypeDirectory $fileName)
   if ($null -ne $contents) { $hashes[$fileName] = Get-Sha256 $contents }
+}
+
+# --- 앱 선언 전수 배정 결속 (PRT-204 · W1) ---
+# 앱 3,677 선언이 여섯 통에 빠짐없이 들어갔는지, 그리고 그 배정이 지금 이 감사·이 매핑표에
+# 묶여 있는지 본다. 승인 예외 통은 W1 단계에서 0 이어야 한다 — 승인은 검수 뒤다.
+$appCheckName = 'full-page-flow-prototype-app-map-check.json'
+$appScriptName = 'full-page-flow-prototype-app-map-check.mjs'
+$appMapName = 'full-page-flow-prototype-app-token-map.json'
+$appAuditRel = '../token-adoption-audit.json'
+$appCheckPath = Join-Path $PrototypeDirectory $appCheckName
+$appScriptPath = Join-Path $PrototypeDirectory $appScriptName
+if (-not (Test-Path -LiteralPath $appCheckPath)) {
+  Add-Failure "$appCheckName : 앱 배정 결과가 없음"
+}
+elseif (-not (Test-Path -LiteralPath $appScriptPath)) {
+  Add-Failure "$appScriptName : 앱 배정 검사기가 없음"
+}
+else {
+  $appCheck = Read-Utf8 $appCheckPath | ConvertFrom-Json
+  $apBytes = [System.IO.File]::ReadAllBytes($appScriptPath)
+  $apSha = [System.Security.Cryptography.SHA256]::Create()
+  try { $appScriptSha = ([System.BitConverter]::ToString($apSha.ComputeHash($apBytes))).Replace('-', '').ToLowerInvariant() }
+  finally { $apSha.Dispose() }
+  if ($appCheck.manifest.script.sha256 -ne $appScriptSha) {
+    Add-Failure "$appCheckName : 검사기 SHA 불일치. 재실행 필요"
+  }
+  foreach ($pair in @(@{ key = 'audit'; file = $appAuditRel }, @{ key = 'appMap'; file = $appMapName }, @{ key = 'prototypeMap'; file = 'full-page-flow-prototype-token-map.json' })) {
+    $srcPath = Join-Path $PrototypeDirectory $pair.file
+    if (-not (Test-Path -LiteralPath $srcPath)) { Add-Failure "$appCheckName : 입력 '$($pair.file)' 가 없음"; continue }
+    $srcSha = Get-Sha256 (Read-Utf8 $srcPath)
+    if ($appCheck.manifest.source.($pair.key).sha256 -ne $srcSha) {
+      Add-Failure "$appCheckName : 입력 '$($pair.file)' SHA 불일치. 배정이 낡았다"
+    }
+  }
+  if ($appCheck.summary.status -ne 'PROPOSAL_COMPLETE') {
+    Add-Failure "$appCheckName : 상태가 PROPOSAL_COMPLETE 아님 ($($appCheck.summary.status))"
+  }
+  if ($appCheck.summary.unmatchedCount -ne 0) {
+    Add-Failure "$appCheckName : 미분류 $($appCheck.summary.unmatchedCount)건 - 전수 배정이 아니다"
+  }
+  if ($appCheck.summary.byBin.approvedException -ne 0) {
+    Add-Failure "$appCheckName : 승인 예외 통이 $($appCheck.summary.byBin.approvedException)건 - W1 은 제안 단계다"
+  }
+  $binSum = 0
+  foreach ($b in @('primitive', 'semantic', 'componentOwned', 'defect', 'pendingApproval', 'approvedException')) {
+    $binSum += [int]$appCheck.summary.byBin.$b
+  }
+  if ($binSum -ne [int]$appCheck.summary.declarations) {
+    Add-Failure "$appCheckName : 통 합계 $binSum 이 선언 $($appCheck.summary.declarations) 과 다르다"
+  }
+  if ($appCheck.summary.failures.Count -gt 0) {
+    foreach ($f in $appCheck.summary.failures) { Add-Failure "$appCheckName : $f" }
+  }
 }
 
 # --- 완료 조건마다 증거 경로 (PRT-203) ---
