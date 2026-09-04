@@ -141,6 +141,16 @@ const tally = { tokenAccess: {}, tokenValue: {}, kitJsx: {}, kitImport: {},
 const bump = (o, k) => { o[k] = (o[k] ?? 0) + 1; };
 const propGroup = n => Object.entries(NUMERIC_STYLE_PROPS).find(([, list]) => list.includes(n))?.[0] ?? null;
 
+// 선언 하나하나를 **어디의 무슨 값인지** 로 보존한다 ([L6]).
+// 파일별 개수만 저장하면 "이 값을 어느 토큰으로 보낼지" 를 판정할 수 없다 —
+// 매핑은 값과 속성과 위치가 있어야 정해진다. 프로토타입 감사와 같은 단위로 맞춘다.
+const declarations = [];
+const record = (group, prop, value, node, rel, layer) => {
+  const sf2 = node.getSourceFile();
+  const { line, character } = sf2.getLineAndCharacterOfPosition(node.getStart(sf2));
+  declarations.push({ group, prop, value, file: rel, line: line + 1, column: character + 1, layer });
+};
+
 for (const abs of files) {
   const rel = relative(repoRoot, abs).replace(/\\/g, '/');
   const src = readFileSync(abs, 'utf8');
@@ -192,18 +202,22 @@ for (const abs of files) {
     }
     // 인라인 숫자 스타일 리터럴
     if (ts.isPropertyAssignment(node) && node.name && ts.isNumericLiteral(node.initializer)) {
-      const g = propGroup(node.name.getText(sf).replace(/['"]/g, ''));
-      if (g) { f.inline[g]++; bump(tally.inline[g], `${node.name.getText(sf)}:${node.initializer.text}`); }
+      const prop = node.name.getText(sf).replace(/['"]/g, '');
+      const g = propGroup(prop);
+      if (g) { f.inline[g]++; bump(tally.inline[g], `${prop}:${node.initializer.text}`);
+        record(g, prop, node.initializer.text, node, rel, layer); }
     }
     // fontWeight 는 문자열 리터럴로 쓰인다
     if (ts.isPropertyAssignment(node) && node.name && ts.isStringLiteral(node.initializer)
         && node.name.getText(sf).replace(/['"]/g, '') === 'fontWeight' && /^\d+$/.test(node.initializer.text)) {
       f.inline.typography++; bump(tally.inline.typography, `fontWeight:${node.initializer.text}`);
+      record('typography', 'fontWeight', node.initializer.text, node, rel, layer);
     }
     // hex 색 리터럴
     if (ts.isStringLiteral(node) && /^#[0-9a-fA-F]{3,8}$/.test(node.text)
         && layer !== 'tokenDefinition') {
       f.hexColors++; bump(tally.hexColors, node.text.toUpperCase());
+      record('color', 'hex', node.text.toUpperCase(), node, rel, layer);
     }
     ts.forEachChild(node, visit);
   })(sf);
@@ -284,12 +298,31 @@ const out = {
       shadowing: '같은 이름의 지역 선언이 있으면 그 파일은 해당 심볼 집계에서 제외하고 목록에 남긴다',
     },
   },
+  declarations,
+  declarationSummary: (() => {
+    const byGroup = {};
+    for (const d of declarations) {
+      const g = (byGroup[d.group] ??= { total: 0, byValue: {}, byLayer: {} });
+      g.total++;
+      const k = `${d.prop}:${d.value}`;
+      g.byValue[k] = (g.byValue[k] ?? 0) + 1;
+      g.byLayer[d.layer] = (g.byLayer[d.layer] ?? 0) + 1;
+    }
+    for (const g of Object.values(byGroup)) {
+      g.distinctDeclarations = Object.keys(g.byValue).length;
+      g.byValue = Object.fromEntries(Object.entries(g.byValue).sort((a, b) => b[1] - a[1]));
+    }
+    return byGroup;
+  })(),
   summary: {
     filesScanned: files.length,
     filesByLayer: { tokenDefinition: byLayer('tokenDefinition').length,
       sharedComponent: byLayer('sharedComponent').length, product: byLayer('product').length },
     filesWithShadowedTokenNames: perFile.filter(f => f.shadowedSymbols.length)
       .map(f => ({ file: f.file, shadowedSymbols: f.shadowedSymbols })),
+    declarations: declarations.length,
+    declarationsByGroup: Object.fromEntries(
+      [...new Set(declarations.map(d => d.group))].map(g => [g, declarations.filter(d => d.group === g).length])),
     tokens: tokenReport, kit: kitReport, inlineLiterals: inlineReport,
     hexColorLiterals: { occurrences: consumers.reduce((a, f) => a + f.hexColors, 0),
       files: consumers.filter(f => f.hexColors > 0).length,
