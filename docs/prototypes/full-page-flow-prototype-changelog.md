@@ -19,6 +19,43 @@
 
 ## 변경 내역
 
+### PRT-180 · 2026-09-04 숫자·단위 통일 검수 지적 반영
+
+- 날짜: 2026-09-04
+- 디자인 동기화 ID: `DS-20260904-002`
+- 적용 범위: 전 화면 공통 `<style>` 레이어, 현재 확정안·검수 기록·디자인 맥락 장부
+- 상태: 프로토타입 적용본·문서 반영 · 실제 Expo 미적용
+- 근거: `PRT-179`에 대한 독립 검수 지적 5건(F01~F05) 전수 반영
+- 변경 내용:
+  - **F01** 숫자를 담은 스케일 밖 선택자 16종을 정정했다. `PRT-179`의 분류기가 셀렉터의 마지막
+    토큰이 `b·strong·small·em`인 경우만 다뤄, 클래스로만 스타일된 요소를 통째로 놓쳤다.
+    `.tab`·`.sheet-preview-tab`·`.edit-form-box`·`.stock-add-select`·`.sales-menu-name`·
+    `.past-actions button`·`.confirm-actions>button` 계열 `15px → 16px`,
+    `.sales-menu-sub`·`.fixed-ledger-sub`·`.fixed-ledger-total-value span`·
+    `.sales-section span:last-child`·`.expo-target`·`.detail-chip` `12px → 13px`,
+    `.app-tab` `12.5px → 13px`.
+  - **F02** 검수 증거를 재취득했다. 이전 회차는 `file://`로 렌더해 `/apps/mobile/assets/fonts/`가
+    드라이브 루트로 해석되며 Pretendard가 로드되지 않았고, 대체 폰트로 측정한 결과였다.
+    저장소 루트 HTTP 서버에서 네 굵기 로드를 `document.fonts.check`로 확인하고
+    `document.fonts.ready` 이후 재측정했다. 검사 대상도 화면 62개에서
+    **활성 popup/state host 123개를 포함한 185건**으로 넓히고 200% 확대를 추가했다.
+  - **F03** 단일 편집 입력에서 `tabular-nums`를 제거했다(선언 139 → 132). UI 가이드 `1.3`과
+    실제 Expo `components/kit`이 폰트 렌더 검증 전 제외를 규정하는데 `PRT-179`가 이를 어겼다.
+  - **F04** `small,em` 기본 규칙이 크기 규칙 없는 요소를 덮는 부작용을 해소했다. 필수 표시 `*`와
+    곱셈 기호가 부모 크기를 잃던 문제를 `.prototype-field-label em`·`.edit-form-label em`·
+    `.stock-add-label em`·`.sales-menu-name em`에 `font-size/weight: inherit`으로 되돌렸다.
+  - **F05** `tabular-nums` 집계를 138에서 실제 값으로 정정했다. F03 반영 후 최종 132건이다.
+- 부수 확인: 이 프로토타입의 Pretendard는 **정적 OTF 4종(400/600/700/800)이며 가변축이 없다.**
+  따라서 `PRT-179`의 `650/750/850` 정규화는 실제 렌더를 바꾸지 않았다.
+- 검수 결과: 185건(화면 62 + popup host 123) 전수. PC 1280px·모바일 320px·320px 200% 확대
+  세 조건 모두 가로 넘침 0건, 콘솔 오류 0건, 폰트 요청 실패 0건.
+  숫자 text node 기준 스케일 밖 요소는 프로토타입 셸 2종만 남았다
+  (폰 목업 상태바 시각 `11px`, 카탈로그 화면 ID 배지 `10px` — 제품 UI 아님).
+- 기획안 반영 포인트:
+  - 타이포 검사는 태그가 아니라 렌더된 text node와 입력값을 대상으로 한다.
+  - 검수 증거는 실제 폰트가 로드된 환경에서만 유효하다. `document.fonts.check`를 게이트에 넣는다.
+  - 검수 범위는 화면뿐 아니라 활성 popup/state host를 포함한다.
+
 ### PRT-179 · 2026-09-04 숫자·단위 타이포 전수 통일
 
 - 날짜: 2026-09-04
