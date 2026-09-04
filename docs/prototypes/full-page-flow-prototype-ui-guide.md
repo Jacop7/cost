@@ -6,9 +6,11 @@
 
 - 상태: 서비스 기준 재검토 개정안
 - 개정일: 2026-09-02
-- 현재 디자인 동기화 ID: `DS-20260904-003`
+- 현재 디자인 동기화 ID: `DS-20260904-004`
 - 적용 대상: `docs/prototypes/full-page-flow-prototype.html`, UI 적용 복사본과 향후 Expo 공용 UI
-- 등록 인벤토리: 프로토타입 `screen` 키 62개, 팝업·조건 상태 호스트 125개, 고유 ID 99개
+- 등록 인벤토리: 프로토타입 `screen` 키 62개, 팝업·조건 상태 호스트 123개, 고유 ID 98개
+  (PRT-182 정정: 이전 표기 `125 / 99`는 `PRT-151`이 `recipe_target_help`를 두 호스트에서
+  제거하기 전 수치였다. HTML 레지스트리 실측이 권위이며 `123 / 98`이 맞다.)
 - 활성 도달성 검수: `screen` 키 62개, 팝업·조건 상태 호스트 120개, 고유 ID 97개
 - 숨김 보존: `discard` 화면 키 1개와 `discard_type`·`discard_period` 상태 2개
 - 이번 개정 제외: 실제 Expo 화면, 프로토타입 HTML, DB, RPC
@@ -1026,8 +1028,9 @@ renderer의 조건 상태로만 등록한다.
 1. 본문은 10장, 추적성은 부록 A~C로 관리한다.
 2. 코드 심볼이 있는 값은 가이드가 다른 현재값을 선언하지 않는다.
 3. 변경 대상 CSS 변수·셀렉터·생성 함수·kit export가 부록 C에 연결된다.
-4. 등록 인벤토리 `screen 62 / popup·state host 125 / unique ID 99`가 HTML 레지스트리와 일치한다.
-5. 활성 도달성 대상 `screen 62 / popup·state host 120 / unique ID 97`이 PC·모바일에서 모두 열린다.
+4. 등록 인벤토리 `screen 62 / popup·state host 123 / unique ID 98`이 HTML 레지스트리와 일치한다.
+5. 활성 도달성 대상 `screen 61 / popup·state host 121 / unique ID 96`이 PC·모바일에서 모두 열린다.
+   활성 합계는 `61 + 121 = 182`이고, 숨김 보존 3건을 더한 `185`가 전수 스캔 대상이다.
 6. 숨김 보존 `discard / discard_type / discard_period`는 활성 목록에 노출되지 않고 직접 진입 시
    `stock`의 폐기 상태로 치환되며 활성 도달성 게이트에서 제외된다.
 7. 활성 popup ID는 레지스트리의 `host / layerType / dismissPolicy / footerPolicy / renderer`를,
