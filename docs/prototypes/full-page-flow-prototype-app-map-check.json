@@ -1,10 +1,10 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-04T21:18:06.723Z",
+  "generatedAt": "2026-09-04T21:39:45.476Z",
   "schemaVersion": 1,
   "script": {
    "name": "full-page-flow-prototype-app-map-check.mjs",
-   "sha256": "89652ea2f202b0d9c58b84dae173a5ea956df1db2aac9f162f2597b02292bd1e"
+   "sha256": "cc1b985b545fe8fe19e700d4e62507a5ed8301b2710218a9b0c5fa4e79d68835"
   },
   "source": {
    "audit": {
@@ -14,7 +14,7 @@
    },
    "appMap": {
     "path": "full-page-flow-prototype-app-token-map.json",
-    "sha256": "1d1f7b20af8620aedcb65600d08abcc3bf06d51e2ded0b50a30f75936543bdde"
+    "sha256": "d8da3eebbdfd3c16283d12af73eaa002af0fd04e68eb5781d2eddf467cf8ecae"
    },
    "prototypeMap": {
     "path": "full-page-flow-prototype-token-map.json",
@@ -33,30 +33,69 @@
   "byBin": {
    "primitive": 2082,
    "semantic": 0,
-   "componentOwned": 152,
-   "defect": 1044,
-   "pendingApproval": 399,
+   "componentOwned": 156,
+   "defect": 952,
+   "pendingApproval": 487,
    "approvedException": 0
   },
   "semanticEmptyReason": "**구조적으로 빔.** 앱 감사는 **값**을 기록하고 역할 이름을 기록하지 않는다 — 인라인 리터럴에는 역할이 붙어 있지 않기 때문이다. 인라인 리터럴에 역할 이름을 붙이는 것은 값을 지어내지 않는다는 원칙의 이름 버전이다. semantic 배정은 `S1` 에서 semantic 토큰이 코드에 생긴 뒤 `P4` 에서 채워진다. 따라서 `W1` 완료 조건은 **'네 통 합 = 3,677 + semantic 0 명시'** 다 — 조건을 조용히 넘어가는 것이 아니라 실제와 맞게 개정한 것이다.",
   "unmatchedCount": 0,
   "unmatched": [],
-  "multiMatchCount": 1009,
+  "multiMatchCount": 1810,
   "multiMatchPairs": {
+   "R-SP-TABBAR-INSET > R-SP-EDGE-INSET": 1,
    "R-TY-SIZE-PRIM > R-TY-SIZE-OFFSCALE": 718,
+   "R-SP-CONVERGE-GROW-H > R-SP-CONVERGE-UNDOCUMENTED": 150,
+   "R-SP-CONVERGE-SHRINK > R-SP-CONVERGE-UNDOCUMENTED": 558,
    "R-TY-SIZE-15 > R-TY-SIZE-CONVERGE > R-TY-SIZE-OFFSCALE": 67,
    "R-TY-SIZE-CONVERGE > R-TY-SIZE-OFFSCALE": 33,
-   "R-SZ-FLEX-RESET > R-SZ-EXTENSION": 69,
+   "R-SZ-FLEX-RESET > R-SZ-MINWIDTH": 64,
    "R-SP-SCROLL-BOTTOM > R-SP-EMPTY-STATE": 49,
-   "R-SP-CAPTION-GAP > R-SP-OPTICAL": 68,
-   "R-SP-CAPTION-GAP-VIEW > R-SP-CAPTION-GAP > R-SP-OPTICAL": 5
+   "R-SP-INLINE-TIGHT > R-SP-EDGE-INSET": 10,
+   "R-SP-CONVERGE-GROW-V > R-SP-CONVERGE-UNDOCUMENTED": 50,
+   "R-SP-CAPTION-GAP > R-SP-EDGE-INSET": 68,
+   "R-SZ-HAIRLINE > R-SZ-CONTROL-BOX": 6,
+   "R-SZ-FLEX-RESET > R-SZ-HAIRLINE > R-SZ-CONTROL-BOX": 2,
+   "R-SP-OPTICAL-ICON > R-SP-EDGE-INSET": 7,
+   "R-SZ-FLEX-RESET > R-SZ-HAIRLINE": 2,
+   "R-SP-BADGE-PAD > R-SP-EDGE-INSET": 3,
+   "R-SP-CAPTION-GAP-VIEW > R-SP-CAPTION-GAP > R-SP-EDGE-INSET": 5,
+   "R-SP-SCROLL-TOP > R-SP-EDGE-INSET": 17
   },
   "multiMatchSamples": [
+   {
+    "decl": "spacing/paddingTop:2 @ apps/mobile/app/(tabs)/_layout.tsx:32",
+    "rules": [
+     "R-SP-TABBAR-INSET",
+     "R-SP-EDGE-INSET"
+    ]
+   },
    {
     "decl": "typography/fontSize:18 @ apps/mobile/src/components/EmptyState.tsx:9",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
+    ]
+   },
+   {
+    "decl": "spacing/gap:6 @ apps/mobile/src/components/history/HistoryLayout.tsx:24",
+    "rules": [
+     "R-SP-CONVERGE-GROW-H",
+     "R-SP-CONVERGE-UNDOCUMENTED"
+    ]
+   },
+   {
+    "decl": "spacing/paddingVertical:14 @ apps/mobile/src/components/history/HistoryLayout.tsx:67",
+    "rules": [
+     "R-SP-CONVERGE-SHRINK",
+     "R-SP-CONVERGE-UNDOCUMENTED"
+    ]
+   },
+   {
+    "decl": "spacing/paddingHorizontal:15 @ apps/mobile/src/components/history/HistoryLayout.tsx:67",
+    "rules": [
+     "R-SP-CONVERGE-SHRINK",
+     "R-SP-CONVERGE-UNDOCUMENTED"
     ]
    },
    {
@@ -82,10 +121,31 @@
     ]
    },
    {
+    "decl": "spacing/paddingHorizontal:15 @ apps/mobile/src/components/history/HistoryLayout.tsx:76",
+    "rules": [
+     "R-SP-CONVERGE-SHRINK",
+     "R-SP-CONVERGE-UNDOCUMENTED"
+    ]
+   },
+   {
+    "decl": "spacing/gap:14 @ apps/mobile/src/components/history/HistoryLayout.tsx:76",
+    "rules": [
+     "R-SP-CONVERGE-SHRINK",
+     "R-SP-CONVERGE-UNDOCUMENTED"
+    ]
+   },
+   {
+    "decl": "spacing/gap:14 @ apps/mobile/src/components/history/HistoryLayout.tsx:78",
+    "rules": [
+     "R-SP-CONVERGE-SHRINK",
+     "R-SP-CONVERGE-UNDOCUMENTED"
+    ]
+   },
+   {
     "decl": "size/minWidth:0 @ apps/mobile/src/components/history/HistoryLayout.tsx:80",
     "rules": [
      "R-SZ-FLEX-RESET",
-     "R-SZ-EXTENSION"
+     "R-SZ-MINWIDTH"
     ]
    },
    {
@@ -101,6 +161,20 @@
      "R-TY-SIZE-15",
      "R-TY-SIZE-CONVERGE",
      "R-TY-SIZE-OFFSCALE"
+    ]
+   },
+   {
+    "decl": "spacing/marginHorizontal:5 @ apps/mobile/src/components/history/HistoryLayout.tsx:108",
+    "rules": [
+     "R-SP-CONVERGE-SHRINK",
+     "R-SP-CONVERGE-UNDOCUMENTED"
+    ]
+   },
+   {
+    "decl": "spacing/marginBottom:7 @ apps/mobile/src/components/history/HistoryLayout.tsx:108",
+    "rules": [
+     "R-SP-CONVERGE-GROW-H",
+     "R-SP-CONVERGE-UNDOCUMENTED"
     ]
    },
    {
@@ -132,6 +206,34 @@
     ]
    },
    {
+    "decl": "spacing/gap:2 @ apps/mobile/src/components/kit/AppHeader.tsx:37",
+    "rules": [
+     "R-SP-INLINE-TIGHT",
+     "R-SP-EDGE-INSET"
+    ]
+   },
+   {
+    "decl": "spacing/paddingRight:6 @ apps/mobile/src/components/kit/AppHeader.tsx:37",
+    "rules": [
+     "R-SP-CONVERGE-GROW-H",
+     "R-SP-CONVERGE-UNDOCUMENTED"
+    ]
+   },
+   {
+    "decl": "spacing/gap:6 @ apps/mobile/src/components/kit/Button.tsx:56",
+    "rules": [
+     "R-SP-CONVERGE-GROW-H",
+     "R-SP-CONVERGE-UNDOCUMENTED"
+    ]
+   },
+   {
+    "decl": "spacing/padding:14 @ apps/mobile/src/components/kit/MemoEditSheet.tsx:41",
+    "rules": [
+     "R-SP-CONVERGE-SHRINK",
+     "R-SP-CONVERGE-UNDOCUMENTED"
+    ]
+   },
+   {
     "decl": "typography/fontSize:16 @ apps/mobile/src/components/kit/MemoEditSheet.tsx:41",
     "rules": [
      "R-TY-SIZE-PRIM",
@@ -143,6 +245,20 @@
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
+    ]
+   },
+   {
+    "decl": "spacing/gap:9 @ apps/mobile/src/components/kit/MemoEditSheet.tsx:47",
+    "rules": [
+     "R-SP-CONVERGE-SHRINK",
+     "R-SP-CONVERGE-UNDOCUMENTED"
+    ]
+   },
+   {
+    "decl": "spacing/gap:10 @ apps/mobile/src/components/kit/QueryState.tsx:18",
+    "rules": [
+     "R-SP-CONVERGE-SHRINK",
+     "R-SP-CONVERGE-UNDOCUMENTED"
     ]
    },
    {
@@ -188,10 +304,24 @@
     ]
    },
    {
+    "decl": "spacing/paddingBottom:10 @ apps/mobile/src/components/kit/SearchBar.tsx:26",
+    "rules": [
+     "R-SP-CONVERGE-SHRINK",
+     "R-SP-CONVERGE-UNDOCUMENTED"
+    ]
+   },
+   {
+    "decl": "spacing/paddingHorizontal:14 @ apps/mobile/src/components/kit/SearchBar.tsx:27",
+    "rules": [
+     "R-SP-CONVERGE-SHRINK",
+     "R-SP-CONVERGE-UNDOCUMENTED"
+    ]
+   },
+   {
     "decl": "size/minWidth:0 @ apps/mobile/src/components/kit/SearchBar.tsx:37",
     "rules": [
      "R-SZ-FLEX-RESET",
-     "R-SZ-EXTENSION"
+     "R-SZ-MINWIDTH"
     ]
    },
    {
@@ -202,10 +332,10 @@
     ]
    },
    {
-    "decl": "size/width:0 @ apps/mobile/src/components/kit/Sheet.tsx:30",
+    "decl": "spacing/paddingTop:10 @ apps/mobile/src/components/kit/Sheet.tsx:31",
     "rules": [
-     "R-SZ-FLEX-RESET",
-     "R-SZ-EXTENSION"
+     "R-SP-CONVERGE-SHRINK",
+     "R-SP-CONVERGE-UNDOCUMENTED"
     ]
    },
    {
@@ -223,10 +353,31 @@
     ]
    },
    {
+    "decl": "spacing/marginTop:3 @ apps/mobile/src/components/kit/Sheet.tsx:38",
+    "rules": [
+     "R-SP-CONVERGE-GROW-V",
+     "R-SP-CONVERGE-UNDOCUMENTED"
+    ]
+   },
+   {
+    "decl": "spacing/paddingTop:14 @ apps/mobile/src/components/kit/Sheet.tsx:44",
+    "rules": [
+     "R-SP-CONVERGE-SHRINK",
+     "R-SP-CONVERGE-UNDOCUMENTED"
+    ]
+   },
+   {
     "decl": "spacing/paddingBottom:40 @ apps/mobile/src/components/kit/Sheet.tsx:44",
     "rules": [
      "R-SP-SCROLL-BOTTOM",
      "R-SP-EMPTY-STATE"
+    ]
+   },
+   {
+    "decl": "spacing/paddingTop:14 @ apps/mobile/src/components/kit/Sheet.tsx:46",
+    "rules": [
+     "R-SP-CONVERGE-SHRINK",
+     "R-SP-CONVERGE-UNDOCUMENTED"
     ]
    },
    {
@@ -241,168 +392,28 @@
     "decl": "spacing/marginTop:2 @ apps/mobile/src/components/kit/Sheet.tsx:77",
     "rules": [
      "R-SP-CAPTION-GAP",
-     "R-SP-OPTICAL"
+     "R-SP-EDGE-INSET"
     ]
    },
    {
-    "decl": "size/width:0 @ apps/mobile/src/components/kit/Slider.tsx:50",
+    "decl": "spacing/marginBottom:6 @ apps/mobile/src/components/kit/Sheet.tsx:79",
     "rules": [
-     "R-SZ-FLEX-RESET",
-     "R-SZ-EXTENSION"
+     "R-SP-CONVERGE-GROW-H",
+     "R-SP-CONVERGE-UNDOCUMENTED"
     ]
    },
    {
-    "decl": "typography/fontSize:16 @ apps/mobile/src/components/kit/SortSheet.tsx:34",
+    "decl": "size/width:26 @ apps/mobile/src/components/kit/Slider.tsx:50",
     "rules": [
-     "R-TY-SIZE-PRIM",
-     "R-TY-SIZE-OFFSCALE"
+     "R-SZ-HAIRLINE",
+     "R-SZ-CONTROL-BOX"
     ]
    },
    {
-    "decl": "size/minWidth:0 @ apps/mobile/src/components/kit/SortSheet.tsx:63",
+    "decl": "size/height:26 @ apps/mobile/src/components/kit/Slider.tsx:50",
     "rules": [
-     "R-SZ-FLEX-RESET",
-     "R-SZ-EXTENSION"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:16 @ apps/mobile/src/components/kit/SortSheet.tsx:64",
-    "rules": [
-     "R-TY-SIZE-PRIM",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:14 @ apps/mobile/src/components/kit/SortSheet.tsx:65",
-    "rules": [
-     "R-TY-SIZE-PRIM",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "spacing/marginTop:2 @ apps/mobile/src/components/kit/SortSheet.tsx:65",
-    "rules": [
-     "R-SP-CAPTION-GAP",
-     "R-SP-OPTICAL"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:13 @ apps/mobile/src/components/kit/charts.tsx:49",
-    "rules": [
-     "R-TY-SIZE-PRIM",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:16 @ apps/mobile/src/components/kit/charts.tsx:51",
-    "rules": [
-     "R-TY-SIZE-PRIM",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:14 @ apps/mobile/src/components/kit/index.tsx:74",
-    "rules": [
-     "R-TY-SIZE-PRIM",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:16 @ apps/mobile/src/components/kit/index.tsx:90",
-    "rules": [
-     "R-TY-SIZE-PRIM",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:13 @ apps/mobile/src/components/kit/index.tsx:111",
-    "rules": [
-     "R-TY-SIZE-PRIM",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:18 @ apps/mobile/src/components/kit/index.tsx:136",
-    "rules": [
-     "R-TY-SIZE-PRIM",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:16 @ apps/mobile/src/components/kit/index.tsx:137",
-    "rules": [
-     "R-TY-SIZE-PRIM",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "size/width:0 @ apps/mobile/src/components/kit/index.tsx:151",
-    "rules": [
-     "R-SZ-FLEX-RESET",
-     "R-SZ-EXTENSION"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:16 @ apps/mobile/src/components/kit/index.tsx:154",
-    "rules": [
-     "R-TY-SIZE-PRIM",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:16 @ apps/mobile/src/components/kit/index.tsx:169",
-    "rules": [
-     "R-TY-SIZE-PRIM",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:16 @ apps/mobile/src/components/kit/index.tsx:177",
-    "rules": [
-     "R-TY-SIZE-PRIM",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:16 @ apps/mobile/src/components/kit/index.tsx:179",
-    "rules": [
-     "R-TY-SIZE-PRIM",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:16 @ apps/mobile/src/components/kit/index.tsx:226",
-    "rules": [
-     "R-TY-SIZE-PRIM",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "size/minWidth:0 @ apps/mobile/src/components/kit/index.tsx:229",
-    "rules": [
-     "R-SZ-FLEX-RESET",
-     "R-SZ-EXTENSION"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:16 @ apps/mobile/src/components/kit/index.tsx:229",
-    "rules": [
-     "R-TY-SIZE-PRIM",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "size/minWidth:0 @ apps/mobile/src/components/kit/index.tsx:245",
-    "rules": [
-     "R-SZ-FLEX-RESET",
-     "R-SZ-EXTENSION"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:16 @ apps/mobile/src/components/kit/index.tsx:245",
-    "rules": [
-     "R-TY-SIZE-PRIM",
-     "R-TY-SIZE-OFFSCALE"
+     "R-SZ-HAIRLINE",
+     "R-SZ-CONTROL-BOX"
     ]
    }
   ],
@@ -413,6 +424,27 @@
     "declarations": 5,
     "evidence": "5건. BasePriceCard:155(gap 10 행) · PurchaseHistoryScreen:164 · FixedCostScreen:133 · MyChannelsScreen:105(셋 다 `gap:6, paddingHorizontal:2` 안내 아이콘+문구 행) · OrdersHomeScreen:313(`<View style={{marginTop:2}}>` 단독). 68건과 달리 육안 확인 전이고, 안내 아이콘+문구라면 목표값이 4 가 아니라 8 이다.",
     "ownerDecision": "관계에 이름을 붙인 뒤에야 목표값이 정해진다. 육안 확인이 선행한다."
+   },
+   {
+    "id": "R-SP-SCROLL-TOP",
+    "question": "스크롤 컨테이너의 **상단** 여유가 2px 인데 하단은 24~104px 이다. 이 비대칭이 의도인지, 상단도 역할값으로 정할지.",
+    "declarations": 17,
+    "evidence": "17자리. 전부 ScrollView 의 contentContainerStyle 에 있는 paddingTop:2 다(IngredientDetailScreen:129 · FixedCostScreen:81 · RecipeDetailScreen:178 …). R-SP-SCROLL-BOTTOM 과 같은 컨테이너의 반대편이다.",
+    "ownerDecision": "하단 여유와 한 봉투에서 함께 정해야 한다 — 같은 컨테이너의 위아래다."
+   },
+   {
+    "id": "R-SP-INLINE-TIGHT",
+    "question": "§5.4 가 `gap.inline` 을 `space.8`(아이콘-텍스트 · 버튼 사이 · 인라인)로 계약했는데, 앱은 같은 자리에 1·2px 을 쓴다. 계약대로 8 로 올릴지, 아이콘끼리 붙는 자리를 별도 관계로 뺄지.",
+    "declarations": 10,
+    "evidence": "10자리. AppHeader:37 헤더 우측 아이콘 사이 gap:2 · MenuProfitSheet:40 텍스트↔셰브런 gap:1 · BasePriceCard:178 버튼 안 아이콘↔라벨 gap:2. 8 로 올리면 **가로로 늘어나므로 S3b** 대상이고, 헤더 아이콘 줄은 폭 여유가 가장 적은 자리다.",
+    "ownerDecision": "§5.4 계약을 그대로 적용할지, \"아이콘끼리\" 라는 관계를 새로 인정할지가 계약 변경이다."
+   },
+   {
+    "id": "R-SP-CONVERGE-UNDOCUMENTED",
+    "question": "프로토타입 매핑표 `converge.space` 에는 있지만 **기획서 §4.7 에 근거가 없는** 값들(11 · 18 · 22)을 어디로 보낼지.",
+    "declarations": 119,
+    "evidence": "11 은 §4.7 표에 있으나 판정이 \"늘림 — **세로·좌우 혼재이므로 변별로 나눠 확인 필요**\" 로 열려 있다(앱 86자리). 18 · 22 는 §4.7 의 수렴표(15·14·13·11·10·9·7·5)에도 고정값(104·44·40)에도 없다(앱 27 · 6자리). 17 · 19 는 매핑표에 있으나 **앱에 한 건도 없다.**",
+    "ownerDecision": "11 은 변(세로/좌우)을 나눠 재판정해야 하고, 18·22 는 언제 누가 정했는지 출처가 없다. 페이블 지적 — \"미확정을 defect 로 배정하면 게이트가 열린 결정을 닫아 버린다.\""
    },
    {
     "id": "R-SP-SCROLL-BOTTOM",
@@ -450,11 +482,25 @@
     "ownerDecision": "tokens.ts 확장이므로 D-11 승인이 선행한다."
    },
    {
-    "id": "R-SZ-EXTENSION",
-    "question": "아이콘 크기 · 컨트롤 높이 · 행 높이는 tokens.ts 에 없다. 정본을 확장할지, 컴포넌트 소유로 남길지.",
-    "declarations": 167,
-    "evidence": "167건. 프로토타입 매핑표의 proposedTokensExtension(iconSize · controlHeight · rowHeight)이 대응하는 자리이고, converge 표에 목적지가 이미 적혀 있지만 그 목적지가 tokens.ts 에 실재하지 않는다. 솔의 F02 — rowHeight 는 고정 높이가 아니라 rowMinHeight 여야 하고, controlHeight 32/38 은 시각 높이이므로 minTouchTarget 44 와 분리해야 한다.",
-    "ownerDecision": "정본 변경이므로 D-11 승인이 선행한다."
+    "id": "R-SZ-ROW-MINH",
+    "question": "행 최소 높이 `minHeight` 를 정본에 넣을지. 넣는다면 **고정 높이가 아니라 `rowMinHeight`** 여야 한다.",
+    "declarations": 24,
+    "evidence": "24자리 · 38 · 46 · 47 · 50 · 52 · 55 · 56 · 70 · 72 · 82 · 100. UI 가이드는 목록 밀도를 3줄 92 / 2줄 76 / 1줄 60 으로 잠갔는데 앱 값은 그 셋 어디에도 안 맞는다. 솔 F02 — \"rowHeight 는 고정 높이가 아니라 rowMinHeight 여야 한다.\"",
+    "ownerDecision": "정본 확장이므로 D-11 봉투에 든다."
+   },
+   {
+    "id": "R-SZ-CONTROL-BOX",
+    "question": "아이콘 버튼·조작 상자의 폭×높이를 정본에 넣을지. 넣는다면 **시각 높이(`visualControlHeight`)와 최소 터치 영역(`minTouchTarget` 44)을 분리**해야 한다.",
+    "declarations": 82,
+    "evidence": "43자리 · 40×40(30) · 34×34(19) · 32×32 · 46×46 · 38×38 · 27×40 · 32×40 · 28×20 · 50×30(스위치 트랙) 등. 44 미만이 대부분이라 터치 영역은 hitSlop 이 따로 메우고 있다. 솔 F02 — \"controlHeight 32/38 은 시각 높이임을 명시하고 minTouchTarget 44 와 분리해야 한다.\"",
+    "ownerDecision": "정본 확장이므로 D-11 봉투에 든다."
+   },
+   {
+    "id": "R-CL-SHADOW",
+    "question": "그림자 색을 정본에 넣을지. 팔레트에는 `shadow.card` 하나뿐인데 앱은 시트·슬라이더 손잡이·스위치 노브에 각기 다른 그림자를 쓴다.",
+    "declarations": 3,
+    "evidence": "3자리 — `Sheet.tsx:30`(offset 0,-8 · opacity .15 · radius 40 · elevation 16) · `Slider.tsx:50` · `MyNotificationsScreen.tsx:34`. **셋 다 `shadowColor: \"#000\"` 이고 scrim 이 아니다.** 프로토타입 매핑표의 `proposedTokensExtension` 이 shadow sheet/fab/bottomBar 를 이미 제안했다.",
+    "ownerDecision": "정본 확장이므로 D-11 봉투에 든다."
    },
    {
     "id": "R-CL-CATEGORY-ACCENT",
@@ -566,6 +612,318 @@
     ]
    },
    {
+    "id": "R-SP-BADGE-PAD",
+    "bin": "defect",
+    "declarations": 3,
+    "name": null,
+    "target": "space.4",
+    "openDecision": null,
+    "values": [
+     [
+      "paddingVertical:2",
+      2
+     ],
+     [
+      "gap:2",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SP-SCROLL-TOP",
+    "bin": "pendingApproval",
+    "declarations": 17,
+    "name": null,
+    "target": null,
+    "openDecision": null,
+    "values": [
+     [
+      "paddingTop:2",
+      17
+     ]
+    ]
+   },
+   {
+    "id": "R-SP-TABBAR-INSET",
+    "bin": "componentOwned",
+    "declarations": 1,
+    "name": "tabBar.topInset",
+    "target": null,
+    "openDecision": null,
+    "values": [
+     [
+      "paddingTop:2",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SP-OPTICAL-ICON",
+    "bin": "componentOwned",
+    "declarations": 7,
+    "name": "optical.iconBaseline",
+    "target": null,
+    "openDecision": null,
+    "values": [
+     [
+      "marginTop:1",
+      6
+     ],
+     [
+      "paddingTop:1",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SP-INLINE-TIGHT",
+    "bin": "pendingApproval",
+    "declarations": 10,
+    "name": null,
+    "target": null,
+    "openDecision": null,
+    "values": [
+     [
+      "gap:2",
+      7
+     ],
+     [
+      "gap:1",
+      3
+     ]
+    ]
+   },
+   {
+    "id": "R-SP-EDGE-INSET",
+    "bin": "componentOwned",
+    "declarations": 18,
+    "name": "inset.edgeAlign",
+    "target": null,
+    "openDecision": null,
+    "values": [
+     [
+      "paddingHorizontal:2",
+      9
+     ],
+     [
+      "paddingBottom:2",
+      3
+     ],
+     [
+      "padding:2",
+      2
+     ],
+     [
+      "marginHorizontal:2",
+      2
+     ],
+     [
+      "marginLeft:1",
+      1
+     ],
+     [
+      "marginVertical:2",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SP-CONVERGE-SHRINK",
+    "bin": "defect",
+    "declarations": 558,
+    "name": null,
+    "target": "프로토타입 매핑표 converge.space (5→4 · 9→8 · 10→8 · 13→12 · 14→12 · 15→12)",
+    "openDecision": null,
+    "values": [
+     [
+      "paddingHorizontal:15",
+      94
+     ],
+     [
+      "paddingVertical:13",
+      66
+     ],
+     [
+      "gap:10",
+      47
+     ],
+     [
+      "paddingHorizontal:14",
+      45
+     ],
+     [
+      "paddingVertical:14",
+      25
+     ],
+     [
+      "gap:5",
+      20
+     ],
+     [
+      "paddingVertical:9",
+      19
+     ],
+     [
+      "paddingVertical:10",
+      18
+     ],
+     [
+      "gap:9",
+      16
+     ],
+     [
+      "marginBottom:10",
+      14
+     ],
+     [
+      "marginBottom:14",
+      14
+     ],
+     [
+      "marginTop:10",
+      14
+     ]
+    ]
+   },
+   {
+    "id": "R-SP-CONVERGE-GROW-V",
+    "bin": "defect",
+    "declarations": 50,
+    "name": null,
+    "target": "4",
+    "openDecision": null,
+    "values": [
+     [
+      "marginTop:3",
+      41
+     ],
+     [
+      "gap:3",
+      6
+     ],
+     [
+      "paddingVertical:3",
+      3
+     ]
+    ]
+   },
+   {
+    "id": "R-SP-CONVERGE-GROW-H",
+    "bin": "defect",
+    "declarations": 150,
+    "name": null,
+    "target": "8",
+    "openDecision": null,
+    "values": [
+     [
+      "gap:6",
+      69
+     ],
+     [
+      "gap:7",
+      22
+     ],
+     [
+      "marginTop:6",
+      9
+     ],
+     [
+      "marginTop:7",
+      9
+     ],
+     [
+      "paddingTop:6",
+      8
+     ],
+     [
+      "marginBottom:6",
+      7
+     ],
+     [
+      "paddingVertical:7",
+      6
+     ],
+     [
+      "marginBottom:7",
+      4
+     ],
+     [
+      "paddingHorizontal:7",
+      4
+     ],
+     [
+      "paddingHorizontal:6",
+      2
+     ],
+     [
+      "marginLeft:7",
+      2
+     ],
+     [
+      "marginRight:6",
+      2
+     ]
+    ]
+   },
+   {
+    "id": "R-SP-CONVERGE-UNDOCUMENTED",
+    "bin": "pendingApproval",
+    "declarations": 119,
+    "name": null,
+    "target": null,
+    "openDecision": null,
+    "values": [
+     [
+      "paddingVertical:11",
+      31
+     ],
+     [
+      "gap:11",
+      23
+     ],
+     [
+      "marginTop:18",
+      14
+     ],
+     [
+      "paddingBottom:11",
+      10
+     ],
+     [
+      "marginBottom:11",
+      9
+     ],
+     [
+      "gap:22",
+      6
+     ],
+     [
+      "marginTop:11",
+      6
+     ],
+     [
+      "paddingTop:11",
+      6
+     ],
+     [
+      "marginBottom:18",
+      4
+     ],
+     [
+      "gap:18",
+      3
+     ],
+     [
+      "paddingVertical:18",
+      2
+     ],
+     [
+      "paddingRight:18",
+      1
+     ]
+    ]
+   },
+   {
     "id": "R-SP-RESET",
     "bin": "componentOwned",
     "declarations": 6,
@@ -584,122 +942,6 @@
      [
       "paddingRight:0",
       1
-     ]
-    ]
-   },
-   {
-    "id": "R-SP-OPTICAL",
-    "bin": "componentOwned",
-    "declarations": 56,
-    "name": "optical.hairline",
-    "target": null,
-    "openDecision": null,
-    "values": [
-     [
-      "paddingTop:2",
-      18
-     ],
-     [
-      "paddingHorizontal:2",
-      9
-     ],
-     [
-      "gap:2",
-      8
-     ],
-     [
-      "marginTop:1",
-      6
-     ],
-     [
-      "paddingBottom:2",
-      3
-     ],
-     [
-      "gap:1",
-      3
-     ],
-     [
-      "paddingVertical:2",
-      2
-     ],
-     [
-      "padding:2",
-      2
-     ],
-     [
-      "marginHorizontal:2",
-      2
-     ],
-     [
-      "marginLeft:1",
-      1
-     ],
-     [
-      "marginVertical:2",
-      1
-     ],
-     [
-      "paddingTop:1",
-      1
-     ]
-    ]
-   },
-   {
-    "id": "R-SP-CONVERGE",
-    "bin": "defect",
-    "declarations": 877,
-    "name": null,
-    "target": "프로토타입 매핑표 converge.space",
-    "openDecision": null,
-    "values": [
-     [
-      "paddingHorizontal:15",
-      94
-     ],
-     [
-      "gap:6",
-      69
-     ],
-     [
-      "paddingVertical:13",
-      66
-     ],
-     [
-      "gap:10",
-      47
-     ],
-     [
-      "paddingHorizontal:14",
-      45
-     ],
-     [
-      "marginTop:3",
-      41
-     ],
-     [
-      "paddingVertical:11",
-      31
-     ],
-     [
-      "paddingVertical:14",
-      25
-     ],
-     [
-      "gap:11",
-      23
-     ],
-     [
-      "gap:7",
-      22
-     ],
-     [
-      "gap:5",
-      20
-     ],
-     [
-      "paddingVertical:9",
-      19
      ]
     ]
    },
@@ -954,43 +1196,179 @@
     ]
    },
    {
-    "id": "R-SZ-EXTENSION",
+    "id": "R-SZ-SPACER",
+    "bin": "defect",
+    "declarations": 6,
+    "name": null,
+    "target": "space.* (12→12 · 24→24 · 9→8)",
+    "openDecision": null,
+    "values": [
+     [
+      "height:9",
+      2
+     ],
+     [
+      "width:12",
+      1
+     ],
+     [
+      "height:12",
+      1
+     ],
+     [
+      "height:24",
+      1
+     ],
+     [
+      "width:16",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-HANDLE",
+    "bin": "componentOwned",
+    "declarations": 10,
+    "name": "sheet.handle",
+    "target": null,
+    "openDecision": null,
+    "values": [
+     [
+      "height:5",
+      5
+     ],
+     [
+      "width:40",
+      4
+     ],
+     [
+      "width:38",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-HAIRLINE",
+    "bin": "componentOwned",
+    "declarations": 18,
+    "name": "hairline.thickness",
+    "target": null,
+    "openDecision": null,
+    "values": [
+     [
+      "height:2.5",
+      7
+     ],
+     [
+      "height:1",
+      4
+     ],
+     [
+      "height:6",
+      2
+     ],
+     [
+      "width:26",
+      1
+     ],
+     [
+      "height:26",
+      1
+     ],
+     [
+      "height:2",
+      1
+     ],
+     [
+      "width:24",
+      1
+     ],
+     [
+      "height:24",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-ROW-MINH",
     "bin": "pendingApproval",
-    "declarations": 167,
+    "declarations": 24,
     "name": null,
     "target": null,
     "openDecision": "D-11",
     "values": [
      [
-      "width:40",
-      16
+      "minHeight:50",
+      4
      ],
+     [
+      "minHeight:38",
+      3
+     ],
+     [
+      "minHeight:52",
+      3
+     ],
+     [
+      "minHeight:72",
+      3
+     ],
+     [
+      "minHeight:55",
+      3
+     ],
+     [
+      "minHeight:47",
+      3
+     ],
+     [
+      "minHeight:100",
+      1
+     ],
+     [
+      "minHeight:56",
+      1
+     ],
+     [
+      "minHeight:70",
+      1
+     ],
+     [
+      "minHeight:82",
+      1
+     ],
+     [
+      "minHeight:46",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-CONTROL-BOX",
+    "bin": "pendingApproval",
+    "declarations": 82,
+    "name": null,
+    "target": null,
+    "openDecision": "D-11",
+    "values": [
      [
       "height:40",
       14
      ],
      [
+      "width:40",
+      12
+     ],
+     [
       "width:34",
-      10
+      9
      ],
      [
       "height:34",
       9
      ],
      [
-      "height:2.5",
-      7
-     ],
-     [
-      "width:44",
-      7
-     ],
-     [
       "width:38",
-      6
-     ],
-     [
-      "height:5",
       5
      ],
      [
@@ -998,16 +1376,112 @@
       5
      ],
      [
-      "width:46",
-      5
+      "height:30",
+      3
      ],
      [
       "width:32",
+      2
+     ],
+     [
+      "width:28",
+      2
+     ],
+     [
+      "height:20",
+      2
+     ],
+     [
+      "width:30",
+      2
+     ],
+     [
+      "width:22",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-FIXED-COL",
+    "bin": "componentOwned",
+    "declarations": 21,
+    "name": "column.fixedWidth",
+    "target": null,
+    "openDecision": null,
+    "values": [
+     [
+      "width:44",
+      7
+     ],
+     [
+      "width:46",
       4
      ],
      [
-      "height:1",
-      4
+      "height:18",
+      2
+     ],
+     [
+      "width:32",
+      2
+     ],
+     [
+      "height:28",
+      1
+     ],
+     [
+      "width:84",
+      1
+     ],
+     [
+      "width:27",
+      1
+     ],
+     [
+      "width:34",
+      1
+     ],
+     [
+      "width:72",
+      1
+     ],
+     [
+      "width:74",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-MINWIDTH",
+    "bin": "componentOwned",
+    "declarations": 6,
+    "name": "column.minWidth",
+    "target": null,
+    "openDecision": null,
+    "values": [
+     [
+      "minWidth:56",
+      1
+     ],
+     [
+      "minWidth:96",
+      1
+     ],
+     [
+      "minWidth:34",
+      1
+     ],
+     [
+      "minWidth:22",
+      1
+     ],
+     [
+      "minWidth:26",
+      1
+     ],
+     [
+      "minWidth:110",
+      1
      ]
     ]
    },
@@ -1047,10 +1521,10 @@
    },
    {
     "id": "R-RD-SHAPE",
-    "bin": "componentOwned",
+    "bin": "defect",
     "declarations": 18,
-    "name": "shape.pill",
-    "target": null,
+    "name": null,
+    "target": "radius.full (999)",
     "openDecision": null,
     "values": [
      [
@@ -1156,12 +1630,12 @@
     ]
    },
    {
-    "id": "R-CL-SCRIM",
-    "bin": "componentOwned",
+    "id": "R-CL-SHADOW",
+    "bin": "pendingApproval",
     "declarations": 3,
-    "name": "sheet.scrim",
+    "name": null,
     "target": null,
-    "openDecision": null,
+    "openDecision": "D-11",
     "values": [
      [
       "hex:#000",

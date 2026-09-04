@@ -43,6 +43,10 @@ for (const r of map.rules) {
   if (!r.근거 && !r.evidence) fail(`${r.id} : 근거가 없다 — 어디서 나온 판정인지 적어야 한다`);
   if (r.bin === 'componentOwned' && !r.name) fail(`${r.id} : componentOwned 인데 이름이 없다. 이름 없는 px 는 예외가 아니라 미매핑이다`);
   if (r.bin === 'defect' && r.target === undefined && !r.openDecision) fail(`${r.id} : defect 인데 수렴 대상도 열린 결정 ID 도 없다`);
+  // 방향(S3a/S3b)이 없으면 §7.2 실행 순서에서 어느 단계에 넣을지 알 수 없다 (페이블 검수 조건 1).
+  if (r.bin === 'defect' && !r.방향) fail(`${r.id} : defect 인데 방향(S3a/S3b) 표식이 없다 — 어느 실행 단계인지 정해지지 않는다`);
+  // 기존 결정의 적용이라고 말하려면 그 결정이 어디 있는지 대야 한다.
+  if (r.bin === 'defect' && /기존 결정|이미 정한|새 결정이 아니/.test(String(r.근거 ?? '')) && !r.출처) fail(`${r.id} : "기존 결정" 이라 적었는데 출처가 없다`);
   if (r.bin === 'pendingApproval' && (!r.question || !r.evidence)) fail(`${r.id} : pendingApproval 인데 질문 또는 증거가 없다`);
 }
 
