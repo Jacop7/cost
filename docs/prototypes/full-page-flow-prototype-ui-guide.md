@@ -5,10 +5,11 @@
 ### 0.1 역할과 범위
 
 - 상태: 서비스 기준 재검토 개정안
-- 개정일: 2026-09-01
-- 적용 대상: `docs/prototypes/full-page-flow-prototype.html`과 향후 Expo 공용 UI
+- 개정일: 2026-09-02
+- 현재 디자인 동기화 ID: `DS-20260902-021`
+- 적용 대상: `docs/prototypes/full-page-flow-prototype.html`, UI 적용 복사본과 향후 Expo 공용 UI
 - 등록 인벤토리: 프로토타입 `screen` 키 62개, 팝업·조건 상태 호스트 125개, 고유 ID 99개
-- 활성 도달성 검수: `screen` 키 61개, 팝업·조건 상태 호스트 123개, 고유 ID 97개
+- 활성 도달성 검수: `screen` 키 62개, 팝업·조건 상태 호스트 120개, 고유 ID 97개
 - 숨김 보존: `discard` 화면 키 1개와 `discard_type`·`discard_period` 상태 2개
 - 이번 개정 제외: 실제 Expo 화면, 프로토타입 HTML, DB, RPC
 - 공동 검토: Codex 전수검수 + `claude-opus-5` 도메인 대조·UI 가이드·서비스 관점·최종 회귀
@@ -24,7 +25,10 @@
 | 화면 ID·라우트·구현 상태 | `apps/mobile/src/features/README.md` |
 | Expo 원시 시각값과 공용 구현 | `apps/mobile/src/theme/tokens.ts`, `apps/mobile/src/components/kit/**` |
 | UI 목표 행동과 출시 검수 기준 | 이 가이드 |
+| 디자인 적용 순서와 화면별 완료 판정 | `full-page-flow-prototype-design-work-plan.md` |
+| 최신 디자인 작업 맥락과 다음 시작점 | `full-page-flow-prototype-design-context.md` |
 | 화면별 확정 문구·배치 | 현재 확정안 문서 |
+| 화면별 적용·PC/모바일 검수 증거 | `full-page-flow-prototype-ui-applied-review.md` |
 | 프로토타입 HTML | 검수용 표현과 상호작용 예시 |
 
 벤치마크는 제품 권위를 대체하지 않으며 역할을 다음처럼 분리한다.
@@ -100,6 +104,8 @@
 11. 정보 구조와 업무 흐름은 캐시노트·오늘얼마 관점으로 검토하고, 토스는 시각 표현 톤에만 적용한다.
 12. 자동 수집 근거가 없는 값에 `실시간`, `LIVE`, `자동 연동`, `자동 집계`를 사용하지 않는다.
 13. 집계·요약·손익은 값과 함께 마지막 기록 시각, 미입력 구간, 작성/확정 상태 중 해당 정보를 제공한다.
+14. 전체폭 텍스트 행동은 Button이며 IconButton 토큰을 적용하지 않는다. 시각 아이콘 크기와 실제
+    터치 영역을 분리하되 터치 영역은 최소 `size.touchMin`을 보장한다.
 
 ---
 
@@ -162,9 +168,11 @@
 - Badge·Chip·Filter·짧은 메타는 `TYPE.captionSm`을 공유한다. Badge만을 위한 별도 글자 토큰을
   만들지 않는다. 현재 프로토타입의 `10~12px` Badge·차트 메타는 목표 적용 때 `captionSm`으로
   매핑하며, `13px` 미만을 유지해야 할 근거가 실제 기기 검증에서 생기기 전에는 예외를 추가하지 않는다.
-- 내역 Row의 일시는 공용 `HistoryDateTime` 역할 하나를 사용한다. 한국어 기본 표기는
-  `MM/DD · HH:mm`, `TYPE.captionSm`(`13 / 600`), `T.ter`, 한 줄, tabular numeral이다. 날짜와 시각의
-  순서·구분점·색·굵기·Row 안의 위치를 화면별로 다시 선언하지 않는다. 월 그룹 제목은
+- 내역 Row의 일시는 공용 `HistoryDateTime` 역할 하나를 사용한다. 글로벌 중립 프로토타입과
+  formatter 실패 시 표기는 `YYYY-MM-DD · HH:mm`, `TYPE.captionSm`(`13 / 600`), `T.ter`, 한 줄,
+  tabular numeral이다. 연도가 없는 `MM/DD · HH:mm` 표기는 월·일 순서와 날짜·시각 맥락이
+  모호하므로 사용하지 않는다. 날짜와 시각의 순서·구분점·색·굵기·Row 안의 위치를 화면별로
+  다시 선언하지 않는다. 월 그룹 제목은
   `YYYY년 M월`, `TYPE.caption`(`14 / 700`), `T.ter`를 사용한다.
 
 ### 1.4 간격·크기·모서리
@@ -389,6 +397,9 @@ PrimaryKPI 의무 대상에서는 제외한다.
 - 삭제·철회·계정 해지는 danger를 사용하며 Primary 색을 재사용하지 않는다.
 - loading 중 라벨을 유지하고 진행 표시 때문에 폭이 바뀌지 않게 한다.
 - 단독 아이콘 행동은 `IconButton`으로 통합하고 문자 아이콘을 넣지 않는다.
+- 카테고리 순서 이동은 같은 Row 안에서 한 쌍으로 작동하는 전용 reorder control이다. Row 왼쪽
+  `28px` 열에 위·아래 SVG 버튼을 세로로 쌓고 각 버튼은 `28×20px`로 한다. 첫 행의 위·마지막 행의
+  아래 버튼은 비활성 처리하며, 두 행동을 `44×44px` 독립 버튼이나 `88px` 가로 묶음으로 확대하지 않는다.
 - 전체가 한 경로로 이동하는 interactive Card·Row는 접근성을 위해 semantic `<button>` 또는 link로
   구현한다. 이는 Button **시각 역할**을 Card·Row에 합친 것이 아니다. 금지 대상은 Card·Row 표면 위에
   채움 Primary·danger 같은 Button variant의 표면을 다시 덧입히거나 동일 행동을 별도 Button으로
@@ -437,6 +448,10 @@ Form은 입력 순서·검증·dirty·제출·실패 복구를 소유하는 조�
   placeholder도 실제 값과 같은 방향으로 정렬해 입력 시작 시 값이 움직이지 않게 한다.
 - 숫자 입력 variant는 `tnum`과 목적에 맞는 `inputMode`를 사용한다. 같은 종류의 수량·금액·비율은
   한 화면에서 같은 끝선에 맞추며 화면별 임의 정렬을 허용하지 않는다.
+- 프로토타입 공용 `prototypeField()`도 suffix가 수량·금액·비율 단위이면 숫자 variant로 판정해 값과
+  placeholder를 end 정렬한다. `prototypeForm()`은 별도 입력 마크업을 만들지 않고 이 helper를 호출해
+  페이지·FormSheet의 값·단위·접근성 이름을 동일하게 유지한다. 편집 가능한 숫자 Field를 읽기 전용
+  값으로 위장하지 않는다.
 - 값과 suffix 사이에는 `space.sm` 이하의 한 덩어리 간격만 두고 suffix를 입력 반대편 끝으로 떼어
   놓지 않는다. 값·suffix·아이콘은 서로 겹치거나 두 줄로 갈라지지 않는다.
 - 앞·뒤 아이콘은 각각 `size.touchMin` 이상의 유효 영역을 확보하고 값 영역에 그 폭을 예약한다.
@@ -457,6 +472,10 @@ Form은 입력 순서·검증·dirty·제출·실패 복구를 소유하는 조�
 **Search**
 
 - `header`와 `page` 변형을 구분한다.
+- SearchBar 하나가 검색 아이콘·입력·placeholder를 소유한다. 선택창 안에 의미가 같은 작은 `검색`
+  라벨이나 설명을 입력 위에 반복하지 않는다.
+- 최초 미선택 PickerSheet에는 임의의 첫 항목 체크를 표시하지 않는다. 실제 기본값이 있는 경우에만
+  해당 항목을 선택 상태로 표시한다.
 - 한글 IME 조합 중 검색을 확정하지 않는다.
 - 최초 데이터 없음과 검색 결과 없음을 같은 문구로 사용하지 않는다.
 - 지우기와 검색 닫기 행동을 구분한다.
@@ -479,6 +498,9 @@ Form은 입력 순서·검증·dirty·제출·실패 복구를 소유하는 조�
 - PageTabs는 tablist/tab/tabpanel 관계와 선택 상태를 제공한다.
 - SegmentedControl 변경 시 라벨·입력값·계산 결과가 같은 모드로 함께 갱신돼야 한다.
 - Filter는 `trigger / sort / period / quick chip` 변형을 사용한다.
+- 상단 `trigger / sort / period` 필터는 모두 높이 `38px`, 흰 배경, 중립 경계선, 검정 글씨,
+  `radius.full`, 우측 아래 화살표를 사용한다. 값이 선택돼도 검정 채움으로 바꾸지 않고 버튼 라벨을
+  선택값으로 교체한다.
 - 전체값일 때도 필터 목적을 숨기지 않는다.
 - 여러 조건을 한 문장으로 합친 거대한 칩을 만들지 않는다.
 - 필터 결과 없음에는 초기화 행동을 제공한다.
@@ -521,6 +543,10 @@ Form은 입력 순서·검증·dirty·제출·실패 복구를 소유하는 조�
 | FieldControl | 사용자가 입력·선택하는 값 | `T.surface`, `T.line`, `radius.md` | focus·error·disabled·readonly 상태 | 계산 결과나 단순 설명 표시 |
 | ResultField·ResultGroup | 미리보기·변경 후·확정 계산값 | `T.surface2`, 약한 경계, `radius.md`; 대표 그룹 한 곳만 tint | 기본 비조작, 상세 이동은 별도 행동 | Input처럼 보이게 하거나 각 결과를 파란 카드로 분리할 때 |
 | Notice | 읽어야 할 정보·주의·오류와 다음 행동 | 중립 또는 의미 tint, `radius.md` | 본문은 비조작, 행동은 별도 Button | 짧은 상태를 Badge 대신 긴 박스로 반복할 때 |
+
+- 정보성 Notice는 좌측 상단에 원형 `i` 아이콘을 두고 본문 시작선을 아이콘 뒤에 맞춘다. 아이콘은
+  장식 요소로 처리하며, 의미는 아이콘만이 아니라 문장으로 전달한다. 정보 Notice의 최소 높이는
+  `48px`, 아이콘은 `20px`, 아이콘과 본문의 시각 간격은 `10px`를 사용한다.
 | PrimaryKPI·SummaryKPI | 기간·기준이 있는 핵심 수치 | 중립 표면 우선, 채움 Primary 표면은 화면당 최대 한 곳 | 상세 이동은 명시적 링크·행동 | 모든 숫자를 동일한 KPI 카드로 만들 때 |
 | Chart | 시간·비율·구성의 관계를 시각화 | 상위 Section·Card 표면 재사용, mark 자체에 별도 Card 표면 없음 | 데이터 point focus·설명만 제공 | 텍스트 목록·표 없이 핵심값을 차트만으로 전달할 때 |
 | EmptyState | 최초 데이터 없음·검색 결과 없음·필터 결과 없음 | Page·Section·Card Body의 현재 상위 표면 재사용 | 대표 복구·추가 행동 최대 한 개 | 실제 값 `0`, loading, 오류를 빈 상태로 대체할 때 |
@@ -583,8 +609,13 @@ Form은 입력 순서·검증·dirty·제출·실패 복구를 소유하는 조�
 - 제목·값·상태를 카드 헤더와 본문에 반복하지 않는다.
 - Row는 `primary / labelValue / valuePercent / countAmount / hierarchy / beforeAfter / event / management`
   변형으로 공통화한다.
+- 반복 목록의 세로 밀도는 세 종류로만 병합한다. 날짜·제목·보조값의 3줄 기록형은 최소 `92px`와
+  상·하 `16px`, 제목·보조값의 2줄 관리형은 최소 `76px`와 상·하 `14px`, 1줄 단순형은 최소
+  `60px`와 상·하 `12px`를 사용한다. 연속 Row 사이는 `1px / T.line2` 한 줄만 사용한다.
 - 행 전체 이동과 별도 chevron·편집 행동을 중복하지 않는다.
 - Table은 웹의 열 의미와 모바일 행 카드의 열 순서·단위·소계·총계를 동일하게 유지한다.
+- 레시피의 `재료`와 `부자재`처럼 동급인 원가 그룹은 모두 같은 Footer 소계 행을 사용한다. 소계는
+  좌측에 그룹명, 우측에 금액과 판매가 대비 비율을 표시하며 빈 상태도 `0원 · 0.0%`를 유지한다.
 - 정렬 가능한 열은 현재 방향을 의미 속성으로 전달한다.
 
 Card는 임의 padding 조합 대신 `Header / Body 또는 RowGroup / Footer` 구조를 사용한다.
@@ -608,14 +639,18 @@ Card는 임의 padding 조합 대신 `Header / Body 또는 RowGroup / Footer` �
   쌓는다. `trailing`의 수량·금액·비율·상태·행동은 축소하지 않고 end 정렬하며 숫자는 `tnum`을 쓴다.
 - 한쪽이 두 줄이면 첫 줄끼리 맞도록 상단 정렬하고, 단일 값 행은 세로 중앙 정렬한다. 값과 단위는
   같은 baseline에 두며 단위만 다음 줄로 떨어지지 않는다.
+- `beforeAfter` 행에서 값이 존재하지 않으면 대시가 아니라 `없음`으로 표시한다. 라벨·이전 값·화살표·
+  이후 값은 최소 높이 `56px`, `1px` 중립 경계, `radius.md`의 한 비교 블록 안에 두고, 연속 비교
+  블록 사이는 `space.sm`으로 구분한다.
 - Badge는 이름 또는 상태 줄 옆에 붙인다. 카드 모서리나 값 열 위에 독립적으로 띄워 소유 대상을
   모호하게 만들지 않는다.
 - 행 전체가 이동할 때만 chevron을 end에 둔다. 외부 링크·편집·복수 메뉴 행동은 목적에 맞는 한
   진입 방식만 사용하고 chevron·편집·메뉴를 같은 행에 함께 나열하지 않는다.
 - selected·focused·error 전환에서 경계 두께 때문에 Card·Row 크기가 변하지 않게 기본 경계를
   예약하거나 inset 표현을 사용한다. loading skeleton도 실제 콘텐츠와 같은 padding·높이를 유지한다.
-- Footer의 단일 행동은 전체 폭, 동등한 두 행동은 `1:1`, 취소와 대표 행동은 기본 `1:2`로 배치한다.
-  2열 버튼이 번역문을 수용하지 못하면 1열로 쌓되 대표 행동을 마지막에 둔다.
+- Footer의 단일 행동은 전체 폭으로 배치하고, 두 행동은 성격과 관계없이 320px까지 항상 `1:1`로
+  균등 분할한다. 번역문이 길면 글자를 줄이거나 한 열로 바꾸지 않고 버튼 내부 줄바꿈과 높이 확장으로
+  처리한다.
 - Card Footer는 기본적으로 Card와 함께 스크롤한다. Layer 안에서 화면 아래에 고정되는 순간
   `LayerFooter`로 분류하고 Card padding·하단 탭 offset이 아니라 2.2와 5.2의 Layer 소유 규칙을 적용한다.
 - 빈 상태는 Card Body에서 start 정렬을 기본으로 하며 block `space.xl`, inline `space.lg`를 사용한다.
@@ -636,6 +671,15 @@ Card는 임의 padding 조합 대신 `Header / Body 또는 RowGroup / Footer` �
 - 채움 Primary 색을 쓰는 비행동 요약 표면은 화면당 하나 이하이며 장식 목적으로 사용하지 않는다.
 - ResultField는 `preview / afterChange / warning / negative / confirmed / empty / loading / error`를 갖는다.
 - ResultField의 라벨은 영역 밖에 두고 영역 안에는 핵심 값을 우선한다.
+- 폼 안의 ResultField는 인접한 FieldControl과 같은 열 너비와 control 높이를 사용한다. 값 길이만큼
+  줄어드는 배지·pill 형태를 금지하고 `width:100%`, `box-sizing:border-box`, 값 end 정렬을 유지한다.
+  ResultGroup의 여러 결과도 각 라벨 아래에서 같은 좌우 시작선과 끝선을 공유한다.
+- 자동 계산 ResultField는 `50px` 높이, 좌우 `14px` padding, 값 `16px / 800 / 22px`를 공통으로
+  사용한다. 금액·수량·단가는 모두 end 정렬하며, 같은 폼의 입력값보다 임의로 크게 키우지 않는다.
+  식재료 구매 단가·재고 변경 결과와 레시피 사용량 비용은 동일한 variant를 사용한다.
+- 계산표 행 안에 사용자가 직접 바꾸는 유일한 핵심 입력이 있으면 해당 행은 최소 `76px`, 상·하
+  `14px`를 사용한다. 입력칸은 모바일 최소 `180px`, 넓은 시연 화면 최대 `240px`, 높이 `50px`로
+  확보하고 값과 단위를 end 정렬한다. 단순 조회 행의 값 영역까지 같은 너비로 늘리지 않는다.
 - ResultField의 기본 표면과 값은 중립색이다. 사용자가 방금 바꾼 값의 대표 계산 결과만 파란 tint를
   사용할 수 있으며, 같은 페이지·시트에서는 하나의 ResultGroup 안에 묶는다. 대표 Primary 행동은
   별도 한 개까지 둘 수 있지만, 비행동 파란 표면은 채움 요약 표면과 tint ResultGroup을 합쳐 한 개만
@@ -718,9 +762,20 @@ renderer의 조건 상태로만 등록한다.
 - `LayerFooter`는 overlay 내부에서 해당 Layer만 소유한다. 페이지 `StickyAction`의 하단 탭 offset을
   더하지 않으며 `.option-card-actions`·`.stock-option-actions`·`.prototype-actions`·`.sheet-actions`
   같은 기존 sticky action은 적용 때 하나의 `LayerFooter` variant로 수렴시킨다.
+- FormSheet·ConfirmDialog·선택 Sheet의 두 행동은 모두 `1:1`, 단일 확인은 `1열`을 기본으로 한다.
+  이 비율은 `footerPolicy`가 소유하고 화면별 grid 선언으로 덮지 않는다.
+- `취소·닫기`는 연한 회색 채움, `완료·저장·확인·적용`은 Primary 파란 채움, 화면 이동·추가·수정처럼
+  취소와 다른 보조 행동은 흰 배경에 Primary 파란 선·파란 글씨를 사용한다. 삭제·철회는 위험 의미를
+  보존해 연한 빨강 배경과 빨간 글씨를 사용하되 폭은 다른 버튼과 동일하다.
 - FormSheet는 3.3의 Field 규격을 그대로 사용하며 팝업 전용 입력 padding을 새로 만들지 않는다.
 - 중앙 Dialog의 질문·영향 문장은 start 정렬을 기본으로 하되 짧은 단일 문장만 중앙 정렬할 수 있다.
   버튼은 `아니오/취소 → 예/확정` 순서로 두고 위험 확정만 danger를 사용한다.
+- 확인 대상에 이름·수량처럼 서로 다른 값이 둘 이상 있으면 `이름 · 수량` 문장으로 이어 붙이지 않는다.
+  중립 DetailBlock 안에서 각 값을 `라벨 + 값`으로 분리하고, 짧은 두 값은 2열로 정렬한다. 라벨은
+  `T.ter`, 값은 `T.ink`를 사용하며 단위가 포함된 숫자는 end 정렬한다.
+- 확인 대상의 이름·수량·금액 같은 핵심값에는 말줄임표를 사용하지 않는다. 긴 이름과 번역은 줄바꿈을
+  허용하며, 2열이 핵심값을 보존하지 못하는 좁은 화면에서는 1열로 전환하고 숫자도 start 정렬한다.
+  두 행동 역시 번역문을 수용하지 못하면 1열로 쌓고 대표 행동을 마지막에 둔다.
 - PopoverMenu 항목의 텍스트는 start, 보조 단축키·상태는 end에 둔다. 위험 항목은 색과 문구로
   구분하고 즉시 삭제하지 않고 ConfirmDialog로 전환한다. 각 항목은 inline `space.md`, block
   `space.sm`, 최소 높이 `size.touchMin`을 사용한다.
@@ -728,6 +783,9 @@ renderer의 조건 상태로만 등록한다.
 ### 5.3 유형별 핵심 규칙
 
 - PickerSheet 단일 선택은 선택 즉시 닫고, 복수·복합 선택만 적용 행동을 둔다.
+- 화면 위 FilterChip과 PickerSheet 내부 선택 행을 같은 `filter` 이름으로 묶어도 시각 variant는
+  분리한다. FilterChip은 선택 후에도 중립 외곽형을 유지하고 라벨만 선택값으로 교체한다.
+  PickerOption의 선택은 정보 표면·Primary 글자·체크 표시를 사용한다.
 - FormSheet는 3장의 폼 계약을 사용하고 실패 후 입력을 보존한다.
 - InfoSheet가 독립 검색·필터가 필요할 만큼 커지면 전체 페이지로 승격한다.
 - ActionSheet는 일반 행동과 위험 행동을 분리한다.
@@ -739,6 +797,8 @@ renderer의 조건 상태로만 등록한다.
 ### 5.4 Safe Area·키보드·포커스
 
 - 하단 팝업은 Safe Area를 footer와 스크롤 여백에 반영한다.
+- 앱 하단 탭이 `safe-area-inset-bottom`을 소유하며, 페이지 StickyAction은 탭 높이와 같은 inset만큼
+  위에 배치한다. 두 요소가 각자 같은 Safe Area를 중복 더하지 않는다.
 - 키보드가 열려도 현재 입력·오류·대표 행동에 접근할 수 있어야 한다.
 - 팝업을 연 기준 버튼을 기억한다.
 - 열릴 때 제목 또는 첫 입력으로 포커스를 옮기고 배경 조작을 막는다.
@@ -898,7 +958,11 @@ renderer의 조건 상태로만 등록한다.
 - 서식 단일 출처는 `@margincook/core`의 locale formatter다.
 - `tokens.won`은 현재 한국어 고정 진입점이며 활성 시장·통화 연결이 필요한 격차다.
 - 통화 위치·소수 자릿수·날짜 순서·요일·복수형을 화면 문자열 이어붙이기로 만들지 않는다.
-- 기기 locale과 서버 저장값을 분리한다.
+- 서버의 시각 원본과 매장 시간대를 권위로 사용하고 기기 locale은 표시 형식에만 사용한다.
+- 실제 제품은 locale formatter로 한국어 `2026. 8. 29. 08:52`, 영어(미국)
+  `Aug 29, 2026 · 8:52 AM`처럼 현지화한다. formatter를 사용할 수 없는 프로토타입·감사 화면만
+  `2026-08-29 · 08:52` 형식을 사용한다.
+- 연도를 생략하는 상대 표시는 `오늘 08:52`, `어제 08:52`처럼 날짜 맥락이 문구에 포함될 때만 허용한다.
 - 한국어보다 30~50% 긴 문구로 헤더·필드·버튼을 검수한다.
 - 텍스트가 잘리면 고정 폭을 늘리기보다 2열을 1열 또는 다중 행으로 전환한다.
 - RTL에서는 방향·행 배치를 반전하되 숫자와 단위의 읽기 순서를 보존한다.
@@ -963,7 +1027,7 @@ renderer의 조건 상태로만 등록한다.
 2. 코드 심볼이 있는 값은 가이드가 다른 현재값을 선언하지 않는다.
 3. 변경 대상 CSS 변수·셀렉터·생성 함수·kit export가 부록 C에 연결된다.
 4. 등록 인벤토리 `screen 62 / popup·state host 125 / unique ID 99`가 HTML 레지스트리와 일치한다.
-5. 활성 도달성 대상 `screen 61 / popup·state host 123 / unique ID 97`이 PC·모바일에서 모두 열린다.
+5. 활성 도달성 대상 `screen 62 / popup·state host 120 / unique ID 97`이 PC·모바일에서 모두 열린다.
 6. 숨김 보존 `discard / discard_type / discard_period`는 활성 목록에 노출되지 않고 직접 진입 시
    `stock`의 폐기 상태로 치환되며 활성 도달성 게이트에서 제외된다.
 7. 활성 popup ID는 레지스트리의 `host / layerType / dismissPolicy / footerPolicy / renderer`를,
@@ -995,6 +1059,8 @@ renderer의 조건 상태로만 등록한다.
     Dialog·Card·Control을 제외한 사례가 0건이다.
 25. Chart wrapper는 `chart`로, 내부 mark는 Chart primitive로 분류되며 핵심값의 텍스트 대체가 존재한다.
 26. Page `StickyAction`과 `LayerFooter`가 동시에 노출되지 않고 각자 하나의 Safe Area·offset 소유자만 가진다.
+27. 최신 디자인 동기화 ID가 UI 적용본·현재 확정안·최신 PRT·적용 검수 기록·맥락 장부에 일치한다.
+    공통 변경은 이 가이드와 실행서까지 일치하고 자동 동기화 검사와 PC·모바일 검수가 PASS다.
 
 ### 9.2 적용 순서
 
@@ -1027,6 +1093,28 @@ renderer의 조건 상태로만 등록한다.
 - RTL·고대비·reduced motion
 - hover·pressed 세부 표현
 
+### 9.2.1 최근 확정 공통 적용표
+
+이 표는 새 variant를 추가하는 목록이 아니라, 위 본문 규칙을 실제 화면에 적용할 때 빠르게 확인하는
+병합 색인이다. 상세 수치는 연결된 본문 절을 권위로 사용한다.
+
+| 병합 요소 | 확정 공통 규칙 | 적용 범위 | 본문 |
+|---|---|---|---|
+| ListRow | 3줄 `92/16`, 2줄 `76/14`, 1줄 `60/12`; 내부선 `1px T.line2` | 기록·관리·설정·선택 목록 | 4.3 |
+| FieldControl | 문자 start, 숫자 end; 숫자와 suffix는 한 묶음으로 인접 배치 | 페이지·FormSheet의 모든 입력 | 3.3 |
+| ResultField | 전체 너비·높이 `50px`; 라벨 외부, 값 end; 계산값 `16/800/22` | 단가·총량·비용·변경 후 값 | 4.4 |
+| Notice | 좌측 `20px` 정보 아이콘, 최소 `48px`; 본문 시작선 통일 | 읽어야 하는 안내·주의 | 4.1 |
+| Filter | 높이 `38px`, 흰 배경·중립선·검정 글씨·아래 화살표 | 메인·내역의 정렬/기간/상태 | 3.5 |
+| LayerFooter | 두 행동 `1:1`, 높이 `48px`, 반경 `12px`, 간격 `8px` | Sheet·Dialog·하단 고정 행동 | 5.2 |
+| DetailBlock | 대상명과 수량을 라벨+값으로 분리하고 숫자는 end 정렬 | 확인 Dialog의 대상 요약 | 5.2 |
+| BeforeAfter | 값 없음은 `없음`; 각 비교 행을 경계 있는 한 블록으로 표시 | 수정·감사 상세 | 4.3, 6.4 |
+| DateTime | locale formatter 우선, 프로토타입 fallback `YYYY-MM-DD · HH:mm` | 목록·상세·팝업 | 7.3 |
+| CostGroupFooter | 동급 원가 그룹은 모두 금액·비율 소계를 제공 | 재료·부자재 등 원가 카드 | 4.3 |
+| PrimaryEditableRow | 조회 행보다 넓은 입력과 상·하 여백을 부여하되 해당 계산표의 핵심 입력 한 곳만 사용 | 판매가 시뮬레이션 등 | 4.4 |
+
+`목표 순이익률 도움말 제거`, 특정 문구 삭제, 화면별 필터 항목처럼 업무 정책으로 결정된 내용은 이
+공통 요소 표에 넣지 않는다. 해당 화면의 screen 계약과 변경 기록에서 관리한다.
+
 ### 9.3 검수 기록
 
 | 필드 | 내용 |
@@ -1047,6 +1135,14 @@ renderer의 조건 상태로만 등록한다.
 - 현재 구현 차이는 부록 C에서 관리한다.
 - 화면별 예외는 이유·영향·종료 조건을 기록한다.
 - 같은 예외가 두 화면 이상 반복되면 공용 variant 후보로 올린다.
+- 모든 디자인 작업은 `full-page-flow-prototype-design-context.md`에서 `DS-YYYYMMDD-NNN` ID를 먼저
+  발급하고 시작 상태를 `IN_PROGRESS`로 기록한다.
+- UI 적용본·현재 확정안·changelog 최신 항목·적용 검수 기록·맥락 장부는 매 작업 같은 ID를 가진다.
+  공통 규칙 변경이면 이 가이드와 디자인 실행서에도 같은 ID를 기록한다.
+- PC·모바일·직접 연결 상태 검수와 필수 문서 갱신이 끝난 뒤 자동 동기화 검사가 `PASS`일 때만 맥락
+  장부를 `SYNCED`로 바꾸고 완료로 판정한다.
+- 맥락 장부는 최근 작업과 다음 시작점을 연결하는 인계 문서이며 현재 화면 정책·공통 디자인 계약을
+  복제하지 않는다. 화면 최종값은 현재 확정안, 공통 규칙은 이 가이드가 계속 권위다.
 - 목표안은 적용·재검수·current-spec/changelog 연결 전까지 현재값으로 표현하지 않는다.
 - 가이드 패턴명과 RN kit export가 매핑되지 않으면 구현 완료로 보지 않는다.
 
@@ -1145,17 +1241,18 @@ renderer의 조건 상태로만 등록한다.
 | `my_material_categories` | RCP-12b | ChildActionHeader, ReorderList, FormSheet, ConfirmDialog |
 | `my_materials` | RCP-13 | ChildActionHeader, ManagementList, FormSheet, ConfirmDialog |
 | `my_tax` | MY-02 | ContextHeader, TaxForm, RadioGroup, ResultField, StickyAction |
-| `my_language` | MY-04 | ChildHeader, RadioList, FormSheet, StickyAction |
-| `my_units` | MY-05 | ChildHeader, SettingsList |
-| `my_vendors` | MY-06 | ChildActionHeader, ManagementList, FormSheet, ConfirmDialog |
+| `my_country` | MY-12 | ChildHeader, CountryChoiceGrid, PriceBasisRadioList, StickyAction |
+| `my_language` | MY-08 | ChildHeader, RadioList, StickyAction |
+| `my_units` | MY-04 | ChildHeader, SettingsList |
+| `my_vendors` | MY-11 | ChildActionHeader, ManagementList, FormSheet, ConfirmDialog |
 | `my_channels` | MY-07 | ChildHeader, SettingsList, FormSheet, ConfirmDialog |
-| `my_hours` | MY-08 | ChildHeader, Toggle, SegmentedControl, TimePickerSheet, StickyAction |
-| `my_notifications` | MY-09 | ChildHeader, ToggleList |
+| `my_hours` | MY-09 | ChildHeader, Toggle, SegmentedControl, TimePickerSheet, StickyAction |
+| `my_notifications` | MY-06 | ChildHeader, ToggleList |
 | `my_account` | MY-10 | ChildHeader, AccountSummary, DangerZone, ConfirmDialog |
 
 ### A.6 식별자 감사 메모
 
-- 등록 screen 키는 62개이며 카탈로그에는 활성 61개를 노출한다. 숨김 `discard`가 나머지 1개다.
+- 등록 screen 키는 63개이며 카탈로그에는 활성 62개를 노출한다. 숨김 `discard`가 나머지 1개다.
 - `discard` 직접 진입은 `stock`의 폐기 필터 상태로 치환하며 독립 화면 열림 게이트에는 포함하지 않는다.
 - `ingredient_edit_menu`, `memo_edit`, `ingredient_delete`, `order_receive`는 독립 페이지 수가 아니라
   popup 성격의 검수 host다. Expo 화면 수를 계산할 때 중복 합산하지 않는다.
@@ -1163,7 +1260,6 @@ renderer의 조건 상태로만 등록한다.
 - `RCP-03`은 `recipe_add`와 `recipe_edit`가 함께 사용한다.
 - `SALES-18`은 `channel`과 `tax`가 함께 사용한다.
 - `MY-02`는 `fixed_average`와 `my_tax`가 함께 사용한다.
-- `MY-05`는 `my_fixed`와 `my_units`가 함께 사용한다.
 - 레시피·부자재 관리 재사용 화면은 `RCP-12`, `RCP-12b`, `RCP-13`을 유지한다.
 - UI 매핑은 화면 키를 기준으로 하며 중복 ID는 기능 README에서 별도로 정리한다.
 
@@ -1171,8 +1267,8 @@ renderer의 조건 상태로만 등록한다.
 
 ## 부록 B. 팝업·조건 상태 레지스트리
 
-HTML 등록 전체는 호스트 상태 125개, 고유 ID 99개다. 이 중 `discard_type`·`discard_period`는
-숨김 보존 상태라 활성 도달성 검수에서는 제외한다. 활성 대상은 호스트 상태 123개, 고유 ID 97개다.
+현재 `popupTabs` 활성 레지스트리는 호스트 상태 120개, 고유 ID 97개다. 독립 폐기 내역 화면의
+옛 필터 상태는 숨김 보존하며 활성 도달성 검수에서는 제외한다.
 
 | 유형 | 등록 고유 ID | 등록 호스트 | 활성 고유 ID | 활성 호스트 |
 |---|---:|---:|---:|---:|
@@ -1200,7 +1296,7 @@ HTML 등록 전체는 호스트 상태 125개, 고유 ID 99개다. 이 중 `disc
 `discard_type`, `discard_period`는 숨김 폐기 화면의 옛 상태다. 새 PageState로 사용하지 않으며
 직접 URL에서 열 수 없는 휴면 보존 항목이다.
 
-### B.2 PickerSheet · 27개
+### B.2 PickerSheet · 26개
 
 - 식재료: `sort`, `add_category`, `add_unit`, `edit_category`, `edit_unit`, `stock_option`,
   `option_vendor`, `option_unit`, `stock_period`, `stock_type`, `stock_order`, `purchase_period`.
@@ -1208,13 +1304,13 @@ HTML 등록 전체는 호스트 상태 125개, 고유 ID 99개다. 이 중 `disc
   `material_category_pick`.
 - 발주: `order_ingredient`, `order_vendor`.
 - 매출관리: `sales_sort`, `sales_period`.
-- MY: `fixed_period`, `tax_country`, `hours_break_start`, `hours_break_end`.
+- MY: `fixed_period`, `hours_break_start`, `hours_break_end`.
 - 숨김 옛 상태: `discard_type`, `discard_period`. 등록 계수에는 남기고 활성 도달성·닫기 정책
   게이트에서는 제외한다.
 
 `order_ingredient`는 검색형, `sales_period`는 적용형 변형이다.
 
-### B.3 FormSheet · 28개
+### B.3 FormSheet · 27개
 
 - 레시피: `recipe_memo`, `recipe_ingredient_usage`, `recipe_material_usage`, `material_add`,
   `material_edit`, `category_add`, `category_edit`.
@@ -1223,7 +1319,7 @@ HTML 등록 전체는 호스트 상태 125개, 고유 ID 99개다. 이 중 `disc
 - 매출관리: `sales_qty`, `sales_etc`, `sales_expense`, `sales_direct_period`, `expense_add`,
   `past_sale_qty`, `past_etc`, `past_expense`.
 - MY: `tax_item_add`, `vendor_add`, `vendor_edit`, `channel_edit`, `hours_start`, `hours_end`,
-  `hours_timezone`, `account_delete`, `language_preview`.
+  `hours_timezone`, `account_delete`.
 
 복합형 `fixed_channel`, `order_receive`, 시간 선택은 선택과 입력을 점진 노출한다. `account_delete`는
 확인 문구 입력 FormSheet 다음에 최종 ConfirmDialog를 둔다. `order_receive`는 screen 키와 popup ID가
@@ -1233,7 +1329,7 @@ HTML 등록 전체는 호스트 상태 125개, 고유 ID 99개다. 이 중 `disc
 ### B.4 InfoSheet · 15개
 
 - 변경·이력: `stock_event_more`, `ingredient_change_detail`, `recipe_change_detail`, `profit_detail`.
-- 안내: `recipe_target_help`, `order_price_spike`.
+- 안내: `order_price_spike`.
 - 발주 목록: `order_candidates`, `order_waiting`, `order_received`.
 - 매출 상세: `sales_menu_profit`, `sales_revenue_all`, `sales_material_detail`,
   `sales_extra_detail`, `sales_fixed_expand`, `stock_check_all`.
@@ -1253,7 +1349,9 @@ HTML 등록 전체는 호스트 상태 125개, 고유 ID 99개다. 이 중 `disc
 
 - `stock_event_more`는 공통 InfoSheet 규격을 사용한다: 20px 제목, 16px 상단 간격, 연한 회색 정보 블록, 2열 하단 고정 액션.
 - 정보 블록은 외곽선을 쓰지 않고 `#F7F8FA` 배경과 12px 모서리만 사용한다.
-- 날짜와 구매처는 같은 줄·같은 검정 계층으로 묶고, 처리 유형·수량은 다음 줄의 핵심 정보로 둔다.
+- 날짜와 구매처는 같은 줄의 맥락 정보로 묶어 `T.sub` 진한 회색을 사용한다. 처리 유형·수량·포장
+  구성은 다음 줄의 핵심 정보로 두고 괄호 안까지 `T.ink` 검정을 유지한다. 같은 문장 안에서
+  포장 구성만 약한 회색으로 낮추지 않는다.
 - `닫기`와 `철회`는 내용과 분리된 하단 고정 영역에 두며, 두 버튼의 높이·반경·간격은 공통 버튼 규격을 따른다.
 
 ### B.5 ActionSheet · 2개
@@ -1297,8 +1395,8 @@ HTML 등록 전체는 호스트 상태 125개, 고유 ID 99개다. 이 중 `disc
 | dismiss | `errorExplicit` | 바깥·Back·Escape 금지, 명시적 닫기·재시도만 허용 |
 | dismiss | `popoverDismissible` | 바깥·Back·Escape 허용, 닫힌 뒤 기준 Button으로 focus 복귀 |
 | footer | `none` | LayerFooter 없음 |
-| footer | `formCancelPrimary` | 취소 + 대표 저장·추가·적용, 기본 `1:2` |
-| footer | `pickerCancelApply` | 취소 + 적용, 기본 `1:2` |
+| footer | `formCancelPrimary` | 취소 + 대표 저장·추가·적용, 항상 `1:1` |
+| footer | `pickerCancelApply` | 취소 + 적용, 항상 `1:1` |
 | footer | `confirmPair` | 취소 + 확정, 기본 `1:1`; 위험 확정만 danger |
 | footer | `infoSingleClose` | 명시적 닫기 한 개 |
 | footer | `infoCloseAction` | 닫기 + 후속 행동 |
@@ -1361,7 +1459,6 @@ PageState에는 `layerType / dismissPolicy / footerPolicy`를 두지 않는다. 
 | `recipe_memo` | `recipe_detail` | FormSheet | `formDirtyGuard` | `formCancelPrimary` | `FormSheet` |
 | `recipe_stop` | `recipe_detail` | ConfirmDialog | `confirmGuarded` | `confirmPair` | `ConfirmDialog` |
 | `recipe_category_pick` | `recipe_add`, `recipe_edit` | PickerSheet | `pickerImmediate` | `none` | `PickerSheet` |
-| `recipe_target_help` | `recipe_add`, `recipe_edit` | InfoSheet | `infoDismissible` | `none` | `InfoSheet` |
 | `recipe_ingredient_usage` | `recipe_edit`, `recipe_ingredient_search` | FormSheet | `formDirtyGuard` | `formCancelPrimary` | `FormSheet` |
 | `recipe_material_usage` | `recipe_material_search` | FormSheet | `formDirtyGuard` | `formCancelPrimary` | `FormSheet` |
 | `material_add` | `recipe_materials`, `my_materials` | FormSheet | `formDirtyGuard` | `formCancelPrimary` | `FormSheet` |
@@ -1419,14 +1516,12 @@ PageState에는 `layerType / dismissPolicy / footerPolicy`를 두지 않는다. 
 | `past_save` | `sales_past` | ConfirmDialog | `confirmGuarded` | `confirmPair` | `ConfirmDialog` |
 | `stock_check_all` | `stock_check` | InfoSheet | `infoDismissible` | `none` | `InfoSheet` |
 
-**MY · popup 15개**
+**MY · popup 13개**
 
 | ID | host 전체 | layerType | dismissPolicy | footerPolicy | renderer |
 |---|---|---|---|---|---|
-| `tax_country` | `my_tax` | PickerSheet | `pickerImmediate` | `none` | `PickerSheet` |
 | `tax_item_add` | `my_tax` | FormSheet | `formDirtyGuard` | `formCancelPrimary` | `FormSheet` |
 | `tax_saved` | `my_tax` | SuccessDialog | `successAfterCommit` | `acknowledge` | `SuccessDialog` |
-| `language_preview` | `my_language` | FormSheet | `formDirtyGuard` | `formCancelPrimary` | `FormSheet` |
 | `vendor_add` | `my_vendors` | FormSheet | `formDirtyGuard` | `formCancelPrimary` | `FormSheet` |
 | `vendor_edit` | `my_vendors` | FormSheet | `formDirtyGuard` | `formCancelPrimary` | `FormSheet` |
 | `vendor_delete` | `my_vendors` | ConfirmDialog | `confirmGuarded` | `confirmPair` | `ConfirmDialog` |
@@ -1439,7 +1534,6 @@ PageState에는 `layerType / dismissPolicy / footerPolicy`를 두지 않는다. 
 | `hours_timezone` | `my_hours` | FormSheet | `formDirtyGuard` | `formCancelPrimary` | `FormSheet` |
 | `account_delete` | `my_account` | FormSheet → ConfirmDialog | `formDirtyGuard` → `confirmGuarded` | `formNextThenConfirm` | `AccountDeleteFlow` |
 
-`language_preview`는 저장 행동이 있으므로 B.4의 옛 InfoSheet 분류 대신 FormSheet로 정정한다.
 `account_delete`는 하나의 URL ID 안에서 `form / confirm` 내부 단계를 명시적으로 갖는 흐름이며,
 renderer가 현재 단계를 소유한다. `order_receive`처럼 screen 키와 popup ID가 같은 경우 증거 키에는
 항상 `screen:order_receive`와 `popup:order_receive@{host}` namespace를 구분한다.
