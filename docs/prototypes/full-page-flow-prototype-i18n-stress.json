@@ -1,0 +1,5026 @@
+{
+ "manifest": {
+  "generatedAt": "2026-09-04T16:44:41.247Z",
+  "schemaVersion": 1,
+  "script": {
+   "name": "full-page-flow-prototype-i18n-stress.mjs",
+   "sha256": "7770fc19fc275093eb51093e432b7021273b22c420543e24c977a5b21a269e27"
+  },
+  "target": {
+   "path": "0_full-page-flow-prototype-ui-applied.html",
+   "sha256": "9897bd0a632fc15e36ef947f99c77d4aa624ddd2af9e5626411b3c185a0ee572",
+   "designSyncId": "DS-20260904-013"
+  },
+  "runner": {
+   "node": "v22.22.2",
+   "playwright": "1.62.1",
+   "chromium": "141.0.7390.37",
+   "platform": "linux"
+  },
+  "viewport": {
+   "width": 320,
+   "height": 720
+  },
+  "targetsMeasured": 182,
+  "rules": {
+   "번역문": "지어내지 않는다. 각 텍스트 노드의 글자를 순환해 붙여 렌더 폭을 목표 배수까지 늘린다",
+   "단위": "글자 수가 아니라 폭. 레이아웃을 깨는 것은 폭이다",
+   "숫자": "글자(한글·라틴)를 포함하지 않은 노드는 늘리지 않는다. 번역해도 숫자는 안 길어진다",
+   "아이콘": "문자 기호는 번역 대상이 아니므로 늘리지 않는다",
+   "셸": "상태바·화면 ID 배지·카탈로그는 제품이 아니므로 제외한다",
+   "기준선": "모든 위반은 base 패스에서 재현되는지 갈라 적는다. 원래 깨져 있던 것은 번역 탓이 아니다",
+   "가로 스크롤": "가로 스크롤을 의도한 조상 안의 요소는 잘림·이탈로 세지 않는다",
+   "붙음": "절대 간격이 아니라 기준선 대비 좁아짐을 잰다. 같은 줄에 있고 둘 다 글자를 가진 쌍만 본다",
+   "집계 단위": "target 이 아니라 요소(카드.슬롯). 하단 탭바 라벨 하나가 182개 target 을 물들이는 것을 막는다",
+   "render-audit 과의 차이": "w130t2 의 글자 200% 는 문자 기호 아이콘을 키우지 않는다(번역 대상이 아니므로). render-audit 의 mobile320t2 는 키운다. 그래서 두 패스의 phoneOverflow 수치는 서로 다르며 서로 대체하지 않는다"
+  }
+ },
+ "summary": {
+  "passes": {
+   "base": {
+    "mode": "한국어 원문 그대로 · 기준선",
+    "targets": 182,
+    "targetsWithPhoneOverflow": 0,
+    "targetsWithClipped": 0,
+    "targetsWithEscapee": 0
+   },
+   "w130": {
+    "mode": "텍스트 폭 +30%",
+    "targets": 182,
+    "targetsWithPhoneOverflow": 0,
+    "targetsWithClipped": 182,
+    "targetsWithEscapee": 0
+   },
+   "w150": {
+    "mode": "텍스트 폭 +50%",
+    "targets": 182,
+    "targetsWithPhoneOverflow": 0,
+    "targetsWithClipped": 182,
+    "targetsWithEscapee": 0
+   },
+   "w130t2": {
+    "mode": "텍스트 폭 +30% & 글자 200%",
+    "targets": 182,
+    "targetsWithPhoneOverflow": 0,
+    "targetsWithClipped": 182,
+    "targetsWithEscapee": 0
+   }
+  },
+  "stretch": {
+   "base": {
+    "stretched": 0,
+    "skippedNumeric": 0,
+    "skippedGlyph": 0,
+    "text2x": 0
+   },
+   "w130": {
+    "stretched": 6986,
+    "skippedNumeric": 958,
+    "skippedGlyph": 889,
+    "text2x": 0
+   },
+   "w150": {
+    "stretched": 6986,
+    "skippedNumeric": 958,
+    "skippedGlyph": 889,
+    "text2x": 0
+   },
+   "w130t2": {
+    "stretched": 6986,
+    "skippedNumeric": 958,
+    "skippedGlyph": 889,
+    "text2x": 8531
+   }
+  },
+  "clippedElements": [
+   {
+    "key": "app-tab.app-tab-label",
+    "headroom": "+30%에서 깨짐",
+    "targets": {
+     "base": 0,
+     "w130": 182,
+     "w150": 182,
+     "w130t2": 182
+    },
+    "maxOver": 71,
+    "samples": [
+     "식재료식",
+     "레시피레",
+     "발주발"
+    ]
+   },
+   {
+    "key": "header.title",
+    "headroom": "+50%에서 깨짐",
+    "targets": {
+     "base": 0,
+     "w130": 0,
+     "w150": 1,
+     "w130t2": 51
+    },
+    "maxOver": 234,
+    "samples": [
+     "식재료식",
+     "판매가 시뮬레이션판매가",
+     "레시피 카테고리레시피"
+    ]
+   },
+   {
+    "key": "(no-card).arrow",
+    "headroom": "+30%와 글자200% 겹칠 때만 깨짐",
+    "targets": {
+     "base": 0,
+     "w130": 0,
+     "w150": 0,
+     "w130t2": 3
+    },
+    "maxOver": 10,
+    "samples": [
+     "→"
+    ]
+   },
+   {
+    "key": "(no-card).span",
+    "headroom": "+50%에서 깨짐",
+    "targets": {
+     "base": 0,
+     "w130": 0,
+     "w150": 1,
+     "w130t2": 1
+    },
+    "maxOver": 10,
+    "samples": [
+     "부자재부"
+    ]
+   },
+   {
+    "key": "expo-row-copy.strong",
+    "headroom": "+50%에서 깨짐",
+    "targets": {
+     "base": 0,
+     "w130": 0,
+     "w150": 1,
+     "w130t2": 1
+    },
+    "maxOver": 6,
+    "samples": [
+     "매출매",
+     "순이익순"
+    ]
+   },
+   {
+    "key": "detail-list-copy.small",
+    "headroom": "+30%와 글자200% 겹칠 때만 깨짐",
+    "targets": {
+     "base": 0,
+     "w130": 0,
+     "w150": 0,
+     "w130t2": 2
+    },
+    "maxOver": 32,
+    "samples": [
+     "2026-08-17 · 동네마",
+     "2026-08-17 · 마장축",
+     "×26"
+    ]
+   },
+   {
+    "key": "header.small",
+    "headroom": "+30%와 글자200% 겹칠 때만 깨짐",
+    "targets": {
+     "base": 0,
+     "w130": 0,
+     "w150": 0,
+     "w130t2": 1
+    },
+    "maxOver": 176,
+    "samples": [
+     "기준값과 기본 설정을 관리해요"
+    ]
+   },
+   {
+    "key": "sales-qty-stepper.b",
+    "headroom": "+30%와 글자200% 겹칠 때만 깨짐",
+    "targets": {
+     "base": 0,
+     "w130": 0,
+     "w150": 0,
+     "w130t2": 1
+    },
+    "maxOver": 23,
+    "samples": [
+     "개개"
+    ]
+   },
+   {
+    "key": "expo-row-copy.small",
+    "headroom": "+30%와 글자200% 겹칠 때만 깨짐",
+    "targets": {
+     "base": 0,
+     "w130": 0,
+     "w150": 0,
+     "w130t2": 1
+    },
+    "maxOver": 45,
+    "samples": [
+     "5.2kg5.",
+     "1.4kg1.4"
+    ]
+   },
+   {
+    "key": "detail-list-copy.strong",
+    "headroom": "+30%와 글자200% 겹칠 때만 깨짐",
+    "targets": {
+     "base": 0,
+     "w130": 0,
+     "w150": 0,
+     "w130t2": 1
+    },
+    "maxOver": 35,
+    "samples": [
+     "주방 이모 (월급)주방이"
+    ]
+   },
+   {
+    "key": "stock-option-copy.strong",
+    "headroom": "+30%와 글자200% 겹칠 때만 깨짐",
+    "targets": {
+     "base": 0,
+     "w130": 0,
+     "w150": 0,
+     "w130t2": 1
+    },
+    "maxOver": 94,
+    "samples": [
+     "Asia/SingaporeAs",
+     "America/New_York",
+     "Europe/LondonEur"
+    ]
+   }
+  ],
+  "escapeeElements": [],
+  "squeezedPairs": {
+   "w130": [],
+   "w150": [],
+   "w130t2": [
+    {
+     "key": "(no-card).month|span>span|1",
+     "targets": 8,
+     "minGap": 0,
+     "baseGap": 179
+    },
+    {
+     "key": "(no-card).change-overview-head|strong>b|1",
+     "targets": 4,
+     "minGap": 0,
+     "baseGap": 159
+    },
+    {
+     "key": "expo-list-card.expo-card-foot|b>span|1",
+     "targets": 2,
+     "minGap": 0,
+     "baseGap": 117
+    }
+   ]
+  },
+  "headroomTally": {
+   "+30%에서 깨짐": 1,
+   "+50%에서 깨짐": 3,
+   "+30%와 글자200% 겹칠 때만 깨짐": 7
+  }
+ },
+ "perTarget": {
+  "screen:ingredient_main": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 790,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 800,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 810,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 1550,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "screen:ingredient_add": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 763,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1099,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 1099,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 2536,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "screen:ingredient_detail": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1520,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 5907,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 9911,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 33674,
+    "clipped": 5,
+    "escapee": 0
+   }
+  },
+  "screen:ingredient_edit_menu": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 5,
+    "escapee": 0
+   }
+  },
+  "screen:ingredient_edit": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 693,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 693,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 693,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 934,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "screen:stock": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1234,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1234,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 1234,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 1956,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "screen:stock_change": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 496,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 496,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 496,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 860,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "screen:memo_edit": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "screen:purchase": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 605,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 605,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 624,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 1001,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "screen:ingredient_changes": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 484,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1268,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 1500,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 17216,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "screen:options": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 556,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 556,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 556,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 650,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "screen:ingredient_delete": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "screen:recipe_main": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1306,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1316,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 9044,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 3752,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "screen:recipe_detail": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 2953,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 40602,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 45547,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 87778,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "screen:recipe_price_sim": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 800,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 800,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 2931,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 1619,
+    "clipped": 5,
+    "escapee": 0
+   }
+  },
+  "screen:recipe_add": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1534,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1534,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 1534,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 2272,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "screen:recipe_edit": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 2018,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 2018,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 2018,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 3394,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "screen:recipe_ingredient_search": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1786,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1786,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 1786,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 2356,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "screen:recipe_material_search": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 778,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 798,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 2044,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "screen:recipe_materials": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 499,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1853,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 541,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 7242,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "screen:recipe_category": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 499,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 771,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 771,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 1818,
+    "clipped": 5,
+    "escapee": 0
+   }
+  },
+  "screen:recipe_material_category": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 619,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 619,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 1648,
+    "clipped": 5,
+    "escapee": 0
+   }
+  },
+  "screen:recipe_changes": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 530,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "screen:profit": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "screen:fixed_average": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1791,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 5118,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 9276,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 49015,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "screen:fixed_actual": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 2557,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 10972,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 13132,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 59844,
+    "clipped": 5,
+    "escapee": 0
+   }
+  },
+  "screen:order_main": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 546,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "screen:order_detail": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 645,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1429,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 1429,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 3370,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "screen:order_receive": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 616,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1116,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 1123,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 1977,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "screen:order_direct": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "screen:sales_main": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1123,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 8241,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 12605,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 67112,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "screen:analytics": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1798,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1810,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 1857,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 3946,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "screen:day": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1518,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1530,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 1577,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 3445,
+    "clipped": 5,
+    "escapee": 0
+   }
+  },
+  "screen:day_full": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1262,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 3427,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 4625,
+    "clipped": 2,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 25253,
+    "clipped": 5,
+    "escapee": 0
+   }
+  },
+  "screen:revenue": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 907,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 907,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 907,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 1586,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "screen:menu": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1615,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1633,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 2747,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 4669,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "screen:channel": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1793,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1806,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 2508,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 4281,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "screen:material": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 686,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1332,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 4315,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 17607,
+    "clipped": 5,
+    "escapee": 0
+   }
+  },
+  "screen:extra": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1066,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 1130,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 14917,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "screen:waste": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 751,
+    "clipped": 5,
+    "escapee": 0
+   }
+  },
+  "screen:sales_fixed": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 595,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 7813,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 8908,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 16142,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "screen:expense": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 616,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 616,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 1795,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "screen:tax": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 978,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "screen:stock_check": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 661,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 1117,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 1188,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "screen:sales_past": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 709,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 709,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 709,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 1047,
+    "clipped": 5,
+    "escapee": 0
+   }
+  },
+  "screen:my_main": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 983,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 2197,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 3043,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 7069,
+    "clipped": 6,
+    "escapee": 0
+   }
+  },
+  "screen:my_fixed": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1791,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 5118,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 9276,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 49015,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "screen:my_fixed_edit": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 2557,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 10972,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 13132,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 59844,
+    "clipped": 5,
+    "escapee": 0
+   }
+  },
+  "screen:my_settings": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 882,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "screen:my_ingredient_categories": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1123,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1379,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 1379,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 2992,
+    "clipped": 5,
+    "escapee": 0
+   }
+  },
+  "screen:my_recipe_categories": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 499,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 771,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 771,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 1818,
+    "clipped": 5,
+    "escapee": 0
+   }
+  },
+  "screen:my_material_categories": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 619,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 619,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 1648,
+    "clipped": 5,
+    "escapee": 0
+   }
+  },
+  "screen:my_materials": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 499,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1853,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 541,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 7242,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "screen:my_tax": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1308,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1347,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 1425,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 1864,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "screen:my_language": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1228,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 4898,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 5207,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 15804,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "screen:my_units": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1069,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1629,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 2120,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 3938,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "screen:my_vendors": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 950,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "screen:my_channels": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 619,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1079,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 1079,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 1679,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "screen:my_hours": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1425,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 7254,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 8947,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 43312,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "screen:my_notifications": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 618,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 2697,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 2697,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 9018,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "screen:my_account": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1165,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 1165,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 4047,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:sort@ingredient_main": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 790,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 800,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 810,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 1550,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:ingredient_option_filled@ingredient_detail": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1520,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 5907,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 9911,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 33674,
+    "clipped": 5,
+    "escapee": 0
+   }
+  },
+  "popup:ingredient_option_empty@ingredient_detail": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1370,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 5757,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 9761,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 33131,
+    "clipped": 5,
+    "escapee": 0
+   }
+  },
+  "popup:add_category@ingredient_add": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 763,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1099,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 1099,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 2536,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:add_unit@ingredient_add": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 763,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1099,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 1099,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 2536,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:edit_category@ingredient_edit": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 693,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 693,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 693,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 934,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:edit_unit@ingredient_edit": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 693,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 693,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 693,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 934,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:stock_inbound@stock_change": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 496,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 496,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 496,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 860,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:stock_deduct@stock_change": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 672,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 672,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 672,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 1105,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:stock_discard@stock_change": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 757,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 757,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 757,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 1208,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:stock_option@stock_change": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 496,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 496,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 496,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 860,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:stock_confirm@stock_change": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1024,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1024,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 1024,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 1595,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:stock_error@stock_change": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1024,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1024,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 1024,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 1595,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:option_list@options": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 556,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 556,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 556,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 650,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:option_add@options": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 607,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 607,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 607,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 896,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:option_edit@options": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 607,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 607,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 607,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 896,
+    "clipped": 5,
+    "escapee": 0
+   }
+  },
+  "popup:option_vendor@options": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 607,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 607,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 607,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 896,
+    "clipped": 5,
+    "escapee": 0
+   }
+  },
+  "popup:option_vendor_new@options": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 607,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 607,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 607,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 862,
+    "clipped": 5,
+    "escapee": 0
+   }
+  },
+  "popup:option_unit@options": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 607,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 607,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 607,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 896,
+    "clipped": 5,
+    "escapee": 0
+   }
+  },
+  "popup:option_card_menu@options": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 556,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 556,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 556,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 650,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:option_more@options": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 607,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 607,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 607,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 896,
+    "clipped": 5,
+    "escapee": 0
+   }
+  },
+  "popup:option_delete@options": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 607,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 607,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 607,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 896,
+    "clipped": 5,
+    "escapee": 0
+   }
+  },
+  "popup:stock_period@stock": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1234,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1234,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 1234,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 1956,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:stock_type@stock": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1234,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1234,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 1234,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 1956,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:stock_order@stock": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1234,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1234,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 1234,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 1956,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:stock_event_more@stock": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1234,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1234,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 1234,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 1956,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:stock_event_revert@stock": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1234,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1234,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 1234,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 1956,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:purchase_period@purchase": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 605,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 605,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 624,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 1001,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:ingredient_change_detail@ingredient_changes": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 484,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1268,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 1500,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 17216,
+    "clipped": 7,
+    "escapee": 0
+   }
+  },
+  "popup:recipe_sort@recipe_main": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1306,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1316,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 9044,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 3752,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:recipe_status@recipe_main": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1306,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1316,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 9044,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 3752,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:recipe_target@recipe_main": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1306,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1316,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 9044,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 3752,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:recipe_memo@recipe_detail": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 2953,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 40602,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 45547,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 87778,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:recipe_stop@recipe_detail": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 2953,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 40602,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 45547,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 87778,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:recipe_category_pick@recipe_add": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1534,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1534,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 1534,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 2272,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:recipe_category_pick@recipe_edit": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 2018,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 2018,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 2018,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 3394,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:recipe_ingredient_usage@recipe_edit": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 2018,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 2018,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 2018,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 3394,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:recipe_ingredient_usage@recipe_ingredient_search": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1786,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1786,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 1786,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 2356,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:recipe_material_usage@recipe_material_search": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 778,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 798,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 2044,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:material_add@recipe_materials": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 499,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1853,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 541,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 7242,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:material_edit@recipe_materials": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 499,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1853,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 541,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 7242,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:material_category_pick@recipe_materials": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 499,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1853,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 541,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 7242,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:material_delete@recipe_materials": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 499,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1853,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 541,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 7242,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:category_add@recipe_category": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 499,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 771,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 771,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 1818,
+    "clipped": 5,
+    "escapee": 0
+   }
+  },
+  "popup:category_edit@recipe_category": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 499,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 771,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 771,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 1818,
+    "clipped": 5,
+    "escapee": 0
+   }
+  },
+  "popup:category_delete@recipe_category": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 499,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 771,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 771,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 1818,
+    "clipped": 5,
+    "escapee": 0
+   }
+  },
+  "popup:category_add@recipe_material_category": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 619,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 619,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 1648,
+    "clipped": 5,
+    "escapee": 0
+   }
+  },
+  "popup:category_edit@recipe_material_category": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 619,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 619,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 1648,
+    "clipped": 5,
+    "escapee": 0
+   }
+  },
+  "popup:category_delete@recipe_material_category": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 619,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 619,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 1648,
+    "clipped": 5,
+    "escapee": 0
+   }
+  },
+  "popup:recipe_change_detail@recipe_changes": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 2,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 530,
+    "clipped": 9,
+    "escapee": 0
+   }
+  },
+  "popup:profit_detail@profit": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 7,
+    "escapee": 0
+   }
+  },
+  "popup:fixed_period@fixed_average": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1791,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 5118,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 9276,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 49015,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:fixed_period@fixed_actual": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 2557,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 10972,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 13132,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 59844,
+    "clipped": 5,
+    "escapee": 0
+   }
+  },
+  "popup:fixed_channel@fixed_actual": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 2557,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 10972,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 13132,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 59844,
+    "clipped": 5,
+    "escapee": 0
+   }
+  },
+  "popup:fixed_item_add@fixed_actual": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 2557,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 10972,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 13132,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 59844,
+    "clipped": 5,
+    "escapee": 0
+   }
+  },
+  "popup:order_candidates@order_main": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 546,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:order_waiting@order_main": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 546,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:order_received@order_main": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 546,
+    "clipped": 6,
+    "escapee": 0
+   }
+  },
+  "popup:order_order@order_main": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 546,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:order_receive@order_main": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 546,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:order_cancel@order_main": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 546,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:order_revert@order_main": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 546,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:order_price_spike@order_main": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 546,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:order_order@order_detail": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 645,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1429,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 1429,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 3370,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:order_receive@order_receive": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 616,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1116,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 1123,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 1977,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:order_ingredient@order_direct": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:order_vendor@order_direct": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:sales_state@sales_main": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1123,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 8241,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 12605,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 67112,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:sales_break@sales_main": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1123,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 8241,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 12605,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 67112,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:sales_close@sales_main": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1123,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 8241,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 12605,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 67112,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:sales_sort@sales_main": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1123,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 8241,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 12605,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 67112,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:sales_qty@sales_main": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1123,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 8241,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 12605,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 67112,
+    "clipped": 5,
+    "escapee": 0
+   }
+  },
+  "popup:sales_shortage@sales_main": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1123,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 8241,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 12605,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 67112,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:sales_etc@sales_main": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1123,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 8241,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 12605,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 67112,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:sales_expense@sales_main": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1123,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 8241,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 12605,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 67112,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:sales_period@analytics": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1798,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1810,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 1857,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 3946,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:sales_direct_period@analytics": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1798,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1810,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 1857,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 3946,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:sales_menu_profit@day": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1518,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1530,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 1577,
+    "clipped": 2,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 3445,
+    "clipped": 7,
+    "escapee": 0
+   }
+  },
+  "popup:sales_revenue_all@revenue": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 907,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 907,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 907,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 1586,
+    "clipped": 6,
+    "escapee": 0
+   }
+  },
+  "popup:sales_material_detail@material": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 686,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1332,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 4315,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 17607,
+    "clipped": 7,
+    "escapee": 0
+   }
+  },
+  "popup:sales_extra_detail@extra": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1066,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 1130,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 14917,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:sales_fixed_expand@sales_fixed": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 595,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 7813,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 8908,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 16142,
+    "clipped": 5,
+    "escapee": 0
+   }
+  },
+  "popup:expense_add@expense": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 616,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 616,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 1795,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:expense_delete@expense": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 1075,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:past_sale_qty@sales_past": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 709,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 709,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 709,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 1047,
+    "clipped": 5,
+    "escapee": 0
+   }
+  },
+  "popup:past_etc@sales_past": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 709,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 709,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 709,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 1047,
+    "clipped": 5,
+    "escapee": 0
+   }
+  },
+  "popup:past_expense@sales_past": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 709,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 709,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 709,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 1047,
+    "clipped": 5,
+    "escapee": 0
+   }
+  },
+  "popup:past_save@sales_past": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 709,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 709,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 709,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 1047,
+    "clipped": 5,
+    "escapee": 0
+   }
+  },
+  "popup:stock_check_all@stock_check": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 661,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 1117,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 1188,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:fixed_period@my_fixed": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1791,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 5118,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 9276,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 49015,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:fixed_period@my_fixed_edit": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 2557,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 10972,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 13132,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 59844,
+    "clipped": 5,
+    "escapee": 0
+   }
+  },
+  "popup:fixed_channel@my_fixed_edit": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 2557,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 10972,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 13132,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 59844,
+    "clipped": 5,
+    "escapee": 0
+   }
+  },
+  "popup:fixed_item_add@my_fixed_edit": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 2557,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 10972,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 13132,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 59844,
+    "clipped": 5,
+    "escapee": 0
+   }
+  },
+  "popup:category_add@my_ingredient_categories": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1123,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1379,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 1379,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 2992,
+    "clipped": 5,
+    "escapee": 0
+   }
+  },
+  "popup:category_edit@my_ingredient_categories": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1123,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1379,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 1379,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 2992,
+    "clipped": 5,
+    "escapee": 0
+   }
+  },
+  "popup:category_delete@my_ingredient_categories": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1123,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1379,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 1379,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 2992,
+    "clipped": 5,
+    "escapee": 0
+   }
+  },
+  "popup:category_add@my_recipe_categories": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 499,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 771,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 771,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 1818,
+    "clipped": 5,
+    "escapee": 0
+   }
+  },
+  "popup:category_edit@my_recipe_categories": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 499,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 771,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 771,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 1818,
+    "clipped": 5,
+    "escapee": 0
+   }
+  },
+  "popup:category_delete@my_recipe_categories": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 499,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 771,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 771,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 1818,
+    "clipped": 5,
+    "escapee": 0
+   }
+  },
+  "popup:category_add@my_material_categories": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 619,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 619,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 1648,
+    "clipped": 5,
+    "escapee": 0
+   }
+  },
+  "popup:category_edit@my_material_categories": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 619,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 619,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 1648,
+    "clipped": 5,
+    "escapee": 0
+   }
+  },
+  "popup:category_delete@my_material_categories": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 619,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 619,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 1648,
+    "clipped": 5,
+    "escapee": 0
+   }
+  },
+  "popup:material_add@my_materials": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 499,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1853,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 541,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 7242,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:material_edit@my_materials": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 499,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1853,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 541,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 7242,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:material_category_pick@my_materials": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 499,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1853,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 541,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 7242,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:material_delete@my_materials": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 499,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1853,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 541,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 7242,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:tax_country@my_tax": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1308,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1347,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 1425,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 1864,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:tax_item_add@my_tax": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1308,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1347,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 1425,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 1864,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:tax_saved@my_tax": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1308,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1347,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 1425,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 1864,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:language_preview@my_language": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1228,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 4898,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 5207,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 15804,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:vendor_add@my_vendors": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 950,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:vendor_edit@my_vendors": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 950,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:vendor_delete@my_vendors": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 950,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:channel_edit@my_channels": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 619,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1079,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 1079,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 1679,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:channel_disable@my_channels": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 619,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1079,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 1079,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 1679,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:hours_start@my_hours": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1425,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 7254,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 8947,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 43312,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:hours_end@my_hours": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1425,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 7254,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 8947,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 43312,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:hours_break_start@my_hours": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1425,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 7254,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 8947,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 43312,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:hours_break_end@my_hours": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1425,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 7254,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 8947,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 43312,
+    "clipped": 4,
+    "escapee": 0
+   }
+  },
+  "popup:hours_timezone@my_hours": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 1425,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 7254,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 8947,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 43312,
+    "clipped": 7,
+    "escapee": 0
+   }
+  },
+  "popup:account_delete@my_account": {
+   "base": {
+    "phoneOverflow": 0,
+    "contentHeight": 480,
+    "clipped": 0,
+    "escapee": 0
+   },
+   "w130": {
+    "phoneOverflow": 0,
+    "contentHeight": 1165,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w150": {
+    "phoneOverflow": 0,
+    "contentHeight": 1165,
+    "clipped": 1,
+    "escapee": 0
+   },
+   "w130t2": {
+    "phoneOverflow": 0,
+    "contentHeight": 4047,
+    "clipped": 4,
+    "escapee": 0
+   }
+  }
+ }
+}
