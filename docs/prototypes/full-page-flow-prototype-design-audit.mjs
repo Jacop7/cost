@@ -3,7 +3,7 @@
  * design-audit.mjs — 프로토타입의 디자인 축을 역할 단위로 전수 측정한다.
  *
  * 타이포만 재던 render-audit 과 달리, 토큰 기획에 필요한 축을 전부 낸다:
- *   타이포(카드×슬롯) · 색 · 간격 · 반경 · 그림자 · 컨트롤 높이 · 터치 영역 · 아이콘
+ *   타이포(카드×슬롯) · 색 · 대비 · 간격 · 반경 · 그림자 · 컨트롤 높이 · 터치 영역 · 아이콘
  *
  * 세는 규칙
  *  - 대상은 제품 UI 뿐이다. 프로토타입 셸(폰 목업 상태바·화면 ID 배지·카탈로그)은 제외한다.
@@ -157,7 +157,28 @@ const COLLECT=({SCALE})=>{
     const f=c.split(/\s+/)[0]; if(CARD.test(f)) return f; } return '(no-card)'; };
   const px=v=>{const n=parseFloat(v); return Number.isFinite(n)?Math.round(n*100)/100:null;};
 
-  const out={typo:[],color:[],space:[],radius:[],shadow:[],control:[],touch:[],icon:[]};
+  // --- 대비(contrast) ---
+  // WCAG 2.x 상대 휘도와 대비비. 텍스트가 실제로 어느 배경 위에 그려지는지 찾아야 하므로
+  // 투명하지 않은 가장 가까운 조상의 배경색을 쓴다. 반투명이 섞이면 알파 합성한다.
+  const parseRGB=v=>{const m=/rgba?\(([^)]+)\)/.exec(v||''); if(!m)return null;
+    const p=m[1].split(',').map(x=>parseFloat(x)); return {r:p[0],g:p[1],b:p[2],a:p.length>3?p[3]:1};};
+  const overCompose=(fg,bg)=>({r:fg.r*fg.a+bg.r*(1-fg.a), g:fg.g*fg.a+bg.g*(1-fg.a), b:fg.b*fg.a+bg.b*(1-fg.a), a:1});
+  const lum=c=>{const f=x=>{x/=255; return x<=0.03928?x/12.92:Math.pow((x+0.055)/1.055,2.4);};
+    return 0.2126*f(c.r)+0.7152*f(c.g)+0.0722*f(c.b);};
+  const ratio=(a,b)=>{const l1=lum(a),l2=lum(b); const hi=Math.max(l1,l2),lo=Math.min(l1,l2);
+    return Math.round(((hi+0.05)/(lo+0.05))*100)/100;};
+  const effectiveBg=e=>{
+    let acc=null;
+    for(let x=e;x;x=x.parentElement){
+      const c=parseRGB(getComputedStyle(x).backgroundColor);
+      if(!c||c.a===0) continue;
+      acc = acc===null ? c : overCompose(acc,c);
+      if(acc.a>=1) return acc;
+    }
+    return acc ?? {r:255,g:255,b:255,a:1};   // 끝까지 불투명 배경이 없으면 흰색으로 본다
+  };
+
+  const out={typo:[],color:[],space:[],radius:[],shadow:[],control:[],touch:[],icon:[],contrast:[]};
   const all=(phone||document.body).querySelectorAll('*');
   for(const e of all){
     if(!isProduct(e))continue;
@@ -175,6 +196,18 @@ const COLLECT=({SCALE})=>{
           color:cs.color,ls:cs.letterSpacing,tabular:cs.fontVariantNumeric,sample:txt.slice(0,20),
           weightSource:sourceOf(e,'font-weight'),lhSource:sourceOf(e,'line-height')});
         out.color.push({role:'text',card,slot,value:cs.color,source:sourceOf(e,'color')});
+        // 대비 — 굵기·크기로 '큰 글자' 여부를 갈라 기준을 다르게 적용한다(WCAG 1.4.3)
+        const fg=parseRGB(cs.color), bgc=effectiveBg(e);
+        if(fg&&bgc){
+          const fgOn = fg.a<1 ? overCompose(fg,bgc) : fg;
+          const px=parseFloat(cs.fontSize), w=parseInt(cs.fontWeight,10)||400;
+          const large = px>=24 || (px>=18.66 && w>=700);
+          const r=ratio(fgOn,bgc);
+          out.contrast.push({card,slot,size:cs.fontSize,weight:cs.fontWeight,
+            fg:cs.color, bg:`rgb(${Math.round(bgc.r)}, ${Math.round(bgc.g)}, ${Math.round(bgc.b)})`,
+            ratio:r, large, passAA: r >= (large?3:4.5), passAAA: r >= (large?4.5:7),
+            sample:txt.slice(0,16)});
+        }
       }
     }
     if(cs.backgroundColor&&cs.backgroundColor!=='rgba(0, 0, 0, 0)')
@@ -226,7 +259,7 @@ const COLLECT=({SCALE})=>{
 };
 
 const SCALE=['22px','20px','18px','16px','14px','13px'];
-const agg={typo:{},color:{},space:{},radius:{},shadow:{},control:{},touch:{},icon:{}};
+const agg={typo:{},color:{},space:{},radius:{},shadow:{},control:{},touch:{},icon:{},contrast:{}};
 const push=(bucket,key,extra)=>{ const b=(agg[bucket][key]??={n:0,ex:new Set()}); b.n++;
   if(extra&&b.ex.size<3) b.ex.add(extra); };
 
@@ -245,6 +278,8 @@ for(const t of targets){
   r.control.forEach(x=>push('control',`${x.tag}|h${x.h}|${x.radius}|${x.size}/${x.weight}${x.innerTag?'|shell of '+x.innerTag:''}`,`${x.card}.${x.slot} "${x.label}"`));
   r.touch.forEach(x=>push('touch',`${x.card}.${x.slot}|${x.w}x${x.h}`,x.label));
   r.icon.forEach(x=>push('icon',`${x.size}/${x.weight}|${x.card}.${x.slot}`,x.glyph));
+  r.contrast.forEach(x=>push('contrast',`${x.fg} on ${x.bg}|${x.ratio}|${x.large?'large':'normal'}|${x.passAA?'AA':'FAIL'}`,
+    `${x.card}.${x.slot} ${x.size}/${x.weight} "${x.sample}"`));
 }
 await browser.close();
 
@@ -264,10 +299,11 @@ const result={
       '출처':"모든 값에 source 를 붙인다 — author(이 요소에 걸린 스타일시트 규칙이 선언) · inline(요소 style 속성) · inherited(여기 선언은 없지만 조상의 작성자 선언이 내려온 것. 상속되는 속성에만 해당) · ua(아무도 선언하지 않은 브라우저 기본값). inherited 와 ua 를 나누지 않으면 '상속된 작성자 색' 을 '아무도 고르지 않은 값' 이라고 잘못 부르게 된다",
       '타이포':'키에 행간·자간을 포함한다. 버린 축은 미매핑 0 이라고 말할 수 없다',
       '컨트롤':'input 자신이 아니라 그것을 감싼 조작 상자를 컨트롤로 본다',
+      '대비':'WCAG 2.x 상대 휘도로 대비비를 낸다. 배경은 투명하지 않은 가장 가까운 조상의 배경색이고, 반투명이 섞이면 알파 합성한다. 24px 이상 또는 18.66px 이상&700 이상은 큰 글자로 보아 기준을 3:1 로, 나머지는 4.5:1 로 적용한다',
       'margin auto':'스타일시트 선언값이 auto 인 변은 뺀다. computed 픽셀은 레이아웃 결과라 간격 결정이 아니다' }},
   summary:Object.fromEntries(Object.keys(agg).map(b=>[b,{종류:Object.keys(agg[b]).length,
     합계:Object.values(agg[b]).reduce((a,v)=>a+v.n,0)}])),
-  typo:dump('typo'),color:dump('color'),space:dump('space'),radius:dump('radius'),
+  typo:dump('typo'),color:dump('color'),space:dump('space'),radius:dump('radius'),contrast:dump('contrast'),
   shadow:dump('shadow'),control:dump('control'),touch:dump('touch'),icon:dump('icon'),
 };
 writeFileSync(outPath,JSON.stringify(result,null,1)+'\n');

@@ -1,15 +1,15 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-04T19:02:02.329Z",
+  "generatedAt": "2026-09-04T19:14:08.178Z",
   "schemaVersion": 1,
   "script": {
    "name": "full-page-flow-prototype-design-audit.mjs",
-   "sha256": "7ed8ee499533cdc2dc657fa952776dab46339d044e14de16ec1565cb53a8feb4"
+   "sha256": "5bace791bd01297d149d3d4e2dc418c0eae06cc2622524c003b3bcdff729917b"
   },
   "target": {
    "path": "0_full-page-flow-prototype-ui-applied.html",
-   "sha256": "8585427cdb5844f55c83735d40b0dc410653b9c2f938d7c1c954bbfe1be664d7",
-   "designSyncId": "DS-20260904-018"
+   "sha256": "7b4064b1bb2ba146fe75ce983f32b3183e694e98130f2ea71a1ec00f6fc15728",
+   "designSyncId": "DS-20260904-019"
   },
   "runner": {
    "node": "v22.22.2",
@@ -31,6 +31,7 @@
    "출처": "모든 값에 source 를 붙인다 — author(이 요소에 걸린 스타일시트 규칙이 선언) · inline(요소 style 속성) · inherited(여기 선언은 없지만 조상의 작성자 선언이 내려온 것. 상속되는 속성에만 해당) · ua(아무도 선언하지 않은 브라우저 기본값). inherited 와 ua 를 나누지 않으면 '상속된 작성자 색' 을 '아무도 고르지 않은 값' 이라고 잘못 부르게 된다",
    "타이포": "키에 행간·자간을 포함한다. 버린 축은 미매핑 0 이라고 말할 수 없다",
    "컨트롤": "input 자신이 아니라 그것을 감싼 조작 상자를 컨트롤로 본다",
+   "대비": "WCAG 2.x 상대 휘도로 대비비를 낸다. 배경은 투명하지 않은 가장 가까운 조상의 배경색이고, 반투명이 섞이면 알파 합성한다. 24px 이상 또는 18.66px 이상&700 이상은 큰 글자로 보아 기준을 3:1 로, 나머지는 4.5:1 로 적용한다",
    "margin auto": "스타일시트 선언값이 auto 인 변은 뺀다. computed 픽셀은 레이아웃 결과라 간격 결정이 아니다"
   }
  },
@@ -66,6 +67,10 @@
   "icon": {
    "종류": 35,
    "합계": 697
+  },
+  "contrast": {
+   "종류": 34,
+   "합계": 6974
   }
  },
  "typo": [
@@ -11435,6 +11440,294 @@
    "n": 1,
    "ex": [
     "358x48"
+   ]
+  }
+ ],
+ "contrast": [
+  {
+   "key": "rgb(25, 31, 40) on rgb(255, 255, 255)|16.56|normal|AA",
+   "n": 2534,
+   "ex": [
+    "expo-card-top.strong 16px/800 \"고춧가루\"",
+    "expo-list-card.b 16px/800 \"재고 812g\"",
+    "expo-card-top.strong 16px/800 \"설탕\""
+   ]
+  },
+  {
+   "key": "rgb(139, 149, 161) on rgb(255, 255, 255)|3.04|normal|FAIL",
+   "n": 1325,
+   "ex": [
+    "expo-list-card.em 13px/700 \"안전재고 1kg\"",
+    "expo-card-foot.span 13px/600 \"최근 입고 08/27\"",
+    "expo-list-card.em 13px/700 \"안전재고 3kg\""
+   ]
+  },
+  {
+   "key": "rgb(78, 89, 104) on rgb(255, 255, 255)|7.11|normal|AA",
+   "n": 850,
+   "ex": [
+    "expo-card-foot.b 13px/700 \"28.00원/g\"",
+    "expo-card-foot.b 13px/700 \"1.80원/g\"",
+    "expo-card-foot.b 13px/700 \"300.00원/개\""
+   ]
+  },
+  {
+   "key": "rgb(78, 89, 104) on rgb(249, 250, 251)|6.81|normal|AA",
+   "n": 296,
+   "ex": [
+    "card.expo-more 14px/700 \"전체보기\"",
+    "expo-list-card.expo-target 13px/700 \"목표 60%\"",
+    "expo-list-card.expo-target 13px/700 \"목표 35%\""
+   ]
+  },
+  {
+   "key": "rgb(25, 31, 40) on rgb(249, 250, 251)|15.85|normal|AA",
+   "n": 291,
+   "ex": [
+    "card.strong 16px/700 \"구매 링크\"",
+    "card.strong 16px/700 \"기준 단가\"",
+    "card.strong 16px/700 \"재고 내역\""
+   ]
+  },
+  {
+   "key": "rgb(78, 89, 104) on rgb(242, 244, 246)|6.45|normal|AA",
+   "n": 213,
+   "ex": [
+    "edit-form-row.edit-form-label 14px/800 \"식재료명\"",
+    "edit-form-row.edit-form-label 14px/800 \"카테고리\"",
+    "edit-form-row.edit-form-label 14px/800 \"개당 용량\""
+   ]
+  },
+  {
+   "key": "rgb(255, 255, 255) on rgb(49, 130, 246)|3.71|normal|FAIL",
+   "n": 173,
+   "ex": [
+    "(no-card).expo-fab 16px/700 \"식재료 추가\"",
+    "sheet-actions.save 16px/800 \"완료\"",
+    "(no-card).expo-fab 16px/700 \"레시피 추가\""
+   ]
+  },
+  {
+   "key": "rgb(139, 149, 161) on rgb(249, 250, 251)|2.91|normal|FAIL",
+   "n": 161,
+   "ex": [
+    "expo-card-top.expo-category 12px/700 \"향신료·허브\"",
+    "expo-card-top.expo-category 12px/700 \"곡물·견과·분말\"",
+    "expo-card-top.expo-category 12px/700 \"축산·계란\""
+   ]
+  },
+  {
+   "key": "rgb(49, 130, 246) on rgb(242, 244, 246)|3.37|normal|FAIL",
+   "n": 145,
+   "ex": [
+    "edit-form-label.em 14px/800 \"*\"",
+    "stock-add-label.em 14px/800 \"*\"",
+    "(no-card).em 14px/800 \"*\""
+   ]
+  },
+  {
+   "key": "rgb(49, 130, 246) on rgb(255, 255, 255)|3.71|normal|FAIL",
+   "n": 139,
+   "ex": [
+    "card.blue 14px/400 \"최저\"",
+    "edit-menu-stage.edit-menu-close 16px/800 \"닫기\"",
+    "card.blue 16px/700 \"+4kg\""
+   ]
+  },
+  {
+   "key": "rgb(240, 68, 82) on rgb(255, 255, 255)|3.71|normal|FAIL",
+   "n": 138,
+   "ex": [
+    "card.red 14px/400 \"최고\"",
+    "expo-row-value.red 16px/700 \"−80g\"",
+    "expo-row-value.red 16px/700 \"−108g\""
+   ]
+  },
+  {
+   "key": "rgb(139, 149, 161) on rgb(242, 244, 246)|2.76|normal|FAIL",
+   "n": 135,
+   "ex": [
+    "(no-card).tab 16px/600 \"축산·계란\"",
+    "(no-card).tab 16px/600 \"수산·해조류\"",
+    "(no-card).tab 16px/600 \"농산(신선)\""
+   ]
+  },
+  {
+   "key": "rgb(25, 31, 40) on rgb(255, 255, 255)|16.56|large|AA",
+   "n": 122,
+   "ex": [
+    "card.detail-name 20px/700 \"고춧가루\"",
+    "stock-detail-total.b 22px/800 \"812g\"",
+    "sheet-preview-card.sheet-preview-title 19px/800 \"메모 수정\""
+   ]
+  },
+  {
+   "key": "rgb(51, 61, 75) on rgb(255, 255, 255)|11|normal|AA",
+   "n": 107,
+   "ex": [
+    "(no-card).expo-sort 14px/700 \"재고 적은순⌄\"",
+    "(no-card).filter-text 14px/800 \"최근 3개월\"",
+    "(no-card).filter-text 14px/800 \"전체\""
+   ]
+  },
+  {
+   "key": "rgb(49, 130, 246) on rgb(234, 243, 255)|3.32|normal|FAIL",
+   "n": 87,
+   "ex": [
+    "stock-total-result.strong 16px/800 \"0원/g\"",
+    "edit-form.ingredient-note-icon 12px/800 \"i\"",
+    "edit-form.span 14px/700 \"구매 링크는 저장한 뒤 상세 \""
+   ]
+  },
+  {
+   "key": "rgb(240, 68, 82) on rgb(254, 236, 236)|3.26|normal|FAIL",
+   "n": 38,
+   "ex": [
+    "expo-card-top.expo-status 12px/700 \"소진 임박\"",
+    "stock-detail-head.expo-status 12px/700 \"소진 임박\"",
+    "expo-card-top.expo-status 12px/700 \"목표 미달\""
+   ]
+  },
+  {
+   "key": "rgb(78, 89, 104) on rgb(244, 248, 255)|6.68|normal|AA",
+   "n": 30,
+   "ex": [
+    "card.callout 14px/600 \"가게의 월 고정비를 매출 비율\"",
+    "card.span 14px/600 \"1인분\"",
+    "card.callout 14px/600 \"발주는 기록만 돼요. 재고와 \""
+   ]
+  },
+  {
+   "key": "rgb(0, 0, 0) on rgb(255, 255, 255)|21|normal|AA",
+   "n": 30,
+   "ex": [
+    "tax-choice.input 13.3333px/400 \"on\""
+   ]
+  },
+  {
+   "key": "rgb(240, 68, 82) on rgb(255, 240, 241)|3.36|normal|FAIL",
+   "n": 29,
+   "ex": [
+    "card.badge 12px/800 \"최고\"",
+    "sheet-preview-stage.button 16px/800 \"삭제\"",
+    "expo-pick-card.badge 12px/800 \"소진 임박\""
+   ]
+  },
+  {
+   "key": "rgb(25, 31, 40) on rgb(242, 244, 246)|15.02|normal|AA",
+   "n": 24,
+   "ex": [
+    "(no-card).tab 16px/700 \"전체\"",
+    "sheet-preview-tabs.sheet-preview-tab 16px/800 \"입고\"",
+    "(no-card).tab 16px/700 \"발주 후보 1\""
+   ]
+  },
+  {
+   "key": "rgb(14, 159, 110) on rgb(255, 255, 255)|3.39|normal|FAIL",
+   "n": 22,
+   "ex": [
+    "analysis-summary-row.span 15px/800 \"순이익\"",
+    "analysis-summary-value.b 16px/900 \"273,599원\"",
+    "sales-value-stack.sales-amount 16px/800 \"273,599원\""
+   ]
+  },
+  {
+   "key": "rgb(224, 122, 0) on rgb(255, 255, 255)|3.02|normal|FAIL",
+   "n": 18,
+   "ex": [
+    "sales-live-copy.em 13px/600 \"지금 재료비 3,254원은 다\"",
+    "sales-live-copy.em 13px/600 \"지금 재료비 1,849원은 다\""
+   ]
+  },
+  {
+   "key": "rgb(183, 110, 0) on rgb(255, 244, 229)|3.69|normal|FAIL",
+   "n": 12,
+   "ex": [
+    "detail-chips.detail-chip 13px/700 \"안전재고 1kg\"",
+    "order-head.expo-status 12px/700 \"안전재고 미달\""
+   ]
+  },
+  {
+   "key": "rgb(14, 159, 110) on rgb(231, 247, 240)|3.06|normal|FAIL",
+   "n": 11,
+   "ex": [
+    "expo-card-top.expo-status 12px/700 \"여유\"",
+    "card.expo-status 12px/700 \"현재 매출 반영\"",
+    "(no-card).expo-status 12px/700 \"현재 매출 반영\""
+   ]
+  },
+  {
+   "key": "rgb(255, 255, 255) on rgb(49, 130, 246)|3.71|large|AA",
+   "n": 9,
+   "ex": [
+    "sales-hero.strong 22px/800 \"273,599원\""
+   ]
+  },
+  {
+   "key": "rgb(78, 89, 104) on rgb(234, 243, 255)|6.35|normal|AA",
+   "n": 8,
+   "ex": [
+    "tax-preview-row.span 12px/800 \"부가세\"",
+    "tax-preview-row.span 12px/800 \"부가세 제외\""
+   ]
+  },
+  {
+   "key": "rgb(14, 159, 110) on rgb(232, 248, 241)|3.08|normal|FAIL",
+   "n": 6,
+   "ex": [
+    "sales-label.profit-badge 10px/800 \"목표 달성\"",
+    "card.badge 12px/800 \"목표 달성\""
+   ]
+  },
+  {
+   "key": "rgb(240, 68, 82) on rgb(234, 243, 255)|3.32|normal|FAIL",
+   "n": 4,
+   "ex": [
+    "tax-preview-row.b 13px/900 \"₩1,091\""
+   ]
+  },
+  {
+   "key": "rgb(25, 31, 40) on rgb(234, 243, 255)|14.8|normal|AA",
+   "n": 4,
+   "ex": [
+    "tax-preview-row.b 13px/900 \"₩10,909\""
+   ]
+  },
+  {
+   "key": "rgb(49, 130, 246) on rgb(255, 255, 255)|3.71|large|AA",
+   "n": 3,
+   "ex": [
+    "card.b 22px/700 \"28.00원/g\""
+   ]
+  },
+  {
+   "key": "rgb(233, 121, 0) on rgb(255, 255, 255)|2.92|normal|FAIL",
+   "n": 3,
+   "ex": [
+    "analysis-summary-value.b 16px/900 \"601,401원\""
+   ]
+  },
+  {
+   "key": "rgb(255, 255, 255) on rgb(209, 214, 219)|1.46|normal|FAIL",
+   "n": 3,
+   "ex": [
+    "(no-card).primary 16px/700 \"발주 등록\"",
+    "(no-card).primary 16px/800 \"추가\""
+   ]
+  },
+  {
+   "key": "rgb(49, 130, 246) on rgb(249, 250, 251)|3.55|normal|FAIL",
+   "n": 2,
+   "ex": [
+    "revenue-summary-row.span 13px/800 \"31.3%\""
+   ]
+  },
+  {
+   "key": "rgb(240, 68, 82) on rgb(249, 250, 251)|3.55|normal|FAIL",
+   "n": 2,
+   "ex": [
+    "sales-shortage-row.b 14px/700 \"부족 재료 2개\"",
+    "sales-shortage-row.b 14px/700 \"부족 재료 1개\""
    ]
   }
  ],

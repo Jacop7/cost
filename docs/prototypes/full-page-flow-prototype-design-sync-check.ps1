@@ -443,6 +443,34 @@ else {
   if ($iAudit.summary.stretch.w130.skippedNumeric -lt 1) { Add-Failure "$i18nName : 숫자 제외가 0건 — 숫자까지 늘렸을 가능성" }
 }
 
+# --- 대비 증거 결속 (PRT-198) ---
+# 색 결정은 대비 없이는 답할 수 없다. 대비 결과가 지금 이 감사·이 적용본에 묶여 있는지 본다.
+$contrastName = 'full-page-flow-prototype-contrast-fix.json'
+$contrastPath = Join-Path $PrototypeDirectory $contrastName
+if (-not (Test-Path -LiteralPath $contrastPath)) {
+  Add-Failure "$contrastName : 대비 결과가 없음"
+}
+else {
+  $cf = Read-Utf8 $contrastPath | ConvertFrom-Json
+  if ($cf.manifest.designAudit.targetSha256 -ne $dAppliedSha) {
+    Add-Failure "$contrastName : 적용본 SHA 불일치. 재측정 필요"
+  }
+  if ($cf.manifest.designAudit.designSyncId -ne $syncId) {
+    Add-Failure "$contrastName : 동기화 ID 불일치"
+  }
+  foreach ($ruleKey in @('기준', '수정안', '방향')) {
+    if ($null -eq $cf.manifest.rules.$ruleKey) { Add-Failure "$contrastName : 측정 규칙 '$ruleKey' 누락" }
+  }
+  if ($cf.summary.pairs -lt 1) { Add-Failure "$contrastName : 비교한 색 쌍이 없음" }
+  # 실패 쌍마다 **어디를 어떻게 고치면 되는지**가 있어야 한다.
+  # 수치만 내고 통과선까지의 거리를 안 내면 결정에 쓸 수 없다.
+  foreach ($row in $cf.rows) {
+    if (-not $row.passAA -and $null -eq $row.fix -and $null -eq $row.fixBackground) {
+      Add-Failure "$contrastName : $($row.fg) on $($row.bg) 가 AA 실패인데 통과 색이 없음"
+    }
+  }
+}
+
 if ($failures.Count -gt 0) {
   Write-Output "DESIGN DOC SYNC: FAIL ($syncId)"
   $failures | ForEach-Object { Write-Output "- $_" }
@@ -455,7 +483,8 @@ foreach ($fileName in $contentsByFile.Keys) {
 }
 foreach ($fileName in @($auditName, $auditScriptName, 'full-page-flow-prototype-render-audit-known.json', $designAuditName, $designAuditScriptName, $i18nName, $i18nScriptName,
     'full-page-flow-prototype-token-map.json', 'full-page-flow-prototype-token-map-check.mjs',
-    'full-page-flow-prototype-token-map-check.json', 'full-page-flow-prototype-i18n-known.json')) {
+    'full-page-flow-prototype-token-map-check.json', 'full-page-flow-prototype-i18n-known.json',
+    'full-page-flow-prototype-contrast-fix.json', 'full-page-flow-prototype-contrast-fix.mjs')) {
   $contents = Read-Utf8 (Join-Path $PrototypeDirectory $fileName)
   if ($null -ne $contents) { $hashes[$fileName] = Get-Sha256 $contents }
 }
