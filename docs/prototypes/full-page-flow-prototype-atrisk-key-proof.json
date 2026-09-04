@@ -1,6 +1,6 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-04T20:50:51.171Z",
+  "generatedAt": "2026-09-04T21:10:19.295Z",
   "schemaVersion": 1,
   "script": {
    "name": "full-page-flow-prototype-atrisk-key-proof.mjs",
@@ -9,16 +9,16 @@
   "source": {
    "stress": {
     "path": "i18n-stress.json",
-    "sha256": "6ac6739aa1433d13b9990cf526f8199a87b665a16fbcf5619477fcf6517e4c9e"
+    "sha256": "3ad6f1f2804ebb6b63b1d052c2f67cd442fde1715b47db6b1a2518f32ca41dbd"
    },
    "known": {
     "path": "full-page-flow-prototype-i18n-known.json",
-    "sha256": "92e35c853519be434d0684f12795441ffebd95cbe7a5718ff0d061121916da74"
+    "sha256": "dcf7782e06f537571526e995fdda579c224d91ef0715c2290f7643c8815ea434"
    }
   },
   "target": {
-   "sha256": "4ff051fdc62e8f2793acc86e8a2762792c99e1b57b7282642469cbfa185a00ed",
-   "designSyncId": "DS-20260904-024"
+   "sha256": "5faff4626b0416697022c90ca5b3f14621f456921db83246654951500e381626",
+   "designSyncId": "DS-20260904-025"
   },
   "rules": {
    "옛 키": "pass|target|selector — PRT-199 이전. 같은 selector 의 형제 host 가 한 칸을 공유하고 마지막에 쓰인 값이 이긴다",

@@ -1,0 +1,886 @@
+{
+ "manifest": {
+  "generatedAt": "2026-09-04T21:03:28.647Z",
+  "schemaVersion": 1,
+  "script": {
+   "name": "full-page-flow-prototype-app-map-check.mjs",
+   "sha256": "cfd43a497d1632cc78c904bfcc5d0b4e83cd79df8af8148aace5f1103f847174"
+  },
+  "source": {
+   "audit": {
+    "path": "token-adoption-audit.json",
+    "sha256": "3eb8f105317ba545139d11e9813d8785d4c401579ce107a726a6a3db080552dd",
+    "declarations": 3677
+   },
+   "appMap": {
+    "path": "full-page-flow-prototype-app-token-map.json",
+    "sha256": "ccd5a86f62e89afb13d949c5971b0e435ee0e58638f8512891ca5dee2a9e9cc6"
+   },
+   "prototypeMap": {
+    "path": "full-page-flow-prototype-token-map.json",
+    "sha256": "57fd9d13fe28630fc6c48e654d513743a0fdde91c5ee5aabf1a51d13cf787319"
+   }
+  },
+  "rules": {
+   "통": "primitive · semantic · componentOwned · defect · pendingApproval · approvedException",
+   "완료 조건": "선언 = 여섯 통의 합 · 미분류 0 · approvedException 0 · componentOwned 이름 필수 · defect 수렴 대상 또는 열린 결정 필수 · pendingApproval 질문·증거 필수 · 걸리지 않는 규칙 0",
+   "첫 일치": "규칙은 순서대로 평가하고 처음 일치한 것이 이긴다. 순서가 곧 우선순위다"
+  }
+ },
+ "summary": {
+  "status": "PROPOSAL_COMPLETE",
+  "declarations": 3677,
+  "byBin": {
+   "primitive": 2082,
+   "semantic": 0,
+   "componentOwned": 152,
+   "defect": 1049,
+   "pendingApproval": 394,
+   "approvedException": 0
+  },
+  "unmatchedCount": 0,
+  "unmatched": [],
+  "openQuestions": [
+   {
+    "id": "R-SP-SCROLL-BOTTOM",
+    "question": "스크롤 컨테이너 하단 여유가 한 역할에 26·28·30·32·40·96·104 일곱 값을 쓴다. 하나로 수렴할지, 하단 탭바·FAB 유무로 역할을 나눌지.",
+    "declarations": 49,
+    "evidence": "ChangeHistoryScreen:149(28) · HistoryLayout:120(30) · MyChannelsScreen:69(32) · Sheet:44(40) · DiscardHistoryScreen:221(26) · IngredientListScreen:115(104) · MaterialManageScreen:119(96). 전부 ScrollView contentContainerStyle 의 하단 여유다. 프로토타입 매핑표는 104 를 '하단 탭바 회피 공간' 으로 컴포넌트 소유에 뒀다.",
+    "ownerDecision": "값 수렴이 아니라 역할 정의 문제다 — 탭바가 있는 화면과 없는 화면을 나눌 것인지가 제품 결정이다."
+   },
+   {
+    "id": "R-SP-EMPTY-STATE",
+    "question": "빈 상태·중앙 정렬 블록의 세로·좌우 여백이 28·40·48·72 와 32 를 쓴다. 스케일 밖 큰 값을 컴포넌트 소유로 잠글지, 스케일을 24 위로 늘릴지.",
+    "declarations": 10,
+    "evidence": "QueryState:18(paddingVertical 48 · paddingHorizontal 32) · PurchaseOptionScreen:254(40) · ChannelWeightSheet:60(28) · SalesDayDetailScreen:76(72). 전부 '결과 없음/불러오는 중' 계열의 중앙 정렬 블록이다.",
+    "ownerDecision": "스케일 확장은 정본(tokens.ts) 변경이라 D-11 과 같은 성격이다."
+   },
+   {
+    "id": "R-TY-SIZE-15",
+    "question": "`fontSize:15` 를 caption(14) 로 내릴지 body(16) 로 올릴지. 프로토타입 매핑표도 '역할별' 로 남겨 둔 자리다.",
+    "declarations": 67,
+    "evidence": "67건. Sheet 안내문(Sheet.tsx:77 · ShortageWarningSheet.tsx:44)처럼 본문에 가까운 자리와 목록 보조값이 섞여 있다. 크기를 올리면 폭이 늘어 `S3b`(폭 증가) 대상이 되고, 내리면 `S3a`(축소) 대상이라 실행 단계가 갈린다.",
+    "ownerDecision": "역할 판정이므로 자리마다 다를 수 있다. 일괄 수렴이 아니라 역할 배정이 필요하다."
+   },
+   {
+    "id": "R-TY-SIZE-OFFSCALE",
+    "question": "스케일에도 수렴표에도 없는 글자 크기 12.5 · 13.5 · 14.5 · 17 · 25 를 어디로 보낼지.",
+    "declarations": 11,
+    "evidence": "11건. 13.5(6) 이 가장 많고 MyHoursScreen:348 같은 보조 설명에 쓰인다. 소수점 크기는 스케일에 없던 값이라 프로토타입 감사에서도 나오지 않았다 — 앱에만 있는 값이다.",
+    "ownerDecision": "13 으로 내릴지 14 로 올릴지가 폭에 영향을 주므로 `S3a`/`S3b` 배정이 갈린다."
+   },
+   {
+    "id": "R-TY-LINEHEIGHT",
+    "question": "React Native 의 lineHeight 는 배수가 아니라 **줄 기준선 사이의 절대 거리**다. 기획서의 1.0/1.4/1.5 를 그대로 쓰면 1~1.5dp 행간이 된다. 이름을 lineHeightRatio 로 바꿔 TYPE 별 절대값을 파생할지, TYPE 역할마다 절대 lineHeight 를 저장할지.",
+    "declarations": 62,
+    "evidence": "62건 · 16·17·19·20·21·22·23. lineHeight:20(45) 이 대부분이고 fontSize 14~16 과 짝지어 쓰인다. 솔의 F02 지적이 이 자리다.",
+    "ownerDecision": "tokens.ts 확장이므로 D-11 승인이 선행한다."
+   },
+   {
+    "id": "R-SZ-EXTENSION",
+    "question": "아이콘 크기 · 컨트롤 높이 · 행 높이는 tokens.ts 에 없다. 정본을 확장할지, 컴포넌트 소유로 남길지.",
+    "declarations": 167,
+    "evidence": "167건. 프로토타입 매핑표의 proposedTokensExtension(iconSize · controlHeight · rowHeight)이 대응하는 자리이고, converge 표에 목적지가 이미 적혀 있지만 그 목적지가 tokens.ts 에 실재하지 않는다. 솔의 F02 — rowHeight 는 고정 높이가 아니라 rowMinHeight 여야 하고, controlHeight 32/38 은 시각 높이이므로 minTouchTarget 44 와 분리해야 한다.",
+    "ownerDecision": "정본 변경이므로 D-11 승인이 선행한다."
+   },
+   {
+    "id": "R-CL-CATEGORY-ACCENT",
+    "question": "MY 허브의 범주 타일 색 **7쌍**(tint 배경 + 진한 전경)을 브랜드 축으로 정식화할지, 팔레트로 수렴시킬 결함으로 볼지.",
+    "declarations": 22,
+    "evidence": "22건. MyCategoryHubScreen:18~20 과 MyHomeScreen:24~31 에서 한 범주에 한 쌍씩 `{bg, fg}` 로 붙어 있다 — #F0EDFB/#7C5CE0(보라) · #EAF6F0/#179E6B(초록) · #FEF1E6/#E08A2B(주황) · #E8F1FB/#2E6FD0(파랑) · #FDECEF/#D94A5E(빨강) · #EDF3FF/#3A6FD8(파랑2) · #FFF5E0/#D99A1C(노랑). **본색+tint 쌍이 일관되게 반복되고 쓰이는 곳이 한 역할로 묶인다** — 페이블이 말한 '브랜드 축 후보' 의 모양이다. 누군가 골랐다.",
+    "ownerDecision": "브랜드 축으로 정식화하면 팔레트에 범주 강조색 7쌍이 추가되고, 결함으로 보면 26건이 기존 tint 계열로 수렴한다. 둘 다 제품 결정이다 — defect 로 분류하는 것도 '이 색을 없앤다' 는 결정이라 솔라 범위가 아니다."
+   },
+   {
+    "id": "R-CL-NEAR-PALETTE",
+    "question": "팔레트 값 바로 옆에 있는 색 셋을 팔레트로 당길지.",
+    "declarations": 4,
+    "evidence": "4건. #D5DAE0(MyNotificationsScreen:32 스위치 off 트랙)은 gray.300 #D5DBE1 과 **1비트 차이**다 — 오타에 가깝다. #B0B8C1(_layout.tsx:25 비활성 탭 아이콘, 2건)은 ink.300 #8B95A1 과 gray.300 사이에 있다. #FFF9F0(MyVendorsScreen:93 그룹 카드 배경)은 amber.tint #FFF4E5 옆이고 테두리는 이미 amberTint 토큰을 쓴다.",
+    "ownerDecision": "팔레트 수렴은 D-1′(팔레트 AA 수렴)과 같은 결정면이라 함께 올린다."
+   },
+   {
+    "id": "R-CL-CHART",
+    "question": "차트 색이 팔레트에 두 단계(chart.1 · chart.2)뿐인데 앱은 네 단계를 쓴다. 단계를 늘릴지, 두 단계로 줄일지.",
+    "declarations": 2,
+    "evidence": "2건. SalesMenuDetailScreen:142~143 의 손익 분해 막대에서 '부자재' #CDD3DA · '고정 지출' #5B6573 을 chart.1 #7A8694 · chart.2 #C5CCD3 과 함께 쓴다. 항목이 넷이라 색도 넷이 필요했다.",
+    "ownerDecision": "차트 색 단계 수는 팔레트 결정이다."
+   }
+  ],
+  "perRule": [
+   {
+    "id": "R-SP-PRIM",
+    "bin": "primitive",
+    "declarations": 581,
+    "name": null,
+    "target": "space.*",
+    "openDecision": null,
+    "values": [
+     [
+      "gap:8",
+      64
+     ],
+     [
+      "paddingHorizontal:16",
+      61
+     ],
+     [
+      "paddingVertical:12",
+      56
+     ],
+     [
+      "paddingHorizontal:20",
+      29
+     ],
+     [
+      "paddingTop:4",
+      26
+     ],
+     [
+      "paddingTop:12",
+      23
+     ],
+     [
+      "marginBottom:8",
+      20
+     ],
+     [
+      "marginTop:4",
+      19
+     ],
+     [
+      "paddingHorizontal:12",
+      18
+     ],
+     [
+      "marginTop:12",
+      18
+     ],
+     [
+      "marginBottom:12",
+      16
+     ],
+     [
+      "marginTop:8",
+      15
+     ]
+    ]
+   },
+   {
+    "id": "R-SP-CAPTION-GAP",
+    "bin": "defect",
+    "declarations": 73,
+    "name": null,
+    "target": 4,
+    "openDecision": null,
+    "values": [
+     [
+      "marginTop:2",
+      73
+     ]
+    ]
+   },
+   {
+    "id": "R-SP-RESET",
+    "bin": "componentOwned",
+    "declarations": 6,
+    "name": "reset.none",
+    "target": null,
+    "openDecision": null,
+    "values": [
+     [
+      "padding:0",
+      3
+     ],
+     [
+      "marginTop:0",
+      2
+     ],
+     [
+      "paddingRight:0",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SP-OPTICAL",
+    "bin": "componentOwned",
+    "declarations": 56,
+    "name": "optical.hairline",
+    "target": null,
+    "openDecision": null,
+    "values": [
+     [
+      "paddingTop:2",
+      18
+     ],
+     [
+      "paddingHorizontal:2",
+      9
+     ],
+     [
+      "gap:2",
+      8
+     ],
+     [
+      "marginTop:1",
+      6
+     ],
+     [
+      "paddingBottom:2",
+      3
+     ],
+     [
+      "gap:1",
+      3
+     ],
+     [
+      "paddingVertical:2",
+      2
+     ],
+     [
+      "padding:2",
+      2
+     ],
+     [
+      "marginHorizontal:2",
+      2
+     ],
+     [
+      "marginLeft:1",
+      1
+     ],
+     [
+      "marginVertical:2",
+      1
+     ],
+     [
+      "paddingTop:1",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SP-CONVERGE",
+    "bin": "defect",
+    "declarations": 877,
+    "name": null,
+    "target": "프로토타입 매핑표 converge.space",
+    "openDecision": null,
+    "values": [
+     [
+      "paddingHorizontal:15",
+      94
+     ],
+     [
+      "gap:6",
+      69
+     ],
+     [
+      "paddingVertical:13",
+      66
+     ],
+     [
+      "gap:10",
+      47
+     ],
+     [
+      "paddingHorizontal:14",
+      45
+     ],
+     [
+      "marginTop:3",
+      41
+     ],
+     [
+      "paddingVertical:11",
+      31
+     ],
+     [
+      "paddingVertical:14",
+      25
+     ],
+     [
+      "gap:11",
+      23
+     ],
+     [
+      "gap:7",
+      22
+     ],
+     [
+      "gap:5",
+      20
+     ],
+     [
+      "paddingVertical:9",
+      19
+     ]
+    ]
+   },
+   {
+    "id": "R-SP-SCROLL-BOTTOM",
+    "bin": "pendingApproval",
+    "declarations": 49,
+    "name": null,
+    "target": null,
+    "openDecision": null,
+    "values": [
+     [
+      "paddingBottom:28",
+      23
+     ],
+     [
+      "paddingBottom:30",
+      12
+     ],
+     [
+      "paddingBottom:32",
+      7
+     ],
+     [
+      "paddingBottom:40",
+      2
+     ],
+     [
+      "paddingBottom:26",
+      2
+     ],
+     [
+      "paddingBottom:104",
+      2
+     ],
+     [
+      "paddingBottom:96",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SP-EMPTY-STATE",
+    "bin": "pendingApproval",
+    "declarations": 10,
+    "name": null,
+    "target": null,
+    "openDecision": null,
+    "values": [
+     [
+      "paddingHorizontal:32",
+      3
+     ],
+     [
+      "paddingVertical:48",
+      2
+     ],
+     [
+      "paddingVertical:40",
+      2
+     ],
+     [
+      "paddingVertical:28",
+      2
+     ],
+     [
+      "paddingVertical:72",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-TY-SIZE-PRIM",
+    "bin": "primitive",
+    "declarations": 718,
+    "name": null,
+    "target": "typeSize.*",
+    "openDecision": null,
+    "values": [
+     [
+      "fontSize:16",
+      329
+     ],
+     [
+      "fontSize:14",
+      288
+     ],
+     [
+      "fontSize:13",
+      58
+     ],
+     [
+      "fontSize:18",
+      21
+     ],
+     [
+      "fontSize:20",
+      11
+     ],
+     [
+      "fontSize:22",
+      11
+     ]
+    ]
+   },
+   {
+    "id": "R-TY-WEIGHT-PRIM",
+    "bin": "primitive",
+    "declarations": 678,
+    "name": null,
+    "target": "typeWeight.*",
+    "openDecision": null,
+    "values": [
+     [
+      "fontWeight:700",
+      306
+     ],
+     [
+      "fontWeight:800",
+      223
+     ],
+     [
+      "fontWeight:600",
+      149
+     ]
+    ]
+   },
+   {
+    "id": "R-TY-SIZE-15",
+    "bin": "pendingApproval",
+    "declarations": 67,
+    "name": null,
+    "target": null,
+    "openDecision": null,
+    "values": [
+     [
+      "fontSize:15",
+      67
+     ]
+    ]
+   },
+   {
+    "id": "R-TY-SIZE-CONVERGE",
+    "bin": "defect",
+    "declarations": 33,
+    "name": null,
+    "target": "프로토타입 매핑표 converge.typeSize",
+    "openDecision": null,
+    "values": [
+     [
+      "fontSize:12",
+      27
+     ],
+     [
+      "fontSize:19",
+      3
+     ],
+     [
+      "fontSize:11",
+      2
+     ],
+     [
+      "fontSize:10",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-TY-SIZE-OFFSCALE",
+    "bin": "pendingApproval",
+    "declarations": 11,
+    "name": null,
+    "target": null,
+    "openDecision": null,
+    "values": [
+     [
+      "fontSize:13.5",
+      6
+     ],
+     [
+      "fontSize:17",
+      2
+     ],
+     [
+      "fontSize:12.5",
+      1
+     ],
+     [
+      "fontSize:14.5",
+      1
+     ],
+     [
+      "fontSize:25",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-TY-LINEHEIGHT",
+    "bin": "pendingApproval",
+    "declarations": 62,
+    "name": null,
+    "target": null,
+    "openDecision": "D-11",
+    "values": [
+     [
+      "lineHeight:20",
+      45
+     ],
+     [
+      "lineHeight:22",
+      5
+     ],
+     [
+      "lineHeight:19",
+      4
+     ],
+     [
+      "lineHeight:23",
+      3
+     ],
+     [
+      "lineHeight:17",
+      2
+     ],
+     [
+      "lineHeight:21",
+      2
+     ],
+     [
+      "lineHeight:16",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-FLEX-RESET",
+    "bin": "componentOwned",
+    "declarations": 69,
+    "name": "flex.minWidthReset",
+    "target": null,
+    "openDecision": null,
+    "values": [
+     [
+      "minWidth:0",
+      64
+     ],
+     [
+      "width:0",
+      5
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-EXTENSION",
+    "bin": "pendingApproval",
+    "declarations": 167,
+    "name": null,
+    "target": null,
+    "openDecision": "D-11",
+    "values": [
+     [
+      "width:40",
+      16
+     ],
+     [
+      "height:40",
+      14
+     ],
+     [
+      "width:34",
+      10
+     ],
+     [
+      "height:34",
+      9
+     ],
+     [
+      "height:2.5",
+      7
+     ],
+     [
+      "width:44",
+      7
+     ],
+     [
+      "width:38",
+      6
+     ],
+     [
+      "height:5",
+      5
+     ],
+     [
+      "height:38",
+      5
+     ],
+     [
+      "width:46",
+      5
+     ],
+     [
+      "width:32",
+      4
+     ],
+     [
+      "height:1",
+      4
+     ]
+    ]
+   },
+   {
+    "id": "R-RD-PRIM",
+    "bin": "primitive",
+    "declarations": 88,
+    "name": null,
+    "target": "radius.*",
+    "openDecision": null,
+    "values": [
+     [
+      "borderRadius:12",
+      66
+     ],
+     [
+      "borderRadius:999",
+      6
+     ],
+     [
+      "borderRadius:16",
+      5
+     ],
+     [
+      "borderTopLeftRadius:20",
+      4
+     ],
+     [
+      "borderTopRightRadius:20",
+      4
+     ],
+     [
+      "borderRadius:8",
+      3
+     ]
+    ]
+   },
+   {
+    "id": "R-RD-SHAPE",
+    "bin": "componentOwned",
+    "declarations": 18,
+    "name": "shape.pill",
+    "target": null,
+    "openDecision": null,
+    "values": [
+     [
+      "borderRadius:3",
+      9
+     ],
+     [
+      "borderRadius:2",
+      7
+     ],
+     [
+      "borderRadius:4",
+      1
+     ],
+     [
+      "borderRadius:15",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-RD-CONVERGE",
+    "bin": "defect",
+    "declarations": 66,
+    "name": null,
+    "target": "프로토타입 매핑표 converge.radius",
+    "openDecision": null,
+    "values": [
+     [
+      "borderRadius:10",
+      28
+     ],
+     [
+      "borderRadius:9",
+      8
+     ],
+     [
+      "borderRadius:11",
+      8
+     ],
+     [
+      "borderRadius:14",
+      8
+     ],
+     [
+      "borderRadius:6",
+      5
+     ],
+     [
+      "borderRadius:13",
+      4
+     ],
+     [
+      "borderRadius:7",
+      2
+     ],
+     [
+      "borderTopLeftRadius:22",
+      1
+     ],
+     [
+      "borderTopRightRadius:22",
+      1
+     ],
+     [
+      "borderRadius:5",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-CL-PRIM",
+    "bin": "primitive",
+    "declarations": 17,
+    "name": null,
+    "target": "palette.*",
+    "openDecision": null,
+    "values": [
+     [
+      "hex:#FFF",
+      10
+     ],
+     [
+      "hex:#7A8694",
+      2
+     ],
+     [
+      "hex:#C5CCD3",
+      2
+     ],
+     [
+      "hex:#FFFFFF",
+      1
+     ],
+     [
+      "hex:#3182F6",
+      1
+     ],
+     [
+      "hex:#8B95A1",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-CL-SCRIM",
+    "bin": "componentOwned",
+    "declarations": 3,
+    "name": "sheet.scrim",
+    "target": null,
+    "openDecision": null,
+    "values": [
+     [
+      "hex:#000",
+      3
+     ]
+    ]
+   },
+   {
+    "id": "R-CL-CATEGORY-ACCENT",
+    "bin": "pendingApproval",
+    "declarations": 22,
+    "name": null,
+    "target": null,
+    "openDecision": null,
+    "values": [
+     [
+      "hex:#F0EDFB",
+      2
+     ],
+     [
+      "hex:#7C5CE0",
+      2
+     ],
+     [
+      "hex:#EAF6F0",
+      2
+     ],
+     [
+      "hex:#179E6B",
+      2
+     ],
+     [
+      "hex:#FEF1E6",
+      2
+     ],
+     [
+      "hex:#E08A2B",
+      2
+     ],
+     [
+      "hex:#E8F1FB",
+      2
+     ],
+     [
+      "hex:#2E6FD0",
+      2
+     ],
+     [
+      "hex:#FDECEF",
+      1
+     ],
+     [
+      "hex:#D94A5E",
+      1
+     ],
+     [
+      "hex:#EDF3FF",
+      1
+     ],
+     [
+      "hex:#3A6FD8",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-CL-NEAR-PALETTE",
+    "bin": "pendingApproval",
+    "declarations": 4,
+    "name": null,
+    "target": null,
+    "openDecision": "D-1′",
+    "values": [
+     [
+      "hex:#B0B8C1",
+      2
+     ],
+     [
+      "hex:#D5DAE0",
+      1
+     ],
+     [
+      "hex:#FFF9F0",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-CL-CHART",
+    "bin": "pendingApproval",
+    "declarations": 2,
+    "name": null,
+    "target": null,
+    "openDecision": null,
+    "values": [
+     [
+      "hex:#CDD3DA",
+      1
+     ],
+     [
+      "hex:#5B6573",
+      1
+     ]
+    ]
+   }
+  ],
+  "failures": []
+ }
+}
