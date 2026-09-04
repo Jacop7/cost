@@ -8,7 +8,7 @@
 
 | 파일 | 역할 |
 |---|---|
-| **`full-page-flow-prototype-ui-applied.html`** | **프로토타입 최신본.** 화면 수정은 전부 여기서 한다 |
+| **`0_full-page-flow-prototype-ui-applied.html`** | **프로토타입 최신본.** 화면 수정은 전부 여기서 한다 |
 
 브라우저로 열 때: `?screen=<화면키>` · `?screen=<화면키>&popup=<팝업ID>` · `?terms=1`(용어 사전)
 
@@ -19,7 +19,7 @@
 | `full-page-flow-prototype-current-spec.md` | **디자인 확정안** — 화면별 문구·배치·업무 흐름 |
 | `full-page-flow-prototype-ui-guide.md` | **UI 가이드** — 토큰·컴포넌트·레이어·접근성 계약 |
 | `full-page-flow-prototype-changelog.md` | **변경 이력** — PRT-001~178, 결정의 근거 |
-| `full-page-flow-prototype-ui-applied-review.md` | **검수 장부** — 화면·팝업별 7항목 판정 |
+| `0_full-page-flow-prototype-ui-applied-review.md` | **검수 장부** — 화면·팝업별 7항목 판정 |
 | `full-page-flow-prototype-design-context.md` | **맥락 장부** — 마지막 작업 지점과 다음 시작점 |
 
 작업 절차는 `full-page-flow-prototype-design-work-plan.md`(실행서, 공통 규칙 잠금 C-01~C-21)에 있습니다.

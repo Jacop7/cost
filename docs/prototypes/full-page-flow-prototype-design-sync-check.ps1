@@ -81,10 +81,10 @@ if ($context -notmatch '(?m)^- 다음 시작점:\s*.+$') {
 }
 
 $required = [ordered]@{
-  'full-page-flow-prototype-ui-applied.html' = 'html'
+  '0_full-page-flow-prototype-ui-applied.html' = 'html'
   'full-page-flow-prototype-current-spec.md' = 'spec'
   'full-page-flow-prototype-changelog.md' = 'changelog'
-  'full-page-flow-prototype-ui-applied-review.md' = 'review'
+  '0_full-page-flow-prototype-ui-applied-review.md' = 'review'
   $contextName = 'context'
 }
 if ($commonChange -eq '예') {
@@ -103,8 +103,8 @@ foreach ($fileName in $required.Keys) {
   $contentsByFile[$fileName] = $contents
 }
 
-if ($contentsByFile.Contains('full-page-flow-prototype-ui-applied.html')) {
-  $html = $contentsByFile['full-page-flow-prototype-ui-applied.html']
+if ($contentsByFile.Contains('0_full-page-flow-prototype-ui-applied.html')) {
+  $html = $contentsByFile['0_full-page-flow-prototype-ui-applied.html']
   $marker = Match-One $html ('(?m)^<!-- DESIGN_SYNC:\s*' + [regex]::Escape($syncId) + '\s*-->\s*$') 'UI 적용본 상단 marker'
   if ($null -ne $marker) {
     $lineNumber = ($html.Substring(0, $marker.Index) -split "`n").Count
@@ -142,8 +142,8 @@ if ($contentsByFile.Contains('full-page-flow-prototype-changelog.md')) {
   }
 }
 
-if ($contentsByFile.Contains('full-page-flow-prototype-ui-applied-review.md')) {
-  $review = $contentsByFile['full-page-flow-prototype-ui-applied-review.md']
+if ($contentsByFile.Contains('0_full-page-flow-prototype-ui-applied-review.md')) {
+  $review = $contentsByFile['0_full-page-flow-prototype-ui-applied-review.md']
   $reviewHeading = [regex]::Match($review, ('(?m)^##\s+' + [regex]::Escape($syncId) + '\s+·\s+.+$'))
   if (-not $reviewHeading.Success) {
     Add-Failure '검수 기록 : 현재 ID 절 없음'
