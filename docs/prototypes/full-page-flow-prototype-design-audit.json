@@ -1,6 +1,6 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-04T20:12:41.036Z",
+  "generatedAt": "2026-09-04T20:30:56.118Z",
   "schemaVersion": 1,
   "script": {
    "name": "full-page-flow-prototype-design-audit.mjs",
@@ -8,8 +8,8 @@
   },
   "target": {
    "path": "0_full-page-flow-prototype-ui-applied.html",
-   "sha256": "f1f07174617cba37c23977ccf8b7125d267526654f079855e9b6746e33c9667a",
-   "designSyncId": "DS-20260904-022"
+   "sha256": "382f45ff4b91d42be043be6dd4e80eef85383dd3e89c41ac0a1775f80f7667f0",
+   "designSyncId": "DS-20260904-023"
   },
   "runner": {
    "node": "v22.22.2",

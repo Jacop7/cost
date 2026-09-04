@@ -454,10 +454,35 @@ else {
         Add-Failure "$i18nName : atRisk 악화 — $k 부족 폭 $($knownKeys[$k]) → $($observed[$k])"
       }
     }
-    $goneCount = 0
-    foreach ($k in $knownKeys.Keys) { if (-not $observed.ContainsKey($k)) { $goneCount++ } }
-    if ($goneCount -gt 0) {
-      Write-Output "  NOTE: $knownI18nName 의 $goneCount 건이 재현되지 않습니다(개선). 목록에서 지우세요."
+    # 사라진 행은 자동 통과가 아니다. 개선일 수도 있고 요소를 숨기거나 잘라낸 결과일 수도 있다.
+    # UI 가이드 §6.1 이 "숨기지 않는다" 를 계약해 놓았는데 게이트가 숨김을 개선으로 세면
+    # 계약과 게이트가 어긋난다. 그래서 사라진 키는 resolved 장부에 사유·근거·PRT 가
+    # 적혀 있을 때만 통과한다 (페이블 검수, PRT-202).
+    $resolved = @{}
+    if ($null -ne $knownI18n.resolved) {
+      foreach ($prop in $knownI18n.resolved.PSObject.Properties) { $resolved[$prop.Name] = $prop.Value }
+    }
+    foreach ($k in $knownKeys.Keys) {
+      if ($observed.ContainsKey($k)) { continue }
+      if (-not $resolved.ContainsKey($k)) {
+        Add-Failure "$knownI18nName : atRisk 사라짐 - $k. 개선인지 숨김인지 resolved 에 사유를 적어야 한다"
+        continue
+      }
+      $r = $resolved[$k]
+      foreach ($field in @('사유', '근거', 'prt')) {
+        if ([string]::IsNullOrWhiteSpace([string]$r.$field)) {
+          Add-Failure "$knownI18nName : resolved[$k] 의 '$field' 가 비어 있음 - 사라진 이유 없이 통과시킬 수 없다"
+        }
+      }
+    }
+    # 낡은 resolved 는 지운다. 다시 관측되는데 해소로 적혀 있으면 장부가 거짓말을 한다.
+    foreach ($k in $resolved.Keys) {
+      if ($observed.ContainsKey($k)) {
+        Add-Failure "$knownI18nName : resolved[$k] 가 다시 관측됨 - 해소 항목이 낡았다"
+      }
+      if (-not $knownKeys.ContainsKey($k)) {
+        Add-Failure "$knownI18nName : resolved[$k] 가 entries 에 없음 - 근거 없는 해소 항목"
+      }
     }
   }
 
@@ -468,6 +493,59 @@ else {
     Add-Failure "$i18nName : 글자 확대가 기준×2 와 어긋난 요소 $($iAudit.summary.stretch.w130t2.text2xMismatched)건 — 상속이 겹쳤거나 우선순위에 졌다"
   }
   if ($iAudit.summary.stretch.w130.skippedNumeric -lt 1) { Add-Failure "$i18nName : 숫자 제외가 0건 — 숫자까지 늘렸을 가능성" }
+}
+
+# --- atRisk 키 교체 증명 결속 (PRT-202) ---
+# "새 키가 데이터를 되살렸다" 는 추론이 아니라 재현이어야 한다. 이 증명은 두 키 스킴을
+# 나란히 돌려, 같은 악화를 옛 스킴은 놓치고 새 스킴은 잡는다는 것을 실행으로 보인다.
+$proofName = 'full-page-flow-prototype-atrisk-key-proof.json'
+$proofScriptName = 'full-page-flow-prototype-atrisk-key-proof.mjs'
+$proofPath = Join-Path $PrototypeDirectory $proofName
+$proofScriptPath = Join-Path $PrototypeDirectory $proofScriptName
+if (-not (Test-Path -LiteralPath $proofPath)) {
+  Add-Failure "$proofName : 키 교체 증명이 없음"
+}
+elseif (-not (Test-Path -LiteralPath $proofScriptPath)) {
+  Add-Failure "$proofScriptName : 증명 스크립트가 없음"
+}
+else {
+  $proof = Read-Utf8 $proofPath | ConvertFrom-Json
+  $pfBytes = [System.IO.File]::ReadAllBytes($proofScriptPath)
+  $pfSha = [System.Security.Cryptography.SHA256]::Create()
+  try { $proofScriptSha = ([System.BitConverter]::ToString($pfSha.ComputeHash($pfBytes))).Replace('-', '').ToLowerInvariant() }
+  finally { $pfSha.Dispose() }
+  if ($proof.manifest.script.sha256 -ne $proofScriptSha) {
+    Add-Failure "$proofName : 증명 스크립트 SHA 불일치. 재실행 필요"
+  }
+  if ($proof.manifest.target.designSyncId -ne $syncId) {
+    Add-Failure "$proofName : 동기화 ID 불일치. 증명=$($proof.manifest.target.designSyncId) 현재=$syncId"
+  }
+  $srcStress = Get-Sha256 (Read-Utf8 (Join-Path $PrototypeDirectory $i18nName))
+  $srcKnown = Get-Sha256 (Read-Utf8 (Join-Path $PrototypeDirectory $knownI18nName))
+  if ($proof.manifest.source.stress.sha256 -ne $srcStress) {
+    Add-Failure "$proofName : 스트레스 결과 SHA 불일치. 증명이 낡았다"
+  }
+  if ($proof.manifest.source.known.sha256 -ne $srcKnown) {
+    Add-Failure "$proofName : atRisk 기준선 SHA 불일치. 증명이 낡았다"
+  }
+  if ($proof.summary.newUniqueKeys -ne $proof.summary.rows) {
+    Add-Failure "$proofName : 새 키가 유일하지 않음 - 행 $($proof.summary.rows) 키 $($proof.summary.newUniqueKeys)"
+  }
+  if ($proof.summary.oldUniqueKeys -ge $proof.summary.rows) {
+    Add-Failure "$proofName : 옛 키가 행을 잃지 않았다면 이 증명이 성립하지 않는다"
+  }
+  if ($proof.summary.worsening.old.verdict -ne 'PASS') {
+    Add-Failure "$proofName : 거짓 음성이 재현되지 않음 - 옛 스킴 판정 $($proof.summary.worsening.old.verdict)"
+  }
+  if ($proof.summary.worsening.new.verdict -ne 'FAIL') {
+    Add-Failure "$proofName : 새 스킴이 악화를 놓침 - 판정 $($proof.summary.worsening.new.verdict)"
+  }
+  if ($proof.summary.deletion.goneIsFail.verdict -ne 'FAIL') {
+    Add-Failure "$proofName : 행 삭제가 잡히지 않음 - 숨김이 개선으로 기록될 수 있다"
+  }
+  if (-not $proof.summary.allAssertionsHold) {
+    Add-Failure "$proofName : 단언 중 성립하지 않는 것이 있다"
+  }
 }
 
 # --- 대비 증거 결속 (PRT-198) ---
@@ -511,7 +589,8 @@ foreach ($fileName in $contentsByFile.Keys) {
 foreach ($fileName in @($auditName, $auditScriptName, 'full-page-flow-prototype-render-audit-known.json', $designAuditName, $designAuditScriptName, $i18nName, $i18nScriptName,
     'full-page-flow-prototype-token-map.json', 'full-page-flow-prototype-token-map-check.mjs',
     'full-page-flow-prototype-token-map-check.json', 'full-page-flow-prototype-i18n-known.json',
-    'full-page-flow-prototype-contrast-fix.json', 'full-page-flow-prototype-contrast-fix.mjs')) {
+    'full-page-flow-prototype-contrast-fix.json', 'full-page-flow-prototype-contrast-fix.mjs',
+    'full-page-flow-prototype-atrisk-key-proof.json', 'full-page-flow-prototype-atrisk-key-proof.mjs')) {
   $contents = Read-Utf8 (Join-Path $PrototypeDirectory $fileName)
   if ($null -ne $contents) { $hashes[$fileName] = Get-Sha256 $contents }
 }
