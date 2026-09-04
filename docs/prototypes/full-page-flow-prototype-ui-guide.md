@@ -6,7 +6,7 @@
 
 - 상태: 서비스 기준 재검토 개정안
 - 개정일: 2026-09-02
-- 현재 디자인 동기화 ID: `DS-20260904-008`
+- 현재 디자인 동기화 ID: `DS-20260904-009`
 - 적용 대상: `docs/prototypes/full-page-flow-prototype.html`, UI 적용 복사본과 향후 Expo 공용 UI
 - 등록 인벤토리: 프로토타입 `screen` 키 62개, 팝업·조건 상태 호스트 123개, 고유 ID 98개
   (PRT-182 정정: 이전 표기 `125 / 99`는 `PRT-151`이 `recipe_target_help`를 두 호스트에서
@@ -1585,11 +1585,24 @@ B.1~B.2에만 보존하고 이 활성 레지스트리에는 넣지 않는다.
 
 - **renderer가 없는 활성 ID는 0개다.** 96개 모두 `openPopupTab()`에 처리 분기가 있고
   실제로 렌더된다. 어떤 ID에 대해서도 "미구현·renderer 없음"이라고 적을 근거가 없다.
-- 실측에서 overlay(`#overlay.open`)를 열지 않고 `#content`만 바꾸는 ID는 10개다 —
-  B.1의 PageState 9개와 `option_more`. `option_more`는 B.8에서 Layer 유형으로
-  분류돼 있으나 현재 구현은 페이지 상태다. B.8 서문의 "아직 목표 계약을 구현한 상태가
-  아니다"에 해당하는 사례이며, 목표 계약 자체는 바꾸지 않는다.
-- 나머지 86개는 overlay를 열고, 시트 본문이 3요소 미만인 경우는 0건이다.
+
+**렌더 산출물 분포 · 실측 96개**
+
+| 산출물 | 개수 | 판정 근거 |
+|---|---:|---|
+| PageState — `#content`만 변경, Layer 없음 | 9 | B.1의 9개와 정확히 일치 |
+| 주 `#overlay` 기반 Layer | 86 | `#overlay.open` |
+| 독립 Layer — `.option-popover-layer` | 1 | `option_more`. `openOptionMore()`(HTML 926행)가 `.option-popover-layer`와 `role="menu"`인 `.option-popover`를 만들어 `.phone`에 붙인다 |
+
+- **Layer 합계 87개**(주 overlay 86 + 독립 1), PageState 9개. 합 96.
+- `option_more`의 B.8 목표 분류 `PopoverMenu`는 **현재 구현과 일치한다.** 주 `#overlay`를
+  쓰지 않을 뿐 PageState가 아니다. 다만 독립 DOM을 만들므로 공용 focus·닫기 계약과
+  분리돼 있고, 이 점은 부록 C `layer:popover-wrapper` 항목에서 별도로 다룬다.
+- 시트 본문이 3요소 미만인 경우는 0건이다.
+- (PRT-187 정정: `PRT-186`은 `#overlay`만 보고 측정해 `option_more`를 "현재 구현은
+  페이지 상태"라고 적었다. **틀렸다.** 독립 레이어를 탐지하지 못한 측정의 한계였고,
+  같은 가이드의 부록 C가 이미 독립 DOM 생성을 기록하고 있어 문서가 자기모순 상태였다.
+  이번에 `.phone` 자식 노드까지 훑어 재측정했다.)
 
 ### B.9 popupTabs 밖의 제품 Layer 시연 host
 

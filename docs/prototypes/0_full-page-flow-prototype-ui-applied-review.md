@@ -3,8 +3,13 @@
 - 적용본: `full-page-flow-prototype-ui-applied.html`
 - 보존 원본: `full-page-flow-prototype.html`
 - 작업 시작 원본 SHA-256: `9B538CE9ACD1D93AA75845EB1851391B8EB4C5732DF7094214E8AC5662428414`
-- 검수 범위: 활성 화면 62개 + 활성 popup/state host 120개 = 182개 host 단위
-- 고유 popup/state ID: 97개
+- 검수 범위: 활성 화면 61개 + 활성 popup/state host 121개 = **182개 host 단위**
+  (PRT-184 정정: 이전 표기 `62 + 120`은 숨김 화면 `discard`를 활성에 넣고 host를 한 개
+  덜 센 값이었다. 합계 182는 우연히 같았다. 레지스트리 실측이 권위다.)
+- 고유 popup/state ID: **96개** (PageState 9 + popup 87). 이전 표기 `97`은
+  `PRT-151`의 `recipe_target_help` 제거 이전 값이다.
+- 이 장부의 target 행 수: **183행 = 활성 182 + `screen:my_country`(SPEC_ONLY) 1**.
+  `SPEC_ONLY`는 레지스트리에 키가 없어 활성 집계에 들어가지 않으므로 따로 센다.
 - 숨김 유지: `discard_type`, `discard_period` 2개. 삭제하지 않고 활성 계약에서 제외한다.
 - 실제 Expo 앱 수정: 없음
 - 2026-09-01 순차 재구축 시작: 자동 공통 스타일로 판정했던 기존 `PASS`는 시각 완료 근거에서
@@ -60,7 +65,7 @@
 | 토큰 | 색·텍스트·선·간격·라운드·그림자·높이·터치 크기 | PASS | PASS | PASS |
 | 병합 요소 | Card, RowGroup, Field, Result, Badge, Control, Layer, StickyAction | PASS | PASS | PASS |
 | 의미 분리 | Field↔Result, Card↔선택행, Page StickyAction↔LayerFooter 분리 | PASS | PASS | PASS |
-| popup 계약 | 활성 고유 ID 97/97 명시 등록 | PASS | 등록 확인, 런타임 전수검수 필요 | COMMON |
+| popup 계약 | 활성 고유 ID 96/96 명시 등록 (PRT-184 정정, 이전 `97/97`) | PASS | 등록 확인, 런타임 전수검수 필요 | COMMON |
 | popup 유형 | PageState / Picker / Form / Info / Action / Confirm / Success / Error / Popover | PASS | 긍정 | COMMON |
 | 닫기 정책 | Confirm·Error 바깥 닫기 차단 | 샘플 PASS | 나머지 미검증 | COMMON |
 | 접근성 | Confirm `alertdialog`, 제목 연결, focus-visible | 샘플 PASS | trap·focus 복귀 미검증 | COMMON |
@@ -111,7 +116,8 @@ Opus가 지정한 후속 위험은 다음과 같다.
 | 매출관리 | 15 | 22 | 적용 | 1차 PASS | 검수 대기 | 1차 PASS | 미검수 | 진행 중 |
 | MY | 17 | 29 | 적용 | 1차 PASS | 검수 대기 | 1차 PASS | 미검수 | 진행 중 |
 
-도메인 수치의 합계는 popup/state의 host 중복을 포함한다. 고유 계약 완전성은 별도의 97/97로 검산한다.
+도메인 수치의 합계는 popup/state의 host 중복을 포함한다. 고유 계약 완전성은 별도의 96/96으로 검산한다.
+(PRT-184 정정: 이전 표기 `97/97`. 위 표의 도메인별 수치는 당시 기록이므로 그대로 둔다.)
 
 ## 페이지별 기록 형식
 
@@ -698,7 +704,9 @@ Opus가 지정한 후속 위험은 다음과 같다.
 
 ## 전체 target 장부
 
-아래 목록은 숨긴 폐기 전용 페이지를 제외한 활성 screen 62개와 popup/state host 120개다.
+아래 목록은 **183행**이다 — 숨긴 폐기 전용 페이지(`discard`)를 제외한 활성 screen **61개**와
+popup/state host **121개**(합 182), 그리고 레지스트리에 키가 없는 `screen:my_country`
+(`SPEC_ONLY`) 1행이다. 활성 182건은 레지스트리와 양방향 차집합 0이다.
 
 | target | domain | type | common | Codex | Opus | PC | mobile | final |
 |---|---|---|---|---|---|---|---|---|
@@ -1758,14 +1766,14 @@ Opus가 지정한 후속 위험은 다음과 같다.
   - 렌더 경로 A(`openActualPopup` map → `showPrototypeSheet`) 61개 ·
     B(단일 ID 전용 분기 → `open*()`) 20개 · C(복합 조건 분기 → 상태 변경 + `render()`) 15개.
     **처리 분기가 없는 활성 ID는 0개다.**
-  - overlay를 열지 않고 `#content`만 바꾸는 ID 10개 = B.1 PageState 9 + `option_more`.
+  - 렌더 산출물 분포는 `DS-20260904-009`에서 재측정해 정정했다(아래 참조).
     시트 본문이 3요소 미만인 경우 0건
   - 적용본 diff는 2행 동기화 표식 1줄(`DS-20260904-007` → `-008`)
 - 미검수: 없음
-- 제약: 실기기 캡처는 수행하지 않았다. 이번 단위는 문서 정정과 경로 실측에 한정한다 —
-  `option_more`가 B.8에서 Layer 유형인데 현재 구현이 페이지 상태인 점은 목표 계약과
-  구현의 차이이며, B.8 서문이 이미 밝힌 범주다. 계약 자체는 바꾸지 않고 별도 회차로 남긴다.
-  세 신규 target의 개별 7항목 검수도 표의 `TODO`로 계속 추적한다.
+- 제약: 실기기 캡처는 수행하지 않았다. 이번 단위는 문서 정정과 경로 실측에 한정한다.
+  세 신규 target의 개별 7항목 검수는 표의 `TODO`로 계속 추적한다.
+  (`DS-20260904-009` 정정: 이 회차가 `option_more`를 "현재 구현은 페이지 상태"라고
+  적은 것은 틀렸다. `#overlay`만 보고 측정한 한계였다.)
 - 결과: PASS
 - 증거: 96개 ID 경로 분류 + 실렌더 로그, `openPopupTab` 원문 발췌(복합 조건 분기 15개 확인),
   PC·320px·320px 200% 확대 각 185건 결과, 적용본 1줄 diff,
@@ -1774,3 +1782,45 @@ Opus가 지정한 후속 위험은 다음과 같다.
   Minor2(`SPEC_ONLY` 범위 충돌) APPLIED. 반박 0건
 - 재발 방지: 정정은 낱말이 아니라 **주장 단위**로 훑어 같은 사실이 적힌 곳을 전부 고친다.
   표를 고치고 본문을 놓치면 문서가 스스로 모순된다. 경로·구현 여부는 target마다 확인한다.
+
+## DS-20260904-009 · PRT-187 `option_more` 산출물 재측정 · 현행 인벤토리 정정
+
+- 대상: UI 가이드 B.8a, 이 장부의 상단 요약·공통 계약 행·전체 target 서문·`DS-20260904-008`
+  기록, 적용본 상단 동기화 표식 1줄. **적용본의 CSS·JS·마크업은 무변경.**
+  검수 범위 **총 185건 = 활성 182건(screen 61 + host 121) + 숨김 보존 3건**
+- 기대값: 렌더 산출물 분류가 실제 DOM과 일치하고, 이 장부의 현행 인벤토리 요약이
+  레지스트리 실측과 일치해야 한다.
+- 실제값: `DS-20260904-008`이 `option_more`를 "현재 구현은 페이지 상태"로 적었으나 틀렸다.
+  `openOptionMore()`(HTML 926행)가 `.option-popover-layer`와 `role="menu"`인 `.option-popover`를
+  만들어 `.phone`에 붙이는 **독립 Popover Layer**다. 주 `#overlay`만 탐지하는 측정의 한계였고,
+  같은 가이드 부록 C(`layer:popover-wrapper`)가 이미 독립 DOM 생성을 기록하고 있었다.
+  `.phone` 자식 노드까지 훑어 96개를 재측정하고 가이드 B.8a에 분포표를 넣었다.
+  이 장부의 현행 요약 `screen 62 / host 120 / 고유 97`, 공통 계약 `97/97`,
+  전체 target 서문 `screen 62 / host 120`을 현재 기준으로 정정했다.
+- PC 검수: `file:///…/0_full-page-flow-prototype-ui-applied.html` 1280×900, 185건 ·
+  넘침 0 · 콘솔 오류 0 · 폰트 실패 0 · 금지 굵기 렌더 0건 · PASS
+- 모바일 검수: 같은 `file://` URL 320×720 185건, 320px 200% 확대 185건 ·
+  각 넘침 0 · 콘솔 오류 0 · 폰트 실패 0 · PASS.
+  추가로 390×844에서 활성 121쌍 / 고유 96 ID를 전부 열어 `.phone` 자식 노드까지 측정 · PASS
+- 측정:
+  - 렌더 산출물 — PageState(`#content`만 변경) **9개**(B.1과 정확히 일치) ·
+    주 `#overlay` 기반 Layer **86개** · 독립 `.option-popover-layer` **1개**(`option_more`).
+    **Layer 87 + PageState 9 = 96.** 시트 본문 3요소 미만 0건
+  - `option_more`의 B.8 목표 분류 `PopoverMenu`는 현재 구현과 **일치**한다.
+    "목표와 구현의 차이"라는 `DS-20260904-008`의 서술은 성립하지 않아 삭제했다
+  - 이 장부 target 행 **183행 = 활성 182 + `screen:my_country`(SPEC_ONLY) 1**.
+    레지스트리와 활성 182건 양방향 차집합 0
+  - 적용본 diff는 2행 동기화 표식 1줄(`DS-20260904-008` → `-009`)
+- 미검수: 없음
+- 제약: 실기기 캡처는 수행하지 않았다. 날짜가 붙은 과거 체크포인트 절의 수치는 그때의
+  측정 기록이므로 고치지 않고 남겼다 — 현행 요약만 정정 대상이다.
+  `option_more`의 독립 DOM이 공용 focus·닫기 계약과 분리된 문제는 부록 C
+  `layer:popover-wrapper`로 계속 추적하며 이번 범위가 아니다.
+- 결과: PASS
+- 증거: 96개 ID 산출물 재측정 로그(`.phone` 자식 노드 포함), `openOptionMore()` 원문(926행),
+  PC·320px·320px 200% 확대 각 185건 결과, 레지스트리 ↔ 장부 차집합 대조,
+  변경 전 사본 `백업/0_full-page-flow-prototype-ui-applied_pre-PRT187.html`
+- 지적 반영: Major(`option_more` 분류) APPLIED · Minor(현행 인벤토리) APPLIED. 반박 0건
+- 재발 방지: **측정 도구의 탐지 범위가 곧 주장의 한계다.** 분류를 주장하기 전에 도구가
+  무엇을 못 보는지 먼저 적는다. 새 절을 쓸 때 같은 대상을 다루는 기존 절을 먼저 읽는다 —
+  부록 C가 답을 갖고 있었는데 B.8a가 모순된 결론을 적었다.
