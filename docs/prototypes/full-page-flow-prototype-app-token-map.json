@@ -26,7 +26,8 @@
         ]
       },
       "target": "space.*",
-      "근거": "tokens.ts 의 space 스케일 4·8·12·16·20·24 에 그대로 있는 값"
+      "근거": "tokens.ts 의 space 스케일 4·8·12·16·20·24 에 그대로 있는 값",
+      "방향": "해당없음 — 이미 스케일 값"
     },
     {
       "id": "R-SP-CAPTION-GAP-VIEW",
@@ -66,7 +67,206 @@
       },
       "target": 4,
       "근거": "UI 가이드 §간격 — `space.xs`(4) 는 '제목과 보조문구, 값과 단위처럼 한 덩어리인 요소' 이고, §Card 는 '제목과 보조문구는 space.xs 로 묶는다' 로 못박았다. 앱은 같은 관계에 2px 을 쓴다. **소스에서 `<Text` 줄임을 확인한 68건만** 이 규칙에 든다 — `<View` 줄 5건은 R-SP-CAPTION-GAP-VIEW 로 뺐다.",
-      "순서근거": "R-SP-OPTICAL 은 값 1·2px 을 광학 보정으로 보는 규칙이다. **같은 2px 이라도 세로 `marginTop` 에서 주값↔보조 줄 관계면 UI 가이드가 이미 `space.xs` 로 잠가 놓은 자리**라 결함이고, 가로 라벨 정렬이면 컴포넌트 소유다. 값이 아니라 관계가 통을 정하므로 관계가 확인된 규칙이 앞선다. PRT-196 에서 프로토타입 쪽에 같은 함정이 있었다."
+      "순서근거": "R-SP-OPTICAL 은 값 1·2px 을 광학 보정으로 보는 규칙이다. **같은 2px 이라도 세로 `marginTop` 에서 주값↔보조 줄 관계면 UI 가이드가 이미 `space.xs` 로 잠가 놓은 자리**라 결함이고, 가로 라벨 정렬이면 컴포넌트 소유다. 값이 아니라 관계가 통을 정하므로 관계가 확인된 규칙이 앞선다. PRT-196 에서 프로토타입 쪽에 같은 함정이 있었다.",
+      "방향": "S3a — 세로(marginTop). 2→4 는 늘림이지만 폭에 영향이 없다"
+    },
+    {
+      "id": "R-SP-BADGE-PAD",
+      "bin": "defect",
+      "match": {
+        "group": "spacing",
+        "numericIn": [
+          1,
+          2
+        ],
+        "at": [
+          "apps/mobile/src/components/kit/index.tsx:332",
+          "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx:136",
+          "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:80"
+        ]
+      },
+      "target": "space.4",
+      "방향": "S3a — 세로(paddingVertical). 뱃지 높이만 는다",
+      "근거": "기획서 §6.4 가 뱃지 padding 을 `space.4 / space.8` 로 계약했다. 앱의 뱃지 상자는 세로 2px 을 쓴다. 페이블 지적 — \"뱃지 안쪽 padding 1·2px 은 §6.4 가 계약한 자리라 defect 이고 광학 보정이 아니다.\"",
+      "순서근거": "R-SP-EDGE-INSET 보다 앞선다 — 계약이 있는 관계가 이름 없는 인셋보다 먼저 잡혀야 한다"
+    },
+    {
+      "id": "R-SP-SCROLL-TOP",
+      "bin": "pendingApproval",
+      "match": {
+        "group": "spacing",
+        "numericIn": [
+          1,
+          2
+        ],
+        "at": [
+          "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:129",
+          "apps/mobile/src/features/my/screens/FixedCostScreen.tsx:81",
+          "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:178",
+          "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx:165",
+          "apps/mobile/src/features/sales/screens/SalesChannelScreen.tsx:68",
+          "apps/mobile/src/features/sales/screens/SalesDayDetailScreen.tsx:62",
+          "apps/mobile/src/features/sales/screens/SalesDayFullScreen.tsx:80",
+          "apps/mobile/src/features/sales/screens/SalesExpenseScreen.tsx:81",
+          "apps/mobile/src/features/sales/screens/SalesExtraScreen.tsx:52",
+          "apps/mobile/src/features/sales/screens/SalesFixedScreen.tsx:72",
+          "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx:58",
+          "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx:159",
+          "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:202",
+          "apps/mobile/src/features/sales/screens/SalesRevenueScreen.tsx:54",
+          "apps/mobile/src/features/sales/screens/SalesStockCheckScreen.tsx:67",
+          "apps/mobile/src/features/sales/screens/SalesTaxScreen.tsx:71",
+          "apps/mobile/src/features/sales/screens/SalesWasteScreen.tsx:53"
+        ]
+      },
+      "question": "스크롤 컨테이너의 **상단** 여유가 2px 인데 하단은 24~104px 이다. 이 비대칭이 의도인지, 상단도 역할값으로 정할지.",
+      "evidence": "17자리. 전부 ScrollView 의 contentContainerStyle 에 있는 paddingTop:2 다(IngredientDetailScreen:129 · FixedCostScreen:81 · RecipeDetailScreen:178 …). R-SP-SCROLL-BOTTOM 과 같은 컨테이너의 반대편이다.",
+      "ownerDecision": "하단 여유와 한 봉투에서 함께 정해야 한다 — 같은 컨테이너의 위아래다.",
+      "순서근거": "R-SP-EDGE-INSET 포괄보다 앞선다. 스크롤 컨테이너 여유는 인셋이 아니라 레이아웃 여백이다"
+    },
+    {
+      "id": "R-SP-TABBAR-INSET",
+      "bin": "componentOwned",
+      "match": {
+        "group": "spacing",
+        "numericIn": [
+          1,
+          2
+        ],
+        "at": [
+          "apps/mobile/app/(tabs)/_layout.tsx:32"
+        ]
+      },
+      "name": "tabBar.topInset",
+      "근거": "`app/(tabs)/_layout.tsx:32` 의 탭바 내부 상단 인셋. 탭바는 높이 60+안전영역을 스스로 계산하는 독립 규격이고, 이 2px 은 그 안의 아이콘 위치 보정이다.",
+      "순서근거": "R-SP-EDGE-INSET 포괄보다 앞선다 — 소유 컴포넌트가 특정된다"
+    },
+    {
+      "id": "R-SP-OPTICAL-ICON",
+      "bin": "componentOwned",
+      "match": {
+        "group": "spacing",
+        "numericIn": [
+          1,
+          2
+        ],
+        "at": [
+          "apps/mobile/src/components/kit/index.tsx:73",
+          "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:288",
+          "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:315",
+          "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:306",
+          "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:301",
+          "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:435",
+          "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:550"
+        ]
+      },
+      "name": "optical.iconBaseline",
+      "근거": "아이콘을 텍스트 첫 줄에 맞추는 1px 보정. `kit/index.tsx:73` 에 소스 주석이 그대로 있다 — \"아이콘은 첫 줄 중앙에 맞춘다 — 여러 줄 문구에서 위로 뜨지 않게\". `MyHoursScreen:315` 의 `paddingTop:1` 도 아이콘 래퍼다. 값이 아니라 **글리프 기준선 보정**이라 스케일 대상이 아니다.",
+      "순서근거": "R-SP-EDGE-INSET 포괄보다 앞선다"
+    },
+    {
+      "id": "R-SP-INLINE-TIGHT",
+      "bin": "pendingApproval",
+      "match": {
+        "group": "spacing",
+        "numericIn": [
+          1,
+          2
+        ],
+        "at": [
+          "apps/mobile/src/components/kit/AppHeader.tsx:37",
+          "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx:178",
+          "apps/mobile/src/features/ingredients/components/LossCard.tsx:135",
+          "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:254",
+          "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:129",
+          "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:435",
+          "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:632",
+          "apps/mobile/src/features/sales/components/MenuProfitSheet.tsx:40",
+          "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:39",
+          "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx:123"
+        ]
+      },
+      "question": "§5.4 가 `gap.inline` 을 `space.8`(아이콘-텍스트 · 버튼 사이 · 인라인)로 계약했는데, 앱은 같은 자리에 1·2px 을 쓴다. 계약대로 8 로 올릴지, 아이콘끼리 붙는 자리를 별도 관계로 뺄지.",
+      "evidence": "10자리. AppHeader:37 헤더 우측 아이콘 사이 gap:2 · MenuProfitSheet:40 텍스트↔셰브런 gap:1 · BasePriceCard:178 버튼 안 아이콘↔라벨 gap:2. 8 로 올리면 **가로로 늘어나므로 S3b** 대상이고, 헤더 아이콘 줄은 폭 여유가 가장 적은 자리다.",
+      "ownerDecision": "§5.4 계약을 그대로 적용할지, \"아이콘끼리\" 라는 관계를 새로 인정할지가 계약 변경이다.",
+      "순서근거": "R-SP-EDGE-INSET 포괄보다 앞선다 — gap 은 인셋이 아니라 사이 간격이다"
+    },
+    {
+      "id": "R-SP-EDGE-INSET",
+      "bin": "componentOwned",
+      "match": {
+        "group": "spacing",
+        "numericIn": [
+          1,
+          2
+        ]
+      },
+      "name": "inset.edgeAlign",
+      "근거": "남은 1·2px 은 상자 가장자리 정렬 인셋이다 — 안내 줄 좌우 `paddingHorizontal:2`(PurchaseHistoryScreen:164), 섹션 라벨 좌우 `marginHorizontal:2`(ProfitBlocks:35), 아이콘 버튼 `padding:2`(RecipeAddScreen:39, 터치 영역은 hitSlop 6 이 따로 소유), 구분선 `marginVertical:2`. 프로토타입 매핑표가 라벨 좌우 2px 에 대해 같은 판정을 내렸다 — \"입력 상자 안쪽 여백만큼 라벨을 밀어 글자 시작선을 맞추는 광학 정렬\".",
+      "검수요청": "포괄 규칙이다. 앞선 다섯 규칙이 관계가 확인된 것을 먼저 걷어낸 뒤 남는 것을 잡는다."
+    },
+    {
+      "id": "R-SP-CONVERGE-SHRINK",
+      "bin": "defect",
+      "match": {
+        "group": "spacing",
+        "numericIn": [
+          5,
+          9,
+          10,
+          13,
+          14,
+          15
+        ]
+      },
+      "target": "프로토타입 매핑표 converge.space (5→4 · 9→8 · 10→8 · 13→12 · 14→12 · 15→12)",
+      "방향": "S3a — 전부 줄임. 상자가 커지지 않으므로 넘침이 새로 생길 수 없다",
+      "출처": "기획서 §4.7 \"나머지 역할 중복 수렴안\" 표 — 15·14·13·10·9·5 각 행에 author 관측 수와 대표 관계, 방향(줄임·안전)이 적혀 있다",
+      "근거": "기획서 §4.7 에 값마다 근거와 방향이 명시된 결정이다. 앱에도 같은 값이 있어 그 결정을 적용한다.",
+      "순서근거": "출처가 확인된 값을 먼저 잡는다. R-SP-CONVERGE-UNDOCUMENTED 는 converge.space 키 전체를 받는 포괄 규칙이라, 근거 있는 값까지 출처 없음으로 보내면 안 된다"
+    },
+    {
+      "id": "R-SP-CONVERGE-GROW-V",
+      "bin": "defect",
+      "match": {
+        "group": "spacing",
+        "numericIn": [
+          3
+        ]
+      },
+      "target": "4",
+      "방향": "S3a — 늘림이지만 **세로**(margin-top)라 폭에 영향이 없다",
+      "출처": "기획서 §4.7 값별 판정 표 — `3` 행: \"space.4 로 수렴. 거의 전부 margin-top 이고 값↔보조 설명이라는 단일 역할이며 세로라 폭에 영향이 없다\"",
+      "근거": "기획서 §4.7 이 방향까지 명시한 결정이다.",
+      "순서근거": "같은 이유 — R-SP-CONVERGE-UNDOCUMENTED 포괄보다 앞선다"
+    },
+    {
+      "id": "R-SP-CONVERGE-GROW-H",
+      "bin": "defect",
+      "match": {
+        "group": "spacing",
+        "numericIn": [
+          6,
+          7
+        ]
+      },
+      "target": "8",
+      "방향": "**S3b** — 가로 `gap`·`padding` 이 대부분이라 **폭이 는다**. `S4` 의 줄바꿈 계약이 깔린 뒤에 집행하고, 집행 후 `atRisk` 증가 0 을 재측정으로 확인한다",
+      "출처": "기획서 §4.7 — `6` 행 \"space.8 로 수렴. 대부분 flex 가로 gap 이라 폭이 는다 → P2 후 atRisk 증가 0 확인 필요\", `7` 행 \"늘림 · 가로 → P2 후 재측정 필요\"",
+      "근거": "기획서 §4.7 이 방향과 재측정 조건까지 명시한 결정이다.",
+      "순서근거": "같은 이유 — R-SP-CONVERGE-UNDOCUMENTED 포괄보다 앞선다"
+    },
+    {
+      "id": "R-SP-CONVERGE-UNDOCUMENTED",
+      "bin": "pendingApproval",
+      "match": {
+        "group": "spacing",
+        "protoConverge": "space"
+      },
+      "question": "프로토타입 매핑표 `converge.space` 에는 있지만 **기획서 §4.7 에 근거가 없는** 값들(11 · 18 · 22)을 어디로 보낼지.",
+      "evidence": "11 은 §4.7 표에 있으나 판정이 \"늘림 — **세로·좌우 혼재이므로 변별로 나눠 확인 필요**\" 로 열려 있다(앱 86자리). 18 · 22 는 §4.7 의 수렴표(15·14·13·11·10·9·7·5)에도 고정값(104·44·40)에도 없다(앱 27 · 6자리). 17 · 19 는 매핑표에 있으나 **앱에 한 건도 없다.**",
+      "ownerDecision": "11 은 변(세로/좌우)을 나눠 재판정해야 하고, 18·22 는 언제 누가 정했는지 출처가 없다. 페이블 지적 — \"미확정을 defect 로 배정하면 게이트가 열린 결정을 닫아 버린다.\"",
+      "순서근거": "수렴 규칙 셋보다 뒤에 온다 — 출처가 확인된 값이 먼저 잡히고, 남은 converge 키만 여기로 온다"
     },
     {
       "id": "R-SP-RESET",
@@ -79,30 +279,6 @@
       },
       "name": "reset.none",
       "근거": "0 은 스케일 값이 아니라 여백의 부재다. SearchBar·StockEditSheet 처럼 부모가 준 padding 을 끄는 자리이며, 스케일로 올릴 대상이 아니다."
-    },
-    {
-      "id": "R-SP-OPTICAL",
-      "bin": "componentOwned",
-      "match": {
-        "group": "spacing",
-        "numericIn": [
-          1,
-          2
-        ]
-      },
-      "name": "optical.hairline",
-      "근거": "marginTop 을 뺀 나머지 1·2px 은 전부 광학 보정이거나 컴포넌트 안쪽 인셋이다 — 콜아웃 아이콘을 첫 줄에 맞추는 marginTop:1(kit/index.tsx:73, 소스에 주석으로 명시), 헤더 우측 아이콘 사이 gap:2(AppHeader:37), 뱃지 안쪽 paddingVertical:2(BasePriceCard:136), 아이콘 버튼 padding:2(RecipeAddScreen:39, hitSlop 6 이 터치 영역을 따로 소유), 섹션 라벨 좌우 marginHorizontal:2(ProfitBlocks:35). 프로토타입 매핑표가 같은 판정을 이미 내렸다 — '1·2px 은 값이 아니라 관계로 판정했다'.",
-      "검수요청": "이름을 하나(optical.hairline)로 묶었다. 소유 컴포넌트별로 쪼갤지는 검수 판단이다."
-    },
-    {
-      "id": "R-SP-CONVERGE",
-      "bin": "defect",
-      "match": {
-        "group": "spacing",
-        "protoConverge": "space"
-      },
-      "target": "프로토타입 매핑표 converge.space",
-      "근거": "프로토타입에서 이미 수렴 대상을 정한 값들(3·5·6·7·9·10·11·13·14·15·17·18·19·22)이 앱에도 그대로 있다. 새 결정이 아니라 기존 결정의 적용이다."
     },
     {
       "id": "R-SP-SCROLL-BOTTOM",
@@ -149,7 +325,8 @@
       },
       "target": "typeSize.*",
       "근거": "tokens.ts 의 typeSize 스케일에 그대로 있는 값",
-      "순서근거": "R-TY-SIZE-OFFSCALE 은 `fontSize` 의 **포괄 규칙**이다(값 조건이 없다). 정본 스케일 값이 포괄에 먼저 걸리면 스케일에 있는 값까지 '스케일 밖' 으로 분류된다. 그래서 정본 규칙이 앞선다."
+      "순서근거": "R-TY-SIZE-OFFSCALE 은 `fontSize` 의 **포괄 규칙**이다(값 조건이 없다). 정본 스케일 값이 포괄에 먼저 걸리면 스케일에 있는 값까지 '스케일 밖' 으로 분류된다. 그래서 정본 규칙이 앞선다.",
+      "방향": "해당없음"
     },
     {
       "id": "R-TY-WEIGHT-PRIM",
@@ -167,7 +344,8 @@
         ]
       },
       "target": "typeWeight.*",
-      "근거": "tokens.ts 의 typeWeight 400·600·700·800 에 그대로 있는 값"
+      "근거": "tokens.ts 의 typeWeight 400·600·700·800 에 그대로 있는 값",
+      "방향": "해당없음"
     },
     {
       "id": "R-TY-SIZE-15",
@@ -198,7 +376,9 @@
       },
       "target": "프로토타입 매핑표 converge.typeSize",
       "근거": "10·11·12 → 13, 19 → 20. 프로토타입에서 이미 정한 수렴이다.",
-      "순서근거": "R-TY-SIZE-OFFSCALE 포괄보다 앞선다. 수렴 목적지가 이미 정해진 값(10·11·12·19)을 '어디로 보낼지 모르는 값' 으로 분류하면 안 된다."
+      "순서근거": "R-TY-SIZE-OFFSCALE 포괄보다 앞선다. 수렴 목적지가 이미 정해진 값(10·11·12·19)을 '어디로 보낼지 모르는 값' 으로 분류하면 안 된다.",
+      "방향": "**S3b** — 10·11·12 → 13 과 19 → 20 은 전부 글자가 커지므로 폭이 는다. `S4` 뒤에 집행하고 대비 도구를 다시 돌린다",
+      "출처": "기획서 §4.5 타이포 스케일 표 — `12px`(241관측) → 13 \"가이드 계약을 따른다\", `10px` → 13 \"뱃지 역할\", `11px` → 13, `19px`(112관측, Sheet·팝업 제목) → `title 20/800`"
     },
     {
       "id": "R-TY-SIZE-OFFSCALE",
@@ -245,15 +425,206 @@
       "순서근거": "R-SZ-EXTENSION 은 `size` 그룹의 **포괄 규칙**이다. `minWidth:0` 은 크기 값이 아니라 flex 축소를 허용하는 관용구이므로, 정본 확장 질문에 섞이기 전에 먼저 걷어낸다."
     },
     {
-      "id": "R-SZ-EXTENSION",
+      "id": "R-SZ-SPACER",
+      "bin": "defect",
+      "match": {
+        "group": "size",
+        "at": [
+          "apps/mobile/src/components/kit/AppHeader.tsx:34",
+          "apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx:287",
+          "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:565",
+          "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:339",
+          "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:381",
+          "apps/mobile/src/features/sales/screens/SalesFixedScreen.tsx:123"
+        ]
+      },
+      "target": "space.* (12→12 · 24→24 · 9→8)",
+      "방향": "S3a — 세로 스페이서. 9→8 은 줄임이고 나머지는 동일",
+      "근거": "`<View style={{height:N}}/>` 단독 스페이서는 **크기가 아니라 간격**이다. 형제 사이를 벌리는 것이 유일한 역할이고, §5.4 가 그 관계에 `gap.*` 이름을 이미 붙여 놓았다. 값이 size 그룹에 잡힌 것은 표현 방식 때문이지 역할 때문이 아니다.",
+      "검수요청": "\"스페이서 View 는 gap 이다\" 는 이 회차의 새 판정이다. 6자리뿐이라 되돌리기 쉽다.",
+      "순서근거": "R-SZ-CONTROL-BOX 보다 앞선다 — 단독 스페이서는 조작 상자가 아니다"
+    },
+    {
+      "id": "R-SZ-HANDLE",
+      "bin": "componentOwned",
+      "match": {
+        "group": "size",
+        "at": [
+          "apps/mobile/src/components/kit/Sheet.tsx:32",
+          "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:223",
+          "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:262",
+          "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:338",
+          "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:329"
+        ]
+      },
+      "name": "sheet.handle",
+      "근거": "시트 상단 핸들 막대(38×5 · 40×5, `Sheet.tsx:32` 등). 프로토타입 매핑표도 핸들을 컴포넌트 고유값으로 뒀다. 반경은 `R-RD-SHAPE` 에서 `radius.full` 로 간다 — 형태는 알약이고 크기는 고유값이다.",
+      "순서근거": "R-SZ-HAIRLINE 보다 앞선다 — 두께만 보면 선처럼 보이지만 폭×두께 쌍을 가진 별도 부품이다"
+    },
+    {
+      "id": "R-SZ-HAIRLINE",
+      "bin": "componentOwned",
+      "match": {
+        "group": "size",
+        "at": [
+          "apps/mobile/src/components/kit/Slider.tsx:45",
+          "apps/mobile/src/components/kit/Slider.tsx:50",
+          "apps/mobile/src/components/kit/index.tsx:151",
+          "apps/mobile/src/components/kit/index.tsx:321",
+          "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx:160",
+          "apps/mobile/src/features/my/components/RevenueGapCard.tsx:70",
+          "apps/mobile/src/features/my/screens/MyAccountScreen.tsx:63",
+          "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx:34",
+          "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:252",
+          "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:276",
+          "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:393",
+          "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:502",
+          "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:56",
+          "apps/mobile/src/theme/tokens.ts:87"
+        ]
+      },
+      "name": "hairline.thickness",
+      "근거": "구분선·트랙·밑줄의 두께(1 · 2 · 2.5 · 5 · 6px). UI 가이드가 \"`1px` 구분선 … 은 간격 예외\" 라고 이미 못박았고, 두께는 스케일이 아니라 렌더 단위에 붙는 값이다.",
+      "순서근거": "R-SZ-CONTROL-BOX 포괄보다 앞선다"
+    },
+    {
+      "id": "R-SZ-ROW-MINH",
       "bin": "pendingApproval",
       "match": {
-        "group": "size"
+        "group": "size",
+        "at": [
+          "apps/mobile/src/components/history/HistoryLayout.tsx:24",
+          "apps/mobile/src/components/kit/AppHeader.tsx:20",
+          "apps/mobile/src/components/kit/MemoEditSheet.tsx:41",
+          "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:166",
+          "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx:123",
+          "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:269",
+          "apps/mobile/src/features/my/screens/FixedCostScreen.tsx:165",
+          "apps/mobile/src/features/my/screens/FixedCostScreen.tsx:77",
+          "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:295",
+          "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:122",
+          "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:167",
+          "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:237",
+          "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:356",
+          "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:389",
+          "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:80",
+          "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx:170",
+          "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx:265",
+          "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx:312",
+          "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:382",
+          "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:490",
+          "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx:184",
+          "apps/mobile/src/features/sales/screens/SalesRevenueScreen.tsx:76",
+          "apps/mobile/src/features/sales/screens/SalesStockCheckScreen.tsx:136",
+          "apps/mobile/src/features/sales/screens/SalesStockCheckScreen.tsx:152"
+        ]
       },
       "openDecision": "D-11",
-      "question": "아이콘 크기 · 컨트롤 높이 · 행 높이는 tokens.ts 에 없다. 정본을 확장할지, 컴포넌트 소유로 남길지.",
-      "evidence": "167건. 프로토타입 매핑표의 proposedTokensExtension(iconSize · controlHeight · rowHeight)이 대응하는 자리이고, converge 표에 목적지가 이미 적혀 있지만 그 목적지가 tokens.ts 에 실재하지 않는다. 솔의 F02 — rowHeight 는 고정 높이가 아니라 rowMinHeight 여야 하고, controlHeight 32/38 은 시각 높이이므로 minTouchTarget 44 와 분리해야 한다.",
-      "ownerDecision": "정본 변경이므로 D-11 승인이 선행한다."
+      "question": "행 최소 높이 `minHeight` 를 정본에 넣을지. 넣는다면 **고정 높이가 아니라 `rowMinHeight`** 여야 한다.",
+      "evidence": "24자리 · 38 · 46 · 47 · 50 · 52 · 55 · 56 · 70 · 72 · 82 · 100. UI 가이드는 목록 밀도를 3줄 92 / 2줄 76 / 1줄 60 으로 잠갔는데 앱 값은 그 셋 어디에도 안 맞는다. 솔 F02 — \"rowHeight 는 고정 높이가 아니라 rowMinHeight 여야 한다.\"",
+      "ownerDecision": "정본 확장이므로 D-11 봉투에 든다."
+    },
+    {
+      "id": "R-SZ-CONTROL-BOX",
+      "bin": "pendingApproval",
+      "match": {
+        "group": "size",
+        "at": [
+          "apps/mobile/src/components/kit/AppHeader.tsx:29",
+          "apps/mobile/src/components/kit/SearchBar.tsx:46",
+          "apps/mobile/src/components/kit/SearchBar.tsx:56",
+          "apps/mobile/src/components/kit/Slider.tsx:50",
+          "apps/mobile/src/components/kit/index.tsx:127",
+          "apps/mobile/src/features/changes/components/RecentChangeRow.tsx:49",
+          "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:204",
+          "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:144",
+          "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:100",
+          "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:89",
+          "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:97",
+          "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:173",
+          "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:286",
+          "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:297",
+          "apps/mobile/src/features/my/screens/MyAccountScreen.tsx:54",
+          "apps/mobile/src/features/my/screens/MyCategoryHubScreen.tsx:43",
+          "apps/mobile/src/features/my/screens/MyHomeScreen.tsx:136",
+          "apps/mobile/src/features/my/screens/MyHomeScreen.tsx:149",
+          "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx:32",
+          "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx:34",
+          "apps/mobile/src/features/my/screens/MyTaxScreen.tsx:241",
+          "apps/mobile/src/features/my/screens/MyUnitsScreen.tsx:216",
+          "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:119",
+          "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:129",
+          "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:132",
+          "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:85",
+          "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:225",
+          "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:232",
+          "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:106",
+          "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:130",
+          "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:133",
+          "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:143",
+          "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:143",
+          "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:146",
+          "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:355",
+          "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:359",
+          "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:284",
+          "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:163",
+          "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:170",
+          "apps/mobile/src/features/sales/components/SaleStepper.tsx:26",
+          "apps/mobile/src/features/sales/screens/SalesChannelScreen.tsx:110",
+          "apps/mobile/src/features/sales/screens/SalesFixedScreen.tsx:66",
+          "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:363"
+        ]
+      },
+      "openDecision": "D-11",
+      "question": "아이콘 버튼·조작 상자의 폭×높이를 정본에 넣을지. 넣는다면 **시각 높이(`visualControlHeight`)와 최소 터치 영역(`minTouchTarget` 44)을 분리**해야 한다.",
+      "evidence": "43자리 · 40×40(30) · 34×34(19) · 32×32 · 46×46 · 38×38 · 27×40 · 32×40 · 28×20 · 50×30(스위치 트랙) 등. 44 미만이 대부분이라 터치 영역은 hitSlop 이 따로 메우고 있다. 솔 F02 — \"controlHeight 32/38 은 시각 높이임을 명시하고 minTouchTarget 44 와 분리해야 한다.\"",
+      "ownerDecision": "정본 확장이므로 D-11 봉투에 든다."
+    },
+    {
+      "id": "R-SZ-FIXED-COL",
+      "bin": "componentOwned",
+      "match": {
+        "group": "size",
+        "at": [
+          "apps/mobile/src/components/kit/Slider.tsx:43",
+          "apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx:72",
+          "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:198",
+          "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx:150",
+          "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:292",
+          "apps/mobile/src/features/my/screens/FixedCostEditScreen.tsx:186",
+          "apps/mobile/src/features/my/screens/FixedCostEditScreen.tsx:226",
+          "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:393",
+          "apps/mobile/src/features/my/screens/MyUnitsScreen.tsx:214",
+          "apps/mobile/src/features/my/screens/MyUnitsScreen.tsx:23",
+          "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx:128",
+          "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx:138",
+          "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:287",
+          "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:300",
+          "apps/mobile/src/features/sales/components/MenuProfitSheet.tsx:108",
+          "apps/mobile/src/features/sales/components/MenuProfitSheet.tsx:116",
+          "apps/mobile/src/features/sales/components/MenuProfitSheet.tsx:82",
+          "apps/mobile/src/features/sales/components/MenuProfitSheet.tsx:99",
+          "apps/mobile/src/features/sales/screens/SalesDayFullScreen.tsx:114",
+          "apps/mobile/src/features/sales/screens/SalesDayFullScreen.tsx:122",
+          "apps/mobile/src/features/sales/screens/SalesDayFullScreen.tsx:138"
+        ]
+      },
+      "name": "column.fixedWidth",
+      "근거": "숫자·라벨 열을 오른쪽 정렬로 맞추기 위한 고정 폭(`<Text style={{width:44, textAlign:\"right\"}}>`). 폭이 스케일 값이 아니라 **그 열에 들어올 가장 긴 문자열**로 정해지므로 컴포넌트가 소유한다.",
+      "검수요청": "번역이 길어지면 이 고정 폭이 잘림의 원인이 된다. `S4` 재구성 이관 대상 후보로 표시해 둔다."
+    },
+    {
+      "id": "R-SZ-MINWIDTH",
+      "bin": "componentOwned",
+      "match": {
+        "group": "size",
+        "props": [
+          "minWidth"
+        ]
+      },
+      "name": "column.minWidth",
+      "근거": "22 · 26 · 34 · 56 · 96 · 110 — 열이 내용보다 좁아지지 않게 하는 하한이다. 고정 폭과 같은 역할의 완화판이고, 값의 근거도 같다(가장 긴 문자열).",
+      "순서근거": "R-SZ-CONTROL-BOX 보다 뒤에 와도 무방하나, `minWidth` 는 폭×높이 쌍이 아니므로 명시적으로 가른다"
     },
     {
       "id": "R-RD-PRIM",
@@ -269,11 +640,12 @@
         ]
       },
       "target": "radius.*",
-      "근거": "tokens.ts 의 radius sm8 · md12 · lg16 · xl20 · full999 에 그대로 있는 값"
+      "근거": "tokens.ts 의 radius sm8 · md12 · lg16 · xl20 · full999 에 그대로 있는 값",
+      "방향": "해당없음"
     },
     {
       "id": "R-RD-SHAPE",
-      "bin": "componentOwned",
+      "bin": "defect",
       "match": {
         "group": "radius",
         "numericIn": [
@@ -283,9 +655,10 @@
           15
         ]
       },
-      "name": "shape.pill",
-      "근거": "전부 스케일이 아니라 **형태**다. 3 은 시트 핸들(38×5, Sheet.tsx:32), 2 는 활성 탭 밑줄(높이 2.5, index.tsx:321), 4 는 7×7 점 뱃지(IngredientListScreen:100), 15 는 50×30 스위치 트랙(MyNotificationsScreen:32) — 넷 다 '짧은 변의 절반' 이라 완전한 알약 모양을 만드는 값이다. 프로토타입 매핑표도 sheet handle 3·4 와 원형을 형태로 보아 컴포넌트 소유에 뒀다.",
-      "검수요청": "radius.full(999) 로 일괄 대체해도 같은 그림이 나온다. 그 편이 값을 하나 줄이지만, 형태 의도를 코드에서 읽기 어려워진다 — 어느 쪽이 나은지는 검수 판단이다."
+      "target": "radius.full (999)",
+      "방향": "S3a — 반경은 폭에 영향이 없다",
+      "근거": "넷 다 \"짧은 변의 절반\" 이라 완전한 알약·원형이 되는 값이다 — 시트 핸들 3(38×5) · 활성 탭 밑줄 2(높이 2.5) · 7×7 점 뱃지 4 · 50×30 스위치 트랙 15. 페이블 지적 — **\"3 은 의도를 말하지 않고 `radius.full` 은 알약이라고 말한다.\"** 기획서 §4.9 가 28·999·50% → `radius.full` 로 같은 결정을 이미 했으므로 새 결정도 아니다.",
+      "검수요청": "기획서 §4.9 는 시트 핸들 3·4 를 컴포넌트 고유값으로 남겼다. 같은 논리로 `radius.full` 이어야 하므로 §4.9 도 함께 고쳤다 — 갈리면 안 된다. 앱에만 있는 2(활성 탭 밑줄)·15(스위치 트랙)도 §4.9 표에 추가했다."
     },
     {
       "id": "R-RD-CONVERGE",
@@ -295,7 +668,9 @@
         "protoConverge": "radius"
       },
       "target": "프로토타입 매핑표 converge.radius",
-      "근거": "5·6·7 → 8, 9·10·11·13 → 12, 14 → 16, 17·18·22 → 20. 프로토타입에서 이미 정한 수렴이다."
+      "근거": "5·6·7 → 8, 9·10·11·13 → 12, 14 → 16, 17·18·22 → 20. 프로토타입에서 이미 정한 수렴이다.",
+      "방향": "S3a — 반경은 폭에 영향이 없다",
+      "출처": "기획서 §4.9 반경 표 — 5·6·7 → `radius.sm`, 9·10·11·13 → `radius.md`, 14 → `radius.lg`, 17·18·22 → `radius.xl`, 28 → `radius.full`"
     },
     {
       "id": "R-CL-PRIM",
@@ -315,17 +690,19 @@
       "근거": "white · chart.1 · chart.2 · blue.500 · ink.300 에 그대로 있는 값"
     },
     {
-      "id": "R-CL-SCRIM",
-      "bin": "componentOwned",
+      "id": "R-CL-SHADOW",
+      "bin": "pendingApproval",
       "match": {
         "group": "color",
         "valuesUpper": [
           "#000"
         ]
       },
-      "name": "sheet.scrim",
-      "근거": "Sheet.tsx:30 의 모달 배경. 팔레트의 scrim 은 rgba(0,0,0,0.42) 이고 여기서는 검정 원색에 투명도를 따로 준다. 색이 아니라 겹침 규칙이라 컴포넌트가 소유한다.",
-      "검수요청": "scrim 토큰을 그대로 쓰도록 바꾸는 편이 나은지 검토 필요."
+      "openDecision": "D-11",
+      "question": "그림자 색을 정본에 넣을지. 팔레트에는 `shadow.card` 하나뿐인데 앱은 시트·슬라이더 손잡이·스위치 노브에 각기 다른 그림자를 쓴다.",
+      "evidence": "3자리 — `Sheet.tsx:30`(offset 0,-8 · opacity .15 · radius 40 · elevation 16) · `Slider.tsx:50` · `MyNotificationsScreen.tsx:34`. **셋 다 `shadowColor: \"#000\"` 이고 scrim 이 아니다.** 프로토타입 매핑표의 `proposedTokensExtension` 이 shadow sheet/fab/bottomBar 를 이미 제안했다.",
+      "ownerDecision": "정본 확장이므로 D-11 봉투에 든다.",
+      "자기정정": "`PRT-204` 는 이 3건을 \"시트 모달 배경(scrim)\" 으로 읽고 `componentOwned` 에 뒀다. **틀렸다.** 소스를 다시 열어 보니 셋 다 `shadowColor` 다 — 배경이 아니라 그림자 색이다. 색값(`#000`)만 보고 역할을 짐작한 것이고, 같은 회차가 \"값이 아니라 관계로\" 를 원칙으로 세워 놓고 세 번째로 같은 실수를 했다."
     },
     {
       "id": "R-CL-CATEGORY-ACCENT",
@@ -386,5 +763,6 @@
     }
   ],
   "semanticNote": "**구조적으로 빔.** 앱 감사는 **값**을 기록하고 역할 이름을 기록하지 않는다 — 인라인 리터럴에는 역할이 붙어 있지 않기 때문이다. 인라인 리터럴에 역할 이름을 붙이는 것은 값을 지어내지 않는다는 원칙의 이름 버전이다. semantic 배정은 `S1` 에서 semantic 토큰이 코드에 생긴 뒤 `P4` 에서 채워진다. 따라서 `W1` 완료 조건은 **'네 통 합 = 3,677 + semantic 0 명시'** 다 — 조건을 조용히 넘어가는 것이 아니라 실제와 맞게 개정한 것이다.",
-  "ruleOrderNote": "규칙은 순서대로 평가하고 첫 일치가 이긴다. **순서에 의존하는 배정이 있으면 앞선 규칙에 `순서근거` 를 적어야 하고, 검사기가 그것을 강제한다.** 다중 일치가 0 이면 순서는 장식이다 — 검사기가 다중 일치 수를 함께 낸다 (페이블 검수 조건 B)."
+  "ruleOrderNote": "규칙은 순서대로 평가하고 첫 일치가 이긴다. **순서에 의존하는 배정이 있으면 앞선 규칙에 `순서근거` 를 적어야 하고, 검사기가 그것을 강제한다.** 다중 일치가 0 이면 순서는 장식이다 — 검사기가 다중 일치 수를 함께 낸다 (페이블 검수 조건 B).",
+  "방향Note": "`defect` 통의 모든 행은 `방향` 을 갖는다 — `S3a`(축소·동일·세로) 또는 `S3b`(폭 증가). §7.2 의 실행 순서가 이 표식으로 집행 가능해진다. 방향 없는 defect 는 어느 단계에 넣을지 알 수 없다 (페이블 검수 조건 1)."
 }
