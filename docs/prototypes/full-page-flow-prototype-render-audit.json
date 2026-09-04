@@ -1,0 +1,9742 @@
+{
+ "manifest": {
+  "generatedAt": "2026-09-04T13:46:36.434Z",
+  "script": {
+   "name": "full-page-flow-prototype-render-audit.mjs",
+   "sha256": "d51f3cea74856c88d8e61e6532391d0361c1f02640a2ef193fbe2430b1d7450a"
+  },
+  "target": {
+   "path": "0_full-page-flow-prototype-ui-applied.html",
+   "sha256": "36a0074bd08eaba9700a4c6eda2ae0c00e72947c61633bfa67f07e3b9b18a38c",
+   "sha256LfNormalized": "7561de6fac7f2c344f701c6c178f51b5f301a356edd1fc35807b74f1fc160617",
+   "designSyncId": "DS-20260904-010"
+  },
+  "runner": {
+   "node": "v22.22.2",
+   "chromium": "141.0.7390.37",
+   "platform": "linux"
+  },
+  "viewports": {
+   "regression": [
+    {
+     "id": "pc",
+     "width": 1280,
+     "height": 900,
+     "zoom": 1
+    },
+    {
+     "id": "mobile320",
+     "width": 320,
+     "height": 720,
+     "zoom": 1
+    },
+    {
+     "id": "mobile320z2",
+     "width": 320,
+     "height": 720,
+     "zoom": 2
+    }
+   ],
+   "classification": {
+    "id": "mobile390",
+    "width": 390,
+    "height": 844,
+    "zoom": 1
+   }
+  },
+  "scale": [
+   "22px",
+   "20px",
+   "18px",
+   "16px",
+   "14px",
+   "13px"
+  ],
+  "bannedWeights": [
+   "300",
+   "500",
+   "650",
+   "750",
+   "850"
+  ]
+ },
+ "summary": {
+  "targetsMeasured": 185,
+  "activeTargets": 182,
+  "hiddenTargets": 3,
+  "activeScreens": 61,
+  "activePopupPairs": 121,
+  "activeUniquePopupIds": 96,
+  "renderKindByPair": {
+   "screen": 61,
+   "overlay": 111,
+   "pageState": 9,
+   "independent": 1
+  },
+  "renderKindByUniquePopupId": {
+   "overlay": 86,
+   "pageState": 9,
+   "independent": 1
+  },
+  "noRendererIds": [],
+  "sheetBodyUnder3": [],
+  "viewports": {
+   "pc": {
+    "overflow": 0,
+    "consoleErrors": 0,
+    "fontFailures": 0,
+    "bannedWeights": [],
+    "offScale": [
+     "SPAN 11px",
+     "route 10px"
+    ]
+   },
+   "mobile320": {
+    "overflow": 0,
+    "consoleErrors": 0,
+    "fontFailures": 0,
+    "bannedWeights": [],
+    "offScale": [
+     "SPAN 11px",
+     "route 10px"
+    ]
+   },
+   "mobile320z2": {
+    "overflow": 0,
+    "consoleErrors": 0,
+    "fontFailures": 0,
+    "bannedWeights": [],
+    "offScale": [
+     "SPAN 11px",
+     "route 10px"
+    ]
+   }
+  }
+ },
+ "targets": [
+  {
+   "target": "screen:ingredient_main",
+   "screen": "ingredient_main",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 269,
+    "baselineContentChars": 269
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:ingredient_add",
+   "screen": "ingredient_add",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 75,
+    "baselineContentChars": 75
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:ingredient_detail",
+   "screen": "ingredient_detail",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 410,
+    "baselineContentChars": 410
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:ingredient_edit_menu",
+   "screen": "ingredient_edit_menu",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 26,
+    "baselineContentChars": 26
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:ingredient_edit",
+   "screen": "ingredient_edit",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 55,
+    "baselineContentChars": 55
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:stock",
+   "screen": "stock",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 330,
+    "baselineContentChars": 330
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:stock_change",
+   "screen": "stock_change",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 83,
+    "baselineContentChars": 83
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:memo_edit",
+   "screen": "memo_edit",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 13,
+    "baselineContentChars": 13
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:purchase",
+   "screen": "purchase",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 157,
+    "baselineContentChars": 157
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:discard",
+   "screen": "discard",
+   "popup": null,
+   "hidden": true,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 140,
+    "baselineContentChars": 140
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:ingredient_changes",
+   "screen": "ingredient_changes",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 93,
+    "baselineContentChars": 93
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:options",
+   "screen": "options",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 96,
+    "baselineContentChars": 96
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:ingredient_delete",
+   "screen": "ingredient_delete",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog",
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 40,
+    "baselineContentChars": 40
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:recipe_main",
+   "screen": "recipe_main",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 420,
+    "baselineContentChars": 420
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:recipe_detail",
+   "screen": "recipe_detail",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 679,
+    "baselineContentChars": 679
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:recipe_price_sim",
+   "screen": "recipe_price_sim",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 126,
+    "baselineContentChars": 126
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:recipe_add",
+   "screen": "recipe_add",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 194,
+    "baselineContentChars": 194
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:recipe_edit",
+   "screen": "recipe_edit",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 345,
+    "baselineContentChars": 345
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:recipe_ingredient_search",
+   "screen": "recipe_ingredient_search",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 592,
+    "baselineContentChars": 592
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:recipe_material_search",
+   "screen": "recipe_material_search",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 87,
+    "baselineContentChars": 87
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:recipe_materials",
+   "screen": "recipe_materials",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 99,
+    "baselineContentChars": 99
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:recipe_category",
+   "screen": "recipe_category",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 63,
+    "baselineContentChars": 63
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:recipe_material_category",
+   "screen": "recipe_material_category",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 50,
+    "baselineContentChars": 50
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:recipe_changes",
+   "screen": "recipe_changes",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 52,
+    "baselineContentChars": 52
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:profit",
+   "screen": "profit",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 13,
+    "baselineContentChars": 13
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:fixed_average",
+   "screen": "fixed_average",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 418,
+    "baselineContentChars": 418
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:fixed_actual",
+   "screen": "fixed_actual",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 515,
+    "baselineContentChars": 515
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:order_main",
+   "screen": "order_main",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 50,
+    "baselineContentChars": 50
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:order_detail",
+   "screen": "order_detail",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 86,
+    "baselineContentChars": 86
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:order_receive",
+   "screen": "order_receive",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 83,
+    "baselineContentChars": 83
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:order_direct",
+   "screen": "order_direct",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 22,
+    "baselineContentChars": 22
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:sales_main",
+   "screen": "sales_main",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 356,
+    "baselineContentChars": 356
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:analytics",
+   "screen": "analytics",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 535,
+    "baselineContentChars": 535
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:day",
+   "screen": "day",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 475,
+    "baselineContentChars": 475
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:day_full",
+   "screen": "day_full",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 391,
+    "baselineContentChars": 391
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:revenue",
+   "screen": "revenue",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 172,
+    "baselineContentChars": 172
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:menu",
+   "screen": "menu",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 383,
+    "baselineContentChars": 383
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:channel",
+   "screen": "channel",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 438,
+    "baselineContentChars": 438
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:material",
+   "screen": "material",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 158,
+    "baselineContentChars": 158
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:extra",
+   "screen": "extra",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 97,
+    "baselineContentChars": 97
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:waste",
+   "screen": "waste",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 46,
+    "baselineContentChars": 46
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:sales_fixed",
+   "screen": "sales_fixed",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 192,
+    "baselineContentChars": 192
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:expense",
+   "screen": "expense",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 42,
+    "baselineContentChars": 42
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:tax",
+   "screen": "tax",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 58,
+    "baselineContentChars": 58
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:stock_check",
+   "screen": "stock_check",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 41,
+    "baselineContentChars": 41
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:sales_past",
+   "screen": "sales_past",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 74,
+    "baselineContentChars": 74
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:my_main",
+   "screen": "my_main",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 191,
+    "baselineContentChars": 191
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:my_fixed",
+   "screen": "my_fixed",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 418,
+    "baselineContentChars": 418
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:my_fixed_edit",
+   "screen": "my_fixed_edit",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 515,
+    "baselineContentChars": 515
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:my_settings",
+   "screen": "my_settings",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 87,
+    "baselineContentChars": 87
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:my_ingredient_categories",
+   "screen": "my_ingredient_categories",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 173,
+    "baselineContentChars": 173
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:my_recipe_categories",
+   "screen": "my_recipe_categories",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 63,
+    "baselineContentChars": 63
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:my_material_categories",
+   "screen": "my_material_categories",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 50,
+    "baselineContentChars": 50
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:my_materials",
+   "screen": "my_materials",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 99,
+    "baselineContentChars": 99
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:my_tax",
+   "screen": "my_tax",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 217,
+    "baselineContentChars": 217
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:my_language",
+   "screen": "my_language",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 543,
+    "baselineContentChars": 543
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:my_units",
+   "screen": "my_units",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 178,
+    "baselineContentChars": 178
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:my_vendors",
+   "screen": "my_vendors",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 54,
+    "baselineContentChars": 54
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:my_channels",
+   "screen": "my_channels",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 70,
+    "baselineContentChars": 70
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:my_hours",
+   "screen": "my_hours",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 270,
+    "baselineContentChars": 270
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:my_notifications",
+   "screen": "my_notifications",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 156,
+    "baselineContentChars": 156
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:my_account",
+   "screen": "my_account",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 92,
+    "baselineContentChars": 92
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:sort@ingredient_main",
+   "screen": "ingredient_main",
+   "popup": "sort",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 14,
+    "sheetTitle": "정렬 기준",
+    "contentChars": 269,
+    "baselineContentChars": 269
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:ingredient_option_filled@ingredient_detail",
+   "screen": "ingredient_detail",
+   "popup": "ingredient_option_filled",
+   "hidden": false,
+   "render": {
+    "kind": "pageState",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 410,
+    "baselineContentChars": 410
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:ingredient_option_empty@ingredient_detail",
+   "screen": "ingredient_detail",
+   "popup": "ingredient_option_empty",
+   "hidden": false,
+   "render": {
+    "kind": "pageState",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": true,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 357,
+    "baselineContentChars": 410
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:add_category@ingredient_add",
+   "screen": "ingredient_add",
+   "popup": "add_category",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 37,
+    "sheetTitle": "카테고리 선택",
+    "contentChars": 75,
+    "baselineContentChars": 75
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:add_unit@ingredient_add",
+   "screen": "ingredient_add",
+   "popup": "add_unit",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 20,
+    "sheetTitle": "단위 선택",
+    "contentChars": 75,
+    "baselineContentChars": 75
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:edit_category@ingredient_edit",
+   "screen": "ingredient_edit",
+   "popup": "edit_category",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 38,
+    "sheetTitle": "카테고리 선택",
+    "contentChars": 55,
+    "baselineContentChars": 55
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:edit_unit@ingredient_edit",
+   "screen": "ingredient_edit",
+   "popup": "edit_unit",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 20,
+    "sheetTitle": "단위 선택",
+    "contentChars": 55,
+    "baselineContentChars": 55
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:stock_inbound@stock_change",
+   "screen": "stock_change",
+   "popup": "stock_inbound",
+   "hidden": false,
+   "render": {
+    "kind": "pageState",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 83,
+    "baselineContentChars": 83
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:stock_deduct@stock_change",
+   "screen": "stock_change",
+   "popup": "stock_deduct",
+   "hidden": false,
+   "render": {
+    "kind": "pageState",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": true,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 49,
+    "baselineContentChars": 83
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:stock_discard@stock_change",
+   "screen": "stock_change",
+   "popup": "stock_discard",
+   "hidden": false,
+   "render": {
+    "kind": "pageState",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": true,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 61,
+    "baselineContentChars": 83
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:stock_option@stock_change",
+   "screen": "stock_change",
+   "popup": "stock_option",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 26,
+    "sheetTitle": "구매처 선택",
+    "contentChars": 83,
+    "baselineContentChars": 83
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:stock_confirm@stock_change",
+   "screen": "stock_change",
+   "popup": "stock_confirm",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": true,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 11,
+    "sheetTitle": "재고를 입고할까요?",
+    "contentChars": 95,
+    "baselineContentChars": 83
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:stock_error@stock_change",
+   "screen": "stock_change",
+   "popup": "stock_error",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": true,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 3,
+    "sheetTitle": "입고 실패",
+    "contentChars": 95,
+    "baselineContentChars": 83
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:option_list@options",
+   "screen": "options",
+   "popup": "option_list",
+   "hidden": false,
+   "render": {
+    "kind": "pageState",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 96,
+    "baselineContentChars": 96
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:option_add@options",
+   "screen": "options",
+   "popup": "option_add",
+   "hidden": false,
+   "render": {
+    "kind": "pageState",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": true,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 32,
+    "baselineContentChars": 96
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:option_edit@options",
+   "screen": "options",
+   "popup": "option_edit",
+   "hidden": false,
+   "render": {
+    "kind": "pageState",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": true,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 36,
+    "baselineContentChars": 96
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:option_vendor@options",
+   "screen": "options",
+   "popup": "option_vendor",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": true,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 18,
+    "sheetTitle": "구매처 선택",
+    "contentChars": 36,
+    "baselineContentChars": 96
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:option_vendor_new@options",
+   "screen": "options",
+   "popup": "option_vendor_new",
+   "hidden": false,
+   "render": {
+    "kind": "pageState",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": true,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 26,
+    "baselineContentChars": 96
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:option_unit@options",
+   "screen": "options",
+   "popup": "option_unit",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": true,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 20,
+    "sheetTitle": "단위 선택",
+    "contentChars": 36,
+    "baselineContentChars": 96
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:option_card_menu@options",
+   "screen": "options",
+   "popup": "option_card_menu",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 6,
+    "sheetTitle": null,
+    "contentChars": 96,
+    "baselineContentChars": 96
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:option_more@options",
+   "screen": "options",
+   "popup": "option_more",
+   "hidden": false,
+   "render": {
+    "kind": "independent",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": true,
+    "overlayOpen": false,
+    "independent": [
+     "option-popover-layer"
+    ],
+    "roles": [
+     "dialog",
+     "menu"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 36,
+    "baselineContentChars": 96
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:option_delete@options",
+   "screen": "options",
+   "popup": "option_delete",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": true,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 5,
+    "sheetTitle": "구매 링크 삭제",
+    "contentChars": 36,
+    "baselineContentChars": 96
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:stock_period@stock",
+   "screen": "stock",
+   "popup": "stock_period",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 14,
+    "sheetTitle": "조회 기간",
+    "contentChars": 330,
+    "baselineContentChars": 330
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:stock_type@stock",
+   "screen": "stock",
+   "popup": "stock_type",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 17,
+    "sheetTitle": "유형",
+    "contentChars": 330,
+    "baselineContentChars": 330
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:stock_order@stock",
+   "screen": "stock",
+   "popup": "stock_order",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 8,
+    "sheetTitle": "정렬 기준",
+    "contentChars": 330,
+    "baselineContentChars": 330
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:stock_event_more@stock",
+   "screen": "stock",
+   "popup": "stock_event_more",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 9,
+    "sheetTitle": "입고내역",
+    "contentChars": 330,
+    "baselineContentChars": 330
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:stock_event_revert@stock",
+   "screen": "stock",
+   "popup": "stock_event_revert",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 5,
+    "sheetTitle": "입고 철회",
+    "contentChars": 330,
+    "baselineContentChars": 330
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:purchase_period@purchase",
+   "screen": "purchase",
+   "popup": "purchase_period",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 14,
+    "sheetTitle": "조회 기간",
+    "contentChars": 157,
+    "baselineContentChars": 157
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:discard_type@discard",
+   "screen": "discard",
+   "popup": "discard_type",
+   "hidden": true,
+   "render": {
+    "kind": "none",
+    "handledInOpenPopupTab": false,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 140,
+    "baselineContentChars": 140
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:discard_period@discard",
+   "screen": "discard",
+   "popup": "discard_period",
+   "hidden": true,
+   "render": {
+    "kind": "none",
+    "handledInOpenPopupTab": false,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 140,
+    "baselineContentChars": 140
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:ingredient_change_detail@ingredient_changes",
+   "screen": "ingredient_changes",
+   "popup": "ingredient_change_detail",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 22,
+    "sheetTitle": "입고 단가 반영",
+    "contentChars": 93,
+    "baselineContentChars": 93
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:recipe_sort@recipe_main",
+   "screen": "recipe_main",
+   "popup": "recipe_sort",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 20,
+    "sheetTitle": "정렬 기준",
+    "contentChars": 420,
+    "baselineContentChars": 420
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:recipe_status@recipe_main",
+   "screen": "recipe_main",
+   "popup": "recipe_status",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 11,
+    "sheetTitle": "판매 상태",
+    "contentChars": 420,
+    "baselineContentChars": 420
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:recipe_target@recipe_main",
+   "screen": "recipe_main",
+   "popup": "recipe_target",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 11,
+    "sheetTitle": "목표",
+    "contentChars": 420,
+    "baselineContentChars": 420
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:recipe_memo@recipe_detail",
+   "screen": "recipe_detail",
+   "popup": "recipe_memo",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 8,
+    "sheetTitle": "메모 수정",
+    "contentChars": 679,
+    "baselineContentChars": 679
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:recipe_stop@recipe_detail",
+   "screen": "recipe_detail",
+   "popup": "recipe_stop",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 4,
+    "sheetTitle": "판매를 중지하시겠습니까?",
+    "contentChars": 679,
+    "baselineContentChars": 679
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:recipe_category_pick@recipe_add",
+   "screen": "recipe_add",
+   "popup": "recipe_category_pick",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 13,
+    "sheetTitle": "카테고리 선택",
+    "contentChars": 194,
+    "baselineContentChars": 194
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:recipe_category_pick@recipe_edit",
+   "screen": "recipe_edit",
+   "popup": "recipe_category_pick",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 14,
+    "sheetTitle": "카테고리 선택",
+    "contentChars": 345,
+    "baselineContentChars": 345
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:recipe_ingredient_usage@recipe_edit",
+   "screen": "recipe_edit",
+   "popup": "recipe_ingredient_usage",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 21,
+    "sheetTitle": "사용량 수정",
+    "contentChars": 345,
+    "baselineContentChars": 345
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:recipe_ingredient_usage@recipe_ingredient_search",
+   "screen": "recipe_ingredient_search",
+   "popup": "recipe_ingredient_usage",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 19,
+    "sheetTitle": "사용량 입력",
+    "contentChars": 592,
+    "baselineContentChars": 592
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:recipe_material_usage@recipe_material_search",
+   "screen": "recipe_material_search",
+   "popup": "recipe_material_usage",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 19,
+    "sheetTitle": "사용량 입력",
+    "contentChars": 87,
+    "baselineContentChars": 87
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:material_add@recipe_materials",
+   "screen": "recipe_materials",
+   "popup": "material_add",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 35,
+    "sheetTitle": "부자재 추가",
+    "contentChars": 99,
+    "baselineContentChars": 99
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:material_edit@recipe_materials",
+   "screen": "recipe_materials",
+   "popup": "material_edit",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 35,
+    "sheetTitle": "부자재 수정",
+    "contentChars": 99,
+    "baselineContentChars": 99
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:material_category_pick@recipe_materials",
+   "screen": "recipe_materials",
+   "popup": "material_category_pick",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 11,
+    "sheetTitle": "카테고리 선택",
+    "contentChars": 99,
+    "baselineContentChars": 99
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:material_delete@recipe_materials",
+   "screen": "recipe_materials",
+   "popup": "material_delete",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 5,
+    "sheetTitle": "특수 포장용기 삭제",
+    "contentChars": 99,
+    "baselineContentChars": 99
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:category_add@recipe_category",
+   "screen": "recipe_category",
+   "popup": "category_add",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 10,
+    "sheetTitle": "카테고리 추가",
+    "contentChars": 63,
+    "baselineContentChars": 63
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:category_edit@recipe_category",
+   "screen": "recipe_category",
+   "popup": "category_edit",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 10,
+    "sheetTitle": "카테고리 수정",
+    "contentChars": 63,
+    "baselineContentChars": 63
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:category_delete@recipe_category",
+   "screen": "recipe_category",
+   "popup": "category_delete",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 5,
+    "sheetTitle": "카테고리 삭제",
+    "contentChars": 63,
+    "baselineContentChars": 63
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:category_add@recipe_material_category",
+   "screen": "recipe_material_category",
+   "popup": "category_add",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 10,
+    "sheetTitle": "카테고리 추가",
+    "contentChars": 50,
+    "baselineContentChars": 50
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:category_edit@recipe_material_category",
+   "screen": "recipe_material_category",
+   "popup": "category_edit",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 10,
+    "sheetTitle": "카테고리 수정",
+    "contentChars": 50,
+    "baselineContentChars": 50
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:category_delete@recipe_material_category",
+   "screen": "recipe_material_category",
+   "popup": "category_delete",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 5,
+    "sheetTitle": "카테고리 삭제",
+    "contentChars": 50,
+    "baselineContentChars": 50
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:recipe_change_detail@recipe_changes",
+   "screen": "recipe_changes",
+   "popup": "recipe_change_detail",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 27,
+    "sheetTitle": "레시피 등록",
+    "contentChars": 52,
+    "baselineContentChars": 52
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:profit_detail@profit",
+   "screen": "profit",
+   "popup": "profit_detail",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 26,
+    "sheetTitle": "손익 변동 상세",
+    "contentChars": 13,
+    "baselineContentChars": 13
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:fixed_period@fixed_average",
+   "screen": "fixed_average",
+   "popup": "fixed_period",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 20,
+    "sheetTitle": "월",
+    "contentChars": 418,
+    "baselineContentChars": 418
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:fixed_period@fixed_actual",
+   "screen": "fixed_actual",
+   "popup": "fixed_period",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 20,
+    "sheetTitle": "월",
+    "contentChars": 515,
+    "baselineContentChars": 515
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:fixed_channel@fixed_actual",
+   "screen": "fixed_actual",
+   "popup": "fixed_channel",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 31,
+    "sheetTitle": "채널 배분",
+    "contentChars": 515,
+    "baselineContentChars": 515
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:fixed_item_add@fixed_actual",
+   "screen": "fixed_actual",
+   "popup": "fixed_item_add",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 21,
+    "sheetTitle": "고정 지출 항목 추가",
+    "contentChars": 515,
+    "baselineContentChars": 515
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:order_candidates@order_main",
+   "screen": "order_main",
+   "popup": "order_candidates",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 8,
+    "sheetTitle": "발주 후보",
+    "contentChars": 50,
+    "baselineContentChars": 50
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:order_waiting@order_main",
+   "screen": "order_main",
+   "popup": "order_waiting",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 18,
+    "sheetTitle": "입고 예정",
+    "contentChars": 50,
+    "baselineContentChars": 50
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:order_received@order_main",
+   "screen": "order_main",
+   "popup": "order_received",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 13,
+    "sheetTitle": "입고 완료",
+    "contentChars": 50,
+    "baselineContentChars": 50
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:order_order@order_main",
+   "screen": "order_main",
+   "popup": "order_order",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 18,
+    "sheetTitle": "주문하기",
+    "contentChars": 50,
+    "baselineContentChars": 50
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:order_receive@order_main",
+   "screen": "order_main",
+   "popup": "order_receive",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 23,
+    "sheetTitle": "입고 완료",
+    "contentChars": 50,
+    "baselineContentChars": 50
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:order_cancel@order_main",
+   "screen": "order_main",
+   "popup": "order_cancel",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 6,
+    "sheetTitle": "발주 취소",
+    "contentChars": 50,
+    "baselineContentChars": 50
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:order_revert@order_main",
+   "screen": "order_main",
+   "popup": "order_revert",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 6,
+    "sheetTitle": "입고 취소",
+    "contentChars": 50,
+    "baselineContentChars": 50
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:order_price_spike@order_main",
+   "screen": "order_main",
+   "popup": "order_price_spike",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 3,
+    "sheetTitle": "입고 단가가 크게 올랐어요",
+    "contentChars": 50,
+    "baselineContentChars": 50
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:order_order@order_detail",
+   "screen": "order_detail",
+   "popup": "order_order",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 18,
+    "sheetTitle": "주문하기",
+    "contentChars": 86,
+    "baselineContentChars": 86
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:order_receive@order_receive",
+   "screen": "order_receive",
+   "popup": "order_receive",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 23,
+    "sheetTitle": "입고 완료",
+    "contentChars": 83,
+    "baselineContentChars": 83
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:order_ingredient@order_direct",
+   "screen": "order_direct",
+   "popup": "order_ingredient",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 15,
+    "sheetTitle": "식재료 선택",
+    "contentChars": 22,
+    "baselineContentChars": 22
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:order_vendor@order_direct",
+   "screen": "order_direct",
+   "popup": "order_vendor",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 17,
+    "sheetTitle": "거래처 선택",
+    "contentChars": 22,
+    "baselineContentChars": 22
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:sales_state@sales_main",
+   "screen": "sales_main",
+   "popup": "sales_state",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 8,
+    "sheetTitle": "영업 중",
+    "contentChars": 356,
+    "baselineContentChars": 356
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:sales_break@sales_main",
+   "screen": "sales_main",
+   "popup": "sales_break",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 5,
+    "sheetTitle": "브레이크 타임으로 바꿀까요?",
+    "contentChars": 356,
+    "baselineContentChars": 356
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:sales_close@sales_main",
+   "screen": "sales_main",
+   "popup": "sales_close",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 5,
+    "sheetTitle": "오늘 장사를 마칠까요?",
+    "contentChars": 356,
+    "baselineContentChars": 356
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:sales_sort@sales_main",
+   "screen": "sales_main",
+   "popup": "sales_sort",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 14,
+    "sheetTitle": "정렬 기준",
+    "contentChars": 356,
+    "baselineContentChars": 356
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:sales_qty@sales_main",
+   "screen": "sales_main",
+   "popup": "sales_qty",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 46,
+    "sheetTitle": "오늘의 판매 수량",
+    "contentChars": 356,
+    "baselineContentChars": 356
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:sales_shortage@sales_main",
+   "screen": "sales_main",
+   "popup": "sales_shortage",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 12,
+    "sheetTitle": "판매 수량보다 재고가 부족해요",
+    "contentChars": 356,
+    "baselineContentChars": 356
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:sales_etc@sales_main",
+   "screen": "sales_main",
+   "popup": "sales_etc",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 48,
+    "sheetTitle": "기타 매출 추가",
+    "contentChars": 356,
+    "baselineContentChars": 356
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:sales_expense@sales_main",
+   "screen": "sales_main",
+   "popup": "sales_expense",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 28,
+    "sheetTitle": "지출 추가",
+    "contentChars": 356,
+    "baselineContentChars": 356
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:sales_period@analytics",
+   "screen": "analytics",
+   "popup": "sales_period",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 24,
+    "sheetTitle": "기간",
+    "contentChars": 535,
+    "baselineContentChars": 535
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:sales_direct_period@analytics",
+   "screen": "analytics",
+   "popup": "sales_direct_period",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 8,
+    "sheetTitle": "기간 직접 설정",
+    "contentChars": 535,
+    "baselineContentChars": 535
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:sales_menu_profit@day",
+   "screen": "day",
+   "popup": "sales_menu_profit",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 61,
+    "sheetTitle": "제육볶음 손익",
+    "contentChars": 475,
+    "baselineContentChars": 475
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:sales_revenue_all@revenue",
+   "screen": "revenue",
+   "popup": "sales_revenue_all",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 37,
+    "sheetTitle": "메뉴 매출 전체",
+    "contentChars": 172,
+    "baselineContentChars": 172
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:sales_material_detail@material",
+   "screen": "material",
+   "popup": "sales_material_detail",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 23,
+    "sheetTitle": "돼지고기 앞다리",
+    "contentChars": 158,
+    "baselineContentChars": 158
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:sales_extra_detail@extra",
+   "screen": "extra",
+   "popup": "sales_extra_detail",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 14,
+    "sheetTitle": "특수 포장용기",
+    "contentChars": 97,
+    "baselineContentChars": 97
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:sales_fixed_expand@sales_fixed",
+   "screen": "sales_fixed",
+   "popup": "sales_fixed_expand",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 11,
+    "sheetTitle": "인건비 세부 내역",
+    "contentChars": 192,
+    "baselineContentChars": 192
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:expense_add@expense",
+   "screen": "expense",
+   "popup": "expense_add",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 16,
+    "sheetTitle": "추가 지출 추가",
+    "contentChars": 42,
+    "baselineContentChars": 42
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:expense_delete@expense",
+   "screen": "expense",
+   "popup": "expense_delete",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": true,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 6,
+    "sheetTitle": "추가 지출 삭제",
+    "contentChars": 40,
+    "baselineContentChars": 42
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:past_sale_qty@sales_past",
+   "screen": "sales_past",
+   "popup": "past_sale_qty",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 24,
+    "sheetTitle": "판매 수량",
+    "contentChars": 74,
+    "baselineContentChars": 74
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:past_etc@sales_past",
+   "screen": "sales_past",
+   "popup": "past_etc",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 36,
+    "sheetTitle": "기타 매출",
+    "contentChars": 74,
+    "baselineContentChars": 74
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:past_expense@sales_past",
+   "screen": "sales_past",
+   "popup": "past_expense",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 25,
+    "sheetTitle": "지출 추가",
+    "contentChars": 74,
+    "baselineContentChars": 74
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:past_save@sales_past",
+   "screen": "sales_past",
+   "popup": "past_save",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 5,
+    "sheetTitle": "과거 판매 내역을 저장할까요?",
+    "contentChars": 74,
+    "baselineContentChars": 74
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:stock_check_all@stock_check",
+   "screen": "stock_check",
+   "popup": "stock_check_all",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 12,
+    "sheetTitle": "전체 부족 재고",
+    "contentChars": 41,
+    "baselineContentChars": 41
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:fixed_period@my_fixed",
+   "screen": "my_fixed",
+   "popup": "fixed_period",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 20,
+    "sheetTitle": "월",
+    "contentChars": 418,
+    "baselineContentChars": 418
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:fixed_period@my_fixed_edit",
+   "screen": "my_fixed_edit",
+   "popup": "fixed_period",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 20,
+    "sheetTitle": "월",
+    "contentChars": 515,
+    "baselineContentChars": 515
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:fixed_channel@my_fixed_edit",
+   "screen": "my_fixed_edit",
+   "popup": "fixed_channel",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 31,
+    "sheetTitle": "채널 배분",
+    "contentChars": 515,
+    "baselineContentChars": 515
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:fixed_item_add@my_fixed_edit",
+   "screen": "my_fixed_edit",
+   "popup": "fixed_item_add",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 21,
+    "sheetTitle": "고정 지출 항목 추가",
+    "contentChars": 515,
+    "baselineContentChars": 515
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:category_add@my_ingredient_categories",
+   "screen": "my_ingredient_categories",
+   "popup": "category_add",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 10,
+    "sheetTitle": "카테고리 추가",
+    "contentChars": 173,
+    "baselineContentChars": 173
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:category_edit@my_ingredient_categories",
+   "screen": "my_ingredient_categories",
+   "popup": "category_edit",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 10,
+    "sheetTitle": "카테고리 수정",
+    "contentChars": 173,
+    "baselineContentChars": 173
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:category_delete@my_ingredient_categories",
+   "screen": "my_ingredient_categories",
+   "popup": "category_delete",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 5,
+    "sheetTitle": "카테고리 삭제",
+    "contentChars": 173,
+    "baselineContentChars": 173
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:category_add@my_recipe_categories",
+   "screen": "my_recipe_categories",
+   "popup": "category_add",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 10,
+    "sheetTitle": "카테고리 추가",
+    "contentChars": 63,
+    "baselineContentChars": 63
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:category_edit@my_recipe_categories",
+   "screen": "my_recipe_categories",
+   "popup": "category_edit",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 10,
+    "sheetTitle": "카테고리 수정",
+    "contentChars": 63,
+    "baselineContentChars": 63
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:category_delete@my_recipe_categories",
+   "screen": "my_recipe_categories",
+   "popup": "category_delete",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 5,
+    "sheetTitle": "카테고리 삭제",
+    "contentChars": 63,
+    "baselineContentChars": 63
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:category_add@my_material_categories",
+   "screen": "my_material_categories",
+   "popup": "category_add",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 10,
+    "sheetTitle": "카테고리 추가",
+    "contentChars": 50,
+    "baselineContentChars": 50
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:category_edit@my_material_categories",
+   "screen": "my_material_categories",
+   "popup": "category_edit",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 10,
+    "sheetTitle": "카테고리 수정",
+    "contentChars": 50,
+    "baselineContentChars": 50
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:category_delete@my_material_categories",
+   "screen": "my_material_categories",
+   "popup": "category_delete",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 5,
+    "sheetTitle": "카테고리 삭제",
+    "contentChars": 50,
+    "baselineContentChars": 50
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:material_add@my_materials",
+   "screen": "my_materials",
+   "popup": "material_add",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 35,
+    "sheetTitle": "부자재 추가",
+    "contentChars": 99,
+    "baselineContentChars": 99
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:material_edit@my_materials",
+   "screen": "my_materials",
+   "popup": "material_edit",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 35,
+    "sheetTitle": "부자재 수정",
+    "contentChars": 99,
+    "baselineContentChars": 99
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:material_category_pick@my_materials",
+   "screen": "my_materials",
+   "popup": "material_category_pick",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 11,
+    "sheetTitle": "카테고리 선택",
+    "contentChars": 99,
+    "baselineContentChars": 99
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:material_delete@my_materials",
+   "screen": "my_materials",
+   "popup": "material_delete",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 5,
+    "sheetTitle": "특수 포장용기 삭제",
+    "contentChars": 99,
+    "baselineContentChars": 99
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:tax_country@my_tax",
+   "screen": "my_tax",
+   "popup": "tax_country",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 23,
+    "sheetTitle": "국가 선택",
+    "contentChars": 217,
+    "baselineContentChars": 217
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:tax_item_add@my_tax",
+   "screen": "my_tax",
+   "popup": "tax_item_add",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 15,
+    "sheetTitle": "추가 세금 항목",
+    "contentChars": 217,
+    "baselineContentChars": 217
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:tax_saved@my_tax",
+   "screen": "my_tax",
+   "popup": "tax_saved",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 3,
+    "sheetTitle": "세금 설정을 저장했어요",
+    "contentChars": 217,
+    "baselineContentChars": 217
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:language_preview@my_language",
+   "screen": "my_language",
+   "popup": "language_preview",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 25,
+    "sheetTitle": "이렇게 보여요",
+    "contentChars": 543,
+    "baselineContentChars": 543
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:vendor_add@my_vendors",
+   "screen": "my_vendors",
+   "popup": "vendor_add",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 9,
+    "sheetTitle": "구매처 추가",
+    "contentChars": 54,
+    "baselineContentChars": 54
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:vendor_edit@my_vendors",
+   "screen": "my_vendors",
+   "popup": "vendor_edit",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 10,
+    "sheetTitle": "구매처 이름 변경",
+    "contentChars": 54,
+    "baselineContentChars": 54
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:vendor_delete@my_vendors",
+   "screen": "my_vendors",
+   "popup": "vendor_delete",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 5,
+    "sheetTitle": "동네마트 삭제",
+    "contentChars": 54,
+    "baselineContentChars": 54
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:channel_edit@my_channels",
+   "screen": "my_channels",
+   "popup": "channel_edit",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 10,
+    "sheetTitle": "채널 이름",
+    "contentChars": 70,
+    "baselineContentChars": 70
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:channel_disable@my_channels",
+   "screen": "my_channels",
+   "popup": "channel_disable",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 6,
+    "sheetTitle": "판매 채널 사용 안 함",
+    "contentChars": 70,
+    "baselineContentChars": 70
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:hours_start@my_hours",
+   "screen": "my_hours",
+   "popup": "hours_start",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 25,
+    "sheetTitle": "영업 시작",
+    "contentChars": 270,
+    "baselineContentChars": 270
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:hours_end@my_hours",
+   "screen": "my_hours",
+   "popup": "hours_end",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 22,
+    "sheetTitle": "영업 종료",
+    "contentChars": 270,
+    "baselineContentChars": 270
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:hours_break_start@my_hours",
+   "screen": "my_hours",
+   "popup": "hours_break_start",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 14,
+    "sheetTitle": "브레이크 시작",
+    "contentChars": 270,
+    "baselineContentChars": 270
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:hours_break_end@my_hours",
+   "screen": "my_hours",
+   "popup": "hours_break_end",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 14,
+    "sheetTitle": "브레이크 종료",
+    "contentChars": 270,
+    "baselineContentChars": 270
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:hours_timezone@my_hours",
+   "screen": "my_hours",
+   "popup": "hours_timezone",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 27,
+    "sheetTitle": "매장 시간대",
+    "contentChars": 270,
+    "baselineContentChars": 270
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:account_delete@my_account",
+   "screen": "my_account",
+   "popup": "account_delete",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 11,
+    "sheetTitle": "계정을 탈퇴할까요?",
+    "contentChars": 92,
+    "baselineContentChars": 92
+   },
+   "regression": {
+    "pc": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "overflow": false,
+     "banned": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  }
+ ]
+}

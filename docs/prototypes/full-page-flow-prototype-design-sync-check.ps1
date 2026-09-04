@@ -173,6 +173,48 @@ if ($commonChange -eq '예') {
   }
 }
 
+# --- 렌더 감사 증거 결속 (PRT-188) ---
+# 문서에 적는 렌더 산출물 분포와 뷰포트 회귀 수치는 render-audit 스크립트의 출력에서만 인용한다.
+# 이 검사는 DOM 을 다시 재지 않는다(그것은 node+playwright 가 필요하다).
+# 보존된 결과 JSON 이 "지금 이 적용본, 지금 이 동기화 ID" 에 묶여 있는지를 확인한다.
+# 적용본이 바뀌면 증거가 자동으로 무효가 되므로, 낡은 측정값을 그대로 인용할 수 없다.
+$auditName = 'full-page-flow-prototype-render-audit.json'
+$auditScriptName = 'full-page-flow-prototype-render-audit.mjs'
+$auditPath = Join-Path $PrototypeDirectory $auditName
+$auditScriptPath = Join-Path $PrototypeDirectory $auditScriptName
+if (-not (Test-Path -LiteralPath $auditPath)) {
+  Add-Failure "$auditName : 렌더 감사 결과가 없음"
+}
+elseif (-not (Test-Path -LiteralPath $auditScriptPath)) {
+  Add-Failure "$auditScriptName : 렌더 감사 스크립트가 없음"
+}
+else {
+  $audit = Read-Utf8 $auditPath | ConvertFrom-Json
+  $appliedBytes = [System.IO.File]::ReadAllBytes((Join-Path $PrototypeDirectory '0_full-page-flow-prototype-ui-applied.html'))
+  $sha = [System.Security.Cryptography.SHA256]::Create()
+  try { $appliedSha = ([System.BitConverter]::ToString($sha.ComputeHash($appliedBytes))).Replace('-', '').ToLowerInvariant() }
+  finally { $sha.Dispose() }
+  $scriptBytes = [System.IO.File]::ReadAllBytes($auditScriptPath)
+  $sha2 = [System.Security.Cryptography.SHA256]::Create()
+  try { $auditScriptSha = ([System.BitConverter]::ToString($sha2.ComputeHash($scriptBytes))).Replace('-', '').ToLowerInvariant() }
+  finally { $sha2.Dispose() }
+  if ($audit.manifest.target.sha256 -ne $appliedSha) {
+    Add-Failure "$auditName : 적용본 SHA 불일치. 감사=$($audit.manifest.target.sha256) 현재=$appliedSha. 재측정 필요"
+  }
+  if ($audit.manifest.target.designSyncId -ne $syncId) {
+    Add-Failure "$auditName : 동기화 ID 불일치. 감사=$($audit.manifest.target.designSyncId) 현재=$syncId"
+  }
+  if ($audit.manifest.script.sha256 -ne $auditScriptSha) {
+    Add-Failure "$auditName : 측정 스크립트 SHA 불일치. 감사=$($audit.manifest.script.sha256) 현재=$auditScriptSha"
+  }
+  if ($audit.summary.targetsMeasured -lt 1) {
+    Add-Failure "$auditName : 측정 target 이 없음"
+  }
+  if ($audit.summary.noRendererIds.Count -gt 0) {
+    Add-Failure "$auditName : 렌더러 없는 활성 ID $($audit.summary.noRendererIds.Count)건 — 조사 필요"
+  }
+}
+
 if ($failures.Count -gt 0) {
   Write-Output "DESIGN DOC SYNC: FAIL ($syncId)"
   $failures | ForEach-Object { Write-Output "- $_" }
@@ -182,6 +224,10 @@ if ($failures.Count -gt 0) {
 $hashes = [ordered]@{}
 foreach ($fileName in $contentsByFile.Keys) {
   $hashes[$fileName] = Get-Sha256 $contentsByFile[$fileName]
+}
+foreach ($fileName in @($auditName, $auditScriptName)) {
+  $contents = Read-Utf8 (Join-Path $PrototypeDirectory $fileName)
+  if ($null -ne $contents) { $hashes[$fileName] = Get-Sha256 $contents }
 }
 
 $previousState = if (Test-Path -LiteralPath $statePath) { Read-Utf8 $statePath | ConvertFrom-Json } else { $null }

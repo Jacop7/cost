@@ -6,7 +6,7 @@
 
 - 상태: 서비스 기준 재검토 개정안
 - 개정일: 2026-09-02
-- 현재 디자인 동기화 ID: `DS-20260904-009`
+- 현재 디자인 동기화 ID: `DS-20260904-010`
 - 적용 대상: `docs/prototypes/full-page-flow-prototype.html`, UI 적용 복사본과 향후 Expo 공용 UI
 - 등록 인벤토리: 프로토타입 `screen` 키 62개, 팝업·조건 상태 호스트 123개, 고유 ID 98개
   (PRT-182 정정: 이전 표기 `125 / 99`는 `PRT-151`이 `recipe_target_help`를 두 호스트에서
@@ -1573,9 +1573,22 @@ B.1~B.2에만 보존하고 이 활성 레지스트리에는 넣지 않는다.
 ### B.8a 활성 96개 ID의 실제 렌더 경로 · 실측
 
 `renderer` 열은 **목표** 계약이다. 아래는 현재 적용본이 실제로 타는 **구현** 경로이며,
-96개 ID를 전부 URL로 직접 열어 측정했다(PRT-186, `file://` 390×844). 목표와 구현의
-차이는 B.8 서문이 이미 밝힌 대로이며, 이 표는 "renderer가 없다"는 주장을 낼 때
-근거로 삼는 유일한 실측 자료다.
+96개 ID를 전부 URL로 직접 열어 측정했다. 목표와 구현의 차이는 B.8 서문이 이미 밝힌
+대로이며, 이 표는 "renderer가 없다"는 주장을 낼 때 근거로 삼는 유일한 실측 자료다.
+
+**이 절의 모든 수치는 아래 산출물에서만 인용한다.** 손으로 세거나 눈으로 확인한 값을
+적지 않는다.
+
+| 항목 | 값 |
+|---|---|
+| 측정 스크립트 | `full-page-flow-prototype-render-audit.mjs` |
+| 결과(target별 원시 로그) | `full-page-flow-prototype-render-audit.json` |
+| 재현 | `node full-page-flow-prototype-render-audit.mjs 0_full-page-flow-prototype-ui-applied.html` |
+
+결과 JSON의 `manifest`가 측정 스크립트 SHA-256, 대상 적용본 SHA-256, 동기화 ID,
+node·chromium 판본, 뷰포트 정의를 함께 담는다. `full-page-flow-prototype-design-sync-check.ps1`이
+이 셋(적용본 SHA·동기화 ID·스크립트 SHA)의 일치를 검사하므로 **적용본이 바뀌면 증거가
+자동으로 무효가 되고 게이트가 막힌다.** 낡은 측정값을 그대로 인용할 수 없다.
 
 | 경로 | 개수 | 진입 방식 | 해당 ID |
 |---|---:|---|---|
@@ -1602,7 +1615,13 @@ B.1~B.2에만 보존하고 이 활성 레지스트리에는 넣지 않는다.
 - (PRT-187 정정: `PRT-186`은 `#overlay`만 보고 측정해 `option_more`를 "현재 구현은
   페이지 상태"라고 적었다. **틀렸다.** 독립 레이어를 탐지하지 못한 측정의 한계였고,
   같은 가이드의 부록 C가 이미 독립 DOM 생성을 기록하고 있어 문서가 자기모순 상태였다.
-  이번에 `.phone` 자식 노드까지 훑어 재측정했다.)
+  `.phone` 자식 노드까지 훑어 재측정했다.)
+- (PRT-188: 그 재측정이 임시 환경의 일회성 스크립트였고 저장소에 남지 않아 제3자가
+  재현할 수 없었다. 스크립트와 target별 원시 로그를 저장소에 보존하고 게이트에 결속했다.
+  이때 초판 스크립트가 `ingredient_option_filled`·`stock_inbound`·`option_list` 3건을
+  `none`으로 잘못 분류하는 것이 드러났다 — **PageState를 "`#content`가 host 기본 상태와
+  다른가"로 판정한 탓**이며, 이 셋은 host의 기본 상태 그 자체여서 차이가 0이다.
+  판정 근거를 `openPopupTab` 처리 분기 유무로 바꿔 고쳤다. 보존이 곧 검증이 된 사례다.)
 
 ### B.9 popupTabs 밖의 제품 Layer 시연 host
 

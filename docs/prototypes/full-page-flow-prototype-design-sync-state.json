@@ -1,17 +1,19 @@
 {
-  "lastCompletedId": "DS-20260904-009",
-  "completedAt": "2026-09-04T22:18:10.7764711+09:00",
+  "lastCompletedId": "DS-20260904-010",
+  "completedAt": "2026-09-04T22:55:37.7461045+09:00",
   "overallUiStatus": "IN_PROGRESS",
   "commonChange": "예",
   "uiChange": "아니오",
-  "prt": "PRT-187",
+  "prt": "PRT-188",
   "hashes": {
-    "0_full-page-flow-prototype-ui-applied.html": "03b1207df29b9fd48f2467c80c5926bc2104b72fb99c94ebb4347d3a3838fe3e",
-    "full-page-flow-prototype-current-spec.md": "9aaf4f3ba24c4d53d111f47ed6fefe66437e081cb577d9e43c9d618a67dcef8b",
-    "full-page-flow-prototype-changelog.md": "22e1a85b15755e40b52e681fe74b0303c2cb2e68b137dd8471de45fc5bc311d2",
-    "0_full-page-flow-prototype-ui-applied-review.md": "9d1657dc2ba3fd13ed02a489b6d260e74d6b7b1c1acd1e941fa357751fc76397",
-    "full-page-flow-prototype-design-context.md": "1c5a7198515063abba6c91e6bb9835df99d8f22a54d5df0930bad06b20d50b23",
-    "full-page-flow-prototype-ui-guide.md": "079c366f9ab9ec0e7d7ae0b7f791b41f9cc80b8e37a9e6e4f8884cce59447247",
-    "full-page-flow-prototype-design-work-plan.md": "db9a055bf82e015221acb05e2bb955043b69d1762163d4df28d69318433ef6e3"
+    "0_full-page-flow-prototype-ui-applied.html": "36a0074bd08eaba9700a4c6eda2ae0c00e72947c61633bfa67f07e3b9b18a38c",
+    "full-page-flow-prototype-current-spec.md": "f53d63d5ae105f90340c2dda8b6801c4b12e29672f29cea54ff4843d2863a3ae",
+    "full-page-flow-prototype-changelog.md": "2cb317e0990ab394b07dd9e4564ac3ed3347876a4a1de008e935d46d9b9d5021",
+    "0_full-page-flow-prototype-ui-applied-review.md": "503a2d3c034b09892ef7c6068f84c1f9fa0f3af4ad4af9ea55feb86f609afe18",
+    "full-page-flow-prototype-design-context.md": "437f3e48a56e50316f87e9a6808f88e3852a4b1a6ccff47b2d5c1af60f13d7ca",
+    "full-page-flow-prototype-ui-guide.md": "1145ff50acf0f9eb8279da89d9df06c0d89955f0591d013eb846f403f73447a1",
+    "full-page-flow-prototype-design-work-plan.md": "9c86800cf123aa8897bed82508c440824385731d3eaa22218a0184fb2000291f",
+    "full-page-flow-prototype-render-audit.json": "8256126109423cc7e93ce6c8ed7586169e119265c2a0251e19b409a203a753e6",
+    "full-page-flow-prototype-render-audit.mjs": "d51f3cea74856c88d8e61e6532391d0361c1f02640a2ef193fbe2430b1d7450a"
   }
 }
