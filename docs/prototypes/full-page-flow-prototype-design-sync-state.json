@@ -1,15 +1,17 @@
 {
-  "lastCompletedId": "DS-20260902-027",
-  "completedAt": "2026-09-02T15:47:52.6189708+09:00",
+  "lastCompletedId": "DS-20260904-006",
+  "completedAt": "2026-09-04T21:48:18.7682754+09:00",
   "overallUiStatus": "IN_PROGRESS",
-  "commonChange": "아니오",
+  "commonChange": "예",
   "uiChange": "예",
-  "prt": "PRT-178",
+  "prt": "PRT-184",
   "hashes": {
-    "0_full-page-flow-prototype-ui-applied.html": "6e079a0a4792ab9c976b00f775aeec9aed309414d0aad1a2aba30bd70c0f1649",
-    "full-page-flow-prototype-current-spec.md": "da76e00c8cd181f3136f7926b83b390927494c749daad3da6fd0c12610b3bc4b",
-    "full-page-flow-prototype-changelog.md": "2335d3ab1dddad7715bd2cb1a194e182f6f1c9260acd7331843a16a50815871a",
-    "0_full-page-flow-prototype-ui-applied-review.md": "df2cb490328bde005e7deddaa8f04d49f1fe4b824bf4fb4936e9e84bdc8ea01f",
-    "full-page-flow-prototype-design-context.md": "75585099816f160ac58af521fe59fbe60465f672d671a4324b347416e3f72352"
+    "0_full-page-flow-prototype-ui-applied.html": "52daf6021cbff91e2f8e2ff609a535c124372ea4c0190d40ad35bb35e4081112",
+    "full-page-flow-prototype-current-spec.md": "0de101afdc9e4f10fcbbf9d947833c4ee4bc86eaff07c2fcaa16a65f89a4f06f",
+    "full-page-flow-prototype-changelog.md": "adae44c166e83806dfb10e1c70e01e4a4c5e6a52fd99851ec363a7270868dcdf",
+    "0_full-page-flow-prototype-ui-applied-review.md": "dbf6a807badcbbe215d29cc42f6499db718ba02fa0a9ad40c498931b57782f63",
+    "full-page-flow-prototype-design-context.md": "cfdb5e47361afe46ef321f8aec83bf08e846ef9d79b087873052fb40832af9e0",
+    "full-page-flow-prototype-ui-guide.md": "fb91566715d3ff9a9f15a76184bc82022a037d26e3d77fbbd29d854f6bdbb95f",
+    "full-page-flow-prototype-design-work-plan.md": "ad086d3d26663e7d6739916b851f54d7b880e42afc7d5ead715efc7fd86b4061"
   }
 }

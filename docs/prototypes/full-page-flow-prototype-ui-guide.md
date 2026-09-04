@@ -6,7 +6,7 @@
 
 - 상태: 서비스 기준 재검토 개정안
 - 개정일: 2026-09-02
-- 현재 디자인 동기화 ID: `DS-20260904-005`
+- 현재 디자인 동기화 ID: `DS-20260904-006`
 - 적용 대상: `docs/prototypes/full-page-flow-prototype.html`, UI 적용 복사본과 향후 Expo 공용 UI
 - 등록 인벤토리: 프로토타입 `screen` 키 62개, 팝업·조건 상태 호스트 123개, 고유 ID 98개
   (PRT-182 정정: 이전 표기 `125 / 99`는 `PRT-151`이 `recipe_target_help`를 두 호스트에서
@@ -1151,7 +1151,13 @@ renderer의 조건 상태로만 등록한다.
 
 ---
 
-## 부록 A. 프로토타입 screen 키 레지스트리 · 62개
+## 부록 A. 프로토타입 screen 키 레지스트리 · 등록 62개 + 미구현 명세 1개
+
+아래 표의 고유 키는 63개다. 이 중 `my_country`(MY-12)는 HTML `screens`에 존재하지 않는
+**명세 전용 항목**이고, 나머지 62개가 등록 레지스트리다. 등록 62개 중 `discard`는 숨김 보존이므로
+활성 도달 가능 화면은 61개다. 검수 장부의 screen target 62행은 `활성 61 + my_country(SPEC_ONLY) 1`이며,
+등록 62개와 숫자가 같지만 구성이 다르다 — 장부는 숨김 `discard`를 세지 않고 `my_country`를 센다.
+같은 키가 두 도메인 절에 나오는 경우(4행)는 진입 별칭이며 고유 키 수에는 한 번만 반영한다.
 
 화면 존재·라우트의 권위는 `apps/mobile/src/features/README.md`다. 이 부록은 UI 패턴 연결만 소유한다.
 `screen` 키는 PC·모바일에서 각 상태를 독립 검수하기 위한 주소 단위이며 제품의 독립 페이지 수를
@@ -1244,7 +1250,7 @@ renderer의 조건 상태로만 등록한다.
 | `my_material_categories` | RCP-12b | ChildActionHeader, ReorderList, FormSheet, ConfirmDialog |
 | `my_materials` | RCP-13 | ChildActionHeader, ManagementList, FormSheet, ConfirmDialog |
 | `my_tax` | MY-02 | ContextHeader, TaxForm, RadioGroup, ResultField, StickyAction |
-| `my_country` | MY-12 | ChildHeader, CountryChoiceGrid, PriceBasisRadioList, StickyAction |
+| `my_country` | MY-12 | **미구현 · 명세만 존재** — HTML `screens`에 키가 없다. 목표 패턴은 ChildHeader, CountryChoiceGrid, PriceBasisRadioList, StickyAction |
 | `my_language` | MY-08 | ChildHeader, RadioList, StickyAction |
 | `my_units` | MY-04 | ChildHeader, SettingsList |
 | `my_vendors` | MY-11 | ChildActionHeader, ManagementList, FormSheet, ConfirmDialog |
@@ -1301,7 +1307,7 @@ renderer의 조건 상태로만 등록한다.
 `discard_type`, `discard_period`는 숨김 폐기 화면의 옛 상태다. 새 PageState로 사용하지 않으며
 직접 URL에서 열 수 없는 휴면 보존 항목이다.
 
-### B.2 PickerSheet · 26개
+### B.2 PickerSheet · 27개
 
 - 식재료: `sort`, `add_category`, `add_unit`, `edit_category`, `edit_unit`, `stock_option`,
   `option_vendor`, `option_unit`, `stock_period`, `stock_type`, `stock_order`, `purchase_period`.
@@ -1309,13 +1315,13 @@ renderer의 조건 상태로만 등록한다.
   `material_category_pick`.
 - 발주: `order_ingredient`, `order_vendor`.
 - 매출관리: `sales_sort`, `sales_period`.
-- MY: `fixed_period`, `hours_break_start`, `hours_break_end`.
+- MY: `fixed_period`, `hours_break_start`, `hours_break_end`, `tax_country`.
 - 숨김 옛 상태: `discard_type`, `discard_period`. 등록 계수에는 남기고 활성 도달성·닫기 정책
   게이트에서는 제외한다.
 
 `order_ingredient`는 검색형, `sales_period`는 적용형 변형이다.
 
-### B.3 FormSheet · 27개
+### B.3 FormSheet · 28개
 
 - 레시피: `recipe_memo`, `recipe_ingredient_usage`, `recipe_material_usage`, `material_add`,
   `material_edit`, `category_add`, `category_edit`.
@@ -1324,14 +1330,14 @@ renderer의 조건 상태로만 등록한다.
 - 매출관리: `sales_qty`, `sales_etc`, `sales_expense`, `sales_direct_period`, `expense_add`,
   `past_sale_qty`, `past_etc`, `past_expense`.
 - MY: `tax_item_add`, `vendor_add`, `vendor_edit`, `channel_edit`, `hours_start`, `hours_end`,
-  `hours_timezone`, `account_delete`.
+  `hours_timezone`, `account_delete`, `language_preview`.
 
 복합형 `fixed_channel`, `order_receive`, 시간 선택은 선택과 입력을 점진 노출한다. `account_delete`는
 확인 문구 입력 FormSheet 다음에 최종 ConfirmDialog를 둔다. `order_receive`는 screen 키와 popup ID가
 같으므로 검수 증거에는 반드시 `screen:order_receive`, `popup:order_receive@order_main`,
 `popup:order_receive@order_receive`처럼 namespace와 host를 함께 기록한다.
 
-### B.4 InfoSheet · 15개
+### B.4 InfoSheet · 14개
 
 - 변경·이력: `stock_event_more`, `ingredient_change_detail`, `recipe_change_detail`, `profit_detail`.
 - 안내: `order_price_spike`.
@@ -1454,7 +1460,7 @@ PageState에는 `layerType / dismissPolicy / footerPolicy`를 두지 않는다. 
 | `purchase_period` | `purchase` | PickerSheet | `pickerImmediate` | `none` | `PickerSheet` |
 | `ingredient_change_detail` | `ingredient_changes` | InfoSheet | `infoDismissible` | `none` | `InfoSheet` |
 
-**레시피·마스터 공용 · popup 18개**
+**레시피·마스터 공용 · popup 17개**
 
 | ID | host 전체 | layerType | dismissPolicy | footerPolicy | renderer |
 |---|---|---|---|---|---|
@@ -1521,10 +1527,12 @@ PageState에는 `layerType / dismissPolicy / footerPolicy`를 두지 않는다. 
 | `past_save` | `sales_past` | ConfirmDialog | `confirmGuarded` | `confirmPair` | `ConfirmDialog` |
 | `stock_check_all` | `stock_check` | InfoSheet | `infoDismissible` | `none` | `InfoSheet` |
 
-**MY · popup 13개**
+**MY · popup 15개**
 
 | ID | host 전체 | layerType | dismissPolicy | footerPolicy | renderer |
 |---|---|---|---|---|---|
+| `tax_country` | `my_tax` | PickerSheet | `pickerImmediate` | `none` | **미구현 — renderer 없음** |
+| `language_preview` | `my_language` | FormSheet | `formDirtyGuard` | `formCancelPrimary` | **미구현 — renderer 없음** |
 | `tax_item_add` | `my_tax` | FormSheet | `formDirtyGuard` | `formCancelPrimary` | `FormSheet` |
 | `tax_saved` | `my_tax` | SuccessDialog | `successAfterCommit` | `acknowledge` | `SuccessDialog` |
 | `vendor_add` | `my_vendors` | FormSheet | `formDirtyGuard` | `formCancelPrimary` | `FormSheet` |
@@ -1548,8 +1556,15 @@ renderer가 현재 단계를 소유한다. `order_receive`처럼 screen 키와 p
 | `account_delete/form` | FormSheet | `formDirtyGuard` | 취소 + 다음 | `AccountDeleteFlow.form` |
 | `account_delete/confirm` | ConfirmDialog | `confirmGuarded` | `confirmPair` | `AccountDeleteFlow.confirm` |
 
-활성 레지스트리 검산은 PageState `9` + popup `20+18+13+22+15=88`, 합계 고유 ID `97`이다.
-각 ID의 host를 펼치면 활성 host 상태 `123`과 일치해야 한다. 숨김 `discard_type`·`discard_period`는
+활성 레지스트리 검산은 PageState `9` + popup `87`, 합계 고유 ID `96`이다.
+각 ID의 host를 펼치면 활성 host 상태 `121`과 일치해야 한다.
+그룹별 소계는 표의 행 수가 아니라 **고유 ID 수**다: `20 + 17 + 13 + 22 + 15 = 87`.
+`account_delete`처럼 한 ID가 2단계로 나뉘어 표에 여러 행으로 나타나는 경우가 있어 행 수와
+ID 수는 일치하지 않는다.
+(PRT-184 정정: 이전 표기 `9 + 88 = 97` / host `123`은 `PRT-151`의 `recipe_target_help`
+제거 이전 값이었다. 또한 `tax_country`·`language_preview`가 활성 `popupTabs`에 있는데
+B.2·B.3·B.8 이름 목록에서만 빠져 있었다 — 유형별 등록 계수에는 이미 포함돼 있었다.
+두 ID는 현재 renderer가 없어 열리지 않으므로 검수 장부에 `TODO`로 등록한다.) 숨김 `discard_type`·`discard_period`는
 B.1~B.2에만 보존하고 이 활성 레지스트리에는 넣지 않는다.
 
 ### B.9 popupTabs 밖의 제품 Layer 시연 host
