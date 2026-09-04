@@ -306,47 +306,21 @@
     }
   },
   "open": {
-    "note": "기획서 §8 의 열린 결정. 여기 나열된 축의 값은 **잠정**이며, 검사기는 그 값들을 provisionallyMapped 로 따로 센다. 미매핑 0 이 곧 확정 0 은 아니다.",
-    "D-1": {
-      "제목": "색 정본 방향과 목표값",
+    "note": "기획서 §8.2. 사람이 정해야 하는 것만 남긴다. 여기 나열된 축의 값은 잠정이며 검사기가 provisionallyMapped 로 따로 센다.",
+    "D-1′": {
+      "제목": "정본 색 자체를 바꿀 것인가(실행서·프로토타입 vs tokens.ts 3건)",
       "축": [
         "color"
       ],
-      "선행": "대비(contrast) 측정"
+      "선행": "대비 측정 + 디자인·제품 소유자 결정"
     },
     "D-2": {
-      "제목": "글자 확대 보상 수단과 header.title 2줄 흡수 여부",
+      "제목": "글자 확대와 긴 번역의 보상 수단 — 탭 라벨·sales-menu-sub·header.title",
       "축": [],
-      "선행": "P2 재측정"
-    },
-    "D-7": {
-      "제목": "상속된 bolder 188건을 어느 굵기로 선언할 것인가",
-      "축": [
-        "typeWeight"
-      ],
-      "선행": null
-    },
-    "D-8": {
-      "제목": "행간 단계 — 1.35 와 1.4 를 나눌지",
-      "축": [
-        "lineHeight"
-      ],
-      "선행": null
-    },
-    "D-9": {
-      "제목": "그림자 bottomBar 처리와 미관측 sliderThumb",
-      "축": [
-        "shadow"
-      ],
-      "선행": null
-    },
-    "D-10": {
-      "제목": "P1a/P1b/P1c 범위 분할 승인",
-      "축": [],
-      "선행": null
+      "선행": "소유자 결정"
     },
     "D-11": {
-      "제목": "tokens.ts 확장 승인 — lineHeight·letterSpacing·iconSize·controlHeight·rowHeight·shadow(sheet/fab/bottomBar)",
+      "제목": "tokens.ts 확장 승인 — lineHeight·letterSpacing·iconSize·controlHeight·rowHeight·shadow",
       "축": [
         "lineHeight",
         "shadow",
@@ -388,7 +362,12 @@
     "D-3": "뱃지 12px 신설 → 폐기. 가이드가 captionSm 13/600 으로 이미 계약했다",
     "D-4": "nudge 스케일 분리 → 폐기. 다만 '전부 space 로 보낸다' 는 결론은 아니다. 1·2px 은 컴포넌트 소유 광학 보정으로 남고 3·6px 만 space 로 간다",
     "D-5": "19px Sheet 제목의 title 승격 → 승격으로 결론",
-    "D-6": "모션·z-index 범위 → P1c 로 분리하는 것으로 결론"
+    "D-6": "모션·z-index 범위 → P1c 로 분리하는 것으로 결론",
+    "D-7": "상속 bolder 188건 → 닫음. 전역 b/strong 규칙 대신 selector 역할별 매핑. 값이 있는 자리는 type.body(700), 문장 강조는 부모와 같은 굵기를 명시",
+    "D-8": "행간 → 부분적으로 닫음. 뱃지 1.0 은 컴포넌트 소유, 날짜·필터는 기본 1.4, 1.35 는 1.4 로 합침. 값의 tokens.ts 등재는 D-11",
+    "D-9": "그림자 → 부분적으로 닫음. 0 10px 28px 1회는 sheet 와 중복이라 흡수, sliderThumb 은 0회 관측이라 미구현. bottomBar 신규 역할 추가는 D-11",
+    "D-10": "단계 순서 → 닫음. P1b → 일반 P2. 예외는 기존 권위와 무관한 단독 정정뿐",
+    "D-1(집행 부분)": "프로토타입 색을 tokens.ts 값으로 수렴시키는 집행은 솔라가 한다. 정본은 이미 코드다(가이드 §1.2)"
   },
   "proposedTokensExtension": {
     "_note": "tokens.ts 에 **없는** 값이다. 필요하다고 판단했지만 정본 확장은 권위 변경이므로 승인 전까지 primitive 가 아니다. 검사기는 이 칸에 든 목적지를 따로 센다.",
@@ -396,8 +375,8 @@
       "tight": 1.0,
       "default": 1.4,
       "relaxed": 1.5,
-      "근거": "선언된 행간의 실측 비율이 1.35~1.4 에 몰려 있고 뱃지만 1.0. 관측의 84.7% 는 선언이 없어 브라우저 normal 을 쓴다",
-      "여는 결정": "D-8"
+      "근거": "실측 선언이 1.35~1.4 에 몰려 있고 1.35 는 16px/700 한 역할뿐이라 1.4 로 합쳤다. 뱃지 1.0 은 컴포넌트 소유로 내렸다",
+      "여는 결정": "D-11"
     },
     "letterSpacing": {
       "none": 0,
