@@ -647,6 +647,14 @@ else {
   if ($binSum -ne [int]$appCheck.summary.declarations) {
     Add-Failure "$appCheckName : 통 합계 $binSum 이 선언 $($appCheck.summary.declarations) 과 다르다"
   }
+  # 빈 통은 "0" 이라고만 적으면 다음 사람이 미완으로 읽는다. 왜 비었는지가 함께 있어야 한다.
+  if ([int]$appCheck.summary.byBin.semantic -eq 0 -and [string]::IsNullOrWhiteSpace([string]$appCheck.summary.semanticEmptyReason)) {
+    Add-Failure "$appCheckName : semantic 통이 0 인데 사유가 없다 - 구조적으로 빈 것인지 미완인지 구별되지 않는다"
+  }
+  # 다중 일치 수는 반드시 기록돼야 한다. "첫 일치가 이긴다" 가 숨은 결정이 되지 않게 한다.
+  if ($null -eq $appCheck.summary.multiMatchCount) {
+    Add-Failure "$appCheckName : 다중 일치 수가 없음 - 규칙 순서가 배정을 바꾸는지 알 수 없다"
+  }
   if ($appCheck.summary.failures.Count -gt 0) {
     foreach ($f in $appCheck.summary.failures) { Add-Failure "$appCheckName : $f" }
   }

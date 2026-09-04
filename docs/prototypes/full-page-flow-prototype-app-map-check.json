@@ -1,10 +1,10 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-04T21:03:28.647Z",
+  "generatedAt": "2026-09-04T21:18:06.723Z",
   "schemaVersion": 1,
   "script": {
    "name": "full-page-flow-prototype-app-map-check.mjs",
-   "sha256": "cfd43a497d1632cc78c904bfcc5d0b4e83cd79df8af8148aace5f1103f847174"
+   "sha256": "89652ea2f202b0d9c58b84dae173a5ea956df1db2aac9f162f2597b02292bd1e"
   },
   "source": {
    "audit": {
@@ -14,7 +14,7 @@
    },
    "appMap": {
     "path": "full-page-flow-prototype-app-token-map.json",
-    "sha256": "ccd5a86f62e89afb13d949c5971b0e435ee0e58638f8512891ca5dee2a9e9cc6"
+    "sha256": "1d1f7b20af8620aedcb65600d08abcc3bf06d51e2ded0b50a30f75936543bdde"
    },
    "prototypeMap": {
     "path": "full-page-flow-prototype-token-map.json",
@@ -34,13 +34,386 @@
    "primitive": 2082,
    "semantic": 0,
    "componentOwned": 152,
-   "defect": 1049,
-   "pendingApproval": 394,
+   "defect": 1044,
+   "pendingApproval": 399,
    "approvedException": 0
   },
+  "semanticEmptyReason": "**구조적으로 빔.** 앱 감사는 **값**을 기록하고 역할 이름을 기록하지 않는다 — 인라인 리터럴에는 역할이 붙어 있지 않기 때문이다. 인라인 리터럴에 역할 이름을 붙이는 것은 값을 지어내지 않는다는 원칙의 이름 버전이다. semantic 배정은 `S1` 에서 semantic 토큰이 코드에 생긴 뒤 `P4` 에서 채워진다. 따라서 `W1` 완료 조건은 **'네 통 합 = 3,677 + semantic 0 명시'** 다 — 조건을 조용히 넘어가는 것이 아니라 실제와 맞게 개정한 것이다.",
   "unmatchedCount": 0,
   "unmatched": [],
+  "multiMatchCount": 1009,
+  "multiMatchPairs": {
+   "R-TY-SIZE-PRIM > R-TY-SIZE-OFFSCALE": 718,
+   "R-TY-SIZE-15 > R-TY-SIZE-CONVERGE > R-TY-SIZE-OFFSCALE": 67,
+   "R-TY-SIZE-CONVERGE > R-TY-SIZE-OFFSCALE": 33,
+   "R-SZ-FLEX-RESET > R-SZ-EXTENSION": 69,
+   "R-SP-SCROLL-BOTTOM > R-SP-EMPTY-STATE": 49,
+   "R-SP-CAPTION-GAP > R-SP-OPTICAL": 68,
+   "R-SP-CAPTION-GAP-VIEW > R-SP-CAPTION-GAP > R-SP-OPTICAL": 5
+  },
+  "multiMatchSamples": [
+   {
+    "decl": "typography/fontSize:18 @ apps/mobile/src/components/EmptyState.tsx:9",
+    "rules": [
+     "R-TY-SIZE-PRIM",
+     "R-TY-SIZE-OFFSCALE"
+    ]
+   },
+   {
+    "decl": "typography/fontSize:15 @ apps/mobile/src/components/history/HistoryLayout.tsx:68",
+    "rules": [
+     "R-TY-SIZE-15",
+     "R-TY-SIZE-CONVERGE",
+     "R-TY-SIZE-OFFSCALE"
+    ]
+   },
+   {
+    "decl": "typography/fontSize:18 @ apps/mobile/src/components/history/HistoryLayout.tsx:70",
+    "rules": [
+     "R-TY-SIZE-PRIM",
+     "R-TY-SIZE-OFFSCALE"
+    ]
+   },
+   {
+    "decl": "typography/fontSize:12 @ apps/mobile/src/components/history/HistoryLayout.tsx:72",
+    "rules": [
+     "R-TY-SIZE-CONVERGE",
+     "R-TY-SIZE-OFFSCALE"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/components/history/HistoryLayout.tsx:80",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-EXTENSION"
+    ]
+   },
+   {
+    "decl": "typography/fontSize:12 @ apps/mobile/src/components/history/HistoryLayout.tsx:81",
+    "rules": [
+     "R-TY-SIZE-CONVERGE",
+     "R-TY-SIZE-OFFSCALE"
+    ]
+   },
+   {
+    "decl": "typography/fontSize:15 @ apps/mobile/src/components/history/HistoryLayout.tsx:85",
+    "rules": [
+     "R-TY-SIZE-15",
+     "R-TY-SIZE-CONVERGE",
+     "R-TY-SIZE-OFFSCALE"
+    ]
+   },
+   {
+    "decl": "typography/fontSize:13 @ apps/mobile/src/components/history/HistoryLayout.tsx:109",
+    "rules": [
+     "R-TY-SIZE-PRIM",
+     "R-TY-SIZE-OFFSCALE"
+    ]
+   },
+   {
+    "decl": "typography/fontSize:13 @ apps/mobile/src/components/history/HistoryLayout.tsx:110",
+    "rules": [
+     "R-TY-SIZE-PRIM",
+     "R-TY-SIZE-OFFSCALE"
+    ]
+   },
+   {
+    "decl": "spacing/paddingBottom:30 @ apps/mobile/src/components/history/HistoryLayout.tsx:120",
+    "rules": [
+     "R-SP-SCROLL-BOTTOM",
+     "R-SP-EMPTY-STATE"
+    ]
+   },
+   {
+    "decl": "typography/fontSize:18 @ apps/mobile/src/components/kit/AppHeader.tsx:36",
+    "rules": [
+     "R-TY-SIZE-PRIM",
+     "R-TY-SIZE-OFFSCALE"
+    ]
+   },
+   {
+    "decl": "typography/fontSize:16 @ apps/mobile/src/components/kit/MemoEditSheet.tsx:41",
+    "rules": [
+     "R-TY-SIZE-PRIM",
+     "R-TY-SIZE-OFFSCALE"
+    ]
+   },
+   {
+    "decl": "typography/fontSize:13 @ apps/mobile/src/components/kit/MemoEditSheet.tsx:43",
+    "rules": [
+     "R-TY-SIZE-PRIM",
+     "R-TY-SIZE-OFFSCALE"
+    ]
+   },
+   {
+    "decl": "typography/fontSize:16 @ apps/mobile/src/components/kit/QueryState.tsx:48",
+    "rules": [
+     "R-TY-SIZE-PRIM",
+     "R-TY-SIZE-OFFSCALE"
+    ]
+   },
+   {
+    "decl": "typography/fontSize:16 @ apps/mobile/src/components/kit/QueryState.tsx:57",
+    "rules": [
+     "R-TY-SIZE-PRIM",
+     "R-TY-SIZE-OFFSCALE"
+    ]
+   },
+   {
+    "decl": "typography/fontSize:14 @ apps/mobile/src/components/kit/QueryState.tsx:60",
+    "rules": [
+     "R-TY-SIZE-PRIM",
+     "R-TY-SIZE-OFFSCALE"
+    ]
+   },
+   {
+    "decl": "typography/fontSize:12 @ apps/mobile/src/components/kit/QueryState.tsx:74",
+    "rules": [
+     "R-TY-SIZE-CONVERGE",
+     "R-TY-SIZE-OFFSCALE"
+    ]
+   },
+   {
+    "decl": "typography/fontSize:16 @ apps/mobile/src/components/kit/QueryState.tsx:89",
+    "rules": [
+     "R-TY-SIZE-PRIM",
+     "R-TY-SIZE-OFFSCALE"
+    ]
+   },
+   {
+    "decl": "typography/fontSize:14 @ apps/mobile/src/components/kit/QueryState.tsx:90",
+    "rules": [
+     "R-TY-SIZE-PRIM",
+     "R-TY-SIZE-OFFSCALE"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/components/kit/SearchBar.tsx:37",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-EXTENSION"
+    ]
+   },
+   {
+    "decl": "typography/fontSize:16 @ apps/mobile/src/components/kit/SearchBar.tsx:37",
+    "rules": [
+     "R-TY-SIZE-PRIM",
+     "R-TY-SIZE-OFFSCALE"
+    ]
+   },
+   {
+    "decl": "size/width:0 @ apps/mobile/src/components/kit/Sheet.tsx:30",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-EXTENSION"
+    ]
+   },
+   {
+    "decl": "typography/fontSize:20 @ apps/mobile/src/components/kit/Sheet.tsx:37",
+    "rules": [
+     "R-TY-SIZE-PRIM",
+     "R-TY-SIZE-OFFSCALE"
+    ]
+   },
+   {
+    "decl": "typography/fontSize:16 @ apps/mobile/src/components/kit/Sheet.tsx:38",
+    "rules": [
+     "R-TY-SIZE-PRIM",
+     "R-TY-SIZE-OFFSCALE"
+    ]
+   },
+   {
+    "decl": "spacing/paddingBottom:40 @ apps/mobile/src/components/kit/Sheet.tsx:44",
+    "rules": [
+     "R-SP-SCROLL-BOTTOM",
+     "R-SP-EMPTY-STATE"
+    ]
+   },
+   {
+    "decl": "typography/fontSize:15 @ apps/mobile/src/components/kit/Sheet.tsx:77",
+    "rules": [
+     "R-TY-SIZE-15",
+     "R-TY-SIZE-CONVERGE",
+     "R-TY-SIZE-OFFSCALE"
+    ]
+   },
+   {
+    "decl": "spacing/marginTop:2 @ apps/mobile/src/components/kit/Sheet.tsx:77",
+    "rules": [
+     "R-SP-CAPTION-GAP",
+     "R-SP-OPTICAL"
+    ]
+   },
+   {
+    "decl": "size/width:0 @ apps/mobile/src/components/kit/Slider.tsx:50",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-EXTENSION"
+    ]
+   },
+   {
+    "decl": "typography/fontSize:16 @ apps/mobile/src/components/kit/SortSheet.tsx:34",
+    "rules": [
+     "R-TY-SIZE-PRIM",
+     "R-TY-SIZE-OFFSCALE"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/components/kit/SortSheet.tsx:63",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-EXTENSION"
+    ]
+   },
+   {
+    "decl": "typography/fontSize:16 @ apps/mobile/src/components/kit/SortSheet.tsx:64",
+    "rules": [
+     "R-TY-SIZE-PRIM",
+     "R-TY-SIZE-OFFSCALE"
+    ]
+   },
+   {
+    "decl": "typography/fontSize:14 @ apps/mobile/src/components/kit/SortSheet.tsx:65",
+    "rules": [
+     "R-TY-SIZE-PRIM",
+     "R-TY-SIZE-OFFSCALE"
+    ]
+   },
+   {
+    "decl": "spacing/marginTop:2 @ apps/mobile/src/components/kit/SortSheet.tsx:65",
+    "rules": [
+     "R-SP-CAPTION-GAP",
+     "R-SP-OPTICAL"
+    ]
+   },
+   {
+    "decl": "typography/fontSize:13 @ apps/mobile/src/components/kit/charts.tsx:49",
+    "rules": [
+     "R-TY-SIZE-PRIM",
+     "R-TY-SIZE-OFFSCALE"
+    ]
+   },
+   {
+    "decl": "typography/fontSize:16 @ apps/mobile/src/components/kit/charts.tsx:51",
+    "rules": [
+     "R-TY-SIZE-PRIM",
+     "R-TY-SIZE-OFFSCALE"
+    ]
+   },
+   {
+    "decl": "typography/fontSize:14 @ apps/mobile/src/components/kit/index.tsx:74",
+    "rules": [
+     "R-TY-SIZE-PRIM",
+     "R-TY-SIZE-OFFSCALE"
+    ]
+   },
+   {
+    "decl": "typography/fontSize:16 @ apps/mobile/src/components/kit/index.tsx:90",
+    "rules": [
+     "R-TY-SIZE-PRIM",
+     "R-TY-SIZE-OFFSCALE"
+    ]
+   },
+   {
+    "decl": "typography/fontSize:13 @ apps/mobile/src/components/kit/index.tsx:111",
+    "rules": [
+     "R-TY-SIZE-PRIM",
+     "R-TY-SIZE-OFFSCALE"
+    ]
+   },
+   {
+    "decl": "typography/fontSize:18 @ apps/mobile/src/components/kit/index.tsx:136",
+    "rules": [
+     "R-TY-SIZE-PRIM",
+     "R-TY-SIZE-OFFSCALE"
+    ]
+   },
+   {
+    "decl": "typography/fontSize:16 @ apps/mobile/src/components/kit/index.tsx:137",
+    "rules": [
+     "R-TY-SIZE-PRIM",
+     "R-TY-SIZE-OFFSCALE"
+    ]
+   },
+   {
+    "decl": "size/width:0 @ apps/mobile/src/components/kit/index.tsx:151",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-EXTENSION"
+    ]
+   },
+   {
+    "decl": "typography/fontSize:16 @ apps/mobile/src/components/kit/index.tsx:154",
+    "rules": [
+     "R-TY-SIZE-PRIM",
+     "R-TY-SIZE-OFFSCALE"
+    ]
+   },
+   {
+    "decl": "typography/fontSize:16 @ apps/mobile/src/components/kit/index.tsx:169",
+    "rules": [
+     "R-TY-SIZE-PRIM",
+     "R-TY-SIZE-OFFSCALE"
+    ]
+   },
+   {
+    "decl": "typography/fontSize:16 @ apps/mobile/src/components/kit/index.tsx:177",
+    "rules": [
+     "R-TY-SIZE-PRIM",
+     "R-TY-SIZE-OFFSCALE"
+    ]
+   },
+   {
+    "decl": "typography/fontSize:16 @ apps/mobile/src/components/kit/index.tsx:179",
+    "rules": [
+     "R-TY-SIZE-PRIM",
+     "R-TY-SIZE-OFFSCALE"
+    ]
+   },
+   {
+    "decl": "typography/fontSize:16 @ apps/mobile/src/components/kit/index.tsx:226",
+    "rules": [
+     "R-TY-SIZE-PRIM",
+     "R-TY-SIZE-OFFSCALE"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/components/kit/index.tsx:229",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-EXTENSION"
+    ]
+   },
+   {
+    "decl": "typography/fontSize:16 @ apps/mobile/src/components/kit/index.tsx:229",
+    "rules": [
+     "R-TY-SIZE-PRIM",
+     "R-TY-SIZE-OFFSCALE"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/components/kit/index.tsx:245",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-EXTENSION"
+    ]
+   },
+   {
+    "decl": "typography/fontSize:16 @ apps/mobile/src/components/kit/index.tsx:245",
+    "rules": [
+     "R-TY-SIZE-PRIM",
+     "R-TY-SIZE-OFFSCALE"
+    ]
+   }
+  ],
   "openQuestions": [
+   {
+    "id": "R-SP-CAPTION-GAP-VIEW",
+    "question": "`marginTop:2` 중 `<Text` 가 아니라 `<View` 줄에 있는 5건. 이 5건의 관계가 '주값↔보조 줄'(→ space.xs 4)인지 '아이콘↔문구'(→ UI 가이드 §5.4 의 gap.inline 8)인지, 아니면 '안내 블록↔위 요소'인지.",
+    "declarations": 5,
+    "evidence": "5건. BasePriceCard:155(gap 10 행) · PurchaseHistoryScreen:164 · FixedCostScreen:133 · MyChannelsScreen:105(셋 다 `gap:6, paddingHorizontal:2` 안내 아이콘+문구 행) · OrdersHomeScreen:313(`<View style={{marginTop:2}}>` 단독). 68건과 달리 육안 확인 전이고, 안내 아이콘+문구라면 목표값이 4 가 아니라 8 이다.",
+    "ownerDecision": "관계에 이름을 붙인 뒤에야 목표값이 정해진다. 육안 확인이 선행한다."
+   },
    {
     "id": "R-SP-SCROLL-BOTTOM",
     "question": "스크롤 컨테이너 하단 여유가 한 역할에 26·28·30·32·40·96·104 일곱 값을 쓴다. 하나로 수렴할지, 하단 탭바·FAB 유무로 역할을 나눌지.",
@@ -85,9 +458,9 @@
    },
    {
     "id": "R-CL-CATEGORY-ACCENT",
-    "question": "MY 허브의 범주 타일 색 **7쌍**(tint 배경 + 진한 전경)을 브랜드 축으로 정식화할지, 팔레트로 수렴시킬 결함으로 볼지.",
+    "question": "MY 허브의 범주 타일 색 **7쌍**(tint 배경 + 진한 전경)을 브랜드 축으로 정식화할지, 팔레트로 수렴시킬 결함으로 볼지. **그리고 정식화한다면 상태색과의 충돌을 받아들일지, 범주 팔레트를 상태 색상대 밖으로 옮길지.**",
     "declarations": 22,
-    "evidence": "22건. MyCategoryHubScreen:18~20 과 MyHomeScreen:24~31 에서 한 범주에 한 쌍씩 `{bg, fg}` 로 붙어 있다 — #F0EDFB/#7C5CE0(보라) · #EAF6F0/#179E6B(초록) · #FEF1E6/#E08A2B(주황) · #E8F1FB/#2E6FD0(파랑) · #FDECEF/#D94A5E(빨강) · #EDF3FF/#3A6FD8(파랑2) · #FFF5E0/#D99A1C(노랑). **본색+tint 쌍이 일관되게 반복되고 쓰이는 곳이 한 역할로 묶인다** — 페이블이 말한 '브랜드 축 후보' 의 모양이다. 누군가 골랐다.",
+    "evidence": "22건. MyCategoryHubScreen:18~20 과 MyHomeScreen:24~31 에서 한 범주에 한 쌍씩 `{bg, fg}` 로 붙어 있다 — #F0EDFB/#7C5CE0(보라) · #EAF6F0/#179E6B(초록) · #FEF1E6/#E08A2B(주황) · #E8F1FB/#2E6FD0(파랑) · #FDECEF/#D94A5E(빨강) · #EDF3FF/#3A6FD8(파랑2) · #FFF5E0/#D99A1C(노랑). **본색+tint 쌍이 일관되게 반복되고 쓰이는 곳이 한 역할로 묶인다** — 페이블이 말한 '브랜드 축 후보' 의 모양이다. 누군가 골랐다. 페이블 지적 — 7쌍 중 초록(#179E6B) · 빨강(#D94A5E) · 주황(#E08A2B)이 상태색(success · danger · warning)과 색상대가 겹친다. 범주 축을 정식화하면 '빨간 타일이 위험을 뜻하지 않는다' 를 사용자가 배워야 한다.",
     "ownerDecision": "브랜드 축으로 정식화하면 팔레트에 범주 강조색 7쌍이 추가되고, 결함으로 보면 26건이 기존 tint 계열로 수렴한다. 둘 다 제품 결정이다 — defect 로 분류하는 것도 '이 색을 없앤다' 는 결정이라 솔라 범위가 아니다."
    },
    {
@@ -165,16 +538,30 @@
     ]
    },
    {
+    "id": "R-SP-CAPTION-GAP-VIEW",
+    "bin": "pendingApproval",
+    "declarations": 5,
+    "name": null,
+    "target": null,
+    "openDecision": null,
+    "values": [
+     [
+      "marginTop:2",
+      5
+     ]
+    ]
+   },
+   {
     "id": "R-SP-CAPTION-GAP",
     "bin": "defect",
-    "declarations": 73,
+    "declarations": 68,
     "name": null,
     "target": 4,
     "openDecision": null,
     "values": [
      [
       "marginTop:2",
-      73
+      68
      ]
     ]
    },
