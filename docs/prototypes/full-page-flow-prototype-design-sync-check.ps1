@@ -1,4 +1,4 @@
-param(
+﻿param(
   [string]$PrototypeDirectory = $PSScriptRoot,
   [switch]$Finalize
 )
@@ -260,6 +260,79 @@ else {
   }
 }
 
+# --- 디자인 감사 증거 결속 (PRT-191) ---
+# 토큰 기획서가 인용하는 타이포·색·간격·반경·그림자·컨트롤·터치·아이콘 수치는
+# design-audit 스크립트의 출력에서만 인용한다. render-audit 과 같은 방식으로
+# "지금 이 적용본, 지금 이 동기화 ID, 지금 이 스크립트" 에 묶여 있는지 확인한다.
+$designAuditName = 'full-page-flow-prototype-design-audit.json'
+$designAuditScriptName = 'full-page-flow-prototype-design-audit.mjs'
+$designAuditPath = Join-Path $PrototypeDirectory $designAuditName
+$designAuditScriptPath = Join-Path $PrototypeDirectory $designAuditScriptName
+if (-not (Test-Path -LiteralPath $designAuditPath)) {
+  Add-Failure "$designAuditName : 디자인 감사 결과가 없음"
+}
+elseif (-not (Test-Path -LiteralPath $designAuditScriptPath)) {
+  Add-Failure "$designAuditScriptName : 디자인 감사 스크립트가 없음"
+}
+else {
+  $dAudit = Read-Utf8 $designAuditPath | ConvertFrom-Json
+  $dAppliedBytes = [System.IO.File]::ReadAllBytes((Join-Path $PrototypeDirectory '0_full-page-flow-prototype-ui-applied.html'))
+  $dSha = [System.Security.Cryptography.SHA256]::Create()
+  try { $dAppliedSha = ([System.BitConverter]::ToString($dSha.ComputeHash($dAppliedBytes))).Replace('-', '').ToLowerInvariant() }
+  finally { $dSha.Dispose() }
+  $dScriptBytes = [System.IO.File]::ReadAllBytes($designAuditScriptPath)
+  $dSha2 = [System.Security.Cryptography.SHA256]::Create()
+  try { $dScriptSha = ([System.BitConverter]::ToString($dSha2.ComputeHash($dScriptBytes))).Replace('-', '').ToLowerInvariant() }
+  finally { $dSha2.Dispose() }
+  if ($dAudit.manifest.target.sha256 -ne $dAppliedSha) {
+    Add-Failure "$designAuditName : 적용본 SHA 불일치. 감사=$($dAudit.manifest.target.sha256) 현재=$dAppliedSha. 재측정 필요"
+  }
+  if ($dAudit.manifest.target.designSyncId -ne $syncId) {
+    Add-Failure "$designAuditName : 동기화 ID 불일치. 감사=$($dAudit.manifest.target.designSyncId) 현재=$syncId"
+  }
+  if ($dAudit.manifest.script.sha256 -ne $dScriptSha) {
+    Add-Failure "$designAuditName : 측정 스크립트 SHA 불일치. 감사=$($dAudit.manifest.script.sha256) 현재=$dScriptSha"
+  }
+  # 측정 규칙이 결과에 같이 적혀 있어야 한다. 규칙 없는 숫자는 재현할 수 없다.
+  foreach ($ruleKey in @('대상', '아이콘', '슬롯', '카드', '간격', 'margin auto')) {
+    if ($null -eq $dAudit.manifest.rules.$ruleKey) {
+      Add-Failure "$designAuditName : 측정 규칙 '$ruleKey' 누락"
+    }
+  }
+  if ($dAudit.manifest.targetsMeasured -lt 1) { Add-Failure "$designAuditName : 측정 target 이 없음" }
+  # 두 감사를 서로 대조한다. 디자인 감사는 활성 target 만 재므로 렌더 감사의 activeTargets 와
+  # 같아야 한다. 한쪽만 고쳐 쓰면 여기서 어긋난다.
+  if ($null -ne $audit -and $null -ne $audit.summary.activeTargets) {
+    if ($dAudit.manifest.targetsMeasured -ne $audit.summary.activeTargets) {
+      Add-Failure "$designAuditName : 측정 target $($dAudit.manifest.targetsMeasured) 이 렌더 감사의 활성 target $($audit.summary.activeTargets) 과 불일치"
+    }
+    if ($dAudit.manifest.target.sha256 -ne $audit.manifest.target.sha256) {
+      Add-Failure "$designAuditName : 두 감사의 적용본 SHA 가 서로 다름"
+    }
+  }
+  if ($null -eq $dAudit.manifest.marginAutoExcluded) {
+    Add-Failure "$designAuditName : margin auto 제외 개수가 기록되지 않음"
+  }
+  # 축별 산식 단언 — 종류가 0 인 축이 있으면 측정이 무너진 것이다.
+  foreach ($axis in @('typo', 'color', 'space', 'radius', 'shadow', 'control', 'touch', 'icon')) {
+    $bucket = $dAudit.summary.$axis
+    if ($null -eq $bucket) { Add-Failure "$designAuditName : 축 $axis 누락"; continue }
+    if ($bucket.'종류' -lt 1) { Add-Failure "$designAuditName : 축 $axis 의 종류가 0" }
+    if ($bucket.'합계' -lt $bucket.'종류') {
+      Add-Failure "$designAuditName : 축 $axis 산식 불일치 합계 $($bucket.'합계') < 종류 $($bucket.'종류')"
+    }
+    $listed = ($dAudit.$axis | Measure-Object).Count
+    if ($listed -ne $bucket.'종류') {
+      Add-Failure "$designAuditName : 축 $axis 의 목록 $listed 건과 요약 종류 $($bucket.'종류') 불일치"
+    }
+    $sum = 0
+    foreach ($row in $dAudit.$axis) { $sum += $row.n }
+    if ($sum -ne $bucket.'합계') {
+      Add-Failure "$designAuditName : 축 $axis 의 항목 합 $sum 과 요약 합계 $($bucket.'합계') 불일치"
+    }
+  }
+}
+
 if ($failures.Count -gt 0) {
   Write-Output "DESIGN DOC SYNC: FAIL ($syncId)"
   $failures | ForEach-Object { Write-Output "- $_" }
@@ -270,7 +343,7 @@ $hashes = [ordered]@{}
 foreach ($fileName in $contentsByFile.Keys) {
   $hashes[$fileName] = Get-Sha256 $contentsByFile[$fileName]
 }
-foreach ($fileName in @($auditName, $auditScriptName, 'full-page-flow-prototype-render-audit-known.json')) {
+foreach ($fileName in @($auditName, $auditScriptName, 'full-page-flow-prototype-render-audit-known.json', $designAuditName, $designAuditScriptName)) {
   $contents = Read-Utf8 (Join-Path $PrototypeDirectory $fileName)
   if ($null -ne $contents) { $hashes[$fileName] = Get-Sha256 $contents }
 }
