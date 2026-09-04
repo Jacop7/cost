@@ -37,6 +37,10 @@
  * [L9] PRT-189(자기 정정) — 가로 스크롤 컨테이너(카탈로그 화면 선택 탭 등) 안의
  *      요소는 viewport 밖으로 나가는 것이 정상이다. 조상에 가로 스크롤이 있거나
  *      보이지 않는 요소는 이탈로 세지 않는다.
+ * [L11] 넘침을 boolean 으로만 저장해, KD-001 이 5px 에서 50px 로 악화돼도 같은 "1건"
+ *       이라 게이트가 통과시켰다. 알려진 목록 대조도 존재 여부만 봤다. **크기가 없으면
+ *       악화를 못 잡는다.** phoneOverflowPx·documentOverflowPx 와 요소별 좌·우 이탈 px 을
+ *       저장하고, 알려진 목록에 크기를 함께 넣어 기준보다 나빠지면 FAIL 로 본다.
  * [L10] PRT-189(자기 정정) — 글자를 2배로 키운 패스에서 TYPE 스케일 검사는 의미가
  *      없다. 모든 크기가 스케일 밖이 된다. 확대 패스에서는 스케일 검사를 하지 않는다.
  * ─────────────────────────────────────────────────────────────────────────────
@@ -124,11 +128,17 @@ const INBROWSER = {
   measure: ({ SCALE, BANNED_COMPUTED, BANNED_DECLARED, OFFICIAL_WEIGHTS, checkScale }) => {
     const phone = document.querySelector('.phone') || document.body;
     const vw = window.innerWidth;
+    // 넘침을 boolean 이 아니라 **px 크기**로 저장한다 ([L11]).
+    // boolean 이면 5px 넘침이 50px 이 돼도 같은 "1건" 이라 악화를 못 잡는다.
+    const phoneOverflowPx = Math.max(0, phone.scrollWidth - phone.clientWidth);
+    const documentOverflowPx = Math.max(0, document.documentElement.scrollWidth - vw);
     const out = {
-      phoneOverflow: phone.scrollWidth > phone.clientWidth + 1,
+      phoneOverflow: phoneOverflowPx > 1,
+      phoneOverflowPx,
       // viewport 경계 기준. 확대된 .phone 이 화면 밖으로 나가는 경우를 잡는다 ([L3])
-      documentOverflow: document.documentElement.scrollWidth > vw + 1,
-      viewportEscapees: [], bannedComputed: [], bannedDeclared: [], offScale: [], fonts: null,
+      documentOverflow: documentOverflowPx > 1,
+      documentOverflowPx,
+      viewportEscapees: [], escapeeDetail: [], bannedComputed: [], bannedDeclared: [], offScale: [], fonts: null,
     };
     const label = e => (typeof e.className === 'string' && e.className.trim()) || e.tagName;
     // 가로 스크롤 컨테이너 안이거나 보이지 않으면 viewport 밖으로 나가는 것이 정상이다 ([L9])
@@ -143,10 +153,14 @@ const INBROWSER = {
     const visible = e => { const cs = getComputedStyle(e);
       return cs.visibility !== 'hidden' && cs.display !== 'none' && parseFloat(cs.opacity || '1') > 0.01; };
 
+    let escapeeSeq = 0;
     for (const e of phone.querySelectorAll('*')) {
       const r = e.getBoundingClientRect();
       if (r.width > 0 && (r.right > vw + 1 || r.left < -1) && visible(e) && !inScrollableX(e)) {
         out.viewportEscapees.push(`${label(e)} ${Math.round(r.left)}..${Math.round(r.right)}/${vw}`);
+        // 좌·우 이탈 px 을 따로 저장한다. 어느 쪽으로 얼마나 나갔는지가 악화 판정의 단위다.
+        out.escapeeDetail.push({ id: `${label(e)}#${escapeeSeq++}`, cls: label(e),
+          leftPx: Math.max(0, Math.round(-r.left)), rightPx: Math.max(0, Math.round(r.right - vw)) });
       }
 
       const cs = getComputedStyle(e);
@@ -305,8 +319,11 @@ const passSummary = Object.fromEntries(PASSES.map(p => {
   return [p.id, {
     mode: p.mode,
     phoneOverflow: all.filter(r => r.phoneOverflow).length,
+    phoneOverflowMaxPx: Math.max(0, ...all.map(r => r.phoneOverflowPx ?? 0)),
     documentOverflow: all.filter(r => r.documentOverflow).length,
+    documentOverflowMaxPx: Math.max(0, ...all.map(r => r.documentOverflowPx ?? 0)),
     viewportEscapees: uniq(all.flatMap(r => r.viewportEscapees)).length,
+    escapeeMaxPx: Math.max(0, ...all.flatMap(r => (r.escapeeDetail ?? []).map(d => Math.max(d.leftPx, d.rightPx)))),
     pageErrors: all.reduce((s, r) => s + r.pageErrors.length, 0),
     consoleErrors: all.reduce((s, r) => s + r.consoleErrors.length, 0),
     fontFailures: all.reduce((s, r) => s + r.fontFailures.length, 0),
