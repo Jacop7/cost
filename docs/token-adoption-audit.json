@@ -1,0 +1,5541 @@
+{
+ "manifest": {
+  "generatedAt": "2026-09-04T15:03:47.292Z",
+  "schemaVersion": 1,
+  "script": {
+   "name": "token-adoption-audit.mjs",
+   "sha256": "767ade9d0ad593730f0c5288506140c3b5b2a8b3baabc1ad77fa00be604d39e2"
+  },
+  "repo": {
+   "headCommit": "6497666e655609a4f4bfe10bfaea6070dad01286",
+   "headTree": "ca59fa2944c2b8d56a32c86a73cd469d473176be"
+  },
+  "runner": {
+   "node": "v22.23.2",
+   "typescript": "5.9.3"
+  },
+  "selection": {
+   "roots": [
+    "apps/mobile/src",
+    "apps/mobile/app"
+   ],
+   "extensions": [
+    ".ts",
+    ".tsx"
+   ],
+   "excludeDirs": [
+    "node_modules",
+    "__tests__",
+    ".expo",
+    "dist",
+    "build"
+   ],
+   "excludeFileSuffixes": [
+    ".test.ts",
+    ".test.tsx",
+    ".d.ts"
+   ],
+   "note": "테스트·타입선언·빌드산출물은 제품 화면이 아니므로 제외한다."
+  },
+  "fileLayers": {
+   "tokenDefinition": [
+    "apps/mobile/src/theme/tokens.ts"
+   ],
+   "sharedComponentPrefixes": [
+    "apps/mobile/src/components/"
+   ],
+   "note": "공용 컴포넌트는 토큰을 소비해야 정상이므로 제외하지 않고 따로 센다"
+  },
+  "countedTokenObjects": [
+   "T",
+   "TYPE",
+   "space",
+   "radius",
+   "STATUS",
+   "FONT"
+  ],
+  "countedTokenValues": [
+   "cardShadow",
+   "tnum"
+  ],
+  "countedKitComponents": [
+   "Txt",
+   "Button",
+   "Icon",
+   "Sheet",
+   "AppHeader",
+   "SearchBar",
+   "SortSheet",
+   "MemoEditSheet",
+   "QueryState",
+   "Slider",
+   "EmptyState"
+  ],
+  "numericStyleProps": {
+   "typography": [
+    "fontSize",
+    "fontWeight",
+    "lineHeight",
+    "letterSpacing"
+   ],
+   "spacing": [
+    "padding",
+    "paddingTop",
+    "paddingRight",
+    "paddingBottom",
+    "paddingLeft",
+    "paddingHorizontal",
+    "paddingVertical",
+    "margin",
+    "marginTop",
+    "marginRight",
+    "marginBottom",
+    "marginLeft",
+    "marginHorizontal",
+    "marginVertical",
+    "gap",
+    "rowGap",
+    "columnGap"
+   ],
+   "radius": [
+    "borderRadius",
+    "borderTopLeftRadius",
+    "borderTopRightRadius",
+    "borderBottomLeftRadius",
+    "borderBottomRightRadius"
+   ],
+   "size": [
+    "width",
+    "height",
+    "minWidth",
+    "minHeight",
+    "maxWidth",
+    "maxHeight"
+   ]
+  },
+  "countingRules": {
+   "definitionRoles": "토큰 객체에 정의된 키의 수",
+   "distinctValues": "그 키들이 갖는 고유 값의 수 (TYPE 은 fontSize 기준)",
+   "usageOccurrences": "소비 파일의 프로퍼티 접근 횟수. 정의 파일과 배럴은 제외",
+   "usageFiles": "한 번이라도 접근한 소비 파일 수",
+   "jsxOccurrences": "JSX 요소로 실제 렌더된 횟수. import 만 한 파일은 세지 않는다",
+   "elementAccess": "X[key] 인덱스 접근도 센다. 동적 키는 X[computed] 로 묶는다",
+   "shadowing": "같은 이름의 지역 선언이 있으면 그 파일은 해당 심볼 집계에서 제외하고 목록에 남긴다"
+  }
+ },
+ "summary": {
+  "filesScanned": 185,
+  "filesByLayer": {
+   "tokenDefinition": 1,
+   "sharedComponent": 14,
+   "product": 170
+  },
+  "filesWithShadowedTokenNames": [
+   {
+    "file": "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx",
+    "shadowedSymbols": [
+     "STATUS"
+    ]
+   },
+   {
+    "file": "apps/mobile/src/theme/tokens.ts",
+    "shadowedSymbols": [
+     "T",
+     "FONT",
+     "TYPE",
+     "tnum",
+     "STATUS",
+     "space",
+     "radius",
+     "cardShadow"
+    ]
+   }
+  ],
+  "tokens": {
+   "T": {
+    "definitionRoles": 24,
+    "distinctValues": 22,
+    "roles": [
+     "bg",
+     "surface",
+     "surface2",
+     "blue",
+     "bluePressed",
+     "blueTint",
+     "blueLine",
+     "onColor",
+     "scrim",
+     "ink",
+     "ink2",
+     "sub",
+     "sub2",
+     "ter",
+     "line",
+     "line2",
+     "green",
+     "greenTint",
+     "amberTint",
+     "red",
+     "redTint",
+     "amberText",
+     "line3",
+     "gray400"
+    ],
+    "values": [
+     "#F2F4F6",
+     "#FFFFFF",
+     "#F9FAFB",
+     "#3182F6",
+     "#2272EB",
+     "#EBF3FE",
+     "rgba(49,130,246,0.2)",
+     "#FFFFFF",
+     "rgba(0,0,0,0.42)",
+     "#191F28",
+     "#333D4B",
+     "#4E5968",
+     "#6B7684",
+     "#8B95A1",
+     "#E5E8EB",
+     "#F2F4F6",
+     "#15B374",
+     "#E7F7F0",
+     "#FFF4E5",
+     "#F04452",
+     "#FEECEC",
+     "#E07A00",
+     "#D1D6DB",
+     "#B0B8C1"
+    ],
+    "usageOccurrences": 1816,
+    "usageFiles": 84,
+    "sharedComponent": {
+     "usageOccurrences": 149,
+     "usageFiles": 13
+    },
+    "product": {
+     "usageOccurrences": 1667,
+     "usageFiles": 71
+    },
+    "shadowedIn": [
+     "apps/mobile/src/theme/tokens.ts"
+    ]
+   },
+   "TYPE": {
+    "definitionRoles": 7,
+    "distinctValues": 6,
+    "roles": [
+     "display",
+     "title",
+     "header",
+     "body",
+     "bodyWeak",
+     "caption",
+     "captionSm"
+    ],
+    "values": [
+     "22",
+     "20",
+     "18",
+     "16",
+     "16",
+     "14",
+     "13"
+    ],
+    "usageOccurrences": 0,
+    "usageFiles": 0,
+    "sharedComponent": {
+     "usageOccurrences": 0,
+     "usageFiles": 0
+    },
+    "product": {
+     "usageOccurrences": 0,
+     "usageFiles": 0
+    },
+    "shadowedIn": [
+     "apps/mobile/src/theme/tokens.ts"
+    ]
+   },
+   "space": {
+    "definitionRoles": 6,
+    "distinctValues": 6,
+    "roles": [
+     "xs",
+     "sm",
+     "md",
+     "lg",
+     "xl",
+     "xxl"
+    ],
+    "values": [
+     "4",
+     "8",
+     "12",
+     "16",
+     "20",
+     "24"
+    ],
+    "usageOccurrences": 3,
+    "usageFiles": 1,
+    "sharedComponent": {
+     "usageOccurrences": 3,
+     "usageFiles": 1
+    },
+    "product": {
+     "usageOccurrences": 0,
+     "usageFiles": 0
+    },
+    "shadowedIn": [
+     "apps/mobile/src/theme/tokens.ts"
+    ]
+   },
+   "radius": {
+    "definitionRoles": 5,
+    "distinctValues": 5,
+    "roles": [
+     "sm",
+     "md",
+     "lg",
+     "xl",
+     "full"
+    ],
+    "values": [
+     "8",
+     "12",
+     "16",
+     "20",
+     "999"
+    ],
+    "usageOccurrences": 0,
+    "usageFiles": 0,
+    "sharedComponent": {
+     "usageOccurrences": 0,
+     "usageFiles": 0
+    },
+    "product": {
+     "usageOccurrences": 0,
+     "usageFiles": 0
+    },
+    "shadowedIn": [
+     "apps/mobile/src/theme/tokens.ts"
+    ]
+   },
+   "STATUS": {
+    "definitionRoles": 3,
+    "distinctValues": 3,
+    "roles": [
+     "ok",
+     "low",
+     "out"
+    ],
+    "values": [
+     {
+      "label": "여유",
+      "fg": "T.green",
+      "bg": "T.greenTint",
+      "bar": "T.green"
+     },
+     {
+      "label": "소진 임박",
+      "fg": "T.amberText",
+      "bg": "T.amberTint",
+      "bar": "T.amberText"
+     },
+     {
+      "label": "소진",
+      "fg": "T.red",
+      "bg": "T.redTint",
+      "bar": "T.red"
+     }
+    ],
+    "usageOccurrences": 1,
+    "usageFiles": 1,
+    "sharedComponent": {
+     "usageOccurrences": 1,
+     "usageFiles": 1
+    },
+    "product": {
+     "usageOccurrences": 0,
+     "usageFiles": 0
+    },
+    "shadowedIn": [
+     "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx",
+     "apps/mobile/src/theme/tokens.ts"
+    ]
+   },
+   "FONT": {
+    "definitionRoles": 2,
+    "distinctValues": 2,
+    "roles": [
+     "family",
+     "num"
+    ],
+    "values": [
+     "Pretendard",
+     "[tabular-nums]"
+    ],
+    "usageOccurrences": 2,
+    "usageFiles": 2,
+    "sharedComponent": {
+     "usageOccurrences": 2,
+     "usageFiles": 2
+    },
+    "product": {
+     "usageOccurrences": 0,
+     "usageFiles": 0
+    },
+    "shadowedIn": [
+     "apps/mobile/src/theme/tokens.ts"
+    ]
+   },
+   "cardShadow": {
+    "definitionRoles": 1,
+    "distinctValues": 1,
+    "usageOccurrences": 2,
+    "usageFiles": 1,
+    "sharedComponent": {
+     "usageOccurrences": 2,
+     "usageFiles": 1
+    },
+    "product": {
+     "usageOccurrences": 0,
+     "usageFiles": 0
+    },
+    "shadowedIn": [
+     "apps/mobile/src/theme/tokens.ts"
+    ]
+   },
+   "tnum": {
+    "definitionRoles": 1,
+    "distinctValues": 1,
+    "usageOccurrences": 46,
+    "usageFiles": 12,
+    "sharedComponent": {
+     "usageOccurrences": 4,
+     "usageFiles": 1
+    },
+    "product": {
+     "usageOccurrences": 42,
+     "usageFiles": 11
+    },
+    "shadowedIn": [
+     "apps/mobile/src/theme/tokens.ts"
+    ]
+   }
+  },
+  "kit": {
+   "Txt": {
+    "jsxOccurrences": 3,
+    "jsxFiles": 1,
+    "importFiles": 1,
+    "productJsxFiles": 0
+   },
+   "Button": {
+    "jsxOccurrences": 92,
+    "jsxFiles": 38,
+    "importFiles": 38,
+    "productJsxFiles": 35
+   },
+   "Icon": {
+    "jsxOccurrences": 189,
+    "jsxFiles": 61,
+    "importFiles": 64,
+    "productJsxFiles": 56
+   },
+   "Sheet": {
+    "jsxOccurrences": 47,
+    "jsxFiles": 35,
+    "importFiles": 34,
+    "productJsxFiles": 32
+   },
+   "AppHeader": {
+    "jsxOccurrences": 49,
+    "jsxFiles": 44,
+    "importFiles": 44,
+    "productJsxFiles": 44
+   },
+   "SearchBar": {
+    "jsxOccurrences": 7,
+    "jsxFiles": 7,
+    "importFiles": 7,
+    "productJsxFiles": 7
+   },
+   "SortSheet": {
+    "jsxOccurrences": 2,
+    "jsxFiles": 2,
+    "importFiles": 2,
+    "productJsxFiles": 2
+   },
+   "MemoEditSheet": {
+    "jsxOccurrences": 2,
+    "jsxFiles": 2,
+    "importFiles": 2,
+    "productJsxFiles": 2
+   },
+   "QueryState": {
+    "jsxOccurrences": 54,
+    "jsxFiles": 49,
+    "importFiles": 49,
+    "productJsxFiles": 49
+   },
+   "Slider": {
+    "jsxOccurrences": 2,
+    "jsxFiles": 2,
+    "importFiles": 2,
+    "productJsxFiles": 2
+   },
+   "EmptyState": {
+    "jsxOccurrences": 0,
+    "jsxFiles": 0,
+    "importFiles": 0,
+    "productJsxFiles": 0
+   }
+  },
+  "inlineLiterals": {
+   "typography": {
+    "occurrences": 1555,
+    "files": 79,
+    "distinctDeclarations": 26,
+    "sharedComponent": 94,
+    "product": 1461
+   },
+   "spacing": {
+    "occurrences": 1652,
+    "files": 79,
+    "distinctDeclarations": 164,
+    "sharedComponent": 94,
+    "product": 1558
+   },
+   "radius": {
+    "occurrences": 172,
+    "files": 58,
+    "distinctDeclarations": 20,
+    "sharedComponent": 23,
+    "product": 149
+   },
+   "size": {
+    "occurrences": 234,
+    "files": 61,
+    "distinctDeclarations": 63,
+    "sharedComponent": 31,
+    "product": 203
+   }
+  },
+  "hexColorLiterals": {
+   "occurrences": 48,
+   "files": 15,
+   "byLayer": {
+    "sharedComponent": 8,
+    "product": 40
+   },
+   "distinct": 26,
+   "values": {
+    "#B0B8C1": 2,
+    "#FFFFFF": 1,
+    "#FFF": 10,
+    "#000": 3,
+    "#F0EDFB": 2,
+    "#7C5CE0": 2,
+    "#EAF6F0": 2,
+    "#179E6B": 2,
+    "#FEF1E6": 2,
+    "#E08A2B": 2,
+    "#E8F1FB": 2,
+    "#2E6FD0": 2,
+    "#FDECEF": 1,
+    "#D94A5E": 1,
+    "#EDF3FF": 1,
+    "#3A6FD8": 1,
+    "#FFF5E0": 1,
+    "#D99A1C": 1,
+    "#D5DAE0": 1,
+    "#FFF9F0": 1,
+    "#3182F6": 1,
+    "#7A8694": 2,
+    "#C5CCD3": 2,
+    "#8B95A1": 1,
+    "#CDD3DA": 1,
+    "#5B6573": 1
+   }
+  },
+  "topInlineFiles": [
+   {
+    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
+    "inlineTotal": 247,
+    "breakdown": {
+     "typography": 130,
+     "spacing": 105,
+     "radius": 4,
+     "size": 8
+    }
+   },
+   {
+    "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
+    "inlineTotal": 174,
+    "breakdown": {
+     "typography": 71,
+     "spacing": 81,
+     "radius": 11,
+     "size": 11
+    }
+   },
+   {
+    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
+    "inlineTotal": 152,
+    "breakdown": {
+     "typography": 65,
+     "spacing": 69,
+     "radius": 9,
+     "size": 9
+    }
+   },
+   {
+    "file": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx",
+    "inlineTotal": 116,
+    "breakdown": {
+     "typography": 48,
+     "spacing": 59,
+     "radius": 7,
+     "size": 2
+    }
+   },
+   {
+    "file": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx",
+    "inlineTotal": 114,
+    "breakdown": {
+     "typography": 43,
+     "spacing": 58,
+     "radius": 7,
+     "size": 6
+    }
+   },
+   {
+    "file": "apps/mobile/src/components/kit/index.tsx",
+    "inlineTotal": 108,
+    "breakdown": {
+     "typography": 44,
+     "spacing": 41,
+     "radius": 14,
+     "size": 9
+    }
+   },
+   {
+    "file": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx",
+    "inlineTotal": 99,
+    "breakdown": {
+     "typography": 47,
+     "spacing": 41,
+     "radius": 2,
+     "size": 9
+    }
+   },
+   {
+    "file": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx",
+    "inlineTotal": 92,
+    "breakdown": {
+     "typography": 41,
+     "spacing": 43,
+     "radius": 5,
+     "size": 3
+    }
+   },
+   {
+    "file": "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx",
+    "inlineTotal": 90,
+    "breakdown": {
+     "typography": 43,
+     "spacing": 42,
+     "radius": 0,
+     "size": 5
+    }
+   },
+   {
+    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
+    "inlineTotal": 86,
+    "breakdown": {
+     "typography": 40,
+     "spacing": 40,
+     "radius": 3,
+     "size": 3
+    }
+   },
+   {
+    "file": "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx",
+    "inlineTotal": 82,
+    "breakdown": {
+     "typography": 37,
+     "spacing": 34,
+     "radius": 4,
+     "size": 7
+    }
+   },
+   {
+    "file": "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx",
+    "inlineTotal": 79,
+    "breakdown": {
+     "typography": 27,
+     "spacing": 39,
+     "radius": 6,
+     "size": 7
+    }
+   },
+   {
+    "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
+    "inlineTotal": 78,
+    "breakdown": {
+     "typography": 36,
+     "spacing": 36,
+     "radius": 4,
+     "size": 2
+    }
+   },
+   {
+    "file": "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx",
+    "inlineTotal": 73,
+    "breakdown": {
+     "typography": 30,
+     "spacing": 37,
+     "radius": 4,
+     "size": 2
+    }
+   },
+   {
+    "file": "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx",
+    "inlineTotal": 68,
+    "breakdown": {
+     "typography": 32,
+     "spacing": 30,
+     "radius": 4,
+     "size": 2
+    }
+   }
+  ]
+ },
+ "files": [
+  {
+   "file": "apps/mobile/app/(tabs)/_layout.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.blue": 1,
+    "T.line2": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "Icon": 1
+   },
+   "kitImport": [
+    "Icon"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 2,
+    "spacing": 1,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 2,
+   "tokenAccessTotal": 2,
+   "inlineTotal": 3
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/ingredients/[id].tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/ingredients/_layout.tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/ingredients/add-stock/[id].tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/ingredients/add.tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/ingredients/changes/[id].tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/ingredients/discards/[id].tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/ingredients/edit/[id].tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/ingredients/history/[id].tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/ingredients/index.tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/ingredients/option.tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/ingredients/purchases/[id].tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/my/_layout.tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/my/account.tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/my/categories.tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/my/category.tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/my/channels.tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/my/country.tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/my/hours.tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/my/index.tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/my/language.tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/my/notifications.tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/my/tax.tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/my/units.tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/my/vendors.tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/orders/_layout.tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/orders/complete.tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/orders/index.tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/recipes/[id].tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/recipes/_layout.tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/recipes/add.tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/recipes/avg-sales.tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/recipes/category.tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/recipes/changes/[id].tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/recipes/fixed-cost-edit.tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/recipes/fixed-cost.tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/recipes/index.tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/recipes/ingredient-search.tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/recipes/material-category.tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/recipes/material-search.tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/recipes/materials.tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/recipes/profit-history.tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/sales/_layout.tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/sales/analytics.tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/sales/channel.tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/sales/day-detail.tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/sales/day.tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/sales/expense.tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/sales/extra.tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/sales/fixed.tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/sales/index.tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/sales/material.tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/sales/menu.tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/sales/past.tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/sales/revenue.tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/sales/stock-check.tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/sales/tax.tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/(tabs)/sales/waste.tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/_layout.tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/app/index.tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/src/components/EmptyState.tsx",
+   "layer": "sharedComponent",
+   "tokenAccess": {
+    "space.xxl": 1,
+    "T.ink": 1,
+    "space.sm": 1,
+    "T.sub2": 1,
+    "space.lg": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 3,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 5,
+   "inlineTotal": 3
+  },
+  {
+   "file": "apps/mobile/src/components/history/HistoryLayout.tsx",
+   "layer": "sharedComponent",
+   "tokenAccess": {
+    "T.sub": 3,
+    "T.ink": 2,
+    "T.ter": 2,
+    "T.line2": 1,
+    "T.blue": 1,
+    "T.red": 1
+   },
+   "tokenValue": {
+    "tnum": 4
+   },
+   "kitJsx": {},
+   "kitImport": [
+    "Icon"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 14,
+    "spacing": 16,
+    "radius": 0,
+    "size": 2
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 10,
+   "inlineTotal": 32
+  },
+  {
+   "file": "apps/mobile/src/components/kit/AppHeader.tsx",
+   "layer": "sharedComponent",
+   "tokenAccess": {
+    "T.bg": 1,
+    "T.ink": 2
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "Icon": 1
+   },
+   "kitImport": [
+    "Icon"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 2,
+    "spacing": 4,
+    "radius": 0,
+    "size": 4
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 3,
+   "inlineTotal": 10
+  },
+  {
+   "file": "apps/mobile/src/components/kit/Button.tsx",
+   "layer": "sharedComponent",
+   "tokenAccess": {
+    "T.blue": 2,
+    "T.onColor": 1,
+    "T.blueTint": 1,
+    "T.line2": 1,
+    "T.ink2": 1,
+    "T.sub": 1,
+    "T.line": 1,
+    "T.redTint": 1,
+    "T.red": 1,
+    "T.bluePressed": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "Icon": 1
+   },
+   "kitImport": [
+    "Icon"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 1,
+    "spacing": 1,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 11,
+   "inlineTotal": 2
+  },
+  {
+   "file": "apps/mobile/src/components/kit/Icon.tsx",
+   "layer": "sharedComponent",
+   "tokenAccess": {
+    "T.ink": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 4,
+   "tokenAccessTotal": 1,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/src/components/kit/MemoEditSheet.tsx",
+   "layer": "sharedComponent",
+   "tokenAccess": {
+    "T.ter": 2,
+    "T.surface2": 1,
+    "T.ink": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "Sheet": 1,
+    "Button": 2
+   },
+   "kitImport": [
+    "Button",
+    "Sheet"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 3,
+    "spacing": 4,
+    "radius": 1,
+    "size": 1
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 4,
+   "inlineTotal": 9
+  },
+  {
+   "file": "apps/mobile/src/components/kit/QueryState.tsx",
+   "layer": "sharedComponent",
+   "tokenAccess": {
+    "T.blue": 1,
+    "T.sub2": 2,
+    "T.ink": 1,
+    "T.red": 1,
+    "T.ter": 2
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "Button": 1
+   },
+   "kitImport": [
+    "Button"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 10,
+    "spacing": 4,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 7,
+   "inlineTotal": 14
+  },
+  {
+   "file": "apps/mobile/src/components/kit/SearchBar.tsx",
+   "layer": "sharedComponent",
+   "tokenAccess": {
+    "T.surface": 1,
+    "T.line": 1,
+    "T.ter": 4,
+    "T.ink": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "Icon": 3
+   },
+   "kitImport": [
+    "Icon"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 2,
+    "spacing": 6,
+    "radius": 1,
+    "size": 5
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 7,
+   "inlineTotal": 14
+  },
+  {
+   "file": "apps/mobile/src/components/kit/Sheet.tsx",
+   "layer": "sharedComponent",
+   "tokenAccess": {
+    "T.scrim": 1,
+    "T.surface": 1,
+    "T.line": 1,
+    "T.ink": 1,
+    "T.sub2": 1,
+    "T.sub": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "Sheet": 1,
+    "Button": 2
+   },
+   "kitImport": [
+    "Button"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 6,
+    "spacing": 12,
+    "radius": 3,
+    "size": 3
+   },
+   "hexColors": 1,
+   "tokenAccessTotal": 6,
+   "inlineTotal": 24
+  },
+  {
+   "file": "apps/mobile/src/components/kit/Slider.tsx",
+   "layer": "sharedComponent",
+   "tokenAccess": {
+    "T.blue": 1,
+    "T.line2": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 3,
+    "size": 6
+   },
+   "hexColors": 2,
+   "tokenAccessTotal": 2,
+   "inlineTotal": 9
+  },
+  {
+   "file": "apps/mobile/src/components/kit/SortSheet.tsx",
+   "layer": "sharedComponent",
+   "tokenAccess": {
+    "T.line": 1,
+    "T.surface": 1,
+    "T.ink2": 1,
+    "T.sub2": 1,
+    "T.line2": 1,
+    "T.blue": 2,
+    "T.ink": 1,
+    "T.ter": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "Icon": 2,
+    "Sheet": 1
+   },
+   "kitImport": [
+    "Icon",
+    "Sheet"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 4,
+    "spacing": 6,
+    "radius": 1,
+    "size": 1
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 9,
+   "inlineTotal": 12
+  },
+  {
+   "file": "apps/mobile/src/components/kit/Txt.tsx",
+   "layer": "sharedComponent",
+   "tokenAccess": {
+    "FONT.num": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 1,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/src/components/kit/charts.tsx",
+   "layer": "sharedComponent",
+   "tokenAccess": {
+    "T.line2": 1,
+    "T.ter": 2,
+    "T.green": 1,
+    "T.sub2": 1,
+    "T.blue": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "Txt": 3
+   },
+   "kitImport": [
+    "Txt"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 5,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 1,
+   "tokenAccessTotal": 6,
+   "inlineTotal": 5
+  },
+  {
+   "file": "apps/mobile/src/components/kit/index.tsx",
+   "layer": "sharedComponent",
+   "tokenAccess": {
+    "FONT.num": 1,
+    "STATUS[[computed]]": 1,
+    "T.onColor": 5,
+    "T.line2": 4,
+    "T.sub2": 3,
+    "T.blueTint": 3,
+    "T.blue": 10,
+    "T.greenTint": 1,
+    "T.green": 3,
+    "T.amberTint": 1,
+    "T.amberText": 1,
+    "T.redTint": 1,
+    "T.red": 3,
+    "T.ter": 16,
+    "T.line": 7,
+    "T.surface": 6,
+    "T.ink": 9,
+    "T.sub": 5,
+    "T.surface2": 1,
+    "T.bg": 1,
+    "T.ink2": 1
+   },
+   "tokenValue": {
+    "cardShadow": 2
+   },
+   "kitJsx": {
+    "Icon": 6
+   },
+   "kitImport": [
+    "Icon"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 44,
+    "spacing": 41,
+    "radius": 14,
+    "size": 9
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 83,
+   "inlineTotal": 108
+  },
+  {
+   "file": "apps/mobile/src/features/business-day/businessDay.ts",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/src/features/business-day/components/BusinessDateGate.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.bg": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "AppHeader": 1,
+    "QueryState": 1
+   },
+   "kitImport": [
+    "AppHeader",
+    "QueryState"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 1,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/src/features/changes/components/RecentChangeRow.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.green": 1,
+    "T.greenTint": 1,
+    "T.amberText": 1,
+    "T.amberTint": 1,
+    "T.sub2": 1,
+    "T.line2": 2,
+    "T.blueTint": 1,
+    "T.blue": 1,
+    "T.sub": 1,
+    "T.ter": 2
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "Icon": 2
+   },
+   "kitImport": [
+    "Icon"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 5,
+    "spacing": 5,
+    "radius": 2,
+    "size": 3
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 12,
+   "inlineTotal": 15
+  },
+  {
+   "file": "apps/mobile/src/features/changes/hooks.ts",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/src/features/changes/index.ts",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.green": 1,
+    "T.greenTint": 1,
+    "T.amberText": 1,
+    "T.amberTint": 1,
+    "T.sub2": 3,
+    "T.line2": 4,
+    "T.sub": 2,
+    "T.line": 3,
+    "T.ter": 10,
+    "T.ink": 5,
+    "T.bg": 1,
+    "T.surface": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "AppHeader": 1,
+    "QueryState": 1,
+    "Icon": 2,
+    "Sheet": 1
+   },
+   "kitImport": [
+    "AppHeader",
+    "Icon",
+    "QueryState",
+    "Sheet"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 29,
+    "spacing": 27,
+    "radius": 2,
+    "size": 5
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 33,
+   "inlineTotal": 63
+  },
+  {
+   "file": "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.surface": 1,
+    "T.line": 1,
+    "T.surface2": 3,
+    "T.line2": 6,
+    "T.sub": 3,
+    "T.ter": 9,
+    "T.blue": 3,
+    "T.ink": 4,
+    "T.red": 2,
+    "T.amberText": 1,
+    "T.redTint": 1,
+    "T.blueTint": 1,
+    "T.sub2": 1
+   },
+   "tokenValue": {
+    "tnum": 6
+   },
+   "kitJsx": {
+    "Icon": 1
+   },
+   "kitImport": [
+    "Icon"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 35,
+    "spacing": 25,
+    "radius": 2,
+    "size": 2
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 36,
+   "inlineTotal": 64
+  },
+  {
+   "file": "apps/mobile/src/features/ingredients/components/CategoryPickerSheet.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.blueTint": 1,
+    "T.surface": 1,
+    "T.blue": 3,
+    "T.line": 1,
+    "T.ink2": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "Sheet": 1,
+    "QueryState": 1,
+    "Icon": 1
+   },
+   "kitImport": [
+    "Sheet",
+    "Icon",
+    "QueryState"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 2,
+    "spacing": 7,
+    "radius": 1,
+    "size": 1
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 7,
+   "inlineTotal": 11
+  },
+  {
+   "file": "apps/mobile/src/features/ingredients/components/IngCard.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.ink": 2,
+    "T.red": 1,
+    "T.amberText": 1,
+    "T.ter": 1,
+    "T.sub": 1,
+    "T.sub2": 1
+   },
+   "tokenValue": {
+    "tnum": 2
+   },
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 9,
+    "spacing": 7,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 7,
+   "inlineTotal": 16
+  },
+  {
+   "file": "apps/mobile/src/features/ingredients/components/LedgerRow.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.surface": 1,
+    "T.line2": 1,
+    "T.ter": 2,
+    "T.ink": 1,
+    "T.sub": 1,
+    "T.blue": 1,
+    "T.red": 2
+   },
+   "tokenValue": {
+    "tnum": 3
+   },
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 10,
+    "spacing": 5,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 9,
+   "inlineTotal": 15
+  },
+  {
+   "file": "apps/mobile/src/features/ingredients/components/LossCard.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.ter": 6,
+    "T.surface2": 2,
+    "T.line2": 3,
+    "T.sub": 2,
+    "T.amberText": 1,
+    "T.ink": 1,
+    "T.red": 1,
+    "T.ink2": 1,
+    "T.sub2": 1
+   },
+   "tokenValue": {
+    "tnum": 1
+   },
+   "kitJsx": {
+    "Icon": 2
+   },
+   "kitImport": [
+    "Icon"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 17,
+    "spacing": 13,
+    "radius": 0,
+    "size": 1
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 18,
+   "inlineTotal": 31
+  },
+  {
+   "file": "apps/mobile/src/features/ingredients/components/UnitPickerSheet.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.ink": 1,
+    "T.sub": 1,
+    "T.blueTint": 1,
+    "T.surface": 1,
+    "T.blue": 3,
+    "T.line": 1,
+    "T.ink2": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "Sheet": 1,
+    "Icon": 1
+   },
+   "kitImport": [
+    "Sheet",
+    "Icon"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 6,
+    "spacing": 10,
+    "radius": 1,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 9,
+   "inlineTotal": 17
+  },
+  {
+   "file": "apps/mobile/src/features/ingredients/components/VendorPickerSheet.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.blueTint": 3,
+    "T.surface": 2,
+    "T.blue": 9,
+    "T.line": 2,
+    "T.ter": 2,
+    "T.ink2": 1,
+    "T.line2": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "Sheet": 1,
+    "QueryState": 1,
+    "Icon": 3,
+    "Button": 2
+   },
+   "kitImport": [
+    "Button",
+    "Icon",
+    "Sheet",
+    "QueryState"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 7,
+    "spacing": 16,
+    "radius": 3,
+    "size": 1
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 20,
+   "inlineTotal": 27
+  },
+  {
+   "file": "apps/mobile/src/features/ingredients/hooks.ts",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/src/features/ingredients/index.ts",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/src/features/ingredients/ledger.ts",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.bg": 1,
+    "T.line2": 2,
+    "T.ter": 4,
+    "T.ink": 4,
+    "T.red": 2,
+    "T.scrim": 2,
+    "T.surface": 2,
+    "T.line": 2,
+    "T.blue": 2,
+    "T.surface2": 2
+   },
+   "tokenValue": {
+    "tnum": 4
+   },
+   "kitJsx": {
+    "AppHeader": 1,
+    "QueryState": 1,
+    "Icon": 2
+   },
+   "kitImport": [
+    "AppHeader",
+    "Icon",
+    "QueryState"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 16,
+    "spacing": 22,
+    "radius": 8,
+    "size": 9
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 23,
+   "inlineTotal": 55
+  },
+  {
+   "file": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.blueTint": 1,
+    "T.surface": 1,
+    "T.blue": 2,
+    "T.line": 3,
+    "T.sub": 4,
+    "T.surface2": 2,
+    "T.sub2": 2,
+    "T.ink": 4,
+    "T.ter": 2,
+    "T.ink2": 1
+   },
+   "tokenValue": {
+    "tnum": 4
+   },
+   "kitJsx": {
+    "Sheet": 2,
+    "Icon": 3,
+    "Button": 2
+   },
+   "kitImport": [
+    "Button",
+    "Icon",
+    "Sheet"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 16,
+    "spacing": 21,
+    "radius": 3,
+    "size": 2
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 22,
+   "inlineTotal": 42
+  },
+  {
+   "file": "apps/mobile/src/features/ingredients/screens/IngredientAddScreen.tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.surface2": 5,
+    "T.line2": 5,
+    "T.sub": 5,
+    "T.bg": 1,
+    "T.ink2": 3,
+    "T.ink": 7,
+    "T.amberText": 1,
+    "T.ter": 7,
+    "T.red": 3,
+    "T.sub2": 2,
+    "T.blue": 1,
+    "T.line3": 1,
+    "T.scrim": 1,
+    "T.surface": 1,
+    "T.line": 2
+   },
+   "tokenValue": {
+    "tnum": 8
+   },
+   "kitJsx": {
+    "AppHeader": 1,
+    "Icon": 4,
+    "QueryState": 1,
+    "MemoEditSheet": 1
+   },
+   "kitImport": [
+    "AppHeader",
+    "Icon",
+    "MemoEditSheet",
+    "QueryState"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 41,
+    "spacing": 43,
+    "radius": 5,
+    "size": 3
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 45,
+   "inlineTotal": 92
+  },
+  {
+   "file": "apps/mobile/src/features/ingredients/screens/IngredientEditScreen.tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/src/features/ingredients/screens/IngredientFormScreen.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.bg": 1,
+    "T.surface": 2,
+    "T.line": 1,
+    "T.ink": 1,
+    "T.ter": 2,
+    "T.blueTint": 2,
+    "T.blue": 4,
+    "T.sub2": 3,
+    "T.sub": 1,
+    "T.surface2": 1,
+    "T.line2": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "AppHeader": 1,
+    "QueryState": 1,
+    "Icon": 4,
+    "Button": 1
+   },
+   "kitImport": [
+    "AppHeader",
+    "Button",
+    "Icon",
+    "QueryState"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 11,
+    "spacing": 23,
+    "radius": 4,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 19,
+   "inlineTotal": 38
+  },
+  {
+   "file": "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.bg": 1,
+    "T.ink": 1,
+    "T.blue": 1,
+    "T.ink2": 2,
+    "T.red": 4,
+    "T.surface": 1,
+    "T.line3": 1,
+    "T.redTint": 1,
+    "T.amberText": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "Icon": 3,
+    "SearchBar": 1,
+    "QueryState": 1,
+    "SortSheet": 1
+   },
+   "kitImport": [
+    "Icon",
+    "SearchBar",
+    "SortSheet",
+    "QueryState"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 6,
+    "spacing": 14,
+    "radius": 2,
+    "size": 7
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 13,
+   "inlineTotal": 29
+  },
+  {
+   "file": "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.bg": 1,
+    "T.line2": 1,
+    "T.ter": 3,
+    "T.ink": 2,
+    "T.sub": 1
+   },
+   "tokenValue": {
+    "tnum": 3
+   },
+   "kitJsx": {
+    "AppHeader": 1,
+    "QueryState": 1,
+    "Icon": 1
+   },
+   "kitImport": [
+    "AppHeader",
+    "Icon",
+    "QueryState"
+   ],
+   "shadowedSymbols": [
+    "STATUS"
+   ],
+   "inline": {
+    "typography": 11,
+    "spacing": 11,
+    "radius": 0,
+    "size": 3
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 8,
+   "inlineTotal": 25
+  },
+  {
+   "file": "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.bg": 2,
+    "T.ink": 5,
+    "T.sub2": 1,
+    "T.ink2": 1,
+    "T.surface": 4,
+    "T.line": 2,
+    "T.ter": 7,
+    "T.line2": 3,
+    "T.sub": 2,
+    "T.blue": 2,
+    "T.line3": 1,
+    "T.scrim": 1,
+    "T.surface2": 2,
+    "T.red": 1
+   },
+   "tokenValue": {
+    "tnum": 5
+   },
+   "kitJsx": {
+    "AppHeader": 2,
+    "Button": 3,
+    "Icon": 5,
+    "QueryState": 1
+   },
+   "kitImport": [
+    "AppHeader",
+    "Button",
+    "Icon",
+    "QueryState"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 27,
+    "spacing": 39,
+    "radius": 6,
+    "size": 7
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 34,
+   "inlineTotal": 79
+  },
+  {
+   "file": "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.ter": 8,
+    "T.red": 2,
+    "T.ink": 8,
+    "T.line2": 5,
+    "T.sub": 5,
+    "T.blue": 12,
+    "T.bg": 1,
+    "T.line": 2,
+    "T.surface": 2,
+    "T.onColor": 1,
+    "T.surface2": 1,
+    "T.blueTint": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "AppHeader": 1,
+    "QueryState": 1,
+    "Icon": 7,
+    "Button": 1,
+    "Sheet": 1
+   },
+   "kitImport": [
+    "AppHeader",
+    "Button",
+    "Icon",
+    "QueryState",
+    "Sheet"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 37,
+    "spacing": 34,
+    "radius": 4,
+    "size": 7
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 48,
+   "inlineTotal": 82
+  },
+  {
+   "file": "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.surface": 3,
+    "T.ink": 3,
+    "T.ter": 8,
+    "T.sub2": 4,
+    "T.surface2": 1,
+    "T.line3": 1,
+    "T.red": 6,
+    "T.sub": 5,
+    "T.blue": 3,
+    "T.line": 1,
+    "T.blueTint": 1,
+    "T.redTint": 2,
+    "T.greenTint": 1,
+    "T.green": 1,
+    "T.ink2": 1,
+    "T.line2": 2
+   },
+   "tokenValue": {
+    "tnum": 5
+   },
+   "kitJsx": {
+    "Sheet": 1,
+    "Icon": 2,
+    "Button": 2
+   },
+   "kitImport": [
+    "Sheet",
+    "Button",
+    "Icon"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 32,
+    "spacing": 30,
+    "radius": 4,
+    "size": 2
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 43,
+   "inlineTotal": 68
+  },
+  {
+   "file": "apps/mobile/src/features/ingredients/screens/StockHistoryScreen.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.bg": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "AppHeader": 1,
+    "QueryState": 1
+   },
+   "kitImport": [
+    "AppHeader",
+    "Icon",
+    "QueryState"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 1,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 1,
+   "inlineTotal": 1
+  },
+  {
+   "file": "apps/mobile/src/features/international-tax/RecipeTaxStatusCard.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.ink": 1,
+    "T.ink2": 2,
+    "T.sub2": 1,
+    "T.blue": 1,
+    "T.ter": 1,
+    "T.red": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "QueryState": 1,
+    "Button": 3
+   },
+   "kitImport": [
+    "Button",
+    "QueryState"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 10,
+    "spacing": 7,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 7,
+   "inlineTotal": 17
+  },
+  {
+   "file": "apps/mobile/src/features/international-tax/contracts.ts",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/src/features/international-tax/hooks.ts",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/src/features/international-tax/index.ts",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/src/features/master-data/hooks.ts",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/src/features/my/components/ChannelWeightSheet.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.ter": 3,
+    "T.blue": 7,
+    "T.line": 1,
+    "T.blueTint": 2,
+    "T.surface": 1,
+    "T.ink": 2,
+    "T.surface2": 1,
+    "T.sub": 2
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "Sheet": 1,
+    "Icon": 2,
+    "Slider": 1,
+    "Button": 2
+   },
+   "kitImport": [
+    "Button",
+    "Icon",
+    "Sheet",
+    "Slider"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 14,
+    "spacing": 15,
+    "radius": 2,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 19,
+   "inlineTotal": 31
+  },
+  {
+   "file": "apps/mobile/src/features/my/components/RevenueGapCard.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.ter": 3,
+    "T.amberText": 1,
+    "T.sub2": 1,
+    "T.amberTint": 1,
+    "T.surface2": 1,
+    "T.line2": 2,
+    "T.blue": 4,
+    "T.blueTint": 1,
+    "T.sub": 1,
+    "T.ink": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "Icon": 3
+   },
+   "kitImport": [
+    "Icon"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 12,
+    "spacing": 12,
+    "radius": 1,
+    "size": 1
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 16,
+   "inlineTotal": 26
+  },
+  {
+   "file": "apps/mobile/src/features/my/hooks.ts",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/src/features/my/screens/FixedCostEditScreen.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.bg": 1,
+    "T.surface2": 2,
+    "T.line2": 2,
+    "T.sub": 1,
+    "T.sub2": 6,
+    "T.ter": 4,
+    "T.blue": 5,
+    "T.line3": 1,
+    "T.line": 1,
+    "T.ink": 2,
+    "T.blueTint": 1,
+    "T.amberTint": 1,
+    "T.amberText": 2,
+    "T.surface": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "AppHeader": 1,
+    "QueryState": 1,
+    "Icon": 6,
+    "Button": 1
+   },
+   "kitImport": [
+    "AppHeader",
+    "Button",
+    "Icon",
+    "QueryState"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 25,
+    "spacing": 26,
+    "radius": 4,
+    "size": 2
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 30,
+   "inlineTotal": 57
+  },
+  {
+   "file": "apps/mobile/src/features/my/screens/FixedCostScreen.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.bg": 1,
+    "T.ink": 7,
+    "T.sub2": 3,
+    "T.surface2": 1,
+    "T.line2": 4,
+    "T.sub": 1,
+    "T.ink2": 3,
+    "T.ter": 3,
+    "T.line": 1,
+    "T.surface": 1,
+    "T.blue": 2
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "AppHeader": 1,
+    "QueryState": 1,
+    "Icon": 2,
+    "Button": 1,
+    "Sheet": 1
+   },
+   "kitImport": [
+    "AppHeader",
+    "Button",
+    "Icon",
+    "QueryState",
+    "Sheet"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 32,
+    "spacing": 30,
+    "radius": 0,
+    "size": 2
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 27,
+   "inlineTotal": 64
+  },
+  {
+   "file": "apps/mobile/src/features/my/screens/MyAccountScreen.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.bg": 1,
+    "T.redTint": 1,
+    "T.red": 1,
+    "T.ink": 1,
+    "T.sub2": 1,
+    "T.line2": 1,
+    "T.sub": 2
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "AppHeader": 1,
+    "Icon": 1,
+    "Button": 3,
+    "Sheet": 1
+   },
+   "kitImport": [
+    "AppHeader",
+    "Button",
+    "Icon",
+    "Sheet"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 8,
+    "spacing": 11,
+    "radius": 1,
+    "size": 3
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 8,
+   "inlineTotal": 23
+  },
+  {
+   "file": "apps/mobile/src/features/my/screens/MyCategoryHubScreen.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.blueTint": 1,
+    "T.blue": 1,
+    "T.bg": 1,
+    "T.ter": 2,
+    "T.line2": 1,
+    "T.ink": 1,
+    "T.line3": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "AppHeader": 1,
+    "QueryState": 1,
+    "Icon": 2
+   },
+   "kitImport": [
+    "AppHeader",
+    "Icon",
+    "QueryState"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 4,
+    "spacing": 9,
+    "radius": 1,
+    "size": 3
+   },
+   "hexColors": 6,
+   "tokenAccessTotal": 8,
+   "inlineTotal": 17
+  },
+  {
+   "file": "apps/mobile/src/features/my/screens/MyCategoryScreen.tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/src/features/my/screens/MyChannelsScreen.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.bg": 1,
+    "T.ink": 1,
+    "T.ter": 3,
+    "T.line2": 1,
+    "T.surface2": 1,
+    "T.sub2": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "AppHeader": 1,
+    "QueryState": 1,
+    "Icon": 2,
+    "Sheet": 1,
+    "Button": 2
+   },
+   "kitImport": [
+    "AppHeader",
+    "Button",
+    "Icon",
+    "QueryState",
+    "Sheet"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 7,
+    "spacing": 13,
+    "radius": 0,
+    "size": 1
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 8,
+   "inlineTotal": 21
+  },
+  {
+   "file": "apps/mobile/src/features/my/screens/MyCountryScreen.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.bg": 1,
+    "T.ter": 4,
+    "T.sub2": 2,
+    "T.red": 1,
+    "T.blue": 2,
+    "T.line2": 1,
+    "T.blueTint": 1,
+    "T.surface": 1,
+    "T.ink2": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "AppHeader": 1,
+    "QueryState": 2,
+    "Button": 2
+   },
+   "kitImport": [
+    "AppHeader",
+    "Button",
+    "QueryState"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 11,
+    "spacing": 13,
+    "radius": 1,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 14,
+   "inlineTotal": 25
+  },
+  {
+   "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.blueTint": 2,
+    "T.blue": 2,
+    "T.redTint": 1,
+    "T.red": 1,
+    "T.bg": 2,
+    "T.ink": 4,
+    "T.sub2": 1,
+    "T.onColor": 1,
+    "T.ter": 2,
+    "T.line2": 1,
+    "T.line3": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "Icon": 3
+   },
+   "kitImport": [
+    "Icon"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 10,
+    "spacing": 14,
+    "radius": 2,
+    "size": 5
+   },
+   "hexColors": 16,
+   "tokenAccessTotal": 18,
+   "inlineTotal": 31
+  },
+  {
+   "file": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.line2": 10,
+    "T.sub": 7,
+    "T.ter": 13,
+    "T.ink": 7,
+    "T.bg": 1,
+    "T.blue": 15,
+    "T.surface2": 3,
+    "T.line": 4,
+    "T.blueTint": 2,
+    "T.surface": 5,
+    "T.sub2": 4,
+    "T.onColor": 2,
+    "T.red": 2
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "Icon": 7,
+    "AppHeader": 1,
+    "QueryState": 1,
+    "Button": 5,
+    "Sheet": 2
+   },
+   "kitImport": [
+    "AppHeader",
+    "Button",
+    "Icon",
+    "QueryState",
+    "Sheet"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 48,
+    "spacing": 59,
+    "radius": 7,
+    "size": 2
+   },
+   "hexColors": 1,
+   "tokenAccessTotal": 75,
+   "inlineTotal": 116
+  },
+  {
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.bg": 1,
+    "T.red": 1,
+    "T.line2": 1,
+    "T.ink": 1,
+    "T.ter": 1,
+    "T.blue": 1,
+    "T.gray400": 1,
+    "T.sub2": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "AppHeader": 1,
+    "QueryState": 1,
+    "Button": 4,
+    "Icon": 1,
+    "Sheet": 1
+   },
+   "kitImport": [
+    "AppHeader",
+    "Button",
+    "Icon",
+    "QueryState",
+    "Sheet"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 6,
+    "spacing": 7,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 8,
+   "inlineTotal": 13
+  },
+  {
+   "file": "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.blue": 1,
+    "T.onColor": 1,
+    "T.bg": 1,
+    "T.redTint": 2,
+    "T.red": 4,
+    "T.ter": 4,
+    "T.line2": 1,
+    "T.ink": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "AppHeader": 1,
+    "QueryState": 1,
+    "Button": 2,
+    "Icon": 1
+   },
+   "kitImport": [
+    "AppHeader",
+    "Button",
+    "Icon",
+    "QueryState"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 10,
+    "spacing": 20,
+    "radius": 4,
+    "size": 7
+   },
+   "hexColors": 2,
+   "tokenAccessTotal": 15,
+   "inlineTotal": 41
+  },
+  {
+   "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.ter": 7,
+    "T.bg": 3,
+    "T.ink": 3,
+    "T.sub2": 4,
+    "T.red": 6,
+    "T.blue": 6,
+    "T.line2": 2,
+    "T.blueTint": 1,
+    "T.surface": 2,
+    "T.ink2": 1,
+    "T.redTint": 2,
+    "T.surface2": 1,
+    "T.sub": 2
+   },
+   "tokenValue": {
+    "tnum": 1
+   },
+   "kitJsx": {
+    "QueryState": 3,
+    "AppHeader": 3,
+    "Button": 7,
+    "Icon": 3
+   },
+   "kitImport": [
+    "AppHeader",
+    "Button",
+    "Icon",
+    "QueryState"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 36,
+    "spacing": 36,
+    "radius": 4,
+    "size": 2
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 40,
+   "inlineTotal": 78
+  },
+  {
+   "file": "apps/mobile/src/features/my/screens/MyUnitsScreen.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.line2": 2,
+    "T.sub": 2,
+    "T.ink": 2,
+    "T.ter": 5,
+    "T.bg": 3,
+    "T.redTint": 2,
+    "T.red": 5,
+    "T.blue": 1,
+    "T.line": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "AppHeader": 3,
+    "Button": 4
+   },
+   "kitImport": [
+    "AppHeader",
+    "Button"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 21,
+    "spacing": 28,
+    "radius": 3,
+    "size": 4
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 23,
+   "inlineTotal": 56
+  },
+  {
+   "file": "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.bg": 1,
+    "T.blue": 1,
+    "T.amberTint": 1,
+    "T.amberText": 2,
+    "T.sub2": 3,
+    "T.ter": 4,
+    "T.line2": 2,
+    "T.ink": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "AppHeader": 1,
+    "Icon": 5,
+    "QueryState": 1,
+    "Sheet": 1,
+    "Button": 2
+   },
+   "kitImport": [
+    "AppHeader",
+    "Button",
+    "Icon",
+    "QueryState",
+    "Sheet"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 10,
+    "spacing": 19,
+    "radius": 2,
+    "size": 9
+   },
+   "hexColors": 1,
+   "tokenAccessTotal": 15,
+   "inlineTotal": 40
+  },
+  {
+   "file": "apps/mobile/src/features/my/store.ts",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/src/features/my/weeklySchedule.ts",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/src/features/orders/hooks.ts",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.bg": 1,
+    "T.sub": 5,
+    "T.blue": 8,
+    "T.line": 3,
+    "T.blueTint": 4,
+    "T.surface": 4,
+    "T.ink": 4,
+    "T.sub2": 4,
+    "T.line2": 3,
+    "T.ink2": 1,
+    "T.ter": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "AppHeader": 1,
+    "Icon": 3,
+    "Button": 1,
+    "Sheet": 1,
+    "SearchBar": 1,
+    "QueryState": 1
+   },
+   "kitImport": [
+    "AppHeader",
+    "Button",
+    "Icon",
+    "QueryState",
+    "SearchBar",
+    "Sheet"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 30,
+    "spacing": 37,
+    "radius": 4,
+    "size": 2
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 38,
+   "inlineTotal": 73
+  },
+  {
+   "file": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.bg": 2,
+    "T.ink": 10,
+    "T.blue": 6,
+    "T.ink2": 4,
+    "T.line3": 1,
+    "T.ter": 6,
+    "T.surface2": 3,
+    "T.sub": 6,
+    "T.red": 2,
+    "T.line2": 1,
+    "T.sub2": 5,
+    "T.blueTint": 3,
+    "T.line": 1,
+    "T.surface": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "Icon": 8,
+    "SearchBar": 1,
+    "QueryState": 2,
+    "Button": 7,
+    "Sheet": 2
+   },
+   "kitImport": [
+    "Button",
+    "Icon",
+    "QueryState",
+    "SearchBar",
+    "Sheet"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 43,
+    "spacing": 58,
+    "radius": 7,
+    "size": 6
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 51,
+   "inlineTotal": 114
+  },
+  {
+   "file": "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.green": 1,
+    "T.red": 1,
+    "T.ter": 10,
+    "T.blue": 3,
+    "T.sub2": 2,
+    "T.line2": 1,
+    "T.ink": 1,
+    "T.line": 1,
+    "T.ink2": 1,
+    "T.amberText": 2
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "Sheet": 1,
+    "Slider": 1,
+    "Icon": 3,
+    "Button": 1
+   },
+   "kitImport": [
+    "Button",
+    "Icon",
+    "Sheet",
+    "Slider"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 33,
+    "spacing": 24,
+    "radius": 0,
+    "size": 2
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 23,
+   "inlineTotal": 59
+  },
+  {
+   "file": "apps/mobile/src/features/recipes/draftStore.ts",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/src/features/recipes/hooks.ts",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/src/features/recipes/profitHistory.ts",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.bg": 1,
+    "T.sub2": 4,
+    "T.ter": 3,
+    "T.ink": 3,
+    "T.blue": 6,
+    "T.blueTint": 2,
+    "T.surface": 4,
+    "T.line": 2,
+    "T.sub": 2,
+    "T.surface2": 1,
+    "T.line2": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "AppHeader": 1,
+    "QueryState": 1,
+    "Icon": 1,
+    "Button": 1
+   },
+   "kitImport": [
+    "AppHeader",
+    "Button",
+    "Icon",
+    "QueryState"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 27,
+    "spacing": 27,
+    "radius": 5,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 29,
+   "inlineTotal": 59
+  },
+  {
+   "file": "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.bg": 1,
+    "T.blue": 4,
+    "T.ter": 3,
+    "T.line2": 1,
+    "T.sub2": 2,
+    "T.ink": 1,
+    "T.blueTint": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "AppHeader": 1,
+    "Icon": 5,
+    "QueryState": 1,
+    "Sheet": 1,
+    "Button": 2
+   },
+   "kitImport": [
+    "AppHeader",
+    "Button",
+    "Icon",
+    "QueryState",
+    "Sheet"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 6,
+    "spacing": 17,
+    "radius": 1,
+    "size": 9
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 13,
+   "inlineTotal": 33
+  },
+  {
+   "file": "apps/mobile/src/features/recipes/screens/CategoryScreen.tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/src/features/recipes/screens/MaterialCategoryScreen.tsx",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.bg": 1,
+    "T.sub2": 3,
+    "T.line2": 1,
+    "T.ink": 2,
+    "T.ter": 4,
+    "T.blueTint": 3,
+    "T.blue": 11,
+    "T.amberTint": 1,
+    "T.amberText": 2,
+    "T.line": 2,
+    "T.surface": 2,
+    "T.ink2": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "AppHeader": 1,
+    "SearchBar": 1,
+    "QueryState": 1,
+    "Icon": 6,
+    "Sheet": 2,
+    "Button": 2
+   },
+   "kitImport": [
+    "AppHeader",
+    "Button",
+    "Icon",
+    "QueryState",
+    "SearchBar",
+    "Sheet"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 21,
+    "spacing": 27,
+    "radius": 4,
+    "size": 5
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 33,
+   "inlineTotal": 57
+  },
+  {
+   "file": "apps/mobile/src/features/recipes/screens/MaterialSearchScreen.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.bg": 1,
+    "T.blueTint": 1,
+    "T.blue": 4,
+    "T.ink": 2,
+    "T.sub2": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "AppHeader": 1,
+    "SearchBar": 1,
+    "Icon": 2,
+    "QueryState": 1
+   },
+   "kitImport": [
+    "AppHeader",
+    "Icon",
+    "QueryState",
+    "SearchBar"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 7,
+    "spacing": 11,
+    "radius": 1,
+    "size": 1
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 9,
+   "inlineTotal": 20
+  },
+  {
+   "file": "apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.ter": 4,
+    "T.green": 1,
+    "T.red": 1,
+    "T.line2": 3,
+    "T.ink": 4,
+    "T.sub": 4,
+    "T.line3": 2,
+    "T.bg": 1,
+    "T.blue": 1,
+    "T.sub2": 2,
+    "T.surface2": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "Icon": 1,
+    "AppHeader": 1,
+    "QueryState": 1,
+    "Sheet": 1
+   },
+   "kitImport": [
+    "AppHeader",
+    "Icon",
+    "QueryState",
+    "Sheet"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 28,
+    "spacing": 24,
+    "radius": 1,
+    "size": 1
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 24,
+   "inlineTotal": 54
+  },
+  {
+   "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.surface2": 2,
+    "T.line2": 7,
+    "T.sub": 4,
+    "T.ter": 19,
+    "T.blue": 21,
+    "T.red": 1,
+    "T.green": 1,
+    "T.bg": 1,
+    "T.blueTint": 5,
+    "T.surface": 5,
+    "T.line": 7,
+    "T.ink": 12,
+    "T.ink2": 3,
+    "T.sub2": 2,
+    "T.amberTint": 1,
+    "T.amberText": 2,
+    "T.onColor": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "Icon": 12,
+    "AppHeader": 1,
+    "QueryState": 1,
+    "Button": 3,
+    "Sheet": 2
+   },
+   "kitImport": [
+    "AppHeader",
+    "Button",
+    "Icon",
+    "QueryState",
+    "Sheet"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 71,
+    "spacing": 81,
+    "radius": 11,
+    "size": 11
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 94,
+   "inlineTotal": 174
+  },
+  {
+   "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.surface2": 4,
+    "T.line2": 11,
+    "T.sub": 9,
+    "T.ter": 30,
+    "T.surface": 2,
+    "T.line": 7,
+    "T.ink": 22,
+    "T.bg": 1,
+    "T.ink2": 11,
+    "T.red": 4,
+    "T.green": 2,
+    "T.line3": 2,
+    "T.gray400": 1,
+    "T.amberText": 1,
+    "T.blue": 7,
+    "T.sub2": 5,
+    "T.blueTint": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "AppHeader": 1,
+    "Icon": 6,
+    "QueryState": 1,
+    "MemoEditSheet": 1
+   },
+   "kitImport": [
+    "AppHeader",
+    "Icon",
+    "MemoEditSheet",
+    "QueryState"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 130,
+    "spacing": 105,
+    "radius": 4,
+    "size": 8
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 120,
+   "inlineTotal": 247
+  },
+  {
+   "file": "apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.bg": 1,
+    "T.ink": 1,
+    "T.sub2": 3,
+    "T.red": 1,
+    "T.blue": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "AppHeader": 1,
+    "SearchBar": 1,
+    "QueryState": 1,
+    "Icon": 1,
+    "Sheet": 1,
+    "Button": 2
+   },
+   "kitImport": [
+    "AppHeader",
+    "Button",
+    "Icon",
+    "QueryState",
+    "SearchBar",
+    "Sheet"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 6,
+    "spacing": 10,
+    "radius": 0,
+    "size": 1
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 7,
+   "inlineTotal": 17
+  },
+  {
+   "file": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.red": 1,
+    "T.green": 1,
+    "T.ink": 8,
+    "T.sub": 4,
+    "T.line2": 1,
+    "T.sub2": 1,
+    "T.amberTint": 1,
+    "T.amberText": 2,
+    "T.bg": 2,
+    "T.blue": 7,
+    "T.ink2": 2,
+    "T.line3": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "Icon": 6,
+    "SearchBar": 1,
+    "QueryState": 1,
+    "Sheet": 3
+   },
+   "kitImport": [
+    "Icon",
+    "QueryState",
+    "SearchBar",
+    "Sheet"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 30,
+    "spacing": 31,
+    "radius": 2,
+    "size": 4
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 31,
+   "inlineTotal": 67
+  },
+  {
+   "file": "apps/mobile/src/features/sales/channels.ts",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.line": 1,
+    "T.surface2": 1,
+    "T.surface": 1,
+    "T.ink": 2,
+    "T.sub2": 2,
+    "T.ter": 1,
+    "T.blue": 1,
+    "T.onColor": 1,
+    "T.line2": 2,
+    "T.line3": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "Icon": 2,
+    "Button": 2,
+    "Sheet": 1
+   },
+   "kitImport": [
+    "Button",
+    "Icon",
+    "Sheet"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 9,
+    "spacing": 8,
+    "radius": 2,
+    "size": 2
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 13,
+   "inlineTotal": 21
+  },
+  {
+   "file": "apps/mobile/src/features/sales/components/LateCloseSheet.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.ter": 1,
+    "T.line": 2,
+    "T.ink": 1,
+    "T.surface": 2,
+    "T.red": 1,
+    "T.blue": 2,
+    "T.blueTint": 1,
+    "T.sub2": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "Sheet": 1,
+    "Button": 1
+   },
+   "kitImport": [
+    "Button",
+    "Sheet"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 3,
+    "spacing": 9,
+    "radius": 2,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 11,
+   "inlineTotal": 14
+  },
+  {
+   "file": "apps/mobile/src/features/sales/components/MenuProfitSheet.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.blue": 3,
+    "T.green": 1,
+    "T.amberText": 2,
+    "T.line2": 4,
+    "T.sub": 4,
+    "T.ink": 4,
+    "T.ter": 5,
+    "T.sub2": 2,
+    "T.line": 1,
+    "T.blueTint": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "Sheet": 1,
+    "Icon": 2
+   },
+   "kitImport": [
+    "Icon",
+    "Sheet"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 38,
+    "spacing": 21,
+    "radius": 1,
+    "size": 4
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 27,
+   "inlineTotal": 64
+  },
+  {
+   "file": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.sub": 5,
+    "T.ter": 11,
+    "T.blue": 4,
+    "T.line2": 5,
+    "T.ink": 8,
+    "T.greenTint": 1,
+    "T.amberTint": 2,
+    "T.green": 2,
+    "T.amberText": 4,
+    "T.line3": 2,
+    "T.surface2": 3,
+    "T.line": 3,
+    "T.sub2": 2
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "Icon": 6
+   },
+   "kitImport": [
+    "Icon"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 47,
+    "spacing": 41,
+    "radius": 2,
+    "size": 9
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 52,
+   "inlineTotal": 99
+  },
+  {
+   "file": "apps/mobile/src/features/sales/components/SaleStepper.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.line2": 2,
+    "T.blue": 1,
+    "T.onColor": 1,
+    "T.sub": 1,
+    "T.ink": 1,
+    "T.ter": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "Icon": 1
+   },
+   "kitImport": [
+    "Icon"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 2,
+    "spacing": 1,
+    "radius": 1,
+    "size": 3
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 7,
+   "inlineTotal": 7
+  },
+  {
+   "file": "apps/mobile/src/features/sales/components/ShortageWarningSheet.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.sub": 1,
+    "T.surface2": 1,
+    "T.line2": 1,
+    "T.ink": 1,
+    "T.red": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "Sheet": 1,
+    "Button": 2
+   },
+   "kitImport": [
+    "Button",
+    "Sheet"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 6,
+    "spacing": 8,
+    "radius": 1,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 5,
+   "inlineTotal": 15
+  },
+  {
+   "file": "apps/mobile/src/features/sales/dayContract.ts",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/src/features/sales/hooks.ts",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/src/features/sales/pendingSale.ts",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/src/features/sales/period.ts",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.bg": 1,
+    "T.ter": 10,
+    "T.amberText": 1,
+    "T.green": 2,
+    "T.line2": 1,
+    "T.blue": 6,
+    "T.ink": 3,
+    "T.sub2": 1,
+    "T.line": 1,
+    "T.blueTint": 1,
+    "T.surface": 1,
+    "T.red": 1,
+    "T.surface2": 1,
+    "T.onColor": 1,
+    "T.ink2": 1,
+    "T.line3": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "AppHeader": 1,
+    "QueryState": 1,
+    "Icon": 5,
+    "Sheet": 2,
+    "Button": 3
+   },
+   "kitImport": [
+    "AppHeader",
+    "Button",
+    "Icon",
+    "QueryState",
+    "Sheet"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 17,
+    "spacing": 28,
+    "radius": 2,
+    "size": 6
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 33,
+   "inlineTotal": 53
+  },
+  {
+   "file": "apps/mobile/src/features/sales/screens/SalesChannelScreen.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.bg": 1,
+    "T.red": 1,
+    "T.green": 1,
+    "T.surface2": 1,
+    "T.line2": 1,
+    "T.sub2": 1,
+    "T.sub": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "AppHeader": 1,
+    "QueryState": 1
+   },
+   "kitImport": [
+    "AppHeader",
+    "Icon",
+    "QueryState"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 2,
+    "spacing": 10,
+    "radius": 1,
+    "size": 2
+   },
+   "hexColors": 3,
+   "tokenAccessTotal": 7,
+   "inlineTotal": 15
+  },
+  {
+   "file": "apps/mobile/src/features/sales/screens/SalesDayDetailScreen.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.bg": 2,
+    "T.ter": 1,
+    "T.amberTint": 1,
+    "T.amberText": 2,
+    "T.line2": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "AppHeader": 1,
+    "QueryState": 1,
+    "Icon": 1,
+    "Button": 1
+   },
+   "kitImport": [
+    "AppHeader",
+    "Button",
+    "Icon",
+    "QueryState"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 5,
+    "spacing": 11,
+    "radius": 1,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 7,
+   "inlineTotal": 17
+  },
+  {
+   "file": "apps/mobile/src/features/sales/screens/SalesDayFullScreen.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.green": 1,
+    "T.amberText": 1,
+    "T.bg": 1,
+    "T.line2": 5,
+    "T.sub": 4,
+    "T.ink": 7,
+    "T.ter": 5,
+    "T.line": 1,
+    "T.sub2": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "AppHeader": 1,
+    "QueryState": 1
+   },
+   "kitImport": [
+    "AppHeader",
+    "QueryState"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 36,
+    "spacing": 22,
+    "radius": 0,
+    "size": 3
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 26,
+   "inlineTotal": 61
+  },
+  {
+   "file": "apps/mobile/src/features/sales/screens/SalesExpenseScreen.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.bg": 1,
+    "T.line2": 1,
+    "T.ink": 4,
+    "T.ter": 2,
+    "T.sub": 1,
+    "T.line": 1,
+    "T.ink2": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "AppHeader": 1,
+    "QueryState": 1,
+    "Icon": 1
+   },
+   "kitImport": [
+    "AppHeader",
+    "Icon",
+    "QueryState"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 17,
+    "spacing": 13,
+    "radius": 1,
+    "size": 1
+   },
+   "hexColors": 1,
+   "tokenAccessTotal": 11,
+   "inlineTotal": 32
+  },
+  {
+   "file": "apps/mobile/src/features/sales/screens/SalesExtraScreen.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.bg": 1,
+    "T.line2": 2,
+    "T.sub": 2,
+    "T.ter": 2,
+    "T.ink": 5,
+    "T.line3": 1,
+    "T.surface2": 1,
+    "T.ink2": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "AppHeader": 1,
+    "QueryState": 1,
+    "Icon": 1,
+    "Sheet": 1
+   },
+   "kitImport": [
+    "AppHeader",
+    "Icon",
+    "QueryState",
+    "Sheet"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 17,
+    "spacing": 16,
+    "radius": 1,
+    "size": 2
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 15,
+   "inlineTotal": 36
+  },
+  {
+   "file": "apps/mobile/src/features/sales/screens/SalesFixedScreen.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.bg": 1,
+    "T.ink2": 2,
+    "T.amberTint": 1,
+    "T.amberText": 2,
+    "T.ink": 2,
+    "T.ter": 2,
+    "T.surface2": 1,
+    "T.line2": 1,
+    "T.sub": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "AppHeader": 1,
+    "Icon": 3,
+    "QueryState": 1
+   },
+   "kitImport": [
+    "AppHeader",
+    "Icon",
+    "QueryState"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 13,
+    "spacing": 14,
+    "radius": 1,
+    "size": 4
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 13,
+   "inlineTotal": 32
+  },
+  {
+   "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.bg": 2,
+    "T.ink": 8,
+    "T.sub2": 6,
+    "T.ink2": 1,
+    "T.red": 4,
+    "T.redTint": 1,
+    "T.sub": 6,
+    "T.blue": 9,
+    "T.onColor": 3,
+    "T.line": 3,
+    "T.surface": 2,
+    "T.line2": 4,
+    "T.ter": 11,
+    "T.amberText": 3,
+    "T.surface2": 1,
+    "T.blueTint": 2,
+    "T.amberTint": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "Icon": 10,
+    "QueryState": 1,
+    "Sheet": 3,
+    "Button": 3,
+    "SortSheet": 1
+   },
+   "kitImport": [
+    "Button",
+    "Icon",
+    "QueryState",
+    "Sheet",
+    "SortSheet"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 65,
+    "spacing": 69,
+    "radius": 9,
+    "size": 9
+   },
+   "hexColors": 1,
+   "tokenAccessTotal": 67,
+   "inlineTotal": 152
+  },
+  {
+   "file": "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.bg": 1,
+    "T.ink": 6,
+    "T.line2": 3,
+    "T.sub": 2,
+    "T.ter": 3,
+    "T.line3": 1,
+    "T.blue": 4,
+    "T.surface2": 1,
+    "T.ink2": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "AppHeader": 1,
+    "QueryState": 1,
+    "Icon": 3,
+    "Sheet": 1
+   },
+   "kitImport": [
+    "AppHeader",
+    "Icon",
+    "QueryState",
+    "Sheet"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 24,
+    "spacing": 23,
+    "radius": 1,
+    "size": 2
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 22,
+   "inlineTotal": 50
+  },
+  {
+   "file": "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.surface2": 1,
+    "T.line2": 6,
+    "T.sub": 2,
+    "T.ter": 10,
+    "T.green": 2,
+    "T.red": 2,
+    "T.blue": 1,
+    "T.bg": 1,
+    "T.ink": 9,
+    "T.line": 1,
+    "T.ink2": 3,
+    "T.sub2": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "AppHeader": 1,
+    "QueryState": 1
+   },
+   "kitImport": [
+    "AppHeader",
+    "QueryState"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 43,
+    "spacing": 42,
+    "radius": 0,
+    "size": 5
+   },
+   "hexColors": 6,
+   "tokenAccessTotal": 39,
+   "inlineTotal": 90
+  },
+  {
+   "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.bg": 2,
+    "T.sub": 5,
+    "T.ink": 8,
+    "T.line2": 5,
+    "T.ter": 8,
+    "T.blue": 5,
+    "T.sub2": 2,
+    "T.surface2": 1,
+    "T.line": 1,
+    "T.blueTint": 1,
+    "T.surface": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "AppHeader": 1,
+    "QueryState": 2,
+    "Icon": 3,
+    "Button": 6,
+    "Sheet": 3
+   },
+   "kitImport": [
+    "AppHeader",
+    "Button",
+    "Icon",
+    "QueryState",
+    "Sheet"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 40,
+    "spacing": 40,
+    "radius": 3,
+    "size": 3
+   },
+   "hexColors": 1,
+   "tokenAccessTotal": 39,
+   "inlineTotal": 86
+  },
+  {
+   "file": "apps/mobile/src/features/sales/screens/SalesRevenueScreen.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.bg": 1,
+    "T.surface2": 1,
+    "T.line": 2,
+    "T.line2": 5,
+    "T.sub": 4,
+    "T.ink": 6,
+    "T.ter": 5,
+    "T.blue": 3,
+    "T.sub2": 2,
+    "T.ink2": 2
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "AppHeader": 1,
+    "QueryState": 1,
+    "Icon": 1
+   },
+   "kitImport": [
+    "AppHeader",
+    "Icon",
+    "QueryState"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 34,
+    "spacing": 26,
+    "radius": 0,
+    "size": 2
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 31,
+   "inlineTotal": 62
+  },
+  {
+   "file": "apps/mobile/src/features/sales/screens/SalesStockCheckScreen.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.bg": 1,
+    "T.ink": 3,
+    "T.ter": 3,
+    "T.line2": 3,
+    "T.red": 2,
+    "T.line3": 1,
+    "T.sub": 2,
+    "T.blue": 1,
+    "T.line": 1,
+    "T.surface": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "AppHeader": 1,
+    "QueryState": 1,
+    "Icon": 1
+   },
+   "kitImport": [
+    "AppHeader",
+    "Icon",
+    "QueryState"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 18,
+    "spacing": 13,
+    "radius": 1,
+    "size": 2
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 18,
+   "inlineTotal": 34
+  },
+  {
+   "file": "apps/mobile/src/features/sales/screens/SalesTaxScreen.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.bg": 1,
+    "T.ink": 1,
+    "T.sub2": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "AppHeader": 1,
+    "QueryState": 1
+   },
+   "kitImport": [
+    "AppHeader",
+    "QueryState"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 4,
+    "spacing": 9,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 3,
+   "inlineTotal": 13
+  },
+  {
+   "file": "apps/mobile/src/features/sales/screens/SalesWasteScreen.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.bg": 1,
+    "T.red": 2
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "AppHeader": 1,
+    "QueryState": 1
+   },
+   "kitImport": [
+    "AppHeader",
+    "QueryState"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 7,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 3,
+   "inlineTotal": 7
+  },
+  {
+   "file": "apps/mobile/src/features/settings/hooks.ts",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/src/lib/SessionProvider.tsx",
+   "layer": "product",
+   "tokenAccess": {
+    "T.bg": 1,
+    "T.blue": 1,
+    "T.sub2": 2,
+    "T.ink": 1
+   },
+   "tokenValue": {},
+   "kitJsx": {
+    "Button": 1
+   },
+   "kitImport": [
+    "Button"
+   ],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 6,
+    "spacing": 2,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 5,
+   "inlineTotal": 8
+  },
+  {
+   "file": "apps/mobile/src/lib/appVersion.ts",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/src/lib/date.ts",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/src/lib/json.ts",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/src/lib/nav.ts",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/src/lib/num.ts",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/src/lib/queryClient.ts",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/src/lib/rpcMonitoring.ts",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/src/lib/rpcValue.ts",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/src/lib/session.ts",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/src/lib/supabase.ts",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/src/lib/webAlert.ts",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/src/theme/fonts.ts",
+   "layer": "product",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [],
+   "inline": {
+    "typography": 0,
+    "spacing": 0,
+    "radius": 0,
+    "size": 0
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 0
+  },
+  {
+   "file": "apps/mobile/src/theme/tokens.ts",
+   "layer": "tokenDefinition",
+   "tokenAccess": {},
+   "tokenValue": {},
+   "kitJsx": {},
+   "kitImport": [],
+   "shadowedSymbols": [
+    "T",
+    "FONT",
+    "TYPE",
+    "tnum",
+    "STATUS",
+    "space",
+    "radius",
+    "cardShadow"
+   ],
+   "inline": {
+    "typography": 14,
+    "spacing": 0,
+    "radius": 0,
+    "size": 2
+   },
+   "hexColors": 0,
+   "tokenAccessTotal": 0,
+   "inlineTotal": 16
+  }
+ ]
+}
