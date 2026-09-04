@@ -6,12 +6,12 @@
 
 - 상태: 서비스 기준 재검토 개정안
 - 개정일: 2026-09-02
-- 현재 디자인 동기화 ID: `DS-20260904-004`
+- 현재 디자인 동기화 ID: `DS-20260904-005`
 - 적용 대상: `docs/prototypes/full-page-flow-prototype.html`, UI 적용 복사본과 향후 Expo 공용 UI
 - 등록 인벤토리: 프로토타입 `screen` 키 62개, 팝업·조건 상태 호스트 123개, 고유 ID 98개
   (PRT-182 정정: 이전 표기 `125 / 99`는 `PRT-151`이 `recipe_target_help`를 두 호스트에서
   제거하기 전 수치였다. HTML 레지스트리 실측이 권위이며 `123 / 98`이 맞다.)
-- 활성 도달성 검수: `screen` 키 62개, 팝업·조건 상태 호스트 120개, 고유 ID 97개
+- 활성 도달성 검수: `screen` 키 61개, 팝업·조건 상태 호스트 121개, 고유 ID 96개
 - 숨김 보존: `discard` 화면 키 1개와 `discard_type`·`discard_period` 상태 2개
 - 이번 개정 제외: 실제 Expo 화면, 프로토타입 HTML, DB, RPC
 - 공동 검토: Codex 전수검수 + `claude-opus-5` 도메인 대조·UI 가이드·서비스 관점·최종 회귀
@@ -1035,7 +1035,7 @@ renderer의 조건 상태로만 등록한다.
    `stock`의 폐기 상태로 치환되며 활성 도달성 게이트에서 제외된다.
 7. 활성 popup ID는 레지스트리의 `host / layerType / dismissPolicy / footerPolicy / renderer`를,
    PageState ID는 `host / stateRenderer`를 따르며 제목·DOM·CSS로 유형을 추론하지 않는다. 두 집합의
-   합계가 활성 popup/state 고유 ID 97개와 일치한다.
+   합계가 활성 popup/state 고유 ID 96개와 일치한다.
 8. Compact·Mobile·Tablet·Prototype desktop 폭에서 잘림·겹침이 없다.
 9. Web·Android·iOS 접근성 출시 게이트를 통과한다.
 10. 미정의 CSS 변수, 금지 굵기, `TYPE` 역할에 매핑되지 않은 제품 글자 크기가 0건이다.
@@ -1270,25 +1270,27 @@ renderer의 조건 상태로만 등록한다.
 
 ## 부록 B. 팝업·조건 상태 레지스트리
 
-현재 `popupTabs` 활성 레지스트리는 호스트 상태 120개, 고유 ID 97개다. 독립 폐기 내역 화면의
+현재 `popupTabs` 활성 레지스트리는 호스트 상태 121개, 고유 ID 96개다. 독립 폐기 내역 화면의
 옛 필터 상태는 숨김 보존하며 활성 도달성 검수에서는 제외한다.
 
 | 유형 | 등록 고유 ID | 등록 호스트 | 활성 고유 ID | 활성 호스트 |
 |---|---:|---:|---:|---:|
 | PickerSheet | 27 | 32 | 25 | 30 |
 | FormSheet | 28 | 43 | 28 | 43 |
-| InfoSheet | 15 | 16 | 15 | 16 |
+| InfoSheet | 14 | 14 | 14 | 14 |
 | ActionSheet | 2 | 2 | 2 | 2 |
 | ConfirmDialog | 15 | 20 | 15 | 20 |
 | SuccessDialog | 1 | 1 | 1 | 1 |
 | ErrorDialog | 1 | 1 | 1 | 1 |
 | PopoverMenu | 1 | 1 | 1 | 1 |
 | PageState | 9 | 9 | 9 | 9 |
-| 합계 | 99 | 125 | 97 | 123 |
+| 합계 | 98 | 123 | 96 | 121 |
 
-등록 검산식은 고유 ID `27+28+15+2+15+1+1+1+9=99`, 호스트 상태
-`32+43+16+2+20+1+1+1+9=125`다. 활성 검산식은 PickerSheet에서 숨김 2개를 뺀
-고유 ID `97`, 호스트 상태 `123`이다.
+등록 검산식은 고유 ID `27+28+14+2+15+1+1+1+9=98`, 호스트 상태
+`32+43+14+2+20+1+1+1+9=123`이다. 활성 검산식은 PickerSheet에서 숨김 2개를 뺀
+고유 ID `96`, 호스트 상태 `121`이다.
+(PRT-182·183 정정: 이전 표기 `99 / 125 / 97 / 123`은 `PRT-151`이 InfoSheet
+`recipe_target_help`를 `recipe_add`·`recipe_edit` 두 호스트에서 제거하기 전 수치였다.)
 
 ### B.1 PageState · 9개
 
@@ -1552,7 +1554,7 @@ B.1~B.2에만 보존하고 이 활성 레지스트리에는 넣지 않는다.
 
 ### B.9 popupTabs 밖의 제품 Layer 시연 host
 
-아래 화면 키는 URL popup ID가 아니라 Layer를 전체 화면 안에서 시연하는 host다. 활성 popup ID 97개
+아래 화면 키는 URL popup ID가 아니라 Layer를 전체 화면 안에서 시연하는 host다. 활성 popup ID 96개
 검산에는 더하지 않지만 `shell-excluded`의 자손 제품 검수에서는 제외하지 않는다.
 
 | screen key | 제품 역할 | dismissPolicy | footerPolicy | 목표 renderer |
