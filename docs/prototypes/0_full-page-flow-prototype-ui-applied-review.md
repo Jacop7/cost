@@ -1504,3 +1504,27 @@ Opus가 지정한 후속 위험은 다음과 같다.
 - 결과: PASS
 - 증거: PC·320px 62화면 순회 결과, 역할별 computed style 대조표(값·suffix·보조 수치),
   변경 전후 파일 해시, 변경 줄 범위 12~122행(`<style>` 블록 내부 한정)
+
+## DS-20260904-002 · PRT-179 검수 지적 반영 및 증거 재취득
+
+- 대상: 전 화면 공통 `<style>` 레이어. 검수 범위는 활성 화면 62개 + 활성 popup/state host 123개 = 185건
+- 기대값: 렌더된 숫자 text node와 입력값 전체가 `TYPE` 스케일(`22/20/18/16/14/13`) 안에 있고,
+  공식 굵기(`400/600/700/800`) 외 값이 0건이며, 단일 편집 입력에는 `tabular-nums`를 적용하지 않고,
+  필수 표시·곱셈 기호가 부모 크기를 유지해야 한다. 증거는 실제 Pretendard 로드 상태에서 취득한다.
+- 실제값: 185건 전수 스캔에서 스케일 밖 요소는 프로토타입 셸 2종만 남았다(폰 목업 상태바 시각
+  `11px/800`, 카탈로그 화면 ID 배지 `10px/700`). 둘 다 `shell-excluded`로 제품 UI가 아니다.
+  굵기는 `400 / 600 / 700 / 800` 네 값이며 금지 굵기 잔존 0건이다.
+  `tabular-nums` 선언은 132건이고 단일 편집 입력 6개 선택자에서 제거했다.
+- PC 검수: `http://127.0.0.1:8099/docs/prototypes/0_full-page-flow-prototype-ui-applied.html`
+  1280×900, 185건 순회 · 가로 넘침 0건 · 콘솔 오류 0건 · 폰트 요청 실패 0건 · PASS
+- 모바일 검수: 같은 URL 320×720, 185건 순회 · 가로 넘침 0건 · PASS.
+  추가로 320px 200% 확대에서도 185건 순회 · 가로 넘침 0건 · PASS
+- 측정: `document.fonts.check`로 Pretendard `400/600/700/800` 네 굵기 로드 확인,
+  `document.fonts.ready` 이후 측정. Pretendard는 정적 OTF 4종이며 가변축이 없다.
+  `font-weight` 분포 `400:4 / 600:51 / 700:165 / 800:103`, 중괄호 균형 일치
+- 미검수: 없음
+- 제약: 실기기 캡처는 수행하지 않았다. 데스크톱 Chromium에서 실제 Pretendard를 로드해 측정했다.
+- 결과: PASS
+- 증거: 185건 text node 스캔 결과, 3개 뷰포트 조건 회귀 결과, 폰트 로드 assert 로그,
+  변경 전 사본 `백업/0_full-page-flow-prototype-ui-applied_pre-PRT180.html`
+- 지적 반영: F01 APPLIED · F02 APPLIED · F03 APPLIED · F04 APPLIED · F05 APPLIED (반박 0건)
