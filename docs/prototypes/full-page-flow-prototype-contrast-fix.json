@@ -1,6 +1,6 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-04T19:59:45.829Z",
+  "generatedAt": "2026-09-04T20:14:53.544Z",
   "schemaVersion": 1,
   "script": {
    "name": "contrast-fix.mjs",
@@ -8,9 +8,9 @@
   },
   "designAudit": {
    "path": "design-audit.json",
-   "sha256": "017cd9642a0cfa9650682a44c568f53b49a4a473721e938b616d9b2de4f4acb2",
-   "targetSha256": "f358ae52b5a7f8ffa8c762632ade3f4dadb9fbfbd5623eb2d60be095c571c1bd",
-   "designSyncId": "DS-20260904-021"
+   "sha256": "eee49ab40b2ab463cd0160bb349a439c710b0145df553b79e4cf30cb439cfe75",
+   "targetSha256": "f1f07174617cba37c23977ccf8b7125d267526654f079855e9b6746e33c9667a",
+   "designSyncId": "DS-20260904-022"
   },
   "rules": {
    "기준": "WCAG 2.x AA — 일반 4.5:1, 큰 글자(24px 이상 또는 18.66px&700 이상) 3:1",
