@@ -294,7 +294,7 @@ else {
     Add-Failure "$designAuditName : 측정 스크립트 SHA 불일치. 감사=$($dAudit.manifest.script.sha256) 현재=$dScriptSha"
   }
   # 측정 규칙이 결과에 같이 적혀 있어야 한다. 규칙 없는 숫자는 재현할 수 없다.
-  foreach ($ruleKey in @('대상', '아이콘', '슬롯', '카드', '간격', 'margin auto')) {
+  foreach ($ruleKey in @('대상', '아이콘', '슬롯', '카드', '간격', 'margin auto', '출처', '타이포', '컨트롤')) {
     if ($null -eq $dAudit.manifest.rules.$ruleKey) {
       Add-Failure "$designAuditName : 측정 규칙 '$ruleKey' 누락"
     }
@@ -365,8 +365,17 @@ else {
   if ($iAudit.manifest.script.sha256 -ne $iScriptSha) {
     Add-Failure "$i18nName : 측정 스크립트 SHA 불일치. 감사=$($iAudit.manifest.script.sha256) 현재=$iScriptSha"
   }
-  foreach ($ruleKey in @('번역문', '단위', '숫자', '아이콘', '셸', '기준선', '가로 스크롤', '붙음', '집계 단위')) {
+  foreach ($ruleKey in @('번역문', '단위', '숫자', '아이콘', '셸', '기준선', '가로 스크롤', '붙음', '집계 단위', '정확도', '오차 방향', '재현하지 않는 것')) {
     if ($null -eq $iAudit.manifest.rules.$ruleKey) { Add-Failure "$i18nName : 측정 규칙 '$ruleKey' 누락" }
+  }
+  # 확대 정확도를 보고하지 않으면 "잘림 0" 이 무엇을 뜻하는지 알 수 없다.
+  # 특히 덜 늘어난 요소의 잘림 0 은 보수적이 아니라 낙관적이므로 atRisk 를 반드시 남긴다.
+  foreach ($passId in @('w130', 'w150', 'w130t2')) {
+    $st = $iAudit.summary.stretch.$passId
+    if ($null -eq $st) { Add-Failure "$i18nName : $passId 확대 통계 누락"; continue }
+    if ($null -eq $st.errorHistogram) { Add-Failure "$i18nName : $passId 오차 분포(errorHistogram) 누락" }
+    if ($null -eq $st.atRiskCount)    { Add-Failure "$i18nName : $passId atRisk 개수 누락 — 덜 늘어난 요소가 제대로 늘렸을 때 넘쳤을지 판정하지 않았다" }
+    if ($null -eq $st.underStretched) { Add-Failure "$i18nName : $passId underStretched 누락" }
   }
   if ($null -ne $audit -and $null -ne $audit.summary.activeTargets) {
     if ($iAudit.manifest.targetsMeasured -ne $audit.summary.activeTargets) {
@@ -401,7 +410,9 @@ $hashes = [ordered]@{}
 foreach ($fileName in $contentsByFile.Keys) {
   $hashes[$fileName] = Get-Sha256 $contentsByFile[$fileName]
 }
-foreach ($fileName in @($auditName, $auditScriptName, 'full-page-flow-prototype-render-audit-known.json', $designAuditName, $designAuditScriptName, $i18nName, $i18nScriptName)) {
+foreach ($fileName in @($auditName, $auditScriptName, 'full-page-flow-prototype-render-audit-known.json', $designAuditName, $designAuditScriptName, $i18nName, $i18nScriptName,
+    'full-page-flow-prototype-token-map.json', 'full-page-flow-prototype-token-map-check.mjs',
+    'full-page-flow-prototype-token-map-check.json')) {
   $contents = Read-Utf8 (Join-Path $PrototypeDirectory $fileName)
   if ($null -ne $contents) { $hashes[$fileName] = Get-Sha256 $contents }
 }
