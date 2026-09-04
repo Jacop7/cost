@@ -35,6 +35,11 @@
 키가 없어 렌더 자체가 불가능한 target**이다. 실측 근거가 없으므로 7항목은 전부 `TODO`로 두고,
 구현되기 전에는 어떤 항목도 `PASS`로 올리지 않는다. 감사 이력 보존을 위해 행은 지우지 않는다.
 
+`TODO`와 `SPEC_ONLY`를 섞지 않는다. **`TODO`는 검수를 아직 하지 않았다는 뜻이지 구현이
+없다는 뜻이 아니다.** 렌더 부재를 주장하려면 popup map 등록 여부와 실렌더로 확인하고
+`SPEC_ONLY`로 적는다. 레지스트리에 있는데 이 장부에 없던 target은 장부 누락일 뿐이며,
+그 사실만으로 미구현을 추론하지 않는다.
+
 ## 공통 적용 1차
 
 | 항목 | 구현 | Codex | Opus | 상태 |
@@ -869,6 +874,13 @@ Opus가 지정한 후속 위험은 다음과 같다.
 | popup:language_preview@my_language | my | FormSheet | COMMON | TODO | TODO | TODO | TODO | TODO |
 | popup:account_delete@my_account | my | FormSheet→ConfirmDialog | COMMON | PASS | REVIEW | PASS | TODO | IN_PROGRESS |
 
+`PRT-184`에서 추가한 세 행(`tax_country@my_tax`, `language_preview@my_language`,
+`fixed_period@my_fixed_edit`)이 `TODO`인 이유는 **개별 렌더·상호작용 검수를 아직 하지 않았기
+때문**이며 구현이 없어서가 아니다. 세 팝업 모두 적용본의 popup map에 등록돼 있고
+`openPopupTab()` → `openActualPopup()` → `showPrototypeSheet()` 경로로 실제 렌더된다
+(`PRT-185`에서 `tax_country`·`language_preview`를 실렌더로 확인). `screen:my_country`만이
+`screens` 레지스트리에 키가 없는 `SPEC_ONLY`다.
+
 ## 2026-09-01 · MY 1차 전수 검수 체크포인트
 
 - 실제 Expo의 `/my`, `/my/country`, `/my/language`를 기준으로 `국가 · 통화(MY-12)`와
@@ -1667,3 +1679,37 @@ Opus가 지정한 후속 위험은 다음과 같다.
   후속1(B.8 소계 재산출) APPLIED · 후속2(target 누락) APPLIED · 후속3(해시 계약 제외) APPLIED.
   반박 0건
 - 지적 반영: Major(잔존 수치 2곳) APPLIED · Minor(스텁 폴백) APPLIED (반박 0건)
+
+## DS-20260904-007 · PRT-185 문서 정정 (renderer 표기 사실 오류)
+
+- 대상: UI 가이드 B.8 MY 절 2행(`tax_country`, `language_preview`), 이 장부의 판정 규칙과
+  target 주석, 적용본 상단 동기화 표식 1줄.
+  **적용본의 CSS·JS·마크업은 무변경이며 바뀐 것은 2행 주석뿐이다.**
+  검수 범위 **총 185건 = 활성 182건(screen 61 + host 121) + 숨김 보존 3건**
+- 기대값: B.8의 renderer 열이 적용본의 실제 렌더 경로와 일치해야 한다.
+- 실제값: `PRT-184`가 두 행을 `미구현 — renderer 없음`으로 적었으나 사실이 아니었다.
+  두 ID는 `openActualPopup()`의 popup map(HTML 995·998행)에 있고 1011행이
+  `showPrototypeSheet()`로 렌더한다. `PickerSheet` / `FormSheet`로 정정했다.
+  이 장부에는 세 신규 행의 `TODO` 사유가 **검수 미실시**임을 명시하고,
+  판정 규칙에 `TODO`와 `SPEC_ONLY`를 섞지 않는다는 조항을 추가했다.
+- PC 검수: `file:///…/0_full-page-flow-prototype-ui-applied.html` 1280×900, 185건 ·
+  넘침 0 · 콘솔 오류 0 · 폰트 실패 0 · 금지 굵기 렌더 0건 · PASS
+- 모바일 검수: 같은 `file://` URL 320×720 185건, 320px 200% 확대 185건 ·
+  각 넘침 0 · 콘솔 오류 0 · 폰트 실패 0 · PASS.
+  추가로 390×844에서 두 팝업을 직접 열어 확인 — `tax_country` `overlay.open=true` ·
+  제목 `국가 선택` · 시트 본문 요소 23개 · 국가 5종 선택 렌더,
+  `language_preview` `overlay.open=true` · 제목 `이렇게 보여요` · 시트 본문 요소 25개 ·
+  3행 미리보기와 저장 확인 렌더. 대조군 `tax_item_add`(기존 `FormSheet` 표기)도 같은 경로로 렌더
+- 측정: 적용본 diff는 2행 동기화 표식 1줄뿐이다
+  (`DS-20260904-006` → `DS-20260904-007`). SHA-256은 `PRT-184`의
+  `52daf602…e4081112`에서 `d0ff4d13…992e74c1`로 바뀌었고, 그 원인은 이 주석 1줄이다.
+- 미검수: 없음
+- 제약: 실기기 캡처는 수행하지 않았다. 이번 단위는 renderer 표기 정정에 한정한다 —
+  세 target(`tax_country`, `language_preview`, `fixed_period@my_fixed_edit`)의 개별 7항목
+  검수는 이 장부 표의 `TODO`로 계속 추적하며 별도 회차에서 수행한다.
+- 결과: PASS
+- 증거: popup map 등록 위치(HTML 995·998행)와 렌더 호출부(1011행), 390×844 실렌더 결과 3건,
+  PC·320px·320px 200% 확대 각 185건 결과, 적용본 1줄 diff
+- 지적 반영: 사실 오류(renderer 표기) APPLIED. 반박 0건
+- 재발 방지: 레지스트리·장부·가이드 어느 쪽의 **누락**도 구현 부재의 근거가 아니다.
+  구현 여부는 popup map과 실렌더로만 판정한다.

@@ -6,7 +6,7 @@
 
 - 상태: 서비스 기준 재검토 개정안
 - 개정일: 2026-09-02
-- 현재 디자인 동기화 ID: `DS-20260904-006`
+- 현재 디자인 동기화 ID: `DS-20260904-007`
 - 적용 대상: `docs/prototypes/full-page-flow-prototype.html`, UI 적용 복사본과 향후 Expo 공용 UI
 - 등록 인벤토리: 프로토타입 `screen` 키 62개, 팝업·조건 상태 호스트 123개, 고유 ID 98개
   (PRT-182 정정: 이전 표기 `125 / 99`는 `PRT-151`이 `recipe_target_help`를 두 호스트에서
@@ -1531,8 +1531,8 @@ PageState에는 `layerType / dismissPolicy / footerPolicy`를 두지 않는다. 
 
 | ID | host 전체 | layerType | dismissPolicy | footerPolicy | renderer |
 |---|---|---|---|---|---|
-| `tax_country` | `my_tax` | PickerSheet | `pickerImmediate` | `none` | **미구현 — renderer 없음** |
-| `language_preview` | `my_language` | FormSheet | `formDirtyGuard` | `formCancelPrimary` | **미구현 — renderer 없음** |
+| `tax_country` | `my_tax` | PickerSheet | `pickerImmediate` | `none` | `PickerSheet` |
+| `language_preview` | `my_language` | FormSheet | `formDirtyGuard` | `formCancelPrimary` | `FormSheet` |
 | `tax_item_add` | `my_tax` | FormSheet | `formDirtyGuard` | `formCancelPrimary` | `FormSheet` |
 | `tax_saved` | `my_tax` | SuccessDialog | `successAfterCommit` | `acknowledge` | `SuccessDialog` |
 | `vendor_add` | `my_vendors` | FormSheet | `formDirtyGuard` | `formCancelPrimary` | `FormSheet` |
