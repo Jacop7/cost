@@ -1,0 +1,156 @@
+{
+ "manifest": {
+  "generatedAt": "2026-09-04T18:01:07.366Z",
+  "schemaVersion": 1,
+  "script": {
+   "name": "full-page-flow-prototype-token-map-check.mjs",
+   "sha256": "27b2a7ef13e6bf962a840ae20a93339abc581f878c50aede793a2ae457972db5"
+  },
+  "designAudit": {
+   "path": "design-audit.json",
+   "sha256": "06827d3123833dec4ebf62f00fe8055f4bcc3519cc53082594c348d2576699eb",
+   "targetSha256": "9e1d4a5dea43c4de3f970be9fd97a365c04e6596de1e2eb308161d15737c1b36",
+   "designSyncId": "DS-20260904-015"
+  },
+  "tokenMap": {
+   "path": "full-page-flow-prototype-token-map.json",
+   "sha256": "fa07e1e0ecd04f5bdd90220fe2beb47abb013a55758333b28711bfa23577849b",
+   "status": "PROVISIONAL"
+  },
+  "rules": {
+   "자리": "primitive · converge · componentOwned · defects 넷 중 하나에 있어야 한다",
+   "목적지": "converge 가 가리키는 곳도 primitive 안에 있어야 한다",
+   "양방향": "매핑표가 측정에 없는 값을 들고 있으면 표가 낡은 것이다",
+   "단위": "판정은 값의 종류로 한다. 관측 수는 참고다(기획서 §1.0)"
+  }
+ },
+ "summary": {
+  "status": "PROVISIONAL",
+  "unmappedCount": 0,
+  "unmappedByAxis": {
+   "space": 0,
+   "radius": 0,
+   "typeSize": 0,
+   "typeWeight": 0,
+   "color": 0,
+   "shadow": 0,
+   "icon": 0,
+   "control": 0,
+   "lineHeight": 0,
+   "letterSpacing": 0
+  },
+  "nudgeValuesUsed": [],
+  "uaExcluded": {
+   "spaceObservations": 1804,
+   "spaceValues": [
+    "1",
+    "2",
+    "6",
+    "14"
+   ],
+   "colorObservations": 2718
+  },
+  "lineHeightKinds": 18,
+  "letterSpacingKinds": 2,
+  "mapFailures": 0,
+  "staleMapEntries": 0
+ },
+ "unmapped": {
+  "space": [],
+  "radius": [],
+  "typeSize": [],
+  "typeWeight": [],
+  "color": [],
+  "shadow": [],
+  "icon": [],
+  "control": [],
+  "lineHeight": [],
+  "letterSpacing": []
+ },
+ "failures": [],
+ "stale": [],
+ "lineHeight": [
+  {
+   "value": "normal",
+   "observations": 5908
+  },
+  {
+   "value": "21.6px",
+   "observations": 523
+  },
+  {
+   "value": "18.2px",
+   "observations": 170
+  },
+  {
+   "value": "19.6px",
+   "observations": 169
+  },
+  {
+   "value": "12px",
+   "observations": 58
+  },
+  {
+   "value": "22px",
+   "observations": 39
+  },
+  {
+   "value": "20px",
+   "observations": 32
+  },
+  {
+   "value": "21px",
+   "observations": 31
+  },
+  {
+   "value": "26.6px",
+   "observations": 21
+  },
+  {
+   "value": "16.2px",
+   "observations": 6
+  },
+  {
+   "value": "21.7px",
+   "observations": 4
+  },
+  {
+   "value": "18.9px",
+   "observations": 3
+  },
+  {
+   "value": "21.75px",
+   "observations": 2
+  },
+  {
+   "value": "18px",
+   "observations": 2
+  },
+  {
+   "value": "17.55px",
+   "observations": 2
+  },
+  {
+   "value": "24.3px",
+   "observations": 2
+  },
+  {
+   "value": "20.3px",
+   "observations": 1
+  },
+  {
+   "value": "23px",
+   "observations": 1
+  }
+ ],
+ "letterSpacing": [
+  {
+   "value": "normal",
+   "observations": 6899
+  },
+  {
+   "value": "-0.3px",
+   "observations": 75
+  }
+ ]
+}

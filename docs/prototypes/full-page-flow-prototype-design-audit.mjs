@@ -21,6 +21,19 @@
  *  [L1] margin:auto 를 거르지 않아 104px·44px 같은 레이아웃 잔여값이 간격 후보로 올라왔다.
  *  [L2] 그 뒤 "40px 초과 또는 정수 아님" 이라는 크기 휴리스틱으로 걸렀는데, 이는 값의
  *       출처가 아니라 값의 크기를 보는 것이라 재현 규칙이 되지 못한다. 선언값 조회로 바꿨다.
+ *  [L3] 간격 집계 키에서 **변(side)을 버렸다.** `padding|2|a>b` 만 남기니 좌우인지 상하인지
+ *       알 수 없었고, 그 결과 `.edit-form-label{margin:0 2px 7px}` 의 2px 을 "라벨과 입력
+ *       사이 baseline 보정" 이라고 잘못 읽었다. 실제로 2px 은 좌우이고 아래는 7px 이다.
+ *       간격은 방향이 곧 역할이므로 변을 키에 남긴다.
+ *  [L4] **작성자가 선언한 값과 브라우저 기본값을 섞어 셌다.** `.expo-more` 는 `<button>` 인데
+ *       padding 선언이 아예 없다. 그래서 Chrome 기본 `padding:1px 6px` 가 1px·6px 관측으로
+ *       올라왔고, 그 둘이 "광학 보정 스케일" 의 최대 항목이 됐다. **아무도 고르지 않은 값을
+ *       토큰 후보로 올릴 뻔했다.** 모든 축에 `source` 를 붙인다 —
+ *       `author`(스타일시트 규칙) · `inline`(요소 style 속성) · `ua`(둘 다 없음 = 브라우저 기본).
+ *  [L5] 타이포 키에 크기·굵기만 넣고 **행간·자간을 버렸다.** 수집은 해 놓고 집계에서 없앴다.
+ *       가이드는 역할마다 행간을 요구하는데, 버린 축은 "미매핑 0" 이라고 말할 수 없다.
+ *  [L6] 컨트롤 높이를 `<input>` 자신에서 쟀다. 실제 컨트롤은 그 입력을 감싼 shell 이다.
+ *       상호작용 요소가 자기보다 큰 조작 상자 안에 있으면 그 상자를 컨트롤로 본다.
  */
 import { chromium } from 'playwright';
 import { createHash } from 'node:crypto';
@@ -86,6 +99,38 @@ const COLLECT=({SCALE})=>{
     AUTO_CACHE.set(e,sides); return sides;
   };
   let autoSkipped=0;
+  // 선언 출처 판정 ([L4]) — 이 요소의 이 속성을 작성자가 정했는가, 브라우저가 정했는가
+  const DECL_CACHE=new WeakMap();
+  const declaredProps=e=>{
+    let set=DECL_CACHE.get(e); if(set) return set;
+    set={author:new Set(),inline:new Set()};
+    for(const rule of RULES){ let m=false; try{m=e.matches(rule.selectorText);}catch{}
+      if(!m) continue;
+      for(let i=0;i<rule.style.length;i++) set.author.add(rule.style[i]);
+    }
+    for(let i=0;i<e.style.length;i++) set.inline.add(e.style[i]);
+    DECL_CACHE.set(e,set); return set;
+  };
+  const SHORTHAND={
+    'padding-top':['padding'],'padding-right':['padding'],'padding-bottom':['padding'],'padding-left':['padding'],
+    'margin-top':['margin','margin-block'],'margin-right':['margin','margin-inline'],
+    'margin-bottom':['margin','margin-block'],'margin-left':['margin','margin-inline'],
+    'row-gap':['gap'],'column-gap':['gap'],
+    'border-top-width':['border','border-width','border-top'],
+    'border-top-color':['border','border-color','border-top'],
+    'background-color':['background','background-color'],
+    'border-radius':['border-radius','border-top-left-radius','border-top-right-radius',
+      'border-bottom-right-radius','border-bottom-left-radius'],
+  };
+  const sourceOf=(e,prop)=>{
+    const d=declaredProps(e);
+    const names=[prop,...(SHORTHAND[prop]??[])];
+    // 브라우저가 shorthand 를 longhand 로 펼쳐 열거하는 경우가 있어 접두 일치도 함께 본다
+    const pre=(set)=>[...set].some(n=>names.some(x=>n===x||n.startsWith(x+'-')));
+    if(names.some(n=>d.inline.has(n))||pre(d.inline)) return 'inline';
+    if(names.some(n=>d.author.has(n))||pre(d.author)) return 'author';
+    return 'ua';
+  };
 
   const CARD=/^(card|expo-list-card|expo-pick-card|expo-row|expo-card|settings-|detail-|sheet-|hub-|option-card|revenue-|channel-|menu-|sales-|analysis-|tax-|edit-|stock-|order-|recipe-)/;
   const GLYPH=/^[＋+−–—‹›⌄•⋮▸▾✓✗▣●◔▰×…\s]*$/;
@@ -114,36 +159,53 @@ const COLLECT=({SCALE})=>{
         color:cs.color,w:px(rect.width),h:px(rect.height),glyph:txt.slice(0,4)});
       else {
         out.typo.push({card,slot,size:cs.fontSize,weight:cs.fontWeight,lh:cs.lineHeight,
-          color:cs.color,ls:cs.letterSpacing,tabular:cs.fontVariantNumeric,sample:txt.slice(0,20)});
-        out.color.push({role:'text',card,slot,value:cs.color});
+          color:cs.color,ls:cs.letterSpacing,tabular:cs.fontVariantNumeric,sample:txt.slice(0,20),
+          weightSource:sourceOf(e,'font-weight'),lhSource:sourceOf(e,'line-height')});
+        out.color.push({role:'text',card,slot,value:cs.color,source:sourceOf(e,'color')});
       }
     }
     if(cs.backgroundColor&&cs.backgroundColor!=='rgba(0, 0, 0, 0)')
-      out.color.push({role:'bg',card,slot,value:cs.backgroundColor});
-    if(px(cs.borderTopWidth)) out.color.push({role:'border',card,slot,value:cs.borderTopColor,width:cs.borderTopWidth});
+      out.color.push({role:'bg',card,slot,value:cs.backgroundColor,source:sourceOf(e,'background-color')});
+    if(px(cs.borderTopWidth)) out.color.push({role:'border',card,slot,value:cs.borderTopColor,width:cs.borderTopWidth,
+      source:sourceOf(e,'border-top-color')});
     if(cs.borderRadius!=='0px') out.radius.push({card,slot,value:cs.borderRadius,
-      w:px(rect.width),h:px(rect.height)});
+      w:px(rect.width),h:px(rect.height),source:sourceOf(e,'border-radius')});
     if(cs.boxShadow&&cs.boxShadow!=='none') out.shadow.push({card,slot,value:cs.boxShadow});
 
     // 간격 — 부모 슬롯 → 자식 슬롯 관계로 남긴다
     const p=e.parentElement, pslot=p?slotOf(p):'(root)';
+    const PADPROP={pt:'padding-top',pr:'padding-right',pb:'padding-bottom',pl:'padding-left'};
     for(const [k,v] of [['pt',cs.paddingTop],['pr',cs.paddingRight],['pb',cs.paddingBottom],['pl',cs.paddingLeft]])
-      if(px(v)) out.space.push({kind:'padding',side:k,card,slot,parent:pslot,value:px(v)});
+      if(px(v)) out.space.push({kind:'padding',side:k,card,slot,parent:pslot,value:px(v),source:sourceOf(e,PADPROP[k])});
     const autoM=declaredAutoMargins(e);
+    const MARPROP={mt:'margin-top',mr:'margin-right',mb:'margin-bottom',ml:'margin-left'};
     for(const [k,v] of [['mt',cs.marginTop],['mr',cs.marginRight],['mb',cs.marginBottom],['ml',cs.marginLeft]])
       if(px(v)&&px(v)>0){ if(autoM[k]){autoSkipped++; continue;}
-        out.space.push({kind:'margin',side:k,card,slot,parent:pslot,value:px(v)}); }
+        out.space.push({kind:'margin',side:k,card,slot,parent:pslot,value:px(v),source:sourceOf(e,MARPROP[k])}); }
     if(cs.gap&&cs.gap!=='normal') cs.gap.split(' ').forEach((g,i)=>{ if(px(g))
-      out.space.push({kind:'gap',side:i?'col':'row',card,slot,parent:pslot,value:px(g)}); });
+      out.space.push({kind:'gap',side:i?'col':'row',card,slot,parent:pslot,value:px(g),
+        source:sourceOf(e,i?'column-gap':'row-gap')}); });
 
     // 컨트롤 높이 · 터치 영역
     const interactive=/^(button|a|input|select|textarea)$/.test(e.tagName.toLowerCase())
       || e.getAttribute('role')==='button' || e.hasAttribute('data-screen-link') || e.hasAttribute('data-popup-link');
     if(interactive&&rect.width>0){
-      out.control.push({card,slot,tag:e.tagName.toLowerCase(),h:px(rect.height),w:px(rect.width),
-        radius:cs.borderRadius,size:cs.fontSize,weight:cs.fontWeight,label:txt.slice(0,18)});
-      if(rect.height<44||rect.width<44)
-        out.touch.push({card,slot,h:px(rect.height),w:px(rect.width),label:txt.slice(0,18)});
+      // 실제 컨트롤은 <input> 자신이 아니라 그것을 감싼 조작 상자다 ([L6]).
+      // 입력이 자기보다 확실히 큰 상자 안에 있으면 그 상자를 컨트롤로 본다.
+      let ctl=e, ctlRect=rect, promoted=null;
+      if(/^(input|textarea|select)$/.test(e.tagName.toLowerCase())){
+        for(let x=e.parentElement, up=0; x && up<3; x=x.parentElement, up++){
+          const xr=x.getBoundingClientRect();
+          if(xr.height >= rect.height+6 && xr.width>0 && xr.height<=96){ ctl=x; ctlRect=xr; promoted=slotOf(x); break; }
+        }
+      }
+      const ccs=ctl===e?cs:getComputedStyle(ctl);
+      out.control.push({card,slot:slotOf(ctl),tag:ctl.tagName.toLowerCase(),
+        h:px(ctlRect.height),w:px(ctlRect.width),radius:ccs.borderRadius,
+        size:cs.fontSize,weight:cs.fontWeight,label:txt.slice(0,18),
+        innerTag:ctl===e?null:e.tagName.toLowerCase(), promotedFrom:promoted?slot:null});
+      if(ctlRect.height<44||ctlRect.width<44)
+        out.touch.push({card,slot:slotOf(ctl),h:px(ctlRect.height),w:px(ctlRect.width),label:txt.slice(0,18)});
     }
   }
   out._autoSkipped=autoSkipped;
@@ -162,12 +224,12 @@ for(const t of targets){
   await page.evaluate(()=>document.fonts.ready);
   const r=await page.evaluate(COLLECT,{SCALE});
   autoSkippedTotal+=r._autoSkipped||0;
-  r.typo.forEach(x=>push('typo',`${x.card}|${x.slot}|${x.size}/${x.weight}`,x.sample));
-  r.color.forEach(x=>push('color',`${x.role}|${x.value}`,`${x.card}.${x.slot}`));
-  r.space.forEach(x=>push('space',`${x.kind}|${x.value}|${x.parent}>${x.slot}`,x.card));
-  r.radius.forEach(x=>push('radius',`${x.value}|${x.card}.${x.slot}`,`${x.w}x${x.h}`));
+  r.typo.forEach(x=>push('typo',`${x.card}|${x.slot}|${x.size}/${x.weight}/${x.lh}/${x.ls}`,x.sample));
+  r.color.forEach(x=>push('color',`${x.role}|${x.value}|${x.source}`,`${x.card}.${x.slot}`));
+  r.space.forEach(x=>push('space',`${x.kind}|${x.side}|${x.value}|${x.parent}>${x.slot}|${x.source}`,x.card));
+  r.radius.forEach(x=>push('radius',`${x.value}|${x.card}.${x.slot}|${x.source}`,`${x.w}x${x.h}`));
   r.shadow.forEach(x=>push('shadow',`${x.value}`,`${x.card}.${x.slot}`));
-  r.control.forEach(x=>push('control',`${x.tag}|h${x.h}|${x.radius}|${x.size}/${x.weight}`,`${x.card}.${x.slot} "${x.label}"`));
+  r.control.forEach(x=>push('control',`${x.tag}|h${x.h}|${x.radius}|${x.size}/${x.weight}${x.innerTag?'|shell of '+x.innerTag:''}`,`${x.card}.${x.slot} "${x.label}"`));
   r.touch.forEach(x=>push('touch',`${x.card}.${x.slot}|${x.w}x${x.h}`,x.label));
   r.icon.forEach(x=>push('icon',`${x.size}/${x.weight}|${x.card}.${x.slot}`,x.glyph));
 }
@@ -185,7 +247,10 @@ const result={
       '아이콘':'문자 기호는 타이포에서 빼고 icon 으로 따로 센다',
       '슬롯':'요소의 첫 클래스(없으면 태그)',
       '카드':'가장 가까운 카드류 조상',
-      '간격':'값만 세지 않고 부모 슬롯 > 자식 슬롯 관계를 함께 남긴다',
+      '간격':'값만 세지 않고 부모 슬롯 > 자식 슬롯 관계와 변(top/right/bottom/left, row/col)을 함께 남긴다',
+      '출처':'모든 값에 source 를 붙인다 — author(스타일시트) · inline(요소 style) · ua(둘 다 없음 = 브라우저 기본). 아무도 고르지 않은 값이 토큰 후보로 올라가는 것을 막는다',
+      '타이포':'키에 행간·자간을 포함한다. 버린 축은 미매핑 0 이라고 말할 수 없다',
+      '컨트롤':'input 자신이 아니라 그것을 감싼 조작 상자를 컨트롤로 본다',
       'margin auto':'스타일시트 선언값이 auto 인 변은 뺀다. computed 픽셀은 레이아웃 결과라 간격 결정이 아니다' }},
   summary:Object.fromEntries(Object.keys(agg).map(b=>[b,{종류:Object.keys(agg[b]).length,
     합계:Object.values(agg[b]).reduce((a,v)=>a+v.n,0)}])),

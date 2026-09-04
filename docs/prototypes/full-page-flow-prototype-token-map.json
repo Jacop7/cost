@@ -1,0 +1,341 @@
+{
+  "$schema": "token-map/1",
+  "status": "PROVISIONAL",
+  "note": "docs/디자인-토큰-3계층-값-매핑-기획서.md 의 결정을 기계가 읽을 수 있게 옮긴 것이다. 문서가 정본이고 이 파일은 그 사본이다. 검수(솔·페이블) 확정 전까지 status 는 PROVISIONAL 이며, 게이트는 이 파일이 PROVISIONAL 인 동안 미매핑을 FAIL 로 올리지 않고 보고만 한다. 2026-09-04 갱신: 검수(솔·페이블) 지적 반영. nudge 스케일은 폐기했다 — 1·6px 관측의 대부분이 브라우저 기본 버튼 padding 이었고, 남은 author 선언은 값·역할 모두 space 로 흡수된다.",
+  "sourcePlan": "docs/디자인-토큰-3계층-값-매핑-기획서.md",
+  "primitive": {
+    "typeSize": [
+      22,
+      20,
+      18,
+      16,
+      14,
+      13,
+      12
+    ],
+    "typeWeight": [
+      400,
+      600,
+      700,
+      800
+    ],
+    "space": [
+      4,
+      8,
+      12,
+      16,
+      20,
+      24,
+      32
+    ],
+    "radius": {
+      "sm": 6,
+      "md": 12,
+      "lg": 16,
+      "xl": 20,
+      "full": 999,
+      "circle": "50%"
+    },
+    "iconSize": [
+      16,
+      20,
+      24
+    ],
+    "controlHeight": [
+      32,
+      38,
+      44,
+      48
+    ],
+    "color": {
+      "ink.900": "rgb(25, 31, 40)",
+      "ink.700": "rgb(51, 61, 75)",
+      "ink.500": "rgb(78, 89, 104)",
+      "ink.300": "rgb(139, 149, 161)",
+      "white": "rgb(255, 255, 255)",
+      "gray.50": "rgb(249, 250, 251)",
+      "gray.100": "rgb(242, 244, 246)",
+      "gray.200": "rgb(229, 232, 235)",
+      "gray.300": "rgb(213, 219, 225)",
+      "blue.500": "rgb(49, 130, 246)",
+      "blue.tint": "rgb(234, 243, 255)",
+      "blue.line": "rgb(184, 212, 255)",
+      "red.500": "rgb(240, 68, 82)",
+      "red.tint": "rgb(254, 236, 236)",
+      "red.line": "rgb(255, 198, 198)",
+      "green.500": "rgb(14, 159, 110)",
+      "green.tint": "rgb(231, 247, 240)",
+      "amber.text": "rgb(183, 110, 0)",
+      "amber.tint": "rgb(255, 244, 229)",
+      "scrim": "rgba(0, 0, 0, 0.42)",
+      "chart.1": "rgb(122, 134, 148)",
+      "chart.2": "rgb(197, 204, 211)"
+    },
+    "shadow": {
+      "card": "rgba(0, 0, 0, 0.04) 0px 1px 3px 0px",
+      "sheet": "rgba(25, 31, 40, 0.24) 0px 18px 50px 0px",
+      "fab": "rgba(49, 130, 246, 0.34) 0px 7px 20px 0px",
+      "bottomBar": "rgba(25, 31, 40, 0.12) 0px -8px 30px 0px"
+    },
+    "rowHeight": [
+      60,
+      76,
+      92
+    ],
+    "_rowHeightNote": "실행서 §3.4 — 3줄 기록 Row 92 / 2줄 관리 Row 76 / 1줄 단순 Row 60. 전부 min-height 로 계약하고 height 로 고정하지 않는다",
+    "lineHeight": {
+      "tight": 1.0,
+      "default": 1.4,
+      "relaxed": 1.5
+    },
+    "_lineHeightNote": "선언된 행간의 실측 비율은 1.35~1.4 에 몰려 있다(16px→21.6=1.35 · 13px→18.2=1.4 · 14px→19.6=1.4 · 19px→26.6=1.4). 뱃지만 1.0. 긴 본문용 1.5 는 가이드 요구.",
+    "letterSpacing": {
+      "none": 0,
+      "titleTight": -0.3
+    }
+  },
+  "converge": {
+    "note": "측정된 값 → 어느 primitive 로 보낼지. 여기 없는 값은 미매핑이다.",
+    "space": {
+      "5": 4,
+      "7": 8,
+      "9": 8,
+      "10": 8,
+      "11": 12,
+      "13": 12,
+      "14": 12,
+      "15": 12,
+      "17": 16,
+      "18": 16,
+      "19": 20,
+      "22": 24,
+      "1": 4,
+      "2": 4,
+      "3": 4,
+      "6": 8
+    },
+    "radius": {
+      "5": 6,
+      "7": 6,
+      "8": 12,
+      "9": 12,
+      "10": 12,
+      "11": 12,
+      "13": 12,
+      "14": 16,
+      "17": 20,
+      "18": 20,
+      "22": 20,
+      "28": 999
+    },
+    "typeSize": {
+      "10": 12,
+      "11": 13,
+      "15": "역할별 — caption 14 또는 body 16",
+      "19": 20
+    },
+    "color": {
+      "rgb(244, 248, 255)": "blue.tint",
+      "rgb(159, 196, 255)": "blue.line",
+      "rgb(201, 221, 255)": "blue.line",
+      "rgb(255, 240, 241)": "red.tint",
+      "rgb(232, 248, 241)": "green.tint",
+      "rgb(224, 122, 0)": "amber.text",
+      "rgb(233, 121, 0)": "amber.text",
+      "rgb(209, 214, 219)": "gray.200",
+      "rgb(217, 222, 228)": "gray.200"
+    },
+    "shadow": {
+      "rgba(25, 31, 40, 0.22) 0px 18px 50px 0px": "sheet",
+      "rgba(25, 31, 40, 0.18) 0px 10px 28px 0px": "sheet"
+    },
+    "iconSize": {
+      "12": 16,
+      "13": 16,
+      "14": 16,
+      "17": 16,
+      "18": 20,
+      "19": 20,
+      "21": 20,
+      "23": 24,
+      "25": 24,
+      "29": 24
+    },
+    "controlHeight": {
+      "30": 32,
+      "31": 32,
+      "34": 32,
+      "36": 38,
+      "40": 38,
+      "41": 38,
+      "42": 44,
+      "43": 44,
+      "45": 44,
+      "46": 48,
+      "47": 48,
+      "50": 48,
+      "51": 48,
+      "52": 48,
+      "28": 32,
+      "64": 48
+    },
+    "rowHeight": {
+      "55": 60,
+      "56": 60,
+      "62": 60,
+      "63": 60,
+      "73": 76
+    },
+    "lineHeight": {
+      "21.6px": "default",
+      "18.2px": "default",
+      "19.6px": "default",
+      "22px": "default",
+      "26.6px": "default",
+      "16.2px": "default",
+      "21px": "relaxed",
+      "20px": "default",
+      "12px": "tight",
+      "21.7px": "default",
+      "18.9px": "default",
+      "21.75px": "default",
+      "18px": "default",
+      "17.55px": "default",
+      "24.3px": "default",
+      "20.3px": "default",
+      "23px": "default"
+    }
+  },
+  "componentOwned": {
+    "note": "컴포넌트 층이 소유하는 단일 역할 고유값. 스케일에 넣지 않는다.",
+    "space": [
+      {
+        "value": 104,
+        "owner": "phone > content",
+        "reason": "하단 탭바 회피 공간"
+      },
+      {
+        "value": 44,
+        "owner": "callout 좌측 padding",
+        "reason": "Notice 아이콘 들여쓰기"
+      },
+      {
+        "value": 40,
+        "owner": "order-empty-form > order-empty-message",
+        "reason": "빈 상태 여백"
+      }
+    ],
+    "radius": [
+      {
+        "value": 3,
+        "owner": "sheet handle",
+        "reason": "핸들 고유 형태"
+      },
+      {
+        "value": 4,
+        "owner": "sheet-preview-handle",
+        "reason": "핸들 고유 형태"
+      }
+    ],
+    "controlHeight": [
+      {
+        "value": 54,
+        "owner": ".expo-fab",
+        "reason": "FAB 는 독립 규격. 실행서에 별도 계약이 없어 현재 값을 고유값으로 잠근다"
+      }
+    ],
+    "cardHeight": [
+      {
+        "value": 104,
+        "owner": ".sales-hero",
+        "reason": "대표 지표 카드"
+      },
+      {
+        "value": 106,
+        "owner": ".memo-preview",
+        "reason": "메모 미리보기"
+      },
+      {
+        "value": 108,
+        "owner": ".expo-list-card",
+        "reason": "목록 카드 min-height"
+      }
+    ]
+  },
+  "defects": {
+    "note": "토큰 결정이 아니라 정정 대상. P2 에서 고친다. 매핑 판정에서 제외하되 개수를 보고한다.",
+    "uaButtonReset": {
+      "selectors": [
+        ".sales-menu-row",
+        ".edit-form-row"
+      ],
+      "values": [
+        "rgb(0, 0, 0)",
+        "rgb(239, 239, 239)"
+      ],
+      "reason": "<button> 인데 border:0·background·color:inherit 를 빼먹어 브라우저 기본 버튼 스타일이 남았다",
+      "declarations": 2
+    },
+    "uaCheckbox": {
+      "values": [
+        "13.3333px"
+      ],
+      "reason": "<input type=checkbox> 의 UA 기본 font-size. 텍스트가 아니다"
+    },
+    "inheritedBolder": {
+      "rule": "<b>·<strong> 에 font-weight 를 선언하지 않아 브라우저 기본 `bolder` 가 적용되고, 부모가 600·700·800 이면 computed 900 이 된다. 실행서 §3.2 가 금지한 굵기다.",
+      "computedWeight": "900",
+      "observations": 188,
+      "diagnosis": "188건 전부 선언값이 없다. 부모 굵기별로 expo-recipe-row(600) 84 · sales-section(800) 20 · tax-summary-row(700) 12 등",
+      "visualEffect": "Pretendard 는 400·600·700·800 face 만 있으므로 900 은 800 face 로 해석된다. 눈에 보이는 차이는 없지만 부모보다 두 단계 굵은 face 가 선택된다(부모 600 → 800 face).",
+      "whyRenderAuditMissedIt": "render-audit 의 금지 굵기 검사는 [L6] 에서 computed 900 을 `b/strong 의 브라우저 bolder 파생` 이라며 선언값 검사로만 좁혔다. 그 판단 자체는 맞다 — 그것은 '누가 900 을 선언했나' 를 묻는 검사다. 다만 그 결과 '무엇이 900 으로 렌더되나' 를 아무도 안 보고 있었다. 두 검사는 서로 다른 질문이고 둘 다 필요하다.",
+      "fix": "굵기를 태그가 아니라 역할로 선언한다. P2 에서 함께 고친다"
+    },
+    "unspecifiedLineHeight": {
+      "rule": "line-height 를 선언하지 않아 브라우저 기본 `normal` 이 적용된다. `normal` 은 글꼴 메트릭에 따라 달라지고 **웹과 React Native 의 결과가 같지 않다.**",
+      "value": "normal",
+      "observations": 5908,
+      "share": "타이포 관측의 84.7%",
+      "diagnosis": "같은 역할이 두 값을 갖는다 — 16px/700 은 normal 1,648회와 21.6px 491회, 13px/600 은 normal 561회와 18.2px 170회, 14px/600 은 normal 362회와 19.6px 127회·20px 30회",
+      "fix": "역할마다 명시 행간을 선언한다. 값은 primitive.lineHeight 세 단계"
+    }
+  },
+  "open": {
+    "note": "기획서 §8 의 열린 결정. 확정 전까지 이 값들의 매핑은 잠정이다.",
+    "D-1": "색 정본 방향 — green·amberText·blueTint 3건",
+    "D-2": "하단 탭 라벨 글자 확대 상한",
+    "D-3": "typeSize 12 추가 vs 뱃지를 13 으로",
+    "D-4": "폐기 — nudge 분리 근거였던 1·6px 이 브라우저 기본값이었다. 남은 author 1(31회)·2(912, 좌우 인셋)·3(971, 값↔보조 세로)·6(368, gap)은 전부 space 역할이다",
+    "D-5": "19px Sheet 제목의 title 승격",
+    "D-6": "모션·z-index 범위",
+    "D-7": "inheritedBolder 188건을 어느 역할 굵기로 선언할 것인가 — 부모와 같게(600/700/800 유지)인가, 한 단계 위(700/800)인가",
+    "D-8": "행간 3단계(tight 1.0 / default 1.4 / relaxed 1.5)가 맞는가. 실측 선언은 1.35~1.4 에 몰려 있는데 1.4 하나로 합칠지, 1.35 와 1.4 를 나눌지"
+  },
+  "excluded": {
+    "note": "컨트롤·행 규격이 아니어서 매핑 대상이 아닌 것. 제외 이유를 값마다 적는다.",
+    "nonIntegerHeight": {
+      "rule": "정수가 아닌 높이는 min-height 에 내용이 더해진 결과지 정해 둔 값이 아니다",
+      "values": [
+        66.78,
+        95.19,
+        96.19
+      ]
+    },
+    "inputInsideShell": {
+      "rule": "<input> 자신의 높이는 컨트롤 높이가 아니다. 실제 컨트롤은 입력을 감싼 shell(.prototype-input-shell·.edit-form-box)이다. 측정기 한계(기획서 §9-1)",
+      "values": [
+        15,
+        17,
+        18,
+        20,
+        21
+      ]
+    },
+    "contentDrivenCardHeight": {
+      "rule": "내용에 따라 늘어난 카드 높이. min-height 는 componentOwned 에 있다",
+      "values": [
+        148
+      ]
+    }
+  }
+}

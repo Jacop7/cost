@@ -69,6 +69,24 @@
  *       레이아웃을 바꾸면 재는 대상이 달라진다. 그래서 DOM 구조는 건드리지 않고,
  *       텍스트가 host 의 유일한 자식일 때 **host 의 letter-spacing** 으로 되돌린다.
  *       유일하지 않으면 목표에 더 가까운 글자 수를 고른다(오차 ≤ 반 글자).
+ *  [L9] 글자를 붙이는 방식 자체를 버렸다. 붙인 뒤 자간으로 되돌리는 보정은 목표의 ±5% 를
+ *       `exact` 라고 불렀는데 그건 정확이 아니라 허용오차였고, 부호 없는 최대 오차만 남겨
+ *       **어느 요소가 덜 늘어났는지 알 수 없었다.** 덜 늘어난 요소의 "잘림 0" 은 보수적이
+ *       아니라 **낙관적**이다 — 실제 번역은 그보다 길다. 그래서 **자간만으로** 늘린다.
+ *       길이 n 인 텍스트의 자간을 ls 만큼 늘리면 폭이 정확히 n·ls 만큼 늘므로
+ *       `ls = (w/n)·(f−1)` 이면 폭이 정확히 `w·f` 가 된다. 글자 수 입자가 없으므로
+ *       짧은 라벨에서도 오차가 없다. 기존 자간에는 덮어쓰지 않고 **더한다.**
+ *       대신 실제 번역이 만드는 **줄바꿈 기회**는 재현하지 않는다 — 이 방향의 오차는
+ *       넘침을 과대 보고하는 쪽(보수적)이다. 노드마다 목표·실제·부호 있는 오차를 남긴다.
+ *  [L10] 자간 방식으로 바꾼 뒤에도 일부 요소가 목표보다 **덜** 늘어났다. 원인은 두 가지다 —
+ *       (가) `overflow:hidden` 상자 안에서는 Range 의 client rect 가 잘린 부분을 세지 않는다.
+ *       (나) 자간이 커지면 줄바꿈 위치가 바뀌어 폭이 자간에 대해 단조롭지 않다.
+ *       반복 보정이 오히려 나빠지는 자리가 있어 **가장 잘 맞은 값을 기억해 되돌린다.**
+ *       그래도 남는 오차는 숨기지 않는다. 특히 **덜 늘어난 요소의 "잘림 0" 은 낙관적**이므로
+ *       `atRisk` 를 따로 센다 — 모자란 폭이 그 상자의 남은 여유보다 크면, 제대로 늘렸을 때
+ *       넘쳤을 것이다. `atRisk` 가 0 이 아니면 그 패스의 "잘림 0" 을 결론으로 쓸 수 없다.
+ *       이 판정이 하단 탭 라벨의 실제 상태를 드러냈다 — `+50%` 에서 15.6px 모자란 채
+ *       여유 0 이므로, 제대로 늘렸다면 넘쳤다.
  *  [L8] 그 보정이 일부 자리에서 오차를 77~100% 로 키웠다. 원인은 폭 측정이었다 —
  *       `Range.getBoundingClientRect()` 는 텍스트가 **두 줄에 걸치면 컨테이너 폭**을
  *       돌려준다. 한 글자 붙였을 뿐인데 폭이 54px→118px 로 뛴 것처럼 보였고, 그
@@ -114,62 +132,112 @@ const targets = [
 
 const STRETCH = ({ factor }) => {
   const GLYPH = /^[＋+−–—‹›⌄•⋮▸▾✓✗▣●◔▰×…\s]*$/;
-  const LETTER = /[가-힣A-Za-z]/;           // 한글 또는 라틴 글자를 하나라도 포함해야 늘린다
+  const LETTER = /[가-힣A-Za-z]/;
   const phone = document.querySelector('.phone');
-  if (!phone) return { stretched: 0, skippedNumeric: 0, skippedGlyph: 0, exact: 0, maxErrorPct: 0 };
-  const walker = document.createTreeWalker(phone, NodeFilter.SHOW_TEXT);
-  const nodes = []; while (walker.nextNode()) nodes.push(walker.currentNode);
+  if (!phone) return { stretched: 0, skippedNumeric: 0, skippedGlyph: 0, worst: [], errorHistogram: {} };
+
   const range = document.createRange();
-  // 줄이 바뀐 텍스트의 폭은 bounding rect 가 아니라 **줄 조각들의 합**이다 ([L8]).
-  // bounding rect 는 두 줄에 걸치면 컨테이너 폭을 그대로 돌려준다.
+  // 줄이 바뀐 텍스트의 폭은 bounding rect 가 아니라 줄 조각들의 합이다 ([L8])
   const widthOf = n => { range.selectNodeContents(n);
     let w = 0; for (const r of range.getClientRects()) w += r.width; return w; };
-  let stretched = 0, skippedNumeric = 0, skippedGlyph = 0, exact = 0, maxErrorPct = 0;
-  for (const n of nodes) {
-    const raw = n.nodeValue; const t = raw.trim();
+
+  // 글자를 붙이지 않고 **자간만** 늘린다 ([L9]).
+  // 길이 n 인 텍스트의 자간을 ls 만큼 늘리면 폭은 정확히 n·ls 만큼 는다(Chrome 은 마지막
+  // 글자 뒤에도 자간을 넣는다). 따라서 ls = (w/n)·(f−1) 로 두면 폭이 정확히 w·f 가 된다.
+  // 글자 수 입자가 사라지므로 짧은 라벨에서도 오차가 없다.
+  const hosts = new Map();     // element → 직접 텍스트 노드 목록
+  const walker = document.createTreeWalker(phone, NodeFilter.SHOW_TEXT);
+  let skippedNumeric = 0, skippedGlyph = 0;
+  while (walker.nextNode()) {
+    const n = walker.currentNode, t = n.nodeValue.trim();
     if (!t) continue;
     const host = n.parentElement;
     if (!host || host.closest('.status, .route, .catalog')) continue;
     if (GLYPH.test(t)) { skippedGlyph++; continue; }
     if (!LETTER.test(t)) { skippedNumeric++; continue; }
-    const w0 = widthOf(n);
-    if (!(w0 > 0)) continue;
-    const goal = w0 * factor;
-    const src = t.replace(/\s+/g, '');
-    if (!src) continue;
-
-    // 1) 자기 글자를 순환해 붙여 목표 폭을 넘는 지점까지 간다
-    let k = 0, w1 = w0, prevW = w0, guard = 0;
-    while (guard++ < 400) {
-      k++;
-      n.nodeValue = raw + Array.from({ length: k }, (_, i) => src[i % src.length]).join('');
-      prevW = w1; w1 = widthOf(n);
-      if (w1 >= goal) break;
-    }
-    // 2) 통째 글자는 마지막 한 글자만큼 넘친다 ([L7]).
-    //    이 텍스트 노드가 host 의 유일한 자식이면 host 의 letter-spacing 으로 정확히 되돌린다.
-    //    (letter-spacing 은 host 안의 다른 텍스트까지 건드리므로 유일할 때만 안전하다.)
-    const soleChild = host.childNodes.length === 1 && host.firstChild === n;
-    let corrected = false;
-    if (soleChild && w1 > goal) {
-      const chars = n.nodeValue.length;
-      if (chars > 0) {
-        host.style.letterSpacing = ((goal - w1) / chars) + 'px';
-        // 보정이 오히려 빗나가면(줄바꿈이 바뀌는 등) 되돌리고 글자 수 조정으로 내려간다
-        if (Math.abs(widthOf(n) / goal - 1) * 100 <= 5) { exact++; corrected = true; }
-        else host.style.letterSpacing = '';
-      }
-    }
-    if (!corrected && k > 0 && Math.abs(prevW - goal) < Math.abs(w1 - goal)) {
-      // 3) 되돌릴 수 없으면 목표에 더 가까운 쪽을 고른다 (오차 ≤ 반 글자)
-      n.nodeValue = raw + Array.from({ length: k - 1 }, (_, i) => src[i % src.length]).join('');
-    }
-    const err = Math.abs(widthOf(n) / goal - 1) * 100;
-    if (err > maxErrorPct) maxErrorPct = err;
-    stretched++;
+    if (!hosts.has(host)) hosts.set(host, []);
+    hosts.get(host).push(n);
   }
+
+  // ── 1) 모든 host 의 기준 폭과 기준 자간을 **먼저 전부** 잰다.
+  // 하나씩 재고 바로 적용하면, 조상 host 에 걸린 자간이 자손에게 상속돼
+  // getComputedStyle 로 읽은 "기준" 자간이 이미 늘어난 값이 된다. 그러면 두 번 더해진다.
+  const before = new Map();
+  for (const [host, nodes] of hosts) {
+    let w = 0;
+    const rows = nodes.map(n => { const w0 = widthOf(n); w += w0; return { node: n, w0 }; });
+    if (!(w > 0)) continue;
+    // 접힌 공백은 렌더되지 않으므로 nodeValue.length 로 세면 자간이 과소 추정된다.
+    // 대신 아래에서 실측 기울기로 한 번 보정하므로 여기서는 추정치면 충분하다.
+    const chars = nodes.reduce((a, n) => a + n.nodeValue.replace(/\s+/g, ' ').trim().length, 0);
+    if (chars < 1) continue;
+    const base = parseFloat(getComputedStyle(host).letterSpacing);
+    before.set(host, { w, chars, rows, base: Number.isFinite(base) ? base : 0 });
+  }
+
+  // ── 2) 추정 자간을 적용한다. 기존 자간에 **더한다** —
+  // 덮어쓰면 .title{letter-spacing:-.3px} 같은 디자인 결정이 사라진다.
+  for (const [host, info] of before) {
+    info.est = (info.w / info.chars) * (factor - 1);
+    host.style.letterSpacing = (info.base + info.est) + 'px';
+  }
+
+  // ── 3) 실측 기울기로 보정한다. 폭은 자간에 대해 선형이고 기울기는 실제 렌더된 글자 수다.
+  // 다만 자간이 커지면 줄바꿈 위치가 바뀌어 기울기가 조금 달라진다. 그래서 세 번 돌린다 —
+  // 매번 **직전 적용값에서의 실측 기울기**로 다시 계산하므로 뉴턴 반복이 된다.
+  // 줄바꿈이 바뀌면 기울기도 바뀌므로 반복이 발산하는 자리가 있다(측정된 폭이 단조롭지 않다).
+  // 그래서 **가장 잘 맞은 값을 기억해 두고 마지막에 그것으로 되돌린다.** 반복이 나빠지면
+  // 나빠진 값을 쓰지 않는다. 남는 오차는 숨기지 않고 히스토그램과 worst 로 보고한다.
+  for (const [host, info] of before) {
+    const goal = info.w * factor;
+    info.applied = info.est;
+    let w1 = 0; for (const r of info.rows) w1 += widthOf(r.node);
+    info.best = { ls: info.est, err: Math.abs(w1 / goal - 1) };
+    for (let iter = 0; iter < 3; iter++) {
+      const slope = info.applied !== 0 ? (w1 - info.w) / info.applied : 0;
+      if (!(slope > 0.01)) break;
+      const need = (goal - info.w) / slope;
+      if (!Number.isFinite(need)) break;
+      info.applied = need;
+      host.style.letterSpacing = (info.base + need) + 'px';
+      w1 = 0; for (const r of info.rows) w1 += widthOf(r.node);
+      const err = Math.abs(w1 / goal - 1);
+      if (err < info.best.err) info.best = { ls: need, err };
+      if (err < 0.005) break;
+    }
+    host.style.letterSpacing = (info.base + info.best.ls) + 'px';
+  }
+
+  // 검산 — 노드마다 목표 대비 부호 있는 오차를 남긴다
+  const slotOf = e => { const c = (typeof e.className === 'string' && e.className.trim()) || '';
+    return c.split(/\s+/)[0] || e.tagName.toLowerCase(); };
+  const pathOf = e => { const p = []; for (let x = e; x && x !== phone && p.length < 4; x = x.parentElement) p.unshift(slotOf(x)); return p.join('>'); };
+  const hist = {};
+  const worst = [];
+  const atRisk = [];      // 덜 늘어났는데 남은 여유보다 모자란 폭이 더 큰 요소
+  let stretched = 0;
+  for (const [host, info] of before) {
+    // 이 host 가 지금 얼마나 여유가 있는가. 음수면 이미 넘쳤다.
+    const headroom = host.clientWidth - host.scrollWidth;
+    for (const { node, w0 } of info.rows) {
+      const goal = w0 * factor, actual = widthOf(node);
+      const err = goal > 0 ? (actual / goal - 1) * 100 : 0;
+      const bucket = err < -5 ? '<-5%' : err < -1 ? '-5~-1%' : err <= 1 ? '±1%' : err <= 5 ? '1~5%' : '>5%';
+      hist[bucket] = (hist[bucket] ?? 0) + 1;
+      const row = { sel: pathOf(host), sample: node.nodeValue.trim().slice(0, 14),
+        w0: Math.round(w0 * 10) / 10, goal: Math.round(goal * 10) / 10,
+        actual: Math.round(actual * 10) / 10, errPct: Math.round(err * 100) / 100,
+        headroom: Math.round(headroom * 10) / 10 };
+      if (Math.abs(err) > 1) worst.push(row);
+      // **덜 늘어난 요소의 "잘림 0" 은 낙관적이다.** 제대로 늘렸다면 넘쳤을지 여기서 판정한다.
+      if (err < -1 && (goal - actual) > headroom) atRisk.push({ ...row, missing: Math.round((goal - actual) * 10) / 10 });
+      stretched++;
+    }
+  }
+  worst.sort((a, b) => Math.abs(b.errPct) - Math.abs(a.errPct));
   range.detach?.();
-  return { stretched, skippedNumeric, skippedGlyph, exact, maxErrorPct: Math.round(maxErrorPct * 100) / 100 };
+  return { stretched, skippedNumeric, skippedGlyph, errorHistogram: hist,
+           worst: worst.slice(0, 12), atRisk: atRisk.slice(0, 12), atRiskCount: atRisk.length };
 };
 
 const TEXT2X = () => {
@@ -257,15 +325,17 @@ const stretchStats = {};
 for (const pass of PASSES) {
   const page = await browser.newPage({ viewport: { width: 320, height: 720 } });
   const sum = { phoneOverflow: 0, clipped: 0, escapee: 0 };
-  const st = { stretched: 0, skippedNumeric: 0, skippedGlyph: 0, text2x: 0, exact: 0, maxErrorPct: 0 };
+  const st = { stretched: 0, skippedNumeric: 0, skippedGlyph: 0, text2x: 0, errorHistogram: {}, worst: [], atRisk: [], atRiskCount: 0 };
   for (const t of targets) {
     await page.goto(`${URLBASE}?screen=${t.screen}` + (t.popup ? `&popup=${t.popup}` : ''), { waitUntil: 'load' });
     await page.evaluate(() => document.fonts.ready);
     if (pass.factor) {
       const s = await page.evaluate(STRETCH, { factor: pass.factor });
       st.stretched += s.stretched; st.skippedNumeric += s.skippedNumeric; st.skippedGlyph += s.skippedGlyph;
-      st.exact += s.exact ?? 0;
-      st.maxErrorPct = Math.max(st.maxErrorPct, s.maxErrorPct ?? 0);
+      for (const [k, v] of Object.entries(s.errorHistogram ?? {})) st.errorHistogram[k] = (st.errorHistogram[k] ?? 0) + v;
+      for (const w of (s.worst ?? [])) st.worst.push({ target: t.t, ...w });
+      for (const w of (s.atRisk ?? [])) st.atRisk.push({ target: t.t, ...w });
+      st.atRiskCount += s.atRiskCount ?? 0;
     }
     if (pass.text2x) st.text2x += await page.evaluate(TEXT2X);
     const m = await page.evaluate(MEASURE);
@@ -278,6 +348,11 @@ for (const pass of PASSES) {
   passSummary[pass.id] = { mode: pass.note, targets: targets.length,
     targetsWithPhoneOverflow: sum.phoneOverflow, targetsWithClipped: sum.clipped,
     targetsWithEscapee: sum.escapee };
+  st.worst.sort((a, b) => Math.abs(b.errPct) - Math.abs(a.errPct));
+  st.underStretched = Object.entries(st.errorHistogram)
+    .filter(([k]) => k === '<-5%' || k === '-5~-1%').reduce((a, [, v]) => a + v, 0);
+  st.worst = st.worst.slice(0, 20);
+  st.atRisk = st.atRisk.slice(0, 20);
   stretchStats[pass.id] = st;
 }
 await browser.close();
@@ -353,7 +428,9 @@ const result = {
     rules: {
       '번역문': '지어내지 않는다. 각 텍스트 노드의 글자를 순환해 붙여 렌더 폭을 목표 배수까지 늘린다',
       '단위': '글자 수가 아니라 폭. 레이아웃을 깨는 것은 폭이다',
-      '정확도': '통째 글자 붙이기는 마지막 한 글자만큼 넘친다. 텍스트가 host 의 유일한 자식이면 host 의 letter-spacing 으로 목표 폭에 정확히 맞추고(exact), 아니면 목표에 더 가까운 글자 수를 고른다(오차 ≤ 반 글자). 남은 최대 오차를 maxErrorPct 로 남긴다',
+      '정확도': '자간만 늘려 목표 폭에 정확히 맞춘다. 글자 수 입자가 없다. 노드마다 목표·실제·부호 있는 오차를 남기고 분포를 errorHistogram 으로, 최악 20건을 worst 로 보존한다',
+      '오차 방향': '덜 늘어난 요소의 잘림 0 은 보수적이 아니라 낙관적이다. 그래서 underStretched 를 따로 세고, 그중 **제대로 늘렸다면 넘쳤을** 것(모자란 폭 > 남은 여유)을 atRisk 로 따로 센다. atRisk 가 0 이어야만 그 패스의 잘림 0 을 결론으로 쓸 수 있다',
+      '재현하지 않는 것': '실제 번역이 만드는 줄바꿈 기회. 이 방향의 오차는 넘침을 과대 보고하는 쪽이라 보수적이다',
       '숫자': '글자(한글·라틴)를 포함하지 않은 노드는 늘리지 않는다. 번역해도 숫자는 안 길어진다',
       '아이콘': '문자 기호는 번역 대상이 아니므로 늘리지 않는다',
       '셸': '상태바·화면 ID 배지·카탈로그는 제품이 아니므로 제외한다',
