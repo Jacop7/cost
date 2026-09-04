@@ -1824,3 +1824,54 @@ popup/state host **121개**(합 182), 그리고 레지스트리에 키가 없는
 - 재발 방지: **측정 도구의 탐지 범위가 곧 주장의 한계다.** 분류를 주장하기 전에 도구가
   무엇을 못 보는지 먼저 적는다. 새 절을 쓸 때 같은 대상을 다루는 기존 절을 먼저 읽는다 —
   부록 C가 답을 갖고 있었는데 B.8a가 모순된 결론을 적었다.
+
+## DS-20260904-010 · PRT-188 렌더 감사 스크립트·원시 로그 보존 및 게이트 결속
+
+- 대상: `full-page-flow-prototype-render-audit.mjs`(신설),
+  `full-page-flow-prototype-render-audit.json`(신설),
+  `full-page-flow-prototype-design-sync-check.ps1`(결속 검사 추가), UI 가이드 B.8a,
+  적용본 상단 동기화 표식 1줄. **적용본의 CSS·JS·마크업은 무변경.**
+  검수 범위 **총 185건 = 활성 182건(screen 61 + host 121) + 숨김 보존 3건**
+- 기대값: 문서가 인용하는 렌더·회귀 수치를 제3자가 같은 명령으로 재현할 수 있어야 하고,
+  증거가 어떤 판본의 적용본에 대한 것인지 기계적으로 확인돼야 한다.
+- 실제값: `DS-20260904-008`·`-009`의 측정은 임시 환경의 일회성 스크립트였고 저장소에
+  남지 않아 재현·검토가 불가능했다. 측정 스크립트와 target별 원시 로그를 저장소에
+  보존하고, 결과 JSON의 `manifest`에 스크립트 SHA-256·적용본 SHA-256·동기화 ID·
+  node/chromium 판본·뷰포트 정의를 담았다. `design-sync-check.ps1`이 이 셋을 현재
+  파일에서 다시 계산해 대조하고 `noRendererIds`가 비면 통과시킨다. 두 파일도 봉인 해시
+  대상에 넣었다. **보존 직후 초판 스크립트가 3건을 `none`으로 오분류하는 결함이 드러나
+  판정 근거를 고쳤다** — 아래 측정 항목 참조.
+- PC 검수: `file:///…/0_full-page-flow-prototype-ui-applied.html` 1280×900, 185건 ·
+  넘침 0 · 콘솔 오류 0 · 폰트 실패 0 · 금지 굵기 렌더 0건 · PASS
+- 모바일 검수: 같은 `file://` URL 320×720 185건, 320px 200% 확대 185건 ·
+  각 넘침 0 · 콘솔 오류 0 · 폰트 실패 0 · PASS.
+  분류 측정은 390×844에서 185건 전수 · PASS
+- 측정 (전부 보존된 `full-page-flow-prototype-render-audit.json`에서 인용):
+  - `targetsMeasured` 185 = `activeTargets` 182(screen 61 + popup 쌍 121) + `hiddenTargets` 3
+  - `activeUniquePopupIds` 96 — `renderKindByUniquePopupId`
+    `overlay` 86 · `pageState` 9 · `independent` 1 · **`noRendererIds` 0건**.
+    `pageState` 9건은 B.1의 9개와 정확히 일치
+  - `sheetBodyUnder3` 0건
+  - 뷰포트 3종(`pc` 1280×900 / `mobile320` 320×720 / `mobile320z2` 320×720 200%) —
+    각 `overflow` 0 · `consoleErrors` 0 · `fontFailures` 0 · `bannedWeights` 없음 ·
+    `offScale`는 프로토타입 셸 2종(`SPAN 11px`, `route 10px`)
+  - 결속 — 스크립트 SHA `d51f3cea…b1d7450a` · 적용본 SHA `36a0074b…3b9b18a38c` ·
+    동기화 ID `DS-20260904-010`. 게이트가 셋을 재계산해 대조하고 PASS
+  - 실행 환경 — node v22.22.2 · chromium 141.0.7390.37 · linux
+  - **초판 결함**: `ingredient_option_filled`·`stock_inbound`·`option_list` 3건을
+    `none`으로 분류했다. PageState를 "`#content`가 host 기본 상태와 다른가"로 판정했는데
+    이 셋은 host의 기본 상태 그 자체라 차이가 0이었다. 판정 근거를 `openPopupTab`의
+    처리 분기 유무로 바꿔 고쳤고 같은 함정을 스크립트 주석에 남겼다.
+    **보존하지 않았으면 드러나지 않았을 결함이다.**
+- 미검수: 없음
+- 제약: 실기기 캡처는 수행하지 않았다. 게이트는 DOM을 다시 재지 않는다 —
+  그것은 node·playwright가 필요하며, 게이트가 검사하는 것은 **증거의 결속**이다.
+  재측정 실행 자체의 자동화는 별도 판단으로 남긴다.
+- 결과: PASS
+- 증거: `full-page-flow-prototype-render-audit.mjs`(SHA `d51f3cea…`),
+  `full-page-flow-prototype-render-audit.json`(target 185건 원시 로그 + manifest),
+  게이트 실행 결과, 변경 전 사본 `백업/0_full-page-flow-prototype-ui-applied_pre-PRT188.html`
+- 지적 반영: Minor(재측정 증거 보존) APPLIED. 반박 0건
+- 재발 방지: **문서에 적는 측정값은 저장소에 보존된 산출물에서만 인용한다.**
+  증거는 대상 파일 해시에 결속하고, 대상이 바뀌면 무효가 되게 한다.
+  **측정 도구도 검증 대상이다** — 보존하면 검토받을 수 있고, 검토받으면 결함이 드러난다.
