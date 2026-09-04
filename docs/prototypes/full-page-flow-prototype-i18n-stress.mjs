@@ -317,6 +317,30 @@ const PASSES = [
   { id: 'w130t2', factor: 1.3,  text2x: true,  note: '텍스트 폭 +30% & 글자 200%' },
 ];
 
+// 하단 탭 라벨의 여유율은 결정에 직접 쓰이므로 **보존된 측정**으로 남긴다.
+// 이 수치를 즉석 스크립트로 내서 문서에 인용했던 것이 검수 지적이었다(페이블 M-2).
+const TAB_HEADROOM = () => {
+  const bar = document.querySelector('.app-tabs');
+  if (!bar) return null;
+  const range = document.createRange();
+  const rows = [];
+  for (const label of bar.querySelectorAll('.app-tab-label')) {
+    const node = [...label.childNodes].find(n => n.nodeType === 3);
+    if (!node) continue;
+    range.selectNodeContents(node);
+    let textW = 0; for (const r of range.getClientRects()) textW += r.width;
+    const box = label.getBoundingClientRect().width;
+    const cs = getComputedStyle(label);
+    rows.push({ label: node.nodeValue.trim(),
+      textWidth: Math.round(textW * 10) / 10, boxWidth: Math.round(box * 10) / 10,
+      headroomPct: textW > 0 ? Math.round((box / textW - 1) * 1000) / 10 : null,
+      fontSize: cs.fontSize, fontWeight: cs.fontWeight, whiteSpace: cs.whiteSpace });
+  }
+  range.detach?.();
+  return { barHeight: getComputedStyle(bar).height, tabCount: rows.length, labels: rows };
+};
+
+let tabHeadroom = null;
 const perTarget = {};
 const passSummary = {};
 const violations = {};
@@ -338,6 +362,7 @@ for (const pass of PASSES) {
       st.atRiskCount += s.atRiskCount ?? 0;
     }
     if (pass.text2x) st.text2x += await page.evaluate(TEXT2X);
+    if (pass.id === 'base' && tabHeadroom === null) tabHeadroom = await page.evaluate(TAB_HEADROOM);
     const m = await page.evaluate(MEASURE);
     (perTarget[t.t] ??= {})[pass.id] = m;
     if (m.phoneOverflow > 0) sum.phoneOverflow++;
@@ -438,11 +463,12 @@ const result = {
       '가로 스크롤': '가로 스크롤을 의도한 조상 안의 요소는 잘림·이탈로 세지 않는다',
       '붙음': '절대 간격이 아니라 기준선 대비 좁아짐을 잰다. 같은 줄에 있고 둘 다 글자를 가진 쌍만 본다',
       '집계 단위': 'target 이 아니라 요소(카드.슬롯). 하단 탭바 라벨 하나가 182개 target 을 물들이는 것을 막는다',
+      '탭 라벨 여유율': '결정에 직접 쓰이는 수치이므로 base 패스에서 라벨마다 글자 폭·상자 폭·여유율을 함께 보존한다. 즉석 스크립트로 낸 숫자를 문서에 인용하지 않기 위해서다',
       'render-audit 과의 차이': "w130t2 의 글자 200% 는 문자 기호 아이콘을 키우지 않는다(번역 대상이 아니므로). render-audit 의 mobile320t2 는 키운다. 그래서 두 패스의 phoneOverflow 수치는 서로 다르며 서로 대체하지 않는다",
     },
   },
   summary: {
-    passes: passSummary, stretch: stretchStats,
+    passes: passSummary, stretch: stretchStats, tabLabelHeadroom: tabHeadroom,
     clippedElements, escapeeElements, squeezedPairs: squeezed,
     headroomTally: (() => { const t = {}; for (const r of clippedElements) t[r.headroom] = (t[r.headroom] ?? 0) + 1; return t; })(),
   },
