@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>타이포 결정 · 12px 배지 · 15px 행 라벨</title>
+<style>
+@font-face{font-family:Pretendard;src:url('../../../apps/mobile/assets/fonts/Pretendard-Regular.otf') format('opentype');font-display:swap}
+@font-face{font-family:Pretendard;font-weight:600;src:url('../../../apps/mobile/assets/fonts/Pretendard-SemiBold.otf') format('opentype');font-display:swap}
+@font-face{font-family:Pretendard;font-weight:700;src:url('../../../apps/mobile/assets/fonts/Pretendard-Bold.otf') format('opentype');font-display:swap}
+@font-face{font-family:Pretendard;font-weight:800;src:url('../../../apps/mobile/assets/fonts/Pretendard-ExtraBold.otf') format('opentype');font-display:swap}
+
+/* 프로토타입 토큰 그대로 */
+:root{--app:#f2f4f6;--surface:#fff;--surface2:#f9fafb;--ink:#191f28;--ink2:#333d4b;
+  --sub:#4e5968;--ter:#8b95a1;--line:#e5e8eb;--line2:#f2f4f6;--blue:#3182f6;--blue2:#eaf3ff;
+  --red:#f04452;--green:#0e9f6e;--amber:#b76e00;--amber2:#fff4df;--greenTint:#e7f7f0;--redTint:#feecec;--amberTint:#fff4e5}
+*{box-sizing:border-box}
+body{margin:0;background:var(--app);color:var(--ink);
+  font:15px/1.65 Pretendard,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px 72px}
+
+header.top{background:var(--surface);border-bottom:1px solid var(--line);margin-bottom:26px}
+header.top .wrap{padding-top:30px;padding-bottom:26px}
+h1{margin:0 0 8px;font-size:26px;font-weight:800;letter-spacing:-.4px}
+.lede{margin:0;max-width:74ch;color:var(--sub);font-size:15px}
+.meta{margin-top:14px;display:flex;gap:8px;flex-wrap:wrap}
+.pill{padding:5px 11px;border:1px solid var(--line);border-radius:999px;background:var(--surface2);
+  color:var(--sub);font-size:12px;font-weight:700}
+
+section{margin-bottom:34px}
+h2{margin:0 0 4px;font-size:20px;font-weight:800;letter-spacing:-.2px}
+h2 .n{margin-left:8px;color:var(--ter);font-size:14px;font-weight:700}
+.sub{margin:0 0 16px;color:var(--sub);font-size:14px;max-width:80ch}
+
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.panel-head{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--line2);
+  background:var(--surface2);flex-wrap:wrap}
+.panel-head h3{margin:0;font-size:15px;font-weight:800}
+.panel-head .why{color:var(--ter);font-size:13px;font-weight:600}
+.panel-body{padding:18px}
+
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:9px 10px;border-bottom:1px solid var(--line2);text-align:left;vertical-align:top}
+th{color:var(--ter);font-size:12px;font-weight:700;text-transform:none}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+tbody tr:last-child td{border-bottom:0}
+code{padding:1px 6px;border-radius:5px;background:var(--surface2);border:1px solid var(--line2);
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px}
+.dim{color:var(--ter)}
+
+.cols{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.spec{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--surface)}
+.spec>header{display:flex;align-items:baseline;gap:8px;padding:11px 14px;border-bottom:1px solid var(--line2)}
+.spec>header b{font-size:14px;font-weight:800}
+.spec>header span{color:var(--ter);font-size:12px;font-weight:700}
+.spec.is-now>header{background:var(--surface2)}
+.spec.is-pick>header{background:var(--blue2);color:var(--blue)}
+.spec.is-pick>header b{color:var(--blue)}
+.stage{padding:16px;background:var(--app)}
+
+/* ── 프로토타입 컴포넌트 CSS 원본 그대로 ── */
+.card{overflow:hidden;margin-bottom:12px;border:1px solid var(--line);border-radius:14px;background:#fff}
+.card:last-child{margin-bottom:0}
+.card-head{display:flex;align-items:center;gap:8px;padding:13px 15px;background:var(--surface2);border-bottom:1px solid var(--line2)}
+.card-head strong{font-size:16px;font-variant-numeric:tabular-nums}
+.expo-rows{padding:0 15px}
+.expo-row{display:flex;align-items:center;gap:10px;min-height:52px;padding:9px 0;border-bottom:1px solid var(--line2)}
+.expo-row>span:first-child{min-width:0;flex:1}
+.expo-row:last-child{border-bottom:0}
+.expo-name{font-size:16px;font-weight:700}
+.expo-sub{display:block;margin-top:2px;color:var(--sub);font-size:13px;font-weight:600}
+.badge{display:inline-flex;padding:4px 7px;border-radius:6px;background:var(--surface2);color:var(--sub);font-weight:800}
+.badge.red{background:#fff0f1;color:var(--red)}
+.badge.blue{background:var(--blue2);color:var(--blue)}
+.badge.green{background:var(--greenTint);color:var(--green)}
+.expo-row>span:last-child{margin-left:auto;flex:0 0 auto}   /* 샘플 한정: 세 행의 배지를 같은 선에 두어 크기 차이만 보이게 한다 */
+.expo-status{display:inline-flex;margin-left:3px;padding:4px 7px;border-radius:6px;
+  background:var(--greenTint);color:var(--green);font-weight:700;line-height:1}
+.expo-status.red{background:var(--redTint);color:var(--red)}
+.expo-status.amber{background:var(--amberTint);color:#e07a00}
+.expo-category{margin-left:auto;padding:5px 7px;border-radius:7px;background:var(--surface2);
+  color:var(--ter);font-weight:700}
+.detail-tag{padding:5px 8px;border-radius:6px;background:var(--surface2);color:var(--ter);font-weight:700}
+.sales-breakdown-row{display:flex;align-items:center;justify-content:space-between;
+  padding:11px 15px;border-bottom:1px solid var(--line2)}
+.sales-breakdown-row:last-child{border-bottom:0}
+.sales-label{color:var(--sub);font-weight:700}
+.sales-value{font-size:16px;font-weight:800;font-variant-numeric:tabular-nums}
+.sales-value.green{color:var(--green)}
+.sales-sub{display:block;margin-top:1px;color:var(--ter);font-size:13px;font-weight:600;
+  text-align:right;font-variant-numeric:tabular-nums}
+.order-button{width:100%;height:36px;margin-top:14px;border:0;border-radius:9px;
+  background:var(--blue);color:#fff;font-weight:700;cursor:default}
+.proto-input{display:flex;align-items:center;gap:8px;width:100%;height:46px;padding:0 14px;
+  border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ter);font-weight:700}
+.tax-field-label{display:block;margin-bottom:6px;color:var(--sub);font-weight:800}
+
+/* 크기 변수 — 안별로 이 값만 바꾼다 */
+.stage{--s12:12px;--s15:15px}
+.badge,.expo-status,.expo-category,.detail-tag,.tax-field-label{font-size:var(--s12)}
+.sales-label,.order-button,.proto-input{font-size:var(--s15)}
+
+.note{margin-top:14px;padding:13px 15px;border:1px solid var(--line);border-radius:12px;
+  background:var(--surface2);color:var(--sub);font-size:13.5px}
+.note b{color:var(--ink)}
+.rec{margin-top:16px;padding:15px 17px;border:1px solid #c9ddff;border-radius:13px;background:var(--blue2)}
+.rec b{color:var(--blue)}
+.rec p{margin:0;color:var(--ink2);font-size:14px}
+.rec p+p{margin-top:8px}
+.excluded{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.ex-card{padding:15px 16px;border:1px solid var(--line);border-radius:13px;background:var(--surface)}
+.ex-card h4{margin:0 0 6px;font-size:14px;font-weight:800}
+.ex-card p{margin:0;color:var(--sub);font-size:13px}
+.ex-card .cnt{display:block;margin-top:9px;color:var(--ter);font-size:12px;font-weight:700}
+footer{color:var(--ter);font-size:12.5px;border-top:1px solid var(--line);padding-top:18px}
+</style></head><body>
+
+<header class="top"><div class="wrap">
+  <h1>타이포 결정 — 스케일 밖 텍스트 두 건</h1>
+  <p class="lede">활성 182건을 전수 렌더해 <code>TYPE</code> 스케일(22·20·18·16·14·13) 밖 텍스트를
+  모았습니다. 프로토타입 셸과 문자 기호 아이콘을 빼고 나면 <b>실제로 정할 것은 두 가지</b>입니다.
+  같은 컴포넌트를 후보 크기로 나란히 그렸습니다.</p>
+  <div class="meta">
+    <span class="pill">원본 DS-20260904-011</span>
+    <span class="pill">활성 182건 전수 computed 측정</span>
+    <span class="pill">Pretendard 실제 로드</span>
+    <span class="pill">프로토타입 CSS 원본 그대로</span>
+  </div>
+</div></header>
+
+<div class="wrap">
+
+<!-- ── 결정 1 ── -->
+<section>
+  <h2>결정 1 · 배지·칩의 <code>12px</code><span class="n">제품 화면 244회 · 클래스 15종</span></h2>
+  <p class="sub">244회 중 <b>188회(77%)가 배지·칩</b>입니다 — <code>badge</code> 89 ·
+  <code>expo-status</code> 58 · <code>expo-category</code> 38 · <code>detail-tag</code> 3.
+  나머지는 폼 라벨 23회와 인라인 보조 텍스트입니다.</p>
+
+  <div class="panel">
+    <div class="panel-head">
+      <h3>같은 카드, 크기만 다름</h3>
+      <span class="why">실행서 §3.2는 CaptionSm <code>13/600</code>을 “날짜·Filter·<b>Badge</b>·짧은 메타”로 이미 정의합니다</span>
+    </div>
+    <div class="panel-body">
+      <div class="cols">
+        <article class="spec is-now"><header><b>현재</b><span>12px</span></header>
+          <div class="stage" style="--s12:12px">
+  <section class="card">
+    <div class="card-head"><strong>레시피</strong></div>
+    <div class="expo-rows">
+      <div class="expo-row"><span><span class="expo-name">김치찌개</span>
+        <span class="expo-sub">판매가 9,000원 · 순이익률 33.7%</span></span>
+        <span class="expo-category">찌개·전골</span></div>
+      <div class="expo-row"><span><span class="expo-name">제육볶음</span>
+        <span class="expo-sub">판매가 12,000원 · 순이익률 28.1%</span></span>
+        <span class="expo-status red">목표 미달</span></div>
+      <div class="expo-row"><span><span class="expo-name">계란말이</span>
+        <span class="expo-sub">판매가 6,000원 · 순이익률 41.2%</span></span>
+        <span class="expo-status">여유</span></div>
+    </div>
+  </section>
+  <section class="card">
+    <div class="card-head"><strong>식재료</strong></div>
+    <div class="expo-rows">
+      <div class="expo-row"><span><span class="expo-name">고춧가루</span>
+        <span class="expo-sub">기준 단가 28.00원/g · 재고 866g</span></span>
+        <span class="badge red">소진 임박</span></div>
+      <div class="expo-row"><span><span class="expo-name">종이컵</span>
+        <span class="expo-sub">기준 단가 32.00원/개 · 재고 240개</span></span>
+        <span class="badge">포장·소모품</span></div>
+      <div class="expo-row"><span><span class="expo-name">대파</span>
+        <span class="expo-sub">기준 단가 4.71원/g · 재고 1.4kg</span></span>
+        <span class="badge blue">최저</span></div>
+    </div>
+  </section>
+  <section class="card">
+    <div class="card-head"><strong>세금 설정</strong></div>
+    <div style="padding:14px 15px">
+      <label class="tax-field-label">가격 기준</label>
+      <div class="proto-input" style="font-size:16px;color:var(--ink)">부가세 포함</div>
+    </div>
+  </section></div></article>
+        <article class="spec is-pick"><header><b>안 A</b><span>13px · CaptionSm으로 흡수</span></header>
+          <div class="stage" style="--s12:13px">
+  <section class="card">
+    <div class="card-head"><strong>레시피</strong></div>
+    <div class="expo-rows">
+      <div class="expo-row"><span><span class="expo-name">김치찌개</span>
+        <span class="expo-sub">판매가 9,000원 · 순이익률 33.7%</span></span>
+        <span class="expo-category">찌개·전골</span></div>
+      <div class="expo-row"><span><span class="expo-name">제육볶음</span>
+        <span class="expo-sub">판매가 12,000원 · 순이익률 28.1%</span></span>
+        <span class="expo-status red">목표 미달</span></div>
+      <div class="expo-row"><span><span class="expo-name">계란말이</span>
+        <span class="expo-sub">판매가 6,000원 · 순이익률 41.2%</span></span>
+        <span class="expo-status">여유</span></div>
+    </div>
+  </section>
+  <section class="card">
+    <div class="card-head"><strong>식재료</strong></div>
+    <div class="expo-rows">
+      <div class="expo-row"><span><span class="expo-name">고춧가루</span>
+        <span class="expo-sub">기준 단가 28.00원/g · 재고 866g</span></span>
+        <span class="badge red">소진 임박</span></div>
+      <div class="expo-row"><span><span class="expo-name">종이컵</span>
+        <span class="expo-sub">기준 단가 32.00원/개 · 재고 240개</span></span>
+        <span class="badge">포장·소모품</span></div>
+      <div class="expo-row"><span><span class="expo-name">대파</span>
+        <span class="expo-sub">기준 단가 4.71원/g · 재고 1.4kg</span></span>
+        <span class="badge blue">최저</span></div>
+    </div>
+  </section>
+  <section class="card">
+    <div class="card-head"><strong>세금 설정</strong></div>
+    <div style="padding:14px 15px">
+      <label class="tax-field-label">가격 기준</label>
+      <div class="proto-input" style="font-size:16px;color:var(--ink)">부가세 포함</div>
+    </div>
+  </section></div></article>
+      </div>
+      <div class="note"><b>단계를 새로 만드는 선택지도 있습니다.</b>
+      <code>TYPE</code>에 <code>12</code>를 신설하면 7단계가 됩니다. 다만 지금 6단계도
+      제품 화면에서 <b>0회</b> 쓰이고 있어, 쓰이지 않는 단계를 늘리는 것이 이 문제를
+      해결하지는 않습니다.</div>
+      <div class="rec"><p><b>솔라 의견 — 안 A(13px).</b> 배지·칩은 실행서가 정의한 CaptionSm 역할과
+      정확히 겹칩니다. 1px 차이라 시각 변화가 작고, 흡수하면 스케일이 6단계로 유지됩니다.</p>
+      <p class="dim">다만 <code>expo-status</code>는 상태 배지라 더 눈에 띄어야 한다는 반론이 가능합니다.
+      위 두 칸을 보고 판단해 주세요.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── 결정 2 ── -->
+<section>
+  <h2>결정 2 · 행 라벨의 <code>15px</code><span class="n">제품 화면 210회 · 클래스 14종</span></h2>
+  <p class="sub"><b>제가 앞서 “버튼·입력”이라고 말한 것은 틀렸습니다.</b> 클래스별로 세어 보니
+  210회 중 <b>158회(75%)가 행 라벨</b>입니다 — <code>span</code> 88(영업일·매출) ·
+  <code>sales-label</code> 70(순이익·매장). 버튼은 31회, 입력은 15회뿐입니다.
+  그래서 이 결정의 실체는 <b>손익표 행 라벨을 어느 역할로 볼 것인가</b>입니다.</p>
+
+  <div class="panel">
+    <div class="panel-head">
+      <h3>손익 행 · 버튼 · 검색 입력</h3>
+      <span class="why">Body <code>16/700</code> = “행 제목·강조 본문” · Caption <code>14/600</code> = “FieldLabel·설명·단위”</span>
+    </div>
+    <div class="panel-body">
+      <div class="cols">
+        <article class="spec is-now"><header><b>현재</b><span>15px</span></header>
+          <div class="stage" style="--s15:15px">
+  <section class="card">
+    <div class="card-head"><strong>채널별 손익 · 매장</strong></div>
+    <div class="sales-breakdown-row"><span class="sales-label">판매 수량</span>
+      <span class="sales-value">87개</span></div>
+    <div class="sales-breakdown-row"><span class="sales-label">매출</span>
+      <span><span class="sales-value">569,000원</span><small class="sales-sub">100%</small></span></div>
+    <div class="sales-breakdown-row"><span class="sales-label">순이익</span>
+      <span><span class="sales-value green">282,045원</span><small class="sales-sub">49.6%</small></span></div>
+    <div class="sales-breakdown-row"><span class="sales-label">(−) 재료 원가</span>
+      <span><span class="sales-value" style="color:var(--ter)">160,889원</span><small class="sales-sub">28.3%</small></span></div>
+  </section>
+  <section class="card">
+    <div style="padding:14px 15px">
+      <div class="proto-input">식재료 이름으로 검색</div>
+      <button class="order-button" type="button">주문하기</button>
+    </div>
+  </section></div></article>
+        <article class="spec is-pick"><header><b>안 A</b><span>16px · Body로 올림</span></header>
+          <div class="stage" style="--s15:16px">
+  <section class="card">
+    <div class="card-head"><strong>채널별 손익 · 매장</strong></div>
+    <div class="sales-breakdown-row"><span class="sales-label">판매 수량</span>
+      <span class="sales-value">87개</span></div>
+    <div class="sales-breakdown-row"><span class="sales-label">매출</span>
+      <span><span class="sales-value">569,000원</span><small class="sales-sub">100%</small></span></div>
+    <div class="sales-breakdown-row"><span class="sales-label">순이익</span>
+      <span><span class="sales-value green">282,045원</span><small class="sales-sub">49.6%</small></span></div>
+    <div class="sales-breakdown-row"><span class="sales-label">(−) 재료 원가</span>
+      <span><span class="sales-value" style="color:var(--ter)">160,889원</span><small class="sales-sub">28.3%</small></span></div>
+  </section>
+  <section class="card">
+    <div style="padding:14px 15px">
+      <div class="proto-input">식재료 이름으로 검색</div>
+      <button class="order-button" type="button">주문하기</button>
+    </div>
+  </section></div></article>
+        <article class="spec"><header><b>안 B</b><span>14px · Caption으로 내림</span></header>
+          <div class="stage" style="--s15:14px">
+  <section class="card">
+    <div class="card-head"><strong>채널별 손익 · 매장</strong></div>
+    <div class="sales-breakdown-row"><span class="sales-label">판매 수량</span>
+      <span class="sales-value">87개</span></div>
+    <div class="sales-breakdown-row"><span class="sales-label">매출</span>
+      <span><span class="sales-value">569,000원</span><small class="sales-sub">100%</small></span></div>
+    <div class="sales-breakdown-row"><span class="sales-label">순이익</span>
+      <span><span class="sales-value green">282,045원</span><small class="sales-sub">49.6%</small></span></div>
+    <div class="sales-breakdown-row"><span class="sales-label">(−) 재료 원가</span>
+      <span><span class="sales-value" style="color:var(--ter)">160,889원</span><small class="sales-sub">28.3%</small></span></div>
+  </section>
+  <section class="card">
+    <div style="padding:14px 15px">
+      <div class="proto-input">식재료 이름으로 검색</div>
+      <button class="order-button" type="button">주문하기</button>
+    </div>
+  </section></div></article>
+      </div>
+      <div class="note"><b>역할별로 나눠 정해도 됩니다.</b> 행 라벨(<code>순이익</code>·<code>매장</code>)은
+      오른쪽 값과 짝을 이루는 <b>행 제목</b>이라 Body 16이 어울리고, 검색 placeholder는
+      <b>설명</b>에 가까워 Caption 14가 어울릴 수 있습니다. 같은 15px이라고 한 값으로
+      묶을 이유는 없습니다.</div>
+      <div class="rec"><p><b>솔라 의견 — 행 라벨과 버튼은 16px, 입력 placeholder는 14px.</b>
+      행 라벨은 값(<code>569,000원</code> 16/800)과 한 줄에서 짝을 이루는데 지금은 라벨만 15px이라
+      한 단계 어긋나 있습니다. 16으로 올리면 행 안에서 라벨과 값의 위계가 정리됩니다.</p>
+      <p class="dim">반대 근거도 있습니다 — 16으로 올리면 라벨이 값과 같은 크기가 되어
+      값의 강조가 약해질 수 있습니다. 그 경우 라벨은 14로 내리고 값만 16으로 두는 편이 낫습니다.
+      위 세 칸이 그 차이입니다.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── 제외 ── -->
+<section>
+  <h2>결정 대상이 아닌 것<span class="n">이번 범위에서 제외</span></h2>
+  <p class="sub">스케일 밖이지만 타이포 결정으로 다루지 않습니다. 근거를 남겨 둡니다.</p>
+  <div class="excluded">
+    <div class="ex-card"><h4>프로토타입 셸</h4>
+      <p>폰 목업 상태바 <code>9:41</code>, 화면 ID 배지 <code>ING-06</code>, 뒤로가기 <code>‹</code>.
+      제품 UI가 아니라 카탈로그 껍데기입니다.</p>
+      <span class="cnt">11px 368회 · 10px 182회 · 0px 182회</span></div>
+    <div class="ex-card"><h4>문자 기호로 그린 아이콘</h4>
+      <p><code>＋</code> <code>›</code> <code>⋮</code> 가 17·19·21·25·29px로 흩어져 있습니다.
+      타이포가 아니라 아이콘이며, UI 가이드 §1.6이 <b>문자 기호를 아이콘으로 쓰지 말라고
+      이미 금지</b>합니다. <code>component.icon</code>이 소유할 몫입니다.</p>
+      <span class="cnt">295회 · 별도 항목으로 이관</span></div>
+    <div class="ex-card"><h4>크기 미지정 입력</h4>
+      <p><code>INPUT</code>이 브라우저 기본 <code>0.83em</code>을 받아 13.33px로 렌더됩니다.
+      선택이 아니라 <b>누락</b>이므로 명시 지정하면 끝납니다.</p>
+      <span class="cnt">13.33px 30회</span></div>
+  </div>
+</section>
+
+<footer>
+  측정: 활성 182건(screen 61 + popup host 121) 전수 computed · 390×844 · <code>file://</code> ·
+  Pretendard 4 face 로드 확인. 원본 <code>0_full-page-flow-prototype-ui-applied.html</code>
+  (<code>DS-20260904-011</code>)은 수정하지 않았습니다. 이 페이지는 결정용이며 동기화 게이트 대상이 아닙니다.
+</footer>
+</div>
+</body></html>
