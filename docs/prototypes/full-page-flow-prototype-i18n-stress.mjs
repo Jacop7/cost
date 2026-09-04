@@ -78,6 +78,11 @@
  *       짧은 라벨에서도 오차가 없다. 기존 자간에는 덮어쓰지 않고 **더한다.**
  *       대신 실제 번역이 만드는 **줄바꿈 기회**는 재현하지 않는다 — 이 방향의 오차는
  *       넘침을 과대 보고하는 쪽(보수적)이다. 노드마다 목표·실제·부호 있는 오차를 남긴다.
+ *  [L13] `atRisk` 기준선 키를 `pass|target|selector` 로 잡았더니 **408행이 309키로
+ *       뭉개졌다.** 한 목록에 같은 구조의 행이 여섯 개 있으면 여섯 행이 한 키를 공유해
+ *       서로 덮어쓴다. 그러면 다섯 행이 나빠져도 마지막 하나만 그대로면 게이트가
+ *       통과시킨다 — **개수만 비교하면 안 된다고 해 놓고 키 수준에서 같은 함정을
+ *       다시 만들었다.** host 마다 DOM 순서 색인을 붙여 키를 유일하게 만든다.
  *  [L12] 두 변형을 겹친 패스에서 폭 오차를 재려 하자 6,986개 중 6개만 ±1% 안에 들었다.
  *       당연하다 — **글자가 커지면 폭이 늘지 않고 줄이 늘어난다.** 상자 폭이 상한이기
  *       때문이다. "목표 폭 = 원래 폭 × 자간배수 × 글자배수" 라는 모델 자체가 그 패스에서는
@@ -275,7 +280,13 @@ const VERIFY = ({ factor, sizeFactor }) => {
   const pathOf = e => { const p = []; for (let x = e; x && x !== phone && p.length < 4; x = x.parentElement) p.unshift(slotOf(x)); return p.join('>'); };
   const hist = {}, worst = [], atRisk = [];
   let stretched = 0;
+  // host 마다 **DOM 순서 색인**을 붙인다 ([L13]).
+  // selector 경로만으로는 같은 목록의 여러 행이 같은 키를 갖는다 — 한 목록에 같은 구조의
+  // 행이 여섯 개 있으면 여섯 행이 한 키로 뭉개진다. 그러면 다섯 행이 나빠져도
+  // 마지막 하나만 그대로면 게이트가 통과시킨다. 개수 비교의 함정과 같은 유형이다.
+  let hostIndex = -1;
   for (const info of store) {
+    hostIndex++;
     const host = info.host;
     const headroom = host.clientWidth - host.scrollWidth;
     // atRisk 는 **host 단위 부족 폭 합계**로 판정한다. 노드 하나씩 여유와 비교하면
@@ -290,7 +301,7 @@ const VERIFY = ({ factor, sizeFactor }) => {
       const err = goal > 0 ? (actual / goal - 1) * 100 : 0;
       const bucket = err < -5 ? '<-5%' : err < -1 ? '-5~-1%' : err <= 1 ? '±1%' : err <= 5 ? '1~5%' : '>5%';
       hist[bucket] = (hist[bucket] ?? 0) + 1;
-      const row = { sel: pathOf(host), ord: r.ord, sample: r.node.nodeValue.trim().slice(0, 14),
+      const row = { sel: pathOf(host), hostIndex, ord: r.ord, sample: r.node.nodeValue.trim().slice(0, 14),
         w0: Math.round(r.w0 * 10) / 10, goal: Math.round(goal * 10) / 10,
         actual: Math.round(actual * 10) / 10, errPct: Math.round(err * 100) / 100,
         headroom: Math.round(headroom * 10) / 10 };
@@ -300,7 +311,7 @@ const VERIFY = ({ factor, sizeFactor }) => {
       stretched++;
     }
     if (missingSum > 0 && missingSum > headroom) {
-      atRisk.push({ sel: pathOf(host), headroom: Math.round(headroom * 10) / 10,
+      atRisk.push({ sel: pathOf(host), hostIndex, headroom: Math.round(headroom * 10) / 10,
         missing: Math.round(missingSum * 10) / 10, nodes: rows.length,
         samples: rows.slice(0, 2).map(r => r.sample) });
     }
