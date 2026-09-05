@@ -146,3 +146,47 @@ test('입력 감사에 결속이 없으면 종료 코드가 1 이다', () => {
     assert.equal(r.status, 1, (r.stdout ?? '') + (r.stderr ?? ''));
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
+
+// 산출물↔산출물 결속은 바이트가 아니라 정규형 (페이블 검수 R6 차단)
+// 축 측정이 기록하는 감사 결속을 파일 바이트로 재면, 같은 내용을 다시 직렬화하거나
+// 줄끝이 다른 OS 에서 받기만 해도 갈린다. 그건 "내용이 달라졌다" 가 아니라 "다시 썼다" 다.
+const auditCanonOf = (audit, indent) => {
+  const dir = mkdtempSync(join(tmpdir(), 'axis-canon-'));
+  try {
+    mkdirSync(join(dir, 'src'), { recursive: true });
+    writeFileSync(join(dir, 'src/Screen.tsx'), 'const a = <View style={{ gap: 3 }} />;');
+    const a = join(dir, 'audit.json');
+    writeFileSync(a, JSON.stringify(audit, null, indent));
+    const o = join(dir, 'axis.json');
+    spawnSync(process.execPath, [MEASURE, a, o], { cwd: dir, encoding: 'utf8' });
+    return JSON.parse(readFileSync(o, 'utf8')).manifest.auditCanon;
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+};
+
+test('감사 JSON 을 재직렬화해도 축↔감사 결속 해시가 같다', () => {
+  const audit = {
+    manifest: { 결속: { expectCommit: '0'.repeat(40), 범위해시: 'f'.repeat(64) } },
+    declarations: [{ group: 'spacing', prop: 'gap', value: 3, file: 'src/Screen.tsx', line: 1, column: 30 }],
+  };
+  const a = auditCanonOf(audit, 0);
+  const b = auditCanonOf(audit, 4);
+  assert.ok(a && b, '정규형 해시가 기록되지 않았다');
+  assert.equal(a, b, '들여쓰기만 바꿨는데 결속 해시가 갈렸다 — 바이트를 재고 있다');
+});
+
+test('키 순서를 바꿔도 결속 해시가 같다 — 정규형은 키를 정렬한다', () => {
+  const base = { manifest: { 결속: { expectCommit: '0'.repeat(40), 범위해시: 'f'.repeat(64) } },
+    declarations: [{ group: 'spacing', prop: 'gap', value: 3, file: 'src/Screen.tsx', line: 1, column: 30 }] };
+  const shuffled = { declarations: base.declarations.map(d => ({ line: d.line, column: d.column, value: d.value, prop: d.prop, group: d.group, file: d.file })),
+    manifest: base.manifest };
+  assert.equal(auditCanonOf(base, 1), auditCanonOf(shuffled, 1),
+    '키 순서만 바꿨는데 결속 해시가 갈렸다');
+});
+
+test('내용이 실제로 달라지면 결속 해시도 달라진다 — 한쪽으로만 열려 있지 않다', () => {
+  const a = { manifest: { 결속: { expectCommit: '0'.repeat(40), 범위해시: 'f'.repeat(64) } },
+    declarations: [{ group: 'spacing', prop: 'gap', value: 3, file: 'src/Screen.tsx', line: 1, column: 30 }] };
+  const b = JSON.parse(JSON.stringify(a));
+  b.declarations[0].value = 4;
+  assert.notEqual(auditCanonOf(a, 1), auditCanonOf(b, 1), '값이 달라졌는데 해시가 같다');
+});

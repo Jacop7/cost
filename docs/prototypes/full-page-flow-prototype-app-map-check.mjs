@@ -1,10 +1,9 @@
 // 앱 선언 전수 배정 검사기 (W1 · P1b).
 //
 // token-adoption-audit.json 의 선언 3,677건을 앱 매핑표의 규칙에 태워
-// 여섯 통 중 하나에 배정하고, 배정이 성립하는지 검사한다.
+// 다섯 통 중 하나에 배정하고, 배정이 성립하는지 검사한다.
 //
 //   primitive          tokens.ts 에 실재하는 값
-//   semantic           역할 이름이 값을 소유하는 자리
 //   componentOwned     단일 컴포넌트가 소유하는 고유값 — **이름 필수**
 //   defect             같은 역할의 팔레트 값이 따로 있는데 벗어난 값 — **수렴 대상 또는 열린 결정 ID 필수**
 //   pendingApproval    분류 제안. 결정이 사람에게 가야 하는 것 — **질문과 증거 필수**
@@ -52,6 +51,19 @@ if (!audit.manifest?.결속?.expectCommit || !audit.manifest?.결속?.범위해�
   console.error('  - 감사 산출물에 결속(expectCommit · 범위해시)이 없다. token-adoption-audit.mjs 를 --expect-commit 과 함께 clean checkout 에서 다시 돌려라');
   process.exit(1);
 }
+/**
+ * 산출물↔산출물 결속은 **파일 바이트가 아니라 파싱한 JSON 의 정규형**으로 잰다
+ * (페이블 `R6` 차단). 바이트로 재면 줄끝·들여쓰기·직렬화 방식이 바뀌는 순간 갈리고,
+ * 그건 "내용이 달라졌다" 가 아니라 "다시 썼다" 를 잰 것이다.
+ * 키를 정렬하고 LF 로 이어 붙여 sha256 한다 — 재직렬화해도 같은 값이 나온다.
+ */
+const canon = (v) => {
+  if (v === null || typeof v !== 'object') return JSON.stringify(v);
+  if (Array.isArray(v)) return `[${v.map(canon).join(',')}]`;
+  return `{${Object.keys(v).sort().map(k => `${JSON.stringify(k)}:${canon(v[k])}`).join(',')}}`;
+};
+const canonHash = (v) => createHash('sha256').update(canon(v), 'utf8').digest('hex');
+
 const BINS = ['primitive', 'componentOwned', 'defect', 'pendingApproval', 'approvedException'];
 const STAGES = ['S1', 'S2', 'S3a', 'S3b', 'S4'];
 const AXES = ['horizontal', 'vertical', 'both', 'none', 'derived'];
@@ -63,6 +75,8 @@ const fail = (m) => failures.push(m);
 for (const r of map.rules) {
   if (!r.id) fail('규칙에 id 가 없다');
   if (!BINS.includes(r.bin)) fail(`${r.id} : 알 수 없는 통 '${r.bin}'`);
+  // `semantic` 은 삭제된 통이다(솔 `W1 R1 F02`). 되살아나면 곧바로 잡는다.
+  if (r.bin === 'semantic') fail(`${r.id} : semantic 통은 삭제됐다 — 하드코딩 리터럴은 semantic 으로 이동하지 않는다. 의미 토큰 채택률은 tokenAccess 로 본다`);
   // pendingApproval 은 evidence 가 곧 근거다. 둘 중 하나는 반드시 있어야 한다.
   if (!r.근거 && !r.evidence) fail(`${r.id} : 근거가 없다 — 어디서 나온 판정인지 적어야 한다`);
   if (r.bin === 'componentOwned' && !r.name) fail(`${r.id} : componentOwned 인데 이름이 없다. 이름 없는 px 는 예외가 아니라 미매핑이다`);
@@ -184,8 +198,8 @@ for (const [id, declared] of declaredPrecedes) {
 // 규칙이 스스로 적은 `axis` 를 믿지 않는다. 그 규칙이 **실제로 이긴 선언들**의 축을
 // 측정 산출물에서 찾아 대조한다. 산문이 아니라 측정이 판정한다.
 if (!axisArt) fail(`축 측정 산출물이 없다: ${axisPath} — 축 판정을 대조 없이 통과시키지 않는다`);
-else if (axisArt.manifest?.auditSha256 !== sha(auditBytes))
-  fail(`축 측정이 다른 감사 산출물에서 나왔다 — 축 ${String(axisArt.manifest?.auditSha256).slice(0, 12)} · 지금 ${sha(auditBytes).slice(0, 12)}. 같은 입력으로 다시 재라`);
+else if (axisArt.manifest?.auditCanon !== canonHash(audit))
+  fail(`축 측정이 다른 감사 산출물에서 나왔다 — 축 ${String(axisArt.manifest?.auditCanon).slice(0, 12)} · 지금 ${canonHash(audit).slice(0, 12)}. 같은 입력으로 다시 재라 (바이트가 아니라 파싱한 JSON 의 정규형으로 대조한다 — 페이블 R6)`);
 else if (!axisArt.manifest?.audit결속)
   fail('축 측정의 입력 감사에 결속이 없다 — 결속 없는 입력에서 잰 축은 남의 나무를 잰 값일 수 있다');
 else {
@@ -278,8 +292,8 @@ const result = {
       prototypeMap: { path: basename(protoPath), sha256: sha(protoBytes) },
     },
     rules: {
-      '통': 'primitive · semantic · componentOwned · defect · pendingApproval · approvedException',
-      '완료 조건': '선언 = 여섯 통의 합 · 미분류 0 · approvedException 0 · componentOwned 이름 필수 · defect 수렴 대상 또는 열린 결정 필수 · pendingApproval 질문·증거 필수 · 걸리지 않는 규칙 0',
+      '통': 'primitive · componentOwned · defect · pendingApproval · approvedException',
+      '완료 조건': '선언 = 다섯 통의 합 · 미분류 0 · approvedException 0 · componentOwned 이름 필수 · defect 수렴 대상 또는 열린 결정 필수 · pendingApproval 질문·증거 필수 · 걸리지 않는 규칙 0',
       '첫 일치': '규칙은 순서대로 평가하고 처음 일치한 것이 이긴다. 순서가 곧 우선순위다',
     },
   },
@@ -287,7 +301,7 @@ const result = {
     status: failures.length ? 'FAIL' : 'PROPOSAL_COMPLETE',
     declarations: total,
     byBin: binCount,
-    semanticEmptyReason: map.semanticNote ?? null,
+    semantic통삭제사유: map.semanticNote ?? null,
     unmatchedCount: unmatched.length,
     unmatched: unmatched.slice(0, 50),
     multiMatchCount,

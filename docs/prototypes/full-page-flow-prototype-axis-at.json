@@ -1,16 +1,17 @@
 {
   "manifest": {
     "script": "docs/prototypes/full-page-flow-prototype-axis-measure.mjs",
-    "scriptSha256": "3ff184ab32d00fe9de323541a214148f881f2ce50bdbd479efad53c7f74ed3c8",
-    "auditSha256": "1cc6b91db5e341f5a6f628af0740a0d1e906654b180ff9e83c8a41dc51f9b146",
+    "scriptSha256": "ceb6bb682e287cef49cf16aa282e78e590001333eb1a8dc8a9692c4db8b36624",
+    "auditSha256": "5430d2fa42d86225b89048126f4ade9a44d840f508d1be8809a1aa5e45b94591",
+    "auditCanon": "3cbfd9d5c507b26dacb9daeedd40896ad976f22e8d3a7bb58e5c93a6f96bbf1c",
     "audit결속": {
-      "expectCommit": "be577597668f721da7442138971276770c2352ab",
-      "범위해시": "b431b8a1a5a85b7845eedeca1b101cd254ffe83b60491530c9d2bd69e3c8beff",
-      "범위해시정의": "선택된 파일의 \"경로\\0 git blob SHA\" 를 정렬해 잇고 감사 스크립트 자신의 sha256 을 더해 sha256. 커밋 SHA 자기참조 없이 입력을 결속한다."
+      "expectCommit": "df7c7c43378d05c1f72a4f7c5c58a987bc19d8f5",
+      "범위해시": "9ae7220b39c74d4900f2365f52367fe7a5cd98d87dd80c887bc8ed1de3b5cdcf",
+      "범위해시정의": "선택된 파일의 \"경로\\0 git blob SHA\" 를 정렬해 잇고 감사 스크립트 자신의 blob SHA 를 더해 sha256. blob SHA 는 CRLF→LF 정규화 뒤 직접 계산하므로 OS·git 유무에 좌우되지 않는다(페이블 R6 차단). 커밋 SHA 자기참조 없이 입력을 결속한다."
     },
     "values": "전부",
     "node": "v22.23.2",
-    "generatedAt": "2026-09-05T04:47:17.616Z",
+    "generatedAt": "2026-09-05T05:24:19.101Z",
     "판정": "축은 값이 아니라 속성과 컨테이너 flexDirection 으로 정한다 (PRT-207)."
   },
   "counts": {

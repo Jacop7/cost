@@ -314,21 +314,30 @@ const headSha = git(['rev-parse', 'HEAD']);
 const dirtyRaw = git(['status', '--porcelain', '--', srcRoot, join(root, 'scripts')]);
 
 /**
- * 감사 입력 범위 해시 (솔 검수 `R4` 질문 3 · `R5 F02`).
+ * 감사 입력 범위 해시 (솔 `R4` 질문 3 · 솔 `R5 F02` · **페이블 `R6` 차단**).
  *
  * `측정커밋` 에 커밋 SHA 를 적으면 **자기 자신의 SHA 를 자기 안에 적어야 하는** 순환이 생긴다.
  * 대신 **감사가 실제로 읽은 것**을 해시한다 — 파일 경로와 내용, 그리고 **감사기 자신**.
- * 관련 파일이 안 바뀌면 뒤따르는 커밋에서도 같은 값이 나오므로 "이후 무변경" 을 말이 아니라
- * 게이트가 직접 검사한다. 감사기가 바뀌면 값도 바뀐다 — 자를 바꿔 놓고 옛 눈금을 쓰지 않는다.
  *
- * ⚠ **제품과 시험을 따로 해시한다.** 초판은 둘을 한 해시에 묶어 놓고 위에서는 "시험 fixture 를
- *   고쳐도 제품 재고가 흔들리면 안 된다" 고 적었다 — 앞뒤가 맞지 않았다. 시험 한 줄만 고쳐도
- *   제품 래칫이 깨져 목록 갱신을 요구했다. **래칫은 제품 해시에만 건다.**
+ * ⚠ **내용 sha256 을 쓰면 줄끝을 잰다.** 초판이 그랬고, 페이블의 Windows clean checkout(CRLF)과
+ *   내 Linux 체크아웃(LF)에서 값이 갈렸다. 결속이 "이후 무변경" 이 아니라 "어느 OS 에서
+ *   받았나" 를 재고 있었다. 그래서 **git blob SHA** 로 바꾼다 —
+ *     `sha1("blob " + 길이 + "\0" + CRLF→LF 정규화 내용)`
+ *   이것은 `git hash-object` 가 내는 값과 같고(그쪽도 clean 필터로 LF 로 정규화한다),
+ *   **git 이 없어도** 계산된다. 시험 하네스가 임시 폴더에서 도는 것과 OS 독립성을 함께 만족한다.
+ *
+ * ⚠ **제품과 시험을 따로 해시한다** (솔 `R5 F02`). 시험 fixture 한 줄을 고쳤다고 제품 재고가
+ *   흔들리면 안 된다. **래칫은 제품 해시에만 건다.**
  */
 const h = (b) => createHash('sha256').update(b).digest('hex');
+/** git blob id — 줄끝을 정규화하므로 체크아웃한 OS 에 좌우되지 않는다. */
+const blobId = (buf) => {
+  const lf = Buffer.from(buf.toString('utf8').replace(/\r\n/g, '\n'), 'utf8');
+  return createHash('sha1').update(Buffer.concat([Buffer.from(`blob ${lf.length}\u0000`, 'utf8'), lf])).digest('hex');
+};
 const hashOf = (list, withSelf) => {
-  const parts = list.map(f => `${relative(idRoot, f).replace(/\\/g, '/')}\u0000${h(readFileSync(f))}`).sort();
-  if (withSelf) parts.push(`\u0000self\u0000${h(readFileSync(new URL(import.meta.url)))}`);
+  const parts = list.map(f => `${relative(idRoot, f).replace(/\\/g, '/')}\u0000${blobId(readFileSync(f))}`).sort();
+  if (withSelf) parts.push(`\u0000self\u0000${blobId(readFileSync(new URL(import.meta.url)))}`);
   return h(parts.join('\n'));
 };
 const 제품입력해시 = hashOf(files, true);        // 판정·소비처·래칫의 입력. 감사기 자신을 포함한다
@@ -339,7 +348,7 @@ const 측정 = {
   작업트리: dirtyRaw === null ? '알 수 없음' : dirtyRaw === '' ? '깨끗' : `변경 ${dirtyRaw.split(/\r?\n/).length}건`,
   변경목록: dirtyRaw ? dirtyRaw.split(/\r?\n/).slice(0, 20) : [],
   제품입력해시, 시험참조해시,
-  해시정의: '감사가 읽은 .tsx 의 "경로\\0내용sha256" 을 정렬해 이어 붙여 sha256. 제품 해시에는 감사기 자신의 sha256 을 더한다. 커밋 SHA 가 아니라 입력을 결속한다. **래칫은 제품 해시에만 건다** — 시험 fixture 변경이 제품 재고를 흔들면 안 된다(R5 F02).',
+  해시정의: '감사가 읽은 .tsx 의 "경로\\0git blob SHA" 를 정렬해 이어 붙여 sha256. blob SHA 는 CRLF→LF 정규화 뒤 계산하므로 체크아웃한 OS 에 좌우되지 않는다(페이블 R6 차단 — 내용 sha256 은 줄끝을 쟀다). 제품 해시에는 감사기 자신의 blob SHA 를 더한다. 커밋 SHA 가 아니라 입력을 결속한다. **래칫은 제품 해시에만 건다** — 시험 fixture 변경이 제품 재고를 흔들면 안 된다(솔 R5 F02).',
   결속: opt['expect-commit'] !== undefined ? `--expect-commit=${opt['expect-commit']}` : '없음 — 이 산출물을 커밋 증거로 인용하지 마라',
 };
 if (opt['expect-commit'] !== undefined) {

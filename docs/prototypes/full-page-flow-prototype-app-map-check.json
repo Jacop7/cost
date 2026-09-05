@@ -1,20 +1,20 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-05T04:53:34.708Z",
+  "generatedAt": "2026-09-05T05:25:13.455Z",
   "schemaVersion": 1,
   "script": {
    "name": "full-page-flow-prototype-app-map-check.mjs",
-   "sha256": "ead3c57f9c4de6ae0c498b591abfe37007f877c194435700b161d3042b8527c4"
+   "sha256": "41dd12a269d4b82dd37e203ef92aea189abb0d7e5ecd28d6f223f5b7c7422945"
   },
   "source": {
    "audit": {
     "path": "token-adoption-audit.json",
-    "sha256": "1cc6b91db5e341f5a6f628af0740a0d1e906654b180ff9e83c8a41dc51f9b146",
+    "sha256": "5430d2fa42d86225b89048126f4ade9a44d840f508d1be8809a1aa5e45b94591",
     "declarations": 3653
    },
    "appMap": {
     "path": "full-page-flow-prototype-app-token-map.json",
-    "sha256": "144fd28d17b2a1286f8da0c7423e1747c221268c7cc7b9c973210fe7b20e4b34"
+    "sha256": "c67f3aedb221e69503dcb1015961adcc304bb7c1c0034e5f2dafebb983afdfb5"
    },
    "prototypeMap": {
     "path": "full-page-flow-prototype-token-map.json",
@@ -22,8 +22,8 @@
    }
   },
   "rules": {
-   "통": "primitive · semantic · componentOwned · defect · pendingApproval · approvedException",
-   "완료 조건": "선언 = 여섯 통의 합 · 미분류 0 · approvedException 0 · componentOwned 이름 필수 · defect 수렴 대상 또는 열린 결정 필수 · pendingApproval 질문·증거 필수 · 걸리지 않는 규칙 0",
+   "통": "primitive · componentOwned · defect · pendingApproval · approvedException",
+   "완료 조건": "선언 = 다섯 통의 합 · 미분류 0 · approvedException 0 · componentOwned 이름 필수 · defect 수렴 대상 또는 열린 결정 필수 · pendingApproval 질문·증거 필수 · 걸리지 않는 규칙 0",
    "첫 일치": "규칙은 순서대로 평가하고 처음 일치한 것이 이긴다. 순서가 곧 우선순위다"
   }
  },
@@ -37,7 +37,7 @@
    "pendingApproval": 44,
    "approvedException": 0
   },
-  "semanticEmptyReason": "**`semantic` 통을 없앴다** (솔 검수 W1 R1 F02). 감사기는 숫자 리터럴만 선언으로 모으므로 `fontSize: 16` → `TYPE.body` 치환은 semantic 으로 이동하는 것이 아니라 입력에서 사라진다. 영원히 0 인 통을 두고 \"P4 에서 채워진다\" 고 적는 것은 분류가 아니다. W1 의 범위를 **하드코딩 리터럴의 배정**으로 좁히고, 의미 토큰 채택률은 같은 감사기가 모으는 `tokenAccess` 로 따로 본다.",
+  "semantic통삭제사유": "**`semantic` 통을 없앴다** (솔 검수 W1 R1 F02). 감사기는 숫자 리터럴만 선언으로 모으므로 `fontSize: 16` → `TYPE.body` 치환은 semantic 으로 이동하는 것이 아니라 입력에서 사라진다. 영원히 0 인 통을 두고 \"P4 에서 채워진다\" 고 적는 것은 분류가 아니다. W1 의 범위를 **하드코딩 리터럴의 배정**으로 좁히고, 의미 토큰 채택률은 같은 감사기가 모으는 `tokenAccess` 로 따로 본다.",
   "unmatchedCount": 0,
   "unmatched": [],
   "multiMatchCount": 929,

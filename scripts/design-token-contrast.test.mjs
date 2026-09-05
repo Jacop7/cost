@@ -269,53 +269,96 @@ test('§8.2d 가 새로 붙으면 봉인이 깨진다 — 새 결정이 조용�
   assert.match(r.out, /결정문 §8\.2 구간이 봉인과 다르다/);
 });
 
-test('결정 커밋이 40자리 SHA 가 아니면 FAIL 한다 — "이 커밋" 같은 자기참조를 받지 않는다', () => {
+test('결정 커밋에 40자리 SHA 가 없으면 FAIL 한다 — "이 커밋" 같은 자기참조를 받지 않는다', () => {
   const r = runSeal(s => { s.결정.커밋 = ['이 봉인을 담은 커밋 PRT-212']; return s; });
   assert.equal(r.code, 1, r.out);
-  assert.match(r.out, /40자리 SHA 로 시작하지 않는다/);
+  assert.match(r.out, /40자리 SHA 가 없다/);
 });
 
-test('결정 커밋 SHA 가 저장소에 없으면 FAIL 한다', () => {
-  const r = runSeal(s => { s.결정.커밋 = ['0'.repeat(40) + ' 없는 커밋']; return s; });
-  assert.equal(r.code, 1, r.out);
-  assert.match(r.out, /개체가 저장소에 없다/);
-});
-
-// ── 결정 커밋 결속 (솔 검수 `R5 F01`) ────────────────────────────────────────
-// 존재만 검사하면 **아무 커밋이나 출처로 통과한다.** 조상 여부와 "결정문을 실제로 바꿨는가"
-// 까지 봐야 "누가 어느 결정으로 봉인을 갱신했는가" 가 증명된다.
+// ── 결정 커밋 결속 (솔 검수 `R5 F01` · `R6 F01`) ─────────────────────────────
+// 검사가 세 번 조여졌다 — 존재만 봄 → 파일 변경까지 봄 → **§8.2 구간이 실제로 달라졌는지**.
+// 아래 시험들은 각 단계에서 **그 전 게이트를 통과하던** 입력이다.
 const gitOut = (args) => spawnSync('git', args, { cwd: root, encoding: 'utf8' }).stdout.trim();
+const DEC_REL = 'docs/디자인-토큰-3계층-값-매핑-기획서.md';
+const sliceOf = (rev) => {
+  const r = spawnSync('git', ['show', `${rev}:${DEC_REL}`], { cwd: root, encoding: 'utf8' });
+  if (r.status !== 0) return null;
+  const lines = r.stdout.replace(/\r\n/g, '\n').split('\n');
+  const from = lines.findIndex(l => /^###\s+8\.2[a-z]?(\s|$)/.test(l));
+  if (from < 0) return null;
+  let to = lines.length;
+  for (let i = from + 1; i < lines.length; i++) {
+    if (/^#{1,2}\s/.test(lines[i])) { to = i; break; }
+    if (/^###\s/.test(lines[i]) && !/^###\s+8\.2[a-z]?(\s|$)/.test(lines[i])) { to = i; break; }
+  }
+  return lines.slice(from, to).join('\n').trimEnd();
+};
+const entry = (sha, sections = ['8.2']) => ({ sha, sections, 비고: '시험' });
 
 test('결정문을 바꾸지 않은 관련 없는 커밋을 출처로 대면 FAIL 한다', () => {
-  // 결정문을 건드리지 않은 조상 커밋을 하나 찾는다.
-  const shas = gitOut(['rev-list', '-40', 'HEAD']).split('\n');
-  const unrelated = shas.find(s => {
-    const names = gitOut(['-c', 'core.quotepath=false', 'show', '--pretty=format:', '--name-only', s]).split('\n');
-    return s && !names.some(n => n.trim() === 'docs/디자인-토큰-3계층-값-매핑-기획서.md');
+  const shas = gitOut(['rev-list', '-40', 'HEAD']).split('\n').filter(Boolean);
+  const unrelated = shas.find(x => {
+    const names = gitOut(['-c', 'core.quotepath=false', 'show', '--pretty=format:', '--name-only', x]).split('\n');
+    return !names.some(n => n.trim() === DEC_REL);
   });
   assert.ok(unrelated, '결정문을 건드리지 않은 조상 커밋을 찾지 못했다 — 시험 전제가 깨졌다');
-  const r = runSeal(s => { s.결정.커밋 = [`${unrelated} 관련 없는 커밋`]; return s; });
+  const r = runSeal(s => { s.결정.커밋 = [entry(unrelated)]; return s; });
   assert.equal(r.code, 1, `관련 없는 커밋이 출처로 통과했다\n${r.out}`);
   assert.match(r.out, /결정문\(.*\)을 바꾸지 않았다/);
 });
 
+test('결정문을 고쳤지만 §8.2 구간은 그대로인 커밋을 출처로 대면 FAIL 한다 (R6 F01)', () => {
+  // §7.x 만 고친 커밋이 실제로 있다. 파일 변경 검사만 있던 게이트는 이것을 통과시켰다.
+  const shas = gitOut(['rev-list', '-40', 'HEAD']).split('\n').filter(Boolean);
+  const docOnly = shas.find(x => {
+    const names = gitOut(['-c', 'core.quotepath=false', 'show', '--pretty=format:', '--name-only', x]).split('\n');
+    if (!names.some(n => n.trim() === DEC_REL)) return false;
+    const now = sliceOf(x), before = sliceOf(`${x}^`);
+    return now !== null && before !== null && now === before;
+  });
+  assert.ok(docOnly, '결정문을 고쳤지만 §8.2 는 그대로인 조상 커밋을 찾지 못했다 — 시험 전제가 깨졌다');
+  const r = runSeal(s => { s.결정.커밋 = [entry(docOnly)]; return s; });
+  assert.equal(r.code, 1, `§8.2 를 안 바꾼 문서 커밋이 출처로 통과했다\n${r.out}`);
+  assert.match(r.out, /§8\.2 구간은 그대로다/);
+});
+
 test('이 가지에 없는 커밋을 출처로 대면 FAIL 한다 — 조상이 아니면 출처가 아니다', () => {
-  // 저장소에 있지만 HEAD 의 조상이 아닌 커밋을 찾는다(다른 브랜치의 끝).
-  const heads = gitOut(['for-each-ref', '--format=%(objectname)', 'refs/heads/']).split('\n').filter(Boolean);
-  const notAncestor = heads.find(s => spawnSync('git', ['merge-base', '--is-ancestor', s, 'HEAD'], { cwd: root }).status !== 0);
-  if (!notAncestor) return;   // 가지가 하나뿐인 저장소면 이 시험은 성립하지 않는다
-  const r = runSeal(s => { s.결정.커밋 = [`${notAncestor} 다른 가지의 커밋`]; return s; });
+  // 브랜치 구성에 기대지 않는다 (솔 검수 `R6 F04`). `commit-tree` 로 **참조되지 않는**
+  // 커밋 개체를 하나 만든다 — 저장소에 존재하지만 HEAD 의 조상이 아니다. ref 는 건드리지 않는다.
+  const tree = gitOut(['rev-parse', 'HEAD^{tree}']);
+  const made = spawnSync('git', ['commit-tree', tree, '-m', 'seal-test dangling'], { cwd: root, encoding: 'utf8' });
+  assert.equal(made.status, 0, `시험용 비조상 커밋을 만들지 못했다: ${made.stderr}`);
+  const notAncestor = made.stdout.trim();
+  assert.match(notAncestor, /^[0-9a-f]{40}$/);
+  assert.notEqual(spawnSync('git', ['merge-base', '--is-ancestor', notAncestor, 'HEAD'], { cwd: root }).status, 0,
+    '만든 커밋이 조상이 되어 버렸다 — 시험 전제가 깨졌다');
+  const r = runSeal(s => { s.결정.커밋 = [entry(notAncestor)]; return s; });
   assert.equal(r.code, 1, `다른 가지의 커밋이 출처로 통과했다\n${r.out}`);
-  assert.match(r.out, /조상이 아니다|바꾸지 않았다/);
+  assert.match(r.out, /조상이 아니다/);
 });
 
 test('저장소에 없는 40자리 SHA 는 여전히 FAIL 한다', () => {
-  const r = runSeal(s => { s.결정.커밋 = ['0'.repeat(40) + ' 없는 커밋']; return s; });
+  const r = runSeal(s => { s.결정.커밋 = [entry('0'.repeat(40))]; return s; });
   assert.equal(r.code, 1, r.out);
   assert.match(r.out, /개체가 저장소에 없다/);
 });
 
-test('저장소의 봉인은 세 커밋 모두 조상이고 결정문을 바꾼 것이다', () => {
+test('sections 를 적지 않으면 FAIL 한다 — 어느 결정을 바꾼 커밋인지 밝혀야 한다', () => {
+  const r = runSeal(s => { s.결정.커밋 = [{ sha: gitOut(['rev-parse', 'HEAD']), 비고: '절 없음' }]; return s; });
+  assert.equal(r.code, 1, r.out);
+  assert.match(r.out, /sections 가 없다/);
+});
+
+test('sections 에 그 커밋 시점에 없는 절을 적으면 FAIL 한다', () => {
+  const r = runSeal(s => {
+    s.결정.커밋 = [{ sha: 'f351058f30aaf421c42ba32dc9ebe9681aa38f25', sections: ['8.2z'], 비고: '없는 절' }];
+    return s;
+  });
+  assert.equal(r.code, 1, r.out);
+  assert.match(r.out, /그 커밋의 구간에는 없다/);
+});
+
+test('저장소의 봉인은 세 커밋 모두 조상이고 §8.2 구간을 바꾼 것이다', () => {
   const r = run(null);
   assert.equal(r.code, 0, r.out);
   assert.match(r.out, /결정 커밋 3건 확인/);
