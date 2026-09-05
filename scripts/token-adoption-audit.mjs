@@ -145,10 +145,30 @@ const propGroup = n => Object.entries(NUMERIC_STYLE_PROPS).find(([, list]) => li
 // 파일별 개수만 저장하면 "이 값을 어느 토큰으로 보낼지" 를 판정할 수 없다 —
 // 매핑은 값과 속성과 위치가 있어야 정해진다. 프로토타입 감사와 같은 단위로 맞춘다.
 const declarations = [];
+const definitionDeclarations = [];
+const directNumericSibling = (node, propName, sf) => {
+  const object = node.parent;
+  if (!object || !ts.isObjectLiteralExpression(object)) return null;
+  const sibling = object.properties.find(p => ts.isPropertyAssignment(p)
+    && p.name.getText(sf).replace(/['"]/g, '') === propName
+    && ts.isNumericLiteral(p.initializer));
+  if (!sibling) return null;
+  const { line, character } = sf.getLineAndCharacterOfPosition(sibling.getStart(sf));
+  return { value: Number(sibling.initializer.text), line: line + 1, column: character + 1 };
+};
 const record = (group, prop, value, node, rel, layer) => {
   const sf2 = node.getSourceFile();
   const { line, character } = sf2.getLineAndCharacterOfPosition(node.getStart(sf2));
-  declarations.push({ group, prop, value, file: rel, line: line + 1, column: character + 1, layer });
+  const declaration = { group, prop, value, file: rel, line: line + 1, column: character + 1, layer };
+  if (group === 'typography' && prop === 'lineHeight') {
+    const pair = directNumericSibling(node, 'fontSize', sf2);
+    declaration.fontSizePair = pair
+      ? { status: 'direct', ...pair }
+      : { status: 'missing', reason: '같은 스타일 객체에 숫자 fontSize 선언이 없다' };
+  }
+  // 토큰 정본의 숫자는 하드코딩 사용처가 아니라 primitive 정의다. 정의를 실행 우주에
+  // 섞으면 정본 자신을 defect 로 분류하고 후행 수렴 단계가 확정값을 다시 쓰게 된다.
+  (layer === 'tokenDefinition' ? definitionDeclarations : declarations).push(declaration);
 };
 
 for (const abs of files) {
@@ -345,6 +365,22 @@ if (bindFail.length) {
   process.exit(1);
 }
 
+const declarationSummaryOf = (list) => {
+  const byGroup = {};
+  for (const d of list) {
+    const g = (byGroup[d.group] ??= { total: 0, byValue: {}, byLayer: {} });
+    g.total++;
+    const k = `${d.prop}:${d.value}`;
+    g.byValue[k] = (g.byValue[k] ?? 0) + 1;
+    g.byLayer[d.layer] = (g.byLayer[d.layer] ?? 0) + 1;
+  }
+  for (const g of Object.values(byGroup)) {
+    g.distinctDeclarations = Object.keys(g.byValue).length;
+    g.byValue = Object.fromEntries(Object.entries(g.byValue).sort((a, b) => b[1] - a[1]));
+  }
+  return byGroup;
+};
+
 const out = {
   manifest: {
     generatedAt: new Date().toISOString(), schemaVersion: 1,
@@ -355,7 +391,7 @@ const out = {
     runner: { node: process.version, typescript: ts.version },
     selection: SELECTION,
     fileLayers: { tokenDefinition: TOKEN_DEFINITION_FILES, sharedComponentPrefixes: SHARED_COMPONENT_PREFIXES,
-      note: '공용 컴포넌트는 토큰을 소비해야 정상이므로 제외하지 않고 따로 센다' },
+      note: '토큰 정의는 definitions 인벤토리로 분리해 하드코딩 실행 우주에서 제외한다. 공용 컴포넌트는 토큰을 소비해야 정상이므로 제외하지 않고 따로 센다' },
     countedTokenObjects: TOKEN_OBJECTS, countedTokenValues: TOKEN_VALUES,
     countedKitComponents: KIT_COMPONENTS, numericStyleProps: NUMERIC_STYLE_PROPS,
     countingRules: {
@@ -366,24 +402,17 @@ const out = {
       jsxOccurrences: 'JSX 요소로 실제 렌더된 횟수. import 만 한 파일은 세지 않는다',
       elementAccess: 'X[key] 인덱스 접근도 센다. 동적 키는 X[computed] 로 묶는다',
       shadowing: '같은 이름의 지역 선언이 있으면 그 파일은 해당 심볼 집계에서 제외하고 목록에 남긴다',
+      definitionDeclarations: 'tokenDefinition 파일의 숫자·굵기 선언은 definitions 에만 보존하고 declarations/defect 우주에서는 제외한다',
+      lineHeightFontSizePair: 'lineHeight 선언은 같은 스타일 객체의 직접 숫자 fontSize 짝을 보존한다. 짝이 없으면 missing 으로 남겨 추정 수렴을 막는다',
     },
   },
+  definitions: {
+    declarations: definitionDeclarations,
+    declarationSummary: declarationSummaryOf(definitionDeclarations),
+    total: definitionDeclarations.length,
+  },
   declarations,
-  declarationSummary: (() => {
-    const byGroup = {};
-    for (const d of declarations) {
-      const g = (byGroup[d.group] ??= { total: 0, byValue: {}, byLayer: {} });
-      g.total++;
-      const k = `${d.prop}:${d.value}`;
-      g.byValue[k] = (g.byValue[k] ?? 0) + 1;
-      g.byLayer[d.layer] = (g.byLayer[d.layer] ?? 0) + 1;
-    }
-    for (const g of Object.values(byGroup)) {
-      g.distinctDeclarations = Object.keys(g.byValue).length;
-      g.byValue = Object.fromEntries(Object.entries(g.byValue).sort((a, b) => b[1] - a[1]));
-    }
-    return byGroup;
-  })(),
+  declarationSummary: declarationSummaryOf(declarations),
   summary: {
     filesScanned: files.length,
     filesByLayer: { tokenDefinition: byLayer('tokenDefinition').length,
