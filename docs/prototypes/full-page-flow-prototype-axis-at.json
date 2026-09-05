@@ -2,26 +2,26 @@
   "manifest": {
     "script": "docs/prototypes/full-page-flow-prototype-axis-measure.mjs",
     "scriptSha256": "60277bdb6a873128565368cd88bc6d99f95dc823a95a8b651bf78ef68312a987",
-    "auditSha256": "9455407af5d900c60467c7ecf9834a8a2960377f6e1737f1aa2551cb09994d47",
-    "auditCanon": "e8396f909e84b57d6703234ea50aca6d392a3cc72ab2a5344299be3afdc3341c",
+    "auditSha256": "b8163d3f97a5fab13995232dd7d314d1f7313bef42b91afd1bd286c65d691df3",
+    "auditCanon": "9f42f6b8b3b10413c10f27fd07ae9dd635f24b52aa9e7df29491b44d254d1f07",
     "audit결속": {
-      "expectCommit": "2e12335",
-      "범위해시": "dde6162a60c15a895a034682f9247216f2cfc17ce155968701881f34121502c9",
+      "expectCommit": "bd4f0a0",
+      "범위해시": "4c6b9384e5283c7a1f3177015b854667e4646ad7013dbd9f51f860cd2f12bef4",
       "범위해시정의": "선택된 파일의 \"경로\\0 git blob SHA\" 를 정렬해 잇고 감사 스크립트 자신의 blob SHA 를 더해 sha256. blob SHA 는 CRLF→LF 정규화 뒤 직접 계산하므로 OS·git 유무에 좌우되지 않는다(페이블 R6 차단). 커밋 SHA 자기참조 없이 입력을 결속한다."
     },
     "values": "전부",
     "node": "v24.15.0",
-    "generatedAt": "2026-09-05T13:05:33.910Z",
+    "generatedAt": "2026-09-05T13:40:26.168Z",
     "판정": "축은 값이 아니라 속성과 컨테이너 flexDirection 으로 정한다 (PRT-207)."
   },
   "counts": {
-    "V": 1114,
-    "H": 1445,
-    "both": 854,
+    "V": 1120,
+    "H": 1471,
+    "both": 855,
     "none": 220,
-    "keysV": 1114,
-    "keysH": 1444,
-    "keysBoth": 853,
+    "keysV": 1120,
+    "keysH": 1470,
+    "keysBoth": 854,
     "keysNone": 206
   },
   "growV": [
@@ -168,6 +168,7 @@
     "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:179:marginTop",
     "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:188:marginTop",
     "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:203:height",
+    "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:203:marginVertical",
     "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:220:paddingBottom",
     "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:220:paddingTop",
     "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:221:paddingBottom",
@@ -539,6 +540,7 @@
     "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:132:height",
     "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:146:lineHeight",
     "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:146:marginBottom",
+    "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:146:marginTop",
     "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:150:marginTop",
     "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:85:height",
     "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:91:paddingBottom",
@@ -701,6 +703,7 @@
     "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:214:paddingTop",
     "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:216:marginBottom",
     "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:257:marginBottom",
+    "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:257:marginTop",
     "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:257:paddingVertical",
     "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:259:lineHeight",
     "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:274:paddingBottom",
@@ -759,6 +762,7 @@
     "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:487:paddingVertical",
     "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:48:lineHeight",
     "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:515:marginBottom",
+    "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:515:marginTop",
     "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:161:paddingVertical",
     "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:169:gap",
     "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:169:paddingBottom",
@@ -835,6 +839,7 @@
     "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:613:paddingVertical",
     "apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx:110:marginTop",
     "apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx:150:marginBottom",
+    "apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx:150:marginTop",
     "apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx:77:gap",
     "apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx:77:paddingBottom",
     "apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx:96:paddingVertical",
@@ -895,6 +900,7 @@
     "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:330:lineHeight",
     "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:356:minHeight",
     "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:357:paddingVertical",
+    "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:35:marginBottom",
     "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:35:marginTop",
     "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:365:marginTop",
     "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:372:marginTop",
@@ -1163,10 +1169,12 @@
     "apps/mobile/src/components/kit/AppHeader.tsx:29:width",
     "apps/mobile/src/components/kit/AppHeader.tsx:34:width",
     "apps/mobile/src/components/kit/AppHeader.tsx:36:fontWeight",
+    "apps/mobile/src/components/kit/AppHeader.tsx:36:letterSpacing",
     "apps/mobile/src/components/kit/AppHeader.tsx:37:gap",
     "apps/mobile/src/components/kit/AppHeader.tsx:37:paddingRight",
     "apps/mobile/src/components/kit/Button.tsx:56:gap",
     "apps/mobile/src/components/kit/Button.tsx:67:fontWeight",
+    "apps/mobile/src/components/kit/Button.tsx:67:letterSpacing",
     "apps/mobile/src/components/kit/MemoEditSheet.tsx:47:gap",
     "apps/mobile/src/components/kit/QueryState.tsx:18:paddingHorizontal",
     "apps/mobile/src/components/kit/QueryState.tsx:48:fontWeight",
@@ -1182,6 +1190,7 @@
     "apps/mobile/src/components/kit/Sheet.tsx:32:width",
     "apps/mobile/src/components/kit/Sheet.tsx:35:paddingHorizontal",
     "apps/mobile/src/components/kit/Sheet.tsx:37:fontWeight",
+    "apps/mobile/src/components/kit/Sheet.tsx:37:letterSpacing",
     "apps/mobile/src/components/kit/Sheet.tsx:38:fontWeight",
     "apps/mobile/src/components/kit/Sheet.tsx:44:paddingHorizontal",
     "apps/mobile/src/components/kit/Sheet.tsx:79:gap",
@@ -1193,6 +1202,7 @@
     "apps/mobile/src/components/kit/SortSheet.tsx:63:minWidth",
     "apps/mobile/src/components/kit/charts.tsx:49:fontWeight",
     "apps/mobile/src/components/kit/charts.tsx:50:fontWeight",
+    "apps/mobile/src/components/kit/charts.tsx:50:letterSpacing",
     "apps/mobile/src/components/kit/charts.tsx:51:fontWeight",
     "apps/mobile/src/components/kit/index.tsx:109:gap",
     "apps/mobile/src/components/kit/index.tsx:109:paddingHorizontal",
@@ -1250,6 +1260,7 @@
     "apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx:149:paddingHorizontal",
     "apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx:153:fontWeight",
     "apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx:156:fontWeight",
+    "apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx:156:letterSpacing",
     "apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx:181:fontWeight",
     "apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx:197:gap",
     "apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx:198:paddingHorizontal",
@@ -1307,6 +1318,7 @@
     "apps/mobile/src/features/ingredients/components/IngCard.tsx:43:paddingHorizontal",
     "apps/mobile/src/features/ingredients/components/IngCard.tsx:44:gap",
     "apps/mobile/src/features/ingredients/components/IngCard.tsx:46:fontWeight",
+    "apps/mobile/src/features/ingredients/components/IngCard.tsx:46:letterSpacing",
     "apps/mobile/src/features/ingredients/components/IngCard.tsx:53:gap",
     "apps/mobile/src/features/ingredients/components/IngCard.tsx:59:fontWeight",
     "apps/mobile/src/features/ingredients/components/IngCard.tsx:66:fontWeight",
@@ -1333,6 +1345,7 @@
     "apps/mobile/src/features/ingredients/components/LossCard.tsx:97:paddingHorizontal",
     "apps/mobile/src/features/ingredients/components/UnitPickerSheet.tsx:32:paddingHorizontal",
     "apps/mobile/src/features/ingredients/components/UnitPickerSheet.tsx:33:fontWeight",
+    "apps/mobile/src/features/ingredients/components/UnitPickerSheet.tsx:33:letterSpacing",
     "apps/mobile/src/features/ingredients/components/UnitPickerSheet.tsx:39:fontWeight",
     "apps/mobile/src/features/ingredients/components/UnitPickerSheet.tsx:40:gap",
     "apps/mobile/src/features/ingredients/components/UnitPickerSheet.tsx:55:gap",
@@ -1359,6 +1372,7 @@
     "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:184:fontWeight",
     "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:188:fontWeight",
     "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:198:width",
+    "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:203:marginHorizontal",
     "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:203:width",
     "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:220:paddingHorizontal",
     "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:222:width",
@@ -1389,12 +1403,14 @@
     "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:129:paddingHorizontal",
     "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:142:gap",
     "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:146:fontWeight",
+    "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:146:letterSpacing",
     "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:152:gap",
     "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:154:fontWeight",
     "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:156:fontWeight",
     "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:169:gap",
     "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:172:gap",
     "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:174:fontWeight",
+    "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:174:letterSpacing",
     "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:177:fontWeight",
     "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:181:fontWeight",
     "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:189:fontWeight",
@@ -1443,6 +1459,7 @@
     "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:82:paddingLeft",
     "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:82:paddingRight",
     "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:83:fontWeight",
+    "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:83:letterSpacing",
     "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:90:width",
     "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:99:width",
     "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx:122:gap",
@@ -1644,6 +1661,7 @@
     "apps/mobile/src/features/my/screens/MyHomeScreen.tsx:107:paddingLeft",
     "apps/mobile/src/features/my/screens/MyHomeScreen.tsx:107:paddingRight",
     "apps/mobile/src/features/my/screens/MyHomeScreen.tsx:108:fontWeight",
+    "apps/mobile/src/features/my/screens/MyHomeScreen.tsx:108:letterSpacing",
     "apps/mobile/src/features/my/screens/MyHomeScreen.tsx:109:fontWeight",
     "apps/mobile/src/features/my/screens/MyHomeScreen.tsx:113:paddingHorizontal",
     "apps/mobile/src/features/my/screens/MyHomeScreen.tsx:115:gap",
@@ -1826,6 +1844,7 @@
     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:220:paddingLeft",
     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:220:paddingRight",
     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:221:fontWeight",
+    "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:221:letterSpacing",
     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:226:width",
     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:234:width",
     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:246:gap",
@@ -1833,6 +1852,7 @@
     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:261:paddingHorizontal",
     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:287:gap",
     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:292:fontWeight",
+    "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:292:letterSpacing",
     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:297:gap",
     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:298:paddingHorizontal",
     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:299:fontWeight",
@@ -1841,11 +1861,13 @@
     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:303:fontWeight",
     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:332:gap",
     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:335:fontWeight",
+    "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:335:letterSpacing",
     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:339:fontWeight",
     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:342:fontWeight",
     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:351:gap",
     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:366:gap",
     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:369:fontWeight",
+    "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:369:letterSpacing",
     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:372:fontWeight",
     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:375:fontWeight",
     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:378:gap",
@@ -1882,6 +1904,7 @@
     "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx:147:fontWeight",
     "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx:62:fontWeight",
     "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx:63:fontWeight",
+    "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx:63:letterSpacing",
     "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx:71:marginHorizontal",
     "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx:82:fontWeight",
     "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx:83:fontWeight",
@@ -1908,6 +1931,7 @@
     "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx:92:gap",
     "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx:92:paddingHorizontal",
     "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx:93:fontWeight",
+    "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx:93:letterSpacing",
     "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx:94:fontWeight",
     "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx:96:gap",
     "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:106:width",
@@ -1959,6 +1983,7 @@
     "apps/mobile/src/features/recipes/screens/MaterialSearchScreen.tsx:66:minWidth",
     "apps/mobile/src/features/recipes/screens/MaterialSearchScreen.tsx:67:gap",
     "apps/mobile/src/features/recipes/screens/MaterialSearchScreen.tsx:68:fontWeight",
+    "apps/mobile/src/features/recipes/screens/MaterialSearchScreen.tsx:68:letterSpacing",
     "apps/mobile/src/features/recipes/screens/MaterialSearchScreen.tsx:72:fontWeight",
     "apps/mobile/src/features/recipes/screens/MaterialSearchScreen.tsx:73:fontWeight",
     "apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx:105:fontWeight",
@@ -2047,6 +2072,7 @@
     "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:214:paddingHorizontal",
     "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:215:gap",
     "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:216:fontWeight",
+    "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:216:letterSpacing",
     "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:223:gap",
     "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:226:fontWeight",
     "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:228:fontWeight",
@@ -2141,9 +2167,11 @@
     "apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx:97:minWidth",
     "apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx:98:gap",
     "apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx:99:fontWeight",
+    "apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx:99:letterSpacing",
     "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:157:paddingLeft",
     "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:157:paddingRight",
     "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:158:fontWeight",
+    "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:158:letterSpacing",
     "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:164:width",
     "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:172:width",
     "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:186:gap",
@@ -2158,6 +2186,7 @@
     "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:63:paddingHorizontal",
     "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:64:gap",
     "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:66:fontWeight",
+    "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:66:letterSpacing",
     "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:73:fontWeight",
     "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:74:fontWeight",
     "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:78:fontWeight",
@@ -2385,6 +2414,7 @@
     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:356:paddingLeft",
     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:356:paddingRight",
     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:358:fontWeight",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:358:letterSpacing",
     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:359:fontWeight",
     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:364:width",
     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:372:paddingHorizontal",
@@ -2395,6 +2425,7 @@
     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:393:fontWeight",
     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:417:fontWeight",
     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:418:fontWeight",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:418:letterSpacing",
     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:421:fontWeight",
     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:429:gap",
     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:438:gap",
@@ -2468,6 +2499,7 @@
     "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx:159:paddingHorizontal",
     "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx:171:paddingHorizontal",
     "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx:172:fontWeight",
+    "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx:172:letterSpacing",
     "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx:184:paddingHorizontal",
     "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx:185:minWidth",
     "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx:186:fontWeight",
@@ -3090,6 +3122,7 @@
     "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:346:fontSize",
     "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:351:fontSize",
     "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:352:fontSize",
+    "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:354:margin",
     "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:354:padding",
     "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:358:fontSize",
     "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:375:fontSize",
@@ -4035,6 +4068,14 @@
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
     },
     {
+      "key": "apps/mobile/src/components/kit/AppHeader.tsx:36:letterSpacing",
+      "value": -0.3,
+      "prop": "letterSpacing",
+      "group": "typography",
+      "axis": "H",
+      "why": "letterSpacing 는 글자 폭에 붙는다 — 가로다"
+    },
+    {
       "key": "apps/mobile/src/components/kit/AppHeader.tsx:37:gap",
       "value": 2,
       "prop": "gap",
@@ -4065,6 +4106,14 @@
       "group": "typography",
       "axis": "H",
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
+    },
+    {
+      "key": "apps/mobile/src/components/kit/Button.tsx:67:letterSpacing",
+      "value": -0.2,
+      "prop": "letterSpacing",
+      "group": "typography",
+      "axis": "H",
+      "why": "letterSpacing 는 글자 폭에 붙는다 — 가로다"
     },
     {
       "key": "apps/mobile/src/components/kit/Icon.tsx:47:hex",
@@ -4483,6 +4532,14 @@
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
     },
     {
+      "key": "apps/mobile/src/components/kit/Sheet.tsx:37:letterSpacing",
+      "value": -0.4,
+      "prop": "letterSpacing",
+      "group": "typography",
+      "axis": "H",
+      "why": "letterSpacing 는 글자 폭에 붙는다 — 가로다"
+    },
+    {
       "key": "apps/mobile/src/components/kit/Sheet.tsx:38:fontSize",
       "value": 16,
       "prop": "fontSize",
@@ -4777,6 +4834,14 @@
       "group": "typography",
       "axis": "H",
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
+    },
+    {
+      "key": "apps/mobile/src/components/kit/charts.tsx:50:letterSpacing",
+      "value": -0.5,
+      "prop": "letterSpacing",
+      "group": "typography",
+      "axis": "H",
+      "why": "letterSpacing 는 글자 폭에 붙는다 — 가로다"
     },
     {
       "key": "apps/mobile/src/components/kit/charts.tsx:51:fontSize",
@@ -5987,6 +6052,14 @@
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
     },
     {
+      "key": "apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx:156:letterSpacing",
+      "value": -0.5,
+      "prop": "letterSpacing",
+      "group": "typography",
+      "axis": "H",
+      "why": "letterSpacing 는 글자 폭에 붙는다 — 가로다"
+    },
+    {
       "key": "apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx:156:marginTop",
       "value": 2,
       "prop": "marginTop",
@@ -6915,6 +6988,14 @@
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
     },
     {
+      "key": "apps/mobile/src/features/ingredients/components/IngCard.tsx:46:letterSpacing",
+      "value": -0.3,
+      "prop": "letterSpacing",
+      "group": "typography",
+      "axis": "H",
+      "why": "letterSpacing 는 글자 폭에 붙는다 — 가로다"
+    },
+    {
       "key": "apps/mobile/src/features/ingredients/components/IngCard.tsx:53:gap",
       "value": 7,
       "prop": "gap",
@@ -7411,6 +7492,14 @@
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
     },
     {
+      "key": "apps/mobile/src/features/ingredients/components/UnitPickerSheet.tsx:33:letterSpacing",
+      "value": -0.4,
+      "prop": "letterSpacing",
+      "group": "typography",
+      "axis": "H",
+      "why": "letterSpacing 는 글자 폭에 붙는다 — 가로다"
+    },
+    {
       "key": "apps/mobile/src/features/ingredients/components/UnitPickerSheet.tsx:33:marginBottom",
       "value": 16,
       "prop": "marginBottom",
@@ -7887,6 +7976,22 @@
       "value": 44,
       "prop": "height",
       "group": "size",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:203:marginHorizontal",
+      "value": -9,
+      "prop": "marginHorizontal",
+      "group": "spacing",
+      "axis": "H",
+      "why": "속성이 가로다"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:203:marginVertical",
+      "value": -2,
+      "prop": "marginVertical",
+      "group": "spacing",
       "axis": "V",
       "why": "속성이 세로다"
     },
@@ -8635,6 +8740,14 @@
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
     },
     {
+      "key": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:146:letterSpacing",
+      "value": -0.5,
+      "prop": "letterSpacing",
+      "group": "typography",
+      "axis": "H",
+      "why": "letterSpacing 는 글자 폭에 붙는다 — 가로다"
+    },
+    {
       "key": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:150:marginTop",
       "value": 13,
       "prop": "marginTop",
@@ -8745,6 +8858,14 @@
       "group": "typography",
       "axis": "H",
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:174:letterSpacing",
+      "value": -0.6,
+      "prop": "letterSpacing",
+      "group": "typography",
+      "axis": "H",
+      "why": "letterSpacing 는 글자 폭에 붙는다 — 가로다"
     },
     {
       "key": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:177:fontSize",
@@ -9585,6 +9706,14 @@
       "group": "typography",
       "axis": "H",
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:83:letterSpacing",
+      "value": -0.6,
+      "prop": "letterSpacing",
+      "group": "typography",
+      "axis": "H",
+      "why": "letterSpacing 는 글자 폭에 붙는다 — 가로다"
     },
     {
       "key": "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:90:width",
@@ -13931,6 +14060,14 @@
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
     },
     {
+      "key": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx:108:letterSpacing",
+      "value": -0.6,
+      "prop": "letterSpacing",
+      "group": "typography",
+      "axis": "H",
+      "why": "letterSpacing 는 글자 폭에 붙는다 — 가로다"
+    },
+    {
       "key": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx:109:fontSize",
       "value": 14,
       "prop": "fontSize",
@@ -17139,6 +17276,14 @@
       "why": "글자 크기는 글자 상자의 두 축을 함께 바꾼다"
     },
     {
+      "key": "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:146:marginTop",
+      "value": -8,
+      "prop": "marginTop",
+      "group": "spacing",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
       "key": "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:146:marginBottom",
       "value": 12,
       "prop": "marginBottom",
@@ -17803,6 +17948,14 @@
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
     },
     {
+      "key": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:221:letterSpacing",
+      "value": -0.6,
+      "prop": "letterSpacing",
+      "group": "typography",
+      "axis": "H",
+      "why": "letterSpacing 는 글자 폭에 붙는다 — 가로다"
+    },
+    {
       "key": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:226:width",
       "value": 40,
       "prop": "width",
@@ -17945,6 +18098,14 @@
       "group": "typography",
       "axis": "H",
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
+    },
+    {
+      "key": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:292:letterSpacing",
+      "value": -0.3,
+      "prop": "letterSpacing",
+      "group": "typography",
+      "axis": "H",
+      "why": "letterSpacing 는 글자 폭에 붙는다 — 가로다"
     },
     {
       "key": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:297:gap",
@@ -18147,6 +18308,14 @@
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
     },
     {
+      "key": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:335:letterSpacing",
+      "value": -0.3,
+      "prop": "letterSpacing",
+      "group": "typography",
+      "axis": "H",
+      "why": "letterSpacing 는 글자 폭에 붙는다 — 가로다"
+    },
+    {
       "key": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:339:fontSize",
       "value": 16,
       "prop": "fontSize",
@@ -18241,6 +18410,14 @@
       "group": "typography",
       "axis": "H",
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
+    },
+    {
+      "key": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:369:letterSpacing",
+      "value": -0.3,
+      "prop": "letterSpacing",
+      "group": "typography",
+      "axis": "H",
+      "why": "letterSpacing 는 글자 폭에 붙는다 — 가로다"
     },
     {
       "key": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:372:fontSize",
@@ -18713,6 +18890,14 @@
       "group": "typography",
       "axis": "H",
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx:63:letterSpacing",
+      "value": -0.6,
+      "prop": "letterSpacing",
+      "group": "typography",
+      "axis": "H",
+      "why": "letterSpacing 는 글자 폭에 붙는다 — 가로다"
     },
     {
       "key": "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx:63:marginTop",
@@ -19401,6 +19586,14 @@
       "group": "typography",
       "axis": "H",
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx:93:letterSpacing",
+      "value": -0.6,
+      "prop": "letterSpacing",
+      "group": "typography",
+      "axis": "H",
+      "why": "letterSpacing 는 글자 폭에 붙는다 — 가로다"
     },
     {
       "key": "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx:94:fontSize",
@@ -20459,6 +20652,14 @@
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
     },
     {
+      "key": "apps/mobile/src/features/recipes/screens/MaterialSearchScreen.tsx:68:letterSpacing",
+      "value": -0.3,
+      "prop": "letterSpacing",
+      "group": "typography",
+      "axis": "H",
+      "why": "letterSpacing 는 글자 폭에 붙는다 — 가로다"
+    },
+    {
       "key": "apps/mobile/src/features/recipes/screens/MaterialSearchScreen.tsx:72:fontSize",
       "value": 14,
       "prop": "fontSize",
@@ -21075,6 +21276,14 @@
       "why": "flexDirection: 'row'"
     },
     {
+      "key": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:257:marginTop",
+      "value": -8,
+      "prop": "marginTop",
+      "group": "spacing",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
       "key": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:257:marginBottom",
       "value": 18,
       "prop": "marginBottom",
@@ -21614,6 +21823,14 @@
       "key": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:354:padding",
       "value": 7,
       "prop": "padding",
+      "group": "spacing",
+      "axis": "B",
+      "why": "단축 속성 — 두 축 모두"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:354:margin",
+      "value": -7,
+      "prop": "margin",
       "group": "spacing",
       "axis": "B",
       "why": "단축 속성 — 두 축 모두"
@@ -22307,6 +22524,14 @@
       "why": "글자 크기는 글자 상자의 두 축을 함께 바꾼다"
     },
     {
+      "key": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:515:marginTop",
+      "value": -8,
+      "prop": "marginTop",
+      "group": "spacing",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
       "key": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:515:marginBottom",
       "value": 12,
       "prop": "marginBottom",
@@ -22553,6 +22778,14 @@
       "group": "typography",
       "axis": "H",
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:216:letterSpacing",
+      "value": -0.3,
+      "prop": "letterSpacing",
+      "group": "typography",
+      "axis": "H",
+      "why": "letterSpacing 는 글자 폭에 붙는다 — 가로다"
     },
     {
       "key": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:223:marginTop",
@@ -24347,6 +24580,14 @@
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
     },
     {
+      "key": "apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx:99:letterSpacing",
+      "value": -0.3,
+      "prop": "letterSpacing",
+      "group": "typography",
+      "axis": "H",
+      "why": "letterSpacing 는 글자 폭에 붙는다 — 가로다"
+    },
+    {
       "key": "apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx:110:fontSize",
       "value": 14,
       "prop": "fontSize",
@@ -24385,6 +24626,14 @@
       "group": "typography",
       "axis": "B",
       "why": "글자 크기는 글자 상자의 두 축을 함께 바꾼다"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx:150:marginTop",
+      "value": -8,
+      "prop": "marginTop",
+      "group": "spacing",
+      "axis": "V",
+      "why": "속성이 세로다"
     },
     {
       "key": "apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx:150:marginBottom",
@@ -24449,6 +24698,14 @@
       "group": "typography",
       "axis": "H",
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:66:letterSpacing",
+      "value": -0.3,
+      "prop": "letterSpacing",
+      "group": "typography",
+      "axis": "H",
+      "why": "letterSpacing 는 글자 폭에 붙는다 — 가로다"
     },
     {
       "key": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:72:marginBottom",
@@ -24761,6 +25018,14 @@
       "group": "typography",
       "axis": "H",
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:158:letterSpacing",
+      "value": -0.6,
+      "prop": "letterSpacing",
+      "group": "typography",
+      "axis": "H",
+      "why": "letterSpacing 는 글자 폭에 붙는다 — 가로다"
     },
     {
       "key": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:164:width",
@@ -25750,6 +26015,14 @@
       "key": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:35:marginTop",
       "value": 4,
       "prop": "marginTop",
+      "group": "spacing",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:35:marginBottom",
+      "value": -3,
+      "prop": "marginBottom",
       "group": "spacing",
       "axis": "V",
       "why": "속성이 세로다"
@@ -28747,6 +29020,14 @@
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
     },
     {
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:358:letterSpacing",
+      "value": -0.6,
+      "prop": "letterSpacing",
+      "group": "typography",
+      "axis": "H",
+      "why": "letterSpacing 는 글자 폭에 붙는다 — 가로다"
+    },
+    {
       "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:359:fontSize",
       "value": 14,
       "prop": "fontSize",
@@ -28953,6 +29234,14 @@
       "group": "typography",
       "axis": "H",
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:418:letterSpacing",
+      "value": -0.6,
+      "prop": "letterSpacing",
+      "group": "typography",
+      "axis": "H",
+      "why": "letterSpacing 는 글자 폭에 붙는다 — 가로다"
     },
     {
       "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:418:marginTop",
@@ -30497,6 +30786,14 @@
       "group": "typography",
       "axis": "H",
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx:172:letterSpacing",
+      "value": -0.3,
+      "prop": "letterSpacing",
+      "group": "typography",
+      "axis": "H",
+      "why": "letterSpacing 는 글자 폭에 붙는다 — 가로다"
     },
     {
       "key": "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx:184:minHeight",

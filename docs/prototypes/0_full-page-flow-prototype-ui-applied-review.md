@@ -2668,3 +2668,20 @@ popup/state host **121개**(합 182), 그리고 레지스트리에 키가 없는
   `full-page-flow-prototype-i18n-stress.json` · `../token-adoption-audit.json` ·
   `full-page-flow-prototype-app-map-check.json` · `full-page-flow-prototype-doc-claims-check.json`
 - 별도 후속: S4a Android·iOS 네이티브 실측은 W1 배정과 프로토타입 DOM 봉인 범위 밖에서 추적한다.
+
+## DS-20260905-007 · PRT-227 음수 숫자 선언 복구와 W1 재배정
+
+- 대상: 토큰 채택 감사기의 음수 AST · W1 규칙표/검사기/기획서 · 동기화 표식.
+- 기대값: 누락된 음수 선언 33건 전수 복구 · 미분류 0 · 승인 예외 0 · 기존 DOM 렌더 회귀 증가 0.
+- 실제값: 선언 3,666건 · 규칙 83개 · primitive 2,063 · componentOwned 227 ·
+  defect 1,326 · pendingApproval 50 · approvedException 0 · 미분류 0.
+- PC 검수: PASS — 1280×900 렌더와 390×844 디자인 축 감사 재실행, 콘솔·폰트 실패 0.
+- 모바일 검수: PASS — 320px · CSS 200% · 글자 200% · i18n 4패스 재실행.
+  렌더 위반은 알려진 5건, i18n 활성 atRisk 잔여 목록과 정확히 일치해 신규·악화 0.
+- 미검수: 없음
+- 결과: PASS
+- 증거: `full-page-flow-prototype-render-audit.json` · `full-page-flow-prototype-design-audit.json` ·
+  `full-page-flow-prototype-i18n-stress.json` · `../token-adoption-audit.json` ·
+  `full-page-flow-prototype-app-map-check.json` · `full-page-flow-prototype-doc-claims-check.json` ·
+  `../../scripts/token-adoption-numeric-literal.test.mjs`
+- 별도 후속: 자간 15건의 역할별 토큰 추가/수렴은 제품 소유자 결정 대기.
