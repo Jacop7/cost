@@ -108,6 +108,7 @@ const PIN_CLOCK = `(() => {
   Object.setPrototypeOf(D, _D);
   globalThis.Date = D;
 })()`;
+let CLOCK_SAMPLE = null;
 const newPinnedPage = async (browser, o) => {
   const p = await browser.newPage(o);
   await p.addInitScript(PIN_CLOCK);
@@ -118,6 +119,44 @@ const newPinnedPage = async (browser, o) => {
 // ── 레지스트리는 문서가 아니라 적용본 자신에게서 읽는다 ────────────────────────
 const boot = await newPinnedPage(browser);
 await boot.goto(URLBASE, { waitUntil: 'load' });
+
+// ── 시계 ↔ 표본 날짜 계약 (PRT-210 · 페이블 조건) ──────────────────────────
+// 시계를 고정하면 측정은 재현되지만, **표본이 낡았는데도 고정 시계 덕분에 통과**하는 상태로
+// 봉인될 수 있다. 프로토타입의 `recentChangeButton()` 은 표본 행이 7일을 넘으면 버튼을
+// 지우므로, 고정 시계가 가장 최근 표본에서 7일 이상 떨어지면 그 봉인은 "다시는 렌더되지
+// 않는 화면" 을 재현하고 있는 것이다. 표본을 갱신하거나 시계를 옮길 때 여기서 걸린다.
+{
+  const sample = await boot.evaluate(() => {
+    const out = [];
+    const seen = new Set();
+    const walk = (v) => {
+      if (typeof v === 'string') { const m = v.match(/^(\d{2})\/(\d{2})(?:\s|$|\u00b7)/); if (m) out.push([+m[1], +m[2]]); }
+      else if (Array.isArray(v)) v.forEach(walk);
+      else if (v && typeof v === 'object') { if (seen.has(v)) return; seen.add(v); Object.values(v).forEach(walk); }
+    };
+    try { walk(screens); } catch { /* 레지스트리가 없으면 빈 목록 */ }
+    return out;
+  });
+  if (sample.length) {
+    const c = new Date(CLOCK_MS);
+    let newest = -Infinity, newestLabel = null;
+    for (const [mo, da] of sample) {
+      let t = new Date(c.getFullYear(), mo - 1, da).getTime();
+      if (t - CLOCK_MS > 86400000) t = new Date(c.getFullYear() - 1, mo - 1, da).getTime();
+      if (t > newest) { newest = t; newestLabel = `${String(mo).padStart(2, '0')}/${String(da).padStart(2, '0')}`; }
+    }
+    const ageDays = Math.floor((CLOCK_MS - newest) / 86400000);
+    if (ageDays >= 7) {
+      console.error(`시계 ${CLOCK} 가 가장 최근 표본 ${newestLabel} 에서 ${ageDays}일 떨어져 있다. ` +
+        `프로토타입은 7일이 넘은 표본의 recent-change 버튼을 지우므로, 이 봉인은 다시는 렌더되지 않는 화면을 재현한다. ` +
+        `표본을 갱신하거나 --clock 을 옮겨라.`);
+      await browser.close();
+      process.exit(3);
+    }
+    CLOCK_SAMPLE = { newest: newestLabel, ageDays };
+  }
+}
+
 const registry = await boot.evaluate(() => {
   const hidden = Object.entries(screens).filter(([, s]) => s.hidden).map(([k]) => k);
   const pairs = [];
@@ -381,7 +420,7 @@ const manifest = {
   schemaVersion: 2,
   script: { name: basename(new URL(import.meta.url).pathname), sha256: scriptSha },
   target: { path: basename(targetPath), sha256: sha(bytes), designSyncId },
-  runner: { node: process.version, playwright: playwrightVersion, chromium: chromiumVersion, platform: process.platform, clock: CLOCK, clockNote: '프로토타입이 스스로 new Date() 를 읽으므로 시계도 측정 입력이다 (PRT-209)' },
+  runner: { node: process.version, playwright: playwrightVersion, chromium: chromiumVersion, platform: process.platform, clock: CLOCK, clockSample: CLOCK_SAMPLE, clockNote: '프로토타입이 스스로 new Date() 를 읽으므로 시계도 측정 입력이다 (PRT-209)' },
   passes: PASSES, classificationPass: CLASSIFY_PASS,
   scale: SCALE, bannedDeclaredWeights: BANNED_DECLARED, bannedComputedWeights: BANNED_COMPUTED,
   officialWeights: OFFICIAL_WEIGHTS, shellOffScaleAllowlist: SHELL_OFFSCALE_ALLOW,

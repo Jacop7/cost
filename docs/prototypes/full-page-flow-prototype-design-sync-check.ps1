@@ -650,7 +650,11 @@ if (-not (Test-Path -LiteralPath $contrastPath)) {
   }
   # 경계값은 통과시키되 **보이게** 둔다. 사라지면 조합표가 조용히 바뀐 것이다.
   if ($null -eq $contrast.boundaryCount) { Add-Failure "$contrastName : 경계값 수가 없음" }
-  if ([int]$contrast.boundaryCount -lt 4) { Add-Failure "$contrastName : 경계값이 $($contrast.boundaryCount)건 - DS-20260905-001 이 승인한 넷보다 적다. 조합표가 바뀌었다" }
+  # PRT-210 에서 text.link/required 를 #1465DB 로 정정해 경계값 넷 중 둘이 해소됐다.
+  # 남은 둘(흰 글자 on action.primary 4.50 · text.tertiary on bg 4.50)은 소유자가 "그대로 두고
+  # 경계값으로 표시" 로 판단한 자리다. 줄어들면 조합표가 조용히 바뀐 것이므로 걸린다.
+  if ([int]$contrast.boundaryCount -lt 2) { Add-Failure "$contrastName : 경계값이 $($contrast.boundaryCount)건 - 남아 있어야 할 둘보다 적다. 조합표가 바뀌었다" }
+  if ([int]$contrast.openCount -ne 0) { Add-Failure "$contrastName : 열린 조합이 $($contrast.openCount)건 - PRT-210 에서 0 이 됐다. 새로 열렸다면 §8.3 에 사유가 있어야 한다" }
   if ($null -eq $contrast.openCount) { Add-Failure "$contrastName : 열린 조합 수가 없음" }
 }
 
