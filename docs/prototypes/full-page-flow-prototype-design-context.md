@@ -1,12 +1,12 @@
 ﻿# 전체 페이지 프로토타입 · 디자인 맥락 장부
 
-> 현재 동기화 ID: `DS-20260905-005`  
+> 현재 동기화 ID: `DS-20260905-006`  
 > 문서 동기화 상태: `SYNCED`  
 > 전체 UI 작업 상태: `IN_PROGRESS`  
 > 마지막 갱신: `2026-09-05`  
 > 공통 변경: `예`  
 > UI 변경: `아니오`  
-> 변경 기록: `PRT-223`
+> 변경 기록: `PRT-226`
 
 ## 1. 문서 역할
 
@@ -42,6 +42,28 @@
 - 글로벌: 30~50% 긴 번역, 320px, 200% 글자 확대, RTL 검수.
 
 ## 4. 가장 최근 작업
+
+### DS-20260905-006 · PRT-226 S4a 정적 후보 기준 W1 전수 재측정
+
+- 작업 성격: S4a 정적 후보 `2e12335`의 앱 토큰 선언 전수 재측정과 W1 배정 재결속.
+  적용본은 동기화 표식 1줄만 바뀌고 CSS·JS·마크업 실행 변경은 없다.
+- 원인: S4a가 제품 TSX의 줄 위치와 터치 외피 spacing 한 자리를 바꿨으므로 기존 W1의
+  파일:행 결속과 선언 3,632건 기준선을 그대로 인용할 수 없었다.
+- 결과:
+  - 사용처 선언 3,633건을 규칙 78개로 재배정했다. 미분류 0, 승인 예외 0이다.
+  - 통은 primitive 2,053 · componentOwned 219 · defect 1,326 · pendingApproval 35다.
+  - S4a 신규 `padding:7`은 일반 space가 아니라 수량 stepper의 겹침 방지 터치 외피로
+    `COMPONENT.quantityStepper.touchEnvelopePadding`에 배정했다.
+  - 줄 이동 선언 55건을 같은 파일·속성·값에 다시 결속했고, 기획서 자동 수치 블록과
+    doc-claims를 새 산출물에 맞췄다.
+- 완료 조건:
+  - PRT226-W1-AUDIT · `../token-adoption-audit.json`
+  - PRT226-W1-MAP · `full-page-flow-prototype-app-map-check.json`
+  - PRT226-W1-DOC · `full-page-flow-prototype-doc-claims-check.json`
+  - PRT226-RENDER · `full-page-flow-prototype-render-audit.json`
+  - PRT226-DESIGN · `full-page-flow-prototype-design-audit.json`
+  - PRT226-I18N · `full-page-flow-prototype-i18n-stress.json`
+- 다음 시작점: 페이블 W1 최종 판정 → `S2` / 네이티브 환경 확보 시 S4a 실측
 
 ### DS-20260905-005 · PRT-223 적용본 해시 정규화와 해시 지점 전수표
 

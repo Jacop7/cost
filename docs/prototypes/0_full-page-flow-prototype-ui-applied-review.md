@@ -2653,3 +2653,18 @@ popup/state host **121개**(합 182), 그리고 레지스트리에 키가 없는
   거짓말을 한다. **통과 조건은 "실패가 없다"가 아니라 "알려진 실패와 정확히 일치한다"다.**
   검사기를 넓힐 때마다 새 결함이 나오며, 그것이 목적이다 — 나온 것은 덮지 말고 원인과
   판단 주체를 적어 목록에 남긴다.
+## DS-20260905-006 · PRT-226 S4a 정적 후보 기준 W1 재측정
+
+- 대상: S4a 정적 후보 `2e12335`의 앱 제품 TSX/TS · W1 감사/배정/문서 대조 · 동기화 표식.
+- 기대값: 사용처 선언 전수 재측정 · 미분류 0 · 승인 예외 0 · 기존 DOM 렌더 회귀 증가 0.
+- 실제값: 선언 3,633건 · 규칙 78개 · primitive 2,053 · componentOwned 219 ·
+  defect 1,326 · pendingApproval 35 · approvedException 0 · 미분류 0.
+- PC 검수: PASS — 1280×900 렌더와 390×844 디자인 축 감사 재실행, 콘솔·폰트 실패 0.
+- 모바일 검수: PASS — 320px · CSS 200% · 글자 200% · i18n 4패스 재실행.
+  렌더 위반은 알려진 5건, i18n 활성 atRisk 396건과 정확히 일치해 신규·악화 0.
+- 미검수: 없음
+- 결과: PASS
+- 증거: `full-page-flow-prototype-render-audit.json` · `full-page-flow-prototype-design-audit.json` ·
+  `full-page-flow-prototype-i18n-stress.json` · `../token-adoption-audit.json` ·
+  `full-page-flow-prototype-app-map-check.json` · `full-page-flow-prototype-doc-claims-check.json`
+- 별도 후속: S4a Android·iOS 네이티브 실측은 W1 배정과 프로토타입 DOM 봉인 범위 밖에서 추적한다.
