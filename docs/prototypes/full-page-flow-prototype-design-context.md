@@ -1,12 +1,12 @@
 ﻿# 전체 페이지 프로토타입 · 디자인 맥락 장부
 
-> 현재 동기화 ID: `DS-20260905-003`  
+> 현재 동기화 ID: `DS-20260905-004`  
 > 문서 동기화 상태: `SYNCED`  
 > 전체 UI 작업 상태: `IN_PROGRESS`  
 > 마지막 갱신: `2026-09-05`  
 > 공통 변경: `예`  
 > UI 변경: `아니오`  
-> 변경 기록: `PRT-210`
+> 변경 기록: `PRT-222`
 
 ## 1. 문서 역할
 
@@ -42,6 +42,33 @@
 - 글로벌: 30~50% 긴 번역, 320px, 200% 글자 확대, RTL 검수.
 
 ## 4. 가장 최근 작업
+
+### DS-20260905-004 · PRT-221 봉인 · 정의 분리와 행간 파생 계약
+
+- 작업 성격: W1 감사 우주 정정 + 행간 목적지 검사 강화 + 승인된 §8.2c 검수 규칙 봉인.
+  적용본은 동기화 표식 1줄만 바뀌고 **CSS·JS·마크업 무변경**
+- UI 화면 변경: 없음
+- 대상: 앱 토큰 채택 감사 · 앱 매핑표/검사기/음성 시험 · 값 매핑 기획서 §7.3·§8.2c·§8.3 ·
+  디자인 토큰 봉인 · 프로토타입 감사/파생 증거
+- 판정: PRT-221 **APPROVED (조건 1)**. “targetMap 15건 불일치” 주장은 검수자가 철회했고,
+  정의 분리와 기계 파생이라는 구조 지적 둘은 유효했다.
+- 내용:
+  - `tokens.ts` 정의 21건(fontSize 7 · fontWeight 7 · lineHeight 7)을 `definitions`로 분리했다.
+    사용처 실행 우주는 3,653→3,632이며 행간 사용처는 66건이다.
+  - 행간 직접 짝 65건은 `DS-20260905-001#6-2` 폐쇄표로 계산하고, 짝 없는 `EmptyState`
+    안내문 1건은 `TYPE.caption.lineHeight` 치환 규칙으로 분리했다.
+  - 같은 AST 스타일 객체를 확인하지 않은 근접 줄 검산을 금지하고, §8.2 변경과 토큰 봉인을
+    같은 커밋에 넣는 원자성 규칙을 기록했다.
+  - 세 DOM 감사는 Playwright 1.62.1 고정 Chromium 151/Windows로 재실행했다. 렌더 위반은
+    알려진 5건과 크기까지 일치했고, i18n 기준·+30% 파손은 0건이다. Linux Chromium 141에서만
+    atRisk이던 12건은 실행기 차이로 `resolved`에 남겼고 신규·악화는 0건이다.
+  - 감사 생성기 4개의 자기/입력 SHA도 CRLF가 아닌 LF 논리 텍스트를 재게 해 Windows
+    checkout이 봉인을 깨는 반쪽 수정을 완결했다.
+- 완료 조건:
+  - PRT221-DEFINITION-SPLIT · ../token-adoption-audit.json
+  - PRT221-LINEHEIGHT-DERIVED · full-page-flow-prototype-app-map-check.json
+  - PRT221-SEALED-REMEASURE · full-page-flow-prototype-render-audit.json
+- 다음 시작점: `S4a` → 같은 SHA에서 W1 전수 재측정 / `DS-20260905-005`
 
 ### DS-20260905-003 · W1 종결 · 잔여 146건 분류 · `text.link` 정정
 

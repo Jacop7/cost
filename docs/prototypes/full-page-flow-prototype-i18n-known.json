@@ -3,9 +3,9 @@
  "note": "현재 남아 있는 atRisk 의 정확한 잔여 목록. 키는 pass|target|selector|hostIndex 다 — selector 만 쓰면 같은 목록의 여러 행이 한 키로 뭉개져 다섯 행이 나빠져도 마지막 하나만 그대로면 통과한다. 게이트는 양방향 + 크기로 대조한다.",
  "resolvedNote": "entries 에 있던 키가 더 이상 관측되지 않으면 여기에 사유·근거·prt 를 적어야 게이트가 통과한다. 사라짐은 개선일 수도 있고 요소를 숨기거나 잘라낸 결과일 수도 있어서, 자동 통과시키면 UI 가이드 §6.1 의 \"숨기지 않는다\" 계약과 게이트가 어긋난다 (PRT-202).",
  "boundTo": {
-  "target": "7ce8bd4968232965ef85a458c03a5a0a73a0790b62f4c2e51a86fff7203fb383",
-  "designSyncId": "DS-20260905-003",
-  "script": "0c774e749d137e03857b6f1201bad7ceae819f19b78263e7396c2b9e39c318f0"
+  "target": "280ed57cb675bb58ec053bf69ff176b7582b9c8db71d966d110761e1c4642aaf",
+  "designSyncId": "DS-20260905-004",
+  "script": "0c72450ee2ff6e839bc7b11cd8fa30cbf2211e893f9c10418421748fa5bb2068"
  },
  "entries": {
   "w130|screen:stock|card>row>row-main>row-title|48": {
@@ -3340,5 +3340,66 @@
   }
  },
  "count": 408,
- "resolved": {}
+ "resolved": {
+  "w130|screen:stock|condition>condition-actions>condition-filter>filter-text|2": {
+   "사유": "실행기 변경으로 atRisk 임계값 아래로 이동",
+   "근거": "적용본의 실행 콘텐츠는 동일하고 DESIGN_SYNC 주석만 변경. Linux Chromium 141 기준선을 Windows Playwright 1.62.1 Chromium 151로 재측정했으며 base 잘림·이탈·넘침은 0건",
+   "prt": "PRT-222"
+  },
+  "w130|popup:stock_period@stock|condition>condition-actions>condition-filter>filter-text|2": {
+   "사유": "실행기 변경으로 atRisk 임계값 아래로 이동",
+   "근거": "적용본의 실행 콘텐츠는 동일하고 DESIGN_SYNC 주석만 변경. Linux Chromium 141 기준선을 Windows Playwright 1.62.1 Chromium 151로 재측정했으며 base 잘림·이탈·넘침은 0건",
+   "prt": "PRT-222"
+  },
+  "w130|popup:stock_type@stock|condition>condition-actions>condition-filter>filter-text|2": {
+   "사유": "실행기 변경으로 atRisk 임계값 아래로 이동",
+   "근거": "적용본의 실행 콘텐츠는 동일하고 DESIGN_SYNC 주석만 변경. Linux Chromium 141 기준선을 Windows Playwright 1.62.1 Chromium 151로 재측정했으며 base 잘림·이탈·넘침은 0건",
+   "prt": "PRT-222"
+  },
+  "w130|popup:stock_order@stock|condition>condition-actions>condition-filter>filter-text|2": {
+   "사유": "실행기 변경으로 atRisk 임계값 아래로 이동",
+   "근거": "적용본의 실행 콘텐츠는 동일하고 DESIGN_SYNC 주석만 변경. Linux Chromium 141 기준선을 Windows Playwright 1.62.1 Chromium 151로 재측정했으며 base 잘림·이탈·넘침은 0건",
+   "prt": "PRT-222"
+  },
+  "w130|popup:stock_event_more@stock|condition>condition-actions>condition-filter>filter-text|2": {
+   "사유": "실행기 변경으로 atRisk 임계값 아래로 이동",
+   "근거": "적용본의 실행 콘텐츠는 동일하고 DESIGN_SYNC 주석만 변경. Linux Chromium 141 기준선을 Windows Playwright 1.62.1 Chromium 151로 재측정했으며 base 잘림·이탈·넘침은 0건",
+   "prt": "PRT-222"
+  },
+  "w130|popup:stock_event_revert@stock|condition>condition-actions>condition-filter>filter-text|2": {
+   "사유": "실행기 변경으로 atRisk 임계값 아래로 이동",
+   "근거": "적용본의 실행 콘텐츠는 동일하고 DESIGN_SYNC 주석만 변경. Linux Chromium 141 기준선을 Windows Playwright 1.62.1 Chromium 151로 재측정했으며 base 잘림·이탈·넘침은 0건",
+   "prt": "PRT-222"
+  },
+  "w150|screen:my_hours|card>setting-row>setting-copy>small|5": {
+   "사유": "실행기 변경으로 atRisk 임계값 아래로 이동",
+   "근거": "적용본의 실행 콘텐츠는 동일하고 DESIGN_SYNC 주석만 변경. Linux Chromium 141 기준선을 Windows Playwright 1.62.1 Chromium 151로 재측정했으며 base 잘림·이탈·넘침은 0건",
+   "prt": "PRT-222"
+  },
+  "w150|popup:hours_start@my_hours|card>setting-row>setting-copy>small|5": {
+   "사유": "실행기 변경으로 atRisk 임계값 아래로 이동",
+   "근거": "적용본의 실행 콘텐츠는 동일하고 DESIGN_SYNC 주석만 변경. Linux Chromium 141 기준선을 Windows Playwright 1.62.1 Chromium 151로 재측정했으며 base 잘림·이탈·넘침은 0건",
+   "prt": "PRT-222"
+  },
+  "w150|popup:hours_end@my_hours|card>setting-row>setting-copy>small|5": {
+   "사유": "실행기 변경으로 atRisk 임계값 아래로 이동",
+   "근거": "적용본의 실행 콘텐츠는 동일하고 DESIGN_SYNC 주석만 변경. Linux Chromium 141 기준선을 Windows Playwright 1.62.1 Chromium 151로 재측정했으며 base 잘림·이탈·넘침은 0건",
+   "prt": "PRT-222"
+  },
+  "w150|popup:hours_break_start@my_hours|card>setting-row>setting-copy>small|5": {
+   "사유": "실행기 변경으로 atRisk 임계값 아래로 이동",
+   "근거": "적용본의 실행 콘텐츠는 동일하고 DESIGN_SYNC 주석만 변경. Linux Chromium 141 기준선을 Windows Playwright 1.62.1 Chromium 151로 재측정했으며 base 잘림·이탈·넘침은 0건",
+   "prt": "PRT-222"
+  },
+  "w150|popup:hours_break_end@my_hours|card>setting-row>setting-copy>small|5": {
+   "사유": "실행기 변경으로 atRisk 임계값 아래로 이동",
+   "근거": "적용본의 실행 콘텐츠는 동일하고 DESIGN_SYNC 주석만 변경. Linux Chromium 141 기준선을 Windows Playwright 1.62.1 Chromium 151로 재측정했으며 base 잘림·이탈·넘침은 0건",
+   "prt": "PRT-222"
+  },
+  "w150|popup:hours_timezone@my_hours|card>setting-row>setting-copy>small|5": {
+   "사유": "실행기 변경으로 atRisk 임계값 아래로 이동",
+   "근거": "적용본의 실행 콘텐츠는 동일하고 DESIGN_SYNC 주석만 변경. Linux Chromium 141 기준선을 Windows Playwright 1.62.1 Chromium 151로 재측정했으며 base 잘림·이탈·넘침은 0건",
+   "prt": "PRT-222"
+  }
+ }
 }

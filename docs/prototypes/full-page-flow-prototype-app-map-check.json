@@ -1,6 +1,6 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-05T10:57:58.244Z",
+  "generatedAt": "2026-09-05T11:39:44.056Z",
   "schemaVersion": 1,
   "script": {
    "name": "full-page-flow-prototype-app-map-check.mjs",
@@ -14,7 +14,7 @@
    },
    "appMap": {
     "path": "full-page-flow-prototype-app-token-map.json",
-    "sha256": "51bc9ad0d9d1e6e086be5abac2e3245a59844ee82590bdd9b8b7950b3309ec81"
+    "sha256": "588d593f7198568cff16b4c645b857a0a7829f4f8b4076d95d4e534faf10d12a"
    },
    "prototypeMap": {
     "path": "full-page-flow-prototype-token-map.json",
@@ -6564,8 +6564,8 @@
    }
   ],
   "binMovementLedger": {
-   "previousMap": "prt220-app-token-map.json",
-   "previousMapSha256": "091e82977c12588bbb2e626b004fce3de534f96a9651321c56727727e391a4fc",
+   "previousMap": "full-page-flow-prototype-app-token-map.json",
+   "previousMapSha256": "588d593f7198568cff16b4c645b857a0a7829f4f8b4076d95d4e534faf10d12a",
    "moves": {},
    "reconciliation": {
     "primitive": {

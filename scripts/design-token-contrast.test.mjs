@@ -358,8 +358,8 @@ test('sections 에 그 커밋 시점에 없는 절을 적으면 FAIL 한다', ()
   assert.match(r.out, /그 커밋의 구간에는 없다/);
 });
 
-test('저장소의 봉인은 세 커밋 모두 조상이고 §8.2 구간을 바꾼 것이다', () => {
+test('저장소의 봉인은 네 커밋 모두 조상이고 §8.2 구간을 바꾼 것이다', () => {
   const r = run(null);
   assert.equal(r.code, 0, r.out);
-  assert.match(r.out, /결정 커밋 3건 확인/);
+  assert.match(r.out, /결정 커밋 4건 확인/);
 });

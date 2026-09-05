@@ -1,24 +1,24 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-05T00:54:52.649Z",
+  "generatedAt": "2026-09-05T11:36:48.875Z",
   "schemaVersion": 1,
   "script": {
    "name": "full-page-flow-prototype-atrisk-key-proof.mjs",
-   "sha256": "4f64c6ea416a5b612ce2cec8998ed00bd0761f8a90936e48ddce68cda1d61342"
+   "sha256": "fef046c527d65d946e68eea8616a78dd157cf324de32f767e42b75fd1b31da73"
   },
   "source": {
    "stress": {
-    "path": "i18n-stress.json",
-    "sha256": "f877b70bfd646c3445adfa54e0d62a636f2c03c8f226f964e2c9acb01c96344b"
+    "path": "full-page-flow-prototype-i18n-stress.json",
+    "sha256": "274b2f0c0703b052054dbd6ad5a7131188e35d098a839ce4cfb753d7d16d9921"
    },
    "known": {
     "path": "full-page-flow-prototype-i18n-known.json",
-    "sha256": "60dbb70874fbd0a2142c3281d00bdab92a355ea365f8be3212c5727af1ca4b8d"
+    "sha256": "7a6936fa2065571eb7d234df472722c291d03459f8d79ac82041abb407a8190c"
    }
   },
   "target": {
-   "sha256": "7ce8bd4968232965ef85a458c03a5a0a73a0790b62f4c2e51a86fff7203fb383",
-   "designSyncId": "DS-20260905-003"
+   "sha256": "280ed57cb675bb58ec053bf69ff176b7582b9c8db71d966d110761e1c4642aaf",
+   "designSyncId": "DS-20260905-004"
   },
   "rules": {
    "옛 키": "pass|target|selector — PRT-199 이전. 같은 selector 의 형제 host 가 한 칸을 공유하고 마지막에 쓰인 값이 이긴다",
@@ -28,12 +28,14 @@
   }
  },
  "summary": {
-  "rows": 408,
-  "oldUniqueKeys": 309,
-  "newUniqueKeys": 408,
-  "collisions": 99,
-  "collidedGroups": 47,
+  "rows": 396,
+  "oldUniqueKeys": 303,
+  "newUniqueKeys": 396,
+  "collisions": 93,
+  "collidedGroups": 41,
   "knownEntries": 408,
+  "knownResolvedEntries": 12,
+  "knownActiveEntries": 396,
   "largestCollidedGroups": [
    {
     "key": "w130|screen:analytics|card>sales-menu-row>sales-menu-copy>sales-menu-sub",
@@ -146,7 +148,7 @@
   "assertions": {
    "새 키는 유일하다": true,
    "옛 키는 행을 잃었다": true,
-   "기준선은 원시 행 수와 같다": true,
+   "활성 기준선은 원시 행 수와 같다": true,
    "옛 스킴은 악화를 놓친다": true,
    "새 스킴은 악화를 잡는다": true,
    "사라짐을 NOTE 로 두면 삭제가 통과한다": true,

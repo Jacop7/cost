@@ -1135,7 +1135,7 @@
    "target": "TYPE.caption.lineHeight = 20",
    "targetValue": 20,
    "출처": "기획서 §8.2 문항 6 결정 **6-2** · EmptyState 안내문 역할",
-   "근거": "같은 스타일 객체에 직접 숫자 fontSize가 없는 유일한 1건이다. 자동 파생에서 숨기지 않고 별도 규칙으로 드러낸다. EmptyState의 hint 안내문은 caption 역할이며 현재 lineHeight 20도 확정값과 같다.",
+   "근거": "같은 스타일 객체에 직접 숫자 fontSize가 없는 유일한 1건이다. 자동 파생에서 숨기지 않고 별도 규칙으로 드러낸다. EmptyState의 hint 안내문은 caption 역할이며 현재 lineHeight 20도 확정값과 같다. 숫자 delta가 same이어도 하드코딩 20을 공용 TYPE.caption.lineHeight 참조로 치환해야 하므로 defect다. componentOwned로 보내면 표준 caption 역할을 EmptyState 전용 값으로 잘못 격리한다.",
    "executionStage": "S3a",
    "axis": "vertical",
    "delta": "same",
@@ -1809,7 +1809,7 @@
  "semanticNote": "**`semantic` 통을 없앴다** (솔 검수 W1 R1 F02). 감사기는 숫자 리터럴만 선언으로 모으므로 `fontSize: 16` → `TYPE.body` 치환은 semantic 으로 이동하는 것이 아니라 입력에서 사라진다. 영원히 0 인 통을 두고 \"P4 에서 채워진다\" 고 적는 것은 분류가 아니다. W1 의 범위를 **하드코딩 리터럴의 배정**으로 좁히고, 의미 토큰 채택률은 같은 감사기가 모으는 `tokenAccess` 로 따로 본다.",
  "ruleOrderNote": "규칙은 순서대로 평가하고 첫 일치가 이긴다. **순서에 의존하는 배정이 있으면 앞선 규칙에 `순서근거` 를 적어야 하고, 검사기가 그것을 강제한다.** 다중 일치가 0 이면 순서는 장식이다 — 검사기가 다중 일치 수를 함께 낸다 (페이블 검수 조건 B).",
  "방향Note": "`defect` 통의 모든 행은 `executionStage`(S1/S2/S3a/S3b/S4) · `axis`(horizontal/vertical/both/none/derived) · `delta`(shrink/same/grow/mixed/unknown) · `evidenceRef` 를 갖는다. axis가 none이 아니면 targetValue/targetMap/protoConverge/targetDerived 중 정확히 하나도 필수다. 검사기는 감사 현재값→목적지를 선언별로 계산해 수기 delta와 대조하고, targetMap의 누락·낡은 항목도 실패시킨다(솔 검수 W1 R2 F03). 런타임 파생은 폐쇄 kind와 formulaVersion을 쓰며 axis=derived·delta=unknown이다. 결정적 파생은 폐쇄표의 값과 판본까지 검사하고 숫자 목적지·delta를 선언별 계산한다(PRT-221). 축은 규칙의 자기 선언을 믿지 않고 실제로 이긴 선언들의 측정축과 대조한다.",
- "designSyncId": "DS-20260905-003",
+ "designSyncId": "DS-20260905-004",
  "선언수조정표": {
   "_": "3,677 → 3,653 의 행방. 하나의 원인으로 설명하면 안 된다(솔 검수 W1 R2). '24건이 전부 감사기 결함' 이라는 설명은 틀렸다.",
   "구기준선_6497666_기존감사기": 3677,

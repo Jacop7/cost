@@ -1,21 +1,21 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-05T00:51:39.495Z",
+  "generatedAt": "2026-09-05T11:36:20.553Z",
   "schemaVersion": 2,
   "script": {
    "name": "full-page-flow-prototype-render-audit.mjs",
-   "sha256": "773a5fb98361d15507c814f5f1f8ebf1e26e62333a3c6727f2aa258dac3cf3e0"
+   "sha256": "0d10cbfcb1a9b1e68ca219150a1ee0a4ed8fa3e157ac5c7b84053303e37fa795"
   },
   "target": {
    "path": "0_full-page-flow-prototype-ui-applied.html",
-   "sha256": "7ce8bd4968232965ef85a458c03a5a0a73a0790b62f4c2e51a86fff7203fb383",
-   "designSyncId": "DS-20260905-003"
+   "sha256": "280ed57cb675bb58ec053bf69ff176b7582b9c8db71d966d110761e1c4642aaf",
+   "designSyncId": "DS-20260905-004"
   },
   "runner": {
-   "node": "v22.22.2",
+   "node": "v24.19.0",
    "playwright": "1.62.1",
-   "chromium": "141.0.7390.37",
-   "platform": "linux",
+   "chromium": "151.0.7922.34",
+   "platform": "win32",
    "clock": "2026-09-04T09:00:00+09:00",
    "clockSample": {
     "newest": "08/30",
