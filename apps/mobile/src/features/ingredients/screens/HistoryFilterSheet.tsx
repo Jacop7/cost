@@ -141,7 +141,7 @@ export function HistoryFilterSheet({
       height={560}
       title="조회 설정"
       headerRight={
-        <Pressable onPress={onClose} style={{ width: 32, height: 32, alignItems: 'center', justifyContent: 'center' }} accessibilityRole="button" accessibilityLabel="닫기">
+        <Pressable onPress={onClose} hitSlop={6} style={{ width: 32, height: 32, alignItems: 'center', justifyContent: 'center' }} accessibilityRole="button" accessibilityLabel="닫기">
           <Icon name="close" size={22} color={T.ink2} />
         </Pressable>
       }

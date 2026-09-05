@@ -1,127 +1,65 @@
 {
-  "_schema": "v4 — entries(미달) · components(공용 컴포넌트 계약, 전 variant 경계) · buttonDynamic · unjudged. 제품 .tsx 만 세고 시험 fixture 는 시험참조로 따로 둔다(R4 F04).",
+  "_schema": "v5 — entries(미달) · siblingOverlaps(같은 부모 형제 중첩 위험) · components(공용 컴포넌트 계약, 전 variant 경계) · buttonDynamic · unjudged. 제품 .tsx 만 세고 시험 fixture 는 시험참조로 따로 둔다(R4 F04).",
   "_해시": "이 목록이 확정된 **제품** 감사 입력의 해시다 — 제품 .tsx 의 \"경로\\0git blob SHA\" 을 정렬해 잇고 감사기 자신의 sha256 을 더해 sha256. 커밋 SHA 자기참조를 피하면서 \"이후 무변경\" 을 게이트가 직접 검사한다. **시험 fixture 는 이 해시에 들어가지 않는다**(솔 검수 R5 F02) — 시험 한 줄을 고쳤다고 제품 재고가 흔들리면 안 된다. 시험참조해시는 기록만 하고 래칫하지 않는다. blob SHA 는 CRLF→LF 정규화 뒤 계산하므로 체크아웃한 OS 에 좌우되지 않는다(페이블 R6 차단 — 내용 sha256 은 줄끝을 쟀다).",
-  "제품입력해시": "0b82852f45de31dc651d5b5254af22bb7d6d20a5f5310e0e78697b417ad6e9bf",
+  "제품입력해시": "d7643b3c107d3b323c7dd950e19876e182879ff0241346e29f6bdeb27ea9a7e3",
   "시험참조해시": "9a57d560e0ab1b1bee86e48a194f516fcd0f698371ee76a587bd2c0d94c4a3cb",
   "_entries": "선언 크기와 hitSlop 이 있는데 44 에 못 미치는 자리. 유효 크기가 줄어도 FAIL 한다.",
   "entries": [
     {
-      "at": "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:200",
-      "유효": "43×56",
-      "사유": "hitSlop 미설정 또는 부족 — S4a 에서 보정"
-    },
-    {
-      "at": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:144",
-      "유효": "32×32",
-      "사유": "hitSlop 미설정 또는 부족 — S4a 에서 보정"
-    },
-    {
-      "at": "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:84",
-      "유효": "40×40",
-      "사유": "hitSlop 미설정 또는 부족 — S4a 에서 보정"
-    },
-    {
-      "at": "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:93",
-      "유효": "40×40",
-      "사유": "hitSlop 미설정 또는 부족 — S4a 에서 보정"
-    },
-    {
-      "at": "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:129",
-      "유효": "42×42",
-      "사유": "hitSlop 미설정 또는 부족 — S4a 에서 보정"
-    },
-    {
-      "at": "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:132",
-      "유효": "42×42",
-      "사유": "hitSlop 미설정 또는 부족 — S4a 에서 보정"
-    },
-    {
-      "at": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:222",
-      "유효": "40×40",
-      "사유": "hitSlop 미설정 또는 부족 — S4a 에서 보정"
-    },
-    {
-      "at": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:229",
-      "유효": "40×40",
-      "사유": "hitSlop 미설정 또는 부족 — S4a 에서 보정"
-    },
-    {
       "at": "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:130",
       "유효": "36×28",
-      "사유": "hitSlop 미설정 또는 부족 — S4a 에서 보정"
+      "사유": "선언상 44 미달 — 후속 보정 필요"
     },
     {
       "at": "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:133",
       "유효": "36×28",
-      "사유": "hitSlop 미설정 또는 부족 — S4a 에서 보정"
-    },
+      "사유": "선언상 44 미달 — 후속 보정 필요"
+    }
+  ],
+  "_siblingOverlaps": "같은 부모 형제 gap/2 규칙을 어기는 알려진 위험. 새 쌍·수치 변경·조용한 해소를 모두 실패시킨다.",
+  "siblingOverlaps": [
     {
-      "at": "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:143",
-      "유효": "42×42",
-      "사유": "hitSlop 미설정 또는 부족 — S4a 에서 보정"
-    },
-    {
-      "at": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:143",
-      "유효": "42×42",
-      "사유": "hitSlop 미설정 또는 부족 — S4a 에서 보정"
-    },
-    {
-      "at": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:146",
-      "유효": "42×42",
-      "사유": "hitSlop 미설정 또는 부족 — S4a 에서 보정"
-    },
-    {
-      "at": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:355",
-      "유효": "42×42",
-      "사유": "hitSlop 미설정 또는 부족 — S4a 에서 보정"
-    },
-    {
-      "at": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:359",
-      "유효": "42×42",
-      "사유": "hitSlop 미설정 또는 부족 — S4a 에서 보정"
-    },
-    {
-      "at": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:159",
-      "유효": "40×40",
-      "사유": "hitSlop 미설정 또는 부족 — S4a 에서 보정"
-    },
-    {
-      "at": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:167",
-      "유효": "40×40",
-      "사유": "hitSlop 미설정 또는 부족 — S4a 에서 보정"
-    },
-    {
-      "at": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:361",
-      "유효": "40×40",
-      "사유": "hitSlop 미설정 또는 부족 — S4a 에서 보정"
+      "pair": "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:130|apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:133",
+      "gap": 2,
+      "firstInward": 4,
+      "secondInward": 4,
+      "근거": "28×20 화면 계약과 두 버튼의 독립 44px 접근성 계약 충돌 — 소유자 결정 필요"
     }
   ],
   "_components": "공용 컴포넌트 계약. 하한이 44 를 넘어도 통과로 닫지 않는다 — 호출부 style 이 padding·height 를 덮어 줄일 수 있고, 가정 A 는 증명이 아니다(R4 F02). 전부 경계이므로 소비처 ID·개수를 전량 래칫한다. Button 이 무력화 불가능한 minHeight:44 를 갖는 것은 시각 변화라 S4 의 몫이고, 그때 통과로 닫고 래칫을 푼다.",
   "components": [
     {
       "컴포넌트": "Button size=\"sm\"",
-      "판정": "경계",
+      "paddingVertical": 8,
+      "fontSize": 14,
       "높이하한": 30,
+      "기본값여부": false,
+      "판정": "경계",
+      "판정사유": "하한 30 < 44 이고 상한의 근거가 없다 — S4 렌더 실측이 닫는다",
       "소비처": 10,
       "at": [
         "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:337",
         "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:504",
         "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:545",
-        "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:314",
-        "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:350",
-        "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:351",
-        "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:383",
+        "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:316",
+        "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:352",
+        "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:353",
+        "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:385",
         "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:191",
         "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:199",
         "apps/mobile/src/features/sales/components/LateCloseSheet.tsx:76"
       ],
       "시험참조": 0,
-      "사유": "하한 30 < 44 이고 상한의 근거가 없다 — S4 렌더 실측이 닫는다"
+      "시험참조at": []
     },
     {
       "컴포넌트": "Button size=\"md\"",
-      "판정": "경계",
+      "paddingVertical": 13,
+      "fontSize": 16,
       "높이하한": 42,
+      "기본값여부": true,
+      "판정": "경계",
+      "판정사유": "하한 42 < 44 이고 상한의 근거가 없다 — S4 렌더 실측이 닫는다",
       "소비처": 13,
       "at": [
         "apps/mobile/src/components/kit/QueryState.tsx:81",
@@ -139,12 +77,18 @@
         "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:266"
       ],
       "시험참조": 1,
-      "사유": "하한 42 < 44 이고 상한의 근거가 없다 — S4 렌더 실측이 닫는다"
+      "시험참조at": [
+        "apps/mobile/tests/smoke.test.tsx:13"
+      ]
     },
     {
       "컴포넌트": "Button size=\"lg\"",
-      "판정": "경계",
+      "paddingVertical": 16,
+      "fontSize": 17,
       "높이하한": 49,
+      "기본값여부": false,
+      "판정": "경계",
+      "판정사유": "하한 49 는 44 를 넘지만 호출부 style 이 padding·height 를 덮어 줄일 수 있어 정적으로 닫지 않는다 (R4 F02)",
       "소비처": 62,
       "at": [
         "apps/mobile/src/components/kit/MemoEditSheet.tsx:48",
@@ -181,9 +125,9 @@
         "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:151",
         "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:153",
         "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx:228",
-        "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:464",
-        "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:504",
+        "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:466",
         "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:506",
+        "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:508",
         "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx:155",
         "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx:134",
         "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:171",
@@ -201,9 +145,9 @@
         "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx:368",
         "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx:369",
         "apps/mobile/src/features/sales/screens/SalesDayDetailScreen.tsx:126",
-        "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:602",
-        "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:672",
-        "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:707",
+        "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:603",
+        "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:673",
+        "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:708",
         "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:278",
         "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:325",
         "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:383",
@@ -211,7 +155,7 @@
         "apps/mobile/src/lib/SessionProvider.tsx:88"
       ],
       "시험참조": 0,
-      "사유": "하한 49 는 44 를 넘지만 호출부 style 이 padding·height 를 덮어 줄일 수 있어 정적으로 닫지 않는다 (R4 F02)"
+      "시험참조at": []
     }
   ],
   "_buttonDynamic": "size 가 변수·spread 로 들어와 어느 variant 인지 정적으로 모르는 자리. 늘어나면 FAIL.",
@@ -297,11 +241,11 @@
     "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx:133",
     "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx:200",
     "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx:246",
-    "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:248",
-    "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:282",
-    "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:327",
-    "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:361",
-    "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:422",
+    "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:250",
+    "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:284",
+    "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:329",
+    "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:363",
+    "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:424",
     "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx:100",
     "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx:114",
     "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx:73",
@@ -339,9 +283,9 @@
     "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:574",
     "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:610",
     "apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx:90",
-    "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:210",
-    "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:226",
-    "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:242",
+    "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:212",
+    "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:228",
+    "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:244",
     "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:61",
     "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:290",
     "apps/mobile/src/features/sales/components/LateCloseSheet.tsx:85",
@@ -359,16 +303,16 @@
     "apps/mobile/src/features/sales/screens/SalesExpenseScreen.tsx:129",
     "apps/mobile/src/features/sales/screens/SalesExtraScreen.tsx:65",
     "apps/mobile/src/features/sales/screens/SalesFixedScreen.tsx:104",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:377",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:411",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:433",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:449",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:527",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:544",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:622",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:648",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:687",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:765",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:378",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:412",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:434",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:450",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:528",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:545",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:623",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:649",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:688",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:766",
     "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx:119",
     "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx:75",
     "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx:95",

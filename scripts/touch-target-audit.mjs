@@ -25,6 +25,7 @@ import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { join, resolve, relative } from 'node:path';
+import ts from 'typescript';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 // `--키=값` 과 값 없는 `--깃발` 둘 다 받는다. 깃발은 빈 문자열이라 `!== undefined` 로 본다.
@@ -134,6 +135,71 @@ for (const f of files) {
   }
 }
 
+// ── 같은 부모의 일반 flow 형제 중첩 ──────────────────────────────────────────
+// 선언상 44 만 맞추면 서로 붙은 버튼의 hitSlop 이 같은 공간을 차지할 수 있다. RN 은 겹친
+// 형제 중 z-index 가 높은 쪽을 우선하므로, 그 상태는 두 버튼 모두의 독립 44px 계약이 아니다.
+// TSX AST 로 **직접 이웃인 pressable 형제**와 부모의 inline gap 을 읽어 각 안쪽 hitSlop 이
+// gap/2 를 넘지 않는지 확인한다. 다른 부모·absolute·부모 clipping 은 네이티브 실측의 몫이다.
+const PRESSABLE_NAMES = new Set(['Pressable', 'TouchableOpacity', 'TouchableHighlight', 'TouchableWithoutFeedback', 'TouchableNativeFeedback']);
+const jsxName = (n) => n?.tagName?.getText?.() ?? '';
+const attr = (opening, name) => opening.attributes.properties.find(p => ts.isJsxAttribute(p) && p.name.text === name);
+const numberOf = (e) => e && (ts.isNumericLiteral(e) ? Number(e.text)
+  : ts.isPrefixUnaryExpression(e) && e.operator === ts.SyntaxKind.MinusToken && ts.isNumericLiteral(e.operand) ? -Number(e.operand.text)
+  : null);
+const objectNumbers = (e) => {
+  if (!e || !ts.isObjectLiteralExpression(e)) return null;
+  const out = {};
+  for (const p of e.properties) if (ts.isPropertyAssignment(p)) {
+    const k = p.name.getText().replace(/^['"]|['"]$/g, '');
+    const v = numberOf(p.initializer);
+    if (v !== null) out[k] = v;
+    else if (ts.isStringLiteral(p.initializer)) out[k] = p.initializer.text;
+  }
+  return out;
+};
+const expressionOf = (a) => a?.initializer && ts.isJsxExpression(a.initializer) ? a.initializer.expression : null;
+const astHitSlop = (opening) => {
+  const e = expressionOf(attr(opening, 'hitSlop'));
+  const n = numberOf(e);
+  if (n !== null) return { top: n, bottom: n, left: n, right: n };
+  const o = objectNumbers(e) ?? {};
+  return { top: o.top ?? o.vertical ?? 0, bottom: o.bottom ?? o.vertical ?? 0,
+    left: o.left ?? o.horizontal ?? 0, right: o.right ?? o.horizontal ?? 0 };
+};
+const astStyle = (opening) => objectNumbers(expressionOf(attr(opening, 'style'))) ?? {};
+const isPressableOpening = (opening) => PRESSABLE_NAMES.has(jsxName(opening)) && Boolean(attr(opening, 'onPress'));
+const siblingPairs = [];
+for (const f of files) {
+  const text = readFileSync(f, 'utf8');
+  const sf = ts.createSourceFile(f, text, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+  const atOf = (opening) => `${relative(idRoot, f).replace(/\\/g, '/')}:${sf.getLineAndCharacterOfPosition(opening.getStart(sf)).line + 1}`;
+  const visit = (node) => {
+    if (ts.isJsxElement(node)) {
+      const elements = node.children.filter(c => ts.isJsxElement(c) || ts.isJsxSelfClosingElement(c));
+      const style = astStyle(node.openingElement);
+      const axis = style.flexDirection === 'row' || style.flexDirection === 'row-reverse' ? 'horizontal' : 'vertical';
+      const parentGap = Number(axis === 'horizontal' ? (style.columnGap ?? style.gap ?? 0) : (style.rowGap ?? style.gap ?? 0));
+      for (let i = 0; i < elements.length - 1; i++) {
+        const first = ts.isJsxElement(elements[i]) ? elements[i].openingElement : elements[i];
+        const second = ts.isJsxElement(elements[i + 1]) ? elements[i + 1].openingElement : elements[i + 1];
+        if (!isPressableOpening(first) || !isPressableOpening(second)) continue;
+        const firstStyle = astStyle(first), secondStyle = astStyle(second);
+        const gap = parentGap + Number(axis === 'horizontal'
+          ? (firstStyle.marginRight ?? firstStyle.marginHorizontal ?? firstStyle.margin ?? 0) + (secondStyle.marginLeft ?? secondStyle.marginHorizontal ?? secondStyle.margin ?? 0)
+          : (firstStyle.marginBottom ?? firstStyle.marginVertical ?? firstStyle.margin ?? 0) + (secondStyle.marginTop ?? secondStyle.marginVertical ?? secondStyle.margin ?? 0));
+        const a = astHitSlop(first), b = astHitSlop(second), limit = gap / 2;
+        const firstInward = axis === 'horizontal' ? a.right : a.bottom;
+        const secondInward = axis === 'horizontal' ? b.left : b.top;
+        const firstAt = atOf(first), secondAt = atOf(second);
+        siblingPairs.push({ pair: `${firstAt}|${secondAt}`, firstAt, secondAt, axis, gap, limit,
+          firstInward, secondInward, 판정: firstInward <= limit && secondInward <= limit ? '통과' : '중첩위험' });
+      }
+    }
+    ts.forEachChild(node, visit);
+  };
+  visit(sf);
+}
+
 // ── 공용 컴포넌트 계약 ────────────────────────────────────
 // `Button` 처럼 **높이가 padding + 글자로 정해지는** 공용 컴포넌트는 자리마다 판정불가로
 // 빠진다. 그런데 그게 앱에서 가장 많이 눌리는 상자다. 크기 variant 를 **한 번** 판정하고
@@ -232,9 +298,10 @@ let dynamicUses = null;
 }
 const compOpen = componentContracts.filter(c => c.판정 !== '통과');
 
-const judged = rows.filter(r => r.판정 !== '판정불가');
-const short = judged.filter(r => r.판정 === '미달');
 const known = existsSync(knownPath) ? JSON.parse(readFileSync(knownPath, 'utf8')) : { entries: [] };
+const judged = rows.filter(r => r.판정 !== '판정불가');
+const rawShort = judged.filter(r => r.판정 === '미달');
+const short = rawShort;
 const knownSet = new Map((known.entries ?? []).map(e => [e.at, e]));
 
 const failures = [];
@@ -252,6 +319,18 @@ for (const s of short) {
   if (Number.isFinite(pw) && s.유효폭 < pw) failures.push(`악화 — ${s.at} 유효 폭 ${pw} → ${s.유효폭}`);
   if (Number.isFinite(ph) && s.유효높이 < ph) failures.push(`악화 — ${s.at} 유효 높이 ${ph} → ${s.유효높이}`);
 }
+const siblingRisks = siblingPairs.filter(p => p.판정 === '중첩위험');
+const knownSibling = new Map((known.siblingOverlaps ?? []).map(e => [e.pair, e]));
+for (const p of siblingRisks) if (!knownSibling.has(p.pair))
+  failures.push(`새 형제 중첩 위험 — ${p.pair} · ${p.axis} gap ${p.gap}의 절반 ${p.limit}보다 안쪽 hitSlop ${p.firstInward}/${p.secondInward}가 크다`);
+for (const p of siblingRisks) {
+  const e = knownSibling.get(p.pair);
+  if (e && (e.gap !== p.gap || e.firstInward !== p.firstInward || e.secondInward !== p.secondInward))
+    failures.push(`알려진 형제 중첩 수치가 바뀌었다 — ${p.pair} · gap ${e.gap}→${p.gap}, 안쪽 ${e.firstInward}/${e.secondInward}→${p.firstInward}/${p.secondInward}`);
+}
+const siblingRiskSet = new Set(siblingRisks.map(p => p.pair));
+for (const [pair] of knownSibling) if (!siblingRiskSet.has(pair))
+  failures.push(`형제 중첩 위험이 해소됐다 — ${pair} 를 siblingOverlaps 에서 빼라`);
 // 판정불가도 래칫한다 — 래칫 밖에 두면 판정 못 하는 상자가 늘어도 통과한다.
 const unjudgedAts = rows.filter(r => r.판정 === '판정불가').map(r => r.at).sort();
 const knownUnjudged = (known.unjudged ?? []).slice().sort();
@@ -374,20 +453,27 @@ const out = {
     script: 'scripts/touch-target-audit.mjs',
     minTouchTarget: MIN,
     판정식: '유효폭 = width + hitSlop.left + hitSlop.right · 유효높이 = height + hitSlop.top + hitSlop.bottom · 둘 다 44 이상',
-    한계: '부모 경계로 잘리는지, 이웃 터치 영역과 겹치는지는 정적 분석으로 못 본다 — 렌더 감사(S4)의 몫이다.',
+    한계: '같은 부모의 직접 이웃인 일반 flow pressable 은 gap/2 규칙으로 정적 검사한다. 부모 경계·다른 부모·absolute·z-order 는 네이티브 렌더 감사(S4)의 몫이다.',
     측정,
     공용컴포넌트판정식: '하한 = 2×paddingVertical + fontSize (가정 A: lineHeight 를 명시하지 않은 Text 의 상자는 fontSize 보다 낮지 않다). 상한의 근거가 없어 미달을 단정하지 않고, 호출부 style 이 padding·height 를 덮어 줄일 수 있어 통과로도 닫지 않는다 — 전부 경계이고 S4 렌더 실측이 닫는다(R4 F02).',
     파일선정: '제품 = apps/mobile 의 .tsx 에서 .test/.spec.tsx 와 tests·__tests__ 폴더를 뺀 것. 시험 fixture 는 따로 세고 제품 재고와 섞지 않는다(R4 F04).',
     generatedAt: new Date().toISOString(), node: process.version,
   },
-  summary: { 파일: files.length, 누를수있는상자: rows.length, 판정: judged.length, 통과: judged.length - short.length,
-    미달: short.length, 판정불가: rows.length - judged.length,
+  summary: { 파일: files.length, 누를수있는상자: rows.length, 판정: judged.length,
+    통과: judged.length - short.length, 미달: short.length,
+    형제중첩위험: siblingRisks.length, 판정불가: rows.length - judged.length,
     공용컴포넌트: componentContracts.length, 공용컴포넌트열린것: compOpen.length,
     Button동적size소비처: dynamicUses === null ? '측정 안 함' : dynamicUses.length },
-  failures, componentContracts, Button동적size소비처: dynamicUses ?? [], rows,
+  failures, siblingPairs, componentContracts, Button동적size소비처: dynamicUses ?? [], rows,
 };
+if (opt['update-known'] !== undefined) {
+  const refreshed = { ...known, 제품입력해시, 시험참조해시,
+    entries: short.map(s => ({ at: s.at, 유효: `${s.유효폭}×${s.유효높이}`, 사유: '선언상 44 미달 — 후속 보정 필요' })),
+    components: componentContracts, buttonDynamic: dynamicUses ?? [], unjudged: unjudgedAts };
+  writeFileSync(knownPath, JSON.stringify(refreshed, null, 2) + '\n');
+}
 if (outPath) writeFileSync(outPath, JSON.stringify(out, null, 2) + '\n');
-console.log(`터치 영역 — 판정 ${judged.length}자리 · 통과 ${judged.length - short.length} · **미달 ${short.length}** · 판정불가 ${rows.length - judged.length}(래칫 대상)`);
+console.log(`터치 영역 — 판정 ${judged.length}자리 · 통과 ${judged.length - short.length} · **미달 ${short.length}** · 형제중첩위험 ${siblingRisks.length} · 판정불가 ${rows.length - judged.length}(래칫 대상)`);
 for (const c of componentContracts) console.log(`  공용 — ${c.컴포넌트} 높이 하한 ${c.높이하한 ?? '?'} → ${c.판정} · 제품 소비처 ${c.소비처 ?? 0}곳 · 시험 참조 ${c.시험참조 ?? 0}곳`);
 if (dynamicUses !== null) console.log(`  공용 — Button size 동적/spread ${dynamicUses.length}곳 (정적 판정 불가)`);
 console.log(`  측정 — 커밋 ${측정.커밋.slice(0, 12)} · 작업 트리 ${측정.작업트리} · 결속 ${측정.결속}`);

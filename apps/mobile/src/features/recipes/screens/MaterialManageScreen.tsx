@@ -140,10 +140,10 @@ export default function MaterialManageScreen() {
                     {m.usedCount > 0 ? <Text style={{ color: T.ter }}>  ·  메뉴 {m.usedCount}개</Text> : null}
                   </Text>
                 </Pressable>
-                <Pressable onPress={() => openEdit(m)} hitSlop={4} accessibilityRole="button" accessibilityLabel={`${m.name} 수정`} style={{ width: 34, height: 34, alignItems: 'center', justifyContent: 'center' }}>
+                <Pressable onPress={() => openEdit(m)} hitSlop={5} accessibilityRole="button" accessibilityLabel={`${m.name} 수정`} style={{ width: 34, height: 34, alignItems: 'center', justifyContent: 'center' }}>
                   <Icon name="edit" size={18} color={T.ter} sw={2} />
                 </Pressable>
-                <Pressable onPress={() => confirmDelete(m)} hitSlop={4} accessibilityRole="button" accessibilityLabel={`${m.name} 삭제`} style={{ width: 34, height: 34, alignItems: 'center', justifyContent: 'center' }}>
+                <Pressable onPress={() => confirmDelete(m)} hitSlop={5} accessibilityRole="button" accessibilityLabel={`${m.name} 삭제`} style={{ width: 34, height: 34, alignItems: 'center', justifyContent: 'center' }}>
                   <Icon name="close" size={19} color={T.ter} />
                 </Pressable>
               </View>
