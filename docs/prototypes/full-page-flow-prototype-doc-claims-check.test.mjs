@@ -27,7 +27,7 @@ const DOC = join(root, 'docs', '디자인-토큰-3계층-값-매핑-기획서.md
  * 산출물과 문서를 각각 변조해 검사기를 돌린다. 임시 저장소 모양을 그대로 만들어야
  * 검사기가 문서를 찾을 수 있다 — `claims` 파일 기준 두 단계 위가 저장소 뿌리다.
  */
-const run = ({ artEdit = null, docEdit = null } = {}) => {
+const run = ({ artEdit = null, docEdit = null, claimsEol = null } = {}) => {
   const dir = mkdtempSync(join(tmpdir(), 'docclaims-'));
   try {
     const proto = join(dir, 'docs', 'prototypes');
@@ -35,14 +35,18 @@ const run = ({ artEdit = null, docEdit = null } = {}) => {
     const art = JSON.parse(readFileSync(ART, 'utf8'));
     if (artEdit) artEdit(art.summary);
     writeFileSync(join(proto, 'full-page-flow-prototype-app-map-check.json'), JSON.stringify(art, null, 1));
-    writeFileSync(join(proto, 'full-page-flow-prototype-doc-claims.json'), readFileSync(CLAIMS));
+    const claimsText = readFileSync(CLAIMS, 'utf8');
+    writeFileSync(join(proto, 'full-page-flow-prototype-doc-claims.json'),
+      claimsEol ? claimsText.replace(/\r?\n/g, claimsEol) : claimsText);
     let md = readFileSync(DOC, 'utf8');
     if (docEdit) md = docEdit(md);
     writeFileSync(join(dir, 'docs', '디자인-토큰-3계층-값-매핑-기획서.md'), md);
+    const outPath = join(dir, 'out.json');
     const r = spawnSync(process.execPath, [CHECK, AUDIT,
       join(proto, 'full-page-flow-prototype-doc-claims.json'),
-      join(dir, 'out.json')], { encoding: 'utf8' });
-    return { code: r.status, out: (r.stdout ?? '') + (r.stderr ?? '') };
+      outPath], { encoding: 'utf8' });
+    const result = (() => { try { return JSON.parse(readFileSync(outPath, 'utf8')); } catch { return null; } })();
+    return { code: r.status, out: (r.stdout ?? '') + (r.stderr ?? ''), result };
   } finally { rmSync(dir, { recursive: true, force: true }); }
 };
 
@@ -87,7 +91,18 @@ test('문서에서 표식을 지우면 FAIL 한다 — 대조를 끄는 길을 �
 });
 
 test('문서의 숫자를 손으로 고치면 FAIL 한다 — 문서를 실제로 읽는다는 증거다', () => {
-  const r = run({ docEdit: (md) => md.replace('| `pendingApproval` | **44** |', '| `pendingApproval` | **46** |') });
+  const r = run({ docEdit: (md) => md.replace(
+    /(\| `pendingApproval` \| \*\*)(\d+)(\*\* \|)/,
+    (_, a, n, b) => `${a}${Number(n) + 1}${b}`,
+  ) });
   assert.equal(r.code, 1, `문서를 읽지 않고 있다\n${r.out}`);
   assert.match(r.out, /자동 생성 블록이 산출물과 다르다/);
+});
+
+test('claims JSON의 CRLF와 LF는 같은 입력 해시를 낸다', () => {
+  const lf = run({ claimsEol: '\n' });
+  const crlf = run({ claimsEol: '\r\n' });
+  assert.equal(lf.code, 0, lf.out);
+  assert.equal(crlf.code, 0, crlf.out);
+  assert.equal(lf.result.manifest.claimsSha256, crlf.result.manifest.claimsSha256);
 });

@@ -1,6 +1,6 @@
 // 앱 선언 전수 배정 검사기 (W1 · P1b).
 //
-// token-adoption-audit.json 의 선언 3,677건을 앱 매핑표의 규칙에 태워
+// token-adoption-audit.json 의 선언 3,653건을 앱 매핑표의 규칙에 태워
 // 다섯 통 중 하나에 배정하고, 배정이 성립하는지 검사한다.
 //
 //   primitive          tokens.ts 에 실재하는 값
@@ -15,7 +15,10 @@ import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { resolve, basename } from 'node:path';
 import { createHash } from 'node:crypto';
 
-const sha = (b) => createHash('sha256').update(b).digest('hex');
+// 모두 UTF-8 텍스트 입력이다. checkout 의 CRLF/LF가 증거를 바꾸지 않도록 Git 정규화와
+// 같은 방향으로 LF를 해시한다(PRT-216의 "내용을 재고 OS를 재지 않는다" 계약).
+const sha = (b) => createHash('sha256')
+  .update(Buffer.from(b.toString('utf8').replace(/\r\n/g, '\n'), 'utf8')).digest('hex');
 const args = process.argv.slice(2).filter(a => !a.startsWith('--'));
 const auditPath = resolve(args[0] ?? 'docs/token-adoption-audit.json');
 const mapPath   = resolve(args[1] ?? 'docs/prototypes/full-page-flow-prototype-app-token-map.json');
@@ -68,8 +71,14 @@ const BINS = ['primitive', 'componentOwned', 'defect', 'pendingApproval', 'appro
 const STAGES = ['S1', 'S2', 'S3a', 'S3b', 'S4'];
 const AXES = ['horizontal', 'vertical', 'both', 'none', 'derived'];
 const DELTAS = ['shrink', 'same', 'grow', 'mixed', 'unknown'];
+const TARGET_FIELDS = ['targetValue', 'targetMap', 'protoConverge', 'targetDerived'];
+const DERIVED_TARGET_KINDS = ['scrollStart', 'scrollEnd', 'scrollEndFab'];
 const failures = [];
 const fail = (m) => failures.push(m);
+
+const declKey = (d) => `${d.file}:${d.line}:${d.prop}`;
+const targetFieldsOf = (r) => TARGET_FIELDS.filter(k => r[k] !== undefined);
+const deltaOf = (current, target) => target < current ? 'shrink' : target > current ? 'grow' : 'same';
 
 // --- 규칙 형식 검사 --------------------------------------------------------
 for (const r of map.rules) {
@@ -89,19 +98,27 @@ for (const r of map.rules) {
     if (!AXES.includes(r.axis)) fail(`${r.id} : axis 가 ${AXES.join('/')} 중 하나가 아니다 — '${r.axis ?? '없음'}'`);
     if (!DELTAS.includes(r.delta)) fail(`${r.id} : delta 가 ${DELTAS.join('/')} 중 하나가 아니다 — '${r.delta ?? '없음'}'`);
     if (!r.evidenceRef) fail(`${r.id} : evidenceRef 가 없다 — 축 판정의 근거가 되는 측정 산출물을 대야 한다`);
-    // 실행 단계와 축은 서로를 구속한다. 기준은 §7.2 의 완료 조건이다 —
-    //   `S3a` 완료 조건이 "**반대 축** diff 0" 이므로 `S3a` 는 **폭이 늘지 않는** 치환이고,
-    //   `S3b` 완료 조건이 "`atRisk` 신규 0" 이므로 `S3b` 는 **폭이 느는** 치환이다.
-    // (§7.2 산문은 `S3a` 를 "줄이거나 같은 크기" 로만 적어 세로 증가를 어디에도 안 넣었다.
-    //  완료 조건 쪽이 실제 계약이고, 문구 정정을 §7.2 에 제안해 두었다.)
-    if (r.executionStage === 'S3b' && !['horizontal', 'both'].includes(r.axis))
-      fail(`${r.id} : S3b 인데 axis 가 '${r.axis}' 다 — S3b 는 폭이 느는 자리다`);
-    if (r.executionStage === 'S3b' && !['grow', 'mixed'].includes(r.delta))
-      fail(`${r.id} : S3b 인데 delta 가 '${r.delta}' 다 — 폭이 늘지 않으면 S3a 다`);
-    if (r.executionStage === 'S3a' && r.axis === 'horizontal' && ['grow', 'mixed'].includes(r.delta))
-      fail(`${r.id} : S3a 인데 가로로 늘어난다 — 그건 S3b 다`);
-    if (r.executionStage === 'S3a' && r.axis === 'both' && ['grow'].includes(r.delta))
-      fail(`${r.id} : S3a 인데 두 축이 함께 는다 — 폭이 늘면 S3b 다`);
+    // `target` 산문에서 숫자를 긁지 않는다. 실행 방향의 근거는 아래 네 필드 중 정확히 하나다.
+    // 산문을 파싱하면 "32/38" 중 어느 선언이 어디로 가는지 다시 추측하게 된다.
+    const tf = targetFieldsOf(r);
+    if (r.axis !== 'none' && tf.length !== 1)
+      fail(`${r.id} : axis '${r.axis}' 인 defect 는 targetValue/targetMap/protoConverge/targetDerived 중 정확히 하나가 필요하다 — 지금 ${tf.length}개`);
+    if (r.targetValue !== undefined && !Number.isFinite(r.targetValue))
+      fail(`${r.id} : targetValue 는 유한한 숫자여야 한다`);
+    if (r.targetMap !== undefined && (r.targetMap === null || Array.isArray(r.targetMap) || typeof r.targetMap !== 'object'))
+      fail(`${r.id} : targetMap 은 { "파일:줄:속성": 숫자 } 객체여야 한다`);
+    if (r.targetMap && Object.entries(r.targetMap).some(([, v]) => !Number.isFinite(v)))
+      fail(`${r.id} : targetMap 의 모든 목적지는 유한한 숫자여야 한다`);
+    if (r.protoConverge !== undefined && (!proto.converge?.[r.protoConverge] || typeof proto.converge[r.protoConverge] !== 'object'))
+      fail(`${r.id} : protoConverge '${r.protoConverge}' 표가 없다`);
+    if (r.targetDerived !== undefined) {
+      if (!r.targetDerived || typeof r.targetDerived !== 'object' ||
+          !DERIVED_TARGET_KINDS.includes(r.targetDerived.kind) ||
+          r.targetDerived.formulaVersion !== 1 || !r.targetDerived.evidenceRef)
+        fail(`${r.id} : targetDerived 는 지원 kind(${DERIVED_TARGET_KINDS.join('/')}) · formulaVersion=1 · evidenceRef 를 가져야 한다`);
+      if (r.axis !== 'derived') fail(`${r.id} : targetDerived 를 쓰는 규칙의 axis 는 derived 여야 한다`);
+      if (r.delta !== 'unknown') fail(`${r.id} : 런타임 파생 목적지는 계산 전 delta 를 unknown 으로 둬야 한다`);
+    }
   }
   // 기존 결정의 적용이라고 말하려면 그 결정이 어디 있는지 대야 한다.
   if (r.bin === 'defect' && /기존 결정|이미 정한|새 결정이 아니/.test(String(r.근거 ?? '')) && !r.출처) fail(`${r.id} : "기존 결정" 이라 적었는데 출처가 없다`);
@@ -142,6 +159,7 @@ const binCount = Object.fromEntries(BINS.map(b => [b, 0]));
 const unmatched = [];
 const perRuleValues = Object.fromEntries(map.rules.map(r => [r.id, {}]));
 const wonKeys = {};
+const wonDeclarations = {};
 
 // "첫 일치가 이긴다" 는 숨은 결정이다. 한 선언이 규칙 둘 이상에 걸리면 그 배정의 근거는
 // 규칙이 아니라 **배치 순서**가 된다. 그래서 다중 일치를 세어 낸다 (페이블 검수 조건 B).
@@ -160,9 +178,74 @@ for (const d of audit.declarations) {
   if (!r) { unmatched.push(`${d.group}/${d.prop}:${d.value} @ ${d.file}:${d.line}`); continue; }
   hit[r.id]++;
   binCount[r.bin]++;
-  (wonKeys[r.id] ??= []).push(`${d.file}:${d.line}:${d.prop}`);
+  (wonKeys[r.id] ??= []).push(declKey(d));
+  (wonDeclarations[r.id] ??= []).push(d);
   const k = `${d.prop}:${d.value}`;
   perRuleValues[r.id][k] = (perRuleValues[r.id][k] || 0) + 1;
+}
+
+// --- 목적지·증감 교차 검증 (솔 `W1 R2 F03`) -------------------------------
+// `delta` 를 규칙 작성자가 직접 적고 검사기가 열거값만 보던 구조를 끝낸다. 현재값은 감사
+// 산출물에서, 목적지는 targetValue/targetMap/protoConverge 중 하나에서 읽어 선언마다 계산한다.
+// 런타임 좌표계에서만 정해지는 값은 targetDerived 로 명시하고, formula+근거가 없으면 통과하지 않는다.
+const computedDirection = {};
+const resolveTarget = (r, d) => {
+  if (r.targetValue !== undefined) return r.targetValue;
+  if (r.targetMap !== undefined) return r.targetMap[declKey(d)];
+  if (r.protoConverge !== undefined) return proto.converge?.[r.protoConverge]?.[String(num(d.value))];
+  return undefined;
+};
+
+for (const r of map.rules) {
+  if (r.bin !== 'defect' || r.axis === 'none') continue;
+  const ds = wonDeclarations[r.id] ?? [];
+  if (!ds.length) continue;
+  if (r.targetDerived !== undefined) {
+    computedDirection[r.id] = { computedDelta: 'unknown', resolved: 0, derived: ds.length,
+      transitions: { derived: ds.length }, targetSource: 'targetDerived' };
+    continue;
+  }
+
+  const transitions = {};
+  const directions = new Set();
+  let resolved = 0;
+  for (const d of ds) {
+    const target = resolveTarget(r, d);
+    if (!Number.isFinite(target)) {
+      fail(`${r.id} : ${declKey(d)} 현재값 ${d.value} 의 숫자 목적지를 계산할 수 없다`);
+      continue;
+    }
+    const current = num(d.value);
+    if (!Number.isFinite(current)) {
+      fail(`${r.id} : ${declKey(d)} 현재값 '${d.value}' 이 숫자가 아니다`);
+      continue;
+    }
+    const direction = deltaOf(current, target);
+    directions.add(direction);
+    const k = `${current}→${target}`;
+    transitions[k] = (transitions[k] ?? 0) + 1;
+    resolved++;
+  }
+  if (r.targetMap !== undefined) {
+    const won = new Set(ds.map(declKey));
+    for (const k of Object.keys(r.targetMap)) if (!won.has(k))
+      fail(`${r.id} : targetMap 항목이 이 규칙이 이긴 선언이 아니다 — ${k}`);
+  }
+  const computedDelta = directions.size === 1 ? [...directions][0] : directions.size > 1 ? 'mixed' : null;
+  computedDirection[r.id] = { computedDelta, resolved, derived: 0, transitions,
+    targetSource: targetFieldsOf(r)[0] ?? null };
+  if (computedDelta && r.delta !== computedDelta)
+    fail(`${r.id} : 수기 delta '${r.delta}' ≠ 현재값→목적지 계산 '${computedDelta}' — ${Object.entries(transitions).map(([k, v]) => `${k}×${v}`).join(' · ')}`);
+
+  // 실행 단계와 **계산된** 방향을 서로 구속한다. 수기 delta 를 다시 믿지 않는다.
+  if (r.executionStage === 'S3b' && !['horizontal', 'both'].includes(r.axis))
+    fail(`${r.id} : S3b 인데 axis 가 '${r.axis}' 다 — S3b 는 폭이 느는 자리다`);
+  if (r.executionStage === 'S3b' && !['grow', 'mixed'].includes(computedDelta))
+    fail(`${r.id} : S3b 인데 계산 delta 가 '${computedDelta}' 다 — 폭이 늘지 않으면 S3a 다`);
+  if (r.executionStage === 'S3a' && r.axis === 'horizontal' && ['grow', 'mixed'].includes(computedDelta))
+    fail(`${r.id} : S3a 인데 계산상 가로로 늘어난다 — 그건 S3b 다`);
+  if (r.executionStage === 'S3a' && r.axis === 'both' && computedDelta === 'grow')
+    fail(`${r.id} : S3a 인데 계산상 두 축이 함께 는다 — 폭이 늘면 S3b 다`);
 }
 const multiMatchCount = Object.values(multiMatchPairs).reduce((a, b) => a + b, 0);
 // 순서 의존 — **아무 문자열이나 적혀 있으면 통과**하던 검사를 양방향 대조로 바꾼다
@@ -253,7 +336,8 @@ for (const r of map.rules) if (hit[r.id] === 0) fail(`${r.id} : 걸리는 선언
 let ledger = null;
 const prevMapPath = process.argv.slice(2).filter(a => !a.startsWith('--'))[4];
 if (prevMapPath) {
-  const prevMap = JSON.parse(readFileSync(resolve(prevMapPath), 'utf8'));
+  const prevMapBytes = readFileSync(resolve(prevMapPath));
+  const prevMap = JSON.parse(prevMapBytes.toString('utf8'));
   const move = {};
   const prevBin = {}, nowBin = {};
   for (const d of audit.declarations) {
@@ -278,7 +362,7 @@ if (prevMapPath) {
     recon[b] = { 이전: prevBin[b] || 0, 나감: out_, 들어옴: in_, 계산: expected, 실제: binCount[b] };
     if (expected !== binCount[b]) fail(`통 이동 대차 불일치 — ${b}: 이전 ${prevBin[b] || 0} - 나감 ${out_} + 들어옴 ${in_} = ${expected} 인데 실제는 ${binCount[b]}`);
   }
-  ledger = { previousMap: basename(resolve(prevMapPath)), moves: move, reconciliation: recon };
+  ledger = { previousMap: basename(resolve(prevMapPath)), previousMapSha256: sha(prevMapBytes), moves: move, reconciliation: recon };
 }
 
 const result = {
@@ -293,7 +377,7 @@ const result = {
     },
     rules: {
       '통': 'primitive · componentOwned · defect · pendingApproval · approvedException',
-      '완료 조건': '선언 = 다섯 통의 합 · 미분류 0 · approvedException 0 · componentOwned 이름 필수 · defect 수렴 대상 또는 열린 결정 필수 · pendingApproval 질문·증거 필수 · 걸리지 않는 규칙 0',
+      '완료 조건': '선언 = 다섯 통의 합 · 미분류 0 · approvedException 0 · componentOwned 이름 필수 · axis!=none defect 목적지 기계 판독 및 delta 계산 일치 · pendingApproval 질문·증거 필수 · 걸리지 않는 규칙 0',
       '첫 일치': '규칙은 순서대로 평가하고 처음 일치한 것이 이긴다. 순서가 곧 우선순위다',
     },
   },
@@ -313,6 +397,14 @@ const result = {
     perRule: map.rules.map(r => ({
       id: r.id, bin: r.bin, declarations: hit[r.id],
       name: r.name ?? null, target: r.target ?? null, openDecision: r.openDecision ?? null,
+      executionStage: r.executionStage ?? null,
+      axis: r.axis ?? null,
+      targetSource: computedDirection[r.id]?.targetSource ?? null,
+      declaredDelta: r.delta ?? null,
+      computedDelta: computedDirection[r.id]?.computedDelta ?? null,
+      targetResolved: computedDirection[r.id]?.resolved ?? 0,
+      targetDerived: computedDirection[r.id]?.derived ?? 0,
+      transitions: computedDirection[r.id]?.transitions ?? {},
       values: Object.entries(perRuleValues[r.id]).sort((a, b) => b[1] - a[1]).slice(0, 12),
     })),
     failures,
