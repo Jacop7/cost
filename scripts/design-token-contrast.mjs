@@ -22,6 +22,7 @@
 import { readFileSync, existsSync, readdirSync, statSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
+import { spawnSync } from 'node:child_process';
 import { resolve, join } from 'node:path';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
@@ -224,13 +225,25 @@ const sealedRoles = () => {
   for (const [k, v] of Object.entries(roles)) all[k] = (v ?? '').toUpperCase();
   return JSON.stringify(Object.fromEntries(Object.keys(all).sort().map(k => [k, all[k]])));
 };
-/** 결정문에서 §8.2 계열 구간만 잘라 낸다 — 산문이 바뀌었다고 게이트가 울면 아무도 안 고친다. */
+/**
+ * 결정문에서 §8.2 계열 구간만 잘라 낸다 — 산문이 바뀌었다고 게이트가 울면 아무도 안 고친다.
+ *
+ * ⚠ 초판은 "다음 `##` 까지" 로 잘랐다. 그런데 §8.2c 다음이 **같은 깊이의 `### 8.3`**(열린 결정)
+ *   이라 §8.3 산문까지 봉인에 들어갔다 — 열린 결정을 다듬을 때마다 **색 결정 봉인**을 갱신해야
+ *   하는 모순이다 (솔 검수 `R4 F03`). 이제 `8.2` · `8.2a` … 가 아닌 `###` 에서도 끊는다.
+ *   `### 8.2d` 가 새로 붙으면 구간에 들어가므로 새 결정이 조용히 들어올 길은 여전히 없다.
+ */
+const IS_8_2 = /^###\s+8\.2[a-z]?(\s|$)/;
 const decisionSlice = (text) => {
   const lines = text.replace(/\r\n/g, '\n').split('\n');
-  const from = lines.findIndex(l => /^###\s+8\.2(\s|[a-z])/.test(l));
+  const from = lines.findIndex(l => IS_8_2.test(l));
   if (from < 0) return null;
   let to = lines.length;
-  for (let i = from + 1; i < lines.length; i++) if (/^##\s/.test(lines[i])) { to = i; break; }
+  for (let i = from + 1; i < lines.length; i++) {
+    const l = lines[i];
+    if (/^#{1,2}\s/.test(l)) { to = i; break; }              // 상위 헤딩
+    if (/^###\s/.test(l) && !IS_8_2.test(l)) { to = i; break; } // 같은 깊이의 다른 절
+  }
   return lines.slice(from, to).join('\n').trimEnd();
 };
 const DEC_DEFAULT = 'docs/디자인-토큰-3계층-값-매핑-기획서.md';
@@ -281,9 +294,20 @@ if (!existsSync(sealPath)) {
       else {
         // 결정 커밋은 **추적용**이다. 봉인을 지키는 것은 위 세 해시고, 커밋은 "이 값이 어디서
         // 결정됐는지" 를 가리킨다. 결정이 여러 번에 걸쳐 닫혔으므로 목록이다.
+        // 결정 커밋은 추적용이다. 봉인을 지키는 것은 위 세 해시고, 커밋은 "이 값이 어디서
+        // 결정됐는지" 를 가리킨다. **형식과 존재를 검사한다** — 초판은 비어 있지 않은지만 봐서
+        // "이 커밋" 같은 자기참조 문장도 통과했다 (솔 검수 `R4 F03`).
         const commits = [].concat(S.결정?.커밋 ?? []).filter(Boolean);
         if (!commits.length) fail.push('봉인에 결정 커밋이 없다 — 어느 커밋의 결정인지 추적할 수 없다');
-        else note.push(`봉인 일치 — 역할 ${got역할.slice(0, 8)} · 계약 ${(want.계약해시 ?? '').slice(0, 8)} · 결정 ${commits.length}건`);
+        else {
+          for (const c of commits) {
+            const m = String(c).match(/^([0-9a-f]{40})(\s|$)/);
+            if (!m) { fail.push(`결정 커밋 항목이 40자리 SHA 로 시작하지 않는다 — '${String(c).slice(0, 48)}'`); continue; }
+            const r = spawnSync('git', ['cat-file', '-e', `${m[1]}^{commit}`], { cwd: root, encoding: 'utf8' });
+            if (r.status !== 0) fail.push(`결정 커밋 ${m[1].slice(0, 12)} 개체가 저장소에 없다 — 손으로 적은 SHA 가 틀렸다`);
+          }
+          if (!fail.length) note.push(`봉인 일치 — 역할 ${got역할.slice(0, 8)} · 계약 ${(want.계약해시 ?? '').slice(0, 8)} · 결정 커밋 ${commits.length}건 확인`);
+        }
       }
     }
   }

@@ -12,14 +12,24 @@ const root = fileURLToPath(new URL('..', import.meta.url));
 const AUDIT = join(root, 'scripts', 'touch-target-audit.mjs');
 const KNOWN = join(root, 'scripts', 'touch-target-known.json');
 
-const runWith = ({ tsx, known }) => {
+/**
+ * 감사를 한 번 돌려 **입력해시**를 얻는다. 알려진 목록은 이 값으로 결속되므로(솔 `R4` 질문 3)
+ * 시험도 실제 사용과 같은 순서를 밟는다 — 재고, 그 입력에 목록을 매고, 다시 잰다.
+ */
+const probeHash = (src, dir) => {
+  const o = join(dir, 'probe.json');
+  spawnSync(process.execPath, [AUDIT, `--src=${src}`, `--known=${join(dir, '없는목록.json')}`, `--out=${o}`], { encoding: 'utf8' });
+  return JSON.parse(readFileSync(o, 'utf8')).manifest.측정.입력해시;
+};
+
+const runWith = ({ tsx, known, args = [] }) => {
   const dir = mkdtempSync(join(tmpdir(), 'touch-'));
   try {
     const src = join(dir, 'src'); mkdirSync(src, { recursive: true });
     writeFileSync(join(src, 'Sample.tsx'), tsx);
     const k = join(dir, 'known.json');
-    writeFileSync(k, JSON.stringify({ unjudged: [], components: [], ...known }, null, 2));
-    const r = spawnSync(process.execPath, [AUDIT, `--src=${src}`, `--known=${k}`], { encoding: 'utf8' });
+    writeFileSync(k, JSON.stringify({ 입력해시: probeHash(src, dir), unjudged: [], components: [], buttonDynamic: [], ...known }, null, 2));
+    const r = spawnSync(process.execPath, [AUDIT, `--src=${src}`, `--known=${k}`, ...args], { encoding: 'utf8' });
     return { code: r.status, out: (r.stdout ?? '') + (r.stderr ?? '') };
   } finally { rmSync(dir, { recursive: true, force: true }); }
 };
@@ -129,7 +139,7 @@ const runButton = ({ consumers = '', known = {}, args = [], button = BUTTON_TSX 
     writeFileSync(join(src, 'src', 'components', 'kit', 'Button.tsx'), button);
     writeFileSync(join(src, 'Consumers.tsx'), consumers);
     const k = join(dir, 'known.json');
-    writeFileSync(k, JSON.stringify({ entries: [], unjudged: [], components: [], buttonDynamic: [], ...known }, null, 2));
+    writeFileSync(k, JSON.stringify({ 입력해시: probeHash(src, dir), entries: [], unjudged: [], components: [], buttonDynamic: [], ...known }, null, 2));
     const r = spawnSync(process.execPath, [AUDIT, `--src=${src}`, `--known=${k}`, ...args], { encoding: 'utf8' });
     return { code: r.status, out: (r.stdout ?? '') + (r.stderr ?? '') };
   } finally { rmSync(dir, { recursive: true, force: true }); }
@@ -139,16 +149,17 @@ const runButton = ({ consumers = '', known = {}, args = [], button = BUTTON_TSX 
 const contracts = (at) => [
   { 컴포넌트: 'Button size="sm"', 판정: '경계', 높이하한: 30, 소비처: (at.sm ?? []).length, at: at.sm ?? [] },
   { 컴포넌트: 'Button size="md"', 판정: '경계', 높이하한: 42, 소비처: (at.md ?? []).length, at: at.md ?? [] },
-  { 컴포넌트: 'Button size="lg"', 판정: '통과', 높이하한: 49 },
+  { 컴포넌트: 'Button size="lg"', 판정: '경계', 높이하한: 49, 소비처: (at.lg ?? []).length, at: at.lg ?? [] },
 ];
 
-test('공용 컴포넌트 계약 — 하한이 44 를 넘으면 통과, 못 넘으면 경계다 (미달을 단정하지 않는다)', () => {
+test('공용 컴포넌트 계약 — 하한이 44 를 넘어도 통과로 닫지 않는다 (호출부 style 이 높이를 줄일 수 있다)', () => {
   const r = runButton({ known: { components: contracts({}) } });
   assert.equal(r.code, 0, r.out);
   assert.match(r.out, /Button size="sm" 높이 하한 30 → 경계/);
   assert.match(r.out, /Button size="md" 높이 하한 42 → 경계/);
-  assert.match(r.out, /Button size="lg" 높이 하한 49 → 통과/);
+  assert.match(r.out, /Button size="lg" 높이 하한 49 → 경계/);
   assert.doesNotMatch(r.out, /어떤 글꼴에서도/);
+  assert.doesNotMatch(r.out, /→ 통과/);
 });
 
 test('여러 줄로 나뉜 여는 태그의 size 도 읽는다 — 줄 단위 정규식이 놓치던 자리다', () => {
@@ -185,13 +196,13 @@ test('경계 variant 의 소비처가 늘면 FAIL — 열린 위험이 조용히
   assert.match(r.out, /소비처가 1 → 2곳으로 바뀌었다/);
 });
 
-test('통과 variant 의 소비처는 게이트하지 않는다 — 늘어도 위험이 늘지 않는다', () => {
+test('하한이 44 를 넘는 variant 의 소비처도 래칫한다 — 통과로 닫지 않았으니 위험이 열려 있다', () => {
   const r = runButton({
     consumers: `<Button size="lg" onPress={f}>A</Button>\n<Button size="lg" onPress={g}>B</Button>`,
-    known: { components: contracts({}) },
+    known: { components: contracts({ lg: ['src/Consumers.tsx:1'] }) },
   });
-  assert.equal(r.code, 0, r.out);
-  assert.match(r.out, /Button size="lg" .* 소비처 2곳/);
+  assert.equal(r.code, 1, `lg 소비처 증가를 놓쳤다 — R4 F02 로 전량 래칫이다\n${r.out}`);
+  assert.match(r.out, /새 Button size="lg" 소비처/);
 });
 
 test('size 가 변수·spread 면 동적으로 세고 따로 래칫한다', () => {
@@ -223,7 +234,88 @@ test('알려진 동적 목록이 아예 없으면 FAIL — 래칫이 꺼진 것�
 test('--expect-commit 이 어긋나면 FAIL — 작업 트리에서 잰 수치를 커밋 증거로 쓰지 못하게 한다', () => {
   const r = runButton({ known: { components: contracts({}) }, args: ['--expect-commit=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef'] });
   assert.equal(r.code, 1, r.out);
+  assert.match(r.out, /측정 커밋 불일치|커밋으로 해석할 수 없다/);
+});
+
+// ── 결속 우회 (솔 검수 `R4 F01`) ─────────────────────────────────────────────
+// 초판은 `head.startsWith(want) || want.startsWith(head)` 였다. 빈 문자열은 **모든** SHA 의
+// 접두사이므로 값 없는 깃발이 통과했고, `<전체SHA>garbage` 는 뒤쪽 조건으로 통과했다.
+const onRepo = (args) => {
+  const r = spawnSync(process.execPath, [AUDIT, ...args], { encoding: 'utf8' });
+  return { code: r.status, out: (r.stdout ?? '') + (r.stderr ?? '') };
+};
+const HEAD_SHA = spawnSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).stdout.trim();
+
+test('값 없는 --expect-commit 은 거부한다 — 빈 문자열은 모든 SHA 의 접두사다', () => {
+  const r = onRepo(['--expect-commit']);
+  assert.equal(r.code, 1, `값 없는 깃발이 결속을 통과했다\n${r.out}`);
+  assert.match(r.out, /커밋 SHA 가 아니다/);
+});
+
+test('전체 SHA 뒤에 군더더기가 붙으면 거부한다 — startsWith 우회를 막는다', () => {
+  const r = onRepo([`--expect-commit=${HEAD_SHA}zz`]);
+  assert.equal(r.code, 1, `suffix 가 붙은 값이 통과했다\n${r.out}`);
+  assert.match(r.out, /커밋 SHA 가 아니다/);
+});
+
+test('7자 미만의 짧은 SHA 는 거부한다', () => {
+  const r = onRepo(['--expect-commit=abc']);
+  assert.equal(r.code, 1, r.out);
+  assert.match(r.out, /커밋 SHA 가 아니다/);
+});
+
+test('해석되지 않는 SHA 는 거부한다 — 없는 개체이거나 모호한 짧은 SHA', () => {
+  const r = onRepo(['--expect-commit=0000000']);
+  assert.equal(r.code, 1, r.out);
+  assert.match(r.out, /커밋으로 해석할 수 없다/);
+});
+
+test('다른 커밋의 SHA 를 대면 불일치로 FAIL 한다 — 전체 SHA 로 해석해 완전 일치만 통과', () => {
+  const parent = spawnSync('git', ['rev-parse', 'HEAD~1'], { cwd: root, encoding: 'utf8' }).stdout.trim();
+  const r = onRepo([`--expect-commit=${parent}`]);
+  assert.equal(r.code, 1, r.out);
   assert.match(r.out, /측정 커밋 불일치/);
+});
+
+test('입력해시가 목록과 다르면 FAIL 한다 — 목록이 어느 입력에서 나왔는지 결속한다', () => {
+  const r = runButton({ known: { 입력해시: 'f'.repeat(64), components: contracts({}) } });
+  assert.equal(r.code, 1, r.out);
+  assert.match(r.out, /감사 입력이 바뀌었다/);
+});
+
+test('입력해시가 아예 없으면 FAIL 한다 — 결속이 꺼진 것을 조용히 넘기지 않는다', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'touch-nohash-'));
+  try {
+    const src = join(dir, 'src');
+    mkdirSync(join(src, 'src', 'components', 'kit'), { recursive: true });
+    writeFileSync(join(src, 'src', 'components', 'kit', 'Button.tsx'), BUTTON_TSX);
+    writeFileSync(join(src, 'Consumers.tsx'), '');
+    const k = join(dir, 'known.json');
+    writeFileSync(k, JSON.stringify({ entries: [], unjudged: [], components: contracts({}), buttonDynamic: [] }, null, 2));
+    const r = spawnSync(process.execPath, [AUDIT, `--src=${src}`, `--known=${k}`], { encoding: 'utf8' });
+    const out = (r.stdout ?? '') + (r.stderr ?? '');
+    assert.equal(r.status, 1, out);
+    assert.match(out, /알려진 입력해시가 없다/);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('시험 fixture 의 <Button> 은 제품 소비처와 섞지 않는다', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'touch-split-'));
+  try {
+    const src = join(dir, 'src');
+    mkdirSync(join(src, 'src', 'components', 'kit'), { recursive: true });
+    mkdirSync(join(src, 'tests'), { recursive: true });
+    writeFileSync(join(src, 'src', 'components', 'kit', 'Button.tsx'), BUTTON_TSX);
+    writeFileSync(join(src, 'Consumers.tsx'), `<Button size="sm" onPress={f}>A</Button>`);
+    writeFileSync(join(src, 'tests', 'smoke.test.tsx'), `<Button size="sm" onPress={f}>시험</Button>`);
+    const k = join(dir, 'known.json');
+    writeFileSync(k, JSON.stringify({ 입력해시: probeHash(src, dir), entries: [], unjudged: [], buttonDynamic: [],
+      components: contracts({ sm: ['src/Consumers.tsx:1'] }) }, null, 2));
+    const r = spawnSync(process.execPath, [AUDIT, `--src=${src}`, `--known=${k}`], { encoding: 'utf8' });
+    const out = (r.stdout ?? '') + (r.stderr ?? '');
+    assert.equal(r.status, 0, `시험 fixture 가 제품 재고에 섞였다\n${out}`);
+    assert.match(out, /Button size="sm" .* 제품 소비처 1곳 · 시험 참조 1곳/);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
 test('저장소를 그대로 재면 작업 트리 상태가 산출물에 남는다 — 결속 없이 인용하지 말라고 적는다', () => {

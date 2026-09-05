@@ -251,3 +251,32 @@ test('봉인에서 결정 커밋을 비우면 FAIL 한다 — 어느 커밋의 �
   assert.equal(r.code, 1, r.out);
   assert.match(r.out, /결정 커밋이 없다/);
 });
+
+// ── 봉인 경계와 결정 커밋 형식 (솔 검수 `R4 F03`) ────────────────────────────
+test('§8.3(열린 결정) 산문이 바뀌어도 통과한다 — 봉인 구간은 8.2 계열뿐이다', () => {
+  const r = runSeal(s => s, {
+    decision: (t) => t.replace('### 8.3 결정 뒤에 새로 열린 것', '### 8.3 결정 뒤에 새로 열린 것(문장 다듬음)'),
+  });
+  assert.equal(r.code, 0, `§8.3 은 봉인 대상이 아닌데 FAIL 했다 — 열린 결정을 다듬을 때마다 색 봉인을 갱신해야 한다\n${r.out}`);
+});
+
+test('§8.2d 가 새로 붙으면 봉인이 깨진다 — 새 결정이 조용히 들어올 길은 없다', () => {
+  const r = runSeal(s => s, {
+    decision: (t) => t.replace('### 8.3 결정 뒤에 새로 열린 것',
+      '### 8.2d 부록 — 몰래 넣은 결정\n\n임의로 더한 결정이다.\n\n### 8.3 결정 뒤에 새로 열린 것'),
+  });
+  assert.equal(r.code, 1, `8.2 계열 추가를 놓쳤다\n${r.out}`);
+  assert.match(r.out, /결정문 §8\.2 구간이 봉인과 다르다/);
+});
+
+test('결정 커밋이 40자리 SHA 가 아니면 FAIL 한다 — "이 커밋" 같은 자기참조를 받지 않는다', () => {
+  const r = runSeal(s => { s.결정.커밋 = ['이 봉인을 담은 커밋 PRT-212']; return s; });
+  assert.equal(r.code, 1, r.out);
+  assert.match(r.out, /40자리 SHA 로 시작하지 않는다/);
+});
+
+test('결정 커밋 SHA 가 저장소에 없으면 FAIL 한다', () => {
+  const r = runSeal(s => { s.결정.커밋 = ['0'.repeat(40) + ' 없는 커밋']; return s; });
+  assert.equal(r.code, 1, r.out);
+  assert.match(r.out, /개체가 저장소에 없다/);
+});
