@@ -593,11 +593,12 @@ foreach ($fileName in @($auditName, $auditScriptName, 'full-page-flow-prototype-
     'full-page-flow-prototype-atrisk-key-proof.json', 'full-page-flow-prototype-atrisk-key-proof.mjs',
     'full-page-flow-prototype-design-sync-check.ps1',
     'full-page-flow-prototype-app-token-map.json', 'full-page-flow-prototype-app-map-check.mjs',
+    'full-page-flow-prototype-app-map-check.test.mjs',
     'full-page-flow-prototype-app-map-check.json', '../token-adoption-audit.json',
     'full-page-flow-prototype-axis-measure.mjs', 'full-page-flow-prototype-axis-at.json',
     'full-page-flow-prototype-role-measure.mjs', 'full-page-flow-prototype-role-at.json',
     'full-page-flow-prototype-doc-claims.json', 'full-page-flow-prototype-doc-claims-check.mjs',
-    'full-page-flow-prototype-doc-claims-check.json',
+    'full-page-flow-prototype-doc-claims-check.test.mjs', 'full-page-flow-prototype-doc-claims-check.json',
     'full-page-flow-prototype-contrast-contract.json', 'full-page-flow-prototype-contrast-gate.mjs',
     'full-page-flow-prototype-contrast-gate.json',
     '../디자인-토큰-3계층-값-매핑-기획서.md')) {
@@ -617,9 +618,9 @@ if (-not (Test-Path -LiteralPath $claimsCheckPath)) {
   Add-Failure "$claimsCheckName : 문서 주장 대조 결과가 없음"
 } else {
   $claimsCheck = Read-Utf8 $claimsCheckPath | ConvertFrom-Json
-  $claimsScriptSha = Get-Sha256 (Read-Utf8 (Join-Path $PrototypeDirectory $claimsScriptName))
-  $claimsSha = Get-Sha256 (Read-Utf8 (Join-Path $PrototypeDirectory $claimsName))
-  $claimsAuditSha = Get-Sha256 (Read-Utf8 (Join-Path $PrototypeDirectory '../token-adoption-audit.json'))
+  $claimsScriptSha = Get-Sha256 ((Read-Utf8 (Join-Path $PrototypeDirectory $claimsScriptName)).Replace("`r`n", "`n"))
+  $claimsSha = Get-Sha256 ((Read-Utf8 (Join-Path $PrototypeDirectory $claimsName)).Replace("`r`n", "`n"))
+  $claimsAuditSha = Get-Sha256 ((Read-Utf8 (Join-Path $PrototypeDirectory '../token-adoption-audit.json')).Replace("`r`n", "`n"))
   if ($claimsCheck.manifest.scriptSha256 -ne $claimsScriptSha) { Add-Failure "$claimsCheckName : 검사기 SHA 불일치. 재실행 필요" }
   if ($claimsCheck.manifest.claimsSha256 -ne $claimsSha) { Add-Failure "$claimsCheckName : 주장 목록 SHA 불일치. 재실행 필요" }
   if ($claimsCheck.manifest.auditSha256 -ne $claimsAuditSha) { Add-Failure "$claimsCheckName : 감사 SHA 불일치. 대조가 낡았다" }
@@ -659,7 +660,7 @@ if (-not (Test-Path -LiteralPath $contrastPath)) {
 }
 
 # --- 앱 선언 전수 배정 결속 (PRT-204 · W1) ---
-# 앱 3,677 선언이 여섯 통에 빠짐없이 들어갔는지, 그리고 그 배정이 지금 이 감사·이 매핑표에
+# 앱 3,653 선언이 다섯 통에 빠짐없이 들어갔는지, 그리고 그 배정이 지금 이 감사·이 매핑표에
 # 묶여 있는지 본다. 승인 예외 통은 W1 단계에서 0 이어야 한다 — 승인은 검수 뒤다.
 $appCheckName = 'full-page-flow-prototype-app-map-check.json'
 $appScriptName = 'full-page-flow-prototype-app-map-check.mjs'
@@ -675,17 +676,14 @@ elseif (-not (Test-Path -LiteralPath $appScriptPath)) {
 }
 else {
   $appCheck = Read-Utf8 $appCheckPath | ConvertFrom-Json
-  $apBytes = [System.IO.File]::ReadAllBytes($appScriptPath)
-  $apSha = [System.Security.Cryptography.SHA256]::Create()
-  try { $appScriptSha = ([System.BitConverter]::ToString($apSha.ComputeHash($apBytes))).Replace('-', '').ToLowerInvariant() }
-  finally { $apSha.Dispose() }
+  $appScriptSha = Get-Sha256 ((Read-Utf8 $appScriptPath).Replace("`r`n", "`n"))
   if ($appCheck.manifest.script.sha256 -ne $appScriptSha) {
     Add-Failure "$appCheckName : 검사기 SHA 불일치. 재실행 필요"
   }
   foreach ($pair in @(@{ key = 'audit'; file = $appAuditRel }, @{ key = 'appMap'; file = $appMapName }, @{ key = 'prototypeMap'; file = 'full-page-flow-prototype-token-map.json' })) {
     $srcPath = Join-Path $PrototypeDirectory $pair.file
     if (-not (Test-Path -LiteralPath $srcPath)) { Add-Failure "$appCheckName : 입력 '$($pair.file)' 가 없음"; continue }
-    $srcSha = Get-Sha256 (Read-Utf8 $srcPath)
+    $srcSha = Get-Sha256 ((Read-Utf8 $srcPath).Replace("`r`n", "`n"))
     if ($appCheck.manifest.source.($pair.key).sha256 -ne $srcSha) {
       Add-Failure "$appCheckName : 입력 '$($pair.file)' SHA 불일치. 배정이 낡았다"
     }
@@ -700,15 +698,11 @@ else {
     Add-Failure "$appCheckName : 승인 예외 통이 $($appCheck.summary.byBin.approvedException)건 - W1 은 제안 단계다"
   }
   $binSum = 0
-  foreach ($b in @('primitive', 'semantic', 'componentOwned', 'defect', 'pendingApproval', 'approvedException')) {
+  foreach ($b in @('primitive', 'componentOwned', 'defect', 'pendingApproval', 'approvedException')) {
     $binSum += [int]$appCheck.summary.byBin.$b
   }
   if ($binSum -ne [int]$appCheck.summary.declarations) {
     Add-Failure "$appCheckName : 통 합계 $binSum 이 선언 $($appCheck.summary.declarations) 과 다르다"
-  }
-  # 빈 통은 "0" 이라고만 적으면 다음 사람이 미완으로 읽는다. 왜 비었는지가 함께 있어야 한다.
-  if ([int]$appCheck.summary.byBin.semantic -eq 0 -and [string]::IsNullOrWhiteSpace([string]$appCheck.summary.semanticEmptyReason)) {
-    Add-Failure "$appCheckName : semantic 통이 0 인데 사유가 없다 - 구조적으로 빈 것인지 미완인지 구별되지 않는다"
   }
   # 배정을 바꾼 회차는 무엇이 어디로 갔는지 대차를 내야 한다. 손으로 쓴 이동 서술은 어긋난다
   # (PRT-206 에서 실제로 어긋났다). 검사기가 낸 대차가 통 변화와 맞는지 게이트가 다시 본다.
@@ -716,7 +710,7 @@ else {
     Add-Failure "$appCheckName : 통 이동 대차가 없음 - 이전 회차 매핑표를 함께 넣어 재실행해야 한다"
   }
   else {
-    foreach ($b in @('primitive', 'semantic', 'componentOwned', 'defect', 'pendingApproval', 'approvedException')) {
+    foreach ($b in @('primitive', 'componentOwned', 'defect', 'pendingApproval', 'approvedException')) {
       $r = $appCheck.summary.binMovementLedger.reconciliation.$b
       if ($null -eq $r) { Add-Failure "$appCheckName : 대차에 '$b' 통이 없음"; continue }
       if ([int]$r.계산 -ne [int]$r.실제) {

@@ -9,7 +9,8 @@ import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { resolve } from 'node:path';
 
-const sha = (b) => createHash('sha256').update(b).digest('hex');
+const sha = (b) => createHash('sha256')
+  .update(Buffer.from(b.toString('utf8').replace(/\r\n/g, '\n'), 'utf8')).digest('hex');
 /**
  * git blob id — CRLF→LF 정규화 뒤 계산하므로 체크아웃한 OS 에 좌우되지 않는다.
  * 대조한 **문서 판본**을 산출물에 박아 두는 데 쓴다 (솔 검수 `W1 R2 F01`).
