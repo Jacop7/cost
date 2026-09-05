@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
-import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import test from 'node:test';
@@ -30,6 +30,53 @@ const teamFiles = {
   'QUALITY-REVIEW': '04-quality-review.md',
   'KNOWLEDGE-ORCHESTRATION': '05-knowledge-orchestration.md',
 };
+
+const chatFiles = {
+  'MASTER-01-HUMAN-DECISIONS': ['master-01-human-decisions.md', 'MASTER', '01 통합 작업큐 · 사람 결정', 'KNOWLEDGE-ORCHESTRATION'],
+  'MASTER-02-ORCHESTRATION': ['master-02-orchestration.md', 'MASTER', '02 마스터 오케스트레이션', 'KNOWLEDGE-ORCHESTRATION'],
+  'MASTER-03-DEPUTY-CONTEXT': ['master-03-deputy-context.md', 'MASTER', '03 부 오케스트레이션 · 토큰/컨텍스트 관리', 'KNOWLEDGE-ORCHESTRATION'],
+  'MASTER-04-DEVELOPMENT-STAGING': ['master-04-development-staging.md', 'MASTER', '04 개발·스테이징 배포 검증', 'SERVER-SUPABASE-OPERATIONS'],
+  'MASTER-05-PRODUCTION-RECOVERY': ['master-05-production-recovery.md', 'MASTER', '05 운영 배포 · 복구 게이트', 'SERVER-SUPABASE-OPERATIONS'],
+  'DEPARTMENT-00-ALL-TEAMS-ROOM': ['department-00-all-teams-room.md', 'DEPARTMENT', '00 모든 팀 상황실', 'ALL-TEAMS-ROOM'],
+  'DEPARTMENT-01-PRODUCT-MOBILE': ['department-01-product-mobile.md', 'DEPARTMENT', '01 Product · Mobile', 'PRODUCT-MOBILE'],
+  'DEPARTMENT-02-DATA-BACKEND': ['department-02-data-backend.md', 'DEPARTMENT', '02 Data · Backend', 'DATA-BACKEND'],
+  'DEPARTMENT-03-SERVER-OPERATIONS': ['department-03-server-operations.md', 'DEPARTMENT', '03 Server · Supabase · Operations', 'SERVER-SUPABASE-OPERATIONS'],
+  'DEPARTMENT-04-QUALITY-REVIEW': ['department-04-quality-review.md', 'DEPARTMENT', '04 Quality · Review', 'QUALITY-REVIEW'],
+  'DEPARTMENT-05-KNOWLEDGE-ORCHESTRATION': ['department-05-knowledge-orchestration.md', 'DEPARTMENT', '05 Knowledge · Orchestration', 'KNOWLEDGE-ORCHESTRATION'],
+};
+
+const chatRouting = {
+  'MASTER-01-HUMAN-DECISIONS': {
+    acceptsFrom: ['MASTER-02-ORCHESTRATION', 'MASTER-04-DEVELOPMENT-STAGING', 'MASTER-05-PRODUCTION-RECOVERY'],
+    routeEdges: ['MASTER-02-ORCHESTRATION|REQUEST,DECISION_POINTER'],
+  },
+  'MASTER-02-ORCHESTRATION': {
+    acceptsFrom: ['MASTER-01-HUMAN-DECISIONS', 'MASTER-03-DEPUTY-CONTEXT', 'MASTER-04-DEVELOPMENT-STAGING', 'MASTER-05-PRODUCTION-RECOVERY'],
+    routeEdges: ['MASTER-01-HUMAN-DECISIONS|AGGREGATE_RESULT,VERIFIED_STATUS,DECISION_POINTER', 'MASTER-03-DEPUTY-CONTEXT|CONFIRMED_ROUTE,TASK_DISPATCH', 'MASTER-04-DEVELOPMENT-STAGING|STAGING_GATE_REQUEST', 'MASTER-05-PRODUCTION-RECOVERY|PRODUCTION_GATE_REQUEST', 'DEPARTMENT-00-ALL-TEAMS-ROOM|VERIFIED_STATUS'],
+  },
+  'MASTER-03-DEPUTY-CONTEXT': {
+    acceptsFrom: ['MASTER-02-ORCHESTRATION', 'DEPARTMENT-01-PRODUCT-MOBILE', 'DEPARTMENT-02-DATA-BACKEND', 'DEPARTMENT-03-SERVER-OPERATIONS', 'DEPARTMENT-04-QUALITY-REVIEW', 'DEPARTMENT-05-KNOWLEDGE-ORCHESTRATION'],
+    routeEdges: ['MASTER-02-ORCHESTRATION|TASK_RESULT,REVIEW_RESULT,AGGREGATE_RESULT,VERIFIED_STATUS,DECISION_POINTER', 'DEPARTMENT-01-PRODUCT-MOBILE|TASK_DISPATCH', 'DEPARTMENT-02-DATA-BACKEND|TASK_DISPATCH', 'DEPARTMENT-03-SERVER-OPERATIONS|TASK_DISPATCH', 'DEPARTMENT-04-QUALITY-REVIEW|REVIEW_REQUEST,TASK_DISPATCH', 'DEPARTMENT-05-KNOWLEDGE-ORCHESTRATION|TASK_DISPATCH'],
+  },
+  'MASTER-04-DEVELOPMENT-STAGING': {
+    acceptsFrom: ['MASTER-02-ORCHESTRATION'],
+    routeEdges: ['MASTER-02-ORCHESTRATION|STAGING_GATE_RESULT,DECISION_POINTER', 'MASTER-01-HUMAN-DECISIONS|DECISION_POINTER'],
+  },
+  'MASTER-05-PRODUCTION-RECOVERY': {
+    acceptsFrom: ['MASTER-02-ORCHESTRATION'],
+    routeEdges: ['MASTER-02-ORCHESTRATION|DECISION_POINTER,VERIFIED_STATUS', 'MASTER-01-HUMAN-DECISIONS|DECISION_POINTER'],
+  },
+  'DEPARTMENT-00-ALL-TEAMS-ROOM': { acceptsFrom: ['MASTER-02-ORCHESTRATION'], routeEdges: [] },
+  'DEPARTMENT-01-PRODUCT-MOBILE': { acceptsFrom: ['MASTER-03-DEPUTY-CONTEXT'], routeEdges: ['MASTER-03-DEPUTY-CONTEXT|TASK_RESULT'] },
+  'DEPARTMENT-02-DATA-BACKEND': { acceptsFrom: ['MASTER-03-DEPUTY-CONTEXT'], routeEdges: ['MASTER-03-DEPUTY-CONTEXT|TASK_RESULT'] },
+  'DEPARTMENT-03-SERVER-OPERATIONS': { acceptsFrom: ['MASTER-03-DEPUTY-CONTEXT'], routeEdges: ['MASTER-03-DEPUTY-CONTEXT|TASK_RESULT'] },
+  'DEPARTMENT-04-QUALITY-REVIEW': { acceptsFrom: ['MASTER-03-DEPUTY-CONTEXT'], routeEdges: ['MASTER-03-DEPUTY-CONTEXT|REVIEW_RESULT,TASK_RESULT'] },
+  'DEPARTMENT-05-KNOWLEDGE-ORCHESTRATION': { acceptsFrom: ['MASTER-03-DEPUTY-CONTEXT'], routeEdges: ['MASTER-03-DEPUTY-CONTEXT|TASK_RESULT'] },
+};
+
+const departmentTitleByTeam = Object.fromEntries(Object.values(chatFiles)
+  .filter(([, group]) => group === 'DEPARTMENT')
+  .map(([, , title, teamId]) => [teamId, title]));
 
 function put(root, path, text) {
   const target = join(root, path);
@@ -71,7 +118,12 @@ function makeFixture(planStatus = 'ACTIVE') {
     context.context_hash = fixtureContextHash(context.context_id);
   }
   const hashAlgorithm = 'sha256(context_id|version|route|autonomy_stage|decision_id|policy_hash)';
-  put(root, 'docs/team/ROLE_CONTEXTS.md', `# Contexts\n\n<!-- role-context-registry:v1 -->\n\`\`\`json\n${JSON.stringify({ schema_version: '1.0', hash_algorithm: hashAlgorithm, contexts }, null, 2)}\n\`\`\`\n<!-- /role-context-registry:v1 -->\n`);
+  const chatEntries = Object.entries(chatFiles).map(([chatId, [filename]]) => ({
+    chat_id: chatId,
+    manifest_path: `docs/team/chats/${filename}`,
+    role_context_ids: ['CTX-ORCH'],
+  }));
+  put(root, 'docs/team/ROLE_CONTEXTS.md', `# Contexts\n\n<!-- role-context-registry:v1 -->\n\`\`\`json\n${JSON.stringify({ schema_version: '1.0', hash_algorithm: hashAlgorithm, contexts }, null, 2)}\n\`\`\`\n<!-- /role-context-registry:v1 -->\n\n<!-- chat-context-registry:v1 -->\n\`\`\`json\n${JSON.stringify({ schema_version: '1.0', entries: chatEntries }, null, 2)}\n\`\`\`\n<!-- /chat-context-registry:v1 -->\n`);
   const learning = { learning_id: 'LRN-TEST-001', status: 'VERIFIED' };
   const assignment = { learning_id: 'LRN-TEST-001', author_role: 'LEGACY_UNKNOWN', lane_owner_role: 'SOLAR', verifier_role: 'CODEX-FUNCTION-QA', verifier_decision_id: null, contract_state: 'LEGACY_READ_ONLY' };
   put(root, 'docs/team/TEAM_LEARNING.md', `# Learning\n\n<!-- team-learning-registry:v1 -->\n\`\`\`json\n${JSON.stringify({ schema_version: '1.0', learnings: [learning] }, null, 2)}\n\`\`\`\n<!-- /team-learning-registry:v1 -->\n\n<!-- team-learning-verifier-registry:v1 -->\n\`\`\`json\n${JSON.stringify({ schema_version: '1.0', entries: [assignment] }, null, 2)}\n\`\`\`\n<!-- /team-learning-verifier-registry:v1 -->\n`);
@@ -98,12 +150,33 @@ function makeFixture(planStatus = 'ACTIVE') {
       task_types: ['STATUS'],
       role_ids: ['ORCHESTRATION'],
       authority_links: ['docs/작업큐.md'],
-      announcement_chat: teamId,
+      announcement_chat: departmentTitleByTeam[teamId],
       temporary_task_condition: 'sealed Task Packet and edit lease',
       handoff_in: ['verified predecessor'],
       handoff_out: ['single successor'],
       chat_is_approval_authority: false,
     }, `# ${teamId}`));
+  }
+  for (const [chatId, [filename, chatGroup, exactTitle, teamId]] of Object.entries(chatFiles)) {
+    const routing = chatRouting[chatId];
+    put(root, `docs/team/chats/${filename}`, frontMatter({
+      chat_id: chatId,
+      schema_version: 2,
+      accepts_from: routing.acceptsFrom,
+      sends_to: routing.routeEdges.map((edge) => edge.split('|')[0]),
+      route_edges: routing.routeEdges,
+      title: exactTitle,
+      purpose: `${chatGroup} route pointer`,
+      role_context_ids: ['CTX-ORCH'],
+      input: ['Task pointer'],
+      output: ['route pointer'],
+      authority_links: ['docs/작업큐.md', 'docs/team/handoffs/README.md', 'docs/team/DECISIONS.md',
+        'docs/team/roles/ORCHESTRATION.md', `docs/team/teams/${teamFiles[teamId]}`],
+      allowed_routes: ['NORMAL'],
+      stop_conditions: ['missing Decision'],
+      handoff_in: ['HUMAN-CHIEF'],
+      handoff_out: ['ORCHESTRATION'],
+    }));
   }
   put(root, 'docs/작업큐.md', '# Queue\n');
   return root;
@@ -122,6 +195,38 @@ test('완성된 activation 문서 그래프는 통과한다', () => withFixture(
   const result = checkDocsGraph({ rootDir: root, requireActivation: true });
   assert.equal(result.status, 'PASS');
   assert.equal(result.risks, 'WITHHELD_PENDING_AUTHORITY_ALIGNMENT');
+}));
+
+test('chat manifest v2에서 02→01 반환 edge 누락을 거부한다', () => withFixture((root) => {
+  const path = 'docs/team/chats/master-02-orchestration.md';
+  const original = readFileSync(join(root, path), 'utf8');
+  put(root, path, original
+    .replace('"MASTER-01-HUMAN-DECISIONS",', '')
+    .replace('"MASTER-01-HUMAN-DECISIONS|AGGREGATE_RESULT,VERIFIED_STATUS,DECISION_POINTER",', ''));
+  assert.throws(() => checkDocsGraph({ rootDir: root, requireActivation: true }), /routing|accepts|sends|edge/i);
+}));
+
+test('chat manifest v2의 wildcard target을 거부한다', () => withFixture((root) => {
+  const path = 'docs/team/chats/master-03-deputy-context.md';
+  const original = readFileSync(join(root, path), 'utf8');
+  put(root, path, original.replaceAll('DEPARTMENT-01-PRODUCT-MOBILE', 'DEPARTMENT-*'));
+  assert.throws(() => checkDocsGraph({ rootDir: root, requireActivation: true }), /routing|wildcard|논리 ID|route edge/i);
+}));
+
+test('chat manifest v2의 미등록 message kind를 거부한다', () => withFixture((root) => {
+  const path = 'docs/team/chats/master-01-human-decisions.md';
+  const original = readFileSync(join(root, path), 'utf8');
+  put(root, path, original.replace('REQUEST,DECISION_POINTER', 'REQUEST,DEPLOYMENT_DISPATCH'));
+  assert.throws(() => checkDocsGraph({ rootDir: root, requireActivation: true }), /routing|message kind/i);
+}));
+
+test('00 상황실의 outbound route 추가를 거부한다', () => withFixture((root) => {
+  const path = 'docs/team/chats/department-00-all-teams-room.md';
+  const original = readFileSync(join(root, path), 'utf8');
+  put(root, path, original
+    .replace('sends_to: []', 'sends_to: ["MASTER-02-ORCHESTRATION"]')
+    .replace('route_edges: []', 'route_edges: ["MASTER-02-ORCHESTRATION|TASK_RESULT"]'));
+  assert.throws(() => checkDocsGraph({ rootDir: root, requireActivation: true }), /routing|edge/i);
 }));
 
 test('ACTIVE 기획안의 DRAFT 자기선언을 잡는다', () => withFixture((root) => {
@@ -145,6 +250,70 @@ test('DRAFT 상태의 완성 후보 트리는 planned-tree 모드에서 통과�
 test('필수 역할 manifest 누락을 잡는다', () => withFixture((root) => {
   rmSync(join(root, 'docs/team/roles/CODEX.md'));
   assert.throws(() => checkDocsGraph({ rootDir: root, requireActivation: true }), /필수 문서가 없습니다/);
+}));
+
+test('필수 chat manifest 누락을 잡는다', () => withFixture((root) => {
+  rmSync(join(root, 'docs/team/chats/master-02-orchestration.md'));
+  assert.throws(() => checkDocsGraph({ rootDir: root, requireActivation: true }), /공식 11개 manifest만/);
+}));
+
+test('12번째 경쟁 chat manifest를 잡는다', () => withFixture((root) => {
+  put(root, 'docs/team/chats/competing-policy.md', frontMatter({
+    chat_id: 'COMPETING', title: '경쟁 권위', purpose: '중복', role_context_ids: ['CTX-ORCH'],
+    input: ['Task'], output: ['policy'], authority_links: ['docs/작업큐.md'], allowed_routes: ['NORMAL'],
+    stop_conditions: ['none'], handoff_in: ['HUMAN-CHIEF'], handoff_out: ['ORCHESTRATION'],
+  }));
+  assert.throws(() => checkDocsGraph({ rootDir: root, requireActivation: true }), /공식 11개 manifest만/);
+}));
+
+test('chat title 중복을 잡는다', () => withFixture((root) => {
+  const path = 'docs/team/chats/master-02-orchestration.md';
+  const text = readFileSync(join(root, path), 'utf8')
+    .replace('title: 02 마스터 오케스트레이션', 'title: 01 통합 작업큐 · 사람 결정');
+  put(root, path, text);
+  assert.throws(() => checkDocsGraph({ rootDir: root, requireActivation: true }), /정확한 chat title이 없거나 중복/);
+}));
+
+test('chat context와 role manifest 불일치를 잡는다', () => withFixture((root) => {
+  const path = 'docs/team/chats/master-02-orchestration.md';
+  const text = readFileSync(join(root, path), 'utf8').replace('["CTX-ORCH"]', '["CTX-UNKNOWN"]');
+  put(root, path, text);
+  assert.throws(() => checkDocsGraph({ rootDir: root, requireActivation: true }), /chat context가 role manifest\/레지스트리와 다릅니다/);
+}));
+
+test('chat manifest의 추가 필드를 잡는다', () => withFixture((root) => {
+  const path = 'docs/team/chats/master-02-orchestration.md';
+  const text = readFileSync(join(root, path), 'utf8').replace('\n---\n', '\nnotes: policy copy\n---\n');
+  put(root, path, text);
+  assert.throws(() => checkDocsGraph({ rootDir: root, requireActivation: true }), /허용되지 않은 필드/);
+}));
+
+test('chat manifest의 본문을 잡는다', () => withFixture((root) => {
+  const path = 'docs/team/chats/master-02-orchestration.md';
+  const text = `${readFileSync(join(root, path), 'utf8')}# 정책 복제\n`;
+  put(root, path, text);
+  assert.throws(() => checkDocsGraph({ rootDir: root, requireActivation: true }), /front matter 외 본문/);
+}));
+
+test('chat의 route 권한 상승을 잡는다', () => withFixture((root) => {
+  const path = 'docs/team/chats/master-02-orchestration.md';
+  const text = readFileSync(join(root, path), 'utf8').replace('["NORMAL"]', '["OPERATIONS"]');
+  put(root, path, text);
+  assert.throws(() => checkDocsGraph({ rootDir: root, requireActivation: true }), /context\/role 범위를 벗어납니다/);
+}));
+
+test('chat의 필수 권위 포인터 누락을 잡는다', () => withFixture((root) => {
+  const path = 'docs/team/chats/master-02-orchestration.md';
+  const text = readFileSync(join(root, path), 'utf8').replace(',"docs/team/DECISIONS.md"', '');
+  put(root, path, text);
+  assert.throws(() => checkDocsGraph({ rootDir: root, requireActivation: true }), /Task\/HANDOFF\/Decision\/role\/team 권위 포인터/);
+}));
+
+test('chat의 잘못된 HANDOFF endpoint를 잡는다', () => withFixture((root) => {
+  const path = 'docs/team/chats/master-02-orchestration.md';
+  const text = readFileSync(join(root, path), 'utf8').replace('["ORCHESTRATION"]', '["UNKNOWN-ROLE"]');
+  put(root, path, text);
+  assert.throws(() => checkDocsGraph({ rootDir: root, requireActivation: true }), /HANDOFF endpoint가 유효하지 않습니다/);
 }));
 
 test('activation 뒤 필수 운영 진입점 누락을 잡는다', () => withFixture((root) => {

@@ -18,3 +18,5 @@ docs/ai-review/evidence/AI-CHAT-ROUTING-EXECUTION-DRAFT-001.md -text -whitespace
 docs/팀서비스-자동흐름-구현계획.md -text
 scripts/team-service-*.mjs -text
 scripts/team-routing-contract-audit*.mjs -text
+scripts/docs-graph-check*.mjs -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/team/chats/*.md -text whitespace=trailing-space,space-before-tab,cr-at-eol
