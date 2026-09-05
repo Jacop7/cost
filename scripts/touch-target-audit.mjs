@@ -314,29 +314,32 @@ const headSha = git(['rev-parse', 'HEAD']);
 const dirtyRaw = git(['status', '--porcelain', '--', srcRoot, join(root, 'scripts')]);
 
 /**
- * 감사 입력 범위 해시 (솔 검수 `R4` 질문 3 · 페이블 조건).
+ * 감사 입력 범위 해시 (솔 검수 `R4` 질문 3 · `R5 F02`).
  *
  * `측정커밋` 에 커밋 SHA 를 적으면 **자기 자신의 SHA 를 자기 안에 적어야 하는** 순환이 생긴다.
  * 대신 **감사가 실제로 읽은 것**을 해시한다 — 파일 경로와 내용, 그리고 **감사기 자신**.
  * 관련 파일이 안 바뀌면 뒤따르는 커밋에서도 같은 값이 나오므로 "이후 무변경" 을 말이 아니라
  * 게이트가 직접 검사한다. 감사기가 바뀌면 값도 바뀐다 — 자를 바꿔 놓고 옛 눈금을 쓰지 않는다.
+ *
+ * ⚠ **제품과 시험을 따로 해시한다.** 초판은 둘을 한 해시에 묶어 놓고 위에서는 "시험 fixture 를
+ *   고쳐도 제품 재고가 흔들리면 안 된다" 고 적었다 — 앞뒤가 맞지 않았다. 시험 한 줄만 고쳐도
+ *   제품 래칫이 깨져 목록 갱신을 요구했다. **래칫은 제품 해시에만 건다.**
  */
 const h = (b) => createHash('sha256').update(b).digest('hex');
-const scopeHash = () => {
-  const parts = [...files, ...testFiles]
-    .map(f => `${relative(idRoot, f).replace(/\\/g, '/')}\u0000${h(readFileSync(f))}`)
-    .sort();
-  parts.push(`\u0000self\u0000${h(readFileSync(new URL(import.meta.url)))}`);
+const hashOf = (list, withSelf) => {
+  const parts = list.map(f => `${relative(idRoot, f).replace(/\\/g, '/')}\u0000${h(readFileSync(f))}`).sort();
+  if (withSelf) parts.push(`\u0000self\u0000${h(readFileSync(new URL(import.meta.url)))}`);
   return h(parts.join('\n'));
 };
-const 입력해시 = scopeHash();
+const 제품입력해시 = hashOf(files, true);        // 판정·소비처·래칫의 입력. 감사기 자신을 포함한다
+const 시험참조해시 = hashOf(testFiles, false);   // 기록만 한다 — 래칫 대상이 아니다
 
 const 측정 = {
   커밋: headSha ?? '알 수 없음 — git 저장소가 아니다',
   작업트리: dirtyRaw === null ? '알 수 없음' : dirtyRaw === '' ? '깨끗' : `변경 ${dirtyRaw.split(/\r?\n/).length}건`,
   변경목록: dirtyRaw ? dirtyRaw.split(/\r?\n/).slice(0, 20) : [],
-  입력해시,
-  입력해시정의: '감사가 읽은 .tsx 의 "경로\\0내용sha256" 을 정렬해 이어 붙이고, 감사기 자신의 sha256 을 더해 sha256. 커밋 SHA 가 아니라 입력을 결속한다.',
+  제품입력해시, 시험참조해시,
+  해시정의: '감사가 읽은 .tsx 의 "경로\\0내용sha256" 을 정렬해 이어 붙여 sha256. 제품 해시에는 감사기 자신의 sha256 을 더한다. 커밋 SHA 가 아니라 입력을 결속한다. **래칫은 제품 해시에만 건다** — 시험 fixture 변경이 제품 재고를 흔들면 안 된다(R5 F02).',
   결속: opt['expect-commit'] !== undefined ? `--expect-commit=${opt['expect-commit']}` : '없음 — 이 산출물을 커밋 증거로 인용하지 마라',
 };
 if (opt['expect-commit'] !== undefined) {
@@ -352,10 +355,10 @@ if (opt['expect-commit'] !== undefined) {
   }
 }
 // 입력 범위 해시 래칫 — 알려진 목록이 어느 입력에서 확정됐는지 게이트가 직접 본다.
-if (known.입력해시 === undefined)
-  failures.push(`알려진 입력해시가 없다 — 목록이 어느 입력에서 나왔는지 결속되지 않는다. 지금 값은 ${입력해시}`);
-else if (known.입력해시 !== 입력해시)
-  failures.push(`감사 입력이 바뀌었다 — 목록 ${String(known.입력해시).slice(0, 12)} · 지금 ${입력해시.slice(0, 12)}. 제품 .tsx 나 감사기가 바뀌었다. 다시 재고 목록과 입력해시를 함께 갱신하라`);
+if (known.제품입력해시 === undefined)
+  failures.push(`알려진 제품입력해시가 없다 — 목록이 어느 입력에서 나왔는지 결속되지 않는다. 지금 값은 ${제품입력해시}`);
+else if (known.제품입력해시 !== 제품입력해시)
+  failures.push(`제품 감사 입력이 바뀌었다 — 목록 ${String(known.제품입력해시).slice(0, 12)} · 지금 ${제품입력해시.slice(0, 12)}. 제품 .tsx 나 감사기가 바뀌었다. 다시 재고 목록과 제품입력해시를 함께 갱신하라`);
 
 const out = {
   manifest: {

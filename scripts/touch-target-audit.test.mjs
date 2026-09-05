@@ -19,7 +19,7 @@ const KNOWN = join(root, 'scripts', 'touch-target-known.json');
 const probeHash = (src, dir) => {
   const o = join(dir, 'probe.json');
   spawnSync(process.execPath, [AUDIT, `--src=${src}`, `--known=${join(dir, '없는목록.json')}`, `--out=${o}`], { encoding: 'utf8' });
-  return JSON.parse(readFileSync(o, 'utf8')).manifest.측정.입력해시;
+  return JSON.parse(readFileSync(o, 'utf8')).manifest.측정.제품입력해시;
 };
 
 const runWith = ({ tsx, known, args = [] }) => {
@@ -28,7 +28,7 @@ const runWith = ({ tsx, known, args = [] }) => {
     const src = join(dir, 'src'); mkdirSync(src, { recursive: true });
     writeFileSync(join(src, 'Sample.tsx'), tsx);
     const k = join(dir, 'known.json');
-    writeFileSync(k, JSON.stringify({ 입력해시: probeHash(src, dir), unjudged: [], components: [], buttonDynamic: [], ...known }, null, 2));
+    writeFileSync(k, JSON.stringify({ 제품입력해시: probeHash(src, dir), unjudged: [], components: [], buttonDynamic: [], ...known }, null, 2));
     const r = spawnSync(process.execPath, [AUDIT, `--src=${src}`, `--known=${k}`, ...args], { encoding: 'utf8' });
     return { code: r.status, out: (r.stdout ?? '') + (r.stderr ?? '') };
   } finally { rmSync(dir, { recursive: true, force: true }); }
@@ -139,7 +139,7 @@ const runButton = ({ consumers = '', known = {}, args = [], button = BUTTON_TSX 
     writeFileSync(join(src, 'src', 'components', 'kit', 'Button.tsx'), button);
     writeFileSync(join(src, 'Consumers.tsx'), consumers);
     const k = join(dir, 'known.json');
-    writeFileSync(k, JSON.stringify({ 입력해시: probeHash(src, dir), entries: [], unjudged: [], components: [], buttonDynamic: [], ...known }, null, 2));
+    writeFileSync(k, JSON.stringify({ 제품입력해시: probeHash(src, dir), entries: [], unjudged: [], components: [], buttonDynamic: [], ...known }, null, 2));
     const r = spawnSync(process.execPath, [AUDIT, `--src=${src}`, `--known=${k}`, ...args], { encoding: 'utf8' });
     return { code: r.status, out: (r.stdout ?? '') + (r.stderr ?? '') };
   } finally { rmSync(dir, { recursive: true, force: true }); }
@@ -277,13 +277,13 @@ test('다른 커밋의 SHA 를 대면 불일치로 FAIL 한다 — 전체 SHA �
   assert.match(r.out, /측정 커밋 불일치/);
 });
 
-test('입력해시가 목록과 다르면 FAIL 한다 — 목록이 어느 입력에서 나왔는지 결속한다', () => {
-  const r = runButton({ known: { 입력해시: 'f'.repeat(64), components: contracts({}) } });
+test('제품입력해시가 목록과 다르면 FAIL 한다 — 목록이 어느 입력에서 나왔는지 결속한다', () => {
+  const r = runButton({ known: { 제품입력해시: 'f'.repeat(64), components: contracts({}) } });
   assert.equal(r.code, 1, r.out);
-  assert.match(r.out, /감사 입력이 바뀌었다/);
+  assert.match(r.out, /제품 감사 입력이 바뀌었다/);
 });
 
-test('입력해시가 아예 없으면 FAIL 한다 — 결속이 꺼진 것을 조용히 넘기지 않는다', () => {
+test('제품입력해시가 아예 없으면 FAIL 한다 — 결속이 꺼진 것을 조용히 넘기지 않는다', () => {
   const dir = mkdtempSync(join(tmpdir(), 'touch-nohash-'));
   try {
     const src = join(dir, 'src');
@@ -295,7 +295,7 @@ test('입력해시가 아예 없으면 FAIL 한다 — 결속이 꺼진 것을 �
     const r = spawnSync(process.execPath, [AUDIT, `--src=${src}`, `--known=${k}`], { encoding: 'utf8' });
     const out = (r.stdout ?? '') + (r.stderr ?? '');
     assert.equal(r.status, 1, out);
-    assert.match(out, /알려진 입력해시가 없다/);
+    assert.match(out, /알려진 제품입력해시가 없다/);
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
@@ -309,7 +309,7 @@ test('시험 fixture 의 <Button> 은 제품 소비처와 섞지 않는다', () 
     writeFileSync(join(src, 'Consumers.tsx'), `<Button size="sm" onPress={f}>A</Button>`);
     writeFileSync(join(src, 'tests', 'smoke.test.tsx'), `<Button size="sm" onPress={f}>시험</Button>`);
     const k = join(dir, 'known.json');
-    writeFileSync(k, JSON.stringify({ 입력해시: probeHash(src, dir), entries: [], unjudged: [], buttonDynamic: [],
+    writeFileSync(k, JSON.stringify({ 제품입력해시: probeHash(src, dir), entries: [], unjudged: [], buttonDynamic: [],
       components: contracts({ sm: ['src/Consumers.tsx:1'] }) }, null, 2));
     const r = spawnSync(process.execPath, [AUDIT, `--src=${src}`, `--known=${k}`], { encoding: 'utf8' });
     const out = (r.stdout ?? '') + (r.stderr ?? '');
@@ -324,4 +324,49 @@ test('저장소를 그대로 재면 작업 트리 상태가 산출물에 남는�
   assert.equal(r.status, 0, out);
   assert.match(out, /측정 — 커밋 [0-9a-f]{12} · 작업 트리 /);
   assert.match(out, /결속 없음 — 이 산출물을 커밋 증거로 인용하지 마라/);
+});
+
+// ── 제품/시험 해시 분리 (솔 검수 `R5 F02`) ───────────────────────────────────
+// "시험 fixture 를 고쳐도 제품 재고가 흔들리면 안 된다" 고 적어 놓고 두 범위를 한 해시에
+// 묶어 두면 앞뒤가 맞지 않는다. 아래 두 시험이 그 경계를 지킨다.
+const withTestFixture = (fixture, known) => {
+  const dir = mkdtempSync(join(tmpdir(), 'touch-hash-'));
+  try {
+    const src = join(dir, 'src');
+    mkdirSync(join(src, 'src', 'components', 'kit'), { recursive: true });
+    mkdirSync(join(src, 'tests'), { recursive: true });
+    writeFileSync(join(src, 'src', 'components', 'kit', 'Button.tsx'), BUTTON_TSX);
+    writeFileSync(join(src, 'Consumers.tsx'), `<Button size="sm" onPress={f}>A</Button>`);
+    writeFileSync(join(src, 'tests', 'smoke.test.tsx'), fixture);
+    const k = join(dir, 'known.json');
+    writeFileSync(k, JSON.stringify({ 제품입력해시: probeHash(src, dir), entries: [], unjudged: [],
+      buttonDynamic: [], components: contracts({ sm: ['src/Consumers.tsx:1'] }), ...known }, null, 2));
+    // 목록을 만든 뒤 시험 fixture 만 고친다.
+    writeFileSync(join(src, 'tests', 'smoke.test.tsx'), fixture + '\n// 시험만 한 줄 고쳤다\n');
+    const r = spawnSync(process.execPath, [AUDIT, `--src=${src}`, `--known=${k}`], { encoding: 'utf8' });
+    return { code: r.status, out: (r.stdout ?? '') + (r.stderr ?? '') };
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+};
+
+test('시험 fixture 를 고쳐도 제품 래칫은 흔들리지 않는다', () => {
+  const r = withTestFixture(`<Button size="sm" onPress={f}>시험</Button>`, {});
+  assert.equal(r.code, 0, `시험 fixture 변경이 제품 재고를 흔들었다\n${r.out}`);
+});
+
+test('제품 .tsx 를 고치면 제품 래칫이 깨진다 — 경계가 한쪽으로만 열려 있지 않다', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'touch-hash2-'));
+  try {
+    const src = join(dir, 'src');
+    mkdirSync(join(src, 'src', 'components', 'kit'), { recursive: true });
+    writeFileSync(join(src, 'src', 'components', 'kit', 'Button.tsx'), BUTTON_TSX);
+    writeFileSync(join(src, 'Consumers.tsx'), `<Button size="sm" onPress={f}>A</Button>`);
+    const k = join(dir, 'known.json');
+    writeFileSync(k, JSON.stringify({ 제품입력해시: probeHash(src, dir), entries: [], unjudged: [],
+      buttonDynamic: [], components: contracts({ sm: ['src/Consumers.tsx:1'] }) }, null, 2));
+    writeFileSync(join(src, 'Consumers.tsx'), `<Button size="sm" onPress={f}>A</Button>\n// 제품 코드를 고쳤다\n`);
+    const r = spawnSync(process.execPath, [AUDIT, `--src=${src}`, `--known=${k}`], { encoding: 'utf8' });
+    const out = (r.stdout ?? '') + (r.stderr ?? '');
+    assert.equal(r.status, 1, `제품 변경을 놓쳤다\n${out}`);
+    assert.match(out, /제품 감사 입력이 바뀌었다/);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
 });

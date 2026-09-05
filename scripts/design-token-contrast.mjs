@@ -300,11 +300,26 @@ if (!existsSync(sealPath)) {
         const commits = [].concat(S.결정?.커밋 ?? []).filter(Boolean);
         if (!commits.length) fail.push('봉인에 결정 커밋이 없다 — 어느 커밋의 결정인지 추적할 수 없다');
         else {
+          // 존재만 보면 **아무 커밋이나 통과한다** (솔 검수 `R5 F01`). 셋을 본다 —
+          //   ① 그 개체가 커밋인가
+          //   ② 지금 HEAD 의 **조상**인가 (다른 가지의 커밋을 출처로 댈 수 없다)
+          //   ③ 그 커밋이 **결정문 파일을 실제로 바꿨는가** (관련 없는 커밋을 댈 수 없다)
+          // 봉인 해시는 변조를 잡고, 이 셋이 "누가 어느 결정으로 갱신했는가" 를 잡는다.
+          const decRel = S.결정?.문서;
           for (const c of commits) {
             const m = String(c).match(/^([0-9a-f]{40})(\s|$)/);
             if (!m) { fail.push(`결정 커밋 항목이 40자리 SHA 로 시작하지 않는다 — '${String(c).slice(0, 48)}'`); continue; }
-            const r = spawnSync('git', ['cat-file', '-e', `${m[1]}^{commit}`], { cwd: root, encoding: 'utf8' });
-            if (r.status !== 0) fail.push(`결정 커밋 ${m[1].slice(0, 12)} 개체가 저장소에 없다 — 손으로 적은 SHA 가 틀렸다`);
+            const sha40 = m[1];
+            const g = (args) => spawnSync('git', args, { cwd: root, encoding: 'utf8' });
+            if (g(['cat-file', '-e', `${sha40}^{commit}`]).status !== 0) {
+              fail.push(`결정 커밋 ${sha40.slice(0, 12)} 개체가 저장소에 없다 — 손으로 적은 SHA 가 틀렸다`);
+              continue;
+            }
+            if (g(['merge-base', '--is-ancestor', sha40, 'HEAD']).status !== 0)
+              fail.push(`결정 커밋 ${sha40.slice(0, 12)} 이 HEAD 의 조상이 아니다 — 이 가지에 없는 커밋을 출처로 댈 수 없다`);
+            const touched = g(['-c', 'core.quotepath=false', 'show', '--pretty=format:', '--name-only', sha40]);
+            if (touched.status !== 0 || !String(touched.stdout).split(/\r?\n/).some(l => l.trim() === decRel))
+              fail.push(`결정 커밋 ${sha40.slice(0, 12)} 이 결정문(${decRel})을 바꾸지 않았다 — 관련 없는 커밋을 출처로 댈 수 없다`);
           }
           if (!fail.length) note.push(`봉인 일치 — 역할 ${got역할.slice(0, 8)} · 계약 ${(want.계약해시 ?? '').slice(0, 8)} · 결정 커밋 ${commits.length}건 확인`);
         }
