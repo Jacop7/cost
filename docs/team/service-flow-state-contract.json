@@ -1,0 +1,135 @@
+{
+  "schema_version": 1,
+  "kind": "CANDIDATE_STATE_CONTRACT_NOT_RUNTIME",
+  "gate_status": "NOT_VALIDATED",
+  "entity_identity": [
+    "task_id",
+    "entity_id",
+    "entity_type",
+    "entity_revision",
+    "run_generation"
+  ],
+  "entities": {
+    "Task": {
+      "owner": "service-chief",
+      "states": [
+        "READY",
+        "ACTIVE",
+        "BLOCKED",
+        "STOP_REQUESTED",
+        "STOPPED_WITH_PENDING",
+        "STOPPED",
+        "COMPLETED"
+      ],
+      "roll_up": "Current generation required subtask results + independent Quality + human final receipt; no unresolved blocker/pending/STOP."
+    },
+    "subtask": {
+      "owner": "responsible-team",
+      "states": [
+        "READY",
+        "ACTIVE",
+        "BLOCKED",
+        "RESULT_SUBMITTED",
+        "RESULT_VERIFIED",
+        "CANCEL_PENDING",
+        "CANCELLED"
+      ],
+      "roll_up": "Only own required assignments in current generation; never overwrite siblings."
+    },
+    "assignment": {
+      "owner": "assigned-role",
+      "states": [
+        "READY",
+        "ACKNOWLEDGED",
+        "EXECUTING",
+        "RESULT_SUBMITTED",
+        "RESULT_VERIFIED",
+        "BLOCKED",
+        "CANCEL_PENDING",
+        "CANCELLED"
+      ],
+      "transition": "Delivery ACK authorizes next hop READY or final owner EXECUTING, never automatic Task completion."
+    },
+    "delivery": {
+      "owner": "source-role",
+      "states": [
+        "READY",
+        "PREPARED",
+        "SENT_UNCONFIRMED",
+        "ACKNOWLEDGED",
+        "RESULT_VERIFIED",
+        "UNKNOWN_DELIVERY",
+        "REJECTED"
+      ],
+      "transition": "Per-leg keyed state; queued != ACK != work completion; no blind ambiguous resend."
+    },
+    "effect": {
+      "owner": "executing-role",
+      "states": [
+        "UNCLAIMED",
+        "CLAIMED",
+        "EXECUTED",
+        "RESULT_RECORDED",
+        "UNKNOWN_EFFECT"
+      ],
+      "transition": "Claim authority/epoch/run CAS under root lock shared with STOP; old actual effects reconcile before new claims."
+    },
+    "blocker": {
+      "owner": "reporting-role",
+      "states": [
+        "OPEN",
+        "REPORT_PENDING",
+        "REPORT_SENT_UNCONFIRMED",
+        "REPORT_ACKED",
+        "WAITING_HUMAN_DECISION",
+        "RESOLVED"
+      ],
+      "transition": "Per-blocker keyed state; valid exact human decision only; sibling state unchanged."
+    }
+  },
+  "event_required_fields": [
+    "event_id",
+    "entity_type",
+    "entity_id",
+    "expected_entity_revision",
+    "task_id",
+    "run_generation",
+    "kind",
+    "payload",
+    "authority_ref",
+    "provenance_ref"
+  ],
+  "fence_required_fields": [
+    "task_revision",
+    "stop_epoch",
+    "run_generation",
+    "assignment_id",
+    "effect_key",
+    "activation_epoch",
+    "lease_nonce",
+    "decision_id",
+    "authority_revision",
+    "not_before",
+    "expires_at"
+  ],
+  "authority_transitions": {
+    "READY_PREPARED": "AUTH_EXPIRED/REVOKED -> block and cancel unconsumed actions",
+    "SENT_EXECUTING": "No new send/effect; reconcile consumed effects; safety STOP/report capability only",
+    "resume": "New valid human Decision and new run_generation",
+    "late_receipt_valid_at_execution": "AUDIT_ONLY",
+    "invalid_at_execution": "REJECTED"
+  },
+  "concurrency": {
+    "lock_scope": "root Task",
+    "linearized": [
+      "STOP_CAS",
+      "DAG_EXPANSION",
+      "SEND_FENCE_CONSUME",
+      "EFFECT_CLAIM"
+    ],
+    "stop_first": "Reject stale claims",
+    "claim_first": "In-flight/pending; do not claim rollback",
+    "old_generation_receipt": "Old delivery audit only; cannot complete current generation"
+  },
+  "acceptance_case": "AC-18"
+}
