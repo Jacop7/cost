@@ -57,6 +57,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { resolve, basename } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { createRequire } from 'node:module';
+import { textSha256 } from './full-page-flow-prototype-text-sha256.mjs';
 
 const require_ = createRequire(import.meta.url);
 const args = process.argv.slice(2).filter(a => !a.startsWith('--'));
@@ -66,9 +67,8 @@ const targetPath = resolve(args[0] ?? 'docs/prototypes/0_full-page-flow-prototyp
 const outPath = resolve(args[1] ?? 'docs/prototypes/full-page-flow-prototype-render-audit.json');
 
 const sha = buf => createHash('sha256').update(buf).digest('hex');
-const textSha = buf => sha(Buffer.from(buf.toString('utf8').replace(/\r\n/g, '\n'), 'utf8'));
 const bytes = readFileSync(targetPath);
-const scriptSha = textSha(readFileSync(new URL(import.meta.url)));
+const scriptSha = textSha256(readFileSync(new URL(import.meta.url)));
 const designSyncId = (bytes.toString('utf8').match(/<!--\s*DESIGN_SYNC:\s*(DS-\d{8}-\d{3})\s*-->/) || [])[1] ?? null;
 let playwrightVersion = null;
 try { playwrightVersion = require_('playwright/package.json').version; } catch { /* noop */ }
@@ -420,7 +420,7 @@ const manifest = {
   generatedAt: new Date().toISOString(),
   schemaVersion: 2,
   script: { name: basename(new URL(import.meta.url).pathname), sha256: scriptSha },
-  target: { path: basename(targetPath), sha256: sha(bytes), designSyncId },
+  target: { path: basename(targetPath), sha256: textSha256(bytes), designSyncId },
   runner: { node: process.version, playwright: playwrightVersion, chromium: chromiumVersion, platform: process.platform, clock: CLOCK, clockSample: CLOCK_SAMPLE, clockNote: '프로토타입이 스스로 new Date() 를 읽으므로 시계도 측정 입력이다 (PRT-209)' },
   passes: PASSES, classificationPass: CLASSIFY_PASS,
   scale: SCALE, bannedDeclaredWeights: BANNED_DECLARED, bannedComputedWeights: BANNED_COMPUTED,

@@ -48,16 +48,6 @@ function Get-NormalizedTextSha256([string]$Contents) {
   return Get-Sha256 ($Contents.Replace("`r`n", "`n"))
 }
 
-function Get-RawFileSha256([string]$Path) {
-  $sha = [System.Security.Cryptography.SHA256]::Create()
-  try {
-    return ([System.BitConverter]::ToString($sha.ComputeHash([System.IO.File]::ReadAllBytes($Path)))).Replace('-', '').ToLowerInvariant()
-  }
-  finally {
-    $sha.Dispose()
-  }
-}
-
 if (-not (Test-Path -LiteralPath $contextPath)) {
   Write-Error 'FAIL: 디자인 맥락 장부가 없습니다.'
 }
@@ -209,7 +199,7 @@ else {
   $audit = Read-Utf8 $auditPath | ConvertFrom-Json
   # 적용본 manifest는 이 저장소의 봉인 바이트 SHA를 사용한다. 반면 JS/JSON 증거는
   # 생성기가 LF 텍스트로 기록하므로 아래 Get-Sha256 정규형으로 비교한다.
-  $appliedSha = Get-RawFileSha256 (Join-Path $PrototypeDirectory '0_full-page-flow-prototype-ui-applied.html')
+  $appliedSha = Get-NormalizedTextSha256 (Read-Utf8 (Join-Path $PrototypeDirectory '0_full-page-flow-prototype-ui-applied.html'))
   $auditScriptSha = Get-NormalizedTextSha256 (Read-Utf8 $auditScriptPath)
   if ($audit.manifest.target.sha256 -ne $appliedSha) {
     Add-Failure "$auditName : 적용본 SHA 불일치. 감사=$($audit.manifest.target.sha256) 현재=$appliedSha. 재측정 필요"
@@ -304,7 +294,7 @@ elseif (-not (Test-Path -LiteralPath $designAuditScriptPath)) {
 }
 else {
   $dAudit = Read-Utf8 $designAuditPath | ConvertFrom-Json
-  $dAppliedSha = Get-RawFileSha256 (Join-Path $PrototypeDirectory '0_full-page-flow-prototype-ui-applied.html')
+  $dAppliedSha = Get-NormalizedTextSha256 (Read-Utf8 (Join-Path $PrototypeDirectory '0_full-page-flow-prototype-ui-applied.html'))
   $dScriptSha = Get-NormalizedTextSha256 (Read-Utf8 $designAuditScriptPath)
   if ($dAudit.manifest.target.sha256 -ne $dAppliedSha) {
     Add-Failure "$designAuditName : 적용본 SHA 불일치. 감사=$($dAudit.manifest.target.sha256) 현재=$dAppliedSha. 재측정 필요"
@@ -370,7 +360,7 @@ elseif (-not (Test-Path -LiteralPath $i18nScriptPath)) {
 }
 else {
   $iAudit = Read-Utf8 $i18nPath | ConvertFrom-Json
-  $iAppliedSha = Get-RawFileSha256 (Join-Path $PrototypeDirectory '0_full-page-flow-prototype-ui-applied.html')
+  $iAppliedSha = Get-NormalizedTextSha256 (Read-Utf8 (Join-Path $PrototypeDirectory '0_full-page-flow-prototype-ui-applied.html'))
   $iScriptSha = Get-NormalizedTextSha256 (Read-Utf8 $i18nScriptPath)
   if ($iAudit.manifest.target.sha256 -ne $iAppliedSha) {
     Add-Failure "$i18nName : 적용본 SHA 불일치. 감사=$($iAudit.manifest.target.sha256) 현재=$iAppliedSha. 재측정 필요"
@@ -589,6 +579,8 @@ foreach ($fileName in @($auditName, $auditScriptName, 'full-page-flow-prototype-
     'full-page-flow-prototype-token-map-check.json', 'full-page-flow-prototype-i18n-known.json',
     'full-page-flow-prototype-contrast-fix.json', 'full-page-flow-prototype-contrast-fix.mjs',
     'full-page-flow-prototype-atrisk-key-proof.json', 'full-page-flow-prototype-atrisk-key-proof.mjs',
+    'full-page-flow-prototype-text-sha256.mjs', 'full-page-flow-prototype-text-sha256.test.mjs',
+    'full-page-flow-prototype-hash-inventory.json',
     'full-page-flow-prototype-design-sync-check.ps1',
     'full-page-flow-prototype-app-token-map.json', 'full-page-flow-prototype-app-map-check.mjs',
     'full-page-flow-prototype-app-map-check.test.mjs',

@@ -120,6 +120,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { resolve, basename } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { createRequire } from 'node:module';
+import { textSha256 } from './full-page-flow-prototype-text-sha256.mjs';
 const req = createRequire(import.meta.url);
 
 const args = process.argv.slice(2).filter(a => !a.startsWith('--'));
@@ -127,7 +128,6 @@ const opt = Object.fromEntries(process.argv.slice(2).filter(a => a.startsWith('-
 const target = resolve(args[0] ?? 'docs/prototypes/0_full-page-flow-prototype-ui-applied.html');
 const outPath = resolve(args[1] ?? 'docs/prototypes/full-page-flow-prototype-i18n-stress.json');
 const sha = b => createHash('sha256').update(b).digest('hex');
-const textSha = b => sha(Buffer.from(b.toString('utf8').replace(/\r\n/g, '\n'), 'utf8'));
 const bytes = readFileSync(target);
 const designSyncId = (bytes.toString('utf8').match(/<!--\s*DESIGN_SYNC:\s*(DS-\d{8}-\d{3})\s*-->/) || [])[1] ?? null;
 let pwVersion = null; try { pwVersion = req('playwright/package.json').version; } catch {}
@@ -582,8 +582,8 @@ const escapeeElements = elementRollup('escapee');
 const result = {
   manifest: {
     generatedAt: new Date().toISOString(), schemaVersion: 1,
-    script: { name: basename(new URL(import.meta.url).pathname), sha256: textSha(readFileSync(new URL(import.meta.url))) },
-    target: { path: basename(target), sha256: sha(bytes), designSyncId },
+    script: { name: basename(new URL(import.meta.url).pathname), sha256: textSha256(readFileSync(new URL(import.meta.url))) },
+    target: { path: basename(target), sha256: textSha256(bytes), designSyncId },
     runner: { node: process.version, playwright: pwVersion, chromium: chromiumVersion, platform: process.platform , clock: CLOCK, clockSample: CLOCK_SAMPLE, clockNote: '프로토타입이 스스로 new Date() 를 읽으므로 시계도 측정 입력이다 (PRT-209)'},
     viewport: { width: 320, height: 720 },
     targetsMeasured: targets.length,

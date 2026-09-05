@@ -1,12 +1,12 @@
 ﻿# 전체 페이지 프로토타입 · 디자인 맥락 장부
 
-> 현재 동기화 ID: `DS-20260905-004`  
+> 현재 동기화 ID: `DS-20260905-005`  
 > 문서 동기화 상태: `SYNCED`  
 > 전체 UI 작업 상태: `IN_PROGRESS`  
 > 마지막 갱신: `2026-09-05`  
 > 공통 변경: `예`  
 > UI 변경: `아니오`  
-> 변경 기록: `PRT-222`
+> 변경 기록: `PRT-223`
 
 ## 1. 문서 역할
 
@@ -42,6 +42,28 @@
 - 글로벌: 30~50% 긴 번역, 320px, 200% 글자 확대, RTL 검수.
 
 ## 4. 가장 최근 작업
+
+### DS-20260905-005 · PRT-223 적용본 해시 정규화와 해시 지점 전수표
+
+- 작업 성격: `core.autocrlf=true` Windows clean checkout에서 재현된 DS 봉인 차단 수정.
+  적용본은 동기화 표식 1줄만 바뀐고 CSS·JS·마크업 실행 변경은 없다.
+- 원인: 증거 JSON과 sync-state는 LF 논리 해시를 쓰지만 세 DOM 감사기의
+  `target.sha256`와 ps1 소비자는 적용본 원시 바이트를 재고 있었다.
+- 수정:
+  - `full-page-flow-prototype-text-sha256.mjs`를 단일 JS 생산 함수로 두고 적용본·스크립트·
+    파생 JSON을 UTF-8 CRLF→LF 후 SHA-256으로 재다.
+  - ps1에서 `Get-RawFileSha256`를 제거하고 세 적용본 대조를 기존 sync-state와 같은
+    `Get-NormalizedTextSha256` 계약으로 통일했다.
+  - `full-page-flow-prototype-hash-inventory.json`에 DS 해시 지점 12개와 계약을 전수 등록했고,
+    음성 시험이 원시 적용본 해시 재등장·표 누락·중복을 막는다.
+- 완료 조건:
+  - PRT223-HASH-PARITY · `full-page-flow-prototype-text-sha256.test.mjs`
+  - PRT223-HASH-INVENTORY · `full-page-flow-prototype-hash-inventory.json`
+  - PRT223-WINDOWS-GATE · `full-page-flow-prototype-design-sync-check.ps1`
+  - PRT223-RENDER · `full-page-flow-prototype-render-audit.json`
+  - PRT223-DESIGN · `full-page-flow-prototype-design-audit.json`
+  - PRT223-I18N · `full-page-flow-prototype-i18n-stress.json`
+- 다음 시작점: `S4a` → 같은 SHA에서 W1 전수 재측정 / `DS-20260905-006`
 
 ### DS-20260905-004 · PRT-221 봉인 · 정의 분리와 행간 파생 계약
 
