@@ -2,14 +2,13 @@
   "schema_version": 1,
   "plan": {
     "path": "docs/팀서비스-자동흐름-구현계획.md",
-    "sha256": "29cea3da0dccdf085e6603f1aacfe69149826407a7a9de0fed0884e3ac850820"
+    "sha256": "5f5cd4132a4dc159de050197cf163f182ad16ccefde32f105b8b08639d8fb93b"
   },
-  "current_verdict": "PLAN_READY_FOR_PH_FEASIBILITY_READ_ONLY",
+  "current_verdict": "BLOCKED_HOST_INTEGRATION_SCOPE_REQUIRED",
   "allowed_actions": [
     "READ",
     "PLAN_REPAIR",
-    "PLAN_TEST",
-    "PH_FEASIBILITY_READ_ONLY"
+    "PLAN_TEST"
   ],
   "implementation_authorized": false,
   "service_ready": false,
@@ -27,8 +26,8 @@
     "current_candidate": "V0.4_PLAN_FINDINGS_CLOSED_RUNTIME_NOT_PASSED"
   },
   "runtime_gates": {
-    "PH_FEASIBILITY": "NOT_EXECUTED",
-    "P2": "BLOCKED_EXACT_PROFILE_MISSING",
+    "PH_FEASIBILITY": "HOST_BINDING_UNAVAILABLE_IN_SCOPE",
+    "P2": "BLOCKED_PH_AND_EXACT_MODEL_PROFILE",
     "FORMAL_INDEPENDENT_REVIEW": "NOT_PASSED",
     "LIVE_PROBE": "NOT_EXECUTED",
     "FULL_VERIFY": "NOT_PASSED"
@@ -76,11 +75,11 @@
   },
   "acceptance": {
     "path": "docs/team/service-flow-acceptance.json",
-    "sha256": "3ee86cacdae35ee2e4abd0ecbf3c534142ffd4b422350c00476b277c1f0aaa43"
+    "sha256": "a19a2ad4bb544c7d0763b30b9f286595fdaca220efe172855da9e46bc0fb388e"
   },
   "state_contract": {
     "path": "docs/team/service-flow-state-contract.json",
-    "sha256": "47112e4c6b82a2c2dfb441271a64fd75030bc20fd61becccaa89170084254302"
+    "sha256": "da78291f860e8cea46f0ea56948cb1e501f6321f5a711f5a4a591c8c61721076"
   },
   "findings": [
     {
@@ -135,5 +134,51 @@
     "reviewed_acceptance_sha256": "3ee86cacdae35ee2e4abd0ecbf3c534142ffd4b422350c00476b277c1f0aaa43",
     "reviewed_state_sha256": "47112e4c6b82a2c2dfb441271a64fd75030bc20fd61becccaa89170084254302"
   },
-  "document_status_note": "Plan v0.4 text is the immutable pre-recheck snapshot; current verdict is this sidecar with R4 exact-hash receipt. No formal/runtime gate promotion."
+  "document_status_note": "CURRENT is the sole current verdict/actions authority. R1-R4 results apply only to their archived input hashes; not a v0.5 PASS.",
+  "feasibility_evidence": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-HOST-SCOPE-001.json",
+    "sha256": "2287c16899944032ff12c2310aae7f1a5ef423f3535b7710c8430f70ff5c5945"
+  },
+  "v05_review": {
+    "sol": "IN_PROGRESS",
+    "fable": "NOT_STARTED_EXACT_ROUND_SOFT_CAP_APPROVAL_MISSING",
+    "formal_gate": false
+  },
+  "findings_for_v05": [
+    {
+      "id": "EXT-B1",
+      "disposition": "CANDIDATE_PLAN_UPDATED",
+      "review_closure": "PENDING"
+    },
+    {
+      "id": "EXT-B2",
+      "disposition": "CANDIDATE_PLAN_UPDATED",
+      "review_closure": "PENDING"
+    },
+    {
+      "id": "EXT-B3",
+      "disposition": "CANDIDATE_PLAN_UPDATED",
+      "review_closure": "PENDING"
+    },
+    {
+      "id": "EXT-C1",
+      "disposition": "STRICT_RETAINED_ALTERNATIVE_NOT_APPROVED",
+      "review_closure": "PENDING"
+    },
+    {
+      "id": "EXT-C2",
+      "disposition": "CANDIDATE_PLAN_UPDATED",
+      "review_closure": "PENDING"
+    },
+    {
+      "id": "EXT-C3",
+      "disposition": "CANDIDATE_PLAN_UPDATED",
+      "review_closure": "PENDING"
+    },
+    {
+      "id": "EXT-C4",
+      "disposition": "CANDIDATE_PLAN_UPDATED",
+      "review_closure": "PENDING"
+    }
+  ]
 }

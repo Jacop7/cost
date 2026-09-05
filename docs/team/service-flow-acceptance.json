@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "kind": "ACCEPTANCE_SPEC_NOT_EXECUTION_EVIDENCE",
   "service_ready": false,
   "cases": [
@@ -142,6 +142,10 @@
         {
           "assertion_id": "AC-08-A03",
           "requirement": "부분 STOP 거부"
+        },
+        {
+          "assertion_id": "AC-08-A04",
+          "requirement": "Reject child-issued stop_epoch; fence epoch equals root Task epoch"
         }
       ],
       "evidence_mode": "LOCAL_MOCK",
@@ -164,6 +168,10 @@
         {
           "assertion_id": "AC-09-A03",
           "requirement": "RESUME 구세대 격리"
+        },
+        {
+          "assertion_id": "AC-09-A04",
+          "requirement": "Reject child-issued stop_epoch; fence epoch equals root Task epoch"
         }
       ],
       "evidence_mode": "LOCAL_MOCK",
@@ -190,6 +198,18 @@
         {
           "assertion_id": "AC-10-A04",
           "requirement": "prepare 부분 실패에도 같은 route/token 회수"
+        },
+        {
+          "assertion_id": "AC-10-A05",
+          "requirement": "New run_generation yields new intent_key and route/token"
+        },
+        {
+          "assertion_id": "AC-10-A06",
+          "requirement": "Same-generation retry and endpoint successor keep original route/token"
+        },
+        {
+          "assertion_id": "AC-10-A07",
+          "requirement": "Stable effect_key across generations prevents duplicate business effect"
         }
       ],
       "evidence_mode": "LOCAL_MOCK",
@@ -304,7 +324,7 @@
     {
       "case_id": "AC-16",
       "phase": "PH-LIVE-PROBE",
-      "file": "scripts/team-service-live.test.mjs",
+      "file": "scripts/team-service.live.test.mjs",
       "test_name": "AC-16 service contract",
       "required_assertions": [
         {
@@ -326,7 +346,7 @@
     {
       "case_id": "AC-17",
       "phase": "P9",
-      "file": "scripts/team-service-live.test.mjs",
+      "file": "scripts/team-service.live.test.mjs",
       "test_name": "AC-17 service contract",
       "required_assertions": [
         {
@@ -428,6 +448,50 @@
       ],
       "evidence_mode": "LOCAL_MOCK",
       "status": "NOT_EXECUTED"
+    },
+    {
+      "case_id": "AC-22",
+      "phase": "P3",
+      "file": "scripts/team-service-live-isolation.test.mjs",
+      "test_name": "AC-22 service contract",
+      "required_assertions": [
+        {
+          "assertion_id": "AC-22-A01",
+          "requirement": "Local runner and verify exclude *.live.test.* marker without loading it"
+        },
+        {
+          "assertion_id": "AC-22-A02",
+          "requirement": "Vitest excludes live marker; default exclusions retained"
+        },
+        {
+          "assertion_id": "AC-22-A03",
+          "requirement": "Unauthorized live launcher rejected before provider access"
+        }
+      ],
+      "evidence_mode": "LOCAL_MOCK",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "case_id": "AC-23",
+      "phase": "P4",
+      "file": "scripts/team-service-runtime-acl.test.mjs",
+      "test_name": "AC-23 service contract",
+      "required_assertions": [
+        {
+          "assertion_id": "AC-23-A01",
+          "requirement": "KnownFolder path containment/reparse rejection"
+        },
+        {
+          "assertion_id": "AC-23-A02",
+          "requirement": "Owner/DACL allowlist and inheritance verified"
+        },
+        {
+          "assertion_id": "AC-23-A03",
+          "requirement": "Actual other non-admin principal read denied; unavailable token blocks"
+        }
+      ],
+      "evidence_mode": "LOCAL_OS_ISOLATION",
+      "status": "NOT_EXECUTED"
     }
   ],
   "phase_gates": [
@@ -445,19 +509,21 @@
     },
     {
       "id": "PH-FEASIBILITY",
-      "depends_on": [
-        "P0"
-      ],
+      "depends_on": [],
       "case_ids": [],
       "requires": [
         "HOST-SCOPE-001",
         "FEASIBLE_STATIC"
       ],
-      "gate_status": "NOT_EXECUTED"
+      "gate_status": "NOT_EXECUTED",
+      "parallel_with": [
+        "P0"
+      ]
     },
     {
       "id": "P2",
       "depends_on": [
+        "P0",
         "PH-FEASIBILITY"
       ],
       "case_ids": [
@@ -491,7 +557,8 @@
         "AC-01",
         "AC-03",
         "AC-06",
-        "AC-07"
+        "AC-07",
+        "AC-22"
       ],
       "requires": [],
       "gate_status": "NOT_EXECUTED"
@@ -504,9 +571,13 @@
       "case_ids": [
         "AC-09",
         "AC-11",
-        "AC-12"
+        "AC-12",
+        "AC-23"
       ],
-      "requires": [],
+      "requires": [
+        "AC-22_EXECUTED_PASS",
+        "RUNTIME_ACL_OS_NEGATIVE_PASS"
+      ],
       "gate_status": "NOT_EXECUTED"
     },
     {
@@ -653,7 +724,27 @@
         "implementation_allowed": false,
         "live_allowed": false
       }
-    }
+    },
+    "owner_time_decision": {
+      "default": "STRICT_NO_RELAXATION",
+      "alternative": "LOCAL_HOST_UTC_MONOTONIC_DRIFT",
+      "alternative_status": "OWNER_DECISION_REQUIRED",
+      "required_decision_fields": [
+        "scope",
+        "max_drift",
+        "max_lease",
+        "expires_at",
+        "reboot_rollback_jump_handling",
+        "same_user_admin_residual_risk"
+      ],
+      "read_only_discovery_requires_relaxation": false
+    },
+    "precedence": [
+      "SOURCE_READ_FAILURE_OR_DEADLINE:DISCOVERY_INCOMPLETE",
+      "ALL_SOURCES_READ_AND_DECISIVE_MISSING:HOST_BINDING_UNAVAILABLE_IN_SCOPE",
+      "STATIC_UNVERIFIED_ONLY:DISCOVERY_INCOMPLETE",
+      "ALL_STATIC_PRESENT:FEASIBLE_STATIC"
+    ]
   },
   "formal_review": {
     "candidate_required_hashes": [
@@ -710,5 +801,22 @@
       "EXACT_PILOT_CAPABILITY",
       "CURRENT_BUNDLE_REVALIDATED"
     ]
+  },
+  "live_isolation": {
+    "suffix": ".live.test.mjs",
+    "local_runner": "scripts/team-service-local-tests.mjs",
+    "local_discovery": "EXACT_ALLOWLIST_AND_**/*.live.test.*_EXCLUDE",
+    "vitest": "Preserve defaults + **/*.live.test.* exclusion for every covering config",
+    "import_time_send": "FORBIDDEN",
+    "negative_case": "AC-22",
+    "required_before": "P4",
+    "implemented": false
+  },
+  "runtime_acl": {
+    "path_base": "Windows KnownFolder LocalAppData/Codex-Team-Service/<project_id>",
+    "checker": "scripts/team-service-runtime-acl.ps1",
+    "case_id": "AC-23",
+    "unavailable_other_principal": "ACL_NEGATIVE_UNVERIFIED",
+    "implemented": false
   }
 }

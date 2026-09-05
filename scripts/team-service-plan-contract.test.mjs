@@ -1,4 +1,4 @@
-// Specification validation only: these tests do not execute AC-01..AC-21.
+// Specification validation only: these tests do not execute AC-01..AC-23.
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { readFileSync } from 'node:fs';
@@ -7,19 +7,19 @@ const state = JSON.parse(readFileSync(new URL('../docs/team/service-flow-state-c
 test('PLAN-01 catalog is explicitly not execution evidence', () => {
   assert.equal(catalog.kind, 'ACCEPTANCE_SPEC_NOT_EXECUTION_EVIDENCE');
   assert.equal(catalog.service_ready, false);
-  assert.equal(catalog.schema_version, 2);
+  assert.equal(catalog.schema_version, 3);
 });
-test('PLAN-02 all 21 cases have exact filenames, unique assertion IDs and evidence modes', () => {
-  assert.deepEqual(catalog.cases.map((c) => c.case_id), Array.from({ length: 21 }, (_, i) => `AC-${String(i + 1).padStart(2, '0')}`));
+test('PLAN-02 all 23 cases have exact filenames, unique assertion IDs and evidence modes', () => {
+  assert.deepEqual(catalog.cases.map((c) => c.case_id), Array.from({ length: 23 }, (_, i) => `AC-${String(i + 1).padStart(2, '0')}`));
   const assertions = [];
   for (const c of catalog.cases) {
-    assert.match(c.file, /^scripts\/team-service-[a-z-]+\.test\.mjs$/);
+    assert.match(c.file, /^scripts\/team-service(?:-[a-z-]+|\.live)\.test\.mjs$/);
     assert.equal(c.test_name, `${c.case_id} service contract`);
     assert.ok(c.phase.length && c.required_assertions.length);
     assert.ok(c.required_assertions.every((a) => a.requirement.trim().length > 0 && a.assertion_id.startsWith(`${c.case_id}-A`)));
     assertions.push(...c.required_assertions.map((a) => a.assertion_id));
     assert.equal(c.status, 'NOT_EXECUTED');
-    assert.equal(c.evidence_mode, ['AC-16','AC-17'].includes(c.case_id) ? 'LIVE_HOST' : 'LOCAL_MOCK');
+    assert.equal(c.evidence_mode, ['AC-16','AC-17'].includes(c.case_id) ? 'LIVE_HOST' : c.case_id === 'AC-23' ? 'LOCAL_OS_ISOLATION' : 'LOCAL_MOCK');
   }
   assert.equal(new Set(assertions).size, assertions.length);
 });
@@ -32,8 +32,35 @@ test('PLAN-03 phase dependencies reference declared cases and retain separate li
   }
   assert.ok(catalog.phase_gates.find((p) => p.id === 'P8').requires.includes('EXACT_APPROVAL_TARGET_HUMAN_DECISION'));
   assert.ok(catalog.phase_gates.find((p) => p.id === 'P7').requires.includes('TYPED_FORMAL_RECEIPT_VALIDATED'));
-  catalog.phase_gates.forEach((p, i) => assert.deepEqual(p.depends_on, i ? [catalog.phase_gates[i - 1].id] : []));
+  catalog.phase_gates.forEach((p, i) => assert.deepEqual(p.depends_on,
+    p.id === 'P2' ? ['P0','PH-FEASIBILITY'] : ['P0','PH-FEASIBILITY'].includes(p.id) ? [] : [catalog.phase_gates[i - 1].id]));
   for (const c of catalog.cases) assert.ok(catalog.phase_gates.find((p) => p.id === c.phase).case_ids.includes(c.case_id));
+});
+
+test('PLAN-07 intent generation and root-only epoch are explicit in the candidate contract', () => {
+  assert.ok(state.intent_key_fields.includes('run_generation'));
+  assert.equal(state.intent_reuse.new_run_generation, 'NEW_ROUTE_TOKEN');
+  assert.equal(state.intent_reuse.endpoint_successor_same_generation, 'SAME_ROUTE_TOKEN');
+  assert.equal(state.intent_reuse.effect_key, 'STABLE_ACROSS_RUN_GENERATIONS');
+  assert.equal(state.stop_epoch_owner, 'ROOT_TASK_ONLY');
+  for (const id of ['AC-08','AC-09']) assert.ok(catalog.cases.find((c) => c.case_id === id).required_assertions.some((a) => a.requirement.includes('child-issued')));
+});
+
+test('PLAN-08 live isolation and real OS ACL negative evidence remain unimplemented gates', () => {
+  for (const id of ['AC-16','AC-17']) assert.equal(catalog.cases.find((c) => c.case_id === id).file, 'scripts/team-service.live.test.mjs');
+  assert.equal(catalog.live_isolation.implemented, false);
+  assert.equal(catalog.live_isolation.required_before, 'P4');
+  assert.equal(catalog.runtime_acl.unavailable_other_principal, 'ACL_NEGATIVE_UNVERIFIED');
+  assert.ok(catalog.phase_gates.find((p) => p.id === 'P4').requires.includes('AC-22_EXECUTED_PASS'));
+});
+
+test('PLAN-09 current verdict and allowed actions have one authority, not a document copy', () => {
+  const plan = readFileSync(new URL('../docs/팀서비스-자동흐름-구현계획.md', import.meta.url), 'utf8');
+  assert.doesNotMatch(plan, /^현재 판정:/m);
+  assert.doesNotMatch(plan, /현재 allowed actions는/);
+  assert.ok(plan.includes('TEAM-SERVICE-FLOW-CURRENT.json'));
+  assert.equal(catalog.feasibility.owner_time_decision.alternative_status, 'OWNER_DECISION_REQUIRED');
+  assert.equal(catalog.feasibility.owner_time_decision.read_only_discovery_requires_relaxation, false);
 });
 
 test('PLAN-04 entity schema and STOP fences include generation, authority and effect claim', () => {
