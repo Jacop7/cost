@@ -1,11 +1,11 @@
 {
   "manifest": {
     "script": "docs/prototypes/full-page-flow-prototype-doc-claims-check.mjs",
-    "scriptSha256": "9dea960ca992e833d2ba742a8c320973c14860842fa2a31cbd9330733b832d5a",
+    "scriptSha256": "d2d66155099cfa0692c37f875bed6168de6587d0eea2ed5fc0a979be6a50e6e1",
     "auditSha256": "5430d2fa42d86225b89048126f4ade9a44d840f508d1be8809a1aa5e45b94591",
-    "claimsSha256": "1bebe0246aede103ec4315bab0969e8aacfb89919b29955490a6ac3618da6f3c",
+    "claimsSha256": "2e3d7c6983146bf3dbfa25a564735a87f3a003a39bafd7ef342acaec0d6f38ad",
     "node": "v22.23.2",
-    "generatedAt": "2026-09-05T05:28:10.533Z",
+    "generatedAt": "2026-09-05T06:46:39.038Z",
     "판정": "값 목록을 값으로 대조한다. 개수만 세면 §7.3.1 같은 자리를 놓친다."
   },
   "status": "PASS",
@@ -244,29 +244,12 @@
       "mode": "존재"
     },
     {
-      "id": "C-W1-BINS",
+      "id": "C-W1-BLOCK",
       "문서": "docs/디자인-토큰-3계층-값-매핑-기획서.md",
-      "절": "§7.3 `P1b` 배정 결과",
-      "주장": "앱 선언 전수가 다섯 통에 배정되고 미분류가 0 이다",
-      "mode": "합계",
-      "기대": {
-        "선언": 3653,
-        "미분류": 0,
-        "primitive": 2067,
-        "componentOwned": 146,
-        "defect": 1396,
-        "pendingApproval": 44,
-        "approvedException": 0
-      },
-      "실제": {
-        "선언": 3653,
-        "미분류": 0,
-        "primitive": 2067,
-        "componentOwned": 146,
-        "defect": 1396,
-        "pendingApproval": 44,
-        "approvedException": 0
-      },
+      "절": "§7.3 `P1b` 배정 결과 — 자동 생성 블록",
+      "주장": "§7.3 의 수치(선언·통·규칙별 건수·다중 일치·충돌 체인)가 검사 산출물과 한 글자도 다르지 않다",
+      "mode": "문서블록",
+      "마커": "W1-수치",
       "verdict": "PASS"
     }
   ]
