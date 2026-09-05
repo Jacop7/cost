@@ -63,6 +63,24 @@ test('PLAN-09 current verdict and allowed actions have one authority, not a docu
   assert.equal(catalog.feasibility.owner_time_decision.read_only_discovery_requires_relaxation, false);
 });
 
+test('PLAN-10 every plan AC filename exactly matches catalog, including both live cases', () => {
+  const plan = readFileSync(new URL('../docs/팀서비스-자동흐름-구현계획.md', import.meta.url), 'utf8');
+  const mappings = [...plan.matchAll(/^\| (AC-\d+) \| (scripts\/[^ |]+) \|/gm)];
+  assert.equal(mappings.length, catalog.cases.length);
+  for (const [,id,file] of mappings) assert.equal(file, catalog.cases.find((c) => c.case_id === id).file, id);
+});
+
+test('PLAN-11 effect identity spans generations and queued cannot close scope', () => {
+  assert.deepEqual(state.entities.effect.primary_key, ['task_id','effect_key']);
+  assert.deepEqual(state.entities.effect.unique_key, ['task_id','effect_key']);
+  assert.equal(state.entities.effect.run_generation_role, 'CLAIM_METADATA_NOT_IDENTITY');
+  assert.equal(state.delivery_receipt_types.APP_QUEUED.close_scope, false);
+  assert.ok(state.authority_schema.required.includes('issued_at'));
+  assert.ok(state.root_control_schema.required.includes('command_seq'));
+  assert.ok(state.control_transitions.some((t) => t.event === 'REPLAY_OR_STALE_COMMAND'));
+  assert.equal(catalog.feasibility.positive_result_contract.negative_report_reuse, 'FORBIDDEN');
+});
+
 test('PLAN-04 entity schema and STOP fences include generation, authority and effect claim', () => {
   assert.deepEqual(Object.keys(state.entities).sort(), ['Task','assignment','blocker','delivery','effect','subtask']);
   for (const key of ['run_generation','decision_id','authority_revision','not_before','expires_at']) assert.ok(state.fence_required_fields.includes(key));

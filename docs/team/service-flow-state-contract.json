@@ -2,13 +2,6 @@
   "schema_version": 1,
   "kind": "CANDIDATE_STATE_CONTRACT_NOT_RUNTIME",
   "gate_status": "NOT_VALIDATED",
-  "entity_identity": [
-    "task_id",
-    "entity_id",
-    "entity_type",
-    "entity_revision",
-    "run_generation"
-  ],
   "entities": {
     "Task": {
       "owner": "service-chief",
@@ -21,7 +14,11 @@
         "STOPPED",
         "COMPLETED"
       ],
-      "roll_up": "Current generation required subtask results + independent Quality + human final receipt; no unresolved blocker/pending/STOP."
+      "roll_up": "Current generation required subtask results + independent Quality + human final receipt; no unresolved blocker/pending/STOP.",
+      "primary_key": [
+        "task_id"
+      ],
+      "run_generation_role": "CURRENT_EXECUTION_METADATA_HISTORY_IN_EVENTS"
     },
     "subtask": {
       "owner": "responsible-team",
@@ -34,7 +31,12 @@
         "CANCEL_PENDING",
         "CANCELLED"
       ],
-      "roll_up": "Only own required assignments in current generation; never overwrite siblings."
+      "roll_up": "Only own required assignments in current generation; never overwrite siblings.",
+      "primary_key": [
+        "task_id",
+        "subtask_id"
+      ],
+      "run_generation_role": "CURRENT_EXECUTION_METADATA_HISTORY_IN_EVENTS"
     },
     "assignment": {
       "owner": "assigned-role",
@@ -48,7 +50,12 @@
         "CANCEL_PENDING",
         "CANCELLED"
       ],
-      "transition": "Delivery ACK authorizes next hop READY or final owner EXECUTING, never automatic Task completion."
+      "transition": "Delivery ACK authorizes next hop READY or final owner EXECUTING, never automatic Task completion.",
+      "primary_key": [
+        "task_id",
+        "assignment_id"
+      ],
+      "run_generation_role": "CURRENT_EXECUTION_METADATA_HISTORY_IN_EVENTS"
     },
     "delivery": {
       "owner": "source-role",
@@ -61,7 +68,12 @@
         "UNKNOWN_DELIVERY",
         "REJECTED"
       ],
-      "transition": "Per-leg keyed state; queued != ACK != work completion; no blind ambiguous resend."
+      "transition": "Per-leg keyed state; queued != ACK != work completion; no blind ambiguous resend.",
+      "primary_key": [
+        "task_id",
+        "route_id"
+      ],
+      "run_generation_role": "CURRENT_EXECUTION_METADATA_HISTORY_IN_EVENTS"
     },
     "effect": {
       "owner": "executing-role",
@@ -72,7 +84,16 @@
         "RESULT_RECORDED",
         "UNKNOWN_EFFECT"
       ],
-      "transition": "Claim authority/epoch/run CAS under root lock shared with STOP; old actual effects reconcile before new claims."
+      "transition": "Claim authority/epoch/run CAS under root lock shared with STOP; old actual effects reconcile before new claims.",
+      "primary_key": [
+        "task_id",
+        "effect_key"
+      ],
+      "run_generation_role": "CLAIM_METADATA_NOT_IDENTITY",
+      "unique_key": [
+        "task_id",
+        "effect_key"
+      ]
     },
     "blocker": {
       "owner": "reporting-role",
@@ -84,7 +105,12 @@
         "WAITING_HUMAN_DECISION",
         "RESOLVED"
       ],
-      "transition": "Per-blocker keyed state; valid exact human decision only; sibling state unchanged."
+      "transition": "Per-blocker keyed state; valid exact human decision only; sibling state unchanged.",
+      "primary_key": [
+        "task_id",
+        "blocker_id"
+      ],
+      "run_generation_role": "CURRENT_EXECUTION_METADATA_HISTORY_IN_EVENTS"
     }
   },
   "event_required_fields": [
@@ -149,5 +175,151 @@
     "effect_key": "STABLE_ACROSS_RUN_GENERATIONS"
   },
   "stop_epoch_owner": "ROOT_TASK_ONLY",
-  "child_epoch": "CHILD_STOP_EPOCH_FORBIDDEN"
+  "child_epoch": "CHILD_STOP_EPOCH_FORBIDDEN",
+  "event_envelope_fields": [
+    "task_id",
+    "entity_id",
+    "entity_type",
+    "entity_revision",
+    "run_generation"
+  ],
+  "root_control_schema": {
+    "owner": "Task",
+    "required": [
+      "task_id",
+      "task_revision",
+      "command_seq",
+      "stop_epoch",
+      "run_generation"
+    ],
+    "integer_fields": {
+      "task_revision": {
+        "min": 0
+      },
+      "command_seq": {
+        "min": 0
+      },
+      "stop_epoch": {
+        "min": 0
+      },
+      "run_generation": {
+        "min": 1
+      }
+    },
+    "child_epoch": "FORBIDDEN"
+  },
+  "authority_schema": {
+    "required": [
+      "decision_id",
+      "authority_revision",
+      "issued_at",
+      "not_before",
+      "expires_at",
+      "revoked_at",
+      "allowed_actions",
+      "scope",
+      "human_provenance_ref"
+    ],
+    "revoked_at": "null or UTC timestamp",
+    "time_order": "issued_at <= not_before < expires_at",
+    "scope": "Intersection with Task/role/Router; never inferred from reporting permission"
+  },
+  "control_transitions": [
+    {
+      "event": "STOP",
+      "from": [
+        "READY",
+        "ACTIVE",
+        "BLOCKED"
+      ],
+      "to": "STOP_REQUESTED",
+      "guards": [
+        "ROOT_REVISION_AND_COMMAND_SEQ_CAS"
+      ],
+      "updates": [
+        "increment command_seq",
+        "increment stop_epoch",
+        "invalidate unconsumed leases",
+        "cancel descendants"
+      ]
+    },
+    {
+      "event": "AUTH_EXPIRED",
+      "from": [
+        "READY",
+        "ACTIVE",
+        "BLOCKED"
+      ],
+      "to": "BLOCKED",
+      "guards": [
+        "TRUSTED_TIME_AT_OR_AFTER_EXPIRES_AT"
+      ],
+      "updates": [
+        "ban new send/effect",
+        "reconcile in-flight",
+        "safety capability only"
+      ]
+    },
+    {
+      "event": "AUTH_REVOKED",
+      "from": [
+        "READY",
+        "ACTIVE",
+        "BLOCKED"
+      ],
+      "to": "BLOCKED",
+      "guards": [
+        "EXACT_AUTHORITY_REVISION_REVOKED"
+      ],
+      "updates": [
+        "ban new send/effect",
+        "reconcile in-flight"
+      ]
+    },
+    {
+      "event": "RESUME",
+      "from": [
+        "BLOCKED",
+        "STOPPED",
+        "STOPPED_WITH_PENDING"
+      ],
+      "to": "READY",
+      "guards": [
+        "NEW_VALID_HUMAN_DECISION",
+        "ROOT_CAS",
+        "PRIOR_EFFECTS_RECONCILED"
+      ],
+      "updates": [
+        "increment command_seq",
+        "increment run_generation",
+        "keep effect unique keys"
+      ]
+    },
+    {
+      "event": "REPLAY_OR_STALE_COMMAND",
+      "from": [
+        "*"
+      ],
+      "to": "REJECTED_NO_STATE_CHANGE",
+      "guards": [
+        "DUPLICATE_EVENT_OR_STALE_REVISION_OR_COMMAND_SEQ"
+      ],
+      "updates": []
+    }
+  ],
+  "delivery_receipt_types": {
+    "APP_QUEUED": {
+      "state": "SENT_UNCONFIRMED",
+      "close_scope": false
+    },
+    "TARGET_ACK": {
+      "state": "ACKNOWLEDGED",
+      "requires": "PROVENANCE_AND_FULL_INTENT_BINDING_VERIFIED",
+      "close_scope": true
+    },
+    "TASK_RESULT": {
+      "requires": "INDEPENDENT_RESULT_VERIFICATION",
+      "ack_only": false
+    }
+  }
 }

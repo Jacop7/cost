@@ -34,6 +34,10 @@
         {
           "assertion_id": "AC-02-A01",
           "requirement": "P5: 5팀 mock 왕복과 ACK/업무 완료 구분"
+        },
+        {
+          "assertion_id": "AC-02-A02",
+          "requirement": "APP_QUEUED cannot ACK or close inbound scope; only provenance-verified TARGET_ACK may close"
         }
       ],
       "evidence_mode": "LOCAL_MOCK",
@@ -276,6 +280,10 @@
         {
           "assertion_id": "AC-13-A02",
           "requirement": "유효 실행의 늦은 receipt AUDIT_ONLY"
+        },
+        {
+          "assertion_id": "AC-13-A03",
+          "requirement": "Reject app-queued/manual evidence ID as target ACK; scope remains open"
         }
       ],
       "evidence_mode": "LOCAL_MOCK",
@@ -394,6 +402,14 @@
         {
           "assertion_id": "AC-18-A04",
           "requirement": "완료 roll-up"
+        },
+        {
+          "assertion_id": "AC-18-A05",
+          "requirement": "Effect unique(task_id,effect_key) across generations; run_generation is claim metadata only"
+        },
+        {
+          "assertion_id": "AC-18-A06",
+          "requirement": "Root command_seq and full authority field/transition schema reject stale CAS and replay"
         }
       ],
       "evidence_mode": "LOCAL_MOCK",
@@ -488,6 +504,14 @@
         {
           "assertion_id": "AC-23-A03",
           "requirement": "Actual other non-admin principal read denied; unavailable token blocks"
+        },
+        {
+          "assertion_id": "AC-23-A04",
+          "requirement": "Actual owner read succeeds on same protected fixture"
+        },
+        {
+          "assertion_id": "AC-23-A05",
+          "requirement": "Evidence binds resolved path, SDDL hash, checker hash, principal type and actual denial result"
         }
       ],
       "evidence_mode": "LOCAL_OS_ISOLATION",
@@ -744,7 +768,21 @@
       "ALL_SOURCES_READ_AND_DECISIVE_MISSING:HOST_BINDING_UNAVAILABLE_IN_SCOPE",
       "STATIC_UNVERIFIED_ONLY:DISCOVERY_INCOMPLETE",
       "ALL_STATIC_PRESENT:FEASIBLE_STATIC"
-    ]
+    ],
+    "positive_result_contract": {
+      "new_scope_id": true,
+      "required": [
+        "requirements_bundle_sha256",
+        "plan_sha256",
+        "acceptance_sha256",
+        "state_sha256",
+        "tool_catalog_raw_sha256",
+        "successful_query_provenance",
+        "all_static_positive_evidence"
+      ],
+      "negative_report_reuse": "FORBIDDEN",
+      "verifier_implemented": false
+    }
   },
   "formal_review": {
     "candidate_required_hashes": [
@@ -818,5 +856,10 @@
     "case_id": "AC-23",
     "unavailable_other_principal": "ACL_NEGATIVE_UNVERIFIED",
     "implemented": false
+  },
+  "case_status_axes": {
+    "status": "execution_status: NOT_EXECUTED until actual run",
+    "implementation_status": "NOT_IMPLEMENTED/AVAILABLE; existence never proves execution",
+    "evidence_mode": "LOCAL_MOCK/LOCAL_OS_ISOLATION/LIVE_HOST; required evidence type, not verdict"
   }
 }
