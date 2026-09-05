@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { dirname, isAbsolute, join, normalize, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -51,6 +51,120 @@ const TEAM_FILES = Object.freeze({
   'KNOWLEDGE-ORCHESTRATION': 'docs/team/teams/05-knowledge-orchestration.md',
 });
 
+const CHAT_FILES = Object.freeze({
+  'MASTER-01-HUMAN-DECISIONS': 'docs/team/chats/master-01-human-decisions.md',
+  'MASTER-02-ORCHESTRATION': 'docs/team/chats/master-02-orchestration.md',
+  'MASTER-03-DEPUTY-CONTEXT': 'docs/team/chats/master-03-deputy-context.md',
+  'MASTER-04-DEVELOPMENT-STAGING': 'docs/team/chats/master-04-development-staging.md',
+  'MASTER-05-PRODUCTION-RECOVERY': 'docs/team/chats/master-05-production-recovery.md',
+  'DEPARTMENT-00-ALL-TEAMS-ROOM': 'docs/team/chats/department-00-all-teams-room.md',
+  'DEPARTMENT-01-PRODUCT-MOBILE': 'docs/team/chats/department-01-product-mobile.md',
+  'DEPARTMENT-02-DATA-BACKEND': 'docs/team/chats/department-02-data-backend.md',
+  'DEPARTMENT-03-SERVER-OPERATIONS': 'docs/team/chats/department-03-server-operations.md',
+  'DEPARTMENT-04-QUALITY-REVIEW': 'docs/team/chats/department-04-quality-review.md',
+  'DEPARTMENT-05-KNOWLEDGE-ORCHESTRATION': 'docs/team/chats/department-05-knowledge-orchestration.md',
+});
+
+const CHAT_TITLES = Object.freeze({
+  'MASTER-01-HUMAN-DECISIONS': '01 통합 작업큐 · 사람 결정',
+  'MASTER-02-ORCHESTRATION': '02 마스터 오케스트레이션',
+  'MASTER-03-DEPUTY-CONTEXT': '03 부 오케스트레이션 · 토큰/컨텍스트 관리',
+  'MASTER-04-DEVELOPMENT-STAGING': '04 개발·스테이징 배포 검증',
+  'MASTER-05-PRODUCTION-RECOVERY': '05 운영 배포 · 복구 게이트',
+  'DEPARTMENT-00-ALL-TEAMS-ROOM': '00 모든 팀 상황실',
+  'DEPARTMENT-01-PRODUCT-MOBILE': '01 Product · Mobile',
+  'DEPARTMENT-02-DATA-BACKEND': '02 Data · Backend',
+  'DEPARTMENT-03-SERVER-OPERATIONS': '03 Server · Supabase · Operations',
+  'DEPARTMENT-04-QUALITY-REVIEW': '04 Quality · Review',
+  'DEPARTMENT-05-KNOWLEDGE-ORCHESTRATION': '05 Knowledge · Orchestration',
+});
+
+const CHAT_TEAM_IDS = Object.freeze({
+  'MASTER-01-HUMAN-DECISIONS': 'KNOWLEDGE-ORCHESTRATION',
+  'MASTER-02-ORCHESTRATION': 'KNOWLEDGE-ORCHESTRATION',
+  'MASTER-03-DEPUTY-CONTEXT': 'KNOWLEDGE-ORCHESTRATION',
+  'MASTER-04-DEVELOPMENT-STAGING': 'SERVER-SUPABASE-OPERATIONS',
+  'MASTER-05-PRODUCTION-RECOVERY': 'SERVER-SUPABASE-OPERATIONS',
+  'DEPARTMENT-00-ALL-TEAMS-ROOM': 'ALL-TEAMS-ROOM',
+  'DEPARTMENT-01-PRODUCT-MOBILE': 'PRODUCT-MOBILE',
+  'DEPARTMENT-02-DATA-BACKEND': 'DATA-BACKEND',
+  'DEPARTMENT-03-SERVER-OPERATIONS': 'SERVER-SUPABASE-OPERATIONS',
+  'DEPARTMENT-04-QUALITY-REVIEW': 'QUALITY-REVIEW',
+  'DEPARTMENT-05-KNOWLEDGE-ORCHESTRATION': 'KNOWLEDGE-ORCHESTRATION',
+});
+
+const ROUTER_MESSAGE_KINDS = Object.freeze(new Set([
+  'REQUEST', 'CONFIRMED_ROUTE', 'TASK_DISPATCH', 'TASK_RESULT', 'REVIEW_REQUEST', 'REVIEW_RESULT',
+  'STAGING_GATE_REQUEST', 'STAGING_GATE_RESULT', 'PRODUCTION_GATE_REQUEST', 'DECISION_POINTER',
+  'VERIFIED_STATUS', 'AGGREGATE_RESULT',
+]));
+
+const CHAT_ROUTING = Object.freeze({
+  'MASTER-01-HUMAN-DECISIONS': {
+    acceptsFrom: ['MASTER-02-ORCHESTRATION', 'MASTER-04-DEVELOPMENT-STAGING', 'MASTER-05-PRODUCTION-RECOVERY'],
+    edges: [['MASTER-02-ORCHESTRATION', ['REQUEST', 'DECISION_POINTER']]],
+  },
+  'MASTER-02-ORCHESTRATION': {
+    acceptsFrom: ['MASTER-01-HUMAN-DECISIONS', 'MASTER-03-DEPUTY-CONTEXT', 'MASTER-04-DEVELOPMENT-STAGING', 'MASTER-05-PRODUCTION-RECOVERY'],
+    edges: [
+      ['MASTER-01-HUMAN-DECISIONS', ['AGGREGATE_RESULT', 'VERIFIED_STATUS', 'DECISION_POINTER']],
+      ['MASTER-03-DEPUTY-CONTEXT', ['CONFIRMED_ROUTE', 'TASK_DISPATCH']],
+      ['MASTER-04-DEVELOPMENT-STAGING', ['STAGING_GATE_REQUEST']],
+      ['MASTER-05-PRODUCTION-RECOVERY', ['PRODUCTION_GATE_REQUEST']],
+      ['DEPARTMENT-00-ALL-TEAMS-ROOM', ['VERIFIED_STATUS']],
+    ],
+  },
+  'MASTER-03-DEPUTY-CONTEXT': {
+    acceptsFrom: ['MASTER-02-ORCHESTRATION', 'DEPARTMENT-01-PRODUCT-MOBILE', 'DEPARTMENT-02-DATA-BACKEND', 'DEPARTMENT-03-SERVER-OPERATIONS', 'DEPARTMENT-04-QUALITY-REVIEW', 'DEPARTMENT-05-KNOWLEDGE-ORCHESTRATION'],
+    edges: [
+      ['MASTER-02-ORCHESTRATION', ['TASK_RESULT', 'REVIEW_RESULT', 'AGGREGATE_RESULT', 'VERIFIED_STATUS', 'DECISION_POINTER']],
+      ['DEPARTMENT-01-PRODUCT-MOBILE', ['TASK_DISPATCH']],
+      ['DEPARTMENT-02-DATA-BACKEND', ['TASK_DISPATCH']],
+      ['DEPARTMENT-03-SERVER-OPERATIONS', ['TASK_DISPATCH']],
+      ['DEPARTMENT-04-QUALITY-REVIEW', ['REVIEW_REQUEST', 'TASK_DISPATCH']],
+      ['DEPARTMENT-05-KNOWLEDGE-ORCHESTRATION', ['TASK_DISPATCH']],
+    ],
+  },
+  'MASTER-04-DEVELOPMENT-STAGING': {
+    acceptsFrom: ['MASTER-02-ORCHESTRATION'],
+    edges: [
+      ['MASTER-02-ORCHESTRATION', ['STAGING_GATE_RESULT', 'DECISION_POINTER']],
+      ['MASTER-01-HUMAN-DECISIONS', ['DECISION_POINTER']],
+    ],
+  },
+  'MASTER-05-PRODUCTION-RECOVERY': {
+    acceptsFrom: ['MASTER-02-ORCHESTRATION'],
+    edges: [
+      ['MASTER-02-ORCHESTRATION', ['DECISION_POINTER', 'VERIFIED_STATUS']],
+      ['MASTER-01-HUMAN-DECISIONS', ['DECISION_POINTER']],
+    ],
+  },
+  'DEPARTMENT-00-ALL-TEAMS-ROOM': {
+    acceptsFrom: ['MASTER-02-ORCHESTRATION'],
+    edges: [],
+  },
+  'DEPARTMENT-01-PRODUCT-MOBILE': {
+    acceptsFrom: ['MASTER-03-DEPUTY-CONTEXT'],
+    edges: [['MASTER-03-DEPUTY-CONTEXT', ['TASK_RESULT']]],
+  },
+  'DEPARTMENT-02-DATA-BACKEND': {
+    acceptsFrom: ['MASTER-03-DEPUTY-CONTEXT'],
+    edges: [['MASTER-03-DEPUTY-CONTEXT', ['TASK_RESULT']]],
+  },
+  'DEPARTMENT-03-SERVER-OPERATIONS': {
+    acceptsFrom: ['MASTER-03-DEPUTY-CONTEXT'],
+    edges: [['MASTER-03-DEPUTY-CONTEXT', ['TASK_RESULT']]],
+  },
+  'DEPARTMENT-04-QUALITY-REVIEW': {
+    acceptsFrom: ['MASTER-03-DEPUTY-CONTEXT'],
+    edges: [['MASTER-03-DEPUTY-CONTEXT', ['REVIEW_RESULT', 'TASK_RESULT']]],
+  },
+  'DEPARTMENT-05-KNOWLEDGE-ORCHESTRATION': {
+    acceptsFrom: ['MASTER-03-DEPUTY-CONTEXT'],
+    edges: [['MASTER-03-DEPUTY-CONTEXT', ['TASK_RESULT']]],
+  },
+});
+
 const REQUIRED_ROLE_FIELDS = Object.freeze([
   'role_id',
   'context_ids',
@@ -77,6 +191,24 @@ const REQUIRED_TEAM_FIELDS = Object.freeze([
   'handoff_in',
   'handoff_out',
   'chat_is_approval_authority',
+]);
+
+const REQUIRED_CHAT_FIELDS = Object.freeze([
+  'chat_id',
+  'schema_version',
+  'accepts_from',
+  'sends_to',
+  'route_edges',
+  'title',
+  'purpose',
+  'role_context_ids',
+  'input',
+  'output',
+  'authority_links',
+  'allowed_routes',
+  'stop_conditions',
+  'handoff_in',
+  'handoff_out',
 ]);
 
 const FORBIDDEN_MANIFEST_FIELDS = Object.freeze([
@@ -168,6 +300,22 @@ function assertStringArray(value, path, field) {
   if (!Array.isArray(value) || value.length === 0 || value.some((item) => typeof item !== 'string' || !item)) {
     fail('INVALID_ARRAY_FIELD', `비어 있지 않은 문자열 배열이어야 합니다: ${path}: ${field}`);
   }
+}
+
+function assertStringArrayAllowEmpty(value, path, field) {
+  if (!Array.isArray(value) || value.some((item) => typeof item !== 'string' || !item)) {
+    fail('INVALID_ARRAY_FIELD', `문자열 배열이어야 합니다: ${path}: ${field}`);
+  }
+}
+
+function parseRouteEdge(value, path) {
+  const match = value.match(/^([A-Z0-9-]+)\|([A-Z_]+(?:,[A-Z_]+)*)$/);
+  if (!match) fail('INVALID_CHAT_ROUTE_EDGE', `route edge 형식이 잘못됐습니다: ${path}: ${value}`);
+  const kinds = match[2].split(',');
+  if (new Set(kinds).size !== kinds.length || kinds.some((kind) => !ROUTER_MESSAGE_KINDS.has(kind))) {
+    fail('INVALID_CHAT_MESSAGE_KIND', `route edge message kind가 중복되거나 허용되지 않습니다: ${path}: ${value}`);
+  }
+  return [match[1], kinds];
 }
 
 function parseRegistry(text) {
@@ -263,6 +411,40 @@ function checkLearningMigration(text) {
   }
 }
 
+function assertExactFields(fields, required, path) {
+  assertRequiredFields(fields, required, path);
+  const allowed = new Set(required);
+  const extras = Object.keys(fields).filter((field) => !allowed.has(field));
+  if (extras.length > 0) fail('EXTRA_FIELD', `chat manifest에 허용되지 않은 필드가 있습니다: ${path}: ${extras.join(', ')}`);
+}
+
+function assertNoBody(text, path) {
+  const match = canonicalText(text).match(/^---\n[\s\S]*?\n---(?:\n|$)([\s\S]*)$/);
+  if (!match || match[1].trim()) fail('CHAT_BODY_FORBIDDEN', `chat manifest는 front matter 외 본문을 둘 수 없습니다: ${path}`);
+}
+
+function parseChatContextRegistry(text) {
+  const registry = parseJsonMarker(text, 'chat-context-registry');
+  if (registry.schema_version !== '1.0' || !Array.isArray(registry.entries)) {
+    fail('INVALID_CHAT_CONTEXT_REGISTRY', 'chat-context-registry schema_version 또는 entries가 잘못됐습니다.');
+  }
+  const entries = new Map();
+  const paths = new Set();
+  for (const entry of registry.entries) {
+    if (!entry || typeof entry.chat_id !== 'string' || entries.has(entry.chat_id)) {
+      fail('DUPLICATE_CHAT_CONTEXT', `chat context ID가 없거나 중복됐습니다: ${entry?.chat_id ?? '<missing>'}`);
+    }
+    if (typeof entry.manifest_path !== 'string' || paths.has(entry.manifest_path)
+        || !Array.isArray(entry.role_context_ids) || entry.role_context_ids.length === 0
+        || entry.role_context_ids.some((id) => typeof id !== 'string' || !id)) {
+      fail('INVALID_CHAT_CONTEXT_BINDING', `chat manifest/context 결속이 잘못됐습니다: ${entry.chat_id}`);
+    }
+    entries.set(entry.chat_id, entry);
+    paths.add(entry.manifest_path);
+  }
+  return entries;
+}
+
 function checkAuthorityLinks(rootDir, path, links) {
   assertStringArray(links, path, 'authority_links');
   for (const link of links) readRequired(rootDir, link);
@@ -315,11 +497,14 @@ export function checkDocsGraph({ rootDir = DEFAULT_ROOT, requireActivation = fal
   const contexts = parseRegistry(readRequired(rootDir, 'docs/team/ROLE_CONTEXTS.md'));
   checkLearningMigration(readRequired(rootDir, 'docs/team/TEAM_LEARNING.md'));
   const roleIds = new Set();
+  const roles = new Map();
+  const contextOwners = new Map();
   for (const [expectedRoleId, path] of Object.entries(ROLE_FILES)) {
     const fields = parseFrontMatter(readRequired(rootDir, path), path);
     assertRequiredFields(fields, REQUIRED_ROLE_FIELDS, path);
     if (fields.role_id !== expectedRoleId || roleIds.has(fields.role_id)) fail('ROLE_ID_MISMATCH', `역할 ID가 파일 계약과 다릅니다: ${path}`);
     roleIds.add(fields.role_id);
+    roles.set(fields.role_id, fields);
     assertStringArray(fields.context_ids, path, 'context_ids');
     assertStringArray(fields.context_refs, path, 'context_refs');
     if (fields.context_refs.length !== fields.context_ids.length) fail('CONTEXT_REF_COVERAGE', `context ID와 version/hash 참조 수가 다릅니다: ${path}`);
@@ -338,6 +523,8 @@ export function checkDocsGraph({ rootDir = DEFAULT_ROOT, requireActivation = fal
     }
     for (const contextId of fields.context_ids) {
       if (!contexts.has(contextId)) fail('UNKNOWN_CONTEXT', `ROLE_CONTEXT 레지스트리에 없는 context입니다: ${path}: ${contextId}`);
+      if (contextOwners.has(contextId)) fail('DUPLICATE_CONTEXT_OWNER', `ROLE_CONTEXT가 여러 role manifest에 소유됩니다: ${contextId}`);
+      contextOwners.set(contextId, fields.role_id);
     }
     for (const field of ['allowed_routes', 'input_allowlist', 'required_outputs', 'verification_checklist', 'handoff_in', 'handoff_out', 'stop_conditions']) {
       assertStringArray(fields[field], path, field);
@@ -347,11 +534,13 @@ export function checkDocsGraph({ rootDir = DEFAULT_ROOT, requireActivation = fal
   }
 
   const teamIds = new Set();
+  const teams = new Map();
   for (const [expectedTeamId, path] of Object.entries(TEAM_FILES)) {
     const fields = parseFrontMatter(readRequired(rootDir, path), path);
     assertRequiredFields(fields, REQUIRED_TEAM_FIELDS, path);
     if (fields.team_id !== expectedTeamId || teamIds.has(fields.team_id)) fail('TEAM_ID_MISMATCH', `팀 ID가 파일 계약과 다릅니다: ${path}`);
     teamIds.add(fields.team_id);
+    teams.set(fields.team_id, fields);
     for (const field of ['task_types', 'role_ids', 'authority_links', 'handoff_in', 'handoff_out']) assertStringArray(fields[field], path, field);
     for (const roleId of fields.role_ids) {
       if (!roleIds.has(roleId)) fail('UNKNOWN_ROLE', `팀 manifest가 없는 역할을 참조합니다: ${path}: ${roleId}`);
@@ -363,12 +552,123 @@ export function checkDocsGraph({ rootDir = DEFAULT_ROOT, requireActivation = fal
     }
   }
 
+  const chatRegistry = parseChatContextRegistry(readRequired(rootDir, 'docs/team/ROLE_CONTEXTS.md'));
+  const expectedChatFiles = Object.values(CHAT_FILES).map((path) => path.split('/').at(-1)).sort();
+  const actualChatFiles = readdirSync(safePath(rootDir, 'docs/team/chats'), { withFileTypes: true })
+    .filter((entry) => entry.isFile() && entry.name.endsWith('.md'))
+    .map((entry) => entry.name)
+    .sort();
+  if (JSON.stringify(actualChatFiles) !== JSON.stringify(expectedChatFiles)) {
+    fail('CHAT_FILE_SET_MISMATCH', `docs/team/chats에는 공식 11개 manifest만 있어야 합니다: ${actualChatFiles.length}개`);
+  }
+  const chatIds = new Set();
+  const chatTitles = new Set();
+  const chatManifests = new Map();
+  const departmentTeamCounts = new Map([...teamIds].map((teamId) => [teamId, 0]));
+  const validHandoffEndpoints = new Set([...roleIds, 'HUMAN-CHIEF']);
+  for (const [expectedChatId, path] of Object.entries(CHAT_FILES)) {
+    const text = readRequired(rootDir, path);
+    const fields = parseFrontMatter(text, path);
+    assertExactFields(fields, REQUIRED_CHAT_FIELDS, path);
+    assertNoBody(text, path);
+    if (fields.chat_id !== expectedChatId || chatIds.has(fields.chat_id)) {
+      fail('CHAT_ID_MISMATCH', `chat ID가 파일 계약과 다릅니다: ${path}`);
+    }
+    if (fields.title !== CHAT_TITLES[expectedChatId] || chatTitles.has(fields.title)) {
+      fail('CHAT_TITLE_MISMATCH', `정확한 chat title이 없거나 중복됐습니다: ${path}`);
+    }
+    if (fields.schema_version !== 2) fail('CHAT_SCHEMA_MISMATCH', `chat manifest schema_version은 2여야 합니다: ${path}`);
+    for (const field of ['role_context_ids', 'input', 'output', 'authority_links', 'allowed_routes', 'stop_conditions', 'handoff_in', 'handoff_out']) {
+      assertStringArray(fields[field], path, field);
+    }
+    assertStringArray(fields.accepts_from, path, 'accepts_from');
+    assertStringArrayAllowEmpty(fields.sends_to, path, 'sends_to');
+    assertStringArrayAllowEmpty(fields.route_edges, path, 'route_edges');
+    const parsedEdges = fields.route_edges.map((edge) => parseRouteEdge(edge, path));
+    if (new Set(fields.accepts_from).size !== fields.accepts_from.length
+        || new Set(fields.sends_to).size !== fields.sends_to.length
+        || new Set(parsedEdges.map(([target]) => target)).size !== parsedEdges.length) {
+      fail('DUPLICATE_CHAT_ROUTE_EDGE', `chat accepts/sends/edge가 중복됐습니다: ${path}`);
+    }
+    if ([...fields.accepts_from, ...fields.sends_to].some((id) => id.includes('*') || !Object.hasOwn(CHAT_FILES, id))) {
+      fail('UNKNOWN_CHAT_ROUTE_TARGET', `chat route에 wildcard 또는 미등록 논리 ID가 있습니다: ${path}`);
+    }
+    const expectedRouting = CHAT_ROUTING[expectedChatId];
+    const expectedSendsTo = expectedRouting.edges.map(([target]) => target);
+    const expectedEdges = expectedRouting.edges.map(([target, kinds]) => `${target}|${kinds.join(',')}`);
+    if (JSON.stringify(fields.accepts_from) !== JSON.stringify(expectedRouting.acceptsFrom)
+        || JSON.stringify(fields.sends_to) !== JSON.stringify(expectedSendsTo)
+        || JSON.stringify(fields.route_edges) !== JSON.stringify(expectedEdges)) {
+      fail('CHAT_ROUTING_CONTRACT_MISMATCH', `chat accepts/sends/edge 계약이 v2 권위와 다릅니다: ${path}`);
+    }
+    if (typeof fields.purpose !== 'string' || !fields.purpose) fail('INVALID_CHAT_PURPOSE', `chat purpose가 없습니다: ${path}`);
+    if (new Set(fields.role_context_ids).size !== fields.role_context_ids.length) fail('DUPLICATE_CHAT_CONTEXT', `chat context가 중복됩니다: ${path}`);
+    const ownerRoleIds = new Set();
+    const contextRoutes = new Set();
+    for (const contextId of fields.role_context_ids) {
+      const context = contexts.get(contextId);
+      const ownerRoleId = contextOwners.get(contextId);
+      if (!context || !ownerRoleId) fail('CHAT_CONTEXT_MISMATCH', `chat context가 role manifest/레지스트리와 다릅니다: ${path}: ${contextId}`);
+      ownerRoleIds.add(ownerRoleId);
+      contextRoutes.add(context.route);
+    }
+    for (const route of fields.allowed_routes) {
+      if (!contextRoutes.has(route) || [...ownerRoleIds].some((roleId) => !roles.get(roleId).allowed_routes.includes(route))) {
+        fail('CHAT_ROUTE_ESCALATION', `chat allowed_routes가 연결 context/role 범위를 벗어납니다: ${path}: ${route}`);
+      }
+    }
+    const expectedTeamId = CHAT_TEAM_IDS[expectedChatId];
+    const expectedAuthorities = ['docs/작업큐.md', 'docs/team/handoffs/README.md', 'docs/team/DECISIONS.md', TEAM_FILES[expectedTeamId],
+      ...[...ownerRoleIds].map((roleId) => ROLE_FILES[roleId])];
+    checkAuthorityLinks(rootDir, path, fields.authority_links);
+    if (expectedAuthorities.some((authority) => !fields.authority_links.includes(authority))) {
+      fail('CHAT_AUTHORITY_MISMATCH', `chat의 Task/HANDOFF/Decision/role/team 권위 포인터가 불완전합니다: ${path}`);
+    }
+    if ([...ownerRoleIds].some((roleId) => !teams.get(expectedTeamId).role_ids.includes(roleId))) {
+      fail('CHAT_ROLE_NOT_IN_TEAM', `chat context 소유 role이 연결 team에 없습니다: ${path}`);
+    }
+    for (const endpoint of [...fields.handoff_in, ...fields.handoff_out]) {
+      if (!validHandoffEndpoints.has(endpoint)) fail('INVALID_CHAT_HANDOFF', `chat HANDOFF endpoint가 유효하지 않습니다: ${path}: ${endpoint}`);
+    }
+    if (expectedChatId.startsWith('DEPARTMENT-')) {
+      if (teams.get(expectedTeamId).announcement_chat !== fields.title) fail('CHAT_ANNOUNCEMENT_MISMATCH', `부서 chat title과 team announcement_chat이 다릅니다: ${path}`);
+      departmentTeamCounts.set(expectedTeamId, departmentTeamCounts.get(expectedTeamId) + 1);
+    }
+    const registryEntry = chatRegistry.get(fields.chat_id);
+    if (!registryEntry || registryEntry.manifest_path !== path
+        || JSON.stringify(registryEntry.role_context_ids) !== JSON.stringify(fields.role_context_ids)) {
+      fail('CHAT_REGISTRY_MISMATCH', `chat manifest와 ROLE_CONTEXTS 결속이 다릅니다: ${path}`);
+    }
+    chatIds.add(fields.chat_id);
+    chatTitles.add(fields.title);
+    chatManifests.set(fields.chat_id, fields);
+  }
+  if (chatRegistry.size !== chatIds.size || [...chatRegistry.keys()].some((id) => !chatIds.has(id))) {
+    fail('CHAT_REGISTRY_COVERAGE', 'chat manifest와 ROLE_CONTEXTS registry가 1:1이 아닙니다.');
+  }
+  if ([...departmentTeamCounts.values()].some((count) => count !== 1)) {
+    fail('CHAT_ANNOUNCEMENT_COVERAGE', '6개 team announcement_chat과 부서 chat manifest가 1:1이 아닙니다.');
+  }
+  for (const [sourceId, source] of chatManifests) {
+    for (const targetId of source.sends_to) {
+      if (!chatManifests.get(targetId)?.accepts_from.includes(sourceId)) {
+        fail('CHAT_ROUTE_RECIPROCITY', `source sends_to와 target accepts_from이 서로 다릅니다: ${sourceId} -> ${targetId}`);
+      }
+    }
+    for (const predecessorId of source.accepts_from) {
+      if (!chatManifests.get(predecessorId)?.sends_to.includes(sourceId)) {
+        fail('CHAT_ROUTE_RECIPROCITY', `target accepts_from과 source sends_to가 서로 다릅니다: ${predecessorId} -> ${sourceId}`);
+      }
+    }
+  }
+
   return {
     status: 'PASS',
     mode: requirePlannedTree ? 'planned-tree' : 'activation',
     planStatus: activatedStatuses[0],
     risks: risksOwned ? 'OWNED_AND_PRESENT' : 'WITHHELD_PENDING_AUTHORITY_ALIGNMENT',
     checkedFiles: PLAN_DOCS.length + CENTRAL_PATHS.length + Object.keys(ROLE_FILES).length + Object.keys(TEAM_FILES).length
+      + Object.keys(CHAT_FILES).length
       + (requireActivation ? OPERATIONS_PATHS.length : 0),
     contextCount: contexts.size,
   };
