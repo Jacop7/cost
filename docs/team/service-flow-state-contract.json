@@ -131,5 +131,23 @@
     "claim_first": "In-flight/pending; do not claim rollback",
     "old_generation_receipt": "Old delivery audit only; cannot complete current generation"
   },
-  "acceptance_case": "AC-18"
+  "acceptance_case": "AC-18",
+  "intent_key_fields": [
+    "task_id",
+    "run_generation",
+    "assignment_id",
+    "leg_id",
+    "work_spec_revision",
+    "logical_source",
+    "logical_target",
+    "message_kind"
+  ],
+  "intent_reuse": {
+    "same_generation_retry": "SAME_ROUTE_TOKEN",
+    "endpoint_successor_same_generation": "SAME_ROUTE_TOKEN",
+    "new_run_generation": "NEW_ROUTE_TOKEN",
+    "effect_key": "STABLE_ACROSS_RUN_GENERATIONS"
+  },
+  "stop_epoch_owner": "ROOT_TASK_ONLY",
+  "child_epoch": "CHILD_STOP_EPOCH_FORBIDDEN"
 }
