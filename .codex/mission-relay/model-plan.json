@@ -175,9 +175,9 @@
       }
     },
     "remainingContextCallsByProfile": {
-      "terra-xhigh": 4
+      "terra-xhigh": 5
     },
-    "remainingPlannedUnits": 261080.0,
+    "remainingPlannedUnits": 292280.0,
     "status": "MODEL_BUDGET_VALID",
     "transitionUpperWeightedUnits": 185280.0
   },
@@ -188,8 +188,8 @@
     "unit": "weighted_token_units"
   },
   "predecessorPlan": {
-    "reason": "12단계 v0.5 완료 증거와 다중 채팅 Mission Relay·Project Orchestrator 확장 착수를 반영함",
-    "sha256": "b8b5474bd6190b5576e95fe2c0eaa725872bba78f5f8812baab82b8e9a7a73a1",
+    "reason": "AI 팀 운영 단계의 봉인 상태를 보존하고, 사용자 요청에 따라 디렉터리·DB·서버·브랜치·Supabase·AI 협업 설정을 하나의 운영 기준선으로 재정렬함",
+    "sha256": "593b657c5a34062fecc6ad802b924efba1aef11d1e2d3bc1cd5a7a80a5b28bee",
     "status": "HISTORICAL_SUPERSEDED"
   },
   "profiles": [
@@ -340,8 +340,8 @@
     }
   ],
   "project": {
-    "goal": "AI 팀 운영 스타터 키트 v0.5 완료 뒤, 10개 채팅의 독립 Mission Relay 경제성·인계와 공통 Project Orchestrator 계획 동기화를 구현·검증한다.",
-    "projectId": "margincook-ai-team-operations-v0.5",
+    "goal": "현재 브랜치의 기존 권위와 사용자 변경을 보존하면서 디렉터리·DB·서버·브랜치·Supabase·AI 협업 설정을 하나의 검증 가능한 운영 기준선으로 정렬하고, 로컬 검증·원격 읽기 감사·사람 승인형 적용 경계를 확립한다.",
+    "projectId": "margincook-platform-operating-baseline-v1",
     "root": "C:\\Users\\jacop\\프로젝트\\식자재관리앱"
   },
   "reviewRequirements": [
@@ -391,7 +391,7 @@
     ]
   },
   "schemaVersion": 1,
-  "sealedAt": "2026-09-03T10:07:36.601104+00:00",
+  "sealedAt": "2026-09-03T17:51:06.708533+00:00",
   "stages": [
     {
       "assignments": [
@@ -670,11 +670,11 @@
       "assignments": [
         {
           "expectedCachedInputTokensPerCall": 16000,
-          "expectedCallsLowerBound": 4,
+          "expectedCallsLowerBound": 5,
           "expectedInputTokensPerCall": 24000,
           "expectedOutputTokensPerCall": 3600,
           "profileId": "terra-xhigh",
-          "responsibility": "다중 등록 Mission Relay·채팅별 1.7 판정·공통 계획 동기화 구현과 회귀 검증",
+          "responsibility": "현재 상태 기준선·Task Packet 확정, 운영 설정 검사기와 문서 정렬, 로컬 DB·서버·브랜치·Supabase·AI 흐름 검증 및 회귀 시험",
           "threadScope": "active-thread"
         },
         {
@@ -683,7 +683,7 @@
           "expectedInputTokensPerCall": 16000,
           "expectedOutputTokensPerCall": 2400,
           "profileId": "sol-high",
-          "responsibility": "다중 채팅 격리·공통 계획 참조·인계 충돌 경계 구조 검토",
+          "responsibility": "디렉터리·DB·서버·브랜치·Supabase 계약과 원격 적용 경계의 구조 검토",
           "threadScope": "separate-task"
         },
         {
@@ -692,12 +692,21 @@
           "expectedInputTokensPerCall": 14000,
           "expectedOutputTokensPerCall": 2200,
           "profileId": "fable-high",
-          "responsibility": "다중 미션·계획 동기화 계약의 독립검수",
+          "responsibility": "통합 운영 기준선과 설정·검증 계약의 독립검수",
+          "threadScope": "external-review"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 0,
+          "expectedCallsLowerBound": 0,
+          "expectedInputTokensPerCall": 12000,
+          "expectedOutputTokensPerCall": 2000,
+          "profileId": "opus-review",
+          "responsibility": "Fable의 구조화된 한도·rate·capacity 승계 시 11개 채팅 모델 접근 계약의 독립검수; maker editor와 reviewer session은 분리",
           "threadScope": "external-review"
         }
       ],
       "id": "13",
-      "name": "다중 채팅 Mission Relay·Project Orchestrator 동기화",
+      "name": "디렉터리·DB·서버·브랜치·Supabase·AI 협업 통합 운영 기준선",
       "status": "active"
     }
   ],
