@@ -2,6 +2,7 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import test from 'node:test';
 const root = new URL('../', import.meta.url);
 const read = (path) => JSON.parse(readFileSync(new URL(path, root), 'utf8'));
@@ -47,7 +48,12 @@ test('HOST-SPEC-03 immutable prior negative and bounded declaration bind design 
   assert.ok(result.timing.elapsed_ms >= 0 && result.timing.elapsed_ms <= declaration.timebox_minutes * 60_000);
   assert.equal(Date.parse(result.timing.ended_at_local) - Date.parse(result.timing.started_at_local), result.timing.elapsed_ms);
   assert.ok(result.source_review.catalog_searches <= declaration.max_catalog_searches);
-  for (const artifact of result.artifacts) assert.equal(artifact.sha256, sha(artifact.path));
+  // The 002 report is immutable. Later translation/tier-2 supplements do not rewrite its inputs.
+  const archiveCommit = '34cf2b4733cee4da6058f97e529d13a9a0ca81d8';
+  for (const artifact of result.artifacts) {
+    const archived = execFileSync('git', ['show', `${archiveCommit}:${artifact.path}`], { cwd: root });
+    assert.equal(artifact.sha256, createHash('sha256').update(archived).digest('hex'));
+  }
   assert.equal(result.constraints_observed.send_calls, 0);
   assert.equal(result.constraints_observed.paid_model_calls, 0);
   assert.equal(result.gates.host_binding_available, false);

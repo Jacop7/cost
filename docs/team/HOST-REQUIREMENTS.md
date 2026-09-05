@@ -29,20 +29,21 @@ P1·P2의 보호된 참조가 여러 속성을 한 객체로 담아도 되지만
 
 | 필드 | 구분 | 출처/대체 | 없으면 주장할 수 없는 것 |
 | --- | --- | --- | --- |
-| CC.host_id | DERIVABLE | Single declared host namespace; protected caller ref must still be scoped | Cross-host identity collision exclusion |
-| CC.protected_source_ref | PLATFORM_REQUIRED | Protected invocation context, not prompt/CLI/env assertion | Authenticated actual calling endpoint |
-| CC.logical_role | DERIVABLE | Exact local manifest lookup from authenticated source binding | Authorized role attribution |
-| CC.runtime_generation | LOCAL_REQUIRED | Protected runtime generation CAS | Current successor attribution and stale endpoint rejection |
-| CC.host_run_ref | OPTIONAL | Platform invocation ref if supplied; otherwise local attempt ref for audit only | Platform run-level attribution |
-| CC.collected_at | LOCAL_REQUIRED | Capture timestamp plus trusted/approved clock policy | Age/freshness bound |
-| CC.expires_at | DERIVABLE | Capture validity window and Decision expiry intersection | Still-valid caller context |
-| CC.provenance | PLATFORM_REQUIRED | Protected context/result origin chain; may be same opaque P1 context capability | Non-self-asserted identity |
-| HR.tool_call_ref | PLATFORM_OR_PROTECTED_CAPTURE | Host invocation link or documented protected capture connection | Result belongs to exact tool invocation |
-| HR.response_source | PLATFORM_OR_PROTECTED_CAPTURE | Unedited tool bytes captured by declared trusted writer | Origin-authenticated result receipt |
-| HR.observed_target_ref | PLATFORM_REQUIRED_FOR_ACK | Actual target binding in tool result/context; prompt echo insufficient | ACK came from intended target |
-| HR.status | PLATFORM_OR_OBSERVED | Tool transport status and separately observed target response | queued vs target ACK vs work result |
-| HR.response_hash | DERIVABLE | Hash exact bytes after protected capture | No alteration since capture |
+| CC.host_id | 파생 가능 | 단일 host 이름공간 설정. 보호된 caller 참조에도 범위를 결속 | host 간 식별자 충돌 배제 |
+| CC.protected_source_ref | 플랫폼 필수 | 실제 invocation의 보호된 출처. prompt/CLI/환경변수 자기 선언은 불충분 | 실제 호출 endpoint 인증 |
+| CC.logical_role | 파생 가능 | 인증된 source binding으로 정확한 로컬 manifest 조회 | 권한 있는 역할로 귀속 |
+| CC.runtime_generation | 로컬 필수 | 보호 runtime의 generation CAS | 현재 successor 귀속·관측된 구세대 거부 |
+| CC.host_run_ref | 선택 | 플랫폼 invocation 참조. 없으면 감사 전용 로컬 시도 참조 | 플랫폼 실행 회차 귀속 |
+| CC.collected_at | 로컬 필수 | 수집 시각과 신뢰/승인된 시계 정책 | 경과 시간·신선도 제한 |
+| CC.expires_at | 파생 가능 | 수집 유효기간과 Decision 만료의 교집합 | 여전히 유효한 caller 문맥 |
+| CC.provenance | 플랫폼 필수 | 보호된 문맥/결과 출처 연결. P1의 동일 참조에 포함 가능 | 자기 선언이 아닌 신원 |
+| HR.tool_call_ref | 플랫폼 또는 보호 수집 | host invocation 연결 또는 문서화된 보호 수집 경로 | 정확한 도구 호출의 결과임 |
+| HR.response_source | 플랫폼 또는 보호 수집 | 신뢰 경로가 선언된 수집자의 무편집 원응답 | 결과 출처의 인증 |
+| HR.observed_target_ref | 인증 ACK에 플랫폼 필수 | 도구 결과/문맥의 실제 target 결속. prompt 되읽기는 불충분 | 의도한 대상의 인증된 ACK |
+| HR.status | 플랫폼 또는 관측 | 도구 접수 상태와 별도 관측한 대상 응답 | 접수·대상 ACK·업무 결과 구별 |
+| HR.response_hash | 파생 가능 | 보호 수집 뒤 정확한 bytes의 hash | 수집 이후 무변경 |
 
+기계 식별자는 JSON의 PLATFORM_REQUIRED/LOCAL_REQUIRED/DERIVABLE 등을 유지한다.
 상세 축소 행동은 기계 계약 각 행의 degradation을 따른다.
 로컬 attempt ID는 host_run_ref가 아니며, 선택한 target을 prompt에 넣었다고 실제 응답 출처가 되지 않는다.
 collected_at/expires_at은 유효성 판단용이다. 정확한 시계가 P1/P2를 만들어내지 않는다.
@@ -59,6 +60,10 @@ collected_at/expires_at은 유효성 판단용이다. 정확한 시계가 P1/P2�
    **현재 채택/발송 승인이 아니다.** 별도 사람 위험 Decision·검수·긍정 증거·정확한 activation 전에는 발송 0이다.
 3. AUTHENTICATED_ROLE_FLOW: P1/P2 및 exact role binding을 확보하는 외부 의존 제품.
    P3 제공 여부에 따라 엄격 예방 또는 별도 승인된 회수형 STOP을 선택한다. 선택을 묵시적으로 바꾸지 않는다.
+
+협력형의 가정 파괴·실패 방어·관측 완료 영수증은 [COOPERATIVE-FLOW-CONTRACT.md](COOPERATIVE-FLOW-CONTRACT.md)와
+[기계 계약](cooperative-flow-contract.json)에 고정한다. OBSERVED와 ATTESTED는 구분하며 관측형 후보를
+현재 strict ACK/COMPLETED 규격에 섞지 않는다. 협력형은 여전히 미채택 후보다.
 
 ## 5. 종료와 외부 이관
 

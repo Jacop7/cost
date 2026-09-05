@@ -1,0 +1,317 @@
+{
+  "schema_version": 1,
+  "version": "0.1",
+  "kind": "COOPERATIVE_FLOW_CANDIDATE_NOT_EXECUTION_EVIDENCE",
+  "adopted": false,
+  "dispatch_enabled": false,
+  "service_ready": false,
+  "roles_count": 11,
+  "assumptions": [
+    "모든 참여 agent가 공통 검증 경로를 사용함",
+    "모든 역할이 단일 권위 runtime과 CAS를 공유함",
+    "collector가 실제 앱 호출·응답을 무편집 수집함",
+    "동일 사용자·관리자의 악의적 변조는 방어 범위 밖"
+  ],
+  "not_guaranteed": [
+    "검증 경로 밖 실행 방지",
+    "실제 caller 신원 인증",
+    "원격 원자 STOP",
+    "서로 다른 request_id의 의미상 중복 자동 판정"
+  ],
+  "assumption_violation": {
+    "next": "QUARANTINE_AND_REPORT",
+    "stop_new_claims": true,
+    "undo_external_effects_claim": false
+  },
+  "threats": [
+    {
+      "id": "T2-01",
+      "failure": "본문/첨부의 지시가 정책·범위를 바꿈",
+      "checks": [
+        "TYPED_ENVELOPE_DATA_BOUNDARY",
+        "CANONICAL_SCOPE_AT_INTAKE_AND_ACTION",
+        "NO_PAYLOAD_AUTHORITY_CHANGE"
+      ],
+      "residual": "agent가 gate를 우회하면 프롬프트만으로 차단 보장 불가"
+    },
+    {
+      "id": "T2-02",
+      "failure": "stale successor generation의 응답·claim",
+      "checks": [
+        "BINDING_AND_RUN_GENERATION",
+        "ATOMIC_CURRENT_OWNER_REVISION_STOP_CHECK",
+        "OLD_RECEIPT_AUDIT_ONLY"
+      ],
+      "residual": "현재 세대를 사칭한 실제 caller 신원은 검증하지 못함"
+    },
+    {
+      "id": "T2-03",
+      "failure": "다른 assignment claim",
+      "checks": [
+        "ASSIGNMENT_OWNER_AND_SCOPE_CHECK",
+        "ATOMIC_OWNER_GENERATION_REVISION_LEASE_EFFECT_CAS"
+      ],
+      "residual": "effect_key CAS 단독으로 소유권이나 신원 보장 불가"
+    },
+    {
+      "id": "T2-04",
+      "failure": "두 방에서 동일 업무 중복 실행",
+      "checks": [
+        "STABLE_REQUEST_ID",
+        "SINGLE_STORE_INTENT_EFFECT_CAS",
+        "SAME_KEY_DIFFERENT_SPEC_HOLD"
+      ],
+      "residual": "서로 다른 request_id의 유사 요청은 사람 병합 확인"
+    },
+    {
+      "id": "T2-05",
+      "failure": "잘못된 방·복사/재생 응답",
+      "checks": [
+        "ACTUAL_CALL_RESULT_LINK",
+        "TARGET_SELECTION_AND_OBSERVATION_MATCH",
+        "NONCE_AND_EXACT_INTENT"
+      ],
+      "residual": "관측의 귀속 오류·collector 오결속 가능, nonce는 서명 아님"
+    },
+    {
+      "id": "T2-06",
+      "failure": "STOP 뒤 in-flight 도착",
+      "checks": [
+        "LOCAL_ROOT_STOP_CAS",
+        "CANCEL_QUERY_RECONCILE",
+        "LATE_RESULT_AUDIT_ONLY"
+      ],
+      "residual": "원격 원자 차단·실행된 효과 취소 보장 없음"
+    }
+  ],
+  "evidence": {
+    "levels": [
+      "UNVERIFIED",
+      "OBSERVED",
+      "ATTESTED"
+    ],
+    "aggregate": "MINIMUM_OF_REQUIRED_EVIDENCE",
+    "queued_is_completion": false,
+    "observed_required": [
+      "ACTUAL_SEND_AND_READ_WAIT_INVOCATION_LINK",
+      "SELECTED_AND_QUERIED_TARGET_MATCH",
+      "RETURNED_TARGET_METADATA_NONCONTRADICTORY",
+      "EXACT_INTENT_AND_NONCE_MATCH",
+      "RAW_CAPTURE_REFERENCE_AND_HASH",
+      "VERIFIER_VERSION_AND_CHECK_RESULTS"
+    ],
+    "attested_additional": [
+      "DECLARED_ATTESTOR_TRUST_ROOT",
+      "CALLER_TARGET_INVOCATION_RESULT_ATTESTATION",
+      "VALID_ATTESTATION_VERIFICATION"
+    ],
+    "capture_implemented": false,
+    "raw_provider_ids_in_git": false,
+    "missing_capture_link": "UNVERIFIED",
+    "content_match_alone": "INSUFFICIENT",
+    "hash_is_identity_proof": false
+  },
+  "receipt": {
+    "required_fields": [
+      "receipt_id",
+      "assurance",
+      "contract_sha256",
+      "acceptance_bundle_sha256",
+      "risk_decision_ref",
+      "task_id",
+      "request_id",
+      "run_generation",
+      "work_spec_revision",
+      "required_leg_receipt_refs",
+      "required_assignment_result_refs",
+      "quality_result_ref",
+      "human_room_publication_ref",
+      "blockers",
+      "pending_effects",
+      "stop_state",
+      "aggregate_verifier_ref",
+      "limitations"
+    ],
+    "leg_required_fields": [
+      "leg_id",
+      "logical_source",
+      "logical_target",
+      "binding_generation",
+      "assignment_id",
+      "route_id",
+      "delivery_token_ref",
+      "payload_sha256",
+      "nonce_ref",
+      "assurance",
+      "event_kind",
+      "capture_ref",
+      "capture_sha256",
+      "verifier_sha256",
+      "check_results"
+    ],
+    "raw_runtime_only": [
+      "provider_thread_ref",
+      "tool_raw_result",
+      "prepared_prompt"
+    ],
+    "allowed_event_kinds": [
+      "APP_QUEUED",
+      "OBSERVED_ACK",
+      "OBSERVED_RESULT",
+      "ATTESTED_ACK",
+      "ATTESTED_RESULT"
+    ],
+    "human_publication_is_human_approval": false
+  },
+  "completion": {
+    "observed_status": "OBSERVED_ROUNDTRIP_COMPLETE",
+    "requires": [
+      "PRE_PILOT_EXACT_REDUCED_TRUST_DECISION",
+      "FORMAL_REVIEW_AND_EXACT_ACTIVATION",
+      "ALL_REQUIRED_LEGS_AT_LEAST_OBSERVED",
+      "CURRENT_RUN_REQUIRED_ASSIGNMENTS_VALID",
+      "QUALITY_RESULT_VALID",
+      "HUMAN_ROOM_PUBLICATION_OBSERVED",
+      "NO_BLOCKER_PENDING_UNKNOWN_DELIVERY_OR_STOP"
+    ],
+    "meets_initial_functional_goal_without_decision": false,
+    "satisfies_strict_ack_or_completed": false,
+    "all_11_roles_in_single_task_required": false,
+    "roles_connection_check_separate": true,
+    "implementation_status": "NOT_IMPLEMENTED"
+  },
+  "contamination": {
+    "event": "REVOKED_BY_EVIDENCE",
+    "dependent_state": "INVALIDATED_PENDING_RECONCILIATION",
+    "propagate_to": [
+      "LEG",
+      "ASSIGNMENT_VALIDATION",
+      "AGGREGATE_RESULT",
+      "HUMAN_SUMMARY",
+      "COMPLETION"
+    ],
+    "preserve_originals": true,
+    "reset_effect_to_unexecuted": false,
+    "unknown_impact": "QUARANTINE_TASK",
+    "blind_retry": false,
+    "notify_human_correction": true
+  },
+  "gates": {
+    "current_strict_gate_bypass": false,
+    "scope001_promoted": false,
+    "host_binding_available": false,
+    "local_verify_required": "PINNED_WORKING_INPUTS_AND_REVIEWED_FAILURE_DISPOSITION",
+    "known_failure_is_pass": false
+  },
+  "tests": [
+    {
+      "case_id": "T2-01",
+      "status": "NOT_EXECUTED",
+      "mock_counts_as_live": false
+    },
+    {
+      "case_id": "T2-02",
+      "status": "NOT_EXECUTED",
+      "mock_counts_as_live": false
+    },
+    {
+      "case_id": "T2-03",
+      "status": "NOT_EXECUTED",
+      "mock_counts_as_live": false
+    },
+    {
+      "case_id": "T2-04",
+      "status": "NOT_EXECUTED",
+      "mock_counts_as_live": false
+    },
+    {
+      "case_id": "T2-05",
+      "status": "NOT_EXECUTED",
+      "mock_counts_as_live": false
+    },
+    {
+      "case_id": "T2-06",
+      "status": "NOT_EXECUTED",
+      "mock_counts_as_live": false
+    },
+    {
+      "case_id": "T2-07_ASSURANCE_DOWNGRADE",
+      "status": "NOT_EXECUTED",
+      "mock_counts_as_live": false
+    },
+    {
+      "case_id": "T2-08_CONTAMINATION_REOPEN",
+      "status": "NOT_EXECUTED",
+      "mock_counts_as_live": false
+    }
+  ],
+  "candidate_phase_gates": [
+    {
+      "id": "T2-SPEC-REVIEW",
+      "depends_on": [],
+      "requires": [
+        "EXACT_THREAT_RECEIPT_STATE_ACCEPTANCE_BUNDLE_REVIEW"
+      ],
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "id": "T2-ADOPT",
+      "depends_on": [
+        "T2-SPEC-REVIEW"
+      ],
+      "requires": [
+        "HUMAN_PRE_PILOT_REDUCED_TRUST_DECISION"
+      ],
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "id": "T2-LOCAL",
+      "depends_on": [
+        "T2-ADOPT"
+      ],
+      "requires": [
+        "LOCAL_CORE_ADMISSION",
+        "T2_01_TO_08_ACTUAL_LOCAL_TEST_EVIDENCE"
+      ],
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "id": "T2-OBSERVATION-FEASIBILITY",
+      "depends_on": [
+        "T2-SPEC-REVIEW"
+      ],
+      "requires": [
+        "NEW_DECLARED_SCOPE",
+        "ACTUAL_CAPTURE_LINK_PROVENANCE_EVIDENCE"
+      ],
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "id": "T2-PROBE",
+      "depends_on": [
+        "T2-LOCAL",
+        "T2-OBSERVATION-FEASIBILITY"
+      ],
+      "requires": [
+        "SEPARATE_STATE_AND_VERIFIER_VERSION",
+        "FORMAL_REVIEW_AND_EXACT_PROBE_ACTIVATION",
+        "OBSERVED_ACK_ONLY_REAL_PROBE"
+      ],
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "id": "T2-ROUNDTRIP",
+      "depends_on": [
+        "T2-PROBE"
+      ],
+      "requires": [
+        "EXACT_PILOT_CAPABILITY",
+        "ALL_REQUIRED_LEG_RESULTS",
+        "HUMAN_ROOM_PUBLICATION",
+        "SEPARATE_11_ROLE_CONNECTION_EVIDENCE",
+        "CONTAMINATION_AND_STOP_RECOVERY_EVIDENCE"
+      ],
+      "status": "NOT_EXECUTED"
+    }
+  ]
+}
