@@ -20,7 +20,7 @@ import {
   stockStateOf,
   STOCK_STATE_LABEL,
 } from '@margincook/core';
-import { COLOR, T, won } from '@/theme/tokens';
+import { COLOR, T, won, space } from '@/theme/tokens';
 import { clampDecimals } from '@/lib/num';
 import { useIngredientList } from '@/features/ingredients/hooks';
 import { dispUnit } from '@/features/ingredients/ledger';
@@ -74,7 +74,7 @@ export default function RecipeIngredientSearchScreen() {
 
       <SearchBar value={query} onChange={setQuery} placeholder="식재료 이름으로 검색" />
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 32, gap: 10 }}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 32, gap: space.sm }}>
                   <QueryState
             isLoading={ingredients.isLoading}
             error={ingredients.error}
@@ -93,7 +93,7 @@ export default function RecipeIngredientSearchScreen() {
                   accessibilityRole="button" accessibilityLabel={`${g.name} 담기`}
                 >
                   <Card pad={0} style={{ overflow: 'hidden' }}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 11, paddingVertical: 13, paddingHorizontal: 15 }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 11, paddingVertical: space.md, paddingHorizontal: space.md }}>
                       <View style={{ flex: 1, minWidth: 0 }}>
                         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
                           <Text style={{ fontSize: 16, fontWeight: '800', letterSpacing: -0.3, color: T.ink }} numberOfLines={1}>{g.name}</Text>
@@ -107,7 +107,7 @@ export default function RecipeIngredientSearchScreen() {
                             <Badge tone="red" solid sm>{STOCK_STATE_LABEL[stockStateOf(g)].label}</Badge>
                           ) : null}
                         </View>
-                        <Text style={[{ fontSize: 14, color: T.sub2, marginTop: 6, fontWeight: '600' }, NUM]}>
+                        <Text style={[{ fontSize: 14, color: T.sub2, marginTop: space.sm, fontWeight: '600' }, NUM]}>
                           {g.basePrice === null ? '단가 산출 전' : `기준 단가 ${formatUnitPrice(g.basePrice, unit)}`}
                           {'  ·  '}재고{' '}
                           <Text style={{ color: isNegativeStock(g.stockTotal) ? T.red : T.sub2, fontWeight: '800' }}>
@@ -154,7 +154,7 @@ export default function RecipeIngredientSearchScreen() {
                     ? `${(Number(qty) || 0) / servings}인분`
                     : formatQuantity((Number(qty) || 0) / servings, pending.unit)} · ${won(Math.round(((Number(qty) || 0) / servings) * pending.unitPrice))}원`}
             </Text>
-            <View style={{ flexDirection: 'row', gap: 9 }}>
+            <View style={{ flexDirection: 'row', gap: space.sm }}>
               <View style={{ flex: 1 }}><Button kind="ghost" size="lg" full onPress={() => setPending(null)}>취소</Button></View>
               <View style={{ flex: 2 }}>
                 <Button kind="primary" size="lg" full disabled={!(Number(qty) > 0)} onPress={confirm}>담기</Button>

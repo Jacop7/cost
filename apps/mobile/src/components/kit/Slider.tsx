@@ -5,7 +5,7 @@
  */
 import { useRef, useState } from 'react';
 import { PanResponder, View } from 'react-native';
-import { COLOR, T } from '@/theme/tokens';
+import { COLOR, T, radius } from '@/theme/tokens';
 
 export function Slider({ value, min, max, step = 1, onChange, color = COLOR.action.primary }: {
   value: number;
@@ -42,12 +42,12 @@ export function Slider({ value, min, max, step = 1, onChange, color = COLOR.acti
       onLayout={(e) => { wRef.current = e.nativeEvent.layout.width; setW(e.nativeEvent.layout.width); }}
       style={{ height: 28, justifyContent: 'center' }}
     >
-      <View pointerEvents="none" style={{ height: 6, borderRadius: 3, backgroundColor: T.line2 }}>
-        <View style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: `${pct * 100}%`, borderRadius: 3, backgroundColor: color }} />
+      <View pointerEvents="none" style={{ height: 6, borderRadius: radius.full, backgroundColor: T.line2 }}>
+        <View style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: `${pct * 100}%`, borderRadius: radius.full, backgroundColor: color }} />
       </View>
       <View
         pointerEvents="none"
-        style={{ position: 'absolute', left: Math.max(0, pct * w - 13), width: 26, height: 26, borderRadius: 13, backgroundColor: '#fff', borderWidth: 2, borderColor: color, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.2, shadowRadius: 6, elevation: 3 }}
+        style={{ position: 'absolute', left: Math.max(0, pct * w - 13), width: 26, height: 26, borderRadius: radius.md, backgroundColor: '#fff', borderWidth: 2, borderColor: color, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.2, shadowRadius: 6, elevation: 3 }}
       />
     </View>
   );

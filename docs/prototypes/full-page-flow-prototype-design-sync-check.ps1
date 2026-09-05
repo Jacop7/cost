@@ -594,9 +594,13 @@ foreach ($fileName in @($auditName, $auditScriptName, 'full-page-flow-prototype-
     'full-page-flow-prototype-contrast-contract.json', 'full-page-flow-prototype-contrast-gate.mjs',
     'full-page-flow-prototype-contrast-gate.json',
     'full-page-flow-prototype-color-usage.json', 'full-page-flow-prototype-s2-geometry-diff.json',
+    'full-page-flow-prototype-s3a-diff.json',
     '../../scripts/design-token-color-usage-known.json', '../../scripts/design-token-color-usage.mjs',
     '../../scripts/design-token-color-usage.test.mjs', '../../scripts/design-token-geometry-diff.mjs',
-    '../../scripts/design-token-geometry-diff.test.mjs',
+    '../../scripts/design-token-geometry-diff.test.mjs', '../../scripts/design-token-s3a-known.json',
+    '../../scripts/design-token-s3a-diff.mjs', '../../scripts/design-token-s3a-diff.test.mjs',
+    '../../scripts/touch-target-known.json', '../../scripts/touch-target-audit.mjs',
+    '../../scripts/touch-target-audit.test.mjs',
     '../디자인-토큰-3계층-값-매핑-기획서.md')) {
   $contents = Read-Utf8 (Join-Path $PrototypeDirectory $fileName)
   if ($null -ne $contents) { $hashes[$fileName] = Get-Sha256 $contents }

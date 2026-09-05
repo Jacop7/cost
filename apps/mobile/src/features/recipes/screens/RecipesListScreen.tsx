@@ -9,7 +9,7 @@ import { Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Badge, Card, Chip, FAB, Icon, QueryState, ScrollTabs, SearchBar, Sheet } from '@/components/kit';
-import { COLOR, T, won } from '@/theme/tokens';
+import { COLOR, T, won, radius, space } from '@/theme/tokens';
 import { formatPercent } from '@margincook/core';
 import { useSettingsLists } from '@/features/master-data/hooks';
 import { useRecipeList, type RecipeRow } from '../hooks';
@@ -60,7 +60,7 @@ function RecipeCard({ r, onPress }: { r: RecipeRow; onPress: () => void }) {
   return (
     <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={`${r.name} 상세`}>
       <Card pad={0} style={{ overflow: 'hidden', opacity: stopped || short ? 0.55 : 1 }}>
-        <View style={{ paddingVertical: 15, paddingHorizontal: 16 }}>
+        <View style={{ paddingVertical: space.md, paddingHorizontal: 16 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7, marginBottom: 12 }}>
             {stopped ? null : warn ? <Badge tone="red" solid sm>목표 미달</Badge> : <Badge tone="green" solid sm>목표 달성</Badge>}
             <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', letterSpacing: -0.3, color: T.ink }} numberOfLines={1}>{r.name}</Text>
@@ -69,15 +69,15 @@ function RecipeCard({ r, onPress }: { r: RecipeRow; onPress: () => void }) {
             {r.categoryName ? <Badge tone="neutral" sm>{r.categoryName}</Badge> : null}
           </View>
 
-          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 9 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: space.sm }}>
             <Text style={{ flex: 1, fontSize: 14, fontWeight: '700', color: T.sub }}>판매가</Text>
             <Text style={[{ fontSize: 14, fontWeight: '800', color: T.ink }, NUM]}>{won(r.price)}원</Text>
           </View>
 
-          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 9 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: space.sm }}>
             <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub }}>순이익</Text>
             {!stopped ? (
-              <View style={{ marginLeft: 6, paddingVertical: 2, paddingHorizontal: 7, borderRadius: 6, backgroundColor: T.line2 }}>
+              <View style={{ marginLeft: 6, paddingVertical: space.xs, paddingHorizontal: 7, borderRadius: radius.sm, backgroundColor: T.line2 }}>
                 <Text style={[{ fontSize: 14, fontWeight: '700', color: T.sub }, NUM]}>목표 {r.targetProfitRate}%</Text>
               </View>
             ) : null}
@@ -94,7 +94,7 @@ function RecipeCard({ r, onPress }: { r: RecipeRow; onPress: () => void }) {
 
           {/* 단가가 없는 재료는 원가에서 조용히 빠진다. 숨기면 순이익이 부풀려 보인다. */}
           {r.unknownCostLines > 0 ? (
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5, marginTop: 9, paddingVertical: 8, paddingHorizontal: 10, borderRadius: 8, backgroundColor: T.amberTint }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.xs, marginTop: space.sm, paddingVertical: 8, paddingHorizontal: space.sm, borderRadius: 8, backgroundColor: T.amberTint }}>
               <Icon name="warn" size={14} color={T.amberText} />
               <Text style={{ flex: 1, fontSize: 14, fontWeight: '600', color: T.amberText }}>
                 단가 없는 재료 {r.unknownCostLines}개가 원가에서 빠져 있어요
@@ -154,7 +154,7 @@ export default function RecipesListScreen() {
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <View style={{ paddingTop: insets.top, backgroundColor: T.bg }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 20, paddingRight: 12, paddingTop: 6, paddingBottom: 12 }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 20, paddingRight: 12, paddingTop: space.sm, paddingBottom: 12 }}>
           <Text style={{ flex: 1, fontSize: 22, fontWeight: '800', color: T.ink, letterSpacing: -0.6 }}>레시피</Text>
           <Pressable
             onPress={() => setSearching((v) => !v)}
@@ -189,7 +189,7 @@ export default function RecipesListScreen() {
         <Chip active={targetFilter !== 'all'} onPress={() => setTargetOpen(true)}>{targetLabel}</Chip>
       </ScrollView>
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 104, gap: 10 }}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 104, gap: space.sm }}>
         <QueryState
           isLoading={recipes.isLoading}
           error={recipes.error}
@@ -214,7 +214,7 @@ export default function RecipesListScreen() {
             onPress={() => { setSort(s.key); setSortOpen(false); }}
             accessibilityRole="button" accessibilityLabel={s.label}
             accessibilityState={{ selected: sort === s.key }}
-            style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 15, paddingHorizontal: 4 }}
+            style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: 4 }}
           >
             <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: sort === s.key ? COLOR.state.selectedText : T.ink }}>{s.label}</Text>
             {sort === s.key ? <Icon name="check" size={18} color={COLOR.action.primary} sw={2.4} /> : null}
@@ -230,7 +230,7 @@ export default function RecipesListScreen() {
             onPress={() => { setStatusFilter(s.key); setStatusOpen(false); }}
             accessibilityRole="button" accessibilityLabel={s.label}
             accessibilityState={{ selected: statusFilter === s.key }}
-            style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 15, paddingHorizontal: 4 }}
+            style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: 4 }}
           >
             <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: statusFilter === s.key ? COLOR.state.selectedText : T.ink }}>{s.label}</Text>
             {statusFilter === s.key ? <Icon name="check" size={18} color={COLOR.action.primary} sw={2.4} /> : null}
@@ -246,7 +246,7 @@ export default function RecipesListScreen() {
             onPress={() => { setTargetFilter(s.key); setTargetOpen(false); }}
             accessibilityRole="button" accessibilityLabel={s.label}
             accessibilityState={{ selected: targetFilter === s.key }}
-            style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 15, paddingHorizontal: 4 }}
+            style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: 4 }}
           >
             <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: targetFilter === s.key ? COLOR.state.selectedText : T.ink }}>{s.label}</Text>
             {targetFilter === s.key ? <Icon name="check" size={18} color={COLOR.action.primary} sw={2.4} /> : null}

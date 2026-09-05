@@ -15,7 +15,7 @@
 import { Pressable, Text, View } from 'react-native';
 import { Icon } from '@/components/kit';
 import { formatQuantity, formatUnitPrice } from '@margincook/core';
-import { COLOR, T, tnum } from '@/theme/tokens';
+import { COLOR, T, tnum, TYPE, radius, space } from '@/theme/tokens';
 import { packSummary } from '@/lib/num';
 
 export interface InboundRecord {
@@ -52,17 +52,17 @@ export function BasePriceCard({
   return (
     <View style={{ backgroundColor: T.surface, borderRadius: 16, overflow: 'hidden', borderWidth: 1, borderColor: T.line }}>
       {/* 헤더 */}
-      <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 13, paddingHorizontal: 16, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: 16, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
         <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.sub }}>기준 단가</Text>
         <Text style={{ fontSize: 14, color: COLOR.text.tertiary, fontWeight: '600' }}>입고 {purchase.count}건 기준</Text>
       </View>
 
       {/* 값 */}
-      <View style={{ paddingHorizontal: 16, paddingTop: 14, paddingBottom: 16 }}>
+      <View style={{ paddingHorizontal: 16, paddingTop: space.md, paddingBottom: 16 }}>
         <View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between' }}>
           <View>
             <Text style={{ fontSize: 14, color: COLOR.text.tertiary, fontWeight: '600' }}>실입고 기준</Text>
-            <Text style={[{ fontSize: 22, fontWeight: '800', color: basePrice === null ? COLOR.text.tertiary : COLOR.text.accent, marginTop: 2 }, tnum]}>
+            <Text style={[{ fontSize: 22, fontWeight: '800', color: basePrice === null ? COLOR.text.tertiary : COLOR.text.accent, marginTop: space.xs }, tnum]}>
               {basePrice === null ? '산출 전' : formatUnitPrice(basePrice, unit)}
             </Text>
           </View>
@@ -75,7 +75,7 @@ export function BasePriceCard({
         </View>
 
         {purchase.count > 0 ? (
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 18, marginTop: 13, paddingTop: 13, borderTopWidth: 1, borderTopColor: T.line2 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.lg, marginTop: space.md, paddingTop: space.md, borderTopWidth: 1, borderTopColor: T.line2 }}>
             {([
               ['최저', purchase.low, COLOR.text.accent],
               ['최고', purchase.high, T.red],
@@ -89,7 +89,7 @@ export function BasePriceCard({
             ))}
           </View>
         ) : (
-          <Text style={{ fontSize: 14, color: COLOR.text.tertiary, lineHeight: 20, marginTop: 13, paddingTop: 13, borderTopWidth: 1, borderTopColor: T.line2 }}>
+          <Text style={{ fontSize: 14, color: COLOR.text.tertiary, lineHeight: TYPE.caption.lineHeight, marginTop: space.md, paddingTop: space.md, borderTopWidth: 1, borderTopColor: T.line2 }}>
             입고 기록이 없어 단가를 낼 수 없어요. 재고 추가나 발주 → 입고를 등록하면 자동으로 계산돼요.
           </Text>
         )}
@@ -99,7 +99,7 @@ export function BasePriceCard({
       {priced.length > 0 ? (
         <>
           <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12, paddingHorizontal: 16, backgroundColor: T.surface2, borderTopWidth: 1, borderBottomWidth: 1, borderColor: T.line2 }}>
-            <Text style={{ flex: 1, fontSize: 15, fontWeight: '800', color: T.sub }}>최근 입고</Text>
+            <Text style={{ flex: 1, fontSize: TYPE.caption.fontSize, fontWeight: '800', color: T.sub }}>최근 입고</Text>
             <Text style={{ fontSize: 13, color: COLOR.text.tertiary, fontWeight: '600' }}>단가 계산에 포함된 기록</Text>
           </View>
 
@@ -133,7 +133,7 @@ export function BasePriceCard({
                     ) : null}
                     <View style={{ flex: 1 }} />
                     {isLow || isHigh ? (
-                      <View style={{ paddingHorizontal: 6, paddingVertical: 2, borderRadius: 5, backgroundColor: isHigh ? T.redTint : COLOR.action.primaryTint }}>
+                      <View style={{ paddingHorizontal: 6, paddingVertical: space.xs, borderRadius: radius.sm, backgroundColor: isHigh ? T.redTint : COLOR.action.primaryTint }}>
                         <Text style={{ fontSize: 12, fontWeight: '700', color: isHigh ? T.red : COLOR.text.accent }}>
                           {isHigh ? '최고' : '최저'}
                         </Text>
@@ -142,7 +142,7 @@ export function BasePriceCard({
                   </View>
 
                   {/* 2줄 — 어디서 · 얼마에. 붙어 있어야 비교가 된다. */}
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 3 }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, marginTop: space.xs }}>
                     <Text style={{ flex: 1, minWidth: 0, fontSize: 16, fontWeight: '700', color: T.ink }} numberOfLines={1}>
                       {o.vendorName ?? '거래처 미지정'}
                     </Text>
@@ -152,7 +152,7 @@ export function BasePriceCard({
                   </View>
 
                   {/* 3줄 — 무엇을 얼마어치. 부분 입고면 그 사실만 오른쪽에 덧붙인다. */}
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 2 }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, marginTop: 2 }}>
                     <Text style={[{ flex: 1, minWidth: 0, fontSize: 14, color: T.sub2 }, tnum]}>
                       {packSummary({
                         volume: o.volume, qty: o.qty, receivedQty: o.receivedQty, amount: o.amount,
@@ -175,7 +175,7 @@ export function BasePriceCard({
       <Pressable
         onPress={onSeeAll}
         accessibilityRole="button" accessibilityLabel="입고 이력 전체 보기"
-        style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 2, paddingVertical: 13, borderTopWidth: 1, borderTopColor: T.line2, backgroundColor: T.surface2 }}
+        style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 2, paddingVertical: space.md, borderTopWidth: 1, borderTopColor: T.line2, backgroundColor: T.surface2 }}
       >
         <Text style={{ fontSize: 15, fontWeight: '700', color: T.sub }}>입고 이력 전체보기</Text>
         <Icon name="chevron" size={16} color={COLOR.text.tertiary} />

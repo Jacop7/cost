@@ -2,27 +2,27 @@
   "manifest": {
     "script": "docs/prototypes/full-page-flow-prototype-axis-measure.mjs",
     "scriptSha256": "60277bdb6a873128565368cd88bc6d99f95dc823a95a8b651bf78ef68312a987",
-    "auditSha256": "b8163d3f97a5fab13995232dd7d314d1f7313bef42b91afd1bd286c65d691df3",
-    "auditCanon": "9f42f6b8b3b10413c10f27fd07ae9dd635f24b52aa9e7df29491b44d254d1f07",
+    "auditSha256": "9c4747db2b71af948b3bd4c63a3cd1ba93163a81dddc43b5bf075ba3b5ee4cc5",
+    "auditCanon": "96869ff6d7a5af07c4700ca9c246dfde2c4363a5dbf8ba458c74374a789ab0fd",
     "audit결속": {
-      "expectCommit": "bd4f0a0",
-      "범위해시": "4c6b9384e5283c7a1f3177015b854667e4646ad7013dbd9f51f860cd2f12bef4",
+      "expectCommit": "f5cacba848e59f1e9b7e671d0c43d83f0efaa762",
+      "범위해시": "e216cb323aac44b94732629e4db3f019e2290ccef38d20a1ff4091086f14111f",
       "범위해시정의": "선택된 파일의 \"경로\\0 git blob SHA\" 를 정렬해 잇고 감사 스크립트 자신의 blob SHA 를 더해 sha256. blob SHA 는 CRLF→LF 정규화 뒤 직접 계산하므로 OS·git 유무에 좌우되지 않는다(페이블 R6 차단). 커밋 SHA 자기참조 없이 입력을 결속한다."
     },
     "values": "전부",
     "node": "v24.15.0",
-    "generatedAt": "2026-09-05T13:40:26.168Z",
+    "generatedAt": "2026-09-05T21:25:13.072Z",
     "판정": "축은 값이 아니라 속성과 컨테이너 flexDirection 으로 정한다 (PRT-207)."
   },
   "counts": {
     "V": 1120,
     "H": 1471,
     "both": 855,
-    "none": 220,
+    "none": 200,
     "keysV": 1120,
     "keysH": 1470,
     "keysBoth": 854,
-    "keysNone": 206
+    "keysNone": 196
   },
   "growV": [
     "apps/mobile/app/(tabs)/_layout.tsx:32:paddingTop",
@@ -1173,8 +1173,8 @@
     "apps/mobile/src/components/kit/AppHeader.tsx:37:gap",
     "apps/mobile/src/components/kit/AppHeader.tsx:37:paddingRight",
     "apps/mobile/src/components/kit/Button.tsx:56:gap",
-    "apps/mobile/src/components/kit/Button.tsx:67:fontWeight",
-    "apps/mobile/src/components/kit/Button.tsx:67:letterSpacing",
+    "apps/mobile/src/components/kit/Button.tsx:68:fontWeight",
+    "apps/mobile/src/components/kit/Button.tsx:68:letterSpacing",
     "apps/mobile/src/components/kit/MemoEditSheet.tsx:47:gap",
     "apps/mobile/src/components/kit/QueryState.tsx:18:paddingHorizontal",
     "apps/mobile/src/components/kit/QueryState.tsx:48:fontWeight",
@@ -3561,19 +3561,9 @@
     "apps/mobile/src/features/my/screens/FixedCostEditScreen.tsx:255:borderRadius",
     "apps/mobile/src/features/my/screens/FixedCostEditScreen.tsx:261:borderRadius",
     "apps/mobile/src/features/my/screens/MyAccountScreen.tsx:54:borderRadius",
-    "apps/mobile/src/features/my/screens/MyCategoryHubScreen.tsx:18:hex",
-    "apps/mobile/src/features/my/screens/MyCategoryHubScreen.tsx:19:hex",
-    "apps/mobile/src/features/my/screens/MyCategoryHubScreen.tsx:20:hex",
     "apps/mobile/src/features/my/screens/MyCategoryHubScreen.tsx:43:borderRadius",
     "apps/mobile/src/features/my/screens/MyHomeScreen.tsx:116:borderRadius",
     "apps/mobile/src/features/my/screens/MyHomeScreen.tsx:129:borderRadius",
-    "apps/mobile/src/features/my/screens/MyHomeScreen.tsx:24:hex",
-    "apps/mobile/src/features/my/screens/MyHomeScreen.tsx:25:hex",
-    "apps/mobile/src/features/my/screens/MyHomeScreen.tsx:26:hex",
-    "apps/mobile/src/features/my/screens/MyHomeScreen.tsx:27:hex",
-    "apps/mobile/src/features/my/screens/MyHomeScreen.tsx:28:hex",
-    "apps/mobile/src/features/my/screens/MyHomeScreen.tsx:29:hex",
-    "apps/mobile/src/features/my/screens/MyHomeScreen.tsx:30:hex",
     "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:378:borderRadius",
     "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:425:borderRadius",
     "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:442:borderRadius",
@@ -4100,7 +4090,7 @@
       "why": "flexDirection: iconRight ? 'row-reverse' : 'row'"
     },
     {
-      "key": "apps/mobile/src/components/kit/Button.tsx:67:fontWeight",
+      "key": "apps/mobile/src/components/kit/Button.tsx:68:fontWeight",
       "value": 700,
       "prop": "fontWeight",
       "group": "typography",
@@ -4108,7 +4098,7 @@
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
     },
     {
-      "key": "apps/mobile/src/components/kit/Button.tsx:67:letterSpacing",
+      "key": "apps/mobile/src/components/kit/Button.tsx:68:letterSpacing",
       "value": -0.2,
       "prop": "letterSpacing",
       "group": "typography",
@@ -13548,54 +13538,6 @@
       "why": "flexDirection: 'row'"
     },
     {
-      "key": "apps/mobile/src/features/my/screens/MyCategoryHubScreen.tsx:18:hex",
-      "value": null,
-      "prop": "hex",
-      "group": "color",
-      "axis": "N",
-      "why": "색은 레이아웃을 밀지 않는다 — 축이 없다"
-    },
-    {
-      "key": "apps/mobile/src/features/my/screens/MyCategoryHubScreen.tsx:18:hex",
-      "value": null,
-      "prop": "hex",
-      "group": "color",
-      "axis": "N",
-      "why": "색은 레이아웃을 밀지 않는다 — 축이 없다"
-    },
-    {
-      "key": "apps/mobile/src/features/my/screens/MyCategoryHubScreen.tsx:19:hex",
-      "value": null,
-      "prop": "hex",
-      "group": "color",
-      "axis": "N",
-      "why": "색은 레이아웃을 밀지 않는다 — 축이 없다"
-    },
-    {
-      "key": "apps/mobile/src/features/my/screens/MyCategoryHubScreen.tsx:19:hex",
-      "value": null,
-      "prop": "hex",
-      "group": "color",
-      "axis": "N",
-      "why": "색은 레이아웃을 밀지 않는다 — 축이 없다"
-    },
-    {
-      "key": "apps/mobile/src/features/my/screens/MyCategoryHubScreen.tsx:20:hex",
-      "value": null,
-      "prop": "hex",
-      "group": "color",
-      "axis": "N",
-      "why": "색은 레이아웃을 밀지 않는다 — 축이 없다"
-    },
-    {
-      "key": "apps/mobile/src/features/my/screens/MyCategoryHubScreen.tsx:20:hex",
-      "value": null,
-      "prop": "hex",
-      "group": "color",
-      "axis": "N",
-      "why": "색은 레이아웃을 밀지 않는다 — 축이 없다"
-    },
-    {
       "key": "apps/mobile/src/features/my/screens/MyCategoryHubScreen.tsx:26:paddingHorizontal",
       "value": 16,
       "prop": "paddingHorizontal",
@@ -13898,118 +13840,6 @@
       "group": "spacing",
       "axis": "V",
       "why": "속성이 세로다"
-    },
-    {
-      "key": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx:24:hex",
-      "value": null,
-      "prop": "hex",
-      "group": "color",
-      "axis": "N",
-      "why": "색은 레이아웃을 밀지 않는다 — 축이 없다"
-    },
-    {
-      "key": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx:24:hex",
-      "value": null,
-      "prop": "hex",
-      "group": "color",
-      "axis": "N",
-      "why": "색은 레이아웃을 밀지 않는다 — 축이 없다"
-    },
-    {
-      "key": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx:25:hex",
-      "value": null,
-      "prop": "hex",
-      "group": "color",
-      "axis": "N",
-      "why": "색은 레이아웃을 밀지 않는다 — 축이 없다"
-    },
-    {
-      "key": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx:25:hex",
-      "value": null,
-      "prop": "hex",
-      "group": "color",
-      "axis": "N",
-      "why": "색은 레이아웃을 밀지 않는다 — 축이 없다"
-    },
-    {
-      "key": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx:26:hex",
-      "value": null,
-      "prop": "hex",
-      "group": "color",
-      "axis": "N",
-      "why": "색은 레이아웃을 밀지 않는다 — 축이 없다"
-    },
-    {
-      "key": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx:26:hex",
-      "value": null,
-      "prop": "hex",
-      "group": "color",
-      "axis": "N",
-      "why": "색은 레이아웃을 밀지 않는다 — 축이 없다"
-    },
-    {
-      "key": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx:27:hex",
-      "value": null,
-      "prop": "hex",
-      "group": "color",
-      "axis": "N",
-      "why": "색은 레이아웃을 밀지 않는다 — 축이 없다"
-    },
-    {
-      "key": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx:27:hex",
-      "value": null,
-      "prop": "hex",
-      "group": "color",
-      "axis": "N",
-      "why": "색은 레이아웃을 밀지 않는다 — 축이 없다"
-    },
-    {
-      "key": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx:28:hex",
-      "value": null,
-      "prop": "hex",
-      "group": "color",
-      "axis": "N",
-      "why": "색은 레이아웃을 밀지 않는다 — 축이 없다"
-    },
-    {
-      "key": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx:28:hex",
-      "value": null,
-      "prop": "hex",
-      "group": "color",
-      "axis": "N",
-      "why": "색은 레이아웃을 밀지 않는다 — 축이 없다"
-    },
-    {
-      "key": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx:29:hex",
-      "value": null,
-      "prop": "hex",
-      "group": "color",
-      "axis": "N",
-      "why": "색은 레이아웃을 밀지 않는다 — 축이 없다"
-    },
-    {
-      "key": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx:29:hex",
-      "value": null,
-      "prop": "hex",
-      "group": "color",
-      "axis": "N",
-      "why": "색은 레이아웃을 밀지 않는다 — 축이 없다"
-    },
-    {
-      "key": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx:30:hex",
-      "value": null,
-      "prop": "hex",
-      "group": "color",
-      "axis": "N",
-      "why": "색은 레이아웃을 밀지 않는다 — 축이 없다"
-    },
-    {
-      "key": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx:30:hex",
-      "value": null,
-      "prop": "hex",
-      "group": "color",
-      "axis": "N",
-      "why": "색은 레이아웃을 밀지 않는다 — 축이 없다"
     },
     {
       "key": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx:107:paddingLeft",

@@ -2,7 +2,7 @@
 import React from 'react';
 import { View, Text, Pressable } from 'react-native';
 import { Card, Badge } from '../../../components/kit';
-import { COLOR, T, tnum } from '../../../theme/tokens';
+import { COLOR, T, tnum, space } from '../../../theme/tokens';
 import {
   belowSafety,
   formatQuantity,
@@ -40,7 +40,7 @@ export function IngCard({ g, onPress }: { g: IngredientRow; onPress?: () => void
   return (
     <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={`${g.name} 상세`}>
       <Card pad={0} style={{ overflow: 'hidden' }}>
-        <View style={{ flex: 1, paddingVertical: 13, paddingHorizontal: 15 }}>
+        <View style={{ flex: 1, paddingVertical: space.md, paddingHorizontal: space.md }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
             <Badge tone={st.tone} solid sm>{st.label}</Badge>
             <Text style={{ fontSize: 16, fontWeight: '800', letterSpacing: -0.3, color: T.ink }} numberOfLines={1}>
@@ -50,7 +50,7 @@ export function IngCard({ g, onPress }: { g: IngredientRow; onPress?: () => void
             {g.categoryName ? <Badge tone="neutral" sm>{g.categoryName}</Badge> : null}
           </View>
 
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7, marginTop: 9 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7, marginTop: space.sm }}>
             {/*
               ⚠ 음수 재고는 **빨강 그대로**다(0102). `0g` 으로 보정하지 않는다 —
                 감추면 입고를 빠뜨렸다는 단서가 화면에서 사라진다.
@@ -69,7 +69,7 @@ export function IngCard({ g, onPress }: { g: IngredientRow; onPress?: () => void
             ) : null}
           </View>
 
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 6 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: space.sm }}>
             {/* 기준단가가 null 이면 '산출 불가'다. 0원으로 그리면 공짜 재료로 읽힌다. */}
             <Text style={[{ fontSize: 14, fontWeight: '700', color: g.basePrice === null ? COLOR.text.tertiary : T.sub }, tnum]}>
               {g.basePrice === null ? '단가 산출 전' : formatUnitPrice(g.basePrice, unit)}

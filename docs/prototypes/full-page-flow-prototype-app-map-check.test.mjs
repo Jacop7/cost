@@ -37,21 +37,22 @@ const run = (mutate = () => {}, eol = '\n') => {
 };
 const rule = (map, id) => map.rules.find(r => r.id === id);
 
-test('기준본은 정의 21건을 분리하고 음수 포함 사용처 3,666건을 다섯 통에 배정한다', () => {
+test('S3a 기준본은 정의 21건을 분리하고 음수 포함 사용처 3,646건을 다섯 통에 배정한다', () => {
   const r = run();
   assert.equal(r.code, 0, r.text);
   assert.deepEqual(r.out.summary.byBin, {
-    primitive: 2063, componentOwned: 227, defect: 1326,
+    primitive: 2063, componentOwned: 228, defect: 1305,
     pendingApproval: 50, approvedException: 0,
   });
-  assert.equal(audit.summary.declarations, 3666);
+  assert.equal(audit.summary.declarations, 3646);
   assert.equal(audit.declarations.filter(d => Number(d.value) < 0).length, 33);
   assert.equal(audit.definitions.total, 21);
   assert.equal(audit.definitions.declarations.filter(d => d.prop === 'lineHeight').length, 7);
   assert.equal(audit.declarations.filter(d => d.layer === 'tokenDefinition').length, 0);
   const per = Object.fromEntries(r.out.summary.perRule.map(x => [x.id, x]));
   assert.equal(per['R-SZ-APPHEADER-ACTION'].declarations, 24);
-  assert.equal(per['R-SZ-CONTROL-SM'].declarations, 20);
+  assert.equal(per['R-SZ-CONTROL-SM-ADJACENT'].declarations, 8);
+  assert.equal(per['R-SZ-CONTROL-SM'].declarations, 12);
   assert.equal(per['R-SZ-CONTROL-MD'].declarations, 10);
   assert.equal(per['R-SZ-ROW-MINH'].declarations, 8);
   assert.equal(per['R-TY-LINEHEIGHT-IMPLICIT'].declarations, 1);
@@ -63,7 +64,7 @@ test('기준본은 정의 21건을 분리하고 음수 포함 사용처 3,666건
   assert.equal(per['R-SP-PROFIT-SECTION-LABEL-OVERLAP'].declarations, 1);
   assert.equal(per['R-TY-LETTERSPACING-TITLE-TIGHT'].declarations, 10);
   assert.equal(per['R-TY-LETTERSPACING-UNDECIDED'].declarations, 15);
-  assert.equal(r.out.summary.multiMatchCount, 918);
+  assert.equal(r.out.summary.multiMatchCount, 927);
 });
 
 test('닫힌 역할을 질문·증거까지 붙여 pendingApproval로 되돌려도 계약이 막는다', () => {

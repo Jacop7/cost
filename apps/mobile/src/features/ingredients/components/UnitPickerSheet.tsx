@@ -2,7 +2,7 @@
 import React from 'react';
 import { View, Text, Pressable } from 'react-native';
 import { Sheet, Icon } from '../../../components/kit';
-import { COLOR, T, FONT } from '../../../theme/tokens';
+import { COLOR, T, FONT, space } from '../../../theme/tokens';
 
 const UNIT_GROUPS: [string, string[]][] = [
   ['무게', ['kg', 'g']],
@@ -37,7 +37,7 @@ export function UnitPickerSheet({
           {groups.map(([label, opts]) => (
             <View key={label}>
               <Text style={{ fontSize: 16, fontWeight: '700', color: T.sub, marginBottom: 8 }}>{label}</Text>
-              <View style={{ flexDirection: 'row', gap: 10 }}>
+              <View style={{ flexDirection: 'row', gap: space.sm }}>
                 {opts.map((u) => {
                   const on = unit === u;
                   return (
@@ -52,7 +52,7 @@ export function UnitPickerSheet({
                         flexDirection: 'row',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        gap: 5,
+                        gap: space.xs,
                         paddingVertical: 16,
                         paddingHorizontal: 4,
                         borderRadius: 12,

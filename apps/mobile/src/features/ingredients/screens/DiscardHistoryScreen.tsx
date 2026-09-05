@@ -18,7 +18,7 @@ import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Badge, Card, Icon, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { formatQuantity } from '@margincook/core';
-import { COLOR, T, tnum, won } from '@/theme/tokens';
+import { COLOR, T, tnum, won, TYPE, radius, space } from '@/theme/tokens';
 import { dispUnit } from '../ledger';
 import { PeriodSheet, periodRange, type HistoryPeriod } from './HistoryFilterSheet';
 import { useStoreLocalDate } from '@/features/business-day/businessDay';
@@ -162,8 +162,8 @@ function DiscardHistoryBody({ localDate }: { localDate: string }) {
                   <View
                     key={e.id}
                     style={{
-                      flexDirection: 'row', alignItems: 'center', gap: 10,
-                      minHeight: 72, paddingVertical: 12, paddingLeft: 14, paddingRight: 12,
+                      flexDirection: 'row', alignItems: 'center', gap: space.sm,
+                      minHeight: 72, paddingVertical: 12, paddingLeft: space.md, paddingRight: 12,
                       borderBottomWidth: i < list.length - 1 ? 1 : 0, borderBottomColor: T.line2,
                     }}
                   >
@@ -176,16 +176,16 @@ function DiscardHistoryBody({ localDate }: { localDate: string }) {
                           {e.waste ? '조리 후' : '조리 전'}
                         </Badge>
                       </View>
-                      <Text style={{ fontSize: 15, fontWeight: '800', color: T.ink, marginTop: 4 }} numberOfLines={1}>
+                      <Text style={{ fontSize: TYPE.caption.fontSize, fontWeight: '800', color: T.ink, marginTop: 4 }} numberOfLines={1}>
                         {e.note ?? (e.waste ? '조리 후 폐기' : '조리 전 폐기')}
                       </Text>
                     </View>
                     <View style={{ alignItems: 'flex-end' }}>
-                      <Text style={[{ fontSize: 15, fontWeight: '800', color: T.red }, tnum]}>
+                      <Text style={[{ fontSize: TYPE.caption.fontSize, fontWeight: '800', color: T.red }, tnum]}>
                         −{formatQuantity(Math.abs(e.countDelta), unit)}
                       </Text>
                       {price !== null ? (
-                        <Text style={[{ fontSize: 12, color: COLOR.text.tertiary, fontWeight: '700', marginTop: 3 }, tnum]}>
+                        <Text style={[{ fontSize: 12, color: COLOR.text.tertiary, fontWeight: '700', marginTop: space.xs }, tnum]}>
                           {won(Math.round(Math.abs(e.countDelta) * price))}원
                         </Text>
                       ) : null}
@@ -217,11 +217,11 @@ function DiscardHistoryBody({ localDate }: { localDate: string }) {
       {/* 유형 선택 — 기간 시트와 같은 하단 시트. 같은 자리에서 같은 모양이어야 한다. */}
       <Modal visible={tabOpen} transparent animationType="fade" onRequestClose={() => setTabOpen(false)} statusBarTranslucent>
         <Pressable onPress={() => setTabOpen(false)} accessibilityRole="button" accessibilityLabel="닫기" style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: T.scrim }}>
-          <View onStartShouldSetResponder={() => true} style={{ backgroundColor: T.surface, borderTopLeftRadius: 20, borderTopRightRadius: 20, paddingHorizontal: 20, paddingTop: 10, paddingBottom: 26 }}>
+          <View onStartShouldSetResponder={() => true} style={{ backgroundColor: T.surface, borderTopLeftRadius: 20, borderTopRightRadius: 20, paddingHorizontal: 20, paddingTop: space.sm, paddingBottom: 26 }}>
             <View style={{ alignItems: 'center', paddingBottom: 12 }}>
-              <View style={{ width: 40, height: 5, borderRadius: 3, backgroundColor: T.line }} />
+              <View style={{ width: 40, height: 5, borderRadius: radius.full, backgroundColor: T.line }} />
             </View>
-            <Text style={{ fontSize: 19, fontWeight: '800', color: T.ink, marginBottom: 14 }}>유형</Text>
+            <Text style={{ fontSize: 19, fontWeight: '800', color: T.ink, marginBottom: space.md }}>유형</Text>
             {TABS.map((k) => {
               const on = k === tab;
               const n = k === '전체' ? discards.length : discards.filter((e) => (k === '조리 후 폐기' ? e.waste : !e.waste)).length;
@@ -232,7 +232,7 @@ function DiscardHistoryBody({ localDate }: { localDate: string }) {
                   accessibilityRole="button"
                   accessibilityState={{ selected: on }}
                   accessibilityLabel={`${k} ${n}건`}
-                  style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 14, borderTopWidth: 1, borderTopColor: T.line2 }}
+                  style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, borderTopWidth: 1, borderTopColor: T.line2 }}
                 >
                   <Text style={{ flex: 1, fontSize: 16, fontWeight: on ? '800' : '600', color: on ? COLOR.state.selectedText : T.ink }}>{k}</Text>
                   <Text style={[{ fontSize: 14, color: COLOR.text.tertiary, marginRight: 8 }, tnum]}>{n}건</Text>
@@ -256,11 +256,11 @@ function DiscardHistoryBody({ localDate }: { localDate: string }) {
       <Modal visible={menuFor !== null} transparent animationType="fade" onRequestClose={() => setMenuFor(null)} statusBarTranslucent>
         <Pressable onPress={() => setMenuFor(null)} accessibilityRole="button" accessibilityLabel="메뉴 닫기" style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: T.scrim }}>
           {/* 시트 본문 탭이 배경까지 전달돼 닫히지 않게 여기서 삼킨다. */}
-          <View onStartShouldSetResponder={() => true} style={{ backgroundColor: T.surface, borderTopLeftRadius: 20, borderTopRightRadius: 20, paddingHorizontal: 12, paddingTop: 10, paddingBottom: 16 }}>
-            <View style={{ alignItems: 'center', paddingBottom: 14 }}>
-              <View style={{ width: 40, height: 5, borderRadius: 3, backgroundColor: T.line }} />
+          <View onStartShouldSetResponder={() => true} style={{ backgroundColor: T.surface, borderTopLeftRadius: 20, borderTopRightRadius: 20, paddingHorizontal: 12, paddingTop: space.sm, paddingBottom: 16 }}>
+            <View style={{ alignItems: 'center', paddingBottom: space.md }}>
+              <View style={{ width: 40, height: 5, borderRadius: radius.full, backgroundColor: T.line }} />
             </View>
-            <View style={{ backgroundColor: T.surface2, borderRadius: 14, overflow: 'hidden', marginBottom: 9 }}>
+            <View style={{ backgroundColor: T.surface2, borderRadius: radius.lg, overflow: 'hidden', marginBottom: space.sm }}>
               <Pressable
                 onPress={() => { const t = menuFor; setMenuFor(null); if (t) confirmDelete(t); }}
                 accessibilityRole="button" accessibilityLabel="폐기 삭제"
@@ -269,7 +269,7 @@ function DiscardHistoryBody({ localDate }: { localDate: string }) {
                 <Text style={{ fontSize: 16, fontWeight: '600', color: T.red }}>삭제</Text>
               </Pressable>
             </View>
-            <Pressable onPress={() => setMenuFor(null)} accessibilityRole="button" accessibilityLabel="닫기" style={{ paddingVertical: 20, borderRadius: 14, backgroundColor: T.surface2, alignItems: 'center' }}>
+            <Pressable onPress={() => setMenuFor(null)} accessibilityRole="button" accessibilityLabel="닫기" style={{ paddingVertical: 20, borderRadius: radius.lg, backgroundColor: T.surface2, alignItems: 'center' }}>
               <Text style={{ fontSize: 16, fontWeight: '600', color: T.ink }}>닫기</Text>
             </Pressable>
           </View>

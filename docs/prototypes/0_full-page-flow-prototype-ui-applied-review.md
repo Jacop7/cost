@@ -2684,12 +2684,29 @@ popup/state host **121개**(합 182), 그리고 레지스트리에 키가 없는
   `full-page-flow-prototype-render-audit.json` · `full-page-flow-prototype-design-audit.json` ·
   `full-page-flow-prototype-i18n-stress.json`.
 
+## DS-20260906-002 · PRT-230 S3a 폭 비증가 토큰 치환
+
+- 대상: S2 종결 SHA `f5cacba` 이후 앱 TS/TSX 기하 선언과 프로토타입 CSS.
+- 기대값: 승인된 S3a 목적지 1,042건만 치환 · 가로 증가 0 · 접근성 래칫 악화 0 ·
+  프로토타입 기하 변경 0.
+- 실제값: 76파일 1,042/1,042건 치환, hitSlop 보정 5/5건. 직접 이웃 action 4곳과
+  MaterialManage action gap은 터치 중첩 때문에 S4로 이관했다.
+- PC 검수: PASS — 1280×900 렌더와 390×844 디자인 축 감사 재실행, 콘솔·폰트 실패 0.
+- 모바일 검수: PASS — 320px · CSS 200% · 글자 200% · 번역 스트레스 재측정.
+  렌더 위반 5건과 i18n atRisk 396건은 알려진 목록과 정확히 일치해 신규·악화 0.
+- 미검수: 없음
+- 범위 밖 후속: Android/iOS 네이티브 터치 frame 실측은 별도 S4a 완료 조건으로 계속 추적한다.
+- 결과: PASS
+- 증거: `full-page-flow-prototype-s3a-diff.json` · `../../scripts/design-token-s3a-known.json` ·
+  `../../scripts/touch-target-known.json` · `full-page-flow-prototype-render-audit.json` ·
+  `full-page-flow-prototype-design-audit.json` · `full-page-flow-prototype-i18n-stress.json`.
+
 ## DS-20260906-001 · PRT-229 S2 독립 검수 반영
 
 - 대상: PRT-228 앱 색 역할 97건 · 상태 역할 정본 · 앱/프로토타입 기하 게이트 · 대비 계약.
 - 기대값: 링크·강조·선택 역할 분리, 상태 역할이 `COLOR.status.*`를 정본으로 사용,
   옛 상태 팔레트 별칭 증가 0, 확장된 기하 속성 diff 0, 색·기하 비의도 변화 0.
-- 실제값: `#1465DB` 사용처는 행동 링크 24 · 강조 값/양의 방향 42 · 선택 상태 31로 분리됐고,
+- 실제값: `#1465DB` 사용처는 행동 링크 24 · 강조 값/양의 방향 43 · 선택 상태 30으로 분리됐고,
   앱 대비 계약은 44쌍 · 경계값 6, 정적 기하는 5,718개 선언 diff 0이다.
 - PC 검수: 1280×900 185 target, 넘침·viewport 이탈·콘솔·폰트 실패 0 · PASS
 - 모바일 검수: 320×720·CSS 200%·글자 200% 185 target과 번역 스트레스

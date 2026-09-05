@@ -6,7 +6,7 @@ import { ReactNode } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Icon } from './Icon';
-import { T } from '@/theme/tokens';
+import { T, space } from '@/theme/tokens';
 
 export function AppHeader({ title, onBack, right, bg = T.bg }: {
   title: string;
@@ -31,7 +31,7 @@ export function AppHeader({ title, onBack, right, bg = T.bg }: {
             <Icon name="back" size={26} color={T.ink} sw={2.1} />
           </Pressable>
         ) : (
-          <View style={{ width: 12 }} />
+          <View style={{ width: space.md }} />
         )}
         <Text style={{ flex: 1, fontSize: 18, fontWeight: '700', color: T.ink, letterSpacing: -0.3 }}>{title}</Text>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 2, paddingRight: 6 }}>{right}</View>

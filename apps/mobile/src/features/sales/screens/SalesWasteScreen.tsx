@@ -14,7 +14,7 @@ import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Card, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { formatQuantity } from '@margincook/core';
-import { T, won } from '@/theme/tokens';
+import { T, won, space } from '@/theme/tokens';
 import { DetailRow, DetailSection, DetailSummary } from '../components/ProfitBlocks';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
 import { useSalesRange, useWasteBreakdown } from '../hooks';
@@ -69,7 +69,7 @@ function SalesWasteScreenBody({ serverToday }: { serverToday: string }) {
               />
 
               <DetailSection title="조리 폐기" />
-              <View style={{ paddingHorizontal: 14, paddingBottom: 4 }}>
+              <View style={{ paddingHorizontal: space.md, paddingBottom: 4 }}>
                 {d.menu.length === 0 ? (
                   <DetailRow name="기록 없음" amount="0원" muted last />
                 ) : (
@@ -86,7 +86,7 @@ function SalesWasteScreenBody({ serverToday }: { serverToday: string }) {
               </View>
 
               <DetailSection title="식재료 폐기" divider />
-              <View style={{ paddingHorizontal: 14, paddingBottom: 4 }}>
+              <View style={{ paddingHorizontal: space.md, paddingBottom: 4 }}>
                 {d.ingredient.length === 0 ? (
                   <DetailRow name="기록 없음" amount="0원" muted last />
                 ) : (

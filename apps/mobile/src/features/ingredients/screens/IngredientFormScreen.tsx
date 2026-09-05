@@ -12,7 +12,7 @@ import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { displayToBase, formatQuantity, isDisplayUnit, previewBaseUnitPrice, rawUnitPrice, roundOrNull } from '@margincook/core';
 import { AppHeader, Button, Field, Icon, Input, QueryState, Select } from '../../../components/kit';
-import { COLOR, T } from '../../../theme/tokens';
+import { COLOR, T, TYPE, space } from '../../../theme/tokens';
 import { UnitPickerSheet } from '../components/UnitPickerSheet';
 import { CategoryPickerSheet } from '../components/CategoryPickerSheet';
 import { VendorPickerSheet } from '../components/VendorPickerSheet';
@@ -150,14 +150,14 @@ export function IngredientFormScreen({ id }: { id?: string }) {
           </Field>
 
           <Field label="개당 용량" req error={vol !== '' ? volError : undefined} hint="kg·L 입력 시 자동 환산 · '개'는 포장당 개수">
-            <View style={{ flexDirection: 'row', gap: 10 }}>
+            <View style={{ flexDirection: 'row', gap: space.sm }}>
               <View style={{ flex: 2 }}>
                 <Input value={vol} placeholder="0" onChangeText={(t) => setVol(clampByUnit(t, unit))} mono keyboardType="decimal-pad" error={vol !== '' && Boolean(volError)} accessibilityLabel="개당 용량" />
               </View>
               <Pressable
                 onPress={() => setPickerOpen(true)}
                 accessibilityRole="button" accessibilityLabel={`단위 ${unit} 변경`}
-                style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: T.surface, borderWidth: 1, borderColor: T.line, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 13 }}
+                style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: T.surface, borderWidth: 1, borderColor: T.line, borderRadius: 12, paddingHorizontal: space.md, paddingVertical: space.md }}
               >
                 <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.ink }}>{unit}</Text>
                 <Icon name="chevronDown" size={18} color={COLOR.text.tertiary} />
@@ -181,9 +181,9 @@ export function IngredientFormScreen({ id }: { id?: string }) {
 
           {/* 단가 미리보기 — 저장 전에 결과를 눈으로 확인하게 한다. */}
           {num(price) > 0 && perBase > 0 ? (
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 16, paddingVertical: 13, paddingHorizontal: 14, borderRadius: 12, backgroundColor: COLOR.action.primaryTint }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, marginBottom: 16, paddingVertical: space.md, paddingHorizontal: space.md, borderRadius: 12, backgroundColor: COLOR.action.primaryTint }}>
               <Icon name="info" size={15} color={COLOR.action.primary} />
-              <Text style={{ flex: 1, fontSize: 14, color: T.sub2, lineHeight: 20 }}>
+              <Text style={{ flex: 1, fontSize: 14, color: T.sub2, lineHeight: TYPE.caption.lineHeight }}>
                 {realPer === null
                   ? '입력값으로는 단가를 계산할 수 없어요'
                   : `기준단가 ${realPer}원/${dispBase}`}
@@ -191,7 +191,7 @@ export function IngredientFormScreen({ id }: { id?: string }) {
             </View>
           ) : null}
 
-          <View style={{ flexDirection: 'row', gap: 10 }}>
+          <View style={{ flexDirection: 'row', gap: space.sm }}>
             <View style={{ flex: 1 }}>
               {/* 안전재고는 재고와 **같은 단위**다(0073). 팩 개수로 받으면
                   팩 용량을 고칠 때 기준이 소리 없이 따라 움직인다. */}
@@ -218,16 +218,16 @@ export function IngredientFormScreen({ id }: { id?: string }) {
               <Pressable
                 onPress={() => router.push(`/ingredients/option?ingredient=${id}`)}
                 accessibilityRole="button" accessibilityLabel="구매 링크·옵션 관리"
-                style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5, paddingVertical: 13, borderRadius: 12, borderWidth: 1, borderColor: COLOR.action.primary, backgroundColor: COLOR.action.primaryTint }}
+                style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.xs, paddingVertical: space.md, borderRadius: 12, borderWidth: 1, borderColor: COLOR.action.primary, backgroundColor: COLOR.action.primaryTint }}
               >
                 <Icon name="plus" size={18} color={COLOR.action.primary} sw={2.2} />
                 <Text style={{ fontSize: 16, fontWeight: '700', color: COLOR.text.link }}>구매 링크 · 옵션 관리</Text>
               </Pressable>
             </View>
           ) : (
-            <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, marginTop: 4, paddingVertical: 12, paddingHorizontal: 14, borderRadius: 12, backgroundColor: T.surface2 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, marginTop: 4, paddingVertical: 12, paddingHorizontal: space.md, borderRadius: 12, backgroundColor: T.surface2 }}>
               <Icon name="info" size={15} color={T.sub2} />
-              <Text style={{ flex: 1, fontSize: 14, color: T.sub2, lineHeight: 20 }}>
+              <Text style={{ flex: 1, fontSize: 14, color: T.sub2, lineHeight: TYPE.caption.lineHeight }}>
                 구매 링크·옵션은 저장한 뒤 상세 화면에서 추가할 수 있어요.
               </Text>
             </View>

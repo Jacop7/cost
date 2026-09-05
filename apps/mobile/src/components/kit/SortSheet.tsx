@@ -7,7 +7,7 @@
 import { Pressable, Text, View } from 'react-native';
 import { Icon } from './Icon';
 import { Sheet } from './Sheet';
-import { COLOR, T } from '@/theme/tokens';
+import { COLOR, T, space } from '@/theme/tokens';
 
 export interface SortOption<K extends string> {
   key: K;
@@ -26,8 +26,8 @@ export function SortChip({ label, onPress }: { label: string; onPress: () => voi
       accessibilityHint="정렬 기준을 바꿉니다"
       hitSlop={6}
       style={{
-        alignSelf: 'flex-start', flexDirection: 'row', alignItems: 'center', gap: 5,
-        paddingVertical: 8, paddingHorizontal: 14, borderRadius: 999,
+        alignSelf: 'flex-start', flexDirection: 'row', alignItems: 'center', gap: space.xs,
+        paddingVertical: 8, paddingHorizontal: space.md, borderRadius: 999,
         borderWidth: 1, borderColor: T.line, backgroundColor: T.surface,
       }}
     >
@@ -55,14 +55,14 @@ export function SortSheet<K extends string>({ visible, options, value, onSelect,
             accessibilityRole="button"
             accessibilityState={{ selected: on }}
             style={{
-              flexDirection: 'row', alignItems: 'center', gap: 10,
-              paddingVertical: 14,
+              flexDirection: 'row', alignItems: 'center', gap: space.sm,
+              paddingVertical: space.md,
               borderBottomWidth: i < options.length - 1 ? 1 : 0, borderBottomColor: T.line2,
             }}
           >
             <View style={{ flex: 1, minWidth: 0 }}>
               <Text style={{ fontSize: 16, fontWeight: on ? '800' : '600', color: on ? COLOR.state.selectedText : T.ink }}>{o.label}</Text>
-              {o.hint ? <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 2 }}>{o.hint}</Text> : null}
+              {o.hint ? <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.xs }}>{o.hint}</Text> : null}
             </View>
             {on ? <Icon name="check" size={20} color={COLOR.action.primary} sw={2.4} /> : null}
           </Pressable>

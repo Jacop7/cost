@@ -11,7 +11,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Alert, Modal, Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { AppHeader, Badge, Button, Card, Field, Icon, Input, QueryState, Select } from '../../../components/kit';
-import { COLOR, T, tnum } from '../../../theme/tokens';
+import { COLOR, T, tnum, TYPE, radius, space } from '../../../theme/tokens';
 import { displayToBase, formatQuantity, formatUnitPrice, isDisplayUnit } from '@margincook/core';
 import { safeBack } from '@/lib/nav';
 import { clampByUnit, clampDecimals } from '@/lib/num';
@@ -147,9 +147,9 @@ export function PurchaseOptionScreen() {
     return (
       <View style={{ flex: 1, backgroundColor: T.bg }}>
         <AppHeader title="구매 링크 · 옵션" onBack={() => safeBack('/ingredients')} />
-        <View style={{ paddingVertical: 48, paddingHorizontal: 32, alignItems: 'center', gap: 10 }}>
+        <View style={{ paddingVertical: 48, paddingHorizontal: 32, alignItems: 'center', gap: space.sm }}>
           <Text style={{ fontSize: 16, fontWeight: '800', color: T.ink, textAlign: 'center' }}>식재료를 먼저 저장해 주세요</Text>
-          <Text style={{ fontSize: 14, color: T.sub2, textAlign: 'center', lineHeight: 20 }}>
+          <Text style={{ fontSize: 14, color: T.sub2, textAlign: 'center', lineHeight: TYPE.caption.lineHeight }}>
             구매 옵션은 식재료에 붙는 정보라 식재료가 있어야 등록할 수 있어요.
           </Text>
           <Button kind="primary" size="md" onPress={() => safeBack('/ingredients')}>돌아가기</Button>
@@ -197,14 +197,14 @@ export function PurchaseOptionScreen() {
               </Field>
 
               <Field label="용량" req error={vol !== '' ? volError : undefined}>
-                <View style={{ flexDirection: 'row', gap: 10 }}>
+                <View style={{ flexDirection: 'row', gap: space.sm }}>
                   <View style={{ flex: 2 }}>
                     <Input value={vol} onChangeText={(t) => setVol(clampByUnit(t, unit))} placeholder="0" mono keyboardType="decimal-pad" error={vol !== '' && Boolean(volError)} accessibilityLabel="용량" />
                   </View>
                   <Pressable
                     onPress={() => setUnitOpen(true)}
                     accessibilityRole="button" accessibilityLabel={`단위 ${unit} 변경`}
-                    style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: T.surface, borderWidth: 1, borderColor: T.line, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 13 }}
+                    style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: T.surface, borderWidth: 1, borderColor: T.line, borderRadius: 12, paddingHorizontal: space.md, paddingVertical: space.md }}
                   >
                     <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.ink }}>{unit}</Text>
                     <Icon name="chevronDown" size={18} color={COLOR.text.tertiary} />
@@ -229,7 +229,7 @@ export function PurchaseOptionScreen() {
               */}
               {unitPrice !== null && Number.isFinite(unitPrice) ? (
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 2, paddingBottom: 12 }}>
-                  <Text style={{ flex: 1, fontSize: 15, fontWeight: '700', color: T.sub }}>단가</Text>
+                  <Text style={{ flex: 1, fontSize: TYPE.caption.fontSize, fontWeight: '700', color: T.sub }}>단가</Text>
                   {/* 값이 실제로 움직였을 때만 전후를 보여 준다. 같은 값을 두 번 쓰면 읽는 데 방해만 된다. */}
                   {prevUnitPrice !== null && Math.abs(prevUnitPrice - unitPrice) > 0.005 ? (
                     <>
@@ -249,7 +249,7 @@ export function PurchaseOptionScreen() {
           </>
         ) : (
           <>
-            <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 4, paddingBottom: 24, gap: 11 }} showsVerticalScrollIndicator={false}>
+            <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 4, paddingBottom: 24, gap: space.md }} showsVerticalScrollIndicator={false}>
               {(g?.options.length ?? 0) === 0 ? (
                 <View style={{ paddingVertical: 40, alignItems: 'center', gap: 8 }}>
                   <Text style={{ fontSize: 16, color: COLOR.text.tertiary }}>등록된 구매 옵션이 없어요</Text>
@@ -266,7 +266,7 @@ export function PurchaseOptionScreen() {
                         key={o.id}
                         onPress={() => { setEditingId(o.id); setFormOpen(true); }}
                         accessibilityRole="button" accessibilityLabel={`${o.name} 수정`}
-                        style={{ flexDirection: 'row', alignItems: 'center', gap: 11, minHeight: 72, paddingVertical: 12, paddingHorizontal: 14, borderBottomWidth: i < g!.options.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}
+                        style={{ flexDirection: 'row', alignItems: 'center', gap: 11, minHeight: 72, paddingVertical: 12, paddingHorizontal: space.md, borderBottomWidth: i < g!.options.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}
                       >
                         {/*
                           식재료 상세의 구매 옵션 줄과 **같은 짜임**이다.
@@ -280,7 +280,7 @@ export function PurchaseOptionScreen() {
                             {o.brandName ?? o.vendorName ?? '구매처 미지정'}
                           </Text>
                           <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }} numberOfLines={1}>{o.name}</Text>
-                          <Text style={[{ fontSize: 12, color: T.sub, fontWeight: '600', marginTop: 3 }, tnum]}>
+                          <Text style={[{ fontSize: 12, color: T.sub, fontWeight: '600', marginTop: space.xs }, tnum]}>
                             {o.amount.toLocaleString('ko-KR')}원
                           </Text>
                         </View>
@@ -292,10 +292,10 @@ export function PurchaseOptionScreen() {
                           <View style={{ height: 18, justifyContent: 'center' }}>
                             {isLow ? <Badge tone="blue" sm>최저</Badge> : isHigh ? <Badge tone="red" sm>최고</Badge> : null}
                           </View>
-                          <Text style={[{ fontSize: 15, fontWeight: '800', color: T.ink, marginTop: 2 }, tnum]}>
+                          <Text style={[{ fontSize: TYPE.caption.fontSize, fontWeight: '800', color: T.ink, marginTop: space.xs }, tnum]}>
                             {formatQuantity(o.volume, base)}
                           </Text>
-                          <Text style={[{ fontSize: 12, color: COLOR.text.tertiary, fontWeight: '700', marginTop: 3 }, tnum]}>
+                          <Text style={[{ fontSize: 12, color: COLOR.text.tertiary, fontWeight: '700', marginTop: space.xs }, tnum]}>
                             {formatUnitPrice(per, base)}
                           </Text>
                         </View>
@@ -324,11 +324,11 @@ export function PurchaseOptionScreen() {
         <Pressable onPress={() => setMenuOpen(false)} accessibilityRole="button" accessibilityLabel="메뉴 닫기" style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: T.scrim }}>
           {/* 시트 본문 탭이 배경까지 전달돼 닫히지 않게 여기서 삼킨다.
               빈 onPress 를 단 Pressable 로 막으면 스크린리더가 "버튼"이라고 읽는다 — View 로 처리한다. */}
-          <View onStartShouldSetResponder={() => true} style={{ backgroundColor: T.surface, borderTopLeftRadius: 20, borderTopRightRadius: 20, paddingHorizontal: 12, paddingTop: 10, paddingBottom: 16 }}>
-            <View style={{ alignItems: 'center', paddingBottom: 14 }}>
-              <View style={{ width: 40, height: 5, borderRadius: 3, backgroundColor: T.line }} />
+          <View onStartShouldSetResponder={() => true} style={{ backgroundColor: T.surface, borderTopLeftRadius: 20, borderTopRightRadius: 20, paddingHorizontal: 12, paddingTop: space.sm, paddingBottom: 16 }}>
+            <View style={{ alignItems: 'center', paddingBottom: space.md }}>
+              <View style={{ width: 40, height: 5, borderRadius: radius.full, backgroundColor: T.line }} />
             </View>
-            <View style={{ backgroundColor: T.surface2, borderRadius: 14, overflow: 'hidden', marginBottom: 9 }}>
+            <View style={{ backgroundColor: T.surface2, borderRadius: radius.lg, overflow: 'hidden', marginBottom: space.sm }}>
               <Pressable
                 onPress={() => { setMenuOpen(false); if (editingId) confirmDelete(editingId, name || '이 옵션'); }}
                 accessibilityRole="button" accessibilityLabel="구매 옵션 삭제"
@@ -337,7 +337,7 @@ export function PurchaseOptionScreen() {
                 <Text style={{ fontSize: 16, fontWeight: '600', color: T.red }}>삭제</Text>
               </Pressable>
             </View>
-            <Pressable onPress={() => setMenuOpen(false)} accessibilityRole="button" accessibilityLabel="닫기" style={{ paddingVertical: 20, borderRadius: 14, backgroundColor: T.surface2, alignItems: 'center' }}>
+            <Pressable onPress={() => setMenuOpen(false)} accessibilityRole="button" accessibilityLabel="닫기" style={{ paddingVertical: 20, borderRadius: radius.lg, backgroundColor: T.surface2, alignItems: 'center' }}>
               <Text style={{ fontSize: 16, fontWeight: '600', color: T.ink }}>닫기</Text>
             </Pressable>
           </View>

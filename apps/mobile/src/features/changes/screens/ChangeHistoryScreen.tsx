@@ -17,7 +17,7 @@ import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { AppHeader, Card, Icon, QueryState, Sheet } from '@/components/kit';
 import { SummaryCard } from '@/components/history/HistoryLayout';
 import { safeBack } from '@/lib/nav';
-import { COLOR, T } from '@/theme/tokens';
+import { COLOR, T, TYPE, radius, space } from '@/theme/tokens';
 import {
   badgeFor,
   changeStamp,
@@ -51,7 +51,7 @@ function StateBadge({ state }: { state: ChangeState }) {
   const s = stateLabel(state);
   const c = TONE[s.tone];
   return (
-    <View style={{ paddingHorizontal: 7, paddingVertical: 3, borderRadius: 6, backgroundColor: c.bg }}>
+    <View style={{ paddingHorizontal: 7, paddingVertical: space.xs, borderRadius: radius.sm, backgroundColor: c.bg }}>
       <Text style={{ fontSize: 12, fontWeight: '700', color: c.fg }}>{s.text}</Text>
     </View>
   );
@@ -67,16 +67,16 @@ function ChangeGroup({ title, lines }: { title: string; lines: ChangeEvent['chan
         {lines.map((l, i) => (
           <View
             key={l.key}
-            style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 12, paddingHorizontal: 13, borderTopWidth: i > 0 ? 1 : 0, borderTopColor: T.line2 }}
+            style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 12, paddingHorizontal: space.md, borderTopWidth: i > 0 ? 1 : 0, borderTopColor: T.line2 }}
           >
             <Text style={{ width: 84, fontSize: 14, fontWeight: '700', color: T.sub }} numberOfLines={1}>
               {l.label}
             </Text>
-            <Text style={[{ fontSize: 15, color: COLOR.text.tertiary }, NUM]} numberOfLines={1}>
+            <Text style={[{ fontSize: TYPE.caption.fontSize, color: COLOR.text.tertiary }, NUM]} numberOfLines={1}>
               {formatChangeValue(l.before, l.unit)}
             </Text>
             <Text style={{ fontSize: 14, color: COLOR.text.tertiary }}>→</Text>
-            <Text style={[{ flex: 1, fontSize: 15, fontWeight: '800', color: T.ink }, NUM]} numberOfLines={1}>
+            <Text style={[{ flex: 1, fontSize: TYPE.caption.fontSize, fontWeight: '800', color: T.ink }, NUM]} numberOfLines={1}>
               {formatChangeValue(l.after, l.unit)}
             </Text>
           </View>
@@ -153,7 +153,7 @@ export function ChangeHistoryScreen({ entity }: { entity: ChangeEntity }) {
               <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.text.tertiary }}>
                 {entity === 'recipe' ? '레시피' : '식재료'}
               </Text>
-              <Text style={{ fontSize: 22, fontWeight: '800', color: T.ink, letterSpacing: -0.5, marginTop: 2 }}>
+              <Text style={{ fontSize: 22, fontWeight: '800', color: T.ink, letterSpacing: -0.5, marginTop: space.xs }}>
                 {subject.data ?? ''}
               </Text>
 
@@ -162,7 +162,7 @@ export function ChangeHistoryScreen({ entity }: { entity: ChangeEntity }) {
                 머리에 대표값(건수), 아래 칸칸이 갈래.
               */}
               {summary ? (
-                <View style={{ marginTop: 13 }}>
+                <View style={{ marginTop: space.md }}>
                   <SummaryCard
                     label="최근 7일 기준"
                     value={`${summary.count}건`}
@@ -194,8 +194,8 @@ export function ChangeHistoryScreen({ entity }: { entity: ChangeEntity }) {
                 accessibilityRole="button"
                 accessibilityLabel={`${item.event.title} 자세히 보기`}
                 style={{
-                  flexDirection: 'row', alignItems: 'center', gap: 10,
-                  paddingVertical: 14, paddingHorizontal: 15,
+                  flexDirection: 'row', alignItems: 'center', gap: space.sm,
+                  paddingVertical: space.md, paddingHorizontal: space.md,
                   backgroundColor: T.surface,
                   borderLeftWidth: 1, borderRightWidth: 1, borderColor: T.line,
                   borderTopWidth: first ? 1 : 0,
@@ -211,10 +211,10 @@ export function ChangeHistoryScreen({ entity }: { entity: ChangeEntity }) {
                   <Text style={[{ fontSize: 13, color: COLOR.text.tertiary, fontWeight: '600' }, NUM]}>
                     {changeStamp(item.event.occurredAt)}
                   </Text>
-                  <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink, marginTop: 2 }} numberOfLines={1}>
+                  <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink, marginTop: space.xs }} numberOfLines={1}>
                     {item.event.title}
                   </Text>
-                  <Text style={{ fontSize: 14, color: T.sub2, marginTop: 2 }} numberOfLines={1}>
+                  <Text style={{ fontSize: 14, color: T.sub2, marginTop: space.xs }} numberOfLines={1}>
                     {item.event.summary}
                   </Text>
                 </View>
@@ -230,12 +230,12 @@ export function ChangeHistoryScreen({ entity }: { entity: ChangeEntity }) {
           ListFooterComponent={
             <>
               {q.isFetchingNextPage ? (
-                <View style={{ paddingVertical: 18 }}>
+                <View style={{ paddingVertical: space.lg }}>
                   <ActivityIndicator color={COLOR.text.tertiary} />
                 </View>
               ) : null}
               {!q.hasNextPage ? (
-                <Text style={{ fontSize: 13, color: COLOR.text.tertiary, lineHeight: 19, marginTop: 12, marginBottom: 10 }}>
+                <Text style={{ fontSize: 13, color: COLOR.text.tertiary, lineHeight: TYPE.captionSm.lineHeight, marginTop: 12, marginBottom: space.sm }}>
                   최근 7일 수정 내역만 표시합니다. 메모 변경
                   {entity === 'ingredient' ? '과 재고 수량 변동은' : '은'} 포함하지 않습니다.
                 </Text>
@@ -247,11 +247,11 @@ export function ChangeHistoryScreen({ entity }: { entity: ChangeEntity }) {
                       key={l.href}
                       onPress={() => router.push(l.href as Href)}
                       accessibilityRole="button" accessibilityLabel={l.label}
-                      style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 13, paddingHorizontal: 15, borderTopWidth: i > 0 ? 1 : 0, borderTopColor: T.line2 }}
+                      style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: space.md, paddingHorizontal: space.md, borderTopWidth: i > 0 ? 1 : 0, borderTopColor: T.line2 }}
                     >
                       <View style={{ flex: 1, minWidth: 0 }}>
                         <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>{l.label}</Text>
-                        <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 2 }}>{l.hint}</Text>
+                        <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.xs }}>{l.hint}</Text>
                       </View>
                       <Icon name="chevron" size={16} color={COLOR.text.tertiary} />
                     </Pressable>
@@ -270,10 +270,10 @@ export function ChangeHistoryScreen({ entity }: { entity: ChangeEntity }) {
       <Sheet visible={open !== null} onClose={() => setOpen(null)} height={520}>
         {open ? (
           <ScrollView showsVerticalScrollIndicator={false}>
-            <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 10 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm }}>
               <View style={{ flex: 1, minWidth: 0 }}>
                 <Text style={{ fontSize: 18, fontWeight: '800', color: T.ink }}>{open.title}</Text>
-                <Text style={[{ fontSize: 14, color: T.sub2, marginTop: 3 }, NUM]}>
+                <Text style={[{ fontSize: 14, color: T.sub2, marginTop: space.xs }, NUM]}>
                   {changeStamp(open.occurredAt)} · {sourceLabel(open)}
                 </Text>
               </View>
@@ -284,7 +284,7 @@ export function ChangeHistoryScreen({ entity }: { entity: ChangeEntity }) {
             <ChangeGroup title="직접 수정" lines={open.changes.filter((c) => c.kind === 'direct')} />
             <ChangeGroup title="자동 갱신" lines={open.changes.filter((c) => c.kind === 'derived')} />
 
-            <View style={{ height: 12 }} />
+            <View style={{ height: space.md }} />
           </ScrollView>
         ) : null}
       </Sheet>

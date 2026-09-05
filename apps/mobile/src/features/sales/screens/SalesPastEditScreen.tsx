@@ -19,7 +19,7 @@ import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppHeader, Button, Card, ConfirmSheet, Field, Icon, Input, Notice, QueryState, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { COLOR, T, won } from '@/theme/tokens';
+import { COLOR, T, won, TYPE, radius, space } from '@/theme/tokens';
 import { useRecipeList } from '@/features/recipes/hooks';
 import {
   useAmendPastSale, useSalesDay,
@@ -191,7 +191,7 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
         onBack={() => safeBack(`/sales/day?date=${date}` as Href)}
       />
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 2, paddingBottom: 24 + insets.bottom + 64, gap: 11 }}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 2, paddingBottom: 24 + insets.bottom + 64, gap: space.md }}>
         <QueryState
           isLoading={day.isLoading || recipes.isLoading}
           error={day.error ?? recipes.error}
@@ -204,7 +204,7 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
               {/* 상단은 영업일 한 줄뿐이다. 채널을 고정하는 행은 두지 않는다(§6.4). */}
               <Card>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <Text style={{ flex: 1, fontSize: 15, fontWeight: '600', color: T.sub }}>영업일</Text>
+                  <Text style={{ flex: 1, fontSize: TYPE.caption.fontSize, fontWeight: '600', color: T.sub }}>영업일</Text>
                   <Text style={{ fontSize: 16, fontWeight: '800', color: T.ink }}>{dayLabel(date, serverToday)}</Text>
                 </View>
               </Card>
@@ -235,7 +235,7 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
                       accessibilityLabel={`${r.name} 판매 수량 ${total}개`}
                       style={{
                         flexDirection: 'row', alignItems: 'center',
-                        paddingVertical: 13, paddingHorizontal: 15,
+                        paddingVertical: space.md, paddingHorizontal: space.md,
                         borderBottomWidth: i < rows.length - 1 ? 1 : 0, borderBottomColor: T.line2,
                         opacity: s.editable ? 1 : 0.5,
                       }}
@@ -243,12 +243,12 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
                       {/* 메뉴명과 수량만. 판매가·재료비는 그날 기준이라 여기 적으면 거짓말이 된다. */}
                       <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: T.ink }} numberOfLines={1}>{r.name}</Text>
                       {q.waste > 0 ? (
-                        <Text style={[{ fontSize: 13, fontWeight: '700', color: COLOR.text.tertiary, marginRight: 10 }, NUM]}>폐기 {q.waste}</Text>
+                        <Text style={[{ fontSize: 13, fontWeight: '700', color: COLOR.text.tertiary, marginRight: space.sm }, NUM]}>폐기 {q.waste}</Text>
                       ) : null}
                       {total > 0 ? (
                         <Text style={[{ fontSize: 16, fontWeight: '800', color: changed ? COLOR.text.accent : T.ink, marginRight: 6 }, NUM]}>{total}개</Text>
                       ) : (
-                        <Text style={{ fontSize: 15, fontWeight: '700', color: COLOR.text.link, marginRight: 6 }}>+ 판매</Text>
+                        <Text style={{ fontSize: TYPE.caption.fontSize, fontWeight: '700', color: COLOR.text.link, marginRight: 6 }}>+ 판매</Text>
                       )}
                       <Icon name="chevron" size={16} color={COLOR.text.tertiary} />
                     </Pressable>
@@ -256,7 +256,7 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
                 })}
               </Card>
 
-              <View style={{ flexDirection: 'row', gap: 10 }}>
+              <View style={{ flexDirection: 'row', gap: space.sm }}>
                 <View style={{ flex: 1 }}>
                   <Button kind="ghost" full disabled={!s.editable} onPress={() => setEtcOpen(true)}>
                     {`기타 매출${etcItems.length ? ` ${etcItems.length}` : ''}`}
@@ -274,7 +274,7 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
       </ScrollView>
 
       {/* 저장은 화면 아래 고정. 고친 것이 없으면 누를 수 없다. */}
-      <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0, paddingHorizontal: 16, paddingTop: 10, paddingBottom: 10 + insets.bottom, backgroundColor: T.bg, borderTopWidth: 1, borderTopColor: T.line2 }}>
+      <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0, paddingHorizontal: 16, paddingTop: space.sm, paddingBottom: 10 + insets.bottom, backgroundColor: T.bg, borderTopWidth: 1, borderTopColor: T.line2 }}>
         <Button
           kind="primary" size="lg" full
           disabled={!s || !s.editable || !dirty}
@@ -290,11 +290,11 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
         {sel ? (
           <View>
             <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub2, marginBottom: 8 }}>판매</Text>
-            <Card pad={0} style={{ overflow: 'hidden', marginBottom: 14 }}>
+            <Card pad={0} style={{ overflow: 'hidden', marginBottom: space.md }}>
               {CHANNEL_LABEL.map(([code, name], i) => {
                 const key = code === 'hall' ? 'hall' : code === 'delivery' ? 'delivery' : 'takeout';
                 return (
-                  <View key={code} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12, paddingHorizontal: 15, borderBottomWidth: i < CHANNEL_LABEL.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
+                  <View key={code} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12, paddingHorizontal: space.md, borderBottomWidth: i < CHANNEL_LABEL.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
                     <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: T.ink }}>{name}</Text>
                     <SaleStepper label={`${name} 판매량`} value={draft[key]} onChange={(v) => setDraft((d) => ({ ...d, [key]: v }))} />
                   </View>
@@ -303,17 +303,17 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
             </Card>
 
             <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub2, marginBottom: 8 }}>폐기</Text>
-            <Card pad={0} style={{ overflow: 'hidden', marginBottom: 14 }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12, paddingHorizontal: 15 }}>
+            <Card pad={0} style={{ overflow: 'hidden', marginBottom: space.md }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12, paddingHorizontal: space.md }}>
                 <View style={{ flex: 1, minWidth: 0 }}>
                   <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>조리 폐기</Text>
-                  <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 2 }}>재료는 나가고 매출은 0</Text>
+                  <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.xs }}>재료는 나가고 매출은 0</Text>
                 </View>
                 <SaleStepper label="조리 폐기 수량" value={draft.waste} onChange={(v) => setDraft((d) => ({ ...d, waste: v }))} />
               </View>
             </Card>
 
-            <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 13, paddingHorizontal: 15, borderRadius: 12, backgroundColor: T.surface2 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: space.md, borderRadius: 12, backgroundColor: T.surface2 }}>
               <Text style={{ fontSize: 16, fontWeight: '700', color: T.sub }}>합계</Text>
               <View style={{ flex: 1 }} />
               <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>
@@ -331,15 +331,15 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
       {/* 기타 매출 — 오늘 입력과 같은 UI 다(§6.4). */}
       <Sheet visible={etcOpen} onClose={() => setEtcOpen(false)} title="기타 매출" sub="레시피에 없는 음료·기타 판매" height={560}>
         {etcItems.length > 0 ? (
-          <Card pad={0} style={{ overflow: 'hidden', marginBottom: 14 }}>
+          <Card pad={0} style={{ overflow: 'hidden', marginBottom: space.md }}>
             {etcItems.map((e, i) => (
-              <View key={`${e.name}-${i}`} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 11, paddingHorizontal: 15, borderBottomWidth: i < etcItems.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
+              <View key={`${e.name}-${i}`} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: space.md, borderBottomWidth: i < etcItems.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
                 <View style={{ flex: 1, minWidth: 0 }}>
                   <Text style={{ fontSize: 16, fontWeight: '600', color: T.sub }}>{e.name} <Text style={{ color: COLOR.text.tertiary }}>×{e.qty}</Text></Text>
                   {/* 미지정은 회색으로 둔다 — 매장으로 보이면 안 된다(0093). */}
-                  <Text style={{ fontSize: 13, fontWeight: '700', color: e.channel ? COLOR.text.accent : COLOR.text.tertiary, marginTop: 2 }}>{channelName(e.channel)}</Text>
+                  <Text style={{ fontSize: 13, fontWeight: '700', color: e.channel ? COLOR.text.accent : COLOR.text.tertiary, marginTop: space.xs }}>{channelName(e.channel)}</Text>
                 </View>
-                <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink, marginRight: 10 }, NUM]}>{won(e.price * e.qty)}원</Text>
+                <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink, marginRight: space.sm }, NUM]}>{won(e.price * e.qty)}원</Text>
                 <Pressable
                   onPress={() => setEtc(etcItems.filter((_, j) => j !== i))}
                   hitSlop={8} accessibilityRole="button" accessibilityLabel={`${e.name} 삭제`}
@@ -351,7 +351,7 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
           </Card>
         ) : null}
         <Field label="항목명" req><Input value={etcName} onChangeText={setEtcName} placeholder="예: 음료" /></Field>
-        <View style={{ flexDirection: 'row', gap: 10 }}>
+        <View style={{ flexDirection: 'row', gap: space.sm }}>
           <View style={{ flex: 1.5 }}><Field label="판매가" req><Input value={etcPrice} onChangeText={setEtcPrice} placeholder="2000" keyboardType="number-pad" suffix="원" mono /></Field></View>
           <View style={{ flex: 1 }}><Field label="수량"><Input value={etcQty} onChangeText={setEtcQty} keyboardType="number-pad" suffix="개" mono /></Field></View>
         </View>
@@ -367,19 +367,19 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
                   accessibilityState={{ selected: on }}
                   accessibilityLabel={name}
                   style={{
-                    flex: 1, paddingVertical: 12, borderRadius: 11, alignItems: 'center',
+                    flex: 1, paddingVertical: 12, borderRadius: radius.md, alignItems: 'center',
                     borderWidth: on ? 1.5 : 1,
                     borderColor: on ? COLOR.action.primary : T.line,
                     backgroundColor: on ? COLOR.action.primaryTint : T.surface,
                   }}
                 >
-                  <Text style={{ fontSize: 15, fontWeight: on ? '800' : '600', color: on ? COLOR.state.selectedText : T.sub }}>{name}</Text>
+                  <Text style={{ fontSize: TYPE.caption.fontSize, fontWeight: on ? '800' : '600', color: on ? COLOR.state.selectedText : T.sub }}>{name}</Text>
                 </Pressable>
               );
             })}
           </View>
         </Field>
-        <View style={{ marginTop: 18 }}>
+        <View style={{ marginTop: space.lg }}>
           <Button kind="primary" size="lg" full onPress={addEtc}>추가</Button>
         </View>
       </Sheet>
@@ -387,14 +387,14 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
       {/* 지출 추가 — 오늘 입력과 같은 UI 다(§6.4). */}
       <Sheet visible={expOpen} onClose={() => setExpOpen(false)} title="지출 추가" sub="재료비 외 그날 현금 지출" height={580}>
         {extraItems.length > 0 ? (
-          <Card pad={0} style={{ overflow: 'hidden', marginBottom: 14 }}>
+          <Card pad={0} style={{ overflow: 'hidden', marginBottom: space.md }}>
             {extraItems.map((e, i) => (
-              <View key={`${e.name}-${i}`} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 11, paddingHorizontal: 15, borderBottomWidth: i < extraItems.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
+              <View key={`${e.name}-${i}`} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: space.md, borderBottomWidth: i < extraItems.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
                 <View style={{ flex: 1, minWidth: 0 }}>
                   <Text style={{ fontSize: 16, fontWeight: '600', color: T.sub }}>{e.name}</Text>
-                  {e.memo ? <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 2 }}>{e.memo}</Text> : null}
+                  {e.memo ? <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.xs }}>{e.memo}</Text> : null}
                 </View>
-                <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink, marginRight: 10 }, NUM]}>{won(e.amount)}원</Text>
+                <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink, marginRight: space.sm }, NUM]}>{won(e.amount)}원</Text>
                 <Pressable
                   onPress={() => setExtra(extraItems.filter((_, j) => j !== i))}
                   hitSlop={8} accessibilityRole="button" accessibilityLabel={`${e.name} 삭제`}
@@ -408,7 +408,7 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
         <Field label="항목명" req><Input value={expName} onChangeText={setExpName} placeholder="예: 얼음·소모품" /></Field>
         <Field label="금액" req><Input value={expAmount} onChangeText={setExpAmount} placeholder="15000" keyboardType="number-pad" suffix="원" mono /></Field>
         <Field label="메모 (선택)"><Input value={expMemo} onChangeText={setExpMemo} placeholder="간단 메모" /></Field>
-        <View style={{ marginTop: 18 }}>
+        <View style={{ marginTop: space.lg }}>
           <Button kind="primary" size="lg" full onPress={addExpense}>추가</Button>
         </View>
       </Sheet>
@@ -438,9 +438,9 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
             if (goHome) router.replace('/sales' as Href);
           }}
           accessibilityRole="button" accessibilityLabel="알림 닫기"
-          style={{ position: 'absolute', left: 16, right: 16, bottom: 84 + insets.bottom, paddingVertical: 13, paddingHorizontal: 15, borderRadius: 12, backgroundColor: 'rgba(25,31,40,0.92)' }}
+          style={{ position: 'absolute', left: 16, right: 16, bottom: 84 + insets.bottom, paddingVertical: space.md, paddingHorizontal: space.md, borderRadius: 12, backgroundColor: 'rgba(25,31,40,0.92)' }}
         >
-          <Text style={{ fontSize: 14, fontWeight: '700', color: '#fff', lineHeight: 20 }}>{toast.text}</Text>
+          <Text style={{ fontSize: 14, fontWeight: '700', color: '#fff', lineHeight: TYPE.caption.lineHeight }}>{toast.text}</Text>
         </Pressable>
       ) : null}
     </View>

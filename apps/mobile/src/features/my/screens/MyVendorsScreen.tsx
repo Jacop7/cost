@@ -11,7 +11,7 @@ import { useMemo, useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { AppHeader, Badge, Button, Card, Field, Icon, Input, QueryState, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { COLOR, T } from '@/theme/tokens';
+import { COLOR, T, TYPE, controlVisualHeight, radius, space } from '@/theme/tokens';
 import { useDeleteVendor, useSaveVendor, useSettingsLists, type VendorRow } from '@/features/master-data/hooks';
 
 /** 공백·기호를 지운 뒤 같으면 "비슷한 이름"으로 본다('대림유통' vs '대림 유통'). */
@@ -90,12 +90,12 @@ export default function MyVendorsScreen() {
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 4, paddingBottom: 28 }}>
         {dupes.map((g) => (
-          <View key={g.map((v) => v.id).join('-')} style={{ backgroundColor: '#FFF9F0', borderWidth: 1, borderColor: T.amberTint, borderRadius: 16, padding: 14, marginBottom: 12 }}>
+          <View key={g.map((v) => v.id).join('-')} style={{ backgroundColor: '#FFF9F0', borderWidth: 1, borderColor: T.amberTint, borderRadius: 16, padding: space.md, marginBottom: 12 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
               <Icon name="swap" size={20} color={T.amberText} />
               <View style={{ flex: 1 }}>
                 <Text style={{ fontSize: 16, fontWeight: '700', color: T.amberText }}>비슷한 이름이 있어요</Text>
-                <Text style={{ fontSize: 14, color: T.sub2, marginTop: 2 }}>
+                <Text style={{ fontSize: 14, color: T.sub2, marginTop: space.xs }}>
                   {g.map((v) => `'${v.name}'`).join(' · ')} — 같은 곳이면 이름을 맞춰 주세요
                 </Text>
               </View>
@@ -115,8 +115,8 @@ export default function MyVendorsScreen() {
         >
           <Card pad={0} style={{ overflow: 'hidden' }}>
             {vendors.map((v, i) => (
-              <View key={v.id} style={{ flexDirection: 'row', alignItems: 'center', gap: 11, paddingVertical: 12, paddingLeft: 15, paddingRight: 10, borderBottomWidth: i < vendors.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
-                <View style={{ width: 38, height: 38, borderRadius: 11, backgroundColor: T.line2, alignItems: 'center', justifyContent: 'center' }}>
+              <View key={v.id} style={{ flexDirection: 'row', alignItems: 'center', gap: 11, paddingVertical: 12, paddingLeft: space.md, paddingRight: space.sm, borderBottomWidth: i < vendors.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
+                <View style={{ width: controlVisualHeight.md, height: controlVisualHeight.md, borderRadius: radius.md, backgroundColor: T.line2, alignItems: 'center', justifyContent: 'center' }}>
                   <Icon name="store" size={20} color={T.sub2} />
                 </View>
                 <Pressable onPress={() => openEdit(v)} accessibilityRole="button" accessibilityLabel={`${v.name} 수정`} style={{ flex: 1, minWidth: 0, paddingVertical: 4 }}>
@@ -124,7 +124,7 @@ export default function MyVendorsScreen() {
                     <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }} numberOfLines={1}>{v.name}</Text>
                     {dupIds.has(v.id) ? <Badge tone="amber" sm>중복?</Badge> : null}
                   </View>
-                  <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 2 }}>발주 {v.usedCount}건</Text>
+                  <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.xs }}>발주 {v.usedCount}건</Text>
                 </Pressable>
                 <Pressable onPress={() => openEdit(v)} hitSlop={5} accessibilityRole="button" accessibilityLabel={`${v.name} 이름 변경`} style={{ width: 34, height: 34, alignItems: 'center', justifyContent: 'center' }}>
                   <Icon name="edit" size={18} color={COLOR.text.tertiary} sw={2} />
@@ -143,11 +143,11 @@ export default function MyVendorsScreen() {
           <Input value={name} onChangeText={setName} placeholder="예) 성동청과" accessibilityLabel="구매처 이름" returnKeyType="done" onSubmitEditing={submit} />
         </Field>
         {editing && editing.usedCount > 0 ? (
-          <Text style={{ fontSize: 14, color: T.sub2, marginTop: -8, marginBottom: 12, lineHeight: 20 }}>
+          <Text style={{ fontSize: 14, color: T.sub2, marginTop: -8, marginBottom: 12, lineHeight: TYPE.caption.lineHeight }}>
             이름을 바꾸면 과거 발주 {editing.usedCount}건의 표기도 함께 바뀌어요.
           </Text>
         ) : null}
-        <View style={{ flexDirection: 'row', gap: 9, marginTop: 8 }}>
+        <View style={{ flexDirection: 'row', gap: space.sm, marginTop: 8 }}>
           <View style={{ flex: 1 }}><Button kind="ghost" size="lg" full onPress={() => { setOpen(false); setEditing(null); }}>취소</Button></View>
           <View style={{ flex: 2 }}>
             <Button kind="primary" size="lg" full loading={saveVendor.isPending} disabled={name.trim() === ''} onPress={submit}>
