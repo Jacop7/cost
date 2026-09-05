@@ -7,7 +7,7 @@ import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Card, Icon, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { T, won } from '@/theme/tokens';
+import { COLOR, T, won } from '@/theme/tokens';
 import { isRevisionConflict, useSalesBusinessDate } from '@/features/business-day/businessDay';
 import { useSalesDay, useSalesRange, useSaveSale } from '../hooks';
 import { rangeLabel } from '@/lib/date';
@@ -97,11 +97,11 @@ function SalesExpenseScreenBody({ serverToday }: { serverToday: string }) {
                 <View key={`${r.name}-${i}`} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12, borderBottomWidth: i < rows.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
                   <View style={{ flex: 1, minWidth: 0 }}>
                     <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>{r.name}</Text>
-                    {r.memo ? <Text style={{ fontSize: 14, color: T.ter, fontWeight: '600', marginTop: 3 }}>{r.memo}</Text> : null}
+                    {r.memo ? <Text style={{ fontSize: 14, color: COLOR.text.tertiary, fontWeight: '600', marginTop: 3 }}>{r.memo}</Text> : null}
                   </View>
                   <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink, marginRight: 12 }, NUM]}>{won(r.amount)}원</Text>
                   <Pressable onPress={() => remove(i)} hitSlop={8} accessibilityRole="button" accessibilityLabel={`${r.name} 삭제`}>
-                    <Icon name="close" size={16} color={T.ter} />
+                    <Icon name="close" size={16} color={COLOR.text.tertiary} />
                   </Pressable>
                 </View>
               ))}

@@ -12,7 +12,7 @@ import { Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
 import { AppHeader, Button, Card, FilterButton, Icon, QueryState, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { T, won } from '@/theme/tokens';
+import { COLOR, T, won } from '@/theme/tokens';
 import { useSalesRange, type RangeMenu } from '../hooks';
 import { ChannelMixCard, MenuSalesList, ProfitBreakdownCard, SalesRow, SecLabel } from '../components/ProfitBlocks';
 import { MenuProfitSheet } from '../components/MenuProfitSheet';
@@ -171,7 +171,7 @@ function SalesAnalyticsBody({ today }: { today: string }) {
           <FilterButton label={`${active.short}, ${active.label}`} onPress={() => setPeriodOpen(true)} />
           <View style={{ flex: 1 }} />
           {dayCount > 1 ? (
-            <Text style={[{ fontSize: 13, fontWeight: '700', color: T.ter }, NUM]}>{dayCount}일</Text>
+            <Text style={[{ fontSize: 13, fontWeight: '700', color: COLOR.text.tertiary }, NUM]}>{dayCount}일</Text>
           ) : null}
         </View>
 
@@ -204,15 +204,15 @@ function SalesAnalyticsBody({ today }: { today: string }) {
                       strong
                       tone={c}
                       labelTone={isProfit ? T.green : undefined}
-                      percentTone={T.ter}
+                      percentTone={COLOR.text.tertiary}
                       last={i === 2}
                     />
                   ))}
                 </View>
                 {dayCount > 1 ? (
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 14, paddingBottom: 12 }}>
-                    <Icon name="info" size={14} color={T.ter} />
-                    <Text style={[{ flex: 1, fontSize: 13, color: T.ter }, NUM]}>하루 평균 순이익 {won(avgProfit)}원 · {dayCount}일 기준</Text>
+                    <Icon name="info" size={14} color={COLOR.text.tertiary} />
+                    <Text style={[{ flex: 1, fontSize: 13, color: COLOR.text.tertiary }, NUM]}>하루 평균 순이익 {won(avgProfit)}원 · {dayCount}일 기준</Text>
                   </View>
                 ) : null}
               </Card>
@@ -268,10 +268,10 @@ function SalesAnalyticsBody({ today }: { today: string }) {
                 }}
               >
                 <View style={{ flex: 1, minWidth: 0 }}>
-                  <Text style={{ fontSize: 15, fontWeight: on ? '800' : '700', color: on ? T.blue : T.ink }}>{pp.short}</Text>
-                  <Text style={[{ fontSize: 12, fontWeight: '600', color: T.ter, marginTop: 3 }, NUM]}>{pp.label}</Text>
+                  <Text style={{ fontSize: 15, fontWeight: on ? '800' : '700', color: on ? COLOR.text.link : T.ink }}>{pp.short}</Text>
+                  <Text style={[{ fontSize: 12, fontWeight: '600', color: COLOR.text.tertiary, marginTop: 3 }, NUM]}>{pp.label}</Text>
                 </View>
-                {on ? <Icon name="check" size={18} color={T.blue} /> : null}
+                {on ? <Icon name="check" size={18} color={COLOR.action.primary} /> : null}
               </Pressable>
             );
           })}
@@ -311,14 +311,14 @@ function SalesAnalyticsBody({ today }: { today: string }) {
                   style={{
                     flexDirection: 'row', alignItems: 'center', gap: 8, minHeight: 50,
                     paddingHorizontal: 13, borderRadius: 12,
-                    borderWidth: on ? 1.5 : 1, borderColor: on ? T.blue : T.line,
-                    backgroundColor: on ? T.blueTint : T.surface,
+                    borderWidth: on ? 1.5 : 1, borderColor: on ? COLOR.action.primary : T.line,
+                    backgroundColor: on ? COLOR.action.primaryTint : T.surface,
                   }}
                 >
-                  <Text style={[{ flex: 1, fontSize: 16, fontWeight: '700', color: value ? T.ink : T.ter }, NUM]} numberOfLines={1}>
+                  <Text style={[{ flex: 1, fontSize: 16, fontWeight: '700', color: value ? T.ink : COLOR.text.tertiary }, NUM]} numberOfLines={1}>
                     {value ?? '선택'}
                   </Text>
-                  <Icon name="calendar" size={17} color={on ? T.blue : T.ter} />
+                  <Icon name="calendar" size={17} color={on ? COLOR.action.primary : COLOR.text.tertiary} />
                 </Pressable>
               </View>
             );
@@ -326,19 +326,19 @@ function SalesAnalyticsBody({ today }: { today: string }) {
         </View>
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10, marginBottom: 4 }}>
           <Pressable onPress={() => shiftMonth(-1)} hitSlop={10} accessibilityRole="button" accessibilityLabel="이전 달">
-            <View style={{ transform: [{ rotate: '180deg' }] }}><Icon name="chevron" size={18} color={T.ter} /></View>
+            <View style={{ transform: [{ rotate: '180deg' }] }}><Icon name="chevron" size={18} color={COLOR.text.tertiary} /></View>
           </Pressable>
           <Text style={{ fontSize: 16, fontWeight: '800', color: T.ink, minWidth: 110, textAlign: 'center' }}>{monthTitle(monthAnchor)}</Text>
           <Pressable onPress={() => shiftMonth(1)} hitSlop={10} accessibilityRole="button" accessibilityLabel="다음 달">
-            <Icon name="chevron" size={18} color={T.ter} />
+            <Icon name="chevron" size={18} color={COLOR.text.tertiary} />
           </Pressable>
         </View>
-        <Text style={{ fontSize: 13, fontWeight: '700', color: T.blue, textAlign: 'center', marginBottom: 8 }}>
+        <Text style={{ fontSize: 13, fontWeight: '700', color: COLOR.text.link, textAlign: 'center', marginBottom: 8 }}>
           {editing === 'from' ? '시작일' : '종료일'}을 고르는 중이에요
         </Text>
         <View style={{ flexDirection: 'row', marginBottom: 6 }}>
           {DOWS.map((d, i) => (
-            <Text key={d} style={{ flex: 1, textAlign: 'center', fontSize: 13, fontWeight: '700', color: i === 0 ? T.red : T.ter }}>{d}</Text>
+            <Text key={d} style={{ flex: 1, textAlign: 'center', fontSize: 13, fontWeight: '700', color: i === 0 ? T.red : COLOR.text.tertiary }}>{d}</Text>
           ))}
         </View>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginBottom: 14 }}>
@@ -356,7 +356,7 @@ function SalesAnalyticsBody({ today }: { today: string }) {
                   accessibilityRole="button"
                   accessibilityLabel={`${Number(day.slice(8))}일 선택`}
                   accessibilityState={{ selected: on, disabled: future }}
-                  style={{ flex: 1, borderRadius: 9, alignItems: 'center', justifyContent: 'center', opacity: future ? 0.35 : 1, backgroundColor: on ? T.blue : has ? T.surface2 : 'transparent' }}
+                  style={{ flex: 1, borderRadius: 9, alignItems: 'center', justifyContent: 'center', opacity: future ? 0.35 : 1, backgroundColor: on ? COLOR.action.primary : has ? T.surface2 : 'transparent' }}
                 >
                   <Text style={{ fontSize: 14, fontWeight: on ? '800' : '600', color: on ? T.onColor : has ? T.ink2 : T.line3 }}>{Number(day.slice(8))}</Text>
                 </Pressable>

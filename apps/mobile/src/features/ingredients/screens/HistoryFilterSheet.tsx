@@ -6,7 +6,7 @@
 import { useEffect, useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { Button, Icon, Sheet } from '../../../components/kit';
-import { T, tnum } from '../../../theme/tokens';
+import { COLOR, T, tnum } from '../../../theme/tokens';
 import { addDays } from '@/lib/date';
 
 function Seg({ opts, sel, onSelect }: { opts: string[]; sel: string; onSelect: (o: string) => void }) {
@@ -25,12 +25,12 @@ function Seg({ opts, sel, onSelect }: { opts: string[]; sel: string; onSelect: (
               paddingVertical: 11,
               paddingHorizontal: 16,
               borderRadius: 11,
-              backgroundColor: on ? T.blueTint : T.surface,
+              backgroundColor: on ? COLOR.action.primaryTint : T.surface,
               borderWidth: 1,
-              borderColor: on ? T.blue : T.line,
+              borderColor: on ? COLOR.action.primary : T.line,
             }}
           >
-            <Text style={{ fontSize: 16, fontWeight: '700', color: on ? T.blue : T.sub }}>{o}</Text>
+            <Text style={{ fontSize: 16, fontWeight: '700', color: on ? COLOR.text.link : T.sub }}>{o}</Text>
           </Pressable>
         );
       })}
@@ -100,7 +100,7 @@ export function PeriodSheet({
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 10, paddingVertical: 12, paddingHorizontal: 14, borderWidth: 1, borderColor: T.line, borderRadius: 12, backgroundColor: T.surface2 }}>
           <Icon name="calendar" size={18} color={T.sub2} />
           <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, tnum]}>{fmt(range.from)}</Text>
-          <Text style={{ flex: 1, textAlign: 'center', color: T.ter }}>~</Text>
+          <Text style={{ flex: 1, textAlign: 'center', color: COLOR.text.tertiary }}>~</Text>
           <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, tnum]}>{fmt(range.to)}</Text>
         </View>
       </View>
@@ -154,7 +154,7 @@ export function HistoryFilterSheet({
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 9, paddingVertical: 12, paddingHorizontal: 14, borderWidth: 1, borderColor: T.line, borderRadius: 12, backgroundColor: T.surface2 }}>
               <Icon name="calendar" size={18} color={T.sub2} />
               <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, tnum]}>{fmt(range.from)}</Text>
-              <Text style={{ flex: 1, textAlign: 'center', color: T.ter }}>~</Text>
+              <Text style={{ flex: 1, textAlign: 'center', color: COLOR.text.tertiary }}>~</Text>
               <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, tnum]}>{fmt(range.to)}</Text>
             </View>
           </View>

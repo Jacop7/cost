@@ -77,6 +77,14 @@ const surfaces = {
   bg: pick(tBlock, 'bg', 'T'),
 };
 const blueTint = pick(tBlock, 'blueTint', 'T');
+const status = {
+  'status.positive': pick(tBlock, 'green', 'T'),
+  'status.positiveTint': pick(tBlock, 'greenTint', 'T'),
+  'status.negative': pick(tBlock, 'red', 'T'),
+  'status.negativeTint': pick(tBlock, 'redTint', 'T'),
+  'status.caution': pick(tBlock, 'amberText', 'T'),
+  'status.cautionTint': pick(tBlock, 'amberTint', 'T'),
+};
 const text = {
   'text.primary': pick(textBlock, 'primary', 'COLOR.text'),
   'text.secondary': pick(textBlock, 'secondary', 'COLOR.text'),
@@ -89,6 +97,7 @@ const textDisabled = pick(textBlock, 'disabled', 'COLOR.text');
 const action = {
   'action.primary': pick(actionBlock, 'primary', 'COLOR.action'),
   'action.primaryPressed': pick(actionBlock, 'primaryPressed', 'COLOR.action'),
+  'action.primaryDisabled': pick(actionBlock, 'primaryDisabled', 'COLOR.action'),
   'action.primaryTint': pick(actionBlock, 'primaryTint', 'COLOR.action'),
   'action.onTint': pick(actionBlock, 'onTint', 'COLOR.action'),
 };
@@ -127,11 +136,22 @@ for (const [sname, s] of Object.entries(surfaces))
   for (const [role, fg] of Object.entries(text)) check(role, fg, s, 'text', sname);
 check('action.primary 위 흰 글자', surfaces.surface, action['action.primary'], 'text', 'action.primary');
 check('action.primaryPressed 위 흰 글자', surfaces.surface, action['action.primaryPressed'], 'text', 'action.primaryPressed');
+check('action.primaryDisabled 위 흰 글자', surfaces.surface, action['action.primaryDisabled'], 'text', 'action.primaryDisabled');
 check('action.onTint on primaryTint', action['action.onTint'], action['action.primaryTint'], 'text', 'action.primaryTint');
 check('myHubTile.label on background', tile['myHubTile.label'], tile['myHubTile.background'], 'text', 'myHubTile');
 check('myHubTile.icon on background', tile['myHubTile.icon'], tile['myHubTile.background'], 'nonText', 'myHubTile');
 for (const [sname, s] of Object.entries(surfaces))
   check('action.primary 테두리·아이콘', action['action.primary'], s, 'nonText', sname);
+for (const [name, fg] of [
+  ['status.positive', status['status.positive']],
+  ['status.negative', status['status.negative']],
+  ['status.caution', status['status.caution']],
+]) {
+  for (const [sname, s] of Object.entries(surfaces)) check(name, fg, s, 'text', sname);
+}
+check('status.positive on positiveTint', status['status.positive'], status['status.positiveTint'], 'text', 'positiveTint');
+check('status.negative on negativeTint', status['status.negative'], status['status.negativeTint'], 'text', 'negativeTint');
+check('status.caution on cautionTint', status['status.caution'], status['status.cautionTint'], 'text', 'cautionTint');
 
 // `text.disabled` 는 WCAG 1.4.3 이 비활성 컴포넌트를 면제한다 — 면제이지 통과가 아니다.
 note.push(`면제 — text.disabled ${textDisabled} (WCAG 1.4.3 비활성 컴포넌트)`);
@@ -152,6 +172,7 @@ const roles = {
   ...text,
   'text.disabled': textDisabled,
   ...action,
+  ...status,
   'brand.primary': brandPrimary,
   ...tile,
 };
@@ -203,6 +224,10 @@ if (existsSync(projectionPath)) {
   }
   for (const [k, v] of Object.entries(text)) {
     const b = P.text?.[k];
+    if (b && v && b.toUpperCase() !== v.toUpperCase()) drift.push(`${k} 앱 ${v} ≠ 프로토타입 ${b}`);
+  }
+  for (const [k, v] of Object.entries(status)) {
+    const b = P.status?.[k];
     if (b && v && b.toUpperCase() !== v.toUpperCase()) drift.push(`${k} 앱 ${v} ≠ 프로토타입 ${b}`);
   }
   if (drift.length) fail.push(`앱과 프로토타입 투영이 갈렸다 — ${drift.join(' · ')}. 프로토타입 쪽을 새 DS 로 맞춰라`);

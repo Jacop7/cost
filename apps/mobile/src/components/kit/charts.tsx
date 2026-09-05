@@ -6,7 +6,7 @@ import { ReactNode } from 'react';
 import { View } from 'react-native';
 import Svg, { Circle, Defs, LinearGradient, Line, Path, Stop, Text as SvgText } from 'react-native-svg';
 import { Txt } from './Txt';
-import { T } from '@/theme/tokens';
+import { COLOR, T } from '@/theme/tokens';
 
 export interface DonutSeg {
   label: string;
@@ -46,7 +46,7 @@ export function Donut({ segments, size = 150, thick = 22, centerTop, centerMain,
         })}
       </Svg>
       <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, alignItems: 'center', justifyContent: 'center' }}>
-        {centerTop ? <Txt style={{ fontSize: 13, fontWeight: '700', color: T.ter }}>{centerTop}</Txt> : null}
+        {centerTop ? <Txt style={{ fontSize: 13, fontWeight: '700', color: COLOR.text.tertiary }}>{centerTop}</Txt> : null}
         <Txt num style={{ fontSize: mainSize, fontWeight: '800', color: mainColor || T.green, letterSpacing: -0.5 }}>{centerMain}</Txt>
         {centerSub ? <Txt style={{ fontSize: 16, fontWeight: '600', color: T.sub2 }}>{centerSub}</Txt> : null}
       </View>
@@ -61,7 +61,7 @@ export interface TrendPoint {
 }
 
 /** 추이 라인 차트 (① 가격 추이 · ② 순이익률 추이). */
-export function TrendChart({ points, w = 320, h = 110, color = T.blue, target, fmt = (v) => `${v}`, pad = 8, markMinMax, solidDots }: {
+export function TrendChart({ points, w = 320, h = 110, color = COLOR.action.primary, target, fmt = (v) => `${v}`, pad = 8, markMinMax, solidDots }: {
   points: TrendPoint[];
   w?: number;
   h?: number;
@@ -89,7 +89,7 @@ export function TrendChart({ points, w = 320, h = 110, color = T.blue, target, f
           <Stop offset="1" stopColor={color} stopOpacity="0" />
         </LinearGradient>
       </Defs>
-      {target != null ? <Line x1={pad} x2={w - pad} y1={Y(target)} y2={Y(target)} stroke={T.ter} strokeWidth={1.3} strokeDasharray="4 4" /> : null}
+      {target != null ? <Line x1={pad} x2={w - pad} y1={Y(target)} y2={Y(target)} stroke={COLOR.text.tertiary} strokeWidth={1.3} strokeDasharray="4 4" /> : null}
       <Path d={area} fill="url(#tg)" />
       <Path d={line} fill="none" stroke={color} strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round" />
       {points.map((p, i) => (

@@ -2,7 +2,7 @@
 import React from 'react';
 import { View, Text, Pressable } from 'react-native';
 import { Sheet, Icon } from '../../../components/kit';
-import { T, FONT } from '../../../theme/tokens';
+import { COLOR, T, FONT } from '../../../theme/tokens';
 
 const UNIT_GROUPS: [string, string[]][] = [
   ['무게', ['kg', 'g']],
@@ -56,13 +56,13 @@ export function UnitPickerSheet({
                         paddingVertical: 16,
                         paddingHorizontal: 4,
                         borderRadius: 12,
-                        backgroundColor: on ? T.blueTint : T.surface,
+                        backgroundColor: on ? COLOR.action.primaryTint : T.surface,
                         borderWidth: 1,
-                        borderColor: on ? T.blue : T.line,
+                        borderColor: on ? COLOR.action.primary : T.line,
                       }}
                     >
-                      {on ? <Icon name="check" size={16} color={T.blue} sw={2.4} /> : null}
-                      <Text style={{ fontSize: 16, fontWeight: '700', color: on ? T.blue : T.ink2 }}>{u}</Text>
+                      {on ? <Icon name="check" size={16} color={COLOR.action.primary} sw={2.4} /> : null}
+                      <Text style={{ fontSize: 16, fontWeight: '700', color: on ? COLOR.text.link : T.ink2 }}>{u}</Text>
                     </Pressable>
                   );
                 })}

@@ -11,7 +11,7 @@ import { useMemo, useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { AppHeader, Badge, Button, Card, Field, Icon, Input, QueryState, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { T } from '@/theme/tokens';
+import { COLOR, T } from '@/theme/tokens';
 import { useDeleteVendor, useSaveVendor, useSettingsLists, type VendorRow } from '@/features/master-data/hooks';
 
 /** 공백·기호를 지운 뒤 같으면 "비슷한 이름"으로 본다('대림유통' vs '대림 유통'). */
@@ -83,7 +83,7 @@ export default function MyVendorsScreen() {
         onBack={() => safeBack('/my')}
         right={
           <Pressable onPress={openAdd} hitSlop={6} accessibilityRole="button" accessibilityLabel="구매처 추가" style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}>
-            <Icon name="plus" size={24} color={T.blue} />
+            <Icon name="plus" size={24} color={COLOR.action.primary} />
           </Pressable>
         }
       />
@@ -103,7 +103,7 @@ export default function MyVendorsScreen() {
           </View>
         ))}
 
-        <Text style={{ fontSize: 14, fontWeight: '700', color: T.ter, marginHorizontal: 4, marginBottom: 8 }}>구매처 {vendors.length}</Text>
+        <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.text.tertiary, marginHorizontal: 4, marginBottom: 8 }}>구매처 {vendors.length}</Text>
 
         <QueryState
           isLoading={lists.isLoading}
@@ -124,13 +124,13 @@ export default function MyVendorsScreen() {
                     <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }} numberOfLines={1}>{v.name}</Text>
                     {dupIds.has(v.id) ? <Badge tone="amber" sm>중복?</Badge> : null}
                   </View>
-                  <Text style={{ fontSize: 14, color: T.ter, marginTop: 2 }}>발주 {v.usedCount}건</Text>
+                  <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 2 }}>발주 {v.usedCount}건</Text>
                 </Pressable>
                 <Pressable onPress={() => openEdit(v)} hitSlop={5} accessibilityRole="button" accessibilityLabel={`${v.name} 이름 변경`} style={{ width: 34, height: 34, alignItems: 'center', justifyContent: 'center' }}>
-                  <Icon name="edit" size={18} color={T.ter} sw={2} />
+                  <Icon name="edit" size={18} color={COLOR.text.tertiary} sw={2} />
                 </Pressable>
                 <Pressable onPress={() => confirmDelete(v)} hitSlop={5} accessibilityRole="button" accessibilityLabel={`${v.name} 삭제`} style={{ width: 34, height: 34, alignItems: 'center', justifyContent: 'center' }}>
-                  <Icon name="close" size={19} color={T.ter} />
+                  <Icon name="close" size={19} color={COLOR.text.tertiary} />
                 </Pressable>
               </View>
             ))}

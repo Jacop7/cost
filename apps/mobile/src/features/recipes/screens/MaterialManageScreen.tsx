@@ -8,7 +8,7 @@ import { useMemo, useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { AppHeader, Badge, Button, Card, FAB, Field, Icon, Input, QueryState, SearchBar, Select, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { T, won } from '@/theme/tokens';
+import { COLOR, T, won } from '@/theme/tokens';
 import { clampDecimals } from '@/lib/num';
 import {
   useDeactivateMaterial,
@@ -137,14 +137,14 @@ export default function MaterialManageScreen() {
                   </View>
                   <Text style={[{ fontSize: 14, color: T.sub2, marginTop: 4, fontWeight: '600' }, NUM]}>
                     기준 단가 <Text style={{ color: T.ink, fontWeight: '700' }}>{won(m.unitCost)}원/{m.unitLabel}</Text>
-                    {m.usedCount > 0 ? <Text style={{ color: T.ter }}>  ·  메뉴 {m.usedCount}개</Text> : null}
+                    {m.usedCount > 0 ? <Text style={{ color: COLOR.text.tertiary }}>  ·  메뉴 {m.usedCount}개</Text> : null}
                   </Text>
                 </Pressable>
                 <Pressable onPress={() => openEdit(m)} hitSlop={5} accessibilityRole="button" accessibilityLabel={`${m.name} 수정`} style={{ width: 34, height: 34, alignItems: 'center', justifyContent: 'center' }}>
-                  <Icon name="edit" size={18} color={T.ter} sw={2} />
+                  <Icon name="edit" size={18} color={COLOR.text.tertiary} sw={2} />
                 </Pressable>
                 <Pressable onPress={() => confirmDelete(m)} hitSlop={5} accessibilityRole="button" accessibilityLabel={`${m.name} 삭제`} style={{ width: 34, height: 34, alignItems: 'center', justifyContent: 'center' }}>
-                  <Icon name="close" size={19} color={T.ter} />
+                  <Icon name="close" size={19} color={COLOR.text.tertiary} />
                 </Pressable>
               </View>
             ))}
@@ -185,16 +185,16 @@ export default function MaterialManageScreen() {
         </Field>
 
         {/* 단가 미리보기 */}
-        <View style={{ backgroundColor: T.blueTint, borderWidth: 1, borderColor: T.blue, borderRadius: 12, paddingVertical: 14, paddingHorizontal: 16 }}>
+        <View style={{ backgroundColor: COLOR.action.primaryTint, borderWidth: 1, borderColor: COLOR.action.primary, borderRadius: 12, paddingVertical: 14, paddingHorizontal: 16 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 11 }}>
-            <Icon name="info" size={17} color={T.blue} />
-            <Text style={{ fontSize: 16, fontWeight: '700', color: T.blue }}>단가 미리보기</Text>
+            <Icon name="info" size={17} color={COLOR.action.primary} />
+            <Text style={{ fontSize: 16, fontWeight: '700', color: COLOR.text.link }}>단가 미리보기</Text>
           </View>
           <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 4 }}>
-            <Text style={{ flex: 1, fontSize: 14, fontWeight: '700', color: T.blue }}>
+            <Text style={{ flex: 1, fontSize: 14, fontWeight: '700', color: COLOR.text.link }}>
               개당 단가 <Text style={{ fontWeight: '600', color: T.sub2 }}>({won(num(boxPrice))} ÷ {count})</Text>
             </Text>
-            <Text style={[{ fontSize: 20, fontWeight: '800', color: T.blue }, NUM]}>
+            <Text style={[{ fontSize: 20, fontWeight: '800', color: COLOR.text.link }, NUM]}>
               {won(unitPrice)}<Text style={{ fontSize: 14 }}>원/{unitLabel || '개'}</Text>
             </Text>
           </View>
@@ -225,10 +225,10 @@ export default function MaterialManageScreen() {
           <Pressable
             onPress={() => { setCatId(null); setCatName(''); setCatOpen(false); }}
             accessibilityRole="button" accessibilityLabel="지정 안 함"
-            style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 14, paddingHorizontal: 16, borderRadius: 12, borderWidth: 1, borderColor: catId === null ? T.blue : T.line, backgroundColor: catId === null ? T.blueTint : T.surface }}
+            style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 14, paddingHorizontal: 16, borderRadius: 12, borderWidth: 1, borderColor: catId === null ? COLOR.action.primary : T.line, backgroundColor: catId === null ? COLOR.action.primaryTint : T.surface }}
           >
-            <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: catId === null ? T.blue : T.ter }}>지정 안 함</Text>
-            {catId === null ? <Icon name="check" size={17} color={T.blue} sw={2.4} /> : null}
+            <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: catId === null ? COLOR.text.link : COLOR.text.tertiary }}>지정 안 함</Text>
+            {catId === null ? <Icon name="check" size={17} color={COLOR.action.primary} sw={2.4} /> : null}
           </Pressable>
           {(lists.data?.materialCategories ?? []).map((c) => {
             const on = catId === c.id;
@@ -237,10 +237,10 @@ export default function MaterialManageScreen() {
                 key={c.id}
                 onPress={() => { setCatId(c.id); setCatName(c.name); setCatOpen(false); }}
                 accessibilityRole="button" accessibilityLabel={c.name} accessibilityState={{ selected: on }}
-                style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 14, paddingHorizontal: 16, borderRadius: 12, borderWidth: 1, borderColor: on ? T.blue : T.line, backgroundColor: on ? T.blueTint : T.surface }}
+                style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 14, paddingHorizontal: 16, borderRadius: 12, borderWidth: 1, borderColor: on ? COLOR.action.primary : T.line, backgroundColor: on ? COLOR.action.primaryTint : T.surface }}
               >
-                <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: on ? T.blue : T.ink2 }}>{c.name}</Text>
-                {on ? <Icon name="check" size={17} color={T.blue} sw={2.4} /> : null}
+                <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: on ? COLOR.text.link : T.ink2 }}>{c.name}</Text>
+                {on ? <Icon name="check" size={17} color={COLOR.action.primary} sw={2.4} /> : null}
               </Pressable>
             );
           })}

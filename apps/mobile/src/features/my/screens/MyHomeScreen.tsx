@@ -7,7 +7,7 @@ import { type Href, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { getLocale } from '@margincook/core';
 import { Card, Icon, IconName } from '@/components/kit';
-import { T } from '@/theme/tokens';
+import { COLOR, COMPONENT, T } from '@/theme/tokens';
 import { useSettings, useUnitDigits } from '../store';
 import { useSettingsLists } from '@/features/master-data/hooks';
 import { useHoursStatus, useStoreSettings } from '@/features/settings/hooks';
@@ -18,17 +18,17 @@ interface MenuItem { icon: IconName; bg: string; fg: string; t: string; d: strin
 const sections = (d: {
   locale: string; unit: string; category: string; vendor: string; channel: string; hours: string; alert: string;
 }): MenuItem[] => [
-  { icon: 'won', bg: T.blueTint, fg: T.blue, t: '고정 지출 (월)', d: '인건비·수수료·포장 등 → 고정지출률', route: '/recipes/fixed-cost' as Href },
+  { icon: 'won', bg: COMPONENT.myHubTile.background, fg: COMPONENT.myHubTile.icon, t: '고정 지출 (월)', d: '인건비·수수료·포장 등 → 고정지출률', route: '/recipes/fixed-cost' as Href },
   // 세금은 매장 하나에 하나다(0087). 고치면 전 메뉴 손익이 다시 계산된다.
-  { icon: 'receipt', bg: T.blueTint, fg: T.blue, t: '세금', d: '부가세 · 카드 수수료 등 판매가에서 빠지는 몫', route: '/my/tax' as Href },
-  { icon: 'grid', bg: '#F0EDFB', fg: '#7C5CE0', t: '카테고리 관리', d: d.category, route: '/my/categories' as Href },
-  { icon: 'globe', bg: '#E8F1FB', fg: '#2E6FD0', t: '언어 · 통화', d: d.locale, route: '/my/language' as Href },
-  { icon: 'ruler', bg: '#FEF1E6', fg: '#E08A2B', t: '단위 설정', d: d.unit, route: '/my/units' as Href },
-  { icon: 'store', bg: '#EAF6F0', fg: '#179E6B', t: '구매처', d: d.vendor, route: '/my/vendors' as Href },
-  { icon: 'receipt', bg: '#FDECEF', fg: '#D94A5E', t: '판매 채널', d: d.channel, route: '/my/channels' as Href },
-  { icon: 'calendar', bg: '#EDF3FF', fg: '#3A6FD8', t: '영업시간', d: d.hours, route: '/my/hours' as Href },
-  { icon: 'bell', bg: '#FFF5E0', fg: '#D99A1C', t: '알림 설정', d: d.alert, route: '/my/notifications' as Href },
-  { icon: 'user', bg: T.redTint, fg: T.red, t: '계정 관리', d: '계정 탈퇴 · 원장 보존 안내', route: '/my/account' as Href },
+  { icon: 'receipt', bg: COMPONENT.myHubTile.background, fg: COMPONENT.myHubTile.icon, t: '세금', d: '부가세 · 카드 수수료 등 판매가에서 빠지는 몫', route: '/my/tax' as Href },
+  { icon: 'grid', bg: COMPONENT.myHubTile.background, fg: COMPONENT.myHubTile.icon, t: '카테고리 관리', d: d.category, route: '/my/categories' as Href },
+  { icon: 'globe', bg: COMPONENT.myHubTile.background, fg: COMPONENT.myHubTile.icon, t: '언어 · 통화', d: d.locale, route: '/my/language' as Href },
+  { icon: 'ruler', bg: COMPONENT.myHubTile.background, fg: COMPONENT.myHubTile.icon, t: '단위 설정', d: d.unit, route: '/my/units' as Href },
+  { icon: 'store', bg: COMPONENT.myHubTile.background, fg: COMPONENT.myHubTile.icon, t: '구매처', d: d.vendor, route: '/my/vendors' as Href },
+  { icon: 'receipt', bg: COMPONENT.myHubTile.background, fg: COMPONENT.myHubTile.icon, t: '판매 채널', d: d.channel, route: '/my/channels' as Href },
+  { icon: 'calendar', bg: COMPONENT.myHubTile.background, fg: COMPONENT.myHubTile.icon, t: '영업시간', d: d.hours, route: '/my/hours' as Href },
+  { icon: 'bell', bg: COMPONENT.myHubTile.background, fg: COMPONENT.myHubTile.icon, t: '알림 설정', d: d.alert, route: '/my/notifications' as Href },
+  { icon: 'user', bg: COMPONENT.myHubTile.background, fg: COMPONENT.myHubTile.icon, t: '계정 관리', d: '계정 탈퇴 · 원장 보존 안내', route: '/my/account' as Href },
 ];
 
 export default function MyHomeScreen() {
@@ -118,7 +118,7 @@ export default function MyHomeScreen() {
           </View>
           <View style={{ flex: 1 }}>
             <Text style={{ fontSize: 18, fontWeight: '800', color: T.ink }}>{storeName.data ?? '매장'}</Text>
-            <Text style={{ fontSize: 14, color: T.ter, marginTop: 2 }}>{L.label} · 미터법</Text>
+            <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 2 }}>{L.label} · 미터법</Text>
           </View>
         </Card>
 
@@ -131,7 +131,7 @@ export default function MyHomeScreen() {
               </View>
               <View style={{ flex: 1, minWidth: 0 }}>
                 <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>{s.t}</Text>
-                <Text style={{ fontSize: 14, color: T.ter, marginTop: 2 }}>{s.d}</Text>
+                <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 2 }}>{s.d}</Text>
               </View>
               <Icon name="chevron" size={18} color={T.line3} />
             </Pressable>

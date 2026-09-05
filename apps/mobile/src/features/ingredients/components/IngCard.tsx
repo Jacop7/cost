@@ -2,7 +2,7 @@
 import React from 'react';
 import { View, Text, Pressable } from 'react-native';
 import { Card, Badge } from '../../../components/kit';
-import { T, tnum } from '../../../theme/tokens';
+import { COLOR, T, tnum } from '../../../theme/tokens';
 import {
   belowSafety,
   formatQuantity,
@@ -71,7 +71,7 @@ export function IngCard({ g, onPress }: { g: IngredientRow; onPress?: () => void
 
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 6 }}>
             {/* 기준단가가 null 이면 '산출 불가'다. 0원으로 그리면 공짜 재료로 읽힌다. */}
-            <Text style={[{ fontSize: 14, fontWeight: '700', color: g.basePrice === null ? T.ter : T.sub }, tnum]}>
+            <Text style={[{ fontSize: 14, fontWeight: '700', color: g.basePrice === null ? COLOR.text.tertiary : T.sub }, tnum]}>
               {g.basePrice === null ? '단가 산출 전' : formatUnitPrice(g.basePrice, unit)}
             </Text>
             <View style={{ flex: 1 }} />

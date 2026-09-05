@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Alert, Modal, Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { AppHeader, Badge, Card, Icon, MemoEditSheet, QueryState } from '../../../components/kit';
-import { T, tnum } from '../../../theme/tokens';
+import { COLOR, T, tnum } from '../../../theme/tokens';
 import { formatQuantity, formatUnitPrice } from '@margincook/core';
 import { safeBack } from '@/lib/nav';
 import { RecentChangeRow } from '@/features/changes';
@@ -153,7 +153,7 @@ export function IngredientDetailScreen() {
                     <Icon name="note" size={16} color={T.amberText} />
                     <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub }}>메모</Text>
                   </View>
-                  <Text style={{ fontSize: 16, fontWeight: '600', color: g.memo ? T.ink2 : T.ter, lineHeight: 22 }}>
+                  <Text style={{ fontSize: 16, fontWeight: '600', color: g.memo ? T.ink2 : COLOR.text.tertiary, lineHeight: 22 }}>
                     {g.memo || '메모를 입력하세요'}
                   </Text>
                 </Pressable>
@@ -174,7 +174,7 @@ export function IngredientDetailScreen() {
                   <Text style={[{ fontSize: 20, fontWeight: '800', letterSpacing: -0.6, color: isNegativeStock(g.stockTotal) ? T.red : T.ink }, tnum]}>
                     총 {formatQuantity(g.stockTotal, unit)}
                   </Text>
-                  <Text style={[{ flexShrink: 1, fontSize: 14, color: g.basePrice === null ? T.ter : T.sub, fontWeight: '700' }, tnum]} numberOfLines={1}>
+                  <Text style={[{ flexShrink: 1, fontSize: 14, color: g.basePrice === null ? COLOR.text.tertiary : T.sub, fontWeight: '700' }, tnum]} numberOfLines={1}>
                     {g.basePrice === null ? '단가 산출 전' : formatUnitPrice(g.basePrice, unit)}
                   </Text>
                 </View>
@@ -228,7 +228,7 @@ export function IngredientDetailScreen() {
                 </View>
                 {recent.length === 0 ? (
                   <View style={{ paddingVertical: 24, alignItems: 'center' }}>
-                    <Text style={{ fontSize: 14, color: T.ter }}>{history.isLoading ? '불러오는 중이에요' : '아직 변동 기록이 없어요'}</Text>
+                    <Text style={{ fontSize: 14, color: COLOR.text.tertiary }}>{history.isLoading ? '불러오는 중이에요' : '아직 변동 기록이 없어요'}</Text>
                   </View>
                 ) : (
                   recent.map((e, i) => {
@@ -254,7 +254,7 @@ export function IngredientDetailScreen() {
                   style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 2, paddingVertical: 13, borderTopWidth: 1, borderTopColor: T.line2, backgroundColor: T.surface2 }}
                 >
                   <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub }}>자세히 보기</Text>
-                  <Icon name="chevron" size={16} color={T.ter} />
+                  <Icon name="chevron" size={16} color={COLOR.text.tertiary} />
                 </Pressable>
               </Card>
 
@@ -266,7 +266,7 @@ export function IngredientDetailScreen() {
                       onPress={() => router.push(`/ingredients/option?ingredient=${g.id}`)}
                       hitSlop={6} accessibilityRole="button" accessibilityLabel="구매 옵션 관리"
                     >
-                      <Text style={{ fontSize: 14, fontWeight: '700', color: T.blue }}>관리</Text>
+                      <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.text.link }}>관리</Text>
                     </Pressable>
                   }
                 >
@@ -274,7 +274,7 @@ export function IngredientDetailScreen() {
                 </SectionHeader>
                 <View style={{ paddingHorizontal: 16, paddingTop: 4, paddingBottom: 10 }}>
                   {g.options.length === 0 ? (
-                    <Text style={{ fontSize: 14, color: T.ter, paddingVertical: 14 }}>등록된 구매 옵션이 없어요</Text>
+                    <Text style={{ fontSize: 14, color: COLOR.text.tertiary, paddingVertical: 14 }}>등록된 구매 옵션이 없어요</Text>
                   ) : (
                     g.options.map((o, i) => (
                       <Pressable
@@ -298,7 +298,7 @@ export function IngredientDetailScreen() {
                             이 자리는 원래 "누구 것이냐"를 말하는 줄이다(0084).
                             ⚠ 브랜드 입력 화면이 아직 없어 지금은 항상 구매처가 나온다.
                           */}
-                          <Text style={{ fontSize: 14, color: T.ter, fontWeight: '600', marginBottom: 4 }} numberOfLines={1}>
+                          <Text style={{ fontSize: 14, color: COLOR.text.tertiary, fontWeight: '600', marginBottom: 4 }} numberOfLines={1}>
                             {o.brandName ?? o.vendorName ?? '구매처 미지정'}
                           </Text>
                           <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }} numberOfLines={1}>
@@ -312,7 +312,7 @@ export function IngredientDetailScreen() {
                           <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, tnum]}>
                             {formatQuantity(o.volume, unit)}
                           </Text>
-                          <Text style={[{ fontSize: 14, color: T.ter, marginTop: 3 }, tnum]}>
+                          <Text style={[{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 3 }, tnum]}>
                             {formatUnitPrice(o.amount / (o.volume || 1), unit)}
                           </Text>
                         </View>

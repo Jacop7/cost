@@ -10,7 +10,7 @@
 import { useEffect, useState } from 'react';
 import { Pressable, Text, TextInput, View } from 'react-native';
 import { Button, Sheet } from '@/components/kit';
-import { T } from '@/theme/tokens';
+import { COLOR, T } from '@/theme/tokens';
 import { QUARTER_SLOTS, normalizeTimeInput } from '@/features/my/weeklySchedule';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
@@ -68,7 +68,7 @@ export function LateCloseSheet({ visible, timezone, loading, onCancel, onConfirm
           value={typed}
           onChangeText={(v) => { setTyped(v); setWarn(null); }}
           placeholder={picked ? `직접 입력 · 예) ${picked}` : '직접 입력 · 예) 01:30'}
-          placeholderTextColor={T.ter}
+          placeholderTextColor={COLOR.text.tertiary}
           keyboardType="numbers-and-punctuation"
           accessibilityLabel="마칠 시각 직접 입력"
           style={{ flex: 1, borderWidth: 1, borderColor: T.line, borderRadius: 10, paddingVertical: 9, paddingHorizontal: 12, fontSize: 15, color: T.ink, backgroundColor: T.surface }}
@@ -87,9 +87,9 @@ export function LateCloseSheet({ visible, timezone, loading, onCancel, onConfirm
               onPress={() => { setPicked(t); setTyped(''); setWarn(null); }}
               accessibilityRole="button" accessibilityLabel={t}
               accessibilityState={{ selected: on }}
-              style={{ paddingVertical: 8, paddingHorizontal: 10, borderRadius: 9, borderWidth: 1, borderColor: on ? T.blue : T.line, backgroundColor: on ? T.blueTint : T.surface }}
+              style={{ paddingVertical: 8, paddingHorizontal: 10, borderRadius: 9, borderWidth: 1, borderColor: on ? COLOR.action.primary : T.line, backgroundColor: on ? COLOR.action.primaryTint : T.surface }}
             >
-              <Text style={[{ fontSize: 14, fontWeight: on ? '800' : '600', color: on ? T.blue : T.sub2 }, NUM]}>{t}</Text>
+              <Text style={[{ fontSize: 14, fontWeight: on ? '800' : '600', color: on ? COLOR.text.link : T.sub2 }, NUM]}>{t}</Text>
             </Pressable>
           );
         })}

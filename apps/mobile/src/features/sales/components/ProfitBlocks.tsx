@@ -15,7 +15,7 @@
 import { Pressable, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
 import { Card, Icon } from '@/components/kit';
-import { T, won } from '@/theme/tokens';
+import { COLOR, T, won } from '@/theme/tokens';
 import type { RangeChannel, RangeMenu, SalesSummary } from '../hooks';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
@@ -34,11 +34,11 @@ export function SecLabel({ title, right, onPress }: { title: string; right?: str
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginHorizontal: 2, marginTop: 4, marginBottom: -3 }}>
       <Text style={{ flex: 1, fontSize: 13, fontWeight: '800', color: T.sub }}>{title}</Text>
-      {right ? <Text style={[{ fontSize: 13, fontWeight: '700', color: T.ter }, NUM]}>{right}</Text> : null}
+      {right ? <Text style={[{ fontSize: 13, fontWeight: '700', color: COLOR.text.tertiary }, NUM]}>{right}</Text> : null}
       {onPress ? (
         <Pressable onPress={onPress} hitSlop={6} accessibilityRole="button" accessibilityLabel={`${title} 자세히 보기`} style={{ flexDirection: 'row', alignItems: 'center', gap: 1 }}>
-          <Text style={{ fontSize: 13, fontWeight: '800', color: T.blue }}>자세히 보기</Text>
-          <Icon name="chevron" size={14} color={T.blue} />
+          <Text style={{ fontSize: 13, fontWeight: '800', color: COLOR.text.link }}>자세히 보기</Text>
+          <Icon name="chevron" size={14} color={COLOR.action.primary} />
         </Pressable>
       ) : null}
     </View>
@@ -93,9 +93,9 @@ export function SalesRow({
       </View>
 
       <View style={{ alignItems: 'flex-end' }}>
-        <Text style={[{ fontSize: 15, fontWeight: '800', color: tone ?? (strong ? T.ink : T.ter) }, NUM]}>{amount}</Text>
+        <Text style={[{ fontSize: 15, fontWeight: '800', color: tone ?? (strong ? T.ink : COLOR.text.tertiary) }, NUM]}>{amount}</Text>
         {percent ? (
-          <Text style={[{ fontSize: 12, fontWeight: '700', color: percentTone ?? tone ?? T.ter, marginTop: 3 }, NUM]}>{percent}</Text>
+          <Text style={[{ fontSize: 12, fontWeight: '700', color: percentTone ?? tone ?? COLOR.text.tertiary, marginTop: 3 }, NUM]}>{percent}</Text>
         ) : null}
       </View>
 
@@ -128,7 +128,7 @@ export function DetailSummary({ rows }: { rows: [string, string, string?, string
           <View style={{ alignItems: 'flex-end' }}>
             <Text style={[{ fontSize: 15, fontWeight: '800', color: tone ?? T.ink }, NUM]}>{v}</Text>
             {/* 고정지출률처럼 값 옆이 아니라 **아래**에 붙는 보조 숫자(프로토타입 규격). */}
-            {sub ? <Text style={[{ fontSize: 12, fontWeight: '800', color: T.blue, marginTop: 3 }, NUM]}>{sub}</Text> : null}
+            {sub ? <Text style={[{ fontSize: 12, fontWeight: '800', color: COLOR.text.link, marginTop: 3 }, NUM]}>{sub}</Text> : null}
           </View>
         </View>
       ))}
@@ -160,7 +160,7 @@ export function DetailRow({ name, sub, amount, percent, muted, last }: {
   muted?: boolean;
   last?: boolean;
 }) {
-  const c = muted ? T.ter : T.ink;
+  const c = muted ? COLOR.text.tertiary : T.ink;
   return (
     <View
       style={{
@@ -171,11 +171,11 @@ export function DetailRow({ name, sub, amount, percent, muted, last }: {
     >
       <View style={{ flex: 1, minWidth: 0 }}>
         <Text style={{ fontSize: 15, fontWeight: '800', color: c }} numberOfLines={1}>{name}</Text>
-        {sub ? <Text style={[{ fontSize: 12, fontWeight: '600', color: T.ter, marginTop: 3 }, NUM]}>{sub}</Text> : null}
+        {sub ? <Text style={[{ fontSize: 12, fontWeight: '600', color: COLOR.text.tertiary, marginTop: 3 }, NUM]}>{sub}</Text> : null}
       </View>
       <View style={{ alignItems: 'flex-end' }}>
         <Text style={[{ fontSize: 15, fontWeight: '800', color: c }, NUM]}>{amount}</Text>
-        {percent ? <Text style={[{ fontSize: 12, fontWeight: '700', color: T.ter, marginTop: 3 }, NUM]}>{percent}</Text> : null}
+        {percent ? <Text style={[{ fontSize: 12, fontWeight: '700', color: COLOR.text.tertiary, marginTop: 3 }, NUM]}>{percent}</Text> : null}
       </View>
     </View>
   );
@@ -223,7 +223,7 @@ export function ChannelMixCard({
         ))}
         {rows.length === 0 ? (
           <View style={{ paddingVertical: 24, alignItems: 'center' }}>
-            <Text style={{ fontSize: 14, color: T.ter }}>판매 기록이 없어요</Text>
+            <Text style={{ fontSize: 14, color: COLOR.text.tertiary }}>판매 기록이 없어요</Text>
           </View>
         ) : null}
       </View>
@@ -314,7 +314,7 @@ export function ProfitBreakdownCard({
             amount={`${won(v)}원`}
             percent={pctOf(v)}
             tone={blackAmounts ? T.ink : undefined}
-            percentTone={T.ter}
+            percentTone={COLOR.text.tertiary}
             arrow
             onPress={() => router.push(route)}
             last={profitFirst && i === costs.length - 1}
@@ -360,16 +360,16 @@ export function MenuSalesList({ menu, showAll, onShowAll, onSelect }: {
         >
           <View style={{ flex: 1, minWidth: 0 }}>
             <Text style={{ fontSize: 15, fontWeight: '800', color: T.ink }} numberOfLines={1}>
-              {m.menuName} <Text style={{ fontSize: 14, color: T.blue, fontWeight: '700' }}>×{m.qty}</Text>
+              {m.menuName} <Text style={{ fontSize: 14, color: COLOR.text.link, fontWeight: '700' }}>×{m.qty}</Text>
             </Text>
-            <Text style={[{ fontSize: 12, fontWeight: '600', color: T.ter, marginTop: 4 }, NUM]} numberOfLines={1}>
+            <Text style={[{ fontSize: 12, fontWeight: '600', color: COLOR.text.tertiary, marginTop: 4 }, NUM]} numberOfLines={1}>
               매장 {m.qtyHall} · 배달 {m.qtyDelivery} · 포장 {m.qtyTakeout}
               {m.qtyWaste > 0 ? ` · 폐기 ${m.qtyWaste}` : ''}
             </Text>
           </View>
           <View style={{ alignItems: 'flex-end' }}>
             <Text style={[{ fontSize: 15, fontWeight: '800', color: T.ink }, NUM]}>{won(m.revenue)}원</Text>
-            <Text style={[{ fontSize: 12, fontWeight: '700', color: T.ter, marginTop: 3 }, NUM]}>재료 {won(m.material)}</Text>
+            <Text style={[{ fontSize: 12, fontWeight: '700', color: COLOR.text.tertiary, marginTop: 3 }, NUM]}>재료 {won(m.material)}</Text>
           </View>
           <View style={{ width: ARROW_W, alignItems: 'flex-end' }}>
             <Icon name="chevron" size={16} color={T.line3} />
@@ -378,7 +378,7 @@ export function MenuSalesList({ menu, showAll, onShowAll, onSelect }: {
       ))}
       {list.length === 0 ? (
         <View style={{ paddingVertical: 28, alignItems: 'center' }}>
-          <Text style={{ fontSize: 14, color: T.ter }}>이 기간에 판매된 메뉴가 없어요</Text>
+          <Text style={{ fontSize: 14, color: COLOR.text.tertiary }}>이 기간에 판매된 메뉴가 없어요</Text>
         </View>
       ) : null}
       {!showAll && sorted.length > 10 ? (

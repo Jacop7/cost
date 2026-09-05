@@ -9,7 +9,7 @@ import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Card, Icon, QueryState, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { T, won } from '@/theme/tokens';
+import { COLOR, T, won } from '@/theme/tokens';
 import { useExtraUsage, useSalesRange, type ExtraUsageItem } from '../hooks';
 import { rangeLabel } from '@/lib/date';
 import { useSalesBusinessDate } from '@/features/business-day/businessDay';
@@ -70,9 +70,9 @@ function SalesExtraScreenBody({ serverToday }: { serverToday: string }) {
                 >
                   <View style={{ flex: 1, minWidth: 0 }}>
                     <Text style={{ fontSize: 16, fontWeight: '600', color: T.sub }} numberOfLines={1}>
-                      {m.name} <Text style={{ color: T.ter }}>{m.qty}개</Text>
+                      {m.name} <Text style={{ color: COLOR.text.tertiary }}>{m.qty}개</Text>
                     </Text>
-                    <Text style={{ fontSize: 14, color: T.ter, marginTop: 2 }} numberOfLines={1}>
+                    <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 2 }} numberOfLines={1}>
                       {m.menus.map((x) => x.menuName).join(' · ')}
                     </Text>
                   </View>

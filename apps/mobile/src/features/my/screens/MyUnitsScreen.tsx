@@ -12,7 +12,7 @@ import { AppHeader, Button, Card, Field, Input, Notice } from '@/components/kit'
 import { safeBack } from '@/lib/nav';
 import { clampDecimals } from '@/lib/num';
 import { RpcError } from '@/lib/supabase';
-import { T } from '@/theme/tokens';
+import { COLOR, T } from '@/theme/tokens';
 import { useSettings, useSettingsActions, useUnitDigits } from '../store';
 
 const SAMPLE_UNIT_PRICE = 4000 / 850;
@@ -23,7 +23,7 @@ function DetailRow({ label, value, sub, last }: { label: string; value: string; 
       <Text style={{ width: 72, fontSize: 16, fontWeight: '600', color: T.sub }}>{label}</Text>
       <View style={{ flex: 1, alignItems: 'flex-end' }}>
         <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>{value}</Text>
-        {sub ? <Text style={{ fontSize: 14, color: T.ter, marginTop: 2 }}>{sub}</Text> : null}
+        {sub ? <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 2 }}>{sub}</Text> : null}
       </View>
     </View>
   );
@@ -135,7 +135,7 @@ export default function MyUnitsScreen() {
   };
 
   if (settings.loading) {
-    return <View style={{ flex: 1, backgroundColor: T.bg }}><AppHeader title="단위 설정" onBack={() => safeBack('/my')} /><Text style={{ margin: 20, color: T.ter }}>불러오는 중…</Text></View>;
+    return <View style={{ flex: 1, backgroundColor: T.bg }}><AppHeader title="단위 설정" onBack={() => safeBack('/my')} /><Text style={{ margin: 20, color: COLOR.text.tertiary }}>불러오는 중…</Text></View>;
   }
   if ((settings.error && !settings.hasData) || baseRevision === null || settings.cupVolume === null || settings.unitSystem === null) {
     return (
@@ -166,14 +166,14 @@ export default function MyUnitsScreen() {
         ) : null}
         {saveError ? <Text role="alert" style={{ color: T.red, fontWeight: '700', marginBottom: 10 }}>저장하지 못했어요 · {saveError}</Text> : null}
 
-        <Text style={{ fontSize: 14, fontWeight: '700', color: T.ter, marginHorizontal: 4, marginBottom: 8 }}>기준 단위</Text>
+        <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.text.tertiary, marginHorizontal: 4, marginBottom: 8 }}>기준 단위</Text>
         <Card pad={0} style={{ overflow: 'hidden', marginBottom: 16 }}>
           <DetailRow label="방식" value="미터법" sub="내부 저장은 항상 최소 단위" />
           <DetailRow label="무게" value="g · kg" sub="1kg = 1,000g" />
           <DetailRow label="부피" value="ml · L" sub="1L = 1,000ml" last />
         </Card>
 
-        <Text style={{ fontSize: 14, fontWeight: '700', color: T.ter, marginHorizontal: 4, marginBottom: 8 }}>조리컵</Text>
+        <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.text.tertiary, marginHorizontal: 4, marginBottom: 8 }}>조리컵</Text>
         <Card style={{ marginBottom: 16 }}>
           <Field label="1컵 용량" hint="레시피 입력에서 컵을 ml로 환산할 때 사용해요.">
             <Input
@@ -194,7 +194,7 @@ export default function MyUnitsScreen() {
           <Button kind="primary" size="lg" full disabled={blocked || !cupValid || !cupChanged} loading={saving} onPress={saveCup} accessibilityLabel="컵 용량 저장">컵 용량 저장</Button>
         </Card>
 
-        <Text style={{ fontSize: 14, fontWeight: '700', color: T.ter, marginHorizontal: 4, marginBottom: 6 }}>단가 표기 자릿수</Text>
+        <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.text.tertiary, marginHorizontal: 4, marginBottom: 6 }}>단가 표기 자릿수</Text>
         <Notice style={{ marginBottom: 10 }}>식재료 단가·원가의 표기만 바뀌고 저장·계산 값은 그대로예요.</Notice>
         <Card pad={0} style={{ overflow: 'hidden' }}>
           {UNIT_PRICE_DIGIT_OPTIONS.map((d, i) => {
@@ -213,7 +213,7 @@ export default function MyUnitsScreen() {
               >
                 <Text style={[{ width: 74, fontSize: 16, fontWeight: '600', color: T.sub }, { fontVariant: ['tabular-nums'] }]}>{pattern}</Text>
                 <Text style={[{ flex: 1, fontSize: 16, fontWeight: '700', color: T.ink }, { fontVariant: ['tabular-nums'] }]}>{formatUnitPrice(SAMPLE_UNIT_PRICE, 'g', locale, d)}</Text>
-                <View style={{ width: 24, height: 24, borderRadius: 12, borderWidth: on ? 7 : 2, borderColor: on ? T.blue : T.line, marginLeft: 12 }} />
+                <View style={{ width: 24, height: 24, borderRadius: 12, borderWidth: on ? 7 : 2, borderColor: on ? COLOR.action.primary : T.line, marginLeft: 12 }} />
               </Pressable>
             );
           })}

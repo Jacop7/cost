@@ -6,14 +6,14 @@
 
 - 상태: 서비스 기준 재검토 개정안
 - 개정일: 2026-09-02
-- 현재 디자인 동기화 ID: `DS-20260905-007`
+- 현재 디자인 동기화 ID: `DS-20260905-008`
 - 적용 대상: `docs/prototypes/full-page-flow-prototype.html`, UI 적용 복사본과 향후 Expo 공용 UI
 - 등록 인벤토리: 프로토타입 `screen` 키 62개, 팝업·조건 상태 호스트 123개, 고유 ID 98개
   (PRT-182 정정: 이전 표기 `125 / 99`는 `PRT-151`이 `recipe_target_help`를 두 호스트에서
   제거하기 전 수치였다. HTML 레지스트리 실측이 권위이며 `123 / 98`이 맞다.)
 - 활성 도달성 검수: `screen` 키 61개, 팝업·조건 상태 호스트 121개, 고유 ID 96개
 - 숨김 보존: `discard` 화면 키 1개와 `discard_type`·`discard_period` 상태 2개
-- 이번 개정 제외: 실제 Expo 화면, 프로토타입 HTML, DB, RPC
+- 이번 개정 제외: Expo 화면의 구조·기하, DB, RPC. 색 역할은 S2에서 Expo와 프로토타입에 함께 적용했다.
 - 공동 검토: Codex 전수검수 + `claude-opus-5` 도메인 대조·UI 가이드·서비스 관점·최종 회귀
   독립 검토. 회차별 범위와 판정은 현재 확정안과 변경 기록에서 관리한다.
 
@@ -122,22 +122,25 @@
 | 앱·기본·보조 표면 | `T.bg`, `T.surface`, `T.surface2` | 화면·카드·결과 영역 |
 | 기본·강한 보조·보조 텍스트 | `T.ink`, `T.ink2`, `T.sub` | 제목·값·본문·라벨 |
 | 읽어야 하는 약한 본문 | `T.sub2` | 날짜·단위·설명 |
-| placeholder·장식 | `T.ter` | 입력 전 안내·비핵심 아이콘 |
+| 읽히는 보조 글자 | `COLOR.text.tertiary` `#66717E` | 보조 설명·날짜·단위 |
+| 비활성 글자 | `COLOR.text.disabled` `#8B95A1` | 실제 비활성 컨트롤에만 사용 |
 | 기본·약한·강한 경계 | `T.line`, `T.line2`, `T.line3` | 필드·행·탭 |
-| Primary·눌림·정보 표면 | `T.blue`, `T.bluePressed`, `T.blueTint` | 주요 행동·선택·안내 |
-| 긍정·주의·위험 | `T.green`, `T.amberText`, `T.red` | 상태 의미 |
+| 브랜드·행동·링크·정보 표면 | `COLOR.brand.primary`, `COLOR.action.primary`, `COLOR.text.link`, `COLOR.action.primaryTint` | 로고·주요 행동·명시적 링크·선택/안내 |
+| 비활성 Primary | `COLOR.action.primaryDisabled` `#6A7887` | 흰 라벨을 쓰는 비활성 주 버튼 |
+| 긍정·주의·위험 | `T.green #0B7F58`, `T.amberText #A16000`, `T.red #DA1222` | 상태 의미. 밝은 표면 셋과 자기 tint에서 AA 통과 |
 | 상태 표면 | `T.greenTint`, `T.amberTint`, `T.redTint` | 상태 배경 |
 | 반전 글자·스크림 | `T.onColor`, `T.scrim` | 색 배경·오버레이 |
 
-`text.tertiary`는 코드의 `T.sub2`, 장식용 약한 색은 `T.ter`에 대응한다. 이름이 비슷하다는 이유로
-서로 바꾸지 않는다. 프로토타입 카탈로그의 바깥 회색 배경은 제품 토큰이 아니다.
+신규 UI는 `T.blue*` 팔레트를 직접 쓰지 않고 의미 역할을 선택한다. `brand.primary #3182F6`와
+`action.primary #1470F5`의 차이는 의도된 것이며, `text.link #1465DB`는 글자 전경이라
+밝은 표면과 tint 모두에서 4.5:1을 지킨다. 프로토타입 카탈로그의 바깥 회색 배경은 제품 토큰이 아니다.
 
 ### 1.2 대비
 
 - 일반 텍스트는 4.5:1, 큰 텍스트와 비텍스트 UI는 3:1 이상이어야 한다.
 - 원시 브랜드·상태색은 작은 글자 전경으로 자동 승인된 값이 아니다.
-- 현재 `StatusBadge`, tint형 `Badge`, `Notice`, 작은 Primary 라벨의 일부 조합은 검산이 필요하다.
-- 접근 가능한 진한 전경색은 실제 대비 검산 후 `tokens.ts`에 추가한다. 이 문서가 임의 색을 확정하지 않는다.
+- `StatusBadge`, tint형 `Badge`, `Notice`, Primary 라벨은 앱 계약과 프로토타입 전수 감사에서 검산한다.
+- `S2` 기준 프로토타입 텍스트 6,974개는 AA 미달 0이고, 앱 역할 계약 39쌍도 절대 기준을 통과한다.
 - 상태는 색과 함께 텍스트·아이콘·부호 중 하나를 사용한다.
 
 대비 미결정 조합은 P0이며 부록 C에서 관리한다.

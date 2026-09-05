@@ -7,7 +7,7 @@ import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Card, Icon, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { T, won } from '@/theme/tokens';
+import { COLOR, T, won } from '@/theme/tokens';
 import { useSalesDay, useSalesRange } from '../hooks';
 import { channelName } from '../channels';
 import { rangeLabel } from '@/lib/date';
@@ -89,13 +89,13 @@ function SalesRevenueScreenBody({ serverToday }: { serverToday: string }) {
               {list.map((m) => (
                 <View key={m.recipeId ?? m.menuName} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 9, paddingLeft: 12, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
                   <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.sub }} numberOfLines={1}>
-                    {m.menuName} <Text style={{ color: T.ter }}>×{m.qty}</Text>
+                    {m.menuName} <Text style={{ color: COLOR.text.tertiary }}>×{m.qty}</Text>
                   </Text>
                   <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{won(m.revenue)}원</Text>
                 </View>
               ))}
               {list.length === 0 ? (
-                <Text style={{ fontSize: 14, color: T.ter, paddingVertical: 16 }}>판매된 메뉴가 없어요</Text>
+                <Text style={{ fontSize: 14, color: COLOR.text.tertiary, paddingVertical: 16 }}>판매된 메뉴가 없어요</Text>
               ) : null}
               {!showAll && sorted.length > 5 ? (
                 <Pressable
@@ -103,8 +103,8 @@ function SalesRevenueScreenBody({ serverToday }: { serverToday: string }) {
                   accessibilityRole="button" accessibilityLabel={`메뉴 ${sorted.length - 5}개 더 보기`}
                   style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 4, paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: T.line2 }}
                 >
-                  <Text style={{ fontSize: 14, fontWeight: '700', color: T.blue }}>더보기 ({sorted.length - 5}개)</Text>
-                  <Icon name="chevronDown" size={15} color={T.blue} />
+                  <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.text.link }}>더보기 ({sorted.length - 5}개)</Text>
+                  <Icon name="chevronDown" size={15} color={COLOR.action.primary} />
                 </Pressable>
               ) : null}
               <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 13, borderBottomWidth: 1, borderBottomColor: T.line }}>
@@ -116,9 +116,9 @@ function SalesRevenueScreenBody({ serverToday }: { serverToday: string }) {
               {etcItems.map((e, i) => (
                 <View key={`${e.name}-${i}`} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 9, paddingLeft: 12, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
                   <View style={{ flex: 1, minWidth: 0 }}>
-                    <Text style={{ fontSize: 16, fontWeight: '600', color: T.sub }}>{e.name} <Text style={{ color: T.ter }}>×{e.qty}</Text></Text>
+                    <Text style={{ fontSize: 16, fontWeight: '600', color: T.sub }}>{e.name} <Text style={{ color: COLOR.text.tertiary }}>×{e.qty}</Text></Text>
                     {/* 미지정은 회색이다 — 매장으로 보이면 안 된다(0093). */}
-                    <Text style={{ fontSize: 13, fontWeight: '700', color: e.channel ? T.blue : T.ter, marginTop: 2 }}>
+                    <Text style={{ fontSize: 13, fontWeight: '700', color: e.channel ? COLOR.text.link : COLOR.text.tertiary, marginTop: 2 }}>
                       {channelName(e.channel)}
                     </Text>
                   </View>
@@ -132,7 +132,7 @@ function SalesRevenueScreenBody({ serverToday }: { serverToday: string }) {
                 </View>
               ) : null}
               {(s?.etcRevenue ?? 0) === 0 ? (
-                <Text style={{ fontSize: 14, color: T.ter, paddingVertical: 12, paddingLeft: 12 }}>기록된 기타 매출이 없어요</Text>
+                <Text style={{ fontSize: 14, color: COLOR.text.tertiary, paddingVertical: 12, paddingLeft: 12 }}>기록된 기타 매출이 없어요</Text>
               ) : (
                 <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 13 }}>
                   <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: T.sub2 }}>소계</Text>

@@ -29,13 +29,13 @@ export const T = {
   line: '#E5E8EB',
   line2: '#F2F4F6',
   // status
-  green: '#15B374',
+  green: '#0B7F58',
   greenTint: '#E7F7F0',
   amberTint: '#FFF4E5',
-  red: '#F04452',
+  red: '#DA1222',
   redTint: '#FEECEC',
   // 부족 상태 텍스트는 가독성 위해 진한 주황 사용(프로토타입 동일)
-  amberText: '#E07A00',
+  amberText: '#A16000',
   // 인라인 통합 — 반복 사용되던 색을 토큰화
   line3: '#D1D6DB', // 밑줄형 탭/헤더 하단 구분선 · chevron 아이콘 (grey300)
   gray400: '#B0B8C1', // Toss grey400 — 차트(세금) 등 옅은 회색 단계
@@ -146,49 +146,12 @@ export const space = { xs: 4, sm: 8, md: 12, lg: 16, xl: 20, xxl: 24 } as const;
 export const radius = { sm: 8, md: 12, lg: 16, xl: 20, full: 999 } as const;
 
 /**
- * 그림자 — 다섯 역할. 값은 **코드 실측**이고 지어낸 것이 아니다.
- *
- * 그림자는 색 하나로 판정할 수 없다 — `shadowColor`·`Offset`·`Opacity`·`Radius`·`elevation`
- * 다섯이 한 묶음이어야 역할이 정해진다. `sheet` 가 위로 지는(`height: -8`) 유일한 그림자이고,
- * `fab` 만 검정이 아니라 **파랑 그림자**를 쓴다.
- * `bottomBar` 는 이름을 쓰지 않는다 — 하단 탭바에 그림자가 없기 때문이다(결정 `D-11`).
- */
-export const shadow = {
-  /** 카드 — 프로토타입 boxShadow '0 1px 3px rgba(0,0,0,0.04)' 의 RN 등가. */
-  card: { shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.04, shadowRadius: 3, elevation: 1 },
-  /** 시트 — 위로 지는 그림자. `Sheet.tsx:30` 실측. */
-  sheet: { shadowColor: '#000', shadowOffset: { width: 0, height: -8 }, shadowOpacity: 0.15, shadowRadius: 40, elevation: 16 },
-  /**
-   * FAB — 검정이 아니라 **파랑 그림자**다. `kit/index.tsx:151` 실측.
-   *
-   * `#3182F6` 은 지금 `brand.primary` 와 같은 값이지만 **실측이라 `S1` 에서는 그대로 둔다.**
-   * `S2` 에서 FAB 배경이 `COLOR.action.primary` 로 바뀌면 그림자만 브랜드색으로 남으므로,
-   * 그때 `COLOR.action.primary` 참조로 전환한다 — **`S2` 목록에 있다**(페이블 조건 2-③).
-   */
-  fab: { shadowColor: '#3182F6', shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.45, shadowRadius: 20, elevation: 6 },
-  /** 슬라이더 손잡이 — `Slider.tsx:50` 실측. `D-9` 잔여가 이 발견으로 닫혔다. */
-  sliderThumb: { shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.2, shadowRadius: 6, elevation: 3 },
-  /** 스위치 노브 — `MyNotificationsScreen.tsx:34` 실측. */
-  switchThumb: { shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.2, shadowRadius: 3, elevation: 2 },
-} as const;
-
-/**
- * 기존 호출부 호환 별칭 — `shadow.card` 와 같은 값이다.
- *
- * `S1` 은 선언만 하는 단계라 호출부를 건드리지 않는다. 남은 사용처는 **두 곳**이다
- * (`kit/index.tsx:58` Card · `kit/index.tsx:302` 세그먼트 선택). `verify` ③ 의
- * **별칭 래칫**이 사용처가 늘어나면 FAIL 한다 — 새 화면이 별칭을 새로 쓰면 안 된다.
- * `S3a` 완료 조건: **사용처 0 → 이 별칭 삭제.**
- */
-export const cardShadow = shadow.card;
-
-/**
  * 색 역할 — **이름이 계약이고 값은 우연히 같을 수 있다.**
  *
  * `T` 는 표면·팔레트고 이쪽은 **역할**이다. 같은 헥스가 두 역할에 들어가도 이름은 나눈다 —
  * `action.primaryPressed` 와 `text.link` 가 지금 같은 값인 것이 그 경우다.
  * 값은 `DS-20260905-001`(문항 1·2)과 그 부록 §8.2a 에서 왔고, 전부 WCAG AA 를 만족한다.
- * 화면 적용은 `S2` 다 — 여기서는 선언만 한다.
+ * `S2`에서 화면 사용처를 이 역할로 이관했다. 신규 화면은 팔레트 `T.blue*`를 직접 쓰지 않는다.
  *
  * **권위 관계** (솔 검수 `F05`)
  *   - `tokens.ts` — **앱 정본**이다. 앱의 색 역할은 여기서 나온다.
@@ -221,6 +184,8 @@ export const COLOR = {
     /** 주 버튼 **배경**. 그 위 흰 글자가 4.50(경계값)이다. */
     primary: '#1470F5',
     primaryPressed: '#1465DB',
+    /** 비활성 Primary 배경. 흰 글자와 4.52:1이며 비활성 상태도 형태를 흐리지 않는다. */
+    primaryDisabled: '#6A7887',
     /** 옅은 파랑 배경(안내 배너·선택 상태·MY 허브 타일). 기존 `T.blueTint` 그대로다. */
     primaryTint: '#EBF3FE',
     /** `tint` 위에 오는 글자·아이콘. */
@@ -232,6 +197,41 @@ export const COLOR = {
     primary: '#3182F6',
   },
 } as const;
+
+/**
+ * 그림자 — 다섯 역할. 값은 **코드 실측**이고 지어낸 것이 아니다.
+ *
+ * 그림자는 색 하나로 판정할 수 없다 — `shadowColor`·`Offset`·`Opacity`·`Radius`·`elevation`
+ * 다섯이 한 묶음이어야 역할이 정해진다. `sheet` 가 위로 지는(`height: -8`) 유일한 그림자이고,
+ * `fab` 만 검정이 아니라 **파랑 그림자**를 쓴다.
+ * `bottomBar` 는 이름을 쓰지 않는다 — 하단 탭바에 그림자가 없기 때문이다(결정 `D-11`).
+ */
+export const shadow = {
+  /** 카드 — 프로토타입 boxShadow '0 1px 3px rgba(0,0,0,0.04)' 의 RN 등가. */
+  card: { shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.04, shadowRadius: 3, elevation: 1 },
+  /** 시트 — 위로 지는 그림자. `Sheet.tsx:30` 실측. */
+  sheet: { shadowColor: '#000', shadowOffset: { width: 0, height: -8 }, shadowOpacity: 0.15, shadowRadius: 40, elevation: 16 },
+  /**
+   * FAB — 검정이 아니라 **파랑 그림자**다. `kit/index.tsx:151` 실측.
+   *
+   * 배경과 그림자 모두 `COLOR.action.primary`를 참조한다. 브랜드색과 다시 결합하지 않는다.
+   */
+  fab: { shadowColor: COLOR.action.primary, shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.45, shadowRadius: 20, elevation: 6 },
+  /** 슬라이더 손잡이 — `Slider.tsx:50` 실측. `D-9` 잔여가 이 발견으로 닫혔다. */
+  sliderThumb: { shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.2, shadowRadius: 6, elevation: 3 },
+  /** 스위치 노브 — `MyNotificationsScreen.tsx:34` 실측. */
+  switchThumb: { shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.2, shadowRadius: 3, elevation: 2 },
+} as const;
+
+/**
+ * 기존 호출부 호환 별칭 — `shadow.card` 와 같은 값이다.
+ *
+ * `S1` 은 선언만 하는 단계라 호출부를 건드리지 않는다. 남은 사용처는 **두 곳**이다
+ * (`kit/index.tsx:58` Card · `kit/index.tsx:302` 세그먼트 선택). `verify` ③ 의
+ * **별칭 래칫**이 사용처가 늘어나면 FAIL 한다 — 새 화면이 별칭을 새로 쓰면 안 된다.
+ * `S3a` 완료 조건: **사용처 0 → 이 별칭 삭제.**
+ */
+export const cardShadow = shadow.card;
 
 /**
  * 금액 표기 (kit won) — 통화기호 없이 숫자만. 호출부가 뒤에 '원'을 붙인다.

@@ -16,7 +16,7 @@ import { safeBack } from '@/lib/nav';
 import { useStoreLocalDate } from '@/features/business-day/businessDay';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
 import { formatQuantity, formatUnitPrice } from '@margincook/core';
-import { T, tnum, won } from '@/theme/tokens';
+import { COLOR, T, tnum, won } from '@/theme/tokens';
 import { packSummary } from '@/lib/num';
 import { dispUnit } from '../ledger';
 import { PeriodSheet, periodRange, type HistoryPeriod } from './HistoryFilterSheet';
@@ -127,7 +127,7 @@ function PurchaseHistoryScreenBody({ localDate }: { localDate: string }) {
                     >
                       <View style={{ flex: 1, minWidth: 0 }}>
                         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                          <Text style={[{ fontSize: 12, color: T.ter, fontWeight: '700' }, tnum]}>
+                          <Text style={[{ fontSize: 12, color: COLOR.text.tertiary, fontWeight: '700' }, tnum]}>
                             {r.orderedAt.slice(5).replace('-', '/')}
                           </Text>
                           {/* 입고 완료는 이 목록의 기본값이라 적지 않는다. 예외만 말한다. */}
@@ -162,8 +162,8 @@ function PurchaseHistoryScreenBody({ localDate }: { localDate: string }) {
           ))}
 
           <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, paddingHorizontal: 2, marginTop: 2 }}>
-            <Icon name="info" size={15} color={T.ter} />
-            <Text style={{ flex: 1, fontSize: 14, color: T.ter, lineHeight: 20 }}>
+            <Icon name="info" size={15} color={COLOR.text.tertiary} />
+            <Text style={{ flex: 1, fontSize: 14, color: COLOR.text.tertiary, lineHeight: 20 }}>
               여기 단가는 <Text style={{ fontWeight: '700' }}>그날 그 값</Text>이에요. 기준 단가는 실제로 들어온 양으로
               가중평균한 값이라 조금 달라요.
             </Text>

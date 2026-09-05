@@ -20,7 +20,7 @@ import {
   stockStateOf,
   STOCK_STATE_LABEL,
 } from '@margincook/core';
-import { T, won } from '@/theme/tokens';
+import { COLOR, T, won } from '@/theme/tokens';
 import { clampDecimals } from '@/lib/num';
 import { useIngredientList } from '@/features/ingredients/hooks';
 import { dispUnit } from '@/features/ingredients/ledger';
@@ -115,7 +115,7 @@ export default function RecipeIngredientSearchScreen() {
                           </Text>
                         </Text>
                       </View>
-                      <Icon name="plus" size={20} color={T.blue} sw={2.2} />
+                      <Icon name="plus" size={20} color={COLOR.action.primary} sw={2.2} />
                     </View>
                   </Card>
                 </Pressable>

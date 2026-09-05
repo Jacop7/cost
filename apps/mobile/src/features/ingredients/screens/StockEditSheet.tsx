@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Pressable, TextInput } from 'react-native';
 import { Sheet, Input, Button, Icon } from '../../../components/kit';
-import { T, tnum } from '../../../theme/tokens';
+import { COLOR, T, tnum } from '../../../theme/tokens';
 import { clampByUnit } from '@/lib/num';
 
 type TabId = 'adj' | 'out' | 'waste';
@@ -56,7 +56,7 @@ function InputBox({ value, onChange, accent, unit }: {
         editable={!!onChange}
         keyboardType="decimal-pad"
         placeholder="0"
-        placeholderTextColor={T.ter}
+        placeholderTextColor={COLOR.text.tertiary}
         accessibilityLabel={`수량 (${unit})`}
       />
       <Text style={{ fontSize: 16, fontWeight: '600', color: T.sub2 }}>{unit}</Text>
@@ -156,7 +156,7 @@ export function StockEditSheet({
                   accessibilityState={{ selected: on }}
                   style={{ paddingBottom: 11 }}
                 >
-                  <Text style={{ fontSize: 16, fontWeight: on ? '700' : '600', color: on ? accent : T.ter }}>{label}</Text>
+                  <Text style={{ fontSize: 16, fontWeight: on ? '700' : '600', color: on ? accent : COLOR.text.tertiary }}>{label}</Text>
                   {on ? <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 2.5, backgroundColor: accent, borderRadius: 2 }} /> : null}
                 </Pressable>
               );
@@ -176,7 +176,7 @@ export function StockEditSheet({
 
               {/* 추가 / 차감 */}
               <View style={{ flexDirection: 'row', gap: 8, marginBottom: 12 }}>
-                {([['add', '추가', T.blue], ['sub', '차감', T.red]] as const).map(([id, label, accent]) => {
+                {([['add', '추가', COLOR.text.link], ['sub', '차감', T.red]] as const).map(([id, label, accent]) => {
                   const on = dir === id;
                   return (
                     <Pressable
@@ -188,7 +188,7 @@ export function StockEditSheet({
                       style={{
                         flex: 1, paddingVertical: 12, borderRadius: 12, alignItems: 'center',
                         borderWidth: 1.5, borderColor: on ? accent : T.line,
-                        backgroundColor: on ? (id === 'add' ? T.blueTint : T.redTint) : T.surface,
+                        backgroundColor: on ? (id === 'add' ? COLOR.action.primaryTint : T.redTint) : T.surface,
                       }}
                     >
                       <Text style={{ fontSize: 16, fontWeight: on ? '800' : '600', color: on ? accent : T.sub2 }}>
@@ -206,7 +206,7 @@ export function StockEditSheet({
                 unit={dispUnit}
                 value={adjVal}
                 onChange={(t) => setAdjVal(clampByUnit(t, dispUnit))}
-                accent={dir === 'add' ? T.blue : T.red}
+                accent={dir === 'add' ? COLOR.text.link : T.red}
               />
 
               {/* 최종값 — 사장님이 뺄셈하지 않는다. */}
@@ -215,8 +215,8 @@ export function StockEditSheet({
                   <Text style={{ fontSize: 16, fontWeight: '800', color: T.sub }}>변동 없음</Text>
                 ) : (
                   <Text style={[{ fontSize: 17, fontWeight: '800' }, tnum]}>
-                    <Text style={{ color: T.ter, fontWeight: '700' }}>{curDisp}{dispUnit}</Text>
-                    <Text style={{ color: T.ter }}>{'   →   '}</Text>
+                    <Text style={{ color: COLOR.text.tertiary, fontWeight: '700' }}>{curDisp}{dispUnit}</Text>
+                    <Text style={{ color: COLOR.text.tertiary }}>{'   →   '}</Text>
                     <Text style={{ color: diffDisp < 0 ? T.red : T.green }}>
                       {round2(nextAdj / factor)}{dispUnit}
                     </Text>
@@ -229,8 +229,8 @@ export function StockEditSheet({
           {tab === 'out' ? (
             <Band>
               <Text style={[{ fontSize: 18, fontWeight: '800' }, tnum]}>
-                <Text style={{ color: T.ter, textDecorationLine: 'line-through', fontWeight: '700' }}>{curDisp}{dispUnit}</Text>
-                <Text style={{ color: T.ter }}>{'   →   '}</Text>
+                <Text style={{ color: COLOR.text.tertiary, textDecorationLine: 'line-through', fontWeight: '700' }}>{curDisp}{dispUnit}</Text>
+                <Text style={{ color: COLOR.text.tertiary }}>{'   →   '}</Text>
                 <Text style={{ color: T.red }}>0{dispUnit}</Text>
               </Text>
             </Band>
@@ -253,7 +253,7 @@ export function StockEditSheet({
             <Input value={reason} onChangeText={setReason} placeholder={reasonPH} />
           </View>
           <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, marginTop: 11 }}>
-            <Icon name="info" size={15} color={T.ter} />
+            <Icon name="info" size={15} color={COLOR.text.tertiary} />
             <Text style={{ flex: 1, fontSize: 14, color: T.sub2, fontWeight: '600', lineHeight: 19 }}>{note}</Text>
           </View>
         </View>
@@ -280,9 +280,9 @@ export function StockEditSheet({
             accessibilityRole="button" accessibilityLabel="재고 추가로 이동"
             style={{ flexDirection: 'row', alignItems: 'center', gap: 7, marginTop: 12, paddingTop: 12, borderTopWidth: 1, borderTopColor: T.line2 }}
           >
-            <Icon name="info" size={15} color={T.ter} />
+            <Icon name="info" size={15} color={COLOR.text.tertiary} />
             <Text style={{ flex: 1, fontSize: 14, color: T.sub2 }}>
-              새로 사 왔다면 <Text style={{ fontWeight: '700', color: T.blue }}>재고 추가</Text>로 넣어 주세요 · 단가도 함께 반영돼요
+              새로 사 왔다면 <Text style={{ fontWeight: '700', color: COLOR.text.link }}>재고 추가</Text>로 넣어 주세요 · 단가도 함께 반영돼요
             </Text>
           </Pressable>
         ) : null}

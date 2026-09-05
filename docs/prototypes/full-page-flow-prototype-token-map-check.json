@@ -1,20 +1,20 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-04T23:15:04.377Z",
+  "generatedAt": "2026-09-05T14:53:41.436Z",
   "schemaVersion": 1,
   "script": {
    "name": "full-page-flow-prototype-token-map-check.mjs",
-   "sha256": "b634964eaa2bda2d91123273d2539e303ae142a7ea12a79d8c15ab58dd9e854c"
+   "sha256": "246fe6d5489c6ebc697f4e247b61e18c031e6e2e210f912acd6544610d62d88f"
   },
   "designAudit": {
-   "path": "design-audit.json",
-   "sha256": "4e4fd1bf729893b49afbfe6ac83025668f47fe6a2cbb96cc7b6b84795c58af54",
-   "targetSha256": "26676bfe28c5a818176a9d2176b2d9713422e8bdb0f2f140e320a803be5ad918",
-   "designSyncId": "DS-20260905-001"
+   "path": "full-page-flow-prototype-design-audit.json",
+   "sha256": "6a3588f044e0317f39720fb23093a584475529c395335888e97c869bacd30434",
+   "targetSha256": "04951ea20efe938028d6dc9b5437a01520965331d859ede5b5c75df97346a59b",
+   "designSyncId": "DS-20260905-008"
   },
   "tokenMap": {
    "path": "full-page-flow-prototype-token-map.json",
-   "sha256": "57fd9d13fe28630fc6c48e654d513743a0fdde91c5ee5aabf1a51d13cf787319",
+   "sha256": "19570ea8058bc622d402070e9dadf3b2115f8903c3d81f4fb8b09e7d38aaed2e",
    "status": "PROVISIONAL"
   },
   "rules": {
@@ -58,7 +58,7 @@
     "decisions": [
      "D-1′"
     ],
-    "valueKinds": 32
+    "valueKinds": 31
    },
    {
     "axis": "lineHeight",

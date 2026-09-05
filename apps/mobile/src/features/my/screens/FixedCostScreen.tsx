@@ -10,7 +10,7 @@ import { type Href, useRouter } from 'expo-router';
 import { AppHeader, Badge, Button, Card, FilterButton, Icon, QueryState, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { formatPercent } from '@margincook/core';
-import { T, won } from '@/theme/tokens';
+import { COLOR, T, won } from '@/theme/tokens';
 import { useStoreLocalDate } from '@/features/business-day/businessDay';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
 import { useFixedCosts, useRevenueCheck } from '../hooks';
@@ -116,7 +116,7 @@ function FixedCostScreenBody({ localMonth }: { localMonth: string }) {
                         <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.ink2 }}>{l.name}</Text>
                         <View style={{ alignItems: 'flex-end' }}>
                           <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{won(l.amount)}원</Text>
-                          <Text style={[{ fontSize: 14, fontWeight: '600', color: T.ter, marginTop: 2 }, NUM]}>{pctOf(l.amount)}</Text>
+                          <Text style={[{ fontSize: 14, fontWeight: '600', color: COLOR.text.tertiary, marginTop: 2 }, NUM]}>{pctOf(l.amount)}</Text>
                         </View>
                       </View>
                     ))}
@@ -131,8 +131,8 @@ function FixedCostScreenBody({ localMonth }: { localMonth: string }) {
           ))}
 
           <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, paddingHorizontal: 2, marginTop: 2 }}>
-            <Icon name="info" size={15} color={T.ter} />
-            <Text style={{ flex: 1, fontSize: 14, color: T.ter, lineHeight: 20 }}>
+            <Icon name="info" size={15} color={COLOR.text.tertiary} />
+            <Text style={{ flex: 1, fontSize: 14, color: COLOR.text.tertiary, lineHeight: 20 }}>
               고정지출률은 이 달의 <Text style={{ fontWeight: '700' }}>모든 메뉴 손익</Text>에 곱해져요. 여기 숫자를 고치면 전 메뉴 순이익률이 함께 바뀌어요.
             </Text>
           </View>
@@ -166,10 +166,10 @@ function FixedCostScreenBody({ localMonth }: { localMonth: string }) {
                   borderBottomWidth: i === months.length - 1 ? 0 : 1, borderBottomColor: T.line2,
                 }}
               >
-                <Text style={{ flex: 1, fontSize: 15, fontWeight: on ? '800' : '700', color: on ? T.blue : T.ink }}>
+                <Text style={{ flex: 1, fontSize: 15, fontWeight: on ? '800' : '700', color: on ? COLOR.text.link : T.ink }}>
                   {m.slice(0, 4)}년 {Number(m.slice(5))}월
                 </Text>
-                {on ? <Icon name="check" size={18} color={T.blue} /> : null}
+                {on ? <Icon name="check" size={18} color={COLOR.action.primary} /> : null}
               </Pressable>
             );
           })}

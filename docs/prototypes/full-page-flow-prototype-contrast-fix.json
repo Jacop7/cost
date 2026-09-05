@@ -1,6 +1,6 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-05T13:48:59.913Z",
+  "generatedAt": "2026-09-05T14:43:54.400Z",
   "schemaVersion": 1,
   "script": {
    "name": "full-page-flow-prototype-contrast-fix.mjs",
@@ -8,9 +8,9 @@
   },
   "designAudit": {
    "path": "full-page-flow-prototype-design-audit.json",
-   "sha256": "20ae7e3f0b334adcf265555c1cf28f2994c4d18c2e9c70edf41f0df135c2e47d",
-   "targetSha256": "341718fa97e8bebaa13b97f45e8e93264bf8f5d0bf0a166a2814e42f6a5d7c6e",
-   "designSyncId": "DS-20260905-007"
+   "sha256": "6a3588f044e0317f39720fb23093a584475529c395335888e97c869bacd30434",
+   "targetSha256": "04951ea20efe938028d6dc9b5437a01520965331d859ede5b5c75df97346a59b",
+   "designSyncId": "DS-20260905-008"
   },
   "rules": {
    "기준": "WCAG 2.x AA — 일반 4.5:1, 큰 글자(24px 이상 또는 18.66px&700 이상) 3:1",
@@ -19,10 +19,10 @@
   }
  },
  "summary": {
-  "pairs": 34,
-  "failingPairs": 20,
+  "pairs": 32,
+  "failingPairs": 0,
   "totalObservations": 6974,
-  "failingObservations": 2453
+  "failingObservations": 0
  },
  "rows": [
   {
@@ -44,25 +44,20 @@
    ]
   },
   {
-   "fg": "#8B95A1",
+   "fg": "#66717E",
    "bg": "#FFFFFF",
    "size": "normal",
    "observations": 1325,
-   "ratio": 3.04,
+   "ratio": 4.97,
    "target": 4.5,
-   "passAA": false,
+   "passAA": true,
    "moved": "foreground",
-   "fix": {
-    "hex": "#6C7886",
-    "ratio": 4.5,
-    "lightnessFrom": 58.8,
-    "lightnessTo": 47.5
-   },
+   "fix": null,
    "fixBackground": null,
    "fixAAA": {
     "hex": "#515A64",
     "ratio": 7,
-    "lightnessFrom": 58.8,
+    "lightnessFrom": 44.7,
     "lightnessTo": 35.6
    },
    "where": [
@@ -93,7 +88,7 @@
    "fg": "#4E5968",
    "bg": "#F9FAFB",
    "size": "normal",
-   "observations": 296,
+   "observations": 298,
    "ratio": 6.81,
    "target": 4.5,
    "passAA": true,
@@ -155,20 +150,15 @@
   },
   {
    "fg": "#FFFFFF",
-   "bg": "#3182F6",
+   "bg": "#1470F5",
    "size": "normal",
    "observations": 173,
-   "ratio": 3.71,
+   "ratio": 4.5,
    "target": 4.5,
-   "passAA": false,
+   "passAA": true,
    "moved": "background",
    "fix": null,
-   "fixBackground": {
-    "hex": "#1470F5",
-    "ratio": 4.5,
-    "lightnessFrom": 57.8,
-    "lightnessTo": 51.8
-   },
+   "fixBackground": null,
    "fixAAA": null,
    "where": [
     "(no-card).expo-fab 16px/700 \"식재료 추가\"",
@@ -177,25 +167,20 @@
    ]
   },
   {
-   "fg": "#8B95A1",
+   "fg": "#66717E",
    "bg": "#F9FAFB",
    "size": "normal",
    "observations": 161,
-   "ratio": 2.91,
+   "ratio": 4.75,
    "target": 4.5,
-   "passAA": false,
+   "passAA": true,
    "moved": "foreground",
-   "fix": {
-    "hex": "#6A7582",
-    "ratio": 4.5,
-    "lightnessFrom": 58.8,
-    "lightnessTo": 46.2
-   },
+   "fix": null,
    "fixBackground": null,
    "fixAAA": {
     "hex": "#4F5761",
     "ratio": 7,
-    "lightnessFrom": 58.8,
+    "lightnessFrom": 44.7,
     "lightnessTo": 34.5
    },
    "where": [
@@ -205,82 +190,21 @@
    ]
   },
   {
-   "fg": "#3182F6",
-   "bg": "#F2F4F6",
-   "size": "normal",
-   "observations": 145,
-   "ratio": 3.37,
-   "target": 4.5,
-   "passAA": false,
-   "moved": "foreground",
-   "fix": {
-    "hex": "#0A68EE",
-    "ratio": 4.5,
-    "lightnessFrom": 57.8,
-    "lightnessTo": 48.7
-   },
-   "fixBackground": null,
-   "fixAAA": {
-    "hex": "#084DB1",
-    "ratio": 7,
-    "lightnessFrom": 57.8,
-    "lightnessTo": 36.3
-   },
-   "where": [
-    "edit-form-label.em 14px/800 \"*\"",
-    "stock-add-label.em 14px/800 \"*\"",
-    "(no-card).em 14px/800 \"*\""
-   ]
-  },
-  {
-   "fg": "#3182F6",
-   "bg": "#FFFFFF",
-   "size": "normal",
-   "observations": 139,
-   "ratio": 3.71,
-   "target": 4.5,
-   "passAA": false,
-   "moved": "foreground",
-   "fix": {
-    "hex": "#1470F5",
-    "ratio": 4.5,
-    "lightnessFrom": 57.8,
-    "lightnessTo": 51.8
-   },
-   "fixBackground": null,
-   "fixAAA": {
-    "hex": "#0853BE",
-    "ratio": 7,
-    "lightnessFrom": 57.8,
-    "lightnessTo": 39
-   },
-   "where": [
-    "card.blue 14px/400 \"최저\"",
-    "edit-menu-stage.edit-menu-close 16px/800 \"닫기\"",
-    "card.blue 16px/700 \"+4kg\""
-   ]
-  },
-  {
-   "fg": "#F04452",
+   "fg": "#DA1222",
    "bg": "#FFFFFF",
    "size": "normal",
    "observations": 138,
-   "ratio": 3.71,
+   "ratio": 5.13,
    "target": 4.5,
-   "passAA": false,
+   "passAA": true,
    "moved": "foreground",
-   "fix": {
-    "hex": "#EB1325",
-    "ratio": 4.5,
-    "lightnessFrom": 60.4,
-    "lightnessTo": 49.9
-   },
+   "fix": null,
    "fixBackground": null,
    "fixAAA": {
-    "hex": "#B30E1C",
+    "hex": "#B30F1C",
     "ratio": 7,
-    "lightnessFrom": 60.4,
-    "lightnessTo": 37.9
+    "lightnessFrom": 46.3,
+    "lightnessTo": 38
    },
    "where": [
     "card.red 14px/400 \"최고\"",
@@ -289,31 +213,49 @@
    ]
   },
   {
-   "fg": "#8B95A1",
+   "fg": "#66717E",
    "bg": "#F2F4F6",
    "size": "normal",
    "observations": 135,
-   "ratio": 2.76,
+   "ratio": 4.5,
    "target": 4.5,
-   "passAA": false,
+   "passAA": true,
    "moved": "foreground",
-   "fix": {
-    "hex": "#66717E",
-    "ratio": 4.5,
-    "lightnessFrom": 58.8,
-    "lightnessTo": 44.8
-   },
+   "fix": null,
    "fixBackground": null,
    "fixAAA": {
     "hex": "#4C545D",
     "ratio": 7,
-    "lightnessFrom": 58.8,
+    "lightnessFrom": 44.7,
     "lightnessTo": 33.1
    },
    "where": [
     "(no-card).tab 16px/600 \"축산·계란\"",
     "(no-card).tab 16px/600 \"수산·해조류\"",
     "(no-card).tab 16px/600 \"농산(신선)\""
+   ]
+  },
+  {
+   "fg": "#1465DB",
+   "bg": "#F2F4F6",
+   "size": "normal",
+   "observations": 129,
+   "ratio": 4.87,
+   "target": 4.5,
+   "passAA": true,
+   "moved": "foreground",
+   "fix": null,
+   "fixBackground": null,
+   "fixAAA": {
+    "hex": "#104FAB",
+    "ratio": 7,
+    "lightnessFrom": 46.9,
+    "lightnessTo": 36.6
+   },
+   "where": [
+    "edit-form-label.em 14px/800 \"*\"",
+    "stock-add-label.em 14px/800 \"*\"",
+    "(no-card).em 14px/800 \"*\""
    ]
   },
   {
@@ -353,26 +295,21 @@
    ]
   },
   {
-   "fg": "#3182F6",
-   "bg": "#EAF3FF",
+   "fg": "#1465DB",
+   "bg": "#EBF3FE",
    "size": "normal",
    "observations": 87,
-   "ratio": 3.32,
+   "ratio": 4.8,
    "target": 4.5,
-   "passAA": false,
+   "passAA": true,
    "moved": "foreground",
-   "fix": {
-    "hex": "#0A67EC",
-    "ratio": 4.5,
-    "lightnessFrom": 57.8,
-    "lightnessTo": 48.3
-   },
+   "fix": null,
    "fixBackground": null,
    "fixAAA": {
-    "hex": "#084DAF",
+    "hex": "#0F4EA9",
     "ratio": 7,
-    "lightnessFrom": 57.8,
-    "lightnessTo": 35.9
+    "lightnessFrom": 46.9,
+    "lightnessTo": 36.2
    },
    "where": [
     "stock-total-result.strong 16px/800 \"0원/g\"",
@@ -381,31 +318,72 @@
    ]
   },
   {
-   "fg": "#F04452",
+   "fg": "#1470F5",
+   "bg": "#FFFFFF",
+   "size": "normal",
+   "observations": 70,
+   "ratio": 4.5,
+   "target": 4.5,
+   "passAA": true,
+   "moved": "foreground",
+   "fix": null,
+   "fixBackground": null,
+   "fixAAA": {
+    "hex": "#0853BF",
+    "ratio": 7,
+    "lightnessFrom": 52,
+    "lightnessTo": 39.1
+   },
+   "where": [
+    "edit-menu-stage.edit-menu-close 16px/800 \"닫기\"",
+    "recipe-add-recommend.small 13px/800 \"적용하기\"",
+    "sales-quick.b 14px/900 \"40,000\""
+   ]
+  },
+  {
+   "fg": "#1465DB",
+   "bg": "#FFFFFF",
+   "size": "normal",
+   "observations": 69,
+   "ratio": 5.37,
+   "target": 4.5,
+   "passAA": true,
+   "moved": "foreground",
+   "fix": null,
+   "fixBackground": null,
+   "fixAAA": {
+    "hex": "#1155B8",
+    "ratio": 7,
+    "lightnessFrom": 46.9,
+    "lightnessTo": 39.3
+   },
+   "where": [
+    "card.blue 14px/400 \"최저\"",
+    "card.blue 16px/700 \"+4kg\"",
+    "card.blue 16px/700 \"+1kg\""
+   ]
+  },
+  {
+   "fg": "#DA1222",
    "bg": "#FEECEC",
    "size": "normal",
-   "observations": 38,
-   "ratio": 3.26,
+   "observations": 67,
+   "ratio": 4.5,
    "target": 4.5,
-   "passAA": false,
+   "passAA": true,
    "moved": "foreground",
-   "fix": {
-    "hex": "#DA1222",
-    "ratio": 4.5,
-    "lightnessFrom": 60.4,
-    "lightnessTo": 46.2
-   },
+   "fix": null,
    "fixBackground": null,
    "fixAAA": {
     "hex": "#A30D19",
     "ratio": 7,
-    "lightnessFrom": 60.4,
-    "lightnessTo": 34.5
+    "lightnessFrom": 46.3,
+    "lightnessTo": 34.6
    },
    "where": [
     "expo-card-top.expo-status 12px/700 \"소진 임박\"",
     "stock-detail-head.expo-status 12px/700 \"소진 임박\"",
-    "expo-card-top.expo-status 12px/700 \"목표 미달\""
+    "card.badge 12px/800 \"최고\""
    ]
   },
   {
@@ -448,34 +426,6 @@
    ]
   },
   {
-   "fg": "#F04452",
-   "bg": "#FFF0F1",
-   "size": "normal",
-   "observations": 29,
-   "ratio": 3.36,
-   "target": 4.5,
-   "passAA": false,
-   "moved": "foreground",
-   "fix": {
-    "hex": "#DE1222",
-    "ratio": 4.5,
-    "lightnessFrom": 60.4,
-    "lightnessTo": 47
-   },
-   "fixBackground": null,
-   "fixAAA": {
-    "hex": "#A70D1A",
-    "ratio": 7,
-    "lightnessFrom": 60.4,
-    "lightnessTo": 35.3
-   },
-   "where": [
-    "card.badge 12px/800 \"최고\"",
-    "sheet-preview-stage.button 16px/800 \"삭제\"",
-    "expo-pick-card.badge 12px/800 \"소진 임박\""
-   ]
-  },
-  {
    "fg": "#191F28",
    "bg": "#F2F4F6",
    "size": "normal",
@@ -494,26 +444,21 @@
    ]
   },
   {
-   "fg": "#0E9F6E",
+   "fg": "#0B7F58",
    "bg": "#FFFFFF",
    "size": "normal",
    "observations": 22,
-   "ratio": 3.39,
+   "ratio": 5.01,
    "target": 4.5,
-   "passAA": false,
+   "passAA": true,
    "moved": "foreground",
-   "fix": {
-    "hex": "#0C875E",
-    "ratio": 4.5,
-    "lightnessFrom": 33.9,
-    "lightnessTo": 28.9
-   },
+   "fix": null,
    "fixBackground": null,
    "fixAAA": {
     "hex": "#096647",
     "ratio": 7,
-    "lightnessFrom": 33.9,
-    "lightnessTo": 21.8
+    "lightnessFrom": 27.1,
+    "lightnessTo": 21.7
    },
    "where": [
     "analysis-summary-row.span 15px/800 \"순이익\"",
@@ -522,80 +467,44 @@
    ]
   },
   {
-   "fg": "#E07A00",
+   "fg": "#A16000",
    "bg": "#FFFFFF",
    "size": "normal",
-   "observations": 18,
-   "ratio": 3.02,
+   "observations": 21,
+   "ratio": 5.01,
    "target": 4.5,
-   "passAA": false,
+   "passAA": true,
    "moved": "foreground",
-   "fix": {
-    "hex": "#B36200",
-    "ratio": 4.5,
-    "lightnessFrom": 43.9,
-    "lightnessTo": 35.2
-   },
+   "fix": null,
    "fixBackground": null,
    "fixAAA": {
-    "hex": "#874A00",
+    "hex": "#814D00",
     "ratio": 7,
-    "lightnessFrom": 43.9,
-    "lightnessTo": 26.5
+    "lightnessFrom": 31.6,
+    "lightnessTo": 25.3
    },
    "where": [
     "sales-live-copy.em 13px/600 \"지금 재료비 3,254원은 다\"",
-    "sales-live-copy.em 13px/600 \"지금 재료비 1,849원은 다\""
+    "sales-live-copy.em 13px/600 \"지금 재료비 1,849원은 다\"",
+    "analysis-summary-value.b 16px/900 \"601,401원\""
    ]
   },
   {
-   "fg": "#B76E00",
-   "bg": "#FFF4E5",
-   "size": "normal",
-   "observations": 12,
-   "ratio": 3.69,
-   "target": 4.5,
-   "passAA": false,
-   "moved": "foreground",
-   "fix": {
-    "hex": "#A36200",
-    "ratio": 4.5,
-    "lightnessFrom": 35.9,
-    "lightnessTo": 31.9
-   },
-   "fixBackground": null,
-   "fixAAA": {
-    "hex": "#794900",
-    "ratio": 7,
-    "lightnessFrom": 35.9,
-    "lightnessTo": 23.7
-   },
-   "where": [
-    "detail-chips.detail-chip 13px/700 \"안전재고 1kg\"",
-    "order-head.expo-status 12px/700 \"안전재고 미달\""
-   ]
-  },
-  {
-   "fg": "#0E9F6E",
+   "fg": "#0B7F58",
    "bg": "#E7F7F0",
    "size": "normal",
-   "observations": 11,
-   "ratio": 3.06,
+   "observations": 17,
+   "ratio": 4.52,
    "target": 4.5,
-   "passAA": false,
+   "passAA": true,
    "moved": "foreground",
-   "fix": {
-    "hex": "#0B7F58",
-    "ratio": 4.5,
-    "lightnessFrom": 33.9,
-    "lightnessTo": 27.2
-   },
+   "fix": null,
    "fixBackground": null,
    "fixAAA": {
-    "hex": "#085F41",
+    "hex": "#085F42",
     "ratio": 7,
-    "lightnessFrom": 33.9,
-    "lightnessTo": 20.2
+    "lightnessFrom": 27.1,
+    "lightnessTo": 20.1
    },
    "where": [
     "expo-card-top.expo-status 12px/700 \"여유\"",
@@ -604,11 +513,51 @@
    ]
   },
   {
+   "fg": "#333D4B",
+   "bg": "#F2F4F6",
+   "size": "normal",
+   "observations": 16,
+   "ratio": 9.97,
+   "target": 4.5,
+   "passAA": true,
+   "moved": "foreground",
+   "fix": null,
+   "fixBackground": null,
+   "fixAAA": null,
+   "where": [
+    "sales-controls.span 14px/700 \"메뉴 관리\"",
+    "edit-form-label.edit-inline-add 13px/800 \"＋ 새 구매처\"",
+    "edit-form-label.edit-inline-add 13px/800 \"취소\""
+   ]
+  },
+  {
+   "fg": "#A16000",
+   "bg": "#FFF4E5",
+   "size": "normal",
+   "observations": 12,
+   "ratio": 4.61,
+   "target": 4.5,
+   "passAA": true,
+   "moved": "foreground",
+   "fix": null,
+   "fixBackground": null,
+   "fixAAA": {
+    "hex": "#7A4800",
+    "ratio": 7,
+    "lightnessFrom": 31.6,
+    "lightnessTo": 23.8
+   },
+   "where": [
+    "detail-chips.detail-chip 13px/700 \"안전재고 1kg\"",
+    "order-head.expo-status 12px/700 \"안전재고 미달\""
+   ]
+  },
+  {
    "fg": "#FFFFFF",
-   "bg": "#3182F6",
+   "bg": "#1470F5",
    "size": "large",
    "observations": 9,
-   "ratio": 3.71,
+   "ratio": 4.5,
    "target": 3,
    "passAA": true,
    "moved": "background",
@@ -621,10 +570,10 @@
   },
   {
    "fg": "#4E5968",
-   "bg": "#EAF3FF",
+   "bg": "#EBF3FE",
    "size": "normal",
    "observations": 8,
-   "ratio": 6.35,
+   "ratio": 6.36,
    "target": 4.5,
    "passAA": true,
    "moved": "foreground",
@@ -642,53 +591,21 @@
    ]
   },
   {
-   "fg": "#0E9F6E",
-   "bg": "#E8F8F1",
-   "size": "normal",
-   "observations": 6,
-   "ratio": 3.08,
-   "target": 4.5,
-   "passAA": false,
-   "moved": "foreground",
-   "fix": {
-    "hex": "#0B8059",
-    "ratio": 4.5,
-    "lightnessFrom": 33.9,
-    "lightnessTo": 27.3
-   },
-   "fixBackground": null,
-   "fixAAA": {
-    "hex": "#085F42",
-    "ratio": 7,
-    "lightnessFrom": 33.9,
-    "lightnessTo": 20.3
-   },
-   "where": [
-    "sales-label.profit-badge 10px/800 \"목표 달성\"",
-    "card.badge 12px/800 \"목표 달성\""
-   ]
-  },
-  {
-   "fg": "#F04452",
-   "bg": "#EAF3FF",
+   "fg": "#DA1222",
+   "bg": "#EBF3FE",
    "size": "normal",
    "observations": 4,
-   "ratio": 3.32,
+   "ratio": 4.59,
    "target": 4.5,
-   "passAA": false,
+   "passAA": true,
    "moved": "foreground",
-   "fix": {
-    "hex": "#DD1222",
-    "ratio": 4.5,
-    "lightnessFrom": 60.4,
-    "lightnessTo": 46.7
-   },
+   "fix": null,
    "fixBackground": null,
    "fixAAA": {
-    "hex": "#A50D1A",
+    "hex": "#A50E1A",
     "ratio": 7,
-    "lightnessFrom": 60.4,
-    "lightnessTo": 35
+    "lightnessFrom": 46.3,
+    "lightnessTo": 35.1
    },
    "where": [
     "tax-preview-row.b 13px/900 \"₩1,091\""
@@ -696,10 +613,10 @@
   },
   {
    "fg": "#191F28",
-   "bg": "#EAF3FF",
+   "bg": "#EBF3FE",
    "size": "normal",
    "observations": 4,
-   "ratio": 14.8,
+   "ratio": 14.81,
    "target": 4.5,
    "passAA": true,
    "moved": "foreground",
@@ -711,68 +628,32 @@
    ]
   },
   {
-   "fg": "#3182F6",
+   "fg": "#1470F5",
    "bg": "#FFFFFF",
    "size": "large",
    "observations": 3,
-   "ratio": 3.71,
+   "ratio": 4.5,
    "target": 3,
    "passAA": true,
    "moved": "foreground",
    "fix": null,
    "fixBackground": null,
-   "fixAAA": {
-    "hex": "#1470F5",
-    "ratio": 4.5,
-    "lightnessFrom": 57.8,
-    "lightnessTo": 51.8
-   },
+   "fixAAA": null,
    "where": [
     "card.b 22px/700 \"28.00원/g\""
    ]
   },
   {
-   "fg": "#E97900",
-   "bg": "#FFFFFF",
-   "size": "normal",
-   "observations": 3,
-   "ratio": 2.92,
-   "target": 4.5,
-   "passAA": false,
-   "moved": "foreground",
-   "fix": {
-    "hex": "#B75F00",
-    "ratio": 4.5,
-    "lightnessFrom": 45.7,
-    "lightnessTo": 36
-   },
-   "fixBackground": null,
-   "fixAAA": {
-    "hex": "#8A4800",
-    "ratio": 7,
-    "lightnessFrom": 45.7,
-    "lightnessTo": 27.1
-   },
-   "where": [
-    "analysis-summary-value.b 16px/900 \"601,401원\""
-   ]
-  },
-  {
    "fg": "#FFFFFF",
-   "bg": "#D1D6DB",
+   "bg": "#6A7887",
    "size": "normal",
    "observations": 3,
-   "ratio": 1.46,
+   "ratio": 4.52,
    "target": 4.5,
-   "passAA": false,
+   "passAA": true,
    "moved": "background",
    "fix": null,
-   "fixBackground": {
-    "hex": "#6A7887",
-    "ratio": 4.5,
-    "lightnessFrom": 83.9,
-    "lightnessTo": 47.2
-   },
+   "fixBackground": null,
    "fixAAA": null,
    "where": [
     "(no-card).primary 16px/700 \"발주 등록\"",
@@ -780,51 +661,20 @@
    ]
   },
   {
-   "fg": "#3182F6",
+   "fg": "#DA1222",
    "bg": "#F9FAFB",
    "size": "normal",
    "observations": 2,
-   "ratio": 3.55,
+   "ratio": 4.91,
    "target": 4.5,
-   "passAA": false,
+   "passAA": true,
    "moved": "foreground",
-   "fix": {
-    "hex": "#0C6CF4",
-    "ratio": 4.5,
-    "lightnessFrom": 57.8,
-    "lightnessTo": 50.4
-   },
-   "fixBackground": null,
-   "fixAAA": {
-    "hex": "#0851B8",
-    "ratio": 7,
-    "lightnessFrom": 57.8,
-    "lightnessTo": 37.7
-   },
-   "where": [
-    "revenue-summary-row.span 13px/800 \"31.3%\""
-   ]
-  },
-  {
-   "fg": "#F04452",
-   "bg": "#F9FAFB",
-   "size": "normal",
-   "observations": 2,
-   "ratio": 3.55,
-   "target": 4.5,
-   "passAA": false,
-   "moved": "foreground",
-   "fix": {
-    "hex": "#E61224",
-    "ratio": 4.5,
-    "lightnessFrom": 60.4,
-    "lightnessTo": 48.6
-   },
+   "fix": null,
    "fixBackground": null,
    "fixAAA": {
     "hex": "#AE0E1B",
     "ratio": 7,
-    "lightnessFrom": 60.4,
+    "lightnessFrom": 46.3,
     "lightnessTo": 36.8
    },
    "where": [

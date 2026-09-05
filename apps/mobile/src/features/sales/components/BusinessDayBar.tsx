@@ -17,7 +17,7 @@ import { Pressable, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
 import { Button, ConfirmSheet, Icon, Sheet } from '@/components/kit';
 import { useState } from 'react';
-import { T } from '@/theme/tokens';
+import { COLOR, T } from '@/theme/tokens';
 import { useCheckRecipeShortages, type ShortageRecipe } from '../hooks';
 import { ShortageWarningSheet } from './ShortageWarningSheet';
 import { LateCloseSheet } from './LateCloseSheet';
@@ -175,7 +175,7 @@ export function BusinessDayBar({ state }: { state: BusinessDayState }) {
               <Text style={{ fontWeight: '800' }}>{dateLabel}</Text>
               <Text style={{ fontSize: 12, color: T.sub2 }}> {dowLabel}</Text>
             </Text>
-            {hours ? <Text style={{ fontSize: 12, fontWeight: '700', color: T.ter }}>{hours}</Text> : null}
+            {hours ? <Text style={{ fontSize: 12, fontWeight: '700', color: COLOR.text.tertiary }}>{hours}</Text> : null}
           </View>
 
           <View style={{ flex: 1 }} />
@@ -200,7 +200,7 @@ export function BusinessDayBar({ state }: { state: BusinessDayState }) {
               영업 시작
             </Button>
           ) : running ? (
-            <Pill text={stateLabel} bg={T.blue} fg={T.onColor} onPress={() => setManage(true)} />
+            <Pill text={stateLabel} bg={COLOR.action.primary} fg={T.onColor} onPress={() => setManage(true)} />
           ) : (
             <Pill
               text={state.closeMethod === 'auto' ? '자동 영업종료' : '영업 종료'}

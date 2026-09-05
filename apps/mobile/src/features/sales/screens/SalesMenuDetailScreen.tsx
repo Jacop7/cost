@@ -16,7 +16,7 @@ import { AppHeader, Card, QueryState } from '@/components/kit';
 import { SalesRow, SecLabel } from '../components/ProfitBlocks';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
 import { safeBack } from '@/lib/nav';
-import { T, won } from '@/theme/tokens';
+import { COLOR, T, won } from '@/theme/tokens';
 import { formatQuantity, formatUnitPrice } from '@margincook/core';
 import { useRecipeDetail } from '@/features/recipes/hooks';
 import { useDayMenuDetail, useRangeMenuDetail, useSalesRange } from '../hooks';
@@ -31,7 +31,7 @@ function SecHead({ title, sub }: { title: string; sub?: string }) {
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 13, paddingHorizontal: 15, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
       <Text style={{ fontSize: 16, fontWeight: '800', color: T.sub }}>{title}</Text>
-      {sub ? <Text style={{ fontSize: 14, color: T.ter, fontWeight: '600' }}>{sub}</Text> : null}
+      {sub ? <Text style={{ fontSize: 14, color: COLOR.text.tertiary, fontWeight: '600' }}>{sub}</Text> : null}
     </View>
   );
 }
@@ -146,7 +146,7 @@ function SalesMenuDetailScreenBody({ serverToday }: { serverToday: string }) {
   ];
 
   const chQty = sold ? [
-    { label: '매장', qty: sold.qtyHall, color: T.blue },
+    { label: '매장', qty: sold.qtyHall, color: COLOR.text.link },
     { label: '배달', qty: sold.qtyDelivery, color: '#7A8694' },
     { label: '포장', qty: sold.qtyTakeout, color: '#C5CCD3' },
   ].filter((c) => c.qty > 0) : [];
@@ -184,7 +184,7 @@ function SalesMenuDetailScreenBody({ serverToday }: { serverToday: string }) {
                   <View key={k} style={{ flexDirection: 'row', alignItems: 'center', minHeight: 47, paddingVertical: 12, paddingHorizontal: 16, borderTopWidth: 1, borderTopColor: T.line2 }}>
                     <View style={{ flex: 1, minWidth: 0 }}>
                       <Text style={{ fontSize: 15, fontWeight: '700', color: T.sub }}>{k}</Text>
-                      {subLabel ? <Text style={{ fontSize: 12, fontWeight: '700', color: T.ter, marginTop: 3 }}>{subLabel}</Text> : null}
+                      {subLabel ? <Text style={{ fontSize: 12, fontWeight: '700', color: COLOR.text.tertiary, marginTop: 3 }}>{subLabel}</Text> : null}
                     </View>
                     <Text style={[{ fontSize: 15, fontWeight: '800', color: accent ? (rate >= target ? T.green : T.red) : T.ink }, NUM]}>{v}</Text>
                   </View>
@@ -203,13 +203,13 @@ function SalesMenuDetailScreenBody({ serverToday }: { serverToday: string }) {
                       >
                         <View style={{ flex: 1, minWidth: 0 }}>
                           <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{won(pp.price)}원</Text>
-                          <Text style={[{ fontSize: 14, color: T.ter, marginTop: 2 }, NUM]}>
+                          <Text style={[{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 2 }, NUM]}>
                             {pp.from === pp.to ? pp.from : `${pp.from} ~ ${pp.to}`} · {pp.days}일
                           </Text>
                         </View>
                         <View style={{ alignItems: 'flex-end' }}>
                           <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{pp.qty}개</Text>
-                          <Text style={[{ fontSize: 14, color: T.ter, marginTop: 2 }, NUM]}>
+                          <Text style={[{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 2 }, NUM]}>
                             {won(Math.round(pp.price * pp.qty))}원
                           </Text>
                         </View>
@@ -279,15 +279,15 @@ function SalesMenuDetailScreenBody({ serverToday }: { serverToday: string }) {
                           <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }} numberOfLines={1}>
                             {l.name}
                           </Text>
-                          <Text style={[{ fontSize: 14, color: T.ter, marginTop: 2 }, NUM]}>
+                          <Text style={[{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 2 }, NUM]}>
                             {l.unitPrice === null ? '단가 산출 전' : unit === null ? `${won(Math.round(l.unitPrice))}원/인분` : formatUnitPrice(l.unitPrice, unit)}
                           </Text>
                         </View>
                         <View style={{ alignItems: 'flex-end' }}>
-                          <Text style={[{ fontSize: 16, fontWeight: '800', color: cost === null ? T.ter : T.ink }, NUM]}>
+                          <Text style={[{ fontSize: 16, fontWeight: '800', color: cost === null ? COLOR.text.tertiary : T.ink }, NUM]}>
                             {cost === null ? '—' : `${won(Math.round(cost))}원`}
                           </Text>
-                          <Text style={[{ fontSize: 14, color: T.ter, marginTop: 2 }, NUM]}>
+                          <Text style={[{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 2 }, NUM]}>
                             {unit === null ? `${used}인분` : formatQuantity(used, unit)} / {cost === null ? '—' : `${p(cost / mult)}%`}
                           </Text>
                         </View>
@@ -314,7 +314,7 @@ function SalesMenuDetailScreenBody({ serverToday }: { serverToday: string }) {
                         <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.ink2 }}>{e.name}</Text>
                         <View style={{ alignItems: 'flex-end' }}>
                           <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{won(Math.round(e.amount * mult))}원</Text>
-                          <Text style={[{ fontSize: 14, fontWeight: '600', color: T.ter, marginTop: 2 }, NUM]}>{p(e.amount)}%</Text>
+                          <Text style={[{ fontSize: 14, fontWeight: '600', color: COLOR.text.tertiary, marginTop: 2 }, NUM]}>{p(e.amount)}%</Text>
                         </View>
                       </View>
                     ))}
@@ -341,11 +341,11 @@ function SalesMenuDetailScreenBody({ serverToday }: { serverToday: string }) {
                     <View key={`${n}-${i}`} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 13, borderBottomWidth: i < all.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
                       <View style={{ flex: 1, minWidth: 0 }}>
                         <Text style={{ fontSize: 16, fontWeight: '600', color: T.ink2 }}>{n}</Text>
-                        <Text style={{ fontSize: 14, color: T.ter, marginTop: 2 }}>{note}</Text>
+                        <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 2 }}>{note}</Text>
                       </View>
                       <View style={{ alignItems: 'flex-end' }}>
                         <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{won(Math.round(v * mult))}원</Text>
-                        <Text style={[{ fontSize: 14, fontWeight: '600', color: T.ter, marginTop: 2 }, NUM]}>{p(v)}%</Text>
+                        <Text style={[{ fontSize: 14, fontWeight: '600', color: COLOR.text.tertiary, marginTop: 2 }, NUM]}>{p(v)}%</Text>
                       </View>
                     </View>
                   ))}

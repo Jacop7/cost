@@ -18,7 +18,7 @@ import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Badge, Card, Icon, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { formatQuantity } from '@margincook/core';
-import { T, tnum, won } from '@/theme/tokens';
+import { COLOR, T, tnum, won } from '@/theme/tokens';
 import { dispUnit } from '../ledger';
 import { PeriodSheet, periodRange, type HistoryPeriod } from './HistoryFilterSheet';
 import { useStoreLocalDate } from '@/features/business-day/businessDay';
@@ -169,7 +169,7 @@ function DiscardHistoryBody({ localDate }: { localDate: string }) {
                   >
                     <View style={{ flex: 1, minWidth: 0 }}>
                       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                        <Text style={[{ fontSize: 12, color: T.ter, fontWeight: '700' }, tnum]}>
+                        <Text style={[{ fontSize: 12, color: COLOR.text.tertiary, fontWeight: '700' }, tnum]}>
                           {e.date.slice(5).replace('-', '/')}
                         </Text>
                         <Badge tone={e.waste ? 'amber' : 'neutral'} sm>
@@ -185,7 +185,7 @@ function DiscardHistoryBody({ localDate }: { localDate: string }) {
                         −{formatQuantity(Math.abs(e.countDelta), unit)}
                       </Text>
                       {price !== null ? (
-                        <Text style={[{ fontSize: 12, color: T.ter, fontWeight: '700', marginTop: 3 }, tnum]}>
+                        <Text style={[{ fontSize: 12, color: COLOR.text.tertiary, fontWeight: '700', marginTop: 3 }, tnum]}>
                           {won(Math.round(Math.abs(e.countDelta) * price))}원
                         </Text>
                       ) : null}
@@ -202,7 +202,7 @@ function DiscardHistoryBody({ localDate }: { localDate: string }) {
                           accessibilityRole="button" accessibilityLabel="더보기"
                           style={{ width: 45, height: 44, marginHorizontal: -9, marginVertical: -2, alignItems: 'center', justifyContent: 'center' }}
                         >
-                          <Icon name="more" size={19} color={T.ter} />
+                          <Icon name="more" size={19} color={COLOR.text.tertiary} />
                         </Pressable>
                       ) : null}
                     </View>
@@ -234,9 +234,9 @@ function DiscardHistoryBody({ localDate }: { localDate: string }) {
                   accessibilityLabel={`${k} ${n}건`}
                   style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 14, borderTopWidth: 1, borderTopColor: T.line2 }}
                 >
-                  <Text style={{ flex: 1, fontSize: 16, fontWeight: on ? '800' : '600', color: on ? T.blue : T.ink }}>{k}</Text>
-                  <Text style={[{ fontSize: 14, color: T.ter, marginRight: 8 }, tnum]}>{n}건</Text>
-                  {on ? <Icon name="check" size={18} color={T.blue} sw={2.4} /> : null}
+                  <Text style={{ flex: 1, fontSize: 16, fontWeight: on ? '800' : '600', color: on ? COLOR.text.link : T.ink }}>{k}</Text>
+                  <Text style={[{ fontSize: 14, color: COLOR.text.tertiary, marginRight: 8 }, tnum]}>{n}건</Text>
+                  {on ? <Icon name="check" size={18} color={COLOR.action.primary} sw={2.4} /> : null}
                 </Pressable>
               );
             })}

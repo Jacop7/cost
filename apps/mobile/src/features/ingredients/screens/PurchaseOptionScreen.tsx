@@ -11,7 +11,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Alert, Modal, Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { AppHeader, Badge, Button, Card, Field, Icon, Input, QueryState, Select } from '../../../components/kit';
-import { T, tnum } from '../../../theme/tokens';
+import { COLOR, T, tnum } from '../../../theme/tokens';
 import { displayToBase, formatQuantity, formatUnitPrice, isDisplayUnit } from '@margincook/core';
 import { safeBack } from '@/lib/nav';
 import { clampByUnit, clampDecimals } from '@/lib/num';
@@ -207,7 +207,7 @@ export function PurchaseOptionScreen() {
                     style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: T.surface, borderWidth: 1, borderColor: T.line, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 13 }}
                   >
                     <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.ink }}>{unit}</Text>
-                    <Icon name="chevronDown" size={18} color={T.ter} />
+                    <Icon name="chevronDown" size={18} color={COLOR.text.tertiary} />
                   </Pressable>
                 </View>
               </Field>
@@ -233,11 +233,11 @@ export function PurchaseOptionScreen() {
                   {/* 값이 실제로 움직였을 때만 전후를 보여 준다. 같은 값을 두 번 쓰면 읽는 데 방해만 된다. */}
                   {prevUnitPrice !== null && Math.abs(prevUnitPrice - unitPrice) > 0.005 ? (
                     <>
-                      <Text style={[{ fontSize: 14, color: T.ter }, tnum]}>{formatUnitPrice(prevUnitPrice, base)}</Text>
-                      <Icon name="arrowRight" size={14} color={T.blue} sw={2.2} />
+                      <Text style={[{ fontSize: 14, color: COLOR.text.tertiary }, tnum]}>{formatUnitPrice(prevUnitPrice, base)}</Text>
+                      <Icon name="arrowRight" size={14} color={COLOR.action.primary} sw={2.2} />
                     </>
                   ) : null}
-                  <Text style={[{ fontSize: 16, fontWeight: '800', color: T.blue }, tnum]}>
+                  <Text style={[{ fontSize: 16, fontWeight: '800', color: COLOR.text.link }, tnum]}>
                     {formatUnitPrice(unitPrice, base)}
                   </Text>
                 </View>
@@ -252,8 +252,8 @@ export function PurchaseOptionScreen() {
             <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 4, paddingBottom: 24, gap: 11 }} showsVerticalScrollIndicator={false}>
               {(g?.options.length ?? 0) === 0 ? (
                 <View style={{ paddingVertical: 40, alignItems: 'center', gap: 8 }}>
-                  <Text style={{ fontSize: 16, color: T.ter }}>등록된 구매 옵션이 없어요</Text>
-                  <Text style={{ fontSize: 14, color: T.ter, textAlign: 'center' }}>자주 사는 곳과 용량·가격을 등록해 두면 발주가 빨라져요</Text>
+                  <Text style={{ fontSize: 16, color: COLOR.text.tertiary }}>등록된 구매 옵션이 없어요</Text>
+                  <Text style={{ fontSize: 14, color: COLOR.text.tertiary, textAlign: 'center' }}>자주 사는 곳과 용량·가격을 등록해 두면 발주가 빨라져요</Text>
                 </View>
               ) : (
                 <Card pad={0} style={{ overflow: 'hidden' }}>
@@ -276,7 +276,7 @@ export function PurchaseOptionScreen() {
                           같은 것을 두 화면이 다르게 그리면 사장님은 다른 정보라고 읽는다.
                         */}
                         <View style={{ flex: 1, minWidth: 0 }}>
-                          <Text style={{ fontSize: 14, color: T.ter, fontWeight: '600', marginBottom: 4 }} numberOfLines={1}>
+                          <Text style={{ fontSize: 14, color: COLOR.text.tertiary, fontWeight: '600', marginBottom: 4 }} numberOfLines={1}>
                             {o.brandName ?? o.vendorName ?? '구매처 미지정'}
                           </Text>
                           <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }} numberOfLines={1}>{o.name}</Text>
@@ -295,11 +295,11 @@ export function PurchaseOptionScreen() {
                           <Text style={[{ fontSize: 15, fontWeight: '800', color: T.ink, marginTop: 2 }, tnum]}>
                             {formatQuantity(o.volume, base)}
                           </Text>
-                          <Text style={[{ fontSize: 12, color: T.ter, fontWeight: '700', marginTop: 3 }, tnum]}>
+                          <Text style={[{ fontSize: 12, color: COLOR.text.tertiary, fontWeight: '700', marginTop: 3 }, tnum]}>
                             {formatUnitPrice(per, base)}
                           </Text>
                         </View>
-                        {o.url ? <Icon name="link" size={16} color={T.ter} /> : null}
+                        {o.url ? <Icon name="link" size={16} color={COLOR.text.tertiary} /> : null}
                         <Icon name="chevron" size={16} color={T.line3} />
                       </Pressable>
                     );

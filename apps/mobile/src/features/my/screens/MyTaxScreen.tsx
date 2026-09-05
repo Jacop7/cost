@@ -19,7 +19,7 @@ import { AppHeader, Button, Card, Icon, Input, QueryState } from '@/components/k
 import { safeBack } from '@/lib/nav';
 import { clampDecimals } from '@/lib/num';
 import { RpcError } from '@/lib/supabase';
-import { T, tnum } from '@/theme/tokens';
+import { COLOR, T, tnum } from '@/theme/tokens';
 import { useSaveStoreTax, useStoreSettings } from '@/features/settings/hooks';
 
 interface Row { name: string; rate: string }
@@ -169,7 +169,7 @@ export default function MyTaxScreen() {
           <Card pad={0} style={{ overflow: 'hidden' }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 13, paddingHorizontal: 15, backgroundColor: T.surface2 }}>
               <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.sub }}>세금 항목</Text>
-              <Text style={{ fontSize: 13, fontWeight: '600', color: T.ter }}>판매가 대비 %</Text>
+              <Text style={{ fontSize: 13, fontWeight: '600', color: COLOR.text.tertiary }}>판매가 대비 %</Text>
             </View>
 
             <View style={{ paddingHorizontal: 15, paddingVertical: 12, gap: 9 }}>
@@ -206,7 +206,7 @@ export default function MyTaxScreen() {
                     hitSlop={8}
                     style={{ width: 32, height: 40, alignItems: 'center', justifyContent: 'center' }}
                   >
-                    <Icon name="close" size={18} color={T.ter} />
+                    <Icon name="close" size={18} color={COLOR.text.tertiary} />
                   </Pressable>
                 </View>
               ))}
@@ -219,11 +219,11 @@ export default function MyTaxScreen() {
                 accessibilityLabel="세금 항목 추가"
                 style={{
                   flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5,
-                  paddingVertical: 13, borderRadius: 12, borderWidth: 1, borderStyle: 'dashed', borderColor: T.blue,
+                  paddingVertical: 13, borderRadius: 12, borderWidth: 1, borderStyle: 'dashed', borderColor: COLOR.action.primary,
                 }}
               >
-                <Icon name="plus" size={17} color={T.blue} sw={2.2} />
-                <Text style={{ fontSize: 16, fontWeight: '700', color: T.blue }}>항목 추가</Text>
+                <Icon name="plus" size={17} color={COLOR.action.primary} sw={2.2} />
+                <Text style={{ fontSize: 16, fontWeight: '700', color: COLOR.text.link }}>항목 추가</Text>
               </Pressable>
 
               {error ? (
@@ -237,8 +237,8 @@ export default function MyTaxScreen() {
               넣으면 같은 돈이 손익에서 두 번 빠진다(19일 503,397원).
           */}
           <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, paddingHorizontal: 2 }}>
-            <Icon name="info" size={15} color={T.ter} />
-            <Text style={{ flex: 1, fontSize: 14, color: T.ter, lineHeight: 20 }}>
+            <Icon name="info" size={15} color={COLOR.text.tertiary} />
+            <Text style={{ flex: 1, fontSize: 14, color: COLOR.text.tertiary, lineHeight: 20 }}>
               배달앱 중개 수수료는 여기가 아니라 <Text style={{ fontWeight: '700' }}>MY {'>'} 고정 지출</Text>에서
               관리해요. 두 곳에 넣으면 같은 돈이 두 번 빠져요.
             </Text>
@@ -250,7 +250,7 @@ export default function MyTaxScreen() {
         {/* 저장 직전에 얼마가 빠지는지 — 재고 추가 화면 하단과 같은 짜임 */}
         <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 2, paddingBottom: 12 }}>
           <Text style={{ flex: 1, fontSize: 15, fontWeight: '700', color: T.sub }}>판매가에서 빠지는 몫</Text>
-          <Text style={[{ fontSize: 16, fontWeight: '800', color: T.blue }, tnum]}>
+          <Text style={[{ fontSize: 16, fontWeight: '800', color: COLOR.text.link }, tnum]}>
             {(Math.round(rate * 1000) / 10).toFixed(1)}%
           </Text>
         </View>

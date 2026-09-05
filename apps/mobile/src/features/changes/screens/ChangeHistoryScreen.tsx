@@ -17,7 +17,7 @@ import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { AppHeader, Card, Icon, QueryState, Sheet } from '@/components/kit';
 import { SummaryCard } from '@/components/history/HistoryLayout';
 import { safeBack } from '@/lib/nav';
-import { T } from '@/theme/tokens';
+import { COLOR, T } from '@/theme/tokens';
 import {
   badgeFor,
   changeStamp,
@@ -72,10 +72,10 @@ function ChangeGroup({ title, lines }: { title: string; lines: ChangeEvent['chan
             <Text style={{ width: 84, fontSize: 14, fontWeight: '700', color: T.sub }} numberOfLines={1}>
               {l.label}
             </Text>
-            <Text style={[{ fontSize: 15, color: T.ter }, NUM]} numberOfLines={1}>
+            <Text style={[{ fontSize: 15, color: COLOR.text.tertiary }, NUM]} numberOfLines={1}>
               {formatChangeValue(l.before, l.unit)}
             </Text>
-            <Text style={{ fontSize: 14, color: T.ter }}>→</Text>
+            <Text style={{ fontSize: 14, color: COLOR.text.tertiary }}>→</Text>
             <Text style={[{ flex: 1, fontSize: 15, fontWeight: '800', color: T.ink }, NUM]} numberOfLines={1}>
               {formatChangeValue(l.after, l.unit)}
             </Text>
@@ -150,7 +150,7 @@ export function ChangeHistoryScreen({ entity }: { entity: ChangeEntity }) {
           ListHeaderComponent={
             <View style={{ marginBottom: 12 }}>
               {/* 무엇의 내역인가 — 헤더가 아니라 여기서 밝힌다 */}
-              <Text style={{ fontSize: 14, fontWeight: '700', color: T.ter }}>
+              <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.text.tertiary }}>
                 {entity === 'recipe' ? '레시피' : '식재료'}
               </Text>
               <Text style={{ fontSize: 22, fontWeight: '800', color: T.ink, letterSpacing: -0.5, marginTop: 2 }}>
@@ -178,7 +178,7 @@ export function ChangeHistoryScreen({ entity }: { entity: ChangeEntity }) {
           renderItem={({ item, index }) => {
             if (item.kind === 'month') {
               return (
-                <Text style={{ fontSize: 14, fontWeight: '800', color: T.ter, marginTop: index === 0 ? 0 : 10, marginBottom: 8 }}>
+                <Text style={{ fontSize: 14, fontWeight: '800', color: COLOR.text.tertiary, marginTop: index === 0 ? 0 : 10, marginBottom: 8 }}>
                   {item.label}
                 </Text>
               );
@@ -208,7 +208,7 @@ export function ChangeHistoryScreen({ entity }: { entity: ChangeEntity }) {
                 }}
               >
                 <View style={{ flex: 1, minWidth: 0 }}>
-                  <Text style={[{ fontSize: 13, color: T.ter, fontWeight: '600' }, NUM]}>
+                  <Text style={[{ fontSize: 13, color: COLOR.text.tertiary, fontWeight: '600' }, NUM]}>
                     {changeStamp(item.event.occurredAt)}
                   </Text>
                   <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink, marginTop: 2 }} numberOfLines={1}>
@@ -219,7 +219,7 @@ export function ChangeHistoryScreen({ entity }: { entity: ChangeEntity }) {
                   </Text>
                 </View>
                 {badge ? <StateBadge state={badge} /> : null}
-                <Icon name="chevron" size={16} color={T.ter} />
+                <Icon name="chevron" size={16} color={COLOR.text.tertiary} />
               </Pressable>
             );
           }}
@@ -231,11 +231,11 @@ export function ChangeHistoryScreen({ entity }: { entity: ChangeEntity }) {
             <>
               {q.isFetchingNextPage ? (
                 <View style={{ paddingVertical: 18 }}>
-                  <ActivityIndicator color={T.ter} />
+                  <ActivityIndicator color={COLOR.text.tertiary} />
                 </View>
               ) : null}
               {!q.hasNextPage ? (
-                <Text style={{ fontSize: 13, color: T.ter, lineHeight: 19, marginTop: 12, marginBottom: 10 }}>
+                <Text style={{ fontSize: 13, color: COLOR.text.tertiary, lineHeight: 19, marginTop: 12, marginBottom: 10 }}>
                   최근 7일 수정 내역만 표시합니다. 메모 변경
                   {entity === 'ingredient' ? '과 재고 수량 변동은' : '은'} 포함하지 않습니다.
                 </Text>
@@ -251,9 +251,9 @@ export function ChangeHistoryScreen({ entity }: { entity: ChangeEntity }) {
                     >
                       <View style={{ flex: 1, minWidth: 0 }}>
                         <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>{l.label}</Text>
-                        <Text style={{ fontSize: 14, color: T.ter, marginTop: 2 }}>{l.hint}</Text>
+                        <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 2 }}>{l.hint}</Text>
                       </View>
-                      <Icon name="chevron" size={16} color={T.ter} />
+                      <Icon name="chevron" size={16} color={COLOR.text.tertiary} />
                     </Pressable>
                   ))}
                 </Card>

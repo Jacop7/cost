@@ -23,7 +23,7 @@ import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Card, Icon, QueryState, Sheet } from '@/components/kit';
 import { monthLabel, changeStamp } from '@/features/changes';
 import { safeBack } from '@/lib/nav';
-import { T, won } from '@/theme/tokens';
+import { COLOR, T, won } from '@/theme/tokens';
 import { deltaTone, useProfitHistory, type ProfitChange } from '../profitHistory';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
@@ -42,7 +42,7 @@ function rate(v: number): string {
 function DeltaText({ delta }: { delta: number | null }) {
   const tone = deltaTone(delta);
   if (tone === 'flat') {
-    return <Text style={{ fontSize: 13, fontWeight: '700', color: T.ter }}>변동 없음</Text>;
+    return <Text style={{ fontSize: 13, fontWeight: '700', color: COLOR.text.tertiary }}>변동 없음</Text>;
   }
   const up = tone === 'up';
   return (
@@ -71,7 +71,7 @@ function Row({ item, last, onPress }: { item: ProfitChange; last: boolean; onPre
       }}
     >
       <View style={{ flex: 1, minWidth: 0 }}>
-        <Text style={[{ fontSize: 13, color: T.ter, fontWeight: '600' }, NUM]}>
+        <Text style={[{ fontSize: 13, color: COLOR.text.tertiary, fontWeight: '600' }, NUM]}>
           {changeStamp(item.occurredAt)}
         </Text>
         <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink, marginTop: 4 }} numberOfLines={1}>
@@ -103,7 +103,7 @@ function BeforeAfter({ label, before, after }: { label: string; before: string; 
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 11 }}>
       <Text style={{ flex: 1, fontSize: 15, fontWeight: '600', color: T.sub }}>{label}</Text>
-      <Text style={[{ fontSize: 15, color: T.ter }, NUM]}>{before}</Text>
+      <Text style={[{ fontSize: 15, color: COLOR.text.tertiary }, NUM]}>{before}</Text>
       <Text style={{ fontSize: 15, color: T.line3, marginHorizontal: 7 }}>→</Text>
       <Text style={[{ fontSize: 15, fontWeight: '800', color: T.ink }, NUM]}>{after}</Text>
     </View>
@@ -170,7 +170,7 @@ export default function ProfitHistoryScreen() {
 
           {q.isFetchingNextPage ? (
             <View style={{ paddingVertical: 16, alignItems: 'center' }}>
-              <ActivityIndicator color={T.blue} />
+              <ActivityIndicator color={COLOR.action.primary} />
             </View>
           ) : null}
         </QueryState>
@@ -181,7 +181,7 @@ export default function ProfitHistoryScreen() {
         {open ? (
           <View style={{ paddingHorizontal: 20, paddingBottom: 8 }}>
             <Text style={{ fontSize: 19, fontWeight: '800', color: T.ink }}>{open.title}</Text>
-            <Text style={{ fontSize: 14, color: T.ter, marginTop: 5 }}>
+            <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 5 }}>
               {changeStamp(open.occurredAt).replace(' · ', ' ')}
               {open.sourceLabel ? ` · ${open.sourceLabel}` : ''}
             </Text>
