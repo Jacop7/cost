@@ -20,6 +20,7 @@ import { resolve, basename } from 'node:path';
 import { createHash } from 'node:crypto';
 
 const sha = (b) => createHash('sha256').update(b).digest('hex');
+const textSha = (b) => sha(Buffer.from(b.toString('utf8').replace(/\r\n/g, '\n'), 'utf8'));
 const args = process.argv.slice(2).filter(a => !a.startsWith('--'));
 const stressPath = resolve(args[0] ?? 'docs/prototypes/full-page-flow-prototype-i18n-stress.json');
 const knownPath  = resolve(args[1] ?? 'docs/prototypes/full-page-flow-prototype-i18n-known.json');
@@ -97,14 +98,16 @@ const deletion = {
 };
 
 const knownCount = Object.keys(known.entries).length;
+const resolvedCount = Object.keys(known.resolved ?? {}).length;
+const knownActiveCount = knownCount - resolvedCount;
 const result = {
   manifest: {
     generatedAt: new Date().toISOString(),
     schemaVersion: 1,
-    script: { name: basename(new URL(import.meta.url).pathname), sha256: sha(selfBytes) },
+    script: { name: basename(new URL(import.meta.url).pathname), sha256: textSha(selfBytes) },
     source: {
-      stress: { path: basename(stressPath), sha256: sha(stressBytes) },
-      known: { path: basename(knownPath), sha256: sha(knownBytes) },
+      stress: { path: basename(stressPath), sha256: textSha(stressBytes) },
+      known: { path: basename(knownPath), sha256: textSha(knownBytes) },
     },
     target: {
       sha256: stress.manifest.target.sha256,
@@ -124,13 +127,15 @@ const result = {
     collisions,
     collidedGroups: collided.length,
     knownEntries: knownCount,
+    knownResolvedEntries: resolvedCount,
+    knownActiveEntries: knownActiveCount,
     largestCollidedGroups: collided.slice(0, 5).map(([k, v]) => ({ key: k, size: v.length, missing: v.map(r => r.missing) })),
     worsening,
     deletion,
     assertions: {
       '새 키는 유일하다': new Set(rows.map(newKey)).size === rows.length,
       '옛 키는 행을 잃었다': groups.size < rows.length,
-      '기준선은 원시 행 수와 같다': knownCount === rows.length,
+      '활성 기준선은 원시 행 수와 같다': knownActiveCount === rows.length,
       '옛 스킴은 악화를 놓친다': worsening.old.verdict === 'PASS',
       '새 스킴은 악화를 잡는다': worsening.new.verdict === 'FAIL',
       '사라짐을 NOTE 로 두면 삭제가 통과한다': deletion.goneIsNote.verdict === 'PASS',

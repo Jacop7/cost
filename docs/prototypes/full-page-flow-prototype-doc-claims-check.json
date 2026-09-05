@@ -5,7 +5,7 @@
     "auditSha256": "591b0c3e55d39512247ae8fcca405470d1a8f4bad020e8c5acc5493378d44ece",
     "claimsSha256": "927bbcf8085befba089028780cee29c7ae2737105f287892ab907bd1b4fefaed",
     "node": "v24.15.0",
-    "generatedAt": "2026-09-05T10:59:53.903Z",
+    "generatedAt": "2026-09-05T11:39:44.159Z",
     "판정": "값 목록을 값으로 대조한다. 개수만 세면 §7.3.1 같은 자리를 놓친다."
   },
   "status": "PASS",
@@ -250,7 +250,7 @@
       "주장": "§7.3 의 수치(선언·통·규칙별 건수·다중 일치·충돌 체인)가 검사 산출물과 한 글자도 다르지 않다",
       "mode": "문서블록",
       "마커": "W1-수치",
-      "문서blob": "462261148be66e67c3eef3c541e735d26fde88fd",
+      "문서blob": "251840247908d5fd38b2de1307df0e2a5c5aaaf7",
       "문서blob고정": null,
       "verdict": "PASS"
     }

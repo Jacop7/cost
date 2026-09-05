@@ -1,21 +1,21 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-05T00:54:52.443Z",
+  "generatedAt": "2026-09-05T11:35:42.891Z",
   "schemaVersion": 1,
   "script": {
    "name": "full-page-flow-prototype-i18n-stress.mjs",
-   "sha256": "0c774e749d137e03857b6f1201bad7ceae819f19b78263e7396c2b9e39c318f0"
+   "sha256": "0c72450ee2ff6e839bc7b11cd8fa30cbf2211e893f9c10418421748fa5bb2068"
   },
   "target": {
    "path": "0_full-page-flow-prototype-ui-applied.html",
-   "sha256": "7ce8bd4968232965ef85a458c03a5a0a73a0790b62f4c2e51a86fff7203fb383",
-   "designSyncId": "DS-20260905-003"
+   "sha256": "280ed57cb675bb58ec053bf69ff176b7582b9c8db71d966d110761e1c4642aaf",
+   "designSyncId": "DS-20260905-004"
   },
   "runner": {
-   "node": "v22.22.2",
+   "node": "v24.19.0",
    "playwright": "1.62.1",
-   "chromium": "141.0.7390.37",
-   "platform": "linux",
+   "chromium": "151.0.7922.34",
+   "platform": "win32",
    "clock": "2026-09-04T09:00:00+09:00",
    "clockSample": {
     "newest": "08/30",
@@ -97,8 +97,8 @@
     "skippedGlyph": 889,
     "text2x": 0,
     "errorHistogram": {
-     "±1%": 6830,
-     "<-5%": 67,
+     "±1%": 6836,
+     "<-5%": 61,
      ">5%": 49,
      "-5~-1%": 39,
      "1~5%": 1
@@ -681,78 +681,6 @@
       "headroom": 0
      },
      {
-      "target": "screen:stock",
-      "sel": "condition>condition-actions>condition-filter>filter-text",
-      "hostIndex": 1,
-      "ord": 0,
-      "sample": "최근 3개월",
-      "w0": 60.6,
-      "goal": 78.8,
-      "actual": 61.5,
-      "errPct": -21.91,
-      "headroom": 0
-     },
-     {
-      "target": "popup:stock_period@stock",
-      "sel": "condition>condition-actions>condition-filter>filter-text",
-      "hostIndex": 1,
-      "ord": 0,
-      "sample": "최근 3개월",
-      "w0": 60.6,
-      "goal": 78.8,
-      "actual": 61.5,
-      "errPct": -21.91,
-      "headroom": 0
-     },
-     {
-      "target": "popup:stock_type@stock",
-      "sel": "condition>condition-actions>condition-filter>filter-text",
-      "hostIndex": 1,
-      "ord": 0,
-      "sample": "최근 3개월",
-      "w0": 60.6,
-      "goal": 78.8,
-      "actual": 61.5,
-      "errPct": -21.91,
-      "headroom": 0
-     },
-     {
-      "target": "popup:stock_order@stock",
-      "sel": "condition>condition-actions>condition-filter>filter-text",
-      "hostIndex": 1,
-      "ord": 0,
-      "sample": "최근 3개월",
-      "w0": 60.6,
-      "goal": 78.8,
-      "actual": 61.5,
-      "errPct": -21.91,
-      "headroom": 0
-     },
-     {
-      "target": "popup:stock_event_more@stock",
-      "sel": "condition>condition-actions>condition-filter>filter-text",
-      "hostIndex": 1,
-      "ord": 0,
-      "sample": "최근 3개월",
-      "w0": 60.6,
-      "goal": 78.8,
-      "actual": 61.5,
-      "errPct": -21.91,
-      "headroom": 0
-     },
-     {
-      "target": "popup:stock_event_revert@stock",
-      "sel": "condition>condition-actions>condition-filter>filter-text",
-      "hostIndex": 1,
-      "ord": 0,
-      "sample": "최근 3개월",
-      "w0": 60.6,
-      "goal": 78.8,
-      "actual": 61.5,
-      "errPct": -21.91,
-      "headroom": 0
-     },
-     {
       "target": "screen:analytics",
       "sel": "card>sales-menu-row>sales-menu-copy>sales-menu-sub",
       "hostIndex": 50,
@@ -1283,73 +1211,73 @@
      {
       "target": "screen:stock",
       "sel": "condition>condition-actions>condition-filter>filter-text",
-      "hostIndex": 2,
+      "hostIndex": 1,
       "ord": 0,
-      "sample": "전체",
-      "w0": 24.2,
-      "goal": 31.5,
-      "actual": 26.5,
-      "errPct": -15.78,
+      "sample": "최근 3개월",
+      "w0": 60.6,
+      "goal": 78.8,
+      "actual": 65.5,
+      "errPct": -16.79,
       "headroom": 0
      },
      {
       "target": "popup:stock_period@stock",
       "sel": "condition>condition-actions>condition-filter>filter-text",
-      "hostIndex": 2,
+      "hostIndex": 1,
       "ord": 0,
-      "sample": "전체",
-      "w0": 24.2,
-      "goal": 31.5,
-      "actual": 26.5,
-      "errPct": -15.78,
+      "sample": "최근 3개월",
+      "w0": 60.6,
+      "goal": 78.8,
+      "actual": 65.5,
+      "errPct": -16.79,
       "headroom": 0
      },
      {
       "target": "popup:stock_type@stock",
       "sel": "condition>condition-actions>condition-filter>filter-text",
-      "hostIndex": 2,
+      "hostIndex": 1,
       "ord": 0,
-      "sample": "전체",
-      "w0": 24.2,
-      "goal": 31.5,
-      "actual": 26.5,
-      "errPct": -15.78,
+      "sample": "최근 3개월",
+      "w0": 60.6,
+      "goal": 78.8,
+      "actual": 65.5,
+      "errPct": -16.79,
       "headroom": 0
      },
      {
       "target": "popup:stock_order@stock",
       "sel": "condition>condition-actions>condition-filter>filter-text",
-      "hostIndex": 2,
+      "hostIndex": 1,
       "ord": 0,
-      "sample": "전체",
-      "w0": 24.2,
-      "goal": 31.5,
-      "actual": 26.5,
-      "errPct": -15.78,
+      "sample": "최근 3개월",
+      "w0": 60.6,
+      "goal": 78.8,
+      "actual": 65.5,
+      "errPct": -16.79,
       "headroom": 0
      },
      {
       "target": "popup:stock_event_more@stock",
       "sel": "condition>condition-actions>condition-filter>filter-text",
-      "hostIndex": 2,
+      "hostIndex": 1,
       "ord": 0,
-      "sample": "전체",
-      "w0": 24.2,
-      "goal": 31.5,
-      "actual": 26.5,
-      "errPct": -15.78,
+      "sample": "최근 3개월",
+      "w0": 60.6,
+      "goal": 78.8,
+      "actual": 65.5,
+      "errPct": -16.79,
       "headroom": 0
      },
      {
       "target": "popup:stock_event_revert@stock",
       "sel": "condition>condition-actions>condition-filter>filter-text",
-      "hostIndex": 2,
+      "hostIndex": 1,
       "ord": 0,
-      "sample": "전체",
-      "w0": 24.2,
-      "goal": 31.5,
-      "actual": 26.5,
-      "errPct": -15.78,
+      "sample": "최근 3개월",
+      "w0": 60.6,
+      "goal": 78.8,
+      "actual": 65.5,
+      "errPct": -16.79,
       "headroom": 0
      },
      {
@@ -2474,72 +2402,6 @@
       ]
      },
      {
-      "target": "screen:stock",
-      "sel": "condition>condition-actions>condition-filter>filter-text",
-      "hostIndex": 1,
-      "headroom": 0,
-      "missing": 17.3,
-      "nodes": 1,
-      "samples": [
-       "최근 3개월"
-      ]
-     },
-     {
-      "target": "popup:stock_period@stock",
-      "sel": "condition>condition-actions>condition-filter>filter-text",
-      "hostIndex": 1,
-      "headroom": 0,
-      "missing": 17.3,
-      "nodes": 1,
-      "samples": [
-       "최근 3개월"
-      ]
-     },
-     {
-      "target": "popup:stock_type@stock",
-      "sel": "condition>condition-actions>condition-filter>filter-text",
-      "hostIndex": 1,
-      "headroom": 0,
-      "missing": 17.3,
-      "nodes": 1,
-      "samples": [
-       "최근 3개월"
-      ]
-     },
-     {
-      "target": "popup:stock_order@stock",
-      "sel": "condition>condition-actions>condition-filter>filter-text",
-      "hostIndex": 1,
-      "headroom": 0,
-      "missing": 17.3,
-      "nodes": 1,
-      "samples": [
-       "최근 3개월"
-      ]
-     },
-     {
-      "target": "popup:stock_event_more@stock",
-      "sel": "condition>condition-actions>condition-filter>filter-text",
-      "hostIndex": 1,
-      "headroom": 0,
-      "missing": 17.3,
-      "nodes": 1,
-      "samples": [
-       "최근 3개월"
-      ]
-     },
-     {
-      "target": "popup:stock_event_revert@stock",
-      "sel": "condition>condition-actions>condition-filter>filter-text",
-      "hostIndex": 1,
-      "headroom": 0,
-      "missing": 17.3,
-      "nodes": 1,
-      "samples": [
-       "최근 3개월"
-      ]
-     },
-     {
       "target": "screen:recipe_materials",
       "sel": "expo-manage-row>expo-manage-copy>expo-pick-title>strong",
       "hostIndex": 6,
@@ -2650,6 +2512,72 @@
       ]
      },
      {
+      "target": "screen:stock",
+      "sel": "condition>condition-actions>condition-filter>filter-text",
+      "hostIndex": 1,
+      "headroom": 0,
+      "missing": 13.2,
+      "nodes": 1,
+      "samples": [
+       "최근 3개월"
+      ]
+     },
+     {
+      "target": "popup:stock_period@stock",
+      "sel": "condition>condition-actions>condition-filter>filter-text",
+      "hostIndex": 1,
+      "headroom": 0,
+      "missing": 13.2,
+      "nodes": 1,
+      "samples": [
+       "최근 3개월"
+      ]
+     },
+     {
+      "target": "popup:stock_type@stock",
+      "sel": "condition>condition-actions>condition-filter>filter-text",
+      "hostIndex": 1,
+      "headroom": 0,
+      "missing": 13.2,
+      "nodes": 1,
+      "samples": [
+       "최근 3개월"
+      ]
+     },
+     {
+      "target": "popup:stock_order@stock",
+      "sel": "condition>condition-actions>condition-filter>filter-text",
+      "hostIndex": 1,
+      "headroom": 0,
+      "missing": 13.2,
+      "nodes": 1,
+      "samples": [
+       "최근 3개월"
+      ]
+     },
+     {
+      "target": "popup:stock_event_more@stock",
+      "sel": "condition>condition-actions>condition-filter>filter-text",
+      "hostIndex": 1,
+      "headroom": 0,
+      "missing": 13.2,
+      "nodes": 1,
+      "samples": [
+       "최근 3개월"
+      ]
+     },
+     {
+      "target": "popup:stock_event_revert@stock",
+      "sel": "condition>condition-actions>condition-filter>filter-text",
+      "hostIndex": 1,
+      "headroom": 0,
+      "missing": 13.2,
+      "nodes": 1,
+      "samples": [
+       "최근 3개월"
+      ]
+     },
+     {
       "target": "popup:account_delete@my_account",
       "sel": "overlay>sheet>div>confirm-copy",
       "hostIndex": 13,
@@ -2713,72 +2641,6 @@
       "nodes": 1,
       "samples": [
        "김치찌개 · 된장찌개 · "
-      ]
-     },
-     {
-      "target": "screen:stock",
-      "sel": "condition>condition-actions>condition-filter>filter-text",
-      "hostIndex": 2,
-      "headroom": 0,
-      "missing": 5,
-      "nodes": 1,
-      "samples": [
-       "전체"
-      ]
-     },
-     {
-      "target": "popup:stock_period@stock",
-      "sel": "condition>condition-actions>condition-filter>filter-text",
-      "hostIndex": 2,
-      "headroom": 0,
-      "missing": 5,
-      "nodes": 1,
-      "samples": [
-       "전체"
-      ]
-     },
-     {
-      "target": "popup:stock_type@stock",
-      "sel": "condition>condition-actions>condition-filter>filter-text",
-      "hostIndex": 2,
-      "headroom": 0,
-      "missing": 5,
-      "nodes": 1,
-      "samples": [
-       "전체"
-      ]
-     },
-     {
-      "target": "popup:stock_order@stock",
-      "sel": "condition>condition-actions>condition-filter>filter-text",
-      "hostIndex": 2,
-      "headroom": 0,
-      "missing": 5,
-      "nodes": 1,
-      "samples": [
-       "전체"
-      ]
-     },
-     {
-      "target": "popup:stock_event_more@stock",
-      "sel": "condition>condition-actions>condition-filter>filter-text",
-      "hostIndex": 2,
-      "headroom": 0,
-      "missing": 5,
-      "nodes": 1,
-      "samples": [
-       "전체"
-      ]
-     },
-     {
-      "target": "popup:stock_event_revert@stock",
-      "sel": "condition>condition-actions>condition-filter>filter-text",
-      "hostIndex": 2,
-      "headroom": 0,
-      "missing": 5,
-      "nodes": 1,
-      "samples": [
-       "전체"
       ]
      },
      {
@@ -3178,10 +3040,10 @@
       ]
      }
     ],
-    "atRiskCount": 106,
+    "atRiskCount": 100,
     "text2xMismatched": 0,
-    "underStretched": 106,
-    "worstCount": 156
+    "underStretched": 100,
+    "worstCount": 150
    },
    "w150": {
     "stretched": 6986,
@@ -3189,8 +3051,8 @@
     "skippedGlyph": 889,
     "text2x": 0,
     "errorHistogram": {
-     "±1%": 6564,
-     "<-5%": 291,
+     "±1%": 6570,
+     "<-5%": 285,
      ">5%": 83,
      "1~5%": 7,
      "-5~-1%": 41
@@ -3302,78 +3164,6 @@
       "goal": 150.7,
       "actual": 109.1,
       "errPct": -27.59,
-      "headroom": 0
-     },
-     {
-      "target": "screen:stock",
-      "sel": "condition>condition-actions>condition-filter>filter-text",
-      "hostIndex": 2,
-      "ord": 0,
-      "sample": "전체",
-      "w0": 24.2,
-      "goal": 36.3,
-      "actual": 26.4,
-      "errPct": -27.26,
-      "headroom": 0
-     },
-     {
-      "target": "popup:stock_period@stock",
-      "sel": "condition>condition-actions>condition-filter>filter-text",
-      "hostIndex": 2,
-      "ord": 0,
-      "sample": "전체",
-      "w0": 24.2,
-      "goal": 36.3,
-      "actual": 26.4,
-      "errPct": -27.26,
-      "headroom": 0
-     },
-     {
-      "target": "popup:stock_type@stock",
-      "sel": "condition>condition-actions>condition-filter>filter-text",
-      "hostIndex": 2,
-      "ord": 0,
-      "sample": "전체",
-      "w0": 24.2,
-      "goal": 36.3,
-      "actual": 26.4,
-      "errPct": -27.26,
-      "headroom": 0
-     },
-     {
-      "target": "popup:stock_order@stock",
-      "sel": "condition>condition-actions>condition-filter>filter-text",
-      "hostIndex": 2,
-      "ord": 0,
-      "sample": "전체",
-      "w0": 24.2,
-      "goal": 36.3,
-      "actual": 26.4,
-      "errPct": -27.26,
-      "headroom": 0
-     },
-     {
-      "target": "popup:stock_event_more@stock",
-      "sel": "condition>condition-actions>condition-filter>filter-text",
-      "hostIndex": 2,
-      "ord": 0,
-      "sample": "전체",
-      "w0": 24.2,
-      "goal": 36.3,
-      "actual": 26.4,
-      "errPct": -27.26,
-      "headroom": 0
-     },
-     {
-      "target": "popup:stock_event_revert@stock",
-      "sel": "condition>condition-actions>condition-filter>filter-text",
-      "hostIndex": 2,
-      "ord": 0,
-      "sample": "전체",
-      "w0": 24.2,
-      "goal": 36.3,
-      "actual": 26.4,
-      "errPct": -27.26,
       "headroom": 0
      },
      {
@@ -6414,6 +6204,78 @@
      },
      {
       "target": "screen:stock",
+      "sel": "condition>condition-actions>condition-filter>filter-text",
+      "hostIndex": 2,
+      "ord": 0,
+      "sample": "전체",
+      "w0": 24.2,
+      "goal": 36.3,
+      "actual": 29,
+      "errPct": -19.99,
+      "headroom": 0
+     },
+     {
+      "target": "popup:stock_period@stock",
+      "sel": "condition>condition-actions>condition-filter>filter-text",
+      "hostIndex": 2,
+      "ord": 0,
+      "sample": "전체",
+      "w0": 24.2,
+      "goal": 36.3,
+      "actual": 29,
+      "errPct": -19.99,
+      "headroom": 0
+     },
+     {
+      "target": "popup:stock_type@stock",
+      "sel": "condition>condition-actions>condition-filter>filter-text",
+      "hostIndex": 2,
+      "ord": 0,
+      "sample": "전체",
+      "w0": 24.2,
+      "goal": 36.3,
+      "actual": 29,
+      "errPct": -19.99,
+      "headroom": 0
+     },
+     {
+      "target": "popup:stock_order@stock",
+      "sel": "condition>condition-actions>condition-filter>filter-text",
+      "hostIndex": 2,
+      "ord": 0,
+      "sample": "전체",
+      "w0": 24.2,
+      "goal": 36.3,
+      "actual": 29,
+      "errPct": -19.99,
+      "headroom": 0
+     },
+     {
+      "target": "popup:stock_event_more@stock",
+      "sel": "condition>condition-actions>condition-filter>filter-text",
+      "hostIndex": 2,
+      "ord": 0,
+      "sample": "전체",
+      "w0": 24.2,
+      "goal": 36.3,
+      "actual": 29,
+      "errPct": -19.99,
+      "headroom": 0
+     },
+     {
+      "target": "popup:stock_event_revert@stock",
+      "sel": "condition>condition-actions>condition-filter>filter-text",
+      "hostIndex": 2,
+      "ord": 0,
+      "sample": "전체",
+      "w0": 24.2,
+      "goal": 36.3,
+      "actual": 29,
+      "errPct": -19.99,
+      "headroom": 0
+     },
+     {
+      "target": "screen:stock",
       "sel": "card>row>row-main>row-sub",
       "hostIndex": 17,
       "ord": 0,
@@ -7334,78 +7196,6 @@
       "goal": 82.6,
       "actual": 77.2,
       "errPct": -6.48,
-      "headroom": 0
-     },
-     {
-      "target": "screen:my_hours",
-      "sel": "card>setting-row>setting-copy>small",
-      "hostIndex": 5,
-      "ord": 0,
-      "sample": "아직 정하지 않아 서울 기",
-      "w0": 169.7,
-      "goal": 254.5,
-      "actual": 238.9,
-      "errPct": -6.13,
-      "headroom": 0
-     },
-     {
-      "target": "popup:hours_start@my_hours",
-      "sel": "card>setting-row>setting-copy>small",
-      "hostIndex": 5,
-      "ord": 0,
-      "sample": "아직 정하지 않아 서울 기",
-      "w0": 169.7,
-      "goal": 254.5,
-      "actual": 238.9,
-      "errPct": -6.13,
-      "headroom": 0
-     },
-     {
-      "target": "popup:hours_end@my_hours",
-      "sel": "card>setting-row>setting-copy>small",
-      "hostIndex": 5,
-      "ord": 0,
-      "sample": "아직 정하지 않아 서울 기",
-      "w0": 169.7,
-      "goal": 254.5,
-      "actual": 238.9,
-      "errPct": -6.13,
-      "headroom": 0
-     },
-     {
-      "target": "popup:hours_break_start@my_hours",
-      "sel": "card>setting-row>setting-copy>small",
-      "hostIndex": 5,
-      "ord": 0,
-      "sample": "아직 정하지 않아 서울 기",
-      "w0": 169.7,
-      "goal": 254.5,
-      "actual": 238.9,
-      "errPct": -6.13,
-      "headroom": 0
-     },
-     {
-      "target": "popup:hours_break_end@my_hours",
-      "sel": "card>setting-row>setting-copy>small",
-      "hostIndex": 5,
-      "ord": 0,
-      "sample": "아직 정하지 않아 서울 기",
-      "w0": 169.7,
-      "goal": 254.5,
-      "actual": 238.9,
-      "errPct": -6.13,
-      "headroom": 0
-     },
-     {
-      "target": "popup:hours_timezone@my_hours",
-      "sel": "card>setting-row>setting-copy>small",
-      "hostIndex": 5,
-      "ord": 0,
-      "sample": "아직 정하지 않아 서울 기",
-      "w0": 169.7,
-      "goal": 254.5,
-      "actual": 238.9,
-      "errPct": -6.13,
       "headroom": 0
      },
      {
@@ -9397,17 +9187,6 @@
      },
      {
       "target": "screen:my_hours",
-      "sel": "card>setting-row>setting-copy>small",
-      "hostIndex": 5,
-      "headroom": 0,
-      "missing": 15.6,
-      "nodes": 1,
-      "samples": [
-       "아직 정하지 않아 서울 기"
-      ]
-     },
-     {
-      "target": "screen:my_hours",
       "sel": "app-tabs>app-tab>app-tab-label",
       "hostIndex": 37,
       "headroom": 0,
@@ -10706,17 +10485,6 @@
      },
      {
       "target": "popup:hours_start@my_hours",
-      "sel": "card>setting-row>setting-copy>small",
-      "hostIndex": 5,
-      "headroom": 0,
-      "missing": 15.6,
-      "nodes": 1,
-      "samples": [
-       "아직 정하지 않아 서울 기"
-      ]
-     },
-     {
-      "target": "popup:hours_start@my_hours",
       "sel": "app-tabs>app-tab>app-tab-label",
       "hostIndex": 37,
       "headroom": 0,
@@ -10724,17 +10492,6 @@
       "nodes": 1,
       "samples": [
        "매출관리"
-      ]
-     },
-     {
-      "target": "popup:hours_end@my_hours",
-      "sel": "card>setting-row>setting-copy>small",
-      "hostIndex": 5,
-      "headroom": 0,
-      "missing": 15.6,
-      "nodes": 1,
-      "samples": [
-       "아직 정하지 않아 서울 기"
       ]
      },
      {
@@ -10750,17 +10507,6 @@
      },
      {
       "target": "popup:hours_break_start@my_hours",
-      "sel": "card>setting-row>setting-copy>small",
-      "hostIndex": 5,
-      "headroom": 0,
-      "missing": 15.6,
-      "nodes": 1,
-      "samples": [
-       "아직 정하지 않아 서울 기"
-      ]
-     },
-     {
-      "target": "popup:hours_break_start@my_hours",
       "sel": "app-tabs>app-tab>app-tab-label",
       "hostIndex": 37,
       "headroom": 0,
@@ -10772,17 +10518,6 @@
      },
      {
       "target": "popup:hours_break_end@my_hours",
-      "sel": "card>setting-row>setting-copy>small",
-      "hostIndex": 5,
-      "headroom": 0,
-      "missing": 15.6,
-      "nodes": 1,
-      "samples": [
-       "아직 정하지 않아 서울 기"
-      ]
-     },
-     {
-      "target": "popup:hours_break_end@my_hours",
       "sel": "app-tabs>app-tab>app-tab-label",
       "hostIndex": 37,
       "headroom": 0,
@@ -10790,17 +10525,6 @@
       "nodes": 1,
       "samples": [
        "매출관리"
-      ]
-     },
-     {
-      "target": "popup:hours_timezone@my_hours",
-      "sel": "card>setting-row>setting-copy>small",
-      "hostIndex": 5,
-      "headroom": 0,
-      "missing": 15.6,
-      "nodes": 1,
-      "samples": [
-       "아직 정하지 않아 서울 기"
       ]
      },
      {
@@ -10889,72 +10613,6 @@
       "nodes": 1,
       "samples": [
        "최신순"
-      ]
-     },
-     {
-      "target": "screen:stock",
-      "sel": "condition>condition-actions>condition-filter>filter-text",
-      "hostIndex": 2,
-      "headroom": 0,
-      "missing": 9.9,
-      "nodes": 1,
-      "samples": [
-       "전체"
-      ]
-     },
-     {
-      "target": "popup:stock_period@stock",
-      "sel": "condition>condition-actions>condition-filter>filter-text",
-      "hostIndex": 2,
-      "headroom": 0,
-      "missing": 9.9,
-      "nodes": 1,
-      "samples": [
-       "전체"
-      ]
-     },
-     {
-      "target": "popup:stock_type@stock",
-      "sel": "condition>condition-actions>condition-filter>filter-text",
-      "hostIndex": 2,
-      "headroom": 0,
-      "missing": 9.9,
-      "nodes": 1,
-      "samples": [
-       "전체"
-      ]
-     },
-     {
-      "target": "popup:stock_order@stock",
-      "sel": "condition>condition-actions>condition-filter>filter-text",
-      "hostIndex": 2,
-      "headroom": 0,
-      "missing": 9.9,
-      "nodes": 1,
-      "samples": [
-       "전체"
-      ]
-     },
-     {
-      "target": "popup:stock_event_more@stock",
-      "sel": "condition>condition-actions>condition-filter>filter-text",
-      "hostIndex": 2,
-      "headroom": 0,
-      "missing": 9.9,
-      "nodes": 1,
-      "samples": [
-       "전체"
-      ]
-     },
-     {
-      "target": "popup:stock_event_revert@stock",
-      "sel": "condition>condition-actions>condition-filter>filter-text",
-      "hostIndex": 2,
-      "headroom": 0,
-      "missing": 9.9,
-      "nodes": 1,
-      "samples": [
-       "전체"
       ]
      },
      {
@@ -11153,6 +10811,72 @@
       "nodes": 1,
       "samples": [
        "발주한 건의 도착 예정일이"
+      ]
+     },
+     {
+      "target": "screen:stock",
+      "sel": "condition>condition-actions>condition-filter>filter-text",
+      "hostIndex": 2,
+      "headroom": 0,
+      "missing": 7.3,
+      "nodes": 1,
+      "samples": [
+       "전체"
+      ]
+     },
+     {
+      "target": "popup:stock_period@stock",
+      "sel": "condition>condition-actions>condition-filter>filter-text",
+      "hostIndex": 2,
+      "headroom": 0,
+      "missing": 7.3,
+      "nodes": 1,
+      "samples": [
+       "전체"
+      ]
+     },
+     {
+      "target": "popup:stock_type@stock",
+      "sel": "condition>condition-actions>condition-filter>filter-text",
+      "hostIndex": 2,
+      "headroom": 0,
+      "missing": 7.3,
+      "nodes": 1,
+      "samples": [
+       "전체"
+      ]
+     },
+     {
+      "target": "popup:stock_order@stock",
+      "sel": "condition>condition-actions>condition-filter>filter-text",
+      "hostIndex": 2,
+      "headroom": 0,
+      "missing": 7.3,
+      "nodes": 1,
+      "samples": [
+       "전체"
+      ]
+     },
+     {
+      "target": "popup:stock_event_more@stock",
+      "sel": "condition>condition-actions>condition-filter>filter-text",
+      "hostIndex": 2,
+      "headroom": 0,
+      "missing": 7.3,
+      "nodes": 1,
+      "samples": [
+       "전체"
+      ]
+     },
+     {
+      "target": "popup:stock_event_revert@stock",
+      "sel": "condition>condition-actions>condition-filter>filter-text",
+      "hostIndex": 2,
+      "headroom": 0,
+      "missing": 7.3,
+      "nodes": 1,
+      "samples": [
+       "전체"
       ]
      },
      {
@@ -11618,10 +11342,10 @@
       ]
      }
     ],
-    "atRiskCount": 302,
+    "atRiskCount": 296,
     "text2xMismatched": 0,
-    "underStretched": 332,
-    "worstCount": 422
+    "underStretched": 326,
+    "worstCount": 416
    },
    "w130t2": {
     "stretched": 6986,
@@ -11942,7 +11666,7 @@
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 3832,
+    "contentHeight": 3831,
     "clipped": 3,
     "escapee": 0
    }
@@ -12228,7 +11952,7 @@
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 5750,
+    "contentHeight": 5749,
     "clipped": 3,
     "escapee": 0
    }
@@ -12586,7 +12310,7 @@
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 685,
+    "contentHeight": 665,
     "clipped": 0,
     "escapee": 0
    },
@@ -13276,25 +13000,25 @@
   "screen:my_language": {
    "base": {
     "phoneOverflow": 0,
-    "contentHeight": 1228,
+    "contentHeight": 1232,
     "clipped": 0,
     "escapee": 0
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1306,
+    "contentHeight": 1310,
     "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 1435,
+    "contentHeight": 1439,
     "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 2990,
+    "contentHeight": 2966,
     "clipped": 3,
     "escapee": 0
    }
@@ -13386,7 +13110,7 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1518,
+    "contentHeight": 1500,
     "clipped": 0,
     "escapee": 0
    },
@@ -13502,7 +13226,7 @@
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 3832,
+    "contentHeight": 3831,
     "clipped": 3,
     "escapee": 0
    }
@@ -13528,7 +13252,7 @@
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 3376,
+    "contentHeight": 3375,
     "clipped": 3,
     "escapee": 0
    }
@@ -14308,7 +14032,7 @@
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 5750,
+    "contentHeight": 5749,
     "clipped": 3,
     "escapee": 0
    }
@@ -14334,7 +14058,7 @@
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 5750,
+    "contentHeight": 5749,
     "clipped": 3,
     "escapee": 0
    }
@@ -15108,7 +14832,7 @@
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 685,
+    "contentHeight": 665,
     "clipped": 0,
     "escapee": 0
    },
@@ -16292,25 +16016,25 @@
   "popup:language_preview@my_language": {
    "base": {
     "phoneOverflow": 0,
-    "contentHeight": 1228,
+    "contentHeight": 1232,
     "clipped": 0,
     "escapee": 0
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1306,
+    "contentHeight": 1310,
     "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 1435,
+    "contentHeight": 1439,
     "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 2990,
+    "contentHeight": 2966,
     "clipped": 3,
     "escapee": 0
    }
@@ -16454,7 +16178,7 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1518,
+    "contentHeight": 1500,
     "clipped": 0,
     "escapee": 0
    },
@@ -16480,7 +16204,7 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1518,
+    "contentHeight": 1500,
     "clipped": 0,
     "escapee": 0
    },
@@ -16506,7 +16230,7 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1518,
+    "contentHeight": 1500,
     "clipped": 0,
     "escapee": 0
    },
@@ -16532,7 +16256,7 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1518,
+    "contentHeight": 1500,
     "clipped": 0,
     "escapee": 0
    },
@@ -16558,7 +16282,7 @@
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1518,
+    "contentHeight": 1500,
     "clipped": 0,
     "escapee": 0
    },

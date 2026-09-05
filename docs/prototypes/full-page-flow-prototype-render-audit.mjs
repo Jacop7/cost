@@ -66,8 +66,9 @@ const targetPath = resolve(args[0] ?? 'docs/prototypes/0_full-page-flow-prototyp
 const outPath = resolve(args[1] ?? 'docs/prototypes/full-page-flow-prototype-render-audit.json');
 
 const sha = buf => createHash('sha256').update(buf).digest('hex');
+const textSha = buf => sha(Buffer.from(buf.toString('utf8').replace(/\r\n/g, '\n'), 'utf8'));
 const bytes = readFileSync(targetPath);
-const scriptSha = sha(readFileSync(new URL(import.meta.url)));
+const scriptSha = textSha(readFileSync(new URL(import.meta.url)));
 const designSyncId = (bytes.toString('utf8').match(/<!--\s*DESIGN_SYNC:\s*(DS-\d{8}-\d{3})\s*-->/) || [])[1] ?? null;
 let playwrightVersion = null;
 try { playwrightVersion = require_('playwright/package.json').version; } catch { /* noop */ }

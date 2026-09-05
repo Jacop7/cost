@@ -1,18 +1,18 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-05T00:52:42.925Z",
+  "generatedAt": "2026-09-05T11:34:57.605Z",
   "schemaVersion": 1,
   "script": {
    "name": "full-page-flow-prototype-design-audit.mjs",
-   "sha256": "854f8311cea461ecfe170871e45ecb31d076ded5560aaf3abdbc12b1ba01bbd3"
+   "sha256": "2aa9f8dfda3485ba90aa86e6c117879b4d9809628c07943cb375b16e4a0b5afa"
   },
   "target": {
    "path": "0_full-page-flow-prototype-ui-applied.html",
-   "sha256": "7ce8bd4968232965ef85a458c03a5a0a73a0790b62f4c2e51a86fff7203fb383",
-   "designSyncId": "DS-20260905-003"
+   "sha256": "280ed57cb675bb58ec053bf69ff176b7582b9c8db71d966d110761e1c4642aaf",
+   "designSyncId": "DS-20260905-004"
   },
   "runner": {
-   "node": "v22.22.2",
+   "node": "v24.19.0",
    "playwright": "1.62.1",
    "chromium": "see render-audit",
    "clock": "2026-09-04T09:00:00+09:00",
@@ -68,7 +68,7 @@
    "합계": 2158
   },
   "touch": {
-   "종류": 61,
+   "종류": 62,
    "합계": 733
   },
   "icon": {
@@ -10691,7 +10691,8 @@
    "key": "8px|card.button|author",
    "n": 42,
    "ex": [
-    "44.28x34"
+    "44.28x34",
+    "44.3x34"
    ]
   },
   {
@@ -10723,9 +10724,9 @@
    "key": "999px|(no-card).condition-filter|author",
    "n": 35,
    "ex": [
-    "106.5x36",
-    "70.11x36",
-    "82.22x36"
+    "103.59x36",
+    "67.2x36",
+    "79.31x36"
    ]
   },
   {
@@ -10924,9 +10925,9 @@
    "key": "999px|recipe-filters.condition-filter|author",
    "n": 12,
    "ex": [
-    "133.84x38",
-    "82.22x38",
-    "97.53x38"
+    "130.94x38",
+    "79.31x38",
+    "94.63x38"
    ]
   },
   {
@@ -10994,7 +10995,7 @@
    "key": "9px|(no-card).business-state|author",
    "n": 9,
    "ex": [
-    "67.61x31"
+    "64.7x32"
    ]
   },
   {
@@ -11008,7 +11009,7 @@
    "key": "999px|sales-controls.button|author",
    "n": 9,
    "ex": [
-    "90.14x40"
+    "86.44x40"
    ]
   },
   {
@@ -11200,7 +11201,7 @@
    "key": "999px|recipe-title-row.recipe-sale-select|author",
    "n": 3,
    "ex": [
-    "78.38x36"
+    "76.31x36"
    ]
   },
   {
@@ -11236,7 +11237,7 @@
    "key": "999px|(no-card).expo-sort|author",
    "n": 2,
    "ex": [
-    "105.47x38"
+    "101.77x38"
    ]
   },
   {
@@ -12090,7 +12091,7 @@
    ]
   },
   {
-   "key": "button|h31|9px|13px/700",
+   "key": "button|h32|9px|13px/700",
    "n": 9,
    "ex": [
     "(no-card).business-state \"영업 중⌄\""
@@ -12413,11 +12414,11 @@
   },
   {
    "key": "card.button|44.28x34",
-   "n": 42,
+   "n": 30,
    "ex": [
     "월",
-    "화",
-    "수"
+    "수",
+    "금"
    ]
   },
   {
@@ -12453,9 +12454,17 @@
    ]
   },
   {
-   "key": "(no-card).condition-filter|118.39x36",
+   "key": "(no-card).condition-filter|115.48x36",
    "n": 12,
    "ex": []
+  },
+  {
+   "key": "card.button|44.3x34",
+   "n": 12,
+   "ex": [
+    "화",
+    "목"
+   ]
   },
   {
    "key": "(no-card).tab|70.19x41",
@@ -12486,14 +12495,14 @@
    ]
   },
   {
-   "key": "(no-card).business-state|67.61x31",
+   "key": "(no-card).business-state|64.7x32",
    "n": 9,
    "ex": [
     "영업 중⌄"
    ]
   },
   {
-   "key": "sales-controls.button|90.14x40",
+   "key": "sales-controls.button|86.44x40",
    "n": 9,
    "ex": [
     "판매량순⌄"
@@ -12540,7 +12549,7 @@
    "ex": []
   },
   {
-   "key": "(no-card).condition-filter|106.5x36",
+   "key": "(no-card).condition-filter|103.59x36",
    "n": 8,
    "ex": []
   },
@@ -12575,12 +12584,12 @@
    ]
   },
   {
-   "key": "(no-card).condition-filter|70.11x36",
+   "key": "(no-card).condition-filter|67.2x36",
    "n": 6,
    "ex": []
   },
   {
-   "key": "(no-card).condition-filter|82.22x36",
+   "key": "(no-card).condition-filter|79.31x36",
    "n": 6,
    "ex": []
   },
@@ -12630,17 +12639,17 @@
    ]
   },
   {
-   "key": "recipe-filters.condition-filter|133.84x38",
+   "key": "recipe-filters.condition-filter|130.94x38",
    "n": 4,
    "ex": []
   },
   {
-   "key": "recipe-filters.condition-filter|82.22x38",
+   "key": "recipe-filters.condition-filter|79.31x38",
    "n": 4,
    "ex": []
   },
   {
-   "key": "recipe-filters.condition-filter|97.53x38",
+   "key": "recipe-filters.condition-filter|94.63x38",
    "n": 4,
    "ex": []
   },
@@ -12687,7 +12696,7 @@
    ]
   },
   {
-   "key": "recipe-title-row.recipe-sale-select|78.38x36",
+   "key": "recipe-title-row.recipe-sale-select|76.31x36",
    "n": 3,
    "ex": [
     "판매중"
@@ -12701,7 +12710,7 @@
    ]
   },
   {
-   "key": "(no-card).condition-filter|157.72x36",
+   "key": "(no-card).condition-filter|154.81x36",
    "n": 3,
    "ex": []
   },
@@ -12727,7 +12736,7 @@
    ]
   },
   {
-   "key": "(no-card).expo-sort|105.47x38",
+   "key": "(no-card).expo-sort|101.77x38",
    "n": 2,
    "ex": [
     "재고 적은순⌄"

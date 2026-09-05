@@ -1116,6 +1116,21 @@ popup/state host **121개**(합 182), 그리고 레지스트리에 키가 없는
 - 실행서와 현재 확정안에 같은 작업 안의 문서 동기화 게이트를 추가했다. 필수 문서 중 하나라도 빠지면
   작업 완료로 답하지 않는다.
 
+## DS-20260905-004 · PRT-221 승인 봉인과 무시각변경 재측정
+
+- 대상: 정의 21건 분리 · 행간 목적지 기계 파생 · §8.2c/토큰 봉인 · 동기화 표식 1줄
+- 기대값: CSS·JS·마크업 변화 0 · 기존 알려진 렌더 위반만 재현 · 앱 사용처 3,632건 전수 배정
+- 실제값: 앱 배정 `2,053 / 218 / 1,326 / 35 / 0` · 미분류 0 · 행간 직접 파생 65 + 명시 1
+- PC 검수: PASS — 1280×900 렌더 및 디자인 감사 재실행, 신규 회귀 0
+- 모바일 검수: PASS — 320px · CSS 200% · 글자 200% · 번역 스트레스 재실행.
+  렌더는 알려진 5건과 크기까지 일치, i18n은 활성 atRisk 396건 + 실행기 변경 `resolved` 12건,
+  신규·악화 0건
+- 미검수: 없음
+- 결과: PASS
+- 증거: `full-page-flow-prototype-render-audit.json` · `full-page-flow-prototype-design-audit.json` ·
+  `full-page-flow-prototype-i18n-stress.json` · `../token-adoption-audit.json` ·
+  `full-page-flow-prototype-app-map-check.json`
+
 ## DS-20260902-001 · 디자인 맥락 장부와 자동 동기화 검사
 
 - 모든 디자인 작업의 최근 결정·영향 범위·다음 시작점을 연결하는
