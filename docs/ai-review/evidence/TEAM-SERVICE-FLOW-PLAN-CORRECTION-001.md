@@ -65,3 +65,12 @@ source commit: bdebbebb32aeaf94a750ea36b3038c36ac4c90f1.
 커밋 후 --verify 결과 COMMITTED_EVIDENCE_INTEGRITY_VERIFIED이며 서비스 준비 판정은 false다.
 증거/명세 검사 명령: node --test scripts/team-service-baseline.test.mjs scripts/team-service-plan-contract.test.mjs.
 이 13/13 검사는 증거 형식·변조 거부·수용 목록 검사일 뿐 AC-01~16 실제 실행이 아니다.
+
+## R3 이후 현재 판정 (앞선 조사 허용 해석을 대체)
+
+독립 전체 검토 R3는 CHANGES_REQUIRED이며 SF-R3-01~07을 반환했다.
+현재 판정은 PLAN_CHANGES_REQUIRED_BEFORE_PH_FEASIBILITY다. READ/PLAN_REPAIR/PLAN_TEST만 허용한다.
+계획 v0.4와 acceptance v2, 상태 후보 계약에 7개 대응을 작성했으나 독립 종결은 아직 PENDING이다.
+최신 plan/acceptance/state/review SHA는 TEAM-SERVICE-FLOW-CURRENT.json에 결속한다.
+R3 대상 v0.3 원문은 R3.input.json과 918a29c에 보존되어 있다.
+현재 명세/증거 검사 16/16은 21개 수용 시험의 실제 실행 또는 formal gate PASS가 아니다.

@@ -2,21 +2,28 @@
   "schema_version": 1,
   "plan": {
     "path": "docs/팀서비스-자동흐름-구현계획.md",
-    "sha256": "eab9e85c246db6e5feffa54ef85131f3b204409495e7c5914dda8ae8242c14e5"
+    "sha256": "29cea3da0dccdf085e6603f1aacfe69149826407a7a9de0fed0884e3ac850820"
   },
-  "current_verdict": "PLAN_READY_FOR_P1A_P2_INVESTIGATION_ONLY",
+  "current_verdict": "PLAN_CHANGES_REQUIRED_BEFORE_PH_FEASIBILITY",
   "allowed_actions": [
     "READ",
-    "MOCK_FEASIBILITY",
-    "MODEL_PLAN_VERIFY"
+    "PLAN_REPAIR",
+    "PLAN_TEST"
   ],
   "implementation_authorized": false,
   "service_ready": false,
   "whole_plan_review": {
-    "status": "PENDING",
+    "status": "CHANGES_REQUIRED",
     "engine": "gpt-5.6-sol",
     "reasoning_effort": "ultra",
-    "formal_gate": false
+    "formal_gate": false,
+    "reviewed_plan_sha256": "eab9e85c246db6e5feffa54ef85131f3b204409495e7c5914dda8ae8242c14e5",
+    "report": {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-PLAN-R3.md",
+      "sha256": "f80d3317af671be0059a39a08aa807728d28b189d02f4b71219dc45dfddc548a"
+    },
+    "blocking_findings": 7,
+    "current_candidate": "V0.4_PENDING_INDEPENDENT_RECHECK"
   },
   "runtime_gates": {
     "PH_FEASIBILITY": "NOT_EXECUTED",
@@ -65,5 +72,57 @@
     "requirement_gaps": 44,
     "integrity": "COMMITTED_EVIDENCE_INTEGRITY_VERIFIED",
     "historical_full_verify": "HISTORICAL_UNPINNED_NOT_REPRODUCED"
-  }
+  },
+  "acceptance": {
+    "path": "docs/team/service-flow-acceptance.json",
+    "sha256": "3ee86cacdae35ee2e4abd0ecbf3c534142ffd4b422350c00476b277c1f0aaa43"
+  },
+  "state_contract": {
+    "path": "docs/team/service-flow-state-contract.json",
+    "sha256": "47112e4c6b82a2c2dfb441271a64fd75030bc20fd61becccaa89170084254302"
+  },
+  "findings": [
+    {
+      "finding_id": "SF-R3-01",
+      "implementation_in_plan": "PROPOSED_V0.4",
+      "independent_closure": "PENDING",
+      "runtime_verified": false
+    },
+    {
+      "finding_id": "SF-R3-02",
+      "implementation_in_plan": "PROPOSED_V0.4",
+      "independent_closure": "PENDING",
+      "runtime_verified": false
+    },
+    {
+      "finding_id": "SF-R3-03",
+      "implementation_in_plan": "PROPOSED_V0.4",
+      "independent_closure": "PENDING",
+      "runtime_verified": false
+    },
+    {
+      "finding_id": "SF-R3-04",
+      "implementation_in_plan": "PROPOSED_V0.4",
+      "independent_closure": "PENDING",
+      "runtime_verified": false
+    },
+    {
+      "finding_id": "SF-R3-05",
+      "implementation_in_plan": "PROPOSED_V0.4",
+      "independent_closure": "PENDING",
+      "runtime_verified": false
+    },
+    {
+      "finding_id": "SF-R3-06",
+      "implementation_in_plan": "PROPOSED_V0.4",
+      "independent_closure": "PENDING",
+      "runtime_verified": false
+    },
+    {
+      "finding_id": "SF-R3-07",
+      "implementation_in_plan": "PROPOSED_V0.4",
+      "independent_closure": "PENDING",
+      "runtime_verified": false
+    }
+  ]
 }
