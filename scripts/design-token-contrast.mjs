@@ -21,19 +21,22 @@
  */
 import { readFileSync, existsSync, readdirSync, statSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
+import { createHash } from 'node:crypto';
 import { resolve, join } from 'node:path';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 // 경로를 바꿀 수 있어야 **음성 시험이 저장소에 보존된다**. 시험은 변조한 사본을 만들어
 // 이 게이트가 실제로 FAIL 하는지 본다 — 손으로 돌려 본 것은 증거가 아니다 (페이블 차단 2).
+// `--키=값` 과 값 없는 `--깃발` 둘 다 받는다. 깃발은 빈 문자열이라 `!== undefined` 로 본다.
 const opt = Object.fromEntries(process.argv.slice(2)
-  .filter(a => a.startsWith('--') && a.includes('='))
-  .map(a => [a.slice(2, a.indexOf('=')), a.slice(a.indexOf('=') + 1)]));
+  .filter(a => a.startsWith('--'))
+  .map(a => (a.includes('=') ? [a.slice(2, a.indexOf('=')), a.slice(a.indexOf('=') + 1)] : [a.slice(2), ''])));
 const tokensPath = resolve(opt.tokens ?? resolve(root, 'apps/mobile/src/theme/tokens.ts'));
 // 계약은 **앱 쪽**에 둔다. 프로토타입 봉인 파일에 두면 앱 색을 바꿀 때마다 프로토타입
 // 봉인이 깨진다 — 잘못된 결속이다. 프로토타입 쪽은 투영으로 남고 겹치는 값만 교차 확인한다.
 const contractPath = resolve(opt.contract ?? resolve(root, 'scripts/design-token-contract.json'));
 const projectionPath = resolve(opt.projection ?? resolve(root, 'docs/prototypes/full-page-flow-prototype-contrast-contract.json'));
+const sealPath = resolve(opt.seal ?? resolve(root, 'scripts/design-token-seal.json'));
 const src = readFileSync(tokensPath, 'utf8');
 
 const fail = [];
@@ -204,6 +207,87 @@ if (existsSync(projectionPath)) {
   if (drift.length) fail.push(`앱과 프로토타입 투영이 갈렸다 — ${drift.join(' · ')}. 프로토타입 쪽을 새 DS 로 맞춰라`);
   else note.push('프로토타입 투영과 겹치는 값이 일치한다');
 } else note.push('프로토타입 투영이 없다 — 교차 확인 생략');
+
+// --- 봉인 (솔 검수 `R3 F03`) --------------------------------------------------
+// 계약을 앱 쪽에 둔 것은 맞지만, 그것만으로는 **토큰과 계약을 같이 고치면 조용히 통과한다.**
+// 위 대조는 둘이 서로 같은지만 보기 때문이다. 그래서 셋을 한 장에 묶어 봉인한다 —
+//   ① 색 역할의 이름→값 사전(토큰에서 뽑은 값)
+//   ② 계약 파일 그대로
+//   ③ 결정문 §8.2 계열 구간(소유자 결정이 적힌 곳) 과 그 커밋
+// 셋 중 하나라도 바뀌면 FAIL 이다. **승인된 변경에서만 봉인을 갱신한다** — 봉인 갱신이
+// 곧 "소유자가 이 값을 승인했다" 는 기록이다.
+const sha = (t) => createHash('sha256').update(t.replace(/\r\n/g, '\n'), 'utf8').digest('hex');
+/** 봉인 대상 색 사전 — 표면과 역할을 한 이름 공간에 모아 키로 정렬한다. */
+const sealedRoles = () => {
+  const all = {};
+  for (const [k, v] of Object.entries(surfaces)) all[`surface.${k}`] = (v ?? '').toUpperCase();
+  for (const [k, v] of Object.entries(roles)) all[k] = (v ?? '').toUpperCase();
+  return JSON.stringify(Object.fromEntries(Object.keys(all).sort().map(k => [k, all[k]])));
+};
+/** 결정문에서 §8.2 계열 구간만 잘라 낸다 — 산문이 바뀌었다고 게이트가 울면 아무도 안 고친다. */
+const decisionSlice = (text) => {
+  const lines = text.replace(/\r\n/g, '\n').split('\n');
+  const from = lines.findIndex(l => /^###\s+8\.2(\s|[a-z])/.test(l));
+  if (from < 0) return null;
+  let to = lines.length;
+  for (let i = from + 1; i < lines.length; i++) if (/^##\s/.test(lines[i])) { to = i; break; }
+  return lines.slice(from, to).join('\n').trimEnd();
+};
+const DEC_DEFAULT = 'docs/디자인-토큰-3계층-값-매핑-기획서.md';
+// 봉인을 갱신할 때 손으로 sha256 을 뜨게 만들면 아무도 안 한다. **값만 찍어 준다** —
+// 결정 커밋과 사유는 사람이 적는다. 그게 "승인" 의 자리다.
+if (opt['print-seal'] !== undefined) {
+  const decP = resolve(opt.decision ?? resolve(root, DEC_DEFAULT));
+  const slice = existsSync(decP) ? decisionSlice(readFileSync(decP, 'utf8')) : null;
+  console.log(JSON.stringify({
+    봉인: {
+      역할해시: sha(sealedRoles()),
+      계약해시: existsSync(contractPath) ? sha(readFileSync(contractPath, 'utf8')) : null,
+      결정해시: slice === null ? null : sha(slice),
+    },
+    결정: { 문서: opt.decision ? opt.decision : DEC_DEFAULT, 커밋: ['<결정이 담긴 커밋 SHA 를 손으로 적어라>'] },
+  }, null, 2));
+  process.exit(0);
+}
+if (!existsSync(sealPath)) {
+  if (opt['allow-missing-seal'] !== undefined) note.push('봉인이 없다 — 명시 면제(--allow-missing-seal)');
+  else fail.push(`봉인을 찾을 수 없다: ${sealPath} — 봉인 없이 통과시키지 않는다. 의도한 것이면 --allow-missing-seal 을 명시하라`);
+} else {
+  const S = JSON.parse(readFileSync(sealPath, 'utf8'));
+  const want = S.봉인 ?? {};
+  const got역할 = sha(sealedRoles());
+  if (!want.역할해시) fail.push('봉인에 역할해시가 없다 — 토큰과 계약을 함께 고쳐도 막지 못한다');
+  else if (want.역할해시 !== got역할)
+    fail.push(`색 역할 값이 봉인과 다르다 — 봉인 ${want.역할해시.slice(0, 12)} · 지금 ${got역할.slice(0, 12)}. 소유자가 승인한 변경이면 봉인을 갱신하라(결정문 갱신 포함), 아니면 값을 되돌려라`);
+
+  if (existsSync(contractPath)) {
+    const got계약 = sha(readFileSync(contractPath, 'utf8'));
+    if (!want.계약해시) fail.push('봉인에 계약해시가 없다');
+    else if (want.계약해시 !== got계약)
+      fail.push(`계약 파일이 봉인과 다르다 — 봉인 ${want.계약해시.slice(0, 12)} · 지금 ${got계약.slice(0, 12)}. 승인된 변경이면 봉인을 갱신하라`);
+  }
+
+  const decPath = resolve(opt.decision ?? resolve(root, S.결정?.문서 ?? ''));
+  if (!S.결정?.문서) fail.push('봉인이 어떤 결정문을 가리키는지 적혀 있지 않다');
+  else if (!existsSync(decPath)) fail.push(`봉인이 가리키는 결정문이 없다: ${decPath}`);
+  else {
+    const slice = decisionSlice(readFileSync(decPath, 'utf8'));
+    if (slice === null) fail.push(`결정문에서 §8.2 구간을 찾지 못했다: ${decPath} — 봉인 대상이 사라졌다`);
+    else {
+      const got결정 = sha(slice);
+      if (!want.결정해시) fail.push('봉인에 결정해시가 없다 — 값만 묶고 근거를 안 묶으면 반쪽이다');
+      else if (want.결정해시 !== got결정)
+        fail.push(`결정문 §8.2 구간이 봉인과 다르다 — 봉인 ${want.결정해시.slice(0, 12)} · 지금 ${got결정.slice(0, 12)}. 결정이 바뀐 것이면 봉인을 갱신하고 커밋도 함께 적어라`);
+      else {
+        // 결정 커밋은 **추적용**이다. 봉인을 지키는 것은 위 세 해시고, 커밋은 "이 값이 어디서
+        // 결정됐는지" 를 가리킨다. 결정이 여러 번에 걸쳐 닫혔으므로 목록이다.
+        const commits = [].concat(S.결정?.커밋 ?? []).filter(Boolean);
+        if (!commits.length) fail.push('봉인에 결정 커밋이 없다 — 어느 커밋의 결정인지 추적할 수 없다');
+        else note.push(`봉인 일치 — 역할 ${got역할.slice(0, 8)} · 계약 ${(want.계약해시 ?? '').slice(0, 8)} · 결정 ${commits.length}건`);
+      }
+    }
+  }
+}
 
 // --- 별칭 래칫 (페이블 조건) ------------------------------------------------------
 // `cardShadow` 는 `shadow.card` 의 호환 별칭이다. `S1` 은 선언만 하는 단계라 호출부를

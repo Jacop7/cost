@@ -177,3 +177,77 @@ test('주석과 import 는 사용처로 세지 않는다', () => {
   const r = runAlias(0, 0);   // 파일에 주석 1줄 + import 1줄만 남는다
   assert.equal(r.code, 0, `주석이나 import 를 사용처로 셌다\n${r.out}`);
 });
+
+// ── 봉인 (솔 검수 `R3 F03`) ──────────────────────────────────────────────────
+// 계약을 앱 쪽에 둔 것만으로는 **토큰과 계약을 같이 고치면 조용히 통과한다.** 위 대조는
+// 둘이 서로 같은지만 보기 때문이다. 아래 첫 시험이 정확히 그 자리를 친다.
+const SEAL = join(root, 'scripts', 'design-token-seal.json');
+const DECISION = join(root, 'docs', '디자인-토큰-3계층-값-매핑-기획서.md');
+
+test('토큰과 계약을 **함께** 바꾸고 봉인을 그대로 두면 FAIL 한다 — 봉인이 없으면 통과했을 자리다', () => {
+  const r = run(
+    s => s.replace(/(primaryPressed:\s*)'#1465DB'/, "$1'#0E5FD6'"),
+    { contractEdit: (c) => { c.roles['action.primaryPressed'] = '#0E5FD6'; return c; } },
+  );
+  assert.equal(r.code, 1, `토큰과 계약을 함께 고쳤는데 통과했다 — 봉인이 작동하지 않는다\n${r.out}`);
+  assert.match(r.out, /색 역할 값이 봉인과 다르다/);
+  assert.doesNotMatch(r.out, /가 tokens\.ts\(.*\) 와 계약 투영/,
+    '이 시험은 계약 대조가 아니라 **봉인**이 잡는 것을 보여야 한다');
+});
+
+test('봉인이 없으면 FAIL 한다', () => {
+  const r = run(null, { extra: [`--seal=${join(root, 'scripts', '없는봉인.json')}`] });
+  assert.equal(r.code, 1, r.out);
+  assert.match(r.out, /봉인을 찾을 수 없다/);
+});
+
+test('봉인 부재는 --allow-missing-seal 로만 면제된다', () => {
+  const r = run(null, { extra: [`--seal=${join(root, 'scripts', '없는봉인.json')}`, '--allow-missing-seal'] });
+  assert.equal(r.code, 0, r.out);
+  assert.match(r.out, /명시 면제/);
+});
+
+/** 봉인을 한 군데만 고친 사본으로 돌린다. */
+const runSeal = (edit, { decision = null } = {}) => {
+  const dir = mkdtempSync(join(tmpdir(), 'seal-'));
+  try {
+    const s = JSON.parse(readFileSync(SEAL, 'utf8'));
+    const seal = join(dir, 'seal.json');
+    writeFileSync(seal, JSON.stringify(edit(s), null, 2));
+    const tok = join(dir, 'tokens.ts'); copyFileSync(TOKENS, tok);
+    const con = join(dir, 'contract.json'); copyFileSync(CONTRACT, con);
+    const extra = [`--seal=${seal}`];
+    if (decision) { const d = join(dir, 'decision.md'); writeFileSync(d, decision(readFileSync(DECISION, 'utf8'))); extra.push(`--decision=${d}`); }
+    const r = spawnSync(process.execPath, [GATE, `--tokens=${tok}`, `--contract=${con}`, ...extra], { encoding: 'utf8' });
+    return { code: r.status, out: (r.stdout ?? '') + (r.stderr ?? '') };
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+};
+
+test('봉인 사본 그대로면 통과한다 — 봉인 시험이 항상 FAIL 하는 것이 아님을 보인다', () => {
+  const r = runSeal(s => s);
+  assert.equal(r.code, 0, r.out);
+  assert.match(r.out, /봉인 일치/);
+});
+
+test('결정문 §8.2 구간이 바뀌면 FAIL 한다 — 값만 묶고 근거를 안 묶으면 반쪽이다', () => {
+  const r = runSeal(s => s, { decision: (t) => t.replace('### 8.2c 부록', '### 8.2c 부록(고침)') });
+  assert.equal(r.code, 1, `결정문 변조를 놓쳤다\n${r.out}`);
+  assert.match(r.out, /결정문 §8\.2 구간이 봉인과 다르다/);
+});
+
+test('결정문 §8.2 밖의 산문이 바뀌어도 통과한다 — 게이트가 산문마다 울면 아무도 안 고친다', () => {
+  const r = runSeal(s => s, { decision: (t) => t.replace('## 9. 알려진 측정기 한계', '## 9. 알려진 측정기 한계(문장 다듬음)') });
+  assert.equal(r.code, 0, r.out);
+});
+
+test('봉인에서 역할해시를 지우면 FAIL 한다', () => {
+  const r = runSeal(s => { delete s.봉인.역할해시; return s; });
+  assert.equal(r.code, 1, r.out);
+  assert.match(r.out, /봉인에 역할해시가 없다/);
+});
+
+test('봉인에서 결정 커밋을 비우면 FAIL 한다 — 어느 커밋의 결정인지 추적할 수 없다', () => {
+  const r = runSeal(s => { s.결정.커밋 = []; return s; });
+  assert.equal(r.code, 1, r.out);
+  assert.match(r.out, /결정 커밋이 없다/);
+});

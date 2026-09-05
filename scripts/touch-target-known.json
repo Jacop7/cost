@@ -1,145 +1,153 @@
 {
-  "$schema": "touch-target-known/2",
-  "note": "최소 터치 영역 44 를 못 채우거나 정적으로 판정할 수 없는 자리. **세 갈래 모두 양방향 래칫**이다 — 새로 생겨도, 해소됐는데 남아 있어도, 크기가 더 나빠져도 FAIL.",
-  "계획": "PRT-211(S1) 은 선언 전용이라 여기서 고치지 않는다. S4a(접근성 PRT)에서 hitSlop 만 보정한다 — 시각 변화 0. 부모 경계·이웃 중첩은 정적 분석으로 못 보므로 그 PRT 의 런타임/실기기 완료 조건이다(솔 F02·React Native Pressable 문서).",
+  "_schema": "v3 — entries(미달) · components(공용 컴포넌트 계약) · buttonDynamic(동적 size 소비처) · unjudged(판정불가). 모든 수치는 clean checkout 에서 --expect-commit 으로 측정한다.",
+  "_측정커밋": "이 목록을 확인한 clean checkout 의 커밋. 이후 커밋이 apps/mobile 을 건드리지 않았다면 그대로 유효하다. 갱신할 때는 반드시 clean checkout 에서 `--expect-commit` 으로 재라 — 작업 트리에서 잰 수치를 커밋 증거로 쓰지 마라(솔 검수 R3 F01).",
+  "측정커밋": "ee6d8ca788fc50b59f6477a9d64c70f6c8e2a896",
   "_entries": "선언 크기와 hitSlop 이 있는데 44 에 못 미치는 자리. 유효 크기가 줄어도 FAIL 한다.",
   "entries": [
     {
       "at": "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:200",
-      "상자": "27×40",
-      "hitSlop": "숫자 8",
       "유효": "43×56",
       "사유": "hitSlop 미설정 또는 부족 — S4a 에서 보정"
     },
     {
       "at": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:144",
-      "상자": "32×32",
-      "hitSlop": "없음",
       "유효": "32×32",
       "사유": "hitSlop 미설정 또는 부족 — S4a 에서 보정"
     },
     {
       "at": "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:84",
-      "상자": "40×40",
-      "hitSlop": "없음",
       "유효": "40×40",
       "사유": "hitSlop 미설정 또는 부족 — S4a 에서 보정"
     },
     {
       "at": "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:93",
-      "상자": "40×40",
-      "hitSlop": "없음",
       "유효": "40×40",
       "사유": "hitSlop 미설정 또는 부족 — S4a 에서 보정"
     },
     {
       "at": "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:129",
-      "상자": "34×34",
-      "hitSlop": "숫자 4",
       "유효": "42×42",
       "사유": "hitSlop 미설정 또는 부족 — S4a 에서 보정"
     },
     {
       "at": "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:132",
-      "상자": "34×34",
-      "hitSlop": "숫자 4",
       "유효": "42×42",
       "사유": "hitSlop 미설정 또는 부족 — S4a 에서 보정"
     },
     {
       "at": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:222",
-      "상자": "40×40",
-      "hitSlop": "없음",
       "유효": "40×40",
       "사유": "hitSlop 미설정 또는 부족 — S4a 에서 보정"
     },
     {
       "at": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:229",
-      "상자": "40×40",
-      "hitSlop": "없음",
       "유효": "40×40",
       "사유": "hitSlop 미설정 또는 부족 — S4a 에서 보정"
     },
     {
       "at": "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:130",
-      "상자": "28×20",
-      "hitSlop": "숫자 4",
       "유효": "36×28",
       "사유": "hitSlop 미설정 또는 부족 — S4a 에서 보정"
     },
     {
       "at": "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:133",
-      "상자": "28×20",
-      "hitSlop": "숫자 4",
       "유효": "36×28",
       "사유": "hitSlop 미설정 또는 부족 — S4a 에서 보정"
     },
     {
       "at": "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:143",
-      "상자": "34×34",
-      "hitSlop": "숫자 4",
       "유효": "42×42",
       "사유": "hitSlop 미설정 또는 부족 — S4a 에서 보정"
     },
     {
       "at": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:143",
-      "상자": "34×34",
-      "hitSlop": "숫자 4",
       "유효": "42×42",
       "사유": "hitSlop 미설정 또는 부족 — S4a 에서 보정"
     },
     {
       "at": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:146",
-      "상자": "34×34",
-      "hitSlop": "숫자 4",
       "유효": "42×42",
       "사유": "hitSlop 미설정 또는 부족 — S4a 에서 보정"
     },
     {
       "at": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:355",
-      "상자": "30×30",
-      "hitSlop": "숫자 6",
       "유효": "42×42",
       "사유": "hitSlop 미설정 또는 부족 — S4a 에서 보정"
     },
     {
       "at": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:359",
-      "상자": "30×30",
-      "hitSlop": "숫자 6",
       "유효": "42×42",
       "사유": "hitSlop 미설정 또는 부족 — S4a 에서 보정"
     },
     {
       "at": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:159",
-      "상자": "40×40",
-      "hitSlop": "없음",
       "유효": "40×40",
       "사유": "hitSlop 미설정 또는 부족 — S4a 에서 보정"
     },
     {
       "at": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:167",
-      "상자": "40×40",
-      "hitSlop": "없음",
       "유효": "40×40",
       "사유": "hitSlop 미설정 또는 부족 — S4a 에서 보정"
     },
     {
       "at": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:361",
-      "상자": "40×40",
-      "hitSlop": "없음",
       "유효": "40×40",
       "사유": "hitSlop 미설정 또는 부족 — S4a 에서 보정"
     }
   ],
-  "_components": "공용 컴포넌트 계약. 높이가 padding+글자로 정해져 자리마다 판정불가로 빠지지만, 앱에서 가장 많이 눌리는 상자다. variant 를 한 번 판정하고 소비처를 센다.",
+  "_components": "공용 컴포넌트 계약. 높이가 padding+글자로 정해져 자리마다 판정불가로 빠지지만, 앱에서 가장 많이 눌리는 상자다. variant 를 한 번 판정하고 소비처를 센다. 판정이 통과가 아닌 variant 만 소비처 ID·개수까지 래칫한다.",
   "components": [
     {
       "컴포넌트": "Button size=\"sm\"",
-      "높이범위": "30~36",
-      "소비처": 8,
-      "사유": "padding 8 + 글자 14 라 어떤 글꼴에서도 44 미만이다. S4a 에서 minHeight 또는 hitSlop 으로 채운다"
+      "판정": "경계",
+      "높이하한": 30,
+      "소비처": 10,
+      "at": [
+        "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:337",
+        "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:504",
+        "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:545",
+        "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:314",
+        "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:350",
+        "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:351",
+        "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:383",
+        "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:191",
+        "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:199",
+        "apps/mobile/src/features/sales/components/LateCloseSheet.tsx:76"
+      ],
+      "사유": "하한 30 < 44 — 정적으로는 모른다(상한의 근거가 없다). 실제 높이는 S4 렌더 측정이 정하고, 보정은 공용 Button 에 minHeight 를 주는 방식이라 시각 변화가 있어 S4 의 몫이다. 그때까지 소비처를 늘리지 않는다"
+    },
+    {
+      "컴포넌트": "Button size=\"md\"",
+      "판정": "경계",
+      "높이하한": 42,
+      "소비처": 14,
+      "at": [
+        "apps/mobile/src/components/kit/QueryState.tsx:81",
+        "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:155",
+        "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:457",
+        "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx:245",
+        "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx:251",
+        "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx:103",
+        "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx:97",
+        "apps/mobile/src/features/my/screens/MyTaxScreen.tsx:158",
+        "apps/mobile/src/features/my/screens/MyTaxScreen.tsx:164",
+        "apps/mobile/src/features/my/screens/MyUnitsScreen.tsx:158",
+        "apps/mobile/src/features/my/screens/MyUnitsScreen.tsx:164",
+        "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:261",
+        "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:266",
+        "apps/mobile/tests/smoke.test.tsx:13"
+      ],
+      "사유": "하한 42 < 44 — 정적으로는 모른다(상한의 근거가 없다). 실제 높이는 S4 렌더 측정이 정하고, 보정은 공용 Button 에 minHeight 를 주는 방식이라 시각 변화가 있어 S4 의 몫이다. 그때까지 소비처를 늘리지 않는다"
+    },
+    {
+      "컴포넌트": "Button size=\"lg\"",
+      "판정": "통과",
+      "높이하한": 49,
+      "사유": "하한 49 ≥ 44 — 가정 A 아래 확정 통과다. 소비처는 게이트하지 않는다(늘어도 위험이 늘지 않는다)"
     }
   ],
+  "_buttonDynamic": "size 가 변수·spread 로 들어와 어느 variant 인지 정적으로 모르는 자리. 늘어나면 FAIL — 판정할 수 없는 자리가 조용히 늘어나는 것을 막는다.",
+  "buttonDynamic": [],
   "_unjudged": "폭·높이가 선언되지 않아 정적으로 판정할 수 없는 자리. 래칫 밖에 두면 판정 못 하는 상자가 늘어도 통과하므로 목록으로 묶는다. 줄이는 방향은 공용 컴포넌트 계약을 늘리는 것이다.",
   "unjudged": [
     "apps/mobile/src/components/kit/Button.tsx:46",
@@ -205,8 +213,7 @@
     "apps/mobile/src/features/my/screens/MyCategoryHubScreen.tsx:37",
     "apps/mobile/src/features/my/screens/MyChannelsScreen.tsx:80",
     "apps/mobile/src/features/my/screens/MyChannelsScreen.tsx:92",
-    "apps/mobile/src/features/my/screens/MyCountryScreen.tsx:53",
-    "apps/mobile/src/features/my/screens/MyHomeScreen.tsx:148",
+    "apps/mobile/src/features/my/screens/MyHomeScreen.tsx:128",
     "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:290",
     "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:352",
     "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:371",
@@ -215,9 +222,8 @@
     "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:519",
     "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:552",
     "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:570",
-    "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx:146",
-    "apps/mobile/src/features/my/screens/MyTaxScreen.tsx:248",
-    "apps/mobile/src/features/my/screens/MyTaxScreen.tsx:59",
+    "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx:259",
+    "apps/mobile/src/features/my/screens/MyTaxScreen.tsx:214",
     "apps/mobile/src/features/my/screens/MyUnitsScreen.tsx:205",
     "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:122",
     "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx:133",
@@ -253,17 +259,17 @@
     "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:462",
     "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:473",
     "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:484",
-    "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:167",
-    "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:229",
-    "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:261",
-    "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:313",
-    "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:327",
-    "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:432",
-    "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:49",
-    "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:493",
-    "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:567",
-    "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:593",
-    "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:629",
+    "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:158",
+    "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:220",
+    "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:252",
+    "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:304",
+    "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:318",
+    "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:423",
+    "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:47",
+    "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:480",
+    "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:553",
+    "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:574",
+    "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:610",
     "apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx:90",
     "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:210",
     "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:226",
@@ -298,11 +304,11 @@
     "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx:119",
     "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx:75",
     "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx:95",
-    "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:253",
-    "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:366",
-    "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:386",
-    "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:421",
-    "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:457",
+    "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:230",
+    "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:343",
+    "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:363",
+    "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:398",
+    "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:434",
     "apps/mobile/src/features/sales/screens/SalesRevenueScreen.tsx:101",
     "apps/mobile/src/features/sales/screens/SalesStockCheckScreen.tsx:132",
     "apps/mobile/src/features/sales/screens/SalesStockCheckScreen.tsx:149",
