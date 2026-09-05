@@ -1,12 +1,12 @@
 ﻿# 전체 페이지 프로토타입 · 디자인 맥락 장부
 
-> 현재 동기화 ID: `DS-20260905-006`  
+> 현재 동기화 ID: `DS-20260905-007`  
 > 문서 동기화 상태: `SYNCED`  
 > 전체 UI 작업 상태: `IN_PROGRESS`  
 > 마지막 갱신: `2026-09-05`  
 > 공통 변경: `예`  
 > UI 변경: `아니오`  
-> 변경 기록: `PRT-226`
+> 변경 기록: `PRT-227`
 
 ## 1. 문서 역할
 
@@ -42,6 +42,28 @@
 - 글로벌: 30~50% 긴 번역, 320px, 200% 글자 확대, RTL 검수.
 
 ## 4. 가장 최근 작업
+
+### DS-20260905-007 · PRT-227 음수 선언 복구와 W1 재배정
+
+- 작업 성격: S4a 정적 후보와 같은 앱 트리에서 감사기 AST 범위를 고치고 W1을 다시 결속했다.
+  적용본은 동기화 표식 1줄만 바뀌고 CSS·JS·마크업 실행 변경은 없다.
+- 원인: 기존 감사기가 양수 `NumericLiteral`만 읽어 `PrefixUnaryExpression`으로 표현되는
+  음수 간격 8건과 음수 자간 25건을 전부 누락했다.
+- 결과:
+  - 사용처 선언은 3,633→3,666, 규칙은 78→83이다. 미분류 0, 승인 예외 0이다.
+  - 통은 primitive 2,063 · componentOwned 227 · defect 1,326 · pendingApproval 50이다.
+  - 승인된 `letterSpacing.titleTight=-0.3` 10건은 primitive, 네 다른 자간 15건은 한 제품
+    결정 질문, 음수 여백 8건은 터치 외피·폼 보조·섹션 라벨의 명명된 컴포넌트 관계다.
+  - `rowOverflowAction`의 45×44는 visualBox가 아니라 touchBox임을 이름과 근거에서 정정했다.
+- 완료 조건:
+  - PRT227-W1-AUDIT · `../token-adoption-audit.json`
+  - PRT227-W1-MAP · `full-page-flow-prototype-app-map-check.json`
+  - PRT227-W1-DOC · `full-page-flow-prototype-doc-claims-check.json`
+  - PRT227-NEGATIVE-AST · `../../scripts/token-adoption-numeric-literal.test.mjs`
+  - PRT227-RENDER · `full-page-flow-prototype-render-audit.json`
+  - PRT227-DESIGN · `full-page-flow-prototype-design-audit.json`
+  - PRT227-I18N · `full-page-flow-prototype-i18n-stress.json`
+- 다음 시작점: 페이블 W1 재판정 → 승인 시 `S2`
 
 ### DS-20260905-006 · PRT-226 S4a 정적 후보 기준 W1 전수 재측정
 

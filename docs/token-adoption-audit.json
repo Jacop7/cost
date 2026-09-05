@@ -1,19 +1,19 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-05T13:05:33.773Z",
+  "generatedAt": "2026-09-05T13:36:26.822Z",
   "schemaVersion": 1,
   "script": {
    "name": "token-adoption-audit.mjs",
-   "sha256": "9cdab4aac248f4a9f7e46284840507eca1fd9ad572813b0ef9b67dba89add03d"
+   "sha256": "591d6ad787d555acdabbf31009808cec9ec5c2f5ec58c2fde908337decc6dd80"
   },
   "repo": {
-   "headCommit": "2e12335a8ea69b211ad56ea47536966b2fe51cc1",
-   "headTree": "a2b6298ef80e5bebebaa797d3895d6207a947c4c",
+   "headCommit": "bd4f0a004a26f0f8fae5bf4d4b4d7b18559f7230",
+   "headTree": "6bf62d3a078464aa3d5a20f9c5a81453a253ede7",
    "toplevel": "C:/Users/jacop/프로젝트/식자재관리앱/.tmp/sol-prt217-6e6376b"
   },
   "결속": {
-   "expectCommit": "2e12335",
-   "범위해시": "dde6162a60c15a895a034682f9247216f2cfc17ce155968701881f34121502c9",
+   "expectCommit": "bd4f0a0",
+   "범위해시": "4c6b9384e5283c7a1f3177015b854667e4646ad7013dbd9f51f860cd2f12bef4",
    "범위해시정의": "선택된 파일의 \"경로\\0 git blob SHA\" 를 정렬해 잇고 감사 스크립트 자신의 blob SHA 를 더해 sha256. blob SHA 는 CRLF→LF 정규화 뒤 직접 계산하므로 OS·git 유무에 좌우되지 않는다(페이블 R6 차단). 커밋 SHA 자기참조 없이 입력을 결속한다."
   },
   "runner": {
@@ -128,7 +128,8 @@
    "elementAccess": "X[key] 인덱스 접근도 센다. 동적 키는 X[computed] 로 묶는다",
    "shadowing": "같은 이름의 지역 선언이 있으면 그 파일은 해당 심볼 집계에서 제외하고 목록에 남긴다",
    "definitionDeclarations": "tokenDefinition 파일의 숫자·굵기 선언은 definitions 에만 보존하고 declarations/defect 우주에서는 제외한다",
-   "lineHeightFontSizePair": "lineHeight 선언은 같은 스타일 객체의 직접 숫자 fontSize 짝을 보존한다. 짝이 없으면 missing 으로 남겨 추정 수렴을 막는다"
+   "lineHeightFontSizePair": "lineHeight 선언은 같은 스타일 객체의 직접 숫자 fontSize 짝을 보존한다. 짝이 없으면 missing 으로 남겨 추정 수렴을 막는다",
+   "signedNumericLiteral": "PrefixUnaryExpression(MinusToken)+NumericLiteral도 음수 선언으로 센다. 음수 margin·letterSpacing을 전수 우주에서 누락하지 않는다"
   }
  },
  "definitions": {
@@ -831,6 +832,15 @@
    "layer": "sharedComponent"
   },
   {
+   "group": "typography",
+   "prop": "letterSpacing",
+   "value": "-0.3",
+   "file": "apps/mobile/src/components/kit/AppHeader.tsx",
+   "line": 36,
+   "column": 80,
+   "layer": "sharedComponent"
+  },
+  {
    "group": "spacing",
    "prop": "gap",
    "value": "2",
@@ -864,6 +874,15 @@
    "file": "apps/mobile/src/components/kit/Button.tsx",
    "line": 67,
    "column": 51,
+   "layer": "sharedComponent"
+  },
+  {
+   "group": "typography",
+   "prop": "letterSpacing",
+   "value": "-0.2",
+   "file": "apps/mobile/src/components/kit/Button.tsx",
+   "line": 67,
+   "column": 70,
    "layer": "sharedComponent"
   },
   {
@@ -1354,6 +1373,15 @@
   },
   {
    "group": "typography",
+   "prop": "letterSpacing",
+   "value": "-0.4",
+   "file": "apps/mobile/src/components/kit/Sheet.tsx",
+   "line": 37,
+   "column": 77,
+   "layer": "sharedComponent"
+  },
+  {
+   "group": "typography",
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/components/kit/Sheet.tsx",
@@ -1689,6 +1717,15 @@
    "file": "apps/mobile/src/components/kit/charts.tsx",
    "line": 50,
    "column": 47,
+   "layer": "sharedComponent"
+  },
+  {
+   "group": "typography",
+   "prop": "letterSpacing",
+   "value": "-0.5",
+   "file": "apps/mobile/src/components/kit/charts.tsx",
+   "line": 50,
+   "column": 95,
    "layer": "sharedComponent"
   },
   {
@@ -3075,6 +3112,15 @@
    "layer": "product"
   },
   {
+   "group": "typography",
+   "prop": "letterSpacing",
+   "value": "-0.5",
+   "file": "apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx",
+   "line": 156,
+   "column": 77,
+   "layer": "product"
+  },
+  {
    "group": "spacing",
    "prop": "marginTop",
    "value": "2",
@@ -4131,6 +4177,15 @@
    "layer": "product"
   },
   {
+   "group": "typography",
+   "prop": "letterSpacing",
+   "value": "-0.3",
+   "file": "apps/mobile/src/features/ingredients/components/IngCard.tsx",
+   "line": 46,
+   "column": 61,
+   "layer": "product"
+  },
+  {
    "group": "spacing",
    "prop": "gap",
    "value": "7",
@@ -4695,6 +4750,15 @@
    "layer": "product"
   },
   {
+   "group": "typography",
+   "prop": "letterSpacing",
+   "value": "-0.4",
+   "file": "apps/mobile/src/features/ingredients/components/UnitPickerSheet.tsx",
+   "line": 33,
+   "column": 57,
+   "layer": "product"
+  },
+  {
    "group": "spacing",
    "prop": "marginBottom",
    "value": "16",
@@ -5232,6 +5296,24 @@
    "file": "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx",
    "line": 203,
    "column": 47,
+   "layer": "product"
+  },
+  {
+   "group": "spacing",
+   "prop": "marginHorizontal",
+   "value": "-9",
+   "file": "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx",
+   "line": 203,
+   "column": 59,
+   "layer": "product"
+  },
+  {
+   "group": "spacing",
+   "prop": "marginVertical",
+   "value": "-2",
+   "file": "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx",
+   "line": 203,
+   "column": 81,
    "layer": "product"
   },
   {
@@ -6072,6 +6154,15 @@
    "layer": "product"
   },
   {
+   "group": "typography",
+   "prop": "letterSpacing",
+   "value": "-0.5",
+   "file": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx",
+   "line": 146,
+   "column": 65,
+   "layer": "product"
+  },
+  {
    "group": "spacing",
    "prop": "marginTop",
    "value": "13",
@@ -6201,6 +6292,15 @@
    "file": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx",
    "line": 174,
    "column": 49,
+   "layer": "product"
+  },
+  {
+   "group": "typography",
+   "prop": "letterSpacing",
+   "value": "-0.6",
+   "file": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx",
+   "line": 174,
+   "column": 68,
    "layer": "product"
   },
   {
@@ -7158,6 +7258,15 @@
    "file": "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx",
    "line": 83,
    "column": 51,
+   "layer": "product"
+  },
+  {
+   "group": "typography",
+   "prop": "letterSpacing",
+   "value": "-0.6",
+   "file": "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx",
+   "line": 83,
+   "column": 84,
    "layer": "product"
   },
   {
@@ -12127,6 +12236,15 @@
   },
   {
    "group": "typography",
+   "prop": "letterSpacing",
+   "value": "-0.6",
+   "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
+   "line": 108,
+   "column": 73,
+   "layer": "product"
+  },
+  {
+   "group": "typography",
    "prop": "fontSize",
    "value": "14",
    "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
@@ -15814,6 +15932,15 @@
   },
   {
    "group": "spacing",
+   "prop": "marginTop",
+   "value": "-8",
+   "file": "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx",
+   "line": 146,
+   "column": 55,
+   "layer": "product"
+  },
+  {
+   "group": "spacing",
    "prop": "marginBottom",
    "value": "12",
    "file": "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx",
@@ -16572,6 +16699,15 @@
    "layer": "product"
   },
   {
+   "group": "typography",
+   "prop": "letterSpacing",
+   "value": "-0.6",
+   "file": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx",
+   "line": 221,
+   "column": 82,
+   "layer": "product"
+  },
+  {
    "group": "size",
    "prop": "width",
    "value": "40",
@@ -16731,6 +16867,15 @@
    "file": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx",
    "line": 292,
    "column": 77,
+   "layer": "product"
+  },
+  {
+   "group": "typography",
+   "prop": "letterSpacing",
+   "value": "-0.3",
+   "file": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx",
+   "line": 292,
+   "column": 96,
    "layer": "product"
   },
   {
@@ -16960,6 +17105,15 @@
   },
   {
    "group": "typography",
+   "prop": "letterSpacing",
+   "value": "-0.3",
+   "file": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx",
+   "line": 335,
+   "column": 96,
+   "layer": "product"
+  },
+  {
+   "group": "typography",
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx",
@@ -17064,6 +17218,15 @@
    "file": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx",
    "line": 369,
    "column": 75,
+   "layer": "product"
+  },
+  {
+   "group": "typography",
+   "prop": "letterSpacing",
+   "value": "-0.3",
+   "file": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx",
+   "line": 369,
+   "column": 94,
    "layer": "product"
   },
   {
@@ -17607,6 +17770,15 @@
    "file": "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx",
    "line": 63,
    "column": 39,
+   "layer": "product"
+  },
+  {
+   "group": "typography",
+   "prop": "letterSpacing",
+   "value": "-0.6",
+   "file": "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx",
+   "line": 63,
+   "column": 73,
    "layer": "product"
   },
   {
@@ -18393,6 +18565,15 @@
    "file": "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx",
    "line": 93,
    "column": 50,
+   "layer": "product"
+  },
+  {
+   "group": "typography",
+   "prop": "letterSpacing",
+   "value": "-0.6",
+   "file": "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx",
+   "line": 93,
+   "column": 83,
    "layer": "product"
   },
   {
@@ -19591,6 +19772,15 @@
   },
   {
    "group": "typography",
+   "prop": "letterSpacing",
+   "value": "-0.3",
+   "file": "apps/mobile/src/features/recipes/screens/MaterialSearchScreen.tsx",
+   "line": 68,
+   "column": 73,
+   "layer": "product"
+  },
+  {
+   "group": "typography",
    "prop": "fontSize",
    "value": "14",
    "file": "apps/mobile/src/features/recipes/screens/MaterialSearchScreen.tsx",
@@ -20290,6 +20480,15 @@
   },
   {
    "group": "spacing",
+   "prop": "marginTop",
+   "value": "-8",
+   "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
+   "line": 257,
+   "column": 84,
+   "layer": "product"
+  },
+  {
+   "group": "spacing",
    "prop": "marginBottom",
    "value": "18",
    "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
@@ -20910,6 +21109,15 @@
    "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
    "line": 354,
    "column": 88,
+   "layer": "product"
+  },
+  {
+   "group": "spacing",
+   "prop": "margin",
+   "value": "-7",
+   "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
+   "line": 354,
+   "column": 100,
    "layer": "product"
   },
   {
@@ -21694,6 +21902,15 @@
   },
   {
    "group": "spacing",
+   "prop": "marginTop",
+   "value": "-8",
+   "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
+   "line": 515,
+   "column": 58,
+   "layer": "product"
+  },
+  {
+   "group": "spacing",
    "prop": "marginBottom",
    "value": "12",
    "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
@@ -21969,6 +22186,15 @@
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
    "line": 216,
    "column": 61,
+   "layer": "product"
+  },
+  {
+   "group": "typography",
+   "prop": "letterSpacing",
+   "value": "-0.3",
+   "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
+   "line": 216,
+   "column": 80,
    "layer": "product"
   },
   {
@@ -23995,6 +24221,15 @@
   },
   {
    "group": "typography",
+   "prop": "letterSpacing",
+   "value": "-0.3",
+   "file": "apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx",
+   "line": 99,
+   "column": 75,
+   "layer": "product"
+  },
+  {
+   "group": "typography",
    "prop": "fontSize",
    "value": "14",
    "file": "apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx",
@@ -24036,6 +24271,15 @@
    "file": "apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx",
    "line": 150,
    "column": 29,
+   "layer": "product"
+  },
+  {
+   "group": "spacing",
+   "prop": "marginTop",
+   "value": "-8",
+   "file": "apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx",
+   "line": 150,
+   "column": 58,
    "layer": "product"
   },
   {
@@ -24108,6 +24352,15 @@
    "file": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx",
    "line": 66,
    "column": 51,
+   "layer": "product"
+  },
+  {
+   "group": "typography",
+   "prop": "letterSpacing",
+   "value": "-0.3",
+   "file": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx",
+   "line": 66,
+   "column": 70,
    "layer": "product"
   },
   {
@@ -24459,6 +24712,15 @@
    "file": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx",
    "line": 158,
    "column": 49,
+   "layer": "product"
+  },
+  {
+   "group": "typography",
+   "prop": "letterSpacing",
+   "value": "-0.6",
+   "file": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx",
+   "line": 158,
+   "column": 82,
    "layer": "product"
   },
   {
@@ -25581,6 +25843,15 @@
    "file": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx",
    "line": 35,
    "column": 93,
+   "layer": "product"
+  },
+  {
+   "group": "spacing",
+   "prop": "marginBottom",
+   "value": "-3",
+   "file": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx",
+   "line": 35,
+   "column": 107,
    "layer": "product"
   },
   {
@@ -28981,6 +29252,15 @@
   },
   {
    "group": "typography",
+   "prop": "letterSpacing",
+   "value": "-0.6",
+   "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
+   "line": 358,
+   "column": 75,
+   "layer": "product"
+  },
+  {
+   "group": "typography",
    "prop": "fontSize",
    "value": "14",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
@@ -29211,6 +29491,15 @@
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
    "line": 418,
    "column": 41,
+   "layer": "product"
+  },
+  {
+   "group": "typography",
+   "prop": "letterSpacing",
+   "value": "-0.6",
+   "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
+   "line": 418,
+   "column": 78,
    "layer": "product"
   },
   {
@@ -30972,6 +31261,15 @@
    "file": "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx",
    "line": 172,
    "column": 48,
+   "layer": "product"
+  },
+  {
+   "group": "typography",
+   "prop": "letterSpacing",
+   "value": "-0.3",
+   "file": "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx",
+   "line": 172,
+   "column": 67,
    "layer": "product"
   },
   {
@@ -33524,7 +33822,7 @@
    "distinctDeclarations": 26
   },
   "typography": {
-   "total": 1539,
+   "total": 1564,
    "byValue": {
     "fontSize:16": 327,
     "fontWeight:700": 296,
@@ -33536,17 +33834,22 @@
     "fontSize:13": 50,
     "fontSize:12": 27,
     "fontSize:18": 21,
+    "letterSpacing:-0.3": 10,
     "fontSize:20": 10,
     "fontSize:22": 10,
+    "letterSpacing:-0.6": 9,
     "fontSize:13.5": 6,
     "lineHeight:22": 4,
     "lineHeight:19": 4,
     "lineHeight:23": 3,
+    "letterSpacing:-0.5": 3,
     "lineHeight:17": 2,
+    "letterSpacing:-0.4": 2,
     "fontSize:19": 2,
     "lineHeight:21": 2,
     "fontSize:11": 2,
     "fontSize:12.5": 1,
+    "letterSpacing:-0.2": 1,
     "lineHeight:16": 1,
     "fontSize:17": 1,
     "fontSize:14.5": 1,
@@ -33554,13 +33857,13 @@
     "fontSize:25": 1
    },
    "byLayer": {
-    "product": 1445,
-    "sharedComponent": 94
+    "product": 1466,
+    "sharedComponent": 98
    },
-   "distinctDeclarations": 26
+   "distinctDeclarations": 31
   },
   "spacing": {
-   "total": 1644,
+   "total": 1652,
    "byValue": {
     "paddingHorizontal:15": 95,
     "marginTop:2": 74,
@@ -33653,6 +33956,7 @@
     "paddingHorizontal:7": 4,
     "paddingVertical:16": 4,
     "paddingBottom:32": 4,
+    "marginTop:-8": 4,
     "gap:14": 3,
     "paddingHorizontal:32": 3,
     "padding:0": 3,
@@ -33702,6 +34006,8 @@
     "padding:5": 1,
     "paddingLeft:11": 1,
     "paddingRight:9": 1,
+    "marginHorizontal:-9": 1,
+    "marginVertical:-2": 1,
     "gap:20": 1,
     "paddingTop:18": 1,
     "paddingBottom:18": 1,
@@ -33718,10 +34024,12 @@
     "marginHorizontal:6": 1,
     "marginTop:24": 1,
     "padding:7": 1,
+    "margin:-7": 1,
     "paddingTop:7": 1,
     "margin:15": 1,
     "marginTop:0": 1,
     "marginLeft:6": 1,
+    "marginBottom:-3": 1,
     "paddingRight:0": 1,
     "marginHorizontal:14": 1,
     "paddingVertical:72": 1,
@@ -33729,10 +34037,10 @@
     "paddingTop:16": 1
    },
    "byLayer": {
-    "product": 1550,
+    "product": 1558,
     "sharedComponent": 94
    },
-   "distinctDeclarations": 165
+   "distinctDeclarations": 170
   },
   "size": {
    "total": 230,
@@ -33866,11 +34174,11 @@
     ]
    }
   ],
-  "declarations": 3633,
+  "declarations": 3666,
   "declarationsByGroup": {
    "color": 46,
-   "typography": 1539,
-   "spacing": 1644,
+   "typography": 1564,
+   "spacing": 1652,
    "size": 230,
    "radius": 174
   },
@@ -34216,18 +34524,18 @@
   },
   "inlineLiterals": {
    "typography": {
-    "occurrences": 1539,
+    "occurrences": 1564,
     "files": 76,
-    "distinctDeclarations": 30,
-    "sharedComponent": 94,
-    "product": 1445
+    "distinctDeclarations": 35,
+    "sharedComponent": 98,
+    "product": 1466
    },
    "spacing": {
-    "occurrences": 1644,
+    "occurrences": 1652,
     "files": 77,
-    "distinctDeclarations": 165,
+    "distinctDeclarations": 170,
     "sharedComponent": 94,
-    "product": 1550
+    "product": 1558
    },
    "radius": {
     "occurrences": 174,
@@ -34284,9 +34592,9 @@
   "topInlineFiles": [
    {
     "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-    "inlineTotal": 243,
+    "inlineTotal": 244,
     "breakdown": {
-     "typography": 128,
+     "typography": 129,
      "spacing": 103,
      "radius": 4,
      "size": 8
@@ -34294,22 +34602,32 @@
    },
    {
     "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
-    "inlineTotal": 175,
+    "inlineTotal": 178,
     "breakdown": {
      "typography": 71,
-     "spacing": 82,
+     "spacing": 85,
      "radius": 11,
      "size": 11
     }
    },
    {
     "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-    "inlineTotal": 152,
+    "inlineTotal": 154,
     "breakdown": {
-     "typography": 65,
+     "typography": 67,
      "spacing": 69,
      "radius": 9,
      "size": 9
+    }
+   },
+   {
+    "file": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx",
+    "inlineTotal": 118,
+    "breakdown": {
+     "typography": 47,
+     "spacing": 58,
+     "radius": 7,
+     "size": 6
     }
    },
    {
@@ -34320,16 +34638,6 @@
      "spacing": 59,
      "radius": 7,
      "size": 2
-    }
-   },
-   {
-    "file": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx",
-    "inlineTotal": 114,
-    "breakdown": {
-     "typography": 43,
-     "spacing": 58,
-     "radius": 7,
-     "size": 6
     }
    },
    {
@@ -34344,19 +34652,19 @@
    },
    {
     "file": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx",
-    "inlineTotal": 99,
+    "inlineTotal": 100,
     "breakdown": {
      "typography": 47,
-     "spacing": 41,
+     "spacing": 42,
      "radius": 2,
      "size": 9
     }
    },
    {
     "file": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx",
-    "inlineTotal": 92,
+    "inlineTotal": 94,
     "breakdown": {
-     "typography": 41,
+     "typography": 43,
      "spacing": 43,
      "radius": 5,
      "size": 3
@@ -34364,9 +34672,9 @@
    },
    {
     "file": "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx",
-    "inlineTotal": 90,
+    "inlineTotal": 91,
     "breakdown": {
-     "typography": 43,
+     "typography": 44,
      "spacing": 42,
      "radius": 0,
      "size": 5
@@ -34423,13 +34731,13 @@
     }
    },
    {
-    "file": "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx",
-    "inlineTotal": 68,
+    "file": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx",
+    "inlineTotal": 69,
     "breakdown": {
      "typography": 32,
-     "spacing": 30,
-     "radius": 4,
-     "size": 2
+     "spacing": 31,
+     "radius": 2,
+     "size": 4
     }
    }
   ]
@@ -35573,14 +35881,14 @@
    ],
    "shadowedSymbols": [],
    "inline": {
-    "typography": 2,
+    "typography": 3,
     "spacing": 4,
     "radius": 0,
     "size": 4
    },
    "hexColors": 0,
    "tokenAccessTotal": 3,
-   "inlineTotal": 10
+   "inlineTotal": 11
   },
   {
    "file": "apps/mobile/src/components/kit/Button.tsx",
@@ -35606,14 +35914,14 @@
    ],
    "shadowedSymbols": [],
    "inline": {
-    "typography": 1,
+    "typography": 2,
     "spacing": 1,
     "radius": 0,
     "size": 0
    },
    "hexColors": 0,
    "tokenAccessTotal": 11,
-   "inlineTotal": 2
+   "inlineTotal": 3
   },
   {
    "file": "apps/mobile/src/components/kit/Icon.tsx",
@@ -35739,14 +36047,14 @@
    ],
    "shadowedSymbols": [],
    "inline": {
-    "typography": 6,
+    "typography": 7,
     "spacing": 12,
     "radius": 3,
     "size": 2
    },
    "hexColors": 1,
    "tokenAccessTotal": 6,
-   "inlineTotal": 23
+   "inlineTotal": 24
   },
   {
    "file": "apps/mobile/src/components/kit/Slider.tsx",
@@ -35841,14 +36149,14 @@
    ],
    "shadowedSymbols": [],
    "inline": {
-    "typography": 5,
+    "typography": 6,
     "spacing": 0,
     "radius": 0,
     "size": 0
    },
    "hexColors": 1,
    "tokenAccessTotal": 6,
-   "inlineTotal": 5
+   "inlineTotal": 6
   },
   {
    "file": "apps/mobile/src/components/kit/index.tsx",
@@ -36041,14 +36349,14 @@
    ],
    "shadowedSymbols": [],
    "inline": {
-    "typography": 29,
+    "typography": 30,
     "spacing": 27,
     "radius": 2,
     "size": 5
    },
    "hexColors": 0,
    "tokenAccessTotal": 33,
-   "inlineTotal": 63
+   "inlineTotal": 64
   },
   {
    "file": "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx",
@@ -36138,14 +36446,14 @@
    "kitImport": [],
    "shadowedSymbols": [],
    "inline": {
-    "typography": 9,
+    "typography": 10,
     "spacing": 7,
     "radius": 0,
     "size": 0
    },
    "hexColors": 0,
    "tokenAccessTotal": 7,
-   "inlineTotal": 16
+   "inlineTotal": 17
   },
   {
    "file": "apps/mobile/src/features/ingredients/components/LedgerRow.tsx",
@@ -36232,14 +36540,14 @@
    ],
    "shadowedSymbols": [],
    "inline": {
-    "typography": 6,
+    "typography": 7,
     "spacing": 10,
     "radius": 1,
     "size": 0
    },
    "hexColors": 0,
    "tokenAccessTotal": 9,
-   "inlineTotal": 17
+   "inlineTotal": 18
   },
   {
    "file": "apps/mobile/src/features/ingredients/components/VendorPickerSheet.tsx",
@@ -36362,13 +36670,13 @@
    "shadowedSymbols": [],
    "inline": {
     "typography": 16,
-    "spacing": 22,
+    "spacing": 24,
     "radius": 8,
     "size": 9
    },
    "hexColors": 0,
    "tokenAccessTotal": 23,
-   "inlineTotal": 55
+   "inlineTotal": 57
   },
   {
    "file": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx",
@@ -36464,14 +36772,14 @@
    ],
    "shadowedSymbols": [],
    "inline": {
-    "typography": 41,
+    "typography": 43,
     "spacing": 43,
     "radius": 5,
     "size": 3
    },
    "hexColors": 0,
    "tokenAccessTotal": 45,
-   "inlineTotal": 92
+   "inlineTotal": 94
   },
   {
    "file": "apps/mobile/src/features/ingredients/screens/IngredientEditScreen.tsx",
@@ -36560,14 +36868,14 @@
    ],
    "shadowedSymbols": [],
    "inline": {
-    "typography": 6,
+    "typography": 7,
     "spacing": 14,
     "radius": 2,
     "size": 7
    },
    "hexColors": 0,
    "tokenAccessTotal": 13,
-   "inlineTotal": 29
+   "inlineTotal": 30
   },
   {
    "file": "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx",
@@ -37106,14 +37414,14 @@
    ],
    "shadowedSymbols": [],
    "inline": {
-    "typography": 10,
+    "typography": 11,
     "spacing": 14,
     "radius": 2,
     "size": 5
    },
    "hexColors": 14,
    "tokenAccessTotal": 18,
-   "inlineTotal": 31
+   "inlineTotal": 32
   },
   {
    "file": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx",
@@ -37344,13 +37652,13 @@
    "shadowedSymbols": [],
    "inline": {
     "typography": 10,
-    "spacing": 19,
+    "spacing": 20,
     "radius": 2,
     "size": 9
    },
    "hexColors": 1,
    "tokenAccessTotal": 15,
-   "inlineTotal": 40
+   "inlineTotal": 41
   },
   {
    "file": "apps/mobile/src/features/my/store.ts",
@@ -37486,14 +37794,14 @@
    ],
    "shadowedSymbols": [],
    "inline": {
-    "typography": 43,
+    "typography": 47,
     "spacing": 58,
     "radius": 7,
     "size": 6
    },
    "hexColors": 0,
    "tokenAccessTotal": 51,
-   "inlineTotal": 114
+   "inlineTotal": 118
   },
   {
    "file": "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx",
@@ -37525,14 +37833,14 @@
    ],
    "shadowedSymbols": [],
    "inline": {
-    "typography": 33,
+    "typography": 34,
     "spacing": 24,
     "radius": 0,
     "size": 2
    },
    "hexColors": 0,
    "tokenAccessTotal": 23,
-   "inlineTotal": 59
+   "inlineTotal": 60
   },
   {
    "file": "apps/mobile/src/features/recipes/draftStore.ts",
@@ -37619,14 +37927,14 @@
    ],
    "shadowedSymbols": [],
    "inline": {
-    "typography": 27,
+    "typography": 28,
     "spacing": 27,
     "radius": 5,
     "size": 0
    },
    "hexColors": 0,
    "tokenAccessTotal": 29,
-   "inlineTotal": 59
+   "inlineTotal": 60
   },
   {
    "file": "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx",
@@ -37772,14 +38080,14 @@
    ],
    "shadowedSymbols": [],
    "inline": {
-    "typography": 7,
+    "typography": 8,
     "spacing": 11,
     "radius": 1,
     "size": 1
    },
    "hexColors": 0,
    "tokenAccessTotal": 9,
-   "inlineTotal": 20
+   "inlineTotal": 21
   },
   {
    "file": "apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx",
@@ -37861,13 +38169,13 @@
    "shadowedSymbols": [],
    "inline": {
     "typography": 71,
-    "spacing": 82,
+    "spacing": 85,
     "radius": 11,
     "size": 11
    },
    "hexColors": 0,
    "tokenAccessTotal": 94,
-   "inlineTotal": 175
+   "inlineTotal": 178
   },
   {
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
@@ -37906,14 +38214,14 @@
    ],
    "shadowedSymbols": [],
    "inline": {
-    "typography": 128,
+    "typography": 129,
     "spacing": 103,
     "radius": 4,
     "size": 8
    },
    "hexColors": 0,
    "tokenAccessTotal": 119,
-   "inlineTotal": 243
+   "inlineTotal": 244
   },
   {
    "file": "apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx",
@@ -37944,14 +38252,14 @@
    ],
    "shadowedSymbols": [],
    "inline": {
-    "typography": 6,
-    "spacing": 10,
+    "typography": 7,
+    "spacing": 11,
     "radius": 0,
     "size": 1
    },
    "hexColors": 0,
    "tokenAccessTotal": 7,
-   "inlineTotal": 17
+   "inlineTotal": 19
   },
   {
    "file": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx",
@@ -37985,14 +38293,14 @@
    ],
    "shadowedSymbols": [],
    "inline": {
-    "typography": 30,
+    "typography": 32,
     "spacing": 31,
     "radius": 2,
     "size": 4
    },
    "hexColors": 0,
    "tokenAccessTotal": 31,
-   "inlineTotal": 67
+   "inlineTotal": 69
   },
   {
    "file": "apps/mobile/src/features/sales/channels.ts",
@@ -38145,13 +38453,13 @@
    "shadowedSymbols": [],
    "inline": {
     "typography": 47,
-    "spacing": 41,
+    "spacing": 42,
     "radius": 2,
     "size": 9
    },
    "hexColors": 0,
    "tokenAccessTotal": 52,
-   "inlineTotal": 99
+   "inlineTotal": 100
   },
   {
    "file": "apps/mobile/src/features/sales/components/SaleStepper.tsx",
@@ -38578,14 +38886,14 @@
    ],
    "shadowedSymbols": [],
    "inline": {
-    "typography": 65,
+    "typography": 67,
     "spacing": 69,
     "radius": 9,
     "size": 9
    },
    "hexColors": 1,
    "tokenAccessTotal": 67,
-   "inlineTotal": 152
+   "inlineTotal": 154
   },
   {
    "file": "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx",
@@ -38653,14 +38961,14 @@
    ],
    "shadowedSymbols": [],
    "inline": {
-    "typography": 43,
+    "typography": 44,
     "spacing": 42,
     "radius": 0,
     "size": 5
    },
    "hexColors": 6,
    "tokenAccessTotal": 39,
-   "inlineTotal": 90
+   "inlineTotal": 91
   },
   {
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",

@@ -1,7 +1,7 @@
 {
  "$schema": "app-token-map/1",
  "status": "PROPOSAL",
- "note": "앱 사용처 인라인 선언 3,633건을 다섯 통에 배정하는 규칙표다 (W1 · P1b). tokens.ts 정본 정의 21건은 감사 산출물 definitions에 별도 보존하며 실행 우주에 넣지 않는다. 행 3,633개를 손으로 적지 않고 규칙으로 적는다. 규칙마다 근거를 달고, 검사기가 규칙을 순서대로 태워 모든 선언이 정확히 한 통에 들어가는지 확인한다. 이 표는 제안이다. 승인은 검수 뒤이고, 그래서 approvedException 통은 0 이어야 한다. 값이 아니라 관계로 판정한다 — 같은 2px 도 세로(제목↔보조문구)면 space.xs 결함이고, 가로(라벨 광학 정렬)면 컴포넌트 소유다.",
+ "note": "앱 사용처 인라인 선언 3,666건을 다섯 통에 배정하는 규칙표다 (W1 · P1b). tokens.ts 정본 정의 21건은 감사 산출물 definitions에 별도 보존하며 실행 우주에 넣지 않는다. 행 3,666개를 손으로 적지 않고 규칙으로 적는다. 규칙마다 근거를 달고, 검사기가 규칙을 순서대로 태워 모든 선언이 정확히 한 통에 들어가는지 확인한다. 이 표는 제안이다. 승인은 검수 뒤이고, 그래서 approvedException 통은 0 이어야 한다. 값이 아니라 관계로 판정한다 — 같은 2px 도 세로(제목↔보조문구)면 space.xs 결함이고, 가로(라벨 광학 정렬)면 컴포넌트 소유다. PRT-227에서 감사기가 놓치던 PrefixUnaryExpression 음수 33건을 복구했다.",
  "primitiveSource": "full-page-flow-prototype-token-map.json 의 primitive·converge 를 그대로 쓴다. 앱 전용 두 번째 표준을 만들지 않는다.",
  "pendingApprovalContract": {
   "definition": "제품 소유자의 새 결정이 없으면 목적지를 정할 수 없는 규칙만 둔다. 닫힌 D-11의 선언별 역할 대응은 이 통에 두지 않는다.",
@@ -9,10 +9,11 @@
    "R-SP-CAPTION-GAP-VIEW",
    "R-SP-EMPTY-STATE",
    "R-TY-SIZE-OFFSCALE",
+   "R-TY-LETTERSPACING-UNDECIDED",
    "R-CL-NEAR-PALETTE",
    "R-CL-CHART"
   ],
-  "expectedDeclarations": 35
+  "expectedDeclarations": 50
  },
  "rules": [
   {
@@ -287,14 +288,66 @@
    "match": {
     "group": "spacing",
     "props": [
-     "padding"
+     "padding",
+     "margin"
     ],
     "at": [
-     "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:354:padding"
+     "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:354:padding",
+     "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:354:margin"
     ]
    },
-   "name": "COMPONENT.quantityStepper.touchEnvelopePadding",
+   "name": "COMPONENT.quantityStepper.touchEnvelope",
    "근거": "S4a에서 30×30 증감 버튼 두 개의 hitSlop이 서로 겹치지 않도록 부모에 padding 7과 상쇄 margin -7을 함께 둔 터치 기하 계약이다. 일반 레이아웃 여백이나 space 수렴 대상이 아니다."
+  },
+  {
+   "id": "R-SP-ROW-OVERFLOW-TOUCH-BOX",
+   "bin": "componentOwned",
+   "match": {
+    "group": "spacing",
+    "props": [
+     "marginHorizontal",
+     "marginVertical"
+    ],
+    "at": [
+     "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:203:marginHorizontal",
+     "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:203:marginVertical"
+    ]
+   },
+   "name": "COMPONENT.rowOverflowAction.touchBox",
+   "근거": "S4a가 27×40 시각 점유 상자를 45×44 터치 상자로 넓히며 행 끝 정렬을 보존하기 위해 둔 음수 상쇄값이다. 일반 여백이나 space 수렴 대상이 아니다."
+  },
+  {
+   "id": "R-SP-FORM-AUXILIARY-OVERLAP",
+   "bin": "componentOwned",
+   "match": {
+    "group": "spacing",
+    "props": [
+     "marginTop"
+    ],
+    "at": [
+     "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:146:marginTop",
+     "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:257:marginTop",
+     "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:515:marginTop",
+     "apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx:150:marginTop"
+    ]
+   },
+   "name": "COMPONENT.formAuxiliary.overlapOffset",
+   "근거": "Field가 예약한 하단 간격 안으로 안내·환산 보조문구를 8px 되밀어 입력과 한 묶음으로 보이게 하는 반복 관계다. S4a의 터치 상자 변경 뒤 생긴 임의 여백이 아니라 기존 Field 간격을 상쇄하는 컴포넌트 소유 오프셋이다."
+  },
+  {
+   "id": "R-SP-PROFIT-SECTION-LABEL-OVERLAP",
+   "bin": "componentOwned",
+   "match": {
+    "group": "spacing",
+    "props": [
+     "marginBottom"
+    ],
+    "at": [
+     "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:35:marginBottom"
+    ]
+   },
+   "name": "COMPONENT.profitSectionLabel.overlapOffset",
+   "근거": "손익 블록의 13px 섹션 라벨을 다음 카드와 시각적으로 묶는 단일 컴포넌트 오프셋이다. 음수 3px을 공용 space 스케일로 승격하지 않고 현재 형상을 보존한다."
   },
   {
    "id": "R-SP-EDGE-INSET",
@@ -999,6 +1052,53 @@
    "방향": "해당없음"
   },
   {
+   "id": "R-TY-LETTERSPACING-TITLE-TIGHT",
+   "bin": "primitive",
+   "match": {
+    "group": "typography",
+    "props": [
+     "letterSpacing"
+    ],
+    "numericIn": [
+     -0.3
+    ],
+    "at": [
+     "apps/mobile/src/components/kit/AppHeader.tsx:36:letterSpacing",
+     "apps/mobile/src/features/ingredients/components/IngCard.tsx:46:letterSpacing",
+     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:292:letterSpacing",
+     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:335:letterSpacing",
+     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:369:letterSpacing",
+     "apps/mobile/src/features/recipes/screens/MaterialSearchScreen.tsx:68:letterSpacing",
+     "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:216:letterSpacing",
+     "apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx:99:letterSpacing",
+     "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:66:letterSpacing",
+     "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx:172:letterSpacing"
+    ]
+   },
+   "target": "letterSpacing.titleTight (-0.3)",
+   "근거": "사용자 결정 9-1이 실측 근거가 있는 유일한 자간 토큰으로 titleTight -0.3을 승인했다. 10건 모두 16~20px, 700~800 굵기의 헤더·카드 제목·행 이름 역할이며 값도 그대로다.",
+   "방향": "해당없음 — 승인된 primitive 값"
+  },
+  {
+   "id": "R-TY-LETTERSPACING-UNDECIDED",
+   "bin": "pendingApproval",
+   "match": {
+    "group": "typography",
+    "props": [
+     "letterSpacing"
+    ],
+    "numericIn": [
+     -0.6,
+     -0.5,
+     -0.4,
+     -0.2
+    ]
+   },
+   "question": "승인된 titleTight -0.3 밖의 자간 15건을 역할별 토큰으로 추가할지, titleTight로 수렴할지. -0.6은 화면 제목·큰 숫자 9건, -0.5는 차트 중심값·상세 제목 3건, -0.4는 시트 제목 2건, -0.2는 Button 라벨 1건이다.",
+   "evidence": "사용자 결정 9-1은 근거 없는 display -0.4를 삭제하고 titleTight -0.3만 승인했다. 따라서 이 네 값은 기존 결정으로 목적지를 만들 수 없으며, 현재 역할 구분을 보존한 채 한 소유자 질문으로 남긴다.",
+   "ownerDecision": "역할별 토큰 추가 또는 -0.3 수렴을 정해야 한다. 특히 -0.6의 큰 숫자·화면 제목과 -0.2의 버튼 라벨은 같은 역할로 합치지 않는다."
+  },
+  {
    "id": "R-TY-SIZE-15-CONTROL",
    "bin": "defect",
    "match": {
@@ -1494,8 +1594,8 @@
    "id": "R-SZ-CONTROL-ROW-OVERFLOW",
    "bin": "componentOwned",
    "match": { "group": "size", "props": ["width", "height"], "at": ["apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:203"] },
-   "name": "COMPONENT.rowOverflowAction.visualBox",
-   "근거": "S4a에서 실제 터치 상자 45×44로 확장한 overflow action의 구성요소 소유 상자다."
+   "name": "COMPONENT.rowOverflowAction.touchBox",
+   "근거": "S4a에서 시각 점유 27×40을 유지한 채 실제 pressable 터치 상자를 45×44로 확장했다. 이 width/height는 시각 상자가 아니라 터치 상자 계약이다."
   },
   {
    "id": "R-SZ-CONTROL-ACCOUNT-ICON",
@@ -1824,7 +1924,7 @@
  "semanticNote": "**`semantic` 통을 없앴다** (솔 검수 W1 R1 F02). 감사기는 숫자 리터럴만 선언으로 모으므로 `fontSize: 16` → `TYPE.body` 치환은 semantic 으로 이동하는 것이 아니라 입력에서 사라진다. 영원히 0 인 통을 두고 \"P4 에서 채워진다\" 고 적는 것은 분류가 아니다. W1 의 범위를 **하드코딩 리터럴의 배정**으로 좁히고, 의미 토큰 채택률은 같은 감사기가 모으는 `tokenAccess` 로 따로 본다.",
  "ruleOrderNote": "규칙은 순서대로 평가하고 첫 일치가 이긴다. **순서에 의존하는 배정이 있으면 앞선 규칙에 `순서근거` 를 적어야 하고, 검사기가 그것을 강제한다.** 다중 일치가 0 이면 순서는 장식이다 — 검사기가 다중 일치 수를 함께 낸다 (페이블 검수 조건 B).",
  "방향Note": "`defect` 통의 모든 행은 `executionStage`(S1/S2/S3a/S3b/S4) · `axis`(horizontal/vertical/both/none/derived) · `delta`(shrink/same/grow/mixed/unknown) · `evidenceRef` 를 갖는다. axis가 none이 아니면 targetValue/targetMap/protoConverge/targetDerived 중 정확히 하나도 필수다. 검사기는 감사 현재값→목적지를 선언별로 계산해 수기 delta와 대조하고, targetMap의 누락·낡은 항목도 실패시킨다(솔 검수 W1 R2 F03). 런타임 파생은 폐쇄 kind와 formulaVersion을 쓰며 axis=derived·delta=unknown이다. 결정적 파생은 폐쇄표의 값과 판본까지 검사하고 숫자 목적지·delta를 선언별 계산한다(PRT-221). 축은 규칙의 자기 선언을 믿지 않고 실제로 이긴 선언들의 측정축과 대조한다.",
- "designSyncId": "DS-20260905-006",
+ "designSyncId": "DS-20260905-007",
  "선언수조정표": {
   "_": "3,677 → 3,653 의 행방. 하나의 원인으로 설명하면 안 된다(솔 검수 W1 R2). '24건이 전부 감사기 결함' 이라는 설명은 틀렸다.",
   "구기준선_6497666_기존감사기": 3677,

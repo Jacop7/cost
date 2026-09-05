@@ -19,6 +19,25 @@
 
 ## 변경 내역
 
+### PRT-227 · 2026-09-05 음수 숫자 선언 복구와 W1 재배정
+
+- 날짜: 2026-09-05
+- 디자인 동기화 ID: `DS-20260905-007`
+- 입력: S4a 정적 후보와 동일한 앱 제품 트리, 음수 AST를 읽도록 고친 감사기.
+- 원인: `-7`·`-0.3`은 TypeScript AST에서 숫자 리터럴이 아니라
+  `PrefixUnaryExpression(MinusToken + NumericLiteral)`인데 기존 감사기는 이를 건너뛰었다.
+- 결과: 사용처 선언 3,633→3,666 · 규칙 78→83 · 미분류 0 · 승인 예외 0.
+  통은 primitive 2,063 · componentOwned 227 · defect 1,326 · pendingApproval 50이다.
+- 분류:
+  - `letterSpacing:-0.3` 10건은 사용자 승인 `titleTight` primitive에 값 변화 없이 대응.
+  - `-0.6/-0.5/-0.4/-0.2` 15건은 역할별 토큰 추가/수렴을 묻는 단일 소유자 질문.
+  - 음수 margin 8건은 quantity stepper·row overflow touch box·form auxiliary·profit section label의
+    명명된 componentOwned 관계로 보존.
+  - `COMPONENT.rowOverflowAction.visualBox`를 `touchBox`로 정정했다. 시각 점유는 27×40이고
+    45×44는 실제 pressable 터치 상자다.
+- UI 변경: 없음. 적용본은 `DESIGN_SYNC` 주석만 변경.
+- 후속: 페이블 W1 재판정 후 S2.
+
 ### PRT-226 · 2026-09-05 S4a 정적 후보 기준 W1 전수 재측정
 
 - 날짜: 2026-09-05

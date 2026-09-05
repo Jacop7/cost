@@ -585,6 +585,8 @@ foreach ($fileName in @($auditName, $auditScriptName, 'full-page-flow-prototype-
     'full-page-flow-prototype-app-token-map.json', 'full-page-flow-prototype-app-map-check.mjs',
     'full-page-flow-prototype-app-map-check.test.mjs',
     'full-page-flow-prototype-app-map-check.json', '../token-adoption-audit.json',
+    '../../scripts/token-adoption-audit.mjs', '../../scripts/token-adoption-numeric-literal.mjs',
+    '../../scripts/token-adoption-numeric-literal.test.mjs',
     'full-page-flow-prototype-axis-measure.mjs', 'full-page-flow-prototype-axis-at.json',
     'full-page-flow-prototype-role-measure.mjs', 'full-page-flow-prototype-role-at.json',
     'full-page-flow-prototype-doc-claims.json', 'full-page-flow-prototype-doc-claims-check.mjs',

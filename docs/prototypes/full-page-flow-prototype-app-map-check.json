@@ -1,6 +1,6 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-05T13:23:18.522Z",
+  "generatedAt": "2026-09-05T13:50:57.067Z",
   "schemaVersion": 1,
   "script": {
    "name": "full-page-flow-prototype-app-map-check.mjs",
@@ -9,12 +9,12 @@
   "source": {
    "audit": {
     "path": "token-adoption-audit.json",
-    "sha256": "9455407af5d900c60467c7ecf9834a8a2960377f6e1737f1aa2551cb09994d47",
-    "declarations": 3633
+    "sha256": "b8163d3f97a5fab13995232dd7d314d1f7313bef42b91afd1bd286c65d691df3",
+    "declarations": 3666
    },
    "appMap": {
     "path": "full-page-flow-prototype-app-token-map.json",
-    "sha256": "d9d205e3d7cee6b15f11ec4c4c4b7f5adc3fbe04db5eacf867ef2a07ba0c97f0"
+    "sha256": "b97bb71b9426e0a8ba85c3c3ec1fa6f086d1c1c3d7197e4497a9ad4c8be83b62"
    },
    "prototypeMap": {
     "path": "full-page-flow-prototype-token-map.json",
@@ -29,12 +29,12 @@
  },
  "summary": {
   "status": "PROPOSAL_COMPLETE",
-  "declarations": 3633,
+  "declarations": 3666,
   "byBin": {
-   "primitive": 2053,
-   "componentOwned": 219,
+   "primitive": 2063,
+   "componentOwned": 227,
    "defect": 1326,
-   "pendingApproval": 35,
+   "pendingApproval": 50,
    "approvedException": 0
   },
   "semantic통삭제사유": "**`semantic` 통을 없앴다** (솔 검수 W1 R1 F02). 감사기는 숫자 리터럴만 선언으로 모으므로 `fontSize: 16` → `TYPE.body` 치환은 semantic 으로 이동하는 것이 아니라 입력에서 사라진다. 영원히 0 인 통을 두고 \"P4 에서 채워진다\" 고 적는 것은 분류가 아니다. W1 의 범위를 **하드코딩 리터럴의 배정**으로 좁히고, 의미 토큰 채택률은 같은 감사기가 모으는 `tokenAccess` 로 따로 본다.",
@@ -6565,36 +6565,27 @@
   ],
   "binMovementLedger": {
    "previousMap": "full-page-flow-prototype-app-token-map.json",
-   "previousMapSha256": "57805c945ca5784cb745487d86df713742e6f9b4fbae1e4f94927ea3324c2e04",
+   "previousMapSha256": "d9d205e3d7cee6b15f11ec4c4c4b7f5adc3fbe04db5eacf867ef2a07ba0c97f0",
    "moves": {
+    "(미분류) → primitive": {
+     "count": 10,
+     "rules": {
+      "- → R-TY-LETTERSPACING-TITLE-TIGHT": 10
+     }
+    },
+    "(미분류) → pendingApproval": {
+     "count": 15,
+     "rules": {
+      "- → R-TY-LETTERSPACING-UNDECIDED": 15
+     }
+    },
     "(미분류) → componentOwned": {
-     "count": 27,
+     "count": 8,
      "rules": {
-      "- → R-SZ-CONTROL-ROW-OVERFLOW": 2,
-      "- → R-SZ-HANDLE": 4,
-      "- → R-SZ-APPHEADER-ACTION": 14,
-      "- → R-SZ-CONTROL-LEGEND": 2,
-      "- → R-SZ-HAIRLINE": 1,
-      "- → R-SP-OPTICAL-ICON": 1,
+      "- → R-SP-ROW-OVERFLOW-TOUCH-BOX": 2,
+      "- → R-SP-FORM-AUXILIARY-OVERLAP": 4,
       "- → R-SP-QUANTITY-TOUCH-ENVELOPE": 1,
-      "- → R-SZ-ROW-SALES-BANNER": 1,
-      "- → R-SP-EDGE-INSET": 1
-     }
-    },
-    "(미분류) → defect": {
-     "count": 29,
-     "rules": {
-      "- → R-RD-SHAPE": 4,
-      "- → R-SP-CONVERGE-GROW-H": 9,
-      "- → R-SP-CONVERGE-11-V": 6,
-      "- → R-SP-CONVERGE-GROW-V": 9,
-      "- → R-SZ-ROW-MINH": 1
-     }
-    },
-    "defect → pendingApproval": {
-     "count": 1,
-     "rules": {
-      "R-SP-CAPTION-GAP → R-SP-CAPTION-GAP-VIEW": 1
+      "- → R-SP-PROFIT-SECTION-LABEL-OVERLAP": 1
      }
     }
    },
@@ -6602,30 +6593,30 @@
     "primitive": {
      "이전": 2053,
      "나감": 0,
-     "들어옴": 0,
-     "계산": 2053,
-     "실제": 2053
+     "들어옴": 10,
+     "계산": 2063,
+     "실제": 2063
     },
     "componentOwned": {
-     "이전": 192,
+     "이전": 219,
      "나감": 0,
-     "들어옴": 27,
-     "계산": 219,
-     "실제": 219
+     "들어옴": 8,
+     "계산": 227,
+     "실제": 227
     },
     "defect": {
-     "이전": 1298,
-     "나감": 1,
-     "들어옴": 29,
+     "이전": 1326,
+     "나감": 0,
+     "들어옴": 0,
      "계산": 1326,
      "실제": 1326
     },
     "pendingApproval": {
-     "이전": 34,
+     "이전": 35,
      "나감": 0,
-     "들어옴": 1,
-     "계산": 35,
-     "실제": 35
+     "들어옴": 15,
+     "계산": 50,
+     "실제": 50
     },
     "approvedException": {
      "이전": 0,
@@ -6650,6 +6641,13 @@
     "declarations": 10,
     "evidence": "QueryState:18(paddingVertical 48 · paddingHorizontal 32) · PurchaseOptionScreen:254(40) · ChannelWeightSheet:60(28) · SalesDayDetailScreen:76(72). 전부 '결과 없음/불러오는 중' 계열의 중앙 정렬 블록이다.",
     "ownerDecision": "스케일 확장은 정본(tokens.ts) 변경이라 D-11 과 같은 성격이다."
+   },
+   {
+    "id": "R-TY-LETTERSPACING-UNDECIDED",
+    "question": "승인된 titleTight -0.3 밖의 자간 15건을 역할별 토큰으로 추가할지, titleTight로 수렴할지. -0.6은 화면 제목·큰 숫자 9건, -0.5는 차트 중심값·상세 제목 3건, -0.4는 시트 제목 2건, -0.2는 Button 라벨 1건이다.",
+    "declarations": 15,
+    "evidence": "사용자 결정 9-1은 근거 없는 display -0.4를 삭제하고 titleTight -0.3만 승인했다. 따라서 이 네 값은 기존 결정으로 목적지를 만들 수 없으며, 현재 역할 구분을 보존한 채 한 소유자 질문으로 남긴다.",
+    "ownerDecision": "역할별 토큰 추가 또는 -0.3 수렴을 정해야 한다. 특히 -0.6의 큰 숫자·화면 제목과 -0.2의 버튼 라벨은 같은 역할로 합치지 않는다."
    },
    {
     "id": "R-TY-SIZE-OFFSCALE",
@@ -6982,8 +6980,8 @@
    {
     "id": "R-SP-QUANTITY-TOUCH-ENVELOPE",
     "bin": "componentOwned",
-    "declarations": 1,
-    "name": "COMPONENT.quantityStepper.touchEnvelopePadding",
+    "declarations": 2,
+    "name": "COMPONENT.quantityStepper.touchEnvelope",
     "target": null,
     "openDecision": null,
     "executionStage": null,
@@ -6997,6 +6995,80 @@
     "values": [
      [
       "padding:7",
+      1
+     ],
+     [
+      "margin:-7",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SP-ROW-OVERFLOW-TOUCH-BOX",
+    "bin": "componentOwned",
+    "declarations": 2,
+    "name": "COMPONENT.rowOverflowAction.touchBox",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "marginHorizontal:-9",
+      1
+     ],
+     [
+      "marginVertical:-2",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SP-FORM-AUXILIARY-OVERLAP",
+    "bin": "componentOwned",
+    "declarations": 4,
+    "name": "COMPONENT.formAuxiliary.overlapOffset",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "marginTop:-8",
+      4
+     ]
+    ]
+   },
+   {
+    "id": "R-SP-PROFIT-SECTION-LABEL-OVERLAP",
+    "bin": "componentOwned",
+    "declarations": 1,
+    "name": "COMPONENT.profitSectionLabel.overlapOffset",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "marginBottom:-3",
       1
      ]
     ]
@@ -7697,6 +7769,62 @@
      [
       "fontWeight:600",
       150
+     ]
+    ]
+   },
+   {
+    "id": "R-TY-LETTERSPACING-TITLE-TIGHT",
+    "bin": "primitive",
+    "declarations": 10,
+    "name": null,
+    "target": "letterSpacing.titleTight (-0.3)",
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "letterSpacing:-0.3",
+      10
+     ]
+    ]
+   },
+   {
+    "id": "R-TY-LETTERSPACING-UNDECIDED",
+    "bin": "pendingApproval",
+    "declarations": 15,
+    "name": null,
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "letterSpacing:-0.6",
+      9
+     ],
+     [
+      "letterSpacing:-0.5",
+      3
+     ],
+     [
+      "letterSpacing:-0.4",
+      2
+     ],
+     [
+      "letterSpacing:-0.2",
+      1
      ]
     ]
    },
@@ -8456,7 +8584,7 @@
     "id": "R-SZ-CONTROL-ROW-OVERFLOW",
     "bin": "componentOwned",
     "declarations": 2,
-    "name": "COMPONENT.rowOverflowAction.visualBox",
+    "name": "COMPONENT.rowOverflowAction.touchBox",
     "target": null,
     "openDecision": null,
     "executionStage": null,
