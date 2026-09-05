@@ -1,0 +1,195 @@
+{
+  "$schema": "design-token-contract/1",
+  "_역할": "**앱 정본 `tokens.ts` 의 색 역할 계약**이다. 게이트가 이 표와 `tokens.ts` 를 이름·값·조합 모두 **양방향**으로 대조한다 — 한쪽에만 있어도, 값이 달라도 FAIL 이다.",
+  "_왜_앱쪽인가": "이 표를 프로토타입 봉인 파일(`docs/prototypes/…-contrast-contract.json`)에 두면 앱 색을 바꿀 때마다 프로토타입 봉인이 깨진다. 잘못된 결속이다. 프로토타입 쪽은 **투영**으로 남고, 겹치는 값(표면·text)만 교차 확인한다.",
+  "_기준": "절대값 4.5:1(글자) / 3:1(비텍스트)을 **반올림 전 원시값**으로 판정한다. 4.50~4.55 는 통과시키되 경계값으로 표시한다.",
+  "_출처": "DS-20260905-001 문항 1·2·8·11 과 그 부록 §8.2a(text.link 정정).",
+  "surfaces": {
+    "surface": "#FFFFFF",
+    "surface2": "#F9FAFB",
+    "bg": "#F2F4F6"
+  },
+  "roles": {
+    "text.primary": "#191F28",
+    "text.secondary": "#4E5968",
+    "text.tertiary": "#66717E",
+    "text.disabled": "#8B95A1",
+    "text.link": "#1465DB",
+    "text.linkPressed": "#0E5FD6",
+    "text.required": "#1465DB",
+    "action.primary": "#1470F5",
+    "action.primaryPressed": "#1465DB",
+    "action.primaryTint": "#EBF3FE",
+    "action.onTint": "#1465DB",
+    "brand.primary": "#3182F6",
+    "myHubTile.background": "#EBF3FE",
+    "myHubTile.icon": "#1470F5",
+    "myHubTile.label": "#1465DB"
+  },
+  "_면제": {
+    "text.disabled": "WCAG 1.4.3 이 비활성 컴포넌트의 글자를 면제한다. 면제이지 통과가 아니므로 대비 재고 대상에서 뺀다."
+  },
+  "_경계값": [
+    "흰 글자 on action.primary 4.50",
+    "text.tertiary on bg 4.50"
+  ],
+  "_조합": "검사할 조합 전부를 정규화해 둔다(`역할|fg|bg|kind`). 게이트가 만드는 집합과 양방향으로 맞춘다.",
+  "combos": [
+    {
+      "역할": "text.primary",
+      "fg": "#191F28",
+      "bg": "#FFFFFF",
+      "kind": "text"
+    },
+    {
+      "역할": "text.secondary",
+      "fg": "#4E5968",
+      "bg": "#FFFFFF",
+      "kind": "text"
+    },
+    {
+      "역할": "text.tertiary",
+      "fg": "#66717E",
+      "bg": "#FFFFFF",
+      "kind": "text"
+    },
+    {
+      "역할": "text.link",
+      "fg": "#1465DB",
+      "bg": "#FFFFFF",
+      "kind": "text"
+    },
+    {
+      "역할": "text.linkPressed",
+      "fg": "#0E5FD6",
+      "bg": "#FFFFFF",
+      "kind": "text"
+    },
+    {
+      "역할": "text.required",
+      "fg": "#1465DB",
+      "bg": "#FFFFFF",
+      "kind": "text"
+    },
+    {
+      "역할": "action.primary 테두리·아이콘",
+      "fg": "#1470F5",
+      "bg": "#FFFFFF",
+      "kind": "nonText"
+    },
+    {
+      "역할": "text.primary",
+      "fg": "#191F28",
+      "bg": "#F9FAFB",
+      "kind": "text"
+    },
+    {
+      "역할": "text.secondary",
+      "fg": "#4E5968",
+      "bg": "#F9FAFB",
+      "kind": "text"
+    },
+    {
+      "역할": "text.tertiary",
+      "fg": "#66717E",
+      "bg": "#F9FAFB",
+      "kind": "text"
+    },
+    {
+      "역할": "text.link",
+      "fg": "#1465DB",
+      "bg": "#F9FAFB",
+      "kind": "text"
+    },
+    {
+      "역할": "text.linkPressed",
+      "fg": "#0E5FD6",
+      "bg": "#F9FAFB",
+      "kind": "text"
+    },
+    {
+      "역할": "text.required",
+      "fg": "#1465DB",
+      "bg": "#F9FAFB",
+      "kind": "text"
+    },
+    {
+      "역할": "action.primary 테두리·아이콘",
+      "fg": "#1470F5",
+      "bg": "#F9FAFB",
+      "kind": "nonText"
+    },
+    {
+      "역할": "text.primary",
+      "fg": "#191F28",
+      "bg": "#F2F4F6",
+      "kind": "text"
+    },
+    {
+      "역할": "text.secondary",
+      "fg": "#4E5968",
+      "bg": "#F2F4F6",
+      "kind": "text"
+    },
+    {
+      "역할": "text.tertiary",
+      "fg": "#66717E",
+      "bg": "#F2F4F6",
+      "kind": "text"
+    },
+    {
+      "역할": "text.link",
+      "fg": "#1465DB",
+      "bg": "#F2F4F6",
+      "kind": "text"
+    },
+    {
+      "역할": "text.linkPressed",
+      "fg": "#0E5FD6",
+      "bg": "#F2F4F6",
+      "kind": "text"
+    },
+    {
+      "역할": "text.required",
+      "fg": "#1465DB",
+      "bg": "#F2F4F6",
+      "kind": "text"
+    },
+    {
+      "역할": "action.primary 테두리·아이콘",
+      "fg": "#1470F5",
+      "bg": "#F2F4F6",
+      "kind": "nonText"
+    },
+    {
+      "역할": "action.primary 위 흰 글자",
+      "fg": "#FFFFFF",
+      "bg": "#1470F5",
+      "kind": "text"
+    },
+    {
+      "역할": "action.primaryPressed 위 흰 글자",
+      "fg": "#FFFFFF",
+      "bg": "#1465DB",
+      "kind": "text"
+    },
+    {
+      "역할": "action.onTint on primaryTint",
+      "fg": "#1465DB",
+      "bg": "#EBF3FE",
+      "kind": "text"
+    },
+    {
+      "역할": "myHubTile.label on background",
+      "fg": "#1465DB",
+      "bg": "#EBF3FE",
+      "kind": "text"
+    },
+    {
+      "역할": "myHubTile.icon on background",
+      "fg": "#1470F5",
+      "bg": "#EBF3FE",
+      "kind": "nonText"
+    }
+  ]
+}
