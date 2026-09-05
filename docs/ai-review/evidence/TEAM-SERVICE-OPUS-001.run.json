@@ -1,0 +1,17 @@
+{
+  "route": "OPUS_DIRECT_ADVISORY",
+  "nonce": "d4f1c97f-8bca-431d-818a-ab7dcf649887",
+  "startedAt": "2026-09-05T05:55:15.531Z",
+  "finishedAt": "2026-09-05T05:59:15.576Z",
+  "modelRequested": "claude-opus-5",
+  "softBudgetUsd": 2,
+  "cliSha256": "ab5fe6cb800a9faf3df1cc0f6bcb71f097296b302a16b576ca906446a22fea71",
+  "inputSnapshotSha256": "8e8c2d2c0c09808307e40473aad8c939f011f138ce9c955ffeda478830453a18",
+  "promptSha256": "c466863d486cbae84d921e402f15827fe207fea2c43d4db41f5a7b9ade32ea49",
+  "exitCode": null,
+  "error": "ETIMEDOUT",
+  "stdout": "",
+  "stderr": "",
+  "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "inputsUnchanged": true
+}
