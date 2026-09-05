@@ -7,7 +7,7 @@
  * 도는 것 —
  *   ① 타입          `pnpm -r typecheck`
  *   ② 시험 3종      `pnpm -r test` (core · db · mobile)
- *   ③ 도구·ACL 보안 고정 CLI 계약과 Docker 없는 비밀번호·argv·환경 격리 회귀시험
+ *   ③ 도구·ACL 보안 고정 CLI 계약과 색 대비·터치 영역, Docker 없는 비밀번호·argv·환경 격리 회귀시험
  *   ④ 새 DB         마이그레이션 전체를 빈 DB 에 태우고 DB 시험을 다시
  *   ⑤ 업그레이드 경로 마이그레이션 **순서**를 태운다
  *   ⑥ 웹 번들       Metro 가 실제로 묶는지
@@ -106,7 +106,18 @@ step(skipDb ? '② 시험 (core · mobile — DB 제외)' : '② 시험 (pnpm -r
 ));
 
 // Docker 가 필요 없는 보안 시험이다. DB 단계 안에 두면 `--no-db` CI 에서 영원히 안 돈다.
-step('③ CLI 계약 · ACL 보안', () => {
+step('③ CLI 계약 · ACL 보안 · 색 대비 · 터치 영역', () => {
+  /*
+   * 색 역할 × 표면 대비 — 절대 기준(4.5:1 / 3:1)을 **반올림 전 원시값**으로 잰다.
+   * 프로토타입 게이트(design-sync-check.ps1)는 로컬 Windows 전용이라 CI 에서 안 돈다.
+   * 표면 색을 한 톤이라도 바꾸는 커밋이 여기서 걸려야 한다.
+   * 최소 터치 영역(44)은 양방향 래칫이다 — 새 미달도, 고쳐졌는데 목록에 남은 것도 FAIL.
+   * 두 검사 모두 음성 시험을 저장소에 두고 함께 돈다(손으로 돌린 것은 증거가 아니다).
+   */
+  if (!run('node', ['scripts/design-token-contrast.mjs'])) return false;
+  if (!run('node', ['--test', 'scripts/design-token-contrast.test.mjs'])) return false;
+  if (!run('node', ['scripts/touch-target-audit.mjs'])) return false;
+  if (!run('node', ['--test', 'scripts/touch-target-audit.test.mjs'])) return false;
   if (!run('node', ['packages/db/scripts/cli-contract.test.mjs'])) return false;
   if (!run('node', ['packages/db/scripts/deploy-guard.test.mjs'])) return false;
   if (!run('node', ['packages/db/scripts/admin-acl-source-scan.test.mjs'])) return false;
