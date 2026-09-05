@@ -36,18 +36,31 @@ const run = (mutate = () => {}, eol = '\n') => {
 };
 const rule = (map, id) => map.rules.find(r => r.id === id);
 
-test('기준본은 3,653건을 다섯 통에 배정하고 F02 이동을 보존한다', () => {
+test('기준본은 3,653건을 다섯 통에 배정하고 PRT-220 역할 재배정을 보존한다', () => {
   const r = run();
   assert.equal(r.code, 0, r.text);
   assert.deepEqual(r.out.summary.byBin, {
-    primitive: 2067, componentOwned: 148, defect: 1215,
-    pendingApproval: 223, approvedException: 0,
+    primitive: 2067, componentOwned: 218, defect: 1333,
+    pendingApproval: 35, approvedException: 0,
   });
   const per = Object.fromEntries(r.out.summary.perRule.map(x => [x.id, x]));
-  assert.equal(per['R-SZ-APPHEADER-ACTION'].declarations, 2);
-  assert.equal(per['R-SZ-CONTROL-BOX'].declarations, 82);
-  assert.equal(per['R-SZ-ROW-MINH'].declarations, 24);
+  assert.equal(per['R-SZ-APPHEADER-ACTION'].declarations, 24);
+  assert.equal(per['R-SZ-CONTROL-SM'].declarations, 20);
+  assert.equal(per['R-SZ-CONTROL-MD'].declarations, 10);
+  assert.equal(per['R-SZ-ROW-MINH'].declarations, 8);
   assert.equal(per['R-TY-LINEHEIGHT'].declarations, 73);
+  assert.equal(r.out.summary.multiMatchCount, 925);
+});
+
+test('닫힌 역할을 질문·증거까지 붙여 pendingApproval로 되돌려도 계약이 막는다', () => {
+  const r = run(map => {
+    const x = rule(map, 'R-TY-LINEHEIGHT');
+    x.bin = 'pendingApproval';
+    x.question = '다시 물을까';
+    x.evidence = '이미 닫힌 D-11';
+  });
+  assert.equal(r.code, 1, r.text);
+  assert.match(r.text, /pendingApproval 규칙 집합이 계약과 다르다/);
 });
 
 test('목적지 변경으로 계산 방향이 뒤집히면 수기 delta와의 불일치를 잡는다', () => {

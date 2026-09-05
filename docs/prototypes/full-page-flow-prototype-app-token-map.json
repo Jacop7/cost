@@ -3,6 +3,17 @@
  "status": "PROPOSAL",
  "note": "앱 인라인 선언 3,653건을 다섯 통에 배정하는 규칙표다 (W1 · P1b). 행 3,653개를 손으로 적지 않고 규칙으로 적는다. 규칙마다 근거를 달고, 검사기가 규칙을 순서대로 태워 모든 선언이 정확히 한 통에 들어가는지 확인한다. 이 표는 제안이다. 승인은 검수 뒤이고, 그래서 approvedException 통은 0 이어야 한다. 값이 아니라 관계로 판정한다 — 같은 2px 도 세로(제목↔보조문구)면 space.xs 결함이고, 가로(라벨 광학 정렬)면 컴포넌트 소유다.",
  "primitiveSource": "full-page-flow-prototype-token-map.json 의 primitive·converge 를 그대로 쓴다. 앱 전용 두 번째 표준을 만들지 않는다.",
+ "pendingApprovalContract": {
+  "definition": "제품 소유자의 새 결정이 없으면 목적지를 정할 수 없는 규칙만 둔다. 닫힌 D-11의 선언별 역할 대응은 이 통에 두지 않는다.",
+  "ruleIds": [
+   "R-SP-CAPTION-GAP-VIEW",
+   "R-SP-EMPTY-STATE",
+   "R-TY-SIZE-OFFSCALE",
+   "R-CL-NEAR-PALETTE",
+   "R-CL-CHART"
+  ],
+  "expectedDeclarations": 35
+ },
  "rules": [
   {
    "id": "R-SP-PRIM",
@@ -300,7 +311,7 @@
   },
   {
    "id": "R-SP-SECTION-LABEL-BOTTOM",
-   "bin": "pendingApproval",
+   "bin": "defect",
    "match": {
     "group": "spacing",
     "numericIn": [
@@ -313,9 +324,13 @@
      "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx:61:paddingBottom"
     ]
    },
-   "question": "섹션 라벨 **아래** 여백이 2px 이다. §간격 계약은 \"제목과 보조문구처럼 한 덩어리\" 를 `space.xs`(4)로 정했다. 4 로 올릴지, 라벨 아래는 별도 관계로 인정할지.",
-   "evidence": "3자리. `SalesMaterialScreen:70`·`SalesRevenueScreen:88` 은 같은 모양이다 — `<Text fontSize:13 fontWeight:800 paddingTop:12 paddingBottom:2>사용 식재료</Text>` 처럼 **위 12 · 아래 2** 로 비대칭이다. `PriceSimSheet:61` 은 `alignItems:center · paddingTop:4 · paddingBottom:2` 인 가운데 정렬 블록으로 같은 비대칭을 쓴다. 셋 다 인셋이 아니라 **제목과 다음 것 사이의 간격**이다 — 위아래가 다른 것이 의도인지가 질문이다.",
-   "ownerDecision": "§간격 계약을 그대로 적용할지, \"라벨 아래\" 라는 관계를 새로 인정할지가 계약 변경이다.",
+   "target": "space.xs (4)",
+   "targetValue": 4,
+   "근거": "3자리 모두 섹션 라벨과 다음 콘텐츠 사이의 세로 관계다. §간격 계약의 `space.xs=4`가 이미 같은 관계를 잠갔으므로 별도 소유자 결정이 아니라 집행 대응이다.",
+   "executionStage": "S3a",
+   "axis": "vertical",
+   "delta": "grow",
+   "evidenceRef": "full-page-flow-prototype-axis-at.json#perDecl",
    "순서근거": "R-SP-CONVERGE-SHRINK 보다 앞선다"
   },
   {
@@ -1013,7 +1028,7 @@
   },
   {
    "id": "R-TY-SIZE-15-PROSE",
-   "bin": "pendingApproval",
+   "bin": "defect",
    "match": {
     "group": "typography",
     "props": [
@@ -1029,9 +1044,13 @@
      "apps/mobile/src/features/sales/components/ShortageWarningSheet.tsx:44:fontSize"
     ]
    },
-   "question": "**결정 5-3 이 다루지 않은 세 번째 갈래다.** 안내 본문 5자리는 라벨도 값도 버튼도 입력도 아니다 — 문단이다. `caption`(14)으로 내릴지 `body`(16)로 올릴지.",
-   "evidence": "5건 — `Sheet.tsx:77`(시트 안내문 · lineHeight 23) · `MyAccountScreen:64`(lh 23) · `MyAccountScreen:74`(lh 22) · `MyLanguageScreen:189`(lh 22) · `ShortageWarningSheet:44`(lh 23). **다섯 모두 `lineHeight` 를 따로 달고 있다** — 이 앱에서 문단으로 읽히는 자리의 표식이다. 나머지 62자리 중 `lineHeight` 를 단 곳은 없다.",
-   "ownerDecision": "결정 5-3 은 두 갈래만 정했다. 문단을 어느 쪽으로 볼지는 새 판정이라 소유자 몫이다.",
+   "target": "16 (`TYPE.body`)",
+   "targetValue": 16,
+   "근거": "4자리 모두 안내 문단이며 별도 lineHeight를 가진 본문 역할이다. 확정된 TYPE 역할 중 본문은 body(16/22)이므로 새 역할을 만들지 않고 body로 배정한다.",
+   "executionStage": "S3b",
+   "axis": "both",
+   "delta": "grow",
+   "evidenceRef": "full-page-flow-prototype-axis-at.json#perDecl",
    "순서근거": "`R-TY-SIZE-15-LABEL` 은 값 15 의 포괄이고, `R-TY-SIZE-CONVERGE` 와 `R-TY-SIZE-OFFSCALE` 은 각각 수렴표와 스케일 밖 글자 크기의 포괄이다. 셋 다 이 다섯 자리를 삼킨다. 그런데 이 자리는 **결정 5-3 이 다루지 않은 세 번째 갈래**(안내 본문)라 목적지가 아직 없다 — 포괄이 먼저 잡으면 목표가 정해진 결함처럼 보이고 소유자에게 갈 질문이 사라진다.",
    "precedes": [
     "R-TY-SIZE-15-LABEL",
@@ -1105,19 +1124,95 @@
   },
   {
    "id": "R-TY-LINEHEIGHT",
-   "bin": "pendingApproval",
+   "bin": "defect",
    "match": {
     "group": "typography",
     "props": [
      "lineHeight"
     ]
    },
-   "question": "행간 73개 선언 각각을 display/title/header/body/bodyWeak/caption/captionSm 중 어느 TYPE 역할로 보낼지.",
-   "evidence": "73건 · 16·17·18·19·20·21·22·23·24·26·28. lineHeight:20(51) 이 대부분이고 fontSize 14~16 과 짝지어 쓰인다. 역할별 절대값 28/26/24/22/22/20/18은 확정됐지만 선언별 역할 배정은 아직 없다.",
-   "target": "`TYPE.<역할>.lineHeight` — 역할마다 **절대 dp** 한 값(선언별 역할 미배정)",
+   "target": "선언의 fontSize/TYPE 역할에 대응하는 절대 lineHeight",
+   "targetMap": {
+    "apps/mobile/src/components/EmptyState.tsx:10:lineHeight": 20,
+    "apps/mobile/src/components/kit/MemoEditSheet.tsx:41:lineHeight": 22,
+    "apps/mobile/src/components/kit/QueryState.tsx:60:lineHeight": 20,
+    "apps/mobile/src/components/kit/QueryState.tsx:74:lineHeight": 18,
+    "apps/mobile/src/components/kit/Sheet.tsx:77:lineHeight": 22,
+    "apps/mobile/src/components/kit/index.tsx:74:lineHeight": 20,
+    "apps/mobile/src/components/kit/index.tsx:177:lineHeight": 22,
+    "apps/mobile/src/components/kit/index.tsx:179:lineHeight": 22,
+    "apps/mobile/src/components/kit/index.tsx:281:lineHeight": 18,
+    "apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx:238:lineHeight": 18,
+    "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx:92:lineHeight": 20,
+    "apps/mobile/src/features/ingredients/components/LossCard.tsx:49:lineHeight": 20,
+    "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:156:lineHeight": 22,
+    "apps/mobile/src/features/ingredients/screens/IngredientFormScreen.tsx:186:lineHeight": 20,
+    "apps/mobile/src/features/ingredients/screens/IngredientFormScreen.tsx:230:lineHeight": 20,
+    "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx:166:lineHeight": 20,
+    "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:152:lineHeight": 20,
+    "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:366:lineHeight": 20,
+    "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx:257:lineHeight": 20,
+    "apps/mobile/src/features/my/components/ChannelWeightSheet.tsx:106:lineHeight": 20,
+    "apps/mobile/src/features/my/components/RevenueGapCard.tsx:32:lineHeight": 20,
+    "apps/mobile/src/features/my/components/RevenueGapCard.tsx:82:lineHeight": 20,
+    "apps/mobile/src/features/my/screens/FixedCostEditScreen.tsx:263:lineHeight": 20,
+    "apps/mobile/src/features/my/screens/FixedCostScreen.tsx:135:lineHeight": 20,
+    "apps/mobile/src/features/my/screens/MyAccountScreen.tsx:59:lineHeight": 20,
+    "apps/mobile/src/features/my/screens/MyAccountScreen.tsx:64:lineHeight": 22,
+    "apps/mobile/src/features/my/screens/MyAccountScreen.tsx:74:lineHeight": 22,
+    "apps/mobile/src/features/my/screens/MyChannelsScreen.tsx:107:lineHeight": 20,
+    "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:467:lineHeight": 20,
+    "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:472:lineHeight": 20,
+    "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:575:lineHeight": 20,
+    "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx:244:lineHeight": 20,
+    "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx:250:lineHeight": 20,
+    "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx:287:lineHeight": 20,
+    "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx:313:lineHeight": 20,
+    "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx:320:lineHeight": 20,
+    "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx:325:lineHeight": 20,
+    "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx:330:lineHeight": 20,
+    "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx:116:lineHeight": 20,
+    "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx:126:lineHeight": 20,
+    "apps/mobile/src/features/my/screens/MyTaxScreen.tsx:241:lineHeight": 20,
+    "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:146:lineHeight": 20,
+    "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx:215:lineHeight": 20,
+    "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:403:lineHeight": 20,
+    "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:499:lineHeight": 20,
+    "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx:147:lineHeight": 20,
+    "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx:53:lineHeight": 20,
+    "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:206:lineHeight": 20,
+    "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:48:lineHeight": 20,
+    "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:259:lineHeight": 20,
+    "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:330:lineHeight": 20,
+    "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:444:lineHeight": 20,
+    "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:419:lineHeight": 20,
+    "apps/mobile/src/features/sales/components/MenuProfitSheet.tsx:122:lineHeight": 20,
+    "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:330:lineHeight": 18,
+    "apps/mobile/src/features/sales/components/ShortageWarningSheet.tsx:44:lineHeight": 22,
+    "apps/mobile/src/features/sales/screens/SalesDayDetailScreen.tsx:91:lineHeight": 20,
+    "apps/mobile/src/features/sales/screens/SalesExpenseScreen.tsx:134:lineHeight": 20,
+    "apps/mobile/src/features/sales/screens/SalesFixedScreen.tsx:85:lineHeight": 20,
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:596:lineHeight": 20,
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:669:lineHeight": 20,
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:704:lineHeight": 20,
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:770:lineHeight": 20,
+    "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:443:lineHeight": 20,
+    "apps/mobile/src/features/sales/screens/SalesStockCheckScreen.tsx:78:lineHeight": 20,
+    "apps/mobile/src/lib/SessionProvider.tsx:83:lineHeight": 22,
+    "apps/mobile/src/theme/tokens.ts:68:lineHeight": 28,
+    "apps/mobile/src/theme/tokens.ts:69:lineHeight": 26,
+    "apps/mobile/src/theme/tokens.ts:70:lineHeight": 24,
+    "apps/mobile/src/theme/tokens.ts:71:lineHeight": 22,
+    "apps/mobile/src/theme/tokens.ts:72:lineHeight": 22,
+    "apps/mobile/src/theme/tokens.ts:73:lineHeight": 20,
+    "apps/mobile/src/theme/tokens.ts:74:lineHeight": 18
+   },
    "출처": "기획서 §8.2 문항 6 결정 **6-2** — \"`TYPE` 역할마다 **절대 `lineHeight`** 저장 (RN 은 배수가 아니라 dp)\", 실행 단계 `S1`",
-   "근거": "결정 6-2는 TYPE 역할별 절대값을 확정했지만, 현재 감사 산출물에는 각 lineHeight 선언의 TYPE 역할이 없다. 같은 fontSize에도 서로 다른 행간이 있어 fontSize만으로 역할을 추론할 수 없다. 숫자 목적지를 선언마다 정하기 전에는 defect와 delta를 확정할 수 없다.",
-   "ownerDecision": "역할 측정기가 각 선언의 TYPE 역할을 보존한 뒤 targetMap을 만들고 current→target delta를 계산하면 defect로 이동한다."
+   "근거": "73건을 같은 선언의 fontSize와 확정 TYPE 계약으로 배정했다. 12·13→captionSm 18, 14→caption 20, 15·16→body 22, 18→header 24, 20→title 26, 22→display 28이다. EmptyState는 기본 14 역할로 20에 배정했다.",
+   "executionStage": "S3a",
+   "axis": "vertical",
+   "delta": "mixed",
+   "evidenceRef": "full-page-flow-prototype-axis-at.json#perDecl"
   },
   {
    "id": "R-SZ-FLEX-RESET",
@@ -1164,7 +1259,7 @@
    },
    "근거": "`<View style={{height:N}}/>` 단독 스페이서는 **크기가 아니라 간격**이다. 형제 사이를 벌리는 것이 유일한 역할이고, §5.4 가 그 관계에 `gap.*` 이름을 이미 붙여 놓았다. 값이 size 그룹에 잡힌 것은 표현 방식 때문이지 역할 때문이 아니다.",
    "검수요청": "**커지는 건은 없다.** 페이블 조건 3 의 조건부(값이 커지면 그 건만 `S3b`)에 걸리는 자리가 0 이다. 가로 스페이서 둘(`width:12`·`width:16`)은 이미 스케일 값이라 움직이지 않으므로 `S3b` 로 갈 이유도 없다.",
-   "순서근거": "R-SZ-CONTROL-BOX 보다 앞선다 — 단독 스페이서는 조작 상자가 아니다",
+   "순서근거": "단독 스페이서는 조작 상자가 아니며 exact at 목록으로 분리한다.",
    "술어": "**자식이 없고, `style` 이 `height` 하나 또는 `width` 하나뿐인 `<View />`.** 여섯 자리가 전부 이 모양이다 — `<View style={{ width: 12 }} />`(AppHeader:34) · `{{ height: 12 }}`(ChangeHistoryScreen:287) · `{{ height: 24 }}`(MyHoursScreen:565) · `{{ height: 9 }}`(RecipeAddScreen:339·:381) · `{{ width: 16 }}`(SalesFixedScreen:123). 속성이 둘 이상이면 그것은 상자이지 스페이서가 아니다.",
    "executionStage": "S3a",
    "axis": "both",
@@ -1195,148 +1290,312 @@
    "match": {
     "group": "size",
     "at": [
-     "apps/mobile/src/components/kit/Slider.tsx:45",
-     "apps/mobile/src/components/kit/Slider.tsx:50",
-     "apps/mobile/src/components/kit/index.tsx:151",
-     "apps/mobile/src/components/kit/index.tsx:321",
-     "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx:160",
-     "apps/mobile/src/features/my/components/RevenueGapCard.tsx:70",
-     "apps/mobile/src/features/my/screens/MyAccountScreen.tsx:63",
-     "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx:34",
-     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:252",
-     "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:276",
-     "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:393",
+     "apps/mobile/src/components/kit/Slider.tsx:45:height",
+     "apps/mobile/src/components/kit/index.tsx:321:height",
+     "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx:160:height",
+     "apps/mobile/src/features/my/components/RevenueGapCard.tsx:70:height",
+     "apps/mobile/src/features/my/screens/MyAccountScreen.tsx:63:height",
+     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:252:height",
+     "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:276:height",
+     "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:393:height",
      "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:489:height",
-     "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:502",
      "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:54:height"
     ]
    },
    "name": "hairline.thickness",
-   "근거": "구분선·트랙·밑줄의 두께(1 · 2 · 2.5 · 5 · 6px). UI 가이드가 \"`1px` 구분선 … 은 간격 예외\" 라고 이미 못박았고, 두께는 스케일이 아니라 렌더 단위에 붙는 값이다.",
-   "순서근거": "`R-SZ-CONTROL-BOX` 는 `width`/`height` 쌍을 조작 상자로 보는 포괄 규칙이다. 구분선·트랙·밑줄의 **두께**는 상자가 아니라 렌더 단위에 붙는 값이라(1 · 2 · 2.5 · 5 · 6px) 조작 상자 질문에 섞이면 안 된다. 그래서 두께를 먼저 걷어낸다.",
-   "precedes": [
-    "R-SZ-CONTROL-BOX"
-   ]
+   "근거": "구분선·트랙·밑줄의 height 두께(1 · 2.5 · 6px)만 속성까지 지정했다. UI 가이드가 `1px` 구분선을 간격 예외로 잠갔고, 두께는 스케일이 아니라 렌더 단위에 붙는 값이다."
   },
   {
    "id": "R-SZ-ROW-MINH",
-   "bin": "pendingApproval",
+   "bin": "defect",
    "match": {
     "group": "size",
     "at": [
-     "apps/mobile/src/components/history/HistoryLayout.tsx:24",
-     "apps/mobile/src/components/kit/AppHeader.tsx:20",
-     "apps/mobile/src/components/kit/MemoEditSheet.tsx:41",
      "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:166",
      "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx:123",
      "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:269",
      "apps/mobile/src/features/my/screens/FixedCostScreen.tsx:165",
-     "apps/mobile/src/features/my/screens/FixedCostScreen.tsx:77",
      "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:295",
-     "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:122",
-     "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:167",
-     "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:237",
      "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:356",
-     "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:389",
-     "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:80",
-     "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx:170",
      "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx:265",
-     "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx:312",
-     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:382",
-     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:490",
-     "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx:184",
-     "apps/mobile/src/features/sales/screens/SalesRevenueScreen.tsx:76",
-     "apps/mobile/src/features/sales/screens/SalesStockCheckScreen.tsx:136",
-     "apps/mobile/src/features/sales/screens/SalesStockCheckScreen.tsx:152"
+     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:490"
     ]
    },
-   "evidence": "24자리 · 38 · 46 · 47 · 50 · 52 · 55 · 56 · 70 · 72 · 82 · 100. UI 가이드는 목록 밀도를 3줄 92 / 2줄 76 / 1줄 60 으로 잠갔는데 앱 값은 그 셋 어디에도 안 맞는다. 솔 F02 — \"rowHeight 는 고정 높이가 아니라 rowMinHeight 여야 한다.\"",
-   "target": "`rowMinHeight` (60 · 76 · 92 · 선언별 역할 미배정)",
+   "target": "ListRow 역할별 `rowMinHeight` 60/76",
+   "targetMap": {
+    "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:166:minHeight": 76,
+    "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx:123:minHeight": 76,
+    "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:269:minHeight": 76,
+    "apps/mobile/src/features/my/screens/FixedCostScreen.tsx:165:minHeight": 60,
+    "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:295:minHeight": 60,
+    "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:356:minHeight": 76,
+    "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx:265:minHeight": 60,
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:490:minHeight": 76
+   },
    "출처": "기획서 §8.2 `D-11` 닫힘 — \"`rowMinHeight` 60/76/92\". 프로토타입 매핑표 `proposedTokensExtension.rowHeight` 와 실행서 §3.4 가 원천",
-   "근거": "24건. `minHeight` 만 쓴다 — 38(3) · 46 · 47(3) · 50(4) · 52(3) · 55(3) · 56 · 70 · 72(3) · 82 · 100. **결정문의 값 집합과 앱의 실측이 맞지 않는다.** 결정 9-1 이 승인한 `rowMinHeight` 은 60 · 76 · 92 이고, 앱은 38~100 사이 열한 값 을 쓴다. 결정문은 **역할 이름과 축을 정했지 어느 앱 값이 어느 역할값으로 가는지는 정하지 않았다.** 그 대응은 측정과 수렴이라 여기서 낸다 — 승인된 값 집합이 프로토타입 좌표계에서 나왔기 때문에, 앱 좌표계의 값이 그대로 같을 이유가 없다.",
-   "question": "24개 minHeight 선언 각각이 1줄/2줄/3줄 ListRow인지, 또는 ListRow가 아닌 컴포넌트 소유 높이인지 판정한 뒤 60/76/92 중 목적지를 배정할 것인가.",
-   "검수요청": "**세 값으로 접을지부터가 열린다.** 38 을 60 으로 올리면 행이 22dp 늘어난다 — 목록 화면에서 한 화면에 들어가는 행 수가 줄고, 이는 `S4` 렌더 감사 대상이다. 대응표를 내기 전에 이 방향이 맞는지 확인이 필요하다.",
-   "ownerDecision": "ListRow 역할 측정과 선언별 targetMap이 생기기 전에는 defect·S4·mixed를 확정하지 않는다. 100→92는 줄고 38→60은 늘 수 있어 수기 delta로 덮을 수 없다."
+   "근거": "24개 minHeight를 구조로 전수 분류했다. 이 8개만 1줄 또는 2줄 목록 행이며 1줄은 60, 2줄은 76으로 배정한다. 나머지 16개는 목록 행이 아니라 각 컴포넌트 소유 높이로 분리한다.",
+   "executionStage": "S4",
+   "axis": "vertical",
+   "delta": "mixed",
+   "evidenceRef": "full-page-flow-prototype-axis-at.json#perDecl"
+  },
+  {
+   "id": "R-SZ-ROW-CONDITION",
+   "bin": "componentOwned",
+   "match": { "group": "size", "props": ["minHeight"], "at": [
+    "apps/mobile/src/components/history/HistoryLayout.tsx:24:minHeight",
+    "apps/mobile/src/features/my/screens/FixedCostScreen.tsx:77:minHeight",
+    "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx:170:minHeight"
+   ] },
+   "name": "COMPONENT.conditionRow.minHeight",
+   "근거": "세 선언은 목록 밀도 행이 아니라 필터·조건 선택 행의 자체 높이다."
+  },
+  {
+   "id": "R-SZ-ROW-APPHEADER",
+   "bin": "componentOwned",
+   "match": { "group": "size", "props": ["minHeight"], "at": ["apps/mobile/src/components/kit/AppHeader.tsx:20:minHeight"] },
+   "name": "COMPONENT.appHeader.minHeight",
+   "근거": "AppHeader 전체 행 높이는 헤더 컴포넌트 계약이 소유한다."
+  },
+  {
+   "id": "R-SZ-ROW-MEMO-INPUT",
+   "bin": "componentOwned",
+   "match": { "group": "size", "props": ["minHeight"], "at": ["apps/mobile/src/components/kit/MemoEditSheet.tsx:41:minHeight"] },
+   "name": "COMPONENT.memoEditSheet.input.minHeight",
+   "근거": "100dp는 여러 줄 메모 입력의 최소 높이이며 ListRow가 아니다."
+  },
+  {
+   "id": "R-SZ-ROW-PROFIT-METRIC",
+   "bin": "componentOwned",
+   "match": { "group": "size", "props": ["minHeight"], "at": [
+    "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:80:minHeight",
+    "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:122:minHeight",
+    "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:167:minHeight"
+   ] },
+   "name": "COMPONENT.profitBlocks.metricRow.minHeight",
+   "근거": "세 선언은 ProfitBlocks 내부 지표 행의 구성요소 소유 높이다."
+  },
+  {
+   "id": "R-SZ-ROW-PROFIT-ACTION",
+   "bin": "componentOwned",
+   "match": { "group": "size", "props": ["minHeight"], "at": [
+    "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:237:minHeight",
+    "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:389:minHeight"
+   ] },
+   "name": "COMPONENT.profitBlocks.actionRow.minHeight",
+   "근거": "두 선언은 ProfitBlocks 내부 action 행의 구성요소 소유 높이다."
+  },
+  {
+   "id": "R-SZ-ROW-SALES-OPTION",
+   "bin": "componentOwned",
+   "match": { "group": "size", "props": ["minHeight"], "at": ["apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx:312:minHeight"] },
+   "name": "COMPONENT.salesAnalytics.option.minHeight",
+   "근거": "선택 chip 묶음의 자체 높이이며 ListRow가 아니다."
+  },
+  {
+   "id": "R-SZ-ROW-SALES-BANNER",
+   "bin": "componentOwned",
+   "match": { "group": "size", "props": ["minHeight"], "at": ["apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:382:minHeight"] },
+   "name": "COMPONENT.salesHome.shortageBanner.minHeight",
+   "근거": "부족 경고 배너의 자체 높이이며 ListRow가 아니다."
+  },
+  {
+   "id": "R-SZ-ROW-SALES-METRIC",
+   "bin": "componentOwned",
+   "match": { "group": "size", "props": ["minHeight"], "at": [
+    "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx:184:minHeight",
+    "apps/mobile/src/features/sales/screens/SalesRevenueScreen.tsx:76:minHeight"
+   ] },
+   "name": "COMPONENT.sales.metricRow.minHeight",
+   "근거": "두 선언은 매출 지표 행의 구성요소 소유 높이다."
+  },
+  {
+   "id": "R-SZ-ROW-STOCK-ACTION",
+   "bin": "componentOwned",
+   "match": { "group": "size", "props": ["minHeight"], "at": [
+    "apps/mobile/src/features/sales/screens/SalesStockCheckScreen.tsx:136:minHeight",
+    "apps/mobile/src/features/sales/screens/SalesStockCheckScreen.tsx:152:minHeight"
+   ] },
+   "name": "COMPONENT.salesStockCheck.action.minHeight",
+   "근거": "두 선언은 재고 확인 action의 자체 높이며 ListRow가 아니다."
   },
   {
    "id": "R-SZ-APPHEADER-ACTION",
    "bin": "componentOwned",
    "match": {
     "group": "size",
-    "at": [
+   "at": [
      "apps/mobile/src/components/kit/AppHeader.tsx:29:width",
-     "apps/mobile/src/components/kit/AppHeader.tsx:29:height"
+     "apps/mobile/src/components/kit/AppHeader.tsx:29:height",
+     "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:89:width",
+     "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:89:height",
+     "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:97:width",
+     "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:97:height",
+     "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:173:width",
+     "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:173:height",
+     "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:85:width",
+     "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:85:height",
+     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:225:width",
+     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:225:height",
+     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:232:width",
+     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:232:height",
+     "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:106:width",
+     "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:106:height",
+     "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:163:width",
+     "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:163:height",
+     "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:170:width",
+     "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:170:height",
+     "apps/mobile/src/features/sales/screens/SalesFixedScreen.tsx:66:width",
+     "apps/mobile/src/features/sales/screens/SalesFixedScreen.tsx:66:height",
+     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:363:width",
+     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:363:height"
     ]
    },
    "name": "COMPONENT.appHeader.iconButton.visualSize",
    "target": 40,
-   "근거": "소유자 결정 11-3은 AppHeader의 맨 아이콘 버튼 40×40을 범용 controlVisualHeight가 아니라 COMPONENT.appHeader.iconButton.visualSize=40으로 잠갔다. 두 선언은 값 수렴 대상이 아니며 시각 변화가 없다.",
+   "근거": "소유자 결정 11-3은 AppHeader와 같은 헤더 action의 40×40을 범용 controlVisualHeight가 아니라 COMPONENT.appHeader.iconButton.visualSize=40으로 잠갔다. 12개 위치의 24선언은 값 수렴 대상이 아니며 시각 변화가 없다.",
    "출처": "기획서 §8.2b · 결정 11-3 (2026-09-05)",
    "방향": "해당없음 — 컴포넌트 소유 40 유지"
   },
   {
-   "id": "R-SZ-CONTROL-BOX",
-   "bin": "pendingApproval",
-   "match": {
-    "group": "size",
-    "at": [
-     "apps/mobile/src/components/kit/SearchBar.tsx:46",
-     "apps/mobile/src/components/kit/SearchBar.tsx:56",
-     "apps/mobile/src/components/kit/Slider.tsx:50",
-     "apps/mobile/src/components/kit/index.tsx:127",
-     "apps/mobile/src/features/changes/components/RecentChangeRow.tsx:49",
-     "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:204",
-     "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:144",
-     "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:100",
-     "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:89",
-     "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:97",
-     "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:173",
-     "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:286",
-     "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:297",
-     "apps/mobile/src/features/my/screens/MyAccountScreen.tsx:54",
-     "apps/mobile/src/features/my/screens/MyCategoryHubScreen.tsx:43",
-     "apps/mobile/src/features/my/screens/MyHomeScreen.tsx:116:height",
-     "apps/mobile/src/features/my/screens/MyHomeScreen.tsx:116:width",
-     "apps/mobile/src/features/my/screens/MyHomeScreen.tsx:129:height",
-     "apps/mobile/src/features/my/screens/MyHomeScreen.tsx:129:width",
-     "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx:279:height",
-     "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx:279:width",
-     "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx:32",
-     "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx:34",
-     "apps/mobile/src/features/my/screens/MyTaxScreen.tsx:207:height",
-     "apps/mobile/src/features/my/screens/MyTaxScreen.tsx:207:width",
-     "apps/mobile/src/features/my/screens/MyTaxScreen.tsx:241",
-     "apps/mobile/src/features/my/screens/MyUnitsScreen.tsx:216",
-     "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:119",
-     "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:129",
-     "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:132",
-     "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:85",
-     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:225",
-     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:232",
-     "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:106",
-     "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:130",
-     "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:133",
-     "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:143",
-     "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:143",
-     "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:146",
-     "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:355",
-     "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:359",
-     "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:275:height",
-     "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:275:width",
-     "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:163",
-     "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:170",
-     "apps/mobile/src/features/sales/components/SaleStepper.tsx:26",
-     "apps/mobile/src/features/sales/screens/SalesChannelScreen.tsx:110",
-     "apps/mobile/src/features/sales/screens/SalesFixedScreen.tsx:66",
-     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:363"
-    ]
-   },
-   "evidence": "AppHeader 40×40 두 선언을 결정 11-3의 `COMPONENT.appHeader.iconButton.visualSize=40`으로 분리한 뒤 남은 82개 선언이다. 40·34·38·32 등 여러 시각 크기가 섞여 있고 44 미만 터치 영역은 hitSlop이 별도로 메운다.",
-   "target": "`controlVisualHeight` 32·38 후보. 선언별 역할과 목적지는 아직 배정하지 않음",
-   "출처": "기획서 §8.2 `D-11` 닫힘 — \"`controlVisualHeight` 32/38 · `minTouchTarget` 44(시각 높이와 **분리**)\"",
-   "근거": "82건. `width`/`height` 쌍이다 — 40(26) · 34(18) · 38(10) · 32(3) · 30(5) · 26·24(4) · 28(2) · 22(2) · 20(2) · 42(2) · 46(2) · 50 · 27. **결정문의 값 집합과 앱의 실측이 맞지 않는다.** 결정 9-1 이 승인한 `controlVisualHeight` 은 32 · 38 이고, 앱은 20~50 사이 열세 값 을 쓴다. 결정문은 **역할 이름과 축을 정했지 어느 앱 값이 어느 역할값으로 가는지는 정하지 않았다.** 그 대응은 측정과 수렴이라 여기서 낸다 — 승인된 값 집합이 프로토타입 좌표계에서 나왔기 때문에, 앱 좌표계의 값이 그대로 같을 이유가 없다. 승인된 두 값과 실제로 일치하는 것은 32(3건)·38(10건) 뿐이고, 가장 많은 40(26건)·34(18건)은 어느 쪽도 아니다.",
-   "question": "남은 82개 선언 각각을 32·38 중 어디로 보낼지, 또는 별도 컴포넌트 소유값으로 둘지 역할별로 확정해야 한다.",
-   "ownerDecision": "정확한 선언별 목적지가 생기기 전에는 defect 및 실행 단계로 확정하지 않는다. `minTouchTarget=44`는 시각 상자 목적지가 아니라 별도 터치 계약이다."
+   "id": "R-SZ-CONTROL-SM",
+   "bin": "defect",
+   "match": { "group": "size", "props": ["width", "height"], "at": [
+    "apps/mobile/src/components/kit/SearchBar.tsx:46",
+    "apps/mobile/src/components/kit/SearchBar.tsx:56",
+    "apps/mobile/src/components/kit/index.tsx:127",
+    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:144",
+    "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:129",
+    "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:132",
+    "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:143",
+    "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:143",
+    "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:146",
+    "apps/mobile/src/features/sales/components/SaleStepper.tsx:26"
+   ] },
+   "target": "controlVisualHeight.sm (32)",
+   "targetValue": 32,
+   "출처": "기획서 §8.2 D-11 · controlVisualHeight 32/38",
+   "근거": "검색·소형 조작 action 10자리의 width/height 20선언이다. 34는 32로 수렴하고 이미 32인 HistoryFilter는 유지한다.",
+   "executionStage": "S3a",
+   "axis": "both",
+   "delta": "mixed",
+   "evidenceRef": "full-page-flow-prototype-axis-at.json#perDecl"
+  },
+  {
+   "id": "R-SZ-CONTROL-MD",
+   "bin": "defect",
+   "match": { "group": "size", "props": ["width", "height"], "at": [
+    "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:286",
+    "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:297",
+    "apps/mobile/src/features/my/screens/MyCategoryHubScreen.tsx:43",
+    "apps/mobile/src/features/my/screens/MyHomeScreen.tsx:129",
+    "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:119"
+   ] },
+   "target": "controlVisualHeight.md (38)",
+   "targetValue": 38,
+   "출처": "기획서 §8.2 D-11 · controlVisualHeight 32/38",
+   "근거": "타일·중형 조작 action 5자리의 width/height 10선언은 이미 38이라 역할 이름으로 수렴하되 시각값은 유지한다.",
+   "executionStage": "S3a",
+   "axis": "both",
+   "delta": "same",
+   "evidenceRef": "full-page-flow-prototype-axis-at.json#perDecl"
+  },
+  {
+   "id": "R-SZ-CONTROL-SLIDER",
+   "bin": "componentOwned",
+   "match": { "group": "size", "props": ["width", "height"], "at": ["apps/mobile/src/components/kit/Slider.tsx:50"] },
+   "name": "COMPONENT.slider.thumb.visualSize",
+   "근거": "슬라이더 thumb 크기는 해당 컴포넌트가 소유한다."
+  },
+  {
+   "id": "R-SZ-CONTROL-CHANGE-ICON",
+   "bin": "componentOwned",
+   "match": { "group": "size", "props": ["width", "height"], "at": ["apps/mobile/src/features/changes/components/RecentChangeRow.tsx:49"] },
+   "name": "COMPONENT.recentChangeRow.icon.visualSize",
+   "근거": "최근 변경 행의 장식 아이콘이며 조작 컨트롤이 아니다."
+  },
+  {
+   "id": "R-SZ-CONTROL-ROW-OVERFLOW",
+   "bin": "componentOwned",
+   "match": { "group": "size", "props": ["width", "height"], "at": ["apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:204"] },
+   "name": "COMPONENT.rowOverflowAction.visualBox",
+   "근거": "27×40 비정방형 overflow action의 구성요소 소유 상자다."
+  },
+  {
+   "id": "R-SZ-CONTROL-ACCOUNT-ICON",
+   "bin": "componentOwned",
+   "match": { "group": "size", "props": ["width", "height"], "at": ["apps/mobile/src/features/my/screens/MyAccountScreen.tsx:54"] },
+   "name": "COMPONENT.accountIdentity.icon.visualSize",
+   "근거": "계정 identity 아이콘의 구성요소 소유 크기다."
+  },
+  {
+   "id": "R-SZ-CONTROL-STORE-ICON",
+   "bin": "componentOwned",
+   "match": { "group": "size", "props": ["width", "height"], "at": ["apps/mobile/src/features/my/screens/MyHomeScreen.tsx:116"] },
+   "name": "COMPONENT.storeIdentity.icon.visualSize",
+   "근거": "매장 identity 아이콘의 구성요소 소유 크기다."
+  },
+  {
+   "id": "R-SZ-CONTROL-RADIO",
+   "bin": "componentOwned",
+   "match": { "group": "size", "props": ["width", "height"], "at": [
+    "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx:279",
+    "apps/mobile/src/features/my/screens/MyUnitsScreen.tsx:216"
+   ] },
+   "name": "COMPONENT.selectionRadio.visualSize",
+   "근거": "언어·단위 선택 radio가 공유하는 구성요소 소유 크기다."
+  },
+  {
+   "id": "R-SZ-CONTROL-SWITCH-TRACK",
+   "bin": "componentOwned",
+   "match": { "group": "size", "props": ["width", "height"], "at": ["apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx:32"] },
+   "name": "COMPONENT.switch.track.visualSize",
+   "근거": "switch track의 비정방형 구성요소 소유 크기다."
+  },
+  {
+   "id": "R-SZ-CONTROL-SWITCH-THUMB",
+   "bin": "componentOwned",
+   "match": { "group": "size", "props": ["width", "height"], "at": ["apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx:34"] },
+   "name": "COMPONENT.switch.thumb.visualSize",
+   "근거": "switch thumb의 구성요소 소유 크기다."
+  },
+  {
+   "id": "R-SZ-CONTROL-TAX-REMOVE",
+   "bin": "componentOwned",
+   "match": { "group": "size", "props": ["width", "height"], "at": ["apps/mobile/src/features/my/screens/MyTaxScreen.tsx:207"] },
+   "name": "COMPONENT.taxRow.removeAction.visualBox",
+   "근거": "세금 행 제거 action의 32×40 비정방형 구성요소 소유 상자다."
+  },
+  {
+   "id": "R-SZ-CONTROL-REORDER",
+   "bin": "componentOwned",
+   "match": { "group": "size", "props": ["width", "height"], "at": [
+    "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:130",
+    "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:133"
+   ] },
+   "name": "COMPONENT.reorderAction.visualBox",
+   "근거": "위·아래 재정렬 action의 28×20 비정방형 구성요소 소유 상자다."
+  },
+  {
+   "id": "R-SZ-CONTROL-QUANTITY",
+   "bin": "componentOwned",
+   "match": { "group": "size", "props": ["width", "height"], "at": [
+    "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:355",
+    "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:359"
+   ] },
+   "name": "COMPONENT.quantityStepper.action.visualSize",
+   "근거": "수량 stepper의 증감 action이 공유하는 구성요소 소유 크기다."
+  },
+  {
+   "id": "R-SZ-CONTROL-LEGEND",
+   "bin": "componentOwned",
+   "match": { "group": "size", "props": ["width", "height"], "at": [
+    "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:100",
+    "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:275",
+    "apps/mobile/src/features/sales/screens/SalesChannelScreen.tsx:110"
+   ] },
+   "name": "COMPONENT.legend.swatch.visualSize",
+   "근거": "세 범례 swatch는 7×7·9×9·10×10 장식 표식이며 조작 컨트롤이 아니다. 크기와 반경은 범례 컴포넌트가 함께 소유한다."
   },
   {
    "id": "R-SZ-FIXED-COL",
@@ -1382,7 +1641,7 @@
    },
    "name": "column.minWidth",
    "근거": "22 · 26 · 34 · 56 · 96 · 110 — 열이 내용보다 좁아지지 않게 하는 하한이다. 고정 폭과 같은 역할의 완화판이고, 값의 근거도 같다(가장 긴 문자열).",
-   "순서근거": "R-SZ-CONTROL-BOX 보다 뒤에 와도 무방하나, `minWidth` 는 폭×높이 쌍이 아니므로 명시적으로 가른다"
+   "순서근거": "`minWidth` 는 폭×높이 쌍이 아니므로 명시적으로 가른다."
   },
   {
    "id": "R-RD-PRIM",
@@ -1403,7 +1662,7 @@
   },
   {
    "id": "R-RD-LEGEND-DOT",
-   "bin": "pendingApproval",
+   "bin": "componentOwned",
    "match": {
     "group": "radius",
     "numericIn": [
@@ -1417,9 +1676,8 @@
      "apps/mobile/src/features/sales/screens/SalesChannelScreen.tsx:110:borderRadius"
     ]
    },
-   "question": "범례 점 두 곳이 **원이 아니다.** `RecipeDetailScreen:284` 는 9×9 에 반경 3(원이 되려면 4.5) · `SalesChannelScreen:110` 은 10×10 에 반경 3(원이 되려면 5) 이다. 둥근 사각형이 의도인지, 다른 범례 점(`IngredientListScreen:100` 의 7×7 반경 4 = 원)과 맞출지.",
-   "evidence": "2건. 실측으로 \"반경 = 짧은 변의 절반\" 이 **성립하지 않는** 유일한 두 자리다. 나머지 16 자리는 전부 성립한다. `radius.full` 로 보내면 RN 이 반경을 짧은 변의 절반으로 자르므로 **둥근 사각형이 원으로 바뀐다** — 값 수렴이 아니라 모양 변경이다.",
-   "ownerDecision": "같은 화면 안에서 범례 점의 모양을 통일할지가 디자인 판정이다.",
+   "name": "COMPONENT.legend.swatch.radius",
+   "근거": "두 값은 범례 swatch의 크기와 함께 모양을 정하는 구성요소 소유값이다. 원으로 바꾸는 제품 결정을 추정하지 않고 현재 둥근 사각형 형상을 보존한다.",
    "순서근거": "R-RD-SHAPE 보다 앞선다 — 실측이 어긋난 자리를 먼저 뺀다"
   },
   {
