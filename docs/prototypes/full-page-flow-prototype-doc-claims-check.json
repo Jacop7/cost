@@ -1,11 +1,10 @@
 {
   "manifest": {
     "script": "docs/prototypes/full-page-flow-prototype-doc-claims-check.mjs",
-    "scriptSha256": "9490ba58ebeb644eee1b29422d347ae73723c653cbd1e25cd5dfe9d09537dc44",
+    "scriptSha256": "b4d282ecbb6a990d1dccca9d16afbb0d364d099942d506fb952cae0e67ab6abd",
     "auditSha256": "b8163d3f97a5fab13995232dd7d314d1f7313bef42b91afd1bd286c65d691df3",
     "claimsSha256": "927bbcf8085befba089028780cee29c7ae2737105f287892ab907bd1b4fefaed",
     "node": "v24.15.0",
-    "generatedAt": "2026-09-05T13:49:00.244Z",
     "판정": "값 목록을 값으로 대조한다. 개수만 세면 §7.3.1 같은 자리를 놓친다."
   },
   "status": "PASS",

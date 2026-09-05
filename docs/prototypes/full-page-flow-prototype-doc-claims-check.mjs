@@ -163,7 +163,10 @@ const out = {
     script: 'docs/prototypes/full-page-flow-prototype-doc-claims-check.mjs',
     scriptSha256: sha(readFileSync(new URL(import.meta.url))),
     auditSha256: sha(auditBytes), claimsSha256: sha(claimBytes),
-    node: process.version, generatedAt: new Date().toISOString(),
+    // 이 파일은 **판정 산출물**이지 실행 일지의 시간이 권위가 아니다. `generatedAt` 을 넣으면
+    // 같은 입력을 다시 확인하는 행위만으로 봉인 대상이 바뀌어 clean tree 게이트를 깨뜨린다.
+    // 입력 해시 셋이 실행 출처를 결속하므로 결과는 같은 입력에 대해 바이트까지 결정적이어야 한다.
+    node: process.version,
     판정: '값 목록을 값으로 대조한다. 개수만 세면 §7.3.1 같은 자리를 놓친다.',
   },
   status: failures.length ? 'FAIL' : 'PASS',
