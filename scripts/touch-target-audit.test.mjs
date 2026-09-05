@@ -3,7 +3,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { readFileSync, writeFileSync, mkdtempSync, rmSync, mkdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdtempSync, rmSync, mkdirSync, copyFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
@@ -29,7 +29,8 @@ const runWith = ({ tsx, known, args = [] }) => {
     const src = join(dir, 'src'); mkdirSync(src, { recursive: true });
     writeFileSync(join(src, 'Sample.tsx'), tsx);
     const k = join(dir, 'known.json');
-    writeFileSync(k, JSON.stringify({ 제품입력해시: probeHash(src, dir), unjudged: [], components: [], buttonDynamic: [], ...known }, null, 2));
+    writeFileSync(k, JSON.stringify({ 제품입력해시: probeHash(src, dir), unjudged: [], siblingOverlaps: [],
+      siblingUnjudged: [], components: [], buttonDynamic: [], ...known }, null, 2));
     const r = spawnSync(process.execPath, [AUDIT, `--src=${src}`, `--known=${k}`, ...args], { encoding: 'utf8' });
     return { code: r.status, out: (r.stdout ?? '') + (r.stderr ?? '') };
   } finally { rmSync(dir, { recursive: true, force: true }); }
@@ -85,12 +86,46 @@ test('같은 부모 이웃 pressable 의 안쪽 hitSlop 이 gap 절반 이하면
   assert.equal(r.code, 0, r.out);
 });
 
+test('삼항 JSX 안의 pressable도 바깥 형제와 중첩되면 FAIL 한다', () => {
+  const tsx = `<View style={{ flexDirection: 'row', gap: 4 }}>{cond ? <Pressable onPress={a} hitSlop={{ right: 3 }} style={{ width: 40, height: 44 }}/> : null}<Pressable onPress={b} hitSlop={{ left: 3 }} style={{ width: 40, height: 44 }}/></View>`;
+  const r = runWith({ tsx, known: { entries: [], siblingOverlaps: [], siblingUnjudged: [] } });
+  assert.equal(r.code, 1, r.out);
+  assert.match(r.out, /새 형제 중첩 위험/);
+});
+
+test('동적 부모 style은 gap 0으로 가정하지 않고 형제판정불가로 래칫한다', () => {
+  const tsx = `<View style={[styles.row, compact && styles.compact]}><Pressable onPress={a} hitSlop={3} style={{ width: 40, height: 44 }}/><Pressable onPress={b} hitSlop={3} style={{ width: 40, height: 44 }}/></View>`;
+  const r = runWith({ tsx, known: { entries: [], siblingOverlaps: [], siblingUnjudged: [] } });
+  assert.equal(r.code, 1, r.out);
+  assert.match(r.out, /새 형제판정불가/);
+});
+
+test('.map()이 반환하는 pressable의 반복 인접 관계도 검사한다', () => {
+  const tsx = `<View style={{ flexDirection: 'row', gap: 4 }}>{items.map((item) => <Pressable key={item.id} onPress={f} hitSlop={3} style={{ width: 40, height: 44 }}/>)}</View>`;
+  const r = runWith({ tsx, known: { entries: [], siblingOverlaps: [], siblingUnjudged: [] } });
+  assert.equal(r.code, 1, r.out);
+  assert.match(r.out, /새 형제 중첩 위험/);
+});
+
+test('typescript 의존성이 없으면 설치 명령을 먼저 안내한다', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'touch-nodeps-'));
+  try {
+    const audit = join(dir, 'touch-target-audit.mjs');
+    copyFileSync(AUDIT, audit);
+    const r = spawnSync(process.execPath, [audit], { encoding: 'utf8' });
+    const out = (r.stdout ?? '') + (r.stderr ?? '');
+    assert.equal(r.status, 2, out);
+    assert.match(out, /corepack pnpm install --frozen-lockfile/);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
 test('저장소의 알려진 목록은 지금 실제와 맞는다', () => {
   const r = spawnSync(process.execPath, [AUDIT], { encoding: 'utf8' });
   assert.equal(r.status, 0, (r.stdout ?? '') + (r.stderr ?? ''));
   const known = JSON.parse(readFileSync(KNOWN, 'utf8'));
   assert.equal(known.entries.length, 2, '28×20 재정렬 두 자리는 소유자 결정 전까지 미해결이어야 한다');
   assert.equal(known.siblingOverlaps.length, 1, '재정렬 버튼 사이의 중첩 위험을 별도로 래칫한다');
+  assert.equal(known.siblingUnjudged.length, 2, '동적 형제 구조 두 부모는 0으로 가정하지 말고 판정불가로 남겨야 한다');
 });
 
 test('판정불가도 래칫한다 — 목록에 없는 새 판정불가는 FAIL', () => {
@@ -154,7 +189,8 @@ const runButton = ({ consumers = '', known = {}, args = [], button = BUTTON_TSX 
     writeFileSync(join(src, 'src', 'components', 'kit', 'Button.tsx'), button);
     writeFileSync(join(src, 'Consumers.tsx'), consumers);
     const k = join(dir, 'known.json');
-    writeFileSync(k, JSON.stringify({ 제품입력해시: probeHash(src, dir), entries: [], unjudged: [], components: [], buttonDynamic: [], ...known }, null, 2));
+    writeFileSync(k, JSON.stringify({ 제품입력해시: probeHash(src, dir), entries: [], unjudged: [], siblingOverlaps: [],
+      siblingUnjudged: [], components: [], buttonDynamic: [], ...known }, null, 2));
     const r = spawnSync(process.execPath, [AUDIT, `--src=${src}`, `--known=${k}`, ...args], { encoding: 'utf8' });
     return { code: r.status, out: (r.stdout ?? '') + (r.stderr ?? '') };
   } finally { rmSync(dir, { recursive: true, force: true }); }
@@ -324,7 +360,7 @@ test('시험 fixture 의 <Button> 은 제품 소비처와 섞지 않는다', () 
     writeFileSync(join(src, 'Consumers.tsx'), `<Button size="sm" onPress={f}>A</Button>`);
     writeFileSync(join(src, 'tests', 'smoke.test.tsx'), `<Button size="sm" onPress={f}>시험</Button>`);
     const k = join(dir, 'known.json');
-    writeFileSync(k, JSON.stringify({ 제품입력해시: probeHash(src, dir), entries: [], unjudged: [], buttonDynamic: [],
+    writeFileSync(k, JSON.stringify({ 제품입력해시: probeHash(src, dir), entries: [], unjudged: [], siblingOverlaps: [], siblingUnjudged: [], buttonDynamic: [],
       components: contracts({ sm: ['src/Consumers.tsx:1'] }) }, null, 2));
     const r = spawnSync(process.execPath, [AUDIT, `--src=${src}`, `--known=${k}`], { encoding: 'utf8' });
     const out = (r.stdout ?? '') + (r.stderr ?? '');
@@ -354,7 +390,7 @@ const withTestFixture = (fixture, known) => {
     writeFileSync(join(src, 'Consumers.tsx'), `<Button size="sm" onPress={f}>A</Button>`);
     writeFileSync(join(src, 'tests', 'smoke.test.tsx'), fixture);
     const k = join(dir, 'known.json');
-    writeFileSync(k, JSON.stringify({ 제품입력해시: probeHash(src, dir), entries: [], unjudged: [],
+    writeFileSync(k, JSON.stringify({ 제품입력해시: probeHash(src, dir), entries: [], unjudged: [], siblingOverlaps: [], siblingUnjudged: [],
       buttonDynamic: [], components: contracts({ sm: ['src/Consumers.tsx:1'] }), ...known }, null, 2));
     // 목록을 만든 뒤 시험 fixture 만 고친다.
     writeFileSync(join(src, 'tests', 'smoke.test.tsx'), fixture + '\n// 시험만 한 줄 고쳤다\n');
@@ -376,7 +412,7 @@ test('제품 .tsx 를 고치면 제품 래칫이 깨진다 — 경계가 한쪽�
     writeFileSync(join(src, 'src', 'components', 'kit', 'Button.tsx'), BUTTON_TSX);
     writeFileSync(join(src, 'Consumers.tsx'), `<Button size="sm" onPress={f}>A</Button>`);
     const k = join(dir, 'known.json');
-    writeFileSync(k, JSON.stringify({ 제품입력해시: probeHash(src, dir), entries: [], unjudged: [],
+    writeFileSync(k, JSON.stringify({ 제품입력해시: probeHash(src, dir), entries: [], unjudged: [], siblingOverlaps: [], siblingUnjudged: [],
       buttonDynamic: [], components: contracts({ sm: ['src/Consumers.tsx:1'] }) }, null, 2));
     writeFileSync(join(src, 'Consumers.tsx'), `<Button size="sm" onPress={f}>A</Button>\n// 제품 코드를 고쳤다\n`);
     const r = spawnSync(process.execPath, [AUDIT, `--src=${src}`, `--known=${k}`], { encoding: 'utf8' });

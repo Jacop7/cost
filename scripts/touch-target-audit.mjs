@@ -17,15 +17,25 @@
  *   목록에 없는 새 미달 → FAIL (재발 방지)
  *   목록에 있는데 이제 통과 → FAIL (고쳤으면 목록에서 빼라)
  *
- * 남은 한계는 정직하게 적는다: 부모 경계로 잘리는지, 이웃 터치 영역과 겹치는지는 **정적
- * 분석으로 못 본다.** 그건 렌더 감사(`S4`)의 몫이고, 이 감사는 "선언상 44 가 되는가" 만 본다.
+ * 실행 전제: 저장소 루트에서 `corepack pnpm install --frozen-lockfile`로 lockfile 의
+ * `typescript` 파서를 설치한다. 없으면 아래 import guard가 재현 명령과 함께 종료한다.
+ *
+ * 남은 한계는 정직하게 적는다: 같은 부모의 직접 형제는 조건부 JSX까지 정적 검사하지만,
+ * 부모 경계·다른 부모·absolute·z-order는 네이티브 렌더 감사(`S4`)의 몫이다.
  */
 import { readFileSync, writeFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { join, resolve, relative } from 'node:path';
-import ts from 'typescript';
+let ts;
+try {
+  const typescriptModule = await import('typescript');
+  ts = typescriptModule.default ?? typescriptModule;
+} catch (error) {
+  console.error('touch-target-audit: TypeScript 파서 의존성이 없습니다. 저장소 루트에서 `corepack pnpm install --frozen-lockfile`을 먼저 실행하세요.');
+  process.exit(2);
+}
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 // `--키=값` 과 값 없는 `--깃발` 둘 다 받는다. 깃발은 빈 문자열이라 `!== undefined` 로 본다.
@@ -158,46 +168,158 @@ const objectNumbers = (e) => {
   return out;
 };
 const expressionOf = (a) => a?.initializer && ts.isJsxExpression(a.initializer) ? a.initializer.expression : null;
-const astHitSlop = (opening) => {
-  const e = expressionOf(attr(opening, 'hitSlop'));
-  const n = numberOf(e);
-  if (n !== null) return { top: n, bottom: n, left: n, right: n };
-  const o = objectNumbers(e) ?? {};
-  return { top: o.top ?? o.vertical ?? 0, bottom: o.bottom ?? o.vertical ?? 0,
-    left: o.left ?? o.horizontal ?? 0, right: o.right ?? o.horizontal ?? 0 };
+const unwrapExpression = (e) => {
+  let current = e;
+  while (current && (ts.isParenthesizedExpression(current) || ts.isAsExpression(current)
+    || ts.isTypeAssertionExpression(current) || ts.isNonNullExpression(current))) current = current.expression;
+  return current;
 };
-const astStyle = (opening) => objectNumbers(expressionOf(attr(opening, 'style'))) ?? {};
+const astHitSlop = (opening) => {
+  const hitSlopAttr = attr(opening, 'hitSlop');
+  if (!hitSlopAttr) return { values: { top: 0, bottom: 0, left: 0, right: 0 }, resolved: true };
+  const e = unwrapExpression(expressionOf(hitSlopAttr));
+  const n = numberOf(e);
+  if (n !== null) return { values: { top: n, bottom: n, left: n, right: n }, resolved: true };
+  if (!e || !ts.isObjectLiteralExpression(e)) return { values: {}, resolved: false };
+  const o = objectNumbers(e) ?? {};
+  const relevant = new Set(['top', 'bottom', 'left', 'right', 'horizontal', 'vertical']);
+  const unresolved = e.properties.some(p => ts.isSpreadAssignment(p) || (ts.isPropertyAssignment(p)
+    && relevant.has(p.name.getText().replace(/^['"]|['"]$/g, '')) && numberOf(p.initializer) === null));
+  return { values: { top: o.top ?? o.vertical ?? 0, bottom: o.bottom ?? o.vertical ?? 0,
+    left: o.left ?? o.horizontal ?? 0, right: o.right ?? o.horizontal ?? 0 }, resolved: !unresolved };
+};
+const styleKeys = new Set(['flexDirection', 'gap', 'rowGap', 'columnGap', 'margin', 'marginHorizontal',
+  'marginVertical', 'marginLeft', 'marginRight', 'marginTop', 'marginBottom']);
+const astStyle = (opening) => {
+  const styleAttr = attr(opening, 'style');
+  if (!styleAttr) return { values: {}, resolved: true };
+  const e = unwrapExpression(expressionOf(styleAttr));
+  if (!e || !ts.isObjectLiteralExpression(e)) return { values: {}, resolved: false };
+  const values = objectNumbers(e) ?? {};
+  const unresolved = e.properties.some(p => ts.isSpreadAssignment(p) || (ts.isPropertyAssignment(p)
+    && styleKeys.has(p.name.getText().replace(/^['"]|['"]$/g, ''))
+    && numberOf(p.initializer) === null && !ts.isStringLiteral(p.initializer)));
+  return { values, resolved: !unresolved };
+};
 const isPressableOpening = (opening) => PRESSABLE_NAMES.has(jsxName(opening)) && Boolean(attr(opening, 'onPress'));
 const siblingPairs = [];
+const siblingUnjudged = [];
 for (const f of files) {
   const text = readFileSync(f, 'utf8');
   const sf = ts.createSourceFile(f, text, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
   const atOf = (opening) => `${relative(idRoot, f).replace(/\\/g, '/')}:${sf.getLineAndCharacterOfPosition(opening.getStart(sf)).line + 1}`;
+  const parentUnjudged = new Map();
+  const expressionUnjudged = new Map();
+  const markUnjudged = (opening, reason) => {
+    const at = atOf(opening);
+    const reasons = parentUnjudged.get(at) ?? new Set();
+    reasons.add(reason);
+    parentUnjudged.set(at, reasons);
+  };
+  const markExpressionUnjudged = (opening, reason) => {
+    const at = atOf(opening);
+    const reasons = expressionUnjudged.get(at) ?? new Set();
+    reasons.add(reason);
+    expressionUnjudged.set(at, reasons);
+  };
+  const jsxOpening = (node) => ts.isJsxElement(node) ? node.openingElement
+    : ts.isJsxSelfClosingElement(node) ? node : null;
+  const combine = (left, right, opening) => {
+    const out = [];
+    for (const a of left) for (const b of right) {
+      if (out.length >= 128) { markExpressionUnjudged(opening, '조건부 JSX 조합이 128개를 넘어 정적으로 펼치지 못했다'); return out; }
+      out.push([...a, ...b]);
+    }
+    return out;
+  };
+  const alternativesFromExpression = (raw, parentOpening) => {
+    const e = unwrapExpression(raw);
+    if (!e || e.kind === ts.SyntaxKind.NullKeyword || e.kind === ts.SyntaxKind.FalseKeyword
+      || e.kind === ts.SyntaxKind.TrueKeyword || ts.isStringLiteral(e) || ts.isNumericLiteral(e)) return [[]];
+    const opening = jsxOpening(e);
+    if (opening) return [[opening]];
+    if (ts.isJsxFragment(e)) return alternativesFromChildren(e.children, parentOpening);
+    if (ts.isConditionalExpression(e)) return [
+      ...alternativesFromExpression(e.whenTrue, parentOpening),
+      ...alternativesFromExpression(e.whenFalse, parentOpening),
+    ];
+    if (ts.isBinaryExpression(e) && e.operatorToken.kind === ts.SyntaxKind.AmpersandAmpersandToken)
+      return [[], ...alternativesFromExpression(e.right, parentOpening)];
+    if (ts.isArrayLiteralExpression(e)) {
+      let sequences = [[]];
+      for (const item of e.elements) sequences = combine(sequences, alternativesFromExpression(item, parentOpening), parentOpening);
+      return sequences;
+    }
+    if (ts.isCallExpression(e) && ts.isPropertyAccessExpression(e.expression) && e.expression.name.text === 'map') {
+      const callback = e.arguments[0];
+      let returned = [];
+      if (callback && (ts.isArrowFunction(callback) || ts.isFunctionExpression(callback))) {
+        if (ts.isBlock(callback.body)) {
+          const collectReturns = (n) => {
+            if (ts.isReturnStatement(n) && n.expression) returned.push(...alternativesFromExpression(n.expression, parentOpening));
+            else ts.forEachChild(n, collectReturns);
+          };
+          collectReturns(callback.body);
+        } else returned = alternativesFromExpression(callback.body, parentOpening);
+      }
+      if (!returned.length) { markExpressionUnjudged(parentOpening, '.map() 반환 JSX를 정적으로 펼치지 못했다'); return [[]]; }
+      return [[], ...returned, ...returned.map(sequence => [...sequence, ...sequence])];
+    }
+    markExpressionUnjudged(parentOpening, `JSX 식을 정적으로 펼치지 못했다 (${ts.SyntaxKind[e.kind]})`);
+    return [[]];
+  };
+  const alternativesFromChild = (child, parentOpening) => {
+    const opening = jsxOpening(child);
+    if (opening) return [[opening]];
+    if (ts.isJsxFragment(child)) return alternativesFromChildren(child.children, parentOpening);
+    if (ts.isJsxExpression(child)) return alternativesFromExpression(child.expression, parentOpening);
+    return [[]];
+  };
+  function alternativesFromChildren(children, parentOpening) {
+    let sequences = [[]];
+    for (const child of children) sequences = combine(sequences, alternativesFromChild(child, parentOpening), parentOpening);
+    return sequences;
+  }
+  const seenPairs = new Set();
   const visit = (node) => {
     if (ts.isJsxElement(node)) {
-      const elements = node.children.filter(c => ts.isJsxElement(c) || ts.isJsxSelfClosingElement(c));
-      const style = astStyle(node.openingElement);
-      const axis = style.flexDirection === 'row' || style.flexDirection === 'row-reverse' ? 'horizontal' : 'vertical';
-      const parentGap = Number(axis === 'horizontal' ? (style.columnGap ?? style.gap ?? 0) : (style.rowGap ?? style.gap ?? 0));
-      for (let i = 0; i < elements.length - 1; i++) {
-        const first = ts.isJsxElement(elements[i]) ? elements[i].openingElement : elements[i];
-        const second = ts.isJsxElement(elements[i + 1]) ? elements[i + 1].openingElement : elements[i + 1];
+      const parentStyle = astStyle(node.openingElement);
+      const alternatives = alternativesFromChildren(node.children, node.openingElement);
+      if (alternatives.some(elements => elements.some(isPressableOpening))) {
+        const pending = expressionUnjudged.get(atOf(node.openingElement));
+        if (pending) for (const reason of pending) markUnjudged(node.openingElement, reason);
+      }
+      for (const elements of alternatives) for (let i = 0; i < elements.length - 1; i++) {
+        const first = elements[i], second = elements[i + 1];
         if (!isPressableOpening(first) || !isPressableOpening(second)) continue;
+        const firstAt = atOf(first), secondAt = atOf(second), pair = `${firstAt}|${secondAt}`;
+        if (seenPairs.has(pair)) continue;
+        seenPairs.add(pair);
         const firstStyle = astStyle(first), secondStyle = astStyle(second);
+        const firstHitSlop = astHitSlop(first), secondHitSlop = astHitSlop(second);
+        if (!parentStyle.resolved || !firstStyle.resolved || !secondStyle.resolved
+          || !firstHitSlop.resolved || !secondHitSlop.resolved) {
+          markUnjudged(node.openingElement, `형제 ${pair}의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다`);
+          continue;
+        }
+        const style = parentStyle.values;
+        const axis = style.flexDirection === 'row' || style.flexDirection === 'row-reverse' ? 'horizontal' : 'vertical';
+        const parentGap = Number(axis === 'horizontal' ? (style.columnGap ?? style.gap ?? 0) : (style.rowGap ?? style.gap ?? 0));
+        const aStyle = firstStyle.values, bStyle = secondStyle.values;
         const gap = parentGap + Number(axis === 'horizontal'
-          ? (firstStyle.marginRight ?? firstStyle.marginHorizontal ?? firstStyle.margin ?? 0) + (secondStyle.marginLeft ?? secondStyle.marginHorizontal ?? secondStyle.margin ?? 0)
-          : (firstStyle.marginBottom ?? firstStyle.marginVertical ?? firstStyle.margin ?? 0) + (secondStyle.marginTop ?? secondStyle.marginVertical ?? secondStyle.margin ?? 0));
-        const a = astHitSlop(first), b = astHitSlop(second), limit = gap / 2;
+          ? (aStyle.marginRight ?? aStyle.marginHorizontal ?? aStyle.margin ?? 0) + (bStyle.marginLeft ?? bStyle.marginHorizontal ?? bStyle.margin ?? 0)
+          : (aStyle.marginBottom ?? aStyle.marginVertical ?? aStyle.margin ?? 0) + (bStyle.marginTop ?? bStyle.marginVertical ?? bStyle.margin ?? 0));
+        const a = firstHitSlop.values, b = secondHitSlop.values, limit = gap / 2;
         const firstInward = axis === 'horizontal' ? a.right : a.bottom;
         const secondInward = axis === 'horizontal' ? b.left : b.top;
-        const firstAt = atOf(first), secondAt = atOf(second);
-        siblingPairs.push({ pair: `${firstAt}|${secondAt}`, firstAt, secondAt, axis, gap, limit,
+        siblingPairs.push({ pair, firstAt, secondAt, axis, gap, limit,
           firstInward, secondInward, 판정: firstInward <= limit && secondInward <= limit ? '통과' : '중첩위험' });
       }
     }
     ts.forEachChild(node, visit);
   };
   visit(sf);
+  siblingUnjudged.push(...[...parentUnjudged].map(([at, reasons]) => ({ at, 사유: [...reasons].sort().join(' · ') })));
 }
 
 // ── 공용 컴포넌트 계약 ────────────────────────────────────
@@ -331,6 +453,20 @@ for (const p of siblingRisks) {
 const siblingRiskSet = new Set(siblingRisks.map(p => p.pair));
 for (const [pair] of knownSibling) if (!siblingRiskSet.has(pair))
   failures.push(`형제 중첩 위험이 해소됐다 — ${pair} 를 siblingOverlaps 에서 빼라`);
+const currentSiblingUnjudged = new Map(siblingUnjudged.map(e => [e.at, e]));
+const knownSiblingUnjudged = new Map((known.siblingUnjudged ?? []).map(e => [e.at, e]));
+if (known.siblingUnjudged === undefined) failures.push('알려진 형제판정불가 목록이 없다 — 조건부 JSX나 동적 style이 늘어도 조용히 통과한다');
+else {
+  for (const [at, e] of currentSiblingUnjudged) if (!knownSiblingUnjudged.has(at))
+    failures.push(`새 형제판정불가 — ${at} · ${e.사유}`);
+  for (const [at, e] of currentSiblingUnjudged) {
+    const previous = knownSiblingUnjudged.get(at);
+    if (previous && previous.사유 !== e.사유)
+      failures.push(`형제판정불가 사유가 바뀌었다 — ${at} · ${previous.사유} → ${e.사유}`);
+  }
+  for (const [at] of knownSiblingUnjudged) if (!currentSiblingUnjudged.has(at))
+    failures.push(`형제판정불가가 해소됐다 — ${at} 를 siblingUnjudged에서 빼라`);
+}
 // 판정불가도 래칫한다 — 래칫 밖에 두면 판정 못 하는 상자가 늘어도 통과한다.
 const unjudgedAts = rows.filter(r => r.판정 === '판정불가').map(r => r.at).sort();
 const knownUnjudged = (known.unjudged ?? []).slice().sort();
@@ -453,7 +589,7 @@ const out = {
     script: 'scripts/touch-target-audit.mjs',
     minTouchTarget: MIN,
     판정식: '유효폭 = width + hitSlop.left + hitSlop.right · 유효높이 = height + hitSlop.top + hitSlop.bottom · 둘 다 44 이상',
-    한계: '같은 부모의 직접 이웃인 일반 flow pressable 은 gap/2 규칙으로 정적 검사한다. 부모 경계·다른 부모·absolute·z-order 는 네이티브 렌더 감사(S4)의 몫이다.',
+    한계: '같은 부모의 직접 이웃인 일반 flow pressable 은 조건부 JSX·Fragment·map 반환 JSX까지 펼쳐 gap/2 규칙으로 정적 검사한다. 펼칠 수 없는 JSX 식과 동적 style/gap/hitSlop은 형제판정불가로 래칫한다. 부모 경계·다른 부모·absolute·z-order 는 네이티브 렌더 감사(S4)의 몫이다.',
     측정,
     공용컴포넌트판정식: '하한 = 2×paddingVertical + fontSize (가정 A: lineHeight 를 명시하지 않은 Text 의 상자는 fontSize 보다 낮지 않다). 상한의 근거가 없어 미달을 단정하지 않고, 호출부 style 이 padding·height 를 덮어 줄일 수 있어 통과로도 닫지 않는다 — 전부 경계이고 S4 렌더 실측이 닫는다(R4 F02).',
     파일선정: '제품 = apps/mobile 의 .tsx 에서 .test/.spec.tsx 와 tests·__tests__ 폴더를 뺀 것. 시험 fixture 는 따로 세고 제품 재고와 섞지 않는다(R4 F04).',
@@ -461,19 +597,20 @@ const out = {
   },
   summary: { 파일: files.length, 누를수있는상자: rows.length, 판정: judged.length,
     통과: judged.length - short.length, 미달: short.length,
-    형제중첩위험: siblingRisks.length, 판정불가: rows.length - judged.length,
+    형제중첩위험: siblingRisks.length, 형제판정불가: siblingUnjudged.length, 판정불가: rows.length - judged.length,
     공용컴포넌트: componentContracts.length, 공용컴포넌트열린것: compOpen.length,
     Button동적size소비처: dynamicUses === null ? '측정 안 함' : dynamicUses.length },
-  failures, siblingPairs, componentContracts, Button동적size소비처: dynamicUses ?? [], rows,
+  failures, siblingPairs, siblingUnjudged, componentContracts, Button동적size소비처: dynamicUses ?? [], rows,
 };
 if (opt['update-known'] !== undefined) {
   const refreshed = { ...known, 제품입력해시, 시험참조해시,
     entries: short.map(s => ({ at: s.at, 유효: `${s.유효폭}×${s.유효높이}`, 사유: '선언상 44 미달 — 후속 보정 필요' })),
+    siblingOverlaps: siblingRisks.map(p => ({ ...(knownSibling.get(p.pair) ?? {}), ...p })), siblingUnjudged,
     components: componentContracts, buttonDynamic: dynamicUses ?? [], unjudged: unjudgedAts };
   writeFileSync(knownPath, JSON.stringify(refreshed, null, 2) + '\n');
 }
 if (outPath) writeFileSync(outPath, JSON.stringify(out, null, 2) + '\n');
-console.log(`터치 영역 — 판정 ${judged.length}자리 · 통과 ${judged.length - short.length} · **미달 ${short.length}** · 형제중첩위험 ${siblingRisks.length} · 판정불가 ${rows.length - judged.length}(래칫 대상)`);
+console.log(`터치 영역 — 판정 ${judged.length}자리 · 통과 ${judged.length - short.length} · **미달 ${short.length}** · 형제중첩위험 ${siblingRisks.length} · 형제판정불가 ${siblingUnjudged.length} · 판정불가 ${rows.length - judged.length}(래칫 대상)`);
 for (const c of componentContracts) console.log(`  공용 — ${c.컴포넌트} 높이 하한 ${c.높이하한 ?? '?'} → ${c.판정} · 제품 소비처 ${c.소비처 ?? 0}곳 · 시험 참조 ${c.시험참조 ?? 0}곳`);
 if (dynamicUses !== null) console.log(`  공용 — Button size 동적/spread ${dynamicUses.length}곳 (정적 판정 불가)`);
 console.log(`  측정 — 커밋 ${측정.커밋.slice(0, 12)} · 작업 트리 ${측정.작업트리} · 결속 ${측정.결속}`);

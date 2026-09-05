@@ -530,7 +530,6 @@ function SalesHomeBody({ today }: { today: string }) {
                     disabled={blocked}
                     accessibilityRole="button" accessibilityLabel={`${m.name} 판매 수량 수정`}
                     style={{ alignItems: 'flex-end' }}
-                    hitSlop={{ top: 6, bottom: 6, left: 7, right: 5 }}
                   >
                     <Text style={[{ fontSize: 15, fontWeight: '800', color: total > 0 ? T.ink : T.ter }, NUM]}>
                       {total}개{q && q.waste > 0 ? ` · 폐기 ${q.waste}` : ''}
