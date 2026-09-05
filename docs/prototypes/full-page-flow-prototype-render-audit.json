@@ -1,21 +1,23 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-04T23:11:51.815Z",
+  "generatedAt": "2026-09-05T00:24:30.710Z",
   "schemaVersion": 2,
   "script": {
    "name": "full-page-flow-prototype-render-audit.mjs",
-   "sha256": "27527a6d2f25c778fca60efb1d81881bbd1648796f4a489734d6f6bcecbc0b0b"
+   "sha256": "bb4a3876726f8727c8c6b16f4c3937eecd632886e9cfbe779dc62b3089ee0d2c"
   },
   "target": {
    "path": "0_full-page-flow-prototype-ui-applied.html",
-   "sha256": "26676bfe28c5a818176a9d2176b2d9713422e8bdb0f2f140e320a803be5ad918",
-   "designSyncId": "DS-20260905-001"
+   "sha256": "87d8aa6e27fa8e06e7c2a0da62c3a0d00df5cd5c2b1015e735b3e415f3706a07",
+   "designSyncId": "DS-20260905-002"
   },
   "runner": {
    "node": "v22.22.2",
    "playwright": "1.62.1",
    "chromium": "141.0.7390.37",
-   "platform": "linux"
+   "platform": "linux",
+   "clock": "2026-09-04T09:00:00+09:00",
+   "clockNote": "프로토타입이 스스로 new Date() 를 읽으므로 시계도 측정 입력이다 (PRT-209)"
   },
   "passes": [
    {

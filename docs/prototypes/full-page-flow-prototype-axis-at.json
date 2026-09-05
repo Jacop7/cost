@@ -1,0 +1,1629 @@
+{
+  "manifest": {
+    "script": "docs/prototypes/full-page-flow-prototype-axis-measure.mjs",
+    "scriptSha256": "c2bc7ab8df650e4b7fa218d6d36d6574cf49fdf6bc06d80645eec89b60cb0a47",
+    "auditSha256": "3eb8f105317ba545139d11e9813d8785d4c401579ce107a726a6a3db080552dd",
+    "values": [
+      3,
+      6,
+      7
+    ],
+    "node": "v22.23.2",
+    "generatedAt": "2026-09-04T23:57:14.415Z",
+    "판정": "축은 값이 아니라 속성과 컨테이너 flexDirection 으로 정한다 (PRT-207)."
+  },
+  "counts": {
+    "V": 91,
+    "H": 109,
+    "both": 0,
+    "keysV": 91,
+    "keysH": 108,
+    "keysBoth": 0
+  },
+  "growV": [
+    "apps/mobile/src/components/history/HistoryLayout.tsx:108:marginBottom",
+    "apps/mobile/src/components/kit/Sheet.tsx:38:marginTop",
+    "apps/mobile/src/components/kit/Sheet.tsx:79:marginBottom",
+    "apps/mobile/src/components/kit/index.tsx:109:paddingVertical",
+    "apps/mobile/src/components/kit/index.tsx:177:marginTop",
+    "apps/mobile/src/components/kit/index.tsx:179:marginTop",
+    "apps/mobile/src/components/kit/index.tsx:281:marginTop",
+    "apps/mobile/src/components/kit/index.tsx:88:paddingVertical",
+    "apps/mobile/src/features/changes/components/RecentChangeRow.tsx:65:paddingVertical",
+    "apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx:276:marginTop",
+    "apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx:54:paddingVertical",
+    "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx:145:marginTop",
+    "apps/mobile/src/features/ingredients/components/IngCard.tsx:72:marginTop",
+    "apps/mobile/src/features/ingredients/components/LedgerRow.tsx:63:marginTop",
+    "apps/mobile/src/features/ingredients/components/LedgerRow.tsx:68:marginTop",
+    "apps/mobile/src/features/ingredients/components/LossCard.tsx:112:marginTop",
+    "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:188:marginTop",
+    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:149:paddingTop",
+    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:98:paddingTop",
+    "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:152:marginBottom",
+    "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:181:marginTop",
+    "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:307:marginTop",
+    "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:315:marginTop",
+    "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:82:paddingTop",
+    "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx:139:marginTop",
+    "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:283:marginTop",
+    "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:298:marginTop",
+    "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx:145:marginTop",
+    "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx:202:marginBottom",
+    "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx:241:marginBottom",
+    "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx:252:marginBottom",
+    "apps/mobile/src/features/international-tax/RecipeTaxStatusCard.tsx:47:marginTop",
+    "apps/mobile/src/features/international-tax/RecipeTaxStatusCard.tsx:51:marginTop",
+    "apps/mobile/src/features/international-tax/RecipeTaxStatusCard.tsx:54:gap",
+    "apps/mobile/src/features/my/components/RevenueGapCard.tsx:96:marginTop",
+    "apps/mobile/src/features/my/screens/FixedCostEditScreen.tsx:243:paddingTop",
+    "apps/mobile/src/features/my/screens/MyHomeScreen.tsx:129:marginTop",
+    "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx:167:marginTop",
+    "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx:116:marginTop",
+    "apps/mobile/src/features/my/screens/MyUnitsScreen.tsx:197:marginBottom",
+    "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx:141:marginTop",
+    "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx:263:marginTop",
+    "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:220:paddingTop",
+    "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:298:marginTop",
+    "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:303:marginTop",
+    "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:340:marginTop",
+    "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:373:marginTop",
+    "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:430:marginTop",
+    "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx:119:paddingVertical",
+    "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx:133:marginTop",
+    "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx:71:marginBottom",
+    "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx:73:marginTop",
+    "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx:112:marginTop",
+    "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx:52:paddingTop",
+    "apps/mobile/src/features/recipes/screens/MaterialSearchScreen.tsx:72:marginTop",
+    "apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx:81:marginTop",
+    "apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx:91:marginTop",
+    "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:278:gap",
+    "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:297:marginTop",
+    "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:297:paddingTop",
+    "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:608:marginTop",
+    "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:617:marginTop",
+    "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:619:marginTop",
+    "apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx:110:marginTop",
+    "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:157:paddingTop",
+    "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:131:marginTop",
+    "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:174:marginTop",
+    "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:178:marginTop",
+    "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:372:marginTop",
+    "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:89:paddingVertical",
+    "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:98:marginTop",
+    "apps/mobile/src/features/sales/components/ShortageWarningSheet.tsx:73:marginBottom",
+    "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx:272:marginTop",
+    "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx:305:marginBottom",
+    "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx:339:marginBottom",
+    "apps/mobile/src/features/sales/screens/SalesDayFullScreen.tsx:106:paddingVertical",
+    "apps/mobile/src/features/sales/screens/SalesDayFullScreen.tsx:125:paddingVertical",
+    "apps/mobile/src/features/sales/screens/SalesDayFullScreen.tsx:96:paddingBottom",
+    "apps/mobile/src/features/sales/screens/SalesDayFullScreen.tsx:98:paddingVertical",
+    "apps/mobile/src/features/sales/screens/SalesExpenseScreen.tsx:100:marginTop",
+    "apps/mobile/src/features/sales/screens/SalesExtraScreen.tsx:98:marginTop",
+    "apps/mobile/src/features/sales/screens/SalesFixedScreen.tsx:114:marginTop",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:356:paddingTop",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:392:marginTop",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:417:marginTop",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:496:marginTop",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:514:marginTop",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:538:marginTop",
+    "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx:138:marginTop",
+    "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx:187:marginTop",
+    "apps/mobile/src/features/sales/screens/SalesStockCheckScreen.tsx:78:marginTop"
+  ],
+  "growH": [
+    "apps/mobile/src/components/history/HistoryLayout.tsx:24:gap",
+    "apps/mobile/src/components/kit/AppHeader.tsx:37:paddingRight",
+    "apps/mobile/src/components/kit/Button.tsx:56:gap",
+    "apps/mobile/src/components/kit/index.tsx:151:gap",
+    "apps/mobile/src/components/kit/index.tsx:298:gap",
+    "apps/mobile/src/features/changes/components/RecentChangeRow.tsx:65:paddingHorizontal",
+    "apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx:54:paddingHorizontal",
+    "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx:127:gap",
+    "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx:136:paddingHorizontal",
+    "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx:83:gap",
+    "apps/mobile/src/features/ingredients/components/IngCard.tsx:44:gap",
+    "apps/mobile/src/features/ingredients/components/IngCard.tsx:53:gap",
+    "apps/mobile/src/features/ingredients/components/IngCard.tsx:72:gap",
+    "apps/mobile/src/features/ingredients/components/LossCard.tsx:66:gap",
+    "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:171:gap",
+    "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:121:gap",
+    "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:142:gap",
+    "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:169:gap",
+    "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:193:gap",
+    "apps/mobile/src/features/ingredients/screens/IngredientFormScreen.tsx:228:gap",
+    "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:121:gap",
+    "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx:129:gap",
+    "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx:164:gap",
+    "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:231:gap",
+    "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:221:gap",
+    "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:342:gap",
+    "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:364:gap",
+    "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx:255:gap",
+    "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx:281:gap",
+    "apps/mobile/src/features/my/components/ChannelWeightSheet.tsx:100:gap",
+    "apps/mobile/src/features/my/components/RevenueGapCard.tsx:50:gap",
+    "apps/mobile/src/features/my/screens/FixedCostEditScreen.tsx:197:gap",
+    "apps/mobile/src/features/my/screens/FixedCostEditScreen.tsx:261:gap",
+    "apps/mobile/src/features/my/screens/FixedCostScreen.tsx:102:gap",
+    "apps/mobile/src/features/my/screens/FixedCostScreen.tsx:133:gap",
+    "apps/mobile/src/features/my/screens/FixedCostScreen.tsx:77:gap",
+    "apps/mobile/src/features/my/screens/MyChannelsScreen.tsx:105:gap",
+    "apps/mobile/src/features/my/screens/MyChannelsScreen.tsx:86:gap",
+    "apps/mobile/src/features/my/screens/MyCountryScreen.tsx:42:gap",
+    "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:290:gap",
+    "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:352:gap",
+    "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:366:gap",
+    "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:403:gap",
+    "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:465:gap",
+    "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:470:gap",
+    "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:515:gap",
+    "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx:112:gap",
+    "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx:124:gap",
+    "apps/mobile/src/features/my/screens/MyTaxScreen.tsx:273:gap",
+    "apps/mobile/src/features/my/screens/MyTaxScreen.tsx:51:gap",
+    "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:123:gap",
+    "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx:195:gap",
+    "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx:213:gap",
+    "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx:259:gap",
+    "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:285:gap",
+    "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:330:gap",
+    "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:364:gap",
+    "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:376:gap",
+    "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:401:gap",
+    "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:497:gap",
+    "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx:145:gap",
+    "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx:112:gap",
+    "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx:96:gap",
+    "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:134:gap",
+    "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:189:gap",
+    "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:204:gap",
+    "apps/mobile/src/features/recipes/screens/MaterialSearchScreen.tsx:67:gap",
+    "apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx:107:marginHorizontal",
+    "apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx:159:marginHorizontal",
+    "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:257:gap",
+    "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:29:gap",
+    "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:315:gap",
+    "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:328:gap",
+    "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:354:gap",
+    "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:372:gap",
+    "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:424:marginLeft",
+    "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:170:gap",
+    "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:224:gap",
+    "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:232:gap",
+    "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:283:gap",
+    "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:33:gap",
+    "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:539:marginLeft",
+    "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:570:gap",
+    "apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx:98:gap",
+    "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:184:gap",
+    "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:64:gap",
+    "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:80:marginLeft",
+    "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:80:paddingHorizontal",
+    "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:54:paddingHorizontal",
+    "apps/mobile/src/features/sales/components/LateCloseSheet.tsx:81:gap",
+    "apps/mobile/src/features/sales/components/MenuProfitSheet.tsx:120:gap",
+    "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:328:gap",
+    "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:84:gap",
+    "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:89:paddingHorizontal",
+    "apps/mobile/src/features/sales/components/SaleStepper.tsx:36:gap",
+    "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx:170:gap",
+    "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx:213:gap",
+    "apps/mobile/src/features/sales/screens/SalesDayDetailScreen.tsx:89:gap",
+    "apps/mobile/src/features/sales/screens/SalesFixedScreen.tsx:83:gap",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:492:gap",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:550:gap",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:644:gap",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:667:gap",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:702:gap",
+    "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx:32:gap",
+    "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:272:marginRight",
+    "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:274:marginRight",
+    "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:382:gap"
+  ],
+  "both": [],
+  "perDecl": [
+    {
+      "key": "apps/mobile/src/components/history/HistoryLayout.tsx:24:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/components/history/HistoryLayout.tsx:108:marginBottom",
+      "value": 7,
+      "prop": "marginBottom",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/components/kit/AppHeader.tsx:37:paddingRight",
+      "value": 6,
+      "prop": "paddingRight",
+      "axis": "H",
+      "why": "속성이 가로다"
+    },
+    {
+      "key": "apps/mobile/src/components/kit/Button.tsx:56:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: iconRight ? 'row-reverse' : 'row'"
+    },
+    {
+      "key": "apps/mobile/src/components/kit/Sheet.tsx:38:marginTop",
+      "value": 3,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/components/kit/Sheet.tsx:79:marginBottom",
+      "value": 6,
+      "prop": "marginBottom",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/components/kit/index.tsx:88:paddingVertical",
+      "value": 7,
+      "prop": "paddingVertical",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/components/kit/index.tsx:109:paddingVertical",
+      "value": 7,
+      "prop": "paddingVertical",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/components/kit/index.tsx:151:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/components/kit/index.tsx:177:marginTop",
+      "value": 6,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/components/kit/index.tsx:179:marginTop",
+      "value": 6,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/components/kit/index.tsx:281:marginTop",
+      "value": 3,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/components/kit/index.tsx:298:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/changes/components/RecentChangeRow.tsx:65:paddingHorizontal",
+      "value": 7,
+      "prop": "paddingHorizontal",
+      "axis": "H",
+      "why": "속성이 가로다"
+    },
+    {
+      "key": "apps/mobile/src/features/changes/components/RecentChangeRow.tsx:65:paddingVertical",
+      "value": 3,
+      "prop": "paddingVertical",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx:54:paddingHorizontal",
+      "value": 7,
+      "prop": "paddingHorizontal",
+      "axis": "H",
+      "why": "속성이 가로다"
+    },
+    {
+      "key": "apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx:54:paddingVertical",
+      "value": 3,
+      "prop": "paddingVertical",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx:276:marginTop",
+      "value": 3,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx:83:gap",
+      "value": 7,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx:127:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx:136:paddingHorizontal",
+      "value": 6,
+      "prop": "paddingHorizontal",
+      "axis": "H",
+      "why": "속성이 가로다"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx:145:marginTop",
+      "value": 3,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/components/IngCard.tsx:44:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/components/IngCard.tsx:53:gap",
+      "value": 7,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/components/IngCard.tsx:72:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/components/IngCard.tsx:72:marginTop",
+      "value": 6,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/components/LedgerRow.tsx:63:marginTop",
+      "value": 3,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/components/LedgerRow.tsx:68:marginTop",
+      "value": 3,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/components/LossCard.tsx:66:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/components/LossCard.tsx:112:marginTop",
+      "value": 3,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:171:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:188:marginTop",
+      "value": 3,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:98:paddingTop",
+      "value": 6,
+      "prop": "paddingTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:149:paddingTop",
+      "value": 6,
+      "prop": "paddingTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:121:gap",
+      "value": 3,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:142:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:152:marginBottom",
+      "value": 6,
+      "prop": "marginBottom",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:169:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:181:marginTop",
+      "value": 6,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:193:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:307:marginTop",
+      "value": 3,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:315:marginTop",
+      "value": 3,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/IngredientFormScreen.tsx:228:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:82:paddingTop",
+      "value": 6,
+      "prop": "paddingTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:121:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx:129:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx:139:marginTop",
+      "value": 3,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx:164:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:231:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:283:marginTop",
+      "value": 3,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:298:marginTop",
+      "value": 3,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:221:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:342:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:364:gap",
+      "value": 7,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx:145:marginTop",
+      "value": 6,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx:202:marginBottom",
+      "value": 7,
+      "prop": "marginBottom",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx:241:marginBottom",
+      "value": 7,
+      "prop": "marginBottom",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx:252:marginBottom",
+      "value": 7,
+      "prop": "marginBottom",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx:255:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx:281:gap",
+      "value": 7,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/international-tax/RecipeTaxStatusCard.tsx:47:marginTop",
+      "value": 7,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/international-tax/RecipeTaxStatusCard.tsx:51:marginTop",
+      "value": 7,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/international-tax/RecipeTaxStatusCard.tsx:54:gap",
+      "value": 7,
+      "prop": "gap",
+      "axis": "V",
+      "why": "컨테이너에 flexDirection 이 없다 — RN 기본은 column"
+    },
+    {
+      "key": "apps/mobile/src/features/my/components/ChannelWeightSheet.tsx:100:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/my/components/RevenueGapCard.tsx:50:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/my/components/RevenueGapCard.tsx:96:marginTop",
+      "value": 6,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/my/screens/FixedCostEditScreen.tsx:197:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/my/screens/FixedCostEditScreen.tsx:243:paddingTop",
+      "value": 6,
+      "prop": "paddingTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/my/screens/FixedCostEditScreen.tsx:261:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/my/screens/FixedCostScreen.tsx:77:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/my/screens/FixedCostScreen.tsx:102:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/my/screens/FixedCostScreen.tsx:133:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/my/screens/MyChannelsScreen.tsx:86:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/my/screens/MyChannelsScreen.tsx:105:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/my/screens/MyCountryScreen.tsx:42:gap",
+      "value": 7,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx:129:marginTop",
+      "value": 3,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:290:gap",
+      "value": 3,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:352:gap",
+      "value": 3,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:366:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:403:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:465:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:470:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:515:gap",
+      "value": 7,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx:167:marginTop",
+      "value": 3,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx:112:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx:116:marginTop",
+      "value": 3,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx:124:gap",
+      "value": 7,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx:51:gap",
+      "value": 7,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx:51:gap",
+      "value": 7,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx:273:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/my/screens/MyUnitsScreen.tsx:197:marginBottom",
+      "value": 6,
+      "prop": "marginBottom",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:123:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx:141:marginTop",
+      "value": 3,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx:195:gap",
+      "value": 7,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx:213:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx:259:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx:263:marginTop",
+      "value": 3,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:220:paddingTop",
+      "value": 6,
+      "prop": "paddingTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:285:gap",
+      "value": 7,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:298:marginTop",
+      "value": 3,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:303:marginTop",
+      "value": 3,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:330:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:340:marginTop",
+      "value": 7,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:364:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:373:marginTop",
+      "value": 7,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:376:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:401:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:430:marginTop",
+      "value": 3,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:497:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx:71:marginBottom",
+      "value": 6,
+      "prop": "marginBottom",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx:73:marginTop",
+      "value": 6,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx:119:paddingVertical",
+      "value": 7,
+      "prop": "paddingVertical",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx:133:marginTop",
+      "value": 7,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx:145:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx:52:paddingTop",
+      "value": 6,
+      "prop": "paddingTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx:96:gap",
+      "value": 7,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx:112:gap",
+      "value": 7,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx:112:marginTop",
+      "value": 7,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:134:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:189:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:204:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/MaterialSearchScreen.tsx:67:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/MaterialSearchScreen.tsx:72:marginTop",
+      "value": 7,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx:81:marginTop",
+      "value": 3,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx:91:marginTop",
+      "value": 3,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx:107:marginHorizontal",
+      "value": 7,
+      "prop": "marginHorizontal",
+      "axis": "H",
+      "why": "속성이 가로다"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx:159:marginHorizontal",
+      "value": 6,
+      "prop": "marginHorizontal",
+      "axis": "H",
+      "why": "속성이 가로다"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:29:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:257:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:315:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:328:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:354:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:372:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:424:marginLeft",
+      "value": 7,
+      "prop": "marginLeft",
+      "axis": "H",
+      "why": "속성이 가로다"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:33:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:170:gap",
+      "value": 3,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:224:gap",
+      "value": 7,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:232:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:278:gap",
+      "value": 3,
+      "prop": "gap",
+      "axis": "V",
+      "why": "컨테이너에 flexDirection 이 없다 — RN 기본은 column"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:283:gap",
+      "value": 7,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:297:marginTop",
+      "value": 7,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:297:paddingTop",
+      "value": 7,
+      "prop": "paddingTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:539:marginLeft",
+      "value": 7,
+      "prop": "marginLeft",
+      "axis": "H",
+      "why": "속성이 가로다"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:570:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:608:marginTop",
+      "value": 3,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:617:marginTop",
+      "value": 3,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:619:marginTop",
+      "value": 3,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx:98:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx:110:marginTop",
+      "value": 6,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:64:gap",
+      "value": 7,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:80:marginLeft",
+      "value": 6,
+      "prop": "marginLeft",
+      "axis": "H",
+      "why": "속성이 가로다"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:80:paddingHorizontal",
+      "value": 7,
+      "prop": "paddingHorizontal",
+      "axis": "H",
+      "why": "속성이 가로다"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:157:paddingTop",
+      "value": 6,
+      "prop": "paddingTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:184:gap",
+      "value": 7,
+      "prop": "gap",
+      "axis": "H",
+      "why": "ScrollView 에 horizontal 이 있고 contentContainerStyle 이다"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:54:paddingHorizontal",
+      "value": 7,
+      "prop": "paddingHorizontal",
+      "axis": "H",
+      "why": "속성이 가로다"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/components/LateCloseSheet.tsx:81:gap",
+      "value": 7,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/components/MenuProfitSheet.tsx:120:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:84:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:89:paddingHorizontal",
+      "value": 6,
+      "prop": "paddingHorizontal",
+      "axis": "H",
+      "why": "속성이 가로다"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:89:paddingVertical",
+      "value": 3,
+      "prop": "paddingVertical",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:98:marginTop",
+      "value": 3,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:131:marginTop",
+      "value": 3,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:174:marginTop",
+      "value": 3,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:178:marginTop",
+      "value": 3,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:328:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:372:marginTop",
+      "value": 3,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/components/SaleStepper.tsx:36:gap",
+      "value": 7,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/components/ShortageWarningSheet.tsx:73:marginBottom",
+      "value": 6,
+      "prop": "marginBottom",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx:170:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx:213:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx:272:marginTop",
+      "value": 3,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx:305:marginBottom",
+      "value": 6,
+      "prop": "marginBottom",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx:339:marginBottom",
+      "value": 6,
+      "prop": "marginBottom",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesDayDetailScreen.tsx:89:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesDayFullScreen.tsx:96:paddingBottom",
+      "value": 6,
+      "prop": "paddingBottom",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesDayFullScreen.tsx:98:paddingVertical",
+      "value": 7,
+      "prop": "paddingVertical",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesDayFullScreen.tsx:106:paddingVertical",
+      "value": 7,
+      "prop": "paddingVertical",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesDayFullScreen.tsx:125:paddingVertical",
+      "value": 7,
+      "prop": "paddingVertical",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesExpenseScreen.tsx:100:marginTop",
+      "value": 3,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesExtraScreen.tsx:98:marginTop",
+      "value": 3,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesFixedScreen.tsx:83:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesFixedScreen.tsx:114:marginTop",
+      "value": 3,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:356:paddingTop",
+      "value": 6,
+      "prop": "paddingTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:392:marginTop",
+      "value": 3,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:417:marginTop",
+      "value": 7,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:492:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:496:marginTop",
+      "value": 3,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:514:marginTop",
+      "value": 3,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:538:marginTop",
+      "value": 3,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:550:gap",
+      "value": 3,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:644:gap",
+      "value": 7,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:667:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:702:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx:138:marginTop",
+      "value": 3,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx:32:gap",
+      "value": 6,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx:187:marginTop",
+      "value": 3,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:272:marginRight",
+      "value": 6,
+      "prop": "marginRight",
+      "axis": "H",
+      "why": "속성이 가로다"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:274:marginRight",
+      "value": 6,
+      "prop": "marginRight",
+      "axis": "H",
+      "why": "속성이 가로다"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:382:gap",
+      "value": 7,
+      "prop": "gap",
+      "axis": "H",
+      "why": "flexDirection: 'row'"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesStockCheckScreen.tsx:78:marginTop",
+      "value": 6,
+      "prop": "marginTop",
+      "axis": "V",
+      "why": "속성이 세로다"
+    }
+  ]
+}

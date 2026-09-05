@@ -92,8 +92,31 @@ const CLASSIFY_PASS = { id: 'mobile390', width: 390, height: 844, mode: 'none' }
 const browser = await chromium.launch(opt.executable ? { executablePath: opt.executable } : {});
 const chromiumVersion = browser.version();
 
+// ── 시계 고정 (PRT-209) ────────────────────────────────────────────────────
+// 프로토타입은 스스로 `new Date()` 를 읽는다 — `recentChangeButton()` 이 표본 행의 날짜와
+// 오늘을 비교해 7일이 넘으면 버튼을 **통째로 지운다**. 그래서 같은 대상 SHA 가 날마다
+// 다른 수치를 낸다(2026-09-04 → 6,974 · 09-05 → 6,965). 봉인은 파일을 묶지 시계를 묶지 않는다.
+// 측정이 재현 가능하려면 시계도 입력이어야 하므로 여기서 고정하고 manifest 에 적는다.
+const CLOCK = opt.clock ?? '2026-09-04T09:00:00+09:00';
+const CLOCK_MS = Date.parse(CLOCK);
+if (!Number.isFinite(CLOCK_MS)) { console.error(`--clock 값을 읽을 수 없다: ${CLOCK}`); process.exit(2); }
+const PIN_CLOCK = `(() => {
+  const T = ${JSON.stringify(CLOCK_MS)};
+  const _D = Date;
+  function D(...a) { return a.length ? new _D(...a) : new _D(T); }
+  D.now = () => T; D.parse = _D.parse; D.UTC = _D.UTC; D.prototype = _D.prototype;
+  Object.setPrototypeOf(D, _D);
+  globalThis.Date = D;
+})()`;
+const newPinnedPage = async (browser, o) => {
+  const p = await browser.newPage(o);
+  await p.addInitScript(PIN_CLOCK);
+  return p;
+};
+
+
 // ── 레지스트리는 문서가 아니라 적용본 자신에게서 읽는다 ────────────────────────
-const boot = await browser.newPage();
+const boot = await newPinnedPage(browser);
 await boot.goto(URLBASE, { waitUntil: 'load' });
 const registry = await boot.evaluate(() => {
   const hidden = Object.entries(screens).filter(([, s]) => s.hidden).map(([k]) => k);
@@ -219,7 +242,7 @@ const INBROWSER = {
 // ── 1) 렌더 산출물 분류 ──────────────────────────────────────────────────────
 const classify = {};
 {
-  const page = await browser.newPage({ viewport: { width: CLASSIFY_PASS.width, height: CLASSIFY_PASS.height } });
+  const page = await newPinnedPage(browser, { viewport: { width: CLASSIFY_PASS.width, height: CLASSIFY_PASS.height } });
   const baseline = {};
   for (const s of new Set(targets.map(t => t.screen))) {
     await page.goto(`${URLBASE}?screen=${s}`, { waitUntil: 'load' });
@@ -264,7 +287,7 @@ const classify = {};
 // ── 2) 패스별 회귀·타이포·폰트 ───────────────────────────────────────────────
 const regression = {};
 for (const pass of PASSES) {
-  const page = await browser.newPage({ viewport: { width: pass.width, height: pass.height } });
+  const page = await newPinnedPage(browser, { viewport: { width: pass.width, height: pass.height } });
   const pageErrors = []; const consoleErrors = []; const fontFails = [];
   page.on('pageerror', e => pageErrors.push(e.message));
   page.on('console', m => { if (m.type() === 'error') consoleErrors.push(m.text()); });   // [L4]
@@ -358,7 +381,7 @@ const manifest = {
   schemaVersion: 2,
   script: { name: basename(new URL(import.meta.url).pathname), sha256: scriptSha },
   target: { path: basename(targetPath), sha256: sha(bytes), designSyncId },
-  runner: { node: process.version, playwright: playwrightVersion, chromium: chromiumVersion, platform: process.platform },
+  runner: { node: process.version, playwright: playwrightVersion, chromium: chromiumVersion, platform: process.platform, clock: CLOCK, clockNote: '프로토타입이 스스로 new Date() 를 읽으므로 시계도 측정 입력이다 (PRT-209)' },
   passes: PASSES, classificationPass: CLASSIFY_PASS,
   scale: SCALE, bannedDeclaredWeights: BANNED_DECLARED, bannedComputedWeights: BANNED_COMPUTED,
   officialWeights: OFFICIAL_WEIGHTS, shellOffScaleAllowlist: SHELL_OFFSCALE_ALLOW,
