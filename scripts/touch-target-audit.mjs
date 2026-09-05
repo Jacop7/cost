@@ -23,6 +23,7 @@
 import { readFileSync, writeFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { join, resolve, relative } from 'node:path';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
@@ -38,13 +39,27 @@ const MIN = 44;
 // 가리키면 그 나무 기준이다 — 시험이 임시 폴더에서도 같은 ID 를 얻는다.
 const idRoot = opt.src ? resolve(opt.src, '..') : root;
 
-const files = [];
+/**
+ * 파일 선정 — **제품 코드와 시험 fixture 를 가른다** (솔 검수 `R4 F04`).
+ *
+ * 기준은 `scripts/token-adoption-audit.mjs` 의 `SELECTION` 과 같게 둔다. 감사기마다 다른
+ * 기준을 두면 같은 저장소를 두 방식으로 세게 되고, 그 차이가 곧 `md 14` 대 `md 13` 이었다.
+ * 시험 fixture 를 고쳤다고 제품 접근성 재고가 흔들리면 안 된다 — 세되 섞지 않는다.
+ */
+const EXCLUDE_DIRS = ['node_modules', '.expo', 'dist', 'build'];
+const TEST_SUFFIX = /\.(test|spec)\.tsx$/;
+const TEST_DIR = /(^|\/)(__tests__|tests)\//;
+const files = [];        // 제품 — 판정과 소비처 재고는 여기서만 나온다
+const testFiles = [];    // 시험 참조 — 따로 센다
 (function walk(d) {
   for (const e of readdirSync(d)) {
-    if (e === 'node_modules' || e === '.expo' || e === 'dist') continue;
+    if (EXCLUDE_DIRS.includes(e)) continue;
     const p = join(d, e);
     if (statSync(p).isDirectory()) walk(p);
-    else if (/\.tsx$/.test(p)) files.push(p);
+    else if (/\.tsx$/.test(p)) {
+      const rel = relative(idRoot, p).replace(/\\/g, '/');
+      (TEST_SUFFIX.test(rel) || TEST_DIR.test(rel) ? testFiles : files).push(p);
+    }
   }
 })(srcRoot);
 
@@ -132,12 +147,16 @@ for (const f of files) {
 //   하한 = `2×paddingVertical + fontSize`
 //     — 가정 A: `lineHeight` 를 명시하지 않은 `Text` 의 상자는 `fontSize` 보다 낮지 않다.
 //       **가정이지 증명이 아니다** — 그래서 통과 쪽으로만 쓴다.
-//   하한 ≥ 44 → 통과(확정)
-//   하한 < 44 → **경계** — 정적으로는 모른다. 실제 높이는 `S4` 렌더 측정이 정한다.
+// ⚠ **하한이 44 를 넘어도 통과로 닫지 않는다** (솔 검수 `R4 F02`). 두 가지 때문이다 —
+//   ① 가정 A 를 "증명이 아니다" 라고 적어 놓고 그것으로 확정 통과를 선언하면 앞뒤가 안 맞는다.
+//   ② `Button` 의 호출부 `style` 은 기본 스타일 **뒤에** 붙어 `paddingVertical` 과 `height` 를
+//      **덮어 줄일 수 있다.** 이 감사는 호출부 override 를 읽지 않는다. 그러니 하한 49 인
+//      `lg` 라도 어떤 소비처가 높이를 줄였는지 정적으로는 모른다.
+// 그래서 판정은 전부 **경계**다. 실제 높이는 `S4` 렌더 실측(Android·iOS)이 닫는다.
 //
-// 경계 variant 는 위험이 열려 있는 상태다. 그래서 **소비처 ID 와 개수까지 래츣한다** —
-// 열린 위험이 조용히 퍼지는 것을 막는다. 통과 variant 는 늘어도 위험이 늘지 않으므로
-// 판정과 하한만 래츣하고 소비처는 산출물(`--out`)에만 남긴다.
+// 경계는 위험이 열려 있는 상태다. 그래서 **모든 variant 의 소비처 ID 와 개수를 래칫한다** —
+// 열린 위험이 조용히 퍼지는 것을 막는다. `Button` 이 호출부가 무력화할 수 없는
+// `minHeight: 44` 를 갖게 되면(그건 시각 변화라 `S4`) 그때 통과로 닫고 래칫을 푼다.
 
 /**
  * `<Button …>` 소비처를 **여는 태그 전체**로 읽는다 (솔 검수 `R3 F01`).
@@ -151,9 +170,13 @@ for (const f of files) {
 const SPREAD = /(?:^|\s)\{\s*\.\.\.[A-Za-z_$][\w$]*\s*\}/;
 const buttonUses = (defaultSize) => {
   const byVariant = new Map();
+  const testByVariant = new Map();
   const dynamic = [];
-  const add = (k, at) => { if (!byVariant.has(k)) byVariant.set(k, []); byVariant.get(k).push(at); };
-  for (const f of files) {
+  let bucket = byVariant;
+  const add = (k, at) => { if (!bucket.has(k)) bucket.set(k, []); bucket.get(k).push(at); };
+  const productSet = new Set(files);
+  for (const f of [...files, ...testFiles]) {
+    bucket = productSet.has(f) ? byVariant : testByVariant;
     const text = readFileSync(f, 'utf8');
     const offsets = [0];
     for (let i = 0; i < text.length; i++) if (text[i] === '\n') offsets.push(i + 1);
@@ -165,11 +188,11 @@ const buttonUses = (defaultSize) => {
       const at = `${relative(idRoot, f).replace(/\\/g, '/')}:${lineOf(m.index)}`;
       const lit = body.match(/\bsize\s*=\s*(?:["'](\w+)["']|\{\s*["'](\w+)["']\s*\})/);
       if (lit) { add(lit[1] ?? lit[2], at); continue; }
-      if (/\bsize\s*=\s*\{/.test(body) || SPREAD.test(body)) { dynamic.push(at); continue; }
+      if (/\bsize\s*=\s*\{/.test(body) || SPREAD.test(body)) { if (bucket === byVariant) dynamic.push(at); continue; }
       add(defaultSize, at);
     }
   }
-  return { byVariant, dynamic };
+  return { byVariant, testByVariant, dynamic };
 };
 
 const componentContracts = [];
@@ -191,9 +214,13 @@ let dynamicUses = null;
         const [, name, pv, ph, fs] = v;
         const lo = 2 * +pv + +fs;
         const at = (uses.byVariant.get(name) ?? []).slice().sort();
+        const 시험 = (uses.testByVariant.get(name) ?? []).slice().sort();
         componentContracts.push({ 컴포넌트: `Button size="${name}"`, paddingVertical: +pv, fontSize: +fs,
-          높이하한: lo, 기본값여부: name === d[1], 판정: lo >= MIN ? '통과' : '경계',
-          소비처: at.length, at });
+          높이하한: lo, 기본값여부: name === d[1], 판정: '경계',
+          판정사유: lo >= MIN
+            ? `하한 ${lo} 는 44 를 넘지만 호출부 style 이 padding·height 를 덮어 줄일 수 있어 정적으로 닫지 않는다 (R4 F02)`
+            : `하한 ${lo} < 44 이고 상한의 근거가 없다 — S4 렌더 실측이 닫는다`,
+          소비처: at.length, at, 시험참조: 시험.length, 시험참조at: 시험 });
       }
       for (const [name, at] of uses.byVariant) {
         if (componentContracts.some(c => c.컴포넌트 === `Button size="${name}"`)) continue;
@@ -272,26 +299,63 @@ if (dynamicUses !== null) {
   }
 }
 
-// ── 측정 출처 결속 (솔 검수 `R3 F01`) ─────────────────────────────────────────
-// 초판은 **작업 트리에서 잰 수치를 검수 대상 커밋의 증거로 인용했다.** 두 값이 달랐고
-// (`8/16/53` 대 `10/14/62`) 검수자가 그걸 잡았다. 그래서 산출물에 측정한 커밋과 작업 트리
-// 상태를 박고, 보고용 측정은 `--expect-commit` 으로 커밋에 결속한다.
+// ── 측정 출처 결속 (솔 검수 `R3 F01` · `R4 F01`) ────────────────────────────
+// `R3` 초판은 **작업 트리에서 잰 수치를 검수 대상 커밋의 증거로 인용했다.** 두 값이 달랐고
+// (`8/16/53` 대 `10/14/62`) 검수자가 그걸 잡았다.
+//
+// `R4` 는 그 결속 자체가 우회 가능하다고 잡았다. 초판은 `startsWith` 로 앞뒤를 비교해서
+// **값 없는 `--expect-commit`(빈 문자열은 모든 SHA 의 접두사다)** 과 `<전체SHA>garbage`
+// (`want.startsWith(head)` 가 참) 를 통과시켰다. 이제는 —
+//   ① 빈 값과 비-hex 와 7자 미만을 **먼저 거부**하고
+//   ② `git rev-parse --verify <입력>^{commit}` 으로 **전체 SHA 로 해석**한 뒤
+//   ③ HEAD 와 **완전히 같은지**만 본다. 모호한 짧은 SHA 는 ②에서 죽는다.
 const git = (args) => { const r = spawnSync('git', args, { cwd: srcRoot, encoding: 'utf8' }); return r.status === 0 ? r.stdout.trim() : null; };
 const headSha = git(['rev-parse', 'HEAD']);
 const dirtyRaw = git(['status', '--porcelain', '--', srcRoot, join(root, 'scripts')]);
+
+/**
+ * 감사 입력 범위 해시 (솔 검수 `R4` 질문 3 · 페이블 조건).
+ *
+ * `측정커밋` 에 커밋 SHA 를 적으면 **자기 자신의 SHA 를 자기 안에 적어야 하는** 순환이 생긴다.
+ * 대신 **감사가 실제로 읽은 것**을 해시한다 — 파일 경로와 내용, 그리고 **감사기 자신**.
+ * 관련 파일이 안 바뀌면 뒤따르는 커밋에서도 같은 값이 나오므로 "이후 무변경" 을 말이 아니라
+ * 게이트가 직접 검사한다. 감사기가 바뀌면 값도 바뀐다 — 자를 바꿔 놓고 옛 눈금을 쓰지 않는다.
+ */
+const h = (b) => createHash('sha256').update(b).digest('hex');
+const scopeHash = () => {
+  const parts = [...files, ...testFiles]
+    .map(f => `${relative(idRoot, f).replace(/\\/g, '/')}\u0000${h(readFileSync(f))}`)
+    .sort();
+  parts.push(`\u0000self\u0000${h(readFileSync(new URL(import.meta.url)))}`);
+  return h(parts.join('\n'));
+};
+const 입력해시 = scopeHash();
+
 const 측정 = {
   커밋: headSha ?? '알 수 없음 — git 저장소가 아니다',
   작업트리: dirtyRaw === null ? '알 수 없음' : dirtyRaw === '' ? '깨끗' : `변경 ${dirtyRaw.split(/\r?\n/).length}건`,
   변경목록: dirtyRaw ? dirtyRaw.split(/\r?\n/).slice(0, 20) : [],
+  입력해시,
+  입력해시정의: '감사가 읽은 .tsx 의 "경로\\0내용sha256" 을 정렬해 이어 붙이고, 감사기 자신의 sha256 을 더해 sha256. 커밋 SHA 가 아니라 입력을 결속한다.',
   결속: opt['expect-commit'] !== undefined ? `--expect-commit=${opt['expect-commit']}` : '없음 — 이 산출물을 커밋 증거로 인용하지 마라',
 };
 if (opt['expect-commit'] !== undefined) {
-  const want = opt['expect-commit'];
-  if (!headSha || !(headSha.startsWith(want) || want.startsWith(headSha)))
-    failures.push(`측정 커밋 불일치 — 요구 ${want} · 실제 ${headSha ?? '알 수 없음'}. 검수 대상 커밋의 clean checkout 에서 재라`);
-  else if (dirtyRaw !== '')
-    failures.push(`작업 트리가 깨끗하지 않다 (${측정.작업트리}) — 커밋에 결속된 수치가 아니다. clean checkout 에서 재라`);
+  const want = String(opt['expect-commit']).trim();
+  if (!/^[0-9a-fA-F]{7,40}$/.test(want))
+    failures.push(`--expect-commit 값이 커밋 SHA 가 아니다: '${want}' — 빈 값·비-hex·7자 미만·군더더기가 붙은 값은 받지 않는다`);
+  else {
+    const resolved = git(['rev-parse', '--verify', '--quiet', `${want.toLowerCase()}^{commit}`]);
+    if (!resolved) failures.push(`--expect-commit ${want} 를 커밋으로 해석할 수 없다 — 없는 개체이거나 모호한 짧은 SHA 다`);
+    else if (!headSha) failures.push('HEAD 를 읽을 수 없다 — git 저장소가 아니다');
+    else if (resolved !== headSha) failures.push(`측정 커밋 불일치 — 요구 ${resolved} · 실제 ${headSha}. 검수 대상 커밋의 clean checkout 에서 재라`);
+    else if (dirtyRaw !== '') failures.push(`작업 트리가 깨끗하지 않다 (${측정.작업트리}) — 커밋에 결속된 수치가 아니다. clean checkout 에서 재라`);
+  }
 }
+// 입력 범위 해시 래칫 — 알려진 목록이 어느 입력에서 확정됐는지 게이트가 직접 본다.
+if (known.입력해시 === undefined)
+  failures.push(`알려진 입력해시가 없다 — 목록이 어느 입력에서 나왔는지 결속되지 않는다. 지금 값은 ${입력해시}`);
+else if (known.입력해시 !== 입력해시)
+  failures.push(`감사 입력이 바뀌었다 — 목록 ${String(known.입력해시).slice(0, 12)} · 지금 ${입력해시.slice(0, 12)}. 제품 .tsx 나 감사기가 바뀌었다. 다시 재고 목록과 입력해시를 함께 갱신하라`);
 
 const out = {
   manifest: {
@@ -300,7 +364,8 @@ const out = {
     판정식: '유효폭 = width + hitSlop.left + hitSlop.right · 유효높이 = height + hitSlop.top + hitSlop.bottom · 둘 다 44 이상',
     한계: '부모 경계로 잘리는지, 이웃 터치 영역과 겹치는지는 정적 분석으로 못 본다 — 렌더 감사(S4)의 몫이다.',
     측정,
-    공용컴포넌트판정식: '하한 = 2×paddingVertical + fontSize (가정 A: lineHeight 를 명시하지 않은 Text 의 상자는 fontSize 보다 낮지 않다). 하한 ≥ 44 면 통과, 아니면 경계 — 미달은 단정하지 않는다(상한의 근거가 없다).',
+    공용컴포넌트판정식: '하한 = 2×paddingVertical + fontSize (가정 A: lineHeight 를 명시하지 않은 Text 의 상자는 fontSize 보다 낮지 않다). 상한의 근거가 없어 미달을 단정하지 않고, 호출부 style 이 padding·height 를 덮어 줄일 수 있어 통과로도 닫지 않는다 — 전부 경계이고 S4 렌더 실측이 닫는다(R4 F02).',
+    파일선정: '제품 = apps/mobile 의 .tsx 에서 .test/.spec.tsx 와 tests·__tests__ 폴더를 뺀 것. 시험 fixture 는 따로 세고 제품 재고와 섞지 않는다(R4 F04).',
     generatedAt: new Date().toISOString(), node: process.version,
   },
   summary: { 파일: files.length, 누를수있는상자: rows.length, 판정: judged.length, 통과: judged.length - short.length,
@@ -311,7 +376,7 @@ const out = {
 };
 if (outPath) writeFileSync(outPath, JSON.stringify(out, null, 2) + '\n');
 console.log(`터치 영역 — 판정 ${judged.length}자리 · 통과 ${judged.length - short.length} · **미달 ${short.length}** · 판정불가 ${rows.length - judged.length}(래칫 대상)`);
-for (const c of componentContracts) console.log(`  공용 — ${c.컴포넌트} 높이 하한 ${c.높이하한 ?? '?'} → ${c.판정} · 소비처 ${c.소비처 ?? 0}곳`);
+for (const c of componentContracts) console.log(`  공용 — ${c.컴포넌트} 높이 하한 ${c.높이하한 ?? '?'} → ${c.판정} · 제품 소비처 ${c.소비처 ?? 0}곳 · 시험 참조 ${c.시험참조 ?? 0}곳`);
 if (dynamicUses !== null) console.log(`  공용 — Button size 동적/spread ${dynamicUses.length}곳 (정적 판정 불가)`);
 console.log(`  측정 — 커밋 ${측정.커밋.slice(0, 12)} · 작업 트리 ${측정.작업트리} · 결속 ${측정.결속}`);
 if (failures.length) {
