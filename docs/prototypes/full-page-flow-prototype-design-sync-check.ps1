@@ -594,9 +594,64 @@ foreach ($fileName in @($auditName, $auditScriptName, 'full-page-flow-prototype-
     'full-page-flow-prototype-design-sync-check.ps1',
     'full-page-flow-prototype-app-token-map.json', 'full-page-flow-prototype-app-map-check.mjs',
     'full-page-flow-prototype-app-map-check.json', '../token-adoption-audit.json',
+    'full-page-flow-prototype-axis-measure.mjs', 'full-page-flow-prototype-axis-at.json',
+    'full-page-flow-prototype-role-measure.mjs', 'full-page-flow-prototype-role-at.json',
+    'full-page-flow-prototype-doc-claims.json', 'full-page-flow-prototype-doc-claims-check.mjs',
+    'full-page-flow-prototype-doc-claims-check.json',
+    'full-page-flow-prototype-contrast-contract.json', 'full-page-flow-prototype-contrast-gate.mjs',
+    'full-page-flow-prototype-contrast-gate.json',
     '../디자인-토큰-3계층-값-매핑-기획서.md')) {
   $contents = Read-Utf8 (Join-Path $PrototypeDirectory $fileName)
   if ($null -ne $contents) { $hashes[$fileName] = Get-Sha256 $contents }
+}
+
+# --- 문서 주장 대조 결속 (PRT-209 · 페이블 제안) ---
+# 문서가 숫자 목록으로 한 주장을 코드 실측과 대조한 결과를 묶는다.
+# 이 회차에만 문서가 코드보다 앞서 있던 자리가 다섯 번 나왔고, 그중 하나(§7.3.1 스크롤 목록)는
+# 값 개수와 총 건수가 우연히 같아 눈으로도 개수 대조로도 안 걸렸다.
+$claimsCheckName = 'full-page-flow-prototype-doc-claims-check.json'
+$claimsScriptName = 'full-page-flow-prototype-doc-claims-check.mjs'
+$claimsName = 'full-page-flow-prototype-doc-claims.json'
+$claimsCheckPath = Join-Path $PrototypeDirectory $claimsCheckName
+if (-not (Test-Path -LiteralPath $claimsCheckPath)) {
+  Add-Failure "$claimsCheckName : 문서 주장 대조 결과가 없음"
+} else {
+  $claimsCheck = Read-Utf8 $claimsCheckPath | ConvertFrom-Json
+  $claimsScriptSha = Get-Sha256 (Read-Utf8 (Join-Path $PrototypeDirectory $claimsScriptName))
+  $claimsSha = Get-Sha256 (Read-Utf8 (Join-Path $PrototypeDirectory $claimsName))
+  $claimsAuditSha = Get-Sha256 (Read-Utf8 (Join-Path $PrototypeDirectory '../token-adoption-audit.json'))
+  if ($claimsCheck.manifest.scriptSha256 -ne $claimsScriptSha) { Add-Failure "$claimsCheckName : 검사기 SHA 불일치. 재실행 필요" }
+  if ($claimsCheck.manifest.claimsSha256 -ne $claimsSha) { Add-Failure "$claimsCheckName : 주장 목록 SHA 불일치. 재실행 필요" }
+  if ($claimsCheck.manifest.auditSha256 -ne $claimsAuditSha) { Add-Failure "$claimsCheckName : 감사 SHA 불일치. 대조가 낡았다" }
+  if ($claimsCheck.status -ne 'PASS') {
+    foreach ($f in $claimsCheck.failures) { Add-Failure "$claimsCheckName : $f" }
+  }
+  if ([int]$claimsCheck.claimCount -lt 5) { Add-Failure "$claimsCheckName : 주장이 $($claimsCheck.claimCount)건 - 목록이 줄었다" }
+}
+
+# --- 색 대비 게이트 결속 (PRT-209 · 페이블 요청 2) ---
+# 승인된 색 중 셋이 AA 선에 여유 0 으로 붙어 있다. 문서 계약은 표면 색이 바뀌는 커밋에서
+# 아무것도 하지 않으므로, 절대 기준(4.5:1 / 3:1)으로 매 커밋 재검산한다.
+# baseline 비교가 아니다 - 바뀐 값이 새 baseline 이 되어 조용히 통과하면 안 된다.
+$contrastName = 'full-page-flow-prototype-contrast-gate.json'
+$contrastScriptName = 'full-page-flow-prototype-contrast-gate.mjs'
+$contractName = 'full-page-flow-prototype-contrast-contract.json'
+$contrastPath = Join-Path $PrototypeDirectory $contrastName
+if (-not (Test-Path -LiteralPath $contrastPath)) {
+  Add-Failure "$contrastName : 색 대비 검사 결과가 없음"
+} else {
+  $contrast = Read-Utf8 $contrastPath | ConvertFrom-Json
+  $contrastScriptSha = Get-Sha256 (Read-Utf8 (Join-Path $PrototypeDirectory $contrastScriptName))
+  $contractSha = Get-Sha256 (Read-Utf8 (Join-Path $PrototypeDirectory $contractName))
+  if ($contrast.manifest.scriptSha256 -ne $contrastScriptSha) { Add-Failure "$contrastName : 검사기 SHA 불일치. 재실행 필요" }
+  if ($contrast.manifest.contractSha256 -ne $contractSha) { Add-Failure "$contrastName : 조합표 SHA 불일치. 재실행 필요" }
+  if ($contrast.status -eq 'FAIL') {
+    foreach ($f in $contrast.failures) { Add-Failure "$contrastName : $f" }
+  }
+  # 경계값은 통과시키되 **보이게** 둔다. 사라지면 조합표가 조용히 바뀐 것이다.
+  if ($null -eq $contrast.boundaryCount) { Add-Failure "$contrastName : 경계값 수가 없음" }
+  if ([int]$contrast.boundaryCount -lt 4) { Add-Failure "$contrastName : 경계값이 $($contrast.boundaryCount)건 - DS-20260905-001 이 승인한 넷보다 적다. 조합표가 바뀌었다" }
+  if ($null -eq $contrast.openCount) { Add-Failure "$contrastName : 열린 조합 수가 없음" }
 }
 
 # --- 앱 선언 전수 배정 결속 (PRT-204 · W1) ---

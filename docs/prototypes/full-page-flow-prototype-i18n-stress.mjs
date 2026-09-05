@@ -133,9 +133,31 @@ let pwVersion = null; try { pwVersion = req('playwright/package.json').version; 
 
 const URLBASE = pathToFileURL(target).href;
 const browser = await chromium.launch(opt.executable ? { executablePath: opt.executable } : {});
+
+// ── 시계 고정 (PRT-209) ────────────────────────────────────────────────────
+// 프로토타입은 스스로 `new Date()` 를 읽는다 — `recentChangeButton()` 이 표본 행의 날짜와
+// 오늘을 비교해 7일이 넘으면 버튼을 통째로 지운다. 봉인은 파일을 묶지 시계를 묶지 않으므로
+// 같은 대상 SHA 가 날마다 다른 수치를 냈다. 시계도 측정 입력이라 여기서 고정하고 적는다.
+const CLOCK = opt.clock ?? '2026-09-04T09:00:00+09:00';
+const CLOCK_MS = Date.parse(CLOCK);
+if (!Number.isFinite(CLOCK_MS)) { console.error(`--clock 값을 읽을 수 없다: ${CLOCK}`); process.exit(2); }
+const PIN_CLOCK = `(() => {
+  const T = ${JSON.stringify(CLOCK_MS)};
+  const _D = Date;
+  function D(...a) { return a.length ? new _D(...a) : new _D(T); }
+  D.now = () => T; D.parse = _D.parse; D.UTC = _D.UTC; D.prototype = _D.prototype;
+  Object.setPrototypeOf(D, _D);
+  globalThis.Date = D;
+})()`;
+const newPinnedPage = async (browser, o) => {
+  const p = await browser.newPage(o);
+  await p.addInitScript(PIN_CLOCK);
+  return p;
+};
+
 const chromiumVersion = browser.version();
 
-const boot = await browser.newPage();
+const boot = await newPinnedPage(browser);
 await boot.goto(URLBASE, { waitUntil: 'load' });
 const reg = await boot.evaluate(() => {
   const hidden = Object.entries(screens).filter(([, s]) => s.hidden).map(([k]) => k);
@@ -413,7 +435,7 @@ const violations = {};
 const stretchStats = {};
 
 for (const pass of PASSES) {
-  const page = await browser.newPage({ viewport: { width: 320, height: 720 } });
+  const page = await newPinnedPage(browser, { viewport: { width: 320, height: 720 } });
   const sum = { phoneOverflow: 0, clipped: 0, escapee: 0 };
   const st = { stretched: 0, skippedNumeric: 0, skippedGlyph: 0, text2x: 0, errorHistogram: {}, worst: [], atRisk: [], atRiskCount: 0, text2xMismatched: 0 };
   for (const t of targets) {
@@ -522,7 +544,7 @@ const result = {
     generatedAt: new Date().toISOString(), schemaVersion: 1,
     script: { name: basename(new URL(import.meta.url).pathname), sha256: sha(readFileSync(new URL(import.meta.url))) },
     target: { path: basename(target), sha256: sha(bytes), designSyncId },
-    runner: { node: process.version, playwright: pwVersion, chromium: chromiumVersion, platform: process.platform },
+    runner: { node: process.version, playwright: pwVersion, chromium: chromiumVersion, platform: process.platform , clock: CLOCK, clockNote: '프로토타입이 스스로 new Date() 를 읽으므로 시계도 측정 입력이다 (PRT-209)'},
     viewport: { width: 320, height: 720 },
     targetsMeasured: targets.length,
     rules: {

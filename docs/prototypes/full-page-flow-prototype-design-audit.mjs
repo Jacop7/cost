@@ -58,7 +58,29 @@ let pw=null; try{pw=req('playwright/package.json').version;}catch{}
 
 const URLBASE=pathToFileURL(target).href;
 const browser=await chromium.launch(opt.executable?{executablePath:opt.executable}:{});
-const boot=await browser.newPage(); await boot.goto(URLBASE,{waitUntil:'load'});
+
+// ── 시계 고정 (PRT-209) ────────────────────────────────────────────────────
+// 프로토타입은 스스로 `new Date()` 를 읽는다 — `recentChangeButton()` 이 표본 행의 날짜와
+// 오늘을 비교해 7일이 넘으면 버튼을 **통째로 지운다**. 그래서 같은 대상 SHA 가 날마다
+// 다른 수치를 낸다(2026-09-04 → 6,974 · 09-05 → 6,965). 봉인은 파일을 묶지 시계를 묶지 않는다.
+// 측정이 재현 가능하려면 시계도 입력이어야 하므로 여기서 고정하고 manifest 에 적는다.
+const CLOCK = opt.clock ?? '2026-09-04T09:00:00+09:00';
+const CLOCK_MS = Date.parse(CLOCK);
+if (!Number.isFinite(CLOCK_MS)) { console.error(`--clock 값을 읽을 수 없다: ${CLOCK}`); process.exit(2); }
+const PIN_CLOCK = `(() => {
+  const T = ${JSON.stringify(CLOCK_MS)};
+  const _D = Date;
+  function D(...a) { return a.length ? new _D(...a) : new _D(T); }
+  D.now = () => T; D.parse = _D.parse; D.UTC = _D.UTC; D.prototype = _D.prototype;
+  Object.setPrototypeOf(D, _D);
+  globalThis.Date = D;
+})()`;
+const newPinnedPage = async (browser, o) => {
+  const p = await browser.newPage(o);
+  await p.addInitScript(PIN_CLOCK);
+  return p;
+};
+const boot=await newPinnedPage(browser); await boot.goto(URLBASE,{waitUntil:'load'});
 const reg=await boot.evaluate(()=>{
   const hidden=Object.entries(screens).filter(([,s])=>s.hidden).map(([k])=>k);
   const pairs=[]; for(const [h,l] of Object.entries(popupTabs)) for(const [i] of l) pairs.push({id:i,host:h});
@@ -264,7 +286,7 @@ const push=(bucket,key,extra)=>{ const b=(agg[bucket][key]??={n:0,ex:new Set()})
   if(extra&&b.ex.size<3) b.ex.add(extra); };
 
 let autoSkippedTotal=0;
-const page=await browser.newPage({viewport:{width:390,height:844}});
+const page=await newPinnedPage(browser,{viewport:{width:390,height:844}});
 for(const t of targets){
   await page.goto(`${URLBASE}?screen=${t.screen}`+(t.popup?`&popup=${t.popup}`:''),{waitUntil:'load'});
   await page.evaluate(()=>document.fonts.ready);
@@ -294,7 +316,7 @@ const result={
   manifest:{generatedAt:new Date().toISOString(),schemaVersion:1,
     script:{name:basename(new URL(import.meta.url).pathname),sha256:sha(readFileSync(new URL(import.meta.url)))},
     target:{path:basename(target),sha256:sha(bytes),designSyncId},
-    runner:{node:process.version,playwright:pw,chromium:'see render-audit'},
+    runner:{node:process.version,playwright:pw,chromium:'see render-audit',clock:CLOCK,clockNote:'프로토타입이 스스로 new Date() 를 읽으므로 시계도 측정 입력이다 (PRT-209)'},
     viewport:{width:390,height:844}, targetsMeasured:targets.length,
     marginAutoExcluded:autoSkippedTotal,
     rules:{ '대상':'제품 UI 만. 프로토타입 셸 제외',

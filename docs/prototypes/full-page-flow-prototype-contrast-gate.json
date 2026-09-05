@@ -1,0 +1,283 @@
+{
+  "manifest": {
+    "script": "docs/prototypes/full-page-flow-prototype-contrast-gate.mjs",
+    "scriptSha256": "e502bef5703f322d008bfc30c7557d0f72b68c7d7c35bf6a527ee8965d0b24e7",
+    "contractSha256": "988ecb58c7f8da71cc47a5dcea9e72a0c257e245638210b979afdfb03187da7f",
+    "node": "v22.23.2",
+    "generatedAt": "2026-09-05T00:29:26.071Z",
+    "기준": "글자 4.5:1 · 비텍스트 3:1 — 절대 기준. baseline 비교가 아니다.",
+    "면제": [
+      "text.disabled #8B95A1 — WCAG 1.4.3 은 **비활성 컴포넌트의 글자를 면제**한다. 면제이지 통과가 아니므로 값은 재고 대상에서 뺀다."
+    ]
+  },
+  "status": "OPEN",
+  "pairCount": 21,
+  "openCount": 3,
+  "open": [
+    "text.link #1470F5 on #F9FAFB = 4.31",
+    "text.link #1470F5 on #F2F4F6 = 4.08",
+    "Notice 본문 글자 on blueTint #1470F5 on #EBF3FE = 4.03"
+  ],
+  "boundaryCount": 4,
+  "boundaries": [
+    "text.link #1470F5 on #FFFFFF = 4.50",
+    "text.tertiary #66717E on #F2F4F6 = 4.50",
+    "text.required #0A68EE on #F2F4F6 = 4.51",
+    "action.primary 위 흰 글자 #FFFFFF on #1470F5 = 4.50"
+  ],
+  "failures": [],
+  "rows": [
+    {
+      "역할": "text.primary",
+      "fg": "#191F28",
+      "bg": "#FFFFFF",
+      "표면": "surface",
+      "kind": "text",
+      "ratio": 16.56,
+      "min": 4.5,
+      "pass": true,
+      "boundary": false,
+      "open": false
+    },
+    {
+      "역할": "text.secondary",
+      "fg": "#4E5968",
+      "bg": "#FFFFFF",
+      "표면": "surface",
+      "kind": "text",
+      "ratio": 7.11,
+      "min": 4.5,
+      "pass": true,
+      "boundary": false,
+      "open": false
+    },
+    {
+      "역할": "text.tertiary",
+      "fg": "#66717E",
+      "bg": "#FFFFFF",
+      "표면": "surface",
+      "kind": "text",
+      "ratio": 4.97,
+      "min": 4.5,
+      "pass": true,
+      "boundary": false,
+      "open": false
+    },
+    {
+      "역할": "text.link",
+      "fg": "#1470F5",
+      "bg": "#FFFFFF",
+      "표면": "surface",
+      "kind": "text",
+      "ratio": 4.5,
+      "min": 4.5,
+      "pass": true,
+      "boundary": true,
+      "open": false
+    },
+    {
+      "역할": "text.required",
+      "fg": "#0A68EE",
+      "bg": "#FFFFFF",
+      "표면": "surface",
+      "kind": "text",
+      "ratio": 4.97,
+      "min": 4.5,
+      "pass": true,
+      "boundary": false,
+      "open": false
+    },
+    {
+      "역할": "text.primary",
+      "fg": "#191F28",
+      "bg": "#F9FAFB",
+      "표면": "surface2",
+      "kind": "text",
+      "ratio": 15.85,
+      "min": 4.5,
+      "pass": true,
+      "boundary": false,
+      "open": false
+    },
+    {
+      "역할": "text.secondary",
+      "fg": "#4E5968",
+      "bg": "#F9FAFB",
+      "표면": "surface2",
+      "kind": "text",
+      "ratio": 6.81,
+      "min": 4.5,
+      "pass": true,
+      "boundary": false,
+      "open": false
+    },
+    {
+      "역할": "text.tertiary",
+      "fg": "#66717E",
+      "bg": "#F9FAFB",
+      "표면": "surface2",
+      "kind": "text",
+      "ratio": 4.75,
+      "min": 4.5,
+      "pass": true,
+      "boundary": false,
+      "open": false
+    },
+    {
+      "역할": "text.link",
+      "fg": "#1470F5",
+      "bg": "#F9FAFB",
+      "표면": "surface2",
+      "kind": "text",
+      "ratio": 4.31,
+      "min": 4.5,
+      "pass": false,
+      "boundary": false,
+      "open": true
+    },
+    {
+      "역할": "text.required",
+      "fg": "#0A68EE",
+      "bg": "#F9FAFB",
+      "표면": "surface2",
+      "kind": "text",
+      "ratio": 4.75,
+      "min": 4.5,
+      "pass": true,
+      "boundary": false,
+      "open": false
+    },
+    {
+      "역할": "text.primary",
+      "fg": "#191F28",
+      "bg": "#F2F4F6",
+      "표면": "bg",
+      "kind": "text",
+      "ratio": 15.02,
+      "min": 4.5,
+      "pass": true,
+      "boundary": false,
+      "open": false
+    },
+    {
+      "역할": "text.secondary",
+      "fg": "#4E5968",
+      "bg": "#F2F4F6",
+      "표면": "bg",
+      "kind": "text",
+      "ratio": 6.45,
+      "min": 4.5,
+      "pass": true,
+      "boundary": false,
+      "open": false
+    },
+    {
+      "역할": "text.tertiary",
+      "fg": "#66717E",
+      "bg": "#F2F4F6",
+      "표면": "bg",
+      "kind": "text",
+      "ratio": 4.5,
+      "min": 4.5,
+      "pass": true,
+      "boundary": true,
+      "open": false
+    },
+    {
+      "역할": "text.link",
+      "fg": "#1470F5",
+      "bg": "#F2F4F6",
+      "표면": "bg",
+      "kind": "text",
+      "ratio": 4.08,
+      "min": 4.5,
+      "pass": false,
+      "boundary": false,
+      "open": true
+    },
+    {
+      "역할": "text.required",
+      "fg": "#0A68EE",
+      "bg": "#F2F4F6",
+      "표면": "bg",
+      "kind": "text",
+      "ratio": 4.51,
+      "min": 4.5,
+      "pass": true,
+      "boundary": true,
+      "open": false
+    },
+    {
+      "역할": "action.primary 위 흰 글자",
+      "fg": "#FFFFFF",
+      "bg": "#1470F5",
+      "표면": null,
+      "kind": "text",
+      "ratio": 4.5,
+      "min": 4.5,
+      "pass": true,
+      "boundary": true,
+      "open": false
+    },
+    {
+      "역할": "action.primary 상자 테두리·아이콘",
+      "fg": "#1470F5",
+      "bg": "#FFFFFF",
+      "표면": null,
+      "kind": "nonText",
+      "ratio": 4.5,
+      "min": 3,
+      "pass": true,
+      "boundary": false,
+      "open": false
+    },
+    {
+      "역할": "action.primary 상자 테두리·아이콘",
+      "fg": "#1470F5",
+      "bg": "#F9FAFB",
+      "표면": null,
+      "kind": "nonText",
+      "ratio": 4.31,
+      "min": 3,
+      "pass": true,
+      "boundary": false,
+      "open": false
+    },
+    {
+      "역할": "action.primary 상자 테두리·아이콘",
+      "fg": "#1470F5",
+      "bg": "#F2F4F6",
+      "표면": null,
+      "kind": "nonText",
+      "ratio": 4.08,
+      "min": 3,
+      "pass": true,
+      "boundary": false,
+      "open": false
+    },
+    {
+      "역할": "Notice 본문 글자 on blueTint",
+      "fg": "#1470F5",
+      "bg": "#EBF3FE",
+      "표면": null,
+      "kind": "text",
+      "ratio": 4.03,
+      "min": 4.5,
+      "pass": false,
+      "boundary": false,
+      "open": true
+    },
+    {
+      "역할": "Notice 테두리·아이콘 on blueTint",
+      "fg": "#1470F5",
+      "bg": "#EBF3FE",
+      "표면": null,
+      "kind": "nonText",
+      "ratio": 4.03,
+      "min": 3,
+      "pass": true,
+      "boundary": false,
+      "open": false
+    }
+  ]
+}
