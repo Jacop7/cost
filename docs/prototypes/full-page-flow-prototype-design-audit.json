@@ -1,15 +1,15 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-05T20:35:59.204Z",
+  "generatedAt": "2026-09-05T21:23:51.493Z",
   "schemaVersion": 1,
   "script": {
    "name": "full-page-flow-prototype-design-audit.mjs",
-   "sha256": "b6dee42bdbae96a1f3234d89b441d7c5abf50027af878feff5349b8595fb5e51"
+   "sha256": "adf8bc5a33e1791f5cb27a40c056c3bafbfbf60ff20629010701468877b80506"
   },
   "target": {
    "path": "0_full-page-flow-prototype-ui-applied.html",
-   "sha256": "d5c9c2462d300cbb6ce022293eaa9e7fb8b332bf429c77799bc81c86f699b694",
-   "designSyncId": "DS-20260906-001"
+   "sha256": "43a604d3f55476eae822c4fcf43c9b2bbdc637cc8add6a34009d91f1e2e0e8a6",
+   "designSyncId": "DS-20260906-002"
   },
   "runner": {
    "node": "v24.15.0",
@@ -44,12 +44,12 @@
  },
  "summary": {
   "typo": {
-   "종류": 341,
-   "합계": 6974
+   "종류": 340,
+   "합계": 6944
   },
   "color": {
-   "종류": 48,
-   "합계": 10848
+   "종류": 47,
+   "합계": 10818
   },
   "space": {
    "종류": 1051,
@@ -76,12 +76,12 @@
    "합계": 697
   },
   "contrast": {
-   "종류": 31,
-   "합계": 6974
+   "종류": 30,
+   "합계": 6944
   },
   "contrastRole": {
-   "종류": 345,
-   "합계": 6974
+   "종류": 344,
+   "합계": 6944
   }
  },
  "typo": [
@@ -703,13 +703,6 @@
     "부가세 포함",
     "부가세 미포함",
     "일반 과세"
-   ]
-  },
-  {
-   "key": "tax-choice|input|13.3333px/400/normal/normal",
-   "n": 30,
-   "ex": [
-    "on"
    ]
   },
   {
@@ -3065,13 +3058,6 @@
     "detail-chips.detail-chip",
     "order-head.expo-status",
     "sales-live-copy.em"
-   ]
-  },
-  {
-   "key": "text|rgb(0, 0, 0)|inherited",
-   "n": 30,
-   "ex": [
-    "tax-choice.input"
    ]
   },
   {
@@ -11613,13 +11599,6 @@
    ]
   },
   {
-   "key": "rgb(0, 0, 0) on rgb(255, 255, 255)|21|normal|AA",
-   "n": 30,
-   "ex": [
-    "tax-choice.input 13.3333px/400 \"on\""
-   ]
-  },
-  {
    "key": "rgb(25, 31, 40) on rgb(242, 244, 246)|15.02|normal|AA",
    "n": 24,
    "ex": [
@@ -11922,7 +11901,7 @@
    "key": "label|h28|0px|13.3333px/400|shell of input",
    "n": 30,
    "ex": [
-    "tax-choice.tax-choice \"on\""
+    "tax-choice.tax-choice \"\""
    ]
   },
   {
@@ -12530,9 +12509,7 @@
   {
    "key": "tax-choice.tax-choice|84.09x28",
    "n": 8,
-   "ex": [
-    "on"
-   ]
+   "ex": []
   },
   {
    "key": "sales-qty-stepper.button|38x38",
@@ -12630,37 +12607,27 @@
   {
    "key": "tax-choice.tax-choice|95.33x28",
    "n": 4,
-   "ex": [
-    "on"
-   ]
+   "ex": []
   },
   {
    "key": "tax-choice.tax-choice|72.86x28",
    "n": 4,
-   "ex": [
-    "on"
-   ]
+   "ex": []
   },
   {
    "key": "tax-choice.tax-choice|72.14x28",
    "n": 4,
-   "ex": [
-    "on"
-   ]
+   "ex": []
   },
   {
    "key": "tax-choice.tax-choice|47.48x28",
    "n": 4,
-   "ex": [
-    "on"
-   ]
+   "ex": []
   },
   {
    "key": "tax-choice.tax-choice|98.23x28",
    "n": 4,
-   "ex": [
-    "on"
-   ]
+   "ex": []
   },
   {
    "key": "card.tax-add|334x42",
@@ -12762,16 +12729,12 @@
   {
    "key": "tax-choice.tax-choice|109.47x28",
    "n": 1,
-   "ex": [
-    "on"
-   ]
+   "ex": []
   },
   {
    "key": "tax-choice.tax-choice|120.7x28",
    "n": 1,
-   "ex": [
-    "on"
-   ]
+   "ex": []
   }
  ],
  "icon": [
@@ -13615,13 +13578,6 @@
     "부가세 포함",
     "부가세 미포함",
     "일반 과세"
-   ]
-  },
-  {
-   "key": "tax-choice.input|rgb(0, 0, 0)|rgb(255, 255, 255)|21|AA",
-   "n": 30,
-   "ex": [
-    "on"
    ]
   },
   {

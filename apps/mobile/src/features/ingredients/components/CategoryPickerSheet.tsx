@@ -4,7 +4,7 @@
 // 추가해도 여기서 고를 수 없어 "추가는 되는데 쓸 수가 없는" 상태가 된다.
 import { ScrollView, Text, View, Pressable } from 'react-native';
 import { Sheet, Icon, QueryState } from '../../../components/kit';
-import { COLOR, T } from '../../../theme/tokens';
+import { COLOR, T, space } from '../../../theme/tokens';
 import { useSettingsLists } from '@/features/master-data/hooks';
 
 export function CategoryPickerSheet({
@@ -46,7 +46,7 @@ export function CategoryPickerSheet({
                   flexDirection: 'row',
                   alignItems: 'center',
                   gap: 8,
-                  paddingVertical: 14,
+                  paddingVertical: space.md,
                   paddingHorizontal: 16,
                   borderRadius: 12,
                   backgroundColor: on ? COLOR.action.primaryTint : T.surface,

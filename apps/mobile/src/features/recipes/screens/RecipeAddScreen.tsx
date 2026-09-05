@@ -10,7 +10,7 @@ import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { AppHeader, Badge, Button, Card, Field, Icon, Input, QueryState, Select, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { formatPercent, formatQuantity, formatUnitPrice, recommendedPrice, round, taxAmount, taxRate } from '@margincook/core';
-import { COLOR, T, won } from '@/theme/tokens';
+import { COLOR, T, won, TYPE, radius, space } from '@/theme/tokens';
 import { clampDecimals } from '@/lib/num';
 import { useSettingsLists } from '@/features/master-data/hooks';
 import { useStoreSettings } from '@/features/settings/hooks';
@@ -26,7 +26,7 @@ const num = (s: string) => {
 
 function SecHead({ title, sub, right }: { title: string; sub?: string; right?: ReactNode }) {
   return (
-    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 13, paddingHorizontal: 15, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
+    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: space.md, paddingHorizontal: space.md, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
       <Text style={{ fontSize: 16, fontWeight: '800', color: T.sub }}>{title}</Text>
       {sub ? <Text style={{ fontSize: 14, color: COLOR.text.tertiary, fontWeight: '600' }}>{sub}</Text> : null}
       {right ? (<><View style={{ flex: 1 }} />{right}</>) : null}
@@ -44,8 +44,8 @@ function InfoBtn({ active, onPress }: { active: boolean; onPress: () => void }) 
 
 function Footer({ children }: { children: ReactNode }) {
   return (
-    <View style={{ paddingVertical: 12, paddingHorizontal: 15, backgroundColor: T.surface2, borderTopWidth: 1, borderTopColor: T.line2 }}>
-      <Text style={{ fontSize: 14, color: COLOR.text.tertiary, lineHeight: 20 }}>{children}</Text>
+    <View style={{ paddingVertical: 12, paddingHorizontal: space.md, backgroundColor: T.surface2, borderTopWidth: 1, borderTopColor: T.line2 }}>
+      <Text style={{ fontSize: 14, color: COLOR.text.tertiary, lineHeight: TYPE.caption.lineHeight }}>{children}</Text>
     </View>
   );
 }
@@ -213,7 +213,7 @@ export default function RecipeAddScreen() {
       >
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 4, paddingBottom: 24 }}>
           {/* 기본 정보 */}
-          <View style={{ marginBottom: 14 }}>
+          <View style={{ marginBottom: space.md }}>
             <Field label="메뉴명" req error={draft.name !== '' ? nameError : undefined}>
               <Input value={draft.name} onChangeText={(t) => patch({ name: t })} placeholder="예) 제육볶음" error={draft.name !== '' && Boolean(nameError)} accessibilityLabel="메뉴명" />
             </Field>
@@ -229,14 +229,14 @@ export default function RecipeAddScreen() {
                 accessibilityLabel="메모"
               />
             </Field>
-            <View style={{ flexDirection: 'row', gap: 10 }}>
+            <View style={{ flexDirection: 'row', gap: space.sm }}>
               <View style={{ flex: 1.4 }}>
                 <Field label="판매가" req error={draft.price !== '' ? priceError : undefined}>
                   <Input value={draft.price} onChangeText={(t) => patch({ price: clampDecimals(t, 0) })} placeholder="0" suffix="원" mono keyboardType="number-pad" accessibilityLabel="판매가" />
                 </Field>
               </View>
             </View>
-            <View style={{ flexDirection: 'row', gap: 10 }}>
+            <View style={{ flexDirection: 'row', gap: space.sm }}>
               <View style={{ flex: 1 }}>
                 <Field label="월 평균 판매량" right={<InfoBtn active={info === 'sales'} onPress={() => setInfo((v) => (v === 'sales' ? null : 'sales'))} />}>
                   <Input value={draft.avgMonthlySales} onChangeText={(t) => patch({ avgMonthlySales: clampDecimals(t, 0) })} placeholder="0" suffix="개" mono keyboardType="number-pad" accessibilityLabel="월 평균 판매량" />
@@ -254,9 +254,9 @@ export default function RecipeAddScreen() {
           </View>
 
           {info ? (
-            <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, marginTop: -8, marginBottom: 18, paddingVertical: 10, paddingHorizontal: 12, backgroundColor: COLOR.action.primaryTint, borderRadius: 10 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, marginTop: -8, marginBottom: space.lg, paddingVertical: space.sm, paddingHorizontal: 12, backgroundColor: COLOR.action.primaryTint, borderRadius: radius.md }}>
               <Icon name="info" size={15} color={COLOR.action.primary} />
-              <Text style={{ flex: 1, fontSize: 14, color: T.sub, fontWeight: '600', lineHeight: 21 }}>
+              <Text style={{ flex: 1, fontSize: 14, color: T.sub, fontWeight: '600', lineHeight: TYPE.caption.lineHeight }}>
                 {info === 'sales'
                   ? '한 달 평균 판매 수량이에요. 손익 미리보기의 ‘월평균 기준’ 계산에 쓰여요.'
                   : '이 메뉴에서 남기고 싶은 순이익 비율이에요. 현재 순이익률이 목표보다 낮으면 권장 판매가를 알려드려요.'}
@@ -267,20 +267,20 @@ export default function RecipeAddScreen() {
           {/* 재료 */}
           <Card pad={0} style={{ overflow: 'hidden' }}>
             <SecHead title="재료" sub={`${draft.lines.length}개`} />
-            <View style={{ flexDirection: 'row', gap: 22, paddingHorizontal: 15, backgroundColor: T.surface, borderBottomWidth: 1, borderBottomColor: T.line }}>
+            <View style={{ flexDirection: 'row', gap: 22, paddingHorizontal: space.md, backgroundColor: T.surface, borderBottomWidth: 1, borderBottomColor: T.line }}>
               {([['batch', `${servings}인분 기준`], ['one', '1인분 기준']] as const).map(([k, label]) => {
                 const on = costMode === k;
                 return (
-                  <Pressable key={k} onPress={() => setCostMode(k)} accessibilityRole="tab" accessibilityLabel={label} accessibilityState={{ selected: on }} style={{ paddingTop: 13, paddingBottom: 11 }}>
+                  <Pressable key={k} onPress={() => setCostMode(k)} accessibilityRole="tab" accessibilityLabel={label} accessibilityState={{ selected: on }} style={{ paddingTop: space.md, paddingBottom: space.md }}>
                     <Text style={{ fontSize: 16, fontWeight: on ? '700' : '600', color: on ? T.ink : COLOR.text.tertiary }}>{label}</Text>
-                    {on ? <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 2.5, backgroundColor: T.ink, borderRadius: 2 }} /> : null}
+                    {on ? <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 2.5, backgroundColor: T.ink, borderRadius: radius.full }} /> : null}
                   </Pressable>
                 );
               })}
             </View>
-            <View style={{ paddingHorizontal: 15, paddingTop: 4, paddingBottom: 15 }}>
+            <View style={{ paddingHorizontal: space.md, paddingTop: 4, paddingBottom: space.md }}>
               {draft.lines.length === 0 ? (
-                <Text style={{ fontSize: 16, color: COLOR.text.tertiary, paddingVertical: 14 }}>아래 ‘재료 검색’으로 재료를 담아 주세요</Text>
+                <Text style={{ fontSize: 16, color: COLOR.text.tertiary, paddingVertical: space.md }}>아래 ‘재료 검색’으로 재료를 담아 주세요</Text>
               ) : (
                 draft.lines.map((l, i) => {
                   const cost = lineCost(l);
@@ -290,7 +290,7 @@ export default function RecipeAddScreen() {
                         <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }} numberOfLines={1}>
                           {l.name}
                         </Text>
-                        <Text style={[{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 2 }, NUM]}>
+                        <Text style={[{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.xs }, NUM]}>
                           {l.unitPrice === null ? '단가 산출 전' : l.unit === null ? `${won(Math.round(l.unitPrice))}원/인분` : formatUnitPrice(l.unitPrice, l.unit)}
                         </Text>
                       </Pressable>
@@ -312,7 +312,7 @@ export default function RecipeAddScreen() {
               <Pressable
                 onPress={() => router.push(`/recipes/ingredient-search${draft.id ? `?exclude=${draft.id}` : ''}` as Href)}
                 accessibilityRole="button" accessibilityLabel="재료 검색"
-                style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, marginTop: 12, paddingVertical: 13, borderRadius: 12, borderWidth: 1, borderColor: COLOR.action.primary, backgroundColor: COLOR.action.primaryTint }}
+                style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, marginTop: 12, paddingVertical: space.md, borderRadius: 12, borderWidth: 1, borderColor: COLOR.action.primary, backgroundColor: COLOR.action.primaryTint }}
               >
                 <Icon name="search" size={17} color={COLOR.action.primary} sw={2.1} />
                 <Text style={{ fontSize: 16, fontWeight: '700', color: COLOR.text.link }}>재료 검색</Text>
@@ -321,13 +321,13 @@ export default function RecipeAddScreen() {
                 <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.ink2 }}>재료비 소계</Text>
                 <View style={{ alignItems: 'flex-end' }}>
                   <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{won(Math.round(material * cm))}원</Text>
-                  <Text style={[{ fontSize: 14, fontWeight: '700', color: T.sub2, marginTop: 2 }, NUM]}>{p(material)}</Text>
+                  <Text style={[{ fontSize: 14, fontWeight: '700', color: T.sub2, marginTop: space.xs }, NUM]}>{p(material)}</Text>
                 </View>
               </View>
               {unknownLines > 0 ? (
-                <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, marginTop: 10, paddingVertical: 10, paddingHorizontal: 12, borderRadius: 10, backgroundColor: T.amberTint }}>
+                <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, marginTop: space.sm, paddingVertical: space.sm, paddingHorizontal: 12, borderRadius: radius.md, backgroundColor: T.amberTint }}>
                   <Icon name="info" size={15} color={T.amberText} />
-                  <Text style={{ flex: 1, fontSize: 14, color: T.amberText, lineHeight: 20 }}>
+                  <Text style={{ flex: 1, fontSize: 14, color: T.amberText, lineHeight: TYPE.caption.lineHeight }}>
                     단가가 없는 재료 {unknownLines}개는 원가에서 빠져 있어요. 재고 추가나 입고를 등록하면 원가에 들어가요.
                   </Text>
                 </View>
@@ -336,20 +336,20 @@ export default function RecipeAddScreen() {
             <Footer>식재료는 검색해서만 담을 수 있어요(단가 자동 연동). 사용량은 기준 인분 전체 양이에요.</Footer>
           </Card>
 
-          <View style={{ height: 9 }} />
+          <View style={{ height: space.sm }} />
 
           {/* 부자재 */}
           <Card pad={0} style={{ overflow: 'hidden' }}>
             <SecHead title="부자재" sub="(이 메뉴에만 들어가는 부가 원가)" />
-            <View style={{ paddingHorizontal: 15, paddingTop: 4, paddingBottom: 15 }}>
+            <View style={{ paddingHorizontal: space.md, paddingTop: 4, paddingBottom: space.md }}>
               {draft.extras.length === 0 ? (
-                <Text style={{ fontSize: 16, color: COLOR.text.tertiary, paddingVertical: 14 }}>등록된 부자재가 없어요</Text>
+                <Text style={{ fontSize: 16, color: COLOR.text.tertiary, paddingVertical: space.md }}>등록된 부자재가 없어요</Text>
               ) : (
                 draft.extras.map((e, i) => (
-                  <View key={`${e.materialId ?? e.name}-${i}`} style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
+                  <View key={`${e.materialId ?? e.name}-${i}`} style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
                     <View style={{ flex: 1, minWidth: 0 }}>
                       <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }} numberOfLines={1}>{e.name}</Text>
-                      <Text style={[{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 2 }, NUM]}>{won(e.amount)}원 × {e.qty}</Text>
+                      <Text style={[{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.xs }, NUM]}>{won(e.amount)}원 × {e.qty}</Text>
                     </View>
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, padding: 7, margin: -7 }}>
                       <Pressable onPress={() => updateExtra(i, { qty: Math.max(0, e.qty - 1) })} hitSlop={7} accessibilityRole="button" accessibilityLabel={`${e.name} 수량 줄이기`} style={{ width: 30, height: 30, borderRadius: 8, backgroundColor: T.line2, alignItems: 'center', justifyContent: 'center' }}>
@@ -369,7 +369,7 @@ export default function RecipeAddScreen() {
               <Pressable
                 onPress={() => router.push('/recipes/material-search' as Href)}
                 accessibilityRole="button" accessibilityLabel="부자재 검색"
-                style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, marginTop: 12, paddingVertical: 13, borderRadius: 12, borderWidth: 1, borderColor: COLOR.action.primary, backgroundColor: COLOR.action.primaryTint }}
+                style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, marginTop: 12, paddingVertical: space.md, borderRadius: 12, borderWidth: 1, borderColor: COLOR.action.primary, backgroundColor: COLOR.action.primaryTint }}
               >
                 <Icon name="search" size={17} color={COLOR.action.primary} sw={2.1} />
                 <Text style={{ fontSize: 16, fontWeight: '700', color: COLOR.text.link }}>부자재 검색</Text>
@@ -378,29 +378,29 @@ export default function RecipeAddScreen() {
             <Footer>부자재 단가는 마스터에서 관리돼요. 단가를 고치면 이 메뉴 원가도 함께 바뀌어요.</Footer>
           </Card>
 
-          <View style={{ height: 9 }} />
+          <View style={{ height: space.sm }} />
 
           {/* 손익 미리보기 */}
           <Card onLine pad={0} style={{ overflow: 'hidden' }}>
             <SecHead title="손익 미리보기" sub="판매가 대비 %" />
-            <View style={{ flexDirection: 'row', gap: 22, paddingHorizontal: 15, backgroundColor: T.surface, borderBottomWidth: 1, borderBottomColor: T.line }}>
+            <View style={{ flexDirection: 'row', gap: 22, paddingHorizontal: space.md, backgroundColor: T.surface, borderBottomWidth: 1, borderBottomColor: T.line }}>
               {([['batch', `${servings}인분`], ['one', '1인분'], ['month', '월평균']] as const).map(([k, label]) => {
                 const on = plMode === k;
                 const disabled = k === 'month' && monthly <= 0;
                 return (
-                  <Pressable key={k} onPress={() => setPlMode(k)} disabled={disabled} accessibilityRole="tab" accessibilityLabel={`${label} 기준`} accessibilityState={{ selected: on, disabled }} style={{ paddingTop: 13, paddingBottom: 11, opacity: disabled ? 0.4 : 1 }}>
+                  <Pressable key={k} onPress={() => setPlMode(k)} disabled={disabled} accessibilityRole="tab" accessibilityLabel={`${label} 기준`} accessibilityState={{ selected: on, disabled }} style={{ paddingTop: space.md, paddingBottom: space.md, opacity: disabled ? 0.4 : 1 }}>
                     <Text style={{ fontSize: 16, fontWeight: on ? '700' : '600', color: on ? T.ink : COLOR.text.tertiary }}>{label} 기준</Text>
-                    {on ? <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 2.5, backgroundColor: T.ink, borderRadius: 2 }} /> : null}
+                    {on ? <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 2.5, backgroundColor: T.ink, borderRadius: radius.full }} /> : null}
                   </Pressable>
                 );
               })}
             </View>
-            <View style={{ paddingHorizontal: 15, paddingTop: 4, paddingBottom: 15 }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: T.line }}>
+            <View style={{ paddingHorizontal: space.md, paddingTop: 4, paddingBottom: space.md }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.sm, borderBottomWidth: 1, borderBottomColor: T.line }}>
                 <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.ink }}>판매가</Text>
                 <View style={{ alignItems: 'flex-end' }}>
                   <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{wm(price)}</Text>
-                  <Text style={[{ fontSize: 14, fontWeight: '600', color: COLOR.text.tertiary, marginTop: 2 }, NUM]}>100%</Text>
+                  <Text style={[{ fontSize: 14, fontWeight: '600', color: COLOR.text.tertiary, marginTop: space.xs }, NUM]}>100%</Text>
                 </View>
               </View>
               {[
@@ -409,13 +409,13 @@ export default function RecipeAddScreen() {
                 { label: '고정 지출', amt: fixed },
                 ...(extra > 0 ? [{ label: '부자재', amt: extra }] : []),
               ].map((c) => (
-                <View key={c.label} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 9, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
+                <View key={c.label} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.sm, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
                   <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.sub }}>
                     <Text style={{ color: COLOR.text.tertiary }}>(−) </Text>{c.label}
                   </Text>
                   <View style={{ alignItems: 'flex-end' }}>
                     <Text style={[{ fontSize: 16, fontWeight: '700', color: COLOR.text.tertiary }, NUM]}>{wm(c.amt)}</Text>
-                    <Text style={[{ fontSize: 14, fontWeight: '600', color: COLOR.text.tertiary, marginTop: 2 }, NUM]}>{p(c.amt)}</Text>
+                    <Text style={[{ fontSize: 14, fontWeight: '600', color: COLOR.text.tertiary, marginTop: space.xs }, NUM]}>{p(c.amt)}</Text>
                   </View>
                 </View>
               ))}
@@ -425,23 +425,23 @@ export default function RecipeAddScreen() {
                 <View style={{ flex: 1 }} />
                 <View style={{ alignItems: 'flex-end' }}>
                   <Text style={[{ fontSize: 16, fontWeight: '800', color: PROFIT }, NUM]}>{wm(profit)}</Text>
-                  <Text style={[{ fontSize: 14, fontWeight: '800', color: PROFIT, marginTop: 2 }, NUM]}>{formatPercent(profitRate)}</Text>
+                  <Text style={[{ fontSize: 14, fontWeight: '800', color: PROFIT, marginTop: space.xs }, NUM]}>{formatPercent(profitRate)}</Text>
                 </View>
               </View>
               {warn && recommended != null ? (
-                <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 11, paddingTop: 11, borderTopWidth: 1, borderTopColor: T.line }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: space.md, paddingTop: space.md, borderTopWidth: 1, borderTopColor: T.line }}>
                   <View style={{ flex: 1 }}>
                     <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink2 }}>권장 판매가</Text>
                     <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 1 }}>목표 {draft.targetProfitRate}% 기준</Text>
                   </View>
                   <Pressable onPress={() => patch({ price: String(recommended) })} accessibilityRole="button" accessibilityLabel="권장 판매가 적용" style={{ alignItems: 'flex-end' }}>
                     <Text style={[{ fontSize: 16, fontWeight: '800', color: COLOR.text.accent }, NUM]}>{won(recommended)}원</Text>
-                    <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.text.link, marginTop: 2 }}>적용하기</Text>
+                    <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.text.link, marginTop: space.xs }}>적용하기</Text>
                   </Pressable>
                 </View>
               ) : null}
               {!id ? (
-                <Text style={{ fontSize: 14, color: COLOR.text.tertiary, lineHeight: 20, marginTop: 12 }}>
+                <Text style={{ fontSize: 14, color: COLOR.text.tertiary, lineHeight: TYPE.caption.lineHeight, marginTop: 12 }}>
                   고정지출률은 저장 후 이번 달 값으로 반영돼요.
                 </Text>
               ) : null}
@@ -462,7 +462,7 @@ export default function RecipeAddScreen() {
           <Pressable
             onPress={() => { patch({ categoryId: null, categoryName: '' }); setCatOpen(false); }}
             accessibilityRole="button" accessibilityLabel="지정 안 함"
-            style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 14, paddingHorizontal: 16, borderRadius: 12, borderWidth: 1, borderColor: draft.categoryId === null ? COLOR.action.primary : T.line, backgroundColor: draft.categoryId === null ? COLOR.action.primaryTint : T.surface }}
+            style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: 16, borderRadius: 12, borderWidth: 1, borderColor: draft.categoryId === null ? COLOR.action.primary : T.line, backgroundColor: draft.categoryId === null ? COLOR.action.primaryTint : T.surface }}
           >
             <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: draft.categoryId === null ? COLOR.state.selectedText : COLOR.text.tertiary }}>지정 안 함</Text>
             {draft.categoryId === null ? <Icon name="check" size={17} color={COLOR.action.primary} sw={2.4} /> : null}
@@ -474,7 +474,7 @@ export default function RecipeAddScreen() {
                 key={c.id}
                 onPress={() => { patch({ categoryId: c.id, categoryName: c.name }); setCatOpen(false); }}
                 accessibilityRole="button" accessibilityLabel={c.name} accessibilityState={{ selected: on }}
-                style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 14, paddingHorizontal: 16, borderRadius: 12, borderWidth: 1, borderColor: on ? COLOR.action.primary : T.line, backgroundColor: on ? COLOR.action.primaryTint : T.surface }}
+                style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: 16, borderRadius: 12, borderWidth: 1, borderColor: on ? COLOR.action.primary : T.line, backgroundColor: on ? COLOR.action.primaryTint : T.surface }}
               >
                 <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: on ? COLOR.state.selectedText : T.ink2 }}>{c.name}</Text>
                 {on ? <Icon name="check" size={17} color={COLOR.action.primary} sw={2.4} /> : null}
@@ -484,7 +484,7 @@ export default function RecipeAddScreen() {
           <Pressable
             onPress={() => { setCatOpen(false); router.push('/recipes/category' as Href); }}
             accessibilityRole="button" accessibilityLabel="카테고리 관리"
-            style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5, paddingVertical: 14, borderRadius: 12, borderWidth: 1, borderStyle: 'dashed', borderColor: COLOR.action.primary }}
+            style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.xs, paddingVertical: space.md, borderRadius: 12, borderWidth: 1, borderStyle: 'dashed', borderColor: COLOR.action.primary }}
           >
             <Icon name="plus" size={17} color={COLOR.action.primary} sw={2.2} />
             <Text style={{ fontSize: 16, fontWeight: '700', color: COLOR.text.link }}>카테고리 관리</Text>
@@ -517,7 +517,7 @@ export default function RecipeAddScreen() {
                 ? `${num(qtyDraft) / servings}인분`
                 : formatQuantity(num(qtyDraft) / servings, draft.lines[qtyEdit]?.unit ?? 'g')}
             </Text>
-            <View style={{ flexDirection: 'row', gap: 9 }}>
+            <View style={{ flexDirection: 'row', gap: space.sm }}>
               <View style={{ flex: 1 }}><Button kind="ghost" size="lg" full onPress={() => setQtyEdit(null)}>취소</Button></View>
               <View style={{ flex: 2 }}><Button kind="primary" size="lg" full onPress={applyQty}>적용</Button></View>
             </View>

@@ -1,6 +1,6 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-05T14:56:06.114Z",
+  "generatedAt": "2026-09-05T21:25:13.249Z",
   "schemaVersion": 1,
   "script": {
    "name": "full-page-flow-prototype-app-map-check.mjs",
@@ -9,12 +9,12 @@
   "source": {
    "audit": {
     "path": "token-adoption-audit.json",
-    "sha256": "b8163d3f97a5fab13995232dd7d314d1f7313bef42b91afd1bd286c65d691df3",
-    "declarations": 3666
+    "sha256": "9c4747db2b71af948b3bd4c63a3cd1ba93163a81dddc43b5bf075ba3b5ee4cc5",
+    "declarations": 3646
    },
    "appMap": {
     "path": "full-page-flow-prototype-app-token-map.json",
-    "sha256": "b97bb71b9426e0a8ba85c3c3ec1fa6f086d1c1c3d7197e4497a9ad4c8be83b62"
+    "sha256": "4df8fa8544d3c2d49357e01e4ad69bfd6839db5da403026bd1262c72e66bfb17"
    },
    "prototypeMap": {
     "path": "full-page-flow-prototype-token-map.json",
@@ -29,18 +29,18 @@
  },
  "summary": {
   "status": "PROPOSAL_COMPLETE",
-  "declarations": 3666,
+  "declarations": 3646,
   "byBin": {
    "primitive": 2063,
-   "componentOwned": 227,
-   "defect": 1326,
+   "componentOwned": 228,
+   "defect": 1305,
    "pendingApproval": 50,
    "approvedException": 0
   },
   "semantic통삭제사유": "**`semantic` 통을 없앴다** (솔 검수 W1 R1 F02). 감사기는 숫자 리터럴만 선언으로 모으므로 `fontSize: 16` → `TYPE.body` 치환은 semantic 으로 이동하는 것이 아니라 입력에서 사라진다. 영원히 0 인 통을 두고 \"P4 에서 채워진다\" 고 적는 것은 분류가 아니다. W1 의 범위를 **하드코딩 리터럴의 배정**으로 좁히고, 의미 토큰 채택률은 같은 감사기가 모으는 `tokenAccess` 로 따로 본다.",
   "unmatchedCount": 0,
   "unmatched": [],
-  "multiMatchCount": 918,
+  "multiMatchCount": 927,
   "multiMatchPairs": {
    "R-TY-SIZE-PRIM > R-TY-SIZE-OFFSCALE": 705,
    "R-TY-SIZE-15-LABEL > R-TY-SIZE-CONVERGE > R-TY-SIZE-OFFSCALE": 48,
@@ -50,7 +50,9 @@
    "R-TY-SIZE-15-PROSE > R-TY-SIZE-15-LABEL > R-TY-SIZE-CONVERGE > R-TY-SIZE-OFFSCALE": 4,
    "R-SP-CAPTION-GAP-VIEW > R-SP-CAPTION-GAP": 5,
    "R-TY-SIZE-15-CONTROL > R-TY-SIZE-15-LABEL > R-TY-SIZE-CONVERGE > R-TY-SIZE-OFFSCALE": 12,
-   "R-SP-SCROLL-END-FAB > R-SP-SCROLL-END > R-SP-EMPTY-STATE": 3
+   "R-SP-SCROLL-END-FAB > R-SP-SCROLL-END > R-SP-EMPTY-STATE": 3,
+   "R-SZ-CONTROL-SM-ADJACENT > R-SZ-CONTROL-SM": 8,
+   "R-SP-MATERIAL-ACTION-GAP > R-SP-CONVERGE-SHRINK": 1
   },
   "multiMatchSamples": [
    {
@@ -2861,6 +2863,34 @@
     ]
    },
    {
+    "decl": "size/width:34 @ apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:129",
+    "rules": [
+     "R-SZ-CONTROL-SM-ADJACENT",
+     "R-SZ-CONTROL-SM"
+    ]
+   },
+   {
+    "decl": "size/height:34 @ apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:129",
+    "rules": [
+     "R-SZ-CONTROL-SM-ADJACENT",
+     "R-SZ-CONTROL-SM"
+    ]
+   },
+   {
+    "decl": "size/width:34 @ apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:132",
+    "rules": [
+     "R-SZ-CONTROL-SM-ADJACENT",
+     "R-SZ-CONTROL-SM"
+    ]
+   },
+   {
+    "decl": "size/height:34 @ apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:132",
+    "rules": [
+     "R-SZ-CONTROL-SM-ADJACENT",
+     "R-SZ-CONTROL-SM"
+    ]
+   },
+   {
     "decl": "typography/fontSize:14 @ apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:146",
     "rules": [
      "R-TY-SIZE-PRIM",
@@ -3478,6 +3508,13 @@
     ]
    },
    {
+    "decl": "spacing/gap:10 @ apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:132",
+    "rules": [
+     "R-SP-MATERIAL-ACTION-GAP",
+     "R-SP-CONVERGE-SHRINK"
+    ]
+   },
+   {
     "decl": "size/minWidth:0 @ apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:133",
     "rules": [
      "R-SZ-FLEX-RESET",
@@ -3496,6 +3533,34 @@
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
+    ]
+   },
+   {
+    "decl": "size/width:34 @ apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:143",
+    "rules": [
+     "R-SZ-CONTROL-SM-ADJACENT",
+     "R-SZ-CONTROL-SM"
+    ]
+   },
+   {
+    "decl": "size/height:34 @ apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:143",
+    "rules": [
+     "R-SZ-CONTROL-SM-ADJACENT",
+     "R-SZ-CONTROL-SM"
+    ]
+   },
+   {
+    "decl": "size/width:34 @ apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:146",
+    "rules": [
+     "R-SZ-CONTROL-SM-ADJACENT",
+     "R-SZ-CONTROL-SM"
+    ]
+   },
+   {
+    "decl": "size/height:34 @ apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:146",
+    "rules": [
+     "R-SZ-CONTROL-SM-ADJACENT",
+     "R-SZ-CONTROL-SM"
     ]
    },
    {
@@ -6566,7 +6631,14 @@
   "binMovementLedger": {
    "previousMap": "full-page-flow-prototype-app-token-map.json",
    "previousMapSha256": "b97bb71b9426e0a8ba85c3c3ec1fa6f086d1c1c3d7197e4497a9ad4c8be83b62",
-   "moves": {},
+   "moves": {
+    "defect → componentOwned": {
+     "count": 1,
+     "rules": {
+      "R-SP-CONVERGE-SHRINK → R-SP-MATERIAL-ACTION-GAP": 1
+     }
+    }
+   },
    "reconciliation": {
     "primitive": {
      "이전": 2063,
@@ -6578,16 +6650,16 @@
     "componentOwned": {
      "이전": 227,
      "나감": 0,
-     "들어옴": 0,
-     "계산": 227,
-     "실제": 227
+     "들어옴": 1,
+     "계산": 228,
+     "실제": 228
     },
     "defect": {
-     "이전": 1326,
-     "나감": 0,
+     "이전": 1306,
+     "나감": 1,
      "들어옴": 0,
-     "계산": 1326,
-     "실제": 1326
+     "계산": 1305,
+     "실제": 1305
     },
     "pendingApproval": {
      "이전": 50,
@@ -7190,9 +7262,31 @@
     ]
    },
    {
+    "id": "R-SP-MATERIAL-ACTION-GAP",
+    "bin": "componentOwned",
+    "declarations": 1,
+    "name": "COMPONENT.materialManage.rowActionGap",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "gap:10",
+      1
+     ]
+    ]
+   },
+   {
     "id": "R-SP-CONVERGE-SHRINK",
     "bin": "defect",
-    "declarations": 552,
+    "declarations": 551,
     "name": null,
     "target": "프로토타입 매핑표 converge.space (5→4 · 9→8 · 10→8 · 13→12 · 14→12 · 15→12)",
     "openDecision": null,
@@ -7201,14 +7295,14 @@
     "targetSource": "protoConverge",
     "declaredDelta": "shrink",
     "computedDelta": "shrink",
-    "targetResolved": 552,
+    "targetResolved": 551,
     "targetDerived": 0,
     "transitions": {
      "14→12": 110,
      "15→12": 125,
      "5→4": 39,
      "9→8": 54,
-     "10→8": 124,
+     "10→8": 123,
      "13→12": 100
     },
     "values": [
@@ -7222,7 +7316,7 @@
      ],
      [
       "gap:10",
-      47
+      46
      ],
      [
       "paddingHorizontal:14",
@@ -8442,9 +8536,37 @@
     ]
    },
    {
+    "id": "R-SZ-CONTROL-SM-ADJACENT",
+    "bin": "defect",
+    "declarations": 8,
+    "name": null,
+    "target": "controlVisualHeight.sm (32)",
+    "openDecision": null,
+    "executionStage": "S4",
+    "axis": "both",
+    "targetSource": "targetValue",
+    "declaredDelta": "shrink",
+    "computedDelta": "shrink",
+    "targetResolved": 8,
+    "targetDerived": 0,
+    "transitions": {
+     "34→32": 8
+    },
+    "values": [
+     [
+      "width:34",
+      4
+     ],
+     [
+      "height:34",
+      4
+     ]
+    ]
+   },
+   {
     "id": "R-SZ-CONTROL-SM",
     "bin": "defect",
-    "declarations": 20,
+    "declarations": 12,
     "name": null,
     "target": "controlVisualHeight.sm (32)",
     "openDecision": null,
@@ -8453,20 +8575,20 @@
     "targetSource": "targetValue",
     "declaredDelta": "mixed",
     "computedDelta": "mixed",
-    "targetResolved": 20,
+    "targetResolved": 12,
     "targetDerived": 0,
     "transitions": {
-     "34→32": 18,
+     "34→32": 10,
      "32→32": 2
     },
     "values": [
      [
       "width:34",
-      9
+      5
      ],
      [
       "height:34",
-      9
+      5
      ],
      [
       "width:32",
@@ -9143,72 +9265,6 @@
      [
       "hex:#000",
       3
-     ]
-    ]
-   },
-   {
-    "id": "R-CL-CATEGORY-ACCENT",
-    "bin": "defect",
-    "declarations": 20,
-    "name": null,
-    "target": "`component.myHubTile.*` — 단색",
-    "openDecision": null,
-    "executionStage": "S2",
-    "axis": "none",
-    "targetSource": null,
-    "declaredDelta": "same",
-    "computedDelta": null,
-    "targetResolved": 0,
-    "targetDerived": 0,
-    "transitions": {},
-    "values": [
-     [
-      "hex:#F0EDFB",
-      2
-     ],
-     [
-      "hex:#7C5CE0",
-      2
-     ],
-     [
-      "hex:#EAF6F0",
-      2
-     ],
-     [
-      "hex:#179E6B",
-      2
-     ],
-     [
-      "hex:#FEF1E6",
-      2
-     ],
-     [
-      "hex:#E08A2B",
-      2
-     ],
-     [
-      "hex:#E8F1FB",
-      1
-     ],
-     [
-      "hex:#2E6FD0",
-      1
-     ],
-     [
-      "hex:#FDECEF",
-      1
-     ],
-     [
-      "hex:#D94A5E",
-      1
-     ],
-     [
-      "hex:#EDF3FF",
-      1
-     ],
-     [
-      "hex:#3A6FD8",
-      1
      ]
     ]
    },

@@ -9,7 +9,7 @@ import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter, type Href } from 'expo-router';
 import { AppHeader, Card, Icon, QueryState, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { COLOR, T, won } from '@/theme/tokens';
+import { COLOR, T, won, space } from '@/theme/tokens';
 import { formatQuantity, formatUnitPrice } from '@margincook/core';
 import { useMaterialUsage, useSalesRange, type MaterialUsageItem } from '../hooks';
 import { rangeLabel } from '@/lib/date';
@@ -66,8 +66,8 @@ function SalesMaterialScreenBody({ serverToday }: { serverToday: string }) {
         >
           <Card onLine pad={0} style={{ overflow: 'hidden' }}>
             <DetailSummary rows={[['영업일', rangeLabel(from, to)], ['재료 원가 합계', `${won(Math.round(total))}원`], ['매출 원가율', `${costRate}%`]] as [string, string][]} />
-            <View style={{ paddingHorizontal: 15, paddingBottom: 15 }}>
-              <Text style={{ fontSize: 13, fontWeight: '800', color: T.ink, paddingTop: 12, paddingBottom: 2 }}>사용 식재료</Text>
+            <View style={{ paddingHorizontal: space.md, paddingBottom: space.md }}>
+              <Text style={{ fontSize: 13, fontWeight: '800', color: T.ink, paddingTop: 12, paddingBottom: space.xs }}>사용 식재료</Text>
               {list.map((m) => {
                 const unit = dispUnit(m.baseUnit);
                 const menus = m.menus.map((x) => x.menuName);
@@ -76,13 +76,13 @@ function SalesMaterialScreenBody({ serverToday }: { serverToday: string }) {
                     key={m.ingredientId}
                     onPress={() => setSel(m)}
                     accessibilityRole="button" accessibilityLabel={`${m.name} 메뉴별 차감 보기`}
-                    style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 9, paddingLeft: 12, borderBottomWidth: 1, borderBottomColor: T.line2 }}
+                    style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: space.sm, paddingLeft: 12, borderBottomWidth: 1, borderBottomColor: T.line2 }}
                   >
                     <View style={{ flex: 1, minWidth: 0 }}>
                       <Text style={{ fontSize: 16, fontWeight: '600', color: T.sub }} numberOfLines={1}>
                         {m.name} <Text style={{ color: COLOR.text.tertiary }}>{formatQuantity(m.qty, unit)}</Text>
                       </Text>
-                      <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 2 }} numberOfLines={1}>
+                      <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.xs }} numberOfLines={1}>
                         {menus.slice(0, 2).join(' · ')}{menus.length > 2 ? ` 외 ${menus.length - 2}개` : ''}
                       </Text>
                     </View>
@@ -95,7 +95,7 @@ function SalesMaterialScreenBody({ serverToday }: { serverToday: string }) {
                 <Pressable
                   onPress={() => setShowAll(true)}
                   accessibilityRole="button" accessibilityLabel={`식재료 ${items.length - 5}개 더 보기`}
-                  style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 4, paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: T.line2 }}
+                  style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 4, paddingVertical: space.sm, borderBottomWidth: 1, borderBottomColor: T.line2 }}
                 >
                   <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.text.link }}>더보기 ({items.length - 5}개)</Text>
                   <Icon name="chevronDown" size={15} color={COLOR.action.primary} />
@@ -132,10 +132,10 @@ function SalesMaterialScreenBody({ serverToday }: { serverToday: string }) {
           <View>
             <Card onLine pad={0} style={{ overflow: 'hidden' }}>
               {sel.menus.map((r, i) => (
-                <View key={r.menuName} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 13, paddingHorizontal: 15, borderBottomWidth: i < sel.menus.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
+                <View key={r.menuName} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: space.md, borderBottomWidth: i < sel.menus.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
                   <View style={{ flex: 1, minWidth: 0 }}>
                     <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }} numberOfLines={1}>{r.menuName}</Text>
-                    <Text style={[{ fontSize: 14, color: T.sub, fontWeight: '600', marginTop: 3 }, NUM]}>
+                    <Text style={[{ fontSize: 14, color: T.sub, fontWeight: '600', marginTop: space.xs }, NUM]}>
                       {formatQuantity(r.qty, dispUnit(sel.baseUnit))}
                     </Text>
                   </View>
@@ -143,7 +143,7 @@ function SalesMaterialScreenBody({ serverToday }: { serverToday: string }) {
                 </View>
               ))}
             </Card>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginTop: 12, paddingVertical: 14, paddingHorizontal: 15, borderRadius: 12, backgroundColor: T.surface2 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginTop: 12, paddingVertical: space.md, paddingHorizontal: space.md, borderRadius: 12, backgroundColor: T.surface2 }}>
               <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.ink2 }}>합계</Text>
               <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{formatQuantity(sel.qty, dispUnit(sel.baseUnit))}</Text>
               <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{won(Math.round(sel.amount))}원</Text>

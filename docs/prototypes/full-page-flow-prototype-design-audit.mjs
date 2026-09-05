@@ -38,6 +38,9 @@
  *       가이드는 역할마다 행간을 요구하는데, 버린 축은 "미매핑 0" 이라고 말할 수 없다.
  *  [L6] 컨트롤 높이를 `<input>` 자신에서 쟀다. 실제 컨트롤은 그 입력을 감싼 shell 이다.
  *       상호작용 요소가 자기보다 큰 조작 상자 안에 있으면 그 상자를 컨트롤로 본다.
+ *  [L8] 모든 `<input>` 의 `value` 를 보이는 글자로 셌다. radio·checkbox 같은 비문자 입력의
+ *       기본값 `"on"` 은 화면에 렌더되지 않는데도 텍스트 대비 표본이 되어 흰색/흰색 실패를
+ *       만들었다. 값·placeholder 는 실제로 문자를 표시하는 입력 유형에서만 수집한다.
  */
 import { chromium } from 'playwright';
 import { createHash } from 'node:crypto';
@@ -247,7 +250,12 @@ const COLLECT=({SCALE})=>{
     const cs=getComputedStyle(e), rect=e.getBoundingClientRect();
     const slot=slotOf(e), card=cardOf(e);
     let txt=''; e.childNodes.forEach(n=>{if(n.nodeType===3)txt+=n.nodeValue;});
-    if(e.tagName==='INPUT'||e.tagName==='TEXTAREA') txt+=(e.value||'')+(e.placeholder||'');
+    if(e.tagName==='TEXTAREA') txt+=(e.value||'')+(e.placeholder||'');
+    if(e.tagName==='INPUT'){
+      // radio·checkbox 등의 `value` 는 폼 제출값이지 화면에 그려지는 텍스트가 아니다 ([L8]).
+      const nonTextualInputTypes=new Set(['button','checkbox','color','file','hidden','image','radio','range','reset','submit']);
+      if(!nonTextualInputTypes.has((e.type||'text').toLowerCase())) txt+=(e.value||'')+(e.placeholder||'');
+    }
     txt=txt.trim();
 
     if(txt){

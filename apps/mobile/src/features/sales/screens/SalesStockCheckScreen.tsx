@@ -24,7 +24,7 @@ import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { AppHeader, Card, Icon, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { formatQuantity, isNegativeStock } from '@margincook/core';
-import { COLOR, T } from '@/theme/tokens';
+import { COLOR, T, TYPE, radius, space } from '@/theme/tokens';
 import { useRecipeShortages, useSaleShortages, type ShortageIngredient, type ShortageMode } from '../hooks';
 import { getPendingSale } from '../pendingSale';
 
@@ -64,7 +64,7 @@ export default function SalesStockCheckScreen() {
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <AppHeader title="재고 확인" onBack={() => safeBack('/sales' as Href)} />
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 2, paddingBottom: 28, gap: 11 }}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 2, paddingBottom: 28, gap: space.md }}>
         <QueryState
           isLoading={q.isLoading}
           error={q.error}
@@ -75,7 +75,7 @@ export default function SalesStockCheckScreen() {
           {recipes.length === 0 ? (
             <Card pad={20}>
               <Text style={{ fontSize: 16, fontWeight: '800', color: T.ink }}>확인이 필요한 재고가 없어요</Text>
-              <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 6, lineHeight: 20 }}>
+              <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.sm, lineHeight: TYPE.caption.lineHeight }}>
                 추가한 재고가 연결된 모든 레시피에 반영됐어요.
               </Text>
             </Card>
@@ -86,7 +86,7 @@ export default function SalesStockCheckScreen() {
               const hidden = r.ingredients.length - list.length;
               return (
                 <Card key={r.recipeId} pad={0} style={{ overflow: 'hidden' }}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 13, paddingHorizontal: 15, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: space.md, paddingHorizontal: space.md, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
                     <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.ink }} numberOfLines={1}>{r.name}</Text>
                     <Text style={{ fontSize: 14, fontWeight: '800', color: T.red }}>부족 재료 {r.ingredients.length}개</Text>
                   </View>
@@ -98,12 +98,12 @@ export default function SalesStockCheckScreen() {
                       accessibilityRole="button"
                       accessibilityLabel={`${g.name} 재고 추가`}
                       style={{
-                        paddingVertical: 12, paddingHorizontal: 15,
+                        paddingVertical: 12, paddingHorizontal: space.md,
                         borderBottomWidth: i === list.length - 1 && hidden === 0 ? 0 : 1, borderBottomColor: T.line2,
                       }}
                     >
                       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                        <Text style={{ flex: 1, fontSize: 15, fontWeight: '800', color: T.ink }} numberOfLines={1}>{g.name}</Text>
+                        <Text style={{ flex: 1, fontSize: TYPE.caption.fontSize, fontWeight: '800', color: T.ink }} numberOfLines={1}>{g.name}</Text>
                         <Icon name="chevron" size={16} color={T.line3} />
                       </View>
                       {/*
@@ -111,7 +111,7 @@ export default function SalesStockCheckScreen() {
                         ⚠ `영업 시작 기준`·`1개 판매 기준` 같은 설명 문구는 붙이지 않는다
                           (기획안 §4.4). 라벨이 이미 그 말을 하고 있다.
                       */}
-                      <View style={{ flexDirection: 'row', gap: 16, marginTop: 5 }}>
+                      <View style={{ flexDirection: 'row', gap: 16, marginTop: space.xs }}>
                         <Text style={[{ fontSize: 12, fontWeight: '700', color: COLOR.text.tertiary }, NUM]}>
                           {shown === 'sale' ? '필요 수량' : '안전재고'}{' '}
                           <Text style={{ color: T.sub }}>
@@ -149,7 +149,7 @@ export default function SalesStockCheckScreen() {
           <Pressable
             onPress={() => router.push('/ingredients' as Href)}
             accessibilityRole="button" accessibilityLabel="전체 부족 재고 보기"
-            style={{ minHeight: 50, alignItems: 'center', justifyContent: 'center', borderRadius: 13, borderWidth: 1, borderColor: T.line, backgroundColor: T.surface }}
+            style={{ minHeight: 50, alignItems: 'center', justifyContent: 'center', borderRadius: radius.md, borderWidth: 1, borderColor: T.line, backgroundColor: T.surface }}
           >
             <Text style={{ fontSize: 15, fontWeight: '800', color: T.sub }}>전체 부족 재고 보기</Text>
           </Pressable>

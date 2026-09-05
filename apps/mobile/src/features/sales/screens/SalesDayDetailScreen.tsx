@@ -8,7 +8,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { AppHeader, Button, Icon, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { COLOR, T } from '@/theme/tokens';
+import { COLOR, T, TYPE, radius, space } from '@/theme/tokens';
 import { useSalesDay, useSalesRange, type RangeMenu } from '../hooks';
 import { ChannelMixCard, MenuSalesList, ProfitBreakdownCard, SecLabel } from '../components/ProfitBlocks';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
@@ -59,7 +59,7 @@ function SalesDayDetailScreenBody({ serverToday }: { serverToday: string }) {
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <AppHeader title={`${dayLabel(date, serverToday)} 손익`} onBack={() => safeBack('/sales' as Href)} />
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 2, paddingBottom: 24, gap: 11 }}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 2, paddingBottom: 24, gap: space.md }}>
         <QueryState
           isLoading={day.isLoading || range.isLoading}
           error={day.error ?? range.error}
@@ -86,9 +86,9 @@ function SalesDayDetailScreenBody({ serverToday }: { serverToday: string }) {
                   `전체가 추정` 처럼 말하면 사장님이 자기 기록을 못 믿게 된다.
               */}
               {d?.basisQuality === 'estimated_current' ? (
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 11, paddingHorizontal: 14, borderRadius: 10, backgroundColor: T.amberTint, marginTop: 9 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: space.md, paddingHorizontal: space.md, borderRadius: radius.md, backgroundColor: T.amberTint, marginTop: space.sm }}>
                   <Icon name="info" size={15} color={T.amberText} />
-                  <Text style={{ flex: 1, fontSize: 14, fontWeight: '700', color: T.amberText, lineHeight: 20 }}>
+                  <Text style={{ flex: 1, fontSize: 14, fontWeight: '700', color: T.amberText, lineHeight: TYPE.caption.lineHeight }}>
                     원가·손익은 현재 기준으로 계산했어요
                   </Text>
                 </View>
@@ -122,7 +122,7 @@ function SalesDayDetailScreenBody({ serverToday }: { serverToday: string }) {
         ⚠ 영업 중인 날에는 안 띄운다. 그 날은 매출관리 홈에서 저장한다.
       */}
       {canAmend ? (
-        <View style={{ paddingHorizontal: 16, paddingTop: 10, paddingBottom: 10 + insets.bottom, backgroundColor: T.bg, borderTopWidth: 1, borderTopColor: T.line2 }}>
+        <View style={{ paddingHorizontal: 16, paddingTop: space.sm, paddingBottom: 10 + insets.bottom, backgroundColor: T.bg, borderTopWidth: 1, borderTopColor: T.line2 }}>
           <Button kind={hasRecord ? 'ghost' : 'primary'} size="lg" full onPress={() => router.push(`/sales/past?date=${date}` as Href)}>
             {hasRecord ? '판매 내역 수정' : '판매 내역 추가'}
           </Button>

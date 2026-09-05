@@ -50,6 +50,44 @@ const MIN = 44;
 // 가리키면 그 나무 기준이다 — 시험이 임시 폴더에서도 같은 ID 를 얻는다.
 const idRoot = opt.src ? resolve(opt.src, '..') : root;
 
+// S3a 이후 인라인 숫자는 `space.sm`·`controlVisualHeight.md` 같은 정적 토큰 참조가 된다.
+// 토큰을 읽지 못해 판정불가가 늘면 제품 회귀가 아니라 감사기 거짓 양성이다. `tokens.ts`의
+// 숫자 리터럴 객체만 펼치며, 계산식·함수·외부 값은 계속 판정불가로 남긴다.
+const tokenNumberValues = new Map();
+const unwrapTokenInitializer = (node) => {
+  let current = node;
+  while (current && (ts.isAsExpression(current) || ts.isSatisfiesExpression?.(current)
+    || ts.isParenthesizedExpression(current) || ts.isTypeAssertionExpression(current))) current = current.expression;
+  return current;
+};
+const tokenNumericLiteral = (node) => {
+  const current = unwrapTokenInitializer(node);
+  if (current && ts.isNumericLiteral(current)) return Number(current.text);
+  if (current && ts.isPrefixUnaryExpression(current) && current.operator === ts.SyntaxKind.MinusToken
+    && ts.isNumericLiteral(current.operand)) return -Number(current.operand.text);
+  return null;
+};
+const tokenFile = join(srcRoot, 'src', 'theme', 'tokens.ts');
+if (existsSync(tokenFile)) {
+  const source = ts.createSourceFile(tokenFile, readFileSync(tokenFile, 'utf8'), ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
+  const collectObject = (prefix, raw) => {
+    const node = unwrapTokenInitializer(raw);
+    if (!node || !ts.isObjectLiteralExpression(node)) return;
+    for (const property of node.properties) if (ts.isPropertyAssignment(property)) {
+      const name = property.name.getText(source).replace(/^['"]|['"]$/g, '');
+      const key = `${prefix}.${name}`;
+      const numeric = tokenNumericLiteral(property.initializer);
+      if (numeric !== null) tokenNumberValues.set(key, numeric);
+      else collectObject(key, property.initializer);
+    }
+  };
+  for (const statement of source.statements) if (ts.isVariableStatement(statement)) {
+    for (const declaration of statement.declarationList.declarations) {
+      if (ts.isIdentifier(declaration.name) && declaration.initializer) collectObject(declaration.name.text, declaration.initializer);
+    }
+  }
+}
+
 /**
  * 파일 선정 — **제품 코드와 시험 fixture 를 가른다** (솔 검수 `R4 F04`).
  *
@@ -113,8 +151,9 @@ const readHitSlop = (body) => {
 const NESTED = /\b(shadowOffset|transform|textShadowOffset|hitSlop)\s*:\s*\{[^}]*\}/g;
 const dim = (body, key) => {
   const clean = body.replace(NESTED, ' ');
-  const m = clean.match(new RegExp(`(?:^|[^A-Za-z])${key}\\s*:\\s*(\\d+(?:\\.\\d+)?)`));
-  return m ? Number(m[1]) : null;
+  const m = clean.match(new RegExp(`(?:^|[^A-Za-z])${key}\\s*:\\s*(\\d+(?:\\.\\d+)?|[A-Za-z_$][\\w$]*(?:\\.[A-Za-z_$][\\w$]*)+)`));
+  if (!m) return null;
+  return /^\d/.test(m[1]) ? Number(m[1]) : (tokenNumberValues.get(m[1]) ?? null);
 };
 
 const PRESSABLE = /<(Pressable|TouchableOpacity|TouchableHighlight|TouchableWithoutFeedback|TouchableNativeFeedback)\b/g;
@@ -153,9 +192,15 @@ for (const f of files) {
 const PRESSABLE_NAMES = new Set(['Pressable', 'TouchableOpacity', 'TouchableHighlight', 'TouchableWithoutFeedback', 'TouchableNativeFeedback']);
 const jsxName = (n) => n?.tagName?.getText?.() ?? '';
 const attr = (opening, name) => opening.attributes.properties.find(p => ts.isJsxAttribute(p) && p.name.text === name);
-const numberOf = (e) => e && (ts.isNumericLiteral(e) ? Number(e.text)
-  : ts.isPrefixUnaryExpression(e) && e.operator === ts.SyntaxKind.MinusToken && ts.isNumericLiteral(e.operand) ? -Number(e.operand.text)
-  : null);
+const numberOf = (e) => {
+  const current = unwrapTokenInitializer(e);
+  if (!current) return null;
+  if (ts.isNumericLiteral(current)) return Number(current.text);
+  if (ts.isPrefixUnaryExpression(current) && current.operator === ts.SyntaxKind.MinusToken
+    && ts.isNumericLiteral(current.operand)) return -Number(current.operand.text);
+  if (ts.isPropertyAccessExpression(current)) return tokenNumberValues.get(current.getText()) ?? null;
+  return null;
+};
 const objectNumbers = (e) => {
   if (!e || !ts.isObjectLiteralExpression(e)) return null;
   const out = {};

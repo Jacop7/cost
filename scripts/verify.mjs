@@ -118,8 +118,8 @@ step('③ CLI 계약 · ACL 보안 · 색 대비 · 터치 영역', () => {
   if (!run('node', ['--test', 'scripts/design-token-contrast.test.mjs'])) return false;
   if (!run('node', ['scripts/design-token-color-usage.mjs'])) return false;
   if (!run('node', ['--test', 'scripts/design-token-color-usage.test.mjs'])) return false;
-  if (!run('node', ['scripts/design-token-geometry-diff.mjs'])) return false;
-  if (!run('node', ['--test', 'scripts/design-token-geometry-diff.test.mjs'])) return false;
+  if (!run('node', ['scripts/design-token-s3a-diff.mjs'])) return false;
+  if (!run('node', ['--test', 'scripts/design-token-s3a-diff.test.mjs'])) return false;
   if (!run('node', ['scripts/touch-target-audit.mjs'])) return false;
   if (!run('node', ['--test', 'scripts/touch-target-audit.test.mjs'])) return false;
   if (!run('node', ['packages/db/scripts/cli-contract.test.mjs'])) return false;

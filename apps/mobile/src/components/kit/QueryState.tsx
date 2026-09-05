@@ -11,11 +11,11 @@
 import type { ReactNode } from 'react';
 import { ActivityIndicator, Text, View } from 'react-native';
 import { Button } from './Button';
-import { COLOR, T } from '@/theme/tokens';
+import { COLOR, T, TYPE, space } from '@/theme/tokens';
 
 function Box({ children }: { children: ReactNode }) {
   return (
-    <View style={{ paddingVertical: 48, paddingHorizontal: 32, alignItems: 'center', gap: 10 }}>
+    <View style={{ paddingVertical: 48, paddingHorizontal: 32, alignItems: 'center', gap: space.sm }}>
       {children}
     </View>
   );
@@ -57,7 +57,7 @@ export function QueryState({
         <Text style={{ fontSize: 16, fontWeight: '800', color: T.ink, textAlign: 'center' }}>
           정보를 불러오지 못했어요
         </Text>
-        <Text style={{ fontSize: 14, color: T.sub2, textAlign: 'center', lineHeight: 20 }}>
+        <Text style={{ fontSize: 14, color: T.sub2, textAlign: 'center', lineHeight: TYPE.caption.lineHeight }}>
           입력한 내용은 그대로예요. 잠시 후 다시 시도해 주세요.
         </Text>
         {/*
@@ -71,7 +71,7 @@ export function QueryState({
           <Text
             selectable
             style={{
-              fontSize: 12, color: T.red, textAlign: 'center', lineHeight: 17,
+              fontSize: 12, color: T.red, textAlign: 'center', lineHeight: TYPE.captionSm.lineHeight,
               paddingHorizontal: 12, fontFamily: 'monospace',
             }}
           >

@@ -6,7 +6,7 @@
 // 폰트/색/라인 단일 출처: 일시14 · 항목16 · 설명14 · 증감16(양수 파랑/음수 빨강) · 잔량14.
 import React from 'react';
 import { View, Text, Pressable } from 'react-native';
-import { COLOR, T, tnum } from '../../../theme/tokens';
+import { COLOR, T, tnum, space } from '../../../theme/tokens';
 
 export function LedgerRow({
   date,
@@ -44,7 +44,7 @@ export function LedgerRow({
         flexDirection: 'row',
         alignItems: 'center',
         gap: 11,
-        paddingVertical: 14,
+        paddingVertical: space.md,
         paddingHorizontal: px,
         backgroundColor: T.surface,
         borderBottomWidth: last ? 0 : 1,
@@ -60,12 +60,12 @@ export function LedgerRow({
           둘 다 "그래서 무엇이 얼마나"를 받쳐 주는 줄이라 같은 무게로 읽혀야 한다.
         */}
         {memo ? (
-          <Text style={{ fontSize: 12, color: T.sub, fontWeight: '600', marginTop: 3 }} numberOfLines={1}>{memo}</Text>
+          <Text style={{ fontSize: 12, color: T.sub, fontWeight: '600', marginTop: space.xs }} numberOfLines={1}>{memo}</Text>
         ) : null}
       </View>
       <View style={{ alignItems: 'flex-end' }}>
         <Text style={[{ fontSize: 16, fontWeight: '800', color: up ? COLOR.text.accent : T.red }, tnum]}>{dNum}<Text style={{ fontWeight: '600' }}>{dUnit}</Text></Text>
-        <Text style={[{ fontSize: 14, color: balNeg ? T.red : COLOR.text.tertiary, fontWeight: balNeg ? '800' : '400', marginTop: 3 }, tnum]}>{bal}</Text>
+        <Text style={[{ fontSize: 14, color: balNeg ? T.red : COLOR.text.tertiary, fontWeight: balNeg ? '800' : '400', marginTop: space.xs }, tnum]}>{bal}</Text>
       </View>
     </Pressable>
   );

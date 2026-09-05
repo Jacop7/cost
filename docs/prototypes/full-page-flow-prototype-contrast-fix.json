@@ -1,6 +1,6 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-05T20:37:39.601Z",
+  "generatedAt": "2026-09-05T21:24:08.907Z",
   "schemaVersion": 1,
   "script": {
    "name": "full-page-flow-prototype-contrast-fix.mjs",
@@ -8,9 +8,9 @@
   },
   "designAudit": {
    "path": "full-page-flow-prototype-design-audit.json",
-   "sha256": "581985ba99fcddb075f6f81c9fb1dfc48e4619f6bde49a048bf800520bd0bffe",
-   "targetSha256": "d5c9c2462d300cbb6ce022293eaa9e7fb8b332bf429c77799bc81c86f699b694",
-   "designSyncId": "DS-20260906-001"
+   "sha256": "09c39e30c3596a0ac98db0eeb77858f15468033ace604cb60c9a6b4ada19ec66",
+   "targetSha256": "43a604d3f55476eae822c4fcf43c9b2bbdc637cc8add6a34009d91f1e2e0e8a6",
+   "designSyncId": "DS-20260906-002"
   },
   "rules": {
    "기준": "WCAG 2.x AA — 일반 4.5:1, 큰 글자(24px 이상 또는 18.66px&700 이상) 3:1",
@@ -19,9 +19,9 @@
   }
  },
  "summary": {
-  "pairs": 31,
+  "pairs": 30,
   "failingPairs": 0,
-  "totalObservations": 6974,
+  "totalObservations": 6944,
   "failingObservations": 0
  },
  "rows": [
@@ -407,22 +407,6 @@
     "card.callout 14px/600 \"가게의 월 고정비를 매출 비율\"",
     "card.span 14px/600 \"1인분\"",
     "card.callout 14px/600 \"발주는 기록만 돼요. 재고와 \""
-   ]
-  },
-  {
-   "fg": "#000000",
-   "bg": "#FFFFFF",
-   "size": "normal",
-   "observations": 30,
-   "ratio": 21,
-   "target": 4.5,
-   "passAA": true,
-   "moved": "foreground",
-   "fix": null,
-   "fixBackground": null,
-   "fixAAA": null,
-   "where": [
-    "tax-choice.input 13.3333px/400 \"on\""
    ]
   },
   {

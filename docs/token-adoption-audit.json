@@ -1,19 +1,19 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-05T13:36:26.822Z",
+  "generatedAt": "2026-09-05T21:14:08.782Z",
   "schemaVersion": 1,
   "script": {
    "name": "token-adoption-audit.mjs",
-   "sha256": "591d6ad787d555acdabbf31009808cec9ec5c2f5ec58c2fde908337decc6dd80"
+   "sha256": "32e13439797ab489cdc7660a29f4c3aa393482f3502b13ab8efff6f564927031"
   },
   "repo": {
-   "headCommit": "bd4f0a004a26f0f8fae5bf4d4b4d7b18559f7230",
-   "headTree": "6bf62d3a078464aa3d5a20f9c5a81453a253ede7",
-   "toplevel": "C:/Users/jacop/프로젝트/식자재관리앱/.tmp/sol-prt217-6e6376b"
+   "headCommit": "f5cacba848e59f1e9b7e671d0c43d83f0efaa762",
+   "headTree": "b85ba4ff93f6547f5d929915602faa7da4789c83",
+   "toplevel": "C:/Users/jacop/프로젝트/식자재관리앱/.tmp/s3a-baseline-f5cacba"
   },
   "결속": {
-   "expectCommit": "bd4f0a0",
-   "범위해시": "4c6b9384e5283c7a1f3177015b854667e4646ad7013dbd9f51f860cd2f12bef4",
+   "expectCommit": "f5cacba848e59f1e9b7e671d0c43d83f0efaa762",
+   "범위해시": "e216cb323aac44b94732629e4db3f019e2290ccef38d20a1ff4091086f14111f",
    "범위해시정의": "선택된 파일의 \"경로\\0 git blob SHA\" 를 정렬해 잇고 감사 스크립트 자신의 blob SHA 를 더해 sha256. blob SHA 는 CRLF→LF 정규화 뒤 직접 계산하므로 OS·git 유무에 좌우되지 않는다(페이블 R6 차단). 커밋 SHA 자기참조 없이 입력을 결속한다."
   },
   "runner": {
@@ -585,7 +585,7 @@
    "value": "4",
    "file": "apps/mobile/src/components/history/HistoryLayout.tsx",
    "line": 72,
-   "column": 74,
+   "column": 88,
    "layer": "sharedComponent"
   },
   {
@@ -648,7 +648,7 @@
    "value": "700",
    "file": "apps/mobile/src/components/history/HistoryLayout.tsx",
    "line": 81,
-   "column": 62,
+   "column": 76,
    "layer": "sharedComponent"
   },
   {
@@ -657,7 +657,7 @@
    "value": "4",
    "file": "apps/mobile/src/components/history/HistoryLayout.tsx",
    "line": 81,
-   "column": 81,
+   "column": 95,
    "layer": "sharedComponent"
   },
   {
@@ -872,7 +872,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/components/kit/Button.tsx",
-   "line": 67,
+   "line": 68,
    "column": 51,
    "layer": "sharedComponent"
   },
@@ -881,7 +881,7 @@
    "prop": "letterSpacing",
    "value": "-0.2",
    "file": "apps/mobile/src/components/kit/Button.tsx",
-   "line": 67,
+   "line": 68,
    "column": 70,
    "layer": "sharedComponent"
   },
@@ -987,7 +987,7 @@
    "value": "8",
    "file": "apps/mobile/src/components/kit/MemoEditSheet.tsx",
    "line": 43,
-   "column": 70,
+   "column": 84,
    "layer": "sharedComponent"
   },
   {
@@ -1689,7 +1689,7 @@
    "value": "2",
    "file": "apps/mobile/src/components/kit/SortSheet.tsx",
    "line": 65,
-   "column": 68,
+   "column": 82,
    "layer": "sharedComponent"
   },
   {
@@ -1815,7 +1815,7 @@
    "value": "12",
    "file": "apps/mobile/src/components/kit/index.tsx",
    "line": 71,
-   "column": 143,
+   "column": 170,
    "layer": "sharedComponent"
   },
   {
@@ -1824,7 +1824,7 @@
    "value": "12",
    "file": "apps/mobile/src/components/kit/index.tsx",
    "line": 71,
-   "column": 161,
+   "column": 188,
    "layer": "sharedComponent"
   },
   {
@@ -1833,7 +1833,7 @@
    "value": "14",
    "file": "apps/mobile/src/components/kit/index.tsx",
    "line": 71,
-   "column": 182,
+   "column": 209,
    "layer": "sharedComponent"
   },
   {
@@ -1869,7 +1869,7 @@
    "value": "20",
    "file": "apps/mobile/src/components/kit/index.tsx",
    "line": 74,
-   "column": 79,
+   "column": 92,
    "layer": "sharedComponent",
    "fontSizePair": {
     "status": "direct",
@@ -2091,7 +2091,7 @@
    "value": "14",
    "file": "apps/mobile/src/components/kit/index.tsx",
    "line": 151,
-   "column": 146,
+   "column": 160,
    "layer": "sharedComponent"
   },
   {
@@ -2100,7 +2100,7 @@
    "value": "15",
    "file": "apps/mobile/src/components/kit/index.tsx",
    "line": 151,
-   "column": 167,
+   "column": 181,
    "layer": "sharedComponent"
   },
   {
@@ -2109,7 +2109,7 @@
    "value": "18",
    "file": "apps/mobile/src/components/kit/index.tsx",
    "line": 151,
-   "column": 184,
+   "column": 198,
    "layer": "sharedComponent"
   },
   {
@@ -2118,7 +2118,7 @@
    "value": "999",
    "file": "apps/mobile/src/components/kit/index.tsx",
    "line": 151,
-   "column": 202,
+   "column": 216,
    "layer": "sharedComponent"
   },
   {
@@ -2241,7 +2241,7 @@
    "value": "6",
    "file": "apps/mobile/src/components/kit/index.tsx",
    "line": 179,
-   "column": 52,
+   "column": 66,
    "layer": "sharedComponent"
   },
   {
@@ -2250,7 +2250,7 @@
    "value": "17",
    "file": "apps/mobile/src/components/kit/index.tsx",
    "line": 179,
-   "column": 66,
+   "column": 80,
    "layer": "sharedComponent",
    "fontSizePair": {
     "status": "direct",
@@ -2310,7 +2310,7 @@
    "value": "600",
    "file": "apps/mobile/src/components/kit/index.tsx",
    "line": 226,
-   "column": 60,
+   "column": 74,
    "layer": "sharedComponent"
   },
   {
@@ -2346,7 +2346,7 @@
    "value": "0",
    "file": "apps/mobile/src/components/kit/index.tsx",
    "line": 229,
-   "column": 108,
+   "column": 122,
    "layer": "sharedComponent"
   },
   {
@@ -2472,7 +2472,7 @@
    "value": "3",
    "file": "apps/mobile/src/components/kit/index.tsx",
    "line": 281,
-   "column": 62,
+   "column": 76,
    "layer": "sharedComponent"
   },
   {
@@ -2481,7 +2481,7 @@
    "value": "16",
    "file": "apps/mobile/src/components/kit/index.tsx",
    "line": 281,
-   "column": 76,
+   "column": 90,
    "layer": "sharedComponent",
    "fontSizePair": {
     "status": "direct",
@@ -3162,7 +3162,7 @@
    "value": "8",
    "file": "apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx",
    "line": 181,
-   "column": 112,
+   "column": 126,
    "layer": "product"
   },
   {
@@ -3216,7 +3216,7 @@
    "value": "600",
    "file": "apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx",
    "line": 211,
-   "column": 63,
+   "column": 77,
    "layer": "product"
   },
   {
@@ -3288,7 +3288,7 @@
    "value": "19",
    "file": "apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx",
    "line": 238,
-   "column": 60,
+   "column": 74,
    "layer": "product",
    "fontSizePair": {
     "status": "direct",
@@ -3303,7 +3303,7 @@
    "value": "12",
    "file": "apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx",
    "line": 238,
-   "column": 76,
+   "column": 90,
    "layer": "product"
   },
   {
@@ -3312,7 +3312,7 @@
    "value": "10",
    "file": "apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx",
    "line": 238,
-   "column": 91,
+   "column": 105,
    "layer": "product"
   },
   {
@@ -3384,7 +3384,7 @@
    "value": "2",
    "file": "apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx",
    "line": 254,
-   "column": 68,
+   "column": 82,
    "layer": "product"
   },
   {
@@ -3510,7 +3510,7 @@
    "value": "600",
    "file": "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx",
    "line": 57,
-   "column": 52,
+   "column": 66,
    "layer": "product"
   },
   {
@@ -3555,7 +3555,7 @@
    "value": "600",
    "file": "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx",
    "line": 64,
-   "column": 56,
+   "column": 70,
    "layer": "product"
   },
   {
@@ -3582,7 +3582,7 @@
    "value": "2",
    "file": "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx",
    "line": 65,
-   "column": 106,
+   "column": 131,
    "layer": "product"
   },
   {
@@ -3699,7 +3699,7 @@
    "value": "20",
    "file": "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx",
    "line": 92,
-   "column": 54,
+   "column": 68,
    "layer": "product",
    "fontSizePair": {
     "status": "direct",
@@ -3714,7 +3714,7 @@
    "value": "13",
    "file": "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx",
    "line": 92,
-   "column": 70,
+   "column": 84,
    "layer": "product"
   },
   {
@@ -3723,7 +3723,7 @@
    "value": "13",
    "file": "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx",
    "line": 92,
-   "column": 85,
+   "column": 99,
    "layer": "product"
   },
   {
@@ -3777,7 +3777,7 @@
    "value": "600",
    "file": "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx",
    "line": 103,
-   "column": 56,
+   "column": 70,
    "layer": "product"
   },
   {
@@ -3822,7 +3822,7 @@
    "value": "600",
    "file": "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx",
    "line": 128,
-   "column": 65,
+   "column": 79,
    "layer": "product"
   },
   {
@@ -4317,7 +4317,7 @@
    "value": "600",
    "file": "apps/mobile/src/features/ingredients/components/LedgerRow.tsx",
    "line": 55,
-   "column": 53,
+   "column": 67,
    "layer": "product"
   },
   {
@@ -4326,7 +4326,7 @@
    "value": "4",
    "file": "apps/mobile/src/features/ingredients/components/LedgerRow.tsx",
    "line": 55,
-   "column": 72,
+   "column": 86,
    "layer": "product"
   },
   {
@@ -4398,7 +4398,7 @@
    "value": "600",
    "file": "apps/mobile/src/features/ingredients/components/LedgerRow.tsx",
    "line": 67,
-   "column": 116,
+   "column": 127,
    "layer": "product"
   },
   {
@@ -4416,7 +4416,7 @@
    "value": "3",
    "file": "apps/mobile/src/features/ingredients/components/LedgerRow.tsx",
    "line": 68,
-   "column": 106,
+   "column": 120,
    "layer": "product"
   },
   {
@@ -4443,7 +4443,7 @@
    "value": "20",
    "file": "apps/mobile/src/features/ingredients/components/LossCard.tsx",
    "line": 49,
-   "column": 63,
+   "column": 77,
    "layer": "product",
    "fontSizePair": {
     "status": "direct",
@@ -4575,7 +4575,7 @@
    "value": "600",
    "file": "apps/mobile/src/features/ingredients/components/LossCard.tsx",
    "line": 103,
-   "column": 70,
+   "column": 84,
    "layer": "product"
   },
   {
@@ -4665,7 +4665,7 @@
    "value": "2",
    "file": "apps/mobile/src/features/ingredients/components/LossCard.tsx",
    "line": 124,
-   "column": 60,
+   "column": 74,
    "layer": "product"
   },
   {
@@ -5034,7 +5034,7 @@
    "value": "2",
    "file": "apps/mobile/src/features/ingredients/components/VendorPickerSheet.tsx",
    "line": 86,
-   "column": 81,
+   "column": 95,
    "layer": "product"
   },
   {
@@ -5196,7 +5196,7 @@
    "value": "700",
    "file": "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx",
    "line": 172,
-   "column": 69,
+   "column": 83,
    "layer": "product"
   },
   {
@@ -5259,7 +5259,7 @@
    "value": "700",
    "file": "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx",
    "line": 188,
-   "column": 69,
+   "column": 83,
    "layer": "product"
   },
   {
@@ -5268,7 +5268,7 @@
    "value": "3",
    "file": "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx",
    "line": 188,
-   "column": 88,
+   "column": 102,
    "layer": "product"
   },
   {
@@ -5457,7 +5457,7 @@
    "value": "8",
    "file": "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx",
    "line": 238,
-   "column": 63,
+   "column": 77,
    "layer": "product"
   },
   {
@@ -6240,7 +6240,7 @@
    "value": "22",
    "file": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx",
    "line": 156,
-   "column": 99,
+   "column": 113,
    "layer": "product",
    "fontSizePair": {
     "status": "direct",
@@ -6318,7 +6318,7 @@
    "value": "700",
    "file": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx",
    "line": 177,
-   "column": 109,
+   "column": 123,
    "layer": "product"
   },
   {
@@ -6561,7 +6561,7 @@
    "value": "14",
    "file": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx",
    "line": 277,
-   "column": 64,
+   "column": 78,
    "layer": "product"
   },
   {
@@ -6606,7 +6606,7 @@
    "value": "600",
    "file": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx",
    "line": 301,
-   "column": 70,
+   "column": 84,
    "layer": "product"
   },
   {
@@ -6615,7 +6615,7 @@
    "value": "4",
    "file": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx",
    "line": 301,
-   "column": 89,
+   "column": 103,
    "layer": "product"
   },
   {
@@ -6687,7 +6687,7 @@
    "value": "3",
    "file": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx",
    "line": 315,
-   "column": 71,
+   "column": 85,
    "layer": "product"
   },
   {
@@ -7062,7 +7062,7 @@
    "value": "600",
    "file": "apps/mobile/src/features/ingredients/screens/IngredientFormScreen.tsx",
    "line": 216,
-   "column": 57,
+   "column": 71,
    "layer": "product"
   },
   {
@@ -7554,7 +7554,7 @@
    "value": "700",
    "file": "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx",
    "line": 130,
-   "column": 71,
+   "column": 85,
    "layer": "product"
   },
   {
@@ -7689,7 +7689,7 @@
    "value": "20",
    "file": "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx",
    "line": 166,
-   "column": 65,
+   "column": 79,
    "layer": "product",
    "fontSizePair": {
     "status": "direct",
@@ -8115,7 +8115,7 @@
    "value": "600",
    "file": "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx",
    "line": 279,
-   "column": 70,
+   "column": 84,
    "layer": "product"
   },
   {
@@ -8124,7 +8124,7 @@
    "value": "4",
    "file": "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx",
    "line": 279,
-   "column": 89,
+   "column": 103,
    "layer": "product"
   },
   {
@@ -8223,7 +8223,7 @@
    "value": "700",
    "file": "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx",
    "line": 298,
-   "column": 71,
+   "column": 85,
    "layer": "product"
   },
   {
@@ -8232,7 +8232,7 @@
    "value": "3",
    "file": "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx",
    "line": 298,
-   "column": 90,
+   "column": 104,
    "layer": "product"
   },
   {
@@ -8520,7 +8520,7 @@
    "value": "800",
    "file": "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx",
    "line": 67,
-   "column": 39,
+   "column": 50,
    "layer": "product"
   },
   {
@@ -8700,7 +8700,7 @@
    "value": "2",
    "file": "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx",
    "line": 241,
-   "column": 69,
+   "column": 83,
    "layer": "product"
   },
   {
@@ -9048,7 +9048,7 @@
    "value": "2",
    "file": "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx",
    "line": 392,
-   "column": 64,
+   "column": 78,
    "layer": "product"
   },
   {
@@ -9111,7 +9111,7 @@
    "value": "2",
    "file": "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx",
    "line": 410,
-   "column": 69,
+   "column": 83,
    "layer": "product"
   },
   {
@@ -9534,7 +9534,7 @@
    "value": "700",
    "file": "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx",
    "line": 218,
-   "column": 50,
+   "column": 64,
    "layer": "product"
   },
   {
@@ -9561,7 +9561,7 @@
    "value": "700",
    "file": "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx",
    "line": 232,
-   "column": 82,
+   "column": 96,
    "layer": "product"
   },
   {
@@ -9810,7 +9810,7 @@
    "value": "28",
    "file": "apps/mobile/src/features/my/components/ChannelWeightSheet.tsx",
    "line": 60,
-   "column": 73,
+   "column": 87,
    "layer": "product"
   },
   {
@@ -9855,7 +9855,7 @@
    "value": "16",
    "file": "apps/mobile/src/features/my/components/ChannelWeightSheet.tsx",
    "line": 71,
-   "column": 244,
+   "column": 272,
    "layer": "product"
   },
   {
@@ -9891,7 +9891,7 @@
    "value": "2",
    "file": "apps/mobile/src/features/my/components/ChannelWeightSheet.tsx",
    "line": 75,
-   "column": 58,
+   "column": 72,
    "layer": "product"
   },
   {
@@ -10044,7 +10044,7 @@
    "value": "8",
    "file": "apps/mobile/src/features/my/components/ChannelWeightSheet.tsx",
    "line": 106,
-   "column": 56,
+   "column": 70,
    "layer": "product"
   },
   {
@@ -10053,7 +10053,7 @@
    "value": "20",
    "file": "apps/mobile/src/features/my/components/ChannelWeightSheet.tsx",
    "line": 106,
-   "column": 70,
+   "column": 84,
    "layer": "product",
    "fontSizePair": {
     "status": "direct",
@@ -10104,7 +10104,7 @@
    "value": "20",
    "file": "apps/mobile/src/features/my/components/RevenueGapCard.tsx",
    "line": 32,
-   "column": 63,
+   "column": 77,
    "layer": "product",
    "fontSizePair": {
     "status": "direct",
@@ -10218,7 +10218,7 @@
    "value": "20",
    "file": "apps/mobile/src/features/my/components/RevenueGapCard.tsx",
    "line": 82,
-   "column": 52,
+   "column": 66,
    "layer": "product",
    "fontSizePair": {
     "status": "direct",
@@ -10233,7 +10233,7 @@
    "value": "4",
    "file": "apps/mobile/src/features/my/components/RevenueGapCard.tsx",
    "line": 82,
-   "column": 68,
+   "column": 82,
    "layer": "product"
   },
   {
@@ -11202,7 +11202,7 @@
    "value": "2",
    "file": "apps/mobile/src/features/my/screens/FixedCostScreen.tsx",
    "line": 119,
-   "column": 90,
+   "column": 104,
    "layer": "product"
   },
   {
@@ -11292,7 +11292,7 @@
    "value": "20",
    "file": "apps/mobile/src/features/my/screens/FixedCostScreen.tsx",
    "line": 135,
-   "column": 65,
+   "column": 79,
    "layer": "product",
    "fontSizePair": {
     "status": "direct",
@@ -11653,60 +11653,6 @@
    "layer": "product"
   },
   {
-   "group": "color",
-   "prop": "hex",
-   "value": "#F0EDFB",
-   "file": "apps/mobile/src/features/my/screens/MyCategoryHubScreen.tsx",
-   "line": 18,
-   "column": 28,
-   "layer": "product"
-  },
-  {
-   "group": "color",
-   "prop": "hex",
-   "value": "#7C5CE0",
-   "file": "apps/mobile/src/features/my/screens/MyCategoryHubScreen.tsx",
-   "line": 18,
-   "column": 43,
-   "layer": "product"
-  },
-  {
-   "group": "color",
-   "prop": "hex",
-   "value": "#EAF6F0",
-   "file": "apps/mobile/src/features/my/screens/MyCategoryHubScreen.tsx",
-   "line": 19,
-   "column": 24,
-   "layer": "product"
-  },
-  {
-   "group": "color",
-   "prop": "hex",
-   "value": "#179E6B",
-   "file": "apps/mobile/src/features/my/screens/MyCategoryHubScreen.tsx",
-   "line": 19,
-   "column": 39,
-   "layer": "product"
-  },
-  {
-   "group": "color",
-   "prop": "hex",
-   "value": "#FEF1E6",
-   "file": "apps/mobile/src/features/my/screens/MyCategoryHubScreen.tsx",
-   "line": 20,
-   "column": 24,
-   "layer": "product"
-  },
-  {
-   "group": "color",
-   "prop": "hex",
-   "value": "#E08A2B",
-   "file": "apps/mobile/src/features/my/screens/MyCategoryHubScreen.tsx",
-   "line": 20,
-   "column": 39,
-   "layer": "product"
-  },
-  {
    "group": "spacing",
    "prop": "paddingHorizontal",
    "value": "16",
@@ -11748,7 +11694,7 @@
    "value": "4",
    "file": "apps/mobile/src/features/my/screens/MyCategoryHubScreen.tsx",
    "line": 27,
-   "column": 52,
+   "column": 66,
    "layer": "product"
   },
   {
@@ -11757,7 +11703,7 @@
    "value": "10",
    "file": "apps/mobile/src/features/my/screens/MyCategoryHubScreen.tsx",
    "line": 27,
-   "column": 73,
+   "column": 87,
    "layer": "product"
   },
   {
@@ -11856,7 +11802,7 @@
    "value": "2",
    "file": "apps/mobile/src/features/my/screens/MyCategoryHubScreen.tsx",
    "line": 48,
-   "column": 62,
+   "column": 76,
    "layer": "product"
   },
   {
@@ -12018,7 +11964,7 @@
    "value": "20",
    "file": "apps/mobile/src/features/my/screens/MyChannelsScreen.tsx",
    "line": 107,
-   "column": 65,
+   "column": 79,
    "layer": "product",
    "fontSizePair": {
     "status": "direct",
@@ -12052,132 +11998,6 @@
    "file": "apps/mobile/src/features/my/screens/MyChannelsScreen.tsx",
    "line": 126,
    "column": 54,
-   "layer": "product"
-  },
-  {
-   "group": "color",
-   "prop": "hex",
-   "value": "#F0EDFB",
-   "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 24,
-   "column": 23,
-   "layer": "product"
-  },
-  {
-   "group": "color",
-   "prop": "hex",
-   "value": "#7C5CE0",
-   "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 24,
-   "column": 38,
-   "layer": "product"
-  },
-  {
-   "group": "color",
-   "prop": "hex",
-   "value": "#E8F1FB",
-   "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 25,
-   "column": 24,
-   "layer": "product"
-  },
-  {
-   "group": "color",
-   "prop": "hex",
-   "value": "#2E6FD0",
-   "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 25,
-   "column": 39,
-   "layer": "product"
-  },
-  {
-   "group": "color",
-   "prop": "hex",
-   "value": "#FEF1E6",
-   "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 26,
-   "column": 24,
-   "layer": "product"
-  },
-  {
-   "group": "color",
-   "prop": "hex",
-   "value": "#E08A2B",
-   "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 26,
-   "column": 39,
-   "layer": "product"
-  },
-  {
-   "group": "color",
-   "prop": "hex",
-   "value": "#EAF6F0",
-   "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 27,
-   "column": 24,
-   "layer": "product"
-  },
-  {
-   "group": "color",
-   "prop": "hex",
-   "value": "#179E6B",
-   "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 27,
-   "column": 39,
-   "layer": "product"
-  },
-  {
-   "group": "color",
-   "prop": "hex",
-   "value": "#FDECEF",
-   "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 28,
-   "column": 26,
-   "layer": "product"
-  },
-  {
-   "group": "color",
-   "prop": "hex",
-   "value": "#D94A5E",
-   "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 28,
-   "column": 41,
-   "layer": "product"
-  },
-  {
-   "group": "color",
-   "prop": "hex",
-   "value": "#EDF3FF",
-   "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 29,
-   "column": 27,
-   "layer": "product"
-  },
-  {
-   "group": "color",
-   "prop": "hex",
-   "value": "#3A6FD8",
-   "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 29,
-   "column": 42,
-   "layer": "product"
-  },
-  {
-   "group": "color",
-   "prop": "hex",
-   "value": "#FFF5E0",
-   "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 30,
-   "column": 23,
-   "layer": "product"
-  },
-  {
-   "group": "color",
-   "prop": "hex",
-   "value": "#D99A1C",
-   "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 30,
-   "column": 38,
    "layer": "product"
   },
   {
@@ -12366,7 +12186,7 @@
    "value": "2",
    "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
    "line": 121,
-   "column": 56,
+   "column": 70,
    "layer": "product"
   },
   {
@@ -12465,7 +12285,7 @@
    "value": "2",
    "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
    "line": 134,
-   "column": 60,
+   "column": 74,
    "layer": "product"
   },
   {
@@ -12519,7 +12339,7 @@
    "value": "1",
    "file": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx",
    "line": 288,
-   "column": 60,
+   "column": 74,
    "layer": "product"
   },
   {
@@ -12636,7 +12456,7 @@
    "value": "2",
    "file": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx",
    "line": 320,
-   "column": 62,
+   "column": 76,
    "layer": "product"
   },
   {
@@ -12690,7 +12510,7 @@
    "value": "2",
    "file": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx",
    "line": 335,
-   "column": 64,
+   "column": 78,
    "layer": "product"
   },
   {
@@ -12744,7 +12564,7 @@
    "value": "2",
    "file": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx",
    "line": 348,
-   "column": 62,
+   "column": 76,
    "layer": "product"
   },
   {
@@ -13236,7 +13056,7 @@
    "value": "20",
    "file": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx",
    "line": 472,
-   "column": 67,
+   "column": 81,
    "layer": "product",
    "fontSizePair": {
     "status": "direct",
@@ -13590,7 +13410,7 @@
    "value": "2",
    "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
    "line": 57,
-   "column": 60,
+   "column": 74,
    "layer": "product"
   },
   {
@@ -13635,7 +13455,7 @@
    "value": "20",
    "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
    "line": 75,
-   "column": 52,
+   "column": 66,
    "layer": "product"
   },
   {
@@ -13716,7 +13536,7 @@
    "value": "4",
    "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
    "line": 240,
-   "column": 71,
+   "column": 85,
    "layer": "product"
   },
   {
@@ -13725,7 +13545,7 @@
    "value": "6",
    "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
    "line": 240,
-   "column": 92,
+   "column": 106,
    "layer": "product"
   },
   {
@@ -13926,7 +13746,7 @@
    "value": "3",
    "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
    "line": 270,
-   "column": 63,
+   "column": 77,
    "layer": "product"
   },
   {
@@ -13980,7 +13800,7 @@
    "value": "600",
    "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
    "line": 276,
-   "column": 64,
+   "column": 78,
    "layer": "product"
   },
   {
@@ -14016,7 +13836,7 @@
    "value": "12",
    "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
    "line": 279,
-   "column": 133,
+   "column": 147,
    "layer": "product"
   },
   {
@@ -14061,7 +13881,7 @@
    "value": "20",
    "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
    "line": 287,
-   "column": 63,
+   "column": 77,
    "layer": "product",
    "fontSizePair": {
     "status": "direct",
@@ -14148,7 +13968,7 @@
    "value": "20",
    "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
    "line": 313,
-   "column": 66,
+   "column": 77,
    "layer": "product",
    "fontSizePair": {
     "status": "direct",
@@ -14163,7 +13983,7 @@
    "value": "600",
    "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
    "line": 313,
-   "column": 82,
+   "column": 93,
    "layer": "product"
   },
   {
@@ -14334,7 +14154,7 @@
    "value": "#D5DAE0",
    "file": "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx",
    "line": 32,
-   "column": 88,
+   "column": 102,
    "layer": "product"
   },
   {
@@ -14523,7 +14343,7 @@
    "value": "4",
    "file": "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx",
    "line": 107,
-   "column": 54,
+   "column": 68,
    "layer": "product"
   },
   {
@@ -14532,7 +14352,7 @@
    "value": "10",
    "file": "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx",
    "line": 107,
-   "column": 75,
+   "column": 89,
    "layer": "product"
   },
   {
@@ -14613,7 +14433,7 @@
    "value": "3",
    "file": "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx",
    "line": 116,
-   "column": 62,
+   "column": 76,
    "layer": "product"
   },
   {
@@ -14622,7 +14442,7 @@
    "value": "19",
    "file": "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx",
    "line": 116,
-   "column": 76,
+   "column": 90,
    "layer": "product",
    "fontSizePair": {
     "status": "direct",
@@ -14673,7 +14493,7 @@
    "value": "20",
    "file": "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx",
    "line": 126,
-   "column": 63,
+   "column": 77,
    "layer": "product",
    "fontSizePair": {
     "status": "direct",
@@ -14994,7 +14814,7 @@
    "value": "20",
    "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
    "line": 241,
-   "column": 65,
+   "column": 79,
    "layer": "product",
    "fontSizePair": {
     "status": "direct",
@@ -15171,7 +14991,7 @@
    "value": "2",
    "file": "apps/mobile/src/features/my/screens/MyUnitsScreen.tsx",
    "line": 26,
-   "column": 59,
+   "column": 73,
    "layer": "product"
   },
   {
@@ -15378,7 +15198,7 @@
    "value": "4",
    "file": "apps/mobile/src/features/my/screens/MyUnitsScreen.tsx",
    "line": 169,
-   "column": 71,
+   "column": 85,
    "layer": "product"
   },
   {
@@ -15387,7 +15207,7 @@
    "value": "8",
    "file": "apps/mobile/src/features/my/screens/MyUnitsScreen.tsx",
    "line": 169,
-   "column": 92,
+   "column": 106,
    "layer": "product"
   },
   {
@@ -15423,7 +15243,7 @@
    "value": "4",
    "file": "apps/mobile/src/features/my/screens/MyUnitsScreen.tsx",
    "line": 176,
-   "column": 71,
+   "column": 85,
    "layer": "product"
   },
   {
@@ -15432,7 +15252,7 @@
    "value": "8",
    "file": "apps/mobile/src/features/my/screens/MyUnitsScreen.tsx",
    "line": 176,
-   "column": 92,
+   "column": 106,
    "layer": "product"
   },
   {
@@ -15486,7 +15306,7 @@
    "value": "4",
    "file": "apps/mobile/src/features/my/screens/MyUnitsScreen.tsx",
    "line": 197,
-   "column": 71,
+   "column": 85,
    "layer": "product"
   },
   {
@@ -15495,7 +15315,7 @@
    "value": "6",
    "file": "apps/mobile/src/features/my/screens/MyUnitsScreen.tsx",
    "line": 197,
-   "column": 92,
+   "column": 106,
    "layer": "product"
   },
   {
@@ -15594,7 +15414,7 @@
    "value": "12",
    "file": "apps/mobile/src/features/my/screens/MyUnitsScreen.tsx",
    "line": 216,
-   "column": 133,
+   "column": 147,
    "layer": "product"
   },
   {
@@ -15747,7 +15567,7 @@
    "value": "4",
    "file": "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx",
    "line": 106,
-   "column": 71,
+   "column": 85,
    "layer": "product"
   },
   {
@@ -15756,7 +15576,7 @@
    "value": "8",
    "file": "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx",
    "line": 106,
-   "column": 92,
+   "column": 106,
    "layer": "product"
   },
   {
@@ -15882,7 +15702,7 @@
    "value": "2",
    "file": "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx",
    "line": 127,
-   "column": 62,
+   "column": 76,
    "layer": "product"
   },
   {
@@ -17055,7 +16875,7 @@
    "value": "1",
    "file": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx",
    "line": 308,
-   "column": 67,
+   "column": 81,
    "layer": "product"
   },
   {
@@ -17751,7 +17571,7 @@
    "value": "700",
    "file": "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx",
    "line": 62,
-   "column": 52,
+   "column": 66,
    "layer": "product"
   },
   {
@@ -17778,7 +17598,7 @@
    "value": "-0.6",
    "file": "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx",
    "line": 63,
-   "column": 73,
+   "column": 84,
    "layer": "product"
   },
   {
@@ -17787,7 +17607,7 @@
    "value": "2",
    "file": "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx",
    "line": 63,
-   "column": 94,
+   "column": 105,
    "layer": "product"
   },
   {
@@ -17895,7 +17715,7 @@
    "value": "700",
    "file": "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx",
    "line": 82,
-   "column": 56,
+   "column": 70,
    "layer": "product"
   },
   {
@@ -17913,7 +17733,7 @@
    "value": "700",
    "file": "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx",
    "line": 83,
-   "column": 56,
+   "column": 70,
    "layer": "product"
   },
   {
@@ -18102,7 +17922,7 @@
    "value": "46",
    "file": "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx",
    "line": 128,
-   "column": 78,
+   "column": 92,
    "layer": "product"
   },
   {
@@ -18237,7 +18057,7 @@
    "value": "600",
    "file": "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx",
    "line": 147,
-   "column": 91,
+   "column": 102,
    "layer": "product"
   },
   {
@@ -18246,7 +18066,7 @@
    "value": "20",
    "file": "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx",
    "line": 147,
-   "column": 110,
+   "column": 121,
    "layer": "product",
    "fontSizePair": {
     "status": "direct",
@@ -18366,7 +18186,7 @@
    "value": "8",
    "file": "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx",
    "line": 66,
-   "column": 75,
+   "column": 89,
    "layer": "product"
   },
   {
@@ -18510,7 +18330,7 @@
    "value": "8",
    "file": "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx",
    "line": 91,
-   "column": 71,
+   "column": 85,
    "layer": "product"
   },
   {
@@ -18528,7 +18348,7 @@
    "value": "14",
    "file": "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx",
    "line": 92,
-   "column": 143,
+   "column": 157,
    "layer": "product"
   },
   {
@@ -18537,7 +18357,7 @@
    "value": "18",
    "file": "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx",
    "line": 92,
-   "column": 161,
+   "column": 175,
    "layer": "product"
   },
   {
@@ -18546,7 +18366,7 @@
    "value": "18",
    "file": "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx",
    "line": 92,
-   "column": 182,
+   "column": 196,
    "layer": "product"
   },
   {
@@ -18870,7 +18690,7 @@
    "value": "4",
    "file": "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx",
    "line": 114,
-   "column": 52,
+   "column": 66,
    "layer": "product"
   },
   {
@@ -18879,7 +18699,7 @@
    "value": "10",
    "file": "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx",
    "line": 114,
-   "column": 73,
+   "column": 87,
    "layer": "product"
   },
   {
@@ -19014,7 +18834,7 @@
    "value": "2",
    "file": "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx",
    "line": 139,
-   "column": 62,
+   "column": 76,
    "layer": "product"
   },
   {
@@ -19311,7 +19131,7 @@
    "value": "12",
    "file": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx",
    "line": 188,
-   "column": 90,
+   "column": 118,
    "layer": "product"
   },
   {
@@ -19320,7 +19140,7 @@
    "value": "14",
    "file": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx",
    "line": 188,
-   "column": 108,
+   "column": 136,
    "layer": "product"
   },
   {
@@ -19329,7 +19149,7 @@
    "value": "16",
    "file": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx",
    "line": 188,
-   "column": 129,
+   "column": 157,
    "layer": "product"
   },
   {
@@ -19668,7 +19488,7 @@
    "value": "12",
    "file": "apps/mobile/src/features/recipes/screens/MaterialSearchScreen.tsx",
    "line": 39,
-   "column": 138,
+   "column": 166,
    "layer": "product"
   },
   {
@@ -19677,7 +19497,7 @@
    "value": "12",
    "file": "apps/mobile/src/features/recipes/screens/MaterialSearchScreen.tsx",
    "line": 39,
-   "column": 156,
+   "column": 184,
    "layer": "product"
   },
   {
@@ -19686,7 +19506,7 @@
    "value": "14",
    "file": "apps/mobile/src/features/recipes/screens/MaterialSearchScreen.tsx",
    "line": 39,
-   "column": 177,
+   "column": 205,
    "layer": "product"
   },
   {
@@ -19902,7 +19722,7 @@
    "value": "600",
    "file": "apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx",
    "line": 74,
-   "column": 53,
+   "column": 67,
    "layer": "product"
   },
   {
@@ -20181,7 +20001,7 @@
    "value": "5",
    "file": "apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx",
    "line": 184,
-   "column": 56,
+   "column": 70,
    "layer": "product"
   },
   {
@@ -20361,7 +20181,7 @@
    "value": "600",
    "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
    "line": 31,
-   "column": 57,
+   "column": 71,
    "layer": "product"
   },
   {
@@ -20406,7 +20226,7 @@
    "value": "20",
    "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
    "line": 48,
-   "column": 50,
+   "column": 64,
    "layer": "product",
    "fontSizePair": {
     "status": "direct",
@@ -20520,7 +20340,7 @@
    "value": "10",
    "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
    "line": 257,
-   "column": 190,
+   "column": 204,
    "layer": "product"
   },
   {
@@ -20661,7 +20481,7 @@
    "value": "14",
    "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
    "line": 283,
-   "column": 60,
+   "column": 74,
    "layer": "product"
   },
   {
@@ -20715,7 +20535,7 @@
    "value": "2",
    "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
    "line": 293,
-   "column": 69,
+   "column": 83,
    "layer": "product"
   },
   {
@@ -20760,7 +20580,7 @@
    "value": "1",
    "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
    "line": 301,
-   "column": 70,
+   "column": 81,
    "layer": "product"
   },
   {
@@ -20769,7 +20589,7 @@
    "value": "700",
    "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
    "line": 301,
-   "column": 84,
+   "column": 95,
    "layer": "product"
   },
   {
@@ -21027,7 +20847,7 @@
    "value": "14",
    "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
    "line": 346,
-   "column": 60,
+   "column": 74,
    "layer": "product"
   },
   {
@@ -21090,7 +20910,7 @@
    "value": "2",
    "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
    "line": 352,
-   "column": 67,
+   "column": 81,
    "layer": "product"
   },
   {
@@ -21423,7 +21243,7 @@
    "value": "2",
    "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
    "line": 403,
-   "column": 82,
+   "column": 96,
    "layer": "product"
   },
   {
@@ -21495,7 +21315,7 @@
    "value": "2",
    "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
    "line": 418,
-   "column": 84,
+   "column": 98,
    "layer": "product"
   },
   {
@@ -21630,7 +21450,7 @@
    "value": "1",
    "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
    "line": 435,
-   "column": 64,
+   "column": 78,
    "layer": "product"
   },
   {
@@ -21675,7 +21495,7 @@
    "value": "2",
    "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
    "line": 439,
-   "column": 84,
+   "column": 93,
    "layer": "product"
   },
   {
@@ -21693,7 +21513,7 @@
    "value": "20",
    "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
    "line": 444,
-   "column": 60,
+   "column": 74,
    "layer": "product",
    "fontSizePair": {
     "status": "direct",
@@ -21708,7 +21528,7 @@
    "value": "12",
    "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
    "line": 444,
-   "column": 76,
+   "column": 90,
    "layer": "product"
   },
   {
@@ -21987,7 +21807,7 @@
    "value": "600",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
    "line": 33,
-   "column": 57,
+   "column": 71,
    "layer": "product"
   },
   {
@@ -22464,7 +22284,7 @@
    "value": "46",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
    "line": 278,
-   "column": 110,
+   "column": 124,
    "layer": "product"
   },
   {
@@ -22617,7 +22437,7 @@
    "value": "14",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
    "line": 312,
-   "column": 66,
+   "column": 80,
    "layer": "product"
   },
   {
@@ -22680,7 +22500,7 @@
    "value": "2",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
    "line": 333,
-   "column": 75,
+   "column": 89,
    "layer": "product"
   },
   {
@@ -22716,7 +22536,7 @@
    "value": "2",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
    "line": 351,
-   "column": 75,
+   "column": 89,
    "layer": "product"
   },
   {
@@ -22887,7 +22707,7 @@
    "value": "2",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
    "line": 382,
-   "column": 92,
+   "column": 106,
    "layer": "product"
   },
   {
@@ -22905,7 +22725,7 @@
    "value": "9",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
    "line": 387,
-   "column": 66,
+   "column": 80,
    "layer": "product"
   },
   {
@@ -22950,7 +22770,7 @@
    "value": "12",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
    "line": 398,
-   "column": 66,
+   "column": 80,
    "layer": "product"
   },
   {
@@ -23013,7 +22833,7 @@
    "value": "600",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
    "line": 407,
-   "column": 73,
+   "column": 87,
    "layer": "product"
   },
   {
@@ -23022,7 +22842,7 @@
    "value": "2",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
    "line": 407,
-   "column": 92,
+   "column": 106,
    "layer": "product"
   },
   {
@@ -23121,7 +22941,7 @@
    "value": "20",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
    "line": 419,
-   "column": 64,
+   "column": 78,
    "layer": "product",
    "fontSizePair": {
     "status": "direct",
@@ -23136,7 +22956,7 @@
    "value": "10",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
    "line": 419,
-   "column": 80,
+   "column": 94,
    "layer": "product"
   },
   {
@@ -23217,7 +23037,7 @@
    "value": "13",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
    "line": 442,
-   "column": 66,
+   "column": 80,
    "layer": "product"
   },
   {
@@ -23280,7 +23100,7 @@
    "value": "600",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
    "line": 454,
-   "column": 73,
+   "column": 87,
    "layer": "product"
   },
   {
@@ -23289,7 +23109,7 @@
    "value": "2",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
    "line": 454,
-   "column": 92,
+   "column": 106,
    "layer": "product"
   },
   {
@@ -23577,7 +23397,7 @@
    "value": "2",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
    "line": 505,
-   "column": 88,
+   "column": 102,
    "layer": "product"
   },
   {
@@ -23649,7 +23469,7 @@
    "value": "2",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
    "line": 520,
-   "column": 90,
+   "column": 104,
    "layer": "product"
   },
   {
@@ -23784,7 +23604,7 @@
    "value": "1",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
    "line": 537,
-   "column": 70,
+   "column": 84,
    "layer": "product"
   },
   {
@@ -23829,7 +23649,7 @@
    "value": "2",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
    "line": 541,
-   "column": 91,
+   "column": 102,
    "layer": "product"
   },
   {
@@ -23910,7 +23730,7 @@
    "value": "15",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
    "line": 567,
-   "column": 64,
+   "column": 78,
    "layer": "product"
   },
   {
@@ -23964,7 +23784,7 @@
    "value": "600",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
    "line": 582,
-   "column": 73,
+   "column": 87,
    "layer": "product"
   },
   {
@@ -24063,7 +23883,7 @@
    "value": "3",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
    "line": 598,
-   "column": 93,
+   "column": 107,
    "layer": "product"
   },
   {
@@ -25611,7 +25431,7 @@
    "value": "600",
    "file": "apps/mobile/src/features/sales/components/MenuProfitSheet.tsx",
    "line": 105,
-   "column": 79,
+   "column": 93,
    "layer": "product"
   },
   {
@@ -25638,7 +25458,7 @@
    "value": "12",
    "file": "apps/mobile/src/features/sales/components/MenuProfitSheet.tsx",
    "line": 107,
-   "column": 84,
+   "column": 98,
    "layer": "product"
   },
   {
@@ -26049,7 +25869,7 @@
    "value": "3",
    "file": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx",
    "line": 98,
-   "column": 97,
+   "column": 111,
    "layer": "product"
   },
   {
@@ -26148,7 +25968,7 @@
    "value": "3",
    "file": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx",
    "line": 131,
-   "column": 84,
+   "column": 95,
    "layer": "product"
   },
   {
@@ -26292,7 +26112,7 @@
    "value": "3",
    "file": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx",
    "line": 174,
-   "column": 79,
+   "column": 93,
    "layer": "product"
   },
   {
@@ -26337,7 +26157,7 @@
    "value": "3",
    "file": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx",
    "line": 178,
-   "column": 83,
+   "column": 97,
    "layer": "product"
   },
   {
@@ -26595,7 +26415,7 @@
    "value": "700",
    "file": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx",
    "line": 363,
-   "column": 72,
+   "column": 83,
    "layer": "product"
   },
   {
@@ -26622,7 +26442,7 @@
    "value": "4",
    "file": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx",
    "line": 365,
-   "column": 76,
+   "column": 90,
    "layer": "product"
   },
   {
@@ -26667,7 +26487,7 @@
    "value": "3",
    "file": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx",
    "line": 372,
-   "column": 76,
+   "column": 90,
    "layer": "product"
   },
   {
@@ -27141,7 +26961,7 @@
    "value": "3",
    "file": "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx",
    "line": 272,
-   "column": 82,
+   "column": 96,
    "layer": "product"
   },
   {
@@ -27330,7 +27150,7 @@
    "value": "8",
    "file": "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx",
    "line": 336,
-   "column": 93,
+   "column": 111,
    "layer": "product"
   },
   {
@@ -28101,7 +27921,7 @@
    "value": "16",
    "file": "apps/mobile/src/features/sales/screens/SalesDayFullScreen.tsx",
    "line": 121,
-   "column": 86,
+   "column": 100,
    "layer": "product"
   },
   {
@@ -28380,7 +28200,7 @@
    "value": "600",
    "file": "apps/mobile/src/features/sales/screens/SalesExpenseScreen.tsx",
    "line": 100,
-   "column": 74,
+   "column": 88,
    "layer": "product"
   },
   {
@@ -28389,7 +28209,7 @@
    "value": "3",
    "file": "apps/mobile/src/features/sales/screens/SalesExpenseScreen.tsx",
    "line": 100,
-   "column": 93,
+   "column": 107,
    "layer": "product"
   },
   {
@@ -28692,7 +28512,7 @@
    "value": "2",
    "file": "apps/mobile/src/features/sales/screens/SalesExtraScreen.tsx",
    "line": 75,
-   "column": 64,
+   "column": 78,
    "layer": "product"
   },
   {
@@ -29085,7 +28905,7 @@
    "value": "600",
    "file": "apps/mobile/src/features/sales/screens/SalesFixedScreen.tsx",
    "line": 114,
-   "column": 65,
+   "column": 79,
    "layer": "product"
   },
   {
@@ -29094,7 +28914,7 @@
    "value": "3",
    "file": "apps/mobile/src/features/sales/screens/SalesFixedScreen.tsx",
    "line": 114,
-   "column": 84,
+   "column": 98,
    "layer": "product"
   },
   {
@@ -29436,7 +29256,7 @@
    "value": "16",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
    "line": 415,
-   "column": 45,
+   "column": 59,
    "layer": "product"
   },
   {
@@ -29445,7 +29265,7 @@
    "value": "16",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
    "line": 415,
-   "column": 63,
+   "column": 77,
    "layer": "product"
   },
   {
@@ -29454,7 +29274,7 @@
    "value": "11",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
    "line": 415,
-   "column": 76,
+   "column": 90,
    "layer": "product"
   },
   {
@@ -29751,7 +29571,7 @@
    "value": "3",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
    "line": 497,
-   "column": 65,
+   "column": 79,
    "layer": "product"
   },
   {
@@ -29823,7 +29643,7 @@
    "value": "3",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
    "line": 538,
-   "column": 86,
+   "column": 100,
    "layer": "product"
   },
   {
@@ -30048,7 +29868,7 @@
    "value": "2",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
    "line": 583,
-   "column": 62,
+   "column": 76,
    "layer": "product"
   },
   {
@@ -30234,7 +30054,7 @@
    "value": "2",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
    "line": 617,
-   "column": 102,
+   "column": 127,
    "layer": "product"
   },
   {
@@ -30447,7 +30267,7 @@
    "value": "2",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
    "line": 684,
-   "column": 72,
+   "column": 86,
    "layer": "product"
   },
   {
@@ -30765,7 +30585,7 @@
    "value": "2",
    "file": "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx",
    "line": 85,
-   "column": 66,
+   "column": 80,
    "layer": "product"
   },
   {
@@ -31062,7 +30882,7 @@
    "value": "8",
    "file": "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx",
    "line": 151,
-   "column": 57,
+   "column": 71,
    "layer": "product"
   },
   {
@@ -31125,7 +30945,7 @@
    "value": "600",
    "file": "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx",
    "line": 34,
-   "column": 57,
+   "column": 71,
    "layer": "product"
   },
   {
@@ -31350,7 +31170,7 @@
    "value": "3",
    "file": "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx",
    "line": 187,
-   "column": 97,
+   "column": 111,
    "layer": "product"
   },
   {
@@ -31440,7 +31260,7 @@
    "value": "2",
    "file": "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx",
    "line": 206,
-   "column": 71,
+   "column": 85,
    "layer": "product"
   },
   {
@@ -31476,7 +31296,7 @@
    "value": "2",
    "file": "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx",
    "line": 212,
-   "column": 71,
+   "column": 85,
    "layer": "product"
   },
   {
@@ -31611,7 +31431,7 @@
    "value": "2",
    "file": "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx",
    "line": 282,
-   "column": 71,
+   "column": 85,
    "layer": "product"
   },
   {
@@ -31647,7 +31467,7 @@
    "value": "2",
    "file": "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx",
    "line": 290,
-   "column": 71,
+   "column": 85,
    "layer": "product"
   },
   {
@@ -31818,7 +31638,7 @@
    "value": "2",
    "file": "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx",
    "line": 317,
-   "column": 90,
+   "column": 104,
    "layer": "product"
   },
   {
@@ -31890,7 +31710,7 @@
    "value": "2",
    "file": "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx",
    "line": 344,
-   "column": 68,
+   "column": 82,
    "layer": "product"
   },
   {
@@ -31935,7 +31755,7 @@
    "value": "2",
    "file": "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx",
    "line": 348,
-   "column": 88,
+   "column": 102,
    "layer": "product"
   },
   {
@@ -32061,7 +31881,7 @@
    "value": "10",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
    "line": 246,
-   "column": 88,
+   "column": 102,
    "layer": "product"
   },
   {
@@ -32088,7 +31908,7 @@
    "value": "6",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
    "line": 249,
-   "column": 107,
+   "column": 118,
    "layer": "product"
   },
   {
@@ -32115,7 +31935,7 @@
    "value": "6",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
    "line": 251,
-   "column": 88,
+   "column": 97,
    "layer": "product"
   },
   {
@@ -32313,7 +32133,7 @@
    "value": "2",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
    "line": 310,
-   "column": 62,
+   "column": 76,
    "layer": "product"
   },
   {
@@ -32466,7 +32286,7 @@
    "value": "2",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
    "line": 340,
-   "column": 102,
+   "column": 127,
    "layer": "product"
   },
   {
@@ -32619,7 +32439,7 @@
    "value": "2",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
    "line": 395,
-   "column": 72,
+   "column": 86,
    "layer": "product"
   },
   {
@@ -32949,7 +32769,7 @@
    "value": "16",
    "file": "apps/mobile/src/features/sales/screens/SalesRevenueScreen.tsx",
    "line": 98,
-   "column": 60,
+   "column": 74,
    "layer": "product"
   },
   {
@@ -33138,7 +32958,7 @@
    "value": "2",
    "file": "apps/mobile/src/features/sales/screens/SalesRevenueScreen.tsx",
    "line": 121,
-   "column": 104,
+   "column": 129,
    "layer": "product"
   },
   {
@@ -33228,7 +33048,7 @@
    "value": "12",
    "file": "apps/mobile/src/features/sales/screens/SalesRevenueScreen.tsx",
    "line": 135,
-   "column": 60,
+   "column": 74,
    "layer": "product"
   },
   {
@@ -33237,7 +33057,7 @@
    "value": "12",
    "file": "apps/mobile/src/features/sales/screens/SalesRevenueScreen.tsx",
    "line": 135,
-   "column": 81,
+   "column": 95,
    "layer": "product"
   },
   {
@@ -33354,7 +33174,7 @@
    "value": "6",
    "file": "apps/mobile/src/features/sales/screens/SalesStockCheckScreen.tsx",
    "line": 78,
-   "column": 58,
+   "column": 72,
    "layer": "product"
   },
   {
@@ -33363,7 +33183,7 @@
    "value": "20",
    "file": "apps/mobile/src/features/sales/screens/SalesStockCheckScreen.tsx",
    "line": 78,
-   "column": 72,
+   "column": 86,
    "layer": "product",
    "fontSizePair": {
     "status": "direct",
@@ -33786,28 +33606,14 @@
  ],
  "declarationSummary": {
   "color": {
-   "total": 46,
+   "total": 26,
    "byValue": {
     "hex:#FFF": 10,
     "hex:#000": 3,
     "hex:#B0B8C1": 2,
-    "hex:#F0EDFB": 2,
-    "hex:#7C5CE0": 2,
-    "hex:#EAF6F0": 2,
-    "hex:#179E6B": 2,
-    "hex:#FEF1E6": 2,
-    "hex:#E08A2B": 2,
     "hex:#7A8694": 2,
     "hex:#C5CCD3": 2,
     "hex:#FFFFFF": 1,
-    "hex:#E8F1FB": 1,
-    "hex:#2E6FD0": 1,
-    "hex:#FDECEF": 1,
-    "hex:#D94A5E": 1,
-    "hex:#EDF3FF": 1,
-    "hex:#3A6FD8": 1,
-    "hex:#FFF5E0": 1,
-    "hex:#D99A1C": 1,
     "hex:#D5DAE0": 1,
     "hex:#FFF9F0": 1,
     "hex:#3182F6": 1,
@@ -33816,10 +33622,10 @@
     "hex:#5B6573": 1
    },
    "byLayer": {
-    "product": 38,
+    "product": 18,
     "sharedComponent": 8
    },
-   "distinctDeclarations": 26
+   "distinctDeclarations": 12
   },
   "typography": {
    "total": 1564,
@@ -34167,16 +33973,16 @@
      "FONT",
      "TYPE",
      "tnum",
-     "STATUS",
      "space",
      "radius",
+     "STATUS",
      "cardShadow"
     ]
    }
   ],
-  "declarations": 3666,
+  "declarations": 3646,
   "declarationsByGroup": {
-   "color": 46,
+   "color": 26,
    "typography": 1564,
    "spacing": 1652,
    "size": 230,
@@ -34229,23 +34035,23 @@
      "#8B95A1",
      "#E5E8EB",
      "#F2F4F6",
-     "#15B374",
+     "#0B7F58",
      "#E7F7F0",
      "#FFF4E5",
-     "#F04452",
+     "#DA1222",
      "#FEECEC",
-     "#E07A00",
+     "#A16000",
      "#D1D6DB",
      "#B0B8C1"
     ],
-    "usageOccurrences": 1796,
+    "usageOccurrences": 1189,
     "usageFiles": 82,
     "sharedComponent": {
-     "usageOccurrences": 149,
+     "usageOccurrences": 97,
      "usageFiles": 13
     },
     "product": {
-     "usageOccurrences": 1647,
+     "usageOccurrences": 1092,
      "usageFiles": 69
     },
     "shadowedIn": [
@@ -34362,21 +34168,21 @@
     "values": [
      {
       "label": "여유",
-      "fg": "T.green",
-      "bg": "T.greenTint",
-      "bar": "T.green"
+      "fg": "COLOR.status.positive",
+      "bg": "COLOR.status.positiveTint",
+      "bar": "COLOR.status.positive"
      },
      {
       "label": "소진 임박",
-      "fg": "T.amberText",
-      "bg": "T.amberTint",
-      "bar": "T.amberText"
+      "fg": "COLOR.status.caution",
+      "bg": "COLOR.status.cautionTint",
+      "bar": "COLOR.status.caution"
      },
      {
       "label": "소진",
-      "fg": "T.red",
-      "bg": "T.redTint",
-      "bar": "T.red"
+      "fg": "COLOR.status.negative",
+      "bg": "COLOR.status.negativeTint",
+      "bar": "COLOR.status.negative"
      }
     ],
     "usageOccurrences": 1,
@@ -34553,32 +34359,18 @@
    }
   },
   "hexColorLiterals": {
-   "occurrences": 46,
-   "files": 15,
+   "occurrences": 26,
+   "files": 13,
    "byLayer": {
     "sharedComponent": 8,
-    "product": 38
+    "product": 18
    },
-   "distinct": 26,
+   "distinct": 12,
    "values": {
     "#B0B8C1": 2,
     "#FFFFFF": 1,
     "#FFF": 10,
     "#000": 3,
-    "#F0EDFB": 2,
-    "#7C5CE0": 2,
-    "#EAF6F0": 2,
-    "#179E6B": 2,
-    "#FEF1E6": 2,
-    "#E08A2B": 2,
-    "#E8F1FB": 1,
-    "#2E6FD0": 1,
-    "#FDECEF": 1,
-    "#D94A5E": 1,
-    "#EDF3FF": 1,
-    "#3A6FD8": 1,
-    "#FFF5E0": 1,
-    "#D99A1C": 1,
     "#D5DAE0": 1,
     "#FFF9F0": 1,
     "#3182F6": 1,
@@ -34747,7 +34539,6 @@
    "file": "apps/mobile/app/(tabs)/_layout.tsx",
    "layer": "product",
    "tokenAccess": {
-    "T.blue": 1,
     "T.line2": 1
    },
    "tokenValue": {},
@@ -34765,7 +34556,7 @@
     "size": 0
    },
    "hexColors": 2,
-   "tokenAccessTotal": 2,
+   "tokenAccessTotal": 1,
    "inlineTotal": 3
   },
   {
@@ -35842,9 +35633,7 @@
    "tokenAccess": {
     "T.sub": 3,
     "T.ink": 2,
-    "T.ter": 2,
     "T.line2": 1,
-    "T.blue": 1,
     "T.red": 1
    },
    "tokenValue": {
@@ -35862,7 +35651,7 @@
     "size": 2
    },
    "hexColors": 0,
-   "tokenAccessTotal": 10,
+   "tokenAccessTotal": 7,
    "inlineTotal": 32
   },
   {
@@ -35894,16 +35683,13 @@
    "file": "apps/mobile/src/components/kit/Button.tsx",
    "layer": "sharedComponent",
    "tokenAccess": {
-    "T.blue": 2,
     "T.onColor": 1,
-    "T.blueTint": 1,
     "T.line2": 1,
     "T.ink2": 1,
     "T.sub": 1,
     "T.line": 1,
     "T.redTint": 1,
-    "T.red": 1,
-    "T.bluePressed": 1
+    "T.red": 1
    },
    "tokenValue": {},
    "kitJsx": {
@@ -35920,7 +35706,7 @@
     "size": 0
    },
    "hexColors": 0,
-   "tokenAccessTotal": 11,
+   "tokenAccessTotal": 7,
    "inlineTotal": 3
   },
   {
@@ -35947,7 +35733,6 @@
    "file": "apps/mobile/src/components/kit/MemoEditSheet.tsx",
    "layer": "sharedComponent",
    "tokenAccess": {
-    "T.ter": 2,
     "T.surface2": 1,
     "T.ink": 1
    },
@@ -35968,18 +35753,16 @@
     "size": 1
    },
    "hexColors": 0,
-   "tokenAccessTotal": 4,
+   "tokenAccessTotal": 2,
    "inlineTotal": 9
   },
   {
    "file": "apps/mobile/src/components/kit/QueryState.tsx",
    "layer": "sharedComponent",
    "tokenAccess": {
-    "T.blue": 1,
     "T.sub2": 2,
     "T.ink": 1,
-    "T.red": 1,
-    "T.ter": 2
+    "T.red": 1
    },
    "tokenValue": {},
    "kitJsx": {
@@ -35996,7 +35779,7 @@
     "size": 0
    },
    "hexColors": 0,
-   "tokenAccessTotal": 7,
+   "tokenAccessTotal": 4,
    "inlineTotal": 14
   },
   {
@@ -36005,7 +35788,6 @@
    "tokenAccess": {
     "T.surface": 1,
     "T.line": 1,
-    "T.ter": 4,
     "T.ink": 1
    },
    "tokenValue": {},
@@ -36023,7 +35805,7 @@
     "size": 5
    },
    "hexColors": 0,
-   "tokenAccessTotal": 7,
+   "tokenAccessTotal": 3,
    "inlineTotal": 14
   },
   {
@@ -36060,7 +35842,6 @@
    "file": "apps/mobile/src/components/kit/Slider.tsx",
    "layer": "sharedComponent",
    "tokenAccess": {
-    "T.blue": 1,
     "T.line2": 1
    },
    "tokenValue": {},
@@ -36074,7 +35855,7 @@
     "size": 4
    },
    "hexColors": 2,
-   "tokenAccessTotal": 2,
+   "tokenAccessTotal": 1,
    "inlineTotal": 7
   },
   {
@@ -36086,9 +35867,7 @@
     "T.ink2": 1,
     "T.sub2": 1,
     "T.line2": 1,
-    "T.blue": 2,
-    "T.ink": 1,
-    "T.ter": 1
+    "T.ink": 1
    },
    "tokenValue": {},
    "kitJsx": {
@@ -36107,7 +35886,7 @@
     "size": 1
    },
    "hexColors": 0,
-   "tokenAccessTotal": 9,
+   "tokenAccessTotal": 6,
    "inlineTotal": 12
   },
   {
@@ -36135,10 +35914,8 @@
    "layer": "sharedComponent",
    "tokenAccess": {
     "T.line2": 1,
-    "T.ter": 2,
     "T.green": 1,
-    "T.sub2": 1,
-    "T.blue": 1
+    "T.sub2": 1
    },
    "tokenValue": {},
    "kitJsx": {
@@ -36155,7 +35932,7 @@
     "size": 0
    },
    "hexColors": 1,
-   "tokenAccessTotal": 6,
+   "tokenAccessTotal": 3,
    "inlineTotal": 6
   },
   {
@@ -36167,15 +35944,12 @@
     "T.onColor": 5,
     "T.line2": 4,
     "T.sub2": 3,
-    "T.blueTint": 3,
-    "T.blue": 10,
     "T.greenTint": 1,
     "T.green": 3,
     "T.amberTint": 1,
     "T.amberText": 1,
     "T.redTint": 1,
     "T.red": 3,
-    "T.ter": 16,
     "T.line": 7,
     "T.surface": 6,
     "T.ink": 9,
@@ -36201,7 +35975,7 @@
     "size": 7
    },
    "hexColors": 0,
-   "tokenAccessTotal": 83,
+   "tokenAccessTotal": 54,
    "inlineTotal": 106
   },
   {
@@ -36258,10 +36032,7 @@
     "T.amberTint": 1,
     "T.sub2": 1,
     "T.line2": 2,
-    "T.blueTint": 1,
-    "T.blue": 1,
-    "T.sub": 1,
-    "T.ter": 2
+    "T.sub": 1
    },
    "tokenValue": {},
    "kitJsx": {
@@ -36278,7 +36049,7 @@
     "size": 3
    },
    "hexColors": 0,
-   "tokenAccessTotal": 12,
+   "tokenAccessTotal": 8,
    "inlineTotal": 15
   },
   {
@@ -36329,7 +36100,6 @@
     "T.line2": 4,
     "T.sub": 2,
     "T.line": 3,
-    "T.ter": 10,
     "T.ink": 5,
     "T.bg": 1,
     "T.surface": 1
@@ -36355,7 +36125,7 @@
     "size": 5
    },
    "hexColors": 0,
-   "tokenAccessTotal": 33,
+   "tokenAccessTotal": 23,
    "inlineTotal": 64
   },
   {
@@ -36367,13 +36137,10 @@
     "T.surface2": 3,
     "T.line2": 6,
     "T.sub": 3,
-    "T.ter": 9,
-    "T.blue": 3,
     "T.ink": 4,
     "T.red": 2,
     "T.amberText": 1,
     "T.redTint": 1,
-    "T.blueTint": 1,
     "T.sub2": 1
    },
    "tokenValue": {
@@ -36393,16 +36160,14 @@
     "size": 2
    },
    "hexColors": 0,
-   "tokenAccessTotal": 36,
+   "tokenAccessTotal": 23,
    "inlineTotal": 64
   },
   {
    "file": "apps/mobile/src/features/ingredients/components/CategoryPickerSheet.tsx",
    "layer": "product",
    "tokenAccess": {
-    "T.blueTint": 1,
     "T.surface": 1,
-    "T.blue": 3,
     "T.line": 1,
     "T.ink2": 1
    },
@@ -36425,7 +36190,7 @@
     "size": 1
    },
    "hexColors": 0,
-   "tokenAccessTotal": 7,
+   "tokenAccessTotal": 3,
    "inlineTotal": 11
   },
   {
@@ -36435,7 +36200,6 @@
     "T.ink": 2,
     "T.red": 1,
     "T.amberText": 1,
-    "T.ter": 1,
     "T.sub": 1,
     "T.sub2": 1
    },
@@ -36452,7 +36216,7 @@
     "size": 0
    },
    "hexColors": 0,
-   "tokenAccessTotal": 7,
+   "tokenAccessTotal": 6,
    "inlineTotal": 17
   },
   {
@@ -36461,10 +36225,8 @@
    "tokenAccess": {
     "T.surface": 1,
     "T.line2": 1,
-    "T.ter": 2,
     "T.ink": 1,
     "T.sub": 1,
-    "T.blue": 1,
     "T.red": 2
    },
    "tokenValue": {
@@ -36480,14 +36242,13 @@
     "size": 0
    },
    "hexColors": 0,
-   "tokenAccessTotal": 9,
+   "tokenAccessTotal": 6,
    "inlineTotal": 15
   },
   {
    "file": "apps/mobile/src/features/ingredients/components/LossCard.tsx",
    "layer": "product",
    "tokenAccess": {
-    "T.ter": 6,
     "T.surface2": 2,
     "T.line2": 3,
     "T.sub": 2,
@@ -36514,7 +36275,7 @@
     "size": 1
    },
    "hexColors": 0,
-   "tokenAccessTotal": 18,
+   "tokenAccessTotal": 12,
    "inlineTotal": 31
   },
   {
@@ -36523,9 +36284,7 @@
    "tokenAccess": {
     "T.ink": 1,
     "T.sub": 1,
-    "T.blueTint": 1,
     "T.surface": 1,
-    "T.blue": 3,
     "T.line": 1,
     "T.ink2": 1
    },
@@ -36546,18 +36305,15 @@
     "size": 0
    },
    "hexColors": 0,
-   "tokenAccessTotal": 9,
+   "tokenAccessTotal": 5,
    "inlineTotal": 18
   },
   {
    "file": "apps/mobile/src/features/ingredients/components/VendorPickerSheet.tsx",
    "layer": "product",
    "tokenAccess": {
-    "T.blueTint": 3,
     "T.surface": 2,
-    "T.blue": 9,
     "T.line": 2,
-    "T.ter": 2,
     "T.ink2": 1,
     "T.line2": 1
    },
@@ -36582,7 +36338,7 @@
     "size": 1
    },
    "hexColors": 0,
-   "tokenAccessTotal": 20,
+   "tokenAccessTotal": 6,
    "inlineTotal": 27
   },
   {
@@ -36645,13 +36401,11 @@
    "tokenAccess": {
     "T.bg": 1,
     "T.line2": 2,
-    "T.ter": 4,
     "T.ink": 4,
     "T.red": 2,
     "T.scrim": 2,
     "T.surface": 2,
     "T.line": 2,
-    "T.blue": 2,
     "T.surface2": 2
    },
    "tokenValue": {
@@ -36675,22 +36429,19 @@
     "size": 9
    },
    "hexColors": 0,
-   "tokenAccessTotal": 23,
+   "tokenAccessTotal": 17,
    "inlineTotal": 57
   },
   {
    "file": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx",
    "layer": "product",
    "tokenAccess": {
-    "T.blueTint": 1,
     "T.surface": 1,
-    "T.blue": 2,
     "T.line": 3,
     "T.sub": 4,
     "T.surface2": 2,
     "T.sub2": 2,
     "T.ink": 4,
-    "T.ter": 2,
     "T.ink2": 1
    },
    "tokenValue": {
@@ -36714,7 +36465,7 @@
     "size": 2
    },
    "hexColors": 0,
-   "tokenAccessTotal": 22,
+   "tokenAccessTotal": 17,
    "inlineTotal": 42
   },
   {
@@ -36746,10 +36497,8 @@
     "T.ink2": 3,
     "T.ink": 7,
     "T.amberText": 1,
-    "T.ter": 7,
     "T.red": 3,
     "T.sub2": 2,
-    "T.blue": 1,
     "T.line3": 1,
     "T.scrim": 1,
     "T.surface": 1,
@@ -36778,7 +36527,7 @@
     "size": 3
    },
    "hexColors": 0,
-   "tokenAccessTotal": 45,
+   "tokenAccessTotal": 37,
    "inlineTotal": 94
   },
   {
@@ -36807,9 +36556,6 @@
     "T.surface": 2,
     "T.line": 1,
     "T.ink": 1,
-    "T.ter": 2,
-    "T.blueTint": 2,
-    "T.blue": 4,
     "T.sub2": 3,
     "T.sub": 1,
     "T.surface2": 1,
@@ -36836,7 +36582,7 @@
     "size": 0
    },
    "hexColors": 0,
-   "tokenAccessTotal": 19,
+   "tokenAccessTotal": 11,
    "inlineTotal": 38
   },
   {
@@ -36845,7 +36591,6 @@
    "tokenAccess": {
     "T.bg": 1,
     "T.ink": 1,
-    "T.blue": 1,
     "T.ink2": 2,
     "T.red": 4,
     "T.surface": 1,
@@ -36874,7 +36619,7 @@
     "size": 7
    },
    "hexColors": 0,
-   "tokenAccessTotal": 13,
+   "tokenAccessTotal": 12,
    "inlineTotal": 30
   },
   {
@@ -36883,7 +36628,6 @@
    "tokenAccess": {
     "T.bg": 1,
     "T.line2": 1,
-    "T.ter": 3,
     "T.ink": 2,
     "T.sub": 1
    },
@@ -36910,7 +36654,7 @@
     "size": 3
    },
    "hexColors": 0,
-   "tokenAccessTotal": 8,
+   "tokenAccessTotal": 5,
    "inlineTotal": 25
   },
   {
@@ -36923,10 +36667,8 @@
     "T.ink2": 1,
     "T.surface": 4,
     "T.line": 2,
-    "T.ter": 7,
     "T.line2": 3,
     "T.sub": 2,
-    "T.blue": 2,
     "T.line3": 1,
     "T.scrim": 1,
     "T.surface2": 2,
@@ -36955,25 +36697,22 @@
     "size": 7
    },
    "hexColors": 0,
-   "tokenAccessTotal": 34,
+   "tokenAccessTotal": 25,
    "inlineTotal": 79
   },
   {
    "file": "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx",
    "layer": "product",
    "tokenAccess": {
-    "T.ter": 8,
     "T.red": 2,
     "T.ink": 8,
     "T.line2": 5,
     "T.sub": 5,
-    "T.blue": 12,
     "T.bg": 1,
     "T.line": 2,
     "T.surface": 2,
     "T.onColor": 1,
-    "T.surface2": 1,
-    "T.blueTint": 1
+    "T.surface2": 1
    },
    "tokenValue": {},
    "kitJsx": {
@@ -36998,7 +36737,7 @@
     "size": 7
    },
    "hexColors": 0,
-   "tokenAccessTotal": 48,
+   "tokenAccessTotal": 27,
    "inlineTotal": 82
   },
   {
@@ -37007,15 +36746,12 @@
    "tokenAccess": {
     "T.surface": 3,
     "T.ink": 3,
-    "T.ter": 8,
     "T.sub2": 4,
     "T.surface2": 1,
     "T.line3": 1,
     "T.red": 6,
     "T.sub": 5,
-    "T.blue": 3,
     "T.line": 1,
-    "T.blueTint": 1,
     "T.redTint": 2,
     "T.greenTint": 1,
     "T.green": 1,
@@ -37043,7 +36779,7 @@
     "size": 2
    },
    "hexColors": 0,
-   "tokenAccessTotal": 43,
+   "tokenAccessTotal": 31,
    "inlineTotal": 68
   },
   {
@@ -37095,10 +36831,7 @@
    "file": "apps/mobile/src/features/my/components/ChannelWeightSheet.tsx",
    "layer": "product",
    "tokenAccess": {
-    "T.ter": 3,
-    "T.blue": 7,
     "T.line": 1,
-    "T.blueTint": 2,
     "T.surface": 1,
     "T.ink": 2,
     "T.surface2": 1,
@@ -37125,21 +36858,18 @@
     "size": 0
    },
    "hexColors": 0,
-   "tokenAccessTotal": 19,
+   "tokenAccessTotal": 7,
    "inlineTotal": 31
   },
   {
    "file": "apps/mobile/src/features/my/components/RevenueGapCard.tsx",
    "layer": "product",
    "tokenAccess": {
-    "T.ter": 3,
     "T.amberText": 1,
     "T.sub2": 1,
     "T.amberTint": 1,
     "T.surface2": 1,
     "T.line2": 2,
-    "T.blue": 4,
-    "T.blueTint": 1,
     "T.sub": 1,
     "T.ink": 1
    },
@@ -37158,7 +36888,7 @@
     "size": 1
    },
    "hexColors": 0,
-   "tokenAccessTotal": 16,
+   "tokenAccessTotal": 8,
    "inlineTotal": 26
   },
   {
@@ -37188,12 +36918,9 @@
     "T.line2": 2,
     "T.sub": 1,
     "T.sub2": 6,
-    "T.ter": 4,
-    "T.blue": 5,
     "T.line3": 1,
     "T.line": 1,
     "T.ink": 2,
-    "T.blueTint": 1,
     "T.amberTint": 1,
     "T.amberText": 2,
     "T.surface": 1
@@ -37219,7 +36946,7 @@
     "size": 2
    },
    "hexColors": 0,
-   "tokenAccessTotal": 30,
+   "tokenAccessTotal": 20,
    "inlineTotal": 57
   },
   {
@@ -37233,10 +36960,8 @@
     "T.line2": 4,
     "T.sub": 1,
     "T.ink2": 3,
-    "T.ter": 3,
     "T.line": 1,
-    "T.surface": 1,
-    "T.blue": 2
+    "T.surface": 1
    },
    "tokenValue": {},
    "kitJsx": {
@@ -37261,7 +36986,7 @@
     "size": 2
    },
    "hexColors": 0,
-   "tokenAccessTotal": 27,
+   "tokenAccessTotal": 22,
    "inlineTotal": 64
   },
   {
@@ -37304,10 +37029,7 @@
    "file": "apps/mobile/src/features/my/screens/MyCategoryHubScreen.tsx",
    "layer": "product",
    "tokenAccess": {
-    "T.blueTint": 1,
-    "T.blue": 1,
     "T.bg": 1,
-    "T.ter": 2,
     "T.line2": 1,
     "T.ink": 1,
     "T.line3": 1
@@ -37330,8 +37052,8 @@
     "radius": 1,
     "size": 3
    },
-   "hexColors": 6,
-   "tokenAccessTotal": 8,
+   "hexColors": 0,
+   "tokenAccessTotal": 4,
    "inlineTotal": 17
   },
   {
@@ -37358,7 +37080,6 @@
    "tokenAccess": {
     "T.bg": 1,
     "T.ink": 1,
-    "T.ter": 3,
     "T.line2": 1,
     "T.surface2": 1,
     "T.sub2": 1
@@ -37386,22 +37107,17 @@
     "size": 1
    },
    "hexColors": 0,
-   "tokenAccessTotal": 8,
+   "tokenAccessTotal": 5,
    "inlineTotal": 21
   },
   {
    "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
    "layer": "product",
    "tokenAccess": {
-    "T.blueTint": 2,
-    "T.blue": 2,
-    "T.redTint": 1,
-    "T.red": 1,
     "T.bg": 2,
     "T.ink": 4,
     "T.sub2": 1,
     "T.onColor": 1,
-    "T.ter": 2,
     "T.line2": 1,
     "T.line3": 1
    },
@@ -37419,8 +37135,8 @@
     "radius": 2,
     "size": 5
    },
-   "hexColors": 14,
-   "tokenAccessTotal": 18,
+   "hexColors": 0,
+   "tokenAccessTotal": 10,
    "inlineTotal": 32
   },
   {
@@ -37429,13 +37145,10 @@
    "tokenAccess": {
     "T.line2": 10,
     "T.sub": 7,
-    "T.ter": 13,
     "T.ink": 7,
     "T.bg": 1,
-    "T.blue": 15,
     "T.surface2": 3,
     "T.line": 4,
-    "T.blueTint": 2,
     "T.surface": 5,
     "T.sub2": 4,
     "T.onColor": 2,
@@ -37464,7 +37177,7 @@
     "size": 2
    },
    "hexColors": 1,
-   "tokenAccessTotal": 75,
+   "tokenAccessTotal": 45,
    "inlineTotal": 116
   },
   {
@@ -37473,16 +37186,13 @@
    "tokenAccess": {
     "T.line2": 3,
     "T.sub": 1,
-    "T.ter": 7,
     "T.ink": 2,
     "T.bg": 2,
     "T.redTint": 2,
     "T.red": 7,
     "T.sub2": 1,
-    "T.blue": 3,
     "T.line": 1,
-    "T.surface": 1,
-    "T.blueTint": 1
+    "T.surface": 1
    },
    "tokenValue": {
     "tnum": 2
@@ -37507,19 +37217,17 @@
     "size": 3
    },
    "hexColors": 0,
-   "tokenAccessTotal": 31,
+   "tokenAccessTotal": 20,
    "inlineTotal": 80
   },
   {
    "file": "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx",
    "layer": "product",
    "tokenAccess": {
-    "T.blue": 1,
     "T.onColor": 1,
     "T.bg": 1,
     "T.redTint": 2,
     "T.red": 4,
-    "T.ter": 4,
     "T.line2": 1,
     "T.ink": 1
    },
@@ -37544,7 +37252,7 @@
     "size": 5
    },
    "hexColors": 2,
-   "tokenAccessTotal": 15,
+   "tokenAccessTotal": 10,
    "inlineTotal": 39
   },
   {
@@ -37556,8 +37264,6 @@
     "T.red": 5,
     "T.surface2": 1,
     "T.sub": 2,
-    "T.ter": 4,
-    "T.blue": 4,
     "T.surface": 1,
     "T.line2": 1
    },
@@ -37584,7 +37290,7 @@
     "size": 2
    },
    "hexColors": 0,
-   "tokenAccessTotal": 21,
+   "tokenAccessTotal": 13,
    "inlineTotal": 45
   },
   {
@@ -37594,11 +37300,9 @@
     "T.line2": 2,
     "T.sub": 2,
     "T.ink": 2,
-    "T.ter": 5,
     "T.bg": 3,
     "T.redTint": 2,
     "T.red": 5,
-    "T.blue": 1,
     "T.line": 1
    },
    "tokenValue": {},
@@ -37618,7 +37322,7 @@
     "size": 4
    },
    "hexColors": 0,
-   "tokenAccessTotal": 23,
+   "tokenAccessTotal": 17,
    "inlineTotal": 56
   },
   {
@@ -37626,11 +37330,9 @@
    "layer": "product",
    "tokenAccess": {
     "T.bg": 1,
-    "T.blue": 1,
     "T.amberTint": 1,
     "T.amberText": 2,
     "T.sub2": 3,
-    "T.ter": 4,
     "T.line2": 2,
     "T.ink": 1
    },
@@ -37657,7 +37359,7 @@
     "size": 9
    },
    "hexColors": 1,
-   "tokenAccessTotal": 15,
+   "tokenAccessTotal": 10,
    "inlineTotal": 41
   },
   {
@@ -37720,15 +37422,12 @@
    "tokenAccess": {
     "T.bg": 1,
     "T.sub": 5,
-    "T.blue": 8,
     "T.line": 3,
-    "T.blueTint": 4,
     "T.surface": 4,
     "T.ink": 4,
     "T.sub2": 4,
     "T.line2": 3,
-    "T.ink2": 1,
-    "T.ter": 1
+    "T.ink2": 1
    },
    "tokenValue": {},
    "kitJsx": {
@@ -37755,7 +37454,7 @@
     "size": 2
    },
    "hexColors": 0,
-   "tokenAccessTotal": 38,
+   "tokenAccessTotal": 25,
    "inlineTotal": 73
   },
   {
@@ -37764,16 +37463,13 @@
    "tokenAccess": {
     "T.bg": 2,
     "T.ink": 10,
-    "T.blue": 6,
     "T.ink2": 4,
     "T.line3": 1,
-    "T.ter": 6,
     "T.surface2": 3,
     "T.sub": 6,
     "T.red": 2,
     "T.line2": 1,
     "T.sub2": 5,
-    "T.blueTint": 3,
     "T.line": 1,
     "T.surface": 1
    },
@@ -37800,7 +37496,7 @@
     "size": 6
    },
    "hexColors": 0,
-   "tokenAccessTotal": 51,
+   "tokenAccessTotal": 36,
    "inlineTotal": 118
   },
   {
@@ -37809,8 +37505,6 @@
    "tokenAccess": {
     "T.green": 1,
     "T.red": 1,
-    "T.ter": 10,
-    "T.blue": 3,
     "T.sub2": 2,
     "T.line2": 1,
     "T.ink": 1,
@@ -37839,7 +37533,7 @@
     "size": 2
    },
    "hexColors": 0,
-   "tokenAccessTotal": 23,
+   "tokenAccessTotal": 10,
    "inlineTotal": 60
   },
   {
@@ -37902,10 +37596,7 @@
    "tokenAccess": {
     "T.bg": 1,
     "T.sub2": 4,
-    "T.ter": 3,
     "T.ink": 3,
-    "T.blue": 6,
-    "T.blueTint": 2,
     "T.surface": 4,
     "T.line": 2,
     "T.sub": 2,
@@ -37933,7 +37624,7 @@
     "size": 0
    },
    "hexColors": 0,
-   "tokenAccessTotal": 29,
+   "tokenAccessTotal": 18,
    "inlineTotal": 60
   },
   {
@@ -37941,12 +37632,9 @@
    "layer": "product",
    "tokenAccess": {
     "T.bg": 1,
-    "T.blue": 4,
-    "T.ter": 3,
     "T.line2": 1,
     "T.sub2": 2,
-    "T.ink": 1,
-    "T.blueTint": 1
+    "T.ink": 1
    },
    "tokenValue": {},
    "kitJsx": {
@@ -37971,7 +37659,7 @@
     "size": 9
    },
    "hexColors": 0,
-   "tokenAccessTotal": 13,
+   "tokenAccessTotal": 5,
    "inlineTotal": 33
   },
   {
@@ -38018,9 +37706,6 @@
     "T.sub2": 3,
     "T.line2": 1,
     "T.ink": 2,
-    "T.ter": 4,
-    "T.blueTint": 3,
-    "T.blue": 11,
     "T.amberTint": 1,
     "T.amberText": 2,
     "T.line": 2,
@@ -38052,7 +37737,7 @@
     "size": 5
    },
    "hexColors": 0,
-   "tokenAccessTotal": 33,
+   "tokenAccessTotal": 15,
    "inlineTotal": 57
   },
   {
@@ -38060,8 +37745,6 @@
    "layer": "product",
    "tokenAccess": {
     "T.bg": 1,
-    "T.blueTint": 1,
-    "T.blue": 4,
     "T.ink": 2,
     "T.sub2": 1
    },
@@ -38086,14 +37769,13 @@
     "size": 1
    },
    "hexColors": 0,
-   "tokenAccessTotal": 9,
+   "tokenAccessTotal": 4,
    "inlineTotal": 21
   },
   {
    "file": "apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx",
    "layer": "product",
    "tokenAccess": {
-    "T.ter": 4,
     "T.green": 1,
     "T.red": 1,
     "T.line2": 3,
@@ -38101,7 +37783,6 @@
     "T.sub": 4,
     "T.line3": 2,
     "T.bg": 1,
-    "T.blue": 1,
     "T.sub2": 2,
     "T.surface2": 1
    },
@@ -38126,7 +37807,7 @@
     "size": 1
    },
    "hexColors": 0,
-   "tokenAccessTotal": 24,
+   "tokenAccessTotal": 19,
    "inlineTotal": 54
   },
   {
@@ -38136,12 +37817,9 @@
     "T.surface2": 2,
     "T.line2": 7,
     "T.sub": 4,
-    "T.ter": 19,
-    "T.blue": 21,
     "T.red": 1,
     "T.green": 1,
     "T.bg": 1,
-    "T.blueTint": 5,
     "T.surface": 5,
     "T.line": 7,
     "T.ink": 12,
@@ -38174,7 +37852,7 @@
     "size": 11
    },
    "hexColors": 0,
-   "tokenAccessTotal": 94,
+   "tokenAccessTotal": 49,
    "inlineTotal": 178
   },
   {
@@ -38184,20 +37862,17 @@
     "T.surface2": 4,
     "T.line2": 11,
     "T.sub": 9,
-    "T.ter": 29,
     "T.surface": 2,
     "T.line": 7,
     "T.ink": 22,
     "T.bg": 1,
     "T.ink2": 11,
-    "T.red": 4,
+    "T.red": 3,
     "T.green": 2,
     "T.line3": 2,
     "T.gray400": 1,
     "T.amberText": 1,
-    "T.blue": 7,
-    "T.sub2": 5,
-    "T.blueTint": 1
+    "T.sub2": 5
    },
    "tokenValue": {},
    "kitJsx": {
@@ -38220,7 +37895,7 @@
     "size": 8
    },
    "hexColors": 0,
-   "tokenAccessTotal": 119,
+   "tokenAccessTotal": 81,
    "inlineTotal": 244
   },
   {
@@ -38230,8 +37905,7 @@
     "T.bg": 1,
     "T.ink": 1,
     "T.sub2": 3,
-    "T.red": 1,
-    "T.blue": 1
+    "T.red": 1
    },
    "tokenValue": {},
    "kitJsx": {
@@ -38258,7 +37932,7 @@
     "size": 1
    },
    "hexColors": 0,
-   "tokenAccessTotal": 7,
+   "tokenAccessTotal": 6,
    "inlineTotal": 19
   },
   {
@@ -38274,7 +37948,6 @@
     "T.amberTint": 1,
     "T.amberText": 2,
     "T.bg": 2,
-    "T.blue": 7,
     "T.ink2": 2,
     "T.line3": 1
    },
@@ -38299,7 +37972,7 @@
     "size": 4
    },
    "hexColors": 0,
-   "tokenAccessTotal": 31,
+   "tokenAccessTotal": 24,
    "inlineTotal": 69
   },
   {
@@ -38329,8 +38002,6 @@
     "T.surface": 1,
     "T.ink": 2,
     "T.sub2": 2,
-    "T.ter": 1,
-    "T.blue": 1,
     "T.onColor": 1,
     "T.line2": 2,
     "T.line3": 1
@@ -38354,20 +38025,17 @@
     "size": 2
    },
    "hexColors": 0,
-   "tokenAccessTotal": 13,
+   "tokenAccessTotal": 11,
    "inlineTotal": 21
   },
   {
    "file": "apps/mobile/src/features/sales/components/LateCloseSheet.tsx",
    "layer": "product",
    "tokenAccess": {
-    "T.ter": 1,
     "T.line": 2,
     "T.ink": 1,
     "T.surface": 2,
     "T.red": 1,
-    "T.blue": 2,
-    "T.blueTint": 1,
     "T.sub2": 1
    },
    "tokenValue": {},
@@ -38387,23 +38055,20 @@
     "size": 0
    },
    "hexColors": 0,
-   "tokenAccessTotal": 11,
+   "tokenAccessTotal": 7,
    "inlineTotal": 14
   },
   {
    "file": "apps/mobile/src/features/sales/components/MenuProfitSheet.tsx",
    "layer": "product",
    "tokenAccess": {
-    "T.blue": 3,
     "T.green": 1,
     "T.amberText": 2,
     "T.line2": 4,
     "T.sub": 4,
     "T.ink": 4,
-    "T.ter": 5,
     "T.sub2": 2,
-    "T.line": 1,
-    "T.blueTint": 1
+    "T.line": 1
    },
    "tokenValue": {},
    "kitJsx": {
@@ -38422,7 +38087,7 @@
     "size": 4
    },
    "hexColors": 0,
-   "tokenAccessTotal": 27,
+   "tokenAccessTotal": 18,
    "inlineTotal": 64
   },
   {
@@ -38430,8 +38095,6 @@
    "layer": "product",
    "tokenAccess": {
     "T.sub": 5,
-    "T.ter": 11,
-    "T.blue": 4,
     "T.line2": 5,
     "T.ink": 8,
     "T.greenTint": 1,
@@ -38458,7 +38121,7 @@
     "size": 9
    },
    "hexColors": 0,
-   "tokenAccessTotal": 52,
+   "tokenAccessTotal": 37,
    "inlineTotal": 100
   },
   {
@@ -38466,11 +38129,9 @@
    "layer": "product",
    "tokenAccess": {
     "T.line2": 2,
-    "T.blue": 1,
     "T.onColor": 1,
     "T.sub": 1,
-    "T.ink": 1,
-    "T.ter": 1
+    "T.ink": 1
    },
    "tokenValue": {},
    "kitJsx": {
@@ -38487,7 +38148,7 @@
     "size": 3
    },
    "hexColors": 0,
-   "tokenAccessTotal": 7,
+   "tokenAccessTotal": 5,
    "inlineTotal": 7
   },
   {
@@ -38597,15 +38258,12 @@
    "layer": "product",
    "tokenAccess": {
     "T.bg": 1,
-    "T.ter": 10,
     "T.amberText": 1,
     "T.green": 2,
     "T.line2": 1,
-    "T.blue": 6,
     "T.ink": 3,
     "T.sub2": 1,
     "T.line": 1,
-    "T.blueTint": 1,
     "T.surface": 1,
     "T.red": 1,
     "T.surface2": 1,
@@ -38636,7 +38294,7 @@
     "size": 6
    },
    "hexColors": 0,
-   "tokenAccessTotal": 33,
+   "tokenAccessTotal": 16,
    "inlineTotal": 53
   },
   {
@@ -38677,7 +38335,6 @@
    "layer": "product",
    "tokenAccess": {
     "T.bg": 2,
-    "T.ter": 1,
     "T.amberTint": 1,
     "T.amberText": 2,
     "T.line2": 1
@@ -38703,7 +38360,7 @@
     "size": 0
    },
    "hexColors": 0,
-   "tokenAccessTotal": 7,
+   "tokenAccessTotal": 6,
    "inlineTotal": 17
   },
   {
@@ -38716,7 +38373,6 @@
     "T.line2": 5,
     "T.sub": 4,
     "T.ink": 7,
-    "T.ter": 5,
     "T.line": 1,
     "T.sub2": 1
    },
@@ -38737,7 +38393,7 @@
     "size": 3
    },
    "hexColors": 0,
-   "tokenAccessTotal": 26,
+   "tokenAccessTotal": 21,
    "inlineTotal": 61
   },
   {
@@ -38747,7 +38403,6 @@
     "T.bg": 1,
     "T.line2": 1,
     "T.ink": 4,
-    "T.ter": 2,
     "T.sub": 1,
     "T.line": 1,
     "T.ink2": 1
@@ -38771,7 +38426,7 @@
     "size": 1
    },
    "hexColors": 1,
-   "tokenAccessTotal": 11,
+   "tokenAccessTotal": 9,
    "inlineTotal": 32
   },
   {
@@ -38781,7 +38436,6 @@
     "T.bg": 1,
     "T.line2": 2,
     "T.sub": 2,
-    "T.ter": 2,
     "T.ink": 5,
     "T.line3": 1,
     "T.surface2": 1,
@@ -38808,7 +38462,7 @@
     "size": 2
    },
    "hexColors": 0,
-   "tokenAccessTotal": 15,
+   "tokenAccessTotal": 13,
    "inlineTotal": 36
   },
   {
@@ -38820,7 +38474,6 @@
     "T.amberTint": 1,
     "T.amberText": 2,
     "T.ink": 2,
-    "T.ter": 2,
     "T.surface2": 1,
     "T.line2": 1,
     "T.sub": 1
@@ -38844,7 +38497,7 @@
     "size": 4
    },
    "hexColors": 0,
-   "tokenAccessTotal": 13,
+   "tokenAccessTotal": 11,
    "inlineTotal": 32
   },
   {
@@ -38858,15 +38511,12 @@
     "T.red": 4,
     "T.redTint": 1,
     "T.sub": 6,
-    "T.blue": 9,
     "T.onColor": 3,
     "T.line": 3,
     "T.surface": 2,
     "T.line2": 4,
-    "T.ter": 11,
     "T.amberText": 3,
     "T.surface2": 1,
-    "T.blueTint": 2,
     "T.amberTint": 1
    },
    "tokenValue": {},
@@ -38892,7 +38542,7 @@
     "size": 9
    },
    "hexColors": 1,
-   "tokenAccessTotal": 67,
+   "tokenAccessTotal": 45,
    "inlineTotal": 154
   },
   {
@@ -38903,9 +38553,7 @@
     "T.ink": 6,
     "T.line2": 3,
     "T.sub": 2,
-    "T.ter": 3,
     "T.line3": 1,
-    "T.blue": 4,
     "T.surface2": 1,
     "T.ink2": 1
    },
@@ -38930,7 +38578,7 @@
     "size": 2
    },
    "hexColors": 0,
-   "tokenAccessTotal": 22,
+   "tokenAccessTotal": 15,
    "inlineTotal": 50
   },
   {
@@ -38940,10 +38588,8 @@
     "T.surface2": 1,
     "T.line2": 6,
     "T.sub": 2,
-    "T.ter": 10,
     "T.green": 2,
     "T.red": 2,
-    "T.blue": 1,
     "T.bg": 1,
     "T.ink": 9,
     "T.line": 1,
@@ -38967,7 +38613,7 @@
     "size": 5
    },
    "hexColors": 6,
-   "tokenAccessTotal": 39,
+   "tokenAccessTotal": 28,
    "inlineTotal": 91
   },
   {
@@ -38978,12 +38624,9 @@
     "T.sub": 5,
     "T.ink": 8,
     "T.line2": 5,
-    "T.ter": 8,
-    "T.blue": 5,
     "T.sub2": 2,
     "T.surface2": 1,
     "T.line": 1,
-    "T.blueTint": 1,
     "T.surface": 1
    },
    "tokenValue": {},
@@ -39009,7 +38652,7 @@
     "size": 3
    },
    "hexColors": 1,
-   "tokenAccessTotal": 39,
+   "tokenAccessTotal": 25,
    "inlineTotal": 86
   },
   {
@@ -39022,8 +38665,6 @@
     "T.line2": 5,
     "T.sub": 4,
     "T.ink": 6,
-    "T.ter": 5,
-    "T.blue": 3,
     "T.sub2": 2,
     "T.ink2": 2
    },
@@ -39046,7 +38687,7 @@
     "size": 2
    },
    "hexColors": 0,
-   "tokenAccessTotal": 31,
+   "tokenAccessTotal": 23,
    "inlineTotal": 62
   },
   {
@@ -39055,12 +38696,10 @@
    "tokenAccess": {
     "T.bg": 1,
     "T.ink": 3,
-    "T.ter": 3,
     "T.line2": 3,
     "T.red": 2,
     "T.line3": 1,
     "T.sub": 2,
-    "T.blue": 1,
     "T.line": 1,
     "T.surface": 1
    },
@@ -39083,7 +38722,7 @@
     "size": 2
    },
    "hexColors": 0,
-   "tokenAccessTotal": 18,
+   "tokenAccessTotal": 14,
    "inlineTotal": 34
   },
   {
@@ -39162,7 +38801,6 @@
    "layer": "product",
    "tokenAccess": {
     "T.bg": 1,
-    "T.blue": 1,
     "T.sub2": 2,
     "T.ink": 1
    },
@@ -39181,7 +38819,7 @@
     "size": 0
    },
    "hexColors": 0,
-   "tokenAccessTotal": 5,
+   "tokenAccessTotal": 4,
    "inlineTotal": 8
   },
   {
@@ -39376,9 +39014,9 @@
     "FONT",
     "TYPE",
     "tnum",
-    "STATUS",
     "space",
     "radius",
+    "STATUS",
     "cardShadow"
    ],
    "inline": {

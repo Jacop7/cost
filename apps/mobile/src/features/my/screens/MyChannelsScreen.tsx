@@ -16,7 +16,7 @@ import { useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { AppHeader, Badge, Button, Card, Field, Icon, Input, QueryState, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { COLOR, T } from '@/theme/tokens';
+import { COLOR, T, TYPE, space } from '@/theme/tokens';
 import { useSaveChannel, useSettingsLists, type ChannelRow } from '@/features/master-data/hooks';
 
 export default function MyChannelsScreen() {
@@ -66,7 +66,7 @@ export default function MyChannelsScreen() {
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <AppHeader title="판매 채널" onBack={() => safeBack('/my')} />
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ padding: 16, paddingBottom: 32, gap: 11 }}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ padding: 16, paddingBottom: 32, gap: space.md }}>
         <QueryState
           isLoading={lists.isLoading}
           error={lists.error}
@@ -81,7 +81,7 @@ export default function MyChannelsScreen() {
                 onPress={() => openEdit(c)}
                 accessibilityRole="button"
                 accessibilityLabel={`${c.name} 이름 수정`}
-                style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 15, paddingHorizontal: 15 }}
+                style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingVertical: space.md, paddingHorizontal: space.md }}
               >
                 <View style={{ flex: 1, minWidth: 0, flexDirection: 'row', alignItems: 'center', gap: 6 }}>
                   <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }} numberOfLines={1}>{c.name}</Text>
@@ -93,7 +93,7 @@ export default function MyChannelsScreen() {
                 onPress={() => toggleActive(c)}
                 accessibilityRole="button"
                 accessibilityLabel={`${c.name} ${c.active ? '사용 안 함으로' : '사용함으로'} 바꾸기`}
-                style={{ paddingVertical: 11, alignItems: 'center', borderTopWidth: 1, borderTopColor: T.line2, backgroundColor: T.surface2 }}
+                style={{ paddingVertical: space.md, alignItems: 'center', borderTopWidth: 1, borderTopColor: T.line2, backgroundColor: T.surface2 }}
               >
                 <Text style={{ fontSize: 14, fontWeight: '600', color: T.sub2 }}>
                   {c.active ? '사용 안 함' : '다시 사용'}
@@ -104,7 +104,7 @@ export default function MyChannelsScreen() {
 
           <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, paddingHorizontal: 2, marginTop: 2 }}>
             <Icon name="info" size={15} color={COLOR.text.tertiary} />
-            <Text style={{ flex: 1, fontSize: 14, color: COLOR.text.tertiary, lineHeight: 20 }}>
+            <Text style={{ flex: 1, fontSize: 14, color: COLOR.text.tertiary, lineHeight: TYPE.caption.lineHeight }}>
               배달앱 수수료는 <Text style={{ fontWeight: '700' }}>고정 지출</Text>의 ‘플랫폼 수수료’에서 관리해요.
               여기서도 받으면 같은 돈이 손익에서 두 번 빠져요.
             </Text>
@@ -123,7 +123,7 @@ export default function MyChannelsScreen() {
             onSubmitEditing={submit}
           />
         </Field>
-        <View style={{ flexDirection: 'row', gap: 9, marginTop: 8 }}>
+        <View style={{ flexDirection: 'row', gap: space.sm, marginTop: 8 }}>
           <View style={{ flex: 1 }}>
             <Button kind="ghost" size="lg" full onPress={() => setEditing(null)}>취소</Button>
           </View>

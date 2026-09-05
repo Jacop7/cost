@@ -14,7 +14,7 @@ import { useEffect, useState } from 'react';
 import { Text, View } from 'react-native';
 import { Badge, Button, Card, Icon, Sheet, Slider } from '@/components/kit';
 import { formatPercent, recommendedPrice, round } from '@margincook/core';
-import { COLOR, T, won } from '@/theme/tokens';
+import { COLOR, T, won, TYPE, space } from '@/theme/tokens';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 
@@ -58,19 +58,19 @@ export function PriceSimSheet({
 
   return (
     <Sheet visible={visible} onClose={onClose} title="판매가 시뮬레이션" sub="판매가를 바꿔 순이익을 미리 확인해요" height={560}>
-      <View style={{ alignItems: 'center', paddingTop: 4, paddingBottom: 2 }}>
+      <View style={{ alignItems: 'center', paddingTop: 4, paddingBottom: space.xs }}>
         <Text style={{ fontSize: 14, color: COLOR.text.tertiary, fontWeight: '700' }}>임시 판매가</Text>
-        <Text style={[{ fontSize: 22, fontWeight: '800', color: COLOR.text.accent, letterSpacing: -0.6, marginTop: 2 }, NUM]}>
+        <Text style={[{ fontSize: 22, fontWeight: '800', color: COLOR.text.accent, letterSpacing: -0.6, marginTop: space.xs }, NUM]}>
           {won(temp)}<Text style={{ fontSize: 18 }}>원</Text>
         </Text>
-        <Text style={[{ fontSize: 14, color: T.sub2, marginTop: 2 }, NUM]}>
+        <Text style={[{ fontSize: 14, color: T.sub2, marginTop: space.xs }, NUM]}>
           현재 {won(price)}원에서 {diff >= 0 ? '+' : '−'}{won(Math.abs(diff))}원
         </Text>
       </View>
 
-      <View style={{ marginTop: 16, marginBottom: 6, marginHorizontal: 4 }}>
+      <View style={{ marginTop: 16, marginBottom: space.sm, marginHorizontal: 4 }}>
         <Slider value={temp} min={min} max={max} step={100} onChange={setTemp} />
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 6 }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: space.sm }}>
           <Text style={[{ fontSize: 14, color: COLOR.text.tertiary }, NUM]}>{won(min)}원</Text>
           <Text style={[{ fontSize: 14, color: COLOR.text.tertiary }, NUM]}>{won(max)}원</Text>
         </View>
@@ -104,8 +104,8 @@ export function PriceSimSheet({
         카드 값을 건드리지 않고 여기서만 보여주므로, 닫으면 아무것도 바뀌지 않는다.
         재료·부자재는 판매가와 무관하므로 금액이 그대로고 비중만 움직인다.
       */}
-      <Card onLine pad={0} style={{ overflow: 'hidden', marginTop: 10 }}>
-        <View style={{ paddingHorizontal: 14, paddingVertical: 11 }}>
+      <Card onLine pad={0} style={{ overflow: 'hidden', marginTop: space.sm }}>
+        <View style={{ paddingHorizontal: space.md, paddingVertical: space.md }}>
           {([
             ['세금', now.tax],
             ['재료 원가', material],
@@ -116,7 +116,7 @@ export function PriceSimSheet({
               key={label}
               style={{
                 flexDirection: 'row', alignItems: 'center',
-                paddingVertical: 7,
+                paddingVertical: space.sm,
                 borderBottomWidth: i < 3 ? 1 : 0, borderBottomColor: T.line2,
                 opacity: amt <= 0 ? 0.45 : 1,
               }}
@@ -130,7 +130,7 @@ export function PriceSimSheet({
               </Text>
             </View>
           ))}
-          <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 7, paddingTop: 8, borderTopWidth: 1, borderTopColor: T.line }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: space.sm, paddingTop: 8, borderTopWidth: 1, borderTopColor: T.line }}>
             <Text style={{ flex: 1, fontSize: 14, fontWeight: '800', color: T.ink2 }}>순이익</Text>
             <Text style={[{ fontSize: 14, fontWeight: '800', color: PROFIT, marginRight: 8 }, NUM]}>
               {won(Math.round(now.profit))}원
@@ -144,7 +144,7 @@ export function PriceSimSheet({
 
       <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, marginTop: 12, paddingHorizontal: 2 }}>
         <Icon name="info" size={15} color={rec != null ? COLOR.action.primary : T.amberText} />
-        <Text style={[{ flex: 1, fontSize: 14, color: rec != null ? COLOR.text.accent : T.amberText, fontWeight: '600', lineHeight: 20 }, NUM]}>
+        <Text style={[{ flex: 1, fontSize: 14, color: rec != null ? COLOR.text.accent : T.amberText, fontWeight: '600', lineHeight: TYPE.caption.lineHeight }, NUM]}>
           {rec != null
             ? `목표 ${formatPercent(target)} 달성 권장가는 ${won(rec)}원이에요`
             : '지금 원가 구조로는 목표 순이익률을 맞출 수 없어요. 재료비나 목표를 조정해 주세요.'}

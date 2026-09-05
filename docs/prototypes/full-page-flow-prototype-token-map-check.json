@@ -1,6 +1,6 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-05T14:53:41.436Z",
+  "generatedAt": "2026-09-05T21:23:55.493Z",
   "schemaVersion": 1,
   "script": {
    "name": "full-page-flow-prototype-token-map-check.mjs",
@@ -8,9 +8,9 @@
   },
   "designAudit": {
    "path": "full-page-flow-prototype-design-audit.json",
-   "sha256": "6a3588f044e0317f39720fb23093a584475529c395335888e97c869bacd30434",
-   "targetSha256": "04951ea20efe938028d6dc9b5437a01520965331d859ede5b5c75df97346a59b",
-   "designSyncId": "DS-20260905-008"
+   "sha256": "09c39e30c3596a0ac98db0eeb77858f15468033ace604cb60c9a6b4ada19ec66",
+   "targetSha256": "43a604d3f55476eae822c4fcf43c9b2bbdc637cc8add6a34009d91f1e2e0e8a6",
+   "designSyncId": "DS-20260906-002"
   },
   "tokenMap": {
    "path": "full-page-flow-prototype-token-map.json",
@@ -58,7 +58,7 @@
     "decisions": [
      "D-1′"
     ],
-    "valueKinds": 31
+    "valueKinds": 29
    },
    {
     "axis": "lineHeight",
@@ -158,7 +158,7 @@
  "lineHeight": [
   {
    "value": "normal",
-   "observations": 5908
+   "observations": 5878
   },
   {
    "value": "21.6px",
@@ -232,7 +232,7 @@
  "letterSpacing": [
   {
    "value": "normal",
-   "observations": 6899
+   "observations": 6869
   },
   {
    "value": "-0.3px",

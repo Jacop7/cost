@@ -1,12 +1,12 @@
 ﻿# 전체 페이지 프로토타입 · 디자인 맥락 장부
 
-> 현재 동기화 ID: `DS-20260906-001`
+> 현재 동기화 ID: `DS-20260906-002`
 > 문서 동기화 상태: `SYNCED`
 > 전체 UI 작업 상태: `IN_PROGRESS`
 > 마지막 갱신: `2026-09-06`
 > 공통 변경: `예`
 > UI 변경: `예`
-> 변경 기록: `PRT-229`
+> 변경 기록: `PRT-230`
 
 ## 1. 문서 역할
 
@@ -43,13 +43,32 @@
 
 ## 4. 가장 최근 작업
 
+### DS-20260906-002 · PRT-230 S3a 폭 비증가 토큰 치환
+
+- 작업 성격: S2 종결 SHA `f5cacba`를 기준으로 폭이 늘지 않는 확정 매핑만 앱 토큰 참조로
+  치환했다. 프로토타입 실행 코드는 바꾸지 않았다.
+- 결과:
+  - 76파일 · 숫자 리터럴 1,042건을 `TYPE`·`space`·`radius`·`controlVisualHeight`로 이관했다.
+  - 고립 action 5곳은 시각 32px와 함께 hitSlop을 보정해 유효 44×44를 유지했다.
+  - 이웃 action 4곳과 관련 gap 1곳은 수렴하면 형제 터치 영역이 겹쳐 `S4`로 미뤘다.
+  - 터치 래칫은 미달 2 · 형제중첩 1 · 판정불가 163으로 악화 0이다.
+- 완료 조건:
+  - PRT230-S3A · `full-page-flow-prototype-s3a-diff.json`
+  - PRT230-TOUCH · `../../scripts/touch-target-known.json`
+  - PRT230-W1-AUDIT · `../token-adoption-audit.json`
+  - PRT230-W1-MAP · `full-page-flow-prototype-app-map-check.json`
+  - PRT230-RENDER · `full-page-flow-prototype-render-audit.json`
+  - PRT230-DESIGN · `full-page-flow-prototype-design-audit.json`
+  - PRT230-I18N · `full-page-flow-prototype-i18n-stress.json`
+- 다음 시작점: 독립 재검수 승인 후 `S4`.
+
 ### DS-20260906-001 · PRT-229 S2 의미 역할 경계와 회귀 게이트 보강
 
 - 작업 성격: PRT-228 독립 검수에서 드러난 같은 색의 서로 다른 의미를 분리하고, 상태 역할의
   정본과 기하 회귀 게이트 범위를 보강했다. 프로토타입도 비활성 버튼 표현만 기본 역할색 +
   `opacity:0.4`로 맞췄고, 그 밖의 실제 색·타이포·간격·크기·배치는 바꾸지 않았다.
 - 결과:
-  - `#1465DB` 사용처 97건을 행동 링크 24 · 강조 값/양의 방향 42 · 선택 상태 31로 분리했다.
+  - `#1465DB` 사용처 97건을 행동 링크 24 · 강조 값/양의 방향 43 · 선택 상태 30으로 분리했다.
     세 역할은 현재 값이 같아 시각 변화가 없지만 앞으로 독립적으로 바꿀 수 있다.
   - `COLOR.status.*` 여섯 역할을 추가하고 `STATUS`가 의미 역할만 읽게 했다. 기존 `T.*` 상태
     별칭 사용처는 증가 금지 래칫으로 고정했다.

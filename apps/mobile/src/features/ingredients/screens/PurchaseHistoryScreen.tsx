@@ -16,7 +16,7 @@ import { safeBack } from '@/lib/nav';
 import { useStoreLocalDate } from '@/features/business-day/businessDay';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
 import { formatQuantity, formatUnitPrice } from '@margincook/core';
-import { COLOR, T, tnum, won } from '@/theme/tokens';
+import { COLOR, T, tnum, won, TYPE, space } from '@/theme/tokens';
 import { packSummary } from '@/lib/num';
 import { dispUnit } from '../ledger';
 import { PeriodSheet, periodRange, type HistoryPeriod } from './HistoryFilterSheet';
@@ -119,8 +119,8 @@ function PurchaseHistoryScreenBody({ localDate }: { localDate: string }) {
                     <View
                       key={r.id}
                       style={{
-                        flexDirection: 'row', alignItems: 'center', gap: 10,
-                        minHeight: 72, paddingVertical: 12, paddingHorizontal: 14,
+                        flexDirection: 'row', alignItems: 'center', gap: space.sm,
+                        minHeight: 72, paddingVertical: 12, paddingHorizontal: space.md,
                         borderBottomWidth: i < list.length - 1 ? 1 : 0, borderBottomColor: T.line2,
                         opacity: r.status === 'canceled' ? 0.5 : 1,
                       }}
@@ -133,10 +133,10 @@ function PurchaseHistoryScreenBody({ localDate }: { localDate: string }) {
                           {/* 입고 완료는 이 목록의 기본값이라 적지 않는다. 예외만 말한다. */}
                           {r.status !== 'received' ? <Badge tone={st.tone} sm>{st.label}</Badge> : null}
                         </View>
-                        <Text style={{ fontSize: 15, fontWeight: '800', color: T.ink, marginTop: 4 }} numberOfLines={1}>
+                        <Text style={{ fontSize: TYPE.caption.fontSize, fontWeight: '800', color: T.ink, marginTop: 4 }} numberOfLines={1}>
                           {r.vendorName ?? '거래처 미지정'}
                         </Text>
-                        <Text style={[{ fontSize: 12, color: T.sub, fontWeight: '600', marginTop: 3 }, tnum]}>
+                        <Text style={[{ fontSize: 12, color: T.sub, fontWeight: '600', marginTop: space.xs }, tnum]}>
                           {/* 주문과 실제가 다르면 그 사실이 단가와 재고를 바꾼다 — packSummary 가 밝힌다. */}
                           {packSummary({
                             volume: r.volume, qty: r.qty, receivedQty: r.receivedQty, amount: r.amount,
@@ -150,7 +150,7 @@ function PurchaseHistoryScreenBody({ localDate }: { localDate: string }) {
                         <View style={{ height: 18, justifyContent: 'center' }}>
                           {mark ? <Badge tone={mark === '최저' ? 'blue' : 'red'} sm>{mark}</Badge> : null}
                         </View>
-                        <Text style={[{ fontSize: 15, fontWeight: '800', color: T.ink, marginTop: 2 }, tnum]}>
+                        <Text style={[{ fontSize: TYPE.caption.fontSize, fontWeight: '800', color: T.ink, marginTop: space.xs }, tnum]}>
                           {r.unitPrice === null ? '—' : formatUnitPrice(r.unitPrice, unit)}
                         </Text>
                       </View>
@@ -163,7 +163,7 @@ function PurchaseHistoryScreenBody({ localDate }: { localDate: string }) {
 
           <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, paddingHorizontal: 2, marginTop: 2 }}>
             <Icon name="info" size={15} color={COLOR.text.tertiary} />
-            <Text style={{ flex: 1, fontSize: 14, color: COLOR.text.tertiary, lineHeight: 20 }}>
+            <Text style={{ flex: 1, fontSize: 14, color: COLOR.text.tertiary, lineHeight: TYPE.caption.lineHeight }}>
               여기 단가는 <Text style={{ fontWeight: '700' }}>그날 그 값</Text>이에요. 기준 단가는 실제로 들어온 양으로
               가중평균한 값이라 조금 달라요.
             </Text>

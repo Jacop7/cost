@@ -9,7 +9,7 @@
 import { Pressable, Text, View } from 'react-native';
 import { Badge, Card, Icon } from '@/components/kit';
 import { formatPercent } from '@margincook/core';
-import { COLOR, T, won } from '@/theme/tokens';
+import { COLOR, T, won, TYPE, radius, space } from '@/theme/tokens';
 import type { RevenueCheck } from '../hooks';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
@@ -29,7 +29,7 @@ export function RevenueGapCard({ check, onApply, applying = false }: {
       <Card pad={14}>
         <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 8 }}>
           <Icon name="info" size={16} color={COLOR.text.tertiary} />
-          <Text style={{ flex: 1, fontSize: 14, color: COLOR.text.tertiary, lineHeight: 20 }}>
+          <Text style={{ flex: 1, fontSize: 14, color: COLOR.text.tertiary, lineHeight: TYPE.caption.lineHeight }}>
             {Number(check.month.slice(5))}월은 아직 매출 기록이 없어요. 판매를 등록하면 실제 매출과 비교해 드려요.
           </Text>
         </View>
@@ -47,7 +47,7 @@ export function RevenueGapCard({ check, onApply, applying = false }: {
 
   return (
     <Card pad={0} style={{ overflow: 'hidden' }}>
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 12, paddingHorizontal: 15, backgroundColor: bg, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 12, paddingHorizontal: space.md, backgroundColor: bg, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
         <Icon name={big ? 'warn' : 'info'} size={16} color={tone} />
         <Text style={{ flex: 1, fontSize: 14, fontWeight: '800', color: tone }}>
           {big ? '적어둔 월매출이 실제와 많이 달라요' : '적어둔 월매출과 실제 비교'}
@@ -57,7 +57,7 @@ export function RevenueGapCard({ check, onApply, applying = false }: {
         ) : null}
       </View>
 
-      <View style={{ paddingHorizontal: 15, paddingVertical: 12, gap: 9 }}>
+      <View style={{ paddingHorizontal: space.md, paddingVertical: 12, gap: space.sm }}>
         <Row label="적어둔 월매출" value={check.manualRevenue === null ? '미입력' : `${won(check.manualRevenue)}원`} />
         <Row
           label={check.inProgress ? `실제 매출 (${check.daysElapsed}/${check.daysTotal}일)` : '실제 매출 (월 전체)'}
@@ -79,7 +79,7 @@ export function RevenueGapCard({ check, onApply, applying = false }: {
           accent
         />
 
-        <Text style={{ fontSize: 14, color: COLOR.text.tertiary, lineHeight: 20, marginTop: 4 }}>
+        <Text style={{ fontSize: 14, color: COLOR.text.tertiary, lineHeight: TYPE.caption.lineHeight, marginTop: 4 }}>
           고정지출률은 <Text style={{ fontWeight: '700' }}>적어둔 월매출</Text>로 계산돼요. 실제 매출로 자동으로 바뀌지 않아요
           {check.inProgress ? ' — 월초에는 며칠치만으로 나눠 비율이 튀기 때문이에요.' : '.'}
         </Text>
@@ -92,8 +92,8 @@ export function RevenueGapCard({ check, onApply, applying = false }: {
             accessibilityLabel={`월매출을 ${won(Math.round(projected))}원으로 채우기`}
             accessibilityState={{ disabled: applying }}
             style={{
-              flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5,
-              marginTop: 6, paddingVertical: 12, borderRadius: 10,
+              flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.xs,
+              marginTop: space.sm, paddingVertical: 12, borderRadius: radius.md,
               borderWidth: 1, borderColor: COLOR.action.primary, backgroundColor: COLOR.action.primaryTint,
               opacity: applying ? 0.5 : 1,
             }}

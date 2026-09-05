@@ -12,18 +12,18 @@ import { AppHeader, Button, Card, Field, Input, Notice } from '@/components/kit'
 import { safeBack } from '@/lib/nav';
 import { clampDecimals } from '@/lib/num';
 import { RpcError } from '@/lib/supabase';
-import { COLOR, T } from '@/theme/tokens';
+import { COLOR, T, space } from '@/theme/tokens';
 import { useSettings, useSettingsActions, useUnitDigits } from '../store';
 
 const SAMPLE_UNIT_PRICE = 4000 / 850;
 
 function DetailRow({ label, value, sub, last }: { label: string; value: string; sub?: string; last?: boolean }) {
   return (
-    <View style={{ flexDirection: 'row', alignItems: 'flex-start', paddingVertical: 13, paddingHorizontal: 15, borderBottomWidth: last ? 0 : 1, borderBottomColor: T.line2 }}>
+    <View style={{ flexDirection: 'row', alignItems: 'flex-start', paddingVertical: space.md, paddingHorizontal: space.md, borderBottomWidth: last ? 0 : 1, borderBottomColor: T.line2 }}>
       <Text style={{ width: 72, fontSize: 16, fontWeight: '600', color: T.sub }}>{label}</Text>
       <View style={{ flex: 1, alignItems: 'flex-end' }}>
         <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>{value}</Text>
-        {sub ? <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 2 }}>{sub}</Text> : null}
+        {sub ? <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.xs }}>{sub}</Text> : null}
       </View>
     </View>
   );
@@ -152,19 +152,19 @@ export default function MyUnitsScreen() {
       <AppHeader title="단위 설정" onBack={() => safeBack('/my')} />
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 4, paddingBottom: 28 }}>
         {settings.error && settings.hasData ? (
-          <View role="alert" accessibilityLabel="재조회 실패" style={{ marginBottom: 10, padding: 13, borderRadius: 12, backgroundColor: T.redTint }}>
+          <View role="alert" accessibilityLabel="재조회 실패" style={{ marginBottom: space.sm, padding: space.md, borderRadius: 12, backgroundColor: T.redTint }}>
             <Text style={{ fontSize: 14, fontWeight: '700', color: T.red }}>최신 설정을 불러오지 못했어요. 다시 시도해 주세요.</Text>
             {/* 배경 오류 재시도는 조회만 다시 한다. 수정 중인 컵 초안을 서버값으로 덮지 않는다. */}
             <View style={{ marginTop: 8 }}><Button kind="gray" size="md" onPress={() => { void settings.refetch(); }} accessibilityLabel="다시 시도">다시 시도</Button></View>
           </View>
         ) : null}
         {serverChanged ? (
-          <View role="status" style={{ marginBottom: 10, padding: 13, borderRadius: 12, backgroundColor: T.redTint, borderWidth: 1, borderColor: T.red }}>
+          <View role="status" style={{ marginBottom: space.sm, padding: space.md, borderRadius: 12, backgroundColor: T.redTint, borderWidth: 1, borderColor: T.red }}>
             <Text style={{ fontSize: 14, fontWeight: '700', color: T.red }}>다른 기기에서 설정이 변경됐어요. 새로고침 후 다시 저장해 주세요.</Text>
             <View style={{ marginTop: 8 }}><Button kind="gray" size="md" onPress={() => { void adoptLatest(); }} accessibilityLabel="새로고침">새로고침</Button></View>
           </View>
         ) : null}
-        {saveError ? <Text role="alert" style={{ color: T.red, fontWeight: '700', marginBottom: 10 }}>저장하지 못했어요 · {saveError}</Text> : null}
+        {saveError ? <Text role="alert" style={{ color: T.red, fontWeight: '700', marginBottom: space.sm }}>저장하지 못했어요 · {saveError}</Text> : null}
 
         <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.text.tertiary, marginHorizontal: 4, marginBottom: 8 }}>기준 단위</Text>
         <Card pad={0} style={{ overflow: 'hidden', marginBottom: 16 }}>
@@ -190,12 +190,12 @@ export default function MyUnitsScreen() {
               accessibilityLabel="1컵 용량"
             />
           </Field>
-          {!cupValid ? <Text style={{ color: T.red, fontSize: 14, marginBottom: 10 }}>0보다 크고 5,000ml 이하로 입력해 주세요.</Text> : null}
+          {!cupValid ? <Text style={{ color: T.red, fontSize: 14, marginBottom: space.sm }}>0보다 크고 5,000ml 이하로 입력해 주세요.</Text> : null}
           <Button kind="primary" size="lg" full disabled={blocked || !cupValid || !cupChanged} loading={saving} onPress={saveCup} accessibilityLabel="컵 용량 저장">컵 용량 저장</Button>
         </Card>
 
-        <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.text.tertiary, marginHorizontal: 4, marginBottom: 6 }}>단가 표기 자릿수</Text>
-        <Notice style={{ marginBottom: 10 }}>식재료 단가·원가의 표기만 바뀌고 저장·계산 값은 그대로예요.</Notice>
+        <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.text.tertiary, marginHorizontal: 4, marginBottom: space.sm }}>단가 표기 자릿수</Text>
+        <Notice style={{ marginBottom: space.sm }}>식재료 단가·원가의 표기만 바뀌고 저장·계산 값은 그대로예요.</Notice>
         <Card pad={0} style={{ overflow: 'hidden' }}>
           {UNIT_PRICE_DIGIT_OPTIONS.map((d, i) => {
             const on = d === digits;
@@ -209,7 +209,7 @@ export default function MyUnitsScreen() {
                 accessibilityRole="radio"
                 accessibilityLabel={`단가 소수 ${d}자리`}
                 accessibilityState={{ checked: on, disabled: blocked }}
-                style={{ flexDirection: 'row', alignItems: 'center', padding: 15, borderBottomWidth: i < UNIT_PRICE_DIGIT_OPTIONS.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}
+                style={{ flexDirection: 'row', alignItems: 'center', padding: space.md, borderBottomWidth: i < UNIT_PRICE_DIGIT_OPTIONS.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}
               >
                 <Text style={[{ width: 74, fontSize: 16, fontWeight: '600', color: T.sub }, { fontVariant: ['tabular-nums'] }]}>{pattern}</Text>
                 <Text style={[{ flex: 1, fontSize: 16, fontWeight: '700', color: T.ink }, { fontVariant: ['tabular-nums'] }]}>{formatUnitPrice(SAMPLE_UNIT_PRICE, 'g', locale, d)}</Text>

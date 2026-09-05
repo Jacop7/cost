@@ -7,7 +7,7 @@ import { type Href, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { getLocale } from '@margincook/core';
 import { Card, Icon, IconName } from '@/components/kit';
-import { COLOR, COMPONENT, T } from '@/theme/tokens';
+import { COLOR, COMPONENT, T, controlVisualHeight, radius, space } from '@/theme/tokens';
 import { useSettings, useUnitDigits } from '../store';
 import { useSettingsLists } from '@/features/master-data/hooks';
 import { useHoursStatus, useStoreSettings } from '@/features/settings/hooks';
@@ -106,32 +106,32 @@ export default function MyHomeScreen() {
       <View style={{ paddingTop: insets.top, backgroundColor: T.bg }}>
         <View style={{ paddingLeft: 20, paddingRight: 16, paddingTop: 8, paddingBottom: 12 }}>
           <Text style={{ fontSize: 22, fontWeight: '800', color: T.ink, letterSpacing: -0.6 }}>마이페이지</Text>
-          <Text style={{ fontSize: 14, color: T.sub2, marginTop: 3, fontWeight: '600' }}>기준값과 기본 설정을 관리해요</Text>
+          <Text style={{ fontSize: 14, color: T.sub2, marginTop: space.xs, fontWeight: '600' }}>기준값과 기본 설정을 관리해요</Text>
         </View>
       </View>
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 28, gap: 11 }}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 28, gap: space.md }}>
         {/* 사업장 */}
-        <Card pad={16} style={{ flexDirection: 'row', alignItems: 'center', gap: 13 }}>
-          <View style={{ width: 46, height: 46, borderRadius: 14, backgroundColor: T.ink, alignItems: 'center', justifyContent: 'center' }}>
+        <Card pad={16} style={{ flexDirection: 'row', alignItems: 'center', gap: space.md }}>
+          <View style={{ width: 46, height: 46, borderRadius: radius.lg, backgroundColor: T.ink, alignItems: 'center', justifyContent: 'center' }}>
             <Icon name="store" size={24} color={T.onColor} />
           </View>
           <View style={{ flex: 1 }}>
             <Text style={{ fontSize: 18, fontWeight: '800', color: T.ink }}>{storeName.data ?? '매장'}</Text>
-            <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 2 }}>{L.label} · 미터법</Text>
+            <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.xs }}>{L.label} · 미터법</Text>
           </View>
         </Card>
 
         {/* 메뉴 */}
         <Card pad={0} style={{ overflow: 'hidden' }}>
           {SECTIONS.map((s, i) => (
-            <Pressable key={s.t} onPress={() => go(s.route)} accessibilityRole="button" accessibilityLabel={s.t} style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 13, paddingHorizontal: 15, borderBottomWidth: i < SECTIONS.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
-              <View style={{ width: 38, height: 38, borderRadius: 11, backgroundColor: s.bg, alignItems: 'center', justifyContent: 'center' }}>
+            <Pressable key={s.t} onPress={() => go(s.route)} accessibilityRole="button" accessibilityLabel={s.t} style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: space.md, paddingHorizontal: space.md, borderBottomWidth: i < SECTIONS.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
+              <View style={{ width: controlVisualHeight.md, height: controlVisualHeight.md, borderRadius: radius.md, backgroundColor: s.bg, alignItems: 'center', justifyContent: 'center' }}>
                 <Icon name={s.icon} size={20} color={s.fg} />
               </View>
               <View style={{ flex: 1, minWidth: 0 }}>
                 <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>{s.t}</Text>
-                <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 2 }}>{s.d}</Text>
+                <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.xs }}>{s.d}</Text>
               </View>
               <Icon name="chevron" size={18} color={T.line3} />
             </Pressable>

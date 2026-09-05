@@ -10,7 +10,7 @@
 import { useEffect, useState } from 'react';
 import { Pressable, Text, TextInput, View } from 'react-native';
 import { Button, Sheet } from '@/components/kit';
-import { COLOR, T } from '@/theme/tokens';
+import { COLOR, T, radius, space } from '@/theme/tokens';
 import { QUARTER_SLOTS, normalizeTimeInput } from '@/features/my/weeklySchedule';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
@@ -63,7 +63,7 @@ export function LateCloseSheet({ visible, timezone, loading, onCancel, onConfirm
       sub="영업시간이 이미 지나 오늘 마칠 시간이 필요해요 · 오늘만 적용돼요"
       height="72%"
     >
-      <View style={{ flexDirection: 'row', gap: 8, paddingBottom: 11, alignItems: 'center' }}>
+      <View style={{ flexDirection: 'row', gap: 8, paddingBottom: space.md, alignItems: 'center' }}>
         <TextInput
           value={typed}
           onChangeText={(v) => { setTyped(v); setWarn(null); }}
@@ -71,7 +71,7 @@ export function LateCloseSheet({ visible, timezone, loading, onCancel, onConfirm
           placeholderTextColor={COLOR.text.tertiary}
           keyboardType="numbers-and-punctuation"
           accessibilityLabel="마칠 시각 직접 입력"
-          style={{ flex: 1, borderWidth: 1, borderColor: T.line, borderRadius: 10, paddingVertical: 9, paddingHorizontal: 12, fontSize: 15, color: T.ink, backgroundColor: T.surface }}
+          style={{ flex: 1, borderWidth: 1, borderColor: T.line, borderRadius: radius.md, paddingVertical: space.sm, paddingHorizontal: 12, fontSize: 15, color: T.ink, backgroundColor: T.surface }}
         />
         <Button kind="primary" size="sm" loading={loading} onPress={confirm}>
           이 시간으로 시작
@@ -87,7 +87,7 @@ export function LateCloseSheet({ visible, timezone, loading, onCancel, onConfirm
               onPress={() => { setPicked(t); setTyped(''); setWarn(null); }}
               accessibilityRole="button" accessibilityLabel={t}
               accessibilityState={{ selected: on }}
-              style={{ paddingVertical: 8, paddingHorizontal: 10, borderRadius: 9, borderWidth: 1, borderColor: on ? COLOR.action.primary : T.line, backgroundColor: on ? COLOR.action.primaryTint : T.surface }}
+              style={{ paddingVertical: 8, paddingHorizontal: space.sm, borderRadius: radius.md, borderWidth: 1, borderColor: on ? COLOR.action.primary : T.line, backgroundColor: on ? COLOR.action.primaryTint : T.surface }}
             >
               <Text style={[{ fontSize: 14, fontWeight: on ? '800' : '600', color: on ? COLOR.state.selectedText : T.sub2 }, NUM]}>{t}</Text>
             </Pressable>

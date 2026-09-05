@@ -6,7 +6,7 @@
 import { ReactNode, useState } from 'react';
 import { KeyboardTypeOptions, Pressable, ScrollView, StyleProp, Text, TextInput, TextInputProps, TextStyle, View, ViewStyle } from 'react-native';
 import { Icon, IconName } from './Icon';
-import { COLOR, cardShadow, FONT, shadow, STATUS, T, won } from '@/theme/tokens';
+import { COLOR, cardShadow, FONT, shadow, STATUS, T, won, TYPE, controlVisualHeight, radius, space } from '@/theme/tokens';
 
 const NUM: TextStyle = { fontVariant: FONT.num as unknown as TextStyle['fontVariant'] };
 export { Icon };
@@ -28,7 +28,7 @@ export type { DonutSeg, TrendPoint } from './charts';
 export function StatusBadge({ status, sm }: { status: keyof typeof STATUS; sm?: boolean }) {
   const s = STATUS[status];
   return (
-    <View style={{ alignSelf: 'flex-start', backgroundColor: s.bar, paddingHorizontal: sm ? 7 : 9, paddingVertical: sm ? 4 : 5, borderRadius: 7 }}>
+    <View style={{ alignSelf: 'flex-start', backgroundColor: s.bar, paddingHorizontal: sm ? 7 : 9, paddingVertical: sm ? 4 : 5, borderRadius: radius.sm }}>
       <Text style={{ color: T.onColor, fontWeight: '700', fontSize: sm ? 12 : 13 }}>{s.label}</Text>
     </View>
   );
@@ -46,7 +46,7 @@ export function Badge({ children, tone = 'neutral', sm, solid }: { children: Rea
   };
   const c = tones[tone];
   return (
-    <View style={{ alignSelf: 'flex-start', backgroundColor: solid ? c.fg : c.bg, borderWidth: c.border ? 1 : 0, borderColor: c.border, paddingHorizontal: sm ? 6 : 8, paddingVertical: sm ? 3 : 4, borderRadius: 6 }}>
+    <View style={{ alignSelf: 'flex-start', backgroundColor: solid ? c.fg : c.bg, borderWidth: c.border ? 1 : 0, borderColor: c.border, paddingHorizontal: sm ? 6 : 8, paddingVertical: sm ? 3 : 4, borderRadius: radius.sm }}>
       <Text style={{ color: solid ? T.onColor : c.fg, fontWeight: '600', fontSize: sm ? 12 : 13 }}>{children}</Text>
     </View>
   );
@@ -68,10 +68,10 @@ export function Card({ children, style, pad = 16, onLine, shadow = true }: { chi
  */
 export function Notice({ children, style }: { children: ReactNode; style?: StyleProp<ViewStyle> }) {
   return (
-    <View style={[{ flexDirection: 'row', alignItems: 'flex-start', gap: 8, backgroundColor: COLOR.action.primaryTint, borderWidth: 1, borderColor: COLOR.action.onTint, borderRadius: 12, paddingVertical: 12, paddingHorizontal: 14 }, style]}>
+    <View style={[{ flexDirection: 'row', alignItems: 'flex-start', gap: 8, backgroundColor: COLOR.action.primaryTint, borderWidth: 1, borderColor: COLOR.action.onTint, borderRadius: 12, paddingVertical: 12, paddingHorizontal: space.md }, style]}>
       {/* 아이콘은 첫 줄 중앙에 맞춘다 — 여러 줄 문구에서 위로 뜨지 않게 */}
       <View style={{ marginTop: 1 }}><Icon name="info" size={17} color={COLOR.action.onTint} /></View>
-      <Text style={{ flex: 1, fontSize: 14, fontWeight: '700', color: COLOR.action.onTint, lineHeight: 20 }}>{children}</Text>
+      <Text style={{ flex: 1, fontSize: 14, fontWeight: '700', color: COLOR.action.onTint, lineHeight: TYPE.caption.lineHeight }}>{children}</Text>
     </View>
   );
 }
@@ -85,7 +85,7 @@ export function Chip({ children, active, tone, onPress }: { children: ReactNode;
       accessibilityRole="button"
       accessibilityState={{ selected: !!active }}
       hitSlop={6}
-      style={{ flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: 7, paddingHorizontal: 12, borderRadius: 999, backgroundColor: active ? T.ink : tone === 'blue' ? COLOR.action.primaryTint : T.surface, borderWidth: active ? 0 : 1, borderColor: T.line }}
+      style={{ flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: space.sm, paddingHorizontal: 12, borderRadius: 999, backgroundColor: active ? T.ink : tone === 'blue' ? COLOR.action.primaryTint : T.surface, borderWidth: active ? 0 : 1, borderColor: T.line }}
     >
       <Text style={{ fontSize: 16, fontWeight: '600', color: active ? T.onColor : tone === 'blue' ? COLOR.text.accent : T.sub }}>{children}</Text>
     </Pressable>
@@ -106,7 +106,7 @@ export function FilterButton({ label, onPress }: { label: string; onPress: () =>
       accessibilityRole="button"
       accessibilityLabel={`${label} 변경`}
       hitSlop={6}
-      style={{ flexDirection: 'row', alignItems: 'center', gap: 5, paddingVertical: 7, paddingHorizontal: 10, borderRadius: 9, borderWidth: 1, borderColor: T.line, backgroundColor: T.surface }}
+      style={{ flexDirection: 'row', alignItems: 'center', gap: space.xs, paddingVertical: space.sm, paddingHorizontal: space.sm, borderRadius: radius.md, borderWidth: 1, borderColor: T.line, backgroundColor: T.surface }}
     >
       <Text style={{ fontSize: 13, fontWeight: '700', color: T.sub }} numberOfLines={1}>{label}</Text>
       <Icon name="chevronDown" size={14} color={COLOR.text.tertiary} />
@@ -116,15 +116,15 @@ export function FilterButton({ label, onPress }: { label: string; onPress: () =>
 
 // ── 스테퍼 ────────────────────────────────────────────────────
 export function Stepper({ value, unit, onChange, label }: { value: number; unit?: string; onChange?: (v: number) => void; label?: string }) {
-  // 34×34 버튼이라 hitSlop 5 를 더해 최소 44×44 터치 영역을 채운다(가이드 §9.6-1·2).
+  // 32×32 버튼이라 hitSlop 6 을 더해 최소 44×44 터치 영역을 채운다(가이드 §9.6-1·2).
   // 아이콘만 있으므로 무엇이 늘고 주는지 라벨로 알린다.
   const btn = (ic: IconName, delta: number, action: string) => (
     <Pressable
       onPress={() => onChange?.(value + delta)}
       accessibilityRole="button"
       accessibilityLabel={label ? `${label} ${action}` : action}
-      hitSlop={5}
-      style={{ width: 34, height: 34, borderRadius: 9, backgroundColor: T.line2, alignItems: 'center', justifyContent: 'center' }}
+      hitSlop={6}
+      style={{ width: controlVisualHeight.sm, height: controlVisualHeight.sm, borderRadius: radius.md, backgroundColor: T.line2, alignItems: 'center', justifyContent: 'center' }}
     >
       <Icon name={ic} size={18} color={T.sub} sw={2.2} />
     </Pressable>
@@ -148,7 +148,7 @@ export function FAB({ label = '추가', icon = 'plus', bottom = 24, onPress }: {
       onPress={onPress}
       accessibilityRole="button"
       accessibilityLabel={label}
-      style={{ position: 'absolute', right: 18, bottom, zIndex: 30, flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: COLOR.action.primary, paddingVertical: 14, paddingLeft: 15, paddingRight: 18, borderRadius: 999, ...shadow.fab }}
+      style={{ position: 'absolute', right: 18, bottom, zIndex: 30, flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: COLOR.action.primary, paddingVertical: space.md, paddingLeft: space.md, paddingRight: space.lg, borderRadius: 999, ...shadow.fab }}
     >
       <Icon name={icon} size={22} color={T.onColor} sw={2.4} />
       <Text style={{ color: T.onColor, fontWeight: '700', fontSize: 16 }}>{label}</Text>
@@ -164,8 +164,8 @@ export function FAB({ label = '추가', icon = 'plus', bottom = 24, onPress }: {
  */
 export function Field({ label, children, hint, req, right, error }: { label: string; children: ReactNode; hint?: string; req?: boolean; right?: ReactNode; error?: string }) {
   return (
-    <View style={{ marginBottom: 18 }}>
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5, marginBottom: 8 }}>
+    <View style={{ marginBottom: space.lg }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.xs, marginBottom: 8 }}>
         <Text style={{ fontSize: 16, fontWeight: '700', color: T.sub }}>
           {label}
           {req ? <Text style={{ color: COLOR.text.required }}> *</Text> : null}
@@ -174,9 +174,9 @@ export function Field({ label, children, hint, req, right, error }: { label: str
       </View>
       {children}
       {error ? (
-        <Text accessibilityRole="alert" style={{ fontSize: 16, color: T.red, marginTop: 6, lineHeight: 20, fontWeight: '600' }}>{error}</Text>
+        <Text accessibilityRole="alert" style={{ fontSize: 16, color: T.red, marginTop: space.sm, lineHeight: TYPE.body.lineHeight, fontWeight: '600' }}>{error}</Text>
       ) : hint ? (
-        <Text style={{ fontSize: 16, color: COLOR.text.tertiary, marginTop: 6, lineHeight: 17 }}>{hint}</Text>
+        <Text style={{ fontSize: 16, color: COLOR.text.tertiary, marginTop: space.sm, lineHeight: TYPE.body.lineHeight }}>{hint}</Text>
       ) : null}
     </View>
   );
@@ -220,7 +220,7 @@ export function Input({
         backgroundColor: disabled ? T.surface2 : T.surface,
         borderWidth: error || focused ? 1.5 : 1,
         borderColor,
-        borderRadius: 12, paddingVertical: 13, paddingHorizontal: 14,
+        borderRadius: 12, paddingVertical: space.md, paddingHorizontal: space.md,
       }}
     >
       {prefix ? <Text style={{ fontSize: 16, color: COLOR.text.tertiary, fontWeight: '600' }}>{prefix}</Text> : null}
@@ -263,7 +263,7 @@ export function ScreenShell({ children, header }: { children: ReactNode; header?
 export function Select({ value, placeholder, onPress }: { value?: string; placeholder?: string; onPress?: () => void }) {
   const empty = value == null || value === '';
   return (
-    <Pressable onPress={onPress} style={{ flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: T.surface, borderWidth: 1, borderColor: T.line, borderRadius: 12, paddingVertical: 13, paddingHorizontal: 14 }}>
+    <Pressable onPress={onPress} style={{ flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: T.surface, borderWidth: 1, borderColor: T.line, borderRadius: 12, paddingVertical: space.md, paddingHorizontal: space.md }}>
       <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: empty ? COLOR.text.tertiary : T.ink }}>{empty ? placeholder : value}</Text>
       <Icon name="chevronDown" size={18} color={COLOR.text.tertiary} />
     </Pressable>
@@ -275,10 +275,10 @@ export function PLRow({ label, amt, pct, kind = 'cost', detail, bold }: { label:
   const sign = kind === 'cost' ? '−' : '';
   const valColor = kind === 'profit' ? T.green : kind === 'cost' ? COLOR.text.tertiary : T.ink;
   return (
-    <View style={{ flexDirection: 'row', alignItems: 'flex-start', paddingVertical: 11, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
+    <View style={{ flexDirection: 'row', alignItems: 'flex-start', paddingVertical: space.md, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
       <View style={{ flex: 1 }}>
         <Text style={{ fontSize: bold ? 15.5 : 14.5, fontWeight: bold ? '800' : '600', color: kind === 'profit' ? T.green : T.ink2 }}>{label}</Text>
-        {detail ? <Text style={{ fontSize: 13, color: COLOR.text.tertiary, marginTop: 3, lineHeight: 16 }}>{detail}</Text> : null}
+        {detail ? <Text style={{ fontSize: 13, color: COLOR.text.tertiary, marginTop: space.xs, lineHeight: TYPE.captionSm.lineHeight }}>{detail}</Text> : null}
       </View>
       <View style={{ alignItems: 'flex-end', minWidth: 96 }}>
         <Text style={[{ fontSize: bold ? 17 : 15, fontWeight: bold ? '800' : '700', color: valColor }, NUM]}>
@@ -295,11 +295,11 @@ export function PLRow({ label, amt, pct, kind = 'cost', detail, bold }: { label:
 // ── 세그먼트 탭 (후보/대기/완료) ───────────────────────────────
 export function SegTabs({ tabs, active = 0, onChange }: { tabs: { label: string; count?: number }[]; active?: number; onChange?: (i: number) => void }) {
   return (
-    <View style={{ flexDirection: 'row', gap: 6, padding: 5, backgroundColor: T.line, borderRadius: 13 }}>
+    <View style={{ flexDirection: 'row', gap: 6, padding: space.xs, backgroundColor: T.line, borderRadius: radius.md }}>
       {tabs.map((t, i) => {
         const on = active === i;
         return (
-          <Pressable key={i} onPress={() => onChange?.(i)} style={[{ flex: 1, alignItems: 'center', justifyContent: 'center', flexDirection: 'row', gap: 5, paddingVertical: 9, borderRadius: 9, backgroundColor: on ? T.surface : 'transparent' }, on ? cardShadow : null]}>
+          <Pressable key={i} onPress={() => onChange?.(i)} style={[{ flex: 1, alignItems: 'center', justifyContent: 'center', flexDirection: 'row', gap: space.xs, paddingVertical: space.sm, borderRadius: radius.md, backgroundColor: on ? T.surface : 'transparent' }, on ? cardShadow : null]}>
             <Text style={{ fontSize: 16, fontWeight: on ? '700' : '600', color: on ? T.ink : COLOR.text.tertiary }}>{t.label}</Text>
             {t.count != null ? <Text style={{ fontSize: 16, fontWeight: '700', color: on ? COLOR.state.selectedText : COLOR.text.tertiary }}>{t.count}</Text> : null}
           </Pressable>
@@ -312,13 +312,13 @@ export function SegTabs({ tabs, active = 0, onChange }: { tabs: { label: string;
 // ── 카테고리 스크롤 탭 (밑줄형) ────────────────────────────────
 export function ScrollTabs({ tabs, active = 0, onChange }: { tabs: string[]; active?: number; onChange?: (i: number) => void }) {
   return (
-    <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 18, paddingHorizontal: 20 }}>
+    <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: space.lg, paddingHorizontal: 20 }}>
       {tabs.map((t, i) => {
         const on = i === active;
         return (
-          <Pressable key={i} onPress={() => onChange?.(i)} style={{ paddingBottom: 11 }}>
+          <Pressable key={i} onPress={() => onChange?.(i)} style={{ paddingBottom: space.md }}>
             <Text style={{ fontSize: 16, fontWeight: on ? '700' : '600', color: on ? T.ink : COLOR.text.tertiary }}>{t}</Text>
-            {on ? <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 2.5, backgroundColor: T.ink, borderRadius: 2 }} /> : null}
+            {on ? <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 2.5, backgroundColor: T.ink, borderRadius: radius.full }} /> : null}
           </Pressable>
         );
       })}
@@ -329,7 +329,7 @@ export function ScrollTabs({ tabs, active = 0, onChange }: { tabs: string[]; act
 // ── 기간 칩 (최근 3개월 ▾) ─────────────────────────────────────
 export function PeriodChip({ value = '최근 3개월', onPress }: { value?: string; onPress?: () => void }) {
   return (
-    <Pressable onPress={onPress} style={{ flexDirection: 'row', alignItems: 'center', gap: 2, paddingVertical: 5, paddingLeft: 11, paddingRight: 9, borderRadius: 999, backgroundColor: T.line2 }}>
+    <Pressable onPress={onPress} style={{ flexDirection: 'row', alignItems: 'center', gap: 2, paddingVertical: space.xs, paddingLeft: 11, paddingRight: space.sm, borderRadius: 999, backgroundColor: T.line2 }}>
       <Text style={{ color: T.sub, fontSize: 16, fontWeight: '700' }}>{value}</Text>
       <Icon name="chevronDown" size={14} color={COLOR.text.tertiary} />
     </Pressable>

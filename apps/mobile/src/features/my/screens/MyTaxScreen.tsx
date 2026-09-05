@@ -19,7 +19,7 @@ import { AppHeader, Button, Card, Icon, Input, QueryState } from '@/components/k
 import { safeBack } from '@/lib/nav';
 import { clampDecimals } from '@/lib/num';
 import { RpcError } from '@/lib/supabase';
-import { COLOR, T, tnum } from '@/theme/tokens';
+import { COLOR, T, tnum, TYPE, space } from '@/theme/tokens';
 import { useSaveStoreTax, useStoreSettings } from '@/features/settings/hooks';
 
 interface Row { name: string; rate: string }
@@ -144,7 +144,7 @@ export default function MyTaxScreen() {
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <AppHeader title="세금" onBack={() => { if (!save.isPending) safeBack('/my'); }} />
 
-      <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 28, gap: 11 }} showsVerticalScrollIndicator={false}>
+      <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 28, gap: space.md }} showsVerticalScrollIndicator={false}>
         <QueryState
           isLoading={settings.isLoading}
           error={settings.data ? null : settings.error}
@@ -153,13 +153,13 @@ export default function MyTaxScreen() {
           emptyTitle="설정을 불러오지 못했어요"
         >
           {settings.isError && settings.data ? (
-            <View role="alert" style={{ padding: 13, borderRadius: 12, backgroundColor: T.redTint }}>
+            <View role="alert" style={{ padding: space.md, borderRadius: 12, backgroundColor: T.redTint }}>
               <Text style={{ color: T.red, fontWeight: '700' }}>최신 설정을 불러오지 못했어요. 다시 시도해 주세요.</Text>
               <View style={{ marginTop: 8 }}><Button kind="gray" size="md" loading={refreshing} onPress={() => { void retryPreservingDraft(); }}>다시 시도</Button></View>
             </View>
           ) : null}
           {serverChanged ? (
-            <View role="status" style={{ padding: 13, borderRadius: 12, backgroundColor: T.redTint, borderWidth: 1, borderColor: T.red }}>
+            <View role="status" style={{ padding: space.md, borderRadius: 12, backgroundColor: T.redTint, borderWidth: 1, borderColor: T.red }}>
               <Text style={{ color: T.red, fontWeight: '700' }}>다른 기기에서 설정이 변경됐어요. 새로고침 후 다시 저장해 주세요.</Text>
               <View style={{ marginTop: 8 }}><Button kind="gray" size="md" loading={refreshing} onPress={() => { void adoptLatest(); }} accessibilityLabel="새로고침">새로고침</Button></View>
             </View>
@@ -167,12 +167,12 @@ export default function MyTaxScreen() {
           {saveError ? <Text role="alert" style={{ color: T.red, fontWeight: '700' }}>저장하지 못했어요 · {saveError}</Text> : null}
           {/* 그 밖의 세금·수수료 */}
           <Card pad={0} style={{ overflow: 'hidden' }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 13, paddingHorizontal: 15, backgroundColor: T.surface2 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: space.md, backgroundColor: T.surface2 }}>
               <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.sub }}>세금 항목</Text>
               <Text style={{ fontSize: 13, fontWeight: '600', color: COLOR.text.tertiary }}>판매가 대비 %</Text>
             </View>
 
-            <View style={{ paddingHorizontal: 15, paddingVertical: 12, gap: 9 }}>
+            <View style={{ paddingHorizontal: space.md, paddingVertical: 12, gap: space.sm }}>
               {rows.map((t, i) => (
                 <View key={i} style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
                   <View style={{ flex: 2 }}>
@@ -218,8 +218,8 @@ export default function MyTaxScreen() {
                 accessibilityRole="button"
                 accessibilityLabel="세금 항목 추가"
                 style={{
-                  flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5,
-                  paddingVertical: 13, borderRadius: 12, borderWidth: 1, borderStyle: 'dashed', borderColor: COLOR.action.primary,
+                  flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.xs,
+                  paddingVertical: space.md, borderRadius: 12, borderWidth: 1, borderStyle: 'dashed', borderColor: COLOR.action.primary,
                 }}
               >
                 <Icon name="plus" size={17} color={COLOR.action.primary} sw={2.2} />
@@ -238,7 +238,7 @@ export default function MyTaxScreen() {
           */}
           <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, paddingHorizontal: 2 }}>
             <Icon name="info" size={15} color={COLOR.text.tertiary} />
-            <Text style={{ flex: 1, fontSize: 14, color: COLOR.text.tertiary, lineHeight: 20 }}>
+            <Text style={{ flex: 1, fontSize: 14, color: COLOR.text.tertiary, lineHeight: TYPE.caption.lineHeight }}>
               배달앱 중개 수수료는 여기가 아니라 <Text style={{ fontWeight: '700' }}>MY {'>'} 고정 지출</Text>에서
               관리해요. 두 곳에 넣으면 같은 돈이 두 번 빠져요.
             </Text>
@@ -249,7 +249,7 @@ export default function MyTaxScreen() {
       <View style={{ paddingHorizontal: 20, paddingTop: 12, paddingBottom: 30, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
         {/* 저장 직전에 얼마가 빠지는지 — 재고 추가 화면 하단과 같은 짜임 */}
         <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 2, paddingBottom: 12 }}>
-          <Text style={{ flex: 1, fontSize: 15, fontWeight: '700', color: T.sub }}>판매가에서 빠지는 몫</Text>
+          <Text style={{ flex: 1, fontSize: TYPE.caption.fontSize, fontWeight: '700', color: T.sub }}>판매가에서 빠지는 몫</Text>
           <Text style={[{ fontSize: 16, fontWeight: '800', color: COLOR.text.accent }, tnum]}>
             {(Math.round(rate * 1000) / 10).toFixed(1)}%
           </Text>

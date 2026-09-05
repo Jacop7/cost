@@ -12,7 +12,7 @@ import { ScrollView, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Card, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { T, won } from '@/theme/tokens';
+import { T, won, space } from '@/theme/tokens';
 import { DetailRow, DetailSection, DetailSummary } from '../components/ProfitBlocks';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
 import { useSalesRange, useTaxBreakdown } from '../hooks';
@@ -70,7 +70,7 @@ function SalesTaxScreenBody({ serverToday }: { serverToday: string }) {
               />
 
               <DetailSection title="항목별" />
-              <View style={{ paddingHorizontal: 14, paddingBottom: 4 }}>
+              <View style={{ paddingHorizontal: space.md, paddingBottom: 4 }}>
                 {d.items.length === 0 ? (
                   <DetailRow name="기록 없음" amount="0원" muted last />
                 ) : (

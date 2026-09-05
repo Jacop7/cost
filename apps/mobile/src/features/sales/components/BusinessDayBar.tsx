@@ -17,7 +17,7 @@ import { Pressable, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
 import { Button, ConfirmSheet, Icon, Sheet } from '@/components/kit';
 import { useState } from 'react';
-import { COLOR, T } from '@/theme/tokens';
+import { COLOR, T, radius, space } from '@/theme/tokens';
 import { useCheckRecipeShortages, type ShortageRecipe } from '../hooks';
 import { ShortageWarningSheet } from './ShortageWarningSheet';
 import { LateCloseSheet } from './LateCloseSheet';
@@ -51,7 +51,7 @@ function Pill({ text, bg, fg, onPress }: { text: string; bg: string; fg: string;
       onPress={onPress}
       accessibilityRole={onPress ? 'button' : undefined}
       accessibilityLabel={onPress ? `${text} 바꾸기` : undefined}
-      style={{ flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: 4, paddingHorizontal: 7, borderRadius: 7, backgroundColor: bg }}
+      style={{ flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: 4, paddingHorizontal: 7, borderRadius: radius.sm, backgroundColor: bg }}
     >
       <Text style={{ fontSize: 11, fontWeight: '800', color: fg }}>{text}</Text>
       {onPress ? <Icon name="chevronDown" size={11} color={fg} /> : null}
@@ -160,10 +160,10 @@ export function BusinessDayBar({ state }: { state: BusinessDayState }) {
   const stateLabel = state.status === 'break' ? '브레이크 중' : '영업 중';
 
   return (
-    <View style={{ marginBottom: 11 }}>
+    <View style={{ marginBottom: space.md }}>
       <View
         style={{
-          padding: 14, borderRadius: 16, borderWidth: 1, borderColor: T.line,
+          padding: space.md, borderRadius: 16, borderWidth: 1, borderColor: T.line,
           // 프로토타입 `.state-closed` 만 배경이 다르다. 경고색 카드는 쓰지 않는다.
           backgroundColor: state.status === 'closed' ? T.surface2 : T.surface,
         }}

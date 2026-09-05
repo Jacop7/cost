@@ -4,7 +4,7 @@
  */
 import { ReactElement, ReactNode } from 'react';
 import { Modal, Pressable, ScrollView, Text, View } from 'react-native';
-import { T } from '@/theme/tokens';
+import { T, TYPE, radius, space } from '@/theme/tokens';
 import { Button } from './Button';
 
 export function Sheet({ visible, onClose, children, title, sub, height, headerRight, scroll = true }: {
@@ -27,23 +27,23 @@ export function Sheet({ visible, onClose, children, title, sub, height, headerRi
         accessibilityLabel="닫기"
         style={{ flex: 1, backgroundColor: T.scrim }}
       />
-      <View accessibilityViewIsModal style={{ position: 'absolute', left: 0, right: 0, bottom: 0, backgroundColor: T.surface, borderTopLeftRadius: 22, borderTopRightRadius: 22, height: height as number | undefined, maxHeight: '90%', shadowColor: '#000', shadowOffset: { width: 0, height: -8 }, shadowOpacity: 0.15, shadowRadius: 40, elevation: 16 }}>
-        <View style={{ alignItems: 'center', paddingTop: 10 }}>
-          <View style={{ width: 38, height: 5, borderRadius: 3, backgroundColor: T.line }} />
+      <View accessibilityViewIsModal style={{ position: 'absolute', left: 0, right: 0, bottom: 0, backgroundColor: T.surface, borderTopLeftRadius: radius.xl, borderTopRightRadius: radius.xl, height: height as number | undefined, maxHeight: '90%', shadowColor: '#000', shadowOffset: { width: 0, height: -8 }, shadowOpacity: 0.15, shadowRadius: 40, elevation: 16 }}>
+        <View style={{ alignItems: 'center', paddingTop: space.sm }}>
+          <View style={{ width: 38, height: 5, borderRadius: radius.full, backgroundColor: T.line }} />
         </View>
         {title ? (
           <View style={{ flexDirection: 'row', alignItems: 'flex-start', paddingHorizontal: 20, paddingTop: 12 }}>
             <View style={{ flex: 1 }}>
               <Text style={{ fontSize: 20, fontWeight: '800', color: T.ink, letterSpacing: -0.4 }}>{title}</Text>
-              {sub ? <Text style={{ fontSize: 16, color: T.sub2, marginTop: 3, fontWeight: '600' }}>{sub}</Text> : null}
+              {sub ? <Text style={{ fontSize: 16, color: T.sub2, marginTop: space.xs, fontWeight: '600' }}>{sub}</Text> : null}
             </View>
             {headerRight}
           </View>
         ) : null}
         {scroll ? (
-          <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 14, paddingBottom: 40 }}>{children}</ScrollView>
+          <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, paddingTop: space.md, paddingBottom: 40 }}>{children}</ScrollView>
         ) : (
-          <View style={{ flex: 1, paddingTop: 14 }}>{children}</View>
+          <View style={{ flex: 1, paddingTop: space.md }}>{children}</View>
         )}
       </View>
     </Modal>
@@ -74,9 +74,9 @@ export function ConfirmSheet({
   return (
     <Sheet visible={visible} onClose={onCancel} title={title} scroll={false}>
       {message ? (
-        <Text style={{ fontSize: 15, lineHeight: 23, color: T.sub, marginTop: 2 }}>{message}</Text>
+        <Text style={{ fontSize: 15, lineHeight: TYPE.body.lineHeight, color: T.sub, marginTop: space.xs }}>{message}</Text>
       ) : null}
-      <View style={{ flexDirection: 'row', gap: 8, marginTop: 18, marginBottom: 6 }}>
+      <View style={{ flexDirection: 'row', gap: 8, marginTop: space.lg, marginBottom: space.sm }}>
         <View style={{ flex: 1 }}>
           <Button kind="ghost" size="lg" full onPress={onCancel}>{cancelText}</Button>
         </View>

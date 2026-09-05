@@ -10,7 +10,7 @@ import { type Href, useRouter } from 'expo-router';
 import { AppHeader, Badge, Button, Card, FilterButton, Icon, QueryState, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { formatPercent } from '@margincook/core';
-import { COLOR, T, won } from '@/theme/tokens';
+import { COLOR, T, won, TYPE, space } from '@/theme/tokens';
 import { useStoreLocalDate } from '@/features/business-day/businessDay';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
 import { useFixedCosts, useRevenueCheck } from '../hooks';
@@ -78,7 +78,7 @@ function FixedCostScreenBody({ localMonth }: { localMonth: string }) {
         <FilterButton label={`${month.slice(0, 4)}년 ${Number(month.slice(5))}월`} onPress={() => setMonthOpen(true)} />
       </View>
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 2, paddingBottom: 24, gap: 11 }}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 2, paddingBottom: 24, gap: space.md }}>
         <QueryState
           isLoading={fixed.isLoading}
           error={fixed.error}
@@ -88,7 +88,7 @@ function FixedCostScreenBody({ localMonth }: { localMonth: string }) {
           emptyHint="아래 ‘수정’으로 월 매출과 항목을 등록해 주세요"
         >
           <Card pad={0} style={{ overflow: 'hidden' }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 15, paddingHorizontal: 16 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: 16 }}>
               <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.ink }}>총 월매출</Text>
               <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{won(revenue)}</Text>
               <Text style={{ fontSize: 14, fontWeight: '600', color: T.sub2, marginLeft: 4 }}>원</Text>
@@ -99,28 +99,28 @@ function FixedCostScreenBody({ localMonth }: { localMonth: string }) {
 
           {items.map((it) => (
             <Card key={it.key} pad={0} style={{ overflow: 'hidden' }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 13, paddingHorizontal: 15, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: space.md, paddingHorizontal: space.md, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
                 <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.sub }}>{LABEL[it.key] ?? it.key}</Text>
                 <Text style={[{ fontSize: 14, fontWeight: '700', color: T.sub2 }, NUM]}>{pctOf(it.total)}</Text>
               </View>
-              <View style={{ paddingHorizontal: 15, paddingTop: 4, paddingBottom: 15 }}>
+              <View style={{ paddingHorizontal: space.md, paddingTop: 4, paddingBottom: space.md }}>
                 {it.lines.length === 0 ? (
-                  <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10 }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.sm }}>
                     <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.ink2 }}>합계 입력</Text>
                     <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{won(it.total)}원</Text>
                   </View>
                 ) : (
                   <>
                     {it.lines.map((l, i) => (
-                      <View key={`${l.name}-${i}`} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10, borderBottomWidth: i < it.lines.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
+                      <View key={`${l.name}-${i}`} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.sm, borderBottomWidth: i < it.lines.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
                         <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.ink2 }}>{l.name}</Text>
                         <View style={{ alignItems: 'flex-end' }}>
                           <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{won(l.amount)}원</Text>
-                          <Text style={[{ fontSize: 14, fontWeight: '600', color: COLOR.text.tertiary, marginTop: 2 }, NUM]}>{pctOf(l.amount)}</Text>
+                          <Text style={[{ fontSize: 14, fontWeight: '600', color: COLOR.text.tertiary, marginTop: space.xs }, NUM]}>{pctOf(l.amount)}</Text>
                         </View>
                       </View>
                     ))}
-                    <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 10, borderTopWidth: 1, borderTopColor: T.line }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: space.sm, borderTopWidth: 1, borderTopColor: T.line }}>
                       <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.ink2 }}>소계</Text>
                       <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{won(it.total)}원</Text>
                     </View>
@@ -132,15 +132,15 @@ function FixedCostScreenBody({ localMonth }: { localMonth: string }) {
 
           <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, paddingHorizontal: 2, marginTop: 2 }}>
             <Icon name="info" size={15} color={COLOR.text.tertiary} />
-            <Text style={{ flex: 1, fontSize: 14, color: COLOR.text.tertiary, lineHeight: 20 }}>
+            <Text style={{ flex: 1, fontSize: 14, color: COLOR.text.tertiary, lineHeight: TYPE.caption.lineHeight }}>
               고정지출률은 이 달의 <Text style={{ fontWeight: '700' }}>모든 메뉴 손익</Text>에 곱해져요. 여기 숫자를 고치면 전 메뉴 순이익률이 함께 바뀌어요.
             </Text>
           </View>
         </QueryState>
       </ScrollView>
 
-      <View style={{ paddingHorizontal: 20, paddingTop: 11, paddingBottom: 30, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 11 }}>
+      <View style={{ paddingHorizontal: 20, paddingTop: space.md, paddingBottom: 30, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: space.md }}>
           <Text style={{ flex: 1, fontSize: 14, fontWeight: '600', color: T.sub2 }}>고정 지출 합계</Text>
           <Text style={[{ fontSize: 18, fontWeight: '800', color: T.ink, marginRight: 8 }, NUM]}>{won(total)}원</Text>
           {rate !== null && rate !== undefined ? <Badge tone="blue" sm>{formatPercent(rate)}</Badge> : null}
@@ -162,7 +162,7 @@ function FixedCostScreenBody({ localMonth }: { localMonth: string }) {
                 accessibilityState={{ selected: on }}
                 accessibilityLabel={`${m.slice(0, 4)}년 ${Number(m.slice(5))}월`}
                 style={{
-                  flexDirection: 'row', alignItems: 'center', gap: 10, minHeight: 55, paddingHorizontal: 15,
+                  flexDirection: 'row', alignItems: 'center', gap: space.sm, minHeight: 55, paddingHorizontal: space.md,
                   borderBottomWidth: i === months.length - 1 ? 0 : 1, borderBottomColor: T.line2,
                 }}
               >

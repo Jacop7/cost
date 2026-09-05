@@ -9,7 +9,7 @@ import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter, type Href } from 'expo-router';
 import { AppHeader, Card, Icon, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { COLOR, T, won } from '@/theme/tokens';
+import { COLOR, T, won, TYPE, space } from '@/theme/tokens';
 import { useFixedBreakdown } from '../hooks';
 import { rangeLabel } from '@/lib/date';
 import { useSalesBusinessDate } from '@/features/business-day/businessDay';
@@ -69,7 +69,7 @@ function SalesFixedScreenBody({ serverToday }: { serverToday: string }) {
           </Pressable>
         }
       />
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 2, paddingBottom: 28, gap: 11 }}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 2, paddingBottom: 28, gap: space.md }}>
         <Card pad={0} style={{ overflow: 'hidden' }}>
           <DetailSummary
             rows={[
@@ -80,9 +80,9 @@ function SalesFixedScreenBody({ serverToday }: { serverToday: string }) {
         </Card>
 
         {fixed.data?.provisional ? (
-          <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, paddingVertical: 12, paddingHorizontal: 14, borderRadius: 12, backgroundColor: T.amberTint }}>
+          <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, paddingVertical: 12, paddingHorizontal: space.md, borderRadius: 12, backgroundColor: T.amberTint }}>
             <Icon name="info" size={15} color={T.amberText} />
-            <Text style={{ flex: 1, fontSize: 14, color: T.amberText, fontWeight: '600', lineHeight: 20 }}>
+            <Text style={{ flex: 1, fontSize: 14, color: T.amberText, fontWeight: '600', lineHeight: TYPE.caption.lineHeight }}>
               이 달 고정지출이 아직 없어 {fixed.data.month} 값으로 잠정 계산했어요.
             </Text>
           </View>
@@ -107,11 +107,11 @@ function SalesFixedScreenBody({ serverToday }: { serverToday: string }) {
                   accessibilityRole="button"
                   accessibilityLabel={`${LABEL[g.key] ?? g.key} 세부 내역`}
                   accessibilityState={{ expanded: Boolean(isOpen) }}
-                  style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 13, paddingHorizontal: 15 }}
+                  style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: space.md }}
                 >
                   <View style={{ flex: 1, minWidth: 0 }}>
                     <Text style={{ fontSize: 16, fontWeight: '800', color: T.ink }}>{LABEL[g.key] ?? g.key}</Text>
-                    <Text style={[{ fontSize: 14, color: COLOR.text.tertiary, fontWeight: '600', marginTop: 3 }, NUM]}>
+                    <Text style={[{ fontSize: 14, color: COLOR.text.tertiary, fontWeight: '600', marginTop: space.xs }, NUM]}>
                       월 {won(g.monthTotal)}원 · 이 기간 몫 {pct}%
                     </Text>
                   </View>
@@ -120,10 +120,10 @@ function SalesFixedScreenBody({ serverToday }: { serverToday: string }) {
                     <View style={{ transform: [{ rotate: isOpen ? '180deg' : '0deg' }] }}>
                       <Icon name="chevronDown" size={16} color={COLOR.text.tertiary} />
                     </View>
-                  ) : <View style={{ width: 16 }} />}
+                  ) : <View style={{ width: space.lg }} />}
                 </Pressable>
                 {isOpen && g.lines.length > 0 ? (
-                  <View style={{ backgroundColor: T.surface2, paddingVertical: 10, paddingHorizontal: 15, borderTopWidth: 1, borderTopColor: T.line2 }}>
+                  <View style={{ backgroundColor: T.surface2, paddingVertical: space.sm, paddingHorizontal: space.md, borderTopWidth: 1, borderTopColor: T.line2 }}>
                     {g.lines.map((l) => (
                       <View key={l.name} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 4 }}>
                         <Text style={{ flex: 1, fontSize: 14, fontWeight: '600', color: T.sub }}>{l.name}</Text>
