@@ -6,7 +6,7 @@
 노출되는 화면과 확정된 화면 정책만을 화면별로 정리한 살아 있는 확정안이다.
 
 - 최근 갱신일: 2026-09-04
-- 현재 디자인 동기화 ID: `DS-20260905-008`
+- 현재 디자인 동기화 ID: `DS-20260906-001`
 
 - 변경 과정과 원복 이력은 `full-page-flow-prototype-changelog.md`에 계속 누적한다.
 - 이 문서에는 대체된 옛 문구와 옛 구조를 남기지 않는다.
@@ -151,7 +151,7 @@ Safe Area 계산을 분리한다. 부록 C.3의 고위험 selector·renderer 매
 | 브랜드 | `--brand` | `#3182f6` |
 | 주 행동 | `--blue` | `#1470f5` |
 | 주 행동 pressed·tint 전경 | `--blue-pressed`, `--on-tint` | `#1465db` |
-| 링크·필수 표시 | `--text-link`, `--required` | `#1465db` |
+| 링크·강조·선택·필수 표시 | `--text-link`, `--accent`, `--selected-text`, `--required` | `#1465db` |
 | 주 행동 옅은 배경 | `--blue2` | `#ebf3fe` |
 | 위험·오류 | `--red` | `#da1222` |
 | 정상·여유 | `--green` | `#0b7f58` |
@@ -166,7 +166,12 @@ Safe Area 계산을 분리한다. 부록 C.3의 고위험 selector·renderer 매
 - 위험 버튼·상태 옅은 배경: `#feecec`
 - 계산 결과 테두리: `#b8d3ff`
 - 선택형 파란 테두리: `#c9ddff`
-- 비활성 Primary 버튼: `#6a7887` (흰 글자 대비 4.52:1)
+- 비활성 버튼: 각 variant의 기본 역할색을 유지하고 `opacity: 0.4` 적용. 별도 비활성 배경색 없음
+
+앱 의미 역할에서는 같은 `#1465db`도 행동 링크(`COLOR.text.link`), 강조 값·양의 방향
+(`COLOR.text.accent`), 선택 상태(`COLOR.state.selectedText`)로 나눈다. 상태 전경·tint의 앱 정본은
+`COLOR.status.*`이며 `T.green/T.amberText/T.red` 계열은 호환 별칭이다. 비활성 버튼은
+variant별 고유색을 유지하고 공통 opacity만 적용한다(사용자 결정 2026-09-06).
 
 ### 2.7 글꼴과 글자 위계
 

@@ -55,12 +55,11 @@ export function Button({
           flexDirection: iconRight ? 'row-reverse' : 'row',
           alignItems: 'center', justifyContent: 'center', gap: 6,
           alignSelf: full ? 'stretch' : 'flex-start',
-          backgroundColor: kind === 'primary' && disabled
-            ? COLOR.action.primaryDisabled
-            : kind === 'primary' && pressed && !blocked ? COLOR.action.primaryPressed : c.bg,
+          backgroundColor: kind === 'primary' && pressed && !blocked ? COLOR.action.primaryPressed : c.bg,
           borderWidth: c.border ? 1 : 0, borderColor: c.border,
           paddingVertical: s.pv, paddingHorizontal: s.ph, borderRadius: s.r,
-          opacity: disabled && kind !== 'primary' ? 0.4 : pressed && kind !== 'primary' ? 0.85 : 1,
+          // 2026-09-06 소유자 결정: variant 고유색은 유지하고 비활성 표현만 공통 opacity로 통일한다.
+          opacity: disabled ? 0.4 : pressed && kind !== 'primary' ? 0.85 : 1,
         },
         style,
       ]}

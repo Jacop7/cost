@@ -30,7 +30,7 @@ function Seg({ opts, sel, onSelect }: { opts: string[]; sel: string; onSelect: (
               borderColor: on ? COLOR.action.primary : T.line,
             }}
           >
-            <Text style={{ fontSize: 16, fontWeight: '700', color: on ? COLOR.text.link : T.sub }}>{o}</Text>
+            <Text style={{ fontSize: 16, fontWeight: '700', color: on ? COLOR.state.selectedText : T.sub }}>{o}</Text>
           </Pressable>
         );
       })}

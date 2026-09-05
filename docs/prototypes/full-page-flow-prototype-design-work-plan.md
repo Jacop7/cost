@@ -1,6 +1,6 @@
 ﻿# 전체 페이지 프로토타입 · 디자인 작업 실행서
 
-> 현재 디자인 동기화 ID: `DS-20260905-008`
+> 현재 디자인 동기화 ID: `DS-20260906-001`
 
 ## 0. 목적
 
@@ -131,13 +131,15 @@ Expo에서는 팔레트 `T.*`를 직접 고르는 대신 `COLOR.*` 의미 역할
 | 내부 구분선 | `T.line2` | `#F2F4F6` | 연속 Row·LayerFooter 상단 |
 | 브랜드 | `COLOR.brand.primary` | `#3182F6` | 로고·비상호작용 브랜드 식별 |
 | Primary | `COLOR.action.primary` | `#1470F5` | 대표 행동 배경·비텍스트 경계 |
-| 비활성 Primary | `COLOR.action.primaryDisabled` | `#6A7887` | 흰 글자 4.52:1 유지 |
+| 비활성 Button | 각 variant의 기본 역할색 + `opacity: 0.4` | 별도 색 없음 | 역할색은 유지하고 비활성 표현만 공통 적용 · 대비 면제 |
 | 링크 | `COLOR.text.link` | `#1465DB` | 밝은 표면 위 명시적 링크·강조 전경 |
+| 강조 값 | `COLOR.text.accent` | `#1465DB` | KPI·양의 방향·읽어야 하는 강조값 |
+| 선택 상태 | `COLOR.state.selectedText` | `#1465DB` | 선택된 옵션·탭·칩의 글자 |
 | 정보 tint | `COLOR.action.primaryTint` | `#EBF3FE` | 대표 계산 결과·정보 Notice |
 | tint 전경 | `COLOR.action.onTint` | `#1465DB` | 정보 tint 위 글자·아이콘 |
-| 위험 | `T.red` | `#DA1222` | 음수·삭제·철회·목표 미달 |
-| 긍정 | `T.green` | `#0B7F58` | 완료·정상 상태 |
-| 주의 | `T.amberText` | `#A16000` | 확인이 필요한 상태 |
+| 위험 | `COLOR.status.negative` | `#DA1222` | 음수·삭제·철회·목표 미달 |
+| 긍정 | `COLOR.status.positive` | `#0B7F58` | 완료·정상 상태 |
+| 주의 | `COLOR.status.caution` | `#A16000` | 확인이 필요한 상태 |
 
 - 유형명 `입고 / 판매 소진 / 차감 / 폐기`처럼 정보 분류를 담당하는 제목은 상태색이 아니라
   `T.ink`를 사용한다. 변화량만 의미에 따라 파랑·빨강을 사용한다.

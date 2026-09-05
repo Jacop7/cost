@@ -1,6 +1,6 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-05T14:43:49.933Z",
+  "generatedAt": "2026-09-05T20:35:59.204Z",
   "schemaVersion": 1,
   "script": {
    "name": "full-page-flow-prototype-design-audit.mjs",
@@ -8,8 +8,8 @@
   },
   "target": {
    "path": "0_full-page-flow-prototype-ui-applied.html",
-   "sha256": "04951ea20efe938028d6dc9b5437a01520965331d859ede5b5c75df97346a59b",
-   "designSyncId": "DS-20260905-008"
+   "sha256": "d5c9c2462d300cbb6ce022293eaa9e7fb8b332bf429c77799bc81c86f699b694",
+   "designSyncId": "DS-20260906-001"
   },
   "runner": {
    "node": "v24.15.0",
@@ -48,7 +48,7 @@
    "합계": 6974
   },
   "color": {
-   "종류": 49,
+   "종류": 48,
    "합계": 10848
   },
   "space": {
@@ -76,11 +76,11 @@
    "합계": 697
   },
   "contrast": {
-   "종류": 32,
+   "종류": 31,
    "합계": 6974
   },
   "contrastRole": {
-   "종류": 346,
+   "종류": 345,
    "합계": 6974
   }
  },
@@ -2919,6 +2919,15 @@
    ]
   },
   {
+   "key": "bg|rgb(20, 112, 245)|author",
+   "n": 183,
+   "ex": [
+    "(no-card).expo-fab",
+    "sheet-actions.save",
+    "recipe-title-row.recipe-sale-select"
+   ]
+  },
+  {
    "key": "bg|rgba(0, 0, 0, 0.42)|author",
    "n": 182,
    "ex": [
@@ -2930,15 +2939,6 @@
    "n": 182,
    "ex": [
     "(no-card).handle"
-   ]
-  },
-  {
-   "key": "bg|rgb(20, 112, 245)|author",
-   "n": 180,
-   "ex": [
-    "(no-card).expo-fab",
-    "sheet-actions.save",
-    "recipe-title-row.recipe-sale-select"
    ]
   },
   {
@@ -3176,13 +3176,6 @@
    "ex": [
     "(no-card).edit-menu-stage",
     "(no-card).sheet-preview-stage"
-   ]
-  },
-  {
-   "key": "bg|rgb(106, 120, 135)|author",
-   "n": 3,
-   "ex": [
-    "(no-card).primary"
    ]
   },
   {
@@ -11513,7 +11506,7 @@
   },
   {
    "key": "rgb(255, 255, 255) on rgb(20, 112, 245)|4.5|normal|AA",
-   "n": 173,
+   "n": 176,
    "ex": [
     "(no-card).expo-fab 16px/700 \"식재료 추가\"",
     "sheet-actions.save 16px/800 \"완료\"",
@@ -11713,14 +11706,6 @@
    "n": 3,
    "ex": [
     "card.b 22px/700 \"28.00원/g\""
-   ]
-  },
-  {
-   "key": "rgb(255, 255, 255) on rgb(106, 120, 135)|4.52|normal|AA",
-   "n": 3,
-   "ex": [
-    "(no-card).primary 16px/700 \"발주 등록\"",
-    "(no-card).primary 16px/800 \"추가\""
    ]
   },
   {
@@ -13767,6 +13752,15 @@
    ]
   },
   {
+   "key": "(no-card).primary|rgb(255, 255, 255)|rgb(20, 112, 245)|4.5|AA",
+   "n": 24,
+   "ex": [
+    "입고",
+    "확인",
+    "닫기"
+   ]
+  },
+  {
    "key": "(no-card).save|rgb(255, 255, 255)|rgb(20, 112, 245)|4.5|AA",
    "n": 24,
    "ex": [
@@ -13816,15 +13810,6 @@
     "100%",
     "28.3%",
     "1.6%"
-   ]
-  },
-  {
-   "key": "(no-card).primary|rgb(255, 255, 255)|rgb(20, 112, 245)|4.5|AA",
-   "n": 21,
-   "ex": [
-    "입고",
-    "확인",
-    "닫기"
    ]
   },
   {
@@ -15193,14 +15178,6 @@
    "ex": [
     "2026-09-01 · 04:",
     "식재료 상세 → 구매 링크에서"
-   ]
-  },
-  {
-   "key": "(no-card).primary|rgb(255, 255, 255)|rgb(106, 120, 135)|4.52|AA",
-   "n": 3,
-   "ex": [
-    "발주 등록",
-    "추가"
    ]
   },
   {

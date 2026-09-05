@@ -1,6 +1,6 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-05T14:43:54.400Z",
+  "generatedAt": "2026-09-05T20:37:39.601Z",
   "schemaVersion": 1,
   "script": {
    "name": "full-page-flow-prototype-contrast-fix.mjs",
@@ -8,9 +8,9 @@
   },
   "designAudit": {
    "path": "full-page-flow-prototype-design-audit.json",
-   "sha256": "6a3588f044e0317f39720fb23093a584475529c395335888e97c869bacd30434",
-   "targetSha256": "04951ea20efe938028d6dc9b5437a01520965331d859ede5b5c75df97346a59b",
-   "designSyncId": "DS-20260905-008"
+   "sha256": "581985ba99fcddb075f6f81c9fb1dfc48e4619f6bde49a048bf800520bd0bffe",
+   "targetSha256": "d5c9c2462d300cbb6ce022293eaa9e7fb8b332bf429c77799bc81c86f699b694",
+   "designSyncId": "DS-20260906-001"
   },
   "rules": {
    "기준": "WCAG 2.x AA — 일반 4.5:1, 큰 글자(24px 이상 또는 18.66px&700 이상) 3:1",
@@ -19,7 +19,7 @@
   }
  },
  "summary": {
-  "pairs": 32,
+  "pairs": 31,
   "failingPairs": 0,
   "totalObservations": 6974,
   "failingObservations": 0
@@ -152,7 +152,7 @@
    "fg": "#FFFFFF",
    "bg": "#1470F5",
    "size": "normal",
-   "observations": 173,
+   "observations": 176,
    "ratio": 4.5,
    "target": 4.5,
    "passAA": true,
@@ -641,23 +641,6 @@
    "fixAAA": null,
    "where": [
     "card.b 22px/700 \"28.00원/g\""
-   ]
-  },
-  {
-   "fg": "#FFFFFF",
-   "bg": "#6A7887",
-   "size": "normal",
-   "observations": 3,
-   "ratio": 4.52,
-   "target": 4.5,
-   "passAA": true,
-   "moved": "background",
-   "fix": null,
-   "fixBackground": null,
-   "fixAAA": null,
-   "where": [
-    "(no-card).primary 16px/700 \"발주 등록\"",
-    "(no-card).primary 16px/800 \"추가\""
    ]
   },
   {

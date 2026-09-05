@@ -89,7 +89,7 @@ export function LateCloseSheet({ visible, timezone, loading, onCancel, onConfirm
               accessibilityState={{ selected: on }}
               style={{ paddingVertical: 8, paddingHorizontal: 10, borderRadius: 9, borderWidth: 1, borderColor: on ? COLOR.action.primary : T.line, backgroundColor: on ? COLOR.action.primaryTint : T.surface }}
             >
-              <Text style={[{ fontSize: 14, fontWeight: on ? '800' : '600', color: on ? COLOR.text.link : T.sub2 }, NUM]}>{t}</Text>
+              <Text style={[{ fontSize: 14, fontWeight: on ? '800' : '600', color: on ? COLOR.state.selectedText : T.sub2 }, NUM]}>{t}</Text>
             </Pressable>
           );
         })}

@@ -64,7 +64,7 @@ function PreviewRow({ label, before, after, beforeTone, last }: {
       <Text style={[{ fontSize: 16, fontWeight: '700', color: COLOR.text.tertiary }, NUM]}>
         <Text style={{ color: beforeTone === 'red' ? T.red : COLOR.text.tertiary, fontWeight: beforeTone === 'red' ? '800' : '700' }}>{before}</Text>
         {' → '}
-        <Text style={{ color: COLOR.text.link, fontWeight: '800' }}>{after}</Text>
+        <Text style={{ color: COLOR.text.accent, fontWeight: '800' }}>{after}</Text>
       </Text>
     </View>
   );
@@ -220,7 +220,7 @@ function QuickInboundScreenBody({ localDate }: { localDate: string }) {
               <Card pad={16}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 12 }}>
                   <Text style={{ fontSize: 16, fontWeight: '800', color: T.ink }}>입고 정보</Text>
-                  <Text style={{ fontSize: 13, fontWeight: '700', color: COLOR.text.link }}>재고와 단가에 반영</Text>
+                  <Text style={{ fontSize: 13, fontWeight: '700', color: COLOR.text.accent }}>재고와 단가에 반영</Text>
                 </View>
 
                 <Field label="구매한 곳 · 옵션" req>
@@ -298,7 +298,7 @@ function QuickInboundScreenBody({ localDate }: { localDate: string }) {
                     >
                       <Icon name="plus" size={18} color={T.onColor} sw={2.4} />
                     </Pressable>
-                    <Text style={[{ flex: 1, textAlign: 'right', fontSize: 14, fontWeight: '700', color: COLOR.text.link }, NUM]}>
+                    <Text style={[{ flex: 1, textAlign: 'right', fontSize: 14, fontWeight: '700', color: COLOR.text.accent }, NUM]}>
                       추가 재고 {formatQuantity(added, unit)}
                     </Text>
                   </View>
@@ -388,7 +388,7 @@ function QuickInboundScreenBody({ localDate }: { localDate: string }) {
                   style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 14, paddingHorizontal: 4 }}
                 >
                   <View style={{ flex: 1 }}>
-                    <Text style={{ fontSize: 16, fontWeight: '700', color: choice.mode === 'direct' ? COLOR.text.link : T.ink }}>직접 입력</Text>
+                    <Text style={{ fontSize: 16, fontWeight: '700', color: choice.mode === 'direct' ? COLOR.state.selectedText : T.ink }}>직접 입력</Text>
                     <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 2 }}>구매처·용량·결제금액을 직접 적어요</Text>
                   </View>
                   {choice.mode === 'direct' ? <Icon name="check" size={18} color={COLOR.action.primary} sw={2.4} /> : null}
@@ -404,7 +404,7 @@ function QuickInboundScreenBody({ localDate }: { localDate: string }) {
                       style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 14, paddingHorizontal: 4, borderTopWidth: 1, borderTopColor: T.line2 }}
                     >
                       <View style={{ flex: 1, minWidth: 0 }}>
-                        <Text style={{ fontSize: 16, fontWeight: '700', color: on ? COLOR.text.link : T.ink }} numberOfLines={1}>
+                        <Text style={{ fontSize: 16, fontWeight: '700', color: on ? COLOR.state.selectedText : T.ink }} numberOfLines={1}>
                           {o.vendorName ? `${o.vendorName} · ` : ''}{o.name}
                         </Text>
                         <Text style={[{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 2 }, NUM]}>

@@ -176,7 +176,7 @@ export function StockEditSheet({
 
               {/* 추가 / 차감 */}
               <View style={{ flexDirection: 'row', gap: 8, marginBottom: 12 }}>
-                {([['add', '추가', COLOR.text.link], ['sub', '차감', T.red]] as const).map(([id, label, accent]) => {
+                {([['add', '추가', COLOR.text.accent], ['sub', '차감', T.red]] as const).map(([id, label, accent]) => {
                   const on = dir === id;
                   return (
                     <Pressable
@@ -206,7 +206,7 @@ export function StockEditSheet({
                 unit={dispUnit}
                 value={adjVal}
                 onChange={(t) => setAdjVal(clampByUnit(t, dispUnit))}
-                accent={dir === 'add' ? COLOR.text.link : T.red}
+                accent={dir === 'add' ? COLOR.text.accent : T.red}
               />
 
               {/* 최종값 — 사장님이 뺄셈하지 않는다. */}
@@ -282,7 +282,7 @@ export function StockEditSheet({
           >
             <Icon name="info" size={15} color={COLOR.text.tertiary} />
             <Text style={{ flex: 1, fontSize: 14, color: T.sub2 }}>
-              새로 사 왔다면 <Text style={{ fontWeight: '700', color: COLOR.text.link }}>재고 추가</Text>로 넣어 주세요 · 단가도 함께 반영돼요
+              새로 사 왔다면 <Text style={{ fontWeight: '700', color: COLOR.text.accent }}>재고 추가</Text>로 넣어 주세요 · 단가도 함께 반영돼요
             </Text>
           </Pressable>
         ) : null}

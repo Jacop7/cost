@@ -249,7 +249,7 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
             return (
               <Pressable key={k} onPress={() => setTab(k)} accessibilityRole="tab" accessibilityLabel={`${label} ${n}건`} accessibilityState={{ selected: on }} style={{ paddingBottom: 11 }}>
                 <Text style={{ fontSize: 16, fontWeight: on ? '700' : '600', color: on ? T.ink : COLOR.text.tertiary }}>
-                  {label} <Text style={[{ color: on ? COLOR.text.link : COLOR.text.tertiary }, NUM]}>{n}</Text>
+                  {label} <Text style={[{ color: on ? COLOR.state.selectedText : COLOR.text.tertiary }, NUM]}>{n}</Text>
                 </Text>
                 {on ? <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 2.5, backgroundColor: T.ink, borderRadius: 2 }} /> : null}
               </Pressable>

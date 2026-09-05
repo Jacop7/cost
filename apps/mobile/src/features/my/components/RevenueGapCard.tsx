@@ -113,7 +113,7 @@ function Row({ label, value, accent }: { label: string; value: string; accent?: 
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
       <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.sub }}>{label}</Text>
-      <Text style={[{ fontSize: 16, fontWeight: accent ? '800' : '700', color: accent ? COLOR.text.link : T.ink }, NUM]}>
+      <Text style={[{ fontSize: 16, fontWeight: accent ? '800' : '700', color: accent ? COLOR.text.accent : T.ink }, NUM]}>
         {value}
       </Text>
     </View>

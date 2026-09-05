@@ -6,7 +6,7 @@
 
 - 상태: 서비스 기준 재검토 개정안
 - 개정일: 2026-09-02
-- 현재 디자인 동기화 ID: `DS-20260905-008`
+- 현재 디자인 동기화 ID: `DS-20260906-001`
 - 적용 대상: `docs/prototypes/full-page-flow-prototype.html`, UI 적용 복사본과 향후 Expo 공용 UI
 - 등록 인벤토리: 프로토타입 `screen` 키 62개, 팝업·조건 상태 호스트 123개, 고유 ID 98개
   (PRT-182 정정: 이전 표기 `125 / 99`는 `PRT-151`이 `recipe_target_help`를 두 호스트에서
@@ -125,22 +125,24 @@
 | 읽히는 보조 글자 | `COLOR.text.tertiary` `#66717E` | 보조 설명·날짜·단위 |
 | 비활성 글자 | `COLOR.text.disabled` `#8B95A1` | 실제 비활성 컨트롤에만 사용 |
 | 기본·약한·강한 경계 | `T.line`, `T.line2`, `T.line3` | 필드·행·탭 |
-| 브랜드·행동·링크·정보 표면 | `COLOR.brand.primary`, `COLOR.action.primary`, `COLOR.text.link`, `COLOR.action.primaryTint` | 로고·주요 행동·명시적 링크·선택/안내 |
-| 비활성 Primary | `COLOR.action.primaryDisabled` `#6A7887` | 흰 라벨을 쓰는 비활성 주 버튼 |
-| 긍정·주의·위험 | `T.green #0B7F58`, `T.amberText #A16000`, `T.red #DA1222` | 상태 의미. 밝은 표면 셋과 자기 tint에서 AA 통과 |
-| 상태 표면 | `T.greenTint`, `T.amberTint`, `T.redTint` | 상태 배경 |
+| 브랜드·행동·링크·강조·선택·정보 표면 | `COLOR.brand.primary`, `COLOR.action.primary`, `COLOR.text.link`, `COLOR.text.accent`, `COLOR.state.selectedText`, `COLOR.action.primaryTint` | 로고·주요 행동·명시적 링크·강조 값·선택 상태·안내 |
+| 비활성 Button | 각 variant 역할색 + `opacity: 0.4` | Primary·tint·gray·ghost·danger 공통. 별도 비활성 배경색을 만들지 않음 |
+| 긍정·주의·위험 | `COLOR.status.positive #0B7F58`, `COLOR.status.caution #A16000`, `COLOR.status.negative #DA1222` | 상태 의미. 밝은 표면 셋과 자기 tint에서 AA 통과 |
+| 상태 표면 | `COLOR.status.positiveTint`, `COLOR.status.cautionTint`, `COLOR.status.negativeTint` | 상태 배경 |
 | 반전 글자·스크림 | `T.onColor`, `T.scrim` | 색 배경·오버레이 |
 
 신규 UI는 `T.blue*` 팔레트를 직접 쓰지 않고 의미 역할을 선택한다. `brand.primary #3182F6`와
-`action.primary #1470F5`의 차이는 의도된 것이며, `text.link #1465DB`는 글자 전경이라
-밝은 표면과 tint 모두에서 4.5:1을 지킨다. 프로토타입 카탈로그의 바깥 회색 배경은 제품 토큰이 아니다.
+`action.primary #1470F5`의 차이는 의도된 것이다. `text.link`, `text.accent`,
+`state.selectedText`는 현재 `#1465DB`로 같지만 행동·강조·선택이라는 서로 다른 변경 경계를
+가진다. 비활성 Button은 variant별 고유색을 보존하고 `opacity: 0.4`만 공통 적용한다
+(사용자 결정 2026-09-06). 프로토타입 카탈로그의 바깥 회색 배경은 제품 토큰이 아니다.
 
 ### 1.2 대비
 
 - 일반 텍스트는 4.5:1, 큰 텍스트와 비텍스트 UI는 3:1 이상이어야 한다.
 - 원시 브랜드·상태색은 작은 글자 전경으로 자동 승인된 값이 아니다.
 - `StatusBadge`, tint형 `Badge`, `Notice`, Primary 라벨은 앱 계약과 프로토타입 전수 감사에서 검산한다.
-- `S2` 기준 프로토타입 텍스트 6,974개는 AA 미달 0이고, 앱 역할 계약 39쌍도 절대 기준을 통과한다.
+- `S2` 기준 프로토타입 텍스트 6,974개는 AA 미달 0이고, 앱 역할 계약 44쌍도 절대 기준을 통과한다.
 - 상태는 색과 함께 텍스트·아이콘·부호 중 하나를 사용한다.
 
 대비 미결정 조합은 P0이며 부록 C에서 관리한다.

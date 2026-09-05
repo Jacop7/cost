@@ -118,7 +118,7 @@ function SalesRevenueScreenBody({ serverToday }: { serverToday: string }) {
                   <View style={{ flex: 1, minWidth: 0 }}>
                     <Text style={{ fontSize: 16, fontWeight: '600', color: T.sub }}>{e.name} <Text style={{ color: COLOR.text.tertiary }}>×{e.qty}</Text></Text>
                     {/* 미지정은 회색이다 — 매장으로 보이면 안 된다(0093). */}
-                    <Text style={{ fontSize: 13, fontWeight: '700', color: e.channel ? COLOR.text.link : COLOR.text.tertiary, marginTop: 2 }}>
+                    <Text style={{ fontSize: 13, fontWeight: '700', color: e.channel ? COLOR.text.accent : COLOR.text.tertiary, marginTop: 2 }}>
                       {channelName(e.channel)}
                     </Text>
                   </View>

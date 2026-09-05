@@ -197,7 +197,7 @@ function FixedCostEditScreenBody({ localMonth }: { localMonth: string }) {
                   style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 9, paddingHorizontal: 12, borderRadius: 10, backgroundColor: T.surface2 }}
                 >
                   <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub2 }}>채널 배분</Text>
-                  <Text style={{ flex: 1, fontSize: 14, fontWeight: '700', color: it.weights ? COLOR.text.link : COLOR.text.tertiary }} numberOfLines={1}>
+                  <Text style={{ flex: 1, fontSize: 14, fontWeight: '700', color: it.weights ? COLOR.text.accent : COLOR.text.tertiary }} numberOfLines={1}>
                     {it.weights
                       ? Object.entries(it.weights).filter(([, v]) => v > 0).map(([k, v]) => `${CH_LABEL[k] ?? k} ${v}%`).join(' · ')
                       : '매출 비중으로 자동'}
@@ -282,7 +282,7 @@ function FixedCostEditScreenBody({ localMonth }: { localMonth: string }) {
         <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 11 }}>
           <Text style={{ flex: 1, fontSize: 14, fontWeight: '600', color: T.sub2 }}>고정지출률</Text>
           <Text style={[{ fontSize: 18, fontWeight: '800', color: T.ink, marginRight: 8 }, NUM]}>{won(sum)}원</Text>
-          <Text style={[{ fontSize: 16, fontWeight: '800', color: rate === null ? COLOR.text.tertiary : COLOR.text.link }, NUM]}>
+          <Text style={[{ fontSize: 16, fontWeight: '800', color: rate === null ? COLOR.text.tertiary : COLOR.text.accent }, NUM]}>
             {rate === null ? '—' : formatPercent(rate)}
           </Text>
         </View>

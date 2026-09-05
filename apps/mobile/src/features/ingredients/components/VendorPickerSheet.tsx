@@ -62,7 +62,7 @@ export function VendorPickerSheet({
                 borderWidth: 1, borderColor: !value ? COLOR.action.primary : T.line,
               }}
             >
-              <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: !value ? COLOR.text.link : COLOR.text.tertiary }}>지정 안 함</Text>
+              <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: !value ? COLOR.state.selectedText : COLOR.text.tertiary }}>지정 안 함</Text>
               {!value ? <Icon name="check" size={17} color={COLOR.action.primary} sw={2.4} /> : null}
             </Pressable>
           ) : null}
@@ -82,7 +82,7 @@ export function VendorPickerSheet({
                 }}
               >
                 <View style={{ flex: 1, minWidth: 0 }}>
-                  <Text style={{ fontSize: 16, fontWeight: '700', color: on ? COLOR.text.link : T.ink2 }}>{v.name}</Text>
+                  <Text style={{ fontSize: 16, fontWeight: '700', color: on ? COLOR.state.selectedText : T.ink2 }}>{v.name}</Text>
                   {v.usedCount > 0 ? <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 2 }}>발주 {v.usedCount}건</Text> : null}
                 </View>
                 {on ? <Icon name="check" size={17} color={COLOR.action.primary} sw={2.4} /> : null}

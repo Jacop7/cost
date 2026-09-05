@@ -310,7 +310,7 @@ function LanguageEditor({ serverLocale, serverRevision, staleError, refetch }: {
         {NEEDS_RESTART.has(D.lang) ? (
           <View style={{ flexDirection: 'row', gap: 7, marginBottom: 12, padding: 13, borderRadius: 12, backgroundColor: COLOR.action.primaryTint, alignItems: 'flex-start' }}>
             <Icon name="info" size={15} color={COLOR.action.primary} />
-            <Text style={{ flex: 1, fontSize: 14, color: COLOR.text.link, lineHeight: 20, fontWeight: '600' }}>
+            <Text style={{ flex: 1, fontSize: 14, color: COLOR.text.accent, lineHeight: 20, fontWeight: '600' }}>
               {D.label}는 글꼴{D.rtl ? '과 오른쪽→왼쪽 방향' : ''}이 달라서, 앱을 다시 켜면 적용돼요. 숫자 표기는 저장하면 바로 바뀌어요.
             </Text>
           </View>

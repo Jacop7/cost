@@ -87,7 +87,7 @@ export function Chip({ children, active, tone, onPress }: { children: ReactNode;
       hitSlop={6}
       style={{ flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: 7, paddingHorizontal: 12, borderRadius: 999, backgroundColor: active ? T.ink : tone === 'blue' ? COLOR.action.primaryTint : T.surface, borderWidth: active ? 0 : 1, borderColor: T.line }}
     >
-      <Text style={{ fontSize: 16, fontWeight: '600', color: active ? T.onColor : tone === 'blue' ? COLOR.text.link : T.sub }}>{children}</Text>
+      <Text style={{ fontSize: 16, fontWeight: '600', color: active ? T.onColor : tone === 'blue' ? COLOR.text.accent : T.sub }}>{children}</Text>
     </Pressable>
   );
 }
@@ -301,7 +301,7 @@ export function SegTabs({ tabs, active = 0, onChange }: { tabs: { label: string;
         return (
           <Pressable key={i} onPress={() => onChange?.(i)} style={[{ flex: 1, alignItems: 'center', justifyContent: 'center', flexDirection: 'row', gap: 5, paddingVertical: 9, borderRadius: 9, backgroundColor: on ? T.surface : 'transparent' }, on ? cardShadow : null]}>
             <Text style={{ fontSize: 16, fontWeight: on ? '700' : '600', color: on ? T.ink : COLOR.text.tertiary }}>{t.label}</Text>
-            {t.count != null ? <Text style={{ fontSize: 16, fontWeight: '700', color: on ? COLOR.text.link : COLOR.text.tertiary }}>{t.count}</Text> : null}
+            {t.count != null ? <Text style={{ fontSize: 16, fontWeight: '700', color: on ? COLOR.state.selectedText : COLOR.text.tertiary }}>{t.count}</Text> : null}
           </Pressable>
         );
       })}

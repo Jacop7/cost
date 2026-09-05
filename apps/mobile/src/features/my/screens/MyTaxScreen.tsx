@@ -250,7 +250,7 @@ export default function MyTaxScreen() {
         {/* 저장 직전에 얼마가 빠지는지 — 재고 추가 화면 하단과 같은 짜임 */}
         <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 2, paddingBottom: 12 }}>
           <Text style={{ flex: 1, fontSize: 15, fontWeight: '700', color: T.sub }}>판매가에서 빠지는 몫</Text>
-          <Text style={[{ fontSize: 16, fontWeight: '800', color: COLOR.text.link }, tnum]}>
+          <Text style={[{ fontSize: 16, fontWeight: '800', color: COLOR.text.accent }, tnum]}>
             {(Math.round(rate * 1000) / 10).toFixed(1)}%
           </Text>
         </View>

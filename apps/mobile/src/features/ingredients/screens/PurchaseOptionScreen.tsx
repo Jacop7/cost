@@ -237,7 +237,7 @@ export function PurchaseOptionScreen() {
                       <Icon name="arrowRight" size={14} color={COLOR.action.primary} sw={2.2} />
                     </>
                   ) : null}
-                  <Text style={[{ fontSize: 16, fontWeight: '800', color: COLOR.text.link }, tnum]}>
+                  <Text style={[{ fontSize: 16, fontWeight: '800', color: COLOR.text.accent }, tnum]}>
                     {formatUnitPrice(unitPrice, base)}
                   </Text>
                 </View>
