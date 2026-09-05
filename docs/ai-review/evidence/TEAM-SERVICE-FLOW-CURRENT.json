@@ -4,11 +4,12 @@
     "path": "docs/팀서비스-자동흐름-구현계획.md",
     "sha256": "29cea3da0dccdf085e6603f1aacfe69149826407a7a9de0fed0884e3ac850820"
   },
-  "current_verdict": "PLAN_CHANGES_REQUIRED_BEFORE_PH_FEASIBILITY",
+  "current_verdict": "PLAN_READY_FOR_PH_FEASIBILITY_READ_ONLY",
   "allowed_actions": [
     "READ",
     "PLAN_REPAIR",
-    "PLAN_TEST"
+    "PLAN_TEST",
+    "PH_FEASIBILITY_READ_ONLY"
   ],
   "implementation_authorized": false,
   "service_ready": false,
@@ -23,7 +24,7 @@
       "sha256": "f80d3317af671be0059a39a08aa807728d28b189d02f4b71219dc45dfddc548a"
     },
     "blocking_findings": 7,
-    "current_candidate": "V0.4_PENDING_INDEPENDENT_RECHECK"
+    "current_candidate": "V0.4_PLAN_FINDINGS_CLOSED_RUNTIME_NOT_PASSED"
   },
   "runtime_gates": {
     "PH_FEASIBILITY": "NOT_EXECUTED",
@@ -84,45 +85,55 @@
   "findings": [
     {
       "finding_id": "SF-R3-01",
-      "implementation_in_plan": "PROPOSED_V0.4",
-      "independent_closure": "PENDING",
+      "implementation_in_plan": "PLAN_SATISFIED_V0.4",
+      "independent_closure": "CLOSED_AT_PLAN_LEVEL",
       "runtime_verified": false
     },
     {
       "finding_id": "SF-R3-02",
-      "implementation_in_plan": "PROPOSED_V0.4",
-      "independent_closure": "PENDING",
+      "implementation_in_plan": "PLAN_SATISFIED_V0.4",
+      "independent_closure": "CLOSED_AT_PLAN_LEVEL",
       "runtime_verified": false
     },
     {
       "finding_id": "SF-R3-03",
-      "implementation_in_plan": "PROPOSED_V0.4",
-      "independent_closure": "PENDING",
+      "implementation_in_plan": "PLAN_SATISFIED_V0.4",
+      "independent_closure": "CLOSED_AT_PLAN_LEVEL",
       "runtime_verified": false
     },
     {
       "finding_id": "SF-R3-04",
-      "implementation_in_plan": "PROPOSED_V0.4",
-      "independent_closure": "PENDING",
+      "implementation_in_plan": "PLAN_SATISFIED_V0.4",
+      "independent_closure": "CLOSED_AT_PLAN_LEVEL",
       "runtime_verified": false
     },
     {
       "finding_id": "SF-R3-05",
-      "implementation_in_plan": "PROPOSED_V0.4",
-      "independent_closure": "PENDING",
+      "implementation_in_plan": "PLAN_SATISFIED_V0.4",
+      "independent_closure": "CLOSED_AT_PLAN_LEVEL",
       "runtime_verified": false
     },
     {
       "finding_id": "SF-R3-06",
-      "implementation_in_plan": "PROPOSED_V0.4",
-      "independent_closure": "PENDING",
+      "implementation_in_plan": "PLAN_SATISFIED_V0.4",
+      "independent_closure": "CLOSED_AT_PLAN_LEVEL",
       "runtime_verified": false
     },
     {
       "finding_id": "SF-R3-07",
-      "implementation_in_plan": "PROPOSED_V0.4",
-      "independent_closure": "PENDING",
+      "implementation_in_plan": "PLAN_SATISFIED_V0.4",
+      "independent_closure": "CLOSED_AT_PLAN_LEVEL",
       "runtime_verified": false
     }
-  ]
+  ],
+  "latest_recheck": {
+    "status": "PLAN_SATISFIED",
+    "formal_gate": false,
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-PLAN-R4.md",
+    "sha256": "13f8788b8147d8613e9671243499eeffd41bf53b92f809e3441ceb305edb0d0f",
+    "reviewed_plan_sha256": "29cea3da0dccdf085e6603f1aacfe69149826407a7a9de0fed0884e3ac850820",
+    "reviewed_acceptance_sha256": "3ee86cacdae35ee2e4abd0ecbf3c534142ffd4b422350c00476b277c1f0aaa43",
+    "reviewed_state_sha256": "47112e4c6b82a2c2dfb441271a64fd75030bc20fd61becccaa89170084254302"
+  },
+  "document_status_note": "Plan v0.4 text is the immutable pre-recheck snapshot; current verdict is this sidecar with R4 exact-hash receipt. No formal/runtime gate promotion."
 }

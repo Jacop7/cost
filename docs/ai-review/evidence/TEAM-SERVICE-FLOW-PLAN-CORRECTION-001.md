@@ -74,3 +74,11 @@ source commit: bdebbebb32aeaf94a750ea36b3038c36ac4c90f1.
 최신 plan/acceptance/state/review SHA는 TEAM-SERVICE-FLOW-CURRENT.json에 결속한다.
 R3 대상 v0.3 원문은 R3.input.json과 918a29c에 보존되어 있다.
 현재 명세/증거 검사 16/16은 21개 수용 시험의 실제 실행 또는 formal gate PASS가 아니다.
+
+## R4 재확인 이후 최신 판정
+
+R4가 v0.4 exact plan/acceptance/state SHA에 대해 7개 모두 PLAN_SATISFIED로 반환했다.
+CURRENT에 R3 Finding의 계획 수준 종결과 R4 원본 hash를 연결했다.
+현재 판정: PLAN_READY_FOR_PH_FEASIBILITY_READ_ONLY. 다음은 HOST-SCOPE-001 읽기 전용 조사다.
+v0.4 본문의 검수 전 상태는 불변 입력 snapshot이며 최신 판정은 CURRENT/R4가 소유한다.
+P2 exact profile, 실질 구현, 21개 AC 실행, formal gate, 실제 발송, 전체 verify는 아직 미통과다.
