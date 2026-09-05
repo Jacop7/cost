@@ -19,13 +19,80 @@ const auditBytes = readFileSync(auditPath), claimBytes = readFileSync(claimsPath
 const audit = JSON.parse(auditBytes.toString('utf8'));
 const claims = JSON.parse(claimBytes.toString('utf8'));
 
+
+/**
+ * §7.3 의 수치 블록을 **산출물에서 생성**한다. 문서가 이것과 한 글자라도 다르면 FAIL 이다.
+ * 사람이 손으로 옮겨 적는 자리를 없애는 것이 목적이다 — 옮겨 적으면 낡는다.
+ */
+const nf = (n) => Number(n).toLocaleString('en-US');
+function renderW1Block(sum) {
+  const bins = sum.byBin ?? {};
+  const pairs = sum.multiMatchPairs ?? {};
+  const rows = (sum.perRule ?? []).slice()
+    .sort((a, b) => (b.declarations - a.declarations) || String(a.id).localeCompare(String(b.id)));
+  const L = [];
+  L.push('');
+  L.push(`선언 **${nf(sum.declarations)}** · 미분류 **${sum.unmatchedCount}** · 다중 일치 **${nf(sum.multiMatchCount)}**(고유 충돌 체인 **${Object.keys(pairs).length}**개)`);
+  L.push('');
+  L.push('| 통 | 선언 |');
+  L.push('|---|---:|');
+  for (const b of ['primitive', 'componentOwned', 'defect', 'pendingApproval', 'approvedException'])
+    L.push(`| \`${b}\` | **${nf(bins[b] ?? 0)}** |`);
+  L.push('');
+  L.push('| 규칙 | 통 | 선언 |');
+  L.push('|---|---|---:|');
+  for (const r of rows) L.push(`| \`${r.id}\` | ${r.bin} | ${nf(r.declarations)} |`);
+  L.push('');
+  L.push('| 충돌 체인 | 선언 |');
+  L.push('|---|---:|');
+  for (const [k, v] of Object.entries(pairs).sort((a, b) => b[1] - a[1]))
+    L.push(`| \`${k}\` | ${nf(v)} |`);
+  L.push('');
+  return L.join('\n');
+}
+
 const num = (v) => (typeof v === 'number' ? v : Number(v));
 const failures = [];
 const results = [];
 
 for (const c of claims.claims) {
+  // `문서블록` — **Markdown 을 실제로 읽는다** (솔 검수 `W1 R2 F01`).
+  //
+  // 초판의 `합계` 모드는 산출물의 통 합계만 봤고 **문서는 읽지도 않았다**(`c.문서` 는 결과에
+  // 복사만 됐다). 그래서 §7.3 의 "순서 영향 1,810건"(실제 929) · "체인 12개"(실제 10) ·
+  // 규칙별 건수 여덟 자리가 전부 통과했다. 특히 `CONTROL-BOX −2` 와 `CATEGORY-ACCENT +2` 가
+  // **같은 `defect` 통 안에서 상쇄**돼 합계 게이트로는 보이지 않았다.
+  //
+  // 그래서 표를 **산출물에서 생성**하고, 문서의 표식 사이 내용과 글자 그대로 대조한다.
+  // 규칙 하나의 건수만 어긋나도 잡히고, 상쇄로 숨을 수 없다. 고치는 법은 하나다 —
+  // 검사기가 찍어 주는 블록을 문서에 붙여 넣는 것.
+  if (c.mode === '문서블록') {
+    const docPath = resolve(claimsPath, '..', '..', '..', c.문서);
+    const srcArt = resolve(claimsPath, '..', c.출처);
+    if (!existsSync(docPath)) { failures.push(`${c.id} : 문서를 찾을 수 없다 — ${c.문서}`); results.push({ id: c.id, verdict: 'FAIL', mode: '문서블록' }); continue; }
+    if (!existsSync(srcArt)) { failures.push(`${c.id} : 대조할 산출물이 없다 — ${c.출처}`); results.push({ id: c.id, verdict: 'FAIL', mode: '문서블록' }); continue; }
+    const sum = JSON.parse(readFileSync(srcArt, 'utf8')).summary ?? {};
+    const want = renderW1Block(sum);
+    const md = readFileSync(docPath, 'utf8').replace(/\r\n/g, '\n');
+    const open = `<!-- ${c.마커}: 자동 생성 -->`, close = `<!-- /${c.마커} -->`;
+    const i = md.indexOf(open), j = md.indexOf(close);
+    let verdict = 'PASS';
+    if (i < 0 || j < 0 || j < i) {
+      verdict = 'FAIL';
+      failures.push(`${c.id} : 문서에 ${open} … ${close} 표식이 없다 — 자동 생성 블록을 넣어야 대조할 수 있다`);
+    } else {
+      const got = md.slice(i + open.length, j).trim();
+      if (got !== want.trim()) {
+        verdict = 'FAIL';
+        const g = got.split('\n'), w = want.trim().split('\n');
+        const n = g.findIndex((l, k) => l !== w[k]);
+        failures.push(`${c.id} : ${c.절} 의 자동 생성 블록이 산출물과 다르다 — 첫 어긋남 ${n + 1}행 · 문서 "${(g[n] ?? '(없음)').slice(0, 70)}" · 실제 "${(w[n] ?? '(없음)').slice(0, 70)}". 아래 블록을 붙여 넣어라:\n${want}`);
+      }
+    }
+    results.push({ id: c.id, 문서: c.문서, 절: c.절, 주장: c.주장, mode: '문서블록', 마커: c.마커, verdict });
+    continue;
+  }
   // `합계` — 값 목록이 아니라 **배정 결과의 수**를 주장한다 (페이블 W1 재종결 조건).
-  // §7.3 이 "3,677건이 여섯 통에" 라고 적어 놓고 코드가 3,653건 다섯 통이 되는 일을 막는다.
   // 문서와 산출물 사이의 대조라 선언 필터를 타지 않는다.
   if (c.mode === '합계') {
     const src = resolve(claimsPath, '..', c.출처);
@@ -85,4 +152,7 @@ const out = {
 };
 writeFileSync(outPath, JSON.stringify(out, null, 2) + '\n');
 console.log(JSON.stringify({ status: out.status, claims: out.claimCount, failures }, null, 1));
-if (failures.length && process.argv.includes('--strict')) process.exit(1);
+// FAIL 인데 종료 코드가 0 이면 단독 실행과 CI 체인이 성공으로 오인한다. `--strict` 를 붙여야
+// 실패하던 것을 **기본 동작**으로 바꾼다 — 같은 결함을 app-map-check 에서 이미 한 번 고쳤다
+// (솔 검수 `W1 R1 F05`). 검사기가 조용히 통과하는 길을 남겨 두지 않는다.
+if (failures.length) process.exitCode = 1;
