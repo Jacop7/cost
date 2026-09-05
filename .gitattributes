@@ -10,3 +10,11 @@ docs/ai-review/tasks/** -text -whitespace
 # Windows 자동 CRLF 변환이 이 검증을 무효화하지 않도록 작업본도 LF로 유지한다.
 .codex/mission-relay/model-plan.json text eol=lf
 .codex/mission-relay/model-plan.json.sha256 text eol=lf
+
+# Team service review/checkpoint artifacts are hashed as raw bytes.
+docs/ai-review/evidence/TEAM-SERVICE-* -text -whitespace
+docs/ai-review/evidence/TEAM-ROUTING-SERVICE-RECOVERY-001.md -text -whitespace
+docs/ai-review/evidence/AI-CHAT-ROUTING-EXECUTION-DRAFT-001.md -text -whitespace
+docs/팀서비스-자동흐름-구현계획.md -text
+scripts/team-service-*.mjs -text
+scripts/team-routing-contract-audit*.mjs -text
