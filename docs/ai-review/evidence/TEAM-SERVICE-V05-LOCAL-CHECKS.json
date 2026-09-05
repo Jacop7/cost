@@ -1,0 +1,47 @@
+{
+  "kind": "LOCAL_SPEC_EVIDENCE_NOT_SERVICE_PASS",
+  "target_commit": "625f9fa3fe66a2711ecabd9c176c543b22f57345",
+  "sources": [
+    {
+      "path": "scripts/team-service-baseline.mjs",
+      "sha256": "43681f69e319bb895c678a246b7ab89da4ecf5247b2a5dd9b6ae04af9e7e9dcc"
+    },
+    {
+      "path": "scripts/team-service-baseline.test.mjs",
+      "sha256": "9d2b6381b72f97898dccf0672c159df8c7e5ff707d3e4b1fe2376effe5d1d55b"
+    },
+    {
+      "path": "scripts/team-service-plan-contract.test.mjs",
+      "sha256": "ac797aaa7321e58869e79e9407e86c3d8964fd82b8b9f19e76fceb185c6e3e58"
+    },
+    {
+      "path": "docs/팀서비스-자동흐름-구현계획.md",
+      "sha256": "5f5cd4132a4dc159de050197cf163f182ad16ccefde32f105b8b08639d8fb93b"
+    },
+    {
+      "path": "docs/team/service-flow-acceptance.json",
+      "sha256": "a19a2ad4bb544c7d0763b30b9f286595fdaca220efe172855da9e46bc0fb388e"
+    },
+    {
+      "path": "docs/team/service-flow-state-contract.json",
+      "sha256": "da78291f860e8cea46f0ea56948cb1e501f6321f5a711f5a4a591c8c61721076"
+    }
+  ],
+  "command": {
+    "executable": "C:\\Program Files\\nodejs\\node.exe",
+    "args": [
+      "--test",
+      "--test-reporter=tap",
+      "scripts/team-service-baseline.test.mjs",
+      "scripts/team-service-plan-contract.test.mjs"
+    ]
+  },
+  "exit_code": 0,
+  "stdout": "TAP version 13\n# Subtest: BL-07 integrity validation permits an honestly failed run, never promotes service readiness\nok 1 - BL-07 integrity validation permits an honestly failed run, never promotes service readiness\n  ---\n  duration_ms: 1.655\n  type: 'test'\n  ...\n# Subtest: BL-08 source content, exact manifest set and duplicate sources are checked\nok 2 - BL-08 source content, exact manifest set and duplicate sources are checked\n  ---\n  duration_ms: 0.3155\n  type: 'test'\n  ...\n# Subtest: BL-09 output hashes, derived verdict and commands cannot be silently changed\nok 3 - BL-09 output hashes, derived verdict and commands cannot be silently changed\n  ---\n  duration_ms: 1.2047\n  type: 'test'\n  ...\n# Subtest: BL-10 historical verification cannot be promoted to a reproduced result\nok 4 - BL-10 historical verification cannot be promoted to a reproduced result\n  ---\n  duration_ms: 0.1526\n  type: 'test'\n  ...\n# Subtest: BL-01 42 passing TAP tests are derived from output, not a manual PASS\nok 5 - BL-01 42 passing TAP tests are derived from output, not a manual PASS\n  ---\n  duration_ms: 0.2527\n  type: 'test'\n  ...\n# Subtest: BL-02 a skipped case or nonzero exit is not the 42/42 baseline\nok 6 - BL-02 a skipped case or nonzero exit is not the 42/42 baseline\n  ---\n  duration_ms: 0.0824\n  type: 'test'\n  ...\n# Subtest: BL-03 Python test count requires exit zero and actual OK\nok 7 - BL-03 Python test count requires exit zero and actual OK\n  ---\n  duration_ms: 0.112\n  type: 'test'\n  ...\n# Subtest: BL-04 expected coverage exit 1 remains requirements not met\nok 8 - BL-04 expected coverage exit 1 remains requirements not met\n  ---\n  duration_ms: 0.1535\n  type: 'test'\n  ...\n# Subtest: BL-05 invalid coverage output and null exit cannot become PASS\nok 9 - BL-05 invalid coverage output and null exit cannot become PASS\n  ---\n  duration_ms: 0.1976\n  type: 'test'\n  ...\n# Subtest: BL-06 source hash includes exact bytes, including line endings\nok 10 - BL-06 source hash includes exact bytes, including line endings\n  ---\n  duration_ms: 0.1731\n  type: 'test'\n  ...\n# Subtest: PLAN-01 catalog is explicitly not execution evidence\nok 11 - PLAN-01 catalog is explicitly not execution evidence\n  ---\n  duration_ms: 0.5833\n  type: 'test'\n  ...\n# Subtest: PLAN-02 all 23 cases have exact filenames, unique assertion IDs and evidence modes\nok 12 - PLAN-02 all 23 cases have exact filenames, unique assertion IDs and evidence modes\n  ---\n  duration_ms: 0.8875\n  type: 'test'\n  ...\n# Subtest: PLAN-03 phase dependencies reference declared cases and retain separate live/approval gates\nok 13 - PLAN-03 phase dependencies reference declared cases and retain separate live/approval gates\n  ---\n  duration_ms: 0.2341\n  type: 'test'\n  ...\n# Subtest: PLAN-07 intent generation and root-only epoch are explicit in the candidate contract\nok 14 - PLAN-07 intent generation and root-only epoch are explicit in the candidate contract\n  ---\n  duration_ms: 0.1142\n  type: 'test'\n  ...\n# Subtest: PLAN-08 live isolation and real OS ACL negative evidence remain unimplemented gates\nok 15 - PLAN-08 live isolation and real OS ACL negative evidence remain unimplemented gates\n  ---\n  duration_ms: 0.0993\n  type: 'test'\n  ...\n# Subtest: PLAN-09 current verdict and allowed actions have one authority, not a document copy\nok 16 - PLAN-09 current verdict and allowed actions have one authority, not a document copy\n  ---\n  duration_ms: 0.8031\n  type: 'test'\n  ...\n# Subtest: PLAN-04 entity schema and STOP fences include generation, authority and effect claim\nok 17 - PLAN-04 entity schema and STOP fences include generation, authority and effect claim\n  ---\n  duration_ms: 0.1341\n  type: 'test'\n  ...\n# Subtest: PLAN-05 feasibility has closed outcome set and includes trusted time\nok 18 - PLAN-05 feasibility has closed outcome set and includes trusted time\n  ---\n  duration_ms: 0.0845\n  type: 'test'\n  ...\n# Subtest: PLAN-06 probe and pilot are separate and advisory cannot satisfy formal receipt\nok 19 - PLAN-06 probe and pilot are separate and advisory cannot satisfy formal receipt\n  ---\n  duration_ms: 0.1044\n  type: 'test'\n  ...\n1..19\n# tests 19\n# suites 0\n# pass 19\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 88.6306\n",
+  "stderr": "",
+  "stdout_sha256": "a6982ba45207f8d5ed9de81edf34453912a5dff926e49ea24a5f9980682e7eef",
+  "service_ready": false,
+  "ac_executed": false,
+  "collector_source": "const fs=require(\"fs\"),cp=require(\"child_process\"),crypto=require(\"crypto\");\nconst hash=b=>crypto.createHash(\"sha256\").update(b).digest(\"hex\");\nconst git=args=>cp.execFileSync(\"git\",args);\nconst paths=[\"scripts/team-service-baseline.mjs\",\"scripts/team-service-baseline.test.mjs\",\"scripts/team-service-plan-contract.test.mjs\",\"docs/팀서비스-자동흐름-구현계획.md\",\"docs/team/service-flow-acceptance.json\",\"docs/team/service-flow-state-contract.json\"];\nconst target_commit=git([\"rev-parse\",\"HEAD\"]).toString().trim();\nconst capture=()=>paths.map(path=>{const b=fs.readFileSync(path);if(!b.equals(git([\"show\",target_commit+\":\"+path])))throw Error(\"uncommitted source\");return {path,sha256:hash(b)};});\nconst sources=capture();\nconst args=[\"--test\",\"--test-reporter=tap\",\"scripts/team-service-baseline.test.mjs\",\"scripts/team-service-plan-contract.test.mjs\"];\nconst run=cp.spawnSync(process.execPath,args,{encoding:\"utf8\",shell:false,windowsHide:true,timeout:30000});\nif(JSON.stringify(sources)!==JSON.stringify(capture())||target_commit!==git([\"rev-parse\",\"HEAD\"]).toString().trim())throw Error(\"source changed\");\nconsole.log(JSON.stringify({kind:\"LOCAL_SPEC_EVIDENCE_NOT_SERVICE_PASS\",target_commit,sources,command:{executable:process.execPath,args},exit_code:run.status,stdout:run.stdout,stderr:run.stderr,stdout_sha256:hash(run.stdout),service_ready:false,ac_executed:false}));",
+  "asserted_test_count": 19
+}

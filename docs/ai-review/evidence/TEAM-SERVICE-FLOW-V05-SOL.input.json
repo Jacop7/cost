@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "kind": "WHOLE_PLAN_ADVISORY_INPUT_MANIFEST",
+  "reviewer_requested": "gpt-5.6-sol",
+  "effort_requested": "ultra",
+  "target_commit": "625f9fa3fe66a2711ecabd9c176c543b22f57345",
+  "inputs": [
+    {
+      "path": "docs/팀서비스-자동흐름-구현계획.md",
+      "sha256": "5f5cd4132a4dc159de050197cf163f182ad16ccefde32f105b8b08639d8fb93b"
+    },
+    {
+      "path": "docs/team/service-flow-acceptance.json",
+      "sha256": "a19a2ad4bb544c7d0763b30b9f286595fdaca220efe172855da9e46bc0fb388e"
+    },
+    {
+      "path": "docs/team/service-flow-state-contract.json",
+      "sha256": "da78291f860e8cea46f0ea56948cb1e501f6321f5a711f5a4a591c8c61721076"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-HOST-SCOPE-001.json",
+      "sha256": "2287c16899944032ff12c2310aae7f1a5ef423f3535b7710c8430f70ff5c5945"
+    }
+  ],
+  "formal_gate": false,
+  "prior_self_assessment_supplied": false
+}
