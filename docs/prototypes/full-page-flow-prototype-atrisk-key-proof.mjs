@@ -18,9 +18,9 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { resolve, basename } from 'node:path';
 import { createHash } from 'node:crypto';
+import { textSha256 } from './full-page-flow-prototype-text-sha256.mjs';
 
 const sha = (b) => createHash('sha256').update(b).digest('hex');
-const textSha = (b) => sha(Buffer.from(b.toString('utf8').replace(/\r\n/g, '\n'), 'utf8'));
 const args = process.argv.slice(2).filter(a => !a.startsWith('--'));
 const stressPath = resolve(args[0] ?? 'docs/prototypes/full-page-flow-prototype-i18n-stress.json');
 const knownPath  = resolve(args[1] ?? 'docs/prototypes/full-page-flow-prototype-i18n-known.json');
@@ -104,10 +104,10 @@ const result = {
   manifest: {
     generatedAt: new Date().toISOString(),
     schemaVersion: 1,
-    script: { name: basename(new URL(import.meta.url).pathname), sha256: textSha(selfBytes) },
+    script: { name: basename(new URL(import.meta.url).pathname), sha256: textSha256(selfBytes) },
     source: {
-      stress: { path: basename(stressPath), sha256: textSha(stressBytes) },
-      known: { path: basename(knownPath), sha256: textSha(knownBytes) },
+      stress: { path: basename(stressPath), sha256: textSha256(stressBytes) },
+      known: { path: basename(knownPath), sha256: textSha256(knownBytes) },
     },
     target: {
       sha256: stress.manifest.target.sha256,

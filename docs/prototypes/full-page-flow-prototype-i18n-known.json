@@ -3,9 +3,9 @@
  "note": "현재 남아 있는 atRisk 의 정확한 잔여 목록. 키는 pass|target|selector|hostIndex 다 — selector 만 쓰면 같은 목록의 여러 행이 한 키로 뭉개져 다섯 행이 나빠져도 마지막 하나만 그대로면 통과한다. 게이트는 양방향 + 크기로 대조한다.",
  "resolvedNote": "entries 에 있던 키가 더 이상 관측되지 않으면 여기에 사유·근거·prt 를 적어야 게이트가 통과한다. 사라짐은 개선일 수도 있고 요소를 숨기거나 잘라낸 결과일 수도 있어서, 자동 통과시키면 UI 가이드 §6.1 의 \"숨기지 않는다\" 계약과 게이트가 어긋난다 (PRT-202).",
  "boundTo": {
-  "target": "280ed57cb675bb58ec053bf69ff176b7582b9c8db71d966d110761e1c4642aaf",
-  "designSyncId": "DS-20260905-004",
-  "script": "0c72450ee2ff6e839bc7b11cd8fa30cbf2211e893f9c10418421748fa5bb2068"
+  "target": "cd6b6571e9f8a236c1515414c0e33160488eba27a4e3fd7335f45d5377578f2c",
+  "designSyncId": "DS-20260905-005",
+  "script": "b89892ac2b728b2dbab7507a7cdcd350fd54850c1bcea2b0d117aa0a4cb84ddd"
  },
  "entries": {
   "w130|screen:stock|card>row>row-main>row-title|48": {

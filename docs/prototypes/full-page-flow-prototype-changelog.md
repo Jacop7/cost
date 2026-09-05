@@ -19,6 +19,23 @@
 
 ## 변경 내역
 
+### PRT-223 · 2026-09-05 적용본 해시를 LF 논리 텍스트로 통일
+
+- 날짜: 2026-09-05
+- 디자인 동기화 ID: `DS-20260905-005`
+- 판정: PRT-222 `9d3f01b` **CHANGES_REQUIRED (차단 1)** 수용. 봉인 내용은 승인됐으나
+  `core.autocrlf=true` Windows clean checkout에서 적용본 SHA가 달라 게이트가 재현되지 않았다.
+- 원인: render·design·i18n 감사기의 `target.sha256` 생산자와 ps1의 세 소비자가
+  `ui-applied.html`을 원시 checkout 바이트로 재고 있었다.
+- 수정:
+  - 공용 `textSha256` = UTF-8 텍스트의 CRLF→LF 후 SHA-256.
+  - 세 DOM 감사기의 적용본·자기 스크립트, contrast-fix·atRisk proof의 텍스트 입력을
+    공용 함수로 이동했다.
+  - ps1의 `Get-RawFileSha256`를 제거하고 적용본 대조를 sync-state와 같은 LF 계약으로 바꾸었다.
+  - 12개 해시 지점 전수표와 LF/CRLF 음성 시험을 봉인 대상에 추가했다.
+- UI 변경: 없음. 적용본은 `DESIGN_SYNC` 주석만 변경.
+- 후속: Windows `autocrlf=true` 재현 확인 → `S4a` → W1 최종 재측정.
+
 ### PRT-222 · 2026-09-05 PRT-221 승인 봉인 — 정의 21건 분리 · 행간 목적지 기계 파생
 
 - 날짜: 2026-09-05

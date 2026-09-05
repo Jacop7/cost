@@ -19,6 +19,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { resolve, basename } from 'node:path';
+import { textSha256 } from './full-page-flow-prototype-text-sha256.mjs';
 
 const auditPath = resolve(process.argv[2] ?? 'design-audit.json');
 const outPath = resolve(process.argv[3] ?? 'contrast-fix.json');
@@ -87,8 +88,8 @@ rows.sort((a, b) => b.observations - a.observations);
 const failing = rows.filter(r => !r.passAA);
 const result = {
   manifest: { generatedAt: new Date().toISOString(), schemaVersion: 1,
-    script: { name: basename(new URL(import.meta.url).pathname), sha256: sha(readFileSync(new URL(import.meta.url))) },
-    designAudit: { path: basename(auditPath), sha256: sha(bytes),
+    script: { name: basename(new URL(import.meta.url).pathname), sha256: textSha256(readFileSync(new URL(import.meta.url))) },
+    designAudit: { path: basename(auditPath), sha256: textSha256(bytes),
       targetSha256: audit.manifest.target.sha256, designSyncId: audit.manifest.target.designSyncId },
     rules: { '기준': 'WCAG 2.x AA — 일반 4.5:1, 큰 글자(24px 이상 또는 18.66px&700 이상) 3:1',
       '수정안': '색상·채도를 유지한 채 명도만 움직여 기준을 처음 넘는 지점을 낸다. 색을 바꾸는 것이 아니라 같은 색의 진하기를 조절한다',

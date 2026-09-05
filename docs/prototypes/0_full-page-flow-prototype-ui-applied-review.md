@@ -1116,6 +1116,19 @@ popup/state host **121개**(합 182), 그리고 레지스트리에 키가 없는
 - 실행서와 현재 확정안에 같은 작업 안의 문서 동기화 게이트를 추가했다. 필수 문서 중 하나라도 빠지면
   작업 완료로 답하지 않는다.
 
+## DS-20260905-005 · PRT-223 적용본 해시 정규화
+
+- 대상: `ui-applied.html` 해시 생산·소비·sync-state 줄끝 계약, 해시 지점 전수표/시험
+- 기대값: CSS·JS·마크업 변경 0 · LF/CRLF checkout에서 같은 적용본 SHA
+- 실제값: 공용 `textSha256` 및 ps1 LF 정규화 적용 · 해시 지점 12개 전수 등록
+- PC 검수: PASS — Windows Playwright 고정 실행기 재측정, 신규 렌더 회귀 0
+- 모바일 검수: PASS — 320px·CSS 200%·글자 200%·i18n 랫칭 일치
+- 미검수: 없음
+- 결과: PASS
+- 증거: `full-page-flow-prototype-text-sha256.test.mjs` · `full-page-flow-prototype-hash-inventory.json` ·
+  `full-page-flow-prototype-render-audit.json` · `full-page-flow-prototype-design-audit.json` ·
+  `full-page-flow-prototype-i18n-stress.json`
+
 ## DS-20260905-004 · PRT-221 승인 봉인과 무시각변경 재측정
 
 - 대상: 정의 21건 분리 · 행간 목적지 기계 파생 · §8.2c/토큰 봉인 · 동기화 표식 1줄

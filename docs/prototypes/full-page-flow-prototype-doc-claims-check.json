@@ -5,7 +5,7 @@
     "auditSha256": "591b0c3e55d39512247ae8fcca405470d1a8f4bad020e8c5acc5493378d44ece",
     "claimsSha256": "927bbcf8085befba089028780cee29c7ae2737105f287892ab907bd1b4fefaed",
     "node": "v24.15.0",
-    "generatedAt": "2026-09-05T11:39:44.159Z",
+    "generatedAt": "2026-09-05T11:52:21.540Z",
     "판정": "값 목록을 값으로 대조한다. 개수만 세면 §7.3.1 같은 자리를 놓친다."
   },
   "status": "PASS",

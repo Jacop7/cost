@@ -1,0 +1,19 @@
+{
+  "$schema": "prototype-hash-inventory/1",
+  "contract": "utf8-crlf-to-lf-sha256-v1",
+  "scope": "DS 봉인이 생산·소비하는 적용본·스크립트·텍스트 JSON 해시. Git provenance blob SHA와 JSON 정규형 해시는 별도 계약이다.",
+  "points": [
+    { "id": "render.target", "file": "full-page-flow-prototype-render-audit.mjs", "kind": "producer", "input": "ui-applied.html", "normalization": "shared-textSha256" },
+    { "id": "design.target", "file": "full-page-flow-prototype-design-audit.mjs", "kind": "producer", "input": "ui-applied.html", "normalization": "shared-textSha256" },
+    { "id": "i18n.target", "file": "full-page-flow-prototype-i18n-stress.mjs", "kind": "producer", "input": "ui-applied.html", "normalization": "shared-textSha256" },
+    { "id": "render.script", "file": "full-page-flow-prototype-render-audit.mjs", "kind": "producer", "input": "script text", "normalization": "shared-textSha256" },
+    { "id": "design.script", "file": "full-page-flow-prototype-design-audit.mjs", "kind": "producer", "input": "script text", "normalization": "shared-textSha256" },
+    { "id": "i18n.script", "file": "full-page-flow-prototype-i18n-stress.mjs", "kind": "producer", "input": "script text", "normalization": "shared-textSha256" },
+    { "id": "proof.script-and-sources", "file": "full-page-flow-prototype-atrisk-key-proof.mjs", "kind": "producer", "input": "script + stress/known JSON", "normalization": "shared-textSha256" },
+    { "id": "contrast.script-and-source", "file": "full-page-flow-prototype-contrast-fix.mjs", "kind": "producer", "input": "script + design audit JSON", "normalization": "shared-textSha256" },
+    { "id": "sync.applied-and-state", "file": "full-page-flow-prototype-design-sync-check.ps1", "kind": "consumer", "input": "ui-applied.html + sealed text files", "normalization": "powershell-crlf-to-lf-parity" },
+    { "id": "app-map.json-links", "file": "full-page-flow-prototype-app-map-check.mjs", "kind": "producer-consumer", "input": "parsed JSON", "normalization": "canonical-json" },
+    { "id": "app-audit.provenance", "file": "scripts/token-adoption-audit.mjs", "kind": "producer", "input": "Git-tracked product files", "normalization": "git-blob-sha" },
+    { "id": "decision-seal", "file": "scripts/design-token-contrast.mjs", "kind": "producer-consumer", "input": "role/contract/decision text", "normalization": "domain-contract" }
+  ]
+}
