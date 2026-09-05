@@ -1,0 +1,316 @@
+{
+  "schema_version": 1,
+  "kind": "ACCEPTANCE_SPEC_NOT_EXECUTION_EVIDENCE",
+  "service_ready": false,
+  "cases": [
+    {
+      "case_id": "AC-01",
+      "phase": "P3",
+      "file": "scripts/team-service-intake.test.mjs",
+      "test_name": "AC-01 service contract",
+      "required_assertions": [
+        "QUESTION send=0",
+        "모호 요청 HOLD",
+        "허용 REQUEST만 생성"
+      ],
+      "evidence_mode": "LOCAL_MOCK",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "case_id": "AC-02",
+      "phase": "P4/P5",
+      "file": "scripts/team-service-driver.test.mjs",
+      "test_name": "AC-02 service contract",
+      "required_assertions": [
+        "5팀 기본 왕복과 ACK/업무 완료 구분"
+      ],
+      "evidence_mode": "LOCAL_MOCK",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "case_id": "AC-03",
+      "phase": "P3",
+      "file": "scripts/team-service-workflow.test.mjs",
+      "test_name": "AC-03 service contract",
+      "required_assertions": [
+        "CEO/총괄 중복 배정 effect count=1"
+      ],
+      "evidence_mode": "LOCAL_MOCK",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "case_id": "AC-04",
+      "phase": "P5",
+      "file": "scripts/team-service-workflow.test.mjs",
+      "test_name": "AC-04 service contract",
+      "required_assertions": [
+        "peer DAG cycle",
+        "깊이/자식/총량 상한 거부"
+      ],
+      "evidence_mode": "LOCAL_MOCK",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "case_id": "AC-05",
+      "phase": "P5",
+      "file": "scripts/team-service-driver.test.mjs",
+      "test_name": "AC-05 service contract",
+      "required_assertions": [
+        "상황실 지연은 비차단",
+        "stale status 덮어쓰기=0"
+      ],
+      "evidence_mode": "LOCAL_MOCK",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "case_id": "AC-06",
+      "phase": "P3",
+      "file": "scripts/team-service-intake.test.mjs",
+      "test_name": "AC-06 service contract",
+      "required_assertions": [
+        "10개 역할 보고",
+        "보고가 실행 권한을 부여하지 않음"
+      ],
+      "evidence_mode": "LOCAL_MOCK",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "case_id": "AC-07",
+      "phase": "P3",
+      "file": "scripts/team-service-workflow.test.mjs",
+      "test_name": "AC-07 service contract",
+      "required_assertions": [
+        "resume/retry/amend",
+        "만료/폐기 Decision 거부"
+      ],
+      "evidence_mode": "LOCAL_MOCK",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "case_id": "AC-08",
+      "phase": "P3/P4",
+      "file": "scripts/team-service-workflow.test.mjs",
+      "test_name": "AC-08 service contract",
+      "required_assertions": [
+        "root STOP→모든 DAG 자손",
+        "자손 누락 시 pending",
+        "부분 STOP 거부"
+      ],
+      "evidence_mode": "LOCAL_MOCK",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "case_id": "AC-09",
+      "phase": "P4",
+      "file": "scripts/team-service-store.test.mjs",
+      "test_name": "AC-09 service contract",
+      "required_assertions": [
+        "STOP CAS와 stale send/DAG 추가의 경합",
+        "late result"
+      ],
+      "evidence_mode": "LOCAL_MOCK",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "case_id": "AC-10",
+      "phase": "P2b",
+      "file": "scripts/team-service-router-adapter.test.mjs",
+      "test_name": "AC-10 service contract",
+      "required_assertions": [
+        "prepare 직후 crash에도 같은 route/token 회수"
+      ],
+      "evidence_mode": "LOCAL_MOCK",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "case_id": "AC-11",
+      "phase": "P4",
+      "file": "scripts/team-service-driver.test.mjs",
+      "test_name": "AC-11 service contract",
+      "required_assertions": [
+        "UNKNOWN_DELIVERY 자동 재발송=0",
+        "실제 transient만 제한 retry"
+      ],
+      "evidence_mode": "LOCAL_MOCK",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "case_id": "AC-12",
+      "phase": "P4",
+      "file": "scripts/team-service-store.test.mjs",
+      "test_name": "AC-12 service contract",
+      "required_assertions": [
+        "이중 writer",
+        "lock",
+        "손상 replay",
+        "key/NFC",
+        "비문자열 ID"
+      ],
+      "evidence_mode": "LOCAL_MOCK",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "case_id": "AC-13",
+      "phase": "P6",
+      "file": "scripts/team-service-router-adapter.test.mjs",
+      "test_name": "AC-13 service contract",
+      "required_assertions": [
+        "위조 source/token/hash/epoch/만료 receipt 거부"
+      ],
+      "evidence_mode": "LOCAL_MOCK",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "case_id": "AC-14",
+      "phase": "P6",
+      "file": "scripts/team-service-driver.test.mjs",
+      "test_name": "AC-14 service contract",
+      "required_assertions": [
+        "successor in-flight 회수",
+        "이전 endpoint 신규 배정=0"
+      ],
+      "evidence_mode": "LOCAL_MOCK",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "case_id": "AC-15",
+      "phase": "P6",
+      "file": "scripts/team-service-router-adapter.test.mjs",
+      "test_name": "AC-15 service contract",
+      "required_assertions": [
+        "운영/DB/비밀 접근",
+        "범위 확대",
+        "ID 유출=0"
+      ],
+      "evidence_mode": "LOCAL_MOCK",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "case_id": "AC-16",
+      "phase": "PH-LIVE-PROBE/P9",
+      "file": "scripts/team-service-live.test.mjs",
+      "test_name": "AC-16 service contract",
+      "required_assertions": [
+        "PH-LIVE-PROBE 실제 wake/ACK와 비운영 왕복",
+        "보고/재개 증거"
+      ],
+      "evidence_mode": "LIVE_HOST",
+      "status": "NOT_EXECUTED"
+    }
+  ],
+  "phase_gates": [
+    {
+      "id": "P0",
+      "requires": [
+        "IMMUTABLE_PLAN_REVIEW",
+        "PINNED_FAST_BASELINE",
+        "HISTORICAL_VERIFY_LIMITATION_RECORDED"
+      ]
+    },
+    {
+      "id": "PH-FEASIBILITY",
+      "requires": [
+        "HOST-SCOPE-001",
+        "CALLER_RECEIPT_FENCE_PROVENANCE"
+      ]
+    },
+    {
+      "id": "P2",
+      "requires": [
+        "SEALED_EXACT_MODEL_PROFILE",
+        "WEIGHT_BASIS",
+        "MODEL_SHA_CONSUMERS"
+      ]
+    },
+    {
+      "id": "P2b",
+      "case_ids": [
+        "AC-10"
+      ]
+    },
+    {
+      "id": "P3",
+      "case_ids": [
+        "AC-01",
+        "AC-03",
+        "AC-06",
+        "AC-07",
+        "AC-08"
+      ]
+    },
+    {
+      "id": "P4",
+      "case_ids": [
+        "AC-02",
+        "AC-09",
+        "AC-11",
+        "AC-12"
+      ]
+    },
+    {
+      "id": "P5",
+      "case_ids": [
+        "AC-04",
+        "AC-05"
+      ]
+    },
+    {
+      "id": "P6",
+      "case_ids": [
+        "AC-13",
+        "AC-14",
+        "AC-15"
+      ]
+    },
+    {
+      "id": "P7",
+      "requires": [
+        "CANDIDATE_HASH_ALIGNMENT",
+        "FORMAL_INDEPENDENT_GATE",
+        "VERIFY_DISPOSITION"
+      ]
+    },
+    {
+      "id": "P8",
+      "requires": [
+        "EXACT_BUNDLE_HUMAN_APPROVAL",
+        "VALID_ENDPOINT_BINDINGS"
+      ]
+    },
+    {
+      "id": "PH-LIVE-PROBE",
+      "case_ids": [
+        "AC-16"
+      ],
+      "requires": [
+        "ACK_ONLY_WAKE_PROBE_NO_TASK_EXECUTION"
+      ]
+    },
+    {
+      "id": "P9",
+      "case_ids": [
+        "AC-01",
+        "AC-02",
+        "AC-03",
+        "AC-04",
+        "AC-05",
+        "AC-06",
+        "AC-07",
+        "AC-08",
+        "AC-09",
+        "AC-10",
+        "AC-11",
+        "AC-12",
+        "AC-13",
+        "AC-14",
+        "AC-15",
+        "AC-16"
+      ],
+      "requires": [
+        "LIVE_ROUNDTRIP",
+        "RECOVERY_SUCCESSOR_EVIDENCE",
+        "STARTER_KIT_UPDATE"
+      ]
+    }
+  ]
+}

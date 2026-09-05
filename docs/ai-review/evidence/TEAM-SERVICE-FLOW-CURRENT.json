@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "plan": {
+    "path": "docs/팀서비스-자동흐름-구현계획.md",
+    "sha256": "eab9e85c246db6e5feffa54ef85131f3b204409495e7c5914dda8ae8242c14e5"
+  },
+  "current_verdict": "PLAN_READY_FOR_P1A_P2_INVESTIGATION_ONLY",
+  "allowed_actions": [
+    "READ",
+    "MOCK_FEASIBILITY",
+    "MODEL_PLAN_VERIFY"
+  ],
+  "implementation_authorized": false,
+  "service_ready": false,
+  "whole_plan_review": {
+    "status": "PENDING",
+    "engine": "gpt-5.6-sol",
+    "reasoning_effort": "ultra",
+    "formal_gate": false
+  },
+  "runtime_gates": {
+    "PH_FEASIBILITY": "NOT_EXECUTED",
+    "P2": "BLOCKED_EXACT_PROFILE_MISSING",
+    "FORMAL_INDEPENDENT_REVIEW": "NOT_PASSED",
+    "LIVE_PROBE": "NOT_EXECUTED",
+    "FULL_VERIFY": "NOT_PASSED"
+  },
+  "correction": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-PLAN-CORRECTION-001.md",
+  "source_records": [
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-PLAN-R1.md",
+      "sha256": "8c432760f2c2adb30be57753a38b461da9dfe28b49df77b20909cccd3a6b15ff"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-PLAN-R1.input.json",
+      "sha256": "d103905c0b18bfcdaaf8899442e8f05d114bbdd7186f48275a665f843b342039"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-PLAN-R2.md",
+      "sha256": "e0b9e3cb2892521576f31992ec662a08058969934e455ac57815a18529a5501d"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-PLAN-R2.input.json",
+      "sha256": "ecdcf1905dcbd839eb419a9cdde6e1a80edcd0f40aae412c92d6542b0678d846"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-OPUS-001.md",
+      "sha256": "86377a96a2a39c676f3cc586e982d49bbcf1445dcf5d737d6683b4f39002d18a"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-OPUS-001.run.json",
+      "sha256": "e192e00dae8cd36e4813cf44bd3056a450828241d797397bdbdab920348bd2e2"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-OPUS-001.input-snapshot.json",
+      "sha256": "8e8c2d2c0c09808307e40473aad8c939f011f138ce9c955ffeda478830453a18"
+    }
+  ],
+  "baseline": {
+    "report": "docs/ai-review/evidence/TEAM-SERVICE-BASELINE-20260905-001.json",
+    "sha256": "3471c93ad7cf81e45aa17de7e818ba725386811483a9e46676483517ee784c0e",
+    "target_commit": "bdebbebb32aeaf94a750ea36b3038c36ac4c90f1",
+    "node_passed": 42,
+    "router_passed": 38,
+    "requirement_gaps": 44,
+    "integrity": "COMMITTED_EVIDENCE_INTEGRITY_VERIFIED",
+    "historical_full_verify": "HISTORICAL_UNPINNED_NOT_REPRODUCED"
+  }
+}
