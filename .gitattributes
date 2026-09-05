@@ -22,3 +22,6 @@ scripts/docs-graph-check*.mjs -text whitespace=trailing-space,space-before-tab,c
 docs/team/chats/*.md -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/team/service-flow-acceptance.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/team/service-flow-state-contract.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/team/host-scope-*.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/team/host-requirements-contract.json -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/team/HOST-REQUIREMENTS.md -text whitespace=trailing-space,space-before-tab,cr-at-eol

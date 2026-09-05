@@ -2,9 +2,9 @@
   "schema_version": 1,
   "plan": {
     "path": "docs/팀서비스-자동흐름-구현계획.md",
-    "sha256": "42315fe416d9a50afda4d12d6094897b4ce289d2b903e13ff97774fa52e5a6a0"
+    "sha256": "1c316f966283334e21de0688aa6dc7eddd59307194030b9c0b96220f1ded8783"
   },
-  "current_verdict": "BLOCKED_HOST_INTEGRATION_SCOPE_REQUIRED",
+  "current_verdict": "HOST_REQUIREMENTS_SPECIFIED_SEND_BLOCKED_LOCAL_CORE_GATED",
   "allowed_actions": [
     "READ",
     "PLAN_REPAIR",
@@ -14,10 +14,12 @@
   "service_ready": false,
   "runtime_gates": {
     "PH_FEASIBILITY": "HOST_BINDING_UNAVAILABLE_IN_SCOPE",
-    "P2": "BLOCKED_PH_AND_EXACT_MODEL_PROFILE",
+    "P2": "BLOCKED_EXACT_LOCAL_MODEL_SCOPE_AND_LOCAL_ADMISSION",
     "FORMAL_INDEPENDENT_REVIEW": "NOT_PASSED",
     "LIVE_PROBE": "NOT_EXECUTED",
-    "FULL_VERIFY": "NOT_PASSED"
+    "FULL_VERIFY": "NOT_PASSED",
+    "LOCAL_CORE_ADMISSION": "NOT_PASSED",
+    "P6_HOST_INTEGRATION": "BLOCKED_NO_NEW_POSITIVE_SCOPE"
   },
   "correction": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-PLAN-CORRECTION-001.md",
   "source_records": [
@@ -62,26 +64,16 @@
   },
   "acceptance": {
     "path": "docs/team/service-flow-acceptance.json",
-    "sha256": "affb675aa69459d6d5994dfa0361a1457e94d55a36b02049da53f478c53a8880"
+    "sha256": "b97645d6b97e704e0cf74d5fbd738a96b4310f8126639c6b34eeaa96d030b4bd"
   },
   "state_contract": {
     "path": "docs/team/service-flow-state-contract.json",
     "sha256": "fbac6828ba2c13d2c422dee8e4a2cfdae370644a36d9ccc26f05a4e4cf9da824"
   },
-  "document_status_note": "CURRENT is the sole current verdict/actions authority. R1-R4 results apply only to their archived input hashes; not a v0.5 PASS.",
+  "document_status_note": "CURRENT is the sole current verdict/actions authority. Archived reviews apply only to their input hashes. V0.6 is a candidate with local specification checks, not an independent review PASS.",
   "feasibility_evidence": {
     "path": "docs/ai-review/evidence/TEAM-SERVICE-HOST-SCOPE-001.json",
     "sha256": "2287c16899944032ff12c2310aae7f1a5ef423f3535b7710c8430f70ff5c5945"
-  },
-  "v05_review": {
-    "sol": "CHANGES_REQUIRED",
-    "sol_report": {
-      "path": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-V05-SOL.md",
-      "sha256": "c64f99ec00827a8ea8584a9f10d0d385ca01955da5830f3a4a169b9305fcaade"
-    },
-    "fable": "NOT_STARTED_EXACT_ROUND_SOFT_CAP_APPROVAL_MISSING",
-    "formal_gate": false,
-    "current_candidate": "V0.5.1_PENDING_RECHECK"
   },
   "findings_for_v05": [
     {
@@ -192,6 +184,32 @@
           "runtime_verified": false
         }
       ]
+    },
+    {
+      "version": "0.5/0.5.1",
+      "review": {
+        "sol": "CHANGES_REQUIRED",
+        "sol_report": {
+          "path": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-V05-SOL.md",
+          "sha256": "c64f99ec00827a8ea8584a9f10d0d385ca01955da5830f3a4a169b9305fcaade"
+        },
+        "fable": "NOT_STARTED_EXACT_ROUND_SOFT_CAP_APPROVAL_MISSING",
+        "formal_gate": false,
+        "current_candidate": "V0.5.1_PENDING_RECHECK"
+      },
+      "local_checks": {
+        "command": [
+          "node",
+          "--test",
+          "scripts/team-service-baseline.test.mjs",
+          "scripts/team-service-plan-contract.test.mjs"
+        ],
+        "passed": 21,
+        "baseline_tests": 10,
+        "plan_spec_tests": 11,
+        "service_ac_executed": 0,
+        "full_verify_passed": false
+      }
     }
   ],
   "current_findings": [
@@ -207,7 +225,7 @@
     },
     {
       "id": "SV05-03",
-      "status": "BLOCKED_EXTERNAL_INTEGRATION_SCOPE",
+      "status": "REQUIREMENTS_SPECIFIED_HOST_DEPENDENCY_UNRESOLVED",
       "runtime_verified": false
     },
     {
@@ -237,16 +255,48 @@
     }
   ],
   "local_checks": {
-    "command": [
-      "node",
-      "--test",
-      "scripts/team-service-baseline.test.mjs",
-      "scripts/team-service-plan-contract.test.mjs"
-    ],
-    "passed": 21,
-    "baseline_tests": 10,
-    "plan_spec_tests": 11,
+    "report": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-V06-LOCAL-CHECKS.json",
+    "specification_checks_passed": 26,
+    "baseline_related_tests_passed": 42,
     "service_ac_executed": 0,
-    "full_verify_passed": false
-  }
+    "full_verify_passed": false,
+    "independent_review": false
+  },
+  "candidate_review": {
+    "version": "0.6",
+    "independent_review": "NOT_STARTED",
+    "formal_gate": false,
+    "paid_call_authorization": "NOT_CONSUMED_IN_READ_DESIGN_SCOPE"
+  },
+  "host_requirements": {
+    "path": "docs/team/host-requirements-contract.json",
+    "sha256": "bcb128ee8946582de605a83beaa9a47984d3540886da45440b7bcdf5521bc597"
+  },
+  "host_scope_002": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-HOST-SCOPE-002.json",
+    "sha256": "c9530bba64279353c378e2dadd573e9c7057b68606b801b8d7b048405d8513d9"
+  },
+  "model_disposition": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-MODEL-DISPOSITION-002.json",
+    "sha256": "e3cd1e75c761c9917ce595875b65a1b421af75398b6d6f331361de4023270fa7",
+    "checkpoint_commit": "7f5aefd",
+    "exact_local_scope_gate": "NOT_PASSED"
+  },
+  "tracks": {
+    "local_core": {
+      "host_dependency": false,
+      "status": "ADMISSION_PENDING",
+      "implementation_started": false
+    },
+    "host": {
+      "status": "EXTERNAL_REQUIREMENTS_UNRESOLVED",
+      "send_enabled": false
+    },
+    "product": {
+      "role_count": 11,
+      "status": "NOT_READY",
+      "requires": "Actual human01→CEO02→deputy03→team→human01 result round trip and mandatory gates"
+    }
+  },
+  "next_safe_action": "Read-only exact local model scope check and PLAN_TEST admission fixture work; obtain independent candidate review before local implementation. No actual messages, activation, endpoint or production changes."
 }

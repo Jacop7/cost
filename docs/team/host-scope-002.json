@@ -1,0 +1,128 @@
+{
+  "schema_version": 1,
+  "scope_id": "HOST-SCOPE-002",
+  "kind": "READ_DESIGN_REQUIREMENTS_AND_DEGRADATION_NOT_INTEGRATION_IMPLEMENTATION",
+  "purpose": "Minimum host requirements, field degradation matrix and fallback product contracts; preserve HOST-SCOPE-001 negative conclusion.",
+  "scope_status": "DECLARED_BEFORE_ANALYSIS",
+  "timebox_minutes": 30,
+  "max_catalog_searches": 2,
+  "max_failed_read_retries_per_source": 1,
+  "sources": [
+    {
+      "type": "repository",
+      "path": "docs/팀서비스-자동흐름-구현계획.md"
+    },
+    {
+      "type": "repository",
+      "path": "docs/team/service-flow-state-contract.json"
+    },
+    {
+      "type": "repository",
+      "path": "docs/team/service-flow-acceptance.json"
+    },
+    {
+      "type": "repository",
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-HOST-SCOPE-001.json"
+    },
+    {
+      "type": "repository",
+      "path": "scripts/team-service-workflow.mjs"
+    },
+    {
+      "type": "repository",
+      "path": "scripts/team-service-workflow.test.mjs"
+    },
+    {
+      "type": "installed_plugin",
+      "path": "C:/Codex-AI-Operations/Codex-Team-Router/POLICY.md"
+    },
+    {
+      "type": "installed_plugin",
+      "path": "C:/Codex-AI-Operations/Codex-Team-Router/plugins/codex-team-router/scripts/team_router.py",
+      "sections": [
+        "resolve_endpoint",
+        "prepare_dispatch",
+        "record_delivery"
+      ]
+    },
+    {
+      "type": "installed_plugin",
+      "path": "C:/Users/jacop/.codex/plugins/cache/team-router-local/codex-team-router/0.1.0+codex.20260904020429/.codex-plugin/plugin.json"
+    },
+    {
+      "type": "tool_schema",
+      "names": [
+        "mcp__codex_app__send_message_to_thread",
+        "mcp__codex_app__wait_threads",
+        "mcp__codex_app__read_thread",
+        "mcp__codex_app__list_threads",
+        "clock__curr_time"
+      ]
+    }
+  ],
+  "constraints": {
+    "send": false,
+    "live_probe": false,
+    "platform_change": false,
+    "plugin_change": false,
+    "production": false,
+    "authentication_change": false,
+    "clock_risk_acceptance": false,
+    "raw_endpoint_persistence": false,
+    "paid_model_calls": false
+  },
+  "terminal_outcomes": {
+    "HOST_REQUIREMENTS_SPECIFIED": "Minimum requests and degradation matrix finished; platform provision unresolved and handed off as external dependency.",
+    "HOST_PARTIAL_VIABLE": "At least one bounded reduced product has source-supported feasibility and an explicit claim/capability set; no strict binding success or deployment approval.",
+    "HOST_INTEGRATION_INFEASIBLE": "A positive explicit platform constraint contradicts the minimum required product; missing docs alone is insufficient.",
+    "HOST_SCOPE_INCOMPLETE": "Timebox/read limits exceeded or required artifacts unfinished; no partial success label."
+  },
+  "precedence": [
+    "positive_proven_incompatibility:HOST_INTEGRATION_INFEASIBLE",
+    "complete_matrix_and_source_supported_reduced_product:HOST_PARTIAL_VIABLE",
+    "complete_matrix_only:HOST_REQUIREMENTS_SPECIFIED",
+    "otherwise:HOST_SCOPE_INCOMPLETE"
+  ],
+  "outputs": [
+    "docs/team/HOST-REQUIREMENTS.md",
+    "docs/team/host-requirements-contract.json",
+    "docs/ai-review/evidence/TEAM-SERVICE-HOST-SCOPE-002.json"
+  ],
+  "prior_scope": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-HOST-SCOPE-001.json",
+    "sha256": "2287c16899944032ff12c2310aae7f1a5ef423f3535b7710c8430f70ff5c5945",
+    "immutable": true,
+    "can_promote_to_available": false
+  },
+  "gate_independence": {
+    "P0": "May proceed in parallel with read/design scope",
+    "local_core": "Separate no-dispatch track; model/scope/test/review gates retained",
+    "send": "Closed; strict positive future scope + exact authority required; no exception from 002"
+  },
+  "baseline": [
+    {
+      "path": "docs/팀서비스-자동흐름-구현계획.md",
+      "sha256": "42315fe416d9a50afda4d12d6094897b4ce289d2b903e13ff97774fa52e5a6a0"
+    },
+    {
+      "path": "docs/team/service-flow-acceptance.json",
+      "sha256": "affb675aa69459d6d5994dfa0361a1457e94d55a36b02049da53f478c53a8880"
+    },
+    {
+      "path": "docs/team/service-flow-state-contract.json",
+      "sha256": "fbac6828ba2c13d2c422dee8e4a2cfdae370644a36d9ccc26f05a4e4cf9da824"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-HOST-SCOPE-001.json",
+      "sha256": "2287c16899944032ff12c2310aae7f1a5ef423f3535b7710c8430f70ff5c5945"
+    },
+    {
+      "path": ".codex/mission-relay/model-plan.json",
+      "sha256": "60d7cb6a85cc43a76532f9047bcc5c4ed5113ebc3fd1708b0c954da91f85d96e"
+    },
+    {
+      "path": ".codex/mission-relay/model-plan.json.sha256",
+      "sha256": "3a663d37d6df81cb0ec2b53a41806995273e174294a1b9e25bee308faf94f7dd"
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-// Specification validation only: these tests do not execute AC-01..AC-23.
+// Specification validation only: these tests do not execute AC-01..AC-24.
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { readFileSync } from 'node:fs';
@@ -7,10 +7,10 @@ const state = JSON.parse(readFileSync(new URL('../docs/team/service-flow-state-c
 test('PLAN-01 catalog is explicitly not execution evidence', () => {
   assert.equal(catalog.kind, 'ACCEPTANCE_SPEC_NOT_EXECUTION_EVIDENCE');
   assert.equal(catalog.service_ready, false);
-  assert.equal(catalog.schema_version, 3);
+  assert.equal(catalog.schema_version, 4);
 });
-test('PLAN-02 all 23 cases have exact filenames, unique assertion IDs and evidence modes', () => {
-  assert.deepEqual(catalog.cases.map((c) => c.case_id), Array.from({ length: 23 }, (_, i) => `AC-${String(i + 1).padStart(2, '0')}`));
+test('PLAN-02 all 24 cases have exact filenames, unique assertion IDs and evidence modes', () => {
+  assert.deepEqual(catalog.cases.map((c) => c.case_id), Array.from({ length: 24 }, (_, i) => `AC-${String(i + 1).padStart(2, '0')}`));
   const assertions = [];
   for (const c of catalog.cases) {
     assert.match(c.file, /^scripts\/team-service(?:-[a-z-]+|\.live)\.test\.mjs$/);
@@ -25,15 +25,17 @@ test('PLAN-02 all 23 cases have exact filenames, unique assertion IDs and eviden
 });
 test('PLAN-03 phase dependencies reference declared cases and retain separate live/approval gates', () => {
   const ids = new Set(catalog.cases.map((c) => c.case_id));
-  assert.deepEqual(catalog.phase_gates.map((p) => p.id), ['P0','PH-FEASIBILITY','P2','P2b','P3','P4','P5','P6','P7','P8','PH-LIVE-PROBE','P9']);
+  assert.deepEqual(catalog.phase_gates.map((p) => p.id), ['P0','PH-FEASIBILITY','LC-ADMISSION','P2','P2b','P3','P4','P5','P6','P7','P8','PH-LIVE-PROBE','P9']);
   for (const phase of catalog.phase_gates) {
     assert.ok(phase.case_ids?.length || phase.requires?.length);
     for (const id of phase.case_ids ?? []) assert.ok(ids.has(id));
   }
   assert.ok(catalog.phase_gates.find((p) => p.id === 'P8').requires.includes('EXACT_APPROVAL_TARGET_HUMAN_DECISION'));
   assert.ok(catalog.phase_gates.find((p) => p.id === 'P7').requires.includes('TYPED_FORMAL_RECEIPT_VALIDATED'));
-  catalog.phase_gates.forEach((p, i) => assert.deepEqual(p.depends_on,
-    p.id === 'P2' ? ['P0','PH-FEASIBILITY'] : ['P0','PH-FEASIBILITY'].includes(p.id) ? [] : [catalog.phase_gates[i - 1].id]));
+  const dependencies = {P0:[], 'PH-FEASIBILITY':[], 'LC-ADMISSION':[], P2:['LC-ADMISSION'],
+    P2b:['P2'], P3:['P2b'], P4:['P3'], P5:['P4'], P6:['P5','PH-FEASIBILITY'],
+    P7:['P0','P6'], P8:['P7'], 'PH-LIVE-PROBE':['P8'], P9:['PH-LIVE-PROBE']};
+  for (const p of catalog.phase_gates) assert.deepEqual(p.depends_on, dependencies[p.id]);
   for (const c of catalog.cases) assert.ok(catalog.phase_gates.find((p) => p.id === c.phase).case_ids.includes(c.case_id));
 });
 
@@ -94,7 +96,8 @@ test('PLAN-05 feasibility has closed outcome set and includes trusted time', () 
   assert.deepEqual(Object.keys(catalog.feasibility.outcomes).sort(), ['DISCOVERY_INCOMPLETE','FEASIBLE_STATIC','HOST_BINDING_UNAVAILABLE_IN_SCOPE']);
   assert.ok(catalog.feasibility.required_static.includes('trusted_utc_provenance'));
   for (const key of ['DISCOVERY_INCOMPLETE','HOST_BINDING_UNAVAILABLE_IN_SCOPE']) {
-    assert.equal(catalog.feasibility.outcomes[key].implementation_allowed, false);
+    assert.equal(catalog.feasibility.outcomes[key].host_integration_allowed, false);
+    assert.equal(catalog.feasibility.outcomes[key].local_core_admission, 'LC-ADMISSION');
     assert.equal(catalog.feasibility.outcomes[key].live_allowed, false);
   }
 });

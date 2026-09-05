@@ -1,0 +1,285 @@
+{
+  "schema_version": 1,
+  "scope_id": "HOST-SCOPE-002",
+  "kind": "MINIMUM_REQUIREMENTS_AND_DEGRADATION_NOT_PLATFORM_IMPLEMENTATION",
+  "minimum_platform_requests": [
+    {
+      "id": "P1",
+      "name": "Invocation-bound caller reference",
+      "required_for": "AUTHENTICATED_ROLE_FLOW",
+      "minimum": "Protected caller endpoint/context reference bound to the actual invocation; namespace may be implicit for a single host.",
+      "not_required_from_platform": [
+        "logical_role",
+        "runtime_generation",
+        "application authority fields"
+      ],
+      "not_substitutable": true,
+      "provision": "UNKNOWN_EXTERNAL_DEPENDENCY"
+    },
+    {
+      "id": "P2",
+      "name": "Invocation-bound result capture/export",
+      "required_for": "ORIGIN_VERIFIED_ACK",
+      "minimum": "Retrievable unedited tool result with protected invocation/actual target linkage; transport accepted and target response distinguishable.",
+      "local_part": "ACL-protected capture, raw-byte hash and intent comparison",
+      "provision": "PARTIAL_CAPTURE_CANDIDATE_UNVERIFIED"
+    },
+    {
+      "id": "P3",
+      "name": "Pre-dispatch atomic fence enforcement",
+      "required_for": "STRICT_PREVENTION_AFTER_STOP",
+      "minimum": "Host consumes expected root stop_epoch/run_generation/authority lease at dispatch linearization point.",
+      "alternative": "Local queued-send stop plus in-flight cancellation/reconciliation; no remote atomic stop guarantee.",
+      "provision": "NOT_EXPOSED_IN_EXAMINED_INTERFACES"
+    }
+  ],
+  "field_degradation_matrix": [
+    {
+      "field": "CC.host_id",
+      "group": "host_namespace",
+      "necessity": "DERIVABLE",
+      "source": "Single declared host namespace; protected caller ref must still be scoped",
+      "claim_lost_without": "Cross-host identity collision exclusion",
+      "degradation": "Bind one host configuration; prohibit cross-host routing"
+    },
+    {
+      "field": "CC.protected_source_ref",
+      "group": "caller_identity",
+      "necessity": "PLATFORM_REQUIRED",
+      "source": "Protected invocation context, not prompt/CLI/env assertion",
+      "claim_lost_without": "Authenticated actual calling endpoint",
+      "degradation": "No identity substitute; only explicitly unauthenticated cooperative-role product"
+    },
+    {
+      "field": "CC.logical_role",
+      "group": "role_mapping",
+      "necessity": "DERIVABLE",
+      "source": "Exact local manifest lookup from authenticated source binding",
+      "claim_lost_without": "Authorized role attribution",
+      "degradation": "Unknown source stays untrusted; role labels grant no authority"
+    },
+    {
+      "field": "CC.runtime_generation",
+      "group": "endpoint_binding",
+      "necessity": "LOCAL_REQUIRED",
+      "source": "Protected runtime generation CAS",
+      "claim_lost_without": "Current successor attribution and stale endpoint rejection",
+      "degradation": "No successor dispatch until verified binding; offline fixtures allowed"
+    },
+    {
+      "field": "CC.host_run_ref",
+      "group": "execution_correlation",
+      "necessity": "OPTIONAL",
+      "source": "Platform invocation ref if supplied; otherwise local attempt ref for audit only",
+      "claim_lost_without": "Platform run-level attribution",
+      "degradation": "Local reference never authenticates source"
+    },
+    {
+      "field": "CC.collected_at",
+      "group": "freshness",
+      "necessity": "LOCAL_REQUIRED",
+      "source": "Capture timestamp plus trusted/approved clock policy",
+      "claim_lost_without": "Age/freshness bound",
+      "degradation": "Undated records audit-only; no time-limited authority claim"
+    },
+    {
+      "field": "CC.expires_at",
+      "group": "freshness",
+      "necessity": "DERIVABLE",
+      "source": "Capture validity window and Decision expiry intersection",
+      "claim_lost_without": "Still-valid caller context",
+      "degradation": "Expired/unknown validity prohibits execution"
+    },
+    {
+      "field": "CC.provenance",
+      "group": "caller_identity",
+      "necessity": "PLATFORM_REQUIRED",
+      "source": "Protected context/result origin chain; may be same opaque P1 context capability",
+      "claim_lost_without": "Non-self-asserted identity",
+      "degradation": "Cannot replace with own JSON or hash"
+    },
+    {
+      "field": "HR.tool_call_ref",
+      "group": "result_correlation",
+      "necessity": "PLATFORM_OR_PROTECTED_CAPTURE",
+      "source": "Host invocation link or documented protected capture connection",
+      "claim_lost_without": "Result belongs to exact tool invocation",
+      "degradation": "Local intent correlation only; no platform attestation"
+    },
+    {
+      "field": "HR.response_source",
+      "group": "receipt_provenance",
+      "necessity": "PLATFORM_OR_PROTECTED_CAPTURE",
+      "source": "Unedited tool bytes captured by declared trusted writer",
+      "claim_lost_without": "Origin-authenticated result receipt",
+      "degradation": "Partial local observation only; no target authenticity claim"
+    },
+    {
+      "field": "HR.observed_target_ref",
+      "group": "target_binding",
+      "necessity": "PLATFORM_REQUIRED_FOR_ACK",
+      "source": "Actual target binding in tool result/context; prompt echo insufficient",
+      "claim_lost_without": "ACK came from intended target",
+      "degradation": "Unknown target cannot yield VERIFIED_ACK or scope close"
+    },
+    {
+      "field": "HR.status",
+      "group": "receipt_semantics",
+      "necessity": "PLATFORM_OR_OBSERVED",
+      "source": "Tool transport status and separately observed target response",
+      "claim_lost_without": "queued vs target ACK vs work result",
+      "degradation": "APP_ACCEPTED only; completion stays pending"
+    },
+    {
+      "field": "HR.response_hash",
+      "group": "integrity",
+      "necessity": "DERIVABLE",
+      "source": "Hash exact bytes after protected capture",
+      "claim_lost_without": "No alteration since capture",
+      "degradation": "Hash alone provides no source identity; unavailable bytes cannot verify integrity"
+    }
+  ],
+  "products": [
+    {
+      "id": "LOCAL_CORE_ONLY",
+      "initial_11_room_goal_satisfied": false,
+      "feasibility": "PARTIAL_REDUCER_EVIDENCE_NOT_PRODUCT_VIABILITY",
+      "dispatch": false,
+      "claims": [
+        "Deterministic state/revision/intent/replay validation using labeled fixtures"
+      ],
+      "forbidden_claims": [
+        "Real team messaging",
+        "Authenticated ACK",
+        "Host STOP prevention",
+        "Full product complete"
+      ],
+      "requirements": [
+        "Local model/scope gate",
+        "No-dispatch test evidence"
+      ],
+      "adopted_for": "Separate implementation-track planning, not implemented in this read/design turn"
+    },
+    {
+      "id": "COOPERATIVE_11_ROLE_FLOW",
+      "initial_11_room_goal_satisfied": "FUNCTIONAL_FLOW_CANDIDATE_NOT_VERIFIED",
+      "feasibility": "CONTRACT_DEFINED_NOT_LIVE_PROVEN",
+      "dispatch": false,
+      "roles_count": 11,
+      "functional_goal": [
+        "Human01→CEO02→service-chief03→team→result return",
+        "Room nonblocking status",
+        "CEO direct team assignment syncs deputy",
+        "Allowed peer collaboration",
+        "All roles may report issues to human"
+      ],
+      "trust": "Cooperative role agents and app-controlled target selection; role labels are not authenticated caller proof.",
+      "claims": [
+        "Observed best-effort receipt",
+        "Local dedupe",
+        "Cancel/reconcile already sent work"
+      ],
+      "forbidden_claims": [
+        "Authenticated caller without P1",
+        "Atomic remote STOP without P3",
+        "Audit hash proves target identity"
+      ],
+      "requirements": [
+        "Explicit reduced-trust product Decision",
+        "Separate candidate/schema/verification and exact activation",
+        "Actual no-effect probe and target provenance evidence"
+      ],
+      "can_open_current_send_gate": false,
+      "owner_decision": "NOT_ACCEPTED"
+    },
+    {
+      "id": "AUTHENTICATED_ROLE_FLOW",
+      "initial_11_room_goal_satisfied": "TARGET_NOT_IMPLEMENTED",
+      "feasibility": "EXTERNAL_DEPENDENCY",
+      "dispatch": false,
+      "requirements": [
+        "P1",
+        "P2",
+        "Clock/lease contract",
+        "Exact role bindings",
+        "New positive scoped verification",
+        "Formal gate and exact activation"
+      ],
+      "stop_option": "P3 strict prevention OR separately approved cancellation/reconciliation semantics",
+      "can_open_current_send_gate": false
+    }
+  ],
+  "local_core_track": {
+    "host_binding_dependency": false,
+    "dispatch": false,
+    "scope": [
+      "C1/C2 bug repairs",
+      "Pure state/event schema",
+      "Local intent get-or-prepare",
+      "Event chain/CAS",
+      "Fixture outbox/replay",
+      "Blocker lifecycle",
+      "Local STOP/effect ordering"
+    ],
+    "excluded": [
+      "Actual Router prepare/record CLI invocation",
+      "Provider APIs or app tool send",
+      "Activation/endpoints/secrets",
+      "Production writes"
+    ],
+    "admission": [
+      "Exact scoped model-plan validation",
+      "Candidate schema and local no-dispatch boundary",
+      "Isolated fixture-only runner"
+    ],
+    "completion": [
+      "No network/app/CLI dispatch imports or capability reachable in local test runner",
+      "Any attempted transport call throws and is counted",
+      "All local scenarios execute with dispatch_attempts=0",
+      "Host cases explicitly BLOCKED_HOST or SKIP_HOST_DEPENDENCY, never PASS"
+    ],
+    "formal_completion_gate": "Independent review still required; machine tests are not review",
+    "host_case_ids": [
+      "AC-13",
+      "AC-14",
+      "AC-15",
+      "AC-16",
+      "AC-17"
+    ],
+    "local_only_case_ids": [
+      "AC-01",
+      "AC-02",
+      "AC-03",
+      "AC-04",
+      "AC-05",
+      "AC-06",
+      "AC-07",
+      "AC-08",
+      "AC-09",
+      "AC-10",
+      "AC-11",
+      "AC-12",
+      "AC-18",
+      "AC-19",
+      "AC-20",
+      "AC-21",
+      "AC-22",
+      "AC-23",
+      "AC-24"
+    ]
+  },
+  "non_retroactivity": {
+    "prior_scope": "HOST-SCOPE-001",
+    "prior_sha256": "2287c16899944032ff12c2310aae7f1a5ef423f3535b7710c8430f70ff5c5945",
+    "may_overwrite": false,
+    "may_promote_prior_negative": false,
+    "new_positive_requires": "New scope and exact requirements bundle plus actual positive evidence; 002 outcomes are not binding-available verdicts"
+  },
+  "safety": {
+    "current_send_gate": "CLOSED",
+    "clock_relaxation_accepted": false,
+    "local_capture_proves_only": "Unchanged since capture, subject to declared trusted writer and OS ACL boundary",
+    "same_user_admin_resistance_claim": false
+  },
+  "decision": "HOST_REQUIREMENTS_SPECIFIED"
+}

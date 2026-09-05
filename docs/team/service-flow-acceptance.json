@@ -1,5 +1,5 @@
 {
-  "schema_version": 3,
+  "schema_version": 4,
   "kind": "ACCEPTANCE_SPEC_NOT_EXECUTION_EVIDENCE",
   "service_ready": false,
   "cases": [
@@ -23,7 +23,9 @@
         }
       ],
       "evidence_mode": "LOCAL_MOCK",
-      "status": "NOT_EXECUTED"
+      "status": "NOT_EXECUTED",
+      "host_dependency": false,
+      "local_track_disposition": "LOCAL_CANDIDATE_NOT_EXECUTED"
     },
     {
       "case_id": "AC-02",
@@ -41,7 +43,9 @@
         }
       ],
       "evidence_mode": "LOCAL_MOCK",
-      "status": "NOT_EXECUTED"
+      "status": "NOT_EXECUTED",
+      "host_dependency": false,
+      "local_track_disposition": "LOCAL_CANDIDATE_NOT_EXECUTED"
     },
     {
       "case_id": "AC-03",
@@ -55,7 +59,9 @@
         }
       ],
       "evidence_mode": "LOCAL_MOCK",
-      "status": "NOT_EXECUTED"
+      "status": "NOT_EXECUTED",
+      "host_dependency": false,
+      "local_track_disposition": "LOCAL_CANDIDATE_NOT_EXECUTED"
     },
     {
       "case_id": "AC-04",
@@ -73,7 +79,9 @@
         }
       ],
       "evidence_mode": "LOCAL_MOCK",
-      "status": "NOT_EXECUTED"
+      "status": "NOT_EXECUTED",
+      "host_dependency": false,
+      "local_track_disposition": "LOCAL_CANDIDATE_NOT_EXECUTED"
     },
     {
       "case_id": "AC-05",
@@ -91,7 +99,9 @@
         }
       ],
       "evidence_mode": "LOCAL_MOCK",
-      "status": "NOT_EXECUTED"
+      "status": "NOT_EXECUTED",
+      "host_dependency": false,
+      "local_track_disposition": "LOCAL_CANDIDATE_NOT_EXECUTED"
     },
     {
       "case_id": "AC-06",
@@ -109,7 +119,9 @@
         }
       ],
       "evidence_mode": "LOCAL_MOCK",
-      "status": "NOT_EXECUTED"
+      "status": "NOT_EXECUTED",
+      "host_dependency": false,
+      "local_track_disposition": "LOCAL_CANDIDATE_NOT_EXECUTED"
     },
     {
       "case_id": "AC-07",
@@ -127,7 +139,9 @@
         }
       ],
       "evidence_mode": "LOCAL_MOCK",
-      "status": "NOT_EXECUTED"
+      "status": "NOT_EXECUTED",
+      "host_dependency": false,
+      "local_track_disposition": "LOCAL_CANDIDATE_NOT_EXECUTED"
     },
     {
       "case_id": "AC-08",
@@ -153,7 +167,9 @@
         }
       ],
       "evidence_mode": "LOCAL_MOCK",
-      "status": "NOT_EXECUTED"
+      "status": "NOT_EXECUTED",
+      "host_dependency": false,
+      "local_track_disposition": "LOCAL_CANDIDATE_NOT_EXECUTED"
     },
     {
       "case_id": "AC-09",
@@ -179,7 +195,9 @@
         }
       ],
       "evidence_mode": "LOCAL_MOCK",
-      "status": "NOT_EXECUTED"
+      "status": "NOT_EXECUTED",
+      "host_dependency": false,
+      "local_track_disposition": "LOCAL_CANDIDATE_NOT_EXECUTED"
     },
     {
       "case_id": "AC-10",
@@ -217,7 +235,9 @@
         }
       ],
       "evidence_mode": "LOCAL_MOCK",
-      "status": "NOT_EXECUTED"
+      "status": "NOT_EXECUTED",
+      "host_dependency": false,
+      "local_track_disposition": "LOCAL_CANDIDATE_NOT_EXECUTED"
     },
     {
       "case_id": "AC-11",
@@ -235,7 +255,9 @@
         }
       ],
       "evidence_mode": "LOCAL_MOCK",
-      "status": "NOT_EXECUTED"
+      "status": "NOT_EXECUTED",
+      "host_dependency": false,
+      "local_track_disposition": "LOCAL_CANDIDATE_NOT_EXECUTED"
     },
     {
       "case_id": "AC-12",
@@ -265,7 +287,9 @@
         }
       ],
       "evidence_mode": "LOCAL_MOCK",
-      "status": "NOT_EXECUTED"
+      "status": "NOT_EXECUTED",
+      "host_dependency": false,
+      "local_track_disposition": "LOCAL_CANDIDATE_NOT_EXECUTED"
     },
     {
       "case_id": "AC-13",
@@ -287,7 +311,9 @@
         }
       ],
       "evidence_mode": "LOCAL_MOCK",
-      "status": "NOT_EXECUTED"
+      "status": "NOT_EXECUTED",
+      "host_dependency": true,
+      "local_track_disposition": "BLOCKED_HOST"
     },
     {
       "case_id": "AC-14",
@@ -305,7 +331,9 @@
         }
       ],
       "evidence_mode": "LOCAL_MOCK",
-      "status": "NOT_EXECUTED"
+      "status": "NOT_EXECUTED",
+      "host_dependency": true,
+      "local_track_disposition": "BLOCKED_HOST"
     },
     {
       "case_id": "AC-15",
@@ -327,7 +355,9 @@
         }
       ],
       "evidence_mode": "LOCAL_MOCK",
-      "status": "NOT_EXECUTED"
+      "status": "NOT_EXECUTED",
+      "host_dependency": true,
+      "local_track_disposition": "BLOCKED_HOST"
     },
     {
       "case_id": "AC-16",
@@ -349,7 +379,9 @@
         }
       ],
       "evidence_mode": "LIVE_HOST",
-      "status": "NOT_EXECUTED"
+      "status": "NOT_EXECUTED",
+      "host_dependency": true,
+      "local_track_disposition": "BLOCKED_HOST"
     },
     {
       "case_id": "AC-17",
@@ -379,7 +411,9 @@
         }
       ],
       "evidence_mode": "LIVE_HOST",
-      "status": "NOT_EXECUTED"
+      "status": "NOT_EXECUTED",
+      "host_dependency": true,
+      "local_track_disposition": "BLOCKED_HOST"
     },
     {
       "case_id": "AC-18",
@@ -413,7 +447,9 @@
         }
       ],
       "evidence_mode": "LOCAL_MOCK",
-      "status": "NOT_EXECUTED"
+      "status": "NOT_EXECUTED",
+      "host_dependency": false,
+      "local_track_disposition": "LOCAL_CANDIDATE_NOT_EXECUTED"
     },
     {
       "case_id": "AC-19",
@@ -431,7 +467,9 @@
         }
       ],
       "evidence_mode": "LOCAL_MOCK",
-      "status": "NOT_EXECUTED"
+      "status": "NOT_EXECUTED",
+      "host_dependency": false,
+      "local_track_disposition": "LOCAL_CANDIDATE_NOT_EXECUTED"
     },
     {
       "case_id": "AC-20",
@@ -445,7 +483,9 @@
         }
       ],
       "evidence_mode": "LOCAL_MOCK",
-      "status": "NOT_EXECUTED"
+      "status": "NOT_EXECUTED",
+      "host_dependency": false,
+      "local_track_disposition": "LOCAL_CANDIDATE_NOT_EXECUTED"
     },
     {
       "case_id": "AC-21",
@@ -463,7 +503,9 @@
         }
       ],
       "evidence_mode": "LOCAL_MOCK",
-      "status": "NOT_EXECUTED"
+      "status": "NOT_EXECUTED",
+      "host_dependency": false,
+      "local_track_disposition": "LOCAL_CANDIDATE_NOT_EXECUTED"
     },
     {
       "case_id": "AC-22",
@@ -485,7 +527,9 @@
         }
       ],
       "evidence_mode": "LOCAL_MOCK",
-      "status": "NOT_EXECUTED"
+      "status": "NOT_EXECUTED",
+      "host_dependency": false,
+      "local_track_disposition": "LOCAL_CANDIDATE_NOT_EXECUTED"
     },
     {
       "case_id": "AC-23",
@@ -515,7 +559,37 @@
         }
       ],
       "evidence_mode": "LOCAL_OS_ISOLATION",
-      "status": "NOT_EXECUTED"
+      "status": "NOT_EXECUTED",
+      "host_dependency": false,
+      "local_track_disposition": "LOCAL_CANDIDATE_NOT_EXECUTED"
+    },
+    {
+      "case_id": "AC-24",
+      "phase": "LC-ADMISSION",
+      "file": "scripts/team-service-no-dispatch.test.mjs",
+      "test_name": "AC-24 service contract",
+      "required_assertions": [
+        {
+          "assertion_id": "AC-24-A1",
+          "requirement": "Local module/import and capability allowlist rejects provider/app/Router CLI/network dispatch reachability, including negative fixtures."
+        },
+        {
+          "assertion_id": "AC-24-A2",
+          "requirement": "A fake transport attempt throws and is counted; no actual provider is invoked."
+        },
+        {
+          "assertion_id": "AC-24-A3",
+          "requirement": "Normal local scenarios execute with dispatch_attempts=0; fixture paths isolated from runtime."
+        },
+        {
+          "assertion_id": "AC-24-A4",
+          "requirement": "Host-dependent cases remain BLOCKED_HOST or SKIP_HOST_DEPENDENCY and never count as service PASS."
+        }
+      ],
+      "evidence_mode": "LOCAL_MOCK",
+      "status": "NOT_EXECUTED",
+      "host_dependency": false,
+      "local_track_disposition": "LOCAL_CANDIDATE_NOT_EXECUTED"
     }
   ],
   "phase_gates": [
@@ -536,7 +610,7 @@
       "depends_on": [],
       "case_ids": [],
       "requires": [
-        "HOST-SCOPE-001",
+        "NEW_POSITIVE_SCOPE_NOT_001_OR_002",
         "FEASIBLE_STATIC"
       ],
       "gate_status": "NOT_EXECUTED",
@@ -545,10 +619,26 @@
       ]
     },
     {
-      "id": "P2",
-      "depends_on": [
+      "id": "LC-ADMISSION",
+      "depends_on": [],
+      "case_ids": [
+        "AC-24"
+      ],
+      "requires": [
+        "EXACT_LOCAL_MODEL_SCOPE",
+        "LOCAL_SCOPE_REVIEW",
+        "FIXTURE_ONLY_BOUNDARY"
+      ],
+      "gate_status": "NOT_EXECUTED",
+      "parallel_with": [
         "P0",
         "PH-FEASIBILITY"
+      ]
+    },
+    {
+      "id": "P2",
+      "depends_on": [
+        "LC-ADMISSION"
       ],
       "case_ids": [
         "AC-18"
@@ -624,7 +714,8 @@
     {
       "id": "P6",
       "depends_on": [
-        "P5"
+        "P5",
+        "PH-FEASIBILITY"
       ],
       "case_ids": [
         "AC-13",
@@ -637,6 +728,7 @@
     {
       "id": "P7",
       "depends_on": [
+        "P0",
         "P6"
       ],
       "case_ids": [],
@@ -725,28 +817,36 @@
       "FEASIBLE_STATIC": {
         "when": "All required_static PRESENT; UNVERIFIED only in live_only",
         "next": [
-          "P2"
+          "P6_HOST_PREREQUISITE_ONLY",
+          "LC-ADMISSION"
         ],
-        "live_allowed": false
+        "live_allowed": false,
+        "host_integration_allowed": true,
+        "local_core_admission": "LC-ADMISSION"
       },
       "HOST_BINDING_UNAVAILABLE_IN_SCOPE": {
         "when": "All sources examined; required_static contains MISSING",
         "next": [
           "READ",
           "PLAN_REPAIR",
-          "THROWAWAY_MOCK"
+          "PLAN_TEST",
+          "LC-ADMISSION"
         ],
-        "implementation_allowed": false,
-        "live_allowed": false
+        "live_allowed": false,
+        "host_integration_allowed": false,
+        "local_core_admission": "LC-ADMISSION"
       },
       "DISCOVERY_INCOMPLETE": {
         "when": "Read failure/time limit or required_static UNVERIFIED",
         "next": [
           "READ",
-          "PLAN_REPAIR"
+          "PLAN_REPAIR",
+          "PLAN_TEST",
+          "LC-ADMISSION"
         ],
-        "implementation_allowed": false,
-        "live_allowed": false
+        "live_allowed": false,
+        "host_integration_allowed": false,
+        "local_core_admission": "LC-ADMISSION"
       }
     },
     "owner_time_decision": {
@@ -861,5 +961,29 @@
     "status": "execution_status: NOT_EXECUTED until actual run",
     "implementation_status": "NOT_IMPLEMENTED/AVAILABLE; existence never proves execution",
     "evidence_mode": "LOCAL_MOCK/LOCAL_OS_ISOLATION/LIVE_HOST; required evidence type, not verdict"
+  },
+  "local_core_track": {
+    "host_binding_dependency": false,
+    "dispatch": false,
+    "completion_is_service_completion": false,
+    "admission": "LC-ADMISSION",
+    "bounded_bugfix": {
+      "ids": [
+        "C1",
+        "C2"
+      ],
+      "after": "LC-ADMISSION",
+      "waits_for_P2b": false,
+      "counts_as_full_P3": false,
+      "independent_review_required": true
+    },
+    "implementation_status": "NOT_IMPLEMENTED",
+    "host_case_ids": [
+      "AC-13",
+      "AC-14",
+      "AC-15",
+      "AC-16",
+      "AC-17"
+    ]
   }
 }
