@@ -42,6 +42,7 @@ import { createHash } from 'node:crypto';
 import { readFileSync, writeFileSync, readdirSync, statSync } from 'node:fs';
 import { resolve, join, relative, basename } from 'node:path';
 import { spawnSync } from 'node:child_process';
+import { numericLiteralValue } from './token-adoption-numeric-literal.mjs';
 
 const opt = Object.fromEntries(process.argv.slice(2).filter(a => a.startsWith('--'))
   .map(a => a.replace(/^--/, '').split('=')));
@@ -151,10 +152,10 @@ const directNumericSibling = (node, propName, sf) => {
   if (!object || !ts.isObjectLiteralExpression(object)) return null;
   const sibling = object.properties.find(p => ts.isPropertyAssignment(p)
     && p.name.getText(sf).replace(/['"]/g, '') === propName
-    && ts.isNumericLiteral(p.initializer));
+    && numericLiteralValue(ts, p.initializer) !== null);
   if (!sibling) return null;
   const { line, character } = sf.getLineAndCharacterOfPosition(sibling.getStart(sf));
-  return { value: Number(sibling.initializer.text), line: line + 1, column: character + 1 };
+  return { value: numericLiteralValue(ts, sibling.initializer), line: line + 1, column: character + 1 };
 };
 const record = (group, prop, value, node, rel, layer) => {
   const sf2 = node.getSourceFile();
@@ -234,12 +235,15 @@ for (const abs of files) {
     //   중첩 객체를 쓰는 속성의 안쪽 키를 상자 크기로 세면 그림자 오프셋이 `size` 선언으로
     //   잡힌다 — `tokens.ts` 의 그림자 다섯 역할이 그렇게 네 건 잡혔고, W1 재개에서 미분류로
     //   드러났다. (같은 덫을 `scripts/touch-target-audit.mjs` 에서도 한 번 밟았다.)
-    if (ts.isPropertyAssignment(node) && node.name && ts.isNumericLiteral(node.initializer)
+    const numericValue = ts.isPropertyAssignment(node)
+      ? numericLiteralValue(ts, node.initializer)
+      : null;
+    if (ts.isPropertyAssignment(node) && node.name && numericValue !== null
         && !insideNestedOffset(node)) {
       const prop = node.name.getText(sf).replace(/['"]/g, '');
       const g = propGroup(prop);
-      if (g) { f.inline[g]++; bump(tally.inline[g], `${prop}:${node.initializer.text}`);
-        record(g, prop, node.initializer.text, node, rel, layer); }
+      if (g) { f.inline[g]++; bump(tally.inline[g], `${prop}:${numericValue}`);
+        record(g, prop, String(numericValue), node, rel, layer); }
     }
     // fontWeight 는 문자열 리터럴로 쓰인다
     if (ts.isPropertyAssignment(node) && node.name && ts.isStringLiteral(node.initializer)
@@ -404,6 +408,7 @@ const out = {
       shadowing: '같은 이름의 지역 선언이 있으면 그 파일은 해당 심볼 집계에서 제외하고 목록에 남긴다',
       definitionDeclarations: 'tokenDefinition 파일의 숫자·굵기 선언은 definitions 에만 보존하고 declarations/defect 우주에서는 제외한다',
       lineHeightFontSizePair: 'lineHeight 선언은 같은 스타일 객체의 직접 숫자 fontSize 짝을 보존한다. 짝이 없으면 missing 으로 남겨 추정 수렴을 막는다',
+      signedNumericLiteral: 'PrefixUnaryExpression(MinusToken)+NumericLiteral도 음수 선언으로 센다. 음수 margin·letterSpacing을 전수 우주에서 누락하지 않는다',
     },
   },
   definitions: {
