@@ -140,7 +140,7 @@ export function CategoryEditScreen({ kind, backTo }: { kind: CategoryKind; backT
                     {USED_LABEL[kind]} {c.usedCount}개
                   </Text>
                 </Pressable>
-                <Pressable onPress={() => confirmDelete(c)} hitSlop={4} accessibilityRole="button" accessibilityLabel={`${c.name} 삭제`} style={{ width: 34, height: 34, alignItems: 'center', justifyContent: 'center' }}>
+                <Pressable onPress={() => confirmDelete(c)} hitSlop={{ top: 5, bottom: 5, left: 4, right: 6 }} accessibilityRole="button" accessibilityLabel={`${c.name} 삭제`} style={{ width: 34, height: 34, alignItems: 'center', justifyContent: 'center' }}>
                   <Icon name="close" size={19} color={T.ter} />
                 </Pressable>
               </View>

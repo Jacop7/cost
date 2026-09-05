@@ -126,10 +126,10 @@ export default function MyVendorsScreen() {
                   </View>
                   <Text style={{ fontSize: 14, color: T.ter, marginTop: 2 }}>발주 {v.usedCount}건</Text>
                 </Pressable>
-                <Pressable onPress={() => openEdit(v)} hitSlop={4} accessibilityRole="button" accessibilityLabel={`${v.name} 이름 변경`} style={{ width: 34, height: 34, alignItems: 'center', justifyContent: 'center' }}>
+                <Pressable onPress={() => openEdit(v)} hitSlop={5} accessibilityRole="button" accessibilityLabel={`${v.name} 이름 변경`} style={{ width: 34, height: 34, alignItems: 'center', justifyContent: 'center' }}>
                   <Icon name="edit" size={18} color={T.ter} sw={2} />
                 </Pressable>
-                <Pressable onPress={() => confirmDelete(v)} hitSlop={4} accessibilityRole="button" accessibilityLabel={`${v.name} 삭제`} style={{ width: 34, height: 34, alignItems: 'center', justifyContent: 'center' }}>
+                <Pressable onPress={() => confirmDelete(v)} hitSlop={5} accessibilityRole="button" accessibilityLabel={`${v.name} 삭제`} style={{ width: 34, height: 34, alignItems: 'center', justifyContent: 'center' }}>
                   <Icon name="close" size={19} color={T.ter} />
                 </Pressable>
               </View>

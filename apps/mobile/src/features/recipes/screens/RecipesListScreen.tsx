@@ -158,6 +158,7 @@ export default function RecipesListScreen() {
           <Text style={{ flex: 1, fontSize: 22, fontWeight: '800', color: T.ink, letterSpacing: -0.6 }}>레시피</Text>
           <Pressable
             onPress={() => setSearching((v) => !v)}
+            hitSlop={{ top: 2, bottom: 2, left: 4, right: 0 }}
             accessibilityRole="button" accessibilityLabel="검색"
             accessibilityState={{ selected: searching }}
             style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}
@@ -166,6 +167,7 @@ export default function RecipesListScreen() {
           </Pressable>
           <Pressable
             onPress={() => router.push('/my/notifications' as Href)}
+            hitSlop={{ top: 2, bottom: 2, left: 0, right: 4 }}
             accessibilityRole="button" accessibilityLabel="알림"
             style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}
           >

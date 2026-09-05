@@ -360,6 +360,7 @@ function SalesHomeBody({ today }: { today: string }) {
           </View>
           <Pressable
             onPress={() => router.push('/sales/analytics' as Href)}
+            hitSlop={2}
             style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}
             accessibilityRole="button" accessibilityLabel="매출 분석"
           >
@@ -529,7 +530,7 @@ function SalesHomeBody({ today }: { today: string }) {
                     disabled={blocked}
                     accessibilityRole="button" accessibilityLabel={`${m.name} 판매 수량 수정`}
                     style={{ alignItems: 'flex-end' }}
-                    hitSlop={6}
+                    hitSlop={{ top: 6, bottom: 6, left: 7, right: 5 }}
                   >
                     <Text style={[{ fontSize: 15, fontWeight: '800', color: total > 0 ? T.ink : T.ter }, NUM]}>
                       {total}개{q && q.waste > 0 ? ` · 폐기 ${q.waste}` : ''}

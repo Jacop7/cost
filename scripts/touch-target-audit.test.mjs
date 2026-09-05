@@ -72,11 +72,25 @@ test('객체형 hitSlop 은 축마다 따로 더한다', () => {
   assert.match(r.out, /유효 24×44/);
 });
 
+test('같은 부모 이웃 pressable 의 안쪽 hitSlop 이 gap 절반을 넘으면 FAIL 한다', () => {
+  const tsx = `<View style={{ flexDirection: 'row', gap: 4 }}><Pressable onPress={a} hitSlop={{ left: 2, right: 3 }} style={{ width: 40, height: 44 }}/><Pressable onPress={b} hitSlop={{ left: 3, right: 2 }} style={{ width: 40, height: 44 }}/></View>`;
+  const r = runWith({ tsx, known: { entries: [], siblingOverlaps: [] } });
+  assert.equal(r.code, 1, r.out);
+  assert.match(r.out, /새 형제 중첩 위험/);
+});
+
+test('같은 부모 이웃 pressable 의 안쪽 hitSlop 이 gap 절반 이하면 통과한다', () => {
+  const tsx = `<View style={{ flexDirection: 'row', gap: 4 }}><Pressable onPress={a} hitSlop={{ left: 2, right: 2 }} style={{ width: 40, height: 44 }}/><Pressable onPress={b} hitSlop={{ left: 2, right: 2 }} style={{ width: 40, height: 44 }}/></View>`;
+  const r = runWith({ tsx, known: { entries: [], siblingOverlaps: [] } });
+  assert.equal(r.code, 0, r.out);
+});
+
 test('저장소의 알려진 목록은 지금 실제와 맞는다', () => {
   const r = spawnSync(process.execPath, [AUDIT], { encoding: 'utf8' });
   assert.equal(r.status, 0, (r.stdout ?? '') + (r.stderr ?? ''));
   const known = JSON.parse(readFileSync(KNOWN, 'utf8'));
-  assert.ok(known.entries.length > 0, '알려진 미달이 비어 있다 — 목록이 사라졌는지 확인하라');
+  assert.equal(known.entries.length, 2, '28×20 재정렬 두 자리는 소유자 결정 전까지 미해결이어야 한다');
+  assert.equal(known.siblingOverlaps.length, 1, '재정렬 버튼 사이의 중첩 위험을 별도로 래칫한다');
 });
 
 test('판정불가도 래칫한다 — 목록에 없는 새 판정불가는 FAIL', () => {
