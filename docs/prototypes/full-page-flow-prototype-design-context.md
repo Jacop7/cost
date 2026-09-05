@@ -1,12 +1,12 @@
 ﻿# 전체 페이지 프로토타입 · 디자인 맥락 장부
 
-> 현재 동기화 ID: `DS-20260906-002`
+> 현재 동기화 ID: `DS-20260906-003`
 > 문서 동기화 상태: `SYNCED`
 > 전체 UI 작업 상태: `IN_PROGRESS`
 > 마지막 갱신: `2026-09-06`
 > 공통 변경: `예`
-> UI 변경: `예`
-> 변경 기록: `PRT-230`
+> UI 변경: `아니오`
+> 변경 기록: `PRT-231`
 
 ## 1. 문서 역할
 
@@ -43,6 +43,23 @@
 
 ## 4. 가장 최근 작업
 
+### DS-20260906-003 · PRT-231 S3a 독립 검수 후 증거 계약 보강
+
+- 작업 성격: PRT-230 페이블 독립 검수 PASS의 Minor 4건을 반영했다. 앱과 프로토타입
+  DOM/CSS/JS는 바꾸지 않았다.
+- 결과:
+  - S3a 게이트의 고정 1,051 오기를 없애고 `known.assignments`를 권위로 삼았다.
+  - 계획의 `current`가 기준선 리터럴과 같고 `target`이 실제 토큰 표현식 값과 같은지를
+    게이트가 직접 대조하며, 두 방향의 음성 시험을 추가했다.
+  - W1 3,646건은 S3a 이전 `f5cacba` 기준선 스냅샷임과 S2의 −20 색 선언 대차를 기록했다.
+  - 은퇴한 S2 기하 게이트에 유효 구간 `83f7ba4→f5cacba`를 명시했다.
+- 완료 조건:
+  - PRT231-S3A-GATE · `../../scripts/design-token-s3a-diff.mjs`
+  - PRT231-S3A-TEST · `../../scripts/design-token-s3a-diff.test.mjs`
+  - PRT231-S2-GATE-NOTE · `../../scripts/design-token-geometry-diff.mjs`
+  - PRT231-W1-BASELINE-NOTE · `../디자인-토큰-3계층-값-매핑-기획서.md`
+- 다음 시작점: `S4` 컴포넌트 계약.
+
 ### DS-20260906-002 · PRT-230 S3a 폭 비증가 토큰 치환
 
 - 작업 성격: S2 종결 SHA `f5cacba`를 기준으로 폭이 늘지 않는 확정 매핑만 앱 토큰 참조로
@@ -52,6 +69,9 @@
   - 고립 action 5곳은 시각 32px와 함께 hitSlop을 보정해 유효 44×44를 유지했다.
   - 이웃 action 4곳과 관련 gap 1곳은 수렴하면 형제 터치 영역이 겹쳐 `S4`로 미뤘다.
   - 터치 래칫은 미달 2 · 형제중첩 1 · 판정불가 163으로 악화 0이다.
+  - W1 감사 JSON은 S3a 결과가 아니라 `f5cacba` 기준선 스냅샷이다. 3,666→3,646의 −20은
+    S2 MY 허브 타일 색 토큰화(`MyCategoryHubScreen` −6 · `MyHomeScreen` −14)이며,
+    S3a 후 전수 재측정은 S4 완료 SHA에서 W1을 최종 종결할 때 수행한다.
 - 완료 조건:
   - PRT230-S3A · `full-page-flow-prototype-s3a-diff.json`
   - PRT230-TOUCH · `../../scripts/touch-target-known.json`

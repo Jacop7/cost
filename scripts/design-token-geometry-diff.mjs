@@ -1,5 +1,9 @@
 #!/usr/bin/env node
-/** S2 정적 기하 게이트 — 기준 SHA와 현재의 기하 선언을 AST/선언 단위로 대조한다. */
+/**
+ * S2 구간 전용 정적 기하 게이트 — 83f7ba4→f5cacba 종결 구간만 유효하다.
+ * S3a 이후 현재 회귀 게이트는 design-token-s3a-diff.mjs이며, 이 스크립트를 새 HEAD에
+ * 기본 인자로 실행하면 승인된 후속 치환 때문에 의도대로 실패한다.
+ */
 import { readFileSync, writeFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { resolve, relative, join } from 'node:path';
 import { fileURLToPath } from 'node:url';

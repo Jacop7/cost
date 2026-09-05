@@ -2684,6 +2684,18 @@ popup/state host **121개**(합 182), 그리고 레지스트리에 키가 없는
   `full-page-flow-prototype-render-audit.json` · `full-page-flow-prototype-design-audit.json` ·
   `full-page-flow-prototype-i18n-stress.json`.
 
+## DS-20260906-003 · PRT-231 S3a 독립 검수 후 증거 계약 보강
+
+- 대상: PRT-230 페이블 독립 검수 PASS의 Minor 4건과 S3a/W1 증거 설명.
+- 기대값: S3a 계획의 현재값·목적지를 독립 계산 · 기준선 스냅샷 명시 · 은퇴 게이트 오독 방지.
+- 실제값: current=기준선 리터럴, target=토큰 표현식 값 검사를 추가하고 음성 시험 7/7 PASS.
+  W1 −20 색 선언 대차와 S2 기하 게이트 유효 구간을 기록했다.
+- PC 검수: PASS — 앱·프로토타입 실행 UI 변경 없음.
+- 모바일 검수: PASS — 앱·프로토타입 실행 UI 변경 없음.
+- 미검수: 없음
+- 결과: PASS
+- 증거: `../../scripts/design-token-s3a-diff.mjs` · `../../scripts/design-token-s3a-diff.test.mjs`.
+
 ## DS-20260906-002 · PRT-230 S3a 폭 비증가 토큰 치환
 
 - 대상: S2 종결 SHA `f5cacba` 이후 앱 TS/TSX 기하 선언과 프로토타입 CSS.
