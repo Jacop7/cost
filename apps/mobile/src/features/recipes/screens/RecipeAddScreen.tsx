@@ -302,7 +302,7 @@ export default function RecipeAddScreen() {
                           {l.unit === null ? `${(l.inputQty / servings) * cm}인분` : formatQuantity((l.inputQty / servings) * cm, l.unit)}
                         </Text>
                       </Pressable>
-                      <Pressable onPress={() => removeLine(i)} hitSlop={{ top: 8, bottom: 8, left: 4, right: 12 }} accessibilityRole="button" accessibilityLabel={`${l.name} 삭제`}>
+                      <Pressable onPress={() => removeLine(i)} accessibilityRole="button" accessibilityLabel={`${l.name} 삭제`}>
                         <Icon name="close" size={18} color={T.ter} />
                       </Pressable>
                     </View>

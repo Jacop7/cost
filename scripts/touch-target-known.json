@@ -1,7 +1,7 @@
 {
-  "_schema": "v5 — entries(미달) · siblingOverlaps(같은 부모 형제 중첩 위험) · components(공용 컴포넌트 계약, 전 variant 경계) · buttonDynamic · unjudged. 제품 .tsx 만 세고 시험 fixture 는 시험참조로 따로 둔다(R4 F04).",
+  "_schema": "v6 — entries(미달) · siblingOverlaps(같은 부모 형제 중첩 위험) · siblingUnjudged(조건부 JSX·동적 style 때문에 형제 관계 판정 불가) · components(공용 컴포넌트 계약, 전 variant 경계) · buttonDynamic · unjudged. 제품 .tsx 만 세고 시험 fixture 는 시험참조로 따로 둔다(R4 F04).",
   "_해시": "이 목록이 확정된 **제품** 감사 입력의 해시다 — 제품 .tsx 의 \"경로\\0git blob SHA\" 을 정렬해 잇고 감사기 자신의 sha256 을 더해 sha256. 커밋 SHA 자기참조를 피하면서 \"이후 무변경\" 을 게이트가 직접 검사한다. **시험 fixture 는 이 해시에 들어가지 않는다**(솔 검수 R5 F02) — 시험 한 줄을 고쳤다고 제품 재고가 흔들리면 안 된다. 시험참조해시는 기록만 하고 래칫하지 않는다. blob SHA 는 CRLF→LF 정규화 뒤 계산하므로 체크아웃한 OS 에 좌우되지 않는다(페이블 R6 차단 — 내용 sha256 은 줄끝을 쟀다).",
-  "제품입력해시": "d7643b3c107d3b323c7dd950e19876e182879ff0241346e29f6bdeb27ea9a7e3",
+  "제품입력해시": "55759050e5963dc2c56439dddb94f3aa98e82f4409d1e463c6aedaabbf2972a4",
   "시험참조해시": "9a57d560e0ab1b1bee86e48a194f516fcd0f698371ee76a587bd2c0d94c4a3cb",
   "_entries": "선언 크기와 hitSlop 이 있는데 44 에 못 미치는 자리. 유효 크기가 줄어도 FAIL 한다.",
   "entries": [
@@ -20,9 +20,14 @@
   "siblingOverlaps": [
     {
       "pair": "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:130|apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:133",
+      "firstAt": "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:130",
+      "secondAt": "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:133",
+      "axis": "vertical",
       "gap": 2,
+      "limit": 1,
       "firstInward": 4,
       "secondInward": 4,
+      "판정": "중첩위험",
       "근거": "28×20 화면 계약과 두 버튼의 독립 44px 접근성 계약 충돌 — 소유자 결정 필요"
     }
   ],
@@ -145,9 +150,9 @@
         "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx:368",
         "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx:369",
         "apps/mobile/src/features/sales/screens/SalesDayDetailScreen.tsx:126",
-        "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:603",
-        "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:673",
-        "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:708",
+        "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:602",
+        "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:672",
+        "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:707",
         "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:278",
         "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:325",
         "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:383",
@@ -186,11 +191,11 @@
     "apps/mobile/src/features/ingredients/components/VendorPickerSheet.tsx:103",
     "apps/mobile/src/features/ingredients/components/VendorPickerSheet.tsx:55",
     "apps/mobile/src/features/ingredients/components/VendorPickerSheet.tsx:73",
-    "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:220",
-    "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:230",
-    "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:258",
-    "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:265",
-    "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:273",
+    "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:219",
+    "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:229",
+    "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:257",
+    "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:264",
+    "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:272",
     "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:18",
     "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:118",
     "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:147",
@@ -308,11 +313,11 @@
     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:434",
     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:450",
     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:528",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:545",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:623",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:649",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:688",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:766",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:544",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:622",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:648",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:687",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:765",
     "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx:119",
     "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx:75",
     "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx:95",
@@ -327,5 +332,16 @@
     "apps/mobile/src/features/sales/screens/SalesStockCheckScreen.tsx:95"
   ],
   "_재고항목원측정커밋": "이 목록의 항목을 처음 확정한 clean checkout 의 커밋이다. **결속은 이 값이 하지 않는다** — 정확한 결속은 제품입력해시와 실행 시 --expect-commit 이 한다(솔 검수 R6 F05).",
-  "재고항목원측정커밋": "0d9f437782d6cde61c18d28a4f5244c7dfb1bdb2"
+  "재고항목원측정커밋": "0d9f437782d6cde61c18d28a4f5244c7dfb1bdb2",
+  "_siblingUnjudged": "조건부 JSX는 펼치고, 정적으로 펼칠 수 없는 식이나 동적 style/gap/hitSlop은 0으로 가정하지 않는다. 부모별로 래칫해 거짓 통과와 거짓 실패를 모두 드러낸다.",
+  "siblingUnjudged": [
+    {
+      "at": "apps/mobile/src/components/kit/index.tsx:298",
+      "사유": "형제 apps/mobile/src/components/kit/index.tsx:302|apps/mobile/src/components/kit/index.tsx:302의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다"
+    },
+    {
+      "at": "apps/mobile/src/features/sales/screens/SalesRevenueScreen.tsx:87",
+      "사유": "조건부 JSX 조합이 128개를 넘어 정적으로 펼치지 못했다"
+    }
+  ]
 }
