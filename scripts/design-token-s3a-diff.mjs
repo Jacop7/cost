@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/** S3a 계약 — S2 exact SHA에서 승인된 1,051개 치환만 허용한다. */
+/** S3a 계약 — S2 exact SHA에서 known.assignments로 승인된 치환만 허용한다. */
 import ts from 'typescript';
 import { createHash } from 'node:crypto';
 import { existsSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
@@ -120,6 +120,9 @@ for (const file of new Set([...baselineFiles, ...currentFiles])) {
     const key = `${file}:${a.line}:${a.prop}`;
     const expected = plan.get(key);
     if (!expected) { fail(`${key} 승인되지 않은 변경 ${a.text}→${b.text}`); continue; }
+    const baselineValue = Number(a.text);
+    if (!Number.isFinite(baselineValue) || baselineValue !== expected.current)
+      fail(`${key} 기준선 현재값 ${a.text} ≠ 계획 current ${expected.current}`);
     if (b.text !== expected.expression) fail(`${key} 목적지 ${b.text} ≠ 승인 ${expected.expression}`);
     used.add(key);
   }
@@ -181,6 +184,13 @@ for (const [name, expected] of Object.entries(known.tokenContract)) {
         if (actual?.[key]?.[inner] !== innerValue) fail(`${name}.${key}.${inner} 값 ${actual?.[key]?.[inner]} ≠ ${innerValue}`);
     } else if (actual?.[key] !== value) fail(`${name}.${key} 값 ${actual?.[key]} ≠ ${value}`);
   }
+}
+const resolveTokenExpression = expression => expression.split('.').reduce((value, key) => value?.[key], actualContract);
+for (const item of plan.values()) {
+  const resolved = resolveTokenExpression(item.expression);
+  if (typeof resolved !== 'number') fail(`${item.key} 토큰 표현식 ${item.expression}의 숫자값을 풀 수 없다`);
+  else if (resolved !== item.target)
+    fail(`${item.key} 토큰 목적지 ${item.expression}=${resolved} ≠ 계획 target ${item.target}`);
 }
 
 const proto = 'docs/prototypes/0_full-page-flow-prototype-ui-applied.html';
