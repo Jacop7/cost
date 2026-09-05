@@ -45,8 +45,9 @@ const run = ({ artEdit = null, docEdit = null, claimsEol = null } = {}) => {
     const r = spawnSync(process.execPath, [CHECK, AUDIT,
       join(proto, 'full-page-flow-prototype-doc-claims.json'),
       outPath], { encoding: 'utf8' });
-    const result = (() => { try { return JSON.parse(readFileSync(outPath, 'utf8')); } catch { return null; } })();
-    return { code: r.status, out: (r.stdout ?? '') + (r.stderr ?? ''), result };
+    const bytes = (() => { try { return readFileSync(outPath, 'utf8'); } catch { return null; } })();
+    const result = (() => { try { return JSON.parse(bytes); } catch { return null; } })();
+    return { code: r.status, out: (r.stdout ?? '') + (r.stderr ?? ''), result, bytes };
   } finally { rmSync(dir, { recursive: true, force: true }); }
 };
 
@@ -105,4 +106,12 @@ test('claims JSON의 CRLF와 LF는 같은 입력 해시를 낸다', () => {
   assert.equal(lf.code, 0, lf.out);
   assert.equal(crlf.code, 0, crlf.out);
   assert.equal(lf.result.manifest.claimsSha256, crlf.result.manifest.claimsSha256);
+});
+
+test('같은 입력을 두 번 검사해도 산출물 바이트가 같다 — 검사가 clean tree를 깨뜨리지 않는다', () => {
+  const first = run({});
+  const second = run({});
+  assert.equal(first.code, 0, first.out);
+  assert.equal(second.code, 0, second.out);
+  assert.equal(first.bytes, second.bytes);
 });
