@@ -1,6 +1,6 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-05T05:25:13.455Z",
+  "generatedAt": "2026-09-05T08:50:09.598Z",
   "schemaVersion": 1,
   "script": {
    "name": "full-page-flow-prototype-app-map-check.mjs",
@@ -14,7 +14,7 @@
    },
    "appMap": {
     "path": "full-page-flow-prototype-app-token-map.json",
-    "sha256": "c67f3aedb221e69503dcb1015961adcc304bb7c1c0034e5f2dafebb983afdfb5"
+    "sha256": "aa396616d23428f29946fcb67819df6836a4cd06b4ad4b4af488ee157b8fe183"
    },
    "prototypeMap": {
     "path": "full-page-flow-prototype-token-map.json",

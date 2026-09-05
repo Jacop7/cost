@@ -10,6 +10,14 @@ import { createHash } from 'node:crypto';
 import { resolve } from 'node:path';
 
 const sha = (b) => createHash('sha256').update(b).digest('hex');
+/**
+ * git blob id — CRLF→LF 정규화 뒤 계산하므로 체크아웃한 OS 에 좌우되지 않는다.
+ * 대조한 **문서 판본**을 산출물에 박아 두는 데 쓴다 (솔 검수 `W1 R2 F01`).
+ */
+const blobId = (buf) => {
+  const lf = Buffer.from(buf.toString('utf8').replace(/\r\n/g, '\n'), 'utf8');
+  return createHash('sha1').update(Buffer.concat([Buffer.from(`blob ${lf.length}\u0000`, 'utf8'), lf])).digest('hex');
+};
 const args = process.argv.slice(2).filter(a => !a.startsWith('--'));
 const auditPath  = resolve(args[0] ?? 'docs/token-adoption-audit.json');
 const claimsPath = resolve(args[1] ?? 'docs/prototypes/full-page-flow-prototype-doc-claims.json');
@@ -73,7 +81,13 @@ for (const c of claims.claims) {
     if (!existsSync(srcArt)) { failures.push(`${c.id} : 대조할 산출물이 없다 — ${c.출처}`); results.push({ id: c.id, verdict: 'FAIL', mode: '문서블록' }); continue; }
     const sum = JSON.parse(readFileSync(srcArt, 'utf8')).summary ?? {};
     const want = renderW1Block(sum);
-    const md = readFileSync(docPath, 'utf8').replace(/\r\n/g, '\n');
+    const docBytes = readFileSync(docPath);
+    // **어느 판본의 문서와 맞춰 봤는가** 를 산출물에 박는다. 검증은 블록 대조가 하고,
+    // 이 값은 출처다 — 보고서가 "문서와 맞다" 고 말할 때 어느 문서인지 남는다.
+    // `문서blob` 을 claim 에 적어 두면 **그 판본으로 고정**된다(선택). 적지 않으면 기록만 한다 —
+    // 블록이 문서와 함께 바뀌는 자리라 매번 고정하면 갱신이 끝없이 돈다.
+    const docBlob = blobId(docBytes);
+    const md = docBytes.toString('utf8').replace(/\r\n/g, '\n');
     const open = `<!-- ${c.마커}: 자동 생성 -->`, close = `<!-- /${c.마커} -->`;
     const i = md.indexOf(open), j = md.indexOf(close);
     let verdict = 'PASS';
@@ -89,7 +103,12 @@ for (const c of claims.claims) {
         failures.push(`${c.id} : ${c.절} 의 자동 생성 블록이 산출물과 다르다 — 첫 어긋남 ${n + 1}행 · 문서 "${(g[n] ?? '(없음)').slice(0, 70)}" · 실제 "${(w[n] ?? '(없음)').slice(0, 70)}". 아래 블록을 붙여 넣어라:\n${want}`);
       }
     }
-    results.push({ id: c.id, 문서: c.문서, 절: c.절, 주장: c.주장, mode: '문서블록', 마커: c.마커, verdict });
+    if (c.문서blob && c.문서blob !== docBlob) {
+      verdict = 'FAIL';
+      failures.push(`${c.id} : 고정된 문서 판본이 아니다 — claim ${String(c.문서blob).slice(0, 12)} · 지금 ${docBlob.slice(0, 12)}`);
+    }
+    results.push({ id: c.id, 문서: c.문서, 절: c.절, 주장: c.주장, mode: '문서블록', 마커: c.마커,
+      문서blob: docBlob, 문서blob고정: c.문서blob ?? null, verdict });
     continue;
   }
   // `합계` — 값 목록이 아니라 **배정 결과의 수**를 주장한다 (페이블 W1 재종결 조건).
