@@ -16,7 +16,7 @@
 import type { ReactNode } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { Card, Icon } from '@/components/kit';
-import { T, tnum } from '@/theme/tokens';
+import { COLOR, T, tnum } from '@/theme/tokens';
 
 /** 조건 줄 — **왼쪽부터** 채운다(프로토타입 `.condition`). 오른쪽은 건수 자리다. */
 export function ConditionRow({ children, right }: { children: ReactNode; right?: ReactNode }) {
@@ -69,7 +69,7 @@ export function SummaryCard({ label, value, sub, metrics = [] }: {
         <View style={{ flex: 1 }} />
         <Text style={[{ fontSize: 18, fontWeight: '800', color: T.ink }, tnum]}>{value}</Text>
         {sub ? (
-          <Text style={[{ fontSize: 12, fontWeight: '700', color: T.ter, marginLeft: 4 }, tnum]}>· {sub}</Text>
+          <Text style={[{ fontSize: 12, fontWeight: '700', color: COLOR.text.tertiary, marginLeft: 4 }, tnum]}>· {sub}</Text>
         ) : null}
       </View>
       {metrics.length > 0 ? (
@@ -78,11 +78,11 @@ export function SummaryCard({ label, value, sub, metrics = [] }: {
             <View key={i} style={{ flexDirection: 'row', gap: 14 }}>
               {pair.map((m) => (
                 <View key={m.label} style={{ flex: 1, minWidth: 0 }}>
-                  <Text style={{ fontSize: 12, color: T.ter, fontWeight: '700', marginBottom: 4 }} numberOfLines={1}>
+                  <Text style={{ fontSize: 12, color: COLOR.text.tertiary, fontWeight: '700', marginBottom: 4 }} numberOfLines={1}>
                     {m.label}
                   </Text>
                   <Text
-                    style={[{ fontSize: 15, fontWeight: '800', color: m.tone === 'blue' ? T.blue : m.tone === 'red' ? T.red : T.ink }, tnum]}
+                    style={[{ fontSize: 15, fontWeight: '800', color: m.tone === 'blue' ? COLOR.text.link : m.tone === 'red' ? T.red : T.ink }, tnum]}
                     numberOfLines={1}
                   >
                     {m.value}

@@ -9,7 +9,7 @@ import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter, type Href } from 'expo-router';
 import { AppHeader, Card, Icon, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { T, won } from '@/theme/tokens';
+import { COLOR, T, won } from '@/theme/tokens';
 import { useFixedBreakdown } from '../hooks';
 import { rangeLabel } from '@/lib/date';
 import { useSalesBusinessDate } from '@/features/business-day/businessDay';
@@ -111,14 +111,14 @@ function SalesFixedScreenBody({ serverToday }: { serverToday: string }) {
                 >
                   <View style={{ flex: 1, minWidth: 0 }}>
                     <Text style={{ fontSize: 16, fontWeight: '800', color: T.ink }}>{LABEL[g.key] ?? g.key}</Text>
-                    <Text style={[{ fontSize: 14, color: T.ter, fontWeight: '600', marginTop: 3 }, NUM]}>
+                    <Text style={[{ fontSize: 14, color: COLOR.text.tertiary, fontWeight: '600', marginTop: 3 }, NUM]}>
                       월 {won(g.monthTotal)}원 · 이 기간 몫 {pct}%
                     </Text>
                   </View>
                   <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink, marginRight: 8 }, NUM]}>{won(Math.round(g.amount))}원</Text>
                   {g.lines.length > 0 ? (
                     <View style={{ transform: [{ rotate: isOpen ? '180deg' : '0deg' }] }}>
-                      <Icon name="chevronDown" size={16} color={T.ter} />
+                      <Icon name="chevronDown" size={16} color={COLOR.text.tertiary} />
                     </View>
                   ) : <View style={{ width: 16 }} />}
                 </Pressable>

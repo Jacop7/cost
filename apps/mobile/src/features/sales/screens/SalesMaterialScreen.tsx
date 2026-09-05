@@ -9,7 +9,7 @@ import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter, type Href } from 'expo-router';
 import { AppHeader, Card, Icon, QueryState, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { T, won } from '@/theme/tokens';
+import { COLOR, T, won } from '@/theme/tokens';
 import { formatQuantity, formatUnitPrice } from '@margincook/core';
 import { useMaterialUsage, useSalesRange, type MaterialUsageItem } from '../hooks';
 import { rangeLabel } from '@/lib/date';
@@ -80,9 +80,9 @@ function SalesMaterialScreenBody({ serverToday }: { serverToday: string }) {
                   >
                     <View style={{ flex: 1, minWidth: 0 }}>
                       <Text style={{ fontSize: 16, fontWeight: '600', color: T.sub }} numberOfLines={1}>
-                        {m.name} <Text style={{ color: T.ter }}>{formatQuantity(m.qty, unit)}</Text>
+                        {m.name} <Text style={{ color: COLOR.text.tertiary }}>{formatQuantity(m.qty, unit)}</Text>
                       </Text>
-                      <Text style={{ fontSize: 14, color: T.ter, marginTop: 2 }} numberOfLines={1}>
+                      <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 2 }} numberOfLines={1}>
                         {menus.slice(0, 2).join(' · ')}{menus.length > 2 ? ` 외 ${menus.length - 2}개` : ''}
                       </Text>
                     </View>
@@ -97,8 +97,8 @@ function SalesMaterialScreenBody({ serverToday }: { serverToday: string }) {
                   accessibilityRole="button" accessibilityLabel={`식재료 ${items.length - 5}개 더 보기`}
                   style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 4, paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: T.line2 }}
                 >
-                  <Text style={{ fontSize: 14, fontWeight: '700', color: T.blue }}>더보기 ({items.length - 5}개)</Text>
-                  <Icon name="chevronDown" size={15} color={T.blue} />
+                  <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.text.link }}>더보기 ({items.length - 5}개)</Text>
+                  <Icon name="chevronDown" size={15} color={COLOR.action.primary} />
                 </Pressable>
               ) : null}
             </View>
@@ -122,8 +122,8 @@ function SalesMaterialScreenBody({ serverToday }: { serverToday: string }) {
               accessibilityRole="button" accessibilityLabel="식재료 상세로 이동"
               style={{ flexDirection: 'row', alignItems: 'center', gap: 1, marginTop: 4 }}
             >
-              <Text style={{ fontSize: 14, fontWeight: '700', color: T.blue }}>식재료 보기</Text>
-              <Icon name="chevron" size={15} color={T.blue} />
+              <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.text.link }}>식재료 보기</Text>
+              <Icon name="chevron" size={15} color={COLOR.action.primary} />
             </Pressable>
           ) : undefined
         }
@@ -148,7 +148,7 @@ function SalesMaterialScreenBody({ serverToday }: { serverToday: string }) {
               <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{formatQuantity(sel.qty, dispUnit(sel.baseUnit))}</Text>
               <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{won(Math.round(sel.amount))}원</Text>
             </View>
-            <Text style={[{ fontSize: 14, color: T.ter, marginTop: 8, textAlign: 'right' }, NUM]}>
+            <Text style={[{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 8, textAlign: 'right' }, NUM]}>
               {sel.unitPrice === null ? '기준단가 산출 전' : `기준단가 ${formatUnitPrice(sel.unitPrice, dispUnit(sel.baseUnit))}`}
             </Text>
           </View>

@@ -12,7 +12,7 @@ import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { displayToBase, formatQuantity, isDisplayUnit, previewBaseUnitPrice, rawUnitPrice, roundOrNull } from '@margincook/core';
 import { AppHeader, Button, Field, Icon, Input, QueryState, Select } from '../../../components/kit';
-import { T } from '../../../theme/tokens';
+import { COLOR, T } from '../../../theme/tokens';
 import { UnitPickerSheet } from '../components/UnitPickerSheet';
 import { CategoryPickerSheet } from '../components/CategoryPickerSheet';
 import { VendorPickerSheet } from '../components/VendorPickerSheet';
@@ -160,7 +160,7 @@ export function IngredientFormScreen({ id }: { id?: string }) {
                 style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: T.surface, borderWidth: 1, borderColor: T.line, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 13 }}
               >
                 <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.ink }}>{unit}</Text>
-                <Icon name="chevronDown" size={18} color={T.ter} />
+                <Icon name="chevronDown" size={18} color={COLOR.text.tertiary} />
               </Pressable>
             </View>
           </Field>
@@ -181,8 +181,8 @@ export function IngredientFormScreen({ id }: { id?: string }) {
 
           {/* 단가 미리보기 — 저장 전에 결과를 눈으로 확인하게 한다. */}
           {num(price) > 0 && perBase > 0 ? (
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 16, paddingVertical: 13, paddingHorizontal: 14, borderRadius: 12, backgroundColor: T.blueTint }}>
-              <Icon name="info" size={15} color={T.blue} />
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 16, paddingVertical: 13, paddingHorizontal: 14, borderRadius: 12, backgroundColor: COLOR.action.primaryTint }}>
+              <Icon name="info" size={15} color={COLOR.action.primary} />
               <Text style={{ flex: 1, fontSize: 14, color: T.sub2, lineHeight: 20 }}>
                 {realPer === null
                   ? '입력값으로는 단가를 계산할 수 없어요'
@@ -213,15 +213,15 @@ export function IngredientFormScreen({ id }: { id?: string }) {
           {id ? (
             <View style={{ marginTop: 4 }}>
               <Text style={{ fontSize: 16, fontWeight: '700', color: T.sub, marginBottom: 8 }}>
-                구매 링크 · 옵션 <Text style={{ color: T.ter, fontWeight: '600' }}>({d?.options.length ?? 0}개)</Text>
+                구매 링크 · 옵션 <Text style={{ color: COLOR.text.tertiary, fontWeight: '600' }}>({d?.options.length ?? 0}개)</Text>
               </Text>
               <Pressable
                 onPress={() => router.push(`/ingredients/option?ingredient=${id}`)}
                 accessibilityRole="button" accessibilityLabel="구매 링크·옵션 관리"
-                style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5, paddingVertical: 13, borderRadius: 12, borderWidth: 1, borderColor: T.blue, backgroundColor: T.blueTint }}
+                style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5, paddingVertical: 13, borderRadius: 12, borderWidth: 1, borderColor: COLOR.action.primary, backgroundColor: COLOR.action.primaryTint }}
               >
-                <Icon name="plus" size={18} color={T.blue} sw={2.2} />
-                <Text style={{ fontSize: 16, fontWeight: '700', color: T.blue }}>구매 링크 · 옵션 관리</Text>
+                <Icon name="plus" size={18} color={COLOR.action.primary} sw={2.2} />
+                <Text style={{ fontSize: 16, fontWeight: '700', color: COLOR.text.link }}>구매 링크 · 옵션 관리</Text>
               </Pressable>
             </View>
           ) : (

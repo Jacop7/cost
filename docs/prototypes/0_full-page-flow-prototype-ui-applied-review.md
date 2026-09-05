@@ -2669,6 +2669,21 @@ popup/state host **121개**(합 182), 그리고 레지스트리에 키가 없는
   `full-page-flow-prototype-app-map-check.json` · `full-page-flow-prototype-doc-claims-check.json`
 - 별도 후속: S4a Android·iOS 네이티브 실측은 W1 배정과 프로토타입 DOM 봉인 범위 밖에서 추적한다.
 
+## DS-20260905-008 · PRT-228 S2 의미 색 역할 적용과 AA 수렴
+
+- 대상: 앱 색 역할 사용처와 프로토타입 활성 182 target 전수.
+- 기대값: 승인된 의미 역할로 수렴, 텍스트 AA 미달 0, 옛 팔레트 직접 참조 0, 기하 변경 0.
+- 실제값: 앱 직접 참조 604→0, 프로토타입 텍스트 6,974건 AA 미달 0,
+  앱·프로토타입 정적 기하 선언 5,017건 diff 0.
+- PC 검수: PASS — 1280×900 렌더·대비·가로 넘침 재측정.
+- 모바일 검수: PASS — 320×720, CSS 200%, 글자 200%, 번역 스트레스 재측정.
+- 미검수: 없음
+- 결과: PASS
+- 증거: `full-page-flow-prototype-color-usage.json` ·
+  `full-page-flow-prototype-s2-geometry-diff.json` · `full-page-flow-prototype-contrast-gate.json` ·
+  `full-page-flow-prototype-render-audit.json` · `full-page-flow-prototype-design-audit.json` ·
+  `full-page-flow-prototype-i18n-stress.json`.
+
 ## DS-20260905-007 · PRT-227 음수 숫자 선언 복구와 W1 재배정
 
 - 대상: 토큰 채택 감사기의 음수 AST · W1 규칙표/검사기/기획서 · 동기화 표식.

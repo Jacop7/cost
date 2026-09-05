@@ -11,7 +11,7 @@
 import type { ReactNode } from 'react';
 import { ActivityIndicator, Text, View } from 'react-native';
 import { Button } from './Button';
-import { T } from '@/theme/tokens';
+import { COLOR, T } from '@/theme/tokens';
 
 function Box({ children }: { children: ReactNode }) {
   return (
@@ -44,7 +44,7 @@ export function QueryState({
   if (isLoading) {
     return (
       <Box>
-        <ActivityIndicator size="large" color={T.blue} />
+        <ActivityIndicator size="large" color={COLOR.action.primary} />
         <Text style={{ fontSize: 16, color: T.sub2, fontWeight: '600' }}>{loadingLabel}</Text>
       </Box>
     );
@@ -86,8 +86,8 @@ export function QueryState({
   if (isEmpty) {
     return (
       <Box>
-        <Text style={{ fontSize: 16, color: T.ter }}>{emptyTitle}</Text>
-        {emptyHint ? <Text style={{ fontSize: 14, color: T.ter, textAlign: 'center' }}>{emptyHint}</Text> : null}
+        <Text style={{ fontSize: 16, color: COLOR.text.tertiary }}>{emptyTitle}</Text>
+        {emptyHint ? <Text style={{ fontSize: 14, color: COLOR.text.tertiary, textAlign: 'center' }}>{emptyHint}</Text> : null}
       </Box>
     );
   }

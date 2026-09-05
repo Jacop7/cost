@@ -9,7 +9,7 @@ import { Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Badge, Card, Chip, FAB, Icon, QueryState, ScrollTabs, SearchBar, Sheet } from '@/components/kit';
-import { T, won } from '@/theme/tokens';
+import { COLOR, T, won } from '@/theme/tokens';
 import { formatPercent } from '@margincook/core';
 import { useSettingsLists } from '@/features/master-data/hooks';
 import { useRecipeList, type RecipeRow } from '../hooks';
@@ -163,7 +163,7 @@ export default function RecipesListScreen() {
             accessibilityState={{ selected: searching }}
             style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}
           >
-            <Icon name="search" size={23} color={searching ? T.blue : T.ink2} />
+            <Icon name="search" size={23} color={searching ? COLOR.action.primary : T.ink2} />
           </Pressable>
           <Pressable
             onPress={() => router.push('/my/notifications' as Href)}
@@ -216,8 +216,8 @@ export default function RecipesListScreen() {
             accessibilityState={{ selected: sort === s.key }}
             style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 15, paddingHorizontal: 4 }}
           >
-            <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: sort === s.key ? T.blue : T.ink }}>{s.label}</Text>
-            {sort === s.key ? <Icon name="check" size={18} color={T.blue} sw={2.4} /> : null}
+            <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: sort === s.key ? COLOR.text.link : T.ink }}>{s.label}</Text>
+            {sort === s.key ? <Icon name="check" size={18} color={COLOR.action.primary} sw={2.4} /> : null}
           </Pressable>
         ))}
       </Sheet>
@@ -232,8 +232,8 @@ export default function RecipesListScreen() {
             accessibilityState={{ selected: statusFilter === s.key }}
             style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 15, paddingHorizontal: 4 }}
           >
-            <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: statusFilter === s.key ? T.blue : T.ink }}>{s.label}</Text>
-            {statusFilter === s.key ? <Icon name="check" size={18} color={T.blue} sw={2.4} /> : null}
+            <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: statusFilter === s.key ? COLOR.text.link : T.ink }}>{s.label}</Text>
+            {statusFilter === s.key ? <Icon name="check" size={18} color={COLOR.action.primary} sw={2.4} /> : null}
           </Pressable>
         ))}
       </Sheet>
@@ -248,8 +248,8 @@ export default function RecipesListScreen() {
             accessibilityState={{ selected: targetFilter === s.key }}
             style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 15, paddingHorizontal: 4 }}
           >
-            <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: targetFilter === s.key ? T.blue : T.ink }}>{s.label}</Text>
-            {targetFilter === s.key ? <Icon name="check" size={18} color={T.blue} sw={2.4} /> : null}
+            <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: targetFilter === s.key ? COLOR.text.link : T.ink }}>{s.label}</Text>
+            {targetFilter === s.key ? <Icon name="check" size={18} color={COLOR.action.primary} sw={2.4} /> : null}
           </Pressable>
         ))}
       </Sheet>

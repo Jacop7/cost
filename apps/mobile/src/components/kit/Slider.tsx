@@ -5,9 +5,9 @@
  */
 import { useRef, useState } from 'react';
 import { PanResponder, View } from 'react-native';
-import { T } from '@/theme/tokens';
+import { COLOR, T } from '@/theme/tokens';
 
-export function Slider({ value, min, max, step = 1, onChange, color = T.blue }: {
+export function Slider({ value, min, max, step = 1, onChange, color = COLOR.action.primary }: {
   value: number;
   min: number;
   max: number;

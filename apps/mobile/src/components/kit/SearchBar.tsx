@@ -9,7 +9,7 @@
  */
 import { Pressable, TextInput, View } from 'react-native';
 import { Icon } from './Icon';
-import { T } from '@/theme/tokens';
+import { COLOR, T } from '@/theme/tokens';
 
 export function SearchBar({ value, onChange, placeholder, onClose, autoFocus = true }: {
   value: string;
@@ -25,12 +25,12 @@ export function SearchBar({ value, onChange, placeholder, onClose, autoFocus = t
   return (
     <View style={{ paddingHorizontal: 16, paddingBottom: 10 }}>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: T.surface, borderWidth: 1, borderColor: T.line, borderRadius: 12, paddingVertical: 11, paddingHorizontal: 14 }}>
-        <Icon name="search" size={19} color={T.ter} />
+        <Icon name="search" size={19} color={COLOR.text.tertiary} />
         <TextInput
           value={value}
           onChangeText={onChange}
           placeholder={placeholder}
-          placeholderTextColor={T.ter}
+          placeholderTextColor={COLOR.text.tertiary}
           autoFocus={autoFocus}
           returnKeyType="search"
           accessibilityLabel={placeholder}
@@ -45,7 +45,7 @@ export function SearchBar({ value, onChange, placeholder, onClose, autoFocus = t
             hitSlop={5}
             style={{ width: 34, height: 34, alignItems: 'center', justifyContent: 'center' }}
           >
-            <Icon name="close" size={18} color={T.ter} />
+            <Icon name="close" size={18} color={COLOR.text.tertiary} />
           </Pressable>
         ) : value !== '' ? (
           <Pressable
@@ -55,7 +55,7 @@ export function SearchBar({ value, onChange, placeholder, onClose, autoFocus = t
             hitSlop={5}
             style={{ width: 34, height: 34, alignItems: 'center', justifyContent: 'center' }}
           >
-            <Icon name="close" size={18} color={T.ter} />
+            <Icon name="close" size={18} color={COLOR.text.tertiary} />
           </Pressable>
         ) : null}
       </View>

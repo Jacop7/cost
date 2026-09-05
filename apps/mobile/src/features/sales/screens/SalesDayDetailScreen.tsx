@@ -8,7 +8,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { AppHeader, Button, Icon, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { T } from '@/theme/tokens';
+import { COLOR, T } from '@/theme/tokens';
 import { useSalesDay, useSalesRange, type RangeMenu } from '../hooks';
 import { ChannelMixCard, MenuSalesList, ProfitBreakdownCard, SecLabel } from '../components/ProfitBlocks';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
@@ -74,7 +74,7 @@ function SalesDayDetailScreenBody({ serverToday }: { serverToday: string }) {
              *   "적은 것이 없다" 인지 구별이 안 된다.
              */
             <View style={{ paddingVertical: 72, alignItems: 'center' }}>
-              <Text style={{ fontSize: 16, fontWeight: '600', color: T.ter }}>판매 내역이 없습니다.</Text>
+              <Text style={{ fontSize: 16, fontWeight: '600', color: COLOR.text.tertiary }}>판매 내역이 없습니다.</Text>
             </View>
           ) : null}
 

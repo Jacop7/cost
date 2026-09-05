@@ -4,7 +4,7 @@
 // 추가해도 여기서 고를 수 없어 "추가는 되는데 쓸 수가 없는" 상태가 된다.
 import { ScrollView, Text, View, Pressable } from 'react-native';
 import { Sheet, Icon, QueryState } from '../../../components/kit';
-import { T } from '../../../theme/tokens';
+import { COLOR, T } from '../../../theme/tokens';
 import { useSettingsLists } from '@/features/master-data/hooks';
 
 export function CategoryPickerSheet({
@@ -49,15 +49,15 @@ export function CategoryPickerSheet({
                   paddingVertical: 14,
                   paddingHorizontal: 16,
                   borderRadius: 12,
-                  backgroundColor: on ? T.blueTint : T.surface,
+                  backgroundColor: on ? COLOR.action.primaryTint : T.surface,
                   borderWidth: 1,
-                  borderColor: on ? T.blue : T.line,
+                  borderColor: on ? COLOR.action.primary : T.line,
                 }}
               >
                 <View style={{ flex: 1, minWidth: 0 }}>
-                  <Text style={{ fontSize: 16, fontWeight: '700', color: on ? T.blue : T.ink2 }}>{c.name}</Text>
+                  <Text style={{ fontSize: 16, fontWeight: '700', color: on ? COLOR.text.link : T.ink2 }}>{c.name}</Text>
                 </View>
-                {on ? <Icon name="check" size={17} color={T.blue} sw={2.4} /> : null}
+                {on ? <Icon name="check" size={17} color={COLOR.action.primary} sw={2.4} /> : null}
               </Pressable>
             );
           })}

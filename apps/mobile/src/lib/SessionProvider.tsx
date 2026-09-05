@@ -13,7 +13,7 @@
 import { createContext, useContext, type ReactNode } from 'react';
 import { ActivityIndicator, Text, View } from 'react-native';
 import { Button } from '@/components/kit';
-import { T } from '@/theme/tokens';
+import { COLOR, T } from '@/theme/tokens';
 import { useSession, type SessionState } from './session';
 
 const SessionContext = createContext<SessionState | null>(null);
@@ -57,7 +57,7 @@ export function SessionGate({ children }: { children: ReactNode }) {
     return (
       <SessionContext.Provider value={s}>
         <Centered>
-          <ActivityIndicator size="large" color={T.blue} />
+          <ActivityIndicator size="large" color={COLOR.action.primary} />
           <Text style={{ fontSize: 16, color: T.sub2, fontWeight: '600' }}>불러오는 중이에요</Text>
         </Centered>
       </SessionContext.Provider>

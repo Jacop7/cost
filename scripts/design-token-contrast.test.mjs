@@ -363,3 +363,15 @@ test('저장소의 봉인은 네 커밋 모두 조상이고 §8.2 구간을 바�
   assert.equal(r.code, 0, r.out);
   assert.match(r.out, /결정 커밋 4건 확인/);
 });
+
+test('상태 전경을 자기 tint에서 AA 미달로 되돌리면 잡는다', () => {
+  const r = run(s => s.replace("green: '#0B7F58',", "green: '#15B374',"));
+  assert.equal(r.code, 1, r.out);
+  assert.match(r.out, /status\.positive .* 미달/);
+});
+
+test('비활성 Primary 배경을 옛 저대비 값으로 되돌리면 잡는다', () => {
+  const r = run(s => s.replace("primaryDisabled: '#6A7887',", "primaryDisabled: '#D1D6DB',"));
+  assert.equal(r.code, 1, r.out);
+  assert.match(r.out, /action\.primaryDisabled .* 미달/);
+});

@@ -10,7 +10,7 @@
 import { useEffect, useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { Button, Icon, Sheet, Slider } from '@/components/kit';
-import { T } from '@/theme/tokens';
+import { COLOR, T } from '@/theme/tokens';
 import { useSettingsLists } from '@/features/master-data/hooks';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
@@ -57,7 +57,7 @@ export function ChannelWeightSheet({ visible, onClose, title, value, onApply }: 
       height={540}
     >
       {channels.length === 0 ? (
-        <Text style={{ fontSize: 16, color: T.ter, textAlign: 'center', paddingVertical: 28 }}>
+        <Text style={{ fontSize: 16, color: COLOR.text.tertiary, textAlign: 'center', paddingVertical: 28 }}>
           등록된 판매 채널이 없어요.
         </Text>
       ) : (
@@ -68,15 +68,15 @@ export function ChannelWeightSheet({ visible, onClose, title, value, onApply }: 
             accessibilityRole="switch"
             accessibilityLabel="채널 비중 직접 지정"
             accessibilityState={{ checked: enabled }}
-            style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 13, paddingHorizontal: 14, borderRadius: 12, borderWidth: 1, borderColor: enabled ? T.blue : T.line, backgroundColor: enabled ? T.blueTint : T.surface, marginBottom: 16 }}
+            style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 13, paddingHorizontal: 14, borderRadius: 12, borderWidth: 1, borderColor: enabled ? COLOR.action.primary : T.line, backgroundColor: enabled ? COLOR.action.primaryTint : T.surface, marginBottom: 16 }}
           >
             <View style={{ flex: 1 }}>
-              <Text style={{ fontSize: 16, fontWeight: '700', color: enabled ? T.blue : T.ink }}>비중 직접 지정</Text>
-              <Text style={{ fontSize: 14, color: T.ter, marginTop: 2 }}>
+              <Text style={{ fontSize: 16, fontWeight: '700', color: enabled ? COLOR.text.link : T.ink }}>비중 직접 지정</Text>
+              <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 2 }}>
                 끄면 채널 매출 비중으로 자동 배분돼요
               </Text>
             </View>
-            {enabled ? <Icon name="check" size={18} color={T.blue} sw={2.4} /> : null}
+            {enabled ? <Icon name="check" size={18} color={COLOR.action.primary} sw={2.4} /> : null}
           </Pressable>
 
           <View style={{ gap: 18, opacity: enabled ? 1 : 0.4 }}>
@@ -84,7 +84,7 @@ export function ChannelWeightSheet({ visible, onClose, title, value, onApply }: 
               <View key={c.code}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 9 }}>
                   <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: T.ink }}>{c.name}</Text>
-                  <Text style={[{ fontSize: 16, fontWeight: '800', color: T.blue }, NUM]}>{weights[c.code] ?? 0}%</Text>
+                  <Text style={[{ fontSize: 16, fontWeight: '800', color: COLOR.text.link }, NUM]}>{weights[c.code] ?? 0}%</Text>
                 </View>
                 <Slider
                   value={weights[c.code] ?? 0}
@@ -97,13 +97,13 @@ export function ChannelWeightSheet({ visible, onClose, title, value, onApply }: 
             ))}
           </View>
 
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 18, paddingVertical: 13, paddingHorizontal: 15, borderRadius: 11, backgroundColor: exact ? T.blueTint : T.surface2 }}>
-            <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: exact ? T.blue : T.sub }}>합계</Text>
-            {exact ? <Icon name="check" size={15} color={T.blue} sw={3} /> : null}
-            <Text style={[{ fontSize: 16, fontWeight: '800', color: exact ? T.blue : T.sub }, NUM]}>{sum}%</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 18, paddingVertical: 13, paddingHorizontal: 15, borderRadius: 11, backgroundColor: exact ? COLOR.action.primaryTint : T.surface2 }}>
+            <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: exact ? COLOR.text.link : T.sub }}>합계</Text>
+            {exact ? <Icon name="check" size={15} color={COLOR.action.primary} sw={3} /> : null}
+            <Text style={[{ fontSize: 16, fontWeight: '800', color: exact ? COLOR.text.link : T.sub }, NUM]}>{sum}%</Text>
           </View>
           {!exact && enabled ? (
-            <Text style={{ fontSize: 14, color: T.ter, marginTop: 8, lineHeight: 20 }}>
+            <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 8, lineHeight: 20 }}>
               합이 100%가 아니어도 괜찮아요. 입력한 비율대로 나눠서 배분해요.
             </Text>
           ) : null}

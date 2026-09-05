@@ -9,7 +9,7 @@
 import { Pressable, Text, View } from 'react-native';
 import { Badge, Card, Icon } from '@/components/kit';
 import { formatPercent } from '@margincook/core';
-import { T, won } from '@/theme/tokens';
+import { COLOR, T, won } from '@/theme/tokens';
 import type { RevenueCheck } from '../hooks';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
@@ -28,8 +28,8 @@ export function RevenueGapCard({ check, onApply, applying = false }: {
     return (
       <Card pad={14}>
         <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 8 }}>
-          <Icon name="info" size={16} color={T.ter} />
-          <Text style={{ flex: 1, fontSize: 14, color: T.ter, lineHeight: 20 }}>
+          <Icon name="info" size={16} color={COLOR.text.tertiary} />
+          <Text style={{ flex: 1, fontSize: 14, color: COLOR.text.tertiary, lineHeight: 20 }}>
             {Number(check.month.slice(5))}월은 아직 매출 기록이 없어요. 판매를 등록하면 실제 매출과 비교해 드려요.
           </Text>
         </View>
@@ -79,7 +79,7 @@ export function RevenueGapCard({ check, onApply, applying = false }: {
           accent
         />
 
-        <Text style={{ fontSize: 14, color: T.ter, lineHeight: 20, marginTop: 4 }}>
+        <Text style={{ fontSize: 14, color: COLOR.text.tertiary, lineHeight: 20, marginTop: 4 }}>
           고정지출률은 <Text style={{ fontWeight: '700' }}>적어둔 월매출</Text>로 계산돼요. 실제 매출로 자동으로 바뀌지 않아요
           {check.inProgress ? ' — 월초에는 며칠치만으로 나눠 비율이 튀기 때문이에요.' : '.'}
         </Text>
@@ -94,12 +94,12 @@ export function RevenueGapCard({ check, onApply, applying = false }: {
             style={{
               flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5,
               marginTop: 6, paddingVertical: 12, borderRadius: 10,
-              borderWidth: 1, borderColor: T.blue, backgroundColor: T.blueTint,
+              borderWidth: 1, borderColor: COLOR.action.primary, backgroundColor: COLOR.action.primaryTint,
               opacity: applying ? 0.5 : 1,
             }}
           >
-            <Icon name="swap" size={16} color={T.blue} sw={2.2} />
-            <Text style={{ fontSize: 14, fontWeight: '700', color: T.blue }}>
+            <Icon name="swap" size={16} color={COLOR.action.primary} sw={2.2} />
+            <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.text.link }}>
               {won(Math.round(projected))}원으로 채우기
             </Text>
           </Pressable>
@@ -113,7 +113,7 @@ function Row({ label, value, accent }: { label: string; value: string; accent?: 
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
       <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.sub }}>{label}</Text>
-      <Text style={[{ fontSize: 16, fontWeight: accent ? '800' : '700', color: accent ? T.blue : T.ink }, NUM]}>
+      <Text style={[{ fontSize: 16, fontWeight: accent ? '800' : '700', color: accent ? COLOR.text.link : T.ink }, NUM]}>
         {value}
       </Text>
     </View>

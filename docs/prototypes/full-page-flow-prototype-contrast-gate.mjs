@@ -10,10 +10,9 @@
 // baseline 비교로 두면 바뀐 값이 새 baseline 이 되어 조용히 통과한다.
 // 4.50~4.55 는 통과시키되 `boundary: true` 로 표시한다. 여유를 만드는 것은 별도 결정이다.
 import { readFileSync, writeFileSync } from 'node:fs';
-import { createHash } from 'node:crypto';
 import { resolve } from 'node:path';
+import { textSha256 } from './full-page-flow-prototype-text-sha256.mjs';
 
-const sha = (b) => createHash('sha256').update(b).digest('hex');
 const args = process.argv.slice(2).filter(a => !a.startsWith('--'));
 const contractPath = resolve(args[0] ?? 'docs/prototypes/full-page-flow-prototype-contrast-contract.json');
 const outPath      = resolve(args[1] ?? 'docs/prototypes/full-page-flow-prototype-contrast-gate.json');
@@ -60,6 +59,15 @@ for (const [surfName, surf] of Object.entries(C.surfaces))
 for (const p of C.onColor ?? []) push(p.역할, p.fg, p.bg, p.kind ?? 'text');
 for (const p of C.nonText ?? []) push(p.역할, p.fg, p.bg, 'nonText');
 for (const p of C.componentSurfaces ?? []) push(p.역할, p.fg, p.bg, p.kind ?? 'text');
+for (const role of ['status.positive', 'status.negative', 'status.caution']) {
+  const fg = C.status?.[role];
+  if (!fg) { failures.push(`${role} 계약이 없다`); continue; }
+  for (const [surfName, surf] of Object.entries(C.surfaces)) push(role, fg, surf, 'text', surfName);
+}
+for (const [role, tint] of [['status.positive', 'status.positiveTint'], ['status.negative', 'status.negativeTint'], ['status.caution', 'status.cautionTint']]) {
+  if (!C.status?.[tint]) failures.push(`${tint} 계약이 없다`);
+  else push(`${role} on ${tint}`, C.status[role], C.status[tint], 'text', tint);
+}
 
 const boundaries = rows.filter(r => r.boundary);
 // 사라진 열린 조합은 조용히 지나가면 안 된다 — 좋아졌으면 목록에서 빼야 하고,
@@ -68,8 +76,8 @@ for (const [k, o] of OPEN) if (!openSeen.has(k)) failures.push(`열린 조합 ${
 const out = {
   manifest: {
     script: 'docs/prototypes/full-page-flow-prototype-contrast-gate.mjs',
-    scriptSha256: sha(readFileSync(new URL(import.meta.url))),
-    contractSha256: sha(contractBytes),
+    scriptSha256: textSha256(readFileSync(new URL(import.meta.url))),
+    contractSha256: textSha256(contractBytes),
     node: process.version, generatedAt: new Date().toISOString(),
     기준: `글자 ${TEXT_MIN}:1 · 비텍스트 ${NONTEXT_MIN}:1 — 절대 기준. baseline 비교가 아니다.`,
     면제: Object.entries(C.textExempt ?? {}).map(([k, v]) => `${k} ${v.value} — ${v.사유}`),

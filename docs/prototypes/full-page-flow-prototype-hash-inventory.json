@@ -11,6 +11,7 @@
     { "id": "i18n.script", "file": "full-page-flow-prototype-i18n-stress.mjs", "kind": "producer", "input": "script text", "normalization": "shared-textSha256" },
     { "id": "proof.script-and-sources", "file": "full-page-flow-prototype-atrisk-key-proof.mjs", "kind": "producer", "input": "script + stress/known JSON", "normalization": "shared-textSha256" },
     { "id": "contrast.script-and-source", "file": "full-page-flow-prototype-contrast-fix.mjs", "kind": "producer", "input": "script + design audit JSON", "normalization": "shared-textSha256" },
+    { "id": "contrast-gate.script-and-contract", "file": "full-page-flow-prototype-contrast-gate.mjs", "kind": "producer", "input": "script + contrast contract JSON", "normalization": "shared-textSha256" },
     { "id": "sync.applied-and-state", "file": "full-page-flow-prototype-design-sync-check.ps1", "kind": "consumer", "input": "ui-applied.html + sealed text files", "normalization": "powershell-crlf-to-lf-parity" },
     { "id": "app-map.json-links", "file": "full-page-flow-prototype-app-map-check.mjs", "kind": "producer-consumer", "input": "parsed JSON", "normalization": "canonical-json" },
     { "id": "app-audit.provenance", "file": "scripts/token-adoption-audit.mjs", "kind": "producer", "input": "Git-tracked product files", "normalization": "git-blob-sha" },

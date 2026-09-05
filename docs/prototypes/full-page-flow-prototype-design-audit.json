@@ -1,6 +1,6 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-05T13:47:20.126Z",
+  "generatedAt": "2026-09-05T14:43:49.933Z",
   "schemaVersion": 1,
   "script": {
    "name": "full-page-flow-prototype-design-audit.mjs",
@@ -8,8 +8,8 @@
   },
   "target": {
    "path": "0_full-page-flow-prototype-ui-applied.html",
-   "sha256": "341718fa97e8bebaa13b97f45e8e93264bf8f5d0bf0a166a2814e42f6a5d7c6e",
-   "designSyncId": "DS-20260905-007"
+   "sha256": "04951ea20efe938028d6dc9b5437a01520965331d859ede5b5c75df97346a59b",
+   "designSyncId": "DS-20260905-008"
   },
   "runner": {
    "node": "v24.15.0",
@@ -76,11 +76,11 @@
    "합계": 697
   },
   "contrast": {
-   "종류": 34,
+   "종류": 32,
    "합계": 6974
   },
   "contrastRole": {
-   "종류": 347,
+   "종류": 346,
    "합계": 6974
   }
  },
@@ -2847,7 +2847,7 @@
    ]
   },
   {
-   "key": "text|rgb(139, 149, 161)|author",
+   "key": "text|rgb(102, 113, 126)|author",
    "n": 1490,
    "ex": [
     "(no-card).tab",
@@ -2857,7 +2857,7 @@
   },
   {
    "key": "text|rgb(78, 89, 104)|author",
-   "n": 1188,
+   "n": 1190,
    "ex": [
     "expo-card-foot.b",
     "edit-form-row.edit-form-label",
@@ -2892,12 +2892,12 @@
    ]
   },
   {
-   "key": "text|rgb(49, 130, 246)|author",
-   "n": 349,
+   "key": "text|rgb(20, 101, 219)|author",
+   "n": 273,
    "ex": [
     "edit-form-label.em",
     "stock-total-result.strong",
-    "card.b"
+    "card.blue"
    ]
   },
   {
@@ -2910,7 +2910,7 @@
    ]
   },
   {
-   "key": "text|rgb(240, 68, 82)|author",
+   "key": "text|rgb(218, 18, 34)|author",
    "n": 205,
    "ex": [
     "expo-card-top.expo-status",
@@ -2933,7 +2933,7 @@
    ]
   },
   {
-   "key": "bg|rgb(49, 130, 246)|author",
+   "key": "bg|rgb(20, 112, 245)|author",
    "n": 180,
    "ex": [
     "(no-card).expo-fab",
@@ -2951,7 +2951,7 @@
    ]
   },
   {
-   "key": "bg|rgb(234, 243, 255)|author",
+   "key": "bg|rgb(235, 243, 254)|author",
    "n": 98,
    "ex": [
     "edit-form-row.stock-total-card",
@@ -2969,7 +2969,7 @@
    ]
   },
   {
-   "key": "text|rgb(139, 149, 161)|inherited",
+   "key": "text|rgb(102, 113, 126)|inherited",
    "n": 90,
    "ex": [
     "expo-card-foot.span",
@@ -2996,17 +2996,26 @@
    ]
   },
   {
-   "key": "border|rgb(49, 130, 246)|author",
-   "n": 59,
+   "key": "bg|rgb(254, 236, 236)|author",
+   "n": 67,
    "ex": [
-    "edit-form.expo-manage-link",
-    "edit-form.ingredient-note-icon",
-    "(no-card).expo-manage-link"
+    "expo-card-top.expo-status",
+    "stock-detail-head.expo-status",
+    "card.badge"
+   ]
+  },
+  {
+   "key": "text|rgb(20, 112, 245)|author",
+   "n": 67,
+   "ex": [
+    "card.b",
+    "edit-menu-stage.edit-menu-close",
+    "recipe-add-recommend.small"
    ]
   },
   {
    "key": "text|rgb(51, 61, 75)|author",
-   "n": 57,
+   "n": 64,
    "ex": [
     "(no-card).expo-sort",
     "card.small",
@@ -3015,15 +3024,24 @@
   },
   {
    "key": "text|rgb(51, 61, 75)|inherited",
-   "n": 50,
+   "n": 59,
    "ex": [
     "(no-card).filter-text",
     "recipe-filters.filter-text",
-    "analysis-summary-value.b"
+    "sales-controls.span"
    ]
   },
   {
-   "key": "text|rgb(139, 149, 161)|inline",
+   "key": "border|rgb(20, 112, 245)|author",
+   "n": 56,
+   "ex": [
+    "edit-form.expo-manage-link",
+    "(no-card).expo-manage-link",
+    "(no-card).category-add"
+   ]
+  },
+  {
+   "key": "text|rgb(102, 113, 126)|inline",
    "n": 41,
    "ex": [
     "detail-memo.span",
@@ -3032,7 +3050,7 @@
    ]
   },
   {
-   "key": "text|rgb(14, 159, 110)|author",
+   "key": "text|rgb(11, 127, 88)|author",
    "n": 39,
    "ex": [
     "expo-card-top.expo-status",
@@ -3041,12 +3059,12 @@
    ]
   },
   {
-   "key": "bg|rgb(254, 236, 236)|author",
-   "n": 38,
+   "key": "text|rgb(161, 96, 0)|author",
+   "n": 33,
    "ex": [
-    "expo-card-top.expo-status",
-    "stock-detail-head.expo-status",
-    "recipe-target-line.expo-status"
+    "detail-chips.detail-chip",
+    "order-head.expo-status",
+    "sales-live-copy.em"
    ]
   },
   {
@@ -3054,24 +3072,6 @@
    "n": 30,
    "ex": [
     "tax-choice.input"
-   ]
-  },
-  {
-   "key": "bg|rgb(255, 240, 241)|author",
-   "n": 29,
-   "ex": [
-    "card.badge",
-    "sheet-preview-stage.button",
-    "expo-pick-card.badge"
-   ]
-  },
-  {
-   "key": "text|rgb(49, 130, 246)|inherited",
-   "n": 27,
-   "ex": [
-    "edit-form.ingredient-note-icon",
-    "edit-form.span",
-    "(no-card).span"
    ]
   },
   {
@@ -3099,10 +3099,12 @@
    ]
   },
   {
-   "key": "text|rgb(224, 122, 0)|author",
-   "n": 18,
+   "key": "bg|rgb(231, 247, 240)|author",
+   "n": 17,
    "ex": [
-    "sales-live-copy.em"
+    "expo-card-top.expo-status",
+    "card.expo-status",
+    "(no-card).expo-status"
    ]
   },
   {
@@ -3122,11 +3124,12 @@
    ]
   },
   {
-   "key": "text|rgb(183, 110, 0)|author",
+   "key": "text|rgb(20, 101, 219)|inherited",
    "n": 12,
    "ex": [
-    "detail-chips.detail-chip",
-    "order-head.expo-status"
+    "edit-form.ingredient-note-icon",
+    "edit-form.span",
+    "(no-card).span"
    ]
   },
   {
@@ -3138,15 +3141,6 @@
    ]
   },
   {
-   "key": "bg|rgb(231, 247, 240)|author",
-   "n": 11,
-   "ex": [
-    "expo-card-top.expo-status",
-    "card.expo-status",
-    "(no-card).expo-status"
-   ]
-  },
-  {
    "key": "border|rgb(201, 221, 255)|author",
    "n": 10,
    "ex": [
@@ -3154,26 +3148,26 @@
    ]
   },
   {
-   "key": "text|rgb(240, 68, 82)|inherited",
+   "key": "text|rgb(218, 18, 34)|inherited",
    "n": 6,
    "ex": [
     "expo-row-value.span"
    ]
   },
   {
-   "key": "bg|rgb(232, 248, 241)|author",
+   "key": "text|rgb(20, 112, 245)|inherited",
    "n": 6,
    "ex": [
-    "sales-label.profit-badge",
-    "card.badge"
+    "revenue-more.span",
+    "sales-material-more.span",
+    "stock-option-action.span"
    ]
   },
   {
-   "key": "bg|rgb(209, 214, 219)|author",
-   "n": 4,
+   "key": "border|rgb(20, 101, 219)|author",
+   "n": 3,
    "ex": [
-    "sheet-preview-card.sheet-preview-handle",
-    "(no-card).primary"
+    "edit-form.ingredient-note-icon"
    ]
   },
   {
@@ -3185,10 +3179,10 @@
    ]
   },
   {
-   "key": "text|rgb(233, 121, 0)|author",
+   "key": "bg|rgb(106, 120, 135)|author",
    "n": 3,
    "ex": [
-    "analysis-summary-value.b"
+    "(no-card).primary"
    ]
   },
   {
@@ -3196,6 +3190,13 @@
    "n": 2,
    "ex": [
     "card.danger-button"
+   ]
+  },
+  {
+   "key": "bg|rgb(209, 214, 219)|author",
+   "n": 1,
+   "ex": [
+    "sheet-preview-card.sheet-preview-handle"
    ]
   },
   {
@@ -11466,7 +11467,7 @@
    ]
   },
   {
-   "key": "rgb(139, 149, 161) on rgb(255, 255, 255)|3.04|normal|FAIL",
+   "key": "rgb(102, 113, 126) on rgb(255, 255, 255)|4.97|normal|AA",
    "n": 1325,
    "ex": [
     "expo-list-card.em 13px/700 \"안전재고 1kg\"",
@@ -11485,7 +11486,7 @@
   },
   {
    "key": "rgb(78, 89, 104) on rgb(249, 250, 251)|6.81|normal|AA",
-   "n": 296,
+   "n": 298,
    "ex": [
     "card.expo-more 14px/700 \"전체보기\"",
     "expo-list-card.expo-target 13px/700 \"목표 60%\"",
@@ -11511,7 +11512,7 @@
    ]
   },
   {
-   "key": "rgb(255, 255, 255) on rgb(49, 130, 246)|3.71|normal|FAIL",
+   "key": "rgb(255, 255, 255) on rgb(20, 112, 245)|4.5|normal|AA",
    "n": 173,
    "ex": [
     "(no-card).expo-fab 16px/700 \"식재료 추가\"",
@@ -11520,7 +11521,7 @@
    ]
   },
   {
-   "key": "rgb(139, 149, 161) on rgb(249, 250, 251)|2.91|normal|FAIL",
+   "key": "rgb(102, 113, 126) on rgb(249, 250, 251)|4.75|normal|AA",
    "n": 161,
    "ex": [
     "expo-card-top.expo-category 12px/700 \"향신료·허브\"",
@@ -11529,25 +11530,7 @@
    ]
   },
   {
-   "key": "rgb(49, 130, 246) on rgb(242, 244, 246)|3.37|normal|FAIL",
-   "n": 145,
-   "ex": [
-    "edit-form-label.em 14px/800 \"*\"",
-    "stock-add-label.em 14px/800 \"*\"",
-    "(no-card).em 14px/800 \"*\""
-   ]
-  },
-  {
-   "key": "rgb(49, 130, 246) on rgb(255, 255, 255)|3.71|normal|FAIL",
-   "n": 139,
-   "ex": [
-    "card.blue 14px/400 \"최저\"",
-    "edit-menu-stage.edit-menu-close 16px/800 \"닫기\"",
-    "card.blue 16px/700 \"+4kg\""
-   ]
-  },
-  {
-   "key": "rgb(240, 68, 82) on rgb(255, 255, 255)|3.71|normal|FAIL",
+   "key": "rgb(218, 18, 34) on rgb(255, 255, 255)|5.13|normal|AA",
    "n": 138,
    "ex": [
     "card.red 14px/400 \"최고\"",
@@ -11556,12 +11539,21 @@
    ]
   },
   {
-   "key": "rgb(139, 149, 161) on rgb(242, 244, 246)|2.76|normal|FAIL",
+   "key": "rgb(102, 113, 126) on rgb(242, 244, 246)|4.5|normal|AA",
    "n": 135,
    "ex": [
     "(no-card).tab 16px/600 \"축산·계란\"",
     "(no-card).tab 16px/600 \"수산·해조류\"",
     "(no-card).tab 16px/600 \"농산(신선)\""
+   ]
+  },
+  {
+   "key": "rgb(20, 101, 219) on rgb(242, 244, 246)|4.87|normal|AA",
+   "n": 129,
+   "ex": [
+    "edit-form-label.em 14px/800 \"*\"",
+    "stock-add-label.em 14px/800 \"*\"",
+    "(no-card).em 14px/800 \"*\""
    ]
   },
   {
@@ -11583,7 +11575,7 @@
    ]
   },
   {
-   "key": "rgb(49, 130, 246) on rgb(234, 243, 255)|3.32|normal|FAIL",
+   "key": "rgb(20, 101, 219) on rgb(235, 243, 254)|4.8|normal|AA",
    "n": 87,
    "ex": [
     "stock-total-result.strong 16px/800 \"0원/g\"",
@@ -11592,12 +11584,30 @@
    ]
   },
   {
-   "key": "rgb(240, 68, 82) on rgb(254, 236, 236)|3.26|normal|FAIL",
-   "n": 38,
+   "key": "rgb(20, 112, 245) on rgb(255, 255, 255)|4.5|normal|AA",
+   "n": 70,
+   "ex": [
+    "edit-menu-stage.edit-menu-close 16px/800 \"닫기\"",
+    "recipe-add-recommend.small 13px/800 \"적용하기\"",
+    "sales-quick.b 14px/900 \"40,000\""
+   ]
+  },
+  {
+   "key": "rgb(20, 101, 219) on rgb(255, 255, 255)|5.37|normal|AA",
+   "n": 69,
+   "ex": [
+    "card.blue 14px/400 \"최저\"",
+    "card.blue 16px/700 \"+4kg\"",
+    "card.blue 16px/700 \"+1kg\""
+   ]
+  },
+  {
+   "key": "rgb(218, 18, 34) on rgb(254, 236, 236)|4.5|normal|AA",
+   "n": 67,
    "ex": [
     "expo-card-top.expo-status 12px/700 \"소진 임박\"",
     "stock-detail-head.expo-status 12px/700 \"소진 임박\"",
-    "expo-card-top.expo-status 12px/700 \"목표 미달\""
+    "card.badge 12px/800 \"최고\""
    ]
   },
   {
@@ -11617,15 +11627,6 @@
    ]
   },
   {
-   "key": "rgb(240, 68, 82) on rgb(255, 240, 241)|3.36|normal|FAIL",
-   "n": 29,
-   "ex": [
-    "card.badge 12px/800 \"최고\"",
-    "sheet-preview-stage.button 16px/800 \"삭제\"",
-    "expo-pick-card.badge 12px/800 \"소진 임박\""
-   ]
-  },
-  {
    "key": "rgb(25, 31, 40) on rgb(242, 244, 246)|15.02|normal|AA",
    "n": 24,
    "ex": [
@@ -11635,7 +11636,7 @@
    ]
   },
   {
-   "key": "rgb(14, 159, 110) on rgb(255, 255, 255)|3.39|normal|FAIL",
+   "key": "rgb(11, 127, 88) on rgb(255, 255, 255)|5.01|normal|AA",
    "n": 22,
    "ex": [
     "analysis-summary-row.span 15px/800 \"순이익\"",
@@ -11644,24 +11645,17 @@
    ]
   },
   {
-   "key": "rgb(224, 122, 0) on rgb(255, 255, 255)|3.02|normal|FAIL",
-   "n": 18,
+   "key": "rgb(161, 96, 0) on rgb(255, 255, 255)|5.01|normal|AA",
+   "n": 21,
    "ex": [
     "sales-live-copy.em 13px/600 \"지금 재료비 3,254원은 다\"",
-    "sales-live-copy.em 13px/600 \"지금 재료비 1,849원은 다\""
+    "sales-live-copy.em 13px/600 \"지금 재료비 1,849원은 다\"",
+    "analysis-summary-value.b 16px/900 \"601,401원\""
    ]
   },
   {
-   "key": "rgb(183, 110, 0) on rgb(255, 244, 229)|3.69|normal|FAIL",
-   "n": 12,
-   "ex": [
-    "detail-chips.detail-chip 13px/700 \"안전재고 1kg\"",
-    "order-head.expo-status 12px/700 \"안전재고 미달\""
-   ]
-  },
-  {
-   "key": "rgb(14, 159, 110) on rgb(231, 247, 240)|3.06|normal|FAIL",
-   "n": 11,
+   "key": "rgb(11, 127, 88) on rgb(231, 247, 240)|4.52|normal|AA",
+   "n": 17,
    "ex": [
     "expo-card-top.expo-status 12px/700 \"여유\"",
     "card.expo-status 12px/700 \"현재 매출 반영\"",
@@ -11669,14 +11663,31 @@
    ]
   },
   {
-   "key": "rgb(255, 255, 255) on rgb(49, 130, 246)|3.71|large|AA",
+   "key": "rgb(51, 61, 75) on rgb(242, 244, 246)|9.97|normal|AA",
+   "n": 16,
+   "ex": [
+    "sales-controls.span 14px/700 \"메뉴 관리\"",
+    "edit-form-label.edit-inline-add 13px/800 \"＋ 새 구매처\"",
+    "edit-form-label.edit-inline-add 13px/800 \"취소\""
+   ]
+  },
+  {
+   "key": "rgb(161, 96, 0) on rgb(255, 244, 229)|4.61|normal|AA",
+   "n": 12,
+   "ex": [
+    "detail-chips.detail-chip 13px/700 \"안전재고 1kg\"",
+    "order-head.expo-status 12px/700 \"안전재고 미달\""
+   ]
+  },
+  {
+   "key": "rgb(255, 255, 255) on rgb(20, 112, 245)|4.5|large|AA",
    "n": 9,
    "ex": [
     "sales-hero.strong 22px/800 \"273,599원\""
    ]
   },
   {
-   "key": "rgb(78, 89, 104) on rgb(234, 243, 255)|6.35|normal|AA",
+   "key": "rgb(78, 89, 104) on rgb(235, 243, 254)|6.36|normal|AA",
    "n": 8,
    "ex": [
     "tax-preview-row.span 12px/800 \"부가세\"",
@@ -11684,43 +11695,28 @@
    ]
   },
   {
-   "key": "rgb(14, 159, 110) on rgb(232, 248, 241)|3.08|normal|FAIL",
-   "n": 6,
-   "ex": [
-    "sales-label.profit-badge 10px/800 \"목표 달성\"",
-    "card.badge 12px/800 \"목표 달성\""
-   ]
-  },
-  {
-   "key": "rgb(240, 68, 82) on rgb(234, 243, 255)|3.32|normal|FAIL",
+   "key": "rgb(218, 18, 34) on rgb(235, 243, 254)|4.59|normal|AA",
    "n": 4,
    "ex": [
     "tax-preview-row.b 13px/900 \"₩1,091\""
    ]
   },
   {
-   "key": "rgb(25, 31, 40) on rgb(234, 243, 255)|14.8|normal|AA",
+   "key": "rgb(25, 31, 40) on rgb(235, 243, 254)|14.81|normal|AA",
    "n": 4,
    "ex": [
     "tax-preview-row.b 13px/900 \"₩10,909\""
    ]
   },
   {
-   "key": "rgb(49, 130, 246) on rgb(255, 255, 255)|3.71|large|AA",
+   "key": "rgb(20, 112, 245) on rgb(255, 255, 255)|4.5|large|AA",
    "n": 3,
    "ex": [
     "card.b 22px/700 \"28.00원/g\""
    ]
   },
   {
-   "key": "rgb(233, 121, 0) on rgb(255, 255, 255)|2.92|normal|FAIL",
-   "n": 3,
-   "ex": [
-    "analysis-summary-value.b 16px/900 \"601,401원\""
-   ]
-  },
-  {
-   "key": "rgb(255, 255, 255) on rgb(209, 214, 219)|1.46|normal|FAIL",
+   "key": "rgb(255, 255, 255) on rgb(106, 120, 135)|4.52|normal|AA",
    "n": 3,
    "ex": [
     "(no-card).primary 16px/700 \"발주 등록\"",
@@ -11728,14 +11724,7 @@
    ]
   },
   {
-   "key": "rgb(49, 130, 246) on rgb(249, 250, 251)|3.55|normal|FAIL",
-   "n": 2,
-   "ex": [
-    "revenue-summary-row.span 13px/800 \"31.3%\""
-   ]
-  },
-  {
-   "key": "rgb(240, 68, 82) on rgb(249, 250, 251)|3.55|normal|FAIL",
+   "key": "rgb(218, 18, 34) on rgb(249, 250, 251)|4.91|normal|AA",
    "n": 2,
    "ex": [
     "sales-shortage-row.b 14px/700 \"부족 재료 2개\"",
@@ -13088,7 +13077,7 @@
    ]
   },
   {
-   "key": "card.small|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "card.small|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 185,
    "ex": [
     "실입고 기준",
@@ -13115,7 +13104,7 @@
    ]
   },
   {
-   "key": "expo-row-value.small|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "expo-row-value.small|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 143,
    "ex": [
     "28.00원/g",
@@ -13133,7 +13122,7 @@
    ]
   },
   {
-   "key": "(no-card).small|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "(no-card).small|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 113,
    "ex": [
     "직접 수정",
@@ -13160,7 +13149,7 @@
    ]
   },
   {
-   "key": "card.small|rgb(139, 149, 161)|rgb(249, 250, 251)|2.91|FAIL",
+   "key": "card.small|rgb(102, 113, 126)|rgb(249, 250, 251)|4.75|AA",
    "n": 103,
    "ex": [
     "해당 메뉴 전용 비용",
@@ -13169,7 +13158,7 @@
    ]
   },
   {
-   "key": "edit-form-label.em|rgb(49, 130, 246)|rgb(242, 244, 246)|3.37|FAIL",
+   "key": "edit-form-label.em|rgb(20, 101, 219)|rgb(242, 244, 246)|4.87|AA",
    "n": 101,
    "ex": [
     "*"
@@ -13266,7 +13255,7 @@
    ]
   },
   {
-   "key": "card.red|rgb(240, 68, 82)|rgb(255, 255, 255)|3.71|FAIL",
+   "key": "card.red|rgb(218, 18, 34)|rgb(255, 255, 255)|5.13|AA",
    "n": 65,
    "ex": [
     "최고",
@@ -13284,7 +13273,7 @@
    ]
   },
   {
-   "key": "sales-live-copy.small|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "sales-live-copy.small|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 63,
    "ex": [
     "판매가 1,000 · 재료비 ",
@@ -13302,7 +13291,7 @@
    ]
   },
   {
-   "key": "sales-live-value.small|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "sales-live-value.small|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 63,
    "ex": [
     "49,000원",
@@ -13311,14 +13300,14 @@
    ]
   },
   {
-   "key": "sales-add.span|rgb(255, 255, 255)|rgb(49, 130, 246)|3.71|FAIL",
+   "key": "sales-add.span|rgb(255, 255, 255)|rgb(20, 112, 245)|4.5|AA",
    "n": 63,
    "ex": [
     "판매"
    ]
   },
   {
-   "key": "card.row-top|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "card.row-top|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 60,
    "ex": [
     "08/30",
@@ -13336,7 +13325,7 @@
    ]
   },
   {
-   "key": "sales-value-stack.sales-percent|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "sales-value-stack.sales-percent|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 59,
    "ex": [
     "65%",
@@ -13345,7 +13334,7 @@
    ]
   },
   {
-   "key": "(no-card).tab|rgb(139, 149, 161)|rgb(242, 244, 246)|2.76|FAIL",
+   "key": "(no-card).tab|rgb(102, 113, 126)|rgb(242, 244, 246)|4.5|AA",
    "n": 58,
    "ex": [
     "축산·계란",
@@ -13354,7 +13343,7 @@
    ]
   },
   {
-   "key": "expo-row-copy.small|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "expo-row-copy.small|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 58,
    "ex": [
     "28,000원",
@@ -13390,7 +13379,7 @@
    ]
   },
   {
-   "key": "sales-menu-values.small|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "sales-menu-values.small|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 47,
    "ex": [
     "재료 18,816원",
@@ -13408,7 +13397,7 @@
    ]
   },
   {
-   "key": "(no-card).expo-icon-button|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "(no-card).expo-icon-button|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 46,
    "ex": [
     "✎"
@@ -13460,7 +13449,7 @@
    ]
   },
   {
-   "key": "detail-list-copy.small|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "detail-list-copy.small|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 43,
    "ex": [
     "13.00원/g",
@@ -13487,7 +13476,7 @@
    ]
   },
   {
-   "key": "(no-card).em|rgb(49, 130, 246)|rgb(255, 255, 255)|3.71|FAIL",
+   "key": "(no-card).em|rgb(20, 101, 219)|rgb(255, 255, 255)|5.37|AA",
    "n": 40,
    "ex": [
     "*"
@@ -13512,7 +13501,7 @@
    ]
   },
   {
-   "key": "expo-card-top.expo-category|rgb(139, 149, 161)|rgb(249, 250, 251)|2.91|FAIL",
+   "key": "expo-card-top.expo-category|rgb(102, 113, 126)|rgb(249, 250, 251)|4.75|AA",
    "n": 38,
    "ex": [
     "향신료·허브",
@@ -13548,7 +13537,7 @@
    ]
   },
   {
-   "key": "sales-menu-name.em|rgb(49, 130, 246)|rgb(255, 255, 255)|3.71|FAIL",
+   "key": "sales-menu-name.em|rgb(20, 112, 245)|rgb(255, 255, 255)|4.5|AA",
    "n": 35,
    "ex": [
     "×49",
@@ -13557,7 +13546,7 @@
    ]
   },
   {
-   "key": "sales-menu-copy.sales-menu-sub|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "sales-menu-copy.sales-menu-sub|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 35,
    "ex": [
     "매장 32 · 배달 13 · ",
@@ -13566,7 +13555,16 @@
    ]
   },
   {
-   "key": "expo-card-top.expo-status|rgb(240, 68, 82)|rgb(254, 236, 236)|3.26|FAIL",
+   "key": "revenue-summary-row.span|rgb(78, 89, 104)|rgb(249, 250, 251)|6.81|AA",
+   "n": 34,
+   "ex": [
+    "영업일",
+    "판매 수량",
+    "매출 합계"
+   ]
+  },
+  {
+   "key": "expo-card-top.expo-status|rgb(218, 18, 34)|rgb(254, 236, 236)|4.5|AA",
    "n": 32,
    "ex": [
     "소진 임박",
@@ -13583,15 +13581,6 @@
    ]
   },
   {
-   "key": "revenue-summary-row.span|rgb(78, 89, 104)|rgb(249, 250, 251)|6.81|AA",
-   "n": 32,
-   "ex": [
-    "영업일",
-    "판매 수량",
-    "매출 합계"
-   ]
-  },
-  {
    "key": "revenue-summary-row.b|rgb(25, 31, 40)|rgb(249, 250, 251)|15.85|AA",
    "n": 32,
    "ex": [
@@ -13601,7 +13590,7 @@
    ]
   },
   {
-   "key": "(no-card).span|rgb(139, 149, 161)|rgb(242, 244, 246)|2.76|FAIL",
+   "key": "(no-card).span|rgb(102, 113, 126)|rgb(242, 244, 246)|4.5|AA",
    "n": 31,
    "ex": [
     "2026년 8월",
@@ -13610,7 +13599,7 @@
    ]
   },
   {
-   "key": "(no-card).sheet-meta|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "(no-card).sheet-meta|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 31,
    "ex": [
     "2026-08-29 · 08:",
@@ -13651,7 +13640,7 @@
    ]
   },
   {
-   "key": "card.blue|rgb(49, 130, 246)|rgb(255, 255, 255)|3.71|FAIL",
+   "key": "card.blue|rgb(20, 101, 219)|rgb(255, 255, 255)|5.37|AA",
    "n": 29,
    "ex": [
     "최저",
@@ -13695,7 +13684,7 @@
    ]
   },
   {
-   "key": "expo-list-card.profit|rgb(240, 68, 82)|rgb(255, 255, 255)|3.71|FAIL",
+   "key": "expo-list-card.profit|rgb(218, 18, 34)|rgb(255, 255, 255)|5.13|AA",
    "n": 28,
    "ex": [
     "21.2%  212원",
@@ -13704,7 +13693,7 @@
    ]
   },
   {
-   "key": "(no-card).category-add|rgb(49, 130, 246)|rgb(234, 243, 255)|3.32|FAIL",
+   "key": "(no-card).category-add|rgb(20, 101, 219)|rgb(235, 243, 254)|4.8|AA",
    "n": 28,
    "ex": [
     "＋  카테고리 추가",
@@ -13730,7 +13719,7 @@
    ]
   },
   {
-   "key": "card.button|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "card.button|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 26,
    "ex": [
     "10인분"
@@ -13744,7 +13733,7 @@
    ]
   },
   {
-   "key": "expo-row-value.span|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "expo-row-value.span|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 26,
    "ex": [
     "9.0%",
@@ -13762,7 +13751,7 @@
    ]
   },
   {
-   "key": "stock-add-label.em|rgb(49, 130, 246)|rgb(242, 244, 246)|3.37|FAIL",
+   "key": "stock-add-label.em|rgb(20, 101, 219)|rgb(242, 244, 246)|4.87|AA",
    "n": 24,
    "ex": [
     "*"
@@ -13778,7 +13767,7 @@
    ]
   },
   {
-   "key": "(no-card).save|rgb(255, 255, 255)|rgb(49, 130, 246)|3.71|FAIL",
+   "key": "(no-card).save|rgb(255, 255, 255)|rgb(20, 112, 245)|4.5|AA",
    "n": 24,
    "ex": [
     "저장",
@@ -13803,7 +13792,7 @@
    ]
   },
   {
-   "key": "card.em|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "card.em|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 21,
    "ex": [
     "23.3%",
@@ -13821,7 +13810,7 @@
    ]
   },
   {
-   "key": "channel-profit-value.small|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "channel-profit-value.small|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 21,
    "ex": [
     "100%",
@@ -13830,7 +13819,7 @@
    ]
   },
   {
-   "key": "(no-card).primary|rgb(255, 255, 255)|rgb(49, 130, 246)|3.71|FAIL",
+   "key": "(no-card).primary|rgb(255, 255, 255)|rgb(20, 112, 245)|4.5|AA",
    "n": 21,
    "ex": [
     "입고",
@@ -13839,7 +13828,7 @@
    ]
   },
   {
-   "key": "stock-option-copy.small|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "stock-option-copy.small|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 21,
    "ex": [
     "발주 17건",
@@ -13848,7 +13837,7 @@
    ]
   },
   {
-   "key": "(no-card).category-note|rgb(139, 149, 161)|rgb(242, 244, 246)|2.76|FAIL",
+   "key": "(no-card).category-note|rgb(102, 113, 126)|rgb(242, 244, 246)|4.5|AA",
    "n": 20,
    "ex": [
     "위·아래 화살표로 순서 변경 "
@@ -13897,7 +13886,7 @@
    ]
   },
   {
-   "key": "sales-live-copy.em|rgb(224, 122, 0)|rgb(255, 255, 255)|3.02|FAIL",
+   "key": "sales-live-copy.em|rgb(161, 96, 0)|rgb(255, 255, 255)|5.01|AA",
    "n": 18,
    "ex": [
     "지금 재료비 3,254원은 다",
@@ -13905,7 +13894,7 @@
    ]
   },
   {
-   "key": "channel-profit-value.b|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "channel-profit-value.b|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 18,
    "ex": [
     "160,889원",
@@ -13923,7 +13912,7 @@
    ]
   },
   {
-   "key": "card.span|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "card.span|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 17,
    "ex": [
     "식재료 상세 → 구매 링크에서",
@@ -13932,7 +13921,7 @@
    ]
   },
   {
-   "key": "(no-card).confirm-delete|rgb(240, 68, 82)|rgb(255, 240, 241)|3.36|FAIL",
+   "key": "(no-card).confirm-delete|rgb(218, 18, 34)|rgb(254, 236, 236)|4.5|AA",
    "n": 17,
    "ex": [
     "삭제",
@@ -13941,7 +13930,7 @@
    ]
   },
   {
-   "key": "(no-card).expo-fab|rgb(255, 255, 255)|rgb(49, 130, 246)|3.71|FAIL",
+   "key": "(no-card).expo-fab|rgb(255, 255, 255)|rgb(20, 112, 245)|4.5|AA",
    "n": 16,
    "ex": [
     "식재료 추가",
@@ -13950,7 +13939,7 @@
    ]
   },
   {
-   "key": "detail-list-copy.span|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "detail-list-copy.span|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 16,
    "ex": [
     "6.6kg",
@@ -13967,7 +13956,7 @@
    ]
   },
   {
-   "key": "recipe-add-subtotal.small|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "recipe-add-subtotal.small|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 15,
    "ex": [
     "목표 40% 기준",
@@ -13992,7 +13981,7 @@
    ]
   },
   {
-   "key": "sheet-preview-tabs.sheet-preview-tab|rgb(139, 149, 161)|rgb(242, 244, 246)|2.76|FAIL",
+   "key": "sheet-preview-tabs.sheet-preview-tab|rgb(102, 113, 126)|rgb(242, 244, 246)|4.5|AA",
    "n": 14,
    "ex": [
     "차감",
@@ -14019,7 +14008,7 @@
    ]
   },
   {
-   "key": "revenue-row.small|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "revenue-row.small|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 14,
    "ex": [
     "×26",
@@ -14046,7 +14035,7 @@
    ]
   },
   {
-   "key": "settings-list.small|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "settings-list.small|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 14,
    "ex": [
     "인건비·수수료·포장 등 → 고",
@@ -14072,7 +14061,7 @@
    ]
   },
   {
-   "key": "expo-row-value.red|rgb(240, 68, 82)|rgb(255, 255, 255)|3.71|FAIL",
+   "key": "expo-row-value.red|rgb(218, 18, 34)|rgb(255, 255, 255)|5.13|AA",
    "n": 12,
    "ex": [
     "−80g",
@@ -14090,7 +14079,7 @@
    ]
   },
   {
-   "key": "card.option-price|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "card.option-price|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 12,
    "ex": [
     "28.00원/g",
@@ -14108,7 +14097,7 @@
    ]
   },
   {
-   "key": "sales-value-stack.sales-amount|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "sales-value-stack.sales-amount|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 12,
    "ex": [
     "234,381원",
@@ -14160,7 +14149,7 @@
    ]
   },
   {
-   "key": "expo-card-foot.span|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "expo-card-foot.span|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 10,
    "ex": [
     "최근 입고 08/27",
@@ -14178,7 +14167,7 @@
    ]
   },
   {
-   "key": "card.recipe-add-search|rgb(49, 130, 246)|rgb(234, 243, 255)|3.32|FAIL",
+   "key": "card.recipe-add-search|rgb(20, 101, 219)|rgb(235, 243, 254)|4.8|AA",
    "n": 10,
    "ex": [
     "식재료 추가",
@@ -14195,7 +14184,7 @@
    ]
   },
   {
-   "key": "card.fixed-ledger-sub|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "card.fixed-ledger-sub|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 10,
    "ex": [
     "월 2,400,000원 · 이",
@@ -14204,7 +14193,7 @@
    ]
   },
   {
-   "key": "(no-card).button|rgb(49, 130, 246)|rgb(255, 255, 255)|3.71|FAIL",
+   "key": "(no-card).button|rgb(20, 112, 245)|rgb(255, 255, 255)|4.5|AA",
    "n": 10,
    "ex": [
     "기타 매출 2",
@@ -14212,7 +14201,7 @@
    ]
   },
   {
-   "key": "(no-card).before|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "(no-card).before|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 10,
    "ex": [
     "없음",
@@ -14221,7 +14210,7 @@
    ]
   },
   {
-   "key": "(no-card).arrow|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "(no-card).arrow|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 10,
    "ex": [
     "→"
@@ -14246,7 +14235,7 @@
    ]
   },
   {
-   "key": "order-head.expo-status|rgb(183, 110, 0)|rgb(255, 244, 229)|3.69|FAIL",
+   "key": "order-head.expo-status|rgb(161, 96, 0)|rgb(255, 244, 229)|4.61|AA",
    "n": 9,
    "ex": [
     "안전재고 미달"
@@ -14260,49 +14249,49 @@
    ]
   },
   {
-   "key": "order-metric.span|rgb(139, 149, 161)|rgb(249, 250, 251)|2.91|FAIL",
+   "key": "order-metric.span|rgb(102, 113, 126)|rgb(249, 250, 251)|4.75|AA",
    "n": 9,
    "ex": [
     "안전 1kg"
    ]
   },
   {
-   "key": "card.order-button|rgb(255, 255, 255)|rgb(49, 130, 246)|3.71|FAIL",
+   "key": "card.order-button|rgb(255, 255, 255)|rgb(20, 112, 245)|4.5|AA",
    "n": 9,
    "ex": [
     "주문하기"
    ]
   },
   {
-   "key": "(no-card).business-state|rgb(255, 255, 255)|rgb(49, 130, 246)|3.71|FAIL",
+   "key": "(no-card).business-state|rgb(255, 255, 255)|rgb(20, 112, 245)|4.5|AA",
    "n": 9,
    "ex": [
     "영업 중⌄"
    ]
   },
   {
-   "key": "sales-hero.small|rgb(255, 255, 255)|rgb(49, 130, 246)|3.71|FAIL",
+   "key": "sales-hero.small|rgb(255, 255, 255)|rgb(20, 112, 245)|4.5|AA",
    "n": 9,
    "ex": [
     "오늘 순이익"
    ]
   },
   {
-   "key": "sales-hero.strong|rgb(255, 255, 255)|rgb(49, 130, 246)|3.71|AA",
+   "key": "sales-hero.strong|rgb(255, 255, 255)|rgb(20, 112, 245)|4.5|AA",
    "n": 9,
    "ex": [
     "273,599원"
    ]
   },
   {
-   "key": "sales-hero.p|rgb(255, 255, 255)|rgb(49, 130, 246)|3.71|FAIL",
+   "key": "sales-hero.p|rgb(255, 255, 255)|rgb(20, 112, 245)|4.5|AA",
    "n": 9,
    "ex": [
     "매출 875,000원 · 순이"
    ]
   },
   {
-   "key": "sales-quick.b|rgb(49, 130, 246)|rgb(255, 255, 255)|3.71|FAIL",
+   "key": "sales-quick.b|rgb(20, 112, 245)|rgb(255, 255, 255)|4.5|AA",
    "n": 9,
    "ex": [
     "40,000"
@@ -14316,14 +14305,14 @@
    ]
   },
   {
-   "key": "sales-controls.span|rgb(49, 130, 246)|rgb(242, 244, 246)|3.37|FAIL",
+   "key": "sales-controls.span|rgb(51, 61, 75)|rgb(242, 244, 246)|9.97|AA",
    "n": 9,
    "ex": [
     "메뉴 관리"
    ]
   },
   {
-   "key": "analysis-summary-value.small|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "analysis-summary-value.small|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 9,
    "ex": [
     "100%",
@@ -14332,7 +14321,7 @@
    ]
   },
   {
-   "key": "card.expo-icon-button|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "card.expo-icon-button|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 9,
    "ex": [
     "✎"
@@ -14356,7 +14345,7 @@
    ]
   },
   {
-   "key": "card.empty-inline|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "card.empty-inline|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 8,
    "ex": [
     "아직 기록된 손익 변동이 없어",
@@ -14379,7 +14368,7 @@
    ]
   },
   {
-   "key": "settings-list.setting-icon|rgb(49, 130, 246)|rgb(234, 243, 255)|3.32|FAIL",
+   "key": "settings-list.setting-icon|rgb(20, 101, 219)|rgb(235, 243, 254)|4.8|AA",
    "n": 8,
    "ex": [
     "₩",
@@ -14388,7 +14377,7 @@
    ]
   },
   {
-   "key": "tax-preview-row.span|rgb(78, 89, 104)|rgb(234, 243, 255)|6.35|AA",
+   "key": "tax-preview-row.span|rgb(78, 89, 104)|rgb(235, 243, 254)|6.36|AA",
    "n": 8,
    "ex": [
     "부가세",
@@ -14419,7 +14408,7 @@
    ]
   },
   {
-   "key": "edit-form-label.edit-inline-add|rgb(49, 130, 246)|rgb(242, 244, 246)|3.37|FAIL",
+   "key": "edit-form-label.edit-inline-add|rgb(51, 61, 75)|rgb(242, 244, 246)|9.97|AA",
    "n": 7,
    "ex": [
     "＋ 새 구매처",
@@ -14454,14 +14443,14 @@
    ]
   },
   {
-   "key": "expo-card-top.expo-status|rgb(14, 159, 110)|rgb(231, 247, 240)|3.06|FAIL",
+   "key": "expo-card-top.expo-status|rgb(11, 127, 88)|rgb(231, 247, 240)|4.52|AA",
    "n": 6,
    "ex": [
     "여유"
    ]
   },
   {
-   "key": "edit-form-row.edit-form-box|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "edit-form-row.edit-form-box|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 6,
    "ex": [
     "카테고리 선택",
@@ -14469,7 +14458,7 @@
    ]
   },
   {
-   "key": "stock-total-result.strong|rgb(49, 130, 246)|rgb(234, 243, 255)|3.32|FAIL",
+   "key": "stock-total-result.strong|rgb(20, 101, 219)|rgb(235, 243, 254)|4.8|AA",
    "n": 6,
    "ex": [
     "0원/g",
@@ -14477,7 +14466,7 @@
    ]
   },
   {
-   "key": "detail-chips.detail-chip|rgb(139, 149, 161)|rgb(249, 250, 251)|2.91|FAIL",
+   "key": "detail-chips.detail-chip|rgb(102, 113, 126)|rgb(249, 250, 251)|4.75|AA",
    "n": 6,
    "ex": [
     "최소 발주 1개",
@@ -14485,7 +14474,7 @@
    ]
   },
   {
-   "key": "(no-card).time|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "(no-card).time|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 6,
    "ex": [
     "2026-08-29 · 08:",
@@ -14501,7 +14490,7 @@
    ]
   },
   {
-   "key": "card.b|rgb(240, 68, 82)|rgb(255, 255, 255)|3.71|FAIL",
+   "key": "card.b|rgb(218, 18, 34)|rgb(255, 255, 255)|5.13|AA",
    "n": 6,
    "ex": [
     "33.7%",
@@ -14509,7 +14498,7 @@
    ]
   },
   {
-   "key": "expo-row-value.span|rgb(240, 68, 82)|rgb(255, 255, 255)|3.71|FAIL",
+   "key": "expo-row-value.span|rgb(218, 18, 34)|rgb(255, 255, 255)|5.13|AA",
    "n": 6,
    "ex": [
     "4,047원",
@@ -14518,7 +14507,7 @@
    ]
   },
   {
-   "key": "card.strong|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "card.strong|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 6,
    "ex": [
     "아직 기록된 손익 변동이 없어",
@@ -14544,7 +14533,7 @@
    ]
   },
   {
-   "key": "sales-value-stack.sales-amount|rgb(14, 159, 110)|rgb(255, 255, 255)|3.39|FAIL",
+   "key": "sales-value-stack.sales-amount|rgb(11, 127, 88)|rgb(255, 255, 255)|5.01|AA",
    "n": 6,
    "ex": [
     "273,599원",
@@ -14552,7 +14541,7 @@
    ]
   },
   {
-   "key": "sales-value-stack.sales-percent|rgb(14, 159, 110)|rgb(255, 255, 255)|3.39|FAIL",
+   "key": "sales-value-stack.sales-percent|rgb(11, 127, 88)|rgb(255, 255, 255)|5.01|AA",
    "n": 6,
    "ex": [
     "31.3%",
@@ -14560,7 +14549,7 @@
    ]
   },
   {
-   "key": "card.b|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "card.b|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 6,
    "ex": [
     "234,381원",
@@ -14594,21 +14583,21 @@
    ]
   },
   {
-   "key": "card.setting-icon|rgb(49, 130, 246)|rgb(234, 243, 255)|3.32|FAIL",
+   "key": "card.setting-icon|rgb(20, 101, 219)|rgb(235, 243, 254)|4.8|AA",
    "n": 6,
    "ex": [
     "ⓘ"
    ]
   },
   {
-   "key": "card.primary|rgb(255, 255, 255)|rgb(49, 130, 246)|3.71|FAIL",
+   "key": "card.primary|rgb(255, 255, 255)|rgb(20, 112, 245)|4.5|AA",
    "n": 6,
    "ex": [
     "기기 시간대 사용"
    ]
   },
   {
-   "key": "(no-card).b|rgb(49, 130, 246)|rgb(234, 243, 255)|3.32|FAIL",
+   "key": "(no-card).b|rgb(20, 101, 219)|rgb(235, 243, 254)|4.8|AA",
    "n": 6,
    "ex": [
     "0원",
@@ -14631,14 +14620,14 @@
    ]
   },
   {
-   "key": "card.badge|rgb(49, 130, 246)|rgb(234, 243, 255)|3.32|FAIL",
+   "key": "card.badge|rgb(20, 101, 219)|rgb(235, 243, 254)|4.8|AA",
    "n": 5,
    "ex": [
     "최저"
    ]
   },
   {
-   "key": "card.badge|rgb(240, 68, 82)|rgb(255, 240, 241)|3.36|FAIL",
+   "key": "card.badge|rgb(218, 18, 34)|rgb(254, 236, 236)|4.5|AA",
    "n": 5,
    "ex": [
     "최고"
@@ -14653,7 +14642,7 @@
    ]
   },
   {
-   "key": "expo-row-copy.span|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "expo-row-copy.span|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 5,
    "ex": [
     "목표 미달"
@@ -14674,14 +14663,14 @@
    ]
   },
   {
-   "key": "sales-label.profit-badge|rgb(14, 159, 110)|rgb(232, 248, 241)|3.08|FAIL",
+   "key": "sales-label.profit-badge|rgb(11, 127, 88)|rgb(231, 247, 240)|4.52|AA",
    "n": 5,
    "ex": [
     "목표 달성"
    ]
   },
   {
-   "key": "sales-section.span|rgb(139, 149, 161)|rgb(242, 244, 246)|2.76|FAIL",
+   "key": "sales-section.span|rgb(102, 113, 126)|rgb(242, 244, 246)|4.5|AA",
    "n": 5,
    "ex": [
     "총 7개"
@@ -14715,7 +14704,7 @@
    ]
   },
   {
-   "key": "expo-list-card.em|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "expo-list-card.em|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 4,
    "ex": [
     "안전재고 1kg",
@@ -14732,7 +14721,7 @@
    ]
   },
   {
-   "key": "(no-card).change-month-label|rgb(139, 149, 161)|rgb(242, 244, 246)|2.76|FAIL",
+   "key": "(no-card).change-month-label|rgb(102, 113, 126)|rgb(242, 244, 246)|4.5|AA",
    "n": 4,
    "ex": [
     "2026년 8월"
@@ -14747,14 +14736,14 @@
    ]
   },
   {
-   "key": "expo-pick-card.badge|rgb(240, 68, 82)|rgb(255, 240, 241)|3.36|FAIL",
+   "key": "expo-pick-card.badge|rgb(218, 18, 34)|rgb(254, 236, 236)|4.5|AA",
    "n": 4,
    "ex": [
     "소진 임박"
    ]
   },
   {
-   "key": "(no-card).em|rgb(49, 130, 246)|rgb(242, 244, 246)|3.37|FAIL",
+   "key": "(no-card).em|rgb(20, 101, 219)|rgb(242, 244, 246)|4.87|AA",
    "n": 4,
    "ex": [
     "*"
@@ -14769,7 +14758,7 @@
    ]
   },
   {
-   "key": "channel-profit-value.red|rgb(240, 68, 82)|rgb(255, 255, 255)|3.71|FAIL",
+   "key": "channel-profit-value.red|rgb(218, 18, 34)|rgb(255, 255, 255)|5.13|AA",
    "n": 4,
    "ex": [
     "−30,958원",
@@ -14808,56 +14797,56 @@
    ]
   },
   {
-   "key": "tax-rate-box.span|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "tax-rate-box.span|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 4,
    "ex": [
     "%"
    ]
   },
   {
-   "key": "tax-preview-row.b|rgb(240, 68, 82)|rgb(234, 243, 255)|3.32|FAIL",
+   "key": "tax-preview-row.b|rgb(218, 18, 34)|rgb(235, 243, 254)|4.59|AA",
    "n": 4,
    "ex": [
     "₩1,091"
    ]
   },
   {
-   "key": "tax-preview-row.span|rgb(49, 130, 246)|rgb(234, 243, 255)|3.32|FAIL",
+   "key": "tax-preview-row.span|rgb(20, 101, 219)|rgb(235, 243, 254)|4.8|AA",
    "n": 4,
    "ex": [
     "결제금액"
    ]
   },
   {
-   "key": "tax-preview-row.b|rgb(49, 130, 246)|rgb(234, 243, 255)|3.32|FAIL",
+   "key": "tax-preview-row.b|rgb(20, 101, 219)|rgb(235, 243, 254)|4.8|AA",
    "n": 4,
    "ex": [
     "₩12,000"
    ]
   },
   {
-   "key": "tax-preview-row.b|rgb(25, 31, 40)|rgb(234, 243, 255)|14.8|AA",
+   "key": "tax-preview-row.b|rgb(25, 31, 40)|rgb(235, 243, 254)|14.81|AA",
    "n": 4,
    "ex": [
     "₩10,909"
    ]
   },
   {
-   "key": "card.tax-empty|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "card.tax-empty|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 4,
    "ex": [
     "추가 세금 항목이 없어요"
    ]
   },
   {
-   "key": "card.tax-add|rgb(49, 130, 246)|rgb(255, 255, 255)|3.71|FAIL",
+   "key": "card.tax-add|rgb(20, 112, 245)|rgb(255, 255, 255)|4.5|AA",
    "n": 4,
    "ex": [
     "＋ 추가 세금 항목"
    ]
   },
   {
-   "key": "tax-summary-row.b|rgb(240, 68, 82)|rgb(255, 255, 255)|3.71|FAIL",
+   "key": "tax-summary-row.b|rgb(218, 18, 34)|rgb(255, 255, 255)|5.13|AA",
    "n": 4,
    "ex": [
     "₩1,091"
@@ -14945,21 +14934,21 @@
    ]
   },
   {
-   "key": "edit-form.ingredient-note-icon|rgb(49, 130, 246)|rgb(234, 243, 255)|3.32|FAIL",
+   "key": "edit-form.ingredient-note-icon|rgb(20, 101, 219)|rgb(235, 243, 254)|4.8|AA",
    "n": 3,
    "ex": [
     "i"
    ]
   },
   {
-   "key": "edit-form.span|rgb(49, 130, 246)|rgb(234, 243, 255)|3.32|FAIL",
+   "key": "edit-form.span|rgb(20, 101, 219)|rgb(235, 243, 254)|4.8|AA",
    "n": 3,
    "ex": [
     "구매 링크는 저장한 뒤 상세 "
    ]
   },
   {
-   "key": "detail-tags.detail-tag|rgb(139, 149, 161)|rgb(249, 250, 251)|2.91|FAIL",
+   "key": "detail-tags.detail-tag|rgb(102, 113, 126)|rgb(249, 250, 251)|4.75|AA",
    "n": 3,
    "ex": [
     "향신료·허브"
@@ -14980,14 +14969,14 @@
    ]
   },
   {
-   "key": "detail-memo.p|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "detail-memo.p|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 3,
    "ex": [
     "메모를 입력하세요"
    ]
   },
   {
-   "key": "card.expo-status|rgb(14, 159, 110)|rgb(231, 247, 240)|3.06|FAIL",
+   "key": "card.expo-status|rgb(11, 127, 88)|rgb(231, 247, 240)|4.52|AA",
    "n": 3,
    "ex": [
     "현재 매출 반영"
@@ -15008,7 +14997,7 @@
    ]
   },
   {
-   "key": "stock-detail-unit-price.span|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "stock-detail-unit-price.span|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 3,
    "ex": [
     "기준 단가"
@@ -15022,35 +15011,35 @@
    ]
   },
   {
-   "key": "stock-detail-head.expo-status|rgb(240, 68, 82)|rgb(254, 236, 236)|3.26|FAIL",
+   "key": "stock-detail-head.expo-status|rgb(218, 18, 34)|rgb(254, 236, 236)|4.5|AA",
    "n": 3,
    "ex": [
     "소진 임박"
    ]
   },
   {
-   "key": "detail-chips.detail-chip|rgb(183, 110, 0)|rgb(255, 244, 229)|3.69|FAIL",
+   "key": "detail-chips.detail-chip|rgb(161, 96, 0)|rgb(255, 244, 229)|4.61|AA",
    "n": 3,
    "ex": [
     "안전재고 1kg"
    ]
   },
   {
-   "key": "card.b|rgb(49, 130, 246)|rgb(255, 255, 255)|3.71|AA",
+   "key": "card.b|rgb(20, 112, 245)|rgb(255, 255, 255)|4.5|AA",
    "n": 3,
    "ex": [
     "28.00원/g"
    ]
   },
   {
-   "key": "stock-add-select.span|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "stock-add-select.span|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 3,
    "ex": [
     "미선택"
    ]
   },
   {
-   "key": "recipe-target-line.expo-status|rgb(240, 68, 82)|rgb(254, 236, 236)|3.26|FAIL",
+   "key": "recipe-target-line.expo-status|rgb(218, 18, 34)|rgb(254, 236, 236)|4.5|AA",
    "n": 3,
    "ex": [
     "목표 미달"
@@ -15064,7 +15053,7 @@
    ]
   },
   {
-   "key": "recipe-title-row.recipe-sale-select|rgb(255, 255, 255)|rgb(49, 130, 246)|3.71|FAIL",
+   "key": "recipe-title-row.recipe-sale-select|rgb(255, 255, 255)|rgb(20, 112, 245)|4.5|AA",
    "n": 3,
    "ex": [
     "판매중"
@@ -15078,21 +15067,21 @@
    ]
   },
   {
-   "key": "detail-memo.span|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "detail-memo.span|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 3,
    "ex": [
     "메모 없음"
    ]
   },
   {
-   "key": "card.span|rgb(240, 68, 82)|rgb(255, 255, 255)|3.71|FAIL",
+   "key": "card.span|rgb(218, 18, 34)|rgb(255, 255, 255)|5.13|AA",
    "n": 3,
    "ex": [
     "순이익"
    ]
   },
   {
-   "key": "card.em|rgb(240, 68, 82)|rgb(255, 255, 255)|3.71|FAIL",
+   "key": "card.em|rgb(218, 18, 34)|rgb(255, 255, 255)|5.13|AA",
    "n": 3,
    "ex": [
     "33.7%"
@@ -15113,14 +15102,14 @@
    ]
   },
   {
-   "key": "order-empty-form.order-empty-select|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "order-empty-form.order-empty-select|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 3,
    "ex": [
     "식재료 선택"
    ]
   },
   {
-   "key": "order-empty-form.order-empty-message|rgb(139, 149, 161)|rgb(242, 244, 246)|2.76|FAIL",
+   "key": "order-empty-form.order-empty-message|rgb(102, 113, 126)|rgb(242, 244, 246)|4.5|AA",
    "n": 3,
    "ex": [
     "먼저 식재료를 선택해 주세요"
@@ -15134,21 +15123,21 @@
    ]
   },
   {
-   "key": "analysis-summary-value.b|rgb(233, 121, 0)|rgb(255, 255, 255)|2.92|FAIL",
+   "key": "analysis-summary-value.b|rgb(161, 96, 0)|rgb(255, 255, 255)|5.01|AA",
    "n": 3,
    "ex": [
     "601,401원"
    ]
   },
   {
-   "key": "analysis-summary-row.span|rgb(14, 159, 110)|rgb(255, 255, 255)|3.39|FAIL",
+   "key": "analysis-summary-row.span|rgb(11, 127, 88)|rgb(255, 255, 255)|5.01|AA",
    "n": 3,
    "ex": [
     "순이익"
    ]
   },
   {
-   "key": "analysis-summary-value.b|rgb(14, 159, 110)|rgb(255, 255, 255)|3.39|FAIL",
+   "key": "analysis-summary-value.b|rgb(11, 127, 88)|rgb(255, 255, 255)|5.01|AA",
    "n": 3,
    "ex": [
     "273,599원"
@@ -15199,7 +15188,7 @@
    ]
   },
   {
-   "key": "(no-card).span|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "(no-card).span|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 3,
    "ex": [
     "2026-09-01 · 04:",
@@ -15207,7 +15196,7 @@
    ]
   },
   {
-   "key": "(no-card).primary|rgb(255, 255, 255)|rgb(209, 214, 219)|1.46|FAIL",
+   "key": "(no-card).primary|rgb(255, 255, 255)|rgb(106, 120, 135)|4.52|AA",
    "n": 3,
    "ex": [
     "발주 등록",
@@ -15229,7 +15218,7 @@
    ]
   },
   {
-   "key": "sheet-preview-body.memo-count|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "sheet-preview-body.memo-count|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 2,
    "ex": [
     "0 / 100"
@@ -15243,14 +15232,14 @@
    ]
   },
   {
-   "key": "sheet-actions.save|rgb(255, 255, 255)|rgb(49, 130, 246)|3.71|FAIL",
+   "key": "sheet-actions.save|rgb(255, 255, 255)|rgb(20, 112, 245)|4.5|AA",
    "n": 2,
    "ex": [
     "완료"
    ]
   },
   {
-   "key": "(no-card).expo-status|rgb(14, 159, 110)|rgb(231, 247, 240)|3.06|FAIL",
+   "key": "(no-card).expo-status|rgb(11, 127, 88)|rgb(231, 247, 240)|4.52|AA",
    "n": 2,
    "ex": [
     "현재 매출 반영"
@@ -15264,7 +15253,7 @@
    ]
   },
   {
-   "key": "recipe-add-recommend.small|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "recipe-add-recommend.small|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 2,
    "ex": [
     "목표 40% 기준"
@@ -15278,21 +15267,21 @@
    ]
   },
   {
-   "key": "recipe-add-recommend.small|rgb(49, 130, 246)|rgb(255, 255, 255)|3.71|FAIL",
+   "key": "recipe-add-recommend.small|rgb(20, 112, 245)|rgb(255, 255, 255)|4.5|AA",
    "n": 2,
    "ex": [
     "적용하기"
    ]
   },
   {
-   "key": "(no-card).span|rgb(49, 130, 246)|rgb(234, 243, 255)|3.32|FAIL",
+   "key": "(no-card).span|rgb(20, 101, 219)|rgb(235, 243, 254)|4.8|AA",
    "n": 2,
    "ex": [
     "부자재 추가·수정은 부자재 관"
    ]
   },
   {
-   "key": "card.green|rgb(14, 159, 110)|rgb(255, 255, 255)|3.39|FAIL",
+   "key": "card.green|rgb(11, 127, 88)|rgb(255, 255, 255)|5.01|AA",
    "n": 2,
    "ex": [
     "273,599원",
@@ -15300,14 +15289,14 @@
    ]
   },
   {
-   "key": "revenue-more.span|rgb(49, 130, 246)|rgb(255, 255, 255)|3.71|FAIL",
+   "key": "revenue-more.span|rgb(20, 112, 245)|rgb(255, 255, 255)|4.5|AA",
    "n": 2,
    "ex": [
     "더보기 (2개)"
    ]
   },
   {
-   "key": "channel-profit-value.green|rgb(14, 159, 110)|rgb(255, 255, 255)|3.39|FAIL",
+   "key": "channel-profit-value.green|rgb(11, 127, 88)|rgb(255, 255, 255)|5.01|AA",
    "n": 2,
    "ex": [
     "282,045원",
@@ -15315,35 +15304,28 @@
    ]
   },
   {
-   "key": "sales-material-more.span|rgb(49, 130, 246)|rgb(255, 255, 255)|3.71|FAIL",
+   "key": "sales-material-more.span|rgb(20, 112, 245)|rgb(255, 255, 255)|4.5|AA",
    "n": 2,
    "ex": [
     "더보기 (2개)"
    ]
   },
   {
-   "key": "detail-list-copy.strong|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "detail-list-copy.strong|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 2,
    "ex": [
     "기록 없음"
    ]
   },
   {
-   "key": "detail-list-row.b|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "detail-list-row.b|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 2,
    "ex": [
     "0원"
    ]
   },
   {
-   "key": "revenue-summary-row.span|rgb(49, 130, 246)|rgb(249, 250, 251)|3.55|FAIL",
-   "n": 2,
-   "ex": [
-    "31.3%"
-   ]
-  },
-  {
-   "key": "card.p|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "card.p|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 2,
    "ex": [
     "추가한 재고가 연결된 모든 레"
@@ -15372,14 +15354,14 @@
    ]
   },
   {
-   "key": "card.strong|rgb(240, 68, 82)|rgb(255, 255, 255)|3.71|FAIL",
+   "key": "card.strong|rgb(218, 18, 34)|rgb(255, 255, 255)|5.13|AA",
    "n": 2,
    "ex": [
     "계정 탈퇴"
    ]
   },
   {
-   "key": "card.danger-button|rgb(240, 68, 82)|rgb(255, 255, 255)|3.71|FAIL",
+   "key": "card.danger-button|rgb(218, 18, 34)|rgb(255, 255, 255)|5.13|AA",
    "n": 2,
    "ex": [
     "계정 탈퇴"
@@ -15402,7 +15384,7 @@
    ]
   },
   {
-   "key": "stock-purchase-meta.b|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "stock-purchase-meta.b|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 2,
    "ex": [
     "28,000원",
@@ -15410,7 +15392,7 @@
    ]
   },
   {
-   "key": "stock-purchase-meta.span|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "stock-purchase-meta.span|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 2,
    "ex": [
     "· 28.00원/g",
@@ -15418,7 +15400,7 @@
    ]
   },
   {
-   "key": "stock-option-action.span|rgb(49, 130, 246)|rgb(255, 255, 255)|3.71|FAIL",
+   "key": "stock-option-action.span|rgb(20, 112, 245)|rgb(255, 255, 255)|4.5|AA",
    "n": 2,
    "ex": [
     "＋ 직접 입력",
@@ -15433,7 +15415,7 @@
    ]
   },
   {
-   "key": "stock-confirm-item.small|rgb(139, 149, 161)|rgb(249, 250, 251)|2.91|FAIL",
+   "key": "stock-confirm-item.small|rgb(102, 113, 126)|rgb(249, 250, 251)|4.75|AA",
    "n": 2,
    "ex": [
     "식재료",
@@ -15457,7 +15439,7 @@
    ]
   },
   {
-   "key": "(no-card).empty-inline|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "(no-card).empty-inline|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 2,
    "ex": [
     "등록된 구매 링크가 없어요"
@@ -15488,7 +15470,7 @@
    ]
   },
   {
-   "key": "sales-shortage-row.b|rgb(240, 68, 82)|rgb(249, 250, 251)|3.55|FAIL",
+   "key": "sales-shortage-row.b|rgb(218, 18, 34)|rgb(249, 250, 251)|4.91|AA",
    "n": 2,
    "ex": [
     "부족 재료 2개",
@@ -15511,14 +15493,14 @@
    ]
   },
   {
-   "key": "edit-menu-stage.prototype-sheet-row|rgb(240, 68, 82)|rgb(255, 255, 255)|3.71|FAIL",
+   "key": "edit-menu-stage.prototype-sheet-row|rgb(218, 18, 34)|rgb(255, 255, 255)|5.13|AA",
    "n": 1,
    "ex": [
     "식재료 삭제"
    ]
   },
   {
-   "key": "edit-menu-stage.edit-menu-close|rgb(49, 130, 246)|rgb(255, 255, 255)|3.71|FAIL",
+   "key": "edit-menu-stage.edit-menu-close|rgb(20, 112, 245)|rgb(255, 255, 255)|4.5|AA",
    "n": 1,
    "ex": [
     "닫기"
@@ -15553,7 +15535,7 @@
    ]
   },
   {
-   "key": "sheet-preview-stage.button|rgb(240, 68, 82)|rgb(255, 240, 241)|3.36|FAIL",
+   "key": "sheet-preview-stage.button|rgb(218, 18, 34)|rgb(254, 236, 236)|4.5|AA",
    "n": 1,
    "ex": [
     "삭제"
@@ -15588,7 +15570,7 @@
    ]
   },
   {
-   "key": "card.badge|rgb(14, 159, 110)|rgb(232, 248, 241)|3.08|FAIL",
+   "key": "card.badge|rgb(11, 127, 88)|rgb(231, 247, 240)|4.52|AA",
    "n": 1,
    "ex": [
     "목표 달성"
@@ -15609,14 +15591,14 @@
    ]
   },
   {
-   "key": "menu-summary-copy.small|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "menu-summary-copy.small|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 1,
    "ex": [
     "목표 40%"
    ]
   },
   {
-   "key": "menu-summary-row.red|rgb(240, 68, 82)|rgb(255, 255, 255)|3.71|FAIL",
+   "key": "menu-summary-row.red|rgb(218, 18, 34)|rgb(255, 255, 255)|5.13|AA",
    "n": 1,
    "ex": [
     "33.7%"
@@ -15644,21 +15626,21 @@
    ]
   },
   {
-   "key": "edit-form-row.edit-form-hint|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "edit-form-row.edit-form-hint|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 1,
    "ex": [
     "레시피 입력에서 컵을 ml로 "
    ]
   },
   {
-   "key": "edit-form.primary|rgb(255, 255, 255)|rgb(49, 130, 246)|3.71|FAIL",
+   "key": "edit-form.primary|rgb(255, 255, 255)|rgb(20, 112, 245)|4.5|AA",
    "n": 1,
    "ex": [
     "컵 용량 저장"
    ]
   },
   {
-   "key": "stock-option-copy.stock-option-empty|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "stock-option-copy.stock-option-empty|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 1,
    "ex": [
     "미 선택"
@@ -15679,21 +15661,21 @@
    ]
   },
   {
-   "key": "option-card-actions.option-card-action|rgb(255, 255, 255)|rgb(49, 130, 246)|3.71|FAIL",
+   "key": "option-card-actions.option-card-action|rgb(255, 255, 255)|rgb(20, 112, 245)|4.5|AA",
    "n": 1,
    "ex": [
     "구매 링크 열기"
    ]
   },
   {
-   "key": "option-card-actions.option-card-action|rgb(49, 130, 246)|rgb(255, 255, 255)|3.71|FAIL",
+   "key": "option-card-actions.option-card-action|rgb(20, 112, 245)|rgb(255, 255, 255)|4.5|AA",
    "n": 1,
    "ex": [
     "구매 링크 수정"
    ]
   },
   {
-   "key": "(no-card).danger|rgb(240, 68, 82)|rgb(255, 255, 255)|3.71|FAIL",
+   "key": "(no-card).danger|rgb(218, 18, 34)|rgb(255, 255, 255)|5.13|AA",
    "n": 1,
    "ex": [
     "구매 링크 삭제"
@@ -15742,14 +15724,14 @@
    ]
   },
   {
-   "key": "option-card-actions.option-card-action|rgb(240, 68, 82)|rgb(255, 240, 241)|3.36|FAIL",
+   "key": "option-card-actions.option-card-action|rgb(218, 18, 34)|rgb(254, 236, 236)|4.5|AA",
    "n": 1,
    "ex": [
     "입고 철회"
    ]
   },
   {
-   "key": "(no-card).delete|rgb(240, 68, 82)|rgb(255, 240, 241)|3.36|FAIL",
+   "key": "(no-card).delete|rgb(218, 18, 34)|rgb(254, 236, 236)|4.5|AA",
    "n": 1,
    "ex": [
     "삭제"
@@ -15763,7 +15745,7 @@
    ]
   },
   {
-   "key": "sales-qty-copy.small|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "sales-qty-copy.small|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 1,
    "ex": [
     "재료는 나가고 매출은 0"
@@ -15777,35 +15759,35 @@
    ]
   },
   {
-   "key": "(no-card).outline|rgb(49, 130, 246)|rgb(255, 255, 255)|3.71|FAIL",
+   "key": "(no-card).outline|rgb(20, 112, 245)|rgb(255, 255, 255)|4.5|AA",
    "n": 1,
    "ex": [
     "재고 확인"
    ]
   },
   {
-   "key": "sales-channel-options.sales-channel-option|rgb(49, 130, 246)|rgb(234, 243, 255)|3.32|FAIL",
+   "key": "sales-channel-options.sales-channel-option|rgb(20, 101, 219)|rgb(235, 243, 254)|4.8|AA",
    "n": 1,
    "ex": [
     "매장"
    ]
   },
   {
-   "key": "(no-card).edit-option-manage|rgb(49, 130, 246)|rgb(234, 243, 255)|3.32|FAIL",
+   "key": "(no-card).edit-option-manage|rgb(20, 101, 219)|rgb(235, 243, 254)|4.8|AA",
    "n": 1,
    "ex": [
     "직접 설정하기"
    ]
   },
   {
-   "key": "(no-card).sales-sheet-header-link|rgb(49, 130, 246)|rgb(255, 255, 255)|3.71|FAIL",
+   "key": "(no-card).sales-sheet-header-link|rgb(20, 112, 245)|rgb(255, 255, 255)|4.5|AA",
    "n": 1,
    "ex": [
     "식재료 보기"
    ]
   },
   {
-   "key": "(no-card).sales-material-sheet-unit|rgb(139, 149, 161)|rgb(255, 255, 255)|3.04|FAIL",
+   "key": "(no-card).sales-material-sheet-unit|rgb(102, 113, 126)|rgb(255, 255, 255)|4.97|AA",
    "n": 1,
    "ex": [
     "기준단가 13.00원/g"

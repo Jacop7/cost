@@ -22,7 +22,7 @@ import { Alert, Pressable, ScrollView, Text, TextInput, View } from 'react-nativ
 import { RpcError } from '@/lib/supabase';
 import { AppHeader, Badge, Button, Card, Icon, QueryState, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { T } from '@/theme/tokens';
+import { COLOR, T } from '@/theme/tokens';
 import { useHoursStatus, useSetOperatingHours, useSetStoreTimezone } from '@/features/settings/hooks';
 import {
   DEFAULT_DAY, DOW_LABEL, DOW_ORDER, QUARTER_SLOTS, WeeklySchedule,
@@ -285,11 +285,11 @@ export default function MyHoursScreen() {
     <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12, paddingHorizontal: 15, borderTopWidth: 1, borderTopColor: T.line2 }}>
       <View style={{ flex: 1 }}>
         <Text style={{ fontSize: 15, fontWeight: '700', color: T.sub }}>{label}</Text>
-        {hint ? <Text style={{ fontSize: 13, color: T.ter, marginTop: 1 }}>{hint}</Text> : null}
+        {hint ? <Text style={{ fontSize: 13, color: COLOR.text.tertiary, marginTop: 1 }}>{hint}</Text> : null}
       </View>
       <Pressable onPress={() => { setPicking(kind); setTyped(''); }} accessibilityRole="button" accessibilityLabel={`${label} 선택`} style={{ flexDirection: 'row', alignItems: 'center', gap: 3 }}>
         <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{value}</Text>
-        <Icon name="chevronDown" size={16} color={T.ter} />
+        <Icon name="chevronDown" size={16} color={COLOR.text.tertiary} />
       </Pressable>
     </View>
   );
@@ -310,14 +310,14 @@ export default function MyHoursScreen() {
         >
           {/* 예약된 변경이 있으면 **제일 위에** 말한다(0131). */}
           {st?.pending ? (
-            <Card pad={0} style={{ overflow: 'hidden', borderColor: T.blue }}>
+            <Card pad={0} style={{ overflow: 'hidden', borderColor: COLOR.action.primary }}>
               <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 8, padding: 14 }}>
-                <View style={{ paddingTop: 1 }}><Icon name="calendar" size={18} color={T.blue} /></View>
+                <View style={{ paddingTop: 1 }}><Icon name="calendar" size={18} color={COLOR.action.primary} /></View>
                 <View style={{ flex: 1 }}>
-                  <Text style={{ fontSize: 15, fontWeight: '800', color: T.blue }}>
+                  <Text style={{ fontSize: 15, fontWeight: '800', color: COLOR.text.link }}>
                     변경한 영업시간은 {mdLabel(st.pending.effectiveFrom)}부터 적용돼요
                   </Text>
-                  <Text style={{ fontSize: 14, color: T.ter, marginTop: 2 }}>
+                  <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 2 }}>
                     오늘 영업시간은 {st.today.openTime.slice(0, 5)}~{st.today.closeTime.slice(0, 5)} 그대로예요.
                   </Text>
                 </View>
@@ -327,12 +327,12 @@ export default function MyHoursScreen() {
 
           {/* 매장 시간대 — 날짜 계산의 뿌리. 정한 적 없으면 기기 시간대를 제안한다. */}
           {st && !st.timezoneConfirmed && deviceTz ? (
-            <Card pad={0} style={{ overflow: 'hidden', borderColor: T.blue }}>
+            <Card pad={0} style={{ overflow: 'hidden', borderColor: COLOR.action.primary }}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, padding: 14 }}>
-                <Icon name="info" size={18} color={T.blue} />
+                <Icon name="info" size={18} color={COLOR.action.primary} />
                 <View style={{ flex: 1 }}>
-                  <Text style={{ fontSize: 15, fontWeight: '800', color: T.blue }}>매장 시간대를 정해 주세요</Text>
-                  <Text style={{ fontSize: 13.5, color: T.ter, marginTop: 2 }}>기기 시간대는 {deviceTz} 예요.</Text>
+                  <Text style={{ fontSize: 15, fontWeight: '800', color: COLOR.text.link }}>매장 시간대를 정해 주세요</Text>
+                  <Text style={{ fontSize: 13.5, color: COLOR.text.tertiary, marginTop: 2 }}>기기 시간대는 {deviceTz} 예요.</Text>
                 </View>
                 <Button kind="primary" size="sm" loading={saveTz.isPending} onPress={() => chooseTz(deviceTz)}>
                   기기 시간대 사용
@@ -345,13 +345,13 @@ export default function MyHoursScreen() {
             <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 13, paddingHorizontal: 15 }}>
               <View style={{ flex: 1 }}>
                 <Text style={{ fontSize: 16, fontWeight: '800', color: T.sub }}>매장 시간대</Text>
-                <Text style={{ fontSize: 13.5, color: T.ter, marginTop: 2 }}>
+                <Text style={{ fontSize: 13.5, color: COLOR.text.tertiary, marginTop: 2 }}>
                   {st?.timezoneConfirmed ? '날짜·영업일 계산의 기준이에요' : '아직 정하지 않아 서울 기준이에요'}
                 </Text>
               </View>
               <Pressable onPress={() => { setTzTyped(''); setTzOpen(true); }} accessibilityRole="button" accessibilityLabel="시간대 변경" style={{ flexDirection: 'row', alignItems: 'center', gap: 3 }}>
                 <Text style={{ fontSize: 15, fontWeight: '800', color: T.ink }}>{st?.timezone ?? ''}</Text>
-                <Icon name="chevronDown" size={16} color={T.ter} />
+                <Icon name="chevronDown" size={16} color={COLOR.text.tertiary} />
               </Pressable>
             </View>
           </Card>
@@ -360,7 +360,7 @@ export default function MyHoursScreen() {
           <Card pad={0} style={{ overflow: 'hidden' }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 13, paddingHorizontal: 15, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
               <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.sub }}>요일별 영업시간</Text>
-              <Text style={{ fontSize: 13.5, color: T.ter }}>바꿀 요일을 고르세요</Text>
+              <Text style={{ fontSize: 13.5, color: COLOR.text.tertiary }}>바꿀 요일을 고르세요</Text>
             </View>
 
             <View style={{ flexDirection: 'row', gap: 6, padding: 13 }}>
@@ -376,11 +376,11 @@ export default function MyHoursScreen() {
                     accessibilityState={{ selected: on }}
                     style={{
                       flex: 1, alignItems: 'center', paddingVertical: 9, borderRadius: 10, borderWidth: 1,
-                      borderColor: on ? T.blue : T.line,
-                      backgroundColor: on ? T.blueTint : closed ? T.surface2 : T.surface,
+                      borderColor: on ? COLOR.action.primary : T.line,
+                      backgroundColor: on ? COLOR.action.primaryTint : closed ? T.surface2 : T.surface,
                     }}
                   >
-                    <Text style={{ fontSize: 15, fontWeight: on ? '800' : '600', color: on ? T.blue : closed ? T.ter : T.sub2 }}>
+                    <Text style={{ fontSize: 15, fontWeight: on ? '800' : '600', color: on ? COLOR.text.link : closed ? COLOR.text.tertiary : T.sub2 }}>
                       {DOW_LABEL[d]}
                     </Text>
                   </Pressable>
@@ -390,8 +390,8 @@ export default function MyHoursScreen() {
 
             {days ? DOW_ORDER.map((d) => (
               <View key={d} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10, paddingHorizontal: 15, borderTopWidth: 1, borderTopColor: T.line2 }}>
-                <Text style={{ width: 34, fontSize: 15, fontWeight: '800', color: selected.has(d) ? T.blue : T.sub }}>{DOW_LABEL[d]}</Text>
-                <Text style={[{ flex: 1, fontSize: 14.5, fontWeight: '600', color: days[d]?.closed ? T.ter : T.ink }, NUM]}>
+                <Text style={{ width: 34, fontSize: 15, fontWeight: '800', color: selected.has(d) ? COLOR.text.link : T.sub }}>{DOW_LABEL[d]}</Text>
+                <Text style={[{ flex: 1, fontSize: 14.5, fontWeight: '600', color: days[d]?.closed ? COLOR.text.tertiary : T.ink }, NUM]}>
                   {days[d] ? dayLabel(days[d]) : '—'}
                 </Text>
               </View>
@@ -422,7 +422,7 @@ export default function MyHoursScreen() {
                 onPress={() => setPClosed((v) => !v)}
                 accessibilityRole="switch" accessibilityLabel="휴무"
                 accessibilityState={{ checked: pClosed }}
-                style={{ paddingVertical: 5, paddingHorizontal: 12, borderRadius: 999, backgroundColor: pClosed ? T.blue : T.line2 }}
+                style={{ paddingVertical: 5, paddingHorizontal: 12, borderRadius: 999, backgroundColor: pClosed ? COLOR.action.primary : T.line2 }}
               >
                 <Text style={{ fontSize: 13.5, fontWeight: '800', color: pClosed ? T.onColor : T.sub2 }}>{pClosed ? '휴무' : '영업'}</Text>
               </Pressable>
@@ -439,7 +439,7 @@ export default function MyHoursScreen() {
                     onPress={() => setUseBreak((v) => !v)}
                     accessibilityRole="switch" accessibilityLabel="브레이크 타임 사용"
                     accessibilityState={{ checked: useBreak }}
-                    style={{ paddingVertical: 5, paddingHorizontal: 12, borderRadius: 999, backgroundColor: useBreak ? T.blue : T.line2 }}
+                    style={{ paddingVertical: 5, paddingHorizontal: 12, borderRadius: 999, backgroundColor: useBreak ? COLOR.action.primary : T.line2 }}
                   >
                     <Text style={{ fontSize: 13.5, fontWeight: '800', color: useBreak ? T.onColor : T.sub2 }}>{useBreak ? '사용' : '사용 안 함'}</Text>
                   </Pressable>
@@ -468,8 +468,8 @@ export default function MyHoursScreen() {
             </View>
           ) : (
             <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, paddingHorizontal: 2 }}>
-              <Icon name="info" size={15} color={T.ter} />
-              <Text style={{ flex: 1, fontSize: 14, color: T.ter, lineHeight: 20 }}>
+              <Icon name="info" size={15} color={COLOR.text.tertiary} />
+              <Text style={{ flex: 1, fontSize: 14, color: COLOR.text.tertiary, lineHeight: 20 }}>
                 종료 시각이 <Text style={{ fontWeight: '700' }}>하루의 경계</Text>예요. 종료를 시작보다
                 이르게 두면 자동으로 다음 날 종료(자정 넘김)로 저장돼요.
               </Text>
@@ -496,7 +496,7 @@ export default function MyHoursScreen() {
             value={typed}
             onChangeText={setTyped}
             placeholder="직접 입력 · 예) 21:30"
-            placeholderTextColor={T.ter}
+            placeholderTextColor={COLOR.text.tertiary}
             keyboardType="numbers-and-punctuation"
             accessibilityLabel="시각 직접 입력"
             style={{ flex: 1, borderWidth: 1, borderColor: T.line, borderRadius: 10, paddingVertical: 9, paddingHorizontal: 12, fontSize: 15, color: T.ink, backgroundColor: T.surface }}
@@ -521,9 +521,9 @@ export default function MyHoursScreen() {
                 onPress={() => applyPick(t)}
                 accessibilityRole="button" accessibilityLabel={t}
                 accessibilityState={{ selected: on }}
-                style={{ paddingVertical: 8, paddingHorizontal: 10, borderRadius: 9, borderWidth: 1, borderColor: on ? T.blue : T.line, backgroundColor: on ? T.blueTint : T.surface }}
+                style={{ paddingVertical: 8, paddingHorizontal: 10, borderRadius: 9, borderWidth: 1, borderColor: on ? COLOR.action.primary : T.line, backgroundColor: on ? COLOR.action.primaryTint : T.surface }}
               >
-                <Text style={[{ fontSize: 14, fontWeight: on ? '800' : '600', color: on ? T.blue : T.sub2 }, NUM]}>{t}</Text>
+                <Text style={[{ fontSize: 14, fontWeight: on ? '800' : '600', color: on ? COLOR.text.link : T.sub2 }, NUM]}>{t}</Text>
               </Pressable>
             );
           })}
@@ -537,7 +537,7 @@ export default function MyHoursScreen() {
             value={tzTyped}
             onChangeText={setTzTyped}
             placeholder="직접 입력 · 예) Asia/Seoul"
-            placeholderTextColor={T.ter}
+            placeholderTextColor={COLOR.text.tertiary}
             autoCapitalize="none"
             accessibilityLabel="시간대 직접 입력"
             style={{ flex: 1, borderWidth: 1, borderColor: T.line, borderRadius: 10, paddingVertical: 9, paddingHorizontal: 12, fontSize: 15, color: T.ink, backgroundColor: T.surface }}
@@ -556,9 +556,9 @@ export default function MyHoursScreen() {
               accessibilityState={{ selected: on }}
               style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 13, borderBottomWidth: 1, borderBottomColor: T.line2 }}
             >
-              <Text style={{ flex: 1, fontSize: 15, fontWeight: on ? '800' : '600', color: on ? T.blue : T.ink }}>{tz}</Text>
+              <Text style={{ flex: 1, fontSize: 15, fontWeight: on ? '800' : '600', color: on ? COLOR.text.link : T.ink }}>{tz}</Text>
               {tz === deviceTz ? <Badge tone="blue" sm>기기</Badge> : null}
-              {on ? <Icon name="check" size={17} color={T.blue} /> : null}
+              {on ? <Icon name="check" size={17} color={COLOR.action.primary} /> : null}
             </Pressable>
           );
         })}

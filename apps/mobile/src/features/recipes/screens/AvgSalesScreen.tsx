@@ -9,7 +9,7 @@ import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Button, Card, Icon, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { T, won } from '@/theme/tokens';
+import { COLOR, T, won } from '@/theme/tokens';
 import { clampDecimals } from '@/lib/num';
 import { useSalesRange } from '@/features/sales/hooks';
 import { addDays } from '@/lib/date';
@@ -63,7 +63,7 @@ function AvgSalesScreenBody({ localDate }: { localDate: string }) {
           emptyTitle=""
         >
           <Card pad={16} style={{ marginBottom: 18 }}>
-            <Text style={{ fontSize: 14, fontWeight: '700', color: T.ter, marginBottom: 8 }}>최근 30일 실제 판매</Text>
+            <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.text.tertiary, marginBottom: 8 }}>최근 30일 실제 판매</Text>
             {sold ? (
               <>
                 <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 8 }}>
@@ -73,14 +73,14 @@ function AvgSalesScreenBody({ localDate }: { localDate: string }) {
                 <Pressable
                   onPress={() => setValue(String(sold.qty))}
                   accessibilityRole="button" accessibilityLabel="실제 판매량으로 채우기"
-                  style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5, marginTop: 12, paddingVertical: 11, borderRadius: 10, borderWidth: 1, borderColor: T.blue, backgroundColor: T.blueTint }}
+                  style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5, marginTop: 12, paddingVertical: 11, borderRadius: 10, borderWidth: 1, borderColor: COLOR.action.primary, backgroundColor: COLOR.action.primaryTint }}
                 >
-                  <Icon name="check" size={16} color={T.blue} sw={2.2} />
-                  <Text style={{ fontSize: 14, fontWeight: '700', color: T.blue }}>이 값으로 채우기</Text>
+                  <Icon name="check" size={16} color={COLOR.action.primary} sw={2.2} />
+                  <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.text.link }}>이 값으로 채우기</Text>
                 </Pressable>
               </>
             ) : (
-              <Text style={{ fontSize: 16, color: T.ter }}>
+              <Text style={{ fontSize: 16, color: COLOR.text.tertiary }}>
                 {recipeId ? '최근 30일 판매 기록이 없어요' : '메뉴를 저장한 뒤에 실제 판매량을 볼 수 있어요'}
               </Text>
             )}
@@ -88,8 +88,8 @@ function AvgSalesScreenBody({ localDate }: { localDate: string }) {
         </QueryState>
 
         {/* 입력 */}
-        <Text style={{ fontSize: 14, fontWeight: '700', color: T.ter, marginBottom: 8 }}>월 평균 판매량</Text>
-        <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 8, backgroundColor: T.surface, borderWidth: 1, borderColor: T.blue, borderRadius: 14, paddingVertical: 18, paddingHorizontal: 18 }}>
+        <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.text.tertiary, marginBottom: 8 }}>월 평균 판매량</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 8, backgroundColor: T.surface, borderWidth: 1, borderColor: COLOR.action.primary, borderRadius: 14, paddingVertical: 18, paddingHorizontal: 18 }}>
           <Text style={[{ flex: 1, fontSize: 22, fontWeight: '800', color: T.ink, letterSpacing: -0.6 }, NUM]}>{value || '0'}</Text>
           <Text style={{ fontSize: 18, fontWeight: '700', color: T.sub2 }}>개/월</Text>
         </View>
@@ -102,9 +102,9 @@ function AvgSalesScreenBody({ localDate }: { localDate: string }) {
                 onPress={() => setValue(v)}
                 accessibilityRole="button" accessibilityLabel={`${v}개`}
                 accessibilityState={{ selected: on }}
-                style={{ flex: 1, alignItems: 'center', paddingVertical: 10, borderRadius: 10, borderWidth: 1, borderColor: on ? T.blue : T.line, backgroundColor: on ? T.blueTint : T.surface }}
+                style={{ flex: 1, alignItems: 'center', paddingVertical: 10, borderRadius: 10, borderWidth: 1, borderColor: on ? COLOR.action.primary : T.line, backgroundColor: on ? COLOR.action.primaryTint : T.surface }}
               >
-                <Text style={[{ fontSize: 14, fontWeight: '700', color: on ? T.blue : T.sub }, NUM]}>{v}</Text>
+                <Text style={[{ fontSize: 14, fontWeight: '700', color: on ? COLOR.text.link : T.sub }, NUM]}>{v}</Text>
               </Pressable>
             );
           })}

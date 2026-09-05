@@ -6,7 +6,7 @@
 // 폰트/색/라인 단일 출처: 일시14 · 항목16 · 설명14 · 증감16(양수 파랑/음수 빨강) · 잔량14.
 import React from 'react';
 import { View, Text, Pressable } from 'react-native';
-import { T, tnum } from '../../../theme/tokens';
+import { COLOR, T, tnum } from '../../../theme/tokens';
 
 export function LedgerRow({
   date,
@@ -52,7 +52,7 @@ export function LedgerRow({
       }}
     >
       <View style={{ flex: 1 }}>
-        <Text style={[{ fontSize: 14, color: T.ter, fontWeight: '600', marginBottom: 4 }, tnum]}>{date}</Text>
+        <Text style={[{ fontSize: 14, color: COLOR.text.tertiary, fontWeight: '600', marginBottom: 4 }, tnum]}>{date}</Text>
         <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>{act}</Text>
         {/*
           메모가 없으면 줄 자체를 그리지 않는다. 빈 Text 는 빈 줄만큼 자리를 먹는다.
@@ -64,8 +64,8 @@ export function LedgerRow({
         ) : null}
       </View>
       <View style={{ alignItems: 'flex-end' }}>
-        <Text style={[{ fontSize: 16, fontWeight: '800', color: up ? T.blue : T.red }, tnum]}>{dNum}<Text style={{ fontWeight: '600' }}>{dUnit}</Text></Text>
-        <Text style={[{ fontSize: 14, color: balNeg ? T.red : T.ter, fontWeight: balNeg ? '800' : '400', marginTop: 3 }, tnum]}>{bal}</Text>
+        <Text style={[{ fontSize: 16, fontWeight: '800', color: up ? COLOR.text.link : T.red }, tnum]}>{dNum}<Text style={{ fontWeight: '600' }}>{dUnit}</Text></Text>
+        <Text style={[{ fontSize: 14, color: balNeg ? T.red : COLOR.text.tertiary, fontWeight: balNeg ? '800' : '400', marginTop: 3 }, tnum]}>{bal}</Text>
       </View>
     </Pressable>
   );

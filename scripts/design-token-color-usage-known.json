@@ -1,0 +1,446 @@
+{
+  "schemaVersion": 1,
+  "baseline": {
+    "commit": "83f7ba438b2bbdf6ceb11014dcd5366ed67b2223",
+    "totals": {
+      "ter": 319,
+      "blue": 232,
+      "blueTint": 52,
+      "bluePressed": 1
+    },
+    "perFile": {
+      "apps/mobile/app/(tabs)/_layout.tsx": {
+        "ter": 0,
+        "blue": 1,
+        "blueTint": 0,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/components/history/HistoryLayout.tsx": {
+        "ter": 2,
+        "blue": 1,
+        "blueTint": 0,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/components/kit/Button.tsx": {
+        "ter": 0,
+        "blue": 2,
+        "blueTint": 1,
+        "bluePressed": 1
+      },
+      "apps/mobile/src/components/kit/MemoEditSheet.tsx": {
+        "ter": 2,
+        "blue": 0,
+        "blueTint": 0,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/components/kit/QueryState.tsx": {
+        "ter": 2,
+        "blue": 1,
+        "blueTint": 0,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/components/kit/SearchBar.tsx": {
+        "ter": 4,
+        "blue": 0,
+        "blueTint": 0,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/components/kit/Slider.tsx": {
+        "ter": 0,
+        "blue": 1,
+        "blueTint": 0,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/components/kit/SortSheet.tsx": {
+        "ter": 1,
+        "blue": 2,
+        "blueTint": 0,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/components/kit/charts.tsx": {
+        "ter": 2,
+        "blue": 1,
+        "blueTint": 0,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/components/kit/index.tsx": {
+        "ter": 16,
+        "blue": 10,
+        "blueTint": 3,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/changes/components/RecentChangeRow.tsx": {
+        "ter": 2,
+        "blue": 1,
+        "blueTint": 1,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx": {
+        "ter": 10,
+        "blue": 0,
+        "blueTint": 0,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx": {
+        "ter": 9,
+        "blue": 3,
+        "blueTint": 1,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/ingredients/components/CategoryPickerSheet.tsx": {
+        "ter": 0,
+        "blue": 3,
+        "blueTint": 1,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/ingredients/components/IngCard.tsx": {
+        "ter": 1,
+        "blue": 0,
+        "blueTint": 0,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/ingredients/components/LedgerRow.tsx": {
+        "ter": 2,
+        "blue": 1,
+        "blueTint": 0,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/ingredients/components/LossCard.tsx": {
+        "ter": 6,
+        "blue": 0,
+        "blueTint": 0,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/ingredients/components/UnitPickerSheet.tsx": {
+        "ter": 0,
+        "blue": 3,
+        "blueTint": 1,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/ingredients/components/VendorPickerSheet.tsx": {
+        "ter": 2,
+        "blue": 9,
+        "blueTint": 3,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx": {
+        "ter": 4,
+        "blue": 2,
+        "blueTint": 0,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx": {
+        "ter": 2,
+        "blue": 2,
+        "blueTint": 1,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx": {
+        "ter": 7,
+        "blue": 1,
+        "blueTint": 0,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/ingredients/screens/IngredientFormScreen.tsx": {
+        "ter": 2,
+        "blue": 4,
+        "blueTint": 2,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx": {
+        "ter": 0,
+        "blue": 1,
+        "blueTint": 0,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx": {
+        "ter": 3,
+        "blue": 0,
+        "blueTint": 0,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx": {
+        "ter": 7,
+        "blue": 2,
+        "blueTint": 0,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx": {
+        "ter": 8,
+        "blue": 12,
+        "blueTint": 1,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx": {
+        "ter": 8,
+        "blue": 3,
+        "blueTint": 1,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/my/components/ChannelWeightSheet.tsx": {
+        "ter": 3,
+        "blue": 7,
+        "blueTint": 2,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/my/components/RevenueGapCard.tsx": {
+        "ter": 3,
+        "blue": 4,
+        "blueTint": 1,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/my/screens/FixedCostEditScreen.tsx": {
+        "ter": 4,
+        "blue": 5,
+        "blueTint": 1,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/my/screens/FixedCostScreen.tsx": {
+        "ter": 3,
+        "blue": 2,
+        "blueTint": 0,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/my/screens/MyCategoryHubScreen.tsx": {
+        "ter": 2,
+        "blue": 1,
+        "blueTint": 1,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/my/screens/MyChannelsScreen.tsx": {
+        "ter": 3,
+        "blue": 0,
+        "blueTint": 0,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/my/screens/MyHomeScreen.tsx": {
+        "ter": 2,
+        "blue": 2,
+        "blueTint": 2,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/my/screens/MyHoursScreen.tsx": {
+        "ter": 13,
+        "blue": 15,
+        "blueTint": 2,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx": {
+        "ter": 7,
+        "blue": 3,
+        "blueTint": 1,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx": {
+        "ter": 4,
+        "blue": 1,
+        "blueTint": 0,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/my/screens/MyTaxScreen.tsx": {
+        "ter": 4,
+        "blue": 4,
+        "blueTint": 0,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/my/screens/MyUnitsScreen.tsx": {
+        "ter": 5,
+        "blue": 1,
+        "blueTint": 0,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx": {
+        "ter": 4,
+        "blue": 1,
+        "blueTint": 0,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx": {
+        "ter": 1,
+        "blue": 8,
+        "blueTint": 4,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx": {
+        "ter": 6,
+        "blue": 6,
+        "blueTint": 3,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx": {
+        "ter": 10,
+        "blue": 3,
+        "blueTint": 0,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx": {
+        "ter": 3,
+        "blue": 6,
+        "blueTint": 2,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx": {
+        "ter": 3,
+        "blue": 4,
+        "blueTint": 1,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx": {
+        "ter": 4,
+        "blue": 11,
+        "blueTint": 3,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/recipes/screens/MaterialSearchScreen.tsx": {
+        "ter": 0,
+        "blue": 4,
+        "blueTint": 1,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx": {
+        "ter": 4,
+        "blue": 1,
+        "blueTint": 0,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx": {
+        "ter": 19,
+        "blue": 21,
+        "blueTint": 5,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx": {
+        "ter": 29,
+        "blue": 7,
+        "blueTint": 1,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx": {
+        "ter": 0,
+        "blue": 1,
+        "blueTint": 0,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx": {
+        "ter": 0,
+        "blue": 7,
+        "blueTint": 0,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/sales/components/BusinessDayBar.tsx": {
+        "ter": 1,
+        "blue": 1,
+        "blueTint": 0,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/sales/components/LateCloseSheet.tsx": {
+        "ter": 1,
+        "blue": 2,
+        "blueTint": 1,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/sales/components/MenuProfitSheet.tsx": {
+        "ter": 5,
+        "blue": 3,
+        "blueTint": 1,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/sales/components/ProfitBlocks.tsx": {
+        "ter": 11,
+        "blue": 4,
+        "blueTint": 0,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/sales/components/SaleStepper.tsx": {
+        "ter": 1,
+        "blue": 1,
+        "blueTint": 0,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx": {
+        "ter": 10,
+        "blue": 6,
+        "blueTint": 1,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/sales/screens/SalesDayDetailScreen.tsx": {
+        "ter": 1,
+        "blue": 0,
+        "blueTint": 0,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/sales/screens/SalesDayFullScreen.tsx": {
+        "ter": 5,
+        "blue": 0,
+        "blueTint": 0,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/sales/screens/SalesExpenseScreen.tsx": {
+        "ter": 2,
+        "blue": 0,
+        "blueTint": 0,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/sales/screens/SalesExtraScreen.tsx": {
+        "ter": 2,
+        "blue": 0,
+        "blueTint": 0,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/sales/screens/SalesFixedScreen.tsx": {
+        "ter": 2,
+        "blue": 0,
+        "blueTint": 0,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx": {
+        "ter": 11,
+        "blue": 9,
+        "blueTint": 2,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx": {
+        "ter": 3,
+        "blue": 4,
+        "blueTint": 0,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx": {
+        "ter": 10,
+        "blue": 1,
+        "blueTint": 0,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx": {
+        "ter": 8,
+        "blue": 5,
+        "blueTint": 1,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/sales/screens/SalesRevenueScreen.tsx": {
+        "ter": 5,
+        "blue": 3,
+        "blueTint": 0,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/features/sales/screens/SalesStockCheckScreen.tsx": {
+        "ter": 3,
+        "blue": 1,
+        "blueTint": 0,
+        "bluePressed": 0
+      },
+      "apps/mobile/src/lib/SessionProvider.tsx": {
+        "ter": 0,
+        "blue": 1,
+        "blueTint": 0,
+        "bluePressed": 0
+      }
+    }
+  },
+  "expectedTotals": {
+    "ter": 0,
+    "blue": 0,
+    "blueTint": 0,
+    "bluePressed": 0
+  }
+}

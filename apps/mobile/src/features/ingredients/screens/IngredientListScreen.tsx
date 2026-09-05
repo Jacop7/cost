@@ -4,7 +4,7 @@ import { View, Text, ScrollView, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ScreenShell, ScrollTabs, Icon, FAB, SearchBar, SortChip, SortSheet, QueryState, type SortOption } from '../../../components/kit';
-import { T } from '../../../theme/tokens';
+import { COLOR, T } from '../../../theme/tokens';
 import { useIngredientList, type IngredientRow } from '../hooks';
 import { useSettingsLists } from '@/features/master-data/hooks';
 import { IngCard, stockStateOf } from '../components/IngCard';
@@ -89,7 +89,7 @@ export function IngredientListScreen() {
               accessibilityState={{ selected: searching }}
               style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}
             >
-              <Icon name="search" size={23} color={searching ? T.blue : T.ink2} />
+              <Icon name="search" size={23} color={searching ? COLOR.action.primary : T.ink2} />
             </Pressable>
             <Pressable
               onPress={() => router.push('/my/notifications')}

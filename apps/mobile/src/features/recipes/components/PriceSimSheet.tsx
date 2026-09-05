@@ -14,7 +14,7 @@ import { useEffect, useState } from 'react';
 import { Text, View } from 'react-native';
 import { Badge, Button, Card, Icon, Sheet, Slider } from '@/components/kit';
 import { formatPercent, recommendedPrice, round } from '@margincook/core';
-import { T, won } from '@/theme/tokens';
+import { COLOR, T, won } from '@/theme/tokens';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 
@@ -59,8 +59,8 @@ export function PriceSimSheet({
   return (
     <Sheet visible={visible} onClose={onClose} title="판매가 시뮬레이션" sub="판매가를 바꿔 순이익을 미리 확인해요" height={560}>
       <View style={{ alignItems: 'center', paddingTop: 4, paddingBottom: 2 }}>
-        <Text style={{ fontSize: 14, color: T.ter, fontWeight: '700' }}>임시 판매가</Text>
-        <Text style={[{ fontSize: 22, fontWeight: '800', color: T.blue, letterSpacing: -0.6, marginTop: 2 }, NUM]}>
+        <Text style={{ fontSize: 14, color: COLOR.text.tertiary, fontWeight: '700' }}>임시 판매가</Text>
+        <Text style={[{ fontSize: 22, fontWeight: '800', color: COLOR.text.link, letterSpacing: -0.6, marginTop: 2 }, NUM]}>
           {won(temp)}<Text style={{ fontSize: 18 }}>원</Text>
         </Text>
         <Text style={[{ fontSize: 14, color: T.sub2, marginTop: 2 }, NUM]}>
@@ -71,28 +71,28 @@ export function PriceSimSheet({
       <View style={{ marginTop: 16, marginBottom: 6, marginHorizontal: 4 }}>
         <Slider value={temp} min={min} max={max} step={100} onChange={setTemp} />
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 6 }}>
-          <Text style={[{ fontSize: 14, color: T.ter }, NUM]}>{won(min)}원</Text>
-          <Text style={[{ fontSize: 14, color: T.ter }, NUM]}>{won(max)}원</Text>
+          <Text style={[{ fontSize: 14, color: COLOR.text.tertiary }, NUM]}>{won(min)}원</Text>
+          <Text style={[{ fontSize: 14, color: COLOR.text.tertiary }, NUM]}>{won(max)}원</Text>
         </View>
       </View>
 
       <Card onLine pad={16}>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <View style={{ gap: 12 }}>
-            <Text style={{ fontSize: 14, color: T.ter, fontWeight: '700' }}>순이익률</Text>
-            <Text style={{ fontSize: 14, color: T.ter, fontWeight: '700' }}>순이익</Text>
+            <Text style={{ fontSize: 14, color: COLOR.text.tertiary, fontWeight: '700' }}>순이익률</Text>
+            <Text style={{ fontSize: 14, color: COLOR.text.tertiary, fontWeight: '700' }}>순이익</Text>
           </View>
           <View style={{ flex: 1 }} />
           <View style={{ alignItems: 'flex-end', gap: 8 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-              <Text style={[{ fontSize: 14, color: T.ter, textDecorationLine: 'line-through' }, NUM]}>{formatPercent(cur.rate)}</Text>
-              <Icon name="arrowRight" size={16} color={T.ter} />
+              <Text style={[{ fontSize: 14, color: COLOR.text.tertiary, textDecorationLine: 'line-through' }, NUM]}>{formatPercent(cur.rate)}</Text>
+              <Icon name="arrowRight" size={16} color={COLOR.text.tertiary} />
               <Text style={[{ fontSize: 20, fontWeight: '800', color: PROFIT }, NUM]}>{formatPercent(now.rate)}</Text>
               {met ? <Badge tone="green" sm solid>목표 달성</Badge> : <Badge tone="red" sm solid>목표 미달</Badge>}
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-              <Text style={[{ fontSize: 14, color: T.ter, textDecorationLine: 'line-through' }, NUM]}>{won(Math.round(cur.profit))}원</Text>
-              <Icon name="arrowRight" size={16} color={T.ter} />
+              <Text style={[{ fontSize: 14, color: COLOR.text.tertiary, textDecorationLine: 'line-through' }, NUM]}>{won(Math.round(cur.profit))}원</Text>
+              <Icon name="arrowRight" size={16} color={COLOR.text.tertiary} />
               <Text style={[{ fontSize: 18, fontWeight: '800', color: PROFIT }, NUM]}>{won(Math.round(now.profit))}원</Text>
             </View>
           </View>
@@ -125,7 +125,7 @@ export function PriceSimSheet({
               <Text style={[{ fontSize: 14, fontWeight: '700', color: T.ink, marginRight: 8 }, NUM]}>
                 {won(Math.round(amt))}원
               </Text>
-              <Text style={[{ fontSize: 14, fontWeight: '600', color: T.ter, width: 46, textAlign: 'right' }, NUM]}>
+              <Text style={[{ fontSize: 14, fontWeight: '600', color: COLOR.text.tertiary, width: 46, textAlign: 'right' }, NUM]}>
                 {temp > 0 ? formatPercent(amt / temp) : '—'}
               </Text>
             </View>
@@ -143,8 +143,8 @@ export function PriceSimSheet({
       </Card>
 
       <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, marginTop: 12, paddingHorizontal: 2 }}>
-        <Icon name="info" size={15} color={rec != null ? T.blue : T.amberText} />
-        <Text style={[{ flex: 1, fontSize: 14, color: rec != null ? T.blue : T.amberText, fontWeight: '600', lineHeight: 20 }, NUM]}>
+        <Icon name="info" size={15} color={rec != null ? COLOR.action.primary : T.amberText} />
+        <Text style={[{ flex: 1, fontSize: 14, color: rec != null ? COLOR.text.link : T.amberText, fontWeight: '600', lineHeight: 20 }, NUM]}>
           {rec != null
             ? `목표 ${formatPercent(target)} 달성 권장가는 ${won(rec)}원이에요`
             : '지금 원가 구조로는 목표 순이익률을 맞출 수 없어요. 재료비나 목표를 조정해 주세요.'}

@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { Icon, type IconName } from './Icon';
-import { T } from '@/theme/tokens';
+import { COLOR, T } from '@/theme/tokens';
 
 type Kind = 'primary' | 'tint' | 'gray' | 'ghost' | 'danger';
 type Size = 'sm' | 'md' | 'lg';
@@ -26,8 +26,8 @@ export function Button({
   accessibilityHint?: string;
 }) {
   const kinds: Record<Kind, { bg: string; fg: string; border?: string }> = {
-    primary: { bg: T.blue, fg: T.onColor },
-    tint: { bg: T.blueTint, fg: T.blue },
+    primary: { bg: COLOR.action.primary, fg: T.onColor },
+    tint: { bg: COLOR.action.primaryTint, fg: COLOR.action.onTint },
     gray: { bg: T.line2, fg: T.ink2 },
     ghost: { bg: 'transparent', fg: T.sub, border: T.line },
     danger: { bg: T.redTint, fg: T.red },
@@ -55,10 +55,12 @@ export function Button({
           flexDirection: iconRight ? 'row-reverse' : 'row',
           alignItems: 'center', justifyContent: 'center', gap: 6,
           alignSelf: full ? 'stretch' : 'flex-start',
-          backgroundColor: kind === 'primary' && pressed && !blocked ? T.bluePressed : c.bg,
+          backgroundColor: kind === 'primary' && disabled
+            ? COLOR.action.primaryDisabled
+            : kind === 'primary' && pressed && !blocked ? COLOR.action.primaryPressed : c.bg,
           borderWidth: c.border ? 1 : 0, borderColor: c.border,
           paddingVertical: s.pv, paddingHorizontal: s.ph, borderRadius: s.r,
-          opacity: disabled ? 0.4 : pressed && kind !== 'primary' ? 0.85 : 1,
+          opacity: disabled && kind !== 'primary' ? 0.4 : pressed && kind !== 'primary' ? 0.85 : 1,
         },
         style,
       ]}

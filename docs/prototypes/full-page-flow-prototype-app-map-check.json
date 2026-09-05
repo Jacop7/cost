@@ -1,6 +1,6 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-05T13:50:57.067Z",
+  "generatedAt": "2026-09-05T14:56:06.114Z",
   "schemaVersion": 1,
   "script": {
    "name": "full-page-flow-prototype-app-map-check.mjs",
@@ -18,7 +18,7 @@
    },
    "prototypeMap": {
     "path": "full-page-flow-prototype-token-map.json",
-    "sha256": "57fd9d13fe28630fc6c48e654d513743a0fdde91c5ee5aabf1a51d13cf787319"
+    "sha256": "a59ad21738f28a2d44d9ec083c45007ac45d9dd0f3a063b2553ed8ce5724cdb5"
    }
   },
   "rules": {
@@ -6565,42 +6565,20 @@
   ],
   "binMovementLedger": {
    "previousMap": "full-page-flow-prototype-app-token-map.json",
-   "previousMapSha256": "d9d205e3d7cee6b15f11ec4c4c4b7f5adc3fbe04db5eacf867ef2a07ba0c97f0",
-   "moves": {
-    "(미분류) → primitive": {
-     "count": 10,
-     "rules": {
-      "- → R-TY-LETTERSPACING-TITLE-TIGHT": 10
-     }
-    },
-    "(미분류) → pendingApproval": {
-     "count": 15,
-     "rules": {
-      "- → R-TY-LETTERSPACING-UNDECIDED": 15
-     }
-    },
-    "(미분류) → componentOwned": {
-     "count": 8,
-     "rules": {
-      "- → R-SP-ROW-OVERFLOW-TOUCH-BOX": 2,
-      "- → R-SP-FORM-AUXILIARY-OVERLAP": 4,
-      "- → R-SP-QUANTITY-TOUCH-ENVELOPE": 1,
-      "- → R-SP-PROFIT-SECTION-LABEL-OVERLAP": 1
-     }
-    }
-   },
+   "previousMapSha256": "b97bb71b9426e0a8ba85c3c3ec1fa6f086d1c1c3d7197e4497a9ad4c8be83b62",
+   "moves": {},
    "reconciliation": {
     "primitive": {
-     "이전": 2053,
+     "이전": 2063,
      "나감": 0,
-     "들어옴": 10,
+     "들어옴": 0,
      "계산": 2063,
      "실제": 2063
     },
     "componentOwned": {
-     "이전": 219,
+     "이전": 227,
      "나감": 0,
-     "들어옴": 8,
+     "들어옴": 0,
      "계산": 227,
      "실제": 227
     },
@@ -6612,9 +6590,9 @@
      "실제": 1326
     },
     "pendingApproval": {
-     "이전": 35,
+     "이전": 50,
      "나감": 0,
-     "들어옴": 15,
+     "들어옴": 0,
      "계산": 50,
      "실제": 50
     },

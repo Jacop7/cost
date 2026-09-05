@@ -16,7 +16,7 @@ import { useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { AppHeader, Badge, Button, Card, Field, Icon, Input, QueryState, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { T } from '@/theme/tokens';
+import { COLOR, T } from '@/theme/tokens';
 import { useSaveChannel, useSettingsLists, type ChannelRow } from '@/features/master-data/hooks';
 
 export default function MyChannelsScreen() {
@@ -87,7 +87,7 @@ export default function MyChannelsScreen() {
                   <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }} numberOfLines={1}>{c.name}</Text>
                   {!c.active ? <Badge tone="neutral" sm>사용 안 함</Badge> : null}
                 </View>
-                <Icon name="edit" size={17} color={T.ter} />
+                <Icon name="edit" size={17} color={COLOR.text.tertiary} />
               </Pressable>
               <Pressable
                 onPress={() => toggleActive(c)}
@@ -103,8 +103,8 @@ export default function MyChannelsScreen() {
           ))}
 
           <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, paddingHorizontal: 2, marginTop: 2 }}>
-            <Icon name="info" size={15} color={T.ter} />
-            <Text style={{ flex: 1, fontSize: 14, color: T.ter, lineHeight: 20 }}>
+            <Icon name="info" size={15} color={COLOR.text.tertiary} />
+            <Text style={{ flex: 1, fontSize: 14, color: COLOR.text.tertiary, lineHeight: 20 }}>
               배달앱 수수료는 <Text style={{ fontWeight: '700' }}>고정 지출</Text>의 ‘플랫폼 수수료’에서 관리해요.
               여기서도 받으면 같은 돈이 손익에서 두 번 빠져요.
             </Text>

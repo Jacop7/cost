@@ -593,6 +593,10 @@ foreach ($fileName in @($auditName, $auditScriptName, 'full-page-flow-prototype-
     'full-page-flow-prototype-doc-claims-check.test.mjs', 'full-page-flow-prototype-doc-claims-check.json',
     'full-page-flow-prototype-contrast-contract.json', 'full-page-flow-prototype-contrast-gate.mjs',
     'full-page-flow-prototype-contrast-gate.json',
+    'full-page-flow-prototype-color-usage.json', 'full-page-flow-prototype-s2-geometry-diff.json',
+    '../../scripts/design-token-color-usage-known.json', '../../scripts/design-token-color-usage.mjs',
+    '../../scripts/design-token-color-usage.test.mjs', '../../scripts/design-token-geometry-diff.mjs',
+    '../../scripts/design-token-geometry-diff.test.mjs',
     '../디자인-토큰-3계층-값-매핑-기획서.md')) {
   $contents = Read-Utf8 (Join-Path $PrototypeDirectory $fileName)
   if ($null -ne $contents) { $hashes[$fileName] = Get-Sha256 $contents }

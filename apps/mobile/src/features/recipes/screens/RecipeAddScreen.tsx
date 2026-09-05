@@ -10,7 +10,7 @@ import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { AppHeader, Badge, Button, Card, Field, Icon, Input, QueryState, Select, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { formatPercent, formatQuantity, formatUnitPrice, recommendedPrice, round, taxAmount, taxRate } from '@margincook/core';
-import { T, won } from '@/theme/tokens';
+import { COLOR, T, won } from '@/theme/tokens';
 import { clampDecimals } from '@/lib/num';
 import { useSettingsLists } from '@/features/master-data/hooks';
 import { useStoreSettings } from '@/features/settings/hooks';
@@ -28,7 +28,7 @@ function SecHead({ title, sub, right }: { title: string; sub?: string; right?: R
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 13, paddingHorizontal: 15, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
       <Text style={{ fontSize: 16, fontWeight: '800', color: T.sub }}>{title}</Text>
-      {sub ? <Text style={{ fontSize: 14, color: T.ter, fontWeight: '600' }}>{sub}</Text> : null}
+      {sub ? <Text style={{ fontSize: 14, color: COLOR.text.tertiary, fontWeight: '600' }}>{sub}</Text> : null}
       {right ? (<><View style={{ flex: 1 }} />{right}</>) : null}
     </View>
   );
@@ -37,7 +37,7 @@ function SecHead({ title, sub, right }: { title: string; sub?: string; right?: R
 function InfoBtn({ active, onPress }: { active: boolean; onPress: () => void }) {
   return (
     <Pressable onPress={onPress} hitSlop={6} style={{ padding: 2 }} accessibilityRole="button" accessibilityLabel="설명 보기">
-      <Icon name="info" size={14} color={active ? T.blue : T.ter} />
+      <Icon name="info" size={14} color={active ? COLOR.action.primary : COLOR.text.tertiary} />
     </Pressable>
   );
 }
@@ -45,7 +45,7 @@ function InfoBtn({ active, onPress }: { active: boolean; onPress: () => void }) 
 function Footer({ children }: { children: ReactNode }) {
   return (
     <View style={{ paddingVertical: 12, paddingHorizontal: 15, backgroundColor: T.surface2, borderTopWidth: 1, borderTopColor: T.line2 }}>
-      <Text style={{ fontSize: 14, color: T.ter, lineHeight: 20 }}>{children}</Text>
+      <Text style={{ fontSize: 14, color: COLOR.text.tertiary, lineHeight: 20 }}>{children}</Text>
     </View>
   );
 }
@@ -254,8 +254,8 @@ export default function RecipeAddScreen() {
           </View>
 
           {info ? (
-            <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, marginTop: -8, marginBottom: 18, paddingVertical: 10, paddingHorizontal: 12, backgroundColor: T.blueTint, borderRadius: 10 }}>
-              <Icon name="info" size={15} color={T.blue} />
+            <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, marginTop: -8, marginBottom: 18, paddingVertical: 10, paddingHorizontal: 12, backgroundColor: COLOR.action.primaryTint, borderRadius: 10 }}>
+              <Icon name="info" size={15} color={COLOR.action.primary} />
               <Text style={{ flex: 1, fontSize: 14, color: T.sub, fontWeight: '600', lineHeight: 21 }}>
                 {info === 'sales'
                   ? '한 달 평균 판매 수량이에요. 손익 미리보기의 ‘월평균 기준’ 계산에 쓰여요.'
@@ -272,7 +272,7 @@ export default function RecipeAddScreen() {
                 const on = costMode === k;
                 return (
                   <Pressable key={k} onPress={() => setCostMode(k)} accessibilityRole="tab" accessibilityLabel={label} accessibilityState={{ selected: on }} style={{ paddingTop: 13, paddingBottom: 11 }}>
-                    <Text style={{ fontSize: 16, fontWeight: on ? '700' : '600', color: on ? T.ink : T.ter }}>{label}</Text>
+                    <Text style={{ fontSize: 16, fontWeight: on ? '700' : '600', color: on ? T.ink : COLOR.text.tertiary }}>{label}</Text>
                     {on ? <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 2.5, backgroundColor: T.ink, borderRadius: 2 }} /> : null}
                   </Pressable>
                 );
@@ -280,7 +280,7 @@ export default function RecipeAddScreen() {
             </View>
             <View style={{ paddingHorizontal: 15, paddingTop: 4, paddingBottom: 15 }}>
               {draft.lines.length === 0 ? (
-                <Text style={{ fontSize: 16, color: T.ter, paddingVertical: 14 }}>아래 ‘재료 검색’으로 재료를 담아 주세요</Text>
+                <Text style={{ fontSize: 16, color: COLOR.text.tertiary, paddingVertical: 14 }}>아래 ‘재료 검색’으로 재료를 담아 주세요</Text>
               ) : (
                 draft.lines.map((l, i) => {
                   const cost = lineCost(l);
@@ -290,20 +290,20 @@ export default function RecipeAddScreen() {
                         <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }} numberOfLines={1}>
                           {l.name}
                         </Text>
-                        <Text style={[{ fontSize: 14, color: T.ter, marginTop: 2 }, NUM]}>
+                        <Text style={[{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 2 }, NUM]}>
                           {l.unitPrice === null ? '단가 산출 전' : l.unit === null ? `${won(Math.round(l.unitPrice))}원/인분` : formatUnitPrice(l.unitPrice, l.unit)}
                         </Text>
                       </Pressable>
                       <Pressable onPress={() => openQty(i)} accessibilityRole="button" accessibilityLabel={`${l.name} 사용량`} style={{ alignItems: 'flex-end', marginRight: 8 }}>
-                        <Text style={[{ fontSize: 16, fontWeight: '800', color: cost === null ? T.ter : T.ink }, NUM]}>
+                        <Text style={[{ fontSize: 16, fontWeight: '800', color: cost === null ? COLOR.text.tertiary : T.ink }, NUM]}>
                           {cost === null ? '—' : `${won(Math.round(cost * cm))}원`}
                         </Text>
-                        <Text style={[{ fontSize: 14, color: T.blue, marginTop: 1, fontWeight: '700' }, NUM]}>
+                        <Text style={[{ fontSize: 14, color: COLOR.text.link, marginTop: 1, fontWeight: '700' }, NUM]}>
                           {l.unit === null ? `${(l.inputQty / servings) * cm}인분` : formatQuantity((l.inputQty / servings) * cm, l.unit)}
                         </Text>
                       </Pressable>
                       <Pressable onPress={() => removeLine(i)} accessibilityRole="button" accessibilityLabel={`${l.name} 삭제`}>
-                        <Icon name="close" size={18} color={T.ter} />
+                        <Icon name="close" size={18} color={COLOR.text.tertiary} />
                       </Pressable>
                     </View>
                   );
@@ -312,10 +312,10 @@ export default function RecipeAddScreen() {
               <Pressable
                 onPress={() => router.push(`/recipes/ingredient-search${draft.id ? `?exclude=${draft.id}` : ''}` as Href)}
                 accessibilityRole="button" accessibilityLabel="재료 검색"
-                style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, marginTop: 12, paddingVertical: 13, borderRadius: 12, borderWidth: 1, borderColor: T.blue, backgroundColor: T.blueTint }}
+                style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, marginTop: 12, paddingVertical: 13, borderRadius: 12, borderWidth: 1, borderColor: COLOR.action.primary, backgroundColor: COLOR.action.primaryTint }}
               >
-                <Icon name="search" size={17} color={T.blue} sw={2.1} />
-                <Text style={{ fontSize: 16, fontWeight: '700', color: T.blue }}>재료 검색</Text>
+                <Icon name="search" size={17} color={COLOR.action.primary} sw={2.1} />
+                <Text style={{ fontSize: 16, fontWeight: '700', color: COLOR.text.link }}>재료 검색</Text>
               </Pressable>
               <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 12, paddingTop: 12, borderTopWidth: 1, borderTopColor: T.line }}>
                 <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.ink2 }}>재료비 소계</Text>
@@ -343,25 +343,25 @@ export default function RecipeAddScreen() {
             <SecHead title="부자재" sub="(이 메뉴에만 들어가는 부가 원가)" />
             <View style={{ paddingHorizontal: 15, paddingTop: 4, paddingBottom: 15 }}>
               {draft.extras.length === 0 ? (
-                <Text style={{ fontSize: 16, color: T.ter, paddingVertical: 14 }}>등록된 부자재가 없어요</Text>
+                <Text style={{ fontSize: 16, color: COLOR.text.tertiary, paddingVertical: 14 }}>등록된 부자재가 없어요</Text>
               ) : (
                 draft.extras.map((e, i) => (
                   <View key={`${e.materialId ?? e.name}-${i}`} style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
                     <View style={{ flex: 1, minWidth: 0 }}>
                       <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }} numberOfLines={1}>{e.name}</Text>
-                      <Text style={[{ fontSize: 14, color: T.ter, marginTop: 2 }, NUM]}>{won(e.amount)}원 × {e.qty}</Text>
+                      <Text style={[{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 2 }, NUM]}>{won(e.amount)}원 × {e.qty}</Text>
                     </View>
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, padding: 7, margin: -7 }}>
                       <Pressable onPress={() => updateExtra(i, { qty: Math.max(0, e.qty - 1) })} hitSlop={7} accessibilityRole="button" accessibilityLabel={`${e.name} 수량 줄이기`} style={{ width: 30, height: 30, borderRadius: 8, backgroundColor: T.line2, alignItems: 'center', justifyContent: 'center' }}>
                         <Icon name="minus" size={16} color={T.sub} sw={2.4} />
                       </Pressable>
                       <Text style={[{ minWidth: 22, textAlign: 'center', fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{e.qty}</Text>
-                      <Pressable onPress={() => updateExtra(i, { qty: e.qty + 1 })} hitSlop={7} accessibilityRole="button" accessibilityLabel={`${e.name} 수량 늘리기`} style={{ width: 30, height: 30, borderRadius: 8, backgroundColor: T.blue, alignItems: 'center', justifyContent: 'center' }}>
+                      <Pressable onPress={() => updateExtra(i, { qty: e.qty + 1 })} hitSlop={7} accessibilityRole="button" accessibilityLabel={`${e.name} 수량 늘리기`} style={{ width: 30, height: 30, borderRadius: 8, backgroundColor: COLOR.action.primary, alignItems: 'center', justifyContent: 'center' }}>
                         <Icon name="plus" size={16} color={T.onColor} sw={2.4} />
                       </Pressable>
                     </View>
                     <Pressable onPress={() => removeExtra(i)} hitSlop={8} accessibilityRole="button" accessibilityLabel={`${e.name} 삭제`}>
-                      <Icon name="close" size={18} color={T.ter} />
+                      <Icon name="close" size={18} color={COLOR.text.tertiary} />
                     </Pressable>
                   </View>
                 ))
@@ -369,10 +369,10 @@ export default function RecipeAddScreen() {
               <Pressable
                 onPress={() => router.push('/recipes/material-search' as Href)}
                 accessibilityRole="button" accessibilityLabel="부자재 검색"
-                style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, marginTop: 12, paddingVertical: 13, borderRadius: 12, borderWidth: 1, borderColor: T.blue, backgroundColor: T.blueTint }}
+                style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, marginTop: 12, paddingVertical: 13, borderRadius: 12, borderWidth: 1, borderColor: COLOR.action.primary, backgroundColor: COLOR.action.primaryTint }}
               >
-                <Icon name="search" size={17} color={T.blue} sw={2.1} />
-                <Text style={{ fontSize: 16, fontWeight: '700', color: T.blue }}>부자재 검색</Text>
+                <Icon name="search" size={17} color={COLOR.action.primary} sw={2.1} />
+                <Text style={{ fontSize: 16, fontWeight: '700', color: COLOR.text.link }}>부자재 검색</Text>
               </Pressable>
             </View>
             <Footer>부자재 단가는 마스터에서 관리돼요. 단가를 고치면 이 메뉴 원가도 함께 바뀌어요.</Footer>
@@ -389,7 +389,7 @@ export default function RecipeAddScreen() {
                 const disabled = k === 'month' && monthly <= 0;
                 return (
                   <Pressable key={k} onPress={() => setPlMode(k)} disabled={disabled} accessibilityRole="tab" accessibilityLabel={`${label} 기준`} accessibilityState={{ selected: on, disabled }} style={{ paddingTop: 13, paddingBottom: 11, opacity: disabled ? 0.4 : 1 }}>
-                    <Text style={{ fontSize: 16, fontWeight: on ? '700' : '600', color: on ? T.ink : T.ter }}>{label} 기준</Text>
+                    <Text style={{ fontSize: 16, fontWeight: on ? '700' : '600', color: on ? T.ink : COLOR.text.tertiary }}>{label} 기준</Text>
                     {on ? <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 2.5, backgroundColor: T.ink, borderRadius: 2 }} /> : null}
                   </Pressable>
                 );
@@ -400,7 +400,7 @@ export default function RecipeAddScreen() {
                 <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.ink }}>판매가</Text>
                 <View style={{ alignItems: 'flex-end' }}>
                   <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{wm(price)}</Text>
-                  <Text style={[{ fontSize: 14, fontWeight: '600', color: T.ter, marginTop: 2 }, NUM]}>100%</Text>
+                  <Text style={[{ fontSize: 14, fontWeight: '600', color: COLOR.text.tertiary, marginTop: 2 }, NUM]}>100%</Text>
                 </View>
               </View>
               {[
@@ -411,11 +411,11 @@ export default function RecipeAddScreen() {
               ].map((c) => (
                 <View key={c.label} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 9, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
                   <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.sub }}>
-                    <Text style={{ color: T.ter }}>(−) </Text>{c.label}
+                    <Text style={{ color: COLOR.text.tertiary }}>(−) </Text>{c.label}
                   </Text>
                   <View style={{ alignItems: 'flex-end' }}>
-                    <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ter }, NUM]}>{wm(c.amt)}</Text>
-                    <Text style={[{ fontSize: 14, fontWeight: '600', color: T.ter, marginTop: 2 }, NUM]}>{p(c.amt)}</Text>
+                    <Text style={[{ fontSize: 16, fontWeight: '700', color: COLOR.text.tertiary }, NUM]}>{wm(c.amt)}</Text>
+                    <Text style={[{ fontSize: 14, fontWeight: '600', color: COLOR.text.tertiary, marginTop: 2 }, NUM]}>{p(c.amt)}</Text>
                   </View>
                 </View>
               ))}
@@ -432,16 +432,16 @@ export default function RecipeAddScreen() {
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 11, paddingTop: 11, borderTopWidth: 1, borderTopColor: T.line }}>
                   <View style={{ flex: 1 }}>
                     <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink2 }}>권장 판매가</Text>
-                    <Text style={{ fontSize: 14, color: T.ter, marginTop: 1 }}>목표 {draft.targetProfitRate}% 기준</Text>
+                    <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 1 }}>목표 {draft.targetProfitRate}% 기준</Text>
                   </View>
                   <Pressable onPress={() => patch({ price: String(recommended) })} accessibilityRole="button" accessibilityLabel="권장 판매가 적용" style={{ alignItems: 'flex-end' }}>
-                    <Text style={[{ fontSize: 16, fontWeight: '800', color: T.blue }, NUM]}>{won(recommended)}원</Text>
-                    <Text style={{ fontSize: 14, fontWeight: '700', color: T.blue, marginTop: 2 }}>적용하기</Text>
+                    <Text style={[{ fontSize: 16, fontWeight: '800', color: COLOR.text.link }, NUM]}>{won(recommended)}원</Text>
+                    <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.text.link, marginTop: 2 }}>적용하기</Text>
                   </Pressable>
                 </View>
               ) : null}
               {!id ? (
-                <Text style={{ fontSize: 14, color: T.ter, lineHeight: 20, marginTop: 12 }}>
+                <Text style={{ fontSize: 14, color: COLOR.text.tertiary, lineHeight: 20, marginTop: 12 }}>
                   고정지출률은 저장 후 이번 달 값으로 반영돼요.
                 </Text>
               ) : null}
@@ -462,10 +462,10 @@ export default function RecipeAddScreen() {
           <Pressable
             onPress={() => { patch({ categoryId: null, categoryName: '' }); setCatOpen(false); }}
             accessibilityRole="button" accessibilityLabel="지정 안 함"
-            style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 14, paddingHorizontal: 16, borderRadius: 12, borderWidth: 1, borderColor: draft.categoryId === null ? T.blue : T.line, backgroundColor: draft.categoryId === null ? T.blueTint : T.surface }}
+            style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 14, paddingHorizontal: 16, borderRadius: 12, borderWidth: 1, borderColor: draft.categoryId === null ? COLOR.action.primary : T.line, backgroundColor: draft.categoryId === null ? COLOR.action.primaryTint : T.surface }}
           >
-            <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: draft.categoryId === null ? T.blue : T.ter }}>지정 안 함</Text>
-            {draft.categoryId === null ? <Icon name="check" size={17} color={T.blue} sw={2.4} /> : null}
+            <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: draft.categoryId === null ? COLOR.text.link : COLOR.text.tertiary }}>지정 안 함</Text>
+            {draft.categoryId === null ? <Icon name="check" size={17} color={COLOR.action.primary} sw={2.4} /> : null}
           </Pressable>
           {(lists.data?.recipeCategories ?? []).map((c) => {
             const on = draft.categoryId === c.id;
@@ -474,20 +474,20 @@ export default function RecipeAddScreen() {
                 key={c.id}
                 onPress={() => { patch({ categoryId: c.id, categoryName: c.name }); setCatOpen(false); }}
                 accessibilityRole="button" accessibilityLabel={c.name} accessibilityState={{ selected: on }}
-                style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 14, paddingHorizontal: 16, borderRadius: 12, borderWidth: 1, borderColor: on ? T.blue : T.line, backgroundColor: on ? T.blueTint : T.surface }}
+                style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 14, paddingHorizontal: 16, borderRadius: 12, borderWidth: 1, borderColor: on ? COLOR.action.primary : T.line, backgroundColor: on ? COLOR.action.primaryTint : T.surface }}
               >
-                <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: on ? T.blue : T.ink2 }}>{c.name}</Text>
-                {on ? <Icon name="check" size={17} color={T.blue} sw={2.4} /> : null}
+                <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: on ? COLOR.text.link : T.ink2 }}>{c.name}</Text>
+                {on ? <Icon name="check" size={17} color={COLOR.action.primary} sw={2.4} /> : null}
               </Pressable>
             );
           })}
           <Pressable
             onPress={() => { setCatOpen(false); router.push('/recipes/category' as Href); }}
             accessibilityRole="button" accessibilityLabel="카테고리 관리"
-            style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5, paddingVertical: 14, borderRadius: 12, borderWidth: 1, borderStyle: 'dashed', borderColor: T.blue }}
+            style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5, paddingVertical: 14, borderRadius: 12, borderWidth: 1, borderStyle: 'dashed', borderColor: COLOR.action.primary }}
           >
-            <Icon name="plus" size={17} color={T.blue} sw={2.2} />
-            <Text style={{ fontSize: 16, fontWeight: '700', color: T.blue }}>카테고리 관리</Text>
+            <Icon name="plus" size={17} color={COLOR.action.primary} sw={2.2} />
+            <Text style={{ fontSize: 16, fontWeight: '700', color: COLOR.text.link }}>카테고리 관리</Text>
           </Pressable>
         </ScrollView>
       </Sheet>

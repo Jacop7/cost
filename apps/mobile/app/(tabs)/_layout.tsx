@@ -2,7 +2,7 @@ import { Platform } from 'react-native';
 import { Tabs } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Icon, IconName } from '@/components/kit/Icon';
-import { T } from '@/theme/tokens';
+import { COLOR, T } from '@/theme/tokens';
 
 /**
  * 하단 네비게이션 5탭 — 프로토타입 kit.jsx TabBar 순서: 식재료·레시피·발주·매출관리·MY.
@@ -21,7 +21,7 @@ export default function TabsLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: T.blue,
+        tabBarActiveTintColor: COLOR.action.primary,
         tabBarInactiveTintColor: '#B0B8C1',
         tabBarLabelStyle: { fontSize: 12.5, fontWeight: '700' },
         tabBarStyle: {

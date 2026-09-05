@@ -7,7 +7,7 @@
 import { Pressable, Text, View } from 'react-native';
 import { Icon } from './Icon';
 import { Sheet } from './Sheet';
-import { T } from '@/theme/tokens';
+import { COLOR, T } from '@/theme/tokens';
 
 export interface SortOption<K extends string> {
   key: K;
@@ -61,10 +61,10 @@ export function SortSheet<K extends string>({ visible, options, value, onSelect,
             }}
           >
             <View style={{ flex: 1, minWidth: 0 }}>
-              <Text style={{ fontSize: 16, fontWeight: on ? '800' : '600', color: on ? T.blue : T.ink }}>{o.label}</Text>
-              {o.hint ? <Text style={{ fontSize: 14, color: T.ter, marginTop: 2 }}>{o.hint}</Text> : null}
+              <Text style={{ fontSize: 16, fontWeight: on ? '800' : '600', color: on ? COLOR.text.link : T.ink }}>{o.label}</Text>
+              {o.hint ? <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 2 }}>{o.hint}</Text> : null}
             </View>
-            {on ? <Icon name="check" size={20} color={T.blue} sw={2.4} /> : null}
+            {on ? <Icon name="check" size={20} color={COLOR.action.primary} sw={2.4} /> : null}
           </Pressable>
         );
       })}

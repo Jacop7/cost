@@ -24,7 +24,7 @@ import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { AppHeader, Card, Icon, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { formatQuantity, isNegativeStock } from '@margincook/core';
-import { T } from '@/theme/tokens';
+import { COLOR, T } from '@/theme/tokens';
 import { useRecipeShortages, useSaleShortages, type ShortageIngredient, type ShortageMode } from '../hooks';
 import { getPendingSale } from '../pendingSale';
 
@@ -75,7 +75,7 @@ export default function SalesStockCheckScreen() {
           {recipes.length === 0 ? (
             <Card pad={20}>
               <Text style={{ fontSize: 16, fontWeight: '800', color: T.ink }}>확인이 필요한 재고가 없어요</Text>
-              <Text style={{ fontSize: 14, color: T.ter, marginTop: 6, lineHeight: 20 }}>
+              <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 6, lineHeight: 20 }}>
                 추가한 재고가 연결된 모든 레시피에 반영됐어요.
               </Text>
             </Card>
@@ -112,13 +112,13 @@ export default function SalesStockCheckScreen() {
                           (기획안 §4.4). 라벨이 이미 그 말을 하고 있다.
                       */}
                       <View style={{ flexDirection: 'row', gap: 16, marginTop: 5 }}>
-                        <Text style={[{ fontSize: 12, fontWeight: '700', color: T.ter }, NUM]}>
+                        <Text style={[{ fontSize: 12, fontWeight: '700', color: COLOR.text.tertiary }, NUM]}>
                           {shown === 'sale' ? '필요 수량' : '안전재고'}{' '}
                           <Text style={{ color: T.sub }}>
                             {formatQuantity(shown === 'sale' ? g.need : safetyBase(g), unitOf(g.baseUnit))}
                           </Text>
                         </Text>
-                        <Text style={[{ fontSize: 12, fontWeight: '700', color: T.ter }, NUM]}>
+                        <Text style={[{ fontSize: 12, fontWeight: '700', color: COLOR.text.tertiary }, NUM]}>
                           현재 재고{' '}
                           <Text style={{ color: T.red, fontWeight: isNegativeStock(g.stock) ? '800' : '700' }}>
                             {formatQuantity(g.stock, unitOf(g.baseUnit))}
@@ -135,7 +135,7 @@ export default function SalesStockCheckScreen() {
                       accessibilityLabel={expanded ? '접기' : `재료 ${hidden}개 더 보기`}
                       style={{ minHeight: 46, alignItems: 'center', justifyContent: 'center', borderTopWidth: 1, borderTopColor: T.line2 }}
                     >
-                      <Text style={{ fontSize: 14, fontWeight: '800', color: T.blue }}>
+                      <Text style={{ fontSize: 14, fontWeight: '800', color: COLOR.text.link }}>
                         {expanded ? '접기' : `${hidden}개 더보기`}
                       </Text>
                     </Pressable>

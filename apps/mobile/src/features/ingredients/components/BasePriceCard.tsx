@@ -15,7 +15,7 @@
 import { Pressable, Text, View } from 'react-native';
 import { Icon } from '@/components/kit';
 import { formatQuantity, formatUnitPrice } from '@margincook/core';
-import { T, tnum } from '@/theme/tokens';
+import { COLOR, T, tnum } from '@/theme/tokens';
 import { packSummary } from '@/lib/num';
 
 export interface InboundRecord {
@@ -54,20 +54,20 @@ export function BasePriceCard({
       {/* 헤더 */}
       <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 13, paddingHorizontal: 16, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
         <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.sub }}>기준 단가</Text>
-        <Text style={{ fontSize: 14, color: T.ter, fontWeight: '600' }}>입고 {purchase.count}건 기준</Text>
+        <Text style={{ fontSize: 14, color: COLOR.text.tertiary, fontWeight: '600' }}>입고 {purchase.count}건 기준</Text>
       </View>
 
       {/* 값 */}
       <View style={{ paddingHorizontal: 16, paddingTop: 14, paddingBottom: 16 }}>
         <View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between' }}>
           <View>
-            <Text style={{ fontSize: 14, color: T.ter, fontWeight: '600' }}>실입고 기준</Text>
-            <Text style={[{ fontSize: 22, fontWeight: '800', color: basePrice === null ? T.ter : T.blue, marginTop: 2 }, tnum]}>
+            <Text style={{ fontSize: 14, color: COLOR.text.tertiary, fontWeight: '600' }}>실입고 기준</Text>
+            <Text style={[{ fontSize: 22, fontWeight: '800', color: basePrice === null ? COLOR.text.tertiary : COLOR.text.link, marginTop: 2 }, tnum]}>
               {basePrice === null ? '산출 전' : formatUnitPrice(basePrice, unit)}
             </Text>
           </View>
           <View style={{ alignItems: 'flex-end' }}>
-            <Text style={{ fontSize: 14, color: T.ter }}>가중평균</Text>
+            <Text style={{ fontSize: 14, color: COLOR.text.tertiary }}>가중평균</Text>
             <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, tnum]}>
               {purchase.avg === null ? '—' : formatUnitPrice(purchase.avg, unit)}
             </Text>
@@ -77,7 +77,7 @@ export function BasePriceCard({
         {purchase.count > 0 ? (
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 18, marginTop: 13, paddingTop: 13, borderTopWidth: 1, borderTopColor: T.line2 }}>
             {([
-              ['최저', purchase.low, T.blue],
+              ['최저', purchase.low, COLOR.text.link],
               ['최고', purchase.high, T.red],
             ] as const).map(([lbl, val, color]) => (
               <View key={lbl} style={{ flexDirection: 'row', alignItems: 'center', gap: 7 }}>
@@ -89,7 +89,7 @@ export function BasePriceCard({
             ))}
           </View>
         ) : (
-          <Text style={{ fontSize: 14, color: T.ter, lineHeight: 20, marginTop: 13, paddingTop: 13, borderTopWidth: 1, borderTopColor: T.line2 }}>
+          <Text style={{ fontSize: 14, color: COLOR.text.tertiary, lineHeight: 20, marginTop: 13, paddingTop: 13, borderTopWidth: 1, borderTopColor: T.line2 }}>
             입고 기록이 없어 단가를 낼 수 없어요. 재고 추가나 발주 → 입고를 등록하면 자동으로 계산돼요.
           </Text>
         )}
@@ -100,7 +100,7 @@ export function BasePriceCard({
         <>
           <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12, paddingHorizontal: 16, backgroundColor: T.surface2, borderTopWidth: 1, borderBottomWidth: 1, borderColor: T.line2 }}>
             <Text style={{ flex: 1, fontSize: 15, fontWeight: '800', color: T.sub }}>최근 입고</Text>
-            <Text style={{ fontSize: 13, color: T.ter, fontWeight: '600' }}>단가 계산에 포함된 기록</Text>
+            <Text style={{ fontSize: 13, color: COLOR.text.tertiary, fontWeight: '600' }}>단가 계산에 포함된 기록</Text>
           </View>
 
           <View style={{ paddingHorizontal: 16 }}>
@@ -125,7 +125,7 @@ export function BasePriceCard({
                 >
                   {/* 1줄 — 언제 · 그때가 최고였나 최저였나 */}
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                    <Text style={[{ fontSize: 14, color: T.ter, fontWeight: '600' }, tnum]}>
+                    <Text style={[{ fontSize: 14, color: COLOR.text.tertiary, fontWeight: '600' }, tnum]}>
                       {o.orderedAt.slice(5).replace('-', '/')}
                     </Text>
                     {partial ? (
@@ -133,8 +133,8 @@ export function BasePriceCard({
                     ) : null}
                     <View style={{ flex: 1 }} />
                     {isLow || isHigh ? (
-                      <View style={{ paddingHorizontal: 6, paddingVertical: 2, borderRadius: 5, backgroundColor: isHigh ? T.redTint : T.blueTint }}>
-                        <Text style={{ fontSize: 12, fontWeight: '700', color: isHigh ? T.red : T.blue }}>
+                      <View style={{ paddingHorizontal: 6, paddingVertical: 2, borderRadius: 5, backgroundColor: isHigh ? T.redTint : COLOR.action.primaryTint }}>
+                        <Text style={{ fontSize: 12, fontWeight: '700', color: isHigh ? T.red : COLOR.text.link }}>
                           {isHigh ? '최고' : '최저'}
                         </Text>
                       </View>
@@ -162,7 +162,7 @@ export function BasePriceCard({
                       {partial ? ' 반영' : ''}
                     </Text>
                     {partial ? (
-                      <Text style={{ fontSize: 13, color: T.ter }}>도착분만 반영</Text>
+                      <Text style={{ fontSize: 13, color: COLOR.text.tertiary }}>도착분만 반영</Text>
                     ) : null}
                   </View>
                 </View>
@@ -178,7 +178,7 @@ export function BasePriceCard({
         style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 2, paddingVertical: 13, borderTopWidth: 1, borderTopColor: T.line2, backgroundColor: T.surface2 }}
       >
         <Text style={{ fontSize: 15, fontWeight: '700', color: T.sub }}>입고 이력 전체보기</Text>
-        <Icon name="chevron" size={16} color={T.ter} />
+        <Icon name="chevron" size={16} color={COLOR.text.tertiary} />
       </Pressable>
     </View>
   );

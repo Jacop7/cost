@@ -7,7 +7,7 @@ import { Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
 import { AppHeader, Badge, Card, Icon, QueryState, SearchBar } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { T, won } from '@/theme/tokens';
+import { COLOR, T, won } from '@/theme/tokens';
 import { useSettingsLists } from '@/features/master-data/hooks';
 import { useRecipeDraft } from '../draftStore';
 
@@ -36,10 +36,10 @@ export default function MaterialSearchScreen() {
         <Pressable
           onPress={() => router.push('/recipes/materials' as Href)}
           accessibilityRole="button" accessibilityLabel="부자재 관리로 이동"
-          style={{ flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: T.blueTint, borderWidth: 1, borderColor: T.blue, borderRadius: 12, paddingVertical: 12, paddingHorizontal: 14 }}
+          style={{ flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: COLOR.action.primaryTint, borderWidth: 1, borderColor: COLOR.action.primary, borderRadius: 12, paddingVertical: 12, paddingHorizontal: 14 }}
         >
-          <Text style={{ flex: 1, fontSize: 14, fontWeight: '700', color: T.blue }}>부자재 추가·수정은 부자재 관리에서 해요</Text>
-          <Icon name="chevron" size={17} color={T.blue} />
+          <Text style={{ flex: 1, fontSize: 14, fontWeight: '700', color: COLOR.text.link }}>부자재 추가·수정은 부자재 관리에서 해요</Text>
+          <Icon name="chevron" size={17} color={COLOR.action.primary} />
         </Pressable>
 
         <QueryState
@@ -73,7 +73,7 @@ export default function MaterialSearchScreen() {
                         기준 단가 <Text style={{ color: T.ink, fontWeight: '700' }}>{won(m.unitCost)}원/{m.unitLabel}</Text>
                       </Text>
                     </View>
-                    <Icon name="plus" size={20} color={T.blue} sw={2.2} />
+                    <Icon name="plus" size={20} color={COLOR.action.primary} sw={2.2} />
                   </View>
                 </Card>
               </Pressable>

@@ -8,7 +8,7 @@
  */
 import { Pressable, Text, View } from 'react-native';
 import { Icon } from '@/components/kit';
-import { T } from '@/theme/tokens';
+import { COLOR, T } from '@/theme/tokens';
 import { changeTime, stateLabel, type LastChange } from '../hooks';
 
 const TONE = {
@@ -47,10 +47,10 @@ export function RecentChangeRow({ change, onPress }: { change: LastChange; onPre
       <View
         style={{
           width: 22, height: 22, borderRadius: 11,
-          alignItems: 'center', justifyContent: 'center', backgroundColor: T.blueTint,
+          alignItems: 'center', justifyContent: 'center', backgroundColor: COLOR.action.primaryTint,
         }}
       >
-        <Icon name="history" size={14} color={T.blue} sw={2.2} />
+        <Icon name="history" size={14} color={COLOR.action.primary} sw={2.2} />
       </View>
 
       <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub }} numberOfLines={1}>
@@ -60,7 +60,7 @@ export function RecentChangeRow({ change, onPress }: { change: LastChange; onPre
       {/* ⚠ 한 줄을 지켜야 한다. 배지가 길어지면 이름 쪽이 아니라 여기가 줄어든다. */}
       <View style={{ flex: 1, minWidth: 0, alignItems: 'flex-start' }}>
         {!change.hasHistory ? (
-          <Text style={{ fontSize: 13, color: T.ter }} numberOfLines={1}>아직 수정 없음</Text>
+          <Text style={{ fontSize: 13, color: COLOR.text.tertiary }} numberOfLines={1}>아직 수정 없음</Text>
         ) : s && c ? (
           <View style={{ paddingHorizontal: 7, paddingVertical: 3, borderRadius: 6, backgroundColor: c.bg }}>
             <Text style={{ fontSize: 12, fontWeight: '700', color: c.fg }} numberOfLines={1}>
@@ -70,7 +70,7 @@ export function RecentChangeRow({ change, onPress }: { change: LastChange; onPre
         ) : null}
       </View>
 
-      <Icon name="chevron" size={16} color={T.ter} />
+      <Icon name="chevron" size={16} color={COLOR.text.tertiary} />
     </Pressable>
   );
 }
