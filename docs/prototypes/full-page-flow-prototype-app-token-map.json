@@ -85,7 +85,7 @@
     },
     {
       "id": "R-SP-SCROLL-TOP",
-      "bin": "pendingApproval",
+      "bin": "defect",
       "match": {
         "group": "spacing",
         "numericIn": [
@@ -112,10 +112,12 @@
           "apps/mobile/src/features/sales/screens/SalesWasteScreen.tsx:53"
         ]
       },
-      "question": "스크롤 컨테이너의 **상단** 여유가 2px 인데 하단은 24~104px 이다. 이 비대칭이 의도인지, 상단도 역할값으로 정할지.",
-      "evidence": "17자리. 전부 ScrollView 의 contentContainerStyle 에 있는 paddingTop:2 다(IngredientDetailScreen:129 · FixedCostScreen:81 · RecipeDetailScreen:178 …). R-SP-SCROLL-BOTTOM 과 같은 컨테이너의 반대편이다.",
-      "ownerDecision": "하단 여유와 한 봉투에서 함께 정해야 한다 — 같은 컨테이너의 위아래다.",
-      "순서근거": "R-SP-EDGE-INSET 포괄보다 앞선다. 스크롤 컨테이너 여유는 인셋이 아니라 레이아웃 여백이다"
+      "순서근거": "R-SP-EDGE-INSET 포괄보다 앞선다. 스크롤 컨테이너 여유는 인셋이 아니라 레이아웃 여백이다",
+      "target": "`scrollStart` — 값은 `scrollEnd` 와 같은 봉투에서 `S4` 에 파생한다",
+      "방향": "S4 — `paddingTop` 이라 세로다. 폭에 영향이 없고, 값은 좌표계별 파생이라 그때 정해진다",
+      "출처": "기획서 §8.2 문항 7 결정 **7-2** 가 스크롤 컨테이너의 **끝** 여유에 `scrollEnd`/`scrollEnd.fab` 두 역할을 줬다. 이 규칙은 **같은 컨테이너의 반대편**이다.",
+      "근거": "17자리가 **한 글자도 다르지 않은 같은 모양**이다 — `<ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 2, paddingBottom: 24|28, [gap: 11] }}>`. 한 템플릿이 화면마다 복사된 것이고, 값도 전부 2 라 수렴할 것이 없다. 없는 것은 **이름**이다. 2 는 `space` 스케일의 최소 단계(4)보다 작아 스케일 값이 아니고, 광학 보정도 아니다(스크롤 컨테이너의 레이아웃 여백이다).",
+      "검수요청": "**값을 여기서 정하지 않았다.** 상단 2 와 하단 24~104 의 비대칭이 의도인지는 `scrollEnd` 와 한 봉투에서 답해야 하고, 그 봉투는 `S4` 다. 지금 하는 일은 관계에 이름을 붙여 `R-SP-EDGE-INSET` 같은 포괄 규칙으로 흘러들지 않게 막는 것이다."
     },
     {
       "id": "R-SP-TABBAR-INSET",
@@ -158,8 +160,8 @@
       "순서근거": "R-SP-EDGE-INSET 포괄보다 앞선다"
     },
     {
-      "id": "R-SP-INLINE-TIGHT",
-      "bin": "pendingApproval",
+      "id": "R-SP-GAP-LABEL-CHEVRON",
+      "bin": "defect",
       "match": {
         "group": "spacing",
         "numericIn": [
@@ -167,22 +169,41 @@
           2
         ],
         "at": [
-          "apps/mobile/src/components/kit/AppHeader.tsx:37",
-          "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx:178",
-          "apps/mobile/src/features/ingredients/components/LossCard.tsx:135",
-          "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:254",
-          "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:129",
-          "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:435",
-          "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:632",
-          "apps/mobile/src/features/sales/components/MenuProfitSheet.tsx:40",
-          "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:39",
-          "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx:123"
+          "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx:178:gap",
+          "apps/mobile/src/features/ingredients/components/LossCard.tsx:135:gap",
+          "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:254:gap",
+          "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:435:gap",
+          "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:632:gap",
+          "apps/mobile/src/features/sales/components/MenuProfitSheet.tsx:40:gap",
+          "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:39:gap",
+          "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx:123:gap"
         ]
       },
-      "question": "§5.4 가 `gap.inline` 을 `space.8`(아이콘-텍스트 · 버튼 사이 · 인라인)로 계약했는데, 앱은 같은 자리에 1·2px 을 쓴다. 계약대로 8 로 올릴지, 아이콘끼리 붙는 자리를 별도 관계로 뺄지.",
-      "evidence": "10자리. AppHeader:37 헤더 우측 아이콘 사이 gap:2 · MenuProfitSheet:40 텍스트↔셰브런 gap:1 · BasePriceCard:178 버튼 안 아이콘↔라벨 gap:2. 8 로 올리면 **가로로 늘어나므로 S3b** 대상이고, 헤더 아이콘 줄은 폭 여유가 가장 적은 자리다.",
-      "ownerDecision": "§5.4 계약을 그대로 적용할지, \"아이콘끼리\" 라는 관계를 새로 인정할지가 계약 변경이다.",
-      "순서근거": "R-SP-EDGE-INSET 포괄보다 앞선다 — gap 은 인셋이 아니라 사이 간격이다"
+      "target": "8 (`gap.inline`)",
+      "방향": "**S3b** — 여덟 자리 전부 가로이고 자리당 6~7px 넓어진다",
+      "출처": "기획서 §5.4 `gap.inline` = `space.8` — 관계에 \"**아이콘-텍스트** · 버튼 사이 · 인라인\" 이 적혀 있다",
+      "근거": "8자리. 글자와 셰브런(`›`) 사이다 — 다섯은 카드 하단의 가운데 정렬 전체보기 버튼(`justifyContent:'center' · gap:2 · paddingVertical:13 · borderTopWidth:1` 로 모양이 같다), 둘은 캡션 줄(`gap:1 · marginTop:4`), 하나는 섹션 제목 줄(`ProfitBlocks:39` · `hitSlop={6}`). **셰브런은 아이콘이고 라벨은 텍스트다** — §5.4 가 이미 계약한 관계이므로 새 이름을 만들어 계약을 피하지 않는다.",
+      "검수요청": "“라벨↔셰브런” 을 별도 관계로 빼면 계약을 좁히는 것이라 그렇게 하지 않았다. 다만 8px 은 셰브런이 라벨에서 떨어져 보일 수 있다 — 가운데 정렬 버튼 다섯은 폭 여유가 넉넉하지만, 시각 확인이 필요하면 `S3b` 렌더 감사에서 이 여덟 자리를 먼저 본다.",
+      "순서근거": "R-SP-EDGE-INSET 포괄보다 앞선다 — gap 은 인셋이 아니다"
+    },
+    {
+      "id": "R-SP-GAP-CONTROL-CLUSTER",
+      "bin": "componentOwned",
+      "match": {
+        "group": "spacing",
+        "numericIn": [
+          1,
+          2
+        ],
+        "at": [
+          "apps/mobile/src/components/kit/AppHeader.tsx:37:gap",
+          "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:129:gap"
+        ]
+      },
+      "name": "gap.controlCluster",
+      "근거": "2자리. **아이콘 버튼끼리 붙는 자리**이고, §5.4 의 \"아이콘-텍스트\" 와 다른 관계다 — 여기엔 텍스트가 없다. `AppHeader.tsx:37` 은 헤더 우측 아이콘 묶음(`gap:2` · 가로 · `paddingRight:6`)이고, `CategoryEditScreen.tsx:129` 는 순서 이동 위/아래 버튼 묶음(`gap:2` · **세로**)이다. 둘 다 버튼이 자기 터치 영역을 따로 갖는다 — 후자는 `hitSlop={4}` 와 28×20 상자다. 묶음 안의 간격은 **묶여 보이게 하는 것이 목적**이라 벌리면 묶음이 아니게 된다.",
+      "검수요청": "§7.3.1 이 열어 뒀던 \"아이콘끼리 붙는 자리를 별도 관계로 뺄지\" 가 이 자리다. 실측해 보니 **두 곳뿐**이고 둘 다 조작 묶음이라 이름을 붙였다. 헤더 우측은 앱에서 폭 여유가 가장 적은 자리이기도 하다 — 8 로 벌렸다면 그쪽이 먼저 넘쳤다.",
+      "순서근거": "R-SP-EDGE-INSET 포괄보다 앞선다"
     },
     {
       "id": "R-SP-EDGE-INSET",
@@ -570,16 +591,153 @@
       "판정근거": "`docs/prototypes/full-page-flow-prototype-axis-measure.mjs` — 감사 JSON 의 간격 선언마다 속성·컨테이너를 읽어 축을 판정하고 `axis-at.json` 을 낸다. 이 규칙의 `at` 목록은 그 산출물이다."
     },
     {
-      "id": "R-SP-CONVERGE-UNDOCUMENTED",
-      "bin": "pendingApproval",
+      "id": "R-SP-CONVERGE-11-V",
+      "bin": "defect",
       "match": {
         "group": "spacing",
-        "protoConverge": "space"
+        "numericIn": [
+          11
+        ],
+        "at": [
+          "apps/mobile/src/components/kit/SearchBar.tsx:27:paddingVertical",
+          "apps/mobile/src/components/kit/index.tsx:278:paddingVertical",
+          "apps/mobile/src/components/kit/index.tsx:319:paddingBottom",
+          "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:25:paddingVertical",
+          "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:129:gap",
+          "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:142:marginBottom",
+          "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:293:paddingVertical",
+          "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:252:gap",
+          "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:62:paddingVertical",
+          "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:199:gap",
+          "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:357:paddingVertical",
+          "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx:157:paddingBottom",
+          "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx:255:marginTop",
+          "apps/mobile/src/features/my/screens/FixedCostEditScreen.tsx:236:paddingVertical",
+          "apps/mobile/src/features/my/screens/FixedCostEditScreen.tsx:281:paddingTop",
+          "apps/mobile/src/features/my/screens/FixedCostEditScreen.tsx:282:marginBottom",
+          "apps/mobile/src/features/my/screens/FixedCostScreen.tsx:81:gap",
+          "apps/mobile/src/features/my/screens/FixedCostScreen.tsx:142:paddingTop",
+          "apps/mobile/src/features/my/screens/FixedCostScreen.tsx:143:marginBottom",
+          "apps/mobile/src/features/my/screens/MyChannelsScreen.tsx:69:gap",
+          "apps/mobile/src/features/my/screens/MyChannelsScreen.tsx:96:paddingVertical",
+          "apps/mobile/src/features/my/screens/MyHomeScreen.tsx:133:gap",
+          "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:303:gap",
+          "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:481:paddingTop",
+          "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:494:paddingBottom",
+          "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:535:paddingBottom",
+          "apps/mobile/src/features/my/screens/MyTaxScreen.tsx:181:gap",
+          "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx:181:paddingVertical",
+          "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx:185:paddingVertical",
+          "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx:204:paddingVertical",
+          "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:248:paddingBottom",
+          "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:295:marginTop",
+          "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:401:paddingVertical",
+          "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx:108:paddingVertical",
+          "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx:76:paddingVertical",
+          "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx:96:marginTop",
+          "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx:133:paddingTop",
+          "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:120:marginBottom",
+          "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:189:marginBottom",
+          "apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx:104:paddingVertical",
+          "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:274:paddingBottom",
+          "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:391:paddingBottom",
+          "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:432:marginTop",
+          "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:432:paddingTop",
+          "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:53:paddingBottom",
+          "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:178:gap",
+          "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:232:marginTop",
+          "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:460:paddingVertical",
+          "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:499:paddingBottom",
+          "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:547:marginTop",
+          "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:547:paddingTop",
+          "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:163:marginBottom",
+          "apps/mobile/src/features/sales/components/LateCloseSheet.tsx:66:paddingBottom",
+          "apps/mobile/src/features/sales/components/MenuProfitSheet.tsx:84:paddingVertical",
+          "apps/mobile/src/features/sales/components/MenuProfitSheet.tsx:91:paddingVertical",
+          "apps/mobile/src/features/sales/components/MenuProfitSheet.tsx:96:paddingVertical",
+          "apps/mobile/src/features/sales/components/MenuProfitSheet.tsx:102:paddingVertical",
+          "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:357:paddingVertical",
+          "apps/mobile/src/features/sales/components/ShortageWarningSheet.tsx:59:paddingVertical",
+          "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx:165:gap",
+          "apps/mobile/src/features/sales/screens/SalesChannelScreen.tsx:68:gap",
+          "apps/mobile/src/features/sales/screens/SalesDayDetailScreen.tsx:62:gap",
+          "apps/mobile/src/features/sales/screens/SalesDayDetailScreen.tsx:89:paddingVertical",
+          "apps/mobile/src/features/sales/screens/SalesDayFullScreen.tsx:111:paddingVertical",
+          "apps/mobile/src/features/sales/screens/SalesDayFullScreen.tsx:119:paddingVertical",
+          "apps/mobile/src/features/sales/screens/SalesExpenseScreen.tsx:82:marginBottom",
+          "apps/mobile/src/features/sales/screens/SalesExtraScreen.tsx:69:paddingVertical",
+          "apps/mobile/src/features/sales/screens/SalesFixedScreen.tsx:72:gap",
+          "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:382:marginBottom",
+          "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:383:paddingVertical",
+          "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:414:marginBottom",
+          "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:613:paddingVertical",
+          "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:681:paddingVertical",
+          "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx:159:gap",
+          "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:202:gap",
+          "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:359:paddingVertical",
+          "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:415:paddingVertical",
+          "apps/mobile/src/features/sales/screens/SalesStockCheckScreen.tsx:67:gap"
+        ]
       },
-      "question": "프로토타입 매핑표 `converge.space` 에는 있지만 **기획서 §4.7 에 근거가 없는** 값들(11 · 18 · 22)을 어디로 보낼지.",
-      "evidence": "11 은 §4.7 표에 있으나 판정이 \"늘림 — **세로·좌우 혼재이므로 변별로 나눠 확인 필요**\" 로 열려 있다(앱 86자리). 18 · 22 는 §4.7 의 수렴표(15·14·13·11·10·9·7·5)에도 고정값(104·44·40)에도 없다(앱 27 · 6자리). 17 · 19 는 매핑표에 있으나 **앱에 한 건도 없다.**",
-      "ownerDecision": "11 은 변(세로/좌우)을 나눠 재판정해야 하고, 18·22 는 언제 누가 정했는지 출처가 없다. 페이블 지적 — \"미확정을 defect 로 배정하면 게이트가 열린 결정을 닫아 버린다.\"",
-      "순서근거": "수렴 규칙 셋보다 뒤에 온다 — 출처가 확인된 값이 먼저 잡히고, 남은 converge 키만 여기로 온다"
+      "target": "12 (`space.md`)",
+      "방향": "S3a — 늘림이지만 **세로 축**이라 폭에 영향이 없다",
+      "출처": "기획서 §4.7 \"나머지 역할 중복 수렴안\" 표의 `11` 행 — 목적지 `12`, 방향 \"늘림 — **세로·좌우 혼재이므로 변별로 나눠 확인 필요**\". **그 변별이 이 규칙이다.** 프로토타입 매핑표 `converge.space` 도 `11 → 12` 로 같다.",
+      "근거": "78자리. **§4.7 이 \"변별로 나눠 확인 필요\" 라고 열어 둔 자리이고, 축을 재서 갈랐다.** 11 은 앱의 **행 세로 패딩과 목록 세로 gap** 이다 — `paddingVertical`(31) · `gap`(16 · 전부 `ScrollView` 의 `contentContainerStyle`) · `paddingBottom`(10) · `marginBottom`(9) · `marginTop`(6) · `paddingTop`(6). §5.4 가 `pad.row` 를 `space.12`(14px 수렴)로, `gap.stack` 을 `space.12` 로 이미 계약했고 11→12 는 그 계약과 같은 목적지다. 축은 `full-page-flow-prototype-axis-measure.mjs` 로 선언마다 쟀다 — 속성이 축을 말하면 그대로, `gap` 은 컨테이너의 `flexDirection`(RN 기본 `column`), 단축은 양축.",
+      "순서근거": "R-SP-CONVERGE-11-H 와 같은 값을 축으로 가른다. 가로가 뒤에 오면 세로가 먼저 걷힌다"
+    },
+    {
+      "id": "R-SP-CONVERGE-11-H",
+      "bin": "defect",
+      "match": {
+        "group": "spacing",
+        "numericIn": [
+          11
+        ],
+        "at": [
+          "apps/mobile/src/components/kit/index.tsx:332:paddingLeft",
+          "apps/mobile/src/features/ingredients/components/LedgerRow.tsx:46:gap",
+          "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:293:gap",
+          "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:269:gap",
+          "apps/mobile/src/features/my/screens/MyAccountScreen.tsx:53:gap",
+          "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:118:gap",
+          "apps/mobile/src/features/recipes/screens/MaterialSearchScreen.tsx:65:gap",
+          "apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx:96:gap"
+        ]
+      },
+      "target": "12 (`space.md`)",
+      "방향": "**S3b** — 가로 축이라 폭이 1px 늘어난다",
+      "출처": "기획서 §4.7 \"나머지 역할 중복 수렴안\" 표의 `11` 행 — 목적지 `12`, 방향 \"늘림 — **세로·좌우 혼재이므로 변별로 나눠 확인 필요**\". **그 변별이 이 규칙이다.** 프로토타입 매핑표 `converge.space` 도 `11 → 12` 로 같다.",
+      "근거": "8자리. `gap`(7 · 전부 `flexDirection:'row'` 인 행) 과 `paddingLeft`(1 · `kit/index.tsx:332` 뱃지 상자). 축은 `full-page-flow-prototype-axis-measure.mjs` 로 선언마다 쟀다 — 속성이 축을 말하면 그대로, `gap` 은 컨테이너의 `flexDirection`(RN 기본 `column`), 단축은 양축.",
+      "검수요청": "늘어나는 폭은 자리당 1px 이지만 가로다. `S3b` 재측정에서 320px 폭과 함께 본다."
+    },
+    {
+      "id": "R-SP-CONVERGE-18",
+      "bin": "defect",
+      "match": {
+        "group": "spacing",
+        "numericIn": [
+          18
+        ]
+      },
+      "target": "16 (`space.lg`)",
+      "방향": "S3a — **줄임**이라 두 축 모두 안전하다",
+      "출처": "프로토타입 매핑표 `converge.space` — `18 → 16` · `22 → 24`. **기획서 §4.7 의 값별 표에 이 둘의 행이 없었다**(`PRT-206` 에서 근거 없는 \"기존 결정\" 주장으로 걸린 자리다). 목적지는 프로토타입 회차에 정해져 있었고 §4.7 이 옮겨 적기를 빠뜨린 것이므로, 출처를 프로토타입 매핑표로 바로잡고 §4.7 에 두 행을 채웠다.",
+      "근거": "27자리. `marginTop`(14)이 대부분이고 세로 23 · 가로 4 다. 줄임이므로 축을 갈라도 실행 단계가 갈리지 않는다. 축은 `full-page-flow-prototype-axis-measure.mjs` 로 선언마다 쟀다 — 속성이 축을 말하면 그대로, `gap` 은 컨테이너의 `flexDirection`(RN 기본 `column`), 단축은 양축."
+    },
+    {
+      "id": "R-SP-CONVERGE-22",
+      "bin": "defect",
+      "match": {
+        "group": "spacing",
+        "numericIn": [
+          22
+        ]
+      },
+      "target": "24 (`space.xxl`)",
+      "방향": "**S3b** — 늘림이고 **여섯 자리 전부 가로**다",
+      "출처": "프로토타입 매핑표 `converge.space` — `18 → 16` · `22 → 24`. **기획서 §4.7 의 값별 표에 이 둘의 행이 없었다**(`PRT-206` 에서 근거 없는 \"기존 결정\" 주장으로 걸린 자리다). 목적지는 프로토타입 회차에 정해져 있었고 §4.7 이 옮겨 적기를 빠뜨린 것이므로, 출처를 프로토타입 매핑표로 바로잡고 §4.7 에 두 행을 채웠다.",
+      "근거": "6자리. 전부 `gap` 이고 전부 `flexDirection:'row'` 인 행이다 — `StockEditSheet:146` · `OrdersHomeScreen:244` · `RecipeAddScreen:270` 등. 자리당 2px 씩 넓어진다. 축은 `full-page-flow-prototype-axis-measure.mjs` 로 선언마다 쟀다 — 속성이 축을 말하면 그대로, `gap` 은 컨테이너의 `flexDirection`(RN 기본 `column`), 단축은 양축.",
+      "검수요청": "가로 늘림 중 가장 큰 폭(2px × 6자리)이다. `S3b` 에서 먼저 본다."
     },
     {
       "id": "R-SP-RESET",
@@ -1218,5 +1376,5 @@
   "semanticNote": "**여전히 빔.** 앱 감사는 **값**을 기록하고 역할 이름을 기록하지 않는다 — 인라인 리터럴에는 역할이 붙어 있지 않기 때문이다. `DS-20260905-001` 로 일곱 규칙의 목적지가 정해졌지만, 그 목적지는 **아직 `tokens.ts` 에 없는 이름**이라 지금 이 자리들은 \"역할이 값을 소유하는 자리\" 가 아니라 \"정해진 역할로 **가야 할** 자리\" 다. 그래서 `semantic` 이 아니라 `defect`(수렴 대상이 있는 값)이다. `semantic` 은 `S1` 에서 이름이 코드에 생기고 `P4` 에서 치환된 뒤에 채워진다.",
   "ruleOrderNote": "규칙은 순서대로 평가하고 첫 일치가 이긴다. **순서에 의존하는 배정이 있으면 앞선 규칙에 `순서근거` 를 적어야 하고, 검사기가 그것을 강제한다.** 다중 일치가 0 이면 순서는 장식이다 — 검사기가 다중 일치 수를 함께 낸다 (페이블 검수 조건 B).",
   "방향Note": "`defect` 통의 모든 행은 `방향` 을 갖는다 — `S3a`(축소·동일·세로) 또는 `S3b`(폭 증가). §7.2 의 실행 순서가 이 표식으로 집행 가능해진다. 방향 없는 defect 는 어느 단계에 넣을지 알 수 없다 (페이블 검수 조건 1).",
-  "designSyncId": "DS-20260905-002"
+  "designSyncId": "DS-20260905-003"
 }
