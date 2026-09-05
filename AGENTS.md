@@ -111,6 +111,10 @@
   - `COLOR.action.primary` `#1470F5` — 버튼 **배경**. 그 위 흰 글자가 4.50:1(경계값).
   - `COLOR.text.link` `#1465DB` — 링크 **글자**. 전경이라 놓이는 **모든** 표면에서 4.5:1
     이어야 한다(§8.2a). 배경 역할과 같은 값을 쓰면 안 된다.
+  - `COLOR.text.accent` `#1465DB` — 강조 값·양의 방향. 링크와 값이 같아도 함께 바뀌지 않는다.
+  - `COLOR.state.selectedText` `#1465DB` — 선택된 옵션·탭·칩의 글자.
+  - `COLOR.status.*` — 긍정·주의·위험 전경과 tint. 새 화면은 `T.green`·`T.red`·
+    `T.amberText` 같은 팔레트 별칭을 직접 쓰지 않는다.
   두 값을 같게 만들면 `pnpm verify` ③ 의 색 대비 게이트가 FAIL 한다.
 
 ## 검사 실행

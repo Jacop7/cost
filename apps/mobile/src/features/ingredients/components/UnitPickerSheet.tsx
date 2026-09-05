@@ -62,7 +62,7 @@ export function UnitPickerSheet({
                       }}
                     >
                       {on ? <Icon name="check" size={16} color={COLOR.action.primary} sw={2.4} /> : null}
-                      <Text style={{ fontSize: 16, fontWeight: '700', color: on ? COLOR.text.link : T.ink2 }}>{u}</Text>
+                      <Text style={{ fontSize: 16, fontWeight: '700', color: on ? COLOR.state.selectedText : T.ink2 }}>{u}</Text>
                     </Pressable>
                   );
                 })}

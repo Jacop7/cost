@@ -15,8 +15,8 @@ const appRel = (opt['app-rel'] ?? 'apps/mobile').replaceAll('\\', '/');
 const protoRel = (opt['prototype-rel'] ?? 'docs/prototypes/0_full-page-flow-prototype-ui-applied.html').replaceAll('\\', '/');
 const baselineRoot = opt['baseline-root'] ? resolve(opt['baseline-root']) : null;
 const outPath = opt.out ? resolve(opt.out) : null;
-const PROPS = /^(?:fontSize|lineHeight|letterSpacing|padding(?:Top|Right|Bottom|Left|Horizontal|Vertical)?|margin(?:Top|Right|Bottom|Left|Horizontal|Vertical)?|gap|rowGap|columnGap|width|minWidth|maxWidth|height|minHeight|maxHeight|borderRadius|borderWidth|top|right|bottom|left)$/;
-const CSS_PROPS = /^(?:font-size|line-height|letter-spacing|padding(?:-(?:top|right|bottom|left))?|margin(?:-(?:top|right|bottom|left))?|gap|row-gap|column-gap|width|min-width|max-width|height|min-height|max-height|border-radius|border-width|top|right|bottom|left)$/;
+const PROPS = /^(?:fontSize|lineHeight|letterSpacing|padding(?:Top|Right|Bottom|Left|Horizontal|Vertical)?|margin(?:Top|Right|Bottom|Left|Horizontal|Vertical)?|gap|rowGap|columnGap|width|minWidth|maxWidth|height|minHeight|maxHeight|border(?:Top|Right|Bottom|Left)?Width|border(?:Top|Bottom)(?:Left|Right)Radius|borderRadius|flex|flexBasis|flexGrow|flexShrink|aspectRatio|transform|top|right|bottom|left)$/;
+const CSS_PROPS = /^(?:font-size|line-height|letter-spacing|padding(?:-(?:top|right|bottom|left))?|margin(?:-(?:top|right|bottom|left))?|gap|row-gap|column-gap|width|min-width|max-width|height|min-height|max-height|border(?:-(?:top|right|bottom|left))?-width|border-(?:top|bottom)-(?:left|right)-radius|border-radius|flex|flex-basis|flex-grow|flex-shrink|aspect-ratio|transform|top|right|bottom|left)$/;
 const norm = s => s.replace(/\s+/g, ' ').trim();
 
 const listFs = (base) => {

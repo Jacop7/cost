@@ -104,7 +104,7 @@ function AvgSalesScreenBody({ localDate }: { localDate: string }) {
                 accessibilityState={{ selected: on }}
                 style={{ flex: 1, alignItems: 'center', paddingVertical: 10, borderRadius: 10, borderWidth: 1, borderColor: on ? COLOR.action.primary : T.line, backgroundColor: on ? COLOR.action.primaryTint : T.surface }}
               >
-                <Text style={[{ fontSize: 14, fontWeight: '700', color: on ? COLOR.text.link : T.sub }, NUM]}>{v}</Text>
+                <Text style={[{ fontSize: 14, fontWeight: '700', color: on ? COLOR.state.selectedText : T.sub }, NUM]}>{v}</Text>
               </Pressable>
             );
           })}

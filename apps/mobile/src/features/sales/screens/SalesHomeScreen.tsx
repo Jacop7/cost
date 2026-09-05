@@ -439,7 +439,7 @@ function SalesHomeBody({ today }: { today: string }) {
             >
               <Icon name="plus" size={16} color={T.sub2} sw={2.2} />
               <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub }}>{label}</Text>
-              {amt > 0 ? <Text style={[{ fontSize: 14, fontWeight: '700', color: COLOR.text.link }, NUM]}>{won(amt)}</Text> : null}
+              {amt > 0 ? <Text style={[{ fontSize: 14, fontWeight: '700', color: COLOR.text.accent }, NUM]}>{won(amt)}</Text> : null}
             </Pressable>
           ))}
         </View>
@@ -614,7 +614,7 @@ function SalesHomeBody({ today }: { today: string }) {
                 <View style={{ flex: 1, minWidth: 0 }}>
                   <Text style={{ fontSize: 16, fontWeight: '600', color: T.sub }}>{e.name} <Text style={{ color: COLOR.text.tertiary }}>×{e.qty}</Text></Text>
                   {/* 미지정은 회색으로 둔다 — 매장으로 보이면 안 된다(0093). */}
-                  <Text style={{ fontSize: 13, fontWeight: '700', color: e.channel ? COLOR.text.link : COLOR.text.tertiary, marginTop: 2 }}>
+                  <Text style={{ fontSize: 13, fontWeight: '700', color: e.channel ? COLOR.text.accent : COLOR.text.tertiary, marginTop: 2 }}>
                     {channelName(e.channel)}
                   </Text>
                 </View>
@@ -658,7 +658,7 @@ function SalesHomeBody({ today }: { today: string }) {
                     backgroundColor: on ? COLOR.action.primaryTint : T.surface,
                   }}
                 >
-                  <Text style={{ fontSize: 15, fontWeight: on ? '800' : '600', color: on ? COLOR.text.link : T.sub }}>{name}</Text>
+                  <Text style={{ fontSize: 15, fontWeight: on ? '800' : '600', color: on ? COLOR.state.selectedText : T.sub }}>{name}</Text>
                 </Pressable>
               );
             })}

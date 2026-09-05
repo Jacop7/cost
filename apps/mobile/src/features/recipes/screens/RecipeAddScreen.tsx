@@ -298,7 +298,7 @@ export default function RecipeAddScreen() {
                         <Text style={[{ fontSize: 16, fontWeight: '800', color: cost === null ? COLOR.text.tertiary : T.ink }, NUM]}>
                           {cost === null ? '—' : `${won(Math.round(cost * cm))}원`}
                         </Text>
-                        <Text style={[{ fontSize: 14, color: COLOR.text.link, marginTop: 1, fontWeight: '700' }, NUM]}>
+                        <Text style={[{ fontSize: 14, color: COLOR.text.accent, marginTop: 1, fontWeight: '700' }, NUM]}>
                           {l.unit === null ? `${(l.inputQty / servings) * cm}인분` : formatQuantity((l.inputQty / servings) * cm, l.unit)}
                         </Text>
                       </Pressable>
@@ -435,7 +435,7 @@ export default function RecipeAddScreen() {
                     <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 1 }}>목표 {draft.targetProfitRate}% 기준</Text>
                   </View>
                   <Pressable onPress={() => patch({ price: String(recommended) })} accessibilityRole="button" accessibilityLabel="권장 판매가 적용" style={{ alignItems: 'flex-end' }}>
-                    <Text style={[{ fontSize: 16, fontWeight: '800', color: COLOR.text.link }, NUM]}>{won(recommended)}원</Text>
+                    <Text style={[{ fontSize: 16, fontWeight: '800', color: COLOR.text.accent }, NUM]}>{won(recommended)}원</Text>
                     <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.text.link, marginTop: 2 }}>적용하기</Text>
                   </Pressable>
                 </View>
@@ -464,7 +464,7 @@ export default function RecipeAddScreen() {
             accessibilityRole="button" accessibilityLabel="지정 안 함"
             style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 14, paddingHorizontal: 16, borderRadius: 12, borderWidth: 1, borderColor: draft.categoryId === null ? COLOR.action.primary : T.line, backgroundColor: draft.categoryId === null ? COLOR.action.primaryTint : T.surface }}
           >
-            <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: draft.categoryId === null ? COLOR.text.link : COLOR.text.tertiary }}>지정 안 함</Text>
+            <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: draft.categoryId === null ? COLOR.state.selectedText : COLOR.text.tertiary }}>지정 안 함</Text>
             {draft.categoryId === null ? <Icon name="check" size={17} color={COLOR.action.primary} sw={2.4} /> : null}
           </Pressable>
           {(lists.data?.recipeCategories ?? []).map((c) => {
@@ -476,7 +476,7 @@ export default function RecipeAddScreen() {
                 accessibilityRole="button" accessibilityLabel={c.name} accessibilityState={{ selected: on }}
                 style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 14, paddingHorizontal: 16, borderRadius: 12, borderWidth: 1, borderColor: on ? COLOR.action.primary : T.line, backgroundColor: on ? COLOR.action.primaryTint : T.surface }}
               >
-                <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: on ? COLOR.text.link : T.ink2 }}>{c.name}</Text>
+                <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: on ? COLOR.state.selectedText : T.ink2 }}>{c.name}</Text>
                 {on ? <Icon name="check" size={17} color={COLOR.action.primary} sw={2.4} /> : null}
               </Pressable>
             );

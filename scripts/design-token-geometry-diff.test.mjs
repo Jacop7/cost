@@ -19,3 +19,5 @@ test('색만 바뀌면 통과한다',()=>assert.equal(run({tsx:`const s={fontSiz
 test('앱 padding 변경을 잡는다',()=>assert.equal(run({tsx:`const s={fontSize:14,paddingHorizontal:16,width:40,color:'#3182F6'};`}).status,1));
 test('프로토타입 height 변경을 잡는다',()=>assert.equal(run({html:`<style>.x{height:48px;margin:4px;color:#3182F6}</style>`}).status,1));
 test('fontSize 변경을 잡는다',()=>assert.equal(run({tsx:`const s={fontSize:16,paddingHorizontal:12,width:40,color:'#3182F6'};`}).status,1));
+test('borderBottomWidth 변경을 잡는다',()=>assert.equal(run({tsx:`const s={fontSize:14,paddingHorizontal:12,width:40,borderBottomWidth:2,color:'#3182F6'};`}).status,1));
+test('flex와 aspectRatio 변경을 잡는다',()=>assert.equal(run({tsx:`const s={fontSize:14,paddingHorizontal:12,width:40,flex:2,aspectRatio:1.5,color:'#3182F6'};`}).status,1));

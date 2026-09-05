@@ -38,7 +38,7 @@ export default function MaterialSearchScreen() {
           accessibilityRole="button" accessibilityLabel="부자재 관리로 이동"
           style={{ flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: COLOR.action.primaryTint, borderWidth: 1, borderColor: COLOR.action.primary, borderRadius: 12, paddingVertical: 12, paddingHorizontal: 14 }}
         >
-          <Text style={{ flex: 1, fontSize: 14, fontWeight: '700', color: COLOR.text.link }}>부자재 추가·수정은 부자재 관리에서 해요</Text>
+          <Text style={{ flex: 1, fontSize: 14, fontWeight: '700', color: COLOR.text.accent }}>부자재 추가·수정은 부자재 관리에서 해요</Text>
           <Icon name="chevron" size={17} color={COLOR.action.primary} />
         </Pressable>
 

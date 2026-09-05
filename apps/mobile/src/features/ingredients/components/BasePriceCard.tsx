@@ -62,7 +62,7 @@ export function BasePriceCard({
         <View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between' }}>
           <View>
             <Text style={{ fontSize: 14, color: COLOR.text.tertiary, fontWeight: '600' }}>실입고 기준</Text>
-            <Text style={[{ fontSize: 22, fontWeight: '800', color: basePrice === null ? COLOR.text.tertiary : COLOR.text.link, marginTop: 2 }, tnum]}>
+            <Text style={[{ fontSize: 22, fontWeight: '800', color: basePrice === null ? COLOR.text.tertiary : COLOR.text.accent, marginTop: 2 }, tnum]}>
               {basePrice === null ? '산출 전' : formatUnitPrice(basePrice, unit)}
             </Text>
           </View>
@@ -77,7 +77,7 @@ export function BasePriceCard({
         {purchase.count > 0 ? (
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 18, marginTop: 13, paddingTop: 13, borderTopWidth: 1, borderTopColor: T.line2 }}>
             {([
-              ['최저', purchase.low, COLOR.text.link],
+              ['최저', purchase.low, COLOR.text.accent],
               ['최고', purchase.high, T.red],
             ] as const).map(([lbl, val, color]) => (
               <View key={lbl} style={{ flexDirection: 'row', alignItems: 'center', gap: 7 }}>
@@ -134,7 +134,7 @@ export function BasePriceCard({
                     <View style={{ flex: 1 }} />
                     {isLow || isHigh ? (
                       <View style={{ paddingHorizontal: 6, paddingVertical: 2, borderRadius: 5, backgroundColor: isHigh ? T.redTint : COLOR.action.primaryTint }}>
-                        <Text style={{ fontSize: 12, fontWeight: '700', color: isHigh ? T.red : COLOR.text.link }}>
+                        <Text style={{ fontSize: 12, fontWeight: '700', color: isHigh ? T.red : COLOR.text.accent }}>
                           {isHigh ? '최고' : '최저'}
                         </Text>
                       </View>

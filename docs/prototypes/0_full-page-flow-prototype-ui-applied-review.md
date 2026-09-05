@@ -2684,6 +2684,24 @@ popup/state host **121개**(합 182), 그리고 레지스트리에 키가 없는
   `full-page-flow-prototype-render-audit.json` · `full-page-flow-prototype-design-audit.json` ·
   `full-page-flow-prototype-i18n-stress.json`.
 
+## DS-20260906-001 · PRT-229 S2 독립 검수 반영
+
+- 대상: PRT-228 앱 색 역할 97건 · 상태 역할 정본 · 앱/프로토타입 기하 게이트 · 대비 계약.
+- 기대값: 링크·강조·선택 역할 분리, 상태 역할이 `COLOR.status.*`를 정본으로 사용,
+  옛 상태 팔레트 별칭 증가 0, 확장된 기하 속성 diff 0, 색·기하 비의도 변화 0.
+- 실제값: `#1465DB` 사용처는 행동 링크 24 · 강조 값/양의 방향 42 · 선택 상태 31로 분리됐고,
+  앱 대비 계약은 44쌍 · 경계값 6, 정적 기하는 5,718개 선언 diff 0이다.
+- PC 검수: 1280×900 185 target, 넘침·viewport 이탈·콘솔·폰트 실패 0 · PASS
+- 모바일 검수: 320×720·CSS 200%·글자 200% 185 target과 번역 스트레스
+  4패스를 재측정했다. 렌더 위반은 알려진 5건, i18n atRisk는 w130 100 + w150 296 =
+  396건으로 알려진 목록과 정확히 일치해 신규·악화 0 · PASS
+- 미검수: 없음
+- 결과: PASS
+- 증거: `full-page-flow-prototype-color-usage.json` ·
+  `full-page-flow-prototype-s2-geometry-diff.json` · `full-page-flow-prototype-contrast-gate.json` ·
+  `full-page-flow-prototype-render-audit.json` · `full-page-flow-prototype-design-audit.json` ·
+  `full-page-flow-prototype-i18n-stress.json`.
+
 ## DS-20260905-007 · PRT-227 음수 숫자 선언 복구와 W1 재배정
 
 - 대상: 토큰 채택 감사기의 음수 AST · W1 규칙표/검사기/기획서 · 동기화 표식.

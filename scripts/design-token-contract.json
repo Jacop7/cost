@@ -16,10 +16,11 @@
     "text.disabled": "#8B95A1",
     "text.link": "#1465DB",
     "text.linkPressed": "#0E5FD6",
+    "text.accent": "#1465DB",
     "text.required": "#1465DB",
+    "state.selectedText": "#1465DB",
     "action.primary": "#1470F5",
     "action.primaryPressed": "#1465DB",
-    "action.primaryDisabled": "#6A7887",
     "action.primaryTint": "#EBF3FE",
     "action.onTint": "#1465DB",
     "brand.primary": "#3182F6",
@@ -38,7 +39,11 @@
   },
   "_경계값": [
     "흰 글자 on action.primary 4.50",
-    "text.tertiary on bg 4.50"
+    "text.tertiary on bg 4.50",
+    "status.positive on bg 4.54",
+    "status.caution on bg 4.55",
+    "status.positive on positiveTint 4.52",
+    "status.negative on negativeTint 4.50"
   ],
   "_조합": "검사할 조합 전부를 정규화해 둔다(`역할|fg|bg|kind`). 게이트가 만드는 집합과 양방향으로 맞춘다.",
   "combos": [
@@ -73,7 +78,19 @@
       "kind": "text"
     },
     {
+      "역할": "text.accent",
+      "fg": "#1465DB",
+      "bg": "#FFFFFF",
+      "kind": "text"
+    },
+    {
       "역할": "text.required",
+      "fg": "#1465DB",
+      "bg": "#FFFFFF",
+      "kind": "text"
+    },
+    {
+      "역할": "state.selectedText",
       "fg": "#1465DB",
       "bg": "#FFFFFF",
       "kind": "text"
@@ -109,7 +126,19 @@
       "kind": "text"
     },
     {
+      "역할": "text.accent",
+      "fg": "#1465DB",
+      "bg": "#F9FAFB",
+      "kind": "text"
+    },
+    {
       "역할": "text.required",
+      "fg": "#1465DB",
+      "bg": "#F9FAFB",
+      "kind": "text"
+    },
+    {
+      "역할": "state.selectedText",
       "fg": "#1465DB",
       "bg": "#F9FAFB",
       "kind": "text"
@@ -145,7 +174,19 @@
       "kind": "text"
     },
     {
+      "역할": "text.accent",
+      "fg": "#1465DB",
+      "bg": "#F2F4F6",
+      "kind": "text"
+    },
+    {
       "역할": "text.required",
+      "fg": "#1465DB",
+      "bg": "#F2F4F6",
+      "kind": "text"
+    },
+    {
+      "역할": "state.selectedText",
       "fg": "#1465DB",
       "bg": "#F2F4F6",
       "kind": "text"
@@ -154,12 +195,6 @@
       "역할": "action.primary 위 흰 글자",
       "fg": "#FFFFFF",
       "bg": "#1470F5",
-      "kind": "text"
-    },
-    {
-      "역할": "action.primaryDisabled 위 흰 글자",
-      "fg": "#FFFFFF",
-      "bg": "#6A7887",
       "kind": "text"
     },
     {

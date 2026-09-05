@@ -166,7 +166,7 @@ function FixedCostScreenBody({ localMonth }: { localMonth: string }) {
                   borderBottomWidth: i === months.length - 1 ? 0 : 1, borderBottomColor: T.line2,
                 }}
               >
-                <Text style={{ flex: 1, fontSize: 15, fontWeight: on ? '800' : '700', color: on ? COLOR.text.link : T.ink }}>
+                <Text style={{ flex: 1, fontSize: 15, fontWeight: on ? '800' : '700', color: on ? COLOR.state.selectedText : T.ink }}>
                   {m.slice(0, 4)}년 {Number(m.slice(5))}월
                 </Text>
                 {on ? <Icon name="check" size={18} color={COLOR.action.primary} /> : null}

@@ -60,7 +60,7 @@ export function PriceSimSheet({
     <Sheet visible={visible} onClose={onClose} title="판매가 시뮬레이션" sub="판매가를 바꿔 순이익을 미리 확인해요" height={560}>
       <View style={{ alignItems: 'center', paddingTop: 4, paddingBottom: 2 }}>
         <Text style={{ fontSize: 14, color: COLOR.text.tertiary, fontWeight: '700' }}>임시 판매가</Text>
-        <Text style={[{ fontSize: 22, fontWeight: '800', color: COLOR.text.link, letterSpacing: -0.6, marginTop: 2 }, NUM]}>
+        <Text style={[{ fontSize: 22, fontWeight: '800', color: COLOR.text.accent, letterSpacing: -0.6, marginTop: 2 }, NUM]}>
           {won(temp)}<Text style={{ fontSize: 18 }}>원</Text>
         </Text>
         <Text style={[{ fontSize: 14, color: T.sub2, marginTop: 2 }, NUM]}>
@@ -144,7 +144,7 @@ export function PriceSimSheet({
 
       <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, marginTop: 12, paddingHorizontal: 2 }}>
         <Icon name="info" size={15} color={rec != null ? COLOR.action.primary : T.amberText} />
-        <Text style={[{ flex: 1, fontSize: 14, color: rec != null ? COLOR.text.link : T.amberText, fontWeight: '600', lineHeight: 20 }, NUM]}>
+        <Text style={[{ flex: 1, fontSize: 14, color: rec != null ? COLOR.text.accent : T.amberText, fontWeight: '600', lineHeight: 20 }, NUM]}>
           {rec != null
             ? `목표 ${formatPercent(target)} 달성 권장가는 ${won(rec)}원이에요`
             : '지금 원가 구조로는 목표 순이익률을 맞출 수 없어요. 재료비나 목표를 조정해 주세요.'}

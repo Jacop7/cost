@@ -246,7 +246,7 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
                         <Text style={[{ fontSize: 13, fontWeight: '700', color: COLOR.text.tertiary, marginRight: 10 }, NUM]}>폐기 {q.waste}</Text>
                       ) : null}
                       {total > 0 ? (
-                        <Text style={[{ fontSize: 16, fontWeight: '800', color: changed ? COLOR.text.link : T.ink, marginRight: 6 }, NUM]}>{total}개</Text>
+                        <Text style={[{ fontSize: 16, fontWeight: '800', color: changed ? COLOR.text.accent : T.ink, marginRight: 6 }, NUM]}>{total}개</Text>
                       ) : (
                         <Text style={{ fontSize: 15, fontWeight: '700', color: COLOR.text.link, marginRight: 6 }}>+ 판매</Text>
                       )}
@@ -337,7 +337,7 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
                 <View style={{ flex: 1, minWidth: 0 }}>
                   <Text style={{ fontSize: 16, fontWeight: '600', color: T.sub }}>{e.name} <Text style={{ color: COLOR.text.tertiary }}>×{e.qty}</Text></Text>
                   {/* 미지정은 회색으로 둔다 — 매장으로 보이면 안 된다(0093). */}
-                  <Text style={{ fontSize: 13, fontWeight: '700', color: e.channel ? COLOR.text.link : COLOR.text.tertiary, marginTop: 2 }}>{channelName(e.channel)}</Text>
+                  <Text style={{ fontSize: 13, fontWeight: '700', color: e.channel ? COLOR.text.accent : COLOR.text.tertiary, marginTop: 2 }}>{channelName(e.channel)}</Text>
                 </View>
                 <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink, marginRight: 10 }, NUM]}>{won(e.price * e.qty)}원</Text>
                 <Pressable
@@ -373,7 +373,7 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
                     backgroundColor: on ? COLOR.action.primaryTint : T.surface,
                   }}
                 >
-                  <Text style={{ fontSize: 15, fontWeight: on ? '800' : '600', color: on ? COLOR.text.link : T.sub }}>{name}</Text>
+                  <Text style={{ fontSize: 15, fontWeight: on ? '800' : '600', color: on ? COLOR.state.selectedText : T.sub }}>{name}</Text>
                 </Pressable>
               );
             })}

@@ -186,7 +186,7 @@ function OrderCompleteScreenBody({ localDate }: { localDate: string }) {
                 <View style={{ flex: 1 }}>
                   <Text style={{ fontSize: 16, fontWeight: '600', color: T.sub }}>실사용 단가</Text>
                 </View>
-                <Text style={[{ fontSize: 16, fontWeight: '700', color: COLOR.text.link }, NUM]}>{dash(real)}원/{unit}</Text>
+                <Text style={[{ fontSize: 16, fontWeight: '700', color: COLOR.text.accent }, NUM]}>{dash(real)}원/{unit}</Text>
               </View>
             </Card>
 
@@ -203,7 +203,7 @@ function OrderCompleteScreenBody({ localDate }: { localDate: string }) {
                     accessibilityRole="button" accessibilityLabel={label} accessibilityState={{ selected: on }}
                     style={{ flex: 1, alignItems: 'center', paddingVertical: 11, borderRadius: 10, borderWidth: 1, borderColor: on ? COLOR.action.primary : T.line, backgroundColor: on ? COLOR.action.primaryTint : T.surface }}
                   >
-                    <Text style={{ fontSize: 14, fontWeight: '700', color: on ? COLOR.text.link : T.sub }}>{label}</Text>
+                    <Text style={{ fontSize: 14, fontWeight: '700', color: on ? COLOR.state.selectedText : T.sub }}>{label}</Text>
                   </Pressable>
                 );
               })}

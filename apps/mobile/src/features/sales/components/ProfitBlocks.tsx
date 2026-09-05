@@ -128,7 +128,7 @@ export function DetailSummary({ rows }: { rows: [string, string, string?, string
           <View style={{ alignItems: 'flex-end' }}>
             <Text style={[{ fontSize: 15, fontWeight: '800', color: tone ?? T.ink }, NUM]}>{v}</Text>
             {/* 고정지출률처럼 값 옆이 아니라 **아래**에 붙는 보조 숫자(프로토타입 규격). */}
-            {sub ? <Text style={[{ fontSize: 12, fontWeight: '800', color: COLOR.text.link, marginTop: 3 }, NUM]}>{sub}</Text> : null}
+            {sub ? <Text style={[{ fontSize: 12, fontWeight: '800', color: COLOR.text.accent, marginTop: 3 }, NUM]}>{sub}</Text> : null}
           </View>
         </View>
       ))}
@@ -360,7 +360,7 @@ export function MenuSalesList({ menu, showAll, onShowAll, onSelect }: {
         >
           <View style={{ flex: 1, minWidth: 0 }}>
             <Text style={{ fontSize: 15, fontWeight: '800', color: T.ink }} numberOfLines={1}>
-              {m.menuName} <Text style={{ fontSize: 14, color: COLOR.text.link, fontWeight: '700' }}>×{m.qty}</Text>
+              {m.menuName} <Text style={{ fontSize: 14, color: COLOR.text.accent, fontWeight: '700' }}>×{m.qty}</Text>
             </Text>
             <Text style={[{ fontSize: 12, fontWeight: '600', color: COLOR.text.tertiary, marginTop: 4 }, NUM]} numberOfLines={1}>
               매장 {m.qtyHall} · 배달 {m.qtyDelivery} · 포장 {m.qtyTakeout}

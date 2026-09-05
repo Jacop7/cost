@@ -254,7 +254,7 @@ export default function RecipeDetailScreen() {
                     accessibilityRole="button" accessibilityLabel={r.active ? '판매 중지' : '판매 재개'}
                     style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 4, paddingVertical: 13, borderTopWidth: 1, borderTopColor: T.line2, backgroundColor: T.surface2 }}
                   >
-                    <Text style={{ fontSize: 16, fontWeight: '700', color: r.active ? T.red : COLOR.text.link }}>
+                    <Text style={{ fontSize: 16, fontWeight: '700', color: r.active ? COLOR.status.negative : COLOR.text.link }}>
                       {r.active ? '판매 중지' : '판매 재개'}
                     </Text>
                   </Pressable>
@@ -537,8 +537,8 @@ export default function RecipeDetailScreen() {
                           <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 1 }}>목표 {r.targetProfitRate}% 기준</Text>
                         </View>
                         <View style={{ alignItems: 'flex-end' }}>
-                          <Text style={[{ fontSize: 16, fontWeight: '800', color: COLOR.text.link }, NUM]}>{won(recommended)}원</Text>
-                          <Text style={[{ fontSize: 14, fontWeight: '700', color: COLOR.text.link, marginTop: 2 }, NUM]}>{r.targetProfitRate}%</Text>
+                          <Text style={[{ fontSize: 16, fontWeight: '800', color: COLOR.text.accent }, NUM]}>{won(recommended)}원</Text>
+                          <Text style={[{ fontSize: 14, fontWeight: '700', color: COLOR.text.accent, marginTop: 2 }, NUM]}>{r.targetProfitRate}%</Text>
                         </View>
                       </View>
                     ) : null}

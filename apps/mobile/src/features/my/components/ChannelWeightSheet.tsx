@@ -71,7 +71,7 @@ export function ChannelWeightSheet({ visible, onClose, title, value, onApply }: 
             style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 13, paddingHorizontal: 14, borderRadius: 12, borderWidth: 1, borderColor: enabled ? COLOR.action.primary : T.line, backgroundColor: enabled ? COLOR.action.primaryTint : T.surface, marginBottom: 16 }}
           >
             <View style={{ flex: 1 }}>
-              <Text style={{ fontSize: 16, fontWeight: '700', color: enabled ? COLOR.text.link : T.ink }}>비중 직접 지정</Text>
+              <Text style={{ fontSize: 16, fontWeight: '700', color: enabled ? COLOR.state.selectedText : T.ink }}>비중 직접 지정</Text>
               <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 2 }}>
                 끄면 채널 매출 비중으로 자동 배분돼요
               </Text>
@@ -84,7 +84,7 @@ export function ChannelWeightSheet({ visible, onClose, title, value, onApply }: 
               <View key={c.code}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 9 }}>
                   <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: T.ink }}>{c.name}</Text>
-                  <Text style={[{ fontSize: 16, fontWeight: '800', color: COLOR.text.link }, NUM]}>{weights[c.code] ?? 0}%</Text>
+                  <Text style={[{ fontSize: 16, fontWeight: '800', color: COLOR.text.accent }, NUM]}>{weights[c.code] ?? 0}%</Text>
                 </View>
                 <Slider
                   value={weights[c.code] ?? 0}
@@ -98,9 +98,9 @@ export function ChannelWeightSheet({ visible, onClose, title, value, onApply }: 
           </View>
 
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 18, paddingVertical: 13, paddingHorizontal: 15, borderRadius: 11, backgroundColor: exact ? COLOR.action.primaryTint : T.surface2 }}>
-            <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: exact ? COLOR.text.link : T.sub }}>합계</Text>
+            <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: exact ? COLOR.text.accent : T.sub }}>합계</Text>
             {exact ? <Icon name="check" size={15} color={COLOR.action.primary} sw={3} /> : null}
-            <Text style={[{ fontSize: 16, fontWeight: '800', color: exact ? COLOR.text.link : T.sub }, NUM]}>{sum}%</Text>
+            <Text style={[{ fontSize: 16, fontWeight: '800', color: exact ? COLOR.text.accent : T.sub }, NUM]}>{sum}%</Text>
           </View>
           {!exact && enabled ? (
             <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 8, lineHeight: 20 }}>

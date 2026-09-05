@@ -66,6 +66,8 @@ const pick = (text, key, where) => {
 const tBlock = block('export const T = {');
 const colorBlock = block('export const COLOR = {');
 const textBlock = sub(colorBlock, 'text');
+const stateBlock = sub(colorBlock, 'state');
+const statusBlock = sub(colorBlock, 'status');
 const actionBlock = sub(colorBlock, 'action');
 const brandBlock = sub(colorBlock, 'brand');
 const compBlock = block('export const COMPONENT = {');
@@ -77,13 +79,21 @@ const surfaces = {
   bg: pick(tBlock, 'bg', 'T'),
 };
 const blueTint = pick(tBlock, 'blueTint', 'T');
+const pickRole = (text, key, where) => {
+  if (!text) { fail.push(`${where} 블록을 찾지 못했다 — tokens.ts 의 모양이 바뀌었다`); return null; }
+  const literal = text.match(new RegExp(`(?:^|[^A-Za-z])${key}\\s*:\\s*'(#[0-9A-Fa-f]{3,8})'`));
+  if (literal) return literal[1].toUpperCase();
+  const ref = text.match(new RegExp(`(?:^|[^A-Za-z])${key}\\s*:\\s*T\\.([A-Za-z][A-Za-z0-9]*)`));
+  if (ref) return pick(tBlock, ref[1], 'T');
+  fail.push(`${where}.${key} 를 tokens.ts 에서 찾지 못했다`); return null;
+};
 const status = {
-  'status.positive': pick(tBlock, 'green', 'T'),
-  'status.positiveTint': pick(tBlock, 'greenTint', 'T'),
-  'status.negative': pick(tBlock, 'red', 'T'),
-  'status.negativeTint': pick(tBlock, 'redTint', 'T'),
-  'status.caution': pick(tBlock, 'amberText', 'T'),
-  'status.cautionTint': pick(tBlock, 'amberTint', 'T'),
+  'status.positive': pickRole(statusBlock, 'positive', 'COLOR.status'),
+  'status.positiveTint': pickRole(statusBlock, 'positiveTint', 'COLOR.status'),
+  'status.negative': pickRole(statusBlock, 'negative', 'COLOR.status'),
+  'status.negativeTint': pickRole(statusBlock, 'negativeTint', 'COLOR.status'),
+  'status.caution': pickRole(statusBlock, 'caution', 'COLOR.status'),
+  'status.cautionTint': pickRole(statusBlock, 'cautionTint', 'COLOR.status'),
 };
 const text = {
   'text.primary': pick(textBlock, 'primary', 'COLOR.text'),
@@ -91,13 +101,14 @@ const text = {
   'text.tertiary': pick(textBlock, 'tertiary', 'COLOR.text'),
   'text.link': pick(textBlock, 'link', 'COLOR.text'),
   'text.linkPressed': pick(textBlock, 'linkPressed', 'COLOR.text'),
+  'text.accent': pick(textBlock, 'accent', 'COLOR.text'),
   'text.required': pick(textBlock, 'required', 'COLOR.text'),
+  'state.selectedText': pick(stateBlock, 'selectedText', 'COLOR.state'),
 };
 const textDisabled = pick(textBlock, 'disabled', 'COLOR.text');
 const action = {
   'action.primary': pick(actionBlock, 'primary', 'COLOR.action'),
   'action.primaryPressed': pick(actionBlock, 'primaryPressed', 'COLOR.action'),
-  'action.primaryDisabled': pick(actionBlock, 'primaryDisabled', 'COLOR.action'),
   'action.primaryTint': pick(actionBlock, 'primaryTint', 'COLOR.action'),
   'action.onTint': pick(actionBlock, 'onTint', 'COLOR.action'),
 };
@@ -136,7 +147,6 @@ for (const [sname, s] of Object.entries(surfaces))
   for (const [role, fg] of Object.entries(text)) check(role, fg, s, 'text', sname);
 check('action.primary 위 흰 글자', surfaces.surface, action['action.primary'], 'text', 'action.primary');
 check('action.primaryPressed 위 흰 글자', surfaces.surface, action['action.primaryPressed'], 'text', 'action.primaryPressed');
-check('action.primaryDisabled 위 흰 글자', surfaces.surface, action['action.primaryDisabled'], 'text', 'action.primaryDisabled');
 check('action.onTint on primaryTint', action['action.onTint'], action['action.primaryTint'], 'text', 'action.primaryTint');
 check('myHubTile.label on background', tile['myHubTile.label'], tile['myHubTile.background'], 'text', 'myHubTile');
 check('myHubTile.icon on background', tile['myHubTile.icon'], tile['myHubTile.background'], 'nonText', 'myHubTile');

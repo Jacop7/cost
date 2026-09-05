@@ -64,7 +64,7 @@ export function LedgerRow({
         ) : null}
       </View>
       <View style={{ alignItems: 'flex-end' }}>
-        <Text style={[{ fontSize: 16, fontWeight: '800', color: up ? COLOR.text.link : T.red }, tnum]}>{dNum}<Text style={{ fontWeight: '600' }}>{dUnit}</Text></Text>
+        <Text style={[{ fontSize: 16, fontWeight: '800', color: up ? COLOR.text.accent : T.red }, tnum]}>{dNum}<Text style={{ fontWeight: '600' }}>{dUnit}</Text></Text>
         <Text style={[{ fontSize: 14, color: balNeg ? T.red : COLOR.text.tertiary, fontWeight: balNeg ? '800' : '400', marginTop: 3 }, tnum]}>{bal}</Text>
       </View>
     </Pressable>

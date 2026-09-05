@@ -132,16 +132,6 @@ export type StatusKey = StockState;
 /** 숫자 정렬용 tabular-nums 스타일 (kit tnum). */
 export const tnum = { fontVariant: ['tabular-nums'] } as { fontVariant: ('tabular-nums')[] };
 
-/** 상태 판정은 core가 하고 kit은 같은 키의 라벨·색만 표시한다. */
-export const STATUS: Record<
-  StatusKey,
-  { label: string; fg: string; bg: string; bar: string }
-> = {
-  ok: { label: '여유', fg: T.green, bg: T.greenTint, bar: T.green },
-  low: { label: '소진 임박', fg: T.amberText, bg: T.amberTint, bar: T.amberText },
-  out: { label: '소진', fg: T.red, bg: T.redTint, bar: T.red },
-};
-
 export const space = { xs: 4, sm: 8, md: 12, lg: 16, xl: 20, xxl: 24 } as const;
 export const radius = { sm: 8, md: 12, lg: 16, xl: 20, full: 999 } as const;
 
@@ -177,15 +167,27 @@ export const COLOR = {
     /** 링크 — **전경 의무**라 네 표면 전부 4.5 이상이어야 한다(§8.2a). */
     link: '#1465DB',
     linkPressed: '#0E5FD6',
+    /** 강조 값·양의 방향. 링크와 값이 같아도 독립적으로 바꿀 수 있게 역할을 분리한다. */
+    accent: '#1465DB',
     /** 필수 표시(`*`). */
     required: '#1465DB',
+  },
+  state: {
+    /** 선택된 옵션·탭·칩의 글자. 링크나 KPI 강조와 독립된 상태 역할이다. */
+    selectedText: '#1465DB',
+  },
+  status: {
+    positive: T.green,
+    caution: T.amberText,
+    negative: T.red,
+    positiveTint: T.greenTint,
+    cautionTint: T.amberTint,
+    negativeTint: T.redTint,
   },
   action: {
     /** 주 버튼 **배경**. 그 위 흰 글자가 4.50(경계값)이다. */
     primary: '#1470F5',
     primaryPressed: '#1465DB',
-    /** 비활성 Primary 배경. 흰 글자와 4.52:1이며 비활성 상태도 형태를 흐리지 않는다. */
-    primaryDisabled: '#6A7887',
     /** 옅은 파랑 배경(안내 배너·선택 상태·MY 허브 타일). 기존 `T.blueTint` 그대로다. */
     primaryTint: '#EBF3FE',
     /** `tint` 위에 오는 글자·아이콘. */
@@ -197,6 +199,16 @@ export const COLOR = {
     primary: '#3182F6',
   },
 } as const;
+
+/** 상태 판정은 core가 하고 kit은 의미 상태 역할만 표시한다. */
+export const STATUS: Record<
+  StatusKey,
+  { label: string; fg: string; bg: string; bar: string }
+> = {
+  ok: { label: '여유', fg: COLOR.status.positive, bg: COLOR.status.positiveTint, bar: COLOR.status.positive },
+  low: { label: '소진 임박', fg: COLOR.status.caution, bg: COLOR.status.cautionTint, bar: COLOR.status.caution },
+  out: { label: '소진', fg: COLOR.status.negative, bg: COLOR.status.negativeTint, bar: COLOR.status.negative },
+};
 
 /**
  * 그림자 — 다섯 역할. 값은 **코드 실측**이고 지어낸 것이 아니다.

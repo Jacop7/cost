@@ -82,7 +82,7 @@ export function SummaryCard({ label, value, sub, metrics = [] }: {
                     {m.label}
                   </Text>
                   <Text
-                    style={[{ fontSize: 15, fontWeight: '800', color: m.tone === 'blue' ? COLOR.text.link : m.tone === 'red' ? T.red : T.ink }, tnum]}
+                    style={[{ fontSize: 15, fontWeight: '800', color: m.tone === 'blue' ? COLOR.text.accent : m.tone === 'red' ? T.red : T.ink }, tnum]}
                     numberOfLines={1}
                   >
                     {m.value}

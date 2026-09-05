@@ -2,23 +2,22 @@
   "manifest": {
     "script": "docs/prototypes/full-page-flow-prototype-contrast-gate.mjs",
     "scriptSha256": "94bc81373ceeef25806da5e291a00d9e4988230ec7f681da3af7b554603614c5",
-    "contractSha256": "c6a08b91de03e52fd35f429326d8c1352e97f7477ba95cc8aa0aca370080c77a",
+    "contractSha256": "aaa283ef603461ecf0cc7c7d426e2165fac08a65f2715c44443bdf7af2a368e7",
     "node": "v24.15.0",
-    "generatedAt": "2026-09-05T14:57:55.764Z",
+    "generatedAt": "2026-09-05T20:33:12.541Z",
     "기준": "글자 4.5:1 · 비텍스트 3:1 — 절대 기준. baseline 비교가 아니다.",
     "면제": [
       "text.disabled #8B95A1 — WCAG 1.4.3 은 **비활성 컴포넌트의 글자를 면제**한다. 면제이지 통과가 아니므로 값은 재고 대상에서 뺀다."
     ]
   },
   "status": "PASS",
-  "pairCount": 37,
+  "pairCount": 42,
   "openCount": 0,
   "open": [],
-  "boundaryCount": 7,
+  "boundaryCount": 6,
   "boundaries": [
     "text.tertiary #66717E on #F2F4F6 = 4.50",
     "action.primary 위 흰 글자 #FFFFFF on #1470F5 = 4.50",
-    "비활성 Primary 위 흰 글자 #FFFFFF on #6A7887 = 4.52",
     "status.positive #0B7F58 on #F2F4F6 = 4.54",
     "status.caution #A16000 on #F2F4F6 = 4.55",
     "status.positive on status.positiveTint #0B7F58 on #E7F7F0 = 4.52",
@@ -64,6 +63,30 @@
     },
     {
       "역할": "text.link",
+      "fg": "#1465DB",
+      "bg": "#FFFFFF",
+      "표면": "surface",
+      "kind": "text",
+      "ratio": 5.37,
+      "min": 4.5,
+      "pass": true,
+      "boundary": false,
+      "open": false
+    },
+    {
+      "역할": "text.accent",
+      "fg": "#1465DB",
+      "bg": "#FFFFFF",
+      "표면": "surface",
+      "kind": "text",
+      "ratio": 5.37,
+      "min": 4.5,
+      "pass": true,
+      "boundary": false,
+      "open": false
+    },
+    {
+      "역할": "state.selectedText",
       "fg": "#1465DB",
       "bg": "#FFFFFF",
       "표면": "surface",
@@ -147,6 +170,30 @@
       "open": false
     },
     {
+      "역할": "text.accent",
+      "fg": "#1465DB",
+      "bg": "#F9FAFB",
+      "표면": "surface2",
+      "kind": "text",
+      "ratio": 5.13,
+      "min": 4.5,
+      "pass": true,
+      "boundary": false,
+      "open": false
+    },
+    {
+      "역할": "state.selectedText",
+      "fg": "#1465DB",
+      "bg": "#F9FAFB",
+      "표면": "surface2",
+      "kind": "text",
+      "ratio": 5.13,
+      "min": 4.5,
+      "pass": true,
+      "boundary": false,
+      "open": false
+    },
+    {
       "역할": "text.required",
       "fg": "#1465DB",
       "bg": "#F9FAFB",
@@ -219,6 +266,30 @@
       "open": false
     },
     {
+      "역할": "text.accent",
+      "fg": "#1465DB",
+      "bg": "#F2F4F6",
+      "표면": "bg",
+      "kind": "text",
+      "ratio": 4.87,
+      "min": 4.5,
+      "pass": true,
+      "boundary": false,
+      "open": false
+    },
+    {
+      "역할": "state.selectedText",
+      "fg": "#1465DB",
+      "bg": "#F2F4F6",
+      "표면": "bg",
+      "kind": "text",
+      "ratio": 4.87,
+      "min": 4.5,
+      "pass": true,
+      "boundary": false,
+      "open": false
+    },
+    {
       "역할": "text.required",
       "fg": "#1465DB",
       "bg": "#F2F4F6",
@@ -249,18 +320,6 @@
       "표면": null,
       "kind": "text",
       "ratio": 4.5,
-      "min": 4.5,
-      "pass": true,
-      "boundary": true,
-      "open": false
-    },
-    {
-      "역할": "비활성 Primary 위 흰 글자",
-      "fg": "#FFFFFF",
-      "bg": "#6A7887",
-      "표면": null,
-      "kind": "text",
-      "ratio": 4.52,
       "min": 4.5,
       "pass": true,
       "boundary": true,

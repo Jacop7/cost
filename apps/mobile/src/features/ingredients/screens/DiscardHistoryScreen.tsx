@@ -234,7 +234,7 @@ function DiscardHistoryBody({ localDate }: { localDate: string }) {
                   accessibilityLabel={`${k} ${n}건`}
                   style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 14, borderTopWidth: 1, borderTopColor: T.line2 }}
                 >
-                  <Text style={{ flex: 1, fontSize: 16, fontWeight: on ? '800' : '600', color: on ? COLOR.text.link : T.ink }}>{k}</Text>
+                  <Text style={{ flex: 1, fontSize: 16, fontWeight: on ? '800' : '600', color: on ? COLOR.state.selectedText : T.ink }}>{k}</Text>
                   <Text style={[{ fontSize: 14, color: COLOR.text.tertiary, marginRight: 8 }, tnum]}>{n}건</Text>
                   {on ? <Icon name="check" size={18} color={COLOR.action.primary} sw={2.4} /> : null}
                 </Pressable>

@@ -314,7 +314,7 @@ export default function MyHoursScreen() {
               <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 8, padding: 14 }}>
                 <View style={{ paddingTop: 1 }}><Icon name="calendar" size={18} color={COLOR.action.primary} /></View>
                 <View style={{ flex: 1 }}>
-                  <Text style={{ fontSize: 15, fontWeight: '800', color: COLOR.text.link }}>
+                  <Text style={{ fontSize: 15, fontWeight: '800', color: COLOR.text.accent }}>
                     변경한 영업시간은 {mdLabel(st.pending.effectiveFrom)}부터 적용돼요
                   </Text>
                   <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 2 }}>
@@ -331,7 +331,7 @@ export default function MyHoursScreen() {
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, padding: 14 }}>
                 <Icon name="info" size={18} color={COLOR.action.primary} />
                 <View style={{ flex: 1 }}>
-                  <Text style={{ fontSize: 15, fontWeight: '800', color: COLOR.text.link }}>매장 시간대를 정해 주세요</Text>
+                  <Text style={{ fontSize: 15, fontWeight: '800', color: COLOR.text.accent }}>매장 시간대를 정해 주세요</Text>
                   <Text style={{ fontSize: 13.5, color: COLOR.text.tertiary, marginTop: 2 }}>기기 시간대는 {deviceTz} 예요.</Text>
                 </View>
                 <Button kind="primary" size="sm" loading={saveTz.isPending} onPress={() => chooseTz(deviceTz)}>
@@ -380,7 +380,7 @@ export default function MyHoursScreen() {
                       backgroundColor: on ? COLOR.action.primaryTint : closed ? T.surface2 : T.surface,
                     }}
                   >
-                    <Text style={{ fontSize: 15, fontWeight: on ? '800' : '600', color: on ? COLOR.text.link : closed ? COLOR.text.tertiary : T.sub2 }}>
+                    <Text style={{ fontSize: 15, fontWeight: on ? '800' : '600', color: on ? COLOR.state.selectedText : closed ? COLOR.text.tertiary : T.sub2 }}>
                       {DOW_LABEL[d]}
                     </Text>
                   </Pressable>
@@ -390,7 +390,7 @@ export default function MyHoursScreen() {
 
             {days ? DOW_ORDER.map((d) => (
               <View key={d} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10, paddingHorizontal: 15, borderTopWidth: 1, borderTopColor: T.line2 }}>
-                <Text style={{ width: 34, fontSize: 15, fontWeight: '800', color: selected.has(d) ? COLOR.text.link : T.sub }}>{DOW_LABEL[d]}</Text>
+                <Text style={{ width: 34, fontSize: 15, fontWeight: '800', color: selected.has(d) ? COLOR.state.selectedText : T.sub }}>{DOW_LABEL[d]}</Text>
                 <Text style={[{ flex: 1, fontSize: 14.5, fontWeight: '600', color: days[d]?.closed ? COLOR.text.tertiary : T.ink }, NUM]}>
                   {days[d] ? dayLabel(days[d]) : '—'}
                 </Text>
@@ -523,7 +523,7 @@ export default function MyHoursScreen() {
                 accessibilityState={{ selected: on }}
                 style={{ paddingVertical: 8, paddingHorizontal: 10, borderRadius: 9, borderWidth: 1, borderColor: on ? COLOR.action.primary : T.line, backgroundColor: on ? COLOR.action.primaryTint : T.surface }}
               >
-                <Text style={[{ fontSize: 14, fontWeight: on ? '800' : '600', color: on ? COLOR.text.link : T.sub2 }, NUM]}>{t}</Text>
+                <Text style={[{ fontSize: 14, fontWeight: on ? '800' : '600', color: on ? COLOR.state.selectedText : T.sub2 }, NUM]}>{t}</Text>
               </Pressable>
             );
           })}
@@ -556,7 +556,7 @@ export default function MyHoursScreen() {
               accessibilityState={{ selected: on }}
               style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 13, borderBottomWidth: 1, borderBottomColor: T.line2 }}
             >
-              <Text style={{ flex: 1, fontSize: 15, fontWeight: on ? '800' : '600', color: on ? COLOR.text.link : T.ink }}>{tz}</Text>
+              <Text style={{ flex: 1, fontSize: 15, fontWeight: on ? '800' : '600', color: on ? COLOR.state.selectedText : T.ink }}>{tz}</Text>
               {tz === deviceTz ? <Badge tone="blue" sm>기기</Badge> : null}
               {on ? <Icon name="check" size={17} color={COLOR.action.primary} /> : null}
             </Pressable>

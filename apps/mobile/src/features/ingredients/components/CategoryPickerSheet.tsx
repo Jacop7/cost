@@ -55,7 +55,7 @@ export function CategoryPickerSheet({
                 }}
               >
                 <View style={{ flex: 1, minWidth: 0 }}>
-                  <Text style={{ fontSize: 16, fontWeight: '700', color: on ? COLOR.text.link : T.ink2 }}>{c.name}</Text>
+                  <Text style={{ fontSize: 16, fontWeight: '700', color: on ? COLOR.state.selectedText : T.ink2 }}>{c.name}</Text>
                 </View>
                 {on ? <Icon name="check" size={17} color={COLOR.action.primary} sw={2.4} /> : null}
               </Pressable>

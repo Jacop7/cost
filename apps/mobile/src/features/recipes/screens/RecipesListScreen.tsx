@@ -216,7 +216,7 @@ export default function RecipesListScreen() {
             accessibilityState={{ selected: sort === s.key }}
             style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 15, paddingHorizontal: 4 }}
           >
-            <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: sort === s.key ? COLOR.text.link : T.ink }}>{s.label}</Text>
+            <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: sort === s.key ? COLOR.state.selectedText : T.ink }}>{s.label}</Text>
             {sort === s.key ? <Icon name="check" size={18} color={COLOR.action.primary} sw={2.4} /> : null}
           </Pressable>
         ))}
@@ -232,7 +232,7 @@ export default function RecipesListScreen() {
             accessibilityState={{ selected: statusFilter === s.key }}
             style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 15, paddingHorizontal: 4 }}
           >
-            <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: statusFilter === s.key ? COLOR.text.link : T.ink }}>{s.label}</Text>
+            <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: statusFilter === s.key ? COLOR.state.selectedText : T.ink }}>{s.label}</Text>
             {statusFilter === s.key ? <Icon name="check" size={18} color={COLOR.action.primary} sw={2.4} /> : null}
           </Pressable>
         ))}
@@ -248,7 +248,7 @@ export default function RecipesListScreen() {
             accessibilityState={{ selected: targetFilter === s.key }}
             style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 15, paddingHorizontal: 4 }}
           >
-            <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: targetFilter === s.key ? COLOR.text.link : T.ink }}>{s.label}</Text>
+            <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: targetFilter === s.key ? COLOR.state.selectedText : T.ink }}>{s.label}</Text>
             {targetFilter === s.key ? <Icon name="check" size={18} color={COLOR.action.primary} sw={2.4} /> : null}
           </Pressable>
         ))}

@@ -61,7 +61,7 @@ export function SortSheet<K extends string>({ visible, options, value, onSelect,
             }}
           >
             <View style={{ flex: 1, minWidth: 0 }}>
-              <Text style={{ fontSize: 16, fontWeight: on ? '800' : '600', color: on ? COLOR.text.link : T.ink }}>{o.label}</Text>
+              <Text style={{ fontSize: 16, fontWeight: on ? '800' : '600', color: on ? COLOR.state.selectedText : T.ink }}>{o.label}</Text>
               {o.hint ? <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 2 }}>{o.hint}</Text> : null}
             </View>
             {on ? <Icon name="check" size={20} color={COLOR.action.primary} sw={2.4} /> : null}

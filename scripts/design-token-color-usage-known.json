@@ -442,5 +442,18 @@
     "blue": 0,
     "blueTint": 0,
     "bluePressed": 0
+  },
+  "statusAliasExpectedTotals": {
+    "green": 29,
+    "greenTint": 6,
+    "amberText": 38,
+    "amberTint": 15,
+    "red": 96,
+    "redTint": 17
+  },
+  "buttonDisabledContract": {
+    "mode": "variant-color-opacity",
+    "opacity": 0.4,
+    "decision": "2026-09-06 사용자 결정 — 버튼마다 역할색이 다르므로 고유색을 유지하고 opacity로 비활성을 표현한다"
   }
 }

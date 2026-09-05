@@ -268,7 +268,7 @@ function SalesAnalyticsBody({ today }: { today: string }) {
                 }}
               >
                 <View style={{ flex: 1, minWidth: 0 }}>
-                  <Text style={{ fontSize: 15, fontWeight: on ? '800' : '700', color: on ? COLOR.text.link : T.ink }}>{pp.short}</Text>
+                  <Text style={{ fontSize: 15, fontWeight: on ? '800' : '700', color: on ? COLOR.state.selectedText : T.ink }}>{pp.short}</Text>
                   <Text style={[{ fontSize: 12, fontWeight: '600', color: COLOR.text.tertiary, marginTop: 3 }, NUM]}>{pp.label}</Text>
                 </View>
                 {on ? <Icon name="check" size={18} color={COLOR.action.primary} /> : null}
@@ -333,7 +333,7 @@ function SalesAnalyticsBody({ today }: { today: string }) {
             <Icon name="chevron" size={18} color={COLOR.text.tertiary} />
           </Pressable>
         </View>
-        <Text style={{ fontSize: 13, fontWeight: '700', color: COLOR.text.link, textAlign: 'center', marginBottom: 8 }}>
+        <Text style={{ fontSize: 13, fontWeight: '700', color: COLOR.state.selectedText, textAlign: 'center', marginBottom: 8 }}>
           {editing === 'from' ? '시작일' : '종료일'}을 고르는 중이에요
         </Text>
         <View style={{ flexDirection: 'row', marginBottom: 6 }}>

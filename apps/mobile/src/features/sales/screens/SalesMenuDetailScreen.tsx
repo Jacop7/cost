@@ -146,7 +146,7 @@ function SalesMenuDetailScreenBody({ serverToday }: { serverToday: string }) {
   ];
 
   const chQty = sold ? [
-    { label: '매장', qty: sold.qtyHall, color: COLOR.text.link },
+    { label: '매장', qty: sold.qtyHall, color: COLOR.text.accent },
     { label: '배달', qty: sold.qtyDelivery, color: '#7A8694' },
     { label: '포장', qty: sold.qtyTakeout, color: '#C5CCD3' },
   ].filter((c) => c.qty > 0) : [];

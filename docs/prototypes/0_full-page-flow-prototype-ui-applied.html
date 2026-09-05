@@ -1,12 +1,12 @@
 <!doctype html>
-<!-- DESIGN_SYNC: DS-20260905-008 -->
+<!-- DESIGN_SYNC: DS-20260906-001 -->
 <html lang="ko">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>서비스 전체 페이지 흐름 프로토타입</title>
   <style>
-    :root{--bg:#eef1f4;--app:#f2f4f6;--surface:#fff;--surface2:#f9fafb;--ink:#191f28;--ink2:#333d4b;--sub:#4e5968;--ter:#66717e;--disabled:#8b95a1;--line:#e5e8eb;--line2:#f2f4f6;--brand:#3182f6;--blue:#1470f5;--blue-pressed:#1465db;--blue2:#ebf3fe;--on-tint:#1465db;--text-link:#1465db;--required:#1465db;--red:#da1222;--green:#0b7f58;--amber:#a16000;--amber2:#fff4e5}
+    :root{--bg:#eef1f4;--app:#f2f4f6;--surface:#fff;--surface2:#f9fafb;--ink:#191f28;--ink2:#333d4b;--sub:#4e5968;--ter:#66717e;--disabled:#8b95a1;--line:#e5e8eb;--line2:#f2f4f6;--brand:#3182f6;--blue:#1470f5;--blue-pressed:#1465db;--blue2:#ebf3fe;--on-tint:#1465db;--text-link:#1465db;--accent:#1465db;--selected-text:#1465db;--required:#1465db;--red:#da1222;--green:#0b7f58;--amber:#a16000;--amber2:#fff4e5}
     *{box-sizing:border-box}b,strong{font-variant-numeric:tabular-nums}small,em{font-size:13px;font-weight:600} body{margin:0;min-height:100vh;padding:22px 14px 40px;background:var(--bg);color:var(--ink);font-family:Pretendard,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased} button{font:inherit}
     .workspace{width:min(960px,100%);margin:auto}.catalog{width:min(680px,100%);margin:0 auto 14px;padding:14px;border:1px solid rgba(25,31,40,.08);border-radius:18px;background:rgba(255,255,255,.82);backdrop-filter:blur(12px)}
     .catalog-head{display:flex;align-items:flex-end;gap:12px;margin-bottom:12px}.catalog-title{margin:0;font-size:17px;font-weight:800}.catalog-meta{margin-left:auto;color:var(--ter);font-size:13px;font-weight:700}.nav-row{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}.nav-row:empty{display:none}.nav-row::-webkit-scrollbar{display:none}.nav-row+.nav-row{margin-top:8px;padding-top:8px;border-top:1px solid var(--line)}.nav-button{flex:0 0 auto;min-height:36px;padding:7px 11px;border:0;border-radius:9px;background:transparent;color:var(--sub);font-size:13px;font-weight:800;line-height:18px;cursor:pointer;white-space:nowrap}.nav-button.active{background:var(--surface);color:var(--ink);font-size:13px;box-shadow:0 2px 9px rgba(25,31,40,.09)}.domain-button.active{color:#fff;background:var(--ink);box-shadow:none}
@@ -107,6 +107,8 @@
     .prototype-input-shell.numeric input,.edit-form-box.numeric-value input{text-align:end}
     .edit-form-box.numeric-value input{min-width:0;flex:1;border:0;outline:0;background:transparent;color:inherit;font:inherit}
     .edit-form-box.numeric-value>span:last-child{margin-left:8px;color:var(--sub)}.edit-form-box.numeric-value>span:last-child:not(.chev){font-size:14px;font-weight:600}
+    /* 2026-09-06 소유자 결정: 버튼 variant의 고유색은 유지하고 비활성 표현만 opacity로 통일한다. */
+    .primary:disabled{background:var(--blue);color:#fff;opacity:.4}
   </style>
 </head>
 <body>

@@ -1,12 +1,12 @@
 ﻿# 전체 페이지 프로토타입 · 디자인 맥락 장부
 
-> 현재 동기화 ID: `DS-20260905-008`
+> 현재 동기화 ID: `DS-20260906-001`
 > 문서 동기화 상태: `SYNCED`
 > 전체 UI 작업 상태: `IN_PROGRESS`
-> 마지막 갱신: `2026-09-05`
+> 마지막 갱신: `2026-09-06`
 > 공통 변경: `예`
 > UI 변경: `예`
-> 변경 기록: `PRT-228`
+> 변경 기록: `PRT-229`
 
 ## 1. 문서 역할
 
@@ -42,6 +42,30 @@
 - 글로벌: 30~50% 긴 번역, 320px, 200% 글자 확대, RTL 검수.
 
 ## 4. 가장 최근 작업
+
+### DS-20260906-001 · PRT-229 S2 의미 역할 경계와 회귀 게이트 보강
+
+- 작업 성격: PRT-228 독립 검수에서 드러난 같은 색의 서로 다른 의미를 분리하고, 상태 역할의
+  정본과 기하 회귀 게이트 범위를 보강했다. 프로토타입도 비활성 버튼 표현만 기본 역할색 +
+  `opacity:0.4`로 맞췄고, 그 밖의 실제 색·타이포·간격·크기·배치는 바꾸지 않았다.
+- 결과:
+  - `#1465DB` 사용처 97건을 행동 링크 24 · 강조 값/양의 방향 42 · 선택 상태 31로 분리했다.
+    세 역할은 현재 값이 같아 시각 변화가 없지만 앞으로 독립적으로 바꿀 수 있다.
+  - `COLOR.status.*` 여섯 역할을 추가하고 `STATUS`가 의미 역할만 읽게 했다. 기존 `T.*` 상태
+    별칭 사용처는 증가 금지 래칫으로 고정했다.
+  - 정적 기하 계약을 방향별 border, corner radius, flex, aspectRatio, transform까지 넓혀
+    기준선과 같은 5,718개 선언을 대조한다.
+  - 앱 대비 계약은 44쌍 · 경계값 6으로 확장했다.
+  - 사용자 결정(2026-09-06)에 따라 비활성 Button은 각 variant의 역할색을 유지하고
+    `opacity: 0.4`로 통일했다. PRT-228의 전용 `primaryDisabled` 색 역할은 철회했다.
+- 완료 조건:
+  - PRT229-COLOR-USAGE · `full-page-flow-prototype-color-usage.json`
+  - PRT229-GEOMETRY · `full-page-flow-prototype-s2-geometry-diff.json`
+  - PRT229-CONTRAST · `full-page-flow-prototype-contrast-gate.json`
+  - PRT229-RENDER · `full-page-flow-prototype-render-audit.json`
+  - PRT229-DESIGN · `full-page-flow-prototype-design-audit.json`
+  - PRT229-I18N · `full-page-flow-prototype-i18n-stress.json`
+- 다음 시작점: 독립 재검수 승인 후 `S3a`.
 
 ### DS-20260905-008 · PRT-228 S2 의미 색 역할 적용과 AA 수렴
 

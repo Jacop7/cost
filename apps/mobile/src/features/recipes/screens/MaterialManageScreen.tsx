@@ -188,13 +188,13 @@ export default function MaterialManageScreen() {
         <View style={{ backgroundColor: COLOR.action.primaryTint, borderWidth: 1, borderColor: COLOR.action.primary, borderRadius: 12, paddingVertical: 14, paddingHorizontal: 16 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 11 }}>
             <Icon name="info" size={17} color={COLOR.action.primary} />
-            <Text style={{ fontSize: 16, fontWeight: '700', color: COLOR.text.link }}>단가 미리보기</Text>
+            <Text style={{ fontSize: 16, fontWeight: '700', color: COLOR.text.accent }}>단가 미리보기</Text>
           </View>
           <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 4 }}>
-            <Text style={{ flex: 1, fontSize: 14, fontWeight: '700', color: COLOR.text.link }}>
+            <Text style={{ flex: 1, fontSize: 14, fontWeight: '700', color: COLOR.text.accent }}>
               개당 단가 <Text style={{ fontWeight: '600', color: T.sub2 }}>({won(num(boxPrice))} ÷ {count})</Text>
             </Text>
-            <Text style={[{ fontSize: 20, fontWeight: '800', color: COLOR.text.link }, NUM]}>
+            <Text style={[{ fontSize: 20, fontWeight: '800', color: COLOR.text.accent }, NUM]}>
               {won(unitPrice)}<Text style={{ fontSize: 14 }}>원/{unitLabel || '개'}</Text>
             </Text>
           </View>
@@ -227,7 +227,7 @@ export default function MaterialManageScreen() {
             accessibilityRole="button" accessibilityLabel="지정 안 함"
             style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 14, paddingHorizontal: 16, borderRadius: 12, borderWidth: 1, borderColor: catId === null ? COLOR.action.primary : T.line, backgroundColor: catId === null ? COLOR.action.primaryTint : T.surface }}
           >
-            <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: catId === null ? COLOR.text.link : COLOR.text.tertiary }}>지정 안 함</Text>
+            <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: catId === null ? COLOR.state.selectedText : COLOR.text.tertiary }}>지정 안 함</Text>
             {catId === null ? <Icon name="check" size={17} color={COLOR.action.primary} sw={2.4} /> : null}
           </Pressable>
           {(lists.data?.materialCategories ?? []).map((c) => {
@@ -239,7 +239,7 @@ export default function MaterialManageScreen() {
                 accessibilityRole="button" accessibilityLabel={c.name} accessibilityState={{ selected: on }}
                 style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 14, paddingHorizontal: 16, borderRadius: 12, borderWidth: 1, borderColor: on ? COLOR.action.primary : T.line, backgroundColor: on ? COLOR.action.primaryTint : T.surface }}
               >
-                <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: on ? COLOR.text.link : T.ink2 }}>{c.name}</Text>
+                <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: on ? COLOR.state.selectedText : T.ink2 }}>{c.name}</Text>
                 {on ? <Icon name="check" size={17} color={COLOR.action.primary} sw={2.4} /> : null}
               </Pressable>
             );
