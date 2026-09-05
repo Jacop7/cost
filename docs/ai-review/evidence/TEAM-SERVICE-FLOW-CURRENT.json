@@ -2,9 +2,9 @@
   "schema_version": 1,
   "plan": {
     "path": "docs/팀서비스-자동흐름-구현계획.md",
-    "sha256": "1c316f966283334e21de0688aa6dc7eddd59307194030b9c0b96220f1ded8783"
+    "sha256": "e811e0b68b23d52b97ba9c321c14b7bb2e50606c401afed30a301a82961d0304"
   },
-  "current_verdict": "HOST_REQUIREMENTS_SPECIFIED_SEND_BLOCKED_LOCAL_CORE_GATED",
+  "current_verdict": "COOPERATIVE_CONTRACT_CANDIDATE_LOCAL_ADMISSION_BLOCKED",
   "allowed_actions": [
     "READ",
     "PLAN_REPAIR",
@@ -14,11 +14,11 @@
   "service_ready": false,
   "runtime_gates": {
     "PH_FEASIBILITY": "HOST_BINDING_UNAVAILABLE_IN_SCOPE",
-    "P2": "BLOCKED_EXACT_LOCAL_MODEL_SCOPE_AND_LOCAL_ADMISSION",
+    "P2": "BLOCKED_LOCAL_ADMISSION",
     "FORMAL_INDEPENDENT_REVIEW": "NOT_PASSED",
     "LIVE_PROBE": "NOT_EXECUTED",
-    "FULL_VERIFY": "NOT_PASSED",
-    "LOCAL_CORE_ADMISSION": "NOT_PASSED",
+    "FULL_VERIFY": "FAILED_3_STAGES_UPGRADE_EVIDENCE_UNVERIFIED",
+    "LOCAL_CORE_ADMISSION": "BLOCKED_VERIFY_DISPOSITION_MODEL_SCOPE_AND_AC24",
     "P6_HOST_INTEGRATION": "BLOCKED_NO_NEW_POSITIVE_SCOPE"
   },
   "correction": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-PLAN-CORRECTION-001.md",
@@ -64,13 +64,13 @@
   },
   "acceptance": {
     "path": "docs/team/service-flow-acceptance.json",
-    "sha256": "b97645d6b97e704e0cf74d5fbd738a96b4310f8126639c6b34eeaa96d030b4bd"
+    "sha256": "5793bf06f000eb35064690a5dde625cfd2022856c575e6957aedfe62d91d4d35"
   },
   "state_contract": {
     "path": "docs/team/service-flow-state-contract.json",
     "sha256": "fbac6828ba2c13d2c422dee8e4a2cfdae370644a36d9ccc26f05a4e4cf9da824"
   },
-  "document_status_note": "CURRENT is the sole current verdict/actions authority. Archived reviews apply only to their input hashes. V0.6 is a candidate with local specification checks, not an independent review PASS.",
+  "document_status_note": "CURRENT owns latest state. v0.6 full Sol advisory and v0.7 two-finding delta are separate, neither formal nor runtime PASS. Historical HOST-SCOPE-002 artifacts remain pinned at34cf2b4; later translation does not rewrite that report.",
   "feasibility_evidence": {
     "path": "docs/ai-review/evidence/TEAM-SERVICE-HOST-SCOPE-001.json",
     "sha256": "2287c16899944032ff12c2310aae7f1a5ef423f3535b7710c8430f70ff5c5945"
@@ -210,18 +210,51 @@
         "service_ac_executed": 0,
         "full_verify_passed": false
       }
+    },
+    {
+      "version": "0.6",
+      "review": {
+        "engine": "gpt-5.6-sol",
+        "reasoning_effort": "ultra",
+        "verdict": "CHANGES_REQUIRED",
+        "formal_gate": false,
+        "report": {
+          "path": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-V06-SOL-RECHECK.md",
+          "sha256": "fdd2fe32b16360178ede644974a0d7ab298d4c1e4030255a9bce50a913210f65"
+        },
+        "reviewed_commit": "34cf2b4733cee4da6058f97e529d13a9a0ca81d8"
+      }
+    },
+    {
+      "version": "0.6",
+      "local_checks": {
+        "report": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-V06-LOCAL-CHECKS.json",
+        "specification_checks_passed": 26,
+        "baseline_related_tests_passed": 42,
+        "service_ac_executed": 0,
+        "full_verify_passed": false,
+        "independent_review": false
+      }
     }
   ],
   "current_findings": [
     {
       "id": "SV05-01",
-      "status": "CANDIDATE_UPDATED_PENDING_RECHECK",
-      "runtime_verified": false
+      "status": "PLAN_SATISFIED_SOL_V06_RUNTIME_UNVERIFIED",
+      "runtime_verified": false,
+      "evidence": {
+        "path": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-V06-SOL-RECHECK.md",
+        "sha256": "fdd2fe32b16360178ede644974a0d7ab298d4c1e4030255a9bce50a913210f65"
+      }
     },
     {
       "id": "SV05-02",
-      "status": "CANDIDATE_UPDATED_PENDING_RECHECK",
-      "runtime_verified": false
+      "status": "PLAN_SATISFIED_SOL_V06_RUNTIME_UNVERIFIED",
+      "runtime_verified": false,
+      "evidence": {
+        "path": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-V06-SOL-RECHECK.md",
+        "sha256": "fdd2fe32b16360178ede644974a0d7ab298d4c1e4030255a9bce50a913210f65"
+      }
     },
     {
       "id": "SV05-03",
@@ -230,43 +263,91 @@
     },
     {
       "id": "SV05-04",
-      "status": "CANDIDATE_UPDATED_PENDING_RECHECK",
-      "runtime_verified": false
+      "status": "PLAN_SATISFIED_SOL_V06_RUNTIME_UNVERIFIED",
+      "runtime_verified": false,
+      "evidence": {
+        "path": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-V06-SOL-RECHECK.md",
+        "sha256": "fdd2fe32b16360178ede644974a0d7ab298d4c1e4030255a9bce50a913210f65"
+      }
     },
     {
       "id": "SV05-05",
-      "status": "CANDIDATE_UPDATED_PENDING_RECHECK",
-      "runtime_verified": false
+      "status": "PLAN_SATISFIED_SOL_V06_RUNTIME_UNVERIFIED",
+      "runtime_verified": false,
+      "evidence": {
+        "path": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-V06-SOL-RECHECK.md",
+        "sha256": "fdd2fe32b16360178ede644974a0d7ab298d4c1e4030255a9bce50a913210f65"
+      }
     },
     {
       "id": "SV05-06",
-      "status": "CANDIDATE_UPDATED_PENDING_RECHECK",
-      "runtime_verified": false
+      "status": "PLAN_SATISFIED_SOL_V06_RUNTIME_UNVERIFIED",
+      "runtime_verified": false,
+      "evidence": {
+        "path": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-V06-SOL-RECHECK.md",
+        "sha256": "fdd2fe32b16360178ede644974a0d7ab298d4c1e4030255a9bce50a913210f65"
+      }
     },
     {
       "id": "SV05-07",
-      "status": "CANDIDATE_UPDATED_PENDING_RECHECK",
-      "runtime_verified": false
+      "status": "PLAN_SATISFIED_SOL_V06_RUNTIME_UNVERIFIED",
+      "runtime_verified": false,
+      "evidence": {
+        "path": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-V06-SOL-RECHECK.md",
+        "sha256": "fdd2fe32b16360178ede644974a0d7ab298d4c1e4030255a9bce50a913210f65"
+      }
     },
     {
       "id": "SV05-08",
-      "status": "CANDIDATE_UPDATED_PENDING_RECHECK",
-      "runtime_verified": false
+      "status": "PLAN_SATISFIED_SOL_V06_RUNTIME_UNVERIFIED",
+      "runtime_verified": false,
+      "evidence": {
+        "path": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-V06-SOL-RECHECK.md",
+        "sha256": "fdd2fe32b16360178ede644974a0d7ab298d4c1e4030255a9bce50a913210f65"
+      }
+    },
+    {
+      "id": "SV06-01",
+      "status": "PLAN_SATISFIED_SOL_V07_DELTA_RUNTIME_UNVERIFIED",
+      "runtime_verified": false,
+      "evidence": {
+        "path": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-V07-SOL-DELTA.md",
+        "sha256": "47b42875e36bf973fd7868158b6e78a19568e913113babfc9f8a4830d46e5c48"
+      }
+    },
+    {
+      "id": "SV06-02",
+      "status": "PLAN_SATISFIED_SOL_V07_DELTA_RUNTIME_UNVERIFIED",
+      "runtime_verified": false,
+      "evidence": {
+        "path": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-V07-SOL-DELTA.md",
+        "sha256": "47b42875e36bf973fd7868158b6e78a19568e913113babfc9f8a4830d46e5c48"
+      }
     }
   ],
   "local_checks": {
-    "report": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-V06-LOCAL-CHECKS.json",
-    "specification_checks_passed": 26,
-    "baseline_related_tests_passed": 42,
+    "report": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-V07-LOCAL-CHECKS.json",
+    "specification_checks_passed": 32,
     "service_ac_executed": 0,
-    "full_verify_passed": false,
-    "independent_review": false
+    "threat_scenarios_executed": 0,
+    "full_verify_passed": false
   },
   "candidate_review": {
-    "version": "0.6",
-    "independent_review": "NOT_STARTED",
+    "version": "0.7",
+    "full_independent_review": "NOT_PERFORMED",
     "formal_gate": false,
-    "paid_call_authorization": "NOT_CONSUMED_IN_READ_DESIGN_SCOPE"
+    "delta_review": {
+      "scope": [
+        "SV06-01",
+        "SV06-02"
+      ],
+      "verdict": "PLAN_SATISFIED",
+      "report": {
+        "path": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-V07-SOL-DELTA.md",
+        "sha256": "47b42875e36bf973fd7868158b6e78a19568e913113babfc9f8a4830d46e5c48"
+      }
+    },
+    "fable_opus_formal_review": "NOT_PERFORMED"
   },
   "host_requirements": {
     "path": "docs/team/host-requirements-contract.json",
@@ -298,5 +379,21 @@
       "requires": "Actual human01→CEO02→deputy03→team→human01 result round trip and mandatory gates"
     }
   },
-  "next_safe_action": "Read-only exact local model scope check and PLAN_TEST admission fixture work; obtain independent candidate review before local implementation. No actual messages, activation, endpoint or production changes."
+  "next_safe_action": "Review known verify failures and obtain a reproducible awaited full-run baseline; validate exact local model scope and AC24. No product implementation, activation or actual sends until admission passes.",
+  "cooperative_contract": {
+    "path": "docs/team/cooperative-flow-contract.json",
+    "sha256": "4d2d2aec65c34542801cdd726455b63f541f0a754cf62a9c80d1e76cd3de7098"
+  },
+  "cooperative_contract_document": {
+    "path": "docs/team/COOPERATIVE-FLOW-CONTRACT.md",
+    "sha256": "a21ed9f76c7aae9bfba44a100059daf0a0df0b07848926031419986e6226d04f"
+  },
+  "verify_execution": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-VERIFY-V07-001.json",
+    "sha256": "161776fe59b0ec249aaca58622dd040f00ec38c55d4424cd53da948bb1f2c34c"
+  },
+  "verify_disposition": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-VERIFY-V07-DISPOSITION.md",
+    "sha256": "0998979cf14942bd8d61d3523420d35f317fa2716fa955e5f5dae30e0ac41da3"
+  }
 }

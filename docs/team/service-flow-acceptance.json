@@ -627,7 +627,9 @@
       "requires": [
         "EXACT_LOCAL_MODEL_SCOPE",
         "LOCAL_SCOPE_REVIEW",
-        "FIXTURE_ONLY_BOUNDARY"
+        "FIXTURE_ONLY_BOUNDARY",
+        "VERIFY_RUN_PINNED_INPUTS",
+        "FAILURE_DISPOSITION_INDEPENDENTLY_REVIEWED"
       ],
       "gate_status": "NOT_EXECUTED",
       "parallel_with": [
@@ -975,7 +977,27 @@
       "after": "LC-ADMISSION",
       "waits_for_P2b": false,
       "counts_as_full_P3": false,
-      "independent_review_required": true
+      "independent_review_required": true,
+      "completion_contract": {
+        "gate_id": "BF-COMPLETE",
+        "depends_on": [
+          "LC-ADMISSION"
+        ],
+        "case_ids": [
+          "BF-C1",
+          "BF-C2"
+        ],
+        "required_evidence": [
+          "EXACT_FIX_TARGET_COMMIT",
+          "SOURCE_TEST_RUNNER_SHA256",
+          "NONEMPTY_ASSERTION_OBSERVATIONS",
+          "TAP_BOTH_CASES_PASS_NO_SKIPS",
+          "AC24_NO_DISPATCH_REVALIDATED_FOR_FIX_BUNDLE",
+          "INDEPENDENT_REVIEW_BOUND_TO_SAME_FIX_BUNDLE"
+        ],
+        "full_P3": false,
+        "gate_status": "NOT_EXECUTED"
+      }
     },
     "implementation_status": "NOT_IMPLEMENTED",
     "host_case_ids": [
@@ -985,5 +1007,51 @@
       "AC-16",
       "AC-17"
     ]
-  }
+  },
+  "cooperative_candidate": {
+    "contract": "docs/team/cooperative-flow-contract.json",
+    "adopted": false,
+    "state_schema_implemented": false,
+    "observed_is_strict_ack": false,
+    "existing_ac_16_17_reinterpreted": false,
+    "pre_pilot_product_decision_required": true
+  },
+  "bounded_bugfix_cases": [
+    {
+      "case_id": "BF-C1",
+      "file": "scripts/team-service-bugfix.test.mjs",
+      "test_name": "BF-C1 rejects non-string IDs",
+      "status": "NOT_EXECUTED",
+      "assertions": [
+        {
+          "id": "BF-C1-A1",
+          "requirement": "Every public ID-taking workflow entry rejects array/object/number/null before regexp or coercion."
+        },
+        {
+          "id": "BF-C1-A2",
+          "requirement": "Valid string IDs retain compatibility; rejected input leaves prior checkpoint unchanged."
+        }
+      ]
+    },
+    {
+      "case_id": "BF-C2",
+      "file": "scripts/team-service-bugfix.test.mjs",
+      "test_name": "BF-C2 canonical event dedupe",
+      "status": "NOT_EXECUTED",
+      "assertions": [
+        {
+          "id": "BF-C2-A1",
+          "requirement": "Same event meaning with reordered object keys hashes identically and is deduped without new transition."
+        },
+        {
+          "id": "BF-C2-A2",
+          "requirement": "Same event ID with changed semantic payload is rejected, not treated as duplicate."
+        },
+        {
+          "id": "BF-C2-A3",
+          "requirement": "NFC collision and unsupported non-JSON values are rejected; arrays preserve order."
+        }
+      ]
+    }
+  ]
 }

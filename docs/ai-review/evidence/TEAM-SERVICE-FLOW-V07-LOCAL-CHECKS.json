@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "kind": "SPECIFICATION_TEST_EXECUTION_NOT_SERVICE_ACCEPTANCE",
+  "version": "0.7",
+  "inputs": [
+    {
+      "path": "docs/팀서비스-자동흐름-구현계획.md",
+      "sha256": "e811e0b68b23d52b97ba9c321c14b7bb2e50606c401afed30a301a82961d0304"
+    },
+    {
+      "path": "docs/team/service-flow-acceptance.json",
+      "sha256": "5793bf06f000eb35064690a5dde625cfd2022856c575e6957aedfe62d91d4d35"
+    },
+    {
+      "path": "docs/team/COOPERATIVE-FLOW-CONTRACT.md",
+      "sha256": "a21ed9f76c7aae9bfba44a100059daf0a0df0b07848926031419986e6226d04f"
+    },
+    {
+      "path": "docs/team/cooperative-flow-contract.json",
+      "sha256": "4d2d2aec65c34542801cdd726455b63f541f0a754cf62a9c80d1e76cd3de7098"
+    },
+    {
+      "path": "docs/team/HOST-REQUIREMENTS.md",
+      "sha256": "16437554345eb645010ebaaa551489cb190606b0089d957d238152b724740696"
+    },
+    {
+      "path": "scripts/team-service-cooperative-contract.test.mjs",
+      "sha256": "ee4abe2b9aeba68897a4bb5003edb517a8f0a328ffaf2640449f504138b61d3c"
+    },
+    {
+      "path": "scripts/team-service-host-requirements.test.mjs",
+      "sha256": "30d2d0a13454c866d2f70cdd5035327fd153c4a251dc13fd6ba2097923fe73ec"
+    },
+    {
+      "path": "scripts/team-service-plan-contract.test.mjs",
+      "sha256": "a5802b6c45f1fd56a82f8114e72634f41bb091fe6771af18f8490d9611e71264"
+    },
+    {
+      "path": "scripts/team-service-baseline.test.mjs",
+      "sha256": "9d2b6381b72f97898dccf0672c159df8c7e5ff707d3e4b1fe2376effe5d1d55b"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-V06-SOL-RECHECK.md",
+      "sha256": "fdd2fe32b16360178ede644974a0d7ab298d4c1e4030255a9bce50a913210f65"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-V07-SOL-DELTA.md",
+      "sha256": "47b42875e36bf973fd7868158b6e78a19568e913113babfc9f8a4830d46e5c48"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-VERIFY-V07-001.json",
+      "sha256": "161776fe59b0ec249aaca58622dd040f00ec38c55d4424cd53da948bb1f2c34c"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-VERIFY-V07-DISPOSITION.md",
+      "sha256": "0998979cf14942bd8d61d3523420d35f317fa2716fa955e5f5dae30e0ac41da3"
+    }
+  ],
+  "command": "node --test --test-reporter=tap scripts/team-service-baseline.test.mjs scripts/team-service-plan-contract.test.mjs scripts/team-service-host-requirements.test.mjs scripts/team-service-cooperative-contract.test.mjs",
+  "exit_code": 0,
+  "raw_output": "TAP version 13\n# Subtest: BL-07 integrity validation permits an honestly failed run, never promotes service readiness\nok 1 - BL-07 integrity validation permits an honestly failed run, never promotes service readiness\n  ---\n  duration_ms: 1.8284\n  type: 'test'\n  ...\n# Subtest: BL-08 source content, exact manifest set and duplicate sources are checked\nok 2 - BL-08 source content, exact manifest set and duplicate sources are checked\n  ---\n  duration_ms: 0.3736\n  type: 'test'\n  ...\n# Subtest: BL-09 output hashes, derived verdict and commands cannot be silently changed\nok 3 - BL-09 output hashes, derived verdict and commands cannot be silently changed\n  ---\n  duration_ms: 1.4567\n  type: 'test'\n  ...\n# Subtest: BL-10 historical verification cannot be promoted to a reproduced result\nok 4 - BL-10 historical verification cannot be promoted to a reproduced result\n  ---\n  duration_ms: 0.1483\n  type: 'test'\n  ...\n# Subtest: BL-01 42 passing TAP tests are derived from output, not a manual PASS\nok 5 - BL-01 42 passing TAP tests are derived from output, not a manual PASS\n  ---\n  duration_ms: 0.2681\n  type: 'test'\n  ...\n# Subtest: BL-02 a skipped case or nonzero exit is not the 42/42 baseline\nok 6 - BL-02 a skipped case or nonzero exit is not the 42/42 baseline\n  ---\n  duration_ms: 0.0851\n  type: 'test'\n  ...\n# Subtest: BL-03 Python test count requires exit zero and actual OK\nok 7 - BL-03 Python test count requires exit zero and actual OK\n  ---\n  duration_ms: 0.1143\n  type: 'test'\n  ...\n# Subtest: BL-04 expected coverage exit 1 remains requirements not met\nok 8 - BL-04 expected coverage exit 1 remains requirements not met\n  ---\n  duration_ms: 0.1618\n  type: 'test'\n  ...\n# Subtest: BL-05 invalid coverage output and null exit cannot become PASS\nok 9 - BL-05 invalid coverage output and null exit cannot become PASS\n  ---\n  duration_ms: 0.1058\n  type: 'test'\n  ...\n# Subtest: BL-06 source hash includes exact bytes, including line endings\nok 10 - BL-06 source hash includes exact bytes, including line endings\n  ---\n  duration_ms: 0.1492\n  type: 'test'\n  ...\n# Subtest: T2-SPEC-01 cooperative product is an unadopted candidate, not a gate bypass\nok 11 - T2-SPEC-01 cooperative product is an unadopted candidate, not a gate bypass\n  ---\n  duration_ms: 0.5741\n  type: 'test'\n  ...\n# Subtest: T2-SPEC-02 failure contracts require scope, owner and generation in addition to CAS\nok 12 - T2-SPEC-02 failure contracts require scope, owner and generation in addition to CAS\n  ---\n  duration_ms: 0.5144\n  type: 'test'\n  ...\n# Subtest: T2-SPEC-03 observation requires captured tool linkage and is never authentication by hash\nok 13 - T2-SPEC-03 observation requires captured tool linkage and is never authentication by hash\n  ---\n  duration_ms: 0.0856\n  type: 'test'\n  ...\n# Subtest: T2-SPEC-04 observed completion is separate and must be accepted before pilot\nok 14 - T2-SPEC-04 observed completion is separate and must be accepted before pilot\n  ---\n  duration_ms: 0.0878\n  type: 'test'\n  ...\n# Subtest: T2-SPEC-05 bad evidence reopens dependent completion without resetting effects\nok 15 - T2-SPEC-05 bad evidence reopens dependent completion without resetting effects\n  ---\n  duration_ms: 0.0715\n  type: 'test'\n  ...\n# Subtest: T2-SPEC-06 known verify failures do not satisfy local admission by themselves\nok 16 - T2-SPEC-06 known verify failures do not satisfy local admission by themselves\n  ---\n  duration_ms: 0.1253\n  type: 'test'\n  ...\n# Subtest: HOST-SPEC-01 all 8 caller and 5 receipt fields state lost claims and degradation\nok 17 - HOST-SPEC-01 all 8 caller and 5 receipt fields state lost claims and degradation\n  ---\n  duration_ms: 1.0033\n  type: 'test'\n  ...\n# Subtest: HOST-SPEC-02 local core is not 11-room service; no candidate grants send authority\nok 18 - HOST-SPEC-02 local core is not 11-room service; no candidate grants send authority\n  ---\n  duration_ms: 0.1266\n  type: 'test'\n  ...\n# Subtest: HOST-SPEC-03 immutable prior negative and bounded declaration bind design result\nok 19 - HOST-SPEC-03 immutable prior negative and bounded declaration bind design result\n  ---\n  duration_ms: 94.7406\n  type: 'test'\n  ...\n# Subtest: HOST-SPEC-04 local admission has no host dependency but retains no-dispatch and review gates\nok 20 - HOST-SPEC-04 local admission has no host dependency but retains no-dispatch and review gates\n  ---\n  duration_ms: 0.2578\n  type: 'test'\n  ...\n# Subtest: HOST-SPEC-05 host cases stay blocked and all acceptance execution remains pending\nok 21 - HOST-SPEC-05 host cases stay blocked and all acceptance execution remains pending\n  ---\n  duration_ms: 0.1587\n  type: 'test'\n  ...\n# Subtest: PLAN-01 catalog is explicitly not execution evidence\nok 22 - PLAN-01 catalog is explicitly not execution evidence\n  ---\n  duration_ms: 0.7722\n  type: 'test'\n  ...\n# Subtest: PLAN-02 all 24 cases have exact filenames, unique assertion IDs and evidence modes\nok 23 - PLAN-02 all 24 cases have exact filenames, unique assertion IDs and evidence modes\n  ---\n  duration_ms: 0.9646\n  type: 'test'\n  ...\n# Subtest: PLAN-03 phase dependencies reference declared cases and retain separate live/approval gates\nok 24 - PLAN-03 phase dependencies reference declared cases and retain separate live/approval gates\n  ---\n  duration_ms: 0.245\n  type: 'test'\n  ...\n# Subtest: PLAN-07 intent generation and root-only epoch are explicit in the candidate contract\nok 25 - PLAN-07 intent generation and root-only epoch are explicit in the candidate contract\n  ---\n  duration_ms: 0.1303\n  type: 'test'\n  ...\n# Subtest: PLAN-08 live isolation and real OS ACL negative evidence remain unimplemented gates\nok 26 - PLAN-08 live isolation and real OS ACL negative evidence remain unimplemented gates\n  ---\n  duration_ms: 0.1101\n  type: 'test'\n  ...\n# Subtest: PLAN-09 current verdict and allowed actions have one authority, not a document copy\nok 27 - PLAN-09 current verdict and allowed actions have one authority, not a document copy\n  ---\n  duration_ms: 0.6565\n  type: 'test'\n  ...\n# Subtest: PLAN-10 every plan AC filename exactly matches catalog, including both live cases\nok 28 - PLAN-10 every plan AC filename exactly matches catalog, including both live cases\n  ---\n  duration_ms: 0.5371\n  type: 'test'\n  ...\n# Subtest: PLAN-11 effect identity spans generations and queued cannot close scope\nok 29 - PLAN-11 effect identity spans generations and queued cannot close scope\n  ---\n  duration_ms: 0.1045\n  type: 'test'\n  ...\n# Subtest: PLAN-04 entity schema and STOP fences include generation, authority and effect claim\nok 30 - PLAN-04 entity schema and STOP fences include generation, authority and effect claim\n  ---\n  duration_ms: 0.125\n  type: 'test'\n  ...\n# Subtest: PLAN-05 feasibility has closed outcome set and includes trusted time\nok 31 - PLAN-05 feasibility has closed outcome set and includes trusted time\n  ---\n  duration_ms: 0.1851\n  type: 'test'\n  ...\n# Subtest: PLAN-06 probe and pilot are separate and advisory cannot satisfy formal receipt\nok 32 - PLAN-06 probe and pilot are separate and advisory cannot satisfy formal receipt\n  ---\n  duration_ms: 0.0773\n  type: 'test'\n  ...\n1..32\n# tests 32\n# suites 0\n# pass 32\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 196.9845\n",
+  "tests": 32,
+  "passed": 32,
+  "service_ac_executed": 0,
+  "threat_scenarios_executed": 0,
+  "initial_test_correction": "First draft test required an arbitrary minimum of 3 checks per threat; T2-03 has 2 composite checks. Replaced the count constraint with nonempty checks plus required owner/scope assertions. Initial31/32, final32/32.",
+  "full_verify_passed": false,
+  "independent_review_reference": "Separate Sol advisory records; these tests cannot issue a review receipt."
+}
