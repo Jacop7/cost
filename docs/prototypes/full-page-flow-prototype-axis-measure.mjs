@@ -26,7 +26,12 @@ const sha = (b) => createHash('sha256').update(b).digest('hex');
 const args = process.argv.slice(2).filter(a => !a.startsWith('--'));
 const auditPath = resolve(args[0] ?? 'docs/token-adoption-audit.json');
 const outPath   = resolve(args[1] ?? '.tmp/axis-at.json');
-const only      = (args[2] ?? '3,6,7').split(',').map(Number);
+// `only` 는 이제 **선택**이다. 초판은 값 3·6·7 의 spacing 만 쟀는데, 그건 GROW-V/GROW-H
+// 한 자리를 가르려고 만든 것이었다. 그 사이 검수가 요구한 것은 **defect 규칙 전수의 축
+// 재검증**이라(솔 `W1 R1 F03` · 페이블 재종결 조건 ④) 기본값을 "전부" 로 바꾼다.
+// `--only=3,6,7` 로 옛 범위를 그대로 재현할 수 있다 — 회귀 비교용이다.
+const onlyOpt = process.argv.slice(2).find(a => a.startsWith('--only='));
+const only = onlyOpt ? onlyOpt.slice('--only='.length).split(',').map(Number) : null;
 
 const auditBytes = readFileSync(auditPath);
 const audit = JSON.parse(auditBytes.toString('utf8'));
@@ -121,13 +126,25 @@ const growV = new Set(), growH = new Set(), both = new Set();
 const perDecl = [];
 let vCount = 0, hCount = 0, bCount = 0;
 
+// 축이 **없는** 속성 — 값이 변해도 이웃을 밀지 않는다. 반경과 색이 그렇다.
+// "축을 모른다(B)" 와 "축이 없다(N)" 를 한 통에 넣으면, 아는 것과 모르는 것이 섞인다.
+const none = new Set();
+let nCount = 0;
+const TYPO_AXIS = { fontSize: 'B', lineHeight: 'V', letterSpacing: 'H', fontWeight: 'H' };
+
 for (const d of audit.declarations) {
-  if (d.group !== 'spacing') continue;
   const n = Number(d.value);
-  if (!only.includes(n)) continue;
+  if (only && !only.includes(n)) continue;
   const key = `${d.file}:${d.line}:${d.prop}`;
   let axis, why;
-  if (V.test(d.prop)) { axis = 'V'; why = '속성이 세로다'; }
+  if (d.group === 'radius') { axis = 'N'; why = '반경은 상자 크기를 바꾸지 않는다 — 축이 없다'; }
+  else if (d.group === 'color') { axis = 'N'; why = '색은 레이아웃을 밀지 않는다 — 축이 없다'; }
+  else if (d.group === 'typography') {
+    axis = TYPO_AXIS[d.prop] ?? 'B';
+    why = { B: '글자 크기는 글자 상자의 두 축을 함께 바꾼다', V: '행간은 줄 높이 — 세로다',
+      H: `${d.prop} 는 글자 폭에 붙는다 — 가로다` }[axis] ?? `축을 알 수 없는 속성 ${d.prop}`;
+  }
+  else if (V.test(d.prop)) { axis = 'V'; why = '속성이 세로다'; }
   else if (H.test(d.prop)) { axis = 'H'; why = '속성이 가로다'; }
   else if (BOTH.test(d.prop)) { axis = 'B'; why = '단축 속성 — 두 축 모두'; }
   else if (d.prop === 'gap') {
@@ -138,9 +155,10 @@ for (const d of audit.declarations) {
     else axis = 'V';
   }
   else { axis = 'B'; why = `축을 알 수 없는 속성 ${d.prop}`; }
-  perDecl.push({ key, value: n, prop: d.prop, axis, why });
+  perDecl.push({ key, value: n, prop: d.prop, group: d.group, axis, why });
   if (axis === 'V') { growV.add(key); vCount++; }
   else if (axis === 'H') { growH.add(key); hCount++; }
+  else if (axis === 'N') { none.add(key); nCount++; }
   else { both.add(key); bCount++; }
 }
 
@@ -149,16 +167,25 @@ const out = {
     script: 'docs/prototypes/full-page-flow-prototype-axis-measure.mjs',
     scriptSha256: sha(readFileSync(new URL(import.meta.url))),
     auditSha256: sha(auditBytes),
-    values: only,
+    // 입력이 결속된 감사 산출물인지 **여기서도** 본다. 결속 없는 입력에서 잰 축은
+    // 그 자체가 남의 나무를 잰 값이 될 수 있다 (솔 `W1 R1 F01`).
+    audit결속: audit.manifest?.결속 ?? null,
+    values: only ?? '전부',
     node: process.version,
     generatedAt: new Date().toISOString(),
     판정: '축은 값이 아니라 속성과 컨테이너 flexDirection 으로 정한다 (PRT-207).',
   },
-  counts: { V: vCount, H: hCount, both: bCount, keysV: growV.size, keysH: growH.size, keysBoth: both.size },
+  counts: { V: vCount, H: hCount, both: bCount, none: nCount,
+    keysV: growV.size, keysH: growH.size, keysBoth: both.size, keysNone: none.size },
   growV: [...growV].sort(),
   growH: [...growH].sort(),
   both: [...both].sort(),
+  none: [...none].sort(),
   perDecl,
 };
 writeFileSync(outPath, JSON.stringify(out, null, 2) + '\n');
-console.log(`값 ${only.join('·')} — 세로 ${vCount}건(${growV.size}키) · 가로 ${hCount}건(${growH.size}키) · 양축/불명 ${bCount}건(${both.size}키)`);
+console.log(`값 ${only ? only.join('·') : '전부'} — 세로 ${vCount} · 가로 ${hCount} · 양축/불명 ${bCount} · 축없음 ${nCount}`);
+if (!audit.manifest?.결속) {
+  console.error('  ⚠ 입력 감사 산출물에 결속이 없다 — token-adoption-audit.mjs 를 --expect-commit 과 함께 다시 돌려라');
+  process.exitCode = 1;
+}

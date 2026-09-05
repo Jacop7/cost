@@ -5,7 +5,7 @@
 // §7.3.1 스크롤 값 목록 · R-TY-WEIGHT-PRIM 의 400. 넷은 눈으로 걸렸지만
 // §7.3.1 은 **값 개수(7)와 총 건수(49)가 우연히 같아** 대조에서 통과하고 있었다.
 // 개수만 세는 대조는 이런 것을 잡지 못한다. 값 자체를 봐야 한다.
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { resolve } from 'node:path';
 
@@ -24,6 +24,21 @@ const failures = [];
 const results = [];
 
 for (const c of claims.claims) {
+  // `합계` — 값 목록이 아니라 **배정 결과의 수**를 주장한다 (페이블 W1 재종결 조건).
+  // §7.3 이 "3,677건이 여섯 통에" 라고 적어 놓고 코드가 3,653건 다섯 통이 되는 일을 막는다.
+  // 문서와 산출물 사이의 대조라 선언 필터를 타지 않는다.
+  if (c.mode === '합계') {
+    const src = resolve(claimsPath, '..', c.출처);
+    if (!existsSync(src)) { failures.push(`${c.id} : 대조할 산출물이 없다 — ${c.출처}`); results.push({ id: c.id, verdict: 'FAIL', mode: '합계' }); continue; }
+    const got = JSON.parse(readFileSync(src, 'utf8')).summary ?? {};
+    const actual = { 선언: got.declarations, 미분류: got.unmatchedCount, ...(got.byBin ?? {}) };
+    const diff = Object.entries(c.기대).filter(([k, v]) => actual[k] !== v)
+      .map(([k, v]) => `${k} 문서 ${v} ≠ 실제 ${actual[k]}`);
+    if (diff.length) failures.push(`${c.id} : ${c.절} — ${diff.join(' · ')}`);
+    results.push({ id: c.id, 문서: c.문서, 절: c.절, 주장: c.주장, mode: '합계',
+      기대: c.기대, 실제: actual, verdict: diff.length ? 'FAIL' : 'PASS' });
+    continue;
+  }
   const ds = audit.declarations.filter(d => {
     if (c.group && d.group !== c.group) return false;
     if (c.props && !c.props.includes(d.prop)) return false;
