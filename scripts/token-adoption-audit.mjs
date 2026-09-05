@@ -328,13 +328,16 @@ if (opt['no-bind'] === undefined) {
  * 선택된 파일의 `경로 + git blob SHA` 를 정렬해 잇고 감사 스크립트 자신의 sha256 을 더한다.
  * git 이 없으면 blob SHA 자리에 내용 sha256 을 쓴다 — 정보는 같고 결속도 같다.
  */
-const blobIds = files.map(f => {
-  const rel = relative(repoRoot, f).replace(/\\/g, '/');
-  const oid = git(['hash-object', '--', f]);
-  return `${rel}\u0000${oid ?? sha(readFileSync(f))}`;
-}).sort();
+// blob id 를 **직접 계산한다** — `git hash-object` 를 부르면 git 설정(autocrlf 등)에 기대게 되고,
+// git 이 없는 자리에서는 아예 못 잰다. `sha1("blob " + 길이 + "\0" + CRLF→LF 정규화 내용)` 은
+// `git hash-object` 와 같은 값이면서 OS 와 git 유무에 좌우되지 않는다 (페이블 `R6` 차단).
+const blobId = (buf) => {
+  const lf = Buffer.from(buf.toString('utf8').replace(/\r\n/g, '\n'), 'utf8');
+  return createHash('sha1').update(Buffer.concat([Buffer.from(`blob ${lf.length}\u0000`, 'utf8'), lf])).digest('hex');
+};
+const blobIds = files.map(f => `${relative(repoRoot, f).replace(/\\/g, '/')}\u0000${blobId(readFileSync(f))}`).sort();
 const scopeHash = sha(Buffer.from(
-  [...blobIds, `\u0000self\u0000${sha(readFileSync(new URL(import.meta.url)))}`].join('\n'), 'utf8'));
+  [...blobIds, `\u0000self\u0000${blobId(readFileSync(new URL(import.meta.url)))}`].join('\n'), 'utf8'));
 
 if (bindFail.length) {
   console.error('토큰 채택 감사 — 입력 결속 FAIL');
@@ -348,7 +351,7 @@ const out = {
     script: { name: basename(new URL(import.meta.url).pathname), sha256: sha(readFileSync(new URL(import.meta.url))) },
     repo: { headCommit: commit, headTree: treeOid, toplevel: toplevel ?? null },
     결속: { expectCommit: wantCommit ?? null, 범위해시: scopeHash,
-      범위해시정의: '선택된 파일의 "경로\\0 git blob SHA" 를 정렬해 잇고 감사 스크립트 자신의 sha256 을 더해 sha256. 커밋 SHA 자기참조 없이 입력을 결속한다.' },
+      범위해시정의: '선택된 파일의 "경로\\0 git blob SHA" 를 정렬해 잇고 감사 스크립트 자신의 blob SHA 를 더해 sha256. blob SHA 는 CRLF→LF 정규화 뒤 직접 계산하므로 OS·git 유무에 좌우되지 않는다(페이블 R6 차단). 커밋 SHA 자기참조 없이 입력을 결속한다.' },
     runner: { node: process.version, typescript: ts.version },
     selection: SELECTION,
     fileLayers: { tokenDefinition: TOKEN_DEFINITION_FILES, sharedComponentPrefixes: SHARED_COMPONENT_PREFIXES,

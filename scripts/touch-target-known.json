@@ -1,9 +1,8 @@
 {
   "_schema": "v4 — entries(미달) · components(공용 컴포넌트 계약, 전 variant 경계) · buttonDynamic · unjudged. 제품 .tsx 만 세고 시험 fixture 는 시험참조로 따로 둔다(R4 F04).",
-  "_해시": "이 목록이 확정된 **제품** 감사 입력의 해시다 — 제품 .tsx 의 \"경로\\0내용sha256\" 을 정렬해 잇고 감사기 자신의 sha256 을 더해 sha256. 커밋 SHA 자기참조를 피하면서 \"이후 무변경\" 을 게이트가 직접 검사한다. **시험 fixture 는 이 해시에 들어가지 않는다**(솔 검수 R5 F02) — 시험 한 줄을 고쳤다고 제품 재고가 흔들리면 안 된다. 시험참조해시는 기록만 하고 래칫하지 않는다.",
-  "제품입력해시": "335b2ecd9fafb132dc078497c02d759740dc4464c8dac7948cafa853d371abb0",
-  "시험참조해시": "0fe34abe75fc7217ad07819a9d80b30fd5792d25ae7caad98305b45b584f3dec",
-  "확정커밋": "0d9f437782d6cde61c18d28a4f5244c7dfb1bdb2 (이 목록을 확정한 clean checkout. 결속은 입력해시가 한다)",
+  "_해시": "이 목록이 확정된 **제품** 감사 입력의 해시다 — 제품 .tsx 의 \"경로\\0git blob SHA\" 을 정렬해 잇고 감사기 자신의 sha256 을 더해 sha256. 커밋 SHA 자기참조를 피하면서 \"이후 무변경\" 을 게이트가 직접 검사한다. **시험 fixture 는 이 해시에 들어가지 않는다**(솔 검수 R5 F02) — 시험 한 줄을 고쳤다고 제품 재고가 흔들리면 안 된다. 시험참조해시는 기록만 하고 래칫하지 않는다. blob SHA 는 CRLF→LF 정규화 뒤 계산하므로 체크아웃한 OS 에 좌우되지 않는다(페이블 R6 차단 — 내용 sha256 은 줄끝을 쟀다).",
+  "제품입력해시": "0b82852f45de31dc651d5b5254af22bb7d6d20a5f5310e0e78697b417ad6e9bf",
+  "시험참조해시": "9a57d560e0ab1b1bee86e48a194f516fcd0f698371ee76a587bd2c0d94c4a3cb",
   "_entries": "선언 크기와 hitSlop 이 있는데 44 에 못 미치는 자리. 유효 크기가 줄어도 FAIL 한다.",
   "entries": [
     {
@@ -382,5 +381,7 @@
     "apps/mobile/src/features/sales/screens/SalesStockCheckScreen.tsx:132",
     "apps/mobile/src/features/sales/screens/SalesStockCheckScreen.tsx:149",
     "apps/mobile/src/features/sales/screens/SalesStockCheckScreen.tsx:95"
-  ]
+  ],
+  "_재고항목원측정커밋": "이 목록의 항목을 처음 확정한 clean checkout 의 커밋이다. **결속은 이 값이 하지 않는다** — 정확한 결속은 제품입력해시와 실행 시 --expect-commit 이 한다(솔 검수 R6 F05).",
+  "재고항목원측정커밋": "0d9f437782d6cde61c18d28a4f5244c7dfb1bdb2"
 }

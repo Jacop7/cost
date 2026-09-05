@@ -1,20 +1,20 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-05T04:47:11.285Z",
+  "generatedAt": "2026-09-05T05:24:18.984Z",
   "schemaVersion": 1,
   "script": {
    "name": "token-adoption-audit.mjs",
-   "sha256": "d714cdc664635f0c85de1b8c6eada4f881b9651e24e3d9199c4ffdc8008771d5"
+   "sha256": "161bbc8ce32535ac5e290746fd3ed272e726ed54307b8873041655fc354502dd"
   },
   "repo": {
-   "headCommit": "be577597668f721da7442138971276770c2352ab",
-   "headTree": "3533b471a9ef6a6026b77ce9baa2ed55df70d29d",
+   "headCommit": "df7c7c43378d05c1f72a4f7c5c58a987bc19d8f5",
+   "headTree": "e84919c584ee6f78f4c47f74d127e96fead55515",
    "toplevel": "/sessions/rcw-01h3h5dvzdyfqvjsuvnxbso6/s1check"
   },
   "결속": {
-   "expectCommit": "be577597668f721da7442138971276770c2352ab",
-   "범위해시": "b431b8a1a5a85b7845eedeca1b101cd254ffe83b60491530c9d2bd69e3c8beff",
-   "범위해시정의": "선택된 파일의 \"경로\\0 git blob SHA\" 를 정렬해 잇고 감사 스크립트 자신의 sha256 을 더해 sha256. 커밋 SHA 자기참조 없이 입력을 결속한다."
+   "expectCommit": "df7c7c43378d05c1f72a4f7c5c58a987bc19d8f5",
+   "범위해시": "9ae7220b39c74d4900f2365f52367fe7a5cd98d87dd80c887bc8ed1de3b5cdcf",
+   "범위해시정의": "선택된 파일의 \"경로\\0 git blob SHA\" 를 정렬해 잇고 감사 스크립트 자신의 blob SHA 를 더해 sha256. blob SHA 는 CRLF→LF 정규화 뒤 직접 계산하므로 OS·git 유무에 좌우되지 않는다(페이블 R6 차단). 커밋 SHA 자기참조 없이 입력을 결속한다."
   },
   "runner": {
    "node": "v22.23.2",

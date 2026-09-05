@@ -36,6 +36,19 @@ const only = onlyOpt ? onlyOpt.slice('--only='.length).split(',').map(Number) : 
 const auditBytes = readFileSync(auditPath);
 const audit = JSON.parse(auditBytes.toString('utf8'));
 
+/**
+ * 산출물↔산출물 결속은 **파일 바이트가 아니라 파싱한 JSON 의 정규형**으로 잰다
+ * (페이블 `R6` 차단). 바이트로 재면 줄끝·들여쓰기·직렬화 방식이 바뀌는 순간 갈리고,
+ * 그건 "내용이 달라졌다" 가 아니라 "다시 썼다" 를 잰 것이다.
+ * 키를 정렬하고 LF 로 이어 붙여 sha256 한다 — 재직렬화해도 같은 값이 나온다.
+ */
+const canon = (v) => {
+  if (v === null || typeof v !== 'object') return JSON.stringify(v);
+  if (Array.isArray(v)) return `[${v.map(canon).join(',')}]`;
+  return `{${Object.keys(v).sort().map(k => `${JSON.stringify(k)}:${canon(v[k])}`).join(',')}}`;
+};
+const canonHash = (v) => createHash('sha256').update(canon(v), 'utf8').digest('hex');
+
 const V = /^(marginTop|marginBottom|marginVertical|paddingTop|paddingBottom|paddingVertical|rowGap|top|bottom|height|minHeight|maxHeight|lineHeight)$/;
 const H = /^(marginLeft|marginRight|marginHorizontal|marginStart|marginEnd|paddingLeft|paddingRight|paddingHorizontal|paddingStart|paddingEnd|columnGap|left|right|width|minWidth|maxWidth)$/;
 const BOTH = /^(padding|margin)$/;
@@ -167,6 +180,8 @@ const out = {
     script: 'docs/prototypes/full-page-flow-prototype-axis-measure.mjs',
     scriptSha256: sha(readFileSync(new URL(import.meta.url))),
     auditSha256: sha(auditBytes),
+    // 결속은 아래 정규형 해시가 한다. 위 바이트 해시는 참고값이다.
+    auditCanon: canonHash(audit),
     // 입력이 결속된 감사 산출물인지 **여기서도** 본다. 결속 없는 입력에서 잰 축은
     // 그 자체가 남의 나무를 잰 값이 될 수 있다 (솔 `W1 R1 F01`).
     audit결속: audit.manifest?.결속 ?? null,

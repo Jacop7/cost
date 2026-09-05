@@ -294,32 +294,60 @@ if (!existsSync(sealPath)) {
       else {
         // 결정 커밋은 **추적용**이다. 봉인을 지키는 것은 위 세 해시고, 커밋은 "이 값이 어디서
         // 결정됐는지" 를 가리킨다. 결정이 여러 번에 걸쳐 닫혔으므로 목록이다.
-        // 결정 커밋은 추적용이다. 봉인을 지키는 것은 위 세 해시고, 커밋은 "이 값이 어디서
-        // 결정됐는지" 를 가리킨다. **형식과 존재를 검사한다** — 초판은 비어 있지 않은지만 봐서
-        // "이 커밋" 같은 자기참조 문장도 통과했다 (솔 검수 `R4 F03`).
+        //
+        // 검사는 세 번에 걸쳐 조여졌다 —
+        //   `R4 F03` 비어 있지 않은지만 봤다 → "이 커밋" 같은 자기참조 문장이 통과했다
+        //   `R5 F01` 존재만 봤다 → 관련 없는 아무 커밋이나 통과했다
+        //   `R6 F01` 파일 변경만 봤다 → **§8.3 이나 서문만 고친 커밋도 통과했다**
+        // 이제 그 커밋의 **부모판과 해당판의 §8.2 구간을 실제로 비교**한다. 구간이 그대로면
+        // 그 커밋은 결정을 바꾼 커밋이 아니다.
         const commits = [].concat(S.결정?.커밋 ?? []).filter(Boolean);
         if (!commits.length) fail.push('봉인에 결정 커밋이 없다 — 어느 커밋의 결정인지 추적할 수 없다');
         else {
-          // 존재만 보면 **아무 커밋이나 통과한다** (솔 검수 `R5 F01`). 셋을 본다 —
-          //   ① 그 개체가 커밋인가
-          //   ② 지금 HEAD 의 **조상**인가 (다른 가지의 커밋을 출처로 댈 수 없다)
-          //   ③ 그 커밋이 **결정문 파일을 실제로 바꿨는가** (관련 없는 커밋을 댈 수 없다)
-          // 봉인 해시는 변조를 잡고, 이 셋이 "누가 어느 결정으로 갱신했는가" 를 잡는다.
           const decRel = S.결정?.문서;
+          const g = (args) => spawnSync('git', args, { cwd: root, encoding: 'utf8' });
+          /** 어느 커밋 시점의 결정문 §8.2 구간. 그 커밋에 파일이 없으면 null. */
+          const sliceAt = (rev) => {
+            const r = g(['show', `${rev}:${decRel}`]);
+            return r.status === 0 ? decisionSlice(r.stdout) : null;
+          };
           for (const c of commits) {
-            const m = String(c).match(/^([0-9a-f]{40})(\s|$)/);
-            if (!m) { fail.push(`결정 커밋 항목이 40자리 SHA 로 시작하지 않는다 — '${String(c).slice(0, 48)}'`); continue; }
-            const sha40 = m[1];
-            const g = (args) => spawnSync('git', args, { cwd: root, encoding: 'utf8' });
+            const sha40 = typeof c === 'string' ? (String(c).match(/^([0-9a-f]{40})(\s|$)/) ?? [])[1] : c?.sha;
+            const sections = (typeof c === 'object' && Array.isArray(c?.sections)) ? c.sections : null;
+            if (!sha40 || !/^[0-9a-f]{40}$/.test(sha40)) {
+              fail.push(`결정 커밋 항목에 40자리 SHA 가 없다 — '${JSON.stringify(c).slice(0, 60)}'`);
+              continue;
+            }
+            if (!sections || !sections.length) {
+              fail.push(`결정 커밋 ${sha40.slice(0, 12)} 에 sections 가 없다 — 어느 결정을 바꾼 커밋인지 적어야 한다 (예: ["8.2b","8.2c"])`);
+              continue;
+            }
             if (g(['cat-file', '-e', `${sha40}^{commit}`]).status !== 0) {
               fail.push(`결정 커밋 ${sha40.slice(0, 12)} 개체가 저장소에 없다 — 손으로 적은 SHA 가 틀렸다`);
               continue;
             }
-            if (g(['merge-base', '--is-ancestor', sha40, 'HEAD']).status !== 0)
+            if (g(['merge-base', '--is-ancestor', sha40, 'HEAD']).status !== 0) {
               fail.push(`결정 커밋 ${sha40.slice(0, 12)} 이 HEAD 의 조상이 아니다 — 이 가지에 없는 커밋을 출처로 댈 수 없다`);
+              continue;
+            }
             const touched = g(['-c', 'core.quotepath=false', 'show', '--pretty=format:', '--name-only', sha40]);
-            if (touched.status !== 0 || !String(touched.stdout).split(/\r?\n/).some(l => l.trim() === decRel))
+            if (touched.status !== 0 || !String(touched.stdout).split(/\r?\n/).some(l => l.trim() === decRel)) {
               fail.push(`결정 커밋 ${sha40.slice(0, 12)} 이 결정문(${decRel})을 바꾸지 않았다 — 관련 없는 커밋을 출처로 댈 수 없다`);
+              continue;
+            }
+            // **§8.2 구간이 실제로 달라졌는가.** 파일을 건드린 것만으로는 결정을 바꾼 것이 아니다.
+            const now = sliceAt(sha40);
+            const before = sliceAt(`${sha40}^`);
+            if (now === null) { fail.push(`결정 커밋 ${sha40.slice(0, 12)} 시점에 결정문 §8.2 구간이 없다`); continue; }
+            if (before !== null && before === now) {
+              fail.push(`결정 커밋 ${sha40.slice(0, 12)} 은 결정문을 고쳤지만 **§8.2 구간은 그대로다** — §8.3 이나 서문만 바꾼 커밋을 결정 출처로 댈 수 없다`);
+              continue;
+            }
+            // 적어 놓은 절이 그 시점 구간에 실제로 있는가.
+            for (const sec of sections) {
+              if (!new RegExp(`^###\\s+${String(sec).replace('.', '\\.')}(\\s|$)`, 'm').test(now))
+                fail.push(`결정 커밋 ${sha40.slice(0, 12)} 의 sections 에 §${sec} 이 있는데 그 커밋의 구간에는 없다`);
+            }
           }
           if (!fail.length) note.push(`봉인 일치 — 역할 ${got역할.slice(0, 8)} · 계약 ${(want.계약해시 ?? '').slice(0, 8)} · 결정 커밋 ${commits.length}건 확인`);
         }

@@ -7,6 +7,7 @@ import { readFileSync, writeFileSync, mkdtempSync, rmSync, mkdirSync } from 'nod
 import { join, dirname } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
+import { createHash } from 'node:crypto';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const AUDIT = join(root, 'scripts', 'touch-target-audit.mjs');
@@ -368,5 +369,41 @@ test('제품 .tsx 를 고치면 제품 래칫이 깨진다 — 경계가 한쪽�
     const out = (r.stdout ?? '') + (r.stderr ?? '');
     assert.equal(r.status, 1, `제품 변경을 놓쳤다\n${out}`);
     assert.match(out, /제품 감사 입력이 바뀌었다/);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+// 줄끝 독립 (페이블 검수 R6 차단)
+// 내용 sha256 으로 재던 초판은 **줄끝을 쟀다.** 페이블의 Windows clean checkout(CRLF)과
+// Linux 체크아웃(LF)에서 제품 해시가 갈렸고, 결속이 "이후 무변경" 이 아니라 "어느 OS 에서
+// 받았나" 를 재고 있었다. blob SHA 는 CRLF→LF 정규화 뒤 계산하므로 같은 내용이면 같은 값이다.
+const hashFor = (eol) => {
+  const dir = mkdtempSync(join(tmpdir(), 'touch-eol-'));
+  try {
+    const src = join(dir, 'src');
+    mkdirSync(join(src, 'src', 'components', 'kit'), { recursive: true });
+    const put = (p, t) => writeFileSync(p, eol === 'crlf' ? t.replace(/\n/g, '\r\n') : t);
+    put(join(src, 'src', 'components', 'kit', 'Button.tsx'), BUTTON_TSX);
+    put(join(src, 'Consumers.tsx'), '<Button size="sm" onPress={f}>A</Button>\n');
+    return probeHash(src, dir);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+};
+
+test('같은 내용을 CRLF 로 바꿔도 제품입력해시가 같다 — 결속이 줄끝을 재지 않는다', () => {
+  assert.equal(hashFor('crlf'), hashFor('lf'),
+    'CRLF 체크아웃과 LF 체크아웃의 해시가 갈린다 — 결속이 OS 를 재고 있다');
+});
+
+test('blob SHA 계산이 git hash-object 와 같다', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'touch-blob-'));
+  try {
+    const f = join(dir, 'a.tsx');
+    const body = 'const a = 1;\nconst b = 2;\n';
+    writeFileSync(f, body);
+    const buf = Buffer.from(body, 'utf8');
+    const mine = createHash('sha1')
+      .update(Buffer.concat([Buffer.from('blob ' + buf.length + '\u0000', 'utf8'), buf]))
+      .digest('hex');
+    const theirs = spawnSync('git', ['hash-object', f], { encoding: 'utf8' }).stdout.trim();
+    assert.equal(mine, theirs, 'blob id 계산이 git 과 다르다');
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
