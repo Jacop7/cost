@@ -1,7 +1,7 @@
 {
  "$schema": "app-token-map/1",
  "status": "PROPOSAL",
- "note": "앱 사용처 인라인 선언 3,632건을 다섯 통에 배정하는 규칙표다 (W1 · P1b). tokens.ts 정본 정의 21건은 감사 산출물 definitions에 별도 보존하며 실행 우주에 넣지 않는다. 행 3,632개를 손으로 적지 않고 규칙으로 적는다. 규칙마다 근거를 달고, 검사기가 규칙을 순서대로 태워 모든 선언이 정확히 한 통에 들어가는지 확인한다. 이 표는 제안이다. 승인은 검수 뒤이고, 그래서 approvedException 통은 0 이어야 한다. 값이 아니라 관계로 판정한다 — 같은 2px 도 세로(제목↔보조문구)면 space.xs 결함이고, 가로(라벨 광학 정렬)면 컴포넌트 소유다.",
+ "note": "앱 사용처 인라인 선언 3,633건을 다섯 통에 배정하는 규칙표다 (W1 · P1b). tokens.ts 정본 정의 21건은 감사 산출물 definitions에 별도 보존하며 실행 우주에 넣지 않는다. 행 3,633개를 손으로 적지 않고 규칙으로 적는다. 규칙마다 근거를 달고, 검사기가 규칙을 순서대로 태워 모든 선언이 정확히 한 통에 들어가는지 확인한다. 이 표는 제안이다. 승인은 검수 뒤이고, 그래서 approvedException 통은 0 이어야 한다. 값이 아니라 관계로 판정한다 — 같은 2px 도 세로(제목↔보조문구)면 space.xs 결함이고, 가로(라벨 광학 정렬)면 컴포넌트 소유다.",
  "primitiveSource": "full-page-flow-prototype-token-map.json 의 primitive·converge 를 그대로 쓴다. 앱 전용 두 번째 표준을 만들지 않는다.",
  "pendingApprovalContract": {
   "definition": "제품 소유자의 새 결정이 없으면 목적지를 정할 수 없는 규칙만 둔다. 닫힌 D-11의 선언별 역할 대응은 이 통에 두지 않는다.",
@@ -49,7 +49,7 @@
      "PurchaseHistoryScreen.tsx:164",
      "FixedCostScreen.tsx:133",
      "MyChannelsScreen.tsx:105",
-     "OrdersHomeScreen.tsx:313"
+     "OrdersHomeScreen.tsx:315"
     ]
    },
    "question": "`marginTop:2` 중 `<Text` 가 아니라 `<View` 줄에 있는 5건. 이 5건의 관계가 '주값↔보조 줄'(→ space.xs 4)인지 '아이콘↔문구'(→ UI 가이드 §5.4 의 gap.inline 8)인지, 아니면 '안내 블록↔위 요소'인지.",
@@ -197,7 +197,7 @@
      "apps/mobile/src/components/kit/index.tsx:73",
      "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:288",
      "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:315",
-     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:306",
+     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:308",
      "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:301",
      "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:435"
     ]
@@ -282,6 +282,21 @@
    "순서근거": "R-SP-EDGE-INSET 포괄보다 앞선다"
   },
   {
+   "id": "R-SP-QUANTITY-TOUCH-ENVELOPE",
+   "bin": "componentOwned",
+   "match": {
+    "group": "spacing",
+    "props": [
+     "padding"
+    ],
+    "at": [
+     "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:354:padding"
+    ]
+   },
+   "name": "COMPONENT.quantityStepper.touchEnvelopePadding",
+   "근거": "S4a에서 30×30 증감 버튼 두 개의 hitSlop이 서로 겹치지 않도록 부모에 padding 7과 상쇄 margin -7을 함께 둔 터치 기하 계약이다. 일반 레이아웃 여백이나 space 수렴 대상이 아니다."
+  },
+  {
    "id": "R-SP-EDGE-INSET",
    "bin": "componentOwned",
    "match": {
@@ -301,7 +316,7 @@
      "apps/mobile/src/features/my/screens/MyTaxScreen.tsx:251:paddingHorizontal",
      "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx:145:paddingHorizontal",
      "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:35:marginHorizontal",
-     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:447:marginHorizontal"
+     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:448:marginHorizontal"
     ]
    },
    "name": "inset.edgeAlign",
@@ -480,11 +495,11 @@
      "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx:141:marginTop",
      "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx:263:marginTop",
      "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:220:paddingTop",
-     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:298:marginTop",
-     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:303:marginTop",
-     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:340:marginTop",
-     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:373:marginTop",
-     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:430:marginTop",
+     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:300:marginTop",
+     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:305:marginTop",
+     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:342:marginTop",
+     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:375:marginTop",
+     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:432:marginTop",
      "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx:119:paddingVertical",
      "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx:133:marginTop",
      "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx:71:marginBottom",
@@ -520,10 +535,10 @@
      "apps/mobile/src/features/sales/screens/SalesExtraScreen.tsx:98:marginTop",
      "apps/mobile/src/features/sales/screens/SalesFixedScreen.tsx:114:marginTop",
      "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:356:paddingTop",
-     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:392:marginTop",
-     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:417:marginTop",
-     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:496:marginTop",
-     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:514:marginTop",
+     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:393:marginTop",
+     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:418:marginTop",
+     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:497:marginTop",
+     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:515:marginTop",
      "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:538:marginTop",
      "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx:138:marginTop",
      "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx:187:marginTop",
@@ -539,7 +554,7 @@
    "축판정표": "세로 — `marginTop`·`marginBottom`·`marginVertical`·`paddingTop`·`paddingBottom`·`paddingVertical`·`rowGap`·`top`·`bottom` / 가로 — `marginLeft`·`marginRight`·`marginHorizontal`·`marginStart`·`marginEnd`·`paddingLeft`·`paddingRight`·`paddingHorizontal`·`paddingStart`·`paddingEnd`·`columnGap`·`left`·`right` / `gap` 은 축이 없어 컨테이너의 `flexDirection` 을 읽는다(RN 기본은 `column`) / `padding`·`margin` 단축은 **양축**이다.",
    "보수배정": "**축이 갈리지 않거나 양축이면 `GROW-H`(S3b)로 보낸다.** 세로로 잘못 넣으면 \"폭에 영향 없음\" 이라는 거짓말이 S3a 에 섞이고, 가로로 잘못 넣으면 재측정을 한 번 더 할 뿐이다. 값 3·6·7 에는 양축·판정불가가 0건이라 이번에는 실제로 옮겨 간 것이 없다.",
    "측정": "세로 91건 · 91키 (재측정 · 이전 94키)",
-   "자기정정": "**`PRT-208` 까지의 축 목록에 3건이 틀린 방향에 있었다.** 판정기를 보존 스크립트(`full-page-flow-prototype-axis-measure.mjs`)로 다시 짜서 재측정한 결과다 — (1) `Button.tsx:56` `gap:6` 은 `flexDirection: iconRight ? 'row-reverse' : 'row'` 라 **삼항식**이고, 문자열 리터럴만 읽던 정규식이 이를 \"선언 없음\" 으로 접어 기본값 column 으로 보냈다. **앱의 모든 버튼 아이콘↔라벨 간격이다.** (2) `IngredientListScreen.tsx:121` `gap:6` 은 감싸는 블록을 줄 단위로 거슬러 찾다 틀렸다 — 같은 줄에서 시작하는 인라인 스타일이었다. (3) `RecipesListScreen.tsx:184` `gap:7` 은 스타일 객체에 `flexDirection` 이 없지만 `<ScrollView horizontal>` 의 `contentContainerStyle` 이라 **원소가 축을 정한다.** 셋 다 세로(S3a)에 있었고 실제로는 가로(S3b)다 — `PRT-207` 이 고친 것과 같은 종류의 오류가 한 겹 더 있었다.",
+   "자기정정": "**`PRT-208` 까지의 축 목록에 3건이 틀린 방향에 있었다.** 판정기를 보존 스크립트(`full-page-flow-prototype-axis-measure.mjs`)로 다시 짜서 재측정한 결과다 — (1) `Button.tsx:56` `gap:6` 은 `flexDirection: iconRight ? 'row-reverse' : 'row'` 라 **삼항식**이고, 문자열 리터럴만 읽던 정규식이 이를 \"선언 없음\" 으로 접어 기본값 column 으로 보냈다. **앱의 모든 버튼 아이콘↔라벨 간격이다.** (2) `IngredientListScreen.tsx:123` `gap:6` 은 감싸는 블록을 줄 단위로 거슬러 찾다 틀렸다 — 같은 줄에서 시작하는 인라인 스타일이었다. (3) `RecipesListScreen.tsx:186` `gap:7` 은 스타일 객체에 `flexDirection` 이 없지만 `<ScrollView horizontal>` 의 `contentContainerStyle` 이라 **원소가 축을 정한다.** 셋 다 세로(S3a)에 있었고 실제로는 가로(S3b)다 — `PRT-207` 이 고친 것과 같은 종류의 오류가 한 겹 더 있었다.",
    "판정근거": "`docs/prototypes/full-page-flow-prototype-axis-measure.mjs` — 감사 JSON 의 간격 선언마다 속성·컨테이너를 읽어 축을 판정하고 `axis-at.json` 을 낸다. 이 규칙의 `at` 목록은 그 산출물이다.",
    "executionStage": "S3a",
    "axis": "vertical",
@@ -578,7 +593,7 @@
      "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:169:gap",
      "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:193:gap",
      "apps/mobile/src/features/ingredients/screens/IngredientFormScreen.tsx:228:gap",
-     "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:121:gap",
+     "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:123:gap",
      "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx:129:gap",
      "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx:164:gap",
      "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:231:gap",
@@ -613,12 +628,12 @@
      "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx:195:gap",
      "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx:213:gap",
      "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx:259:gap",
-     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:285:gap",
-     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:330:gap",
-     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:364:gap",
-     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:376:gap",
-     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:401:gap",
-     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:497:gap",
+     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:287:gap",
+     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:332:gap",
+     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:366:gap",
+     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:378:gap",
+     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:403:gap",
+     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:499:gap",
      "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx:145:gap",
      "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx:112:gap",
      "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx:96:gap",
@@ -643,7 +658,7 @@
      "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:526:marginLeft",
      "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:556:gap",
      "apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx:98:gap",
-     "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:184:gap",
+     "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:186:gap",
      "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:64:gap",
      "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:80:marginLeft",
      "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:80:paddingHorizontal",
@@ -658,7 +673,7 @@
      "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx:213:gap",
      "apps/mobile/src/features/sales/screens/SalesDayDetailScreen.tsx:89:gap",
      "apps/mobile/src/features/sales/screens/SalesFixedScreen.tsx:83:gap",
-     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:492:gap",
+     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:493:gap",
      "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:550:gap",
      "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:644:gap",
      "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:667:gap",
@@ -677,7 +692,7 @@
    "축판정표": "세로 — `marginTop`·`marginBottom`·`marginVertical`·`paddingTop`·`paddingBottom`·`paddingVertical`·`rowGap`·`top`·`bottom` / 가로 — `marginLeft`·`marginRight`·`marginHorizontal`·`marginStart`·`marginEnd`·`paddingLeft`·`paddingRight`·`paddingHorizontal`·`paddingStart`·`paddingEnd`·`columnGap`·`left`·`right` / `gap` 은 축이 없어 컨테이너의 `flexDirection` 을 읽는다(RN 기본은 `column`) / `padding`·`margin` 단축은 **양축**이다.",
    "보수배정": "**축이 갈리지 않거나 양축이면 `GROW-H`(S3b)로 보낸다.** 세로로 잘못 넣으면 \"폭에 영향 없음\" 이라는 거짓말이 S3a 에 섞이고, 가로로 잘못 넣으면 재측정을 한 번 더 할 뿐이다. 값 3·6·7 에는 양축·판정불가가 0건이라 이번에는 실제로 옮겨 간 것이 없다.",
    "측정": "가로 109건 · 108키 (재측정 · 이전 105키)",
-   "자기정정": "**`PRT-208` 까지의 축 목록에 3건이 틀린 방향에 있었다.** 판정기를 보존 스크립트(`full-page-flow-prototype-axis-measure.mjs`)로 다시 짜서 재측정한 결과다 — (1) `Button.tsx:56` `gap:6` 은 `flexDirection: iconRight ? 'row-reverse' : 'row'` 라 **삼항식**이고, 문자열 리터럴만 읽던 정규식이 이를 \"선언 없음\" 으로 접어 기본값 column 으로 보냈다. **앱의 모든 버튼 아이콘↔라벨 간격이다.** (2) `IngredientListScreen.tsx:121` `gap:6` 은 감싸는 블록을 줄 단위로 거슬러 찾다 틀렸다 — 같은 줄에서 시작하는 인라인 스타일이었다. (3) `RecipesListScreen.tsx:184` `gap:7` 은 스타일 객체에 `flexDirection` 이 없지만 `<ScrollView horizontal>` 의 `contentContainerStyle` 이라 **원소가 축을 정한다.** 셋 다 세로(S3a)에 있었고 실제로는 가로(S3b)다 — `PRT-207` 이 고친 것과 같은 종류의 오류가 한 겹 더 있었다.",
+   "자기정정": "**`PRT-208` 까지의 축 목록에 3건이 틀린 방향에 있었다.** 판정기를 보존 스크립트(`full-page-flow-prototype-axis-measure.mjs`)로 다시 짜서 재측정한 결과다 — (1) `Button.tsx:56` `gap:6` 은 `flexDirection: iconRight ? 'row-reverse' : 'row'` 라 **삼항식**이고, 문자열 리터럴만 읽던 정규식이 이를 \"선언 없음\" 으로 접어 기본값 column 으로 보냈다. **앱의 모든 버튼 아이콘↔라벨 간격이다.** (2) `IngredientListScreen.tsx:123` `gap:6` 은 감싸는 블록을 줄 단위로 거슬러 찾다 틀렸다 — 같은 줄에서 시작하는 인라인 스타일이었다. (3) `RecipesListScreen.tsx:186` `gap:7` 은 스타일 객체에 `flexDirection` 이 없지만 `<ScrollView horizontal>` 의 `contentContainerStyle` 이라 **원소가 축을 정한다.** 셋 다 세로(S3a)에 있었고 실제로는 가로(S3b)다 — `PRT-207` 이 고친 것과 같은 종류의 오류가 한 겹 더 있었다.",
    "판정근거": "`docs/prototypes/full-page-flow-prototype-axis-measure.mjs` — 감사 JSON 의 간격 선언마다 속성·컨테이너를 읽어 축을 판정하고 `axis-at.json` 을 낸다. 이 규칙의 `at` 목록은 그 산출물이다.",
    "executionStage": "S3b",
    "axis": "horizontal",
@@ -724,9 +739,9 @@
      "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx:181:paddingVertical",
      "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx:185:paddingVertical",
      "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx:204:paddingVertical",
-     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:248:paddingBottom",
-     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:295:marginTop",
-     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:401:paddingVertical",
+     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:250:paddingBottom",
+     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:297:marginTop",
+     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:403:paddingVertical",
      "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx:108:paddingVertical",
      "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx:133:paddingTop",
      "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx:76:paddingVertical",
@@ -762,9 +777,9 @@
      "apps/mobile/src/features/sales/screens/SalesExpenseScreen.tsx:82:marginBottom",
      "apps/mobile/src/features/sales/screens/SalesExtraScreen.tsx:69:paddingVertical",
      "apps/mobile/src/features/sales/screens/SalesFixedScreen.tsx:72:gap",
-     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:382:marginBottom",
-     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:383:paddingVertical",
-     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:414:marginBottom",
+     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:383:marginBottom",
+     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:384:paddingVertical",
+     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:415:marginBottom",
      "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:613:paddingVertical",
      "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:681:paddingVertical",
      "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx:159:gap",
@@ -876,9 +891,9 @@
     ],
     "numericGt": 24,
     "at": [
-     "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:115:paddingBottom",
+     "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:117:paddingBottom",
      "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:119:paddingBottom",
-     "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:190:paddingBottom"
+     "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:192:paddingBottom"
     ]
    },
    "target": "scrollEnd.fab",
@@ -1235,8 +1250,8 @@
     "group": "size",
     "at": [
      "apps/mobile/src/components/kit/Sheet.tsx:32",
-     "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:223",
-     "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:262",
+     "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:222",
+     "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:261",
      "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:338",
      "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:329"
     ]
@@ -1256,7 +1271,7 @@
      "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx:160:height",
      "apps/mobile/src/features/my/components/RevenueGapCard.tsx:70:height",
      "apps/mobile/src/features/my/screens/MyAccountScreen.tsx:63:height",
-     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:252:height",
+     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:254:height",
      "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:276:height",
      "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:393:height",
      "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:489:height",
@@ -1279,7 +1294,7 @@
      "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:295",
      "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:356",
      "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx:265",
-     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:490"
+     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:491"
     ]
    },
    "target": "ListRow 역할별 `rowMinHeight` 60/76",
@@ -1291,7 +1306,7 @@
     "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:295:minHeight": 60,
     "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:356:minHeight": 76,
     "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx:265:minHeight": 60,
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:490:minHeight": 76
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:491:minHeight": 76
    },
    "출처": "기획서 §8.2 `D-11` 닫힘 — \"`rowMinHeight` 60/76/92\". 프로토타입 매핑표 `proposedTokensExtension.rowHeight` 와 실행서 §3.4 가 원천",
    "근거": "24개 minHeight를 구조로 전수 분류했다. 이 8개만 1줄 또는 2줄 목록 행이며 1줄은 60, 2줄은 76으로 배정한다. 나머지 16개는 목록 행이 아니라 각 컴포넌트 소유 높이로 분리한다.",
@@ -1356,7 +1371,7 @@
   {
    "id": "R-SZ-ROW-SALES-BANNER",
    "bin": "componentOwned",
-   "match": { "group": "size", "props": ["minHeight"], "at": ["apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:382:minHeight"] },
+   "match": { "group": "size", "props": ["minHeight"], "at": ["apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:383:minHeight"] },
    "name": "COMPONENT.salesHome.shortageBanner.minHeight",
    "근거": "부족 경고 배너의 자체 높이이며 ListRow가 아니다."
   },
@@ -1388,28 +1403,28 @@
    "at": [
      "apps/mobile/src/components/kit/AppHeader.tsx:29:width",
      "apps/mobile/src/components/kit/AppHeader.tsx:29:height",
-     "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:89:width",
-     "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:89:height",
-     "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:97:width",
-     "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:97:height",
+     "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:90:width",
+     "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:90:height",
+     "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:99:width",
+     "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:99:height",
      "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:173:width",
      "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:173:height",
      "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:85:width",
      "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:85:height",
-     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:225:width",
-     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:225:height",
-     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:232:width",
-     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:232:height",
+     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:226:width",
+     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:226:height",
+     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:234:width",
+     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:234:height",
      "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:106:width",
      "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:106:height",
-     "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:163:width",
-     "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:163:height",
-     "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:170:width",
-     "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:170:height",
+     "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:164:width",
+     "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:164:height",
+     "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:172:width",
+     "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:172:height",
      "apps/mobile/src/features/sales/screens/SalesFixedScreen.tsx:66:width",
      "apps/mobile/src/features/sales/screens/SalesFixedScreen.tsx:66:height",
-     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:363:width",
-     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:363:height"
+     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:364:width",
+     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:364:height"
     ]
    },
    "name": "COMPONENT.appHeader.iconButton.visualSize",
@@ -1478,9 +1493,9 @@
   {
    "id": "R-SZ-CONTROL-ROW-OVERFLOW",
    "bin": "componentOwned",
-   "match": { "group": "size", "props": ["width", "height"], "at": ["apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:204"] },
+   "match": { "group": "size", "props": ["width", "height"], "at": ["apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:203"] },
    "name": "COMPONENT.rowOverflowAction.visualBox",
-   "근거": "27×40 비정방형 overflow action의 구성요소 소유 상자다."
+   "근거": "S4a에서 실제 터치 상자 45×44로 확장한 overflow action의 구성요소 소유 상자다."
   },
   {
    "id": "R-SZ-CONTROL-ACCOUNT-ICON",
@@ -1551,7 +1566,7 @@
    "id": "R-SZ-CONTROL-LEGEND",
    "bin": "componentOwned",
    "match": { "group": "size", "props": ["width", "height"], "at": [
-    "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:100",
+    "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:102",
     "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:275",
     "apps/mobile/src/features/sales/screens/SalesChannelScreen.tsx:110"
    ] },
@@ -1657,14 +1672,14 @@
      "apps/mobile/src/components/kit/Slider.tsx:45:borderRadius",
      "apps/mobile/src/components/kit/Slider.tsx:46:borderRadius",
      "apps/mobile/src/components/kit/index.tsx:321:borderRadius",
-     "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:223:borderRadius",
-     "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:262:borderRadius",
+     "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:222:borderRadius",
+     "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:261:borderRadius",
      "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:338:borderRadius",
-     "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:100:borderRadius",
+     "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:102:borderRadius",
      "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:329:borderRadius",
      "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx:160:borderRadius",
      "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx:32:borderRadius",
-     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:252:borderRadius",
+     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:254:borderRadius",
      "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:276:borderRadius",
      "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:393:borderRadius",
      "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:489:borderRadius",
@@ -1809,7 +1824,7 @@
  "semanticNote": "**`semantic` 통을 없앴다** (솔 검수 W1 R1 F02). 감사기는 숫자 리터럴만 선언으로 모으므로 `fontSize: 16` → `TYPE.body` 치환은 semantic 으로 이동하는 것이 아니라 입력에서 사라진다. 영원히 0 인 통을 두고 \"P4 에서 채워진다\" 고 적는 것은 분류가 아니다. W1 의 범위를 **하드코딩 리터럴의 배정**으로 좁히고, 의미 토큰 채택률은 같은 감사기가 모으는 `tokenAccess` 로 따로 본다.",
  "ruleOrderNote": "규칙은 순서대로 평가하고 첫 일치가 이긴다. **순서에 의존하는 배정이 있으면 앞선 규칙에 `순서근거` 를 적어야 하고, 검사기가 그것을 강제한다.** 다중 일치가 0 이면 순서는 장식이다 — 검사기가 다중 일치 수를 함께 낸다 (페이블 검수 조건 B).",
  "방향Note": "`defect` 통의 모든 행은 `executionStage`(S1/S2/S3a/S3b/S4) · `axis`(horizontal/vertical/both/none/derived) · `delta`(shrink/same/grow/mixed/unknown) · `evidenceRef` 를 갖는다. axis가 none이 아니면 targetValue/targetMap/protoConverge/targetDerived 중 정확히 하나도 필수다. 검사기는 감사 현재값→목적지를 선언별로 계산해 수기 delta와 대조하고, targetMap의 누락·낡은 항목도 실패시킨다(솔 검수 W1 R2 F03). 런타임 파생은 폐쇄 kind와 formulaVersion을 쓰며 axis=derived·delta=unknown이다. 결정적 파생은 폐쇄표의 값과 판본까지 검사하고 숫자 목적지·delta를 선언별 계산한다(PRT-221). 축은 규칙의 자기 선언을 믿지 않고 실제로 이긴 선언들의 측정축과 대조한다.",
- "designSyncId": "DS-20260905-005",
+ "designSyncId": "DS-20260905-006",
  "선언수조정표": {
   "_": "3,677 → 3,653 의 행방. 하나의 원인으로 설명하면 안 된다(솔 검수 W1 R2). '24건이 전부 감사기 결함' 이라는 설명은 틀렸다.",
   "구기준선_6497666_기존감사기": 3677,

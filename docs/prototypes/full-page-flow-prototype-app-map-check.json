@@ -1,6 +1,6 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-05T11:52:21.427Z",
+  "generatedAt": "2026-09-05T13:23:18.522Z",
   "schemaVersion": 1,
   "script": {
    "name": "full-page-flow-prototype-app-map-check.mjs",
@@ -9,12 +9,12 @@
   "source": {
    "audit": {
     "path": "token-adoption-audit.json",
-    "sha256": "591b0c3e55d39512247ae8fcca405470d1a8f4bad020e8c5acc5493378d44ece",
-    "declarations": 3632
+    "sha256": "9455407af5d900c60467c7ecf9834a8a2960377f6e1737f1aa2551cb09994d47",
+    "declarations": 3633
    },
    "appMap": {
     "path": "full-page-flow-prototype-app-token-map.json",
-    "sha256": "57805c945ca5784cb745487d86df713742e6f9b4fbae1e4f94927ea3324c2e04"
+    "sha256": "d9d205e3d7cee6b15f11ec4c4c4b7f5adc3fbe04db5eacf867ef2a07ba0c97f0"
    },
    "prototypeMap": {
     "path": "full-page-flow-prototype-token-map.json",
@@ -29,10 +29,10 @@
  },
  "summary": {
   "status": "PROPOSAL_COMPLETE",
-  "declarations": 3632,
+  "declarations": 3633,
   "byBin": {
    "primitive": 2053,
-   "componentOwned": 218,
+   "componentOwned": 219,
    "defect": 1326,
    "pendingApproval": 35,
    "approvedException": 0
@@ -1040,42 +1040,42 @@
     ]
    },
    {
-    "decl": "spacing/paddingBottom:26 @ apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:221",
+    "decl": "spacing/paddingBottom:26 @ apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:220",
     "rules": [
      "R-SP-SCROLL-END",
      "R-SP-EMPTY-STATE"
     ]
    },
    {
-    "decl": "typography/fontSize:19 @ apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:225",
+    "decl": "typography/fontSize:19 @ apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:224",
     "rules": [
      "R-TY-SIZE-CONVERGE",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
-    "decl": "typography/fontSize:16 @ apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:238",
+    "decl": "typography/fontSize:16 @ apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:237",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
-    "decl": "typography/fontSize:14 @ apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:239",
+    "decl": "typography/fontSize:14 @ apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:238",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
-    "decl": "typography/fontSize:16 @ apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:270",
+    "decl": "typography/fontSize:16 @ apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:269",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
-    "decl": "typography/fontSize:16 @ apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:274",
+    "decl": "typography/fontSize:16 @ apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:273",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
@@ -1355,7 +1355,7 @@
     ]
    },
    {
-    "decl": "spacing/paddingBottom:104 @ apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:115",
+    "decl": "spacing/paddingBottom:104 @ apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:117",
     "rules": [
      "R-SP-SCROLL-END-FAB",
      "R-SP-SCROLL-END",
@@ -1363,21 +1363,21 @@
     ]
    },
    {
-    "decl": "size/minWidth:0 @ apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:131",
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:133",
     "rules": [
      "R-SZ-FLEX-RESET",
      "R-SZ-MINWIDTH"
     ]
    },
    {
-    "decl": "typography/fontSize:16 @ apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:132",
+    "decl": "typography/fontSize:16 @ apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:134",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
-    "decl": "typography/fontSize:14 @ apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:137",
+    "decl": "typography/fontSize:14 @ apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:139",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
@@ -3008,175 +3008,175 @@
     ]
    },
    {
-    "decl": "typography/fontSize:16 @ apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:249",
+    "decl": "typography/fontSize:16 @ apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:251",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
-    "decl": "spacing/paddingBottom:28 @ apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:259",
+    "decl": "spacing/paddingBottom:28 @ apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:261",
     "rules": [
      "R-SP-SCROLL-END",
      "R-SP-EMPTY-STATE"
     ]
    },
    {
-    "decl": "typography/fontSize:18 @ apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:290",
+    "decl": "typography/fontSize:18 @ apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:292",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
-    "decl": "typography/fontSize:14 @ apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:297",
+    "decl": "typography/fontSize:14 @ apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:299",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
-    "decl": "typography/fontSize:16 @ apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:298",
+    "decl": "typography/fontSize:16 @ apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:300",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
-    "decl": "typography/fontSize:14 @ apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:301",
+    "decl": "typography/fontSize:14 @ apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:303",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
-    "decl": "typography/fontSize:16 @ apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:303",
+    "decl": "typography/fontSize:16 @ apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:305",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
-    "decl": "typography/fontSize:14 @ apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:306",
+    "decl": "typography/fontSize:14 @ apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:308",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
-    "decl": "spacing/marginTop:2 @ apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:313",
+    "decl": "spacing/marginTop:2 @ apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:315",
     "rules": [
      "R-SP-CAPTION-GAP-VIEW",
      "R-SP-CAPTION-GAP"
     ]
    },
    {
-    "decl": "typography/fontSize:18 @ apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:333",
+    "decl": "typography/fontSize:18 @ apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:335",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
-    "decl": "typography/fontSize:16 @ apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:337",
+    "decl": "typography/fontSize:16 @ apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:339",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
-    "decl": "typography/fontSize:16 @ apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:340",
+    "decl": "typography/fontSize:16 @ apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:342",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
-    "decl": "typography/fontSize:18 @ apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:367",
+    "decl": "typography/fontSize:18 @ apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:369",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
-    "decl": "typography/fontSize:16 @ apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:370",
+    "decl": "typography/fontSize:16 @ apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:372",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
-    "decl": "typography/fontSize:16 @ apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:373",
+    "decl": "typography/fontSize:16 @ apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:375",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
-    "decl": "typography/fontSize:14 @ apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:377",
+    "decl": "typography/fontSize:14 @ apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:379",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
-    "decl": "typography/fontSize:16 @ apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:378",
+    "decl": "typography/fontSize:16 @ apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:380",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
-    "decl": "typography/fontSize:14 @ apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:403",
+    "decl": "typography/fontSize:14 @ apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:405",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
-    "decl": "typography/fontSize:14 @ apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:408",
+    "decl": "typography/fontSize:14 @ apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:410",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
-    "decl": "size/minWidth:0 @ apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:428",
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:430",
     "rules": [
      "R-SZ-FLEX-RESET",
      "R-SZ-MINWIDTH"
     ]
    },
    {
-    "decl": "typography/fontSize:16 @ apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:429",
+    "decl": "typography/fontSize:16 @ apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:431",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
-    "decl": "typography/fontSize:14 @ apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:430",
+    "decl": "typography/fontSize:14 @ apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:432",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
-    "decl": "typography/fontSize:16 @ apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:456",
+    "decl": "typography/fontSize:16 @ apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:458",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
-    "decl": "typography/fontSize:18 @ apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:457",
+    "decl": "typography/fontSize:18 @ apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:459",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
-    "decl": "typography/fontSize:14 @ apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:499",
+    "decl": "typography/fontSize:14 @ apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:501",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
@@ -4638,7 +4638,7 @@
     ]
    },
    {
-    "decl": "spacing/paddingBottom:104 @ apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:190",
+    "decl": "spacing/paddingBottom:104 @ apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:192",
     "rules": [
      "R-SP-SCROLL-END-FAB",
      "R-SP-SCROLL-END",
@@ -4646,21 +4646,21 @@
     ]
    },
    {
-    "decl": "typography/fontSize:16 @ apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:217",
+    "decl": "typography/fontSize:16 @ apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:219",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
-    "decl": "typography/fontSize:16 @ apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:233",
+    "decl": "typography/fontSize:16 @ apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:235",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
-    "decl": "typography/fontSize:16 @ apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:249",
+    "decl": "typography/fontSize:16 @ apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:251",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
@@ -5569,42 +5569,35 @@
     ]
    },
    {
-    "decl": "size/minWidth:0 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:388",
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:389",
     "rules": [
      "R-SZ-FLEX-RESET",
      "R-SZ-MINWIDTH"
     ]
    },
    {
-    "decl": "typography/fontSize:13 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:389",
+    "decl": "typography/fontSize:13 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:390",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
-    "decl": "typography/fontSize:11 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:392",
+    "decl": "typography/fontSize:11 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:393",
     "rules": [
      "R-TY-SIZE-CONVERGE",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
-    "decl": "typography/fontSize:13 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:416",
+    "decl": "typography/fontSize:13 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:417",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
-    "decl": "typography/fontSize:13 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:420",
-    "rules": [
-     "R-TY-SIZE-PRIM",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:14 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:440",
+    "decl": "typography/fontSize:13 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:421",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
@@ -5618,21 +5611,28 @@
     ]
    },
    {
-    "decl": "typography/fontSize:14 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:456",
+    "decl": "typography/fontSize:14 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:442",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
-    "decl": "size/minWidth:0 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:491",
+    "decl": "typography/fontSize:14 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:457",
+    "rules": [
+     "R-TY-SIZE-PRIM",
+     "R-TY-SIZE-OFFSCALE"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:492",
     "rules": [
      "R-SZ-FLEX-RESET",
      "R-SZ-MINWIDTH"
     ]
    },
    {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:493",
+    "decl": "typography/fontSize:15 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:494",
     "rules": [
      "R-TY-SIZE-15-LABEL",
      "R-TY-SIZE-CONVERGE",
@@ -5640,14 +5640,14 @@
     ]
    },
    {
-    "decl": "typography/fontSize:12 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:496",
+    "decl": "typography/fontSize:12 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:497",
     "rules": [
      "R-TY-SIZE-CONVERGE",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
-    "decl": "typography/fontSize:13 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:514",
+    "decl": "typography/fontSize:13 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:515",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
@@ -6566,7 +6566,38 @@
   "binMovementLedger": {
    "previousMap": "full-page-flow-prototype-app-token-map.json",
    "previousMapSha256": "57805c945ca5784cb745487d86df713742e6f9b4fbae1e4f94927ea3324c2e04",
-   "moves": {},
+   "moves": {
+    "(미분류) → componentOwned": {
+     "count": 27,
+     "rules": {
+      "- → R-SZ-CONTROL-ROW-OVERFLOW": 2,
+      "- → R-SZ-HANDLE": 4,
+      "- → R-SZ-APPHEADER-ACTION": 14,
+      "- → R-SZ-CONTROL-LEGEND": 2,
+      "- → R-SZ-HAIRLINE": 1,
+      "- → R-SP-OPTICAL-ICON": 1,
+      "- → R-SP-QUANTITY-TOUCH-ENVELOPE": 1,
+      "- → R-SZ-ROW-SALES-BANNER": 1,
+      "- → R-SP-EDGE-INSET": 1
+     }
+    },
+    "(미분류) → defect": {
+     "count": 29,
+     "rules": {
+      "- → R-RD-SHAPE": 4,
+      "- → R-SP-CONVERGE-GROW-H": 9,
+      "- → R-SP-CONVERGE-11-V": 6,
+      "- → R-SP-CONVERGE-GROW-V": 9,
+      "- → R-SZ-ROW-MINH": 1
+     }
+    },
+    "defect → pendingApproval": {
+     "count": 1,
+     "rules": {
+      "R-SP-CAPTION-GAP → R-SP-CAPTION-GAP-VIEW": 1
+     }
+    }
+   },
    "reconciliation": {
     "primitive": {
      "이전": 2053,
@@ -6576,23 +6607,23 @@
      "실제": 2053
     },
     "componentOwned": {
-     "이전": 218,
+     "이전": 192,
      "나감": 0,
-     "들어옴": 0,
-     "계산": 218,
-     "실제": 218
+     "들어옴": 27,
+     "계산": 219,
+     "실제": 219
     },
     "defect": {
-     "이전": 1326,
-     "나감": 0,
-     "들어옴": 0,
+     "이전": 1298,
+     "나감": 1,
+     "들어옴": 29,
      "계산": 1326,
      "실제": 1326
     },
     "pendingApproval": {
-     "이전": 35,
+     "이전": 34,
      "나감": 0,
-     "들어옴": 0,
+     "들어옴": 1,
      "계산": 35,
      "실제": 35
     },
@@ -6945,6 +6976,28 @@
      [
       "gap:2",
       2
+     ]
+    ]
+   },
+   {
+    "id": "R-SP-QUANTITY-TOUCH-ENVELOPE",
+    "bin": "componentOwned",
+    "declarations": 1,
+    "name": "COMPONENT.quantityStepper.touchEnvelopePadding",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "padding:7",
+      1
      ]
     ]
    },
@@ -8416,11 +8469,11 @@
     "transitions": {},
     "values": [
      [
-      "width:27",
+      "width:45",
       1
      ],
      [
-      "height:40",
+      "height:44",
       1
      ]
     ]

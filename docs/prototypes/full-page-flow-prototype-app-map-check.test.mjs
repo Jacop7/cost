@@ -37,14 +37,14 @@ const run = (mutate = () => {}, eol = '\n') => {
 };
 const rule = (map, id) => map.rules.find(r => r.id === id);
 
-test('기준본은 정의 21건을 분리하고 사용처 3,632건을 다섯 통에 배정한다', () => {
+test('기준본은 정의 21건을 분리하고 사용처 3,633건을 다섯 통에 배정한다', () => {
   const r = run();
   assert.equal(r.code, 0, r.text);
   assert.deepEqual(r.out.summary.byBin, {
-    primitive: 2053, componentOwned: 218, defect: 1326,
+    primitive: 2053, componentOwned: 219, defect: 1326,
     pendingApproval: 35, approvedException: 0,
   });
-  assert.equal(audit.summary.declarations, 3632);
+  assert.equal(audit.summary.declarations, 3633);
   assert.equal(audit.definitions.total, 21);
   assert.equal(audit.definitions.declarations.filter(d => d.prop === 'lineHeight').length, 7);
   assert.equal(audit.declarations.filter(d => d.layer === 'tokenDefinition').length, 0);
@@ -56,6 +56,7 @@ test('기준본은 정의 21건을 분리하고 사용처 3,632건을 다섯 통
   assert.equal(per['R-TY-LINEHEIGHT-IMPLICIT'].declarations, 1);
   assert.equal(per['R-TY-LINEHEIGHT'].declarations, 65);
   assert.equal(per['R-TY-LINEHEIGHT'].targetResolved, 65);
+  assert.equal(per['R-SP-QUANTITY-TOUCH-ENVELOPE'].declarations, 1);
   assert.equal(r.out.summary.multiMatchCount, 918);
 });
 
