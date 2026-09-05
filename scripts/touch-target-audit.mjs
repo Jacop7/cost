@@ -22,16 +22,21 @@
  */
 import { readFileSync, writeFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
+import { spawnSync } from 'node:child_process';
 import { join, resolve, relative } from 'node:path';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
+// `--키=값` 과 값 없는 `--깃발` 둘 다 받는다. 깃발은 빈 문자열이라 `!== undefined` 로 본다.
 const opt = Object.fromEntries(process.argv.slice(2)
-  .filter(a => a.startsWith('--') && a.includes('='))
-  .map(a => [a.slice(2, a.indexOf('=')), a.slice(a.indexOf('=') + 1)]));
+  .filter(a => a.startsWith('--'))
+  .map(a => (a.includes('=') ? [a.slice(2, a.indexOf('=')), a.slice(a.indexOf('=') + 1)] : [a.slice(2), ''])));
 const srcRoot = resolve(opt.src ?? join(root, 'apps', 'mobile'));
 const knownPath = resolve(opt.known ?? join(root, 'scripts', 'touch-target-known.json'));
 const outPath = opt.out ? resolve(opt.out) : null;
 const MIN = 44;
+// 자리 ID 의 기준 경로. 저장소를 그대로 재면 저장소 루트 기준이고, `--src` 로 다른 나무를
+// 가리키면 그 나무 기준이다 — 시험이 임시 폴더에서도 같은 ID 를 얻는다.
+const idRoot = opt.src ? resolve(opt.src, '..') : root;
 
 const files = [];
 (function walk(d) {
@@ -101,7 +106,7 @@ for (const f of files) {
     if (!/onPress\s*=/.test(body)) continue;          // 누를 수 없으면 터치 영역 계약 밖이다
     const w = dim(body, 'width'), h = dim(body, 'height');
     const hs = readHitSlop(body);
-    const rel = relative(root, f).replace(/\\/g, '/');
+    const rel = relative(idRoot, f).replace(/\\/g, '/');
     const line = lineOf(m.index);
     if (w === null || h === null) {
       rows.push({ at: `${rel}:${line}`, element: m[1], width: w, height: h, hitSlop: hs.form,
@@ -114,43 +119,91 @@ for (const f of files) {
   }
 }
 
-// ── 공용 컴포넌트 계약 (솔 검수 `F02`) ─────────────────────────────────────────
+// ── 공용 컴포넌트 계약 ────────────────────────────────────
 // `Button` 처럼 **높이가 padding + 글자로 정해지는** 공용 컴포넌트는 자리마다 판정불가로
 // 빠진다. 그런데 그게 앱에서 가장 많이 눌리는 상자다. 크기 variant 를 **한 번** 판정하고
 // 소비처를 세어 연결한다.
 //
-// 정확한 높이는 글꼴 메트릭에 달려 정적 분석으로 못 정한다. 그래서 **범위**로 판정한다 —
-//   하한 = 2×paddingVertical + fontSize        (글자 상자가 최소 이만큼은 된다)
-//   상한 = 2×paddingVertical + ceil(fontSize × 1.4)   (§4.8 default 행간)
-// 상한이 44 미만이면 **어떤 글꼴에서도 미달**이라 확정이고, 하한이 44 이상이면 확정 통과다.
-// 그 사이는 `경계` 로 두고 렌더 측정(`S4`)의 몫으로 넘긴다 — 정적으로 단정하지 않는다.
+// ⚠ **상한을 만들지 않는다** (솔 검수 `R3 F02`). 초판은 상한을 `2×pv + ceil(fs × 1.4)` 로 두고
+//   "상한이 44 미만이면 어떤 글꼴에서도 미달" 이라고 단정했다. 근거가 없다 — `1.4` 는 §4.8 의
+//   **기본 행간 권고**이지 글꼴이 그리는 텍스트 상자 높이의 상한이 아니다. 그래서 이 감사는
+//   **미달을 단정하지 않는다.**
+//
+//   하한 = `2×paddingVertical + fontSize`
+//     — 가정 A: `lineHeight` 를 명시하지 않은 `Text` 의 상자는 `fontSize` 보다 낮지 않다.
+//       **가정이지 증명이 아니다** — 그래서 통과 쪽으로만 쓴다.
+//   하한 ≥ 44 → 통과(확정)
+//   하한 < 44 → **경계** — 정적으로는 모른다. 실제 높이는 `S4` 렌더 측정이 정한다.
+//
+// 경계 variant 는 위험이 열려 있는 상태다. 그래서 **소비처 ID 와 개수까지 래츣한다** —
+// 열린 위험이 조용히 퍼지는 것을 막는다. 통과 variant 는 늘어도 위험이 늘지 않으므로
+// 판정과 하한만 래츣하고 소비처는 산출물(`--out`)에만 남긴다.
+
+/**
+ * `<Button …>` 소비처를 **여는 태그 전체**로 읽는다 (솔 검수 `R3 F01`).
+ *
+ * 초판은 `줄마다 /<Button[^>]*size="sm"/` 로 셌다. 세 가지를 놓친다 —
+ *   ① 여러 줄로 나눈 태그(`<Button` 과 `size=` 가 다른 줄)
+ *   ② `size` 를 안 쓴 자리 — 기본값(`Button.tsx` 의 `size = 'md'`)으로 간다
+ *   ③ `size={v}` · `{...props}` 처럼 정적으로 모르는 자리
+ * 기본값은 이 파일이 아니라 **`Button.tsx` 에서 읽는다** — 바뀌면 감사가 따라가야 한다.
+ */
+const SPREAD = /(?:^|\s)\{\s*\.\.\.[A-Za-z_$][\w$]*\s*\}/;
+const buttonUses = (defaultSize) => {
+  const byVariant = new Map();
+  const dynamic = [];
+  const add = (k, at) => { if (!byVariant.has(k)) byVariant.set(k, []); byVariant.get(k).push(at); };
+  for (const f of files) {
+    const text = readFileSync(f, 'utf8');
+    const offsets = [0];
+    for (let i = 0; i < text.length; i++) if (text[i] === '\n') offsets.push(i + 1);
+    const lineOf = (idx) => { let lo = 0, hi = offsets.length - 1; while (lo < hi) { const mid = (lo + hi + 1) >> 1; if (offsets[mid] <= idx) lo = mid; else hi = mid - 1; } return lo + 1; };
+    const re = /<Button(?![A-Za-z0-9_])/g;
+    let m;
+    while ((m = re.exec(text))) {
+      const body = tagBody(text, m.index);
+      const at = `${relative(idRoot, f).replace(/\\/g, '/')}:${lineOf(m.index)}`;
+      const lit = body.match(/\bsize\s*=\s*(?:["'](\w+)["']|\{\s*["'](\w+)["']\s*\})/);
+      if (lit) { add(lit[1] ?? lit[2], at); continue; }
+      if (/\bsize\s*=\s*\{/.test(body) || SPREAD.test(body)) { dynamic.push(at); continue; }
+      add(defaultSize, at);
+    }
+  }
+  return { byVariant, dynamic };
+};
+
 const componentContracts = [];
+let dynamicUses = null;
 {
   const bt = join(srcRoot, 'src', 'components', 'kit', 'Button.tsx');
   if (existsSync(bt)) {
     const t = readFileSync(bt, 'utf8');
+    const d = t.match(/\bsize\s*=\s*'([A-Za-z]+)'/);
     const m = t.match(/const sizes[^=]*=\s*\{([\s\S]*?)\n\s*\};/);
-    if (!m) componentContracts.push({ 컴포넌트: 'Button', 판정: '읽기실패', 사유: 'sizes 표를 못 읽었다 — 모양이 바뀌었으면 계약을 다시 맞춰라' });
+    if (!d) componentContracts.push({ 컴포넌트: 'Button', 판정: '읽기실패', 사유: "기본 size 값(`size = 'md'`)을 못 읽었다 — 기본값을 모르면 size 없는 자리를 배정할 수 없다" });
+    else if (!m) componentContracts.push({ 컴포넌트: 'Button', 판정: '읽기실패', 사유: 'sizes 표를 못 읽었다 — 모양이 바뀌었으면 계약을 다시 맞춰라' });
     else {
+      const uses = buttonUses(d[1]);
+      dynamicUses = uses.dynamic;
       for (const line of m[1].split('\n')) {
         const v = line.match(/(\w+)\s*:\s*\{\s*pv:\s*(\d+),\s*ph:\s*(\d+),\s*fs:\s*(\d+)/);
         if (!v) continue;
         const [, name, pv, ph, fs] = v;
-        const lo = 2 * +pv + +fs, hi = 2 * +pv + Math.ceil(+fs * 1.4);
-        const 판정 = hi < MIN ? '미달' : lo >= MIN ? '통과' : '경계';
-        const uses = [];
-        for (const f of files) {
-          const src = readFileSync(f, 'utf8').split(/\r?\n/);
-          src.forEach((ln, i) => { if (new RegExp(`<Button[^>]*size=["']${name}["']`).test(ln)) uses.push(`${relative(root, f).replace(/\\/g, '/')}:${i + 1}`); });
-        }
+        const lo = 2 * +pv + +fs;
+        const at = (uses.byVariant.get(name) ?? []).slice().sort();
         componentContracts.push({ 컴포넌트: `Button size="${name}"`, paddingVertical: +pv, fontSize: +fs,
-          높이범위: `${lo}~${hi}`, 판정, 소비처: uses.length, at: uses.slice(0, 12) });
+          높이하한: lo, 기본값여부: name === d[1], 판정: lo >= MIN ? '통과' : '경계',
+          소비처: at.length, at });
+      }
+      for (const [name, at] of uses.byVariant) {
+        if (componentContracts.some(c => c.컴포넌트 === `Button size="${name}"`)) continue;
+        componentContracts.push({ 컴포넌트: `Button size="${name}"`, 판정: '읽기실패',
+          사유: 'sizes 표에 없는 size 값을 쓰는 자리가 있다', 소비처: at.length, at: at.slice().sort() });
       }
     }
   }
 }
-const compShort = componentContracts.filter(c => c.판정 === '미달' || c.판정 === '읽기실패');
-const compEdge = componentContracts.filter(c => c.판정 === '경계');
+const compOpen = componentContracts.filter(c => c.판정 !== '통과');
 
 const judged = rows.filter(r => r.판정 !== '판정불가');
 const short = judged.filter(r => r.판정 === '미달');
@@ -182,19 +235,62 @@ else {
   const ua = new Set(unjudgedAts);
   for (const a of knownUnjudged) if (!ua.has(a)) failures.push(`판정불가가 해소됐다 — ${a} 를 목록에서 빼라`);
 }
-// 공용 컴포넌트 계약
-// 공용 컴포넌트 계약 — 알려진 미달과 양방향으로 맞춘다.
+// 공용 컴포넌트 계약 — 알려진 목록과 양방향으로 맞춘다.
+//
+// 판정과 높이 하한은 모든 variant 를 대조한다. **소비처 ID 와 개수는 판정이 `통과` 가 아닌
+// variant 만** 대조한다 — 열린 위험이 조용히 퍼지는 것을 막는 것이 목적이고, 확정 통과가
+// 늘어나는 것은 위험이 아니다. 판정이 통과에서 벗어나는 순간 소비처가 래칫 대상이 된다.
 const knownComp = new Map((known.components ?? []).map(c => [c.컴포넌트, c]));
-if (known.components === undefined) failures.push('알려진 공용 컴포넌트 미달 목록이 없다');
-else {
-  for (const c of compShort) if (!knownComp.has(c.컴포넌트))
-    failures.push(`새 공용 컴포넌트 미달 — ${c.컴포넌트} 높이 ${c.높이범위 ?? '?'} · 소비처 ${c.소비처 ?? '?'}곳 — 어떤 글꼴에서도 44 에 못 미친다`);
-  const shortComp = new Set(compShort.map(c => c.컴포넌트));
-  for (const k of knownComp.keys()) if (!shortComp.has(k)) failures.push(`공용 컴포넌트 ${k} 가 이제 미달이 아니다 — 목록에서 빼라`);
-  for (const c of compShort) {
+if (known.components === undefined) failures.push('알려진 공용 컴포넌트 목록이 없다 — 래칫이 꺼진 것을 조용히 넘기지 않는다');
+else if (componentContracts.length || knownComp.size) {
+  const seen = new Set();
+  for (const c of componentContracts) {
+    seen.add(c.컴포넌트);
     const e = knownComp.get(c.컴포넌트);
-    if (e && e.높이범위 && e.높이범위 !== c.높이범위) failures.push(`공용 컴포넌트 ${c.컴포넌트} 높이 범위가 ${e.높이범위} → ${c.높이범위} 로 바뀌었다 — 목록을 갱신하라`);
+    if (!e) { failures.push(`알려지지 않은 공용 컴포넌트 계약 — ${c.컴포넌트} 판정 ${c.판정} · 하한 ${c.높이하한 ?? '?'} · 소비처 ${c.소비처 ?? 0}곳. 목록에 올려라`); continue; }
+    if (e.판정 !== c.판정) failures.push(`공용 컴포넌트 ${c.컴포넌트} 판정이 ${e.판정} → ${c.판정} 으로 바뀌었다 — 목록을 갱신하라`);
+    if (c.높이하한 !== undefined && e.높이하한 !== c.높이하한) failures.push(`공용 컴포넌트 ${c.컴포넌트} 높이 하한이 ${e.높이하한} → ${c.높이하한} 으로 바뀌었다 — 목록을 갱신하라`);
+    if (c.판정 === '통과') continue;
+    if (e.소비처 === undefined || !Array.isArray(e.at)) {
+      failures.push(`공용 컴포넌트 ${c.컴포넌트} 는 판정이 ${c.판정} 인데 알려진 소비처 목록이 없다 — 열린 위험은 소비처까지 래칫한다`);
+      continue;
+    }
+    if (e.소비처 !== c.소비처) failures.push(`공용 컴포넌트 ${c.컴포넌트} 소비처가 ${e.소비처} → ${c.소비처}곳으로 바뀌었다`);
+    const ka = new Set(e.at), ca = new Set(c.at);
+    for (const a of c.at) if (!ka.has(a)) failures.push(`새 ${c.컴포넌트} 소비처 — ${a} (판정이 ${c.판정} 인 variant 는 늘리지 않는다)`);
+    for (const a of e.at) if (!ca.has(a)) failures.push(`${c.컴포넌트} 소비처가 사라졌다 — ${a} 를 목록에서 빼라`);
   }
+  for (const k of knownComp.keys()) if (!seen.has(k)) failures.push(`알려진 공용 컴포넌트 ${k} 가 이제 측정되지 않는다 — 목록에서 빼라`);
+}
+// `size` 가 변수거나 spread 로 들어오는 자리 — 어느 variant 인지 정적으로 모른다. 따로 래칫한다.
+if (dynamicUses !== null) {
+  if (known.buttonDynamic === undefined) failures.push('알려진 동적 size 소비처 목록이 없다 — size 가 변수면 어느 variant 인지 정적으로 모른다');
+  else {
+    const cur = new Set(dynamicUses), prev = new Set(known.buttonDynamic);
+    for (const a of dynamicUses) if (!prev.has(a)) failures.push(`새 동적 size 소비처 — ${a} (어느 variant 인지 정적으로 판정할 수 없다)`);
+    for (const a of known.buttonDynamic) if (!cur.has(a)) failures.push(`동적 size 소비처가 사라졌다 — ${a} 를 목록에서 빼라`);
+  }
+}
+
+// ── 측정 출처 결속 (솔 검수 `R3 F01`) ─────────────────────────────────────────
+// 초판은 **작업 트리에서 잰 수치를 검수 대상 커밋의 증거로 인용했다.** 두 값이 달랐고
+// (`8/16/53` 대 `10/14/62`) 검수자가 그걸 잡았다. 그래서 산출물에 측정한 커밋과 작업 트리
+// 상태를 박고, 보고용 측정은 `--expect-commit` 으로 커밋에 결속한다.
+const git = (args) => { const r = spawnSync('git', args, { cwd: srcRoot, encoding: 'utf8' }); return r.status === 0 ? r.stdout.trim() : null; };
+const headSha = git(['rev-parse', 'HEAD']);
+const dirtyRaw = git(['status', '--porcelain', '--', srcRoot, join(root, 'scripts')]);
+const 측정 = {
+  커밋: headSha ?? '알 수 없음 — git 저장소가 아니다',
+  작업트리: dirtyRaw === null ? '알 수 없음' : dirtyRaw === '' ? '깨끗' : `변경 ${dirtyRaw.split(/\r?\n/).length}건`,
+  변경목록: dirtyRaw ? dirtyRaw.split(/\r?\n/).slice(0, 20) : [],
+  결속: opt['expect-commit'] !== undefined ? `--expect-commit=${opt['expect-commit']}` : '없음 — 이 산출물을 커밋 증거로 인용하지 마라',
+};
+if (opt['expect-commit'] !== undefined) {
+  const want = opt['expect-commit'];
+  if (!headSha || !(headSha.startsWith(want) || want.startsWith(headSha)))
+    failures.push(`측정 커밋 불일치 — 요구 ${want} · 실제 ${headSha ?? '알 수 없음'}. 검수 대상 커밋의 clean checkout 에서 재라`);
+  else if (dirtyRaw !== '')
+    failures.push(`작업 트리가 깨끗하지 않다 (${측정.작업트리}) — 커밋에 결속된 수치가 아니다. clean checkout 에서 재라`);
 }
 
 const out = {
@@ -203,16 +299,21 @@ const out = {
     minTouchTarget: MIN,
     판정식: '유효폭 = width + hitSlop.left + hitSlop.right · 유효높이 = height + hitSlop.top + hitSlop.bottom · 둘 다 44 이상',
     한계: '부모 경계로 잘리는지, 이웃 터치 영역과 겹치는지는 정적 분석으로 못 본다 — 렌더 감사(S4)의 몫이다.',
+    측정,
+    공용컴포넌트판정식: '하한 = 2×paddingVertical + fontSize (가정 A: lineHeight 를 명시하지 않은 Text 의 상자는 fontSize 보다 낮지 않다). 하한 ≥ 44 면 통과, 아니면 경계 — 미달은 단정하지 않는다(상한의 근거가 없다).',
     generatedAt: new Date().toISOString(), node: process.version,
   },
   summary: { 파일: files.length, 누를수있는상자: rows.length, 판정: judged.length, 통과: judged.length - short.length,
     미달: short.length, 판정불가: rows.length - judged.length,
-    공용컴포넌트: componentContracts.length, 공용컴포넌트미달: compShort.length, 공용컴포넌트경계: compEdge.length },
-  failures, componentContracts, rows,
+    공용컴포넌트: componentContracts.length, 공용컴포넌트열린것: compOpen.length,
+    Button동적size소비처: dynamicUses === null ? '측정 안 함' : dynamicUses.length },
+  failures, componentContracts, Button동적size소비처: dynamicUses ?? [], rows,
 };
 if (outPath) writeFileSync(outPath, JSON.stringify(out, null, 2) + '\n');
 console.log(`터치 영역 — 판정 ${judged.length}자리 · 통과 ${judged.length - short.length} · **미달 ${short.length}** · 판정불가 ${rows.length - judged.length}(래칫 대상)`);
-for (const c of componentContracts) console.log(`  공용 — ${c.컴포넌트} 높이 ${c.높이범위 ?? '?'} → ${c.판정} · 소비처 ${c.소비처 ?? 0}곳`);
+for (const c of componentContracts) console.log(`  공용 — ${c.컴포넌트} 높이 하한 ${c.높이하한 ?? '?'} → ${c.판정} · 소비처 ${c.소비처 ?? 0}곳`);
+if (dynamicUses !== null) console.log(`  공용 — Button size 동적/spread ${dynamicUses.length}곳 (정적 판정 불가)`);
+console.log(`  측정 — 커밋 ${측정.커밋.slice(0, 12)} · 작업 트리 ${측정.작업트리} · 결속 ${측정.결속}`);
 if (failures.length) {
   console.error('\n터치 영역 래칫 FAIL');
   for (const f of failures) console.error(`  - ${f}`);

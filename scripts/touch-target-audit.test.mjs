@@ -108,10 +108,128 @@ test('알려진 미달이 **더 나빠지면** FAIL — 존재만 비교하지 �
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test('공용 컴포넌트 계약 — Button size 별로 한 번 판정하고 소비처를 센다', () => {
+const BUTTON_TSX = `
+type Size = 'sm' | 'md' | 'lg';
+export function Button({ children, kind = 'primary', size = 'md', full }: Props) {
+  const sizes: Record<Size, { pv: number; ph: number; fs: number; r: number }> = {
+    sm: { pv: 8, ph: 12, fs: 14, r: 9 },
+    md: { pv: 13, ph: 16, fs: 16, r: 12 },
+    lg: { pv: 16, ph: 18, fs: 17, r: 14 },
+  };
+  return null;
+}
+`;
+
+/** `Button.tsx` 가 있는 가짜 앱을 만든다 — 공용 컴포넌트 계약과 소비처 세기를 시험한다. */
+const runButton = ({ consumers = '', known = {}, args = [], button = BUTTON_TSX }) => {
+  const dir = mkdtempSync(join(tmpdir(), 'touch-btn-'));
+  try {
+    const src = join(dir, 'src');
+    mkdirSync(join(src, 'src', 'components', 'kit'), { recursive: true });
+    writeFileSync(join(src, 'src', 'components', 'kit', 'Button.tsx'), button);
+    writeFileSync(join(src, 'Consumers.tsx'), consumers);
+    const k = join(dir, 'known.json');
+    writeFileSync(k, JSON.stringify({ entries: [], unjudged: [], components: [], buttonDynamic: [], ...known }, null, 2));
+    const r = spawnSync(process.execPath, [AUDIT, `--src=${src}`, `--known=${k}`, ...args], { encoding: 'utf8' });
+    return { code: r.status, out: (r.stdout ?? '') + (r.stderr ?? '') };
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+};
+
+/** 시험용 계약 — 세 variant 를 다 올려 둔다. `at` 은 시험마다 덮어쓴다. */
+const contracts = (at) => [
+  { 컴포넌트: 'Button size="sm"', 판정: '경계', 높이하한: 30, 소비처: (at.sm ?? []).length, at: at.sm ?? [] },
+  { 컴포넌트: 'Button size="md"', 판정: '경계', 높이하한: 42, 소비처: (at.md ?? []).length, at: at.md ?? [] },
+  { 컴포넌트: 'Button size="lg"', 판정: '통과', 높이하한: 49 },
+];
+
+test('공용 컴포넌트 계약 — 하한이 44 를 넘으면 통과, 못 넘으면 경계다 (미달을 단정하지 않는다)', () => {
+  const r = runButton({ known: { components: contracts({}) } });
+  assert.equal(r.code, 0, r.out);
+  assert.match(r.out, /Button size="sm" 높이 하한 30 → 경계/);
+  assert.match(r.out, /Button size="md" 높이 하한 42 → 경계/);
+  assert.match(r.out, /Button size="lg" 높이 하한 49 → 통과/);
+  assert.doesNotMatch(r.out, /어떤 글꼴에서도/);
+});
+
+test('여러 줄로 나뉜 여는 태그의 size 도 읽는다 — 줄 단위 정규식이 놓치던 자리다', () => {
+  const tsx = `
+<Button
+  kind="ghost"
+  size="sm"
+  onPress={f}
+>눌러</Button>`;
+  const r = runButton({ tsx: undefined, consumers: tsx, known: { components: contracts({ sm: ['src/Consumers.tsx:2'] }) } });
+  assert.equal(r.code, 0, `여러 줄 태그의 size="sm" 을 못 읽었다\n${r.out}`);
+  assert.match(r.out, /Button size="sm" .* 소비처 1곳/);
+});
+
+test('size 를 안 쓴 자리는 Button.tsx 의 기본값으로 배정된다', () => {
+  const r = runButton({ consumers: `<Button onPress={f}>저장</Button>`, known: { components: contracts({ md: ['src/Consumers.tsx:1'] }) } });
+  assert.equal(r.code, 0, `기본값 md 배정을 못 했다\n${r.out}`);
+  assert.match(r.out, /Button size="md" .* 소비처 1곳/);
+});
+
+test('기본값을 Button.tsx 에서 못 읽으면 읽기실패다 — 조용히 md 로 가정하지 않는다', () => {
+  const r = runButton({ button: BUTTON_TSX.replace("size = 'md', ", ''), known: { components: [] } });
+  assert.equal(r.code, 1, r.out);
+  assert.match(r.out, /읽기실패/);
+});
+
+test('경계 variant 의 소비처가 늘면 FAIL — 열린 위험이 조용히 퍼지는 것을 막는다', () => {
+  const r = runButton({
+    consumers: `<Button size="sm" onPress={f}>A</Button>\n<Button size="sm" onPress={g}>B</Button>`,
+    known: { components: contracts({ sm: ['src/Consumers.tsx:1'] }) },
+  });
+  assert.equal(r.code, 1, `소비처 증가를 놓쳤다\n${r.out}`);
+  assert.match(r.out, /새 Button size="sm" 소비처/);
+  assert.match(r.out, /소비처가 1 → 2곳으로 바뀌었다/);
+});
+
+test('통과 variant 의 소비처는 게이트하지 않는다 — 늘어도 위험이 늘지 않는다', () => {
+  const r = runButton({
+    consumers: `<Button size="lg" onPress={f}>A</Button>\n<Button size="lg" onPress={g}>B</Button>`,
+    known: { components: contracts({}) },
+  });
+  assert.equal(r.code, 0, r.out);
+  assert.match(r.out, /Button size="lg" .* 소비처 2곳/);
+});
+
+test('size 가 변수·spread 면 동적으로 세고 따로 래칫한다', () => {
+  const r = runButton({
+    consumers: `<Button size={sz} onPress={f}>A</Button>\n<Button {...rest}>B</Button>`,
+    known: { components: contracts({}) },
+  });
+  assert.equal(r.code, 1, `동적 size 소비처 증가를 놓쳤다\n${r.out}`);
+  assert.match(r.out, /새 동적 size 소비처/);
+  assert.match(r.out, /Button size 동적\/spread 2곳/);
+});
+
+test('알려진 동적 목록이 아예 없으면 FAIL — 래칫이 꺼진 것을 넘기지 않는다', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'touch-dyn-'));
+  try {
+    const src = join(dir, 'src');
+    mkdirSync(join(src, 'src', 'components', 'kit'), { recursive: true });
+    writeFileSync(join(src, 'src', 'components', 'kit', 'Button.tsx'), BUTTON_TSX);
+    writeFileSync(join(src, 'Consumers.tsx'), '');
+    const k = join(dir, 'known.json');
+    writeFileSync(k, JSON.stringify({ entries: [], unjudged: [], components: contracts({}) }, null, 2));
+    const r = spawnSync(process.execPath, [AUDIT, `--src=${src}`, `--known=${k}`], { encoding: 'utf8' });
+    const out = (r.stdout ?? '') + (r.stderr ?? '');
+    assert.equal(r.status, 1, out);
+    assert.match(out, /알려진 동적 size 소비처 목록이 없다/);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('--expect-commit 이 어긋나면 FAIL — 작업 트리에서 잰 수치를 커밋 증거로 쓰지 못하게 한다', () => {
+  const r = runButton({ known: { components: contracts({}) }, args: ['--expect-commit=deadbeefdeadbeefdeadbeefdeadbeefdeadbeef'] });
+  assert.equal(r.code, 1, r.out);
+  assert.match(r.out, /측정 커밋 불일치/);
+});
+
+test('저장소를 그대로 재면 작업 트리 상태가 산출물에 남는다 — 결속 없이 인용하지 말라고 적는다', () => {
   const r = spawnSync(process.execPath, [AUDIT], { encoding: 'utf8' });
   const out = (r.stdout ?? '') + (r.stderr ?? '');
   assert.equal(r.status, 0, out);
-  assert.match(out, /공용 — Button size="sm" 높이 30~36 → 미달/);
-  assert.match(out, /공용 — Button size="lg" .* → 통과/);
+  assert.match(out, /측정 — 커밋 [0-9a-f]{12} · 작업 트리 /);
+  assert.match(out, /결속 없음 — 이 산출물을 커밋 증거로 인용하지 마라/);
 });

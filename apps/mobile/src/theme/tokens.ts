@@ -96,7 +96,10 @@ export const iconSize = { sm: 16, md: 20, lg: 24 } as const;
  * **현황 수치를 여기 적지 않는다.** 권위는 감사 스크립트와 그 목록이다 —
  * `scripts/touch-target-audit.mjs` 와 `scripts/touch-target-known.json`.
  * 주석에 숫자를 복제하면 코드가 바뀔 때 주석만 낡는다(솔 검수 `F03`).
- * 보정은 `S4a` 접근성 `PRT` 에서 한다 — `hitSlop` 만, 시각 변화 0.
+ * **보정 방식은 자리마다 다르다** (솔 검수 `R3 F04` — 문서마다 달리 적혀 있었다):
+ *   `hitSlop` — 아이콘 전용 버튼처럼 **의도적으로 작은 컨트롤**. 시각 변화 0 이라 `S4a` 의 몫이다.
+ *   `minHeight` — 공용 `Button` 처럼 **높이가 padding + 글자로 정해지는 컴포넌트**. 상자가
+ *     실제로 커지므로 **시각 변화이고 `S4` 의 몫이다.** `S4a` 에서 건드리지 않는다.
  * 부모 경계로 잘리는지와 이웃 터치 영역 중첩은 **정적 분석으로 못 본다** — `S4` 렌더 감사의 몫이다.
  */
 export const minTouchTarget = 44;
