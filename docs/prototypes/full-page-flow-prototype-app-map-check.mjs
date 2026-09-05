@@ -247,7 +247,26 @@ for (const r of map.rules) {
   if (r.executionStage === 'S3a' && r.axis === 'both' && computedDelta === 'grow')
     fail(`${r.id} : S3a 인데 계산상 두 축이 함께 는다 — 폭이 늘면 S3b 다`);
 }
+
+// pendingApproval은 단순 미분류 대기실이 아니다. 소유자의 **새 제품 결정**이 필요한
+// 규칙만 허용한다(PRT-220). 닫힌 D-11의 역할 대응을 이 통으로 옮겨 숫자 목적지 검사를
+// 우회하지 못하도록 매핑표의 명시 계약과 실제 규칙 집합을 양방향 대조한다.
+{
+  const contract = map.pendingApprovalContract;
+  if (!contract || !Array.isArray(contract.ruleIds) || !Number.isInteger(contract.expectedDeclarations)) {
+    fail('pendingApprovalContract(ruleIds · expectedDeclarations)가 없다');
+  } else {
+    const declared = [...contract.ruleIds].sort();
+    const actual = map.rules.filter(r => r.bin === 'pendingApproval').map(r => r.id).sort();
+    if (JSON.stringify(declared) !== JSON.stringify(actual))
+      fail(`pendingApproval 규칙 집합이 계약과 다르다 — 계약 ${declared.join(', ')} · 실제 ${actual.join(', ')}`);
+  }
+}
 const multiMatchCount = Object.values(multiMatchPairs).reduce((a, b) => a + b, 0);
+
+if (map.pendingApprovalContract && binCount.pendingApproval !== map.pendingApprovalContract.expectedDeclarations) {
+  fail(`pendingApproval 선언 ${binCount.pendingApproval}건이 계약 ${map.pendingApprovalContract.expectedDeclarations}건과 다르다`);
+}
 // 순서 의존 — **아무 문자열이나 적혀 있으면 통과**하던 검사를 양방향 대조로 바꾼다
 // (솔 검수 `W1 R1 F04`). 승자 규칙은 자기가 이기는 규칙들을 `precedes` 에 **정확한 id 로**
 // 적어야 하고, 실제 충돌 쌍과 집합이 같아야 한다. 근거 문장도 그대로 요구한다 —

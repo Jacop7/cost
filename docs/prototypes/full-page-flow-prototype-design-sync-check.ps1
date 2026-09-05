@@ -33,8 +33,25 @@ function Match-One([string]$Contents, [string]$Pattern, [string]$Label) {
 function Get-Sha256([string]$Contents) {
   $sha = [System.Security.Cryptography.SHA256]::Create()
   try {
-    $bytes = [System.Text.UTF8Encoding]::new($false).GetBytes($Contents)
+    # 봉인 상태와 텍스트 증거는 checkout 줄끝이 아니라 논리 내용을 잰다.
+    $normalized = $Contents.Replace("`r`n", "`n")
+    $bytes = [System.Text.UTF8Encoding]::new($false).GetBytes($normalized)
     return ([System.BitConverter]::ToString($sha.ComputeHash($bytes))).Replace('-', '').ToLowerInvariant()
+  }
+  finally {
+    $sha.Dispose()
+  }
+}
+
+function Get-NormalizedTextSha256([string]$Contents) {
+  # 생성기가 LF 텍스트로 기록한 증거는 checkout OS가 아니라 논리 내용을 잰다.
+  return Get-Sha256 ($Contents.Replace("`r`n", "`n"))
+}
+
+function Get-RawFileSha256([string]$Path) {
+  $sha = [System.Security.Cryptography.SHA256]::Create()
+  try {
+    return ([System.BitConverter]::ToString($sha.ComputeHash([System.IO.File]::ReadAllBytes($Path)))).Replace('-', '').ToLowerInvariant()
   }
   finally {
     $sha.Dispose()
@@ -190,14 +207,10 @@ elseif (-not (Test-Path -LiteralPath $auditScriptPath)) {
 }
 else {
   $audit = Read-Utf8 $auditPath | ConvertFrom-Json
-  $appliedBytes = [System.IO.File]::ReadAllBytes((Join-Path $PrototypeDirectory '0_full-page-flow-prototype-ui-applied.html'))
-  $sha = [System.Security.Cryptography.SHA256]::Create()
-  try { $appliedSha = ([System.BitConverter]::ToString($sha.ComputeHash($appliedBytes))).Replace('-', '').ToLowerInvariant() }
-  finally { $sha.Dispose() }
-  $scriptBytes = [System.IO.File]::ReadAllBytes($auditScriptPath)
-  $sha2 = [System.Security.Cryptography.SHA256]::Create()
-  try { $auditScriptSha = ([System.BitConverter]::ToString($sha2.ComputeHash($scriptBytes))).Replace('-', '').ToLowerInvariant() }
-  finally { $sha2.Dispose() }
+  # 적용본 manifest는 이 저장소의 봉인 바이트 SHA를 사용한다. 반면 JS/JSON 증거는
+  # 생성기가 LF 텍스트로 기록하므로 아래 Get-Sha256 정규형으로 비교한다.
+  $appliedSha = Get-RawFileSha256 (Join-Path $PrototypeDirectory '0_full-page-flow-prototype-ui-applied.html')
+  $auditScriptSha = Get-NormalizedTextSha256 (Read-Utf8 $auditScriptPath)
   if ($audit.manifest.target.sha256 -ne $appliedSha) {
     Add-Failure "$auditName : 적용본 SHA 불일치. 감사=$($audit.manifest.target.sha256) 현재=$appliedSha. 재측정 필요"
   }
@@ -291,14 +304,8 @@ elseif (-not (Test-Path -LiteralPath $designAuditScriptPath)) {
 }
 else {
   $dAudit = Read-Utf8 $designAuditPath | ConvertFrom-Json
-  $dAppliedBytes = [System.IO.File]::ReadAllBytes((Join-Path $PrototypeDirectory '0_full-page-flow-prototype-ui-applied.html'))
-  $dSha = [System.Security.Cryptography.SHA256]::Create()
-  try { $dAppliedSha = ([System.BitConverter]::ToString($dSha.ComputeHash($dAppliedBytes))).Replace('-', '').ToLowerInvariant() }
-  finally { $dSha.Dispose() }
-  $dScriptBytes = [System.IO.File]::ReadAllBytes($designAuditScriptPath)
-  $dSha2 = [System.Security.Cryptography.SHA256]::Create()
-  try { $dScriptSha = ([System.BitConverter]::ToString($dSha2.ComputeHash($dScriptBytes))).Replace('-', '').ToLowerInvariant() }
-  finally { $dSha2.Dispose() }
+  $dAppliedSha = Get-RawFileSha256 (Join-Path $PrototypeDirectory '0_full-page-flow-prototype-ui-applied.html')
+  $dScriptSha = Get-NormalizedTextSha256 (Read-Utf8 $designAuditScriptPath)
   if ($dAudit.manifest.target.sha256 -ne $dAppliedSha) {
     Add-Failure "$designAuditName : 적용본 SHA 불일치. 감사=$($dAudit.manifest.target.sha256) 현재=$dAppliedSha. 재측정 필요"
   }
@@ -363,14 +370,8 @@ elseif (-not (Test-Path -LiteralPath $i18nScriptPath)) {
 }
 else {
   $iAudit = Read-Utf8 $i18nPath | ConvertFrom-Json
-  $iBytes = [System.IO.File]::ReadAllBytes((Join-Path $PrototypeDirectory '0_full-page-flow-prototype-ui-applied.html'))
-  $iSha = [System.Security.Cryptography.SHA256]::Create()
-  try { $iAppliedSha = ([System.BitConverter]::ToString($iSha.ComputeHash($iBytes))).Replace('-', '').ToLowerInvariant() }
-  finally { $iSha.Dispose() }
-  $iScriptBytes = [System.IO.File]::ReadAllBytes($i18nScriptPath)
-  $iSha2 = [System.Security.Cryptography.SHA256]::Create()
-  try { $iScriptSha = ([System.BitConverter]::ToString($iSha2.ComputeHash($iScriptBytes))).Replace('-', '').ToLowerInvariant() }
-  finally { $iSha2.Dispose() }
+  $iAppliedSha = Get-RawFileSha256 (Join-Path $PrototypeDirectory '0_full-page-flow-prototype-ui-applied.html')
+  $iScriptSha = Get-NormalizedTextSha256 (Read-Utf8 $i18nScriptPath)
   if ($iAudit.manifest.target.sha256 -ne $iAppliedSha) {
     Add-Failure "$i18nName : 적용본 SHA 불일치. 감사=$($iAudit.manifest.target.sha256) 현재=$iAppliedSha. 재측정 필요"
   }
@@ -510,18 +511,15 @@ elseif (-not (Test-Path -LiteralPath $proofScriptPath)) {
 }
 else {
   $proof = Read-Utf8 $proofPath | ConvertFrom-Json
-  $pfBytes = [System.IO.File]::ReadAllBytes($proofScriptPath)
-  $pfSha = [System.Security.Cryptography.SHA256]::Create()
-  try { $proofScriptSha = ([System.BitConverter]::ToString($pfSha.ComputeHash($pfBytes))).Replace('-', '').ToLowerInvariant() }
-  finally { $pfSha.Dispose() }
+  $proofScriptSha = Get-NormalizedTextSha256 (Read-Utf8 $proofScriptPath)
   if ($proof.manifest.script.sha256 -ne $proofScriptSha) {
     Add-Failure "$proofName : 증명 스크립트 SHA 불일치. 재실행 필요"
   }
   if ($proof.manifest.target.designSyncId -ne $syncId) {
     Add-Failure "$proofName : 동기화 ID 불일치. 증명=$($proof.manifest.target.designSyncId) 현재=$syncId"
   }
-  $srcStress = Get-Sha256 (Read-Utf8 (Join-Path $PrototypeDirectory $i18nName))
-  $srcKnown = Get-Sha256 (Read-Utf8 (Join-Path $PrototypeDirectory $knownI18nName))
+  $srcStress = Get-NormalizedTextSha256 (Read-Utf8 (Join-Path $PrototypeDirectory $i18nName))
+  $srcKnown = Get-NormalizedTextSha256 (Read-Utf8 (Join-Path $PrototypeDirectory $knownI18nName))
   if ($proof.manifest.source.stress.sha256 -ne $srcStress) {
     Add-Failure "$proofName : 스트레스 결과 SHA 불일치. 증명이 낡았다"
   }
@@ -642,8 +640,8 @@ if (-not (Test-Path -LiteralPath $contrastPath)) {
   Add-Failure "$contrastName : 색 대비 검사 결과가 없음"
 } else {
   $contrast = Read-Utf8 $contrastPath | ConvertFrom-Json
-  $contrastScriptSha = Get-Sha256 (Read-Utf8 (Join-Path $PrototypeDirectory $contrastScriptName))
-  $contractSha = Get-Sha256 (Read-Utf8 (Join-Path $PrototypeDirectory $contractName))
+  $contrastScriptSha = Get-NormalizedTextSha256 (Read-Utf8 (Join-Path $PrototypeDirectory $contrastScriptName))
+  $contractSha = Get-NormalizedTextSha256 (Read-Utf8 (Join-Path $PrototypeDirectory $contractName))
   if ($contrast.manifest.scriptSha256 -ne $contrastScriptSha) { Add-Failure "$contrastName : 검사기 SHA 불일치. 재실행 필요" }
   if ($contrast.manifest.contractSha256 -ne $contractSha) { Add-Failure "$contrastName : 조합표 SHA 불일치. 재실행 필요" }
   if ($contrast.status -eq 'FAIL') {
@@ -762,7 +760,8 @@ else {
     $rest = $ctxSection.Substring($condHead.Index + $condHead.Length)
     $stop = [regex]::Match($rest, '(?m)^- \S')
     $condBlock = if ($stop.Success) { $rest.Substring(0, $stop.Index) } else { $rest }
-    $items = [regex]::Matches($condBlock, '(?m)^  - (?<id>[^·\r\n]*)·(?<path>[^\r\n]*)$')
+    # Windows CRLF에서는 `$`가 `\r` 앞에 서지 않아 LF 전용 정규식이 항목 0건을 만들었다.
+    $items = [regex]::Matches($condBlock, '(?m)^  - (?<id>[^·\r\n]*)·(?<path>[^\r\n]*)\r?$')
     if ($items.Count -lt 1) {
       Add-Failure "$contextName : 완료 조건 항목이 0건 - '  - <조건 ID> · <증거 경로>' 형태로 적는다"
     }

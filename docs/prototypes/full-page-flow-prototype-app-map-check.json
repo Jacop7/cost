@@ -1,10 +1,10 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-05T09:42:25.910Z",
+  "generatedAt": "2026-09-05T10:15:54.463Z",
   "schemaVersion": 1,
   "script": {
    "name": "full-page-flow-prototype-app-map-check.mjs",
-   "sha256": "ee78ac73b2ef24584f8792187391e2d69d0e32920bd4566d3e76943d093fcfca"
+   "sha256": "288bd1b4afe74c4deffab01e3fc64aeb533df4b2eddc21ca29daaad1864f97ef"
   },
   "source": {
    "audit": {
@@ -14,7 +14,7 @@
    },
    "appMap": {
     "path": "full-page-flow-prototype-app-token-map.json",
-    "sha256": "9d2b47e5b2adf3ce87bb81874fabb6dd26bbae88a92bbce7aacf1c9ad1439c74"
+    "sha256": "091e82977c12588bbb2e626b004fce3de534f96a9651321c56727727e391a4fc"
    },
    "prototypeMap": {
     "path": "full-page-flow-prototype-token-map.json",
@@ -32,15 +32,15 @@
   "declarations": 3653,
   "byBin": {
    "primitive": 2067,
-   "componentOwned": 148,
-   "defect": 1215,
-   "pendingApproval": 223,
+   "componentOwned": 218,
+   "defect": 1333,
+   "pendingApproval": 35,
    "approvedException": 0
   },
   "semantic통삭제사유": "**`semantic` 통을 없앴다** (솔 검수 W1 R1 F02). 감사기는 숫자 리터럴만 선언으로 모으므로 `fontSize: 16` → `TYPE.body` 치환은 semantic 으로 이동하는 것이 아니라 입력에서 사라진다. 영원히 0 인 통을 두고 \"P4 에서 채워진다\" 고 적는 것은 분류가 아니다. W1 의 범위를 **하드코딩 리터럴의 배정**으로 좁히고, 의미 토큰 채택률은 같은 감사기가 모으는 `tokenAccess` 로 따로 본다.",
   "unmatchedCount": 0,
   "unmatched": [],
-  "multiMatchCount": 929,
+  "multiMatchCount": 925,
   "multiMatchPairs": {
    "R-TY-SIZE-PRIM > R-TY-SIZE-OFFSCALE": 712,
    "R-TY-SIZE-15-LABEL > R-TY-SIZE-CONVERGE > R-TY-SIZE-OFFSCALE": 48,
@@ -48,7 +48,6 @@
    "R-SZ-FLEX-RESET > R-SZ-MINWIDTH": 65,
    "R-SP-SCROLL-END > R-SP-EMPTY-STATE": 44,
    "R-TY-SIZE-15-PROSE > R-TY-SIZE-15-LABEL > R-TY-SIZE-CONVERGE > R-TY-SIZE-OFFSCALE": 4,
-   "R-SZ-HAIRLINE > R-SZ-CONTROL-BOX": 4,
    "R-SP-CAPTION-GAP-VIEW > R-SP-CAPTION-GAP": 5,
    "R-TY-SIZE-15-CONTROL > R-TY-SIZE-15-LABEL > R-TY-SIZE-CONVERGE > R-TY-SIZE-OFFSCALE": 12,
    "R-SP-SCROLL-END-FAB > R-SP-SCROLL-END > R-SP-EMPTY-STATE": 3
@@ -231,20 +230,6 @@
      "R-TY-SIZE-15-LABEL",
      "R-TY-SIZE-CONVERGE",
      "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "size/width:26 @ apps/mobile/src/components/kit/Slider.tsx:50",
-    "rules": [
-     "R-SZ-HAIRLINE",
-     "R-SZ-CONTROL-BOX"
-    ]
-   },
-   {
-    "decl": "size/height:26 @ apps/mobile/src/components/kit/Slider.tsx:50",
-    "rules": [
-     "R-SZ-HAIRLINE",
-     "R-SZ-CONTROL-BOX"
     ]
    },
    {
@@ -2634,20 +2619,6 @@
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "size/width:24 @ apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx:34",
-    "rules": [
-     "R-SZ-HAIRLINE",
-     "R-SZ-CONTROL-BOX"
-    ]
-   },
-   {
-    "decl": "size/height:24 @ apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx:34",
-    "rules": [
-     "R-SZ-HAIRLINE",
-     "R-SZ-CONTROL-BOX"
     ]
    },
    {
@@ -6643,20 +6614,43 @@
   ],
   "binMovementLedger": {
    "previousMap": "full-page-flow-prototype-app-token-map.json",
-   "previousMapSha256": "aa396616d23428f29946fcb67819df6836a4cd06b4ad4b4af488ee157b8fe183",
+   "previousMapSha256": "9d2b47e5b2adf3ce87bb81874fabb6dd26bbae88a92bbce7aacf1c9ad1439c74",
    "moves": {
-    "defect → pendingApproval": {
-     "count": 179,
+    "pendingApproval → defect": {
+     "count": 118,
      "rules": {
       "R-TY-LINEHEIGHT → R-TY-LINEHEIGHT": 73,
-      "R-SZ-ROW-MINH → R-SZ-ROW-MINH": 24,
-      "R-SZ-CONTROL-BOX → R-SZ-CONTROL-BOX": 82
+      "R-SZ-CONTROL-BOX → R-SZ-CONTROL-SM": 20,
+      "R-TY-SIZE-15-PROSE → R-TY-SIZE-15-PROSE": 4,
+      "R-SZ-ROW-MINH → R-SZ-ROW-MINH": 8,
+      "R-SZ-CONTROL-BOX → R-SZ-CONTROL-MD": 10,
+      "R-SP-SECTION-LABEL-BOTTOM → R-SP-SECTION-LABEL-BOTTOM": 3
      }
     },
-    "defect → componentOwned": {
-     "count": 2,
+    "pendingApproval → componentOwned": {
+     "count": 70,
      "rules": {
-      "R-SZ-CONTROL-BOX → R-SZ-APPHEADER-ACTION": 2
+      "R-SZ-ROW-MINH → R-SZ-ROW-CONDITION": 3,
+      "R-SZ-ROW-MINH → R-SZ-ROW-APPHEADER": 1,
+      "R-SZ-ROW-MINH → R-SZ-ROW-MEMO-INPUT": 1,
+      "R-SZ-CONTROL-BOX → R-SZ-CONTROL-CHANGE-ICON": 2,
+      "R-SZ-CONTROL-BOX → R-SZ-CONTROL-ROW-OVERFLOW": 2,
+      "R-SZ-CONTROL-BOX → R-SZ-APPHEADER-ACTION": 22,
+      "R-SZ-CONTROL-BOX → R-SZ-CONTROL-LEGEND": 6,
+      "R-SZ-CONTROL-BOX → R-SZ-CONTROL-ACCOUNT-ICON": 2,
+      "R-SZ-CONTROL-BOX → R-SZ-CONTROL-STORE-ICON": 2,
+      "R-SZ-CONTROL-BOX → R-SZ-CONTROL-RADIO": 4,
+      "R-SZ-CONTROL-BOX → R-SZ-CONTROL-SWITCH-TRACK": 2,
+      "R-SZ-CONTROL-BOX → R-SZ-CONTROL-TAX-REMOVE": 2,
+      "R-SZ-CONTROL-BOX → R-SZ-CONTROL-REORDER": 4,
+      "R-SZ-CONTROL-BOX → R-SZ-CONTROL-QUANTITY": 4,
+      "R-RD-LEGEND-DOT → R-RD-LEGEND-DOT": 2,
+      "R-SZ-ROW-MINH → R-SZ-ROW-PROFIT-METRIC": 3,
+      "R-SZ-ROW-MINH → R-SZ-ROW-PROFIT-ACTION": 2,
+      "R-SZ-ROW-MINH → R-SZ-ROW-SALES-OPTION": 1,
+      "R-SZ-ROW-MINH → R-SZ-ROW-SALES-BANNER": 1,
+      "R-SZ-ROW-MINH → R-SZ-ROW-SALES-METRIC": 2,
+      "R-SZ-ROW-MINH → R-SZ-ROW-STOCK-ACTION": 2
      }
     }
    },
@@ -6669,25 +6663,25 @@
      "실제": 2067
     },
     "componentOwned": {
-     "이전": 146,
+     "이전": 148,
      "나감": 0,
-     "들어옴": 2,
-     "계산": 148,
-     "실제": 148
+     "들어옴": 70,
+     "계산": 218,
+     "실제": 218
     },
     "defect": {
-     "이전": 1396,
-     "나감": 181,
-     "들어옴": 0,
-     "계산": 1215,
-     "실제": 1215
+     "이전": 1215,
+     "나감": 0,
+     "들어옴": 118,
+     "계산": 1333,
+     "실제": 1333
     },
     "pendingApproval": {
-     "이전": 44,
-     "나감": 0,
-     "들어옴": 179,
-     "계산": 223,
-     "실제": 223
+     "이전": 223,
+     "나감": 188,
+     "들어옴": 0,
+     "계산": 35,
+     "실제": 35
     },
     "approvedException": {
      "이전": 0,
@@ -6707,13 +6701,6 @@
     "ownerDecision": "관계에 이름을 붙인 뒤에야 목표값이 정해진다. 육안 확인이 선행한다."
    },
    {
-    "id": "R-SP-SECTION-LABEL-BOTTOM",
-    "question": "섹션 라벨 **아래** 여백이 2px 이다. §간격 계약은 \"제목과 보조문구처럼 한 덩어리\" 를 `space.xs`(4)로 정했다. 4 로 올릴지, 라벨 아래는 별도 관계로 인정할지.",
-    "declarations": 3,
-    "evidence": "3자리. `SalesMaterialScreen:70`·`SalesRevenueScreen:88` 은 같은 모양이다 — `<Text fontSize:13 fontWeight:800 paddingTop:12 paddingBottom:2>사용 식재료</Text>` 처럼 **위 12 · 아래 2** 로 비대칭이다. `PriceSimSheet:61` 은 `alignItems:center · paddingTop:4 · paddingBottom:2` 인 가운데 정렬 블록으로 같은 비대칭을 쓴다. 셋 다 인셋이 아니라 **제목과 다음 것 사이의 간격**이다 — 위아래가 다른 것이 의도인지가 질문이다.",
-    "ownerDecision": "§간격 계약을 그대로 적용할지, \"라벨 아래\" 라는 관계를 새로 인정할지가 계약 변경이다."
-   },
-   {
     "id": "R-SP-EMPTY-STATE",
     "question": "빈 상태·중앙 정렬 블록의 세로·좌우 여백이 28·40·48·72 와 32 를 쓴다. 스케일 밖 큰 값을 컴포넌트 소유로 잠글지, 스케일을 24 위로 늘릴지.",
     "declarations": 10,
@@ -6721,46 +6708,11 @@
     "ownerDecision": "스케일 확장은 정본(tokens.ts) 변경이라 D-11 과 같은 성격이다."
    },
    {
-    "id": "R-TY-SIZE-15-PROSE",
-    "question": "**결정 5-3 이 다루지 않은 세 번째 갈래다.** 안내 본문 5자리는 라벨도 값도 버튼도 입력도 아니다 — 문단이다. `caption`(14)으로 내릴지 `body`(16)로 올릴지.",
-    "declarations": 4,
-    "evidence": "5건 — `Sheet.tsx:77`(시트 안내문 · lineHeight 23) · `MyAccountScreen:64`(lh 23) · `MyAccountScreen:74`(lh 22) · `MyLanguageScreen:189`(lh 22) · `ShortageWarningSheet:44`(lh 23). **다섯 모두 `lineHeight` 를 따로 달고 있다** — 이 앱에서 문단으로 읽히는 자리의 표식이다. 나머지 62자리 중 `lineHeight` 를 단 곳은 없다.",
-    "ownerDecision": "결정 5-3 은 두 갈래만 정했다. 문단을 어느 쪽으로 볼지는 새 판정이라 소유자 몫이다."
-   },
-   {
     "id": "R-TY-SIZE-OFFSCALE",
     "question": "스케일에도 수렴표에도 없는 글자 크기 12.5 · 13.5 · 14.5 · 17 · 25 를 어디로 보낼지.",
     "declarations": 10,
     "evidence": "10건. 13.5(6) 이 가장 많고 MyHoursScreen:348 같은 보조 설명에 쓰인다. 소수점 크기는 스케일에 없던 값이라 프로토타입 감사에서도 나오지 않았다 — 앱에만 있는 값이다.",
     "ownerDecision": "13 으로 내릴지 14 로 올릴지가 폭에 영향을 주므로 `S3a`/`S3b` 배정이 갈린다."
-   },
-   {
-    "id": "R-TY-LINEHEIGHT",
-    "question": "행간 73개 선언 각각을 display/title/header/body/bodyWeak/caption/captionSm 중 어느 TYPE 역할로 보낼지.",
-    "declarations": 73,
-    "evidence": "73건 · 16·17·18·19·20·21·22·23·24·26·28. lineHeight:20(51) 이 대부분이고 fontSize 14~16 과 짝지어 쓰인다. 역할별 절대값 28/26/24/22/22/20/18은 확정됐지만 선언별 역할 배정은 아직 없다.",
-    "ownerDecision": "역할 측정기가 각 선언의 TYPE 역할을 보존한 뒤 targetMap을 만들고 current→target delta를 계산하면 defect로 이동한다."
-   },
-   {
-    "id": "R-SZ-ROW-MINH",
-    "question": "24개 minHeight 선언 각각이 1줄/2줄/3줄 ListRow인지, 또는 ListRow가 아닌 컴포넌트 소유 높이인지 판정한 뒤 60/76/92 중 목적지를 배정할 것인가.",
-    "declarations": 24,
-    "evidence": "24자리 · 38 · 46 · 47 · 50 · 52 · 55 · 56 · 70 · 72 · 82 · 100. UI 가이드는 목록 밀도를 3줄 92 / 2줄 76 / 1줄 60 으로 잠갔는데 앱 값은 그 셋 어디에도 안 맞는다. 솔 F02 — \"rowHeight 는 고정 높이가 아니라 rowMinHeight 여야 한다.\"",
-    "ownerDecision": "ListRow 역할 측정과 선언별 targetMap이 생기기 전에는 defect·S4·mixed를 확정하지 않는다. 100→92는 줄고 38→60은 늘 수 있어 수기 delta로 덮을 수 없다."
-   },
-   {
-    "id": "R-SZ-CONTROL-BOX",
-    "question": "남은 82개 선언 각각을 32·38 중 어디로 보낼지, 또는 별도 컴포넌트 소유값으로 둘지 역할별로 확정해야 한다.",
-    "declarations": 82,
-    "evidence": "AppHeader 40×40 두 선언을 결정 11-3의 `COMPONENT.appHeader.iconButton.visualSize=40`으로 분리한 뒤 남은 82개 선언이다. 40·34·38·32 등 여러 시각 크기가 섞여 있고 44 미만 터치 영역은 hitSlop이 별도로 메운다.",
-    "ownerDecision": "정확한 선언별 목적지가 생기기 전에는 defect 및 실행 단계로 확정하지 않는다. `minTouchTarget=44`는 시각 상자 목적지가 아니라 별도 터치 계약이다."
-   },
-   {
-    "id": "R-RD-LEGEND-DOT",
-    "question": "범례 점 두 곳이 **원이 아니다.** `RecipeDetailScreen:284` 는 9×9 에 반경 3(원이 되려면 4.5) · `SalesChannelScreen:110` 은 10×10 에 반경 3(원이 되려면 5) 이다. 둥근 사각형이 의도인지, 다른 범례 점(`IngredientListScreen:100` 의 7×7 반경 4 = 원)과 맞출지.",
-    "declarations": 2,
-    "evidence": "2건. 실측으로 \"반경 = 짧은 변의 절반\" 이 **성립하지 않는** 유일한 두 자리다. 나머지 16 자리는 전부 성립한다. `radius.full` 로 보내면 RN 이 반경을 짧은 변의 절반으로 자르므로 **둥근 사각형이 원으로 바뀐다** — 값 수렴이 아니라 모양 변경이다.",
-    "ownerDecision": "같은 화면 안에서 범례 점의 모양을 통일할지가 디자인 판정이다."
    },
    {
     "id": "R-CL-NEAR-PALETTE",
@@ -7111,19 +7063,21 @@
    },
    {
     "id": "R-SP-SECTION-LABEL-BOTTOM",
-    "bin": "pendingApproval",
+    "bin": "defect",
     "declarations": 3,
     "name": null,
-    "target": null,
+    "target": "space.xs (4)",
     "openDecision": null,
-    "executionStage": null,
-    "axis": null,
-    "targetSource": null,
-    "declaredDelta": null,
-    "computedDelta": null,
-    "targetResolved": 0,
+    "executionStage": "S3a",
+    "axis": "vertical",
+    "targetSource": "targetValue",
+    "declaredDelta": "grow",
+    "computedDelta": "grow",
+    "targetResolved": 3,
     "targetDerived": 0,
-    "transitions": {},
+    "transitions": {
+     "2→4": 3
+    },
     "values": [
      [
       "paddingBottom:2",
@@ -7806,19 +7760,21 @@
    },
    {
     "id": "R-TY-SIZE-15-PROSE",
-    "bin": "pendingApproval",
+    "bin": "defect",
     "declarations": 4,
     "name": null,
-    "target": null,
+    "target": "16 (`TYPE.body`)",
     "openDecision": null,
-    "executionStage": null,
-    "axis": null,
-    "targetSource": null,
-    "declaredDelta": null,
-    "computedDelta": null,
-    "targetResolved": 0,
+    "executionStage": "S3b",
+    "axis": "both",
+    "targetSource": "targetValue",
+    "declaredDelta": "grow",
+    "computedDelta": "grow",
+    "targetResolved": 4,
     "targetDerived": 0,
-    "transitions": {},
+    "transitions": {
+     "15→16": 4
+    },
     "values": [
      [
       "fontSize:15",
@@ -7929,19 +7885,34 @@
    },
    {
     "id": "R-TY-LINEHEIGHT",
-    "bin": "pendingApproval",
+    "bin": "defect",
     "declarations": 73,
     "name": null,
-    "target": "`TYPE.<역할>.lineHeight` — 역할마다 **절대 dp** 한 값(선언별 역할 미배정)",
+    "target": "선언의 fontSize/TYPE 역할에 대응하는 절대 lineHeight",
     "openDecision": null,
-    "executionStage": null,
-    "axis": null,
-    "targetSource": null,
-    "declaredDelta": null,
-    "computedDelta": null,
-    "targetResolved": 0,
+    "executionStage": "S3a",
+    "axis": "vertical",
+    "targetSource": "targetMap",
+    "declaredDelta": "mixed",
+    "computedDelta": "mixed",
+    "targetResolved": 73,
     "targetDerived": 0,
-    "transitions": {},
+    "transitions": {
+     "20→20": 50,
+     "22→22": 6,
+     "17→18": 1,
+     "23→22": 3,
+     "20→22": 1,
+     "17→22": 1,
+     "16→18": 1,
+     "19→18": 2,
+     "19→20": 2,
+     "21→20": 2,
+     "28→28": 1,
+     "26→26": 1,
+     "24→24": 1,
+     "18→18": 1
+    },
     "values": [
      [
       "lineHeight:20",
@@ -8087,7 +8058,7 @@
    {
     "id": "R-SZ-HAIRLINE",
     "bin": "componentOwned",
-    "declarations": 14,
+    "declarations": 10,
     "name": "hairline.thickness",
     "target": null,
     "openDecision": null,
@@ -8111,68 +8082,38 @@
      [
       "height:6",
       1
-     ],
-     [
-      "width:26",
-      1
-     ],
-     [
-      "height:26",
-      1
-     ],
-     [
-      "width:24",
-      1
-     ],
-     [
-      "height:24",
-      1
      ]
     ]
    },
    {
     "id": "R-SZ-ROW-MINH",
-    "bin": "pendingApproval",
-    "declarations": 24,
+    "bin": "defect",
+    "declarations": 8,
     "name": null,
-    "target": "`rowMinHeight` (60 · 76 · 92 · 선언별 역할 미배정)",
+    "target": "ListRow 역할별 `rowMinHeight` 60/76",
     "openDecision": null,
-    "executionStage": null,
-    "axis": null,
-    "targetSource": null,
-    "declaredDelta": null,
-    "computedDelta": null,
-    "targetResolved": 0,
+    "executionStage": "S4",
+    "axis": "vertical",
+    "targetSource": "targetMap",
+    "declaredDelta": "mixed",
+    "computedDelta": "mixed",
+    "targetResolved": 8,
     "targetDerived": 0,
-    "transitions": {},
+    "transitions": {
+     "72→76": 3,
+     "55→60": 2,
+     "56→60": 1,
+     "70→76": 1,
+     "82→76": 1
+    },
     "values": [
-     [
-      "minHeight:50",
-      4
-     ],
-     [
-      "minHeight:38",
-      3
-     ],
-     [
-      "minHeight:52",
-      3
-     ],
      [
       "minHeight:72",
       3
      ],
      [
       "minHeight:55",
-      3
-     ],
-     [
-      "minHeight:47",
-      3
-     ],
-     [
-      "minHeight:100",
-      1
+      2
      ],
      [
       "minHeight:56",
@@ -8185,9 +8126,215 @@
      [
       "minHeight:82",
       1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-ROW-CONDITION",
+    "bin": "componentOwned",
+    "declarations": 3,
+    "name": "COMPONENT.conditionRow.minHeight",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "minHeight:38",
+      3
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-ROW-APPHEADER",
+    "bin": "componentOwned",
+    "declarations": 1,
+    "name": "COMPONENT.appHeader.minHeight",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "minHeight:52",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-ROW-MEMO-INPUT",
+    "bin": "componentOwned",
+    "declarations": 1,
+    "name": "COMPONENT.memoEditSheet.input.minHeight",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "minHeight:100",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-ROW-PROFIT-METRIC",
+    "bin": "componentOwned",
+    "declarations": 3,
+    "name": "COMPONENT.profitBlocks.metricRow.minHeight",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "minHeight:55",
+      1
      ],
      [
+      "minHeight:47",
+      1
+     ],
+     [
+      "minHeight:52",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-ROW-PROFIT-ACTION",
+    "bin": "componentOwned",
+    "declarations": 2,
+    "name": "COMPONENT.profitBlocks.actionRow.minHeight",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "minHeight:50",
+      2
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-ROW-SALES-OPTION",
+    "bin": "componentOwned",
+    "declarations": 1,
+    "name": "COMPONENT.salesAnalytics.option.minHeight",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "minHeight:50",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-ROW-SALES-BANNER",
+    "bin": "componentOwned",
+    "declarations": 1,
+    "name": "COMPONENT.salesHome.shortageBanner.minHeight",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "minHeight:52",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-ROW-SALES-METRIC",
+    "bin": "componentOwned",
+    "declarations": 2,
+    "name": "COMPONENT.sales.metricRow.minHeight",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "minHeight:47",
+      2
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-ROW-STOCK-ACTION",
+    "bin": "componentOwned",
+    "declarations": 2,
+    "name": "COMPONENT.salesStockCheck.action.minHeight",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
       "minHeight:46",
+      1
+     ],
+     [
+      "minHeight:50",
       1
      ]
     ]
@@ -8195,7 +8342,7 @@
    {
     "id": "R-SZ-APPHEADER-ACTION",
     "bin": "componentOwned",
-    "declarations": 2,
+    "declarations": 24,
     "name": "COMPONENT.appHeader.iconButton.visualSize",
     "target": 40,
     "openDecision": null,
@@ -8210,20 +8357,85 @@
     "values": [
      [
       "width:40",
-      1
+      12
      ],
      [
       "height:40",
+      12
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-CONTROL-SM",
+    "bin": "defect",
+    "declarations": 20,
+    "name": null,
+    "target": "controlVisualHeight.sm (32)",
+    "openDecision": null,
+    "executionStage": "S3a",
+    "axis": "both",
+    "targetSource": "targetValue",
+    "declaredDelta": "mixed",
+    "computedDelta": "mixed",
+    "targetResolved": 20,
+    "targetDerived": 0,
+    "transitions": {
+     "34→32": 18,
+     "32→32": 2
+    },
+    "values": [
+     [
+      "width:34",
+      9
+     ],
+     [
+      "height:34",
+      9
+     ],
+     [
+      "width:32",
+      1
+     ],
+     [
+      "height:32",
       1
      ]
     ]
    },
    {
-    "id": "R-SZ-CONTROL-BOX",
-    "bin": "pendingApproval",
-    "declarations": 82,
+    "id": "R-SZ-CONTROL-MD",
+    "bin": "defect",
+    "declarations": 10,
     "name": null,
-    "target": "`controlVisualHeight` 32·38 후보. 선언별 역할과 목적지는 아직 배정하지 않음",
+    "target": "controlVisualHeight.md (38)",
+    "openDecision": null,
+    "executionStage": "S3a",
+    "axis": "both",
+    "targetSource": "targetValue",
+    "declaredDelta": "same",
+    "computedDelta": "same",
+    "targetResolved": 10,
+    "targetDerived": 0,
+    "transitions": {
+     "38→38": 10
+    },
+    "values": [
+     [
+      "width:38",
+      5
+     ],
+     [
+      "height:38",
+      5
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-CONTROL-SLIDER",
+    "bin": "componentOwned",
+    "declarations": 2,
+    "name": "COMPONENT.slider.thumb.visualSize",
+    "target": null,
     "openDecision": null,
     "executionStage": null,
     "axis": null,
@@ -8235,37 +8447,135 @@
     "transitions": {},
     "values": [
      [
+      "width:26",
+      1
+     ],
+     [
+      "height:26",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-CONTROL-CHANGE-ICON",
+    "bin": "componentOwned",
+    "declarations": 2,
+    "name": "COMPONENT.recentChangeRow.icon.visualSize",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "width:22",
+      1
+     ],
+     [
+      "height:22",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-CONTROL-ROW-OVERFLOW",
+    "bin": "componentOwned",
+    "declarations": 2,
+    "name": "COMPONENT.rowOverflowAction.visualBox",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "width:27",
+      1
+     ],
+     [
       "height:40",
-      13
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-CONTROL-ACCOUNT-ICON",
+    "bin": "componentOwned",
+    "declarations": 2,
+    "name": "COMPONENT.accountIdentity.icon.visualSize",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "width:42",
+      1
      ],
      [
-      "width:40",
-      11
+      "height:42",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-CONTROL-STORE-ICON",
+    "bin": "componentOwned",
+    "declarations": 2,
+    "name": "COMPONENT.storeIdentity.icon.visualSize",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "width:46",
+      1
      ],
      [
-      "width:34",
-      9
-     ],
-     [
-      "height:34",
-      9
-     ],
-     [
-      "width:38",
-      5
-     ],
-     [
-      "height:38",
-      5
-     ],
-     [
-      "height:30",
-      3
-     ],
-     [
-      "width:32",
-      2
-     ],
+      "height:46",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-CONTROL-RADIO",
+    "bin": "componentOwned",
+    "declarations": 4,
+    "name": "COMPONENT.selectionRadio.visualSize",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
      [
       "width:24",
       2
@@ -8273,7 +8583,103 @@
      [
       "height:24",
       2
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-CONTROL-SWITCH-TRACK",
+    "bin": "componentOwned",
+    "declarations": 2,
+    "name": "COMPONENT.switch.track.visualSize",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "width:50",
+      1
      ],
+     [
+      "height:30",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-CONTROL-SWITCH-THUMB",
+    "bin": "componentOwned",
+    "declarations": 2,
+    "name": "COMPONENT.switch.thumb.visualSize",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "width:24",
+      1
+     ],
+     [
+      "height:24",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-CONTROL-TAX-REMOVE",
+    "bin": "componentOwned",
+    "declarations": 2,
+    "name": "COMPONENT.taxRow.removeAction.visualBox",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "width:32",
+      1
+     ],
+     [
+      "height:40",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-CONTROL-REORDER",
+    "bin": "componentOwned",
+    "declarations": 4,
+    "name": "COMPONENT.reorderAction.visualBox",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
      [
       "width:28",
       2
@@ -8281,6 +8687,74 @@
      [
       "height:20",
       2
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-CONTROL-QUANTITY",
+    "bin": "componentOwned",
+    "declarations": 4,
+    "name": "COMPONENT.quantityStepper.action.visualSize",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "width:30",
+      2
+     ],
+     [
+      "height:30",
+      2
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-CONTROL-LEGEND",
+    "bin": "componentOwned",
+    "declarations": 6,
+    "name": "COMPONENT.legend.swatch.visualSize",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "width:7",
+      1
+     ],
+     [
+      "height:7",
+      1
+     ],
+     [
+      "width:9",
+      1
+     ],
+     [
+      "height:9",
+      1
+     ],
+     [
+      "width:10",
+      1
+     ],
+     [
+      "height:10",
+      1
      ]
     ]
    },
@@ -8428,9 +8902,9 @@
    },
    {
     "id": "R-RD-LEGEND-DOT",
-    "bin": "pendingApproval",
+    "bin": "componentOwned",
     "declarations": 2,
-    "name": null,
+    "name": "COMPONENT.legend.swatch.radius",
     "target": null,
     "openDecision": null,
     "executionStage": null,
