@@ -18,6 +18,7 @@ const MAP = join(here, 'full-page-flow-prototype-app-token-map.json');
 const PROTO = join(here, 'full-page-flow-prototype-token-map.json');
 const AXIS = join(here, 'full-page-flow-prototype-axis-at.json');
 const original = JSON.parse(readFileSync(MAP, 'utf8'));
+const audit = JSON.parse(readFileSync(AUDIT, 'utf8'));
 
 const run = (mutate = () => {}, eol = '\n') => {
   const dir = mkdtempSync(join(tmpdir(), 'app-map-delta-'));
@@ -36,20 +37,26 @@ const run = (mutate = () => {}, eol = '\n') => {
 };
 const rule = (map, id) => map.rules.find(r => r.id === id);
 
-test('기준본은 3,653건을 다섯 통에 배정하고 PRT-220 역할 재배정을 보존한다', () => {
+test('기준본은 정의 21건을 분리하고 사용처 3,632건을 다섯 통에 배정한다', () => {
   const r = run();
   assert.equal(r.code, 0, r.text);
   assert.deepEqual(r.out.summary.byBin, {
-    primitive: 2067, componentOwned: 218, defect: 1333,
+    primitive: 2053, componentOwned: 218, defect: 1326,
     pendingApproval: 35, approvedException: 0,
   });
+  assert.equal(audit.summary.declarations, 3632);
+  assert.equal(audit.definitions.total, 21);
+  assert.equal(audit.definitions.declarations.filter(d => d.prop === 'lineHeight').length, 7);
+  assert.equal(audit.declarations.filter(d => d.layer === 'tokenDefinition').length, 0);
   const per = Object.fromEntries(r.out.summary.perRule.map(x => [x.id, x]));
   assert.equal(per['R-SZ-APPHEADER-ACTION'].declarations, 24);
   assert.equal(per['R-SZ-CONTROL-SM'].declarations, 20);
   assert.equal(per['R-SZ-CONTROL-MD'].declarations, 10);
   assert.equal(per['R-SZ-ROW-MINH'].declarations, 8);
-  assert.equal(per['R-TY-LINEHEIGHT'].declarations, 73);
-  assert.equal(r.out.summary.multiMatchCount, 925);
+  assert.equal(per['R-TY-LINEHEIGHT-IMPLICIT'].declarations, 1);
+  assert.equal(per['R-TY-LINEHEIGHT'].declarations, 65);
+  assert.equal(per['R-TY-LINEHEIGHT'].targetResolved, 65);
+  assert.equal(r.out.summary.multiMatchCount, 918);
 });
 
 test('닫힌 역할을 질문·증거까지 붙여 pendingApproval로 되돌려도 계약이 막는다', () => {
@@ -97,6 +104,12 @@ test('파생 목적지는 폐쇄 enum·판본·근거가 모두 있어야 한다
   const r = run(map => { delete rule(map, 'R-SP-SCROLL-END').targetDerived.evidenceRef; });
   assert.equal(r.code, 1, r.text);
   assert.match(r.text, /targetDerived 는 지원 kind/);
+});
+
+test('lineHeight 파생표가 사용자 확정 6-2와 한 값이라도 다르면 실패한다', () => {
+  const r = run(map => { rule(map, 'R-TY-LINEHEIGHT').targetDerived.table['18'] = 22; });
+  assert.equal(r.code, 1, r.text);
+  assert.match(r.text, /lineHeight 파생표가 사용자 확정 6-2와 다르다/);
 });
 
 test('같은 매핑표의 CRLF와 LF는 같은 입력 해시를 낸다', () => {

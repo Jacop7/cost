@@ -1,20 +1,20 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-05T10:15:54.463Z",
+  "generatedAt": "2026-09-05T10:57:58.244Z",
   "schemaVersion": 1,
   "script": {
    "name": "full-page-flow-prototype-app-map-check.mjs",
-   "sha256": "288bd1b4afe74c4deffab01e3fc64aeb533df4b2eddc21ca29daaad1864f97ef"
+   "sha256": "1e9367798a227a60676f7fcfad5803dfa502e2690de96343a72fd5dae0cc4773"
   },
   "source": {
    "audit": {
     "path": "token-adoption-audit.json",
-    "sha256": "5430d2fa42d86225b89048126f4ade9a44d840f508d1be8809a1aa5e45b94591",
-    "declarations": 3653
+    "sha256": "591b0c3e55d39512247ae8fcca405470d1a8f4bad020e8c5acc5493378d44ece",
+    "declarations": 3632
    },
    "appMap": {
     "path": "full-page-flow-prototype-app-token-map.json",
-    "sha256": "091e82977c12588bbb2e626b004fce3de534f96a9651321c56727727e391a4fc"
+    "sha256": "51bc9ad0d9d1e6e086be5abac2e3245a59844ee82590bdd9b8b7950b3309ec81"
    },
    "prototypeMap": {
     "path": "full-page-flow-prototype-token-map.json",
@@ -29,20 +29,20 @@
  },
  "summary": {
   "status": "PROPOSAL_COMPLETE",
-  "declarations": 3653,
+  "declarations": 3632,
   "byBin": {
-   "primitive": 2067,
+   "primitive": 2053,
    "componentOwned": 218,
-   "defect": 1333,
+   "defect": 1326,
    "pendingApproval": 35,
    "approvedException": 0
   },
   "semantic통삭제사유": "**`semantic` 통을 없앴다** (솔 검수 W1 R1 F02). 감사기는 숫자 리터럴만 선언으로 모으므로 `fontSize: 16` → `TYPE.body` 치환은 semantic 으로 이동하는 것이 아니라 입력에서 사라진다. 영원히 0 인 통을 두고 \"P4 에서 채워진다\" 고 적는 것은 분류가 아니다. W1 의 범위를 **하드코딩 리터럴의 배정**으로 좁히고, 의미 토큰 채택률은 같은 감사기가 모으는 `tokenAccess` 로 따로 본다.",
   "unmatchedCount": 0,
   "unmatched": [],
-  "multiMatchCount": 925,
+  "multiMatchCount": 918,
   "multiMatchPairs": {
-   "R-TY-SIZE-PRIM > R-TY-SIZE-OFFSCALE": 712,
+   "R-TY-SIZE-PRIM > R-TY-SIZE-OFFSCALE": 705,
    "R-TY-SIZE-15-LABEL > R-TY-SIZE-CONVERGE > R-TY-SIZE-OFFSCALE": 48,
    "R-TY-SIZE-CONVERGE > R-TY-SIZE-OFFSCALE": 32,
    "R-SZ-FLEX-RESET > R-SZ-MINWIDTH": 65,
@@ -6561,124 +6561,37 @@
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
     ]
-   },
-   {
-    "decl": "typography/fontSize:22 @ apps/mobile/src/theme/tokens.ts:68",
-    "rules": [
-     "R-TY-SIZE-PRIM",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:20 @ apps/mobile/src/theme/tokens.ts:69",
-    "rules": [
-     "R-TY-SIZE-PRIM",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:18 @ apps/mobile/src/theme/tokens.ts:70",
-    "rules": [
-     "R-TY-SIZE-PRIM",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:16 @ apps/mobile/src/theme/tokens.ts:71",
-    "rules": [
-     "R-TY-SIZE-PRIM",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:16 @ apps/mobile/src/theme/tokens.ts:72",
-    "rules": [
-     "R-TY-SIZE-PRIM",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:14 @ apps/mobile/src/theme/tokens.ts:73",
-    "rules": [
-     "R-TY-SIZE-PRIM",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:13 @ apps/mobile/src/theme/tokens.ts:74",
-    "rules": [
-     "R-TY-SIZE-PRIM",
-     "R-TY-SIZE-OFFSCALE"
-    ]
    }
   ],
   "binMovementLedger": {
-   "previousMap": "full-page-flow-prototype-app-token-map.json",
-   "previousMapSha256": "9d2b47e5b2adf3ce87bb81874fabb6dd26bbae88a92bbce7aacf1c9ad1439c74",
-   "moves": {
-    "pendingApproval → defect": {
-     "count": 118,
-     "rules": {
-      "R-TY-LINEHEIGHT → R-TY-LINEHEIGHT": 73,
-      "R-SZ-CONTROL-BOX → R-SZ-CONTROL-SM": 20,
-      "R-TY-SIZE-15-PROSE → R-TY-SIZE-15-PROSE": 4,
-      "R-SZ-ROW-MINH → R-SZ-ROW-MINH": 8,
-      "R-SZ-CONTROL-BOX → R-SZ-CONTROL-MD": 10,
-      "R-SP-SECTION-LABEL-BOTTOM → R-SP-SECTION-LABEL-BOTTOM": 3
-     }
-    },
-    "pendingApproval → componentOwned": {
-     "count": 70,
-     "rules": {
-      "R-SZ-ROW-MINH → R-SZ-ROW-CONDITION": 3,
-      "R-SZ-ROW-MINH → R-SZ-ROW-APPHEADER": 1,
-      "R-SZ-ROW-MINH → R-SZ-ROW-MEMO-INPUT": 1,
-      "R-SZ-CONTROL-BOX → R-SZ-CONTROL-CHANGE-ICON": 2,
-      "R-SZ-CONTROL-BOX → R-SZ-CONTROL-ROW-OVERFLOW": 2,
-      "R-SZ-CONTROL-BOX → R-SZ-APPHEADER-ACTION": 22,
-      "R-SZ-CONTROL-BOX → R-SZ-CONTROL-LEGEND": 6,
-      "R-SZ-CONTROL-BOX → R-SZ-CONTROL-ACCOUNT-ICON": 2,
-      "R-SZ-CONTROL-BOX → R-SZ-CONTROL-STORE-ICON": 2,
-      "R-SZ-CONTROL-BOX → R-SZ-CONTROL-RADIO": 4,
-      "R-SZ-CONTROL-BOX → R-SZ-CONTROL-SWITCH-TRACK": 2,
-      "R-SZ-CONTROL-BOX → R-SZ-CONTROL-TAX-REMOVE": 2,
-      "R-SZ-CONTROL-BOX → R-SZ-CONTROL-REORDER": 4,
-      "R-SZ-CONTROL-BOX → R-SZ-CONTROL-QUANTITY": 4,
-      "R-RD-LEGEND-DOT → R-RD-LEGEND-DOT": 2,
-      "R-SZ-ROW-MINH → R-SZ-ROW-PROFIT-METRIC": 3,
-      "R-SZ-ROW-MINH → R-SZ-ROW-PROFIT-ACTION": 2,
-      "R-SZ-ROW-MINH → R-SZ-ROW-SALES-OPTION": 1,
-      "R-SZ-ROW-MINH → R-SZ-ROW-SALES-BANNER": 1,
-      "R-SZ-ROW-MINH → R-SZ-ROW-SALES-METRIC": 2,
-      "R-SZ-ROW-MINH → R-SZ-ROW-STOCK-ACTION": 2
-     }
-    }
-   },
+   "previousMap": "prt220-app-token-map.json",
+   "previousMapSha256": "091e82977c12588bbb2e626b004fce3de534f96a9651321c56727727e391a4fc",
+   "moves": {},
    "reconciliation": {
     "primitive": {
-     "이전": 2067,
+     "이전": 2053,
      "나감": 0,
      "들어옴": 0,
-     "계산": 2067,
-     "실제": 2067
+     "계산": 2053,
+     "실제": 2053
     },
     "componentOwned": {
-     "이전": 148,
+     "이전": 218,
      "나감": 0,
-     "들어옴": 70,
+     "들어옴": 0,
      "계산": 218,
      "실제": 218
     },
     "defect": {
-     "이전": 1215,
+     "이전": 1326,
      "나감": 0,
-     "들어옴": 118,
-     "계산": 1333,
-     "실제": 1333
+     "들어옴": 0,
+     "계산": 1326,
+     "실제": 1326
     },
     "pendingApproval": {
-     "이전": 223,
-     "나감": 188,
+     "이전": 35,
+     "나감": 0,
      "들어옴": 0,
      "계산": 35,
      "실제": 35
@@ -7665,7 +7578,7 @@
    {
     "id": "R-TY-SIZE-PRIM",
     "bin": "primitive",
-    "declarations": 712,
+    "declarations": 705,
     "name": null,
     "target": "typeSize.*",
     "openDecision": null,
@@ -7680,34 +7593,34 @@
     "values": [
      [
       "fontSize:16",
-      329
+      327
      ],
      [
       "fontSize:14",
-      288
+      287
      ],
      [
       "fontSize:13",
-      51
+      50
      ],
      [
       "fontSize:18",
-      22
+      21
      ],
      [
       "fontSize:20",
-      11
+      10
      ],
      [
       "fontSize:22",
-      11
+      10
      ]
     ]
    },
    {
     "id": "R-TY-WEIGHT-PRIM",
     "bin": "primitive",
-    "declarations": 669,
+    "declarations": 662,
     "name": null,
     "target": "typeWeight.*",
     "openDecision": null,
@@ -7722,15 +7635,15 @@
     "values": [
      [
       "fontWeight:700",
-      298
+      296
      ],
      [
       "fontWeight:800",
-      218
+      216
      ],
      [
       "fontWeight:600",
-      153
+      150
      ]
     ]
    },
@@ -7884,22 +7797,46 @@
     ]
    },
    {
-    "id": "R-TY-LINEHEIGHT",
+    "id": "R-TY-LINEHEIGHT-IMPLICIT",
     "bin": "defect",
-    "declarations": 73,
+    "declarations": 1,
     "name": null,
-    "target": "선언의 fontSize/TYPE 역할에 대응하는 절대 lineHeight",
+    "target": "TYPE.caption.lineHeight = 20",
     "openDecision": null,
     "executionStage": "S3a",
     "axis": "vertical",
-    "targetSource": "targetMap",
-    "declaredDelta": "mixed",
-    "computedDelta": "mixed",
-    "targetResolved": 73,
+    "targetSource": "targetValue",
+    "declaredDelta": "same",
+    "computedDelta": "same",
+    "targetResolved": 1,
     "targetDerived": 0,
     "transitions": {
-     "20→20": 50,
-     "22→22": 6,
+     "20→20": 1
+    },
+    "values": [
+     [
+      "lineHeight:20",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-TY-LINEHEIGHT",
+    "bin": "defect",
+    "declarations": 65,
+    "name": null,
+    "target": "같은 스타일 객체의 fontSize → 사용자 확정 TYPE 절대 lineHeight",
+    "openDecision": null,
+    "executionStage": "S3a",
+    "axis": "vertical",
+    "targetSource": "targetDerived",
+    "declaredDelta": "mixed",
+    "computedDelta": "mixed",
+    "targetResolved": 65,
+    "targetDerived": 0,
+    "transitions": {
+     "22→22": 4,
+     "20→20": 48,
      "17→18": 1,
      "23→22": 3,
      "20→22": 1,
@@ -7907,20 +7844,16 @@
      "16→18": 1,
      "19→18": 2,
      "19→20": 2,
-     "21→20": 2,
-     "28→28": 1,
-     "26→26": 1,
-     "24→24": 1,
-     "18→18": 1
+     "21→20": 2
     },
     "values": [
      [
       "lineHeight:20",
-      51
+      49
      ],
      [
       "lineHeight:22",
-      6
+      4
      ],
      [
       "lineHeight:19",
@@ -7940,22 +7873,6 @@
      ],
      [
       "lineHeight:16",
-      1
-     ],
-     [
-      "lineHeight:28",
-      1
-     ],
-     [
-      "lineHeight:26",
-      1
-     ],
-     [
-      "lineHeight:24",
-      1
-     ],
-     [
-      "lineHeight:18",
       1
      ]
     ]

@@ -658,7 +658,7 @@ if (-not (Test-Path -LiteralPath $contrastPath)) {
 }
 
 # --- 앱 선언 전수 배정 결속 (PRT-204 · W1) ---
-# 앱 3,653 선언이 다섯 통에 빠짐없이 들어갔는지, 그리고 그 배정이 지금 이 감사·이 매핑표에
+# 앱 사용처 선언이 다섯 통에 빠짐없이 들어갔는지, 그리고 그 배정이 지금 이 감사·이 매핑표에
 # 묶여 있는지 본다. 승인 예외 통은 W1 단계에서 0 이어야 한다 — 승인은 검수 뒤다.
 $appCheckName = 'full-page-flow-prototype-app-map-check.json'
 $appScriptName = 'full-page-flow-prototype-app-map-check.mjs'

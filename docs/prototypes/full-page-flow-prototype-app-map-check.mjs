@@ -1,6 +1,6 @@
 // 앱 선언 전수 배정 검사기 (W1 · P1b).
 //
-// token-adoption-audit.json 의 선언 3,653건을 앱 매핑표의 규칙에 태워
+// token-adoption-audit.json 의 **사용처 선언**을 앱 매핑표의 규칙에 태워
 // 다섯 통 중 하나에 배정하고, 배정이 성립하는지 검사한다.
 //
 //   primitive          tokens.ts 에 실재하는 값
@@ -72,13 +72,29 @@ const STAGES = ['S1', 'S2', 'S3a', 'S3b', 'S4'];
 const AXES = ['horizontal', 'vertical', 'both', 'none', 'derived'];
 const DELTAS = ['shrink', 'same', 'grow', 'mixed', 'unknown'];
 const TARGET_FIELDS = ['targetValue', 'targetMap', 'protoConverge', 'targetDerived'];
-const DERIVED_TARGET_KINDS = ['scrollStart', 'scrollEnd', 'scrollEndFab'];
+const RUNTIME_DERIVED_TARGET_KINDS = ['scrollStart', 'scrollEnd', 'scrollEndFab'];
+const DETERMINISTIC_DERIVED_TARGET_KINDS = ['typeLineHeightByFontSize'];
+const DERIVED_TARGET_KINDS = [...RUNTIME_DERIVED_TARGET_KINDS, ...DETERMINISTIC_DERIVED_TARGET_KINDS];
+// 사용자 결정 6-2의 폐쇄표다. targetDerived가 같은 표를 품는 이유는 산출물만 읽어도
+// 실행 계약이 보이게 하기 위해서이고, 검사기는 이 상수와 **값까지** 대조한다.
+// `mixed`라는 delta 하나만 맞춰 두고 틀린 targetMap을 통과시키던 PRT-220 결함을 막는다.
+const TYPE_LINE_HEIGHT_BY_FONT_SIZE_V1 = Object.freeze({
+  12: 18, 13: 18, 14: 20, 15: 22, 16: 22, 18: 24, 20: 26, 22: 28,
+});
+const TYPE_LINE_HEIGHT_DECISION = 'DS-20260905-001#6-2';
 const failures = [];
 const fail = (m) => failures.push(m);
 
 const declKey = (d) => `${d.file}:${d.line}:${d.prop}`;
 const targetFieldsOf = (r) => TARGET_FIELDS.filter(k => r[k] !== undefined);
 const deltaOf = (current, target) => target < current ? 'shrink' : target > current ? 'grow' : 'same';
+const sameJson = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+
+// 토큰 정본의 정의가 하드코딩 실행 우주에 다시 섞이면 정본 자신을 defect로 바꾸게 된다.
+if (!audit.definitions || !Array.isArray(audit.definitions.declarations))
+  fail('감사 산출물에 분리된 definitions 인벤토리가 없다');
+for (const d of audit.declarations ?? []) if (d.layer === 'tokenDefinition')
+  fail(`토큰 정의가 실행 우주 declarations에 섞였다 — ${declKey(d)}`);
 
 // --- 규칙 형식 검사 --------------------------------------------------------
 for (const r of map.rules) {
@@ -116,8 +132,17 @@ for (const r of map.rules) {
           !DERIVED_TARGET_KINDS.includes(r.targetDerived.kind) ||
           r.targetDerived.formulaVersion !== 1 || !r.targetDerived.evidenceRef)
         fail(`${r.id} : targetDerived 는 지원 kind(${DERIVED_TARGET_KINDS.join('/')}) · formulaVersion=1 · evidenceRef 를 가져야 한다`);
-      if (r.axis !== 'derived') fail(`${r.id} : targetDerived 를 쓰는 규칙의 axis 는 derived 여야 한다`);
-      if (r.delta !== 'unknown') fail(`${r.id} : 런타임 파생 목적지는 계산 전 delta 를 unknown 으로 둬야 한다`);
+      if (RUNTIME_DERIVED_TARGET_KINDS.includes(r.targetDerived.kind)) {
+        if (r.axis !== 'derived') fail(`${r.id} : 런타임 targetDerived 를 쓰는 규칙의 axis 는 derived 여야 한다`);
+        if (r.delta !== 'unknown') fail(`${r.id} : 런타임 파생 목적지는 계산 전 delta 를 unknown 으로 둬야 한다`);
+      }
+      if (r.targetDerived.kind === 'typeLineHeightByFontSize') {
+        if (r.targetDerived.decisionRef !== TYPE_LINE_HEIGHT_DECISION)
+          fail(`${r.id} : lineHeight 파생의 decisionRef 는 ${TYPE_LINE_HEIGHT_DECISION} 이어야 한다`);
+        if (!sameJson(r.targetDerived.table, TYPE_LINE_HEIGHT_BY_FONT_SIZE_V1))
+          fail(`${r.id} : lineHeight 파생표가 사용자 확정 6-2와 다르다 — ${JSON.stringify(r.targetDerived.table)}`);
+        if (r.axis === 'derived') fail(`${r.id} : lineHeight 파생은 숫자 목적지가 확정된 세로 변경이다 — axis=vertical 이어야 한다`);
+      }
     }
   }
   // 기존 결정의 적용이라고 말하려면 그 결정이 어디 있는지 대야 한다.
@@ -137,6 +162,7 @@ const matches = (r, d) => {
   if (m.numericIn && !m.numericIn.includes(num(d.value))) return false;
   if (m.numericGt !== undefined && !(num(d.value) > m.numericGt)) return false;
   if (m.numericLt !== undefined && !(num(d.value) < m.numericLt)) return false;
+  if (m.fontSizePairStatus && d.fontSizePair?.status !== m.fontSizePairStatus) return false;
   if (m.protoConverge) {
     const table = proto.converge[m.protoConverge];
     if (!table || !(String(num(d.value)) in table)) return false;
@@ -186,13 +212,18 @@ for (const d of audit.declarations) {
 
 // --- 목적지·증감 교차 검증 (솔 `W1 R2 F03`) -------------------------------
 // `delta` 를 규칙 작성자가 직접 적고 검사기가 열거값만 보던 구조를 끝낸다. 현재값은 감사
-// 산출물에서, 목적지는 targetValue/targetMap/protoConverge 중 하나에서 읽어 선언마다 계산한다.
-// 런타임 좌표계에서만 정해지는 값은 targetDerived 로 명시하고, formula+근거가 없으면 통과하지 않는다.
+// 산출물에서, 목적지는 targetValue/targetMap/protoConverge/결정적 targetDerived 중 하나에서
+// 읽어 선언마다 계산한다. 런타임 좌표계에서만 정해지는 값은 별도 targetDerived kind로
+// 명시하고, formula+근거가 없으면 통과하지 않는다.
 const computedDirection = {};
 const resolveTarget = (r, d) => {
   if (r.targetValue !== undefined) return r.targetValue;
   if (r.targetMap !== undefined) return r.targetMap[declKey(d)];
   if (r.protoConverge !== undefined) return proto.converge?.[r.protoConverge]?.[String(num(d.value))];
+  if (r.targetDerived?.kind === 'typeLineHeightByFontSize') {
+    if (d.fontSizePair?.status !== 'direct') return undefined;
+    return r.targetDerived.table?.[String(d.fontSizePair.value)];
+  }
   return undefined;
 };
 
@@ -200,7 +231,7 @@ for (const r of map.rules) {
   if (r.bin !== 'defect' || r.axis === 'none') continue;
   const ds = wonDeclarations[r.id] ?? [];
   if (!ds.length) continue;
-  if (r.targetDerived !== undefined) {
+  if (r.targetDerived !== undefined && RUNTIME_DERIVED_TARGET_KINDS.includes(r.targetDerived.kind)) {
     computedDirection[r.id] = { computedDelta: 'unknown', resolved: 0, derived: ds.length,
       transitions: { derived: ds.length }, targetSource: 'targetDerived' };
     continue;

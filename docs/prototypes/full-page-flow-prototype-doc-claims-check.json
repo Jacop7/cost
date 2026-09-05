@@ -2,10 +2,10 @@
   "manifest": {
     "script": "docs/prototypes/full-page-flow-prototype-doc-claims-check.mjs",
     "scriptSha256": "9490ba58ebeb644eee1b29422d347ae73723c653cbd1e25cd5dfe9d09537dc44",
-    "auditSha256": "5430d2fa42d86225b89048126f4ade9a44d840f508d1be8809a1aa5e45b94591",
-    "claimsSha256": "2e3d7c6983146bf3dbfa25a564735a87f3a003a39bafd7ef342acaec0d6f38ad",
+    "auditSha256": "591b0c3e55d39512247ae8fcca405470d1a8f4bad020e8c5acc5493378d44ece",
+    "claimsSha256": "927bbcf8085befba089028780cee29c7ae2737105f287892ab907bd1b4fefaed",
     "node": "v24.15.0",
-    "generatedAt": "2026-09-05T10:38:06.077Z",
+    "generatedAt": "2026-09-05T10:59:53.903Z",
     "판정": "값 목록을 값으로 대조한다. 개수만 세면 §7.3.1 같은 자리를 놓친다."
   },
   "status": "PASS",
@@ -203,7 +203,7 @@
         22,
         25
       ],
-      "observedCount": 818,
+      "observedCount": 811,
       "claimedCount": null,
       "ghost": [],
       "missing": [
@@ -236,8 +236,8 @@
         700,
         800
       ],
-      "observedCount": 669,
-      "claimedCount": 669,
+      "observedCount": 662,
+      "claimedCount": 662,
       "ghost": [],
       "missing": [],
       "verdict": "PASS",
@@ -250,7 +250,7 @@
       "주장": "§7.3 의 수치(선언·통·규칙별 건수·다중 일치·충돌 체인)가 검사 산출물과 한 글자도 다르지 않다",
       "mode": "문서블록",
       "마커": "W1-수치",
-      "문서blob": "0dd954a4a5bcecce67a53c9f7ea4ff447fb6c370",
+      "문서blob": "462261148be66e67c3eef3c541e735d26fde88fd",
       "문서blob고정": null,
       "verdict": "PASS"
     }

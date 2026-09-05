@@ -1,18 +1,18 @@
 {
   "manifest": {
     "script": "docs/prototypes/full-page-flow-prototype-role-measure.mjs",
-    "scriptSha256": "f6fbc418fdd5a5c283550f84e711e4a93393a5b692229e67d98e9b50c1df814c",
-    "auditSha256": "3eb8f105317ba545139d11e9813d8785d4c401579ce107a726a6a3db080552dd",
+    "scriptSha256": "68fc962d2772e415864c3400ffcb3b94cd6a2244d42a3b8a35337b84aaeb97d9",
+    "auditSha256": "591b0c3e55d39512247ae8fcca405470d1a8f4bad020e8c5acc5493378d44ece",
     "selector": "typography:fontSize:15",
-    "node": "v22.23.2",
-    "generatedAt": "2026-09-04T23:57:14.643Z",
+    "node": "v24.15.0",
+    "generatedAt": "2026-09-05T10:57:17.567Z",
     "판정": "역할 맥락은 눈이 아니라 원소·조상 사슬·형제 속성으로 읽는다."
   },
   "counts": {
-    "total": 67,
+    "total": 64,
     "input": 3,
-    "pressable": 23,
-    "plain": 41,
+    "pressable": 22,
+    "plain": 39,
     "pressSingleText": 10,
     "pressMultiText": 12
   },
@@ -243,21 +243,6 @@
       "line": "<Text style={[{ fontSize: 15, fontWeight: '800', color: T.ink, marginTop: 2 }, tnum]}>"
     },
     {
-      "key": "apps/mobile/src/features/international-tax/RecipeTaxStatusCard.tsx:36:fontSize",
-      "short": "features/international-tax/RecipeTaxStatusCard.tsx:36",
-      "value": "15",
-      "element": "Text",
-      "isInput": false,
-      "pressable": false,
-      "pressableBy": null,
-      "chain": "Text < View < QueryState < Card",
-      "staticText": false,
-      "children": "{state.data?.treatment ? TREATMENT[state.data.treatment] : '",
-      "pressTextCount": null,
-      "pressSelectedState": null,
-      "line": "<Text style={{ fontSize: 15, fontWeight: '700', color: T.ink2 }}>"
-    },
-    {
       "key": "apps/mobile/src/features/my/screens/FixedCostScreen.tsx:169:fontSize",
       "short": "features/my/screens/FixedCostScreen.tsx:169",
       "value": "15",
@@ -483,38 +468,23 @@
       "line": "<Text style={{ flex: 1, fontSize: 15, fontWeight: on ? '800' : '600', color: on ? T.blue : T.ink }}>{tz}</Text>"
     },
     {
-      "key": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx:189:fontSize",
-      "short": "features/my/screens/MyLanguageScreen.tsx:189",
+      "key": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx:75:fontSize",
+      "short": "features/my/screens/MyLanguageScreen.tsx:75",
       "value": "15",
       "element": "Text",
       "isInput": false,
       "pressable": false,
       "pressableBy": null,
-      "chain": "Text < Sheet",
+      "chain": "Text < Shell",
       "staticText": true,
-      "children": "이 계정의 언어 선호를 {draft === 'ko' ? '한국어' : 'English'}로 저장합니다. 화면",
+      "children": "불러오는 중…",
       "pressTextCount": null,
       "pressSelectedState": null,
-      "line": "<Text style={{ fontSize: 15, color: T.sub2, lineHeight: 22, marginBottom: 16 }}>"
+      "line": "<Text style={{ fontSize: 15, color: T.ter, margin: 20 }}>불러오는 중…</Text>"
     },
     {
-      "key": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx:51:fontSize",
-      "short": "features/my/screens/MyTaxScreen.tsx:51",
-      "value": "15",
-      "element": "Card",
-      "isInput": false,
-      "pressable": true,
-      "pressableBy": "Card@51",
-      "chain": "Card < QueryState",
-      "staticText": true,
-      "children": "저장",
-      "pressTextCount": null,
-      "pressSelectedState": null,
-      "line": "{market?<><Card><Text style={{fontSize:14,fontWeight:'700',color:T.ter}}>{LAUNCH_MARKETS[market.countryCode].countryNameKo} · {market.currencyCode}</Text><Text style={{fontSize:19,fontWeight:'800',col…"
-    },
-    {
-      "key": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx:286:fontSize",
-      "short": "features/my/screens/MyTaxScreen.tsx:286",
+      "key": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx:252:fontSize",
+      "short": "features/my/screens/MyTaxScreen.tsx:252",
       "value": "15",
       "element": "Text",
       "isInput": false,
@@ -588,13 +558,13 @@
       "line": "<Text style={[{ fontSize: 15, fontWeight: '800', color: T.ink }, NUM]}>{after}</Text>"
     },
     {
-      "key": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:237:fontSize",
-      "short": "features/recipes/screens/RecipeDetailScreen.tsx:237",
+      "key": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:228:fontSize",
+      "short": "features/recipes/screens/RecipeDetailScreen.tsx:228",
       "value": "15",
       "element": "Text",
       "isInput": false,
       "pressable": true,
-      "pressableBy": "Pressable@229",
+      "pressableBy": "Pressable@220",
       "chain": "Text < Text < Pressable < View < Card < QueryState < ScrollView < View",
       "staticText": false,
       "children": "{r.memo || '메모 없음'}",
@@ -903,14 +873,14 @@
       "line": "<Text style={[{ fontSize: 15, fontWeight: '800', color: accent ? (rate >= target ? T.green : T.red) : T.ink }, NUM]}>{v}</Text>"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:230:fontSize",
-      "short": "features/sales/screens/SalesPastEditScreen.tsx:230",
+      "key": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:207:fontSize",
+      "short": "features/sales/screens/SalesPastEditScreen.tsx:207",
       "value": "15",
       "element": "Text",
       "isInput": false,
       "pressable": false,
       "pressableBy": null,
-      "chain": "Text < View < Card < QueryState",
+      "chain": "Text < View < Card < QueryState < ScrollView < View",
       "staticText": true,
       "children": "영업일",
       "pressTextCount": null,
@@ -918,14 +888,14 @@
       "line": "<Text style={{ flex: 1, fontSize: 15, fontWeight: '600', color: T.sub }}>영업일</Text>"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:274:fontSize",
-      "short": "features/sales/screens/SalesPastEditScreen.tsx:274",
+      "key": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:251:fontSize",
+      "short": "features/sales/screens/SalesPastEditScreen.tsx:251",
       "value": "15",
       "element": "Text",
       "isInput": false,
       "pressable": true,
-      "pressableBy": "Pressable@253",
-      "chain": "Text < Text < Pressable < Card < QueryState",
+      "pressableBy": "Pressable@230",
+      "chain": "Text < Text < Pressable < Card < QueryState < ScrollView < View",
       "staticText": true,
       "children": "+ 판매",
       "pressTextCount": 4,
@@ -933,13 +903,13 @@
       "line": "<Text style={{ fontSize: 15, fontWeight: '700', color: T.blue, marginRight: 6 }}>+ 판매</Text>"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:399:fontSize",
-      "short": "features/sales/screens/SalesPastEditScreen.tsx:399",
+      "key": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:376:fontSize",
+      "short": "features/sales/screens/SalesPastEditScreen.tsx:376",
       "value": "15",
       "element": "Text",
       "isInput": false,
       "pressable": true,
-      "pressableBy": "Pressable@386",
+      "pressableBy": "Pressable@363",
       "chain": "Text < Pressable < View < Field < Sheet < View",
       "staticText": false,
       "children": "{name}",
@@ -1006,21 +976,6 @@
       "pressTextCount": 1,
       "pressSelectedState": false,
       "line": "<Text style={{ fontSize: 15, fontWeight: '800', color: T.sub }}>전체 부족 재고 보기</Text>"
-    },
-    {
-      "key": "apps/mobile/src/features/sales/screens/SalesTaxScreen.tsx:138:fontSize",
-      "short": "features/sales/screens/SalesTaxScreen.tsx:138",
-      "value": "15",
-      "element": "Text",
-      "isInput": false,
-      "pressable": false,
-      "pressableBy": null,
-      "chain": "Text < Card",
-      "staticText": true,
-      "children": "판매 시점 국제 세금 기록",
-      "pressTextCount": null,
-      "pressSelectedState": null,
-      "line": "<Text style={{ fontSize: 15, fontWeight: '800', color: T.ink }}>판매 시점 국제 세금 기록</Text>"
     }
   ]
 }

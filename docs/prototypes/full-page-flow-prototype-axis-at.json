@@ -1,27 +1,27 @@
 {
   "manifest": {
     "script": "docs/prototypes/full-page-flow-prototype-axis-measure.mjs",
-    "scriptSha256": "ceb6bb682e287cef49cf16aa282e78e590001333eb1a8dc8a9692c4db8b36624",
-    "auditSha256": "5430d2fa42d86225b89048126f4ade9a44d840f508d1be8809a1aa5e45b94591",
-    "auditCanon": "3cbfd9d5c507b26dacb9daeedd40896ad976f22e8d3a7bb58e5c93a6f96bbf1c",
+    "scriptSha256": "60277bdb6a873128565368cd88bc6d99f95dc823a95a8b651bf78ef68312a987",
+    "auditSha256": "591b0c3e55d39512247ae8fcca405470d1a8f4bad020e8c5acc5493378d44ece",
+    "auditCanon": "53304ca26a52feeee9c70b1545d56faacb8a2f07ce0d5616f1b79bfd5805c83d",
     "audit결속": {
-      "expectCommit": "df7c7c43378d05c1f72a4f7c5c58a987bc19d8f5",
-      "범위해시": "9ae7220b39c74d4900f2365f52367fe7a5cd98d87dd80c887bc8ed1de3b5cdcf",
+      "expectCommit": "b5eb5bf51558482a2041038375c288907292e751",
+      "범위해시": "40b2dab7c73a10ef7edefdb3258b0e3e47107a9293021e416a6a470a14d581f0",
       "범위해시정의": "선택된 파일의 \"경로\\0 git blob SHA\" 를 정렬해 잇고 감사 스크립트 자신의 blob SHA 를 더해 sha256. blob SHA 는 CRLF→LF 정규화 뒤 직접 계산하므로 OS·git 유무에 좌우되지 않는다(페이블 R6 차단). 커밋 SHA 자기참조 없이 입력을 결속한다."
     },
     "values": "전부",
-    "node": "v22.23.2",
-    "generatedAt": "2026-09-05T05:24:19.101Z",
+    "node": "v24.15.0",
+    "generatedAt": "2026-09-05T10:51:15.311Z",
     "판정": "축은 값이 아니라 속성과 컨테이너 flexDirection 으로 정한다 (PRT-207)."
   },
   "counts": {
-    "V": 1121,
-    "H": 1452,
-    "both": 860,
+    "V": 1114,
+    "H": 1445,
+    "both": 853,
     "none": 220,
-    "keysV": 1121,
-    "keysH": 1451,
-    "keysBoth": 859,
+    "keysV": 1114,
+    "keysH": 1444,
+    "keysBoth": 852,
     "keysNone": 206
   },
   "growV": [
@@ -1138,14 +1138,7 @@
     "apps/mobile/src/features/sales/screens/SalesWasteScreen.tsx:72:paddingBottom",
     "apps/mobile/src/features/sales/screens/SalesWasteScreen.tsx:89:paddingBottom",
     "apps/mobile/src/lib/SessionProvider.tsx:41:gap",
-    "apps/mobile/src/lib/SessionProvider.tsx:83:lineHeight",
-    "apps/mobile/src/theme/tokens.ts:68:lineHeight",
-    "apps/mobile/src/theme/tokens.ts:69:lineHeight",
-    "apps/mobile/src/theme/tokens.ts:70:lineHeight",
-    "apps/mobile/src/theme/tokens.ts:71:lineHeight",
-    "apps/mobile/src/theme/tokens.ts:72:lineHeight",
-    "apps/mobile/src/theme/tokens.ts:73:lineHeight",
-    "apps/mobile/src/theme/tokens.ts:74:lineHeight"
+    "apps/mobile/src/lib/SessionProvider.tsx:83:lineHeight"
   ],
   "growH": [
     "apps/mobile/app/(tabs)/_layout.tsx:26:fontWeight",
@@ -2591,14 +2584,7 @@
     "apps/mobile/src/features/sales/screens/SalesWasteScreen.tsx:89:paddingHorizontal",
     "apps/mobile/src/lib/SessionProvider.tsx:41:paddingHorizontal",
     "apps/mobile/src/lib/SessionProvider.tsx:61:fontWeight",
-    "apps/mobile/src/lib/SessionProvider.tsx:82:fontWeight",
-    "apps/mobile/src/theme/tokens.ts:68:fontWeight",
-    "apps/mobile/src/theme/tokens.ts:69:fontWeight",
-    "apps/mobile/src/theme/tokens.ts:70:fontWeight",
-    "apps/mobile/src/theme/tokens.ts:71:fontWeight",
-    "apps/mobile/src/theme/tokens.ts:72:fontWeight",
-    "apps/mobile/src/theme/tokens.ts:73:fontWeight",
-    "apps/mobile/src/theme/tokens.ts:74:fontWeight"
+    "apps/mobile/src/lib/SessionProvider.tsx:82:fontWeight"
   ],
   "both": [
     "apps/mobile/app/(tabs)/_layout.tsx:26:fontSize",
@@ -3452,14 +3438,7 @@
     "apps/mobile/src/features/sales/screens/SalesStockCheckScreen.tsx:91:fontSize",
     "apps/mobile/src/lib/SessionProvider.tsx:61:fontSize",
     "apps/mobile/src/lib/SessionProvider.tsx:82:fontSize",
-    "apps/mobile/src/lib/SessionProvider.tsx:83:fontSize",
-    "apps/mobile/src/theme/tokens.ts:68:fontSize",
-    "apps/mobile/src/theme/tokens.ts:69:fontSize",
-    "apps/mobile/src/theme/tokens.ts:70:fontSize",
-    "apps/mobile/src/theme/tokens.ts:71:fontSize",
-    "apps/mobile/src/theme/tokens.ts:72:fontSize",
-    "apps/mobile/src/theme/tokens.ts:73:fontSize",
-    "apps/mobile/src/theme/tokens.ts:74:fontSize"
+    "apps/mobile/src/lib/SessionProvider.tsx:83:fontSize"
   ],
   "none": [
     "apps/mobile/app/(tabs)/_layout.tsx:25:hex",
@@ -32721,174 +32700,6 @@
     {
       "key": "apps/mobile/src/lib/SessionProvider.tsx:83:lineHeight",
       "value": 22,
-      "prop": "lineHeight",
-      "group": "typography",
-      "axis": "V",
-      "why": "행간은 줄 높이 — 세로다"
-    },
-    {
-      "key": "apps/mobile/src/theme/tokens.ts:68:fontSize",
-      "value": 22,
-      "prop": "fontSize",
-      "group": "typography",
-      "axis": "B",
-      "why": "글자 크기는 글자 상자의 두 축을 함께 바꾼다"
-    },
-    {
-      "key": "apps/mobile/src/theme/tokens.ts:68:fontWeight",
-      "value": 800,
-      "prop": "fontWeight",
-      "group": "typography",
-      "axis": "H",
-      "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
-    },
-    {
-      "key": "apps/mobile/src/theme/tokens.ts:68:lineHeight",
-      "value": 28,
-      "prop": "lineHeight",
-      "group": "typography",
-      "axis": "V",
-      "why": "행간은 줄 높이 — 세로다"
-    },
-    {
-      "key": "apps/mobile/src/theme/tokens.ts:69:fontSize",
-      "value": 20,
-      "prop": "fontSize",
-      "group": "typography",
-      "axis": "B",
-      "why": "글자 크기는 글자 상자의 두 축을 함께 바꾼다"
-    },
-    {
-      "key": "apps/mobile/src/theme/tokens.ts:69:fontWeight",
-      "value": 800,
-      "prop": "fontWeight",
-      "group": "typography",
-      "axis": "H",
-      "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
-    },
-    {
-      "key": "apps/mobile/src/theme/tokens.ts:69:lineHeight",
-      "value": 26,
-      "prop": "lineHeight",
-      "group": "typography",
-      "axis": "V",
-      "why": "행간은 줄 높이 — 세로다"
-    },
-    {
-      "key": "apps/mobile/src/theme/tokens.ts:70:fontSize",
-      "value": 18,
-      "prop": "fontSize",
-      "group": "typography",
-      "axis": "B",
-      "why": "글자 크기는 글자 상자의 두 축을 함께 바꾼다"
-    },
-    {
-      "key": "apps/mobile/src/theme/tokens.ts:70:fontWeight",
-      "value": 700,
-      "prop": "fontWeight",
-      "group": "typography",
-      "axis": "H",
-      "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
-    },
-    {
-      "key": "apps/mobile/src/theme/tokens.ts:70:lineHeight",
-      "value": 24,
-      "prop": "lineHeight",
-      "group": "typography",
-      "axis": "V",
-      "why": "행간은 줄 높이 — 세로다"
-    },
-    {
-      "key": "apps/mobile/src/theme/tokens.ts:71:fontSize",
-      "value": 16,
-      "prop": "fontSize",
-      "group": "typography",
-      "axis": "B",
-      "why": "글자 크기는 글자 상자의 두 축을 함께 바꾼다"
-    },
-    {
-      "key": "apps/mobile/src/theme/tokens.ts:71:fontWeight",
-      "value": 700,
-      "prop": "fontWeight",
-      "group": "typography",
-      "axis": "H",
-      "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
-    },
-    {
-      "key": "apps/mobile/src/theme/tokens.ts:71:lineHeight",
-      "value": 22,
-      "prop": "lineHeight",
-      "group": "typography",
-      "axis": "V",
-      "why": "행간은 줄 높이 — 세로다"
-    },
-    {
-      "key": "apps/mobile/src/theme/tokens.ts:72:fontSize",
-      "value": 16,
-      "prop": "fontSize",
-      "group": "typography",
-      "axis": "B",
-      "why": "글자 크기는 글자 상자의 두 축을 함께 바꾼다"
-    },
-    {
-      "key": "apps/mobile/src/theme/tokens.ts:72:fontWeight",
-      "value": 600,
-      "prop": "fontWeight",
-      "group": "typography",
-      "axis": "H",
-      "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
-    },
-    {
-      "key": "apps/mobile/src/theme/tokens.ts:72:lineHeight",
-      "value": 22,
-      "prop": "lineHeight",
-      "group": "typography",
-      "axis": "V",
-      "why": "행간은 줄 높이 — 세로다"
-    },
-    {
-      "key": "apps/mobile/src/theme/tokens.ts:73:fontSize",
-      "value": 14,
-      "prop": "fontSize",
-      "group": "typography",
-      "axis": "B",
-      "why": "글자 크기는 글자 상자의 두 축을 함께 바꾼다"
-    },
-    {
-      "key": "apps/mobile/src/theme/tokens.ts:73:fontWeight",
-      "value": 600,
-      "prop": "fontWeight",
-      "group": "typography",
-      "axis": "H",
-      "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
-    },
-    {
-      "key": "apps/mobile/src/theme/tokens.ts:73:lineHeight",
-      "value": 20,
-      "prop": "lineHeight",
-      "group": "typography",
-      "axis": "V",
-      "why": "행간은 줄 높이 — 세로다"
-    },
-    {
-      "key": "apps/mobile/src/theme/tokens.ts:74:fontSize",
-      "value": 13,
-      "prop": "fontSize",
-      "group": "typography",
-      "axis": "B",
-      "why": "글자 크기는 글자 상자의 두 축을 함께 바꾼다"
-    },
-    {
-      "key": "apps/mobile/src/theme/tokens.ts:74:fontWeight",
-      "value": 600,
-      "prop": "fontWeight",
-      "group": "typography",
-      "axis": "H",
-      "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
-    },
-    {
-      "key": "apps/mobile/src/theme/tokens.ts:74:lineHeight",
-      "value": 18,
       "prop": "lineHeight",
       "group": "typography",
       "axis": "V",
