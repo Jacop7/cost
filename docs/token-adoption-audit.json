@@ -1,14 +1,20 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-04T19:19:26.400Z",
+  "generatedAt": "2026-09-05T04:47:11.285Z",
   "schemaVersion": 1,
   "script": {
    "name": "token-adoption-audit.mjs",
-   "sha256": "862f5a40f2dcc19da4a734425b453522012639907c7f2fe3b88b20d705a544a8"
+   "sha256": "d714cdc664635f0c85de1b8c6eada4f881b9651e24e3d9199c4ffdc8008771d5"
   },
   "repo": {
-   "headCommit": "6497666e655609a4f4bfe10bfaea6070dad01286",
-   "headTree": "ca59fa2944c2b8d56a32c86a73cd469d473176be"
+   "headCommit": "be577597668f721da7442138971276770c2352ab",
+   "headTree": "3533b471a9ef6a6026b77ce9baa2ed55df70d29d",
+   "toplevel": "/sessions/rcw-01h3h5dvzdyfqvjsuvnxbso6/s1check"
+  },
+  "결속": {
+   "expectCommit": "be577597668f721da7442138971276770c2352ab",
+   "범위해시": "b431b8a1a5a85b7845eedeca1b101cd254ffe83b60491530c9d2bd69e3c8beff",
+   "범위해시정의": "선택된 파일의 \"경로\\0 git blob SHA\" 를 정렬해 잇고 감사 스크립트 자신의 sha256 을 더해 sha256. 커밋 SHA 자기참조 없이 입력을 결속한다."
   },
   "runner": {
    "node": "v22.23.2",
@@ -989,15 +995,6 @@
    "layer": "sharedComponent"
   },
   {
-   "group": "size",
-   "prop": "width",
-   "value": "0",
-   "file": "apps/mobile/src/components/kit/Sheet.tsx",
-   "line": 30,
-   "column": 271,
-   "layer": "sharedComponent"
-  },
-  {
    "group": "spacing",
    "prop": "paddingTop",
    "value": "10",
@@ -1265,24 +1262,6 @@
    "file": "apps/mobile/src/components/kit/Slider.tsx",
    "line": 50,
    "column": 188,
-   "layer": "sharedComponent"
-  },
-  {
-   "group": "size",
-   "prop": "width",
-   "value": "0",
-   "file": "apps/mobile/src/components/kit/Slider.tsx",
-   "line": 50,
-   "column": 212,
-   "layer": "sharedComponent"
-  },
-  {
-   "group": "size",
-   "prop": "height",
-   "value": "2",
-   "file": "apps/mobile/src/components/kit/Slider.tsx",
-   "line": 50,
-   "column": 222,
    "layer": "sharedComponent"
   },
   {
@@ -1805,24 +1784,6 @@
    "file": "apps/mobile/src/components/kit/index.tsx",
    "line": 151,
    "column": 202,
-   "layer": "sharedComponent"
-  },
-  {
-   "group": "size",
-   "prop": "width",
-   "value": "0",
-   "file": "apps/mobile/src/components/kit/index.tsx",
-   "line": 151,
-   "column": 258,
-   "layer": "sharedComponent"
-  },
-  {
-   "group": "size",
-   "prop": "height",
-   "value": "6",
-   "file": "apps/mobile/src/components/kit/index.tsx",
-   "line": 151,
-   "column": 268,
    "layer": "sharedComponent"
   },
   {
@@ -9353,159 +9314,6 @@
    "group": "typography",
    "prop": "fontSize",
    "value": "16",
-   "file": "apps/mobile/src/features/international-tax/RecipeTaxStatusCard.tsx",
-   "line": 27,
-   "column": 22,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
-   "prop": "fontWeight",
-   "value": "800",
-   "file": "apps/mobile/src/features/international-tax/RecipeTaxStatusCard.tsx",
-   "line": 27,
-   "column": 36,
-   "layer": "product"
-  },
-  {
-   "group": "spacing",
-   "prop": "marginTop",
-   "value": "8",
-   "file": "apps/mobile/src/features/international-tax/RecipeTaxStatusCard.tsx",
-   "line": 35,
-   "column": 24,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
-   "prop": "fontSize",
-   "value": "15",
-   "file": "apps/mobile/src/features/international-tax/RecipeTaxStatusCard.tsx",
-   "line": 36,
-   "column": 26,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
-   "prop": "fontWeight",
-   "value": "700",
-   "file": "apps/mobile/src/features/international-tax/RecipeTaxStatusCard.tsx",
-   "line": 36,
-   "column": 40,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
-   "prop": "fontSize",
-   "value": "13",
-   "file": "apps/mobile/src/features/international-tax/RecipeTaxStatusCard.tsx",
-   "line": 39,
-   "column": 26,
-   "layer": "product"
-  },
-  {
-   "group": "spacing",
-   "prop": "marginTop",
-   "value": "4",
-   "file": "apps/mobile/src/features/international-tax/RecipeTaxStatusCard.tsx",
-   "line": 39,
-   "column": 55,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
-   "prop": "fontSize",
-   "value": "13",
-   "file": "apps/mobile/src/features/international-tax/RecipeTaxStatusCard.tsx",
-   "line": 44,
-   "column": 55,
-   "layer": "product"
-  },
-  {
-   "group": "spacing",
-   "prop": "marginTop",
-   "value": "4",
-   "file": "apps/mobile/src/features/international-tax/RecipeTaxStatusCard.tsx",
-   "line": 44,
-   "column": 84,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
-   "prop": "fontSize",
-   "value": "14",
-   "file": "apps/mobile/src/features/international-tax/RecipeTaxStatusCard.tsx",
-   "line": 47,
-   "column": 98,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
-   "prop": "fontWeight",
-   "value": "700",
-   "file": "apps/mobile/src/features/international-tax/RecipeTaxStatusCard.tsx",
-   "line": 47,
-   "column": 110,
-   "layer": "product"
-  },
-  {
-   "group": "spacing",
-   "prop": "marginTop",
-   "value": "7",
-   "file": "apps/mobile/src/features/international-tax/RecipeTaxStatusCard.tsx",
-   "line": 47,
-   "column": 140,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
-   "prop": "fontSize",
-   "value": "13",
-   "file": "apps/mobile/src/features/international-tax/RecipeTaxStatusCard.tsx",
-   "line": 51,
-   "column": 28,
-   "layer": "product"
-  },
-  {
-   "group": "spacing",
-   "prop": "marginTop",
-   "value": "7",
-   "file": "apps/mobile/src/features/international-tax/RecipeTaxStatusCard.tsx",
-   "line": 51,
-   "column": 56,
-   "layer": "product"
-  },
-  {
-   "group": "spacing",
-   "prop": "gap",
-   "value": "7",
-   "file": "apps/mobile/src/features/international-tax/RecipeTaxStatusCard.tsx",
-   "line": 54,
-   "column": 56,
-   "layer": "product"
-  },
-  {
-   "group": "spacing",
-   "prop": "marginTop",
-   "value": "10",
-   "file": "apps/mobile/src/features/international-tax/RecipeTaxStatusCard.tsx",
-   "line": 54,
-   "column": 62,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
-   "prop": "fontWeight",
-   "value": "700",
-   "file": "apps/mobile/src/features/international-tax/RecipeTaxStatusCard.tsx",
-   "line": 57,
-   "column": 65,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
-   "prop": "fontSize",
-   "value": "16",
    "file": "apps/mobile/src/features/my/components/ChannelWeightSheet.tsx",
    "line": 60,
    "column": 24,
@@ -11708,254 +11516,11 @@
    "layer": "product"
   },
   {
-   "group": "spacing",
-   "prop": "padding",
-   "value": "16",
-   "file": "apps/mobile/src/features/my/screens/MyCountryScreen.tsx",
-   "line": 33,
-   "column": 41,
-   "layer": "product"
-  },
-  {
-   "group": "spacing",
-   "prop": "paddingBottom",
-   "value": "32",
-   "file": "apps/mobile/src/features/my/screens/MyCountryScreen.tsx",
-   "line": 33,
-   "column": 52,
-   "layer": "product"
-  },
-  {
-   "group": "spacing",
-   "prop": "gap",
-   "value": "12",
-   "file": "apps/mobile/src/features/my/screens/MyCountryScreen.tsx",
-   "line": 33,
-   "column": 69,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
-   "prop": "fontSize",
-   "value": "14",
-   "file": "apps/mobile/src/features/my/screens/MyCountryScreen.tsx",
-   "line": 38,
-   "column": 25,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
-   "prop": "fontWeight",
-   "value": "700",
-   "file": "apps/mobile/src/features/my/screens/MyCountryScreen.tsx",
-   "line": 38,
-   "column": 37,
-   "layer": "product"
-  },
-  {
-   "group": "spacing",
-   "prop": "gap",
-   "value": "8",
-   "file": "apps/mobile/src/features/my/screens/MyCountryScreen.tsx",
-   "line": 39,
-   "column": 61,
-   "layer": "product"
-  },
-  {
-   "group": "spacing",
-   "prop": "marginTop",
-   "value": "10",
-   "file": "apps/mobile/src/features/my/screens/MyCountryScreen.tsx",
-   "line": 39,
-   "column": 67,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
-   "prop": "fontSize",
-   "value": "14",
-   "file": "apps/mobile/src/features/my/screens/MyCountryScreen.tsx",
-   "line": 40,
-   "column": 25,
-   "layer": "product"
-  },
-  {
-   "group": "spacing",
-   "prop": "marginTop",
-   "value": "12",
-   "file": "apps/mobile/src/features/my/screens/MyCountryScreen.tsx",
-   "line": 40,
-   "column": 50,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
-   "prop": "fontSize",
-   "value": "14",
-   "file": "apps/mobile/src/features/my/screens/MyCountryScreen.tsx",
-   "line": 42,
-   "column": 59,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
-   "prop": "fontWeight",
-   "value": "700",
-   "file": "apps/mobile/src/features/my/screens/MyCountryScreen.tsx",
-   "line": 42,
-   "column": 71,
-   "layer": "product"
-  },
-  {
-   "group": "spacing",
-   "prop": "gap",
-   "value": "7",
-   "file": "apps/mobile/src/features/my/screens/MyCountryScreen.tsx",
-   "line": 42,
-   "column": 322,
-   "layer": "product"
-  },
-  {
-   "group": "spacing",
-   "prop": "marginTop",
-   "value": "10",
-   "file": "apps/mobile/src/features/my/screens/MyCountryScreen.tsx",
-   "line": 42,
-   "column": 328,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
-   "prop": "fontSize",
-   "value": "14",
-   "file": "apps/mobile/src/features/my/screens/MyCountryScreen.tsx",
-   "line": 43,
-   "column": 29,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
-   "prop": "fontWeight",
-   "value": "700",
-   "file": "apps/mobile/src/features/my/screens/MyCountryScreen.tsx",
-   "line": 43,
-   "column": 41,
-   "layer": "product"
-  },
-  {
-   "group": "spacing",
-   "prop": "gap",
-   "value": "8",
-   "file": "apps/mobile/src/features/my/screens/MyCountryScreen.tsx",
-   "line": 43,
-   "column": 119,
-   "layer": "product"
-  },
-  {
-   "group": "spacing",
-   "prop": "marginTop",
-   "value": "10",
-   "file": "apps/mobile/src/features/my/screens/MyCountryScreen.tsx",
-   "line": 43,
-   "column": 125,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
-   "prop": "fontSize",
-   "value": "13",
-   "file": "apps/mobile/src/features/my/screens/MyCountryScreen.tsx",
-   "line": 43,
-   "column": 409,
-   "layer": "product"
-  },
-  {
-   "group": "spacing",
-   "prop": "marginTop",
-   "value": "9",
-   "file": "apps/mobile/src/features/my/screens/MyCountryScreen.tsx",
-   "line": 43,
-   "column": 434,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
-   "prop": "fontSize",
-   "value": "13",
-   "file": "apps/mobile/src/features/my/screens/MyCountryScreen.tsx",
-   "line": 44,
-   "column": 31,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
-   "prop": "fontWeight",
-   "value": "700",
-   "file": "apps/mobile/src/features/my/screens/MyCountryScreen.tsx",
-   "line": 45,
-   "column": 61,
-   "layer": "product"
-  },
-  {
-   "group": "spacing",
-   "prop": "paddingHorizontal",
-   "value": "12",
-   "file": "apps/mobile/src/features/my/screens/MyCountryScreen.tsx",
-   "line": 53,
-   "column": 304,
-   "layer": "product"
-  },
-  {
-   "group": "spacing",
-   "prop": "paddingVertical",
-   "value": "9",
-   "file": "apps/mobile/src/features/my/screens/MyCountryScreen.tsx",
-   "line": 53,
-   "column": 325,
-   "layer": "product"
-  },
-  {
-   "group": "radius",
-   "prop": "borderRadius",
-   "value": "10",
-   "file": "apps/mobile/src/features/my/screens/MyCountryScreen.tsx",
-   "line": 53,
-   "column": 343,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
-   "prop": "fontWeight",
-   "value": "700",
-   "file": "apps/mobile/src/features/my/screens/MyCountryScreen.tsx",
-   "line": 53,
-   "column": 471,
-   "layer": "product"
-  },
-  {
-   "group": "color",
-   "prop": "hex",
-   "value": "#E8F1FB",
-   "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 24,
-   "column": 24,
-   "layer": "product"
-  },
-  {
-   "group": "color",
-   "prop": "hex",
-   "value": "#2E6FD0",
-   "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 24,
-   "column": 39,
-   "layer": "product"
-  },
-  {
    "group": "color",
    "prop": "hex",
    "value": "#F0EDFB",
    "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 25,
+   "line": 24,
    "column": 23,
    "layer": "product"
   },
@@ -11964,7 +11529,7 @@
    "prop": "hex",
    "value": "#7C5CE0",
    "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 25,
+   "line": 24,
    "column": 38,
    "layer": "product"
   },
@@ -11973,7 +11538,7 @@
    "prop": "hex",
    "value": "#E8F1FB",
    "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 26,
+   "line": 25,
    "column": 24,
    "layer": "product"
   },
@@ -11982,7 +11547,7 @@
    "prop": "hex",
    "value": "#2E6FD0",
    "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 26,
+   "line": 25,
    "column": 39,
    "layer": "product"
   },
@@ -11991,7 +11556,7 @@
    "prop": "hex",
    "value": "#FEF1E6",
    "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 27,
+   "line": 26,
    "column": 24,
    "layer": "product"
   },
@@ -12000,7 +11565,7 @@
    "prop": "hex",
    "value": "#E08A2B",
    "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 27,
+   "line": 26,
    "column": 39,
    "layer": "product"
   },
@@ -12009,7 +11574,7 @@
    "prop": "hex",
    "value": "#EAF6F0",
    "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 28,
+   "line": 27,
    "column": 24,
    "layer": "product"
   },
@@ -12018,7 +11583,7 @@
    "prop": "hex",
    "value": "#179E6B",
    "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 28,
+   "line": 27,
    "column": 39,
    "layer": "product"
   },
@@ -12027,7 +11592,7 @@
    "prop": "hex",
    "value": "#FDECEF",
    "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 29,
+   "line": 28,
    "column": 26,
    "layer": "product"
   },
@@ -12036,7 +11601,7 @@
    "prop": "hex",
    "value": "#D94A5E",
    "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 29,
+   "line": 28,
    "column": 41,
    "layer": "product"
   },
@@ -12045,7 +11610,7 @@
    "prop": "hex",
    "value": "#EDF3FF",
    "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 30,
+   "line": 29,
    "column": 27,
    "layer": "product"
   },
@@ -12054,7 +11619,7 @@
    "prop": "hex",
    "value": "#3A6FD8",
    "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 30,
+   "line": 29,
    "column": 42,
    "layer": "product"
   },
@@ -12063,7 +11628,7 @@
    "prop": "hex",
    "value": "#FFF5E0",
    "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 31,
+   "line": 30,
    "column": 23,
    "layer": "product"
   },
@@ -12072,7 +11637,7 @@
    "prop": "hex",
    "value": "#D99A1C",
    "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 31,
+   "line": 30,
    "column": 38,
    "layer": "product"
   },
@@ -12081,7 +11646,7 @@
    "prop": "paddingLeft",
    "value": "20",
    "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 127,
+   "line": 107,
    "column": 24,
    "layer": "product"
   },
@@ -12090,7 +11655,7 @@
    "prop": "paddingRight",
    "value": "16",
    "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 127,
+   "line": 107,
    "column": 41,
    "layer": "product"
   },
@@ -12099,7 +11664,7 @@
    "prop": "paddingTop",
    "value": "8",
    "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 127,
+   "line": 107,
    "column": 59,
    "layer": "product"
   },
@@ -12108,7 +11673,7 @@
    "prop": "paddingBottom",
    "value": "12",
    "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 127,
+   "line": 107,
    "column": 74,
    "layer": "product"
   },
@@ -12117,7 +11682,7 @@
    "prop": "fontSize",
    "value": "22",
    "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 128,
+   "line": 108,
    "column": 26,
    "layer": "product"
   },
@@ -12126,7 +11691,7 @@
    "prop": "fontWeight",
    "value": "800",
    "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 128,
+   "line": 108,
    "column": 40,
    "layer": "product"
   },
@@ -12135,7 +11700,7 @@
    "prop": "fontSize",
    "value": "14",
    "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 129,
+   "line": 109,
    "column": 26,
    "layer": "product"
   },
@@ -12144,7 +11709,7 @@
    "prop": "marginTop",
    "value": "3",
    "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 129,
+   "line": 109,
    "column": 55,
    "layer": "product"
   },
@@ -12153,7 +11718,7 @@
    "prop": "fontWeight",
    "value": "600",
    "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 129,
+   "line": 109,
    "column": 69,
    "layer": "product"
   },
@@ -12162,7 +11727,7 @@
    "prop": "paddingHorizontal",
    "value": "16",
    "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 133,
+   "line": 113,
    "column": 81,
    "layer": "product"
   },
@@ -12171,7 +11736,7 @@
    "prop": "paddingBottom",
    "value": "28",
    "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 133,
+   "line": 113,
    "column": 104,
    "layer": "product"
   },
@@ -12180,7 +11745,7 @@
    "prop": "gap",
    "value": "11",
    "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 133,
+   "line": 113,
    "column": 123,
    "layer": "product"
   },
@@ -12189,7 +11754,7 @@
    "prop": "gap",
    "value": "13",
    "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 135,
+   "line": 115,
    "column": 77,
    "layer": "product"
   },
@@ -12198,7 +11763,7 @@
    "prop": "width",
    "value": "46",
    "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 136,
+   "line": 116,
    "column": 26,
    "layer": "product"
   },
@@ -12207,7 +11772,7 @@
    "prop": "height",
    "value": "46",
    "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 136,
+   "line": 116,
    "column": 37,
    "layer": "product"
   },
@@ -12216,7 +11781,7 @@
    "prop": "borderRadius",
    "value": "14",
    "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 136,
+   "line": 116,
    "column": 49,
    "layer": "product"
   },
@@ -12225,7 +11790,7 @@
    "prop": "fontSize",
    "value": "18",
    "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 140,
+   "line": 120,
    "column": 28,
    "layer": "product"
   },
@@ -12234,7 +11799,7 @@
    "prop": "fontWeight",
    "value": "800",
    "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 140,
+   "line": 120,
    "column": 42,
    "layer": "product"
   },
@@ -12243,7 +11808,7 @@
    "prop": "fontSize",
    "value": "14",
    "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 141,
+   "line": 121,
    "column": 28,
    "layer": "product"
   },
@@ -12252,7 +11817,7 @@
    "prop": "marginTop",
    "value": "2",
    "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 141,
+   "line": 121,
    "column": 56,
    "layer": "product"
   },
@@ -12261,7 +11826,7 @@
    "prop": "gap",
    "value": "12",
    "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 148,
+   "line": 128,
    "column": 167,
    "layer": "product"
   },
@@ -12270,7 +11835,7 @@
    "prop": "paddingVertical",
    "value": "13",
    "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 148,
+   "line": 128,
    "column": 176,
    "layer": "product"
   },
@@ -12279,7 +11844,7 @@
    "prop": "paddingHorizontal",
    "value": "15",
    "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 148,
+   "line": 128,
    "column": 197,
    "layer": "product"
   },
@@ -12288,7 +11853,7 @@
    "prop": "width",
    "value": "38",
    "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 149,
+   "line": 129,
    "column": 30,
    "layer": "product"
   },
@@ -12297,7 +11862,7 @@
    "prop": "height",
    "value": "38",
    "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 149,
+   "line": 129,
    "column": 41,
    "layer": "product"
   },
@@ -12306,7 +11871,7 @@
    "prop": "borderRadius",
    "value": "11",
    "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 149,
+   "line": 129,
    "column": 53,
    "layer": "product"
   },
@@ -12315,7 +11880,7 @@
    "prop": "minWidth",
    "value": "0",
    "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 152,
+   "line": 132,
    "column": 39,
    "layer": "product"
   },
@@ -12324,7 +11889,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 153,
+   "line": 133,
    "column": 32,
    "layer": "product"
   },
@@ -12333,7 +11898,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 153,
+   "line": 133,
    "column": 46,
    "layer": "product"
   },
@@ -12342,7 +11907,7 @@
    "prop": "fontSize",
    "value": "14",
    "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 154,
+   "line": 134,
    "column": 32,
    "layer": "product"
   },
@@ -12351,7 +11916,7 @@
    "prop": "marginTop",
    "value": "2",
    "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 154,
+   "line": 134,
    "column": 60,
    "layer": "product"
   },
@@ -13410,74 +12975,38 @@
   },
   {
    "group": "spacing",
-   "prop": "padding",
-   "value": "16",
-   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
-   "line": 122,
-   "column": 44,
-   "layer": "product"
-  },
-  {
-   "group": "spacing",
-   "prop": "paddingBottom",
-   "value": "32",
-   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
-   "line": 122,
-   "column": 57,
-   "layer": "product"
-  },
-  {
-   "group": "spacing",
-   "prop": "gap",
+   "prop": "paddingVertical",
    "value": "12",
    "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
-   "line": 122,
-   "column": 76,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
-   "prop": "fontWeight",
-   "value": "700",
-   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
-   "line": 140,
-   "column": 53,
+   "line": 54,
+   "column": 68,
    "layer": "product"
   },
   {
    "group": "spacing",
-   "prop": "gap",
-   "value": "12",
+   "prop": "paddingHorizontal",
+   "value": "15",
    "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
-   "line": 161,
-   "column": 61,
-   "layer": "product"
-  },
-  {
-   "group": "spacing",
-   "prop": "padding",
-   "value": "16",
-   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
-   "line": 161,
-   "column": 70,
+   "line": 54,
+   "column": 89,
    "layer": "product"
   },
   {
    "group": "typography",
    "prop": "fontSize",
-   "value": "17",
+   "value": "16",
    "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
-   "line": 166,
-   "column": 32,
+   "line": 56,
+   "column": 24,
    "layer": "product"
   },
   {
    "group": "typography",
    "prop": "fontWeight",
-   "value": "800",
+   "value": "600",
    "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
-   "line": 166,
-   "column": 46,
+   "line": 56,
+   "column": 38,
    "layer": "product"
   },
   {
@@ -13485,17 +13014,44 @@
    "prop": "fontSize",
    "value": "13",
    "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
-   "line": 167,
+   "line": 57,
    "column": 32,
    "layer": "product"
   },
   {
    "group": "spacing",
    "prop": "marginTop",
-   "value": "3",
+   "value": "2",
    "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
-   "line": 167,
+   "line": 57,
    "column": 60,
+   "layer": "product"
+  },
+  {
+   "group": "typography",
+   "prop": "fontSize",
+   "value": "18",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 60,
+   "column": 23,
+   "layer": "product"
+  },
+  {
+   "group": "typography",
+   "prop": "fontWeight",
+   "value": "800",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 60,
+   "column": 37,
+   "layer": "product"
+  },
+  {
+   "group": "spacing",
+   "prop": "marginLeft",
+   "value": "12",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 60,
+   "column": 70,
    "layer": "product"
   },
   {
@@ -13503,26 +13059,638 @@
    "prop": "fontSize",
    "value": "15",
    "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
-   "line": 189,
+   "line": 75,
+   "column": 24,
+   "layer": "product"
+  },
+  {
+   "group": "spacing",
+   "prop": "margin",
+   "value": "20",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 75,
+   "column": 52,
+   "layer": "product"
+  },
+  {
+   "group": "spacing",
+   "prop": "margin",
+   "value": "16",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 84,
+   "column": 26,
+   "layer": "product"
+  },
+  {
+   "group": "spacing",
+   "prop": "marginHorizontal",
+   "value": "16",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 85,
+   "column": 24,
+   "layer": "product"
+  },
+  {
+   "group": "spacing",
+   "prop": "margin",
+   "value": "16",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 94,
+   "column": 36,
+   "layer": "product"
+  },
+  {
+   "group": "spacing",
+   "prop": "paddingHorizontal",
+   "value": "16",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 238,
+   "column": 81,
+   "layer": "product"
+  },
+  {
+   "group": "spacing",
+   "prop": "paddingTop",
+   "value": "4",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 238,
+   "column": 104,
+   "layer": "product"
+  },
+  {
+   "group": "spacing",
+   "prop": "paddingBottom",
+   "value": "28",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 238,
+   "column": 119,
+   "layer": "product"
+  },
+  {
+   "group": "typography",
+   "prop": "fontSize",
+   "value": "14",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 240,
    "column": 24,
    "layer": "product"
   },
   {
    "group": "typography",
-   "prop": "lineHeight",
-   "value": "22",
+   "prop": "fontWeight",
+   "value": "700",
    "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
-   "line": 189,
-   "column": 53,
+   "line": 240,
+   "column": 38,
+   "layer": "product"
+  },
+  {
+   "group": "spacing",
+   "prop": "marginHorizontal",
+   "value": "4",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 240,
+   "column": 71,
    "layer": "product"
   },
   {
    "group": "spacing",
    "prop": "marginBottom",
+   "value": "6",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 240,
+   "column": 92,
+   "layer": "product"
+  },
+  {
+   "group": "spacing",
+   "prop": "marginBottom",
+   "value": "10",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 241,
+   "column": 26,
+   "layer": "product"
+  },
+  {
+   "group": "spacing",
+   "prop": "marginBottom",
+   "value": "10",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 243,
+   "column": 68,
+   "layer": "product"
+  },
+  {
+   "group": "spacing",
+   "prop": "padding",
+   "value": "13",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 243,
+   "column": 86,
+   "layer": "product"
+  },
+  {
+   "group": "radius",
+   "prop": "borderRadius",
+   "value": "12",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 243,
+   "column": 99,
+   "layer": "product"
+  },
+  {
+   "group": "typography",
+   "prop": "fontSize",
+   "value": "14",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 244,
+   "column": 28,
+   "layer": "product"
+  },
+  {
+   "group": "typography",
+   "prop": "fontWeight",
+   "value": "700",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 244,
+   "column": 42,
+   "layer": "product"
+  },
+  {
+   "group": "typography",
+   "prop": "lineHeight",
+   "value": "20",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 244,
+   "column": 75,
+   "layer": "product"
+  },
+  {
+   "group": "spacing",
+   "prop": "marginTop",
+   "value": "8",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 245,
+   "column": 28,
+   "layer": "product"
+  },
+  {
+   "group": "spacing",
+   "prop": "marginBottom",
+   "value": "10",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 249,
+   "column": 40,
+   "layer": "product"
+  },
+  {
+   "group": "spacing",
+   "prop": "padding",
+   "value": "13",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 249,
+   "column": 58,
+   "layer": "product"
+  },
+  {
+   "group": "radius",
+   "prop": "borderRadius",
+   "value": "12",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 249,
+   "column": 71,
+   "layer": "product"
+  },
+  {
+   "group": "typography",
+   "prop": "fontSize",
+   "value": "14",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 250,
+   "column": 28,
+   "layer": "product"
+  },
+  {
+   "group": "typography",
+   "prop": "fontWeight",
+   "value": "700",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 250,
+   "column": 42,
+   "layer": "product"
+  },
+  {
+   "group": "typography",
+   "prop": "lineHeight",
+   "value": "20",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 250,
+   "column": 75,
+   "layer": "product"
+  },
+  {
+   "group": "spacing",
+   "prop": "marginTop",
+   "value": "8",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 251,
+   "column": 28,
+   "layer": "product"
+  },
+  {
+   "group": "spacing",
+   "prop": "padding",
+   "value": "15",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 266,
+   "column": 70,
+   "layer": "product"
+  },
+  {
+   "group": "size",
+   "prop": "minWidth",
+   "value": "0",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 268,
+   "column": 41,
+   "layer": "product"
+  },
+  {
+   "group": "typography",
+   "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
-   "line": 189,
-   "column": 69,
+   "line": 269,
+   "column": 35,
+   "layer": "product"
+  },
+  {
+   "group": "typography",
+   "prop": "fontWeight",
+   "value": "700",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 269,
+   "column": 49,
+   "layer": "product"
+  },
+  {
+   "group": "typography",
+   "prop": "fontSize",
+   "value": "14",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 270,
+   "column": 35,
+   "layer": "product"
+  },
+  {
+   "group": "spacing",
+   "prop": "marginTop",
+   "value": "3",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 270,
+   "column": 63,
+   "layer": "product"
+  },
+  {
+   "group": "spacing",
+   "prop": "marginTop",
+   "value": "3",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 274,
+   "column": 78,
+   "layer": "product"
+  },
+  {
+   "group": "spacing",
+   "prop": "gap",
+   "value": "6",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 274,
+   "column": 92,
+   "layer": "product"
+  },
+  {
+   "group": "typography",
+   "prop": "fontSize",
+   "value": "14",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 275,
+   "column": 37,
+   "layer": "product"
+  },
+  {
+   "group": "typography",
+   "prop": "fontWeight",
+   "value": "600",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 275,
+   "column": 66,
+   "layer": "product"
+  },
+  {
+   "group": "typography",
+   "prop": "fontSize",
+   "value": "13",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 276,
+   "column": 36,
+   "layer": "product"
+  },
+  {
+   "group": "typography",
+   "prop": "fontWeight",
+   "value": "600",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 276,
+   "column": 64,
+   "layer": "product"
+  },
+  {
+   "group": "size",
+   "prop": "width",
+   "value": "24",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 279,
+   "column": 32,
+   "layer": "product"
+  },
+  {
+   "group": "size",
+   "prop": "height",
+   "value": "24",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 279,
+   "column": 43,
+   "layer": "product"
+  },
+  {
+   "group": "radius",
+   "prop": "borderRadius",
+   "value": "12",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 279,
+   "column": 55,
+   "layer": "product"
+  },
+  {
+   "group": "spacing",
+   "prop": "marginLeft",
+   "value": "12",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 279,
+   "column": 133,
+   "layer": "product"
+  },
+  {
+   "group": "spacing",
+   "prop": "gap",
+   "value": "7",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 285,
+   "column": 46,
+   "layer": "product"
+  },
+  {
+   "group": "spacing",
+   "prop": "marginHorizontal",
+   "value": "4",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 285,
+   "column": 54,
+   "layer": "product"
+  },
+  {
+   "group": "spacing",
+   "prop": "marginTop",
+   "value": "16",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 285,
+   "column": 75,
+   "layer": "product"
+  },
+  {
+   "group": "typography",
+   "prop": "fontSize",
+   "value": "14",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 287,
+   "column": 35,
+   "layer": "product"
+  },
+  {
+   "group": "typography",
+   "prop": "lineHeight",
+   "value": "20",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 287,
+   "column": 63,
+   "layer": "product"
+  },
+  {
+   "group": "spacing",
+   "prop": "paddingHorizontal",
+   "value": "20",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 294,
+   "column": 22,
+   "layer": "product"
+  },
+  {
+   "group": "spacing",
+   "prop": "paddingTop",
+   "value": "12",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 294,
+   "column": 45,
+   "layer": "product"
+  },
+  {
+   "group": "spacing",
+   "prop": "marginBottom",
+   "value": "12",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 303,
+   "column": 52,
+   "layer": "product"
+  },
+  {
+   "group": "spacing",
+   "prop": "gap",
+   "value": "7",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 311,
+   "column": 48,
+   "layer": "product"
+  },
+  {
+   "group": "spacing",
+   "prop": "marginBottom",
+   "value": "12",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 311,
+   "column": 56,
+   "layer": "product"
+  },
+  {
+   "group": "spacing",
+   "prop": "padding",
+   "value": "13",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 311,
+   "column": 74,
+   "layer": "product"
+  },
+  {
+   "group": "radius",
+   "prop": "borderRadius",
+   "value": "12",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 311,
+   "column": 87,
+   "layer": "product"
+  },
+  {
+   "group": "typography",
+   "prop": "fontSize",
+   "value": "14",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 313,
+   "column": 37,
+   "layer": "product"
+  },
+  {
+   "group": "typography",
+   "prop": "lineHeight",
+   "value": "20",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 313,
+   "column": 66,
+   "layer": "product"
+  },
+  {
+   "group": "typography",
+   "prop": "fontWeight",
+   "value": "600",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 313,
+   "column": 82,
+   "layer": "product"
+  },
+  {
+   "group": "typography",
+   "prop": "fontSize",
+   "value": "14",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 320,
+   "column": 52,
+   "layer": "product"
+  },
+  {
+   "group": "typography",
+   "prop": "fontWeight",
+   "value": "700",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 320,
+   "column": 66,
+   "layer": "product"
+  },
+  {
+   "group": "typography",
+   "prop": "lineHeight",
+   "value": "20",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 320,
+   "column": 99,
+   "layer": "product"
+  },
+  {
+   "group": "spacing",
+   "prop": "marginBottom",
+   "value": "12",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 320,
+   "column": 115,
+   "layer": "product"
+  },
+  {
+   "group": "typography",
+   "prop": "fontSize",
+   "value": "14",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 325,
+   "column": 26,
+   "layer": "product"
+  },
+  {
+   "group": "typography",
+   "prop": "fontWeight",
+   "value": "700",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 325,
+   "column": 40,
+   "layer": "product"
+  },
+  {
+   "group": "typography",
+   "prop": "lineHeight",
+   "value": "20",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 325,
+   "column": 73,
+   "layer": "product"
+  },
+  {
+   "group": "spacing",
+   "prop": "marginBottom",
+   "value": "12",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 325,
+   "column": 89,
+   "layer": "product"
+  },
+  {
+   "group": "typography",
+   "prop": "fontSize",
+   "value": "14",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 330,
+   "column": 26,
+   "layer": "product"
+  },
+  {
+   "group": "typography",
+   "prop": "fontWeight",
+   "value": "700",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 330,
+   "column": 40,
+   "layer": "product"
+  },
+  {
+   "group": "typography",
+   "prop": "lineHeight",
+   "value": "20",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 330,
+   "column": 73,
+   "layer": "product"
+  },
+  {
+   "group": "spacing",
+   "prop": "marginBottom",
+   "value": "12",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 330,
+   "column": 89,
+   "layer": "product"
+  },
+  {
+   "group": "spacing",
+   "prop": "gap",
+   "value": "9",
+   "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+   "line": 335,
+   "column": 46,
    "layer": "product"
   },
   {
@@ -13595,24 +13763,6 @@
    "file": "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx",
    "line": 34,
    "column": 145,
-   "layer": "product"
-  },
-  {
-   "group": "size",
-   "prop": "width",
-   "value": "0",
-   "file": "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx",
-   "line": 34,
-   "column": 169,
-   "layer": "product"
-  },
-  {
-   "group": "size",
-   "prop": "height",
-   "value": "1",
-   "file": "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx",
-   "line": 34,
-   "column": 179,
    "layer": "product"
   },
   {
@@ -13917,304 +14067,7 @@
    "prop": "padding",
    "value": "16",
    "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 37,
-   "column": 169,
-   "layer": "product"
-  },
-  {
-   "group": "spacing",
-   "prop": "padding",
-   "value": "16",
-   "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 49,
-   "column": 164,
-   "layer": "product"
-  },
-  {
-   "group": "spacing",
-   "prop": "paddingBottom",
-   "value": "32",
-   "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 49,
-   "column": 175,
-   "layer": "product"
-  },
-  {
-   "group": "spacing",
-   "prop": "gap",
-   "value": "12",
-   "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 49,
-   "column": 192,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
-   "prop": "fontSize",
-   "value": "14",
-   "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 51,
-   "column": 37,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
-   "prop": "fontWeight",
-   "value": "700",
-   "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 51,
-   "column": 49,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
-   "prop": "fontSize",
-   "value": "19",
-   "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 51,
-   "column": 175,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
-   "prop": "fontWeight",
-   "value": "800",
-   "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 51,
-   "column": 187,
-   "layer": "product"
-  },
-  {
-   "group": "spacing",
-   "prop": "marginTop",
-   "value": "5",
-   "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 51,
-   "column": 216,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
-   "prop": "fontSize",
-   "value": "13",
-   "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 51,
-   "column": 310,
-   "layer": "product"
-  },
-  {
-   "group": "spacing",
-   "prop": "marginTop",
-   "value": "5",
-   "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 51,
-   "column": 335,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
-   "prop": "fontSize",
-   "value": "14",
-   "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 51,
-   "column": 484,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
-   "prop": "fontWeight",
-   "value": "700",
-   "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 51,
-   "column": 496,
-   "layer": "product"
-  },
-  {
-   "group": "spacing",
-   "prop": "gap",
-   "value": "7",
-   "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 51,
-   "column": 576,
-   "layer": "product"
-  },
-  {
-   "group": "spacing",
-   "prop": "marginTop",
-   "value": "9",
-   "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 51,
-   "column": 582,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
-   "prop": "fontSize",
-   "value": "15",
-   "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 51,
-   "column": 904,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
-   "prop": "fontWeight",
-   "value": "800",
-   "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 51,
-   "column": 916,
-   "layer": "product"
-  },
-  {
-   "group": "spacing",
-   "prop": "marginTop",
-   "value": "9",
-   "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 51,
-   "column": 1006,
-   "layer": "product"
-  },
-  {
-   "group": "spacing",
-   "prop": "gap",
-   "value": "8",
-   "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 51,
-   "column": 1018,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
-   "prop": "fontSize",
-   "value": "13",
-   "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 51,
-   "column": 1713,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
-   "prop": "fontWeight",
-   "value": "700",
-   "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 51,
-   "column": 1725,
-   "layer": "product"
-  },
-  {
-   "group": "spacing",
-   "prop": "gap",
-   "value": "7",
-   "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 51,
-   "column": 1823,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
-   "prop": "fontSize",
-   "value": "16",
-   "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 51,
-   "column": 2677,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
-   "prop": "fontWeight",
-   "value": "800",
-   "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 51,
-   "column": 2689,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
-   "prop": "fontSize",
-   "value": "14",
-   "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 51,
-   "column": 2755,
-   "layer": "product"
-  },
-  {
-   "group": "spacing",
-   "prop": "marginTop",
-   "value": "5",
-   "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 51,
-   "column": 2780,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
-   "prop": "fontWeight",
-   "value": "700",
-   "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 52,
-   "column": 111,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
-   "prop": "fontWeight",
-   "value": "700",
-   "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 53,
-   "column": 59,
-   "layer": "product"
-  },
-  {
-   "group": "spacing",
-   "prop": "paddingHorizontal",
-   "value": "10",
-   "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 59,
-   "column": 254,
-   "layer": "product"
-  },
-  {
-   "group": "spacing",
-   "prop": "paddingVertical",
-   "value": "8",
-   "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 59,
-   "column": 275,
-   "layer": "product"
-  },
-  {
-   "group": "radius",
-   "prop": "borderRadius",
-   "value": "9",
-   "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 59,
-   "column": 293,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
-   "prop": "fontSize",
-   "value": "13",
-   "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 59,
-   "column": 420,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
-   "prop": "fontWeight",
-   "value": "700",
-   "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 59,
-   "column": 432,
-   "layer": "product"
-  },
-  {
-   "group": "spacing",
-   "prop": "padding",
-   "value": "16",
-   "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 181,
+   "line": 147,
    "column": 44,
    "layer": "product"
   },
@@ -14223,7 +14076,7 @@
    "prop": "paddingBottom",
    "value": "28",
    "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 181,
+   "line": 147,
    "column": 57,
    "layer": "product"
   },
@@ -14232,7 +14085,7 @@
    "prop": "gap",
    "value": "11",
    "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 181,
+   "line": 147,
    "column": 76,
    "layer": "product"
   },
@@ -14241,7 +14094,7 @@
    "prop": "padding",
    "value": "13",
    "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 190,
+   "line": 156,
    "column": 41,
    "layer": "product"
   },
@@ -14250,7 +14103,7 @@
    "prop": "borderRadius",
    "value": "12",
    "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 190,
+   "line": 156,
    "column": 54,
    "layer": "product"
   },
@@ -14259,7 +14112,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 191,
+   "line": 157,
    "column": 44,
    "layer": "product"
   },
@@ -14268,7 +14121,7 @@
    "prop": "marginTop",
    "value": "8",
    "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 192,
+   "line": 158,
    "column": 30,
    "layer": "product"
   },
@@ -14277,7 +14130,7 @@
    "prop": "padding",
    "value": "13",
    "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 196,
+   "line": 162,
    "column": 42,
    "layer": "product"
   },
@@ -14286,7 +14139,7 @@
    "prop": "borderRadius",
    "value": "12",
    "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 196,
+   "line": 162,
    "column": 55,
    "layer": "product"
   },
@@ -14295,7 +14148,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 197,
+   "line": 163,
    "column": 44,
    "layer": "product"
   },
@@ -14304,7 +14157,7 @@
    "prop": "marginTop",
    "value": "8",
    "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 198,
+   "line": 164,
    "column": 30,
    "layer": "product"
   },
@@ -14313,7 +14166,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 201,
+   "line": 167,
    "column": 66,
    "layer": "product"
   },
@@ -14322,7 +14175,7 @@
    "prop": "paddingVertical",
    "value": "13",
    "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 204,
+   "line": 170,
    "column": 72,
    "layer": "product"
   },
@@ -14331,7 +14184,7 @@
    "prop": "paddingHorizontal",
    "value": "15",
    "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 204,
+   "line": 170,
    "column": 93,
    "layer": "product"
   },
@@ -14340,7 +14193,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 205,
+   "line": 171,
    "column": 39,
    "layer": "product"
   },
@@ -14349,7 +14202,7 @@
    "prop": "fontWeight",
    "value": "800",
    "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 205,
+   "line": 171,
    "column": 53,
    "layer": "product"
   },
@@ -14358,7 +14211,7 @@
    "prop": "fontSize",
    "value": "13",
    "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 206,
+   "line": 172,
    "column": 30,
    "layer": "product"
   },
@@ -14367,7 +14220,7 @@
    "prop": "fontWeight",
    "value": "600",
    "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 206,
+   "line": 172,
    "column": 44,
    "layer": "product"
   },
@@ -14376,7 +14229,7 @@
    "prop": "paddingHorizontal",
    "value": "15",
    "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 209,
+   "line": 175,
    "column": 28,
    "layer": "product"
   },
@@ -14385,7 +14238,7 @@
    "prop": "paddingVertical",
    "value": "12",
    "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 209,
+   "line": 175,
    "column": 51,
    "layer": "product"
   },
@@ -14394,7 +14247,7 @@
    "prop": "gap",
    "value": "9",
    "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 209,
+   "line": 175,
    "column": 72,
    "layer": "product"
   },
@@ -14403,7 +14256,7 @@
    "prop": "gap",
    "value": "8",
    "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 211,
+   "line": 177,
    "column": 84,
    "layer": "product"
   },
@@ -14412,7 +14265,7 @@
    "prop": "width",
    "value": "32",
    "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 241,
+   "line": 207,
    "column": 30,
    "layer": "product"
   },
@@ -14421,7 +14274,7 @@
    "prop": "height",
    "value": "40",
    "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 241,
+   "line": 207,
    "column": 41,
    "layer": "product"
   },
@@ -14430,7 +14283,7 @@
    "prop": "gap",
    "value": "5",
    "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 255,
+   "line": 221,
    "column": 89,
    "layer": "product"
   },
@@ -14439,7 +14292,7 @@
    "prop": "paddingVertical",
    "value": "13",
    "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 256,
+   "line": 222,
    "column": 19,
    "layer": "product"
   },
@@ -14448,7 +14301,7 @@
    "prop": "borderRadius",
    "value": "12",
    "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 256,
+   "line": 222,
    "column": 40,
    "layer": "product"
   },
@@ -14457,7 +14310,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 260,
+   "line": 226,
    "column": 32,
    "layer": "product"
   },
@@ -14466,7 +14319,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 260,
+   "line": 226,
    "column": 46,
    "layer": "product"
   },
@@ -14475,7 +14328,7 @@
    "prop": "fontSize",
    "value": "14",
    "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 264,
+   "line": 230,
    "column": 32,
    "layer": "product"
   },
@@ -14484,7 +14337,7 @@
    "prop": "fontWeight",
    "value": "600",
    "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 264,
+   "line": 230,
    "column": 46,
    "layer": "product"
   },
@@ -14493,7 +14346,7 @@
    "prop": "gap",
    "value": "6",
    "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 273,
+   "line": 239,
    "column": 74,
    "layer": "product"
   },
@@ -14502,7 +14355,7 @@
    "prop": "paddingHorizontal",
    "value": "2",
    "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 273,
+   "line": 239,
    "column": 82,
    "layer": "product"
   },
@@ -14511,7 +14364,7 @@
    "prop": "fontSize",
    "value": "14",
    "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 275,
+   "line": 241,
    "column": 37,
    "layer": "product"
   },
@@ -14520,7 +14373,7 @@
    "prop": "lineHeight",
    "value": "20",
    "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 275,
+   "line": 241,
    "column": 65,
    "layer": "product"
   },
@@ -14529,7 +14382,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 276,
+   "line": 242,
    "column": 50,
    "layer": "product"
   },
@@ -14538,7 +14391,7 @@
    "prop": "paddingHorizontal",
    "value": "20",
    "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 283,
+   "line": 249,
    "column": 22,
    "layer": "product"
   },
@@ -14547,7 +14400,7 @@
    "prop": "paddingTop",
    "value": "12",
    "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 283,
+   "line": 249,
    "column": 45,
    "layer": "product"
   },
@@ -14556,7 +14409,7 @@
    "prop": "paddingBottom",
    "value": "30",
    "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 283,
+   "line": 249,
    "column": 61,
    "layer": "product"
   },
@@ -14565,7 +14418,7 @@
    "prop": "paddingHorizontal",
    "value": "2",
    "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 285,
+   "line": 251,
    "column": 68,
    "layer": "product"
   },
@@ -14574,7 +14427,7 @@
    "prop": "paddingBottom",
    "value": "12",
    "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 285,
+   "line": 251,
    "column": 90,
    "layer": "product"
   },
@@ -14583,7 +14436,7 @@
    "prop": "fontSize",
    "value": "15",
    "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 286,
+   "line": 252,
    "column": 35,
    "layer": "product"
   },
@@ -14592,7 +14445,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 286,
+   "line": 252,
    "column": 49,
    "layer": "product"
   },
@@ -14601,7 +14454,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 287,
+   "line": 253,
    "column": 27,
    "layer": "product"
   },
@@ -14610,7 +14463,7 @@
    "prop": "fontWeight",
    "value": "800",
    "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-   "line": 287,
+   "line": 253,
    "column": 41,
    "layer": "product"
   },
@@ -21279,7 +21132,7 @@
    "prop": "gap",
    "value": "6",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 33,
+   "line": 31,
    "column": 64,
    "layer": "product"
   },
@@ -21288,7 +21141,7 @@
    "prop": "paddingVertical",
    "value": "13",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 33,
+   "line": 31,
    "column": 72,
    "layer": "product"
   },
@@ -21297,7 +21150,7 @@
    "prop": "paddingHorizontal",
    "value": "15",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 33,
+   "line": 31,
    "column": 93,
    "layer": "product"
   },
@@ -21306,7 +21159,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 34,
+   "line": 32,
    "column": 22,
    "layer": "product"
   },
@@ -21315,7 +21168,7 @@
    "prop": "fontWeight",
    "value": "800",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 34,
+   "line": 32,
    "column": 36,
    "layer": "product"
   },
@@ -21324,7 +21177,7 @@
    "prop": "fontSize",
    "value": "14",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 35,
+   "line": 33,
    "column": 29,
    "layer": "product"
   },
@@ -21333,7 +21186,7 @@
    "prop": "fontWeight",
    "value": "600",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 35,
+   "line": 33,
    "column": 57,
    "layer": "product"
   },
@@ -21342,7 +21195,7 @@
    "prop": "gap",
    "value": "22",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 45,
+   "line": 43,
    "column": 42,
    "layer": "product"
   },
@@ -21351,7 +21204,7 @@
    "prop": "paddingHorizontal",
    "value": "15",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 45,
+   "line": 43,
    "column": 51,
    "layer": "product"
   },
@@ -21360,7 +21213,7 @@
    "prop": "paddingTop",
    "value": "13",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 53,
+   "line": 51,
    "column": 22,
    "layer": "product"
   },
@@ -21369,7 +21222,7 @@
    "prop": "paddingBottom",
    "value": "11",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 53,
+   "line": 51,
    "column": 38,
    "layer": "product"
   },
@@ -21378,7 +21231,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 55,
+   "line": 53,
    "column": 28,
    "layer": "product"
   },
@@ -21387,7 +21240,7 @@
    "prop": "height",
    "value": "2.5",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 56,
+   "line": 54,
    "column": 86,
    "layer": "product"
   },
@@ -21396,7 +21249,7 @@
    "prop": "borderRadius",
    "value": "2",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 56,
+   "line": 54,
    "column": 123,
    "layer": "product"
   },
@@ -21405,7 +21258,7 @@
    "prop": "gap",
    "value": "3",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 170,
+   "line": 161,
    "column": 66,
    "layer": "product"
   },
@@ -21414,7 +21267,7 @@
    "prop": "paddingHorizontal",
    "value": "8",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 170,
+   "line": 161,
    "column": 74,
    "layer": "product"
   },
@@ -21423,7 +21276,7 @@
    "prop": "paddingVertical",
    "value": "8",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 170,
+   "line": 161,
    "column": 96,
    "layer": "product"
   },
@@ -21432,7 +21285,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 173,
+   "line": 164,
    "column": 43,
    "layer": "product"
   },
@@ -21441,7 +21294,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 173,
+   "line": 164,
    "column": 57,
    "layer": "product"
   },
@@ -21450,7 +21303,7 @@
    "prop": "paddingHorizontal",
    "value": "16",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 178,
+   "line": 169,
    "column": 81,
    "layer": "product"
   },
@@ -21459,7 +21312,7 @@
    "prop": "paddingTop",
    "value": "2",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 178,
+   "line": 169,
    "column": 104,
    "layer": "product"
   },
@@ -21468,7 +21321,7 @@
    "prop": "paddingBottom",
    "value": "28",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 178,
+   "line": 169,
    "column": 119,
    "layer": "product"
   },
@@ -21477,7 +21330,7 @@
    "prop": "gap",
    "value": "11",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 178,
+   "line": 169,
    "column": 138,
    "layer": "product"
   },
@@ -21486,7 +21339,7 @@
    "prop": "paddingHorizontal",
    "value": "16",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 223,
+   "line": 214,
    "column": 34,
    "layer": "product"
   },
@@ -21495,7 +21348,7 @@
    "prop": "paddingTop",
    "value": "14",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 223,
+   "line": 214,
    "column": 57,
    "layer": "product"
   },
@@ -21504,7 +21357,7 @@
    "prop": "paddingBottom",
    "value": "12",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 223,
+   "line": 214,
    "column": 73,
    "layer": "product"
   },
@@ -21513,7 +21366,7 @@
    "prop": "gap",
    "value": "7",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 224,
+   "line": 215,
    "column": 80,
    "layer": "product"
   },
@@ -21522,7 +21375,7 @@
    "prop": "fontSize",
    "value": "20",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 225,
+   "line": 216,
    "column": 47,
    "layer": "product"
   },
@@ -21531,7 +21384,7 @@
    "prop": "fontWeight",
    "value": "800",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 225,
+   "line": 216,
    "column": 61,
    "layer": "product"
   },
@@ -21540,7 +21393,7 @@
    "prop": "marginTop",
    "value": "11",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 232,
+   "line": 223,
    "column": 32,
    "layer": "product"
   },
@@ -21549,7 +21402,7 @@
    "prop": "gap",
    "value": "6",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 232,
+   "line": 223,
    "column": 91,
    "layer": "product"
   },
@@ -21558,7 +21411,7 @@
    "prop": "fontSize",
    "value": "14",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 235,
+   "line": 226,
    "column": 38,
    "layer": "product"
   },
@@ -21567,7 +21420,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 235,
+   "line": 226,
    "column": 52,
    "layer": "product"
   },
@@ -21576,7 +21429,7 @@
    "prop": "fontSize",
    "value": "15",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 237,
+   "line": 228,
    "column": 43,
    "layer": "product"
   },
@@ -21585,7 +21438,7 @@
    "prop": "fontWeight",
    "value": "600",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 237,
+   "line": 228,
    "column": 57,
    "layer": "product"
   },
@@ -21594,7 +21447,7 @@
    "prop": "paddingVertical",
    "value": "12",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 256,
+   "line": 247,
    "column": 88,
    "layer": "product"
   },
@@ -21603,7 +21456,7 @@
    "prop": "paddingHorizontal",
    "value": "16",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 256,
+   "line": 247,
    "column": 109,
    "layer": "product"
   },
@@ -21612,7 +21465,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 257,
+   "line": 248,
    "column": 47,
    "layer": "product"
   },
@@ -21621,7 +21474,7 @@
    "prop": "fontWeight",
    "value": "600",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 257,
+   "line": 248,
    "column": 61,
    "layer": "product"
   },
@@ -21630,7 +21483,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 258,
+   "line": 249,
    "column": 39,
    "layer": "product"
   },
@@ -21639,7 +21492,7 @@
    "prop": "fontWeight",
    "value": "800",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 258,
+   "line": 249,
    "column": 53,
    "layer": "product"
   },
@@ -21648,7 +21501,7 @@
    "prop": "gap",
    "value": "4",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 264,
+   "line": 255,
    "column": 100,
    "layer": "product"
   },
@@ -21657,7 +21510,7 @@
    "prop": "paddingVertical",
    "value": "13",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 264,
+   "line": 255,
    "column": 108,
    "layer": "product"
   },
@@ -21666,7 +21519,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 266,
+   "line": 257,
    "column": 36,
    "layer": "product"
   },
@@ -21675,7 +21528,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 266,
+   "line": 257,
    "column": 50,
    "layer": "product"
   },
@@ -21684,7 +21537,7 @@
    "prop": "gap",
    "value": "16",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 276,
+   "line": 267,
    "column": 78,
    "layer": "product"
   },
@@ -21693,7 +21546,7 @@
    "prop": "padding",
    "value": "16",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 276,
+   "line": 267,
    "column": 87,
    "layer": "product"
   },
@@ -21702,7 +21555,7 @@
    "prop": "gap",
    "value": "3",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 278,
+   "line": 269,
    "column": 45,
    "layer": "product"
   },
@@ -21711,7 +21564,7 @@
    "prop": "gap",
    "value": "7",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 283,
+   "line": 274,
    "column": 100,
    "layer": "product"
   },
@@ -21720,7 +21573,7 @@
    "prop": "width",
    "value": "9",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 284,
+   "line": 275,
    "column": 44,
    "layer": "product"
   },
@@ -21729,7 +21582,7 @@
    "prop": "height",
    "value": "9",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 284,
+   "line": 275,
    "column": 54,
    "layer": "product"
   },
@@ -21738,7 +21591,7 @@
    "prop": "borderRadius",
    "value": "3",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 284,
+   "line": 275,
    "column": 65,
    "layer": "product"
   },
@@ -21747,7 +21600,7 @@
    "prop": "fontSize",
    "value": "14",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 285,
+   "line": 276,
    "column": 53,
    "layer": "product"
   },
@@ -21756,7 +21609,7 @@
    "prop": "fontSize",
    "value": "14",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 286,
+   "line": 277,
    "column": 45,
    "layer": "product"
   },
@@ -21765,7 +21618,7 @@
    "prop": "fontWeight",
    "value": "800",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 286,
+   "line": 277,
    "column": 59,
    "layer": "product"
   },
@@ -21774,7 +21627,7 @@
    "prop": "marginRight",
    "value": "8",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 286,
+   "line": 277,
    "column": 110,
    "layer": "product"
   },
@@ -21783,7 +21636,7 @@
    "prop": "fontSize",
    "value": "14",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 287,
+   "line": 278,
    "column": 45,
    "layer": "product"
   },
@@ -21792,7 +21645,7 @@
    "prop": "fontWeight",
    "value": "600",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 287,
+   "line": 278,
    "column": 59,
    "layer": "product"
   },
@@ -21801,7 +21654,7 @@
    "prop": "width",
    "value": "46",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 287,
+   "line": 278,
    "column": 110,
    "layer": "product"
   },
@@ -21810,7 +21663,7 @@
    "prop": "marginTop",
    "value": "7",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 297,
+   "line": 288,
    "column": 82,
    "layer": "product"
   },
@@ -21819,7 +21672,7 @@
    "prop": "paddingTop",
    "value": "7",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 297,
+   "line": 288,
    "column": 96,
    "layer": "product"
   },
@@ -21828,7 +21681,7 @@
    "prop": "fontSize",
    "value": "14",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 298,
+   "line": 289,
    "column": 49,
    "layer": "product"
   },
@@ -21837,7 +21690,7 @@
    "prop": "fontWeight",
    "value": "800",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 298,
+   "line": 289,
    "column": 63,
    "layer": "product"
   },
@@ -21846,7 +21699,7 @@
    "prop": "fontSize",
    "value": "14",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 299,
+   "line": 290,
    "column": 41,
    "layer": "product"
   },
@@ -21855,7 +21708,7 @@
    "prop": "fontWeight",
    "value": "800",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 299,
+   "line": 290,
    "column": 55,
    "layer": "product"
   },
@@ -21864,7 +21717,7 @@
    "prop": "marginRight",
    "value": "8",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 299,
+   "line": 290,
    "column": 88,
    "layer": "product"
   },
@@ -21873,7 +21726,7 @@
    "prop": "fontSize",
    "value": "14",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 300,
+   "line": 291,
    "column": 41,
    "layer": "product"
   },
@@ -21882,7 +21735,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 300,
+   "line": 291,
    "column": 55,
    "layer": "product"
   },
@@ -21891,7 +21744,7 @@
    "prop": "width",
    "value": "46",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 300,
+   "line": 291,
    "column": 89,
    "layer": "product"
   },
@@ -21900,7 +21753,7 @@
    "prop": "fontSize",
    "value": "14",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 314,
+   "line": 305,
    "column": 40,
    "layer": "product"
   },
@@ -21909,7 +21762,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 314,
+   "line": 305,
    "column": 54,
    "layer": "product"
   },
@@ -21918,7 +21771,7 @@
    "prop": "paddingHorizontal",
    "value": "15",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 319,
+   "line": 310,
    "column": 34,
    "layer": "product"
   },
@@ -21927,7 +21780,7 @@
    "prop": "paddingTop",
    "value": "4",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 319,
+   "line": 310,
    "column": 57,
    "layer": "product"
   },
@@ -21936,7 +21789,7 @@
    "prop": "paddingBottom",
    "value": "15",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 319,
+   "line": 310,
    "column": 72,
    "layer": "product"
   },
@@ -21945,7 +21798,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 321,
+   "line": 312,
    "column": 38,
    "layer": "product"
   },
@@ -21954,7 +21807,7 @@
    "prop": "paddingVertical",
    "value": "14",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 321,
+   "line": 312,
    "column": 66,
    "layer": "product"
   },
@@ -21963,7 +21816,7 @@
    "prop": "paddingVertical",
    "value": "10",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 331,
+   "line": 322,
    "column": 82,
    "layer": "product"
   },
@@ -21972,7 +21825,7 @@
    "prop": "minWidth",
    "value": "0",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 333,
+   "line": 324,
    "column": 53,
    "layer": "product"
   },
@@ -21981,7 +21834,7 @@
    "prop": "gap",
    "value": "5",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 334,
+   "line": 325,
    "column": 90,
    "layer": "product"
   },
@@ -21990,7 +21843,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 335,
+   "line": 326,
    "column": 63,
    "layer": "product"
   },
@@ -21999,7 +21852,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 335,
+   "line": 326,
    "column": 77,
    "layer": "product"
   },
@@ -22008,7 +21861,7 @@
    "prop": "fontSize",
    "value": "14",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 342,
+   "line": 333,
    "column": 47,
    "layer": "product"
   },
@@ -22017,7 +21870,7 @@
    "prop": "marginTop",
    "value": "2",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 342,
+   "line": 333,
    "column": 75,
    "layer": "product"
   },
@@ -22026,7 +21879,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 357,
+   "line": 348,
    "column": 47,
    "layer": "product"
   },
@@ -22035,7 +21888,7 @@
    "prop": "fontWeight",
    "value": "800",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 357,
+   "line": 348,
    "column": 61,
    "layer": "product"
   },
@@ -22044,7 +21897,7 @@
    "prop": "fontSize",
    "value": "14",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 360,
+   "line": 351,
    "column": 47,
    "layer": "product"
   },
@@ -22053,7 +21906,7 @@
    "prop": "marginTop",
    "value": "2",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 360,
+   "line": 351,
    "column": 75,
    "layer": "product"
   },
@@ -22062,7 +21915,7 @@
    "prop": "marginTop",
    "value": "10",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 368,
+   "line": 359,
    "column": 80,
    "layer": "product"
   },
@@ -22071,7 +21924,7 @@
    "prop": "paddingTop",
    "value": "10",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 368,
+   "line": 359,
    "column": 95,
    "layer": "product"
   },
@@ -22080,7 +21933,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 369,
+   "line": 360,
    "column": 47,
    "layer": "product"
   },
@@ -22089,7 +21942,7 @@
    "prop": "fontWeight",
    "value": "800",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 369,
+   "line": 360,
    "column": 61,
    "layer": "product"
   },
@@ -22098,7 +21951,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 371,
+   "line": 362,
    "column": 41,
    "layer": "product"
   },
@@ -22107,7 +21960,7 @@
    "prop": "fontWeight",
    "value": "800",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 371,
+   "line": 362,
    "column": 55,
    "layer": "product"
   },
@@ -22116,7 +21969,7 @@
    "prop": "fontSize",
    "value": "14",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 372,
+   "line": 363,
    "column": 41,
    "layer": "product"
   },
@@ -22125,7 +21978,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 372,
+   "line": 363,
    "column": 55,
    "layer": "product"
   },
@@ -22134,7 +21987,7 @@
    "prop": "marginTop",
    "value": "2",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 372,
+   "line": 363,
    "column": 89,
    "layer": "product"
   },
@@ -22143,7 +21996,7 @@
    "prop": "paddingHorizontal",
    "value": "15",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 382,
+   "line": 373,
    "column": 34,
    "layer": "product"
   },
@@ -22152,7 +22005,7 @@
    "prop": "paddingVertical",
    "value": "4",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 382,
+   "line": 373,
    "column": 57,
    "layer": "product"
   },
@@ -22161,7 +22014,7 @@
    "prop": "paddingVertical",
    "value": "9",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 385,
+   "line": 376,
    "column": 95,
    "layer": "product"
   },
@@ -22170,7 +22023,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 386,
+   "line": 377,
    "column": 51,
    "layer": "product"
   },
@@ -22179,7 +22032,7 @@
    "prop": "fontWeight",
    "value": "600",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 386,
+   "line": 377,
    "column": 65,
    "layer": "product"
   },
@@ -22188,7 +22041,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 390,
+   "line": 381,
    "column": 45,
    "layer": "product"
   },
@@ -22197,7 +22050,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 390,
+   "line": 381,
    "column": 59,
    "layer": "product"
   },
@@ -22206,7 +22059,7 @@
    "prop": "fontSize",
    "value": "14",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 391,
+   "line": 382,
    "column": 45,
    "layer": "product"
   },
@@ -22215,7 +22068,7 @@
    "prop": "fontWeight",
    "value": "600",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 391,
+   "line": 382,
    "column": 59,
    "layer": "product"
   },
@@ -22224,7 +22077,7 @@
    "prop": "marginTop",
    "value": "2",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 391,
+   "line": 382,
    "column": 92,
    "layer": "product"
   },
@@ -22233,7 +22086,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 396,
+   "line": 387,
    "column": 38,
    "layer": "product"
   },
@@ -22242,7 +22095,7 @@
    "prop": "paddingVertical",
    "value": "9",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 396,
+   "line": 387,
    "column": 66,
    "layer": "product"
   },
@@ -22251,7 +22104,7 @@
    "prop": "paddingHorizontal",
    "value": "15",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 405,
+   "line": 396,
    "column": 34,
    "layer": "product"
   },
@@ -22260,7 +22113,7 @@
    "prop": "paddingTop",
    "value": "4",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 405,
+   "line": 396,
    "column": 57,
    "layer": "product"
   },
@@ -22269,7 +22122,7 @@
    "prop": "paddingBottom",
    "value": "15",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 405,
+   "line": 396,
    "column": 72,
    "layer": "product"
   },
@@ -22278,7 +22131,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 407,
+   "line": 398,
    "column": 38,
    "layer": "product"
   },
@@ -22287,7 +22140,7 @@
    "prop": "paddingVertical",
    "value": "12",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 407,
+   "line": 398,
    "column": 66,
    "layer": "product"
   },
@@ -22296,7 +22149,7 @@
    "prop": "paddingVertical",
    "value": "8",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 412,
+   "line": 403,
    "column": 97,
    "layer": "product"
   },
@@ -22305,7 +22158,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 413,
+   "line": 404,
    "column": 51,
    "layer": "product"
   },
@@ -22314,7 +22167,7 @@
    "prop": "fontWeight",
    "value": "600",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 413,
+   "line": 404,
    "column": 65,
    "layer": "product"
   },
@@ -22323,7 +22176,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 415,
+   "line": 406,
    "column": 45,
    "layer": "product"
   },
@@ -22332,7 +22185,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 415,
+   "line": 406,
    "column": 59,
    "layer": "product"
   },
@@ -22341,7 +22194,7 @@
    "prop": "fontSize",
    "value": "14",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 416,
+   "line": 407,
    "column": 45,
    "layer": "product"
   },
@@ -22350,7 +22203,7 @@
    "prop": "fontWeight",
    "value": "600",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 416,
+   "line": 407,
    "column": 73,
    "layer": "product"
   },
@@ -22359,7 +22212,7 @@
    "prop": "marginTop",
    "value": "2",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 416,
+   "line": 407,
    "column": 92,
    "layer": "product"
   },
@@ -22368,7 +22221,7 @@
    "prop": "marginTop",
    "value": "10",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 421,
+   "line": 412,
    "column": 80,
    "layer": "product"
   },
@@ -22377,7 +22230,7 @@
    "prop": "paddingTop",
    "value": "10",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 421,
+   "line": 412,
    "column": 95,
    "layer": "product"
   },
@@ -22386,7 +22239,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 422,
+   "line": 413,
    "column": 47,
    "layer": "product"
   },
@@ -22395,7 +22248,7 @@
    "prop": "fontWeight",
    "value": "800",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 422,
+   "line": 413,
    "column": 61,
    "layer": "product"
   },
@@ -22404,7 +22257,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 424,
+   "line": 415,
    "column": 41,
    "layer": "product"
   },
@@ -22413,7 +22266,7 @@
    "prop": "fontWeight",
    "value": "800",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 424,
+   "line": 415,
    "column": 55,
    "layer": "product"
   },
@@ -22422,7 +22275,7 @@
    "prop": "fontSize",
    "value": "14",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 425,
+   "line": 416,
    "column": 41,
    "layer": "product"
   },
@@ -22431,7 +22284,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 425,
+   "line": 416,
    "column": 55,
    "layer": "product"
   },
@@ -22440,7 +22293,7 @@
    "prop": "marginTop",
    "value": "2",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 425,
+   "line": 416,
    "column": 89,
    "layer": "product"
   },
@@ -22449,7 +22302,7 @@
    "prop": "fontSize",
    "value": "14",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 428,
+   "line": 419,
    "column": 36,
    "layer": "product"
   },
@@ -22458,7 +22311,7 @@
    "prop": "lineHeight",
    "value": "20",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 428,
+   "line": 419,
    "column": 64,
    "layer": "product"
   },
@@ -22467,7 +22320,7 @@
    "prop": "marginTop",
    "value": "10",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 428,
+   "line": 419,
    "column": 80,
    "layer": "product"
   },
@@ -22476,7 +22329,7 @@
    "prop": "gap",
    "value": "2",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 435,
+   "line": 426,
    "column": 100,
    "layer": "product"
   },
@@ -22485,7 +22338,7 @@
    "prop": "paddingVertical",
    "value": "13",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 435,
+   "line": 426,
    "column": 108,
    "layer": "product"
   },
@@ -22494,7 +22347,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 437,
+   "line": 428,
    "column": 36,
    "layer": "product"
   },
@@ -22503,7 +22356,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 437,
+   "line": 428,
    "column": 50,
    "layer": "product"
   },
@@ -22512,7 +22365,7 @@
    "prop": "paddingHorizontal",
    "value": "15",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 451,
+   "line": 440,
    "column": 34,
    "layer": "product"
   },
@@ -22521,7 +22374,7 @@
    "prop": "paddingTop",
    "value": "4",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 451,
+   "line": 440,
    "column": 57,
    "layer": "product"
   },
@@ -22530,7 +22383,7 @@
    "prop": "paddingBottom",
    "value": "15",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 451,
+   "line": 440,
    "column": 72,
    "layer": "product"
   },
@@ -22539,7 +22392,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 453,
+   "line": 442,
    "column": 38,
    "layer": "product"
   },
@@ -22548,7 +22401,7 @@
    "prop": "paddingVertical",
    "value": "13",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 453,
+   "line": 442,
    "column": 66,
    "layer": "product"
   },
@@ -22557,7 +22410,7 @@
    "prop": "paddingVertical",
    "value": "11",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 460,
+   "line": 449,
    "column": 80,
    "layer": "product"
   },
@@ -22566,7 +22419,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 462,
+   "line": 451,
    "column": 51,
    "layer": "product"
   },
@@ -22575,7 +22428,7 @@
    "prop": "fontWeight",
    "value": "600",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 462,
+   "line": 451,
    "column": 65,
    "layer": "product"
   },
@@ -22584,7 +22437,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 464,
+   "line": 453,
    "column": 45,
    "layer": "product"
   },
@@ -22593,7 +22446,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 464,
+   "line": 453,
    "column": 59,
    "layer": "product"
   },
@@ -22602,7 +22455,7 @@
    "prop": "fontSize",
    "value": "14",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 465,
+   "line": 454,
    "column": 45,
    "layer": "product"
   },
@@ -22611,7 +22464,7 @@
    "prop": "fontWeight",
    "value": "600",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 465,
+   "line": 454,
    "column": 73,
    "layer": "product"
   },
@@ -22620,7 +22473,7 @@
    "prop": "marginTop",
    "value": "2",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 465,
+   "line": 454,
    "column": 92,
    "layer": "product"
   },
@@ -22629,7 +22482,7 @@
    "prop": "marginTop",
    "value": "10",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 472,
+   "line": 461,
    "column": 82,
    "layer": "product"
   },
@@ -22638,7 +22491,7 @@
    "prop": "paddingTop",
    "value": "10",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 472,
+   "line": 461,
    "column": 97,
    "layer": "product"
   },
@@ -22647,7 +22500,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 473,
+   "line": 462,
    "column": 49,
    "layer": "product"
   },
@@ -22656,7 +22509,7 @@
    "prop": "fontWeight",
    "value": "800",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 473,
+   "line": 462,
    "column": 63,
    "layer": "product"
   },
@@ -22665,7 +22518,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 475,
+   "line": 464,
    "column": 43,
    "layer": "product"
   },
@@ -22674,7 +22527,7 @@
    "prop": "fontWeight",
    "value": "800",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 475,
+   "line": 464,
    "column": 57,
    "layer": "product"
   },
@@ -22683,7 +22536,7 @@
    "prop": "fontSize",
    "value": "14",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 476,
+   "line": 465,
    "column": 43,
    "layer": "product"
   },
@@ -22692,7 +22545,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 476,
+   "line": 465,
    "column": 57,
    "layer": "product"
   },
@@ -22701,7 +22554,7 @@
    "prop": "marginTop",
    "value": "2",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 476,
+   "line": 465,
    "column": 91,
    "layer": "product"
   },
@@ -22710,7 +22563,7 @@
    "prop": "gap",
    "value": "22",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 488,
+   "line": 475,
    "column": 56,
    "layer": "product"
   },
@@ -22719,7 +22572,7 @@
    "prop": "paddingHorizontal",
    "value": "15",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 488,
+   "line": 475,
    "column": 65,
    "layer": "product"
   },
@@ -22728,7 +22581,7 @@
    "prop": "paddingTop",
    "value": "13",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 499,
+   "line": 486,
    "column": 36,
    "layer": "product"
   },
@@ -22737,7 +22590,7 @@
    "prop": "paddingBottom",
    "value": "11",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 499,
+   "line": 486,
    "column": 52,
    "layer": "product"
   },
@@ -22746,7 +22599,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 501,
+   "line": 488,
    "column": 42,
    "layer": "product"
   },
@@ -22755,7 +22608,7 @@
    "prop": "height",
    "value": "2.5",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 502,
+   "line": 489,
    "column": 100,
    "layer": "product"
   },
@@ -22764,7 +22617,7 @@
    "prop": "borderRadius",
    "value": "2",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 502,
+   "line": 489,
    "column": 137,
    "layer": "product"
   },
@@ -22773,7 +22626,7 @@
    "prop": "paddingHorizontal",
    "value": "15",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 507,
+   "line": 494,
    "column": 34,
    "layer": "product"
   },
@@ -22782,7 +22635,7 @@
    "prop": "paddingTop",
    "value": "4",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 507,
+   "line": 494,
    "column": 57,
    "layer": "product"
   },
@@ -22791,7 +22644,7 @@
    "prop": "paddingBottom",
    "value": "15",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 507,
+   "line": 494,
    "column": 72,
    "layer": "product"
   },
@@ -22800,7 +22653,7 @@
    "prop": "paddingVertical",
    "value": "10",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 508,
+   "line": 495,
    "column": 80,
    "layer": "product"
   },
@@ -22809,7 +22662,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 509,
+   "line": 496,
    "column": 47,
    "layer": "product"
   },
@@ -22818,7 +22671,7 @@
    "prop": "fontWeight",
    "value": "600",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 509,
+   "line": 496,
    "column": 61,
    "layer": "product"
   },
@@ -22827,7 +22680,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 510,
+   "line": 497,
    "column": 39,
    "layer": "product"
   },
@@ -22836,7 +22689,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 510,
+   "line": 497,
    "column": 53,
    "layer": "product"
   },
@@ -22845,7 +22698,7 @@
    "prop": "paddingVertical",
    "value": "10",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 514,
+   "line": 501,
    "column": 80,
    "layer": "product"
   },
@@ -22854,7 +22707,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 515,
+   "line": 502,
    "column": 47,
    "layer": "product"
   },
@@ -22863,7 +22716,7 @@
    "prop": "fontWeight",
    "value": "800",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 515,
+   "line": 502,
    "column": 61,
    "layer": "product"
   },
@@ -22872,7 +22725,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 517,
+   "line": 504,
    "column": 41,
    "layer": "product"
   },
@@ -22881,7 +22734,7 @@
    "prop": "fontWeight",
    "value": "800",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 517,
+   "line": 504,
    "column": 55,
    "layer": "product"
   },
@@ -22890,7 +22743,7 @@
    "prop": "fontSize",
    "value": "14",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 518,
+   "line": 505,
    "column": 41,
    "layer": "product"
   },
@@ -22899,7 +22752,7 @@
    "prop": "fontWeight",
    "value": "600",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 518,
+   "line": 505,
    "column": 55,
    "layer": "product"
   },
@@ -22908,7 +22761,7 @@
    "prop": "marginTop",
    "value": "2",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 518,
+   "line": 505,
    "column": 88,
    "layer": "product"
   },
@@ -22917,7 +22770,7 @@
    "prop": "paddingVertical",
    "value": "9",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 527,
+   "line": 514,
    "column": 96,
    "layer": "product"
   },
@@ -22926,7 +22779,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 528,
+   "line": 515,
    "column": 49,
    "layer": "product"
   },
@@ -22935,7 +22788,7 @@
    "prop": "fontWeight",
    "value": "600",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 528,
+   "line": 515,
    "column": 63,
    "layer": "product"
   },
@@ -22944,7 +22797,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 532,
+   "line": 519,
    "column": 43,
    "layer": "product"
   },
@@ -22953,7 +22806,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 532,
+   "line": 519,
    "column": 57,
    "layer": "product"
   },
@@ -22962,7 +22815,7 @@
    "prop": "fontSize",
    "value": "14",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 533,
+   "line": 520,
    "column": 43,
    "layer": "product"
   },
@@ -22971,7 +22824,7 @@
    "prop": "fontWeight",
    "value": "600",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 533,
+   "line": 520,
    "column": 57,
    "layer": "product"
   },
@@ -22980,7 +22833,7 @@
    "prop": "marginTop",
    "value": "2",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 533,
+   "line": 520,
    "column": 90,
    "layer": "product"
   },
@@ -22989,7 +22842,7 @@
    "prop": "paddingTop",
    "value": "12",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 537,
+   "line": 524,
    "column": 80,
    "layer": "product"
   },
@@ -22998,7 +22851,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 538,
+   "line": 525,
    "column": 38,
    "layer": "product"
   },
@@ -23007,7 +22860,7 @@
    "prop": "fontWeight",
    "value": "800",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 538,
+   "line": 525,
    "column": 52,
    "layer": "product"
   },
@@ -23016,7 +22869,7 @@
    "prop": "marginLeft",
    "value": "7",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 539,
+   "line": 526,
    "column": 38,
    "layer": "product"
   },
@@ -23025,7 +22878,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 542,
+   "line": 529,
    "column": 41,
    "layer": "product"
   },
@@ -23034,7 +22887,7 @@
    "prop": "fontWeight",
    "value": "800",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 542,
+   "line": 529,
    "column": 55,
    "layer": "product"
   },
@@ -23043,7 +22896,7 @@
    "prop": "fontSize",
    "value": "14",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 543,
+   "line": 530,
    "column": 41,
    "layer": "product"
   },
@@ -23052,7 +22905,7 @@
    "prop": "fontWeight",
    "value": "800",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 543,
+   "line": 530,
    "column": 55,
    "layer": "product"
   },
@@ -23061,7 +22914,7 @@
    "prop": "marginTop",
    "value": "2",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 543,
+   "line": 530,
    "column": 89,
    "layer": "product"
   },
@@ -23070,7 +22923,7 @@
    "prop": "marginTop",
    "value": "11",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 547,
+   "line": 534,
    "column": 82,
    "layer": "product"
   },
@@ -23079,7 +22932,7 @@
    "prop": "paddingTop",
    "value": "11",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 547,
+   "line": 534,
    "column": 97,
    "layer": "product"
   },
@@ -23088,7 +22941,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 549,
+   "line": 536,
    "column": 42,
    "layer": "product"
   },
@@ -23097,7 +22950,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 549,
+   "line": 536,
    "column": 56,
    "layer": "product"
   },
@@ -23106,7 +22959,7 @@
    "prop": "fontSize",
    "value": "14",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 550,
+   "line": 537,
    "column": 42,
    "layer": "product"
   },
@@ -23115,7 +22968,7 @@
    "prop": "marginTop",
    "value": "1",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 550,
+   "line": 537,
    "column": 70,
    "layer": "product"
   },
@@ -23124,7 +22977,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 553,
+   "line": 540,
    "column": 43,
    "layer": "product"
   },
@@ -23133,7 +22986,7 @@
    "prop": "fontWeight",
    "value": "800",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 553,
+   "line": 540,
    "column": 57,
    "layer": "product"
   },
@@ -23142,7 +22995,7 @@
    "prop": "fontSize",
    "value": "14",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 554,
+   "line": 541,
    "column": 43,
    "layer": "product"
   },
@@ -23151,7 +23004,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 554,
+   "line": 541,
    "column": 57,
    "layer": "product"
   },
@@ -23160,7 +23013,7 @@
    "prop": "marginTop",
    "value": "2",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 554,
+   "line": 541,
    "column": 91,
    "layer": "product"
   },
@@ -23169,8 +23022,8 @@
    "prop": "gap",
    "value": "6",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 570,
-   "column": 102,
+   "line": 556,
+   "column": 100,
    "layer": "product"
   },
   {
@@ -23178,8 +23031,8 @@
    "prop": "margin",
    "value": "15",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 570,
-   "column": 110,
+   "line": 556,
+   "column": 108,
    "layer": "product"
   },
   {
@@ -23187,8 +23040,8 @@
    "prop": "marginTop",
    "value": "0",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 570,
-   "column": 122,
+   "line": 556,
+   "column": 120,
    "layer": "product"
   },
   {
@@ -23196,8 +23049,8 @@
    "prop": "paddingVertical",
    "value": "13",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 570,
-   "column": 136,
+   "line": 556,
+   "column": 134,
    "layer": "product"
   },
   {
@@ -23205,8 +23058,8 @@
    "prop": "borderRadius",
    "value": "12",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 570,
-   "column": 157,
+   "line": 556,
+   "column": 155,
    "layer": "product"
   },
   {
@@ -23214,8 +23067,8 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 573,
-   "column": 38,
+   "line": 559,
+   "column": 36,
    "layer": "product"
   },
   {
@@ -23223,44 +23076,8 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 573,
-   "column": 52,
-   "layer": "product"
-  },
-  {
-   "group": "spacing",
-   "prop": "margin",
-   "value": "15",
-   "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 576,
-   "column": 36,
-   "layer": "product"
-  },
-  {
-   "group": "spacing",
-   "prop": "marginTop",
-   "value": "0",
-   "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 576,
-   "column": 48,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
-   "prop": "fontSize",
-   "value": "14",
-   "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 576,
-   "column": 76,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
-   "prop": "lineHeight",
-   "value": "20",
-   "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 576,
-   "column": 90,
+   "line": 559,
+   "column": 50,
    "layer": "product"
   },
   {
@@ -23268,7 +23085,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 586,
+   "line": 567,
    "column": 36,
    "layer": "product"
   },
@@ -23277,7 +23094,7 @@
    "prop": "padding",
    "value": "15",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 586,
+   "line": 567,
    "column": 64,
    "layer": "product"
   },
@@ -23286,7 +23103,7 @@
    "prop": "gap",
    "value": "10",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 598,
+   "line": 579,
    "column": 84,
    "layer": "product"
   },
@@ -23295,7 +23112,7 @@
    "prop": "paddingVertical",
    "value": "12",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 598,
+   "line": 579,
    "column": 93,
    "layer": "product"
   },
@@ -23304,7 +23121,7 @@
    "prop": "paddingHorizontal",
    "value": "15",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 598,
+   "line": 579,
    "column": 114,
    "layer": "product"
   },
@@ -23313,7 +23130,7 @@
    "prop": "minWidth",
    "value": "0",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 600,
+   "line": 581,
    "column": 51,
    "layer": "product"
   },
@@ -23322,7 +23139,7 @@
    "prop": "fontSize",
    "value": "13",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 601,
+   "line": 582,
    "column": 45,
    "layer": "product"
   },
@@ -23331,7 +23148,7 @@
    "prop": "fontWeight",
    "value": "600",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 601,
+   "line": 582,
    "column": 73,
    "layer": "product"
   },
@@ -23340,7 +23157,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 604,
+   "line": 585,
    "column": 44,
    "layer": "product"
   },
@@ -23349,7 +23166,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 604,
+   "line": 585,
    "column": 58,
    "layer": "product"
   },
@@ -23358,7 +23175,7 @@
    "prop": "marginTop",
    "value": "4",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 604,
+   "line": 585,
    "column": 91,
    "layer": "product"
   },
@@ -23367,7 +23184,7 @@
    "prop": "fontSize",
    "value": "14",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 608,
+   "line": 589,
    "column": 46,
    "layer": "product"
   },
@@ -23376,7 +23193,7 @@
    "prop": "marginTop",
    "value": "3",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 608,
+   "line": 589,
    "column": 74,
    "layer": "product"
   },
@@ -23385,7 +23202,7 @@
    "prop": "paddingTop",
    "value": "14",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 611,
+   "line": 592,
    "column": 66,
    "layer": "product"
   },
@@ -23394,7 +23211,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 612,
+   "line": 593,
    "column": 45,
    "layer": "product"
   },
@@ -23403,7 +23220,7 @@
    "prop": "fontWeight",
    "value": "800",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 612,
+   "line": 593,
    "column": 59,
    "layer": "product"
   },
@@ -23412,7 +23229,7 @@
    "prop": "fontSize",
    "value": "13",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 617,
+   "line": 598,
    "column": 46,
    "layer": "product"
   },
@@ -23421,7 +23238,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 617,
+   "line": 598,
    "column": 60,
    "layer": "product"
   },
@@ -23430,7 +23247,7 @@
    "prop": "marginTop",
    "value": "3",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 617,
+   "line": 598,
    "column": 93,
    "layer": "product"
   },
@@ -23439,7 +23256,7 @@
    "prop": "fontSize",
    "value": "13",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 619,
+   "line": 600,
    "column": 47,
    "layer": "product"
   },
@@ -23448,7 +23265,7 @@
    "prop": "fontWeight",
    "value": "800",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 619,
+   "line": 600,
    "column": 61,
    "layer": "product"
   },
@@ -23457,7 +23274,7 @@
    "prop": "marginTop",
    "value": "3",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 619,
+   "line": 600,
    "column": 80,
    "layer": "product"
   },
@@ -23466,7 +23283,7 @@
    "prop": "gap",
    "value": "2",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 632,
+   "line": 613,
    "column": 100,
    "layer": "product"
   },
@@ -23475,7 +23292,7 @@
    "prop": "paddingVertical",
    "value": "13",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 632,
+   "line": 613,
    "column": 108,
    "layer": "product"
   },
@@ -23484,7 +23301,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 634,
+   "line": 615,
    "column": 36,
    "layer": "product"
   },
@@ -23493,7 +23310,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-   "line": 634,
+   "line": 615,
    "column": 50,
    "layer": "product"
   },
@@ -31179,7 +30996,7 @@
    "prop": "paddingHorizontal",
    "value": "16",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 202,
+   "line": 194,
    "column": 81,
    "layer": "product"
   },
@@ -31188,7 +31005,7 @@
    "prop": "paddingTop",
    "value": "2",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 202,
+   "line": 194,
    "column": 104,
    "layer": "product"
   },
@@ -31197,7 +31014,7 @@
    "prop": "gap",
    "value": "11",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 202,
+   "line": 194,
    "column": 159,
    "layer": "product"
   },
@@ -31206,7 +31023,7 @@
    "prop": "fontSize",
    "value": "15",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 230,
+   "line": 207,
    "column": 43,
    "layer": "product"
   },
@@ -31215,7 +31032,7 @@
    "prop": "fontWeight",
    "value": "600",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 230,
+   "line": 207,
    "column": 57,
    "layer": "product"
   },
@@ -31224,7 +31041,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 231,
+   "line": 208,
    "column": 34,
    "layer": "product"
   },
@@ -31233,7 +31050,7 @@
    "prop": "fontWeight",
    "value": "800",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 231,
+   "line": 208,
    "column": 48,
    "layer": "product"
   },
@@ -31242,7 +31059,7 @@
    "prop": "paddingVertical",
    "value": "13",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 261,
+   "line": 238,
    "column": 25,
    "layer": "product"
   },
@@ -31251,7 +31068,7 @@
    "prop": "paddingHorizontal",
    "value": "15",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 261,
+   "line": 238,
    "column": 46,
    "layer": "product"
   },
@@ -31260,7 +31077,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 267,
+   "line": 244,
    "column": 47,
    "layer": "product"
   },
@@ -31269,7 +31086,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 267,
+   "line": 244,
    "column": 61,
    "layer": "product"
   },
@@ -31278,7 +31095,7 @@
    "prop": "fontSize",
    "value": "13",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 269,
+   "line": 246,
    "column": 41,
    "layer": "product"
   },
@@ -31287,7 +31104,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 269,
+   "line": 246,
    "column": 55,
    "layer": "product"
   },
@@ -31296,7 +31113,7 @@
    "prop": "marginRight",
    "value": "10",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 269,
+   "line": 246,
    "column": 88,
    "layer": "product"
   },
@@ -31305,7 +31122,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 272,
+   "line": 249,
    "column": 41,
    "layer": "product"
   },
@@ -31314,7 +31131,7 @@
    "prop": "fontWeight",
    "value": "800",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 272,
+   "line": 249,
    "column": 55,
    "layer": "product"
   },
@@ -31323,7 +31140,7 @@
    "prop": "marginRight",
    "value": "6",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 272,
+   "line": 249,
    "column": 107,
    "layer": "product"
   },
@@ -31332,7 +31149,7 @@
    "prop": "fontSize",
    "value": "15",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 274,
+   "line": 251,
    "column": 40,
    "layer": "product"
   },
@@ -31341,7 +31158,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 274,
+   "line": 251,
    "column": 54,
    "layer": "product"
   },
@@ -31350,7 +31167,7 @@
    "prop": "marginRight",
    "value": "6",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 274,
+   "line": 251,
    "column": 88,
    "layer": "product"
   },
@@ -31359,7 +31176,7 @@
    "prop": "gap",
    "value": "10",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 282,
+   "line": 259,
    "column": 52,
    "layer": "product"
   },
@@ -31368,7 +31185,7 @@
    "prop": "paddingHorizontal",
    "value": "16",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 300,
+   "line": 277,
    "column": 74,
    "layer": "product"
   },
@@ -31377,7 +31194,7 @@
    "prop": "paddingTop",
    "value": "10",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 300,
+   "line": 277,
    "column": 97,
    "layer": "product"
   },
@@ -31386,7 +31203,7 @@
    "prop": "fontSize",
    "value": "14",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 315,
+   "line": 292,
    "column": 28,
    "layer": "product"
   },
@@ -31395,7 +31212,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 315,
+   "line": 292,
    "column": 42,
    "layer": "product"
   },
@@ -31404,7 +31221,7 @@
    "prop": "marginBottom",
    "value": "8",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 315,
+   "line": 292,
    "column": 76,
    "layer": "product"
   },
@@ -31413,7 +31230,7 @@
    "prop": "marginBottom",
    "value": "14",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 316,
+   "line": 293,
    "column": 56,
    "layer": "product"
   },
@@ -31422,7 +31239,7 @@
    "prop": "paddingVertical",
    "value": "12",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 320,
+   "line": 297,
    "column": 89,
    "layer": "product"
   },
@@ -31431,7 +31248,7 @@
    "prop": "paddingHorizontal",
    "value": "15",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 320,
+   "line": 297,
    "column": 110,
    "layer": "product"
   },
@@ -31440,7 +31257,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 321,
+   "line": 298,
    "column": 45,
    "layer": "product"
   },
@@ -31449,7 +31266,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 321,
+   "line": 298,
    "column": 59,
    "layer": "product"
   },
@@ -31458,7 +31275,7 @@
    "prop": "fontSize",
    "value": "14",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 328,
+   "line": 305,
    "column": 28,
    "layer": "product"
   },
@@ -31467,7 +31284,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 328,
+   "line": 305,
    "column": 42,
    "layer": "product"
   },
@@ -31476,7 +31293,7 @@
    "prop": "marginBottom",
    "value": "8",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 328,
+   "line": 305,
    "column": 76,
    "layer": "product"
   },
@@ -31485,7 +31302,7 @@
    "prop": "marginBottom",
    "value": "14",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 329,
+   "line": 306,
    "column": 56,
    "layer": "product"
   },
@@ -31494,7 +31311,7 @@
    "prop": "paddingVertical",
    "value": "12",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 330,
+   "line": 307,
    "column": 74,
    "layer": "product"
   },
@@ -31503,7 +31320,7 @@
    "prop": "paddingHorizontal",
    "value": "15",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 330,
+   "line": 307,
    "column": 95,
    "layer": "product"
   },
@@ -31512,7 +31329,7 @@
    "prop": "minWidth",
    "value": "0",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 331,
+   "line": 308,
    "column": 41,
    "layer": "product"
   },
@@ -31521,7 +31338,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 332,
+   "line": 309,
    "column": 34,
    "layer": "product"
   },
@@ -31530,7 +31347,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 332,
+   "line": 309,
    "column": 48,
    "layer": "product"
   },
@@ -31539,7 +31356,7 @@
    "prop": "fontSize",
    "value": "14",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 333,
+   "line": 310,
    "column": 34,
    "layer": "product"
   },
@@ -31548,7 +31365,7 @@
    "prop": "marginTop",
    "value": "2",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 333,
+   "line": 310,
    "column": 62,
    "layer": "product"
   },
@@ -31557,7 +31374,7 @@
    "prop": "paddingVertical",
    "value": "13",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 339,
+   "line": 316,
    "column": 72,
    "layer": "product"
   },
@@ -31566,7 +31383,7 @@
    "prop": "paddingHorizontal",
    "value": "15",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 339,
+   "line": 316,
    "column": 93,
    "layer": "product"
   },
@@ -31575,7 +31392,7 @@
    "prop": "borderRadius",
    "value": "12",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 339,
+   "line": 316,
    "column": 116,
    "layer": "product"
   },
@@ -31584,7 +31401,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 340,
+   "line": 317,
    "column": 30,
    "layer": "product"
   },
@@ -31593,7 +31410,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 340,
+   "line": 317,
    "column": 44,
    "layer": "product"
   },
@@ -31602,7 +31419,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 342,
+   "line": 319,
    "column": 31,
    "layer": "product"
   },
@@ -31611,7 +31428,7 @@
    "prop": "fontWeight",
    "value": "800",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 342,
+   "line": 319,
    "column": 45,
    "layer": "product"
   },
@@ -31620,7 +31437,7 @@
    "prop": "marginTop",
    "value": "16",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 347,
+   "line": 324,
    "column": 28,
    "layer": "product"
   },
@@ -31629,7 +31446,7 @@
    "prop": "marginBottom",
    "value": "14",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 357,
+   "line": 334,
    "column": 54,
    "layer": "product"
   },
@@ -31638,7 +31455,7 @@
    "prop": "paddingVertical",
    "value": "11",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 359,
+   "line": 336,
    "column": 97,
    "layer": "product"
   },
@@ -31647,7 +31464,7 @@
    "prop": "paddingHorizontal",
    "value": "15",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 359,
+   "line": 336,
    "column": 118,
    "layer": "product"
   },
@@ -31656,7 +31473,7 @@
    "prop": "minWidth",
    "value": "0",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 360,
+   "line": 337,
    "column": 41,
    "layer": "product"
   },
@@ -31665,7 +31482,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 361,
+   "line": 338,
    "column": 34,
    "layer": "product"
   },
@@ -31674,7 +31491,7 @@
    "prop": "fontWeight",
    "value": "600",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 361,
+   "line": 338,
    "column": 48,
    "layer": "product"
   },
@@ -31683,7 +31500,7 @@
    "prop": "fontSize",
    "value": "13",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 363,
+   "line": 340,
    "column": 34,
    "layer": "product"
   },
@@ -31692,7 +31509,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 363,
+   "line": 340,
    "column": 48,
    "layer": "product"
   },
@@ -31701,7 +31518,7 @@
    "prop": "marginTop",
    "value": "2",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 363,
+   "line": 340,
    "column": 102,
    "layer": "product"
   },
@@ -31710,7 +31527,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 365,
+   "line": 342,
    "column": 33,
    "layer": "product"
   },
@@ -31719,7 +31536,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 365,
+   "line": 342,
    "column": 47,
    "layer": "product"
   },
@@ -31728,7 +31545,7 @@
    "prop": "marginRight",
    "value": "10",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 365,
+   "line": 342,
    "column": 80,
    "layer": "product"
   },
@@ -31737,7 +31554,7 @@
    "prop": "gap",
    "value": "10",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 377,
+   "line": 354,
    "column": 46,
    "layer": "product"
   },
@@ -31746,7 +31563,7 @@
    "prop": "gap",
    "value": "7",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 382,
+   "line": 359,
    "column": 48,
    "layer": "product"
   },
@@ -31755,7 +31572,7 @@
    "prop": "paddingVertical",
    "value": "12",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 393,
+   "line": 370,
    "column": 30,
    "layer": "product"
   },
@@ -31764,7 +31581,7 @@
    "prop": "borderRadius",
    "value": "11",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 393,
+   "line": 370,
    "column": 51,
    "layer": "product"
   },
@@ -31773,7 +31590,7 @@
    "prop": "fontSize",
    "value": "15",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 399,
+   "line": 376,
    "column": 34,
    "layer": "product"
   },
@@ -31782,7 +31599,7 @@
    "prop": "marginTop",
    "value": "18",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 405,
+   "line": 382,
    "column": 24,
    "layer": "product"
   },
@@ -31791,7 +31608,7 @@
    "prop": "marginBottom",
    "value": "14",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 413,
+   "line": 390,
    "column": 54,
    "layer": "product"
   },
@@ -31800,7 +31617,7 @@
    "prop": "paddingVertical",
    "value": "11",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 415,
+   "line": 392,
    "column": 97,
    "layer": "product"
   },
@@ -31809,7 +31626,7 @@
    "prop": "paddingHorizontal",
    "value": "15",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 415,
+   "line": 392,
    "column": 118,
    "layer": "product"
   },
@@ -31818,7 +31635,7 @@
    "prop": "minWidth",
    "value": "0",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 416,
+   "line": 393,
    "column": 41,
    "layer": "product"
   },
@@ -31827,7 +31644,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 417,
+   "line": 394,
    "column": 34,
    "layer": "product"
   },
@@ -31836,7 +31653,7 @@
    "prop": "fontWeight",
    "value": "600",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 417,
+   "line": 394,
    "column": 48,
    "layer": "product"
   },
@@ -31845,7 +31662,7 @@
    "prop": "fontSize",
    "value": "14",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 418,
+   "line": 395,
    "column": 44,
    "layer": "product"
   },
@@ -31854,7 +31671,7 @@
    "prop": "marginTop",
    "value": "2",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 418,
+   "line": 395,
    "column": 72,
    "layer": "product"
   },
@@ -31863,7 +31680,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 420,
+   "line": 397,
    "column": 33,
    "layer": "product"
   },
@@ -31872,7 +31689,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 420,
+   "line": 397,
    "column": 47,
    "layer": "product"
   },
@@ -31881,7 +31698,7 @@
    "prop": "marginRight",
    "value": "10",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 420,
+   "line": 397,
    "column": 80,
    "layer": "product"
   },
@@ -31890,7 +31707,7 @@
    "prop": "marginTop",
    "value": "18",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 434,
+   "line": 411,
    "column": 24,
    "layer": "product"
   },
@@ -31899,7 +31716,7 @@
    "prop": "paddingVertical",
    "value": "13",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 464,
+   "line": 441,
    "column": 91,
    "layer": "product"
   },
@@ -31908,7 +31725,7 @@
    "prop": "paddingHorizontal",
    "value": "15",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 464,
+   "line": 441,
    "column": 112,
    "layer": "product"
   },
@@ -31917,7 +31734,7 @@
    "prop": "borderRadius",
    "value": "12",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 464,
+   "line": 441,
    "column": 135,
    "layer": "product"
   },
@@ -31926,7 +31743,7 @@
    "prop": "fontSize",
    "value": "14",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 466,
+   "line": 443,
    "column": 26,
    "layer": "product"
   },
@@ -31935,7 +31752,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 466,
+   "line": 443,
    "column": 40,
    "layer": "product"
   },
@@ -31944,7 +31761,7 @@
    "prop": "hex",
    "value": "#FFF",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 466,
+   "line": 443,
    "column": 66,
    "layer": "product"
   },
@@ -31953,7 +31770,7 @@
    "prop": "lineHeight",
    "value": "20",
    "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
-   "line": 466,
+   "line": 443,
    "column": 74,
    "layer": "product"
   },
@@ -32826,7 +32643,7 @@
    "prop": "paddingHorizontal",
    "value": "16",
    "file": "apps/mobile/src/features/sales/screens/SalesTaxScreen.tsx",
-   "line": 71,
+   "line": 54,
    "column": 44,
    "layer": "product"
   },
@@ -32835,7 +32652,7 @@
    "prop": "paddingTop",
    "value": "2",
    "file": "apps/mobile/src/features/sales/screens/SalesTaxScreen.tsx",
-   "line": 71,
+   "line": 54,
    "column": 67,
    "layer": "product"
   },
@@ -32844,7 +32661,7 @@
    "prop": "paddingBottom",
    "value": "28",
    "file": "apps/mobile/src/features/sales/screens/SalesTaxScreen.tsx",
-   "line": 71,
+   "line": 54,
    "column": 82,
    "layer": "product"
   },
@@ -32853,7 +32670,7 @@
    "prop": "paddingHorizontal",
    "value": "14",
    "file": "apps/mobile/src/features/sales/screens/SalesTaxScreen.tsx",
-   "line": 96,
+   "line": 73,
    "column": 30,
    "layer": "product"
   },
@@ -32862,80 +32679,8 @@
    "prop": "paddingBottom",
    "value": "4",
    "file": "apps/mobile/src/features/sales/screens/SalesTaxScreen.tsx",
-   "line": 96,
+   "line": 73,
    "column": 53,
-   "layer": "product"
-  },
-  {
-   "group": "spacing",
-   "prop": "marginTop",
-   "value": "12",
-   "file": "apps/mobile/src/features/sales/screens/SalesTaxScreen.tsx",
-   "line": 137,
-   "column": 22,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
-   "prop": "fontSize",
-   "value": "15",
-   "file": "apps/mobile/src/features/sales/screens/SalesTaxScreen.tsx",
-   "line": 138,
-   "column": 24,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
-   "prop": "fontWeight",
-   "value": "800",
-   "file": "apps/mobile/src/features/sales/screens/SalesTaxScreen.tsx",
-   "line": 138,
-   "column": 38,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
-   "prop": "fontSize",
-   "value": "14",
-   "file": "apps/mobile/src/features/sales/screens/SalesTaxScreen.tsx",
-   "line": 139,
-   "column": 24,
-   "layer": "product"
-  },
-  {
-   "group": "spacing",
-   "prop": "marginTop",
-   "value": "5",
-   "file": "apps/mobile/src/features/sales/screens/SalesTaxScreen.tsx",
-   "line": 139,
-   "column": 53,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
-   "prop": "lineHeight",
-   "value": "20",
-   "file": "apps/mobile/src/features/sales/screens/SalesTaxScreen.tsx",
-   "line": 139,
-   "column": 67,
-   "layer": "product"
-  },
-  {
-   "group": "spacing",
-   "prop": "paddingHorizontal",
-   "value": "14",
-   "file": "apps/mobile/src/features/sales/screens/SalesTaxScreen.tsx",
-   "line": 156,
-   "column": 22,
-   "layer": "product"
-  },
-  {
-   "group": "spacing",
-   "prop": "paddingBottom",
-   "value": "4",
-   "file": "apps/mobile/src/features/sales/screens/SalesTaxScreen.tsx",
-   "line": 156,
-   "column": 45,
    "layer": "product"
   },
   {
@@ -33078,7 +32823,7 @@
    "prop": "fontSize",
    "value": "22",
    "file": "apps/mobile/src/theme/tokens.ts",
-   "line": 56,
+   "line": 68,
    "column": 14,
    "layer": "tokenDefinition"
   },
@@ -33087,8 +32832,17 @@
    "prop": "fontWeight",
    "value": "800",
    "file": "apps/mobile/src/theme/tokens.ts",
-   "line": 56,
+   "line": 68,
    "column": 28,
+   "layer": "tokenDefinition"
+  },
+  {
+   "group": "typography",
+   "prop": "lineHeight",
+   "value": "28",
+   "file": "apps/mobile/src/theme/tokens.ts",
+   "line": 68,
+   "column": 47,
    "layer": "tokenDefinition"
   },
   {
@@ -33096,7 +32850,7 @@
    "prop": "fontSize",
    "value": "20",
    "file": "apps/mobile/src/theme/tokens.ts",
-   "line": 57,
+   "line": 69,
    "column": 12,
    "layer": "tokenDefinition"
   },
@@ -33105,8 +32859,17 @@
    "prop": "fontWeight",
    "value": "800",
    "file": "apps/mobile/src/theme/tokens.ts",
-   "line": 57,
+   "line": 69,
    "column": 26,
+   "layer": "tokenDefinition"
+  },
+  {
+   "group": "typography",
+   "prop": "lineHeight",
+   "value": "26",
+   "file": "apps/mobile/src/theme/tokens.ts",
+   "line": 69,
+   "column": 45,
    "layer": "tokenDefinition"
   },
   {
@@ -33114,7 +32877,7 @@
    "prop": "fontSize",
    "value": "18",
    "file": "apps/mobile/src/theme/tokens.ts",
-   "line": 58,
+   "line": 70,
    "column": 13,
    "layer": "tokenDefinition"
   },
@@ -33123,8 +32886,17 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/theme/tokens.ts",
-   "line": 58,
+   "line": 70,
    "column": 27,
+   "layer": "tokenDefinition"
+  },
+  {
+   "group": "typography",
+   "prop": "lineHeight",
+   "value": "24",
+   "file": "apps/mobile/src/theme/tokens.ts",
+   "line": 70,
+   "column": 46,
    "layer": "tokenDefinition"
   },
   {
@@ -33132,7 +32904,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/theme/tokens.ts",
-   "line": 59,
+   "line": 71,
    "column": 11,
    "layer": "tokenDefinition"
   },
@@ -33141,8 +32913,17 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/theme/tokens.ts",
-   "line": 59,
+   "line": 71,
    "column": 25,
+   "layer": "tokenDefinition"
+  },
+  {
+   "group": "typography",
+   "prop": "lineHeight",
+   "value": "22",
+   "file": "apps/mobile/src/theme/tokens.ts",
+   "line": 71,
+   "column": 44,
    "layer": "tokenDefinition"
   },
   {
@@ -33150,7 +32931,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/theme/tokens.ts",
-   "line": 60,
+   "line": 72,
    "column": 15,
    "layer": "tokenDefinition"
   },
@@ -33159,8 +32940,17 @@
    "prop": "fontWeight",
    "value": "600",
    "file": "apps/mobile/src/theme/tokens.ts",
-   "line": 60,
+   "line": 72,
    "column": 29,
+   "layer": "tokenDefinition"
+  },
+  {
+   "group": "typography",
+   "prop": "lineHeight",
+   "value": "22",
+   "file": "apps/mobile/src/theme/tokens.ts",
+   "line": 72,
+   "column": 48,
    "layer": "tokenDefinition"
   },
   {
@@ -33168,7 +32958,7 @@
    "prop": "fontSize",
    "value": "14",
    "file": "apps/mobile/src/theme/tokens.ts",
-   "line": 61,
+   "line": 73,
    "column": 14,
    "layer": "tokenDefinition"
   },
@@ -33177,8 +32967,17 @@
    "prop": "fontWeight",
    "value": "600",
    "file": "apps/mobile/src/theme/tokens.ts",
-   "line": 61,
+   "line": 73,
    "column": 28,
+   "layer": "tokenDefinition"
+  },
+  {
+   "group": "typography",
+   "prop": "lineHeight",
+   "value": "20",
+   "file": "apps/mobile/src/theme/tokens.ts",
+   "line": 73,
+   "column": 47,
    "layer": "tokenDefinition"
   },
   {
@@ -33186,7 +32985,7 @@
    "prop": "fontSize",
    "value": "13",
    "file": "apps/mobile/src/theme/tokens.ts",
-   "line": 62,
+   "line": 74,
    "column": 16,
    "layer": "tokenDefinition"
   },
@@ -33195,32 +32994,23 @@
    "prop": "fontWeight",
    "value": "600",
    "file": "apps/mobile/src/theme/tokens.ts",
-   "line": 62,
+   "line": 74,
    "column": 30,
    "layer": "tokenDefinition"
   },
   {
-   "group": "size",
-   "prop": "width",
-   "value": "0",
+   "group": "typography",
+   "prop": "lineHeight",
+   "value": "18",
    "file": "apps/mobile/src/theme/tokens.ts",
-   "line": 87,
-   "column": 19,
-   "layer": "tokenDefinition"
-  },
-  {
-   "group": "size",
-   "prop": "height",
-   "value": "1",
-   "file": "apps/mobile/src/theme/tokens.ts",
-   "line": 87,
-   "column": 29,
+   "line": 74,
+   "column": 49,
    "layer": "tokenDefinition"
   }
  ],
  "declarationSummary": {
   "color": {
-   "total": 48,
+   "total": 46,
    "byValue": {
     "hex:#FFF": 10,
     "hex:#000": 3,
@@ -33231,11 +33021,11 @@
     "hex:#179E6B": 2,
     "hex:#FEF1E6": 2,
     "hex:#E08A2B": 2,
-    "hex:#E8F1FB": 2,
-    "hex:#2E6FD0": 2,
     "hex:#7A8694": 2,
     "hex:#C5CCD3": 2,
     "hex:#FFFFFF": 1,
+    "hex:#E8F1FB": 1,
+    "hex:#2E6FD0": 1,
     "hex:#FDECEF": 1,
     "hex:#D94A5E": 1,
     "hex:#EDF3FF": 1,
@@ -33250,118 +33040,120 @@
     "hex:#5B6573": 1
    },
    "byLayer": {
-    "product": 40,
+    "product": 38,
     "sharedComponent": 8
    },
    "distinctDeclarations": 26
   },
   "typography": {
-   "total": 1569,
+   "total": 1560,
    "byValue": {
     "fontSize:16": 329,
-    "fontWeight:700": 306,
+    "fontWeight:700": 298,
     "fontSize:14": 288,
-    "fontWeight:800": 223,
-    "fontWeight:600": 149,
-    "fontSize:15": 67,
-    "fontSize:13": 58,
-    "lineHeight:20": 45,
+    "fontWeight:800": 218,
+    "fontWeight:600": 153,
+    "fontSize:15": 64,
+    "lineHeight:20": 51,
+    "fontSize:13": 51,
     "fontSize:12": 27,
-    "fontSize:18": 21,
+    "fontSize:18": 22,
     "fontSize:20": 11,
     "fontSize:22": 11,
+    "lineHeight:22": 6,
     "fontSize:13.5": 6,
-    "lineHeight:22": 5,
     "lineHeight:19": 4,
     "lineHeight:23": 3,
-    "fontSize:19": 3,
     "lineHeight:17": 2,
-    "fontSize:17": 2,
+    "fontSize:19": 2,
     "lineHeight:21": 2,
     "fontSize:11": 2,
     "fontSize:12.5": 1,
     "lineHeight:16": 1,
+    "fontSize:17": 1,
     "fontSize:14.5": 1,
     "fontSize:10": 1,
-    "fontSize:25": 1
+    "fontSize:25": 1,
+    "lineHeight:28": 1,
+    "lineHeight:26": 1,
+    "lineHeight:24": 1,
+    "lineHeight:18": 1
    },
    "byLayer": {
-    "product": 1461,
+    "product": 1445,
     "sharedComponent": 94,
-    "tokenDefinition": 14
+    "tokenDefinition": 21
    },
-   "distinctDeclarations": 26
+   "distinctDeclarations": 30
   },
   "spacing": {
-   "total": 1652,
+   "total": 1643,
    "byValue": {
-    "paddingHorizontal:15": 94,
-    "marginTop:2": 73,
-    "gap:6": 69,
+    "paddingHorizontal:15": 95,
+    "marginTop:2": 74,
+    "gap:6": 70,
     "paddingVertical:13": 66,
-    "gap:8": 64,
-    "paddingHorizontal:16": 61,
-    "paddingVertical:12": 56,
+    "paddingHorizontal:16": 62,
+    "gap:8": 61,
+    "paddingVertical:12": 57,
     "gap:10": 47,
-    "paddingHorizontal:14": 45,
-    "marginTop:3": 41,
+    "paddingHorizontal:14": 44,
+    "marginTop:3": 42,
     "paddingVertical:11": 31,
-    "paddingHorizontal:20": 29,
-    "paddingTop:4": 26,
+    "paddingHorizontal:20": 30,
+    "paddingTop:4": 27,
     "paddingVertical:14": 25,
-    "paddingTop:12": 23,
-    "paddingBottom:28": 23,
+    "paddingTop:12": 24,
+    "paddingBottom:28": 24,
     "gap:11": 23,
-    "gap:7": 22,
+    "marginBottom:12": 21,
     "marginBottom:8": 20,
     "gap:5": 20,
-    "paddingVertical:9": 19,
-    "marginTop:4": 19,
+    "gap:7": 20,
     "paddingTop:2": 18,
-    "paddingHorizontal:12": 18,
-    "marginTop:12": 18,
+    "paddingVertical:9": 18,
     "paddingVertical:10": 18,
-    "marginBottom:12": 16,
-    "gap:9": 16,
-    "marginTop:8": 15,
-    "gap:12": 15,
+    "gap:9": 17,
+    "paddingHorizontal:12": 17,
+    "marginBottom:10": 17,
+    "marginTop:4": 17,
+    "marginTop:8": 16,
+    "marginTop:12": 16,
     "marginTop:18": 14,
-    "marginBottom:10": 14,
     "marginBottom:14": 14,
-    "marginTop:10": 14,
     "paddingBottom:24": 14,
     "paddingBottom:15": 14,
     "marginRight:8": 13,
     "paddingBottom:30": 12,
     "paddingTop:10": 12,
     "paddingTop:13": 11,
-    "marginTop:9": 11,
     "paddingBottom:12": 11,
-    "padding:16": 11,
+    "gap:12": 11,
+    "marginHorizontal:4": 11,
+    "padding:13": 11,
     "padding:14": 10,
     "paddingBottom:11": 10,
-    "marginBottom:16": 10,
     "marginBottom:9": 10,
-    "paddingVertical:8": 9,
+    "marginTop:10": 10,
     "marginTop:6": 9,
     "paddingHorizontal:4": 9,
+    "marginBottom:16": 9,
     "marginBottom:11": 9,
     "paddingHorizontal:2": 9,
-    "marginTop:7": 9,
     "paddingVertical:15": 9,
-    "marginHorizontal:4": 9,
     "paddingLeft:12": 9,
-    "paddingBottom:4": 9,
     "gap:2": 8,
+    "marginBottom:6": 8,
+    "paddingVertical:8": 8,
+    "marginTop:9": 8,
     "paddingTop:6": 8,
-    "padding:13": 8,
+    "paddingBottom:4": 8,
+    "marginTop:16": 7,
     "paddingBottom:10": 7,
-    "marginBottom:6": 7,
     "gap:4": 7,
     "paddingTop:8": 7,
     "paddingVertical:4": 7,
-    "paddingBottom:32": 7,
-    "marginTop:16": 6,
+    "marginTop:7": 7,
     "paddingTop:14": 6,
     "marginTop:1": 6,
     "paddingVertical:7": 6,
@@ -33372,11 +33164,10 @@
     "gap:22": 6,
     "marginTop:11": 6,
     "paddingTop:11": 6,
-    "marginTop:5": 6,
+    "padding:16": 6,
     "paddingBottom:5": 6,
     "paddingTop:5": 6,
     "marginBottom:4": 5,
-    "paddingHorizontal:10": 5,
     "marginTop:13": 5,
     "paddingHorizontal:13": 5,
     "paddingBottom:16": 5,
@@ -33384,9 +33175,11 @@
     "marginRight:12": 5,
     "marginRight:10": 5,
     "marginBottom:7": 4,
+    "paddingHorizontal:10": 4,
     "marginBottom:18": 4,
     "paddingHorizontal:7": 4,
     "paddingVertical:16": 4,
+    "paddingBottom:32": 4,
     "gap:14": 3,
     "paddingHorizontal:32": 3,
     "padding:0": 3,
@@ -33396,6 +33189,9 @@
     "paddingVertical:24": 3,
     "gap:16": 3,
     "paddingBottom:14": 3,
+    "marginLeft:12": 3,
+    "margin:16": 3,
+    "padding:15": 3,
     "paddingBottom:2": 3,
     "gap:1": 3,
     "marginRight:16": 3,
@@ -33412,16 +33208,16 @@
     "paddingBottom:104": 2,
     "paddingVertical:40": 2,
     "paddingVertical:28": 2,
+    "margin:20": 2,
+    "marginHorizontal:16": 2,
     "marginTop:14": 2,
-    "padding:15": 2,
     "paddingRight:10": 2,
     "marginTop:20": 2,
     "paddingLeft:10": 2,
     "paddingBottom:8": 2,
+    "marginTop:5": 2,
     "padding:2": 2,
     "marginLeft:7": 2,
-    "margin:15": 2,
-    "marginTop:0": 2,
     "marginHorizontal:2": 2,
     "marginRight:6": 2,
     "marginHorizontal:5": 1,
@@ -33442,10 +33238,6 @@
     "paddingRight:16": 1,
     "gap:13": 1,
     "paddingTop:1": 1,
-    "margin:20": 1,
-    "margin:16": 1,
-    "marginHorizontal:16": 1,
-    "marginLeft:12": 1,
     "paddingHorizontal:18": 1,
     "paddingBottom:96": 1,
     "paddingTop:15": 1,
@@ -33453,6 +33245,8 @@
     "marginHorizontal:6": 1,
     "marginTop:24": 1,
     "paddingTop:7": 1,
+    "margin:15": 1,
+    "marginTop:0": 1,
     "marginLeft:6": 1,
     "paddingRight:0": 1,
     "marginHorizontal:14": 1,
@@ -33461,15 +33255,15 @@
     "paddingTop:16": 1
    },
    "byLayer": {
-    "product": 1558,
+    "product": 1549,
     "sharedComponent": 94
    },
    "distinctDeclarations": 164
   },
   "size": {
-   "total": 236,
+   "total": 230,
    "byValue": {
-    "minWidth:0": 64,
+    "minWidth:0": 65,
     "width:40": 16,
     "height:40": 14,
     "width:34": 10,
@@ -33477,34 +33271,32 @@
     "height:2.5": 7,
     "width:44": 7,
     "width:38": 6,
-    "width:0": 5,
     "height:5": 5,
     "height:38": 5,
     "width:46": 5,
     "width:32": 4,
-    "height:1": 4,
+    "height:24": 4,
     "minHeight:50": 4,
     "minHeight:38": 3,
     "minHeight:52": 3,
     "minHeight:72": 3,
     "minHeight:55": 3,
-    "height:24": 3,
+    "width:24": 3,
     "height:30": 3,
     "height:9": 3,
     "minHeight:47": 3,
-    "height:6": 2,
     "width:27": 2,
     "height:18": 2,
-    "width:24": 2,
+    "height:1": 2,
     "width:28": 2,
     "height:20": 2,
     "width:30": 2,
     "width:12": 1,
     "minHeight:100": 1,
     "height:28": 1,
+    "height:6": 1,
     "width:26": 1,
     "height:26": 1,
-    "height:2": 1,
     "minWidth:56": 1,
     "minWidth:96": 1,
     "width:22": 1,
@@ -33534,21 +33326,20 @@
     "minHeight:46": 1
    },
    "byLayer": {
-    "sharedComponent": 31,
-    "product": 203,
-    "tokenDefinition": 2
+    "sharedComponent": 26,
+    "product": 204
    },
-   "distinctDeclarations": 63
+   "distinctDeclarations": 61
   },
   "radius": {
-   "total": 172,
+   "total": 174,
    "byValue": {
-    "borderRadius:12": 66,
-    "borderRadius:10": 28,
+    "borderRadius:12": 70,
+    "borderRadius:10": 27,
     "borderRadius:3": 9,
-    "borderRadius:9": 8,
     "borderRadius:11": 8,
     "borderRadius:14": 8,
+    "borderRadius:9": 7,
     "borderRadius:2": 7,
     "borderRadius:999": 6,
     "borderRadius:6": 5,
@@ -33566,17 +33357,17 @@
    },
    "byLayer": {
     "sharedComponent": 23,
-    "product": 149
+    "product": 151
    },
    "distinctDeclarations": 20
   }
  },
  "summary": {
-  "filesScanned": 185,
+  "filesScanned": 177,
   "filesByLayer": {
    "tokenDefinition": 1,
    "sharedComponent": 14,
-   "product": 170
+   "product": 162
   },
   "filesWithShadowedTokenNames": [
    {
@@ -33599,13 +33390,13 @@
     ]
    }
   ],
-  "declarations": 3677,
+  "declarations": 3653,
   "declarationsByGroup": {
-   "color": 48,
-   "typography": 1569,
-   "spacing": 1652,
-   "size": 236,
-   "radius": 172
+   "color": 46,
+   "typography": 1560,
+   "spacing": 1643,
+   "size": 230,
+   "radius": 174
   },
   "tokens": {
    "T": {
@@ -33663,15 +33454,15 @@
      "#D1D6DB",
      "#B0B8C1"
     ],
-    "usageOccurrences": 1816,
-    "usageFiles": 84,
+    "usageOccurrences": 1796,
+    "usageFiles": 82,
     "sharedComponent": {
      "usageOccurrences": 149,
      "usageFiles": 13
     },
     "product": {
-     "usageOccurrences": 1667,
-     "usageFiles": 71
+     "usageOccurrences": 1647,
+     "usageFiles": 69
     },
     "shadowedIn": [
      "apps/mobile/src/theme/tokens.ts"
@@ -33864,15 +33655,15 @@
    "tnum": {
     "definitionRoles": 1,
     "distinctValues": 1,
-    "usageOccurrences": 46,
-    "usageFiles": 12,
+    "usageOccurrences": 48,
+    "usageFiles": 13,
     "sharedComponent": {
      "usageOccurrences": 4,
      "usageFiles": 1
     },
     "product": {
-     "usageOccurrences": 42,
-     "usageFiles": 11
+     "usageOccurrences": 44,
+     "usageFiles": 12
     },
     "shadowedIn": [
      "apps/mobile/src/theme/tokens.ts"
@@ -33887,13 +33678,13 @@
     "productJsxFiles": 0
    },
    "Button": {
-    "jsxOccurrences": 92,
-    "jsxFiles": 38,
-    "importFiles": 38,
-    "productJsxFiles": 35
+    "jsxOccurrences": 85,
+    "jsxFiles": 36,
+    "importFiles": 36,
+    "productJsxFiles": 33
    },
    "Icon": {
-    "jsxOccurrences": 189,
+    "jsxOccurrences": 190,
     "jsxFiles": 61,
     "importFiles": 64,
     "productJsxFiles": 56
@@ -33905,10 +33696,10 @@
     "productJsxFiles": 32
    },
    "AppHeader": {
-    "jsxOccurrences": 49,
-    "jsxFiles": 44,
-    "importFiles": 44,
-    "productJsxFiles": 44
+    "jsxOccurrences": 47,
+    "jsxFiles": 43,
+    "importFiles": 43,
+    "productJsxFiles": 43
    },
    "SearchBar": {
     "jsxOccurrences": 7,
@@ -33929,10 +33720,10 @@
     "productJsxFiles": 2
    },
    "QueryState": {
-    "jsxOccurrences": 54,
-    "jsxFiles": 49,
-    "importFiles": 49,
-    "productJsxFiles": 49
+    "jsxOccurrences": 47,
+    "jsxFiles": 46,
+    "importFiles": 46,
+    "productJsxFiles": 46
    },
    "Slider": {
     "jsxOccurrences": 2,
@@ -33949,40 +33740,40 @@
   },
   "inlineLiterals": {
    "typography": {
-    "occurrences": 1555,
-    "files": 79,
-    "distinctDeclarations": 26,
+    "occurrences": 1539,
+    "files": 76,
+    "distinctDeclarations": 30,
     "sharedComponent": 94,
-    "product": 1461
+    "product": 1445
    },
    "spacing": {
-    "occurrences": 1652,
-    "files": 79,
+    "occurrences": 1643,
+    "files": 77,
     "distinctDeclarations": 164,
     "sharedComponent": 94,
-    "product": 1558
+    "product": 1549
    },
    "radius": {
-    "occurrences": 172,
+    "occurrences": 174,
     "files": 58,
     "distinctDeclarations": 20,
     "sharedComponent": 23,
-    "product": 149
+    "product": 151
    },
    "size": {
-    "occurrences": 234,
-    "files": 61,
-    "distinctDeclarations": 63,
-    "sharedComponent": 31,
-    "product": 203
+    "occurrences": 230,
+    "files": 62,
+    "distinctDeclarations": 61,
+    "sharedComponent": 26,
+    "product": 204
    }
   },
   "hexColorLiterals": {
-   "occurrences": 48,
+   "occurrences": 46,
    "files": 15,
    "byLayer": {
     "sharedComponent": 8,
-    "product": 40
+    "product": 38
    },
    "distinct": 26,
    "values": {
@@ -33996,8 +33787,8 @@
     "#179E6B": 2,
     "#FEF1E6": 2,
     "#E08A2B": 2,
-    "#E8F1FB": 2,
-    "#2E6FD0": 2,
+    "#E8F1FB": 1,
+    "#2E6FD0": 1,
     "#FDECEF": 1,
     "#D94A5E": 1,
     "#EDF3FF": 1,
@@ -34017,10 +33808,10 @@
   "topInlineFiles": [
    {
     "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-    "inlineTotal": 247,
+    "inlineTotal": 243,
     "breakdown": {
-     "typography": 130,
-     "spacing": 105,
+     "typography": 128,
+     "spacing": 103,
      "radius": 4,
      "size": 8
     }
@@ -34067,12 +33858,12 @@
    },
    {
     "file": "apps/mobile/src/components/kit/index.tsx",
-    "inlineTotal": 108,
+    "inlineTotal": 106,
     "breakdown": {
      "typography": 44,
      "spacing": 41,
      "radius": 14,
-     "size": 9
+     "size": 7
     }
    },
    {
@@ -34126,6 +33917,16 @@
     }
    },
    {
+    "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+    "inlineTotal": 80,
+    "breakdown": {
+     "typography": 35,
+     "spacing": 38,
+     "radius": 4,
+     "size": 3
+    }
+   },
+   {
     "file": "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx",
     "inlineTotal": 79,
     "breakdown": {
@@ -34133,16 +33934,6 @@
      "spacing": 39,
      "radius": 6,
      "size": 7
-    }
-   },
-   {
-    "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
-    "inlineTotal": 78,
-    "breakdown": {
-     "typography": 36,
-     "spacing": 36,
-     "radius": 4,
-     "size": 2
     }
    },
    {
@@ -34465,24 +34256,6 @@
   },
   {
    "file": "apps/mobile/app/(tabs)/my/channels.tsx",
-   "layer": "product",
-   "tokenAccess": {},
-   "tokenValue": {},
-   "kitJsx": {},
-   "kitImport": [],
-   "shadowedSymbols": [],
-   "inline": {
-    "typography": 0,
-    "spacing": 0,
-    "radius": 0,
-    "size": 0
-   },
-   "hexColors": 0,
-   "tokenAccessTotal": 0,
-   "inlineTotal": 0
-  },
-  {
-   "file": "apps/mobile/app/(tabs)/my/country.tsx",
    "layer": "product",
    "tokenAccess": {},
    "tokenValue": {},
@@ -35493,11 +35266,11 @@
     "typography": 6,
     "spacing": 12,
     "radius": 3,
-    "size": 3
+    "size": 2
    },
    "hexColors": 1,
    "tokenAccessTotal": 6,
-   "inlineTotal": 24
+   "inlineTotal": 23
   },
   {
    "file": "apps/mobile/src/components/kit/Slider.tsx",
@@ -35514,11 +35287,11 @@
     "typography": 0,
     "spacing": 0,
     "radius": 3,
-    "size": 6
+    "size": 4
    },
    "hexColors": 2,
    "tokenAccessTotal": 2,
-   "inlineTotal": 9
+   "inlineTotal": 7
   },
   {
    "file": "apps/mobile/src/components/kit/SortSheet.tsx",
@@ -35641,11 +35414,11 @@
     "typography": 44,
     "spacing": 41,
     "radius": 14,
-    "size": 9
+    "size": 7
    },
    "hexColors": 0,
    "tokenAccessTotal": 83,
-   "inlineTotal": 108
+   "inlineTotal": 106
   },
   {
    "file": "apps/mobile/src/features/business-day/businessDay.ts",
@@ -36517,91 +36290,6 @@
    "inlineTotal": 1
   },
   {
-   "file": "apps/mobile/src/features/international-tax/RecipeTaxStatusCard.tsx",
-   "layer": "product",
-   "tokenAccess": {
-    "T.ink": 1,
-    "T.ink2": 2,
-    "T.sub2": 1,
-    "T.blue": 1,
-    "T.ter": 1,
-    "T.red": 1
-   },
-   "tokenValue": {},
-   "kitJsx": {
-    "QueryState": 1,
-    "Button": 3
-   },
-   "kitImport": [
-    "Button",
-    "QueryState"
-   ],
-   "shadowedSymbols": [],
-   "inline": {
-    "typography": 10,
-    "spacing": 7,
-    "radius": 0,
-    "size": 0
-   },
-   "hexColors": 0,
-   "tokenAccessTotal": 7,
-   "inlineTotal": 17
-  },
-  {
-   "file": "apps/mobile/src/features/international-tax/contracts.ts",
-   "layer": "product",
-   "tokenAccess": {},
-   "tokenValue": {},
-   "kitJsx": {},
-   "kitImport": [],
-   "shadowedSymbols": [],
-   "inline": {
-    "typography": 0,
-    "spacing": 0,
-    "radius": 0,
-    "size": 0
-   },
-   "hexColors": 0,
-   "tokenAccessTotal": 0,
-   "inlineTotal": 0
-  },
-  {
-   "file": "apps/mobile/src/features/international-tax/hooks.ts",
-   "layer": "product",
-   "tokenAccess": {},
-   "tokenValue": {},
-   "kitJsx": {},
-   "kitImport": [],
-   "shadowedSymbols": [],
-   "inline": {
-    "typography": 0,
-    "spacing": 0,
-    "radius": 0,
-    "size": 0
-   },
-   "hexColors": 0,
-   "tokenAccessTotal": 0,
-   "inlineTotal": 0
-  },
-  {
-   "file": "apps/mobile/src/features/international-tax/index.ts",
-   "layer": "product",
-   "tokenAccess": {},
-   "tokenValue": {},
-   "kitJsx": {},
-   "kitImport": [],
-   "shadowedSymbols": [],
-   "inline": {
-    "typography": 0,
-    "spacing": 0,
-    "radius": 0,
-    "size": 0
-   },
-   "hexColors": 0,
-   "tokenAccessTotal": 0,
-   "inlineTotal": 0
-  },
-  {
    "file": "apps/mobile/src/features/master-data/hooks.ts",
    "layer": "product",
    "tokenAccess": {},
@@ -36918,42 +36606,6 @@
    "inlineTotal": 21
   },
   {
-   "file": "apps/mobile/src/features/my/screens/MyCountryScreen.tsx",
-   "layer": "product",
-   "tokenAccess": {
-    "T.bg": 1,
-    "T.ter": 4,
-    "T.sub2": 2,
-    "T.red": 1,
-    "T.blue": 2,
-    "T.line2": 1,
-    "T.blueTint": 1,
-    "T.surface": 1,
-    "T.ink2": 1
-   },
-   "tokenValue": {},
-   "kitJsx": {
-    "AppHeader": 1,
-    "QueryState": 2,
-    "Button": 2
-   },
-   "kitImport": [
-    "AppHeader",
-    "Button",
-    "QueryState"
-   ],
-   "shadowedSymbols": [],
-   "inline": {
-    "typography": 11,
-    "spacing": 13,
-    "radius": 1,
-    "size": 0
-   },
-   "hexColors": 0,
-   "tokenAccessTotal": 14,
-   "inlineTotal": 25
-  },
-  {
    "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
    "layer": "product",
    "tokenAccess": {
@@ -36983,7 +36635,7 @@
     "radius": 2,
     "size": 5
    },
-   "hexColors": 16,
+   "hexColors": 14,
    "tokenAccessTotal": 18,
    "inlineTotal": 31
   },
@@ -37035,40 +36687,44 @@
    "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
    "layer": "product",
    "tokenAccess": {
-    "T.bg": 1,
-    "T.red": 1,
-    "T.line2": 1,
-    "T.ink": 1,
-    "T.ter": 1,
-    "T.blue": 1,
-    "T.gray400": 1,
-    "T.sub2": 1
+    "T.line2": 3,
+    "T.sub": 1,
+    "T.ter": 7,
+    "T.ink": 2,
+    "T.bg": 2,
+    "T.redTint": 2,
+    "T.red": 7,
+    "T.sub2": 1,
+    "T.blue": 3,
+    "T.line": 1,
+    "T.surface": 1,
+    "T.blueTint": 1
    },
-   "tokenValue": {},
+   "tokenValue": {
+    "tnum": 2
+   },
    "kitJsx": {
-    "AppHeader": 1,
-    "QueryState": 1,
-    "Button": 4,
-    "Icon": 1,
+    "Button": 6,
+    "AppHeader": 2,
+    "Icon": 2,
     "Sheet": 1
    },
    "kitImport": [
     "AppHeader",
     "Button",
     "Icon",
-    "QueryState",
     "Sheet"
    ],
    "shadowedSymbols": [],
    "inline": {
-    "typography": 6,
-    "spacing": 7,
-    "radius": 0,
-    "size": 0
+    "typography": 35,
+    "spacing": 38,
+    "radius": 4,
+    "size": 3
    },
    "hexColors": 0,
-   "tokenAccessTotal": 8,
-   "inlineTotal": 13
+   "tokenAccessTotal": 31,
+   "inlineTotal": 80
   },
   {
    "file": "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx",
@@ -37101,37 +36757,33 @@
     "typography": 10,
     "spacing": 20,
     "radius": 4,
-    "size": 7
+    "size": 5
    },
    "hexColors": 2,
    "tokenAccessTotal": 15,
-   "inlineTotal": 41
+   "inlineTotal": 39
   },
   {
    "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
    "layer": "product",
    "tokenAccess": {
-    "T.ter": 7,
-    "T.bg": 3,
-    "T.ink": 3,
-    "T.sub2": 4,
-    "T.red": 6,
-    "T.blue": 6,
-    "T.line2": 2,
-    "T.blueTint": 1,
-    "T.surface": 2,
-    "T.ink2": 1,
+    "T.bg": 1,
     "T.redTint": 2,
+    "T.red": 5,
     "T.surface2": 1,
-    "T.sub": 2
+    "T.sub": 2,
+    "T.ter": 4,
+    "T.blue": 4,
+    "T.surface": 1,
+    "T.line2": 1
    },
    "tokenValue": {
     "tnum": 1
    },
    "kitJsx": {
-    "QueryState": 3,
-    "AppHeader": 3,
-    "Button": 7,
+    "AppHeader": 1,
+    "QueryState": 1,
+    "Button": 3,
     "Icon": 3
    },
    "kitImport": [
@@ -37142,14 +36794,14 @@
    ],
    "shadowedSymbols": [],
    "inline": {
-    "typography": 36,
-    "spacing": 36,
-    "radius": 4,
+    "typography": 18,
+    "spacing": 22,
+    "radius": 3,
     "size": 2
    },
    "hexColors": 0,
-   "tokenAccessTotal": 40,
-   "inlineTotal": 78
+   "tokenAccessTotal": 21,
+   "inlineTotal": 45
   },
   {
    "file": "apps/mobile/src/features/my/screens/MyUnitsScreen.tsx",
@@ -37748,7 +37400,7 @@
     "T.surface2": 4,
     "T.line2": 11,
     "T.sub": 9,
-    "T.ter": 30,
+    "T.ter": 29,
     "T.surface": 2,
     "T.line": 7,
     "T.ink": 22,
@@ -37778,14 +37430,14 @@
    ],
    "shadowedSymbols": [],
    "inline": {
-    "typography": 130,
-    "spacing": 105,
+    "typography": 128,
+    "spacing": 103,
     "radius": 4,
     "size": 8
    },
    "hexColors": 0,
-   "tokenAccessTotal": 120,
-   "inlineTotal": 247
+   "tokenAccessTotal": 119,
+   "inlineTotal": 243
   },
   {
    "file": "apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx",
@@ -38553,7 +38205,7 @@
    "tokenValue": {},
    "kitJsx": {
     "AppHeader": 1,
-    "QueryState": 2,
+    "QueryState": 1,
     "Icon": 3,
     "Button": 6,
     "Sheet": 3
@@ -38654,9 +38306,7 @@
    "file": "apps/mobile/src/features/sales/screens/SalesTaxScreen.tsx",
    "layer": "product",
    "tokenAccess": {
-    "T.bg": 1,
-    "T.ink": 1,
-    "T.sub2": 1
+    "T.bg": 1
    },
    "tokenValue": {},
    "kitJsx": {
@@ -38669,14 +38319,14 @@
    ],
    "shadowedSymbols": [],
    "inline": {
-    "typography": 4,
-    "spacing": 9,
+    "typography": 0,
+    "spacing": 5,
     "radius": 0,
     "size": 0
    },
    "hexColors": 0,
-   "tokenAccessTotal": 3,
-   "inlineTotal": 13
+   "tokenAccessTotal": 1,
+   "inlineTotal": 5
   },
   {
    "file": "apps/mobile/src/features/sales/screens/SalesWasteScreen.tsx",
@@ -38749,24 +38399,6 @@
    "hexColors": 0,
    "tokenAccessTotal": 5,
    "inlineTotal": 8
-  },
-  {
-   "file": "apps/mobile/src/lib/appVersion.ts",
-   "layer": "product",
-   "tokenAccess": {},
-   "tokenValue": {},
-   "kitJsx": {},
-   "kitImport": [],
-   "shadowedSymbols": [],
-   "inline": {
-    "typography": 0,
-    "spacing": 0,
-    "radius": 0,
-    "size": 0
-   },
-   "hexColors": 0,
-   "tokenAccessTotal": 0,
-   "inlineTotal": 0
   },
   {
    "file": "apps/mobile/src/lib/date.ts",
@@ -38842,24 +38474,6 @@
   },
   {
    "file": "apps/mobile/src/lib/queryClient.ts",
-   "layer": "product",
-   "tokenAccess": {},
-   "tokenValue": {},
-   "kitJsx": {},
-   "kitImport": [],
-   "shadowedSymbols": [],
-   "inline": {
-    "typography": 0,
-    "spacing": 0,
-    "radius": 0,
-    "size": 0
-   },
-   "hexColors": 0,
-   "tokenAccessTotal": 0,
-   "inlineTotal": 0
-  },
-  {
-   "file": "apps/mobile/src/lib/rpcMonitoring.ts",
    "layer": "product",
    "tokenAccess": {},
    "tokenValue": {},
@@ -38984,14 +38598,14 @@
     "cardShadow"
    ],
    "inline": {
-    "typography": 14,
+    "typography": 21,
     "spacing": 0,
     "radius": 0,
-    "size": 2
+    "size": 0
    },
    "hexColors": 0,
    "tokenAccessTotal": 0,
-   "inlineTotal": 16
+   "inlineTotal": 21
   }
  ]
 }

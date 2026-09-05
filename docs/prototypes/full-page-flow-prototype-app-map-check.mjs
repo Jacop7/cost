@@ -12,7 +12,7 @@
 //
 // 마지막 통이 0 이어야 하는 이유: W1 은 제안을 내는 단계이고 승인은 검수 뒤다.
 // 산출물에 "승인 예외" 가 채워져 있으면 그 자체가 독단이다 (페이블 검수 조건 1).
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { resolve, basename } from 'node:path';
 import { createHash } from 'node:crypto';
 
@@ -22,6 +22,10 @@ const auditPath = resolve(args[0] ?? 'docs/token-adoption-audit.json');
 const mapPath   = resolve(args[1] ?? 'docs/prototypes/full-page-flow-prototype-app-token-map.json');
 const protoPath = resolve(args[2] ?? 'docs/prototypes/full-page-flow-prototype-token-map.json');
 const outPath   = resolve(args[3] ?? 'docs/prototypes/full-page-flow-prototype-app-map-check.json');
+// 축 측정 산출물 — `방향` 산문을 믿지 않고 **선언마다 잰 축**과 대조한다 (솔 `W1 R1 F03`).
+// 위치 인자 5번은 이미 이전 회차 매핑표(대차용)가 쓰고 있으므로 이름 있는 옵션으로 받는다.
+const axisOpt = process.argv.slice(2).find(a => a.startsWith('--axis='));
+const axisPath  = resolve(axisOpt ? axisOpt.slice('--axis='.length) : '.tmp/axis-at.json');
 
 const auditBytes = readFileSync(auditPath);
 const mapBytes = readFileSync(mapPath);
@@ -29,9 +33,29 @@ const protoBytes = readFileSync(protoPath);
 const audit = JSON.parse(auditBytes.toString('utf8'));
 const map = JSON.parse(mapBytes.toString('utf8'));
 const proto = JSON.parse(protoBytes.toString('utf8'));
+const axisArt = existsSync(axisPath) ? JSON.parse(readFileSync(axisPath, 'utf8')) : null;
 const selfBytes = readFileSync(new URL(import.meta.url));
 
-const BINS = ['primitive', 'semantic', 'componentOwned', 'defect', 'pendingApproval', 'approvedException'];
+// ⚠ `semantic` 통을 **없앤다** (솔 검수 `W1 R1 F02`).
+//
+// 산출물은 "P4 에서 치환되면 semantic 이 채워진다" 고 적고 있었는데 그 기전이 성립하지 않는다.
+// 감사기는 **숫자 리터럴만** 선언으로 모은다. `fontSize: 16` 을 `TYPE.body` 로 치환하면 그
+// 선언은 `semantic` 으로 **이동하는 것이 아니라 입력에서 사라진다.** 영원히 0 인 통을 놓고
+// "아직 안 채워졌다" 고 적는 것은 분류가 아니라 변명이다.
+//
+// 그래서 W1 의 범위를 정직하게 **"하드코딩 리터럴의 배정"** 으로 좁힌다. 의미 토큰 채택률은
+// 같은 감사기가 이미 모으고 있는 `tokenAccess` 로 따로 보는 지표다 — 이 표의 통이 아니다.
+// 입력이 결속돼 있는지 **검사기가 직접 본다** (솔 검수 `W1 R1 F01`).
+// 결속 없이 만들어진 감사 산출물을 그대로 배정하면 W1 은 또 남의 나무를 세게 된다.
+if (!audit.manifest?.결속?.expectCommit || !audit.manifest?.결속?.범위해시) {
+  console.error('앱 선언 전수 배정 검사 — 입력 결속 FAIL');
+  console.error('  - 감사 산출물에 결속(expectCommit · 범위해시)이 없다. token-adoption-audit.mjs 를 --expect-commit 과 함께 clean checkout 에서 다시 돌려라');
+  process.exit(1);
+}
+const BINS = ['primitive', 'componentOwned', 'defect', 'pendingApproval', 'approvedException'];
+const STAGES = ['S1', 'S2', 'S3a', 'S3b', 'S4'];
+const AXES = ['horizontal', 'vertical', 'both', 'none', 'derived'];
+const DELTAS = ['shrink', 'same', 'grow', 'mixed', 'unknown'];
 const failures = [];
 const fail = (m) => failures.push(m);
 
@@ -43,8 +67,28 @@ for (const r of map.rules) {
   if (!r.근거 && !r.evidence) fail(`${r.id} : 근거가 없다 — 어디서 나온 판정인지 적어야 한다`);
   if (r.bin === 'componentOwned' && !r.name) fail(`${r.id} : componentOwned 인데 이름이 없다. 이름 없는 px 는 예외가 아니라 미매핑이다`);
   if (r.bin === 'defect' && r.target === undefined && !r.openDecision) fail(`${r.id} : defect 인데 수렴 대상도 열린 결정 ID 도 없다`);
-  // 방향(S3a/S3b)이 없으면 §7.2 실행 순서에서 어느 단계에 넣을지 알 수 없다 (페이블 검수 조건 1).
-  if (r.bin === 'defect' && !r.방향) fail(`${r.id} : defect 인데 방향(S3a/S3b) 표식이 없다 — 어느 실행 단계인지 정해지지 않는다`);
+  // `방향` 은 산문 한 칸에 **실행 단계와 축과 증감**을 섞어 담고 있었고, 검사기는 그 칸이
+  // 비어 있지 않은지만 봤다 — `S33a` 같은 오타도 통과했다 (솔 검수 `W1 R1 F03`).
+  // 셋을 갈라 열거값으로 강제하고, 축 판정은 **결속된 측정 산출물**을 대게 한다.
+  if (r.bin === 'defect') {
+    if (!STAGES.includes(r.executionStage)) fail(`${r.id} : executionStage 가 ${STAGES.join('/')} 중 하나가 아니다 — '${r.executionStage ?? '없음'}'`);
+    if (!AXES.includes(r.axis)) fail(`${r.id} : axis 가 ${AXES.join('/')} 중 하나가 아니다 — '${r.axis ?? '없음'}'`);
+    if (!DELTAS.includes(r.delta)) fail(`${r.id} : delta 가 ${DELTAS.join('/')} 중 하나가 아니다 — '${r.delta ?? '없음'}'`);
+    if (!r.evidenceRef) fail(`${r.id} : evidenceRef 가 없다 — 축 판정의 근거가 되는 측정 산출물을 대야 한다`);
+    // 실행 단계와 축은 서로를 구속한다. 기준은 §7.2 의 완료 조건이다 —
+    //   `S3a` 완료 조건이 "**반대 축** diff 0" 이므로 `S3a` 는 **폭이 늘지 않는** 치환이고,
+    //   `S3b` 완료 조건이 "`atRisk` 신규 0" 이므로 `S3b` 는 **폭이 느는** 치환이다.
+    // (§7.2 산문은 `S3a` 를 "줄이거나 같은 크기" 로만 적어 세로 증가를 어디에도 안 넣었다.
+    //  완료 조건 쪽이 실제 계약이고, 문구 정정을 §7.2 에 제안해 두었다.)
+    if (r.executionStage === 'S3b' && !['horizontal', 'both'].includes(r.axis))
+      fail(`${r.id} : S3b 인데 axis 가 '${r.axis}' 다 — S3b 는 폭이 느는 자리다`);
+    if (r.executionStage === 'S3b' && !['grow', 'mixed'].includes(r.delta))
+      fail(`${r.id} : S3b 인데 delta 가 '${r.delta}' 다 — 폭이 늘지 않으면 S3a 다`);
+    if (r.executionStage === 'S3a' && r.axis === 'horizontal' && ['grow', 'mixed'].includes(r.delta))
+      fail(`${r.id} : S3a 인데 가로로 늘어난다 — 그건 S3b 다`);
+    if (r.executionStage === 'S3a' && r.axis === 'both' && ['grow'].includes(r.delta))
+      fail(`${r.id} : S3a 인데 두 축이 함께 는다 — 폭이 늘면 S3b 다`);
+  }
   // 기존 결정의 적용이라고 말하려면 그 결정이 어디 있는지 대야 한다.
   if (r.bin === 'defect' && /기존 결정|이미 정한|새 결정이 아니/.test(String(r.근거 ?? '')) && !r.출처) fail(`${r.id} : "기존 결정" 이라 적었는데 출처가 없다`);
   if (r.bin === 'pendingApproval' && (!r.question || !r.evidence)) fail(`${r.id} : pendingApproval 인데 질문 또는 증거가 없다`);
@@ -83,6 +127,7 @@ const hit = Object.fromEntries(map.rules.map(r => [r.id, 0]));
 const binCount = Object.fromEntries(BINS.map(b => [b, 0]));
 const unmatched = [];
 const perRuleValues = Object.fromEntries(map.rules.map(r => [r.id, {}]));
+const wonKeys = {};
 
 // "첫 일치가 이긴다" 는 숨은 결정이다. 한 선언이 규칙 둘 이상에 걸리면 그 배정의 근거는
 // 규칙이 아니라 **배치 순서**가 된다. 그래서 다중 일치를 세어 낸다 (페이블 검수 조건 B).
@@ -95,25 +140,93 @@ for (const d of audit.declarations) {
   if (all.length > 1) {
     const pair = all.map(r => r.id).join(' > ');
     multiMatchPairs[pair] = (multiMatchPairs[pair] || 0) + 1;
-    if (multiMatch.length < 50) multiMatch.push({ decl: `${d.group}/${d.prop}:${d.value} @ ${d.file}:${d.line}`, rules: all.map(r => r.id) });
+    multiMatch.push({ decl: `${d.group}/${d.prop}:${d.value} @ ${d.file}:${d.line}`, rules: all.map(r => r.id) });
   }
   const r = all[0];
   if (!r) { unmatched.push(`${d.group}/${d.prop}:${d.value} @ ${d.file}:${d.line}`); continue; }
   hit[r.id]++;
   binCount[r.bin]++;
+  (wonKeys[r.id] ??= []).push(`${d.file}:${d.line}:${d.prop}`);
   const k = `${d.prop}:${d.value}`;
   perRuleValues[r.id][k] = (perRuleValues[r.id][k] || 0) + 1;
 }
 const multiMatchCount = Object.values(multiMatchPairs).reduce((a, b) => a + b, 0);
-// 순서 의존이 있는 경우, 그 순서가 규칙 자체에 근거로 적혀 있어야 한다.
+// 순서 의존 — **아무 문자열이나 적혀 있으면 통과**하던 검사를 양방향 대조로 바꾼다
+// (솔 검수 `W1 R1 F04`). 승자 규칙은 자기가 이기는 규칙들을 `precedes` 에 **정확한 id 로**
+// 적어야 하고, 실제 충돌 쌍과 집합이 같아야 한다. 근거 문장도 그대로 요구한다 —
+// 기계가 검사하는 것은 "적혀 있는가" 까지이고, "그 근거가 옳은가" 는 사람이 본다.
+// 그래서 표본 상한을 없애고 **고유 충돌 체인 전부**를 산출물에 낸다.
+const declaredPrecedes = new Map(map.rules.map(r => [r.id, new Set(r.precedes ?? [])]));
+const actualPrecedes = new Map(map.rules.map(r => [r.id, new Set()]));
 for (const pair of Object.keys(multiMatchPairs)) {
-  const first = map.rules.find(r => r.id === pair.split(' > ')[0]);
-  if (!first?.순서근거) fail(`${pair} : 순서 의존이 있는데 앞선 규칙에 순서근거가 없다 — 배정의 근거가 규칙이 아니라 배치다`);
+  const ids = pair.split(' > ');
+  const winner = ids[0];
+  for (const loser of ids.slice(1)) actualPrecedes.get(winner)?.add(loser);
+}
+for (const [id, actual] of actualPrecedes) {
+  if (!actual.size) continue;
+  const rule = map.rules.find(r => r.id === id);
+  if (!rule?.순서근거) fail(`${id} : 순서 의존이 있는데 순서근거가 없다 — 배정의 근거가 규칙이 아니라 배치다`);
+  const declared = declaredPrecedes.get(id) ?? new Set();
+  // 근거가 **실제 충돌 규칙을 이름으로 대야** 한다. "포괄보다 앞선다" 같은 문장은 어느 포괄인지
+  // 말하지 않아 검수할 대상이 안 잡힌다 (솔 `W1 R1 F04`).
+  for (const l of actual) if (!String(rule?.순서근거 ?? '').includes(l))
+    fail(`${id} : 순서근거가 ${l} 를 이름으로 대지 않는다 — 무엇을 이기는지 적지 않은 근거는 검수할 수 없다`);
+  for (const l of actual) if (!declared.has(l)) fail(`${id} : ${l} 을 실제로 이기는데 precedes 에 없다 — 이긴 것을 적지 않으면 검수할 대상이 안 잡힌다`);
+  for (const l of declared) if (!actual.has(l)) fail(`${id} : precedes 에 ${l} 이 있는데 실제 충돌이 없다 — 낡은 선언이다`);
+}
+for (const [id, declared] of declaredPrecedes) {
+  if (declared.size && !(actualPrecedes.get(id) ?? new Set()).size)
+    fail(`${id} : precedes 를 선언했는데 이 규칙이 이기는 충돌이 하나도 없다`);
+}
+
+// --- 축 교차 검증 (솔 `W1 R1 F03` · 페이블 재종결 조건 ④) --------------------
+// 규칙이 스스로 적은 `axis` 를 믿지 않는다. 그 규칙이 **실제로 이긴 선언들**의 축을
+// 측정 산출물에서 찾아 대조한다. 산문이 아니라 측정이 판정한다.
+if (!axisArt) fail(`축 측정 산출물이 없다: ${axisPath} — 축 판정을 대조 없이 통과시키지 않는다`);
+else if (axisArt.manifest?.auditSha256 !== sha(auditBytes))
+  fail(`축 측정이 다른 감사 산출물에서 나왔다 — 축 ${String(axisArt.manifest?.auditSha256).slice(0, 12)} · 지금 ${sha(auditBytes).slice(0, 12)}. 같은 입력으로 다시 재라`);
+else if (!axisArt.manifest?.audit결속)
+  fail('축 측정의 입력 감사에 결속이 없다 — 결속 없는 입력에서 잰 축은 남의 나무를 잰 값일 수 있다');
+else {
+  const axisOf = new Map((axisArt.perDecl ?? []).map(x => [x.key, x.axis]));
+  const WANT = { vertical: 'V', horizontal: 'H', none: 'N' };
+  for (const r of map.rules) {
+    if (r.bin !== 'defect') continue;
+    const keys = wonKeys[r.id] ?? [];
+    if (!keys.length) continue;
+    const missing = keys.filter(k => !axisOf.has(k));
+    if (missing.length) { fail(`${r.id} : 이긴 선언 ${missing.length}건이 축 측정에 없다 — 예: ${missing[0]}`); continue; }
+    const seen = new Set(keys.map(k => axisOf.get(k)));
+    if (r.axis === 'derived') continue;                       // 값이 뒤 단계에서 파생되는 자리
+    const want = WANT[r.axis];
+    if (want) {
+      const wrong = [...seen].filter(a => a !== want);
+      if (wrong.length) fail(`${r.id} : axis 가 '${r.axis}' 인데 측정된 축은 ${[...seen].join('·')} 다 — 예: ${keys.find(k => axisOf.get(k) !== want)}`);
+    } else if (r.axis === 'both') {
+      if (seen.size === 1 && !seen.has('B'))
+        fail(`${r.id} : axis 가 'both' 인데 측정된 축은 전부 ${[...seen][0]} 다 — 한 축이면 그렇게 적어라`);
+    }
+  }
 }
 
 // --- 완료 조건 -------------------------------------------------------------
 const total = audit.declarations.length;
 const assigned = Object.values(binCount).reduce((a, b) => a + b, 0);
+// `at` 항목이 아무 선언에도 닿지 않으면 **줄 번호가 낡은 것**이다. W1 초판의 오염이 정확히
+// 그렇게 숨었다 — 목록은 남의 나무의 줄 번호였고 아무도 그것을 검사하지 않았다.
+{
+  const seenAt = new Set();
+  for (const d of audit.declarations) seenAt.add(`${d.file}:${d.line}:${d.prop}`);
+  for (const r of map.rules) for (const a of r.match.at ?? []) {
+    const parts = a.split(':');
+    const prop = parts.length >= 3 && !/^\d+$/.test(parts[parts.length - 1]) ? parts.pop() : null;
+    const ln = parts.pop();
+    const f = parts.join(':');
+    const ok = audit.declarations.some(d => d.file.endsWith(f) && String(d.line) === ln && (!prop || d.prop === prop));
+    if (!ok) fail(`${r.id} : at 항목이 어느 선언에도 닿지 않는다 — ${a}. 줄 번호가 낡았거나 다른 나무에서 적은 것이다`);
+  }
+}
 if (unmatched.length) fail(`미분류 ${unmatched.length}건 — 전수 배정이 아니다`);
 if (assigned !== total) fail(`배정 합계 ${assigned} 이 선언 ${total} 과 다르다`);
 if (binCount.approvedException !== 0) fail(`승인 예외 통이 ${binCount.approvedException}건 — W1 은 제안 단계다. 승인은 검수 뒤다`);
@@ -194,3 +307,5 @@ const result = {
 writeFileSync(outPath, JSON.stringify(result, null, 1) + '\n');
 console.log(JSON.stringify({ status: result.summary.status, byBin: binCount, unmatched: unmatched.length, multiMatch: multiMatchCount, failures }, null, 1));
 if (unmatched.length) console.log('미분류 예시:', unmatched.slice(0, 10));
+// FAIL 인데 종료 코드가 0 이면 단독 실행과 CI 체인이 성공으로 오인한다 (솔 검수 `W1 R1 F05`).
+if (failures.length) process.exitCode = 1;

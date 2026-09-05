@@ -41,7 +41,7 @@ import ts from 'typescript';
 import { createHash } from 'node:crypto';
 import { readFileSync, writeFileSync, readdirSync, statSync } from 'node:fs';
 import { resolve, join, relative, basename } from 'node:path';
-import { execSync } from 'node:child_process';
+import { spawnSync } from 'node:child_process';
 
 const opt = Object.fromEntries(process.argv.slice(2).filter(a => a.startsWith('--'))
   .map(a => a.replace(/^--/, '').split('=')));
@@ -170,6 +170,14 @@ for (const abs of files) {
     ts.forEachChild(node, findShadows);
   })(sf);
   const shadowed = (name) => f.shadowedSymbols.includes(name);
+  /** 중첩 객체를 값으로 갖는 속성 — 그 안쪽 키는 스타일 속성이 아니다. */
+  const NESTED_OFFSET = ['shadowOffset', 'textShadowOffset', 'transform'];
+  const insideNestedOffset = (n) => {
+    const obj = n.parent;
+    const pa = obj && obj.parent;
+    return !!(pa && ts.isPropertyAssignment(pa)
+      && NESTED_OFFSET.includes(pa.name.getText(sf).replace(/['"]/g, '')));
+  };
 
   (function visit(node) {
     // T.blue / TYPE.body / space.lg …  — 프로퍼티 접근만 센다(문자열·주석 제외)
@@ -201,7 +209,13 @@ for (const abs of files) {
       f.kitImport.push(node.name.text); bump(tally.kitImport, node.name.text);
     }
     // 인라인 숫자 스타일 리터럴
-    if (ts.isPropertyAssignment(node) && node.name && ts.isNumericLiteral(node.initializer)) {
+    //
+    // ⚠ `shadowOffset: { width: 0, height: 6 }` 의 `height` 는 **상자 높이가 아니다.**
+    //   중첩 객체를 쓰는 속성의 안쪽 키를 상자 크기로 세면 그림자 오프셋이 `size` 선언으로
+    //   잡힌다 — `tokens.ts` 의 그림자 다섯 역할이 그렇게 네 건 잡혔고, W1 재개에서 미분류로
+    //   드러났다. (같은 덫을 `scripts/touch-target-audit.mjs` 에서도 한 번 밟았다.)
+    if (ts.isPropertyAssignment(node) && node.name && ts.isNumericLiteral(node.initializer)
+        && !insideNestedOffset(node)) {
       const prop = node.name.getText(sf).replace(/['"]/g, '');
       const g = propGroup(prop);
       if (g) { f.inline[g]++; bump(tally.inline[g], `${prop}:${node.initializer.text}`);
@@ -271,17 +285,70 @@ const inlineReport = Object.fromEntries(Object.keys(NUMERIC_STYLE_PROPS).map(g =
     product: byLayer('product').reduce((a, f) => a + f.inline[g], 0) }];
 }));
 
-let commit = null, treeOid = null;
-try {
-  commit = execSync('git rev-parse HEAD', { cwd: repoRoot }).toString().trim();
-  treeOid = execSync('git rev-parse HEAD^{tree}', { cwd: repoRoot }).toString().trim();
-} catch { /* git 없이도 동작한다 */ }
+// ── 입력 결속 (솔 검수 `W1 R1 F01`) ──────────────────────────────────────────
+// 이 감사기의 산출물이 W1 전체의 입력이다. 그런데 초판은 HEAD 를 **적기만** 했고 아무도
+// 그 값을 검사하지 않았다. 그 결과 3,677건이 다른 브랜치(`6497666`)에서 측정된 채로
+// `codex/prototype-persistence` 에 실렸고, 자기 커밋에서 재현되지 않았다.
+//
+// 세 가지를 고친다 —
+//   ① 문자열 셸 실행을 버린다. `HEAD^{tree}` 가 Windows 셸에서 `HEAD{tree}` 로 전달돼
+//      tree 조회가 조용히 실패했다. 인자 배열로 넘긴다.
+//   ② `--root` 가 **그 저장소의 최상위와 같은지** 단언한다. 다른 저장소 안의 임시 복사본을
+//      가리키면 상위 저장소의 HEAD 를 적게 된다 — 검수자가 실제로 그 경로로 재현했다.
+//   ③ `--expect-commit` 을 **필수**로 하고 전체 SHA 완전 일치와 선택 범위 dirty 0 을 단언한다.
+const git = (args) => {
+  const r = spawnSync('git', args, { cwd: repoRoot, encoding: 'utf8' });
+  return r.status === 0 ? r.stdout.trim() : null;
+};
+const bindFail = [];
+const toplevel = git(['rev-parse', '--show-toplevel']);
+const commit = git(['rev-parse', 'HEAD']);
+const treeOid = git(['rev-parse', 'HEAD^{tree}']);
+const wantCommit = opt['expect-commit'];
+if (opt['no-bind'] === undefined) {
+  if (!toplevel) bindFail.push(`--root 가 git 저장소가 아니다: ${repoRoot}`);
+  else if (resolve(toplevel) !== resolve(repoRoot))
+    bindFail.push(`--root 가 저장소 최상위가 아니다 — root ${resolve(repoRoot)} · 최상위 ${resolve(toplevel)}. 다른 저장소 안의 복사본을 재면 그 상위 저장소의 HEAD 를 적게 된다`);
+  if (wantCommit === undefined)
+    bindFail.push('--expect-commit 이 없다 — 이 산출물은 W1 전체의 입력이다. 어느 커밋을 쟀는지 결속하지 않은 측정은 쓰지 않는다 (의도한 것이면 --no-bind 를 명시하라)');
+  else if (!/^[0-9a-fA-F]{7,40}$/.test(String(wantCommit).trim()))
+    bindFail.push(`--expect-commit 값이 커밋 SHA 가 아니다: '${wantCommit}'`);
+  else {
+    const resolved = git(['rev-parse', '--verify', '--quiet', `${String(wantCommit).trim().toLowerCase()}^{commit}`]);
+    if (!resolved) bindFail.push(`--expect-commit ${wantCommit} 를 커밋으로 해석할 수 없다 — 없는 개체이거나 모호한 짧은 SHA 다`);
+    else if (resolved !== commit) bindFail.push(`측정 커밋 불일치 — 요구 ${resolved} · 실제 ${commit}`);
+  }
+  const dirty = git(['status', '--porcelain', '--', ...SELECTION.roots]);
+  if (dirty === null) bindFail.push('작업 트리 상태를 읽을 수 없다');
+  else if (dirty !== '') bindFail.push(`선택 범위가 깨끗하지 않다 — ${dirty.split(/\r?\n/).length}건 변경. clean checkout 에서 재라`);
+}
+
+/**
+ * 입력 범위 해시 — 감사가 실제로 읽은 것을 결속한다 (솔 `W1 R1 F01` · 페이블 재종결 조건).
+ * 선택된 파일의 `경로 + git blob SHA` 를 정렬해 잇고 감사 스크립트 자신의 sha256 을 더한다.
+ * git 이 없으면 blob SHA 자리에 내용 sha256 을 쓴다 — 정보는 같고 결속도 같다.
+ */
+const blobIds = files.map(f => {
+  const rel = relative(repoRoot, f).replace(/\\/g, '/');
+  const oid = git(['hash-object', '--', f]);
+  return `${rel}\u0000${oid ?? sha(readFileSync(f))}`;
+}).sort();
+const scopeHash = sha(Buffer.from(
+  [...blobIds, `\u0000self\u0000${sha(readFileSync(new URL(import.meta.url)))}`].join('\n'), 'utf8'));
+
+if (bindFail.length) {
+  console.error('토큰 채택 감사 — 입력 결속 FAIL');
+  for (const f of bindFail) console.error(`  - ${f}`);
+  process.exit(1);
+}
 
 const out = {
   manifest: {
     generatedAt: new Date().toISOString(), schemaVersion: 1,
     script: { name: basename(new URL(import.meta.url).pathname), sha256: sha(readFileSync(new URL(import.meta.url))) },
-    repo: { headCommit: commit, headTree: treeOid },
+    repo: { headCommit: commit, headTree: treeOid, toplevel: toplevel ?? null },
+    결속: { expectCommit: wantCommit ?? null, 범위해시: scopeHash,
+      범위해시정의: '선택된 파일의 "경로\\0 git blob SHA" 를 정렬해 잇고 감사 스크립트 자신의 sha256 을 더해 sha256. 커밋 SHA 자기참조 없이 입력을 결속한다.' },
     runner: { node: process.version, typescript: ts.version },
     selection: SELECTION,
     fileLayers: { tokenDefinition: TOKEN_DEFINITION_FILES, sharedComponentPrefixes: SHARED_COMPONENT_PREFIXES,
