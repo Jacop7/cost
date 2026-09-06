@@ -327,7 +327,7 @@ export const COMPONENT = {
     takeout: '#C5CCD3',
   },
   profitChart: {
-    material: T.ter,
+    material: COLOR.text.tertiary,
     fixed: '#5B6573',
     extra: '#CDD3DA',
     tax: T.gray400,
