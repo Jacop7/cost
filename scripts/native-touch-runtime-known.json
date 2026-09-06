@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "baselines": {
+    "android@1": {
+      "observedUnjudged": [],
+      "materialOverlaps": []
+    },
+    "android@2": {
+      "observedUnjudged": [],
+      "materialOverlaps": []
+    }
+  }
+}

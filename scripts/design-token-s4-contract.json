@@ -16,6 +16,16 @@
     "geometryChangesIncludedHere": 131,
     "note": "S4 baseline 대비 exact AST 잠금은 후속 S3b까지 합친 현재 나무를 재므로, S3b 179건 중 fontSize 48건을 제외한 geometry 131건도 allowedAstChanges에 포함한다. 각 변경의 단계 소유권은 S3b 계약이 별도로 단언한다."
   },
+  "nativeStage": {
+    "stage": "S4a",
+    "geometryChangesIncludedHere": 16,
+    "note": "네이티브 부모 clipping 실측으로 승인된 후속 기하 변경만 행별 S4a 소유로 기록한다."
+  },
+  "nativeFollowupStage": {
+    "stage": "S4b",
+    "geometryChangesIncludedHere": 41,
+    "note": "S4a 원래 계보 밖에서 네이티브 감사가 발견한 공용·화면 컴포넌트 후속 보정을 별도 소유한다."
+  },
   "allowedAstDiff": {
     "files": [
       "apps/mobile/app/(tabs)/_layout.tsx",
@@ -23,6 +33,7 @@
       "apps/mobile/src/components/kit/AppHeader.tsx",
       "apps/mobile/src/components/kit/Button.tsx",
       "apps/mobile/src/components/kit/Sheet.tsx",
+      "apps/mobile/src/components/kit/SortSheet.tsx",
       "apps/mobile/src/components/kit/index.tsx",
       "apps/mobile/src/features/changes/components/RecentChangeRow.tsx",
       "apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx",
@@ -88,8 +99,8 @@
       "apps/mobile/src/features/sales/screens/SalesWasteScreen.tsx",
       "apps/mobile/src/theme/tokens.ts"
     ],
-    "beforeHash": "c62f8b1a8b746d38c4d2ce77e1a8e8ef9462c486cf5d0b46c04fc0873f5c181b",
-    "afterHash": "8766402290d3836ea926a8883fea0a3250192544dfab16bfe5874d32c6f6f0f2"
+    "beforeHash": "4fbc7b14b73f4f18dd831a12941a781c244341e826af1bb1cc55d13d5788fe79",
+    "afterHash": "61f8a17f060ec1de51bfcb7beebb8164beb35d874af0736ae03f0ccdefde3fe6"
   },
   "counts": {
     "scrollStart": 17,
@@ -107,7 +118,7 @@
     "scrollEnd": "일반 flow 화면은 gap만 쓴다. Modal Sheet는 별도 좌표계라 LAYOUT.scroll.end + insets.bottom으로 safe-area를 한 번 포함한다.",
     "scrollEndWithFab": "COMPONENT.fab.bottom + COMPONENT.fab.visualHeight + space.xxl",
     "tabLabel": "두 줄 허용, 실측 라벨 초과 높이만 baseHeight에 더하고 safe-area는 한 번만 포함한다.",
-    "button": "소유자 S4a 계약대로 시각 높이는 유지하고 variant별 세로 hitSlop(sm 7/md 1/lg 0)으로 정적 높이 하한 44를 만든다. 가로는 넓히지 않아 이웃 행동과 겹치지 않는다.",
+    "button": "네이티브 부모 clipping이 5개 넘는 sm 소비처에서 반복되어 sm은 시각 minHeight 44·hitSlop 0으로 통일한다. md는 부모 실측 전 열어 두고 lg는 기존 시각 높이로 통과한다.",
     "reorder": "겹치는 28×20 두 버튼 대신 44×44 한 진입점과 웹에서도 두 방향을 제공하는 kit Sheet를 쓴다."
   },
   "allowedAstChanges": [
@@ -115,1435 +126,2066 @@
       "file": "apps/mobile/app/(tabs)/_layout.tsx",
       "declaration": "attr:maxFontSizeMultiplier#1",
       "before": null,
-      "after": "{2}"
+      "after": "{2}",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/app/(tabs)/_layout.tsx",
       "declaration": "attr:numberOfLines#1",
       "before": null,
-      "after": "{2}"
+      "after": "{2}",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/app/(tabs)/_layout.tsx",
       "declaration": "prop:height#1",
       "before": "60 + bottomPad",
-      "after": null
+      "after": null,
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/components/history/HistoryLayout.tsx",
       "declaration": "prop:gap#1",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
+    },
+    {
+      "file": "apps/mobile/src/components/history/HistoryLayout.tsx",
+      "declaration": "prop:minHeight#1",
+      "before": "38",
+      "after": "44",
+      "stage": "S4a"
     },
     {
       "file": "apps/mobile/src/components/history/HistoryLayout.tsx",
       "declaration": "prop:paddingBottom#1",
       "before": "30",
-      "after": "LAYOUT.scroll.end"
+      "after": "LAYOUT.scroll.end",
+      "stage": "S4"
+    },
+    {
+      "file": "apps/mobile/src/components/kit/AppHeader.tsx",
+      "declaration": "prop:minHeight#2",
+      "before": null,
+      "after": "44",
+      "stage": "S4a"
+    },
+    {
+      "file": "apps/mobile/src/components/kit/AppHeader.tsx",
+      "declaration": "prop:minWidth#1",
+      "before": null,
+      "after": "44",
+      "stage": "S4a"
     },
     {
       "file": "apps/mobile/src/components/kit/AppHeader.tsx",
       "declaration": "prop:paddingRight#2",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/components/kit/Button.tsx",
       "declaration": "attr:hitSlop#1",
       "before": null,
-      "after": "{{ top: s.hs, bottom: s.hs }}"
+      "after": "{{ top: s.hs, bottom: s.hs }}",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/components/kit/Button.tsx",
       "declaration": "prop:bottom#1",
       "before": null,
-      "after": "s.hs"
+      "after": "s.hs",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/components/kit/Button.tsx",
       "declaration": "prop:gap#1",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
+    },
+    {
+      "file": "apps/mobile/src/components/kit/Button.tsx",
+      "declaration": "prop:minHeight#1",
+      "before": null,
+      "after": "44",
+      "stage": "S4a"
+    },
+    {
+      "file": "apps/mobile/src/components/kit/Button.tsx",
+      "declaration": "prop:minHeight#2",
+      "before": null,
+      "after": "s.minHeight",
+      "stage": "S4a"
     },
     {
       "file": "apps/mobile/src/components/kit/Button.tsx",
       "declaration": "prop:top#1",
       "before": null,
-      "after": "s.hs"
+      "after": "s.hs",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/components/kit/Sheet.tsx",
       "declaration": "prop:paddingBottom#1",
       "before": "40",
-      "after": "LAYOUT.scroll.end + insets.bottom"
+      "after": "LAYOUT.scroll.end + insets.bottom",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/components/kit/Sheet.tsx",
       "declaration": "prop:paddingBottom#2",
       "before": null,
-      "after": "insets.bottom"
+      "after": "insets.bottom",
+      "stage": "S4"
+    },
+    {
+      "file": "apps/mobile/src/components/kit/SortSheet.tsx",
+      "declaration": "attr:hitSlop#1",
+      "before": "{6}",
+      "after": "{0}",
+      "stage": "S4b"
+    },
+    {
+      "file": "apps/mobile/src/components/kit/SortSheet.tsx",
+      "declaration": "prop:minHeight#1",
+      "before": null,
+      "after": "44",
+      "stage": "S4b"
+    },
+    {
+      "file": "apps/mobile/src/components/kit/index.tsx",
+      "declaration": "attr:hitSlop#1",
+      "before": "{6}",
+      "after": "{0}",
+      "stage": "S4b"
+    },
+    {
+      "file": "apps/mobile/src/components/kit/index.tsx",
+      "declaration": "attr:hitSlop#2",
+      "before": "{6}",
+      "after": "{{ top: 9, bottom: 9 }}",
+      "stage": "S4a"
+    },
+    {
+      "file": "apps/mobile/src/components/kit/index.tsx",
+      "declaration": "prop:bottom#1",
+      "before": "0",
+      "after": "9",
+      "stage": "S4a"
+    },
+    {
+      "file": "apps/mobile/src/components/kit/index.tsx",
+      "declaration": "prop:bottom#2",
+      "before": null,
+      "after": "0",
+      "stage": "S4a"
+    },
+    {
+      "file": "apps/mobile/src/components/kit/index.tsx",
+      "declaration": "prop:flexShrink#1",
+      "before": "0",
+      "after": "1",
+      "stage": "S4b"
+    },
+    {
+      "file": "apps/mobile/src/components/kit/index.tsx",
+      "declaration": "prop:flexShrink#2",
+      "before": null,
+      "after": "0",
+      "stage": "S4b"
     },
     {
       "file": "apps/mobile/src/components/kit/index.tsx",
       "declaration": "prop:gap#12",
       "before": "2",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/components/kit/index.tsx",
       "declaration": "prop:gap#5",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/components/kit/index.tsx",
       "declaration": "prop:gap#9",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/components/kit/index.tsx",
       "declaration": "prop:minHeight#1",
       "before": null,
-      "after": "COMPONENT.fab.visualHeight"
+      "after": "44",
+      "stage": "S4b"
+    },
+    {
+      "file": "apps/mobile/src/components/kit/index.tsx",
+      "declaration": "prop:minHeight#2",
+      "before": null,
+      "after": "COMPONENT.fab.visualHeight",
+      "stage": "S4a"
     },
     {
       "file": "apps/mobile/src/components/kit/index.tsx",
       "declaration": "prop:paddingLeft#2",
       "before": "11",
-      "after": "space.md"
+      "after": "space.md",
+      "stage": "S3b"
+    },
+    {
+      "file": "apps/mobile/src/components/kit/index.tsx",
+      "declaration": "prop:top#1",
+      "before": null,
+      "after": "9",
+      "stage": "S4a"
     },
     {
       "file": "apps/mobile/src/features/changes/components/RecentChangeRow.tsx",
       "declaration": "prop:paddingHorizontal#1",
       "before": "7",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx",
       "declaration": "prop:paddingBottom#1",
       "before": "28",
-      "after": "LAYOUT.scroll.end"
+      "after": "LAYOUT.scroll.end",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx",
       "declaration": "prop:paddingHorizontal#1",
       "before": "7",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx",
       "declaration": "prop:gap#2",
       "before": "7",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx",
       "declaration": "prop:gap#3",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx",
       "declaration": "prop:gap#6",
       "before": "2",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx",
       "declaration": "prop:paddingHorizontal#5",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/ingredients/components/CategoryPickerSheet.tsx",
       "declaration": "prop:paddingBottom#1",
       "before": "30",
-      "after": "LAYOUT.scroll.end"
+      "after": "LAYOUT.scroll.end",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/ingredients/components/IngCard.tsx",
       "declaration": "prop:gap#1",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/ingredients/components/IngCard.tsx",
       "declaration": "prop:gap#2",
       "before": "7",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/ingredients/components/IngCard.tsx",
       "declaration": "prop:gap#3",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/ingredients/components/LedgerRow.tsx",
       "declaration": "prop:gap#1",
       "before": "11",
-      "after": "space.md"
+      "after": "space.md",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/ingredients/components/LossCard.tsx",
       "declaration": "prop:gap#2",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/ingredients/components/LossCard.tsx",
       "declaration": "prop:gap#5",
       "before": "2",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/ingredients/components/UnitPickerSheet.tsx",
       "declaration": "prop:paddingBottom#1",
       "before": "30",
-      "after": "LAYOUT.scroll.end"
+      "after": "LAYOUT.scroll.end",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx",
       "declaration": "prop:gap#2",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
+    },
+    {
+      "file": "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx",
+      "declaration": "prop:marginHorizontal#1",
+      "before": "-9",
+      "after": "-8.5",
+      "stage": "S4a"
+    },
+    {
+      "file": "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx",
+      "declaration": "prop:marginVertical#1",
+      "before": "-2",
+      "after": null,
+      "stage": "S4a"
     },
     {
       "file": "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx",
       "declaration": "prop:minHeight#1",
       "before": "72",
-      "after": "rowMinHeight.twoLine"
+      "after": "rowMinHeight.twoLine",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx",
       "declaration": "prop:paddingBottom#1",
       "before": "26",
-      "after": "LAYOUT.scroll.end"
+      "after": "LAYOUT.scroll.end",
+      "stage": "S4"
+    },
+    {
+      "file": "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx",
+      "declaration": "prop:width#1",
+      "before": "27",
+      "after": "44",
+      "stage": "S4a"
+    },
+    {
+      "file": "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx",
+      "declaration": "prop:width#2",
+      "before": "45",
+      "after": "44",
+      "stage": "S4a"
     },
     {
       "file": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx",
       "declaration": "prop:gap#1",
       "before": "3",
-      "after": "space.xs"
+      "after": "space.xs",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx",
       "declaration": "prop:gap#3",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx",
       "declaration": "prop:gap#5",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx",
       "declaration": "prop:gap#7",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx",
       "declaration": "prop:gap#8",
       "before": "2",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx",
       "declaration": "prop:gap#9",
       "before": "11",
-      "after": "space.md"
+      "after": "space.md",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx",
       "declaration": "prop:paddingBottom#1",
       "before": "28",
-      "after": "LAYOUT.scroll.end"
+      "after": "LAYOUT.scroll.end",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx",
       "declaration": "prop:paddingTop#1",
       "before": "2",
-      "after": "LAYOUT.scroll.start"
+      "after": "LAYOUT.scroll.start",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/ingredients/screens/IngredientFormScreen.tsx",
       "declaration": "prop:gap#6",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/ingredients/screens/IngredientFormScreen.tsx",
       "declaration": "prop:paddingBottom#2",
       "before": "30",
-      "after": "LAYOUT.scroll.end"
+      "after": "LAYOUT.scroll.end",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx",
       "declaration": "prop:gap#2",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx",
       "declaration": "prop:paddingBottom#3",
       "before": "104",
-      "after": "LAYOUT.scroll.endWithFab"
+      "after": "LAYOUT.scroll.endWithFab",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx",
       "declaration": "prop:gap#2",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx",
       "declaration": "prop:gap#3",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx",
       "declaration": "prop:minHeight#1",
       "before": "72",
-      "after": "rowMinHeight.twoLine"
+      "after": "rowMinHeight.twoLine",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx",
       "declaration": "prop:gap#4",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx",
       "declaration": "prop:gap#7",
       "before": "11",
-      "after": "space.md"
+      "after": "space.md",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx",
       "declaration": "prop:minHeight#1",
       "before": "72",
-      "after": "rowMinHeight.twoLine"
+      "after": "rowMinHeight.twoLine",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx",
       "declaration": "prop:paddingBottom#2",
       "before": "30",
-      "after": "LAYOUT.scroll.end"
+      "after": "LAYOUT.scroll.end",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx",
       "declaration": "prop:paddingBottom#5",
       "before": "30",
-      "after": "LAYOUT.scroll.end"
+      "after": "LAYOUT.scroll.end",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx",
       "declaration": "prop:gap#2",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx",
       "declaration": "prop:gap#5",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx",
       "declaration": "prop:gap#6",
       "before": "7",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx",
       "declaration": "prop:gap#1",
       "before": "22",
-      "after": "space.xxl"
+      "after": "space.xxl",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx",
       "declaration": "prop:gap#3",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx",
       "declaration": "prop:gap#5",
       "before": "7",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx",
       "declaration": "prop:paddingBottom#4",
       "before": "26",
-      "after": "LAYOUT.scroll.end"
+      "after": "LAYOUT.scroll.end",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/my/components/ChannelWeightSheet.tsx",
       "declaration": "prop:gap#3",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/my/components/RevenueGapCard.tsx",
       "declaration": "prop:gap#2",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/my/screens/FixedCostEditScreen.tsx",
       "declaration": "prop:gap#4",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/my/screens/FixedCostEditScreen.tsx",
       "declaration": "prop:gap#8",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/my/screens/FixedCostEditScreen.tsx",
       "declaration": "prop:paddingBottom#2",
       "before": "30",
-      "after": "LAYOUT.scroll.end"
+      "after": "LAYOUT.scroll.end",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/my/screens/FixedCostScreen.tsx",
       "declaration": "prop:gap#1",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/my/screens/FixedCostScreen.tsx",
       "declaration": "prop:gap#3",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/my/screens/FixedCostScreen.tsx",
       "declaration": "prop:gap#4",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/my/screens/FixedCostScreen.tsx",
       "declaration": "prop:minHeight#2",
       "before": "55",
-      "after": "rowMinHeight.oneLine"
+      "after": "rowMinHeight.oneLine",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/my/screens/FixedCostScreen.tsx",
       "declaration": "prop:paddingBottom#3",
       "before": "30",
-      "after": "LAYOUT.scroll.end"
+      "after": "LAYOUT.scroll.end",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/my/screens/FixedCostScreen.tsx",
       "declaration": "prop:paddingTop#1",
       "before": "2",
-      "after": "LAYOUT.scroll.start"
+      "after": "LAYOUT.scroll.start",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/my/screens/MyAccountScreen.tsx",
       "declaration": "prop:gap#2",
       "before": "11",
-      "after": "space.md"
+      "after": "space.md",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/my/screens/MyAccountScreen.tsx",
       "declaration": "prop:paddingBottom#1",
       "before": "40",
-      "after": "LAYOUT.scroll.end"
+      "after": "LAYOUT.scroll.end",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/my/screens/MyCategoryHubScreen.tsx",
       "declaration": "prop:paddingBottom#1",
       "before": "28",
-      "after": "LAYOUT.scroll.end"
+      "after": "LAYOUT.scroll.end",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/my/screens/MyChannelsScreen.tsx",
       "declaration": "prop:gap#3",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/my/screens/MyChannelsScreen.tsx",
       "declaration": "prop:gap#4",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/my/screens/MyChannelsScreen.tsx",
       "declaration": "prop:paddingBottom#1",
       "before": "32",
-      "after": "LAYOUT.scroll.end"
+      "after": "LAYOUT.scroll.end",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
       "declaration": "prop:paddingBottom#2",
       "before": "28",
-      "after": "LAYOUT.scroll.end"
+      "after": "LAYOUT.scroll.end",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx",
       "declaration": "prop:gap#1",
       "before": "3",
-      "after": "space.xs"
+      "after": "space.xs",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx",
       "declaration": "prop:gap#11",
       "before": "7",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx",
       "declaration": "prop:gap#5",
       "before": "3",
-      "after": "space.xs"
+      "after": "space.xs",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx",
       "declaration": "prop:gap#6",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx",
       "declaration": "prop:gap#7",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx",
       "declaration": "prop:gap#8",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx",
       "declaration": "prop:gap#9",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx",
       "declaration": "prop:paddingBottom#2",
       "before": "30",
-      "after": "LAYOUT.scroll.end"
+      "after": "LAYOUT.scroll.end",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
       "declaration": "prop:gap#1",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
       "declaration": "prop:gap#2",
       "before": "7",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
       "declaration": "prop:gap#3",
       "before": "7",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
       "declaration": "prop:paddingBottom#1",
       "before": "28",
-      "after": "LAYOUT.scroll.end"
+      "after": "LAYOUT.scroll.end",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx",
       "declaration": "prop:gap#2",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx",
       "declaration": "prop:gap#3",
       "before": "7",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx",
       "declaration": "prop:paddingBottom#1",
       "before": "28",
-      "after": "LAYOUT.scroll.end"
+      "after": "LAYOUT.scroll.end",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
       "declaration": "prop:gap#5",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
       "declaration": "prop:paddingBottom#1",
       "before": "28",
-      "after": "LAYOUT.scroll.end"
+      "after": "LAYOUT.scroll.end",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
       "declaration": "prop:paddingBottom#2",
       "before": "30",
-      "after": "LAYOUT.scroll.end"
+      "after": "LAYOUT.scroll.end",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/my/screens/MyUnitsScreen.tsx",
       "declaration": "prop:paddingBottom#1",
       "before": "28",
-      "after": "LAYOUT.scroll.end"
+      "after": "LAYOUT.scroll.end",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx",
       "declaration": "attr:hitSlop#2",
       "before": "{5}",
-      "after": "{COMPONENT.adjacentActions.hitSlop}"
+      "after": "{COMPONENT.adjacentActions.hitSlop}",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx",
       "declaration": "attr:hitSlop#3",
       "before": "{5}",
-      "after": "{COMPONENT.adjacentActions.hitSlop}"
+      "after": "{COMPONENT.adjacentActions.hitSlop}",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx",
       "declaration": "prop:gap#2",
       "before": "11",
-      "after": "COMPONENT.adjacentActions.gap"
+      "after": "COMPONENT.adjacentActions.gap",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx",
       "declaration": "prop:gap#3",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx",
       "declaration": "prop:height#3",
       "before": "34",
-      "after": "controlVisualHeight.sm"
+      "after": "controlVisualHeight.sm",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx",
       "declaration": "prop:height#4",
       "before": "34",
-      "after": "controlVisualHeight.sm"
+      "after": "controlVisualHeight.sm",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx",
       "declaration": "prop:paddingBottom#1",
       "before": "28",
-      "after": "LAYOUT.scroll.end"
+      "after": "LAYOUT.scroll.end",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx",
       "declaration": "prop:width#3",
       "before": "34",
-      "after": "controlVisualHeight.sm"
+      "after": "controlVisualHeight.sm",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx",
       "declaration": "prop:width#4",
       "before": "34",
-      "after": "controlVisualHeight.sm"
+      "after": "controlVisualHeight.sm",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx",
       "declaration": "prop:gap#4",
       "before": "7",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx",
       "declaration": "prop:gap#5",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx",
       "declaration": "prop:gap#8",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx",
       "declaration": "prop:paddingBottom#2",
       "before": "30",
-      "after": "LAYOUT.scroll.end"
+      "after": "LAYOUT.scroll.end",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx",
       "declaration": "prop:gap#1",
       "before": "22",
-      "after": "space.xxl"
+      "after": "space.xxl",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx",
       "declaration": "prop:gap#13",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx",
       "declaration": "prop:gap#3",
       "before": "7",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx",
       "declaration": "prop:gap#5",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx",
       "declaration": "prop:gap#7",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx",
       "declaration": "prop:gap#8",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx",
       "declaration": "prop:gap#9",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
+    },
+    {
+      "file": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx",
+      "declaration": "prop:minHeight#1",
+      "before": null,
+      "after": "44",
+      "stage": "S4b"
     },
     {
       "file": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx",
       "declaration": "prop:paddingBottom#3",
       "before": "28",
-      "after": "LAYOUT.scroll.end"
+      "after": "LAYOUT.scroll.end",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx",
       "declaration": "prop:gap#5",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx",
       "declaration": "prop:gap#4",
       "before": "7",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx",
       "declaration": "prop:gap#5",
       "before": "7",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx",
       "declaration": "prop:paddingBottom#2",
       "before": "28",
-      "after": "LAYOUT.scroll.end"
+      "after": "LAYOUT.scroll.end",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx",
       "declaration": "attr:hitSlop#2",
       "before": "{4}",
-      "after": "{{ top: 6, bottom: 6, left: 4, right: 8 }}"
+      "after": "{{ top: 6, bottom: 6, left: 4, right: 8 }}",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx",
       "declaration": "attr:hitSlop#3",
       "before": "{4}",
-      "after": null
+      "after": null,
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx",
       "declaration": "attr:hitSlop#4",
       "before": "{{ top: 6, bottom: 6, left: 4, right: 8 }}",
-      "after": null
+      "after": null,
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx",
       "declaration": "prop:gap#2",
       "before": "2",
-      "after": "space.xs"
+      "after": "space.xs",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx",
       "declaration": "prop:gap#3",
       "before": "space.xs",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx",
       "declaration": "prop:height#2",
       "before": "20",
-      "after": "44"
+      "after": "44",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx",
       "declaration": "prop:height#3",
       "before": "20",
-      "after": "controlVisualHeight.sm"
+      "after": "controlVisualHeight.sm",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx",
       "declaration": "prop:height#4",
       "before": "controlVisualHeight.sm",
-      "after": null
+      "after": null,
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx",
       "declaration": "prop:paddingBottom#1",
       "before": "28",
-      "after": "LAYOUT.scroll.end"
+      "after": "LAYOUT.scroll.end",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx",
       "declaration": "prop:width#2",
       "before": "28",
-      "after": "44"
+      "after": "44",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx",
       "declaration": "prop:width#3",
       "before": "28",
-      "after": "controlVisualHeight.sm"
+      "after": "controlVisualHeight.sm",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx",
       "declaration": "prop:width#4",
       "before": "controlVisualHeight.sm",
-      "after": null
+      "after": null,
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx",
       "declaration": "attr:hitSlop#1",
       "before": "{5}",
-      "after": "{COMPONENT.adjacentActions.hitSlop}"
+      "after": "{COMPONENT.adjacentActions.hitSlop}",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx",
       "declaration": "attr:hitSlop#2",
       "before": "{5}",
-      "after": "{COMPONENT.adjacentActions.hitSlop}"
+      "after": "{COMPONENT.adjacentActions.hitSlop}",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx",
       "declaration": "prop:gap#1",
       "before": "10",
-      "after": "COMPONENT.adjacentActions.gap"
+      "after": "COMPONENT.adjacentActions.gap",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx",
       "declaration": "prop:gap#2",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx",
       "declaration": "prop:gap#4",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx",
       "declaration": "prop:gap#5",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx",
       "declaration": "prop:height#1",
       "before": "34",
-      "after": "controlVisualHeight.sm"
+      "after": "controlVisualHeight.sm",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx",
       "declaration": "prop:height#2",
       "before": "34",
-      "after": "controlVisualHeight.sm"
+      "after": "controlVisualHeight.sm",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx",
       "declaration": "prop:paddingBottom#1",
       "before": "96",
-      "after": "LAYOUT.scroll.endWithFab"
+      "after": "LAYOUT.scroll.endWithFab",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx",
       "declaration": "prop:width#1",
       "before": "34",
-      "after": "controlVisualHeight.sm"
+      "after": "controlVisualHeight.sm",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx",
       "declaration": "prop:width#2",
       "before": "34",
-      "after": "controlVisualHeight.sm"
+      "after": "controlVisualHeight.sm",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/MaterialSearchScreen.tsx",
       "declaration": "prop:gap#3",
       "before": "11",
-      "after": "space.md"
+      "after": "space.md",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/MaterialSearchScreen.tsx",
       "declaration": "prop:gap#4",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/MaterialSearchScreen.tsx",
       "declaration": "prop:paddingBottom#1",
       "before": "32",
-      "after": "LAYOUT.scroll.end"
+      "after": "LAYOUT.scroll.end",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx",
       "declaration": "prop:marginHorizontal#1",
       "before": "7",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx",
       "declaration": "prop:marginHorizontal#2",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx",
       "declaration": "prop:paddingBottom#1",
       "before": "32",
-      "after": "LAYOUT.scroll.end"
+      "after": "LAYOUT.scroll.end",
+      "stage": "S4"
+    },
+    {
+      "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
+      "declaration": "attr:hitSlop#1",
+      "before": "{6}",
+      "after": "{8}",
+      "stage": "S4b"
+    },
+    {
+      "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
+      "declaration": "attr:hitSlop#2",
+      "before": "{7}",
+      "after": "{8}",
+      "stage": "S4a"
+    },
+    {
+      "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
+      "declaration": "attr:hitSlop#3",
+      "before": "{7}",
+      "after": null,
+      "stage": "S4b"
+    },
+    {
+      "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
+      "declaration": "attr:hitSlop#4",
+      "before": "{8}",
+      "after": null,
+      "stage": "S4b"
+    },
+    {
+      "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
+      "declaration": "prop:flexShrink#1",
+      "before": null,
+      "after": "0",
+      "stage": "S4b"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
       "declaration": "prop:gap#1",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
       "declaration": "prop:gap#10",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
       "declaration": "prop:gap#11",
       "before": "22",
-      "after": "space.xxl"
+      "after": "space.xxl",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
       "declaration": "prop:gap#4",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
       "declaration": "prop:gap#5",
       "before": "22",
-      "after": "space.xxl"
+      "after": "space.xxl",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
       "declaration": "prop:gap#6",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
       "declaration": "prop:gap#7",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
       "declaration": "prop:gap#9",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
+    },
+    {
+      "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
+      "declaration": "prop:height#1",
+      "before": "2.5",
+      "after": "44",
+      "stage": "S4b"
+    },
+    {
+      "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
+      "declaration": "prop:height#2",
+      "before": "space.sm",
+      "after": "2.5",
+      "stage": "S4b"
+    },
+    {
+      "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
+      "declaration": "prop:height#3",
+      "before": "30",
+      "after": "44",
+      "stage": "S4b"
+    },
+    {
+      "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
+      "declaration": "prop:height#4",
+      "before": "30",
+      "after": "space.sm",
+      "stage": "S4b"
+    },
+    {
+      "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
+      "declaration": "prop:height#5",
+      "before": "space.sm",
+      "after": "30",
+      "stage": "S4b"
+    },
+    {
+      "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
+      "declaration": "prop:height#6",
+      "before": "2.5",
+      "after": "30",
+      "stage": "S4b"
+    },
+    {
+      "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
+      "declaration": "prop:height#7",
+      "before": null,
+      "after": "44",
+      "stage": "S4b"
+    },
+    {
+      "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
+      "declaration": "prop:height#8",
+      "before": null,
+      "after": "space.sm",
+      "stage": "S4b"
+    },
+    {
+      "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
+      "declaration": "prop:height#9",
+      "before": null,
+      "after": "2.5",
+      "stage": "S4b"
+    },
+    {
+      "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
+      "declaration": "prop:margin#1",
+      "before": "-7",
+      "after": "-8",
+      "stage": "S4a"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
       "declaration": "prop:marginLeft#1",
       "before": "7",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
+    },
+    {
+      "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
+      "declaration": "prop:minHeight#1",
+      "before": null,
+      "after": "44",
+      "stage": "S4b"
+    },
+    {
+      "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
+      "declaration": "prop:minWidth#2",
+      "before": "0",
+      "after": "44",
+      "stage": "S4b"
+    },
+    {
+      "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
+      "declaration": "prop:minWidth#3",
+      "before": "22",
+      "after": "0",
+      "stage": "S4b"
+    },
+    {
+      "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
+      "declaration": "prop:minWidth#4",
+      "before": null,
+      "after": "22",
+      "stage": "S4b"
+    },
+    {
+      "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
+      "declaration": "prop:padding#1",
+      "before": "2",
+      "after": "8",
+      "stage": "S4b"
+    },
+    {
+      "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
+      "declaration": "prop:padding#2",
+      "before": "7",
+      "after": null,
+      "stage": "S4b"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
       "declaration": "prop:paddingBottom#7",
       "before": "30",
-      "after": "LAYOUT.scroll.end"
+      "after": "LAYOUT.scroll.end",
+      "stage": "S4"
+    },
+    {
+      "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
+      "declaration": "prop:width#1",
+      "before": "30",
+      "after": "44",
+      "stage": "S4b"
+    },
+    {
+      "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
+      "declaration": "prop:width#2",
+      "before": "30",
+      "after": "44",
+      "stage": "S4b"
+    },
+    {
+      "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
+      "declaration": "prop:width#3",
+      "before": null,
+      "after": "30",
+      "stage": "S4b"
+    },
+    {
+      "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
+      "declaration": "prop:width#4",
+      "before": null,
+      "after": "30",
+      "stage": "S4b"
+    },
+    {
+      "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
+      "declaration": "prop:width#5",
+      "before": null,
+      "after": "44",
+      "stage": "S4b"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
       "declaration": "prop:gap#1",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
       "declaration": "prop:gap#10",
       "before": "7",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
       "declaration": "prop:gap#12",
       "before": "2",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
       "declaration": "prop:gap#13",
       "before": "22",
-      "after": "space.xxl"
+      "after": "space.xxl",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
       "declaration": "prop:gap#14",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
       "declaration": "prop:gap#16",
       "before": "2",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
       "declaration": "prop:gap#2",
       "before": "22",
-      "after": "space.xxl"
+      "after": "space.xxl",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
       "declaration": "prop:gap#3",
       "before": "3",
-      "after": "space.xs"
+      "after": "space.xs",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
       "declaration": "prop:gap#5",
       "before": "7",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
       "declaration": "prop:gap#6",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
       "declaration": "prop:marginLeft#1",
       "before": "7",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
       "declaration": "prop:paddingBottom#2",
       "before": "28",
-      "after": "LAYOUT.scroll.end"
+      "after": "LAYOUT.scroll.end",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
       "declaration": "prop:paddingTop#2",
       "before": "2",
-      "after": "LAYOUT.scroll.start"
+      "after": "LAYOUT.scroll.start",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx",
       "declaration": "prop:gap#2",
       "before": "11",
-      "after": "space.md"
+      "after": "space.md",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx",
       "declaration": "prop:gap#3",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx",
       "declaration": "prop:paddingBottom#1",
       "before": "32",
-      "after": "LAYOUT.scroll.end"
+      "after": "LAYOUT.scroll.end",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx",
       "declaration": "prop:gap#1",
       "before": "7",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx",
       "declaration": "prop:gap#3",
       "before": "7",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx",
       "declaration": "prop:marginLeft#1",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
+    },
+    {
+      "file": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx",
+      "declaration": "prop:minHeight#1",
+      "before": null,
+      "after": "68",
+      "stage": "S4b"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx",
       "declaration": "prop:paddingBottom#2",
       "before": "104",
-      "after": "LAYOUT.scroll.endWithFab"
+      "after": "LAYOUT.scroll.endWithFab",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx",
       "declaration": "prop:paddingHorizontal#2",
       "before": "7",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx",
       "declaration": "prop:minHeight#1",
       "before": "56",
-      "after": "rowMinHeight.oneLine"
+      "after": "rowMinHeight.oneLine",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx",
       "declaration": "prop:paddingHorizontal#1",
       "before": "7",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/sales/components/LateCloseSheet.tsx",
       "declaration": "prop:gap#2",
       "before": "7",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/sales/components/MenuProfitSheet.tsx",
       "declaration": "prop:gap#1",
       "before": "1",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/sales/components/MenuProfitSheet.tsx",
       "declaration": "prop:gap#2",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx",
       "declaration": "attr:numberOfLines#3",
       "before": "{1}",
-      "after": null
+      "after": null,
+      "stage": "S4"
+    },
+    {
+      "file": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx",
+      "declaration": "prop:flexShrink#1",
+      "before": null,
+      "after": "1",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx",
       "declaration": "prop:gap#2",
       "before": "1",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx",
       "declaration": "prop:gap#4",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx",
       "declaration": "prop:gap#8",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx",
       "declaration": "prop:minHeight#5",
       "before": "70",
-      "after": "rowMinHeight.twoLine"
+      "after": "rowMinHeight.twoLine",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx",
       "declaration": "prop:paddingHorizontal#1",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/sales/components/SaleStepper.tsx",
       "declaration": "prop:gap#1",
       "before": "7",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx",
       "declaration": "prop:gap#2",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx",
       "declaration": "prop:gap#3",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx",
       "declaration": "prop:minHeight#2",
       "before": "55",
-      "after": "rowMinHeight.oneLine"
+      "after": "rowMinHeight.oneLine",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx",
       "declaration": "prop:paddingTop#1",
       "before": "2",
-      "after": "LAYOUT.scroll.start"
+      "after": "LAYOUT.scroll.start",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/sales/screens/SalesChannelScreen.tsx",
       "declaration": "prop:paddingBottom#1",
       "before": "28",
-      "after": "LAYOUT.scroll.end"
+      "after": "LAYOUT.scroll.end",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/sales/screens/SalesChannelScreen.tsx",
       "declaration": "prop:paddingTop#1",
       "before": "2",
-      "after": "LAYOUT.scroll.start"
+      "after": "LAYOUT.scroll.start",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/sales/screens/SalesDayDetailScreen.tsx",
       "declaration": "prop:gap#2",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/sales/screens/SalesDayDetailScreen.tsx",
       "declaration": "prop:paddingTop#1",
       "before": "2",
-      "after": "LAYOUT.scroll.start"
+      "after": "LAYOUT.scroll.start",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/sales/screens/SalesDayFullScreen.tsx",
       "declaration": "prop:paddingBottom#1",
       "before": "28",
-      "after": "LAYOUT.scroll.end"
+      "after": "LAYOUT.scroll.end",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/sales/screens/SalesDayFullScreen.tsx",
       "declaration": "prop:paddingTop#1",
       "before": "2",
-      "after": "LAYOUT.scroll.start"
+      "after": "LAYOUT.scroll.start",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/sales/screens/SalesExpenseScreen.tsx",
       "declaration": "prop:paddingBottom#1",
       "before": "28",
-      "after": "LAYOUT.scroll.end"
+      "after": "LAYOUT.scroll.end",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/sales/screens/SalesExpenseScreen.tsx",
       "declaration": "prop:paddingTop#1",
       "before": "2",
-      "after": "LAYOUT.scroll.start"
+      "after": "LAYOUT.scroll.start",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/sales/screens/SalesExtraScreen.tsx",
       "declaration": "prop:paddingBottom#1",
       "before": "28",
-      "after": "LAYOUT.scroll.end"
+      "after": "LAYOUT.scroll.end",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/sales/screens/SalesExtraScreen.tsx",
       "declaration": "prop:paddingTop#1",
       "before": "2",
-      "after": "LAYOUT.scroll.start"
+      "after": "LAYOUT.scroll.start",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/sales/screens/SalesFixedScreen.tsx",
       "declaration": "prop:gap#2",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/sales/screens/SalesFixedScreen.tsx",
       "declaration": "prop:paddingBottom#1",
       "before": "28",
-      "after": "LAYOUT.scroll.end"
+      "after": "LAYOUT.scroll.end",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/sales/screens/SalesFixedScreen.tsx",
       "declaration": "prop:paddingTop#1",
       "before": "2",
-      "after": "LAYOUT.scroll.start"
+      "after": "LAYOUT.scroll.start",
+      "stage": "S4"
+    },
+    {
+      "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
+      "declaration": "attr:hitSlop#2",
+      "before": "{6}",
+      "after": "{8}",
+      "stage": "S4b"
+    },
+    {
+      "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
+      "declaration": "attr:hitSlop#4",
+      "before": "{8}",
+      "after": null,
+      "stage": "S4b"
     },
     {
       "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
       "declaration": "prop:gap#10",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
       "declaration": "prop:gap#11",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
       "declaration": "prop:gap#6",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
       "declaration": "prop:gap#7",
       "before": "3",
-      "after": "space.xs"
+      "after": "space.xs",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
       "declaration": "prop:gap#9",
       "before": "7",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
       "declaration": "prop:minHeight#2",
       "before": "82",
-      "after": "rowMinHeight.twoLine"
+      "after": "44",
+      "stage": "S4b"
+    },
+    {
+      "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
+      "declaration": "prop:minHeight#3",
+      "before": null,
+      "after": "44",
+      "stage": "S4b"
+    },
+    {
+      "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
+      "declaration": "prop:minHeight#4",
+      "before": null,
+      "after": "rowMinHeight.twoLine",
+      "stage": "S4b"
+    },
+    {
+      "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
+      "declaration": "prop:minHeight#5",
+      "before": null,
+      "after": "44",
+      "stage": "S4b"
+    },
+    {
+      "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
+      "declaration": "prop:minHeight#6",
+      "before": null,
+      "after": "44",
+      "stage": "S4b"
+    },
+    {
+      "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
+      "declaration": "prop:minWidth#3",
+      "before": "0",
+      "after": "44",
+      "stage": "S4b"
+    },
+    {
+      "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
+      "declaration": "prop:minWidth#6",
+      "before": null,
+      "after": "0",
+      "stage": "S4b"
     },
     {
       "file": "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx",
       "declaration": "prop:gap#3",
       "before": "1",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx",
       "declaration": "prop:paddingBottom#1",
       "before": "28",
-      "after": "LAYOUT.scroll.end"
+      "after": "LAYOUT.scroll.end",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx",
       "declaration": "prop:paddingTop#1",
       "before": "2",
-      "after": "LAYOUT.scroll.start"
+      "after": "LAYOUT.scroll.start",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx",
       "declaration": "prop:gap#1",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx",
       "declaration": "prop:paddingBottom#1",
       "before": "28",
-      "after": "LAYOUT.scroll.end"
+      "after": "LAYOUT.scroll.end",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx",
       "declaration": "prop:paddingTop#1",
       "before": "2",
-      "after": "LAYOUT.scroll.start"
+      "after": "LAYOUT.scroll.start",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
       "declaration": "prop:gap#4",
       "before": "7",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
       "declaration": "prop:marginRight#2",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
       "declaration": "prop:marginRight#3",
       "before": "6",
-      "after": "space.sm"
+      "after": "space.sm",
+      "stage": "S3b"
     },
     {
       "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
       "declaration": "prop:paddingTop#1",
       "before": "2",
-      "after": "LAYOUT.scroll.start"
+      "after": "LAYOUT.scroll.start",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/sales/screens/SalesRevenueScreen.tsx",
       "declaration": "prop:paddingBottom#1",
       "before": "28",
-      "after": "LAYOUT.scroll.end"
+      "after": "LAYOUT.scroll.end",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/sales/screens/SalesRevenueScreen.tsx",
       "declaration": "prop:paddingTop#1",
       "before": "2",
-      "after": "LAYOUT.scroll.start"
+      "after": "LAYOUT.scroll.start",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/sales/screens/SalesStockCheckScreen.tsx",
       "declaration": "prop:paddingBottom#1",
       "before": "28",
-      "after": "LAYOUT.scroll.end"
+      "after": "LAYOUT.scroll.end",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/sales/screens/SalesStockCheckScreen.tsx",
       "declaration": "prop:paddingTop#1",
       "before": "2",
-      "after": "LAYOUT.scroll.start"
+      "after": "LAYOUT.scroll.start",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/sales/screens/SalesTaxScreen.tsx",
       "declaration": "prop:paddingBottom#1",
       "before": "28",
-      "after": "LAYOUT.scroll.end"
+      "after": "LAYOUT.scroll.end",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/sales/screens/SalesTaxScreen.tsx",
       "declaration": "prop:paddingTop#1",
       "before": "2",
-      "after": "LAYOUT.scroll.start"
+      "after": "LAYOUT.scroll.start",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/sales/screens/SalesWasteScreen.tsx",
       "declaration": "prop:paddingBottom#1",
       "before": "28",
-      "after": "LAYOUT.scroll.end"
+      "after": "LAYOUT.scroll.end",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/features/sales/screens/SalesWasteScreen.tsx",
       "declaration": "prop:paddingTop#1",
       "before": "2",
-      "after": "LAYOUT.scroll.start"
+      "after": "LAYOUT.scroll.start",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/theme/tokens.ts",
       "declaration": "prop:bottom#1",
       "before": null,
-      "after": "space.xxl"
+      "after": "space.xxl",
+      "stage": "S4"
     },
     {
       "file": "apps/mobile/src/theme/tokens.ts",
       "declaration": "prop:gap#1",
       "before": null,
-      "after": "space.md"
+      "after": "space.md",
+      "stage": "S4"
     }
   ]
 }

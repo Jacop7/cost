@@ -36,7 +36,7 @@ function SecHead({ title, sub, right }: { title: string; sub?: string; right?: R
 
 function InfoBtn({ active, onPress }: { active: boolean; onPress: () => void }) {
   return (
-    <Pressable onPress={onPress} hitSlop={6} style={{ padding: 2 }} accessibilityRole="button" accessibilityLabel="설명 보기">
+    <Pressable onPress={onPress} style={{ width: 44, height: 44, flexShrink: 0, alignItems: 'center', justifyContent: 'center' }} accessibilityRole="button" accessibilityLabel="설명 보기">
       <Icon name="info" size={14} color={active ? COLOR.action.primary : COLOR.text.tertiary} />
     </Pressable>
   );
@@ -294,7 +294,7 @@ export default function RecipeAddScreen() {
                           {l.unitPrice === null ? '단가 산출 전' : l.unit === null ? `${won(Math.round(l.unitPrice))}원/인분` : formatUnitPrice(l.unitPrice, l.unit)}
                         </Text>
                       </Pressable>
-                      <Pressable onPress={() => openQty(i)} accessibilityRole="button" accessibilityLabel={`${l.name} 사용량`} style={{ alignItems: 'flex-end', marginRight: 8 }}>
+                      <Pressable onPress={() => openQty(i)} accessibilityRole="button" accessibilityLabel={`${l.name} 사용량`} style={{ minWidth: 44, minHeight: 44, alignItems: 'flex-end', justifyContent: 'center', marginRight: 8 }}>
                         <Text style={[{ fontSize: 16, fontWeight: '800', color: cost === null ? COLOR.text.tertiary : T.ink }, NUM]}>
                           {cost === null ? '—' : `${won(Math.round(cost * cm))}원`}
                         </Text>
@@ -302,7 +302,7 @@ export default function RecipeAddScreen() {
                           {l.unit === null ? `${(l.inputQty / servings) * cm}인분` : formatQuantity((l.inputQty / servings) * cm, l.unit)}
                         </Text>
                       </Pressable>
-                      <Pressable onPress={() => removeLine(i)} accessibilityRole="button" accessibilityLabel={`${l.name} 삭제`}>
+                      <Pressable onPress={() => removeLine(i)} accessibilityRole="button" accessibilityLabel={`${l.name} 삭제`} style={{ width: 44, height: 44, alignItems: 'center', justifyContent: 'center' }}>
                         <Icon name="close" size={18} color={COLOR.text.tertiary} />
                       </Pressable>
                     </View>
@@ -351,16 +351,16 @@ export default function RecipeAddScreen() {
                       <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }} numberOfLines={1}>{e.name}</Text>
                       <Text style={[{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.xs }, NUM]}>{won(e.amount)}원 × {e.qty}</Text>
                     </View>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, padding: 7, margin: -7 }}>
-                      <Pressable onPress={() => updateExtra(i, { qty: Math.max(0, e.qty - 1) })} hitSlop={7} accessibilityRole="button" accessibilityLabel={`${e.name} 수량 줄이기`} style={{ width: 30, height: 30, borderRadius: 8, backgroundColor: T.line2, alignItems: 'center', justifyContent: 'center' }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, padding: 8, margin: -8 }}>
+                      <Pressable onPress={() => updateExtra(i, { qty: Math.max(0, e.qty - 1) })} hitSlop={8} accessibilityRole="button" accessibilityLabel={`${e.name} 수량 줄이기`} style={{ width: 30, height: 30, borderRadius: 8, backgroundColor: T.line2, alignItems: 'center', justifyContent: 'center' }}>
                         <Icon name="minus" size={16} color={T.sub} sw={2.4} />
                       </Pressable>
                       <Text style={[{ minWidth: 22, textAlign: 'center', fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{e.qty}</Text>
-                      <Pressable onPress={() => updateExtra(i, { qty: e.qty + 1 })} hitSlop={7} accessibilityRole="button" accessibilityLabel={`${e.name} 수량 늘리기`} style={{ width: 30, height: 30, borderRadius: 8, backgroundColor: COLOR.action.primary, alignItems: 'center', justifyContent: 'center' }}>
+                      <Pressable onPress={() => updateExtra(i, { qty: e.qty + 1 })} hitSlop={8} accessibilityRole="button" accessibilityLabel={`${e.name} 수량 늘리기`} style={{ width: 30, height: 30, borderRadius: 8, backgroundColor: COLOR.action.primary, alignItems: 'center', justifyContent: 'center' }}>
                         <Icon name="plus" size={16} color={T.onColor} sw={2.4} />
                       </Pressable>
                     </View>
-                    <Pressable onPress={() => removeExtra(i)} hitSlop={8} accessibilityRole="button" accessibilityLabel={`${e.name} 삭제`}>
+                    <Pressable onPress={() => removeExtra(i)} accessibilityRole="button" accessibilityLabel={`${e.name} 삭제`} style={{ width: 44, height: 44, alignItems: 'center', justifyContent: 'center' }}>
                       <Icon name="close" size={18} color={COLOR.text.tertiary} />
                     </Pressable>
                   </View>

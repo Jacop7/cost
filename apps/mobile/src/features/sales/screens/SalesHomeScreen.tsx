@@ -445,13 +445,12 @@ function SalesHomeBody({ today }: { today: string }) {
         </View>
 
         {/* 정렬 + 메뉴 관리 */}
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginHorizontal: 2, marginBottom: space.sm }}>
+        <View style={{ minHeight: 44, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginHorizontal: 2, marginBottom: space.sm }}>
           <SortChip label={sortLabel} onPress={() => setSortOpen(true)} />
           <Pressable
             onPress={() => router.push('/recipes' as Href)}
             accessibilityRole="button" accessibilityLabel="메뉴 관리"
-            hitSlop={6}
-            style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}
+            style={{ minHeight: 44, flexDirection: 'row', alignItems: 'center', gap: 4 }}
           >
             <Icon name="edit" size={15} color={COLOR.action.primary} sw={2.2} />
             <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.text.link }}>메뉴 관리</Text>
@@ -529,7 +528,7 @@ function SalesHomeBody({ today }: { today: string }) {
                     onPress={() => openMenu(m)}
                     disabled={blocked}
                     accessibilityRole="button" accessibilityLabel={`${m.name} 판매 수량 수정`}
-                    style={{ alignItems: 'flex-end' }}
+                    style={{ minWidth: 44, minHeight: 44, alignItems: 'flex-end', justifyContent: 'center' }}
                   >
                     <Text style={[{ fontSize: TYPE.caption.fontSize, fontWeight: '800', color: total > 0 ? T.ink : COLOR.text.tertiary }, NUM]}>
                       {total}개{q && q.waste > 0 ? ` · 폐기 ${q.waste}` : ''}
@@ -547,7 +546,7 @@ function SalesHomeBody({ today }: { today: string }) {
                     accessibilityRole="button"
                     accessibilityLabel={blocked ? `${m.name} 판매 중지` : `${m.name} 판매 입력`}
                     accessibilityState={{ disabled: blocked }}
-                    style={{ flexDirection: 'row', alignItems: 'center', gap: space.xs, paddingVertical: space.sm, paddingHorizontal: 16, borderRadius: radius.md, backgroundColor: blocked ? T.line : COLOR.action.primary }}
+                    style={{ minHeight: 44, flexDirection: 'row', alignItems: 'center', gap: space.xs, paddingVertical: space.sm, paddingHorizontal: 16, borderRadius: radius.md, backgroundColor: blocked ? T.line : COLOR.action.primary }}
                   >
                     <Icon name="plus" size={16} color={blocked ? COLOR.text.tertiary : T.onColor} sw={2.4} />
                     <Text style={{ fontSize: 14, fontWeight: '700', color: blocked ? COLOR.text.tertiary : T.onColor }}>판매</Text>

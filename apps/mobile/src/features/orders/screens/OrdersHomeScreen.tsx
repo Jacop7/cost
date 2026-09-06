@@ -284,7 +284,7 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
                   <Pressable
                     onPress={() => router.push(`/ingredients/${c.ingredientId}` as Href)}
                     accessibilityRole="button" accessibilityLabel={`${c.name} 상세`}
-                    style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm }}
+                    style={{ minHeight: 44, flexDirection: 'row', alignItems: 'center', gap: space.sm }}
                   >
                     <Badge tone={reasonTone(c.reasons)} solid sm>
                       {REASON_LABEL[c.reasons[0] ?? 'manual'] ?? '발주 필요'}
