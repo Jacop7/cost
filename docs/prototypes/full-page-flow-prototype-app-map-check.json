@@ -1,6 +1,6 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-06T07:50:28.066Z",
+  "generatedAt": "2026-09-06T08:00:02.078Z",
   "schemaVersion": 1,
   "script": {
    "name": "full-page-flow-prototype-app-map-check.mjs",
@@ -5469,7 +5469,79 @@
     ]
    }
   ],
-  "binMovementLedger": null,
+  "binMovementLedger": {
+   "previousMap": "full-page-flow-prototype-app-token-map-pre-ff18998.json",
+   "previousMapSha256": "4df8fa8544d3c2d49357e01e4ad69bfd6839db5da403026bd1262c72e66bfb17",
+   "moves": {
+    "(미분류) → componentOwned": {
+     "count": 22,
+     "rules": {
+      "- → R-SP-TABBAR-INSET": 1,
+      "- → R-SZ-APPHEADER-RIGHT-TOUCH": 1,
+      "- → R-SZ-BUTTON-SM-MINHEIGHT": 1,
+      "- → R-SZ-HANDLE": 2,
+      "- → R-SP-ROW-OVERFLOW-TOUCH-BOX": 1,
+      "- → R-SZ-ORDER-DETAIL-TOUCH": 1,
+      "- → R-SZ-APPHEADER-ACTION": 2,
+      "- → R-SZ-CATEGORY-REORDER-TOUCH": 2,
+      "- → R-SZ-RECIPE-EDITOR-TOUCH": 7,
+      "- → R-SZ-SALES-ACTION-ROW": 1,
+      "- → R-SZ-SALES-MANAGE-ACTION": 1,
+      "- → R-SZ-SALES-QUANTITY-ACTION": 1,
+      "- → R-SZ-SALES-SALE-ACTION": 1
+     }
+    },
+    "(미분류) → defect": {
+     "count": 1,
+     "rules": {
+      "- → R-CL-SHADOW": 1
+     }
+    },
+    "primitive → componentOwned": {
+     "count": 1,
+     "rules": {
+      "R-SP-PRIM → R-SP-QUANTITY-TOUCH-ENVELOPE": 1
+     }
+    }
+   },
+   "reconciliation": {
+    "primitive": {
+     "이전": 2064,
+     "나감": 1,
+     "들어옴": 0,
+     "계산": 2063,
+     "실제": 2063
+    },
+    "componentOwned": {
+     "이전": 216,
+     "나감": 0,
+     "들어옴": 23,
+     "계산": 239,
+     "실제": 239
+    },
+    "defect": {
+     "이전": 2,
+     "나감": 0,
+     "들어옴": 1,
+     "계산": 3,
+     "실제": 3
+    },
+    "pendingApproval": {
+     "이전": 48,
+     "나감": 0,
+     "들어옴": 0,
+     "계산": 48,
+     "실제": 48
+    },
+    "approvedException": {
+     "이전": 0,
+     "나감": 0,
+     "들어옴": 0,
+     "계산": 0,
+     "실제": 0
+    }
+   }
+  },
   "openQuestions": [
    {
     "id": "R-SP-CAPTION-GAP-VIEW",

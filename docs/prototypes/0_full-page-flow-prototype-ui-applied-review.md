@@ -2691,6 +2691,27 @@ popup/state host **121개**(합 182), 그리고 레지스트리에 키가 없는
   `full-page-flow-prototype-render-audit.json` · `full-page-flow-prototype-design-audit.json` ·
   `full-page-flow-prototype-i18n-stress.json`.
 
+## DS-20260906-011 · PRT-243 Android exact 증거와 W1 재배정 봉인
+
+- 대상: S4a 제품판 `d4fba6b`의 Android 1×/2× native touch 산출물과 같은 제품판에서
+  다시 측정한 W1 선언 배정.
+- 기대값: Android 계약 target의 유효 터치 미달·판정불가·물질적 형제 중첩 0,
+  W1 미분류 0, 통 이동 대차 일치. iOS 부재를 성공으로 접지 않는다.
+- 실제값: Android 15/API 35·density 2.625에서 1×/2× 각각 target 19·소스 계보 20,
+  미달 0·판정불가 0·중첩 0. W1은 정의 21건 제외 선언 2,353건,
+  `primitive 2,063 / componentOwned 239 / defect 3 / pendingApproval 48 / exception 0`,
+  미분류 0·다중 일치 774·고유 충돌 체인 6이다.
+- PC 검수: 프로토타입 1280×900 감사 재실행 · PASS
+- 모바일 검수: 320px·CSS 200%·글자 200%·i18n 4패스 재실행 · PASS
+- 미검수: 없음
+- 범위: 이 절의 검수 범위는 프로토타입 봉인과 Android·W1 재배정 후보까지다.
+- 별도 게이트: iOS 1×/2× native touch exact 증거는 아직 `MISSING` 2건이다. 따라서
+  이 절의 PASS와 별개로 S4a·S4·W1 전체는 REOPEN이다.
+- 결과: PASS
+- 증거: `full-page-flow-prototype-app-map-check.json` ·
+  `full-page-flow-prototype-doc-claims-check.json` · `../token-adoption-audit.json` ·
+  `native-touch-android-1x.json` · `native-touch-android-2x.json`.
+
 ## DS-20260906-010 · PRT-238 소유자 결정 12-4 역할별 44px 계약
 
 - 대상: 프로토타입 kit의 소형 Button·ConditionRow와 앱의 Button sm·AppHeader 우측 액션·
