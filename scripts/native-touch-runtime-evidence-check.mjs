@@ -17,6 +17,29 @@ const defaultRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const normalized = (path) => readFileSync(path, 'utf8').replace(/\r\n/g, '\n');
 const sha256 = (value) => createHash('sha256').update(value).digest('hex');
 const same = (left, right) => JSON.stringify(left) === JSON.stringify(right);
+const TAP_PROBE_EXPECTED = new Map([
+  ['inside-effective-rect', 1],
+  ['outside-direct-parent', 0],
+  ['outside-overflow-visible-grandparent', 1],
+]);
+
+export function validateTapProbeData(probe, expected) {
+  const failures = [];
+  if (probe.status !== 'PASS' || probe.failures?.length) failures.push(`${expected.name}: 실제 탭 probe가 PASS가 아니다`);
+  if (probe.platform !== expected.platform) failures.push(`${expected.name}: platform이 ${expected.platform}이 아니다`);
+  if (probe.manifest?.evidenceStatus !== 'EXACT_COMMIT_EVIDENCE') failures.push(`${expected.name}: exact commit 증거가 아니다`);
+  for (const [id, expectedCount] of TAP_PROBE_EXPECTED) {
+    const item = probe.empiricalTapProbe?.find((candidate) => candidate.id === id);
+    if (!item) failures.push(`${expected.name}: empiricalTapProbe ${id} 누락`);
+    else if (item.expectedOnPressCount !== expectedCount || item.onPressCount !== expectedCount)
+      failures.push(`${expected.name}: ${id} onPress ${item.onPressCount}/${item.expectedOnPressCount} ≠ ${expectedCount}`);
+  }
+  if ((probe.empiricalTapProbe?.length ?? 0) !== TAP_PROBE_EXPECTED.size)
+    failures.push(`${expected.name}: empiricalTapProbe는 정확히 ${TAP_PROBE_EXPECTED.size}건이어야 한다`);
+  for (const key of ['scriptSha256', 'auditSha256', 'contractSha256'])
+    if (probe.manifest?.[key] !== expected[key]) failures.push(`${expected.name}: ${key} 불일치`);
+  return failures;
+}
 
 export function validateArtifactData(artifact, contract, known, expected) {
   const failures = [];
@@ -119,7 +142,30 @@ export function verifyRepositoryEvidence(root = defaultRoot, options = {}) {
     const changed = spawnSync('git', ['diff', '--quiet', productCommit, 'HEAD', '--', ...scope], { cwd: root });
     if (changed.status !== 0) failures.push('productCommit 뒤 앱 또는 네이티브 측정 계약이 바뀌어 증거가 낡았다');
   }
-  return { artifacts, failures, requiredMatrix };
+  const tapProbeScriptPath = join(root, 'scripts/native-touch-runtime-tap-probe.mjs');
+  const tapExpected = {
+    scriptSha256: sha256(normalized(tapProbeScriptPath)),
+    auditSha256: sha256(normalized(auditPath)),
+    contractSha256: sha256(normalized(contractPath)),
+  };
+  const tapProbes = requiredPlatforms.flatMap((platform) => {
+    const name = `native-touch-${platform}-tap-probe.json`;
+    const path = join(root, 'docs/prototypes', name);
+    if (!existsSync(path)) { failures.push(`MISSING ${name} — ${platform} 실제 탭 3점 증거가 없다`); return []; }
+    const probe = JSON.parse(normalized(path));
+    failures.push(...validateTapProbeData(probe, { ...tapExpected, name, platform }));
+    const commit = probe.manifest?.productCommit;
+    if (!/^[0-9a-f]{40}$/.test(commit ?? '')) failures.push(`${name}: 완전한 productCommit이 없다`);
+    else {
+      const ancestor = spawnSync('git', ['merge-base', '--is-ancestor', commit, 'HEAD'], { cwd: root });
+      if (ancestor.status !== 0) failures.push(`${name}: productCommit ${commit}은 HEAD의 조상이 아니다`);
+      else if (probe.manifest?.productTree !== git(root, ['rev-parse', `${commit}^{tree}`])) failures.push(`${name}: productTree 불일치`);
+      const changed = spawnSync('git', ['diff', '--quiet', commit, 'HEAD', '--', 'apps/mobile'], { cwd: root });
+      if (changed.status !== 0) failures.push(`${name}: productCommit 뒤 앱이 바뀌어 실제 탭 증거가 낡았다`);
+    }
+    return [probe];
+  });
+  return { artifacts, tapProbes, failures, requiredMatrix };
 }
 
 export function buildEvidenceReceipt(root, verification, requirePlatforms) {
@@ -146,6 +192,15 @@ export function buildEvidenceReceipt(root, verification, requirePlatforms) {
       failureCount: artifact.evaluation?.failures?.length ?? null,
     };
   });
+  const tapProbeCells = requirePlatforms.map((platform) => {
+    const file = `native-touch-${platform}-tap-probe.json`;
+    const path = join(root, 'docs/prototypes', file);
+    if (!existsSync(path)) return { platform, file, status: 'MISSING' };
+    const probe = JSON.parse(normalized(path));
+    return { platform, file, status: 'PRESENT', textSha256: sha256(normalized(path)),
+      productCommit: probe.manifest?.productCommit ?? null, productTree: probe.manifest?.productTree ?? null,
+      result: probe.status ?? null, probeCount: probe.empiricalTapProbe?.length ?? null };
+  });
   return {
     schemaVersion: 1,
     status: verification.failures.length ? 'FAIL' : 'PASS',
@@ -157,6 +212,7 @@ export function buildEvidenceReceipt(root, verification, requirePlatforms) {
       known: { path: 'scripts/native-touch-runtime-known.json', textSha256: sha256(normalized(knownPath)) },
     },
     cells,
+    tapProbeCells,
     failures: verification.failures,
   };
 }
@@ -173,6 +229,12 @@ export function receiptHashFailures(root, receipt, resolveCellPath) {
     const path = resolveCellPath?.(cell) ?? join(root, 'docs/prototypes', cell.file);
     if (!existsSync(path)) failures.push(`MISSING ${cell.file} — 영수증 원시 증거가 없다`);
     else if (sha256(normalized(path)) !== cell.textSha256) failures.push(`영수증 원시 증거 해시 불일치: ${cell.file}`);
+  }
+  for (const cell of receipt.tapProbeCells ?? []) {
+    if (cell.status !== 'PRESENT') continue;
+    const path = resolveCellPath?.(cell) ?? join(root, 'docs/prototypes', cell.file);
+    if (!existsSync(path)) failures.push(`MISSING ${cell.file} — 영수증 실제 탭 증거가 없다`);
+    else if (sha256(normalized(path)) !== cell.textSha256) failures.push(`영수증 실제 탭 증거 해시 불일치: ${cell.file}`);
   }
   return failures;
 }

@@ -7,7 +7,7 @@
   "contracts": {
     "checker": {
       "path": "scripts/native-touch-runtime-evidence-check.mjs",
-      "textSha256": "4ddf7b91d992cb330543c8dcc3d0abdc057121aabdd02e3ad34c81458578645b"
+      "textSha256": "19155150a7ecbf52cd4da7e8b380a30d951ab1d67c7231ec7efe25dd5728dc14"
     },
     "audit": {
       "path": "scripts/native-touch-runtime-audit.mjs",
@@ -84,6 +84,18 @@
       "observedUnjudgedCount": 0,
       "materialOverlapCount": 0,
       "failureCount": 0
+    }
+  ],
+  "tapProbeCells": [
+    {
+      "platform": "android",
+      "file": "native-touch-android-tap-probe.json",
+      "status": "PRESENT",
+      "textSha256": "b1e528ecafc2b36cb73361eabe685b86969201903abada890f20ab12aecc2a54",
+      "productCommit": "595eb703c8a9a79b5707b88a97ba4fc19eedd953",
+      "productTree": "277f796f6f2fc25c6dd50b23e06764f8a516cbfe",
+      "result": "PASS",
+      "probeCount": 3
     }
   ],
   "failures": []
