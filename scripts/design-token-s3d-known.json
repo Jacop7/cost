@@ -32,7 +32,7 @@
     { "file": "apps/mobile/src/features/sales/screens/SalesChannelScreen.tsx", "sha256": "261d0994cfcb9380ca952aa233dec1889a00fafbbeedd0e38c7985c548e4cd59" },
     { "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx", "sha256": "097c3c04e16dfb04dd9e407efcece85f514fafa72b2c96392862b2f453bd14bd" },
     { "file": "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx", "sha256": "40f36605151039e9bf134fea1f021ac64f5253aee418e3654a8c5a8119053c38" },
-    { "file": "apps/mobile/src/theme/tokens.ts", "sha256": "4cca9155dd5daa07c46a4b1d9c9c520ffcdfd539573083fcf73a77b2cab35dd0" }
+    { "file": "apps/mobile/src/theme/tokens.ts", "sha256": "ddb9058d2933c7d5c990b495fef8a21b9e28e6713c991d42d5abeeaa8d02ced2" }
   ],
   "requiredTokenSnippets": [
     "displayTight: -0.6",
@@ -42,6 +42,7 @@
     "offTrack: '#D5DAE0'",
     "background: COLOR.status.cautionTint",
     "border: COLOR.status.caution",
-    "hall: COLOR.brand.primary"
+    "hall: COLOR.brand.primary",
+    "material: COLOR.text.tertiary"
   ]
 }
