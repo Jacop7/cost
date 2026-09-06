@@ -138,7 +138,7 @@ function layerOf(path) {
 export function classifyDeclarations(declarations) {
   const assignments = declarations.map((declaration) => {
     if (declaration.group === 'motion' && declaration.prop === 'animationType' && declaration.value === 'fade') {
-      return { ...declaration, bucket: 'componentOwned', role: 'COMPONENT.contextMenu.animationType', target: 'fade' };
+      return { ...declaration, bucket: 'componentOwned', role: 'COMPONENT.inlineSheet.animationType', target: 'fade' };
     }
     if (declaration.group === 'motion' && declaration.prop === 'animationType' && declaration.value === 'slide') {
       return { ...declaration, bucket: 'componentOwned', role: 'COMPONENT.sheet.animationType', target: 'slide' };
