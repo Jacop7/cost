@@ -9,7 +9,8 @@ test('주석·문자열은 선언으로 세지 않고 JSX animationType만 센�
     export const X = () => <Modal animationType="fade" />;
   `);
   assert.equal(rows.length, 1);
-  assert.deepEqual({ prop: rows[0].prop, value: rows[0].value }, { prop: 'animationType', value: 'fade' });
+  assert.deepEqual({ prop: rows[0].prop, value: rows[0].value, component: rows[0].component },
+    { prop: 'animationType', value: 'fade', component: 'Modal' });
 });
 
 test('zIndex 숫자는 레이어 선언이고 elevation은 그림자라 제외한다', () => {
