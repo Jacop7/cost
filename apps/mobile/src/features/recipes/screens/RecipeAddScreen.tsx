@@ -434,7 +434,7 @@ export default function RecipeAddScreen() {
                     <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink2 }}>권장 판매가</Text>
                     <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 1 }}>목표 {draft.targetProfitRate}% 기준</Text>
                   </View>
-                  <Pressable onPress={() => patch({ price: String(recommended) })} accessibilityRole="button" accessibilityLabel="권장 판매가 적용" style={{ alignItems: 'flex-end' }}>
+                  <Pressable onPress={() => patch({ price: String(recommended) })} hitSlop={{ top: 7 }} accessibilityRole="button" accessibilityLabel="권장 판매가 적용" style={{ alignItems: 'flex-end' }}>
                     <Text style={[{ fontSize: 16, fontWeight: '800', color: COLOR.text.accent }, NUM]}>{won(recommended)}원</Text>
                     <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.text.link, marginTop: space.xs }}>적용하기</Text>
                   </Pressable>

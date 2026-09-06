@@ -298,6 +298,12 @@ export const COMPONENT = {
     gap: space.md,
     hitSlop: 6,
   },
+  chip: {
+    /** 필터·선택 칩의 시각 높이. 승인된 중간 컨트롤 높이를 재사용한다. */
+    visualHeight: controlVisualHeight.md,
+    /** 가로 필터 행은 칩 위아래 12dp 여유까지 실제 viewport 안에 보존한다. */
+    rowMinHeight: controlVisualHeight.md + space.xxl,
+  },
   button: {
     label: { letterSpacing: -0.2 },
   },

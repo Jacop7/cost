@@ -1,7 +1,27 @@
 #!/usr/bin/env node
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { classifyVisibility, compareNativeRatchet, effectiveTouchRect, evaluateNativeArtifact, nativeRatchetSnapshot, physicalHalfPixelTolerance, recomputeNativeArtifactDerived, rectOverlap, resolveActionForFontScale } from './native-touch-runtime-audit.mjs';
+import { classifyVisibility, compareNativeRatchet, effectiveTouchRect, evaluateNativeArtifact, isActiveScreenStateList, nativeRatchetSnapshot, physicalHalfPixelTolerance, recomputeNativeArtifactDerived, rectOverlap, resolveActionForFontScale, tabRootForRoute, tabScopedRoute, waitForStableOwner } from './native-touch-runtime-audit.mjs';
+
+test('탭 route는 실제 (tabs) 그룹을 명시한다', () => {
+  assert.equal(tabScopedRoute('/recipes'), '/(tabs)/recipes');
+  assert.equal(tabScopedRoute('/ingredients/discards/1'), '/(tabs)/ingredients/discards/1');
+  assert.equal(tabScopedRoute('/sign-in'), '/sign-in');
+  assert.equal(tabRootForRoute('/(tabs)/recipes/add?id=1'), '/(tabs)/recipes');
+  assert.equal(tabRootForRoute('/sign-in'), null);
+});
+
+test('RNSScreen 조상이 있으면 전부 activityState 2인 버튼만 활성으로 센다', () => {
+  assert.equal(isActiveScreenStateList([]), true);
+  assert.equal(isActiveScreenStateList([2, 2]), true);
+  assert.equal(isActiveScreenStateList([2, 0]), false);
+});
+
+test('탐색 뒤 활성 owner의 nativeTag 집합이 연속 관측될 때만 진행한다', async () => {
+  const samples = [[], [{ nativeTag: 1 }], [{ nativeTag: 2 }], [{ nativeTag: 2 }], [{ nativeTag: 2 }]];
+  const evaluate = async () => JSON.stringify(samples.shift() ?? []);
+  assert.deepEqual(await waitForStableOwner(evaluate, 'Owner', { attempts: 5, consecutive: 3, delayMs: 0 }), [{ nativeTag: 2 }]);
+});
 
 test('글자 배율별 스크롤 위치를 같은 계약에서 고른다', () => {
   const action = { kind: 'scroll', yByFontScale: { '1': 1100, '2': 1600 } };

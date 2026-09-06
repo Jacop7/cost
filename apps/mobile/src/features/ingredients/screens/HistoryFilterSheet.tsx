@@ -11,13 +11,14 @@ import { addDays } from '@/lib/date';
 
 function Seg({ opts, sel, onSelect }: { opts: string[]; sel: string; onSelect: (o: string) => void }) {
   return (
-    <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+    <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, paddingVertical: 1 }}>
       {opts.map((o) => {
         const on = o === sel;
         return (
           <Pressable
             key={o}
             onPress={() => onSelect(o)}
+            hitSlop={{ top: 1, bottom: 1 }}
             accessibilityRole="button"
             accessibilityLabel={o}
             accessibilityState={{ selected: on }}

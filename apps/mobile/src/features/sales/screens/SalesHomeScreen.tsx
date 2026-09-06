@@ -11,7 +11,7 @@ import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Badge, Button, Card, ConfirmSheet, Field, Icon, Input, QueryState, Sheet, SortChip, SortSheet, type SortOption } from '@/components/kit';
-import { COLOR, T, won, TYPE, radius, rowMinHeight, space } from '@/theme/tokens';
+import { COLOR, T, won, TYPE, minTouchTarget, radius, rowMinHeight, space } from '@/theme/tokens';
 import { useRecipeList, type RecipeRow } from '@/features/recipes/hooks';
 
 
@@ -426,7 +426,7 @@ function SalesHomeBody({ today }: { today: string }) {
         </Pressable>
 
         {/* 기타 매출 · 지출 추가 */}
-        <View style={{ flexDirection: 'row', gap: 8, marginBottom: 12 }}>
+        <View style={{ minHeight: minTouchTarget, flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 }}>
           {([
             ['기타 매출', s?.etcRevenue ?? 0, () => setEtcOpen(true)],
             ['지출 추가', s?.dailyExtra ?? 0, () => setExpOpen(true)],
@@ -434,6 +434,7 @@ function SalesHomeBody({ today }: { today: string }) {
             <Pressable
               key={label}
               onPress={onP}
+              hitSlop={{ top: 1, bottom: 1 }}
               accessibilityRole="button" accessibilityLabel={label}
               style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.xs, paddingVertical: space.md, borderRadius: 12, borderWidth: 1, borderColor: T.line, backgroundColor: T.surface }}
             >

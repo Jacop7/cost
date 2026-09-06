@@ -85,7 +85,7 @@ export function Chip({ children, active, tone, onPress }: { children: ReactNode;
       accessibilityRole="button"
       accessibilityState={{ selected: !!active }}
       hitSlop={{ top: 9, bottom: 9, left: 0, right: 0 }}
-      style={{ flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: space.sm, paddingHorizontal: 12, borderRadius: 999, backgroundColor: active ? T.ink : tone === 'blue' ? COLOR.action.primaryTint : T.surface, borderWidth: active ? 0 : 1, borderColor: T.line }}
+      style={{ minHeight: COMPONENT.chip.visualHeight, flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: space.sm, paddingHorizontal: 12, borderRadius: 999, backgroundColor: active ? T.ink : tone === 'blue' ? COLOR.action.primaryTint : T.surface, borderWidth: active ? 0 : 1, borderColor: T.line }}
     >
       <Text style={{ fontSize: 16, fontWeight: '600', color: active ? T.onColor : tone === 'blue' ? COLOR.text.accent : T.sub }}>{children}</Text>
     </Pressable>

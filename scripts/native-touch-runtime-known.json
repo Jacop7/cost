@@ -8,6 +8,14 @@
     "android@2": {
       "observedUnjudged": [],
       "materialOverlaps": []
+    },
+    "ios@2": {
+      "observedUnjudged": [],
+      "materialOverlaps": []
+    },
+    "ios@1": {
+      "observedUnjudged": [],
+      "materialOverlaps": []
     }
   }
 }
