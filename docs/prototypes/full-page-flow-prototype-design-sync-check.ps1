@@ -603,6 +603,9 @@ foreach ($fileName in @($auditName, $auditScriptName, 'full-page-flow-prototype-
     '../../scripts/design-token-s4-check.test.mjs',
     '../../scripts/design-token-s3b-known.json', '../../scripts/design-token-s3b-diff.mjs',
     '../../scripts/design-token-s3b-diff.test.mjs',
+    'full-page-flow-prototype-s3c-diff.json',
+    '../../scripts/design-token-s3c-known.json', '../../scripts/design-token-s3c-diff.mjs',
+    '../../scripts/design-token-s3c-diff.test.mjs',
     '../../scripts/touch-target-known.json', '../../scripts/touch-target-audit.mjs',
     '../../scripts/touch-target-audit.test.mjs',
     '../디자인-토큰-3계층-값-매핑-기획서.md')) {

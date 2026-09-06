@@ -2691,6 +2691,21 @@ popup/state host **121개**(합 182), 그리고 레지스트리에 키가 없는
   `full-page-flow-prototype-render-audit.json` · `full-page-flow-prototype-design-audit.json` ·
   `full-page-flow-prototype-i18n-stress.json`.
 
+## DS-20260906-014 · PRT-251 S3c 잔여 수렴과 W1 재측정
+
+- 대상: S3c 승인 선언 8건, 해당 제품판의 W1 전수 배정, 프로토타입 동기화 표식.
+- 기대값: S3c exact diff 8건만 변경 · W1 defect 8→0 · 미분류 0 · 승인 밖 제품 변경 0.
+- 실제값: 간격 5건과 그림자 3건을 의미 토큰으로 치환했고, W1은 2,345건
+  `2,064 / 249 / 0 / 32 / 0`, 미분류 0이다.
+- PC 검수: 프로토타입 1280×900 감사 재실행 · PASS
+- 모바일 검수: 320px·CSS 200%·글자 200%·i18n 4패스 재실행 · PASS
+- 앱 검수: S3c exact diff 게이트 PASS · 음성 시험 5/5 · 타입 검사 PASS · 모바일 시험 207/207.
+- 별도 게이트: 제품 SHA 변경에 따른 Android native touch 재측정과 iOS native touch는 계속 열려 있다.
+- 미검수: 없음
+- 결과: PASS
+- 증거: `full-page-flow-prototype-s3c-diff.json` · `full-page-flow-prototype-app-map-check.json` ·
+  `full-page-flow-prototype-doc-claims-check.json` · `../token-adoption-audit.json`.
+
 ## DS-20260906-013 · PRT-249 PRT-248 검수 후속과 W1 팔레트 exact 정정
 
 - 대상: W1 실행 단계·빈 상태 수렴 표식·팔레트 exact 분류·검사기 stage enum·동기화 표식.

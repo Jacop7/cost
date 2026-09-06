@@ -1,19 +1,19 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-06T07:49:12.167Z",
+  "generatedAt": "2026-09-06T09:24:33.989Z",
   "schemaVersion": 1,
   "script": {
    "name": "token-adoption-audit.mjs",
-   "sha256": "32e13439797ab489cdc7660a29f4c3aa393482f3502b13ab8efff6f564927031"
+   "sha256": "591d6ad787d555acdabbf31009808cec9ec5c2f5ec58c2fde908337decc6dd80"
   },
   "repo": {
-   "headCommit": "d4fba6b1d0bbdc5e734a004b6e813e06273ef6e5",
-   "headTree": "9bda6a9d15e614063dd75fde94fdc1c07a17e13e",
-   "toplevel": "C:/Users/jacop/프로젝트/식자재관리앱/.tmp/native-evidence-runner-ff18998"
+   "headCommit": "dbb89c1e652980c14d46df6942d73d316d05e821",
+   "headTree": "4c0fe8ac32c5878e9a90e60316938630f19dd00e",
+   "toplevel": "C:/Users/jacop/프로젝트/식자재관리앱/.tmp/sol-prt217-6e6376b"
   },
   "결속": {
-   "expectCommit": "d4fba6b1d0bbdc5e734a004b6e813e06273ef6e5",
-   "범위해시": "022ee3f4714be0c4f226110526e2fea2483434c9c0dcd1de4dba3a438aba1ece",
+   "expectCommit": "dbb89c1e652980c14d46df6942d73d316d05e821",
+   "범위해시": "5842e3267317bb4485b7b0af0dfa9b59388ac92d2982636d62504f915c741aea",
    "범위해시정의": "선택된 파일의 \"경로\\0 git blob SHA\" 를 정렬해 잇고 감사 스크립트 자신의 blob SHA 를 더해 sha256. blob SHA 는 CRLF→LF 정규화 뒤 직접 계산하므로 OS·git 유무에 좌우되지 않는다(페이블 R6 차단). 커밋 SHA 자기참조 없이 입력을 결속한다."
   },
   "runner": {
@@ -981,15 +981,6 @@
    "layer": "sharedComponent"
   },
   {
-   "group": "color",
-   "prop": "hex",
-   "value": "#000",
-   "file": "apps/mobile/src/components/kit/Sheet.tsx",
-   "line": 32,
-   "column": 261,
-   "layer": "sharedComponent"
-  },
-  {
    "group": "size",
    "prop": "width",
    "value": "38",
@@ -1131,15 +1122,6 @@
    "file": "apps/mobile/src/components/kit/Slider.tsx",
    "line": 50,
    "column": 138,
-   "layer": "sharedComponent"
-  },
-  {
-   "group": "color",
-   "prop": "hex",
-   "value": "#000",
-   "file": "apps/mobile/src/components/kit/Slider.tsx",
-   "line": 50,
-   "column": 195,
    "layer": "sharedComponent"
   },
   {
@@ -2607,15 +2589,6 @@
    "file": "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx",
    "line": 149,
    "column": 51,
-   "layer": "product"
-  },
-  {
-   "group": "spacing",
-   "prop": "marginTop",
-   "value": "2",
-   "file": "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx",
-   "line": 155,
-   "column": 93,
    "layer": "product"
   },
   {
@@ -4995,15 +4968,6 @@
    "layer": "product"
   },
   {
-   "group": "spacing",
-   "prop": "marginTop",
-   "value": "2",
-   "file": "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx",
-   "line": 164,
-   "column": 111,
-   "layer": "product"
-  },
-  {
    "group": "typography",
    "prop": "fontSize",
    "value": "14",
@@ -7371,15 +7335,6 @@
    "layer": "product"
   },
   {
-   "group": "spacing",
-   "prop": "marginTop",
-   "value": "2",
-   "file": "apps/mobile/src/features/my/screens/FixedCostScreen.tsx",
-   "line": 133,
-   "column": 111,
-   "layer": "product"
-  },
-  {
    "group": "typography",
    "prop": "fontSize",
    "value": "14",
@@ -7710,15 +7665,6 @@
    "file": "apps/mobile/src/features/my/screens/MyChannelsScreen.tsx",
    "line": 105,
    "column": 89,
-   "layer": "product"
-  },
-  {
-   "group": "spacing",
-   "prop": "marginTop",
-   "value": "2",
-   "file": "apps/mobile/src/features/my/screens/MyChannelsScreen.tsx",
-   "line": 105,
-   "column": 111,
    "layer": "product"
   },
   {
@@ -8997,15 +8943,6 @@
    "file": "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx",
    "line": 34,
    "column": 86,
-   "layer": "product"
-  },
-  {
-   "group": "color",
-   "prop": "hex",
-   "value": "#000",
-   "file": "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx",
-   "line": 34,
-   "column": 145,
    "layer": "product"
   },
   {
@@ -10797,15 +10734,6 @@
    "file": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx",
    "line": 308,
    "column": 81,
-   "layer": "product"
-  },
-  {
-   "group": "spacing",
-   "prop": "marginTop",
-   "value": "2",
-   "file": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx",
-   "line": 315,
-   "column": 34,
    "layer": "product"
   },
   {
@@ -21603,10 +21531,9 @@
    "distinctDeclarations": 18
   },
   "color": {
-   "total": 25,
+   "total": 22,
    "byValue": {
     "hex:#FFF": 10,
-    "hex:#000": 3,
     "hex:#7A8694": 2,
     "hex:#C5CCD3": 2,
     "hex:#FFFFFF": 1,
@@ -21619,13 +21546,13 @@
     "hex:#B0B8C1": 1
    },
    "byLayer": {
-    "product": 17,
-    "sharedComponent": 8
+    "product": 16,
+    "sharedComponent": 6
    },
-   "distinctDeclarations": 12
+   "distinctDeclarations": 11
   },
   "spacing": {
-   "total": 632,
+   "total": 627,
    "byValue": {
     "paddingHorizontal:16": 62,
     "gap:8": 61,
@@ -21661,7 +21588,6 @@
     "padding:16": 6,
     "marginBottom:4": 5,
     "paddingBottom:16": 5,
-    "marginTop:2": 5,
     "paddingLeft:20": 5,
     "marginRight:12": 5,
     "paddingVertical:16": 4,
@@ -21705,10 +21631,10 @@
     "paddingTop:16": 1
    },
    "byLayer": {
-    "product": 597,
+    "product": 592,
     "sharedComponent": 35
    },
-   "distinctDeclarations": 76
+   "distinctDeclarations": 75
   },
   "size": {
    "total": 201,
@@ -21817,11 +21743,11 @@
     ]
    }
   ],
-  "declarations": 2353,
+  "declarations": 2345,
   "declarationsByGroup": {
    "typography": 1401,
-   "color": 25,
-   "spacing": 632,
+   "color": 22,
+   "spacing": 627,
    "size": 201,
    "radius": 94
   },
@@ -21949,14 +21875,14 @@
      "20",
      "24"
     ],
-    "usageOccurrences": 961,
+    "usageOccurrences": 966,
     "usageFiles": 75,
     "sharedComponent": {
      "usageOccurrences": 61,
      "usageFiles": 10
     },
     "product": {
-     "usageOccurrences": 900,
+     "usageOccurrences": 905,
      "usageFiles": 65
     },
     "shadowedIn": [
@@ -22174,11 +22100,11 @@
     "product": 1318
    },
    "spacing": {
-    "occurrences": 632,
+    "occurrences": 627,
     "files": 74,
-    "distinctDeclarations": 76,
+    "distinctDeclarations": 75,
     "sharedComponent": 35,
-    "product": 597
+    "product": 592
    },
    "radius": {
     "occurrences": 94,
@@ -22196,17 +22122,16 @@
    }
   },
   "hexColorLiterals": {
-   "occurrences": 25,
-   "files": 13,
+   "occurrences": 22,
+   "files": 12,
    "byLayer": {
-    "sharedComponent": 8,
-    "product": 17
+    "sharedComponent": 6,
+    "product": 16
    },
-   "distinct": 12,
+   "distinct": 11,
    "values": {
     "#FFFFFF": 1,
     "#FFF": 10,
-    "#000": 3,
     "#D5DAE0": 1,
     "#FFF9F0": 1,
     "#3182F6": 1,
@@ -22251,10 +22176,10 @@
    },
    {
     "file": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx",
-    "inlineTotal": 74,
+    "inlineTotal": 73,
     "breakdown": {
      "typography": 45,
-     "spacing": 20,
+     "spacing": 19,
      "radius": 2,
      "size": 7
     }
@@ -23696,7 +23621,7 @@
     "radius": 0,
     "size": 2
    },
-   "hexColors": 1,
+   "hexColors": 0,
    "tokenAccessTotal": 18,
    "inlineTotal": 11
   },
@@ -23718,7 +23643,7 @@
     "radius": 0,
     "size": 4
    },
-   "hexColors": 2,
+   "hexColors": 1,
    "tokenAccessTotal": 4,
    "inlineTotal": 4
   },
@@ -24046,7 +23971,7 @@
     "T.surface2": 3,
     "T.line2": 6,
     "T.sub": 3,
-    "space.xs": 3,
+    "space.xs": 4,
     "T.ink": 4,
     "space.lg": 1,
     "T.red": 2,
@@ -24071,13 +23996,13 @@
    "shadowedSymbols": [],
    "inline": {
     "typography": 31,
-    "spacing": 8,
+    "spacing": 7,
     "radius": 1,
     "size": 2
    },
    "hexColors": 0,
-   "tokenAccessTotal": 45,
-   "inlineTotal": 42
+   "tokenAccessTotal": 46,
+   "inlineTotal": 41
   },
   {
    "file": "apps/mobile/src/features/ingredients/components/CategoryPickerSheet.tsx",
@@ -24590,7 +24515,7 @@
     "TYPE.caption": 3,
     "T.ink": 2,
     "T.sub": 1,
-    "space.xs": 2
+    "space.xs": 3
    },
    "tokenValue": {
     "tnum": 3
@@ -24610,13 +24535,13 @@
    ],
    "inline": {
     "typography": 6,
-    "spacing": 5,
+    "spacing": 4,
     "radius": 0,
     "size": 2
    },
    "hexColors": 0,
-   "tokenAccessTotal": 16,
-   "inlineTotal": 13
+   "tokenAccessTotal": 17,
+   "inlineTotal": 12
   },
   {
    "file": "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx",
@@ -24957,7 +24882,7 @@
     "T.line2": 4,
     "T.sub": 1,
     "T.ink2": 3,
-    "space.xs": 1,
+    "space.xs": 2,
     "T.line": 1,
     "TYPE.caption": 1,
     "T.surface": 1,
@@ -24981,13 +24906,13 @@
    "shadowedSymbols": [],
    "inline": {
     "typography": 30,
-    "spacing": 11,
+    "spacing": 10,
     "radius": 0,
     "size": 1
    },
    "hexColors": 0,
-   "tokenAccessTotal": 41,
-   "inlineTotal": 42
+   "tokenAccessTotal": 42,
+   "inlineTotal": 41
   },
   {
    "file": "apps/mobile/src/features/my/screens/MyAccountScreen.tsx",
@@ -25094,6 +25019,7 @@
     "T.line2": 1,
     "T.surface2": 1,
     "T.sub2": 1,
+    "space.xs": 1,
     "TYPE.caption": 1
    },
    "tokenValue": {},
@@ -25114,13 +25040,13 @@
    "shadowedSymbols": [],
    "inline": {
     "typography": 6,
-    "spacing": 4,
+    "spacing": 3,
     "radius": 0,
     "size": 1
    },
    "hexColors": 0,
-   "tokenAccessTotal": 14,
-   "inlineTotal": 11
+   "tokenAccessTotal": 15,
+   "inlineTotal": 10
   },
   {
    "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
@@ -25283,7 +25209,7 @@
     "radius": 3,
     "size": 5
    },
-   "hexColors": 2,
+   "hexColors": 1,
    "tokenAccessTotal": 24,
    "inlineTotal": 24
   },
@@ -25521,7 +25447,7 @@
     "T.surface2": 3,
     "radius.md": 4,
     "T.sub": 6,
-    "space.xs": 3,
+    "space.xs": 4,
     "T.red": 2,
     "T.line2": 1,
     "T.sub2": 5,
@@ -25548,13 +25474,13 @@
    "shadowedSymbols": [],
    "inline": {
     "typography": 45,
-    "spacing": 20,
+    "spacing": 19,
     "radius": 2,
     "size": 7
    },
    "hexColors": 0,
-   "tokenAccessTotal": 80,
-   "inlineTotal": 74
+   "tokenAccessTotal": 81,
+   "inlineTotal": 73
   },
   {
    "file": "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx",

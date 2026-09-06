@@ -1,6 +1,6 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-06T09:11:09.311Z",
+  "generatedAt": "2026-09-06T09:29:41.813Z",
   "schemaVersion": 1,
   "script": {
    "name": "full-page-flow-prototype-app-map-check.mjs",
@@ -9,12 +9,12 @@
   "source": {
    "audit": {
     "path": "token-adoption-audit.json",
-    "sha256": "fd04e87a1920503304cd7731aa65fbed3a4d3f430e17eca7ff46a51408b8b494",
-    "declarations": 2353
+    "sha256": "b56b58077c4a4656e40638b722b2ebcb944ba74a17185080ac0d6198beccecc5",
+    "declarations": 2345
    },
    "appMap": {
     "path": "full-page-flow-prototype-app-token-map.json",
-    "sha256": "98dcb18e387938920d70dff411b1f55bd942f61c8cddd8e439ff9bdc9dabd6c8"
+    "sha256": "1539765e1950bf4041df129c13527fbdd599e5808bcb978549f94f9a63f32b2a"
    },
    "prototypeMap": {
     "path": "full-page-flow-prototype-token-map.json",
@@ -29,11 +29,11 @@
  },
  "summary": {
   "status": "PROPOSAL_COMPLETE",
-  "declarations": 2353,
+  "declarations": 2345,
   "byBin": {
    "primitive": 2064,
    "componentOwned": 249,
-   "defect": 8,
+   "defect": 0,
    "pendingApproval": 32,
    "approvedException": 0
   },
@@ -5471,20 +5471,13 @@
   ],
   "binMovementLedger": {
    "previousMap": "full-page-flow-prototype-app-token-map.json",
-   "previousMapSha256": "d1416380d562bb313d1a9572c68cdbe33e58faced49a17f25daaf098bf1f2243",
-   "moves": {
-    "pendingApproval → primitive": {
-     "count": 1,
-     "rules": {
-      "R-CL-NEAR-PALETTE → R-CL-PRIM": 1
-     }
-    }
-   },
+   "previousMapSha256": "98dcb18e387938920d70dff411b1f55bd942f61c8cddd8e439ff9bdc9dabd6c8",
+   "moves": {},
    "reconciliation": {
     "primitive": {
-     "이전": 2063,
+     "이전": 2064,
      "나감": 0,
-     "들어옴": 1,
+     "들어옴": 0,
      "계산": 2064,
      "실제": 2064
     },
@@ -5496,15 +5489,15 @@
      "실제": 249
     },
     "defect": {
-     "이전": 8,
+     "이전": 0,
      "나감": 0,
      "들어옴": 0,
-     "계산": 8,
-     "실제": 8
+     "계산": 0,
+     "실제": 0
     },
     "pendingApproval": {
-     "이전": 33,
-     "나감": 1,
+     "이전": 32,
+     "나감": 0,
      "들어옴": 0,
      "계산": 32,
      "실제": 32
@@ -5542,9 +5535,9 @@
    },
    {
     "id": "R-CL-CHART",
-    "question": "차트·범례 색이 팔레트에는 두 단계(chart.1 `#7A8694` · chart.2 `#C5CCD3`)뿐인데 앱은 **네 단계**를 쓴다. 단계를 넷으로 늘릴지, 둘로 줄일지. **그리고 chart.1·chart.2 자체가 `tokens.ts` 에 없다** — 늘리든 줄이든 정본 확장이 따라온다.",
+    "question": "차트·범례 색이 팔레트에는 두 단계(chart.1 `#7A8694` · chart.2 `#C5CCD3`)뿐인데 앱은 **네 단계**를 쓴다. 단계를 넷으로 늘릴지, 둘로 줄일지. **그리고 chart.1·chart.2 자체가 `tokens.ts` 에 없다** — 늘리든 줄이든 정본 확장이 따라온다. 같은 손익 범례의 기존 primitive `#8B95A1`(재료)·`T.gray400 #B0B8C1`(세금)도 팔레트 결정에 함께 참여하며, 결정 결과에 따라 참조 토큰이 바뀔 수 있다.",
     "declarations": 6,
-    "evidence": "6건. `SalesChannelScreen:22` 가 hall `#3182F6` · delivery `#7A8694` · takeout `#C5CCD3` 셋을, `SalesMenuDetailScreen:142~143` 이 손익 분해 막대에서 부자재 `#CDD3DA` · 고정 지출 `#5B6573` 을 chart.1·chart.2 와 함께 넷으로 쓴다. 항목이 넷이라 색도 넷이 필요했다. 앞의 둘은 `PRT-208` 까지 primitive 로 세고 있었는데 `tokens.ts` 에 없다 — 문서(팔레트)와 코드(tokens.ts)가 갈린 **다섯 번째** 자리다.",
+    "evidence": "pending 6건은 `SalesChannelScreen:22` 의 delivery `#7A8694` · takeout `#C5CCD3`, `SalesMenuDetailScreen:142~143,150~151` 의 `#CDD3DA` · `#5B6573` · `#7A8694` · `#C5CCD3` 이다. 손익 범례 전체는 여기에 primitive로 배정된 `#8B95A1`(재료)·`#B0B8C1`(세금)까지 포함한다. 팔레트는 이 여섯 색의 역할 관계를 한 세트로 결정해야 한다.",
     "ownerDecision": "차트 색 단계 수는 팔레트 결정이다."
    }
   ],
@@ -5638,30 +5631,6 @@
      [
       "marginTop:12",
       16
-     ]
-    ]
-   },
-   {
-    "id": "R-SP-CAPTION-GAP-VIEW",
-    "bin": "defect",
-    "declarations": 5,
-    "name": null,
-    "target": "space.xs",
-    "openDecision": null,
-    "executionStage": "S3c",
-    "axis": "vertical",
-    "targetSource": "targetValue",
-    "declaredDelta": "grow",
-    "computedDelta": "grow",
-    "targetResolved": 5,
-    "targetDerived": 0,
-    "transitions": {
-     "2→4": 5
-    },
-    "values": [
-     [
-      "marginTop:2",
-      5
      ]
     ]
    },
@@ -7280,28 +7249,6 @@
      [
       "hex:#B0B8C1",
       1
-     ]
-    ]
-   },
-   {
-    "id": "R-CL-SHADOW",
-    "bin": "defect",
-    "declarations": 3,
-    "name": null,
-    "target": "`shadow.sheet` · `shadow.sliderThumb` · `shadow.switchThumb`",
-    "openDecision": null,
-    "executionStage": "S3c",
-    "axis": "none",
-    "targetSource": null,
-    "declaredDelta": "same",
-    "computedDelta": null,
-    "targetResolved": 0,
-    "targetDerived": 0,
-    "transitions": {},
-    "values": [
-     [
-      "hex:#000",
-      3
      ]
     ]
    },
