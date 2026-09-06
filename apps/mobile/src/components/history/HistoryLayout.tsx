@@ -21,7 +21,7 @@ import { LAYOUT, COLOR, T, tnum, TYPE, space } from '@/theme/tokens';
 /** 조건 줄 — **왼쪽부터** 채운다(프로토타입 `.condition`). 오른쪽은 건수 자리다. */
 export function ConditionRow({ children, right }: { children: ReactNode; right?: ReactNode }) {
   return (
-    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, minHeight: 38, marginBottom: 8 }}>
+    <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, minHeight: 38, marginBottom: 8 }}>
       {children}
       <View style={{ flex: 1 }} />
       {right}
@@ -69,7 +69,7 @@ export function SummaryCard({ label, value, sub, metrics = [] }: {
         <View style={{ flex: 1 }} />
         <Text style={[{ fontSize: 18, fontWeight: '800', color: T.ink }, tnum]}>{value}</Text>
         {sub ? (
-          <Text style={[{ fontSize: 12, fontWeight: '700', color: COLOR.text.tertiary, marginLeft: 4 }, tnum]}>· {sub}</Text>
+          <Text style={[{ fontSize: TYPE.captionSm.fontSize, fontWeight: '700', color: COLOR.text.tertiary, marginLeft: 4 }, tnum]}>· {sub}</Text>
         ) : null}
       </View>
       {metrics.length > 0 ? (
@@ -78,7 +78,7 @@ export function SummaryCard({ label, value, sub, metrics = [] }: {
             <View key={i} style={{ flexDirection: 'row', gap: space.md }}>
               {pair.map((m) => (
                 <View key={m.label} style={{ flex: 1, minWidth: 0 }}>
-                  <Text style={{ fontSize: 12, color: COLOR.text.tertiary, fontWeight: '700', marginBottom: 4 }} numberOfLines={1}>
+                  <Text style={{ fontSize: TYPE.captionSm.fontSize, color: COLOR.text.tertiary, fontWeight: '700', marginBottom: 4 }} numberOfLines={1}>
                     {m.label}
                   </Text>
                   <Text

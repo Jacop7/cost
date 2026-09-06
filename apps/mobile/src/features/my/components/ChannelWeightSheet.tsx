@@ -97,7 +97,7 @@ export function ChannelWeightSheet({ visible, onClose, title, value, onApply }: 
             ))}
           </View>
 
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: space.lg, paddingVertical: space.md, paddingHorizontal: space.md, borderRadius: radius.md, backgroundColor: exact ? COLOR.action.primaryTint : T.surface2 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, marginTop: space.lg, paddingVertical: space.md, paddingHorizontal: space.md, borderRadius: radius.md, backgroundColor: exact ? COLOR.action.primaryTint : T.surface2 }}>
             <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: exact ? COLOR.text.accent : T.sub }}>합계</Text>
             {exact ? <Icon name="check" size={15} color={COLOR.action.primary} sw={3} /> : null}
             <Text style={[{ fontSize: 16, fontWeight: '800', color: exact ? COLOR.text.accent : T.sub }, NUM]}>{sum}%</Text>

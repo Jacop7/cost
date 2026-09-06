@@ -63,7 +63,7 @@ export function LossCard({ loss, baseUnit, discards, unitPrice, onPress }: {
         헤더 — '현재 재고' 와 **같은 배경**을 쓴다. 카드마다 배경이 다르면 한 화면에
         나란히 놓였을 때 목록이 들썩인다. 높은 로스율은 숫자 색과 배지로만 알린다.
       */}
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: space.md, paddingHorizontal: space.md, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingVertical: space.md, paddingHorizontal: space.md, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
         <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.sub }}>로스율</Text>
         {high ? <Badge tone="amber" sm>확인 필요</Badge> : null}
         <Text style={[{ fontSize: 16, fontWeight: '800', color: high ? T.amberText : T.ink }, NUM]}>
@@ -132,7 +132,7 @@ export function LossCard({ loss, baseUnit, discards, unitPrice, onPress }: {
         <Pressable
           onPress={onPress}
           accessibilityRole="button" accessibilityLabel="폐기 내역 전체 보기"
-          style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 2, paddingVertical: space.md, borderTopWidth: 1, borderTopColor: T.line2, backgroundColor: T.surface2 }}
+          style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.sm, paddingVertical: space.md, borderTopWidth: 1, borderTopColor: T.line2, backgroundColor: T.surface2 }}
         >
           <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub }}>자세히 보기</Text>
           <Icon name="chevron" size={16} color={COLOR.text.tertiary} />

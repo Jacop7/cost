@@ -51,8 +51,8 @@ function StateBadge({ state }: { state: ChangeState }) {
   const s = stateLabel(state);
   const c = TONE[s.tone];
   return (
-    <View style={{ paddingHorizontal: 7, paddingVertical: space.xs, borderRadius: radius.sm, backgroundColor: c.bg }}>
-      <Text style={{ fontSize: 12, fontWeight: '700', color: c.fg }}>{s.text}</Text>
+    <View style={{ paddingHorizontal: space.sm, paddingVertical: space.xs, borderRadius: radius.sm, backgroundColor: c.bg }}>
+      <Text style={{ fontSize: TYPE.captionSm.fontSize, fontWeight: '700', color: c.fg }}>{s.text}</Text>
     </View>
   );
 }

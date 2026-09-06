@@ -120,7 +120,7 @@ export default function MyVendorsScreen() {
                   <Icon name="store" size={20} color={T.sub2} />
                 </View>
                 <Pressable onPress={() => openEdit(v)} accessibilityRole="button" accessibilityLabel={`${v.name} 수정`} style={{ flex: 1, minWidth: 0, paddingVertical: 4 }}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm }}>
                     <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }} numberOfLines={1}>{v.name}</Text>
                     {dupIds.has(v.id) ? <Badge tone="amber" sm>중복?</Badge> : null}
                   </View>

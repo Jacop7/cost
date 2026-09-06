@@ -104,7 +104,7 @@ function BeforeAfter({ label, before, after }: { label: string; before: string; 
     <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md }}>
       <Text style={{ flex: 1, fontSize: TYPE.caption.fontSize, fontWeight: '600', color: T.sub }}>{label}</Text>
       <Text style={[{ fontSize: TYPE.caption.fontSize, color: COLOR.text.tertiary }, NUM]}>{before}</Text>
-      <Text style={{ fontSize: TYPE.caption.fontSize, color: T.line3, marginHorizontal: 7 }}>→</Text>
+      <Text style={{ fontSize: TYPE.caption.fontSize, color: T.line3, marginHorizontal: space.sm }}>→</Text>
       <Text style={[{ fontSize: TYPE.caption.fontSize, fontWeight: '800', color: T.ink }, NUM]}>{after}</Text>
     </View>
   );
@@ -156,7 +156,7 @@ export default function ProfitHistoryScreen() {
         >
           {blocks.map((b) => (
             <View key={b.month} style={{ marginBottom: space.md }}>
-              <Text style={{ marginHorizontal: 6, marginBottom: 8, fontSize: 13, fontWeight: '800', color: T.sub }}>
+              <Text style={{ marginHorizontal: space.sm, marginBottom: 8, fontSize: 13, fontWeight: '800', color: T.sub }}>
                 {b.month}
               </Text>
               {/* 카드 하나에 행 구분선 — 줄마다 카드를 쓰면 목록이 아니라 더미가 된다. */}
@@ -180,7 +180,7 @@ export default function ProfitHistoryScreen() {
       <Sheet visible={open !== null} onClose={() => setOpen(null)} height={430}>
         {open ? (
           <View style={{ paddingHorizontal: 20, paddingBottom: 8 }}>
-            <Text style={{ fontSize: 19, fontWeight: '800', color: T.ink }}>{open.title}</Text>
+            <Text style={{ fontSize: TYPE.title.fontSize, fontWeight: '800', color: T.ink }}>{open.title}</Text>
             <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.xs }}>
               {changeStamp(open.occurredAt).replace(' · ', ' ')}
               {open.sourceLabel ? ` · ${open.sourceLabel}` : ''}

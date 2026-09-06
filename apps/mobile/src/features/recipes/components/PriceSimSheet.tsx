@@ -142,7 +142,7 @@ export function PriceSimSheet({
         </View>
       </Card>
 
-      <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, marginTop: 12, paddingHorizontal: 2 }}>
+      <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, marginTop: 12, paddingHorizontal: 2 }}>
         <Icon name="info" size={15} color={rec != null ? COLOR.action.primary : T.amberText} />
         <Text style={[{ flex: 1, fontSize: 14, color: rec != null ? COLOR.text.accent : T.amberText, fontWeight: '600', lineHeight: TYPE.caption.lineHeight }, NUM]}>
           {rec != null

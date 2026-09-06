@@ -81,7 +81,7 @@ export function ConfirmSheet({
   return (
     <Sheet visible={visible} onClose={onCancel} title={title} scroll={false}>
       {message ? (
-        <Text style={{ fontSize: 15, lineHeight: TYPE.body.lineHeight, color: T.sub, marginTop: space.xs }}>{message}</Text>
+        <Text style={{ fontSize: TYPE.body.fontSize, lineHeight: TYPE.body.lineHeight, color: T.sub, marginTop: space.xs }}>{message}</Text>
       ) : null}
       <View style={{ flexDirection: 'row', gap: 8, marginTop: space.lg, marginBottom: space.sm }}>
         <View style={{ flex: 1 }}>

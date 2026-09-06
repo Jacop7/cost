@@ -36,7 +36,7 @@ export function SecLabel({ title, right, onPress }: { title: string; right?: str
       <Text style={{ flex: 1, fontSize: 13, fontWeight: '800', color: T.sub }}>{title}</Text>
       {right ? <Text style={[{ fontSize: 13, fontWeight: '700', color: COLOR.text.tertiary }, NUM]}>{right}</Text> : null}
       {onPress ? (
-        <Pressable onPress={onPress} hitSlop={6} accessibilityRole="button" accessibilityLabel={`${title} 자세히 보기`} style={{ flexDirection: 'row', alignItems: 'center', gap: 1 }}>
+        <Pressable onPress={onPress} hitSlop={6} accessibilityRole="button" accessibilityLabel={`${title} 자세히 보기`} style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm }}>
           <Text style={{ fontSize: 13, fontWeight: '800', color: COLOR.text.link }}>자세히 보기</Text>
           <Icon name="chevron" size={14} color={COLOR.action.primary} />
         </Pressable>
@@ -81,13 +81,13 @@ export function SalesRow({
         borderBottomWidth: last ? 0 : 1, borderBottomColor: T.line2,
       }}
     >
-      <View style={{ flex: 1, minWidth: 0, flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+      <View style={{ flex: 1, minWidth: 0, flexDirection: 'row', alignItems: 'center', gap: space.sm }}>
         <Text style={{ fontSize: TYPE.caption.fontSize, fontWeight: strong ? '800' : '700', color: labelTone ?? (strong ? T.ink : T.sub) }}>
           {label}
         </Text>
         {badge ? (
-          <View style={{ paddingHorizontal: 6, paddingVertical: space.xs, borderRadius: radius.sm, backgroundColor: badge.met ? T.greenTint : T.amberTint }}>
-            <Text style={{ fontSize: 10, fontWeight: '800', color: badge.met ? T.green : T.amberText }}>{badge.text}</Text>
+          <View style={{ paddingHorizontal: space.sm, paddingVertical: space.xs, borderRadius: radius.sm, backgroundColor: badge.met ? T.greenTint : T.amberTint }}>
+            <Text style={{ fontSize: TYPE.captionSm.fontSize, fontWeight: '800', color: badge.met ? T.green : T.amberText }}>{badge.text}</Text>
           </View>
         ) : null}
       </View>
@@ -95,7 +95,7 @@ export function SalesRow({
       <View style={{ alignItems: 'flex-end' }}>
         <Text style={[{ fontSize: TYPE.caption.fontSize, fontWeight: '800', color: tone ?? (strong ? T.ink : COLOR.text.tertiary) }, NUM]}>{amount}</Text>
         {percent ? (
-          <Text style={[{ fontSize: 12, fontWeight: '700', color: percentTone ?? tone ?? COLOR.text.tertiary, marginTop: space.xs }, NUM]}>{percent}</Text>
+          <Text style={[{ fontSize: TYPE.captionSm.fontSize, fontWeight: '700', color: percentTone ?? tone ?? COLOR.text.tertiary, marginTop: space.xs }, NUM]}>{percent}</Text>
         ) : null}
       </View>
 
@@ -128,7 +128,7 @@ export function DetailSummary({ rows }: { rows: [string, string, string?, string
           <View style={{ alignItems: 'flex-end' }}>
             <Text style={[{ fontSize: TYPE.caption.fontSize, fontWeight: '800', color: tone ?? T.ink }, NUM]}>{v}</Text>
             {/* 고정지출률처럼 값 옆이 아니라 **아래**에 붙는 보조 숫자(프로토타입 규격). */}
-            {sub ? <Text style={[{ fontSize: 12, fontWeight: '800', color: COLOR.text.accent, marginTop: space.xs }, NUM]}>{sub}</Text> : null}
+            {sub ? <Text style={[{ fontSize: TYPE.captionSm.fontSize, fontWeight: '800', color: COLOR.text.accent, marginTop: space.xs }, NUM]}>{sub}</Text> : null}
           </View>
         </View>
       ))}
@@ -171,11 +171,11 @@ export function DetailRow({ name, sub, amount, percent, muted, last }: {
     >
       <View style={{ flex: 1, minWidth: 0 }}>
         <Text style={{ fontSize: TYPE.caption.fontSize, fontWeight: '800', color: c }} numberOfLines={1}>{name}</Text>
-        {sub ? <Text style={[{ fontSize: 12, fontWeight: '600', color: COLOR.text.tertiary, marginTop: space.xs }, NUM]}>{sub}</Text> : null}
+        {sub ? <Text style={[{ fontSize: TYPE.captionSm.fontSize, fontWeight: '600', color: COLOR.text.tertiary, marginTop: space.xs }, NUM]}>{sub}</Text> : null}
       </View>
       <View style={{ alignItems: 'flex-end' }}>
         <Text style={[{ fontSize: TYPE.caption.fontSize, fontWeight: '800', color: c }, NUM]}>{amount}</Text>
-        {percent ? <Text style={[{ fontSize: 12, fontWeight: '700', color: COLOR.text.tertiary, marginTop: space.xs }, NUM]}>{percent}</Text> : null}
+        {percent ? <Text style={[{ fontSize: TYPE.captionSm.fontSize, fontWeight: '700', color: COLOR.text.tertiary, marginTop: space.xs }, NUM]}>{percent}</Text> : null}
       </View>
     </View>
   );
@@ -238,7 +238,7 @@ export function ChannelMixCard({
             borderTopWidth: 1, borderTopColor: T.line, backgroundColor: T.surface2,
           }}
         >
-          <Text style={{ fontSize: 15, fontWeight: '800', color: T.sub }}>자세히 보기</Text>
+          <Text style={{ fontSize: TYPE.body.fontSize, fontWeight: '800', color: T.sub }}>자세히 보기</Text>
           <Icon name="chevron" size={16} color={T.sub2} />
         </Pressable>
       ) : null}
@@ -325,7 +325,7 @@ export function ProfitBreakdownCard({
 
       {/* 고정지출률을 과거 월에서 빌려 쓴 상태면 그대로 확정값처럼 보이면 안 된다. */}
       {summary.fixedRateProvisional ? (
-        <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, marginHorizontal: space.md, marginBottom: 12, paddingVertical: space.sm, paddingHorizontal: 12, borderRadius: radius.md, backgroundColor: T.amberTint }}>
+        <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, marginHorizontal: space.md, marginBottom: 12, paddingVertical: space.sm, paddingHorizontal: 12, borderRadius: radius.md, backgroundColor: T.amberTint }}>
           <Icon name="info" size={15} color={T.amberText} />
           <Text style={{ flex: 1, fontSize: 13, color: T.amberText, lineHeight: TYPE.captionSm.lineHeight }}>
             이 달 고정지출이 아직 없어 최근 입력값으로 잠정 계산했어요.
@@ -362,14 +362,14 @@ export function MenuSalesList({ menu, showAll, onShowAll, onSelect }: {
             <Text style={{ fontSize: TYPE.caption.fontSize, fontWeight: '800', color: T.ink }} numberOfLines={1}>
               {m.menuName} <Text style={{ fontSize: 14, color: COLOR.text.accent, fontWeight: '700' }}>×{m.qty}</Text>
             </Text>
-            <Text style={[{ flexShrink: 1, fontSize: 12, fontWeight: '600', color: COLOR.text.tertiary, marginTop: 4 }, NUM]}>
+            <Text style={[{ flexShrink: 1, fontSize: TYPE.captionSm.fontSize, fontWeight: '600', color: COLOR.text.tertiary, marginTop: 4 }, NUM]}>
               매장 {m.qtyHall} · 배달 {m.qtyDelivery} · 포장 {m.qtyTakeout}
               {m.qtyWaste > 0 ? ` · 폐기 ${m.qtyWaste}` : ''}
             </Text>
           </View>
           <View style={{ alignItems: 'flex-end' }}>
             <Text style={[{ fontSize: TYPE.caption.fontSize, fontWeight: '800', color: T.ink }, NUM]}>{won(m.revenue)}원</Text>
-            <Text style={[{ fontSize: 12, fontWeight: '700', color: COLOR.text.tertiary, marginTop: space.xs }, NUM]}>재료 {won(m.material)}</Text>
+            <Text style={[{ fontSize: TYPE.captionSm.fontSize, fontWeight: '700', color: COLOR.text.tertiary, marginTop: space.xs }, NUM]}>재료 {won(m.material)}</Text>
           </View>
           <View style={{ width: ARROW_W, alignItems: 'flex-end' }}>
             <Icon name="chevron" size={16} color={T.line3} />
@@ -390,7 +390,7 @@ export function MenuSalesList({ menu, showAll, onShowAll, onSelect }: {
             borderTopWidth: 1, borderTopColor: T.line, backgroundColor: T.surface2,
           }}
         >
-          <Text style={{ fontSize: 15, fontWeight: '800', color: T.sub }}>더보기 ({sorted.length - 10}개)</Text>
+          <Text style={{ fontSize: TYPE.body.fontSize, fontWeight: '800', color: T.sub }}>더보기 ({sorted.length - 10}개)</Text>
           <Icon name="chevronDown" size={15} color={T.sub2} />
         </Pressable>
       ) : null}

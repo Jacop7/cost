@@ -93,7 +93,7 @@ function AvgSalesScreenBody({ localDate }: { localDate: string }) {
           <Text style={[{ flex: 1, fontSize: 22, fontWeight: '800', color: T.ink, letterSpacing: -0.6 }, NUM]}>{value || '0'}</Text>
           <Text style={{ fontSize: 18, fontWeight: '700', color: T.sub2 }}>개/월</Text>
         </View>
-        <View style={{ flexDirection: 'row', gap: 7, marginTop: space.md }}>
+        <View style={{ flexDirection: 'row', gap: space.sm, marginTop: space.md }}>
           {['100', '200', '300', '500'].map((v) => {
             const on = v === value;
             return (
@@ -109,7 +109,7 @@ function AvgSalesScreenBody({ localDate }: { localDate: string }) {
             );
           })}
         </View>
-        <View style={{ flexDirection: 'row', gap: 7, marginTop: space.sm }}>
+        <View style={{ flexDirection: 'row', gap: space.sm, marginTop: space.sm }}>
           {['-50', '-10', '+10', '+50'].map((d) => (
             <Pressable
               key={d}

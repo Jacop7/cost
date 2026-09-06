@@ -218,7 +218,7 @@ function QuickInboundScreenBody({ localDate }: { localDate: string }) {
 
               {/* 입고 정보 */}
               <Card pad={16}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 12 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, marginBottom: 12 }}>
                   <Text style={{ fontSize: 16, fontWeight: '800', color: T.ink }}>입고 정보</Text>
                   <Text style={{ fontSize: 13, fontWeight: '700', color: COLOR.text.accent }}>재고와 단가에 반영</Text>
                 </View>
@@ -339,7 +339,7 @@ function QuickInboundScreenBody({ localDate }: { localDate: string }) {
               */}
               {p ? (
                 <Card pad={0} style={{ overflow: 'hidden' }}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: space.md, paddingHorizontal: space.md, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingVertical: space.md, paddingHorizontal: space.md, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
                     <Text style={{ fontSize: 16, fontWeight: '800', color: T.sub }}>반영 내용</Text>
                   </View>
                   <View style={{ paddingHorizontal: space.md, paddingVertical: 4 }}>
@@ -361,7 +361,7 @@ function QuickInboundScreenBody({ localDate }: { localDate: string }) {
                       </Text>
                     </View>
                   </View>
-                  <View style={{ flexDirection: 'row', gap: 7, paddingVertical: 12, paddingHorizontal: space.md, borderTopWidth: 1, borderTopColor: T.line2, backgroundColor: COLOR.action.primaryTint }}>
+                  <View style={{ flexDirection: 'row', gap: space.sm, paddingVertical: 12, paddingHorizontal: space.md, borderTopWidth: 1, borderTopColor: T.line2, backgroundColor: COLOR.action.primaryTint }}>
                     <Icon name="info" size={16} color={COLOR.action.primary} />
                     <Text style={{ flex: 1, fontSize: 14, color: T.sub, lineHeight: TYPE.caption.lineHeight }}>
                       입고를 확정하면 재고와 입고 이력이 추가되고, 기준 단가와

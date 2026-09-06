@@ -168,8 +168,8 @@ function DiscardHistoryBody({ localDate }: { localDate: string }) {
                     }}
                   >
                     <View style={{ flex: 1, minWidth: 0 }}>
-                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                        <Text style={[{ fontSize: 12, color: COLOR.text.tertiary, fontWeight: '700' }, tnum]}>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm }}>
+                        <Text style={[{ fontSize: TYPE.captionSm.fontSize, color: COLOR.text.tertiary, fontWeight: '700' }, tnum]}>
                           {e.date.slice(5).replace('-', '/')}
                         </Text>
                         <Badge tone={e.waste ? 'amber' : 'neutral'} sm>
@@ -185,7 +185,7 @@ function DiscardHistoryBody({ localDate }: { localDate: string }) {
                         −{formatQuantity(Math.abs(e.countDelta), unit)}
                       </Text>
                       {price !== null ? (
-                        <Text style={[{ fontSize: 12, color: COLOR.text.tertiary, fontWeight: '700', marginTop: space.xs }, tnum]}>
+                        <Text style={[{ fontSize: TYPE.captionSm.fontSize, color: COLOR.text.tertiary, fontWeight: '700', marginTop: space.xs }, tnum]}>
                           {won(Math.round(Math.abs(e.countDelta) * price))}원
                         </Text>
                       ) : null}
@@ -221,7 +221,7 @@ function DiscardHistoryBody({ localDate }: { localDate: string }) {
             <View style={{ alignItems: 'center', paddingBottom: 12 }}>
               <View style={{ width: 40, height: 5, borderRadius: radius.full, backgroundColor: T.line }} />
             </View>
-            <Text style={{ fontSize: 19, fontWeight: '800', color: T.ink, marginBottom: space.md }}>유형</Text>
+            <Text style={{ fontSize: TYPE.title.fontSize, fontWeight: '800', color: T.ink, marginBottom: space.md }}>유형</Text>
             {TABS.map((k) => {
               const on = k === tab;
               const n = k === '전체' ? discards.length : discards.filter((e) => (k === '조리 후 폐기' ? e.waste : !e.waste)).length;

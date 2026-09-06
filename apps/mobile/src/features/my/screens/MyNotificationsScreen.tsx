@@ -109,7 +109,7 @@ export default function MyNotificationsScreen() {
             {ITEMS.map((n, i) => (
               <View key={n.key} style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 16, paddingHorizontal: space.md, borderBottomWidth: i < ITEMS.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
                 <View style={{ flex: 1, minWidth: 0 }}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm }}>
                     <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>{n.name}</Text>
                     {n.badge ? <Badge tone="blue" sm>{n.badge}</Badge> : null}
                   </View>
@@ -121,7 +121,7 @@ export default function MyNotificationsScreen() {
           </Card>
         </QueryState>
 
-        <View style={{ flexDirection: 'row', gap: 7, marginTop: space.md, marginHorizontal: 4, alignItems: 'flex-start' }}>
+        <View style={{ flexDirection: 'row', gap: space.sm, marginTop: space.md, marginHorizontal: 4, alignItems: 'flex-start' }}>
           <Icon name="info" size={15} color={COLOR.text.tertiary} />
           <Text style={{ flex: 1, fontSize: 14, color: COLOR.text.tertiary, lineHeight: TYPE.caption.lineHeight }}>
             아침 발주 요약은 곧 소진·안전재고 미달 후보를 1건으로 묶어서 보내요. 알림 발송은 서버 작업이 붙은 뒤 동작해요.

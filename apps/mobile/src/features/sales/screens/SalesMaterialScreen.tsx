@@ -120,7 +120,7 @@ function SalesMaterialScreenBody({ serverToday }: { serverToday: string }) {
               onPress={() => { const id = sel.ingredientId; setSel(null); router.push(`/ingredients/${id}` as Href); }}
               hitSlop={6}
               accessibilityRole="button" accessibilityLabel="식재료 상세로 이동"
-              style={{ flexDirection: 'row', alignItems: 'center', gap: 1, marginTop: 4 }}
+              style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, marginTop: 4 }}
             >
               <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.text.link }}>식재료 보기</Text>
               <Icon name="chevron" size={15} color={COLOR.action.primary} />

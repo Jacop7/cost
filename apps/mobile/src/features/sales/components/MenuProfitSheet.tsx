@@ -37,7 +37,7 @@ export function MenuProfitSheet({ sel, summary, periodLabel, from, to, onClose }
             onPress={() => { onClose(); router.push(`/sales/menu?recipe=${sel.recipeId}&from=${from}&to=${to}` as Href); }}
             hitSlop={6}
             accessibilityRole="button" accessibilityLabel="메뉴 손익 자세히 보기"
-            style={{ flexDirection: 'row', alignItems: 'center', gap: 1, marginTop: 4 }}
+            style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, marginTop: 4 }}
           >
             <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.text.link }}>자세히 보기</Text>
             <Icon name="chevron" size={15} color={COLOR.action.primary} />
@@ -117,7 +117,7 @@ export function MenuProfitSheet({ sel, summary, periodLabel, from, to, onClose }
                 </View>
               </View>
             </Card>
-            <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, paddingVertical: 12, paddingHorizontal: space.md, borderRadius: radius.md, backgroundColor: COLOR.action.primaryTint }}>
+            <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, paddingVertical: 12, paddingHorizontal: space.md, borderRadius: radius.md, backgroundColor: COLOR.action.primaryTint }}>
               <Icon name="info" size={15} color={COLOR.action.primary} />
               <Text style={{ flex: 1, fontSize: 14, color: T.sub2, lineHeight: TYPE.caption.lineHeight }}>
                 재료 원가는 판매 시점 실제값이고, ‘배분’이 붙은 항목은 이 메뉴의 매출 비중

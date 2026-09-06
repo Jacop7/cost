@@ -17,7 +17,7 @@ import { Pressable, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
 import { Button, ConfirmSheet, Icon, Sheet } from '@/components/kit';
 import { useState } from 'react';
-import { COLOR, T, radius, rowMinHeight, space } from '@/theme/tokens';
+import { COLOR, T, radius, rowMinHeight, space, TYPE } from '@/theme/tokens';
 import { useCheckRecipeShortages, type ShortageRecipe } from '../hooks';
 import { ShortageWarningSheet } from './ShortageWarningSheet';
 import { LateCloseSheet } from './LateCloseSheet';
@@ -51,9 +51,9 @@ function Pill({ text, bg, fg, onPress }: { text: string; bg: string; fg: string;
       onPress={onPress}
       accessibilityRole={onPress ? 'button' : undefined}
       accessibilityLabel={onPress ? `${text} 바꾸기` : undefined}
-      style={{ flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: 4, paddingHorizontal: 7, borderRadius: radius.sm, backgroundColor: bg }}
+      style={{ flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: 4, paddingHorizontal: space.sm, borderRadius: radius.sm, backgroundColor: bg }}
     >
-      <Text style={{ fontSize: 11, fontWeight: '800', color: fg }}>{text}</Text>
+      <Text style={{ fontSize: TYPE.captionSm.fontSize, fontWeight: '800', color: fg }}>{text}</Text>
       {onPress ? <Icon name="chevronDown" size={11} color={fg} /> : null}
     </Wrap>
   );
@@ -173,9 +173,9 @@ export function BusinessDayBar({ state }: { state: BusinessDayState }) {
           <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 8, minWidth: 0, flexShrink: 1 }}>
             <Text style={{ fontSize: 14, color: T.ink }} numberOfLines={1}>
               <Text style={{ fontWeight: '800' }}>{dateLabel}</Text>
-              <Text style={{ fontSize: 12, color: T.sub2 }}> {dowLabel}</Text>
+              <Text style={{ fontSize: TYPE.captionSm.fontSize, color: T.sub2 }}> {dowLabel}</Text>
             </Text>
-            {hours ? <Text style={{ fontSize: 12, fontWeight: '700', color: COLOR.text.tertiary }}>{hours}</Text> : null}
+            {hours ? <Text style={{ fontSize: TYPE.captionSm.fontSize, fontWeight: '700', color: COLOR.text.tertiary }}>{hours}</Text> : null}
           </View>
 
           <View style={{ flex: 1 }} />

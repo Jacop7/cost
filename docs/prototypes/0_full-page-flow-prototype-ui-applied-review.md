@@ -14,6 +14,11 @@
 - 실제 Expo 앱 수정: S2 색 역할과 S3a·S4 토큰/컴포넌트 계약을 단계별로 적용했다. 이 장부의
   화면별 PASS는 프로토타입 판정이며, Expo 단계의 완료 여부는 각 단계 게이트와 네이티브 증거가
   별도로 소유한다.
+- 2026-09-06 `DS-20260906-008` / `PRT-235`: S3b 폭 증가 치환은 S2 기준 180건 중
+  S4가 먼저 닫은 1건을 승계하고 179건을 Expo 앱에 적용했다. 프로토타입 DOM·CSS·JS에는
+  변화가 없으며 동기화 표식만 갱신한다. S3b 전용 exact diff 계약과 S4 누적 AST 계약을
+  함께 통과한 뒤 감사 4종을 재실행한다. Android·iOS 네이티브 S4a와 W1 최종 종결은
+  이 단계의 완료 범위가 아니다.
 - 2026-09-01 순차 재구축 시작: 자동 공통 스타일로 판정했던 기존 `PASS`는 시각 완료 근거에서
   제외한다. 적용본을 보존 원본과 동일한 상태로 되돌렸고, `ING-01`부터 화면·연결 팝업을 순서대로
   실제 Expo와 대조해 다시 만든다. 아래의 과거 PASS 표는 변경 이력으로만 보존하며 최신 판정으로
@@ -2685,6 +2690,22 @@ popup/state host **121개**(합 182), 그리고 레지스트리에 키가 없는
   `full-page-flow-prototype-s2-geometry-diff.json` · `full-page-flow-prototype-contrast-gate.json` ·
   `full-page-flow-prototype-render-audit.json` · `full-page-flow-prototype-design-audit.json` ·
   `full-page-flow-prototype-i18n-stress.json`.
+
+## DS-20260906-008 · PRT-235 S3b 폭 증가 토큰 치환 후보
+
+- 대상: S2 기준 S3b 180건을 현재 S4 나무에 투영한 앱 선언과 프로토타입 봉인.
+- 기대값: S4 승계 1건 + 신규 179건이 exact 계획과 일치하고, 승인 밖 변경·폭 축소·
+  토큰 값 불일치가 0이어야 한다.
+- 실제값: 신규 179건(앱 56파일)과 승계 1건이 전용 계약과 일치하고, S4 누적 기하
+  변경 239건도 선언별 계약과 정확히 일치한다.
+- PC 검수: 프로토타입 1280×900 감사 재실행 · PASS.
+- 모바일 검수: 320px·CSS 200%·글자 200%·i18n 4패스 재실행 · PASS.
+- 미검수: 없음
+- 별도 게이트: 페이블 독립 검수와 Android·iOS S4a 네이티브 frame 측정은
+  프로토타입 렌더 판정이 아니라 각각 S3b 단계 승인과 S4a 최종 종결이 소유한다.
+- 결과: PASS
+- 증거: `../../scripts/design-token-s3b-known.json` · `../../scripts/design-token-s3b-diff.mjs` ·
+  `../../scripts/design-token-s3b-diff.test.mjs` · `../../scripts/design-token-s4-contract.json`.
 
 ## DS-20260906-007 · PRT-234 S4 Button 형제 중첩·선언별 AST 계약 정정
 

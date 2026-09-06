@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { Icon, type IconName } from './Icon';
-import { COLOR, T } from '@/theme/tokens';
+import { COLOR, T, space } from '@/theme/tokens';
 
 type Kind = 'primary' | 'tint' | 'gray' | 'ghost' | 'danger';
 type Size = 'sm' | 'md' | 'lg';
@@ -54,7 +54,7 @@ export function Button({
       style={({ pressed }) => [
         {
           flexDirection: iconRight ? 'row-reverse' : 'row',
-          alignItems: 'center', justifyContent: 'center', gap: 6,
+          alignItems: 'center', justifyContent: 'center', gap: space.sm,
           alignSelf: full ? 'stretch' : 'flex-start',
           backgroundColor: kind === 'primary' && pressed && !blocked ? COLOR.action.primaryPressed : c.bg,
           borderWidth: c.border ? 1 : 0, borderColor: c.border,
