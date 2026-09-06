@@ -16,7 +16,7 @@ import { AppHeader, Card, QueryState } from '@/components/kit';
 import { SalesRow, SecLabel } from '../components/ProfitBlocks';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
 import { safeBack } from '@/lib/nav';
-import { LAYOUT, COLOR, T, won, TYPE, space } from '@/theme/tokens';
+import { LAYOUT, COLOR, COMPONENT, T, won, TYPE, space } from '@/theme/tokens';
 import { formatQuantity, formatUnitPrice } from '@margincook/core';
 import { useRecipeDetail } from '@/features/recipes/hooks';
 import { useDayMenuDetail, useRangeMenuDetail, useSalesRange } from '../hooks';
@@ -138,17 +138,17 @@ function SalesMenuDetailScreenBody({ serverToday }: { serverToday: string }) {
 
 
   const legend: [string, number, number, string][] = [
-    ['재료', material, p(material), '#8B95A1'],
-    ['부자재', extra, p(extra), '#CDD3DA'],
-    ['고정 지출', fixed, p(fixed), '#5B6573'],
-    ['세금', tax, p(tax), '#B0B8C1'],
+    ['재료', material, p(material), COMPONENT.profitChart.material],
+    ['부자재', extra, p(extra), COMPONENT.profitChart.extra],
+    ['고정 지출', fixed, p(fixed), COMPONENT.profitChart.fixed],
+    ['세금', tax, p(tax), COMPONENT.profitChart.tax],
     ['순이익', profit, rate, rate >= target ? T.green : T.red],
   ];
 
   const chQty = sold ? [
-    { label: '매장', qty: sold.qtyHall, color: COLOR.text.accent },
-    { label: '배달', qty: sold.qtyDelivery, color: '#7A8694' },
-    { label: '포장', qty: sold.qtyTakeout, color: '#C5CCD3' },
+    { label: '매장', qty: sold.qtyHall, color: COMPONENT.channelChart.hall },
+    { label: '배달', qty: sold.qtyDelivery, color: COMPONENT.channelChart.delivery },
+    { label: '포장', qty: sold.qtyTakeout, color: COMPONENT.channelChart.takeout },
   ].filter((c) => c.qty > 0) : [];
   const chTotal = chQty.reduce((a, c) => a + c.qty, 0);
 

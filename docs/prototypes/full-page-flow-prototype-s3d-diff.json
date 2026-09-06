@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "stage": "S3d",
+  "baselineCommit": "0b206c2ac51fa36ed146ee5583a2071b85158f12",
+  "ownerDecisionDate": "2026-09-06",
+  "pendingDeclarationsResolved": 32,
+  "changedFiles": [
+    "apps/mobile/src/components/kit/Button.tsx",
+    "apps/mobile/src/components/kit/Sheet.tsx",
+    "apps/mobile/src/components/kit/charts.tsx",
+    "apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx",
+    "apps/mobile/src/features/ingredients/components/UnitPickerSheet.tsx",
+    "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx",
+    "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx",
+    "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx",
+    "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
+    "apps/mobile/src/features/my/screens/MyHoursScreen.tsx",
+    "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx",
+    "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx",
+    "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx",
+    "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx",
+    "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx",
+    "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx",
+    "apps/mobile/src/features/sales/components/LateCloseSheet.tsx",
+    "apps/mobile/src/features/sales/screens/SalesChannelScreen.tsx",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
+    "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx",
+    "apps/mobile/src/theme/tokens.ts"
+  ],
+  "appTreeSha256": "6dbaa40ff4e3a15a0415e11ed4f1ab8da0afb17daa0622e11c64e374ebbbc4c5",
+  "status": "PASS",
+  "failures": []
+}

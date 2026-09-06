@@ -355,7 +355,7 @@ function SalesHomeBody({ today }: { today: string }) {
       <View style={{ paddingTop: insets.top, backgroundColor: T.bg }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 20, paddingRight: 12, paddingTop: space.sm, paddingBottom: 12 }}>
           <View style={{ flex: 1 }}>
-            <Text style={{ fontSize: 22, fontWeight: '800', color: T.ink, letterSpacing: -0.6 }}>매출관리</Text>
+            <Text style={{ fontSize: 22, fontWeight: '800', color: T.ink, letterSpacing: TYPE.display.letterSpacing }}>매출관리</Text>
             <Text style={{ fontSize: 14, color: T.sub2, marginTop: space.xs, fontWeight: '600' }}>{dayLabel(today, today)}</Text>
           </View>
           <Pressable
@@ -415,7 +415,7 @@ function SalesHomeBody({ today }: { today: string }) {
           style={{ backgroundColor: COLOR.action.primary, borderRadius: 16, padding: 16, marginBottom: space.md }}
         >
           <Text style={{ fontSize: 13, fontWeight: '700', color: 'rgba(255,255,255,0.82)' }}>오늘 순이익</Text>
-          <Text style={[{ fontSize: 25, fontWeight: '800', color: T.onColor, letterSpacing: -0.6, marginTop: space.sm }, NUM]}>
+          <Text style={[{ fontSize: TYPE.display.fontSize, fontWeight: '800', color: T.onColor, letterSpacing: TYPE.display.letterSpacing, marginTop: space.sm }, NUM]}>
             {beforeOpen ? '—' : `${won(summary?.profit ?? 0)}원`}
           </Text>
           <Text style={[{ fontSize: 13, fontWeight: '700', color: 'rgba(255,255,255,0.86)', marginTop: 4 }, NUM]}>

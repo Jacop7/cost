@@ -4,7 +4,7 @@ import { View, Text, ScrollView, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ScreenShell, ScrollTabs, Icon, FAB, SearchBar, SortChip, SortSheet, QueryState, type SortOption } from '../../../components/kit';
-import { LAYOUT, COLOR, T, radius, space } from '../../../theme/tokens';
+import { LAYOUT, COLOR, T, TYPE, radius, space } from '../../../theme/tokens';
 import { useIngredientList, type IngredientRow } from '../hooks';
 import { useSettingsLists } from '@/features/master-data/hooks';
 import { IngCard, stockStateOf } from '../components/IngCard';
@@ -80,7 +80,7 @@ export function IngredientListScreen() {
       header={
         <View style={{ paddingTop: insets.top, backgroundColor: T.bg }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 20, paddingRight: 12, paddingTop: space.sm, paddingBottom: 12 }}>
-            <Text style={{ flex: 1, fontSize: 22, fontWeight: '800', color: T.ink, letterSpacing: -0.6 }}>식재료</Text>
+            <Text style={{ flex: 1, fontSize: 22, fontWeight: '800', color: T.ink, letterSpacing: TYPE.display.letterSpacing }}>식재료</Text>
             <Pressable
               onPress={() => setSearching((v) => !v)}
               hitSlop={{ top: 2, bottom: 2, left: 4, right: 0 }}

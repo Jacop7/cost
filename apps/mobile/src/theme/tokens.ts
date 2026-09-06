@@ -64,21 +64,21 @@ export const FONT = {
  * 값**이므로, 적용 단계에서 세로 방향 **시각 변화**로 분류해 렌더 감사에 포함한다.
  * `13→19`(2자리)·`13→16`(1자리)이 18 과 다르지만 표본이 작아 확정표를 따른다.
  */
+/**
+ * 자간은 TYPE 역할에 붙인다. `displayTight`는 2026-09-06 소유자 결정으로 승인된
+ * 22px 화면 제목·큰 숫자 전용이고, `titleTight`는 20px 상세·시트 제목 전용이다.
+ */
+export const letterSpacing = { none: 0, displayTight: -0.6, titleTight: -0.3 } as const;
+
 export const TYPE = {
-  display: { fontSize: 22, fontWeight: '800', lineHeight: 28 }, // 큰 숫자·금액 강조
-  title: { fontSize: 20, fontWeight: '800', lineHeight: 26 }, // 화면·시트 제목, 항목명
+  display: { fontSize: 22, fontWeight: '800', lineHeight: 28, letterSpacing: letterSpacing.displayTight }, // 큰 숫자·금액 강조
+  title: { fontSize: 20, fontWeight: '800', lineHeight: 26, letterSpacing: letterSpacing.titleTight }, // 화면·시트 제목, 항목명
   header: { fontSize: 18, fontWeight: '700', lineHeight: 24 }, // 앱 헤더·섹션 헤더
   body: { fontSize: 16, fontWeight: '700', lineHeight: 22 }, // 본문 기본(행 제목·값)
   bodyWeak: { fontSize: 16, fontWeight: '600', lineHeight: 22 }, // 본문 보조
   caption: { fontSize: 14, fontWeight: '600', lineHeight: 20 }, // 라벨·캡션
   captionSm: { fontSize: 13, fontWeight: '600', lineHeight: 18 }, // 칩·탭 라벨
 } as const;
-
-/**
- * 자간 — 실측 2종뿐이다. 없는 축을 만들지 않는다.
- * `titleTight` 는 큰 제목에서만 쓴다(프로토타입 `.detail-name` · 시트 제목).
- */
-export const letterSpacing = { none: 0, titleTight: -0.3 } as const;
 
 /** 아이콘 크기 — 실측 3단계. `Icon size` 인자에 이 값만 넣는다. */
 export const iconSize = { sm: 16, md: 20, lg: 24 } as const;
@@ -307,6 +307,30 @@ export const COMPONENT = {
     /** 32px 시각 상자 둘의 44px 터치 영역이 겹치지 않는 최소 중심 간격. */
     gap: space.md,
     hitSlop: 6,
+  },
+  button: {
+    label: { letterSpacing: -0.2 },
+  },
+  donut: {
+    centerValue: { letterSpacing: -0.5 },
+  },
+  switch: {
+    offTrack: '#D5DAE0',
+  },
+  warningCard: {
+    background: COLOR.status.cautionTint,
+    border: COLOR.status.caution,
+  },
+  channelChart: {
+    hall: COLOR.brand.primary,
+    delivery: '#7A8694',
+    takeout: '#C5CCD3',
+  },
+  profitChart: {
+    material: T.ter,
+    fixed: '#5B6573',
+    extra: '#CDD3DA',
+    tax: T.gray400,
   },
 } as const;
 

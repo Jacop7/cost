@@ -90,7 +90,7 @@ function AvgSalesScreenBody({ localDate }: { localDate: string }) {
         {/* 입력 */}
         <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.text.tertiary, marginBottom: 8 }}>월 평균 판매량</Text>
         <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 8, backgroundColor: T.surface, borderWidth: 1, borderColor: COLOR.action.primary, borderRadius: radius.lg, paddingVertical: space.lg, paddingHorizontal: space.lg }}>
-          <Text style={[{ flex: 1, fontSize: 22, fontWeight: '800', color: T.ink, letterSpacing: -0.6 }, NUM]}>{value || '0'}</Text>
+          <Text style={[{ flex: 1, fontSize: 22, fontWeight: '800', color: T.ink, letterSpacing: TYPE.display.letterSpacing }, NUM]}>{value || '0'}</Text>
           <Text style={{ fontSize: 18, fontWeight: '700', color: T.sub2 }}>개/월</Text>
         </View>
         <View style={{ flexDirection: 'row', gap: space.sm, marginTop: space.md }}>

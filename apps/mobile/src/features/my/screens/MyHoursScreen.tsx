@@ -332,7 +332,7 @@ export default function MyHoursScreen() {
                 <Icon name="info" size={18} color={COLOR.action.primary} />
                 <View style={{ flex: 1 }}>
                   <Text style={{ fontSize: TYPE.caption.fontSize, fontWeight: '800', color: COLOR.text.accent }}>매장 시간대를 정해 주세요</Text>
-                  <Text style={{ fontSize: 13.5, color: COLOR.text.tertiary, marginTop: space.xs }}>기기 시간대는 {deviceTz} 예요.</Text>
+                  <Text style={{ fontSize: TYPE.caption.fontSize, color: COLOR.text.tertiary, marginTop: space.xs }}>기기 시간대는 {deviceTz} 예요.</Text>
                 </View>
                 <Button kind="primary" size="sm" loading={saveTz.isPending} onPress={() => chooseTz(deviceTz)}>
                   기기 시간대 사용
@@ -345,7 +345,7 @@ export default function MyHoursScreen() {
             <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: space.md }}>
               <View style={{ flex: 1 }}>
                 <Text style={{ fontSize: 16, fontWeight: '800', color: T.sub }}>매장 시간대</Text>
-                <Text style={{ fontSize: 13.5, color: COLOR.text.tertiary, marginTop: space.xs }}>
+                <Text style={{ fontSize: TYPE.caption.fontSize, color: COLOR.text.tertiary, marginTop: space.xs }}>
                   {st?.timezoneConfirmed ? '날짜·영업일 계산의 기준이에요' : '아직 정하지 않아 서울 기준이에요'}
                 </Text>
               </View>
@@ -360,7 +360,7 @@ export default function MyHoursScreen() {
           <Card pad={0} style={{ overflow: 'hidden' }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: space.md, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
               <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.sub }}>요일별 영업시간</Text>
-              <Text style={{ fontSize: 13.5, color: COLOR.text.tertiary }}>바꿀 요일을 고르세요</Text>
+              <Text style={{ fontSize: TYPE.caption.fontSize, color: COLOR.text.tertiary }}>바꿀 요일을 고르세요</Text>
             </View>
 
             <View style={{ flexDirection: 'row', gap: space.sm, padding: space.md }}>
@@ -391,7 +391,7 @@ export default function MyHoursScreen() {
             {days ? DOW_ORDER.map((d) => (
               <View key={d} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.sm, paddingHorizontal: space.md, borderTopWidth: 1, borderTopColor: T.line2 }}>
                 <Text style={{ width: 34, fontSize: TYPE.caption.fontSize, fontWeight: '800', color: selected.has(d) ? COLOR.state.selectedText : T.sub }}>{DOW_LABEL[d]}</Text>
-                <Text style={[{ flex: 1, fontSize: 14.5, fontWeight: '600', color: days[d]?.closed ? COLOR.text.tertiary : T.ink }, NUM]}>
+                <Text style={[{ flex: 1, fontSize: TYPE.caption.fontSize, fontWeight: '600', color: days[d]?.closed ? COLOR.text.tertiary : T.ink }, NUM]}>
                   {days[d] ? dayLabel(days[d]) : '—'}
                 </Text>
               </View>
@@ -424,7 +424,7 @@ export default function MyHoursScreen() {
                 accessibilityState={{ checked: pClosed }}
                 style={{ paddingVertical: space.xs, paddingHorizontal: 12, borderRadius: 999, backgroundColor: pClosed ? COLOR.action.primary : T.line2 }}
               >
-                <Text style={{ fontSize: 13.5, fontWeight: '800', color: pClosed ? T.onColor : T.sub2 }}>{pClosed ? '휴무' : '영업'}</Text>
+                <Text style={{ fontSize: TYPE.captionSm.fontSize, fontWeight: '800', color: pClosed ? T.onColor : T.sub2 }}>{pClosed ? '휴무' : '영업'}</Text>
               </Pressable>
             </View>
 
@@ -441,7 +441,7 @@ export default function MyHoursScreen() {
                     accessibilityState={{ checked: useBreak }}
                     style={{ paddingVertical: space.xs, paddingHorizontal: 12, borderRadius: 999, backgroundColor: useBreak ? COLOR.action.primary : T.line2 }}
                   >
-                    <Text style={{ fontSize: 13.5, fontWeight: '800', color: useBreak ? T.onColor : T.sub2 }}>{useBreak ? '사용' : '사용 안 함'}</Text>
+                    <Text style={{ fontSize: TYPE.captionSm.fontSize, fontWeight: '800', color: useBreak ? T.onColor : T.sub2 }}>{useBreak ? '사용' : '사용 안 함'}</Text>
                   </Pressable>
                 </View>
                 {useBreak ? (
