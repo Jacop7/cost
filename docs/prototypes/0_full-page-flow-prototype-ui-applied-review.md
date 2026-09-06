@@ -2691,6 +2691,18 @@ popup/state host **121개**(합 182), 그리고 레지스트리에 키가 없는
   `full-page-flow-prototype-render-audit.json` · `full-page-flow-prototype-design-audit.json` ·
   `full-page-flow-prototype-i18n-stress.json`.
 
+## DS-20260906-016 · PRT-256 P1c 모션·레이어 축 전수 매핑
+
+- 대상: 앱 178개 TS/TSX의 모션·z-index 선언과 역할 배정.
+- 기대값: 소스 실재 선언 전수 보존 · 미매핑 0 · source에 없는 duration/easing 추정 0.
+- 실제값: 모션 5·레이어 1을 세 컴포넌트 역할에 배정했고 미매핑은 0이다.
+- PC 검수: 프로토타입 1280×900 감사 재실행 · PASS
+- 모바일 검수: 320px·CSS 200%·글자 200%·i18n 4패스 재실행 · PASS
+- 범위: 측정기·산출물·기획서 변경이며 앱·프로토타입 제품 UI는 불변이다.
+- 미검수: 없음
+- 결과: PASS
+- 증거: `full-page-flow-prototype-motion-layer-audit.json`.
+
 ## DS-20260906-015 · PRT-252 S3c 제품판 Android native touch 재측정
 
 - 대상: PRT-251 `4a54cb6` 제품판의 Android 1×·2× native touch와 실제 탭 증거.

@@ -19,6 +19,18 @@
 
 ## 변경 내역
 
+### PRT-256 · 2026-09-06 P1c 모션·레이어 축 전수 매핑
+
+- 날짜: 2026-09-06
+- 디자인 동기화 ID: `DS-20260906-016`
+- 앱·프로토타입 UI 변경: 없음. 앱 TS/TSX 178파일을 AST로 읽어 모션·z-index만 보존했다.
+- 결과: 선언 6건 = `animationType` 5(`fade` 4·`slide` 1) + `zIndex:30` 1,
+  미매핑 0. 직접 duration/easing과 Animated·Reanimated 호출은 0이다.
+- 배정: 직접 만든 하단 시트 fade, 공용 Sheet slide, 공용 FAB zIndex를 세 컴포넌트 역할로
+  보존한다. RN preset 내부 값을 추정한 primitive는 만들지 않는다.
+- 검사: 주석·문자열 오계수, elevation 혼입, 동적/미지 값, 고정 회전 오계수의 음성 시험 5건을
+  보존한다. 입력 178파일과 검사기 SHA를 산출물 manifest에 결속한다.
+
 ### PRT-252 · 2026-09-06 S3c 제품판 Android native touch 재측정
 
 - 날짜: 2026-09-06

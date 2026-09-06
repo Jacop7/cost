@@ -1,12 +1,12 @@
 # 전체 페이지 프로토타입 · 디자인 맥락 장부
 
-> 현재 동기화 ID: `DS-20260906-015`
+> 현재 동기화 ID: `DS-20260906-016`
 > 문서 동기화 상태: `SYNCED`
 > 전체 UI 작업 상태: `IN_PROGRESS`
 > 마지막 갱신: `2026-09-06`
 > 공통 변경: `아니오`
 > UI 변경: `아니오`
-> 변경 기록: `PRT-252`
+> 변경 기록: `PRT-256`
 
 ## 1. 문서 역할
 
@@ -43,6 +43,20 @@
 - 글로벌: 30~50% 긴 번역, 320px, 200% 글자 확대, RTL 검수.
 
 ## 4. 가장 최근 작업
+
+### DS-20260906-016 · PRT-256 P1c 모션·레이어 축 전수 매핑
+
+- 작업 성격: P1a/P1b가 세지 않던 앱 모션·z-index 선언을 AST로 전수 보존하고 역할을 배정한다.
+  앱·프로토타입 제품 코드는 바꾸지 않는다.
+- 결과: 앱 178파일에서 선언 6개를 찾았다. 직접 만든 하단 시트 `fade` 4개, 공용 Sheet
+  `slide` 1개, 공용 FAB `zIndex:30` 1개이며 미매핑은 0이다.
+- 판단: 소스에 없는 duration/easing은 추정하지 않는다. 현재 값은
+  `COMPONENT.inlineSheet.animationType`·`COMPONENT.sheet.animationType`·
+  `COMPONENT.fab.zIndex`가 소유하며 새 primitive는 만들지 않는다.
+- 완료 조건:
+  - PRT256-P1C · `full-page-flow-prototype-motion-layer-audit.json`
+- 미완료·후속: PRT-251/252 S3c+Android 독립 검수 · 소유자 결정 32건 · iOS native touch.
+- 다음 시작점: P1c 독립 검수와 잔여 결정 패킷 / `DS-20260906-017`
 
 ### DS-20260906-015 · PRT-252 S3c 제품판 Android native touch 재측정
 
