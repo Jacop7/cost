@@ -47,6 +47,6 @@ test('저장소 현재 P1c 인벤토리는 6건을 세 역할에 전부 배정�
     unmapped: 0,
   });
   assert.deepEqual([...new Set(result.assignments.map((row) => row.role))].sort(), [
-    'COMPONENT.contextMenu.animationType', 'COMPONENT.fab.zIndex', 'COMPONENT.sheet.animationType',
+    'COMPONENT.fab.zIndex', 'COMPONENT.inlineSheet.animationType', 'COMPONENT.sheet.animationType',
   ]);
 });
