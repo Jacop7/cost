@@ -1,28 +1,28 @@
 {
   "$schema": "app-token-map/1",
   "status": "PROPOSAL",
-  "note": "S3c까지 적용한 앱 사용처 인라인 선언 2,345건을 다섯 통에 배정하는 W1 규칙표다. tokens.ts 정본 정의는 definitions에 별도 보존한다. dbb89c1에서 전수 재측정했으며 iOS 네이티브 증거가 남아 W1 상태는 REOPEN이다.",
+  "note": "S3d까지 적용한 앱 사용처 인라인 선언 2,310건을 다섯 통에 배정하는 W1 규칙표다. tokens.ts 정본 정의는 definitions에 별도 보존한다. 6b965a6에서 전수 재측정했으며 iOS 네이티브 증거가 남아 W1 상태는 REOPEN이다.",
   "inputMovementContract": {
-    "previousDeclarations": 2353,
-    "currentDeclarations": 2345,
-    "removedFromInput": 8,
-    "stage": "S3c",
+    "previousMapCommit": "0b206c2ac51fa36ed146ee5583a2071b85158f12",
+    "previousDeclarations": 2345,
+    "currentDeclarations": 2310,
+    "removedFromInput": 35,
+    "stage": "S3d",
+    "approvedDeclarations": 32,
+    "supportingDeclarations": 3,
     "rules": [
-      "R-SP-CAPTION-GAP-VIEW",
-      "R-CL-SHADOW"
-    ],
-    "reason": "S3c의 리터럴 선언 8건이 의미·컴포넌트 토큰 참조로 바뀌어 숫자·색 리터럴 감사 입력 우주에서 사라졌다. 통 사이 이동이 아니다."
-  },
-  "primitiveSource": "full-page-flow-prototype-token-map.json 의 primitive·converge 를 그대로 쓴다. 앱 전용 두 번째 표준을 만들지 않는다.",
-  "pendingApprovalContract": {
-    "definition": "제품 소유자의 새 결정이 없으면 목적지를 정할 수 없는 규칙만 둔다. 닫힌 D-11의 선언별 역할 대응은 이 통에 두지 않는다.",
-    "ruleIds": [
       "R-TY-SIZE-OFFSCALE",
       "R-TY-LETTERSPACING-UNDECIDED",
       "R-CL-NEAR-PALETTE",
       "R-CL-CHART"
     ],
-    "expectedDeclarations": 32
+    "reason": "S3d의 pendingApproval 32건과 차트 역할 완결을 위해 함께 치환한 primitive 색 3건이 의미·컴포넌트 토큰 참조로 바뀌어 리터럴 감사 입력 우주에서 사라졌다. 통 사이 이동이 아니다."
+  },
+  "primitiveSource": "full-page-flow-prototype-token-map.json 의 primitive·converge 를 그대로 쓴다. 앱 전용 두 번째 표준을 만들지 않는다.",
+  "pendingApprovalContract": {
+    "definition": "제품 소유자의 새 결정이 없으면 목적지를 정할 수 없는 규칙만 둔다. 닫힌 D-11의 선언별 역할 대응은 이 통에 두지 않는다.",
+    "ruleIds": [],
+    "expectedDeclarations": 0
   },
   "rules": [
     {
@@ -424,11 +424,7 @@
       },
       "target": "typeSize.*",
       "근거": "tokens.ts 의 typeSize 스케일에 그대로 있는 값",
-      "순서근거": "R-TY-SIZE-OFFSCALE은 남은 모든 fontSize를 묻는 포괄 규칙이다. typeSize 스케일에 이미 있는 값은 R-TY-SIZE-PRIM이 먼저 확정한다.",
-      "방향": "해당없음",
-      "precedes": [
-        "R-TY-SIZE-OFFSCALE"
-      ]
+      "방향": "해당없음"
     },
     {
       "id": "R-TY-WEIGHT-PRIM",
@@ -475,38 +471,6 @@
       "target": "letterSpacing.titleTight (-0.3)",
       "근거": "사용자 결정 9-1이 실측 근거가 있는 유일한 자간 토큰으로 titleTight -0.3을 승인했다. 10건 모두 16~20px, 700~800 굵기의 헤더·카드 제목·행 이름 역할이며 값도 그대로다.",
       "방향": "해당없음 — 승인된 primitive 값"
-    },
-    {
-      "id": "R-TY-LETTERSPACING-UNDECIDED",
-      "bin": "pendingApproval",
-      "match": {
-        "group": "typography",
-        "props": [
-          "letterSpacing"
-        ],
-        "numericIn": [
-          -0.6,
-          -0.5,
-          -0.4,
-          -0.2
-        ]
-      },
-      "question": "승인된 titleTight -0.3 밖의 자간 15건을 역할별 토큰으로 추가할지, titleTight로 수렴할지. -0.6은 화면 제목·큰 숫자 9건, -0.5는 차트 중심값·상세 제목 3건, -0.4는 시트 제목 2건, -0.2는 Button 라벨 1건이다.",
-      "evidence": "사용자 결정 9-1은 근거 없는 display -0.4를 삭제하고 titleTight -0.3만 승인했다. 따라서 이 네 값은 기존 결정으로 목적지를 만들 수 없으며, 현재 역할 구분을 보존한 채 한 소유자 질문으로 남긴다.",
-      "ownerDecision": "역할별 토큰 추가 또는 -0.3 수렴을 정해야 한다. 특히 -0.6의 큰 숫자·화면 제목과 -0.2의 버튼 라벨은 같은 역할로 합치지 않는다."
-    },
-    {
-      "id": "R-TY-SIZE-OFFSCALE",
-      "bin": "pendingApproval",
-      "match": {
-        "group": "typography",
-        "props": [
-          "fontSize"
-        ]
-      },
-      "question": "스케일에도 수렴표에도 없는 글자 크기 12.5 · 13.5 · 14.5 · 17 · 25 를 어디로 보낼지.",
-      "evidence": "9건. 13.5(6)이 가장 많고, 나머지는 17·14.5·25가 각 1건이다. 소수점 크기는 스케일에 없던 값이라 프로토타입 감사에서도 나오지 않았다 — 앱에만 있는 값이다.",
-      "ownerDecision": "13 으로 내릴지 14 로 올릴지가 폭에 영향을 주므로 `S3a`/`S3b` 배정이 갈린다."
     },
     {
       "id": "R-SZ-FLEX-RESET",
@@ -1200,38 +1164,6 @@
       },
       "target": "palette.*",
       "근거": "`T.surface`/`T.onColor`(#FFFFFF) · `T.blue`(#3182F6) · `T.ter`(#8B95A1) · `T.gray400`(#B0B8C1)에 그대로 있는 값. **`#7A8694` · `#C5CCD3` 를 뺐다** — 둘은 `tokens.ts` 에 없다(팔레트 문서에만 chart.1 · chart.2 로 있다). 통의 기준을 \"tokens.ts 에 실재\" 로 통일하고, 두 값은 같은 역할을 묻는 `R-CL-CHART` 로 옮겼다."
-    },
-    {
-      "id": "R-CL-NEAR-PALETTE",
-      "bin": "pendingApproval",
-      "match": {
-        "group": "color",
-        "valuesUpper": [
-          "#D5DAE0",
-          "#FFF9F0"
-        ]
-      },
-      "openDecision": "D-1′",
-      "question": "정본에 없는 근접색 둘을 기존 역할로 수렴시킬지, 컴포넌트 역할로 보존할지.",
-      "evidence": "2건. #D5DAE0은 MyNotificationsScreen 스위치 off 트랙이며 현 `tokens.ts`에는 이 값이나 `gray.300` 역할이 없다. #FFF9F0은 MyVendorsScreen 중복 구매처 카드 배경이고 같은 카드의 테두리는 `T.amberTint`다. #B0B8C1은 근접색이 아니라 `T.gray400`과 exact라 `R-CL-PRIM`으로 정정했다.",
-      "ownerDecision": "팔레트 수렴은 D-1′(팔레트 AA 수렴)과 같은 결정면이라 함께 올린다.",
-      "권고": "#D5DAE0은 switch.offTrack 컴포넌트 역할로 현행값을 보존하고, #FFF9F0은 같은 카드 테두리의 `T.amberTint`(#FFF4E5)로 수렴하는 안을 권한다."
-    },
-    {
-      "id": "R-CL-CHART",
-      "bin": "pendingApproval",
-      "match": {
-        "group": "color",
-        "valuesUpper": [
-          "#CDD3DA",
-          "#5B6573",
-          "#7A8694",
-          "#C5CCD3"
-        ]
-      },
-      "question": "차트·범례 색이 팔레트에는 두 단계(chart.1 `#7A8694` · chart.2 `#C5CCD3`)뿐인데 앱은 **네 단계**를 쓴다. 단계를 넷으로 늘릴지, 둘로 줄일지. **그리고 chart.1·chart.2 자체가 `tokens.ts` 에 없다** — 늘리든 줄이든 정본 확장이 따라온다. 같은 손익 범례의 기존 primitive `#8B95A1`(재료)·`T.gray400 #B0B8C1`(세금)도 팔레트 결정에 함께 참여하며, 결정 결과에 따라 참조 토큰이 바뀔 수 있다.",
-      "evidence": "pending 6건은 `SalesChannelScreen:22` 의 delivery `#7A8694` · takeout `#C5CCD3`, `SalesMenuDetailScreen:142~143,150~151` 의 `#CDD3DA` · `#5B6573` · `#7A8694` · `#C5CCD3` 이다. 손익 범례 전체는 여기에 primitive로 배정된 `#8B95A1`(재료)·`#B0B8C1`(세금)까지 포함한다. 팔레트는 이 여섯 색의 역할 관계를 한 세트로 결정해야 한다.",
-      "ownerDecision": "차트 색 단계 수는 팔레트 결정이다."
     }
   ],
   "semanticNote": "**`semantic` 통을 없앴다** (솔 검수 W1 R1 F02). 감사기는 숫자 리터럴만 선언으로 모으므로 `fontSize: 16` → `TYPE.body` 치환은 semantic 으로 이동하는 것이 아니라 입력에서 사라진다. 영원히 0 인 통을 두고 \"P4 에서 채워진다\" 고 적는 것은 분류가 아니다. W1 의 범위를 **하드코딩 리터럴의 배정**으로 좁히고, 의미 토큰 채택률은 같은 감사기가 모으는 `tokenAccess` 로 따로 본다.",

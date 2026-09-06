@@ -1,19 +1,19 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-06T09:24:33.989Z",
+  "generatedAt": "2026-09-06T11:36:30.350Z",
   "schemaVersion": 1,
   "script": {
    "name": "token-adoption-audit.mjs",
    "sha256": "591d6ad787d555acdabbf31009808cec9ec5c2f5ec58c2fde908337decc6dd80"
   },
   "repo": {
-   "headCommit": "dbb89c1e652980c14d46df6942d73d316d05e821",
-   "headTree": "4c0fe8ac32c5878e9a90e60316938630f19dd00e",
+   "headCommit": "dda79a6c2a4e48293450dfe69dd98996908bee17",
+   "headTree": "19595f9cbddfef7d21e50ae5b78b5614acabd8d2",
    "toplevel": "C:/Users/jacop/프로젝트/식자재관리앱/.tmp/sol-prt217-6e6376b"
   },
   "결속": {
-   "expectCommit": "dbb89c1e652980c14d46df6942d73d316d05e821",
-   "범위해시": "5842e3267317bb4485b7b0af0dfa9b59388ac92d2982636d62504f915c741aea",
+   "expectCommit": "dda79a6",
+   "범위해시": "ee1731f17562c5b01a3bc2d8b480e80109d3290c0a509315e16df4f6c5a56a36",
    "범위해시정의": "선택된 파일의 \"경로\\0 git blob SHA\" 를 정렬해 잇고 감사 스크립트 자신의 blob SHA 를 더해 sha256. blob SHA 는 CRLF→LF 정규화 뒤 직접 계산하므로 OS·git 유무에 좌우되지 않는다(페이블 R6 차단). 커밋 SHA 자기참조 없이 입력을 결속한다."
   },
   "runner": {
@@ -139,7 +139,7 @@
     "prop": "fontSize",
     "value": "22",
     "file": "apps/mobile/src/theme/tokens.ts",
-    "line": 68,
+    "line": 74,
     "column": 14,
     "layer": "tokenDefinition"
    },
@@ -148,7 +148,7 @@
     "prop": "fontWeight",
     "value": "800",
     "file": "apps/mobile/src/theme/tokens.ts",
-    "line": 68,
+    "line": 74,
     "column": 28,
     "layer": "tokenDefinition"
    },
@@ -157,13 +157,13 @@
     "prop": "lineHeight",
     "value": "28",
     "file": "apps/mobile/src/theme/tokens.ts",
-    "line": 68,
+    "line": 74,
     "column": 47,
     "layer": "tokenDefinition",
     "fontSizePair": {
      "status": "direct",
      "value": 22,
-     "line": 68,
+     "line": 74,
      "column": 14
     }
    },
@@ -172,7 +172,7 @@
     "prop": "fontSize",
     "value": "20",
     "file": "apps/mobile/src/theme/tokens.ts",
-    "line": 69,
+    "line": 75,
     "column": 12,
     "layer": "tokenDefinition"
    },
@@ -181,7 +181,7 @@
     "prop": "fontWeight",
     "value": "800",
     "file": "apps/mobile/src/theme/tokens.ts",
-    "line": 69,
+    "line": 75,
     "column": 26,
     "layer": "tokenDefinition"
    },
@@ -190,13 +190,13 @@
     "prop": "lineHeight",
     "value": "26",
     "file": "apps/mobile/src/theme/tokens.ts",
-    "line": 69,
+    "line": 75,
     "column": 45,
     "layer": "tokenDefinition",
     "fontSizePair": {
      "status": "direct",
      "value": 20,
-     "line": 69,
+     "line": 75,
      "column": 12
     }
    },
@@ -205,7 +205,7 @@
     "prop": "fontSize",
     "value": "18",
     "file": "apps/mobile/src/theme/tokens.ts",
-    "line": 70,
+    "line": 76,
     "column": 13,
     "layer": "tokenDefinition"
    },
@@ -214,7 +214,7 @@
     "prop": "fontWeight",
     "value": "700",
     "file": "apps/mobile/src/theme/tokens.ts",
-    "line": 70,
+    "line": 76,
     "column": 27,
     "layer": "tokenDefinition"
    },
@@ -223,13 +223,13 @@
     "prop": "lineHeight",
     "value": "24",
     "file": "apps/mobile/src/theme/tokens.ts",
-    "line": 70,
+    "line": 76,
     "column": 46,
     "layer": "tokenDefinition",
     "fontSizePair": {
      "status": "direct",
      "value": 18,
-     "line": 70,
+     "line": 76,
      "column": 13
     }
    },
@@ -238,7 +238,7 @@
     "prop": "fontSize",
     "value": "16",
     "file": "apps/mobile/src/theme/tokens.ts",
-    "line": 71,
+    "line": 77,
     "column": 11,
     "layer": "tokenDefinition"
    },
@@ -247,7 +247,7 @@
     "prop": "fontWeight",
     "value": "700",
     "file": "apps/mobile/src/theme/tokens.ts",
-    "line": 71,
+    "line": 77,
     "column": 25,
     "layer": "tokenDefinition"
    },
@@ -256,13 +256,13 @@
     "prop": "lineHeight",
     "value": "22",
     "file": "apps/mobile/src/theme/tokens.ts",
-    "line": 71,
+    "line": 77,
     "column": 44,
     "layer": "tokenDefinition",
     "fontSizePair": {
      "status": "direct",
      "value": 16,
-     "line": 71,
+     "line": 77,
      "column": 11
     }
    },
@@ -271,7 +271,7 @@
     "prop": "fontSize",
     "value": "16",
     "file": "apps/mobile/src/theme/tokens.ts",
-    "line": 72,
+    "line": 78,
     "column": 15,
     "layer": "tokenDefinition"
    },
@@ -280,7 +280,7 @@
     "prop": "fontWeight",
     "value": "600",
     "file": "apps/mobile/src/theme/tokens.ts",
-    "line": 72,
+    "line": 78,
     "column": 29,
     "layer": "tokenDefinition"
    },
@@ -289,13 +289,13 @@
     "prop": "lineHeight",
     "value": "22",
     "file": "apps/mobile/src/theme/tokens.ts",
-    "line": 72,
+    "line": 78,
     "column": 48,
     "layer": "tokenDefinition",
     "fontSizePair": {
      "status": "direct",
      "value": 16,
-     "line": 72,
+     "line": 78,
      "column": 15
     }
    },
@@ -304,7 +304,7 @@
     "prop": "fontSize",
     "value": "14",
     "file": "apps/mobile/src/theme/tokens.ts",
-    "line": 73,
+    "line": 79,
     "column": 14,
     "layer": "tokenDefinition"
    },
@@ -313,7 +313,7 @@
     "prop": "fontWeight",
     "value": "600",
     "file": "apps/mobile/src/theme/tokens.ts",
-    "line": 73,
+    "line": 79,
     "column": 28,
     "layer": "tokenDefinition"
    },
@@ -322,13 +322,13 @@
     "prop": "lineHeight",
     "value": "20",
     "file": "apps/mobile/src/theme/tokens.ts",
-    "line": 73,
+    "line": 79,
     "column": 47,
     "layer": "tokenDefinition",
     "fontSizePair": {
      "status": "direct",
      "value": 14,
-     "line": 73,
+     "line": 79,
      "column": 14
     }
    },
@@ -337,7 +337,7 @@
     "prop": "fontSize",
     "value": "13",
     "file": "apps/mobile/src/theme/tokens.ts",
-    "line": 74,
+    "line": 80,
     "column": 16,
     "layer": "tokenDefinition"
    },
@@ -346,7 +346,7 @@
     "prop": "fontWeight",
     "value": "600",
     "file": "apps/mobile/src/theme/tokens.ts",
-    "line": 74,
+    "line": 80,
     "column": 30,
     "layer": "tokenDefinition"
    },
@@ -355,20 +355,38 @@
     "prop": "lineHeight",
     "value": "18",
     "file": "apps/mobile/src/theme/tokens.ts",
-    "line": 74,
+    "line": 80,
     "column": 49,
     "layer": "tokenDefinition",
     "fontSizePair": {
      "status": "direct",
      "value": 13,
-     "line": 74,
+     "line": 80,
      "column": 16
     }
+   },
+   {
+    "group": "typography",
+    "prop": "letterSpacing",
+    "value": "-0.2",
+    "file": "apps/mobile/src/theme/tokens.ts",
+    "line": 312,
+    "column": 14,
+    "layer": "tokenDefinition"
+   },
+   {
+    "group": "typography",
+    "prop": "letterSpacing",
+    "value": "-0.5",
+    "file": "apps/mobile/src/theme/tokens.ts",
+    "line": 315,
+    "column": 20,
+    "layer": "tokenDefinition"
    }
   ],
   "declarationSummary": {
    "typography": {
-    "total": 21,
+    "total": 23,
     "byValue": {
      "fontWeight:600": 3,
      "fontWeight:800": 2,
@@ -384,15 +402,17 @@
      "fontSize:14": 1,
      "lineHeight:20": 1,
      "fontSize:13": 1,
-     "lineHeight:18": 1
+     "lineHeight:18": 1,
+     "letterSpacing:-0.2": 1,
+     "letterSpacing:-0.5": 1
     },
     "byLayer": {
-     "tokenDefinition": 21
+     "tokenDefinition": 23
     },
-    "distinctDeclarations": 15
+    "distinctDeclarations": 17
    }
   },
-  "total": 21
+  "total": 23
  },
  "declarations": [
   {
@@ -729,15 +749,6 @@
    "layer": "sharedComponent"
   },
   {
-   "group": "typography",
-   "prop": "letterSpacing",
-   "value": "-0.2",
-   "file": "apps/mobile/src/components/kit/Button.tsx",
-   "line": 71,
-   "column": 70,
-   "layer": "sharedComponent"
-  },
-  {
    "group": "color",
    "prop": "hex",
    "value": "#FFF",
@@ -1036,15 +1047,6 @@
   },
   {
    "group": "typography",
-   "prop": "letterSpacing",
-   "value": "-0.4",
-   "file": "apps/mobile/src/components/kit/Sheet.tsx",
-   "line": 39,
-   "column": 77,
-   "layer": "sharedComponent"
-  },
-  {
-   "group": "typography",
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/components/kit/Sheet.tsx",
@@ -1212,15 +1214,6 @@
    "file": "apps/mobile/src/components/kit/charts.tsx",
    "line": 50,
    "column": 47,
-   "layer": "sharedComponent"
-  },
-  {
-   "group": "typography",
-   "prop": "letterSpacing",
-   "value": "-0.5",
-   "file": "apps/mobile/src/components/kit/charts.tsx",
-   "line": 50,
-   "column": 95,
    "layer": "sharedComponent"
   },
   {
@@ -2067,15 +2060,6 @@
    "file": "apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx",
    "line": 156,
    "column": 44,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
-   "prop": "letterSpacing",
-   "value": "-0.5",
-   "file": "apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx",
-   "line": 156,
-   "column": 77,
    "layer": "product"
   },
   {
@@ -3087,21 +3071,12 @@
    "layer": "product"
   },
   {
-   "group": "typography",
-   "prop": "letterSpacing",
-   "value": "-0.4",
-   "file": "apps/mobile/src/features/ingredients/components/UnitPickerSheet.tsx",
-   "line": 33,
-   "column": 57,
-   "layer": "product"
-  },
-  {
    "group": "spacing",
    "prop": "marginBottom",
    "value": "16",
    "file": "apps/mobile/src/features/ingredients/components/UnitPickerSheet.tsx",
    "line": 33,
-   "column": 78,
+   "column": 98,
    "layer": "product"
   },
   {
@@ -4006,15 +3981,6 @@
   },
   {
    "group": "typography",
-   "prop": "letterSpacing",
-   "value": "-0.5",
-   "file": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx",
-   "line": 146,
-   "column": 65,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
    "prop": "fontSize",
    "value": "14",
    "file": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx",
@@ -4083,15 +4049,6 @@
    "file": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx",
    "line": 174,
    "column": 49,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
-   "prop": "letterSpacing",
-   "value": "-0.6",
-   "file": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx",
-   "line": 174,
-   "column": 68,
    "layer": "product"
   },
   {
@@ -4731,15 +4688,6 @@
    "file": "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx",
    "line": 83,
    "column": 51,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
-   "prop": "letterSpacing",
-   "value": "-0.6",
-   "file": "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx",
-   "line": 83,
-   "column": 84,
    "layer": "product"
   },
   {
@@ -6184,20 +6132,11 @@
   },
   {
    "group": "typography",
-   "prop": "fontSize",
-   "value": "17",
-   "file": "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx",
-   "line": 217,
-   "column": 35,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
    "prop": "fontWeight",
    "value": "800",
    "file": "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx",
    "line": 217,
-   "column": 49,
+   "column": 65,
    "layer": "product"
   },
   {
@@ -7750,15 +7689,6 @@
   },
   {
    "group": "typography",
-   "prop": "letterSpacing",
-   "value": "-0.6",
-   "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
-   "line": 108,
-   "column": 73,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
    "prop": "fontSize",
    "value": "14",
    "file": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx",
@@ -8003,15 +7933,6 @@
   {
    "group": "typography",
    "prop": "fontSize",
-   "value": "13.5",
-   "file": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx",
-   "line": 335,
-   "column": 34,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
-   "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx",
    "line": 347,
@@ -8025,15 +7946,6 @@
    "file": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx",
    "line": 347,
    "column": 46,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
-   "prop": "fontSize",
-   "value": "13.5",
-   "file": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx",
-   "line": 348,
-   "column": 32,
    "layer": "product"
   },
   {
@@ -8064,15 +7976,6 @@
    "layer": "product"
   },
   {
-   "group": "typography",
-   "prop": "fontSize",
-   "value": "13.5",
-   "file": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx",
-   "line": 363,
-   "column": 30,
-   "layer": "product"
-  },
-  {
    "group": "size",
    "prop": "width",
    "value": "34",
@@ -8092,20 +7995,11 @@
   },
   {
    "group": "typography",
-   "prop": "fontSize",
-   "value": "14.5",
-   "file": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx",
-   "line": 394,
-   "column": 42,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
    "prop": "fontWeight",
    "value": "600",
    "file": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx",
    "line": 394,
-   "column": 58,
+   "column": 75,
    "layer": "product"
   },
   {
@@ -8173,20 +8067,11 @@
   },
   {
    "group": "typography",
-   "prop": "fontSize",
-   "value": "13.5",
-   "file": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx",
-   "line": 427,
-   "column": 32,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
    "prop": "fontWeight",
    "value": "800",
    "file": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx",
    "line": 427,
-   "column": 48,
+   "column": 67,
    "layer": "product"
   },
   {
@@ -8227,20 +8112,11 @@
   },
   {
    "group": "typography",
-   "prop": "fontSize",
-   "value": "13.5",
-   "file": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx",
-   "line": 444,
-   "column": 36,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
    "prop": "fontWeight",
    "value": "800",
    "file": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx",
    "line": 444,
-   "column": 52,
+   "column": 71,
    "layer": "product"
   },
   {
@@ -8907,15 +8783,6 @@
    "file": "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx",
    "line": 32,
    "column": 27,
-   "layer": "product"
-  },
-  {
-   "group": "color",
-   "prop": "hex",
-   "value": "#D5DAE0",
-   "file": "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx",
-   "line": 32,
-   "column": 111,
    "layer": "product"
   },
   {
@@ -9819,21 +9686,12 @@
    "layer": "product"
   },
   {
-   "group": "color",
-   "prop": "hex",
-   "value": "#FFF9F0",
-   "file": "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx",
-   "line": 93,
-   "column": 78,
-   "layer": "product"
-  },
-  {
    "group": "radius",
    "prop": "borderRadius",
    "value": "16",
    "file": "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx",
    "line": 93,
-   "column": 131,
+   "column": 171,
    "layer": "product"
   },
   {
@@ -9842,7 +9700,7 @@
    "value": "12",
    "file": "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx",
    "line": 93,
-   "column": 168,
+   "column": 208,
    "layer": "product"
   },
   {
@@ -10503,15 +10361,6 @@
    "layer": "product"
   },
   {
-   "group": "typography",
-   "prop": "letterSpacing",
-   "value": "-0.6",
-   "file": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx",
-   "line": 221,
-   "column": 82,
-   "layer": "product"
-  },
-  {
    "group": "size",
    "prop": "width",
    "value": "40",
@@ -11161,15 +11010,6 @@
   },
   {
    "group": "typography",
-   "prop": "letterSpacing",
-   "value": "-0.6",
-   "file": "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx",
-   "line": 63,
-   "column": 84,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
    "prop": "fontSize",
    "value": "18",
    "file": "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx",
@@ -11751,15 +11591,6 @@
    "file": "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx",
    "line": 93,
    "column": 50,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
-   "prop": "letterSpacing",
-   "value": "-0.6",
-   "file": "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx",
-   "line": 93,
-   "column": 83,
    "layer": "product"
   },
   {
@@ -15768,15 +15599,6 @@
    "layer": "product"
   },
   {
-   "group": "typography",
-   "prop": "letterSpacing",
-   "value": "-0.6",
-   "file": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx",
-   "line": 158,
-   "column": 82,
-   "layer": "product"
-  },
-  {
    "group": "size",
    "prop": "width",
    "value": "40",
@@ -16056,21 +15878,12 @@
    "layer": "product"
   },
   {
-   "group": "typography",
-   "prop": "fontSize",
-   "value": "13.5",
-   "file": "apps/mobile/src/features/sales/components/LateCloseSheet.tsx",
-   "line": 80,
-   "column": 30,
-   "layer": "product"
-  },
-  {
    "group": "spacing",
    "prop": "paddingBottom",
    "value": "8",
    "file": "apps/mobile/src/features/sales/components/LateCloseSheet.tsx",
    "line": 80,
-   "column": 60,
+   "column": 77,
    "layer": "product"
   },
   {
@@ -17370,33 +17183,6 @@
    "layer": "product"
   },
   {
-   "group": "color",
-   "prop": "hex",
-   "value": "#3182F6",
-   "file": "apps/mobile/src/features/sales/screens/SalesChannelScreen.tsx",
-   "line": 22,
-   "column": 47,
-   "layer": "product"
-  },
-  {
-   "group": "color",
-   "prop": "hex",
-   "value": "#7A8694",
-   "file": "apps/mobile/src/features/sales/screens/SalesChannelScreen.tsx",
-   "line": 22,
-   "column": 68,
-   "layer": "product"
-  },
-  {
-   "group": "color",
-   "prop": "hex",
-   "value": "#C5CCD3",
-   "file": "apps/mobile/src/features/sales/screens/SalesChannelScreen.tsx",
-   "line": 22,
-   "column": 88,
-   "layer": "product"
-  },
-  {
    "group": "spacing",
    "prop": "paddingHorizontal",
    "value": "16",
@@ -18649,15 +18435,6 @@
   },
   {
    "group": "typography",
-   "prop": "letterSpacing",
-   "value": "-0.6",
-   "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 358,
-   "column": 75,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
    "prop": "fontSize",
    "value": "14",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
@@ -18793,29 +18570,11 @@
   },
   {
    "group": "typography",
-   "prop": "fontSize",
-   "value": "25",
-   "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 418,
-   "column": 27,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
    "prop": "fontWeight",
    "value": "800",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
    "line": 418,
-   "column": 41,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
-   "prop": "letterSpacing",
-   "value": "-0.6",
-   "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 418,
-   "column": 78,
+   "column": 60,
    "layer": "product"
   },
   {
@@ -19824,60 +19583,6 @@
    "file": "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx",
    "line": 34,
    "column": 71,
-   "layer": "product"
-  },
-  {
-   "group": "color",
-   "prop": "hex",
-   "value": "#8B95A1",
-   "file": "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx",
-   "line": 141,
-   "column": 35,
-   "layer": "product"
-  },
-  {
-   "group": "color",
-   "prop": "hex",
-   "value": "#CDD3DA",
-   "file": "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx",
-   "line": 142,
-   "column": 30,
-   "layer": "product"
-  },
-  {
-   "group": "color",
-   "prop": "hex",
-   "value": "#5B6573",
-   "file": "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx",
-   "line": 143,
-   "column": 32,
-   "layer": "product"
-  },
-  {
-   "group": "color",
-   "prop": "hex",
-   "value": "#B0B8C1",
-   "file": "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx",
-   "line": 144,
-   "column": 25,
-   "layer": "product"
-  },
-  {
-   "group": "color",
-   "prop": "hex",
-   "value": "#7A8694",
-   "file": "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx",
-   "line": 150,
-   "column": 50,
-   "layer": "product"
-  },
-  {
-   "group": "color",
-   "prop": "hex",
-   "value": "#C5CCD3",
-   "file": "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx",
-   "line": 151,
-   "column": 49,
    "layer": "product"
   },
   {
@@ -21503,7 +21208,7 @@
  ],
  "declarationSummary": {
   "typography": {
-   "total": 1401,
+   "total": 1377,
    "byValue": {
     "fontSize:16": 327,
     "fontWeight:700": 296,
@@ -21514,42 +21219,25 @@
     "fontSize:18": 21,
     "letterSpacing:-0.3": 10,
     "fontSize:20": 10,
-    "fontSize:22": 10,
-    "letterSpacing:-0.6": 9,
-    "fontSize:13.5": 6,
-    "letterSpacing:-0.5": 3,
-    "letterSpacing:-0.4": 2,
-    "letterSpacing:-0.2": 1,
-    "fontSize:17": 1,
-    "fontSize:14.5": 1,
-    "fontSize:25": 1
+    "fontSize:22": 10
    },
    "byLayer": {
-    "product": 1318,
-    "sharedComponent": 83
+    "product": 1297,
+    "sharedComponent": 80
    },
-   "distinctDeclarations": 18
+   "distinctDeclarations": 10
   },
   "color": {
-   "total": 22,
+   "total": 11,
    "byValue": {
     "hex:#FFF": 10,
-    "hex:#7A8694": 2,
-    "hex:#C5CCD3": 2,
-    "hex:#FFFFFF": 1,
-    "hex:#D5DAE0": 1,
-    "hex:#FFF9F0": 1,
-    "hex:#3182F6": 1,
-    "hex:#8B95A1": 1,
-    "hex:#CDD3DA": 1,
-    "hex:#5B6573": 1,
-    "hex:#B0B8C1": 1
+    "hex:#FFFFFF": 1
    },
    "byLayer": {
-    "product": 16,
+    "product": 5,
     "sharedComponent": 6
    },
-   "distinctDeclarations": 11
+   "distinctDeclarations": 2
   },
   "spacing": {
    "total": 627,
@@ -21743,10 +21431,10 @@
     ]
    }
   ],
-  "declarations": 2345,
+  "declarations": 2310,
   "declarationsByGroup": {
-   "typography": 1401,
-   "color": 22,
+   "typography": 1377,
+   "color": 11,
    "spacing": 627,
    "size": 201,
    "radius": 94
@@ -21807,14 +21495,14 @@
      "#D1D6DB",
      "#B0B8C1"
     ],
-    "usageOccurrences": 1188,
+    "usageOccurrences": 1187,
     "usageFiles": 82,
     "sharedComponent": {
      "usageOccurrences": 97,
      "usageFiles": 13
     },
     "product": {
-     "usageOccurrences": 1091,
+     "usageOccurrences": 1090,
      "usageFiles": 69
     },
     "shadowedIn": [
@@ -21842,15 +21530,15 @@
      "14",
      "13"
     ],
-    "usageOccurrences": 164,
-    "usageFiles": 54,
+    "usageOccurrences": 186,
+    "usageFiles": 58,
     "sharedComponent": {
-     "usageOccurrences": 15,
+     "usageOccurrences": 16,
      "usageFiles": 6
     },
     "product": {
-     "usageOccurrences": 149,
-     "usageFiles": 48
+     "usageOccurrences": 170,
+     "usageFiles": 52
     },
     "shadowedIn": [
      "apps/mobile/src/theme/tokens.ts"
@@ -22093,11 +21781,11 @@
   },
   "inlineLiterals": {
    "typography": {
-    "occurrences": 1401,
+    "occurrences": 1377,
     "files": 76,
-    "distinctDeclarations": 24,
-    "sharedComponent": 83,
-    "product": 1318
+    "distinctDeclarations": 18,
+    "sharedComponent": 80,
+    "product": 1297
    },
    "spacing": {
     "occurrences": 627,
@@ -22122,25 +21810,16 @@
    }
   },
   "hexColorLiterals": {
-   "occurrences": 22,
-   "files": 12,
+   "occurrences": 11,
+   "files": 8,
    "byLayer": {
     "sharedComponent": 6,
-    "product": 16
+    "product": 5
    },
-   "distinct": 11,
+   "distinct": 2,
    "values": {
     "#FFFFFF": 1,
-    "#FFF": 10,
-    "#D5DAE0": 1,
-    "#FFF9F0": 1,
-    "#3182F6": 1,
-    "#7A8694": 2,
-    "#C5CCD3": 2,
-    "#8B95A1": 1,
-    "#CDD3DA": 1,
-    "#5B6573": 1,
-    "#B0B8C1": 1
+    "#FFF": 10
    }
   },
   "topInlineFiles": [
@@ -22166,9 +21845,9 @@
    },
    {
     "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-    "inlineTotal": 95,
+    "inlineTotal": 92,
     "breakdown": {
-     "typography": 57,
+     "typography": 54,
      "spacing": 21,
      "radius": 4,
      "size": 13
@@ -22176,9 +21855,9 @@
    },
    {
     "file": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx",
-    "inlineTotal": 73,
+    "inlineTotal": 72,
     "breakdown": {
-     "typography": 45,
+     "typography": 44,
      "spacing": 19,
      "radius": 2,
      "size": 7
@@ -22196,22 +21875,12 @@
    },
    {
     "file": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx",
-    "inlineTotal": 61,
+    "inlineTotal": 59,
     "breakdown": {
-     "typography": 42,
+     "typography": 40,
      "spacing": 14,
      "radius": 2,
      "size": 3
-    }
-   },
-   {
-    "file": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx",
-    "inlineTotal": 57,
-    "breakdown": {
-     "typography": 33,
-     "spacing": 20,
-     "radius": 3,
-     "size": 1
     }
    },
    {
@@ -22255,13 +21924,13 @@
     }
    },
    {
-    "file": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx",
+    "file": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx",
     "inlineTotal": 51,
     "breakdown": {
-     "typography": 32,
-     "spacing": 14,
-     "radius": 1,
-     "size": 4
+     "typography": 27,
+     "spacing": 20,
+     "radius": 3,
+     "size": 1
     }
    },
    {
@@ -22292,6 +21961,16 @@
      "spacing": 16,
      "radius": 3,
      "size": 2
+    }
+   },
+   {
+    "file": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx",
+    "inlineTotal": 50,
+    "breakdown": {
+     "typography": 31,
+     "spacing": 14,
+     "radius": 1,
+     "size": 4
     }
    }
   ]
@@ -23472,14 +23151,14 @@
    ],
    "shadowedSymbols": [],
    "inline": {
-    "typography": 2,
+    "typography": 1,
     "spacing": 0,
     "radius": 0,
     "size": 1
    },
    "hexColors": 0,
    "tokenAccessTotal": 8,
-   "inlineTotal": 3
+   "inlineTotal": 2
   },
   {
    "file": "apps/mobile/src/components/kit/Icon.tsx",
@@ -23599,6 +23278,7 @@
     "radius.full": 1,
     "T.line": 1,
     "T.ink": 1,
+    "TYPE.title": 1,
     "T.sub2": 1,
     "space.xs": 2,
     "space.md": 2,
@@ -23616,14 +23296,14 @@
    ],
    "shadowedSymbols": [],
    "inline": {
-    "typography": 5,
+    "typography": 4,
     "spacing": 4,
     "radius": 0,
     "size": 2
    },
    "hexColors": 0,
-   "tokenAccessTotal": 18,
-   "inlineTotal": 11
+   "tokenAccessTotal": 19,
+   "inlineTotal": 10
   },
   {
    "file": "apps/mobile/src/components/kit/Slider.tsx",
@@ -23718,14 +23398,14 @@
    ],
    "shadowedSymbols": [],
    "inline": {
-    "typography": 6,
+    "typography": 5,
     "spacing": 0,
     "radius": 0,
     "size": 0
    },
    "hexColors": 1,
    "tokenAccessTotal": 3,
-   "inlineTotal": 6
+   "inlineTotal": 5
   },
   {
    "file": "apps/mobile/src/components/kit/index.tsx",
@@ -23934,6 +23614,7 @@
     "TYPE.caption": 2,
     "T.ink": 5,
     "T.bg": 1,
+    "TYPE.display": 1,
     "T.surface": 1,
     "space.lg": 1
    },
@@ -23952,14 +23633,14 @@
    ],
    "shadowedSymbols": [],
    "inline": {
-    "typography": 26,
+    "typography": 25,
     "spacing": 9,
     "radius": 1,
     "size": 4
    },
    "hexColors": 0,
-   "tokenAccessTotal": 46,
-   "inlineTotal": 40
+   "tokenAccessTotal": 47,
+   "inlineTotal": 39
   },
   {
    "file": "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx",
@@ -24133,6 +23814,7 @@
    "file": "apps/mobile/src/features/ingredients/components/UnitPickerSheet.tsx",
    "layer": "product",
    "tokenAccess": {
+    "TYPE.title": 1,
     "T.ink": 1,
     "T.sub": 1,
     "space.sm": 1,
@@ -24152,14 +23834,14 @@
    ],
    "shadowedSymbols": [],
    "inline": {
-    "typography": 7,
+    "typography": 6,
     "spacing": 7,
     "radius": 1,
     "size": 0
    },
    "hexColors": 0,
-   "tokenAccessTotal": 7,
-   "inlineTotal": 15
+   "tokenAccessTotal": 8,
+   "inlineTotal": 14
   },
   {
    "file": "apps/mobile/src/features/ingredients/components/VendorPickerSheet.tsx",
@@ -24365,6 +24047,7 @@
     "space.xs": 4,
     "T.ink2": 3,
     "space.sm": 10,
+    "TYPE.title": 2,
     "T.ink": 7,
     "T.amberText": 1,
     "TYPE.body": 1,
@@ -24394,14 +24077,14 @@
    ],
    "shadowedSymbols": [],
    "inline": {
-    "typography": 42,
+    "typography": 40,
     "spacing": 14,
     "radius": 2,
     "size": 3
    },
    "hexColors": 0,
-   "tokenAccessTotal": 68,
-   "inlineTotal": 61
+   "tokenAccessTotal": 70,
+   "inlineTotal": 59
   },
   {
    "file": "apps/mobile/src/features/ingredients/screens/IngredientEditScreen.tsx",
@@ -24469,6 +24152,7 @@
     "T.bg": 1,
     "space.sm": 5,
     "T.ink": 1,
+    "TYPE.display": 1,
     "T.ink2": 2,
     "radius.full": 1,
     "T.red": 4,
@@ -24494,14 +24178,14 @@
    ],
    "shadowedSymbols": [],
    "inline": {
-    "typography": 7,
+    "typography": 6,
     "spacing": 7,
     "radius": 0,
     "size": 7
    },
    "hexColors": 0,
-   "tokenAccessTotal": 20,
-   "inlineTotal": 21
+   "tokenAccessTotal": 21,
+   "inlineTotal": 20
   },
   {
    "file": "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx",
@@ -24657,6 +24341,7 @@
     "T.line": 1,
     "T.redTint": 2,
     "T.greenTint": 1,
+    "TYPE.body": 1,
     "T.green": 1,
     "T.ink2": 1,
     "TYPE.caption": 1,
@@ -24677,14 +24362,14 @@
    ],
    "shadowedSymbols": [],
    "inline": {
-    "typography": 31,
+    "typography": 30,
     "spacing": 10,
     "radius": 3,
     "size": 2
    },
    "hexColors": 0,
-   "tokenAccessTotal": 52,
-   "inlineTotal": 46
+   "tokenAccessTotal": 53,
+   "inlineTotal": 45
   },
   {
    "file": "apps/mobile/src/features/ingredients/screens/StockHistoryScreen.tsx",
@@ -25054,6 +24739,7 @@
    "tokenAccess": {
     "T.bg": 2,
     "T.ink": 4,
+    "TYPE.display": 1,
     "T.sub2": 1,
     "space.xs": 3,
     "space.md": 4,
@@ -25072,14 +24758,14 @@
    ],
    "shadowedSymbols": [],
    "inline": {
-    "typography": 11,
+    "typography": 10,
     "spacing": 6,
     "radius": 0,
     "size": 3
    },
    "hexColors": 0,
-   "tokenAccessTotal": 19,
-   "inlineTotal": 20
+   "tokenAccessTotal": 20,
+   "inlineTotal": 19
   },
   {
    "file": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx",
@@ -25087,7 +24773,7 @@
    "tokenAccess": {
     "space.md": 21,
     "T.line2": 10,
-    "TYPE.caption": 11,
+    "TYPE.caption": 15,
     "T.sub": 7,
     "space.xs": 7,
     "T.ink": 7,
@@ -25099,6 +24785,7 @@
     "T.surface": 5,
     "TYPE.body": 4,
     "T.sub2": 4,
+    "TYPE.captionSm": 2,
     "T.onColor": 2,
     "T.red": 2,
     "space.xxl": 1
@@ -25120,14 +24807,14 @@
    ],
    "shadowedSymbols": [],
    "inline": {
-    "typography": 33,
+    "typography": 27,
     "spacing": 20,
     "radius": 3,
     "size": 1
    },
    "hexColors": 1,
-   "tokenAccessTotal": 103,
-   "inlineTotal": 57
+   "tokenAccessTotal": 109,
+   "inlineTotal": 51
   },
   {
    "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
@@ -25209,7 +24896,7 @@
     "radius": 3,
     "size": 5
    },
-   "hexColors": 1,
+   "hexColors": 0,
    "tokenAccessTotal": 24,
    "inlineTotal": 24
   },
@@ -25295,7 +24982,6 @@
    "layer": "product",
    "tokenAccess": {
     "T.bg": 1,
-    "T.amberTint": 1,
     "space.md": 2,
     "T.amberText": 2,
     "T.sub2": 3,
@@ -25328,8 +25014,8 @@
     "radius": 1,
     "size": 3
    },
-   "hexColors": 1,
-   "tokenAccessTotal": 19,
+   "hexColors": 0,
+   "tokenAccessTotal": 18,
    "inlineTotal": 24
   },
   {
@@ -25439,6 +25125,7 @@
     "T.bg": 2,
     "space.sm": 18,
     "T.ink": 10,
+    "TYPE.display": 1,
     "T.ink2": 4,
     "T.line3": 1,
     "space.xxl": 1,
@@ -25473,14 +25160,14 @@
    ],
    "shadowedSymbols": [],
    "inline": {
-    "typography": 45,
+    "typography": 44,
     "spacing": 19,
     "radius": 2,
     "size": 7
    },
    "hexColors": 0,
-   "tokenAccessTotal": 81,
-   "inlineTotal": 73
+   "tokenAccessTotal": 82,
+   "inlineTotal": 72
   },
   {
    "file": "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx",
@@ -25489,6 +25176,7 @@
     "T.green": 1,
     "T.red": 1,
     "space.xs": 3,
+    "TYPE.display": 1,
     "T.sub2": 2,
     "space.sm": 6,
     "space.md": 2,
@@ -25514,14 +25202,14 @@
    ],
    "shadowedSymbols": [],
    "inline": {
-    "typography": 33,
+    "typography": 32,
     "spacing": 13,
     "radius": 0,
     "size": 2
    },
    "hexColors": 0,
-   "tokenAccessTotal": 22,
-   "inlineTotal": 48
+   "tokenAccessTotal": 23,
+   "inlineTotal": 47
   },
   {
    "file": "apps/mobile/src/features/recipes/draftStore.ts",
@@ -25592,6 +25280,7 @@
     "radius.md": 3,
     "T.surface": 4,
     "radius.lg": 1,
+    "TYPE.display": 1,
     "T.line": 2,
     "T.sub": 2,
     "T.surface2": 1,
@@ -25612,14 +25301,14 @@
    ],
    "shadowedSymbols": [],
    "inline": {
-    "typography": 27,
+    "typography": 26,
     "spacing": 11,
     "radius": 1,
     "size": 0
    },
    "hexColors": 0,
-   "tokenAccessTotal": 38,
-   "inlineTotal": 39
+   "tokenAccessTotal": 39,
+   "inlineTotal": 38
   },
   {
    "file": "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx",
@@ -25978,6 +25667,7 @@
     "T.amberTint": 1,
     "T.amberText": 2,
     "T.bg": 2,
+    "TYPE.display": 1,
     "T.ink2": 2,
     "T.line3": 1
    },
@@ -25996,14 +25686,14 @@
    ],
    "shadowedSymbols": [],
    "inline": {
-    "typography": 32,
+    "typography": 31,
     "spacing": 14,
     "radius": 1,
     "size": 4
    },
    "hexColors": 0,
-   "tokenAccessTotal": 41,
-   "inlineTotal": 51
+   "tokenAccessTotal": 42,
+   "inlineTotal": 50
   },
   {
    "file": "apps/mobile/src/features/sales/channels.ts",
@@ -26073,6 +25763,7 @@
     "TYPE.body": 1,
     "T.ink": 1,
     "T.surface": 2,
+    "TYPE.caption": 1,
     "T.red": 1,
     "T.sub2": 1
    },
@@ -26087,14 +25778,14 @@
    ],
    "shadowedSymbols": [],
    "inline": {
-    "typography": 2,
+    "typography": 1,
     "spacing": 5,
     "radius": 0,
     "size": 0
    },
    "hexColors": 0,
-   "tokenAccessTotal": 14,
-   "inlineTotal": 7
+   "tokenAccessTotal": 15,
+   "inlineTotal": 6
   },
   {
    "file": "apps/mobile/src/features/sales/components/MenuProfitSheet.tsx",
@@ -26393,7 +26084,7 @@
     "radius": 1,
     "size": 2
    },
-   "hexColors": 3,
+   "hexColors": 0,
    "tokenAccessTotal": 13,
    "inlineTotal": 7
   },
@@ -26590,6 +26281,7 @@
     "T.bg": 2,
     "space.sm": 14,
     "T.ink": 8,
+    "TYPE.display": 3,
     "T.sub2": 6,
     "space.xs": 10,
     "T.ink2": 1,
@@ -26627,14 +26319,14 @@
    ],
    "shadowedSymbols": [],
    "inline": {
-    "typography": 57,
+    "typography": 54,
     "spacing": 21,
     "radius": 4,
     "size": 13
    },
    "hexColors": 1,
-   "tokenAccessTotal": 108,
-   "inlineTotal": 95
+   "tokenAccessTotal": 111,
+   "inlineTotal": 92
   },
   {
    "file": "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx",
@@ -26711,7 +26403,7 @@
     "radius": 0,
     "size": 5
    },
-   "hexColors": 6,
+   "hexColors": 0,
    "tokenAccessTotal": 62,
    "inlineTotal": 55
   },
@@ -27139,14 +26831,14 @@
     "cardShadow"
    ],
    "inline": {
-    "typography": 21,
+    "typography": 23,
     "spacing": 0,
     "radius": 0,
     "size": 0
    },
    "hexColors": 0,
    "tokenAccessTotal": 0,
-   "inlineTotal": 21
+   "inlineTotal": 23
   }
  ]
 }

@@ -15,6 +15,7 @@
     { "id": "sync.applied-and-state", "file": "full-page-flow-prototype-design-sync-check.ps1", "kind": "consumer", "input": "ui-applied.html + sealed text files", "normalization": "powershell-crlf-to-lf-parity" },
     { "id": "app-map.json-links", "file": "full-page-flow-prototype-app-map-check.mjs", "kind": "producer-consumer", "input": "parsed JSON", "normalization": "canonical-json" },
     { "id": "app-audit.provenance", "file": "scripts/token-adoption-audit.mjs", "kind": "producer", "input": "Git-tracked product files", "normalization": "git-blob-sha" },
+    { "id": "s3d.exact-source", "file": "scripts/design-token-s3d-diff.mjs", "kind": "producer-consumer", "input": "baseline Git tree + approved file hashes + current app tree", "normalization": "shared-textSha256" },
     { "id": "decision-seal", "file": "scripts/design-token-contrast.mjs", "kind": "producer-consumer", "input": "role/contract/decision text", "normalization": "domain-contract" }
   ]
 }

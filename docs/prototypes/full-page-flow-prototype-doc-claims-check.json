@@ -2,7 +2,7 @@
   "manifest": {
     "script": "docs/prototypes/full-page-flow-prototype-doc-claims-check.mjs",
     "scriptSha256": "b4d282ecbb6a990d1dccca9d16afbb0d364d099942d506fb952cae0e67ab6abd",
-    "auditSha256": "b56b58077c4a4656e40638b722b2ebcb944ba74a17185080ac0d6198beccecc5",
+    "auditSha256": "f2b19e9bd2f50cbe2754d597c0ef4be0f1962c3109d08e84da191af51ca19f4d",
     "claimsSha256": "a7e105c47f685f0950a225184963b240ee7f5a116ea8f4fb7b3f55bbceebaff8",
     "node": "v24.15.0",
     "판정": "값 목록을 값으로 대조한다. 개수만 세면 §7.3.1 같은 자리를 놓친다."
@@ -106,25 +106,16 @@
       ],
       "observedValues": [
         13,
-        13.5,
         14,
-        14.5,
         16,
-        17,
         18,
         20,
-        22,
-        25
+        22
       ],
-      "observedCount": 714,
+      "observedCount": 705,
       "claimedCount": null,
       "ghost": [],
-      "missing": [
-        13.5,
-        14.5,
-        17,
-        25
-      ],
+      "missing": [],
       "verdict": "PASS",
       "mode": "존재"
     },
@@ -157,7 +148,7 @@
       "주장": "§7.3 의 수치(선언·통·규칙별 건수·다중 일치·충돌 체인)가 검사 산출물과 한 글자도 다르지 않다",
       "mode": "문서블록",
       "마커": "W1-수치",
-      "문서blob": "80c47fc1dc986ddcae1e0504063453be2b75640a",
+      "문서blob": "b6e81d0a633bdba03d6b1399af1547b0d481048e",
       "문서blob고정": null,
       "verdict": "PASS"
     }

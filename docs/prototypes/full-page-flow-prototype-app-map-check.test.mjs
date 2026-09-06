@@ -54,16 +54,16 @@ const asControlBoxDefect = (map) => {
 };
 const TYPE_LINE_HEIGHT_TABLE = { '12': 18, '13': 18, '14': 20, '15': 22, '16': 22, '18': 24, '20': 26, '22': 28 };
 
-test('S3c 뒤 W1은 정의 21건을 분리하고 음수 포함 사용처 2,345건을 다섯 통에 배정한다', () => {
+test('S3d 뒤 W1은 정의를 분리하고 사용처 2,310건을 다섯 통에 배정하며 pending을 비운다', () => {
   const r = run();
   assert.equal(r.code, 0, r.text);
   assert.deepEqual(r.out.summary.byBin, {
-    primitive: 2064, componentOwned: 249, defect: 0,
-    pendingApproval: 32, approvedException: 0,
+    primitive: 2061, componentOwned: 249, defect: 0,
+    pendingApproval: 0, approvedException: 0,
   });
-  assert.equal(audit.summary.declarations, 2345);
-  assert.equal(audit.declarations.filter(d => Number(d.value) < 0).length, 32);
-  assert.equal(audit.definitions.total, 21);
+  assert.equal(audit.summary.declarations, 2310);
+  assert.equal(audit.declarations.filter(d => Number(d.value) < 0).length, 17);
+  assert.equal(audit.definitions.total, 23);
   assert.equal(audit.definitions.declarations.filter(d => d.prop === 'lineHeight').length, 7);
   assert.equal(audit.declarations.filter(d => d.layer === 'tokenDefinition').length, 0);
   const per = Object.fromEntries(r.out.summary.perRule.map(x => [x.id, x]));
@@ -75,30 +75,30 @@ test('S3c 뒤 W1은 정의 21건을 분리하고 음수 포함 사용처 2,345�
   assert.equal(per['R-SP-FORM-AUXILIARY-OVERLAP'].declarations, 4);
   assert.equal(per['R-SP-PROFIT-SECTION-LABEL-OVERLAP'].declarations, 1);
   assert.equal(per['R-TY-LETTERSPACING-TITLE-TIGHT'].declarations, 10);
-  assert.equal(per['R-TY-LETTERSPACING-UNDECIDED'].declarations, 15);
   assert.equal(per['R-SP-EMPTY-STANDARD-V'].declarations, 2);
   assert.equal(per['R-SP-EMPTY-STANDARD-H'].declarations, 2);
   assert.equal(per['R-SP-EMPTY-COMPACT'].declarations, 2);
   assert.equal(per['R-SP-EMPTY-SHEET'].declarations, 2);
   assert.equal(per['R-SP-EMPTY-DAY-DETAIL'].declarations, 1);
   assert.equal(per['R-SP-SESSION-GATE-H'].declarations, 1);
-  assert.equal(per['R-CL-PRIM'].declarations, 14);
-  assert.equal(per['R-CL-NEAR-PALETTE'].declarations, 2);
-  assert.equal(r.out.summary.multiMatchCount, 774);
-  assert.equal(r.out.summary.binMovementLedger.removedFromInput, 8);
+  assert.equal(per['R-CL-PRIM'].declarations, 11);
+  assert.equal(per['R-TY-LETTERSPACING-UNDECIDED'], undefined);
+  assert.equal(per['R-CL-NEAR-PALETTE'], undefined);
+  assert.equal(r.out.summary.multiMatchCount, 69);
+  assert.equal(r.out.summary.binMovementLedger.removedFromInput, 35);
   assert.deepEqual(r.out.summary.binMovementLedger.inputUniverse, {
-    previous: 2353,
-    current: 2345,
-    stage: 'S3c',
-    rules: ['R-SP-CAPTION-GAP-VIEW', 'R-CL-SHADOW'],
-    reason: 'S3c의 리터럴 선언 8건이 의미·컴포넌트 토큰 참조로 바뀌어 숫자·색 리터럴 감사 입력 우주에서 사라졌다. 통 사이 이동이 아니다.',
+    previous: 2345,
+    current: 2310,
+    stage: 'S3d',
+    rules: ['R-TY-SIZE-OFFSCALE', 'R-TY-LETTERSPACING-UNDECIDED', 'R-CL-NEAR-PALETTE', 'R-CL-CHART'],
+    reason: 'S3d의 pendingApproval 32건과 차트 역할 완결을 위해 함께 치환한 primitive 색 3건이 의미·컴포넌트 토큰 참조로 바뀌어 리터럴 감사 입력 우주에서 사라졌다. 통 사이 이동이 아니다.',
   });
 });
 
-test('S3c 입력 감소 8을 통 이동처럼 숨기거나 다른 수로 바꾸면 실패한다', () => {
+test('S3d 입력 감소 35를 통 이동처럼 숨기거나 다른 수로 바꾸면 실패한다', () => {
   const r = run(map => { map.inputMovementContract.removedFromInput = 7; });
   assert.equal(r.code, 1, r.text);
-  assert.match(r.text, /입력 감소 산식 2353 - 2345 ≠ 7/);
+  assert.match(r.text, /입력 감소 산식 2345 - 2310 ≠ 7/);
 });
 
 test('닫힌 역할을 질문·증거까지 붙여 pendingApproval로 되돌려도 계약이 막는다', () => {

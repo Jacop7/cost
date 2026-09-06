@@ -4,7 +4,7 @@
     "scriptSha256": "94bc81373ceeef25806da5e291a00d9e4988230ec7f681da3af7b554603614c5",
     "contractSha256": "aaa283ef603461ecf0cc7c7d426e2165fac08a65f2715c44443bdf7af2a368e7",
     "node": "v24.15.0",
-    "generatedAt": "2026-09-06T10:42:39.381Z",
+    "generatedAt": "2026-09-06T11:42:11.373Z",
     "기준": "글자 4.5:1 · 비텍스트 3:1 — 절대 기준. baseline 비교가 아니다.",
     "면제": [
       "text.disabled #8B95A1 — WCAG 1.4.3 은 **비활성 컴포넌트의 글자를 면제**한다. 면제이지 통과가 아니므로 값은 재고 대상에서 뺀다."
