@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Expo 개발 빌드의 Fabric frame을 Hermes inspector에서 읽어 실제 터치 영역을 잰다.
- * 정적 `visual + hitSlop * 2` 합산과 달리 React Native의 부모 경계 clipping을 포함한다.
+ * 정적 `visual + hitSlop * 2` 합산과 달리 React Native의 플랫폼별 touch clipping을 포함한다.
  */
 import { createHash } from 'node:crypto';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
@@ -70,6 +70,15 @@ export function effectiveTouchRect(frame, parentFrames, hitSlop) {
     height: Math.max(0, effective.bottom - effective.top),
     clipped: Object.keys(raw).some((key) => Math.abs(raw[key] - effective[key]) > 1e-7),
   };
+}
+
+/**
+ * 실제 3점 탭으로 확인한 플랫폼 차이를 한곳에 둔다.
+ * Android는 직접 host parent에서 hitSlop을 자르고, iOS의 overflow-visible 일반 View는
+ * 자르지 않는다. 명시적 시각 clipping 경계는 두 플랫폼 모두 터치 경계다.
+ */
+export function ancestorClipsTouch(ancestor, index, platform) {
+  return ancestor?.clipsVisual === true || (platform === 'android' && index === 0);
 }
 
 export function physicalHalfPixelTolerance(density) {
@@ -197,7 +206,8 @@ export function recomputeNativeArtifactDerived(artifact) {
         ? row.ancestors : [row.parent];
       const ancestorMeasures = ancestorRows.map((ancestor, index) => frameFromMeasure(ancestor.windowMeasure,
         `${scenario.id}/${phase.id}/${row.key} ancestor[${index}]`));
-      const touchAncestorMeasures = ancestorMeasures.filter((_, index) => ancestorRows[index]?.clipsTouch !== false);
+      const touchAncestorMeasures = ancestorMeasures.filter((_, index) =>
+        ancestorClipsTouch(ancestorRows[index], index, result.platform));
       const touch = effectiveTouchRect(windowFrame, touchAncestorMeasures, row.hitSlop);
       const visualAncestorMeasures = ancestorMeasures.filter((_, index) => ancestorRows[index]?.clipsVisual !== false);
       const visual = visualAncestorMeasures.length
@@ -381,7 +391,7 @@ function runtimeExpression(operation) {
     }
     state.rows=[];state.pending=0;state.done=false;
     const measure=(node,method,target,key)=>{state.pending++;nativeFabricUIManager[method](node.stateNode.node,(...values)=>{target[key]=values;state.pending--;if(state.pending===0)state.done=true})};
-    for(const b of active){const row={key:b.ownerChain.join('>')+'|'+b.label+'|'+b.nativeTag,label:b.label,ownerChain:b.ownerChain,hitSlop:b.hitSlop,nativeTag:b.nativeTag,parentNativeTag:b.parentNativeTag,screenActivityStates:b.screenActivityStates,ancestors:b.ancestors.map((n,index)=>{const chain=owners(n),hostName=name(n),directOwner=name(n?._debugOwner),hostIdentity=hostName+'>'+directOwner,scroll=/ScrollView|FlatList|VirtualizedList/.test(hostIdentity),root=index===b.ancestors.length-1,platformWrapper=/RNSScreen|RCTModalHostView/.test(hostIdentity),overflow=flatStyle(n.memoizedProps?.style).overflow??n.memoizedProps?.overflow??'visible',clipsVisual=!platformWrapper&&(scroll||root||overflow==='hidden'||overflow==='scroll'),clipsTouch=index===0||clipsVisual;return {nativeTag:n.stateNode?.canonical?.nativeTag,hostName,directOwner,ownerChain:chain,kind:scroll?'scrollViewport':root?'root':'nonScroll',overflow,platformWrapper,clipsVisual,clipsTouch}})};state.rows.push(row);measure(b.host,'measure',row,'relativeMeasure');measure(b.host,'measureInWindow',row,'windowMeasure');for(const ancestor of row.ancestors){const node=b.ancestors[row.ancestors.indexOf(ancestor)];measure(node,'measureInWindow',ancestor,'windowMeasure')}}
+    for(const b of active){const row={key:b.ownerChain.join('>')+'|'+b.label+'|'+b.nativeTag,label:b.label,ownerChain:b.ownerChain,hitSlop:b.hitSlop,nativeTag:b.nativeTag,parentNativeTag:b.parentNativeTag,screenActivityStates:b.screenActivityStates,ancestors:b.ancestors.map((n,index)=>{const chain=owners(n),hostName=name(n),directOwner=name(n?._debugOwner),hostIdentity=hostName+'>'+directOwner,scroll=/ScrollView|FlatList|VirtualizedList/.test(hostIdentity),root=index===b.ancestors.length-1,platformWrapper=/RNSScreen|RCTModalHostView/.test(hostIdentity),overflow=flatStyle(n.memoizedProps?.style).overflow??n.memoizedProps?.overflow??'visible',clipsVisual=!platformWrapper&&(scroll||root||overflow==='hidden'||overflow==='scroll'),clipsTouch=clipsVisual||(op.platform==='android'&&index===0);return {nativeTag:n.stateNode?.canonical?.nativeTag,hostName,directOwner,ownerChain:chain,kind:scroll?'scrollViewport':root?'root':'nonScroll',overflow,platformWrapper,clipsVisual,clipsTouch}})};state.rows.push(row);measure(b.host,'measure',row,'relativeMeasure');measure(b.host,'measureInWindow',row,'windowMeasure');for(const ancestor of row.ancestors){const node=b.ancestors[row.ancestors.indexOf(ancestor)];measure(node,'measureInWindow',ancestor,'windowMeasure')}}
     if(state.pending===0)state.done=true;return JSON.stringify({rows:state.rows.length,pending:state.pending});
   })()`;
 }
@@ -438,8 +448,8 @@ async function runtimeDevice(evaluate) {
   })())`));
 }
 
-async function collect(evaluate, density, ownerPattern) {
-  await evaluate(runtimeExpression({ kind: 'collect' }));
+async function collect(evaluate, density, ownerPattern, platform) {
+  await evaluate(runtimeExpression({ kind: 'collect', platform }));
   let state;
   for (let attempt = 0; attempt < 80; attempt++) {
     await sleep(50);
@@ -452,7 +462,7 @@ async function collect(evaluate, density, ownerPattern) {
     .filter((row) => ownerPattern && !matches(row.ownerChain.join('>'), ownerPattern))
     .map((row) => row.ownerChain.join('>')))].sort();
   const activeRows = visibleRows.filter((row) => !ownerPattern || matches(row.ownerChain.join('>'), ownerPattern));
-  const rebuilt = recomputeNativeArtifactDerived({ device: { density }, scenarios: [{ id: 'runtime', phases: [{ id: 'runtime', rows: activeRows }] }] });
+  const rebuilt = recomputeNativeArtifactDerived({ platform, device: { density }, scenarios: [{ id: 'runtime', phases: [{ id: 'runtime', rows: activeRows }] }] });
   const phase = rebuilt.scenarios[0].phases[0];
   return { rows: phase.rows, overlaps: phase.overlaps,
     excludedOwnerChains, excludedPartiallyVisible: phase.excludedPartiallyVisible };
@@ -495,13 +505,13 @@ async function main() {
       const route = tabScopedRoute(renderRoute(scenario.route));
       await navigate(inspector.evaluate, route);
       await waitForStableOwner(inspector.evaluate, scenario.activeOwnerPattern);
-      const phases = [{ id: 'initial', ...await collect(inspector.evaluate, density, scenario.activeOwnerPattern) }];
+      const phases = [{ id: 'initial', ...await collect(inspector.evaluate, density, scenario.activeOwnerPattern, platform) }];
       for (const action of scenario.actions ?? []) {
         const resolvedAction = resolveActionForRuntime(action, platform, fontScale);
         await inspector.evaluate(runtimeExpression({ kind: resolvedAction.kind ?? 'press', ...resolvedAction }));
         const actionOwnerPattern = action.activeOwnerPattern ?? scenario.activeOwnerPattern;
         await waitForStableOwner(inspector.evaluate, actionOwnerPattern);
-        phases.push({ id: action.phase, ...await collect(inspector.evaluate, density, actionOwnerPattern) });
+        phases.push({ id: action.phase, ...await collect(inspector.evaluate, density, actionOwnerPattern, platform) });
       }
       scenarios.push({ id: scenario.id, route, phases });
       console.log(`${scenario.id}: ${phases.map((phase) => `${phase.id} ${phase.rows.length}`).join(' · ')}`);

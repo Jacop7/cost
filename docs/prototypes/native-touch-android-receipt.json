@@ -2,24 +2,25 @@
   "schemaVersion": 1,
   "status": "PASS",
   "requirePlatforms": [
-    "android"
+    "android",
+    "ios"
   ],
   "contracts": {
     "checker": {
       "path": "scripts/native-touch-runtime-evidence-check.mjs",
-      "textSha256": "19155150a7ecbf52cd4da7e8b380a30d951ab1d67c7231ec7efe25dd5728dc14"
+      "textSha256": "7714f879b1e604e505982f1113d300f8562988589f8df23b4f7fbf2260444abe"
     },
     "audit": {
       "path": "scripts/native-touch-runtime-audit.mjs",
-      "textSha256": "27c5a2cf1f6da984251d31e30852b16adb811453351bf1b366519e3c05144115"
+      "textSha256": "e57154d1280bbc6b11f55216d28c4d4209a0f8d884054bf43f649d325e8bfb9c"
     },
     "contract": {
       "path": "scripts/native-touch-runtime-contract.json",
-      "textSha256": "1b47f0cd6d017d093f123ca75c6e81d9ffa0d45763c9c245efd01de5219a1dba"
+      "textSha256": "d73a1aa878477f87ebcdb348b0488b0665ff06c319577e93b7d448d5a150f6cf"
     },
     "known": {
       "path": "scripts/native-touch-runtime-known.json",
-      "textSha256": "bd0e1c4f80fbfbe6767a4bf8c9cc65b674f9dee77fc6e3d10d578116de933387"
+      "textSha256": "8fde0bebcf04cfd878f943f8d5d2b3b141d2ee57458939e318234e10a8a019ba"
     }
   },
   "cells": [
@@ -28,11 +29,11 @@
       "fontScale": 1,
       "file": "native-touch-android-1x.json",
       "status": "PRESENT",
-      "textSha256": "a0da7a2e1c0140665406579957a7fb19ddc3975b79bf2f56cdb0047ec11be0d4",
-      "productCommit": "98b22691d55215734e4b8ce5c4bde877b6a5c7fa",
-      "productTree": "b80b8309d9b0008b0f8cba38ca0e5fd5180a533d",
+      "textSha256": "3e4a0276e63c4d10b8f63fa1e4c4181d7e14919f3e679dffef777e92702df83f",
+      "productCommit": "5e6fb6763bcbb338b596fc66650f64aff9550550",
+      "productTree": "bab0885dbf717a5b943d18768a1292647f338c54",
       "device": {
-        "id": "emulator-5554",
+        "id": "android-emulator-api35",
         "platform": "android",
         "density": 2.625,
         "fontScale": 1,
@@ -49,7 +50,13 @@
         "model": "sdk_gphone64_x86_64",
         "apiLevel": 35
       },
-      "targetCount": 19,
+      "targetCount": 26,
+      "coverage": {
+        "observedRows": 246,
+        "fullyVisibleRows": 165,
+        "excludedScrollableOrRootRows": 81,
+        "targetShortCount": 0
+      },
       "observedUnjudgedCount": 0,
       "materialOverlapCount": 0,
       "failureCount": 0
@@ -59,11 +66,11 @@
       "fontScale": 2,
       "file": "native-touch-android-2x.json",
       "status": "PRESENT",
-      "textSha256": "b24b1c3becfb55f0d21f6d01a45595bdbecd543abb250b4b192e79764503e280",
-      "productCommit": "98b22691d55215734e4b8ce5c4bde877b6a5c7fa",
-      "productTree": "b80b8309d9b0008b0f8cba38ca0e5fd5180a533d",
+      "textSha256": "01b56f5c4b02e1966a0eee27dc66abcc7435560dcea217a5ea561a4590649ee0",
+      "productCommit": "5e6fb6763bcbb338b596fc66650f64aff9550550",
+      "productTree": "bab0885dbf717a5b943d18768a1292647f338c54",
       "device": {
-        "id": "emulator-5554",
+        "id": "android-emulator-api35",
         "platform": "android",
         "density": 2.625,
         "fontScale": 2,
@@ -80,7 +87,85 @@
         "model": "sdk_gphone64_x86_64",
         "apiLevel": 35
       },
-      "targetCount": 19,
+      "targetCount": 26,
+      "coverage": {
+        "observedRows": 246,
+        "fullyVisibleRows": 125,
+        "excludedScrollableOrRootRows": 121,
+        "targetShortCount": 0
+      },
+      "observedUnjudgedCount": 0,
+      "materialOverlapCount": 0,
+      "failureCount": 0
+    },
+    {
+      "platform": "ios",
+      "fontScale": 1,
+      "file": "native-touch-ios-1x.json",
+      "status": "PRESENT",
+      "textSha256": "8b642cd720f7102747e28595422ddb64e084e9008419a2c68b5c068f8e74e748",
+      "productCommit": "5e6fb6763bcbb338b596fc66650f64aff9550550",
+      "productTree": "bab0885dbf717a5b943d18768a1292647f338c54",
+      "device": {
+        "id": "iphone-actual",
+        "platform": "ios",
+        "density": 3,
+        "fontScale": 1,
+        "osVersion": "26.5.2",
+        "reactNativeVersion": {
+          "major": 0,
+          "minor": 81,
+          "patch": 5
+        },
+        "expoVersion": "54.0.0",
+        "appVersion": "0.1.0",
+        "bundleId": "co.smartolive.margincook",
+        "model": "iPhone15Pro",
+        "apiLevel": null
+      },
+      "targetCount": 26,
+      "coverage": {
+        "observedRows": 246,
+        "fullyVisibleRows": 161,
+        "excludedScrollableOrRootRows": 85,
+        "targetShortCount": 0
+      },
+      "observedUnjudgedCount": 0,
+      "materialOverlapCount": 0,
+      "failureCount": 0
+    },
+    {
+      "platform": "ios",
+      "fontScale": 2,
+      "file": "native-touch-ios-2x.json",
+      "status": "PRESENT",
+      "textSha256": "c3dd34910681fb8675bbc9742e48d6121b531ff3bb5a4a312c083a1bc379aa64",
+      "productCommit": "5e6fb6763bcbb338b596fc66650f64aff9550550",
+      "productTree": "bab0885dbf717a5b943d18768a1292647f338c54",
+      "device": {
+        "id": "iphone-actual",
+        "platform": "ios",
+        "density": 3,
+        "fontScale": 2,
+        "osVersion": "26.5.2",
+        "reactNativeVersion": {
+          "major": 0,
+          "minor": 81,
+          "patch": 5
+        },
+        "expoVersion": "54.0.0",
+        "appVersion": "0.1.0",
+        "bundleId": "co.smartolive.margincook",
+        "model": "iPhone15Pro",
+        "apiLevel": null
+      },
+      "targetCount": 26,
+      "coverage": {
+        "observedRows": 246,
+        "fullyVisibleRows": 161,
+        "excludedScrollableOrRootRows": 85,
+        "targetShortCount": 0
+      },
       "observedUnjudgedCount": 0,
       "materialOverlapCount": 0,
       "failureCount": 0
@@ -91,10 +176,24 @@
       "platform": "android",
       "file": "native-touch-android-tap-probe.json",
       "status": "PRESENT",
-      "textSha256": "70d9ca4716fc314af46bd1db39aa705e585391e9e606b5f06aee27db7e83f98a",
-      "productCommit": "98b22691d55215734e4b8ce5c4bde877b6a5c7fa",
-      "productTree": "b80b8309d9b0008b0f8cba38ca0e5fd5180a533d",
-      "result": "PASS",
+      "textSha256": "ff7723f9c6c95e2eb334dd0dd59a00c00db027157b75885fc42dd64aff5d04b8",
+      "productCommit": "460073d6976bbfadd768fb40432e33473bbf9c45",
+      "productTree": "bd4ef01c892d59f4ff4a44f19e992526526bd4dc",
+      "recordedResult": "PASS",
+      "currentContractResult": "PASS",
+      "legacyEvaluationSuperseded": false,
+      "probeCount": 3
+    },
+    {
+      "platform": "ios",
+      "file": "native-touch-ios-tap-probe.json",
+      "status": "PRESENT",
+      "textSha256": "ce1a8fbc9d70bf5fb3c1e23227ccecfcd7c8464a2fe1dbce9fbf16dfe5dea332",
+      "productCommit": "acc11b68e375a5d0ab296b50e1b197fe4f6a8bbe",
+      "productTree": "2bc7a758aabd0f4c44d08d07482ee0b4c433d0ad",
+      "recordedResult": "FAIL",
+      "currentContractResult": "PASS",
+      "legacyEvaluationSuperseded": true,
       "probeCount": 3
     }
   ],

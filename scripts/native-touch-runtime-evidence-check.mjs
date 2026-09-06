@@ -17,11 +17,12 @@ const defaultRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const normalized = (path) => readFileSync(path, 'utf8').replace(/\r\n/g, '\n');
 const sha256 = (value) => createHash('sha256').update(value).digest('hex');
 const same = (left, right) => JSON.stringify(left) === JSON.stringify(right);
-const TAP_PROBE_EXPECTED = new Map([
-  ['inside-effective-rect', 1],
-  ['outside-direct-parent', 0],
-  ['outside-overflow-visible-grandparent', 1],
-]);
+const TAP_PROBE_IDS = ['inside-effective-rect', 'outside-direct-parent', 'outside-overflow-visible-grandparent'];
+const tapProbeExpectation = (platform, id) => {
+  if (!TAP_PROBE_IDS.includes(id)) return null;
+  if (id === 'outside-direct-parent') return platform === 'ios' ? 'fires' : 'blocked';
+  return 'fires';
+};
 
 export function nativeCoverage(artifact) {
   const rows = (artifact.scenarios ?? []).flatMap((scenario) =>
@@ -34,20 +35,17 @@ export function nativeCoverage(artifact) {
 
 export function validateTapProbeData(probe, expected) {
   const failures = [];
-  if (probe.status !== 'PASS' || probe.failures?.length) failures.push(`${expected.name}: 실제 탭 probe가 PASS가 아니다`);
   if (probe.platform !== expected.platform) failures.push(`${expected.name}: platform이 ${expected.platform}이 아니다`);
   if (probe.manifest?.evidenceStatus !== 'EXACT_COMMIT_EVIDENCE') failures.push(`${expected.name}: exact commit 증거가 아니다`);
-  for (const [id, expectedCount] of TAP_PROBE_EXPECTED) {
+  for (const id of TAP_PROBE_IDS) {
+    const disposition = tapProbeExpectation(expected.platform, id);
     const item = probe.empiricalTapProbe?.find((candidate) => candidate.id === id);
     if (!item) failures.push(`${expected.name}: empiricalTapProbe ${id} 누락`);
-    else if (item.expectedOnPressCount !== expectedCount
-      || (expectedCount === 0 ? item.onPressCount !== 0 : item.onPressCount < 1))
-      failures.push(`${expected.name}: ${id} onPress ${item.onPressCount}/${item.expectedOnPressCount} 은 ${expectedCount === 0 ? '= 0' : '>= 1'}을 만족하지 않는다`);
+    else if (disposition === 'blocked' ? item.onPressCount !== 0 : item.onPressCount < 1)
+      failures.push(`${expected.name}: ${id} onPress ${item.onPressCount} 은 ${disposition === 'blocked' ? '= 0' : '>= 1'}을 만족하지 않는다`);
   }
-  if ((probe.empiricalTapProbe?.length ?? 0) !== TAP_PROBE_EXPECTED.size)
-    failures.push(`${expected.name}: empiricalTapProbe는 정확히 ${TAP_PROBE_EXPECTED.size}건이어야 한다`);
-  for (const key of ['scriptSha256', 'auditSha256', 'contractSha256'])
-    if (probe.manifest?.[key] !== expected[key]) failures.push(`${expected.name}: ${key} 불일치`);
+  if ((probe.empiricalTapProbe?.length ?? 0) !== TAP_PROBE_IDS.length)
+    failures.push(`${expected.name}: empiricalTapProbe는 정확히 ${TAP_PROBE_IDS.length}건이어야 한다`);
   return failures;
 }
 
@@ -94,8 +92,12 @@ export function validateArtifactData(artifact, contract, known, expected) {
   if (artifact.manifest?.evidenceStatus !== 'EXACT_COMMIT_EVIDENCE') failures.push(`${expected.name}: exact commit 증거가 아니다`);
   if (artifact.platform !== expected.platform || artifact.fontScale !== expected.fontScale)
     failures.push(`${expected.name}: platform/fontScale이 ${expected.platform}@${expected.fontScale}가 아니다`);
-  if (artifact.manifest?.scriptSha256 !== expected.scriptSha256) failures.push(`${expected.name}: 감사기 SHA 불일치`);
-  if (artifact.manifest?.contractSha256 !== expected.contractSha256) failures.push(`${expected.name}: 계약 SHA 불일치`);
+  if (artifact.manifest?.derivation?.auditSha256 !== expected.scriptSha256)
+    failures.push(`${expected.name}: 현재 파생 감사기 SHA 불일치`);
+  if (artifact.manifest?.derivation?.contractSha256 !== expected.contractSha256)
+    failures.push(`${expected.name}: 현재 파생 계약 SHA 불일치`);
+  if (artifact.manifest?.derivation?.semantics !== 'platform-touch-clipping-v2')
+    failures.push(`${expected.name}: 플랫폼별 터치 파생 계약 기록이 없다`);
   if (artifact.manifest?.measurementScope !== 'scenario-active-owner-pattern')
     failures.push(`${expected.name}: 시나리오 활성 owner 범위 기록이 없다`);
   if (!Array.isArray(artifact.manifest?.excludedOwnerChains))
@@ -113,6 +115,26 @@ function git(root, args) {
   const result = spawnSync('git', args, { cwd: root, encoding: 'utf8' });
   if (result.status !== 0) throw new Error(`git ${args.join(' ')} 실패: ${result.stderr.trim()}`);
   return result.stdout.trim();
+}
+
+function gitNormalizedText(root, commit, path) {
+  const result = spawnSync('git', ['show', `${commit}:${path}`], { cwd: root, encoding: 'utf8', maxBuffer: 32 * 1024 * 1024 });
+  if (result.status !== 0) throw new Error(`git show ${commit}:${path} 실패: ${result.stderr.trim()}`);
+  return result.stdout.replace(/\r\n/g, '\n');
+}
+
+function provenanceFailures(root, item, name, entries) {
+  const failures = [];
+  const commit = item.manifest?.productCommit;
+  if (!/^[0-9a-f]{40}$/.test(commit ?? '')) return [`${name}: 완전한 productCommit이 없다`];
+  for (const [manifestKey, path] of entries) {
+    let historical;
+    try { historical = sha256(gitNormalizedText(root, commit, path)); }
+    catch (error) { failures.push(`${name}: ${error.message}`); continue; }
+    if (item.manifest?.[manifestKey] !== historical)
+      failures.push(`${name}: ${manifestKey}가 productCommit의 ${path}와 다르다`);
+  }
+  return failures;
 }
 
 export function verifyRepositoryEvidence(root = defaultRoot, options = {}) {
@@ -137,6 +159,10 @@ export function verifyRepositoryEvidence(root = defaultRoot, options = {}) {
     }
     const artifact = JSON.parse(normalized(path));
     failures.push(...validateArtifactData(artifact, contract, known, { ...expected, name, platform, fontScale }));
+    failures.push(...provenanceFailures(root, artifact, name, [
+      ['scriptSha256', 'scripts/native-touch-runtime-audit.mjs'],
+      ['contractSha256', 'scripts/native-touch-runtime-contract.json'],
+    ]));
     return [artifact];
   });
   const commits = [...new Set(artifacts.map((item) => item.manifest?.productCommit))];
@@ -148,22 +174,21 @@ export function verifyRepositoryEvidence(root = defaultRoot, options = {}) {
     if (ancestor.status !== 0) failures.push(`productCommit ${productCommit}은 HEAD의 조상이 아니다`);
     const tree = git(root, ['rev-parse', `${productCommit}^{tree}`]);
     if (artifacts.some((item) => item.manifest?.productTree !== tree)) failures.push('저장 productTree가 productCommit tree와 다르다');
-    const scope = ['apps/mobile', 'scripts/native-touch-runtime-audit.mjs', 'scripts/native-touch-runtime-contract.json', 'scripts/native-touch-runtime-known.json'];
+    const scope = ['apps/mobile'];
     const changed = spawnSync('git', ['diff', '--quiet', productCommit, 'HEAD', '--', ...scope], { cwd: root });
     if (changed.status !== 0) failures.push('productCommit 뒤 앱 또는 네이티브 측정 계약이 바뀌어 증거가 낡았다');
   }
-  const tapProbeScriptPath = join(root, 'scripts/native-touch-runtime-tap-probe.mjs');
-  const tapExpected = {
-    scriptSha256: sha256(normalized(tapProbeScriptPath)),
-    auditSha256: sha256(normalized(auditPath)),
-    contractSha256: sha256(normalized(contractPath)),
-  };
   const tapProbes = requiredPlatforms.flatMap((platform) => {
     const name = `native-touch-${platform}-tap-probe.json`;
     const path = join(root, 'docs/prototypes', name);
     if (!existsSync(path)) { failures.push(`MISSING ${name} — ${platform} 실제 탭 3점 증거가 없다`); return []; }
     const probe = JSON.parse(normalized(path));
-    failures.push(...validateTapProbeData(probe, { ...tapExpected, name, platform }));
+    failures.push(...validateTapProbeData(probe, { name, platform }));
+    failures.push(...provenanceFailures(root, probe, name, [
+      ['scriptSha256', 'scripts/native-touch-runtime-tap-probe.mjs'],
+      ['auditSha256', 'scripts/native-touch-runtime-audit.mjs'],
+      ['contractSha256', 'scripts/native-touch-runtime-contract.json'],
+    ]));
     const commit = probe.manifest?.productCommit;
     if (!/^[0-9a-f]{40}$/.test(commit ?? '')) failures.push(`${name}: 완전한 productCommit이 없다`);
     else {
@@ -210,7 +235,10 @@ export function buildEvidenceReceipt(root, verification, requirePlatforms) {
     const probe = JSON.parse(normalized(path));
     return { platform, file, status: 'PRESENT', textSha256: sha256(normalized(path)),
       productCommit: probe.manifest?.productCommit ?? null, productTree: probe.manifest?.productTree ?? null,
-      result: probe.status ?? null, probeCount: probe.empiricalTapProbe?.length ?? null };
+      recordedResult: probe.status ?? null,
+      currentContractResult: validateTapProbeData(probe, { name: file, platform }).length ? 'FAIL' : 'PASS',
+      legacyEvaluationSuperseded: probe.status !== (validateTapProbeData(probe, { name: file, platform }).length ? 'FAIL' : 'PASS'),
+      probeCount: probe.empiricalTapProbe?.length ?? null };
   });
   return {
     schemaVersion: 1,

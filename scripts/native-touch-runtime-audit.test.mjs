@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { classifyVisibility, compareNativeRatchet, effectiveTouchRect, evaluateNativeArtifact, isActiveScreenStateList, nativeRatchetSnapshot, physicalHalfPixelTolerance, recomputeNativeArtifactDerived, rectOverlap, resolveActionForFontScale, resolveActionForRuntime, tabRootForRoute, tabScopedRoute, waitForStableOwner } from './native-touch-runtime-audit.mjs';
+import { ancestorClipsTouch, classifyVisibility, compareNativeRatchet, effectiveTouchRect, evaluateNativeArtifact, isActiveScreenStateList, nativeRatchetSnapshot, physicalHalfPixelTolerance, recomputeNativeArtifactDerived, rectOverlap, resolveActionForFontScale, resolveActionForRuntime, tabRootForRoute, tabScopedRoute, waitForStableOwner } from './native-touch-runtime-audit.mjs';
 
 test('탭 route는 실제 (tabs) 그룹을 명시한다', () => {
   assert.equal(tabScopedRoute('/recipes'), '/(tabs)/recipes');
@@ -40,11 +40,20 @@ test('플랫폼·글자 배율별 스크롤 위치가 공통 배율값보다 우
   assert.deepEqual(resolveActionForRuntime(action, 'android', 2), { ...action, x: 200, y: 3000 });
 });
 
-test('hitSlop은 모든 host ancestor 중 가까운 native parent frame에서도 잘린다', () => {
+test('사각형 계산기는 전달된 터치 경계에서 hitSlop을 자른다', () => {
   const result = effectiveTouchRect({ x: 10, y: 10, width: 40, height: 40 }, { x: 0, y: 10, width: 100, height: 40 }, 6);
   assert.equal(result.width, 52);
   assert.equal(result.height, 40);
   assert.equal(result.clipped, true);
+});
+
+test('직접 부모의 touch clipping은 Android와 iOS에서 다르고 명시적 clipping은 공통이다', () => {
+  const visible = { clipsVisual: false };
+  const hidden = { clipsVisual: true };
+  assert.equal(ancestorClipsTouch(visible, 0, 'android'), true);
+  assert.equal(ancestorClipsTouch(visible, 0, 'ios'), false);
+  assert.equal(ancestorClipsTouch(hidden, 1, 'android'), true);
+  assert.equal(ancestorClipsTouch(hidden, 1, 'ios'), true);
 });
 
 test('반 물리 픽셀 이내의 43.81dp는 density 2.625에서 44로 판정할 수 있다', () => {
@@ -96,8 +105,8 @@ test('overflow hidden 비스크롤 부모의 시각 clipping은 제외하지 않
   assert.equal(row.pass44, false);
 });
 
-test('좌표계가 다른 비클리핑 wrapper는 터치 영역을 줄이지 않고 직접 부모와 clipping 경계만 제한한다', () => {
-  const input = { device: { density: 2 }, scenarios: [{ id: 'one', phases: [{ id: 'initial', rows: [{
+test('Android는 직접 부모를 제한하고 좌표계가 다른 비클리핑 wrapper는 건너뛴다', () => {
+  const input = { platform: 'android', device: { density: 2 }, scenarios: [{ id: 'one', phases: [{ id: 'initial', rows: [{
     key: 'button', label: '조회', ownerChain: ['Button'], nativeTag: 1, parentNativeTag: 2,
     relativeMeasure: [0, 0, 44, 44], windowMeasure: [0, 50, 44, 44], hitSlop: 0,
     ancestors: [
@@ -110,6 +119,19 @@ test('좌표계가 다른 비클리핑 wrapper는 터치 영역을 줄이지 않
   const row = recomputeNativeArtifactDerived(input).scenarios[0].phases[0].rows[0];
   assert.equal(row.effectiveHeight, 44);
   assert.equal(row.visibilityDisposition, 'fullyVisible');
+});
+
+test('iOS overflow-visible 직접 부모는 hitSlop을 자르지 않는다', () => {
+  const input = { platform: 'ios', device: { density: 3 }, scenarios: [{ id: 'one', phases: [{ id: 'initial', rows: [{
+    key: 'button', label: '조회', ownerChain: ['Button'], nativeTag: 1, parentNativeTag: 2,
+    relativeMeasure: [0, 0, 20, 20], windowMeasure: [10, 10, 20, 20], hitSlop: 20,
+    ancestors: [
+      { nativeTag: 2, kind: 'nonScroll', clipsVisual: false, windowMeasure: [10, 10, 20, 20] },
+      { nativeTag: 3, kind: 'root', clipsVisual: true, windowMeasure: [0, 0, 100, 100] },
+    ],
+  }] }] }] };
+  const row = recomputeNativeArtifactDerived(input).scenarios[0].phases[0].rows[0];
+  assert.deepEqual(row.effectiveRect, { left: 0, top: 0, right: 50, bottom: 50 });
 });
 
 test('같은 부모 형제의 실제 사각형 교차량을 계산한다', () => {
