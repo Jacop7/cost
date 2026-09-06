@@ -67,7 +67,8 @@ function location(node, sourceFile, file, layer) {
 }
 
 function jsxTagName(node, sourceFile) {
-  return node.tagName?.getText(sourceFile) ?? null;
+  const opening = ts.isJsxAttributes(node) ? node.parent : node;
+  return opening?.tagName?.getText(sourceFile) ?? null;
 }
 
 function callName(node, sourceFile) {
