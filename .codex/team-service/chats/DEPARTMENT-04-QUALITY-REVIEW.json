@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "chat_manifest_version": 2,
+  "logical_chat_id": "DEPARTMENT-04-QUALITY-REVIEW",
+  "title": "04 Quality · Review",
+  "role_class": "TEAM",
+  "profile_id": "DEFAULT_11_ROLE",
+  "requirement_revision": "2026-09-06-profile-owned-human-master-deputy-teams",
+  "endpoint_binding": "RUNTIME_ONLY_NOT_PRESENT"
+}

@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "review_id": "TEAM-SERVICE-PORTABLE-PACKAGE-FABLE-RECHECK-004",
+  "review_mode": "DIRECT_FABLE_COWORK_ADVISORY_NOT_FORMAL_CLI_RECEIPT",
+  "target_head": "fe96c3c196d4c3211024c1ecbe18e9d358a230b8",
+  "scope": "PORTABLE_INSTALL_BOOTSTRAP_AND_FULL_LOSS_REBUILD_DESIGN_ONLY",
+  "inputs": [
+    {"path": "docs/ai-team-starter-kit/PORTABLE-TEAM-SERVICE-ARCHITECTURE.md", "sha256": "7458bea3ce0c3636dfd1071ed28616034d4af55f3141b0abf89efb13f0f29ef9"},
+    {"path": "docs/ai-team-starter-kit/REBUILD-BLUEPRINT.md", "sha256": "6cbafa692cd564aeed08c1344b47856030cc070ad3ef24dcd99461fe68f5ea07"},
+    {"path": "docs/ai-team-starter-kit/PLUGIN-OPERATIONS.md", "sha256": "8b47990a71cb7657b10f0f33bc12d3b545356a2ac90f6a1c8bccf85aa9815777"},
+    {"path": "docs/ai-team-starter-kit/portable-package-contract.json", "sha256": "2c1d09c91e3156ff7c370dd50510d3fdf0bd73e4c1e0fb3880d182dfc4b63900"},
+    {"path": "docs/ai-team-starter-kit/schemas/project-profile.schema.json", "sha256": "f02c0938ed118eb0a91c327d970a69323e281285ecdea63121d4995e0548a2bb"},
+    {"path": "docs/ai-team-starter-kit/schemas/capability-policy.schema.json", "sha256": "4110fc67e1d0290347100fbf7ebce22edc175d874d9ae0a4ecf89f9435a09ee0"},
+    {"path": "docs/ai-team-starter-kit/schemas/install-receipt.schema.json", "sha256": "eef9b0b93fd58f067ec133af66ac50eac092044a832c3c3d7343d044a7a6b0a5"},
+    {"path": "docs/ai-team-starter-kit/schemas/generated-files.schema.json", "sha256": "42c20c882dfd2247fc5bc1bea3a421b77a65e35f693609010feda787eea450cc"},
+    {"path": "docs/ai-team-starter-kit/profiles/default-11-role-profile.json", "sha256": "0a22579b497d9c387be4cd31ade17ab675599bfe43ed901409233b3d2bd19bf3"},
+    {"path": "docs/ai-team-starter-kit/golden/portable-v1-vectors.json", "sha256": "26f8825b7c68391485ea738ca791406782ea307be548213e6431028e184ef267"},
+    {"path": "scripts/portable-team-service-design.test.mjs", "sha256": "0ff59368e4f53a70a1389cd1645295396eabc876af02acd13e2a1459a3bac04f"},
+    {"path": "docs/ai-review/evidence/TEAM-SERVICE-PORTABLE-PACKAGE-FABLE-RECHECK-003.md", "sha256": "2d143264270cfd4e828bc6e3fb69facbd0ae3d2e42e516f372b0ba6d2cbe0934"}
+  ],
+  "local_checks": {
+    "command": "node --test scripts/portable-team-service-design.test.mjs",
+    "tests": 4,
+    "pass": 4,
+    "fail": 0,
+    "skipped": 0
+  },
+  "requested_decisions": [
+    "G1_UTF16_CANONICAL_GOLDEN_AND_ASTRAL_VECTOR_CLOSED",
+    "G2_AC24_NO_SEND_COUNTER_VOCABULARY_CLOSED",
+    "SCHEMA_VALID_RECEIPT_AND_DEPENDENCY_FREE_SEMANTIC_TEST_SUFFICIENT",
+    "NONBLOCKING_FOLLOWUPS_CLOSED_OR_DEFERABLE",
+    "FULL_LOSS_REBUILD_BLUEPRINT_SUFFICIENT",
+    "OVERALL_DESIGN_ACCEPTABLE",
+    "READY_FOR_SEPARATE_IMPLEMENTATION_ADMISSION"
+  ],
+  "forbidden_claims": ["PLUGIN_IMPLEMENTED", "PLUGIN_INSTALLED", "SECOND_PC_VALIDATED", "REAL_SEND_AUTHORIZED", "HOST_AUTHENTICATED", "SERVICE_READY"]
+}

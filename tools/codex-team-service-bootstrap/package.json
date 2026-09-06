@@ -1,0 +1,14 @@
+{
+  "name": "codex-team-service-bootstrap-runtime",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "engines": {
+    "node": ">=24.15.0 <25"
+  },
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "doctor": "node scripts/team-service.mjs doctor",
+    "verify": "node scripts/team-service.mjs verify-install"
+  }
+}

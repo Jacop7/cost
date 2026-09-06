@@ -1,0 +1,17 @@
+---
+chat_id: <CHAT-ID>
+schema_version: 2
+accepts_from: ["<EXACT-LOGICAL-SOURCE-CHAT-ID>"]
+sends_to: ["<EXACT-LOGICAL-TARGET-CHAT-ID>"]
+route_edges: ["<EXACT-LOGICAL-TARGET-CHAT-ID>|<ALLOWED-MESSAGE-KIND>"]
+title: <PROJECT-ADAPTER-EXACT-TITLE>
+purpose: <ONE-BOUNDED-PURPOSE>
+role_context_ids: ["<ROLE-CONTEXT-ID>"]
+input: ["<ALLOWED-INPUT-POINTER>"]
+output: ["<REQUIRED-OUTPUT-POINTER>"]
+authority_links: ["<TASK-LEDGER>","<DECISION-AUTHORITY>","<HANDOFF-AUTHORITY>","<ROLE-MANIFEST>","<TEAM-MANIFEST>"]
+allowed_routes: ["<ROUTE-OWNED-BY-CONNECTED-CONTEXT-AND-ROLE>"]
+stop_conditions: ["<MISSING-AUTHORITY-OR-CONFLICT>"]
+handoff_in: ["<REGISTERED-ROLE-OR-HUMAN-ESCAPE>"]
+handoff_out: ["<REGISTERED-ROLE-OR-HUMAN-ESCAPE>"]
+---

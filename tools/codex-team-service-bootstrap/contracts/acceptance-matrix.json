@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "package": "codex-team-service-bootstrap",
+  "version": "0.1.0",
+  "assurance": "LOCAL_CORE_ONLY",
+  "tests": [
+    {"id": "AT-01", "status": "PASS", "claim": "install receipt URN $ref resolves in the bundled schema registry"},
+    {"id": "AT-02", "status": "PASS_SIMULATED_CLEAN_PROFILES", "claim": "two clean project roots generate byte-identical contracts"},
+    {"id": "AT-03", "status": "PASS", "claim": "generated role manifests contain no provider endpoint or raw thread id"},
+    {"id": "AT-04", "status": "PASS", "claim": "no-send dry-run records 0 normal attempts, positive rejected fake attempts, and 0 provider calls"},
+    {"id": "AT-05", "status": "PASS", "claim": "stage above sealed tier fails closed"},
+    {"id": "AT-06", "status": "PASS_WINDOWS_CURRENT_HOST", "claim": "PowerShell child marker and exit code are observed"},
+    {"id": "AT-07", "status": "PASS_CURRENT_EXACT_DEPENDENCIES", "claim": "four dependency manifests match the exact reviewed versions"},
+    {"id": "AT-08", "status": "PASS_CURRENT_SCHEMA_NOOP_ONLY", "claim": "schema v1 migration is a hash-preserving no-op; no legacy migration is claimed"},
+    {"id": "AT-09", "status": "PASS", "claim": "11 role manifests and 67 required logical edges derive from the profile"},
+    {"id": "AT-10", "status": "PASS_VALIDATION_ONLY", "claim": "exact simulation envelope can be validated without activation"},
+    {"id": "AT-11", "status": "PASS", "claim": "repeated init is byte-idempotent and refuses edited-file overwrite"},
+    {"id": "AT-12", "status": "PASS", "claim": "runtime loss returns RUNTIME_RESTORE_REQUIRED without endpoint guessing"},
+    {"id": "AT-13", "status": "PASS_WINDOWS_CURRENT_HOST", "claim": "Unicode project paths and LF-only output pass"},
+    {"id": "AT-14", "status": "PASS", "claim": "bootstrap commands do not mutate four dependency plugin manifests"},
+    {"id": "AT-15", "status": "PASS_SIMULATED_SECOND_PROFILE", "claim": "exported package installs in a clean user profile without the source repository"},
+    {"id": "AT-16", "status": "BLOCKED_EXTERNAL_SECOND_PRINCIPAL", "claim": "another Windows principal must prove runtime read denial"},
+    {"id": "AT-17", "status": "PASS", "claim": "same doctor inputs yield the same tier hash and project config cannot promote tier"}
+  ],
+  "claims": {
+    "plugin_implemented": true,
+    "plugin_installed_current_pc": true,
+    "clean_profile_simulation_validated": true,
+    "physical_second_pc_validated": false,
+    "real_send_authorized": false,
+    "host_authenticated": false,
+    "service_ready": false
+  }
+}

@@ -1,0 +1,3 @@
+# codex-team-service-bootstrap runtime must never enter Git
+.codex/team-service/runtime/
+.codex/team-service/*.local.json

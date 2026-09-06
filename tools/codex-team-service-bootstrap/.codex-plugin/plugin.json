@@ -1,0 +1,24 @@
+{
+  "name": "codex-team-service-bootstrap",
+  "version": "0.1.0",
+  "description": "Portable, fail-closed bootstrap for project-declared Codex team services.",
+  "author": {
+    "name": "MarginCook AI Operations"
+  },
+  "license": "UNLICENSED",
+  "keywords": ["codex", "team-service", "orchestration", "bootstrap"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Codex Team Service Bootstrap",
+    "shortDescription": "Initialize and verify portable AI team projects.",
+    "longDescription": "Creates deterministic project contracts, diagnoses supported capability tiers, and verifies no-send collaboration setup without replacing Mission Relay, Project Orchestrator, Team Router, or Account Continuity.",
+    "developerName": "MarginCook AI Operations",
+    "category": "Productivity",
+    "capabilities": ["Interactive", "Write"],
+    "defaultPrompt": [
+      "이 프로젝트의 팀 서비스 설치 상태를 진단해줘.",
+      "팀 서비스 초기화 계획을 무발송으로 보여줘.",
+      "팀 서비스 설치와 계약 무결성을 검증해줘."
+    ]
+  }
+}

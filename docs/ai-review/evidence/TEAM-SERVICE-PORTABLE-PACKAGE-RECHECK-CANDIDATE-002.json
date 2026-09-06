@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "review_id": "TEAM-SERVICE-PORTABLE-PACKAGE-FABLE-RECHECK-002",
+  "review_mode": "DIRECT_FABLE_COWORK_ADVISORY_NOT_FORMAL_CLI_RECEIPT",
+  "target_head": "fe96c3c196d4c3211024c1ecbe18e9d358a230b8",
+  "scope": "PORTABLE_INSTALL_BOOTSTRAP_AND_FULL_LOSS_REBUILD_DESIGN_ONLY",
+  "inputs": [
+    {
+      "path": "docs/ai-team-starter-kit/PORTABLE-TEAM-SERVICE-ARCHITECTURE.md",
+      "sha256": "2f30bc20d26f52af702a971365445f953613a1c8714e191c6f0391f7684b626c"
+    },
+    {
+      "path": "docs/ai-team-starter-kit/REBUILD-BLUEPRINT.md",
+      "sha256": "b8b6d947f5c7f1ba7fec4842a86699696bf65cb08cba6032859bd5411c2cfa6d"
+    },
+    {
+      "path": "docs/ai-team-starter-kit/PLUGIN-OPERATIONS.md",
+      "sha256": "1356c114b1dd2adef37ed93f8c4f13ed0a96b9c845d50e51c15045100eba2f08"
+    },
+    {
+      "path": "docs/ai-team-starter-kit/portable-package-contract.json",
+      "sha256": "1c73c070e610c02e430ff4c1307f87b5cc631613fd398b31325f35ad5e329499"
+    },
+    {
+      "path": "docs/ai-team-starter-kit/README.md",
+      "sha256": "adc689764376558735c7a30111a279fce931ae9b55138ec20723c1305f60919b"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-PORTABLE-PACKAGE-FABLE-001.md",
+      "sha256": "5647e8e0d0c48dfd7fcf68c23042b7e5f9553ee494ea30c25afdba796e2a7045"
+    }
+  ],
+  "requested_decisions": [
+    "B1_CAPABILITY_TIER_MACHINE_SEALED_AND_ENFORCED",
+    "B2_FOUR_PLUGIN_COMPATIBILITY_AND_FAIL_CLOSED",
+    "B3_INSTALL_RECEIPT_RECALCULABLE",
+    "B4_NO_SEND_HARNESS_OBSERVED_ZERO_ZERO",
+    "B5_ACTIVATION_ENVELOPE_AND_PROBE_PILOT_SPLIT",
+    "B6_SHELL_RUNTIME_UNICODE_CRLF_PROBES",
+    "B7_GENERATED_MANIFEST_EDGE_COVERAGE_AUDIT",
+    "THREE_LAYER_NO_REVERSE_FLOW_BOUNDARY",
+    "FULL_LOSS_REBUILD_BLUEPRINT_SUFFICIENT",
+    "CROSS_PC_AND_CROSS_PROJECT_ACCEPTANCE_SUFFICIENT",
+    "NO_EXISTING_PLUGIN_OWNERSHIP_DUPLICATION",
+    "DESIGN_READY_FOR_SEPARATE_IMPLEMENTATION_ADMISSION"
+  ],
+  "forbidden_claims": [
+    "PLUGIN_IMPLEMENTED",
+    "PLUGIN_INSTALLED",
+    "SECOND_PC_VALIDATED",
+    "REAL_SEND_AUTHORIZED",
+    "HOST_AUTHENTICATED",
+    "SERVICE_READY"
+  ]
+}

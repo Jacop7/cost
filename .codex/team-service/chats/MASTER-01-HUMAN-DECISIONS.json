@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "chat_manifest_version": 2,
+  "logical_chat_id": "MASTER-01-HUMAN-DECISIONS",
+  "title": "01 통합 작업큐 · 사람 결정",
+  "role_class": "HUMAN",
+  "profile_id": "DEFAULT_11_ROLE",
+  "requirement_revision": "2026-09-06-profile-owned-human-master-deputy-teams",
+  "endpoint_binding": "RUNTIME_ONLY_NOT_PRESENT"
+}

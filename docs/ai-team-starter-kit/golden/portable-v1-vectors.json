@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "canonical_json_vectors": [
+    {
+      "id": "CANONICAL-NFC-SORT-001",
+      "input_json_text": "{\"z\":[1,2],\"e\\u0301\":\"cafe\\u0301\"}",
+      "expected_utf8_text": "{\"z\":[1,2],\"é\":\"café\"}",
+      "expected_sha256": "5f65a47161eb149f90e772cc52e9f297005a4761a1b2fe7274435a512c2cf683"
+    },
+    {
+      "id": "CANONICAL-UTF16-ASTRAL-002",
+      "input_json_text": "{\"ｚ\":2,\"𝕒\":1}",
+      "expected_utf8_text": "{\"𝕒\":1,\"ｚ\":2}",
+      "expected_sha256": "c55afa73aca10330339ba2f41e30d1e7ba697f35dabff99b483eb94a632e508e"
+    }
+  ],
+  "canonical_object_vectors": [
+    {
+      "id": "RECEIPT-CANONICAL-001",
+      "input": {
+        "plugin_manifest_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "sealed_tier": "LOCAL_CORE_ONLY",
+        "generated_file_hashes": [{"path": ".codex/team-service/CURRENT.json", "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}],
+        "schema_version": 1
+      },
+      "expected_utf8_text": "{\"generated_file_hashes\":[{\"path\":\".codex/team-service/CURRENT.json\",\"sha256\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\"}],\"plugin_manifest_sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"schema_version\":1,\"sealed_tier\":\"LOCAL_CORE_ONLY\"}",
+      "expected_sha256": "a44e5bef6010d8da15257b4c78ca1915585fb3608845b74ce438b1dd5e2a63e5"
+    }
+  ],
+  "schema_valid_receipt_vectors": [
+    {
+      "id": "INSTALL-RECEIPT-SCHEMA-001",
+      "input": {
+        "schema_version": 1,
+        "receipt_id": "INSTALL-TEST-001",
+        "previous_receipt_sha256": null,
+        "plugin_manifest_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "compatibility_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "dependency_observations": [
+          {"name": "codex-mission-relay", "version": "0.1.0+codex.test", "artifact": "handoff", "artifact_sha256": "1111111111111111111111111111111111111111111111111111111111111111", "schema_selector": "schema_version", "verification_result": "PASS"},
+          {"name": "codex-project-orchestrator", "version": "0.1.0+codex.test", "artifact": "model-plan", "artifact_sha256": "2222222222222222222222222222222222222222222222222222222222222222", "schema_selector": "schemaVersion", "verification_result": "PASS"},
+          {"name": "codex-team-router", "version": "0.1.0+codex.test", "artifact": "policy", "artifact_sha256": "3333333333333333333333333333333333333333333333333333333333333333", "schema_selector": "schemaVersion", "verification_result": "PASS"},
+          {"name": "codex-account-continuity", "version": "0.1.0+codex.test", "artifact": "transition-receipt", "artifact_sha256": "4444444444444444444444444444444444444444444444444444444444444444", "schema_selector": "schema_version", "verification_result": "PASS"}
+        ],
+        "project_profile_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "template_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+        "generated_file_hashes": [{"path": ".codex/team-service/CURRENT.json", "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "mode": "TRACKED_PROJECT", "classification": "CREATE"}],
+        "doctor_evidence_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+        "sealed_tier": "LOCAL_CORE_ONLY",
+        "runtime_reference": "runtime-ref:9999999999999999999999999999999999999999999999999999999999999999",
+        "acl_result": "PASS",
+        "no_send_evidence_sha256": "8888888888888888888888888888888888888888888888888888888888888888",
+        "coverage_evidence_sha256": "7777777777777777777777777777777777777777777777777777777777777777",
+        "clock_provenance": "UNVERIFIED_TIME"
+      },
+      "expected_sha256": "8671ee5c5f13709b3ee52b63ae0e88d69ce681187df8749ad3fc062a17a04436"
+    }
+  ],
+  "harness_vectors": [
+    {"id": "HARNESS-SAFE-001", "module_source": "import { createHash } from 'node:crypto'; export const value = createHash('sha256').update('safe').digest('hex');", "expected": "PASS_NO_SEND"},
+    {"id": "HARNESS-INTERNAL-CALL-001", "module_source": "export function run(){ return fetch('https://example.invalid'); }", "invoke_export": "run", "expected": "REJECT_FORBIDDEN_GLOBAL_CALL", "normal_dispatch_attempts": 0, "negative_fake_attempts": 1, "actual_provider_calls": 0}
+  ]
+}
