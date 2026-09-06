@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { evaluateS4, loadBaselineSources, loadSources } from './design-token-s4-check.mjs';
+import { carryAstChangeStage, evaluateS4, loadBaselineSources, loadSources } from './design-token-s4-check.mjs';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const contract = JSON.parse(readFileSync(join(root, 'scripts/design-token-s4-contract.json'), 'utf8'));
@@ -42,6 +42,18 @@ test('누적 AST 변경은 S4·S3b·S3c·네이티브 소유 단계를 행별로
   const broken = structuredClone(contract);
   broken.allowedAstChanges[0].stage = 'S3b';
   assert.match(evaluateS4(current(), broken, baseline, residual).join('\n'), /S3b 소유 AST 변경/);
+});
+
+test('AST 계약 갱신은 같은 선언의 occurrence 이동에도 기존 소유 단계를 보존한다', () => {
+  const previous = [{
+    file: 'Button.tsx', declaration: 'prop:minHeight#1', before: '40', after: '44', stage: 'S4b',
+  }];
+  assert.equal(carryAstChangeStage({
+    file: 'Button.tsx', declaration: 'prop:minHeight#2', before: '40', after: '44',
+  }, previous), 'S4b');
+  assert.equal(carryAstChangeStage({
+    file: 'Button.tsx', declaration: 'prop:minHeight#2', before: '40', after: '48',
+  }, previous), 'S4a');
 });
 
 test('S3c 누적 행을 다른 단계로 밀면 승인된 8개 배정과의 결속이 실패한다', () => {
