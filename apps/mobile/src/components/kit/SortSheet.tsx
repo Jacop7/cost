@@ -24,9 +24,9 @@ export function SortChip({ label, onPress }: { label: string; onPress: () => voi
       accessibilityRole="button"
       accessibilityLabel={`정렬 기준: ${label}`}
       accessibilityHint="정렬 기준을 바꿉니다"
-      hitSlop={0}
+      hitSlop={{ top: 9, bottom: 9, left: 0, right: 0 }}
       style={{
-        minHeight: 44, alignSelf: 'flex-start', flexDirection: 'row', alignItems: 'center', gap: space.xs,
+        alignSelf: 'flex-start', flexDirection: 'row', alignItems: 'center', gap: space.xs,
         paddingVertical: 8, paddingHorizontal: space.md, borderRadius: 999,
         borderWidth: 1, borderColor: T.line, backgroundColor: T.surface,
       }}

@@ -1,6 +1,6 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-06T03:18:39.279Z",
+  "generatedAt": "2026-09-06T05:55:30.639Z",
   "schemaVersion": 1,
   "script": {
    "name": "full-page-flow-prototype-i18n-stress.mjs",
@@ -8,8 +8,8 @@
   },
   "target": {
    "path": "0_full-page-flow-prototype-ui-applied.html",
-   "sha256": "c987dd794f191f4ff41021614685ddf46d8468bf02e129246a2275417b766863",
-   "designSyncId": "DS-20260906-008"
+   "sha256": "ccabd0256b77a6c75d73f9a3f6712a4f254f04beeed87c64af81a05b32b2d487",
+   "designSyncId": "DS-20260906-010"
   },
   "runner": {
    "node": "v24.15.0",
@@ -11726,19 +11726,19 @@
   "screen:stock": {
    "base": {
     "phoneOverflow": 0,
-    "contentHeight": 1234,
+    "contentHeight": 1228,
     "clipped": 0,
     "escapee": 0
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1234,
+    "contentHeight": 1228,
     "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 1234,
+    "contentHeight": 1228,
     "clipped": 0,
     "escapee": 0
    },
@@ -11804,19 +11804,19 @@
   "screen:purchase": {
    "base": {
     "phoneOverflow": 0,
-    "contentHeight": 605,
+    "contentHeight": 599,
     "clipped": 0,
     "escapee": 0
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 605,
+    "contentHeight": 599,
     "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 605,
+    "contentHeight": 599,
     "clipped": 0,
     "escapee": 0
    },
@@ -12090,25 +12090,25 @@
   "screen:recipe_materials": {
    "base": {
     "phoneOverflow": 0,
-    "contentHeight": 499,
+    "contentHeight": 493,
     "clipped": 0,
     "escapee": 0
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 527,
+    "contentHeight": 521,
     "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 541,
+    "contentHeight": 535,
     "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 953,
+    "contentHeight": 947,
     "clipped": 3,
     "escapee": 0
    }
@@ -12290,7 +12290,7 @@
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 546,
+    "contentHeight": 554,
     "clipped": 3,
     "escapee": 0
    }
@@ -12402,19 +12402,19 @@
   "screen:analytics": {
    "base": {
     "phoneOverflow": 0,
-    "contentHeight": 1798,
+    "contentHeight": 1792,
     "clipped": 0,
     "escapee": 0
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1808,
+    "contentHeight": 1802,
     "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 1867,
+    "contentHeight": 1861,
     "clipped": 0,
     "escapee": 0
    },
@@ -12948,25 +12948,25 @@
   "screen:my_materials": {
    "base": {
     "phoneOverflow": 0,
-    "contentHeight": 499,
+    "contentHeight": 493,
     "clipped": 0,
     "escapee": 0
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 527,
+    "contentHeight": 521,
     "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 541,
+    "contentHeight": 535,
     "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 953,
+    "contentHeight": 947,
     "clipped": 3,
     "escapee": 0
    }
@@ -13070,7 +13070,7 @@
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 742,
+    "contentHeight": 736,
     "clipped": 3,
     "escapee": 0
    }
@@ -13130,25 +13130,25 @@
   "screen:my_notifications": {
    "base": {
     "phoneOverflow": 0,
-    "contentHeight": 618,
+    "contentHeight": 612,
     "clipped": 0,
     "escapee": 0
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 657,
+    "contentHeight": 651,
     "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 675,
+    "contentHeight": 669,
     "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 1196,
+    "contentHeight": 1190,
     "clipped": 3,
     "escapee": 0
    }
@@ -13754,19 +13754,19 @@
   "popup:stock_period@stock": {
    "base": {
     "phoneOverflow": 0,
-    "contentHeight": 1234,
+    "contentHeight": 1228,
     "clipped": 0,
     "escapee": 0
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1234,
+    "contentHeight": 1228,
     "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 1234,
+    "contentHeight": 1228,
     "clipped": 0,
     "escapee": 0
    },
@@ -13780,19 +13780,19 @@
   "popup:stock_type@stock": {
    "base": {
     "phoneOverflow": 0,
-    "contentHeight": 1234,
+    "contentHeight": 1228,
     "clipped": 0,
     "escapee": 0
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1234,
+    "contentHeight": 1228,
     "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 1234,
+    "contentHeight": 1228,
     "clipped": 0,
     "escapee": 0
    },
@@ -13806,19 +13806,19 @@
   "popup:stock_order@stock": {
    "base": {
     "phoneOverflow": 0,
-    "contentHeight": 1234,
+    "contentHeight": 1228,
     "clipped": 0,
     "escapee": 0
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1234,
+    "contentHeight": 1228,
     "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 1234,
+    "contentHeight": 1228,
     "clipped": 0,
     "escapee": 0
    },
@@ -13832,19 +13832,19 @@
   "popup:stock_event_more@stock": {
    "base": {
     "phoneOverflow": 0,
-    "contentHeight": 1234,
+    "contentHeight": 1228,
     "clipped": 0,
     "escapee": 0
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1234,
+    "contentHeight": 1228,
     "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 1234,
+    "contentHeight": 1228,
     "clipped": 0,
     "escapee": 0
    },
@@ -13858,19 +13858,19 @@
   "popup:stock_event_revert@stock": {
    "base": {
     "phoneOverflow": 0,
-    "contentHeight": 1234,
+    "contentHeight": 1228,
     "clipped": 0,
     "escapee": 0
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1234,
+    "contentHeight": 1228,
     "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 1234,
+    "contentHeight": 1228,
     "clipped": 0,
     "escapee": 0
    },
@@ -13884,19 +13884,19 @@
   "popup:purchase_period@purchase": {
    "base": {
     "phoneOverflow": 0,
-    "contentHeight": 605,
+    "contentHeight": 599,
     "clipped": 0,
     "escapee": 0
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 605,
+    "contentHeight": 599,
     "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 605,
+    "contentHeight": 599,
     "clipped": 0,
     "escapee": 0
    },
@@ -14196,25 +14196,25 @@
   "popup:material_add@recipe_materials": {
    "base": {
     "phoneOverflow": 0,
-    "contentHeight": 499,
+    "contentHeight": 493,
     "clipped": 0,
     "escapee": 0
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 527,
+    "contentHeight": 521,
     "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 541,
+    "contentHeight": 535,
     "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 953,
+    "contentHeight": 947,
     "clipped": 3,
     "escapee": 0
    }
@@ -14222,25 +14222,25 @@
   "popup:material_edit@recipe_materials": {
    "base": {
     "phoneOverflow": 0,
-    "contentHeight": 499,
+    "contentHeight": 493,
     "clipped": 0,
     "escapee": 0
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 527,
+    "contentHeight": 521,
     "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 541,
+    "contentHeight": 535,
     "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 953,
+    "contentHeight": 947,
     "clipped": 3,
     "escapee": 0
    }
@@ -14248,25 +14248,25 @@
   "popup:material_category_pick@recipe_materials": {
    "base": {
     "phoneOverflow": 0,
-    "contentHeight": 499,
+    "contentHeight": 493,
     "clipped": 0,
     "escapee": 0
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 527,
+    "contentHeight": 521,
     "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 541,
+    "contentHeight": 535,
     "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 953,
+    "contentHeight": 947,
     "clipped": 3,
     "escapee": 0
    }
@@ -14274,25 +14274,25 @@
   "popup:material_delete@recipe_materials": {
    "base": {
     "phoneOverflow": 0,
-    "contentHeight": 499,
+    "contentHeight": 493,
     "clipped": 0,
     "escapee": 0
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 527,
+    "contentHeight": 521,
     "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 541,
+    "contentHeight": 535,
     "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 953,
+    "contentHeight": 947,
     "clipped": 3,
     "escapee": 0
    }
@@ -14630,7 +14630,7 @@
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 546,
+    "contentHeight": 554,
     "clipped": 3,
     "escapee": 0
    }
@@ -14656,7 +14656,7 @@
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 546,
+    "contentHeight": 554,
     "clipped": 3,
     "escapee": 0
    }
@@ -14682,7 +14682,7 @@
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 546,
+    "contentHeight": 554,
     "clipped": 5,
     "escapee": 0
    }
@@ -14708,7 +14708,7 @@
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 546,
+    "contentHeight": 554,
     "clipped": 3,
     "escapee": 0
    }
@@ -14734,7 +14734,7 @@
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 546,
+    "contentHeight": 554,
     "clipped": 3,
     "escapee": 0
    }
@@ -14760,7 +14760,7 @@
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 546,
+    "contentHeight": 554,
     "clipped": 3,
     "escapee": 0
    }
@@ -14786,7 +14786,7 @@
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 546,
+    "contentHeight": 554,
     "clipped": 3,
     "escapee": 0
    }
@@ -14812,7 +14812,7 @@
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 546,
+    "contentHeight": 554,
     "clipped": 3,
     "escapee": 0
    }
@@ -15132,19 +15132,19 @@
   "popup:sales_period@analytics": {
    "base": {
     "phoneOverflow": 0,
-    "contentHeight": 1798,
+    "contentHeight": 1792,
     "clipped": 0,
     "escapee": 0
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1808,
+    "contentHeight": 1802,
     "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 1867,
+    "contentHeight": 1861,
     "clipped": 0,
     "escapee": 0
    },
@@ -15158,19 +15158,19 @@
   "popup:sales_direct_period@analytics": {
    "base": {
     "phoneOverflow": 0,
-    "contentHeight": 1798,
+    "contentHeight": 1792,
     "clipped": 0,
     "escapee": 0
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 1808,
+    "contentHeight": 1802,
     "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 1867,
+    "contentHeight": 1861,
     "clipped": 0,
     "escapee": 0
    },
@@ -15834,25 +15834,25 @@
   "popup:material_add@my_materials": {
    "base": {
     "phoneOverflow": 0,
-    "contentHeight": 499,
+    "contentHeight": 493,
     "clipped": 0,
     "escapee": 0
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 527,
+    "contentHeight": 521,
     "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 541,
+    "contentHeight": 535,
     "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 953,
+    "contentHeight": 947,
     "clipped": 3,
     "escapee": 0
    }
@@ -15860,25 +15860,25 @@
   "popup:material_edit@my_materials": {
    "base": {
     "phoneOverflow": 0,
-    "contentHeight": 499,
+    "contentHeight": 493,
     "clipped": 0,
     "escapee": 0
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 527,
+    "contentHeight": 521,
     "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 541,
+    "contentHeight": 535,
     "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 953,
+    "contentHeight": 947,
     "clipped": 3,
     "escapee": 0
    }
@@ -15886,25 +15886,25 @@
   "popup:material_category_pick@my_materials": {
    "base": {
     "phoneOverflow": 0,
-    "contentHeight": 499,
+    "contentHeight": 493,
     "clipped": 0,
     "escapee": 0
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 527,
+    "contentHeight": 521,
     "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 541,
+    "contentHeight": 535,
     "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 953,
+    "contentHeight": 947,
     "clipped": 3,
     "escapee": 0
    }
@@ -15912,25 +15912,25 @@
   "popup:material_delete@my_materials": {
    "base": {
     "phoneOverflow": 0,
-    "contentHeight": 499,
+    "contentHeight": 493,
     "clipped": 0,
     "escapee": 0
    },
    "w130": {
     "phoneOverflow": 0,
-    "contentHeight": 527,
+    "contentHeight": 521,
     "clipped": 0,
     "escapee": 0
    },
    "w150": {
     "phoneOverflow": 0,
-    "contentHeight": 541,
+    "contentHeight": 535,
     "clipped": 0,
     "escapee": 0
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 953,
+    "contentHeight": 947,
     "clipped": 3,
     "escapee": 0
    }
@@ -16060,7 +16060,7 @@
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 742,
+    "contentHeight": 736,
     "clipped": 3,
     "escapee": 0
    }
@@ -16086,7 +16086,7 @@
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 742,
+    "contentHeight": 736,
     "clipped": 3,
     "escapee": 0
    }
@@ -16112,7 +16112,7 @@
    },
    "w130t2": {
     "phoneOverflow": 0,
-    "contentHeight": 742,
+    "contentHeight": 736,
     "clipped": 3,
     "escapee": 0
    }

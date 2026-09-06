@@ -162,7 +162,7 @@ const readHitSlop = (body) => {
 const NESTED = /\b(shadowOffset|transform|textShadowOffset|hitSlop)\s*:\s*\{[^}]*\}/g;
 const dim = (body, key) => {
   const clean = body.replace(NESTED, ' ');
-  const m = clean.match(new RegExp(`(?:^|[^A-Za-z])${key}\\s*:\\s*(\\d+(?:\\.\\d+)?|[A-Za-z_$][\\w$]*(?:\\.[A-Za-z_$][\\w$]*)+)`));
+  const m = clean.match(new RegExp(`(?:^|[^A-Za-z])${key}\\s*:\\s*(\\d+(?:\\.\\d+)?|[A-Za-z_$][\\w$]*(?:\\.[A-Za-z_$][\\w$]*)*)`));
   if (!m) return null;
   return /^\d/.test(m[1]) ? Number(m[1]) : (tokenNumberValues.get(m[1]) ?? null);
 };

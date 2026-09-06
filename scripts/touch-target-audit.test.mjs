@@ -23,11 +23,15 @@ const probeHash = (src, dir) => {
   return JSON.parse(readFileSync(o, 'utf8')).manifest.측정.제품입력해시;
 };
 
-const runWith = ({ tsx, known, args = [] }) => {
+const runWith = ({ tsx, known, args = [], tokens = null }) => {
   const dir = mkdtempSync(join(tmpdir(), 'touch-'));
   try {
     const src = join(dir, 'src'); mkdirSync(src, { recursive: true });
     writeFileSync(join(src, 'Sample.tsx'), tsx);
+    if (tokens) {
+      const theme = join(src, 'src', 'theme'); mkdirSync(theme, { recursive: true });
+      writeFileSync(join(theme, 'tokens.ts'), tokens);
+    }
     const k = join(dir, 'known.json');
     writeFileSync(k, JSON.stringify({ 제품입력해시: probeHash(src, dir), unjudged: [], parentUnjudged: [], siblingOverlaps: [],
       siblingUnjudged: [], components: [], buttonDynamic: [], ...known }, null, 2));
@@ -71,6 +75,13 @@ test('객체형 hitSlop 은 축마다 따로 더한다', () => {
   const r = runWith({ tsx, known: { entries: [] } });
   assert.equal(r.code, 1, r.out);
   assert.match(r.out, /유효 24×44/);
+});
+
+test('점 없는 최상위 숫자 토큰도 width·height로 읽는다', () => {
+  const tsx = `<Pressable onPress={f} style={{ width: minTouchTarget, height: minTouchTarget }}><I/></Pressable>`;
+  const r = runWith({ tsx, tokens: `export const minTouchTarget = 44;`, known: { entries: [] } });
+  assert.equal(r.code, 0, r.out);
+  assert.match(r.out, /통과 1/);
 });
 
 test('부모 minHeight 38 안의 32 + 2×6은 44가 아니라 38로 잘려 미달이다', () => {

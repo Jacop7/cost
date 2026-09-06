@@ -1,9 +1,15 @@
 #!/usr/bin/env node
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { compareNativeRatchet, effectiveTouchRect, evaluateNativeArtifact, nativeRatchetSnapshot, physicalHalfPixelTolerance, rectOverlap } from './native-touch-runtime-audit.mjs';
+import { compareNativeRatchet, effectiveTouchRect, evaluateNativeArtifact, nativeRatchetSnapshot, physicalHalfPixelTolerance, rectOverlap, resolveActionForFontScale } from './native-touch-runtime-audit.mjs';
 
-test('hitSlop은 가장 가까운 native parent frame에서 잘린다', () => {
+test('글자 배율별 스크롤 위치를 같은 계약에서 고른다', () => {
+  const action = { kind: 'scroll', yByFontScale: { '1': 1100, '2': 1600 } };
+  assert.equal(resolveActionForFontScale(action, 1).y, 1100);
+  assert.equal(resolveActionForFontScale(action, 2).y, 1600);
+});
+
+test('hitSlop은 모든 host ancestor 중 가까운 native parent frame에서도 잘린다', () => {
   const result = effectiveTouchRect({ x: 10, y: 10, width: 40, height: 40 }, { x: 0, y: 10, width: 100, height: 40 }, 6);
   assert.equal(result.width, 52);
   assert.equal(result.height, 40);
@@ -50,7 +56,7 @@ test('계약 밖 실제 미달은 observedUnjudged에 따로 보존한다', () =
   assert.deepEqual(result.failures, []);
 });
 
-test('네이티브 미달·중첩 래칫은 새 항목과 악화를 막고 개선은 허용한다', () => {
+test('네이티브 미달·중첩 래칫은 새 항목·악화·known의 무기록 개선을 모두 막는다', () => {
   const evaluation = evaluateNativeArtifact(artifact(40), contract);
   evaluation.materialOverlaps = [{ scenario: 'one', phase: 'initial', left: 'A|버튼|1', right: 'B|버튼|2', width: 2, height: 40 }];
   const known = nativeRatchetSnapshot(evaluation);
@@ -58,8 +64,20 @@ test('네이티브 미달·중첩 래칫은 새 항목과 악화를 막고 개�
   const improved = structuredClone(known);
   improved.observedUnjudged = [];
   improved.materialOverlaps = [];
-  assert.deepEqual(compareNativeRatchet(improved, known), []);
+  assert.match(compareNativeRatchet(improved, known).join('\n'), /사라진 네이티브/);
   const worse = structuredClone(known);
   worse.materialOverlaps[0].maxWidth += 1;
   assert.match(compareNativeRatchet(worse, known).join('\n'), /중첩 악화/);
+});
+
+test('유효 영역은 직접 부모뿐 아니라 모든 host 조상의 교집합으로 제한된다', () => {
+  const result = effectiveTouchRect(
+    { x: 10, y: 10, width: 40, height: 40 },
+    [{ x: 0, y: 0, width: 100, height: 100 }, { x: 12, y: 12, width: 36, height: 36 }],
+    8,
+  );
+  assert.deepEqual(result.effective, { left: 12, top: 12, right: 48, bottom: 48 });
+  assert.equal(result.width, 36);
+  assert.equal(result.height, 36);
+  assert.equal(result.clipped, true);
 });

@@ -7,6 +7,10 @@
     "contract": "scripts/design-token-s3a-known.json",
     "supersededFiles": [
       "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx"
+    ],
+    "supersededDeclarations": [
+      "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:144:width",
+      "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:144:height"
     ]
   },
   "downstreamStage": {
@@ -18,12 +22,12 @@
   },
   "nativeStage": {
     "stage": "S4a",
-    "geometryChangesIncludedHere": 16,
+    "geometryChangesIncludedHere": 31,
     "note": "네이티브 부모 clipping 실측으로 승인된 후속 기하 변경만 행별 S4a 소유로 기록한다."
   },
   "nativeFollowupStage": {
     "stage": "S4b",
-    "geometryChangesIncludedHere": 41,
+    "geometryChangesIncludedHere": 36,
     "note": "S4a 원래 계보 밖에서 네이티브 감사가 발견한 공용·화면 컴포넌트 후속 보정을 별도 소유한다."
   },
   "allowedAstDiff": {
@@ -44,6 +48,7 @@
       "apps/mobile/src/features/ingredients/components/LossCard.tsx",
       "apps/mobile/src/features/ingredients/components/UnitPickerSheet.tsx",
       "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx",
+      "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx",
       "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx",
       "apps/mobile/src/features/ingredients/screens/IngredientFormScreen.tsx",
       "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx",
@@ -99,8 +104,8 @@
       "apps/mobile/src/features/sales/screens/SalesWasteScreen.tsx",
       "apps/mobile/src/theme/tokens.ts"
     ],
-    "beforeHash": "4fbc7b14b73f4f18dd831a12941a781c244341e826af1bb1cc55d13d5788fe79",
-    "afterHash": "61f8a17f060ec1de51bfcb7beebb8164beb35d874af0736ae03f0ccdefde3fe6"
+    "beforeHash": "0499bc087901b5d56888563af6e8ebe0800e4b10644a8835b80fc88e6a96dea7",
+    "afterHash": "3b3e259ff466f69febf43847b5e50a39fef9336a0a50b475c26d33aac934c713"
   },
   "counts": {
     "scrollStart": 17,
@@ -118,7 +123,7 @@
     "scrollEnd": "일반 flow 화면은 gap만 쓴다. Modal Sheet는 별도 좌표계라 LAYOUT.scroll.end + insets.bottom으로 safe-area를 한 번 포함한다.",
     "scrollEndWithFab": "COMPONENT.fab.bottom + COMPONENT.fab.visualHeight + space.xxl",
     "tabLabel": "두 줄 허용, 실측 라벨 초과 높이만 baseHeight에 더하고 safe-area는 한 번만 포함한다.",
-    "button": "네이티브 부모 clipping이 5개 넘는 sm 소비처에서 반복되어 sm은 시각 minHeight 44·hitSlop 0으로 통일한다. md는 부모 실측 전 열어 두고 lg는 기존 시각 높이로 통과한다.",
+    "button": "2026-09-06 소유자 결정 12-4: Button sm·헤더/시트 icon action은 시각 44, Chip·SortChip은 기존 형상과 44 이상 부모 줄을 쓴다. md는 부모 실측 전 열어 두고 lg는 기존 시각 높이로 통과한다.",
     "reorder": "겹치는 28×20 두 버튼 대신 44×44 한 진입점과 웹에서도 두 방향을 제공하는 kit Sheet를 쓴다."
   },
   "allowedAstChanges": [
@@ -245,28 +250,49 @@
       "file": "apps/mobile/src/components/kit/SortSheet.tsx",
       "declaration": "attr:hitSlop#1",
       "before": "{6}",
-      "after": "{0}",
-      "stage": "S4b"
+      "after": "{{ top: 9, bottom: 9, left: 0, right: 0 }}",
+      "stage": "S4a"
     },
     {
       "file": "apps/mobile/src/components/kit/SortSheet.tsx",
-      "declaration": "prop:minHeight#1",
+      "declaration": "prop:bottom#1",
       "before": null,
-      "after": "44",
-      "stage": "S4b"
+      "after": "9",
+      "stage": "S4a"
+    },
+    {
+      "file": "apps/mobile/src/components/kit/SortSheet.tsx",
+      "declaration": "prop:left#1",
+      "before": null,
+      "after": "0",
+      "stage": "S4a"
+    },
+    {
+      "file": "apps/mobile/src/components/kit/SortSheet.tsx",
+      "declaration": "prop:right#1",
+      "before": null,
+      "after": "0",
+      "stage": "S4a"
+    },
+    {
+      "file": "apps/mobile/src/components/kit/SortSheet.tsx",
+      "declaration": "prop:top#1",
+      "before": null,
+      "after": "9",
+      "stage": "S4a"
     },
     {
       "file": "apps/mobile/src/components/kit/index.tsx",
       "declaration": "attr:hitSlop#1",
       "before": "{6}",
-      "after": "{0}",
-      "stage": "S4b"
+      "after": "{{ top: 9, bottom: 9, left: 0, right: 0 }}",
+      "stage": "S4a"
     },
     {
       "file": "apps/mobile/src/components/kit/index.tsx",
       "declaration": "attr:hitSlop#2",
       "before": "{6}",
-      "after": "{{ top: 9, bottom: 9 }}",
+      "after": "{{ top: 6, bottom: 6 }}",
       "stage": "S4a"
     },
     {
@@ -279,6 +305,13 @@
     {
       "file": "apps/mobile/src/components/kit/index.tsx",
       "declaration": "prop:bottom#2",
+      "before": null,
+      "after": "6",
+      "stage": "S4a"
+    },
+    {
+      "file": "apps/mobile/src/components/kit/index.tsx",
+      "declaration": "prop:bottom#3",
       "before": null,
       "after": "0",
       "stage": "S4a"
@@ -320,14 +353,14 @@
     },
     {
       "file": "apps/mobile/src/components/kit/index.tsx",
-      "declaration": "prop:minHeight#1",
+      "declaration": "prop:left#2",
       "before": null,
-      "after": "44",
-      "stage": "S4b"
+      "after": "0",
+      "stage": "S4a"
     },
     {
       "file": "apps/mobile/src/components/kit/index.tsx",
-      "declaration": "prop:minHeight#2",
+      "declaration": "prop:minHeight#1",
       "before": null,
       "after": "COMPONENT.fab.visualHeight",
       "stage": "S4a"
@@ -341,9 +374,37 @@
     },
     {
       "file": "apps/mobile/src/components/kit/index.tsx",
+      "declaration": "prop:right#1",
+      "before": "18",
+      "after": "0",
+      "stage": "S4a"
+    },
+    {
+      "file": "apps/mobile/src/components/kit/index.tsx",
+      "declaration": "prop:right#2",
+      "before": "0",
+      "after": "18",
+      "stage": "S4a"
+    },
+    {
+      "file": "apps/mobile/src/components/kit/index.tsx",
+      "declaration": "prop:right#3",
+      "before": null,
+      "after": "0",
+      "stage": "S4a"
+    },
+    {
+      "file": "apps/mobile/src/components/kit/index.tsx",
       "declaration": "prop:top#1",
       "before": null,
       "after": "9",
+      "stage": "S4a"
+    },
+    {
+      "file": "apps/mobile/src/components/kit/index.tsx",
+      "declaration": "prop:top#2",
+      "before": null,
+      "after": "6",
       "stage": "S4a"
     },
     {
@@ -498,6 +559,27 @@
       "declaration": "prop:width#2",
       "before": "45",
       "after": "44",
+      "stage": "S4a"
+    },
+    {
+      "file": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx",
+      "declaration": "attr:hitSlop#1",
+      "before": "{6}",
+      "after": "{0}",
+      "stage": "S4a"
+    },
+    {
+      "file": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx",
+      "declaration": "prop:height#1",
+      "before": "controlVisualHeight.sm",
+      "after": "minTouchTarget",
+      "stage": "S4a"
+    },
+    {
+      "file": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx",
+      "declaration": "prop:width#1",
+      "before": "controlVisualHeight.sm",
+      "after": "minTouchTarget",
       "stage": "S4a"
     },
     {
@@ -1717,13 +1799,6 @@
       "before": "6",
       "after": "space.sm",
       "stage": "S3b"
-    },
-    {
-      "file": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx",
-      "declaration": "prop:minHeight#1",
-      "before": null,
-      "after": "68",
-      "stage": "S4b"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx",

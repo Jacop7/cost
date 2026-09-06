@@ -1,12 +1,12 @@
 # 전체 페이지 프로토타입 · 디자인 맥락 장부
 
-> 현재 동기화 ID: `DS-20260906-008`
+> 현재 동기화 ID: `DS-20260906-010`
 > 문서 동기화 상태: `SYNCED`
 > 전체 UI 작업 상태: `IN_PROGRESS`
 > 마지막 갱신: `2026-09-06`
 > 공통 변경: `예`
 > UI 변경: `예`
-> 변경 기록: `PRT-235`
+> 변경 기록: `PRT-238`
 
 ## 1. 문서 역할
 
@@ -43,6 +43,26 @@
 - 글로벌: 30~50% 긴 번역, 320px, 200% 글자 확대, RTL 검수.
 
 ## 4. 가장 최근 작업
+
+### DS-20260906-010 · PRT-238 소유자 결정 12-4와 양 플랫폼 S4a
+
+- 작업 성격: Android 실측에서 드러난 부모 clipping에 대해 소유자가 시안집 별책 12의
+  **12-4 "버튼 44 · 칩 줄 44"**를 확정했다.
+- 역할 분리: Button sm·헤더/시트 icon action·ConditionRow는 시각 44, Chip·SortChip은 기존
+  형상을 유지하고 부모 줄을 44 이상으로 둔 채 세로 `hitSlop 9`·가로 `0`으로 실제 높이 44를
+  만든다. 승인 밖 화면 diff와 형제 터치 중첩은 0이어야 한다.
+- 앱 변경: Button sm 10·ConditionRow 3·AppHeader right 12·FilterButton 7 소비처에 공용 계약을
+  적용하고, PRT-236의 Chip 3·SortChip 2 시각 확대는 철회했다.
+- 프로토타입: `.order-button 36→44`, 기본 `.condition 38→44`만 동기화한다.
+- iOS: App Store Expo Go SDK 57과 고정 SDK 54가 호환되지 않아 SDK 54 EAS development build를
+  실제 iPhone에 설치한다. Android·iOS raw frame과 모든 host ancestor clipping을 따로 보존한다.
+- 상태: 제품·감사기 커밋 → Android 1×/2× → iPhone 실기기 → Fable 독립 검수 순으로 진행 중.
+- 완료 조건:
+  - PRT238-S4-UNION · `../../scripts/design-token-s4-contract.json`
+  - PRT238-TOUCH-STATIC · `../../scripts/touch-target-known.json`
+  - PRT238-RENDER · `full-page-flow-prototype-render-audit.json`
+  - PRT238-DESIGN · `full-page-flow-prototype-design-audit.json`
+  - PRT238-I18N · `full-page-flow-prototype-i18n-stress.json`
 
 ### DS-20260906-008 · PRT-235 S3b 폭 증가 토큰 치환 후보
 

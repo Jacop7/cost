@@ -15,6 +15,11 @@ const sleep = (ms) => new Promise((done) => setTimeout(done, ms));
 const sha256 = (text) => createHash('sha256').update(text).digest('hex');
 const normalizedText = (path) => readFileSync(path, 'utf8').replace(/\r\n/g, '\n');
 
+export function resolveActionForFontScale(action, fontScale) {
+  const keyed = action?.yByFontScale?.[String(fontScale)];
+  return keyed === undefined ? action : { ...action, y: Number(keyed) };
+}
+
 export function slopBox(value) {
   if (typeof value === 'number') return { top: value, right: value, bottom: value, left: value };
   const box = value ?? {};
@@ -26,7 +31,7 @@ export function slopBox(value) {
   };
 }
 
-export function effectiveTouchRect(frame, parentFrame, hitSlop) {
+export function effectiveTouchRect(frame, parentFrames, hitSlop) {
   const slop = slopBox(hitSlop);
   const raw = {
     left: frame.x - slop.left,
@@ -34,18 +39,18 @@ export function effectiveTouchRect(frame, parentFrame, hitSlop) {
     right: frame.x + frame.width + slop.right,
     bottom: frame.y + frame.height + slop.bottom,
   };
-  const parent = {
+  const parents = (Array.isArray(parentFrames) ? parentFrames : [parentFrames]).map((parentFrame) => ({
     left: parentFrame.x,
     top: parentFrame.y,
     right: parentFrame.x + parentFrame.width,
     bottom: parentFrame.y + parentFrame.height,
-  };
-  const effective = {
-    left: Math.max(raw.left, parent.left),
-    top: Math.max(raw.top, parent.top),
-    right: Math.min(raw.right, parent.right),
-    bottom: Math.min(raw.bottom, parent.bottom),
-  };
+  }));
+  const effective = parents.reduce((result, parent) => ({
+    left: Math.max(result.left, parent.left),
+    top: Math.max(result.top, parent.top),
+    right: Math.min(result.right, parent.right),
+    bottom: Math.min(result.bottom, parent.bottom),
+  }), raw);
   return {
     raw,
     effective,
@@ -109,8 +114,59 @@ export function compareNativeRatchet(current, known, epsilon = 1e-6) {
         && (item.maxWidth > old.maxWidth + epsilon || item.maxHeight > old.maxHeight + epsilon))
         failures.push(`네이티브 중첩 악화: ${item.key}`);
     }
+    const currentKeys = new Set(current[field].map((item) => item.key));
+    for (const key of baseline.keys()) {
+      if (!currentKeys.has(key)) failures.push(`사라진 네이티브 ${field}: ${key} — known 갱신 필요`);
+    }
   }
   return failures;
+}
+
+const frameFromMeasure = (measure, label) => {
+  if (!Array.isArray(measure) || measure.length < 4 || measure.slice(0, 4).some((value) => !Number.isFinite(value)))
+    throw new Error(`${label} 원시 measure가 유효하지 않다`);
+  return { x: measure[0], y: measure[1], width: measure[2], height: measure[3] };
+};
+
+export function recomputeNativeArtifactDerived(artifact) {
+  const result = structuredClone(artifact);
+  const density = Number(result.device?.density);
+  for (const scenario of result.scenarios ?? []) for (const phase of scenario.phases ?? []) {
+    for (const row of phase.rows ?? []) {
+      const relative = frameFromMeasure(row.relativeMeasure, `${scenario.id}/${phase.id}/${row.key} relative`);
+      const windowFrame = frameFromMeasure(row.windowMeasure, `${scenario.id}/${phase.id}/${row.key} window`);
+      const ancestorMeasures = Array.isArray(row.ancestors) && row.ancestors.length
+        ? row.ancestors.map((ancestor, index) => frameFromMeasure(ancestor.windowMeasure,
+          `${scenario.id}/${phase.id}/${row.key} ancestor[${index}]`))
+        : [frameFromMeasure(row.parent?.windowMeasure, `${scenario.id}/${phase.id}/${row.key} parent`)];
+      const touch = effectiveTouchRect(windowFrame, ancestorMeasures, row.hitSlop);
+      const visual = effectiveTouchRect(windowFrame, ancestorMeasures, 0);
+      row.relativeFrame = relative;
+      row.windowFrame = windowFrame;
+      row.parentFrame = ancestorMeasures[0];
+      row.ancestorFrames = ancestorMeasures;
+      row.touchRect = touch.raw;
+      row.effectiveRect = touch.effective;
+      row.effectiveWidth = touch.width;
+      row.effectiveHeight = touch.height;
+      row.clippedByParent = touch.clipped;
+      row.visualRect = visual.effective;
+      row.visualWidth = visual.width;
+      row.visualHeight = visual.height;
+      row.visualFullyVisible = Math.abs(visual.width - windowFrame.width) <= 1e-6
+        && Math.abs(visual.height - windowFrame.height) <= 1e-6;
+      row.pass44 = touch.width + physicalHalfPixelTolerance(density) >= 44
+        && touch.height + physicalHalfPixelTolerance(density) >= 44;
+    }
+    phase.overlaps = [];
+    for (let left = 0; left < phase.rows.length; left++) for (let right = left + 1; right < phase.rows.length; right++) {
+      if (phase.rows[left].parentNativeTag !== phase.rows[right].parentNativeTag) continue;
+      const overlap = rectOverlap(phase.rows[left].effectiveRect, phase.rows[right].effectiveRect);
+      if (overlap.width > 0 && overlap.height > 0)
+        phase.overlaps.push({ left: phase.rows[left].key, right: phase.rows[right].key, ...overlap });
+    }
+  }
+  return result;
 }
 
 const matches = (value, pattern) => !pattern || new RegExp(pattern, 'u').test(value ?? '');
@@ -160,7 +216,8 @@ export function evaluateNativeArtifact(artifact, contract) {
     .reduce((sum, target) => sum + target.sourceEntries.length, 0);
   if (expectedLineage !== contract.expectedSourceLineage)
     failures.push(`계약 source lineage ${expectedLineage} ≠ ${contract.expectedSourceLineage}`);
-  if (artifact.platform !== contract.platform) failures.push(`platform ${artifact.platform} ≠ ${contract.platform}`);
+  const allowedPlatforms = contract.platforms ?? [contract.platform];
+  if (!allowedPlatforms.includes(artifact.platform)) failures.push(`platform ${artifact.platform} ∉ [${allowedPlatforms.join(', ')}]`);
   const allowedFontScales = contract.fontScales ?? [contract.fontScale];
   if (!allowedFontScales.some((value) => Math.abs(value - artifact.fontScale) < 1e-6))
     failures.push(`fontScale ${artifact.fontScale} ∉ [${allowedFontScales.join(', ')}]`);
@@ -174,7 +231,7 @@ function options(argv) {
   }));
 }
 
-async function connectInspector(url) {
+async function connectInspector(url, desiredPlatform) {
   const pages = await fetch(`${url.replace(/\/$/, '')}/json/list`).then((response) => response.json());
   const evaluate = async (socket, expression) => {
     const id = Math.floor(Math.random() * 1_000_000_000);
@@ -200,7 +257,9 @@ async function connectInspector(url) {
     });
     const roots = await evaluate(socket,
       "typeof __REACT_DEVTOOLS_GLOBAL_HOOK__==='object'?[...__REACT_DEVTOOLS_GLOBAL_HOOK__.renderers.keys()].reduce((n,id)=>n+__REACT_DEVTOOLS_GLOBAL_HOOK__.getFiberRoots(id).size,0):0");
-    if (roots > 0) return { socket, evaluate: (expression) => evaluate(socket, expression) };
+    const runtimePlatform = roots > 0 ? await evaluate(socket, `(()=>{const modules=[...__r.getModules().entries()];const hit=modules.find(([,m])=>String(m.verboseName||'').replaceAll('\\\\','/').endsWith('/node_modules/react-native/index.js'));return hit?__r(hit[0]).Platform.OS:'unknown'})()`) : 'unknown';
+    if (roots > 0 && (!desiredPlatform || runtimePlatform === desiredPlatform))
+      return { socket, page, runtimePlatform, evaluate: (expression) => evaluate(socket, expression) };
     socket.close();
   }
   throw new Error('React Native Hermes inspector를 찾지 못했다');
@@ -217,10 +276,10 @@ function runtimeExpression(operation) {
     const owners=f=>{const out=[];for(let n=f?._debugOwner;n&&out.length<12;n=n._debugOwner){const v=name(n);if(v&&!out.includes(v))out.push(v)}return out};
     const text=f=>{let out='';const seen=new Set();const walk=n=>{if(!n||seen.has(n))return;seen.add(n);const p=n.memoizedProps||{};if(typeof p.children==='string'||typeof p.children==='number')out+=' '+p.children;walk(n.child);walk(n.sibling)};walk(f?.child);return out.replace(/\\s+/g,' ').trim()};
     const hostChild=f=>{const q=f?.child?[f.child]:[];const seen=new Set();while(q.length){const n=q.shift();if(!n||seen.has(n))continue;seen.add(n);if(n.tag===5)return n;if(n.child)q.push(n.child);if(n.sibling)q.push(n.sibling)}return null};
-    const hostParent=f=>{for(let n=f?.return;n;n=n.return)if(n.tag===5)return n;return null};
+    const hostAncestors=f=>{const out=[];for(let n=f?.return;n;n=n.return)if(n.tag===5)out.push(n);return out};
     const slop=v=>typeof v==='number'?{top:v,right:v,bottom:v,left:v}:{top:v?.top??v?.vertical??0,right:v?.right??v?.horizontal??0,bottom:v?.bottom??v?.vertical??0,left:v?.left??v?.horizontal??0};
     const buttons=[];const seen=new Set();
-    const walk=f=>{if(!f||seen.has(f))return;seen.add(f);const p=f.memoizedProps||{};if(name(f)==='Pressable'&&p.accessibilityRole==='button'){const host=hostChild(f),parent=hostParent(f);if(host&&parent){const label=String(p.accessibilityLabel||text(f)||'(unlabelled)');buttons.push({fiber:f,host,parent,label,ownerChain:owners(f),hitSlop:slop(p.hitSlop??host.memoizedProps?.hitSlop),nativeTag:host.stateNode?.canonical?.nativeTag,parentNativeTag:parent.stateNode?.canonical?.nativeTag})}}walk(f.child);walk(f.sibling)};
+    const walk=f=>{if(!f||seen.has(f))return;seen.add(f);const p=f.memoizedProps||{};if(name(f)==='Pressable'&&p.accessibilityRole==='button'){const host=hostChild(f),ancestors=hostAncestors(f);if(host&&ancestors.length){const label=String(p.accessibilityLabel||text(f)||'(unlabelled)');buttons.push({fiber:f,host,ancestors,label,ownerChain:owners(f),hitSlop:slop(p.hitSlop??host.memoizedProps?.hitSlop),nativeTag:host.stateNode?.canonical?.nativeTag,parentNativeTag:ancestors[0].stateNode?.canonical?.nativeTag})}}walk(f.child);walk(f.sibling)};
     roots.forEach(walk);
     const active=[...new Map(buttons.filter(b=>Number.isFinite(b.nativeTag)).map(b=>[b.nativeTag,b])).values()];
     if(op.kind==='press'){
@@ -228,9 +287,17 @@ function runtimeExpression(operation) {
       if(!found)throw new Error('action target 없음: '+op.labelPattern);
       const press=found.fiber.memoizedProps?.onPress;if(typeof press!=='function')throw new Error('onPress 없음');press();return JSON.stringify({pressed:found.label});
     }
+    if(op.kind==='scroll'){
+      const found=active.find(b=>(!op.ownerPattern||new RegExp(op.ownerPattern,'u').test(b.ownerChain.join('>')))&&new RegExp(op.labelPattern,'u').test(b.label));
+      if(!found)throw new Error('scroll target 없음: '+op.labelPattern);
+      for(let n=found.fiber;n;n=n.return)if(name(n)==='ScrollView'&&typeof n.stateNode?.scrollTo==='function'){
+        n.stateNode.scrollTo({y:Number(op.y||0),animated:false});return JSON.stringify({scrolled:found.label,y:Number(op.y||0)});
+      }
+      throw new Error('scroll ancestor 없음: '+op.labelPattern);
+    }
     state.rows=[];state.pending=0;state.done=false;
     const measure=(node,method,target,key)=>{state.pending++;nativeFabricUIManager[method](node.stateNode.node,(...values)=>{target[key]=values;state.pending--;if(state.pending===0)state.done=true})};
-    for(const b of active){const row={key:b.ownerChain.join('>')+'|'+b.label+'|'+b.nativeTag,label:b.label,ownerChain:b.ownerChain,hitSlop:b.hitSlop,nativeTag:b.nativeTag,parentNativeTag:b.parentNativeTag,parent:{}};state.rows.push(row);measure(b.host,'measure',row,'relativeMeasure');measure(b.host,'measureInWindow',row,'windowMeasure');measure(b.parent,'measureInWindow',row.parent,'windowMeasure')}
+    for(const b of active){const row={key:b.ownerChain.join('>')+'|'+b.label+'|'+b.nativeTag,label:b.label,ownerChain:b.ownerChain,hitSlop:b.hitSlop,nativeTag:b.nativeTag,parentNativeTag:b.parentNativeTag,ancestors:b.ancestors.map(n=>({nativeTag:n.stateNode?.canonical?.nativeTag}))};state.rows.push(row);measure(b.host,'measure',row,'relativeMeasure');measure(b.host,'measureInWindow',row,'windowMeasure');for(const ancestor of row.ancestors){const node=b.ancestors[row.ancestors.indexOf(ancestor)];measure(node,'measureInWindow',ancestor,'windowMeasure')}}
     if(state.pending===0)state.done=true;return JSON.stringify({rows:state.rows.length,pending:state.pending});
   })()`;
 }
@@ -249,7 +316,9 @@ async function runtimeDevice(evaluate) {
     return {platform:rn?.Platform?.OS||'unknown',density:rn?.PixelRatio?.get?.()??null,fontScale:rn?.PixelRatio?.getFontScale?.()??null,
       osVersion:String(rn?.Platform?.Version??'unknown'),reactNativeVersion:rn?.Platform?.constants?.reactNativeVersion??null,
       expoVersion:constants?.expoVersion??constants?.expoConfig?.sdkVersion??null,
-      appVersion:constants?.expoConfig?.version??null,bundleId:constants?.expoConfig?.android?.package??constants?.expoConfig?.ios?.bundleIdentifier??null};
+      appVersion:constants?.expoConfig?.version??null,bundleId:constants?.expoConfig?.android?.package??constants?.expoConfig?.ios?.bundleIdentifier??null,
+      model:rn?.Platform?.constants?.Model??rn?.Platform?.constants?.model??null,
+      apiLevel:rn?.Platform?.OS==='android'?rn?.Platform?.Version:null};
   })())`));
 }
 
@@ -262,25 +331,20 @@ async function collect(evaluate, density, ownerPattern) {
     if (state.done) break;
   }
   if (!state?.done) throw new Error('native measure callback 완료 실패');
-  const rows = state.rows.filter((row) => row.windowMeasure?.[2] > 0 && row.windowMeasure?.[3] > 0)
-    .filter((row) => !ownerPattern || matches(row.ownerChain.join('>'), ownerPattern)).map((row) => {
-    const [relativeX, relativeY, relativeWidth, relativeHeight] = row.relativeMeasure;
-    const [x, y, width, height] = row.windowMeasure;
-    const [parentX, parentY, parentWidth, parentHeight] = row.parent.windowMeasure;
-    const touch = effectiveTouchRect({ x, y, width, height }, { x: parentX, y: parentY, width: parentWidth, height: parentHeight }, row.hitSlop);
-    return { ...row, relativeFrame: { x: relativeX, y: relativeY, width: relativeWidth, height: relativeHeight },
-      windowFrame: { x, y, width, height }, parentFrame: { x: parentX, y: parentY, width: parentWidth, height: parentHeight },
-      touchRect: touch.raw, effectiveRect: touch.effective, effectiveWidth: touch.width, effectiveHeight: touch.height,
-      clippedByParent: touch.clipped, pass44: touch.width + physicalHalfPixelTolerance(density) >= 44 && touch.height + physicalHalfPixelTolerance(density) >= 44 };
-  });
-  const overlaps = [];
-  for (let left = 0; left < rows.length; left++) for (let right = left + 1; right < rows.length; right++) {
-    if (rows[left].parentNativeTag !== rows[right].parentNativeTag) continue;
-    const overlap = rectOverlap(rows[left].effectiveRect, rows[right].effectiveRect);
-    if (overlap.width > 0 && overlap.height > 0)
-      overlaps.push({ left: rows[left].key, right: rows[right].key, ...overlap });
-  }
-  return { rows, overlaps };
+  const visibleRows = state.rows.filter((row) => row.windowMeasure?.[2] > 0 && row.windowMeasure?.[3] > 0);
+  const excludedOwnerChains = [...new Set(visibleRows
+    .filter((row) => ownerPattern && !matches(row.ownerChain.join('>'), ownerPattern))
+    .map((row) => row.ownerChain.join('>')))].sort();
+  const activeRows = visibleRows.filter((row) => !ownerPattern || matches(row.ownerChain.join('>'), ownerPattern));
+  const firstPass = recomputeNativeArtifactDerived({ device: { density }, scenarios: [{ id: 'runtime', phases: [{ id: 'runtime', rows: activeRows }] }] });
+  const excludedPartiallyVisible = firstPass.scenarios[0].phases[0].rows
+    .filter((row) => !row.visualFullyVisible).map((row) => ({ key: row.key, label: row.label,
+      ownerChain: row.ownerChain, windowFrame: row.windowFrame, visualRect: row.visualRect,
+      visualWidth: row.visualWidth, visualHeight: row.visualHeight })).sort((left, right) => left.key.localeCompare(right.key));
+  const rows = firstPass.scenarios[0].phases[0].rows.filter((row) => row.visualFullyVisible);
+  const rebuilt = recomputeNativeArtifactDerived({ device: { density }, scenarios: [{ id: 'runtime', phases: [{ id: 'runtime', rows }] }] });
+  return { rows: rebuilt.scenarios[0].phases[0].rows, overlaps: rebuilt.scenarios[0].phases[0].overlaps,
+    excludedOwnerChains, excludedPartiallyVisible };
 }
 
 async function main() {
@@ -298,7 +362,7 @@ async function main() {
   const renderRoute = (route) => route.replace(/\{\{([^}]+)\}\}/g, (_, key) => {
     if (!fixtures[key]) throw new Error(`fixture 누락: ${key}`); return fixtures[key];
   });
-  const inspector = await connectInspector(String(opt.inspector ?? 'http://127.0.0.1:8081'));
+  const inspector = await connectInspector(String(opt.inspector ?? 'http://127.0.0.1:8081'), platform);
   const scenarios = [];
   const measuredDevice = await runtimeDevice(inspector.evaluate);
   const density = Number(measuredDevice.density);
@@ -314,7 +378,8 @@ async function main() {
       const route = renderRoute(scenario.route); await navigate(inspector.evaluate, route);
       const phases = [{ id: 'initial', ...await collect(inspector.evaluate, density, scenario.activeOwnerPattern) }];
       for (const action of scenario.actions ?? []) {
-        await inspector.evaluate(runtimeExpression({ kind: 'press', ...action })); await sleep(600);
+        const resolvedAction = resolveActionForFontScale(action, fontScale);
+        await inspector.evaluate(runtimeExpression({ kind: resolvedAction.kind ?? 'press', ...resolvedAction })); await sleep(600);
         phases.push({ id: action.phase, ...await collect(inspector.evaluate, density, action.activeOwnerPattern ?? scenario.activeOwnerPattern) });
       }
       scenarios.push({ id: scenario.id, route, phases });
@@ -325,6 +390,10 @@ async function main() {
     schemaVersion: 1, platform, fontScale,
     device: { id: String(opt.device ?? 'unknown'), ...measuredDevice, density },
     manifest: { evidenceStatus: diagnostic ? 'DIAGNOSTIC_DIRTY_NOT_EVIDENCE' : 'EXACT_COMMIT_EVIDENCE',
+      measurementScope: 'scenario-active-owner-pattern',
+      excludedOwnerChains: [...new Set(scenarios.flatMap((scenario) => scenario.phases)
+        .flatMap((phase) => phase.excludedOwnerChains ?? []))].sort(),
+      inspectorPage: { title: inspector.page?.title ?? null, deviceName: inspector.page?.deviceName ?? null },
       productCommit: head, productTree: spawnSync('git', ['rev-parse', 'HEAD^{tree}'], { cwd: root, encoding: 'utf8' }).stdout.trim(),
       scriptSha256: sha256(normalizedText(here)), contractSha256: sha256(normalizedText(contractPath)), node: process.version },
     scenarios,
