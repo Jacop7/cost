@@ -10,6 +10,7 @@ const opt = Object.fromEntries(process.argv.slice(2).filter((arg) => arg.startsW
   const index = arg.indexOf('='); return index < 0 ? [arg.slice(2), true] : [arg.slice(2, index), arg.slice(index + 1)];
 }));
 const inspectorUrl = String(opt.inspector ?? 'http://127.0.0.1:8081');
+const platform = String(opt.platform ?? 'android');
 const adb = String(opt.adb ?? (process.env.ANDROID_HOME
   ? join(process.env.ANDROID_HOME, 'platform-tools', 'adb.exe') : 'adb'));
 const deviceId = String(opt.device ?? 'emulator-5554');
@@ -22,7 +23,7 @@ const git = (args) => {
   return result.stdout.trim();
 };
 
-async function connect() {
+async function connect(desiredPlatform) {
   const pages = await fetch(`${inspectorUrl}/json/list`).then((response) => response.json());
   for (const page of pages.slice().reverse()) {
     const socket = await new Promise((resolve, reject) => {
@@ -31,7 +32,8 @@ async function connect() {
       candidate.onopen = () => resolve(candidate);
     });
     const roots = await evaluate(socket, "typeof __REACT_DEVTOOLS_GLOBAL_HOOK__==='object'?[...__REACT_DEVTOOLS_GLOBAL_HOOK__.renderers.keys()].reduce((n,id)=>n+__REACT_DEVTOOLS_GLOBAL_HOOK__.getFiberRoots(id).size,0):0");
-    if (roots > 0) return socket;
+    const runtimePlatform = roots > 0 ? await evaluate(socket, `(()=>{const modules=[...__r.getModules().entries()];const hit=modules.find(([,m])=>String(m.verboseName||'').replaceAll('\\\\','/').endsWith('/node_modules/react-native/index.js'));return hit?__r(hit[0]).Platform.OS:'unknown'})()`) : 'unknown';
+    if (roots > 0 && runtimePlatform === desiredPlatform) return socket;
     socket.close();
   }
   throw new Error('Hermes inspector 없음');
@@ -60,7 +62,7 @@ const runtime = (op) => `(()=>{
   const roots=[...hook.getFiberRoots(rendererId)].map(root=>root.current);
   const name=f=>{const t=f?.elementType||f?.type;return typeof t==='string'?t:(t?.displayName||t?.name||'')};
   const owners=f=>{const out=[];for(let n=f?._debugOwner;n&&out.length<12;n=n._debugOwner){const v=name(n);if(v&&!out.includes(v))out.push(v)}return out};
-  const text=f=>{let out='';const seen=new Set();const walk=n=>{if(!n||seen.has(n))return;seen.add(n);const p=n.memoizedProps||{};if(typeof p.children==='string'||typeof p.children==='number')out+=' '+p.children;walk(n.child);walk(n.sibling)};walk(f?.child);return out.replace(/\\s+/g,' ').trim()};
+  const text=f=>{let out='';const seen=new Set();const walk=n=>{if(!n||seen.has(n))return;seen.add(n);const p=n.memoizedProps;if(typeof p==='string'||typeof p==='number')out+=' '+p;walk(n.child);walk(n.sibling)};walk(f?.child);return out.replace(/\\s+/g,' ').trim()};
   const hostChild=f=>{const q=f?.child?[f.child]:[];const seen=new Set();while(q.length){const n=q.shift();if(!n||seen.has(n))continue;seen.add(n);if(n.tag===5)return n;if(n.child)q.push(n.child);if(n.sibling)q.push(n.sibling)}return null};
   const hostAncestors=f=>{const out=[];for(let n=f?.return;n;n=n.return)if(n.tag===5)out.push(n);return out};
   const flat=s=>Array.isArray(s)?Object.assign({},...s.filter(Boolean).map(flat)):(s&&typeof s==='object'?s:{});
@@ -108,17 +110,37 @@ async function tapAndRead(socket, point, windowOffsetY, density) {
   return { pointDp: point, pointPx: { x, y }, onPressCount: state.count };
 }
 
+async function physicalTapAndRead(socket, point, instruction, { requirePress, timeoutMs = 120_000 } = {}) {
+  await evaluate(socket, runtime({ kind: 'reset', labelPattern: '^정렬 기준: 추천순$', ownerPattern: 'IngredientListScreen' }));
+  console.log(`PHYSICAL_TAP_REQUIRED ${instruction} requestedPointDp=${point.x.toFixed(2)},${point.y.toFixed(2)}`);
+  if (requirePress) {
+    const started = Date.now();
+    while (Date.now() - started < timeoutMs) {
+      await sleep(250);
+      const state = JSON.parse(await evaluate(socket, runtime({ kind: 'state', labelPattern: '^정렬 기준: 추천순$', ownerPattern: 'IngredientListScreen' })));
+      if (state.count > 0) return { requestedPointDp: point, onPressCount: state.count,
+        operatorAttestation: { method: 'physical-user-tap-detected-by-hermes-onPress', confirmedAt: new Date().toISOString() } };
+    }
+    throw new Error(`실제 탭 대기 시간 초과: ${instruction}`);
+  }
+  process.stdin.resume();
+  await new Promise((resolveInput) => process.stdin.once('data', resolveInput));
+  const state = JSON.parse(await evaluate(socket, runtime({ kind: 'state', labelPattern: '^정렬 기준: 추천순$', ownerPattern: 'IngredientListScreen' })));
+  return { requestedPointDp: point, onPressCount: state.count,
+    operatorAttestation: { method: 'physical-user-tap-confirmed-by-stdin', confirmedAt: new Date().toISOString() } };
+}
+
 const head = git(['rev-parse', 'HEAD']);
 if (!opt['expect-commit'] || opt['expect-commit'] !== head) throw new Error(`--expect-commit 불일치: ${head}`);
 if (git(['status', '--porcelain', '--untracked-files=no'])) throw new Error('추적 파일이 변경된 트리에서는 실제 탭 증거를 만들지 않는다');
-const socket = await connect();
+const socket = await connect(platform);
 try {
   const runtimeDevice = JSON.parse(await evaluate(socket, `JSON.stringify((()=>{const modules=[...__r.getModules().entries()];const hit=modules.find(([,m])=>String(m.verboseName||'').replaceAll('\\\\','/').endsWith('/node_modules/react-native/index.js'));const rn=__r(hit[0]);return {platform:rn.Platform.OS,density:rn.PixelRatio.get(),fontScale:rn.PixelRatio.getFontScale(),osVersion:String(rn.Platform.Version)}})())`));
-  if (runtimeDevice.platform !== 'android') throw new Error(`Android 런타임이 아니다: ${runtimeDevice.platform}`);
+  if (runtimeDevice.platform !== platform) throw new Error(`${platform} 런타임이 아니다: ${runtimeDevice.platform}`);
   const density = Number(runtimeDevice.density);
-  await evaluate(socket, `(()=>{const m=[...__r.getModules().entries()].find(([,v])=>String(v.verboseName||'').replaceAll('\\\\','/').endsWith('/node_modules/expo-router/build/exports.js'));__r(m[0]).router.replace('/orders');return 'ok'})()`);
+  await evaluate(socket, `(()=>{const m=[...__r.getModules().entries()].find(([,v])=>String(v.verboseName||'').replaceAll('\\\\','/').endsWith('/node_modules/expo-router/build/exports.js'));__r(m[0]).router.replace('/(tabs)/orders');return 'ok'})()`);
   await sleep(700);
-  await evaluate(socket, `(()=>{const m=[...__r.getModules().entries()].find(([,v])=>String(v.verboseName||'').replaceAll('\\\\','/').endsWith('/node_modules/expo-router/build/exports.js'));__r(m[0]).router.replace('/ingredients');return 'ok'})()`);
+  await evaluate(socket, `(()=>{const m=[...__r.getModules().entries()].find(([,v])=>String(v.verboseName||'').replaceAll('\\\\','/').endsWith('/node_modules/expo-router/build/exports.js'));__r(m[0]).router.replace('/(tabs)/ingredients');return 'ok'})()`);
   await sleep(1800);
   await evaluate(socket, runtime({ kind: 'instrument', labelPattern: '^정렬 기준: 추천순$', ownerPattern: 'IngredientListScreen' }));
   await sleep(500);
@@ -126,9 +148,15 @@ try {
   const [x, y, width, height] = initial.frame;
   const [px, py, pwidth, pheight] = initial.ancestors[0].frame;
   const windowOffsetY = Math.max(0, -initial.ancestors.at(-1).frame[1]);
-  const inside = await tapAndRead(socket, { x: x + width / 2, y: y + height / 2 }, windowOffsetY, density);
-  const clippedEdge = await tapAndRead(socket, { x: x + width / 2, y: Math.min(y + height + 8.5, py + pheight + 0.75) }, windowOffsetY, density);
-  await evaluate(socket, `(()=>{const m=[...__r.getModules().entries()].find(([,v])=>String(v.verboseName||'').replaceAll('\\\\','/').endsWith('/node_modules/expo-router/build/exports.js'));__r(m[0]).router.replace('/ingredients');return 'ok'})()`);
+  const insidePoint = { x: x + width / 2, y: y + height / 2 };
+  const clippedEdgePoint = { x: x + width / 2, y: Math.min(y + height + 8.5, py + pheight + 0.75) };
+  const inside = platform === 'android'
+    ? await tapAndRead(socket, insidePoint, windowOffsetY, density)
+    : await physicalTapAndRead(socket, insidePoint, '1/3 추천순 버튼 가운데를 누르세요', { requirePress: true });
+  const clippedEdge = platform === 'android'
+    ? await tapAndRead(socket, clippedEdgePoint, windowOffsetY, density)
+    : await physicalTapAndRead(socket, clippedEdgePoint, '2/3 추천순 버튼 바로 아래 빈 영역을 누른 뒤 채팅에 완료라고 보내세요', { requirePress: false });
+  await evaluate(socket, `(()=>{const m=[...__r.getModules().entries()].find(([,v])=>String(v.verboseName||'').replaceAll('\\\\','/').endsWith('/node_modules/expo-router/build/exports.js'));__r(m[0]).router.replace('/(tabs)/ingredients');return 'ok'})()`);
   await sleep(1200);
   await evaluate(socket, runtime({ kind: 'shrinkOverflowGrandparent', labelPattern: '^정렬 기준: 추천순$', ownerPattern: 'IngredientListScreen' }));
   await sleep(700);
@@ -137,7 +165,10 @@ try {
   const overflowMeasure = await measure(socket);
   const [ox, oy, ow, oh] = overflowMeasure.frame;
   const overflowWindowOffsetY = Math.max(0, -overflowMeasure.ancestors.at(-1).frame[1]);
-  const overflowVisibleGrandparent = await tapAndRead(socket, { x: ox + ow / 2, y: oy + oh / 2 }, overflowWindowOffsetY, density);
+  const overflowPoint = { x: ox + ow / 2, y: oy + oh / 2 };
+  const overflowVisibleGrandparent = platform === 'android'
+    ? await tapAndRead(socket, overflowPoint, overflowWindowOffsetY, density)
+    : await physicalTapAndRead(socket, overflowPoint, '3/3 추천순 버튼 가운데를 다시 누르세요', { requirePress: true });
   const probes = [
     { id: 'inside-effective-rect', expectedOnPressCount: 1, ...inside },
     { id: 'outside-direct-parent', expectedOnPressCount: 0, ...clippedEdge },
@@ -149,14 +180,18 @@ try {
   const artifact = {
     schemaVersion: 1,
     status: failures.length ? 'FAIL' : 'PASS',
-    platform: 'android',
-    device: { id: deviceId, model: shell(['getprop', 'ro.product.model']), apiLevel: Number(shell(['getprop', 'ro.build.version.sdk'])), ...runtimeDevice },
+    platform,
+    device: platform === 'android'
+      ? { id: deviceId, model: shell(['getprop', 'ro.product.model']), apiLevel: Number(shell(['getprop', 'ro.build.version.sdk'])), ...runtimeDevice }
+      : { id: String(opt.device ?? 'iphone-actual'), model: String(opt.model ?? 'iPhone'), ...runtimeDevice },
     manifest: {
       evidenceStatus: 'EXACT_COMMIT_EVIDENCE', productCommit: head, productTree: git(['rev-parse', 'HEAD^{tree}']),
       script: basename(here), scriptSha256: sha256(normalizedText(here)),
       auditSha256: sha256(normalizedText(join(root, 'scripts/native-touch-runtime-audit.mjs'))),
       contractSha256: sha256(normalizedText(join(root, 'scripts/native-touch-runtime-contract.json'))),
-      method: 'Hermes React DevTools onPress counter + adb shell input tap',
+      method: platform === 'android'
+        ? 'Hermes React DevTools onPress counter + adb shell input tap'
+        : 'Hermes React DevTools onPress counter + physical user tap with stdin attestation for the expected non-press point',
     },
     target: { route: '/ingredients', label: '정렬 기준: 추천순', owner: 'IngredientListScreen' },
     windowOffsetY,
@@ -164,7 +199,7 @@ try {
     empiricalTapProbe: probes,
     failures,
   };
-  const output = resolve(String(opt.out ?? join(root, 'docs/prototypes/native-touch-android-tap-probe.json')));
+  const output = resolve(String(opt.out ?? join(root, 'docs/prototypes', `native-touch-${platform}-tap-probe.json`)));
   writeFileSync(output, `${JSON.stringify(artifact, null, 2)}\n`);
   console.log(`${artifact.status} ${output}`);
   if (failures.length) process.exitCode = 1;
