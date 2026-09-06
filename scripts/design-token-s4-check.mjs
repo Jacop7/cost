@@ -90,6 +90,53 @@ export function astDiffContract(beforeSources, afterSources) {
   };
 }
 
+/**
+ * 허용 파일 해시는 범위를 막지만 무엇을 승인했는지는 설명하지 못한다. 같은 속성의 등장
+ * 순서를 안정 key로 삼아 선언별 `before → after`를 보존한다. 추가·삭제는 null로 표시한다.\n+ * 계약 검토자가 파일명·속성·값을 직접 읽을 수 있고, 값 하나만 바뀌어도 정확히 실패한다.
+ */
+export function astGeometryDeclarations(sources) {
+  const result = new Map();
+  for (const [file, text] of sources) {
+    if (!/\.(?:ts|tsx)$/.test(file)) continue;
+    const sf = ts.createSourceFile(file, text, ts.ScriptTarget.Latest, true, file.endsWith('x') ? ts.ScriptKind.TSX : ts.ScriptKind.TS);
+    const counts = new Map();
+    const rows = new Map();
+    const add = (kind, prop, value) => {
+      const base = `${kind}:${prop}`;
+      const occurrence = (counts.get(base) ?? 0) + 1;
+      counts.set(base, occurrence);
+      rows.set(`${base}#${occurrence}`, compact(value));
+    };
+    const visit = (node) => {
+      if (ts.isPropertyAssignment(node)) {
+        const prop = node.name.getText(sf).replace(/^['"]|['"]$/g, '');
+        if (geometryProps.has(prop)) add('prop', prop, node.initializer.getText(sf));
+      }
+      if (ts.isJsxAttribute(node) && geometryAttrs.has(node.name.text))
+        add('attr', node.name.text, node.initializer?.getText(sf) ?? 'true');
+      ts.forEachChild(node, visit);
+    };
+    visit(sf);
+    if (rows.size) result.set(file, rows);
+  }
+  return result;
+}
+
+export function astChangePlan(beforeSources, afterSources) {
+  const before = astGeometryDeclarations(beforeSources), after = astGeometryDeclarations(afterSources);
+  const files = [...new Set([...before.keys(), ...after.keys()])].sort();
+  const changes = [];
+  for (const file of files) {
+    const a = before.get(file) ?? new Map(), b = after.get(file) ?? new Map();
+    for (const declaration of [...new Set([...a.keys(), ...b.keys()])].sort()) {
+      const beforeValue = a.get(declaration) ?? null;
+      const afterValue = b.get(declaration) ?? null;
+      if (beforeValue !== afterValue) changes.push({ file, declaration, before: beforeValue, after: afterValue });
+    }
+  }
+  return changes;
+}
+
 const occurrences = (sources, regex) => {
   let count = 0;
   for (const text of sources.values()) count += [...text.matchAll(regex)].length;
@@ -107,6 +154,14 @@ export function evaluateS4(sources, contract, baselineSources) {
       const actualFiles = actual.files?.join(', ') ?? '';
       const expectedFiles = expected.files?.join(', ') ?? '';
       fail(`S4 허용 AST diff 불일치 — 실제 [${actualFiles}] · 계약 [${expectedFiles}]`);
+    }
+    const actualChanges = astChangePlan(baselineSources, sources);
+    const expectedChanges = contract.allowedAstChanges;
+    if (!Array.isArray(expectedChanges)) fail('S4 선언별 AST 변경 계약이 없다');
+    else if (JSON.stringify(actualChanges) !== JSON.stringify(expectedChanges)) {
+      const first = actualChanges.find((item, index) => JSON.stringify(item) !== JSON.stringify(expectedChanges[index]))
+        ?? expectedChanges[actualChanges.length];
+      fail(`S4 선언별 AST 변경 불일치 — ${first?.file ?? '건수'} ${first?.declaration ?? `${actualChanges.length}≠${expectedChanges.length}`}`);
     }
   }
   const count = (name, regex) => {
@@ -157,7 +212,8 @@ export function evaluateS4(sources, contract, baselineSources) {
   if (wrapped !== contract.counts.tabStackProviders) fail(`탭 Stack provider ${wrapped} ≠ ${contract.counts.tabStackProviders}`);
 
   const button = get('apps/mobile/src/components/kit/Button.tsx');
-  for (const pattern of [/sm:\s*\{[^}]*hs:\s*7\b/, /md:\s*\{[^}]*hs:\s*1\b/, /lg:\s*\{[^}]*hs:\s*0\b/, /hitSlop=\{s\.hs\}/])
+  for (const pattern of [/sm:\s*\{[^}]*hs:\s*7\b/, /md:\s*\{[^}]*hs:\s*1\b/, /lg:\s*\{[^}]*hs:\s*0\b/,
+    /hitSlop=\{\{\s*top:\s*s\.hs,\s*bottom:\s*s\.hs\s*\}\}/])
     if (!pattern.test(button)) fail(`Button 시각 보존 hitSlop 계약 누락: ${pattern}`);
   if (/minHeight\s*:\s*minTouchTarget/.test(button)) fail('Button에 시각 높이를 바꾸는 minTouchTarget이 돌아왔다');
 
@@ -215,10 +271,20 @@ function main() {
   }));
   const root = resolve(opt.root ?? defaultRoot);
   const contractPath = resolve(opt.contract ?? join(root, 'scripts/design-token-s4-contract.json'));
-  const contract = JSON.parse(readFileSync(contractPath, 'utf8'));
+  let contract = JSON.parse(readFileSync(contractPath, 'utf8'));
   let baselineSources;
   try { baselineSources = loadBaselineSources(root, contract.baselineCommit); }
   catch (error) { baselineSources = null; console.error(String(error)); }
+  if (opt['update-ast-contract'] !== undefined) {
+    if (!baselineSources) throw new Error('baseline AST 입력 없이 계약을 갱신할 수 없다');
+    const sources = loadSources(root);
+    contract = {
+      ...contract,
+      allowedAstDiff: astDiffContract(baselineSources, sources),
+      allowedAstChanges: astChangePlan(baselineSources, sources),
+    };
+    writeFileSync(contractPath, JSON.stringify(contract, null, 2) + '\n');
+  }
   const failures = evaluateS4(loadSources(root), contract, baselineSources);
   let head = null; let dirty = null;
   if (existsSync(join(root, '.git'))) {

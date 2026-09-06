@@ -125,7 +125,7 @@ test('저장소의 알려진 목록은 지금 실제와 맞는다', () => {
   const known = JSON.parse(readFileSync(KNOWN, 'utf8'));
   assert.equal(known.entries.length, 0, 'S4 정적 계약 뒤 선언상 미달은 0이어야 한다');
   assert.equal(known.siblingOverlaps.length, 0, '같은 부모 형제 중첩 위험은 S4에서 해소되어야 한다');
-  assert.equal(known.siblingUnjudged.length, 2, '동적 형제 구조 두 부모는 0으로 가정하지 말고 판정불가로 남겨야 한다');
+  assert.equal(known.siblingUnjudged.length, 12, '동적 형제 구조와 계약표에 없는 공용 조작 컴포넌트는 0으로 가정하지 말고 판정불가로 남겨야 한다');
 });
 
 test('판정불가도 래칫한다 — 목록에 없는 새 판정불가는 FAIL', () => {
@@ -177,7 +177,7 @@ export function Button({ children, kind = 'primary', size = 'md', full }: Props)
     lg: { pv: 16, ph: 18, fs: 17, r: 14, hs: 0 },
   };
   const s = sizes[size];
-  return <Pressable hitSlop={s.hs} style={[base, style]} />;
+  return <Pressable hitSlop={{ top: s.hs, bottom: s.hs }} style={[base, style]} />;
 }
 `;
 
@@ -213,7 +213,7 @@ test('공용 컴포넌트 계약 — variant별 hitSlop으로 시각 크기 없�
 });
 
 test('Button variant hitSlop 연결이 빠지면 통과 계약을 재현하지 못한다', () => {
-  const button = BUTTON_TSX.replace('hitSlop={s.hs} ', '');
+  const button = BUTTON_TSX.replace('hitSlop={{ top: s.hs, bottom: s.hs }} ', '');
   const r = runButton({ button, known: { components: contracts({}) } });
   assert.equal(r.code, 1, r.out);
   assert.match(r.out, /Button size="sm" 판정이 통과 → 경계/);
@@ -231,6 +231,21 @@ test('Button 소비처가 높이를 덮으면 variant hitSlop 통과를 닫지 �
   const r = runButton({ consumers, known: { components: contracts({ sm: ['src/Consumers.tsx:1'] }) } });
   assert.equal(r.code, 1, r.out);
   assert.match(r.out, /Button size="sm" 판정이 통과 → 경계/);
+});
+
+test('인접 sm Button의 사방 hitSlop 회귀를 형제 중첩으로 잡는다', () => {
+  const button = BUTTON_TSX.replace('hitSlop={{ top: s.hs, bottom: s.hs }}', 'hitSlop={s.hs}');
+  const consumers = `<View style={{ flexDirection: 'row', gap: 8 }}><Button size="sm" onPress={a}>발주 취소</Button><Button size="sm" onPress={b}>입고 완료</Button></View>`;
+  const r = runButton({ button, consumers, known: { components: contracts({ sm: ['src/Consumers.tsx:1', 'src/Consumers.tsx:1'] }) } });
+  assert.equal(r.code, 1, r.out);
+  assert.match(r.out, /새 형제 중첩 위험/);
+});
+
+test('계약표에 없는 공용 조작 컴포넌트 형제는 무판정 통과하지 않는다', () => {
+  const consumers = `<View style={{ flexDirection: 'row', gap: 8 }}><Action onPress={a}/><Action onPress={b}/></View>`;
+  const r = runButton({ consumers, known: { components: contracts({}) } });
+  assert.equal(r.code, 1, r.out);
+  assert.match(r.out, /새 형제판정불가/);
 });
 
 test('여러 줄로 나뉜 여는 태그의 size 도 읽는다 — 줄 단위 정규식이 놓치던 자리다', () => {

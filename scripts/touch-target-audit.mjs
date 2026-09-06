@@ -197,8 +197,10 @@ for (const f of files) {
 // ── 같은 부모의 일반 flow 형제 중첩 ──────────────────────────────────────────
 // 선언상 44 만 맞추면 서로 붙은 버튼의 hitSlop 이 같은 공간을 차지할 수 있다. RN 은 겹친
 // 형제 중 z-index 가 높은 쪽을 우선하므로, 그 상태는 두 버튼 모두의 독립 44px 계약이 아니다.
-// TSX AST 로 **직접 이웃인 pressable 형제**와 부모의 inline gap 을 읽어 각 안쪽 hitSlop 이
-// gap/2 를 넘지 않는지 확인한다. 다른 부모·absolute·부모 clipping 은 네이티브 실측의 몫이다.
+// TSX AST 로 **직접 이웃인 pressable 또는 공용 조작 컴포넌트 형제**와 부모의 inline gap 을
+// 읽어 각 안쪽 hitSlop 이 gap/2 를 넘지 않는지 확인한다. 공용 컴포넌트는 아래 계약표에서
+// 내부 hitSlop을 펼친다. 표에 없는 대문자 컴포넌트는 무판정 통과시키지 않고 판정불가로 남긴다.
+// 다른 부모·absolute·부모 clipping 은 네이티브 실측의 몫이다.
 const PRESSABLE_NAMES = new Set(['Pressable', 'TouchableOpacity', 'TouchableHighlight', 'TouchableWithoutFeedback', 'TouchableNativeFeedback']);
 const jsxName = (n) => n?.tagName?.getText?.() ?? '';
 const attr = (opening, name) => opening.attributes.properties.find(p => ts.isJsxAttribute(p) && p.name.text === name);
@@ -257,6 +259,33 @@ const astStyle = (opening) => {
   return { values, resolved: !unresolved };
 };
 const isPressableOpening = (opening) => PRESSABLE_NAMES.has(jsxName(opening)) && Boolean(attr(opening, 'onPress'));
+const isCustomInteractiveOpening = (opening) => /^[A-Z]/.test(jsxName(opening)) && Boolean(attr(opening, 'onPress'));
+const isInteractiveOpening = (opening) => isPressableOpening(opening) || isCustomInteractiveOpening(opening);
+const buttonPath = join(srcRoot, 'src', 'components', 'kit', 'Button.tsx');
+const buttonSource = existsSync(buttonPath) ? readFileSync(buttonPath, 'utf8') : '';
+const buttonDefaultSize = buttonSource.match(/\bsize\s*=\s*'([A-Za-z]+)'/)?.[1] ?? null;
+const buttonHitSlopBySize = new Map([...buttonSource.matchAll(/(\w+)\s*:\s*\{\s*pv:\s*\d+,\s*ph:\s*\d+,\s*fs:\s*\d+,\s*r:\s*\d+,\s*hs:\s*(\d+)/g)]
+  .map((match) => [match[1], Number(match[2])]));
+const buttonHitSlopMode = /hitSlop\s*=\s*\{\{\s*top:\s*s\.hs,\s*bottom:\s*s\.hs\s*\}\}/.test(buttonSource)
+  ? 'vertical' : /hitSlop\s*=\s*\{s\.hs\}/.test(buttonSource) ? 'all' : null;
+const componentHitSlop = (opening) => {
+  if (isPressableOpening(opening)) return astHitSlop(opening);
+  if (jsxName(opening) !== 'Button') return { values: {}, resolved: false };
+  const sizeAttr = attr(opening, 'size');
+  let size = buttonDefaultSize;
+  if (sizeAttr) {
+    if (ts.isStringLiteral(sizeAttr.initializer)) size = sizeAttr.initializer.text;
+    else {
+      const expression = unwrapExpression(expressionOf(sizeAttr));
+      if (expression && ts.isStringLiteral(expression)) size = expression.text;
+      else return { values: {}, resolved: false };
+    }
+  }
+  const hs = size ? buttonHitSlopBySize.get(size) : undefined;
+  if (hs === undefined || !buttonHitSlopMode) return { values: {}, resolved: false };
+  return { values: { top: hs, bottom: hs,
+    left: buttonHitSlopMode === 'all' ? hs : 0, right: buttonHitSlopMode === 'all' ? hs : 0 }, resolved: true };
+};
 const siblingPairs = [];
 const siblingUnjudged = [];
 for (const f of files) {
@@ -340,18 +369,18 @@ for (const f of files) {
     if (ts.isJsxElement(node)) {
       const parentStyle = astStyle(node.openingElement);
       const alternatives = alternativesFromChildren(node.children, node.openingElement);
-      if (alternatives.some(elements => elements.some(isPressableOpening))) {
+      if (alternatives.some(elements => elements.some(isInteractiveOpening))) {
         const pending = expressionUnjudged.get(atOf(node.openingElement));
         if (pending) for (const reason of pending) markUnjudged(node.openingElement, reason);
       }
       for (const elements of alternatives) for (let i = 0; i < elements.length - 1; i++) {
         const first = elements[i], second = elements[i + 1];
-        if (!isPressableOpening(first) || !isPressableOpening(second)) continue;
+        if (!isInteractiveOpening(first) || !isInteractiveOpening(second)) continue;
         const firstAt = atOf(first), secondAt = atOf(second), pair = `${firstAt}|${secondAt}`;
         if (seenPairs.has(pair)) continue;
         seenPairs.add(pair);
         const firstStyle = astStyle(first), secondStyle = astStyle(second);
-        const firstHitSlop = astHitSlop(first), secondHitSlop = astHitSlop(second);
+        const firstHitSlop = componentHitSlop(first), secondHitSlop = componentHitSlop(second);
         if (!parentStyle.resolved || !firstStyle.resolved || !secondStyle.resolved
           || !firstHitSlop.resolved || !secondHitSlop.resolved) {
           markUnjudged(node.openingElement, `형제 ${pair}의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다`);
@@ -466,7 +495,7 @@ let dynamicUses = null;
       ? (/^\d/.test(forcedMin[1]) ? Number(forcedMin[1]) : (tokenNumberValues.get(forcedMin[1]) ?? null))
       : null;
     const lockedMinHeight = callerStyleAt >= 0 && forcedMinAt > callerStyleAt ? forcedMinValue : null;
-    const variantHitSlop = /hitSlop\s*=\s*\{s\.hs\}/.test(t);
+    const variantHitSlop = /hitSlop\s*=\s*\{\{\s*top:\s*s\.hs,\s*bottom:\s*s\.hs\s*\}\}/.test(t);
     if (!d) componentContracts.push({ 컴포넌트: 'Button', 판정: '읽기실패', 사유: "기본 size 값(`size = 'md'`)을 못 읽었다 — 기본값을 모르면 size 없는 자리를 배정할 수 없다" });
     else if (!m) componentContracts.push({ 컴포넌트: 'Button', 판정: '읽기실패', 사유: 'sizes 표를 못 읽었다 — 모양이 바뀌었으면 계약을 다시 맞춰라' });
     else {

@@ -1,6 +1,6 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-06T01:35:02.834Z",
+  "generatedAt": "2026-09-06T01:52:37.622Z",
   "schemaVersion": 1,
   "script": {
    "name": "full-page-flow-prototype-token-map-check.mjs",
@@ -8,9 +8,9 @@
   },
   "designAudit": {
    "path": "full-page-flow-prototype-design-audit.json",
-   "sha256": "14e9ac7227ecd262c5dcb5bc9ee048f6ed0ed6ce72522d129a29f0a951845150",
-   "targetSha256": "ff353952891ff58a78bb83eda4e7c59111e7d9226803157acf0ecf2a203afd00",
-   "designSyncId": "DS-20260906-006"
+   "sha256": "918eaa98665d9779025b26e7dae4c3af22716543af8d4cc01f7a5ed8cc75520b",
+   "targetSha256": "49d137a08e16fcd140279eb8458491a164c521fea36c71e43ed0675d2ec01e5d",
+   "designSyncId": "DS-20260906-007"
   },
   "tokenMap": {
    "path": "full-page-flow-prototype-token-map.json",
