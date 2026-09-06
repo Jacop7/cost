@@ -1,12 +1,12 @@
 # 전체 페이지 프로토타입 · 디자인 맥락 장부
 
-> 현재 동기화 ID: `DS-20260906-011`
+> 현재 동기화 ID: `DS-20260906-012`
 > 문서 동기화 상태: `SYNCED`
 > 전체 UI 작업 상태: `IN_PROGRESS`
 > 마지막 갱신: `2026-09-06`
 > 공통 변경: `아니오`
 > UI 변경: `아니오`
-> 변경 기록: `PRT-243`
+> 변경 기록: `PRT-248`
 
 ## 1. 문서 역할
 
@@ -43,6 +43,28 @@
 - 글로벌: 30~50% 긴 번역, 320px, 200% 글자 확대, RTL 검수.
 
 ## 4. 가장 최근 작업
+
+### DS-20260906-012 · PRT-248 W1 비결정 15건 역할 분류
+
+- 작업 성격: S4a Android 제품판의 W1 배정 후보에서 새 제품 결정 없이 소스 관계로 닫을 수 있는
+  간격 15건을 재분류한다. 프로토타입 DOM·CSS·JS와 앱 제품 코드는 바꾸지 않는다.
+- W1 결과: 다섯 `marginTop:2`는 앞 콘텐츠와 다음 값·안내·행동 블록 사이의 세로 간격으로 확인해
+  `space.xs=4` defect로 배정했다. 빈 상태·세션 중앙 정렬 10건은 48/32 표준형, 40 목록형,
+  28 시트형, 72 매출 상세형, 세션 셸 32로 나눠 이름 있는 컴포넌트 형상으로 보존했다.
+- 배정 결과: `primitive 2,063 / componentOwned 249 / defect 8 / pendingApproval 33 /
+  exception 0`, 미분류 0, 다중 일치 774, 고유 충돌 체인 6이다.
+- 공통 규칙 영향: 없음. 범용 space 스케일과 앱 제품 파일은 바꾸지 않았다.
+- 검수: W1 검사기·문서 claim·음성 시험 32건 PASS. 렌더·디자인·i18n·대비 감사 4종은
+  동기화 표식만 바뀐 적용본에 다시 결속한다.
+- 완료 조건:
+  - PRT248-W1-MAP · `full-page-flow-prototype-app-map-check.json`
+  - PRT248-W1-CLAIMS · `full-page-flow-prototype-doc-claims-check.json`
+  - PRT248-RENDER · `full-page-flow-prototype-render-audit.json`
+  - PRT248-DESIGN · `full-page-flow-prototype-design-audit.json`
+  - PRT248-I18N · `full-page-flow-prototype-i18n-stress.json`
+  - PRT248-CONTRAST · `full-page-flow-prototype-contrast-fix.json`
+- 미완료·후속: 제품 결정이 필요한 타이포·색 33건과 iOS native touch 증거.
+- 다음 시작점: W1 `pendingApproval` 33건 결정 패킷 / `DS-20260906-013`
 
 ### DS-20260906-011 · PRT-243 Android exact 증거와 W1 재배정 봉인
 

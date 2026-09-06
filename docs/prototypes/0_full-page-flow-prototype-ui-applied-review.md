@@ -2691,6 +2691,22 @@ popup/state host **121개**(합 182), 그리고 레지스트리에 키가 없는
   `full-page-flow-prototype-render-audit.json` · `full-page-flow-prototype-design-audit.json` ·
   `full-page-flow-prototype-i18n-stress.json`.
 
+## DS-20260906-012 · PRT-248 W1 비결정 15건 역할 분류
+
+- 대상: S4a Android 제품판의 W1 배정 후보 중 간격 관련 승인 대기 15건.
+- 기대값: 새 제품 결정 없이 직접 관계를 확인할 수 있는 선언만 pendingApproval에서 제거하고,
+  사용처 선언 총합·미분류·통 이동 대차가 유지될 것. 앱과 프로토타입 UI는 바뀌지 않을 것.
+- 실제값: 다섯 `marginTop:2`는 `space.xs=4` defect, 빈 상태·세션 여백 10건은 여섯 개의
+  이름 있는 componentOwned 규칙으로 분리됐다. 배정은 `2,063 / 249 / 8 / 33 / 0`, 미분류 0이다.
+- PC 검수: 프로토타입 1280×900 감사 재실행 · PASS
+- 모바일 검수: 320px·CSS 200%·글자 200%·i18n 4패스 재실행 · PASS
+- 범위: 문서·배정 규칙 변경이며 앱 제품 파일과 프로토타입 시각 결과는 불변이다.
+- 별도 게이트: iOS native touch 증거와 남은 제품 결정 33건은 계속 열려 있다.
+- 미검수: 없음
+- 결과: PASS
+- 증거: `full-page-flow-prototype-app-map-check.json` ·
+  `full-page-flow-prototype-doc-claims-check.json` · `../token-adoption-audit.json`.
+
 ## DS-20260906-011 · PRT-243 Android exact 증거와 W1 재배정 봉인
 
 - 대상: S4a 제품판 `d4fba6b`의 Android 1×/2× native touch 산출물과 같은 제품판에서

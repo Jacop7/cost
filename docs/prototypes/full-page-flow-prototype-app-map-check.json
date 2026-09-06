@@ -1,6 +1,6 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-06T08:00:02.078Z",
+  "generatedAt": "2026-09-06T08:52:42.498Z",
   "schemaVersion": 1,
   "script": {
    "name": "full-page-flow-prototype-app-map-check.mjs",
@@ -14,7 +14,7 @@
    },
    "appMap": {
     "path": "full-page-flow-prototype-app-token-map.json",
-    "sha256": "710979f2d623b6c072abc1010dfc7fe5a3c5d26b9d183ada9578aca07e144283"
+    "sha256": "d1416380d562bb313d1a9572c68cdbe33e58faced49a17f25daaf098bf1f2243"
    },
    "prototypeMap": {
     "path": "full-page-flow-prototype-token-map.json",
@@ -32,9 +32,9 @@
   "declarations": 2353,
   "byBin": {
    "primitive": 2063,
-   "componentOwned": 239,
-   "defect": 3,
-   "pendingApproval": 48,
+   "componentOwned": 249,
+   "defect": 8,
+   "pendingApproval": 33,
    "approvedException": 0
   },
   "semantic통삭제사유": "**`semantic` 통을 없앴다** (솔 검수 W1 R1 F02). 감사기는 숫자 리터럴만 선언으로 모으므로 `fontSize: 16` → `TYPE.body` 치환은 semantic 으로 이동하는 것이 아니라 입력에서 사라진다. 영원히 0 인 통을 두고 \"P4 에서 채워진다\" 고 적는 것은 분류가 아니다. W1 의 범위를 **하드코딩 리터럴의 배정**으로 좁히고, 의미 토큰 채택률은 같은 감사기가 모으는 `tokenAccess` 로 따로 본다.",
@@ -5470,68 +5470,55 @@
    }
   ],
   "binMovementLedger": {
-   "previousMap": "full-page-flow-prototype-app-token-map-pre-ff18998.json",
-   "previousMapSha256": "4df8fa8544d3c2d49357e01e4ad69bfd6839db5da403026bd1262c72e66bfb17",
+   "previousMap": "full-page-flow-prototype-app-token-map.json",
+   "previousMapSha256": "710979f2d623b6c072abc1010dfc7fe5a3c5d26b9d183ada9578aca07e144283",
    "moves": {
-    "(미분류) → componentOwned": {
-     "count": 22,
+    "pendingApproval → componentOwned": {
+     "count": 10,
      "rules": {
-      "- → R-SP-TABBAR-INSET": 1,
-      "- → R-SZ-APPHEADER-RIGHT-TOUCH": 1,
-      "- → R-SZ-BUTTON-SM-MINHEIGHT": 1,
-      "- → R-SZ-HANDLE": 2,
-      "- → R-SP-ROW-OVERFLOW-TOUCH-BOX": 1,
-      "- → R-SZ-ORDER-DETAIL-TOUCH": 1,
-      "- → R-SZ-APPHEADER-ACTION": 2,
-      "- → R-SZ-CATEGORY-REORDER-TOUCH": 2,
-      "- → R-SZ-RECIPE-EDITOR-TOUCH": 7,
-      "- → R-SZ-SALES-ACTION-ROW": 1,
-      "- → R-SZ-SALES-MANAGE-ACTION": 1,
-      "- → R-SZ-SALES-QUANTITY-ACTION": 1,
-      "- → R-SZ-SALES-SALE-ACTION": 1
+      "R-SP-EMPTY-STATE → R-SP-EMPTY-STANDARD-V": 2,
+      "R-SP-EMPTY-STATE → R-SP-EMPTY-STANDARD-H": 2,
+      "R-SP-EMPTY-STATE → R-SP-EMPTY-COMPACT": 2,
+      "R-SP-EMPTY-STATE → R-SP-EMPTY-SHEET": 2,
+      "R-SP-EMPTY-STATE → R-SP-EMPTY-DAY-DETAIL": 1,
+      "R-SP-EMPTY-STATE → R-SP-SESSION-GATE-H": 1
      }
     },
-    "(미분류) → defect": {
-     "count": 1,
+    "pendingApproval → defect": {
+     "count": 5,
      "rules": {
-      "- → R-CL-SHADOW": 1
-     }
-    },
-    "primitive → componentOwned": {
-     "count": 1,
-     "rules": {
-      "R-SP-PRIM → R-SP-QUANTITY-TOUCH-ENVELOPE": 1
+      "R-SP-CAPTION-GAP-VIEW → R-SP-CAPTION-GAP-VIEW": 5
      }
     }
    },
    "reconciliation": {
     "primitive": {
-     "이전": 2064,
-     "나감": 1,
+     "이전": 2063,
+     "나감": 0,
      "들어옴": 0,
      "계산": 2063,
      "실제": 2063
     },
     "componentOwned": {
-     "이전": 216,
+     "이전": 239,
      "나감": 0,
-     "들어옴": 23,
-     "계산": 239,
-     "실제": 239
+     "들어옴": 10,
+     "계산": 249,
+     "실제": 249
     },
     "defect": {
-     "이전": 2,
+     "이전": 3,
      "나감": 0,
-     "들어옴": 1,
-     "계산": 3,
-     "실제": 3
+     "들어옴": 5,
+     "계산": 8,
+     "실제": 8
     },
     "pendingApproval": {
      "이전": 48,
-     "나감": 0,
+     "나감": 15,
      "들어옴": 0,
-     "계산": 48,
-     "실제": 48
+     "계산": 33,
+     "실제": 33
     },
     "approvedException": {
      "이전": 0,
@@ -5543,20 +5530,6 @@
    }
   },
   "openQuestions": [
-   {
-    "id": "R-SP-CAPTION-GAP-VIEW",
-    "question": "`marginTop:2` 중 `<Text` 가 아니라 `<View` 줄에 있는 5건. 이 5건의 관계가 '주값↔보조 줄'(→ space.xs 4)인지 '아이콘↔문구'(→ UI 가이드 §5.4 의 gap.inline 8)인지, 아니면 '안내 블록↔위 요소'인지.",
-    "declarations": 5,
-    "evidence": "5건. BasePriceCard:155(gap 10 행) · PurchaseHistoryScreen:164 · FixedCostScreen:133 · MyChannelsScreen:105(셋 다 `gap:6, paddingHorizontal:2` 안내 아이콘+문구 행) · OrdersHomeScreen:313(`<View style={{marginTop:2}}>` 단독). 68건과 달리 육안 확인 전이고, 안내 아이콘+문구라면 목표값이 4 가 아니라 8 이다.",
-    "ownerDecision": "관계에 이름을 붙인 뒤에야 목표값이 정해진다. 육안 확인이 선행한다."
-   },
-   {
-    "id": "R-SP-EMPTY-STATE",
-    "question": "빈 상태·중앙 정렬 블록의 세로·좌우 여백이 28·40·48·72 와 32 를 쓴다. 스케일 밖 큰 값을 컴포넌트 소유로 잠글지, 스케일을 24 위로 늘릴지.",
-    "declarations": 10,
-    "evidence": "QueryState:18(paddingVertical 48 · paddingHorizontal 32) · PurchaseOptionScreen:254(40) · ChannelWeightSheet:60(28) · SalesDayDetailScreen:76(72). 전부 '결과 없음/불러오는 중' 계열의 중앙 정렬 블록이다.",
-    "ownerDecision": "스케일 확장은 정본(tokens.ts) 변경이라 D-11 과 같은 성격이다."
-   },
    {
     "id": "R-TY-LETTERSPACING-UNDECIDED",
     "question": "승인된 titleTight -0.3 밖의 자간 15건을 역할별 토큰으로 추가할지, titleTight로 수렴할지. -0.6은 화면 제목·큰 숫자 9건, -0.5는 차트 중심값·상세 제목 3건, -0.4는 시트 제목 2건, -0.2는 Button 라벨 1건이다.",
@@ -5681,19 +5654,21 @@
    },
    {
     "id": "R-SP-CAPTION-GAP-VIEW",
-    "bin": "pendingApproval",
+    "bin": "defect",
     "declarations": 5,
     "name": null,
-    "target": null,
+    "target": "space.xs",
     "openDecision": null,
-    "executionStage": null,
-    "axis": null,
-    "targetSource": null,
-    "declaredDelta": null,
-    "computedDelta": null,
-    "targetResolved": 0,
+    "executionStage": "S3a",
+    "axis": "vertical",
+    "targetSource": "targetValue",
+    "declaredDelta": "grow",
+    "computedDelta": "grow",
+    "targetResolved": 5,
     "targetDerived": 0,
-    "transitions": {},
+    "transitions": {
+     "2→4": 5
+    },
     "values": [
      [
       "marginTop:2",
@@ -5982,10 +5957,32 @@
     ]
    },
    {
-    "id": "R-SP-EMPTY-STATE",
-    "bin": "pendingApproval",
-    "declarations": 10,
-    "name": null,
+    "id": "R-SP-EMPTY-STANDARD-V",
+    "bin": "componentOwned",
+    "declarations": 2,
+    "name": "COMPONENT.emptyState.standard.paddingVertical",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "paddingVertical:48",
+      2
+     ]
+    ]
+   },
+   {
+    "id": "R-SP-EMPTY-STANDARD-H",
+    "bin": "componentOwned",
+    "declarations": 2,
+    "name": "COMPONENT.emptyState.standard.paddingHorizontal",
     "target": null,
     "openDecision": null,
     "executionStage": null,
@@ -5999,22 +5996,94 @@
     "values": [
      [
       "paddingHorizontal:32",
-      3
-     ],
-     [
-      "paddingVertical:48",
       2
-     ],
+     ]
+    ]
+   },
+   {
+    "id": "R-SP-EMPTY-COMPACT",
+    "bin": "componentOwned",
+    "declarations": 2,
+    "name": "COMPONENT.emptyState.compact.paddingVertical",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
      [
       "paddingVertical:40",
       2
-     ],
+     ]
+    ]
+   },
+   {
+    "id": "R-SP-EMPTY-SHEET",
+    "bin": "componentOwned",
+    "declarations": 2,
+    "name": "COMPONENT.emptyState.sheet.paddingVertical",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
      [
       "paddingVertical:28",
       2
-     ],
+     ]
+    ]
+   },
+   {
+    "id": "R-SP-EMPTY-DAY-DETAIL",
+    "bin": "componentOwned",
+    "declarations": 1,
+    "name": "COMPONENT.emptyState.dayDetail.paddingVertical",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
      [
       "paddingVertical:72",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SP-SESSION-GATE-H",
+    "bin": "componentOwned",
+    "declarations": 1,
+    "name": "COMPONENT.sessionGate.paddingHorizontal",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "paddingHorizontal:32",
       1
      ]
     ]
