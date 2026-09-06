@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /** 커밋에 보존된 Android·iOS 네이티브 터치 증거를 원시 frame부터 다시 판정한다. */
 import { createHash } from 'node:crypto';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
@@ -38,13 +38,15 @@ export function validateArtifactData(artifact, contract, known, expected) {
         const storedRow = storedPhase.rows[rowIndex];
         for (const key of ['relativeFrame', 'windowFrame', 'parentFrame', 'ancestorFrames', 'touchRect',
           'effectiveRect', 'effectiveWidth', 'effectiveHeight', 'clippedByParent', 'visualRect', 'visualWidth',
-          'visualHeight', 'visualFullyVisible', 'pass44']) {
+          'visualHeight', 'visualFullyVisible', 'visibilityDisposition', 'clippingAncestors', 'pass44']) {
           if (!same(storedRow[key], rebuiltRow[key]))
             failures.push(`${expected.name}: ${rebuiltScenario.id}/${rebuiltPhase.id}/${rowIndex} 저장 ${key}가 원시 frame 재계산과 다르다`);
         }
       }
       if (!same(storedPhase.overlaps, rebuiltPhase.overlaps))
         failures.push(`${expected.name}: ${rebuiltScenario.id}/${rebuiltPhase.id} 저장 overlaps가 원시 frame 재계산과 다르다`);
+      if (!same(storedPhase.excludedPartiallyVisible, rebuiltPhase.excludedPartiallyVisible))
+        failures.push(`${expected.name}: ${rebuiltScenario.id}/${rebuiltPhase.id} 저장 excludedPartiallyVisible이 원시 frame 재계산과 다르다`);
     }
   }
   const recomputed = evaluateNativeArtifact(rebuilt, contract);
@@ -80,7 +82,7 @@ function git(root, args) {
   return result.stdout.trim();
 }
 
-export function verifyRepositoryEvidence(root = defaultRoot) {
+export function verifyRepositoryEvidence(root = defaultRoot, options = {}) {
   const contractPath = join(root, 'scripts/native-touch-runtime-contract.json');
   const auditPath = join(root, 'scripts/native-touch-runtime-audit.mjs');
   const known = JSON.parse(normalized(join(root, 'scripts/native-touch-runtime-known.json')));
@@ -92,14 +94,21 @@ export function verifyRepositoryEvidence(root = defaultRoot) {
   const failures = [];
   const matrix = contract.evidenceMatrix ?? (contract.platforms ?? [contract.platform]).flatMap((platform) =>
     contract.fontScales.map((fontScale) => ({ platform, fontScale, file: `native-touch-${platform}-${fontScale}x.json` })));
-  const artifacts = matrix.map(({ platform, fontScale, file: name }) => {
+  const requiredPlatforms = options.requirePlatforms ?? contract.closedPlatforms ?? contract.platforms ?? [contract.platform];
+  const requiredMatrix = matrix.filter(({ platform }) => requiredPlatforms.includes(platform));
+  const artifacts = requiredMatrix.flatMap(({ platform, fontScale, file: name }) => {
     const path = join(root, 'docs/prototypes', name);
+    if (!existsSync(path)) {
+      failures.push(`MISSING ${name} — ${platform}@${fontScale} exact 증거가 없다`);
+      return [];
+    }
     const artifact = JSON.parse(normalized(path));
     failures.push(...validateArtifactData(artifact, contract, known, { ...expected, name, platform, fontScale }));
-    return artifact;
+    return [artifact];
   });
   const commits = [...new Set(artifacts.map((item) => item.manifest?.productCommit))];
-  if (commits.length !== 1 || !/^[0-9a-f]{40}$/.test(commits[0] ?? '')) failures.push('양 플랫폼·두 배율이 하나의 완전한 productCommit에 결속되지 않았다');
+  if (artifacts.length !== requiredMatrix.length) failures.push(`요구 증거 ${requiredMatrix.length}칸 중 ${artifacts.length}칸만 존재한다`);
+  if (commits.length !== 1 || !/^[0-9a-f]{40}$/.test(commits[0] ?? '')) failures.push('요구 플랫폼·배율이 하나의 완전한 productCommit에 결속되지 않았다');
   else {
     const productCommit = commits[0];
     const ancestor = spawnSync('git', ['merge-base', '--is-ancestor', productCommit, 'HEAD'], { cwd: root });
@@ -115,7 +124,10 @@ export function verifyRepositoryEvidence(root = defaultRoot) {
 
 if (resolve(process.argv[1] ?? '') === resolve(here)) {
   try {
-    const { artifacts, failures } = verifyRepositoryEvidence();
+    const requireArg = process.argv.slice(2).find((arg) => arg.startsWith('--require='))?.slice('--require='.length);
+    const requirePlatforms = requireArg === 'all' ? ['android', 'ios']
+      : requireArg ? requireArg.split(',').map((item) => item.trim()).filter(Boolean) : undefined;
+    const { artifacts, failures } = verifyRepositoryEvidence(defaultRoot, { requirePlatforms });
     for (const artifact of artifacts) console.log(`${artifact.platform}@${artifact.fontScale} — target ${artifact.evaluation.lineage.length} · 미달 ${artifact.evaluation.observedUnjudged.length} · 중첩 ${artifact.evaluation.materialOverlaps.length}`);
     if (failures.length) {
       console.error(failures.map((item) => `  - ${item}`).join('\n'));

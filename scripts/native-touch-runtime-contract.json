@@ -2,6 +2,7 @@
   "schemaVersion": 1,
   "platform": "android",
   "platforms": ["android", "ios"],
+  "closedPlatforms": ["android"],
   "fontScales": [1, 2],
   "evidenceMatrix": [
     { "platform": "android", "fontScale": 1, "file": "native-touch-android-1x.json" },
@@ -10,13 +11,13 @@
     { "platform": "ios", "fontScale": 2, "file": "native-touch-ios-2x.json" }
   ],
   "minimumTarget": 44,
-  "expectedSourceLineage": 18,
+  "expectedSourceLineage": 20,
   "tolerance": "physical: effective_dp*density >= 44*density - 0.5 - 0.001px; overlap <= 0.5 + 0.001px",
   "measurement": {
     "relativeFrame": "nativeFabricUIManager.measure — onLayout과 같은 부모 상대 좌표",
     "windowFrame": "nativeFabricUIManager.measureInWindow",
-    "effectiveTouch": "hitSlop 확장 뒤 모든 host ancestor frame의 교집합으로 clipping",
-    "scope": "각 시나리오의 activeOwnerPattern에 속한, 화면에 보이는 accessibilityRole=button Pressable 전수; 제외 owner chain은 산출물에 보존",
+    "effectiveTouch": "hitSlop 확장 뒤 직접 host parent와 실제 clipping ancestor(overflow hidden/scroll·scroll viewport·화면 root) frame의 교집합. measureInWindow 좌표계가 다른 RNSScreen*/RCTModalHostView 플랫폼 wrapper는 wrapper 자체를 경계로 쓰지 않고 그 안의 실제 View/scroll/root를 쓴다.",
+    "scope": "각 시나리오의 activeOwnerPattern에 속한 accessibilityRole=button Pressable 전수. 잔존 탭의 다른 owner는 제외 목록에 보존하고, 반 물리 픽셀 이내 반올림은 가시로 본다. 실제 overflow hidden/scroll·스크롤 viewport·화면 root만 시각 clipping 경계이며, 일반 View의 기본 overflow visible과 좌표계가 다른 RNSScreen*/RCTModalHostView 플랫폼 wrapper는 frame 밖이라는 이유만으로 clipping이라 보지 않는다. 스크롤 viewport·화면 root에 잘린 행만 판단 제외하고 비스크롤 clipping 경계에 잘린 행은 판단한다.",
     "overlap": "같은 native parent의 유효 터치 사각형 교차"
   },
   "scenarios": [
@@ -105,8 +106,11 @@
       "id": "sales-home",
       "route": "/sales",
       "activeOwnerPattern": "SalesHomeScreen",
+      "actions": [{ "kind": "scroll", "phase": "sales-actions", "ownerPattern": "SalesHomeScreen", "labelPattern": " 판매 수량 수정$", "yByFontScale": { "1": 400, "2": 700 } }],
       "targets": [
-        { "id": "sales-analytics", "phase": "initial", "ownerPattern": "SalesHomeScreen", "labelPattern": "^매출 분석$", "minimumObserved": 1, "sourceEntries": ["apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:361"] }
+        { "id": "sales-analytics", "phase": "initial", "ownerPattern": "SalesHomeScreen", "labelPattern": "^매출 분석$", "minimumObserved": 1, "sourceEntries": ["apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:361"] },
+        { "id": "sales-quantity-action", "phase": "sales-actions", "ownerPattern": "SalesHomeScreen", "labelPattern": " 판매 수량 수정$", "minimumObserved": 1, "sourceEntries": ["apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:531"] },
+        { "id": "sales-sale-action", "phase": "sales-actions", "ownerPattern": "SalesHomeScreen", "labelPattern": " 판매 입력$", "minimumObserved": 1, "sourceEntries": ["apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:549"] }
       ]
     }
   ]

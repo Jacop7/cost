@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { compareNativeRatchet, effectiveTouchRect, evaluateNativeArtifact, nativeRatchetSnapshot, physicalHalfPixelTolerance, rectOverlap, resolveActionForFontScale } from './native-touch-runtime-audit.mjs';
+import { classifyVisibility, compareNativeRatchet, effectiveTouchRect, evaluateNativeArtifact, nativeRatchetSnapshot, physicalHalfPixelTolerance, recomputeNativeArtifactDerived, rectOverlap, resolveActionForFontScale } from './native-touch-runtime-audit.mjs';
 
 test('글자 배율별 스크롤 위치를 같은 계약에서 고른다', () => {
   const action = { kind: 'scroll', yByFontScale: { '1': 1100, '2': 1600 } };
@@ -20,6 +20,65 @@ test('반 물리 픽셀 이내의 43.81dp는 density 2.625에서 44로 판정할
   const tolerance = physicalHalfPixelTolerance(2.625);
   assert.ok(43.80953 + tolerance >= 44);
   assert.ok(43.7 + tolerance < 44);
+});
+
+test('반 물리 픽셀 이내의 가시 영역 반올림은 부분 가시로 제외하지 않는다', () => {
+  const result = classifyVisibility(
+    { x: 0, y: 0, width: 44, height: 44 },
+    [{ frame: { x: 0, y: 0, width: 44, height: 43.81 }, kind: 'nonScroll' }],
+    2.625,
+  );
+  assert.equal(result.visibilityDisposition, 'fullyVisible');
+});
+
+test('스크롤 viewport clipping만 판단에서 제외하고 비스크롤 부모 clipping은 판단한다', () => {
+  const frame = { x: 0, y: 0, width: 44, height: 44 };
+  const clipped = { x: 0, y: 0, width: 44, height: 20 };
+  assert.equal(classifyVisibility(frame, [{ frame: clipped, kind: 'scrollViewport' }], 2).visibilityDisposition,
+    'excludedScrollableOrRoot');
+  assert.equal(classifyVisibility(frame, [{ frame: clipped, kind: 'nonScroll' }], 2).visibilityDisposition,
+    'clippedByNonScroll');
+});
+
+test('overflow visible인 일반 View 경계는 건너뛰고 실제 스크롤 viewport를 clipping 출처로 삼는다', () => {
+  const frame = { x: 0, y: 30, width: 44, height: 44 };
+  const result = classifyVisibility(frame, [
+    { frame: { x: 0, y: 30, width: 43.7, height: 44 }, kind: 'nonScroll', clipsVisual: false },
+    { frame: { x: 0, y: 0, width: 100, height: 40 }, kind: 'scrollViewport', clipsVisual: true },
+  ], 2);
+  assert.equal(result.visibilityDisposition, 'excludedScrollableOrRoot');
+  assert.equal(result.clippingAncestors.length, 1);
+  assert.equal(result.clippingAncestors[0].kind, 'scrollViewport');
+});
+
+test('overflow hidden 비스크롤 부모의 시각 clipping은 제외하지 않고 실제 미달로 남긴다', () => {
+  const input = { device: { density: 2 }, scenarios: [{ id: 'one', phases: [{ id: 'initial', rows: [{
+    key: 'clipped', label: '잘린 버튼', ownerChain: ['Other'], nativeTag: 1, parentNativeTag: 2,
+    relativeMeasure: [0, 0, 44, 44], windowMeasure: [0, 0, 44, 44], hitSlop: 0,
+    ancestors: [{ nativeTag: 2, kind: 'nonScroll', overflow: 'hidden', clipsVisual: true,
+      windowMeasure: [0, 0, 44, 20] }],
+  }] }] }] };
+  const rebuilt = recomputeNativeArtifactDerived(input);
+  const row = rebuilt.scenarios[0].phases[0].rows[0];
+  assert.equal(row.visibilityDisposition, 'clippedByNonScroll');
+  assert.equal(row.visualHeight, 20);
+  assert.equal(row.pass44, false);
+});
+
+test('좌표계가 다른 비클리핑 wrapper는 터치 영역을 줄이지 않고 직접 부모와 clipping 경계만 제한한다', () => {
+  const input = { device: { density: 2 }, scenarios: [{ id: 'one', phases: [{ id: 'initial', rows: [{
+    key: 'button', label: '조회', ownerChain: ['Button'], nativeTag: 1, parentNativeTag: 2,
+    relativeMeasure: [0, 0, 44, 44], windowMeasure: [0, 50, 44, 44], hitSlop: 0,
+    ancestors: [
+      { nativeTag: 2, kind: 'nonScroll', clipsVisual: false, clipsTouch: true, windowMeasure: [0, 40, 100, 60] },
+      { nativeTag: 3, kind: 'nonScroll', hostName: 'RNSScreenContainer', overflow: 'hidden',
+        platformWrapper: true, clipsVisual: false, clipsTouch: false, windowMeasure: [0, -50, 100, 60] },
+      { nativeTag: 4, kind: 'root', clipsVisual: true, clipsTouch: true, windowMeasure: [0, 0, 100, 100] },
+    ],
+  }] }] }] };
+  const row = recomputeNativeArtifactDerived(input).scenarios[0].phases[0].rows[0];
+  assert.equal(row.effectiveHeight, 44);
+  assert.equal(row.visibilityDisposition, 'fullyVisible');
 });
 
 test('같은 부모 형제의 실제 사각형 교차량을 계산한다', () => {
