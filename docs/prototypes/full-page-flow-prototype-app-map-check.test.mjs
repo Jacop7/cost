@@ -58,8 +58,8 @@ test('최종 W1은 정의 21건을 분리하고 음수 포함 사용처 2,353건
   const r = run();
   assert.equal(r.code, 0, r.text);
   assert.deepEqual(r.out.summary.byBin, {
-    primitive: 2063, componentOwned: 249, defect: 8,
-    pendingApproval: 33, approvedException: 0,
+    primitive: 2064, componentOwned: 249, defect: 8,
+    pendingApproval: 32, approvedException: 0,
   });
   assert.equal(audit.summary.declarations, 2353);
   assert.equal(audit.declarations.filter(d => Number(d.value) < 0).length, 32);
@@ -83,6 +83,8 @@ test('최종 W1은 정의 21건을 분리하고 음수 포함 사용처 2,353건
   assert.equal(per['R-SP-EMPTY-SHEET'].declarations, 2);
   assert.equal(per['R-SP-EMPTY-DAY-DETAIL'].declarations, 1);
   assert.equal(per['R-SP-SESSION-GATE-H'].declarations, 1);
+  assert.equal(per['R-CL-PRIM'].declarations, 14);
+  assert.equal(per['R-CL-NEAR-PALETTE'].declarations, 2);
   assert.equal(r.out.summary.multiMatchCount, 774);
 });
 

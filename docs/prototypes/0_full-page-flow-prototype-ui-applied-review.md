@@ -2691,6 +2691,22 @@ popup/state host **121개**(합 182), 그리고 레지스트리에 키가 없는
   `full-page-flow-prototype-render-audit.json` · `full-page-flow-prototype-design-audit.json` ·
   `full-page-flow-prototype-i18n-stress.json`.
 
+## DS-20260906-013 · PRT-249 PRT-248 검수 후속과 W1 팔레트 exact 정정
+
+- 대상: W1 실행 단계·빈 상태 수렴 표식·팔레트 exact 분류·검사기 stage enum·동기화 표식.
+- 기대값: PRT-248 페이블 조건 반영 · `#B0B8C1` exact 분류 · 합계 2,353/미분류 0 유지 ·
+  앱·프로토타입 시각 변화 0.
+- 실제값: `S3c` 실행 단위와 빈 상태 수렴 후보를 명시했고, W1은
+  `2,064 / 249 / 8 / 32 / 0`, 미분류 0이다.
+- PC 검수: 프로토타입 1280×900 감사 재실행 · PASS
+- 모바일 검수: 320px·CSS 200%·글자 200%·i18n 4패스 재실행 · PASS
+- 범위: 앱 제품 파일과 프로토타입 DOM/CSS/JS는 불변이다.
+- 별도 게이트: iOS native touch · 남은 제품 결정 32건 · `S3c` 실행은 계속 열려 있다.
+- 미검수: 없음
+- 결과: PASS
+- 증거: `full-page-flow-prototype-app-map-check.json` ·
+  `full-page-flow-prototype-doc-claims-check.json` · `../token-adoption-audit.json`.
+
 ## DS-20260906-012 · PRT-248 W1 비결정 15건 역할 분류
 
 - 대상: S4a Android 제품판의 W1 배정 후보 중 간격 관련 승인 대기 15건.

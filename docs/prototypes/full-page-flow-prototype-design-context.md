@@ -1,12 +1,12 @@
 # 전체 페이지 프로토타입 · 디자인 맥락 장부
 
-> 현재 동기화 ID: `DS-20260906-012`
+> 현재 동기화 ID: `DS-20260906-013`
 > 문서 동기화 상태: `SYNCED`
 > 전체 UI 작업 상태: `IN_PROGRESS`
 > 마지막 갱신: `2026-09-06`
 > 공통 변경: `아니오`
 > UI 변경: `아니오`
-> 변경 기록: `PRT-248`
+> 변경 기록: `PRT-249`
 
 ## 1. 문서 역할
 
@@ -43,6 +43,26 @@
 - 글로벌: 30~50% 긴 번역, 320px, 200% 글자 확대, RTL 검수.
 
 ## 4. 가장 최근 작업
+
+### DS-20260906-013 · PRT-249 PRT-248 검수 후속과 W1 팔레트 exact 정정
+
+- 작업 성격: 페이블 PRT-248 PASS의 비차단 조건 둘을 반영하고, 잔여 팔레트 분류의 사실 오류를
+  정정한다. 앱·프로토타입 제품 UI는 바꾸지 않는다.
+- 검수 후속: 새 간격 defect 5건과 미실행 그림자 3건을 `S3c` 한 단위로 묶었다. 빈 상태·세션
+  6규칙에는 `convergenceCandidate`와 후속 소유자 질문을 남겨 현행 보존이 영구 종결로 숨지 않는다.
+- 자체 정정: `#B0B8C1` 1건은 `T.gray400`과 exact이므로 primitive다. `#D5DAE0`의 근거로 적었던
+  비실재 `gray.300 #D5DBE1` 문구를 없앴다.
+- W1 결과: `primitive 2,064 / componentOwned 249 / defect 8 / pendingApproval 32 /
+  exception 0`, 미분류 0, 합계 2,353.
+- 완료 조건:
+  - PRT249-W1-MAP · `full-page-flow-prototype-app-map-check.json`
+  - PRT249-W1-CLAIMS · `full-page-flow-prototype-doc-claims-check.json`
+  - PRT249-RENDER · `full-page-flow-prototype-render-audit.json`
+  - PRT249-DESIGN · `full-page-flow-prototype-design-audit.json`
+  - PRT249-I18N · `full-page-flow-prototype-i18n-stress.json`
+  - PRT249-CONTRAST · `full-page-flow-prototype-contrast-fix.json`
+- 미완료·후속: 소유자 결정 32건 · `S3c` 실행 · 빈 상태 수렴 결정 · iOS native touch.
+- 다음 시작점: W1 잔여 결정 패킷 / `DS-20260906-014`
 
 ### DS-20260906-012 · PRT-248 W1 비결정 15건 역할 분류
 

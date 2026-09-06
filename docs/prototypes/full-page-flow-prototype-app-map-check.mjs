@@ -68,7 +68,7 @@ const canon = (v) => {
 const canonHash = (v) => createHash('sha256').update(canon(v), 'utf8').digest('hex');
 
 const BINS = ['primitive', 'componentOwned', 'defect', 'pendingApproval', 'approvedException'];
-const STAGES = ['S1', 'S2', 'S3a', 'S3b', 'S4'];
+const STAGES = ['S1', 'S2', 'S3a', 'S3b', 'S3c', 'S4'];
 const AXES = ['horizontal', 'vertical', 'both', 'none', 'derived'];
 const DELTAS = ['shrink', 'same', 'grow', 'mixed', 'unknown'];
 const TARGET_FIELDS = ['targetValue', 'targetMap', 'protoConverge', 'targetDerived'];

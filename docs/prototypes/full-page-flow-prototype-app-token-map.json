@@ -11,7 +11,7 @@
       "R-CL-NEAR-PALETTE",
       "R-CL-CHART"
     ],
-    "expectedDeclarations": 33
+    "expectedDeclarations": 32
   },
   "rules": [
     {
@@ -74,7 +74,7 @@
       },
       "target": "space.xs",
       "targetValue": 4,
-      "executionStage": "S3a",
+      "executionStage": "S3c",
       "axis": "vertical",
       "delta": "grow",
       "evidenceRef": "full-page-flow-prototype-axis-at.json#perDecl",
@@ -315,6 +315,8 @@
         ]
       },
       "name": "COMPONENT.emptyState.standard.paddingVertical",
+      "convergenceCandidate": true,
+      "convergenceQuestion": "빈 상태 세로 형상을 sheet/compact/standard/dayDetail 네 단계로 유지할지, 더 적은 단계로 수렴할지 후속 소유자 결정에서 검토한다.",
       "근거": "QueryState와 식재료 미선택 안내는 제목+설명의 표준 중앙 빈 상태로 같은 48px 세로 형상을 쓴다. 범용 space 스케일을 24 위로 늘리지 않고 컴포넌트 형상으로 보존한다."
     },
     {
@@ -334,6 +336,8 @@
         ]
       },
       "name": "COMPONENT.emptyState.standard.paddingHorizontal",
+      "convergenceCandidate": true,
+      "convergenceQuestion": "빈 상태 좌우 32px을 화면 gutter와 별도 컴포넌트 값으로 유지할지 후속 소유자 결정에서 검토한다.",
       "근거": "표준 중앙 빈 상태의 긴 설명이 화면 가장자리에 붙지 않게 하는 전용 좌우 인셋이다. 일반 화면 gutter와 분리해 현행 32px 형상을 보존한다."
     },
     {
@@ -353,6 +357,8 @@
         ]
       },
       "name": "COMPONENT.emptyState.compact.paddingVertical",
+      "convergenceCandidate": true,
+      "convergenceQuestion": "빈 상태 세로 형상을 sheet/compact/standard/dayDetail 네 단계로 유지할지, 더 적은 단계로 수렴할지 후속 소유자 결정에서 검토한다.",
       "근거": "스크롤 목록 안의 단문 빈 상태 두 자리로, 표준 제목+설명형보다 작은 동일 형상이다. 현행 40px을 컴포넌트 역할로 보존한다."
     },
     {
@@ -372,6 +378,8 @@
         ]
       },
       "name": "COMPONENT.emptyState.sheet.paddingVertical",
+      "convergenceCandidate": true,
+      "convergenceQuestion": "빈 상태 세로 형상을 sheet/compact/standard/dayDetail 네 단계로 유지할지, 더 적은 단계로 수렴할지 후속 소유자 결정에서 검토한다.",
       "근거": "제한된 시트·카드 내부 단문 빈 상태 두 자리다. 바깥 시트 높이와 함께 형상을 이루므로 일반 space가 아니라 컴포넌트가 28px을 소유한다."
     },
     {
@@ -390,6 +398,8 @@
         ]
       },
       "name": "COMPONENT.emptyState.dayDetail.paddingVertical",
+      "convergenceCandidate": true,
+      "convergenceQuestion": "빈 상태 세로 형상을 sheet/compact/standard/dayDetail 네 단계로 유지할지, 더 적은 단계로 수렴할지 후속 소유자 결정에서 검토한다.",
       "근거": "매출 상세 본문에서 기록 부재를 카드 대신 넓은 중앙 한 줄로 보여 주는 화면 전용 형상이다. 다른 빈 상태와 합쳐 세로 위치를 바꾸지 않는다."
     },
     {
@@ -408,6 +418,8 @@
         ]
       },
       "name": "COMPONENT.sessionGate.paddingHorizontal",
+      "convergenceCandidate": true,
+      "convergenceQuestion": "세션 셸 좌우 32px을 빈 상태 표준형과 같은 primitive로 공유할지 후속 소유자 결정에서 검토한다.",
       "근거": "인증·세션 로딩을 화면 중앙에 배치하는 앱 셸 전용 인셋이다. 제품 빈 상태와 범용 화면 gutter에 합치지 않고 현행 32px 형상을 보존한다."
     },
     {
@@ -1197,13 +1209,14 @@
         "group": "color",
         "valuesUpper": [
           "#FFF",
-          "#FFFFFF",
-          "#3182F6",
-          "#8B95A1"
+        "#FFFFFF",
+        "#3182F6",
+        "#8B95A1",
+        "#B0B8C1"
         ]
       },
       "target": "palette.*",
-      "근거": "`T.surface`/`T.onColor`(#FFFFFF) · `T.blue`(#3182F6) · `T.ter`(#8B95A1) 에 그대로 있는 값. **`#7A8694` · `#C5CCD3` 를 뺐다** — 페이블 지적대로 둘은 `tokens.ts` 에 없다(팔레트 문서에만 chart.1 · chart.2 로 있다). 통의 기준을 \"tokens.ts 에 실재\" 로 통일하고, 두 값은 같은 역할을 묻는 `R-CL-CHART` 로 옮겼다."
+    "근거": "`T.surface`/`T.onColor`(#FFFFFF) · `T.blue`(#3182F6) · `T.ter`(#8B95A1) · `T.gray400`(#B0B8C1)에 그대로 있는 값. **`#7A8694` · `#C5CCD3` 를 뺐다** — 둘은 `tokens.ts` 에 없다(팔레트 문서에만 chart.1 · chart.2 로 있다). 통의 기준을 \"tokens.ts 에 실재\" 로 통일하고, 두 값은 같은 역할을 묻는 `R-CL-CHART` 로 옮겼다."
     },
     {
       "id": "R-CL-SHADOW",
@@ -1226,7 +1239,7 @@
       "근거": "3자리. **묶음으로 읽었다 — 색 하나로는 그림자를 판정할 수 없다(페이블 조건 5).** `Sheet.tsx:30` = `#000` · offset(0,**−8**) · opacity .15 · radius 40 · elevation 16 → **위로 지는 그림자**라 `shadow.sheet`. `Slider.tsx:50` = `#000` · offset(0,2) · opacity .2 · radius 6 · elevation 3 → 26×26 원형 손잡이라 `shadow.sliderThumb`. `MyNotificationsScreen.tsx:34` = `#000` · offset(0,1) · opacity .2 · radius 3 · elevation 2 → 24×24 스위치 노브라 `shadow.switchThumb`. 나머지 두 역할은 인라인 리터럴이 아니다 — `card` 는 `tokens.ts` 의 `cardShadow` 로 이미 토큰이고, `fab` 은 `#000` 을 쓰지 않아 이 술어에 걸리지 않는다.",
       "술어한계": "**감사 JSON 은 `shadowColor` 의 hex 만 기록하고 `shadowOffset`·`shadowOpacity`·`shadowRadius`·`elevation` 은 기록하지 않는다**(그룹은 color · typography · spacing · size · radius 다섯뿐이다). 그래서 매처가 볼 수 있는 것은 색과 자리뿐이고, 묶음은 위 근거에 실측으로 적었다. 매처가 묶음을 직접 잡게 하려면 `token-adoption-audit.mjs` 가 그림자 속성을 기록하도록 넓혀야 한다 — 봉인된 스크립트라 별도 `PRT` 다.",
       "검수요청": "술어를 `색 #000` 에서 **자리 3곳**으로 좁혔다. 색만으로 잡으면 앞으로 생길 네 번째 `#000` 이 조용히 이 규칙에 들어온다.",
-      "executionStage": "S1",
+      "executionStage": "S3c",
       "axis": "none",
       "delta": "same",
       "evidenceRef": "full-page-flow-prototype-axis-at.json#perDecl — 선언마다 잰 축. 검사기가 이 규칙이 이긴 선언들의 축과 대조한다",
@@ -1237,17 +1250,16 @@
       "bin": "pendingApproval",
       "match": {
         "group": "color",
-        "valuesUpper": [
-          "#D5DAE0",
-          "#B0B8C1",
-          "#FFF9F0"
-        ]
+      "valuesUpper": [
+        "#D5DAE0",
+        "#FFF9F0"
+      ]
       },
       "openDecision": "D-1′",
-      "question": "팔레트 값 바로 옆에 있는 색 셋을 팔레트로 당길지.",
-      "evidence": "3건. #D5DAE0(MyNotificationsScreen 스위치 off 트랙)은 gray.300 #D5DBE1과 1비트 차이다. #B0B8C1은 비활성 탭 아이콘 1건, #FFF9F0은 MyVendorsScreen 그룹 카드 배경 1건이다. S2 뒤 전수 재측정값이다.",
+      "question": "정본에 없는 근접색 둘을 기존 역할로 수렴시킬지, 컴포넌트 역할로 보존할지.",
+      "evidence": "2건. #D5DAE0은 MyNotificationsScreen 스위치 off 트랙이며 현 `tokens.ts`에는 이 값이나 `gray.300` 역할이 없다. #FFF9F0은 MyVendorsScreen 중복 구매처 카드 배경이고 같은 카드의 테두리는 `T.amberTint`다. #B0B8C1은 근접색이 아니라 `T.gray400`과 exact라 `R-CL-PRIM`으로 정정했다.",
       "ownerDecision": "팔레트 수렴은 D-1′(팔레트 AA 수렴)과 같은 결정면이라 함께 올린다.",
-      "권고": "#D5DAE0 → gray.300(#D5DBE1) 로 수렴을 권한다. 1비트 차이는 의도로 보기 어렵다. #FFF9F0 → amber.tint(#FFF4E5), 같은 카드의 테두리가 이미 amberTint 토큰이라 안팎이 갈려 있다. #B0B8C1 은 권고를 보류한다 — 비활성 탭 아이콘은 대비 요건 면제 대상이라 D-1′ 의 팔레트 결정에 딸려 가는 편이 낫다."
+      "권고": "#D5DAE0은 switch.offTrack 컴포넌트 역할로 현행값을 보존하고, #FFF9F0은 같은 카드 테두리의 `T.amberTint`(#FFF4E5)로 수렴하는 안을 권한다."
     },
     {
       "id": "R-CL-CHART",
