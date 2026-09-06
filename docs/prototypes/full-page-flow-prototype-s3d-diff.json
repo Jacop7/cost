@@ -2,12 +2,14 @@
   "schemaVersion": 1,
   "stage": "S3d",
   "baselineCommit": "0b206c2ac51fa36ed146ee5583a2071b85158f12",
+  "productCommit": "a3638b72ef2b503dbc394f1d648ba90af58d7c42",
   "ownerDecisionDate": "2026-09-06",
   "pendingDeclarationsResolved": 32,
   "changedFiles": [
     "apps/mobile/src/components/kit/Button.tsx",
     "apps/mobile/src/components/kit/Sheet.tsx",
     "apps/mobile/src/components/kit/charts.tsx",
+    "apps/mobile/src/components/kit/index.tsx",
     "apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx",
     "apps/mobile/src/features/ingredients/components/UnitPickerSheet.tsx",
     "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx",
@@ -27,7 +29,7 @@
     "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx",
     "apps/mobile/src/theme/tokens.ts"
   ],
-  "appTreeSha256": "6dbaa40ff4e3a15a0415e11ed4f1ab8da0afb17daa0622e11c64e374ebbbc4c5",
+  "appTreeSha256": "631a5137bdaa4886594e2cf1b78be5551b3eb4f170af29bdc89f917b335c3305",
   "status": "PASS",
   "failures": []
 }

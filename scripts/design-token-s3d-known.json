@@ -2,6 +2,7 @@
   "schemaVersion": 1,
   "stage": "S3d",
   "baselineCommit": "0b206c2ac51fa36ed146ee5583a2071b85158f12",
+  "productCommit": "a3638b72ef2b503dbc394f1d648ba90af58d7c42",
   "ownerDecisionDate": "2026-09-06",
   "expectedPendingDeclarationsResolved": 32,
   "note": "페이블이 분리한 사용자 질문 3건의 권고안과 기계 배정 29건을 한 새 소구간으로 실행한다. 닫힌 S3a/S3b를 재사용하지 않는다.",
@@ -9,12 +10,13 @@
     "salesHero": "25→22(TYPE.display)",
     "displayLetterSpacing": "TYPE.display.letterSpacing=-0.6",
     "vendorWarningCard": "amberTint 배경 + caution 테두리",
-    "mechanical": "17→16, 13.5/14.5 역할 분리, switch offTrack 보존, 차트 팔레트 componentOwned, hall=brand.primary"
+    "mechanical": "17→16, 13.5/14.5 역할 분리, switch offTrack 보존, 차트 팔레트 componentOwned, hall=brand.primary. 가시 자간 변화 3건: IngredientDetailScreen.tsx:146 -0.5→TYPE.title.letterSpacing(-0.3), :174 -0.6→TYPE.title.letterSpacing(-0.3), ChangeHistoryScreen.tsx:156 -0.5→TYPE.display.letterSpacing(-0.6)"
   },
   "files": [
     { "file": "apps/mobile/src/components/kit/Button.tsx", "sha256": "f70a1609a5f91d0649507a28c88b0a560c5534fa49fcbe214e508da279b75ee9" },
     { "file": "apps/mobile/src/components/kit/Sheet.tsx", "sha256": "219f91d6451eed11701eed83c6d7c906012d45aac5b935c03e39ce55f40a8cdf" },
-    { "file": "apps/mobile/src/components/kit/charts.tsx", "sha256": "146d975d2df85431e38537bf3943f521ac299654852eff0ff92117b51c0af36b" },
+    { "file": "apps/mobile/src/components/kit/charts.tsx", "sha256": "0445d71e03c46e90b9a7f3b100687d325af3d1b4c6026e16af80b943a93fef00" },
+    { "file": "apps/mobile/src/components/kit/index.tsx", "sha256": "8b3913da9e4b8f4535e2f493d98a51ccb4ec48e910d6e1d302e0d3d74a842259" },
     { "file": "apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx", "sha256": "a4b9a9b61a2c56887fb279b621b463a40aab7d5c89b3f13b5ef7ee3de1c920fc" },
     { "file": "apps/mobile/src/features/ingredients/components/UnitPickerSheet.tsx", "sha256": "6d3b89d1ee26db873c11c6d916d54ef4b8a86ce229a9816d2ecba1881e66df10" },
     { "file": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx", "sha256": "0983f1acdc31f509057047797e9dc75d50369a910d5147dac08033dd4410bfa3" },
@@ -32,7 +34,7 @@
     { "file": "apps/mobile/src/features/sales/screens/SalesChannelScreen.tsx", "sha256": "261d0994cfcb9380ca952aa233dec1889a00fafbbeedd0e38c7985c548e4cd59" },
     { "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx", "sha256": "097c3c04e16dfb04dd9e407efcece85f514fafa72b2c96392862b2f453bd14bd" },
     { "file": "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx", "sha256": "40f36605151039e9bf134fea1f021ac64f5253aee418e3654a8c5a8119053c38" },
-    { "file": "apps/mobile/src/theme/tokens.ts", "sha256": "ddb9058d2933c7d5c990b495fef8a21b9e28e6713c991d42d5abeeaa8d02ced2" }
+    { "file": "apps/mobile/src/theme/tokens.ts", "sha256": "c79bf2f728fe66a6734638a34c55b5ab12c18d18009ed4192ecf8c3d0c6992d6" }
   ],
   "requiredTokenSnippets": [
     "displayTight: -0.6",
@@ -43,6 +45,13 @@
     "background: COLOR.status.cautionTint",
     "border: COLOR.status.caution",
     "hall: COLOR.brand.primary",
-    "material: COLOR.text.tertiary"
+    "material: COLOR.text.tertiary",
+    "icon: COLOR.action.primary",
+    "label: COLOR.action.onTint",
+    "segmentGap: 1"
+  ],
+  "requiredProductSnippets": [
+    { "file": "apps/mobile/src/components/kit/charts.tsx", "snippet": "len - COMPONENT.donut.segmentGap" },
+    { "file": "apps/mobile/src/components/kit/index.tsx", "snippet": "SHADOW.card" }
   ]
 }

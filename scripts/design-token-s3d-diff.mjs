@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /** S3d exact gate — 승인된 자간·크기·색 32건과 완결 역할 참조 외 앱 변경을 거부한다. */
 import { createHash } from 'node:crypto';
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawnSync } from 'node:child_process';
 import { readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 
@@ -17,6 +17,7 @@ const lf = text => text.replace(/\r\n/g, '\n');
 const sha = text => createHash('sha256').update(text, 'utf8').digest('hex');
 const git = args => execFileSync('git', args, { cwd: root, encoding: 'utf8' }).trim();
 const read = file => lf(readFileSync(resolve(root, file), 'utf8'));
+const readAt = (commit, file) => lf(execFileSync('git', ['show', `${commit}:${file}`], { cwd: root, encoding: 'utf8' }));
 
 const walk = (dir, acc = []) => {
   let entries = [];
@@ -32,27 +33,36 @@ const walk = (dir, acc = []) => {
 
 if (known.schemaVersion !== 1 || known.stage !== 'S3d') fail('known 계약은 schemaVersion 1 · stage S3d여야 한다');
 if (known.expectedPendingDeclarationsResolved !== 32) fail('S3d는 pendingApproval 32건을 정확히 닫아야 한다');
+if (!/^[0-9a-f]{40}$/.test(known.productCommit ?? '')) fail('S3d productCommit이 완전한 SHA가 아니다');
 if (!Array.isArray(known.files) || new Set(known.files.map(x => x.file)).size !== known.files?.length)
   fail('files가 없거나 경로가 중복됐다');
 
 const currentFiles = [...walk(join(root, 'apps/mobile/src')), ...walk(join(root, 'apps/mobile/app'))].sort();
+const productCommit = known.productCommit;
+if (productCommit && spawnSync('git', ['merge-base', '--is-ancestor', productCommit, 'HEAD'], { cwd: root }).status !== 0)
+  fail(`S3d productCommit ${productCommit}이 HEAD의 조상이 아니다`);
+const productFiles = productCommit ? git(['ls-tree', '-r', '--name-only', productCommit, '--', 'apps/mobile/src', 'apps/mobile/app'])
+  .split(/\r?\n/).filter(file => /\.tsx?$/.test(file)).sort() : [];
 const baselineFiles = git(['ls-tree', '-r', '--name-only', known.baselineCommit, '--', 'apps/mobile/src', 'apps/mobile/app'])
   .split(/\r?\n/).filter(file => /\.tsx?$/.test(file)).sort();
-if (JSON.stringify(currentFiles) !== JSON.stringify(baselineFiles)) fail('앱 TS/TSX 파일 집합이 기준선과 다르다');
+if (JSON.stringify(productFiles) !== JSON.stringify(baselineFiles)) fail('S3d 제품 커밋의 앱 TS/TSX 파일 집합이 기준선과 다르다');
 
-const changedFiles = currentFiles.filter(file => read(file) !== lf(execFileSync('git', ['show', `${known.baselineCommit}:${file}`], { cwd: root, encoding: 'utf8' })));
+const changedFiles = productFiles.filter(file => readAt(productCommit, file) !== readAt(known.baselineCommit, file));
 const expectedFiles = known.files.map(x => x.file).sort();
 if (JSON.stringify(changedFiles) !== JSON.stringify(expectedFiles)) {
   fail(`변경 파일 집합 불일치: expected ${expectedFiles.length}, current ${changedFiles.length}`);
 }
 for (const item of known.files ?? []) {
-  const actual = sha(read(item.file));
+  const actual = sha(readAt(productCommit, item.file));
   if (actual !== item.sha256) fail(`${item.file} 내용 불일치: expected ${item.sha256.slice(0, 12)}, current ${actual.slice(0, 12)}`);
 }
 
 const tokenSource = read('apps/mobile/src/theme/tokens.ts');
 for (const snippet of known.requiredTokenSnippets ?? []) {
   if (!tokenSource.includes(snippet)) fail(`필수 토큰 계약 누락: ${snippet}`);
+}
+for (const item of known.requiredProductSnippets ?? []) {
+  if (!read(item.file).includes(item.snippet)) fail(`현재 제품 역할 계약 누락: ${item.file} — ${item.snippet}`);
 }
 const productSource = currentFiles.filter(f => f !== 'apps/mobile/src/theme/tokens.ts').map(read).join('\n');
 for (const legacy of [
@@ -73,6 +83,7 @@ const result = {
   schemaVersion: 1,
   stage: 'S3d',
   baselineCommit: known.baselineCommit,
+  productCommit,
   ownerDecisionDate: known.ownerDecisionDate,
   pendingDeclarationsResolved: known.expectedPendingDeclarationsResolved,
   changedFiles,

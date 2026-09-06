@@ -118,6 +118,9 @@ step('③ CLI 계약 · ACL 보안 · 색 대비 · 터치 영역', () => {
   if (!run('node', ['--test', 'scripts/design-token-contrast.test.mjs'])) return false;
   if (!run('node', ['scripts/design-token-color-usage.mjs'])) return false;
   if (!run('node', ['--test', 'scripts/design-token-color-usage.test.mjs'])) return false;
+  // S3d의 32개 소유자 결정과 역할 참조도 기본 CI에서 exact 대조한다.
+  if (!run('node', ['scripts/design-token-s3d-diff.mjs'])) return false;
+  if (!run('node', ['--test', 'scripts/design-token-s3d-diff.test.mjs'])) return false;
   // S3a의 exact interval은 PRT-231에서 닫혔다. 이후 단계에서는 S4 검사가 그 assignmentPlan의
   // 잔존까지 재단언한다. 옛 검사기를 현재 나무에 다시 대면 승인된 S4 변경도 회귀로 오인한다.
   if (!run('node', ['scripts/design-token-s4-check.mjs'])) return false;

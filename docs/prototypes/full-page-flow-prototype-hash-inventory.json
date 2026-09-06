@@ -1,8 +1,9 @@
 {
   "$schema": "prototype-hash-inventory/1",
-  "contract": "utf8-crlf-to-lf-sha256-v1",
+  "contract": "utf8-bom-strip-crlf-to-lf-sha256-v1",
   "scope": "DS 봉인이 생산·소비하는 적용본·스크립트·텍스트 JSON 해시. Git provenance blob SHA와 JSON 정규형 해시는 별도 계약이다.",
   "points": [
+    { "id": "text-hash.contract", "file": "full-page-flow-prototype-text-sha256.mjs", "kind": "producer-consumer", "input": "UTF-8 text bytes", "normalization": "shared-textSha256" },
     { "id": "render.target", "file": "full-page-flow-prototype-render-audit.mjs", "kind": "producer", "input": "ui-applied.html", "normalization": "shared-textSha256" },
     { "id": "design.target", "file": "full-page-flow-prototype-design-audit.mjs", "kind": "producer", "input": "ui-applied.html", "normalization": "shared-textSha256" },
     { "id": "i18n.target", "file": "full-page-flow-prototype-i18n-stress.mjs", "kind": "producer", "input": "ui-applied.html", "normalization": "shared-textSha256" },

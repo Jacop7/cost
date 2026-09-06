@@ -2,16 +2,16 @@
   "manifest": {
     "script": "docs/prototypes/full-page-flow-prototype-axis-measure.mjs",
     "scriptSha256": "60277bdb6a873128565368cd88bc6d99f95dc823a95a8b651bf78ef68312a987",
-    "auditSha256": "f2b19e9bd2f50cbe2754d597c0ef4be0f1962c3109d08e84da191af51ca19f4d",
-    "auditCanon": "31f8198adcc0fba9810486019f066f92aa69435575749b0718daa2608a5146f5",
+    "auditSha256": "cceeb07d0dfa3175a33269042ddeedf6acc3bb07bbfd9da82b3ed82311bfbdea",
+    "auditCanon": "e347fa0e01b7813060e67fad014b702ef3a893b6a57b3ddfe5a2910fb2f34e47",
     "audit결속": {
-      "expectCommit": "dda79a6",
-      "범위해시": "ee1731f17562c5b01a3bc2d8b480e80109d3290c0a509315e16df4f6c5a56a36",
+      "expectCommit": "b3589e514a5bf4186b5716ca8c0c2875170c3eff",
+      "범위해시": "0dbf5d050c0099ad8bee6f8da3ae5884ad9e03bd309f57796fa16e2d32b25c97",
       "범위해시정의": "선택된 파일의 \"경로\\0 git blob SHA\" 를 정렬해 잇고 감사 스크립트 자신의 blob SHA 를 더해 sha256. blob SHA 는 CRLF→LF 정규화 뒤 직접 계산하므로 OS·git 유무에 좌우되지 않는다(페이블 R6 차단). 커밋 SHA 자기참조 없이 입력을 결속한다."
     },
     "values": "전부",
     "node": "v24.15.0",
-    "generatedAt": "2026-09-06T11:36:30.472Z",
+    "generatedAt": "2026-09-06T12:33:08.753Z",
     "판정": "축은 값이 아니라 속성과 컨테이너 flexDirection 으로 정한다 (PRT-207)."
   },
   "counts": {
@@ -478,9 +478,9 @@
     "apps/mobile/src/components/kit/Slider.tsx:50:width",
     "apps/mobile/src/components/kit/SortSheet.tsx:34:fontWeight",
     "apps/mobile/src/components/kit/SortSheet.tsx:63:minWidth",
-    "apps/mobile/src/components/kit/charts.tsx:49:fontWeight",
     "apps/mobile/src/components/kit/charts.tsx:50:fontWeight",
     "apps/mobile/src/components/kit/charts.tsx:51:fontWeight",
+    "apps/mobile/src/components/kit/charts.tsx:52:fontWeight",
     "apps/mobile/src/components/kit/index.tsx:111:fontWeight",
     "apps/mobile/src/components/kit/index.tsx:133:gap",
     "apps/mobile/src/components/kit/index.tsx:135:minWidth",
@@ -1530,8 +1530,8 @@
     "apps/mobile/src/components/kit/SortSheet.tsx:34:fontSize",
     "apps/mobile/src/components/kit/SortSheet.tsx:64:fontSize",
     "apps/mobile/src/components/kit/SortSheet.tsx:65:fontSize",
-    "apps/mobile/src/components/kit/charts.tsx:49:fontSize",
-    "apps/mobile/src/components/kit/charts.tsx:51:fontSize",
+    "apps/mobile/src/components/kit/charts.tsx:50:fontSize",
+    "apps/mobile/src/components/kit/charts.tsx:52:fontSize",
     "apps/mobile/src/components/kit/index.tsx:111:fontSize",
     "apps/mobile/src/components/kit/index.tsx:136:fontSize",
     "apps/mobile/src/components/kit/index.tsx:137:fontSize",
@@ -2242,7 +2242,7 @@
     "apps/mobile/src/components/kit/SearchBar.tsx:27:borderRadius",
     "apps/mobile/src/components/kit/Slider.tsx:50:hex",
     "apps/mobile/src/components/kit/SortSheet.tsx:30:borderRadius",
-    "apps/mobile/src/components/kit/charts.tsx:101:hex",
+    "apps/mobile/src/components/kit/charts.tsx:102:hex",
     "apps/mobile/src/components/kit/index.tsx:151:borderRadius",
     "apps/mobile/src/components/kit/index.tsx:223:borderRadius",
     "apps/mobile/src/components/kit/index.tsx:266:borderRadius",
@@ -3029,7 +3029,7 @@
       "why": "글자 크기는 글자 상자의 두 축을 함께 바꾼다"
     },
     {
-      "key": "apps/mobile/src/components/kit/charts.tsx:49:fontSize",
+      "key": "apps/mobile/src/components/kit/charts.tsx:50:fontSize",
       "value": 13,
       "prop": "fontSize",
       "group": "typography",
@@ -3037,7 +3037,7 @@
       "why": "글자 크기는 글자 상자의 두 축을 함께 바꾼다"
     },
     {
-      "key": "apps/mobile/src/components/kit/charts.tsx:49:fontWeight",
+      "key": "apps/mobile/src/components/kit/charts.tsx:50:fontWeight",
       "value": 700,
       "prop": "fontWeight",
       "group": "typography",
@@ -3045,7 +3045,7 @@
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
     },
     {
-      "key": "apps/mobile/src/components/kit/charts.tsx:50:fontWeight",
+      "key": "apps/mobile/src/components/kit/charts.tsx:51:fontWeight",
       "value": 800,
       "prop": "fontWeight",
       "group": "typography",
@@ -3053,7 +3053,7 @@
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
     },
     {
-      "key": "apps/mobile/src/components/kit/charts.tsx:51:fontSize",
+      "key": "apps/mobile/src/components/kit/charts.tsx:52:fontSize",
       "value": 16,
       "prop": "fontSize",
       "group": "typography",
@@ -3061,7 +3061,7 @@
       "why": "글자 크기는 글자 상자의 두 축을 함께 바꾼다"
     },
     {
-      "key": "apps/mobile/src/components/kit/charts.tsx:51:fontWeight",
+      "key": "apps/mobile/src/components/kit/charts.tsx:52:fontWeight",
       "value": 600,
       "prop": "fontWeight",
       "group": "typography",
@@ -3069,7 +3069,7 @@
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
     },
     {
-      "key": "apps/mobile/src/components/kit/charts.tsx:101:hex",
+      "key": "apps/mobile/src/components/kit/charts.tsx:102:hex",
       "value": null,
       "prop": "hex",
       "group": "color",

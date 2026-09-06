@@ -102,7 +102,7 @@ for (const token of TOKENS) {
 for (const token of STATUS_ALIASES) {
   const expected = known.statusAliasExpectedTotals?.[token];
   if (!Number.isInteger(expected)) failures.push(`statusAliasExpectedTotals.${token} 이 없다`);
-  else if (statusAliasTotals[token] > expected) failures.push(`T.${token} 별칭 사용 ${expected}→${statusAliasTotals[token]} — 사용처가 늘었다`);
+  else if (statusAliasTotals[token] !== expected) failures.push(`T.${token} 별칭 사용 ${statusAliasTotals[token]} ≠ 기대 ${expected} — 수렴·회귀를 known과 함께 기록해야 한다`);
 }
 if (linkMisuses.length) failures.push(...linkMisuses.map(x => `${x} COLOR.text.link 는 상호작용 JSX 안에서만 쓴다`));
 let buttonDisabledContract = null;
