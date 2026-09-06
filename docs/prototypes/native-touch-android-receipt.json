@@ -7,7 +7,7 @@
   "contracts": {
     "checker": {
       "path": "scripts/native-touch-runtime-evidence-check.mjs",
-      "textSha256": "9ad21a7fe9d82f6ac0493ce167eb7629122c7415f84b61fafde438fe3f987b40"
+      "textSha256": "4ddf7b91d992cb330543c8dcc3d0abdc057121aabdd02e3ad34c81458578645b"
     },
     "audit": {
       "path": "scripts/native-touch-runtime-audit.mjs",

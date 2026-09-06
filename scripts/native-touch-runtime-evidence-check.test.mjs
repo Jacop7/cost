@@ -1,10 +1,12 @@
 #!/usr/bin/env node
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { buildEvidenceReceipt, validateArtifactData, verifyRepositoryEvidence } from './native-touch-runtime-evidence-check.mjs';
+import { buildEvidenceReceipt, receiptHashFailures, validateArtifactData, verifyEvidenceReceipt, verifyRepositoryEvidence } from './native-touch-runtime-evidence-check.mjs';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const json = (path) => JSON.parse(readFileSync(join(root, path), 'utf8'));
@@ -30,6 +32,30 @@ test('작은 영수증도 원시 증거·제품 SHA·검사 계약 해시에 결
   assert.ok(receipt.cells.every((cell) => cell.status === 'PRESENT' && cell.textSha256.length === 64));
   assert.equal(new Set(receipt.cells.map((cell) => cell.productCommit)).size, 1);
   assert.ok(Object.values(receipt.contracts).every((item) => item.textSha256.length === 64));
+});
+
+test('커밋된 영수증은 현재 원시 증거와 exact 일치하고 closedPlatforms와 같은 범위를 요구한다', () => {
+  const result = verifyEvidenceReceipt(root);
+  assert.deepEqual(result.failures, []);
+  assert.deepEqual(result.receipt.requirePlatforms, contract.closedPlatforms);
+});
+
+test('원시 증거가 한 바이트라도 달라지면 영수증 검증이 실패한다', () => {
+  const sourcePath = join(root, 'docs/prototypes/native-touch-android-1x.json');
+  const original = readFileSync(sourcePath, 'utf8');
+  const temp = mkdtempSync(join(tmpdir(), 'native-touch-receipt-'));
+  const receipt = json('docs/prototypes/native-touch-android-receipt.json');
+  try {
+    const changedPath = join(temp, 'native-touch-android-1x.json');
+    writeFileSync(changedPath, `${original} `);
+    const changedHash = createHash('sha256').update(readFileSync(changedPath, 'utf8').replace(/\r\n/g, '\n')).digest('hex');
+    assert.notEqual(changedHash, receipt.cells.find((cell) => cell.file === 'native-touch-android-1x.json').textSha256);
+    const failures = receiptHashFailures(root, receipt, (cell) =>
+      cell.file === 'native-touch-android-1x.json' ? changedPath : join(root, 'docs/prototypes', cell.file));
+    assert.match(failures.join('\n'), /영수증 원시 증거 해시 불일치: native-touch-android-1x\.json/);
+  } finally {
+    rmSync(temp, { recursive: true, force: true });
+  }
 });
 
 test('전체 4칸 요구는 iOS 증거가 없으면 MISSING으로 설명하고, 있으면 전부 검증한다', () => {
