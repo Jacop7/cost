@@ -20,6 +20,18 @@ export function resolveActionForFontScale(action, fontScale) {
   return keyed === undefined ? action : { ...action, y: Number(keyed) };
 }
 
+export function resolveActionForRuntime(action, platform, fontScale) {
+  const resolved = resolveActionForFontScale(action, fontScale);
+  const runtimeKey = `${platform}@${fontScale}`;
+  const x = action?.xByRuntime?.[runtimeKey] ?? action?.xByFontScale?.[String(fontScale)];
+  const y = action?.yByRuntime?.[runtimeKey] ?? action?.yByFontScale?.[String(fontScale)];
+  return {
+    ...resolved,
+    ...(x === undefined ? {} : { x: Number(x) }),
+    ...(y === undefined ? {} : { y: Number(y) }),
+  };
+}
+
 export function slopBox(value) {
   if (typeof value === 'number') return { top: value, right: value, bottom: value, left: value };
   const box = value ?? {};
@@ -363,7 +375,7 @@ function runtimeExpression(operation) {
       const found=active.find(b=>(!op.ownerPattern||new RegExp(op.ownerPattern,'u').test(b.ownerChain.join('>')))&&new RegExp(op.labelPattern,'u').test(b.label));
       if(!found)throw new Error('scroll target 없음: '+op.labelPattern);
       for(let n=found.fiber;n;n=n.return)if(name(n)==='ScrollView'&&typeof n.stateNode?.scrollTo==='function'){
-        n.stateNode.scrollTo({y:Number(op.y||0),animated:false});return JSON.stringify({scrolled:found.label,y:Number(op.y||0)});
+        n.stateNode.scrollTo({x:Number(op.x||0),y:Number(op.y||0),animated:false});return JSON.stringify({scrolled:found.label,x:Number(op.x||0),y:Number(op.y||0)});
       }
       throw new Error('scroll ancestor 없음: '+op.labelPattern);
     }
@@ -485,7 +497,7 @@ async function main() {
       await waitForStableOwner(inspector.evaluate, scenario.activeOwnerPattern);
       const phases = [{ id: 'initial', ...await collect(inspector.evaluate, density, scenario.activeOwnerPattern) }];
       for (const action of scenario.actions ?? []) {
-        const resolvedAction = resolveActionForFontScale(action, fontScale);
+        const resolvedAction = resolveActionForRuntime(action, platform, fontScale);
         await inspector.evaluate(runtimeExpression({ kind: resolvedAction.kind ?? 'press', ...resolvedAction }));
         const actionOwnerPattern = action.activeOwnerPattern ?? scenario.activeOwnerPattern;
         await waitForStableOwner(inspector.evaluate, actionOwnerPattern);

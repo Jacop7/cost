@@ -11,7 +11,7 @@
     { "platform": "ios", "fontScale": 2, "file": "native-touch-ios-2x.json" }
   ],
   "minimumTarget": 44,
-  "expectedSourceLineage": 27,
+  "expectedSourceLineage": 30,
   "tolerance": "physical: effective_dp*density >= 44*density - 0.5 - 0.001px; overlap <= 0.5 + 0.001px",
   "measurement": {
     "relativeFrame": "nativeFabricUIManager.measure — onLayout과 같은 부모 상대 좌표",
@@ -42,10 +42,14 @@
       "id": "stock-history",
       "route": "/ingredients/history/{{ingredientId}}",
       "activeOwnerPattern": "StockHistoryScreen|HistoryFilterSheet",
-      "actions": [{ "phase": "filter-sheet", "ownerPattern": "StockHistoryScreen", "labelPattern": "^최근 3개월 변경$" }],
+      "actions": [
+        { "phase": "filter-sheet", "ownerPattern": "StockHistoryScreen", "labelPattern": "^최근 3개월 변경$" },
+        { "kind": "scroll", "phase": "filter-sheet-bottom", "ownerPattern": "HistoryFilterSheet", "labelPattern": "^조회$", "yByRuntime": { "android@2": 1000 } }
+      ],
       "targets": [
         { "id": "history-filter-close", "phase": "filter-sheet", "ownerPattern": "HistoryFilterSheet", "labelPattern": "^닫기$", "minimumObserved": 1, "sourceEntries": ["apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:145"] },
-        { "id": "history-segments", "phase": "filter-sheet", "ownerPattern": "Seg>HistoryFilterSheet", "labelPattern": "^(오늘|최근 1개월|최근 3개월|최근 6개월|최근 1년|전체|입고|소진|폐기|조정|최신순|오래된순)$", "minimumObserved": 13, "sourceEntries": ["apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:18"] }
+        { "id": "history-period-segments", "phase": "filter-sheet", "ownerPattern": "Seg>HistoryFilterSheet", "labelPattern": "^(오늘|최근 1개월|최근 3개월|최근 6개월|최근 1년|전체)$", "minimumObserved": 6, "sourceEntries": ["apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:18"] },
+        { "id": "history-type-sort-segments", "phase": "filter-sheet-bottom", "ownerPattern": "Seg>HistoryFilterSheet", "labelPattern": "^(전체|입고|소진|폐기|조정|최신순|오래된순)$", "minimumObserved": 7, "sourceEntries": ["apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:18"] }
       ]
     },
     {
@@ -89,8 +93,8 @@
       "route": "/recipes/add?id={{recipeId}}",
       "activeOwnerPattern": "RecipeAddScreen",
       "actions": [
-        { "kind": "scroll", "phase": "extra-controls", "ownerPattern": "RecipeAddScreen", "labelPattern": "특수 포장용기 수량 줄이기$", "yByFontScale": { "1": 1100, "2": 1250 } },
-        { "kind": "scroll", "phase": "profit-preview", "ownerPattern": "RecipeAddScreen", "labelPattern": "^권장 판매가 적용$", "yByFontScale": { "1": 1600, "2": 1600 } }
+        { "kind": "scroll", "phase": "extra-controls", "ownerPattern": "RecipeAddScreen", "labelPattern": "특수 포장용기 수량 줄이기$", "yByFontScale": { "1": 1100, "2": 1250 }, "yByRuntime": { "android@2": 1500 } },
+        { "kind": "scroll", "phase": "profit-preview", "ownerPattern": "RecipeAddScreen", "labelPattern": "^권장 판매가 적용$", "yByFontScale": { "1": 1600, "2": 1600 }, "yByRuntime": { "android@2": 3200 } }
       ],
       "targets": [
         { "id": "extra-decrement", "phase": "extra-controls", "ownerPattern": "RecipeAddScreen", "labelPattern": " 수량 줄이기$", "minimumObserved": 1, "sourceEntries": ["apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:355"] },
@@ -102,10 +106,14 @@
       "id": "recipe-list",
       "route": "/recipes",
       "activeOwnerPattern": "RecipesListScreen",
+      "actions": [
+        { "kind": "scroll", "phase": "filter-chips-end", "ownerPattern": "Chip>RecipesListScreen", "labelPattern": "^목표$", "xByFontScale": { "2": 300 } }
+      ],
       "targets": [
         { "id": "recipes-search", "phase": "initial", "ownerPattern": "RecipesListScreen", "labelPattern": "^검색$", "minimumObserved": 1, "sourceEntries": ["apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:159"] },
         { "id": "recipes-alert", "phase": "initial", "ownerPattern": "RecipesListScreen", "labelPattern": "^알림$", "minimumObserved": 1, "sourceEntries": ["apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:167"] },
-        { "id": "recipe-filter-chips", "phase": "initial", "ownerPattern": "Chip>RecipesListScreen", "labelPattern": "^(순이익률 낮은순|판매중|목표)$", "minimumObserved": 3, "sourceEntries": ["apps/mobile/src/components/kit/index.tsx:83", "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:186"] }
+        { "id": "recipe-filter-chips-start", "phase": "initial", "ownerPattern": "Chip>RecipesListScreen", "labelPattern": "^(순이익률 낮은순|판매중)$", "minimumObserved": 2, "sourceEntries": ["apps/mobile/src/components/kit/index.tsx:83", "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:186"] },
+        { "id": "recipe-filter-chip-end", "phase": "filter-chips-end", "ownerPattern": "Chip>RecipesListScreen", "labelPattern": "^목표$", "minimumObserved": 1, "sourceEntries": ["apps/mobile/src/components/kit/index.tsx:83", "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:186"] }
       ]
     },
     {
