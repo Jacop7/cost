@@ -6,13 +6,14 @@ import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { buildEvidenceReceipt, receiptHashFailures, validateArtifactData, verifyEvidenceReceipt, verifyRepositoryEvidence } from './native-touch-runtime-evidence-check.mjs';
+import { buildEvidenceReceipt, receiptHashFailures, validateArtifactData, validateTapProbeData, verifyEvidenceReceipt, verifyRepositoryEvidence } from './native-touch-runtime-evidence-check.mjs';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const json = (path) => JSON.parse(readFileSync(join(root, path), 'utf8'));
 const contract = json('scripts/native-touch-runtime-contract.json');
 const known = json('scripts/native-touch-runtime-known.json');
 const source = json('docs/prototypes/native-touch-android-1x.json');
+const tapProbe = json('docs/prototypes/native-touch-android-tap-probe.json');
 const expected = {
   name: 'fixture', platform: 'android', fontScale: 1,
   scriptSha256: source.manifest.scriptSha256,
@@ -29,9 +30,24 @@ test('작은 영수증도 원시 증거·제품 SHA·검사 계약 해시에 결
   assert.equal(receipt.status, 'PASS');
   assert.deepEqual(receipt.requirePlatforms, ['android']);
   assert.equal(receipt.cells.length, 2);
+  assert.equal(receipt.tapProbeCells.length, 1);
+  assert.equal(receipt.tapProbeCells[0].probeCount, 3);
   assert.ok(receipt.cells.every((cell) => cell.status === 'PRESENT' && cell.textSha256.length === 64));
   assert.equal(new Set(receipt.cells.map((cell) => cell.productCommit)).size, 1);
   assert.ok(Object.values(receipt.contracts).every((item) => item.textSha256.length === 64));
+});
+
+test('실제 탭 3점은 안쪽 발화·직접 부모 밖 차단·overflow visible 조부모 밖 발화를 모두 요구한다', () => {
+  const expectedTap = {
+    name: 'tap-fixture', platform: 'android',
+    scriptSha256: tapProbe.manifest.scriptSha256,
+    auditSha256: tapProbe.manifest.auditSha256,
+    contractSha256: tapProbe.manifest.contractSha256,
+  };
+  assert.deepEqual(validateTapProbeData(tapProbe, expectedTap), []);
+  const broken = structuredClone(tapProbe);
+  broken.empiricalTapProbe.find((item) => item.id === 'outside-overflow-visible-grandparent').onPressCount = 0;
+  assert.match(validateTapProbeData(broken, expectedTap).join('\n'), /outside-overflow-visible-grandparent/);
 });
 
 test('커밋된 영수증은 현재 원시 증거와 exact 일치하고 closedPlatforms와 같은 범위를 요구한다', () => {
