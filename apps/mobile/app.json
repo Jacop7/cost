@@ -14,7 +14,10 @@
     ],
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "co.smartolive.margincook"
+      "bundleIdentifier": "co.smartolive.margincook",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "package": "co.smartolive.margincook"
