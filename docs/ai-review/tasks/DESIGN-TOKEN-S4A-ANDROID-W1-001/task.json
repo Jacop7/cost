@@ -1,0 +1,103 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "DESIGN-TOKEN-S4A-ANDROID-W1-001",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R2",
+  "author_role": "SOLAR-ARCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "33bf34e51399d98043c273399abc11b5c3ae9464",
+  "target_commit_sha": "00454d6fcea7fc394bcb72ddedb50146a5dcec12",
+  "target_tree_oid": "4fea102bb978b30e552fc1ee1511a788552ecf95",
+  "agents_blob_oid": "93e81260be0841066c1e9ebbf5cd7848cdafe1a9",
+  "agents_sha256": "4391dab92223f9b796e076f9b2862263dd6b8e5579015f7e0c6a694798df8f9c",
+  "requirements": [
+    "Android 1x/2x exact 증거는 scroll/root 부분 노출과 비-scroll clipping을 구분하고, 직접 부모와 실제 clipping 조상만으로 유효 터치 영역을 재계산한다.",
+    "소유자 결정 12-4의 역할별 시각 크기와 hitSlop 계약이 승인 밖 화면 변화·44dp 미달·물질적 형제 중첩 없이 구현된다.",
+    "W1은 같은 제품판에서 정의 21건을 제외한 선언 2,353건을 다섯 통에 미분류 없이 배정하고, 이전 배정과의 통 이동 대차를 보존한다.",
+    "iOS 1x/2x 증거가 없는 상태를 MISSING으로 보고하며 S4a·S4·W1 전체를 최종 완료로 선언하지 않는다.",
+    "원시 Android 증거 두 파일은 각 2MB 입력 상한을 넘으므로 검사기가 전체를 재계산해 만든 작은 영수증이 파일 해시·제품 SHA·기기·계약·결과를 결속한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:design-kit-and-tokens",
+    "USER-DECISION:12-4-role-specific-touch-contract",
+    "S4A:native-effective-touch-44dp",
+    "W1:five-bin-zero-unmatched",
+    "AI-REVIEW:pass-is-not-gate-closure"
+  ],
+  "artifact_paths": [
+    "apps/mobile/src/components/history/HistoryLayout.tsx",
+    "apps/mobile/src/components/kit/AppHeader.tsx",
+    "apps/mobile/src/components/kit/Button.tsx",
+    "apps/mobile/src/components/kit/SortSheet.tsx",
+    "apps/mobile/src/components/kit/index.tsx",
+    "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx",
+    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx",
+    "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx",
+    "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
+    "scripts/native-touch-runtime-audit.mjs",
+    "scripts/native-touch-runtime-audit.test.mjs",
+    "scripts/native-touch-runtime-contract.json",
+    "scripts/native-touch-runtime-evidence-check.mjs",
+    "scripts/native-touch-runtime-evidence-check.test.mjs",
+    "scripts/native-touch-runtime-known.json",
+    "scripts/touch-target-audit.mjs",
+    "scripts/touch-target-audit.test.mjs",
+    "scripts/touch-target-known.json",
+    "docs/prototypes/full-page-flow-prototype-app-token-map.json",
+    "docs/prototypes/full-page-flow-prototype-app-map-check.mjs",
+    "docs/prototypes/full-page-flow-prototype-app-map-check.test.mjs",
+    "docs/디자인-토큰-3계층-값-매핑-기획서.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "apps/mobile/src/theme/tokens.ts",
+    "scripts/design-token-s4-contract.json",
+    "docs/prototypes/full-page-flow-prototype-current-spec.md",
+    "docs/prototypes/full-page-flow-prototype-ui-guide.md"
+  ],
+  "evidence_paths": [
+    "docs/prototypes/native-touch-android-receipt.json",
+    "docs/token-adoption-audit.json",
+    "docs/prototypes/full-page-flow-prototype-app-map-check.json",
+    "docs/prototypes/full-page-flow-prototype-doc-claims-check.json",
+    "docs/prototypes/full-page-flow-prototype-axis-at.json",
+    "docs/prototypes/full-page-flow-prototype-render-audit.json",
+    "docs/prototypes/full-page-flow-prototype-design-audit.json",
+    "docs/prototypes/full-page-flow-prototype-i18n-stress.json"
+  ],
+  "excluded_paths": [
+    "docs/prototypes/native-touch-android-1x.json",
+    "docs/prototypes/native-touch-android-2x.json"
+  ],
+  "required_evidence": [
+    "native-touch-android-receipt.json status PASS, 두 Android cell PRESENT, 동일 productCommit, 미달·중첩·실패 0",
+    "native-touch-runtime-evidence-check --require=all이 iOS 두 칸을 MISSING으로 실패",
+    "app-map-check PROPOSAL_COMPLETE, 선언 2,353, 미분류 0, 통 2,063/239/3/48/0",
+    "design-sync-check DS-20260906-011 PASS와 관련 음성 시험 105/105"
+  ],
+  "human_decisions": [
+    "2026-09-06 소유자가 12-4를 확정했다: Button sm·ConditionRow·헤더 action은 보이는 44, FilterButton은 시각 32+세로 hitSlop 6, Chip/SortChip은 형상 유지+부모 행 44+세로 hitSlop 9.",
+    "Apple Developer Program 결제·가입은 완료했고 팀 활성화 승인 대기 중이다. iOS 부재는 허용된 임시 외부 차단이지만 전체 종결 승인은 아니다.",
+    "2026-08-28 사용자가 공식 Claude Code 읽기 전용 검수와 후속 진행을 승인했다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "4.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": [
+    { "learning_id": "LRN-ORCH-CI-001", "reason": "로컬 Android 증거와 W1 배정 검수이며 브랜치 통합·원격 CI 범위가 아니다." },
+    { "learning_id": "LRN-CODEX-TIME-001", "reason": "DB 시간 fixture와 무관한 UI 터치·토큰 감사다." },
+    { "learning_id": "LRN-OPS-BACKUP-001", "reason": "개발 DB 파괴적 재구축·백업 범위가 아니다." }
+  ]
+}
