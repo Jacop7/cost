@@ -38,8 +38,9 @@ export function Donut({ segments, size = 150, thick = 22, centerTop, centerMain,
           // 깨져 도넛이 통째로 사라진다 — 호출자 실수를 여기서 흡수한다.
           const pctv = Number.isFinite(s.value) ? Math.max(0, Math.min(100, s.value)) : 0;
           const len = (pctv / 100) * c;
+          const visibleLen = Math.max(0, len - COMPONENT.donut.segmentGap);
           const el = (
-            <Circle key={i} cx={cx} cy={cx} r={r} fill="none" stroke={s.color} strokeWidth={thick} strokeDasharray={`${len} ${c - len}`} strokeDashoffset={-acc} strokeLinecap="butt" />
+            <Circle key={i} cx={cx} cy={cx} r={r} fill="none" stroke={s.color} strokeWidth={thick} strokeDasharray={`${visibleLen} ${c - visibleLen}`} strokeDashoffset={-acc} strokeLinecap="butt" />
           );
           acc += len;
           return el;

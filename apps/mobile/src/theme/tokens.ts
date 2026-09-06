@@ -236,16 +236,6 @@ export const shadow = {
 } as const;
 
 /**
- * 기존 호출부 호환 별칭 — `shadow.card` 와 같은 값이다.
- *
- * `S1` 은 선언만 하는 단계라 호출부를 건드리지 않는다. 남은 사용처는 **두 곳**이다
- * (`kit/index.tsx:58` Card · `kit/index.tsx:302` 세그먼트 선택). `verify` ③ 의
- * **별칭 래칫**이 사용처가 늘어나면 FAIL 한다 — 새 화면이 별칭을 새로 쓰면 안 된다.
- * `S3a` 완료 조건: **사용처 0 → 이 별칭 삭제.**
- */
-export const cardShadow = shadow.card;
-
-/**
  * 금액 표기 (kit won) — 통화기호 없이 숫자만. 호출부가 뒤에 '원'을 붙인다.
  *
  * 서식 규칙은 `@margincook/core` locale.ts 단일 출처를 쓴다. `toLocaleString('ko-KR')` 은
@@ -289,9 +279,9 @@ export const COMPONENT = {
     /** 배경 — `action.primaryTint` 를 **참조**한다. 같음을 검사하는 것보다 강제하는 쪽이 낫다. */
     background: COLOR.action.primaryTint,
     /** 아이콘 — 비텍스트라 기준 3:1. tint 위 4.03. */
-    icon: '#1470F5',
+    icon: COLOR.action.primary,
     /** 라벨 — 글자라 기준 4.5:1. tint 위 4.80. */
-    label: '#1465DB',
+    label: COLOR.action.onTint,
   },
   tabBar: {
     /** 한국어 한 줄 기준 높이. 라벨이 실제로 두 줄이 되면 그 초과 높이만 더한다. */
@@ -313,6 +303,8 @@ export const COMPONENT = {
   },
   donut: {
     centerValue: { letterSpacing: -0.5 },
+    /** 인접 구간의 명도 대비가 낮아도 경계를 잃지 않도록 트랙을 드러내는 1dp 간격. */
+    segmentGap: 1,
   },
   switch: {
     offTrack: '#D5DAE0',

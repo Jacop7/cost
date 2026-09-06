@@ -6,7 +6,7 @@
 import { ReactNode, useState } from 'react';
 import { KeyboardTypeOptions, Pressable, ScrollView, StyleProp, Text, TextInput, TextInputProps, TextStyle, View, ViewStyle } from 'react-native';
 import { Icon, IconName } from './Icon';
-import { COLOR, COMPONENT, cardShadow, FONT, shadow, STATUS, T, won, TYPE, controlVisualHeight, radius, space } from '@/theme/tokens';
+import { COLOR, COMPONENT, FONT, shadow as SHADOW, STATUS, T, won, TYPE, controlVisualHeight, radius, space } from '@/theme/tokens';
 
 const NUM: TextStyle = { fontVariant: FONT.num as unknown as TextStyle['fontVariant'] };
 export { Icon };
@@ -55,7 +55,7 @@ export function Badge({ children, tone = 'neutral', sm, solid }: { children: Rea
 // ── 카드 ──────────────────────────────────────────────────────
 export function Card({ children, style, pad = 16, onLine, shadow = true }: { children: ReactNode; style?: StyleProp<ViewStyle>; pad?: number; onLine?: boolean; shadow?: boolean }) {
   return (
-    <View style={[{ backgroundColor: T.surface, borderRadius: 16, padding: pad, borderWidth: onLine ? 1 : 0, borderColor: T.line }, shadow ? cardShadow : null, style]}>
+    <View style={[{ backgroundColor: T.surface, borderRadius: 16, padding: pad, borderWidth: onLine ? 1 : 0, borderColor: T.line }, shadow ? SHADOW.card : null, style]}>
       {children}
     </View>
   );
@@ -148,7 +148,7 @@ export function FAB({ label = '추가', icon = 'plus', bottom = 24, onPress }: {
       onPress={onPress}
       accessibilityRole="button"
       accessibilityLabel={label}
-      style={{ position: 'absolute', right: 18, bottom, minHeight: COMPONENT.fab.visualHeight, zIndex: 30, flexDirection: 'row', alignItems: 'center', gap: space.sm, backgroundColor: COLOR.action.primary, paddingVertical: space.md, paddingLeft: space.md, paddingRight: space.lg, borderRadius: 999, ...shadow.fab }}
+      style={{ position: 'absolute', right: 18, bottom, minHeight: COMPONENT.fab.visualHeight, zIndex: 30, flexDirection: 'row', alignItems: 'center', gap: space.sm, backgroundColor: COLOR.action.primary, paddingVertical: space.md, paddingLeft: space.md, paddingRight: space.lg, borderRadius: 999, ...SHADOW.fab }}
     >
       <Icon name={icon} size={22} color={T.onColor} sw={2.4} />
       <Text style={{ color: T.onColor, fontWeight: '700', fontSize: 16 }}>{label}</Text>
@@ -299,7 +299,7 @@ export function SegTabs({ tabs, active = 0, onChange }: { tabs: { label: string;
       {tabs.map((t, i) => {
         const on = active === i;
         return (
-          <Pressable key={i} onPress={() => onChange?.(i)} style={[{ flex: 1, alignItems: 'center', justifyContent: 'center', flexDirection: 'row', gap: space.xs, paddingVertical: space.sm, borderRadius: radius.md, backgroundColor: on ? T.surface : 'transparent' }, on ? cardShadow : null]}>
+          <Pressable key={i} onPress={() => onChange?.(i)} style={[{ flex: 1, alignItems: 'center', justifyContent: 'center', flexDirection: 'row', gap: space.xs, paddingVertical: space.sm, borderRadius: radius.md, backgroundColor: on ? T.surface : 'transparent' }, on ? SHADOW.card : null]}>
             <Text style={{ fontSize: 16, fontWeight: on ? '700' : '600', color: on ? T.ink : COLOR.text.tertiary }}>{t.label}</Text>
             {t.count != null ? <Text style={{ fontSize: 16, fontWeight: '700', color: on ? COLOR.state.selectedText : COLOR.text.tertiary }}>{t.count}</Text> : null}
           </Pressable>
