@@ -28,9 +28,9 @@
       "fontScale": 1,
       "file": "native-touch-android-1x.json",
       "status": "PRESENT",
-      "textSha256": "c32851b3a53a9eab6de400978b8701f1c367e5684ab18d8af013513aacda195a",
-      "productCommit": "4a54cb651d5eb56d76fc80193ee37e88cf53368d",
-      "productTree": "577b634d41afa2f7d41396d242463fe09dc5130f",
+      "textSha256": "a0da7a2e1c0140665406579957a7fb19ddc3975b79bf2f56cdb0047ec11be0d4",
+      "productCommit": "98b22691d55215734e4b8ce5c4bde877b6a5c7fa",
+      "productTree": "b80b8309d9b0008b0f8cba38ca0e5fd5180a533d",
       "device": {
         "id": "emulator-5554",
         "platform": "android",
@@ -59,9 +59,9 @@
       "fontScale": 2,
       "file": "native-touch-android-2x.json",
       "status": "PRESENT",
-      "textSha256": "8fb2615d5e049844964d8f5e41609634eb7fc6b18f67bcedd9895fc2abb0e68d",
-      "productCommit": "4a54cb651d5eb56d76fc80193ee37e88cf53368d",
-      "productTree": "577b634d41afa2f7d41396d242463fe09dc5130f",
+      "textSha256": "b24b1c3becfb55f0d21f6d01a45595bdbecd543abb250b4b192e79764503e280",
+      "productCommit": "98b22691d55215734e4b8ce5c4bde877b6a5c7fa",
+      "productTree": "b80b8309d9b0008b0f8cba38ca0e5fd5180a533d",
       "device": {
         "id": "emulator-5554",
         "platform": "android",
@@ -91,9 +91,9 @@
       "platform": "android",
       "file": "native-touch-android-tap-probe.json",
       "status": "PRESENT",
-      "textSha256": "b94953269cbfa42dcbe6023f37f78fa9d5e4e7792ddc583d042f115f7831bd7e",
-      "productCommit": "4a54cb651d5eb56d76fc80193ee37e88cf53368d",
-      "productTree": "577b634d41afa2f7d41396d242463fe09dc5130f",
+      "textSha256": "70d9ca4716fc314af46bd1db39aa705e585391e9e606b5f06aee27db7e83f98a",
+      "productCommit": "98b22691d55215734e4b8ce5c4bde877b6a5c7fa",
+      "productTree": "b80b8309d9b0008b0f8cba38ca0e5fd5180a533d",
       "result": "PASS",
       "probeCount": 3
     }

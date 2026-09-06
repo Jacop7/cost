@@ -2694,6 +2694,20 @@ popup/state host **121개**(합 182), 그리고 레지스트리에 키가 없는
   `full-page-flow-prototype-render-audit.json` · `full-page-flow-prototype-design-audit.json` ·
   `full-page-flow-prototype-i18n-stress.json`.
 
+## DS-20260906-024 · PRT-266 S3d 제품판 Android native touch 재측정
+
+- 대상: PRT-265 `98b2269` 제품판의 Android 1×·2× native touch와 실제 탭 증거.
+- 기대값: 두 배율 모두 계약 target 19개, 유효 터치 미달·물질적 형제 중첩 0, 탭 프로브 PASS.
+- 실제값: Android 15/API 35·density 2.625에서 기대값과 일치하고 영수증 재계산도 PASS.
+- PC 검수: 네이티브 증거·영수증·W1·S3d·S2·동기화 게이트 재현 · PASS
+- 모바일 검수: Android 1×·2×·실제 탭 재측정 · PASS
+- 미검수: 없음
+- 결과: PASS
+- 증거: `native-touch-android-1x.json` · `native-touch-android-2x.json` ·
+  `native-touch-android-tap-probe.json` · `native-touch-android-receipt.json`.
+- 범위 밖 후속: 차트 인접 구간 접근성 Finding과 iOS 1×·2×·실제 탭 증거. 따라서
+  S4a·S4·W1 전체는 계속 `REOPEN`이다.
+
 ## DS-20260906-023 · PRT-265 S3d 의미 역할 경계 교정
 
 - 대상: 제품 커밋 `dda79a6`의 차트 재료색 토큰 참조와 S3d·S2·터치 결속.

@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "status": "PROPOSAL_COMPLETE",
   "manifest": {
-    "sourceCommit": "dda79a6c2a4e48293450dfe69dd98996908bee17",
+    "sourceCommit": "98b22691d55215734e4b8ce5c4bde877b6a5c7fa",
     "script": "design-token-motion-layer-audit.mjs",
     "scriptSha256": "dbf0436428374108e5b36a076dbda042445373811f30a978559245cf068061da",
     "selection": {
@@ -37,7 +37,7 @@
         "animation",
         "@keyframes"
       ],
-      "sha256": "f13000e06fbc4cfef4d9f3c27449c634d68ed8014d03539d94ebfaf8ea7010aa"
+      "sha256": "98244ae00b040373c20c40eb4168ae8532104261e71fec85b2546a6e3040b947"
     }
   },
   "summary": {
