@@ -20,8 +20,9 @@
  * 실행 전제: 저장소 루트에서 `corepack pnpm install --frozen-lockfile`로 lockfile 의
  * `typescript` 파서를 설치한다. 없으면 아래 import guard가 재현 명령과 함께 종료한다.
  *
- * 남은 한계는 정직하게 적는다: 같은 부모의 직접 형제는 조건부 JSX까지 정적 검사하지만,
- * 부모 경계·다른 부모·absolute·z-order는 네이티브 렌더 감사(`S4`)의 몫이다.
+ * 직접 부모의 inline height/minHeight·width/minWidth는 토큰까지 읽어 hitSlop clipping을
+ * 보수적으로 투영한다. 부모 크기를 정적으로 못 읽으면 `통과`가 아니라 `부모판정불가`다.
+ * 다른 부모·absolute·z-order와 동적 부모 크기는 네이티브 렌더 감사(`S4a`)의 몫이다.
  */
 import { readFileSync, writeFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -166,7 +167,40 @@ const dim = (body, key) => {
   return /^\d/.test(m[1]) ? Number(m[1]) : (tokenNumberValues.get(m[1]) ?? null);
 };
 
+const PRESSABLE_NAMES_FOR_PARENT = new Set(['Pressable', 'TouchableOpacity', 'TouchableHighlight', 'TouchableWithoutFeedback', 'TouchableNativeFeedback']);
 const PRESSABLE = /<(Pressable|TouchableOpacity|TouchableHighlight|TouchableWithoutFeedback|TouchableNativeFeedback)\b/g;
+const parentBoundsByAt = new Map();
+for (const f of files) {
+  const text = readFileSync(f, 'utf8');
+  const sf = ts.createSourceFile(f, text, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+  const atOf = (node) => `${relative(idRoot, f).replace(/\\/g, '/')}:${sf.getLineAndCharacterOfPosition(node.getStart(sf)).line + 1}`;
+  const styleNumbers = (opening) => {
+    const styleAttr = opening?.attributes?.properties?.find((property) => ts.isJsxAttribute(property) && property.name.text === 'style');
+    const expression = styleAttr?.initializer && ts.isJsxExpression(styleAttr.initializer) ? unwrapTokenInitializer(styleAttr.initializer.expression) : null;
+    if (!expression || !ts.isObjectLiteralExpression(expression)) return null;
+    const values = {};
+    for (const property of expression.properties) if (ts.isPropertyAssignment(property)) {
+      const key = property.name.getText(sf).replace(/^['"]|['"]$/g, '');
+      if (!['width', 'minWidth', 'height', 'minHeight'].includes(key)) continue;
+      const value = tokenNumericLiteral(property.initializer);
+      if (value !== null) values[key] = value;
+    }
+    return values;
+  };
+  const visit = (node) => {
+    const opening = ts.isJsxElement(node) ? node.openingElement : ts.isJsxSelfClosingElement(node) ? node : null;
+    if (opening && PRESSABLE_NAMES_FOR_PARENT.has(opening.tagName.getText(sf))
+      && opening.attributes.properties.some((property) => ts.isJsxAttribute(property) && property.name.text === 'onPress')) {
+      let ancestor = node.parent;
+      while (ancestor && !ts.isJsxElement(ancestor) && !ts.isJsxSelfClosingElement(ancestor)) ancestor = ancestor.parent;
+      const parentOpening = ancestor && ts.isJsxElement(ancestor) ? ancestor.openingElement
+        : ancestor && ts.isJsxSelfClosingElement(ancestor) ? ancestor : null;
+      parentBoundsByAt.set(atOf(opening), styleNumbers(parentOpening));
+    }
+    ts.forEachChild(node, visit);
+  };
+  visit(sf);
+}
 const rows = [];
 for (const f of files) {
   const text = readFileSync(f, 'utf8');
@@ -188,9 +222,20 @@ for (const f of files) {
         판정: '판정불가', 사유: '폭 또는 높이가 선언되지 않았다 — 내용/flex 로 정해진다. 렌더 감사의 몫이다' });
       continue;
     }
-    const ew = w + hs.left + hs.right, eh = h + hs.top + hs.bottom;
-    rows.push({ at: `${rel}:${line}`, element: m[1], width: w, height: h, hitSlop: hs.form,
-      유효폭: ew, 유효높이: eh, 판정: (ew >= MIN && eh >= MIN) ? '통과' : '미달' });
+    const at = `${rel}:${line}`;
+    const parent = parentBoundsByAt.get(at);
+    const parentWidth = parent ? (parent.width ?? parent.minWidth ?? null) : null;
+    const parentHeight = parent ? (parent.height ?? parent.minHeight ?? null) : null;
+    const rawWidth = w + hs.left + hs.right, rawHeight = h + hs.top + hs.bottom;
+    const needsParentWidth = w < MIN && rawWidth >= MIN;
+    const needsParentHeight = h < MIN && rawHeight >= MIN;
+    const parentUnknown = (needsParentWidth && parentWidth === null) || (needsParentHeight && parentHeight === null);
+    const ew = parentWidth === null ? rawWidth : Math.min(rawWidth, parentWidth);
+    const eh = parentHeight === null ? rawHeight : Math.min(rawHeight, parentHeight);
+    rows.push({ at, element: m[1], width: w, height: h, hitSlop: hs.form,
+      부모폭: parentWidth, 부모높이: parentHeight, 유효폭: ew, 유효높이: eh,
+      판정: parentUnknown ? '부모판정불가' : (ew >= MIN && eh >= MIN) ? '통과' : '미달',
+      ...(parentUnknown ? { 사유: '44를 채우는 hitSlop이 직접 부모 경계에서 잘리는지 정적으로 확정할 수 없다' } : {}) });
   }
 }
 
@@ -425,7 +470,8 @@ for (const f of files) {
 //      **덮어 줄일 수 있다.** 이 감사는 호출부 override 를 읽지 않는다. 그러니 하한 49 인
 //      `lg` 라도 어떤 소비처가 높이를 줄였는지 정적으로는 모른다.
 // 그래서 호출부 뒤에 강제 하한이 없으면 판정은 **경계**다. 실제 높이는 `S4` 렌더 실측
-// (Android·iOS)이 닫는다.
+// (Android·iOS)이 닫는다. variant 자체의 minHeight는 그 variant 소비처에 치수 override가
+// 없을 때만 강제 하한으로 인정한다.
 //
 // 경계는 위험이 열려 있는 상태다. 그래서 **모든 variant 의 소비처 ID 와 개수를 래칫한다** —
 // 열린 위험이 조용히 퍼지는 것을 막는다. `Button` 이 호출부가 무력화할 수 없는
@@ -502,23 +548,31 @@ let dynamicUses = null;
       const uses = buttonUses(d[1]);
       dynamicUses = uses.dynamic;
       for (const line of m[1].split('\n')) {
-        const v = line.match(/(\w+)\s*:\s*\{\s*pv:\s*(\d+),\s*ph:\s*(\d+),\s*fs:\s*(\d+),\s*r:\s*(\d+),\s*hs:\s*(\d+)/);
+        const v = line.match(/(\w+)\s*:\s*\{\s*pv:\s*(\d+),\s*ph:\s*(\d+),\s*fs:\s*(\d+),\s*r:\s*(\d+),\s*hs:\s*(\d+)(?:,\s*minHeight:\s*(\d+))?/);
         if (!v) continue;
-        const [, name, pv, ph, fs, , hs] = v;
-        const contentLo = 2 * +pv + +fs;
+        const [, name, pv, ph, fs, , hs, variantMinRaw] = v;
+        const variantMinHeight = variantMinRaw === undefined ? null : +variantMinRaw;
+        const contentLo = Math.max(2 * +pv + +fs, variantMinHeight ?? 0);
         const overrides = uses.dimensionOverrides.get(name) ?? [];
         const hitSlopLo = variantHitSlop && overrides.length === 0 ? contentLo + 2 * +hs : contentLo;
         const lo = lockedMinHeight === null ? hitSlopLo : Math.max(contentLo, lockedMinHeight);
+        const parentDependent = contentLo < MIN && variantHitSlop && overrides.length === 0 && hitSlopLo >= MIN;
         const staticallyClosed = (lockedMinHeight !== null && lockedMinHeight >= MIN)
-          || (variantHitSlop && overrides.length === 0 && hitSlopLo >= MIN);
+          || (variantMinHeight !== null && variantMinHeight >= MIN && overrides.length === 0)
+          || (contentLo >= MIN && overrides.length === 0);
         const at = (uses.byVariant.get(name) ?? []).slice().sort();
         const 시험 = (uses.testByVariant.get(name) ?? []).slice().sort();
         componentContracts.push({ 컴포넌트: `Button size="${name}"`, paddingVertical: +pv, fontSize: +fs, hitSlop: +hs,
-          높이하한: lo, 기본값여부: name === d[1], 판정: staticallyClosed ? '통과' : '경계',
+          ...(variantMinHeight === null ? {} : { minHeight: variantMinHeight }),
+          높이하한: lo, 기본값여부: name === d[1], 판정: staticallyClosed ? '통과' : parentDependent ? '부모판정불가' : '경계',
           판정사유: lockedMinHeight !== null && lockedMinHeight >= MIN
             ? `호출부 style 뒤의 강제 minHeight ${lockedMinHeight} 가 모든 variant 를 44 아래로 줄지 않게 한다`
-            : variantHitSlop && overrides.length === 0 && hitSlopLo >= MIN
-              ? `내용 하한 ${contentLo} + hitSlop ${hs}×2 = ${hitSlopLo}, 치수 override 소비처 0으로 시각 크기 없이 44를 채운다`
+            : variantMinHeight !== null && variantMinHeight >= MIN && overrides.length === 0
+              ? `variant minHeight ${variantMinHeight}이고 치수 override 소비처가 없어 부모 hitSlop에 의존하지 않는다`
+            : contentLo >= MIN && overrides.length === 0
+              ? `내용 하한 ${contentLo} 자체가 44 이상이고 치수 override 소비처가 없다 — hitSlop이나 부모 여유에 의존하지 않는다`
+            : parentDependent
+              ? `내용 하한 ${contentLo} + hitSlop ${hs}×2 = ${hitSlopLo}이나 직접 native parent가 44보다 작으면 slop이 잘린다 — 소비처별 부모 실측이 닫는다`
               : overrides.length > 0
                 ? `치수 override 소비처 ${overrides.length}곳(${overrides.join(', ')}) 때문에 variant hitSlop 하한을 정적으로 보장하지 못한다`
             : lo >= MIN
@@ -537,7 +591,7 @@ let dynamicUses = null;
 const compOpen = componentContracts.filter(c => c.판정 !== '통과');
 
 const known = existsSync(knownPath) ? JSON.parse(readFileSync(knownPath, 'utf8')) : { entries: [] };
-const judged = rows.filter(r => r.판정 !== '판정불가');
+const judged = rows.filter(r => r.판정 !== '판정불가' && r.판정 !== '부모판정불가');
 const rawShort = judged.filter(r => r.판정 === '미달');
 const short = rawShort;
 const knownSet = new Map((known.entries ?? []).map(e => [e.at, e]));
@@ -592,6 +646,15 @@ else {
   for (const a of unjudgedAts) if (!ku.has(a)) failures.push(`새 판정불가 — ${a} (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)`);
   const ua = new Set(unjudgedAts);
   for (const a of knownUnjudged) if (!ua.has(a)) failures.push(`판정불가가 해소됐다 — ${a} 를 목록에서 빼라`);
+}
+const parentUnjudged = rows.filter(r => r.판정 === '부모판정불가')
+  .map(r => ({ at: r.at, 사유: r.사유 })).sort((a, b) => a.at.localeCompare(b.at));
+const knownParentUnjudged = new Map((known.parentUnjudged ?? []).map((entry) => [entry.at, entry]));
+if (known.parentUnjudged === undefined) failures.push('알려진 부모판정불가 목록이 없다 — hitSlop clipping을 모르는 자리가 늘어도 조용히 통과한다');
+else {
+  const current = new Map(parentUnjudged.map((entry) => [entry.at, entry]));
+  for (const [at, entry] of current) if (!knownParentUnjudged.has(at)) failures.push(`새 부모판정불가 — ${at} · ${entry.사유}`);
+  for (const [at] of knownParentUnjudged) if (!current.has(at)) failures.push(`부모판정불가가 해소됐다 — ${at} 를 parentUnjudged에서 빼라`);
 }
 // 공용 컴포넌트 계약 — 알려진 목록과 양방향으로 맞춘다.
 //
@@ -705,28 +768,28 @@ const out = {
     script: 'scripts/touch-target-audit.mjs',
     minTouchTarget: MIN,
     판정식: '유효폭 = width + hitSlop.left + hitSlop.right · 유효높이 = height + hitSlop.top + hitSlop.bottom · 둘 다 44 이상',
-    한계: '같은 부모의 직접 이웃인 일반 flow pressable 은 조건부 JSX·Fragment·map 반환 JSX까지 펼쳐 gap/2 규칙으로 정적 검사한다. 펼칠 수 없는 JSX 식과 동적 style/gap/hitSlop은 형제판정불가로 래칫한다. 부모 경계·다른 부모·absolute·z-order 는 네이티브 렌더 감사(S4)의 몫이다.',
+    한계: '직접 부모의 inline width/minWidth/height/minHeight는 토큰까지 읽어 hitSlop clipping을 투영한다. 부모 크기를 못 읽으면 부모판정불가로 래칫한다. 같은 부모의 직접 이웃은 조건부 JSX까지 펼쳐 gap/2 규칙으로 검사한다. 다른 부모·absolute·z-order·동적 부모 크기는 네이티브 렌더 감사(S4a)의 몫이다.',
     측정,
     공용컴포넌트판정식: '하한 = 2×paddingVertical + fontSize (가정 A: lineHeight 를 명시하지 않은 Text 의 상자는 fontSize 보다 낮지 않다). 상한의 근거가 없어 미달을 단정하지 않고, 호출부 style 이 padding·height 를 덮어 줄일 수 있어 통과로도 닫지 않는다 — 전부 경계이고 S4 렌더 실측이 닫는다(R4 F02).',
     파일선정: '제품 = apps/mobile 의 .tsx 에서 .test/.spec.tsx 와 tests·__tests__ 폴더를 뺀 것. 시험 fixture 는 따로 세고 제품 재고와 섞지 않는다(R4 F04).',
     generatedAt: new Date().toISOString(), node: process.version,
   },
   summary: { 파일: files.length, 누를수있는상자: rows.length, 판정: judged.length,
-    통과: judged.length - short.length, 미달: short.length,
+    통과: judged.length - short.length, 미달: short.length, 부모판정불가: parentUnjudged.length,
     형제중첩위험: siblingRisks.length, 형제판정불가: siblingUnjudged.length, 판정불가: rows.length - judged.length,
     공용컴포넌트: componentContracts.length, 공용컴포넌트열린것: compOpen.length,
     Button동적size소비처: dynamicUses === null ? '측정 안 함' : dynamicUses.length },
-  failures, siblingPairs, siblingUnjudged, componentContracts, Button동적size소비처: dynamicUses ?? [], rows,
+  failures, siblingPairs, siblingUnjudged, parentUnjudged, componentContracts, Button동적size소비처: dynamicUses ?? [], rows,
 };
 if (opt['update-known'] !== undefined) {
   const refreshed = { ...known, 제품입력해시, 시험참조해시,
     entries: short.map(s => ({ at: s.at, 유효: `${s.유효폭}×${s.유효높이}`, 사유: '선언상 44 미달 — 후속 보정 필요' })),
-    siblingOverlaps: siblingRisks.map(p => ({ ...(knownSibling.get(p.pair) ?? {}), ...p })), siblingUnjudged,
+    siblingOverlaps: siblingRisks.map(p => ({ ...(knownSibling.get(p.pair) ?? {}), ...p })), siblingUnjudged, parentUnjudged,
     components: componentContracts, buttonDynamic: dynamicUses ?? [], unjudged: unjudgedAts };
   writeFileSync(knownPath, JSON.stringify(refreshed, null, 2) + '\n');
 }
 if (outPath) writeFileSync(outPath, JSON.stringify(out, null, 2) + '\n');
-console.log(`터치 영역 — 판정 ${judged.length}자리 · 통과 ${judged.length - short.length} · **미달 ${short.length}** · 형제중첩위험 ${siblingRisks.length} · 형제판정불가 ${siblingUnjudged.length} · 판정불가 ${rows.length - judged.length}(래칫 대상)`);
+console.log(`터치 영역 — 판정 ${judged.length}자리 · 통과 ${judged.length - short.length} · **미달 ${short.length}** · 부모판정불가 ${parentUnjudged.length} · 형제중첩위험 ${siblingRisks.length} · 형제판정불가 ${siblingUnjudged.length} · 판정불가 ${unjudgedAts.length}(래칫 대상)`);
 for (const c of componentContracts) console.log(`  공용 — ${c.컴포넌트} 높이 하한 ${c.높이하한 ?? '?'} → ${c.판정} · 제품 소비처 ${c.소비처 ?? 0}곳 · 시험 참조 ${c.시험참조 ?? 0}곳`);
 if (dynamicUses !== null) console.log(`  공용 — Button size 동적/spread ${dynamicUses.length}곳 (정적 판정 불가)`);
 console.log(`  측정 — 커밋 ${측정.커밋.slice(0, 12)} · 작업 트리 ${측정.작업트리} · 결속 ${측정.결속}`);

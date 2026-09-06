@@ -195,12 +195,12 @@ function DiscardHistoryBody({ localDate }: { localDate: string }) {
                       자리는 항상 비워 둔다. 있고 없고에 따라 오른쪽 숫자가 밀리면
                       같은 목록이 줄마다 다르게 보인다.
                     */}
-                    <View style={{ width: 27, alignItems: 'center' }}>
+                    <View style={{ width: 44, marginHorizontal: -8.5, alignItems: 'center' }}>
                       {canDelete(e) ? (
                         <Pressable
                           onPress={() => setMenuFor(e)}
                           accessibilityRole="button" accessibilityLabel="더보기"
-                          style={{ width: 45, height: 44, marginHorizontal: -9, marginVertical: -2, alignItems: 'center', justifyContent: 'center' }}
+                          style={{ width: 44, height: 44, alignItems: 'center', justifyContent: 'center' }}
                         >
                           <Icon name="more" size={19} color={COLOR.text.tertiary} />
                         </Pressable>

@@ -84,8 +84,8 @@ export function Chip({ children, active, tone, onPress }: { children: ReactNode;
       onPress={onPress}
       accessibilityRole="button"
       accessibilityState={{ selected: !!active }}
-      hitSlop={6}
-      style={{ flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: space.sm, paddingHorizontal: 12, borderRadius: 999, backgroundColor: active ? T.ink : tone === 'blue' ? COLOR.action.primaryTint : T.surface, borderWidth: active ? 0 : 1, borderColor: T.line }}
+      hitSlop={0}
+      style={{ minHeight: 44, flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: space.sm, paddingHorizontal: 12, borderRadius: 999, backgroundColor: active ? T.ink : tone === 'blue' ? COLOR.action.primaryTint : T.surface, borderWidth: active ? 0 : 1, borderColor: T.line }}
     >
       <Text style={{ fontSize: 16, fontWeight: '600', color: active ? T.onColor : tone === 'blue' ? COLOR.text.accent : T.sub }}>{children}</Text>
     </Pressable>
@@ -105,7 +105,7 @@ export function FilterButton({ label, onPress }: { label: string; onPress: () =>
       onPress={onPress}
       accessibilityRole="button"
       accessibilityLabel={`${label} 변경`}
-      hitSlop={6}
+      hitSlop={{ top: 9, bottom: 9 }}
       style={{ flexDirection: 'row', alignItems: 'center', gap: space.xs, paddingVertical: space.sm, paddingHorizontal: space.sm, borderRadius: radius.md, borderWidth: 1, borderColor: T.line, backgroundColor: T.surface }}
     >
       <Text style={{ fontSize: 13, fontWeight: '700', color: T.sub }} numberOfLines={1}>{label}</Text>
@@ -166,7 +166,7 @@ export function Field({ label, children, hint, req, right, error }: { label: str
   return (
     <View style={{ marginBottom: space.lg }}>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.xs, marginBottom: 8 }}>
-        <Text style={{ fontSize: 16, fontWeight: '700', color: T.sub }}>
+        <Text style={{ flexShrink: 1, fontSize: 16, fontWeight: '700', color: T.sub }}>
           {label}
           {req ? <Text style={{ color: COLOR.text.required }}> *</Text> : null}
         </Text>

@@ -34,7 +34,7 @@ export function AppHeader({ title, onBack, right, bg = T.bg }: {
           <View style={{ width: space.md }} />
         )}
         <Text style={{ flex: 1, fontSize: 18, fontWeight: '700', color: T.ink, letterSpacing: -0.3 }}>{title}</Text>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 2, paddingRight: space.sm }}>{right}</View>
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', minWidth: 44, minHeight: 44, gap: 2, paddingRight: space.sm }}>{right}</View>
       </View>
     </View>
   );

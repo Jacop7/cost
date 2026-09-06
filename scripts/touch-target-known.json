@@ -1,7 +1,7 @@
 {
   "_schema": "v7 — entries(미달) · siblingOverlaps(같은 부모 형제 중첩 위험) · siblingUnjudged(조건부 JSX·동적 style 때문에 형제 관계 판정 불가) · components(공용 컴포넌트 계약) · buttonDynamic · unjudged. 제품 .tsx 만 세고 시험 fixture 는 시험참조로 따로 둔다(R4 F04).",
   "_해시": "이 목록이 확정된 **제품** 감사 입력의 해시다 — 제품 .tsx 의 \"경로\\0git blob SHA\" 을 정렬해 잇고 감사기 자신의 sha256 을 더해 sha256. 커밋 SHA 자기참조를 피하면서 \"이후 무변경\" 을 게이트가 직접 검사한다. **시험 fixture 는 이 해시에 들어가지 않는다**(솔 검수 R5 F02) — 시험 한 줄을 고쳤다고 제품 재고가 흔들리면 안 된다. 시험참조해시는 기록만 하고 래칫하지 않는다. blob SHA 는 CRLF→LF 정규화 뒤 계산하므로 체크아웃한 OS 에 좌우되지 않는다(페이블 R6 차단 — 내용 sha256 은 줄끝을 쟀다).",
-  "제품입력해시": "cbae18edc93f36f8b760925318395257768a5d63e5086c53d24a040d92a63490",
+  "제품입력해시": "c6d7333eafee1119e918cba5d95dbb3d930dcf7c8ead694b29d3c1d58a1375bc",
   "시험참조해시": "9a57d560e0ab1b1bee86e48a194f516fcd0f698371ee76a587bd2c0d94c4a3cb",
   "_entries": "선언 크기와 hitSlop 이 있는데 44 에 못 미치는 자리. 유효 크기가 줄어도 FAIL 한다.",
   "entries": [],
@@ -13,11 +13,12 @@
       "컴포넌트": "Button size=\"sm\"",
       "paddingVertical": 8,
       "fontSize": 14,
-      "hitSlop": 7,
+      "hitSlop": 0,
+      "minHeight": 44,
       "높이하한": 44,
       "기본값여부": false,
       "판정": "통과",
-      "판정사유": "내용 하한 30 + hitSlop 7×2 = 44, 치수 override 소비처 0으로 시각 크기 없이 44를 채운다",
+      "판정사유": "variant minHeight 44이고 치수 override 소비처가 없어 부모 hitSlop에 의존하지 않는다",
       "소비처": 10,
       "at": [
         "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:337",
@@ -41,8 +42,8 @@
       "hitSlop": 1,
       "높이하한": 44,
       "기본값여부": true,
-      "판정": "통과",
-      "판정사유": "내용 하한 42 + hitSlop 1×2 = 44, 치수 override 소비처 0으로 시각 크기 없이 44를 채운다",
+      "판정": "부모판정불가",
+      "판정사유": "내용 하한 42 + hitSlop 1×2 = 44이나 직접 native parent가 44보다 작으면 slop이 잘린다 — 소비처별 부모 실측이 닫는다",
       "소비처": 13,
       "at": [
         "apps/mobile/src/components/kit/QueryState.tsx:81",
@@ -72,7 +73,7 @@
       "높이하한": 49,
       "기본값여부": false,
       "판정": "통과",
-      "판정사유": "내용 하한 49 + hitSlop 0×2 = 49, 치수 override 소비처 0으로 시각 크기 없이 44를 채운다",
+      "판정사유": "내용 하한 49 자체가 44 이상이고 치수 override 소비처가 없다 — hitSlop이나 부모 여유에 의존하지 않는다",
       "소비처": 65,
       "at": [
         "apps/mobile/src/components/kit/MemoEditSheet.tsx:48",
@@ -132,9 +133,9 @@
         "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx:368",
         "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx:369",
         "apps/mobile/src/features/sales/screens/SalesDayDetailScreen.tsx:126",
-        "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:602",
-        "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:672",
-        "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:707",
+        "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:601",
+        "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:671",
+        "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:706",
         "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:278",
         "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:325",
         "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:383",
@@ -149,7 +150,7 @@
   "buttonDynamic": [],
   "_unjudged": "폭·높이가 선언되지 않아 정적으로 판정할 수 없는 자리. 래칫 밖에 두면 판정 못 하는 상자가 늘어도 통과하므로 목록으로 묶는다. 줄이는 방향은 공용 컴포넌트 계약을 늘리는 것이다.",
   "unjudged": [
-    "apps/mobile/src/components/kit/Button.tsx:46",
+    "apps/mobile/src/components/kit/Button.tsx:48",
     "apps/mobile/src/components/kit/Sheet.tsx:26",
     "apps/mobile/src/components/kit/SortSheet.tsx:22",
     "apps/mobile/src/components/kit/SortSheet.tsx:52",
@@ -248,11 +249,8 @@
     "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:274",
     "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:289",
     "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:297",
-    "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:305",
     "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:312",
-    "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:363",
     "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:369",
-    "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:39",
     "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:391",
     "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:437",
     "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:462",
@@ -294,12 +292,12 @@
     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:412",
     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:434",
     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:450",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:528",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:544",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:622",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:648",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:687",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:765",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:527",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:543",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:621",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:647",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:686",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:764",
     "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx:119",
     "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx:75",
     "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx:95",
@@ -364,6 +362,120 @@
     {
       "at": "apps/mobile/src/features/sales/screens/SalesRevenueScreen.tsx:87",
       "사유": "조건부 JSX 조합이 128개를 넘어 정적으로 펼치지 못했다"
+    }
+  ],
+  "parentUnjudged": [
+    {
+      "at": "apps/mobile/src/components/kit/AppHeader.tsx:24",
+      "사유": "44를 채우는 hitSlop이 직접 부모 경계에서 잘리는지 정적으로 확정할 수 없다"
+    },
+    {
+      "at": "apps/mobile/src/components/kit/index.tsx:122",
+      "사유": "44를 채우는 hitSlop이 직접 부모 경계에서 잘리는지 정적으로 확정할 수 없다"
+    },
+    {
+      "at": "apps/mobile/src/components/kit/SearchBar.tsx:41",
+      "사유": "44를 채우는 hitSlop이 직접 부모 경계에서 잘리는지 정적으로 확정할 수 없다"
+    },
+    {
+      "at": "apps/mobile/src/components/kit/SearchBar.tsx:51",
+      "사유": "44를 채우는 hitSlop이 직접 부모 경계에서 잘리는지 정적으로 확정할 수 없다"
+    },
+    {
+      "at": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:144",
+      "사유": "44를 채우는 hitSlop이 직접 부모 경계에서 잘리는지 정적으로 확정할 수 없다"
+    },
+    {
+      "at": "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:84",
+      "사유": "44를 채우는 hitSlop이 직접 부모 경계에서 잘리는지 정적으로 확정할 수 없다"
+    },
+    {
+      "at": "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:94",
+      "사유": "44를 채우는 hitSlop이 직접 부모 경계에서 잘리는지 정적으로 확정할 수 없다"
+    },
+    {
+      "at": "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:169",
+      "사유": "44를 채우는 hitSlop이 직접 부모 경계에서 잘리는지 정적으로 확정할 수 없다"
+    },
+    {
+      "at": "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:281",
+      "사유": "44를 채우는 hitSlop이 직접 부모 경계에서 잘리는지 정적으로 확정할 수 없다"
+    },
+    {
+      "at": "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:293",
+      "사유": "44를 채우는 hitSlop이 직접 부모 경계에서 잘리는지 정적으로 확정할 수 없다"
+    },
+    {
+      "at": "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx:25",
+      "사유": "44를 채우는 hitSlop이 직접 부모 경계에서 잘리는지 정적으로 확정할 수 없다"
+    },
+    {
+      "at": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx:201",
+      "사유": "44를 채우는 hitSlop이 직접 부모 경계에서 잘리는지 정적으로 확정할 수 없다"
+    },
+    {
+      "at": "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:129",
+      "사유": "44를 채우는 hitSlop이 직접 부모 경계에서 잘리는지 정적으로 확정할 수 없다"
+    },
+    {
+      "at": "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:132",
+      "사유": "44를 채우는 hitSlop이 직접 부모 경계에서 잘리는지 정적으로 확정할 수 없다"
+    },
+    {
+      "at": "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:85",
+      "사유": "44를 채우는 hitSlop이 직접 부모 경계에서 잘리는지 정적으로 확정할 수 없다"
+    },
+    {
+      "at": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:222",
+      "사유": "44를 채우는 hitSlop이 직접 부모 경계에서 잘리는지 정적으로 확정할 수 없다"
+    },
+    {
+      "at": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:230",
+      "사유": "44를 채우는 hitSlop이 직접 부모 경계에서 잘리는지 정적으로 확정할 수 없다"
+    },
+    {
+      "at": "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:109",
+      "사유": "44를 채우는 hitSlop이 직접 부모 경계에서 잘리는지 정적으로 확정할 수 없다"
+    },
+    {
+      "at": "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:152",
+      "사유": "44를 채우는 hitSlop이 직접 부모 경계에서 잘리는지 정적으로 확정할 수 없다"
+    },
+    {
+      "at": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:143",
+      "사유": "44를 채우는 hitSlop이 직접 부모 경계에서 잘리는지 정적으로 확정할 수 없다"
+    },
+    {
+      "at": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:146",
+      "사유": "44를 채우는 hitSlop이 직접 부모 경계에서 잘리는지 정적으로 확정할 수 없다"
+    },
+    {
+      "at": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:355",
+      "사유": "44를 채우는 hitSlop이 직접 부모 경계에서 잘리는지 정적으로 확정할 수 없다"
+    },
+    {
+      "at": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:359",
+      "사유": "44를 채우는 hitSlop이 직접 부모 경계에서 잘리는지 정적으로 확정할 수 없다"
+    },
+    {
+      "at": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:159",
+      "사유": "44를 채우는 hitSlop이 직접 부모 경계에서 잘리는지 정적으로 확정할 수 없다"
+    },
+    {
+      "at": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:168",
+      "사유": "44를 채우는 hitSlop이 직접 부모 경계에서 잘리는지 정적으로 확정할 수 없다"
+    },
+    {
+      "at": "apps/mobile/src/features/sales/components/SaleStepper.tsx:18",
+      "사유": "44를 채우는 hitSlop이 직접 부모 경계에서 잘리는지 정적으로 확정할 수 없다"
+    },
+    {
+      "at": "apps/mobile/src/features/sales/screens/SalesFixedScreen.tsx:62",
+      "사유": "44를 채우는 hitSlop이 직접 부모 경계에서 잘리는지 정적으로 확정할 수 없다"
+    },
+    {
+      "at": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:361",
+      "사유": "44를 채우는 hitSlop이 직접 부모 경계에서 잘리는지 정적으로 확정할 수 없다"
     }
   ]
 }

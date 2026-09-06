@@ -45,7 +45,8 @@ const geometryProps = new Set([
   'width', 'height', 'minWidth', 'minHeight', 'maxWidth', 'maxHeight',
   'padding', 'paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft', 'paddingHorizontal', 'paddingVertical',
   'margin', 'marginTop', 'marginRight', 'marginBottom', 'marginLeft', 'marginHorizontal', 'marginVertical',
-  'gap', 'rowGap', 'columnGap', 'top', 'right', 'bottom', 'left', 'position', 'flexDirection', 'flexWrap',
+  'gap', 'rowGap', 'columnGap', 'top', 'right', 'bottom', 'left', 'position',
+  'flexDirection', 'flexWrap', 'flexShrink',
 ]);
 const geometryAttrs = new Set(['hitSlop', 'numberOfLines', 'maxFontSizeMultiplier']);
 const sha = (value) => createHash('sha256').update(value).digest('hex');
@@ -158,10 +159,28 @@ export function evaluateS4(sources, contract, baselineSources) {
     const actualChanges = astChangePlan(baselineSources, sources);
     const expectedChanges = contract.allowedAstChanges;
     if (!Array.isArray(expectedChanges)) fail('S4 선언별 AST 변경 계약이 없다');
-    else if (JSON.stringify(actualChanges) !== JSON.stringify(expectedChanges)) {
-      const first = actualChanges.find((item, index) => JSON.stringify(item) !== JSON.stringify(expectedChanges[index]))
-        ?? expectedChanges[actualChanges.length];
-      fail(`S4 선언별 AST 변경 불일치 — ${first?.file ?? '건수'} ${first?.declaration ?? `${actualChanges.length}≠${expectedChanges.length}`}`);
+    else {
+      const stageCounts = expectedChanges.reduce((counts, item) => {
+        counts[item.stage] = (counts[item.stage] ?? 0) + 1;
+        return counts;
+      }, {});
+      const expectedWithoutStage = expectedChanges.map(({ stage: _stage, ...item }) => item);
+      if (expectedChanges.some((item) => !['S4', 'S3b', 'S4a', 'S4b'].includes(item.stage)))
+        fail('S4 선언별 AST 변경에 유효한 소유 단계가 없는 행이 있다');
+      if (stageCounts.S3b !== contract.downstreamStage.geometryChangesIncludedHere)
+        fail(`S3b 소유 AST 변경 ${stageCounts.S3b ?? 0} ≠ ${contract.downstreamStage.geometryChangesIncludedHere}`);
+      if (stageCounts.S4a !== contract.nativeStage.geometryChangesIncludedHere)
+        fail(`S4a 소유 AST 변경 ${stageCounts.S4a ?? 0} ≠ ${contract.nativeStage.geometryChangesIncludedHere}`);
+      if ((stageCounts.S4b ?? 0) !== (contract.nativeFollowupStage?.geometryChangesIncludedHere ?? 0))
+        fail(`S4b 소유 AST 변경 ${stageCounts.S4b ?? 0} ≠ ${contract.nativeFollowupStage?.geometryChangesIncludedHere ?? 0}`);
+      const expectedS4 = expectedChanges.length - contract.downstreamStage.geometryChangesIncludedHere
+        - contract.nativeStage.geometryChangesIncludedHere - (contract.nativeFollowupStage?.geometryChangesIncludedHere ?? 0);
+      if (stageCounts.S4 !== expectedS4) fail(`S4 소유 AST 변경 ${stageCounts.S4 ?? 0} ≠ ${expectedS4}`);
+      if (JSON.stringify(actualChanges) !== JSON.stringify(expectedWithoutStage)) {
+        const first = actualChanges.find((item, index) => JSON.stringify(item) !== JSON.stringify(expectedWithoutStage[index]))
+          ?? expectedWithoutStage[actualChanges.length];
+        fail(`S4 선언별 AST 변경 불일치 — ${first?.file ?? '건수'} ${first?.declaration ?? `${actualChanges.length}≠${expectedWithoutStage.length}`}`);
+      }
     }
   }
   const count = (name, regex) => {
@@ -212,9 +231,9 @@ export function evaluateS4(sources, contract, baselineSources) {
   if (wrapped !== contract.counts.tabStackProviders) fail(`탭 Stack provider ${wrapped} ≠ ${contract.counts.tabStackProviders}`);
 
   const button = get('apps/mobile/src/components/kit/Button.tsx');
-  for (const pattern of [/sm:\s*\{[^}]*hs:\s*7\b/, /md:\s*\{[^}]*hs:\s*1\b/, /lg:\s*\{[^}]*hs:\s*0\b/,
+  for (const pattern of [/sm:\s*\{[^}]*hs:\s*0\b[^}]*minHeight:\s*44\b/, /md:\s*\{[^}]*hs:\s*1\b/, /lg:\s*\{[^}]*hs:\s*0\b/,
     /hitSlop=\{\{\s*top:\s*s\.hs,\s*bottom:\s*s\.hs\s*\}\}/])
-    if (!pattern.test(button)) fail(`Button 시각 보존 hitSlop 계약 누락: ${pattern}`);
+    if (!pattern.test(button)) fail(`Button 크기·hitSlop 계약 누락: ${pattern}`);
   if (/minHeight\s*:\s*minTouchTarget/.test(button)) fail('Button에 시각 높이를 바꾸는 minTouchTarget이 돌아왔다');
 
   const sheet = get('apps/mobile/src/components/kit/Sheet.tsx');
@@ -238,7 +257,11 @@ export function evaluateS4(sources, contract, baselineSources) {
   if (touch) {
     if (touch.entries?.length !== 0) fail(`터치 미달 ${touch.entries?.length ?? '없음'}건`);
     if (touch.siblingOverlaps?.length !== 0) fail(`형제 중첩 ${touch.siblingOverlaps?.length ?? '없음'}건`);
-    if (!touch.components?.length || touch.components.some((item) => item.판정 !== '통과')) fail('Button variant 정적 통과가 닫히지 않았다');
+    const componentState = new Map((touch.components ?? []).map((item) => [item.컴포넌트, item.판정]));
+    if (componentState.get('Button size="sm"') !== '통과'
+      || componentState.get('Button size="md"') !== '부모판정불가'
+      || componentState.get('Button size="lg"') !== '통과')
+      fail('Button variant 부모 clipping 상태가 계약과 다르다');
   }
 
   // S4가 구조를 소유해 대체한 파일을 빼고, S3a의 1,042개 토큰 치환이 현재 소스에 남아
@@ -278,10 +301,15 @@ function main() {
   if (opt['update-ast-contract'] !== undefined) {
     if (!baselineSources) throw new Error('baseline AST 입력 없이 계약을 갱신할 수 없다');
     const sources = loadSources(root);
+    const previousStages = new Map((contract.allowedAstChanges ?? []).map(({ stage, ...item }) => [JSON.stringify(item), stage]));
+    const allowedAstChanges = astChangePlan(baselineSources, sources)
+      .map((item) => ({ ...item, stage: previousStages.get(JSON.stringify(item)) ?? 'S4a' }));
     contract = {
       ...contract,
       allowedAstDiff: astDiffContract(baselineSources, sources),
-      allowedAstChanges: astChangePlan(baselineSources, sources),
+      nativeStage: { ...(contract.nativeStage ?? {}), stage: 'S4a', geometryChangesIncludedHere: allowedAstChanges.filter((item) => item.stage === 'S4a').length },
+      nativeFollowupStage: { ...(contract.nativeFollowupStage ?? {}), stage: 'S4b', geometryChangesIncludedHere: allowedAstChanges.filter((item) => item.stage === 'S4b').length },
+      allowedAstChanges,
     };
     writeFileSync(contractPath, JSON.stringify(contract, null, 2) + '\n');
   }

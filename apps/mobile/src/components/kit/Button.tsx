@@ -32,8 +32,10 @@ export function Button({
     ghost: { bg: 'transparent', fg: T.sub, border: T.line },
     danger: { bg: T.redTint, fg: T.red },
   };
-  const sizes: Record<Size, { pv: number; ph: number; fs: number; r: number; hs: number }> = {
-    sm: { pv: 8, ph: 12, fs: 14, r: 9, hs: 7 },
+  const sizes: Record<Size, { pv: number; ph: number; fs: number; r: number; hs: number; minHeight?: number }> = {
+    // 네이티브 측정에서 10개 소비처 중 발주·영업 시작을 포함한 5개 이상이
+    // 가장 가까운 부모에 잘려 36.57dp로 남았다. 반복 예외 대신 공용 시각 높이를 보장한다.
+    sm: { pv: 8, ph: 12, fs: 14, r: 9, hs: 0, minHeight: 44 },
     md: { pv: 13, ph: 16, fs: 16, r: 12, hs: 1 },
     lg: { pv: 16, ph: 18, fs: 17, r: 14, hs: 0 },
   };
@@ -58,7 +60,7 @@ export function Button({
           alignSelf: full ? 'stretch' : 'flex-start',
           backgroundColor: kind === 'primary' && pressed && !blocked ? COLOR.action.primaryPressed : c.bg,
           borderWidth: c.border ? 1 : 0, borderColor: c.border,
-          paddingVertical: s.pv, paddingHorizontal: s.ph, borderRadius: s.r,
+          paddingVertical: s.pv, paddingHorizontal: s.ph, borderRadius: s.r, minHeight: s.minHeight,
           // 2026-09-06 소유자 결정: variant 고유색은 유지하고 비활성 표현만 공통 opacity로 통일한다.
           opacity: disabled ? 0.4 : pressed && kind !== 'primary' ? 0.85 : 1,
         },

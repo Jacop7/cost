@@ -20,14 +20,31 @@ const changed = (file, from, to) => {
 
 test('저장소 S4 계약이 통과한다', () => assert.deepEqual(evaluateS4(current(), contract, baseline), []));
 
+test('누적 AST 변경은 S4와 S3b 소유 단계를 행별로 보존한다', () => {
+  const counts = contract.allowedAstChanges.reduce((result, item) => {
+    result[item.stage] = (result[item.stage] ?? 0) + 1;
+    return result;
+  }, {});
+  assert.equal(counts.S4, contract.allowedAstChanges.length
+    - contract.downstreamStage.geometryChangesIncludedHere
+    - contract.nativeStage.geometryChangesIncludedHere
+    - (contract.nativeFollowupStage?.geometryChangesIncludedHere ?? 0));
+  assert.equal(counts.S3b, contract.downstreamStage.geometryChangesIncludedHere);
+  assert.equal(counts.S4a ?? 0, contract.nativeStage.geometryChangesIncludedHere);
+  assert.equal(counts.S4b ?? 0, contract.nativeFollowupStage?.geometryChangesIncludedHere ?? 0);
+  const broken = structuredClone(contract);
+  broken.allowedAstChanges[0].stage = 'S3b';
+  assert.match(evaluateS4(current(), broken, baseline).join('\n'), /S3b 소유 AST 변경/);
+});
+
 test('스크롤 역할 한 자리를 리터럴로 되돌리면 실패한다', () => {
   const sources = changed('apps/mobile/src/components/history/HistoryLayout.tsx', 'paddingBottom: LAYOUT.scroll.end', 'paddingBottom: 30');
   assert.match(evaluateS4(sources, contract, baseline).join('\n'), /scrollEnd 43 ≠ 44/);
 });
 
-test('Button sm hitSlop을 줄이면 실패한다', () => {
-  const sources = changed('apps/mobile/src/components/kit/Button.tsx', 'r: 9, hs: 7', 'r: 9, hs: 6');
-  assert.match(evaluateS4(sources, contract, baseline).join('\n'), /Button 시각 보존 hitSlop/);
+test('Button sm 최소 높이를 줄이면 실패한다', () => {
+  const sources = changed('apps/mobile/src/components/kit/Button.tsx', 'minHeight: 44', 'minHeight: 43');
+  assert.match(evaluateS4(sources, contract, baseline).join('\n'), /Button 크기·hitSlop/);
 });
 
 test('탭 라벨을 한 줄로 닫으면 실패한다', () => {
@@ -66,5 +83,10 @@ test('알려진 터치 미달을 다시 넣으면 실패한다', () => {
 
 test('허용 목록 밖 기하 변경은 건수 상쇄와 무관하게 실패한다', () => {
   const sources = changed('apps/mobile/src/components/history/HistoryLayout.tsx', 'paddingHorizontal: 16', 'paddingHorizontal: 17');
+  assert.match(evaluateS4(sources, contract, baseline).join('\n'), /허용 AST diff 불일치/);
+});
+
+test('글자 확대에서 터치 영역을 지키는 flexShrink 변경도 기하 계약이 잡는다', () => {
+  const sources = changed('apps/mobile/src/components/kit/index.tsx', 'flexShrink: 1, fontSize: 16', 'flexShrink: 0, fontSize: 16');
   assert.match(evaluateS4(sources, contract, baseline).join('\n'), /허용 AST diff 불일치/);
 });
