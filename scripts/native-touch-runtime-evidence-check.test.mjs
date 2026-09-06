@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { validateArtifactData, verifyRepositoryEvidence } from './native-touch-runtime-evidence-check.mjs';
+import { buildEvidenceReceipt, validateArtifactData, verifyRepositoryEvidence } from './native-touch-runtime-evidence-check.mjs';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const json = (path) => JSON.parse(readFileSync(join(root, path), 'utf8'));
@@ -19,6 +19,17 @@ const expected = {
 
 test('closedPlatforms의 exact 증거는 원시 frame 재계산과 현재 제품 범위에 결속된다', () => {
   assert.deepEqual(verifyRepositoryEvidence(root, { requirePlatforms: ['android'] }).failures, []);
+});
+
+test('작은 영수증도 원시 증거·제품 SHA·검사 계약 해시에 결속된다', () => {
+  const verification = verifyRepositoryEvidence(root, { requirePlatforms: ['android'] });
+  const receipt = buildEvidenceReceipt(root, verification, ['android']);
+  assert.equal(receipt.status, 'PASS');
+  assert.deepEqual(receipt.requirePlatforms, ['android']);
+  assert.equal(receipt.cells.length, 2);
+  assert.ok(receipt.cells.every((cell) => cell.status === 'PRESENT' && cell.textSha256.length === 64));
+  assert.equal(new Set(receipt.cells.map((cell) => cell.productCommit)).size, 1);
+  assert.ok(Object.values(receipt.contracts).every((item) => item.textSha256.length === 64));
 });
 
 test('전체 4칸 요구는 iOS 증거가 없으면 MISSING으로 설명하고, 있으면 전부 검증한다', () => {
