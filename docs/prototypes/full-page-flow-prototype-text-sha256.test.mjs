@@ -13,6 +13,11 @@ test('같은 HTML의 LF와 CRLF는 같은 적용본 SHA다', () => {
   assert.equal(textSha256(lf), textSha256(lf.replace(/\n/g, '\r\n')));
 });
 
+test('UTF-8 BOM 유무는 같은 텍스트 증거 SHA다', () => {
+  const text = '# 계약\n값\n';
+  assert.equal(textSha256(text), textSha256(`\uFEFF${text}`));
+});
+
 test('세 DOM 감사기는 적용본과 자기 스크립트를 공용 textSha256로 재다', () => {
   for (const name of [
     'full-page-flow-prototype-render-audit.mjs',
@@ -41,8 +46,8 @@ test('프로토타입 대비 게이트도 스크립트와 계약을 공용 textS
 
 test('해시 지점 전수표는 ID가 유일하고 모든 지점의 정규화 계약을 명시한다', () => {
   const inventory = JSON.parse(read('full-page-flow-prototype-hash-inventory.json'));
-  assert.equal(inventory.contract, 'utf8-crlf-to-lf-sha256-v1');
-  assert.equal(inventory.points.length, 14);
+  assert.equal(inventory.contract, 'utf8-bom-strip-crlf-to-lf-sha256-v1');
+  assert.equal(inventory.points.length, 15);
   assert.equal(new Set(inventory.points.map((p) => p.id)).size, inventory.points.length);
   const allowed = new Set(['shared-textSha256', 'powershell-crlf-to-lf-parity', 'canonical-json', 'git-blob-sha', 'domain-contract']);
   for (const point of inventory.points) assert.ok(allowed.has(point.normalization), point.id);

@@ -444,12 +444,12 @@
     "bluePressed": 0
   },
   "statusAliasExpectedTotals": {
-    "green": 29,
-    "greenTint": 6,
-    "amberText": 38,
-    "amberTint": 15,
-    "red": 96,
-    "redTint": 17
+    "green": 0,
+    "greenTint": 0,
+    "amberText": 0,
+    "amberTint": 0,
+    "red": 0,
+    "redTint": 0
   },
   "buttonDisabledContract": {
     "mode": "variant-color-opacity",

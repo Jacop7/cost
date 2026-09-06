@@ -113,12 +113,18 @@ const action = {
   'action.onTint': pick(actionBlock, 'onTint', 'COLOR.action'),
 };
 const brandPrimary = pick(brandBlock, 'primary', 'COLOR.brand');
-// myHubTile.background 는 리터럴이 아니라 COLOR.action.primaryTint 참조다 — 참조면 그 값을 쓴다.
+const componentRole = (key, fallback) => {
+  const ref = tileBlock?.match(new RegExp(`(?:^|[^A-Za-z])${key}\\s*:\\s*COLOR\\.(action|text|status|state)\\.([A-Za-z][A-Za-z0-9]*)`));
+  if (!ref) return pick(tileBlock, key, 'COMPONENT.myHubTile');
+  const tables = { action, text, status, state: text };
+  return tables[ref[1]]?.[`${ref[1]}.${ref[2]}`] ?? fallback;
+};
+// myHubTile 세 역할은 의미 토큰 참조를 직접 해석해 같은 값을 복제하지 못하게 한다.
 const tileBgRef = tileBlock && /background\s*:\s*COLOR\.action\.primaryTint/.test(tileBlock);
 const tile = {
-  'myHubTile.background': tileBgRef ? action['action.primaryTint'] : pick(tileBlock, 'background', 'COMPONENT.myHubTile'),
-  'myHubTile.icon': pick(tileBlock, 'icon', 'COMPONENT.myHubTile'),
-  'myHubTile.label': pick(tileBlock, 'label', 'COMPONENT.myHubTile'),
+  'myHubTile.background': componentRole('background', action['action.primaryTint']),
+  'myHubTile.icon': componentRole('icon', action['action.primary']),
+  'myHubTile.label': componentRole('label', action['action.onTint']),
 };
 if (tileBgRef) note.push('myHubTile.background 는 COLOR.action.primaryTint 참조다 — 값이 갈릴 수 없다');
 
@@ -395,7 +401,7 @@ if (!existsSync(sealPath)) {
 // `cardShadow` 는 `shadow.card` 의 호환 별칭이다. `S1` 은 선언만 하는 단계라 호출부를
 // 건드리지 않지만, **사용처가 늘어나면 안 된다** — 새 화면이 별칭을 새로 쓰면 치환이
 // 끝나지 않는다. `S3a` 완료 조건은 "사용처 0 → 별칭 삭제" 이므로 이 수는 줄기만 해야 한다.
-const ALIAS_BASELINE = Number(opt['alias-baseline'] ?? 2);   // kit/index.tsx:58(Card) · kit/index.tsx:302(세그먼트 선택)
+const ALIAS_BASELINE = Number(opt['alias-baseline'] ?? 0);   // PRT-267: S3a 약속대로 사용처 0 · 별칭 삭제
 {
   const appSrc = resolve(opt.app ?? resolve(root, 'apps/mobile/src'));
   const hits = [];
@@ -421,7 +427,7 @@ const ALIAS_BASELINE = Number(opt['alias-baseline'] ?? 2);   // kit/index.tsx:58
     fail.push(`cardShadow 별칭 사용처가 ${hits.length}곳으로 늘었다(기준 ${ALIAS_BASELINE}) — 새 화면은 shadow.card 를 쓴다: ${hits.join(' · ')}`);
   else if (hits.length < ALIAS_BASELINE)
     fail.push(`cardShadow 별칭 사용처가 ${hits.length}곳으로 줄었다(기준 ${ALIAS_BASELINE}) — 치환했으면 ALIAS_BASELINE 을 함께 낮춰라. 0 이면 별칭을 삭제한다(S3a 완료 조건)`);
-  else note.push(`cardShadow 별칭 사용처 ${hits.length}곳 — 기준과 같다 (S3a 에서 0 으로 만들고 별칭 삭제)`);
+  else note.push(`cardShadow 별칭 사용처 ${hits.length}곳 — 기준과 같다 (0 유지)`);
 }
 
 // --- 보고 ---------------------------------------------------------------------

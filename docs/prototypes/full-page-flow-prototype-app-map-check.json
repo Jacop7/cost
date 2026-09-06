@@ -1,6 +1,6 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-06T11:57:49.015Z",
+  "generatedAt": "2026-09-06T12:33:59.427Z",
   "schemaVersion": 1,
   "script": {
    "name": "full-page-flow-prototype-app-map-check.mjs",
@@ -9,7 +9,7 @@
   "source": {
    "audit": {
     "path": "token-adoption-audit.json",
-    "sha256": "f2b19e9bd2f50cbe2754d597c0ef4be0f1962c3109d08e84da191af51ca19f4d",
+    "sha256": "cceeb07d0dfa3175a33269042ddeedf6acc3bb07bbfd9da82b3ed82311bfbdea",
     "declarations": 2310
    },
    "appMap": {

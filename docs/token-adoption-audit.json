@@ -1,19 +1,19 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-06T11:36:30.350Z",
+  "generatedAt": "2026-09-06T12:32:42.871Z",
   "schemaVersion": 1,
   "script": {
    "name": "token-adoption-audit.mjs",
    "sha256": "591d6ad787d555acdabbf31009808cec9ec5c2f5ec58c2fde908337decc6dd80"
   },
   "repo": {
-   "headCommit": "dda79a6c2a4e48293450dfe69dd98996908bee17",
-   "headTree": "19595f9cbddfef7d21e50ae5b78b5614acabd8d2",
+   "headCommit": "b3589e514a5bf4186b5716ca8c0c2875170c3eff",
+   "headTree": "1294595feb33d3d98dcb62afa0c1b86d8fa40bc1",
    "toplevel": "C:/Users/jacop/프로젝트/식자재관리앱/.tmp/sol-prt217-6e6376b"
   },
   "결속": {
-   "expectCommit": "dda79a6",
-   "범위해시": "ee1731f17562c5b01a3bc2d8b480e80109d3290c0a509315e16df4f6c5a56a36",
+   "expectCommit": "b3589e514a5bf4186b5716ca8c0c2875170c3eff",
+   "범위해시": "0dbf5d050c0099ad8bee6f8da3ae5884ad9e03bd309f57796fa16e2d32b25c97",
    "범위해시정의": "선택된 파일의 \"경로\\0 git blob SHA\" 를 정렬해 잇고 감사 스크립트 자신의 blob SHA 를 더해 sha256. blob SHA 는 CRLF→LF 정규화 뒤 직접 계산하므로 OS·git 유무에 좌우되지 않는다(페이블 R6 차단). 커밋 SHA 자기참조 없이 입력을 결속한다."
   },
   "runner": {
@@ -370,7 +370,7 @@
     "prop": "letterSpacing",
     "value": "-0.2",
     "file": "apps/mobile/src/theme/tokens.ts",
-    "line": 312,
+    "line": 302,
     "column": 14,
     "layer": "tokenDefinition"
    },
@@ -379,7 +379,7 @@
     "prop": "letterSpacing",
     "value": "-0.5",
     "file": "apps/mobile/src/theme/tokens.ts",
-    "line": 315,
+    "line": 305,
     "column": 20,
     "layer": "tokenDefinition"
    }
@@ -1194,7 +1194,7 @@
    "prop": "fontSize",
    "value": "13",
    "file": "apps/mobile/src/components/kit/charts.tsx",
-   "line": 49,
+   "line": 50,
    "column": 36,
    "layer": "sharedComponent"
   },
@@ -1203,7 +1203,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/components/kit/charts.tsx",
-   "line": 49,
+   "line": 50,
    "column": 50,
    "layer": "sharedComponent"
   },
@@ -1212,7 +1212,7 @@
    "prop": "fontWeight",
    "value": "800",
    "file": "apps/mobile/src/components/kit/charts.tsx",
-   "line": 50,
+   "line": 51,
    "column": 47,
    "layer": "sharedComponent"
   },
@@ -1221,7 +1221,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/components/kit/charts.tsx",
-   "line": 51,
+   "line": 52,
    "column": 36,
    "layer": "sharedComponent"
   },
@@ -1230,7 +1230,7 @@
    "prop": "fontWeight",
    "value": "600",
    "file": "apps/mobile/src/components/kit/charts.tsx",
-   "line": 51,
+   "line": 52,
    "column": 50,
    "layer": "sharedComponent"
   },
@@ -1239,7 +1239,7 @@
    "prop": "hex",
    "value": "#FFF",
    "file": "apps/mobile/src/components/kit/charts.tsx",
-   "line": 101,
+   "line": 102,
    "column": 37,
    "layer": "sharedComponent"
   },
@@ -1519,7 +1519,7 @@
    "value": "600",
    "file": "apps/mobile/src/components/kit/index.tsx",
    "line": 177,
-   "column": 133,
+   "column": 149,
    "layer": "sharedComponent"
   },
   {
@@ -2860,7 +2860,7 @@
    "value": "600",
    "file": "apps/mobile/src/features/ingredients/components/LedgerRow.tsx",
    "line": 67,
-   "column": 127,
+   "column": 143,
    "layer": "product"
   },
   {
@@ -4102,7 +4102,7 @@
    "value": "4",
    "file": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx",
    "line": 189,
-   "column": 63,
+   "column": 79,
    "layer": "product"
   },
   {
@@ -4111,7 +4111,7 @@
    "value": "700",
    "file": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx",
    "line": 189,
-   "column": 77,
+   "column": 93,
    "layer": "product"
   },
   {
@@ -8710,7 +8710,7 @@
    "value": "12",
    "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
    "line": 320,
-   "column": 136,
+   "column": 152,
    "layer": "product"
   },
   {
@@ -8737,7 +8737,7 @@
    "value": "12",
    "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
    "line": 325,
-   "column": 110,
+   "column": 126,
    "layer": "product"
   },
   {
@@ -8764,7 +8764,7 @@
    "value": "12",
    "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
    "line": 330,
-   "column": 110,
+   "column": 126,
    "layer": "product"
   },
   {
@@ -8845,7 +8845,7 @@
    "value": "700",
    "file": "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx",
    "line": 96,
-   "column": 44,
+   "column": 60,
    "layer": "product"
   },
   {
@@ -8872,7 +8872,7 @@
    "value": "700",
    "file": "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx",
    "line": 102,
-   "column": 44,
+   "column": 60,
    "layer": "product"
   },
   {
@@ -8890,7 +8890,7 @@
    "value": "700",
    "file": "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx",
    "line": 106,
-   "column": 66,
+   "column": 82,
    "layer": "product"
   },
   {
@@ -9007,7 +9007,7 @@
    "value": "700",
    "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
    "line": 157,
-   "column": 44,
+   "column": 60,
    "layer": "product"
   },
   {
@@ -9034,7 +9034,7 @@
    "value": "700",
    "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
    "line": 163,
-   "column": 44,
+   "column": 60,
    "layer": "product"
   },
   {
@@ -9052,7 +9052,7 @@
    "value": "700",
    "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
    "line": 167,
-   "column": 66,
+   "column": 82,
    "layer": "product"
   },
   {
@@ -9439,7 +9439,7 @@
    "value": "700",
    "file": "apps/mobile/src/features/my/screens/MyUnitsScreen.tsx",
    "line": 167,
-   "column": 64,
+   "column": 80,
    "layer": "product"
   },
   {
@@ -9538,7 +9538,7 @@
    "value": "14",
    "file": "apps/mobile/src/features/my/screens/MyUnitsScreen.tsx",
    "line": 193,
-   "column": 53,
+   "column": 69,
    "layer": "product"
   },
   {
@@ -11374,7 +11374,7 @@
    "value": "600",
    "file": "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx",
    "line": 147,
-   "column": 102,
+   "column": 111,
    "layer": "product"
   },
   {
@@ -15262,7 +15262,7 @@
    "value": "800",
    "file": "apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx",
    "line": 113,
-   "column": 97,
+   "column": 113,
    "layer": "product"
   },
   {
@@ -15883,7 +15883,7 @@
    "value": "8",
    "file": "apps/mobile/src/features/sales/components/LateCloseSheet.tsx",
    "line": 80,
-   "column": 77,
+   "column": 93,
    "layer": "product"
   },
   {
@@ -18268,7 +18268,7 @@
    "value": "600",
    "file": "apps/mobile/src/features/sales/screens/SalesFixedScreen.tsx",
    "line": 85,
-   "column": 71,
+   "column": 80,
    "layer": "product"
   },
   {
@@ -18763,7 +18763,7 @@
    "value": "600",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
    "line": 514,
-   "column": 94,
+   "column": 103,
    "layer": "product"
   },
   {
@@ -21426,8 +21426,7 @@
      "tnum",
      "space",
      "radius",
-     "STATUS",
-     "cardShadow"
+     "STATUS"
     ]
    }
   ],
@@ -21495,14 +21494,14 @@
      "#D1D6DB",
      "#B0B8C1"
     ],
-    "usageOccurrences": 1187,
+    "usageOccurrences": 1016,
     "usageFiles": 82,
     "sharedComponent": {
-     "usageOccurrences": 97,
+     "usageOccurrences": 82,
      "usageFiles": 13
     },
     "product": {
-     "usageOccurrences": 1090,
+     "usageOccurrences": 934,
      "usageFiles": 69
     },
     "shadowedIn": [
@@ -21679,19 +21678,17 @@
    "cardShadow": {
     "definitionRoles": 1,
     "distinctValues": 1,
-    "usageOccurrences": 2,
-    "usageFiles": 1,
+    "usageOccurrences": 0,
+    "usageFiles": 0,
     "sharedComponent": {
-     "usageOccurrences": 2,
-     "usageFiles": 1
+     "usageOccurrences": 0,
+     "usageFiles": 0
     },
     "product": {
      "usageOccurrences": 0,
      "usageFiles": 0
     },
-    "shadowedIn": [
-     "apps/mobile/src/theme/tokens.ts"
-    ]
+    "shadowedIn": []
    },
    "tnum": {
     "definitionRoles": 1,
@@ -23081,7 +23078,6 @@
     "T.ink": 2,
     "TYPE.captionSm": 2,
     "T.line2": 1,
-    "T.red": 1,
     "space.xs": 1
    },
    "tokenValue": {
@@ -23099,7 +23095,7 @@
     "size": 2
    },
    "hexColors": 0,
-   "tokenAccessTotal": 19,
+   "tokenAccessTotal": 18,
    "inlineTotal": 19
   },
   {
@@ -23138,8 +23134,6 @@
     "T.ink2": 1,
     "T.sub": 1,
     "T.line": 1,
-    "T.redTint": 1,
-    "T.red": 1,
     "space.sm": 1
    },
    "tokenValue": {},
@@ -23157,7 +23151,7 @@
     "size": 1
    },
    "hexColors": 0,
-   "tokenAccessTotal": 8,
+   "tokenAccessTotal": 6,
    "inlineTotal": 2
   },
   {
@@ -23218,8 +23212,7 @@
     "T.sub2": 2,
     "T.ink": 1,
     "TYPE.caption": 1,
-    "TYPE.captionSm": 2,
-    "T.red": 1
+    "TYPE.captionSm": 2
    },
    "tokenValue": {},
    "kitJsx": {
@@ -23236,7 +23229,7 @@
     "size": 0
    },
    "hexColors": 0,
-   "tokenAccessTotal": 8,
+   "tokenAccessTotal": 7,
    "inlineTotal": 10
   },
   {
@@ -23386,7 +23379,6 @@
    "layer": "sharedComponent",
    "tokenAccess": {
     "T.line2": 1,
-    "T.green": 1,
     "T.sub2": 1
    },
    "tokenValue": {},
@@ -23404,7 +23396,7 @@
     "size": 0
    },
    "hexColors": 1,
-   "tokenAccessTotal": 3,
+   "tokenAccessTotal": 2,
    "inlineTotal": 5
   },
   {
@@ -23417,12 +23409,6 @@
     "T.onColor": 5,
     "T.line2": 4,
     "T.sub2": 3,
-    "T.greenTint": 1,
-    "T.green": 3,
-    "T.amberTint": 1,
-    "T.amberText": 1,
-    "T.redTint": 1,
-    "T.red": 3,
     "T.line": 7,
     "T.surface": 6,
     "space.md": 10,
@@ -23440,9 +23426,7 @@
     "TYPE.captionSm": 1,
     "radius.full": 1
    },
-   "tokenValue": {
-    "cardShadow": 2
-   },
+   "tokenValue": {},
    "kitJsx": {
     "Icon": 6
    },
@@ -23457,7 +23441,7 @@
     "size": 5
    },
    "hexColors": 0,
-   "tokenAccessTotal": 94,
+   "tokenAccessTotal": 84,
    "inlineTotal": 64
   },
   {
@@ -23526,10 +23510,6 @@
    "file": "apps/mobile/src/features/changes/components/RecentChangeRow.tsx",
    "layer": "product",
    "tokenAccess": {
-    "T.green": 1,
-    "T.greenTint": 1,
-    "T.amberText": 1,
-    "T.amberTint": 1,
     "T.sub2": 1,
     "T.line2": 2,
     "space.md": 2,
@@ -23555,7 +23535,7 @@
     "size": 3
    },
    "hexColors": 0,
-   "tokenAccessTotal": 15,
+   "tokenAccessTotal": 11,
    "inlineTotal": 8
   },
   {
@@ -23598,10 +23578,6 @@
    "file": "apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx",
    "layer": "product",
    "tokenAccess": {
-    "T.green": 1,
-    "T.greenTint": 1,
-    "T.amberText": 1,
-    "T.amberTint": 1,
     "T.sub2": 3,
     "T.line2": 4,
     "space.sm": 4,
@@ -23639,7 +23615,7 @@
     "size": 4
    },
    "hexColors": 0,
-   "tokenAccessTotal": 47,
+   "tokenAccessTotal": 43,
    "inlineTotal": 39
   },
   {
@@ -23655,12 +23631,9 @@
     "space.xs": 4,
     "T.ink": 4,
     "space.lg": 1,
-    "T.red": 2,
     "space.sm": 6,
     "TYPE.caption": 2,
-    "T.amberText": 1,
     "radius.sm": 1,
-    "T.redTint": 1,
     "TYPE.captionSm": 1,
     "T.sub2": 1,
     "TYPE.body": 1
@@ -23682,7 +23655,7 @@
     "size": 2
    },
    "hexColors": 0,
-   "tokenAccessTotal": 46,
+   "tokenAccessTotal": 42,
    "inlineTotal": 41
   },
   {
@@ -23723,8 +23696,6 @@
     "space.md": 2,
     "space.sm": 5,
     "T.ink": 2,
-    "T.red": 1,
-    "T.amberText": 1,
     "T.sub": 1,
     "T.sub2": 1
    },
@@ -23741,7 +23712,7 @@
     "size": 0
    },
    "hexColors": 0,
-   "tokenAccessTotal": 13,
+   "tokenAccessTotal": 11,
    "inlineTotal": 10
   },
   {
@@ -23754,8 +23725,7 @@
     "T.ink": 1,
     "TYPE.captionSm": 1,
     "T.sub": 1,
-    "space.xs": 2,
-    "T.red": 2
+    "space.xs": 2
    },
    "tokenValue": {
     "tnum": 3
@@ -23770,7 +23740,7 @@
     "size": 0
    },
    "hexColors": 0,
-   "tokenAccessTotal": 11,
+   "tokenAccessTotal": 9,
    "inlineTotal": 10
   },
   {
@@ -23783,9 +23753,7 @@
     "T.surface2": 2,
     "T.line2": 3,
     "T.sub": 2,
-    "T.amberText": 1,
     "T.ink": 1,
-    "T.red": 1,
     "space.xs": 2,
     "T.ink2": 1,
     "T.sub2": 1
@@ -23807,7 +23775,7 @@
     "size": 1
    },
    "hexColors": 0,
-   "tokenAccessTotal": 25,
+   "tokenAccessTotal": 23,
    "inlineTotal": 18
   },
   {
@@ -23944,7 +23912,6 @@
     "TYPE.captionSm": 2,
     "TYPE.caption": 2,
     "T.ink": 4,
-    "T.red": 2,
     "space.xs": 1,
     "T.scrim": 2,
     "T.surface": 2,
@@ -23975,7 +23942,7 @@
     "size": 8
    },
    "hexColors": 0,
-   "tokenAccessTotal": 36,
+   "tokenAccessTotal": 34,
    "inlineTotal": 35
   },
   {
@@ -24049,9 +24016,7 @@
     "space.sm": 10,
     "TYPE.title": 2,
     "T.ink": 7,
-    "T.amberText": 1,
     "TYPE.body": 1,
-    "T.red": 3,
     "T.sub2": 2,
     "T.line3": 1,
     "T.scrim": 1,
@@ -24083,7 +24048,7 @@
     "size": 3
    },
    "hexColors": 0,
-   "tokenAccessTotal": 70,
+   "tokenAccessTotal": 66,
    "inlineTotal": 59
   },
   {
@@ -24155,12 +24120,9 @@
     "TYPE.display": 1,
     "T.ink2": 2,
     "radius.full": 1,
-    "T.red": 4,
     "T.surface": 1,
     "T.line3": 1,
-    "T.redTint": 1,
     "radius.md": 1,
-    "T.amberText": 1,
     "space.xs": 1
    },
    "tokenValue": {},
@@ -24184,7 +24146,7 @@
     "size": 7
    },
    "hexColors": 0,
-   "tokenAccessTotal": 21,
+   "tokenAccessTotal": 15,
    "inlineTotal": 20
   },
   {
@@ -24248,8 +24210,7 @@
     "T.scrim": 1,
     "radius.full": 1,
     "T.surface2": 2,
-    "radius.lg": 2,
-    "T.red": 1
+    "radius.lg": 2
    },
    "tokenValue": {
     "tnum": 5
@@ -24274,7 +24235,7 @@
     "size": 6
    },
    "hexColors": 0,
-   "tokenAccessTotal": 47,
+   "tokenAccessTotal": 46,
    "inlineTotal": 54
   },
   {
@@ -24282,7 +24243,6 @@
    "layer": "product",
    "tokenAccess": {
     "space.sm": 5,
-    "T.red": 2,
     "T.ink": 8,
     "space.md": 12,
     "T.line2": 5,
@@ -24319,7 +24279,7 @@
     "size": 3
    },
    "hexColors": 0,
-   "tokenAccessTotal": 51,
+   "tokenAccessTotal": 49,
    "inlineTotal": 54
   },
   {
@@ -24334,15 +24294,11 @@
     "T.surface2": 1,
     "T.line3": 1,
     "space.xxl": 1,
-    "T.red": 6,
     "radius.full": 1,
     "space.lg": 3,
     "T.sub": 5,
     "T.line": 1,
-    "T.redTint": 2,
-    "T.greenTint": 1,
     "TYPE.body": 1,
-    "T.green": 1,
     "T.ink2": 1,
     "TYPE.caption": 1,
     "T.line2": 2
@@ -24368,7 +24324,7 @@
     "size": 2
    },
    "hexColors": 0,
-   "tokenAccessTotal": 53,
+   "tokenAccessTotal": 43,
    "inlineTotal": 45
   },
   {
@@ -24461,9 +24417,7 @@
    "layer": "product",
    "tokenAccess": {
     "TYPE.caption": 2,
-    "T.amberText": 1,
     "T.sub2": 1,
-    "T.amberTint": 1,
     "T.surface2": 1,
     "space.sm": 3,
     "space.md": 2,
@@ -24488,7 +24442,7 @@
     "size": 1
    },
    "hexColors": 0,
-   "tokenAccessTotal": 17,
+   "tokenAccessTotal": 15,
    "inlineTotal": 17
   },
   {
@@ -24525,8 +24479,6 @@
     "space.xs": 2,
     "T.line": 1,
     "T.ink": 2,
-    "T.amberTint": 1,
-    "T.amberText": 2,
     "TYPE.caption": 1,
     "T.surface": 1
    },
@@ -24551,7 +24503,7 @@
     "size": 2
    },
    "hexColors": 0,
-   "tokenAccessTotal": 37,
+   "tokenAccessTotal": 34,
    "inlineTotal": 39
   },
   {
@@ -24605,8 +24557,6 @@
    "tokenAccess": {
     "T.bg": 1,
     "space.md": 2,
-    "T.redTint": 1,
-    "T.red": 1,
     "T.ink": 1,
     "TYPE.caption": 1,
     "T.sub2": 1,
@@ -24637,7 +24587,7 @@
     "size": 3
    },
    "hexColors": 0,
-   "tokenAccessTotal": 17,
+   "tokenAccessTotal": 15,
    "inlineTotal": 13
   },
   {
@@ -24787,7 +24737,6 @@
     "T.sub2": 4,
     "TYPE.captionSm": 2,
     "T.onColor": 2,
-    "T.red": 2,
     "space.xxl": 1
    },
    "tokenValue": {},
@@ -24813,7 +24762,7 @@
     "size": 1
    },
    "hexColors": 1,
-   "tokenAccessTotal": 109,
+   "tokenAccessTotal": 107,
    "inlineTotal": 51
   },
   {
@@ -24828,8 +24777,6 @@
     "TYPE.caption": 8,
     "T.bg": 2,
     "space.sm": 8,
-    "T.redTint": 2,
-    "T.red": 7,
     "T.sub2": 1,
     "T.line": 1,
     "T.surface": 1
@@ -24857,7 +24804,7 @@
     "size": 3
    },
    "hexColors": 0,
-   "tokenAccessTotal": 44,
+   "tokenAccessTotal": 35,
    "inlineTotal": 55
   },
   {
@@ -24869,8 +24816,6 @@
     "T.bg": 1,
     "space.sm": 6,
     "space.md": 4,
-    "T.redTint": 2,
-    "T.red": 4,
     "T.line2": 1,
     "T.ink": 1,
     "space.xs": 1,
@@ -24897,7 +24842,7 @@
     "size": 5
    },
    "hexColors": 0,
-   "tokenAccessTotal": 24,
+   "tokenAccessTotal": 18,
    "inlineTotal": 24
   },
   {
@@ -24906,8 +24851,6 @@
    "tokenAccess": {
     "T.bg": 1,
     "space.md": 7,
-    "T.redTint": 2,
-    "T.red": 5,
     "T.surface2": 1,
     "T.sub": 2,
     "space.sm": 2,
@@ -24939,7 +24882,7 @@
     "size": 2
    },
    "hexColors": 0,
-   "tokenAccessTotal": 25,
+   "tokenAccessTotal": 18,
    "inlineTotal": 31
   },
   {
@@ -24953,8 +24896,6 @@
     "space.xs": 1,
     "T.bg": 3,
     "space.sm": 6,
-    "T.redTint": 2,
-    "T.red": 5,
     "T.line": 1
    },
    "tokenValue": {},
@@ -24974,7 +24915,7 @@
     "size": 4
    },
    "hexColors": 0,
-   "tokenAccessTotal": 29,
+   "tokenAccessTotal": 22,
    "inlineTotal": 43
   },
   {
@@ -24983,7 +24924,6 @@
    "tokenAccess": {
     "T.bg": 1,
     "space.md": 2,
-    "T.amberText": 2,
     "T.sub2": 3,
     "space.xs": 2,
     "space.sm": 3,
@@ -25015,7 +24955,7 @@
     "size": 3
    },
    "hexColors": 0,
-   "tokenAccessTotal": 18,
+   "tokenAccessTotal": 16,
    "inlineTotal": 24
   },
   {
@@ -25135,7 +25075,6 @@
     "radius.md": 4,
     "T.sub": 6,
     "space.xs": 4,
-    "T.red": 2,
     "T.line2": 1,
     "T.sub2": 5,
     "TYPE.caption": 2,
@@ -25166,15 +25105,13 @@
     "size": 7
    },
    "hexColors": 0,
-   "tokenAccessTotal": 82,
+   "tokenAccessTotal": 80,
    "inlineTotal": 72
   },
   {
    "file": "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx",
    "layer": "product",
    "tokenAccess": {
-    "T.green": 1,
-    "T.red": 1,
     "space.xs": 3,
     "TYPE.display": 1,
     "T.sub2": 2,
@@ -25184,7 +25121,6 @@
     "T.ink": 1,
     "T.line": 1,
     "T.ink2": 1,
-    "T.amberText": 2,
     "TYPE.caption": 1
    },
    "tokenValue": {},
@@ -25208,7 +25144,7 @@
     "size": 2
    },
    "hexColors": 0,
-   "tokenAccessTotal": 23,
+   "tokenAccessTotal": 19,
    "inlineTotal": 47
   },
   {
@@ -25395,8 +25331,6 @@
     "T.line2": 1,
     "T.ink": 2,
     "radius.md": 1,
-    "T.amberTint": 1,
-    "T.amberText": 2,
     "TYPE.caption": 1,
     "space.lg": 1,
     "T.line": 2,
@@ -25428,7 +25362,7 @@
     "size": 1
    },
    "hexColors": 0,
-   "tokenAccessTotal": 31,
+   "tokenAccessTotal": 28,
    "inlineTotal": 35
   },
   {
@@ -25469,8 +25403,6 @@
    "file": "apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx",
    "layer": "product",
    "tokenAccess": {
-    "T.green": 1,
-    "T.red": 1,
     "space.sm": 3,
     "space.md": 7,
     "T.line2": 3,
@@ -25506,7 +25438,7 @@
     "size": 1
    },
    "hexColors": 0,
-   "tokenAccessTotal": 38,
+   "tokenAccessTotal": 36,
    "inlineTotal": 34
   },
   {
@@ -25519,8 +25451,6 @@
     "T.line2": 7,
     "T.sub": 4,
     "TYPE.caption": 4,
-    "T.red": 1,
-    "T.green": 1,
     "T.bg": 1,
     "space.lg": 1,
     "radius.md": 2,
@@ -25532,8 +25462,6 @@
     "space.xs": 8,
     "T.ink2": 3,
     "T.sub2": 2,
-    "T.amberTint": 1,
-    "T.amberText": 2,
     "T.onColor": 1
    },
    "tokenValue": {},
@@ -25559,7 +25487,7 @@
     "size": 17
    },
    "hexColors": 0,
-   "tokenAccessTotal": 111,
+   "tokenAccessTotal": 106,
    "inlineTotal": 122
   },
   {
@@ -25579,11 +25507,8 @@
     "T.bg": 1,
     "space.xs": 18,
     "T.ink2": 11,
-    "T.red": 3,
-    "T.green": 2,
     "T.line3": 2,
     "T.gray400": 1,
-    "T.amberText": 1,
     "TYPE.caption": 2,
     "T.sub2": 5
    },
@@ -25608,7 +25533,7 @@
     "size": 8
    },
    "hexColors": 0,
-   "tokenAccessTotal": 162,
+   "tokenAccessTotal": 156,
    "inlineTotal": 161
   },
   {
@@ -25619,8 +25544,7 @@
     "space.sm": 4,
     "space.md": 3,
     "T.ink": 1,
-    "T.sub2": 3,
-    "T.red": 1
+    "T.sub2": 3
    },
    "tokenValue": {},
    "kitJsx": {
@@ -25647,15 +25571,13 @@
     "size": 1
    },
    "hexColors": 0,
-   "tokenAccessTotal": 13,
+   "tokenAccessTotal": 12,
    "inlineTotal": 11
   },
   {
    "file": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx",
    "layer": "product",
    "tokenAccess": {
-    "T.red": 1,
-    "T.green": 1,
     "space.md": 4,
     "space.sm": 10,
     "T.ink": 8,
@@ -25664,8 +25586,6 @@
     "radius.sm": 1,
     "T.line2": 1,
     "T.sub2": 1,
-    "T.amberTint": 1,
-    "T.amberText": 2,
     "T.bg": 2,
     "TYPE.display": 1,
     "T.ink2": 2,
@@ -25692,7 +25612,7 @@
     "size": 4
    },
    "hexColors": 0,
-   "tokenAccessTotal": 42,
+   "tokenAccessTotal": 37,
    "inlineTotal": 50
   },
   {
@@ -25764,7 +25684,6 @@
     "T.ink": 1,
     "T.surface": 2,
     "TYPE.caption": 1,
-    "T.red": 1,
     "T.sub2": 1
    },
    "tokenValue": {},
@@ -25784,7 +25703,7 @@
     "size": 0
    },
    "hexColors": 0,
-   "tokenAccessTotal": 15,
+   "tokenAccessTotal": 14,
    "inlineTotal": 6
   },
   {
@@ -25792,8 +25711,6 @@
    "layer": "product",
    "tokenAccess": {
     "space.sm": 3,
-    "T.green": 1,
-    "T.amberText": 2,
     "space.md": 8,
     "T.line2": 4,
     "T.sub": 4,
@@ -25820,7 +25737,7 @@
     "size": 4
    },
    "hexColors": 0,
-   "tokenAccessTotal": 31,
+   "tokenAccessTotal": 28,
    "inlineTotal": 51
   },
   {
@@ -25834,11 +25751,7 @@
     "T.ink": 8,
     "space.xs": 11,
     "radius.sm": 1,
-    "T.greenTint": 1,
-    "T.amberTint": 2,
     "TYPE.captionSm": 8,
-    "T.green": 2,
-    "T.amberText": 4,
     "T.line3": 2,
     "T.surface2": 3,
     "T.line": 3,
@@ -25862,7 +25775,7 @@
     "size": 8
    },
    "hexColors": 0,
-   "tokenAccessTotal": 85,
+   "tokenAccessTotal": 76,
    "inlineTotal": 51
   },
   {
@@ -25906,7 +25819,6 @@
     "T.line2": 1,
     "TYPE.caption": 1,
     "T.ink": 1,
-    "T.red": 1,
     "space.lg": 1,
     "space.sm": 1
    },
@@ -25927,7 +25839,7 @@
     "size": 0
    },
    "hexColors": 0,
-   "tokenAccessTotal": 14,
+   "tokenAccessTotal": 13,
    "inlineTotal": 6
   },
   {
@@ -26010,8 +25922,6 @@
     "space.md": 7,
     "space.sm": 8,
     "space.xs": 3,
-    "T.amberText": 1,
-    "T.green": 2,
     "T.line2": 1,
     "TYPE.body": 1,
     "T.ink": 3,
@@ -26019,7 +25929,6 @@
     "T.sub2": 1,
     "T.line": 1,
     "T.surface": 1,
-    "T.red": 1,
     "radius.md": 1,
     "T.surface2": 1,
     "T.onColor": 1,
@@ -26049,7 +25958,7 @@
     "size": 5
    },
    "hexColors": 0,
-   "tokenAccessTotal": 37,
+   "tokenAccessTotal": 33,
    "inlineTotal": 30
   },
   {
@@ -26058,8 +25967,6 @@
    "tokenAccess": {
     "T.bg": 1,
     "space.md": 3,
-    "T.red": 1,
-    "T.green": 1,
     "T.surface2": 1,
     "T.line2": 1,
     "T.sub2": 1,
@@ -26085,7 +25992,7 @@
     "size": 2
    },
    "hexColors": 0,
-   "tokenAccessTotal": 13,
+   "tokenAccessTotal": 11,
    "inlineTotal": 7
   },
   {
@@ -26096,8 +26003,6 @@
     "space.md": 3,
     "space.sm": 3,
     "radius.md": 1,
-    "T.amberTint": 1,
-    "T.amberText": 2,
     "TYPE.caption": 1,
     "T.line2": 1
    },
@@ -26122,15 +26027,13 @@
     "size": 0
    },
    "hexColors": 0,
-   "tokenAccessTotal": 14,
+   "tokenAccessTotal": 11,
    "inlineTotal": 8
   },
   {
    "file": "apps/mobile/src/features/sales/screens/SalesDayFullScreen.tsx",
    "layer": "product",
    "tokenAccess": {
-    "T.green": 1,
-    "T.amberText": 1,
     "T.bg": 1,
     "space.md": 5,
     "space.sm": 5,
@@ -26157,7 +26060,7 @@
     "size": 3
    },
    "hexColors": 0,
-   "tokenAccessTotal": 31,
+   "tokenAccessTotal": 29,
    "inlineTotal": 49
   },
   {
@@ -26242,8 +26145,6 @@
     "T.ink2": 2,
     "space.md": 5,
     "space.sm": 2,
-    "T.amberTint": 1,
-    "T.amberText": 2,
     "TYPE.caption": 1,
     "T.ink": 2,
     "space.xs": 1,
@@ -26271,7 +26172,7 @@
     "size": 3
    },
    "hexColors": 0,
-   "tokenAccessTotal": 21,
+   "tokenAccessTotal": 18,
    "inlineTotal": 20
   },
   {
@@ -26286,9 +26187,7 @@
     "space.xs": 10,
     "T.ink2": 1,
     "space.md": 22,
-    "T.red": 4,
     "radius.md": 5,
-    "T.redTint": 1,
     "TYPE.captionSm": 3,
     "T.sub": 6,
     "T.onColor": 3,
@@ -26296,11 +26195,9 @@
     "T.surface": 2,
     "T.line2": 4,
     "TYPE.caption": 6,
-    "T.amberText": 3,
     "T.surface2": 1,
     "TYPE.body": 1,
-    "space.lg": 2,
-    "T.amberTint": 1
+    "space.lg": 2
    },
    "tokenValue": {},
    "kitJsx": {
@@ -26325,7 +26222,7 @@
     "size": 13
    },
    "hexColors": 1,
-   "tokenAccessTotal": 111,
+   "tokenAccessTotal": 102,
    "inlineTotal": 92
   },
   {
@@ -26376,8 +26273,6 @@
     "T.surface2": 1,
     "T.line2": 6,
     "T.sub": 2,
-    "T.green": 2,
-    "T.red": 2,
     "T.bg": 1,
     "T.ink": 9,
     "TYPE.caption": 2,
@@ -26404,7 +26299,7 @@
     "size": 5
    },
    "hexColors": 0,
-   "tokenAccessTotal": 62,
+   "tokenAccessTotal": 58,
    "inlineTotal": 55
   },
   {
@@ -26501,7 +26396,6 @@
     "space.sm": 1,
     "TYPE.caption": 2,
     "T.line2": 3,
-    "T.red": 2,
     "T.line3": 1,
     "space.xs": 1,
     "TYPE.captionSm": 2,
@@ -26530,7 +26424,7 @@
     "size": 2
    },
    "hexColors": 0,
-   "tokenAccessTotal": 26,
+   "tokenAccessTotal": 24,
    "inlineTotal": 20
   },
   {
@@ -26565,7 +26459,6 @@
    "layer": "product",
    "tokenAccess": {
     "T.bg": 1,
-    "T.red": 2,
     "space.md": 2
    },
    "tokenValue": {},
@@ -26585,7 +26478,7 @@
     "size": 0
    },
    "hexColors": 0,
-   "tokenAccessTotal": 5,
+   "tokenAccessTotal": 3,
    "inlineTotal": 3
   },
   {
@@ -26827,8 +26720,7 @@
     "tnum",
     "space",
     "radius",
-    "STATUS",
-    "cardShadow"
+    "STATUS"
    ],
    "inline": {
     "typography": 23,

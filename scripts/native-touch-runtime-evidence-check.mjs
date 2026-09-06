@@ -23,6 +23,15 @@ const TAP_PROBE_EXPECTED = new Map([
   ['outside-overflow-visible-grandparent', 1],
 ]);
 
+export function nativeCoverage(artifact) {
+  const rows = (artifact.scenarios ?? []).flatMap((scenario) =>
+    (scenario.phases ?? []).flatMap((phase) => phase.rows ?? []));
+  const fullyVisibleRows = rows.filter((row) => row.visibilityDisposition === 'fullyVisible').length;
+  const excludedScrollableOrRootRows = rows.filter((row) => row.visibilityDisposition === 'excludedScrollableOrRoot').length;
+  const targetShortCount = (artifact.evaluation?.lineage ?? []).reduce((sum, item) => sum + (item.short ?? 0), 0);
+  return { observedRows: rows.length, fullyVisibleRows, excludedScrollableOrRootRows, targetShortCount };
+}
+
 export function validateTapProbeData(probe, expected) {
   const failures = [];
   if (probe.status !== 'PASS' || probe.failures?.length) failures.push(`${expected.name}: 실제 탭 probe가 PASS가 아니다`);
@@ -187,6 +196,7 @@ export function buildEvidenceReceipt(root, verification, requirePlatforms) {
       productTree: artifact.manifest?.productTree ?? null,
       device: artifact.device ?? null,
       targetCount: artifact.evaluation?.lineage?.length ?? null,
+      coverage: nativeCoverage(artifact),
       observedUnjudgedCount: artifact.evaluation?.observedUnjudged?.length ?? null,
       materialOverlapCount: artifact.evaluation?.materialOverlaps?.length ?? null,
       failureCount: artifact.evaluation?.failures?.length ?? null,
@@ -278,7 +288,10 @@ if (resolve(process.argv[1] ?? '') === resolve(here)) {
       const resolvedPlatforms = requirePlatforms ?? [...new Set(verification.requiredMatrix.map((item) => item.platform))];
       writeFileSync(resolve(outputArg), `${JSON.stringify(buildEvidenceReceipt(defaultRoot, verification, resolvedPlatforms), null, 2)}\n`);
     }
-    for (const artifact of artifacts) console.log(`${artifact.platform}@${artifact.fontScale} — target ${artifact.evaluation.lineage.length} · 미달 ${artifact.evaluation.observedUnjudged.length} · 중첩 ${artifact.evaluation.materialOverlaps.length}`);
+    for (const artifact of artifacts) {
+      const coverage = nativeCoverage(artifact);
+      console.log(`${artifact.platform}@${artifact.fontScale} — target ${artifact.evaluation.lineage.length} · 유효 미달 ${coverage.targetShortCount} · 계약 밖 미판정 미달 ${artifact.evaluation.observedUnjudged.length} · 중첩 ${artifact.evaluation.materialOverlaps.length} · 커버리지 ${coverage.fullyVisibleRows}/${coverage.observedRows} (스크롤·루트 제외 ${coverage.excludedScrollableOrRootRows})`);
+    }
     if (failures.length) {
       console.error(failures.map((item) => `  - ${item}`).join('\n'));
       process.exit(1);

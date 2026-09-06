@@ -364,6 +364,12 @@ test('저장소의 봉인은 네 커밋 모두 조상이고 §8.2 구간을 바�
   assert.match(r.out, /결정 커밋 4건 확인/);
 });
 
+test('저장소 기본 계약은 cardShadow 사용처 0을 요구한다', () => {
+  const r = runAlias(0, 0);
+  assert.equal(r.code, 0, r.out);
+  assert.match(r.out, /별칭 사용처 0곳 — 기준과 같다/);
+});
+
 test('상태 전경을 자기 tint에서 AA 미달로 되돌리면 잡는다', () => {
   const r = run(s => s.replace("green: '#0B7F58',", "green: '#15B374',"));
   assert.equal(r.code, 1, r.out);

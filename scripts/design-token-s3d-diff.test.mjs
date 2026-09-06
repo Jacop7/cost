@@ -28,8 +28,11 @@ const fixture = () => {
   const app = 'const x = TYPE.display.fontSize;\n';
   put(root, 'apps/mobile/src/theme/tokens.ts', token);
   put(root, 'apps/mobile/src/A.tsx', app);
+  execFileSync('git', ['add', '.'], { cwd: root });
+  execFileSync('git', ['commit', '-qm', 'product'], { cwd: root });
+  const productCommit = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim();
   const known = {
-    schemaVersion: 1, stage: 'S3d', baselineCommit, expectedPendingDeclarationsResolved: 32,
+    schemaVersion: 1, stage: 'S3d', baselineCommit, productCommit, expectedPendingDeclarationsResolved: 32,
     files: [
       { file: 'apps/mobile/src/A.tsx', sha256: sha(app) },
       { file: 'apps/mobile/src/theme/tokens.ts', sha256: sha(token) },
@@ -47,12 +50,26 @@ test('승인된 S3d 파일과 역할이면 통과한다', () => {
 });
 test('승인 밖 파일 변경은 실패한다', () => {
   const f = fixture();
-  try { put(f.root, 'apps/mobile/src/B.tsx', 'const b = 1;\n'); assert.equal(f.run().status, 1); }
+  try {
+    put(f.root, 'apps/mobile/src/B.tsx', 'const b = 1;\n');
+    execFileSync('git', ['add', '.'], { cwd: f.root });
+    execFileSync('git', ['commit', '-qm', 'bad product'], { cwd: f.root });
+    f.known.productCommit = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: f.root, encoding: 'utf8' }).trim();
+    put(f.root, 'known.json', JSON.stringify(f.known));
+    assert.equal(f.run().status, 1);
+  }
   finally { rmSync(f.root, { recursive: true, force: true }); }
 });
 test('승인 파일 내용 변조는 실패한다', () => {
   const f = fixture();
-  try { put(f.root, 'apps/mobile/src/A.tsx', 'const x = TYPE.display.fontSize + 1;\n'); assert.equal(f.run().status, 1); }
+  try {
+    put(f.root, 'apps/mobile/src/A.tsx', 'const x = TYPE.display.fontSize + 1;\n');
+    execFileSync('git', ['add', '.'], { cwd: f.root });
+    execFileSync('git', ['commit', '-qm', 'bad hash'], { cwd: f.root });
+    f.known.productCommit = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: f.root, encoding: 'utf8' }).trim();
+    put(f.root, 'known.json', JSON.stringify(f.known));
+    assert.equal(f.run().status, 1);
+  }
   finally { rmSync(f.root, { recursive: true, force: true }); }
 });
 test('CRLF 체크아웃은 같은 내용으로 인정한다', () => {
@@ -67,6 +84,16 @@ test('필수 역할 토큰 누락은 실패한다', () => {
   const f = fixture();
   try {
     f.known.requiredTokenSnippets.push('missing.role');
+    put(f.root, 'known.json', JSON.stringify(f.known));
+    assert.equal(f.run().status, 1);
+  } finally { rmSync(f.root, { recursive: true, force: true }); }
+});
+test('S3d 뒤의 무관한 현재 앱 변경은 허용하되 역할 불변식은 계속 검사한다', () => {
+  const f = fixture();
+  try {
+    put(f.root, 'apps/mobile/src/B.tsx', 'const b = 1;\n');
+    assert.equal(f.run().status, 0);
+    f.known.requiredProductSnippets = [{ file: 'apps/mobile/src/B.tsx', snippet: 'missing role' }];
     put(f.root, 'known.json', JSON.stringify(f.known));
     assert.equal(f.run().status, 1);
   } finally { rmSync(f.root, { recursive: true, force: true }); }
