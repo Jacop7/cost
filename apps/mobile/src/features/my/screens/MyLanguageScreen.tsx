@@ -26,7 +26,7 @@ import {
 import { AppHeader, Button, Card, Icon, Notice, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { RpcError } from '@/lib/supabase';
-import { COLOR, T, tnum, TYPE, space } from '@/theme/tokens';
+import { LAYOUT, COLOR, T, tnum, TYPE, space } from '@/theme/tokens';
 import { useSettings, useSettingsActions, useUnitDigits } from '../store';
 
 // 미리보기는 검산 기준값을 그대로 쓴다 — 사장님이 자기 화면에서 보던 숫자로 비교할 수 있게.
@@ -235,7 +235,7 @@ function LanguageEditor({ serverLocale, serverRevision, staleError, refetch }: {
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <AppHeader title="언어 · 통화" onBack={() => safeBack('/my')} />
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 4, paddingBottom: 28 }}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 4, paddingBottom: LAYOUT.scroll.end }}>
         {/* 언어·지역 — 통화와 숫자 서식이 여기서 함께 결정된다 */}
         <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.text.tertiary, marginHorizontal: 4, marginBottom: space.sm }}>언어 · 지역</Text>
         <Notice style={{ marginBottom: space.sm }}>금액의 기본 소수 자릿수는 통화가 정해요. 원·엔·동은 소수가 없어 0자리, 달러·유로 등은 2자리예요.</Notice>

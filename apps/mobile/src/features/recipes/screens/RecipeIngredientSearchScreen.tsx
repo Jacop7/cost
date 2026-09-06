@@ -20,7 +20,7 @@ import {
   stockStateOf,
   STOCK_STATE_LABEL,
 } from '@margincook/core';
-import { COLOR, T, won, space } from '@/theme/tokens';
+import { LAYOUT, COLOR, T, won, space } from '@/theme/tokens';
 import { clampDecimals } from '@/lib/num';
 import { useIngredientList } from '@/features/ingredients/hooks';
 import { dispUnit } from '@/features/ingredients/ledger';
@@ -74,7 +74,7 @@ export default function RecipeIngredientSearchScreen() {
 
       <SearchBar value={query} onChange={setQuery} placeholder="식재료 이름으로 검색" />
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 32, gap: space.sm }}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: LAYOUT.scroll.end, gap: space.sm }}>
                   <QueryState
             isLoading={ingredients.isLoading}
             error={ingredients.error}

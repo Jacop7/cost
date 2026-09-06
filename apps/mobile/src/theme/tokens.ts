@@ -293,4 +293,32 @@ export const COMPONENT = {
     /** 라벨 — 글자라 기준 4.5:1. tint 위 4.80. */
     label: '#1465DB',
   },
+  tabBar: {
+    /** 한국어 한 줄 기준 높이. 라벨이 실제로 두 줄이 되면 그 초과 높이만 더한다. */
+    baseHeight: 60,
+    labelBaseLineHeight: TYPE.captionSm.lineHeight,
+  },
+  fab: {
+    /** 일반 flow 탭바 좌표계 안에서의 FAB 기하. */
+    bottom: space.xxl,
+    visualHeight: 48,
+  },
+  adjacentActions: {
+    /** 32px 시각 상자 둘의 44px 터치 영역이 겹치지 않는 최소 중심 간격. */
+    gap: space.md,
+    hitSlop: 6,
+  },
+} as const;
+
+/**
+ * 화면 레이아웃 의미값. 현재 하단 탭바는 absolute/overlay가 아니라 일반 flow다.
+ * 따라서 `scroll.end`에는 탭바 높이와 safe-area를 다시 더하지 않는다. FAB가 있는 화면만
+ * 같은 콘텐츠 좌표계의 `bottom + visualHeight + gap`을 사용한다(결정 7-2).
+ */
+export const LAYOUT = {
+  scroll: {
+    start: 2,
+    end: space.xxl,
+    endWithFab: COMPONENT.fab.bottom + COMPONENT.fab.visualHeight + space.xxl,
+  },
 } as const;

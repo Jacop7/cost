@@ -2,7 +2,7 @@
 import React from 'react';
 import { View, Text, Pressable } from 'react-native';
 import { Sheet, Icon } from '../../../components/kit';
-import { COLOR, T, FONT, space } from '../../../theme/tokens';
+import { LAYOUT, COLOR, T, FONT, space } from '../../../theme/tokens';
 
 const UNIT_GROUPS: [string, string[]][] = [
   ['무게', ['kg', 'g']],
@@ -29,7 +29,7 @@ export function UnitPickerSheet({
   const groups = base ? UNIT_GROUPS.filter(([label]) => label === GROUP_OF[base]) : UNIT_GROUPS;
   return (
     <Sheet visible={visible} onClose={onClose}>
-      <View style={{ paddingHorizontal: 20, paddingTop: 4, paddingBottom: 30 }}>
+      <View style={{ paddingHorizontal: 20, paddingTop: 4, paddingBottom: LAYOUT.scroll.end }}>
         <Text style={{ fontSize: 20, fontWeight: '800', letterSpacing: -0.4, marginBottom: 16, color: T.ink }}>
           단위 선택
         </Text>

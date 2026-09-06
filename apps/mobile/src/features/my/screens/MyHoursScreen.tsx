@@ -22,7 +22,7 @@ import { Alert, Pressable, ScrollView, Text, TextInput, View } from 'react-nativ
 import { RpcError } from '@/lib/supabase';
 import { AppHeader, Badge, Button, Card, Icon, QueryState, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { COLOR, T, TYPE, radius, space } from '@/theme/tokens';
+import { LAYOUT, COLOR, T, TYPE, radius, space } from '@/theme/tokens';
 import { useHoursStatus, useSetOperatingHours, useSetStoreTimezone } from '@/features/settings/hooks';
 import {
   DEFAULT_DAY, DOW_LABEL, DOW_ORDER, QUARTER_SLOTS, WeeklySchedule,
@@ -478,7 +478,7 @@ export default function MyHoursScreen() {
         </QueryState>
       </ScrollView>
 
-      <View style={{ paddingHorizontal: 20, paddingTop: space.md, paddingBottom: 30, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
+      <View style={{ paddingHorizontal: 20, paddingTop: space.md, paddingBottom: LAYOUT.scroll.end, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
         <Button kind="primary" size="lg" full loading={save.isPending} disabled={!days || validationError !== null} onPress={submit}>
           저장
         </Button>

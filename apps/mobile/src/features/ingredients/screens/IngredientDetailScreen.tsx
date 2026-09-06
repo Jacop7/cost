@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Alert, Modal, Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { AppHeader, Badge, Card, Icon, MemoEditSheet, QueryState } from '../../../components/kit';
-import { COLOR, T, tnum, TYPE, radius, space } from '../../../theme/tokens';
+import { LAYOUT, COLOR, T, tnum, TYPE, radius, space } from '../../../theme/tokens';
 import { formatQuantity, formatUnitPrice } from '@margincook/core';
 import { safeBack } from '@/lib/nav';
 import { RecentChangeRow } from '@/features/changes';
@@ -126,7 +126,7 @@ export function IngredientDetailScreen() {
         }
       />
 
-      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 2, paddingBottom: 28, gap: space.md }} showsVerticalScrollIndicator={false}>
+      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingTop: LAYOUT.scroll.start, paddingBottom: LAYOUT.scroll.end, gap: space.md }} showsVerticalScrollIndicator={false}>
         <QueryState
           isLoading={detail.isLoading}
           error={detail.error}

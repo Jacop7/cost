@@ -12,7 +12,7 @@ import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { displayToBase, formatQuantity, isDisplayUnit, previewBaseUnitPrice, rawUnitPrice, roundOrNull } from '@margincook/core';
 import { AppHeader, Button, Field, Icon, Input, QueryState, Select } from '../../../components/kit';
-import { COLOR, T, TYPE, space } from '../../../theme/tokens';
+import { LAYOUT, COLOR, T, TYPE, space } from '../../../theme/tokens';
 import { UnitPickerSheet } from '../components/UnitPickerSheet';
 import { CategoryPickerSheet } from '../components/CategoryPickerSheet';
 import { VendorPickerSheet } from '../components/VendorPickerSheet';
@@ -235,7 +235,7 @@ export function IngredientFormScreen({ id }: { id?: string }) {
         </ScrollView>
       </QueryState>
 
-      <View style={{ paddingHorizontal: 20, paddingTop: 12, paddingBottom: 30, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
+      <View style={{ paddingHorizontal: 20, paddingTop: 12, paddingBottom: LAYOUT.scroll.end, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
         <Button kind="primary" size="lg" full disabled={!canSave} loading={save.isPending} onPress={onSave}>
           {id ? '저장' : '추가'}
         </Button>

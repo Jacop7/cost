@@ -11,7 +11,7 @@ import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Badge, Button, Card, ConfirmSheet, Field, Icon, Input, QueryState, Sheet, SortChip, SortSheet, type SortOption } from '@/components/kit';
-import { COLOR, T, won, TYPE, radius, space } from '@/theme/tokens';
+import { COLOR, T, won, TYPE, radius, rowMinHeight, space } from '@/theme/tokens';
 import { useRecipeList, type RecipeRow } from '@/features/recipes/hooks';
 
 
@@ -488,7 +488,7 @@ function SalesHomeBody({ today }: { today: string }) {
               const short = !stopped && m.blockedBy !== null;
               const blocked = stopped;
               return (
-                <View key={m.id} style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, minHeight: 82, paddingVertical: 12, paddingHorizontal: space.md, borderBottomWidth: i < list.length - 1 ? 1 : 0, borderBottomColor: T.line2, opacity: blocked ? 0.45 : 1 }}>
+                <View key={m.id} style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, minHeight: rowMinHeight.twoLine, paddingVertical: 12, paddingHorizontal: space.md, borderBottomWidth: i < list.length - 1 ? 1 : 0, borderBottomColor: T.line2, opacity: blocked ? 0.45 : 1 }}>
                   <View style={{ flex: 1, minWidth: 0 }}>
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
                       <Text style={{ fontSize: TYPE.caption.fontSize, fontWeight: '800', color: T.ink }} numberOfLines={1}>{m.name}</Text>

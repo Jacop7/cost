@@ -599,6 +599,8 @@ foreach ($fileName in @($auditName, $auditScriptName, 'full-page-flow-prototype-
     '../../scripts/design-token-color-usage.test.mjs', '../../scripts/design-token-geometry-diff.mjs',
     '../../scripts/design-token-geometry-diff.test.mjs', '../../scripts/design-token-s3a-known.json',
     '../../scripts/design-token-s3a-diff.mjs', '../../scripts/design-token-s3a-diff.test.mjs',
+    '../../scripts/design-token-s4-contract.json', '../../scripts/design-token-s4-check.mjs',
+    '../../scripts/design-token-s4-check.test.mjs',
     '../../scripts/touch-target-known.json', '../../scripts/touch-target-audit.mjs',
     '../../scripts/touch-target-audit.test.mjs',
     '../디자인-토큰-3계층-값-매핑-기획서.md')) {

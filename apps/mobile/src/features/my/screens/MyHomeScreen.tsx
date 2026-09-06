@@ -7,7 +7,7 @@ import { type Href, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { getLocale } from '@margincook/core';
 import { Card, Icon, IconName } from '@/components/kit';
-import { COLOR, COMPONENT, T, controlVisualHeight, radius, space } from '@/theme/tokens';
+import { LAYOUT, COLOR, COMPONENT, T, controlVisualHeight, radius, space } from '@/theme/tokens';
 import { useSettings, useUnitDigits } from '../store';
 import { useSettingsLists } from '@/features/master-data/hooks';
 import { useHoursStatus, useStoreSettings } from '@/features/settings/hooks';
@@ -110,7 +110,7 @@ export default function MyHomeScreen() {
         </View>
       </View>
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 28, gap: space.md }}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: LAYOUT.scroll.end, gap: space.md }}>
         {/* 사업장 */}
         <Card pad={16} style={{ flexDirection: 'row', alignItems: 'center', gap: space.md }}>
           <View style={{ width: 46, height: 46, borderRadius: radius.lg, backgroundColor: T.ink, alignItems: 'center', justifyContent: 'center' }}>

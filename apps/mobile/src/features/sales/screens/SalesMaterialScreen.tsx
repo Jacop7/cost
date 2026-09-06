@@ -9,7 +9,7 @@ import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter, type Href } from 'expo-router';
 import { AppHeader, Card, Icon, QueryState, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { COLOR, T, won, space } from '@/theme/tokens';
+import { LAYOUT, COLOR, T, won, space } from '@/theme/tokens';
 import { formatQuantity, formatUnitPrice } from '@margincook/core';
 import { useMaterialUsage, useSalesRange, type MaterialUsageItem } from '../hooks';
 import { rangeLabel } from '@/lib/date';
@@ -55,7 +55,7 @@ function SalesMaterialScreenBody({ serverToday }: { serverToday: string }) {
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <AppHeader title="재료 원가 자세히" onBack={() => safeBack(`/sales/day?date=${to}`)} />
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 2, paddingBottom: 28 }}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: LAYOUT.scroll.start, paddingBottom: LAYOUT.scroll.end }}>
         <QueryState
           isLoading={usage.isLoading}
           error={usage.error}

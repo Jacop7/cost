@@ -24,7 +24,7 @@ import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { AppHeader, Card, Icon, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { formatQuantity, isNegativeStock } from '@margincook/core';
-import { COLOR, T, TYPE, radius, space } from '@/theme/tokens';
+import { LAYOUT, COLOR, T, TYPE, radius, space } from '@/theme/tokens';
 import { useRecipeShortages, useSaleShortages, type ShortageIngredient, type ShortageMode } from '../hooks';
 import { getPendingSale } from '../pendingSale';
 
@@ -64,7 +64,7 @@ export default function SalesStockCheckScreen() {
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <AppHeader title="재고 확인" onBack={() => safeBack('/sales' as Href)} />
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 2, paddingBottom: 28, gap: space.md }}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: LAYOUT.scroll.start, paddingBottom: LAYOUT.scroll.end, gap: space.md }}>
         <QueryState
           isLoading={q.isLoading}
           error={q.error}

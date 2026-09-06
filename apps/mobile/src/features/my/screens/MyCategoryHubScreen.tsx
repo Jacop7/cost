@@ -6,7 +6,7 @@ import { Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
 import { AppHeader, Card, Icon, IconName, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { COLOR, COMPONENT, T, controlVisualHeight, radius, space } from '@/theme/tokens';
+import { LAYOUT, COLOR, COMPONENT, T, controlVisualHeight, radius, space } from '@/theme/tokens';
 import { useSettingsLists } from '@/features/master-data/hooks';
 
 export default function MyCategoryHubScreen() {
@@ -23,7 +23,7 @@ export default function MyCategoryHubScreen() {
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <AppHeader title="카테고리 관리" onBack={() => safeBack('/my')} />
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 8, paddingBottom: 28 }}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 8, paddingBottom: LAYOUT.scroll.end }}>
         <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginHorizontal: 4, marginBottom: space.sm }}>분류와 부자재 단가를 관리해요.</Text>
         <QueryState
           isLoading={lists.isLoading}

@@ -11,7 +11,7 @@ import { AppHeader, Badge, Card, Donut, Icon, MemoEditSheet, QueryState } from '
 import { safeBack } from '@/lib/nav';
 import { RecentChangeRow, changeStamp } from '@/features/changes';
 import { formatPercent, formatQuantity, formatUnitPrice, isNegativeStock, recommendedPrice, round, stockStateOf, STOCK_STATE_LABEL, taxAmount, taxRate } from '@margincook/core';
-import { COLOR, T, won, TYPE, radius, space } from '@/theme/tokens';
+import { LAYOUT, COLOR, T, won, TYPE, radius, space } from '@/theme/tokens';
 import { PriceSimSheet } from '../components/PriceSimSheet';
 import { useDeactivateRecipe, useRecipeDetail, useSaveRecipe } from '../hooks';
 import { deltaTone, useProfitHistory } from '../profitHistory';
@@ -166,7 +166,7 @@ export default function RecipeDetailScreen() {
         }
       />
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 2, paddingBottom: 28, gap: space.md }}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: LAYOUT.scroll.start, paddingBottom: LAYOUT.scroll.end, gap: space.md }}>
         <QueryState
           isLoading={detail.isLoading}
           error={detail.error}

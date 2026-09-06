@@ -8,7 +8,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { AppHeader, Button, Icon, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { COLOR, T, TYPE, radius, space } from '@/theme/tokens';
+import { LAYOUT, COLOR, T, TYPE, radius, space } from '@/theme/tokens';
 import { useSalesDay, useSalesRange, type RangeMenu } from '../hooks';
 import { ChannelMixCard, MenuSalesList, ProfitBreakdownCard, SecLabel } from '../components/ProfitBlocks';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
@@ -59,7 +59,7 @@ function SalesDayDetailScreenBody({ serverToday }: { serverToday: string }) {
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <AppHeader title={`${dayLabel(date, serverToday)} 손익`} onBack={() => safeBack('/sales' as Href)} />
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 2, paddingBottom: 24, gap: space.md }}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: LAYOUT.scroll.start, paddingBottom: 24, gap: space.md }}>
         <QueryState
           isLoading={day.isLoading || range.isLoading}
           error={day.error ?? range.error}

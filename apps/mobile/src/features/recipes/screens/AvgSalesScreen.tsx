@@ -9,7 +9,7 @@ import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Button, Card, Icon, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { COLOR, T, won, TYPE, radius, space } from '@/theme/tokens';
+import { LAYOUT, COLOR, T, won, TYPE, radius, space } from '@/theme/tokens';
 import { clampDecimals } from '@/lib/num';
 import { useSalesRange } from '@/features/sales/hooks';
 import { addDays } from '@/lib/date';
@@ -130,7 +130,7 @@ function AvgSalesScreenBody({ localDate }: { localDate: string }) {
         </View>
       </ScrollView>
 
-      <View style={{ paddingHorizontal: 20, paddingTop: space.md, paddingBottom: 28, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
+      <View style={{ paddingHorizontal: 20, paddingTop: space.md, paddingBottom: LAYOUT.scroll.end, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
         <Button
           kind="primary" size="lg" full
           onPress={() => { patch({ avgMonthlySales: clampDecimals(value, 0) }); safeBack('/recipes/add'); }}

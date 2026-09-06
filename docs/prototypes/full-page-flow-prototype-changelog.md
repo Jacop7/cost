@@ -1,4 +1,4 @@
-﻿# 전체 페이지 흐름 프로토타입 변경 기록
+# 전체 페이지 흐름 프로토타입 변경 기록
 
 작업 대상 적용본: `docs/prototypes/full-page-flow-prototype-ui-applied.html`  
 보존 원본: `docs/prototypes/full-page-flow-prototype.html`
@@ -18,6 +18,23 @@
   갱신한 뒤 자동 동기화 검사를 통과한다.
 
 ## 변경 내역
+
+### PRT-232 · 2026-09-06 S4 컴포넌트·레이아웃 계약 후보
+
+- 날짜: 2026-09-06
+- 디자인 동기화 ID: `DS-20260906-005`
+- 기준선: S3a 종결 `deeb767ebf80c4d1c14a854a052a60ffdb46c6ad`.
+- 앱: 2줄 하단 탭 라벨과 실측 초과 높이 기반 탭바, 일반/FAB 스크롤 끝 여백,
+  ListRow 60/76, `sales-menu-sub` 줄바꿈, Button 최소 누름 높이 44를 적용했다.
+- 인접 행동: `MyVendors`·`MaterialManage`의 시각 상자를 34→32로 수렴시키면서 gap 12·hitSlop 6으로
+  독립 44px 터치 영역을 만들었다. 카테고리 정렬은 겹치는 28×20 두 버튼 대신 단일 44×44 진입점과
+  네이티브 방향 선택으로 바꿨다.
+- 게이트: S4 계약 6개 음성 시험, 터치 감사 미달 0·형제중첩 0·판정불가 163 래칫,
+  모바일 타입 검사와 207개 시험을 통과했다. S3a assignmentPlan 잔존도 S4 게이트가 재단언한다.
+- 한계: Android·iOS `onLayout`+`measureInWindow` 실제 frame 증거는 현재 Windows 환경에
+  `adb`·`xcrun`이 없어 아직 확보하지 못했다. 따라서 S4a 네이티브 조건과 S4 최종 판정은 열려 있다.
+- 프로토타입 UI 변경: 없음. 적용본은 동기화 표식만 변경했다.
+- 후속: 독립 검수 → 네이티브 증거 확보 또는 명시적 차단 기록 → `S3b`.
 
 ### PRT-231 · 2026-09-06 S3a 독립 검수 후 증거 계약 보강
 

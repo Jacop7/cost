@@ -11,7 +11,7 @@ import { useMemo, useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { AppHeader, Badge, Button, Card, Field, Icon, Input, QueryState, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { COLOR, T, TYPE, controlVisualHeight, radius, space } from '@/theme/tokens';
+import { LAYOUT, COLOR, COMPONENT, T, TYPE, controlVisualHeight, radius, space } from '@/theme/tokens';
 import { useDeleteVendor, useSaveVendor, useSettingsLists, type VendorRow } from '@/features/master-data/hooks';
 
 /** 공백·기호를 지운 뒤 같으면 "비슷한 이름"으로 본다('대림유통' vs '대림 유통'). */
@@ -88,7 +88,7 @@ export default function MyVendorsScreen() {
         }
       />
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 4, paddingBottom: 28 }}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 4, paddingBottom: LAYOUT.scroll.end }}>
         {dupes.map((g) => (
           <View key={g.map((v) => v.id).join('-')} style={{ backgroundColor: '#FFF9F0', borderWidth: 1, borderColor: T.amberTint, borderRadius: 16, padding: space.md, marginBottom: 12 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
@@ -115,7 +115,7 @@ export default function MyVendorsScreen() {
         >
           <Card pad={0} style={{ overflow: 'hidden' }}>
             {vendors.map((v, i) => (
-              <View key={v.id} style={{ flexDirection: 'row', alignItems: 'center', gap: 11, paddingVertical: 12, paddingLeft: space.md, paddingRight: space.sm, borderBottomWidth: i < vendors.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
+              <View key={v.id} style={{ flexDirection: 'row', alignItems: 'center', gap: COMPONENT.adjacentActions.gap, paddingVertical: 12, paddingLeft: space.md, paddingRight: space.sm, borderBottomWidth: i < vendors.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
                 <View style={{ width: controlVisualHeight.md, height: controlVisualHeight.md, borderRadius: radius.md, backgroundColor: T.line2, alignItems: 'center', justifyContent: 'center' }}>
                   <Icon name="store" size={20} color={T.sub2} />
                 </View>
@@ -126,10 +126,10 @@ export default function MyVendorsScreen() {
                   </View>
                   <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.xs }}>발주 {v.usedCount}건</Text>
                 </Pressable>
-                <Pressable onPress={() => openEdit(v)} hitSlop={5} accessibilityRole="button" accessibilityLabel={`${v.name} 이름 변경`} style={{ width: 34, height: 34, alignItems: 'center', justifyContent: 'center' }}>
+                <Pressable onPress={() => openEdit(v)} hitSlop={COMPONENT.adjacentActions.hitSlop} accessibilityRole="button" accessibilityLabel={`${v.name} 이름 변경`} style={{ width: controlVisualHeight.sm, height: controlVisualHeight.sm, alignItems: 'center', justifyContent: 'center' }}>
                   <Icon name="edit" size={18} color={COLOR.text.tertiary} sw={2} />
                 </Pressable>
-                <Pressable onPress={() => confirmDelete(v)} hitSlop={5} accessibilityRole="button" accessibilityLabel={`${v.name} 삭제`} style={{ width: 34, height: 34, alignItems: 'center', justifyContent: 'center' }}>
+                <Pressable onPress={() => confirmDelete(v)} hitSlop={COMPONENT.adjacentActions.hitSlop} accessibilityRole="button" accessibilityLabel={`${v.name} 삭제`} style={{ width: controlVisualHeight.sm, height: controlVisualHeight.sm, alignItems: 'center', justifyContent: 'center' }}>
                   <Icon name="close" size={19} color={COLOR.text.tertiary} />
                 </Pressable>
               </View>

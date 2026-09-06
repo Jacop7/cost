@@ -7,7 +7,7 @@ import { Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
 import { AppHeader, Badge, Card, Icon, QueryState, SearchBar } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { COLOR, T, won, space } from '@/theme/tokens';
+import { LAYOUT, COLOR, T, won, space } from '@/theme/tokens';
 import { useSettingsLists } from '@/features/master-data/hooks';
 import { useRecipeDraft } from '../draftStore';
 
@@ -32,7 +32,7 @@ export default function MaterialSearchScreen() {
       <AppHeader title="부자재 검색" onBack={() => safeBack('/recipes/add')} />
       <SearchBar value={query} onChange={setQuery} placeholder="부자재 이름으로 검색" />
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 32, gap: space.sm }}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: LAYOUT.scroll.end, gap: space.sm }}>
         <Pressable
           onPress={() => router.push('/recipes/materials' as Href)}
           accessibilityRole="button" accessibilityLabel="부자재 관리로 이동"

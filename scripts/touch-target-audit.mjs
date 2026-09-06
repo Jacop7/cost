@@ -65,6 +65,7 @@ const tokenNumericLiteral = (node) => {
   if (current && ts.isNumericLiteral(current)) return Number(current.text);
   if (current && ts.isPrefixUnaryExpression(current) && current.operator === ts.SyntaxKind.MinusToken
     && ts.isNumericLiteral(current.operand)) return -Number(current.operand.text);
+  if (current && ts.isPropertyAccessExpression(current)) return tokenNumberValues.get(current.getText()) ?? null;
   return null;
 };
 const tokenFile = join(srcRoot, 'src', 'theme', 'tokens.ts');
@@ -83,7 +84,11 @@ if (existsSync(tokenFile)) {
   };
   for (const statement of source.statements) if (ts.isVariableStatement(statement)) {
     for (const declaration of statement.declarationList.declarations) {
-      if (ts.isIdentifier(declaration.name) && declaration.initializer) collectObject(declaration.name.text, declaration.initializer);
+      if (ts.isIdentifier(declaration.name) && declaration.initializer) {
+        const numeric = tokenNumericLiteral(declaration.initializer);
+        if (numeric !== null) tokenNumberValues.set(declaration.name.text, numeric);
+        else collectObject(declaration.name.text, declaration.initializer);
+      }
     }
   }
 }
@@ -131,6 +136,11 @@ const readHitSlop = (body) => {
   const rest = body.slice(m.index + m[0].length - 1);
   const num = rest.match(/^\{\s*(\d+(?:\.\d+)?)\s*\}/);
   if (num) { const v = Number(num[1]); return { top: v, bottom: v, left: v, right: v, form: `숫자 ${v}` }; }
+  const ref = rest.match(/^\{\s*([A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*)+)\s*\}/);
+  if (ref && tokenNumberValues.has(ref[1])) {
+    const v = tokenNumberValues.get(ref[1]);
+    return { top: v, bottom: v, left: v, right: v, form: `토큰 ${ref[1]}=${v}` };
+  }
   const obj = rest.match(/^\{\s*\{([\s\S]{0,200}?)\}\s*\}/);
   if (obj) {
     const g = (k) => { const mm = obj[1].match(new RegExp(`${k}\\s*:\\s*(\\d+(?:\\.\\d+)?)`)); return mm ? Number(mm[1]) : null; };
@@ -385,11 +395,13 @@ for (const f of files) {
 //   ② `Button` 의 호출부 `style` 은 기본 스타일 **뒤에** 붙어 `paddingVertical` 과 `height` 를
 //      **덮어 줄일 수 있다.** 이 감사는 호출부 override 를 읽지 않는다. 그러니 하한 49 인
 //      `lg` 라도 어떤 소비처가 높이를 줄였는지 정적으로는 모른다.
-// 그래서 판정은 전부 **경계**다. 실제 높이는 `S4` 렌더 실측(Android·iOS)이 닫는다.
+// 그래서 호출부 뒤에 강제 하한이 없으면 판정은 **경계**다. 실제 높이는 `S4` 렌더 실측
+// (Android·iOS)이 닫는다.
 //
 // 경계는 위험이 열려 있는 상태다. 그래서 **모든 variant 의 소비처 ID 와 개수를 래칫한다** —
 // 열린 위험이 조용히 퍼지는 것을 막는다. `Button` 이 호출부가 무력화할 수 없는
-// `minHeight: 44` 를 갖게 되면(그건 시각 변화라 `S4`) 그때 통과로 닫고 래칫을 푼다.
+// `minHeight: 44` 를 **호출부 style 뒤에** 갖게 되면(그건 시각 변화라 `S4`) 그때 정적 통과로
+// 닫고 소비처 래칫을 푼다. 앞에 둔 하한은 호출부가 다시 줄일 수 있으므로 인정하지 않는다.
 
 /**
  * `<Button …>` 소비처를 **여는 태그 전체**로 읽는다 (솔 검수 `R3 F01`).
@@ -436,6 +448,14 @@ let dynamicUses = null;
     const t = readFileSync(bt, 'utf8');
     const d = t.match(/\bsize\s*=\s*'([A-Za-z]+)'/);
     const m = t.match(/const sizes[^=]*=\s*\{([\s\S]*?)\n\s*\};/);
+    const styleArray = t.match(/style\s*=\s*\{(?:\s*\([^)]*\)\s*=>)?\s*\[([\s\S]*?)\]\s*\}/);
+    const callerStyleAt = styleArray?.[1].search(/(?:^|,)\s*style\s*(?:,|$)/) ?? -1;
+    const forcedMin = styleArray?.[1].match(/\{\s*minHeight\s*:\s*(\d+(?:\.\d+)?|[A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*)*)\s*\}/);
+    const forcedMinAt = forcedMin ? styleArray[1].indexOf(forcedMin[0]) : -1;
+    const forcedMinValue = forcedMin
+      ? (/^\d/.test(forcedMin[1]) ? Number(forcedMin[1]) : (tokenNumberValues.get(forcedMin[1]) ?? null))
+      : null;
+    const lockedMinHeight = callerStyleAt >= 0 && forcedMinAt > callerStyleAt ? forcedMinValue : null;
     if (!d) componentContracts.push({ 컴포넌트: 'Button', 판정: '읽기실패', 사유: "기본 size 값(`size = 'md'`)을 못 읽었다 — 기본값을 모르면 size 없는 자리를 배정할 수 없다" });
     else if (!m) componentContracts.push({ 컴포넌트: 'Button', 판정: '읽기실패', 사유: 'sizes 표를 못 읽었다 — 모양이 바뀌었으면 계약을 다시 맞춰라' });
     else {
@@ -445,14 +465,17 @@ let dynamicUses = null;
         const v = line.match(/(\w+)\s*:\s*\{\s*pv:\s*(\d+),\s*ph:\s*(\d+),\s*fs:\s*(\d+)/);
         if (!v) continue;
         const [, name, pv, ph, fs] = v;
-        const lo = 2 * +pv + +fs;
+        const contentLo = 2 * +pv + +fs;
+        const lo = lockedMinHeight === null ? contentLo : Math.max(contentLo, lockedMinHeight);
         const at = (uses.byVariant.get(name) ?? []).slice().sort();
         const 시험 = (uses.testByVariant.get(name) ?? []).slice().sort();
         componentContracts.push({ 컴포넌트: `Button size="${name}"`, paddingVertical: +pv, fontSize: +fs,
-          높이하한: lo, 기본값여부: name === d[1], 판정: '경계',
-          판정사유: lo >= MIN
-            ? `하한 ${lo} 는 44 를 넘지만 호출부 style 이 padding·height 를 덮어 줄일 수 있어 정적으로 닫지 않는다 (R4 F02)`
-            : `하한 ${lo} < 44 이고 상한의 근거가 없다 — S4 렌더 실측이 닫는다`,
+          높이하한: lo, 기본값여부: name === d[1], 판정: lockedMinHeight !== null && lockedMinHeight >= MIN ? '통과' : '경계',
+          판정사유: lockedMinHeight !== null && lockedMinHeight >= MIN
+            ? `호출부 style 뒤의 강제 minHeight ${lockedMinHeight} 가 모든 variant 를 44 아래로 줄지 않게 한다`
+            : lo >= MIN
+              ? `내용 하한 ${lo} 는 44 를 넘지만 호출부 style 이 padding·height 를 덮어 줄일 수 있어 정적으로 닫지 않는다 (R4 F02)`
+              : `내용 하한 ${lo} < 44 이고 호출부 뒤 강제 하한이 없다 — S4 렌더 실측이 닫는다`,
           소비처: at.length, at, 시험참조: 시험.length, 시험참조at: 시험 });
       }
       for (const [name, at] of uses.byVariant) {

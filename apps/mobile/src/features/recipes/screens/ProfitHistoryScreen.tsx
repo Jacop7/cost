@@ -23,7 +23,7 @@ import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Card, Icon, QueryState, Sheet } from '@/components/kit';
 import { monthLabel, changeStamp } from '@/features/changes';
 import { safeBack } from '@/lib/nav';
-import { COLOR, T, won, TYPE, space } from '@/theme/tokens';
+import { LAYOUT, COLOR, T, won, TYPE, space } from '@/theme/tokens';
 import { deltaTone, useProfitHistory, type ProfitChange } from '../profitHistory';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
@@ -139,7 +139,7 @@ export default function ProfitHistoryScreen() {
 
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ padding: space.md, paddingBottom: 32 }}
+        contentContainerStyle={{ padding: space.md, paddingBottom: LAYOUT.scroll.end }}
         onScroll={({ nativeEvent: e }) => {
           const near = e.layoutMeasurement.height + e.contentOffset.y >= e.contentSize.height - 220;
           if (near && q.hasNextPage && !q.isFetchingNextPage) void q.fetchNextPage();

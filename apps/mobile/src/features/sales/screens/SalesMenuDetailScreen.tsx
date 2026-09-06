@@ -16,7 +16,7 @@ import { AppHeader, Card, QueryState } from '@/components/kit';
 import { SalesRow, SecLabel } from '../components/ProfitBlocks';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
 import { safeBack } from '@/lib/nav';
-import { COLOR, T, won, TYPE, space } from '@/theme/tokens';
+import { LAYOUT, COLOR, T, won, TYPE, space } from '@/theme/tokens';
 import { formatQuantity, formatUnitPrice } from '@margincook/core';
 import { useRecipeDetail } from '@/features/recipes/hooks';
 import { useDayMenuDetail, useRangeMenuDetail, useSalesRange } from '../hooks';
@@ -156,7 +156,7 @@ function SalesMenuDetailScreenBody({ serverToday }: { serverToday: string }) {
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <AppHeader title="메뉴 손익" onBack={() => safeBack(`/sales/day?date=${to}`)} />
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 2, paddingBottom: 28, gap: space.md }}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: LAYOUT.scroll.start, paddingBottom: LAYOUT.scroll.end, gap: space.md }}>
         <QueryState
           isLoading={recipe.isLoading || range.isLoading}
           error={recipe.error ?? range.error}

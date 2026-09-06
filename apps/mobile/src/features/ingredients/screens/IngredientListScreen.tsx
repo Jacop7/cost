@@ -4,7 +4,7 @@ import { View, Text, ScrollView, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ScreenShell, ScrollTabs, Icon, FAB, SearchBar, SortChip, SortSheet, QueryState, type SortOption } from '../../../components/kit';
-import { COLOR, T, radius, space } from '../../../theme/tokens';
+import { LAYOUT, COLOR, T, radius, space } from '../../../theme/tokens';
 import { useIngredientList, type IngredientRow } from '../hooks';
 import { useSettingsLists } from '@/features/master-data/hooks';
 import { IngCard, stockStateOf } from '../components/IngCard';
@@ -114,7 +114,7 @@ export function IngredientListScreen() {
       <View style={{ paddingHorizontal: 20, paddingTop: 12, paddingBottom: space.sm }}>
         <SortChip label={sortLabel} onPress={() => setSortOpen(true)} />
       </View>
-      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 104, gap: space.sm }} showsVerticalScrollIndicator={false}>
+      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: LAYOUT.scroll.endWithFab, gap: space.sm }} showsVerticalScrollIndicator={false}>
         {outList.length > 0 ? (
           <View
             style={{

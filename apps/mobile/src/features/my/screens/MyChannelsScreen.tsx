@@ -16,7 +16,7 @@ import { useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { AppHeader, Badge, Button, Card, Field, Icon, Input, QueryState, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { COLOR, T, TYPE, space } from '@/theme/tokens';
+import { LAYOUT, COLOR, T, TYPE, space } from '@/theme/tokens';
 import { useSaveChannel, useSettingsLists, type ChannelRow } from '@/features/master-data/hooks';
 
 export default function MyChannelsScreen() {
@@ -66,7 +66,7 @@ export default function MyChannelsScreen() {
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <AppHeader title="판매 채널" onBack={() => safeBack('/my')} />
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ padding: 16, paddingBottom: 32, gap: space.md }}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ padding: 16, paddingBottom: LAYOUT.scroll.end, gap: space.md }}>
         <QueryState
           isLoading={lists.isLoading}
           error={lists.error}

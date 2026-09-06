@@ -10,7 +10,7 @@ import { type Href, useRouter } from 'expo-router';
 import { AppHeader, Badge, Button, Card, FilterButton, Icon, QueryState, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { formatPercent } from '@margincook/core';
-import { COLOR, T, won, TYPE, space } from '@/theme/tokens';
+import { LAYOUT, COLOR, T, won, TYPE, rowMinHeight, space } from '@/theme/tokens';
 import { useStoreLocalDate } from '@/features/business-day/businessDay';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
 import { useFixedCosts, useRevenueCheck } from '../hooks';
@@ -78,7 +78,7 @@ function FixedCostScreenBody({ localMonth }: { localMonth: string }) {
         <FilterButton label={`${month.slice(0, 4)}년 ${Number(month.slice(5))}월`} onPress={() => setMonthOpen(true)} />
       </View>
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 2, paddingBottom: 24, gap: space.md }}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: LAYOUT.scroll.start, paddingBottom: 24, gap: space.md }}>
         <QueryState
           isLoading={fixed.isLoading}
           error={fixed.error}
@@ -139,7 +139,7 @@ function FixedCostScreenBody({ localMonth }: { localMonth: string }) {
         </QueryState>
       </ScrollView>
 
-      <View style={{ paddingHorizontal: 20, paddingTop: space.md, paddingBottom: 30, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
+      <View style={{ paddingHorizontal: 20, paddingTop: space.md, paddingBottom: LAYOUT.scroll.end, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: space.md }}>
           <Text style={{ flex: 1, fontSize: 14, fontWeight: '600', color: T.sub2 }}>고정 지출 합계</Text>
           <Text style={[{ fontSize: 18, fontWeight: '800', color: T.ink, marginRight: 8 }, NUM]}>{won(total)}원</Text>
@@ -162,7 +162,7 @@ function FixedCostScreenBody({ localMonth }: { localMonth: string }) {
                 accessibilityState={{ selected: on }}
                 accessibilityLabel={`${m.slice(0, 4)}년 ${Number(m.slice(5))}월`}
                 style={{
-                  flexDirection: 'row', alignItems: 'center', gap: space.sm, minHeight: 55, paddingHorizontal: space.md,
+                  flexDirection: 'row', alignItems: 'center', gap: space.sm, minHeight: rowMinHeight.oneLine, paddingHorizontal: space.md,
                   borderBottomWidth: i === months.length - 1 ? 0 : 1, borderBottomColor: T.line2,
                 }}
               >

@@ -7,7 +7,7 @@ import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Card, Icon, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { COLOR, T, won, TYPE, space } from '@/theme/tokens';
+import { LAYOUT, COLOR, T, won, TYPE, space } from '@/theme/tokens';
 import { useSalesDay, useSalesRange } from '../hooks';
 import { channelName } from '../channels';
 import { rangeLabel } from '@/lib/date';
@@ -51,7 +51,7 @@ function SalesRevenueScreenBody({ serverToday }: { serverToday: string }) {
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <AppHeader title="매출 자세히" onBack={() => safeBack(`/sales/day?date=${to}`)} />
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 2, paddingBottom: 28 }}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: LAYOUT.scroll.start, paddingBottom: LAYOUT.scroll.end }}>
         <QueryState
           isLoading={range.isLoading}
           error={range.error}

@@ -4,7 +4,7 @@
  */
 import { ReactElement, ReactNode } from 'react';
 import { Modal, Pressable, ScrollView, Text, View } from 'react-native';
-import { T, TYPE, radius, space } from '@/theme/tokens';
+import { LAYOUT, T, TYPE, radius, space } from '@/theme/tokens';
 import { Button } from './Button';
 
 export function Sheet({ visible, onClose, children, title, sub, height, headerRight, scroll = true }: {
@@ -41,7 +41,7 @@ export function Sheet({ visible, onClose, children, title, sub, height, headerRi
           </View>
         ) : null}
         {scroll ? (
-          <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, paddingTop: space.md, paddingBottom: 40 }}>{children}</ScrollView>
+          <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, paddingTop: space.md, paddingBottom: LAYOUT.scroll.end }}>{children}</ScrollView>
         ) : (
           <View style={{ flex: 1, paddingTop: space.md }}>{children}</View>
         )}
