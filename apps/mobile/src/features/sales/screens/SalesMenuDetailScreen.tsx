@@ -142,7 +142,7 @@ function SalesMenuDetailScreenBody({ serverToday }: { serverToday: string }) {
     ['부자재', extra, p(extra), COMPONENT.profitChart.extra],
     ['고정 지출', fixed, p(fixed), COMPONENT.profitChart.fixed],
     ['세금', tax, p(tax), COMPONENT.profitChart.tax],
-    ['순이익', profit, rate, rate >= target ? T.green : T.red],
+    ['순이익', profit, rate, rate >= target ? COLOR.status.positive : COLOR.status.negative],
   ];
 
   const chQty = sold ? [
@@ -186,7 +186,7 @@ function SalesMenuDetailScreenBody({ serverToday }: { serverToday: string }) {
                       <Text style={{ fontSize: TYPE.caption.fontSize, fontWeight: '700', color: T.sub }}>{k}</Text>
                       {subLabel ? <Text style={{ fontSize: TYPE.captionSm.fontSize, fontWeight: '700', color: COLOR.text.tertiary, marginTop: space.xs }}>{subLabel}</Text> : null}
                     </View>
-                    <Text style={[{ fontSize: TYPE.caption.fontSize, fontWeight: '800', color: accent ? (rate >= target ? T.green : T.red) : T.ink }, NUM]}>{v}</Text>
+                    <Text style={[{ fontSize: TYPE.caption.fontSize, fontWeight: '800', color: accent ? (rate >= target ? COLOR.status.positive : COLOR.status.negative) : T.ink }, NUM]}>{v}</Text>
                   </View>
                 ))}
               </Card>

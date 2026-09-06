@@ -152,19 +152,19 @@ export default function MyUnitsScreen() {
       <AppHeader title="단위 설정" onBack={() => safeBack('/my')} />
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 4, paddingBottom: LAYOUT.scroll.end }}>
         {settings.error && settings.hasData ? (
-          <View role="alert" accessibilityLabel="재조회 실패" style={{ marginBottom: space.sm, padding: space.md, borderRadius: 12, backgroundColor: T.redTint }}>
-            <Text style={{ fontSize: 14, fontWeight: '700', color: T.red }}>최신 설정을 불러오지 못했어요. 다시 시도해 주세요.</Text>
+          <View role="alert" accessibilityLabel="재조회 실패" style={{ marginBottom: space.sm, padding: space.md, borderRadius: 12, backgroundColor: COLOR.status.negativeTint }}>
+            <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.status.negative }}>최신 설정을 불러오지 못했어요. 다시 시도해 주세요.</Text>
             {/* 배경 오류 재시도는 조회만 다시 한다. 수정 중인 컵 초안을 서버값으로 덮지 않는다. */}
             <View style={{ marginTop: 8 }}><Button kind="gray" size="md" onPress={() => { void settings.refetch(); }} accessibilityLabel="다시 시도">다시 시도</Button></View>
           </View>
         ) : null}
         {serverChanged ? (
-          <View role="status" style={{ marginBottom: space.sm, padding: space.md, borderRadius: 12, backgroundColor: T.redTint, borderWidth: 1, borderColor: T.red }}>
-            <Text style={{ fontSize: 14, fontWeight: '700', color: T.red }}>다른 기기에서 설정이 변경됐어요. 새로고침 후 다시 저장해 주세요.</Text>
+          <View role="status" style={{ marginBottom: space.sm, padding: space.md, borderRadius: 12, backgroundColor: COLOR.status.negativeTint, borderWidth: 1, borderColor: COLOR.status.negative }}>
+            <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.status.negative }}>다른 기기에서 설정이 변경됐어요. 새로고침 후 다시 저장해 주세요.</Text>
             <View style={{ marginTop: 8 }}><Button kind="gray" size="md" onPress={() => { void adoptLatest(); }} accessibilityLabel="새로고침">새로고침</Button></View>
           </View>
         ) : null}
-        {saveError ? <Text role="alert" style={{ color: T.red, fontWeight: '700', marginBottom: space.sm }}>저장하지 못했어요 · {saveError}</Text> : null}
+        {saveError ? <Text role="alert" style={{ color: COLOR.status.negative, fontWeight: '700', marginBottom: space.sm }}>저장하지 못했어요 · {saveError}</Text> : null}
 
         <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.text.tertiary, marginHorizontal: 4, marginBottom: 8 }}>기준 단위</Text>
         <Card pad={0} style={{ overflow: 'hidden', marginBottom: 16 }}>
@@ -190,7 +190,7 @@ export default function MyUnitsScreen() {
               accessibilityLabel="1컵 용량"
             />
           </Field>
-          {!cupValid ? <Text style={{ color: T.red, fontSize: 14, marginBottom: space.sm }}>0보다 크고 5,000ml 이하로 입력해 주세요.</Text> : null}
+          {!cupValid ? <Text style={{ color: COLOR.status.negative, fontSize: 14, marginBottom: space.sm }}>0보다 크고 5,000ml 이하로 입력해 주세요.</Text> : null}
           <Button kind="primary" size="lg" full disabled={blocked || !cupValid || !cupChanged} loading={saving} onPress={saveCup} accessibilityLabel="컵 용량 저장">컵 용량 저장</Button>
         </Card>
 

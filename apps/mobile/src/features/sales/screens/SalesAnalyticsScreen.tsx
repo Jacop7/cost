@@ -193,8 +193,8 @@ function SalesAnalyticsBody({ today }: { today: string }) {
                   */}
                   {([
                     ['매출', won(s.revenue), '100%', undefined, false],
-                    ['지출', won(expense), `${expenseRate}%`, T.amberText, false],
-                    ['순이익', won(s.profit), `${profitRate}%`, T.green, true],
+                    ['지출', won(expense), `${expenseRate}%`, COLOR.status.caution, false],
+                    ['순이익', won(s.profit), `${profitRate}%`, COLOR.status.positive, true],
                   ] as const).map(([l, v, p, c, isProfit], i) => (
                     <SalesRow
                       key={l}
@@ -203,7 +203,7 @@ function SalesAnalyticsBody({ today }: { today: string }) {
                       percent={p}
                       strong
                       tone={c}
-                      labelTone={isProfit ? T.green : undefined}
+                      labelTone={isProfit ? COLOR.status.positive : undefined}
                       percentTone={COLOR.text.tertiary}
                       last={i === 2}
                     />
@@ -338,7 +338,7 @@ function SalesAnalyticsBody({ today }: { today: string }) {
         </Text>
         <View style={{ flexDirection: 'row', marginBottom: space.sm }}>
           {DOWS.map((d, i) => (
-            <Text key={d} style={{ flex: 1, textAlign: 'center', fontSize: 13, fontWeight: '700', color: i === 0 ? T.red : COLOR.text.tertiary }}>{d}</Text>
+            <Text key={d} style={{ flex: 1, textAlign: 'center', fontSize: 13, fontWeight: '700', color: i === 0 ? COLOR.status.negative : COLOR.text.tertiary }}>{d}</Text>
           ))}
         </View>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginBottom: space.md }}>

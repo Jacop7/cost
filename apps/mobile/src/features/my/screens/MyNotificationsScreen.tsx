@@ -92,18 +92,18 @@ export default function MyNotificationsScreen() {
           emptyTitle=""
         >
           {settings.isError && settings.data ? (
-            <View role="alert" accessibilityLabel="재조회 실패" style={{ marginBottom: space.sm, padding: space.md, borderRadius: 12, backgroundColor: T.redTint }}>
-              <Text style={{ color: T.red, fontWeight: '700' }}>최신 설정을 불러오지 못했어요. 다시 시도해 주세요.</Text>
+            <View role="alert" accessibilityLabel="재조회 실패" style={{ marginBottom: space.sm, padding: space.md, borderRadius: 12, backgroundColor: COLOR.status.negativeTint }}>
+              <Text style={{ color: COLOR.status.negative, fontWeight: '700' }}>최신 설정을 불러오지 못했어요. 다시 시도해 주세요.</Text>
               <View style={{ marginTop: 8 }}><Button kind="gray" size="md" onPress={() => { void refresh(); }}>다시 시도</Button></View>
             </View>
           ) : null}
           {serverChanged ? (
-            <View role="status" style={{ marginBottom: space.sm, padding: space.md, borderRadius: 12, backgroundColor: T.redTint, borderWidth: 1, borderColor: T.red }}>
-              <Text style={{ color: T.red, fontWeight: '700' }}>다른 기기에서 설정이 변경됐어요. 새로고침 후 다시 저장해 주세요.</Text>
+            <View role="status" style={{ marginBottom: space.sm, padding: space.md, borderRadius: 12, backgroundColor: COLOR.status.negativeTint, borderWidth: 1, borderColor: COLOR.status.negative }}>
+              <Text style={{ color: COLOR.status.negative, fontWeight: '700' }}>다른 기기에서 설정이 변경됐어요. 새로고침 후 다시 저장해 주세요.</Text>
               <View style={{ marginTop: 8 }}><Button kind="gray" size="md" loading={refreshing} onPress={() => { void refresh(); }} accessibilityLabel="새로고침">새로고침</Button></View>
             </View>
           ) : null}
-          {saveError ? <Text role="alert" style={{ color: T.red, fontWeight: '700', marginBottom: space.sm }}>바꾸지 못했어요 · {saveError}</Text> : null}
+          {saveError ? <Text role="alert" style={{ color: COLOR.status.negative, fontWeight: '700', marginBottom: space.sm }}>바꾸지 못했어요 · {saveError}</Text> : null}
           <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginHorizontal: 4, marginBottom: space.sm }}>4종 중 {onCount}개 켜짐</Text>
           <Card pad={0} style={{ overflow: 'hidden' }}>
             {ITEMS.map((n, i) => (

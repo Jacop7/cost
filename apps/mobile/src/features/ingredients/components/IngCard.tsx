@@ -56,14 +56,14 @@ export function IngCard({ g, onPress }: { g: IngredientRow; onPress?: () => void
                 감추면 입고를 빠뜨렸다는 단서가 화면에서 사라진다.
             */}
             <Text
-              style={[{ fontSize: 16, fontWeight: '800', color: isNegativeStock(g.stockTotal) ? T.red : T.ink }, tnum]}
+              style={[{ fontSize: 16, fontWeight: '800', color: isNegativeStock(g.stockTotal) ? COLOR.status.negative : T.ink }, tnum]}
               numberOfLines={1}
             >
               총 {formatQuantity(g.stockTotal, unit)}
             </Text>
             {/* 왜 노란지 그 자리에서 설명한다 — 안전선을 같이 보여준다. */}
             {stockStateOf(g) === 'low' ? (
-              <Text style={{ fontSize: 13, fontWeight: '700', color: T.amberText }}>
+              <Text style={{ fontSize: 13, fontWeight: '700', color: COLOR.status.caution }}>
                 안전 {formatQuantity(g.safetyStock, unit)} 미달
               </Text>
             ) : null}

@@ -14,7 +14,7 @@ import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Card, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { formatQuantity } from '@margincook/core';
-import { LAYOUT, T, won, space } from '@/theme/tokens';
+import { COLOR, LAYOUT, T, won, space } from '@/theme/tokens';
 import { DetailRow, DetailSection, DetailSummary } from '../components/ProfitBlocks';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
 import { useSalesRange, useWasteBreakdown } from '../hooks';
@@ -63,8 +63,8 @@ function SalesWasteScreenBody({ serverToday }: { serverToday: string }) {
               <DetailSummary
                 rows={[
                   ['영업일', rangeLabel(from, to)],
-                  ['폐기 손실 합계', `${d.total > 0 ? '−' : ''}${won(Math.round(d.total))}원`, undefined, d.total > 0 ? T.red : undefined],
-                  ['매출 대비', `${pct > 0 ? '−' : ''}${pct}%`, undefined, pct > 0 ? T.red : undefined],
+                  ['폐기 손실 합계', `${d.total > 0 ? '−' : ''}${won(Math.round(d.total))}원`, undefined, d.total > 0 ? COLOR.status.negative : undefined],
+                  ['매출 대비', `${pct > 0 ? '−' : ''}${pct}%`, undefined, pct > 0 ? COLOR.status.negative : undefined],
                 ]}
               />
 

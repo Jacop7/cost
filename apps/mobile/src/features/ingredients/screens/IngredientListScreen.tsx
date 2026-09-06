@@ -99,7 +99,7 @@ export function IngredientListScreen() {
               style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}
             >
               <Icon name="bell" size={24} color={T.ink2} />
-              <View style={{ position: 'absolute', top: 9, right: 10, width: 7, height: 7, borderRadius: radius.full, backgroundColor: T.red, borderWidth: 1.5, borderColor: T.surface }} />
+              <View style={{ position: 'absolute', top: 9, right: 10, width: 7, height: 7, borderRadius: radius.full, backgroundColor: COLOR.status.negative, borderWidth: 1.5, borderColor: T.surface }} />
             </Pressable>
           </View>
           {searching ? (
@@ -121,22 +121,22 @@ export function IngredientListScreen() {
               flexDirection: 'row',
               alignItems: 'center',
               gap: space.sm,
-              backgroundColor: T.redTint,
+              backgroundColor: COLOR.status.negativeTint,
               borderWidth: 1,
-              borderColor: T.red,
+              borderColor: COLOR.status.negative,
               borderRadius: radius.md,
               paddingVertical: space.sm,
               paddingHorizontal: 12,
             }}
           >
-            <Icon name="warn" size={16} color={T.red} />
+            <Icon name="warn" size={16} color={COLOR.status.negative} />
             <View style={{ flex: 1, minWidth: 0 }}>
-              <Text style={{ fontSize: 16, fontWeight: '700', color: T.red }} numberOfLines={1}>
+              <Text style={{ fontSize: 16, fontWeight: '700', color: COLOR.status.negative }} numberOfLines={1}>
                 소진 {outList.length} — {outList.map((g) => g.name).join(', ')}
               </Text>
               {/* 소진 임박은 같은 줄에서 색을 달리해 이미 소진된 재료와 구분한다. */}
               {lowCount > 0 ? (
-                <Text style={{ fontSize: 14, fontWeight: '600', color: T.amberText, marginTop: space.xs }}>
+                <Text style={{ fontSize: 14, fontWeight: '600', color: COLOR.status.caution, marginTop: space.xs }}>
                   소진 임박 {lowCount}종은 슬슬 시켜 두세요
                 </Text>
               ) : null}

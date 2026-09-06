@@ -258,9 +258,9 @@ function FixedCostEditScreenBody({ localMonth }: { localMonth: string }) {
             <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.text.link }}>항목 추가</Text>
           </Pressable>
 
-          <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, paddingVertical: 12, paddingHorizontal: space.md, borderRadius: 12, backgroundColor: T.amberTint }}>
-            <Icon name="info" size={15} color={T.amberText} />
-            <Text style={{ flex: 1, fontSize: 14, color: T.amberText, lineHeight: TYPE.caption.lineHeight }}>
+          <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, paddingVertical: 12, paddingHorizontal: space.md, borderRadius: 12, backgroundColor: COLOR.status.cautionTint }}>
+            <Icon name="info" size={15} color={COLOR.status.caution} />
+            <Text style={{ flex: 1, fontSize: 14, color: COLOR.status.caution, lineHeight: TYPE.caption.lineHeight }}>
               저장하면 이 달 <Text style={{ fontWeight: '700' }}>모든 메뉴의 손익</Text>이 다시 계산돼요.
             </Text>
           </View>

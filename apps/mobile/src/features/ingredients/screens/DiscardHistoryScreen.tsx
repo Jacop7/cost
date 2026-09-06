@@ -181,7 +181,7 @@ function DiscardHistoryBody({ localDate }: { localDate: string }) {
                       </Text>
                     </View>
                     <View style={{ alignItems: 'flex-end' }}>
-                      <Text style={[{ fontSize: TYPE.caption.fontSize, fontWeight: '800', color: T.red }, tnum]}>
+                      <Text style={[{ fontSize: TYPE.caption.fontSize, fontWeight: '800', color: COLOR.status.negative }, tnum]}>
                         −{formatQuantity(Math.abs(e.countDelta), unit)}
                       </Text>
                       {price !== null ? (
@@ -266,7 +266,7 @@ function DiscardHistoryBody({ localDate }: { localDate: string }) {
                 accessibilityRole="button" accessibilityLabel="폐기 삭제"
                 style={{ paddingVertical: 20, alignItems: 'center' }}
               >
-                <Text style={{ fontSize: 16, fontWeight: '600', color: T.red }}>삭제</Text>
+                <Text style={{ fontSize: 16, fontWeight: '600', color: COLOR.status.negative }}>삭제</Text>
               </Pressable>
             </View>
             <Pressable onPress={() => setMenuFor(null)} accessibilityRole="button" accessibilityLabel="닫기" style={{ paddingVertical: 20, borderRadius: radius.lg, backgroundColor: T.surface2, alignItems: 'center' }}>

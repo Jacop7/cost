@@ -92,9 +92,9 @@ export default function MyVendorsScreen() {
         {dupes.map((g) => (
           <View key={g.map((v) => v.id).join('-')} style={{ backgroundColor: COMPONENT.warningCard.background, borderWidth: 1, borderColor: COMPONENT.warningCard.border, borderRadius: 16, padding: space.md, marginBottom: 12 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-              <Icon name="swap" size={20} color={T.amberText} />
+              <Icon name="swap" size={20} color={COLOR.status.caution} />
               <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: 16, fontWeight: '700', color: T.amberText }}>비슷한 이름이 있어요</Text>
+                <Text style={{ fontSize: 16, fontWeight: '700', color: COLOR.status.caution }}>비슷한 이름이 있어요</Text>
                 <Text style={{ fontSize: 14, color: T.sub2, marginTop: space.xs }}>
                   {g.map((v) => `'${v.name}'`).join(' · ')} — 같은 곳이면 이름을 맞춰 주세요
                 </Text>

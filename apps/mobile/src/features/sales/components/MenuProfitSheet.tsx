@@ -61,7 +61,7 @@ export function MenuProfitSheet({ sel, summary, periodLabel, from, to, onClose }
 
         const p = (v: number) => (revenue > 0 ? Math.round((v / revenue) * 1000) / 10 : 0);
         const met = p(mProfit) >= TARGET_RATE;
-        const MPR = met ? T.green : T.amberText;
+        const MPR = met ? COLOR.status.positive : COLOR.status.caution;
 
         // [라벨, 금액, 배분값인가]
         const mCosts: [string, number, boolean][] = [
@@ -90,7 +90,7 @@ export function MenuProfitSheet({ sel, summary, periodLabel, from, to, onClose }
                 {sel.qtyWaste > 0 ? (
                   <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
                     <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.sub }}>조리 폐기</Text>
-                    <Text style={[{ fontSize: 14, fontWeight: '700', color: T.amberText }, NUM]}>{sel.qtyWaste}개 · 매출 0</Text>
+                    <Text style={[{ fontSize: 14, fontWeight: '700', color: COLOR.status.caution }, NUM]}>{sel.qtyWaste}개 · 매출 0</Text>
                   </View>
                 ) : null}
                 <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, borderBottomWidth: 1, borderBottomColor: T.line }}>

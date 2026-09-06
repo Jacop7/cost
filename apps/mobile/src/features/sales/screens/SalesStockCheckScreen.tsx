@@ -88,7 +88,7 @@ export default function SalesStockCheckScreen() {
                 <Card key={r.recipeId} pad={0} style={{ overflow: 'hidden' }}>
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: space.md, paddingHorizontal: space.md, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
                     <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.ink }} numberOfLines={1}>{r.name}</Text>
-                    <Text style={{ fontSize: 14, fontWeight: '800', color: T.red }}>부족 재료 {r.ingredients.length}개</Text>
+                    <Text style={{ fontSize: 14, fontWeight: '800', color: COLOR.status.negative }}>부족 재료 {r.ingredients.length}개</Text>
                   </View>
 
                   {list.map((g, i) => (
@@ -120,7 +120,7 @@ export default function SalesStockCheckScreen() {
                         </Text>
                         <Text style={[{ fontSize: TYPE.captionSm.fontSize, fontWeight: '700', color: COLOR.text.tertiary }, NUM]}>
                           현재 재고{' '}
-                          <Text style={{ color: T.red, fontWeight: isNegativeStock(g.stock) ? '800' : '700' }}>
+                          <Text style={{ color: COLOR.status.negative, fontWeight: isNegativeStock(g.stock) ? '800' : '700' }}>
                             {formatQuantity(g.stock, unitOf(g.baseUnit))}
                           </Text>
                         </Text>

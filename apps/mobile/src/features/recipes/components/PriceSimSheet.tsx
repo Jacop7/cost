@@ -49,7 +49,7 @@ export function PriceSimSheet({
   const cur = calc(price);
   const now = calc(temp);
   const met = now.rate >= target;
-  const PROFIT = met ? T.green : T.red;
+  const PROFIT = met ? COLOR.status.positive : COLOR.status.negative;
   const diff = temp - price;
 
   // 목표 달성 권장가(100원 단위). 분모가 0 이하면 어떤 가격으로도 목표를 못 맞춘다.
@@ -143,8 +143,8 @@ export function PriceSimSheet({
       </Card>
 
       <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, marginTop: 12, paddingHorizontal: 2 }}>
-        <Icon name="info" size={15} color={rec != null ? COLOR.action.primary : T.amberText} />
-        <Text style={[{ flex: 1, fontSize: 14, color: rec != null ? COLOR.text.accent : T.amberText, fontWeight: '600', lineHeight: TYPE.caption.lineHeight }, NUM]}>
+        <Icon name="info" size={15} color={rec != null ? COLOR.action.primary : COLOR.status.caution} />
+        <Text style={[{ flex: 1, fontSize: 14, color: rec != null ? COLOR.text.accent : COLOR.status.caution, fontWeight: '600', lineHeight: TYPE.caption.lineHeight }, NUM]}>
           {rec != null
             ? `목표 ${formatPercent(target)} 달성 권장가는 ${won(rec)}원이에요`
             : '지금 원가 구조로는 목표 순이익률을 맞출 수 없어요. 재료비나 목표를 조정해 주세요.'}

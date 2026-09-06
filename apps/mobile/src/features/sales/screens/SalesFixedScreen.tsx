@@ -80,9 +80,9 @@ function SalesFixedScreenBody({ serverToday }: { serverToday: string }) {
         </Card>
 
         {fixed.data?.provisional ? (
-          <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, paddingVertical: 12, paddingHorizontal: space.md, borderRadius: 12, backgroundColor: T.amberTint }}>
-            <Icon name="info" size={15} color={T.amberText} />
-            <Text style={{ flex: 1, fontSize: 14, color: T.amberText, fontWeight: '600', lineHeight: TYPE.caption.lineHeight }}>
+          <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, paddingVertical: 12, paddingHorizontal: space.md, borderRadius: 12, backgroundColor: COLOR.status.cautionTint }}>
+            <Icon name="info" size={15} color={COLOR.status.caution} />
+            <Text style={{ flex: 1, fontSize: 14, color: COLOR.status.caution, fontWeight: '600', lineHeight: TYPE.caption.lineHeight }}>
               이 달 고정지출이 아직 없어 {fixed.data.month} 값으로 잠정 계산했어요.
             </Text>
           </View>

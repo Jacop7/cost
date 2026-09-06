@@ -146,7 +146,7 @@ export function StockEditSheet({
           <View style={{ flexDirection: 'row', gap: space.xxl, paddingHorizontal: 20 }}>
             {TABS.map(([id, label]) => {
               const on = tab === id;
-              const accent = id === 'waste' ? T.red : T.ink;
+              const accent = id === 'waste' ? COLOR.status.negative : T.ink;
               return (
                 <Pressable
                   key={id}
@@ -176,7 +176,7 @@ export function StockEditSheet({
 
               {/* 추가 / 차감 */}
               <View style={{ flexDirection: 'row', gap: 8, marginBottom: 12 }}>
-                {([['add', '추가', COLOR.text.accent], ['sub', '차감', T.red]] as const).map(([id, label, accent]) => {
+                {([['add', '추가', COLOR.text.accent], ['sub', '차감', COLOR.status.negative]] as const).map(([id, label, accent]) => {
                   const on = dir === id;
                   return (
                     <Pressable
@@ -188,7 +188,7 @@ export function StockEditSheet({
                       style={{
                         flex: 1, paddingVertical: 12, borderRadius: 12, alignItems: 'center',
                         borderWidth: 1.5, borderColor: on ? accent : T.line,
-                        backgroundColor: on ? (id === 'add' ? COLOR.action.primaryTint : T.redTint) : T.surface,
+                        backgroundColor: on ? (id === 'add' ? COLOR.action.primaryTint : COLOR.status.negativeTint) : T.surface,
                       }}
                     >
                       <Text style={{ fontSize: 16, fontWeight: on ? '800' : '600', color: on ? accent : T.sub2 }}>
@@ -206,18 +206,18 @@ export function StockEditSheet({
                 unit={dispUnit}
                 value={adjVal}
                 onChange={(t) => setAdjVal(clampByUnit(t, dispUnit))}
-                accent={dir === 'add' ? COLOR.text.accent : T.red}
+                accent={dir === 'add' ? COLOR.text.accent : COLOR.status.negative}
               />
 
               {/* 최종값 — 사장님이 뺄셈하지 않는다. */}
-              <Band bg={diffDisp === 0 ? undefined : diffDisp < 0 ? T.redTint : T.greenTint}>
+              <Band bg={diffDisp === 0 ? undefined : diffDisp < 0 ? COLOR.status.negativeTint : COLOR.status.positiveTint}>
                 {diffDisp === 0 ? (
                   <Text style={{ fontSize: 16, fontWeight: '800', color: T.sub }}>변동 없음</Text>
                 ) : (
                   <Text style={[{ fontSize: TYPE.body.fontSize, fontWeight: '800' }, tnum]}>
                     <Text style={{ color: COLOR.text.tertiary, fontWeight: '700' }}>{curDisp}{dispUnit}</Text>
                     <Text style={{ color: COLOR.text.tertiary }}>{'   →   '}</Text>
-                    <Text style={{ color: diffDisp < 0 ? T.red : T.green }}>
+                    <Text style={{ color: diffDisp < 0 ? COLOR.status.negative : COLOR.status.positive }}>
                       {round2(nextAdj / factor)}{dispUnit}
                     </Text>
                   </Text>
@@ -231,7 +231,7 @@ export function StockEditSheet({
               <Text style={[{ fontSize: 18, fontWeight: '800' }, tnum]}>
                 <Text style={{ color: COLOR.text.tertiary, textDecorationLine: 'line-through', fontWeight: '700' }}>{curDisp}{dispUnit}</Text>
                 <Text style={{ color: COLOR.text.tertiary }}>{'   →   '}</Text>
-                <Text style={{ color: T.red }}>0{dispUnit}</Text>
+                <Text style={{ color: COLOR.status.negative }}>0{dispUnit}</Text>
               </Text>
             </Band>
           ) : null}
@@ -239,7 +239,7 @@ export function StockEditSheet({
           {tab === 'waste' ? (
             <>
               <Text style={{ fontSize: 16, fontWeight: '700', color: T.sub, marginBottom: space.sm }}>폐기 수량</Text>
-              <InputBox unit={dispUnit} value={wasteVal} onChange={(t) => setWasteVal(clampByUnit(t, dispUnit))} accent={T.red} />
+              <InputBox unit={dispUnit} value={wasteVal} onChange={(t) => setWasteVal(clampByUnit(t, dispUnit))} accent={COLOR.status.negative} />
               <Band>
                 <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink2 }, tnum]}>
                   폐기 후 재고 <Text style={{ fontWeight: '800' }}>{round2(afterWaste / factor)}{dispUnit}</Text>

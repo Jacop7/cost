@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 import { AppHeader, Button, Card, Field, Icon, Input, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { LAYOUT, T, TYPE, space } from '@/theme/tokens';
+import { COLOR, LAYOUT, T, TYPE, space } from '@/theme/tokens';
 import { useRetireAccount } from '../hooks';
 
 const CONFIRM_WORD = '탈퇴';
@@ -51,8 +51,8 @@ export default function MyAccountScreen() {
       <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: LAYOUT.scroll.end, gap: space.md }}>
         <Card pad={18}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.md }}>
-            <View style={{ width: 42, height: 42, borderRadius: 12, backgroundColor: T.redTint, alignItems: 'center', justifyContent: 'center' }}>
-              <Icon name="user" size={22} color={T.red} />
+            <View style={{ width: 42, height: 42, borderRadius: 12, backgroundColor: COLOR.status.negativeTint, alignItems: 'center', justifyContent: 'center' }}>
+              <Icon name="user" size={22} color={COLOR.status.negative} />
             </View>
             <View style={{ flex: 1 }}>
               <Text style={{ fontSize: 18, fontWeight: '800', color: T.ink }}>계정 탈퇴</Text>

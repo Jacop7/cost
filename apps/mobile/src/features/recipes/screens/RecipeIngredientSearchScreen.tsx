@@ -110,7 +110,7 @@ export default function RecipeIngredientSearchScreen() {
                         <Text style={[{ fontSize: 14, color: T.sub2, marginTop: space.sm, fontWeight: '600' }, NUM]}>
                           {g.basePrice === null ? '단가 산출 전' : `기준 단가 ${formatUnitPrice(g.basePrice, unit)}`}
                           {'  ·  '}재고{' '}
-                          <Text style={{ color: isNegativeStock(g.stockTotal) ? T.red : T.sub2, fontWeight: '800' }}>
+                          <Text style={{ color: isNegativeStock(g.stockTotal) ? COLOR.status.negative : T.sub2, fontWeight: '800' }}>
                             {formatQuantity(g.stockTotal, unit)}
                           </Text>
                         </Text>

@@ -150,7 +150,7 @@ export function IngredientDetailScreen() {
                   style={{ marginTop: space.md, paddingTop: space.md, borderTopWidth: 1, borderTopColor: T.line2 }}
                 >
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.xs, marginBottom: space.sm }}>
-                    <Icon name="note" size={16} color={T.amberText} />
+                    <Icon name="note" size={16} color={COLOR.status.caution} />
                     <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub }}>메모</Text>
                   </View>
                   <Text style={{ fontSize: 16, fontWeight: '600', color: g.memo ? T.ink2 : COLOR.text.tertiary, lineHeight: TYPE.body.lineHeight }}>
@@ -171,7 +171,7 @@ export function IngredientDetailScreen() {
                 </View>
                 <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 8, marginTop: 8 }}>
                   {/* ⚠ 음수는 빨강 그대로(0102). 0 으로 보정하면 왜 마이너스인지 물어볼 일이 없어진다. */}
-                  <Text style={[{ fontSize: 20, fontWeight: '800', letterSpacing: TYPE.title.letterSpacing, color: isNegativeStock(g.stockTotal) ? T.red : T.ink }, tnum]}>
+                  <Text style={[{ fontSize: 20, fontWeight: '800', letterSpacing: TYPE.title.letterSpacing, color: isNegativeStock(g.stockTotal) ? COLOR.status.negative : T.ink }, tnum]}>
                     총 {formatQuantity(g.stockTotal, unit)}
                   </Text>
                   <Text style={[{ flexShrink: 1, fontSize: 14, color: g.basePrice === null ? COLOR.text.tertiary : T.sub, fontWeight: '700' }, tnum]} numberOfLines={1}>
@@ -186,7 +186,7 @@ export function IngredientDetailScreen() {
                   수량은 `−750g` 그대로다. 여기서는 얼마나 채워야 0 이 되는지만 덧붙인다.
                 */}
                 {isNegativeStock(g.stockTotal) ? (
-                  <Text style={[{ fontSize: 14, color: T.red, marginTop: 4, fontWeight: '700' }, tnum]}>
+                  <Text style={[{ fontSize: 14, color: COLOR.status.negative, marginTop: 4, fontWeight: '700' }, tnum]}>
                     재고 부족 {formatQuantity(shortageOf(g.stockTotal), unit)} · 입고를 빠뜨렸는지 확인해 주세요
                   </Text>
                 ) : null}
@@ -345,7 +345,7 @@ export function IngredientDetailScreen() {
                   accessibilityRole="button" accessibilityLabel={m.label}
                   style={{ paddingVertical: 20, alignItems: 'center', borderTopWidth: i > 0 ? 1 : 0, borderTopColor: T.line }}
                 >
-                  <Text style={{ fontSize: 16, fontWeight: '600', color: m.danger ? T.red : T.ink }}>{m.label}</Text>
+                  <Text style={{ fontSize: 16, fontWeight: '600', color: m.danger ? COLOR.status.negative : T.ink }}>{m.label}</Text>
                 </Pressable>
               ))}
             </View>

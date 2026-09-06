@@ -30,7 +30,7 @@ export function Button({
     tint: { bg: COLOR.action.primaryTint, fg: COLOR.action.onTint },
     gray: { bg: T.line2, fg: T.ink2 },
     ghost: { bg: 'transparent', fg: T.sub, border: T.line },
-    danger: { bg: T.redTint, fg: T.red },
+    danger: { bg: COLOR.status.negativeTint, fg: COLOR.status.negative },
   };
   const sizes: Record<Size, { pv: number; ph: number; fs: number; r: number; hs: number; minHeight?: number }> = {
     // 네이티브 측정에서 10개 소비처 중 발주·영업 시작을 포함한 5개 이상이

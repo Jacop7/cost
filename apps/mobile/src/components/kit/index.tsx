@@ -39,9 +39,9 @@ export function Badge({ children, tone = 'neutral', sm, solid }: { children: Rea
   const tones: Record<Tone, { bg: string; fg: string; border?: string }> = {
     neutral: { bg: T.line2, fg: T.sub2 },
     blue: { bg: COLOR.action.primaryTint, fg: COLOR.action.onTint },
-    green: { bg: T.greenTint, fg: T.green },
-    amber: { bg: T.amberTint, fg: T.amberText },
-    red: { bg: T.redTint, fg: T.red },
+    green: { bg: COLOR.status.positiveTint, fg: COLOR.status.positive },
+    amber: { bg: COLOR.status.cautionTint, fg: COLOR.status.caution },
+    red: { bg: COLOR.status.negativeTint, fg: COLOR.status.negative },
     ghost: { bg: 'transparent', fg: COLOR.text.tertiary, border: T.line },
   };
   const c = tones[tone];
@@ -174,7 +174,7 @@ export function Field({ label, children, hint, req, right, error }: { label: str
       </View>
       {children}
       {error ? (
-        <Text accessibilityRole="alert" style={{ fontSize: 16, color: T.red, marginTop: space.sm, lineHeight: TYPE.body.lineHeight, fontWeight: '600' }}>{error}</Text>
+        <Text accessibilityRole="alert" style={{ fontSize: 16, color: COLOR.status.negative, marginTop: space.sm, lineHeight: TYPE.body.lineHeight, fontWeight: '600' }}>{error}</Text>
       ) : hint ? (
         <Text style={{ fontSize: 16, color: COLOR.text.tertiary, marginTop: space.sm, lineHeight: TYPE.body.lineHeight }}>{hint}</Text>
       ) : null}
@@ -212,7 +212,7 @@ export function Input({
   const empty = value == null || value === '';
   const [focused, setFocused] = useState(false);
   // 상태 우선순위: 오류 > 포커스 > 기본. 오류를 포커스가 가리면 사용자가 원인을 못 찾는다.
-  const borderColor = error ? T.red : focused ? COLOR.action.primary : T.line;
+  const borderColor = error ? COLOR.status.negative : focused ? COLOR.action.primary : T.line;
   return (
     <View
       style={{
@@ -273,11 +273,11 @@ export function Select({ value, placeholder, onPress }: { value?: string; placeh
 // ── 손익표 행 ─────────────────────────────────────────────────
 export function PLRow({ label, amt, pct, kind = 'cost', detail, bold }: { label: string; amt: number; pct: number | string; kind?: 'sales' | 'cost' | 'profit'; detail?: string; bold?: boolean }) {
   const sign = kind === 'cost' ? '−' : '';
-  const valColor = kind === 'profit' ? T.green : kind === 'cost' ? COLOR.text.tertiary : T.ink;
+  const valColor = kind === 'profit' ? COLOR.status.positive : kind === 'cost' ? COLOR.text.tertiary : T.ink;
   return (
     <View style={{ flexDirection: 'row', alignItems: 'flex-start', paddingVertical: space.md, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
       <View style={{ flex: 1 }}>
-        <Text style={{ fontSize: bold ? 15.5 : 14.5, fontWeight: bold ? '800' : '600', color: kind === 'profit' ? T.green : T.ink2 }}>{label}</Text>
+        <Text style={{ fontSize: bold ? 15.5 : 14.5, fontWeight: bold ? '800' : '600', color: kind === 'profit' ? COLOR.status.positive : T.ink2 }}>{label}</Text>
         {detail ? <Text style={{ fontSize: 13, color: COLOR.text.tertiary, marginTop: space.xs, lineHeight: TYPE.captionSm.lineHeight }}>{detail}</Text> : null}
       </View>
       <View style={{ alignItems: 'flex-end', minWidth: 96 }}>

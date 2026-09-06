@@ -463,8 +463,8 @@ export default function MyHoursScreen() {
           {/* 거울 검증 결과 — 저장 전에 서버가 할 말을 미리 보여 준다. */}
           {validationError ? (
             <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, paddingHorizontal: 2 }}>
-              <Icon name="info" size={15} color={T.red} />
-              <Text style={{ flex: 1, fontSize: 14, color: T.red, lineHeight: TYPE.caption.lineHeight }}>{validationError}</Text>
+              <Icon name="info" size={15} color={COLOR.status.negative} />
+              <Text style={{ flex: 1, fontSize: 14, color: COLOR.status.negative, lineHeight: TYPE.caption.lineHeight }}>{validationError}</Text>
             </View>
           ) : (
             <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, paddingHorizontal: 2 }}>

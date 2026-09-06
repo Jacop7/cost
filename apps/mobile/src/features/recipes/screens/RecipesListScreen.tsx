@@ -55,7 +55,7 @@ function RecipeCard({ r, onPress }: { r: RecipeRow; onPress: () => void }) {
   // 재료가 바닥나 지금은 못 만드는 메뉴. 판매중지와 달리 입고하면 저절로 풀린다.
   const short = !stopped && r.blockedBy !== null;
   const warn = !stopped && belowTarget(r);
-  const rateColor = warn ? T.red : T.green;
+  const rateColor = warn ? COLOR.status.negative : COLOR.status.positive;
 
   return (
     <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={`${r.name} 상세`}>
@@ -94,9 +94,9 @@ function RecipeCard({ r, onPress }: { r: RecipeRow; onPress: () => void }) {
 
           {/* 단가가 없는 재료는 원가에서 조용히 빠진다. 숨기면 순이익이 부풀려 보인다. */}
           {r.unknownCostLines > 0 ? (
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.xs, marginTop: space.sm, paddingVertical: 8, paddingHorizontal: space.sm, borderRadius: 8, backgroundColor: T.amberTint }}>
-              <Icon name="warn" size={14} color={T.amberText} />
-              <Text style={{ flex: 1, fontSize: 14, fontWeight: '600', color: T.amberText }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.xs, marginTop: space.sm, paddingVertical: 8, paddingHorizontal: space.sm, borderRadius: 8, backgroundColor: COLOR.status.cautionTint }}>
+              <Icon name="warn" size={14} color={COLOR.status.caution} />
+              <Text style={{ flex: 1, fontSize: 14, fontWeight: '600', color: COLOR.status.caution }}>
                 단가 없는 재료 {r.unknownCostLines}개가 원가에서 빠져 있어요
               </Text>
             </View>
