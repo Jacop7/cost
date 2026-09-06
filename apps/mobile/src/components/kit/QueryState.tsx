@@ -71,7 +71,7 @@ export function QueryState({
           <Text
             selectable
             style={{
-              fontSize: TYPE.captionSm.fontSize, color: T.red, textAlign: 'center', lineHeight: TYPE.captionSm.lineHeight,
+              fontSize: TYPE.captionSm.fontSize, color: COLOR.status.negative, textAlign: 'center', lineHeight: TYPE.captionSm.lineHeight,
               paddingHorizontal: 12, fontFamily: 'monospace',
             }}
           >

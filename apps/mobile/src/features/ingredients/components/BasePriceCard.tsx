@@ -78,7 +78,7 @@ export function BasePriceCard({
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.lg, marginTop: space.md, paddingTop: space.md, borderTopWidth: 1, borderTopColor: T.line2 }}>
             {([
               ['최저', purchase.low, COLOR.text.accent],
-              ['최고', purchase.high, T.red],
+              ['최고', purchase.high, COLOR.status.negative],
             ] as const).map(([lbl, val, color]) => (
               <View key={lbl} style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm }}>
                 <Text style={{ fontSize: 14, fontWeight: '700', color }}>{lbl}</Text>
@@ -129,12 +129,12 @@ export function BasePriceCard({
                       {o.orderedAt.slice(5).replace('-', '/')}
                     </Text>
                     {partial ? (
-                      <Text style={{ fontSize: 13, fontWeight: '700', color: T.amberText }}>부분 입고</Text>
+                      <Text style={{ fontSize: 13, fontWeight: '700', color: COLOR.status.caution }}>부분 입고</Text>
                     ) : null}
                     <View style={{ flex: 1 }} />
                     {isLow || isHigh ? (
-                      <View style={{ paddingHorizontal: space.sm, paddingVertical: space.xs, borderRadius: radius.sm, backgroundColor: isHigh ? T.redTint : COLOR.action.primaryTint }}>
-                        <Text style={{ fontSize: TYPE.captionSm.fontSize, fontWeight: '700', color: isHigh ? T.red : COLOR.text.accent }}>
+                      <View style={{ paddingHorizontal: space.sm, paddingVertical: space.xs, borderRadius: radius.sm, backgroundColor: isHigh ? COLOR.status.negativeTint : COLOR.action.primaryTint }}>
+                        <Text style={{ fontSize: TYPE.captionSm.fontSize, fontWeight: '700', color: isHigh ? COLOR.status.negative : COLOR.text.accent }}>
                           {isHigh ? '최고' : '최저'}
                         </Text>
                       </View>

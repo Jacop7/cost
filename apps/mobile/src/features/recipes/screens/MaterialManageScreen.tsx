@@ -201,9 +201,9 @@ export default function MaterialManageScreen() {
         </View>
 
         {editing && editing.usedCount > 0 ? (
-          <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, marginTop: 12, paddingVertical: 12, paddingHorizontal: space.md, borderRadius: radius.md, backgroundColor: T.amberTint }}>
-            <Icon name="info" size={15} color={T.amberText} />
-            <Text style={{ flex: 1, fontSize: 14, color: T.amberText, lineHeight: TYPE.caption.lineHeight }}>
+          <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, marginTop: 12, paddingVertical: 12, paddingHorizontal: space.md, borderRadius: radius.md, backgroundColor: COLOR.status.cautionTint }}>
+            <Icon name="info" size={15} color={COLOR.status.caution} />
+            <Text style={{ flex: 1, fontSize: 14, color: COLOR.status.caution, lineHeight: TYPE.caption.lineHeight }}>
               단가를 바꾸면 이 부자재를 쓰는 메뉴 {editing.usedCount}개의 원가도 함께 바뀌어요.
             </Text>
           </View>

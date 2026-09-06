@@ -240,14 +240,14 @@ function LanguageEditor({ serverLocale, serverRevision, staleError, refetch }: {
         <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.text.tertiary, marginHorizontal: 4, marginBottom: space.sm }}>언어 · 지역</Text>
         <Notice style={{ marginBottom: space.sm }}>금액의 기본 소수 자릿수는 통화가 정해요. 원·엔·동은 소수가 없어 0자리, 달러·유로 등은 2자리예요.</Notice>
         {staleError ? (
-          <View role="status" accessibilityLabel="재조회 실패" style={{ marginBottom: space.sm, padding: space.md, borderRadius: 12, backgroundColor: T.redTint, borderWidth: 1, borderColor: T.red }}>
-            <Text style={{ fontSize: 14, fontWeight: '700', color: T.red, lineHeight: TYPE.caption.lineHeight }}>최신 설정을 불러오지 못했어요. 마지막으로 받은 값 기준이에요.</Text>
+          <View role="status" accessibilityLabel="재조회 실패" style={{ marginBottom: space.sm, padding: space.md, borderRadius: 12, backgroundColor: COLOR.status.negativeTint, borderWidth: 1, borderColor: COLOR.status.negative }}>
+            <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.status.negative, lineHeight: TYPE.caption.lineHeight }}>최신 설정을 불러오지 못했어요. 마지막으로 받은 값 기준이에요.</Text>
             <View style={{ marginTop: 8 }}><Button kind="gray" size="md" loading={refreshing} onPress={() => { void retry(); }} accessibilityLabel="다시 시도">다시 시도</Button></View>
           </View>
         ) : null}
         {serverChanged ? (
-          <View role="status" style={{ marginBottom: space.sm, padding: space.md, borderRadius: 12, backgroundColor: T.redTint, borderWidth: 1, borderColor: T.red }}>
-            <Text style={{ fontSize: 14, fontWeight: '700', color: T.red, lineHeight: TYPE.caption.lineHeight }}>다른 기기에서 설정이 변경됐어요. 새로고침 후 다시 저장해 주세요.</Text>
+          <View role="status" style={{ marginBottom: space.sm, padding: space.md, borderRadius: 12, backgroundColor: COLOR.status.negativeTint, borderWidth: 1, borderColor: COLOR.status.negative }}>
+            <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.status.negative, lineHeight: TYPE.caption.lineHeight }}>다른 기기에서 설정이 변경됐어요. 새로고침 후 다시 저장해 주세요.</Text>
             <View style={{ marginTop: 8 }}><Button kind="gray" size="md" loading={refreshing} onPress={() => { void refresh(); }} accessibilityLabel="새로고침">새로고침</Button></View>
           </View>
         ) : null}
@@ -317,17 +317,17 @@ function LanguageEditor({ serverLocale, serverRevision, staleError, refetch }: {
         ) : null}
 
         {saveError ? (
-          <Text accessibilityRole="alert" style={{ fontSize: 14, fontWeight: '700', color: T.red, lineHeight: TYPE.caption.lineHeight, marginBottom: 12 }}>
+          <Text accessibilityRole="alert" style={{ fontSize: 14, fontWeight: '700', color: COLOR.status.negative, lineHeight: TYPE.caption.lineHeight, marginBottom: 12 }}>
             저장하지 못했어요 · {saveError}
           </Text>
         ) : null}
         {serverChanged ? (
-          <Text style={{ fontSize: 14, fontWeight: '700', color: T.red, lineHeight: TYPE.caption.lineHeight, marginBottom: 12 }}>
+          <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.status.negative, lineHeight: TYPE.caption.lineHeight, marginBottom: 12 }}>
             다른 기기에서 설정이 변경됐어요. 새로고침 후 다시 저장해 주세요.
           </Text>
         ) : null}
         {staleError && !serverChanged ? (
-          <Text style={{ fontSize: 14, fontWeight: '700', color: T.red, lineHeight: TYPE.caption.lineHeight, marginBottom: 12 }}>
+          <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.status.negative, lineHeight: TYPE.caption.lineHeight, marginBottom: 12 }}>
             최신 설정을 확인하지 못해 저장할 수 없어요. 다시 시도한 뒤 저장해 주세요.
           </Text>
         ) : null}

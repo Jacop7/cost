@@ -382,19 +382,19 @@ function SalesHomeBody({ today }: { today: string }) {
             style={{
               flexDirection: 'row', alignItems: 'center', gap: space.sm, minHeight: 52, marginBottom: space.md,
               paddingVertical: space.md, paddingHorizontal: space.md,
-              borderWidth: 1, borderColor: T.red, borderRadius: radius.md, backgroundColor: T.redTint,
+              borderWidth: 1, borderColor: COLOR.status.negative, borderRadius: radius.md, backgroundColor: COLOR.status.negativeTint,
             }}
           >
-            <Icon name="warn" size={16} color={T.red} />
+            <Icon name="warn" size={16} color={COLOR.status.negative} />
             <View style={{ flex: 1, minWidth: 0 }}>
-              <Text style={{ fontSize: 13, fontWeight: '800', color: T.red }}>
+              <Text style={{ fontSize: 13, fontWeight: '800', color: COLOR.status.negative }}>
                 식재료 부족 {shortCount}개
               </Text>
               <Text style={{ fontSize: TYPE.captionSm.fontSize, fontWeight: '700', color: T.sub, marginTop: space.xs }}>
                 부족한 식재료의 재고를 추가해 주세요
               </Text>
             </View>
-            <Icon name="chevron" size={16} color={T.red} />
+            <Icon name="chevron" size={16} color={COLOR.status.negative} />
           </Pressable>
         ) : null}
 
@@ -511,7 +511,7 @@ function SalesHomeBody({ today }: { today: string }) {
                       판매가는 사장님만 바꾸므로 그때만 `판매가` 라고 짚어 준다.
                     */}
                     {b?.changed ? (
-                      <Text style={[{ fontSize: 13, color: T.amberText, marginTop: space.xs, fontWeight: '600' }, NUM]}>
+                      <Text style={[{ fontSize: 13, color: COLOR.status.caution, marginTop: space.xs, fontWeight: '600' }, NUM]}>
                         {b.currentPrice !== b.price
                           ? `판매가 ${won(Math.round(b.currentPrice))}원은 다음 영업일부터 적용돼요`
                           : `지금 재료비 ${won(Math.round(b.currentMaterialCost))}원은 다음 영업일부터 적용돼요`}
@@ -698,9 +698,9 @@ function SalesHomeBody({ today }: { today: string }) {
         <Field label="항목명" req><Input value={expName} onChangeText={setExpName} placeholder="예: 얼음·소모품" /></Field>
         <Field label="금액" req><Input value={expAmount} onChangeText={setExpAmount} placeholder="15000" keyboardType="number-pad" suffix="원" mono /></Field>
         <Field label="메모 (선택)"><Input value={expMemo} onChangeText={setExpMemo} placeholder="간단 메모" /></Field>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingVertical: 12, paddingHorizontal: space.md, borderRadius: radius.md, backgroundColor: T.amberTint }}>
-          <Icon name="info" size={15} color={T.amberText} />
-          <Text style={{ flex: 1, fontSize: 14, color: T.amberText, lineHeight: TYPE.caption.lineHeight }}>그날 손익에서만 차감되고, 고정 지출엔 반영되지 않아요.</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingVertical: 12, paddingHorizontal: space.md, borderRadius: radius.md, backgroundColor: COLOR.status.cautionTint }}>
+          <Icon name="info" size={15} color={COLOR.status.caution} />
+          <Text style={{ flex: 1, fontSize: 14, color: COLOR.status.caution, lineHeight: TYPE.caption.lineHeight }}>그날 손익에서만 차감되고, 고정 지출엔 반영되지 않아요.</Text>
         </View>
         <View style={{ marginTop: space.lg }}>
           <Button kind="primary" size="lg" full disabled={!s} loading={saveSale.isPending} onPress={addExpense}>추가</Button>

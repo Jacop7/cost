@@ -153,18 +153,18 @@ export default function MyTaxScreen() {
           emptyTitle="설정을 불러오지 못했어요"
         >
           {settings.isError && settings.data ? (
-            <View role="alert" style={{ padding: space.md, borderRadius: 12, backgroundColor: T.redTint }}>
-              <Text style={{ color: T.red, fontWeight: '700' }}>최신 설정을 불러오지 못했어요. 다시 시도해 주세요.</Text>
+            <View role="alert" style={{ padding: space.md, borderRadius: 12, backgroundColor: COLOR.status.negativeTint }}>
+              <Text style={{ color: COLOR.status.negative, fontWeight: '700' }}>최신 설정을 불러오지 못했어요. 다시 시도해 주세요.</Text>
               <View style={{ marginTop: 8 }}><Button kind="gray" size="md" loading={refreshing} onPress={() => { void retryPreservingDraft(); }}>다시 시도</Button></View>
             </View>
           ) : null}
           {serverChanged ? (
-            <View role="status" style={{ padding: space.md, borderRadius: 12, backgroundColor: T.redTint, borderWidth: 1, borderColor: T.red }}>
-              <Text style={{ color: T.red, fontWeight: '700' }}>다른 기기에서 설정이 변경됐어요. 새로고침 후 다시 저장해 주세요.</Text>
+            <View role="status" style={{ padding: space.md, borderRadius: 12, backgroundColor: COLOR.status.negativeTint, borderWidth: 1, borderColor: COLOR.status.negative }}>
+              <Text style={{ color: COLOR.status.negative, fontWeight: '700' }}>다른 기기에서 설정이 변경됐어요. 새로고침 후 다시 저장해 주세요.</Text>
               <View style={{ marginTop: 8 }}><Button kind="gray" size="md" loading={refreshing} onPress={() => { void adoptLatest(); }} accessibilityLabel="새로고침">새로고침</Button></View>
             </View>
           ) : null}
-          {saveError ? <Text role="alert" style={{ color: T.red, fontWeight: '700' }}>저장하지 못했어요 · {saveError}</Text> : null}
+          {saveError ? <Text role="alert" style={{ color: COLOR.status.negative, fontWeight: '700' }}>저장하지 못했어요 · {saveError}</Text> : null}
           {/* 그 밖의 세금·수수료 */}
           <Card pad={0} style={{ overflow: 'hidden' }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: space.md, backgroundColor: T.surface2 }}>
@@ -227,7 +227,7 @@ export default function MyTaxScreen() {
               </Pressable>
 
               {error ? (
-                <Text style={{ fontSize: 14, fontWeight: '600', color: T.red }}>{error}</Text>
+                <Text style={{ fontSize: 14, fontWeight: '600', color: COLOR.status.negative }}>{error}</Text>
               ) : null}
             </View>
           </Card>

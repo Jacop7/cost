@@ -86,8 +86,8 @@ export function SalesRow({
           {label}
         </Text>
         {badge ? (
-          <View style={{ paddingHorizontal: space.sm, paddingVertical: space.xs, borderRadius: radius.sm, backgroundColor: badge.met ? T.greenTint : T.amberTint }}>
-            <Text style={{ fontSize: TYPE.captionSm.fontSize, fontWeight: '800', color: badge.met ? T.green : T.amberText }}>{badge.text}</Text>
+          <View style={{ paddingHorizontal: space.sm, paddingVertical: space.xs, borderRadius: radius.sm, backgroundColor: badge.met ? COLOR.status.positiveTint : COLOR.status.cautionTint }}>
+            <Text style={{ fontSize: TYPE.captionSm.fontSize, fontWeight: '800', color: badge.met ? COLOR.status.positive : COLOR.status.caution }}>{badge.text}</Text>
           </View>
         ) : null}
       </View>
@@ -277,7 +277,7 @@ export function ProfitBreakdownCard({
   const pctOf = (v: number) => (summary.revenue > 0 ? `${Math.round((v / summary.revenue) * 1000) / 10}%` : '0%');
   const rate = summary.revenue > 0 ? Math.round((summary.profit / summary.revenue) * 1000) / 10 : 0;
   const met = rate >= TARGET_RATE;
-  const PROFIT = met ? T.green : T.amberText;
+  const PROFIT = met ? COLOR.status.positive : COLOR.status.caution;
 
   const costs: [string, number, Href][] = [
     ['(−) 재료 원가', summary.materialCost, `/sales/material${q}` as Href],
@@ -325,9 +325,9 @@ export function ProfitBreakdownCard({
 
       {/* 고정지출률을 과거 월에서 빌려 쓴 상태면 그대로 확정값처럼 보이면 안 된다. */}
       {summary.fixedRateProvisional ? (
-        <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, marginHorizontal: space.md, marginBottom: 12, paddingVertical: space.sm, paddingHorizontal: 12, borderRadius: radius.md, backgroundColor: T.amberTint }}>
-          <Icon name="info" size={15} color={T.amberText} />
-          <Text style={{ flex: 1, fontSize: 13, color: T.amberText, lineHeight: TYPE.captionSm.lineHeight }}>
+        <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, marginHorizontal: space.md, marginBottom: 12, paddingVertical: space.sm, paddingHorizontal: 12, borderRadius: radius.md, backgroundColor: COLOR.status.cautionTint }}>
+          <Icon name="info" size={15} color={COLOR.status.caution} />
+          <Text style={{ flex: 1, fontSize: 13, color: COLOR.status.caution, lineHeight: TYPE.captionSm.lineHeight }}>
             이 달 고정지출이 아직 없어 최근 입력값으로 잠정 계산했어요.
           </Text>
         </View>

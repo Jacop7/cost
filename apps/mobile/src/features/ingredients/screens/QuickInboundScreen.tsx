@@ -49,7 +49,7 @@ function SummaryRow({ label, value, tone }: { label: string; value: string; tone
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: space.sm }}>
       <Text style={{ flex: 1, fontSize: 14, fontWeight: '700', color: COLOR.text.tertiary }}>{label}</Text>
-      <Text style={[{ fontSize: 16, fontWeight: '800', color: tone === 'red' ? T.red : T.ink }, NUM]}>{value}</Text>
+      <Text style={[{ fontSize: 16, fontWeight: '800', color: tone === 'red' ? COLOR.status.negative : T.ink }, NUM]}>{value}</Text>
     </View>
   );
 }
@@ -62,7 +62,7 @@ function PreviewRow({ label, before, after, beforeTone, last }: {
     <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, borderBottomWidth: last ? 0 : 1, borderBottomColor: T.line2 }}>
       <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.sub }}>{label}</Text>
       <Text style={[{ fontSize: 16, fontWeight: '700', color: COLOR.text.tertiary }, NUM]}>
-        <Text style={{ color: beforeTone === 'red' ? T.red : COLOR.text.tertiary, fontWeight: beforeTone === 'red' ? '800' : '700' }}>{before}</Text>
+        <Text style={{ color: beforeTone === 'red' ? COLOR.status.negative : COLOR.text.tertiary, fontWeight: beforeTone === 'red' ? '800' : '700' }}>{before}</Text>
         {' → '}
         <Text style={{ color: COLOR.text.accent, fontWeight: '800' }}>{after}</Text>
       </Text>

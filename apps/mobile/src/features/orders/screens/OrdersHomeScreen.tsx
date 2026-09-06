@@ -302,7 +302,7 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
                     <View style={{ flex: 1, paddingVertical: space.sm, paddingHorizontal: 12, backgroundColor: T.surface2, borderRadius: radius.md }}>
                       <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub }}>현재 재고</Text>
                       {/* ⚠ 발주 후보에서도 음수는 빨강 그대로다(0102). 권장 발주량에 부족분이 들어 있다. */}
-                      <Text style={[{ fontSize: 16, fontWeight: isNegativeStock(c.stockTotal) ? '800' : '600', color: isNegativeStock(c.stockTotal) ? T.red : T.sub, marginTop: space.xs }, NUM]}>
+                      <Text style={[{ fontSize: 16, fontWeight: isNegativeStock(c.stockTotal) ? '800' : '600', color: isNegativeStock(c.stockTotal) ? COLOR.status.negative : T.sub, marginTop: space.xs }, NUM]}>
                         {formatQuantity(c.stockTotal, unit)}
                       </Text>
                       <Text style={[{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 1 }, NUM]}>
@@ -336,7 +336,7 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
                     {partial ? <Badge tone="amber" sm>부분입고 {w.receivedQty}/{w.qty}</Badge> : null}
                     <Icon name="chevron" size={18} color={COLOR.text.tertiary} />
                   </Pressable>
-                  <Text style={{ fontSize: 16, fontWeight: '700', color: late ? T.red : T.ink2, marginTop: space.sm }}>
+                  <Text style={{ fontSize: 16, fontWeight: '700', color: late ? COLOR.status.negative : T.ink2, marginTop: space.sm }}>
                     {dueLabel(w.expectedAt, today)}
                   </Text>
                   <Text style={[{ fontSize: 16, fontWeight: '600', color: T.sub, marginTop: space.sm }, NUM]}>

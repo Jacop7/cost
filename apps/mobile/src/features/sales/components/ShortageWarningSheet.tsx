@@ -17,7 +17,7 @@
  */
 import { Text, View } from 'react-native';
 import { Button, Sheet } from '@/components/kit';
-import { T, TYPE, space } from '@/theme/tokens';
+import { COLOR, T, TYPE, space } from '@/theme/tokens';
 import type { ShortageMode, ShortageRecipe } from '../hooks';
 
 export function ShortageWarningSheet({
@@ -63,7 +63,7 @@ export function ShortageWarningSheet({
             <Text style={{ flex: 1, fontSize: TYPE.caption.fontSize, fontWeight: '800', color: T.ink }} numberOfLines={1}>
               {r.name}
             </Text>
-            <Text style={{ fontSize: 14, fontWeight: '800', color: T.red }}>
+            <Text style={{ fontSize: 14, fontWeight: '800', color: COLOR.status.negative }}>
               부족 재료 {r.ingredients.length}개
             </Text>
           </View>

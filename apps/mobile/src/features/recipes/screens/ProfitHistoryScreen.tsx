@@ -46,7 +46,7 @@ function DeltaText({ delta }: { delta: number | null }) {
   }
   const up = tone === 'up';
   return (
-    <Text style={[{ fontSize: 13, fontWeight: '800', color: up ? T.green : T.red }, NUM]}>
+    <Text style={[{ fontSize: 13, fontWeight: '800', color: up ? COLOR.status.positive : COLOR.status.negative }, NUM]}>
       {up ? '+' : '−'}
       {amount(Math.abs(delta as number))}
     </Text>

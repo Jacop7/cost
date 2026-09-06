@@ -12,8 +12,8 @@ import { COLOR, T, radius, space, TYPE } from '@/theme/tokens';
 import { changeTime, stateLabel, type LastChange } from '../hooks';
 
 const TONE = {
-  green: { fg: T.green, bg: T.greenTint },
-  amber: { fg: T.amberText, bg: T.amberTint },
+  green: { fg: COLOR.status.positive, bg: COLOR.status.positiveTint },
+  amber: { fg: COLOR.status.caution, bg: COLOR.status.cautionTint },
   neutral: { fg: T.sub2, bg: T.line2 },
 } as const;
 

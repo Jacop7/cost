@@ -177,7 +177,7 @@ export default function RecipeDetailScreen() {
           {r && calc ? (() => {
             const { price, material, extra, tax, fixed, profit, profitRate, target, recommended } = calc;
             const warn = r.active && profitRate < target;
-            const PROFIT = warn ? T.red : T.green;
+            const PROFIT = warn ? COLOR.status.negative : COLOR.status.positive;
             const cm = costMode === 'batch' ? r.baseServings : 1;
             const m = view === 'batch' ? r.baseServings : view === 'one' ? 1 : (r.avgMonthlySales ?? 0);
             const wm = (v: number) => `${won(Math.round(v * m))}원`;
@@ -222,7 +222,7 @@ export default function RecipeDetailScreen() {
                       accessibilityRole="button" accessibilityLabel="메모 수정"
                       style={{ marginTop: space.md, flexDirection: 'row', alignItems: 'center', gap: space.sm }}
                     >
-                      <Icon name="note" size={15} color={T.amberText} />
+                      <Icon name="note" size={15} color={COLOR.status.caution} />
                       <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub }}>메모</Text>
                       <Text
                         style={{ flex: 1, fontSize: TYPE.caption.fontSize, fontWeight: '600', color: r.memo ? T.ink2 : COLOR.text.tertiary }}
@@ -338,7 +338,7 @@ export default function RecipeDetailScreen() {
                                     반제품 줄(ingredientId 없음)은 창고 재고라는 게 없으므로 뺀다.
                                 */}
                                 {l.ingredientId && unit !== null ? (
-                                  <Text style={{ color: isNegativeStock(l.stockTotal) ? T.red : COLOR.text.tertiary, fontWeight: isNegativeStock(l.stockTotal) ? '800' : '400' }}>
+                                  <Text style={{ color: isNegativeStock(l.stockTotal) ? COLOR.status.negative : COLOR.text.tertiary, fontWeight: isNegativeStock(l.stockTotal) ? '800' : '400' }}>
                                     {'  ·  '}재고 {formatQuantity(l.stockTotal, unit)}
                                   </Text>
                                 ) : null}
@@ -597,7 +597,7 @@ export default function RecipeDetailScreen() {
                             {tone === 'flat' ? (
                               <Text style={{ fontSize: 13, fontWeight: '700', color: COLOR.text.tertiary, marginTop: space.xs }}>변동 없음</Text>
                             ) : (
-                              <Text style={[{ fontSize: 13, fontWeight: '800', marginTop: space.xs, color: tone === 'up' ? T.green : T.red }, NUM]}>
+                              <Text style={[{ fontSize: 13, fontWeight: '800', marginTop: space.xs, color: tone === 'up' ? COLOR.status.positive : COLOR.status.negative }, NUM]}>
                                 {tone === 'up' ? '+' : '−'}{won(Math.abs(Math.round((h.profitDelta ?? 0) * 100) / 100))}원
                               </Text>
                             )}

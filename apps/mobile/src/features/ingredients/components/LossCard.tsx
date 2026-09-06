@@ -66,7 +66,7 @@ export function LossCard({ loss, baseUnit, discards, unitPrice, onPress }: {
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingVertical: space.md, paddingHorizontal: space.md, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
         <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.sub }}>로스율</Text>
         {high ? <Badge tone="amber" sm>확인 필요</Badge> : null}
-        <Text style={[{ fontSize: 16, fontWeight: '800', color: high ? T.amberText : T.ink }, NUM]}>
+        <Text style={[{ fontSize: 16, fontWeight: '800', color: high ? COLOR.status.caution : T.ink }, NUM]}>
           {pct(loss.rate)}
         </Text>
       </View>
@@ -103,7 +103,7 @@ export function LossCard({ loss, baseUnit, discards, unitPrice, onPress }: {
                 <Text style={[{ flex: 1, fontSize: 14, color: COLOR.text.tertiary, fontWeight: '600' }, tnum]}>
                   {e.date.slice(5).replace('-', '/')}
                 </Text>
-                <Text style={[{ fontSize: TYPE.caption.fontSize, fontWeight: '800', color: T.red }, NUM]}>
+                <Text style={[{ fontSize: TYPE.caption.fontSize, fontWeight: '800', color: COLOR.status.negative }, NUM]}>
                   −{formatQuantity(amount, u)}
                 </Text>
               </View>

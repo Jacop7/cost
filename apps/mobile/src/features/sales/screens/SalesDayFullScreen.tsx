@@ -58,7 +58,7 @@ function SalesDayFullScreenBody({ serverToday }: { serverToday: string }) {
 
   const marginPct = pctOf(s?.profit ?? 0);
   const met = marginPct >= TARGET_RATE;
-  const PR = met ? T.green : T.amberText;
+  const PR = met ? COLOR.status.positive : COLOR.status.caution;
 
   const costs: { n: string; v: number; sub: [string, number][] }[] = s
     ? [

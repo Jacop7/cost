@@ -334,7 +334,7 @@ export function PurchaseOptionScreen() {
                 accessibilityRole="button" accessibilityLabel="구매 옵션 삭제"
                 style={{ paddingVertical: 20, alignItems: 'center' }}
               >
-                <Text style={{ fontSize: 16, fontWeight: '600', color: T.red }}>삭제</Text>
+                <Text style={{ fontSize: 16, fontWeight: '600', color: COLOR.status.negative }}>삭제</Text>
               </Pressable>
             </View>
             <Pressable onPress={() => setMenuOpen(false)} accessibilityRole="button" accessibilityLabel="닫기" style={{ paddingVertical: 20, borderRadius: radius.lg, backgroundColor: T.surface2, alignItems: 'center' }}>

@@ -141,7 +141,7 @@ export default function RecipeAddScreen() {
   const profit = price - tax - material - fixed - extra;
   const profitRate = price > 0 ? profit / price : 0;
   const warn = profitRate < target;
-  const PROFIT = warn ? T.red : T.green;
+  const PROFIT = warn ? COLOR.status.negative : COLOR.status.positive;
   // 권장가 분모에도 세금 항목이 들어간다 — 빼면 카드 수수료만큼 낮게 나온다.
   const recRaw = recommendedPrice(material + extra, fixedRate, target, taxRate(taxItems));
   const recommended = recRaw == null ? null : Math.round(recRaw / 100) * 100;
@@ -325,9 +325,9 @@ export default function RecipeAddScreen() {
                 </View>
               </View>
               {unknownLines > 0 ? (
-                <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, marginTop: space.sm, paddingVertical: space.sm, paddingHorizontal: 12, borderRadius: radius.md, backgroundColor: T.amberTint }}>
-                  <Icon name="info" size={15} color={T.amberText} />
-                  <Text style={{ flex: 1, fontSize: 14, color: T.amberText, lineHeight: TYPE.caption.lineHeight }}>
+                <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, marginTop: space.sm, paddingVertical: space.sm, paddingHorizontal: 12, borderRadius: radius.md, backgroundColor: COLOR.status.cautionTint }}>
+                  <Icon name="info" size={15} color={COLOR.status.caution} />
+                  <Text style={{ flex: 1, fontSize: 14, color: COLOR.status.caution, lineHeight: TYPE.caption.lineHeight }}>
                     단가가 없는 재료 {unknownLines}개는 원가에서 빠져 있어요. 재고 추가나 입고를 등록하면 원가에 들어가요.
                   </Text>
                 </View>

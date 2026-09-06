@@ -9,7 +9,7 @@ import { ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Card, Icon, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { LAYOUT, COMPONENT, T, won, TYPE, space } from '@/theme/tokens';
+import { COLOR, LAYOUT, COMPONENT, T, won, TYPE, space } from '@/theme/tokens';
 import { useEtcByChannel, useSalesRange } from '../hooks';
 
 import { DetailSummary, SalesRow } from '../components/ProfitBlocks';
@@ -91,7 +91,7 @@ function SalesChannelScreenBody({ serverToday }: { serverToday: string }) {
             const profit = revenue - c.material - extraMat - tax - waste - fixed - daily;
             const rate = revenue > 0 ? Math.round((profit / revenue) * 1000) / 10 : 0;
             const neg = profit < 0;
-            const PR = neg ? T.red : T.green;
+            const PR = neg ? COLOR.status.negative : COLOR.status.positive;
             const p = (v: number) => (revenue > 0 ? Math.round((v / revenue) * 1000) / 10 : 0);
 
             // [라벨, 금액, 배분값인가]

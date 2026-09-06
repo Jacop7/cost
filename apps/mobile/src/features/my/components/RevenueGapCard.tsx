@@ -40,8 +40,8 @@ export function RevenueGapCard({ check, onApply, applying = false }: {
   const gap = check.gapPct;
   const over = (gap ?? 0) > 0;
   const big = gap !== null && Math.abs(gap) >= WARN_GAP;
-  const tone = big ? T.amberText : T.sub2;
-  const bg = big ? T.amberTint : T.surface2;
+  const tone = big ? COLOR.status.caution : T.sub2;
+  const bg = big ? COLOR.status.cautionTint : T.surface2;
 
   const projected = check.projectedRevenue ?? 0;
 
