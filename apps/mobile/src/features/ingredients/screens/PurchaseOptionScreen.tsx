@@ -11,7 +11,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Alert, Modal, Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { AppHeader, Badge, Button, Card, Field, Icon, Input, QueryState, Select } from '../../../components/kit';
-import { COLOR, T, tnum, TYPE, radius, space } from '../../../theme/tokens';
+import { LAYOUT, COLOR, T, tnum, TYPE, radius, rowMinHeight, space } from '../../../theme/tokens';
 import { displayToBase, formatQuantity, formatUnitPrice, isDisplayUnit } from '@margincook/core';
 import { safeBack } from '@/lib/nav';
 import { clampByUnit, clampDecimals } from '@/lib/num';
@@ -222,7 +222,7 @@ export function PurchaseOptionScreen() {
 
             </ScrollView>
 
-            <View style={{ paddingHorizontal: 20, paddingTop: 12, paddingBottom: 30, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
+            <View style={{ paddingHorizontal: 20, paddingTop: 12, paddingBottom: LAYOUT.scroll.end, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
               {/*
                 버튼 바로 위 한 줄 — 재고 추가 화면의 하단과 같은 짜임이다.
                 고친 값이 단가를 어디로 옮기는지 누르기 직전에 보인다.
@@ -266,7 +266,7 @@ export function PurchaseOptionScreen() {
                         key={o.id}
                         onPress={() => { setEditingId(o.id); setFormOpen(true); }}
                         accessibilityRole="button" accessibilityLabel={`${o.name} 수정`}
-                        style={{ flexDirection: 'row', alignItems: 'center', gap: 11, minHeight: 72, paddingVertical: 12, paddingHorizontal: space.md, borderBottomWidth: i < g!.options.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}
+                        style={{ flexDirection: 'row', alignItems: 'center', gap: 11, minHeight: rowMinHeight.twoLine, paddingVertical: 12, paddingHorizontal: space.md, borderBottomWidth: i < g!.options.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}
                       >
                         {/*
                           식재료 상세의 구매 옵션 줄과 **같은 짜임**이다.
@@ -309,7 +309,7 @@ export function PurchaseOptionScreen() {
 
             </ScrollView>
 
-            <View style={{ paddingHorizontal: 20, paddingTop: 12, paddingBottom: 30, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
+            <View style={{ paddingHorizontal: 20, paddingTop: 12, paddingBottom: LAYOUT.scroll.end, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
               <Button kind="primary" size="lg" full onPress={openNew}>구매 옵션 추가</Button>
             </View>
           </>

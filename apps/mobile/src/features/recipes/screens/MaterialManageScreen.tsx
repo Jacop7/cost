@@ -8,7 +8,7 @@ import { useMemo, useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { AppHeader, Badge, Button, Card, FAB, Field, Icon, Input, QueryState, SearchBar, Select, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { COLOR, T, won, TYPE, controlVisualHeight, radius, space } from '@/theme/tokens';
+import { LAYOUT, COLOR, COMPONENT, T, won, TYPE, controlVisualHeight, radius, space } from '@/theme/tokens';
 import { clampDecimals } from '@/lib/num';
 import {
   useDeactivateMaterial,
@@ -116,7 +116,7 @@ export default function MaterialManageScreen() {
       <AppHeader title="부자재 관리" onBack={() => safeBack('/my/categories')} />
       <SearchBar value={query} onChange={setQuery} placeholder="부자재 이름으로 검색" />
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 96 }}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: LAYOUT.scroll.endWithFab }}>
         <Text style={{ fontSize: 14, fontWeight: '600', color: T.sub2, marginBottom: space.md }}>등록된 부자재 {items.length}</Text>
 
         <QueryState
@@ -129,7 +129,7 @@ export default function MaterialManageScreen() {
         >
           <Card pad={0} style={{ overflow: 'hidden' }}>
             {items.map((m, i) => (
-              <View key={m.id} style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 12, paddingLeft: space.md, paddingRight: space.sm, borderBottomWidth: i < items.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
+              <View key={m.id} style={{ flexDirection: 'row', alignItems: 'center', gap: COMPONENT.adjacentActions.gap, paddingVertical: 12, paddingLeft: space.md, paddingRight: space.sm, borderBottomWidth: i < items.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
                 <Pressable onPress={() => openEdit(m)} accessibilityRole="button" accessibilityLabel={`${m.name} 수정`} style={{ flex: 1, minWidth: 0 }}>
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
                     <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }} numberOfLines={1}>{m.name}</Text>
@@ -140,10 +140,10 @@ export default function MaterialManageScreen() {
                     {m.usedCount > 0 ? <Text style={{ color: COLOR.text.tertiary }}>  ·  메뉴 {m.usedCount}개</Text> : null}
                   </Text>
                 </Pressable>
-                <Pressable onPress={() => openEdit(m)} hitSlop={5} accessibilityRole="button" accessibilityLabel={`${m.name} 수정`} style={{ width: 34, height: 34, alignItems: 'center', justifyContent: 'center' }}>
+                <Pressable onPress={() => openEdit(m)} hitSlop={COMPONENT.adjacentActions.hitSlop} accessibilityRole="button" accessibilityLabel={`${m.name} 수정`} style={{ width: controlVisualHeight.sm, height: controlVisualHeight.sm, alignItems: 'center', justifyContent: 'center' }}>
                   <Icon name="edit" size={18} color={COLOR.text.tertiary} sw={2} />
                 </Pressable>
-                <Pressable onPress={() => confirmDelete(m)} hitSlop={5} accessibilityRole="button" accessibilityLabel={`${m.name} 삭제`} style={{ width: 34, height: 34, alignItems: 'center', justifyContent: 'center' }}>
+                <Pressable onPress={() => confirmDelete(m)} hitSlop={COMPONENT.adjacentActions.hitSlop} accessibilityRole="button" accessibilityLabel={`${m.name} 삭제`} style={{ width: controlVisualHeight.sm, height: controlVisualHeight.sm, alignItems: 'center', justifyContent: 'center' }}>
                   <Icon name="close" size={19} color={COLOR.text.tertiary} />
                 </Pressable>
               </View>

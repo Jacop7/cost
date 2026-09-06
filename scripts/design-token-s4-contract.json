@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "stage": "S4",
+  "decisionDate": "2026-09-05",
+  "baselineCommit": "deeb767ebf80c4d1c14a854a052a60ffdb46c6ad",
+  "priorStage": {
+    "contract": "scripts/design-token-s3a-known.json",
+    "supersededFiles": [
+      "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx"
+    ]
+  },
+  "counts": {
+    "scrollStart": 17,
+    "scrollEnd": 44,
+    "scrollEndWithFab": 3,
+    "rowMinHeightOneLine": 3,
+    "rowMinHeightTwoLine": 5,
+    "adjacentActionDimensions": 8,
+    "adjacentActionHitSlop": 4,
+    "adjacentActionGaps": 2,
+    "tabScreens": 5,
+    "tabStackProviders": 5
+  },
+  "contracts": {
+    "scrollEnd": "현재 탭바는 일반 flow이므로 탭바 높이와 safe-area를 스크롤 여백에 다시 더하지 않는다.",
+    "scrollEndWithFab": "COMPONENT.fab.bottom + COMPONENT.fab.visualHeight + space.xxl",
+    "tabLabel": "두 줄 허용, 실측 라벨 초과 높이만 baseHeight에 더하고 safe-area는 한 번만 포함한다.",
+    "button": "호출부 style 뒤에 minTouchTarget을 강제한다.",
+    "reorder": "겹치는 28×20 두 버튼 대신 44×44 한 진입점에서 이동 방향을 고른다."
+  }
+}

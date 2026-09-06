@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 import { AppHeader, Button, Card, Field, Icon, Input, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { T, TYPE, space } from '@/theme/tokens';
+import { LAYOUT, T, TYPE, space } from '@/theme/tokens';
 import { useRetireAccount } from '../hooks';
 
 const CONFIRM_WORD = '탈퇴';
@@ -48,7 +48,7 @@ export default function MyAccountScreen() {
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <AppHeader title="계정 관리" onBack={() => { if (!retire.isPending) safeBack('/my'); }} />
-      <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 40, gap: space.md }}>
+      <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: LAYOUT.scroll.end, gap: space.md }}>
         <Card pad={18}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 11 }}>
             <View style={{ width: 42, height: 42, borderRadius: 12, backgroundColor: T.redTint, alignItems: 'center', justifyContent: 'center' }}>

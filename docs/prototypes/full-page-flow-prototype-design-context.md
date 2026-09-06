@@ -1,12 +1,12 @@
-﻿# 전체 페이지 프로토타입 · 디자인 맥락 장부
+# 전체 페이지 프로토타입 · 디자인 맥락 장부
 
-> 현재 동기화 ID: `DS-20260906-003`
+> 현재 동기화 ID: `DS-20260906-005`
 > 문서 동기화 상태: `SYNCED`
 > 전체 UI 작업 상태: `IN_PROGRESS`
 > 마지막 갱신: `2026-09-06`
 > 공통 변경: `예`
-> UI 변경: `아니오`
-> 변경 기록: `PRT-231`
+> UI 변경: `예`
+> 변경 기록: `PRT-232`
 
 ## 1. 문서 역할
 
@@ -25,7 +25,8 @@
 - 동일 역할은 동일 컴포넌트·토큰·간격·상태를 사용한다.
 - 화면별 임시 CSS로 공통 문제를 덮지 않는다.
 - 숫자·단위·통화·날짜·긴 번역·RTL을 글로벌 formatter와 반응형 규칙으로 처리한다.
-- 실제 Expo는 별도 승인 전까지 수정하지 않고 UI 적용 복사본만 작업한다.
+- 실제 Expo는 사용자 승인으로 S2·S3a·S4를 단계별 적용하며, 각 단계는 전용 게이트와 독립 검수를
+  통과하기 전 다음 단계의 기준선으로 확정하지 않는다.
 
 ## 3. 현재 잠긴 공통 규칙
 
@@ -38,10 +39,29 @@
 - 확인창: 중앙 Dialog, 대상은 라벨+값 DetailBlock, 핵심값 말줄임 금지.
 - 날짜: locale formatter 우선, 프로토타입 fallback `YYYY-MM-DD · HH:mm`.
 - 동급 원가 그룹: 재료·부자재 모두 금액·판매가 대비 비율 소계 제공.
-- 카테고리 순서 조작: Row 왼쪽 `28px` 열, 위·아래 SVG 버튼 각 `28×20px`, 첫·마지막 경계 비활성.
+- 카테고리 순서 조작: Row 왼쪽 단일 `44×44px` 진입점, 네이티브 방향 선택, 항목 1개면 비활성.
 - 글로벌: 30~50% 긴 번역, 320px, 200% 글자 확대, RTL 검수.
 
 ## 4. 가장 최근 작업
+
+### DS-20260906-005 · PRT-232 S4 컴포넌트·레이아웃 계약 후보
+
+- 작업 성격: S3a 뒤에 폭 증가를 받을 컴포넌트·레이아웃 계약을 Expo 앱에 적용했다.
+- 결과:
+  - 스크롤 시작 17·일반 끝 44·FAB 끝 3자리를 `LAYOUT.scroll` 역할로 이관했다.
+  - ListRow 8자리를 60/76으로, 하단 탭을 2줄·동적 높이로, `sales-menu-sub`을 줄바꿈으로 바꿨다.
+  - 터치 정적 감사는 미달 0·형제중첩 0이며 Button 세 variant가 호출부 뒤 44px 하한으로 통과한다.
+  - S4 전용 게이트와 음성 시험 6건이 이전 S3a 치환 잔존까지 확인한다.
+- 미완료: Android·iOS 실제 frame·부모 clipping·우선순위 측정. 현 환경에는 `adb`·`xcrun`이 없다.
+- 완료 조건:
+  - PRT232-S4-CONTRACT · `../../scripts/design-token-s4-contract.json`
+  - PRT232-S4-GATE · `../../scripts/design-token-s4-check.mjs`
+  - PRT232-S4-TEST · `../../scripts/design-token-s4-check.test.mjs`
+  - PRT232-TOUCH · `../../scripts/touch-target-known.json`
+  - PRT232-RENDER · `full-page-flow-prototype-render-audit.json`
+  - PRT232-DESIGN · `full-page-flow-prototype-design-audit.json`
+  - PRT232-I18N · `full-page-flow-prototype-i18n-stress.json`
+- 다음 시작점: 독립 검수 뒤 S4 확정, 이어서 `S3b`.
 
 ### DS-20260906-003 · PRT-231 S3a 독립 검수 후 증거 계약 보강
 

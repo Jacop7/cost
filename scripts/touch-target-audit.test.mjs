@@ -123,8 +123,8 @@ test('저장소의 알려진 목록은 지금 실제와 맞는다', () => {
   const r = spawnSync(process.execPath, [AUDIT], { encoding: 'utf8' });
   assert.equal(r.status, 0, (r.stdout ?? '') + (r.stderr ?? ''));
   const known = JSON.parse(readFileSync(KNOWN, 'utf8'));
-  assert.equal(known.entries.length, 2, '28×20 재정렬 두 자리는 소유자 결정 전까지 미해결이어야 한다');
-  assert.equal(known.siblingOverlaps.length, 1, '재정렬 버튼 사이의 중첩 위험을 별도로 래칫한다');
+  assert.equal(known.entries.length, 0, 'S4 정적 계약 뒤 선언상 미달은 0이어야 한다');
+  assert.equal(known.siblingOverlaps.length, 0, '같은 부모 형제 중첩 위험은 S4에서 해소되어야 한다');
   assert.equal(known.siblingUnjudged.length, 2, '동적 형제 구조 두 부모는 0으로 가정하지 말고 판정불가로 남겨야 한다');
 });
 
@@ -211,6 +211,30 @@ test('공용 컴포넌트 계약 — 하한이 44 를 넘어도 통과로 닫지
   assert.match(r.out, /Button size="lg" 높이 하한 49 → 경계/);
   assert.doesNotMatch(r.out, /어떤 글꼴에서도/);
   assert.doesNotMatch(r.out, /→ 통과/);
+});
+
+test('Button 호출부 style 뒤의 minHeight 44는 모든 variant를 통과로 닫는다', () => {
+  const button = BUTTON_TSX.replace('return null;', 'return <Pressable style={[base, style, { minHeight: 44 }]} />;');
+  const passed = contracts({}).map((item) => ({ ...item, 판정: '통과', 높이하한: Math.max(item.높이하한, 44) }));
+  const r = runButton({ button, known: { components: passed } });
+  assert.equal(r.code, 0, r.out);
+  assert.match(r.out, /Button size="sm" 높이 하한 44 → 통과/);
+  assert.match(r.out, /Button size="lg" 높이 하한 49 → 통과/);
+});
+
+test('Button minHeight 44가 호출부 style 앞이면 override 가능하므로 경계로 남는다', () => {
+  const button = BUTTON_TSX.replace('return null;', 'return <Pressable style={[base, { minHeight: 44 }, style]} />;');
+  const r = runButton({ button, known: { components: contracts({}) } });
+  assert.equal(r.code, 0, r.out);
+  assert.match(r.out, /Button size="sm" 높이 하한 30 → 경계/);
+});
+
+test('Button 호출부 뒤 강제 하한이 44 미만이면 경계로 남는다', () => {
+  const button = BUTTON_TSX.replace('return null;', 'return <Pressable style={[base, style, { minHeight: 40 }]} />;');
+  const expected = contracts({}).map((item) => item.컴포넌트 === 'Button size="sm"' ? { ...item, 높이하한: 40 } : item);
+  const r = runButton({ button, known: { components: expected } });
+  assert.equal(r.code, 0, r.out);
+  assert.match(r.out, /Button size="md" 높이 하한 42 → 경계/);
 });
 
 test('여러 줄로 나뉜 여는 태그의 size 도 읽는다 — 줄 단위 정규식이 놓치던 자리다', () => {

@@ -9,7 +9,7 @@ import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href } from 'expo-router';
 import { AppHeader, Badge, Button, Card, Field, Icon, Input, QueryState, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { COLOR, T, controlVisualHeight, space } from '@/theme/tokens';
+import { LAYOUT, COLOR, T, controlVisualHeight, space } from '@/theme/tokens';
 import {
   useDeleteCategory,
   useReorderCategories,
@@ -93,6 +93,15 @@ export function CategoryEditScreen({ kind, backTo }: { kind: CategoryKind; backT
     });
   };
 
+  /** 두 28×20 버튼의 터치 영역이 겹치지 않도록 한 개의 44×44 진입점에서 방향을 고른다. */
+  const openReorder = (index: number, name: string) => {
+    const actions: Parameters<typeof Alert.alert>[2] = [];
+    if (index > 0) actions.push({ text: '위로 이동', onPress: () => move(index, -1) });
+    if (index < items.length - 1) actions.push({ text: '아래로 이동', onPress: () => move(index, 1) });
+    actions.push({ text: '취소', style: 'cancel' });
+    Alert.alert(`${name} 순서 변경`, '이동할 방향을 골라 주세요.', actions);
+  };
+
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <AppHeader
@@ -110,9 +119,9 @@ export function CategoryEditScreen({ kind, backTo }: { kind: CategoryKind; backT
         }
       />
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 4, paddingBottom: 28 }}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 4, paddingBottom: LAYOUT.scroll.end }}>
         <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginHorizontal: 4, marginBottom: space.sm }}>
-          위·아래 화살표로 순서 변경 · 탭하면 {kind === 'ingredient' ? '이름·로스율' : '이름'} 수정
+          순서 변경 버튼으로 이동 · 이름을 탭하면 {kind === 'ingredient' ? '이름·로스율' : '이름'} 수정
         </Text>
 
         <QueryState
@@ -126,14 +135,16 @@ export function CategoryEditScreen({ kind, backTo }: { kind: CategoryKind; backT
           <Card pad={0} style={{ overflow: 'hidden' }}>
             {items.map((c, i) => (
               <View key={c.id} style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: space.sm, paddingLeft: space.sm, paddingRight: 12, borderBottomWidth: i < items.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
-                <View style={{ gap: 2 }}>
-                  <Pressable onPress={() => move(i, -1)} disabled={i === 0} hitSlop={4} accessibilityRole="button" accessibilityLabel={`${c.name} 위로`} style={{ width: 28, height: 20, alignItems: 'center', justifyContent: 'center', opacity: i === 0 ? 0.25 : 1 }}>
-                    <Icon name="up" size={16} color={T.sub2} />
-                  </Pressable>
-                  <Pressable onPress={() => move(i, 1)} disabled={i === items.length - 1} hitSlop={4} accessibilityRole="button" accessibilityLabel={`${c.name} 아래로`} style={{ width: 28, height: 20, alignItems: 'center', justifyContent: 'center', opacity: i === items.length - 1 ? 0.25 : 1 }}>
-                    <Icon name="down" size={16} color={T.sub2} />
-                  </Pressable>
-                </View>
+                <Pressable
+                  onPress={() => openReorder(i, c.name)}
+                  disabled={items.length < 2}
+                  accessibilityRole="button"
+                  accessibilityLabel={`${c.name} 순서 변경`}
+                  accessibilityState={{ disabled: items.length < 2 }}
+                  style={{ width: 44, height: 44, alignItems: 'center', justifyContent: 'center', opacity: items.length < 2 ? 0.25 : 1 }}
+                >
+                  <Icon name="swap" size={20} color={T.sub2} />
+                </Pressable>
                 <Pressable onPress={() => openEdit(c)} accessibilityRole="button" accessibilityLabel={`${c.name} 수정`} style={{ flex: 1, minWidth: 0, paddingVertical: 4 }}>
                   <Text style={{ fontSize: 16, fontWeight: '600', color: T.ink }} numberOfLines={1}>{c.name}</Text>
                   <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.xs }}>

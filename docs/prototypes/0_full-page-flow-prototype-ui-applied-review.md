@@ -1,4 +1,4 @@
-﻿# 전체 페이지 UI 가이드 적용본 검수 장부
+# 전체 페이지 UI 가이드 적용본 검수 장부
 
 - 적용본: `full-page-flow-prototype-ui-applied.html`
 - 보존 원본: `full-page-flow-prototype.html`
@@ -11,7 +11,9 @@
 - 이 장부의 target 행 수: **183행 = 활성 182 + `screen:my_country`(SPEC_ONLY) 1**.
   `SPEC_ONLY`는 레지스트리에 키가 없어 활성 집계에 들어가지 않으므로 따로 센다.
 - 숨김 유지: `discard_type`, `discard_period` 2개. 삭제하지 않고 활성 계약에서 제외한다.
-- 실제 Expo 앱 수정: 없음
+- 실제 Expo 앱 수정: S2 색 역할과 S3a·S4 토큰/컴포넌트 계약을 단계별로 적용했다. 이 장부의
+  화면별 PASS는 프로토타입 판정이며, Expo 단계의 완료 여부는 각 단계 게이트와 네이티브 증거가
+  별도로 소유한다.
 - 2026-09-01 순차 재구축 시작: 자동 공통 스타일로 판정했던 기존 `PASS`는 시각 완료 근거에서
   제외한다. 적용본을 보존 원본과 동일한 상태로 되돌렸고, `ING-01`부터 화면·연결 팝업을 순서대로
   실제 Expo와 대조해 다시 만든다. 아래의 과거 PASS 표는 변경 이력으로만 보존하며 최신 판정으로
@@ -2683,6 +2685,23 @@ popup/state host **121개**(합 182), 그리고 레지스트리에 키가 없는
   `full-page-flow-prototype-s2-geometry-diff.json` · `full-page-flow-prototype-contrast-gate.json` ·
   `full-page-flow-prototype-render-audit.json` · `full-page-flow-prototype-design-audit.json` ·
   `full-page-flow-prototype-i18n-stress.json`.
+
+## DS-20260906-005 · PRT-232 S4 컴포넌트·레이아웃 계약 후보
+
+- 대상: Expo 하단 탭·스크롤 여백·ListRow·매출 메뉴 요약·Button·인접 아이콘 행동·카테고리 정렬.
+- 기대값: 스크롤 역할 `17/44/3`, ListRow `3/5`, 2줄 탭 라벨과 동적 높이, 터치 정적 미달·중첩 0.
+- 실제값: S4 계약 검사 PASS, 음성 시험 6/6, 터치 감사 미달 0·형제중첩 0·판정불가 163,
+  Button `sm/md/lg` 정적 통과, 모바일 타입 검사와 207/207 시험 PASS.
+- PC 검수: PASS
+- 모바일 검수: PASS
+- 미검수: 없음
+- 결과: PASS
+- 범위 설명: 프로토타입 DOM/CSS/JS는 바뀌지 않았고 1280×900·320px·CSS 200%·글자 200%·
+  i18n 4패스 결과가 알려진 목록과 일치한다. 이 PASS는 프로토타입 봉인 판정이다.
+- 별도 후속: 앱 S4 후보의 Android·iOS 실제 frame은 네이티브 조건 전까지 최종 PASS가 아니다.
+- 증거: `../../scripts/design-token-s4-contract.json` · `../../scripts/design-token-s4-check.mjs` ·
+  `../../scripts/design-token-s4-check.test.mjs` · `../../scripts/touch-target-known.json` ·
+  `../../scripts/touch-target-audit.mjs` · `../../scripts/touch-target-audit.test.mjs`.
 
 ## DS-20260906-003 · PRT-231 S3a 독립 검수 후 증거 계약 보강
 

@@ -12,7 +12,7 @@ import { Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
 import { AppHeader, Button, Card, FilterButton, Icon, QueryState, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { COLOR, T, won, radius, space } from '@/theme/tokens';
+import { LAYOUT, COLOR, T, won, radius, rowMinHeight, space } from '@/theme/tokens';
 import { useSalesRange, type RangeMenu } from '../hooks';
 import { ChannelMixCard, MenuSalesList, ProfitBreakdownCard, SalesRow, SecLabel } from '../components/ProfitBlocks';
 import { MenuProfitSheet } from '../components/MenuProfitSheet';
@@ -162,7 +162,7 @@ function SalesAnalyticsBody({ today }: { today: string }) {
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <AppHeader title="매출 분석" onBack={() => safeBack('/sales' as Href)} />
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 2, paddingBottom: 24, gap: space.md }}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: LAYOUT.scroll.start, paddingBottom: 24, gap: space.md }}>
         {/*
           프로토타입 `.condition-filter` — 기간은 **버튼 하나**로 고른다.
           예전엔 칩 6개 + 달력 + 직접설정 시트로 같은 일을 하는 길이 셋이었다.
@@ -262,7 +262,7 @@ function SalesAnalyticsBody({ today }: { today: string }) {
                 accessibilityState={{ selected: on }}
                 accessibilityLabel={`${pp.short} ${pp.label}`}
                 style={{
-                  flexDirection: 'row', alignItems: 'center', gap: space.sm, minHeight: 55,
+                  flexDirection: 'row', alignItems: 'center', gap: space.sm, minHeight: rowMinHeight.oneLine,
                   paddingHorizontal: space.md,
                   borderBottomWidth: i === PRESETS.length - 1 ? 0 : 1, borderBottomColor: T.line2,
                 }}

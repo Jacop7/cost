@@ -15,7 +15,7 @@
 import { Pressable, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
 import { Card, Icon } from '@/components/kit';
-import { COLOR, T, won, TYPE, radius, space } from '@/theme/tokens';
+import { COLOR, T, won, TYPE, radius, rowMinHeight, space } from '@/theme/tokens';
 import type { RangeChannel, RangeMenu, SalesSummary } from '../hooks';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
@@ -353,7 +353,7 @@ export function MenuSalesList({ menu, showAll, onShowAll, onSelect }: {
           onPress={() => onSelect(m)}
           accessibilityRole="button" accessibilityLabel={`${m.menuName} 손익 보기`}
           style={{
-            flexDirection: 'row', alignItems: 'center', gap: space.sm, minHeight: 70,
+            flexDirection: 'row', alignItems: 'center', gap: space.sm, minHeight: rowMinHeight.twoLine,
             paddingVertical: space.md, paddingHorizontal: space.md,
             borderBottomWidth: i === list.length - 1 ? 0 : 1, borderBottomColor: T.line2,
           }}
@@ -362,7 +362,7 @@ export function MenuSalesList({ menu, showAll, onShowAll, onSelect }: {
             <Text style={{ fontSize: TYPE.caption.fontSize, fontWeight: '800', color: T.ink }} numberOfLines={1}>
               {m.menuName} <Text style={{ fontSize: 14, color: COLOR.text.accent, fontWeight: '700' }}>×{m.qty}</Text>
             </Text>
-            <Text style={[{ fontSize: 12, fontWeight: '600', color: COLOR.text.tertiary, marginTop: 4 }, NUM]} numberOfLines={1}>
+            <Text style={[{ flexShrink: 1, fontSize: 12, fontWeight: '600', color: COLOR.text.tertiary, marginTop: 4 }, NUM]}>
               매장 {m.qtyHall} · 배달 {m.qtyDelivery} · 포장 {m.qtyTakeout}
               {m.qtyWaste > 0 ? ` · 폐기 ${m.qtyWaste}` : ''}
             </Text>

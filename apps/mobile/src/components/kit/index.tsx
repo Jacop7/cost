@@ -6,7 +6,7 @@
 import { ReactNode, useState } from 'react';
 import { KeyboardTypeOptions, Pressable, ScrollView, StyleProp, Text, TextInput, TextInputProps, TextStyle, View, ViewStyle } from 'react-native';
 import { Icon, IconName } from './Icon';
-import { COLOR, cardShadow, FONT, shadow, STATUS, T, won, TYPE, controlVisualHeight, radius, space } from '@/theme/tokens';
+import { COLOR, COMPONENT, cardShadow, FONT, shadow, STATUS, T, won, TYPE, controlVisualHeight, radius, space } from '@/theme/tokens';
 
 const NUM: TextStyle = { fontVariant: FONT.num as unknown as TextStyle['fontVariant'] };
 export { Icon };
@@ -148,7 +148,7 @@ export function FAB({ label = '추가', icon = 'plus', bottom = 24, onPress }: {
       onPress={onPress}
       accessibilityRole="button"
       accessibilityLabel={label}
-      style={{ position: 'absolute', right: 18, bottom, zIndex: 30, flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: COLOR.action.primary, paddingVertical: space.md, paddingLeft: space.md, paddingRight: space.lg, borderRadius: 999, ...shadow.fab }}
+      style={{ position: 'absolute', right: 18, bottom, minHeight: COMPONENT.fab.visualHeight, zIndex: 30, flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: COLOR.action.primary, paddingVertical: space.md, paddingLeft: space.md, paddingRight: space.lg, borderRadius: 999, ...shadow.fab }}
     >
       <Icon name={icon} size={22} color={T.onColor} sw={2.4} />
       <Text style={{ color: T.onColor, fontWeight: '700', fontSize: 16 }}>{label}</Text>

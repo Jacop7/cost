@@ -13,7 +13,7 @@ import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Badge, Button, Card, Field, Icon, Input, QueryState, SearchBar, Select, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { formatQuantity, formatUnitPrice, previewBaseUnitPrice, rawUnitPrice, roundOrNull } from '@margincook/core';
-import { COLOR, T, won, TYPE, radius, space } from '@/theme/tokens';
+import { LAYOUT, COLOR, T, won, TYPE, radius, space } from '@/theme/tokens';
 import { clampDecimals, dash } from '@/lib/num';
 import { useIngredientDetail, useIngredientList } from '@/features/ingredients/hooks';
 import { VendorPickerSheet } from '@/features/ingredients/components/VendorPickerSheet';
@@ -224,7 +224,7 @@ function OrderCompleteScreenBody({ localDate }: { localDate: string }) {
         )}
       </ScrollView>
 
-      <View style={{ paddingHorizontal: 20, paddingTop: 12, paddingBottom: 30, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
+      <View style={{ paddingHorizontal: 20, paddingTop: 12, paddingBottom: LAYOUT.scroll.end, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
         <Button kind="primary" size="lg" full disabled={!canSave} loading={placeOrders.isPending} onPress={submit}>발주 등록</Button>
       </View>
 

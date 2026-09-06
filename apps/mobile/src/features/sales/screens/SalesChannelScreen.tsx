@@ -9,7 +9,7 @@ import { ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Card, Icon, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { T, won, TYPE, space } from '@/theme/tokens';
+import { LAYOUT, T, won, TYPE, space } from '@/theme/tokens';
 import { useEtcByChannel, useSalesRange } from '../hooks';
 
 import { DetailSummary, SalesRow } from '../components/ProfitBlocks';
@@ -65,7 +65,7 @@ function SalesChannelScreenBody({ serverToday }: { serverToday: string }) {
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <AppHeader title="채널별 손익" onBack={() => safeBack(`/sales/day?date=${to}`)} />
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 2, paddingBottom: 28, gap: space.md }}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: LAYOUT.scroll.start, paddingBottom: LAYOUT.scroll.end, gap: space.md }}>
         <Card pad={0} style={{ overflow: 'hidden' }}>
           <DetailSummary rows={[['영업일', rangeLabel(from, to)]]} />
         </Card>

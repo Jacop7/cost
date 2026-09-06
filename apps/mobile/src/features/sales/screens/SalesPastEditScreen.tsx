@@ -19,7 +19,7 @@ import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppHeader, Button, Card, ConfirmSheet, Field, Icon, Input, Notice, QueryState, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { COLOR, T, won, TYPE, radius, space } from '@/theme/tokens';
+import { LAYOUT, COLOR, T, won, TYPE, radius, space } from '@/theme/tokens';
 import { useRecipeList } from '@/features/recipes/hooks';
 import {
   useAmendPastSale, useSalesDay,
@@ -191,7 +191,7 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
         onBack={() => safeBack(`/sales/day?date=${date}` as Href)}
       />
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 2, paddingBottom: 24 + insets.bottom + 64, gap: space.md }}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: LAYOUT.scroll.start, paddingBottom: 24 + insets.bottom + 64, gap: space.md }}>
         <QueryState
           isLoading={day.isLoading || recipes.isLoading}
           error={day.error ?? recipes.error}

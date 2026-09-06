@@ -1,46 +1,22 @@
 {
-  "_schema": "v6 — entries(미달) · siblingOverlaps(같은 부모 형제 중첩 위험) · siblingUnjudged(조건부 JSX·동적 style 때문에 형제 관계 판정 불가) · components(공용 컴포넌트 계약, 전 variant 경계) · buttonDynamic · unjudged. 제품 .tsx 만 세고 시험 fixture 는 시험참조로 따로 둔다(R4 F04).",
+  "_schema": "v7 — entries(미달) · siblingOverlaps(같은 부모 형제 중첩 위험) · siblingUnjudged(조건부 JSX·동적 style 때문에 형제 관계 판정 불가) · components(공용 컴포넌트 계약) · buttonDynamic · unjudged. 제품 .tsx 만 세고 시험 fixture 는 시험참조로 따로 둔다(R4 F04).",
   "_해시": "이 목록이 확정된 **제품** 감사 입력의 해시다 — 제품 .tsx 의 \"경로\\0git blob SHA\" 을 정렬해 잇고 감사기 자신의 sha256 을 더해 sha256. 커밋 SHA 자기참조를 피하면서 \"이후 무변경\" 을 게이트가 직접 검사한다. **시험 fixture 는 이 해시에 들어가지 않는다**(솔 검수 R5 F02) — 시험 한 줄을 고쳤다고 제품 재고가 흔들리면 안 된다. 시험참조해시는 기록만 하고 래칫하지 않는다. blob SHA 는 CRLF→LF 정규화 뒤 계산하므로 체크아웃한 OS 에 좌우되지 않는다(페이블 R6 차단 — 내용 sha256 은 줄끝을 쟀다).",
-  "제품입력해시": "dbdd32c507cfa71edf3fa57e4a35ab0dfc197edd6657f613df1dd618612db2e0",
+  "제품입력해시": "7aba0a9ab05901c96a0cc5ef3da1117fcb63416ec25009c665f6c44bc2e74fc9",
   "시험참조해시": "9a57d560e0ab1b1bee86e48a194f516fcd0f698371ee76a587bd2c0d94c4a3cb",
   "_entries": "선언 크기와 hitSlop 이 있는데 44 에 못 미치는 자리. 유효 크기가 줄어도 FAIL 한다.",
-  "entries": [
-    {
-      "at": "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:130",
-      "유효": "36×28",
-      "사유": "선언상 44 미달 — 후속 보정 필요"
-    },
-    {
-      "at": "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:133",
-      "유효": "36×28",
-      "사유": "선언상 44 미달 — 후속 보정 필요"
-    }
-  ],
+  "entries": [],
   "_siblingOverlaps": "같은 부모 형제 gap/2 규칙을 어기는 알려진 위험. 새 쌍·수치 변경·조용한 해소를 모두 실패시킨다.",
-  "siblingOverlaps": [
-    {
-      "pair": "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:130|apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:133",
-      "firstAt": "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:130",
-      "secondAt": "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:133",
-      "axis": "vertical",
-      "gap": 2,
-      "limit": 1,
-      "firstInward": 4,
-      "secondInward": 4,
-      "판정": "중첩위험",
-      "근거": "28×20 화면 계약과 두 버튼의 독립 44px 접근성 계약 충돌 — 소유자 결정 필요"
-    }
-  ],
-  "_components": "공용 컴포넌트 계약. 하한이 44 를 넘어도 통과로 닫지 않는다 — 호출부 style 이 padding·height 를 덮어 줄일 수 있고, 가정 A 는 증명이 아니다(R4 F02). 전부 경계이므로 소비처 ID·개수를 전량 래칫한다. Button 이 무력화 불가능한 minHeight:44 를 갖는 것은 시각 변화라 S4 의 몫이고, 그때 통과로 닫고 래칫을 푼다.",
+  "siblingOverlaps": [],
+  "_components": "공용 컴포넌트 계약. 호출부 style 뒤에 minHeight:44를 강제해 override로 줄일 수 없을 때만 정적 통과로 닫는다. 통과 variant는 소비처 래칫을 풀되 Android·iOS 실제 frame 검증은 별도 산출물로 남긴다.",
   "components": [
     {
       "컴포넌트": "Button size=\"sm\"",
       "paddingVertical": 8,
       "fontSize": 14,
-      "높이하한": 30,
+      "높이하한": 44,
       "기본값여부": false,
-      "판정": "경계",
-      "판정사유": "하한 30 < 44 이고 상한의 근거가 없다 — S4 렌더 실측이 닫는다",
+      "판정": "통과",
+      "판정사유": "호출부 style 뒤의 강제 minHeight 44 가 모든 variant 를 44 아래로 줄지 않게 한다",
       "소비처": 10,
       "at": [
         "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:337",
@@ -61,10 +37,10 @@
       "컴포넌트": "Button size=\"md\"",
       "paddingVertical": 13,
       "fontSize": 16,
-      "높이하한": 42,
+      "높이하한": 44,
       "기본값여부": true,
-      "판정": "경계",
-      "판정사유": "하한 42 < 44 이고 상한의 근거가 없다 — S4 렌더 실측이 닫는다",
+      "판정": "통과",
+      "판정사유": "호출부 style 뒤의 강제 minHeight 44 가 모든 variant 를 44 아래로 줄지 않게 한다",
       "소비처": 13,
       "at": [
         "apps/mobile/src/components/kit/QueryState.tsx:81",
@@ -92,8 +68,8 @@
       "fontSize": 17,
       "높이하한": 49,
       "기본값여부": false,
-      "판정": "경계",
-      "판정사유": "하한 49 는 44 를 넘지만 호출부 style 이 padding·height 를 덮어 줄일 수 있어 정적으로 닫지 않는다 (R4 F02)",
+      "판정": "통과",
+      "판정사유": "호출부 style 뒤의 강제 minHeight 44 가 모든 variant 를 44 아래로 줄지 않게 한다",
       "소비처": 62,
       "at": [
         "apps/mobile/src/components/kit/MemoEditSheet.tsx:48",
@@ -135,8 +111,8 @@
         "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:508",
         "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx:155",
         "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx:134",
-        "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:171",
-        "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:173",
+        "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:182",
+        "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:184",
         "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:213",
         "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:215",
         "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:454",
@@ -254,8 +230,8 @@
     "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx:100",
     "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx:114",
     "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx:73",
-    "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:137",
-    "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:151",
+    "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:148",
+    "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:162",
     "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:133",
     "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:225",
     "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:236",

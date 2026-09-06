@@ -16,7 +16,7 @@ import { safeBack } from '@/lib/nav';
 import { useStoreLocalDate } from '@/features/business-day/businessDay';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
 import { formatQuantity, formatUnitPrice } from '@margincook/core';
-import { COLOR, T, tnum, won, TYPE, space } from '@/theme/tokens';
+import { COLOR, T, tnum, won, TYPE, rowMinHeight, space } from '@/theme/tokens';
 import { packSummary } from '@/lib/num';
 import { dispUnit } from '../ledger';
 import { PeriodSheet, periodRange, type HistoryPeriod } from './HistoryFilterSheet';
@@ -120,7 +120,7 @@ function PurchaseHistoryScreenBody({ localDate }: { localDate: string }) {
                       key={r.id}
                       style={{
                         flexDirection: 'row', alignItems: 'center', gap: space.sm,
-                        minHeight: 72, paddingVertical: 12, paddingHorizontal: space.md,
+                        minHeight: rowMinHeight.twoLine, paddingVertical: 12, paddingHorizontal: space.md,
                         borderBottomWidth: i < list.length - 1 ? 1 : 0, borderBottomColor: T.line2,
                         opacity: r.status === 'canceled' ? 0.5 : 1,
                       }}

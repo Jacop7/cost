@@ -18,7 +18,7 @@ import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Badge, Card, Icon, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { formatQuantity } from '@margincook/core';
-import { COLOR, T, tnum, won, TYPE, radius, space } from '@/theme/tokens';
+import { LAYOUT, COLOR, T, tnum, won, TYPE, radius, rowMinHeight, space } from '@/theme/tokens';
 import { dispUnit } from '../ledger';
 import { PeriodSheet, periodRange, type HistoryPeriod } from './HistoryFilterSheet';
 import { useStoreLocalDate } from '@/features/business-day/businessDay';
@@ -163,7 +163,7 @@ function DiscardHistoryBody({ localDate }: { localDate: string }) {
                     key={e.id}
                     style={{
                       flexDirection: 'row', alignItems: 'center', gap: space.sm,
-                      minHeight: 72, paddingVertical: 12, paddingLeft: space.md, paddingRight: 12,
+                      minHeight: rowMinHeight.twoLine, paddingVertical: 12, paddingLeft: space.md, paddingRight: 12,
                       borderBottomWidth: i < list.length - 1 ? 1 : 0, borderBottomColor: T.line2,
                     }}
                   >
@@ -217,7 +217,7 @@ function DiscardHistoryBody({ localDate }: { localDate: string }) {
       {/* 유형 선택 — 기간 시트와 같은 하단 시트. 같은 자리에서 같은 모양이어야 한다. */}
       <Modal visible={tabOpen} transparent animationType="fade" onRequestClose={() => setTabOpen(false)} statusBarTranslucent>
         <Pressable onPress={() => setTabOpen(false)} accessibilityRole="button" accessibilityLabel="닫기" style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: T.scrim }}>
-          <View onStartShouldSetResponder={() => true} style={{ backgroundColor: T.surface, borderTopLeftRadius: 20, borderTopRightRadius: 20, paddingHorizontal: 20, paddingTop: space.sm, paddingBottom: 26 }}>
+          <View onStartShouldSetResponder={() => true} style={{ backgroundColor: T.surface, borderTopLeftRadius: 20, borderTopRightRadius: 20, paddingHorizontal: 20, paddingTop: space.sm, paddingBottom: LAYOUT.scroll.end }}>
             <View style={{ alignItems: 'center', paddingBottom: 12 }}>
               <View style={{ width: 40, height: 5, borderRadius: radius.full, backgroundColor: T.line }} />
             </View>

@@ -1,8 +1,9 @@
-import { Platform } from 'react-native';
+import { useEffect, useState } from 'react';
+import { Platform, Text } from 'react-native';
 import { Tabs } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Icon, IconName } from '@/components/kit/Icon';
-import { COLOR, T } from '@/theme/tokens';
+import { COLOR, COMPONENT, T, TYPE } from '@/theme/tokens';
 
 /**
  * 하단 네비게이션 5탭 — 프로토타입 kit.jsx TabBar 순서: 식재료·레시피·발주·매출관리·MY.
@@ -15,31 +16,48 @@ const tabIcon =
 
 export default function TabsLayout() {
   const insets = useSafeAreaInsets();
+  const [labelHeight, setLabelHeight] = useState<number>(COMPONENT.tabBar.labelBaseLineHeight);
   // 웹: 하단 패딩 0으로 라벨 공간 확보(패딩을 키우면 라벨이 숨겨짐). 총 높이 60.
   const bottomPad = Platform.OS === 'web' ? 0 : insets.bottom;
+  useEffect(() => setLabelHeight(COMPONENT.tabBar.labelBaseLineHeight), [bottomPad]);
+  const height = COMPONENT.tabBar.baseHeight
+    + Math.max(0, labelHeight - COMPONENT.tabBar.labelBaseLineHeight)
+    + bottomPad;
+  const tabLabel = (label: string) => ({ color }: { color: string }) => (
+    <Text
+      numberOfLines={2}
+      maxFontSizeMultiplier={2}
+      onLayout={(event) => {
+        const measured = Math.ceil(event.nativeEvent.layout.height);
+        setLabelHeight((current) => Math.max(current, measured));
+      }}
+      style={{ color, fontSize: TYPE.captionSm.fontSize, lineHeight: TYPE.captionSm.lineHeight, fontWeight: '700', textAlign: 'center' }}
+    >
+      {label}
+    </Text>
+  );
 
   return (
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: COLOR.action.primary,
         tabBarInactiveTintColor: '#B0B8C1',
-        tabBarLabelStyle: { fontSize: 12.5, fontWeight: '700' },
         tabBarStyle: {
           backgroundColor: '#FFFFFF',
           borderTopColor: T.line2,
           borderTopWidth: 1,
-          height: 60 + bottomPad,
+          height,
           paddingTop: 2,
           paddingBottom: bottomPad,
         },
         headerShown: false,
       }}
     >
-      <Tabs.Screen name="ingredients" options={{ title: '식재료', tabBarIcon: tabIcon('box') }} />
-      <Tabs.Screen name="recipes" options={{ title: '레시피', tabBarIcon: tabIcon('receipt') }} />
-      <Tabs.Screen name="orders" options={{ title: '발주', tabBarIcon: tabIcon('clipboard') }} />
-      <Tabs.Screen name="sales" options={{ title: '매출관리', tabBarIcon: tabIcon('bars') }} />
-      <Tabs.Screen name="my" options={{ title: 'MY', tabBarIcon: tabIcon('user') }} />
+      <Tabs.Screen name="ingredients" options={{ title: '식재료', tabBarLabel: tabLabel('식재료'), tabBarIcon: tabIcon('box') }} />
+      <Tabs.Screen name="recipes" options={{ title: '레시피', tabBarLabel: tabLabel('레시피'), tabBarIcon: tabIcon('receipt') }} />
+      <Tabs.Screen name="orders" options={{ title: '발주', tabBarLabel: tabLabel('발주'), tabBarIcon: tabIcon('clipboard') }} />
+      <Tabs.Screen name="sales" options={{ title: '매출관리', tabBarLabel: tabLabel('매출관리'), tabBarIcon: tabIcon('bars') }} />
+      <Tabs.Screen name="my" options={{ title: 'MY', tabBarLabel: tabLabel('MY'), tabBarIcon: tabIcon('user') }} />
     </Tabs>
   );
 }

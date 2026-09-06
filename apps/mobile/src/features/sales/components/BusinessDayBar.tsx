@@ -17,7 +17,7 @@ import { Pressable, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
 import { Button, ConfirmSheet, Icon, Sheet } from '@/components/kit';
 import { useState } from 'react';
-import { COLOR, T, radius, space } from '@/theme/tokens';
+import { COLOR, T, radius, rowMinHeight, space } from '@/theme/tokens';
 import { useCheckRecipeShortages, type ShortageRecipe } from '../hooks';
 import { ShortageWarningSheet } from './ShortageWarningSheet';
 import { LateCloseSheet } from './LateCloseSheet';
@@ -292,7 +292,7 @@ export function BusinessDayBar({ state }: { state: BusinessDayState }) {
             onPress={() => { setManage(false); run(); }}
             accessibilityRole="button" accessibilityLabel={label}
             style={{
-              flexDirection: 'row', alignItems: 'center', minHeight: 56, paddingHorizontal: 4,
+              flexDirection: 'row', alignItems: 'center', minHeight: rowMinHeight.oneLine, paddingHorizontal: 4,
               borderBottomWidth: i === 0 ? 1 : 0, borderBottomColor: T.line2,
             }}
           >

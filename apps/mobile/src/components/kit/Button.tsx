@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { Icon, type IconName } from './Icon';
-import { COLOR, T } from '@/theme/tokens';
+import { COLOR, T, minTouchTarget } from '@/theme/tokens';
 
 type Kind = 'primary' | 'tint' | 'gray' | 'ghost' | 'danger';
 type Size = 'sm' | 'md' | 'lg';
@@ -62,6 +62,8 @@ export function Button({
           opacity: disabled ? 0.4 : pressed && kind !== 'primary' ? 0.85 : 1,
         },
         style,
+        // 호출부 style 뒤에 둬 모든 variant의 실제 누름 상자가 44px 아래로 줄지 않게 한다.
+        { minHeight: minTouchTarget },
       ]}
     >
       {iconEl}

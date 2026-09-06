@@ -17,7 +17,7 @@ import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { AppHeader, Card, Icon, QueryState, Sheet } from '@/components/kit';
 import { SummaryCard } from '@/components/history/HistoryLayout';
 import { safeBack } from '@/lib/nav';
-import { COLOR, T, TYPE, radius, space } from '@/theme/tokens';
+import { LAYOUT, COLOR, T, TYPE, radius, space } from '@/theme/tokens';
 import {
   badgeFor,
   changeStamp,
@@ -146,7 +146,7 @@ export function ChangeHistoryScreen({ entity }: { entity: ChangeEntity }) {
         <FlatList
           data={rows}
           keyExtractor={(r) => r.key}
-          contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 28 }}
+          contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: LAYOUT.scroll.end }}
           ListHeaderComponent={
             <View style={{ marginBottom: 12 }}>
               {/* 무엇의 내역인가 — 헤더가 아니라 여기서 밝힌다 */}

@@ -19,7 +19,7 @@ import { AppHeader, Button, Card, Icon, Input, QueryState } from '@/components/k
 import { safeBack } from '@/lib/nav';
 import { clampDecimals } from '@/lib/num';
 import { RpcError } from '@/lib/supabase';
-import { COLOR, T, tnum, TYPE, space } from '@/theme/tokens';
+import { LAYOUT, COLOR, T, tnum, TYPE, space } from '@/theme/tokens';
 import { useSaveStoreTax, useStoreSettings } from '@/features/settings/hooks';
 
 interface Row { name: string; rate: string }
@@ -144,7 +144,7 @@ export default function MyTaxScreen() {
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <AppHeader title="세금" onBack={() => { if (!save.isPending) safeBack('/my'); }} />
 
-      <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 28, gap: space.md }} showsVerticalScrollIndicator={false}>
+      <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: LAYOUT.scroll.end, gap: space.md }} showsVerticalScrollIndicator={false}>
         <QueryState
           isLoading={settings.isLoading}
           error={settings.data ? null : settings.error}
@@ -246,7 +246,7 @@ export default function MyTaxScreen() {
         </QueryState>
       </ScrollView>
 
-      <View style={{ paddingHorizontal: 20, paddingTop: 12, paddingBottom: 30, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
+      <View style={{ paddingHorizontal: 20, paddingTop: 12, paddingBottom: LAYOUT.scroll.end, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
         {/* 저장 직전에 얼마가 빠지는지 — 재고 추가 화면 하단과 같은 짜임 */}
         <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 2, paddingBottom: 12 }}>
           <Text style={{ flex: 1, fontSize: TYPE.caption.fontSize, fontWeight: '700', color: T.sub }}>판매가에서 빠지는 몫</Text>

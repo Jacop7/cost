@@ -7,7 +7,7 @@ import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Card, Icon, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { COLOR, T, won, TYPE, space } from '@/theme/tokens';
+import { LAYOUT, COLOR, T, won, TYPE, space } from '@/theme/tokens';
 import { isRevisionConflict, useSalesBusinessDate } from '@/features/business-day/businessDay';
 import { useSalesDay, useSalesRange, useSaveSale } from '../hooks';
 import { rangeLabel } from '@/lib/date';
@@ -78,7 +78,7 @@ function SalesExpenseScreenBody({ serverToday }: { serverToday: string }) {
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <AppHeader title="추가 지출" onBack={() => safeBack(`/sales/day?date=${to}`)} />
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 2, paddingBottom: 28 }}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: LAYOUT.scroll.start, paddingBottom: LAYOUT.scroll.end }}>
         <Card pad={0} style={{ overflow: 'hidden', marginBottom: space.md }}>
           <DetailSummary rows={[['영업일', rangeLabel(from, to)]]} />
         </Card>

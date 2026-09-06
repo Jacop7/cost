@@ -16,7 +16,7 @@
 import type { ReactNode } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { Card, Icon } from '@/components/kit';
-import { COLOR, T, tnum, TYPE, space } from '@/theme/tokens';
+import { LAYOUT, COLOR, T, tnum, TYPE, space } from '@/theme/tokens';
 
 /** 조건 줄 — **왼쪽부터** 채운다(프로토타입 `.condition`). 오른쪽은 건수 자리다. */
 export function ConditionRow({ children, right }: { children: ReactNode; right?: ReactNode }) {
@@ -117,7 +117,7 @@ export function MonthHead({ month, count, first = false }: { month: string; coun
  * ⚠ 조건 줄은 **이 안**에 둔다. 헤더 밑에 고정하면 목록만 스크롤돼서
  *   프로토타입과 다른 화면이 된다.
  */
-export const historyContent = { paddingHorizontal: 16, paddingTop: 12, paddingBottom: 30 } as const;
+export const historyContent = { paddingHorizontal: 16, paddingTop: 12, paddingBottom: LAYOUT.scroll.end } as const;
 
 /** `2026-08` → `2026년 8월`. 다섯 화면이 같은 문장을 쓰게 여기서만 만든다. */
 export const monthTitle = (ym: string) => `${ym.slice(0, 4)}년 ${Number(ym.slice(5, 7))}월`;

@@ -12,7 +12,7 @@ import { AppHeader, Button, Card, Field, Input, Notice } from '@/components/kit'
 import { safeBack } from '@/lib/nav';
 import { clampDecimals } from '@/lib/num';
 import { RpcError } from '@/lib/supabase';
-import { COLOR, T, space } from '@/theme/tokens';
+import { LAYOUT, COLOR, T, space } from '@/theme/tokens';
 import { useSettings, useSettingsActions, useUnitDigits } from '../store';
 
 const SAMPLE_UNIT_PRICE = 4000 / 850;
@@ -150,7 +150,7 @@ export default function MyUnitsScreen() {
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <AppHeader title="단위 설정" onBack={() => safeBack('/my')} />
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 4, paddingBottom: 28 }}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 4, paddingBottom: LAYOUT.scroll.end }}>
         {settings.error && settings.hasData ? (
           <View role="alert" accessibilityLabel="재조회 실패" style={{ marginBottom: space.sm, padding: space.md, borderRadius: 12, backgroundColor: T.redTint }}>
             <Text style={{ fontSize: 14, fontWeight: '700', color: T.red }}>최신 설정을 불러오지 못했어요. 다시 시도해 주세요.</Text>

@@ -14,7 +14,7 @@ import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Card, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { formatQuantity } from '@margincook/core';
-import { T, won, space } from '@/theme/tokens';
+import { LAYOUT, T, won, space } from '@/theme/tokens';
 import { DetailRow, DetailSection, DetailSummary } from '../components/ProfitBlocks';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
 import { useSalesRange, useWasteBreakdown } from '../hooks';
@@ -50,7 +50,7 @@ function SalesWasteScreenBody({ serverToday }: { serverToday: string }) {
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <AppHeader title="폐기 손실 자세히" onBack={() => safeBack(`/sales/day?date=${to}`)} />
 
-      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 2, paddingBottom: 28 }} showsVerticalScrollIndicator={false}>
+      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingTop: LAYOUT.scroll.start, paddingBottom: LAYOUT.scroll.end }} showsVerticalScrollIndicator={false}>
         <QueryState
           isLoading={q.isLoading}
           error={q.error}

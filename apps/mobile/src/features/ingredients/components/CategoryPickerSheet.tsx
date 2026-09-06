@@ -4,7 +4,7 @@
 // 추가해도 여기서 고를 수 없어 "추가는 되는데 쓸 수가 없는" 상태가 된다.
 import { ScrollView, Text, View, Pressable } from 'react-native';
 import { Sheet, Icon, QueryState } from '../../../components/kit';
-import { COLOR, T, space } from '../../../theme/tokens';
+import { LAYOUT, COLOR, T, space } from '../../../theme/tokens';
 import { useSettingsLists } from '@/features/master-data/hooks';
 
 export function CategoryPickerSheet({
@@ -32,7 +32,7 @@ export function CategoryPickerSheet({
         emptyTitle="등록된 카테고리가 없어요"
         emptyHint="마이페이지 → 카테고리 설정에서 추가해 주세요"
       >
-        <ScrollView contentContainerStyle={{ paddingHorizontal: 4, paddingTop: 4, paddingBottom: 30, gap: 8 }} showsVerticalScrollIndicator={false}>
+        <ScrollView contentContainerStyle={{ paddingHorizontal: 4, paddingTop: 4, paddingBottom: LAYOUT.scroll.end, gap: 8 }} showsVerticalScrollIndicator={false}>
           {cats.map((c) => {
             const on = value === c.id;
             return (
