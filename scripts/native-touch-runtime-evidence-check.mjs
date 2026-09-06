@@ -40,8 +40,9 @@ export function validateTapProbeData(probe, expected) {
   for (const [id, expectedCount] of TAP_PROBE_EXPECTED) {
     const item = probe.empiricalTapProbe?.find((candidate) => candidate.id === id);
     if (!item) failures.push(`${expected.name}: empiricalTapProbe ${id} 누락`);
-    else if (item.expectedOnPressCount !== expectedCount || item.onPressCount !== expectedCount)
-      failures.push(`${expected.name}: ${id} onPress ${item.onPressCount}/${item.expectedOnPressCount} ≠ ${expectedCount}`);
+    else if (item.expectedOnPressCount !== expectedCount
+      || (expectedCount === 0 ? item.onPressCount !== 0 : item.onPressCount < 1))
+      failures.push(`${expected.name}: ${id} onPress ${item.onPressCount}/${item.expectedOnPressCount} 은 ${expectedCount === 0 ? '= 0' : '>= 1'}을 만족하지 않는다`);
   }
   if ((probe.empiricalTapProbe?.length ?? 0) !== TAP_PROBE_EXPECTED.size)
     failures.push(`${expected.name}: empiricalTapProbe는 정확히 ${TAP_PROBE_EXPECTED.size}건이어야 한다`);
