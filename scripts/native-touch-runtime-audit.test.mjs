@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { classifyVisibility, compareNativeRatchet, effectiveTouchRect, evaluateNativeArtifact, isActiveScreenStateList, nativeRatchetSnapshot, physicalHalfPixelTolerance, recomputeNativeArtifactDerived, rectOverlap, resolveActionForFontScale, tabRootForRoute, tabScopedRoute, waitForStableOwner } from './native-touch-runtime-audit.mjs';
+import { classifyVisibility, compareNativeRatchet, effectiveTouchRect, evaluateNativeArtifact, isActiveScreenStateList, nativeRatchetSnapshot, physicalHalfPixelTolerance, recomputeNativeArtifactDerived, rectOverlap, resolveActionForFontScale, resolveActionForRuntime, tabRootForRoute, tabScopedRoute, waitForStableOwner } from './native-touch-runtime-audit.mjs';
 
 test('탭 route는 실제 (tabs) 그룹을 명시한다', () => {
   assert.equal(tabScopedRoute('/recipes'), '/(tabs)/recipes');
@@ -27,6 +27,17 @@ test('글자 배율별 스크롤 위치를 같은 계약에서 고른다', () =>
   const action = { kind: 'scroll', yByFontScale: { '1': 1100, '2': 1600 } };
   assert.equal(resolveActionForFontScale(action, 1).y, 1100);
   assert.equal(resolveActionForFontScale(action, 2).y, 1600);
+});
+
+test('플랫폼·글자 배율별 스크롤 위치가 공통 배율값보다 우선한다', () => {
+  const action = {
+    kind: 'scroll',
+    xByFontScale: { '2': 200 },
+    yByFontScale: { '2': 1600 },
+    yByRuntime: { 'android@2': 3000 },
+  };
+  assert.deepEqual(resolveActionForRuntime(action, 'ios', 2), { ...action, x: 200, y: 1600 });
+  assert.deepEqual(resolveActionForRuntime(action, 'android', 2), { ...action, x: 200, y: 3000 });
 });
 
 test('hitSlop은 모든 host ancestor 중 가까운 native parent frame에서도 잘린다', () => {
