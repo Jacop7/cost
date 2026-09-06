@@ -2691,6 +2691,26 @@ popup/state host **121개**(합 182), 그리고 레지스트리에 키가 없는
   `full-page-flow-prototype-render-audit.json` · `full-page-flow-prototype-design-audit.json` ·
   `full-page-flow-prototype-i18n-stress.json`.
 
+## DS-20260906-010 · PRT-238 소유자 결정 12-4 역할별 44px 계약
+
+- 대상: 프로토타입 kit의 소형 Button·ConditionRow와 앱의 Button sm·AppHeader 우측 액션·
+  ConditionRow·Chip/SortChip 줄 계약.
+- 기대값: 버튼류의 보이는 상자는 44px, 칩류는 34px 형상을 유지하되 소유 행이 44px 이상이어야
+  한다. 그 밖의 보이는 크기 변화와 기존 렌더·번역 위반 악화는 0이어야 한다.
+- 실제값: 프로토타입 `.order-button` 36→44px, `.condition` 최소 44px를 동기화했다. 앱은
+  Button sm 36→44px, AppHeader 우측 액션 40→44px(아이콘 24px·헤더 52px 유지),
+  ConditionRow 38→44px이며 Chip·SortChip은 34px 형상과 기존 44px 초과 소유 행을 유지한다.
+- PC 검수: 1280×900 185 target 재측정 · 넘침·viewport 이탈·콘솔·폰트 실패 0 · PASS.
+- 모바일 검수: 320px·CSS 200%·글자 200% 185 target과 i18n 4패스 재측정 ·
+  알려진 렌더 위반 5건 유지, i18n 활성 atRisk 396건 유지 · PASS.
+- 미검수: 없음
+- 별도 게이트: Android·iOS 실제 frame과 터치 실측은 앱 S4a 최종 종결이 소유하며 이 절의
+  프로토타입 봉인 PASS와 구분한다.
+- 결과: PASS
+- 증거: `full-page-flow-prototype-render-audit.json` · `-render-audit-known.json` ·
+  `full-page-flow-prototype-design-audit.json` · `full-page-flow-prototype-i18n-stress.json` ·
+  `full-page-flow-prototype-i18n-known.json` · `../../scripts/native-touch-runtime-contract.json`.
+
 ## DS-20260906-008 · PRT-235 S3b 폭 증가 토큰 치환 후보
 
 - 대상: S2 기준 S3b 180건을 현재 S4 나무에 투영한 앱 선언과 프로토타입 봉인.

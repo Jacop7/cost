@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- DESIGN_SYNC: DS-20260906-008 -->
+<!-- DESIGN_SYNC: DS-20260906-010 -->
 <html lang="ko">
 <head>
   <meta charset="utf-8" />
@@ -109,6 +109,8 @@
     .edit-form-box.numeric-value>span:last-child{margin-left:8px;color:var(--sub)}.edit-form-box.numeric-value>span:last-child:not(.chev){font-size:14px;font-weight:600}
     /* 2026-09-06 소유자 결정: 버튼 variant의 고유색은 유지하고 비활성 표현만 opacity로 통일한다. */
     .primary:disabled{background:var(--blue);color:#fff;opacity:.4}
+    /* 2026-09-06 owner decision 12-4: button actions are visibly 44px; chip rows, not chip shapes, own 44px. */
+    .condition{min-height:44px}.order-button{height:44px}
   </style>
 </head>
 <body>

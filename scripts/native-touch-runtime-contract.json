@@ -1,14 +1,22 @@
 {
   "schemaVersion": 1,
   "platform": "android",
+  "platforms": ["android", "ios"],
   "fontScales": [1, 2],
+  "evidenceMatrix": [
+    { "platform": "android", "fontScale": 1, "file": "native-touch-android-1x.json" },
+    { "platform": "android", "fontScale": 2, "file": "native-touch-android-2x.json" },
+    { "platform": "ios", "fontScale": 1, "file": "native-touch-ios-1x.json" },
+    { "platform": "ios", "fontScale": 2, "file": "native-touch-ios-2x.json" }
+  ],
   "minimumTarget": 44,
   "expectedSourceLineage": 18,
   "tolerance": "physical: effective_dp*density >= 44*density - 0.5 - 0.001px; overlap <= 0.5 + 0.001px",
   "measurement": {
     "relativeFrame": "nativeFabricUIManager.measure — onLayout과 같은 부모 상대 좌표",
     "windowFrame": "nativeFabricUIManager.measureInWindow",
-    "effectiveTouch": "hitSlop 확장 뒤 가장 가까운 native parent frame으로 clipping",
+    "effectiveTouch": "hitSlop 확장 뒤 모든 host ancestor frame의 교집합으로 clipping",
+    "scope": "각 시나리오의 activeOwnerPattern에 속한, 화면에 보이는 accessibilityRole=button Pressable 전수; 제외 owner chain은 산출물에 보존",
     "overlap": "같은 native parent의 유효 터치 사각형 교차"
   },
   "scenarios": [
@@ -24,11 +32,18 @@
     {
       "id": "discard-history",
       "route": "/ingredients/discards/{{ingredientId}}",
-      "activeOwnerPattern": "DiscardHistoryScreen|HistoryFilterSheet",
-      "actions": [{ "phase": "filter-sheet", "ownerPattern": "FilterButton", "labelPattern": "^최근 3개월 변경$" }],
+      "activeOwnerPattern": "DiscardHistoryScreen",
       "targets": [
-        { "id": "discard-more", "phase": "initial", "ownerPattern": "DiscardHistory", "labelPattern": "^더보기$", "minimumObserved": 1, "sourceEntries": ["apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:200"] },
-        { "id": "history-filter-close", "phase": "filter-sheet", "ownerPattern": "PeriodSheet", "labelPattern": "^닫기$", "minimumObserved": 1, "sourceEntries": ["apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:144"] }
+        { "id": "discard-more", "phase": "initial", "ownerPattern": "DiscardHistory", "labelPattern": "^더보기$", "minimumObserved": 1, "sourceEntries": ["apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:200"] }
+      ]
+    },
+    {
+      "id": "stock-history",
+      "route": "/ingredients/history/{{ingredientId}}",
+      "activeOwnerPattern": "StockHistoryScreen|HistoryFilterSheet",
+      "actions": [{ "phase": "filter-sheet", "ownerPattern": "StockHistoryScreen", "labelPattern": "^최근 3개월 변경$" }],
+      "targets": [
+        { "id": "history-filter-close", "phase": "filter-sheet", "ownerPattern": "HistoryFilterSheet", "labelPattern": "^닫기$", "minimumObserved": 1, "sourceEntries": ["apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:144"] }
       ]
     },
     {
@@ -71,9 +86,10 @@
       "id": "recipe-add",
       "route": "/recipes/add?id={{recipeId}}",
       "activeOwnerPattern": "RecipeAddScreen",
+      "actions": [{ "kind": "scroll", "phase": "extra-controls", "ownerPattern": "RecipeAddScreen", "labelPattern": "특수 포장용기 수량 줄이기$", "yByFontScale": { "1": 1100, "2": 1600 } }],
       "targets": [
-        { "id": "extra-decrement", "phase": "initial", "ownerPattern": "RecipeAddScreen", "labelPattern": " 수량 줄이기$", "minimumObserved": 1, "sourceEntries": ["apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:355"] },
-        { "id": "extra-increment", "phase": "initial", "ownerPattern": "RecipeAddScreen", "labelPattern": " 수량 늘리기$", "minimumObserved": 1, "sourceEntries": ["apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:359"] }
+        { "id": "extra-decrement", "phase": "extra-controls", "ownerPattern": "RecipeAddScreen", "labelPattern": " 수량 줄이기$", "minimumObserved": 1, "sourceEntries": ["apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:355"] },
+        { "id": "extra-increment", "phase": "extra-controls", "ownerPattern": "RecipeAddScreen", "labelPattern": " 수량 늘리기$", "minimumObserved": 1, "sourceEntries": ["apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:359"] }
       ]
     },
     {

@@ -6,7 +6,7 @@
 
 - 상태: 서비스 기준 재검토 개정안
 - 개정일: 2026-09-02
-- 현재 디자인 동기화 ID: `DS-20260906-008`
+- 현재 디자인 동기화 ID: `DS-20260906-010`
 - 적용 대상: `docs/prototypes/full-page-flow-prototype.html`, UI 적용 복사본과 향후 Expo 공용 UI
 - 등록 인벤토리: 프로토타입 `screen` 키 62개, 팝업·조건 상태 호스트 123개, 고유 ID 98개
   (PRT-182 정정: 이전 표기 `125 / 99`는 `PRT-151`이 `recipe_target_help`를 두 호스트에서
@@ -230,6 +230,11 @@ padding과 margin을 중복 적용하지 않는다. 목록의 마지막 행, 폼
 | `size.controlCompact` | 36 | 인라인 작은 조작의 시각 높이 |
 | `size.controlFilter` | 40 | 필터·분할 선택 |
 | `size.controlDefault` | 52 | 입력·셀렉트·검색·주요 버튼 |
+
+- 소유자 결정 12-4(2026-09-06): 행동 버튼은 시각/투명 상자 44px를 사용한다. `Button sm`은
+  `36→44`, 헤더·시트 아이콘 action은 아이콘 크기를 유지한 투명 `44×44`, 조건 줄은 44다.
+  Chip·SortChip은 선택 표식이므로 기존 약 34px 형상을 유지하고 부모 줄만 44 이상으로 만든다.
+  `FilterButton`은 시각 32와 세로 hitSlop 6을 쓴다. 승인 밖 화면 diff는 0이어야 한다.
 | `size.rowMin` | 64 | 일반 목록 행 최소 높이 |
 | `size.navigationBottom` | 60 | Safe Area를 제외한 하단 탭 |
 | `size.fab` | 54 | 확장형 FAB |

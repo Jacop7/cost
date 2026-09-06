@@ -270,10 +270,11 @@ export function evaluateS4(sources, contract, baselineSources) {
   try { prior = JSON.parse(get(contract.priorStage.contract)); } catch { fail('S3a 계약을 읽지 못했다'); }
   if (prior) {
     const superseded = new Set(contract.priorStage.supersededFiles ?? []);
+    const supersededDeclarations = new Set(contract.priorStage.supersededDeclarations ?? []);
     const groups = new Map();
     for (const item of prior.assignmentPlan ?? []) {
       const file = item.key.replace(/:\d+:[^:]+$/, '');
-      if (superseded.has(file)) continue;
+      if (superseded.has(file) || supersededDeclarations.has(item.key)) continue;
       const prop = item.key.match(/:([^:]+)$/)?.[1];
       const key = JSON.stringify([file, prop, item.expression]);
       groups.set(key, (groups.get(key) ?? 0) + 1);

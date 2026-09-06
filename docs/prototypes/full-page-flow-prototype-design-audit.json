@@ -1,6 +1,6 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-06T03:17:11.111Z",
+  "generatedAt": "2026-09-06T05:53:29.039Z",
   "schemaVersion": 1,
   "script": {
    "name": "full-page-flow-prototype-design-audit.mjs",
@@ -8,8 +8,8 @@
   },
   "target": {
    "path": "0_full-page-flow-prototype-ui-applied.html",
-   "sha256": "c987dd794f191f4ff41021614685ddf46d8468bf02e129246a2275417b766863",
-   "designSyncId": "DS-20260906-008"
+   "sha256": "ccabd0256b77a6c75d73f9a3f6712a4f254f04beeed87c64af81a05b32b2d487",
+   "designSyncId": "DS-20260906-010"
   },
   "runner": {
    "node": "v24.15.0",
@@ -68,8 +68,8 @@
    "합계": 2158
   },
   "touch": {
-   "종류": 62,
-   "합계": 733
+   "종류": 61,
+   "합계": 724
   },
   "icon": {
    "종류": 35,
@@ -10961,7 +10961,7 @@
    "key": "9px|card.order-button|author",
    "n": 9,
    "ex": [
-    "330x36"
+    "330x44"
    ]
   },
   {
@@ -12037,7 +12037,7 @@
    ]
   },
   {
-   "key": "button|h36|9px|15px/700",
+   "key": "button|h44|9px|15px/700",
    "n": 9,
    "ex": [
     "card.order-button \"주문하기\""
@@ -12438,13 +12438,6 @@
    "n": 9,
    "ex": [
     "입고 완료 98"
-   ]
-  },
-  {
-   "key": "card.order-button|330x36",
-   "n": 9,
-   "ex": [
-    "주문하기"
    ]
   },
   {

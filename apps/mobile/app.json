@@ -25,6 +25,13 @@
     },
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "73ee6432-380d-43d7-bdda-ae2da89bf731"
+      }
+    },
+    "owner": "jacop7223"
   }
 }

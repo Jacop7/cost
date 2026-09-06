@@ -6,7 +6,7 @@
 import { useEffect, useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { Button, Icon, Sheet } from '../../../components/kit';
-import { COLOR, T, tnum, controlVisualHeight, radius, space } from '../../../theme/tokens';
+import { COLOR, T, tnum, minTouchTarget, radius, space } from '../../../theme/tokens';
 import { addDays } from '@/lib/date';
 
 function Seg({ opts, sel, onSelect }: { opts: string[]; sel: string; onSelect: (o: string) => void }) {
@@ -141,7 +141,7 @@ export function HistoryFilterSheet({
       height={560}
       title="조회 설정"
       headerRight={
-        <Pressable onPress={onClose} hitSlop={6} style={{ width: controlVisualHeight.sm, height: controlVisualHeight.sm, alignItems: 'center', justifyContent: 'center' }} accessibilityRole="button" accessibilityLabel="닫기">
+        <Pressable onPress={onClose} hitSlop={0} style={{ width: minTouchTarget, height: minTouchTarget, alignItems: 'center', justifyContent: 'center' }} accessibilityRole="button" accessibilityLabel="닫기">
           <Icon name="close" size={22} color={T.ink2} />
         </Pressable>
       }
