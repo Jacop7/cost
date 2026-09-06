@@ -1,0 +1,138 @@
+{
+  "schemaVersion": 1,
+  "status": "PROPOSAL_COMPLETE",
+  "manifest": {
+    "sourceCommit": "b1e23cd9b057d9b5461f205a800445a37c294ea3",
+    "script": "design-token-motion-layer-audit.mjs",
+    "scriptSha256": "04961174d9dc8d06a5c94b6a9a1a8755c41b276dbf688255ef2195e24f425e03",
+    "selection": {
+      "roots": [
+        "apps/mobile/src",
+        "apps/mobile/app"
+      ],
+      "extensions": [
+        ".ts",
+        ".tsx"
+      ],
+      "excludeDirs": [
+        "node_modules",
+        "__tests__",
+        ".expo",
+        "dist",
+        "build"
+      ],
+      "excludeFileSuffixes": [
+        ".test.ts",
+        ".test.tsx",
+        ".d.ts"
+      ]
+    },
+    "filesMeasured": 178,
+    "scopeSha256": "7f462bd7de1ff107f9522260167d2d31d0fdfbd3678afbeb7efa7c5c32dad058"
+  },
+  "summary": {
+    "declarations": 6,
+    "motion": 5,
+    "layer": 1,
+    "animationType": {
+      "fade": 4,
+      "slide": 1,
+      "other": 0
+    },
+    "customMotionApiCalls": 0,
+    "zIndexValues": [
+      30
+    ],
+    "unmapped": 0
+  },
+  "interpretation": {
+    "durationEasing": "현재 앱에는 직접 선언된 duration/easing 또는 Animated/Reanimated 호출이 없다. React Native Modal preset의 내부 시간값을 소스에서 추정하지 않는다.",
+    "tokens": "현재 6건은 세 컴포넌트 역할로 완전 배정된다. 숫자 primitive를 새로 만들 근거는 없으며 중앙 토큰 신설은 실제 두 번째 사용처가 생길 때 재검토한다."
+  },
+  "assignments": [
+    {
+      "group": "layer",
+      "prop": "zIndex",
+      "kind": "literal",
+      "value": 30,
+      "file": "apps/mobile/src/components/kit/index.tsx",
+      "line": 151,
+      "column": 96,
+      "layer": "sharedComponent",
+      "bucket": "componentOwned",
+      "role": "COMPONENT.fab.zIndex",
+      "target": 30
+    },
+    {
+      "group": "motion",
+      "prop": "animationType",
+      "kind": "literal",
+      "value": "slide",
+      "component": "Modal",
+      "file": "apps/mobile/src/components/kit/Sheet.tsx",
+      "line": 23,
+      "column": 42,
+      "layer": "sharedComponent",
+      "bucket": "componentOwned",
+      "role": "COMPONENT.sheet.animationType",
+      "target": "slide"
+    },
+    {
+      "group": "motion",
+      "prop": "animationType",
+      "kind": "literal",
+      "value": "fade",
+      "component": "Modal",
+      "file": "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx",
+      "line": 218,
+      "column": 44,
+      "layer": "product",
+      "bucket": "componentOwned",
+      "role": "COMPONENT.inlineSheet.animationType",
+      "target": "fade"
+    },
+    {
+      "group": "motion",
+      "prop": "animationType",
+      "kind": "literal",
+      "value": "fade",
+      "component": "Modal",
+      "file": "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx",
+      "line": 256,
+      "column": 53,
+      "layer": "product",
+      "bucket": "componentOwned",
+      "role": "COMPONENT.inlineSheet.animationType",
+      "target": "fade"
+    },
+    {
+      "group": "motion",
+      "prop": "animationType",
+      "kind": "literal",
+      "value": "fade",
+      "component": "Modal",
+      "file": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx",
+      "line": 332,
+      "column": 45,
+      "layer": "product",
+      "bucket": "componentOwned",
+      "role": "COMPONENT.inlineSheet.animationType",
+      "target": "fade"
+    },
+    {
+      "group": "motion",
+      "prop": "animationType",
+      "kind": "literal",
+      "value": "fade",
+      "component": "Modal",
+      "file": "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx",
+      "line": 323,
+      "column": 45,
+      "layer": "product",
+      "bucket": "componentOwned",
+      "role": "COMPONENT.inlineSheet.animationType",
+      "target": "fade"
+    }
+  ],
+  "failures": []
+}
