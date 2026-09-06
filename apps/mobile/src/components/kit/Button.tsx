@@ -50,7 +50,7 @@ export function Button({
       accessibilityLabel={accessibilityLabel}
       accessibilityHint={accessibilityHint}
       accessibilityState={{ disabled: blocked, busy: loading }}
-      hitSlop={s.hs}
+      hitSlop={{ top: s.hs, bottom: s.hs }}
       style={({ pressed }) => [
         {
           flexDirection: iconRight ? 'row-reverse' : 'row',

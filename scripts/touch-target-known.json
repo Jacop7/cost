@@ -1,7 +1,7 @@
 {
   "_schema": "v7 — entries(미달) · siblingOverlaps(같은 부모 형제 중첩 위험) · siblingUnjudged(조건부 JSX·동적 style 때문에 형제 관계 판정 불가) · components(공용 컴포넌트 계약) · buttonDynamic · unjudged. 제품 .tsx 만 세고 시험 fixture 는 시험참조로 따로 둔다(R4 F04).",
   "_해시": "이 목록이 확정된 **제품** 감사 입력의 해시다 — 제품 .tsx 의 \"경로\\0git blob SHA\" 을 정렬해 잇고 감사기 자신의 sha256 을 더해 sha256. 커밋 SHA 자기참조를 피하면서 \"이후 무변경\" 을 게이트가 직접 검사한다. **시험 fixture 는 이 해시에 들어가지 않는다**(솔 검수 R5 F02) — 시험 한 줄을 고쳤다고 제품 재고가 흔들리면 안 된다. 시험참조해시는 기록만 하고 래칫하지 않는다. blob SHA 는 CRLF→LF 정규화 뒤 계산하므로 체크아웃한 OS 에 좌우되지 않는다(페이블 R6 차단 — 내용 sha256 은 줄끝을 쟀다).",
-  "제품입력해시": "89b49795f89f7824fe8c708ce8cea7effcc31b52690e57382974c93eceb9f541",
+  "제품입력해시": "8e6ac37ddc0fc890fa0238b066c319506200089291ca2ebca1f16bdf2b6d4c8c",
   "시험참조해시": "9a57d560e0ab1b1bee86e48a194f516fcd0f698371ee76a587bd2c0d94c4a3cb",
   "_entries": "선언 크기와 hitSlop 이 있는데 44 에 못 미치는 자리. 유효 크기가 줄어도 FAIL 한다.",
   "entries": [],
@@ -320,6 +320,46 @@
     {
       "at": "apps/mobile/src/components/kit/index.tsx:298",
       "사유": "형제 apps/mobile/src/components/kit/index.tsx:302|apps/mobile/src/components/kit/index.tsx:302의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다"
+    },
+    {
+      "at": "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:132",
+      "사유": "형제 apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:133|apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:134의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다"
+    },
+    {
+      "at": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:141",
+      "사유": "형제 apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:147|apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:161의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다"
+    },
+    {
+      "at": "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:148",
+      "사유": "형제 apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:156|apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:156의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다"
+    },
+    {
+      "at": "apps/mobile/src/features/ingredients/screens/StockHistoryScreen.tsx:118",
+      "사유": "형제 apps/mobile/src/features/ingredients/screens/StockHistoryScreen.tsx:119|apps/mobile/src/features/ingredients/screens/StockHistoryScreen.tsx:120의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다"
+    },
+    {
+      "at": "apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx:163",
+      "사유": "형제 apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx:165|apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx:165의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다"
+    },
+    {
+      "at": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:214",
+      "사유": "형제 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:220|apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:235의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다"
+    },
+    {
+      "at": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:186",
+      "사유": "형제 apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:187|apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:188의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다 · 형제 apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:188|apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:189의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다"
+    },
+    {
+      "at": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:193",
+      "사유": "형제 apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:202|apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:202의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다"
+    },
+    {
+      "at": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:303",
+      "사유": "JSX 식을 정적으로 펼치지 못했다 (CallExpression) · 형제 apps/mobile/src/features/sales/components/ProfitBlocks.tsx:305|apps/mobile/src/features/sales/components/ProfitBlocks.tsx:311의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다 · 형제 apps/mobile/src/features/sales/components/ProfitBlocks.tsx:311|apps/mobile/src/features/sales/components/ProfitBlocks.tsx:311의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다"
+    },
+    {
+      "at": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:448",
+      "사유": "형제 apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:449|apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:450의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다"
     },
     {
       "at": "apps/mobile/src/features/sales/screens/SalesRevenueScreen.tsx:87",

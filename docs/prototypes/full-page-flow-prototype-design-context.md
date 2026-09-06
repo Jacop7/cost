@@ -1,12 +1,12 @@
 # 전체 페이지 프로토타입 · 디자인 맥락 장부
 
-> 현재 동기화 ID: `DS-20260906-006`
+> 현재 동기화 ID: `DS-20260906-007`
 > 문서 동기화 상태: `SYNCED`
 > 전체 UI 작업 상태: `IN_PROGRESS`
 > 마지막 갱신: `2026-09-06`
 > 공통 변경: `예`
 > UI 변경: `예`
-> 변경 기록: `PRT-233`
+> 변경 기록: `PRT-234`
 
 ## 1. 문서 역할
 
@@ -43,6 +43,22 @@
 - 글로벌: 30~50% 긴 번역, 320px, 200% 글자 확대, RTL 검수.
 
 ## 4. 가장 최근 작업
+
+### DS-20260906-007 · PRT-234 S4 Button 형제 중첩·선언별 AST 계약 정정
+
+- 작업 성격: PRT-233 페이블 재검수의 Major 1건·Minor 2건을 반영했다.
+- 결과:
+  - Button variant 보정을 세로 hitSlop으로 제한해 인접 행동의 가로 터치 영역 중첩을 없앴다.
+  - 터치 감사기가 공용 Button 계약을 형제 관계에도 투영하고, 계약표에 없는 공용 조작 컴포넌트
+    형제 10곳을 새로 드러내 총 12곳을 판정불가 래칫으로 보존한다.
+  - S4 AST 계약은 허용 변경 108건을 파일·속성·변경 전후 값으로 직접 대조한다.
+- 미완료: Android·iOS 실제 frame·부모 clipping·우선순위 측정. 현 환경에는 `adb`·`xcrun`이 없다.
+- 완료 조건:
+  - PRT234-S4-CONTRACT · `../../scripts/design-token-s4-contract.json`
+  - PRT234-S4-GATE · `../../scripts/design-token-s4-check.mjs`
+  - PRT234-S4-TEST · `../../scripts/design-token-s4-check.test.mjs`
+  - PRT234-TOUCH · `../../scripts/touch-target-known.json`
+- 다음 시작점: 독립 재검수 뒤 정적 S4를 승인하고 `S3b`; 네이티브 증거 전에는 S4·W1 최종 종결 금지.
 
 ### DS-20260906-006 · PRT-233 S4 독립 검수 차단 정정
 

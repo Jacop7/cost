@@ -2686,6 +2686,21 @@ popup/state host **121개**(합 182), 그리고 레지스트리에 키가 없는
   `full-page-flow-prototype-render-audit.json` · `full-page-flow-prototype-design-audit.json` ·
   `full-page-flow-prototype-i18n-stress.json`.
 
+## DS-20260906-007 · PRT-234 S4 Button 형제 중첩·선언별 AST 계약 정정
+
+- 대상: Button variant hitSlop 축, 공용 조작 컴포넌트 형제 감사, S4 AST 허용 변경 계약.
+- 기대값: 인접 Button 가로 중첩 0, 계약을 모르는 조작 컴포넌트 무판정 통과 0, 승인 밖 선언 변경 0.
+- 실제값: Button 세로 hitSlop `7/1/0`, 터치 미달 0·형제중첩 0·형제판정불가 12·일반 판정불가 163,
+  선언별 AST 변경 108건이 계약과 정확히 일치한다.
+- PC 검수: 프로토타입 1280×900 감사 재실행 · PASS
+- 모바일 검수: 320px·CSS 200%·글자 200%·i18n 4패스 재실행 · PASS
+- 미검수: 없음
+- 결과: PASS
+- 범위 밖 후속: Android·iOS 실제 frame 측정(현 환경 `adb`·`xcrun` 없음). 앱 S4·W1
+  최종 종결 조건이며 이 절의 프로토타입 봉인·앱 정적 계약 PASS와 구분한다.
+- 증거: `../../scripts/design-token-s4-contract.json` · `../../scripts/design-token-s4-check.mjs` ·
+  `../../scripts/design-token-s4-check.test.mjs` · `../../scripts/touch-target-known.json`.
+
 ## DS-20260906-006 · PRT-233 S4 독립 검수 차단 정정
 
 - 대상: Modal Sheet safe-area, 카테고리 정렬 웹 경로, Button 터치 계약, 탭 fontScale·색,
