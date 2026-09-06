@@ -66,6 +66,21 @@ export function physicalHalfPixelTolerance(density) {
   return (0.5 + 1e-3) / density;
 }
 
+/** Expo Router 탭 아래의 실제 화면을 명시해 같은 이름의 숨은 route를 만들지 않는다. */
+export function tabScopedRoute(route) {
+  return /^\/(ingredients|recipes|orders|sales|my)(?:\/|\?|$)/.test(route) ? `/(tabs)${route}` : route;
+}
+
+export function tabRootForRoute(route) {
+  const match = route.match(/^\/\(tabs\)\/(ingredients|recipes|orders|sales|my)(?:\/|\?|$)/);
+  return match ? `/(tabs)/${match[1]}` : null;
+}
+
+/** react-native-screens에서 2만 활성 화면이다. screen 조상이 없는 modal/root는 유지한다. */
+export function isActiveScreenStateList(states) {
+  return states.length === 0 || states.every((state) => state === 2);
+}
+
 export function rectOverlap(left, right) {
   return {
     width: Math.max(0, Math.min(left.right, right.right) - Math.max(left.left, right.left)),
@@ -323,17 +338,24 @@ function runtimeExpression(operation) {
     const state=globalThis.__MARGINCOOK_NATIVE_TOUCH__??={};
     const name=f=>{const t=f?.elementType||f?.type;return typeof t==='string'?t:(t?.displayName||t?.name||'')};
     const owners=f=>{const out=[];for(let n=f?._debugOwner;n&&out.length<12;n=n._debugOwner){const v=name(n);if(v&&!out.includes(v))out.push(v)}return out};
-    const text=f=>{let out='';const seen=new Set();const walk=n=>{if(!n||seen.has(n))return;seen.add(n);const p=n.memoizedProps||{};if(typeof p.children==='string'||typeof p.children==='number')out+=' '+p.children;walk(n.child);walk(n.sibling)};walk(f?.child);return out.replace(/\\s+/g,' ').trim()};
+    const text=f=>{let out='';const seen=new Set();const walk=n=>{if(!n||seen.has(n))return;seen.add(n);const p=n.memoizedProps;if(typeof p==='string'||typeof p==='number')out+=' '+p;walk(n.child);walk(n.sibling)};walk(f?.child);return out.replace(/\\s+/g,' ').trim()};
     const hostChild=f=>{const q=f?.child?[f.child]:[];const seen=new Set();while(q.length){const n=q.shift();if(!n||seen.has(n))continue;seen.add(n);if(n.tag===5)return n;if(n.child)q.push(n.child);if(n.sibling)q.push(n.sibling)}return null};
     const hostAncestors=f=>{const out=[];for(let n=f?.return;n;n=n.return)if(n.tag===5)out.push(n);return out};
     const flatStyle=s=>Array.isArray(s)?Object.assign({},...s.filter(Boolean).map(flatStyle)):(s&&typeof s==='object'?s:{});
     const slop=v=>typeof v==='number'?{top:v,right:v,bottom:v,left:v}:{top:v?.top??v?.vertical??0,right:v?.right??v?.horizontal??0,bottom:v?.bottom??v?.vertical??0,left:v?.left??v?.horizontal??0};
     const buttons=[];const seen=new Set();
-    const walk=f=>{if(!f||seen.has(f))return;seen.add(f);const p=f.memoizedProps||{};if(name(f)==='Pressable'&&p.accessibilityRole==='button'){const host=hostChild(f),ancestors=hostAncestors(f);if(host&&ancestors.length){const label=String(p.accessibilityLabel||text(f)||'(unlabelled)');buttons.push({fiber:f,host,ancestors,label,ownerChain:owners(f),hitSlop:slop(p.hitSlop??host.memoizedProps?.hitSlop),nativeTag:host.stateNode?.canonical?.nativeTag,parentNativeTag:ancestors[0].stateNode?.canonical?.nativeTag})}}walk(f.child);walk(f.sibling)};
+    const walk=f=>{if(!f||seen.has(f))return;seen.add(f);const p=f.memoizedProps||{};if(name(f)==='Pressable'&&p.accessibilityRole==='button'){const host=hostChild(f),ancestors=hostAncestors(f);if(host&&ancestors.length){const label=String(p.accessibilityLabel||text(f)||'(unlabelled)');const screenActivityStates=ancestors.filter(n=>name(n)==='RNSScreen'&&n.memoizedProps?.activityState!=null).map(n=>n.memoizedProps.activityState);buttons.push({fiber:f,host,ancestors,label,ownerChain:owners(f),hitSlop:slop(p.hitSlop??host.memoizedProps?.hitSlop),nativeTag:host.stateNode?.canonical?.nativeTag,parentNativeTag:ancestors[0].stateNode?.canonical?.nativeTag,screenActivityStates})}}walk(f.child);walk(f.sibling)};
     roots.forEach(walk);
-    const active=[...new Map(buttons.filter(b=>Number.isFinite(b.nativeTag)).map(b=>[b.nativeTag,b])).values()];
-    if(op.kind==='press'){
+    const active=[...new Map(buttons.filter(b=>Number.isFinite(b.nativeTag)&&(b.screenActivityStates.length===0||b.screenActivityStates.every(s=>s===2))).map(b=>[b.nativeTag,b])).values()];
+    if(op.kind==='snapshot'){
+      const rows=active.filter(b=>!op.ownerPattern||new RegExp(op.ownerPattern,'u').test(b.ownerChain.join('>')))
+        .map(b=>({nativeTag:b.nativeTag,label:b.label,ownerChain:b.ownerChain,screenActivityStates:b.screenActivityStates}))
+        .sort((a,b)=>a.nativeTag-b.nativeTag);
+      return JSON.stringify(rows);
+    }
+    if(op.kind==='press'||op.kind==='pressIfPresent'){
       const found=active.find(b=>(!op.ownerPattern||new RegExp(op.ownerPattern,'u').test(b.ownerChain.join('>')))&&new RegExp(op.labelPattern,'u').test(b.label));
+      if(!found&&op.kind==='pressIfPresent')return JSON.stringify({pressed:null});
       if(!found)throw new Error('action target 없음: '+op.labelPattern);
       const press=found.fiber.memoizedProps?.onPress;if(typeof press!=='function')throw new Error('onPress 없음');press();return JSON.stringify({pressed:found.label});
     }
@@ -347,14 +369,46 @@ function runtimeExpression(operation) {
     }
     state.rows=[];state.pending=0;state.done=false;
     const measure=(node,method,target,key)=>{state.pending++;nativeFabricUIManager[method](node.stateNode.node,(...values)=>{target[key]=values;state.pending--;if(state.pending===0)state.done=true})};
-    for(const b of active){const row={key:b.ownerChain.join('>')+'|'+b.label+'|'+b.nativeTag,label:b.label,ownerChain:b.ownerChain,hitSlop:b.hitSlop,nativeTag:b.nativeTag,parentNativeTag:b.parentNativeTag,ancestors:b.ancestors.map((n,index)=>{const chain=owners(n),hostName=name(n),directOwner=name(n?._debugOwner),hostIdentity=hostName+'>'+directOwner,scroll=/ScrollView|FlatList|VirtualizedList/.test(hostIdentity),root=index===b.ancestors.length-1,platformWrapper=/RNSScreen|RCTModalHostView/.test(hostIdentity),overflow=flatStyle(n.memoizedProps?.style).overflow??n.memoizedProps?.overflow??'visible',clipsVisual=!platformWrapper&&(scroll||root||overflow==='hidden'||overflow==='scroll'),clipsTouch=index===0||clipsVisual;return {nativeTag:n.stateNode?.canonical?.nativeTag,hostName,directOwner,ownerChain:chain,kind:scroll?'scrollViewport':root?'root':'nonScroll',overflow,platformWrapper,clipsVisual,clipsTouch}})};state.rows.push(row);measure(b.host,'measure',row,'relativeMeasure');measure(b.host,'measureInWindow',row,'windowMeasure');for(const ancestor of row.ancestors){const node=b.ancestors[row.ancestors.indexOf(ancestor)];measure(node,'measureInWindow',ancestor,'windowMeasure')}}
+    for(const b of active){const row={key:b.ownerChain.join('>')+'|'+b.label+'|'+b.nativeTag,label:b.label,ownerChain:b.ownerChain,hitSlop:b.hitSlop,nativeTag:b.nativeTag,parentNativeTag:b.parentNativeTag,screenActivityStates:b.screenActivityStates,ancestors:b.ancestors.map((n,index)=>{const chain=owners(n),hostName=name(n),directOwner=name(n?._debugOwner),hostIdentity=hostName+'>'+directOwner,scroll=/ScrollView|FlatList|VirtualizedList/.test(hostIdentity),root=index===b.ancestors.length-1,platformWrapper=/RNSScreen|RCTModalHostView/.test(hostIdentity),overflow=flatStyle(n.memoizedProps?.style).overflow??n.memoizedProps?.overflow??'visible',clipsVisual=!platformWrapper&&(scroll||root||overflow==='hidden'||overflow==='scroll'),clipsTouch=index===0||clipsVisual;return {nativeTag:n.stateNode?.canonical?.nativeTag,hostName,directOwner,ownerChain:chain,kind:scroll?'scrollViewport':root?'root':'nonScroll',overflow,platformWrapper,clipsVisual,clipsTouch}})};state.rows.push(row);measure(b.host,'measure',row,'relativeMeasure');measure(b.host,'measureInWindow',row,'windowMeasure');for(const ancestor of row.ancestors){const node=b.ancestors[row.ancestors.indexOf(ancestor)];measure(node,'measureInWindow',ancestor,'windowMeasure')}}
     if(state.pending===0)state.done=true;return JSON.stringify({rows:state.rows.length,pending:state.pending});
   })()`;
 }
 
+async function closeTransientLayers(evaluate) {
+  for (let attempt = 0; attempt < 4; attempt++) {
+    const result = JSON.parse(await evaluate(runtimeExpression({ kind: 'pressIfPresent', ownerPattern: 'Sheet|Modal|Popover', labelPattern: '^닫기$' })));
+    if (!result.pressed) return;
+    await sleep(350);
+  }
+  throw new Error('닫기 가능한 임시 레이어가 4회 뒤에도 남았다');
+}
+
 async function navigate(evaluate, route) {
-  const expression = `(()=>{const modules=[...__r.getModules().entries()];const hit=modules.find(([,m])=>String(m.verboseName||'').replaceAll('\\\\','/').endsWith('/node_modules/expo-router/build/exports.js'));if(!hit)throw new Error('expo-router exports module 없음');__r(hit[0]).router.replace(${JSON.stringify(route)});return hit[0]})()`;
-  await evaluate(expression); await sleep(1700);
+  const routerCall = (method, value) => `(()=>{const modules=[...__r.getModules().entries()];const hit=modules.find(([,m])=>String(m.verboseName||'').replaceAll('\\\\','/').endsWith('/node_modules/expo-router/build/exports.js'));if(!hit)throw new Error('expo-router exports module 없음');__r(hit[0]).router.${method}(${value === undefined ? '' : JSON.stringify(value)});return hit[0]})()`;
+  const root = tabRootForRoute(route);
+  if (root) {
+    await evaluate(routerCall('replace', root));
+    await sleep(350);
+    await evaluate(`(()=>{const modules=[...__r.getModules().entries()];const hit=modules.find(([,m])=>String(m.verboseName||'').replaceAll('\\\\','/').endsWith('/node_modules/expo-router/build/exports.js'));if(!hit)throw new Error('expo-router exports module 없음');const router=__r(hit[0]).router;if(router.canDismiss())router.dismissAll();return router.canDismiss()})()`);
+    await sleep(350);
+    await evaluate(routerCall('replace', root));
+    await sleep(350);
+  }
+  if (!root || route !== root) await evaluate(routerCall('navigate', route));
+}
+
+export async function waitForStableOwner(evaluate, ownerPattern, { attempts = 40, consecutive = 3, delayMs = 250 } = {}) {
+  let previous = null;
+  let stable = 0;
+  for (let attempt = 0; attempt < attempts; attempt++) {
+    await sleep(delayMs);
+    const rows = JSON.parse(await evaluate(runtimeExpression({ kind: 'snapshot', ownerPattern })));
+    const key = JSON.stringify(rows);
+    stable = rows.length > 0 && key === previous ? stable + 1 : rows.length > 0 ? 1 : 0;
+    if (stable >= consecutive) return rows;
+    previous = key;
+  }
+  throw new Error(`활성 owner가 안정되지 않았다: ${ownerPattern}`);
 }
 
 async function runtimeDevice(evaluate) {
@@ -425,12 +479,17 @@ async function main() {
       : contract.scenarios;
     if (!selectedScenarios.length) throw new Error(`scenario 없음: ${opt.scenario}`);
     for (const scenario of selectedScenarios) {
-      const route = renderRoute(scenario.route); await navigate(inspector.evaluate, route);
+      await closeTransientLayers(inspector.evaluate);
+      const route = tabScopedRoute(renderRoute(scenario.route));
+      await navigate(inspector.evaluate, route);
+      await waitForStableOwner(inspector.evaluate, scenario.activeOwnerPattern);
       const phases = [{ id: 'initial', ...await collect(inspector.evaluate, density, scenario.activeOwnerPattern) }];
       for (const action of scenario.actions ?? []) {
         const resolvedAction = resolveActionForFontScale(action, fontScale);
-        await inspector.evaluate(runtimeExpression({ kind: resolvedAction.kind ?? 'press', ...resolvedAction })); await sleep(600);
-        phases.push({ id: action.phase, ...await collect(inspector.evaluate, density, action.activeOwnerPattern ?? scenario.activeOwnerPattern) });
+        await inspector.evaluate(runtimeExpression({ kind: resolvedAction.kind ?? 'press', ...resolvedAction }));
+        const actionOwnerPattern = action.activeOwnerPattern ?? scenario.activeOwnerPattern;
+        await waitForStableOwner(inspector.evaluate, actionOwnerPattern);
+        phases.push({ id: action.phase, ...await collect(inspector.evaluate, density, actionOwnerPattern) });
       }
       scenarios.push({ id: scenario.id, route, phases });
       console.log(`${scenario.id}: ${phases.map((phase) => `${phase.id} ${phase.rows.length}`).join(' · ')}`);

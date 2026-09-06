@@ -130,7 +130,7 @@ export default function MaterialManageScreen() {
           <Card pad={0} style={{ overflow: 'hidden' }}>
             {items.map((m, i) => (
               <View key={m.id} style={{ flexDirection: 'row', alignItems: 'center', gap: COMPONENT.adjacentActions.gap, paddingVertical: 12, paddingLeft: space.md, paddingRight: space.sm, borderBottomWidth: i < items.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
-                <Pressable onPress={() => openEdit(m)} accessibilityRole="button" accessibilityLabel={`${m.name} 수정`} style={{ flex: 1, minWidth: 0 }}>
+                <Pressable onPress={() => openEdit(m)} hitSlop={{ top: 2, bottom: 2 }} accessibilityRole="button" accessibilityLabel={`${m.name} 수정`} style={{ flex: 1, minWidth: 0 }}>
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm }}>
                     <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }} numberOfLines={1}>{m.name}</Text>
                     {m.categoryName ? <Badge tone="neutral" sm>{m.categoryName}</Badge> : null}

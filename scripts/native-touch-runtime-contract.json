@@ -11,7 +11,7 @@
     { "platform": "ios", "fontScale": 2, "file": "native-touch-ios-2x.json" }
   ],
   "minimumTarget": 44,
-  "expectedSourceLineage": 20,
+  "expectedSourceLineage": 27,
   "tolerance": "physical: effective_dp*density >= 44*density - 0.5 - 0.001px; overlap <= 0.5 + 0.001px",
   "measurement": {
     "relativeFrame": "nativeFabricUIManager.measure — onLayout과 같은 부모 상대 좌표",
@@ -44,7 +44,8 @@
       "activeOwnerPattern": "StockHistoryScreen|HistoryFilterSheet",
       "actions": [{ "phase": "filter-sheet", "ownerPattern": "StockHistoryScreen", "labelPattern": "^최근 3개월 변경$" }],
       "targets": [
-        { "id": "history-filter-close", "phase": "filter-sheet", "ownerPattern": "HistoryFilterSheet", "labelPattern": "^닫기$", "minimumObserved": 1, "sourceEntries": ["apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:144"] }
+        { "id": "history-filter-close", "phase": "filter-sheet", "ownerPattern": "HistoryFilterSheet", "labelPattern": "^닫기$", "minimumObserved": 1, "sourceEntries": ["apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:145"] },
+        { "id": "history-segments", "phase": "filter-sheet", "ownerPattern": "Seg>HistoryFilterSheet", "labelPattern": "^(오늘|최근 1개월|최근 3개월|최근 6개월|최근 1년|전체|입고|소진|폐기|조정|최신순|오래된순)$", "minimumObserved": 13, "sourceEntries": ["apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:18"] }
       ]
     },
     {
@@ -79,7 +80,7 @@
       "route": "/recipes/materials",
       "activeOwnerPattern": "MaterialManageScreen",
       "targets": [
-        { "id": "material-edit", "phase": "initial", "ownerPattern": "MaterialManageScreen", "labelPattern": " 수정$", "minimumObserved": 1, "sourceEntries": ["apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:143"] },
+        { "id": "material-edit", "phase": "initial", "ownerPattern": "MaterialManageScreen", "labelPattern": " 수정$", "minimumObserved": 1, "sourceEntries": ["apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:133", "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:143"] },
         { "id": "material-delete", "phase": "initial", "ownerPattern": "MaterialManageScreen", "labelPattern": " 삭제$", "minimumObserved": 1, "sourceEntries": ["apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:146"] }
       ]
     },
@@ -87,10 +88,14 @@
       "id": "recipe-add",
       "route": "/recipes/add?id={{recipeId}}",
       "activeOwnerPattern": "RecipeAddScreen",
-      "actions": [{ "kind": "scroll", "phase": "extra-controls", "ownerPattern": "RecipeAddScreen", "labelPattern": "특수 포장용기 수량 줄이기$", "yByFontScale": { "1": 1100, "2": 1600 } }],
+      "actions": [
+        { "kind": "scroll", "phase": "extra-controls", "ownerPattern": "RecipeAddScreen", "labelPattern": "특수 포장용기 수량 줄이기$", "yByFontScale": { "1": 1100, "2": 1250 } },
+        { "kind": "scroll", "phase": "profit-preview", "ownerPattern": "RecipeAddScreen", "labelPattern": "^권장 판매가 적용$", "yByFontScale": { "1": 1600, "2": 1600 } }
+      ],
       "targets": [
         { "id": "extra-decrement", "phase": "extra-controls", "ownerPattern": "RecipeAddScreen", "labelPattern": " 수량 줄이기$", "minimumObserved": 1, "sourceEntries": ["apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:355"] },
-        { "id": "extra-increment", "phase": "extra-controls", "ownerPattern": "RecipeAddScreen", "labelPattern": " 수량 늘리기$", "minimumObserved": 1, "sourceEntries": ["apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:359"] }
+        { "id": "extra-increment", "phase": "extra-controls", "ownerPattern": "RecipeAddScreen", "labelPattern": " 수량 늘리기$", "minimumObserved": 1, "sourceEntries": ["apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:359"] },
+        { "id": "recommended-price-apply", "phase": "profit-preview", "ownerPattern": "RecipeAddScreen", "labelPattern": "^권장 판매가 적용$", "minimumObserved": 1, "sourceEntries": ["apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:437"] }
       ]
     },
     {
@@ -99,7 +104,8 @@
       "activeOwnerPattern": "RecipesListScreen",
       "targets": [
         { "id": "recipes-search", "phase": "initial", "ownerPattern": "RecipesListScreen", "labelPattern": "^검색$", "minimumObserved": 1, "sourceEntries": ["apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:159"] },
-        { "id": "recipes-alert", "phase": "initial", "ownerPattern": "RecipesListScreen", "labelPattern": "^알림$", "minimumObserved": 1, "sourceEntries": ["apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:167"] }
+        { "id": "recipes-alert", "phase": "initial", "ownerPattern": "RecipesListScreen", "labelPattern": "^알림$", "minimumObserved": 1, "sourceEntries": ["apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:167"] },
+        { "id": "recipe-filter-chips", "phase": "initial", "ownerPattern": "Chip>RecipesListScreen", "labelPattern": "^(순이익률 낮은순|판매중|목표)$", "minimumObserved": 3, "sourceEntries": ["apps/mobile/src/components/kit/index.tsx:83", "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:186"] }
       ]
     },
     {
@@ -109,8 +115,10 @@
       "actions": [{ "kind": "scroll", "phase": "sales-actions", "ownerPattern": "SalesHomeScreen", "labelPattern": " 판매 수량 수정$", "yByFontScale": { "1": 400, "2": 700 } }],
       "targets": [
         { "id": "sales-analytics", "phase": "initial", "ownerPattern": "SalesHomeScreen", "labelPattern": "^매출 분석$", "minimumObserved": 1, "sourceEntries": ["apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:361"] },
+        { "id": "sales-quick-actions", "phase": "initial", "ownerPattern": "SalesHomeScreen", "labelPattern": "^(기타 매출|지출 추가)$", "minimumObserved": 2, "sourceEntries": ["apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:434"] },
+        { "id": "sales-sort-chip", "phase": "initial", "ownerPattern": "^SortChip>", "labelPattern": "^정렬 기준:", "minimumObserved": 1, "sourceEntries": ["apps/mobile/src/components/kit/SortSheet.tsx:22"] },
         { "id": "sales-quantity-action", "phase": "sales-actions", "ownerPattern": "SalesHomeScreen", "labelPattern": " 판매 수량 수정$", "minimumObserved": 1, "sourceEntries": ["apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:531"] },
-        { "id": "sales-sale-action", "phase": "sales-actions", "ownerPattern": "SalesHomeScreen", "labelPattern": " 판매 입력$", "minimumObserved": 1, "sourceEntries": ["apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:549"] }
+        { "id": "sales-sale-action", "phase": "sales-actions", "ownerPattern": "SalesHomeScreen", "labelPattern": " 판매 입력$", "minimumObserved": 1, "sourceEntries": ["apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:548"] }
       ]
     }
   ]
