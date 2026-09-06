@@ -1,6 +1,6 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-05T21:25:13.249Z",
+  "generatedAt": "2026-09-06T07:50:28.066Z",
   "schemaVersion": 1,
   "script": {
    "name": "full-page-flow-prototype-app-map-check.mjs",
@@ -9,12 +9,12 @@
   "source": {
    "audit": {
     "path": "token-adoption-audit.json",
-    "sha256": "9c4747db2b71af948b3bd4c63a3cd1ba93163a81dddc43b5bf075ba3b5ee4cc5",
-    "declarations": 3646
+    "sha256": "fd04e87a1920503304cd7731aa65fbed3a4d3f430e17eca7ff46a51408b8b494",
+    "declarations": 2353
    },
    "appMap": {
     "path": "full-page-flow-prototype-app-token-map.json",
-    "sha256": "4df8fa8544d3c2d49357e01e4ad69bfd6839db5da403026bd1262c72e66bfb17"
+    "sha256": "710979f2d623b6c072abc1010dfc7fe5a3c5d26b9d183ada9578aca07e144283"
    },
    "prototypeMap": {
     "path": "full-page-flow-prototype-token-map.json",
@@ -29,44 +29,31 @@
  },
  "summary": {
   "status": "PROPOSAL_COMPLETE",
-  "declarations": 3646,
+  "declarations": 2353,
   "byBin": {
    "primitive": 2063,
-   "componentOwned": 228,
-   "defect": 1305,
-   "pendingApproval": 50,
+   "componentOwned": 239,
+   "defect": 3,
+   "pendingApproval": 48,
    "approvedException": 0
   },
   "semantic통삭제사유": "**`semantic` 통을 없앴다** (솔 검수 W1 R1 F02). 감사기는 숫자 리터럴만 선언으로 모으므로 `fontSize: 16` → `TYPE.body` 치환은 semantic 으로 이동하는 것이 아니라 입력에서 사라진다. 영원히 0 인 통을 두고 \"P4 에서 채워진다\" 고 적는 것은 분류가 아니다. W1 의 범위를 **하드코딩 리터럴의 배정**으로 좁히고, 의미 토큰 채택률은 같은 감사기가 모으는 `tokenAccess` 로 따로 본다.",
   "unmatchedCount": 0,
   "unmatched": [],
-  "multiMatchCount": 927,
+  "multiMatchCount": 774,
   "multiMatchPairs": {
    "R-TY-SIZE-PRIM > R-TY-SIZE-OFFSCALE": 705,
-   "R-TY-SIZE-15-LABEL > R-TY-SIZE-CONVERGE > R-TY-SIZE-OFFSCALE": 48,
-   "R-TY-SIZE-CONVERGE > R-TY-SIZE-OFFSCALE": 32,
    "R-SZ-FLEX-RESET > R-SZ-MINWIDTH": 65,
-   "R-SP-SCROLL-END > R-SP-EMPTY-STATE": 44,
-   "R-TY-SIZE-15-PROSE > R-TY-SIZE-15-LABEL > R-TY-SIZE-CONVERGE > R-TY-SIZE-OFFSCALE": 4,
-   "R-SP-CAPTION-GAP-VIEW > R-SP-CAPTION-GAP": 5,
-   "R-TY-SIZE-15-CONTROL > R-TY-SIZE-15-LABEL > R-TY-SIZE-CONVERGE > R-TY-SIZE-OFFSCALE": 12,
-   "R-SP-SCROLL-END-FAB > R-SP-SCROLL-END > R-SP-EMPTY-STATE": 3,
-   "R-SZ-CONTROL-SM-ADJACENT > R-SZ-CONTROL-SM": 8,
-   "R-SP-MATERIAL-ACTION-GAP > R-SP-CONVERGE-SHRINK": 1
+   "R-SZ-APPHEADER-RIGHT-TOUCH > R-SZ-MINWIDTH": 1,
+   "R-SZ-RECIPE-EDITOR-TOUCH > R-SZ-MINWIDTH": 1,
+   "R-SP-QUANTITY-TOUCH-ENVELOPE > R-SP-PRIM": 1,
+   "R-SZ-SALES-QUANTITY-ACTION > R-SZ-MINWIDTH": 1
   },
   "multiMatchSamples": [
    {
     "decl": "typography/fontSize:18 @ apps/mobile/src/components/EmptyState.tsx:9",
     "rules": [
      "R-TY-SIZE-PRIM",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/components/history/HistoryLayout.tsx:68",
-    "rules": [
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
@@ -78,32 +65,10 @@
     ]
    },
    {
-    "decl": "typography/fontSize:12 @ apps/mobile/src/components/history/HistoryLayout.tsx:72",
-    "rules": [
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
     "decl": "size/minWidth:0 @ apps/mobile/src/components/history/HistoryLayout.tsx:80",
     "rules": [
      "R-SZ-FLEX-RESET",
      "R-SZ-MINWIDTH"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:12 @ apps/mobile/src/components/history/HistoryLayout.tsx:81",
-    "rules": [
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/components/history/HistoryLayout.tsx:85",
-    "rules": [
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
@@ -121,17 +86,17 @@
     ]
    },
    {
-    "decl": "spacing/paddingBottom:30 @ apps/mobile/src/components/history/HistoryLayout.tsx:120",
-    "rules": [
-     "R-SP-SCROLL-END",
-     "R-SP-EMPTY-STATE"
-    ]
-   },
-   {
     "decl": "typography/fontSize:18 @ apps/mobile/src/components/kit/AppHeader.tsx:36",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
+    ]
+   },
+   {
+    "decl": "size/minWidth:44 @ apps/mobile/src/components/kit/AppHeader.tsx:37",
+    "rules": [
+     "R-SZ-APPHEADER-RIGHT-TOUCH",
+     "R-SZ-MINWIDTH"
     ]
    },
    {
@@ -170,13 +135,6 @@
     ]
    },
    {
-    "decl": "typography/fontSize:12 @ apps/mobile/src/components/kit/QueryState.tsx:74",
-    "rules": [
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
     "decl": "typography/fontSize:16 @ apps/mobile/src/components/kit/QueryState.tsx:89",
     "rules": [
      "R-TY-SIZE-PRIM",
@@ -205,32 +163,16 @@
     ]
    },
    {
-    "decl": "typography/fontSize:20 @ apps/mobile/src/components/kit/Sheet.tsx:37",
+    "decl": "typography/fontSize:20 @ apps/mobile/src/components/kit/Sheet.tsx:39",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
-    "decl": "typography/fontSize:16 @ apps/mobile/src/components/kit/Sheet.tsx:38",
+    "decl": "typography/fontSize:16 @ apps/mobile/src/components/kit/Sheet.tsx:40",
     "rules": [
      "R-TY-SIZE-PRIM",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "spacing/paddingBottom:40 @ apps/mobile/src/components/kit/Sheet.tsx:44",
-    "rules": [
-     "R-SP-SCROLL-END",
-     "R-SP-EMPTY-STATE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/components/kit/Sheet.tsx:77",
-    "rules": [
-     "R-TY-SIZE-15-PROSE",
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
@@ -459,20 +401,6 @@
     ]
    },
    {
-    "decl": "typography/fontSize:12 @ apps/mobile/src/features/changes/components/RecentChangeRow.tsx:66",
-    "rules": [
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:12 @ apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx:55",
-    "rules": [
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
     "decl": "typography/fontSize:14 @ apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx:65",
     "rules": [
      "R-TY-SIZE-PRIM",
@@ -487,33 +415,10 @@
     ]
    },
    {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx:75",
-    "rules": [
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
     "decl": "typography/fontSize:14 @ apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx:78",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx:79",
-    "rules": [
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "spacing/paddingBottom:28 @ apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx:149",
-    "rules": [
-     "R-SP-SCROLL-END",
-     "R-SP-EMPTY-STATE"
     ]
    },
    {
@@ -678,14 +583,6 @@
     ]
    },
    {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/ingredients/components/BasePriceCard.tsx:102",
-    "rules": [
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
     "decl": "typography/fontSize:13 @ apps/mobile/src/features/ingredients/components/BasePriceCard.tsx:103",
     "rules": [
      "R-TY-SIZE-PRIM",
@@ -703,13 +600,6 @@
     "decl": "typography/fontSize:13 @ apps/mobile/src/features/ingredients/components/BasePriceCard.tsx:132",
     "rules": [
      "R-TY-SIZE-PRIM",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:12 @ apps/mobile/src/features/ingredients/components/BasePriceCard.tsx:137",
-    "rules": [
-     "R-TY-SIZE-CONVERGE",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
@@ -735,13 +625,6 @@
     ]
    },
    {
-    "decl": "spacing/marginTop:2 @ apps/mobile/src/features/ingredients/components/BasePriceCard.tsx:155",
-    "rules": [
-     "R-SP-CAPTION-GAP-VIEW",
-     "R-SP-CAPTION-GAP"
-    ]
-   },
-   {
     "decl": "size/minWidth:0 @ apps/mobile/src/features/ingredients/components/BasePriceCard.tsx:156",
     "rules": [
      "R-SZ-FLEX-RESET",
@@ -760,22 +643,6 @@
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/ingredients/components/BasePriceCard.tsx:180",
-    "rules": [
-     "R-TY-SIZE-15-CONTROL",
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "spacing/paddingBottom:30 @ apps/mobile/src/features/ingredients/components/CategoryPickerSheet.tsx:35",
-    "rules": [
-     "R-SP-SCROLL-END",
-     "R-SP-EMPTY-STATE"
     ]
    },
    {
@@ -842,13 +709,6 @@
     ]
    },
    {
-    "decl": "typography/fontSize:12 @ apps/mobile/src/features/ingredients/components/LedgerRow.tsx:63",
-    "rules": [
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
     "decl": "typography/fontSize:16 @ apps/mobile/src/features/ingredients/components/LedgerRow.tsx:67",
     "rules": [
      "R-TY-SIZE-PRIM",
@@ -898,26 +758,10 @@
     ]
    },
    {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/ingredients/components/LossCard.tsx:106",
-    "rules": [
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
     "decl": "size/minWidth:0 @ apps/mobile/src/features/ingredients/components/LossCard.tsx:113",
     "rules": [
      "R-SZ-FLEX-RESET",
      "R-SZ-MINWIDTH"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/ingredients/components/LossCard.tsx:113",
-    "rules": [
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
@@ -939,13 +783,6 @@
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "spacing/paddingBottom:30 @ apps/mobile/src/features/ingredients/components/UnitPickerSheet.tsx:32",
-    "rules": [
-     "R-SP-SCROLL-END",
-     "R-SP-EMPTY-STATE"
     ]
    },
    {
@@ -1009,50 +846,6 @@
     "rules": [
      "R-SZ-FLEX-RESET",
      "R-SZ-MINWIDTH"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:12 @ apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:172",
-    "rules": [
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:179",
-    "rules": [
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:184",
-    "rules": [
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:12 @ apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:188",
-    "rules": [
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "spacing/paddingBottom:26 @ apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:220",
-    "rules": [
-     "R-SP-SCROLL-END",
-     "R-SP-EMPTY-STATE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:19 @ apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:224",
-    "rules": [
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
@@ -1151,13 +944,6 @@
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "spacing/paddingBottom:28 @ apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:129",
-    "rules": [
-     "R-SP-SCROLL-END",
-     "R-SP-EMPTY-STATE"
     ]
    },
    {
@@ -1343,25 +1129,10 @@
     ]
    },
    {
-    "decl": "spacing/paddingBottom:30 @ apps/mobile/src/features/ingredients/screens/IngredientFormScreen.tsx:238",
-    "rules": [
-     "R-SP-SCROLL-END",
-     "R-SP-EMPTY-STATE"
-    ]
-   },
-   {
     "decl": "typography/fontSize:22 @ apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:83",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "spacing/paddingBottom:104 @ apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:117",
-    "rules": [
-     "R-SP-SCROLL-END-FAB",
-     "R-SP-SCROLL-END",
-     "R-SP-EMPTY-STATE"
     ]
    },
    {
@@ -1393,43 +1164,6 @@
     ]
    },
    {
-    "decl": "typography/fontSize:12 @ apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx:130",
-    "rules": [
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx:136",
-    "rules": [
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:12 @ apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx:139",
-    "rules": [
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx:153",
-    "rules": [
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "spacing/marginTop:2 @ apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx:164",
-    "rules": [
-     "R-SP-CAPTION-GAP-VIEW",
-     "R-SP-CAPTION-GAP"
-    ]
-   },
-   {
     "decl": "typography/fontSize:14 @ apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx:166",
     "rules": [
      "R-TY-SIZE-PRIM",
@@ -1454,21 +1188,6 @@
     "decl": "typography/fontSize:16 @ apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:209",
     "rules": [
      "R-TY-SIZE-PRIM",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "spacing/paddingBottom:30 @ apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:225",
-    "rules": [
-     "R-SP-SCROLL-END",
-     "R-SP-EMPTY-STATE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:232",
-    "rules": [
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
@@ -1519,35 +1238,6 @@
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:12 @ apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:283",
-    "rules": [
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:295",
-    "rules": [
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:12 @ apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:298",
-    "rules": [
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "spacing/paddingBottom:30 @ apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:312",
-    "rules": [
-     "R-SP-SCROLL-END",
-     "R-SP-EMPTY-STATE"
     ]
    },
    {
@@ -1817,13 +1507,6 @@
     ]
    },
    {
-    "decl": "spacing/paddingBottom:26 @ apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx:261",
-    "rules": [
-     "R-SP-SCROLL-END",
-     "R-SP-EMPTY-STATE"
-    ]
-   },
-   {
     "decl": "typography/fontSize:14 @ apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx:284",
     "rules": [
      "R-TY-SIZE-PRIM",
@@ -1992,13 +1675,6 @@
     ]
    },
    {
-    "decl": "spacing/paddingBottom:30 @ apps/mobile/src/features/my/screens/FixedCostEditScreen.tsx:281",
-    "rules": [
-     "R-SP-SCROLL-END",
-     "R-SP-EMPTY-STATE"
-    ]
-   },
-   {
     "decl": "typography/fontSize:14 @ apps/mobile/src/features/my/screens/FixedCostEditScreen.tsx:283",
     "rules": [
      "R-TY-SIZE-PRIM",
@@ -2104,24 +1780,10 @@
     ]
    },
    {
-    "decl": "spacing/marginTop:2 @ apps/mobile/src/features/my/screens/FixedCostScreen.tsx:133",
-    "rules": [
-     "R-SP-CAPTION-GAP-VIEW",
-     "R-SP-CAPTION-GAP"
-    ]
-   },
-   {
     "decl": "typography/fontSize:14 @ apps/mobile/src/features/my/screens/FixedCostScreen.tsx:135",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "spacing/paddingBottom:30 @ apps/mobile/src/features/my/screens/FixedCostScreen.tsx:142",
-    "rules": [
-     "R-SP-SCROLL-END",
-     "R-SP-EMPTY-STATE"
     ]
    },
    {
@@ -2139,22 +1801,6 @@
     ]
    },
    {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/my/screens/FixedCostScreen.tsx:169",
-    "rules": [
-     "R-TY-SIZE-15-CONTROL",
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "spacing/paddingBottom:40 @ apps/mobile/src/features/my/screens/MyAccountScreen.tsx:51",
-    "rules": [
-     "R-SP-SCROLL-END",
-     "R-SP-EMPTY-STATE"
-    ]
-   },
-   {
     "decl": "typography/fontSize:18 @ apps/mobile/src/features/my/screens/MyAccountScreen.tsx:58",
     "rules": [
      "R-TY-SIZE-PRIM",
@@ -2166,31 +1812,6 @@
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/my/screens/MyAccountScreen.tsx:64",
-    "rules": [
-     "R-TY-SIZE-15-PROSE",
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/my/screens/MyAccountScreen.tsx:74",
-    "rules": [
-     "R-TY-SIZE-15-PROSE",
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "spacing/paddingBottom:28 @ apps/mobile/src/features/my/screens/MyCategoryHubScreen.tsx:26",
-    "rules": [
-     "R-SP-SCROLL-END",
-     "R-SP-EMPTY-STATE"
     ]
    },
    {
@@ -2222,13 +1843,6 @@
     ]
    },
    {
-    "decl": "spacing/paddingBottom:32 @ apps/mobile/src/features/my/screens/MyChannelsScreen.tsx:69",
-    "rules": [
-     "R-SP-SCROLL-END",
-     "R-SP-EMPTY-STATE"
-    ]
-   },
-   {
     "decl": "size/minWidth:0 @ apps/mobile/src/features/my/screens/MyChannelsScreen.tsx:86",
     "rules": [
      "R-SZ-FLEX-RESET",
@@ -2250,13 +1864,6 @@
     ]
    },
    {
-    "decl": "spacing/marginTop:2 @ apps/mobile/src/features/my/screens/MyChannelsScreen.tsx:105",
-    "rules": [
-     "R-SP-CAPTION-GAP-VIEW",
-     "R-SP-CAPTION-GAP"
-    ]
-   },
-   {
     "decl": "typography/fontSize:14 @ apps/mobile/src/features/my/screens/MyChannelsScreen.tsx:107",
     "rules": [
      "R-TY-SIZE-PRIM",
@@ -2275,13 +1882,6 @@
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "spacing/paddingBottom:28 @ apps/mobile/src/features/my/screens/MyHomeScreen.tsx:113",
-    "rules": [
-     "R-SP-SCROLL-END",
-     "R-SP-EMPTY-STATE"
     ]
    },
    {
@@ -2320,14 +1920,6 @@
     ]
    },
    {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/my/screens/MyHoursScreen.tsx:287",
-    "rules": [
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
     "decl": "typography/fontSize:13 @ apps/mobile/src/features/my/screens/MyHoursScreen.tsx:288",
     "rules": [
      "R-TY-SIZE-PRIM",
@@ -2342,25 +1934,9 @@
     ]
    },
    {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/my/screens/MyHoursScreen.tsx:317",
-    "rules": [
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
     "decl": "typography/fontSize:14 @ apps/mobile/src/features/my/screens/MyHoursScreen.tsx:320",
     "rules": [
      "R-TY-SIZE-PRIM",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/my/screens/MyHoursScreen.tsx:334",
-    "rules": [
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
@@ -2372,14 +1948,6 @@
     ]
    },
    {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/my/screens/MyHoursScreen.tsx:353",
-    "rules": [
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
     "decl": "typography/fontSize:16 @ apps/mobile/src/features/my/screens/MyHoursScreen.tsx:362",
     "rules": [
      "R-TY-SIZE-PRIM",
@@ -2387,50 +1955,9 @@
     ]
    },
    {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/my/screens/MyHoursScreen.tsx:383",
-    "rules": [
-     "R-TY-SIZE-15-CONTROL",
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/my/screens/MyHoursScreen.tsx:393",
-    "rules": [
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
     "decl": "typography/fontSize:16 @ apps/mobile/src/features/my/screens/MyHoursScreen.tsx:404",
     "rules": [
      "R-TY-SIZE-PRIM",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/my/screens/MyHoursScreen.tsx:412",
-    "rules": [
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/my/screens/MyHoursScreen.tsx:420",
-    "rules": [
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/my/screens/MyHoursScreen.tsx:437",
-    "rules": [
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
@@ -2449,43 +1976,9 @@
     ]
    },
    {
-    "decl": "spacing/paddingBottom:30 @ apps/mobile/src/features/my/screens/MyHoursScreen.tsx:481",
-    "rules": [
-     "R-SP-SCROLL-END",
-     "R-SP-EMPTY-STATE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/my/screens/MyHoursScreen.tsx:502",
-    "rules": [
-     "R-TY-SIZE-15-CONTROL",
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
     "decl": "typography/fontSize:14 @ apps/mobile/src/features/my/screens/MyHoursScreen.tsx:526",
     "rules": [
      "R-TY-SIZE-PRIM",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/my/screens/MyHoursScreen.tsx:543",
-    "rules": [
-     "R-TY-SIZE-15-CONTROL",
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/my/screens/MyHoursScreen.tsx:559",
-    "rules": [
-     "R-TY-SIZE-15-CONTROL",
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
@@ -2515,21 +2008,6 @@
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/my/screens/MyLanguageScreen.tsx:75",
-    "rules": [
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "spacing/paddingBottom:28 @ apps/mobile/src/features/my/screens/MyLanguageScreen.tsx:238",
-    "rules": [
-     "R-SP-SCROLL-END",
-     "R-SP-EMPTY-STATE"
     ]
    },
    {
@@ -2624,13 +2102,6 @@
     ]
    },
    {
-    "decl": "spacing/paddingBottom:28 @ apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx:86",
-    "rules": [
-     "R-SP-SCROLL-END",
-     "R-SP-EMPTY-STATE"
-    ]
-   },
-   {
     "decl": "typography/fontSize:14 @ apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx:107",
     "rules": [
      "R-TY-SIZE-PRIM",
@@ -2663,13 +2134,6 @@
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "spacing/paddingBottom:28 @ apps/mobile/src/features/my/screens/MyTaxScreen.tsx:147",
-    "rules": [
-     "R-SP-SCROLL-END",
-     "R-SP-EMPTY-STATE"
     ]
    },
    {
@@ -2708,21 +2172,6 @@
     ]
    },
    {
-    "decl": "spacing/paddingBottom:30 @ apps/mobile/src/features/my/screens/MyTaxScreen.tsx:249",
-    "rules": [
-     "R-SP-SCROLL-END",
-     "R-SP-EMPTY-STATE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/my/screens/MyTaxScreen.tsx:252",
-    "rules": [
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
     "decl": "typography/fontSize:16 @ apps/mobile/src/features/my/screens/MyTaxScreen.tsx:253",
     "rules": [
      "R-TY-SIZE-PRIM",
@@ -2748,13 +2197,6 @@
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "spacing/paddingBottom:28 @ apps/mobile/src/features/my/screens/MyUnitsScreen.tsx:153",
-    "rules": [
-     "R-SP-SCROLL-END",
-     "R-SP-EMPTY-STATE"
     ]
    },
    {
@@ -2814,13 +2256,6 @@
     ]
    },
    {
-    "decl": "spacing/paddingBottom:28 @ apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:91",
-    "rules": [
-     "R-SP-SCROLL-END",
-     "R-SP-EMPTY-STATE"
-    ]
-   },
-   {
     "decl": "typography/fontSize:16 @ apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:97",
     "rules": [
      "R-TY-SIZE-PRIM",
@@ -2860,34 +2295,6 @@
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "size/width:34 @ apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:129",
-    "rules": [
-     "R-SZ-CONTROL-SM-ADJACENT",
-     "R-SZ-CONTROL-SM"
-    ]
-   },
-   {
-    "decl": "size/height:34 @ apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:129",
-    "rules": [
-     "R-SZ-CONTROL-SM-ADJACENT",
-     "R-SZ-CONTROL-SM"
-    ]
-   },
-   {
-    "decl": "size/width:34 @ apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:132",
-    "rules": [
-     "R-SZ-CONTROL-SM-ADJACENT",
-     "R-SZ-CONTROL-SM"
-    ]
-   },
-   {
-    "decl": "size/height:34 @ apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:132",
-    "rules": [
-     "R-SZ-CONTROL-SM-ADJACENT",
-     "R-SZ-CONTROL-SM"
     ]
    },
    {
@@ -3003,13 +2410,6 @@
     ]
    },
    {
-    "decl": "spacing/paddingBottom:30 @ apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx:227",
-    "rules": [
-     "R-SP-SCROLL-END",
-     "R-SP-EMPTY-STATE"
-    ]
-   },
-   {
     "decl": "size/minWidth:0 @ apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx:258",
     "rules": [
      "R-SZ-FLEX-RESET",
@@ -3042,13 +2442,6 @@
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "spacing/paddingBottom:28 @ apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:261",
-    "rules": [
-     "R-SP-SCROLL-END",
-     "R-SP-EMPTY-STATE"
     ]
    },
    {
@@ -3091,13 +2484,6 @@
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "spacing/marginTop:2 @ apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:315",
-    "rules": [
-     "R-SP-CAPTION-GAP-VIEW",
-     "R-SP-CAPTION-GAP"
     ]
    },
    {
@@ -3444,60 +2830,38 @@
     ]
    },
    {
-    "decl": "spacing/paddingBottom:28 @ apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx:133",
-    "rules": [
-     "R-SP-SCROLL-END",
-     "R-SP-EMPTY-STATE"
-    ]
-   },
-   {
-    "decl": "spacing/paddingBottom:28 @ apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:113",
-    "rules": [
-     "R-SP-SCROLL-END",
-     "R-SP-EMPTY-STATE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:14 @ apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:114",
+    "decl": "typography/fontSize:14 @ apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:121",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
-    "decl": "size/minWidth:0 @ apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:137",
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:146",
     "rules": [
      "R-SZ-FLEX-RESET",
      "R-SZ-MINWIDTH"
     ]
    },
    {
-    "decl": "typography/fontSize:16 @ apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:138",
+    "decl": "typography/fontSize:16 @ apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:147",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
-    "decl": "typography/fontSize:14 @ apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:139",
+    "decl": "typography/fontSize:14 @ apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:148",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
-    "decl": "typography/fontSize:14 @ apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:157",
+    "decl": "typography/fontSize:14 @ apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:166",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "spacing/paddingBottom:96 @ apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:119",
-    "rules": [
-     "R-SP-SCROLL-END-FAB",
-     "R-SP-SCROLL-END",
-     "R-SP-EMPTY-STATE"
     ]
    },
    {
@@ -3505,13 +2869,6 @@
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "spacing/gap:10 @ apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:132",
-    "rules": [
-     "R-SP-MATERIAL-ACTION-GAP",
-     "R-SP-CONVERGE-SHRINK"
     ]
    },
    {
@@ -3533,34 +2890,6 @@
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "size/width:34 @ apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:143",
-    "rules": [
-     "R-SZ-CONTROL-SM-ADJACENT",
-     "R-SZ-CONTROL-SM"
-    ]
-   },
-   {
-    "decl": "size/height:34 @ apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:143",
-    "rules": [
-     "R-SZ-CONTROL-SM-ADJACENT",
-     "R-SZ-CONTROL-SM"
-    ]
-   },
-   {
-    "decl": "size/width:34 @ apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:146",
-    "rules": [
-     "R-SZ-CONTROL-SM-ADJACENT",
-     "R-SZ-CONTROL-SM"
-    ]
-   },
-   {
-    "decl": "size/height:34 @ apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:146",
-    "rules": [
-     "R-SZ-CONTROL-SM-ADJACENT",
-     "R-SZ-CONTROL-SM"
     ]
    },
    {
@@ -3610,13 +2939,6 @@
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "spacing/paddingBottom:32 @ apps/mobile/src/features/recipes/screens/MaterialSearchScreen.tsx:35",
-    "rules": [
-     "R-SP-SCROLL-END",
-     "R-SP-EMPTY-STATE"
     ]
    },
    {
@@ -3697,55 +3019,9 @@
     ]
    },
    {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx:105",
-    "rules": [
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx:106",
-    "rules": [
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx:107",
-    "rules": [
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx:108",
-    "rules": [
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "spacing/paddingBottom:32 @ apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx:142",
-    "rules": [
-     "R-SP-SCROLL-END",
-     "R-SP-EMPTY-STATE"
-    ]
-   },
-   {
     "decl": "typography/fontSize:13 @ apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx:159",
     "rules": [
      "R-TY-SIZE-PRIM",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:19 @ apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx:183",
-    "rules": [
-     "R-TY-SIZE-CONVERGE",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
@@ -3841,6 +3117,13 @@
     ]
    },
    {
+    "decl": "size/minWidth:44 @ apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:297",
+    "rules": [
+     "R-SZ-RECIPE-EDITOR-TOUCH",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
     "decl": "typography/fontSize:16 @ apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:298",
     "rules": [
      "R-TY-SIZE-PRIM",
@@ -3915,6 +3198,13 @@
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
+    ]
+   },
+   {
+    "decl": "spacing/padding:8 @ apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:354",
+    "rules": [
+     "R-SP-QUANTITY-TOUCH-ENVELOPE",
+     "R-SP-PRIM"
     ]
    },
    {
@@ -4037,13 +3327,6 @@
     ]
    },
    {
-    "decl": "spacing/paddingBottom:30 @ apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:453",
-    "rules": [
-     "R-SP-SCROLL-END",
-     "R-SP-EMPTY-STATE"
-    ]
-   },
-   {
     "decl": "typography/fontSize:16 @ apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:467",
     "rules": [
      "R-TY-SIZE-PRIM",
@@ -4100,13 +3383,6 @@
     ]
    },
    {
-    "decl": "spacing/paddingBottom:28 @ apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:169",
-    "rules": [
-     "R-SP-SCROLL-END",
-     "R-SP-EMPTY-STATE"
-    ]
-   },
-   {
     "decl": "typography/fontSize:20 @ apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:216",
     "rules": [
      "R-TY-SIZE-PRIM",
@@ -4117,14 +3393,6 @@
     "decl": "typography/fontSize:14 @ apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:226",
     "rules": [
      "R-TY-SIZE-PRIM",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:228",
-    "rules": [
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
@@ -4584,13 +3852,6 @@
     ]
    },
    {
-    "decl": "spacing/paddingBottom:32 @ apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx:77",
-    "rules": [
-     "R-SP-SCROLL-END",
-     "R-SP-EMPTY-STATE"
-    ]
-   },
-   {
     "decl": "size/minWidth:0 @ apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx:97",
     "rules": [
      "R-SZ-FLEX-RESET",
@@ -4703,14 +3964,6 @@
     ]
    },
    {
-    "decl": "spacing/paddingBottom:104 @ apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:192",
-    "rules": [
-     "R-SP-SCROLL-END-FAB",
-     "R-SP-SCROLL-END",
-     "R-SP-EMPTY-STATE"
-    ]
-   },
-   {
     "decl": "typography/fontSize:16 @ apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:219",
     "rules": [
      "R-TY-SIZE-PRIM",
@@ -4732,13 +3985,6 @@
     ]
    },
    {
-    "decl": "typography/fontSize:11 @ apps/mobile/src/features/sales/components/BusinessDayBar.tsx:56",
-    "rules": [
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
     "decl": "size/minWidth:0 @ apps/mobile/src/features/sales/components/BusinessDayBar.tsx:173",
     "rules": [
      "R-SZ-FLEX-RESET",
@@ -4753,32 +3999,9 @@
     ]
    },
    {
-    "decl": "typography/fontSize:12 @ apps/mobile/src/features/sales/components/BusinessDayBar.tsx:176",
-    "rules": [
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:12 @ apps/mobile/src/features/sales/components/BusinessDayBar.tsx:178",
-    "rules": [
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
     "decl": "typography/fontSize:16 @ apps/mobile/src/features/sales/components/BusinessDayBar.tsx:299",
     "rules": [
      "R-TY-SIZE-PRIM",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/sales/components/LateCloseSheet.tsx:74",
-    "rules": [
-     "R-TY-SIZE-15-CONTROL",
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
@@ -4951,59 +4174,6 @@
     ]
    },
    {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/sales/components/ProfitBlocks.tsx:85",
-    "rules": [
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:10 @ apps/mobile/src/features/sales/components/ProfitBlocks.tsx:90",
-    "rules": [
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/sales/components/ProfitBlocks.tsx:96",
-    "rules": [
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:12 @ apps/mobile/src/features/sales/components/ProfitBlocks.tsx:98",
-    "rules": [
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/sales/components/ProfitBlocks.tsx:127",
-    "rules": [
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/sales/components/ProfitBlocks.tsx:129",
-    "rules": [
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:12 @ apps/mobile/src/features/sales/components/ProfitBlocks.tsx:131",
-    "rules": [
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
     "decl": "typography/fontSize:13 @ apps/mobile/src/features/sales/components/ProfitBlocks.tsx:145",
     "rules": [
      "R-TY-SIZE-PRIM",
@@ -5018,48 +4188,9 @@
     ]
    },
    {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/sales/components/ProfitBlocks.tsx:173",
-    "rules": [
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:12 @ apps/mobile/src/features/sales/components/ProfitBlocks.tsx:174",
-    "rules": [
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/sales/components/ProfitBlocks.tsx:177",
-    "rules": [
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:12 @ apps/mobile/src/features/sales/components/ProfitBlocks.tsx:178",
-    "rules": [
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
     "decl": "typography/fontSize:14 @ apps/mobile/src/features/sales/components/ProfitBlocks.tsx:226",
     "rules": [
      "R-TY-SIZE-PRIM",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/sales/components/ProfitBlocks.tsx:241",
-    "rules": [
-     "R-TY-SIZE-15-CONTROL",
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
@@ -5078,39 +4209,9 @@
     ]
    },
    {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/sales/components/ProfitBlocks.tsx:362",
-    "rules": [
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
     "decl": "typography/fontSize:14 @ apps/mobile/src/features/sales/components/ProfitBlocks.tsx:363",
     "rules": [
      "R-TY-SIZE-PRIM",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:12 @ apps/mobile/src/features/sales/components/ProfitBlocks.tsx:365",
-    "rules": [
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/sales/components/ProfitBlocks.tsx:371",
-    "rules": [
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:12 @ apps/mobile/src/features/sales/components/ProfitBlocks.tsx:372",
-    "rules": [
-     "R-TY-SIZE-CONVERGE",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
@@ -5122,35 +4223,9 @@
     ]
    },
    {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/sales/components/ProfitBlocks.tsx:393",
-    "rules": [
-     "R-TY-SIZE-15-CONTROL",
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
     "decl": "typography/fontSize:18 @ apps/mobile/src/features/sales/components/SaleStepper.tsx:38",
     "rules": [
      "R-TY-SIZE-PRIM",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/sales/components/ShortageWarningSheet.tsx:44",
-    "rules": [
-     "R-TY-SIZE-15-PROSE",
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/sales/components/ShortageWarningSheet.tsx:63",
-    "rules": [
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
@@ -5180,22 +4255,6 @@
     "rules": [
      "R-SZ-FLEX-RESET",
      "R-SZ-MINWIDTH"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx:271",
-    "rules": [
-     "R-TY-SIZE-15-CONTROL",
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:12 @ apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx:272",
-    "rules": [
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
@@ -5248,21 +4307,6 @@
     ]
    },
    {
-    "decl": "spacing/paddingBottom:28 @ apps/mobile/src/features/sales/screens/SalesChannelScreen.tsx:68",
-    "rules": [
-     "R-SP-SCROLL-END",
-     "R-SP-EMPTY-STATE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/sales/screens/SalesChannelScreen.tsx:111",
-    "rules": [
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
     "decl": "typography/fontSize:16 @ apps/mobile/src/features/sales/screens/SalesDayDetailScreen.tsx:77",
     "rules": [
      "R-TY-SIZE-PRIM",
@@ -5274,13 +4318,6 @@
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "spacing/paddingBottom:28 @ apps/mobile/src/features/sales/screens/SalesDayFullScreen.tsx:80",
-    "rules": [
-     "R-SP-SCROLL-END",
-     "R-SP-EMPTY-STATE"
     ]
    },
    {
@@ -5410,13 +4447,6 @@
     ]
    },
    {
-    "decl": "spacing/paddingBottom:28 @ apps/mobile/src/features/sales/screens/SalesExpenseScreen.tsx:81",
-    "rules": [
-     "R-SP-SCROLL-END",
-     "R-SP-EMPTY-STATE"
-    ]
-   },
-   {
     "decl": "size/minWidth:0 @ apps/mobile/src/features/sales/screens/SalesExpenseScreen.tsx:98",
     "rules": [
      "R-SZ-FLEX-RESET",
@@ -5477,13 +4507,6 @@
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "spacing/paddingBottom:28 @ apps/mobile/src/features/sales/screens/SalesExtraScreen.tsx:52",
-    "rules": [
-     "R-SP-SCROLL-END",
-     "R-SP-EMPTY-STATE"
     ]
    },
    {
@@ -5564,13 +4587,6 @@
     ]
    },
    {
-    "decl": "spacing/paddingBottom:28 @ apps/mobile/src/features/sales/screens/SalesFixedScreen.tsx:72",
-    "rules": [
-     "R-SP-SCROLL-END",
-     "R-SP-EMPTY-STATE"
-    ]
-   },
-   {
     "decl": "typography/fontSize:14 @ apps/mobile/src/features/sales/screens/SalesFixedScreen.tsx:85",
     "rules": [
      "R-TY-SIZE-PRIM",
@@ -5648,13 +4664,6 @@
     ]
    },
    {
-    "decl": "typography/fontSize:11 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:393",
-    "rules": [
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
     "decl": "typography/fontSize:13 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:417",
     "rules": [
      "R-TY-SIZE-PRIM",
@@ -5683,217 +4692,178 @@
     ]
    },
    {
-    "decl": "typography/fontSize:14 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:457",
+    "decl": "typography/fontSize:14 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:456",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
-    "decl": "size/minWidth:0 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:492",
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:491",
     "rules": [
      "R-SZ-FLEX-RESET",
      "R-SZ-MINWIDTH"
     ]
    },
    {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:494",
-    "rules": [
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:12 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:497",
-    "rules": [
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:13 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:515",
+    "decl": "typography/fontSize:13 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:514",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:534",
+    "decl": "size/minWidth:44 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:531",
     "rules": [
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
+     "R-SZ-SALES-QUANTITY-ACTION",
+     "R-SZ-MINWIDTH"
     ]
    },
    {
-    "decl": "typography/fontSize:12 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:538",
-    "rules": [
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:14 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:553",
+    "decl": "typography/fontSize:14 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:552",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
-    "decl": "typography/fontSize:14 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:566",
+    "decl": "typography/fontSize:14 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:565",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
-    "decl": "typography/fontSize:16 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:572",
+    "decl": "typography/fontSize:16 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:571",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
-    "decl": "typography/fontSize:14 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:578",
+    "decl": "typography/fontSize:14 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:577",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
-    "decl": "size/minWidth:0 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:581",
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:580",
     "rules": [
      "R-SZ-FLEX-RESET",
      "R-SZ-MINWIDTH"
     ]
    },
    {
-    "decl": "typography/fontSize:16 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:582",
+    "decl": "typography/fontSize:16 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:581",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
-    "decl": "typography/fontSize:14 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:583",
+    "decl": "typography/fontSize:14 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:582",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
-    "decl": "typography/fontSize:16 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:590",
+    "decl": "typography/fontSize:16 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:589",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
-    "decl": "typography/fontSize:16 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:592",
+    "decl": "typography/fontSize:16 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:591",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
-    "decl": "typography/fontSize:14 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:596",
+    "decl": "typography/fontSize:14 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:595",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
-    "decl": "size/minWidth:0 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:614",
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:613",
     "rules": [
      "R-SZ-FLEX-RESET",
      "R-SZ-MINWIDTH"
     ]
    },
    {
-    "decl": "typography/fontSize:16 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:615",
+    "decl": "typography/fontSize:16 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:614",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
-    "decl": "typography/fontSize:13 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:617",
+    "decl": "typography/fontSize:13 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:616",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
-    "decl": "typography/fontSize:16 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:621",
+    "decl": "typography/fontSize:16 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:620",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:661",
-    "rules": [
-     "R-TY-SIZE-15-CONTROL",
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:14 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:669",
+    "decl": "typography/fontSize:14 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:668",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
-    "decl": "size/minWidth:0 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:682",
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:681",
     "rules": [
      "R-SZ-FLEX-RESET",
      "R-SZ-MINWIDTH"
     ]
    },
    {
-    "decl": "typography/fontSize:16 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:683",
+    "decl": "typography/fontSize:16 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:682",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
-    "decl": "typography/fontSize:14 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:684",
+    "decl": "typography/fontSize:14 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:683",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
-    "decl": "typography/fontSize:16 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:686",
+    "decl": "typography/fontSize:16 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:685",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
-    "decl": "typography/fontSize:14 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:704",
+    "decl": "typography/fontSize:14 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:703",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
-    "decl": "typography/fontSize:14 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:770",
+    "decl": "typography/fontSize:14 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:769",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "spacing/paddingBottom:28 @ apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx:58",
-    "rules": [
-     "R-SP-SCROLL-END",
-     "R-SP-EMPTY-STATE"
     ]
    },
    {
@@ -6016,13 +4986,6 @@
     ]
    },
    {
-    "decl": "spacing/paddingBottom:28 @ apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx:159",
-    "rules": [
-     "R-SP-SCROLL-END",
-     "R-SP-EMPTY-STATE"
-    ]
-   },
-   {
     "decl": "typography/fontSize:20 @ apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx:172",
     "rules": [
      "R-TY-SIZE-PRIM",
@@ -6034,29 +4997,6 @@
     "rules": [
      "R-SZ-FLEX-RESET",
      "R-SZ-MINWIDTH"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx:186",
-    "rules": [
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:12 @ apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx:187",
-    "rules": [
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx:189",
-    "rules": [
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
     ]
    },
    {
@@ -6207,14 +5147,6 @@
     ]
    },
    {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:207",
-    "rules": [
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
     "decl": "typography/fontSize:16 @ apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:208",
     "rules": [
      "R-TY-SIZE-PRIM",
@@ -6239,14 +5171,6 @@
     "decl": "typography/fontSize:16 @ apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:249",
     "rules": [
      "R-TY-SIZE-PRIM",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:251",
-    "rules": [
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
@@ -6335,14 +5259,6 @@
     ]
    },
    {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:376",
-    "rules": [
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
     "decl": "size/minWidth:0 @ apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:393",
     "rules": [
      "R-SZ-FLEX-RESET",
@@ -6374,29 +5290,6 @@
     "decl": "typography/fontSize:14 @ apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:443",
     "rules": [
      "R-TY-SIZE-PRIM",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "spacing/paddingBottom:28 @ apps/mobile/src/features/sales/screens/SalesRevenueScreen.tsx:54",
-    "rules": [
-     "R-SP-SCROLL-END",
-     "R-SP-EMPTY-STATE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/sales/screens/SalesRevenueScreen.tsx:81",
-    "rules": [
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/sales/screens/SalesRevenueScreen.tsx:82",
-    "rules": [
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
      "R-TY-SIZE-OFFSCALE"
     ]
    },
@@ -6520,13 +5413,6 @@
     ]
    },
    {
-    "decl": "spacing/paddingBottom:28 @ apps/mobile/src/features/sales/screens/SalesStockCheckScreen.tsx:67",
-    "rules": [
-     "R-SP-SCROLL-END",
-     "R-SP-EMPTY-STATE"
-    ]
-   },
-   {
     "decl": "typography/fontSize:16 @ apps/mobile/src/features/sales/screens/SalesStockCheckScreen.tsx:77",
     "rules": [
      "R-TY-SIZE-PRIM",
@@ -6555,55 +5441,10 @@
     ]
    },
    {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/sales/screens/SalesStockCheckScreen.tsx:106",
-    "rules": [
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:12 @ apps/mobile/src/features/sales/screens/SalesStockCheckScreen.tsx:115",
-    "rules": [
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:12 @ apps/mobile/src/features/sales/screens/SalesStockCheckScreen.tsx:121",
-    "rules": [
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
     "decl": "typography/fontSize:14 @ apps/mobile/src/features/sales/screens/SalesStockCheckScreen.tsx:138",
     "rules": [
      "R-TY-SIZE-PRIM",
      "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "typography/fontSize:15 @ apps/mobile/src/features/sales/screens/SalesStockCheckScreen.tsx:154",
-    "rules": [
-     "R-TY-SIZE-15-CONTROL",
-     "R-TY-SIZE-15-LABEL",
-     "R-TY-SIZE-CONVERGE",
-     "R-TY-SIZE-OFFSCALE"
-    ]
-   },
-   {
-    "decl": "spacing/paddingBottom:28 @ apps/mobile/src/features/sales/screens/SalesTaxScreen.tsx:54",
-    "rules": [
-     "R-SP-SCROLL-END",
-     "R-SP-EMPTY-STATE"
-    ]
-   },
-   {
-    "decl": "spacing/paddingBottom:28 @ apps/mobile/src/features/sales/screens/SalesWasteScreen.tsx:53",
-    "rules": [
-     "R-SP-SCROLL-END",
-     "R-SP-EMPTY-STATE"
     ]
    },
    {
@@ -6628,55 +5469,7 @@
     ]
    }
   ],
-  "binMovementLedger": {
-   "previousMap": "full-page-flow-prototype-app-token-map.json",
-   "previousMapSha256": "b97bb71b9426e0a8ba85c3c3ec1fa6f086d1c1c3d7197e4497a9ad4c8be83b62",
-   "moves": {
-    "defect → componentOwned": {
-     "count": 1,
-     "rules": {
-      "R-SP-CONVERGE-SHRINK → R-SP-MATERIAL-ACTION-GAP": 1
-     }
-    }
-   },
-   "reconciliation": {
-    "primitive": {
-     "이전": 2063,
-     "나감": 0,
-     "들어옴": 0,
-     "계산": 2063,
-     "실제": 2063
-    },
-    "componentOwned": {
-     "이전": 227,
-     "나감": 0,
-     "들어옴": 1,
-     "계산": 228,
-     "실제": 228
-    },
-    "defect": {
-     "이전": 1306,
-     "나감": 1,
-     "들어옴": 0,
-     "계산": 1305,
-     "실제": 1305
-    },
-    "pendingApproval": {
-     "이전": 50,
-     "나감": 0,
-     "들어옴": 0,
-     "계산": 50,
-     "실제": 50
-    },
-    "approvedException": {
-     "이전": 0,
-     "나감": 0,
-     "들어옴": 0,
-     "계산": 0,
-     "실제": 0
-    }
-   }
-  },
+  "binMovementLedger": null,
   "openQuestions": [
    {
     "id": "R-SP-CAPTION-GAP-VIEW",
@@ -6702,15 +5495,15 @@
    {
     "id": "R-TY-SIZE-OFFSCALE",
     "question": "스케일에도 수렴표에도 없는 글자 크기 12.5 · 13.5 · 14.5 · 17 · 25 를 어디로 보낼지.",
-    "declarations": 10,
-    "evidence": "10건. 13.5(6) 이 가장 많고 MyHoursScreen:348 같은 보조 설명에 쓰인다. 소수점 크기는 스케일에 없던 값이라 프로토타입 감사에서도 나오지 않았다 — 앱에만 있는 값이다.",
+    "declarations": 9,
+    "evidence": "9건. 13.5(6)이 가장 많고, 나머지는 17·14.5·25가 각 1건이다. 소수점 크기는 스케일에 없던 값이라 프로토타입 감사에서도 나오지 않았다 — 앱에만 있는 값이다.",
     "ownerDecision": "13 으로 내릴지 14 로 올릴지가 폭에 영향을 주므로 `S3a`/`S3b` 배정이 갈린다."
    },
    {
     "id": "R-CL-NEAR-PALETTE",
     "question": "팔레트 값 바로 옆에 있는 색 셋을 팔레트로 당길지.",
-    "declarations": 4,
-    "evidence": "4건. #D5DAE0(MyNotificationsScreen:32 스위치 off 트랙)은 gray.300 #D5DBE1 과 **1비트 차이**다 — 오타에 가깝다. #B0B8C1(_layout.tsx:25 비활성 탭 아이콘, 2건)은 ink.300 #8B95A1 과 gray.300 사이에 있다. #FFF9F0(MyVendorsScreen:93 그룹 카드 배경)은 amber.tint #FFF4E5 옆이고 테두리는 이미 amberTint 토큰을 쓴다.",
+    "declarations": 3,
+    "evidence": "3건. #D5DAE0(MyNotificationsScreen 스위치 off 트랙)은 gray.300 #D5DBE1과 1비트 차이다. #B0B8C1은 비활성 탭 아이콘 1건, #FFF9F0은 MyVendorsScreen 그룹 카드 배경 1건이다. S2 뒤 전수 재측정값이다.",
     "ownerDecision": "팔레트 수렴은 D-1′(팔레트 AA 수렴)과 같은 결정면이라 함께 올린다."
    },
    {
@@ -6722,6 +5515,32 @@
    }
   ],
   "perRule": [
+   {
+    "id": "R-SP-QUANTITY-TOUCH-ENVELOPE",
+    "bin": "componentOwned",
+    "declarations": 2,
+    "name": "COMPONENT.quantityStepper.touchEnvelope",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "padding:8",
+      1
+     ],
+     [
+      "margin:-8",
+      1
+     ]
+    ]
+   },
    {
     "id": "R-SP-PRIM",
     "bin": "primitive",
@@ -6811,82 +5630,10 @@
     ]
    },
    {
-    "id": "R-SP-CAPTION-GAP",
-    "bin": "defect",
-    "declarations": 69,
-    "name": null,
-    "target": 4,
-    "openDecision": null,
-    "executionStage": "S3a",
-    "axis": "vertical",
-    "targetSource": "targetValue",
-    "declaredDelta": "grow",
-    "computedDelta": "grow",
-    "targetResolved": 69,
-    "targetDerived": 0,
-    "transitions": {
-     "2→4": 69
-    },
-    "values": [
-     [
-      "marginTop:2",
-      69
-     ]
-    ]
-   },
-   {
-    "id": "R-SP-BADGE-PAD",
-    "bin": "defect",
-    "declarations": 2,
-    "name": null,
-    "target": "space.4",
-    "openDecision": null,
-    "executionStage": "S3a",
-    "axis": "vertical",
-    "targetSource": "targetValue",
-    "declaredDelta": "grow",
-    "computedDelta": "grow",
-    "targetResolved": 2,
-    "targetDerived": 0,
-    "transitions": {
-     "2→4": 2
-    },
-    "values": [
-     [
-      "paddingVertical:2",
-      2
-     ]
-    ]
-   },
-   {
-    "id": "R-SP-SCROLL-TOP",
-    "bin": "defect",
-    "declarations": 17,
-    "name": null,
-    "target": "`scrollStart` — 값은 `scrollEnd` 와 같은 봉투에서 `S4` 에 파생한다",
-    "openDecision": null,
-    "executionStage": "S4",
-    "axis": "derived",
-    "targetSource": "targetDerived",
-    "declaredDelta": "unknown",
-    "computedDelta": "unknown",
-    "targetResolved": 0,
-    "targetDerived": 17,
-    "transitions": {
-     "derived": 17
-    },
-    "values": [
-     [
-      "paddingTop:2",
-      17
-     ]
-    ]
-   },
-   {
     "id": "R-SP-TABBAR-INSET",
     "bin": "componentOwned",
     "declarations": 1,
-    "name": "tabBar.topInset",
+    "name": "COMPONENT.tabBar.topInset",
     "target": null,
     "openDecision": null,
     "executionStage": null,
@@ -6900,6 +5647,28 @@
     "values": [
      [
       "paddingTop:2",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SP-ROW-OVERFLOW-TOUCH-BOX",
+    "bin": "componentOwned",
+    "declarations": 1,
+    "name": "COMPONENT.rowOverflowAction.touchBox",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "marginHorizontal:-8.5",
       1
      ]
     ]
@@ -6953,62 +5722,9 @@
     ]
    },
    {
-    "id": "R-SP-GAP-LABEL-CHEVRON",
-    "bin": "defect",
-    "declarations": 8,
-    "name": null,
-    "target": "8 (`gap.inline`)",
-    "openDecision": null,
-    "executionStage": "S3b",
-    "axis": "horizontal",
-    "targetSource": "targetValue",
-    "declaredDelta": "grow",
-    "computedDelta": "grow",
-    "targetResolved": 8,
-    "targetDerived": 0,
-    "transitions": {
-     "2→8": 5,
-     "1→8": 3
-    },
-    "values": [
-     [
-      "gap:2",
-      5
-     ],
-     [
-      "gap:1",
-      3
-     ]
-    ]
-   },
-   {
-    "id": "R-SP-GAP-SEGMENT",
-    "bin": "defect",
-    "declarations": 1,
-    "name": null,
-    "target": "8 (`gap.inline`)",
-    "openDecision": null,
-    "executionStage": "S3b",
-    "axis": "horizontal",
-    "targetSource": "targetValue",
-    "declaredDelta": "grow",
-    "computedDelta": "grow",
-    "targetResolved": 1,
-    "targetDerived": 0,
-    "transitions": {
-     "2→8": 1
-    },
-    "values": [
-     [
-      "gap:2",
-      1
-     ]
-    ]
-   },
-   {
     "id": "R-SP-GAP-CONTROL-CLUSTER",
     "bin": "componentOwned",
-    "declarations": 2,
+    "declarations": 1,
     "name": "gap.controlCluster",
     "target": null,
     "openDecision": null,
@@ -7023,58 +5739,6 @@
     "values": [
      [
       "gap:2",
-      2
-     ]
-    ]
-   },
-   {
-    "id": "R-SP-QUANTITY-TOUCH-ENVELOPE",
-    "bin": "componentOwned",
-    "declarations": 2,
-    "name": "COMPONENT.quantityStepper.touchEnvelope",
-    "target": null,
-    "openDecision": null,
-    "executionStage": null,
-    "axis": null,
-    "targetSource": null,
-    "declaredDelta": null,
-    "computedDelta": null,
-    "targetResolved": 0,
-    "targetDerived": 0,
-    "transitions": {},
-    "values": [
-     [
-      "padding:7",
-      1
-     ],
-     [
-      "margin:-7",
-      1
-     ]
-    ]
-   },
-   {
-    "id": "R-SP-ROW-OVERFLOW-TOUCH-BOX",
-    "bin": "componentOwned",
-    "declarations": 2,
-    "name": "COMPONENT.rowOverflowAction.touchBox",
-    "target": null,
-    "openDecision": null,
-    "executionStage": null,
-    "axis": null,
-    "targetSource": null,
-    "declaredDelta": null,
-    "computedDelta": null,
-    "targetResolved": 0,
-    "targetDerived": 0,
-    "transitions": {},
-    "values": [
-     [
-      "marginHorizontal:-9",
-      1
-     ],
-     [
-      "marginVertical:-2",
       1
      ]
     ]
@@ -7150,30 +5814,6 @@
     ]
    },
    {
-    "id": "R-SP-SECTION-LABEL-BOTTOM",
-    "bin": "defect",
-    "declarations": 3,
-    "name": null,
-    "target": "space.xs (4)",
-    "openDecision": null,
-    "executionStage": "S3a",
-    "axis": "vertical",
-    "targetSource": "targetValue",
-    "declaredDelta": "grow",
-    "computedDelta": "grow",
-    "targetResolved": 3,
-    "targetDerived": 0,
-    "transitions": {
-     "2→4": 3
-    },
-    "values": [
-     [
-      "paddingBottom:2",
-      3
-     ]
-    ]
-   },
-   {
     "id": "R-SP-DIVIDER-INSET",
     "bin": "componentOwned",
     "declarations": 1,
@@ -7218,28 +5858,6 @@
     ]
    },
    {
-    "id": "R-SP-ICON-BUTTON-PAD",
-    "bin": "componentOwned",
-    "declarations": 1,
-    "name": "iconButton.padding",
-    "target": null,
-    "openDecision": null,
-    "executionStage": null,
-    "axis": null,
-    "targetSource": null,
-    "declaredDelta": null,
-    "computedDelta": null,
-    "targetResolved": 0,
-    "targetDerived": 0,
-    "transitions": {},
-    "values": [
-     [
-      "padding:2",
-      1
-     ]
-    ]
-   },
-   {
     "id": "R-SP-UNIT-NUDGE",
     "bin": "componentOwned",
     "declarations": 1,
@@ -7258,381 +5876,6 @@
      [
       "marginLeft:1",
       1
-     ]
-    ]
-   },
-   {
-    "id": "R-SP-MATERIAL-ACTION-GAP",
-    "bin": "componentOwned",
-    "declarations": 1,
-    "name": "COMPONENT.materialManage.rowActionGap",
-    "target": null,
-    "openDecision": null,
-    "executionStage": null,
-    "axis": null,
-    "targetSource": null,
-    "declaredDelta": null,
-    "computedDelta": null,
-    "targetResolved": 0,
-    "targetDerived": 0,
-    "transitions": {},
-    "values": [
-     [
-      "gap:10",
-      1
-     ]
-    ]
-   },
-   {
-    "id": "R-SP-CONVERGE-SHRINK",
-    "bin": "defect",
-    "declarations": 551,
-    "name": null,
-    "target": "프로토타입 매핑표 converge.space (5→4 · 9→8 · 10→8 · 13→12 · 14→12 · 15→12)",
-    "openDecision": null,
-    "executionStage": "S3a",
-    "axis": "both",
-    "targetSource": "protoConverge",
-    "declaredDelta": "shrink",
-    "computedDelta": "shrink",
-    "targetResolved": 551,
-    "targetDerived": 0,
-    "transitions": {
-     "14→12": 110,
-     "15→12": 125,
-     "5→4": 39,
-     "9→8": 54,
-     "10→8": 123,
-     "13→12": 100
-    },
-    "values": [
-     [
-      "paddingHorizontal:15",
-      95
-     ],
-     [
-      "paddingVertical:13",
-      66
-     ],
-     [
-      "gap:10",
-      46
-     ],
-     [
-      "paddingHorizontal:14",
-      44
-     ],
-     [
-      "paddingVertical:14",
-      25
-     ],
-     [
-      "gap:5",
-      20
-     ],
-     [
-      "paddingVertical:9",
-      18
-     ],
-     [
-      "paddingVertical:10",
-      18
-     ],
-     [
-      "gap:9",
-      17
-     ],
-     [
-      "marginBottom:10",
-      17
-     ],
-     [
-      "marginBottom:14",
-      14
-     ],
-     [
-      "paddingBottom:15",
-      14
-     ]
-    ]
-   },
-   {
-    "id": "R-SP-CONVERGE-GROW-V",
-    "bin": "defect",
-    "declarations": 90,
-    "name": null,
-    "target": "4 (값 3) · 8 (값 6·7)",
-    "openDecision": null,
-    "executionStage": "S3a",
-    "axis": "vertical",
-    "targetSource": "protoConverge",
-    "declaredDelta": "grow",
-    "computedDelta": "grow",
-    "targetResolved": 90,
-    "targetDerived": 0,
-    "transitions": {
-     "7→8": 18,
-     "3→4": 46,
-     "6→8": 26
-    },
-    "values": [
-     [
-      "marginTop:3",
-      42
-     ],
-     [
-      "marginTop:6",
-      9
-     ],
-     [
-      "marginBottom:6",
-      8
-     ],
-     [
-      "paddingTop:6",
-      8
-     ],
-     [
-      "marginTop:7",
-      7
-     ],
-     [
-      "paddingVertical:7",
-      6
-     ],
-     [
-      "marginBottom:7",
-      4
-     ],
-     [
-      "paddingVertical:3",
-      3
-     ],
-     [
-      "gap:3",
-      1
-     ],
-     [
-      "paddingTop:7",
-      1
-     ],
-     [
-      "paddingBottom:6",
-      1
-     ]
-    ]
-   },
-   {
-    "id": "R-SP-CONVERGE-GROW-H",
-    "bin": "defect",
-    "declarations": 109,
-    "name": null,
-    "target": "4 (값 3) · 8 (값 6·7)",
-    "openDecision": null,
-    "executionStage": "S3b",
-    "axis": "horizontal",
-    "targetSource": "protoConverge",
-    "declaredDelta": "grow",
-    "computedDelta": "grow",
-    "targetResolved": 109,
-    "targetDerived": 0,
-    "transitions": {
-     "6→8": 77,
-     "7→8": 27,
-     "3→4": 5
-    },
-    "values": [
-     [
-      "gap:6",
-      70
-     ],
-     [
-      "gap:7",
-      20
-     ],
-     [
-      "gap:3",
-      5
-     ],
-     [
-      "paddingHorizontal:7",
-      4
-     ],
-     [
-      "paddingHorizontal:6",
-      2
-     ],
-     [
-      "marginLeft:7",
-      2
-     ],
-     [
-      "marginRight:6",
-      2
-     ],
-     [
-      "paddingRight:6",
-      1
-     ],
-     [
-      "marginHorizontal:7",
-      1
-     ],
-     [
-      "marginHorizontal:6",
-      1
-     ],
-     [
-      "marginLeft:6",
-      1
-     ]
-    ]
-   },
-   {
-    "id": "R-SP-CONVERGE-11-V",
-    "bin": "defect",
-    "declarations": 78,
-    "name": null,
-    "target": "12 (`space.md`)",
-    "openDecision": null,
-    "executionStage": "S3a",
-    "axis": "vertical",
-    "targetSource": "targetValue",
-    "declaredDelta": "grow",
-    "computedDelta": "grow",
-    "targetResolved": 78,
-    "targetDerived": 0,
-    "transitions": {
-     "11→12": 78
-    },
-    "values": [
-     [
-      "paddingVertical:11",
-      31
-     ],
-     [
-      "gap:11",
-      16
-     ],
-     [
-      "paddingBottom:11",
-      10
-     ],
-     [
-      "marginBottom:11",
-      9
-     ],
-     [
-      "marginTop:11",
-      6
-     ],
-     [
-      "paddingTop:11",
-      6
-     ]
-    ]
-   },
-   {
-    "id": "R-SP-CONVERGE-11-H",
-    "bin": "defect",
-    "declarations": 8,
-    "name": null,
-    "target": "12 (`space.md`)",
-    "openDecision": null,
-    "executionStage": "S3b",
-    "axis": "horizontal",
-    "targetSource": "targetValue",
-    "declaredDelta": "grow",
-    "computedDelta": "grow",
-    "targetResolved": 8,
-    "targetDerived": 0,
-    "transitions": {
-     "11→12": 8
-    },
-    "values": [
-     [
-      "gap:11",
-      7
-     ],
-     [
-      "paddingLeft:11",
-      1
-     ]
-    ]
-   },
-   {
-    "id": "R-SP-CONVERGE-18",
-    "bin": "defect",
-    "declarations": 27,
-    "name": null,
-    "target": "16 (`space.lg`)",
-    "openDecision": null,
-    "executionStage": "S3a",
-    "axis": "both",
-    "targetSource": "targetValue",
-    "declaredDelta": "shrink",
-    "computedDelta": "shrink",
-    "targetResolved": 27,
-    "targetDerived": 0,
-    "transitions": {
-     "18→16": 27
-    },
-    "values": [
-     [
-      "marginTop:18",
-      14
-     ],
-     [
-      "marginBottom:18",
-      4
-     ],
-     [
-      "gap:18",
-      3
-     ],
-     [
-      "paddingVertical:18",
-      2
-     ],
-     [
-      "paddingRight:18",
-      1
-     ],
-     [
-      "paddingTop:18",
-      1
-     ],
-     [
-      "paddingBottom:18",
-      1
-     ],
-     [
-      "paddingHorizontal:18",
-      1
-     ]
-    ]
-   },
-   {
-    "id": "R-SP-CONVERGE-22",
-    "bin": "defect",
-    "declarations": 6,
-    "name": null,
-    "target": "24 (`space.xxl`)",
-    "openDecision": null,
-    "executionStage": "S3b",
-    "axis": "horizontal",
-    "targetSource": "targetValue",
-    "declaredDelta": "grow",
-    "computedDelta": "grow",
-    "targetResolved": 6,
-    "targetDerived": 0,
-    "transitions": {
-     "22→24": 6
-    },
-    "values": [
-     [
-      "gap:22",
-      6
      ]
     ]
    },
@@ -7663,74 +5906,6 @@
      [
       "paddingRight:0",
       1
-     ]
-    ]
-   },
-   {
-    "id": "R-SP-SCROLL-END-FAB",
-    "bin": "defect",
-    "declarations": 3,
-    "name": null,
-    "target": "scrollEnd.fab",
-    "openDecision": null,
-    "executionStage": "S4",
-    "axis": "derived",
-    "targetSource": "targetDerived",
-    "declaredDelta": "unknown",
-    "computedDelta": "unknown",
-    "targetResolved": 0,
-    "targetDerived": 3,
-    "transitions": {
-     "derived": 3
-    },
-    "values": [
-     [
-      "paddingBottom:104",
-      2
-     ],
-     [
-      "paddingBottom:96",
-      1
-     ]
-    ]
-   },
-   {
-    "id": "R-SP-SCROLL-END",
-    "bin": "defect",
-    "declarations": 44,
-    "name": null,
-    "target": "scrollEnd",
-    "openDecision": null,
-    "executionStage": "S4",
-    "axis": "derived",
-    "targetSource": "targetDerived",
-    "declaredDelta": "unknown",
-    "computedDelta": "unknown",
-    "targetResolved": 0,
-    "targetDerived": 44,
-    "transitions": {
-     "derived": 44
-    },
-    "values": [
-     [
-      "paddingBottom:28",
-      24
-     ],
-     [
-      "paddingBottom:30",
-      12
-     ],
-     [
-      "paddingBottom:32",
-      4
-     ],
-     [
-      "paddingBottom:40",
-      2
-     ],
-     [
-      "paddingBottom:26",
-      2
      ]
     ]
    },
@@ -7901,120 +6076,9 @@
     ]
    },
    {
-    "id": "R-TY-SIZE-15-CONTROL",
-    "bin": "defect",
-    "declarations": 12,
-    "name": null,
-    "target": "16 (`TYPE.body`)",
-    "openDecision": null,
-    "executionStage": "S3b",
-    "axis": "both",
-    "targetSource": "targetValue",
-    "declaredDelta": "grow",
-    "computedDelta": "grow",
-    "targetResolved": 12,
-    "targetDerived": 0,
-    "transitions": {
-     "15→16": 12
-    },
-    "values": [
-     [
-      "fontSize:15",
-      12
-     ]
-    ]
-   },
-   {
-    "id": "R-TY-SIZE-15-PROSE",
-    "bin": "defect",
-    "declarations": 4,
-    "name": null,
-    "target": "16 (`TYPE.body`)",
-    "openDecision": null,
-    "executionStage": "S3b",
-    "axis": "both",
-    "targetSource": "targetValue",
-    "declaredDelta": "grow",
-    "computedDelta": "grow",
-    "targetResolved": 4,
-    "targetDerived": 0,
-    "transitions": {
-     "15→16": 4
-    },
-    "values": [
-     [
-      "fontSize:15",
-      4
-     ]
-    ]
-   },
-   {
-    "id": "R-TY-SIZE-15-LABEL",
-    "bin": "defect",
-    "declarations": 48,
-    "name": null,
-    "target": "14 (`TYPE.caption`)",
-    "openDecision": null,
-    "executionStage": "S3a",
-    "axis": "both",
-    "targetSource": "targetValue",
-    "declaredDelta": "shrink",
-    "computedDelta": "shrink",
-    "targetResolved": 48,
-    "targetDerived": 0,
-    "transitions": {
-     "15→14": 48
-    },
-    "values": [
-     [
-      "fontSize:15",
-      48
-     ]
-    ]
-   },
-   {
-    "id": "R-TY-SIZE-CONVERGE",
-    "bin": "defect",
-    "declarations": 32,
-    "name": null,
-    "target": "프로토타입 매핑표 converge.typeSize",
-    "openDecision": null,
-    "executionStage": "S3b",
-    "axis": "both",
-    "targetSource": "protoConverge",
-    "declaredDelta": "grow",
-    "computedDelta": "grow",
-    "targetResolved": 32,
-    "targetDerived": 0,
-    "transitions": {
-     "12→13": 27,
-     "19→20": 2,
-     "11→13": 2,
-     "10→13": 1
-    },
-    "values": [
-     [
-      "fontSize:12",
-      27
-     ],
-     [
-      "fontSize:19",
-      2
-     ],
-     [
-      "fontSize:11",
-      2
-     ],
-     [
-      "fontSize:10",
-      1
-     ]
-    ]
-   },
-   {
     "id": "R-TY-SIZE-OFFSCALE",
     "bin": "pendingApproval",
-    "declarations": 10,
+    "declarations": 9,
     "name": null,
     "target": null,
     "openDecision": null,
@@ -8032,10 +6096,6 @@
       6
      ],
      [
-      "fontSize:12.5",
-      1
-     ],
-     [
       "fontSize:17",
       1
      ],
@@ -8045,87 +6105,6 @@
      ],
      [
       "fontSize:25",
-      1
-     ]
-    ]
-   },
-   {
-    "id": "R-TY-LINEHEIGHT-IMPLICIT",
-    "bin": "defect",
-    "declarations": 1,
-    "name": null,
-    "target": "TYPE.caption.lineHeight = 20",
-    "openDecision": null,
-    "executionStage": "S3a",
-    "axis": "vertical",
-    "targetSource": "targetValue",
-    "declaredDelta": "same",
-    "computedDelta": "same",
-    "targetResolved": 1,
-    "targetDerived": 0,
-    "transitions": {
-     "20→20": 1
-    },
-    "values": [
-     [
-      "lineHeight:20",
-      1
-     ]
-    ]
-   },
-   {
-    "id": "R-TY-LINEHEIGHT",
-    "bin": "defect",
-    "declarations": 65,
-    "name": null,
-    "target": "같은 스타일 객체의 fontSize → 사용자 확정 TYPE 절대 lineHeight",
-    "openDecision": null,
-    "executionStage": "S3a",
-    "axis": "vertical",
-    "targetSource": "targetDerived",
-    "declaredDelta": "mixed",
-    "computedDelta": "mixed",
-    "targetResolved": 65,
-    "targetDerived": 0,
-    "transitions": {
-     "22→22": 4,
-     "20→20": 48,
-     "17→18": 1,
-     "23→22": 3,
-     "20→22": 1,
-     "17→22": 1,
-     "16→18": 1,
-     "19→18": 2,
-     "19→20": 2,
-     "21→20": 2
-    },
-    "values": [
-     [
-      "lineHeight:20",
-      49
-     ],
-     [
-      "lineHeight:22",
-      4
-     ],
-     [
-      "lineHeight:19",
-      4
-     ],
-     [
-      "lineHeight:23",
-      3
-     ],
-     [
-      "lineHeight:17",
-      2
-     ],
-     [
-      "lineHeight:21",
-      2
-     ],
-     [
-      "lineHeight:16",
       1
      ]
     ]
@@ -8149,49 +6128,6 @@
      [
       "minWidth:0",
       65
-     ]
-    ]
-   },
-   {
-    "id": "R-SZ-SPACER",
-    "bin": "defect",
-    "declarations": 6,
-    "name": null,
-    "target": "`space.*` — 12→12 · 24→24 · 16→16 · **9→8**",
-    "openDecision": null,
-    "executionStage": "S3a",
-    "axis": "both",
-    "targetSource": "targetMap",
-    "declaredDelta": "mixed",
-    "computedDelta": "mixed",
-    "targetResolved": 6,
-    "targetDerived": 0,
-    "transitions": {
-     "12→12": 2,
-     "24→24": 1,
-     "9→8": 2,
-     "16→16": 1
-    },
-    "values": [
-     [
-      "height:9",
-      2
-     ],
-     [
-      "width:12",
-      1
-     ],
-     [
-      "height:12",
-      1
-     ],
-     [
-      "height:24",
-      1
-     ],
-     [
-      "width:16",
-      1
      ]
     ]
    },
@@ -8256,50 +6192,6 @@
     ]
    },
    {
-    "id": "R-SZ-ROW-MINH",
-    "bin": "defect",
-    "declarations": 8,
-    "name": null,
-    "target": "ListRow 역할별 `rowMinHeight` 60/76",
-    "openDecision": null,
-    "executionStage": "S4",
-    "axis": "vertical",
-    "targetSource": "targetMap",
-    "declaredDelta": "mixed",
-    "computedDelta": "mixed",
-    "targetResolved": 8,
-    "targetDerived": 0,
-    "transitions": {
-     "72→76": 3,
-     "55→60": 2,
-     "56→60": 1,
-     "70→76": 1,
-     "82→76": 1
-    },
-    "values": [
-     [
-      "minHeight:72",
-      3
-     ],
-     [
-      "minHeight:55",
-      2
-     ],
-     [
-      "minHeight:56",
-      1
-     ],
-     [
-      "minHeight:70",
-      1
-     ],
-     [
-      "minHeight:82",
-      1
-     ]
-    ]
-   },
-   {
     "id": "R-SZ-ROW-CONDITION",
     "bin": "componentOwned",
     "declarations": 3,
@@ -8317,7 +6209,11 @@
     "values": [
      [
       "minHeight:38",
-      3
+      2
+     ],
+     [
+      "minHeight:44",
+      1
      ]
     ]
    },
@@ -8536,99 +6432,6 @@
     ]
    },
    {
-    "id": "R-SZ-CONTROL-SM-ADJACENT",
-    "bin": "defect",
-    "declarations": 8,
-    "name": null,
-    "target": "controlVisualHeight.sm (32)",
-    "openDecision": null,
-    "executionStage": "S4",
-    "axis": "both",
-    "targetSource": "targetValue",
-    "declaredDelta": "shrink",
-    "computedDelta": "shrink",
-    "targetResolved": 8,
-    "targetDerived": 0,
-    "transitions": {
-     "34→32": 8
-    },
-    "values": [
-     [
-      "width:34",
-      4
-     ],
-     [
-      "height:34",
-      4
-     ]
-    ]
-   },
-   {
-    "id": "R-SZ-CONTROL-SM",
-    "bin": "defect",
-    "declarations": 12,
-    "name": null,
-    "target": "controlVisualHeight.sm (32)",
-    "openDecision": null,
-    "executionStage": "S3a",
-    "axis": "both",
-    "targetSource": "targetValue",
-    "declaredDelta": "mixed",
-    "computedDelta": "mixed",
-    "targetResolved": 12,
-    "targetDerived": 0,
-    "transitions": {
-     "34→32": 10,
-     "32→32": 2
-    },
-    "values": [
-     [
-      "width:34",
-      5
-     ],
-     [
-      "height:34",
-      5
-     ],
-     [
-      "width:32",
-      1
-     ],
-     [
-      "height:32",
-      1
-     ]
-    ]
-   },
-   {
-    "id": "R-SZ-CONTROL-MD",
-    "bin": "defect",
-    "declarations": 10,
-    "name": null,
-    "target": "controlVisualHeight.md (38)",
-    "openDecision": null,
-    "executionStage": "S3a",
-    "axis": "both",
-    "targetSource": "targetValue",
-    "declaredDelta": "same",
-    "computedDelta": "same",
-    "targetResolved": 10,
-    "targetDerived": 0,
-    "transitions": {
-     "38→38": 10
-    },
-    "values": [
-     [
-      "width:38",
-      5
-     ],
-     [
-      "height:38",
-      5
-     ]
-    ]
-   },
-   {
     "id": "R-SZ-CONTROL-SLIDER",
     "bin": "componentOwned",
     "declarations": 2,
@@ -8683,7 +6486,7 @@
    {
     "id": "R-SZ-CONTROL-ROW-OVERFLOW",
     "bin": "componentOwned",
-    "declarations": 2,
+    "declarations": 3,
     "name": "COMPONENT.rowOverflowAction.touchBox",
     "target": null,
     "openDecision": null,
@@ -8697,8 +6500,8 @@
     "transitions": {},
     "values": [
      [
-      "width:45",
-      1
+      "width:44",
+      2
      ],
      [
       "height:44",
@@ -8863,32 +6666,6 @@
     ]
    },
    {
-    "id": "R-SZ-CONTROL-REORDER",
-    "bin": "componentOwned",
-    "declarations": 4,
-    "name": "COMPONENT.reorderAction.visualBox",
-    "target": null,
-    "openDecision": null,
-    "executionStage": null,
-    "axis": null,
-    "targetSource": null,
-    "declaredDelta": null,
-    "computedDelta": null,
-    "targetResolved": 0,
-    "targetDerived": 0,
-    "transitions": {},
-    "values": [
-     [
-      "width:28",
-      2
-     ],
-     [
-      "height:20",
-      2
-     ]
-    ]
-   },
-   {
     "id": "R-SZ-CONTROL-QUANTITY",
     "bin": "componentOwned",
     "declarations": 4,
@@ -8959,7 +6736,7 @@
    {
     "id": "R-SZ-FIXED-COL",
     "bin": "componentOwned",
-    "declarations": 21,
+    "declarations": 20,
     "name": "column.fixedWidth",
     "target": null,
     "openDecision": null,
@@ -8997,10 +6774,6 @@
       1
      ],
      [
-      "width:27",
-      1
-     ],
-     [
       "width:34",
       1
      ],
@@ -9010,6 +6783,228 @@
      ],
      [
       "width:74",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-APPHEADER-RIGHT-TOUCH",
+    "bin": "componentOwned",
+    "declarations": 2,
+    "name": "COMPONENT.appHeader.rightSlot.minTouchTarget",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "minWidth:44",
+      1
+     ],
+     [
+      "minHeight:44",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-BUTTON-SM-MINHEIGHT",
+    "bin": "componentOwned",
+    "declarations": 1,
+    "name": "COMPONENT.button.sm.visualHeight",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "minHeight:44",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-ORDER-DETAIL-TOUCH",
+    "bin": "componentOwned",
+    "declarations": 1,
+    "name": "COMPONENT.orderIngredientLink.minTouchTarget",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "minHeight:44",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-CATEGORY-REORDER-TOUCH",
+    "bin": "componentOwned",
+    "declarations": 2,
+    "name": "COMPONENT.categoryReorderAction.minTouchTarget",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "width:44",
+      1
+     ],
+     [
+      "height:44",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-RECIPE-EDITOR-TOUCH",
+    "bin": "componentOwned",
+    "declarations": 8,
+    "name": "COMPONENT.recipeEditor.interactiveCell.minTouchTarget",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "width:44",
+      3
+     ],
+     [
+      "height:44",
+      3
+     ],
+     [
+      "minWidth:44",
+      1
+     ],
+     [
+      "minHeight:44",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-SALES-ACTION-ROW",
+    "bin": "componentOwned",
+    "declarations": 1,
+    "name": "COMPONENT.salesHome.actionRow.minTouchTarget",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "minHeight:44",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-SALES-MANAGE-ACTION",
+    "bin": "componentOwned",
+    "declarations": 1,
+    "name": "COMPONENT.salesHome.manageAction.minTouchTarget",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "minHeight:44",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-SALES-QUANTITY-ACTION",
+    "bin": "componentOwned",
+    "declarations": 2,
+    "name": "COMPONENT.salesHome.quantityAction.minTouchTarget",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "minWidth:44",
+      1
+     ],
+     [
+      "minHeight:44",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-SALES-SALE-ACTION",
+    "bin": "componentOwned",
+    "declarations": 1,
+    "name": "COMPONENT.salesHome.saleAction.minTouchTarget",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "minHeight:44",
       1
      ]
     ]
@@ -9121,98 +7116,6 @@
     ]
    },
    {
-    "id": "R-RD-SHAPE",
-    "bin": "defect",
-    "declarations": 16,
-    "name": null,
-    "target": "radius.full (999)",
-    "openDecision": null,
-    "executionStage": "S3a",
-    "axis": "none",
-    "targetSource": null,
-    "declaredDelta": "grow",
-    "computedDelta": null,
-    "targetResolved": 0,
-    "targetDerived": 0,
-    "transitions": {},
-    "values": [
-     [
-      "borderRadius:3",
-      7
-     ],
-     [
-      "borderRadius:2",
-      7
-     ],
-     [
-      "borderRadius:4",
-      1
-     ],
-     [
-      "borderRadius:15",
-      1
-     ]
-    ]
-   },
-   {
-    "id": "R-RD-CONVERGE",
-    "bin": "defect",
-    "declarations": 64,
-    "name": null,
-    "target": "프로토타입 매핑표 converge.radius",
-    "openDecision": null,
-    "executionStage": "S3a",
-    "axis": "none",
-    "targetSource": null,
-    "declaredDelta": "mixed",
-    "computedDelta": null,
-    "targetResolved": 0,
-    "targetDerived": 0,
-    "transitions": {},
-    "values": [
-     [
-      "borderRadius:10",
-      27
-     ],
-     [
-      "borderRadius:11",
-      8
-     ],
-     [
-      "borderRadius:14",
-      8
-     ],
-     [
-      "borderRadius:9",
-      7
-     ],
-     [
-      "borderRadius:6",
-      5
-     ],
-     [
-      "borderRadius:13",
-      4
-     ],
-     [
-      "borderRadius:7",
-      2
-     ],
-     [
-      "borderTopLeftRadius:22",
-      1
-     ],
-     [
-      "borderTopRightRadius:22",
-      1
-     ],
-     [
-      "borderRadius:5",
-      1
-     ]
-    ]
-   },
-   {
     "id": "R-CL-PRIM",
     "bin": "primitive",
     "declarations": 13,
@@ -9271,7 +7174,7 @@
    {
     "id": "R-CL-NEAR-PALETTE",
     "bin": "pendingApproval",
-    "declarations": 4,
+    "declarations": 3,
     "name": null,
     "target": null,
     "openDecision": "D-1′",
@@ -9285,15 +7188,15 @@
     "transitions": {},
     "values": [
      [
-      "hex:#B0B8C1",
-      2
-     ],
-     [
       "hex:#D5DAE0",
       1
      ],
      [
       "hex:#FFF9F0",
+      1
+     ],
+     [
+      "hex:#B0B8C1",
       1
      ]
     ]
