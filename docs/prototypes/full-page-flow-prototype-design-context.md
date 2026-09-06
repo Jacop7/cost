@@ -1,12 +1,12 @@
 # 전체 페이지 프로토타입 · 디자인 맥락 장부
 
-> 현재 동기화 ID: `DS-20260906-014`
+> 현재 동기화 ID: `DS-20260906-015`
 > 문서 동기화 상태: `SYNCED`
 > 전체 UI 작업 상태: `IN_PROGRESS`
 > 마지막 갱신: `2026-09-06`
-> 공통 변경: `예`
-> UI 변경: `예`
-> 변경 기록: `PRT-251`
+> 공통 변경: `아니오`
+> UI 변경: `아니오`
+> 변경 기록: `PRT-252`
 
 ## 1. 문서 역할
 
@@ -43,6 +43,22 @@
 - 글로벌: 30~50% 긴 번역, 320px, 200% 글자 확대, RTL 검수.
 
 ## 4. 가장 최근 작업
+
+### DS-20260906-015 · PRT-252 S3c 제품판 Android native touch 재측정
+
+- 작업 성격: PRT-251 제품판에서 Android 1×·2×와 실제 탭 증거를 다시 수집한다.
+  앱·프로토타입 제품 코드는 바꾸지 않는다.
+- 결과: Android 15/API 35·density 2.625에서 두 배율 모두 계약 lineage 19개,
+  미달 0·새 판정불가 0·물질적 형제 중첩 0이다. 실제 탭 프로브 세 조건도 모두 통과했다.
+- 결속: 원시 산출물은 제품 커밋 `4a54cb6`·제품 tree·측정 계약·검사기 SHA에 묶이며,
+  `native-touch-android-receipt.json`이 해시와 재계산 결과를 대조한다.
+- 완료 조건:
+  - PRT252-ANDROID-1X · `native-touch-android-1x.json`
+  - PRT252-ANDROID-2X · `native-touch-android-2x.json`
+  - PRT252-ANDROID-TAP · `native-touch-android-tap-probe.json`
+  - PRT252-ANDROID-RECEIPT · `native-touch-android-receipt.json`
+- 미완료·후속: iOS native touch · 소유자 결정 32건 · P1c 모션/z-index 측정.
+- 다음 시작점: PRT-251/252 S3c+Android 독립 검수와 P1c 측정 / `DS-20260906-016`
 
 ### DS-20260906-014 · PRT-251 S3c 잔여 수렴과 W1 재측정
 

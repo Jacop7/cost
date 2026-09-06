@@ -2691,6 +2691,20 @@ popup/state host **121개**(합 182), 그리고 레지스트리에 키가 없는
   `full-page-flow-prototype-render-audit.json` · `full-page-flow-prototype-design-audit.json` ·
   `full-page-flow-prototype-i18n-stress.json`.
 
+## DS-20260906-015 · PRT-252 S3c 제품판 Android native touch 재측정
+
+- 대상: PRT-251 `4a54cb6` 제품판의 Android 1×·2× native touch와 실제 탭 증거.
+- 기대값: 계약 lineage 19개 · 미달 0 · 새 판정불가 0 · 형제 중첩 0 · 탭 프로브 3조건 PASS.
+- 실제값: Android 15/API 35·density 2.625의 1×·2×가 기대값과 일치하고 탭 프로브도 PASS다.
+- PC 검수: 프로토타입 1280×900 감사 재실행 · PASS
+- 모바일 검수: 320px·CSS 200%·글자 200%·i18n 4패스 재실행 · PASS
+- 범위: Android 부분 종결만 포함한다. 앱·프로토타입 제품 코드 변화는 없다.
+- 별도 게이트: iOS 1×·2×가 `MISSING`이므로 S4a·S4·W1 전체는 계속 REOPEN이다.
+- 미검수: 없음
+- 결과: PASS
+- 증거: `native-touch-android-1x.json` · `native-touch-android-2x.json` ·
+  `native-touch-android-tap-probe.json` · `native-touch-android-receipt.json`.
+
 ## DS-20260906-014 · PRT-251 S3c 잔여 수렴과 W1 재측정
 
 - 대상: S3c 승인 선언 8건, 해당 제품판의 W1 전수 배정, 프로토타입 동기화 표식.
