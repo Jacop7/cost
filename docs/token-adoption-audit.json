@@ -1,18 +1,18 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-06T12:32:42.871Z",
+  "generatedAt": "2026-09-06T12:40:26.042Z",
   "schemaVersion": 1,
   "script": {
    "name": "token-adoption-audit.mjs",
    "sha256": "591d6ad787d555acdabbf31009808cec9ec5c2f5ec58c2fde908337decc6dd80"
   },
   "repo": {
-   "headCommit": "b3589e514a5bf4186b5716ca8c0c2875170c3eff",
-   "headTree": "1294595feb33d3d98dcb62afa0c1b86d8fa40bc1",
+   "headCommit": "b037bfb6099ac04b969f8e43629182a4110cfc6e",
+   "headTree": "4533e6d33eb121cd9e3f5f879ecc26366ebb67a7",
    "toplevel": "C:/Users/jacop/프로젝트/식자재관리앱/.tmp/sol-prt217-6e6376b"
   },
   "결속": {
-   "expectCommit": "b3589e514a5bf4186b5716ca8c0c2875170c3eff",
+   "expectCommit": "b037bfb6099ac04b969f8e43629182a4110cfc6e",
    "범위해시": "0dbf5d050c0099ad8bee6f8da3ae5884ad9e03bd309f57796fa16e2d32b25c97",
    "범위해시정의": "선택된 파일의 \"경로\\0 git blob SHA\" 를 정렬해 잇고 감사 스크립트 자신의 blob SHA 를 더해 sha256. blob SHA 는 CRLF→LF 정규화 뒤 직접 계산하므로 OS·git 유무에 좌우되지 않는다(페이블 R6 차단). 커밋 SHA 자기참조 없이 입력을 결속한다."
   },
