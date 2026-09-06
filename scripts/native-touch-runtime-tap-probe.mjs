@@ -76,10 +76,14 @@ const runtime = (op) => `(()=>{
     return JSON.stringify({label:found.label,owner:owners(found.fiber)[0]});
   }
   if(op.kind==='shrinkDirectParent'){
-    const target=found.ancestors[0];
-    const style={...flat(target.memoizedProps?.style),flex:0,height:20,overflow:'visible',position:'relative',zIndex:999,elevation:999};
-    renderer.overrideProps(target,['style'],style);
-    return JSON.stringify({host:name(target),style});
+    const parent=found.ancestors[0];
+    const pressableStyle={...flat(found.fiber.memoizedProps?.style),height:20,paddingVertical:0};
+    const parentStyle={...flat(parent.memoizedProps?.style),flex:0,height:20,paddingTop:0,paddingBottom:0,
+      marginBottom:48,overflow:'visible',position:'relative',zIndex:999,elevation:999};
+    renderer.overrideProps(found.fiber,['style'],pressableStyle);
+    renderer.overrideProps(found.fiber,['hitSlop'],{top:0,bottom:40,left:0,right:0});
+    renderer.overrideProps(parent,['style'],parentStyle);
+    return JSON.stringify({host:name(parent),pressableStyle,parentStyle});
   }
   if(op.kind==='shrinkOverflowGrandparent'){
     const parent=found.ancestors[0],target=found.ancestors[1];
@@ -158,10 +162,10 @@ try {
   await evaluate(socket, runtime({ kind: 'instrument', labelPattern: '^정렬 기준: 추천순$', ownerPattern: 'IngredientListScreen' }));
   const clippedMeasure = await measure(socket);
   const [cx, cy, cwidth, cheight] = clippedMeasure.frame;
-  const clippedPoint = { x: cx + cwidth / 2, y: cy + cheight - 5 };
+  const clippedPoint = { x: cx + cwidth / 2, y: cy + cheight + 24 };
   const clippedEdge = platform === 'android'
     ? await tapAndRead(socket, clippedPoint, Math.max(0, -clippedMeasure.ancestors.at(-1).frame[1]), density)
-    : await physicalTapAndRead(socket, clippedPoint, '2/3 보이는 추천순 버튼의 아래쪽 절반을 누른 뒤 채팅에 완료라고 보내세요', { requirePress: false });
+    : await physicalTapAndRead(socket, clippedPoint, '2/3 낮아진 추천순 버튼과 첫 카드 사이의 넓은 빈 회색 공간 중앙을 누른 뒤 채팅에 완료라고 보내세요', { requirePress: false });
   await evaluate(socket, `(()=>{const m=[...__r.getModules().entries()].find(([,v])=>String(v.verboseName||'').replaceAll('\\\\','/').endsWith('/node_modules/expo-router/build/exports.js'));__r(m[0]).router.replace('/(tabs)/orders');return 'ok'})()`);
   await sleep(500);
   await evaluate(socket, `(()=>{const m=[...__r.getModules().entries()].find(([,v])=>String(v.verboseName||'').replaceAll('\\\\','/').endsWith('/node_modules/expo-router/build/exports.js'));__r(m[0]).router.replace('/(tabs)/ingredients');return 'ok'})()`);
@@ -180,7 +184,7 @@ try {
   const probes = [
     { id: 'inside-effective-rect', expectedOnPressCount: 1, ...inside },
     { id: 'outside-direct-parent', expectedOnPressCount: 0,
-      syntheticMutation: 'ancestor[0] flex:0;height:20;overflow:visible; zIndex/elevation 999', measure: clippedMeasure, ...clippedEdge },
+      syntheticMutation: 'Pressable height:20 + hitSlop.bottom:40; ancestor[0] height:20 + marginBottom:48 + overflow:visible', measure: clippedMeasure, ...clippedEdge },
     { id: 'outside-overflow-visible-grandparent', expectedOnPressCount: 1, syntheticMutation: 'ancestor[1] flex:0;height:20;overflow:visible; zIndex/elevation 999', ...overflowVisibleGrandparent },
   ];
   // 실제 사용자 탭은 전송 지연 동안 반복될 수 있다. 계약은 '정확히 1회'가 아니라
