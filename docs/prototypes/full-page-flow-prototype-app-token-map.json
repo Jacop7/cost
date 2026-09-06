@@ -2,6 +2,17 @@
   "$schema": "app-token-map/1",
   "status": "PROPOSAL",
   "note": "S3c까지 적용한 앱 사용처 인라인 선언 2,345건을 다섯 통에 배정하는 W1 규칙표다. tokens.ts 정본 정의는 definitions에 별도 보존한다. dbb89c1에서 전수 재측정했으며 iOS 네이티브 증거가 남아 W1 상태는 REOPEN이다.",
+  "inputMovementContract": {
+    "previousDeclarations": 2353,
+    "currentDeclarations": 2345,
+    "removedFromInput": 8,
+    "stage": "S3c",
+    "rules": [
+      "R-SP-CAPTION-GAP-VIEW",
+      "R-CL-SHADOW"
+    ],
+    "reason": "S3c의 리터럴 선언 8건이 의미·컴포넌트 토큰 참조로 바뀌어 숫자·색 리터럴 감사 입력 우주에서 사라졌다. 통 사이 이동이 아니다."
+  },
   "primitiveSource": "full-page-flow-prototype-token-map.json 의 primitive·converge 를 그대로 쓴다. 앱 전용 두 번째 표준을 만들지 않는다.",
   "pendingApprovalContract": {
     "definition": "제품 소유자의 새 결정이 없으면 목적지를 정할 수 없는 규칙만 둔다. 닫힌 D-11의 선언별 역할 대응은 이 통에 두지 않는다.",

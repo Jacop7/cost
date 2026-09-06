@@ -26,6 +26,7 @@ export function loadSources(root = defaultRoot) {
   visit(join(root, 'apps/mobile/src'));
   sources.set('scripts/touch-target-known.json', readFileSync(join(root, 'scripts/touch-target-known.json'), 'utf8'));
   sources.set('scripts/design-token-s3a-known.json', readFileSync(join(root, 'scripts/design-token-s3a-known.json'), 'utf8'));
+  sources.set('scripts/design-token-s3c-known.json', readFileSync(join(root, 'scripts/design-token-s3c-known.json'), 'utf8'));
   return sources;
 }
 
@@ -144,7 +145,7 @@ const occurrences = (sources, regex) => {
   return count;
 };
 
-export function evaluateS4(sources, contract, baselineSources) {
+export function evaluateS4(sources, contract, baselineSources, residualSources) {
   const failures = [];
   const fail = (message) => failures.push(message);
   if (!baselineSources) fail('S4 baseline AST 입력이 없다');
@@ -165,15 +166,18 @@ export function evaluateS4(sources, contract, baselineSources) {
         return counts;
       }, {});
       const expectedWithoutStage = expectedChanges.map(({ stage: _stage, ...item }) => item);
-      if (expectedChanges.some((item) => !['S4', 'S3b', 'S4a', 'S4b'].includes(item.stage)))
+      if (expectedChanges.some((item) => !['S4', 'S3b', 'S3c', 'S4a', 'S4b'].includes(item.stage)))
         fail('S4 선언별 AST 변경에 유효한 소유 단계가 없는 행이 있다');
       if (stageCounts.S3b !== contract.downstreamStage.geometryChangesIncludedHere)
         fail(`S3b 소유 AST 변경 ${stageCounts.S3b ?? 0} ≠ ${contract.downstreamStage.geometryChangesIncludedHere}`);
+      if ((stageCounts.S3c ?? 0) !== (contract.residualStage?.geometryChangesIncludedHere ?? 0))
+        fail(`S3c 소유 AST 변경 ${stageCounts.S3c ?? 0} ≠ ${contract.residualStage?.geometryChangesIncludedHere ?? 0}`);
       if (stageCounts.S4a !== contract.nativeStage.geometryChangesIncludedHere)
         fail(`S4a 소유 AST 변경 ${stageCounts.S4a ?? 0} ≠ ${contract.nativeStage.geometryChangesIncludedHere}`);
       if ((stageCounts.S4b ?? 0) !== (contract.nativeFollowupStage?.geometryChangesIncludedHere ?? 0))
         fail(`S4b 소유 AST 변경 ${stageCounts.S4b ?? 0} ≠ ${contract.nativeFollowupStage?.geometryChangesIncludedHere ?? 0}`);
       const expectedS4 = expectedChanges.length - contract.downstreamStage.geometryChangesIncludedHere
+        - (contract.residualStage?.geometryChangesIncludedHere ?? 0)
         - contract.nativeStage.geometryChangesIncludedHere - (contract.nativeFollowupStage?.geometryChangesIncludedHere ?? 0);
       if (stageCounts.S4 !== expectedS4) fail(`S4 소유 AST 변경 ${stageCounts.S4 ?? 0} ≠ ${expectedS4}`);
       if (JSON.stringify(actualChanges) !== JSON.stringify(expectedWithoutStage)) {
@@ -181,6 +185,29 @@ export function evaluateS4(sources, contract, baselineSources) {
           ?? expectedWithoutStage[actualChanges.length];
         fail(`S4 선언별 AST 변경 불일치 — ${first?.file ?? '건수'} ${first?.declaration ?? `${actualChanges.length}≠${expectedWithoutStage.length}`}`);
       }
+    }
+  }
+  let residualKnown;
+  try { residualKnown = JSON.parse(sources.get(contract.residualStage?.contract) ?? ''); }
+  catch { fail('S3c 누적 계약을 읽지 못했다'); }
+  if (residualKnown) {
+    if (contract.residualStage?.stage !== 'S3c' || residualKnown.stage !== 'S3c') fail('S3c 누적 단계 이름이 다르다');
+    if (residualKnown.assignments?.length !== residualKnown.expectedAssignments
+      || residualKnown.expectedAssignments !== contract.residualStage?.assignments)
+      fail(`S3c 승인 배정 ${residualKnown.assignments?.length ?? 0} ≠ ${contract.residualStage?.assignments ?? 0}`);
+    if (!residualSources?.before || !residualSources?.after) fail('S3c 기준선·제품 AST 입력이 없다');
+    else {
+      const actualResidual = astChangePlan(residualSources.before, residualSources.after);
+      const contractedResidual = (contract.allowedAstChanges ?? [])
+        .filter((item) => item.stage === 'S3c').map(({ stage: _stage, ...item }) => item);
+      if (JSON.stringify(actualResidual) !== JSON.stringify(contractedResidual)) {
+        const first = actualResidual.find((item, index) => JSON.stringify(item) !== JSON.stringify(contractedResidual[index]))
+          ?? contractedResidual[actualResidual.length];
+        fail(`S3c 승인 AST 변경 불일치 — ${first?.file ?? '건수'} ${first?.declaration ?? `${actualResidual.length}≠${contractedResidual.length}`}`);
+      }
+      const assignmentFiles = [...new Set(residualKnown.assignments.map((item) => item.file))].sort();
+      const residualFiles = [...new Set(actualResidual.map((item) => item.file))].sort();
+      if (JSON.stringify(assignmentFiles) !== JSON.stringify(residualFiles)) fail('S3c 배정 파일과 누적 AST 파일 집합이 다르다');
     }
   }
   const count = (name, regex) => {
@@ -299,6 +326,14 @@ function main() {
   let baselineSources;
   try { baselineSources = loadBaselineSources(root, contract.baselineCommit); }
   catch (error) { baselineSources = null; console.error(String(error)); }
+  let residualSources = null;
+  try {
+    const residualKnown = JSON.parse(readFileSync(join(root, contract.residualStage.contract), 'utf8'));
+    residualSources = {
+      before: loadBaselineSources(root, residualKnown.baselineCommit),
+      after: loadBaselineSources(root, contract.residualStage.productCommit),
+    };
+  } catch (error) { console.error(String(error)); }
   if (opt['update-ast-contract'] !== undefined) {
     if (!baselineSources) throw new Error('baseline AST 입력 없이 계약을 갱신할 수 없다');
     const sources = loadSources(root);
@@ -308,13 +343,14 @@ function main() {
     contract = {
       ...contract,
       allowedAstDiff: astDiffContract(baselineSources, sources),
+      residualStage: { ...(contract.residualStage ?? {}), stage: 'S3c', geometryChangesIncludedHere: allowedAstChanges.filter((item) => item.stage === 'S3c').length },
       nativeStage: { ...(contract.nativeStage ?? {}), stage: 'S4a', geometryChangesIncludedHere: allowedAstChanges.filter((item) => item.stage === 'S4a').length },
       nativeFollowupStage: { ...(contract.nativeFollowupStage ?? {}), stage: 'S4b', geometryChangesIncludedHere: allowedAstChanges.filter((item) => item.stage === 'S4b').length },
       allowedAstChanges,
     };
     writeFileSync(contractPath, JSON.stringify(contract, null, 2) + '\n');
   }
-  const failures = evaluateS4(loadSources(root), contract, baselineSources);
+  const failures = evaluateS4(loadSources(root), contract, baselineSources, residualSources);
   let head = null; let dirty = null;
   if (existsSync(join(root, '.git'))) {
     head = spawnSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).stdout.trim();

@@ -85,6 +85,20 @@ test('S3c 뒤 W1은 정의 21건을 분리하고 음수 포함 사용처 2,345�
   assert.equal(per['R-CL-PRIM'].declarations, 14);
   assert.equal(per['R-CL-NEAR-PALETTE'].declarations, 2);
   assert.equal(r.out.summary.multiMatchCount, 774);
+  assert.equal(r.out.summary.binMovementLedger.removedFromInput, 8);
+  assert.deepEqual(r.out.summary.binMovementLedger.inputUniverse, {
+    previous: 2353,
+    current: 2345,
+    stage: 'S3c',
+    rules: ['R-SP-CAPTION-GAP-VIEW', 'R-CL-SHADOW'],
+    reason: 'S3c의 리터럴 선언 8건이 의미·컴포넌트 토큰 참조로 바뀌어 숫자·색 리터럴 감사 입력 우주에서 사라졌다. 통 사이 이동이 아니다.',
+  });
+});
+
+test('S3c 입력 감소 8을 통 이동처럼 숨기거나 다른 수로 바꾸면 실패한다', () => {
+  const r = run(map => { map.inputMovementContract.removedFromInput = 7; });
+  assert.equal(r.code, 1, r.text);
+  assert.match(r.text, /입력 감소 산식 2353 - 2345 ≠ 7/);
 });
 
 test('닫힌 역할을 질문·증거까지 붙여 pendingApproval로 되돌려도 계약이 막는다', () => {

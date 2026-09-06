@@ -20,6 +20,14 @@
     "geometryChangesIncludedHere": 131,
     "note": "S4 baseline 대비 exact AST 잠금은 후속 S3b까지 합친 현재 나무를 재므로, S3b 179건 중 fontSize 48건을 제외한 geometry 131건도 allowedAstChanges에 포함한다. 각 변경의 단계 소유권은 S3b 계약이 별도로 단언한다."
   },
+  "residualStage": {
+    "stage": "S3c",
+    "contract": "scripts/design-token-s3c-known.json",
+    "productCommit": "dbb89c1e652980c14d46df6942d73d316d05e821",
+    "assignments": 8,
+    "geometryChangesIncludedHere": 13,
+    "note": "S3c의 승인 배정은 8건이다. marginTop 5건은 AST 5행, 그림자 객체 3건은 중첩 width/height 삭제와 동일 속성 순번 이동 때문에 AST 8행으로 투영되어 누적 계약에는 합계 13행이 들어간다. S3c 기준선→제품 커밋의 계산 결과와 값까지 직접 대조한다."
+  },
   "nativeStage": {
     "stage": "S4a",
     "geometryChangesIncludedHere": 31,
@@ -37,6 +45,7 @@
       "apps/mobile/src/components/kit/AppHeader.tsx",
       "apps/mobile/src/components/kit/Button.tsx",
       "apps/mobile/src/components/kit/Sheet.tsx",
+      "apps/mobile/src/components/kit/Slider.tsx",
       "apps/mobile/src/components/kit/SortSheet.tsx",
       "apps/mobile/src/components/kit/index.tsx",
       "apps/mobile/src/features/changes/components/RecentChangeRow.tsx",
@@ -104,8 +113,8 @@
       "apps/mobile/src/features/sales/screens/SalesWasteScreen.tsx",
       "apps/mobile/src/theme/tokens.ts"
     ],
-    "beforeHash": "0499bc087901b5d56888563af6e8ebe0800e4b10644a8835b80fc88e6a96dea7",
-    "afterHash": "3b3e259ff466f69febf43847b5e50a39fef9336a0a50b475c26d33aac934c713"
+    "beforeHash": "ce93827706db17c25cd4a15e4953bd865d7d3216ac77e77e1c1c88d2ae2b284a",
+    "afterHash": "d106e4e50a8355ad14e1ba7eeb8fb1afe4d5b40c44fcf2ea8f431827c2cb18df"
   },
   "counts": {
     "scrollStart": 17,
@@ -234,6 +243,20 @@
     },
     {
       "file": "apps/mobile/src/components/kit/Sheet.tsx",
+      "declaration": "prop:height#2",
+      "before": "-8",
+      "after": "5",
+      "stage": "S3c"
+    },
+    {
+      "file": "apps/mobile/src/components/kit/Sheet.tsx",
+      "declaration": "prop:height#3",
+      "before": "5",
+      "after": null,
+      "stage": "S3c"
+    },
+    {
+      "file": "apps/mobile/src/components/kit/Sheet.tsx",
       "declaration": "prop:paddingBottom#1",
       "before": "40",
       "after": "LAYOUT.scroll.end + insets.bottom",
@@ -245,6 +268,34 @@
       "before": null,
       "after": "insets.bottom",
       "stage": "S4"
+    },
+    {
+      "file": "apps/mobile/src/components/kit/Sheet.tsx",
+      "declaration": "prop:width#1",
+      "before": "0",
+      "after": "38",
+      "stage": "S3c"
+    },
+    {
+      "file": "apps/mobile/src/components/kit/Sheet.tsx",
+      "declaration": "prop:width#2",
+      "before": "38",
+      "after": null,
+      "stage": "S3c"
+    },
+    {
+      "file": "apps/mobile/src/components/kit/Slider.tsx",
+      "declaration": "prop:height#4",
+      "before": "2",
+      "after": null,
+      "stage": "S3c"
+    },
+    {
+      "file": "apps/mobile/src/components/kit/Slider.tsx",
+      "declaration": "prop:width#3",
+      "before": "0",
+      "after": null,
+      "stage": "S3c"
     },
     {
       "file": "apps/mobile/src/components/kit/SortSheet.tsx",
@@ -448,6 +499,13 @@
       "before": "2",
       "after": "space.sm",
       "stage": "S3b"
+    },
+    {
+      "file": "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx",
+      "declaration": "prop:marginTop#5",
+      "before": "2",
+      "after": "space.xs",
+      "stage": "S3c"
     },
     {
       "file": "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx",
@@ -682,6 +740,13 @@
     },
     {
       "file": "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx",
+      "declaration": "prop:marginTop#4",
+      "before": "2",
+      "after": "space.xs",
+      "stage": "S3c"
+    },
+    {
+      "file": "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx",
       "declaration": "prop:minHeight#1",
       "before": "72",
       "after": "rowMinHeight.twoLine",
@@ -829,6 +894,13 @@
     },
     {
       "file": "apps/mobile/src/features/my/screens/FixedCostScreen.tsx",
+      "declaration": "prop:marginTop#2",
+      "before": "2",
+      "after": "space.xs",
+      "stage": "S3c"
+    },
+    {
+      "file": "apps/mobile/src/features/my/screens/FixedCostScreen.tsx",
       "declaration": "prop:minHeight#2",
       "before": "55",
       "after": "rowMinHeight.oneLine",
@@ -882,6 +954,13 @@
       "before": "6",
       "after": "space.sm",
       "stage": "S3b"
+    },
+    {
+      "file": "apps/mobile/src/features/my/screens/MyChannelsScreen.tsx",
+      "declaration": "prop:marginTop#1",
+      "before": "2",
+      "after": "space.xs",
+      "stage": "S3c"
     },
     {
       "file": "apps/mobile/src/features/my/screens/MyChannelsScreen.tsx",
@@ -997,10 +1076,24 @@
     },
     {
       "file": "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx",
+      "declaration": "prop:height#3",
+      "before": "1",
+      "after": null,
+      "stage": "S3c"
+    },
+    {
+      "file": "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx",
       "declaration": "prop:paddingBottom#1",
       "before": "28",
       "after": "LAYOUT.scroll.end",
       "stage": "S4"
+    },
+    {
+      "file": "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx",
+      "declaration": "prop:width#3",
+      "before": "0",
+      "after": null,
+      "stage": "S3c"
     },
     {
       "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
@@ -1169,6 +1262,13 @@
       "before": "6",
       "after": "space.sm",
       "stage": "S3b"
+    },
+    {
+      "file": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx",
+      "declaration": "prop:marginTop#5",
+      "before": "2",
+      "after": "space.xs",
+      "stage": "S3c"
     },
     {
       "file": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx",

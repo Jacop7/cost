@@ -1,10 +1,10 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-06T09:29:41.813Z",
+  "generatedAt": "2026-09-06T10:00:03.617Z",
   "schemaVersion": 1,
   "script": {
    "name": "full-page-flow-prototype-app-map-check.mjs",
-   "sha256": "0be1dbf8d7ffb5895e8092c5d1b1fbeacefe66b42df4ef18fce2356f231c8978"
+   "sha256": "410c80bcc92815ad6d93bc7f0307d3c874be97f1006693bf29410e569fa5b26e"
   },
   "source": {
    "audit": {
@@ -14,7 +14,7 @@
    },
    "appMap": {
     "path": "full-page-flow-prototype-app-token-map.json",
-    "sha256": "1539765e1950bf4041df129c13527fbdd599e5808bcb978549f94f9a63f32b2a"
+    "sha256": "13e6900221715b7f6c6de6470c2e31771ef58e00c9cee32d44c6a720e1f9a7e6"
    },
    "prototypeMap": {
     "path": "full-page-flow-prototype-token-map.json",
@@ -5470,8 +5470,17 @@
    }
   ],
   "binMovementLedger": {
-   "previousMap": "full-page-flow-prototype-app-token-map.json",
-   "previousMapSha256": "98dcb18e387938920d70dff411b1f55bd942f61c8cddd8e439ff9bdc9dabd6c8",
+   "removedFromInput": 8,
+   "inputUniverse": {
+    "previous": 2353,
+    "current": 2345,
+    "stage": "S3c",
+    "rules": [
+     "R-SP-CAPTION-GAP-VIEW",
+     "R-CL-SHADOW"
+    ],
+    "reason": "S3c의 리터럴 선언 8건이 의미·컴포넌트 토큰 참조로 바뀌어 숫자·색 리터럴 감사 입력 우주에서 사라졌다. 통 사이 이동이 아니다."
+   },
    "moves": {},
    "reconciliation": {
     "primitive": {
@@ -5509,7 +5518,9 @@
      "계산": 0,
      "실제": 0
     }
-   }
+   },
+   "previousMap": "full-page-flow-prototype-app-token-map.json",
+   "previousMapSha256": "13e6900221715b7f6c6de6470c2e31771ef58e00c9cee32d44c6a720e1f9a7e6"
   },
   "openQuestions": [
    {
