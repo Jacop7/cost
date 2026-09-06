@@ -20,6 +20,7 @@ const blobId = (buf) => {
   return createHash('sha1').update(Buffer.concat([Buffer.from(`blob ${lf.length}\u0000`, 'utf8'), lf])).digest('hex');
 };
 const args = process.argv.slice(2).filter(a => !a.startsWith('--'));
+const updateDocumentBlock = process.argv.includes('--update-document-block');
 const auditPath  = resolve(args[0] ?? 'docs/token-adoption-audit.json');
 const claimsPath = resolve(args[1] ?? 'docs/prototypes/full-page-flow-prototype-doc-claims.json');
 const outPath    = resolve(args[2] ?? 'docs/prototypes/full-page-flow-prototype-doc-claims-check.json');
@@ -87,8 +88,8 @@ for (const c of claims.claims) {
     // 이 값은 출처다 — 보고서가 "문서와 맞다" 고 말할 때 어느 문서인지 남는다.
     // `문서blob` 을 claim 에 적어 두면 **그 판본으로 고정**된다(선택). 적지 않으면 기록만 한다 —
     // 블록이 문서와 함께 바뀌는 자리라 매번 고정하면 갱신이 끝없이 돈다.
-    const docBlob = blobId(docBytes);
-    const md = docBytes.toString('utf8').replace(/\r\n/g, '\n');
+    let docBlob = blobId(docBytes);
+    let md = docBytes.toString('utf8').replace(/\r\n/g, '\n');
     const open = `<!-- ${c.마커}: 자동 생성 -->`, close = `<!-- /${c.마커} -->`;
     const i = md.indexOf(open), j = md.indexOf(close);
     let verdict = 'PASS';
@@ -98,10 +99,16 @@ for (const c of claims.claims) {
     } else {
       const got = md.slice(i + open.length, j).trim();
       if (got !== want.trim()) {
-        verdict = 'FAIL';
-        const g = got.split('\n'), w = want.trim().split('\n');
-        const n = g.findIndex((l, k) => l !== w[k]);
-        failures.push(`${c.id} : ${c.절} 의 자동 생성 블록이 산출물과 다르다 — 첫 어긋남 ${n + 1}행 · 문서 "${(g[n] ?? '(없음)').slice(0, 70)}" · 실제 "${(w[n] ?? '(없음)').slice(0, 70)}". 아래 블록을 붙여 넣어라:\n${want}`);
+        if (updateDocumentBlock) {
+          md = `${md.slice(0, i + open.length)}\n${want.trim()}\n${md.slice(j)}`;
+          writeFileSync(docPath, md);
+          docBlob = blobId(Buffer.from(md, 'utf8'));
+        } else {
+          verdict = 'FAIL';
+          const g = got.split('\n'), w = want.trim().split('\n');
+          const n = g.findIndex((l, k) => l !== w[k]);
+          failures.push(`${c.id} : ${c.절} 의 자동 생성 블록이 산출물과 다르다 — 첫 어긋남 ${n + 1}행 · 문서 "${(g[n] ?? '(없음)').slice(0, 70)}" · 실제 "${(w[n] ?? '(없음)').slice(0, 70)}". 아래 블록을 붙여 넣어라:\n${want}`);
+        }
       }
     }
     if (c.문서blob && c.문서blob !== docBlob) {

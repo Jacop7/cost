@@ -54,14 +54,14 @@ const asControlBoxDefect = (map) => {
 };
 const TYPE_LINE_HEIGHT_TABLE = { '12': 18, '13': 18, '14': 20, '15': 22, '16': 22, '18': 24, '20': 26, '22': 28 };
 
-test('S3d 뒤 W1은 정의를 분리하고 사용처 2,310건을 다섯 통에 배정하며 pending을 비운다', () => {
+test('S4a 뒤 W1은 정의를 분리하고 사용처 2,311건을 다섯 통에 배정하며 pending을 비운다', () => {
   const r = run();
   assert.equal(r.code, 0, r.text);
   assert.deepEqual(r.out.summary.byBin, {
-    primitive: 2061, componentOwned: 249, defect: 0,
+    primitive: 2061, componentOwned: 250, defect: 0,
     pendingApproval: 0, approvedException: 0,
   });
-  assert.equal(audit.summary.declarations, 2310);
+  assert.equal(audit.summary.declarations, 2311);
   assert.equal(audit.declarations.filter(d => Number(d.value) < 0).length, 17);
   assert.equal(audit.definitions.total, 23);
   assert.equal(audit.definitions.declarations.filter(d => d.prop === 'lineHeight').length, 7);
@@ -72,6 +72,7 @@ test('S3d 뒤 W1은 정의를 분리하고 사용처 2,310건을 다섯 통에 �
   assert.equal(per['R-SZ-BUTTON-SM-MINHEIGHT'].declarations, 1);
   assert.equal(per['R-SP-QUANTITY-TOUCH-ENVELOPE'].declarations, 2);
   assert.equal(per['R-SP-ROW-OVERFLOW-TOUCH-BOX'].declarations, 1);
+  assert.equal(per['R-SP-SEGMENT-TOUCH-ENVELOPE'].declarations, 1);
   assert.equal(per['R-SP-FORM-AUXILIARY-OVERLAP'].declarations, 4);
   assert.equal(per['R-SP-PROFIT-SECTION-LABEL-OVERLAP'].declarations, 1);
   assert.equal(per['R-TY-LETTERSPACING-TITLE-TIGHT'].declarations, 10);
@@ -85,20 +86,20 @@ test('S3d 뒤 W1은 정의를 분리하고 사용처 2,310건을 다섯 통에 �
   assert.equal(per['R-TY-LETTERSPACING-UNDECIDED'], undefined);
   assert.equal(per['R-CL-NEAR-PALETTE'], undefined);
   assert.equal(r.out.summary.multiMatchCount, 69);
-  assert.equal(r.out.summary.binMovementLedger.removedFromInput, 35);
+  assert.equal(r.out.summary.binMovementLedger.removedFromInput, 34);
   assert.deepEqual(r.out.summary.binMovementLedger.inputUniverse, {
     previous: 2345,
-    current: 2310,
-    stage: 'S3d',
+    current: 2311,
+    stage: 'S3d+S4a',
     rules: ['R-TY-SIZE-OFFSCALE', 'R-TY-LETTERSPACING-UNDECIDED', 'R-CL-NEAR-PALETTE', 'R-CL-CHART'],
-    reason: 'S3d의 pendingApproval 32건과 차트 역할 완결을 위해 함께 치환한 primitive 색 3건이 의미·컴포넌트 토큰 참조로 바뀌어 리터럴 감사 입력 우주에서 사라졌다. 통 사이 이동이 아니다.',
+    reason: 'S3d의 pendingApproval 32건과 차트 역할 완결을 위해 함께 치환한 primitive 색 3건이 의미·컴포넌트 토큰 참조로 바뀌어 리터럴 감사 입력 우주에서 사라졌고, S4a가 세그먼트 터치 외피 paddingVertical 1 선언 1건을 추가했다. 순감은 35-1=34이며 통 사이 이동이 아니다.',
   });
 });
 
-test('S3d 입력 감소 35를 통 이동처럼 숨기거나 다른 수로 바꾸면 실패한다', () => {
+test('S3d+S4a 입력 순감 34를 통 이동처럼 숨기거나 다른 수로 바꾸면 실패한다', () => {
   const r = run(map => { map.inputMovementContract.removedFromInput = 7; });
   assert.equal(r.code, 1, r.text);
-  assert.match(r.text, /입력 감소 산식 2345 - 2310 ≠ 7/);
+  assert.match(r.text, /입력 감소 산식 2345 - 2311 ≠ 7/);
 });
 
 test('닫힌 역할을 질문·증거까지 붙여 pendingApproval로 되돌려도 계약이 막는다', () => {

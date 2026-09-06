@@ -2,24 +2,24 @@
   "manifest": {
     "script": "docs/prototypes/full-page-flow-prototype-axis-measure.mjs",
     "scriptSha256": "60277bdb6a873128565368cd88bc6d99f95dc823a95a8b651bf78ef68312a987",
-    "auditSha256": "441a4363d8ac41818a60b90c738a43863df84efbf0b483770d94ddf3f98df698",
-    "auditCanon": "df1235098f3e380d00c2b3c58ccb499aa9ebacaad6beae6fea1f1e607c3ee648",
+    "auditSha256": "cfffdc85c7eff8d255b2be809655ad17d69cd58c26f86990c396cd21756d9ac3",
+    "auditCanon": "305f0e20c78737e42ef9359dce30fd81815ef657e31642cd2397147aac5e078f",
     "audit결속": {
-      "expectCommit": "b037bfb6099ac04b969f8e43629182a4110cfc6e",
-      "범위해시": "0dbf5d050c0099ad8bee6f8da3ae5884ad9e03bd309f57796fa16e2d32b25c97",
+      "expectCommit": "3ca0f7920188435b2006d96ac3fab09951563183",
+      "범위해시": "fa91eda5a4ed7be7ba8d51fe33828bdb468d37b3f3d6d7da00c7ca9f44dbee7c",
       "범위해시정의": "선택된 파일의 \"경로\\0 git blob SHA\" 를 정렬해 잇고 감사 스크립트 자신의 blob SHA 를 더해 sha256. blob SHA 는 CRLF→LF 정규화 뒤 직접 계산하므로 OS·git 유무에 좌우되지 않는다(페이블 R6 차단). 커밋 SHA 자기참조 없이 입력을 결속한다."
     },
     "values": "전부",
     "node": "v24.15.0",
-    "generatedAt": "2026-09-06T12:40:26.155Z",
+    "generatedAt": "2026-09-06T21:27:21.513Z",
     "판정": "축은 값이 아니라 속성과 컨테이너 flexDirection 으로 정한다 (PRT-207)."
   },
   "counts": {
-    "V": 414,
+    "V": 415,
     "H": 1069,
     "both": 722,
     "none": 105,
-    "keysV": 414,
+    "keysV": 415,
     "keysH": 1068,
     "keysBoth": 721,
     "keysNone": 104
@@ -84,11 +84,12 @@
     "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:261:height",
     "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:267:paddingVertical",
     "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:272:paddingVertical",
-    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:100:paddingVertical",
-    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:107:paddingTop",
-    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:150:gap",
-    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:154:paddingVertical",
-    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:171:paddingTop",
+    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:101:paddingVertical",
+    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:108:paddingTop",
+    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:14:paddingVertical",
+    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:151:gap",
+    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:155:paddingVertical",
+    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:172:paddingTop",
     "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:121:paddingVertical",
     "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:172:marginTop",
     "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:189:marginTop",
@@ -395,19 +396,19 @@
     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:383:minHeight",
     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:421:marginTop",
     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:429:marginBottom",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:448:minHeight",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:453:minHeight",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:490:paddingVertical",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:531:minHeight",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:549:minHeight",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:565:marginBottom",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:570:paddingVertical",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:577:marginBottom",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:579:paddingVertical",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:599:marginTop",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:654:paddingVertical",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:666:paddingVertical",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:701:paddingVertical",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:449:minHeight",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:454:minHeight",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:491:paddingVertical",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:532:minHeight",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:550:minHeight",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:566:marginBottom",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:571:paddingVertical",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:578:marginBottom",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:580:paddingVertical",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:600:marginTop",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:655:paddingVertical",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:667:paddingVertical",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:702:paddingVertical",
     "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx:123:marginTop",
     "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx:146:marginTop",
     "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx:151:marginTop",
@@ -609,18 +610,18 @@
     "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:261:width",
     "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:269:fontWeight",
     "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:273:fontWeight",
-    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:100:gap",
-    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:102:fontWeight",
-    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:104:fontWeight",
+    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:101:gap",
+    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:103:fontWeight",
+    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:105:fontWeight",
     "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:14:gap",
-    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:152:fontWeight",
-    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:154:gap",
-    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:156:fontWeight",
-    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:158:fontWeight",
-    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:162:fontWeight",
-    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:166:fontWeight",
-    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:26:paddingHorizontal",
-    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:33:fontWeight",
+    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:153:fontWeight",
+    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:155:gap",
+    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:157:fontWeight",
+    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:159:fontWeight",
+    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:163:fontWeight",
+    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:167:fontWeight",
+    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:27:paddingHorizontal",
+    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:34:fontWeight",
     "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:121:paddingHorizontal",
     "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:124:fontWeight",
     "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:129:paddingHorizontal",
@@ -1372,34 +1373,34 @@
     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:418:fontWeight",
     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:421:fontWeight",
     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:429:gap",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:441:fontWeight",
     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:442:fontWeight",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:448:marginHorizontal",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:453:gap",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:456:fontWeight",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:491:minWidth",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:493:fontWeight",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:514:fontWeight",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:531:minWidth",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:533:fontWeight",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:537:fontWeight",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:549:paddingHorizontal",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:552:fontWeight",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:565:fontWeight",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:571:fontWeight",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:577:fontWeight",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:580:minWidth",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:581:fontWeight",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:589:fontWeight",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:591:fontWeight",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:613:minWidth",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:614:fontWeight",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:616:fontWeight",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:620:fontWeight",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:681:minWidth",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:682:fontWeight",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:685:fontWeight",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:769:fontWeight",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:443:fontWeight",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:449:marginHorizontal",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:454:gap",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:457:fontWeight",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:492:minWidth",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:494:fontWeight",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:515:fontWeight",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:532:minWidth",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:534:fontWeight",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:538:fontWeight",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:550:paddingHorizontal",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:553:fontWeight",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:566:fontWeight",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:572:fontWeight",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:578:fontWeight",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:581:minWidth",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:582:fontWeight",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:590:fontWeight",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:592:fontWeight",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:614:minWidth",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:615:fontWeight",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:617:fontWeight",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:621:fontWeight",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:682:minWidth",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:683:fontWeight",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:686:fontWeight",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:770:fontWeight",
     "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx:100:fontWeight",
     "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx:125:fontWeight",
     "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx:136:minWidth",
@@ -1615,14 +1616,14 @@
     "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:238:fontSize",
     "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:269:fontSize",
     "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:273:fontSize",
-    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:102:fontSize",
-    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:104:fontSize",
-    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:152:fontSize",
-    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:156:fontSize",
-    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:158:fontSize",
-    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:162:fontSize",
-    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:166:fontSize",
-    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:33:fontSize",
+    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:103:fontSize",
+    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:105:fontSize",
+    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:153:fontSize",
+    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:157:fontSize",
+    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:159:fontSize",
+    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:163:fontSize",
+    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:167:fontSize",
+    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:34:fontSize",
     "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:124:fontSize",
     "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:146:fontSize",
     "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:154:fontSize",
@@ -2134,28 +2135,28 @@
     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:415:padding",
     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:417:fontSize",
     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:421:fontSize",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:441:fontSize",
     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:442:fontSize",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:456:fontSize",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:514:fontSize",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:552:fontSize",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:565:fontSize",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:571:fontSize",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:577:fontSize",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:581:fontSize",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:443:fontSize",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:457:fontSize",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:515:fontSize",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:553:fontSize",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:566:fontSize",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:572:fontSize",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:578:fontSize",
     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:582:fontSize",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:589:fontSize",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:591:fontSize",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:595:fontSize",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:614:fontSize",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:616:fontSize",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:620:fontSize",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:668:fontSize",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:682:fontSize",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:583:fontSize",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:590:fontSize",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:592:fontSize",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:596:fontSize",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:615:fontSize",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:617:fontSize",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:621:fontSize",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:669:fontSize",
     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:683:fontSize",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:685:fontSize",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:703:fontSize",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:769:fontSize",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:684:fontSize",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:686:fontSize",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:704:fontSize",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:770:fontSize",
     "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx:100:fontSize",
     "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx:125:fontSize",
     "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx:137:fontSize",
@@ -2261,8 +2262,8 @@
     "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:220:borderTopRightRadius",
     "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:259:borderTopLeftRadius",
     "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:259:borderTopRightRadius",
-    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:100:borderRadius",
-    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:154:borderRadius",
+    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:101:borderRadius",
+    "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:155:borderRadius",
     "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:336:borderTopLeftRadius",
     "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:336:borderTopRightRadius",
     "apps/mobile/src/features/ingredients/screens/IngredientFormScreen.tsx:160:borderRadius",
@@ -2330,10 +2331,10 @@
     "apps/mobile/src/features/sales/screens/SalesExtraScreen.tsx:104:borderRadius",
     "apps/mobile/src/features/sales/screens/SalesFixedScreen.tsx:83:borderRadius",
     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:415:borderRadius",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:438:borderRadius",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:588:borderRadius",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:767:borderRadius",
-    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:769:hex",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:439:borderRadius",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:589:borderRadius",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:768:borderRadius",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:770:hex",
     "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx:146:borderRadius",
     "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:316:borderRadius",
     "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:441:borderRadius",
@@ -5229,7 +5230,15 @@
       "why": "flexDirection: 'row'"
     },
     {
-      "key": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:26:paddingHorizontal",
+      "key": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:14:paddingVertical",
+      "value": 1,
+      "prop": "paddingVertical",
+      "group": "spacing",
+      "axis": "V",
+      "why": "속성이 세로다"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:27:paddingHorizontal",
       "value": 16,
       "prop": "paddingHorizontal",
       "group": "spacing",
@@ -5237,7 +5246,7 @@
       "why": "속성이 가로다"
     },
     {
-      "key": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:33:fontSize",
+      "key": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:34:fontSize",
       "value": 16,
       "prop": "fontSize",
       "group": "typography",
@@ -5245,7 +5254,7 @@
       "why": "글자 크기는 글자 상자의 두 축을 함께 바꾼다"
     },
     {
-      "key": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:33:fontWeight",
+      "key": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:34:fontWeight",
       "value": 700,
       "prop": "fontWeight",
       "group": "typography",
@@ -5253,7 +5262,7 @@
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
     },
     {
-      "key": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:100:gap",
+      "key": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:101:gap",
       "value": 8,
       "prop": "gap",
       "group": "spacing",
@@ -5261,7 +5270,7 @@
       "why": "flexDirection: 'row'"
     },
     {
-      "key": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:100:paddingVertical",
+      "key": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:101:paddingVertical",
       "value": 12,
       "prop": "paddingVertical",
       "group": "spacing",
@@ -5269,7 +5278,7 @@
       "why": "속성이 세로다"
     },
     {
-      "key": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:100:borderRadius",
+      "key": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:101:borderRadius",
       "value": 12,
       "prop": "borderRadius",
       "group": "radius",
@@ -5277,7 +5286,7 @@
       "why": "반경은 상자 크기를 바꾸지 않는다 — 축이 없다"
     },
     {
-      "key": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:102:fontSize",
+      "key": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:103:fontSize",
       "value": 16,
       "prop": "fontSize",
       "group": "typography",
@@ -5285,7 +5294,7 @@
       "why": "글자 크기는 글자 상자의 두 축을 함께 바꾼다"
     },
     {
-      "key": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:102:fontWeight",
+      "key": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:103:fontWeight",
       "value": 700,
       "prop": "fontWeight",
       "group": "typography",
@@ -5293,7 +5302,7 @@
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
     },
     {
-      "key": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:104:fontSize",
+      "key": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:105:fontSize",
       "value": 16,
       "prop": "fontSize",
       "group": "typography",
@@ -5301,7 +5310,7 @@
       "why": "글자 크기는 글자 상자의 두 축을 함께 바꾼다"
     },
     {
-      "key": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:104:fontWeight",
+      "key": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:105:fontWeight",
       "value": 700,
       "prop": "fontWeight",
       "group": "typography",
@@ -5309,7 +5318,7 @@
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
     },
     {
-      "key": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:107:paddingTop",
+      "key": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:108:paddingTop",
       "value": 12,
       "prop": "paddingTop",
       "group": "spacing",
@@ -5317,7 +5326,7 @@
       "why": "속성이 세로다"
     },
     {
-      "key": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:150:gap",
+      "key": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:151:gap",
       "value": 20,
       "prop": "gap",
       "group": "spacing",
@@ -5325,7 +5334,7 @@
       "why": "컨테이너에 flexDirection 이 없다 — RN 기본은 column"
     },
     {
-      "key": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:152:fontSize",
+      "key": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:153:fontSize",
       "value": 16,
       "prop": "fontSize",
       "group": "typography",
@@ -5333,7 +5342,7 @@
       "why": "글자 크기는 글자 상자의 두 축을 함께 바꾼다"
     },
     {
-      "key": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:152:fontWeight",
+      "key": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:153:fontWeight",
       "value": 700,
       "prop": "fontWeight",
       "group": "typography",
@@ -5341,7 +5350,7 @@
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
     },
     {
-      "key": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:154:gap",
+      "key": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:155:gap",
       "value": 8,
       "prop": "gap",
       "group": "spacing",
@@ -5349,7 +5358,7 @@
       "why": "flexDirection: 'row'"
     },
     {
-      "key": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:154:paddingVertical",
+      "key": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:155:paddingVertical",
       "value": 12,
       "prop": "paddingVertical",
       "group": "spacing",
@@ -5357,7 +5366,7 @@
       "why": "속성이 세로다"
     },
     {
-      "key": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:154:borderRadius",
+      "key": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:155:borderRadius",
       "value": 12,
       "prop": "borderRadius",
       "group": "radius",
@@ -5365,7 +5374,7 @@
       "why": "반경은 상자 크기를 바꾸지 않는다 — 축이 없다"
     },
     {
-      "key": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:156:fontSize",
+      "key": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:157:fontSize",
       "value": 16,
       "prop": "fontSize",
       "group": "typography",
@@ -5373,7 +5382,7 @@
       "why": "글자 크기는 글자 상자의 두 축을 함께 바꾼다"
     },
     {
-      "key": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:156:fontWeight",
+      "key": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:157:fontWeight",
       "value": 700,
       "prop": "fontWeight",
       "group": "typography",
@@ -5381,7 +5390,7 @@
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
     },
     {
-      "key": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:158:fontSize",
+      "key": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:159:fontSize",
       "value": 16,
       "prop": "fontSize",
       "group": "typography",
@@ -5389,7 +5398,7 @@
       "why": "글자 크기는 글자 상자의 두 축을 함께 바꾼다"
     },
     {
-      "key": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:158:fontWeight",
+      "key": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:159:fontWeight",
       "value": 700,
       "prop": "fontWeight",
       "group": "typography",
@@ -5397,7 +5406,7 @@
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
     },
     {
-      "key": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:162:fontSize",
+      "key": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:163:fontSize",
       "value": 16,
       "prop": "fontSize",
       "group": "typography",
@@ -5405,7 +5414,7 @@
       "why": "글자 크기는 글자 상자의 두 축을 함께 바꾼다"
     },
     {
-      "key": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:162:fontWeight",
+      "key": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:163:fontWeight",
       "value": 700,
       "prop": "fontWeight",
       "group": "typography",
@@ -5413,7 +5422,7 @@
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
     },
     {
-      "key": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:166:fontSize",
+      "key": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:167:fontSize",
       "value": 16,
       "prop": "fontSize",
       "group": "typography",
@@ -5421,7 +5430,7 @@
       "why": "글자 크기는 글자 상자의 두 축을 함께 바꾼다"
     },
     {
-      "key": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:166:fontWeight",
+      "key": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:167:fontWeight",
       "value": 700,
       "prop": "fontWeight",
       "group": "typography",
@@ -5429,7 +5438,7 @@
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
     },
     {
-      "key": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:171:paddingTop",
+      "key": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:172:paddingTop",
       "value": 12,
       "prop": "paddingTop",
       "group": "spacing",
@@ -18525,28 +18534,12 @@
       "why": "속성이 세로다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:438:borderRadius",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:439:borderRadius",
       "value": 12,
       "prop": "borderRadius",
       "group": "radius",
       "axis": "N",
       "why": "반경은 상자 크기를 바꾸지 않는다 — 축이 없다"
-    },
-    {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:441:fontSize",
-      "value": 14,
-      "prop": "fontSize",
-      "group": "typography",
-      "axis": "B",
-      "why": "글자 크기는 글자 상자의 두 축을 함께 바꾼다"
-    },
-    {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:441:fontWeight",
-      "value": 700,
-      "prop": "fontWeight",
-      "group": "typography",
-      "axis": "H",
-      "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
     },
     {
       "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:442:fontSize",
@@ -18565,7 +18558,23 @@
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:448:minHeight",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:443:fontSize",
+      "value": 14,
+      "prop": "fontSize",
+      "group": "typography",
+      "axis": "B",
+      "why": "글자 크기는 글자 상자의 두 축을 함께 바꾼다"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:443:fontWeight",
+      "value": 700,
+      "prop": "fontWeight",
+      "group": "typography",
+      "axis": "H",
+      "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:449:minHeight",
       "value": 44,
       "prop": "minHeight",
       "group": "size",
@@ -18573,7 +18582,7 @@
       "why": "속성이 세로다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:448:marginHorizontal",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:449:marginHorizontal",
       "value": 2,
       "prop": "marginHorizontal",
       "group": "spacing",
@@ -18581,7 +18590,7 @@
       "why": "속성이 가로다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:453:minHeight",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:454:minHeight",
       "value": 44,
       "prop": "minHeight",
       "group": "size",
@@ -18589,7 +18598,7 @@
       "why": "속성이 세로다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:453:gap",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:454:gap",
       "value": 4,
       "prop": "gap",
       "group": "spacing",
@@ -18597,7 +18606,7 @@
       "why": "flexDirection: 'row'"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:456:fontSize",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:457:fontSize",
       "value": 14,
       "prop": "fontSize",
       "group": "typography",
@@ -18605,7 +18614,7 @@
       "why": "글자 크기는 글자 상자의 두 축을 함께 바꾼다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:456:fontWeight",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:457:fontWeight",
       "value": 700,
       "prop": "fontWeight",
       "group": "typography",
@@ -18613,7 +18622,7 @@
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:490:paddingVertical",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:491:paddingVertical",
       "value": 12,
       "prop": "paddingVertical",
       "group": "spacing",
@@ -18621,7 +18630,7 @@
       "why": "속성이 세로다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:491:minWidth",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:492:minWidth",
       "value": 0,
       "prop": "minWidth",
       "group": "size",
@@ -18629,7 +18638,7 @@
       "why": "속성이 가로다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:493:fontWeight",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:494:fontWeight",
       "value": 800,
       "prop": "fontWeight",
       "group": "typography",
@@ -18637,7 +18646,7 @@
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:514:fontSize",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:515:fontSize",
       "value": 13,
       "prop": "fontSize",
       "group": "typography",
@@ -18645,7 +18654,7 @@
       "why": "글자 크기는 글자 상자의 두 축을 함께 바꾼다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:514:fontWeight",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:515:fontWeight",
       "value": 600,
       "prop": "fontWeight",
       "group": "typography",
@@ -18653,7 +18662,7 @@
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:531:minWidth",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:532:minWidth",
       "value": 44,
       "prop": "minWidth",
       "group": "size",
@@ -18661,7 +18670,7 @@
       "why": "속성이 가로다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:531:minHeight",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:532:minHeight",
       "value": 44,
       "prop": "minHeight",
       "group": "size",
@@ -18669,7 +18678,7 @@
       "why": "속성이 세로다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:533:fontWeight",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:534:fontWeight",
       "value": 800,
       "prop": "fontWeight",
       "group": "typography",
@@ -18677,7 +18686,7 @@
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:537:fontWeight",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:538:fontWeight",
       "value": 700,
       "prop": "fontWeight",
       "group": "typography",
@@ -18685,7 +18694,7 @@
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:549:minHeight",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:550:minHeight",
       "value": 44,
       "prop": "minHeight",
       "group": "size",
@@ -18693,7 +18702,7 @@
       "why": "속성이 세로다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:549:paddingHorizontal",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:550:paddingHorizontal",
       "value": 16,
       "prop": "paddingHorizontal",
       "group": "spacing",
@@ -18701,7 +18710,7 @@
       "why": "속성이 가로다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:552:fontSize",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:553:fontSize",
       "value": 14,
       "prop": "fontSize",
       "group": "typography",
@@ -18709,7 +18718,7 @@
       "why": "글자 크기는 글자 상자의 두 축을 함께 바꾼다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:552:fontWeight",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:553:fontWeight",
       "value": 700,
       "prop": "fontWeight",
       "group": "typography",
@@ -18717,7 +18726,7 @@
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:565:fontSize",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:566:fontSize",
       "value": 14,
       "prop": "fontSize",
       "group": "typography",
@@ -18725,7 +18734,7 @@
       "why": "글자 크기는 글자 상자의 두 축을 함께 바꾼다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:565:fontWeight",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:566:fontWeight",
       "value": 700,
       "prop": "fontWeight",
       "group": "typography",
@@ -18733,7 +18742,7 @@
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:565:marginBottom",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:566:marginBottom",
       "value": 8,
       "prop": "marginBottom",
       "group": "spacing",
@@ -18741,7 +18750,7 @@
       "why": "속성이 세로다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:570:paddingVertical",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:571:paddingVertical",
       "value": 12,
       "prop": "paddingVertical",
       "group": "spacing",
@@ -18749,7 +18758,7 @@
       "why": "속성이 세로다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:571:fontSize",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:572:fontSize",
       "value": 16,
       "prop": "fontSize",
       "group": "typography",
@@ -18757,7 +18766,7 @@
       "why": "글자 크기는 글자 상자의 두 축을 함께 바꾼다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:571:fontWeight",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:572:fontWeight",
       "value": 700,
       "prop": "fontWeight",
       "group": "typography",
@@ -18765,7 +18774,7 @@
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:577:fontSize",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:578:fontSize",
       "value": 14,
       "prop": "fontSize",
       "group": "typography",
@@ -18773,7 +18782,7 @@
       "why": "글자 크기는 글자 상자의 두 축을 함께 바꾼다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:577:fontWeight",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:578:fontWeight",
       "value": 700,
       "prop": "fontWeight",
       "group": "typography",
@@ -18781,7 +18790,7 @@
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:577:marginBottom",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:578:marginBottom",
       "value": 8,
       "prop": "marginBottom",
       "group": "spacing",
@@ -18789,7 +18798,7 @@
       "why": "속성이 세로다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:579:paddingVertical",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:580:paddingVertical",
       "value": 12,
       "prop": "paddingVertical",
       "group": "spacing",
@@ -18797,7 +18806,7 @@
       "why": "속성이 세로다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:580:minWidth",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:581:minWidth",
       "value": 0,
       "prop": "minWidth",
       "group": "size",
@@ -18805,7 +18814,7 @@
       "why": "속성이 가로다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:581:fontSize",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:582:fontSize",
       "value": 16,
       "prop": "fontSize",
       "group": "typography",
@@ -18813,7 +18822,7 @@
       "why": "글자 크기는 글자 상자의 두 축을 함께 바꾼다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:581:fontWeight",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:582:fontWeight",
       "value": 700,
       "prop": "fontWeight",
       "group": "typography",
@@ -18821,7 +18830,7 @@
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:582:fontSize",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:583:fontSize",
       "value": 14,
       "prop": "fontSize",
       "group": "typography",
@@ -18829,7 +18838,7 @@
       "why": "글자 크기는 글자 상자의 두 축을 함께 바꾼다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:588:borderRadius",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:589:borderRadius",
       "value": 12,
       "prop": "borderRadius",
       "group": "radius",
@@ -18837,7 +18846,7 @@
       "why": "반경은 상자 크기를 바꾸지 않는다 — 축이 없다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:589:fontSize",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:590:fontSize",
       "value": 16,
       "prop": "fontSize",
       "group": "typography",
@@ -18845,7 +18854,7 @@
       "why": "글자 크기는 글자 상자의 두 축을 함께 바꾼다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:589:fontWeight",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:590:fontWeight",
       "value": 700,
       "prop": "fontWeight",
       "group": "typography",
@@ -18853,7 +18862,7 @@
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:591:fontSize",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:592:fontSize",
       "value": 16,
       "prop": "fontSize",
       "group": "typography",
@@ -18861,7 +18870,7 @@
       "why": "글자 크기는 글자 상자의 두 축을 함께 바꾼다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:591:fontWeight",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:592:fontWeight",
       "value": 800,
       "prop": "fontWeight",
       "group": "typography",
@@ -18869,7 +18878,7 @@
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:595:fontSize",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:596:fontSize",
       "value": 14,
       "prop": "fontSize",
       "group": "typography",
@@ -18877,7 +18886,7 @@
       "why": "글자 크기는 글자 상자의 두 축을 함께 바꾼다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:599:marginTop",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:600:marginTop",
       "value": 16,
       "prop": "marginTop",
       "group": "spacing",
@@ -18885,7 +18894,7 @@
       "why": "속성이 세로다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:613:minWidth",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:614:minWidth",
       "value": 0,
       "prop": "minWidth",
       "group": "size",
@@ -18893,7 +18902,7 @@
       "why": "속성이 가로다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:614:fontSize",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:615:fontSize",
       "value": 16,
       "prop": "fontSize",
       "group": "typography",
@@ -18901,7 +18910,7 @@
       "why": "글자 크기는 글자 상자의 두 축을 함께 바꾼다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:614:fontWeight",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:615:fontWeight",
       "value": 600,
       "prop": "fontWeight",
       "group": "typography",
@@ -18909,7 +18918,7 @@
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:616:fontSize",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:617:fontSize",
       "value": 13,
       "prop": "fontSize",
       "group": "typography",
@@ -18917,7 +18926,7 @@
       "why": "글자 크기는 글자 상자의 두 축을 함께 바꾼다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:616:fontWeight",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:617:fontWeight",
       "value": 700,
       "prop": "fontWeight",
       "group": "typography",
@@ -18925,7 +18934,7 @@
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:620:fontSize",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:621:fontSize",
       "value": 16,
       "prop": "fontSize",
       "group": "typography",
@@ -18933,7 +18942,7 @@
       "why": "글자 크기는 글자 상자의 두 축을 함께 바꾼다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:620:fontWeight",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:621:fontWeight",
       "value": 700,
       "prop": "fontWeight",
       "group": "typography",
@@ -18941,7 +18950,7 @@
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:654:paddingVertical",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:655:paddingVertical",
       "value": 12,
       "prop": "paddingVertical",
       "group": "spacing",
@@ -18949,7 +18958,7 @@
       "why": "속성이 세로다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:666:paddingVertical",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:667:paddingVertical",
       "value": 12,
       "prop": "paddingVertical",
       "group": "spacing",
@@ -18957,7 +18966,7 @@
       "why": "속성이 세로다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:668:fontSize",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:669:fontSize",
       "value": 14,
       "prop": "fontSize",
       "group": "typography",
@@ -18965,7 +18974,7 @@
       "why": "글자 크기는 글자 상자의 두 축을 함께 바꾼다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:681:minWidth",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:682:minWidth",
       "value": 0,
       "prop": "minWidth",
       "group": "size",
@@ -18973,7 +18982,7 @@
       "why": "속성이 가로다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:682:fontSize",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:683:fontSize",
       "value": 16,
       "prop": "fontSize",
       "group": "typography",
@@ -18981,7 +18990,7 @@
       "why": "글자 크기는 글자 상자의 두 축을 함께 바꾼다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:682:fontWeight",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:683:fontWeight",
       "value": 600,
       "prop": "fontWeight",
       "group": "typography",
@@ -18989,7 +18998,7 @@
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:683:fontSize",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:684:fontSize",
       "value": 14,
       "prop": "fontSize",
       "group": "typography",
@@ -18997,7 +19006,7 @@
       "why": "글자 크기는 글자 상자의 두 축을 함께 바꾼다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:685:fontSize",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:686:fontSize",
       "value": 16,
       "prop": "fontSize",
       "group": "typography",
@@ -19005,7 +19014,7 @@
       "why": "글자 크기는 글자 상자의 두 축을 함께 바꾼다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:685:fontWeight",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:686:fontWeight",
       "value": 700,
       "prop": "fontWeight",
       "group": "typography",
@@ -19013,7 +19022,7 @@
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:701:paddingVertical",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:702:paddingVertical",
       "value": 12,
       "prop": "paddingVertical",
       "group": "spacing",
@@ -19021,7 +19030,7 @@
       "why": "속성이 세로다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:703:fontSize",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:704:fontSize",
       "value": 14,
       "prop": "fontSize",
       "group": "typography",
@@ -19029,7 +19038,7 @@
       "why": "글자 크기는 글자 상자의 두 축을 함께 바꾼다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:767:borderRadius",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:768:borderRadius",
       "value": 12,
       "prop": "borderRadius",
       "group": "radius",
@@ -19037,7 +19046,7 @@
       "why": "반경은 상자 크기를 바꾸지 않는다 — 축이 없다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:769:fontSize",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:770:fontSize",
       "value": 14,
       "prop": "fontSize",
       "group": "typography",
@@ -19045,7 +19054,7 @@
       "why": "글자 크기는 글자 상자의 두 축을 함께 바꾼다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:769:fontWeight",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:770:fontWeight",
       "value": 700,
       "prop": "fontWeight",
       "group": "typography",
@@ -19053,7 +19062,7 @@
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
     },
     {
-      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:769:hex",
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:770:hex",
       "value": null,
       "prop": "hex",
       "group": "color",
