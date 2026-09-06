@@ -1,10 +1,10 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-06T08:52:42.498Z",
+  "generatedAt": "2026-09-06T09:11:09.311Z",
   "schemaVersion": 1,
   "script": {
    "name": "full-page-flow-prototype-app-map-check.mjs",
-   "sha256": "1e9367798a227a60676f7fcfad5803dfa502e2690de96343a72fd5dae0cc4773"
+   "sha256": "0be1dbf8d7ffb5895e8092c5d1b1fbeacefe66b42df4ef18fce2356f231c8978"
   },
   "source": {
    "audit": {
@@ -14,7 +14,7 @@
    },
    "appMap": {
     "path": "full-page-flow-prototype-app-token-map.json",
-    "sha256": "d1416380d562bb313d1a9572c68cdbe33e58faced49a17f25daaf098bf1f2243"
+    "sha256": "98dcb18e387938920d70dff411b1f55bd942f61c8cddd8e439ff9bdc9dabd6c8"
    },
    "prototypeMap": {
     "path": "full-page-flow-prototype-token-map.json",
@@ -31,10 +31,10 @@
   "status": "PROPOSAL_COMPLETE",
   "declarations": 2353,
   "byBin": {
-   "primitive": 2063,
+   "primitive": 2064,
    "componentOwned": 249,
    "defect": 8,
-   "pendingApproval": 33,
+   "pendingApproval": 32,
    "approvedException": 0
   },
   "semantic통삭제사유": "**`semantic` 통을 없앴다** (솔 검수 W1 R1 F02). 감사기는 숫자 리터럴만 선언으로 모으므로 `fontSize: 16` → `TYPE.body` 치환은 semantic 으로 이동하는 것이 아니라 입력에서 사라진다. 영원히 0 인 통을 두고 \"P4 에서 채워진다\" 고 적는 것은 분류가 아니다. W1 의 범위를 **하드코딩 리터럴의 배정**으로 좁히고, 의미 토큰 채택률은 같은 감사기가 모으는 `tokenAccess` 로 따로 본다.",
@@ -5471,23 +5471,12 @@
   ],
   "binMovementLedger": {
    "previousMap": "full-page-flow-prototype-app-token-map.json",
-   "previousMapSha256": "710979f2d623b6c072abc1010dfc7fe5a3c5d26b9d183ada9578aca07e144283",
+   "previousMapSha256": "d1416380d562bb313d1a9572c68cdbe33e58faced49a17f25daaf098bf1f2243",
    "moves": {
-    "pendingApproval → componentOwned": {
-     "count": 10,
+    "pendingApproval → primitive": {
+     "count": 1,
      "rules": {
-      "R-SP-EMPTY-STATE → R-SP-EMPTY-STANDARD-V": 2,
-      "R-SP-EMPTY-STATE → R-SP-EMPTY-STANDARD-H": 2,
-      "R-SP-EMPTY-STATE → R-SP-EMPTY-COMPACT": 2,
-      "R-SP-EMPTY-STATE → R-SP-EMPTY-SHEET": 2,
-      "R-SP-EMPTY-STATE → R-SP-EMPTY-DAY-DETAIL": 1,
-      "R-SP-EMPTY-STATE → R-SP-SESSION-GATE-H": 1
-     }
-    },
-    "pendingApproval → defect": {
-     "count": 5,
-     "rules": {
-      "R-SP-CAPTION-GAP-VIEW → R-SP-CAPTION-GAP-VIEW": 5
+      "R-CL-NEAR-PALETTE → R-CL-PRIM": 1
      }
     }
    },
@@ -5495,30 +5484,30 @@
     "primitive": {
      "이전": 2063,
      "나감": 0,
-     "들어옴": 0,
-     "계산": 2063,
-     "실제": 2063
+     "들어옴": 1,
+     "계산": 2064,
+     "실제": 2064
     },
     "componentOwned": {
-     "이전": 239,
+     "이전": 249,
      "나감": 0,
-     "들어옴": 10,
+     "들어옴": 0,
      "계산": 249,
      "실제": 249
     },
     "defect": {
-     "이전": 3,
+     "이전": 8,
      "나감": 0,
-     "들어옴": 5,
+     "들어옴": 0,
      "계산": 8,
      "실제": 8
     },
     "pendingApproval": {
-     "이전": 48,
-     "나감": 15,
+     "이전": 33,
+     "나감": 1,
      "들어옴": 0,
-     "계산": 33,
-     "실제": 33
+     "계산": 32,
+     "실제": 32
     },
     "approvedException": {
      "이전": 0,
@@ -5546,9 +5535,9 @@
    },
    {
     "id": "R-CL-NEAR-PALETTE",
-    "question": "팔레트 값 바로 옆에 있는 색 셋을 팔레트로 당길지.",
-    "declarations": 3,
-    "evidence": "3건. #D5DAE0(MyNotificationsScreen 스위치 off 트랙)은 gray.300 #D5DBE1과 1비트 차이다. #B0B8C1은 비활성 탭 아이콘 1건, #FFF9F0은 MyVendorsScreen 그룹 카드 배경 1건이다. S2 뒤 전수 재측정값이다.",
+    "question": "정본에 없는 근접색 둘을 기존 역할로 수렴시킬지, 컴포넌트 역할로 보존할지.",
+    "declarations": 2,
+    "evidence": "2건. #D5DAE0은 MyNotificationsScreen 스위치 off 트랙이며 현 `tokens.ts`에는 이 값이나 `gray.300` 역할이 없다. #FFF9F0은 MyVendorsScreen 중복 구매처 카드 배경이고 같은 카드의 테두리는 `T.amberTint`다. #B0B8C1은 근접색이 아니라 `T.gray400`과 exact라 `R-CL-PRIM`으로 정정했다.",
     "ownerDecision": "팔레트 수렴은 D-1′(팔레트 AA 수렴)과 같은 결정면이라 함께 올린다."
    },
    {
@@ -5659,7 +5648,7 @@
     "name": null,
     "target": "space.xs",
     "openDecision": null,
-    "executionStage": "S3a",
+    "executionStage": "S3c",
     "axis": "vertical",
     "targetSource": "targetValue",
     "declaredDelta": "grow",
@@ -7259,7 +7248,7 @@
    {
     "id": "R-CL-PRIM",
     "bin": "primitive",
-    "declarations": 13,
+    "declarations": 14,
     "name": null,
     "target": "palette.*",
     "openDecision": null,
@@ -7287,6 +7276,10 @@
      [
       "hex:#8B95A1",
       1
+     ],
+     [
+      "hex:#B0B8C1",
+      1
      ]
     ]
    },
@@ -7297,7 +7290,7 @@
     "name": null,
     "target": "`shadow.sheet` · `shadow.sliderThumb` · `shadow.switchThumb`",
     "openDecision": null,
-    "executionStage": "S1",
+    "executionStage": "S3c",
     "axis": "none",
     "targetSource": null,
     "declaredDelta": "same",
@@ -7315,7 +7308,7 @@
    {
     "id": "R-CL-NEAR-PALETTE",
     "bin": "pendingApproval",
-    "declarations": 3,
+    "declarations": 2,
     "name": null,
     "target": null,
     "openDecision": "D-1′",
@@ -7334,10 +7327,6 @@
      ],
      [
       "hex:#FFF9F0",
-      1
-     ],
-     [
-      "hex:#B0B8C1",
       1
      ]
     ]
