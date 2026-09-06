@@ -33,15 +33,15 @@ test('작은 영수증도 원시 증거·제품 SHA·검사 계약 해시에 결
   assert.equal(receipt.tapProbeCells.length, 1);
   assert.equal(receipt.tapProbeCells[0].probeCount, 3);
   assert.deepEqual(receipt.cells.map((cell) => cell.coverage), [
-    { observedRows: 256, fullyVisibleRows: 184, excludedScrollableOrRootRows: 72, targetShortCount: 0 },
-    { observedRows: 192, fullyVisibleRows: 102, excludedScrollableOrRootRows: 90, targetShortCount: 0 },
+    { observedRows: 246, fullyVisibleRows: 165, excludedScrollableOrRootRows: 81, targetShortCount: 0 },
+    { observedRows: 246, fullyVisibleRows: 125, excludedScrollableOrRootRows: 121, targetShortCount: 0 },
   ]);
   assert.ok(receipt.cells.every((cell) => cell.status === 'PRESENT' && cell.textSha256.length === 64));
   assert.equal(new Set(receipt.cells.map((cell) => cell.productCommit)).size, 1);
   assert.ok(Object.values(receipt.contracts).every((item) => item.textSha256.length === 64));
 });
 
-test('실제 탭 3점은 안쪽 발화·직접 부모 밖 차단·overflow visible 조부모 밖 발화를 모두 요구한다', () => {
+test('Android 실제 탭은 안쪽 발화·직접 부모 밖 차단·overflow visible 조부모 밖 발화를 요구한다', () => {
   const expectedTap = {
     name: 'tap-fixture', platform: 'android',
     scriptSha256: tapProbe.manifest.scriptSha256,
@@ -55,6 +55,14 @@ test('실제 탭 3점은 안쪽 발화·직접 부모 밖 차단·overflow visib
   const broken = structuredClone(tapProbe);
   broken.empiricalTapProbe.find((item) => item.id === 'outside-overflow-visible-grandparent').onPressCount = 0;
   assert.match(validateTapProbeData(broken, expectedTap).join('\n'), /outside-overflow-visible-grandparent/);
+});
+
+test('iOS 실제 탭은 overflow-visible 직접 부모 밖에서도 발화해야 한다', () => {
+  const ios = json('.tmp/native-touch-ios-tap-probe-279.json');
+  assert.deepEqual(validateTapProbeData(ios, { name: 'ios-tap', platform: 'ios' }), []);
+  const broken = structuredClone(ios);
+  broken.empiricalTapProbe.find((item) => item.id === 'outside-direct-parent').onPressCount = 0;
+  assert.match(validateTapProbeData(broken, { name: 'ios-tap', platform: 'ios' }).join('\n'), /outside-direct-parent/);
 });
 
 test('커밋된 영수증은 현재 원시 증거와 exact 일치하고 closedPlatforms와 같은 범위를 요구한다', () => {
@@ -118,12 +126,12 @@ test('진단 산출물을 exact 증거로 받지 않는다', () => {
   assert.match(validateArtifactData(broken, contract, known, expected).join('\n'), /exact commit/);
 });
 
-test('감사기나 계약 SHA가 달라지면 낡은 증거다', () => {
+test('현재 파생 감사기나 계약 SHA가 달라지면 낡은 증거다', () => {
   const broken = structuredClone(source);
-  broken.manifest.scriptSha256 = '0'.repeat(64);
-  broken.manifest.contractSha256 = '1'.repeat(64);
-  assert.match(validateArtifactData(broken, contract, known, expected).join('\n'), /감사기 SHA 불일치/);
-  assert.match(validateArtifactData(broken, contract, known, expected).join('\n'), /계약 SHA 불일치/);
+  broken.manifest.derivation.auditSha256 = '0'.repeat(64);
+  broken.manifest.derivation.contractSha256 = '1'.repeat(64);
+  assert.match(validateArtifactData(broken, contract, known, expected).join('\n'), /파생 감사기 SHA 불일치/);
+  assert.match(validateArtifactData(broken, contract, known, expected).join('\n'), /파생 계약 SHA 불일치/);
 });
 
 test('iOS는 model·OS를 요구하지만 Android 전용 API level을 요구하지 않는다', () => {

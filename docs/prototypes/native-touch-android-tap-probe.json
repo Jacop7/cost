@@ -13,12 +13,12 @@
   },
   "manifest": {
     "evidenceStatus": "EXACT_COMMIT_EVIDENCE",
-    "productCommit": "98b22691d55215734e4b8ce5c4bde877b6a5c7fa",
-    "productTree": "b80b8309d9b0008b0f8cba38ca0e5fd5180a533d",
+    "productCommit": "460073d6976bbfadd768fb40432e33473bbf9c45",
+    "productTree": "bd4ef01c892d59f4ff4a44f19e992526526bd4dc",
     "script": "native-touch-runtime-tap-probe.mjs",
-    "scriptSha256": "3f82fb8cc1b8e5cadc126567bafce7ef8d756260030ad99b2dae5b6e37ef1384",
-    "auditSha256": "27c5a2cf1f6da984251d31e30852b16adb811453351bf1b366519e3c05144115",
-    "contractSha256": "1b47f0cd6d017d093f123ca75c6e81d9ffa0d45763c9c245efd01de5219a1dba",
+    "scriptSha256": "a2b6f5b5fc670a33fb861d9d93d41b6d7883fe4f1ee2d1b97d779c1b8c57b3df",
+    "auditSha256": "6d77597e19d25275f5b82d901a32c36e4f1392d0be251b0535270be5a25933db",
+    "contractSha256": "e912693b1f0ecc3df06eb1a6b2b14d4bee854cad8e995b632acc7060da656708",
     "method": "Hermes React DevTools onPress counter + adb shell input tap"
   },
   "target": {
