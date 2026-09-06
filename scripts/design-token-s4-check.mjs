@@ -4,6 +4,8 @@ import { existsSync, readFileSync, readdirSync, statSync, writeFileSync } from '
 import { join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
+import ts from 'typescript';
 
 const here = fileURLToPath(import.meta.url);
 const defaultRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
@@ -27,15 +29,86 @@ export function loadSources(root = defaultRoot) {
   return sources;
 }
 
+export function loadBaselineSources(root, commit) {
+  const sources = new Map();
+  const list = spawnSync('git', ['ls-tree', '-r', '--name-only', commit, '--', 'apps/mobile/app', 'apps/mobile/src'], { cwd: root, encoding: 'utf8' });
+  if (list.status !== 0) throw new Error(`baseline ${commit} 파일 목록을 읽지 못했다`);
+  for (const file of list.stdout.split(/\r?\n/).filter((name) => /\.(?:ts|tsx)$/.test(name) && !/\.(?:test|d)\.tsx?$/.test(name))) {
+    const shown = spawnSync('git', ['show', `${commit}:${file}`], { cwd: root, encoding: 'utf8', maxBuffer: 20 * 1024 * 1024 });
+    if (shown.status !== 0) throw new Error(`baseline 파일을 읽지 못했다: ${file}`);
+    sources.set(file, shown.stdout);
+  }
+  return sources;
+}
+
+const geometryProps = new Set([
+  'width', 'height', 'minWidth', 'minHeight', 'maxWidth', 'maxHeight',
+  'padding', 'paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft', 'paddingHorizontal', 'paddingVertical',
+  'margin', 'marginTop', 'marginRight', 'marginBottom', 'marginLeft', 'marginHorizontal', 'marginVertical',
+  'gap', 'rowGap', 'columnGap', 'top', 'right', 'bottom', 'left', 'position', 'flexDirection', 'flexWrap',
+]);
+const geometryAttrs = new Set(['hitSlop', 'numberOfLines', 'maxFontSizeMultiplier']);
+const sha = (value) => createHash('sha256').update(value).digest('hex');
+const compact = (value) => value.replace(/\s+/g, ' ').trim();
+
+/** S4가 허용하는 기하·터치·줄바꿈 변화의 AST 투영. 건수 정규식과 달리 위치가 바뀌거나 상쇄돼도 잡는다. */
+export function astGeometryInventory(sources) {
+  const result = new Map();
+  for (const [file, text] of sources) {
+    if (!/\.(?:ts|tsx)$/.test(file)) continue;
+    const sf = ts.createSourceFile(file, text, ts.ScriptTarget.Latest, true, file.endsWith('x') ? ts.ScriptKind.TSX : ts.ScriptKind.TS);
+    const rows = [];
+    const visit = (node) => {
+      if (ts.isPropertyAssignment(node) && geometryProps.has(node.name.getText(sf).replace(/^['"]|['"]$/g, '')))
+        rows.push(`${sf.getLineAndCharacterOfPosition(node.getStart(sf)).line + 1}:prop:${compact(node.getText(sf))}`);
+      if (ts.isJsxAttribute(node) && geometryAttrs.has(node.name.text))
+        rows.push(`${sf.getLineAndCharacterOfPosition(node.getStart(sf)).line + 1}:attr:${compact(node.getText(sf))}`);
+      ts.forEachChild(node, visit);
+    };
+    visit(sf);
+    if (rows.length) result.set(file, rows);
+  }
+  return result;
+}
+
+export function astDiffManifest(beforeSources, afterSources) {
+  const before = astGeometryInventory(beforeSources), after = astGeometryInventory(afterSources);
+  const files = [...new Set([...before.keys(), ...after.keys()])].sort();
+  return files.flatMap((file) => {
+    const a = before.get(file) ?? [], b = after.get(file) ?? [];
+    const beforeHash = sha(a.join('\n')), afterHash = sha(b.join('\n'));
+    return beforeHash === afterHash ? [] : [{ file, beforeHash, afterHash, beforeCount: a.length, afterCount: b.length }];
+  });
+}
+
+export function astDiffContract(beforeSources, afterSources) {
+  const items = astDiffManifest(beforeSources, afterSources);
+  return {
+    files: items.map((item) => item.file),
+    beforeHash: sha(JSON.stringify(items.map(({ file, beforeHash, beforeCount }) => ({ file, beforeHash, beforeCount })))),
+    afterHash: sha(JSON.stringify(items.map(({ file, afterHash, afterCount }) => ({ file, afterHash, afterCount })))),
+  };
+}
+
 const occurrences = (sources, regex) => {
   let count = 0;
   for (const text of sources.values()) count += [...text.matchAll(regex)].length;
   return count;
 };
 
-export function evaluateS4(sources, contract) {
+export function evaluateS4(sources, contract, baselineSources) {
   const failures = [];
   const fail = (message) => failures.push(message);
+  if (!baselineSources) fail('S4 baseline AST 입력이 없다');
+  else {
+    const actual = astDiffContract(baselineSources, sources);
+    const expected = contract.allowedAstDiff ?? {};
+    if (JSON.stringify(actual) !== JSON.stringify(expected)) {
+      const actualFiles = actual.files?.join(', ') ?? '';
+      const expectedFiles = expected.files?.join(', ') ?? '';
+      fail(`S4 허용 AST diff 불일치 — 실제 [${actualFiles}] · 계약 [${expectedFiles}]`);
+    }
+  }
   const count = (name, regex) => {
     const actual = occurrences(sources, regex);
     const expected = contract.counts[name];
@@ -71,25 +144,33 @@ export function evaluateS4(sources, contract) {
   if ([...tabs.matchAll(/tabBarLabel\s*:\s*tabLabel\(/g)].length !== contract.counts.tabScreens) fail('탭 화면 5개의 custom label 연결이 아니다');
   for (const pattern of [/numberOfLines=\{2\}/, /maxFontSizeMultiplier=\{2\}/, /onLayout=/,
     /Math\.max\(0,\s*labelHeight\s*-\s*COMPONENT\.tabBar\.labelBaseLineHeight\)/,
-    /\+\s*bottomPad/, /paddingBottom\s*:\s*bottomPad/]) if (!pattern.test(tabs)) fail(`탭바 계약 누락: ${pattern}`);
+    /\+\s*bottomPad/, /paddingBottom\s*:\s*bottomPad/, /useWindowDimensions\(\)/,
+    /\[bottomPad,\s*fontScale\]/, /key=\{`\$\{label\}-\$\{fontScale\}`\}/,
+    /tabBarInactiveTintColor\s*:\s*COLOR\.text\.tertiary/]) if (!pattern.test(tabs)) fail(`탭바 계약 누락: ${pattern}`);
   if ((tabs.match(/insets\.bottom/g) ?? []).length !== 1) fail('safe-area bottom을 정확히 한 번만 읽지 않는다');
 
   const provider = get('apps/mobile/src/components/layout/TabBarMetrics.tsx');
   if (!/useBottomTabBarHeight\(\)/.test(provider)) fail('실제 탭바 높이 관측이 없다');
+  if (!/Tabs[^\n]*전용|Tabs[^\n]*아래/.test(provider)) fail('TabBarMetrics의 Tabs 전용 생명주기 계약이 문서화되지 않았다');
   const stacks = ['ingredients', 'recipes', 'orders', 'sales', 'my'];
   const wrapped = stacks.filter((name) => /<ObservedTabBarHeightProvider>/.test(get(`apps/mobile/app/(tabs)/${name}/_layout.tsx`))).length;
   if (wrapped !== contract.counts.tabStackProviders) fail(`탭 Stack provider ${wrapped} ≠ ${contract.counts.tabStackProviders}`);
 
   const button = get('apps/mobile/src/components/kit/Button.tsx');
-  const caller = button.indexOf('\n        style,');
-  const locked = button.indexOf('{ minHeight: minTouchTarget }');
-  if (caller < 0 || locked < 0 || locked < caller) fail('Button minTouchTarget이 호출부 style 뒤에서 잠기지 않았다');
+  for (const pattern of [/sm:\s*\{[^}]*hs:\s*7\b/, /md:\s*\{[^}]*hs:\s*1\b/, /lg:\s*\{[^}]*hs:\s*0\b/, /hitSlop=\{s\.hs\}/])
+    if (!pattern.test(button)) fail(`Button 시각 보존 hitSlop 계약 누락: ${pattern}`);
+  if (/minHeight\s*:\s*minTouchTarget/.test(button)) fail('Button에 시각 높이를 바꾸는 minTouchTarget이 돌아왔다');
+
+  const sheet = get('apps/mobile/src/components/kit/Sheet.tsx');
+  for (const pattern of [/useSafeAreaInsets\(\)/, /paddingBottom\s*:\s*LAYOUT\.scroll\.end\s*\+\s*insets\.bottom/])
+    if (!pattern.test(sheet)) fail(`Modal Sheet safe-area 계약 누락: ${pattern}`);
 
   const category = get('apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx');
   if (!/accessibilityLabel=\{`\$\{c\.name\} 순서 변경`\}/.test(category) || !/width\s*:\s*44,\s*height\s*:\s*44/.test(category))
     fail('카테고리 순서 변경 단일 44×44 진입점이 없다');
   if (/width\s*:\s*28|height\s*:\s*20/.test(category)) fail('옛 28×20 재정렬 상자가 남아 있다');
-  if (!/Alert\.alert\(`\$\{name\} 순서 변경`/.test(category)) fail('순서 변경 방향 선택이 없다');
+  if (!/visible=\{reordering\s*!==\s*null\}/.test(category) || !/위로 이동/.test(category) || !/아래로 이동/.test(category))
+    fail('웹에서도 두 방향이 동작하는 kit Sheet 순서 선택이 없다');
 
   const profit = get('apps/mobile/src/features/sales/components/ProfitBlocks.tsx');
   if (!/매장 \{m\.qtyHall\}[\s\S]*?폐기 \$\{m\.qtyWaste\}/.test(profit)) fail('sales-menu-sub 요약을 찾지 못했다');
@@ -135,7 +216,10 @@ function main() {
   const root = resolve(opt.root ?? defaultRoot);
   const contractPath = resolve(opt.contract ?? join(root, 'scripts/design-token-s4-contract.json'));
   const contract = JSON.parse(readFileSync(contractPath, 'utf8'));
-  const failures = evaluateS4(loadSources(root), contract);
+  let baselineSources;
+  try { baselineSources = loadBaselineSources(root, contract.baselineCommit); }
+  catch (error) { baselineSources = null; console.error(String(error)); }
+  const failures = evaluateS4(loadSources(root), contract, baselineSources);
   let head = null; let dirty = null;
   if (existsSync(join(root, '.git'))) {
     head = spawnSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).stdout.trim();

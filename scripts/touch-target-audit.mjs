@@ -400,8 +400,9 @@ for (const f of files) {
 //
 // 경계는 위험이 열려 있는 상태다. 그래서 **모든 variant 의 소비처 ID 와 개수를 래칫한다** —
 // 열린 위험이 조용히 퍼지는 것을 막는다. `Button` 이 호출부가 무력화할 수 없는
-// `minHeight: 44` 를 **호출부 style 뒤에** 갖게 되면(그건 시각 변화라 `S4`) 그때 정적 통과로
-// 닫고 소비처 래칫을 푼다. 앞에 둔 하한은 호출부가 다시 줄일 수 있으므로 인정하지 않는다.
+// `minHeight: 44` 를 **호출부 style 뒤에** 갖거나, variant별 정적 hitSlop이 내용 하한을 44로
+// 만들고 모든 소비처가 높이·세로 padding을 덮지 않으면 정적 통과로 닫는다. 후자는 S4a의
+// "시각 변화 0" 계약을 지키는 경로다. 호출부 치수 override가 하나라도 있으면 다시 경계다.
 
 /**
  * `<Button …>` 소비처를 **여는 태그 전체**로 읽는다 (솔 검수 `R3 F01`).
@@ -416,6 +417,7 @@ const SPREAD = /(?:^|\s)\{\s*\.\.\.[A-Za-z_$][\w$]*\s*\}/;
 const buttonUses = (defaultSize) => {
   const byVariant = new Map();
   const testByVariant = new Map();
+  const dimensionOverrides = new Map();
   const dynamic = [];
   let bucket = byVariant;
   const add = (k, at) => { if (!bucket.has(k)) bucket.set(k, []); bucket.get(k).push(at); };
@@ -432,12 +434,20 @@ const buttonUses = (defaultSize) => {
       const body = tagBody(text, m.index);
       const at = `${relative(idRoot, f).replace(/\\/g, '/')}:${lineOf(m.index)}`;
       const lit = body.match(/\bsize\s*=\s*(?:["'](\w+)["']|\{\s*["'](\w+)["']\s*\})/);
-      if (lit) { add(lit[1] ?? lit[2], at); continue; }
+      const variant = lit ? (lit[1] ?? lit[2]) : defaultSize;
+      const inlineStyle = body.match(/\bstyle\s*=\s*\{\{([\s\S]*?)\}\}/)?.[1];
+      const unknownStyle = /\bstyle\s*=/.test(body) && inlineStyle === undefined;
+      const dimensionOverride = unknownStyle || /\b(?:height|minHeight|maxHeight|padding|paddingVertical|paddingTop|paddingBottom)\s*:/.test(inlineStyle ?? '');
+      if (dimensionOverride && bucket === byVariant) {
+        if (!dimensionOverrides.has(variant)) dimensionOverrides.set(variant, []);
+        dimensionOverrides.get(variant).push(at);
+      }
+      if (lit) { add(variant, at); continue; }
       if (/\bsize\s*=\s*\{/.test(body) || SPREAD.test(body)) { if (bucket === byVariant) dynamic.push(at); continue; }
       add(defaultSize, at);
     }
   }
-  return { byVariant, testByVariant, dynamic };
+  return { byVariant, testByVariant, dynamic, dimensionOverrides };
 };
 
 const componentContracts = [];
@@ -456,23 +466,32 @@ let dynamicUses = null;
       ? (/^\d/.test(forcedMin[1]) ? Number(forcedMin[1]) : (tokenNumberValues.get(forcedMin[1]) ?? null))
       : null;
     const lockedMinHeight = callerStyleAt >= 0 && forcedMinAt > callerStyleAt ? forcedMinValue : null;
+    const variantHitSlop = /hitSlop\s*=\s*\{s\.hs\}/.test(t);
     if (!d) componentContracts.push({ 컴포넌트: 'Button', 판정: '읽기실패', 사유: "기본 size 값(`size = 'md'`)을 못 읽었다 — 기본값을 모르면 size 없는 자리를 배정할 수 없다" });
     else if (!m) componentContracts.push({ 컴포넌트: 'Button', 판정: '읽기실패', 사유: 'sizes 표를 못 읽었다 — 모양이 바뀌었으면 계약을 다시 맞춰라' });
     else {
       const uses = buttonUses(d[1]);
       dynamicUses = uses.dynamic;
       for (const line of m[1].split('\n')) {
-        const v = line.match(/(\w+)\s*:\s*\{\s*pv:\s*(\d+),\s*ph:\s*(\d+),\s*fs:\s*(\d+)/);
+        const v = line.match(/(\w+)\s*:\s*\{\s*pv:\s*(\d+),\s*ph:\s*(\d+),\s*fs:\s*(\d+),\s*r:\s*(\d+),\s*hs:\s*(\d+)/);
         if (!v) continue;
-        const [, name, pv, ph, fs] = v;
+        const [, name, pv, ph, fs, , hs] = v;
         const contentLo = 2 * +pv + +fs;
-        const lo = lockedMinHeight === null ? contentLo : Math.max(contentLo, lockedMinHeight);
+        const overrides = uses.dimensionOverrides.get(name) ?? [];
+        const hitSlopLo = variantHitSlop && overrides.length === 0 ? contentLo + 2 * +hs : contentLo;
+        const lo = lockedMinHeight === null ? hitSlopLo : Math.max(contentLo, lockedMinHeight);
+        const staticallyClosed = (lockedMinHeight !== null && lockedMinHeight >= MIN)
+          || (variantHitSlop && overrides.length === 0 && hitSlopLo >= MIN);
         const at = (uses.byVariant.get(name) ?? []).slice().sort();
         const 시험 = (uses.testByVariant.get(name) ?? []).slice().sort();
-        componentContracts.push({ 컴포넌트: `Button size="${name}"`, paddingVertical: +pv, fontSize: +fs,
-          높이하한: lo, 기본값여부: name === d[1], 판정: lockedMinHeight !== null && lockedMinHeight >= MIN ? '통과' : '경계',
+        componentContracts.push({ 컴포넌트: `Button size="${name}"`, paddingVertical: +pv, fontSize: +fs, hitSlop: +hs,
+          높이하한: lo, 기본값여부: name === d[1], 판정: staticallyClosed ? '통과' : '경계',
           판정사유: lockedMinHeight !== null && lockedMinHeight >= MIN
             ? `호출부 style 뒤의 강제 minHeight ${lockedMinHeight} 가 모든 variant 를 44 아래로 줄지 않게 한다`
+            : variantHitSlop && overrides.length === 0 && hitSlopLo >= MIN
+              ? `내용 하한 ${contentLo} + hitSlop ${hs}×2 = ${hitSlopLo}, 치수 override 소비처 0으로 시각 크기 없이 44를 채운다`
+              : overrides.length > 0
+                ? `치수 override 소비처 ${overrides.length}곳(${overrides.join(', ')}) 때문에 variant hitSlop 하한을 정적으로 보장하지 못한다`
             : lo >= MIN
               ? `내용 하한 ${lo} 는 44 를 넘지만 호출부 style 이 padding·height 를 덮어 줄일 수 있어 정적으로 닫지 않는다 (R4 F02)`
               : `내용 하한 ${lo} < 44 이고 호출부 뒤 강제 하한이 없다 — S4 렌더 실측이 닫는다`,

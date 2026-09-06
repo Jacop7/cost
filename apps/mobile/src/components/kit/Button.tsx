@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { Icon, type IconName } from './Icon';
-import { COLOR, T, minTouchTarget } from '@/theme/tokens';
+import { COLOR, T } from '@/theme/tokens';
 
 type Kind = 'primary' | 'tint' | 'gray' | 'ghost' | 'danger';
 type Size = 'sm' | 'md' | 'lg';
@@ -32,10 +32,10 @@ export function Button({
     ghost: { bg: 'transparent', fg: T.sub, border: T.line },
     danger: { bg: T.redTint, fg: T.red },
   };
-  const sizes: Record<Size, { pv: number; ph: number; fs: number; r: number }> = {
-    sm: { pv: 8, ph: 12, fs: 14, r: 9 },
-    md: { pv: 13, ph: 16, fs: 16, r: 12 },
-    lg: { pv: 16, ph: 18, fs: 17, r: 14 },
+  const sizes: Record<Size, { pv: number; ph: number; fs: number; r: number; hs: number }> = {
+    sm: { pv: 8, ph: 12, fs: 14, r: 9, hs: 7 },
+    md: { pv: 13, ph: 16, fs: 16, r: 12, hs: 1 },
+    lg: { pv: 16, ph: 18, fs: 17, r: 14, hs: 0 },
   };
   const c = kinds[kind];
   const s = sizes[size];
@@ -50,6 +50,7 @@ export function Button({
       accessibilityLabel={accessibilityLabel}
       accessibilityHint={accessibilityHint}
       accessibilityState={{ disabled: blocked, busy: loading }}
+      hitSlop={s.hs}
       style={({ pressed }) => [
         {
           flexDirection: iconRight ? 'row-reverse' : 'row',
@@ -62,8 +63,6 @@ export function Button({
           opacity: disabled ? 0.4 : pressed && kind !== 'primary' ? 0.85 : 1,
         },
         style,
-        // 호출부 style 뒤에 둬 모든 variant의 실제 누름 상자가 44px 아래로 줄지 않게 한다.
-        { minHeight: minTouchTarget },
       ]}
     >
       {iconEl}

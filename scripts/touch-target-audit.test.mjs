@@ -171,12 +171,13 @@ test('알려진 미달이 **더 나빠지면** FAIL — 존재만 비교하지 �
 const BUTTON_TSX = `
 type Size = 'sm' | 'md' | 'lg';
 export function Button({ children, kind = 'primary', size = 'md', full }: Props) {
-  const sizes: Record<Size, { pv: number; ph: number; fs: number; r: number }> = {
-    sm: { pv: 8, ph: 12, fs: 14, r: 9 },
-    md: { pv: 13, ph: 16, fs: 16, r: 12 },
-    lg: { pv: 16, ph: 18, fs: 17, r: 14 },
+  const sizes: Record<Size, { pv: number; ph: number; fs: number; r: number; hs: number }> = {
+    sm: { pv: 8, ph: 12, fs: 14, r: 9, hs: 7 },
+    md: { pv: 13, ph: 16, fs: 16, r: 12, hs: 1 },
+    lg: { pv: 16, ph: 18, fs: 17, r: 14, hs: 0 },
   };
-  return null;
+  const s = sizes[size];
+  return <Pressable hitSlop={s.hs} style={[base, style]} />;
 }
 `;
 
@@ -198,43 +199,38 @@ const runButton = ({ consumers = '', known = {}, args = [], button = BUTTON_TSX 
 
 /** 시험용 계약 — 세 variant 를 다 올려 둔다. `at` 은 시험마다 덮어쓴다. */
 const contracts = (at) => [
-  { 컴포넌트: 'Button size="sm"', 판정: '경계', 높이하한: 30, 소비처: (at.sm ?? []).length, at: at.sm ?? [] },
-  { 컴포넌트: 'Button size="md"', 판정: '경계', 높이하한: 42, 소비처: (at.md ?? []).length, at: at.md ?? [] },
-  { 컴포넌트: 'Button size="lg"', 판정: '경계', 높이하한: 49, 소비처: (at.lg ?? []).length, at: at.lg ?? [] },
+  { 컴포넌트: 'Button size="sm"', 판정: '통과', 높이하한: 44, 소비처: (at.sm ?? []).length, at: at.sm ?? [] },
+  { 컴포넌트: 'Button size="md"', 판정: '통과', 높이하한: 44, 소비처: (at.md ?? []).length, at: at.md ?? [] },
+  { 컴포넌트: 'Button size="lg"', 판정: '통과', 높이하한: 49, 소비처: (at.lg ?? []).length, at: at.lg ?? [] },
 ];
 
-test('공용 컴포넌트 계약 — 하한이 44 를 넘어도 통과로 닫지 않는다 (호출부 style 이 높이를 줄일 수 있다)', () => {
+test('공용 컴포넌트 계약 — variant별 hitSlop으로 시각 크기 없이 44를 채운다', () => {
   const r = runButton({ known: { components: contracts({}) } });
   assert.equal(r.code, 0, r.out);
-  assert.match(r.out, /Button size="sm" 높이 하한 30 → 경계/);
-  assert.match(r.out, /Button size="md" 높이 하한 42 → 경계/);
-  assert.match(r.out, /Button size="lg" 높이 하한 49 → 경계/);
-  assert.doesNotMatch(r.out, /어떤 글꼴에서도/);
-  assert.doesNotMatch(r.out, /→ 통과/);
-});
-
-test('Button 호출부 style 뒤의 minHeight 44는 모든 variant를 통과로 닫는다', () => {
-  const button = BUTTON_TSX.replace('return null;', 'return <Pressable style={[base, style, { minHeight: 44 }]} />;');
-  const passed = contracts({}).map((item) => ({ ...item, 판정: '통과', 높이하한: Math.max(item.높이하한, 44) }));
-  const r = runButton({ button, known: { components: passed } });
-  assert.equal(r.code, 0, r.out);
   assert.match(r.out, /Button size="sm" 높이 하한 44 → 통과/);
+  assert.match(r.out, /Button size="md" 높이 하한 44 → 통과/);
   assert.match(r.out, /Button size="lg" 높이 하한 49 → 통과/);
 });
 
-test('Button minHeight 44가 호출부 style 앞이면 override 가능하므로 경계로 남는다', () => {
-  const button = BUTTON_TSX.replace('return null;', 'return <Pressable style={[base, { minHeight: 44 }, style]} />;');
+test('Button variant hitSlop 연결이 빠지면 통과 계약을 재현하지 못한다', () => {
+  const button = BUTTON_TSX.replace('hitSlop={s.hs} ', '');
   const r = runButton({ button, known: { components: contracts({}) } });
-  assert.equal(r.code, 0, r.out);
-  assert.match(r.out, /Button size="sm" 높이 하한 30 → 경계/);
+  assert.equal(r.code, 1, r.out);
+  assert.match(r.out, /Button size="sm" 판정이 통과 → 경계/);
 });
 
-test('Button 호출부 뒤 강제 하한이 44 미만이면 경계로 남는다', () => {
-  const button = BUTTON_TSX.replace('return null;', 'return <Pressable style={[base, style, { minHeight: 40 }]} />;');
-  const expected = contracts({}).map((item) => item.컴포넌트 === 'Button size="sm"' ? { ...item, 높이하한: 40 } : item);
-  const r = runButton({ button, known: { components: expected } });
-  assert.equal(r.code, 0, r.out);
-  assert.match(r.out, /Button size="md" 높이 하한 42 → 경계/);
+test('Button sm hitSlop이 6으로 줄면 유효 하한 44 미달을 잡는다', () => {
+  const button = BUTTON_TSX.replace('r: 9, hs: 7', 'r: 9, hs: 6');
+  const r = runButton({ button, known: { components: contracts({}) } });
+  assert.equal(r.code, 1, r.out);
+  assert.match(r.out, /Button size="sm" 높이 하한이 44 → 42/);
+});
+
+test('Button 소비처가 높이를 덮으면 variant hitSlop 통과를 닫지 않는다', () => {
+  const consumers = `<Button size="sm" onPress={f} style={{ height: 20 }}>A</Button>`;
+  const r = runButton({ consumers, known: { components: contracts({ sm: ['src/Consumers.tsx:1'] }) } });
+  assert.equal(r.code, 1, r.out);
+  assert.match(r.out, /Button size="sm" 판정이 통과 → 경계/);
 });
 
 test('여러 줄로 나뉜 여는 태그의 size 도 읽는다 — 줄 단위 정규식이 놓치던 자리다', () => {
@@ -262,22 +258,25 @@ test('기본값을 Button.tsx 에서 못 읽으면 읽기실패다 — 조용히
 });
 
 test('경계 variant 의 소비처가 늘면 FAIL — 열린 위험이 조용히 퍼지는 것을 막는다', () => {
+  const button = BUTTON_TSX.replace('r: 9, hs: 7', 'r: 9, hs: 6');
+  const open = contracts({ sm: ['src/Consumers.tsx:1'] }).map((item) => item.컴포넌트 === 'Button size="sm"'
+    ? { ...item, 판정: '경계', 높이하한: 42 } : item);
   const r = runButton({
+    button,
     consumers: `<Button size="sm" onPress={f}>A</Button>\n<Button size="sm" onPress={g}>B</Button>`,
-    known: { components: contracts({ sm: ['src/Consumers.tsx:1'] }) },
+    known: { components: open },
   });
   assert.equal(r.code, 1, `소비처 증가를 놓쳤다\n${r.out}`);
   assert.match(r.out, /새 Button size="sm" 소비처/);
   assert.match(r.out, /소비처가 1 → 2곳으로 바뀌었다/);
 });
 
-test('하한이 44 를 넘는 variant 의 소비처도 래칫한다 — 통과로 닫지 않았으니 위험이 열려 있다', () => {
+test('통과 variant의 소비처 증가는 열린 위험이 아니므로 실패시키지 않는다', () => {
   const r = runButton({
     consumers: `<Button size="lg" onPress={f}>A</Button>\n<Button size="lg" onPress={g}>B</Button>`,
     known: { components: contracts({ lg: ['src/Consumers.tsx:1'] }) },
   });
-  assert.equal(r.code, 1, `lg 소비처 증가를 놓쳤다 — R4 F02 로 전량 래칫이다\n${r.out}`);
-  assert.match(r.out, /새 Button size="lg" 소비처/);
+  assert.equal(r.code, 0, r.out);
 });
 
 test('size 가 변수·spread 면 동적으로 세고 따로 래칫한다', () => {

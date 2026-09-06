@@ -38,6 +38,7 @@ export function CategoryEditScreen({ kind, backTo }: { kind: CategoryKind; backT
   const reorder = useReorderCategories();
 
   const [editing, setEditing] = useState<CategoryRow | null>(null);
+  const [reordering, setReordering] = useState<CategoryRow | null>(null);
   const [adding, setAdding] = useState(false);
   const [name, setName] = useState('');
 
@@ -93,13 +94,10 @@ export function CategoryEditScreen({ kind, backTo }: { kind: CategoryKind; backT
     });
   };
 
-  /** 두 28×20 버튼의 터치 영역이 겹치지 않도록 한 개의 44×44 진입점에서 방향을 고른다. */
-  const openReorder = (index: number, name: string) => {
-    const actions: Parameters<typeof Alert.alert>[2] = [];
-    if (index > 0) actions.push({ text: '위로 이동', onPress: () => move(index, -1) });
-    if (index < items.length - 1) actions.push({ text: '아래로 이동', onPress: () => move(index, 1) });
-    actions.push({ text: '취소', style: 'cancel' });
-    Alert.alert(`${name} 순서 변경`, '이동할 방향을 골라 주세요.', actions);
+  /** 두 28×20 버튼의 터치 영역이 겹치지 않도록 한 개의 44×44 진입점에서 방향 시트를 연다. */
+  const chooseMove = (index: number, dir: -1 | 1) => {
+    setReordering(null);
+    move(index, dir);
   };
 
   return (
@@ -136,7 +134,7 @@ export function CategoryEditScreen({ kind, backTo }: { kind: CategoryKind; backT
             {items.map((c, i) => (
               <View key={c.id} style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: space.sm, paddingLeft: space.sm, paddingRight: 12, borderBottomWidth: i < items.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
                 <Pressable
-                  onPress={() => openReorder(i, c.name)}
+                  onPress={() => setReordering(c)}
                   disabled={items.length < 2}
                   accessibilityRole="button"
                   accessibilityLabel={`${c.name} 순서 변경`}
@@ -168,6 +166,29 @@ export function CategoryEditScreen({ kind, backTo }: { kind: CategoryKind; backT
           <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.text.link }}>카테고리 추가</Text>
         </Pressable>
       </ScrollView>
+
+      <Sheet
+        visible={reordering !== null}
+        onClose={() => setReordering(null)}
+        title={reordering ? `${reordering.name} 순서 변경` : '순서 변경'}
+        sub="이동할 방향을 골라 주세요."
+        height={330}
+      >
+        {reordering ? (() => {
+          const index = items.findIndex((item) => item.id === reordering.id);
+          return (
+            <View style={{ gap: space.sm }}>
+              <Button kind="gray" size="lg" full icon="up" disabled={index <= 0} onPress={() => chooseMove(index, -1)}>
+                위로 이동
+              </Button>
+              <Button kind="gray" size="lg" full icon="down" disabled={index < 0 || index >= items.length - 1} onPress={() => chooseMove(index, 1)}>
+                아래로 이동
+              </Button>
+              <Button kind="ghost" size="lg" full onPress={() => setReordering(null)}>취소</Button>
+            </View>
+          );
+        })() : null}
+      </Sheet>
 
       <Sheet
         visible={adding}
