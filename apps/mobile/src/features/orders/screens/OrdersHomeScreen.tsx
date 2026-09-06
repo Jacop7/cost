@@ -312,7 +312,7 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
                   </View>
 
                   {/* 식재료 상세는 위 제목 줄의 화살표로 간다 — 여기는 행동만 둔다. */}
-                  <View style={{ marginTop: 2 }}>
+                  <View style={{ marginTop: space.xs }}>
                     <Button kind="primary" size="sm" full onPress={() => openOrder(c)}>주문하기</Button>
                   </View>
                 </View>

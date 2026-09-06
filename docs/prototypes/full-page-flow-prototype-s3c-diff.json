@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "stage": "S3c",
+  "baselineCommit": "4a0debd242a8461fcf4049d8a55e8ea81541e078",
+  "assignments": 8,
+  "changedFiles": [
+    "apps/mobile/src/components/kit/Sheet.tsx",
+    "apps/mobile/src/components/kit/Slider.tsx",
+    "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx",
+    "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx",
+    "apps/mobile/src/features/my/screens/FixedCostScreen.tsx",
+    "apps/mobile/src/features/my/screens/MyChannelsScreen.tsx",
+    "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx",
+    "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx"
+  ],
+  "appTreeSha256": "9cbd129e34aa5d0f40840338a9f72ea1e9e68b077f76af141e70624176b1dce9",
+  "status": "PASS",
+  "failures": []
+}

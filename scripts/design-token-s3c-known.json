@@ -1,0 +1,116 @@
+{
+  "schemaVersion": 1,
+  "stage": "S3c",
+  "baselineCommit": "4a0debd242a8461fcf4049d8a55e8ea81541e078",
+  "expectedAssignments": 8,
+  "note": "PRT-249에서 확정된 W1 잔여 defect 8건만 실행한다. 각 before→after를 기준선에 적용한 결과가 현재 앱 파일과 글자 그대로 같아야 한다.",
+  "assignments": [
+    {
+      "id": "S3C-SP-01",
+      "file": "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx",
+      "rule": "R-SP-CAPTION-GAP-VIEW",
+      "axis": "vertical",
+      "delta": "grow",
+      "currentValue": 2,
+      "targetValue": 4,
+      "target": "space.xs",
+      "replacements": [
+        { "before": "marginTop: 2", "after": "marginTop: space.xs" }
+      ]
+    },
+    {
+      "id": "S3C-SP-02",
+      "file": "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx",
+      "rule": "R-SP-CAPTION-GAP-VIEW",
+      "axis": "vertical",
+      "delta": "grow",
+      "currentValue": 2,
+      "targetValue": 4,
+      "target": "space.xs",
+      "replacements": [
+        { "before": "marginTop: 2", "after": "marginTop: space.xs" }
+      ]
+    },
+    {
+      "id": "S3C-SP-03",
+      "file": "apps/mobile/src/features/my/screens/FixedCostScreen.tsx",
+      "rule": "R-SP-CAPTION-GAP-VIEW",
+      "axis": "vertical",
+      "delta": "grow",
+      "currentValue": 2,
+      "targetValue": 4,
+      "target": "space.xs",
+      "replacements": [
+        { "before": "marginTop: 2", "after": "marginTop: space.xs" }
+      ]
+    },
+    {
+      "id": "S3C-SP-04",
+      "file": "apps/mobile/src/features/my/screens/MyChannelsScreen.tsx",
+      "rule": "R-SP-CAPTION-GAP-VIEW",
+      "axis": "vertical",
+      "delta": "grow",
+      "currentValue": 2,
+      "targetValue": 4,
+      "target": "space.xs",
+      "replacements": [
+        { "before": "marginTop: 2", "after": "marginTop: space.xs" }
+      ]
+    },
+    {
+      "id": "S3C-SP-05",
+      "file": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx",
+      "rule": "R-SP-CAPTION-GAP-VIEW",
+      "axis": "vertical",
+      "delta": "grow",
+      "currentValue": 2,
+      "targetValue": 4,
+      "target": "space.xs",
+      "replacements": [
+        { "before": "marginTop: 2", "after": "marginTop: space.xs" }
+      ]
+    },
+    {
+      "id": "S3C-SH-01",
+      "file": "apps/mobile/src/components/kit/Sheet.tsx",
+      "rule": "R-CL-SHADOW",
+      "axis": "none",
+      "delta": "same",
+      "target": "shadow.sheet",
+      "shadowRole": "sheet",
+      "bundle": "shadowColor: '#000', shadowOffset: { width: 0, height: -8 }, shadowOpacity: 0.15, shadowRadius: 40, elevation: 16",
+      "replacements": [
+        { "before": "LAYOUT, T, TYPE, radius, space", "after": "LAYOUT, T, TYPE, radius, shadow, space" },
+        { "before": "shadowColor: '#000', shadowOffset: { width: 0, height: -8 }, shadowOpacity: 0.15, shadowRadius: 40, elevation: 16", "after": "...shadow.sheet" }
+      ]
+    },
+    {
+      "id": "S3C-SH-02",
+      "file": "apps/mobile/src/components/kit/Slider.tsx",
+      "rule": "R-CL-SHADOW",
+      "axis": "none",
+      "delta": "same",
+      "target": "shadow.sliderThumb",
+      "shadowRole": "sliderThumb",
+      "bundle": "shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.2, shadowRadius: 6, elevation: 3",
+      "replacements": [
+        { "before": "COLOR, T, radius", "after": "COLOR, T, radius, shadow" },
+        { "before": "shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.2, shadowRadius: 6, elevation: 3", "after": "...shadow.sliderThumb" }
+      ]
+    },
+    {
+      "id": "S3C-SH-03",
+      "file": "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx",
+      "rule": "R-CL-SHADOW",
+      "axis": "none",
+      "delta": "same",
+      "target": "shadow.switchThumb",
+      "shadowRole": "switchThumb",
+      "bundle": "shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.2, shadowRadius: 3, elevation: 2",
+      "replacements": [
+        { "before": "LAYOUT, COLOR, T, TYPE, radius, space", "after": "LAYOUT, COLOR, T, TYPE, radius, shadow, space" },
+        { "before": "shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.2, shadowRadius: 3, elevation: 2", "after": "...shadow.switchThumb" }
+      ]
+    }
+  ]
+}

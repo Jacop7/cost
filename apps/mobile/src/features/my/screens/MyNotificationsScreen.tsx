@@ -8,7 +8,7 @@ import { Pressable, ScrollView, Text, View } from 'react-native';
 import { AppHeader, Badge, Button, Card, Icon, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { RpcError } from '@/lib/supabase';
-import { LAYOUT, COLOR, T, TYPE, radius, space } from '@/theme/tokens';
+import { LAYOUT, COLOR, T, TYPE, radius, shadow, space } from '@/theme/tokens';
 import { useSaveSettings, useStoreSettings, type SaveSettingsInput, type StoreSettings } from '@/features/settings/hooks';
 
 type Key = 'alertMorningSummary' | 'alertInboundDelay' | 'alertPriceSpike' | 'alertTargetMiss';
@@ -31,7 +31,7 @@ function Toggle({ on, disabled, onPress, label }: { on: boolean; disabled?: bool
       hitSlop={8}
       style={{ width: 50, height: 30, borderRadius: radius.full, backgroundColor: on ? COLOR.action.primary : '#D5DAE0', justifyContent: 'center', opacity: disabled ? 0.5 : 1 }}
     >
-      <View style={{ position: 'absolute', left: on ? 23 : 3, width: 24, height: 24, borderRadius: 12, backgroundColor: T.onColor, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.2, shadowRadius: 3, elevation: 2 }} />
+      <View style={{ position: 'absolute', left: on ? 23 : 3, width: 24, height: 24, borderRadius: 12, backgroundColor: T.onColor, ...shadow.switchThumb }} />
     </Pressable>
   );
 }

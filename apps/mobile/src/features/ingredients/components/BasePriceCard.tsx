@@ -152,7 +152,7 @@ export function BasePriceCard({
                   </View>
 
                   {/* 3줄 — 무엇을 얼마어치. 부분 입고면 그 사실만 오른쪽에 덧붙인다. */}
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, marginTop: 2 }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, marginTop: space.xs }}>
                     <Text style={[{ flex: 1, minWidth: 0, fontSize: 14, color: T.sub2 }, tnum]}>
                       {packSummary({
                         volume: o.volume, qty: o.qty, receivedQty: o.receivedQty, amount: o.amount,
