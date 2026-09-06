@@ -608,6 +608,13 @@ foreach ($fileName in @($auditName, $auditScriptName, 'full-page-flow-prototype-
     '../../scripts/design-token-s3c-diff.test.mjs',
     '../../scripts/touch-target-known.json', '../../scripts/touch-target-audit.mjs',
     '../../scripts/touch-target-audit.test.mjs',
+    'native-touch-android-1x.json', 'native-touch-android-2x.json',
+    'native-touch-android-tap-probe.json', 'native-touch-android-receipt.json',
+    '../../scripts/native-touch-runtime-contract.json', '../../scripts/native-touch-runtime-known.json',
+    '../../scripts/native-touch-runtime-audit.mjs', '../../scripts/native-touch-runtime-audit.test.mjs',
+    '../../scripts/native-touch-runtime-tap-probe.mjs',
+    '../../scripts/native-touch-runtime-evidence-check.mjs',
+    '../../scripts/native-touch-runtime-evidence-check.test.mjs',
     '../디자인-토큰-3계층-값-매핑-기획서.md')) {
   $contents = Read-Utf8 (Join-Path $PrototypeDirectory $fileName)
   if ($null -ne $contents) { $hashes[$fileName] = Get-Sha256 $contents }

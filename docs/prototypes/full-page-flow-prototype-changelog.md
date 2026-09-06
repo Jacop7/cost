@@ -19,6 +19,20 @@
 
 ## 변경 내역
 
+### PRT-252 · 2026-09-06 S3c 제품판 Android native touch 재측정
+
+- 날짜: 2026-09-06
+- 디자인 동기화 ID: `DS-20260906-015`
+- 앱·프로토타입 UI 변경: 없음. PRT-251 제품판의 Android 1×·2×와 실제 탭을 재측정했다.
+- Android 결과: Android 15/API 35·density 2.625에서 1×·2× 모두 계약 lineage 19개,
+  미달 0·새 판정불가 0·물질적 형제 중첩 0이다.
+- 실제 탭: 직접 부모 밖은 onPress 0, `overflow:visible` 조상 밖은 onPress 1로 관측해
+  유효 터치 영역의 부모 clipping 계약을 다시 확인했다.
+- 결속: 원시 1×·2×·탭 산출물은 PRT-251 `4a54cb6` 제품판과 측정 계약·검사기 SHA에 묶고,
+  재계산 영수증을 함께 보존한다.
+- 한계: iOS 1×·2×는 Apple Developer Program 팀 활성화 전이라 계속 `MISSING`이다.
+  Android 부분만 종결하며 S4a·S4·W1 전체는 iOS 전까지 `REOPEN`이다.
+
 ### PRT-251 · 2026-09-06 S3c 잔여 수렴과 W1 재측정
 
 - 날짜: 2026-09-06
