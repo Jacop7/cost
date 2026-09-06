@@ -17,8 +17,16 @@ const expected = {
   contractSha256: source.manifest.contractSha256,
 };
 
-test('저장소의 양 플랫폼·두 배율 exact 증거는 원시 frame 재계산과 현재 제품 범위에 결속된다', () => {
-  assert.deepEqual(verifyRepositoryEvidence(root).failures, []);
+test('closedPlatforms의 exact 증거는 원시 frame 재계산과 현재 제품 범위에 결속된다', () => {
+  assert.deepEqual(verifyRepositoryEvidence(root, { requirePlatforms: ['android'] }).failures, []);
+});
+
+test('전체 4칸 요구는 iOS 증거가 없으면 MISSING으로 설명하고, 있으면 전부 검증한다', () => {
+  const failures = verifyRepositoryEvidence(root, { requirePlatforms: ['android', 'ios'] }).failures;
+  const iosExists = ['native-touch-ios-1x.json', 'native-touch-ios-2x.json']
+    .every((name) => { try { readFileSync(join(root, 'docs/prototypes', name)); return true; } catch { return false; } });
+  if (iosExists) assert.deepEqual(failures, []);
+  else assert.match(failures.join('\n'), /MISSING native-touch-ios-1x\.json.*MISSING native-touch-ios-2x\.json/s);
 });
 
 test('저장 요약만 0으로 고쳐도 원시 frame 재계산이 잡는다', () => {

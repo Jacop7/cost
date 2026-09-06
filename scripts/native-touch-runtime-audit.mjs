@@ -73,6 +73,37 @@ export function rectOverlap(left, right) {
   };
 }
 
+const rectOfFrame = (frame) => ({
+  left: frame.x, top: frame.y, right: frame.x + frame.width, bottom: frame.y + frame.height,
+});
+
+export function classifyVisibility(frame, ancestors, density) {
+  const tolerance = physicalHalfPixelTolerance(density);
+  const raw = rectOfFrame(frame);
+  const clippingAncestors = [];
+  for (const ancestor of ancestors) {
+    // React Native View의 기본 overflow는 visible이다. 부모 frame 밖이라는 사실만으로
+    // 시각적으로 잘렸다고 추론하지 않고, 실제 clipping 경계만 가시성 판정에 쓴다.
+    if (ancestor.clipsVisual === false) continue;
+    const bounds = rectOfFrame(ancestor.frame);
+    if (raw.left < bounds.left - tolerance || raw.top < bounds.top - tolerance
+      || raw.right > bounds.right + tolerance || raw.bottom > bounds.bottom + tolerance) {
+      clippingAncestors.push({ nativeTag: ancestor.nativeTag ?? null, kind: ancestor.kind ?? 'nonScroll',
+        hostName: ancestor.hostName ?? null, ownerChain: ancestor.ownerChain ?? [],
+        overflow: ancestor.overflow ?? null, clipsVisual: ancestor.clipsVisual ?? true });
+    }
+  }
+  if (!clippingAncestors.length) return { visualFullyVisible: true, visibilityDisposition: 'fullyVisible', clippingAncestors };
+  // RN은 가장 가까운 clipping 경계에서 먼저 잘린다. ScrollView 밖의 항목은 그 뒤의 화면
+  // 컨테이너도 기하상 벗어나 보이지만, 도달 방법은 스크롤이므로 첫 경계의 역할로 판정한다.
+  const safelyExcluded = ['scrollViewport', 'root'].includes(clippingAncestors[0].kind);
+  return {
+    visualFullyVisible: false,
+    visibilityDisposition: safelyExcluded ? 'excludedScrollableOrRoot' : 'clippedByNonScroll',
+    clippingAncestors,
+  };
+}
+
 const stableRuntimeKey = (value) => String(value).replace(/\|\d+$/, '');
 export function nativeRatchetSnapshot(evaluation) {
   const observed = new Map();
@@ -135,12 +166,17 @@ export function recomputeNativeArtifactDerived(artifact) {
     for (const row of phase.rows ?? []) {
       const relative = frameFromMeasure(row.relativeMeasure, `${scenario.id}/${phase.id}/${row.key} relative`);
       const windowFrame = frameFromMeasure(row.windowMeasure, `${scenario.id}/${phase.id}/${row.key} window`);
-      const ancestorMeasures = Array.isArray(row.ancestors) && row.ancestors.length
-        ? row.ancestors.map((ancestor, index) => frameFromMeasure(ancestor.windowMeasure,
-          `${scenario.id}/${phase.id}/${row.key} ancestor[${index}]`))
-        : [frameFromMeasure(row.parent?.windowMeasure, `${scenario.id}/${phase.id}/${row.key} parent`)];
-      const touch = effectiveTouchRect(windowFrame, ancestorMeasures, row.hitSlop);
-      const visual = effectiveTouchRect(windowFrame, ancestorMeasures, 0);
+      const ancestorRows = Array.isArray(row.ancestors) && row.ancestors.length
+        ? row.ancestors : [row.parent];
+      const ancestorMeasures = ancestorRows.map((ancestor, index) => frameFromMeasure(ancestor.windowMeasure,
+        `${scenario.id}/${phase.id}/${row.key} ancestor[${index}]`));
+      const touchAncestorMeasures = ancestorMeasures.filter((_, index) => ancestorRows[index]?.clipsTouch !== false);
+      const touch = effectiveTouchRect(windowFrame, touchAncestorMeasures, row.hitSlop);
+      const visualAncestorMeasures = ancestorMeasures.filter((_, index) => ancestorRows[index]?.clipsVisual !== false);
+      const visual = visualAncestorMeasures.length
+        ? effectiveTouchRect(windowFrame, visualAncestorMeasures, 0)
+        : { raw: rectOfFrame(windowFrame), effective: rectOfFrame(windowFrame), width: windowFrame.width,
+          height: windowFrame.height, clipped: false };
       row.relativeFrame = relative;
       row.windowFrame = windowFrame;
       row.parentFrame = ancestorMeasures[0];
@@ -153,17 +189,28 @@ export function recomputeNativeArtifactDerived(artifact) {
       row.visualRect = visual.effective;
       row.visualWidth = visual.width;
       row.visualHeight = visual.height;
-      row.visualFullyVisible = Math.abs(visual.width - windowFrame.width) <= 1e-6
-        && Math.abs(visual.height - windowFrame.height) <= 1e-6;
+      const visibility = classifyVisibility(windowFrame, ancestorRows.map((ancestor, index) => ({
+        frame: ancestorMeasures[index], nativeTag: ancestor?.nativeTag, kind: ancestor?.kind,
+        hostName: ancestor?.hostName, ownerChain: ancestor?.ownerChain,
+        overflow: ancestor?.overflow, clipsVisual: ancestor?.clipsVisual,
+      })), density);
+      row.visualFullyVisible = visibility.visualFullyVisible;
+      row.visibilityDisposition = visibility.visibilityDisposition;
+      row.clippingAncestors = visibility.clippingAncestors;
       row.pass44 = touch.width + physicalHalfPixelTolerance(density) >= 44
         && touch.height + physicalHalfPixelTolerance(density) >= 44;
     }
+    phase.excludedPartiallyVisible = phase.rows.filter((row) => row.visibilityDisposition === 'excludedScrollableOrRoot')
+      .map((row) => ({ key: row.key, label: row.label, ownerChain: row.ownerChain,
+        windowFrame: row.windowFrame, visualRect: row.visualRect, visualWidth: row.visualWidth,
+        visualHeight: row.visualHeight, clippingAncestors: row.clippingAncestors }));
+    const judgedRows = phase.rows.filter((row) => row.visibilityDisposition !== 'excludedScrollableOrRoot');
     phase.overlaps = [];
-    for (let left = 0; left < phase.rows.length; left++) for (let right = left + 1; right < phase.rows.length; right++) {
-      if (phase.rows[left].parentNativeTag !== phase.rows[right].parentNativeTag) continue;
-      const overlap = rectOverlap(phase.rows[left].effectiveRect, phase.rows[right].effectiveRect);
+    for (let left = 0; left < judgedRows.length; left++) for (let right = left + 1; right < judgedRows.length; right++) {
+      if (judgedRows[left].parentNativeTag !== judgedRows[right].parentNativeTag) continue;
+      const overlap = rectOverlap(judgedRows[left].effectiveRect, judgedRows[right].effectiveRect);
       if (overlap.width > 0 && overlap.height > 0)
-        phase.overlaps.push({ left: phase.rows[left].key, right: phase.rows[right].key, ...overlap });
+        phase.overlaps.push({ left: judgedRows[left].key, right: judgedRows[right].key, ...overlap });
     }
   }
   return result;
@@ -187,6 +234,7 @@ export function evaluateNativeArtifact(artifact, contract) {
       if (seenTargetIds.has(target.id)) failures.push(`target ID 중복: ${target.id}`);
       seenTargetIds.add(target.id);
       const rows = measured.phases.flatMap((phase) => phase.rows.map((row) => ({ ...row, phase: phase.id })))
+        .filter((row) => row.visibilityDisposition !== 'excludedScrollableOrRoot')
         .filter((row) => (!target.phase || row.phase === target.phase)
           && matches(row.ownerChain.join('>'), target.ownerPattern)
           && matches(row.label, target.labelPattern));
@@ -199,6 +247,7 @@ export function evaluateNativeArtifact(artifact, contract) {
 
     const targetRows = new Set();
     for (const phase of measured.phases) for (const row of phase.rows) {
+      if (row.visibilityDisposition === 'excludedScrollableOrRoot') continue;
       const owned = scenario.targets.some((target) => (!target.phase || target.phase === phase.id)
         && matches(row.ownerChain.join('>'), target.ownerPattern) && matches(row.label, target.labelPattern));
       if (owned) targetRows.add(`${phase.id}|${row.nativeTag}`);
@@ -277,6 +326,7 @@ function runtimeExpression(operation) {
     const text=f=>{let out='';const seen=new Set();const walk=n=>{if(!n||seen.has(n))return;seen.add(n);const p=n.memoizedProps||{};if(typeof p.children==='string'||typeof p.children==='number')out+=' '+p.children;walk(n.child);walk(n.sibling)};walk(f?.child);return out.replace(/\\s+/g,' ').trim()};
     const hostChild=f=>{const q=f?.child?[f.child]:[];const seen=new Set();while(q.length){const n=q.shift();if(!n||seen.has(n))continue;seen.add(n);if(n.tag===5)return n;if(n.child)q.push(n.child);if(n.sibling)q.push(n.sibling)}return null};
     const hostAncestors=f=>{const out=[];for(let n=f?.return;n;n=n.return)if(n.tag===5)out.push(n);return out};
+    const flatStyle=s=>Array.isArray(s)?Object.assign({},...s.filter(Boolean).map(flatStyle)):(s&&typeof s==='object'?s:{});
     const slop=v=>typeof v==='number'?{top:v,right:v,bottom:v,left:v}:{top:v?.top??v?.vertical??0,right:v?.right??v?.horizontal??0,bottom:v?.bottom??v?.vertical??0,left:v?.left??v?.horizontal??0};
     const buttons=[];const seen=new Set();
     const walk=f=>{if(!f||seen.has(f))return;seen.add(f);const p=f.memoizedProps||{};if(name(f)==='Pressable'&&p.accessibilityRole==='button'){const host=hostChild(f),ancestors=hostAncestors(f);if(host&&ancestors.length){const label=String(p.accessibilityLabel||text(f)||'(unlabelled)');buttons.push({fiber:f,host,ancestors,label,ownerChain:owners(f),hitSlop:slop(p.hitSlop??host.memoizedProps?.hitSlop),nativeTag:host.stateNode?.canonical?.nativeTag,parentNativeTag:ancestors[0].stateNode?.canonical?.nativeTag})}}walk(f.child);walk(f.sibling)};
@@ -297,7 +347,7 @@ function runtimeExpression(operation) {
     }
     state.rows=[];state.pending=0;state.done=false;
     const measure=(node,method,target,key)=>{state.pending++;nativeFabricUIManager[method](node.stateNode.node,(...values)=>{target[key]=values;state.pending--;if(state.pending===0)state.done=true})};
-    for(const b of active){const row={key:b.ownerChain.join('>')+'|'+b.label+'|'+b.nativeTag,label:b.label,ownerChain:b.ownerChain,hitSlop:b.hitSlop,nativeTag:b.nativeTag,parentNativeTag:b.parentNativeTag,ancestors:b.ancestors.map(n=>({nativeTag:n.stateNode?.canonical?.nativeTag}))};state.rows.push(row);measure(b.host,'measure',row,'relativeMeasure');measure(b.host,'measureInWindow',row,'windowMeasure');for(const ancestor of row.ancestors){const node=b.ancestors[row.ancestors.indexOf(ancestor)];measure(node,'measureInWindow',ancestor,'windowMeasure')}}
+    for(const b of active){const row={key:b.ownerChain.join('>')+'|'+b.label+'|'+b.nativeTag,label:b.label,ownerChain:b.ownerChain,hitSlop:b.hitSlop,nativeTag:b.nativeTag,parentNativeTag:b.parentNativeTag,ancestors:b.ancestors.map((n,index)=>{const chain=owners(n),hostName=name(n),directOwner=name(n?._debugOwner),hostIdentity=hostName+'>'+directOwner,scroll=/ScrollView|FlatList|VirtualizedList/.test(hostIdentity),root=index===b.ancestors.length-1,platformWrapper=/RNSScreen|RCTModalHostView/.test(hostIdentity),overflow=flatStyle(n.memoizedProps?.style).overflow??n.memoizedProps?.overflow??'visible',clipsVisual=!platformWrapper&&(scroll||root||overflow==='hidden'||overflow==='scroll'),clipsTouch=index===0||clipsVisual;return {nativeTag:n.stateNode?.canonical?.nativeTag,hostName,directOwner,ownerChain:chain,kind:scroll?'scrollViewport':root?'root':'nonScroll',overflow,platformWrapper,clipsVisual,clipsTouch}})};state.rows.push(row);measure(b.host,'measure',row,'relativeMeasure');measure(b.host,'measureInWindow',row,'windowMeasure');for(const ancestor of row.ancestors){const node=b.ancestors[row.ancestors.indexOf(ancestor)];measure(node,'measureInWindow',ancestor,'windowMeasure')}}
     if(state.pending===0)state.done=true;return JSON.stringify({rows:state.rows.length,pending:state.pending});
   })()`;
 }
@@ -336,15 +386,10 @@ async function collect(evaluate, density, ownerPattern) {
     .filter((row) => ownerPattern && !matches(row.ownerChain.join('>'), ownerPattern))
     .map((row) => row.ownerChain.join('>')))].sort();
   const activeRows = visibleRows.filter((row) => !ownerPattern || matches(row.ownerChain.join('>'), ownerPattern));
-  const firstPass = recomputeNativeArtifactDerived({ device: { density }, scenarios: [{ id: 'runtime', phases: [{ id: 'runtime', rows: activeRows }] }] });
-  const excludedPartiallyVisible = firstPass.scenarios[0].phases[0].rows
-    .filter((row) => !row.visualFullyVisible).map((row) => ({ key: row.key, label: row.label,
-      ownerChain: row.ownerChain, windowFrame: row.windowFrame, visualRect: row.visualRect,
-      visualWidth: row.visualWidth, visualHeight: row.visualHeight })).sort((left, right) => left.key.localeCompare(right.key));
-  const rows = firstPass.scenarios[0].phases[0].rows.filter((row) => row.visualFullyVisible);
-  const rebuilt = recomputeNativeArtifactDerived({ device: { density }, scenarios: [{ id: 'runtime', phases: [{ id: 'runtime', rows }] }] });
-  return { rows: rebuilt.scenarios[0].phases[0].rows, overlaps: rebuilt.scenarios[0].phases[0].overlaps,
-    excludedOwnerChains, excludedPartiallyVisible };
+  const rebuilt = recomputeNativeArtifactDerived({ device: { density }, scenarios: [{ id: 'runtime', phases: [{ id: 'runtime', rows: activeRows }] }] });
+  const phase = rebuilt.scenarios[0].phases[0];
+  return { rows: phase.rows, overlaps: phase.overlaps,
+    excludedOwnerChains, excludedPartiallyVisible: phase.excludedPartiallyVisible };
 }
 
 async function main() {
@@ -358,6 +403,7 @@ async function main() {
   const diagnostic = opt.diagnostic === true;
   if (!diagnostic && (!opt['expect-commit'] || head !== opt['expect-commit'])) throw new Error(`--expect-commit 불일치: ${head}`);
   if (!diagnostic && dirty) throw new Error('추적 파일이 변경된 트리에서는 네이티브 증거를 만들지 않는다');
+  if (opt.scenario && !diagnostic) throw new Error('--scenario는 일부 화면만 보는 진단 실행에서만 허용한다');
   const fixtures = Object.fromEntries(Object.entries(opt).filter(([key]) => key.startsWith('fixture-')).map(([key, value]) => [key.slice(8), value]));
   const renderRoute = (route) => route.replace(/\{\{([^}]+)\}\}/g, (_, key) => {
     if (!fixtures[key]) throw new Error(`fixture 누락: ${key}`); return fixtures[key];
@@ -374,7 +420,11 @@ async function main() {
     throw new Error(`--font-scale ${opt['font-scale']} ≠ 런타임 ${fontScale}`);
   if (platform !== measuredDevice.platform) throw new Error(`platform ${platform} ≠ 런타임 ${measuredDevice.platform}`);
   try {
-    for (const scenario of contract.scenarios) {
+    const selectedScenarios = opt.scenario
+      ? contract.scenarios.filter((scenario) => scenario.id === opt.scenario)
+      : contract.scenarios;
+    if (!selectedScenarios.length) throw new Error(`scenario 없음: ${opt.scenario}`);
+    for (const scenario of selectedScenarios) {
       const route = renderRoute(scenario.route); await navigate(inspector.evaluate, route);
       const phases = [{ id: 'initial', ...await collect(inspector.evaluate, density, scenario.activeOwnerPattern) }];
       for (const action of scenario.actions ?? []) {
