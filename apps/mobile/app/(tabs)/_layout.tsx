@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Platform, Text } from 'react-native';
+import { Platform, Text, useWindowDimensions } from 'react-native';
 import { Tabs } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Icon, IconName } from '@/components/kit/Icon';
@@ -16,15 +16,17 @@ const tabIcon =
 
 export default function TabsLayout() {
   const insets = useSafeAreaInsets();
+  const { fontScale } = useWindowDimensions();
   const [labelHeight, setLabelHeight] = useState<number>(COMPONENT.tabBar.labelBaseLineHeight);
   // 웹: 하단 패딩 0으로 라벨 공간 확보(패딩을 키우면 라벨이 숨겨짐). 총 높이 60.
   const bottomPad = Platform.OS === 'web' ? 0 : insets.bottom;
-  useEffect(() => setLabelHeight(COMPONENT.tabBar.labelBaseLineHeight), [bottomPad]);
+  useEffect(() => setLabelHeight(COMPONENT.tabBar.labelBaseLineHeight), [bottomPad, fontScale]);
   const height = COMPONENT.tabBar.baseHeight
     + Math.max(0, labelHeight - COMPONENT.tabBar.labelBaseLineHeight)
     + bottomPad;
   const tabLabel = (label: string) => ({ color }: { color: string }) => (
     <Text
+      key={`${label}-${fontScale}`}
       numberOfLines={2}
       maxFontSizeMultiplier={2}
       onLayout={(event) => {
@@ -41,7 +43,8 @@ export default function TabsLayout() {
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: COLOR.action.primary,
-        tabBarInactiveTintColor: '#B0B8C1',
+        // 비활성 탭도 누를 수 있는 행동이므로 disabled 색이 아니라 보조 텍스트 역할을 쓴다.
+        tabBarInactiveTintColor: COLOR.text.tertiary,
         tabBarStyle: {
           backgroundColor: '#FFFFFF',
           borderTopColor: T.line2,

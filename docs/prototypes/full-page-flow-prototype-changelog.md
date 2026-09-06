@@ -19,6 +19,27 @@
 
 ## 변경 내역
 
+### PRT-233 · 2026-09-06 S4 독립 검수 차단 정정
+
+- 날짜: 2026-09-06
+- 디자인 동기화 ID: `DS-20260906-006`
+- 입력: PRT-232 `b4d7d7e`의 페이블 독립 검수 `CHANGES_REQUIRED`(차단 Major 2 · 결정
+  Major 1 · Minor 4).
+- 차단 정정: Modal Sheet가 `LAYOUT.scroll.end`만 써 safe-area를 잃던 문제를
+  `LAYOUT.scroll.end + insets.bottom`으로 고쳤다. `Alert.alert`의 웹 polyfill이 마지막 행동만
+  실행하던 카테고리 정렬은 공용 Sheet의 위/아래 두 행동으로 바꿨다.
+- Button 결정: 새 시각 44px로 키우지 않았다. 사용자 확정 S4a 계약이 “hitSlop만·화면 diff 0”이고
+  D-11이 `controlVisualHeight`와 `minTouchTarget`을 분리했으므로, 시각 높이를 유지한 채 variant별
+  hitSlop `sm 7 / md 1 / lg 0`으로 보수적 정적 하한 44를 만든다.
+- Minor 정정: fontScale 변경 시 탭 라벨 높이를 재측정하고, provider의 Tabs 전용 생명주기를
+  문서화했다. 행동 가능한 비활성 탭은 disabled 예외가 아니므로 `COLOR.text.tertiary`를 쓴다.
+  S4 게이트는 S3a 기준선 대비 기하·hitSlop·줄 수 AST diff의 파일 목록과 양쪽 해시를 잠근다.
+- 검증: S4 계약과 음성 시험, 터치 래칫(미달 0·형제중첩 0·판정불가 163), 모바일 타입 검사를
+  통과했다. 프로토타입 DOM/CSS/JS 변경은 없고 동기화 표식만 갱신해 감사 4종을 재실행한다.
+- 한계: Android·iOS 실제 frame 증거는 `adb`·`xcrun` 부재로 아직 없다. 정적 S4 병합과 별개로
+  S4·W1 최종 종결은 이 증거 또는 사용자의 명시적 예외 승인 전까지 열어 둔다.
+- 후속: 독립 재검수 → 정적 S4 승인 → `S3b`; 네이티브 환경이 생기면 S4a·W1 최종 종결.
+
 ### PRT-232 · 2026-09-06 S4 컴포넌트·레이아웃 계약 후보
 
 - 날짜: 2026-09-06

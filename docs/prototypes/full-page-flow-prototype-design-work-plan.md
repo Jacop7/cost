@@ -1,6 +1,6 @@
 # 전체 페이지 프로토타입 · 디자인 작업 실행서
 
-> 현재 디자인 동기화 ID: `DS-20260906-005`
+> 현재 디자인 동기화 ID: `DS-20260906-006`
 
 ## 0. 목적
 
@@ -21,9 +21,10 @@
 아래 완료 조건을 통과하기 전에는 전체 완료로 표시하지 않는다. Expo 공용 색 역할은 소유자 승인에 따라
 S2에서 함께 적용했고, 화면 구조·기하는 뒤 단계의 별도 완료 조건을 따른다.
 
-Expo `S4` 후보는 `scrollStart/end/endWithFab`, ListRow 60/76, 2줄 탭 라벨의 동적 높이,
-`sales-menu-sub` 줄바꿈, 인접 아이콘 행동의 비중첩 44px 터치 영역을 적용했다. 정적 게이트는
-통과했지만 Android·iOS 실제 frame 측정은 별도 완료 조건으로 남아 있으므로 전체 완료가 아니다.
+Expo `S4` 후보는 `scrollStart/end/endWithFab`, Modal Sheet의 safe-area 포함, ListRow 60/76,
+2줄 탭 라벨의 글꼴 배율별 동적 높이, `sales-menu-sub` 줄바꿈, 비중첩 44px 터치 영역을 적용했다.
+Button은 시각 높이를 유지하고 size별 hitSlop으로 44px를 채운다. 정적 게이트는 통과했지만
+Android·iOS 실제 frame 측정은 별도 완료 조건으로 남아 있으므로 전체 완료가 아니다.
 
 ## 1. 문서와 파일 책임
 

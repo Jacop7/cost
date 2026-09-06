@@ -4,6 +4,7 @@
  */
 import { ReactElement, ReactNode } from 'react';
 import { Modal, Pressable, ScrollView, Text, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LAYOUT, T, TYPE, radius, space } from '@/theme/tokens';
 import { Button } from './Button';
 
@@ -17,6 +18,7 @@ export function Sheet({ visible, onClose, children, title, sub, height, headerRi
   headerRight?: ReactElement;
   scroll?: boolean; // false면 스크롤 없이 flex 컨테이너 (자체 레이아웃·하단 고정 버튼용)
 }) {
+  const insets = useSafeAreaInsets();
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
       {/* 배경 탭으로 닫기. 스크린리더가 "닫기"로 읽을 수 있어야 하고, Android 하드웨어 back 은
@@ -41,9 +43,14 @@ export function Sheet({ visible, onClose, children, title, sub, height, headerRi
           </View>
         ) : null}
         {scroll ? (
-          <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, paddingTop: space.md, paddingBottom: LAYOUT.scroll.end }}>{children}</ScrollView>
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ paddingHorizontal: 20, paddingTop: space.md, paddingBottom: LAYOUT.scroll.end + insets.bottom }}
+          >
+            {children}
+          </ScrollView>
         ) : (
-          <View style={{ flex: 1, paddingTop: space.md }}>{children}</View>
+          <View style={{ flex: 1, paddingTop: space.md, paddingBottom: insets.bottom }}>{children}</View>
         )}
       </View>
     </Modal>

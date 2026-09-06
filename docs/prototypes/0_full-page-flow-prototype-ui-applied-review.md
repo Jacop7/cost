@@ -2686,6 +2686,25 @@ popup/state host **121개**(합 182), 그리고 레지스트리에 키가 없는
   `full-page-flow-prototype-render-audit.json` · `full-page-flow-prototype-design-audit.json` ·
   `full-page-flow-prototype-i18n-stress.json`.
 
+## DS-20260906-006 · PRT-233 S4 독립 검수 차단 정정
+
+- 대상: Modal Sheet safe-area, 카테고리 정렬 웹 경로, Button 터치 계약, 탭 fontScale·색,
+  S4 AST 허용 diff 게이트.
+- 기대값: 웹·네이티브 공통 경로에서 방향 두 개, Modal safe-area 1회, 시각 변화 없는 44px 터치,
+  승인 밖 기하 변경 0.
+- 실제값: S4 계약 PASS, 음성 시험 10/10, 터치 미달 0·형제중첩 0·판정불가 163,
+  Button `sm/md/lg` 정적 통과.
+- PC 검수: 프로토타입 1280×900 감사 재실행 · PASS
+- 모바일 검수: 320px·CSS 200%·글자 200%·i18n 4패스 재실행 · PASS
+- 미검수: 없음
+- 결과: PASS
+- 범위 밖 후속: Android·iOS 실제 frame 측정(현 환경 `adb`·`xcrun` 없음). 앱 S4·W1
+  최종 종결 조건이며 이 절의 프로토타입 봉인·앱 정적 계약 PASS와 구분한다.
+- 증거: `../../scripts/design-token-s4-contract.json` · `../../scripts/design-token-s4-check.mjs` ·
+  `../../scripts/design-token-s4-check.test.mjs` · `../../scripts/touch-target-known.json` ·
+  `full-page-flow-prototype-render-audit.json` · `full-page-flow-prototype-design-audit.json` ·
+  `full-page-flow-prototype-i18n-stress.json`.
+
 ## DS-20260906-005 · PRT-232 S4 컴포넌트·레이아웃 계약 후보
 
 - 대상: Expo 하단 탭·스크롤 여백·ListRow·매출 메뉴 요약·Button·인접 아이콘 행동·카테고리 정렬.

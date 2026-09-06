@@ -1,12 +1,12 @@
 # 전체 페이지 프로토타입 · 디자인 맥락 장부
 
-> 현재 동기화 ID: `DS-20260906-005`
+> 현재 동기화 ID: `DS-20260906-006`
 > 문서 동기화 상태: `SYNCED`
 > 전체 UI 작업 상태: `IN_PROGRESS`
 > 마지막 갱신: `2026-09-06`
 > 공통 변경: `예`
 > UI 변경: `예`
-> 변경 기록: `PRT-232`
+> 변경 기록: `PRT-233`
 
 ## 1. 문서 역할
 
@@ -43,6 +43,27 @@
 - 글로벌: 30~50% 긴 번역, 320px, 200% 글자 확대, RTL 검수.
 
 ## 4. 가장 최근 작업
+
+### DS-20260906-006 · PRT-233 S4 독립 검수 차단 정정
+
+- 작업 성격: PRT-232 페이블 검수의 차단 Major 2건·결정 Major 1건·Minor 4건을 반영했다.
+- 결과:
+  - Modal Sheet의 하단 여백에 safe-area를 한 번 더하고, 카테고리 방향 선택을 웹에서도 두 방향이
+    동작하는 공용 Sheet로 바꿨다.
+  - Button은 기존 사용자 S4a 결정(시각 변화 0)에 따라 시각 높이를 유지하고 `sm/md/lg` hitSlop
+    `7/1/0`으로 정적 높이 하한 44를 만든다.
+  - 탭 라벨은 fontScale 변경 때 다시 측정하고, 비활성 탭도 행동 가능하므로 tertiary 색을 쓴다.
+  - S4 게이트가 S3a 기준선과 현재 코드의 기하·hitSlop·줄 수 AST 차이를 허용 목록과 대조한다.
+- 미완료: Android·iOS 실제 frame·부모 clipping·우선순위 측정. 현 환경에는 `adb`·`xcrun`이 없다.
+- 완료 조건:
+  - PRT233-S4-CONTRACT · `../../scripts/design-token-s4-contract.json`
+  - PRT233-S4-GATE · `../../scripts/design-token-s4-check.mjs`
+  - PRT233-S4-TEST · `../../scripts/design-token-s4-check.test.mjs`
+  - PRT233-TOUCH · `../../scripts/touch-target-known.json`
+  - PRT233-RENDER · `full-page-flow-prototype-render-audit.json`
+  - PRT233-DESIGN · `full-page-flow-prototype-design-audit.json`
+  - PRT233-I18N · `full-page-flow-prototype-i18n-stress.json`
+- 다음 시작점: 독립 재검수 뒤 정적 S4를 승인하고 `S3b`; 네이티브 증거 전에는 S4·W1 최종 종결 금지.
 
 ### DS-20260906-005 · PRT-232 S4 컴포넌트·레이아웃 계약 후보
 
