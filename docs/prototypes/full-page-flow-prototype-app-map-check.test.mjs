@@ -36,41 +36,54 @@ const run = (mutate = () => {}, eol = '\n') => {
   } finally { rmSync(dir, { recursive: true, force: true }); }
 };
 const rule = (map, id) => map.rules.find(r => r.id === id);
+const declarationKey = (d) => `${d.file}:${d.line}:${d.prop}`;
+const asControlBoxDefect = (map) => {
+  const x = rule(map, 'R-SZ-CONTROL-ROW-OVERFLOW');
+  x.bin = 'defect';
+  delete x.name;
+  x.target = 44;
+  x.targetMap = Object.fromEntries(audit.declarations
+    .filter(d => d.group === 'size' && /DiscardHistoryScreen\.tsx$/.test(d.file)
+      && [198, 203].includes(d.line) && ['width', 'height'].includes(d.prop))
+    .map(d => [declarationKey(d), 44]));
+  x.executionStage = 'S3a';
+  x.axis = 'both';
+  x.delta = 'same';
+  x.evidenceRef = 'test synthetic target map';
+  return x;
+};
+const TYPE_LINE_HEIGHT_TABLE = { '12': 18, '13': 18, '14': 20, '15': 22, '16': 22, '18': 24, '20': 26, '22': 28 };
 
-test('S3a 기준본은 정의 21건을 분리하고 음수 포함 사용처 3,646건을 다섯 통에 배정한다', () => {
+test('최종 W1은 정의 21건을 분리하고 음수 포함 사용처 2,353건을 다섯 통에 배정한다', () => {
   const r = run();
   assert.equal(r.code, 0, r.text);
   assert.deepEqual(r.out.summary.byBin, {
-    primitive: 2063, componentOwned: 228, defect: 1305,
-    pendingApproval: 50, approvedException: 0,
+    primitive: 2063, componentOwned: 239, defect: 3,
+    pendingApproval: 48, approvedException: 0,
   });
-  assert.equal(audit.summary.declarations, 3646);
-  assert.equal(audit.declarations.filter(d => Number(d.value) < 0).length, 33);
+  assert.equal(audit.summary.declarations, 2353);
+  assert.equal(audit.declarations.filter(d => Number(d.value) < 0).length, 32);
   assert.equal(audit.definitions.total, 21);
   assert.equal(audit.definitions.declarations.filter(d => d.prop === 'lineHeight').length, 7);
   assert.equal(audit.declarations.filter(d => d.layer === 'tokenDefinition').length, 0);
   const per = Object.fromEntries(r.out.summary.perRule.map(x => [x.id, x]));
   assert.equal(per['R-SZ-APPHEADER-ACTION'].declarations, 24);
-  assert.equal(per['R-SZ-CONTROL-SM-ADJACENT'].declarations, 8);
-  assert.equal(per['R-SZ-CONTROL-SM'].declarations, 12);
-  assert.equal(per['R-SZ-CONTROL-MD'].declarations, 10);
-  assert.equal(per['R-SZ-ROW-MINH'].declarations, 8);
-  assert.equal(per['R-TY-LINEHEIGHT-IMPLICIT'].declarations, 1);
-  assert.equal(per['R-TY-LINEHEIGHT'].declarations, 65);
-  assert.equal(per['R-TY-LINEHEIGHT'].targetResolved, 65);
+  assert.equal(per['R-SZ-RECIPE-EDITOR-TOUCH'].declarations, 8);
+  assert.equal(per['R-SZ-BUTTON-SM-MINHEIGHT'].declarations, 1);
   assert.equal(per['R-SP-QUANTITY-TOUCH-ENVELOPE'].declarations, 2);
-  assert.equal(per['R-SP-ROW-OVERFLOW-TOUCH-BOX'].declarations, 2);
+  assert.equal(per['R-SP-ROW-OVERFLOW-TOUCH-BOX'].declarations, 1);
   assert.equal(per['R-SP-FORM-AUXILIARY-OVERLAP'].declarations, 4);
   assert.equal(per['R-SP-PROFIT-SECTION-LABEL-OVERLAP'].declarations, 1);
   assert.equal(per['R-TY-LETTERSPACING-TITLE-TIGHT'].declarations, 10);
   assert.equal(per['R-TY-LETTERSPACING-UNDECIDED'].declarations, 15);
-  assert.equal(r.out.summary.multiMatchCount, 927);
+  assert.equal(r.out.summary.multiMatchCount, 774);
 });
 
 test('닫힌 역할을 질문·증거까지 붙여 pendingApproval로 되돌려도 계약이 막는다', () => {
   const r = run(map => {
-    const x = rule(map, 'R-TY-LINEHEIGHT');
+    const x = rule(map, 'R-SZ-BUTTON-SM-MINHEIGHT');
     x.bin = 'pendingApproval';
+    delete x.name;
     x.question = '다시 물을까';
     x.evidence = '이미 닫힌 D-11';
   });
@@ -79,43 +92,64 @@ test('닫힌 역할을 질문·증거까지 붙여 pendingApproval로 되돌려�
 });
 
 test('목적지 변경으로 계산 방향이 뒤집히면 수기 delta와의 불일치를 잡는다', () => {
-  const r = run(map => { rule(map, 'R-SP-CAPTION-GAP').targetValue = 0; });
-  assert.equal(r.code, 1, r.text);
-  assert.match(r.text, /수기 delta 'grow'.*계산 'shrink'/s);
-});
-
-test('목적지는 그대로인데 수기 delta만 조작해도 실패한다', () => {
-  const r = run(map => { rule(map, 'R-SP-CAPTION-GAP').delta = 'same'; });
+  const r = run(map => {
+    const x = asControlBoxDefect(map);
+    for (const key of Object.keys(x.targetMap)) x.targetMap[key] = 48;
+  });
   assert.equal(r.code, 1, r.text);
   assert.match(r.text, /수기 delta 'same'.*계산 'grow'/s);
 });
 
-test('한 규칙 안에 same과 shrink가 섞인 목적지는 mixed로 계산한다', () => {
-  const r = run(map => { rule(map, 'R-SZ-SPACER').delta = 'shrink'; });
+test('목적지는 그대로인데 수기 delta만 조작해도 실패한다', () => {
+  const r = run(map => { asControlBoxDefect(map).delta = 'shrink'; });
   assert.equal(r.code, 1, r.text);
-  assert.match(r.text, /R-SZ-SPACER.*계산 'mixed'/s);
+  assert.match(r.text, /수기 delta 'shrink'.*계산 'same'/s);
+});
+
+test('한 규칙 안에 same과 shrink가 섞인 목적지는 mixed로 계산한다', () => {
+  const r = run(map => {
+    const x = asControlBoxDefect(map);
+    const keys = Object.keys(x.targetMap);
+    x.targetMap[keys[0]] = 40;
+    x.targetMap[keys[1]] = 48;
+  });
+  assert.equal(r.code, 1, r.text);
+  assert.match(r.text, /R-SZ-CONTROL-ROW-OVERFLOW.*계산 'mixed'/s);
 });
 
 test('axis가 있는 defect에서 숫자 목적지를 없애면 실패한다', () => {
-  const r = run(map => { delete rule(map, 'R-SP-CAPTION-GAP').targetValue; });
+  const r = run(map => { delete asControlBoxDefect(map).targetMap; });
   assert.equal(r.code, 1, r.text);
   assert.match(r.text, /정확히 하나가 필요하다/);
 });
 
 test('targetMap이 이기지 않은 선언을 품으면 낡은 목적지로 실패한다', () => {
-  const r = run(map => { rule(map, 'R-SZ-SPACER').targetMap['apps/mobile/src/없는화면.tsx:1:height'] = 8; });
+  const r = run(map => { asControlBoxDefect(map).targetMap['apps/mobile/src/없는화면.tsx:1:height'] = 44; });
   assert.equal(r.code, 1, r.text);
   assert.match(r.text, /targetMap 항목이 이 규칙이 이긴 선언이 아니다/);
 });
 
 test('파생 목적지는 폐쇄 enum·판본·근거가 모두 있어야 한다', () => {
-  const r = run(map => { delete rule(map, 'R-SP-SCROLL-END').targetDerived.evidenceRef; });
+  const r = run(map => {
+    const x = asControlBoxDefect(map);
+    delete x.targetMap;
+    x.axis = 'vertical';
+    x.targetDerived = { kind: 'typeLineHeightByFontSize', formulaVersion: 1,
+      decisionRef: 'DS-20260905-001#6-2', table: TYPE_LINE_HEIGHT_TABLE };
+  });
   assert.equal(r.code, 1, r.text);
   assert.match(r.text, /targetDerived 는 지원 kind/);
 });
 
 test('lineHeight 파생표가 사용자 확정 6-2와 한 값이라도 다르면 실패한다', () => {
-  const r = run(map => { rule(map, 'R-TY-LINEHEIGHT').targetDerived.table['18'] = 22; });
+  const r = run(map => {
+    const x = asControlBoxDefect(map);
+    delete x.targetMap;
+    x.axis = 'vertical';
+    x.targetDerived = { kind: 'typeLineHeightByFontSize', formulaVersion: 1,
+      decisionRef: 'DS-20260905-001#6-2', evidenceRef: '기획서 §8.2 문항 6 결정 6-2',
+      table: { ...TYPE_LINE_HEIGHT_TABLE, '18': 22 } };
+  });
   assert.equal(r.code, 1, r.text);
   assert.match(r.text, /lineHeight 파생표가 사용자 확정 6-2와 다르다/);
 });

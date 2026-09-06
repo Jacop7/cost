@@ -59,8 +59,8 @@ test('저장소 그대로면 통과한다 — 시험 자체가 항상 FAIL 하�
 
 test('같은 통 안에서 +2/−2 로 상쇄해도 FAIL 한다 — 합계 게이트가 놓치던 자리다', () => {
   const r = run({ artEdit: (s) => {
-    const a = s.perRule.find(x => x.id === 'R-SZ-CONTROL-SM');
-    const b = s.perRule.find(x => x.id === 'R-TY-LINEHEIGHT');
+    const a = s.perRule.find(x => x.id === 'R-SZ-FLEX-RESET');
+    const b = s.perRule.find(x => x.id === 'R-SZ-APPHEADER-ACTION');
     a.declarations -= 2; b.declarations += 2;          // 통 합계도 선언 수도 그대로다
   } });
   assert.equal(r.code, 1, `같은 통 안의 상쇄를 놓쳤다\n${r.out}`);
