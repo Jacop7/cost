@@ -124,6 +124,8 @@ step('③ CLI 계약 · ACL 보안 · 색 대비 · 터치 영역', () => {
   if (!run('node', ['--test', 'scripts/design-token-s4-check.test.mjs'])) return false;
   if (!run('node', ['scripts/touch-target-audit.mjs'])) return false;
   if (!run('node', ['--test', 'scripts/touch-target-audit.test.mjs'])) return false;
+  if (!run('node', ['scripts/native-touch-runtime-evidence-check.mjs'])) return false;
+  if (!run('node', ['--test', 'scripts/native-touch-runtime-evidence-check.test.mjs'])) return false;
   if (!run('node', ['packages/db/scripts/cli-contract.test.mjs'])) return false;
   if (!run('node', ['packages/db/scripts/deploy-guard.test.mjs'])) return false;
   if (!run('node', ['packages/db/scripts/admin-acl-source-scan.test.mjs'])) return false;
