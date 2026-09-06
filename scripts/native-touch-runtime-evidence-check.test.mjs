@@ -49,6 +49,9 @@ test('실제 탭 3점은 안쪽 발화·직접 부모 밖 차단·overflow visib
     contractSha256: tapProbe.manifest.contractSha256,
   };
   assert.deepEqual(validateTapProbeData(tapProbe, expectedTap), []);
+  const repeatedPhysicalTap = structuredClone(tapProbe);
+  repeatedPhysicalTap.empiricalTapProbe.find((item) => item.id === 'inside-effective-rect').onPressCount = 4;
+  assert.deepEqual(validateTapProbeData(repeatedPhysicalTap, expectedTap), []);
   const broken = structuredClone(tapProbe);
   broken.empiricalTapProbe.find((item) => item.id === 'outside-overflow-visible-grandparent').onPressCount = 0;
   assert.match(validateTapProbeData(broken, expectedTap).join('\n'), /outside-overflow-visible-grandparent/);
