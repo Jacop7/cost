@@ -130,7 +130,7 @@ function FixedCostScreenBody({ localMonth }: { localMonth: string }) {
             </Card>
           ))}
 
-          <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, paddingHorizontal: 2, marginTop: 2 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, paddingHorizontal: 2, marginTop: space.xs }}>
             <Icon name="info" size={15} color={COLOR.text.tertiary} />
             <Text style={{ flex: 1, fontSize: 14, color: COLOR.text.tertiary, lineHeight: TYPE.caption.lineHeight }}>
               고정지출률은 이 달의 <Text style={{ fontWeight: '700' }}>모든 메뉴 손익</Text>에 곱해져요. 여기 숫자를 고치면 전 메뉴 순이익률이 함께 바뀌어요.

@@ -102,7 +102,7 @@ export default function MyChannelsScreen() {
             </Card>
           ))}
 
-          <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, paddingHorizontal: 2, marginTop: 2 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, paddingHorizontal: 2, marginTop: space.xs }}>
             <Icon name="info" size={15} color={COLOR.text.tertiary} />
             <Text style={{ flex: 1, fontSize: 14, color: COLOR.text.tertiary, lineHeight: TYPE.caption.lineHeight }}>
               배달앱 수수료는 <Text style={{ fontWeight: '700' }}>고정 지출</Text>의 ‘플랫폼 수수료’에서 관리해요.

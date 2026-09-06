@@ -5,7 +5,7 @@
 import { ReactElement, ReactNode } from 'react';
 import { Modal, Pressable, ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { LAYOUT, T, TYPE, radius, space } from '@/theme/tokens';
+import { LAYOUT, T, TYPE, radius, shadow, space } from '@/theme/tokens';
 import { Button } from './Button';
 
 export function Sheet({ visible, onClose, children, title, sub, height, headerRight, scroll = true }: {
@@ -29,7 +29,7 @@ export function Sheet({ visible, onClose, children, title, sub, height, headerRi
         accessibilityLabel="닫기"
         style={{ flex: 1, backgroundColor: T.scrim }}
       />
-      <View accessibilityViewIsModal style={{ position: 'absolute', left: 0, right: 0, bottom: 0, backgroundColor: T.surface, borderTopLeftRadius: radius.xl, borderTopRightRadius: radius.xl, height: height as number | undefined, maxHeight: '90%', shadowColor: '#000', shadowOffset: { width: 0, height: -8 }, shadowOpacity: 0.15, shadowRadius: 40, elevation: 16 }}>
+      <View accessibilityViewIsModal style={{ position: 'absolute', left: 0, right: 0, bottom: 0, backgroundColor: T.surface, borderTopLeftRadius: radius.xl, borderTopRightRadius: radius.xl, height: height as number | undefined, maxHeight: '90%', ...shadow.sheet }}>
         <View style={{ alignItems: 'center', paddingTop: space.sm }}>
           <View style={{ width: 38, height: 5, borderRadius: radius.full, backgroundColor: T.line }} />
         </View>
