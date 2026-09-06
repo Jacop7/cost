@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "mode": "SIMULATION_ONLY",
+  "implementationDecisionId": "DEC-REPLACE-ME",
+  "decisionStatus": "ACTIVE_IMPLEMENTATION_ONLY",
+  "activationDecisionId": null,
+  "dispatchEnabled": false,
+  "humanRelayEnabled": false,
+  "retryLimit": 2,
+  "expectedChatCount": 1,
+  "designPath": "docs/REPLACE-WITH-ROUTING-DESIGN.md",
+  "designSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "allowedMessageKinds": [
+    "REQUEST",
+    "CONFIRMED_ROUTE",
+    "TASK_DISPATCH",
+    "TASK_RESULT",
+    "REVIEW_REQUEST",
+    "REVIEW_RESULT",
+    "STAGING_GATE_REQUEST",
+    "STAGING_GATE_RESULT",
+    "PRODUCTION_GATE_REQUEST",
+    "DECISION_POINTER",
+    "VERIFIED_STATUS",
+    "AGGREGATE_RESULT"
+  ]
+}

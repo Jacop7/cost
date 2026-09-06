@@ -1,0 +1,289 @@
+{
+  "schema_version": 1,
+  "profile_id": "DEFAULT_11_ROLE",
+  "requirement_revision": "2026-09-06-profile-owned-human-master-deputy-teams",
+  "expansion_semantics": "For each requirement, take the ordered Cartesian product of the named source and target selector arrays, remove pairs with equal IDs only when exclude_self is true, and require one logical edge containing every listed kind.",
+  "semantics": {
+    "quality_peer_collaboration": "ALLOWED_FOR_CONSULTATION_ONLY_NEVER_SATISFIES_INDEPENDENT_REVIEW_OR_ASSIGNMENT_AUTHORITY",
+    "production_result_kind": "VERIFIED_STATUS_IS_INTENTIONAL_BECAUSE_PRODUCTION_GATE_RETURNS_RELEASE_STATUS_NOT_GENERIC_TASK_RESULT",
+    "room_assignment_role": "NONBLOCKING_AGGREGATION_ONLY"
+  },
+  "roles": [
+    {
+      "logical_chat_id": "MASTER-01-HUMAN-DECISIONS",
+      "title": "01 통합 작업큐 · 사람 결정",
+      "role_class": "HUMAN"
+    },
+    {
+      "logical_chat_id": "MASTER-02-ORCHESTRATION",
+      "title": "02 마스터 오케스트레이션",
+      "role_class": "MASTER"
+    },
+    {
+      "logical_chat_id": "MASTER-03-DEPUTY-CONTEXT",
+      "title": "03 부 오케스트레이션 · 토큰/컨텍스트 관리",
+      "role_class": "DEPUTY"
+    },
+    {
+      "logical_chat_id": "MASTER-04-DEVELOPMENT-STAGING",
+      "title": "04 개발·스테이징 배포 검증",
+      "role_class": "GATE"
+    },
+    {
+      "logical_chat_id": "MASTER-05-PRODUCTION-RECOVERY",
+      "title": "05 운영 배포 · 복구 게이트",
+      "role_class": "GATE"
+    },
+    {
+      "logical_chat_id": "DEPARTMENT-00-ALL-TEAMS-ROOM",
+      "title": "00 모든 팀 상황실",
+      "role_class": "ROOM"
+    },
+    {
+      "logical_chat_id": "DEPARTMENT-01-PRODUCT-MOBILE",
+      "title": "01 Product · Mobile",
+      "role_class": "TEAM"
+    },
+    {
+      "logical_chat_id": "DEPARTMENT-02-DATA-BACKEND",
+      "title": "02 Data · Backend",
+      "role_class": "TEAM"
+    },
+    {
+      "logical_chat_id": "DEPARTMENT-03-SERVER-OPERATIONS",
+      "title": "03 Server · Supabase · Operations",
+      "role_class": "TEAM"
+    },
+    {
+      "logical_chat_id": "DEPARTMENT-04-QUALITY-REVIEW",
+      "title": "04 Quality · Review",
+      "role_class": "TEAM"
+    },
+    {
+      "logical_chat_id": "DEPARTMENT-05-KNOWLEDGE-ORCHESTRATION",
+      "title": "05 Knowledge · Orchestration",
+      "role_class": "TEAM"
+    }
+  ],
+  "selectors": {
+    "human": [
+      "MASTER-01-HUMAN-DECISIONS"
+    ],
+    "master": [
+      "MASTER-02-ORCHESTRATION"
+    ],
+    "deputy": [
+      "MASTER-03-DEPUTY-CONTEXT"
+    ],
+    "staging": [
+      "MASTER-04-DEVELOPMENT-STAGING"
+    ],
+    "production": [
+      "MASTER-05-PRODUCTION-RECOVERY"
+    ],
+    "room": [
+      "DEPARTMENT-00-ALL-TEAMS-ROOM"
+    ],
+    "quality": [
+      "DEPARTMENT-04-QUALITY-REVIEW"
+    ],
+    "teams": [
+      "DEPARTMENT-01-PRODUCT-MOBILE",
+      "DEPARTMENT-02-DATA-BACKEND",
+      "DEPARTMENT-03-SERVER-OPERATIONS",
+      "DEPARTMENT-04-QUALITY-REVIEW",
+      "DEPARTMENT-05-KNOWLEDGE-ORCHESTRATION"
+    ],
+    "all_non_human": [
+      "MASTER-02-ORCHESTRATION",
+      "MASTER-03-DEPUTY-CONTEXT",
+      "MASTER-04-DEVELOPMENT-STAGING",
+      "MASTER-05-PRODUCTION-RECOVERY",
+      "DEPARTMENT-00-ALL-TEAMS-ROOM",
+      "DEPARTMENT-01-PRODUCT-MOBILE",
+      "DEPARTMENT-02-DATA-BACKEND",
+      "DEPARTMENT-03-SERVER-OPERATIONS",
+      "DEPARTMENT-04-QUALITY-REVIEW",
+      "DEPARTMENT-05-KNOWLEDGE-ORCHESTRATION"
+    ]
+  },
+  "edge_requirements": [
+    {
+      "requirement_id": "INTAKE",
+      "source_selector": "human",
+      "target_selector": "master",
+      "exclude_self": false,
+      "kinds": [
+        "REQUEST"
+      ]
+    },
+    {
+      "requirement_id": "MASTER_TO_DEPUTY",
+      "source_selector": "master",
+      "target_selector": "deputy",
+      "exclude_self": false,
+      "kinds": [
+        "TASK_DISPATCH"
+      ]
+    },
+    {
+      "requirement_id": "DEPUTY_ROOM_STATUS",
+      "source_selector": "deputy",
+      "target_selector": "room",
+      "exclude_self": false,
+      "kinds": [
+        "VERIFIED_STATUS"
+      ]
+    },
+    {
+      "requirement_id": "ROOM_DEPUTY_RESULT",
+      "source_selector": "room",
+      "target_selector": "deputy",
+      "exclude_self": false,
+      "kinds": [
+        "AGGREGATE_RESULT"
+      ]
+    },
+    {
+      "requirement_id": "DEPUTY_MASTER_RESULT",
+      "source_selector": "deputy",
+      "target_selector": "master",
+      "exclude_self": false,
+      "kinds": [
+        "AGGREGATE_RESULT"
+      ]
+    },
+    {
+      "requirement_id": "MASTER_HUMAN_RESULT",
+      "source_selector": "master",
+      "target_selector": "human",
+      "exclude_self": false,
+      "kinds": [
+        "AGGREGATE_RESULT"
+      ]
+    },
+    {
+      "requirement_id": "DEPUTY_TEAM_ASSIGNMENT",
+      "source_selector": "deputy",
+      "target_selector": "teams",
+      "exclude_self": false,
+      "kinds": [
+        "TASK_DISPATCH"
+      ]
+    },
+    {
+      "requirement_id": "TEAM_DEPUTY_RESULT",
+      "source_selector": "teams",
+      "target_selector": "deputy",
+      "exclude_self": false,
+      "kinds": [
+        "TASK_RESULT"
+      ]
+    },
+    {
+      "requirement_id": "CEO_DIRECT_ASSIGNMENT",
+      "source_selector": "master",
+      "target_selector": "teams",
+      "exclude_self": false,
+      "kinds": [
+        "TASK_DISPATCH"
+      ]
+    },
+    {
+      "requirement_id": "TEAM_CEO_DIRECT_RESULT",
+      "source_selector": "teams",
+      "target_selector": "master",
+      "exclude_self": false,
+      "kinds": [
+        "TASK_RESULT"
+      ]
+    },
+    {
+      "requirement_id": "TEAM_ROOM_STATUS",
+      "source_selector": "teams",
+      "target_selector": "room",
+      "exclude_self": false,
+      "kinds": [
+        "VERIFIED_STATUS"
+      ]
+    },
+    {
+      "requirement_id": "PEER_COLLABORATION",
+      "source_selector": "teams",
+      "target_selector": "teams",
+      "exclude_self": true,
+      "kinds": [
+        "COLLAB_REQUEST",
+        "COLLAB_RESULT"
+      ]
+    },
+    {
+      "requirement_id": "DIRECT_HUMAN_ESCALATION",
+      "source_selector": "all_non_human",
+      "target_selector": "human",
+      "exclude_self": false,
+      "kinds": [
+        "DECISION_POINTER"
+      ]
+    },
+    {
+      "requirement_id": "QUALITY_REQUEST",
+      "source_selector": "deputy",
+      "target_selector": "quality",
+      "exclude_self": false,
+      "kinds": [
+        "REVIEW_REQUEST"
+      ]
+    },
+    {
+      "requirement_id": "QUALITY_RESULT",
+      "source_selector": "quality",
+      "target_selector": "deputy",
+      "exclude_self": false,
+      "kinds": [
+        "REVIEW_RESULT"
+      ]
+    },
+    {
+      "requirement_id": "STAGING_REQUEST",
+      "source_selector": "master",
+      "target_selector": "staging",
+      "exclude_self": false,
+      "kinds": [
+        "STAGING_GATE_REQUEST"
+      ]
+    },
+    {
+      "requirement_id": "STAGING_RESULT",
+      "source_selector": "staging",
+      "target_selector": "master",
+      "exclude_self": false,
+      "kinds": [
+        "STAGING_GATE_RESULT"
+      ]
+    },
+    {
+      "requirement_id": "PRODUCTION_REQUEST",
+      "source_selector": "master",
+      "target_selector": "production",
+      "exclude_self": false,
+      "kinds": [
+        "PRODUCTION_GATE_REQUEST"
+      ]
+    },
+    {
+      "requirement_id": "PRODUCTION_RESULT",
+      "source_selector": "production",
+      "target_selector": "master",
+      "exclude_self": false,
+      "kinds": [
+        "VERIFIED_STATUS"
+      ]
+    }
+  ],
+  "document_roots": {
+    "authority": "AGENTS.md",
+    "tasks": "docs/team/TASKS.md",
+    "reviews": "docs/ai-review"
+  }
+}

@@ -7,3 +7,6 @@
 - [HANDOFF](./HANDOFF.md)
 - [Role Context](./ROLE-CONTEXT.md)
 - [Team Manifest](./TEAM-MANIFEST.md)
+- [Chat Manifest](./CHAT-MANIFEST.md)
+- [Team Router 정책](./TEAM-ROUTER-POLICY.json) — 대상 프로젝트의 결정 ID·채팅 수·설계 SHA로 바꾸고
+  `.codex/team-router/policy.json`에 배치한다. 초기값은 항상 무발송이다.

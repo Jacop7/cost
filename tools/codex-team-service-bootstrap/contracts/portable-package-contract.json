@@ -1,0 +1,203 @@
+{
+  "schema_version": 1,
+  "contract_id": "CODEX_TEAM_SERVICE_BOOTSTRAP_PORTABLE_V1",
+  "status": "DRAFT_FOR_FABLE_REVIEW",
+  "package_name": "codex-team-service-bootstrap",
+  "ownership": "COMPOSE_AND_VERIFY_ONLY",
+  "canonical_json": {
+    "normalization": "NFC_FOR_KEYS_AND_STRING_VALUES",
+    "key_order": "UTF16_CODE_UNIT_LEXICOGRAPHIC_ECMASCRIPT_LT_GT",
+    "encoding": "COMPACT_UTF8",
+    "astral_note": "ECMAScript string ordering compares UTF-16 code units, not Unicode code points or locale collation.",
+    "reference": "scripts/team-service-workflow.mjs#canonicalJson"
+  },
+  "default_mode": "SIMULATION_ONLY",
+  "verified_platforms": ["WINDOWS"],
+  "unverified_platforms": ["MACOS", "LINUX"],
+  "layers": {
+    "plugin": {
+      "tracked": true,
+      "scope": ["schemas", "templates", "doctor", "init", "verify", "migration", "recovery", "harness", "compatibility"],
+      "forbidden": ["project_name", "absolute_project_path", "account_identifier", "provider_endpoint", "secret", "raw_conversation"]
+    },
+    "project": {
+      "tracked": true,
+      "root": ".codex/team-service",
+      "scope": ["profile", "logical_chat_manifests", "capability_policy", "acceptance", "current", "hash_inventory", "known_open"],
+      "forbidden": ["absolute_path", "account_identifier", "thread_id", "provider_endpoint", "secret", "raw_conversation"]
+    },
+    "runtime": {
+      "tracked": false,
+      "windows_root": "KNOWNFOLDER_LOCALAPPDATA/Codex-Team-Service/<project-id>",
+      "scope": ["endpoint_binding", "hmac_reference", "tier_seal", "install_receipt", "activation_receipt", "epoch", "raw_tool_response", "outbox", "lock", "checkpoint"],
+      "missing_action": "RUNTIME_RESTORE_REQUIRED",
+      "reverse_flow_to_project": "FORBIDDEN"
+    }
+  },
+  "dependencies": [
+    {
+      "name": "codex-mission-relay",
+      "observed_version": "0.1.0+codex.20260905052501",
+      "supported_version": "EXACT_UNTIL_COMPATIBILITY_TESTED",
+      "owns": ["mission_1_7", "handoff", "restore", "study_gate"],
+      "consumes": [
+        {"artifact": "MISSION_RELAY_HANDOFF_AND_RESTORE_RECEIPTS", "path_patterns": ["data/<owner-alias>/handoffs/*.json", "data/<owner-alias>/recovery/*.json"], "schema_selector": "schema_version", "verification": "MISSION_RELAY_VERIFY_RECEIPT_COMMAND_AND_SHA256_SIDECAR"}
+      ],
+      "bootstrap_action": "READ_AND_VERIFY_ONLY"
+    },
+    {
+      "name": "codex-project-orchestrator",
+      "observed_version": "0.1.0+codex.20260903082431",
+      "supported_version": "EXACT_UNTIL_COMPATIBILITY_TESTED",
+      "owns": ["model_plan", "reasoning_effort", "weighted_token_budget", "review_plan"],
+      "consumes": [
+        {"artifact": ".codex/mission-relay/model-plan.json", "schema_selector": "schemaVersion", "verification": "SHA256_SIDECAR_AND_PROJECT_ORCHESTRATOR_VALIDATE"},
+        {"artifact": "PROJECT_ORCHESTRATOR_COMPUTE_BUDGET_OUTPUT", "schema_selector": "status", "verification": "EXACT_COMMAND_OUTPUT_SCHEMA_AND_PLAN_SHA_MATCH"}
+      ],
+      "bootstrap_action": "READ_AND_VERIFY_ONLY"
+    },
+    {
+      "name": "codex-team-router",
+      "observed_version": "0.1.0+codex.20260904020429",
+      "supported_version": "EXACT_UNTIL_COMPATIBILITY_TESTED",
+      "owns": ["route_edges", "dedupe", "endpoint_generation", "dispatch_activation"],
+      "consumes": [
+        {"artifact": ".codex/team-router/policy.json", "schema_selector": "schemaVersion", "verification": "TEAM_ROUTER_VALIDATE_AND_EXACT_FILE_SHA"},
+        {"artifact": ".codex/team-router/activation-receipt.json", "schema_selector": "schemaVersion", "verification": "TEAM_ROUTER_VERIFY_ACTIVATION_AND_EXACT_FILE_SHA"},
+        {"artifact": "PROJECT_DECLARED_CHAT_MANIFEST_V2", "schema_selector": "chat_manifest_version", "verification": "PROFILE_MANIFEST_POLICY_THREE_WAY_AUDIT"}
+      ],
+      "bootstrap_action": "READ_AND_VERIFY_ONLY"
+    },
+    {
+      "name": "codex-account-continuity",
+      "observed_version": "0.1.0+codex.20260903082432",
+      "supported_version": "EXACT_UNTIL_COMPATIBILITY_TESTED",
+      "owns": ["same_principal_group", "account_transition_receipt"],
+      "consumes": [
+        {"artifact": "ACCOUNT_CONTINUITY_TRANSITION_RECEIPT", "schema_selector": "schema_version", "verification": "ACCOUNT_CONTINUITY_VERIFY_RECEIPT_AND_SHA256_SIDECAR"}
+      ],
+      "bootstrap_action": "READ_AND_VERIFY_ONLY"
+    }
+  ],
+  "doctor_inputs": {
+    "tool_schemas": [
+      {"name": "mcp__codex_app__send_message_to_thread", "fields": ["threadId", "prompt"], "live_call_during_doctor": false},
+      {"name": "mcp__codex_app__read_thread", "fields": ["threadId", "hostId", "turnLimit"], "live_call_during_doctor": false},
+      {"name": "mcp__codex_app__wait_threads", "fields": ["targets", "timeoutMs"], "live_call_during_doctor": false},
+      {"name": "mcp__codex_app__create_thread", "fields": ["prompt", "target"], "live_call_during_doctor": false}
+    ],
+    "evidence_matrix": ["caller_provenance", "receipt_provenance", "send_effect_fence", "trusted_utc_provenance"],
+    "host_scope_result": {"format": "HOST-SCOPE-<N>", "required_sha256": true, "negative_result_cannot_be_promoted_by_configuration": true},
+    "same_inputs_same_tier_hash": true
+  },
+  "capability_tiers": {
+    "LOCAL_CORE_ONLY": {
+      "requires": ["LOCAL_CONTRACTS_VALID", "NO_SEND_HARNESS_PASS"],
+      "allows": ["TASK_NORMALIZATION", "EVENT_CHAIN", "INTENT_EFFECT_CAS", "OUTBOX_REPLAY", "BLOCKER_LIFECYCLE", "LOCAL_STOP", "SIMULATION"],
+      "forbids": ["PROVIDER_SEND", "STRICT_ACK", "DELIVERED", "COMPLETED"]
+    },
+    "COOPERATIVE_OBSERVED": {
+      "requires": ["OWNER_REDUCED_TRUST_DECISION", "OBSERVATION_COLLECTOR_VALIDATED", "PROBE_ENVELOPE_VALID"],
+      "allows": ["ACK_ONLY_PROBE", "OBSERVED_ROUNDTRIP"],
+      "forbids": ["STRICT_ACK", "ROUTER_DELIVERED", "STRICT_COMPLETED", "AUTHENTICATED_WORDING"]
+    },
+    "AUTHENTICATED": {
+      "requires": ["POSITIVE_HOST_SCOPE", "CALLER_PROVENANCE", "RECEIPT_PROVENANCE", "SEND_EFFECT_FENCE", "TRUSTED_TIME"],
+      "allows": ["ONLY_CAPABILITIES_PROVEN_BY_EXACT_HOST_EVIDENCE"],
+      "forbids": ["UNPROVEN_FIELD_PROMOTION"]
+    }
+  },
+  "assurance_terms": ["UNVERIFIED", "OBSERVED", "ATTESTED"],
+  "tier_enforcement": {
+    "activation_validator": "READ_SEALED_TIER_AND_REJECT_STAGE_ABOVE_TIER",
+    "stage_minimums": {"SIMULATION_ONLY": "LOCAL_CORE_ONLY", "PROBE_ONLY": "COOPERATIVE_OBSERVED", "PILOT": "AUTHENTICATED"},
+    "router_cross_check": {
+      "read": [".codex/team-router/policy.json#dispatchEnabled", ".codex/team-router/activation-receipt.json"],
+      "commands": ["verify-install", "dry-run"],
+      "mismatch": "TIER_POLICY_INCONSISTENT"
+    },
+    "configuration_may_promote_tier": false
+  },
+  "activation_envelope": {
+    "required": ["candidate_manifest_sha256", "review_receipt_sha256", "human_decision_sha256", "sealed_tier", "epoch_id", "previous_epoch", "expected_epoch"],
+    "decision_self_hash": "FORBIDDEN",
+    "cross_candidate_reuse": "FORBIDDEN",
+    "stages": ["PROBE_ONLY", "PILOT"],
+    "consume": "SINGLE_CURRENT_EPOCH_COMPARE_AND_SWAP",
+    "stale_expected_epoch": "REJECT_STALE_EPOCH"
+  },
+  "install_receipt": {
+    "required": ["previous_receipt_sha256", "plugin_manifest_sha256", "compatibility_sha256", "dependency_observations", "project_profile_sha256", "template_sha256", "generated_file_hashes", "doctor_evidence_sha256", "sealed_tier", "runtime_reference", "acl_result", "no_send_evidence_sha256", "coverage_evidence_sha256"],
+    "forbidden": ["secret", "raw_endpoint", "account_identifier", "raw_conversation"],
+    "verify_action_on_drift": "DRIFTED_OR_INCOMPLETE"
+  },
+  "init": {
+    "requires_plan_before_apply": true,
+    "overwrite_existing": false,
+    "classifications": ["UNCHANGED", "CREATE", "MERGE_REQUIRED", "CONFLICT"],
+    "partial_success": "FORBIDDEN",
+    "same_input": "BYTE_IDENTICAL_OR_NOOP"
+  },
+  "no_send_harness": {
+    "closure_pinned": true,
+    "builtin_allowlist": ["node:crypto", "node:path", "node:url"],
+    "stubbed_builtins": ["node:fs", "node:fs/promises"],
+    "all_other_builtins": "REJECT",
+    "dynamic_import": "REJECT",
+    "required_observations": {"normal_dispatch_attempts": 0, "negative_fake_attempts": ">0", "actual_provider_calls": 0, "target_internal_forbidden_call_fixture": "REJECTED_BEFORE_EFFECT"},
+    "error_mapping": {"REJECT_FORBIDDEN_GLOBAL_CALL": "NO_DISPATCH:fetch"},
+    "security_limit": "COOPERATIVE_FIXTURE_NOT_ADVERSARIAL_CODE_ISOLATION"
+  },
+  "routing_coverage": {
+    "requirements_source": ".codex/team-service/project-profile.json#edge_requirements",
+    "comparison": "PROFILE_MANIFEST_ROUTER_POLICY_THREE_WAY",
+    "hardcoded_global_requirement_revision": "FORBIDDEN",
+    "missing_or_extra_edge": "EXPLICIT_FINDING_NOT_PASS"
+  },
+  "runtime_versions": {
+    "node": {"observed": "24.15.0", "supported": ">=24.15.0 <25"},
+    "python": {"observed": "3.13.14", "supported": ">=3.13 <3.14"},
+    "typescript": {"observed": "5.9.3", "supported": "5.9.x"},
+    "shell_probe": "ACTUAL_CHILD_MARKER_AND_EXIT_CODE_REQUIRED"
+  },
+  "tracking_policy": {
+    "generate": [".gitattributes", ".gitignore"],
+    "verify": "ZERO_RUNTIME_CLASS_FILES_UNDER_TRACKED_ROOTS",
+    "runtime_inside_repository": "FORBIDDEN"
+  },
+  "rebuild_inputs": [
+    "schemas/project-profile.schema.json",
+    "schemas/capability-policy.schema.json",
+    "schemas/install-receipt.schema.json",
+    "schemas/generated-files.schema.json",
+    "profiles/default-11-role-profile.json",
+    "golden/portable-v1-vectors.json",
+    "scripts/portable-team-service-design.test.mjs"
+  ],
+  "acceptance_tests": [
+    "AT-01_CLEAN_INSTALL_RECEIPT",
+    "AT-02_CROSS_PC_DETERMINISM",
+    "AT-03_SECRET_ENDPOINT_ABSOLUTE_PATH_LEAK_ZERO",
+    "AT-04_NO_SEND_CLOSURE_ZERO_ZERO",
+    "AT-05_TIER_FAIL_CLOSED",
+    "AT-06_SHELL_PROCESS_EXIT_PROBE",
+    "AT-07_DEPENDENCY_COMPATIBILITY_FAIL_CLOSED",
+    "AT-08_MIGRATION_ROUNDTRIP_HASH",
+    "AT-09_ADAPTER_ROLE_EDGE_COVERAGE",
+    "AT-10_PROBE_REQUIRES_EXACT_ENVELOPE",
+    "AT-11_INIT_IDEMPOTENT_NO_OVERWRITE",
+    "AT-12_RUNTIME_LOSS_RESTORE_REQUIRED",
+    "AT-13_UNICODE_CRLF_PLATFORM_MATRIX",
+    "AT-14_PLUGIN_REMOVAL_DEPENDENCY_REGRESSION_ZERO",
+    "AT-15_REBUILD_FROM_EMPTY_SOURCE",
+    "AT-16_RUNTIME_ACL_NEGATIVE_OTHER_PRINCIPAL",
+    "AT-17_DOCTOR_TIER_DETERMINISM_AND_CONFIG_PROMOTION_REJECTED"
+  ],
+  "current_claims": {
+    "plugin_implemented": false,
+    "installed_on_second_pc": false,
+    "cross_project_validated": false,
+    "real_send_authorized": false,
+    "service_ready": false
+  }
+}

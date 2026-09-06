@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "review_id": "TEAM-SERVICE-PORTABLE-PACKAGE-FABLE-RECHECK-003",
+  "review_mode": "DIRECT_FABLE_COWORK_ADVISORY_NOT_FORMAL_CLI_RECEIPT",
+  "target_head": "fe96c3c196d4c3211024c1ecbe18e9d358a230b8",
+  "scope": "PORTABLE_INSTALL_BOOTSTRAP_AND_FULL_LOSS_REBUILD_DESIGN_ONLY",
+  "inputs": [
+    {"path": "docs/ai-team-starter-kit/PORTABLE-TEAM-SERVICE-ARCHITECTURE.md", "sha256": "f65e63e78a63aa616e7c30bf9434452f71501291091cc6b76e7f0eabbab14629"},
+    {"path": "docs/ai-team-starter-kit/REBUILD-BLUEPRINT.md", "sha256": "e8871593963e4bb6e92aded71308d21e4e647c601b7ad43783ab035b954d4a9a"},
+    {"path": "docs/ai-team-starter-kit/PLUGIN-OPERATIONS.md", "sha256": "8b47990a71cb7657b10f0f33bc12d3b545356a2ac90f6a1c8bccf85aa9815777"},
+    {"path": "docs/ai-team-starter-kit/portable-package-contract.json", "sha256": "e1c8924806d4e8d8b04159ab72453b5b6a83e341db78b30604492cfba7a78e6d"},
+    {"path": "docs/ai-team-starter-kit/schemas/project-profile.schema.json", "sha256": "0f318145992a23a30b39446238272cf4d2b0122296ee95ee0d414ac9e333d85f"},
+    {"path": "docs/ai-team-starter-kit/schemas/capability-policy.schema.json", "sha256": "4110fc67e1d0290347100fbf7ebce22edc175d874d9ae0a4ecf89f9435a09ee0"},
+    {"path": "docs/ai-team-starter-kit/schemas/install-receipt.schema.json", "sha256": "eef9b0b93fd58f067ec133af66ac50eac092044a832c3c3d7343d044a7a6b0a5"},
+    {"path": "docs/ai-team-starter-kit/schemas/generated-files.schema.json", "sha256": "4f470f54035a11c9be67ea431c4fe0f1faab733571589cfd21a9255ed52f3e44"},
+    {"path": "docs/ai-team-starter-kit/profiles/default-11-role-profile.json", "sha256": "75645b2eae217c9233dee0e2bc4acd6ea362cee3f8e8dc9e1b69e7466f604a78"},
+    {"path": "docs/ai-team-starter-kit/golden/portable-v1-vectors.json", "sha256": "dc453187b4a26cd7ed6c4a10dc8aeb7df2734ea667344f0dcecf98b86466857d"},
+    {"path": "docs/ai-review/evidence/TEAM-SERVICE-PORTABLE-PACKAGE-FABLE-001.md", "sha256": "5647e8e0d0c48dfd7fcf68c23042b7e5f9553ee494ea30c25afdba796e2a7045"},
+    {"path": "docs/ai-review/evidence/TEAM-SERVICE-PORTABLE-PACKAGE-FABLE-RECHECK-002.md", "sha256": "60359a45566e341aee19e873aa35159c84d132b3ddc2cd2f978502f0cba7f330"}
+  ],
+  "local_checks": {
+    "json_parse": "7_OF_7_PASS",
+    "golden_hash": "2_OF_2_PASS",
+    "schema_semantic_validator": "NOT_EXECUTED_DEPENDENCY_UNAVAILABLE"
+  },
+  "requested_decisions": [
+    "R1_TIER_ENFORCEMENT_POINTS_CLOSED",
+    "R2_REBUILD_INPUTS_SELF_CONTAINED",
+    "R3_DEPENDENCY_CONSUMES_DEFINED",
+    "B4_ALLOWLIST_AND_INTERNAL_CALL_NEGATIVE_DEFINED",
+    "B7_PROFILE_OWNS_REQUIREMENT_EDGES",
+    "AT16_AT17_AND_TRACKING_POLICY_DEFINED",
+    "FULL_LOSS_REBUILD_BLUEPRINT_SUFFICIENT",
+    "DESIGN_READY_FOR_SEPARATE_IMPLEMENTATION_ADMISSION"
+  ],
+  "forbidden_claims": ["PLUGIN_IMPLEMENTED", "PLUGIN_INSTALLED", "SECOND_PC_VALIDATED", "REAL_SEND_AUTHORIZED", "HOST_AUTHENTICATED", "SERVICE_READY"]
+}

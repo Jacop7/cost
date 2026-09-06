@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:codex-team-service:capability-policy:v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "mode", "tier_source", "activation_minimums", "router_consistency"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "mode": {"enum": ["SIMULATION_ONLY", "PROBE_ONLY", "PILOT"]},
+    "tier_source": {"const": "RUNTIME_DOCTOR_SEAL_ONLY"},
+    "activation_minimums": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["SIMULATION_ONLY", "PROBE_ONLY", "PILOT"],
+      "properties": {
+        "SIMULATION_ONLY": {"const": "LOCAL_CORE_ONLY"},
+        "PROBE_ONLY": {"const": "COOPERATIVE_OBSERVED"},
+        "PILOT": {"const": "AUTHENTICATED"}
+      }
+    },
+    "router_consistency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["policy_path", "activation_receipt_path", "mismatch"],
+      "properties": {
+        "policy_path": {"const": ".codex/team-router/policy.json"},
+        "activation_receipt_path": {"const": ".codex/team-router/activation-receipt.json"},
+        "mismatch": {"const": "TIER_POLICY_INCONSISTENT"}
+      }
+    }
+  }
+}

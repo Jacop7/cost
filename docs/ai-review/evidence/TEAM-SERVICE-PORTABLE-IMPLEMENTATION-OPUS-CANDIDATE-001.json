@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "review_id": "TEAM-SERVICE-PORTABLE-IMPLEMENTATION-OPUS-001",
+  "review_mode": "DIRECT_OPUS_COWORK_ADVISORY_FABLE_LIMIT_SUCCESSION_NOT_FORMAL_CLI_RECEIPT",
+  "target_head": "fe96c3c196d4c3211024c1ecbe18e9d358a230b8",
+  "scope": "PORTABLE_PLUGIN_LOCAL_CORE_IMPLEMENTATION_AND_RELEASE",
+  "design_baseline": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-PORTABLE-PACKAGE-DESIGN-BASELINE-001.json",
+    "sha256": "c06c4b747208b83b4b4bb8301533bb98893adf6f478c6a00ee71d127a818f10e",
+    "verdict": "DESIGN_ACCEPTABLE_DIRECT_FABLE_COWORK"
+  },
+  "inputs": [
+    {"path": "tools/codex-team-service-bootstrap/.codex-plugin/plugin.json", "sha256": "ea63d754e32a7711a5c73dc47f559628816a850d68fa6fd5cea15ab7ad6fedf3"},
+    {"path": "tools/codex-team-service-bootstrap/scripts/lib/core.mjs", "sha256": "4f2f8baf9bd9306e61b0acc90eac3c99fc15e4ccd1e1d5b7d8aa90f473d81f91"},
+    {"path": "tools/codex-team-service-bootstrap/scripts/team-service.mjs", "sha256": "90edf503f1f49a735f067de8179ca9cfcda5134202020bad08176d0cb0280e8a"},
+    {"path": "tools/codex-team-service-bootstrap/scripts/Install-TeamServiceBootstrap.ps1", "sha256": "d9cd737103c0cdf9892cc84b8199c638143bd611ba36cac05ae848ae51de3d6f"},
+    {"path": "tools/codex-team-service-bootstrap/scripts/Export-TeamServiceBootstrap.ps1", "sha256": "07348b6037915c58de7975d2d903f1339e6a98116f7b1182b4efb00095830a7e"},
+    {"path": "tools/codex-team-service-bootstrap/tests/team-service-bootstrap.test.mjs", "sha256": "7b7c5bb312db8c9ec5a720e6728be51f80288d0f39d270c1c304667562b0d665"},
+    {"path": "tools/codex-team-service-bootstrap/tests/distribution.test.mjs", "sha256": "572e13fb58af132cd1b0db88b19d990a078d90ca552cf5ab3ae8e8b14675d845"},
+    {"path": "tools/codex-team-service-bootstrap/contracts/portable-package-contract.json", "sha256": "c7057efe4b9e8ee220b2b4617d94c49b85f9bb7a1dca960982146c06264f4912"},
+    {"path": "tools/codex-team-service-bootstrap/contracts/acceptance-matrix.json", "sha256": "dfa1048f10ed2033c8b199a637628adba428ad4523732d2566d04d9822b75d48"},
+    {"path": "tools/codex-team-service-bootstrap/docs/IMPLEMENTATION-STATUS.md", "sha256": "e65d0625e872f4be61cd073a0764ae7e5b988431a44884fb18d7e4ec8a635093"},
+    {"path": ".codex/team-service/project-profile.json", "sha256": "ffd28718f55a2598f69a359ff8ed2395ad9e7146ebf68d8dbfc26a5af550eec5"},
+    {"path": ".codex/team-service/capability-policy.json", "sha256": "ea031bc0f913781f9a45a09d5bc602cea188a6d307ef9d3700bf10f89fd4bcaf"},
+    {"path": ".codex/team-service/generated-files.json", "sha256": "ceea91d690b6eedad3c711e4779a8d7ad564d50f5218be40e5106e4f84286afa"},
+    {"path": "dist/codex-team-service-bootstrap-0.1.0/release-inventory.json", "sha256": "7dc0e4bcf2a3c9624db8f9f296d99a1ce694ac4268339346703ebc4c12ba1f08"},
+    {"path": "dist/codex-team-service-bootstrap-0.1.0.zip", "sha256": "19223c18e73f634bd659b6e4f35cbdb037b7e134a39fde2ef9a91dfe52fbbe68"},
+    {"path": "docs/ai-team-starter-kit/REBUILD-BLUEPRINT.md", "sha256": "961eddcb1065e61e3b7db8147b4e011b7bf2dc058c7664ff68093e88bd44e413"},
+    {"path": "docs/ai-team-starter-kit/PLUGIN-OPERATIONS.md", "sha256": "f5440738ab8a61e2e7141ae7115ba00298ecdf7da9fe0ae43a3425a50e6f46a5"}
+  ],
+  "local_checks": {
+    "plugin_validator": "PASS",
+    "starter_kit_command": "corepack pnpm ai:starter-kit:check",
+    "starter_kit_tests": {"pass": 22, "fail": 0, "skipped": 0},
+    "release_plugin_tests": {"pass": 15, "fail": 0, "skipped": 0},
+    "installed_version": "0.1.0+codex.20260906120857",
+    "current_project_dry_run": {"logical_roles": 11, "logical_required_edges": 67, "normal_dispatch_attempts": 0, "negative_fake_attempts": 1, "actual_provider_calls": 0, "status": "PASS_LOCAL_NO_SEND"},
+    "current_project_verify": "TIER_POLICY_INCONSISTENT_EXPECTED_FAIL_CLOSED"
+  },
+  "requested_decisions": [
+    "N1_TO_N4_IMPLEMENTATION_ADMISSION_CONDITIONS_CLOSED",
+    "EIGHT_COMPONENT_PACKAGE_IMPLEMENTATION_COHERENT",
+    "SCHEMA_VALIDATOR_AND_CANONICALIZATION_FAIL_CLOSED",
+    "INSTALL_UPDATE_EXPORT_PATHS_SAFE_AND_PORTABLE",
+    "TEST_CLAIMS_MATCH_EVIDENCE_WITHOUT_SECOND_PC_OVERCLAIM",
+    "CURRENT_ROUTER_TIER_INCONSISTENCY_HANDLED_SAFELY",
+    "READY_FOR_NEXT_LOCAL_IMPLEMENTATION_ITERATION"
+  ],
+  "known_limits": [
+    "AT16_BLOCKED_EXTERNAL_SECOND_WINDOWS_PRINCIPAL",
+    "PHYSICAL_SECOND_PC_NOT_TESTED",
+    "HOST_AUTHENTICATION_UNAVAILABLE",
+    "REAL_SEND_NOT_AUTHORIZED",
+    "CURRENT_ROUTER_ACTIVE_WHILE_BOOTSTRAP_TIER_LOCAL_CORE_ONLY"
+  ],
+  "forbidden_claims": ["PHYSICAL_SECOND_PC_VALIDATED", "REAL_SEND_AUTHORIZED", "HOST_AUTHENTICATED", "SERVICE_READY", "FORMAL_CLI_REVIEW_RECEIPT"]
+}

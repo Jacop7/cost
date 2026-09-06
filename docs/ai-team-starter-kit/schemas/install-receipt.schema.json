@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:codex-team-service:install-receipt:v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "receipt_id", "previous_receipt_sha256", "plugin_manifest_sha256", "compatibility_sha256", "dependency_observations", "project_profile_sha256", "template_sha256", "generated_file_hashes", "doctor_evidence_sha256", "sealed_tier", "runtime_reference", "acl_result", "no_send_evidence_sha256", "coverage_evidence_sha256", "clock_provenance"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "receipt_id": {"type": "string", "pattern": "^[A-Z0-9][A-Z0-9_-]{2,127}$"},
+    "previous_receipt_sha256": {"anyOf": [{"type": "null"}, {"type": "string", "pattern": "^[a-f0-9]{64}$"}]},
+    "plugin_manifest_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "compatibility_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "dependency_observations": {
+      "type": "array",
+      "minItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "version", "artifact", "artifact_sha256", "schema_selector", "verification_result"],
+        "properties": {
+          "name": {"type": "string", "minLength": 1},
+          "version": {"type": "string", "minLength": 1},
+          "artifact": {"type": "string", "minLength": 1},
+          "artifact_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "schema_selector": {"type": "string", "minLength": 1},
+          "verification_result": {"enum": ["PASS", "FAIL", "UNAVAILABLE"]}
+        }
+      }
+    },
+    "project_profile_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "template_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "generated_file_hashes": {"type": "array", "items": {"$ref": "urn:codex-team-service:generated-files:v1#/$defs/file"}},
+    "doctor_evidence_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "sealed_tier": {"enum": ["LOCAL_CORE_ONLY", "COOPERATIVE_OBSERVED", "AUTHENTICATED"]},
+    "runtime_reference": {"type": "string", "pattern": "^runtime-ref:[a-f0-9]{64}$"},
+    "acl_result": {"enum": ["PASS", "FAIL", "UNVERIFIED_PLATFORM"]},
+    "no_send_evidence_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "coverage_evidence_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "clock_provenance": {"enum": ["TRUSTED_HOST_UTC", "OWNER_APPROVED_LOCAL_ALTERNATIVE", "UNVERIFIED_TIME"]}
+  }
+}

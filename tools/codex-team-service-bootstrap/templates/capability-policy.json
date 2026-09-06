@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "mode": "SIMULATION_ONLY",
+  "tier_source": "RUNTIME_DOCTOR_SEAL_ONLY",
+  "activation_minimums": {
+    "SIMULATION_ONLY": "LOCAL_CORE_ONLY",
+    "PROBE_ONLY": "COOPERATIVE_OBSERVED",
+    "PILOT": "AUTHENTICATED"
+  },
+  "router_consistency": {
+    "policy_path": ".codex/team-router/policy.json",
+    "activation_receipt_path": ".codex/team-router/activation-receipt.json",
+    "mismatch": "TIER_POLICY_INCONSISTENT"
+  }
+}

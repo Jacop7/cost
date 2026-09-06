@@ -28,3 +28,5 @@
 
 공통 core는 Task, 역할, 팀 route, HANDOFF, 검수·사람 결정의 구조만 제공한다. DB, CI, 배포,
 credential, 제품 규칙은 `adapters/` 또는 대상 프로젝트 profile에 두며 core를 수정해 섞지 않는다.
+
+[`templates/CHAT-MANIFEST.md`](./templates/CHAT-MANIFEST.md)는 구조만 제공한다. 채팅방 exact title·개수·context 대응은 프로젝트 adapter의 단일 권위를 링크하며, 채팅 이름이 사람 승인이나 운영 실행 권한을 만들지 않는다.

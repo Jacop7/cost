@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "chat_manifest_version": 2,
+  "logical_chat_id": "MASTER-03-DEPUTY-CONTEXT",
+  "title": "03 부 오케스트레이션 · 토큰/컨텍스트 관리",
+  "role_class": "DEPUTY",
+  "profile_id": "DEFAULT_11_ROLE",
+  "requirement_revision": "2026-09-06-profile-owned-human-master-deputy-teams",
+  "endpoint_binding": "RUNTIME_ONLY_NOT_PRESENT"
+}

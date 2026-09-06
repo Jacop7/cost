@@ -10,11 +10,34 @@ v0.5는 실제 R1 문서 그래프 verify 게이트 파일럿에서 확인한 �
 - [시작 절차](./START-HERE.md)
 - [공통 계약](./CORE-CONTRACT.md)
 - [재사용 템플릿](./templates/README.md)
+- [일반 Chat Manifest](./templates/CHAT-MANIFEST.md)
+- [Team Router 무발송 정책 템플릿](./templates/TEAM-ROUTER-POLICY.json)
 - [프로젝트 adapter/profile 경계](./adapters/README.md)
+- [휴대형 팀 서비스 아키텍처](./PORTABLE-TEAM-SERVICE-ARCHITECTURE.md)
+- [플러그인·adapter 유실 재제작 설계서](./REBUILD-BLUEPRINT.md)
+- [공통 플러그인 설치·운영 설계](./PLUGIN-OPERATIONS.md)
+- [휴대형 패키지 기계 판독 계약](./portable-package-contract.json)
+- [프로젝트 profile schema](./schemas/project-profile.schema.json)
+- [capability policy schema](./schemas/capability-policy.schema.json)
+- [설치 영수증 schema](./schemas/install-receipt.schema.json)
+- [생성 파일 inventory schema](./schemas/generated-files.schema.json)
+- [기본 11역할 profile](./profiles/default-11-role-profile.json)
+- [재제작 golden vector](./golden/portable-v1-vectors.json)
+- [검수된 설계 기준선](../ai-review/evidence/TEAM-SERVICE-PORTABLE-PACKAGE-DESIGN-BASELINE-001.json)
+- [Fable 최종 설계 재검수 004](../ai-review/evidence/TEAM-SERVICE-PORTABLE-PACKAGE-FABLE-RECHECK-004.md)
+- [플러그인 정본 소스](../../tools/codex-team-service-bootstrap/README.md)
+- [구현 상태](../../tools/codex-team-service-bootstrap/docs/IMPLEMENTATION-STATUS.md)
+- [AT-01~17 판정표](../../tools/codex-team-service-bootstrap/contracts/acceptance-matrix.json)
+
+현재 휴대형 패키지는 **설계 승인** 상태다. 플러그인 구현·설치·다른 PC 검증·실제 채팅 발송은
+별도 구현 입장과 활성화 결정을 통과해야 하며 아직 완료로 주장하지 않는다.
 
 여러 장기 채팅을 쓸 때는 프로젝트마다 봉인 모델 계획 하나를 두고, 각 채팅은 자기 Mission Relay
 상태·1.7 경제성·HANDOFF 계보만 별도로 보존한다. 채팅마다 계획 사본을 만들거나 한 채팅의 rollover를
 다른 채팅으로 전파하지 않는다.
+
+교차 채팅 라우팅이 필요하면 각 manifest의 v2 edge와 프로젝트별 Team Router 정책을 함께 검증한다.
+공통 키트는 실제 발송을 켜지 않으며, 구현 승인과 별도의 활성화 Decision 전에는 simulation만 허용한다.
 
 ## 포함하지 않는 것
 
@@ -25,3 +48,4 @@ v0.5는 실제 R1 문서 그래프 verify 게이트 파일럿에서 확인한 �
 
 각 새 프로젝트는 이 템플릿을 복사한 뒤 adapter/profile을 작성하고, 자신의 공식 문서·검사기·독립검수
 결과를 통해서만 활성화한다.
+채팅방의 exact title·개수·컨텍스트 대응은 공통 core가 아니라 각 프로젝트 adapter가 정하며, manifest는 그 권위를 링크로만 참조한다.

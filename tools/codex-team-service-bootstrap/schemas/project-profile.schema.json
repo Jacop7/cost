@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:codex-team-service:project-profile:v1",
+  "title": "Codex Team Service Project Profile",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "profile_id", "requirement_revision", "expansion_semantics", "semantics", "roles", "selectors", "edge_requirements", "document_roots"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "profile_id": {"type": "string", "pattern": "^[A-Z0-9][A-Z0-9_-]{2,63}$"},
+    "requirement_revision": {"type": "string", "minLength": 1},
+    "expansion_semantics": {"type": "string", "minLength": 1},
+    "semantics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["quality_peer_collaboration", "production_result_kind", "room_assignment_role"],
+      "properties": {
+        "quality_peer_collaboration": {"const": "ALLOWED_FOR_CONSULTATION_ONLY_NEVER_SATISFIES_INDEPENDENT_REVIEW_OR_ASSIGNMENT_AUTHORITY"},
+        "production_result_kind": {"const": "VERIFIED_STATUS_IS_INTENTIONAL_BECAUSE_PRODUCTION_GATE_RETURNS_RELEASE_STATUS_NOT_GENERIC_TASK_RESULT"},
+        "room_assignment_role": {"const": "NONBLOCKING_AGGREGATION_ONLY"}
+      }
+    },
+    "roles": {
+      "type": "array",
+      "minItems": 2,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["logical_chat_id", "title", "role_class"],
+        "properties": {
+          "logical_chat_id": {"type": "string", "pattern": "^[A-Z0-9][A-Z0-9-]{2,95}$"},
+          "title": {"type": "string", "minLength": 1},
+          "role_class": {"enum": ["HUMAN", "MASTER", "DEPUTY", "GATE", "ROOM", "TEAM"]}
+        }
+      }
+    },
+    "selectors": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "array",
+        "minItems": 1,
+        "uniqueItems": true,
+        "items": {"type": "string", "pattern": "^[A-Z0-9][A-Z0-9-]{2,95}$"}
+      }
+    },
+    "edge_requirements": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["requirement_id", "source_selector", "target_selector", "exclude_self", "kinds"],
+        "properties": {
+          "requirement_id": {"type": "string", "pattern": "^[A-Z0-9][A-Z0-9_-]{2,95}$"},
+          "source_selector": {"type": "string", "minLength": 1},
+          "target_selector": {"type": "string", "minLength": 1},
+          "exclude_self": {"type": "boolean"},
+          "kinds": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^[A-Z][A-Z0-9_]{1,63}$"}}
+        }
+      }
+    },
+    "document_roots": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["authority", "tasks", "reviews"],
+      "properties": {
+        "authority": {"type": "string", "pattern": "^(?![A-Za-z]:|/).+"},
+        "tasks": {"type": "string", "pattern": "^(?![A-Za-z]:|/).+"},
+        "reviews": {"type": "string", "pattern": "^(?![A-Za-z]:|/).+"}
+      }
+    }
+  }
+}
