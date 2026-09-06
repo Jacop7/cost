@@ -30,12 +30,12 @@
   },
   "nativeStage": {
     "stage": "S4a",
-    "geometryChangesIncludedHere": 31,
+    "geometryChangesIncludedHere": 52,
     "note": "네이티브 부모 clipping 실측으로 승인된 후속 기하 변경만 행별 S4a 소유로 기록한다."
   },
   "nativeFollowupStage": {
     "stage": "S4b",
-    "geometryChangesIncludedHere": 36,
+    "geometryChangesIncludedHere": 31,
     "note": "S4a 원래 계보 밖에서 네이티브 감사가 발견한 공용·화면 컴포넌트 후속 보정을 별도 소유한다."
   },
   "allowedAstDiff": {
@@ -47,6 +47,7 @@
       "apps/mobile/src/components/kit/Sheet.tsx",
       "apps/mobile/src/components/kit/Slider.tsx",
       "apps/mobile/src/components/kit/SortSheet.tsx",
+      "apps/mobile/src/components/kit/charts.tsx",
       "apps/mobile/src/components/kit/index.tsx",
       "apps/mobile/src/features/changes/components/RecentChangeRow.tsx",
       "apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx",
@@ -113,8 +114,8 @@
       "apps/mobile/src/features/sales/screens/SalesWasteScreen.tsx",
       "apps/mobile/src/theme/tokens.ts"
     ],
-    "beforeHash": "ce93827706db17c25cd4a15e4953bd865d7d3216ac77e77e1c1c88d2ae2b284a",
-    "afterHash": "d106e4e50a8355ad14e1ba7eeb8fb1afe4d5b40c44fcf2ea8f431827c2cb18df"
+    "beforeHash": "ab621cdc4d19b2e20a0871913befb5ca7d46d764da68e7f61448c31201feaab8",
+    "afterHash": "f9af0d1b8b2e2b3dfcb04140fb87ae4164f6205b3d0b89a925cfe3adaf317f72"
   },
   "counts": {
     "scrollStart": 17,
@@ -301,14 +302,14 @@
       "file": "apps/mobile/src/components/kit/SortSheet.tsx",
       "declaration": "attr:hitSlop#1",
       "before": "{6}",
-      "after": "{{ top: 9, bottom: 9, left: 0, right: 0 }}",
+      "after": "{{ top: 9, bottom: 10, left: 0, right: 0 }}",
       "stage": "S4a"
     },
     {
       "file": "apps/mobile/src/components/kit/SortSheet.tsx",
       "declaration": "prop:bottom#1",
       "before": null,
-      "after": "9",
+      "after": "10",
       "stage": "S4a"
     },
     {
@@ -412,6 +413,13 @@
     {
       "file": "apps/mobile/src/components/kit/index.tsx",
       "declaration": "prop:minHeight#1",
+      "before": null,
+      "after": "COMPONENT.chip.visualHeight",
+      "stage": "S4a"
+    },
+    {
+      "file": "apps/mobile/src/components/kit/index.tsx",
+      "declaration": "prop:minHeight#2",
       "before": null,
       "after": "COMPONENT.fab.visualHeight",
       "stage": "S4a"
@@ -623,7 +631,21 @@
       "file": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx",
       "declaration": "attr:hitSlop#1",
       "before": "{6}",
+      "after": "{{ top: 1, bottom: 1 }}",
+      "stage": "S4a"
+    },
+    {
+      "file": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx",
+      "declaration": "attr:hitSlop#2",
+      "before": null,
       "after": "{0}",
+      "stage": "S4a"
+    },
+    {
+      "file": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx",
+      "declaration": "prop:bottom#1",
+      "before": null,
+      "after": "1",
       "stage": "S4a"
     },
     {
@@ -631,6 +653,34 @@
       "declaration": "prop:height#1",
       "before": "controlVisualHeight.sm",
       "after": "minTouchTarget",
+      "stage": "S4a"
+    },
+    {
+      "file": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx",
+      "declaration": "prop:paddingVertical#1",
+      "before": "space.md",
+      "after": "1",
+      "stage": "S4a"
+    },
+    {
+      "file": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx",
+      "declaration": "prop:paddingVertical#2",
+      "before": "12",
+      "after": "space.md",
+      "stage": "S4a"
+    },
+    {
+      "file": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx",
+      "declaration": "prop:paddingVertical#4",
+      "before": null,
+      "after": "12",
+      "stage": "S4a"
+    },
+    {
+      "file": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx",
+      "declaration": "prop:top#1",
+      "before": null,
+      "after": "1",
       "stage": "S4a"
     },
     {
@@ -1400,8 +1450,8 @@
       "file": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx",
       "declaration": "attr:hitSlop#1",
       "before": "{5}",
-      "after": "{COMPONENT.adjacentActions.hitSlop}",
-      "stage": "S4"
+      "after": "{{ top: 2, bottom: 2 }}",
+      "stage": "S4a"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx",
@@ -1409,6 +1459,20 @@
       "before": "{5}",
       "after": "{COMPONENT.adjacentActions.hitSlop}",
       "stage": "S4"
+    },
+    {
+      "file": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx",
+      "declaration": "attr:hitSlop#3",
+      "before": null,
+      "after": "{COMPONENT.adjacentActions.hitSlop}",
+      "stage": "S4a"
+    },
+    {
+      "file": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx",
+      "declaration": "prop:bottom#1",
+      "before": null,
+      "after": "2",
+      "stage": "S4a"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx",
@@ -1458,6 +1522,13 @@
       "before": "96",
       "after": "LAYOUT.scroll.endWithFab",
       "stage": "S4"
+    },
+    {
+      "file": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx",
+      "declaration": "prop:top#1",
+      "before": null,
+      "after": "2",
+      "stage": "S4a"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx",
@@ -1533,8 +1604,8 @@
       "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
       "declaration": "attr:hitSlop#3",
       "before": "{7}",
-      "after": null,
-      "stage": "S4b"
+      "after": "{{ top: 7 }}",
+      "stage": "S4a"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
@@ -1734,6 +1805,13 @@
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
+      "declaration": "prop:top#1",
+      "before": null,
+      "after": "7",
+      "stage": "S4a"
+    },
+    {
+      "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
       "declaration": "prop:width#1",
       "before": "30",
       "after": "44",
@@ -1899,6 +1977,13 @@
       "before": "6",
       "after": "space.sm",
       "stage": "S3b"
+    },
+    {
+      "file": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx",
+      "declaration": "prop:minHeight#1",
+      "before": null,
+      "after": "COMPONENT.chip.rowMinHeight",
+      "stage": "S4a"
     },
     {
       "file": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx",
@@ -2128,15 +2213,22 @@
       "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
       "declaration": "attr:hitSlop#2",
       "before": "{6}",
-      "after": "{8}",
-      "stage": "S4b"
+      "after": "{{ top: 1, bottom: 1 }}",
+      "stage": "S4a"
     },
     {
       "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-      "declaration": "attr:hitSlop#4",
-      "before": "{8}",
-      "after": null,
-      "stage": "S4b"
+      "declaration": "prop:bottom#1",
+      "before": "24",
+      "after": "1",
+      "stage": "S4a"
+    },
+    {
+      "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
+      "declaration": "prop:bottom#2",
+      "before": null,
+      "after": "24",
+      "stage": "S4a"
     },
     {
       "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
@@ -2177,8 +2269,8 @@
       "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
       "declaration": "prop:minHeight#2",
       "before": "82",
-      "after": "44",
-      "stage": "S4b"
+      "after": "minTouchTarget",
+      "stage": "S4a"
     },
     {
       "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
@@ -2191,14 +2283,14 @@
       "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
       "declaration": "prop:minHeight#4",
       "before": null,
-      "after": "rowMinHeight.twoLine",
-      "stage": "S4b"
+      "after": "44",
+      "stage": "S4a"
     },
     {
       "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
       "declaration": "prop:minHeight#5",
       "before": null,
-      "after": "44",
+      "after": "rowMinHeight.twoLine",
       "stage": "S4b"
     },
     {
@@ -2207,6 +2299,13 @@
       "before": null,
       "after": "44",
       "stage": "S4b"
+    },
+    {
+      "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
+      "declaration": "prop:minHeight#7",
+      "before": null,
+      "after": "44",
+      "stage": "S4a"
     },
     {
       "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
@@ -2221,6 +2320,13 @@
       "before": null,
       "after": "0",
       "stage": "S4b"
+    },
+    {
+      "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
+      "declaration": "prop:top#1",
+      "before": null,
+      "after": "1",
+      "stage": "S4a"
     },
     {
       "file": "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx",

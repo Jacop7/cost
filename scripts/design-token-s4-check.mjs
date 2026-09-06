@@ -139,6 +139,18 @@ export function astChangePlan(beforeSources, afterSources) {
   return changes;
 }
 
+const declarationBase = (declaration) => declaration.replace(/#\d+$/, '');
+
+export function carryAstChangeStage(item, previousChanges) {
+  const exact = previousChanges.find(({ stage: _stage, ...previous }) => JSON.stringify(previous) === JSON.stringify(item));
+  if (exact) return exact.stage;
+  const sameDeclaration = previousChanges.filter((previous) => previous.file === item.file
+    && previous.before === item.before
+    && previous.after === item.after
+    && declarationBase(previous.declaration) === declarationBase(item.declaration));
+  return sameDeclaration.length === 1 ? sameDeclaration[0].stage : 'S4a';
+}
+
 const occurrences = (sources, regex) => {
   let count = 0;
   for (const text of sources.values()) count += [...text.matchAll(regex)].length;
@@ -337,9 +349,9 @@ function main() {
   if (opt['update-ast-contract'] !== undefined) {
     if (!baselineSources) throw new Error('baseline AST 입력 없이 계약을 갱신할 수 없다');
     const sources = loadSources(root);
-    const previousStages = new Map((contract.allowedAstChanges ?? []).map(({ stage, ...item }) => [JSON.stringify(item), stage]));
+    const previousChanges = contract.allowedAstChanges ?? [];
     const allowedAstChanges = astChangePlan(baselineSources, sources)
-      .map((item) => ({ ...item, stage: previousStages.get(JSON.stringify(item)) ?? 'S4a' }));
+      .map((item) => ({ ...item, stage: carryAstChangeStage(item, previousChanges) }));
     contract = {
       ...contract,
       allowedAstDiff: astDiffContract(baselineSources, sources),
