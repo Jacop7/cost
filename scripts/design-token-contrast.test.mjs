@@ -105,7 +105,7 @@ test('T.blueTint 만 바꾸면 결정 2-4 의 tint 고정 위반으로 잡는다
 });
 
 test('myHubTile.label 을 tint 위 4.03 인 색으로 바꾸면 잡는다', () => {
-  const r = run(s => s.replace(/(label:\s*)'#1465DB'/, "$1'#1470F5'"));
+  const r = run(s => s.replace(/(label:\s*)COLOR\.action\.onTint/, '$1COLOR.action.primary'));
   assert.equal(r.code, 1, r.out);
   assert.match(r.out, /myHubTile\.label/);
 });
