@@ -13,8 +13,8 @@
   },
   "manifest": {
     "evidenceStatus": "EXACT_COMMIT_EVIDENCE",
-    "productCommit": "4a54cb651d5eb56d76fc80193ee37e88cf53368d",
-    "productTree": "577b634d41afa2f7d41396d242463fe09dc5130f",
+    "productCommit": "98b22691d55215734e4b8ce5c4bde877b6a5c7fa",
+    "productTree": "b80b8309d9b0008b0f8cba38ca0e5fd5180a533d",
     "script": "native-touch-runtime-tap-probe.mjs",
     "scriptSha256": "3f82fb8cc1b8e5cadc126567bafce7ef8d756260030ad99b2dae5b6e37ef1384",
     "auditSha256": "27c5a2cf1f6da984251d31e30852b16adb811453351bf1b366519e3c05144115",

@@ -1,12 +1,12 @@
 # 전체 페이지 프로토타입 · 디자인 맥락 장부
 
-> 현재 동기화 ID: `DS-20260906-023`
+> 현재 동기화 ID: `DS-20260906-024`
 > 문서 동기화 상태: `SYNCED`
 > 전체 UI 작업 상태: `IN_PROGRESS`
 > 마지막 갱신: `2026-09-06`
-> 공통 변경: `예`
-> UI 변경: `예`
-> 변경 기록: `PRT-265`
+> 공통 변경: `아니오`
+> UI 변경: `아니오`
+> 변경 기록: `PRT-266`
 
 ## 1. 문서 역할
 
@@ -43,6 +43,20 @@
 - 글로벌: 30~50% 긴 번역, 320px, 200% 글자 확대, RTL 검수.
 
 ## 4. 가장 최근 작업
+
+### DS-20260906-024 · PRT-266 S3d 제품판 Android native touch 재측정
+
+- 작업 성격: PRT-265 증거 커밋 `98b2269`의 앱 제품판에서 Android 1×·2× 실제 frame과
+  실제 탭 프로브를 다시 수집한다. 앱·프로토타입의 보이는 UI는 바꾸지 않는다.
+- 결과: Android 15/API 35·density 2.625에서 1×·2× 각각 계약 target 19개,
+  유효 터치 미달 0, 물질적 형제 중첩 0이며 실제 탭 프로브도 PASS다.
+- 완료 조건:
+  - PRT266-ANDROID-1X · `native-touch-android-1x.json`
+  - PRT266-ANDROID-2X · `native-touch-android-2x.json`
+  - PRT266-ANDROID-TAP · `native-touch-android-tap-probe.json`
+  - PRT266-ANDROID-RECEIPT · `native-touch-android-receipt.json`
+- 미완료·후속: iOS native touch 1×/2× + tap probe, 차트 인접 구간 접근성 Finding.
+- 다음 시작점: PRT-261·264·265·266 Claude Opus 독립 검수 / 비플랫폼 접근성 후속.
 
 ### DS-20260906-023 · PRT-265 S3d 의미 역할 경계 교정
 
