@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /** 커밋에 보존된 Android·iOS 네이티브 터치 증거를 원시 frame부터 다시 판정한다. */
 import { createHash } from 'node:crypto';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
@@ -119,7 +119,46 @@ export function verifyRepositoryEvidence(root = defaultRoot, options = {}) {
     const changed = spawnSync('git', ['diff', '--quiet', productCommit, 'HEAD', '--', ...scope], { cwd: root });
     if (changed.status !== 0) failures.push('productCommit 뒤 앱 또는 네이티브 측정 계약이 바뀌어 증거가 낡았다');
   }
-  return { artifacts, failures };
+  return { artifacts, failures, requiredMatrix };
+}
+
+export function buildEvidenceReceipt(root, verification, requirePlatforms) {
+  const checkerPath = join(root, 'scripts/native-touch-runtime-evidence-check.mjs');
+  const contractPath = join(root, 'scripts/native-touch-runtime-contract.json');
+  const auditPath = join(root, 'scripts/native-touch-runtime-audit.mjs');
+  const knownPath = join(root, 'scripts/native-touch-runtime-known.json');
+  const cells = verification.requiredMatrix.map(({ platform, fontScale, file }) => {
+    const path = join(root, 'docs/prototypes', file);
+    if (!existsSync(path)) return { platform, fontScale, file, status: 'MISSING' };
+    const artifact = JSON.parse(normalized(path));
+    return {
+      platform,
+      fontScale,
+      file,
+      status: 'PRESENT',
+      textSha256: sha256(normalized(path)),
+      productCommit: artifact.manifest?.productCommit ?? null,
+      productTree: artifact.manifest?.productTree ?? null,
+      device: artifact.device ?? null,
+      targetCount: artifact.evaluation?.lineage?.length ?? null,
+      observedUnjudgedCount: artifact.evaluation?.observedUnjudged?.length ?? null,
+      materialOverlapCount: artifact.evaluation?.materialOverlaps?.length ?? null,
+      failureCount: artifact.evaluation?.failures?.length ?? null,
+    };
+  });
+  return {
+    schemaVersion: 1,
+    status: verification.failures.length ? 'FAIL' : 'PASS',
+    requirePlatforms,
+    contracts: {
+      checker: { path: 'scripts/native-touch-runtime-evidence-check.mjs', textSha256: sha256(normalized(checkerPath)) },
+      audit: { path: 'scripts/native-touch-runtime-audit.mjs', textSha256: sha256(normalized(auditPath)) },
+      contract: { path: 'scripts/native-touch-runtime-contract.json', textSha256: sha256(normalized(contractPath)) },
+      known: { path: 'scripts/native-touch-runtime-known.json', textSha256: sha256(normalized(knownPath)) },
+    },
+    cells,
+    failures: verification.failures,
+  };
 }
 
 if (resolve(process.argv[1] ?? '') === resolve(here)) {
@@ -127,7 +166,13 @@ if (resolve(process.argv[1] ?? '') === resolve(here)) {
     const requireArg = process.argv.slice(2).find((arg) => arg.startsWith('--require='))?.slice('--require='.length);
     const requirePlatforms = requireArg === 'all' ? ['android', 'ios']
       : requireArg ? requireArg.split(',').map((item) => item.trim()).filter(Boolean) : undefined;
-    const { artifacts, failures } = verifyRepositoryEvidence(defaultRoot, { requirePlatforms });
+    const outputArg = process.argv.slice(2).find((arg) => arg.startsWith('--output='))?.slice('--output='.length);
+    const verification = verifyRepositoryEvidence(defaultRoot, { requirePlatforms });
+    const { artifacts, failures } = verification;
+    if (outputArg) {
+      const resolvedPlatforms = requirePlatforms ?? [...new Set(verification.requiredMatrix.map((item) => item.platform))];
+      writeFileSync(resolve(outputArg), `${JSON.stringify(buildEvidenceReceipt(defaultRoot, verification, resolvedPlatforms), null, 2)}\n`);
+    }
     for (const artifact of artifacts) console.log(`${artifact.platform}@${artifact.fontScale} — target ${artifact.evaluation.lineage.length} · 미달 ${artifact.evaluation.observedUnjudged.length} · 중첩 ${artifact.evaluation.materialOverlaps.length}`);
     if (failures.length) {
       console.error(failures.map((item) => `  - ${item}`).join('\n'));
