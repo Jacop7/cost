@@ -1,12 +1,12 @@
 # 전체 페이지 프로토타입 · 디자인 맥락 장부
 
-> 현재 동기화 ID: `DS-20260906-017`
+> 현재 동기화 ID: `DS-20260906-020`
 > 문서 동기화 상태: `SYNCED`
 > 전체 UI 작업 상태: `IN_PROGRESS`
 > 마지막 갱신: `2026-09-06`
 > 공통 변경: `아니오`
 > UI 변경: `아니오`
-> 변경 기록: `PRT-257`
+> 변경 기록: `PRT-260`
 
 ## 1. 문서 역할
 
@@ -43,6 +43,50 @@
 - 글로벌: 30~50% 긴 번역, 320px, 200% 글자 확대, RTL 검수.
 
 ## 4. 가장 최근 작업
+
+### DS-20260906-020 · PRT-260 P1c 최종 증거 봉인
+
+- 작업 성격: DS-019 뒤 생성형 대비 게이트를 실행한 순서 오류를 새 ID로 바로잡는다.
+  제품 UI 코드는 바꾸지 않는다.
+- 절차: 모든 생성형 감사·게이트 산출물을 먼저 만든 뒤 마지막에 한 번만 봉인한다.
+- 완료 조건:
+  - PRT260-P1C · `full-page-flow-prototype-motion-layer-audit.json`
+  - PRT260-W1 · `full-page-flow-prototype-app-map-check.json`
+  - PRT260-CONTRAST · `full-page-flow-prototype-contrast-gate.json`
+  - PRT260-RENDER · `full-page-flow-prototype-render-audit.json`
+- 미완료·후속: 소유자 결정 32건 · iOS native touch.
+- 다음 시작점: 잔여 결정 패킷 독립 검수 / `DS-20260906-021`
+
+### DS-20260906-019 · PRT-259 P1c·W1 증거 재봉인
+
+- 작업 성격: DS-018 완료 뒤 동일 입력으로 재생성된 W1 산출물 두 개를 새 DS에 결속한다.
+  제품 UI 코드는 바꾸지 않는다.
+- 완료 조건:
+  - PRT259-P1C · `full-page-flow-prototype-motion-layer-audit.json`
+  - PRT259-W1 · `full-page-flow-prototype-app-map-check.json`
+  - PRT259-RENDER · `full-page-flow-prototype-render-audit.json`
+  - PRT259-I18N · `full-page-flow-prototype-i18n-stress.json`
+- 결과: P1c 앱 6·프로토타입 14·미매핑 0, W1 2,345·미분류 0·pending 32이며,
+  렌더·디자인·i18n·대비 감사가 현재 적용본과 같은 ID·해시를 사용한다.
+- 미완료·후속: 소유자 결정 32건 · iOS native touch.
+- 다음 시작점: 잔여 결정 패킷 독립 검수 / `DS-20260906-020`
+
+### DS-20260906-018 · PRT-258 P1c 프로토타입 레이어·시스템 모션 증거 보강
+
+- 작업 성격: PRT-253~256 페이블 독립검수 PASS의 비차단 Minor 3건을 닫는다. 제품 UI 코드는
+  바꾸지 않는다.
+- 프로토타입 측정: `<style>`의 `z-index` 14건·8단계와 명시 transition/animation/keyframes
+  0건을 보존한다. overlay/portal, 레이아웃 순서, 컴포넌트 내부 쌓임, 앱 FAB의 대응표로 전부
+  배정했다.
+- 시스템 모션: ActivityIndicator JSX 5곳·navigator preset 7곳·pressed opacity 1곳을
+  토큰화 범위 밖 플랫폼 기본 동작으로 별도 보존했다.
+- 결속: 앱 scope·프로토타입·검사기 해시와 DS 봉인이 정확성을 담당하며 sourceCommit은
+  provenance다. `--verify`가 현재 측정과 산출물을 대조한다.
+- 완료 조건:
+  - PRT258-P1C · `full-page-flow-prototype-motion-layer-audit.json`
+  - PRT258-P1C-TEST · `../../scripts/design-token-motion-layer-audit.test.mjs`
+- 미완료·후속: 소유자 결정 32건 · iOS native touch.
+- 다음 시작점: 잔여 결정 패킷 독립 검수 / `DS-20260906-019`
 
 ### DS-20260906-017 · PRT-257 S3c 누적 계약·W1 입력 감소 증거 보강
 

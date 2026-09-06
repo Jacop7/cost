@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { auditRepository, classifyDeclarations, scanSource } from './design-token-motion-layer-audit.mjs';
+import { auditRepository, classifyDeclarations, classifyPrototypeDeclaration, scanPrototypeCss, scanSource } from './design-token-motion-layer-audit.mjs';
 
 test('주석·문자열은 선언으로 세지 않고 JSX animationType만 센다', () => {
   const rows = scanSource(`
@@ -49,4 +49,35 @@ test('저장소 현재 P1c 인벤토리는 6건을 세 역할에 전부 배정�
   assert.deepEqual([...new Set(result.assignments.map((row) => row.role))].sort(), [
     'COMPONENT.fab.zIndex', 'COMPONENT.inlineSheet.animationType', 'COMPONENT.sheet.animationType',
   ]);
+  assert.deepEqual(result.prototype.summary, {
+    declarations: 14,
+    layer: 14,
+    motion: 0,
+    zIndexValues: [1, 2, 5, 10, 11, 12, 20, 24],
+    unmapped: 0,
+  });
+  assert.deepEqual(result.interpretation.systemMotion.activityIndicator,
+    { jsxUsages: 5, identifierOccurrencesIncludingImports: 10 });
+  assert.deepEqual(result.interpretation.systemMotion.navigatorPreset,
+    { containers: 7, stack: 6, tabs: 1, explicitAnimationOptions: 0 });
+  assert.deepEqual(result.interpretation.systemMotion.pressedOpacity,
+    { declarations: 1, transitionDurationDeclared: false });
+});
+
+test('프로토타입은 style 블록의 레이어·모션 선언만 세고 script 문자열은 제외한다', () => {
+  const rows = scanPrototypeCss(`
+    <style>.a{z-index:20}.b{transition:opacity .2s}@keyframes pop{to{opacity:1}}</style>
+    <script>const fake = 'z-index:999; animation: fake 1s';</script>
+  `);
+  assert.deepEqual(rows.map(({ prop, value }) => ({ prop, value })), [
+    { prop: 'z-index', value: 20 },
+    { prop: 'transition', value: 'opacity .2s' },
+    { prop: '@keyframes', value: 'pop' },
+  ]);
+});
+
+test('프로토타입의 알려지지 않은 z-index 값은 미매핑으로 완료되지 않는다', () => {
+  const rows = scanPrototypeCss('<style>.future{z-index:99}</style>');
+  assert.equal(rows.length, 1);
+  assert.equal(classifyPrototypeDeclaration(rows[0]).handling, 'unmapped');
 });
