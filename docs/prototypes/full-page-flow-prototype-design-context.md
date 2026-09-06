@@ -1,12 +1,12 @@
 # 전체 페이지 프로토타입 · 디자인 맥락 장부
 
-> 현재 동기화 ID: `DS-20260906-013`
+> 현재 동기화 ID: `DS-20260906-014`
 > 문서 동기화 상태: `SYNCED`
 > 전체 UI 작업 상태: `IN_PROGRESS`
 > 마지막 갱신: `2026-09-06`
-> 공통 변경: `아니오`
-> UI 변경: `아니오`
-> 변경 기록: `PRT-249`
+> 공통 변경: `예`
+> UI 변경: `예`
+> 변경 기록: `PRT-251`
 
 ## 1. 문서 역할
 
@@ -43,6 +43,30 @@
 - 글로벌: 30~50% 긴 번역, 320px, 200% 글자 확대, RTL 검수.
 
 ## 4. 가장 최근 작업
+
+### DS-20260906-014 · PRT-251 S3c 잔여 수렴과 W1 재측정
+
+- 작업 성격: 승인된 S3c 간격·그림자 8자리를 앱에 적용하고 그 제품판에서 W1을 다시 측정한다.
+  프로토타입 DOM·CSS·JS는 바꾸지 않는다.
+- 앱 변경: 다섯 블록 간 `marginTop:2`를 `space.xs=4`로, 세 인라인 그림자 묶음을
+  `shadow.sheet`·`shadow.sliderThumb`·`shadow.switchThumb`으로 치환했다.
+- W1 결과: 정의를 제외한 2,345개 선언을
+  `primitive 2,064 / componentOwned 249 / defect 0 / pendingApproval 32 / exception 0`으로
+  배정했다. 미분류 0이며 S3c의 실행 대상 8건은 잔여 defect에서 사라졌다.
+- 검수 후속: 페이블 PRT-249의 비차단 조건에 따라 차트 팔레트 결정 질문이 같은 범례의 정본 색
+  `#8B95A1`·`#B0B8C1`까지 함께 보여 주도록 보완했다.
+- 완료 조건:
+  - PRT251-S3C · `full-page-flow-prototype-s3c-diff.json`
+  - PRT251-W1-AUDIT · `../token-adoption-audit.json`
+  - PRT251-W1-MAP · `full-page-flow-prototype-app-map-check.json`
+  - PRT251-W1-CLAIMS · `full-page-flow-prototype-doc-claims-check.json`
+  - PRT251-RENDER · `full-page-flow-prototype-render-audit.json`
+  - PRT251-DESIGN · `full-page-flow-prototype-design-audit.json`
+  - PRT251-I18N · `full-page-flow-prototype-i18n-stress.json`
+  - PRT251-CONTRAST · `full-page-flow-prototype-contrast-fix.json`
+- 미완료·후속: 변경된 제품 SHA의 Android native touch 재측정 · iOS native touch · 소유자 결정
+  32건 · P1c 모션/z-index 측정.
+- 다음 시작점: Android native touch 재측정과 S3c 독립 검수 / `DS-20260906-015`
 
 ### DS-20260906-013 · PRT-249 PRT-248 검수 후속과 W1 팔레트 exact 정정
 

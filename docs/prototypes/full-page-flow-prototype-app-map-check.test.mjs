@@ -54,14 +54,14 @@ const asControlBoxDefect = (map) => {
 };
 const TYPE_LINE_HEIGHT_TABLE = { '12': 18, '13': 18, '14': 20, '15': 22, '16': 22, '18': 24, '20': 26, '22': 28 };
 
-test('최종 W1은 정의 21건을 분리하고 음수 포함 사용처 2,353건을 다섯 통에 배정한다', () => {
+test('S3c 뒤 W1은 정의 21건을 분리하고 음수 포함 사용처 2,345건을 다섯 통에 배정한다', () => {
   const r = run();
   assert.equal(r.code, 0, r.text);
   assert.deepEqual(r.out.summary.byBin, {
-    primitive: 2064, componentOwned: 249, defect: 8,
+    primitive: 2064, componentOwned: 249, defect: 0,
     pendingApproval: 32, approvedException: 0,
   });
-  assert.equal(audit.summary.declarations, 2353);
+  assert.equal(audit.summary.declarations, 2345);
   assert.equal(audit.declarations.filter(d => Number(d.value) < 0).length, 32);
   assert.equal(audit.definitions.total, 21);
   assert.equal(audit.definitions.declarations.filter(d => d.prop === 'lineHeight').length, 7);
@@ -76,7 +76,6 @@ test('최종 W1은 정의 21건을 분리하고 음수 포함 사용처 2,353건
   assert.equal(per['R-SP-PROFIT-SECTION-LABEL-OVERLAP'].declarations, 1);
   assert.equal(per['R-TY-LETTERSPACING-TITLE-TIGHT'].declarations, 10);
   assert.equal(per['R-TY-LETTERSPACING-UNDECIDED'].declarations, 15);
-  assert.equal(per['R-SP-CAPTION-GAP-VIEW'].declarations, 5);
   assert.equal(per['R-SP-EMPTY-STANDARD-V'].declarations, 2);
   assert.equal(per['R-SP-EMPTY-STANDARD-H'].declarations, 2);
   assert.equal(per['R-SP-EMPTY-COMPACT'].declarations, 2);

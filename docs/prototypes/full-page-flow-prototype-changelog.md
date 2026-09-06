@@ -19,6 +19,24 @@
 
 ## 변경 내역
 
+### PRT-251 · 2026-09-06 S3c 잔여 수렴과 W1 재측정
+
+- 날짜: 2026-09-06
+- 디자인 동기화 ID: `DS-20260906-014`
+- 앱 UI 변경: 승인된 S3c 8자리만 변경했다. 블록 간 `marginTop: 2` 다섯 곳은
+  `space.xs=4`로, Sheet·Slider·알림 Switch의 인라인 그림자 세 곳은 각각
+  `shadow.sheet`·`shadow.sliderThumb`·`shadow.switchThumb`으로 치환했다.
+- 실행 증거: S3c exact diff 게이트가 선언별 8개와 변경 파일 8개를 대조하고 음성 시험 5건이
+  승인 밖 변경·누락·중복·토큰 값 변경을 실패시킨다. 모바일 타입 검사와 시험 207건을 통과했다.
+- W1 재측정: 정의를 제외한 선언은 2,345건이며 배정은
+  `primitive 2,064 / componentOwned 249 / defect 0 / pendingApproval 32 / exception 0`,
+  미분류 0이다. 실행된 S3c 규칙 둘은 활성 배정표에서 제거했다.
+- 페이블 PRT-249 후속: 차트 결정은 보류 색 4종뿐 아니라 같은 범례에 이미 쓰이는 정본 색
+  `#8B95A1`·`#B0B8C1`도 함께 비교하도록 질문 근거를 보완했다.
+- 프로토타입 UI 변경: 없음. 동기화 표식만 갱신하고 감사 4종을 현재 ID에 다시 결속한다.
+- 한계: 제품 SHA가 바뀌어 기존 Android native touch 증거는 재측정 전까지 무효다.
+  iOS는 Apple Developer Program 팀 활성화 전이라 계속 외부 대기다.
+
 ### PRT-249 · 2026-09-06 PRT-248 검수 후속과 W1 팔레트 exact 정정
 
 - 날짜: 2026-09-06

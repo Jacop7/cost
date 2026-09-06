@@ -2,27 +2,27 @@
   "manifest": {
     "script": "docs/prototypes/full-page-flow-prototype-axis-measure.mjs",
     "scriptSha256": "60277bdb6a873128565368cd88bc6d99f95dc823a95a8b651bf78ef68312a987",
-    "auditSha256": "fd04e87a1920503304cd7731aa65fbed3a4d3f430e17eca7ff46a51408b8b494",
-    "auditCanon": "4b2b16712a45d56bc89daabfa8a5fc82264c397f4cf589d5216be0c04ec657a5",
+    "auditSha256": "b56b58077c4a4656e40638b722b2ebcb944ba74a17185080ac0d6198beccecc5",
+    "auditCanon": "29b3086a721cf164d0a8b7bda59b958cc58360fe36c8a8e000278de5ce4dfa53",
     "audit결속": {
-      "expectCommit": "d4fba6b1d0bbdc5e734a004b6e813e06273ef6e5",
-      "범위해시": "022ee3f4714be0c4f226110526e2fea2483434c9c0dcd1de4dba3a438aba1ece",
+      "expectCommit": "dbb89c1e652980c14d46df6942d73d316d05e821",
+      "범위해시": "5842e3267317bb4485b7b0af0dfa9b59388ac92d2982636d62504f915c741aea",
       "범위해시정의": "선택된 파일의 \"경로\\0 git blob SHA\" 를 정렬해 잇고 감사 스크립트 자신의 blob SHA 를 더해 sha256. blob SHA 는 CRLF→LF 정규화 뒤 직접 계산하므로 OS·git 유무에 좌우되지 않는다(페이블 R6 차단). 커밋 SHA 자기참조 없이 입력을 결속한다."
     },
     "values": "전부",
     "node": "v24.15.0",
-    "generatedAt": "2026-09-06T07:49:29.227Z",
+    "generatedAt": "2026-09-06T09:27:05.082Z",
     "판정": "축은 값이 아니라 속성과 컨테이너 flexDirection 으로 정한다 (PRT-207)."
   },
   "counts": {
-    "V": 419,
+    "V": 414,
     "H": 1084,
     "both": 731,
-    "none": 119,
-    "keysV": 419,
+    "none": 116,
+    "keysV": 414,
     "keysH": 1083,
     "keysBoth": 730,
-    "keysNone": 115
+    "keysNone": 113
   },
   "growV": [
     "apps/mobile/app/(tabs)/_layout.tsx:53:paddingTop",
@@ -59,7 +59,6 @@
     "apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx:70:paddingVertical",
     "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx:101:paddingVertical",
     "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx:124:paddingVertical",
-    "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx:155:marginTop",
     "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx:61:paddingBottom",
     "apps/mobile/src/features/ingredients/components/CategoryPickerSheet.tsx:35:gap",
     "apps/mobile/src/features/ingredients/components/CategoryPickerSheet.tsx:35:paddingTop",
@@ -117,7 +116,6 @@
     "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx:123:paddingVertical",
     "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx:136:marginTop",
     "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx:150:height",
-    "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx:164:marginTop",
     "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:150:paddingVertical",
     "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:173:height",
     "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:190:paddingBottom",
@@ -166,7 +164,6 @@
     "apps/mobile/src/features/my/screens/FixedCostEditScreen.tsx:175:paddingVertical",
     "apps/mobile/src/features/my/screens/FixedCostEditScreen.tsx:261:paddingVertical",
     "apps/mobile/src/features/my/screens/FixedCostScreen.tsx:106:paddingTop",
-    "apps/mobile/src/features/my/screens/FixedCostScreen.tsx:133:marginTop",
     "apps/mobile/src/features/my/screens/FixedCostScreen.tsx:77:minHeight",
     "apps/mobile/src/features/my/screens/FixedCostScreen.tsx:77:paddingVertical",
     "apps/mobile/src/features/my/screens/FixedCostScreen.tsx:81:paddingBottom",
@@ -176,7 +173,6 @@
     "apps/mobile/src/features/my/screens/MyAccountScreen.tsx:73:paddingBottom",
     "apps/mobile/src/features/my/screens/MyAccountScreen.tsx:74:marginBottom",
     "apps/mobile/src/features/my/screens/MyCategoryHubScreen.tsx:26:paddingTop",
-    "apps/mobile/src/features/my/screens/MyChannelsScreen.tsx:105:marginTop",
     "apps/mobile/src/features/my/screens/MyChannelsScreen.tsx:126:marginTop",
     "apps/mobile/src/features/my/screens/MyHomeScreen.tsx:107:paddingBottom",
     "apps/mobile/src/features/my/screens/MyHomeScreen.tsx:107:paddingTop",
@@ -251,7 +247,6 @@
     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:261:paddingTop",
     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:287:minHeight",
     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:308:marginTop",
-    "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:315:marginTop",
     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:351:marginTop",
     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:378:marginTop",
     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:378:paddingTop",
@@ -2269,7 +2264,6 @@
     "apps/mobile/src/components/kit/Icon.tsx:53:hex",
     "apps/mobile/src/components/kit/MemoEditSheet.tsx:41:borderRadius",
     "apps/mobile/src/components/kit/SearchBar.tsx:27:borderRadius",
-    "apps/mobile/src/components/kit/Sheet.tsx:32:hex",
     "apps/mobile/src/components/kit/Slider.tsx:50:hex",
     "apps/mobile/src/components/kit/SortSheet.tsx:30:borderRadius",
     "apps/mobile/src/components/kit/charts.tsx:101:hex",
@@ -2322,7 +2316,6 @@
     "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx:101:borderRadius",
     "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx:32:hex",
     "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx:34:borderRadius",
-    "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx:34:hex",
     "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx:95:borderRadius",
     "apps/mobile/src/features/my/screens/MyTaxScreen.tsx:156:borderRadius",
     "apps/mobile/src/features/my/screens/MyTaxScreen.tsx:162:borderRadius",
@@ -2901,14 +2894,6 @@
       "why": "단축 속성 — 두 축 모두"
     },
     {
-      "key": "apps/mobile/src/components/kit/Sheet.tsx:32:hex",
-      "value": null,
-      "prop": "hex",
-      "group": "color",
-      "axis": "N",
-      "why": "색은 레이아웃을 밀지 않는다 — 축이 없다"
-    },
-    {
       "key": "apps/mobile/src/components/kit/Sheet.tsx:34:width",
       "value": 38,
       "prop": "width",
@@ -3027,14 +3012,6 @@
       "group": "size",
       "axis": "V",
       "why": "속성이 세로다"
-    },
-    {
-      "key": "apps/mobile/src/components/kit/Slider.tsx:50:hex",
-      "value": null,
-      "prop": "hex",
-      "group": "color",
-      "axis": "N",
-      "why": "색은 레이아웃을 밀지 않는다 — 축이 없다"
     },
     {
       "key": "apps/mobile/src/components/kit/Slider.tsx:50:hex",
@@ -4347,14 +4324,6 @@
       "group": "typography",
       "axis": "H",
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
-    },
-    {
-      "key": "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx:155:marginTop",
-      "value": 2,
-      "prop": "marginTop",
-      "group": "spacing",
-      "axis": "V",
-      "why": "속성이 세로다"
     },
     {
       "key": "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx:156:minWidth",
@@ -6469,14 +6438,6 @@
       "why": "속성이 가로다"
     },
     {
-      "key": "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx:164:marginTop",
-      "value": 2,
-      "prop": "marginTop",
-      "group": "spacing",
-      "axis": "V",
-      "why": "속성이 세로다"
-    },
-    {
       "key": "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx:166:fontSize",
       "value": 14,
       "prop": "fontSize",
@@ -8581,14 +8542,6 @@
       "why": "속성이 가로다"
     },
     {
-      "key": "apps/mobile/src/features/my/screens/FixedCostScreen.tsx:133:marginTop",
-      "value": 2,
-      "prop": "marginTop",
-      "group": "spacing",
-      "axis": "V",
-      "why": "속성이 세로다"
-    },
-    {
       "key": "apps/mobile/src/features/my/screens/FixedCostScreen.tsx:135:fontSize",
       "value": 14,
       "prop": "fontSize",
@@ -8883,14 +8836,6 @@
       "group": "spacing",
       "axis": "H",
       "why": "속성이 가로다"
-    },
-    {
-      "key": "apps/mobile/src/features/my/screens/MyChannelsScreen.tsx:105:marginTop",
-      "value": 2,
-      "prop": "marginTop",
-      "group": "spacing",
-      "axis": "V",
-      "why": "속성이 세로다"
     },
     {
       "key": "apps/mobile/src/features/my/screens/MyChannelsScreen.tsx:107:fontSize",
@@ -10027,14 +9972,6 @@
       "group": "radius",
       "axis": "N",
       "why": "반경은 상자 크기를 바꾸지 않는다 — 축이 없다"
-    },
-    {
-      "key": "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx:34:hex",
-      "value": null,
-      "prop": "hex",
-      "group": "color",
-      "axis": "N",
-      "why": "색은 레이아웃을 밀지 않는다 — 축이 없다"
     },
     {
       "key": "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx:86:paddingHorizontal",
@@ -11623,14 +11560,6 @@
     {
       "key": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:308:marginTop",
       "value": 1,
-      "prop": "marginTop",
-      "group": "spacing",
-      "axis": "V",
-      "why": "속성이 세로다"
-    },
-    {
-      "key": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:315:marginTop",
-      "value": 2,
       "prop": "marginTop",
       "group": "spacing",
       "axis": "V",
