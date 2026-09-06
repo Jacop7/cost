@@ -218,7 +218,7 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <View style={{ paddingTop: insets.top, backgroundColor: T.bg }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 20, paddingRight: 12, paddingTop: space.sm, paddingBottom: 12 }}>
-          <Text style={{ flex: 1, fontSize: 22, fontWeight: '800', color: T.ink, letterSpacing: -0.6 }}>발주</Text>
+          <Text style={{ flex: 1, fontSize: 22, fontWeight: '800', color: T.ink, letterSpacing: TYPE.display.letterSpacing }}>발주</Text>
           <Pressable
             onPress={() => setSearching((v) => !v)}
             hitSlop={{ top: 2, bottom: 2, left: 4, right: 0 }}

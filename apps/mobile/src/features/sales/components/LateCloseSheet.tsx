@@ -77,7 +77,7 @@ export function LateCloseSheet({ visible, timezone, loading, onCancel, onConfirm
           이 시간으로 시작
         </Button>
       </View>
-      {warn ? <Text style={{ fontSize: 13.5, color: T.red, paddingBottom: 8 }}>{warn}</Text> : null}
+      {warn ? <Text style={{ fontSize: TYPE.caption.fontSize, color: T.red, paddingBottom: 8 }}>{warn}</Text> : null}
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: space.sm, paddingBottom: 24 }}>
         {QUARTER_SLOTS.map((t) => {
           const on = t === picked && typed.trim() === '';

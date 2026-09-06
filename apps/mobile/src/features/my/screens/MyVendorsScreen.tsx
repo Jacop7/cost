@@ -90,7 +90,7 @@ export default function MyVendorsScreen() {
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 4, paddingBottom: LAYOUT.scroll.end }}>
         {dupes.map((g) => (
-          <View key={g.map((v) => v.id).join('-')} style={{ backgroundColor: '#FFF9F0', borderWidth: 1, borderColor: T.amberTint, borderRadius: 16, padding: space.md, marginBottom: 12 }}>
+          <View key={g.map((v) => v.id).join('-')} style={{ backgroundColor: COMPONENT.warningCard.background, borderWidth: 1, borderColor: COMPONENT.warningCard.border, borderRadius: 16, padding: space.md, marginBottom: 12 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
               <Icon name="swap" size={20} color={T.amberText} />
               <View style={{ flex: 1 }}>

@@ -143,7 +143,7 @@ export function IngredientDetailScreen() {
                   {g.categoryName ? <Badge tone="neutral">{g.categoryName}</Badge> : null}
                   {g.vendorName ? <Badge tone="neutral" sm>{g.vendorName}</Badge> : null}
                 </View>
-                <Text style={{ fontSize: 20, fontWeight: '800', letterSpacing: -0.5, color: T.ink }}>{g.name}</Text>
+                <Text style={{ fontSize: 20, fontWeight: '800', letterSpacing: TYPE.title.letterSpacing, color: T.ink }}>{g.name}</Text>
                 <Pressable
                   onPress={() => setMemoOpen(true)}
                   accessibilityRole="button" accessibilityLabel="메모 수정"
@@ -171,7 +171,7 @@ export function IngredientDetailScreen() {
                 </View>
                 <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 8, marginTop: 8 }}>
                   {/* ⚠ 음수는 빨강 그대로(0102). 0 으로 보정하면 왜 마이너스인지 물어볼 일이 없어진다. */}
-                  <Text style={[{ fontSize: 20, fontWeight: '800', letterSpacing: -0.6, color: isNegativeStock(g.stockTotal) ? T.red : T.ink }, tnum]}>
+                  <Text style={[{ fontSize: 20, fontWeight: '800', letterSpacing: TYPE.title.letterSpacing, color: isNegativeStock(g.stockTotal) ? T.red : T.ink }, tnum]}>
                     총 {formatQuantity(g.stockTotal, unit)}
                   </Text>
                   <Text style={[{ flexShrink: 1, fontSize: 14, color: g.basePrice === null ? COLOR.text.tertiary : T.sub, fontWeight: '700' }, tnum]} numberOfLines={1}>

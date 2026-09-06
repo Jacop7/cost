@@ -9,7 +9,7 @@ import { ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Card, Icon, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { LAYOUT, T, won, TYPE, space } from '@/theme/tokens';
+import { LAYOUT, COMPONENT, T, won, TYPE, space } from '@/theme/tokens';
 import { useEtcByChannel, useSalesRange } from '../hooks';
 
 import { DetailSummary, SalesRow } from '../components/ProfitBlocks';
@@ -19,7 +19,7 @@ import { rangeLabel } from '@/lib/date';
 import { useSalesBusinessDate } from '@/features/business-day/businessDay';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
-const COLOR: Record<string, string> = { hall: '#3182F6', delivery: '#7A8694', takeout: '#C5CCD3' };
+const CHANNEL_COLOR: Record<string, string> = COMPONENT.channelChart;
 
 /**
  * ⚠ 서버가 정한 장부 날짜를 받고 나서 본체를 붙인다(0125). 앱이 직접 계산하지 않는다.
@@ -107,7 +107,7 @@ function SalesChannelScreenBody({ serverToday }: { serverToday: string }) {
             return (
               <Card key={c.code} pad={0} style={{ overflow: 'hidden' }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 12, paddingHorizontal: space.md, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
-                  <View style={{ width: 10, height: 10, borderRadius: 3, backgroundColor: COLOR[c.code] ?? T.sub2 }} />
+                  <View style={{ width: 10, height: 10, borderRadius: 3, backgroundColor: CHANNEL_COLOR[c.code] ?? T.sub2 }} />
                   <Text style={{ fontSize: TYPE.caption.fontSize, fontWeight: '800', color: T.sub }}>{c.name}</Text>
                 </View>
                 <View style={{ paddingHorizontal: space.md, paddingTop: space.xs, paddingBottom: space.xs }}>

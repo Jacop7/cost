@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { Icon, type IconName } from './Icon';
-import { COLOR, T, space } from '@/theme/tokens';
+import { COLOR, COMPONENT, T, space } from '@/theme/tokens';
 
 type Kind = 'primary' | 'tint' | 'gray' | 'ghost' | 'danger';
 type Size = 'sm' | 'md' | 'lg';
@@ -68,7 +68,7 @@ export function Button({
       ]}
     >
       {iconEl}
-      <Text style={{ color: c.fg, fontSize: s.fs, fontWeight: '700', letterSpacing: -0.2, opacity: loading ? 0 : 1 }}>
+      <Text style={{ color: c.fg, fontSize: s.fs, fontWeight: '700', letterSpacing: COMPONENT.button.label.letterSpacing, opacity: loading ? 0 : 1 }}>
         {children}
       </Text>
       {loading ? (

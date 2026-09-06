@@ -153,7 +153,7 @@ export function ChangeHistoryScreen({ entity }: { entity: ChangeEntity }) {
               <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.text.tertiary }}>
                 {entity === 'recipe' ? '레시피' : '식재료'}
               </Text>
-              <Text style={{ fontSize: 22, fontWeight: '800', color: T.ink, letterSpacing: -0.5, marginTop: space.xs }}>
+              <Text style={{ fontSize: 22, fontWeight: '800', color: T.ink, letterSpacing: TYPE.display.letterSpacing, marginTop: space.xs }}>
                 {subject.data ?? ''}
               </Text>
 

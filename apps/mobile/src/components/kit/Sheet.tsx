@@ -36,7 +36,7 @@ export function Sheet({ visible, onClose, children, title, sub, height, headerRi
         {title ? (
           <View style={{ flexDirection: 'row', alignItems: 'flex-start', paddingHorizontal: 20, paddingTop: 12 }}>
             <View style={{ flex: 1 }}>
-              <Text style={{ fontSize: 20, fontWeight: '800', color: T.ink, letterSpacing: -0.4 }}>{title}</Text>
+              <Text style={{ fontSize: 20, fontWeight: '800', color: T.ink, letterSpacing: TYPE.title.letterSpacing }}>{title}</Text>
               {sub ? <Text style={{ fontSize: 16, color: T.sub2, marginTop: space.xs, fontWeight: '600' }}>{sub}</Text> : null}
             </View>
             {headerRight}

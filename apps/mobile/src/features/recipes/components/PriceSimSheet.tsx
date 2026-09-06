@@ -60,7 +60,7 @@ export function PriceSimSheet({
     <Sheet visible={visible} onClose={onClose} title="판매가 시뮬레이션" sub="판매가를 바꿔 순이익을 미리 확인해요" height={560}>
       <View style={{ alignItems: 'center', paddingTop: 4, paddingBottom: space.xs }}>
         <Text style={{ fontSize: 14, color: COLOR.text.tertiary, fontWeight: '700' }}>임시 판매가</Text>
-        <Text style={[{ fontSize: 22, fontWeight: '800', color: COLOR.text.accent, letterSpacing: -0.6, marginTop: space.xs }, NUM]}>
+        <Text style={[{ fontSize: 22, fontWeight: '800', color: COLOR.text.accent, letterSpacing: TYPE.display.letterSpacing, marginTop: space.xs }, NUM]}>
           {won(temp)}<Text style={{ fontSize: 18 }}>원</Text>
         </Text>
         <Text style={[{ fontSize: 14, color: T.sub2, marginTop: space.xs }, NUM]}>

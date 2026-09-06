@@ -9,7 +9,7 @@ import { Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Badge, Card, Chip, FAB, Icon, QueryState, ScrollTabs, SearchBar, Sheet } from '@/components/kit';
-import { LAYOUT, COLOR, T, won, radius, space } from '@/theme/tokens';
+import { LAYOUT, COLOR, T, won, TYPE, radius, space } from '@/theme/tokens';
 import { formatPercent } from '@margincook/core';
 import { useSettingsLists } from '@/features/master-data/hooks';
 import { useRecipeList, type RecipeRow } from '../hooks';
@@ -155,7 +155,7 @@ export default function RecipesListScreen() {
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <View style={{ paddingTop: insets.top, backgroundColor: T.bg }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 20, paddingRight: 12, paddingTop: space.sm, paddingBottom: 12 }}>
-          <Text style={{ flex: 1, fontSize: 22, fontWeight: '800', color: T.ink, letterSpacing: -0.6 }}>레시피</Text>
+          <Text style={{ flex: 1, fontSize: 22, fontWeight: '800', color: T.ink, letterSpacing: TYPE.display.letterSpacing }}>레시피</Text>
           <Pressable
             onPress={() => setSearching((v) => !v)}
             hitSlop={{ top: 2, bottom: 2, left: 4, right: 0 }}

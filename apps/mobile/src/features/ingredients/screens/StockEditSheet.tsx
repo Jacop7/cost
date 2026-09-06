@@ -214,7 +214,7 @@ export function StockEditSheet({
                 {diffDisp === 0 ? (
                   <Text style={{ fontSize: 16, fontWeight: '800', color: T.sub }}>변동 없음</Text>
                 ) : (
-                  <Text style={[{ fontSize: 17, fontWeight: '800' }, tnum]}>
+                  <Text style={[{ fontSize: TYPE.body.fontSize, fontWeight: '800' }, tnum]}>
                     <Text style={{ color: COLOR.text.tertiary, fontWeight: '700' }}>{curDisp}{dispUnit}</Text>
                     <Text style={{ color: COLOR.text.tertiary }}>{'   →   '}</Text>
                     <Text style={{ color: diffDisp < 0 ? T.red : T.green }}>
