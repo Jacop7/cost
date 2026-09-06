@@ -1,12 +1,12 @@
 # 전체 페이지 프로토타입 · 디자인 맥락 장부
 
-> 현재 동기화 ID: `DS-20260906-010`
+> 현재 동기화 ID: `DS-20260906-011`
 > 문서 동기화 상태: `SYNCED`
 > 전체 UI 작업 상태: `IN_PROGRESS`
 > 마지막 갱신: `2026-09-06`
-> 공통 변경: `예`
-> UI 변경: `예`
-> 변경 기록: `PRT-238`
+> 공통 변경: `아니오`
+> UI 변경: `아니오`
+> 변경 기록: `PRT-243`
 
 ## 1. 문서 역할
 
@@ -43,6 +43,26 @@
 - 글로벌: 30~50% 긴 번역, 320px, 200% 글자 확대, RTL 검수.
 
 ## 4. 가장 최근 작업
+
+### DS-20260906-011 · PRT-243 Android exact 증거와 W1 재배정 봉인
+
+- 작업 성격: S4a의 Android 1×/2× exact 증거와 그 제품 SHA에서 다시 만든 W1 배정 결과를
+  보존한다. 프로토타입 DOM·CSS·JS와 앱 제품 코드는 바꾸지 않는다.
+- Android 결과: Android 15/API 35·density 2.625에서 1×/2× 모두 계약 target 19개,
+  소스 계보 20개를 관측했고 미달·판정불가·물질적 형제 중첩은 0이다. 일반 `View`의
+  `overflow:visible`은 clipping 경계로 보지 않고, 직접 부모와 실제 clipping 조상만 유효 터치
+  영역을 제한한다. scroll/root 밖 부분 노출은 제외하되 비-scroll clipping은 계속 판정한다.
+- W1 결과: S4a 제품판을 전수 재측정해 정의 21건을 제외한 선언 2,353건을
+  `primitive 2,063 / componentOwned 239 / defect 3 / pendingApproval 48 / exception 0`으로
+  배정했다. 미분류 0, 다중 일치 774, 고유 충돌 체인 6이며 통 이동 대차표도 산출물에 보존한다.
+- 미완료: Apple Developer Program 팀 활성화 전이라 iOS 1×/2× exact 증거는 `MISSING`이다.
+  따라서 S4a·S4·W1 전체는 `REOPEN`이며 Android 부분 종결과 구분한다.
+- 완료 조건:
+  - PRT243-W1-AUDIT · `../token-adoption-audit.json`
+  - PRT243-W1-MAP · `full-page-flow-prototype-app-map-check.json`
+  - PRT243-W1-CLAIMS · `full-page-flow-prototype-doc-claims-check.json`
+  - PRT243-W1-AXIS · `full-page-flow-prototype-axis-at.json`
+
 
 ### DS-20260906-010 · PRT-238 소유자 결정 12-4와 양 플랫폼 S4a
 
