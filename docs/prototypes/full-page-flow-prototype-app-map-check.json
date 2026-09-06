@@ -1,20 +1,20 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-06T12:40:26.315Z",
+  "generatedAt": "2026-09-06T21:27:44.156Z",
   "schemaVersion": 1,
   "script": {
    "name": "full-page-flow-prototype-app-map-check.mjs",
-   "sha256": "756a033d588f7874a729c6602b619d7d6507de4e4707d7f86990194e357cfbb3"
+   "sha256": "d89698b6f6773e487d9ce6cb20a77da2b1fa999bf7ee749dcaee5e363f9f6553"
   },
   "source": {
    "audit": {
     "path": "token-adoption-audit.json",
-    "sha256": "441a4363d8ac41818a60b90c738a43863df84efbf0b483770d94ddf3f98df698",
-    "declarations": 2310
+    "sha256": "cfffdc85c7eff8d255b2be809655ad17d69cd58c26f86990c396cd21756d9ac3",
+    "declarations": 2311
    },
    "appMap": {
     "path": "full-page-flow-prototype-app-token-map.json",
-    "sha256": "5cfe1bf74397fc66a9c93c591cd6b54ea8e0b6121545f6591b165ad7cbecf13c"
+    "sha256": "0f1580411bf52feb991fa349ab1ff87f74142fff7d729952fee96a3047ffacd8"
    },
    "prototypeMap": {
     "path": "full-page-flow-prototype-token-map.json",
@@ -29,10 +29,10 @@
  },
  "summary": {
   "status": "PROPOSAL_COMPLETE",
-  "declarations": 2310,
+  "declarations": 2311,
   "byBin": {
    "primitive": 2061,
-   "componentOwned": 249,
+   "componentOwned": 250,
    "defect": 0,
    "pendingApproval": 0,
    "approvedException": 0
@@ -428,35 +428,35 @@
     ]
    },
    {
-    "decl": "size/minWidth:0 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:491",
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:492",
     "rules": [
      "R-SZ-FLEX-RESET",
      "R-SZ-MINWIDTH"
     ]
    },
    {
-    "decl": "size/minWidth:44 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:531",
+    "decl": "size/minWidth:44 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:532",
     "rules": [
      "R-SZ-SALES-QUANTITY-ACTION",
      "R-SZ-MINWIDTH"
     ]
    },
    {
-    "decl": "size/minWidth:0 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:580",
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:581",
     "rules": [
      "R-SZ-FLEX-RESET",
      "R-SZ-MINWIDTH"
     ]
    },
    {
-    "decl": "size/minWidth:0 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:613",
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:614",
     "rules": [
      "R-SZ-FLEX-RESET",
      "R-SZ-MINWIDTH"
     ]
    },
    {
-    "decl": "size/minWidth:0 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:681",
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:682",
     "rules": [
      "R-SZ-FLEX-RESET",
      "R-SZ-MINWIDTH"
@@ -534,20 +534,32 @@
    }
   ],
   "binMovementLedger": {
-   "removedFromInput": 35,
+   "removedFromInput": 34,
    "inputUniverse": {
     "previous": 2345,
-    "current": 2310,
-    "stage": "S3d",
+    "current": 2311,
+    "stage": "S3d+S4a",
     "rules": [
      "R-TY-SIZE-OFFSCALE",
      "R-TY-LETTERSPACING-UNDECIDED",
      "R-CL-NEAR-PALETTE",
      "R-CL-CHART"
     ],
-    "reason": "S3d의 pendingApproval 32건과 차트 역할 완결을 위해 함께 치환한 primitive 색 3건이 의미·컴포넌트 토큰 참조로 바뀌어 리터럴 감사 입력 우주에서 사라졌다. 통 사이 이동이 아니다."
+    "reason": "S3d의 pendingApproval 32건과 차트 역할 완결을 위해 함께 치환한 primitive 색 3건이 의미·컴포넌트 토큰 참조로 바뀌어 리터럴 감사 입력 우주에서 사라졌고, S4a가 세그먼트 터치 외피 paddingVertical 1 선언 1건을 추가했다. 순감은 35-1=34이며 통 사이 이동이 아니다."
    },
-   "moves": {},
+   "moves": {
+    "(미분류) → componentOwned": {
+     "count": 6,
+     "rules": {
+      "- → R-SP-SEGMENT-TOUCH-ENVELOPE": 1,
+      "- → R-SZ-SALES-ACTION-ROW": 1,
+      "- → R-SP-EDGE-INSET": 1,
+      "- → R-SZ-SALES-MANAGE-ACTION": 1,
+      "- → R-SZ-SALES-QUANTITY-ACTION": 1,
+      "- → R-SZ-SALES-SALE-ACTION": 1
+     }
+    }
+   },
    "reconciliation": {
     "primitive": {
      "이전": 2061,
@@ -557,11 +569,11 @@
      "실제": 2061
     },
     "componentOwned": {
-     "이전": 249,
+     "이전": 244,
      "나감": 0,
-     "들어옴": 0,
-     "계산": 249,
-     "실제": 249
+     "들어옴": 6,
+     "계산": 250,
+     "실제": 250
     },
     "defect": {
      "이전": 0,
@@ -836,6 +848,28 @@
     "values": [
      [
       "marginBottom:-3",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SP-SEGMENT-TOUCH-ENVELOPE",
+    "bin": "componentOwned",
+    "declarations": 1,
+    "name": "COMPONENT.segmentedControl.touchEnvelope",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "paddingVertical:1",
       1
      ]
     ]

@@ -385,7 +385,7 @@ for (const r of map.rules) if (hit[r.id] === 0) fail(`${r.id} : 걸리는 선언
 // 실제로 어긋났다. 이전 회차의 매핑표를 함께 주면 선언 단위로 대차를 내고, 그 합이
 // 통 변화와 맞지 않으면 FAIL 한다 (페이블 검수 조건).
 const inputMovement = map.inputMovementContract;
-if (!inputMovement || !['S3c', 'S3d'].includes(inputMovement.stage)) fail('지원하는 입력 우주 이동 계약(S3c/S3d)이 없다');
+if (!inputMovement || !['S3c', 'S3d', 'S3d+S4a'].includes(inputMovement.stage)) fail('지원하는 입력 우주 이동 계약(S3c/S3d/S3d+S4a)이 없다');
 else {
   const movementStage = inputMovement.stage;
   if (inputMovement.currentDeclarations !== total)
@@ -394,10 +394,11 @@ else {
     fail(`${movementStage} 입력 감소 산식 ${inputMovement.previousDeclarations} - ${inputMovement.currentDeclarations} ≠ ${inputMovement.removedFromInput}`);
   const expectedRemoved = movementStage === 'S3c'
     ? 8
-    : Number(inputMovement.approvedDeclarations ?? 0) + Number(inputMovement.supportingDeclarations ?? 0);
+    : Number(inputMovement.approvedDeclarations ?? 0) + Number(inputMovement.supportingDeclarations ?? 0)
+      - Number(inputMovement.addedSupportingDeclarations ?? 0);
   if (inputMovement.removedFromInput !== expectedRemoved)
     fail(`${movementStage} removedFromInput ${inputMovement.removedFromInput} ≠ 승인·보조 합 ${expectedRemoved}`);
-  if (movementStage === 'S3d' && inputMovement.approvedDeclarations !== 32)
+  if (movementStage.startsWith('S3d') && inputMovement.approvedDeclarations !== 32)
     fail(`S3d 승인 pending 해소 ${inputMovement.approvedDeclarations} ≠ 32`);
   const activeRuleIds = new Set(map.rules.map((rule) => rule.id));
   for (const id of inputMovement.rules ?? []) if (activeRuleIds.has(id))

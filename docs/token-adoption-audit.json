@@ -1,19 +1,19 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-06T12:40:26.042Z",
+  "generatedAt": "2026-09-06T21:24:27.978Z",
   "schemaVersion": 1,
   "script": {
    "name": "token-adoption-audit.mjs",
    "sha256": "591d6ad787d555acdabbf31009808cec9ec5c2f5ec58c2fde908337decc6dd80"
   },
   "repo": {
-   "headCommit": "b037bfb6099ac04b969f8e43629182a4110cfc6e",
-   "headTree": "4533e6d33eb121cd9e3f5f879ecc26366ebb67a7",
+   "headCommit": "3ca0f7920188435b2006d96ac3fab09951563183",
+   "headTree": "ef1f0418061b2a08d60eabd113f774d706cc5166",
    "toplevel": "C:/Users/jacop/프로젝트/식자재관리앱/.tmp/sol-prt217-6e6376b"
   },
   "결속": {
-   "expectCommit": "b037bfb6099ac04b969f8e43629182a4110cfc6e",
-   "범위해시": "0dbf5d050c0099ad8bee6f8da3ae5884ad9e03bd309f57796fa16e2d32b25c97",
+   "expectCommit": "3ca0f7920188435b2006d96ac3fab09951563183",
+   "범위해시": "fa91eda5a4ed7be7ba8d51fe33828bdb468d37b3f3d6d7da00c7ca9f44dbee7c",
    "범위해시정의": "선택된 파일의 \"경로\\0 git blob SHA\" 를 정렬해 잇고 감사 스크립트 자신의 blob SHA 를 더해 sha256. blob SHA 는 CRLF→LF 정규화 뒤 직접 계산하므로 OS·git 유무에 좌우되지 않는다(페이블 R6 차단). 커밋 SHA 자기참조 없이 입력을 결속한다."
   },
   "runner": {
@@ -370,7 +370,7 @@
     "prop": "letterSpacing",
     "value": "-0.2",
     "file": "apps/mobile/src/theme/tokens.ts",
-    "line": 302,
+    "line": 308,
     "column": 14,
     "layer": "tokenDefinition"
    },
@@ -379,7 +379,7 @@
     "prop": "letterSpacing",
     "value": "-0.5",
     "file": "apps/mobile/src/theme/tokens.ts",
-    "line": 305,
+    "line": 311,
     "column": 20,
     "layer": "tokenDefinition"
    }
@@ -1330,7 +1330,7 @@
    "value": "4",
    "file": "apps/mobile/src/components/kit/index.tsx",
    "line": 88,
-   "column": 60,
+   "column": 100,
    "layer": "sharedComponent"
   },
   {
@@ -1339,7 +1339,7 @@
    "value": "12",
    "file": "apps/mobile/src/components/kit/index.tsx",
    "line": 88,
-   "column": 95,
+   "column": 135,
    "layer": "sharedComponent"
   },
   {
@@ -1348,7 +1348,7 @@
    "value": "999",
    "file": "apps/mobile/src/components/kit/index.tsx",
    "line": 88,
-   "column": 118,
+   "column": 158,
    "layer": "sharedComponent"
   },
   {
@@ -3666,10 +3666,19 @@
   },
   {
    "group": "spacing",
+   "prop": "paddingVertical",
+   "value": "1",
+   "file": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx",
+   "line": 14,
+   "column": 68,
+   "layer": "product"
+  },
+  {
+   "group": "spacing",
    "prop": "paddingHorizontal",
    "value": "16",
    "file": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx",
-   "line": 26,
+   "line": 27,
    "column": 15,
    "layer": "product"
   },
@@ -3678,7 +3687,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx",
-   "line": 33,
+   "line": 34,
    "column": 28,
    "layer": "product"
   },
@@ -3687,7 +3696,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx",
-   "line": 33,
+   "line": 34,
    "column": 42,
    "layer": "product"
   },
@@ -3696,7 +3705,7 @@
    "prop": "gap",
    "value": "8",
    "file": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx",
-   "line": 100,
+   "line": 101,
    "column": 68,
    "layer": "product"
   },
@@ -3705,7 +3714,7 @@
    "prop": "paddingVertical",
    "value": "12",
    "file": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx",
-   "line": 100,
+   "line": 101,
    "column": 97,
    "layer": "product"
   },
@@ -3714,7 +3723,7 @@
    "prop": "borderRadius",
    "value": "12",
    "file": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx",
-   "line": 100,
+   "line": 101,
    "column": 184,
    "layer": "product"
   },
@@ -3723,7 +3732,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx",
-   "line": 102,
+   "line": 103,
    "column": 27,
    "layer": "product"
   },
@@ -3732,7 +3741,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx",
-   "line": 102,
+   "line": 103,
    "column": 41,
    "layer": "product"
   },
@@ -3741,7 +3750,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx",
-   "line": 104,
+   "line": 105,
    "column": 27,
    "layer": "product"
   },
@@ -3750,7 +3759,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx",
-   "line": 104,
+   "line": 105,
    "column": 41,
    "layer": "product"
   },
@@ -3759,7 +3768,7 @@
    "prop": "paddingTop",
    "value": "12",
    "file": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx",
-   "line": 107,
+   "line": 108,
    "column": 22,
    "layer": "product"
   },
@@ -3768,7 +3777,7 @@
    "prop": "gap",
    "value": "20",
    "file": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx",
-   "line": 150,
+   "line": 151,
    "column": 24,
    "layer": "product"
   },
@@ -3777,7 +3786,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx",
-   "line": 152,
+   "line": 153,
    "column": 28,
    "layer": "product"
   },
@@ -3786,7 +3795,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx",
-   "line": 152,
+   "line": 153,
    "column": 42,
    "layer": "product"
   },
@@ -3795,7 +3804,7 @@
    "prop": "gap",
    "value": "8",
    "file": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx",
-   "line": 154,
+   "line": 155,
    "column": 72,
    "layer": "product"
   },
@@ -3804,7 +3813,7 @@
    "prop": "paddingVertical",
    "value": "12",
    "file": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx",
-   "line": 154,
+   "line": 155,
    "column": 101,
    "layer": "product"
   },
@@ -3813,7 +3822,7 @@
    "prop": "borderRadius",
    "value": "12",
    "file": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx",
-   "line": 154,
+   "line": 155,
    "column": 188,
    "layer": "product"
   },
@@ -3822,7 +3831,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx",
-   "line": 156,
+   "line": 157,
    "column": 31,
    "layer": "product"
   },
@@ -3831,7 +3840,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx",
-   "line": 156,
+   "line": 157,
    "column": 45,
    "layer": "product"
   },
@@ -3840,7 +3849,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx",
-   "line": 158,
+   "line": 159,
    "column": 31,
    "layer": "product"
   },
@@ -3849,7 +3858,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx",
-   "line": 158,
+   "line": 159,
    "column": 45,
    "layer": "product"
   },
@@ -3858,7 +3867,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx",
-   "line": 162,
+   "line": 163,
    "column": 28,
    "layer": "product"
   },
@@ -3867,7 +3876,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx",
-   "line": 162,
+   "line": 163,
    "column": 42,
    "layer": "product"
   },
@@ -3876,7 +3885,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx",
-   "line": 166,
+   "line": 167,
    "column": 28,
    "layer": "product"
   },
@@ -3885,7 +3894,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx",
-   "line": 166,
+   "line": 167,
    "column": 42,
    "layer": "product"
   },
@@ -3894,7 +3903,7 @@
    "prop": "paddingTop",
    "value": "12",
    "file": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx",
-   "line": 171,
+   "line": 172,
    "column": 22,
    "layer": "product"
   },
@@ -11950,7 +11959,7 @@
    "value": "0",
    "file": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx",
    "line": 133,
-   "column": 137,
+   "column": 169,
    "layer": "product"
   },
   {
@@ -15640,7 +15649,7 @@
    "value": "20",
    "file": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx",
    "line": 186,
-   "column": 133,
+   "column": 173,
    "layer": "product"
   },
   {
@@ -15649,7 +15658,7 @@
    "value": "12",
    "file": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx",
    "line": 186,
-   "column": 156,
+   "column": 196,
    "layer": "product"
   },
   {
@@ -18610,7 +18619,7 @@
    "value": "8",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
    "line": 429,
-   "column": 46,
+   "column": 95,
    "layer": "product"
   },
   {
@@ -18619,7 +18628,7 @@
    "value": "12",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
    "line": 429,
-   "column": 54,
+   "column": 103,
    "layer": "product"
   },
   {
@@ -18627,7 +18636,7 @@
    "prop": "borderRadius",
    "value": "12",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 438,
+   "line": 439,
    "column": 145,
    "layer": "product"
   },
@@ -18636,7 +18645,7 @@
    "prop": "fontSize",
    "value": "14",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 441,
+   "line": 442,
    "column": 30,
    "layer": "product"
   },
@@ -18645,7 +18654,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 441,
+   "line": 442,
    "column": 44,
    "layer": "product"
   },
@@ -18654,7 +18663,7 @@
    "prop": "fontSize",
    "value": "14",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 442,
+   "line": 443,
    "column": 42,
    "layer": "product"
   },
@@ -18663,7 +18672,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 442,
+   "line": 443,
    "column": 56,
    "layer": "product"
   },
@@ -18672,7 +18681,7 @@
    "prop": "minHeight",
    "value": "44",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 448,
+   "line": 449,
    "column": 24,
    "layer": "product"
   },
@@ -18681,7 +18690,7 @@
    "prop": "marginHorizontal",
    "value": "2",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 448,
+   "line": 449,
    "column": 116,
    "layer": "product"
   },
@@ -18690,7 +18699,7 @@
    "prop": "minHeight",
    "value": "44",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 453,
+   "line": 454,
    "column": 22,
    "layer": "product"
   },
@@ -18699,7 +18708,7 @@
    "prop": "gap",
    "value": "4",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 453,
+   "line": 454,
    "column": 81,
    "layer": "product"
   },
@@ -18708,7 +18717,7 @@
    "prop": "fontSize",
    "value": "14",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 456,
+   "line": 457,
    "column": 28,
    "layer": "product"
   },
@@ -18717,7 +18726,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 456,
+   "line": 457,
    "column": 42,
    "layer": "product"
   },
@@ -18726,7 +18735,7 @@
    "prop": "paddingVertical",
    "value": "12",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 490,
+   "line": 491,
    "column": 135,
    "layer": "product"
   },
@@ -18735,7 +18744,7 @@
    "prop": "minWidth",
    "value": "0",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 491,
+   "line": 492,
    "column": 43,
    "layer": "product"
   },
@@ -18744,7 +18753,7 @@
    "prop": "fontWeight",
    "value": "800",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 493,
+   "line": 494,
    "column": 71,
    "layer": "product"
   },
@@ -18753,7 +18762,7 @@
    "prop": "fontSize",
    "value": "13",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 514,
+   "line": 515,
    "column": 39,
    "layer": "product"
   },
@@ -18762,7 +18771,7 @@
    "prop": "fontWeight",
    "value": "600",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 514,
+   "line": 515,
    "column": 103,
    "layer": "product"
   },
@@ -18771,7 +18780,7 @@
    "prop": "minWidth",
    "value": "44",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 531,
+   "line": 532,
    "column": 30,
    "layer": "product"
   },
@@ -18780,7 +18789,7 @@
    "prop": "minHeight",
    "value": "44",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 531,
+   "line": 532,
    "column": 44,
    "layer": "product"
   },
@@ -18789,7 +18798,7 @@
    "prop": "fontWeight",
    "value": "800",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 533,
+   "line": 534,
    "column": 70,
    "layer": "product"
   },
@@ -18798,7 +18807,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 537,
+   "line": 538,
    "column": 74,
    "layer": "product"
   },
@@ -18807,7 +18816,7 @@
    "prop": "minHeight",
    "value": "44",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 549,
+   "line": 550,
    "column": 30,
    "layer": "product"
   },
@@ -18816,7 +18825,7 @@
    "prop": "paddingHorizontal",
    "value": "16",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 549,
+   "line": 550,
    "column": 131,
    "layer": "product"
   },
@@ -18825,7 +18834,7 @@
    "prop": "fontSize",
    "value": "14",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 552,
+   "line": 553,
    "column": 36,
    "layer": "product"
   },
@@ -18834,7 +18843,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 552,
+   "line": 553,
    "column": 50,
    "layer": "product"
   },
@@ -18843,7 +18852,7 @@
    "prop": "fontSize",
    "value": "14",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 565,
+   "line": 566,
    "column": 28,
    "layer": "product"
   },
@@ -18852,7 +18861,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 565,
+   "line": 566,
    "column": 42,
    "layer": "product"
   },
@@ -18861,7 +18870,7 @@
    "prop": "marginBottom",
    "value": "8",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 565,
+   "line": 566,
    "column": 76,
    "layer": "product"
   },
@@ -18870,7 +18879,7 @@
    "prop": "paddingVertical",
    "value": "12",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 570,
+   "line": 571,
    "column": 84,
    "layer": "product"
   },
@@ -18879,7 +18888,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 571,
+   "line": 572,
    "column": 43,
    "layer": "product"
   },
@@ -18888,7 +18897,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 571,
+   "line": 572,
    "column": 57,
    "layer": "product"
   },
@@ -18897,7 +18906,7 @@
    "prop": "fontSize",
    "value": "14",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 577,
+   "line": 578,
    "column": 28,
    "layer": "product"
   },
@@ -18906,7 +18915,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 577,
+   "line": 578,
    "column": 42,
    "layer": "product"
   },
@@ -18915,7 +18924,7 @@
    "prop": "marginBottom",
    "value": "8",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 577,
+   "line": 578,
    "column": 76,
    "layer": "product"
   },
@@ -18924,7 +18933,7 @@
    "prop": "paddingVertical",
    "value": "12",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 579,
+   "line": 580,
    "column": 74,
    "layer": "product"
   },
@@ -18933,7 +18942,7 @@
    "prop": "minWidth",
    "value": "0",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 580,
+   "line": 581,
    "column": 41,
    "layer": "product"
   },
@@ -18942,7 +18951,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 581,
+   "line": 582,
    "column": 34,
    "layer": "product"
   },
@@ -18951,7 +18960,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 581,
+   "line": 582,
    "column": 48,
    "layer": "product"
   },
@@ -18960,7 +18969,7 @@
    "prop": "fontSize",
    "value": "14",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 582,
+   "line": 583,
    "column": 34,
    "layer": "product"
   },
@@ -18969,7 +18978,7 @@
    "prop": "borderRadius",
    "value": "12",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 588,
+   "line": 589,
    "column": 128,
    "layer": "product"
   },
@@ -18978,7 +18987,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 589,
+   "line": 590,
    "column": 30,
    "layer": "product"
   },
@@ -18987,7 +18996,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 589,
+   "line": 590,
    "column": 44,
    "layer": "product"
   },
@@ -18996,7 +19005,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 591,
+   "line": 592,
    "column": 31,
    "layer": "product"
   },
@@ -19005,7 +19014,7 @@
    "prop": "fontWeight",
    "value": "800",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 591,
+   "line": 592,
    "column": 45,
    "layer": "product"
   },
@@ -19014,7 +19023,7 @@
    "prop": "fontSize",
    "value": "14",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 595,
+   "line": 596,
    "column": 28,
    "layer": "product"
   },
@@ -19023,7 +19032,7 @@
    "prop": "marginTop",
    "value": "16",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 599,
+   "line": 600,
    "column": 28,
    "layer": "product"
   },
@@ -19032,7 +19041,7 @@
    "prop": "minWidth",
    "value": "0",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 613,
+   "line": 614,
    "column": 41,
    "layer": "product"
   },
@@ -19041,7 +19050,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 614,
+   "line": 615,
    "column": 34,
    "layer": "product"
   },
@@ -19050,7 +19059,7 @@
    "prop": "fontWeight",
    "value": "600",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 614,
+   "line": 615,
    "column": 48,
    "layer": "product"
   },
@@ -19059,7 +19068,7 @@
    "prop": "fontSize",
    "value": "13",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 616,
+   "line": 617,
    "column": 34,
    "layer": "product"
   },
@@ -19068,7 +19077,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 616,
+   "line": 617,
    "column": 48,
    "layer": "product"
   },
@@ -19077,7 +19086,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 620,
+   "line": 621,
    "column": 33,
    "layer": "product"
   },
@@ -19086,7 +19095,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 620,
+   "line": 621,
    "column": 47,
    "layer": "product"
   },
@@ -19095,7 +19104,7 @@
    "prop": "paddingVertical",
    "value": "12",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 654,
+   "line": 655,
    "column": 30,
    "layer": "product"
   },
@@ -19104,7 +19113,7 @@
    "prop": "paddingVertical",
    "value": "12",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 666,
+   "line": 667,
    "column": 83,
    "layer": "product"
   },
@@ -19113,7 +19122,7 @@
    "prop": "fontSize",
    "value": "14",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 668,
+   "line": 669,
    "column": 35,
    "layer": "product"
   },
@@ -19122,7 +19131,7 @@
    "prop": "minWidth",
    "value": "0",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 681,
+   "line": 682,
    "column": 41,
    "layer": "product"
   },
@@ -19131,7 +19140,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 682,
+   "line": 683,
    "column": 34,
    "layer": "product"
   },
@@ -19140,7 +19149,7 @@
    "prop": "fontWeight",
    "value": "600",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 682,
+   "line": 683,
    "column": 48,
    "layer": "product"
   },
@@ -19149,7 +19158,7 @@
    "prop": "fontSize",
    "value": "14",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 683,
+   "line": 684,
    "column": 44,
    "layer": "product"
   },
@@ -19158,7 +19167,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 685,
+   "line": 686,
    "column": 33,
    "layer": "product"
   },
@@ -19167,7 +19176,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 685,
+   "line": 686,
    "column": 47,
    "layer": "product"
   },
@@ -19176,7 +19185,7 @@
    "prop": "paddingVertical",
    "value": "12",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 701,
+   "line": 702,
    "column": 83,
    "layer": "product"
   },
@@ -19185,7 +19194,7 @@
    "prop": "fontSize",
    "value": "14",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 703,
+   "line": 704,
    "column": 35,
    "layer": "product"
   },
@@ -19194,7 +19203,7 @@
    "prop": "borderRadius",
    "value": "12",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 767,
+   "line": 768,
    "column": 131,
    "layer": "product"
   },
@@ -19203,7 +19212,7 @@
    "prop": "fontSize",
    "value": "14",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 769,
+   "line": 770,
    "column": 26,
    "layer": "product"
   },
@@ -19212,7 +19221,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 769,
+   "line": 770,
    "column": 40,
    "layer": "product"
   },
@@ -19221,7 +19230,7 @@
    "prop": "hex",
    "value": "#FFF",
    "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
-   "line": 769,
+   "line": 770,
    "column": 66,
    "layer": "product"
   },
@@ -21240,7 +21249,7 @@
    "distinctDeclarations": 2
   },
   "spacing": {
-   "total": 627,
+   "total": 628,
    "byValue": {
     "paddingHorizontal:16": 62,
     "gap:8": 61,
@@ -21303,6 +21312,7 @@
     "gap:2": 1,
     "marginLeft:1": 1,
     "marginHorizontal:-8.5": 1,
+    "paddingVertical:1": 1,
     "gap:20": 1,
     "marginVertical:2": 1,
     "marginVertical:16": 1,
@@ -21319,10 +21329,10 @@
     "paddingTop:16": 1
    },
    "byLayer": {
-    "product": 592,
+    "product": 593,
     "sharedComponent": 35
    },
-   "distinctDeclarations": 75
+   "distinctDeclarations": 76
   },
   "size": {
    "total": 201,
@@ -21430,11 +21440,11 @@
     ]
    }
   ],
-  "declarations": 2310,
+  "declarations": 2311,
   "declarationsByGroup": {
    "typography": 1377,
    "color": 11,
-   "spacing": 627,
+   "spacing": 628,
    "size": 201,
    "radius": 94
   },
@@ -21785,11 +21795,11 @@
     "product": 1297
    },
    "spacing": {
-    "occurrences": 627,
+    "occurrences": 628,
     "files": 74,
-    "distinctDeclarations": 75,
+    "distinctDeclarations": 76,
     "sharedComponent": 35,
-    "product": 592
+    "product": 593
    },
    "radius": {
     "occurrences": 94,
@@ -23976,13 +23986,13 @@
    "shadowedSymbols": [],
    "inline": {
     "typography": 16,
-    "spacing": 9,
+    "spacing": 10,
     "radius": 2,
     "size": 0
    },
    "hexColors": 0,
    "tokenAccessTotal": 30,
-   "inlineTotal": 27
+   "inlineTotal": 28
   },
   {
    "file": "apps/mobile/src/features/ingredients/screens/IngredientAddScreen.tsx",

@@ -1,22 +1,23 @@
 {
   "$schema": "app-token-map/1",
   "status": "PROPOSAL",
-  "note": "S3d까지 적용한 앱 사용처 인라인 선언 2,310건을 다섯 통에 배정하는 W1 규칙표다. tokens.ts 정본 정의는 definitions에 별도 보존한다. 6b965a6에서 전수 재측정했으며 iOS 네이티브 증거가 남아 W1 상태는 REOPEN이다.",
+  "note": "S4a 양 플랫폼 실기기 증거까지 적용한 앱 사용처 인라인 선언 2,311건을 다섯 통에 배정하는 W1 최종 규칙표다. tokens.ts 정본 정의는 definitions에 별도 보존한다. 3ca0f79에서 전수 재측정했으며 Android·iOS 네이티브 증거가 모두 닫혔다.",
   "inputMovementContract": {
     "previousMapCommit": "0b206c2ac51fa36ed146ee5583a2071b85158f12",
     "previousDeclarations": 2345,
-    "currentDeclarations": 2310,
-    "removedFromInput": 35,
-    "stage": "S3d",
+    "currentDeclarations": 2311,
+    "removedFromInput": 34,
+    "stage": "S3d+S4a",
     "approvedDeclarations": 32,
     "supportingDeclarations": 3,
+    "addedSupportingDeclarations": 1,
     "rules": [
       "R-TY-SIZE-OFFSCALE",
       "R-TY-LETTERSPACING-UNDECIDED",
       "R-CL-NEAR-PALETTE",
       "R-CL-CHART"
     ],
-    "reason": "S3d의 pendingApproval 32건과 차트 역할 완결을 위해 함께 치환한 primitive 색 3건이 의미·컴포넌트 토큰 참조로 바뀌어 리터럴 감사 입력 우주에서 사라졌다. 통 사이 이동이 아니다."
+    "reason": "S3d의 pendingApproval 32건과 차트 역할 완결을 위해 함께 치환한 primitive 색 3건이 의미·컴포넌트 토큰 참조로 바뀌어 리터럴 감사 입력 우주에서 사라졌고, S4a가 세그먼트 터치 외피 paddingVertical 1 선언 1건을 추가했다. 순감은 35-1=34이며 통 사이 이동이 아니다."
   },
   "primitiveSource": "full-page-flow-prototype-token-map.json 의 primitive·converge 를 그대로 쓴다. 앱 전용 두 번째 표준을 만들지 않는다.",
   "pendingApprovalContract": {
@@ -190,6 +191,22 @@
       "근거": "손익 블록의 13px 섹션 라벨을 다음 카드와 시각적으로 묶는 단일 컴포넌트 오프셋이다. 음수 3px을 공용 space 스케일로 승격하지 않고 현재 형상을 보존한다."
     },
     {
+      "id": "R-SP-SEGMENT-TOUCH-ENVELOPE",
+      "bin": "componentOwned",
+      "match": {
+        "group": "spacing",
+        "numericIn": [
+          1
+        ],
+        "at": [
+          "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:14:paddingVertical"
+        ]
+      },
+      "name": "COMPONENT.segmentedControl.touchEnvelope",
+      "근거": "S4a에서 기간·유형 세그먼트의 hitSlop 1px이 형제 행 밖으로 나가지 않게 래퍼가 소유하는 세로 터치 여유다. 일반 layout space가 아니라 pressable 터치 기하와 한 쌍이다.",
+      "순서근거": "R-SP-EDGE-INSET의 값 1 포괄보다 앞서 터치 외피 역할로 분리한다"
+    },
+    {
       "id": "R-SP-EDGE-INSET",
       "bin": "componentOwned",
       "match": {
@@ -209,7 +226,7 @@
           "apps/mobile/src/features/my/screens/MyTaxScreen.tsx:251:paddingHorizontal",
           "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx:145:paddingHorizontal",
           "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:35:marginHorizontal",
-          "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:448:marginHorizontal"
+          "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:449:marginHorizontal"
         ]
       },
       "name": "inset.edgeAlign",
@@ -1036,7 +1053,7 @@
           44
         ],
         "at": [
-          "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:448:minHeight"
+          "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:449:minHeight"
         ]
       },
       "name": "COMPONENT.salesHome.actionRow.minTouchTarget",
@@ -1054,7 +1071,7 @@
           44
         ],
         "at": [
-          "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:453:minHeight"
+          "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:454:minHeight"
         ]
       },
       "name": "COMPONENT.salesHome.manageAction.minTouchTarget",
@@ -1073,7 +1090,7 @@
           44
         ],
         "at": [
-          "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:531"
+          "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:532"
         ]
       },
       "name": "COMPONENT.salesHome.quantityAction.minTouchTarget",
@@ -1093,7 +1110,7 @@
           44
         ],
         "at": [
-          "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:549:minHeight"
+          "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:550:minHeight"
         ]
       },
       "name": "COMPONENT.salesHome.saleAction.minTouchTarget",
