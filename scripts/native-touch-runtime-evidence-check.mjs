@@ -161,12 +161,55 @@ export function buildEvidenceReceipt(root, verification, requirePlatforms) {
   };
 }
 
+export function receiptHashFailures(root, receipt, resolveCellPath) {
+  const failures = [];
+  for (const item of Object.values(receipt.contracts ?? {})) {
+    const path = join(root, item.path);
+    if (!existsSync(path)) failures.push(`MISSING ${item.path} — 영수증 계약 파일이 없다`);
+    else if (sha256(normalized(path)) !== item.textSha256) failures.push(`영수증 계약 해시 불일치: ${item.path}`);
+  }
+  for (const cell of receipt.cells ?? []) {
+    if (cell.status !== 'PRESENT') continue;
+    const path = resolveCellPath?.(cell) ?? join(root, 'docs/prototypes', cell.file);
+    if (!existsSync(path)) failures.push(`MISSING ${cell.file} — 영수증 원시 증거가 없다`);
+    else if (sha256(normalized(path)) !== cell.textSha256) failures.push(`영수증 원시 증거 해시 불일치: ${cell.file}`);
+  }
+  return failures;
+}
+
+export function verifyEvidenceReceipt(root = defaultRoot, receiptPath = join(root, 'docs/prototypes/native-touch-android-receipt.json')) {
+  const failures = [];
+  if (!existsSync(receiptPath)) return { receipt: null, expected: null, failures: [`MISSING ${receiptPath} — 네이티브 터치 영수증이 없다`] };
+  const receipt = JSON.parse(normalized(receiptPath));
+  const contract = JSON.parse(normalized(join(root, 'scripts/native-touch-runtime-contract.json')));
+  failures.push(...receiptHashFailures(root, receipt));
+  if (!same(receipt.requirePlatforms, contract.closedPlatforms))
+    failures.push(`영수증 requirePlatforms ${JSON.stringify(receipt.requirePlatforms)}가 계약 closedPlatforms ${JSON.stringify(contract.closedPlatforms)}와 다르다`);
+  const verification = verifyRepositoryEvidence(root, { requirePlatforms: receipt.requirePlatforms });
+  const expected = buildEvidenceReceipt(root, verification, receipt.requirePlatforms);
+  if (!same(receipt, expected)) failures.push('커밋된 네이티브 터치 영수증이 현재 원시 증거·계약·검사기의 재계산 결과와 다르다');
+  failures.push(...verification.failures);
+  return { receipt, expected, failures: [...new Set(failures)] };
+}
+
 if (resolve(process.argv[1] ?? '') === resolve(here)) {
   try {
     const requireArg = process.argv.slice(2).find((arg) => arg.startsWith('--require='))?.slice('--require='.length);
     const requirePlatforms = requireArg === 'all' ? ['android', 'ios']
       : requireArg ? requireArg.split(',').map((item) => item.trim()).filter(Boolean) : undefined;
     const outputArg = process.argv.slice(2).find((arg) => arg.startsWith('--output='))?.slice('--output='.length);
+    const verifyReceiptArg = process.argv.slice(2).find((arg) => arg === '--verify-receipt' || arg.startsWith('--verify-receipt='));
+    if (verifyReceiptArg) {
+      const configuredPath = verifyReceiptArg.includes('=') ? verifyReceiptArg.slice(verifyReceiptArg.indexOf('=') + 1) : '';
+      const receiptPath = configuredPath ? resolve(configuredPath) : join(defaultRoot, 'docs/prototypes/native-touch-android-receipt.json');
+      const receiptVerification = verifyEvidenceReceipt(defaultRoot, receiptPath);
+      if (receiptVerification.failures.length) {
+        console.error(receiptVerification.failures.map((item) => `  - ${item}`).join('\n'));
+        process.exit(1);
+      }
+      console.log(`네이티브 터치 영수증 PASS — ${receiptPath}`);
+      process.exit(0);
+    }
     const verification = verifyRepositoryEvidence(defaultRoot, { requirePlatforms });
     const { artifacts, failures } = verification;
     if (outputArg) {
