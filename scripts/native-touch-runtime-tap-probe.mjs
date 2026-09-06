@@ -58,6 +58,9 @@ async function evaluate(socket, expression) {
 
 const runtime = (op) => `(()=>{
   const op=${JSON.stringify(op)},hook=__REACT_DEVTOOLS_GLOBAL_HOOK__;
+  globalThis.__MARGINCOOK_TAP_PROBE__??={count:0,events:[]};
+  if(op.kind==='state')return JSON.stringify(globalThis.__MARGINCOOK_TAP_PROBE__);
+  if(op.kind==='reset'){globalThis.__MARGINCOOK_TAP_PROBE__={count:0,events:[]};return 'ok'}
   const rendererId=[...hook.renderers.keys()].find(id=>hook.getFiberRoots(id).size>0),renderer=hook.renderers.get(rendererId);
   const roots=[...hook.getFiberRoots(rendererId)].map(root=>root.current);
   const name=f=>{const t=f?.elementType||f?.type;return typeof t==='string'?t:(t?.displayName||t?.name||'')};
@@ -68,12 +71,10 @@ const runtime = (op) => `(()=>{
   const flat=s=>Array.isArray(s)?Object.assign({},...s.filter(Boolean).map(flat)):(s&&typeof s==='object'?s:{});
   let found;const seen=new Set();const walk=f=>{if(!f||seen.has(f))return;seen.add(f);const p=f.memoizedProps||{};if(name(f)==='Pressable'){const label=String(p.accessibilityLabel||text(f)||'(unlabelled)');if(new RegExp(op.labelPattern,'u').test(label)&&owners(f).some(v=>new RegExp(op.ownerPattern,'u').test(v)))found={fiber:f,label,host:hostChild(f),ancestors:hostAncestors(f)}}walk(f.child);walk(f.sibling)};roots.forEach(walk);
   if(!found?.host||!found.ancestors.length)throw new Error('probe target 없음');
-  globalThis.__MARGINCOOK_TAP_PROBE__??={count:0,events:[]};
   if(op.kind==='instrument'){
     renderer.overrideProps(found.fiber,['onPress'],()=>{globalThis.__MARGINCOOK_TAP_PROBE__.count++;globalThis.__MARGINCOOK_TAP_PROBE__.events.push(Date.now())});
     return JSON.stringify({label:found.label,owner:owners(found.fiber)[0]});
   }
-  if(op.kind==='reset'){globalThis.__MARGINCOOK_TAP_PROBE__={count:0,events:[]};return 'ok'}
   if(op.kind==='shrinkOverflowGrandparent'){
     const parent=found.ancestors[0],target=found.ancestors[1];
     const parentStyle={...flat(parent.memoizedProps?.style),position:'relative',zIndex:999,elevation:999};
@@ -81,7 +82,6 @@ const runtime = (op) => `(()=>{
     renderer.overrideProps(parent,['style'],parentStyle);renderer.overrideProps(target,['style'],style);
     return JSON.stringify({host:name(target),style,parentStyle});
   }
-  if(op.kind==='state')return JSON.stringify(globalThis.__MARGINCOOK_TAP_PROBE__);
   if(op.kind==='measure'){
     const state={done:false,pending:0,frame:null,ancestors:[]};globalThis.__MARGINCOOK_TAP_MEASURE__=state;
     const measure=(node,target)=>{state.pending++;nativeFabricUIManager.measureInWindow(node.stateNode.node,(...v)=>{target.push(...v);state.pending--;if(!state.pending)state.done=true})};
@@ -116,7 +116,7 @@ async function physicalTapAndRead(socket, point, instruction, { requirePress, ti
   if (requirePress) {
     const started = Date.now();
     while (Date.now() - started < timeoutMs) {
-      await sleep(250);
+      await sleep(750);
       const state = JSON.parse(await evaluate(socket, runtime({ kind: 'state', labelPattern: '^정렬 기준: 추천순$', ownerPattern: 'IngredientListScreen' })));
       if (state.count > 0) return { requestedPointDp: point, onPressCount: state.count,
         operatorAttestation: { method: 'physical-user-tap-detected-by-hermes-onPress', confirmedAt: new Date().toISOString() } };
