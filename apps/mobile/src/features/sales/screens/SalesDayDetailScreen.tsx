@@ -86,7 +86,7 @@ function SalesDayDetailScreenBody({ serverToday }: { serverToday: string }) {
                   `전체가 추정` 처럼 말하면 사장님이 자기 기록을 못 믿게 된다.
               */}
               {d?.basisQuality === 'estimated_current' ? (
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: space.md, paddingHorizontal: space.md, borderRadius: radius.md, backgroundColor: T.amberTint, marginTop: space.sm }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingVertical: space.md, paddingHorizontal: space.md, borderRadius: radius.md, backgroundColor: T.amberTint, marginTop: space.sm }}>
                   <Icon name="info" size={15} color={T.amberText} />
                   <Text style={{ flex: 1, fontSize: 14, fontWeight: '700', color: T.amberText, lineHeight: TYPE.caption.lineHeight }}>
                     원가·손익은 현재 기준으로 계산했어요

@@ -143,7 +143,7 @@ export function StockEditSheet({
       <View>
         {/* 탭 (언더라인) — 전체폭 밑줄·좌측 시작 (식재료/발주현황 동일) */}
         <View style={{ borderBottomWidth: 1, borderBottomColor: T.line3, marginTop: space.sm }}>
-          <View style={{ flexDirection: 'row', gap: 22, paddingHorizontal: 20 }}>
+          <View style={{ flexDirection: 'row', gap: space.xxl, paddingHorizontal: 20 }}>
             {TABS.map(([id, label]) => {
               const on = tab === id;
               const accent = id === 'waste' ? T.red : T.ink;
@@ -252,7 +252,7 @@ export function StockEditSheet({
             <Text style={{ fontSize: 16, fontWeight: '700', color: T.sub, marginBottom: space.sm }}>사유 (선택)</Text>
             <Input value={reason} onChangeText={setReason} placeholder={reasonPH} />
           </View>
-          <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, marginTop: space.md }}>
+          <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, marginTop: space.md }}>
             <Icon name="info" size={15} color={COLOR.text.tertiary} />
             <Text style={{ flex: 1, fontSize: 14, color: T.sub2, fontWeight: '600', lineHeight: TYPE.caption.lineHeight }}>{note}</Text>
           </View>
@@ -278,7 +278,7 @@ export function StockEditSheet({
           <Pressable
             onPress={onAddStock}
             accessibilityRole="button" accessibilityLabel="재고 추가로 이동"
-            style={{ flexDirection: 'row', alignItems: 'center', gap: 7, marginTop: 12, paddingTop: 12, borderTopWidth: 1, borderTopColor: T.line2 }}
+            style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, marginTop: 12, paddingTop: 12, borderTopWidth: 1, borderTopColor: T.line2 }}
           >
             <Icon name="info" size={15} color={COLOR.text.tertiary} />
             <Text style={{ flex: 1, fontSize: 14, color: T.sub2 }}>

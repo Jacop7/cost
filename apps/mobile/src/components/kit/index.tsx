@@ -148,7 +148,7 @@ export function FAB({ label = '추가', icon = 'plus', bottom = 24, onPress }: {
       onPress={onPress}
       accessibilityRole="button"
       accessibilityLabel={label}
-      style={{ position: 'absolute', right: 18, bottom, minHeight: COMPONENT.fab.visualHeight, zIndex: 30, flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: COLOR.action.primary, paddingVertical: space.md, paddingLeft: space.md, paddingRight: space.lg, borderRadius: 999, ...shadow.fab }}
+      style={{ position: 'absolute', right: 18, bottom, minHeight: COMPONENT.fab.visualHeight, zIndex: 30, flexDirection: 'row', alignItems: 'center', gap: space.sm, backgroundColor: COLOR.action.primary, paddingVertical: space.md, paddingLeft: space.md, paddingRight: space.lg, borderRadius: 999, ...shadow.fab }}
     >
       <Icon name={icon} size={22} color={T.onColor} sw={2.4} />
       <Text style={{ color: T.onColor, fontWeight: '700', fontSize: 16 }}>{label}</Text>
@@ -295,7 +295,7 @@ export function PLRow({ label, amt, pct, kind = 'cost', detail, bold }: { label:
 // ── 세그먼트 탭 (후보/대기/완료) ───────────────────────────────
 export function SegTabs({ tabs, active = 0, onChange }: { tabs: { label: string; count?: number }[]; active?: number; onChange?: (i: number) => void }) {
   return (
-    <View style={{ flexDirection: 'row', gap: 6, padding: space.xs, backgroundColor: T.line, borderRadius: radius.md }}>
+    <View style={{ flexDirection: 'row', gap: space.sm, padding: space.xs, backgroundColor: T.line, borderRadius: radius.md }}>
       {tabs.map((t, i) => {
         const on = active === i;
         return (
@@ -329,7 +329,7 @@ export function ScrollTabs({ tabs, active = 0, onChange }: { tabs: string[]; act
 // ── 기간 칩 (최근 3개월 ▾) ─────────────────────────────────────
 export function PeriodChip({ value = '최근 3개월', onPress }: { value?: string; onPress?: () => void }) {
   return (
-    <Pressable onPress={onPress} style={{ flexDirection: 'row', alignItems: 'center', gap: 2, paddingVertical: space.xs, paddingLeft: 11, paddingRight: space.sm, borderRadius: 999, backgroundColor: T.line2 }}>
+    <Pressable onPress={onPress} style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingVertical: space.xs, paddingLeft: space.md, paddingRight: space.sm, borderRadius: 999, backgroundColor: T.line2 }}>
       <Text style={{ color: T.sub, fontSize: 16, fontWeight: '700' }}>{value}</Text>
       <Icon name="chevronDown" size={14} color={COLOR.text.tertiary} />
     </Pressable>

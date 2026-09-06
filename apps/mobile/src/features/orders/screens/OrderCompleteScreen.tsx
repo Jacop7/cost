@@ -192,7 +192,7 @@ function OrderCompleteScreenBody({ localDate }: { localDate: string }) {
 
             {/* 도착 예정일 */}
             <Text style={{ fontSize: 16, fontWeight: '700', color: T.sub, marginBottom: 8 }}>도착 예정일</Text>
-            <View style={{ flexDirection: 'row', gap: 7, marginBottom: space.sm }}>
+            <View style={{ flexDirection: 'row', gap: space.sm, marginBottom: space.sm }}>
               {([0, 1, 2, 3, 7] as const).map((n) => {
                 const on = dayOffset === n;
                 const label = n === 0 ? '오늘' : n === 1 ? '내일' : n === 2 ? '모레' : `${n}일 후`;
@@ -210,7 +210,7 @@ function OrderCompleteScreenBody({ localDate }: { localDate: string }) {
             </View>
             <Text style={[{ fontSize: 14, color: T.sub2, fontWeight: '600', marginBottom: 16 }, NUM]}>{dayLabelOf(arrival)} 도착 예정</Text>
 
-            <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, paddingVertical: 12, paddingHorizontal: space.md, borderRadius: 12, backgroundColor: COLOR.action.primaryTint }}>
+            <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, paddingVertical: 12, paddingHorizontal: space.md, borderRadius: 12, backgroundColor: COLOR.action.primaryTint }}>
               <Icon name="info" size={15} color={COLOR.action.primary} />
               <Text style={{ flex: 1, fontSize: 14, color: T.sub2, lineHeight: TYPE.caption.lineHeight }}>
                 발주는 기록만 돼요. 재고와 기준단가는 발주 현황에서 <Text style={{ fontWeight: '700' }}>입고 완료</Text>를 눌렀을 때 바뀌어요.
@@ -256,7 +256,7 @@ function OrderCompleteScreenBody({ localDate }: { localDate: string }) {
                   style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingVertical: space.md, paddingHorizontal: space.md, borderRadius: 12, borderWidth: 1, borderColor: on ? COLOR.action.primary : T.line, backgroundColor: on ? COLOR.action.primaryTint : T.surface }}
                 >
                   <View style={{ flex: 1, minWidth: 0 }}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm }}>
                       <Text numberOfLines={1} style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>{x.name}</Text>
                       {x.categoryName ? <Badge tone="neutral" sm>{x.categoryName}</Badge> : null}
                     </View>

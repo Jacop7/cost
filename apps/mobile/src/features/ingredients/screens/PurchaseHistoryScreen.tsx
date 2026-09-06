@@ -126,8 +126,8 @@ function PurchaseHistoryScreenBody({ localDate }: { localDate: string }) {
                       }}
                     >
                       <View style={{ flex: 1, minWidth: 0 }}>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                          <Text style={[{ fontSize: 12, color: COLOR.text.tertiary, fontWeight: '700' }, tnum]}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm }}>
+                          <Text style={[{ fontSize: TYPE.captionSm.fontSize, color: COLOR.text.tertiary, fontWeight: '700' }, tnum]}>
                             {r.orderedAt.slice(5).replace('-', '/')}
                           </Text>
                           {/* 입고 완료는 이 목록의 기본값이라 적지 않는다. 예외만 말한다. */}
@@ -136,7 +136,7 @@ function PurchaseHistoryScreenBody({ localDate }: { localDate: string }) {
                         <Text style={{ fontSize: TYPE.caption.fontSize, fontWeight: '800', color: T.ink, marginTop: 4 }} numberOfLines={1}>
                           {r.vendorName ?? '거래처 미지정'}
                         </Text>
-                        <Text style={[{ fontSize: 12, color: T.sub, fontWeight: '600', marginTop: space.xs }, tnum]}>
+                        <Text style={[{ fontSize: TYPE.captionSm.fontSize, color: T.sub, fontWeight: '600', marginTop: space.xs }, tnum]}>
                           {/* 주문과 실제가 다르면 그 사실이 단가와 재고를 바꾼다 — packSummary 가 밝힌다. */}
                           {packSummary({
                             volume: r.volume, qty: r.qty, receivedQty: r.receivedQty, amount: r.amount,
@@ -161,7 +161,7 @@ function PurchaseHistoryScreenBody({ localDate }: { localDate: string }) {
             </View>
           ))}
 
-          <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, paddingHorizontal: 2, marginTop: 2 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, paddingHorizontal: 2, marginTop: 2 }}>
             <Icon name="info" size={15} color={COLOR.text.tertiary} />
             <Text style={{ flex: 1, fontSize: 14, color: COLOR.text.tertiary, lineHeight: TYPE.caption.lineHeight }}>
               여기 단가는 <Text style={{ fontWeight: '700' }}>그날 그 값</Text>이에요. 기준 단가는 실제로 들어온 양으로

@@ -225,7 +225,7 @@ export function IngredientFormScreen({ id }: { id?: string }) {
               </Pressable>
             </View>
           ) : (
-            <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, marginTop: 4, paddingVertical: 12, paddingHorizontal: space.md, borderRadius: 12, backgroundColor: T.surface2 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, marginTop: 4, paddingVertical: 12, paddingHorizontal: space.md, borderRadius: 12, backgroundColor: T.surface2 }}>
               <Icon name="info" size={15} color={T.sub2} />
               <Text style={{ flex: 1, fontSize: 14, color: T.sub2, lineHeight: TYPE.caption.lineHeight }}>
                 구매 링크·옵션은 저장한 뒤 상세 화면에서 추가할 수 있어요.

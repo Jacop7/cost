@@ -74,7 +74,7 @@ function FixedCostScreenBody({ localMonth }: { localMonth: string }) {
         ⚠ 칩 6개를 필터 버튼 하나로 바꿨다(0096). 매출 분석·식재료 내역이 쓰는
           `.condition-filter` 와 같은 모양이라야 사장님이 한 번만 배운다.
       */}
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, minHeight: 38, paddingHorizontal: 20, paddingVertical: 8 }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, minHeight: 38, paddingHorizontal: 20, paddingVertical: 8 }}>
         <FilterButton label={`${month.slice(0, 4)}년 ${Number(month.slice(5))}월`} onPress={() => setMonthOpen(true)} />
       </View>
 
@@ -99,7 +99,7 @@ function FixedCostScreenBody({ localMonth }: { localMonth: string }) {
 
           {items.map((it) => (
             <Card key={it.key} pad={0} style={{ overflow: 'hidden' }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: space.md, paddingHorizontal: space.md, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingVertical: space.md, paddingHorizontal: space.md, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
                 <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.sub }}>{LABEL[it.key] ?? it.key}</Text>
                 <Text style={[{ fontSize: 14, fontWeight: '700', color: T.sub2 }, NUM]}>{pctOf(it.total)}</Text>
               </View>
@@ -130,7 +130,7 @@ function FixedCostScreenBody({ localMonth }: { localMonth: string }) {
             </Card>
           ))}
 
-          <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, paddingHorizontal: 2, marginTop: 2 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, paddingHorizontal: 2, marginTop: 2 }}>
             <Icon name="info" size={15} color={COLOR.text.tertiary} />
             <Text style={{ flex: 1, fontSize: 14, color: COLOR.text.tertiary, lineHeight: TYPE.caption.lineHeight }}>
               고정지출률은 이 달의 <Text style={{ fontWeight: '700' }}>모든 메뉴 손익</Text>에 곱해져요. 여기 숫자를 고치면 전 메뉴 순이익률이 함께 바뀌어요.
@@ -166,7 +166,7 @@ function FixedCostScreenBody({ localMonth }: { localMonth: string }) {
                   borderBottomWidth: i === months.length - 1 ? 0 : 1, borderBottomColor: T.line2,
                 }}
               >
-                <Text style={{ flex: 1, fontSize: 15, fontWeight: on ? '800' : '700', color: on ? COLOR.state.selectedText : T.ink }}>
+                <Text style={{ flex: 1, fontSize: TYPE.body.fontSize, fontWeight: on ? '800' : '700', color: on ? COLOR.state.selectedText : T.ink }}>
                   {m.slice(0, 4)}년 {Number(m.slice(5))}월
                 </Text>
                 {on ? <Icon name="check" size={18} color={COLOR.action.primary} /> : null}

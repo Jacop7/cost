@@ -271,7 +271,7 @@ function LanguageEditor({ serverLocale, serverRevision, staleError, refetch }: {
                     {sub}{l.currencyName} ({l.currency})
                   </Text>
                   {/* 기본 표시 예시 + 기본 소수 자릿수 — 구분자·소수점·자릿수가 한 줄에 */}
-                  <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: space.xs, gap: 6 }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: space.xs, gap: space.sm }}>
                     <Text style={[{ fontSize: 14, color: T.sub2, fontWeight: '600' }, tnum, LTR]}>{localeSample(l.key as LocaleKey)}</Text>
                     <Text style={{ fontSize: 13, color: COLOR.text.tertiary, fontWeight: '600' }}>소수 {l.moneyDigits}자리</Text>
                   </View>
@@ -282,7 +282,7 @@ function LanguageEditor({ serverLocale, serverRevision, staleError, refetch }: {
           })}
         </Card>
 
-        <View style={{ flexDirection: 'row', gap: 7, marginHorizontal: 4, marginTop: 16, alignItems: 'flex-start' }}>
+        <View style={{ flexDirection: 'row', gap: space.sm, marginHorizontal: 4, marginTop: 16, alignItems: 'flex-start' }}>
           <Icon name="info" size={15} color={COLOR.text.tertiary} />
           <Text style={{ flex: 1, fontSize: 14, color: COLOR.text.tertiary, lineHeight: TYPE.caption.lineHeight }}>
             표기만 바뀌어요. 저장·계산은 항상 최소단위(g·ml·개) 원래 값 그대로예요. 단가를 몇 자리까지 볼지는 단위 설정에서 고를 수 있어요.
@@ -308,7 +308,7 @@ function LanguageEditor({ serverLocale, serverRevision, staleError, refetch }: {
 
         {/* 글꼴·방향은 시작 시 확정 — 스크립트가 다른 언어는 재시작이 필요하다 */}
         {NEEDS_RESTART.has(D.lang) ? (
-          <View style={{ flexDirection: 'row', gap: 7, marginBottom: 12, padding: space.md, borderRadius: 12, backgroundColor: COLOR.action.primaryTint, alignItems: 'flex-start' }}>
+          <View style={{ flexDirection: 'row', gap: space.sm, marginBottom: 12, padding: space.md, borderRadius: 12, backgroundColor: COLOR.action.primaryTint, alignItems: 'flex-start' }}>
             <Icon name="info" size={15} color={COLOR.action.primary} />
             <Text style={{ flex: 1, fontSize: 14, color: COLOR.text.accent, lineHeight: TYPE.caption.lineHeight, fontWeight: '600' }}>
               {D.label}는 글꼴{D.rtl ? '과 오른쪽→왼쪽 방향' : ''}이 달라서, 앱을 다시 켜면 적용돼요. 숫자 표기는 저장하면 바로 바뀌어요.

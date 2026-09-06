@@ -243,7 +243,7 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
 
       {/* 3탭 */}
       <View style={{ borderBottomWidth: 1, borderBottomColor: T.line3 }}>
-        <View style={{ flexDirection: 'row', gap: 22, paddingHorizontal: 20 }}>
+        <View style={{ flexDirection: 'row', gap: space.xxl, paddingHorizontal: 20 }}>
           {TABS.map(([k, label, n]) => {
             const on = tab === k;
             return (
@@ -284,7 +284,7 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
                   <Pressable
                     onPress={() => router.push(`/ingredients/${c.ingredientId}` as Href)}
                     accessibilityRole="button" accessibilityLabel={`${c.name} 상세`}
-                    style={{ flexDirection: 'row', alignItems: 'center', gap: 7 }}
+                    style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm }}
                   >
                     <Badge tone={reasonTone(c.reasons)} solid sm>
                       {REASON_LABEL[c.reasons[0] ?? 'manual'] ?? '발주 필요'}
@@ -329,7 +329,7 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
                   <Pressable
                     onPress={() => router.push(`/ingredients/${w.ingredientId}` as Href)}
                     accessibilityRole="button" accessibilityLabel={`${w.name} 상세`}
-                    style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}
+                    style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm }}
                   >
                     <Badge tone={late ? 'red' : 'blue'} solid sm>{late ? '입고지연' : '입고예정'}</Badge>
                     <Text numberOfLines={1} style={{ flex: 1, fontSize: 18, fontWeight: '800', letterSpacing: -0.3, color: T.ink }}>{w.name}</Text>
@@ -363,7 +363,7 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
                 <Pressable
                   onPress={() => router.push(`/ingredients/${d.ingredientId}` as Href)}
                   accessibilityRole="button" accessibilityLabel={`${d.name} 상세`}
-                  style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}
+                  style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm }}
                 >
                   <Badge tone="green" solid sm>입고 완료</Badge>
                   <Text numberOfLines={1} style={{ flex: 1, fontSize: 18, fontWeight: '800', letterSpacing: -0.3, color: T.ink }}>{d.name}</Text>
@@ -375,7 +375,7 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
                 <Text style={[{ fontSize: 16, fontWeight: '600', color: T.sub, marginTop: space.sm }, NUM]}>
                   {d.vendorName ?? '거래처 미지정'} · {won(d.amount)}원 × {d.receivedQty}개
                 </Text>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 8, paddingTop: 8, borderTopWidth: 1, borderTopColor: T.line2 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, marginTop: 8, paddingTop: 8, borderTopWidth: 1, borderTopColor: T.line2 }}>
                   <Text style={{ flex: 1, fontSize: 14, fontWeight: '600', color: T.sub2 }}>입고 단가</Text>
                   <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>
                     {d.unitPrice === null ? '—' : `${Math.round(d.unitPrice * 100) / 100}원`}
@@ -400,7 +400,7 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
       >
         {orderFor ? (
           <View>
-            <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, marginBottom: 12, paddingVertical: space.md, paddingHorizontal: space.md, borderRadius: radius.md, backgroundColor: COLOR.action.primaryTint }}>
+            <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, marginBottom: 12, paddingVertical: space.md, paddingHorizontal: space.md, borderRadius: radius.md, backgroundColor: COLOR.action.primaryTint }}>
               <Icon name="info" size={15} color={COLOR.action.primary} />
               <Text style={{ flex: 1, fontSize: 14, color: T.sub2, lineHeight: TYPE.caption.lineHeight }}>
                 발주는 <Text style={{ fontWeight: '700' }}>기록만</Text> 돼요. 재고와 단가는 ‘입고 완료’를 눌렀을 때 바뀌어요.
@@ -496,7 +496,7 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
                 accessibilityLabel="실제 입고 수량"
               />
             </Field>
-            <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, paddingVertical: 12, paddingHorizontal: space.md, borderRadius: radius.md, backgroundColor: COLOR.action.primaryTint }}>
+            <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, paddingVertical: 12, paddingHorizontal: space.md, borderRadius: radius.md, backgroundColor: COLOR.action.primaryTint }}>
               <Icon name="info" size={15} color={COLOR.action.primary} />
               <Text style={{ flex: 1, fontSize: 14, color: T.sub2, lineHeight: TYPE.caption.lineHeight }}>
                 저장하면 재고가 늘고 기준단가가 다시 계산돼요. 이 재료를 쓰는 메뉴 원가도 함께 바뀝니다.

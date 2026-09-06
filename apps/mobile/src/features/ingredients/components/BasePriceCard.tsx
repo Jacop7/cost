@@ -80,7 +80,7 @@ export function BasePriceCard({
               ['최저', purchase.low, COLOR.text.accent],
               ['최고', purchase.high, T.red],
             ] as const).map(([lbl, val, color]) => (
-              <View key={lbl} style={{ flexDirection: 'row', alignItems: 'center', gap: 7 }}>
+              <View key={lbl} style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm }}>
                 <Text style={{ fontSize: 14, fontWeight: '700', color }}>{lbl}</Text>
                 <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, tnum]}>
                   {val === null ? '—' : formatUnitPrice(val, unit)}
@@ -124,7 +124,7 @@ export function BasePriceCard({
                   style={{ paddingVertical: 12, borderBottomWidth: i < priced.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}
                 >
                   {/* 1줄 — 언제 · 그때가 최고였나 최저였나 */}
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm }}>
                     <Text style={[{ fontSize: 14, color: COLOR.text.tertiary, fontWeight: '600' }, tnum]}>
                       {o.orderedAt.slice(5).replace('-', '/')}
                     </Text>
@@ -133,8 +133,8 @@ export function BasePriceCard({
                     ) : null}
                     <View style={{ flex: 1 }} />
                     {isLow || isHigh ? (
-                      <View style={{ paddingHorizontal: 6, paddingVertical: space.xs, borderRadius: radius.sm, backgroundColor: isHigh ? T.redTint : COLOR.action.primaryTint }}>
-                        <Text style={{ fontSize: 12, fontWeight: '700', color: isHigh ? T.red : COLOR.text.accent }}>
+                      <View style={{ paddingHorizontal: space.sm, paddingVertical: space.xs, borderRadius: radius.sm, backgroundColor: isHigh ? T.redTint : COLOR.action.primaryTint }}>
+                        <Text style={{ fontSize: TYPE.captionSm.fontSize, fontWeight: '700', color: isHigh ? T.red : COLOR.text.accent }}>
                           {isHigh ? '최고' : '최저'}
                         </Text>
                       </View>
@@ -175,9 +175,9 @@ export function BasePriceCard({
       <Pressable
         onPress={onSeeAll}
         accessibilityRole="button" accessibilityLabel="입고 이력 전체 보기"
-        style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 2, paddingVertical: space.md, borderTopWidth: 1, borderTopColor: T.line2, backgroundColor: T.surface2 }}
+        style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.sm, paddingVertical: space.md, borderTopWidth: 1, borderTopColor: T.line2, backgroundColor: T.surface2 }}
       >
-        <Text style={{ fontSize: 15, fontWeight: '700', color: T.sub }}>입고 이력 전체보기</Text>
+        <Text style={{ fontSize: TYPE.body.fontSize, fontWeight: '700', color: T.sub }}>입고 이력 전체보기</Text>
         <Icon name="chevron" size={16} color={COLOR.text.tertiary} />
       </Pressable>
     </View>

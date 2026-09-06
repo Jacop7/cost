@@ -83,7 +83,7 @@ export default function MyChannelsScreen() {
                 accessibilityLabel={`${c.name} 이름 수정`}
                 style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingVertical: space.md, paddingHorizontal: space.md }}
               >
-                <View style={{ flex: 1, minWidth: 0, flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                <View style={{ flex: 1, minWidth: 0, flexDirection: 'row', alignItems: 'center', gap: space.sm }}>
                   <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }} numberOfLines={1}>{c.name}</Text>
                   {!c.active ? <Badge tone="neutral" sm>사용 안 함</Badge> : null}
                 </View>
@@ -102,7 +102,7 @@ export default function MyChannelsScreen() {
             </Card>
           ))}
 
-          <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, paddingHorizontal: 2, marginTop: 2 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, paddingHorizontal: 2, marginTop: 2 }}>
             <Icon name="info" size={15} color={COLOR.text.tertiary} />
             <Text style={{ flex: 1, fontSize: 14, color: COLOR.text.tertiary, lineHeight: TYPE.caption.lineHeight }}>
               배달앱 수수료는 <Text style={{ fontWeight: '700' }}>고정 지출</Text>의 ‘플랫폼 수수료’에서 관리해요.

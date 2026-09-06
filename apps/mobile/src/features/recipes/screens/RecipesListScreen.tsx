@@ -61,7 +61,7 @@ function RecipeCard({ r, onPress }: { r: RecipeRow; onPress: () => void }) {
     <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={`${r.name} 상세`}>
       <Card pad={0} style={{ overflow: 'hidden', opacity: stopped || short ? 0.55 : 1 }}>
         <View style={{ paddingVertical: space.md, paddingHorizontal: 16 }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7, marginBottom: 12 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, marginBottom: 12 }}>
             {stopped ? null : warn ? <Badge tone="red" solid sm>목표 미달</Badge> : <Badge tone="green" solid sm>목표 달성</Badge>}
             <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', letterSpacing: -0.3, color: T.ink }} numberOfLines={1}>{r.name}</Text>
             {stopped ? <Badge tone="neutral" sm>판매중지</Badge> : null}
@@ -77,7 +77,7 @@ function RecipeCard({ r, onPress }: { r: RecipeRow; onPress: () => void }) {
           <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: space.sm }}>
             <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub }}>순이익</Text>
             {!stopped ? (
-              <View style={{ marginLeft: 6, paddingVertical: space.xs, paddingHorizontal: 7, borderRadius: radius.sm, backgroundColor: T.line2 }}>
+              <View style={{ marginLeft: space.sm, paddingVertical: space.xs, paddingHorizontal: space.sm, borderRadius: radius.sm, backgroundColor: T.line2 }}>
                 <Text style={[{ fontSize: 14, fontWeight: '700', color: T.sub }, NUM]}>목표 {r.targetProfitRate}%</Text>
               </View>
             ) : null}
@@ -183,7 +183,7 @@ export default function RecipesListScreen() {
         <ScrollTabs tabs={tabs} active={cat} onChange={setCat} />
       </View>
 
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ flexGrow: 0 }} contentContainerStyle={{ gap: 7, paddingHorizontal: 20, paddingVertical: 12 }}>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ flexGrow: 0 }} contentContainerStyle={{ gap: space.sm, paddingHorizontal: 20, paddingVertical: 12 }}>
         <Chip active onPress={() => setSortOpen(true)}>{sortLabel}</Chip>
         <Chip active={statusFilter !== 'all'} onPress={() => setStatusOpen(true)}>{statusLabel}</Chip>
         <Chip active={targetFilter !== 'all'} onPress={() => setTargetOpen(true)}>{targetLabel}</Chip>

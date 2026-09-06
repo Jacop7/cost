@@ -6,7 +6,7 @@
 // 폰트/색/라인 단일 출처: 일시14 · 항목16 · 설명14 · 증감16(양수 파랑/음수 빨강) · 잔량14.
 import React from 'react';
 import { View, Text, Pressable } from 'react-native';
-import { COLOR, T, tnum, space } from '../../../theme/tokens';
+import { COLOR, T, tnum, space, TYPE } from '../../../theme/tokens';
 
 export function LedgerRow({
   date,
@@ -43,7 +43,7 @@ export function LedgerRow({
       style={{
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 11,
+        gap: space.md,
         paddingVertical: space.md,
         paddingHorizontal: px,
         backgroundColor: T.surface,
@@ -60,7 +60,7 @@ export function LedgerRow({
           둘 다 "그래서 무엇이 얼마나"를 받쳐 주는 줄이라 같은 무게로 읽혀야 한다.
         */}
         {memo ? (
-          <Text style={{ fontSize: 12, color: T.sub, fontWeight: '600', marginTop: space.xs }} numberOfLines={1}>{memo}</Text>
+          <Text style={{ fontSize: TYPE.captionSm.fontSize, color: T.sub, fontWeight: '600', marginTop: space.xs }} numberOfLines={1}>{memo}</Text>
         ) : null}
       </View>
       <View style={{ alignItems: 'flex-end' }}>

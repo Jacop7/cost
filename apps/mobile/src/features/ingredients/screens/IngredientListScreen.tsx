@@ -120,7 +120,7 @@ export function IngredientListScreen() {
             style={{
               flexDirection: 'row',
               alignItems: 'center',
-              gap: 6,
+              gap: space.sm,
               backgroundColor: T.redTint,
               borderWidth: 1,
               borderColor: T.red,

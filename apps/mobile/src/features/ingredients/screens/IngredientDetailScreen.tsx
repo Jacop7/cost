@@ -118,7 +118,7 @@ export function IngredientDetailScreen() {
           <Pressable
             onPress={() => setMenuOpen(true)}
             accessibilityRole="button" accessibilityLabel="수정 메뉴 열기"
-            style={{ flexDirection: 'row', alignItems: 'center', gap: 3, paddingHorizontal: 8, paddingVertical: 8 }}
+            style={{ flexDirection: 'row', alignItems: 'center', gap: space.xs, paddingHorizontal: 8, paddingVertical: 8 }}
           >
             <Icon name="edit" size={19} color={T.ink2} />
             <Text style={{ color: T.ink2, fontSize: 16, fontWeight: '700' }}>수정</Text>
@@ -139,7 +139,7 @@ export function IngredientDetailScreen() {
             <>
               {/* 이름 · 메모 */}
               <Card pad={16}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: space.md }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, marginBottom: space.md }}>
                   {g.categoryName ? <Badge tone="neutral">{g.categoryName}</Badge> : null}
                   {g.vendorName ? <Badge tone="neutral" sm>{g.vendorName}</Badge> : null}
                 </View>
@@ -166,7 +166,7 @@ export function IngredientDetailScreen() {
 
               {/* 잔여 */}
               <Card pad={16}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm }}>
                   {st ? <Badge tone={st.tone} solid sm>{st.label}</Badge> : null}
                 </View>
                 <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 8, marginTop: 8 }}>
@@ -190,7 +190,7 @@ export function IngredientDetailScreen() {
                     재고 부족 {formatQuantity(shortageOf(g.stockTotal), unit)} · 입고를 빠뜨렸는지 확인해 주세요
                   </Text>
                 ) : null}
-                <View style={{ marginTop: space.sm, flexDirection: 'row', gap: 6, flexWrap: 'wrap' }}>
+                <View style={{ marginTop: space.sm, flexDirection: 'row', gap: space.sm, flexWrap: 'wrap' }}>
                   {/*
                     ⚠ 안전재고는 **기준단위**다(0073). `개` 를 붙이면 `2000개` 로 읽힌다 —
                       실제로는 2,000g 이다. 수량과 같은 포맷을 쓴다.
@@ -251,7 +251,7 @@ export function IngredientDetailScreen() {
                 <Pressable
                   onPress={() => router.push(`/ingredients/history/${g.id}`)}
                   accessibilityRole="button" accessibilityLabel="재고 변동 내역 전체 보기"
-                  style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 2, paddingVertical: space.md, borderTopWidth: 1, borderTopColor: T.line2, backgroundColor: T.surface2 }}
+                  style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.sm, paddingVertical: space.md, borderTopWidth: 1, borderTopColor: T.line2, backgroundColor: T.surface2 }}
                 >
                   <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub }}>자세히 보기</Text>
                   <Icon name="chevron" size={16} color={COLOR.text.tertiary} />
@@ -290,7 +290,7 @@ export function IngredientDetailScreen() {
                          * 왼쪽 세 줄은 무엇을 사는지, 오른쪽 두 줄은 얼마짜리인지.
                          * 카드 세 개(최근 입고 · 현재 재고 · 구매 옵션)가 같은 리듬으로 읽힌다.
                          */
-                        style={{ flexDirection: 'row', alignItems: 'center', gap: 11, paddingVertical: space.md, borderBottomWidth: i < g.options.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}
+                        style={{ flexDirection: 'row', alignItems: 'center', gap: space.md, paddingVertical: space.md, borderBottomWidth: i < g.options.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}
                       >
                         <View style={{ flex: 1, minWidth: 0 }}>
                           {/*

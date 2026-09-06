@@ -9,7 +9,7 @@
  */
 import { Pressable, Text, View } from 'react-native';
 import { Icon } from '@/components/kit';
-import { COLOR, T, controlVisualHeight, radius } from '@/theme/tokens';
+import { COLOR, T, controlVisualHeight, radius, space } from '@/theme/tokens';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 
@@ -33,7 +33,7 @@ export function SaleStepper({ value, onChange, label }: { value: number; onChang
     </Pressable>
   );
   return (
-    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7 }}>
+    <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm }}>
       <Btn ic="minus" delta={-1} disabled={value <= 0} />
       <Text style={[{ minWidth: 26, textAlign: 'center', fontSize: 18, fontWeight: '800', color: value ? T.ink : COLOR.text.tertiary }, NUM]}>{value}</Text>
       <Btn ic="plus" delta={1} />

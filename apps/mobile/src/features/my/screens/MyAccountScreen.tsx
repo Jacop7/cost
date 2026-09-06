@@ -50,7 +50,7 @@ export default function MyAccountScreen() {
       <AppHeader title="계정 관리" onBack={() => { if (!retire.isPending) safeBack('/my'); }} />
       <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: LAYOUT.scroll.end, gap: space.md }}>
         <Card pad={18}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 11 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.md }}>
             <View style={{ width: 42, height: 42, borderRadius: 12, backgroundColor: T.redTint, alignItems: 'center', justifyContent: 'center' }}>
               <Icon name="user" size={22} color={T.red} />
             </View>
@@ -61,7 +61,7 @@ export default function MyAccountScreen() {
           </View>
 
           <View style={{ height: 1, backgroundColor: T.line2, marginVertical: 16 }} />
-          <Text style={{ fontSize: 15, lineHeight: TYPE.body.lineHeight, color: T.sub }}>
+          <Text style={{ fontSize: TYPE.body.fontSize, lineHeight: TYPE.body.lineHeight, color: T.sub }}>
             매출·입고·재고 원장은 운영 기록과 감사 근거이므로 탈퇴와 동시에 물리 삭제하지 않고 보존해요.
             다시 로그인하거나 기존 매장에 접근할 수는 없어요.
           </Text>
@@ -71,7 +71,7 @@ export default function MyAccountScreen() {
 
       <Sheet visible={confirming} onClose={close} title="계정을 탈퇴할까요?" sub="완료하면 되돌릴 수 없어요" height={430} scroll={false}>
         <View style={{ flex: 1, paddingHorizontal: 20, paddingBottom: 20 }}>
-          <Text style={{ fontSize: 15, lineHeight: TYPE.body.lineHeight, color: T.sub, marginBottom: 16 }}>
+          <Text style={{ fontSize: TYPE.body.fontSize, lineHeight: TYPE.body.lineHeight, color: T.sub, marginBottom: 16 }}>
             계속하려면 아래에 ‘탈퇴’를 입력해 주세요. 영업 원장은 보존되지만 계정과 기존 매장 접근은 즉시 사라져요.
           </Text>
           <Field label="확인 문구" error={error ?? undefined}>

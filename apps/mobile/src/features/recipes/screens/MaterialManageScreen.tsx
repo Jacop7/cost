@@ -131,7 +131,7 @@ export default function MaterialManageScreen() {
             {items.map((m, i) => (
               <View key={m.id} style={{ flexDirection: 'row', alignItems: 'center', gap: COMPONENT.adjacentActions.gap, paddingVertical: 12, paddingLeft: space.md, paddingRight: space.sm, borderBottomWidth: i < items.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
                 <Pressable onPress={() => openEdit(m)} accessibilityRole="button" accessibilityLabel={`${m.name} 수정`} style={{ flex: 1, minWidth: 0 }}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm }}>
                     <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }} numberOfLines={1}>{m.name}</Text>
                     {m.categoryName ? <Badge tone="neutral" sm>{m.categoryName}</Badge> : null}
                   </View>
@@ -186,7 +186,7 @@ export default function MaterialManageScreen() {
 
         {/* 단가 미리보기 */}
         <View style={{ backgroundColor: COLOR.action.primaryTint, borderWidth: 1, borderColor: COLOR.action.primary, borderRadius: 12, paddingVertical: space.md, paddingHorizontal: 16 }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: space.md }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, marginBottom: space.md }}>
             <Icon name="info" size={17} color={COLOR.action.primary} />
             <Text style={{ fontSize: 16, fontWeight: '700', color: COLOR.text.accent }}>단가 미리보기</Text>
           </View>
@@ -201,7 +201,7 @@ export default function MaterialManageScreen() {
         </View>
 
         {editing && editing.usedCount > 0 ? (
-          <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, marginTop: 12, paddingVertical: 12, paddingHorizontal: space.md, borderRadius: radius.md, backgroundColor: T.amberTint }}>
+          <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, marginTop: 12, paddingVertical: 12, paddingHorizontal: space.md, borderRadius: radius.md, backgroundColor: T.amberTint }}>
             <Icon name="info" size={15} color={T.amberText} />
             <Text style={{ flex: 1, fontSize: 14, color: T.amberText, lineHeight: TYPE.caption.lineHeight }}>
               단가를 바꾸면 이 부자재를 쓰는 메뉴 {editing.usedCount}개의 원가도 함께 바뀌어요.

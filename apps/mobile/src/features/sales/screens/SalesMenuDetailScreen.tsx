@@ -29,7 +29,7 @@ const dispUnit = (u: 'g' | 'ml' | 'ea' | null) => (u === null ? null : u === 'ea
 
 function SecHead({ title, sub }: { title: string; sub?: string }) {
   return (
-    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: space.md, paddingHorizontal: space.md, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
+    <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingVertical: space.md, paddingHorizontal: space.md, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
       <Text style={{ fontSize: 16, fontWeight: '800', color: T.sub }}>{title}</Text>
       {sub ? <Text style={{ fontSize: 14, color: COLOR.text.tertiary, fontWeight: '600' }}>{sub}</Text> : null}
     </View>
@@ -184,7 +184,7 @@ function SalesMenuDetailScreenBody({ serverToday }: { serverToday: string }) {
                   <View key={k} style={{ flexDirection: 'row', alignItems: 'center', minHeight: 47, paddingVertical: 12, paddingHorizontal: 16, borderTopWidth: 1, borderTopColor: T.line2 }}>
                     <View style={{ flex: 1, minWidth: 0 }}>
                       <Text style={{ fontSize: TYPE.caption.fontSize, fontWeight: '700', color: T.sub }}>{k}</Text>
-                      {subLabel ? <Text style={{ fontSize: 12, fontWeight: '700', color: COLOR.text.tertiary, marginTop: space.xs }}>{subLabel}</Text> : null}
+                      {subLabel ? <Text style={{ fontSize: TYPE.captionSm.fontSize, fontWeight: '700', color: COLOR.text.tertiary, marginTop: space.xs }}>{subLabel}</Text> : null}
                     </View>
                     <Text style={[{ fontSize: TYPE.caption.fontSize, fontWeight: '800', color: accent ? (rate >= target ? T.green : T.red) : T.ink }, NUM]}>{v}</Text>
                   </View>

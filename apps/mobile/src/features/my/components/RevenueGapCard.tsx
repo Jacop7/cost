@@ -47,7 +47,7 @@ export function RevenueGapCard({ check, onApply, applying = false }: {
 
   return (
     <Card pad={0} style={{ overflow: 'hidden' }}>
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 12, paddingHorizontal: space.md, backgroundColor: bg, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingVertical: 12, paddingHorizontal: space.md, backgroundColor: bg, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
         <Icon name={big ? 'warn' : 'info'} size={16} color={tone} />
         <Text style={{ flex: 1, fontSize: 14, fontWeight: '800', color: tone }}>
           {big ? '적어둔 월매출이 실제와 많이 달라요' : '적어둔 월매출과 실제 비교'}

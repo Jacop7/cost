@@ -12,7 +12,7 @@ import { Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
 import { AppHeader, Button, Card, FilterButton, Icon, QueryState, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { LAYOUT, COLOR, T, won, radius, rowMinHeight, space } from '@/theme/tokens';
+import { LAYOUT, COLOR, T, won, radius, rowMinHeight, space, TYPE } from '@/theme/tokens';
 import { useSalesRange, type RangeMenu } from '../hooks';
 import { ChannelMixCard, MenuSalesList, ProfitBreakdownCard, SalesRow, SecLabel } from '../components/ProfitBlocks';
 import { MenuProfitSheet } from '../components/MenuProfitSheet';
@@ -167,7 +167,7 @@ function SalesAnalyticsBody({ today }: { today: string }) {
           프로토타입 `.condition-filter` — 기간은 **버튼 하나**로 고른다.
           예전엔 칩 6개 + 달력 + 직접설정 시트로 같은 일을 하는 길이 셋이었다.
         */}
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, minHeight: 38, marginTop: 4 }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, minHeight: 38, marginTop: 4 }}>
           <FilterButton label={`${active.short}, ${active.label}`} onPress={() => setPeriodOpen(true)} />
           <View style={{ flex: 1 }} />
           {dayCount > 1 ? (
@@ -210,7 +210,7 @@ function SalesAnalyticsBody({ today }: { today: string }) {
                   ))}
                 </View>
                 {dayCount > 1 ? (
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: space.md, paddingBottom: 12 }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingHorizontal: space.md, paddingBottom: 12 }}>
                     <Icon name="info" size={14} color={COLOR.text.tertiary} />
                     <Text style={[{ flex: 1, fontSize: 13, color: COLOR.text.tertiary }, NUM]}>하루 평균 순이익 {won(avgProfit)}원 · {dayCount}일 기준</Text>
                   </View>
@@ -268,8 +268,8 @@ function SalesAnalyticsBody({ today }: { today: string }) {
                 }}
               >
                 <View style={{ flex: 1, minWidth: 0 }}>
-                  <Text style={{ fontSize: 15, fontWeight: on ? '800' : '700', color: on ? COLOR.state.selectedText : T.ink }}>{pp.short}</Text>
-                  <Text style={[{ fontSize: 12, fontWeight: '600', color: COLOR.text.tertiary, marginTop: space.xs }, NUM]}>{pp.label}</Text>
+                  <Text style={{ fontSize: TYPE.body.fontSize, fontWeight: on ? '800' : '700', color: on ? COLOR.state.selectedText : T.ink }}>{pp.short}</Text>
+                  <Text style={[{ fontSize: TYPE.captionSm.fontSize, fontWeight: '600', color: COLOR.text.tertiary, marginTop: space.xs }, NUM]}>{pp.label}</Text>
                 </View>
                 {on ? <Icon name="check" size={18} color={COLOR.action.primary} /> : null}
               </Pressable>

@@ -28,7 +28,7 @@ const dispUnit = (u: 'g' | 'ml' | 'ea' | null) => (u === null ? null : u === 'ea
 
 function SecHead({ title, sub, right }: { title: string; sub?: string; right?: ReactNode }) {
   return (
-    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: space.md, paddingHorizontal: space.md, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
+    <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingVertical: space.md, paddingHorizontal: space.md, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
       <Text style={{ fontSize: 16, fontWeight: '800', color: T.sub }}>{title}</Text>
       {sub ? <Text style={{ fontSize: 14, color: COLOR.text.tertiary, fontWeight: '600' }}>{sub}</Text> : null}
       {right ? (<><View style={{ flex: 1 }} />{right}</>) : null}
@@ -40,7 +40,7 @@ function SecHead({ title, sub, right }: { title: string; sub?: string; right?: R
 function CostTabs({ value, onChange, servings }: { value: 'batch' | 'one'; onChange: (v: 'batch' | 'one') => void; servings: number }) {
   const tabs: ['batch' | 'one', string][] = [['batch', `${servings}인분 기준`], ['one', '1인분 기준']];
   return (
-    <View style={{ flexDirection: 'row', gap: 22, paddingHorizontal: space.md, backgroundColor: T.surface, borderBottomWidth: 1, borderBottomColor: T.line }}>
+    <View style={{ flexDirection: 'row', gap: space.xxl, paddingHorizontal: space.md, backgroundColor: T.surface, borderBottomWidth: 1, borderBottomColor: T.line }}>
       {tabs.map(([k, label]) => {
         const on = value === k;
         return (
@@ -158,7 +158,7 @@ export default function RecipeDetailScreen() {
           <Pressable
             onPress={() => router.push(`/recipes/add?id=${id}` as Href)}
             accessibilityRole="button" accessibilityLabel="레시피 수정"
-            style={{ flexDirection: 'row', alignItems: 'center', gap: 3, paddingHorizontal: 8, paddingVertical: 8 }}
+            style={{ flexDirection: 'row', alignItems: 'center', gap: space.xs, paddingHorizontal: 8, paddingVertical: 8 }}
           >
             <Icon name="edit" size={19} color={T.ink2} />
             <Text style={{ color: T.ink2, fontSize: 16, fontWeight: '700' }}>수정</Text>
@@ -212,7 +212,7 @@ export default function RecipeDetailScreen() {
                 {/* 메뉴 요약 */}
                 <Card pad={0} style={{ overflow: 'hidden' }}>
                   <View style={{ paddingHorizontal: 16, paddingTop: space.md, paddingBottom: 12 }}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7 }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm }}>
                       <Text style={{ flex: 1, fontSize: 20, fontWeight: '800', letterSpacing: -0.3, color: T.ink }} numberOfLines={1}>{r.name}</Text>
                       {!r.active ? <Badge tone="neutral" sm solid>판매중지</Badge> : warn ? <Badge tone="red" sm solid>목표 미달</Badge> : <Badge tone="green" sm solid>목표 달성</Badge>}
                     </View>
@@ -220,7 +220,7 @@ export default function RecipeDetailScreen() {
                     <Pressable
                       onPress={() => setMemoOpen(true)}
                       accessibilityRole="button" accessibilityLabel="메모 수정"
-                      style={{ marginTop: space.md, flexDirection: 'row', alignItems: 'center', gap: 6 }}
+                      style={{ marginTop: space.md, flexDirection: 'row', alignItems: 'center', gap: space.sm }}
                     >
                       <Icon name="note" size={15} color={T.amberText} />
                       <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub }}>메모</Text>
@@ -271,7 +271,7 @@ export default function RecipeDetailScreen() {
                         const accent = b.label === '순이익';
                         const zero = b.amt <= 0;
                         return (
-                          <View key={b.label} style={{ flexDirection: 'row', alignItems: 'center', gap: 7, opacity: zero ? 0.45 : 1 }}>
+                          <View key={b.label} style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, opacity: zero ? 0.45 : 1 }}>
                             <View style={{ width: 9, height: 9, borderRadius: 3, backgroundColor: b.color }} />
                             <Text style={{ flex: 1, fontSize: 14, fontWeight: accent ? '800' : '600', color: accent ? PROFIT : T.sub2 }}>{b.label}</Text>
                             <Text style={[{ fontSize: 14, fontWeight: '800', color: accent ? PROFIT : T.ink, marginRight: 8 }, NUM]}>{won(Math.round(b.amt))}원</Text>
@@ -423,7 +423,7 @@ export default function RecipeDetailScreen() {
                   <Pressable
                     onPress={() => router.push('/recipes/fixed-cost' as Href)}
                     accessibilityRole="button" accessibilityLabel="고정 지출 자세히 보기"
-                    style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 2, paddingVertical: space.md, borderTopWidth: 1, borderTopColor: T.line2, backgroundColor: T.surface2 }}
+                    style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.sm, paddingVertical: space.md, borderTopWidth: 1, borderTopColor: T.line2, backgroundColor: T.surface2 }}
                   >
                     <Text style={{ fontSize: 16, fontWeight: '700', color: T.sub }}>자세히 보기</Text>
                     <Icon name="chevron" size={16} color={COLOR.text.tertiary} />
@@ -472,7 +472,7 @@ export default function RecipeDetailScreen() {
                 {/* 손익 미리보기 */}
                 <Card onLine pad={0} style={{ overflow: 'hidden' }}>
                   <SecHead title="손익 미리보기" sub="판매가 대비 %" />
-                  <View style={{ flexDirection: 'row', gap: 22, paddingHorizontal: space.md, backgroundColor: T.surface, borderBottomWidth: 1, borderBottomColor: T.line }}>
+                  <View style={{ flexDirection: 'row', gap: space.xxl, paddingHorizontal: space.md, backgroundColor: T.surface, borderBottomWidth: 1, borderBottomColor: T.line }}>
                     {([['batch', `${r.baseServings}인분`], ['one', '1인분'], ['month', '월평균']] as const).map(([k, label]) => {
                       const on = view === k;
                       const disabled = k === 'month' && (r.avgMonthlySales ?? 0) <= 0;
@@ -523,7 +523,7 @@ export default function RecipeDetailScreen() {
                     ))}
                     <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 12 }}>
                       <Text style={{ fontSize: 16, fontWeight: '800', color: T.ink }}>순이익</Text>
-                      <View style={{ marginLeft: 7 }}>{warn ? <Badge tone="red" sm solid>목표 미달</Badge> : <Badge tone="green" sm solid>목표 달성</Badge>}</View>
+                      <View style={{ marginLeft: space.sm }}>{warn ? <Badge tone="red" sm solid>목표 미달</Badge> : <Badge tone="green" sm solid>목표 달성</Badge>}</View>
                       <View style={{ flex: 1 }} />
                       <View style={{ alignItems: 'flex-end' }}>
                         <Text style={[{ fontSize: 16, fontWeight: '800', color: PROFIT }, NUM]}>{wm(profit)}</Text>
@@ -553,7 +553,7 @@ export default function RecipeDetailScreen() {
                   <Pressable
                     onPress={() => setSimOpen(true)}
                     accessibilityRole="button" accessibilityLabel="판매가 시뮬레이션"
-                    style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, margin: space.md, marginTop: 0, paddingVertical: space.md, borderRadius: 12, borderWidth: 1, borderColor: COLOR.action.primary, backgroundColor: COLOR.action.primaryTint }}
+                    style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.sm, margin: space.md, marginTop: 0, paddingVertical: space.md, borderRadius: 12, borderWidth: 1, borderColor: COLOR.action.primary, backgroundColor: COLOR.action.primaryTint }}
                   >
                     <Icon name="trend" size={18} color={COLOR.action.primary} sw={2.1} />
                     <Text style={{ fontSize: 16, fontWeight: '700', color: COLOR.text.link }}>판매가 시뮬레이션</Text>
@@ -610,7 +610,7 @@ export default function RecipeDetailScreen() {
                   <Pressable
                     onPress={() => router.push(`/recipes/profit-history?id=${r.id}` as Href)}
                     accessibilityRole="button" accessibilityLabel="손익 변동 자세히 보기"
-                    style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 2, paddingVertical: space.md, backgroundColor: T.surface2 }}
+                    style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.sm, paddingVertical: space.md, backgroundColor: T.surface2 }}
                   >
                     <Text style={{ fontSize: 16, fontWeight: '700', color: T.sub }}>자세히 보기</Text>
                     <Icon name="chevron" size={16} color={COLOR.text.tertiary} />

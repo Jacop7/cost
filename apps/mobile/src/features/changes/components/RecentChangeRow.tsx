@@ -8,7 +8,7 @@
  */
 import { Pressable, Text, View } from 'react-native';
 import { Icon } from '@/components/kit';
-import { COLOR, T, radius, space } from '@/theme/tokens';
+import { COLOR, T, radius, space, TYPE } from '@/theme/tokens';
 import { changeTime, stateLabel, type LastChange } from '../hooks';
 
 const TONE = {
@@ -62,8 +62,8 @@ export function RecentChangeRow({ change, onPress }: { change: LastChange; onPre
         {!change.hasHistory ? (
           <Text style={{ fontSize: 13, color: COLOR.text.tertiary }} numberOfLines={1}>아직 수정 없음</Text>
         ) : s && c ? (
-          <View style={{ paddingHorizontal: 7, paddingVertical: space.xs, borderRadius: radius.sm, backgroundColor: c.bg }}>
-            <Text style={{ fontSize: 12, fontWeight: '700', color: c.fg }} numberOfLines={1}>
+          <View style={{ paddingHorizontal: space.sm, paddingVertical: space.xs, borderRadius: radius.sm, backgroundColor: c.bg }}>
+            <Text style={{ fontSize: TYPE.captionSm.fontSize, fontWeight: '700', color: c.fg }} numberOfLines={1}>
               {s.text}
             </Text>
           </View>

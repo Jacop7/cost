@@ -112,13 +112,13 @@ export default function SalesStockCheckScreen() {
                           (기획안 §4.4). 라벨이 이미 그 말을 하고 있다.
                       */}
                       <View style={{ flexDirection: 'row', gap: 16, marginTop: space.xs }}>
-                        <Text style={[{ fontSize: 12, fontWeight: '700', color: COLOR.text.tertiary }, NUM]}>
+                        <Text style={[{ fontSize: TYPE.captionSm.fontSize, fontWeight: '700', color: COLOR.text.tertiary }, NUM]}>
                           {shown === 'sale' ? '필요 수량' : '안전재고'}{' '}
                           <Text style={{ color: T.sub }}>
                             {formatQuantity(shown === 'sale' ? g.need : safetyBase(g), unitOf(g.baseUnit))}
                           </Text>
                         </Text>
-                        <Text style={[{ fontSize: 12, fontWeight: '700', color: COLOR.text.tertiary }, NUM]}>
+                        <Text style={[{ fontSize: TYPE.captionSm.fontSize, fontWeight: '700', color: COLOR.text.tertiary }, NUM]}>
                           현재 재고{' '}
                           <Text style={{ color: T.red, fontWeight: isNegativeStock(g.stock) ? '800' : '700' }}>
                             {formatQuantity(g.stock, unitOf(g.baseUnit))}
@@ -151,7 +151,7 @@ export default function SalesStockCheckScreen() {
             accessibilityRole="button" accessibilityLabel="전체 부족 재고 보기"
             style={{ minHeight: 50, alignItems: 'center', justifyContent: 'center', borderRadius: radius.md, borderWidth: 1, borderColor: T.line, backgroundColor: T.surface }}
           >
-            <Text style={{ fontSize: 15, fontWeight: '800', color: T.sub }}>전체 부족 재고 보기</Text>
+            <Text style={{ fontSize: TYPE.body.fontSize, fontWeight: '800', color: T.sub }}>전체 부족 재고 보기</Text>
           </Pressable>
         </QueryState>
       </ScrollView>

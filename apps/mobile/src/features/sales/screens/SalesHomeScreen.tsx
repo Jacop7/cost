@@ -390,7 +390,7 @@ function SalesHomeBody({ today }: { today: string }) {
               <Text style={{ fontSize: 13, fontWeight: '800', color: T.red }}>
                 식재료 부족 {shortCount}개
               </Text>
-              <Text style={{ fontSize: 11, fontWeight: '700', color: T.sub, marginTop: space.xs }}>
+              <Text style={{ fontSize: TYPE.captionSm.fontSize, fontWeight: '700', color: T.sub, marginTop: space.xs }}>
                 부족한 식재료의 재고를 추가해 주세요
               </Text>
             </View>
@@ -490,11 +490,11 @@ function SalesHomeBody({ today }: { today: string }) {
               return (
                 <View key={m.id} style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, minHeight: rowMinHeight.twoLine, paddingVertical: 12, paddingHorizontal: space.md, borderBottomWidth: i < list.length - 1 ? 1 : 0, borderBottomColor: T.line2, opacity: blocked ? 0.45 : 1 }}>
                   <View style={{ flex: 1, minWidth: 0 }}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm }}>
                       <Text style={{ fontSize: TYPE.caption.fontSize, fontWeight: '800', color: T.ink }} numberOfLines={1}>{m.name}</Text>
                       {stopped ? <Badge tone="neutral" sm>판매 중지</Badge> : short ? <Badge tone="red" sm solid>재료 부족</Badge> : null}
                     </View>
-                    <Text style={[{ fontSize: 12, color: COLOR.text.tertiary, marginTop: space.xs }, NUM]}>
+                    <Text style={[{ fontSize: TYPE.captionSm.fontSize, color: COLOR.text.tertiary, marginTop: space.xs }, NUM]}>
                       {/* 왜 안 되는지 그 자리에서 밝힌다 — 배지만으로는 어느 재료인지 모른다. */}
                       {short
                         ? `${m.blockedBy}이(가) 모자라요 · 팔면 부족분이 음수 재고로 남아요`
@@ -535,7 +535,7 @@ function SalesHomeBody({ today }: { today: string }) {
                       {total}개{q && q.waste > 0 ? ` · 폐기 ${q.waste}` : ''}
                     </Text>
                     {total > 0 ? (
-                      <Text style={[{ fontSize: 12, fontWeight: '700', color: COLOR.text.tertiary, marginTop: space.xs }, NUM]}>
+                      <Text style={[{ fontSize: TYPE.captionSm.fontSize, fontWeight: '700', color: COLOR.text.tertiary, marginTop: space.xs }, NUM]}>
                         {won(Math.round((b?.price ?? m.price) * total))}원
                       </Text>
                     ) : null}
@@ -547,7 +547,7 @@ function SalesHomeBody({ today }: { today: string }) {
                     accessibilityRole="button"
                     accessibilityLabel={blocked ? `${m.name} 판매 중지` : `${m.name} 판매 입력`}
                     accessibilityState={{ disabled: blocked }}
-                    style={{ flexDirection: 'row', alignItems: 'center', gap: 3, paddingVertical: space.sm, paddingHorizontal: 16, borderRadius: radius.md, backgroundColor: blocked ? T.line : COLOR.action.primary }}
+                    style={{ flexDirection: 'row', alignItems: 'center', gap: space.xs, paddingVertical: space.sm, paddingHorizontal: 16, borderRadius: radius.md, backgroundColor: blocked ? T.line : COLOR.action.primary }}
                   >
                     <Icon name="plus" size={16} color={blocked ? COLOR.text.tertiary : T.onColor} sw={2.4} />
                     <Text style={{ fontSize: 14, fontWeight: '700', color: blocked ? COLOR.text.tertiary : T.onColor }}>판매</Text>
@@ -641,7 +641,7 @@ function SalesHomeBody({ today }: { today: string }) {
           메뉴처럼 3칸으로 쪼개면 음료 하나 넣는 데 숫자를 셋 눌러야 한다.
         */}
         <Field label="판매 채널" req>
-          <View style={{ flexDirection: 'row', gap: 7 }}>
+          <View style={{ flexDirection: 'row', gap: space.sm }}>
             {CHANNEL_LABEL.map(([code, name]) => {
               const on = etcChannel === code;
               return (
@@ -658,13 +658,13 @@ function SalesHomeBody({ today }: { today: string }) {
                     backgroundColor: on ? COLOR.action.primaryTint : T.surface,
                   }}
                 >
-                  <Text style={{ fontSize: 15, fontWeight: on ? '800' : '600', color: on ? COLOR.state.selectedText : T.sub }}>{name}</Text>
+                  <Text style={{ fontSize: TYPE.body.fontSize, fontWeight: on ? '800' : '600', color: on ? COLOR.state.selectedText : T.sub }}>{name}</Text>
                 </Pressable>
               );
             })}
           </View>
         </Field>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 12, paddingHorizontal: space.md, borderRadius: radius.md, backgroundColor: COLOR.action.primaryTint }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingVertical: 12, paddingHorizontal: space.md, borderRadius: radius.md, backgroundColor: COLOR.action.primaryTint }}>
           <Icon name="info" size={15} color={COLOR.action.primary} />
           <Text style={{ flex: 1, fontSize: 14, color: T.sub2, lineHeight: TYPE.caption.lineHeight }}>기타 매출은 재료 차감 없이 매출에만 더해져요.</Text>
         </View>
@@ -699,7 +699,7 @@ function SalesHomeBody({ today }: { today: string }) {
         <Field label="항목명" req><Input value={expName} onChangeText={setExpName} placeholder="예: 얼음·소모품" /></Field>
         <Field label="금액" req><Input value={expAmount} onChangeText={setExpAmount} placeholder="15000" keyboardType="number-pad" suffix="원" mono /></Field>
         <Field label="메모 (선택)"><Input value={expMemo} onChangeText={setExpMemo} placeholder="간단 메모" /></Field>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 12, paddingHorizontal: space.md, borderRadius: radius.md, backgroundColor: T.amberTint }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingVertical: 12, paddingHorizontal: space.md, borderRadius: radius.md, backgroundColor: T.amberTint }}>
           <Icon name="info" size={15} color={T.amberText} />
           <Text style={{ flex: 1, fontSize: 14, color: T.amberText, lineHeight: TYPE.caption.lineHeight }}>그날 손익에서만 차감되고, 고정 지출엔 반영되지 않아요.</Text>
         </View>

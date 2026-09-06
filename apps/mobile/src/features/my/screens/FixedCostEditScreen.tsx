@@ -194,7 +194,7 @@ function FixedCostEditScreenBody({ localMonth }: { localMonth: string }) {
                   onPress={() => setWeightFor(si)}
                   accessibilityRole="button"
                   accessibilityLabel={`${LABEL[it.key] ?? it.label} 채널 비중`}
-                  style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: space.sm, paddingHorizontal: 12, borderRadius: radius.md, backgroundColor: T.surface2 }}
+                  style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingVertical: space.sm, paddingHorizontal: 12, borderRadius: radius.md, backgroundColor: T.surface2 }}
                 >
                   <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub2 }}>채널 배분</Text>
                   <Text style={{ flex: 1, fontSize: 14, fontWeight: '700', color: it.weights ? COLOR.text.accent : COLOR.text.tertiary }} numberOfLines={1}>
@@ -258,7 +258,7 @@ function FixedCostEditScreenBody({ localMonth }: { localMonth: string }) {
             <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.text.link }}>항목 추가</Text>
           </Pressable>
 
-          <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, paddingVertical: 12, paddingHorizontal: space.md, borderRadius: 12, backgroundColor: T.amberTint }}>
+          <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, paddingVertical: 12, paddingHorizontal: space.md, borderRadius: 12, backgroundColor: T.amberTint }}>
             <Icon name="info" size={15} color={T.amberText} />
             <Text style={{ flex: 1, fontSize: 14, color: T.amberText, lineHeight: TYPE.caption.lineHeight }}>
               저장하면 이 달 <Text style={{ fontWeight: '700' }}>모든 메뉴의 손익</Text>이 다시 계산돼요.

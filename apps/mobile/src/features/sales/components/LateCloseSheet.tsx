@@ -10,7 +10,7 @@
 import { useEffect, useState } from 'react';
 import { Pressable, Text, TextInput, View } from 'react-native';
 import { Button, Sheet } from '@/components/kit';
-import { COLOR, T, radius, space } from '@/theme/tokens';
+import { COLOR, T, radius, space, TYPE } from '@/theme/tokens';
 import { QUARTER_SLOTS, normalizeTimeInput } from '@/features/my/weeklySchedule';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
@@ -71,14 +71,14 @@ export function LateCloseSheet({ visible, timezone, loading, onCancel, onConfirm
           placeholderTextColor={COLOR.text.tertiary}
           keyboardType="numbers-and-punctuation"
           accessibilityLabel="마칠 시각 직접 입력"
-          style={{ flex: 1, borderWidth: 1, borderColor: T.line, borderRadius: radius.md, paddingVertical: space.sm, paddingHorizontal: 12, fontSize: 15, color: T.ink, backgroundColor: T.surface }}
+          style={{ flex: 1, borderWidth: 1, borderColor: T.line, borderRadius: radius.md, paddingVertical: space.sm, paddingHorizontal: 12, fontSize: TYPE.body.fontSize, color: T.ink, backgroundColor: T.surface }}
         />
         <Button kind="primary" size="sm" loading={loading} onPress={confirm}>
           이 시간으로 시작
         </Button>
       </View>
       {warn ? <Text style={{ fontSize: 13.5, color: T.red, paddingBottom: 8 }}>{warn}</Text> : null}
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 7, paddingBottom: 24 }}>
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: space.sm, paddingBottom: 24 }}>
         {QUARTER_SLOTS.map((t) => {
           const on = t === picked && typed.trim() === '';
           return (

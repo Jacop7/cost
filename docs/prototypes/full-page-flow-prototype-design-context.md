@@ -1,12 +1,12 @@
 # 전체 페이지 프로토타입 · 디자인 맥락 장부
 
-> 현재 동기화 ID: `DS-20260906-007`
+> 현재 동기화 ID: `DS-20260906-008`
 > 문서 동기화 상태: `SYNCED`
 > 전체 UI 작업 상태: `IN_PROGRESS`
 > 마지막 갱신: `2026-09-06`
 > 공통 변경: `예`
 > UI 변경: `예`
-> 변경 기록: `PRT-234`
+> 변경 기록: `PRT-235`
 
 ## 1. 문서 역할
 
@@ -43,6 +43,27 @@
 - 글로벌: 30~50% 긴 번역, 320px, 200% 글자 확대, RTL 검수.
 
 ## 4. 가장 최근 작업
+
+### DS-20260906-008 · PRT-235 S3b 폭 증가 토큰 치환 후보
+
+- 작업 성격: PRT-234 페이블 PASS와 S3b 진입 승인 후, S2 기준선에서 확정한
+  폭 증가 치환 180건을 현재 S4 나무에 투영했다.
+- 결과: 180건 중 S4가 이미 `COMPONENT.adjacentActions.gap=12`로 닫은 1건은 승계하고,
+  나머지 179건을 `space` · `TYPE` 토큰으로 치환했다. 적용은 56개 파일이다.
+- 계약: `design-token-s3b-known.json`이 파일·속성·기준값·목적지를 179건 전수 보존하고,
+  `design-token-s3b-diff.mjs`가 승인 변경 외 0건과 목적지 토큰의 실제 숫자값을 대조한다.
+- 경계: S4 게이트는 `deeb767` 기준선과 현재 나무를 비교하므로, S3b 기하 131건도
+  합친 239건을 잠그되 단계 소유권은 별도 S3b 계약이 입증한다.
+- 미완료: Android·iOS 네이티브 S4a 실측과 그 SHA에서의 W1 최종 재측정.
+- 완료 조건:
+  - PRT235-S3B-CONTRACT · `../../scripts/design-token-s3b-known.json`
+  - PRT235-S3B-GATE · `../../scripts/design-token-s3b-diff.mjs`
+  - PRT235-S3B-TEST · `../../scripts/design-token-s3b-diff.test.mjs`
+  - PRT235-S4-UNION · `../../scripts/design-token-s4-contract.json`
+  - PRT235-RENDER · `full-page-flow-prototype-render-audit.json`
+  - PRT235-DESIGN · `full-page-flow-prototype-design-audit.json`
+  - PRT235-I18N · `full-page-flow-prototype-i18n-stress.json`
+- 다음 시작점: 페이블 독립 검수 → 네이티브 S4a 결함 정정·증거 보존 → W1·S4 최종 종결.
 
 ### DS-20260906-007 · PRT-234 S4 Button 형제 중첩·선언별 AST 계약 정정
 

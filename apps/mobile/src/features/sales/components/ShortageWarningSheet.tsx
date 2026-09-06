@@ -41,7 +41,7 @@ export function ShortageWarningSheet({
       title={start ? '현재 재고가 부족한 메뉴가 있어요' : '판매 수량보다 재고가 부족해요'}
       scroll={false}
     >
-      <Text style={{ fontSize: 15, lineHeight: TYPE.body.lineHeight, color: T.sub, marginTop: space.xs }}>
+      <Text style={{ fontSize: TYPE.body.fontSize, lineHeight: TYPE.body.lineHeight, color: T.sub, marginTop: space.xs }}>
         재고를 확인하거나 그대로 {start ? '영업을 시작' : '판매'}할 수 있어요.
       </Text>
 

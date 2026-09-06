@@ -246,9 +246,9 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
                         <Text style={[{ fontSize: 13, fontWeight: '700', color: COLOR.text.tertiary, marginRight: space.sm }, NUM]}>폐기 {q.waste}</Text>
                       ) : null}
                       {total > 0 ? (
-                        <Text style={[{ fontSize: 16, fontWeight: '800', color: changed ? COLOR.text.accent : T.ink, marginRight: 6 }, NUM]}>{total}개</Text>
+                        <Text style={[{ fontSize: 16, fontWeight: '800', color: changed ? COLOR.text.accent : T.ink, marginRight: space.sm }, NUM]}>{total}개</Text>
                       ) : (
-                        <Text style={{ fontSize: TYPE.caption.fontSize, fontWeight: '700', color: COLOR.text.link, marginRight: 6 }}>+ 판매</Text>
+                        <Text style={{ fontSize: TYPE.caption.fontSize, fontWeight: '700', color: COLOR.text.link, marginRight: space.sm }}>+ 판매</Text>
                       )}
                       <Icon name="chevron" size={16} color={COLOR.text.tertiary} />
                     </Pressable>
@@ -356,7 +356,7 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
           <View style={{ flex: 1 }}><Field label="수량"><Input value={etcQty} onChangeText={setEtcQty} keyboardType="number-pad" suffix="개" mono /></Field></View>
         </View>
         <Field label="판매 채널" req>
-          <View style={{ flexDirection: 'row', gap: 7 }}>
+          <View style={{ flexDirection: 'row', gap: space.sm }}>
             {CHANNEL_LABEL.map(([code, name]) => {
               const on = etcChannel === code;
               return (
