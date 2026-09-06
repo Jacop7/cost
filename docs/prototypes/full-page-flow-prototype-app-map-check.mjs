@@ -383,7 +383,31 @@ for (const r of map.rules) if (hit[r.id] === 0) fail(`${r.id} : 걸리는 선언
 // 배정을 바꾼 회차에서 "무엇이 어디로 갔는지" 를 손으로 쓰면 어긋난다. PRT-206 의 서술이
 // 실제로 어긋났다. 이전 회차의 매핑표를 함께 주면 선언 단위로 대차를 내고, 그 합이
 // 통 변화와 맞지 않으면 FAIL 한다 (페이블 검수 조건).
-let ledger = null;
+const inputMovement = map.inputMovementContract;
+if (!inputMovement || inputMovement.stage !== 'S3c') fail('S3c 입력 우주 이동 계약이 없다');
+else {
+  if (inputMovement.currentDeclarations !== total)
+    fail(`S3c 현재 입력 ${inputMovement.currentDeclarations} ≠ 감사 선언 ${total}`);
+  if (inputMovement.previousDeclarations - inputMovement.currentDeclarations !== inputMovement.removedFromInput)
+    fail(`S3c 입력 감소 산식 ${inputMovement.previousDeclarations} - ${inputMovement.currentDeclarations} ≠ ${inputMovement.removedFromInput}`);
+  if (inputMovement.removedFromInput !== 8)
+    fail(`S3c removedFromInput ${inputMovement.removedFromInput} ≠ 승인 배정 8`);
+  const activeRuleIds = new Set(map.rules.map((rule) => rule.id));
+  for (const id of inputMovement.rules ?? []) if (activeRuleIds.has(id))
+    fail(`S3c 실행 완료 규칙 ${id}가 활성 W1 규칙으로 돌아왔다`);
+}
+let ledger = {
+  removedFromInput: inputMovement?.removedFromInput ?? null,
+  inputUniverse: inputMovement ? {
+    previous: inputMovement.previousDeclarations,
+    current: inputMovement.currentDeclarations,
+    stage: inputMovement.stage,
+    rules: inputMovement.rules,
+    reason: inputMovement.reason,
+  } : null,
+  moves: {},
+  reconciliation: null,
+};
 const prevMapPath = process.argv.slice(2).filter(a => !a.startsWith('--'))[4];
 if (prevMapPath) {
   const prevMapBytes = readFileSync(resolve(prevMapPath));
@@ -412,7 +436,7 @@ if (prevMapPath) {
     recon[b] = { 이전: prevBin[b] || 0, 나감: out_, 들어옴: in_, 계산: expected, 실제: binCount[b] };
     if (expected !== binCount[b]) fail(`통 이동 대차 불일치 — ${b}: 이전 ${prevBin[b] || 0} - 나감 ${out_} + 들어옴 ${in_} = ${expected} 인데 실제는 ${binCount[b]}`);
   }
-  ledger = { previousMap: basename(resolve(prevMapPath)), previousMapSha256: sha(prevMapBytes), moves: move, reconciliation: recon };
+  ledger = { ...ledger, previousMap: basename(resolve(prevMapPath)), previousMapSha256: sha(prevMapBytes), moves: move, reconciliation: recon };
 }
 
 const result = {

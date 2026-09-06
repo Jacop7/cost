@@ -2691,6 +2691,23 @@ popup/state host **121개**(합 182), 그리고 레지스트리에 키가 없는
   `full-page-flow-prototype-render-audit.json` · `full-page-flow-prototype-design-audit.json` ·
   `full-page-flow-prototype-i18n-stress.json`.
 
+## DS-20260906-017 · PRT-257 S3c 누적 계약·W1 입력 감소 증거 보강
+
+- 대상: S3c 누적 단계 소유권 13행과 W1 입력 우주 감소 8건. 앱·프로토타입 제품 렌더는 불변.
+- 기대값: S3c 승인 배정 8 = 누적 AST 13행 직접 대조 · `removedFromInput: 8` · 통 이동 0.
+- 실제값: 간격 AST 5행 + 그림자 AST 8행을 S3c 기준→제품 커밋 계산값과 대조했고,
+  W1 입력은 2,353→2,345, 다섯 통 배정은 불변이다.
+- PC 검수: 1280×900 렌더·디자인 감사 재실행 · PASS
+- 모바일 검수: 320×720·CSS 200%·글자 200%·i18n 4패스 재실행 · PASS
+- 음성 검증: S3c 단계·건수·값 조작과 입력 감소값 조작이 각각 FAIL.
+- 미검수: 없음
+- 별도 후속: iOS native touch와 제품 소유자 결정 32건. W1·S4a 전체 상태는 iOS 증거
+  전까지 `REOPEN`이다.
+- 결과: PASS
+- 증거: `../../scripts/design-token-s4-contract.json` · `full-page-flow-prototype-app-map-check.json` ·
+  `full-page-flow-prototype-doc-claims-check.json` · `full-page-flow-prototype-render-audit.json` ·
+  `full-page-flow-prototype-design-audit.json` · `full-page-flow-prototype-i18n-stress.json`.
+
 ## DS-20260906-016 · PRT-256 P1c 모션·레이어 축 전수 매핑
 
 - 대상: 앱 178개 TS/TSX의 모션·z-index 선언과 역할 배정.

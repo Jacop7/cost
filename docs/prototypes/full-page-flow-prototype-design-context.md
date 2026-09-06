@@ -1,12 +1,12 @@
 # 전체 페이지 프로토타입 · 디자인 맥락 장부
 
-> 현재 동기화 ID: `DS-20260906-016`
+> 현재 동기화 ID: `DS-20260906-017`
 > 문서 동기화 상태: `SYNCED`
 > 전체 UI 작업 상태: `IN_PROGRESS`
 > 마지막 갱신: `2026-09-06`
 > 공통 변경: `아니오`
 > UI 변경: `아니오`
-> 변경 기록: `PRT-256`
+> 변경 기록: `PRT-257`
 
 ## 1. 문서 역할
 
@@ -43,6 +43,22 @@
 - 글로벌: 30~50% 긴 번역, 320px, 200% 글자 확대, RTL 검수.
 
 ## 4. 가장 최근 작업
+
+### DS-20260906-017 · PRT-257 S3c 누적 계약·W1 입력 감소 증거 보강
+
+- 작업 성격: 페이블의 PRT-251/252 검수에서 드러난 누적 S4 계약 누락과 W1 대차표의 입력 감소
+  누락을 정정한다. 앱·프로토타입 제품 코드는 바꾸지 않는다.
+- 누적 계약: S3c 승인 배정 8건을 누적 AST 13행과 구분해 기록한다. 그림자 객체 세 곳의
+  중첩 width/height 삭제와 동일 속성 순번 이동 때문에 8개 배정이 AST 13행으로 투영된다.
+  S4 게이트는 S3c 기준 커밋→제품 커밋의 계산 결과와 누적 계약의 13행을 값까지 대조한다.
+- W1 대차: 리터럴 8건이 토큰 참조가 되어 입력 우주에서 사라진 것을
+  `binMovementLedger.removedFromInput: 8`로 보존한다. 이는 통 이동이 아니다.
+- 완료 조건:
+  - PRT257-S4-CUMULATIVE · `../../scripts/design-token-s4-contract.json`
+  - PRT257-W1-MOVEMENT · `full-page-flow-prototype-app-map-check.json`
+  - PRT257-W1-CLAIMS · `full-page-flow-prototype-doc-claims-check.json`
+- 미완료·후속: 페이블 재검수 · 소유자 결정 32건 · iOS native touch.
+- 다음 시작점: PRT-257 독립 재검수와 P1c 독립 검수 / `DS-20260906-018`
 
 ### DS-20260906-016 · PRT-256 P1c 모션·레이어 축 전수 매핑
 
@@ -82,7 +98,8 @@
   `shadow.sheet`·`shadow.sliderThumb`·`shadow.switchThumb`으로 치환했다.
 - W1 결과: 정의를 제외한 2,345개 선언을
   `primitive 2,064 / componentOwned 249 / defect 0 / pendingApproval 32 / exception 0`으로
-  배정했다. 미분류 0이며 S3c의 실행 대상 8건은 잔여 defect에서 사라졌다.
+  배정했다. 미분류 0이며 S3c의 리터럴 8건은 토큰 참조가 되어 입력 우주에서 사라졌다.
+  통 이동이 아니므로 대차표에 `removedFromInput: 8`과 `2,353 - 8 = 2,345`를 별도 보존한다.
 - 검수 후속: 페이블 PRT-249의 비차단 조건에 따라 차트 팔레트 결정 질문이 같은 범례의 정본 색
   `#8B95A1`·`#B0B8C1`까지 함께 보여 주도록 보완했다.
 - 완료 조건:
