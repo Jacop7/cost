@@ -14,6 +14,7 @@
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { resolve, basename } from 'node:path';
 import { createHash } from 'node:crypto';
+import { spawnSync } from 'node:child_process';
 
 // 모두 UTF-8 텍스트 입력이다. checkout 의 CRLF/LF가 증거를 바꾸지 않도록 Git 정규화와
 // 같은 방향으로 LF를 해시한다(PRT-216의 "내용을 재고 OS를 재지 않는다" 계약).
@@ -384,17 +385,23 @@ for (const r of map.rules) if (hit[r.id] === 0) fail(`${r.id} : 걸리는 선언
 // 실제로 어긋났다. 이전 회차의 매핑표를 함께 주면 선언 단위로 대차를 내고, 그 합이
 // 통 변화와 맞지 않으면 FAIL 한다 (페이블 검수 조건).
 const inputMovement = map.inputMovementContract;
-if (!inputMovement || inputMovement.stage !== 'S3c') fail('S3c 입력 우주 이동 계약이 없다');
+if (!inputMovement || !['S3c', 'S3d'].includes(inputMovement.stage)) fail('지원하는 입력 우주 이동 계약(S3c/S3d)이 없다');
 else {
+  const movementStage = inputMovement.stage;
   if (inputMovement.currentDeclarations !== total)
-    fail(`S3c 현재 입력 ${inputMovement.currentDeclarations} ≠ 감사 선언 ${total}`);
+    fail(`${movementStage} 현재 입력 ${inputMovement.currentDeclarations} ≠ 감사 선언 ${total}`);
   if (inputMovement.previousDeclarations - inputMovement.currentDeclarations !== inputMovement.removedFromInput)
-    fail(`S3c 입력 감소 산식 ${inputMovement.previousDeclarations} - ${inputMovement.currentDeclarations} ≠ ${inputMovement.removedFromInput}`);
-  if (inputMovement.removedFromInput !== 8)
-    fail(`S3c removedFromInput ${inputMovement.removedFromInput} ≠ 승인 배정 8`);
+    fail(`${movementStage} 입력 감소 산식 ${inputMovement.previousDeclarations} - ${inputMovement.currentDeclarations} ≠ ${inputMovement.removedFromInput}`);
+  const expectedRemoved = movementStage === 'S3c'
+    ? 8
+    : Number(inputMovement.approvedDeclarations ?? 0) + Number(inputMovement.supportingDeclarations ?? 0);
+  if (inputMovement.removedFromInput !== expectedRemoved)
+    fail(`${movementStage} removedFromInput ${inputMovement.removedFromInput} ≠ 승인·보조 합 ${expectedRemoved}`);
+  if (movementStage === 'S3d' && inputMovement.approvedDeclarations !== 32)
+    fail(`S3d 승인 pending 해소 ${inputMovement.approvedDeclarations} ≠ 32`);
   const activeRuleIds = new Set(map.rules.map((rule) => rule.id));
   for (const id of inputMovement.rules ?? []) if (activeRuleIds.has(id))
-    fail(`S3c 실행 완료 규칙 ${id}가 활성 W1 규칙으로 돌아왔다`);
+    fail(`${movementStage} 실행 완료 규칙 ${id}가 활성 W1 규칙으로 돌아왔다`);
 }
 let ledger = {
   removedFromInput: inputMovement?.removedFromInput ?? null,
@@ -409,8 +416,25 @@ let ledger = {
   reconciliation: null,
 };
 const prevMapPath = process.argv.slice(2).filter(a => !a.startsWith('--'))[4];
+const previousMapCommit = map.inputMovementContract?.previousMapCommit;
+let prevMapBytes = null;
+let previousMapLabel = null;
 if (prevMapPath) {
-  const prevMapBytes = readFileSync(resolve(prevMapPath));
+  prevMapBytes = readFileSync(resolve(prevMapPath));
+  previousMapLabel = basename(resolve(prevMapPath));
+} else if (previousMapCommit) {
+  const objectPath = 'docs/prototypes/full-page-flow-prototype-app-token-map.json';
+  const shown = spawnSync('git', ['show', `${previousMapCommit}:${objectPath}`], {
+    cwd: process.cwd(), encoding: null, maxBuffer: 16 * 1024 * 1024,
+  });
+  if (shown.status !== 0 || !shown.stdout?.length) {
+    fail(`이전 매핑표 Git 개체를 읽을 수 없다: ${previousMapCommit}:${objectPath}`);
+  } else {
+    prevMapBytes = shown.stdout;
+    previousMapLabel = `${previousMapCommit}:${objectPath}`;
+  }
+}
+if (prevMapBytes) {
   const prevMap = JSON.parse(prevMapBytes.toString('utf8'));
   const move = {};
   const prevBin = {}, nowBin = {};
@@ -436,7 +460,7 @@ if (prevMapPath) {
     recon[b] = { 이전: prevBin[b] || 0, 나감: out_, 들어옴: in_, 계산: expected, 실제: binCount[b] };
     if (expected !== binCount[b]) fail(`통 이동 대차 불일치 — ${b}: 이전 ${prevBin[b] || 0} - 나감 ${out_} + 들어옴 ${in_} = ${expected} 인데 실제는 ${binCount[b]}`);
   }
-  ledger = { ...ledger, previousMap: basename(resolve(prevMapPath)), previousMapSha256: sha(prevMapBytes), moves: move, reconciliation: recon };
+  ledger = { ...ledger, previousMap: previousMapLabel, previousMapSha256: sha(prevMapBytes), moves: move, reconciliation: recon };
 }
 
 const result = {

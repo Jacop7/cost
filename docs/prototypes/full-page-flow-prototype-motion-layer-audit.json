@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "status": "PROPOSAL_COMPLETE",
   "manifest": {
-    "sourceCommit": "a645eb72a6d483d49459cff10f613277ae950d9d",
+    "sourceCommit": "dda79a6c2a4e48293450dfe69dd98996908bee17",
     "script": "design-token-motion-layer-audit.mjs",
     "scriptSha256": "dbf0436428374108e5b36a076dbda042445373811f30a978559245cf068061da",
     "selection": {
@@ -28,7 +28,7 @@
       ]
     },
     "filesMeasured": 178,
-    "scopeSha256": "7f462bd7de1ff107f9522260167d2d31d0fdfbd3678afbeb7efa7c5c32dad058",
+    "scopeSha256": "a68c95ee54bb6da64c0ef4de3bdeac11662483e1692a2b5db34dc39797e7f216",
     "prototype": {
       "file": "docs/prototypes/0_full-page-flow-prototype-ui-applied.html",
       "syntax": [
@@ -37,7 +37,7 @@
         "animation",
         "@keyframes"
       ],
-      "sha256": "6b384613db5d22efd26311529023956bface378f1ea764b023726c2937443c56"
+      "sha256": "f13000e06fbc4cfef4d9f3c27449c634d68ed8014d03539d94ebfaf8ea7010aa"
     }
   },
   "summary": {

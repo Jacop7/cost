@@ -1,12 +1,12 @@
 # 전체 페이지 프로토타입 · 디자인 맥락 장부
 
-> 현재 동기화 ID: `DS-20260906-020`
+> 현재 동기화 ID: `DS-20260906-023`
 > 문서 동기화 상태: `SYNCED`
 > 전체 UI 작업 상태: `IN_PROGRESS`
 > 마지막 갱신: `2026-09-06`
-> 공통 변경: `아니오`
-> UI 변경: `아니오`
-> 변경 기록: `PRT-260`
+> 공통 변경: `예`
+> UI 변경: `예`
+> 변경 기록: `PRT-265`
 
 ## 1. 문서 역할
 
@@ -43,6 +43,51 @@
 - 글로벌: 30~50% 긴 번역, 320px, 200% 글자 확대, RTL 검수.
 
 ## 4. 가장 최근 작업
+
+### DS-20260906-023 · PRT-265 S3d 의미 역할 경계 교정
+
+- 작업 성격: PRT-264 제품 커밋 `dda79a6`에서 차트 재료색의 옛 기본 별칭 `T.ter` 참조를
+  `COLOR.text.tertiary` 의미 역할로 교정한다. 색값과 렌더는 같고 계층 경계만 바로잡는다.
+- 검출 근거: 표준 `verify --no-db`의 S2 색 사용 래칫이 `T.ter 0→1` 회귀를 차단했다.
+- 완료 조건:
+  - PRT265-S3D · `../../scripts/design-token-s3d-known.json`
+  - PRT265-COLOR · `../../scripts/design-token-color-usage-known.json`
+  - PRT265-TOUCH · `../../scripts/touch-target-known.json`
+  - PRT265-RENDER · `full-page-flow-prototype-render-audit.json`
+- 미완료·후속: 차트 인접 구간 접근성 Finding, iOS native touch 1×/2× + tap probe.
+- 다음 시작점: PRT-265 페이블 독립 검수 / 비플랫폼 접근성 후속.
+
+### DS-20260906-022 · PRT-263 S3d 증거 결속 보정
+
+- 작업 성격: S3d 제품 변경 뒤 값은 같지만 입력 SHA가 낡은 터치 기준선과, 해시 지점 전수표
+  14개를 13개로 고정한 음성 시험을 현재 입력에 맞춘다. 제품 UI 코드는 바꾸지 않는다.
+- 재측정: 터치 미달 0 · 형제 중첩 0 · 부모판정불가 27 · 형제판정불가 12 · 판정불가 160,
+  W1 2,310건 = primitive 2,061 + componentOwned 249, 나머지 통과 미분류 0.
+- 완료 조건:
+  - PRT263-TOUCH · `../../scripts/touch-target-known.json`
+  - PRT263-HASH · `full-page-flow-prototype-text-sha256.test.mjs`
+  - PRT263-W1 · `full-page-flow-prototype-app-map-check.json`
+  - PRT263-RENDER · `full-page-flow-prototype-render-audit.json`
+- 미완료·후속: 차트 인접 구간 접근성 Finding, iOS native touch 1×/2× + tap probe.
+- 다음 시작점: PRT-263 페이블 독립 검수 / 비플랫폼 접근성 후속.
+
+### DS-20260906-021 · PRT-262 S3d 소유자 결정 적용·W1 재배정
+
+- 작업 성격: 소유자가 페이블 시안집 권고안으로 확정한 자간·크기·색 32건을 새 소구간
+  S3d로 적용한다. 닫힌 S3a/S3b를 재사용하지 않는다.
+- 제품 적용: `6b965a6`에서 매출 핵심값 25→22, display 자간 −0.6, 거래처 경고 카드
+  cautionTint+caution 테두리, 나머지 기계 배정 29건을 역할 토큰으로 치환했다.
+- 증거: S3d exact gate PASS(21파일), 모바일 typecheck·207 tests PASS, W1 재측정
+  2,310건 = primitive 2,061 + componentOwned 249, defect/pending/exception/미분류 0.
+- 접근성 후속: 차트는 범례 텍스트를 유지하지만 인접 회색 구간 대비 1.50/1.51:1을 별도
+  Finding으로 추적한다. 구간 경계선/간격은 이번 역할 배정에 섞지 않는다.
+- 완료 조건:
+  - PRT262-S3D · `../../scripts/design-token-s3d-known.json`
+  - PRT262-W1 · `full-page-flow-prototype-app-map-check.json`
+  - PRT262-RENDER · `full-page-flow-prototype-render-audit.json`
+  - PRT262-I18N · `full-page-flow-prototype-i18n-stress.json`
+- 미완료·후속: iOS native touch 1×/2× + tap probe. 그 전 W1·S4a·S4는 REOPEN.
+- 다음 시작점: DS 봉인 후 PRT-262 페이블 독립 검수 / iOS 승인 대기 중 비플랫폼 잔여 확인.
 
 ### DS-20260906-020 · PRT-260 P1c 최종 증거 봉인
 
