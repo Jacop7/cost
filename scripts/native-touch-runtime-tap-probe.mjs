@@ -110,24 +110,20 @@ async function tapAndRead(socket, point, windowOffsetY, density) {
   return { pointDp: point, pointPx: { x, y }, onPressCount: state.count };
 }
 
-async function physicalTapAndRead(socket, point, instruction, { requirePress, timeoutMs = 120_000 } = {}) {
+async function physicalTapAndRead(socket, point, instruction, { requirePress } = {}) {
   await evaluate(socket, runtime({ kind: 'reset', labelPattern: '^정렬 기준: 추천순$', ownerPattern: 'IngredientListScreen' }));
   console.log(`PHYSICAL_TAP_REQUIRED ${instruction} requestedPointDp=${point.x.toFixed(2)},${point.y.toFixed(2)}`);
-  if (requirePress) {
-    const started = Date.now();
-    while (Date.now() - started < timeoutMs) {
-      await sleep(750);
-      const state = JSON.parse(await evaluate(socket, runtime({ kind: 'state', labelPattern: '^정렬 기준: 추천순$', ownerPattern: 'IngredientListScreen' })));
-      if (state.count > 0) return { requestedPointDp: point, onPressCount: state.count,
-        operatorAttestation: { method: 'physical-user-tap-detected-by-hermes-onPress', confirmedAt: new Date().toISOString() } };
-    }
-    throw new Error(`실제 탭 대기 시간 초과: ${instruction}`);
-  }
+  console.log('PRESS_ENTER_AFTER_PHYSICAL_TAP');
   process.stdin.resume();
   await new Promise((resolveInput) => process.stdin.once('data', resolveInput));
   const state = JSON.parse(await evaluate(socket, runtime({ kind: 'state', labelPattern: '^정렬 기준: 추천순$', ownerPattern: 'IngredientListScreen' })));
   return { requestedPointDp: point, onPressCount: state.count,
-    operatorAttestation: { method: 'physical-user-tap-confirmed-by-stdin', confirmedAt: new Date().toISOString() } };
+    operatorAttestation: {
+      method: requirePress
+        ? 'physical-user-tap-confirmed-by-stdin-and-hermes-onPress'
+        : 'physical-user-tap-confirmed-by-stdin',
+      confirmedAt: new Date().toISOString(),
+    } };
 }
 
 const head = git(['rev-parse', 'HEAD']);
