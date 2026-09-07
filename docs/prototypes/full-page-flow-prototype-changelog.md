@@ -19,6 +19,19 @@
 
 ## 변경 내역
 
+### PRT-296 · 2026-09-07 디자인 토큰 P2 exact-SHA 최종 종결
+
+- 날짜: 2026-09-07
+- 디자인 동기화 ID: `DS-20260907-005`
+- 앱·프로토타입 UI 변경: 없음. 제품·원시 네이티브 증거는
+  `04eb1de9bc24e96b2e520b1d150c3e5b37edaf71` 그대로다.
+- 검수: 같은 exact SHA의 Claude Opus 재검수는 Major 0·Minor 0 `PASS`, 전체
+  `corepack pnpm verify`는 6/6 통과했다.
+- 사람 결정: 소유자가 2026-09-07 Opus 승계 위험을 exact SHA에 명시적으로 수용하고
+  W1·S4a·S4·P2의 R2/R3 최종 종결을 승인했다.
+- 상태: W1·S1·S2·S3a·S4a·S4·S3b·P2 `COMPLETE`. 이 종결은 프로덕션 배포나
+  보호 원격 gate `CLOSED` 승인이 아니다.
+
 ### PRT-295 · 2026-09-07 최종 검수 Minor 정정과 DS 재봉인
 
 - 날짜: 2026-09-07

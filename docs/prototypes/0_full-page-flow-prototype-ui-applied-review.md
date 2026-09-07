@@ -3062,6 +3062,26 @@ popup/state host **121개**(합 182), 그리고 레지스트리에 키가 없는
   `../../scripts/native-touch-runtime-rederive.test.mjs` ·
   `full-page-flow-prototype-app-map-check.json`.
 
+## DS-20260907-005 · PRT-296 디자인 토큰 P2 최종 종결
+
+- 대상: exact SHA `04eb1de9bc24e96b2e520b1d150c3e5b37edaf71`의 W1·S4a·S4·P2
+  종결 후보와 PRT-295 정정 결과.
+- 기대값: exact SHA 독립검수에 미해결 Finding이 없고 전체 로컬 게이트 6/6이 통과하며,
+  Fable 복구 표본 재감사를 대신하는 사람의 위험 수용이 같은 SHA와 범위에 명시적으로 결속된다.
+- 실제값: Claude Opus exact-SHA 재검수 Major 0·Minor 0 `PASS`; `corepack pnpm verify`
+  6/6 통과; 소유자가 2026-09-07 같은 SHA의 Opus 승계 검수 결과를 수용하고 W1·S4a·S4·
+  P2의 R2/R3 최종 종결을 승인했다.
+- 사람 결정 원문: “`04eb1de9bc24e96b2e520b1d150c3e5b37edaf71`의 Opus 승계 검수 결과를
+  수용하고 W1·S4a·S4·P2의 R2/R3 최종 종결을 승인합니다.”
+- PC 검수: PASS — 타입·시험·CLI·ACL·대비·터치·새 DB·경합·locale parity·업그레이드
+  11/11·웹 번들을 포함한 전체 6/6.
+- 모바일 검수: PASS — Android·iOS 1×/접근성 확대 frame과 양 플랫폼 실제 탭, iOS Text
+  1×/2.143×가 동일 제품 tree에 결속됐다.
+- 미검수: 없음
+- 결과: PASS
+- 증거: `native-touch-android-receipt.json` · `native-text-scale-ios-2x.json` ·
+  `full-page-flow-prototype-app-map-check.json` · `../../scripts/native-touch-runtime-contract.json`.
+
 ## DS-20260907-004 · PRT-295 최종 검수 Minor 정정
 
 - 대상: PRT-294 Opus exact-SHA 검수의 비차단 Minor 2건.

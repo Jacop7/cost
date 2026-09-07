@@ -1,6 +1,6 @@
 # 전체 페이지 프로토타입 · 디자인 작업 실행서
 
-> 현재 디자인 동기화 ID: `DS-20260907-004`
+> 현재 디자인 동기화 ID: `DS-20260907-005`
 
 ## 0. 목적
 
@@ -17,15 +17,16 @@
 5. 같은 역할 화면끼리 교차검수
 6. PC·모바일 재검수와 기록
 
-현재 `full-page-flow-prototype-ui-applied.html`은 **부분 적용본**이다. 등록된 모든 screen·popup·조건 상태가
-아래 완료 조건을 통과하기 전에는 전체 완료로 표시하지 않는다. Expo 공용 색 역할은 소유자 승인에 따라
-S2에서 함께 적용했고, 화면 구조·기하는 뒤 단계의 별도 완료 조건을 따른다.
+현재 `full-page-flow-prototype-ui-applied.html`은 등록된 모든 screen·popup·조건 상태의 렌더·디자인·
+국제화 감사를 통과한 적용본이다. Expo 공용 색 역할은 소유자 승인에 따라 S2에서 함께 적용했고,
+화면 구조·기하는 S3a·S4·S3b와 네이티브 S4a 증거까지 완료했다.
 
 Expo `S4` 후보는 `scrollStart/end/endWithFab`, Modal Sheet의 safe-area 포함, ListRow 60/76,
 2줄 탭 라벨의 글꼴 배율별 동적 높이, `sales-menu-sub` 줄바꿈, 비중첩 44px 터치 영역을 적용했다.
 소유자 결정 12-4에 따라 Button sm은 시각 44px, 헤더·시트 icon action은 투명 44×44,
-Chip·SortChip은 기존 형상과 44px 이상 부모 줄을 쓴다. 정적 게이트는 통과했지만
-Android·iOS 실제 frame 측정은 별도 완료 조건으로 남아 있으므로 전체 완료가 아니다.
+Chip·SortChip은 기존 형상과 44px 이상 부모 줄을 쓴다. 정적 게이트와 Android·iOS 실제 frame·
+탭 측정이 모두 통과했으며, W1·S4a·S4·P2는 `04eb1de9bc24e96b2e520b1d150c3e5b37edaf71`
+Opus PASS와 2026-09-07 소유자 exact-SHA 위험 수용으로 최종 종결됐다.
 
 ## 1. 문서와 파일 책임
 
