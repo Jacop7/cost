@@ -309,7 +309,9 @@ test('결정문을 바꾸지 않은 관련 없는 커밋을 출처로 대면 FAI
 
 test('결정문을 고쳤지만 §8.2 구간은 그대로인 커밋을 출처로 대면 FAIL 한다 (R6 F01)', () => {
   // §7.x 만 고친 커밋이 실제로 있다. 파일 변경 검사만 있던 게이트는 이것을 통과시켰다.
-  const shas = gitOut(['rev-list', '-40', 'HEAD']).split('\n').filter(Boolean);
+  // 최근 N개라는 시간 창은 관련 커밋이 뒤로 밀리면 시험 전제를 깨뜨린다. 이 파일을 실제로
+  // 변경한 HEAD 조상만 전수 순회해, 저장소가 커져도 provenance 음성 fixture를 유지한다.
+  const shas = gitOut(['rev-list', 'HEAD', '--', DEC_REL]).split('\n').filter(Boolean);
   const docOnly = shas.find(x => {
     const names = gitOut(['-c', 'core.quotepath=false', 'show', '--pretty=format:', '--name-only', x]).split('\n');
     if (!names.some(n => n.trim() === DEC_REL)) return false;
