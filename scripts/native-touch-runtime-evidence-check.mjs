@@ -8,6 +8,7 @@ import { spawnSync } from 'node:child_process';
 import {
   compareNativeRatchet,
   evaluateNativeArtifact,
+  fontScaleMatches,
   nativeRatchetSnapshot,
   recomputeNativeArtifactDerived,
 } from './native-touch-runtime-audit.mjs';
@@ -31,6 +32,32 @@ export function nativeCoverage(artifact) {
   const excludedScrollableOrRootRows = rows.filter((row) => row.visibilityDisposition === 'excludedScrollableOrRoot').length;
   const targetShortCount = (artifact.evaluation?.lineage ?? []).reduce((sum, item) => sum + (item.short ?? 0), 0);
   return { observedRows: rows.length, fullyVisibleRows, excludedScrollableOrRootRows, targetShortCount };
+}
+
+export function scaledLayoutWitness(one, two) {
+  const grouped = (artifact) => {
+    const result = new Map();
+    for (const scenario of artifact.scenarios ?? []) for (const phase of scenario.phases ?? [])
+      for (const row of phase.rows ?? []) {
+        const key = JSON.stringify([scenario.id, phase.id, row.ownerChain ?? [], row.label ?? null]);
+        if (!result.has(key)) result.set(key, []);
+        result.get(key).push(row);
+      }
+    for (const rows of result.values()) rows.sort((a, b) => a.windowMeasure[1] - b.windowMeasure[1]
+      || a.windowMeasure[0] - b.windowMeasure[0]);
+    return result;
+  };
+  const left = grouped(one), right = grouped(two);
+  let paired = 0, dimensionChanged = 0;
+  for (const [key, rows] of left) {
+    const peers = right.get(key) ?? [];
+    for (let index = 0; index < Math.min(rows.length, peers.length); index++) {
+      paired++;
+      if (Math.abs(rows[index].windowMeasure[2] - peers[index].windowMeasure[2]) > 0.5
+        || Math.abs(rows[index].windowMeasure[3] - peers[index].windowMeasure[3]) > 0.5) dimensionChanged++;
+    }
+  }
+  return { paired, dimensionChanged };
 }
 
 export function validateTapProbeData(probe, expected) {
@@ -86,12 +113,14 @@ export function validateArtifactData(artifact, contract, known, expected) {
     if (!same(stored[key], recomputed[key])) failures.push(`${expected.name}: 저장 판정 ${key}가 원시 frame 재계산과 다르다`);
   }
   const snapshot = nativeRatchetSnapshot(recomputed);
-  const ratchetKey = `${artifact.platform}@${artifact.fontScale}`;
+  const ratchetKey = `${artifact.platform}@${expected.evidenceScale}`;
   if (!same(stored.ratchet?.snapshot, snapshot)) failures.push(`${expected.name}: 저장 ratchet snapshot이 재계산과 다르다`);
   failures.push(...compareNativeRatchet(snapshot, known.baselines?.[ratchetKey]).map((item) => `${expected.name}: ${item}`));
   if (artifact.manifest?.evidenceStatus !== 'EXACT_COMMIT_EVIDENCE') failures.push(`${expected.name}: exact commit 증거가 아니다`);
-  if (artifact.platform !== expected.platform || artifact.fontScale !== expected.fontScale)
-    failures.push(`${expected.name}: platform/fontScale이 ${expected.platform}@${expected.fontScale}가 아니다`);
+  if (artifact.platform !== expected.platform
+    || artifact.manifest?.evidenceScale !== expected.evidenceScale
+    || !fontScaleMatches(contract, expected.platform, expected.evidenceScale, artifact.fontScale))
+    failures.push(`${expected.name}: ${expected.platform}@${expected.evidenceScale} 증거 셀에 맞지 않는 실제 fontScale ${artifact.fontScale}`);
   if (artifact.manifest?.derivation?.auditSha256 !== expected.scriptSha256)
     failures.push(`${expected.name}: 현재 파생 감사기 SHA 불일치`);
   if (artifact.manifest?.derivation?.contractSha256 !== expected.contractSha256)
@@ -147,18 +176,19 @@ export function verifyRepositoryEvidence(root = defaultRoot, options = {}) {
     contractSha256: sha256(normalized(contractPath)),
   };
   const failures = [];
-  const matrix = contract.evidenceMatrix ?? (contract.platforms ?? [contract.platform]).flatMap((platform) =>
-    contract.fontScales.map((fontScale) => ({ platform, fontScale, file: `native-touch-${platform}-${fontScale}x.json` })));
+  const matrix = (contract.evidenceMatrix ?? (contract.platforms ?? [contract.platform]).flatMap((platform) =>
+    contract.fontScales.map((evidenceScale) => ({ platform, evidenceScale, file: `native-touch-${platform}-${evidenceScale}x.json` }))))
+    .map((entry) => ({ ...entry, evidenceScale: entry.evidenceScale ?? entry.fontScale }));
   const requiredPlatforms = options.requirePlatforms ?? contract.closedPlatforms ?? contract.platforms ?? [contract.platform];
   const requiredMatrix = matrix.filter(({ platform }) => requiredPlatforms.includes(platform));
-  const artifacts = requiredMatrix.flatMap(({ platform, fontScale, file: name }) => {
+  const artifacts = requiredMatrix.flatMap(({ platform, evidenceScale, file: name }) => {
     const path = join(root, 'docs/prototypes', name);
     if (!existsSync(path)) {
-      failures.push(`MISSING ${name} — ${platform}@${fontScale} exact 증거가 없다`);
+      failures.push(`MISSING ${name} — ${platform}@${evidenceScale} 접근성 셀 증거가 없다`);
       return [];
     }
     const artifact = JSON.parse(normalized(path));
-    failures.push(...validateArtifactData(artifact, contract, known, { ...expected, name, platform, fontScale }));
+    failures.push(...validateArtifactData(artifact, contract, known, { ...expected, name, platform, evidenceScale }));
     failures.push(...provenanceFailures(root, artifact, name, [
       ['scriptSha256', 'scripts/native-touch-runtime-audit.mjs'],
       ['contractSha256', 'scripts/native-touch-runtime-contract.json'],
@@ -177,6 +207,16 @@ export function verifyRepositoryEvidence(root = defaultRoot, options = {}) {
     const scope = ['apps/mobile'];
     const changed = spawnSync('git', ['diff', '--quiet', productCommit, 'HEAD', '--', ...scope], { cwd: root });
     if (changed.status !== 0) failures.push('productCommit 뒤 앱이 바뀌어 증거가 낡았다');
+  }
+  for (const platform of contract.requireScaledLayoutWitness ?? []) {
+    if (!requiredPlatforms.includes(platform)) continue;
+    const one = artifacts.find((item) => item.platform === platform && item.manifest?.evidenceScale === 1);
+    const two = artifacts.find((item) => item.platform === platform && item.manifest?.evidenceScale === 2);
+    if (one && two) {
+      const witness = scaledLayoutWitness(one, two);
+      if (witness.paired < 1 || witness.dimensionChanged < 1)
+        failures.push(`${platform}@2: 실제 접근성 확대에서 크기가 달라진 동일 제품 frame이 없다 (${witness.dimensionChanged}/${witness.paired})`);
+    }
   }
   const tapProbes = requiredPlatforms.flatMap((platform) => {
     const name = `native-touch-${platform}-tap-probe.json`;
@@ -208,13 +248,14 @@ export function buildEvidenceReceipt(root, verification, requirePlatforms) {
   const contractPath = join(root, 'scripts/native-touch-runtime-contract.json');
   const auditPath = join(root, 'scripts/native-touch-runtime-audit.mjs');
   const knownPath = join(root, 'scripts/native-touch-runtime-known.json');
-  const cells = verification.requiredMatrix.map(({ platform, fontScale, file }) => {
+  const cells = verification.requiredMatrix.map(({ platform, evidenceScale, file }) => {
     const path = join(root, 'docs/prototypes', file);
-    if (!existsSync(path)) return { platform, fontScale, file, status: 'MISSING' };
+    if (!existsSync(path)) return { platform, evidenceScale, file, status: 'MISSING' };
     const artifact = JSON.parse(normalized(path));
     return {
       platform,
-      fontScale,
+      evidenceScale,
+      actualFontScale: artifact.fontScale,
       file,
       status: 'PRESENT',
       textSha256: sha256(normalized(path)),

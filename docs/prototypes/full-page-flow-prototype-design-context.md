@@ -1,12 +1,12 @@
 # 전체 페이지 프로토타입 · 디자인 맥락 장부
 
-> 현재 동기화 ID: `DS-20260907-001`
+> 현재 동기화 ID: `DS-20260907-002`
 > 문서 동기화 상태: `SYNCED`
 > 전체 UI 작업 상태: `IN_PROGRESS`
 > 마지막 갱신: `2026-09-07`
 > 공통 변경: `아니오`
 > UI 변경: `아니오`
-> 변경 기록: `PRT-285`
+> 변경 기록: `PRT-286`
 
 ## 1. 문서 역할
 
@@ -44,14 +44,35 @@
 
 ## 4. 가장 최근 작업
 
+### DS-20260907-002 · PRT-286 iOS 접근성 증거 계약 정정
+
+- 작업 성격: Opus 독립검수의 Major 2·Minor 4를 반영한다. 제품 UI는 바꾸지 않는다.
+- 실제 결과: Android는 논리 2×와 실제 2.000을 정확히 대조하고, iOS는 논리 2× 칸에서 실제
+  `fontScale >= 2`를 받도록 배율 계약을 분리했다. 다만 기존 iOS 2× touch 파일은 246개 frame의
+  크기 변화가 0건이라 종결 증거에서 제외했다. `closedPlatforms`는 재채집 전까지 Android다.
+- Text 증거: 같은 문구·역할의 제품 `SessionGate` 버튼 `다시 시도` 한 쌍만 통제 증거로 사용한다.
+  `62×20.33 → 132.67×43.67dp`로 실제 2.143배에 비례한다. 서로 다른 상태·문구의 나머지 행은
+  문맥 관측이며 독립 확대 성공 건수로 세지 않는다. tap probe의 `iPhone15Pro`와 OS·density·
+  393×758dp 콘텐츠 viewport로 `model:null`을 출처가 보이는 방식으로 보충했다.
+- W1 정정: `R-SP-EDGE-INSET`의 실제 11자리가 모두 2이므로 포괄값을 `[1,2]`에서 `[2]`로 좁혔다.
+- 완료 조건:
+  - PRT286-SCALE-POLICY · ../../scripts/native-touch-runtime-contract.json
+  - PRT286-TOUCH-CHECK · ../../scripts/native-touch-runtime-evidence-check.mjs
+  - PRT286-TEXT-CHECK · ../../scripts/native-text-scale-evidence-check.mjs
+  - PRT286-TEXT-IDENTITY · ../../scripts/native-text-scale-rederive.mjs
+  - PRT286-W1-SCOPE · full-page-flow-prototype-app-token-map.json
+- 미완료·후속: iOS의 실제 접근성 2.143 상태에서 10개 시나리오·16개 단계 touch frame을 다시
+  채집하고 동일 제품 frame의 크기 변화가 확인돼야 iOS를 `closedPlatforms`로 복구한다.
+- 다음 시작점: PRT-286 exact SHA 커밋 → iPhone 재연결·iOS 2× touch 재채집 → 재봉인·Opus 재검수.
+
 ### DS-20260907-001 · PRT-285 네이티브 글자 확대 직접 증거와 종결 게이트 보강
 
 - 작업 성격: PRT-280~284 뒤 누락된 이력과 iOS 2× 글자 확대 직접 증거, clean checkout
   fixture, iOS 기기 식별, W1 규칙 분리, 일회용 DB 시험을 한 후보 판본에 결속한다. 제품 UI는
   바꾸지 않는다.
-- 실제 결과: 같은 iPhone·같은 앱 tree에서 Text host 5개를 1.0×와 iOS 접근성 단계
-  2.143×로 직접 측정했고 구조 역할 5개 모두 매칭·5개 모두 실제 frame 확대를 확인했다.
-  개발용 LogBox 2개를 제외한 제품 `SessionGate` Text도 3/3 확대됐다.
+- 실제 결과: 같은 iPhone·같은 앱 tree에서 Text host를 1.0×와 iOS 접근성 단계 2.143×로
+  측정했다. 후속 `PRT-286` 검산에서 같은 문구·역할의 통제 제품 쌍은 `다시 시도` 1건뿐이며,
+  기존 iOS 2× touch frame은 실제 접근성 확대를 반영하지 않았음이 확인돼 종결 주장을 철회했다.
   Android Expo 54.0.8과 iOS Expo 54.0.0의 환경 차이를 명시했으며 touch 4칸은 기존처럼
   유효 미달·계약 밖 미판정 미달·물질적 형제 중첩 0이다.
 - W1 결과: 사용처 2,311건 = primitive 2,061 + componentOwned 250,

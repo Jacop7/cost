@@ -15,6 +15,15 @@ const sleep = (ms) => new Promise((done) => setTimeout(done, ms));
 const sha256 = (text) => createHash('sha256').update(text).digest('hex');
 const normalizedText = (path) => readFileSync(path, 'utf8').replace(/\r\n/g, '\n');
 
+export function fontScaleMatches(contract, platform, evidenceScale, actualScale) {
+  const policy = contract.fontScalePolicies?.[platform]?.[String(evidenceScale)]
+    ?? { mode: 'exact', value: evidenceScale };
+  if (!Number.isFinite(actualScale) || !Number.isFinite(Number(policy.value))) return false;
+  return policy.mode === 'minimum'
+    ? actualScale + 1e-6 >= Number(policy.value)
+    : Math.abs(actualScale - Number(policy.value)) < 1e-6;
+}
+
 export function resolveActionForFontScale(action, fontScale) {
   const keyed = action?.yByFontScale?.[String(fontScale)];
   return keyed === undefined ? action : { ...action, y: Number(keyed) };
@@ -304,9 +313,11 @@ export function evaluateNativeArtifact(artifact, contract) {
     failures.push(`계약 source lineage ${expectedLineage} ≠ ${contract.expectedSourceLineage}`);
   const allowedPlatforms = contract.platforms ?? [contract.platform];
   if (!allowedPlatforms.includes(artifact.platform)) failures.push(`platform ${artifact.platform} ∉ [${allowedPlatforms.join(', ')}]`);
-  const allowedFontScales = contract.fontScales ?? [contract.fontScale];
-  if (!allowedFontScales.some((value) => Math.abs(value - artifact.fontScale) < 1e-6))
-    failures.push(`fontScale ${artifact.fontScale} ∉ [${allowedFontScales.join(', ')}]`);
+  const evidenceScale = Number(artifact.manifest?.evidenceScale ?? artifact.fontScale);
+  const allowedEvidenceScales = contract.fontScales ?? [contract.fontScale];
+  if (!allowedEvidenceScales.includes(evidenceScale)
+    || !fontScaleMatches(contract, artifact.platform, evidenceScale, artifact.fontScale))
+    failures.push(`fontScale ${artifact.fontScale}은 ${artifact.platform}@${evidenceScale} 계약을 만족하지 않는다`);
   return { tolerance, lineage, observedUnjudged, materialOverlaps, failures };
 }
 
@@ -489,11 +500,12 @@ async function main() {
   const measuredDevice = await runtimeDevice(inspector.evaluate);
   const density = Number(measuredDevice.density);
   const fontScale = Number(measuredDevice.fontScale);
+  const evidenceScale = Number(opt['font-scale']);
   if (!(density > 0)) throw new Error('런타임에서 유효한 density를 읽지 못했다');
   if (opt.density && Math.abs(Number(opt.density) - density) > 1e-6)
     throw new Error(`--density ${opt.density} ≠ 런타임 ${density}`);
-  if (opt['font-scale'] && Math.abs(Number(opt['font-scale']) - fontScale) > 1e-6)
-    throw new Error(`--font-scale ${opt['font-scale']} ≠ 런타임 ${fontScale}`);
+  if (!(evidenceScale > 0) || !fontScaleMatches(contract, platform, evidenceScale, fontScale))
+    throw new Error(`런타임 ${platform}@${fontScale}가 --font-scale ${opt['font-scale']} 계약을 만족하지 않는다`);
   if (platform !== measuredDevice.platform) throw new Error(`platform ${platform} ≠ 런타임 ${measuredDevice.platform}`);
   try {
     const selectedScenarios = opt.scenario
@@ -507,7 +519,7 @@ async function main() {
       await waitForStableOwner(inspector.evaluate, scenario.activeOwnerPattern);
       const phases = [{ id: 'initial', ...await collect(inspector.evaluate, density, scenario.activeOwnerPattern, platform) }];
       for (const action of scenario.actions ?? []) {
-        const resolvedAction = resolveActionForRuntime(action, platform, fontScale);
+        const resolvedAction = resolveActionForRuntime(action, platform, evidenceScale);
         await inspector.evaluate(runtimeExpression({ kind: resolvedAction.kind ?? 'press', ...resolvedAction }));
         const actionOwnerPattern = action.activeOwnerPattern ?? scenario.activeOwnerPattern;
         await waitForStableOwner(inspector.evaluate, actionOwnerPattern);
@@ -521,6 +533,7 @@ async function main() {
     schemaVersion: 1, platform, fontScale,
     device: { id: String(opt.device ?? 'unknown'), ...measuredDevice, density },
     manifest: { evidenceStatus: diagnostic ? 'DIAGNOSTIC_DIRTY_NOT_EVIDENCE' : 'EXACT_COMMIT_EVIDENCE',
+      evidenceScale,
       measurementScope: 'scenario-active-owner-pattern',
       excludedOwnerChains: [...new Set(scenarios.flatMap((scenario) => scenario.phases)
         .flatMap((phase) => phase.excludedOwnerChains ?? []))].sort(),
@@ -531,7 +544,7 @@ async function main() {
   };
   artifact.evaluation = evaluateNativeArtifact(artifact, contract);
   const knownPath = resolve(opt.known ?? join(root, 'scripts/native-touch-runtime-known.json'));
-  const ratchetKey = `${platform}@${fontScale}`;
+  const ratchetKey = `${platform}@${evidenceScale}`;
   const knownAll = existsSync(knownPath) ? JSON.parse(readFileSync(knownPath, 'utf8')) : { schemaVersion: 1, baselines: {} };
   const snapshot = nativeRatchetSnapshot(artifact.evaluation);
   if (opt['update-known']) {
@@ -544,7 +557,7 @@ async function main() {
   }
   artifact.evaluation.ratchet = { key: ratchetKey, snapshot,
     knownSha256: existsSync(knownPath) ? sha256(normalizedText(knownPath)) : null };
-  const outputPath = resolve(opt.out ?? join(root, 'docs/prototypes', `native-touch-${platform}-${fontScale}x.json`));
+  const outputPath = resolve(opt.out ?? join(root, 'docs/prototypes', `native-touch-${platform}-${evidenceScale}x.json`));
   writeFileSync(outputPath, JSON.stringify(artifact, null, 2) + '\n');
   console.log(`네이티브 터치 감사: lineage ${artifact.evaluation.lineage.length} · 새 무판정 미달 ${artifact.evaluation.observedUnjudged.length} · 중첩 ${artifact.evaluation.materialOverlaps.length}`);
   if (artifact.evaluation.failures.length) {
