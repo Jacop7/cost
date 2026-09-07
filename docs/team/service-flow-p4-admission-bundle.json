@@ -4,7 +4,7 @@
   "gate_id": "P4",
   "profile_id": "STORE_DRIVER",
   "run_id": "AC24-P4-ADMISSION-001",
-  "bundle_commit": "23a343cfe7b9c02f28d76090cdf32777d9471134",
+  "authority_commit": "23a343cfe7b9c02f28d76090cdf32777d9471134",
   "scenario_ids": ["AC-09", "AC-11", "AC-12", "AC-23"],
   "evidence": [
     {
@@ -13,11 +13,11 @@
     },
     {
       "path": ".codex/mission-relay/candidates/team-service-p4-admission-009.json",
-      "sha256": "387404339d730529fdc492453565575bdaa9fc528979175054578becda47e5b9"
+      "sha256": "bc05761238ceaea9e13420792123b9215d32598a6dafd063bb6363fc86e88088"
     },
     {
       "path": ".codex/mission-relay/candidates/team-service-p4-admission-009.json.sha256",
-      "sha256": "aa0340a5585268ac5c3afdedefd9dc860dde7aeeb63ea5d8283474344a80dbdd"
+      "sha256": "eae84d710cf4d6319059441632116fdbf4e8551629348a873793f91a342e4275"
     },
     {
       "path": "docs/team/service-flow-p4-contract.json",
@@ -40,6 +40,14 @@
       "sha256": "4ef32a00be07a8c7135e50c869979f901e648613762ac39578f1dadec4632947"
     },
     {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-P4-PLAN-OWNER-DECISION-CORRECTION-003.json",
+      "sha256": "a7eb7d1ba06af0e634095877df56aa871a02c9f13561f4b0a1d4d7a97627da5c"
+    },
+    {
+      "path": ".gitattributes",
+      "sha256": "7aedbc727df1a510220b191900703a6bbe2cf1025d18ed1568e5487066c805d2"
+    },
+    {
       "path": "docs/ai-review/evidence/TEAM-SERVICE-P4-PLAN-OPUS-RECHECK-002.md",
       "sha256": "6670c5a9d1b2957f124a9909cf5337c066e316eefd176dabe650f37bdecd8f53"
     }
@@ -47,11 +55,11 @@
   "harness": [
     {
       "path": "scripts/team-service-p4-admission.mjs",
-      "sha256": "5e550f223063186195239bf2da2aab2c3c380d83f405dacf1b4cafe331647512"
+      "sha256": "9320e936f2b9688e1e53441fc8a7edfcdf1b74c72ffe41b8e8446ae79f683576"
     },
     {
       "path": "scripts/team-service-p4-no-dispatch.test.mjs",
-      "sha256": "eb00de025144d1b116bf2e28e58486932551d5e15cf90f2afbf74213a52a2764"
+      "sha256": "6cda8cef06555082843deb16acee3143f992f72f44633dbc97c4cc9784f98579"
     }
   ],
   "forbidden_implementation_paths": [

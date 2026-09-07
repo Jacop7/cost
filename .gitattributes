@@ -1,5 +1,6 @@
 # Fable audit records are byte-addressed and may preserve archived source whitespace.
 # Git must neither rewrite their checkout bytes nor report the preserved bytes as new whitespace errors.
+.gitattributes text eol=lf
 docs/ai-review/tasks/** -text -whitespace
 
 # SQL migration의 함수 본문 조각 교체는 줄끝까지 판본 계약의 일부다.
@@ -10,6 +11,7 @@ docs/ai-review/tasks/** -text -whitespace
 # Windows 자동 CRLF 변환이 이 검증을 무효화하지 않도록 작업본도 LF로 유지한다.
 .codex/mission-relay/model-plan.json text eol=lf
 .codex/mission-relay/model-plan.json.sha256 text eol=lf
+.codex/mission-relay/candidates/*.json text eol=lf
 .codex/mission-relay/candidates/*.sha256 text eol=lf
 
 # Team service review/checkpoint artifacts are hashed as raw bytes.

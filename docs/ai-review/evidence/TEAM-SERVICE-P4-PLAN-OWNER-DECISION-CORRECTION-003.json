@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "decision_id": "DEC-TEAM-SERVICE-P4-PLAN-PREWORK-CORRECTION-003",
+  "recorded_at": "2026-09-07T17:02:00+09:00",
+  "authority": "HUMAN_01",
+  "source": "Opus가 P4-B2 후보 경로 불일치를 보고한 뒤 사용자가 '자동으로 진행해줘'라고 명시함",
+  "decision": "FORWARD_CORRECT_P4_CANDIDATE_ALLOWED_PATHS_ONLY",
+  "predecessor_decision": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-P4-PLAN-OWNER-DECISION-002.json",
+    "sha256": "4ef32a00be07a8c7135e50c869979f901e648613762ac39578f1dadec4632947"
+  },
+  "reason": "The sealed P4 candidate was created under the clearer admission-specific filename, while DEC-002 listed the legacy local-core filename. The candidate JSON and sidecar must also be normalized to LF so a clean Windows checkout reproduces their SHA. This forward correction binds those mechanical fixes without rewriting DEC-002.",
+  "replace_allowed_paths": [
+    {
+      "from": ".codex/mission-relay/candidates/team-service-local-core-009.json",
+      "to": ".codex/mission-relay/candidates/team-service-p4-admission-009.json"
+    },
+    {
+      "from": ".codex/mission-relay/candidates/team-service-local-core-009.json.sha256",
+      "to": ".codex/mission-relay/candidates/team-service-p4-admission-009.json.sha256"
+    }
+  ],
+  "effective_allowed_paths": [
+    ".codex/mission-relay/candidates/team-service-p4-admission-009.json",
+    ".codex/mission-relay/candidates/team-service-p4-admission-009.json.sha256",
+    ".gitattributes"
+  ],
+  "historical_decision_rewritten": false,
+  "scope_expanded_beyond_p4_admission_prework": false,
+  "p4_implementation_authorized": false,
+  "real_send_authorized": false,
+  "service_ready": false
+}
