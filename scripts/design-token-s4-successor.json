@@ -413,6 +413,7 @@
   "updatePolicy": "schema v2: sealedRawFailures가 현재 raw 실패를 exact 순서로 봉인한다. P3 개선은 새 successor 판본을 만들고 predecessorSuccessorBlob에 직전 successor Git blob OID를 기록한 뒤 changeDelta(old→new), 분류, 계수를 함께 갱신하며 exact-SHA 독립검수를 다시 받는다.",
   "lineage": {
     "predecessorSuccessorBlob": null,
+    "predecessorSuccessorCommit": null,
     "previousP0BaselineBlob": "366160ec59c1887f9a047e76bca26d0c2ec1c547",
     "sourceP0BaselineBlob": "08cd5091636b891f16f23c608518a283cd5d2f08"
   },

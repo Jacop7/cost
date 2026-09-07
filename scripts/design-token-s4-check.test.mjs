@@ -2,7 +2,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
@@ -11,6 +11,7 @@ import {
   evaluateS4Successor,
   loadBaselineSources,
   loadSources,
+  validatePredecessorProvenance,
 } from './design-token-s4-check.mjs';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
@@ -238,12 +239,13 @@ test('P3 owner 분포를 바꾸면 exact 소유 대조가 실패한다', () => {
 test('후속 successor predecessor blob은 Git blob OID 형식이어야 한다', () => {
   const broken = structuredClone(successor);
   broken.lineage.predecessorSuccessorBlob = 'not-a-blob';
-  assert.match(evaluateCurrent(current(), contract, broken).join('\n'), /predecessor blob 형식/);
+  assert.match(evaluateCurrent(current(), contract, broken).join('\n'), /predecessor blob\/commit/);
 });
 
 const followupSuccessor = ({ added = [], removed = [] }) => {
   const next = structuredClone(successor);
   next.lineage.predecessorSuccessorBlob = 'a'.repeat(40);
+  next.lineage.predecessorSuccessorCommit = 'b'.repeat(40);
   next.counts.inherited = successor.sealedRawFailures.length;
   for (const message of removed) {
     const item = next.classifications.find((entry) => entry.message === message);
@@ -290,6 +292,36 @@ test('후속 successor의 fromRaw가 predecessor와 다르면 실패한다', () 
   const next = followupSuccessor({ added: [] });
   next.changeDelta.fromRaw = [];
   assert.match(evaluateS4Successor(next.sealedRawFailures, next, previousP0, sourceP0, current(), successor).join('\n'), /fromRaw/);
+});
+
+test('후속 successor에서 기존 P3 backlog를 component transfer로 세탁하면 실패한다', () => {
+  const next = followupSuccessor({ added: [] });
+  const item = next.classifications.find((entry) => entry.kind === 'p3-backlog');
+  item.kind = 'component-transfer';
+  item.transferId = 'P2-HUB-HEADER';
+  delete item.ownerStage;
+  assert.match(evaluateS4Successor(next.sealedRawFailures, next, previousP0, sourceP0, current(), successor).join('\n'), /상속 실패를 component transfer/);
+});
+
+test('Git 이력에서 도달 불가능한 predecessor blob은 provenance 검사를 통과하지 못한다', () => {
+  const tempRoot = join(root, '.tmp');
+  mkdirSync(tempRoot, { recursive: true });
+  const repo = mkdtempSync(join(tempRoot, 's4-predecessor-'));
+  try {
+    spawnSync('git', ['init'], { cwd: repo });
+    mkdirSync(join(repo, 'scripts'), { recursive: true });
+    writeFileSync(join(repo, 'scripts/design-token-s4-successor.json'), JSON.stringify(successor));
+    spawnSync('git', ['add', '--all'], { cwd: repo });
+    spawnSync('git', ['-c', 'user.name=S4 Test', '-c', 'user.email=test@example.invalid', 'commit', '-m', 'predecessor'], { cwd: repo });
+    const commit = spawnSync('git', ['rev-parse', 'HEAD'], { cwd: repo, encoding: 'utf8' }).stdout.trim();
+    const orphan = spawnSync('git', ['hash-object', '-w', '--stdin'], { cwd: repo, encoding: 'utf8', input: '{"orphan":true}\n' }).stdout.trim();
+    const next = structuredClone(successor);
+    next.lineage.predecessorSuccessorBlob = orphan;
+    next.lineage.predecessorSuccessorCommit = commit;
+    assert.match(validatePredecessorProvenance(repo, next).join('\n'), /지정 커밋의 계약 파일/);
+  } finally {
+    rmSync(repo, { recursive: true, force: true });
+  }
 });
 
 test('P0 baseline blob 계보를 끊으면 실패한다', () => {
