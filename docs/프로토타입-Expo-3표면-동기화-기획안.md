@@ -1,6 +1,6 @@
 # 프로토타입·Expo 3표면 동기화 기획안
 
-> 상태: **Opus 1차 자문 반영 · 재검수 대기 초안**
+> 상태: **Opus 2차 자문 반영 · R3 재검수 대기 초안**
 > 작성일: 2026-09-07
 > 적용 범위: 프로토타입 · 기본 Expo 앱 · Expo 화면 카탈로그
 > 실행 순서: [`프로토타입-Expo-3표면-동기화-세부실행서.md`](./프로토타입-Expo-3표면-동기화-세부실행서.md)
@@ -143,13 +143,35 @@ README의 정식 ID, Expo route/AST, prototype registry에서 생성한다. `cat
 생성 컬럼의 수기 편집은 실패한다. README의 구현 상태 블록은 최종 레지스트리에서 생성해 상태의
 이중 권위를 없앤다.
 
+레지스트리 JSON 직렬화는 UTF-8(BOM 없음), LF, 파일 끝 개행 1개, key 고정 순서, 배열의 Unicode
+codepoint 오름차순, 2-space indent로 고정한다. 두 번 연속 생성한 bytes가 같아야 하며 `.gitattributes`가
+두 JSON의 LF를 고정한다. CRLF·BOM·key/array 순서 변화는 의미가 같아도 gate가 실패한다.
+
+README에는 `<!-- THREE-SURFACE-STATUS:START -->`와 `<!-- THREE-SURFACE-STATUS:END -->`로 생성
+상태 영역을 지정한다. ID parser는 이 영역을 입력에서 제외하고 정식 ID 표와 영역이 겹치면 실패한다.
+순서는 `README 정식 ID + route/prototype + 사람 선언 → registry 생성 → README 상태 생성`으로
+고정한다. 두 차례 재생성의 idempotency, 생성 영역 수기 수정, 표식 누락·중복을 음성 시험한다.
+
 검사기는 레지스트리와 Expo 라우트, 화면 ID 인벤토리, 프로토타입 target을 양방향 대조한다. 미등록
 라우트나 target, 중복 ID, 존재하지 않는 파일, 근거 없는 제외는 실패한다. 다만 `specOnly`·
 `expoOnly`·`unsupported`처럼 근거가 있는 선언 예외는 차집합에서 제외하지 않고 별도 목록으로
 정확히 대조한다. 카탈로그의 탭 목록은 최종 레지스트리에서 생성하고 별도 배열을 두지 않는다.
 
+예외는 축별로만 작동한다.
+
+| 차이 축 | 허용 근거 | 다른 축에 미치는 영향 |
+|---|---|---|
+| route ↔ 정식 ID | `parity=specOnly` 또는 `expoOnly`와 `reason` | catalog·prototype 차이를 면제하지 않음 |
+| 정식 ID ↔ prototype target | `parity=specOnly`·`expoOnly`·`divergent`와 `reason` | route·catalog 차이를 면제하지 않음 |
+| 정식 ID ↔ catalog entry | `catalogMode=unsupported`와 `reason` | route·prototype 차이를 면제하지 않음 |
+
+`catalogMode=route`는 fixture 필드를 금지한다. `catalogMode=fixture`는 `fixtureKind`와 `fixtureRef`를
+모두 요구한다. `catalogMode=unsupported`는 두 fixture 필드를 금지한다. 잘못된 축의 예외와 각
+필드 의존 위반은 축별 음성 fixture로 실패시킨다.
+
 의존 방향은 `src/dev/** → 제품 화면·provider` 단방향이다. 제품 화면, kit, hook, 공용 provider는
 `src/dev/**`를 import할 수 없다. 의존 그래프 검사와 위반 fixture가 이를 실패 폐쇄한다.
+검사는 정적 import, 동적 `import()`, `require`, type-only import와 barrel re-export를 모두 해석한다.
 
 ## 6. 동기화 운영
 
@@ -170,6 +192,10 @@ README의 정식 ID, Expo route/AST, prototype registry에서 생성한다. `cat
 동시 예외 상한 초과는 검사기가 실패한다. 긴급 경로는 production 차단·Supabase allowlist·검사기
 코드를 수정할 수 없고 후속 정상 commit에서 세 표면을 다시 맞춘다.
 
+동시 `temporaryDivergence` 상한은 3건이다. P3 마이그레이션 대기 장부 상한도 첫 P3 배치 전에
+기준선 JSON에 숫자로 고정한다. `expiresAt`은 UTC 기준 `YYYY-MM-DD`이며 빌드 시계로 평가하고,
+만료 시 긴급 차이 절차의 후속 동기화 commit 외 변경을 차단한다.
+
 ## 7. 품질 계약
 
 - 기존 계산·RPC·원장 시험 결과가 바뀌지 않는다.
@@ -181,6 +207,8 @@ README의 정식 ID, Expo route/AST, prototype registry에서 생성한다. `cat
   export에서 sentinel 존재를 양성 대조한다. Vitest 플래그 시험과 번들 게이트를 분리한다.
 - 제품 코드의 `src/dev/**` import 0건이며 위반 음성 시험이 통과한다.
 - 운영 Supabase ref를 주입하면 카탈로그 부팅이 하드 실패한다.
+- P4 이후 모든 commit은 `prototype:catalog:isolation`과 `prototype:catalog:imports`를 필수로
+  실행한다. `--no-bundle`은 이 두 gate를 충족하지 않는다.
 - 화면 ID·라우트·prototype target·catalog entry의 양방향 미등록이 0건이다.
 - 새 legacy 색 별칭과 임의 팔레트가 0건이며 3계층 토큰 계약을 통과한다.
 - 320px, 글자 200%, 영어 스트레스, Android·iOS safe-area와 터치 영역을 검증한다.
@@ -215,6 +243,9 @@ README의 정식 ID, Expo route/AST, prototype registry에서 생성한다. `cat
 - Opus 1차 자문 대상은 `63f066a8cb406deeedf15be19a393d6a741454ed`이며 판정은
   `CHANGES_REQUIRED`였다. 이 판본은 운영 격리·레지스트리 권위·fixture 경계·단계 게이트와
   `myHours.test.tsx` flake를 정정한 뒤 새 exact SHA로 재확인한다.
+- Opus 2차 자문 대상은 `9ded66e2bbc5a58486aa9ae15b226a1aa3ceff9a`이며 판정은
+  `CHANGES_REQUIRED`이다. Finding별 상태는
+  `docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-001/advisory-ledger.md`가 소유한다.
 - 이 초안은 구현 전에 Opus의 `OPUS_DIRECT_ADVISORY` 검수를 받는다. 이는 사용자 요청에 따른
   계획 자문이며 Fable 승계나 R2/R3 종결 증거가 아니다. 자문 대상 exact SHA와 판정을 기록하고,
   자문 뒤 문서 bytes가 바뀌면 P0 착수 전에 같은 범위로 재확인한다.

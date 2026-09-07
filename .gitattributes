@@ -14,6 +14,10 @@ docs/ai-review/tasks/** -text -whitespace
 .codex/mission-relay/candidates/*.json text eol=lf
 .codex/mission-relay/candidates/*.sha256 text eol=lf
 
+# 3표면 레지스트리는 재생성 bytes 자체가 계약이다.
+apps/mobile/src/dev/surfaceRegistry.declarations.json text eol=lf
+apps/mobile/src/dev/surfaceRegistry.generated.json text eol=lf
+
 # Team service review/checkpoint artifacts are hashed as raw bytes.
 docs/ai-review/evidence/TEAM-SERVICE-* -text -whitespace
 docs/ai-review/evidence/TEAM-ROUTING-SERVICE-RECOVERY-001.md -text -whitespace
