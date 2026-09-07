@@ -1,6 +1,6 @@
 # 프로토타입·Expo 3표면 동기화 세부 실행서
 
-> 상태: **P1 구현 · Opus 직접 자문 R1 Finding 반영 중**
+> 상태: **P1 구현 완료 · Opus 직접 자문 R2 PASS · P2 착수**
 > 작성일: 2026-09-07
 > 상위 권위: [`프로토타입-Expo-3표면-동기화-기획안.md`](./프로토타입-Expo-3표면-동기화-기획안.md)
 > 이 문서는 토큰 값이나 제품 계약을 새로 정하지 않고, 승인된 기획을 실행하는 순서와 게이트만 소유한다.
@@ -28,6 +28,7 @@
 | Opus R8 반영안 | `7fb0ec2d51e2722bdbc08ed33b449d49e5dfc19e` · `CHANGES_REQUIRED` |
 | P0 구현·봉인 | `25a03b1` → `dabcccc` |
 | P1 최초 구현·봉인 | `827d338` → `1bb9b52` · Opus 직접 자문 `CHANGES_REQUIRED` |
+| P1 보완 구현·봉인 | `8292ec9` → `af316a0` · Opus 직접 자문 `PASS` |
 
 기본 작업 폴더의 다른 장기 작업 변경과 `.tmp` 전체를 삭제하지 않는다. 이 실행서는 격리 worktree만
 소유한다. 다른 변경을 발견하면 경로·소유 커밋을 확인하기 전 이동·삭제·스테이징하지 않는다.
@@ -197,6 +198,10 @@
   unsupported 기본값 상속, stub/source 결속, 정렬·floor 고정이었다.
 - 반영안은 P1 floor 객체의 hash를 고정하고, code-unit 정렬·tsconfig alias 기반 graph·실제 stub
   registry·route 도달성·top-level literal 제한을 음성시험으로 닫는다.
+- 보완 봉인 `af316a0e600f00f719194a8d1bf08045af5621f9`는 같은 범위의 Opus 직접 자문 R2에서 `PASS`였다.
+  이는 P1 구현 진행 승인이고 Fable 또는 공식 R2/R3 운영 종결 증거는 아니다.
+- 후속 검사기 backlog는 `packages/*` 경유 graph, tsconfig `extends`, `.web` suffix, trailing `/index`
+  route 정규화, symlink root, 임시 예외 만료 형식이다. P2 검사기 보강과 함께 닫는다.
 
 ## 6. P2 — 공용 레이아웃 pilot
 
