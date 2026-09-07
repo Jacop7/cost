@@ -45,10 +45,11 @@
     "node": "v24.15.0",
     "derivation": {
       "semantics": "platform-touch-clipping-v2",
-      "auditSha256": "e57154d1280bbc6b11f55216d28c4d4209a0f8d884054bf43f649d325e8bfb9c",
-      "contractSha256": "d73a1aa878477f87ebcdb348b0488b0665ff06c319577e93b7d448d5a150f6cf",
+      "auditSha256": "9f395bf3963196d58a0a196bd5eee1388b62e96d8c7b114a849c497f02ea1aa0",
+      "contractSha256": "0520173175f8cfebb9dccaa04741872a68f37a156d9fefd0598050512053b6d2",
       "source": "preserved-raw-native-frames"
-    }
+    },
+    "evidenceScale": 2
   },
   "scenarios": [
     {

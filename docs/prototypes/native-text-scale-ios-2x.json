@@ -19,7 +19,7 @@
       "height": 852,
       "fontScale": 2.143
     },
-    "model": null
+    "model": "iPhone15Pro"
   },
   "rows": [
     {
@@ -167,6 +167,18 @@
           "prefersFuseboxFrontend": true,
           "nativeSourceCodeFetching": false,
           "nativePageReloads": true
+        }
+      }
+    },
+    "deviceIdentitySupplement": {
+      "source": "native-touch-ios-tap-probe.json",
+      "reason": "React Native Platform.constants가 iOS 실제 모델을 반환하지 않아 같은 기기의 탭 증거로 보충",
+      "matched": {
+        "osVersion": "26.5.2",
+        "density": 3,
+        "contentViewportDp": {
+          "width": 393,
+          "height": 758
         }
       }
     }

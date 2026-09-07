@@ -2,7 +2,7 @@
 /** 보존된 원시 native frame을 현재 플랫폼별 터치 계약으로 다시 파생한다. */
 import { createHash } from 'node:crypto';
 import { readFileSync, writeFileSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { basename, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   compareNativeRatchet,
@@ -62,12 +62,16 @@ export function assertSameIosIdentity(source, tap, label = 'iOS 증거') {
 export function rederive(argument) {
   const path = resolve(argument);
   const source = JSON.parse(normalized(path));
+  const matrixCell = contract.evidenceMatrix?.find((item) => item.file === basename(path));
+  const evidenceScale = Number(matrixCell?.evidenceScale ?? matrixCell?.fontScale ?? source.manifest?.evidenceScale ?? source.fontScale);
+  if (!(evidenceScale > 0)) throw new Error(`${path}: 접근성 evidenceScale을 결정할 수 없다`);
   const artifact = recomputeNativeArtifactDerived(source);
+  artifact.manifest.evidenceScale = evidenceScale;
   artifact.evaluation = evaluateNativeArtifact(artifact, contract);
   const snapshot = nativeRatchetSnapshot(artifact.evaluation);
   artifact.evaluation.failures.push(...compareNativeRatchet(snapshot,
-    known.baselines?.[`${artifact.platform}@${artifact.fontScale}`]));
-  artifact.evaluation.ratchet = { key: `${artifact.platform}@${artifact.fontScale}`, snapshot };
+    known.baselines?.[`${artifact.platform}@${evidenceScale}`]));
+  artifact.evaluation.ratchet = { key: `${artifact.platform}@${evidenceScale}`, snapshot };
   artifact.manifest.derivation = {
     semantics: 'platform-touch-clipping-v2',
     auditSha256: sha256(normalized(auditPath)),

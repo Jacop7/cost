@@ -2,21 +2,20 @@
   "schemaVersion": 1,
   "status": "PASS",
   "requirePlatforms": [
-    "android",
-    "ios"
+    "android"
   ],
   "contracts": {
     "checker": {
       "path": "scripts/native-touch-runtime-evidence-check.mjs",
-      "textSha256": "fabc9cfcf1ae286f5bc97a6fb731762cf88b096b7b4106d59ce9a30ca75d1d05"
+      "textSha256": "1679fc7714818ea0c4ba694b8575c84b6d82b0c7ce18587ac6296a5fcec6b1dc"
     },
     "audit": {
       "path": "scripts/native-touch-runtime-audit.mjs",
-      "textSha256": "e57154d1280bbc6b11f55216d28c4d4209a0f8d884054bf43f649d325e8bfb9c"
+      "textSha256": "9f395bf3963196d58a0a196bd5eee1388b62e96d8c7b114a849c497f02ea1aa0"
     },
     "contract": {
       "path": "scripts/native-touch-runtime-contract.json",
-      "textSha256": "d73a1aa878477f87ebcdb348b0488b0665ff06c319577e93b7d448d5a150f6cf"
+      "textSha256": "0520173175f8cfebb9dccaa04741872a68f37a156d9fefd0598050512053b6d2"
     },
     "known": {
       "path": "scripts/native-touch-runtime-known.json",
@@ -26,10 +25,11 @@
   "cells": [
     {
       "platform": "android",
-      "fontScale": 1,
+      "evidenceScale": 1,
+      "actualFontScale": 1,
       "file": "native-touch-android-1x.json",
       "status": "PRESENT",
-      "textSha256": "3e4a0276e63c4d10b8f63fa1e4c4181d7e14919f3e679dffef777e92702df83f",
+      "textSha256": "e5f961c5c79cb3e050587ea38ec3f1d7456fe2028bc6a88765947cf780d7dda4",
       "productCommit": "5e6fb6763bcbb338b596fc66650f64aff9550550",
       "productTree": "bab0885dbf717a5b943d18768a1292647f338c54",
       "device": {
@@ -63,10 +63,11 @@
     },
     {
       "platform": "android",
-      "fontScale": 2,
+      "evidenceScale": 2,
+      "actualFontScale": 2,
       "file": "native-touch-android-2x.json",
       "status": "PRESENT",
-      "textSha256": "01b56f5c4b02e1966a0eee27dc66abcc7435560dcea217a5ea561a4590649ee0",
+      "textSha256": "b2db6e998e80f8f4fd69d76b5aed11d7cdac790cb3aa9f906a43e5fa43825dbb",
       "productCommit": "5e6fb6763bcbb338b596fc66650f64aff9550550",
       "productTree": "bab0885dbf717a5b943d18768a1292647f338c54",
       "device": {
@@ -97,78 +98,6 @@
       "observedUnjudgedCount": 0,
       "materialOverlapCount": 0,
       "failureCount": 0
-    },
-    {
-      "platform": "ios",
-      "fontScale": 1,
-      "file": "native-touch-ios-1x.json",
-      "status": "PRESENT",
-      "textSha256": "f0a2c155f73249eec794e3d23e12684332a7aeb93085c3b5bba7b91b7d3ddb3d",
-      "productCommit": "5e6fb6763bcbb338b596fc66650f64aff9550550",
-      "productTree": "bab0885dbf717a5b943d18768a1292647f338c54",
-      "device": {
-        "id": "iphone-actual",
-        "platform": "ios",
-        "density": 3,
-        "fontScale": 1,
-        "osVersion": "26.5.2",
-        "reactNativeVersion": {
-          "major": 0,
-          "minor": 81,
-          "patch": 5
-        },
-        "expoVersion": "54.0.0",
-        "appVersion": "0.1.0",
-        "bundleId": "co.smartolive.margincook",
-        "model": "iPhone15Pro",
-        "apiLevel": null
-      },
-      "targetCount": 26,
-      "coverage": {
-        "observedRows": 246,
-        "fullyVisibleRows": 161,
-        "excludedScrollableOrRootRows": 85,
-        "targetShortCount": 0
-      },
-      "observedUnjudgedCount": 0,
-      "materialOverlapCount": 0,
-      "failureCount": 0
-    },
-    {
-      "platform": "ios",
-      "fontScale": 2,
-      "file": "native-touch-ios-2x.json",
-      "status": "PRESENT",
-      "textSha256": "f29b54c3e7184ec84141051a5fcb4d1c906915f1371410765c785fad13d61e9b",
-      "productCommit": "5e6fb6763bcbb338b596fc66650f64aff9550550",
-      "productTree": "bab0885dbf717a5b943d18768a1292647f338c54",
-      "device": {
-        "id": "iphone-actual",
-        "platform": "ios",
-        "density": 3,
-        "fontScale": 2,
-        "osVersion": "26.5.2",
-        "reactNativeVersion": {
-          "major": 0,
-          "minor": 81,
-          "patch": 5
-        },
-        "expoVersion": "54.0.0",
-        "appVersion": "0.1.0",
-        "bundleId": "co.smartolive.margincook",
-        "model": "iPhone15Pro",
-        "apiLevel": null
-      },
-      "targetCount": 26,
-      "coverage": {
-        "observedRows": 246,
-        "fullyVisibleRows": 161,
-        "excludedScrollableOrRootRows": 85,
-        "targetShortCount": 0
-      },
-      "observedUnjudgedCount": 0,
-      "materialOverlapCount": 0,
-      "failureCount": 0
     }
   ],
   "tapProbeCells": [
@@ -182,18 +111,6 @@
       "recordedResult": "PASS",
       "currentContractResult": "PASS",
       "legacyEvaluationSuperseded": false,
-      "probeCount": 3
-    },
-    {
-      "platform": "ios",
-      "file": "native-touch-ios-tap-probe.json",
-      "status": "PRESENT",
-      "textSha256": "ce1a8fbc9d70bf5fb3c1e23227ccecfcd7c8464a2fe1dbce9fbf16dfe5dea332",
-      "productCommit": "acc11b68e375a5d0ab296b50e1b197fe4f6a8bbe",
-      "productTree": "2bc7a758aabd0f4c44d08d07482ee0b4c433d0ad",
-      "recordedResult": "FAIL",
-      "currentContractResult": "PASS",
-      "legacyEvaluationSuperseded": true,
       "probeCount": 3
     }
   ],

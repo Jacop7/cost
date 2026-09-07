@@ -1,7 +1,20 @@
 #!/usr/bin/env node
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { ancestorClipsTouch, classifyVisibility, compareNativeRatchet, effectiveTouchRect, evaluateNativeArtifact, isActiveScreenStateList, nativeRatchetSnapshot, physicalHalfPixelTolerance, recomputeNativeArtifactDerived, rectOverlap, resolveActionForFontScale, resolveActionForRuntime, tabRootForRoute, tabScopedRoute, waitForStableOwner } from './native-touch-runtime-audit.mjs';
+import { ancestorClipsTouch, classifyVisibility, compareNativeRatchet, effectiveTouchRect, evaluateNativeArtifact, fontScaleMatches, isActiveScreenStateList, nativeRatchetSnapshot, physicalHalfPixelTolerance, recomputeNativeArtifactDerived, rectOverlap, resolveActionForFontScale, resolveActionForRuntime, tabRootForRoute, tabScopedRoute, waitForStableOwner } from './native-touch-runtime-audit.mjs';
+
+test('접근성 2× 셀은 Android exact 2, iOS 2 이상 실제 배율을 받는다', () => {
+  const contract = {
+    fontScalePolicies: {
+      android: { '2': { mode: 'exact', value: 2 } },
+      ios: { '2': { mode: 'minimum', value: 2 } },
+    },
+  };
+  assert.equal(fontScaleMatches(contract, 'android', 2, 2), true);
+  assert.equal(fontScaleMatches(contract, 'android', 2, 2.143), false);
+  assert.equal(fontScaleMatches(contract, 'ios', 2, 2.143), true);
+  assert.equal(fontScaleMatches(contract, 'ios', 2, 1.999), false);
+});
 
 test('탭 route는 실제 (tabs) 그룹을 명시한다', () => {
   assert.equal(tabScopedRoute('/recipes'), '/(tabs)/recipes');

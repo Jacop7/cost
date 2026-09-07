@@ -3061,3 +3061,21 @@ popup/state host **121개**(합 182), 그리고 레지스트리에 키가 없는
   `../../scripts/native-text-scale-evidence-check.test.mjs` ·
   `../../scripts/native-touch-runtime-rederive.test.mjs` ·
   `full-page-flow-prototype-app-map-check.json`.
+
+## DS-20260907-002 · PRT-286 iOS 접근성 증거 계약 정정
+
+- 대상: Opus 독립검수 Major 2·Minor 4와 PRT-285의 과도한 종결 주장.
+- 기대값: 논리 2×/실제 fontScale 분리 · iOS 실제 확대 frame 증거 없이는 종결 차단 · 동일 문구
+  제품 Text 통제쌍 · 비어 있지 않은 기기 model · W1 포괄 규칙 축소.
+- 실제값: Android exact 2 / iOS minimum 2 정책을 분리하고, iOS 1×/2× 동일 역할 frame의 크기
+  변화 0건을 차단하는 검사를 추가했다. 현재 iOS는 종결 목록에서 제외했다.
+- Text 검수: `SessionGate`의 `다시 시도`가 `62×20.33 → 132.67×43.67dp`로 실제 2.143배에
+  비례하는 통제쌍이다. 다른 상태·문구 행은 확대 성공 수에 포함하지 않는다.
+- PC 검수: PASS
+- 모바일 검수: PASS
+- 미검수: 없음
+- 결과: PASS
+- 증거: `../../scripts/native-touch-runtime-contract.json` ·
+  `../../scripts/native-touch-runtime-evidence-check.mjs` ·
+  `../../scripts/native-text-scale-evidence-check.mjs` ·
+  `../../scripts/native-text-scale-rederive.mjs`.

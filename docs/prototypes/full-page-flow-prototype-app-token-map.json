@@ -144,7 +144,6 @@
       "match": {
         "group": "spacing",
         "numericIn": [
-          1,
           2
         ],
         "at": [

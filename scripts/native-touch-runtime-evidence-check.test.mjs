@@ -6,7 +6,7 @@ import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { buildEvidenceReceipt, receiptHashFailures, validateArtifactData, validateTapProbeData, verifyEvidenceReceipt, verifyRepositoryEvidence } from './native-touch-runtime-evidence-check.mjs';
+import { buildEvidenceReceipt, receiptHashFailures, scaledLayoutWitness, validateArtifactData, validateTapProbeData, verifyEvidenceReceipt, verifyRepositoryEvidence } from './native-touch-runtime-evidence-check.mjs';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const json = (path) => JSON.parse(readFileSync(join(root, path), 'utf8'));
@@ -15,7 +15,7 @@ const known = json('scripts/native-touch-runtime-known.json');
 const source = json('docs/prototypes/native-touch-android-1x.json');
 const tapProbe = json('docs/prototypes/native-touch-android-tap-probe.json');
 const expected = {
-  name: 'fixture', platform: 'android', fontScale: 1,
+  name: 'fixture', platform: 'android', evidenceScale: 1,
   scriptSha256: source.manifest.scriptSha256,
   contractSha256: source.manifest.contractSha256,
 };
@@ -95,8 +95,25 @@ test('전체 4칸 요구는 iOS 증거가 없으면 MISSING으로 설명하고, 
   const failures = verifyRepositoryEvidence(root, { requirePlatforms: ['android', 'ios'] }).failures;
   const iosExists = ['native-touch-ios-1x.json', 'native-touch-ios-2x.json']
     .every((name) => { try { readFileSync(join(root, 'docs/prototypes', name)); return true; } catch { return false; } });
-  if (iosExists) assert.deepEqual(failures, []);
+  if (iosExists) {
+    const one = json('docs/prototypes/native-touch-ios-1x.json');
+    const two = json('docs/prototypes/native-touch-ios-2x.json');
+    const witness = scaledLayoutWitness(one, two);
+    if (witness.dimensionChanged) assert.deepEqual(failures, []);
+    else assert.match(failures.join('\n'), /크기가 달라진 동일 제품 frame이 없다/);
+  }
   else assert.match(failures.join('\n'), /MISSING native-touch-ios-1x\.json.*MISSING native-touch-ios-2x\.json/s);
+});
+
+test('iOS 2× 셀은 위치 이동만이 아니라 같은 제품 frame의 크기 변화를 보여야 한다', () => {
+  const one = { scenarios: [{ id: 'a', phases: [{ id: 'initial', rows: [
+    { ownerChain: ['Row'], label: '메뉴', windowMeasure: [0, 10, 80, 40] },
+  ] }] }] };
+  const shifted = structuredClone(one);
+  shifted.scenarios[0].phases[0].rows[0].windowMeasure = [0, -140, 80, 40];
+  assert.deepEqual(scaledLayoutWitness(one, shifted), { paired: 1, dimensionChanged: 0 });
+  shifted.scenarios[0].phases[0].rows[0].windowMeasure = [0, -140, 100, 60];
+  assert.deepEqual(scaledLayoutWitness(one, shifted), { paired: 1, dimensionChanged: 1 });
 });
 
 test('저장 요약만 0으로 고쳐도 원시 frame 재계산이 잡는다', () => {
@@ -139,7 +156,8 @@ test('현재 파생 감사기나 계약 SHA가 달라지면 낡은 증거다', (
 test('iOS는 model·OS를 요구하지만 Android 전용 API level을 요구하지 않는다', () => {
   const ios = structuredClone(source);
   ios.platform = 'ios'; ios.fontScale = 1;
+  ios.manifest.evidenceScale = 1;
   ios.device = { ...ios.device, id: '00008110-example', model: 'iPhone', osVersion: '18.6', apiLevel: null };
-  const failures = validateArtifactData(ios, contract, known, { ...expected, platform: 'ios' });
+  const failures = validateArtifactData(ios, contract, known, { ...expected, platform: 'ios', evidenceScale: 1 });
   assert.doesNotMatch(failures.join('\n'), /API 식별/);
 });

@@ -2,13 +2,24 @@
   "schemaVersion": 1,
   "platform": "android",
   "platforms": ["android", "ios"],
-  "closedPlatforms": ["android", "ios"],
+  "closedPlatforms": ["android"],
+  "requireScaledLayoutWitness": ["ios"],
   "fontScales": [1, 2],
+  "fontScalePolicies": {
+    "android": {
+      "1": { "mode": "exact", "value": 1 },
+      "2": { "mode": "exact", "value": 2 }
+    },
+    "ios": {
+      "1": { "mode": "exact", "value": 1 },
+      "2": { "mode": "minimum", "value": 2 }
+    }
+  },
   "evidenceMatrix": [
-    { "platform": "android", "fontScale": 1, "file": "native-touch-android-1x.json" },
-    { "platform": "android", "fontScale": 2, "file": "native-touch-android-2x.json" },
-    { "platform": "ios", "fontScale": 1, "file": "native-touch-ios-1x.json" },
-    { "platform": "ios", "fontScale": 2, "file": "native-touch-ios-2x.json" }
+    { "platform": "android", "evidenceScale": 1, "file": "native-touch-android-1x.json" },
+    { "platform": "android", "evidenceScale": 2, "file": "native-touch-android-2x.json" },
+    { "platform": "ios", "evidenceScale": 1, "file": "native-touch-ios-1x.json" },
+    { "platform": "ios", "evidenceScale": 2, "file": "native-touch-ios-2x.json" }
   ],
   "minimumTarget": 44,
   "expectedSourceLineage": 30,

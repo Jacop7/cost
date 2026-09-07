@@ -626,6 +626,8 @@ foreach ($fileName in @($auditName, $auditScriptName, 'full-page-flow-prototype-
     '../../scripts/native-touch-runtime-rederive.test.mjs',
     'native-text-scale-ios-1x.json', 'native-text-scale-ios-2x.json',
     '../../scripts/native-text-scale-audit.mjs',
+    '../../scripts/native-text-scale-rederive.mjs',
+    '../../scripts/native-text-scale-rederive.test.mjs',
     '../../scripts/native-text-scale-evidence-check.mjs',
     '../../scripts/native-text-scale-evidence-check.test.mjs',
     '../디자인-토큰-3계층-값-매핑-기획서.md')) {
@@ -634,7 +636,8 @@ foreach ($fileName in @($auditName, $auditScriptName, 'full-page-flow-prototype-
     'native-touch-ios-1x.json', 'native-touch-ios-2x.json', 'native-touch-ios-tap-probe.json',
     '../../scripts/native-touch-runtime-rederive.mjs', '../../scripts/native-touch-runtime-rederive.test.mjs',
     'native-text-scale-ios-1x.json', 'native-text-scale-ios-2x.json',
-    '../../scripts/native-text-scale-audit.mjs', '../../scripts/native-text-scale-evidence-check.mjs',
+    '../../scripts/native-text-scale-audit.mjs', '../../scripts/native-text-scale-rederive.mjs',
+    '../../scripts/native-text-scale-rederive.test.mjs', '../../scripts/native-text-scale-evidence-check.mjs',
     '../../scripts/native-text-scale-evidence-check.test.mjs'
   )
   if ($null -ne $contents) { $hashes[$fileName] = Get-Sha256 $contents }
