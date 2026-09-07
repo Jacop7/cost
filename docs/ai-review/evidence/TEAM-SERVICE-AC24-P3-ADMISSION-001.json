@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "kind": "AC24_P3_ADMISSION_OBSERVATION_NOT_GATE_APPROVAL",
+  "run_id": "AC24-P3-ADMISSION-001",
+  "gate_id": "P3",
+  "profile_id": "P3",
+  "bundle_commit": "29714c9d93a5829c1b4faa1513019f298a433003",
+  "bundle_ref": "docs/team/service-flow-p3-admission-bundle.json",
+  "bundle_sha256": "dbc5e27fa8be27cd085824f3cda2852979f51388ff6533cad038e08fe7fab85d",
+  "target_modules": [
+    "scripts/team-service-intent-store.mjs",
+    "scripts/team-service-workflow.mjs"
+  ],
+  "scenario_ids": ["AC-01", "AC-03", "AC-06", "AC-07", "AC-22"],
+  "import_closure": [
+    "scripts/docs-graph-check.mjs",
+    "scripts/team-routing-contract-audit.mjs",
+    "scripts/team-service-canonical.mjs",
+    "scripts/team-service-intent-store.mjs",
+    "scripts/team-service-p3-admission-scenario.mjs",
+    "scripts/team-service-workflow.mjs"
+  ],
+  "normal_dispatch_attempts": 0,
+  "negative_fake_attempts": 4,
+  "negative_rejections": ["fake-send", "fetch", "websocket", "fs:readFileSync"],
+  "actual_provider_calls": 0,
+  "normal": {
+    "p3_entry_status": "READY",
+    "preserved_exports": ["applyServiceEvent", "createServiceWorkflow", "nextServiceAction"],
+    "non_human_role_count": 10,
+    "effect_key_equivalent_across_routes": true,
+    "dispatch_attempts": 0
+  },
+  "host_cases": [
+    {"case_id": "AC-13", "status": "BLOCKED_HOST"},
+    {"case_id": "AC-14", "status": "BLOCKED_HOST"},
+    {"case_id": "AC-15", "status": "BLOCKED_HOST"},
+    {"case_id": "AC-16", "status": "BLOCKED_HOST"},
+    {"case_id": "AC-17", "status": "BLOCKED_HOST"}
+  ],
+  "test_ref": "scripts/team-service-p3-no-dispatch.test.mjs",
+  "test_sha256": "724f1d46d78a861cfcaacea2635506cfac0404bd9669201059bdfaf3b6a4e20c",
+  "runner_ref": "scripts/team-service-p3-admission.mjs",
+  "runner_sha256": "5b1106299eeb9ad3afdf873ceb76dc300e2854724fb2457fc05dc9a1136a5fe7",
+  "tap_ref": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P3-ADMISSION-001.tap",
+  "tap_sha256": "1548abb109e2b711cc95e05b3ade07be813ade8a5cb1b8ad74a58260f18470ce",
+  "assertion_observations": [
+    {"assertion_id": "AC-24-A1", "verification_result": "PASS", "observation": "Exact six-module transitive closure and five harness hashes matched; omitted, extra, drifted and dynamic inputs were rejected."},
+    {"assertion_id": "AC-24-A2", "verification_result": "PASS", "observation": "Four fake transport/network/filesystem attempts threw; actual_provider_calls and normal_dispatch_attempts remained zero."},
+    {"assertion_id": "AC-24-A3", "verification_result": "PASS_ENTRY_PREREQUISITES_ONLY", "observation": "Current workflow exports, 10 non-human roles and route-independent business effect key were observed. Future P3 implementation was not executed."},
+    {"assertion_id": "AC-24-A4", "verification_result": "PASS", "observation": "Five host cases stayed BLOCKED_HOST and service_ready remained false."}
+  ],
+  "result": "PASS_ENTRY_PREREQUISITES_ONLY",
+  "entry_validates_future_implementation": false,
+  "completion_rerun_required": true,
+  "admission_authorized": false,
+  "real_send_authorized": false,
+  "service_ready": false,
+  "snapshot": "COMMITTED_BASELINE_WITH_WORKING_TREE_HASHED_BUNDLE_AND_EVIDENCE"
+}

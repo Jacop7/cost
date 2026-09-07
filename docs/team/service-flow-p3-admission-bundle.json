@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "kind": "AC24_P3_ADMISSION_FIXTURE_ONLY",
+  "gate_id": "P3",
+  "profile_id": "P3",
+  "run_id": "AC24-P3-ADMISSION-001",
+  "bundle_commit": "29714c9d93a5829c1b4faa1513019f298a433003",
+  "target_modules": [
+    "scripts/team-service-intent-store.mjs",
+    "scripts/team-service-workflow.mjs"
+  ],
+  "scenario": "scripts/team-service-p3-admission-scenario.mjs",
+  "scenario_ids": ["AC-01", "AC-03", "AC-06", "AC-07", "AC-22"],
+  "modules": [
+    {
+      "path": "scripts/team-service-intent-store.mjs",
+      "sha256": "bc83ae76f76654b584a5d8fd6343966161f69e6cd7a20606f5af60b30ab7647a"
+    },
+    {
+      "path": "scripts/team-service-canonical.mjs",
+      "sha256": "e253b2b3a64a4a929bdd46e4425bdd7864edb5130af29e27926dd48a87148f9d"
+    },
+    {
+      "path": "scripts/team-service-workflow.mjs",
+      "sha256": "5dbec261f792bbb32130f24ac1ff0daac89cf39aecb7cc7deff92c7e9936a2d1"
+    },
+    {
+      "path": "scripts/team-routing-contract-audit.mjs",
+      "sha256": "8f829b203c25297a6069205971caeebbbc97ccbff205615731ae0231dffac6a8"
+    },
+    {
+      "path": "scripts/docs-graph-check.mjs",
+      "sha256": "3dcb6ee26d13b91764ccb48f9759f56222f7fef28902e306d73a8807f8d31398"
+    },
+    {
+      "path": "scripts/team-service-p3-admission-scenario.mjs",
+      "sha256": "c0f26c4610c21da3a0feebea320a98c9a7b190678a76129d5121e56fa5d6dd21"
+    }
+  ],
+  "harness_files": [
+    {
+      "path": "scripts/team-service-p3-admission.mjs",
+      "sha256": "5b1106299eeb9ad3afdf873ceb76dc300e2854724fb2457fc05dc9a1136a5fe7"
+    },
+    {
+      "path": "scripts/team-service-p3-no-dispatch.test.mjs",
+      "sha256": "724f1d46d78a861cfcaacea2635506cfac0404bd9669201059bdfaf3b6a4e20c"
+    },
+    {
+      "path": "scripts/team-service-p3-contract.test.mjs",
+      "sha256": "ad20a37b5ef948445d4360d99ec19a27596eabfb42527ba1577c96101323994d"
+    },
+    {
+      "path": "scripts/team-service-router-adapter.test.mjs",
+      "sha256": "844bdd020acedef6a770843b76c9a9982b7f86708531397c179dbd7526b43bb5"
+    },
+    {
+      "path": "scripts/team-service-workflow.test.mjs",
+      "sha256": "7c12d51bacfbde67f97f4921be9809fc98ef6b40a034cc20c02cf7cc8d8139fc"
+    }
+  ],
+  "requires_ac22": false,
+  "entry_validates_future_implementation": false,
+  "completion_rerun_required": true,
+  "scope": "P3 entry prerequisites only: current workflow API, 10 non-human roles, exact business effect key and capability-denial boundary. This does not validate future P3 implementation.",
+  "snapshot": "COMMITTED_BASELINE_WITH_WORKING_TREE_HASHED_BUNDLE",
+  "real_send_authorized": false,
+  "service_ready": false
+}
