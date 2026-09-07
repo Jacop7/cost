@@ -101,10 +101,10 @@
     "actual_provider_calls": 0
   },
   "completion_evidence": {
-    "bundle": "docs/team/service-flow-p3-completion-bundle-003.json",
-    "bundle_sha256": "b705f03db7204ec3ed5426dc9a10ce9881070b90065a2081727049595c17e536",
-    "run": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P3-COMPLETION-003.json",
-    "run_sha256": "f3e2f472a0f17ac3147f25d628e4f90b400699fb047c0c93f284500d81c0697c",
+    "bundle": "docs/team/service-flow-p3-completion-bundle-004.json",
+    "bundle_sha256": "314bfd37325f818aa54a2d18b2f8c6743e01ed82b6efadfec65d4e57e1f60a2a",
+    "run": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P3-COMPLETION-004.json",
+    "run_sha256": "38b5c88a8ea31e87d4e3b22fe97a7f74ba5c4df58c69b2f8bdae5a4923fa7c8c",
     "result": "PASS_34_OF_34_ZERO_DISPATCH",
     "independent_review": "PENDING"
   },

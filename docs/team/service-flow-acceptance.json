@@ -28,9 +28,9 @@
       "implementation_status": "AVAILABLE",
       "execution_status": "PASS",
       "execution_evidence": {
-        "path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P3-COMPLETION-003.json",
-        "sha256": "f3e2f472a0f17ac3147f25d628e4f90b400699fb047c0c93f284500d81c0697c",
-        "run_id": "AC24-P3-COMPLETION-003"
+        "path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P3-COMPLETION-004.json",
+        "sha256": "38b5c88a8ea31e87d4e3b22fe97a7f74ba5c4df58c69b2f8bdae5a4923fa7c8c",
+        "run_id": "AC24-P3-COMPLETION-004"
       }
     },
     {
@@ -71,9 +71,9 @@
       "implementation_status": "AVAILABLE",
       "execution_status": "PASS",
       "execution_evidence": {
-        "path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P3-COMPLETION-003.json",
-        "sha256": "f3e2f472a0f17ac3147f25d628e4f90b400699fb047c0c93f284500d81c0697c",
-        "run_id": "AC24-P3-COMPLETION-003"
+        "path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P3-COMPLETION-004.json",
+        "sha256": "38b5c88a8ea31e87d4e3b22fe97a7f74ba5c4df58c69b2f8bdae5a4923fa7c8c",
+        "run_id": "AC24-P3-COMPLETION-004"
       }
     },
     {
@@ -139,9 +139,9 @@
       "implementation_status": "AVAILABLE",
       "execution_status": "PASS",
       "execution_evidence": {
-        "path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P3-COMPLETION-003.json",
-        "sha256": "f3e2f472a0f17ac3147f25d628e4f90b400699fb047c0c93f284500d81c0697c",
-        "run_id": "AC24-P3-COMPLETION-003"
+        "path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P3-COMPLETION-004.json",
+        "sha256": "38b5c88a8ea31e87d4e3b22fe97a7f74ba5c4df58c69b2f8bdae5a4923fa7c8c",
+        "run_id": "AC24-P3-COMPLETION-004"
       }
     },
     {
@@ -165,9 +165,9 @@
       "implementation_status": "AVAILABLE",
       "execution_status": "PASS",
       "execution_evidence": {
-        "path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P3-COMPLETION-003.json",
-        "sha256": "f3e2f472a0f17ac3147f25d628e4f90b400699fb047c0c93f284500d81c0697c",
-        "run_id": "AC24-P3-COMPLETION-003"
+        "path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P3-COMPLETION-004.json",
+        "sha256": "38b5c88a8ea31e87d4e3b22fe97a7f74ba5c4df58c69b2f8bdae5a4923fa7c8c",
+        "run_id": "AC24-P3-COMPLETION-004"
       }
     },
     {
@@ -582,9 +582,9 @@
       "implementation_status": "AVAILABLE",
       "execution_status": "PASS",
       "execution_evidence": {
-        "path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P3-COMPLETION-003.json",
-        "sha256": "f3e2f472a0f17ac3147f25d628e4f90b400699fb047c0c93f284500d81c0697c",
-        "run_id": "AC24-P3-COMPLETION-003"
+        "path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P3-COMPLETION-004.json",
+        "sha256": "38b5c88a8ea31e87d4e3b22fe97a7f74ba5c4df58c69b2f8bdae5a4923fa7c8c",
+        "run_id": "AC24-P3-COMPLETION-004"
       }
     },
     {
@@ -762,9 +762,10 @@
         "requires_ac22": false,
         "negative_evidence_required": true,
         "entry_validates_future_implementation": false,
-        "completion_rerun_required": true,
+        "completion_rerun_required": false,
         "implementation_status": "AVAILABLE",
-        "execution_status": "NOT_EXECUTED"
+        "execution_status": "PASS",
+        "active_run_id": "AC24-P3-COMPLETION-004"
       },
       "STORE_DRIVER": {
             "entry_modules": [
@@ -1422,13 +1423,103 @@
           "allowlist_ref": "docs/team/service-flow-p3-admission-bundle.json",
           "runner_ref": "scripts/team-service-p3-admission.mjs",
           "verifier_ref": "scripts/team-service-p3-no-dispatch.test.mjs"
+        },
+        {
+          "run_id": "AC24-P3-COMPLETION-004",
+          "predecessor_run_id": "AC24-P3-ADMISSION-002",
+          "gate_id": "P3",
+          "profile_id": "P3",
+          "bundle_commit": "d51564617ab256e8488fd3f8c220106bb3691ddf",
+          "target_commit": "aaeb3b78abd2ceac39655425b89a075aa429593c",
+          "target_modules": [
+            "docs/team/service-flow-p3-contract.json",
+            "docs/team/service-flow-acceptance.json",
+            "scripts/team-service-p3-contract.test.mjs",
+            "scripts/team-service-intake.mjs",
+            "scripts/team-service-intake.test.mjs",
+            "scripts/team-service-workflow.mjs",
+            "scripts/team-service-workflow.test.mjs",
+            "scripts/team-service-intent-store.mjs",
+            "scripts/team-service-router-adapter.test.mjs",
+            "scripts/team-service-p2b-scenario.mjs",
+            "scripts/team-service-local-tests.mjs",
+            "scripts/team-service-live-isolation.test.mjs",
+            "scripts/verify.mjs",
+            "apps/mobile/vitest.config.ts"
+          ],
+          "module_sha256": [
+            {"path": "apps/mobile/vitest.config.ts", "sha256": "229a1052da1389f84dff113f53cbe5bd885e21d73bc95c7d5427a0eb1da6a4da"},
+            {"path": "docs/team/service-flow-acceptance.json", "sha256": "b1ae84a0ad86f860d89a60926b544221208600728b6bcb51be8ac0e4cb09b480"},
+            {"path": "docs/team/service-flow-p3-contract.json", "sha256": "fe3a626099bcdc5e62248e6e902739b1fd43ba0bbf23f8f07a59773302865dfe"},
+            {"path": "scripts/docs-graph-check.mjs", "sha256": "3dcb6ee26d13b91764ccb48f9759f56222f7fef28902e306d73a8807f8d31398"},
+            {"path": "scripts/team-routing-contract-audit.mjs", "sha256": "8f829b203c25297a6069205971caeebbbc97ccbff205615731ae0231dffac6a8"},
+            {"path": "scripts/team-service-canonical.mjs", "sha256": "e253b2b3a64a4a929bdd46e4425bdd7864edb5130af29e27926dd48a87148f9d"},
+            {"path": "scripts/team-service-intake.mjs", "sha256": "764e3f7b56b8853d3f29c2d58db917244d3e9078a6e557efd8ef87f602c83c88"},
+            {"path": "scripts/team-service-intake.test.mjs", "sha256": "bef630baf228dad1081711b0a027692187d782ef1f01cd3fade47806b2bd0888"},
+            {"path": "scripts/team-service-intent-store.mjs", "sha256": "bc83ae76f76654b584a5d8fd6343966161f69e6cd7a20606f5af60b30ab7647a"},
+            {"path": "scripts/team-service-live-isolation.test.mjs", "sha256": "ffa0d66ffd6db31cf7093ec458d1e6dee7bedc16651a3b7ea6881f340d7f91b3"},
+            {"path": "scripts/team-service-local-tests.mjs", "sha256": "d5a5aa1252028439539b5254964ab919931830230a037c668b186fa5f87dea71"},
+            {"path": "scripts/team-service-p2b-scenario.mjs", "sha256": "9c0cd53d7b89840c340f2de55d32fb3dd40d11af0ba6292afbec9e3544b36b40"},
+            {"path": "scripts/team-service-p3-contract.test.mjs", "sha256": "29f1800e16a807e1178e248c71c24098a75ca3ba9588ead4ca9fa42c64a71e25"},
+            {"path": "scripts/team-service-router-adapter.test.mjs", "sha256": "74898f77e07ba224e63d84de1134f221d28db348ae4de64b135026e57f6fa047"},
+            {"path": "scripts/team-service-workflow.mjs", "sha256": "2556fe64ea392d8e7b702fc87b5f4ba8a88879061e545b7ccb971079a43882bb"},
+            {"path": "scripts/team-service-workflow.test.mjs", "sha256": "3f2e5c24eb45cf77709e620e67e9b8e95073f201e1a79661ffadfe731533369e"},
+            {"path": "scripts/verify-shell.mjs", "sha256": "50128d11fcc958ea7b9c34dd7d692da5f044dca5a21244edd197f5ebb63573e3"},
+            {"path": "scripts/verify.mjs", "sha256": "0c262c225d73186865760368eaec1ac851363227ce44763549e81d3c1fd80549"}
+          ],
+          "import_closure": [
+            "apps/mobile/vitest.config.ts",
+            "docs/team/service-flow-acceptance.json",
+            "docs/team/service-flow-p3-contract.json",
+            "scripts/docs-graph-check.mjs",
+            "scripts/team-routing-contract-audit.mjs",
+            "scripts/team-service-canonical.mjs",
+            "scripts/team-service-intake.mjs",
+            "scripts/team-service-intake.test.mjs",
+            "scripts/team-service-intent-store.mjs",
+            "scripts/team-service-live-isolation.test.mjs",
+            "scripts/team-service-local-tests.mjs",
+            "scripts/team-service-p2b-scenario.mjs",
+            "scripts/team-service-p3-contract.test.mjs",
+            "scripts/team-service-router-adapter.test.mjs",
+            "scripts/team-service-workflow.mjs",
+            "scripts/team-service-workflow.test.mjs",
+            "scripts/verify-shell.mjs",
+            "scripts/verify.mjs"
+          ],
+          "allowlist_sha256": "314bfd37325f818aa54a2d18b2f8c6743e01ed82b6efadfec65d4e57e1f60a2a",
+          "scenario_ids": ["AC-01", "AC-03", "AC-06", "AC-07", "AC-22"],
+          "test_sha256": "ffa0d66ffd6db31cf7093ec458d1e6dee7bedc16651a3b7ea6881f340d7f91b3",
+          "runner_sha256": "d5a5aa1252028439539b5254964ab919931830230a037c668b186fa5f87dea71",
+          "verifier_sha256": "d5a5aa1252028439539b5254964ab919931830230a037c668b186fa5f87dea71",
+          "normal_dispatch_attempts": 0,
+          "negative_fake_attempts": 2,
+          "actual_provider_calls": 0,
+          "exit_code": 0,
+          "tests": {"passed": 34, "failed": 0, "skipped": 0},
+          "assertion_observations": [
+            {"assertion_id": "AC-24-A1", "case_id": "AC-24", "run_id": "AC24-P3-COMPLETION-004", "target_commit": "aaeb3b78abd2ceac39655425b89a075aa429593c", "test_sha256": "ffa0d66ffd6db31cf7093ec458d1e6dee7bedc16651a3b7ea6881f340d7f91b3", "verifier_sha256": "d5a5aa1252028439539b5254964ab919931830230a037c668b186fa5f87dea71", "artifact_sha256": "314bfd37325f818aa54a2d18b2f8c6743e01ed82b6efadfec65d4e57e1f60a2a", "observation": "Exact 14-target and 18-module transitive closure matched committed bytes and rejected working-tree drift.", "verification_result": "PASS"},
+            {"assertion_id": "AC-24-A2", "case_id": "AC-24", "run_id": "AC24-P3-COMPLETION-004", "target_commit": "aaeb3b78abd2ceac39655425b89a075aa429593c", "test_sha256": "ffa0d66ffd6db31cf7093ec458d1e6dee7bedc16651a3b7ea6881f340d7f91b3", "verifier_sha256": "d5a5aa1252028439539b5254964ab919931830230a037c668b186fa5f87dea71", "artifact_sha256": "314bfd37325f818aa54a2d18b2f8c6743e01ed82b6efadfec65d4e57e1f60a2a", "observation": "Two unauthorized launcher attempts rejected before provider access; actual provider calls remained zero.", "verification_result": "PASS"},
+            {"assertion_id": "AC-24-A3", "case_id": "AC-24", "run_id": "AC24-P3-COMPLETION-004", "target_commit": "aaeb3b78abd2ceac39655425b89a075aa429593c", "test_sha256": "ffa0d66ffd6db31cf7093ec458d1e6dee7bedc16651a3b7ea6881f340d7f91b3", "verifier_sha256": "d5a5aa1252028439539b5254964ab919931830230a037c668b186fa5f87dea71", "artifact_sha256": "314bfd37325f818aa54a2d18b2f8c6743e01ed82b6efadfec65d4e57e1f60a2a", "observation": "All 34 local tests passed with normal dispatch attempts zero.", "verification_result": "PASS"},
+            {"assertion_id": "AC-24-A4", "case_id": "AC-24", "run_id": "AC24-P3-COMPLETION-004", "target_commit": "aaeb3b78abd2ceac39655425b89a075aa429593c", "test_sha256": "ffa0d66ffd6db31cf7093ec458d1e6dee7bedc16651a3b7ea6881f340d7f91b3", "verifier_sha256": "d5a5aa1252028439539b5254964ab919931830230a037c668b186fa5f87dea71", "artifact_sha256": "314bfd37325f818aa54a2d18b2f8c6743e01ed82b6efadfec65d4e57e1f60a2a", "observation": "Host-dependent cases remain blocked and service_ready plus real_send_authorized remain false.", "verification_result": "PASS"}
+          ],
+          "evidence_ref": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P3-COMPLETION-004.json",
+          "evidence_sha256": "38b5c88a8ea31e87d4e3b22fe97a7f74ba5c4df58c69b2f8bdae5a4923fa7c8c",
+          "tap_ref": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P3-COMPLETION-004.tap",
+          "tap_sha256": "8458a844ab74c6bd14ed7500f3ed66b28152f8a6824800f3c99a44759dfb8cde",
+          "result": "PASS",
+          "scope_limit": "P3 local implementation only; no host, live send, Router runtime, endpoint, app, DB, Supabase or service-ready claim.",
+          "snapshot": "COMMITTED_TARGET_WITH_EXACT_RAW_TAP",
+          "allowlist_ref": "docs/team/service-flow-p3-completion-bundle-004.json",
+          "runner_ref": "scripts/team-service-local-tests.mjs",
+          "verifier_ref": "scripts/team-service-local-tests.mjs"
         }
       ],
       "execution_evidence": {
-        "path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P3-ADMISSION-002.json",
-        "sha256": "5701c6e9b47dc723498146b99e52973c474a9bed0dfa598fe522bad7c4addd0f"
+        "path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P3-COMPLETION-004.json",
+        "sha256": "38b5c88a8ea31e87d4e3b22fe97a7f74ba5c4df58c69b2f8bdae5a4923fa7c8c"
       },
-      "active_run_id": "AC24-P3-ADMISSION-002"
+      "active_run_id": "AC24-P3-COMPLETION-004"
     }
   ],
   "phase_gates": [
@@ -1614,15 +1705,15 @@
       "ac24_run_requirement": {
         "case_id": "AC-24",
         "profile_id": "P3",
-        "bundle": "docs/team/service-flow-p3-completion-bundle-003.json",
+        "bundle": "docs/team/service-flow-p3-completion-bundle-004.json",
         "requires_ac22": false,
         "entry_validates_future_implementation": false,
         "completion_rerun_required": false,
         "status": "PASS_COMPLETION_EXECUTION_PENDING_INDEPENDENT_REVIEW",
-        "run_id": "AC24-P3-COMPLETION-003",
+        "run_id": "AC24-P3-COMPLETION-004",
         "evidence": {
-          "path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P3-COMPLETION-003.json",
-          "sha256": "f3e2f472a0f17ac3147f25d628e4f90b400699fb047c0c93f284500d81c0697c"
+          "path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P3-COMPLETION-004.json",
+        "sha256": "38b5c88a8ea31e87d4e3b22fe97a7f74ba5c4df58c69b2f8bdae5a4923fa7c8c"
         }
       }
     },
