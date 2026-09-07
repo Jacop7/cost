@@ -1,8 +1,8 @@
 {
   "schemaVersion": 3,
   "stage": "P2",
-  "baselineCommit": "ed02fbbc54db10dbab9a259f5a445e2a2dc0dd58",
-  "baselineTree": "21fb3124c8c3f3f095cda79b31e19870bdb04f64",
+  "baselineCommit": "a54b065f78568d01fbd5fc7b50458ba14cd54a1b",
+  "baselineTree": "aee35f4dcef7d36e0542dd9c1f8a8e2e1d4aad05",
   "anchors": {
     "productBaseline": {
       "commit": "3448884d7219227dce369af45cb2be290ed12f3a",
@@ -67,7 +67,7 @@
     },
     {
       "path": "scripts/design-token-s4-check.mjs",
-      "textSha256": "a2c21db51acb73cfa352e7e6c64681aaf9d3535853a77dd190b2c81ad522c65d"
+      "textSha256": "c1a6c97f59658b8cba37bab5539acfaa82df679c9b3ebf2bf827805310426810"
     },
     {
       "path": "scripts/three-surface-advisory-ledger-check.mjs",
@@ -8648,7 +8648,7 @@
   ],
   "successorBacklog": {
     "contract": "scripts/design-token-s4-successor.json",
-    "textSha256": "ce48f5c0851d85c0a428bf5bfaccde95595417803cd9304383f16709f711439a",
+    "textSha256": "c40536137ab4046a200fd5a0133c9aa029bdea6e7f33ca38cdcf86dc9c2170a3",
     "rawFailures": 54,
     "componentTransfer": 6,
     "p3Backlog": 48,
@@ -8736,7 +8736,7 @@
   },
   "provenance": {
     "writtenBy": "--write",
-    "headAtWrite": "ed02fbbc54db10dbab9a259f5a445e2a2dc0dd58",
+    "headAtWrite": "a54b065f78568d01fbd5fc7b50458ba14cd54a1b",
     "tokens": [
       "P2-S4-SUCCESSOR@071e228ee5ba998bee99528beb0611551e2df38a"
     ]

@@ -96,6 +96,16 @@
       "contentSha256": "becae2ba4425ede786ac6eaf483f43fa36efdcd355ff24a48e7c779b3be5909a"
     },
     {
+      "path": "docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-P2-001/opus-direct-advisory-r5.md",
+      "status": "present",
+      "contentSha256": "c8a8f53f823f32b0b17d45d4548c2923bf3d2885b1d4a2dcbd480aefa646da32"
+    },
+    {
+      "path": "docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-P2-001/opus-direct-advisory-r6.md",
+      "status": "planned",
+      "contentSha256": null
+    },
+    {
       "path": "docs/prototypes/three-surface-approved-visual-changes.json",
       "status": "present",
       "contentSha256": "c5eb4aae30e504e754108b8a2d1c64bc98285687e9a0b73b9787ddca1bbc0bea"
