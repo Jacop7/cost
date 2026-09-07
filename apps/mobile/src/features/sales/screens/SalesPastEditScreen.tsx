@@ -19,7 +19,7 @@ import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppHeader, Button, Card, ConfirmSheet, Field, Icon, Input, Notice, QueryState, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { T, won } from '@/theme/tokens';
+import { COLOR, T, won } from '@/theme/tokens';
 import { useRecipeList } from '@/features/recipes/hooks';
 import {
   useAmendPastSale, useSalesDay,
@@ -266,14 +266,14 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
                       {/* 메뉴명과 수량만. 판매가·재료비는 그날 기준이라 여기 적으면 거짓말이 된다. */}
                       <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: T.ink }} numberOfLines={1}>{r.name}</Text>
                       {q.waste > 0 ? (
-                        <Text style={[{ fontSize: 13, fontWeight: '700', color: T.ter, marginRight: 10 }, NUM]}>폐기 {q.waste}</Text>
+                        <Text style={[{ fontSize: 13, fontWeight: '700', color: COLOR.text.tertiary, marginRight: 10 }, NUM]}>폐기 {q.waste}</Text>
                       ) : null}
                       {total > 0 ? (
-                        <Text style={[{ fontSize: 16, fontWeight: '800', color: changed ? T.blue : T.ink, marginRight: 6 }, NUM]}>{total}개</Text>
+                        <Text style={[{ fontSize: 16, fontWeight: '800', color: changed ? COLOR.text.accent : T.ink, marginRight: 6 }, NUM]}>{total}개</Text>
                       ) : (
-                        <Text style={{ fontSize: 15, fontWeight: '700', color: T.blue, marginRight: 6 }}>+ 판매</Text>
+                        <Text style={{ fontSize: 15, fontWeight: '700', color: COLOR.action.primary, marginRight: 6 }}>+ 판매</Text>
                       )}
-                      <Icon name="chevron" size={16} color={T.ter} />
+                      <Icon name="chevron" size={16} color={COLOR.text.tertiary} />
                     </Pressable>
                   );
                 })}
@@ -330,7 +330,7 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
               <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12, paddingHorizontal: 15 }}>
                 <View style={{ flex: 1, minWidth: 0 }}>
                   <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>조리 폐기</Text>
-                  <Text style={{ fontSize: 14, color: T.ter, marginTop: 2 }}>재료는 나가고 매출은 0</Text>
+                  <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 2 }}>재료는 나가고 매출은 0</Text>
                 </View>
                 <SaleStepper label="조리 폐기 수량" value={draft.waste} onChange={(v) => setDraft((d) => ({ ...d, waste: v }))} />
               </View>
@@ -358,16 +358,16 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
             {etcItems.map((e, i) => (
               <View key={`${e.name}-${i}`} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 11, paddingHorizontal: 15, borderBottomWidth: i < etcItems.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
                 <View style={{ flex: 1, minWidth: 0 }}>
-                  <Text style={{ fontSize: 16, fontWeight: '600', color: T.sub }}>{e.name} <Text style={{ color: T.ter }}>×{e.qty}</Text></Text>
+                  <Text style={{ fontSize: 16, fontWeight: '600', color: T.sub }}>{e.name} <Text style={{ color: COLOR.text.tertiary }}>×{e.qty}</Text></Text>
                   {/* 미지정은 회색으로 둔다 — 매장으로 보이면 안 된다(0093). */}
-                  <Text style={{ fontSize: 13, fontWeight: '700', color: e.channel ? T.blue : T.ter, marginTop: 2 }}>{channelName(e.channel)}</Text>
+                  <Text style={{ fontSize: 13, fontWeight: '700', color: e.channel ? COLOR.text.accent : COLOR.text.tertiary, marginTop: 2 }}>{channelName(e.channel)}</Text>
                 </View>
                 <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink, marginRight: 10 }, NUM]}>{won(e.price * e.qty)}원</Text>
                 <Pressable
                   onPress={() => setEtc(etcItems.filter((_, j) => j !== i))}
                   hitSlop={8} accessibilityRole="button" accessibilityLabel={`${e.name} 삭제`}
                 >
-                  <Icon name="close" size={16} color={T.ter} />
+                  <Icon name="close" size={16} color={COLOR.text.tertiary} />
                 </Pressable>
               </View>
             ))}
@@ -392,11 +392,11 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
                   style={{
                     flex: 1, paddingVertical: 12, borderRadius: 11, alignItems: 'center',
                     borderWidth: on ? 1.5 : 1,
-                    borderColor: on ? T.blue : T.line,
-                    backgroundColor: on ? T.blueTint : T.surface,
+                    borderColor: on ? COLOR.action.primary : T.line,
+                    backgroundColor: on ? COLOR.action.primaryTint : T.surface,
                   }}
                 >
-                  <Text style={{ fontSize: 15, fontWeight: on ? '800' : '600', color: on ? T.blue : T.sub }}>{name}</Text>
+                  <Text style={{ fontSize: 15, fontWeight: on ? '800' : '600', color: on ? COLOR.state.selectedText : T.sub }}>{name}</Text>
                 </Pressable>
               );
             })}
@@ -415,14 +415,14 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
               <View key={`${e.name}-${i}`} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 11, paddingHorizontal: 15, borderBottomWidth: i < extraItems.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
                 <View style={{ flex: 1, minWidth: 0 }}>
                   <Text style={{ fontSize: 16, fontWeight: '600', color: T.sub }}>{e.name}</Text>
-                  {e.memo ? <Text style={{ fontSize: 14, color: T.ter, marginTop: 2 }}>{e.memo}</Text> : null}
+                  {e.memo ? <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 2 }}>{e.memo}</Text> : null}
                 </View>
                 <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink, marginRight: 10 }, NUM]}>{won(e.amount)}원</Text>
                 <Pressable
                   onPress={() => setExtra(extraItems.filter((_, j) => j !== i))}
                   hitSlop={8} accessibilityRole="button" accessibilityLabel={`${e.name} 삭제`}
                 >
-                  <Icon name="close" size={16} color={T.ter} />
+                  <Icon name="close" size={16} color={COLOR.text.tertiary} />
                 </Pressable>
               </View>
             ))}

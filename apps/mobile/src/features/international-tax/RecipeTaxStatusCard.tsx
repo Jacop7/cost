@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { Text, View } from 'react-native';
 import { Button, Card, QueryState } from '@/components/kit';
-import { T } from '@/theme/tokens';
+import { COLOR, T } from '@/theme/tokens';
 import { RpcError } from '@/lib/supabase';
 import { formatNumber } from '@margincook/core';
 import { useAppCapabilities, useRecipeTaxState, useSaveMenuTaxOverride } from './hooks';
@@ -41,20 +41,20 @@ export function RecipeTaxStatusCard({ recipeId }: { recipeId: string }) {
               ? `카테고리 ${categoryName ?? '확인 필요'}`
               : '판매할 때 적용되는 프로필과 카테고리를 서버가 확정해요.'}
           </Text>
-          {state.data?.effectiveFrom ? <Text style={{ fontSize: 13, color: T.blue, marginTop: 4 }}>
+          {state.data?.effectiveFrom ? <Text style={{ fontSize: 13, color: COLOR.text.accent, marginTop: 4 }}>
             변경한 과세 상태는 {state.data.effectiveFrom}부터 적용돼요.
           </Text> : null}
           {state.data?.quote&&state.data.currencyCode&&state.data.minorUnit!==null?<Text style={{fontSize:14,fontWeight:'700',color:T.ink2,marginTop:7}}>
             현재 판매가 세금 {state.data.currencyCode} {formatNumber(state.data.quote.taxAmount,{digits:state.data.minorUnit,group:',',decimal:'.'})} · 순매출 {state.data.currencyCode} {formatNumber(state.data.quote.netSales,{digits:state.data.minorUnit,group:',',decimal:'.'})}
           </Text>:null}
           {!state.data?.capabilities.internationalTax.writeEnabled ? (
-            <Text style={{ fontSize: 13, color: T.ter, marginTop: 7 }}>
+            <Text style={{ fontSize: 13, color: COLOR.text.tertiary, marginTop: 7 }}>
               과세 상태 변경 기능은 준비 중이에요.
             </Text>
           ) : state.data?.taxProfileId ? <View style={{gap:7,marginTop:10}}>
             <Button kind="gray" size="md" disabled={save.isPending} onPress={()=>{setError(null);save.mutate({taxProfileId:state.data!.taxProfileId!,taxCategory:null,treatment:null,baseRevision:state.data!.overrideRevision},{onError:e=>{if(e instanceof RpcError&&e.code==='45009'){setError('다른 기기에서 과세 상태가 변경됐어요. 새로고침해 주세요.');return;}setError(e instanceof Error?e.message:'저장하지 못했어요');}});}}>매장 기본값</Button>
             {state.data.categories.map(category=><Button key={category.code} kind="gray" size="md" disabled={save.isPending} onPress={()=>{setError(null);save.mutate({taxProfileId:state.data!.taxProfileId!,taxCategory:category.code,treatment:null,baseRevision:state.data!.overrideRevision},{onError:e=>{if(e instanceof RpcError&&e.code==='45009'){setError('다른 기기에서 과세 상태가 변경됐어요. 새로고침해 주세요.');return;}setError(e instanceof Error?e.message:'저장하지 못했어요');}});}}>{category.name}</Button>)}
-            {error?<View role="alert"><Text style={{color:T.red,fontWeight:'700'}}>{error}</Text><Button kind="gray" size="md" onPress={()=>{setError(null);void state.refetch();}}>새로고침</Button></View>:null}
+            {error?<View role="alert"><Text style={{color:COLOR.status.negative,fontWeight:'700'}}>{error}</Text><Button kind="gray" size="md" onPress={()=>{setError(null);void state.refetch();}}>새로고침</Button></View>:null}
           </View> : null}
         </View>
       </QueryState>
