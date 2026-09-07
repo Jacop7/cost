@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "kind": "TEAM_SERVICE_P3_FOCUSED_TEST_RECEIPT",
+  "run_id": "TEAM-SERVICE-P3-FOCUSED-002",
+  "target_commit": "4e4347db078ca34c2f08f6325f0cf3f76e513852",
+  "snapshot": "COMMITTED_TEST_INPUTS_WITH_EXACT_RAW_TAP",
+  "command": "node --test --test-reporter=tap scripts/team-service-router-adapter.test.mjs scripts/team-service-workflow.test.mjs scripts/team-service-p3-contract.test.mjs",
+  "exit_code": 0,
+  "tests": {"passed": 26, "failed": 0, "skipped": 0},
+  "inputs": [
+    {"path": "scripts/team-service-router-adapter.test.mjs", "sha256": "844bdd020acedef6a770843b76c9a9982b7f86708531397c179dbd7526b43bb5"},
+    {"path": "scripts/team-service-workflow.test.mjs", "sha256": "7c12d51bacfbde67f97f4921be9809fc98ef6b40a034cc20c02cf7cc8d8139fc"},
+    {"path": "scripts/team-service-p3-contract.test.mjs", "sha256": "506ef0c07243db70c14c33456412f9691b839fb2b4e83d324ea19284e6d05d2b"}
+  ],
+  "tap_ref": "docs/ai-review/evidence/TEAM-SERVICE-P3-FOCUSED-002.tap",
+  "tap_sha256": "239673eee7e77655a7beb33f2c3956a1045085073b46fb0ff09f8ae197ec6d03",
+  "historical_succession": {
+    "predecessor": "AC24-P2B-003",
+    "disposition": "The immutable P2b receipt remains valid only for its pinned historical bytes. The seven AC-10 assertions were rerun against the current intent-store and test inputs in this focused run."
+  },
+  "claim": "P3 contract, workflow and AC-10 regression-focused tests passed on the exact listed test inputs.",
+  "limitations": [
+    "This receipt is not a full pnpm verify pass.",
+    "This receipt does not execute the future P3 implementation target set.",
+    "This receipt does not authorize service_ready or real send."
+  ],
+  "service_ready": false,
+  "real_send_authorized": false
+}

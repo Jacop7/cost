@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "kind": "AC24_P3_ADMISSION_OBSERVATION_NOT_GATE_APPROVAL",
+  "run_id": "AC24-P3-ADMISSION-002",
+  "predecessor_run_id": "AC24-P3-ADMISSION-001",
+  "gate_id": "P3",
+  "profile_id": "P3",
+  "bundle_commit": "210a700c19b6062d2310c809abf44e8e97333af5",
+  "bundle_ref": "docs/team/service-flow-p3-admission-bundle.json",
+  "bundle_sha256": "93e34f20a7d4e575fac4d8cc4359b2aff7eed2cb218cc76d6c487899d2f7d620",
+  "target_modules": [
+    "scripts/team-service-intent-store.mjs",
+    "scripts/team-service-workflow.mjs"
+  ],
+  "scenario_ids": ["AC-01", "AC-03", "AC-06", "AC-07", "AC-22"],
+  "import_closure": [
+    "scripts/docs-graph-check.mjs",
+    "scripts/team-routing-contract-audit.mjs",
+    "scripts/team-service-canonical.mjs",
+    "scripts/team-service-intent-store.mjs",
+    "scripts/team-service-p3-admission-scenario.mjs",
+    "scripts/team-service-workflow.mjs"
+  ],
+  "module_sha256": [
+    {"path": "scripts/team-service-intent-store.mjs", "sha256": "bc83ae76f76654b584a5d8fd6343966161f69e6cd7a20606f5af60b30ab7647a"},
+    {"path": "scripts/team-service-canonical.mjs", "sha256": "e253b2b3a64a4a929bdd46e4425bdd7864edb5130af29e27926dd48a87148f9d"},
+    {"path": "scripts/team-service-workflow.mjs", "sha256": "5dbec261f792bbb32130f24ac1ff0daac89cf39aecb7cc7deff92c7e9936a2d1"},
+    {"path": "scripts/team-routing-contract-audit.mjs", "sha256": "8f829b203c25297a6069205971caeebbbc97ccbff205615731ae0231dffac6a8"},
+    {"path": "scripts/docs-graph-check.mjs", "sha256": "3dcb6ee26d13b91764ccb48f9759f56222f7fef28902e306d73a8807f8d31398"},
+    {"path": "scripts/team-service-p3-admission-scenario.mjs", "sha256": "c0f26c4610c21da3a0feebea320a98c9a7b190678a76129d5121e56fa5d6dd21"}
+  ],
+  "normal_dispatch_attempts": 0,
+  "negative_fake_attempts": 4,
+  "negative_rejections": ["fake-send", "fetch", "websocket", "fs:readFileSync"],
+  "actual_provider_calls": 0,
+  "normal": {
+    "p3_entry_status": "READY",
+    "preserved_exports": ["applyServiceEvent", "createServiceWorkflow", "nextServiceAction"],
+    "non_human_role_count": 10,
+    "effect_key_equivalent_across_routes": true,
+    "dispatch_attempts": 0
+  },
+  "host_cases": [
+    {"case_id": "AC-13", "status": "BLOCKED_HOST"},
+    {"case_id": "AC-14", "status": "BLOCKED_HOST"},
+    {"case_id": "AC-15", "status": "BLOCKED_HOST"},
+    {"case_id": "AC-16", "status": "BLOCKED_HOST"},
+    {"case_id": "AC-17", "status": "BLOCKED_HOST"}
+  ],
+  "command": "node --test --test-reporter=tap scripts/team-service-p3-no-dispatch.test.mjs",
+  "exit_code": 0,
+  "tests": {"passed": 3, "failed": 0, "skipped": 0},
+  "test_ref": "scripts/team-service-p3-no-dispatch.test.mjs",
+  "test_sha256": "724f1d46d78a861cfcaacea2635506cfac0404bd9669201059bdfaf3b6a4e20c",
+  "runner_ref": "scripts/team-service-p3-admission.mjs",
+  "runner_sha256": "5b1106299eeb9ad3afdf873ceb76dc300e2854724fb2457fc05dc9a1136a5fe7",
+  "tap_ref": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P3-ADMISSION-002.tap",
+  "tap_sha256": "5415262af5fdbbb1cd3ecfade1a56550850ab7e29c06aae5da9c6ee4fd4431fd",
+  "assertion_observations": [
+    {"assertion_id": "AC-24-A1", "verification_result": "PASS", "observation": "Exact six-module transitive closure and five harness hashes matched; omitted, extra, drifted and dynamic inputs were rejected."},
+    {"assertion_id": "AC-24-A2", "verification_result": "PASS", "observation": "Four fake transport, network and filesystem attempts threw; actual_provider_calls and normal_dispatch_attempts remained zero."},
+    {"assertion_id": "AC-24-A3", "verification_result": "PASS_ENTRY_PREREQUISITES_ONLY", "observation": "Current workflow exports, 10 non-human roles and route-independent business effect key were observed. Future P3 implementation was not executed."},
+    {"assertion_id": "AC-24-A4", "verification_result": "PASS", "observation": "Five host cases stayed BLOCKED_HOST and service_ready remained false."}
+  ],
+  "result": "PASS_ENTRY_PREREQUISITES_ONLY",
+  "entry_validates_future_implementation": false,
+  "completion_rerun_required": true,
+  "admission_authorized": false,
+  "real_send_authorized": false,
+  "service_ready": false,
+  "snapshot": "COMMITTED_BASELINE_WITH_EXACT_RAW_TAP"
+}
