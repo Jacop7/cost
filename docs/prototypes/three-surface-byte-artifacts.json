@@ -13,12 +13,12 @@
     {
       "path": ".gitattributes",
       "status": "present",
-      "contentSha256": "7c4f1aecad1905b243e090b061a322045c37336ec4729777705a4f25c2c624d6"
+      "contentSha256": "2c3611849383dd091fbd876e9d7b77e5009ab0f8981531b11ba7d34a93134d2d"
     },
     {
       "path": "apps/mobile/src/dev/surfaceFixtureStubs.json",
       "status": "present",
-      "contentSha256": null
+      "contentSha256": "e29c23242581ae09a404791e4535b6fb33ab3e4dccb86f7eb81e9a65cc93bebc"
     },
     {
       "path": "apps/mobile/src/dev/surfaceRegistry.declarations.json",
@@ -28,12 +28,12 @@
     {
       "path": "apps/mobile/src/dev/surfaceRegistry.generated.json",
       "status": "present",
-      "contentSha256": "f16e87a6f337ef7b87eec858b5f6324781ae032d70bcf442339ae63bd8113a9a"
+      "contentSha256": "2847fa97e6b32cf3e2bd64e54dcd093b372e65e7c685a4f439ed83f4c3265a4d"
     },
     {
       "path": "apps/mobile/src/dev/surfaceRegistry.ts",
       "status": "present",
-      "contentSha256": "e378ac1801f01f9d9f45833da8db63f5dfbac4d9b9ce97826bdf4fed56d3c5f6"
+      "contentSha256": "23fecf568d871386b948f9d387bc009f8e198608b8e517859ea1a8209907fccb"
     },
     {
       "path": "docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-001/advisory-ledger.json",
@@ -68,7 +68,7 @@
     {
       "path": "docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-P1-001/opus-direct-advisory-r1.md",
       "status": "present",
-      "contentSha256": null
+      "contentSha256": "eba959cb18d8e5a556a1c65b4350472ae7bc803f29ea5ad754a9296820907c66"
     },
     {
       "path": "docs/prototypes/three-surface-approved-visual-changes.json",
@@ -98,12 +98,12 @@
     {
       "path": "docs/프로토타입-Expo-3표면-동기화-기획안.md",
       "status": "present",
-      "contentSha256": "5c695b5eef124d5692952cdf4dc7421853fd966824c8dfb81368ed9c96018c75"
+      "contentSha256": "8b88476568b5d0be4333b6abd237f8494a3aeec7fa0327f4dc5fe3b8587856fb"
     },
     {
       "path": "docs/프로토타입-Expo-3표면-동기화-세부실행서.md",
       "status": "present",
-      "contentSha256": "38dc5799cff28f7d1da248eeab277737cc659d279a56e3f7b7b8532731b37f2d"
+      "contentSha256": "170b408ae3351da5574aba8cd6785c8e081deab1404e7ed4150006d348498d32"
     },
     {
       "path": "scripts/three-surface-advisory-ledger-check.mjs",
@@ -118,7 +118,7 @@
     {
       "path": "scripts/three-surface-byte-artifacts-check.mjs",
       "status": "present",
-      "contentSha256": "583198b7dda131edb4dd93e0b47259d90c1be14e9e740aae9bb3143d1bc1896c"
+      "contentSha256": "ba3d586d48744dd79383ae4a3fc67b4343eb6f60e37d47cb473c1a9f1a640573"
     },
     {
       "path": "scripts/three-surface-byte-artifacts-check.test.mjs",
@@ -138,12 +138,12 @@
     {
       "path": "scripts/three-surface-sync-check.mjs",
       "status": "present",
-      "contentSha256": "f2badfe8289ad8c4986b7d043ff17b5c1998bd7600db40a5f2a31ba14259064d"
+      "contentSha256": "b14ad6b7518e0c83a0367e072568058f8c5e2133ac0516aa422896fd42a1d1a1"
     },
     {
       "path": "scripts/three-surface-sync-check.test.mjs",
       "status": "present",
-      "contentSha256": "0d77da52881e13d9662f002ca6bf54379a0c8cba4afa3ff31bda84cbc89ccb49"
+      "contentSha256": "be8df23949e0cc0306c2f7cbda0b204d8efae22650372fd5bd4cd270d5635f9a"
     }
   ],
   "readmeMarker": {
