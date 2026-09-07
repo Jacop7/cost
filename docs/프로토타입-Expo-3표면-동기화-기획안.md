@@ -1,6 +1,6 @@
 # 프로토타입·Expo 3표면 동기화 기획안
 
-> 상태: **Opus 5차 자문 반영 · R6 재검수 대기 초안**
+> 상태: **Opus 7차 자문 반영 · R8 재검수 대기 초안**
 > 작성일: 2026-09-07
 > 적용 범위: 프로토타입 · 기본 Expo 앱 · Expo 화면 카탈로그
 > 실행 순서: [`프로토타입-Expo-3표면-동기화-세부실행서.md`](./프로토타입-Expo-3표면-동기화-세부실행서.md)
@@ -165,11 +165,13 @@ README에는 `<!-- THREE-SURFACE-STATUS:START -->`와 `<!-- THREE-SURFACE-STATUS
 
 | 차이 축 | 허용 근거 | 다른 축에 미치는 영향 |
 |---|---|---|
-| route ↔ 정식 ID | `parity=specOnly` 또는 `expoOnly`와 `reason` | catalog·prototype 차이를 면제하지 않음 |
+| route ↔ 정식 ID | `parity=specOnly`과 `reason` | catalog·prototype 차이를 면제하지 않음 |
 | 정식 ID ↔ prototype target | `parity=specOnly`·`expoOnly`·`divergent`와 `reason` | route·catalog 차이를 면제하지 않음 |
 | 정식 ID ↔ catalog entry | `catalogMode=unsupported` 또는 `parity=specOnly`와 `reason` | route·prototype 차이를 면제하지 않음 |
 
-parity별 필드 계약은 다음과 같다. `R`은 필수, `O`는 선택, `F`는 금지다.
+핵심 필드 계약은 다음과 같다. `R`은 필수, `O`는 선택, `F`는 금지다. `expoOnly`는 README 정식
+ID와 Expo route가 있지만 prototype target만 없는 상태다. README ID 없는 route는 무조건 실패하며
+`expoOnly`로 면제할 수 없다.
 
 | parity | `expoRoute` | `sourceComponent` | `prototypeTargets` | `catalogMode` | `states` |
 |---|---:|---:|---:|---:|---:|
@@ -205,8 +207,10 @@ parity별 필드 계약은 다음과 같다. `R`은 필수, `O`는 선택, `F`�
 모두 요구한다. `catalogMode=unsupported`는 두 fixture 필드를 금지한다. 잘못된 축의 예외와 각
 필드 의존 위반은 축별 음성 fixture로 실패시킨다.
 
-의존 방향은 `src/dev/** → 제품 화면·provider` 단방향이다. 제품 화면, kit, hook, 공용 provider는
-`src/dev/**`를 import할 수 없다. 의존 그래프 검사와 위반 fixture가 이를 실패 폐쇄한다.
+의존 방향은 개발 전용 소스 → 제품 화면·provider 단방향이다. 금지 대상은 `src/dev/**`와 P4 decision
+record가 확정한 catalog root·fixture root의 합집합이며, 이 root 집합을 decision commit SHA와 함께
+검사기 설정에 결속한다. 제품 화면, kit, hook, 공용 provider는 이 집합을 import할 수 없다.
+의존 그래프 검사와 위반 fixture가 이를 실패 폐쇄한다.
 검사는 정적 import, 동적 `import()`, `require`, type-only import와 barrel re-export를 모두 해석한다.
 
 ## 6. 동기화 운영
@@ -312,6 +316,7 @@ byte-stable 산출물 hash와 별도 필드로 기록한다. 만료일은 commit
   `a02dec70b273e8db692f483b62bc5fbd18f9144b`이며 둘 다 `CHANGES_REQUIRED`였다. 대응은 같은
   기계 장부에 이어서 기록하고 새 exact SHA로 재검수한다.
 - Opus 6차 자문 대상은 `776e7141cb620222e8d7015c90b65d8a2cc795b3`이며 `CHANGES_REQUIRED`였다.
+- Opus 7차 자문 대상은 `6912a5ac7355237459126ffea41a1860e66f0d33`이며 `CHANGES_REQUIRED`였다.
 - 이 초안은 구현 전에 Opus의 `OPUS_DIRECT_ADVISORY` 검수를 받는다. 이는 사용자 요청에 따른
   계획 자문이며 Fable 승계나 R2/R3 종결 증거가 아니다. 자문 대상 exact SHA와 판정을 기록하고,
   자문 뒤 문서 bytes가 바뀌면 P0 착수 전에 같은 범위로 재확인한다.

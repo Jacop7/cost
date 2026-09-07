@@ -8,6 +8,7 @@
 > R4 target: `08741ab5f0fc1e6ca93b8d2a1dabaa75d6553b1d`
 > R5 target: `a02dec70b273e8db692f483b62bc5fbd18f9144b`
 > R6 target: `776e7141cb620222e8d7015c90b65d8a2cc795b3`
+> R7 target: `6912a5ac7355237459126ffea41a1860e66f0d33`
 
 | ID | 심각도 | 제기 회차 | 상태 | 처리 근거 | 검증 SHA |
 |---|---|---|---|---|---|
@@ -89,3 +90,6 @@
 | R6-F2 | Minor | R6 | fixed | 10회 전체 스위트 측정 SHA·runner·2330/2330 기록 | pending R7 |
 | R6-F3 | Minor | R6 | fixed | 생성 5필드와 사람 선언 5필드 parity 계약·C/O 범례 | pending R7 |
 | R6-F4 | Minor | R6 | fixed | 사람이 migrationPending 등록 후 기계 projection 생성 | pending R7 |
+| R7-F1 | Minor | R7 | fixed | expoOnly를 README ID·route 존재 + prototype 부재로 고정 | pending R8 |
+| R7-F2 | Minor | R7 | fixed | P4 decision의 catalog/fixture root까지 역방향 import 금지 | pending R8 |
+| R7-F3 | Minor | R7 | fixed | 문서 상태줄·R7 target 추적 일치 | pending R8 |
