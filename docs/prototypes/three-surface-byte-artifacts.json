@@ -13,22 +13,22 @@
     {
       "path": ".gitattributes",
       "status": "present",
-      "contentSha256": "24a558a1ab21b6188baaec14fec46255517fb2c42921713be53811b1e03eb5b3"
+      "contentSha256": "7c4f1aecad1905b243e090b061a322045c37336ec4729777705a4f25c2c624d6"
     },
     {
       "path": "apps/mobile/src/dev/surfaceRegistry.declarations.json",
       "status": "present",
-      "contentSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      "contentSha256": "3e52a07d10c82c3b6e737fcfa1eb087b3c8a79abe566d8f0fe448ad6718cc435"
     },
     {
       "path": "apps/mobile/src/dev/surfaceRegistry.generated.json",
       "status": "present",
-      "contentSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      "contentSha256": "f16e87a6f337ef7b87eec858b5f6324781ae032d70bcf442339ae63bd8113a9a"
     },
     {
       "path": "apps/mobile/src/dev/surfaceRegistry.ts",
       "status": "present",
-      "contentSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      "contentSha256": "e378ac1801f01f9d9f45833da8db63f5dfbac4d9b9ce97826bdf4fed56d3c5f6"
     },
     {
       "path": "docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-001/advisory-ledger.json",
@@ -86,6 +86,16 @@
       "contentSha256": null
     },
     {
+      "path": "docs/프로토타입-Expo-3표면-동기화-기획안.md",
+      "status": "present",
+      "contentSha256": "5c695b5eef124d5692952cdf4dc7421853fd966824c8dfb81368ed9c96018c75"
+    },
+    {
+      "path": "docs/프로토타입-Expo-3표면-동기화-세부실행서.md",
+      "status": "present",
+      "contentSha256": "38dc5799cff28f7d1da248eeab277737cc659d279a56e3f7b7b8532731b37f2d"
+    },
+    {
       "path": "scripts/three-surface-advisory-ledger-check.mjs",
       "status": "present",
       "contentSha256": "91abe7f9426bdbcf33a390747034334210c0da00c56cae8eefaed698efb66e1b"
@@ -98,12 +108,12 @@
     {
       "path": "scripts/three-surface-byte-artifacts-check.mjs",
       "status": "present",
-      "contentSha256": "512d2b9c46f0b28304ad81b4367924e4f29d456fee3f7f558de6680a33449547"
+      "contentSha256": "583198b7dda131edb4dd93e0b47259d90c1be14e9e740aae9bb3143d1bc1896c"
     },
     {
       "path": "scripts/three-surface-byte-artifacts-check.test.mjs",
       "status": "present",
-      "contentSha256": "be44026fd5c61886121e416a4580ceb8c9b28ac0d3c6ec4a76bcae11e4b71c0b"
+      "contentSha256": "9b5546b86c14d7570e3f1ba1ee11972ed2e267c4451243e92dc7ae448ad0c30c"
     },
     {
       "path": "scripts/three-surface-p0-check.mjs",
@@ -118,22 +128,12 @@
     {
       "path": "scripts/three-surface-sync-check.mjs",
       "status": "present",
-      "contentSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      "contentSha256": "f2badfe8289ad8c4986b7d043ff17b5c1998bd7600db40a5f2a31ba14259064d"
     },
     {
       "path": "scripts/three-surface-sync-check.test.mjs",
       "status": "present",
-      "contentSha256": "0000000000000000000000000000000000000000000000000000000000000000"
-    },
-    {
-      "path": "docs/프로토타입-Expo-3표면-동기화-기획안.md",
-      "status": "present",
-      "contentSha256": "0000000000000000000000000000000000000000000000000000000000000000"
-    },
-    {
-      "path": "docs/프로토타입-Expo-3표면-동기화-세부실행서.md",
-      "status": "present",
-      "contentSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      "contentSha256": "0d77da52881e13d9662f002ca6bf54379a0c8cba4afa3ff31bda84cbc89ccb49"
     }
   ],
   "readmeMarker": {
