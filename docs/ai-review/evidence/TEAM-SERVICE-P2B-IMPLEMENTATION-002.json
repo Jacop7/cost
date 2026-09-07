@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "kind": "P2B_LOCAL_INTENT_ADAPTER_IMPLEMENTATION_EVIDENCE",
+  "run_id": "AC10-P2B-002",
+  "target_commit": "679308e5d0e76f4e62cb3e06eb55e71cbee398a2",
+  "completion_bundle": "docs/team/service-flow-p2b-completion-bundle-002.json",
+  "review_disposition": {
+    "review": "docs/ai-review/evidence/TEAM-SERVICE-P2B-IMPLEMENTATION-OPUS-001.md",
+    "review_sha256": "ec4a0bad8395082a5d8a900e59f07cf4777a7e295bdcfe0117aa82fd5a78a7d7",
+    "BL-1": "CLOSED_BY_ENDPOINT_SUCCESSOR_POSITIVE_AND_IDENTITY_POLLUTION_NEGATIVE_TEST",
+    "BL-2": "CLOSED_BY_RAW_TAP_AND_EXIT_CODE_BINDING"
+  },
+  "raw_execution": [
+    {
+      "command": "node --test --test-reporter=tap scripts/team-service-router-adapter.test.mjs",
+      "exit_code": 0,
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-P2B-IMPLEMENTATION-002-AC10.tap",
+      "sha256": "29ac898ac846c7e519d2fc2be453c71211dd564e926825e2df9b7df691567501",
+      "observed": "PASS_7_OF_7"
+    },
+    {
+      "command": "node --test --test-reporter=tap scripts/team-service-router-adapter.test.mjs scripts/team-service-workflow.test.mjs scripts/team-service-state-contract.test.mjs scripts/team-service-p2b-contract.test.mjs",
+      "exit_code": 0,
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-P2B-IMPLEMENTATION-002-COMBINED.tap",
+      "sha256": "eb7294e7528be5fc235d736507a15d7df1890b0f9986e2f667d89634b07b3310",
+      "observed": "PASS_32_OF_32"
+    }
+  ],
+  "assertion_observations": {
+    "AC-10-A01": "TAP_SUBTEST_1",
+    "AC-10-A02": "TAP_SUBTEST_2",
+    "AC-10-A03": "TAP_SUBTEST_3",
+    "AC-10-A04": "TAP_SUBTEST_4",
+    "AC-10-A05": "TAP_SUBTEST_5",
+    "AC-10-A06": "TAP_SUBTEST_6_ENDPOINT_SUCCESSOR_POSITIVE_AND_IDENTITY_POLLUTION_NEGATIVE",
+    "AC-10-A07": "TAP_SUBTEST_7"
+  },
+  "results": {
+    "ac10_tests": "PASS_7_OF_7",
+    "combined_tests": "PASS_32_OF_32",
+    "failed": 0,
+    "skipped": 0,
+    "normal_dispatch_attempts": 0,
+    "actual_provider_calls": 0
+  },
+  "implementation": {
+    "canonical_interpreter": "SINGLE_SHARED_MODULE",
+    "intent_store": "IN_MEMORY_HASH_CHAINED_CHECKPOINTS",
+    "provider": "INJECTED_LOCAL_IDEMPOTENT_MOCK",
+    "partial_success": "SAME_INTENT_PROVIDER_REQUERY",
+    "effect_uniqueness": "TASK_ID_EFFECT_KEY_ACROSS_GENERATIONS"
+  },
+  "limitations": [
+    "Durable filesystem binding and crash persistence remain P4 work.",
+    "The mock does not prove Team Router CLI get-or-prepare support.",
+    "No live provider, host-authenticated receipt, endpoint mutation, or message send was used.",
+    "This is not service_ready or full pnpm verify evidence."
+  ],
+  "verdict": "BLOCKERS_CLOSED_PENDING_OPUS_DELTA_RECHECK_AND_AC24_P2B"
+}

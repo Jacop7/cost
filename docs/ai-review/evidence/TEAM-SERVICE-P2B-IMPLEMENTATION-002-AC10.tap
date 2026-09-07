@@ -1,0 +1,52 @@
+TAP version 13
+# Subtest: AC-10-A01 같은 intent와 payload는 최초 route/token을 재사용한다
+ok 1 - AC-10-A01 같은 intent와 payload는 최초 route/token을 재사용한다
+  ---
+  duration_ms: 1.898
+  type: 'test'
+  ...
+# Subtest: AC-10-A02 같은 intent의 다른 payload는 충돌로 닫힌다
+ok 2 - AC-10-A02 같은 intent의 다른 payload는 충돌로 닫힌다
+  ---
+  duration_ms: 1.2786
+  type: 'test'
+  ...
+# Subtest: AC-10-A03 동시 요청은 intent별 하나의 논리 prepare로 직렬화된다
+ok 3 - AC-10-A03 동시 요청은 intent별 하나의 논리 prepare로 직렬화된다
+  ---
+  duration_ms: 34.0255
+  type: 'test'
+  ...
+# Subtest: AC-10-A04 provider 성공 뒤 결과 유실은 같은 key로 회수하며 blind retry와 선 UUID를 거부한다
+ok 4 - AC-10-A04 provider 성공 뒤 결과 유실은 같은 key로 회수하며 blind retry와 선 UUID를 거부한다
+  ---
+  duration_ms: 1.9912
+  type: 'test'
+  ...
+# Subtest: AC-10-A05 새 run_generation은 새 intent와 새 route/token을 만든다
+ok 5 - AC-10-A05 새 run_generation은 새 intent와 새 route/token을 만든다
+  ---
+  duration_ms: 7.3452
+  type: 'test'
+  ...
+# Subtest: AC-10-A06 같은 세대 successor retry는 endpoint를 identity로 섞지 않고 기존 route/token을 유지한다
+ok 6 - AC-10-A06 같은 세대 successor retry는 endpoint를 identity로 섞지 않고 기존 route/token을 유지한다
+  ---
+  duration_ms: 0.8689
+  type: 'test'
+  ...
+# Subtest: AC-10-A07 effect_key는 세대와 무관하고 같은 business effect의 중복 실행을 막는다
+ok 7 - AC-10-A07 effect_key는 세대와 무관하고 같은 business effect의 중복 실행을 막는다
+  ---
+  duration_ms: 0.3146
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 158.748
