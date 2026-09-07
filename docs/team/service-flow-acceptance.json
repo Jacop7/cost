@@ -1778,12 +1778,34 @@
       ],
       "gate_status": "NOT_EXECUTED",
       "admission_prework": {
-        "status": "AUTHORIZED_NOT_EXECUTED",
+        "status": "PASS_ADMISSION_PREWORK_DIRECT_OPUS_RECHECK_002_RUN_ID_003",
         "decision": {
           "path": "docs/ai-review/evidence/TEAM-SERVICE-P4-PLAN-OWNER-DECISION-002.json",
           "sha256": "4ef32a00be07a8c7135e50c869979f901e648613762ac39578f1dadec4632947",
           "decision_id": "DEC-TEAM-SERVICE-P4-PLAN-PREWORK-002"
         },
+        "decision_correction": {
+          "path": "docs/ai-review/evidence/TEAM-SERVICE-P4-PLAN-OWNER-DECISION-CORRECTION-003.json",
+          "sha256": "a7eb7d1ba06af0e634095877df56aa871a02c9f13561f4b0a1d4d7a97627da5c",
+          "decision_id": "DEC-TEAM-SERVICE-P4-PLAN-PREWORK-CORRECTION-003"
+        },
+        "model_candidate": {
+          "path": ".codex/mission-relay/candidates/team-service-p4-admission-009.json",
+          "sha256": "bc05761238ceaea9e13420792123b9215d32598a6dafd063bb6363fc86e88088"
+        },
+        "independent_review": {
+          "path": "docs/ai-review/evidence/TEAM-SERVICE-P4-ADMISSION-OPUS-RECHECK-002.md",
+          "sha256": "af588d9a4e511b740da33eb7969eb67b13af12ed251b36bb4a28d22b9e49c7de",
+          "verdict": "PASS_ADMISSION_PREWORK",
+          "formal_cli_receipt": false
+        },
+        "run": {
+          "path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P4-ADMISSION-003.json",
+          "sha256": "0f4dc5498ebb8fcddbf01e31e26d92c82a8ba77f1d51eafc2641931244f4f8c8",
+          "run_id": "AC24-P4-ADMISSION-003",
+          "entry_validates_future_implementation": false
+        },
+        "implementation_decision_required": true,
         "implementation_authorized": false,
         "real_send_authorized": false
       },
