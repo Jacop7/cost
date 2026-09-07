@@ -28,7 +28,7 @@
     {
       "path": "docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-001/advisory-ledger.json",
       "status": "present",
-      "contentSha256": "542b1a5f88ac78b49a6ddf874ee069a3e647c33abd420028348029e35790c3d5"
+      "contentSha256": "e39e7500f657884a813663a62ab9f00c0243d013c2f16400844640cfba22555f"
     },
     {
       "path": "docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-001/advisory-ledger.md",
@@ -48,7 +48,7 @@
     {
       "path": "docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-P0-001/opus-direct-advisory-r2.md",
       "status": "present",
-      "contentSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      "contentSha256": "cf16e4d15f4eba16eedaa736c26568248e5008fa522c37408237e6daf7bb5e2f"
     },
     {
       "path": "docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-P0-001/task.json",
@@ -68,7 +68,7 @@
     {
       "path": "docs/prototypes/three-surface-baseline.json",
       "status": "present",
-      "contentSha256": "99aed144076b3b5323f7b0b4f4975aad469a0f6c1ab16b76cc9c142194088e70"
+      "contentSha256": "09e50f3eb47457d6cf7b46bea9f8564da66256251818a8f238770360f42d59d5"
     },
     {
       "path": "docs/prototypes/three-surface-migration-backlog.json",
@@ -83,32 +83,32 @@
     {
       "path": "scripts/three-surface-advisory-ledger-check.mjs",
       "status": "present",
-      "contentSha256": "94fdfd584920a42f4f6ef44c2206a054b9c40c6dbdb062eae7be480b60592e08"
+      "contentSha256": "91abe7f9426bdbcf33a390747034334210c0da00c56cae8eefaed698efb66e1b"
     },
     {
       "path": "scripts/three-surface-advisory-ledger-check.test.mjs",
       "status": "present",
-      "contentSha256": "06c839dc0e5093d9862c82af5c02a8b002291db64e39fbad6a627d542beda179"
+      "contentSha256": "949b4d6215b6fe8b78d86f657d85e146e95bc2a189fd3ef0b1b7f5c91c15f47c"
     },
     {
       "path": "scripts/three-surface-byte-artifacts-check.mjs",
       "status": "present",
-      "contentSha256": "198f8594c119e4b6ec1f393c0da91f0cbc5af31c193b5b101931ef843f99cb7d"
+      "contentSha256": "512d2b9c46f0b28304ad81b4367924e4f29d456fee3f7f558de6680a33449547"
     },
     {
       "path": "scripts/three-surface-byte-artifacts-check.test.mjs",
       "status": "present",
-      "contentSha256": "2351220d8c252c1bd928e6d175aa470a33e393d144b43c7fc5ab4a6202ba694c"
+      "contentSha256": "be44026fd5c61886121e416a4580ceb8c9b28ac0d3c6ec4a76bcae11e4b71c0b"
     },
     {
       "path": "scripts/three-surface-p0-check.mjs",
       "status": "present",
-      "contentSha256": "725160c35afc7acc882a92631f7b40a6e1328967196108656e3be090079078c0"
+      "contentSha256": "cae47e7f01067973f8b8b5c5fa95275d25ae5a39e66c4830b9f3f3618fa84418"
     },
     {
       "path": "scripts/three-surface-p0-check.test.mjs",
       "status": "present",
-      "contentSha256": "46a94c51b3437c227e9e5b4ebfc8586d9bce8920bf394a2367abca1fe8d944e1"
+      "contentSha256": "759ae0635fb5b711e0235b4f0ade60d286f1ee659a5062ccfb3716dedd4b6290"
     }
   ],
   "readmeMarker": {
