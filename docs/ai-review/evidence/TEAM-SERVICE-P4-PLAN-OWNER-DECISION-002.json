@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "decision_id": "DEC-TEAM-SERVICE-P4-PLAN-PREWORK-002",
+  "recorded_at": "2026-09-07T16:28:03+09:00",
+  "authority": "HUMAN_01",
+  "source": "사용자가 P4 예상 시간과 전용 승인 필요 범위를 확인한 직후 현재 Codex 작업에서 '진핸해줘'라고 응답함",
+  "decision": "AUTHORIZE_P4_PLAN_TEST_AND_ADMISSION_PREWORK_ONLY",
+  "candidate": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-P4-PLAN-OWNER-DECISION-CANDIDATE-002.json",
+    "sha256": "b81b2b62b02b24703b556ce7671e8a7112abd8439b3285a572e8a814db1119d2"
+  },
+  "independent_plan_review": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-P4-PLAN-OPUS-RECHECK-002.md",
+    "sha256": "6670c5a9d1b2957f124a9909cf5337c066e316eefd176dabe650f37bdecd8f53",
+    "verdict": "PASS_DELTA_B1_B2",
+    "remaining_blocker_before_this_decision": "OWNER_AUTHORITY_ONLY",
+    "formal_cli_receipt": false
+  },
+  "reviewed_plan_bytes": [
+    {
+      "path": "docs/team/service-flow-p4-contract.json",
+      "sha256": "612a4de268a7dcac7a60779f911ab57d9008118d58c657cd85e0f706accce2ae"
+    },
+    {
+      "path": "docs/team/service-flow-acceptance.json",
+      "sha256": "8b688167dc70b4a7344bcc9509ea9e2a96855ff18cce30a58b51c3869313fcdd"
+    },
+    {
+      "path": "scripts/team-service-p4-contract.test.mjs",
+      "sha256": "5b9024803db6d131f716dd47062cb0a76321eb38667e2b2c71f94ba91b06b086"
+    }
+  ],
+  "supersedes_for_p4_scope": "DEC-TEAM-SERVICE-P3-COMPLETION-006 forbidden_actions[0]",
+  "does_not_rewrite_historical_decision": true,
+  "allowed_actions": [
+    "P4 PLAN_TEST 상태와 이 결정의 CURRENT 등록",
+    "P4 전용 비활성 모델 범위 후보 009 작성·검증·봉인",
+    "P4 AC-24 STORE_DRIVER 입장 번들·무발송 하네스 작성과 실행",
+    "P4 입장 후보에 대한 독립 Opus 검수 요청"
+  ],
+  "allowed_files": [
+    "docs/ai-review/evidence/TEAM-SERVICE-FLOW-CURRENT.json",
+    "docs/team/service-flow-acceptance.json",
+    "docs/team/service-flow-p4-contract.json",
+    "scripts/team-service-p4-contract.test.mjs",
+    ".codex/mission-relay/candidates/team-service-local-core-009.json",
+    ".codex/mission-relay/candidates/team-service-local-core-009.json.sha256",
+    "docs/team/service-flow-p4-admission-bundle.json",
+    "scripts/team-service-p4-admission.mjs",
+    "scripts/team-service-p4-no-dispatch.test.mjs",
+    "docs/ai-review/evidence/TEAM-SERVICE-P4-PLAN-TEST-001.tap",
+    "docs/ai-review/evidence/TEAM-SERVICE-P4-PLAN-TEST-001.json",
+    "docs/ai-review/evidence/TEAM-SERVICE-AC24-P4-ADMISSION-001.tap",
+    "docs/ai-review/evidence/TEAM-SERVICE-AC24-P4-ADMISSION-001.json",
+    "docs/ai-review/evidence/TEAM-SERVICE-P4-ADMISSION-REVIEW-CANDIDATE-001.json",
+    "docs/ai-review/evidence/TEAM-SERVICE-P4-ADMISSION-OPUS-001.md"
+  ],
+  "forbidden_actions": [
+    "P4 store, driver 또는 runtime ACL 구현",
+    "실제 provider 또는 팀 채팅 발송",
+    "Team Router runtime, activation, policy 또는 endpoint 변경",
+    "앱 제품, DB, migration 또는 Supabase 변경",
+    "스테이징 또는 운영 변경",
+    "색 대비 결정 계보 실패 면제",
+    "service_ready, host_authenticated, stage 3 PASS 또는 full verify PASS 주장"
+  ],
+  "p4_implementation_authorized": false,
+  "service_ready": false,
+  "real_send_authorized": false
+}
