@@ -1,8 +1,8 @@
 {
   "schemaVersion": 3,
   "stage": "P2",
-  "baselineCommit": "2f2faf17704705652b64b7dbf1041cc964ffed92",
-  "baselineTree": "37443ed288c07135ed0c2628ab258fecc2497f1f",
+  "baselineCommit": "ed02fbbc54db10dbab9a259f5a445e2a2dc0dd58",
+  "baselineTree": "21fb3124c8c3f3f095cda79b31e19870bdb04f64",
   "anchors": {
     "productBaseline": {
       "commit": "3448884d7219227dce369af45cb2be290ed12f3a",
@@ -67,7 +67,7 @@
     },
     {
       "path": "scripts/design-token-s4-check.mjs",
-      "textSha256": "10175c16832fed6c1a993577d89093bff04020f2805dc3f2f0e4f1c23bd9822b"
+      "textSha256": "a2c21db51acb73cfa352e7e6c64681aaf9d3535853a77dd190b2c81ad522c65d"
     },
     {
       "path": "scripts/three-surface-advisory-ledger-check.mjs",
@@ -79,7 +79,7 @@
     },
     {
       "path": "scripts/three-surface-p0-check.mjs",
-      "textSha256": "87f6c9e3cfc2ceed1e84134142c3e322a22a5097f50c0a3b9a2176c5af5b74c2"
+      "textSha256": "8cdcbb2423eec7e4280f874b158908ce602372bc6aae5e3ced88bea2238d0708"
     },
     {
       "path": "scripts/touch-target-audit.mjs",
@@ -8653,6 +8653,7 @@
     "componentTransfer": 6,
     "p3Backlog": 48,
     "p0Regression": 654,
+    "overlap": 0,
     "combinedUniqueOpen": 702,
     "rationale": "P0 재기준선 이후 S4 gate가 PASS하므로 successor의 P3 backlog는 P0 regression과 중복되지 않는 별도 open 집합이다."
   },
@@ -8735,7 +8736,7 @@
   },
   "provenance": {
     "writtenBy": "--write",
-    "headAtWrite": "2f2faf17704705652b64b7dbf1041cc964ffed92",
+    "headAtWrite": "ed02fbbc54db10dbab9a259f5a445e2a2dc0dd58",
     "tokens": [
       "P2-S4-SUCCESSOR@071e228ee5ba998bee99528beb0611551e2df38a"
     ]
