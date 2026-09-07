@@ -47,9 +47,9 @@ test('플랫폼·글자 배율별 스크롤 위치가 공통 배율값보다 우
     kind: 'scroll',
     xByFontScale: { '2': 200 },
     yByFontScale: { '2': 1600 },
-    yByRuntime: { 'android@2': 3000 },
+    yByRuntime: { 'android@2': 3000, 'ios@2': 1800 },
   };
-  assert.deepEqual(resolveActionForRuntime(action, 'ios', 2), { ...action, x: 200, y: 1600 });
+  assert.deepEqual(resolveActionForRuntime(action, 'ios', 2), { ...action, x: 200, y: 1800 });
   assert.deepEqual(resolveActionForRuntime(action, 'android', 2), { ...action, x: 200, y: 3000 });
 });
 

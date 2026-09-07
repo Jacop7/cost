@@ -17,7 +17,7 @@ import { Pressable, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
 import { Button, ConfirmSheet, Icon, Sheet } from '@/components/kit';
 import { useState } from 'react';
-import { COLOR, T, radius, rowMinHeight, space, TYPE } from '@/theme/tokens';
+import { COLOR, T, minTouchTarget, radius, rowMinHeight, space, TYPE } from '@/theme/tokens';
 import { useCheckRecipeShortages, type ShortageRecipe } from '../hooks';
 import { ShortageWarningSheet } from './ShortageWarningSheet';
 import { LateCloseSheet } from './LateCloseSheet';
@@ -45,17 +45,22 @@ function dayParts(d: string): [string, string] {
 
 /** 프로토타입 `.pill` — 11px/850, 안쪽 4/7. */
 function Pill({ text, bg, fg, onPress }: { text: string; bg: string; fg: string; onPress?: () => void }) {
-  const Wrap = onPress ? Pressable : View;
-  return (
-    <Wrap
-      onPress={onPress}
-      accessibilityRole={onPress ? 'button' : undefined}
-      accessibilityLabel={onPress ? `${text} 바꾸기` : undefined}
-      style={{ flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: 4, paddingHorizontal: space.sm, borderRadius: radius.sm, backgroundColor: bg }}
-    >
+  const content = <>
       <Text style={{ fontSize: TYPE.captionSm.fontSize, fontWeight: '800', color: fg }}>{text}</Text>
       {onPress ? <Icon name="chevronDown" size={11} color={fg} /> : null}
-    </Wrap>
+    </>;
+  const pillStyle = { flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: 4,
+    paddingHorizontal: space.sm, borderRadius: radius.sm, backgroundColor: bg } as const;
+  if (!onPress) return <View style={pillStyle}>{content}</View>;
+  return (
+    <View style={{ height: minTouchTarget, marginVertical: -space.sm, justifyContent: 'center' }}>
+      <Pressable
+        onPress={onPress} hitSlop={{ top: space.sm, bottom: space.sm, left: 0, right: 0 }}
+        accessibilityRole="button" accessibilityLabel={`${text} 바꾸기`} style={pillStyle}
+      >
+        {content}
+      </Pressable>
+    </View>
   );
 }
 
