@@ -6,6 +6,7 @@
 > R2 target: `9ded66e2bbc5a58486aa9ae15b226a1aa3ceff9a`
 > R3 target: `9da4e43559ce2d953652c7b279d7584365e3a519`
 > R4 target: `08741ab5f0fc1e6ca93b8d2a1dabaa75d6553b1d`
+> R5 target: `a02dec70b273e8db692f483b62bc5fbd18f9144b`
 
 | ID | 심각도 | 제기 회차 | 상태 | 처리 근거 | 검증 SHA |
 |---|---|---|---|---|---|
@@ -75,3 +76,11 @@
 | R4-m3 | Minor | R4 | fixed | LF 규약을 텍스트 산출물로 한정·PNG `-text` | pending R5 |
 | R4-m4 | Minor | R4 | fixed | 시각 캡처 renderer·OS·SDK 결속과 rebaseline trigger | pending R5 |
 | R4-m5 | Minor | R4 | fixed | 기획안 최소 검수점에 P0 추가 | pending R5 |
+| R5-M1 | Major | R5 | fixed | unsupported의 states 금지·route/fixture만 상태 렌더 의무·비어 있는 배열 거부 | pending R6 |
+| R5-m1 | Minor | R5 | fixed | parity별 temporary divergence 허용 axes 행렬 | pending R6 |
+| R5-m2 | Minor | R5 | fixed | registry `migrationPending`에서 생성하는 P3→P5 backlog projection | pending R6 |
+| R5-m3 | Minor | R5 | fixed | 사람 선언 key가 README 정식 ID에 없는 고아 fixture | pending R6 |
+| R5-m4 | Minor | R5 | fixed | PNG baseline `.gitattributes -text -diff`와 문서 계약 | pending R6 |
+| R5-m5 | Minor | R5 | fixed | 만료 검사 commit-time/current-time 분리·revert remediation | pending R6 |
+| R5-m6 | Minor | R5 | fixed | spike는 정적 diff, 첫 catalog artifact부터 heavy gate | pending R6 |
+| R5-m7 | Minor | R5 | fixed | structure decision에 채택 구조별 production 강제 연결 절차 | pending R6 |

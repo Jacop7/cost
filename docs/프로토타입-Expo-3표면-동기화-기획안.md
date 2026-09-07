@@ -1,6 +1,6 @@
 # 프로토타입·Expo 3표면 동기화 기획안
 
-> 상태: **Opus 4차 자문 반영 · R5 재검수 대기 초안**
+> 상태: **Opus 5차 자문 반영 · R6 재검수 대기 초안**
 > 작성일: 2026-09-07
 > 적용 범위: 프로토타입 · 기본 Expo 앱 · Expo 화면 카탈로그
 > 실행 순서: [`프로토타입-Expo-3표면-동기화-세부실행서.md`](./프로토타입-Expo-3표면-동기화-세부실행서.md)
@@ -137,10 +137,11 @@ Button, Icon, Input, Select, Checkbox, Switch, Chip, Card, Header, Sheet, Tab이
 | `parity` | `aligned`·`divergent`·`specOnly`·`expoOnly` |
 | `reason` | 불일치·제외의 근거와 후속 책임 |
 | `temporaryDivergence` | 정상 parity와 직교하는 임시 예외 객체 `{axes, owner, approvedBy, expiresAt, targets}` |
+| `migrationPending` | P3→P5 단계적 수렴 객체 `{owner, expiresAt, targets}`. `parity=divergent`에서만 허용 |
 
 컬럼 소유를 분리한다. `screenId`·`domain`·`expoRoute`·`sourceComponent`·`prototypeTargets`는
 README의 정식 ID, Expo route/AST, prototype registry에서 생성한다. `catalogMode`·`fixtureKind`·
-`fixtureRef`·`states`·`parity`·`reason`과 `temporaryDivergence`만 ID별 선언 파일에서 사람이 쓴다.
+`fixtureRef`·`states`·`parity`·`reason`·`temporaryDivergence`·`migrationPending`만 ID별 선언 파일에서 사람이 쓴다.
 검사기는 두 입력을 합쳐 최종 레지스트리를 재생성하고 committed bytes와 일치하는지 확인한다.
 생성 컬럼의 수기 편집은 실패한다. README의 구현 상태 블록은 최종 레지스트리에서 생성해 상태의
 이중 권위를 없앤다.
@@ -172,17 +173,20 @@ parity별 필드 계약은 다음과 같다. `R`은 필수, `O`는 선택, `F`�
 
 | parity | `expoRoute` | `sourceComponent` | `prototypeTargets` | `catalogMode` | `states` |
 |---|---:|---:|---:|---:|---:|
-| `aligned` | R | R | R | R | R |
-| `divergent` | R | R | R | R | R |
+| `aligned` | R | R | R | R | R* |
+| `divergent` | R | R | R | R | R* |
 | `specOnly` | F | F | R | F | F |
-| `expoOnly` | R | R | F | R | R |
+| `expoOnly` | R | R | F | R | R* |
 
-생성기는 이 행렬로 필드를 생성·보존·거부한다. 각 parity마다 필수 필드 누락, 금지 필드 삽입,
+`R`은 필드가 존재하고 배열이면 비어 있지 않다는 뜻이다. `R*`은 `catalogMode=route|fixture`일 때
+비어 있지 않은 필수이고, `catalogMode=unsupported`일 때 금지다. 생성기는 이 행렬로 필드를
+생성·보존·거부한다. 각 parity마다 필수 필드 누락, 금지 필드 삽입,
 선택 필드의 잘못된 형식을 음성 fixture로 검증한다. `specOnly`는 parity 자체가 catalog 축 부재의
 근거이며 `states`는 prototype target 쪽 상태 표현을 사용하므로 레지스트리에서는 금지한다.
-`temporaryDivergence`는 parity 값이 아니므로 어느
-parity와도 공존할 수 있지만 `axes`가 비어 있으면 실패한다. 허용 축은 `routeId`·`prototype`·`catalog`·
-`visual`·`state`뿐이며 축별 영향 target을 요구한다. 만료 후에는 이 객체만 삭제해 정상 parity를
+`temporaryDivergence`는 parity 값이 아니므로 어느 parity와도 공존할 수 있지만 `axes`가 비어 있으면
+실패한다. 허용 축은 `routeId`·`prototype`·`catalog`·`visual`·`state`뿐이며 축별 영향 target을 요구한다.
+`aligned|divergent`는 다섯 축, `specOnly`는 `prototype|visual|state`, `expoOnly`는
+`routeId|catalog|visual|state`만 허용한다. 부적합 조합은 실패한다. 만료 후에는 이 객체만 삭제해 정상 parity를
 복원하고 parity 자체를 바꾸지 않는다. 잘못된 축, 빈 축, 엉뚱한 후속 commit을 음성 시험한다.
 
 `catalogMode=route`는 fixture 필드를 금지한다. `catalogMode=fixture`는 `fixtureKind`와 `fixtureRef`를
@@ -205,7 +209,10 @@ parity와도 공존할 수 있지만 `axes`가 비어 있으면 실패한다. �
 6. 레지스트리·렌더·접근성·국제화 감사를 재실행하고 정확한 SHA로 검수받는다.
 
 어느 한 표면만 바꾼 커밋은 완료가 아니다. P2~P5 마이그레이션 중에는 항목별 담당·만료일과
-미해결 상한을 가진 P5 대기 장부를 사용하며, 상한 초과 또는 만료 시 다음 배치가 실패한다.
+미해결 상한을 가진 `three-surface-migration-backlog.json`을 사용한다. 이는 registry의
+`migrationPending` 객체에서만 생성하는 읽기 전용 projection이며 고아·누락·수기 수정은 실패한다.
+영구 divergent와 emergency `temporaryDivergence`는 포함하지 않는다. 상한 초과 또는 만료 시 다음
+배치가 실패한다.
 
 제품 긴급 수정은 지정된 승인자가 승인한 경우 먼저 배포할 수 있다. 승인자는
 `docs/prototypes/three-surface-approvers.json`의 `PRODUCT-OWNER` 역할이어야 하고 `approvedBy`는 목록에
@@ -217,9 +224,10 @@ parity와도 공존할 수 있지만 `axes`가 비어 있으면 실패한다. �
 
 P2 전 `three-surface-baseline.json`에 `migrationBacklogMax`와 `emergencyDivergenceMax`를 각각 한 번
 고정하며, 상한 변경은 별도 검수 commit에서만 허용한다. 같은 commit에서 상한을 높여 새 항목을
-통과시키면 실패한다. P3·P5는 전자를, 긴급 절차는 후자를 사용한다. `expiresAt`은 UTC ISO-8601이고 평가 시각을
-산출물에 기록한다. committer date보다 최대 7일 뒤까지만 허용하며, 시간 의존 검사 결과는 byte-stable
-산출물 hash와 별도 필드로 기록한다. 만료 시 후속 동기화 commit 외 변경을 차단한다.
+통과시키면 실패한다. P3·P5는 전자를, 긴급 절차는 후자를 사용한다. `expiresAt`은 UTC ISO-8601이고
+검사기는 committer date 기준 재현 모드와 현재 시각 운영 모드를 별도 PASS line으로 낸다. 평가 시각은
+byte-stable 산출물 hash와 별도 필드로 기록한다. 만료일은 committer date보다 최대 7일 뒤까지만
+허용하며, 현재 시각 만료 시 후속 동기화 commit 외 변경을 차단한다.
 
 ## 7. 품질 계약
 
@@ -230,18 +238,21 @@ P2 전 `three-surface-baseline.json`에 `migrationBacklogMax`와 `emergencyDiver
   데이터 계산은 실패한다. 허용 경계 양성 fixture와 추가 JSX·중첩 초과·style 음성 fixture를 둔다.
 - 카탈로그 sentinel, route, fixture module은 native와 web **운영 산출물에 존재하지 않아야 한다**.
   런타임의 production 거부는 이 부재 검사의 보조 방어일 뿐 대체 증거가 아니다.
-- 빌드 게이트는 transform 뒤에도 보존되는 sentinel로 ① 정상 production에서 부재, ② 동일 production
-  구성에 강제로 카탈로그를 켰을 때 존재, ③ development에서 존재를 각기 독립 PASS line으로 증명한다.
+- 빌드 게이트는 transform 뒤에도 보존되는 sentinel로 ① 정상 production에서 부재, ② 채택 구조의
+  decision record가 정한 production 강제 연결 절차에서 존재, ③ development에서 존재를 각기 독립
+  PASS line으로 증명한다.
   Vitest 플래그 시험과 native·web bundle/route manifest 게이트를 분리한다.
 - 제품 코드의 `src/dev/**` import 0건이며 위반 음성 시험이 통과한다.
 - 운영 Supabase ref를 주입하면 카탈로그 부팅이 하드 실패한다.
-- P4 spike 이후 exact review SHA와 protected pre-merge 환경에서 `prototype:catalog:isolation`과
-  `prototype:catalog:imports`를 필수 실행한다. 문서 전용 중간 commit마다 번들을 요구하지 않지만,
+- P4 구조 spike는 route manifest·app config·provider graph의 정적 diff gate만 실행한다. 첫 catalog
+  sentinel·route·fixture가 들어간 뒤 exact review SHA와 protected pre-merge 환경에서
+  `prototype:catalog:isolation`과 `prototype:catalog:imports`를 필수 실행한다. 문서 전용 중간 commit마다 번들을 요구하지 않지만,
   긴급 commit도 검수·병합 후보에서는 면제하지 않는다. `--no-bundle`은 두 gate를 충족하지 않는다.
 - 화면 ID·라우트·prototype target·catalog entry의 양방향 미등록이 0건이다.
 - 새 legacy 색 별칭과 임의 팔레트가 0건이며 3계층 토큰 계약을 통과한다.
 - 320px, 글자 200%, 영어 스트레스, Android·iOS safe-area와 터치 영역을 검증한다.
-- loading·empty·error·ready를 지원한다고 적은 화면은 각 상태가 실제로 렌더돼야 한다.
+- `catalogMode=route|fixture`에서 loading·empty·error·ready를 지원한다고 적은 화면은 각 상태가 실제로
+  렌더돼야 한다. `unsupported`는 `states`를 선언할 수 없고 prototype 상태는 `prototypeTargets`가 소유한다.
 - 동일 provider 계약은 import 문자열뿐 아니라 해석된 module identity/path와 order-sensitive provider
   chain snapshot이 일치해야 한다. provider 추가·삭제·순서 변경 음성 fixture를 둔다.
 - 최신 제품 변경 때문에 과거 디자인 토큰 exact gate가 어긋난 부분은 삭제하거나 우회하지 않고,
@@ -282,6 +293,9 @@ P2 전 `three-surface-baseline.json`에 `migrationBacklogMax`와 `emergencyDiver
   schema는 `findingId`·`round`·`severity`·`targetSection`·`disposition`·`closingSha`·`verifier`를
   요구한다. 완료 round의 모든 Finding이 있어야 하며 `closed`는 closing SHA 없이는 실패한다.
   `open|deferred|rejected-with-rationale`도 근거를 요구하고 P0 전 checker가 전수 대조한다.
+- Opus 4차 자문 대상은 `08741ab5f0fc1e6ca93b8d2a1dabaa75d6553b1d`, Opus 5차 자문 대상은
+  `a02dec70b273e8db692f483b62bc5fbd18f9144b`이며 둘 다 `CHANGES_REQUIRED`였다. 대응은 같은
+  기계 장부에 이어서 기록하고 새 exact SHA로 재검수한다.
 - 이 초안은 구현 전에 Opus의 `OPUS_DIRECT_ADVISORY` 검수를 받는다. 이는 사용자 요청에 따른
   계획 자문이며 Fable 승계나 R2/R3 종결 증거가 아니다. 자문 대상 exact SHA와 판정을 기록하고,
   자문 뒤 문서 bytes가 바뀌면 P0 착수 전에 같은 범위로 재확인한다.

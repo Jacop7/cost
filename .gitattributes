@@ -24,7 +24,7 @@ docs/prototypes/three-surface-baseline.json text eol=lf
 docs/prototypes/three-surface-approved-visual-changes.json text eol=lf
 docs/prototypes/three-surface-native-evidence.json text eol=lf
 docs/prototypes/three-surface-approvers.json text eol=lf
-docs/prototypes/three-surface-visual-baseline/** -text
+docs/prototypes/three-surface-visual-baseline/** -text -diff
 
 # Team service review/checkpoint artifacts are hashed as raw bytes.
 docs/ai-review/evidence/TEAM-SERVICE-* -text -whitespace
