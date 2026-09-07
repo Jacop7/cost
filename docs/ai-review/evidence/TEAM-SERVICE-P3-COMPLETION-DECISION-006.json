@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "decision_id": "DEC-TEAM-SERVICE-P3-COMPLETION-006",
+  "recorded_at": "2026-09-07T15:30:00+09:00",
+  "authority": "HUMAN_01",
+  "source": "현재 Codex 작업에서 사용자가 P3 선행 작업부터 처리하고 이어서 자동 진행하라고 명시함",
+  "decision": "ACCEPT_P3_LOCAL_COMPLETION_ONLY",
+  "candidate": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-P3-COMPLETION-RECHECK-CANDIDATE-005.json",
+    "sha256": "d5645e4a8a640eafd34342abbb64669f4b682766d868e21a55bf2948bdf333b8"
+  },
+  "independent_review": {
+    "provider": "CLAUDE_OPUS_DIRECT_COWORK",
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-P3-COMPLETION-OPUS-RECHECK-005.md",
+    "sha256": "9db1d5a077ee8dc156c5365ef0b9ef6a1c5f079c3298319e118cd9b60bad5d16",
+    "verdict": "PASS",
+    "p3_completion_may_be_recorded": true,
+    "formal_cli_receipt": false
+  },
+  "review_addendum": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-P3-COMPLETION-OPUS-ADDENDUM-006.md",
+    "sha256": "37b49b4e7f982e28a2b2ade2dcca7957b10c54a35dd5007dbb150d02522b12b2",
+    "verdict": "PASS",
+    "p4_prework_may_begin": false,
+    "p4_block_reason": "COLOR_CONTRAST_DECISION_LINEAGE"
+  },
+  "completion_run": {
+    "run_id": "AC24-P3-COMPLETION-004",
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P3-COMPLETION-004.json",
+    "sha256": "38b5c88a8ea31e87d4e3b22fe97a7f74ba5c4df58c69b2f8bdae5a4923fa7c8c",
+    "raw_tap_path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P3-COMPLETION-004.tap",
+    "raw_tap_sha256": "8458a844ab74c6bd14ed7500f3ed66b28152f8a6824800f3c99a44759dfb8cde"
+  },
+  "completion_bundle": {
+    "path": "docs/team/service-flow-p3-completion-bundle-004.json",
+    "sha256": "314bfd37325f818aa54a2d18b2f8c6743e01ed82b6efadfec65d4e57e1f60a2a",
+    "target_commit": "aaeb3b7"
+  },
+  "post_registration_verification": {
+    "run_id": "TEAM-SERVICE-P3-REGISTRATION-VERIFY-005",
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-P3-REGISTRATION-VERIFY-005.json",
+    "sha256": "363b1a38aaea5aa8138a5c8e55d014140f429ea8abddf8cbde76b6c0fd202d46",
+    "replaces_completion_run": false
+  },
+  "pipeline_non_regression": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-P3-VERIFY-NO-DB-006.json",
+    "sha256": "7847bd67c68228c6647f8062f225d8573615f653a3b9e222bbae08535ad154fa",
+    "p3_local_suite": "PASS_33_OF_33",
+    "stage_3_complete": false,
+    "full_verify_passed": false,
+    "failure_owner": "COLOR_CONTRAST_DECISION_LINEAGE",
+    "waived": false
+  },
+  "allowed_actions": [
+    "P3 로컬 구현 완료 상태 등록",
+    "P3 완료 검수와 사람 결정의 SHA 결속",
+    "P4 차단 사유를 색 대비 결정 계보 문제로 기록"
+  ],
+  "forbidden_actions": [
+    "P4 선작업 또는 구현 착수",
+    "실제 provider 또는 팀 채팅 발송",
+    "Team Router runtime, activation, policy 또는 endpoint 변경",
+    "앱 제품 동작, DB, migration 또는 Supabase 변경",
+    "스테이징 또는 운영 변경",
+    "service_ready, host_authenticated, stage 3 PASS 또는 full pnpm verify PASS 주장"
+  ],
+  "service_ready": false,
+  "real_send_authorized": false
+}
