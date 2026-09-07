@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "kind": "EXACT_P2B_COMPLETION_BUNDLE",
+  "gate_id": "P2b",
+  "profile_id": "P2B",
+  "run_id": "AC24-P2B-003",
+  "bundle_commit": "bf450a6940bb02958438231432f34189cf49c5c8",
+  "target_modules": [
+    "scripts/team-service-intent-store.mjs"
+  ],
+  "scenario": "scripts/team-service-p2b-scenario.mjs",
+  "scenario_ids": ["AC-10"],
+  "assertion_ids": [
+    "AC-10-A01",
+    "AC-10-A02",
+    "AC-10-A03",
+    "AC-10-A04",
+    "AC-10-A05",
+    "AC-10-A06",
+    "AC-10-A07"
+  ],
+  "modules": [
+    {
+      "path": "scripts/team-service-intent-store.mjs",
+      "sha256": "b8c60edddf656a6e28163ee8f3f4a5fcde62659f46cfa7e869c58f5fe7f118e5"
+    },
+    {
+      "path": "scripts/team-service-canonical.mjs",
+      "sha256": "e253b2b3a64a4a929bdd46e4425bdd7864edb5130af29e27926dd48a87148f9d"
+    },
+    {
+      "path": "scripts/team-service-p2b-scenario.mjs",
+      "sha256": "a3c1bb0407605f425e4f81d1e9abaca8af7ab753803e8d1a32d5ba542f0551d9"
+    }
+  ],
+  "fixture_files": [
+    {
+      "path": "docs/team/service-flow-p2b-contract.json",
+      "sha256": "ec2076e29497970d47c0cef0e07da53a9f9cbfc0d3baabdb8f1a6462f13f1ae3"
+    }
+  ],
+  "harness_files": [
+    {
+      "path": "scripts/team-service-p2b-no-dispatch.test.mjs",
+      "sha256": "fa127f6d6ad116637103a9fd874e370c959a4abf4fd0d3df2846434320179412"
+    },
+    {
+      "path": "scripts/team-service-admission.mjs",
+      "sha256": "34f5f222b23a7f52cdc53efdf4d2e5780bbe928ddaf9f247fe36cfdc47a840e1"
+    }
+  ],
+  "supporting_regressions": [
+    {"path": "scripts/team-service-router-adapter.test.mjs", "sha256": "d5ea5d6ca448447b6922edf0ddc1c810a432e86b54cc1851d232c07e5c67b829"},
+    {"path": "scripts/team-service-workflow.test.mjs", "sha256": "7c12d51bacfbde67f97f4921be9809fc98ef6b40a034cc20c02cf7cc8d8139fc"},
+    {"path": "scripts/team-service-state-contract.test.mjs", "sha256": "1c136f5655ba236c4c1c22ae84622eae92fcc2d2a576a9ffadbf32256af06f17"},
+    {"path": "scripts/team-service-p2b-contract.test.mjs", "sha256": "b2a0bd7b8f282c7997b5451278d28da0785f5f31cc68b300973794228af592a3"}
+  ],
+  "boundary": {
+    "evidence_mode": "LOCAL_MOCK",
+    "host_dependency": false,
+    "real_send_authorized": false,
+    "router_cli_get_or_prepare": "NOT_BOUND",
+    "durable_filesystem_binding": "DEFERRED_TO_P4",
+    "service_ready": false
+  }
+}
