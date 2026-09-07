@@ -74,6 +74,11 @@ try {
   git(['add', '--', 'docs/prototypes/three-surface-baseline.json'], temp);
   git(['-c', 'user.name=Three Surface Test', '-c', 'user.email=test@example.invalid', 'commit', '-m', 'classification baseline receipt'], temp);
   const migratedText = readFileSync(baselinePath, 'utf8');
+  const badDelta = JSON.parse(migratedText);
+  badDelta.classificationMigration.failureLineDelta[0].added.push('수기 차집합 오염');
+  writeFileSync(baselinePath, canonical(badDelta));
+  expectFail(run([]), /실패선 차집합/);
+  writeFileSync(baselinePath, migratedText);
   const migrated = JSON.parse(migratedText); delete migrated.classificationMigration;
   writeFileSync(baselinePath, canonical(migrated));
   expectFail(run([]), /classification 이력 변경에 migration/);
@@ -91,8 +96,8 @@ try {
   const bootstrapCommit = git(['rev-parse', 'HEAD'], bootstrapRoot).stdout.trim();
   expectFail(run(['--write', `--expect-commit=${bootstrapCommit}`], bootstrapRoot), /--bootstrap/);
   rmSync(bootstrapRoot, { recursive: true, force: true });
-  assert.equal(passed, 17);
-  console.log(`three-surface P0 실행 음성 계약 ${passed}/17 PASS`);
+  assert.equal(passed, 18);
+  console.log(`three-surface P0 실행 음성 계약 ${passed}/18 PASS`);
 } finally {
   git(['worktree', 'remove', '--force', temp]);
   rmSync(temp, { recursive: true, force: true });
