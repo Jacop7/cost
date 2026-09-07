@@ -85,10 +85,10 @@ test('AC-22 service contract', () => {
   assert.equal(providerAccess, 1);
 });
 
-const completionBundle = process.env.P3_COMPLETION_BUNDLE_PATH
-  ?? 'docs/team/service-flow-p3-completion-bundle-001.json';
-if (existsSync(resolve(root, completionBundle))) {
+const completionBundle = process.env.P3_COMPLETION_BUNDLE_PATH;
+if (completionBundle) {
   test('AC-24 P3 completion bundle is exact and remains no-send', () => {
+    assert.equal(existsSync(resolve(root, completionBundle)), true);
     const observation = verifyP3CompletionBundle(completionBundle, { cwd: root });
     assert.deepEqual(observation.scenario_ids, ['AC-01', 'AC-03', 'AC-06', 'AC-07', 'AC-22']);
     assert.equal(observation.target_modules.length, 14);
