@@ -1,12 +1,12 @@
 # 전체 페이지 프로토타입 · 디자인 맥락 장부
 
-> 현재 동기화 ID: `DS-20260907-003`
+> 현재 동기화 ID: `DS-20260907-004`
 > 문서 동기화 상태: `SYNCED`
 > 전체 UI 작업 상태: `IN_PROGRESS`
 > 마지막 갱신: `2026-09-07`
 > 공통 변경: `예`
-> UI 변경: `예`
-> 변경 기록: `PRT-294`
+> UI 변경: `아니오`
+> 변경 기록: `PRT-295`
 
 ## 1. 문서 역할
 
@@ -44,6 +44,24 @@
 
 ## 4. 가장 최근 작업
 
+### DS-20260907-004 · PRT-295 최종 검수 Minor 정정
+
+- 작업 성격: PRT-294 Opus exact-SHA 검수의 비차단 Minor 2건을 닫는다. 제품 UI와 원시
+  네이티브 frame은 바꾸지 않는다.
+- 확대 증거 정정: 계약 검사기의 정렬·짝짓기 규칙으로 다시 계산한 iOS touch frame 변화는
+  `169/246(68.7%)`이다. 이전 `179/246(72.8%)`은 검수자가 정렬 없이 등장 순서로 짝지은
+  임시 수치였으며, 통과 하한 30% 판정에는 영향이 없다.
+- 회귀 방어: 확대 frame 비율 계약을 `0.3` 미만으로 낮추면 음성 시험이 실패하도록 수준을
+  고정했다.
+- 완료 조건:
+  - PRT295-TOUCH-CONTRACT · `../../scripts/native-touch-runtime-contract.json`
+  - PRT295-TOUCH-CHECK · `../../scripts/native-touch-runtime-evidence-check.mjs`
+  - PRT295-TOUCH-TEST · `../../scripts/native-touch-runtime-evidence-check.test.mjs`
+  - PRT295-REVIEW-RECORD · `0_full-page-flow-prototype-ui-applied-review.md`
+- 미완료·후속: R2/R3 공식 종결에는 Fable 재감사 또는 소유자의 exact-SHA 위험 수용이 필요하다.
+- 다음 시작점: 감사 4종과 파생 산출물 재실행 → `DS-20260907-004 -Finalize` → clean
+  checkout 검증 → Opus 독립 재검수.
+
 ### DS-20260907-003 · PRT-294 최종 증거 래칫과 재봉인
 
 - 작업 성격: PRT-287~293의 iOS 실제 접근성 재채집, 양 플랫폼 터치 종결 후보, W1 재측정,
@@ -52,7 +70,7 @@
 - 네이티브 터치 결과: Android 1×/2×와 iOS 1×/2.143× 각각 target 26, 유효 미달·계약 밖
   미판정 미달·물질적 형제 중첩 0. iOS 실제 3점 탭은 안쪽 발화·직접 host parent 밖 차단·
   overflow-visible 조부모 밖 발화를 보였고 양 플랫폼 계약은 `direct-parent-touch-clipping-v3`다.
-- 확대 증거: iOS touch 동일 제품 frame 179/246이 크기 변화했고, iOS 제품 Text 통제쌍
+- 확대 증거: iOS touch 동일 제품 frame 169/246이 크기 변화했고, iOS 제품 Text 통제쌍
   131/137이 실제 2.143배에 비례한다. 회귀 하한은 touch 30%, Text 통제 130건·비례 120건이다.
 - W1 결과: 앱 선언 2,311건 = primitive 2,061 + componentOwned 250, 나머지 통과 미분류 0.
   PRT-289의 선언 13건 추가·13건 제거는 줄 이동이며 순증감 0이다.
