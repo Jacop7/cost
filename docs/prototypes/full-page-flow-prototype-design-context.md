@@ -1,12 +1,12 @@
 # 전체 페이지 프로토타입 · 디자인 맥락 장부
 
-> 현재 동기화 ID: `DS-20260907-002`
+> 현재 동기화 ID: `DS-20260907-003`
 > 문서 동기화 상태: `SYNCED`
 > 전체 UI 작업 상태: `IN_PROGRESS`
 > 마지막 갱신: `2026-09-07`
-> 공통 변경: `아니오`
-> UI 변경: `아니오`
-> 변경 기록: `PRT-286`
+> 공통 변경: `예`
+> UI 변경: `예`
+> 변경 기록: `PRT-294`
 
 ## 1. 문서 역할
 
@@ -43,6 +43,33 @@
 - 글로벌: 30~50% 긴 번역, 320px, 200% 글자 확대, RTL 검수.
 
 ## 4. 가장 최근 작업
+
+### DS-20260907-003 · PRT-294 최종 증거 래칫과 재봉인
+
+- 작업 성격: PRT-287~293의 iOS 실제 접근성 재채집, 양 플랫폼 터치 종결 후보, W1 재측정,
+  S4a 누적 기하 계약을 한 동기화 판본에 결속한다. PRT-289에서 `BusinessDayBar`의 투명
+  44dp 외피와 `hitSlop: 12`가 앱 UI·터치 기하를 바꿨다.
+- 네이티브 터치 결과: Android 1×/2×와 iOS 1×/2.143× 각각 target 26, 유효 미달·계약 밖
+  미판정 미달·물질적 형제 중첩 0. iOS 실제 3점 탭은 안쪽 발화·직접 host parent 밖 차단·
+  overflow-visible 조부모 밖 발화를 보였고 양 플랫폼 계약은 `direct-parent-touch-clipping-v3`다.
+- 확대 증거: iOS touch 동일 제품 frame 179/246이 크기 변화했고, iOS 제품 Text 통제쌍
+  131/137이 실제 2.143배에 비례한다. 회귀 하한은 touch 30%, Text 통제 130건·비례 120건이다.
+- W1 결과: 앱 선언 2,311건 = primitive 2,061 + componentOwned 250, 나머지 통과 미분류 0.
+  PRT-289의 선언 13건 추가·13건 제거는 줄 이동이며 순증감 0이다.
+- S4 결과: 누적 AST 340행 중 신규 7행은 모두 `BusinessDayBar`의 S4a 기하이고,
+  네이티브 단계 기하는 59행이다. 이전 단계 소유권은 유지했다.
+- 완료 조건:
+  - PRT294-NATIVE-TOUCH · `native-touch-android-receipt.json`
+  - PRT294-NATIVE-TEXT · `native-text-scale-ios-2x.json`
+  - PRT294-W1 · `full-page-flow-prototype-app-map-check.json`
+  - PRT294-S4 · `../../scripts/design-token-s4-contract.json`
+  - PRT294-TOUCH-CONTRACT · `../../scripts/native-touch-runtime-contract.json`
+  - PRT294-TOUCH-CHECK · `../../scripts/native-touch-runtime-evidence-check.mjs`
+  - PRT294-TEXT-CHECK · `../../scripts/native-text-scale-evidence-check.mjs`
+- 미완료·후속: exact SHA Opus 재검수. 공식 Fable 한도 복구 뒤 R2/R3 표본 재감사 또는
+  소유자의 exact-SHA 위험 수용은 별도 운영 게이트다.
+- 다음 시작점: 감사 4종과 파생 산출물 재실행 → `DS-20260907-003 -Finalize` → clean
+  checkout 검증 → Opus 독립 재검수.
 
 ### DS-20260907-002 · PRT-286 iOS 접근성 증거 계약 정정
 

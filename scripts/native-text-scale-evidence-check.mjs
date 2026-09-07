@@ -7,6 +7,8 @@ import { spawnSync } from 'node:child_process';
 import { textSha256 } from '../docs/prototypes/full-page-flow-prototype-text-sha256.mjs';
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
+const MIN_CONTROLLED_PRODUCT = 130;
+const MIN_PROPORTIONAL_PRODUCT = 120;
 const normalized = (path) => readFileSync(path, 'utf8').replace(/\r\n/g, '\n');
 const sameDevice = (a, b) => Boolean(a.model) && Boolean(b.model)
   && a.platform === b.platform && a.density === b.density && a.osVersion === b.osVersion
@@ -98,8 +100,10 @@ export function compareTextScale(one, two) {
     const heightRatio = right.windowMeasure[3] / left.windowMeasure[3];
     return Math.abs(widthRatio - expectedRatio) <= 0.15 && Math.abs(heightRatio - expectedRatio) <= 0.15;
   });
-  if (controlled.length < 1) failures.push('같은 문구·역할의 통제 제품 Text host가 없다');
-  if (proportional.length < 1) failures.push(`실제 배율 ${expectedRatio.toFixed(3)}에 비례해 커진 통제 제품 Text host가 없다`);
+  if (controlled.length < MIN_CONTROLLED_PRODUCT)
+    failures.push(`같은 문구·역할의 통제 제품 Text host가 ${MIN_CONTROLLED_PRODUCT}건 미만이다 (${controlled.length})`);
+  if (proportional.length < MIN_PROPORTIONAL_PRODUCT)
+    failures.push(`실제 배율 ${expectedRatio.toFixed(3)}에 비례해 커진 통제 제품 Text host가 ${MIN_PROPORTIONAL_PRODUCT}건 미만이다 (${proportional.length})`);
   return { failures, summary: { oneRows: one.rows?.length ?? 0, twoRows: two.rows?.length ?? 0,
     matched: matched.length, scalable: scalable.length, enlarged: enlarged.length,
     productScalable: productScalable.length, productEnlarged: productEnlarged.length,

@@ -47,7 +47,7 @@
     "derivation": {
       "semantics": "direct-parent-touch-clipping-v3",
       "auditSha256": "00b30b911d2c1a966ca5e7538fb8ddea71458002e7a95f0cc2b358331f940cb1",
-      "contractSha256": "6f508ef00a133a3016d5e188799991eb4d6995ce838845739adc13c0673cabc8",
+      "contractSha256": "88d13190dc27c92987fb21779d6b7254ca6877d30a09c6c45a8c62cb54ed17c8",
       "source": "preserved-raw-native-frames"
     }
   },
