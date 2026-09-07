@@ -83,12 +83,20 @@ test('P2B-SPEC-08 acceptance catalog predefines the P2b completion profile', () 
   const ac24 = catalog.cases.find((item) => item.case_id === 'AC-24');
   const profile = ac24.parameterization.scenarios.P2B;
   assert.deepEqual(gate.ac24_run_requirement, {
-    case_id: 'AC-24', profile_id: 'P2B', bundle: 'EXACT_P2B_COMPLETION_BUNDLE', status: 'NOT_EXECUTED',
+    case_id: 'AC-24', profile_id: 'P2B', bundle: 'EXACT_P2B_COMPLETION_BUNDLE',
+    status: 'PASS_LOCAL_ONLY_DIRECT_OPUS_REVIEW_003', run_id: 'AC24-P2B-003',
   });
-  assert.deepEqual(profile.entry_modules, ['scripts/team-service-router-adapter.test.mjs']);
+  assert.deepEqual(profile.entry_modules, ['scripts/team-service-intent-store.mjs']);
+  assert.equal(profile.scenario, 'scripts/team-service-p2b-scenario.mjs');
+  assert.deepEqual(profile.baseline_tests, ['scripts/team-service-router-adapter.test.mjs']);
   assert.deepEqual(profile.fixture_files, ['docs/team/service-flow-p2b-contract.json']);
   assert.deepEqual(profile.scenario_ids, ['AC-10']);
   assert.equal(profile.completion_only, true);
   assert.equal(profile.requires_driver_store, false);
   assert.equal(profile.requires_ac22, false);
+  assert.equal(profile.execution_status, 'PASS');
+  assert.equal(profile.active_run_id, 'AC24-P2B-003');
+  assert.match(profile.additional_modules, /same seven AC-10 assertion IDs/);
+  assert.ok(gate.requires.includes('AC24_ZERO_DISPATCH_PASS'));
+  assert.ok(gate.requires.includes('INDEPENDENT_OPUS_REVIEW_PASS'));
 });

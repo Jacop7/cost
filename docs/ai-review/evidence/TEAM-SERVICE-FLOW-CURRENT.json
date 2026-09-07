@@ -2,24 +2,45 @@
   "schema_version": 1,
   "plan": {
     "path": "docs/팀서비스-자동흐름-구현계획.md",
-    "sha256": "e811e0b68b23d52b97ba9c321c14b7bb2e50606c401afed30a301a82961d0304"
+    "sha256": "3a330d97249cf1ff1b47a70e3b59154c4f4d009f1cc2a5e7568373f2fada59a7"
   },
-  "current_verdict": "COOPERATIVE_CONTRACT_CANDIDATE_LOCAL_ADMISSION_BLOCKED",
+  "current_verdict": "P2B_COMPLETE_LOCAL_ONLY_DIRECT_OPUS_REVIEW_003",
   "allowed_actions": [
     "READ",
     "PLAN_REPAIR",
-    "PLAN_TEST"
+    "PLAN_TEST",
+    "C1_C2_COMPLETION_RECORD_READ",
+    "P2_COMPLETION_RECORD_READ",
+    "P2B_COMPLETION_RECORD_READ",
+    "P3_ADMISSION_PLANNING"
   ],
   "implementation_authorized": false,
+  "implementation_scope": "Global implementation remains false; exact scoped decisions authorize BF-C1/BF-C2, P2 state-contract/AC-18 and the P2b local contract only. P3 is not admitted.",
+  "implementation_authorizations": [
+    {
+      "decision_id": "DEC-TEAM-SERVICE-LOCAL-ADMISSION-P2-005",
+      "scope": "P2_STATE_CONTRACT_ONLY",
+      "decision_path": "docs/ai-review/evidence/TEAM-SERVICE-LOCAL-ADMISSION-P2-005.json",
+      "decision_sha256": "b3abbe4b01f93c45990a8a5f216dbdadca00d6420a0c415232399a4f9520cb28",
+      "catalog_path": "docs/team/service-flow-acceptance.json",
+      "catalog_sha256": "54cc85126406b1e4d0d175b0ba87d06e400f01b96bdaf6065961a39bb1a3f49e",
+      "implementation_authorized": true,
+      "service_ready": false,
+      "real_send_authorized": false
+    }
+  ],
   "service_ready": false,
   "runtime_gates": {
     "PH_FEASIBILITY": "HOST_BINDING_UNAVAILABLE_IN_SCOPE",
-    "P2": "BLOCKED_LOCAL_ADMISSION",
-    "FORMAL_INDEPENDENT_REVIEW": "NOT_PASSED",
+    "P2": "PASS_LOCAL_ONLY_DIRECT_FABLE_RECHECK_006",
+    "P2b": "PASS_LOCAL_ONLY_DIRECT_OPUS_REVIEW_003",
+    "FORMAL_INDEPENDENT_REVIEW": "NO_RECEIPT_EXACT_HUMAN_DIRECT_CHAT_SUBSTITUTION_ACCEPTED_FOR_CANDIDATE003_LOCAL_SCOPE_ONLY",
     "LIVE_PROBE": "NOT_EXECUTED",
-    "FULL_VERIFY": "FAILED_3_STAGES_UPGRADE_EVIDENCE_UNVERIFIED",
-    "LOCAL_CORE_ADMISSION": "BLOCKED_VERIFY_DISPOSITION_MODEL_SCOPE_AND_AC24",
-    "P6_HOST_INTEGRATION": "BLOCKED_NO_NEW_POSITIVE_SCOPE"
+    "FULL_VERIFY": "FAILED_2_STAGES_FRESH_AND_UPGRADE_ACTUALLY_PASSED",
+    "LOCAL_CORE_ADMISSION": "PASSED_SCOPED_C1_C2_AND_P2_STATE_CONTRACT_ONLY",
+    "BF_COMPLETE": "PASS_LOCAL_ONLY_DIRECT_FABLE_HUMAN_SUBSTITUTION",
+    "P6_HOST_INTEGRATION": "BLOCKED_NO_NEW_POSITIVE_SCOPE",
+    "ROUTER_RECOVERY": "BYTES_HASH_INVENTORIED_UNTRACKED_NOT_ACTIVATED_REQUIREMENT_COVERAGE_44_MISSING"
   },
   "correction": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-PLAN-CORRECTION-001.md",
   "source_records": [
@@ -64,13 +85,13 @@
   },
   "acceptance": {
     "path": "docs/team/service-flow-acceptance.json",
-    "sha256": "5793bf06f000eb35064690a5dde625cfd2022856c575e6957aedfe62d91d4d35"
+    "sha256": "54cc85126406b1e4d0d175b0ba87d06e400f01b96bdaf6065961a39bb1a3f49e"
   },
   "state_contract": {
     "path": "docs/team/service-flow-state-contract.json",
-    "sha256": "fbac6828ba2c13d2c422dee8e4a2cfdae370644a36d9ccc26f05a4e4cf9da824"
+    "sha256": "6fd8dc1c41373fa55852a271cbbfbf95ec6ec48cb8e93c5e32c289df40fdddb2"
   },
-  "document_status_note": "CURRENT owns latest state. v0.6 full Sol advisory and v0.7 two-finding delta are separate, neither formal nor runtime PASS. Historical HOST-SCOPE-002 artifacts remain pinned at34cf2b4; later translation does not rewrite that report.",
+  "document_status_note": "CURRENT owns latest state. v0.8.1 frozen candidate received Cowork PLAN_ACCEPTABLE advisory. v0.8.2 corrects nonblocking F12-F16 and requires its own formal review; no same-SHA verdict reuse. Historical reviews/001/002/VERIFY-V07 evidence remain immutable.",
   "feasibility_evidence": {
     "path": "docs/ai-review/evidence/TEAM-SERVICE-HOST-SCOPE-001.json",
     "sha256": "2287c16899944032ff12c2310aae7f1a5ef423f3535b7710c8430f70ff5c5945"
@@ -235,6 +256,104 @@
         "full_verify_passed": false,
         "independent_review": false
       }
+    },
+    {
+      "version": "0.7",
+      "review": {
+        "status": "CHANGES_REQUIRED",
+        "engine": "CLAUDE_COWORK_MODEL_UNATTESTED",
+        "formal_gate": false,
+        "reviewed_commit": "22036fb3f59f7ae66f7d3ce8b1a6eafb7bd18076",
+        "reviewed_plan_sha256": "e811e0b68b23d52b97ba9c321c14b7bb2e50606c401afed30a301a82961d0304",
+        "report": {
+          "path": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-V07-COWORK-001.md",
+          "sha256": "6e60ff7c98e63adae5ac4510632ec6cc2da265921da6c7fe9f21bf05f45176d3"
+        },
+        "blocking_findings": [
+          "F-1",
+          "F-2",
+          "F-3"
+        ],
+        "other_findings": [
+          "F-4",
+          "F-5",
+          "F-6",
+          "F-7"
+        ],
+        "source": "User-supplied Cowork report, exact local bytes preserved; no typed receipt/model attestation."
+      },
+      "local_checks": {
+        "report": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-V07-LOCAL-CHECKS.json",
+        "specification_checks_passed": 32,
+        "service_ac_executed": 0,
+        "threat_scenarios_executed": 0,
+        "full_verify_passed": false
+      }
+    },
+    {
+      "version": "0.8",
+      "review": {
+        "verdict": "CHANGES_REQUIRED",
+        "formal_gate": false,
+        "observation": {
+          "path": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-V08-COWORK-OBSERVATION.json",
+          "sha256": "c211645dd5c35e97983cdeefdc5c3af128ccaea377c1090de63fea65844dbe3e"
+        },
+        "plan_blockers": [
+          "F-8"
+        ],
+        "additional_findings": [
+          "F-9",
+          "F-10",
+          "F-11"
+        ],
+        "candidate_manifest_sha256": "e7eb610b01b5bf6e15c5a74ae2746453b54c9a782f9831d01c4bd7ef81fd0e8b"
+      },
+      "local_checks": {
+        "status": "SPECIFICATION_ONLY_NOT_SERVICE_OR_INDEPENDENT_REVIEW",
+        "report": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-V08-LOCAL-CHECKS.json",
+        "specification_checks_passed": 36,
+        "service_ac_executed": 0,
+        "scope003_executed": false,
+        "full_verify_passed": false,
+        "report_sha256": "5b511d288defc7ed7f58c3c479ef66a0c14b6e23cb6b0e2f90bded745fca7f12"
+      }
+    },
+    {
+      "version": "0.8.1",
+      "review": {
+        "verdict": "PLAN_ACCEPTABLE",
+        "formal_gate": false,
+        "model_attestation": false,
+        "model_ui_label": "Fable 5.1 중간",
+        "candidate_manifest_sha256": "520a9528f63c01a9863401981e4de2fc3b0515a2b5f50678228e82d86fd6fb2c",
+        "report": {
+          "path": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-V081-COWORK-001.md",
+          "sha256": "3f28b3f0f404f6d8ae95ab18d6b6d5cbc16abecf5cb66903097c76d9384642bf"
+        },
+        "plan_blockers": [],
+        "nonblocking_findings": [
+          "F-12",
+          "F-13",
+          "F-14",
+          "F-15",
+          "F-16"
+        ],
+        "implementation_admission": "BLOCKED",
+        "send": "CLOSED",
+        "retrieval": "Cowork report code-view Copy; archived LF bytes match displayed report SHA prefix/suffix. No formal receipt."
+      },
+      "local_checks": {
+        "status": "SPECIFICATION_ONLY_NOT_SERVICE_OR_INDEPENDENT_REVIEW",
+        "report": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-V081-LOCAL-CHECKS.json",
+        "specification_checks_passed": 36,
+        "service_ac_executed": 0,
+        "scope003_executed": false,
+        "full_verify_passed": false,
+        "report_sha256": "3c8e906be7270f7aa490899876cb614695f602120ead1ca18c31a894021f5ffa",
+        "checked_version": "0.8.1",
+        "scope_note": "Completed v0.8.1 run only, not proof of current v0.8.2. The next candidate manifest binds its separate immutable execution report to avoid a circular CURRENT/report pin."
+      }
     }
   ],
   "current_findings": [
@@ -326,28 +445,134 @@
     }
   ],
   "local_checks": {
-    "report": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-V07-LOCAL-CHECKS.json",
-    "specification_checks_passed": 32,
+    "status": "SPECIFICATION_ONLY_NOT_SERVICE_OR_INDEPENDENT_REVIEW",
+    "report": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-V081-LOCAL-CHECKS.json",
+    "specification_checks_passed": 36,
     "service_ac_executed": 0,
-    "threat_scenarios_executed": 0,
-    "full_verify_passed": false
+    "scope003_executed": false,
+    "full_verify_passed": false,
+    "report_sha256": "3c8e906be7270f7aa490899876cb614695f602120ead1ca18c31a894021f5ffa",
+    "checked_version": "0.8.1",
+    "scope_note": "Completed v0.8.1 run only, not proof of current v0.8.2. The next candidate manifest binds its separate immutable execution report to avoid a circular CURRENT/report pin."
   },
   "candidate_review": {
-    "version": "0.7",
-    "full_independent_review": "NOT_PERFORMED",
+    "version": "0.8.2",
+    "full_independent_review": "V081_COWORK_ACCEPTABLE_V082_CORRECTIONS_NOT_INDEPENDENTLY_REVIEWED",
     "formal_gate": false,
-    "delta_review": {
-      "scope": [
-        "SV06-01",
-        "SV06-02"
-      ],
-      "verdict": "PLAN_SATISFIED",
-      "report": {
-        "path": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-V07-SOL-DELTA.md",
-        "sha256": "47b42875e36bf973fd7868158b6e78a19568e913113babfc9f8a4830d46e5c48"
-      }
+    "fable_opus_formal_review": "NOT_PERFORMED",
+    "source_review": {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-V07-COWORK-001.md",
+      "sha256": "6e60ff7c98e63adae5ac4510632ec6cc2da265921da6c7fe9f21bf05f45176d3"
     },
-    "fable_opus_formal_review": "NOT_PERFORMED"
+    "review_target": "Plan/catalog/specification repair; no product implementation or actual routing",
+    "findings": [
+      {
+        "id": "F-1",
+        "response": "COWORK_V081_RECHECKED_PLAN_RESOLVED_FORMAL_OPEN",
+        "detail": "Three pending decisions and bounded scope003 declaration; no adoption/result synthesized."
+      },
+      {
+        "id": "F-2",
+        "response": "COWORK_V081_RECHECKED_PLAN_RESOLVED_FORMAL_OPEN",
+        "detail": "Two axes; all24 NOT_IMPLEMENTED after source inspection; case/test/assertion marker validation and negative tests."
+      },
+      {
+        "id": "F-3",
+        "response": "COWORK_V081_RECHECKED_PLAN_RESOLVED_FORMAL_OPEN",
+        "detail": "Exact-bundle ADMISSION/FIX_BUNDLE/STORE_DRIVER definitions; runs empty, no admission PASS."
+      },
+      {
+        "id": "F-4",
+        "response": "PARTIAL_PRESERVATION_GATE_OPEN",
+        "detail": "Untracked legacy files not staged/activated. Hash inventory recorded but bytes recovery/ownership disposition still required."
+      },
+      {
+        "id": "F-5",
+        "response": "COWORK_V081_RECHECKED_PLAN_RESOLVED_FORMAL_OPEN",
+        "detail": "Current HOST-REQUIREMENTS document pin added; scope002 historical evidence untouched."
+      },
+      {
+        "id": "F-6",
+        "response": "OPEN_REQUIRES_NEW_HEAD_VERIFY_AFTER_SHELL_FIX",
+        "detail": "Old failed run remains historical; no new run/PASS claim."
+      },
+      {
+        "id": "F-7",
+        "response": "COWORK_V081_RECHECKED_PLAN_RESOLVED_FORMAL_OPEN",
+        "detail": "Cowork advisory versus paid typed formal receipt explicit."
+      },
+      {
+        "id": "F-8",
+        "response": "COWORK_V081_RECHECKED_PLAN_RESOLVED_FORMAL_OPEN",
+        "runtime_verified": false
+      },
+      {
+        "id": "F-9",
+        "response": "COWORK_V081_RECHECKED_PLAN_RESOLVED_FORMAL_OPEN",
+        "runtime_verified": false
+      },
+      {
+        "id": "F-10",
+        "response": "COWORK_V081_RECHECKED_PLAN_RESOLVED_FORMAL_OPEN",
+        "runtime_verified": false
+      },
+      {
+        "id": "F-11",
+        "response": "COWORK_V081_RECHECKED_PLAN_RESOLVED_FORMAL_OPEN",
+        "runtime_verified": false
+      },
+      {
+        "id": "F-12",
+        "response": "APPLIED_PENDING_FORMAL_REVIEW",
+        "runtime_verified": false
+      },
+      {
+        "id": "F-13",
+        "response": "APPLIED_PENDING_FORMAL_REVIEW",
+        "runtime_verified": false
+      },
+      {
+        "id": "F-14",
+        "response": "APPLIED_PENDING_FORMAL_REVIEW",
+        "runtime_verified": false
+      },
+      {
+        "id": "F-15",
+        "response": "APPLIED_PENDING_FORMAL_REVIEW",
+        "runtime_verified": false
+      },
+      {
+        "id": "F-16",
+        "response": "APPLIED_PENDING_FORMAL_REVIEW",
+        "runtime_verified": false
+      }
+    ],
+    "previous_candidate_observation": {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-V08-COWORK-OBSERVATION.json",
+      "sha256": "c211645dd5c35e97983cdeefdc5c3af128ccaea377c1090de63fea65844dbe3e"
+    },
+    "previous_full_advisory": {
+      "verdict": "PLAN_ACCEPTABLE",
+      "formal_gate": false,
+      "model_attestation": false,
+      "model_ui_label": "Fable 5.1 중간",
+      "candidate_manifest_sha256": "520a9528f63c01a9863401981e4de2fc3b0515a2b5f50678228e82d86fd6fb2c",
+      "report": {
+        "path": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-V081-COWORK-001.md",
+        "sha256": "3f28b3f0f404f6d8ae95ab18d6b6d5cbc16abecf5cb66903097c76d9384642bf"
+      },
+      "plan_blockers": [],
+      "nonblocking_findings": [
+        "F-12",
+        "F-13",
+        "F-14",
+        "F-15",
+        "F-16"
+      ],
+      "implementation_admission": "BLOCKED",
+      "send": "CLOSED",
+      "retrieval": "Cowork report code-view Copy; archived LF bytes match displayed report SHA prefix/suffix. No formal receipt."
+    }
   },
   "host_requirements": {
     "path": "docs/team/host-requirements-contract.json",
@@ -361,13 +586,16 @@
     "path": "docs/ai-review/evidence/TEAM-SERVICE-MODEL-DISPOSITION-002.json",
     "sha256": "e3cd1e75c761c9917ce595875b65a1b421af75398b6d6f331361de4023270fa7",
     "checkpoint_commit": "7f5aefd",
-    "exact_local_scope_gate": "NOT_PASSED"
+    "exact_local_scope_gate": "PASSED_C1_C2_ONLY_BY_DEC_TEAM_SERVICE_LOCAL_ADMISSION_SOL_003",
+    "superseded_for_bounded_scope_by": "docs/ai-review/evidence/TEAM-SERVICE-LOCAL-ADMISSION-SOL-003.json"
   },
   "tracks": {
     "local_core": {
       "host_dependency": false,
-      "status": "ADMISSION_PENDING",
-      "implementation_started": false
+      "status": "BF_C1_C2_COMPLETE_LOCAL_ONLY",
+      "implementation_started": true,
+      "broader_local_core_admission": "PENDING",
+      "full_p3_complete": false
     },
     "host": {
       "status": "EXTERNAL_REQUIREMENTS_UNRESOLVED",
@@ -379,7 +607,38 @@
       "requires": "Actual human01→CEO02→deputy03→team→human01 result round trip and mandatory gates"
     }
   },
-  "next_safe_action": "Review known verify failures and obtain a reproducible awaited full-run baseline; validate exact local model scope and AC24. No product implementation, activation or actual sends until admission passes.",
+  "next_safe_action": "BF-C1/BF-C2 bounded local scope is complete. Before any broader local core, cooperative tier, host integration, real send, Router activation, app, DB, Supabase, staging or production work, open and satisfy that track's separate admission/decision/review gates. Service readiness and P3 remain false.",
+  "bounded_bugfix": {
+    "target_commit": "fe96c3c196d4c3211024c1ecbe18e9d358a230b8",
+    "source": {
+      "path": "scripts/team-service-workflow.mjs",
+      "sha256": "d11fd59d35b6e37ca0d5a21175cc7a9e950312ce060be7a1cd6676cd978a8bbe"
+    },
+    "tests": {
+      "path": "scripts/team-service-bugfix.test.mjs",
+      "sha256": "c35173e736419d1ae513d0b782cce115018f2d00c9ae788876d6cf507ef51b59",
+      "result": "BF-C1_AND_BF-C2_PASS_NO_SKIPS"
+    },
+    "fix_bundle": {
+      "path": "docs/team/service-flow-fix-bundle.json",
+      "sha256": "261873eb2c6026f3fe6ab9d499d5db207c709911951163d61120ccefd52ee6ee"
+    },
+    "execution": {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-BF-COMPLETE-004.json",
+      "sha256": "dc1f5333bbb453c454fde165249901479c1555ce3f157f2df2bd0441e60f0b15",
+      "ac24": "3/3 PASS",
+      "normal_dispatch_attempts": 0,
+      "actual_provider_calls": 0
+    },
+    "independent_review": {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-BF-COMPLETE-004-FABLE.md",
+      "sha256": "10bb9c47953fff220fad13e9cb9383a4dd5e9a98eb85f87731ef7fde1714e3db",
+      "verdict": "PASS",
+      "formal_cli_receipt": false,
+      "basis": "EXACT_HUMAN_DIRECT_FABLE_SUBSTITUTION_CANDIDATE003_LOCAL_SCOPE_ONLY"
+    },
+    "service_ready": false
+  },
   "cooperative_contract": {
     "path": "docs/team/cooperative-flow-contract.json",
     "sha256": "4d2d2aec65c34542801cdd726455b63f541f0a754cf62a9c80d1e76cd3de7098"
@@ -389,11 +648,513 @@
     "sha256": "a21ed9f76c7aae9bfba44a100059daf0a0df0b07848926031419986e6226d04f"
   },
   "verify_execution": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-VERIFY-PREWORK-20260906-001.json",
+    "sha256": "f63c0e117cc609ad14a257d8d689286a0bbd3f4ba38996c636bed88b4e5412b9"
+  },
+  "verify_disposition": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-PREWORK-20260906-DISPOSITION-001.md",
+    "sha256": "7b0b687c3d0cbe1f25fff5ddd71bd2d59969af593f27a4ea14188f2b6e610577"
+  },
+  "historical_verify_execution_v07": {
     "path": "docs/ai-review/evidence/TEAM-SERVICE-VERIFY-V07-001.json",
     "sha256": "161776fe59b0ec249aaca58622dd040f00ec38c55d4424cd53da948bb1f2c34c"
   },
-  "verify_disposition": {
+  "historical_verify_disposition_v07": {
     "path": "docs/ai-review/evidence/TEAM-SERVICE-VERIFY-V07-DISPOSITION.md",
     "sha256": "0998979cf14942bd8d61d3523420d35f317fa2716fa955e5f5dae30e0ac41da3"
+  },
+  "host_requirements_document": {
+    "path": "docs/team/HOST-REQUIREMENTS.md",
+    "sha256": "16437554345eb645010ebaaa551489cb190606b0089d957d238152b724740696"
+  },
+  "host_scope_003": {
+    "declaration": {
+      "path": "docs/team/host-scope-003.json",
+      "sha256": "5335b0d8cb6543ab98346398825640cdd5c6932580734eecac94aa4947d7244f"
+    },
+    "status": "EXECUTED_READ_ONLY",
+    "outcome": "CAPTURE_LINK_UNAVAILABLE_IN_SCOPE",
+    "strict_host_binding": false,
+    "preflight": {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-HOST-SCOPE-003-PREFLIGHT.json",
+      "sha256": "d50e0ac4e5e87ef3bcadc828aade2d4d25a10de99ae5aa3c0cbaa934420734c0"
+    },
+    "analysis_started": true,
+    "result": {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-HOST-SCOPE-003.json",
+      "sha256": "5eed084878475ebd48416a37cc0c4b5adfb5e1127be6a63366db0864ed748f3c"
+    },
+    "correction": {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-HOST-SCOPE-003-CORRECTION-001.json",
+      "sha256": "6b00f997bf4f281edce51327ad371fb351144a2185b6315eb125f64b4175adeb"
+    },
+    "decision_basis_correction": {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-HOST-SCOPE-003-CORRECTION-002.json",
+      "sha256": "a715d62d166106a34a5e91d530b3485e00d23cef30c403c3b0a924681e46f3c8"
+    }
+  },
+  "pending_owner_decisions": [
+    {
+      "id": "D-T2-ADOPT",
+      "status": "PENDING",
+      "decision_owner": "HUMAN_01",
+      "preparation_owner": "CEO_02_AND_SERVICE_CHIEF_03",
+      "requested_on": "2026-09-05",
+      "due_before": "T2-ADOPT_BEFORE_ANY_COOPERATIVE_IMPLEMENTATION_OR_PILOT",
+      "inputs": [
+        {
+          "path": "docs/team/cooperative-flow-contract.json",
+          "sha256": "4d2d2aec65c34542801cdd726455b63f541f0a754cf62a9c80d1e76cd3de7098"
+        },
+        {
+          "path": "docs/team/COOPERATIVE-FLOW-CONTRACT.md",
+          "sha256": "a21ed9f76c7aae9bfba44a100059daf0a0df0b07848926031419986e6226d04f"
+        },
+        {
+          "path": "docs/team/host-scope-003.json",
+          "sha256": "5335b0d8cb6543ab98346398825640cdd5c6932580734eecac94aa4947d7244f"
+        },
+        {
+          "requirement": "HOST-SCOPE-003 result with source-supported observation path",
+          "status": "CAPTURE_LINK_UNAVAILABLE_IN_SCOPE",
+          "path": "docs/ai-review/evidence/TEAM-SERVICE-HOST-SCOPE-003.json",
+          "sha256": "5eed084878475ebd48416a37cc0c4b5adfb5e1127be6a63366db0864ed748f3c"
+        },
+        {
+          "requirement": "Exact reduced-trust capability/limitations and candidate review",
+          "status": "PENDING"
+        }
+      ],
+      "options": [
+        "ADOPT",
+        "REJECT",
+        "CONDITIONAL_ADOPTION_WITH_EXPLICIT_LIMITS"
+      ],
+      "default_action": "NO_COOPERATIVE_ADOPTION_NO_SEND",
+      "next_gate": "T2-ADOPT_THEN_SEPARATE_CANDIDATE_REVIEW_AND_EXACT_ACTIVATION",
+      "grants_send": false
+    },
+    {
+      "id": "D-CLOCK-ALT",
+      "status": "PENDING",
+      "decision_owner": "HUMAN_01",
+      "preparation_owner": "OPERATIONS_AND_QUALITY",
+      "requested_on": "2026-09-05",
+      "due_before": "ANY_USE_OF_LOCAL_CLOCK_ALTERNATIVE",
+      "inputs": [
+        {
+          "requirement": "scope/max_drift/max_lease/expires_at/reboot_rollback_jump_handling/same_user_admin_residual_risk",
+          "status": "NOT_SUBMITTED"
+        }
+      ],
+      "options": [
+        "KEEP_STRICT",
+        "ACCEPT_EXACT_BOUNDED_LOCAL_CLOCK_RISK"
+      ],
+      "default_action": "STRICT_NO_RELAXATION",
+      "next_gate": "CLOCK_POLICY_VALIDATION_NOT_CALLER_OR_RECEIPT_AUTHENTICATION",
+      "grants_send": false
+    },
+    {
+      "id": "D-FABLE-SOFTCAP",
+      "status": "SUPERSEDED_NO_CLI_RECEIPT_BY_EXACT_TARGET_HUMAN_DIRECT_CHAT_SUBSTITUTION",
+      "decision_owner": "HUMAN_01",
+      "preparation_owner": "SERVICE_CHIEF_03_TOKEN_MANAGER_AND_QUALITY",
+      "requested_on": "2026-09-05",
+      "due_before": "NEXT_PAID_FORMAL_CLI_ROUND",
+      "inputs": [
+        {
+          "requirement": "Exact task/round/target/risk class and estimated soft cap, project envelope remaining, overrun acceptance pin",
+          "status": "R001_2_USD_PIN_RECORDED_PROVIDER_RUN_ABORTED_NO_RECEIPT"
+        }
+      ],
+      "options": [
+        "APPROVE_EXACT_ROUND_RISK",
+        "DECLINE_OR_DEFER"
+      ],
+      "default_action": "NO_NEW_PAID_FORMAL_CLI_CALL",
+      "next_gate": "NOT_USED_FOR_CANDIDATE003_LOCAL_SCOPE_HUMAN_SUBSTITUTION_DECISION_RECORDED",
+      "grants_send": false,
+      "prior_approvals": "Preserved; not denied or revoked. Earlier broad approvals/Cowork subscription advisory are not an exact new formal CLI-round pin."
+    }
+  ],
+  "router_preservation": {
+    "owner_role": "05 Knowledge · Orchestration + 03 Server · Supabase · Operations",
+    "status": "OPEN_UNTRACKED_BYTES_NOT_RECOVERABLE_BY_HASH_ALONE",
+    "due_before": [
+      "P7",
+      "P8",
+      "RECOVERY_READINESS"
+    ],
+    "observed_at_commit": "22036fb3f59f7ae66f7d3ce8b1a6eafb7bd18076",
+    "files": [
+      {
+        "path": ".codex/team-router/policy.json",
+        "sha256": "15aad51c68927075f8d54fdbdba043bde9c50db5bb7af866c040e7ed0ccb787e"
+      },
+      {
+        "path": ".codex/team-router/activation-decision.json",
+        "sha256": "d066abab56cf851965ef155368e35e3077c942d6daabeca51a72012c4ef00327"
+      },
+      {
+        "path": ".codex/team-router/activation-receipt.json",
+        "sha256": "145cbad5de2a1251e2c08d895005003e9f2025e462d03bc572e233b4c017fe9e"
+      },
+      {
+        "path": ".codex/team-router/pilot-request.json",
+        "sha256": "ebf5cda0a88efc2a83e808f228ca42566e00ead270961c4f24a78bf7c20e7eec"
+      }
+    ],
+    "completion_options": [
+      "SECRET_AND_ENDPOINT_SCREENED_EXACT_GIT_CHECKPOINT",
+      "PROTECTED_IMMUTABLE_BYTES_LOCATION_AND_HASH_WITH_RESTORE_TEST"
+    ],
+    "source_documents_dirty": [
+      "docs/team/README.md",
+      "docs/team/DECISIONS.md",
+      "docs/team/ROLE_CONTEXTS.md"
+    ],
+    "tracking_or_activation_performed": false
+  },
+  "pending_candidate_checks": {
+    "version": "0.8.2",
+    "report": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-V082-LOCAL-CHECKS.json",
+    "binding": "Hash in V082 candidate manifest; historical top-level local_checks is explicitly v0.8.1",
+    "claim": "NO_SERVICE_AC_OR_FULL_VERIFY_PASS"
+  },
+  "remaining_prework_20260906": {
+  "scope": "PLAN_REPAIR_PLAN_TEST_ONLY",
+  "status": "FABLE_ADVISORY_ACCEPTABLE_D1_RECHECKED_RESOLVED",
+  "d1_followup_review": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-PREWORK-20260906-D1-FABLE-001.md",
+    "sha256": "6baca2e20d0fc6c5965455c6b309577d4fe10b5824ca15ec92201ffd8d3f2f71"
+  },
+  "implementation": false,
+  "formal_gate": false,
+  "model_candidate": {
+    "path": ".codex/mission-relay/candidates/team-service-local-core-003.json",
+    "sha256": "14627ad1a7d5fd8ad0bcd7d61469cf9f8639e64a076afe458a3a9d16267b1bf8",
+    "sealed": true,
+    "cli_verified": true,
+    "adopted": false,
+    "local_scope_consumed": true,
+    "local_scope_consumption_decision": {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-LOCAL-ADMISSION-SOL-003.json",
+      "sha256": "793f6c4098259f69272bb0e41ed060425bb0e7190830af75d9b590d3f0d4a3b2",
+      "scope": "C1_C2_ONLY"
+    },
+    "catalog_snapshot": {
+      "status": "D4_CLOSED_FOR_SOL_HIGH_AVAILABILITY_ONLY",
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-MODEL-CATALOG-20260906-002.json",
+      "sha256": "7cb889b777bed6f2eab16785a01613697e507247fbbd7d2d52bba87ae5d9ee03",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "high",
+      "captured_target": "gpt-6-astra/high",
+      "reused_raw_list_contains": "gpt-5.6-sol/high",
+      "new_capture": false,
+      "provider_attestation": false,
+      "paid_inference": false
+    },
+    "current_task_observation": {
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "high",
+      "observed_at": "2026-09-06T07:56:20.122Z",
+      "raw_transcript_copied": false
+    },
+    "predecessor_candidate": {
+      "path": ".codex/mission-relay/candidates/team-service-local-core-002.json",
+      "sha256": "bd8575aca310dd4f2d1267412b8c7ac598b029c6d22c3efd25c913ae3cd00f15",
+      "status": "HISTORICAL_NOT_ACTIVE"
+    }
+  },
+  "full_verify_summary": {
+    "passed_stages": [
+      1,
+      4,
+      5,
+      6
+    ],
+    "failed_stages": [
+      2,
+      3
+    ],
+    "fresh_tests_passed": 50,
+    "upgrade_cases_passed": 23,
+    "input_count": 591,
+    "changed_inputs": [],
+    "inventory_scope_partial": true
+  },
+  "local_tests": 55,
+  "graph_unit_supplement": 26,
+  "advisory_review": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-PREWORK-20260906-FINAL-FABLE-001.md",
+    "sha256": "43d27db843c3aaa6e8cf1d4de96ad197d3478371b154dd36ce234050fdf039cc"
+  },
+  "advisory_verdict": "PREWORK_ACCEPTABLE",
+  "model_ui_label": "Fable 5.1 중간",
+  "provider_attestation": false,
+  "reviewed_candidate_manifest_sha256": "ec45ad2c2f921f5e9b137ef4f63753b3fdb102f80bad82002ea2eca976bfa76d",
+  "limitations": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-PREWORK-20260906-LIMITATIONS-001.json",
+    "sha256": "bec4497e63f2f3124a858dc9cbd4a31f0372764b38b0fbb7165cd1f37f36e1df"
+  },
+  "addendum": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-PREWORK-20260906-ADDENDUM-001.md",
+    "sha256": "4eacf910743be2e2adfe661b73235c85392f21ee57d2a3a6edebcb894338f8da"
+  },
+  "d1_execution": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-PREWORK-20260906-D1-CHECKS-001.json",
+    "sha256": "b764852285704536ea3c01650516c2decfcfdf1ab3b86aa7b9eefcc3c65c8880"
+  },
+  "preserved": [
+    "Original review and full-run bytes",
+    "Canonical model/activation receipts",
+    "Existing user dirty files"
+  ],
+  "post_review_note": "Only CURRENT and new supplemental evidence changed after frozen review. CURRENT is a live index, not the reviewed snapshot or a formal receipt."
+},
+  "admission_prework": {
+    "scope": "PLAN_TEST_ADMISSION_ONLY",
+    "status": "F17_F22_RECHECKED_PREWORK_ACCEPTABLE_ADVISORY_ONLY",
+    "bundle": {
+      "path": "docs/team/service-flow-admission-bundle.json",
+      "sha256": "0a11db591af3cc65143fad6c331841716325605a6ec8ff2e42af8ee886aeb023"
+    },
+    "execution": {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-ADMISSION-002.json",
+      "sha256": "34db3467ed425afc4962fe24df11463dc31f68f19750cd0f299677f6a881f8e0"
+    },
+    "ac24_test_passed": true,
+    "regression_tests_passed": 13,
+    "service_ready": false,
+    "local_admission": true,
+    "actual_provider_calls": 0,
+    "normal_dispatch_attempts": 0,
+    "negative_rejections": 4,
+    "formal_review": "NO_FORMAL_RECEIPT_EXACT_HUMAN_DIRECT_CHAT_SUBSTITUTION_ACCEPTED_CANDIDATE003_ONLY",
+    "local_admission_decision": {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-LOCAL-ADMISSION-SOL-003.json",
+      "sha256": "793f6c4098259f69272bb0e41ed060425bb0e7190830af75d9b590d3f0d4a3b2",
+      "ac24_run_id": "AC24-ADMISSION-GATE-003",
+      "ac24_tests": "3/3 PASS",
+      "normal_dispatch_attempts": 0,
+      "actual_provider_calls": 0,
+      "result": "PASS_C1_C2_ONLY"
+    },
+    "cowork_direct_review": {
+      "verdict": "BLOCKED_C1_RESOLVED_TWO_GATES_REMAIN",
+      "c1_provenance_correction": "VERIFIED",
+      "candidate_and_evidence_coherence": "VERIFIED_ADVISORY_ONLY",
+      "formal_gate": false,
+      "report_file_created": false,
+      "remaining": [
+        "LOCAL_SCOPE_REVIEW formal receipt or explicit human policy substitution",
+        "gate owner decision for candidate003 consumption and failure disposition acceptance"
+      ]
+    },
+    "full_verify": "ACTUALLY_RERUN_20260906_FAILED_2_OF_6_SEE_VERIFY_EXECUTION",
+    "model_plan_integrity": "VERIFIED_NOT_EXACT_LOCAL_SCOPE_APPROVAL",
+    "previous_review": {
+      "verdict": "PREWORK_ACCEPTABLE",
+      "formal_gate": false,
+      "model_attestation": false,
+      "model_ui_label": "Fable 5.1 중간",
+      "candidate_manifest_sha256": "3a7e914a12554e88f2a4f915d2ceefba87c4c4da35f7438b61e0e31ee2cbc710",
+      "report": {
+        "path": "docs/ai-review/evidence/TEAM-SERVICE-ADMISSION-PREWORK-001-FABLE-COWORK.md",
+        "sha256": "45bef0646afb02594d1cec8b380c14c5e154dac6a677fdcecf89f129079a5180"
+      },
+      "required_before_consumption": [
+        "F-17"
+      ],
+      "nonblocking": [
+        "F-18",
+        "F-19",
+        "F-20",
+        "F-21",
+        "F-22"
+      ]
+    },
+    "target_module_negative_fixture": "FETCH_DENIED_WITHIN_VM",
+    "limitations": "Cooperative-only VM; host-realm crypto/path/url objects expose prototype chains. No hostile-code containment, OS isolation, or host provenance claim.",
+    "review": {
+      "verdict": "PREWORK_ACCEPTABLE",
+      "formal_gate": false,
+      "model_attestation": false,
+      "model_ui_label": "Fable 5.1 중간",
+      "reviewed_candidate_manifest_sha256": "7179428bf68f6a428b87c01011c1dbf2b69d1eaf92e7034d1e9661b02d94431f",
+      "report": {
+        "path": "docs/ai-review/evidence/TEAM-SERVICE-ADMISSION-PREWORK-002-FABLE-COWORK.md",
+        "sha256": "2482002a588653404eb32017fedf67b6fc17e57fd76d786fe2271bd3a1c98ffc"
+      },
+      "closed_findings": [
+        "F-17",
+        "F-18",
+        "F-19",
+        "F-20",
+        "F-21",
+        "F-22"
+      ],
+      "new_blocking_findings": [],
+      "nonblocking_followups": [
+        {
+          "id": "O-1",
+          "status": "DEFERRED_NONBLOCKING",
+          "detail": "Echo negative fixture child marker into recorded TAP for visibility."
+        },
+        {
+          "id": "O-2",
+          "status": "DEFERRED_NONBLOCKING",
+          "detail": "Validate scenario path versus negative_only flag."
+        },
+        {
+          "id": "O-3",
+          "status": "REQUIRED_BEFORE_REAL_GATE_CONSUMPTION",
+          "detail": "Future admission consumer must reuse current-input hash verification; spec verifier alone is not a production admission consumer."
+        }
+      ],
+      "scope": "Read-only same-session delta advisory; reviewer inspected source and recorded execution, did not rerun tests. Does not authorize implementation or dispatch."
+    },
+    "machine_checks": {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-ADMISSION-PREWORK-002-CHECKS.json",
+      "sha256": "ff729b4e59aae5e736706decdc37e5f67b3a9f449aff15b3a3033176c73ce89e",
+      "tests_passed": 49,
+      "full_verify": false
+    },
+    "post_review_update": "Only CURRENT verdict, review references and next actions changed after the frozen review; original candidate and evidence remain immutable. Current CURRENT bytes are not the reviewed snapshot."
+  },
+  "p2_admission_candidate": {
+    "scope": "P2_STATE_AUTH_EVENT_SCHEMA_ONLY",
+    "status": "PASS_LOCAL_ONLY_DIRECT_FABLE_RECHECK_006",
+    "implementation_authorized": true,
+    "candidate": {
+      "path": ".codex/mission-relay/candidates/team-service-local-core-005.json",
+      "sha256": "f15b2f2928583a342516e3ae6a1772ac4927ad0a457d048450b455ac6cf80ed5",
+      "sidecar_path": ".codex/mission-relay/candidates/team-service-local-core-005.json.sha256",
+      "sidecar_sha256": "e9ae2c1042f5a3b8d6222d9c03188ffcc62a3021f334c17b63bca658868bfc22",
+      "sealed": true,
+      "cli_verified": true,
+      "active": false,
+      "canonical_stages_1_13_equal": true,
+      "stage_14_only": true
+    },
+    "first_fable_review": {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-P2-ADMISSION-FABLE-001.md",
+      "sha256": "0fbadd89ea238ad262380599739806f9aee20dc35b0c3e44a197a239f7b5b549",
+      "verdict": "CHANGES_REQUIRED",
+      "implementation_may_begin": false,
+      "formal_cli_receipt": false
+    },
+    "fable_recheck": {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-P2-ADMISSION-FABLE-RECHECK-002.md",
+      "sha256": "df951e6482efa826d715b1d55b418c4220bbcb55ee09b05e0af58fb4a27fa652",
+      "verdict": "PASS",
+      "implementation_may_begin": true,
+      "formal_cli_receipt": false,
+      "service_ready": false
+    },
+    "first_post_implementation_review": {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-P2-IMPLEMENTATION-FABLE-REVIEW-005.md",
+      "sha256": "33cf19423dd06429f94fbceae9bf55e09856b18da2f7928056f20d9ff5f30ad8",
+      "verdict": "CHANGES_REQUIRED",
+      "blocking_findings": ["B-1_CANONICAL_PAYLOAD_EQUALITY", "B-2_CLOCK_PROVENANCE"],
+      "resolved_in_run": "AC18-P2-STATE-CONTRACT-006",
+      "formal_cli_receipt": false
+    },
+    "final_post_implementation_recheck": {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-P2-IMPLEMENTATION-FABLE-RECHECK-006.md",
+      "sha256": "67900a8b9533cf2314f71cc94d147d4dbea084c5b1e69fdfa3e407fa617883d6",
+      "verdict": "PASS",
+      "p2_local_completion": true,
+      "formal_cli_receipt": false,
+      "scope": "P2_DECLARATIVE_STATE_AUTHORITY_EVENT_SCHEMA_AND_AC18_LOCAL_MOCK_ONLY",
+      "next_authorized_phase": "NONE_UNLESS_SEPARATELY_ADMITTED"
+    },
+    "admission_decision": {
+      "decision_id": "DEC-TEAM-SERVICE-LOCAL-ADMISSION-P2-005",
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-LOCAL-ADMISSION-P2-005.json",
+      "sha256": "b3abbe4b01f93c45990a8a5f216dbdadca00d6420a0c415232399a4f9520cb28",
+      "catalog_path": "docs/team/service-flow-acceptance.json",
+      "catalog_sha256": "54cc85126406b1e4d0d175b0ba87d06e400f01b96bdaf6065961a39bb1a3f49e"
+    },
+    "failure_disposition": {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-P2-ADMISSION-FAILURE-DISPOSITION-002.md",
+      "sha256": "6e805ae462dbcc23bcc36068df4df7b59e616a0642b2c259c0703b3db495a7c4",
+      "open_failures_waived": false,
+      "development_db_regression": "43_OF_50_TO_42_OF_50_LEDGER_MISMATCH_NEW",
+      "full_verify_passed": false
+    },
+    "ac24_entry": {
+      "run_id": "AC24-ADMISSION-P2-005",
+      "profile_id": "ADMISSION",
+      "bundle": {
+        "path": "docs/team/service-flow-p2-admission-bundle.json",
+        "sha256": "788b4044f6f81a3a8cf756ecd3dacf3f132a1169f308b17f5d36fed621d6fd31"
+      },
+      "evidence": {
+        "path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-ADMISSION-P2-005.json",
+        "sha256": "d6da338f9b35eedf6c37c3b0f78f53a14f88bbf0a4a2cbafbe2d56d26034bbd2"
+      },
+      "raw_tap": {
+        "path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-ADMISSION-P2-005.tap",
+        "sha256": "aa4bef902260980951503eb6e3fef060207af44f398d7d2c31d1cde2c993057a"
+      },
+      "registered_in_catalog": true,
+      "normal_dispatch_attempts": 0,
+      "actual_provider_calls": 0,
+      "admission_authorized": false
+    },
+    "p2_completion_profile": {
+      "id": "P2_STATE_CONTRACT",
+      "status": "PASS_LOCAL_ONLY_DIRECT_FABLE_RECHECK_006",
+      "entry_module": "scripts/team-service-state-contract.test.mjs",
+      "entry_module_sha256": "b7b2a7b46280a654a393cd3bac433f59e8a38ca0a96c8d292828333077ed7796",
+      "fixture": "docs/team/service-flow-state-contract.json",
+      "fixture_sha256": "6fd8dc1c41373fa55852a271cbbfbf95ec6ec48cb8e93c5e32c289df40fdddb2",
+      "case_id": "AC-18",
+      "catalog_path": "docs/team/service-flow-acceptance.json",
+      "catalog_sha256": "54cc85126406b1e4d0d175b0ba87d06e400f01b96bdaf6065961a39bb1a3f49e",
+      "plan_test_path": "scripts/team-service-plan-contract.test.mjs",
+      "plan_test_sha256": "e12e615f5ae72d7eff10c458cc757b5e395d1bae8848a4a9a12653ed1edf045b",
+      "run_id": "AC18-P2-STATE-CONTRACT-006",
+      "evidence_path": "docs/ai-review/evidence/TEAM-SERVICE-AC18-P2-STATE-CONTRACT-006.json",
+      "evidence_sha256": "0c129f3e8c29dc9117d92c3957a432f7c8b412f5329038e703328c4ed3419d4e",
+      "raw_tap_path": "docs/ai-review/evidence/TEAM-SERVICE-AC18-P2-STATE-CONTRACT-006.tap",
+      "raw_tap_sha256": "afce073e40f7c862d0540a01a74b5adb75fa2550d14c303b046cb4c89e2757ad",
+      "normal_dispatch_attempts": 0,
+      "actual_provider_calls": 0,
+      "service_ready": false
+    },
+    "p2b_completion": {
+      "status": "PASS_LOCAL_ONLY_DIRECT_OPUS_REVIEW_003",
+      "case_id": "AC-10",
+      "run_id": "AC24-P2B-003",
+      "candidate_path": "docs/ai-review/evidence/TEAM-SERVICE-P2B-COMPLETION-CANDIDATE-003.json",
+      "candidate_sha256": "ab9a1a71d55139119edcddc5cadea1b35de6ff7b8d86317839f01d5ec2c28ca7",
+      "evidence_path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P2B-003.json",
+      "evidence_sha256": "9f3d6cbe1dc47061eef9f1667de6843e657e889eca39c42ccd6c86b207a3b7ca",
+      "raw_tap_path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P2B-003.tap",
+      "raw_tap_sha256": "830e9a0d77bc30dd41a640f412a074b91b4fc1bdba58ce2c95dd8cd623533c0b",
+      "bundle_path": "docs/team/service-flow-p2b-completion-bundle-003.json",
+      "bundle_sha256": "e876b20fc58764041444cf9a0153d57c82af54f8ccffbce0944bd21b142939e8",
+      "review_path": "docs/ai-review/evidence/TEAM-SERVICE-P2B-COMPLETION-OPUS-003.md",
+      "review_sha256": "40b1860e620c799fc556dff27e8d3098e6ae7d31e8085418a0ce0e2a1592af5b",
+      "decision_path": "docs/ai-review/evidence/TEAM-SERVICE-P2B-COMPLETION-DECISION-003.json",
+      "decision_sha256": "cc20bcb8cb901d715609c3c6acc8493430e04a471f777862d180847066c6ccdf",
+      "catalog_path": "docs/team/service-flow-acceptance.json",
+      "catalog_sha256": "54cc85126406b1e4d0d175b0ba87d06e400f01b96bdaf6065961a39bb1a3f49e",
+      "plan_test_path": "scripts/team-service-p2b-contract.test.mjs",
+      "plan_test_sha256": "50079d25922b7f5512b69d6f08f994ed7eaf64f0c2ce19777a7e203941684efe",
+      "normal_dispatch_attempts": 0,
+      "actual_provider_calls": 0,
+      "service_ready": false
+    },
+    "next_gate": "P3_REQUIRES_SEPARATE_MODEL_SCOPE_REVIEW_AC24_ADMISSION_AND_OWNER_DECISION",
+    "forbidden": [
+      "P3 through P5 implementation without separate admission",
+      "real provider send",
+      "Router, app, DB, Supabase, staging or production mutation",
+      "service_ready or full verify PASS claim"
+    ]
   }
 }

@@ -246,8 +246,13 @@
       "evidence_mode": "LOCAL_MOCK",
       "host_dependency": false,
       "local_track_disposition": "LOCAL_CANDIDATE",
-      "implementation_status": "NOT_IMPLEMENTED",
-      "execution_status": "NOT_EXECUTED"
+      "implementation_status": "AVAILABLE",
+      "execution_status": "PASS",
+      "execution_evidence": {
+        "path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P2B-003.json",
+        "sha256": "9f3d6cbe1dc47061eef9f1667de6843e657e889eca39c42ccd6c86b207a3b7ca",
+        "run_id": "AC24-P2B-003"
+      }
     },
     {
       "case_id": "AC-11",
@@ -674,24 +679,31 @@
         "requires_driver_store": false,
         "requires_ac22": false,
         "completion_only": true,
+        "negative_evidence_required": false,
         "execution_status": "PASS",
         "active_run_id": "AC18-P2-STATE-CONTRACT-006"
       },
       "P2B": {
         "entry_modules": [
+          "scripts/team-service-intent-store.mjs"
+        ],
+        "scenario": "scripts/team-service-p2b-scenario.mjs",
+        "baseline_tests": [
           "scripts/team-service-router-adapter.test.mjs"
         ],
         "fixture_files": [
           "docs/team/service-flow-p2b-contract.json"
         ],
-        "additional_modules": "P2b AC-10 test, shared canonical interpreter, inactive intent store, workflow consumers and AC-18 canonical regression are pinned by the exact completion bundle; no live Router CLI, transport or provider is in scope.",
+        "additional_modules": "The capability-limited VM executes the actual intent store and dedicated AC-10 scenario. The node:test router-adapter suite remains a separately pinned regression because node:test cannot execute inside the builtin-denying VM allowlist. Both suites must preserve the same seven AC-10 assertion IDs; a semantic change requires updating and rerunning both.",
         "scenario_ids": [
           "AC-10"
         ],
         "requires_driver_store": false,
         "requires_ac22": false,
         "completion_only": true,
-        "execution_status": "NOT_EXECUTED"
+        "negative_evidence_required": true,
+        "execution_status": "PASS",
+        "active_run_id": "AC24-P2B-003"
       },
       "STORE_DRIVER": {
             "entry_modules": [
@@ -1204,13 +1216,59 @@
           "allowlist_ref": "docs/team/service-flow-p2-state-contract-bundle-006.json",
           "runner_ref": "C:/Program Files/nodejs/node.exe",
           "verifier_ref": "scripts/team-service-state-contract.test.mjs"
+        },
+        {
+          "run_id": "AC24-P2B-003",
+          "gate_id": "P2b",
+          "profile_id": "P2B",
+          "bundle_commit": "bf450a6940bb02958438231432f34189cf49c5c8",
+          "target_modules": ["scripts/team-service-intent-store.mjs"],
+          "module_sha256": [
+            {"path":"scripts/team-service-intent-store.mjs","sha256":"b8c60edddf656a6e28163ee8f3f4a5fcde62659f46cfa7e869c58f5fe7f118e5"},
+            {"path":"scripts/team-service-canonical.mjs","sha256":"e253b2b3a64a4a929bdd46e4425bdd7864edb5130af29e27926dd48a87148f9d"},
+            {"path":"scripts/team-service-p2b-scenario.mjs","sha256":"a3c1bb0407605f425e4f81d1e9abaca8af7ab753803e8d1a32d5ba542f0551d9"}
+          ],
+          "import_closure": [
+            "scripts/team-service-canonical.mjs",
+            "scripts/team-service-intent-store.mjs",
+            "scripts/team-service-p2b-scenario.mjs"
+          ],
+          "allowlist_sha256": "e876b20fc58764041444cf9a0153d57c82af54f8ccffbce0944bd21b142939e8",
+          "scenario_ids": ["AC-10"],
+          "test_sha256": "fa127f6d6ad116637103a9fd874e370c959a4abf4fd0d3df2846434320179412",
+          "runner_sha256": "3331e1ffe19874215472217c5e94f5a0c6d8e18c4ac7111d3937aa0ad5e9b4a5",
+          "verifier_sha256": "fa127f6d6ad116637103a9fd874e370c959a4abf4fd0d3df2846434320179412",
+          "normal_dispatch_attempts": 0,
+          "negative_fake_attempts": 3,
+          "actual_provider_calls": 0,
+          "assertion_observations": [
+            {"assertion_id":"AC-10-A01","verification_result":"PASS","observation":"Same identity and payload reused one route and delivery token with one local mock prepare."},
+            {"assertion_id":"AC-10-A02","verification_result":"PASS","observation":"Same intent with a changed payload failed closed as INTENT_CONFLICT."},
+            {"assertion_id":"AC-10-A03","verification_result":"PASS","observation":"Eight concurrent requests linearized to one route, token and local mock prepare."},
+            {"assertion_id":"AC-10-A04","verification_result":"PASS","observation":"Committed-result loss recovered the original route/token; blind recovery, early UUID and tampered checkpoint were rejected."},
+            {"assertion_id":"AC-10-A05","verification_result":"PASS","observation":"A new run_generation produced a new intent, route and delivery token."},
+            {"assertion_id":"AC-10-A06","verification_result":"PASS","observation":"Successor retry kept endpoint data outside identity, reused route/token and rejected endpoint_id identity pollution."},
+            {"assertion_id":"AC-10-A07","verification_result":"PASS","observation":"The local effect key stayed stable across generations and duplicate claim was rejected."},
+            {"assertion_id":"AC-24-A1","verification_result":"PASS","observation":"Exact three-module transitive closure was hash checked; omitted, extra, drifted, dynamic and forbidden imports were rejected."},
+            {"assertion_id":"AC-24-A2","verification_result":"PASS","observation":"Three fake transport/network attempts threw and no actual provider was bound."},
+            {"assertion_id":"AC-24-A3","verification_result":"PASS","observation":"The P2b normal scenario completed all seven assertions with normal_dispatch_attempts=0."},
+            {"assertion_id":"AC-24-A4","verification_result":"PASS","observation":"service_ready remained false; host-dependent claims were not evaluated or promoted."}
+          ],
+          "evidence_ref": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P2B-003.json",
+          "evidence_sha256": "9f3d6cbe1dc47061eef9f1667de6843e657e889eca39c42ccd6c86b207a3b7ca",
+          "result": "PASS",
+          "scope_limit": "P2b local intent preparation and AC-10 only; capability-limited VM and local provider mock. No Router CLI, host, real send, durable filesystem or service-ready claim.",
+          "snapshot": "COMMITTED_TARGET_WITH_HASHED_UNCOMMITTED_BUNDLE_AND_EVIDENCE",
+          "allowlist_ref": "docs/team/service-flow-p2b-completion-bundle-003.json",
+          "runner_ref": "C:/Program Files/nodejs/node.exe",
+          "verifier_ref": "scripts/team-service-p2b-no-dispatch.test.mjs"
         }
       ],
       "execution_evidence": {
-        "path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-ADMISSION-P2-005.json",
-        "sha256": "d6da338f9b35eedf6c37c3b0f78f53a14f88bbf0a4a2cbafbe2d56d26034bbd2"
+        "path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P2B-003.json",
+        "sha256": "9f3d6cbe1dc47061eef9f1667de6843e657e889eca39c42ccd6c86b207a3b7ca"
       },
-      "active_run_id": "AC24-ADMISSION-P2-005"
+      "active_run_id": "AC24-P2B-003"
     }
   ],
   "phase_gates": [
@@ -1331,13 +1389,33 @@
       "case_ids": [
         "AC-10"
       ],
-      "requires": [],
-      "gate_status": "NOT_EXECUTED",
+      "requires": [
+        "P2_PASS_LOCAL_ONLY",
+        "EXACT_P2B_COMPLETION_BUNDLE",
+        "AC24_ZERO_DISPATCH_PASS",
+        "AC10_ALL_ASSERTIONS_PASS",
+        "INDEPENDENT_OPUS_REVIEW_PASS",
+        "HUMAN_GATE_OWNER_DECISION"
+      ],
+      "gate_status": "PASS_LOCAL_ONLY_DIRECT_OPUS_REVIEW_003",
+      "post_implementation_review": {
+        "path": "docs/ai-review/evidence/TEAM-SERVICE-P2B-COMPLETION-OPUS-003.md",
+        "sha256": "40b1860e620c799fc556dff27e8d3098e6ae7d31e8085418a0ce0e2a1592af5b",
+        "verdict": "PASS",
+        "formal_cli_receipt": false,
+        "scope": "P2B_LOCAL_INTENT_PREPARATION_AND_AC10_ONLY"
+      },
+      "gate_owner_decision": {
+        "path": "docs/ai-review/evidence/TEAM-SERVICE-P2B-COMPLETION-DECISION-003.json",
+        "sha256": "cc20bcb8cb901d715609c3c6acc8493430e04a471f777862d180847066c6ccdf",
+        "decision": "ACCEPT_P2B_LOCAL_COMPLETION"
+      },
       "ac24_run_requirement": {
         "case_id": "AC-24",
         "profile_id": "P2B",
         "bundle": "EXACT_P2B_COMPLETION_BUNDLE",
-        "status": "NOT_EXECUTED"
+        "status": "PASS_LOCAL_ONLY_DIRECT_OPUS_REVIEW_003",
+        "run_id": "AC24-P2B-003"
       }
     },
     {
