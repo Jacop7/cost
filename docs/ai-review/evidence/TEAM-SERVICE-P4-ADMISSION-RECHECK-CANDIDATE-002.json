@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "kind": "DIRECT_OPUS_COWORK_DELTA_RECHECK_REQUEST",
+  "review_id": "TEAM-SERVICE-P4-ADMISSION-OPUS-RECHECK-002",
+  "scope": "P4 PLAN_TEST and AC-24 STORE_DRIVER admission prework corrections only",
+  "baseline_commit": "7655ee0f2446af9c8a47e1432e92ac501d541586",
+  "baseline_tree": "bbded9a0cbbb3e824298111da116b1354d3e131f",
+  "prior_request": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-P4-ADMISSION-REVIEW-CANDIDATE-001.json",
+    "sha256": "d526edb816a65975bf05747083c9c1b7181aa58cfc1521cb664481967d21ec79"
+  },
+  "prior_review": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-P4-ADMISSION-OPUS-001.md",
+    "sha256": "7fc0fdb383f76cd136a77c7965d72ecb90ebeedf368920fce682abc926742734",
+    "verdict": "CHANGES_REQUIRED"
+  },
+  "corrected_artifacts": [
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-P4-PLAN-OWNER-DECISION-CORRECTION-003.json",
+      "sha256": "a7eb7d1ba06af0e634095877df56aa871a02c9f13561f4b0a1d4d7a97627da5c",
+      "addresses": ["P4-B2"]
+    },
+    {
+      "path": ".gitattributes",
+      "sha256": "6770c9982a77a6edbfe9aa744faf69bd58c27efadd97b1a60bc84c0d8cc09e13",
+      "addresses": ["P4-B1"]
+    },
+    {
+      "path": ".codex/mission-relay/candidates/team-service-p4-admission-009.json",
+      "sha256": "bc05761238ceaea9e13420792123b9215d32598a6dafd063bb6363fc86e88088",
+      "addresses": ["P4-B1", "P4-B2", "N2"]
+    },
+    {
+      "path": ".codex/mission-relay/candidates/team-service-p4-admission-009.json.sha256",
+      "sha256": "eae84d710cf4d6319059441632116fdbf4e8551629348a873793f91a342e4275",
+      "addresses": ["P4-B1"]
+    },
+    {
+      "path": "docs/team/service-flow-p4-admission-bundle.json",
+      "sha256": "5b9429be9dd4b38e1167ce914ec362e4fc5d9464191d91aecb2fd33118cc9254",
+      "addresses": ["P4-B1", "P4-B2", "N1", "N3", "N4"]
+    },
+    {
+      "path": "scripts/team-service-p4-admission.mjs",
+      "sha256": "9320e936f2b9688e1e53441fc8a7edfcdf1b74c72ffe41b8e8446ae79f683576",
+      "addresses": ["P4-B1", "P4-B2", "N1", "N3", "N4"]
+    },
+    {
+      "path": "scripts/team-service-p4-no-dispatch.test.mjs",
+      "sha256": "6cda8cef06555082843deb16acee3143f992f72f44633dbc97c4cc9784f98579",
+      "addresses": ["P4-B1", "P4-B2", "N1", "N3", "N4"]
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P4-ADMISSION-002.tap",
+      "sha256": "a907c64158af7f59f568f657a2c004c67d3be1c758ce02a3d362e0fa761bb8cc",
+      "addresses": ["P4-B1", "P4-B2", "N1", "N3", "N4"]
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P4-ADMISSION-002.json",
+      "sha256": "8eaa3cc1b99c5023ee5b008d346e7039944d0b32fc24de4c28558e67128ded2e",
+      "addresses": ["P4-B1", "P4-B2", "N1", "N3", "N4"]
+    }
+  ],
+  "local_results": {
+    "model_candidate": "MODEL_PLAN_VERIFIED",
+    "committed_pin_check": "PASS_13_OF_13",
+    "ac24_admission": "PASS_3_OF_3",
+    "normal_dispatch_attempts": 0,
+    "actual_provider_calls": 0,
+    "dispatch_counters_basis": "STRUCTURAL_NO_RUNTIME_MODULE_EXECUTED"
+  },
+  "requested_recheck": {
+    "findings": ["P4-B1", "P4-B2", "N1", "N2", "N3", "N4"],
+    "allowed_verdicts": ["PASS_ADMISSION_PREWORK", "CHANGES_REQUIRED", "BLOCKED"],
+    "confirm_clean_checkout_reproducibility": true,
+    "confirm_exact_path_authority": true,
+    "confirm_P4_implementation_still_requires_new_unambiguous_human_decision": true
+  },
+  "known_open": [
+    "N5 remains intentionally open: no P4 implementation authority exists.",
+    "Structural zero counters are not runtime capability-denial evidence.",
+    "The color-lineage verify failure still blocks service-ready and full-verify claims."
+  ],
+  "p4_implementation_authorized": false,
+  "real_send_authorized": false,
+  "service_ready": false,
+  "formal_cli_receipt": false
+}
