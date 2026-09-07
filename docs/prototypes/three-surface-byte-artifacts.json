@@ -13,7 +13,7 @@
     {
       "path": ".gitattributes",
       "status": "present",
-      "contentSha256": "c119a9bc2d941e8775a65bbde4025484e4f182251c8e736a5ae3e040df59ffab"
+      "contentSha256": "ae6a3f0607983f813597ce5f537bfccec1073117f05b6229914f2b8fb9a8287e"
     },
     {
       "path": "apps/mobile/src/dev/surfaceFixtureStubs.json",
@@ -98,7 +98,7 @@
     {
       "path": "docs/prototypes/three-surface-baseline.json",
       "status": "present",
-      "contentSha256": "df6e137161e2b6f55ed8012e9031cd457281733981e9d1b7de69978faa60094f"
+      "contentSha256": "c4849ab901112dc14e981819b4bb9da59c95669f2f01c7c960c8ada479f9b4ca"
     },
     {
       "path": "docs/prototypes/three-surface-migration-backlog.json",
@@ -119,6 +119,21 @@
       "path": "docs/프로토타입-Expo-3표면-동기화-세부실행서.md",
       "status": "present",
       "contentSha256": "70e16b48e69d9a82868ecbd6c9b61d3e8ceadce6c3433f3e20fb93b23847beca"
+    },
+    {
+      "path": "scripts/design-token-s4-check.mjs",
+      "status": "present",
+      "contentSha256": "fa6ecb9afa423825a805291230c11e2dedc44c646bfb7f88b9649b10bf8320c0"
+    },
+    {
+      "path": "scripts/design-token-s4-check.test.mjs",
+      "status": "present",
+      "contentSha256": "319ea50e15dbe2e824e99731cd3f77ffbf52e578c5eafb85f38b55e4caf96bfe"
+    },
+    {
+      "path": "scripts/design-token-s4-successor.json",
+      "status": "present",
+      "contentSha256": "b41e3035ff29f959f0c412baa4a5792a77e3d6ba6b50469b2351be616f9eb671"
     },
     {
       "path": "scripts/three-surface-advisory-ledger-check.mjs",
