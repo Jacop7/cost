@@ -242,7 +242,7 @@
       },
       {
         "path": "docs/team/service-flow-acceptance.json",
-        "sha256": "cef5344d28989cc4290a46aa0904bec5003bc5edc17b705fbe798a79df5520d6"
+        "sha256": "659662dede5f42a57b5ad4ab6f0f91c58930e479f65f84c6178f83c8f7fa97cf"
       },
       {
         "path": "docs/ai-review/evidence/TEAM-SERVICE-P3-ADMISSION-OPUS-001.md",
@@ -254,15 +254,15 @@
       },
       {
         "path": "docs/team/service-flow-p3-contract.json",
-        "sha256": "d42c0e010ddd200b361cb82a66a23ef1d949a4c44a750687dba7f4ea039ff890"
+        "sha256": "58897ee630c71333cf1c89705d823e48ec92a671f3ed01f03c1c3bfaa57f6248"
       },
       {
         "path": "scripts/team-service-p3-contract.test.mjs",
-        "sha256": "ad20a37b5ef948445d4360d99ec19a27596eabfb42527ba1577c96101323994d"
+        "sha256": "506ef0c07243db70c14c33456412f9691b839fb2b4e83d324ea19284e6d05d2b"
       },
       {
         "path": "docs/team/service-flow-p3-admission-bundle.json",
-        "sha256": "dbc5e27fa8be27cd085824f3cda2852979f51388ff6533cad038e08fe7fab85d"
+        "sha256": "93e34f20a7d4e575fac4d8cc4359b2aff7eed2cb218cc76d6c487899d2f7d620"
       },
       {
         "path": "scripts/team-service-p3-admission.mjs",
@@ -274,7 +274,7 @@
       },
       {
         "path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P3-ADMISSION-001.json",
-        "sha256": "d1d906c33cbd701c952bec428fb75f99eaa7c541e4f5b7e3a9614f80efbe0d97"
+        "sha256": "7645076ec674beefae7a348a7e0151dc3b3d43f5b456f4aba30d3f8d72f71d0c"
       }
     ],
     "legacy_fields": "Existing stages, approvals, budgets and model availability are preserved historical predecessor data, not new verification or new budget authorization.",
@@ -518,7 +518,7 @@
     ]
   },
   "schemaVersion": 1,
-  "sealedAt": "2026-09-07T04:41:18.494315+00:00",
+  "sealedAt": "2026-09-07T04:43:51.471731+00:00",
   "stages": [
     {
       "assignments": [
