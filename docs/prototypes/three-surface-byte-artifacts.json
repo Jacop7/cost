@@ -92,8 +92,8 @@
     },
     {
       "path": "docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-P2-001/opus-direct-advisory-r4.md",
-      "status": "planned",
-      "contentSha256": null
+      "status": "present",
+      "contentSha256": "becae2ba4425ede786ac6eaf483f43fa36efdcd355ff24a48e7c779b3be5909a"
     },
     {
       "path": "docs/prototypes/three-surface-approved-visual-changes.json",
