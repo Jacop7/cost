@@ -13,7 +13,7 @@
     {
       "path": ".gitattributes",
       "status": "present",
-      "contentSha256": "8aa7520b86277e64bab7a89f45fedc0a8a5364cb85e05184777cf09d7989c6b7"
+      "contentSha256": "c119a9bc2d941e8775a65bbde4025484e4f182251c8e736a5ae3e040df59ffab"
     },
     {
       "path": "apps/mobile/src/dev/surfaceFixtureStubs.json",
@@ -76,9 +76,14 @@
       "contentSha256": "670cb0885ff4956e387be897f5232227118562da70f11babef7b0a2fd4fabd93"
     },
     {
+      "path": "docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-P2-001/opus-direct-advisory-r1.md",
+      "status": "present",
+      "contentSha256": "9480f3d609358d56bd4fd55c4f7ccf5f8e58deffea528ec5e6891d27b96b1b10"
+    },
+    {
       "path": "docs/prototypes/three-surface-approved-visual-changes.json",
       "status": "present",
-      "contentSha256": "6a548ca775727775a37614b5f5563437e5d180c6a5ee28ee021ecc89f0399747"
+      "contentSha256": "c5eb4aae30e504e754108b8a2d1c64bc98285687e9a0b73b9787ddca1bbc0bea"
     },
     {
       "path": "docs/prototypes/three-surface-approvers.json",
@@ -88,7 +93,7 @@
     {
       "path": "docs/prototypes/three-surface-baseline.json",
       "status": "present",
-      "contentSha256": "5412d99a19d6a1294e7f63fd7b76c41a3aff95f97b165a9a5194f80eba46b0fc"
+      "contentSha256": "df6e137161e2b6f55ed8012e9031cd457281733981e9d1b7de69978faa60094f"
     },
     {
       "path": "docs/prototypes/three-surface-migration-backlog.json",
@@ -103,12 +108,12 @@
     {
       "path": "docs/프로토타입-Expo-3표면-동기화-기획안.md",
       "status": "present",
-      "contentSha256": "8b88476568b5d0be4333b6abd237f8494a3aeec7fa0327f4dc5fe3b8587856fb"
+      "contentSha256": "7e323548d70ace514a58bd1207ce3d6de9219ec8ced75df88baac57c35057226"
     },
     {
       "path": "docs/프로토타입-Expo-3표면-동기화-세부실행서.md",
       "status": "present",
-      "contentSha256": "6ba0e0bead2f6654236f93d2f5d1224908dda6d008f6b893229dcd0c174fcad3"
+      "contentSha256": "b2a29767c8a3ef5f1512b0aba4b841e7b3756043fc6fe72ce039c85a35dc0ac0"
     },
     {
       "path": "scripts/three-surface-advisory-ledger-check.mjs",
@@ -133,17 +138,17 @@
     {
       "path": "scripts/three-surface-p0-check.mjs",
       "status": "present",
-      "contentSha256": "cae47e7f01067973f8b8b5c5fa95275d25ae5a39e66c4830b9f3f3618fa84418"
+      "contentSha256": "73d494b513f299ddac8139bd28ffe72c8692a8000c0d333565603681f82501d1"
     },
     {
       "path": "scripts/three-surface-p0-check.test.mjs",
       "status": "present",
-      "contentSha256": "759ae0635fb5b711e0235b4f0ade60d286f1ee659a5062ccfb3716dedd4b6290"
+      "contentSha256": "7f4ba97b0a8701810b43d1307d76919dac474a3e075f933288354628a5aaa6d3"
     },
     {
       "path": "scripts/three-surface-sync-check.mjs",
       "status": "present",
-      "contentSha256": "33ba7df490c405d9b777366def384de32be2b56c7ce5fc55994fa9e4cec871ab"
+      "contentSha256": "f361dbe2efbf5b766ed65d1d09617fe930c93aad9b127adefbe1d7c754653a0b"
     },
     {
       "path": "scripts/three-surface-sync-check.test.mjs",
@@ -153,17 +158,17 @@
     {
       "path": "scripts/three-surface-visual-capture.mjs",
       "status": "present",
-      "contentSha256": "574d751c5f5fa228782de32d992b3215094463856c6b1d6b8802241521759aab"
+      "contentSha256": "0da433406542dad75ff3539bd10020ebfe4b3b18bf4ce0d300f5e4f7583aa372"
     },
     {
       "path": "scripts/three-surface-visual-diff-check.mjs",
       "status": "present",
-      "contentSha256": "a588ab6263a544417d602d534e5a068c602b2674ddcd4c2cc7bcd8136da40857"
+      "contentSha256": "522f2398c93295cdc6b243c833327498cfe80fb9c196a3e1f3f95a6e7479bf33"
     },
     {
       "path": "scripts/three-surface-visual-diff-check.test.mjs",
       "status": "present",
-      "contentSha256": "dafc21b3fd0191e7277946de3fb9e409a81899d5ab4860ce652b4654c94c7b6f"
+      "contentSha256": "91fd078e95b038ca8ce7bd9962a7bb3c68886c980e107f0cae34c631060c5234"
     }
   ],
   "readmeMarker": {
