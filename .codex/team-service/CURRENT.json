@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "status": "INITIALIZED_SIMULATION_ONLY",
+  "mode": "SIMULATION_ONLY",
+  "sealed_tier": "UNSEALED_UNTIL_RUNTIME_DOCTOR",
+  "real_send_authorized": false,
+  "service_ready": false
+}

@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "status": "NOT_EXECUTED",
+  "dependencies": [
+    {
+      "name": "codex-mission-relay",
+      "observed_version": "0.1.0+codex.20260905052501",
+      "supported_version": "EXACT_UNTIL_COMPATIBILITY_TESTED",
+      "verification_result": "NOT_EXECUTED"
+    },
+    {
+      "name": "codex-project-orchestrator",
+      "observed_version": "0.1.0+codex.20260903082431",
+      "supported_version": "EXACT_UNTIL_COMPATIBILITY_TESTED",
+      "verification_result": "NOT_EXECUTED"
+    },
+    {
+      "name": "codex-team-router",
+      "observed_version": "0.1.0+codex.20260904020429",
+      "supported_version": "EXACT_UNTIL_COMPATIBILITY_TESTED",
+      "verification_result": "NOT_EXECUTED"
+    },
+    {
+      "name": "codex-account-continuity",
+      "observed_version": "0.1.0+codex.20260903082432",
+      "supported_version": "EXACT_UNTIL_COMPATIBILITY_TESTED",
+      "verification_result": "NOT_EXECUTED"
+    }
+  ]
+}

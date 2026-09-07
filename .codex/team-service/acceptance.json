@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "status": "NOT_EXECUTED_FOR_THIS_PROJECT",
+  "tests": [
+    {
+      "id": "AT-01_CLEAN_INSTALL_RECEIPT",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "id": "AT-02_CROSS_PC_DETERMINISM",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "id": "AT-03_SECRET_ENDPOINT_ABSOLUTE_PATH_LEAK_ZERO",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "id": "AT-04_NO_SEND_CLOSURE_ZERO_ZERO",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "id": "AT-05_TIER_FAIL_CLOSED",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "id": "AT-06_SHELL_PROCESS_EXIT_PROBE",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "id": "AT-07_DEPENDENCY_COMPATIBILITY_FAIL_CLOSED",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "id": "AT-08_MIGRATION_ROUNDTRIP_HASH",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "id": "AT-09_ADAPTER_ROLE_EDGE_COVERAGE",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "id": "AT-10_PROBE_REQUIRES_EXACT_ENVELOPE",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "id": "AT-11_INIT_IDEMPOTENT_NO_OVERWRITE",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "id": "AT-12_RUNTIME_LOSS_RESTORE_REQUIRED",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "id": "AT-13_UNICODE_CRLF_PLATFORM_MATRIX",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "id": "AT-14_PLUGIN_REMOVAL_DEPENDENCY_REGRESSION_ZERO",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "id": "AT-15_REBUILD_FROM_EMPTY_SOURCE",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "id": "AT-16_RUNTIME_ACL_NEGATIVE_OTHER_PRINCIPAL",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "id": "AT-17_DOCTOR_TIER_DETERMINISM_AND_CONFIG_PROMOTION_REJECTED",
+      "status": "NOT_EXECUTED"
+    }
+  ]
+}

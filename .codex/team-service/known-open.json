@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "status": "OPEN_ITEMS_REMAIN",
+  "physical_second_pc": "NOT_TESTED",
+  "runtime_acl_other_principal": "BLOCKED_EXTERNAL_SECOND_PRINCIPAL",
+  "actual_host_roundtrip": "NOT_AUTHORIZED",
+  "package_acceptance_snapshot": [
+    {
+      "id": "AT-01",
+      "status": "PASS"
+    },
+    {
+      "id": "AT-02",
+      "status": "PASS_SIMULATED_CLEAN_PROFILES"
+    },
+    {
+      "id": "AT-03",
+      "status": "PASS"
+    },
+    {
+      "id": "AT-04",
+      "status": "PASS_EXECUTED_HARNESS"
+    },
+    {
+      "id": "AT-05",
+      "status": "PASS"
+    },
+    {
+      "id": "AT-06",
+      "status": "PASS_WINDOWS_CURRENT_HOST"
+    },
+    {
+      "id": "AT-07",
+      "status": "PASS_CURRENT_EXACT_AND_NEGATIVE_MISSING"
+    },
+    {
+      "id": "AT-08",
+      "status": "PASS_V0_1_X_TO_V0_2_0_AND_CURRENT_NOOP"
+    },
+    {
+      "id": "AT-09",
+      "status": "PASS_PROFILE_MANIFEST_ROUTER_MISMATCH_REPORTED"
+    },
+    {
+      "id": "AT-10",
+      "status": "PASS_VALIDATION_ONLY"
+    },
+    {
+      "id": "AT-11",
+      "status": "PASS"
+    },
+    {
+      "id": "AT-12",
+      "status": "PASS"
+    },
+    {
+      "id": "AT-13",
+      "status": "PASS_WINDOWS_CURRENT_HOST"
+    },
+    {
+      "id": "AT-14",
+      "status": "PASS"
+    },
+    {
+      "id": "AT-15",
+      "status": "BLOCKED_REBUILD_FROM_EMPTY_SOURCE_DRILL"
+    },
+    {
+      "id": "AT-16",
+      "status": "BLOCKED_EXTERNAL_SECOND_PRINCIPAL"
+    },
+    {
+      "id": "AT-17",
+      "status": "PASS"
+    }
+  ]
+}

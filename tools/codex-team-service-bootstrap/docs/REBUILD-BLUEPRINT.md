@@ -1,6 +1,6 @@
-# AI 팀 서비스 유실 재제작 설계서 v0.1
+# AI 팀 서비스 유실 재제작 설계서 v0.2.0
 
-상태: `DRAFT_FOR_FABLE_REVIEW`
+상태: `IMPLEMENTATION_CANDIDATE_OPUS_RECHECK_PENDING`
 
 목표는 플러그인, adapter, 템플릿, 검사기, 문서 8개 영역이 모두 유실돼도 원시 채팅에 의존하지 않고
 동일 의미의 패키지를 다시 만드는 것이다. runtime 비밀과 실제 endpoint는 재제작 대상이 아니라
@@ -20,6 +20,7 @@
 - `schemas/capability-policy.schema.json`
 - `schemas/install-receipt.schema.json`
 - `schemas/generated-files.schema.json`
+- `schemas/host-evidence-admission.schema.json`
 - `profiles/default-11-role-profile.json`
 - `golden/portable-v1-vectors.json`
 - `scripts/portable-team-service-design.test.mjs` (저장소 루트 기준)
@@ -40,7 +41,8 @@ codex-team-service-bootstrap/
 │  ├─ project-profile.schema.json
 │  ├─ capability-policy.schema.json
 │  ├─ install-receipt.schema.json
-│  └─ generated-files.schema.json
+│  ├─ generated-files.schema.json
+│  └─ host-evidence-admission.schema.json
 ├─ templates/
 │  ├─ default-11-role-profile.json
 │  └─ project/
@@ -53,6 +55,7 @@ codex-team-service-bootstrap/
 │  ├─ migrate.mjs
 │  └─ recover.mjs
 ├─ migrations/<from>-to-<to>.mjs
+├─ harness/no-send-{normal,forbidden,dynamic-import}.mjs
 ├─ fixtures/minimal-project/
 └─ tests/
 ```
@@ -124,7 +127,7 @@ default profile은 selector의 ordered Cartesian product와 `exclude_self` 규�
 - `AT-01` 새 사용자 프로필·새 clone clean install과 receipt 재검산
 - `AT-02` 두 PC에서 같은 입력의 프로젝트 생성 파일 hash 동일
 - `AT-03` Git diff의 비밀·계정·endpoint·절대경로 누출 0
-- `AT-04` closure pin과 fake transport를 포함한 무발송 0/0
+- `AT-04` closure pin과 fake transport를 포함한 무발송 정상 0·거부 attempt 양수·실제 provider 0
 - `AT-05` host 근거 누락 시 tier 상향·send 거부
 - `AT-06` PowerShell/Bash 오인 0, 실제 exit code 보존
 - `AT-07` 기존 플러그인 지원 범위 밖 version에서 fail-closed
@@ -149,11 +152,12 @@ Windows가 v1 검증 플랫폼이다. 다른 OS는 해당 OS의 ACL·KnownFolder
 선언하지 않는다.
 
 설계 단계의 dependency-free 의미 검사는 `scripts/portable-team-service-design.test.mjs`가 수행한다.
-UTF-16 canonical reference를 직접 실행해 expected text/hash를 대조하고, selector 참조와 67개 기본 edge
+UTF-16 canonical reference를 직접 실행해 expected text/hash를 대조하고, selector 참조와 67개 route-kind
+requirement·64개 고유 source-target route
 확장, 외부 `$ref` 대상, schema-valid 전체 install receipt, 경로의 drive/UNC/backslash/상위탈출 거부,
 AC-24 관측 어휘를 검사한다. 텍스트와 그 텍스트 hash만 비교하는 자기참조 검사는 허용하지 않는다.
 
-## 9. 구현 v0.1 정본 매핑
+## 9. 구현 v0.2.0 정본 매핑
 
 설계 정본을 실제 코드로 옮긴 첫 구현은 `tools/codex-team-service-bootstrap`이다.
 
@@ -162,10 +166,12 @@ AC-24 관측 어휘를 검사한다. 텍스트와 그 텍스트 hash만 비교�
 - canonical·schema registry·경로/원자성 helper: `scripts/lib/core.mjs`
 - doctor·init·runtime receipt·dry-run·verify·activation validation·migration·recovery:
   `scripts/team-service.mjs`
+- 실행형 무발송 closure: `scripts/no-send-harness.mjs`, `harness/no-send-*.mjs`
 - 다른 사용자/PC 설치와 업데이트 백업: `scripts/Install-TeamServiceBootstrap.ps1`
 - marketplace형 release 생성: `scripts/Export-TeamServiceBootstrap.ps1`
 - 실행 시험과 현재 판정: `tests/`, `contracts/acceptance-matrix.json`, `docs/IMPLEMENTATION-STATUS.md`
 
-구현 v0.1에서 AT-08은 schema v1의 hash 보존 no-op만 검증하며 아직 존재하지 않는 구버전 migration을
-통과했다고 주장하지 않는다. AT-16은 다른 Windows principal이 필요한 외부 시험이라 차단 상태로
+구현 v0.2.0에서 AT-08은 schema v1의 hash 보존 no-op와 0.1.x→0.2.0 프로젝트 파일 migration·runtime
+backup을 검증한다. 더 오래된 미지 판본의 migration은 주장하지 않는다. AT-15의 빈 소스 재제작 drill과
+AT-16의 다른 Windows principal 외부 시험은 차단 상태로
 남긴다. 격리된 두 번째 사용자 프로필 시험은 실제 물리적 두 번째 PC 시험을 대신하지 않는다.

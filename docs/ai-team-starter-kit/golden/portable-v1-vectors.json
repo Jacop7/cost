@@ -34,6 +34,7 @@
         "schema_version": 1,
         "receipt_id": "INSTALL-TEST-001",
         "previous_receipt_sha256": null,
+        "plugin_version": "0.2.0+codex.test",
         "plugin_manifest_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
         "compatibility_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
         "dependency_observations": [
@@ -53,7 +54,7 @@
         "coverage_evidence_sha256": "7777777777777777777777777777777777777777777777777777777777777777",
         "clock_provenance": "UNVERIFIED_TIME"
       },
-      "expected_sha256": "8671ee5c5f13709b3ee52b63ae0e88d69ce681187df8749ad3fc062a17a04436"
+      "expected_sha256": "b0a06f4bc56da5833e25ac895a11ed2be632a029ec8515c43b8c2d262149046e"
     }
   ],
   "harness_vectors": [
