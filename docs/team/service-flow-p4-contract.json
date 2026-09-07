@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "kind": "TEAM_SERVICE_P4_PLAN_TEST_CONTRACT",
+  "status": "PLAN_TEST_CANDIDATE_PENDING_INDEPENDENT_REVIEW",
+  "phase": "P4",
+  "depends_on": ["P3"],
+  "purpose": "Plan a local Task store, outbox and foreground driver with crash, writer, STOP and Windows ACL evidence while every real transport remains disabled.",
+  "entry": {
+    "p3_required_status": "PASS_LOCAL_ONLY_DIRECT_OPUS_RECHECK_005",
+    "p3_owner_decision": "DEC-TEAM-SERVICE-P3-COMPLETION-006",
+    "p3_completion_run": "AC24-P3-COMPLETION-004",
+    "p3_pipeline_non_regression": "PASS_33_OF_33",
+    "full_verify_required_for_plan_test": false,
+    "full_verify_required_for_service_ready": true,
+    "color_lineage_waived": false,
+    "color_lineage_disposition": "OUTSIDE_P4_TARGET_BUT_BLOCKS_STAGE3_AND_SERVICE_READY"
+  },
+  "planned_targets": [
+    "docs/team/service-flow-p4-contract.json",
+    "docs/team/service-flow-acceptance.json",
+    "scripts/team-service-p4-contract.test.mjs",
+    "scripts/team-service-store.mjs",
+    "scripts/team-service-store.test.mjs",
+    "scripts/team-service-driver.mjs",
+    "scripts/team-service-driver.test.mjs",
+    "scripts/team-service-runtime-acl.ps1",
+    "scripts/team-service-runtime-acl.test.mjs",
+    "scripts/team-service-p4-local-tests.mjs",
+    "scripts/team-service-local-tests.mjs"
+  ],
+  "store": {
+    "root": "WINDOWS_LOCALAPPDATA_KNOWN_FOLDER/Codex-Team-Service/<project_id>",
+    "git_or_onedrive_forbidden": true,
+    "project_id_single_segment_required": true,
+    "reparse_path_forbidden": true,
+    "event_log_append_only": true,
+    "sequence_and_previous_hash_required": true,
+    "revision_cas_required": true,
+    "atomic_publish_required": true,
+    "corruption_action": "QUARANTINE_AND_FAIL_CLOSED",
+    "process_lock_required": true,
+    "live_lock_may_not_be_stolen": true,
+    "stale_lock_requires_owner_liveness_proof": true
+  },
+  "outbox": {
+    "persist_intent_before_prepare": true,
+    "persist_prepared_result_before_send": true,
+    "unique_key": "intent_key",
+    "same_key_same_payload": "RETURN_EXISTING_ENTRY",
+    "same_key_different_payload": "INTENT_CONFLICT",
+    "unknown_delivery": "RECONCILE_BEFORE_ANY_RETRY",
+    "blind_prepare_or_send_retry": false,
+    "transport_semantics": "AT_LEAST_ONCE_WITH_TOKEN_DEDUPE_AND_EFFECT_IDEMPOTENCY",
+    "exactly_once_claimed": false
+  },
+  "driver": {
+    "mode": "FOREGROUND_ONLY",
+    "background_service_claimed": false,
+    "provider_or_team_chat_available": false,
+    "test_transport": "IN_PROCESS_FAKE_ONLY",
+    "transient_retry_limit_required": true,
+    "rejected_is_terminal": true,
+    "ack_is_not_completion": true,
+    "stop_checks_before_claim_and_before_effect": true,
+    "root_stop_epoch_only": true,
+    "stale_generation_result": "AUDIT_ONLY"
+  },
+  "runtime_acl": {
+    "checker": "scripts/team-service-runtime-acl.ps1",
+    "test": "scripts/team-service-runtime-acl.test.mjs",
+    "standalone_command": "node --test scripts/team-service-runtime-acl.test.mjs",
+    "depends_on_verify_stage3_completion": false,
+    "owner_sid_required": true,
+    "system_sid_allowed": true,
+    "broad_allow_forbidden": true,
+    "unexpected_inheritance_forbidden": true,
+    "actual_owner_read_required": true,
+    "actual_other_non_admin_token_read_denial_required": true,
+    "missing_other_token": "ACL_NEGATIVE_UNVERIFIED",
+    "account_creation_or_password_collection_allowed": false,
+    "admin_or_system_cryptographic_isolation_claimed": false,
+    "evidence_fields": [
+      "resolved_path",
+      "sddl_sha256",
+      "checker_sha256",
+      "principal_type",
+      "owner_read_result",
+      "other_principal_denial_result"
+    ]
+  },
+  "acceptance": {
+    "case_ids": ["AC-09", "AC-11", "AC-12", "AC-23"],
+    "completion_profile": "STORE_DRIVER",
+    "completion_requires_ac24": true,
+    "exact_target_and_transitive_closure_required": true,
+    "skips_count_as_pass": false,
+    "dispatch_attempts": 0,
+    "actual_provider_calls": 0
+  },
+  "admission": {
+    "model_scope_candidate_required": true,
+    "independent_plan_review_required": true,
+    "ac24_entry_run_required": true,
+    "gate_owner_decision_required": true,
+    "implementation_may_begin_before_all_entry_gates": false
+  },
+  "scope": {
+    "network_allowed": false,
+    "provider_send_allowed": false,
+    "team_router_runtime_mutation_allowed": false,
+    "endpoint_mutation_allowed": false,
+    "app_product_mutation_allowed": false,
+    "database_supabase_mutation_allowed": false,
+    "p5_or_later_allowed": false,
+    "service_ready_claim_allowed": false,
+    "stage3_or_full_verify_pass_claim_allowed": false
+  }
+}
