@@ -1,8 +1,8 @@
 {
   "schemaVersion": 3,
   "stage": "P2",
-  "baselineCommit": "2a73bb088c1fbc38b1ca48e0c50de88f2d18231c",
-  "baselineTree": "e5157e031c6fe27ff799c7127d535055bdbc377f",
+  "baselineCommit": "071e228ee5ba998bee99528beb0611551e2df38a",
+  "baselineTree": "b81cb0bd3b9988b57642ebac3ffc7fb6a5a6cbec",
   "anchors": {
     "productBaseline": {
       "commit": "3448884d7219227dce369af45cb2be290ed12f3a",
@@ -67,7 +67,7 @@
     },
     {
       "path": "scripts/design-token-s4-check.mjs",
-      "textSha256": "5c78a9f60814d784befe054222bed6c974a2501c67b1a19b6c48a1520ae1507e"
+      "textSha256": "fa6ecb9afa423825a805291230c11e2dedc44c646bfb7f88b9649b10bf8320c0"
     },
     {
       "path": "scripts/three-surface-advisory-ledger-check.mjs",
@@ -4029,341 +4029,15 @@
     {
       "id": "S4-EXACT",
       "command": "node scripts/design-token-s4-check.mjs",
-      "exitCode": 1,
-      "outputSha256": "493aa34cb172e15f19deaa9afeec3d72afc6df1446cd6014c57fc7c4a55f476f",
-      "lineCount": 55,
-      "failureLines": [
-        "S4 허용 AST diff 불일치 — 실제 [apps/mobile/app/(tabs)/_layout.tsx, apps/mobile/src/components/history/HistoryLayout.tsx, apps/mobile/src/components/kit/AppHeader.tsx, apps/mobile/src/components/kit/Button.tsx, apps/mobile/src/components/kit/Sheet.tsx, apps/mobile/src/components/kit/Slider.tsx, apps/mobile/src/components/kit/SortSheet.tsx, apps/mobile/src/components/kit/charts.tsx, apps/mobile/src/components/kit/index.tsx, apps/mobile/src/features/changes/components/RecentChangeRow.tsx, apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx, apps/mobile/src/features/ingredients/components/BasePriceCard.tsx, apps/mobile/src/features/ingredients/components/CategoryPickerSheet.tsx, apps/mobile/src/features/ingredients/components/IngCard.tsx, apps/mobile/src/features/ingredients/components/LedgerRow.tsx, apps/mobile/src/features/ingredients/components/LossCard.tsx, apps/mobile/src/features/ingredients/components/UnitPickerSheet.tsx, apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx, apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx, apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx, apps/mobile/src/features/ingredients/screens/IngredientFormScreen.tsx, apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx, apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx, apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx, apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx, apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx, apps/mobile/src/features/international-tax/RecipeTaxStatusCard.tsx, apps/mobile/src/features/my/components/ChannelWeightSheet.tsx, apps/mobile/src/features/my/components/RevenueGapCard.tsx, apps/mobile/src/features/my/screens/FixedCostEditScreen.tsx, apps/mobile/src/features/my/screens/FixedCostScreen.tsx, apps/mobile/src/features/my/screens/MyAccountScreen.tsx, apps/mobile/src/features/my/screens/MyCategoryHubScreen.tsx, apps/mobile/src/features/my/screens/MyChannelsScreen.tsx, apps/mobile/src/features/my/screens/MyCountryScreen.tsx, apps/mobile/src/features/my/screens/MyHomeScreen.tsx, apps/mobile/src/features/my/screens/MyHoursScreen.tsx, apps/mobile/src/features/my/screens/MyLanguageScreen.tsx, apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx, apps/mobile/src/features/my/screens/MyTaxScreen.tsx, apps/mobile/src/features/my/screens/MyUnitsScreen.tsx, apps/mobile/src/features/my/screens/MyVendorsScreen.tsx, apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx, apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx, apps/mobile/src/features/recipes/components/PriceSimSheet.tsx, apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx, apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx, apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx, apps/mobile/src/features/recipes/screens/MaterialSearchScreen.tsx, apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx, apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx, apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx, apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx, apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx, apps/mobile/src/features/sales/components/BusinessDayBar.tsx, apps/mobile/src/features/sales/components/LateCloseSheet.tsx, apps/mobile/src/features/sales/components/MenuProfitSheet.tsx, apps/mobile/src/features/sales/components/ProfitBlocks.tsx, apps/mobile/src/features/sales/components/SaleStepper.tsx, apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx, apps/mobile/src/features/sales/screens/SalesChannelScreen.tsx, apps/mobile/src/features/sales/screens/SalesDayDetailScreen.tsx, apps/mobile/src/features/sales/screens/SalesDayFullScreen.tsx, apps/mobile/src/features/sales/screens/SalesExpenseScreen.tsx, apps/mobile/src/features/sales/screens/SalesExtraScreen.tsx, apps/mobile/src/features/sales/screens/SalesFixedScreen.tsx, apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx, apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx, apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx, apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx, apps/mobile/src/features/sales/screens/SalesRevenueScreen.tsx, apps/mobile/src/features/sales/screens/SalesStockCheckScreen.tsx, apps/mobile/src/features/sales/screens/SalesTaxScreen.tsx, apps/mobile/src/features/sales/screens/SalesWasteScreen.tsx, apps/mobile/src/theme/tokens.ts] · 계약 [apps/mobile/app/(tabs)/_layout.tsx, apps/mobile/src/components/history/HistoryLayout.tsx, apps/mobile/src/components/kit/AppHeader.tsx, apps/mobile/src/components/kit/Button.tsx, apps/mobile/src/components/kit/Sheet.tsx, apps/mobile/src/components/kit/Slider.tsx, apps/mobile/src/components/kit/SortSheet.tsx, apps/mobile/src/components/kit/charts.tsx, apps/mobile/src/components/kit/index.tsx, apps/mobile/src/features/changes/components/RecentChangeRow.tsx, apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx, apps/mobile/src/features/ingredients/components/BasePriceCard.tsx, apps/mobile/src/features/ingredients/components/CategoryPickerSheet.tsx, apps/mobile/src/features/ingredients/components/IngCard.tsx, apps/mobile/src/features/ingredients/components/LedgerRow.tsx, apps/mobile/src/features/ingredients/components/LossCard.tsx, apps/mobile/src/features/ingredients/components/UnitPickerSheet.tsx, apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx, apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx, apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx, apps/mobile/src/features/ingredients/screens/IngredientFormScreen.tsx, apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx, apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx, apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx, apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx, apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx, apps/mobile/src/features/my/components/ChannelWeightSheet.tsx, apps/mobile/src/features/my/components/RevenueGapCard.tsx, apps/mobile/src/features/my/screens/FixedCostEditScreen.tsx, apps/mobile/src/features/my/screens/FixedCostScreen.tsx, apps/mobile/src/features/my/screens/MyAccountScreen.tsx, apps/mobile/src/features/my/screens/MyCategoryHubScreen.tsx, apps/mobile/src/features/my/screens/MyChannelsScreen.tsx, apps/mobile/src/features/my/screens/MyHomeScreen.tsx, apps/mobile/src/features/my/screens/MyHoursScreen.tsx, apps/mobile/src/features/my/screens/MyLanguageScreen.tsx, apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx, apps/mobile/src/features/my/screens/MyTaxScreen.tsx, apps/mobile/src/features/my/screens/MyUnitsScreen.tsx, apps/mobile/src/features/my/screens/MyVendorsScreen.tsx, apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx, apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx, apps/mobile/src/features/recipes/components/PriceSimSheet.tsx, apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx, apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx, apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx, apps/mobile/src/features/recipes/screens/MaterialSearchScreen.tsx, apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx, apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx, apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx, apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx, apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx, apps/mobile/src/features/sales/components/BusinessDayBar.tsx, apps/mobile/src/features/sales/components/LateCloseSheet.tsx, apps/mobile/src/features/sales/components/MenuProfitSheet.tsx, apps/mobile/src/features/sales/components/ProfitBlocks.tsx, apps/mobile/src/features/sales/components/SaleStepper.tsx, apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx, apps/mobile/src/features/sales/screens/SalesChannelScreen.tsx, apps/mobile/src/features/sales/screens/SalesDayDetailScreen.tsx, apps/mobile/src/features/sales/screens/SalesDayFullScreen.tsx, apps/mobile/src/features/sales/screens/SalesExpenseScreen.tsx, apps/mobile/src/features/sales/screens/SalesExtraScreen.tsx, apps/mobile/src/features/sales/screens/SalesFixedScreen.tsx, apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx, apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx, apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx, apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx, apps/mobile/src/features/sales/screens/SalesRevenueScreen.tsx, apps/mobile/src/features/sales/screens/SalesStockCheckScreen.tsx, apps/mobile/src/features/sales/screens/SalesTaxScreen.tsx, apps/mobile/src/features/sales/screens/SalesWasteScreen.tsx, apps/mobile/src/theme/tokens.ts]",
-        "S4 선언별 AST 변경 불일치 — apps/mobile/src/components/kit/index.tsx prop:flexDirection#14",
-        "scrollStart 15 ≠ 17",
-        "scrollEnd 41 ≠ 44",
-        "S3a 회귀 apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx paddingTop:space.sm 0 < 1",
-        "S3a 회귀 apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx borderRadius:radius.full 0 < 1",
-        "S3a 회귀 apps/mobile/src/features/my/screens/MyHomeScreen.tsx marginTop:space.xs 0 < 3",
-        "S3a 회귀 apps/mobile/src/features/my/screens/MyHomeScreen.tsx gap:space.md 0 < 2",
-        "S3a 회귀 apps/mobile/src/features/my/screens/MyHomeScreen.tsx borderRadius:radius.lg 0 < 1",
-        "S3a 회귀 apps/mobile/src/features/my/screens/MyHomeScreen.tsx paddingVertical:space.md 0 < 1",
-        "S3a 회귀 apps/mobile/src/features/my/screens/MyHomeScreen.tsx paddingHorizontal:space.md 0 < 1",
-        "S3a 회귀 apps/mobile/src/features/my/screens/MyHomeScreen.tsx width:controlVisualHeight.md 0 < 1",
-        "S3a 회귀 apps/mobile/src/features/my/screens/MyHomeScreen.tsx height:controlVisualHeight.md 0 < 1",
-        "S3a 회귀 apps/mobile/src/features/my/screens/MyHomeScreen.tsx borderRadius:radius.md 0 < 1",
-        "S3a 회귀 apps/mobile/src/features/my/screens/MyLanguageScreen.tsx paddingHorizontal:space.md 0 < 1",
-        "S3a 회귀 apps/mobile/src/features/my/screens/MyLanguageScreen.tsx marginTop:space.xs 0 < 3",
-        "S3a 회귀 apps/mobile/src/features/my/screens/MyLanguageScreen.tsx fontSize:TYPE.caption.fontSize 0 < 1",
-        "S3a 회귀 apps/mobile/src/features/my/screens/MyLanguageScreen.tsx marginBottom:space.sm 0 < 4",
-        "S3a 회귀 apps/mobile/src/features/my/screens/MyLanguageScreen.tsx padding:space.md 0 < 4",
-        "S3a 회귀 apps/mobile/src/features/my/screens/MyLanguageScreen.tsx lineHeight:TYPE.caption.lineHeight 0 < 7",
-        "S3a 회귀 apps/mobile/src/features/my/screens/MyLanguageScreen.tsx gap:space.sm 0 < 1",
-        "S3a 회귀 apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx paddingTop:space.sm 0 < 1",
-        "S3a 회귀 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx paddingVertical:space.md 0 < 8",
-        "S3a 회귀 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx paddingHorizontal:space.md 0 < 9",
-        "S3a 회귀 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx paddingTop:space.md 0 < 5",
-        "S3a 회귀 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx paddingBottom:space.md 0 < 6",
-        "S3a 회귀 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx borderRadius:radius.full 0 < 2",
-        "S3a 회귀 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx gap:space.md 0 < 1",
-        "S3a 회귀 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx marginTop:space.md 0 < 2",
-        "S3a 회귀 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx fontSize:TYPE.caption.fontSize 0 < 1",
-        "S3a 회귀 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx gap:space.xs 0 < 2",
-        "S3a 회귀 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx marginTop:space.sm 0 < 5",
-        "S3a 회귀 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx paddingTop:space.sm 0 < 4",
-        "S3a 회귀 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx paddingVertical:space.sm 0 < 6",
-        "S3a 회귀 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx marginTop:space.xs 0 < 15",
-        "S3a 회귀 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx lineHeight:TYPE.caption.lineHeight 0 < 1",
-        "S3a 회귀 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx margin:space.md 0 < 1",
-        "S3a 회귀 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx padding:space.md 0 < 1",
-        "S3a 회귀 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx gap:space.sm 0 < 1",
-        "S3a 회귀 apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx paddingTop:space.sm 0 < 1",
-        "S3a 회귀 apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx paddingTop:space.sm 0 < 1",
-        "S3a 회귀 apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx marginTop:space.xs 7 < 8",
-        "S3a 회귀 apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx gap:space.md 0 < 1",
-        "S3a 회귀 apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx fontSize:TYPE.caption.fontSize 0 < 3",
-        "S3a 회귀 apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx paddingVertical:space.md 0 < 5",
-        "S3a 회귀 apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx paddingHorizontal:space.md 0 < 7",
-        "S3a 회귀 apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx marginRight:space.sm 0 < 3",
-        "S3a 회귀 apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx gap:space.sm 0 < 2",
-        "S3a 회귀 apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx paddingTop:space.sm 0 < 1",
-        "S3a 회귀 apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx marginBottom:space.md 0 < 4",
-        "S3a 회귀 apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx marginTop:space.xs 0 < 3",
-        "S3a 회귀 apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx borderRadius:radius.md 0 < 1",
-        "S3a 회귀 apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx marginTop:space.lg 0 < 2",
-        "S3a 회귀 apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx lineHeight:TYPE.caption.lineHeight 0 < 1"
-      ],
+      "exitCode": 0,
+      "outputSha256": "f2870bd39b91a4e30b361f00e8d338d56bbde41020486872320ebbc21744caee",
+      "lineCount": 3,
+      "failureLines": [],
       "outputNormalization": "lf-trim-final-and-remove-touch-volatile-provenance-v1",
       "disposition": "regression",
       "rationale": "값·개수·미판정 표면 변화는 주소 이동으로 입증되지 않았으므로 보수적으로 regression backlog에 남긴다.",
       "successorContract": "P0 backlog + P2/P3 component and visual-diff gates",
-      "failures": [
-        {
-          "id": "S4-EXACT-0001",
-          "disposition": "regression",
-          "message": "S4 허용 AST diff 불일치 — 실제 [apps/mobile/app/(tabs)/_layout.tsx, apps/mobile/src/components/history/HistoryLayout.tsx, apps/mobile/src/components/kit/AppHeader.tsx, apps/mobile/src/components/kit/Button.tsx, apps/mobile/src/components/kit/Sheet.tsx, apps/mobile/src/components/kit/Slider.tsx, apps/mobile/src/components/kit/SortSheet.tsx, apps/mobile/src/components/kit/charts.tsx, apps/mobile/src/components/kit/index.tsx, apps/mobile/src/features/changes/components/RecentChangeRow.tsx, apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx, apps/mobile/src/features/ingredients/components/BasePriceCard.tsx, apps/mobile/src/features/ingredients/components/CategoryPickerSheet.tsx, apps/mobile/src/features/ingredients/components/IngCard.tsx, apps/mobile/src/features/ingredients/components/LedgerRow.tsx, apps/mobile/src/features/ingredients/components/LossCard.tsx, apps/mobile/src/features/ingredients/components/UnitPickerSheet.tsx, apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx, apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx, apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx, apps/mobile/src/features/ingredients/screens/IngredientFormScreen.tsx, apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx, apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx, apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx, apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx, apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx, apps/mobile/src/features/international-tax/RecipeTaxStatusCard.tsx, apps/mobile/src/features/my/components/ChannelWeightSheet.tsx, apps/mobile/src/features/my/components/RevenueGapCard.tsx, apps/mobile/src/features/my/screens/FixedCostEditScreen.tsx, apps/mobile/src/features/my/screens/FixedCostScreen.tsx, apps/mobile/src/features/my/screens/MyAccountScreen.tsx, apps/mobile/src/features/my/screens/MyCategoryHubScreen.tsx, apps/mobile/src/features/my/screens/MyChannelsScreen.tsx, apps/mobile/src/features/my/screens/MyCountryScreen.tsx, apps/mobile/src/features/my/screens/MyHomeScreen.tsx, apps/mobile/src/features/my/screens/MyHoursScreen.tsx, apps/mobile/src/features/my/screens/MyLanguageScreen.tsx, apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx, apps/mobile/src/features/my/screens/MyTaxScreen.tsx, apps/mobile/src/features/my/screens/MyUnitsScreen.tsx, apps/mobile/src/features/my/screens/MyVendorsScreen.tsx, apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx, apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx, apps/mobile/src/features/recipes/components/PriceSimSheet.tsx, apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx, apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx, apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx, apps/mobile/src/features/recipes/screens/MaterialSearchScreen.tsx, apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx, apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx, apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx, apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx, apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx, apps/mobile/src/features/sales/components/BusinessDayBar.tsx, apps/mobile/src/features/sales/components/LateCloseSheet.tsx, apps/mobile/src/features/sales/components/MenuProfitSheet.tsx, apps/mobile/src/features/sales/components/ProfitBlocks.tsx, apps/mobile/src/features/sales/components/SaleStepper.tsx, apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx, apps/mobile/src/features/sales/screens/SalesChannelScreen.tsx, apps/mobile/src/features/sales/screens/SalesDayDetailScreen.tsx, apps/mobile/src/features/sales/screens/SalesDayFullScreen.tsx, apps/mobile/src/features/sales/screens/SalesExpenseScreen.tsx, apps/mobile/src/features/sales/screens/SalesExtraScreen.tsx, apps/mobile/src/features/sales/screens/SalesFixedScreen.tsx, apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx, apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx, apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx, apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx, apps/mobile/src/features/sales/screens/SalesRevenueScreen.tsx, apps/mobile/src/features/sales/screens/SalesStockCheckScreen.tsx, apps/mobile/src/features/sales/screens/SalesTaxScreen.tsx, apps/mobile/src/features/sales/screens/SalesWasteScreen.tsx, apps/mobile/src/theme/tokens.ts] · 계약 [apps/mobile/app/(tabs)/_layout.tsx, apps/mobile/src/components/history/HistoryLayout.tsx, apps/mobile/src/components/kit/AppHeader.tsx, apps/mobile/src/components/kit/Button.tsx, apps/mobile/src/components/kit/Sheet.tsx, apps/mobile/src/components/kit/Slider.tsx, apps/mobile/src/components/kit/SortSheet.tsx, apps/mobile/src/components/kit/charts.tsx, apps/mobile/src/components/kit/index.tsx, apps/mobile/src/features/changes/components/RecentChangeRow.tsx, apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx, apps/mobile/src/features/ingredients/components/BasePriceCard.tsx, apps/mobile/src/features/ingredients/components/CategoryPickerSheet.tsx, apps/mobile/src/features/ingredients/components/IngCard.tsx, apps/mobile/src/features/ingredients/components/LedgerRow.tsx, apps/mobile/src/features/ingredients/components/LossCard.tsx, apps/mobile/src/features/ingredients/components/UnitPickerSheet.tsx, apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx, apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx, apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx, apps/mobile/src/features/ingredients/screens/IngredientFormScreen.tsx, apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx, apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx, apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx, apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx, apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx, apps/mobile/src/features/my/components/ChannelWeightSheet.tsx, apps/mobile/src/features/my/components/RevenueGapCard.tsx, apps/mobile/src/features/my/screens/FixedCostEditScreen.tsx, apps/mobile/src/features/my/screens/FixedCostScreen.tsx, apps/mobile/src/features/my/screens/MyAccountScreen.tsx, apps/mobile/src/features/my/screens/MyCategoryHubScreen.tsx, apps/mobile/src/features/my/screens/MyChannelsScreen.tsx, apps/mobile/src/features/my/screens/MyHomeScreen.tsx, apps/mobile/src/features/my/screens/MyHoursScreen.tsx, apps/mobile/src/features/my/screens/MyLanguageScreen.tsx, apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx, apps/mobile/src/features/my/screens/MyTaxScreen.tsx, apps/mobile/src/features/my/screens/MyUnitsScreen.tsx, apps/mobile/src/features/my/screens/MyVendorsScreen.tsx, apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx, apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx, apps/mobile/src/features/recipes/components/PriceSimSheet.tsx, apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx, apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx, apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx, apps/mobile/src/features/recipes/screens/MaterialSearchScreen.tsx, apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx, apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx, apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx, apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx, apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx, apps/mobile/src/features/sales/components/BusinessDayBar.tsx, apps/mobile/src/features/sales/components/LateCloseSheet.tsx, apps/mobile/src/features/sales/components/MenuProfitSheet.tsx, apps/mobile/src/features/sales/components/ProfitBlocks.tsx, apps/mobile/src/features/sales/components/SaleStepper.tsx, apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx, apps/mobile/src/features/sales/screens/SalesChannelScreen.tsx, apps/mobile/src/features/sales/screens/SalesDayDetailScreen.tsx, apps/mobile/src/features/sales/screens/SalesDayFullScreen.tsx, apps/mobile/src/features/sales/screens/SalesExpenseScreen.tsx, apps/mobile/src/features/sales/screens/SalesExtraScreen.tsx, apps/mobile/src/features/sales/screens/SalesFixedScreen.tsx, apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx, apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx, apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx, apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx, apps/mobile/src/features/sales/screens/SalesRevenueScreen.tsx, apps/mobile/src/features/sales/screens/SalesStockCheckScreen.tsx, apps/mobile/src/features/sales/screens/SalesTaxScreen.tsx, apps/mobile/src/features/sales/screens/SalesWasteScreen.tsx, apps/mobile/src/theme/tokens.ts]"
-        },
-        {
-          "id": "S4-EXACT-0002",
-          "disposition": "regression",
-          "message": "S4 선언별 AST 변경 불일치 — apps/mobile/src/components/kit/index.tsx prop:flexDirection#14"
-        },
-        {
-          "id": "S4-EXACT-0003",
-          "disposition": "regression",
-          "message": "scrollStart 15 ≠ 17"
-        },
-        {
-          "id": "S4-EXACT-0004",
-          "disposition": "regression",
-          "message": "scrollEnd 41 ≠ 44"
-        },
-        {
-          "id": "S4-EXACT-0005",
-          "disposition": "regression",
-          "message": "S3a 회귀 apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx paddingTop:space.sm 0 < 1"
-        },
-        {
-          "id": "S4-EXACT-0006",
-          "disposition": "regression",
-          "message": "S3a 회귀 apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx borderRadius:radius.full 0 < 1"
-        },
-        {
-          "id": "S4-EXACT-0007",
-          "disposition": "regression",
-          "message": "S3a 회귀 apps/mobile/src/features/my/screens/MyHomeScreen.tsx marginTop:space.xs 0 < 3"
-        },
-        {
-          "id": "S4-EXACT-0008",
-          "disposition": "regression",
-          "message": "S3a 회귀 apps/mobile/src/features/my/screens/MyHomeScreen.tsx gap:space.md 0 < 2"
-        },
-        {
-          "id": "S4-EXACT-0009",
-          "disposition": "regression",
-          "message": "S3a 회귀 apps/mobile/src/features/my/screens/MyHomeScreen.tsx borderRadius:radius.lg 0 < 1"
-        },
-        {
-          "id": "S4-EXACT-0010",
-          "disposition": "regression",
-          "message": "S3a 회귀 apps/mobile/src/features/my/screens/MyHomeScreen.tsx paddingVertical:space.md 0 < 1"
-        },
-        {
-          "id": "S4-EXACT-0011",
-          "disposition": "regression",
-          "message": "S3a 회귀 apps/mobile/src/features/my/screens/MyHomeScreen.tsx paddingHorizontal:space.md 0 < 1"
-        },
-        {
-          "id": "S4-EXACT-0012",
-          "disposition": "regression",
-          "message": "S3a 회귀 apps/mobile/src/features/my/screens/MyHomeScreen.tsx width:controlVisualHeight.md 0 < 1"
-        },
-        {
-          "id": "S4-EXACT-0013",
-          "disposition": "regression",
-          "message": "S3a 회귀 apps/mobile/src/features/my/screens/MyHomeScreen.tsx height:controlVisualHeight.md 0 < 1"
-        },
-        {
-          "id": "S4-EXACT-0014",
-          "disposition": "regression",
-          "message": "S3a 회귀 apps/mobile/src/features/my/screens/MyHomeScreen.tsx borderRadius:radius.md 0 < 1"
-        },
-        {
-          "id": "S4-EXACT-0015",
-          "disposition": "regression",
-          "message": "S3a 회귀 apps/mobile/src/features/my/screens/MyLanguageScreen.tsx paddingHorizontal:space.md 0 < 1"
-        },
-        {
-          "id": "S4-EXACT-0016",
-          "disposition": "regression",
-          "message": "S3a 회귀 apps/mobile/src/features/my/screens/MyLanguageScreen.tsx marginTop:space.xs 0 < 3"
-        },
-        {
-          "id": "S4-EXACT-0017",
-          "disposition": "regression",
-          "message": "S3a 회귀 apps/mobile/src/features/my/screens/MyLanguageScreen.tsx fontSize:TYPE.caption.fontSize 0 < 1"
-        },
-        {
-          "id": "S4-EXACT-0018",
-          "disposition": "regression",
-          "message": "S3a 회귀 apps/mobile/src/features/my/screens/MyLanguageScreen.tsx marginBottom:space.sm 0 < 4"
-        },
-        {
-          "id": "S4-EXACT-0019",
-          "disposition": "regression",
-          "message": "S3a 회귀 apps/mobile/src/features/my/screens/MyLanguageScreen.tsx padding:space.md 0 < 4"
-        },
-        {
-          "id": "S4-EXACT-0020",
-          "disposition": "regression",
-          "message": "S3a 회귀 apps/mobile/src/features/my/screens/MyLanguageScreen.tsx lineHeight:TYPE.caption.lineHeight 0 < 7"
-        },
-        {
-          "id": "S4-EXACT-0021",
-          "disposition": "regression",
-          "message": "S3a 회귀 apps/mobile/src/features/my/screens/MyLanguageScreen.tsx gap:space.sm 0 < 1"
-        },
-        {
-          "id": "S4-EXACT-0022",
-          "disposition": "regression",
-          "message": "S3a 회귀 apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx paddingTop:space.sm 0 < 1"
-        },
-        {
-          "id": "S4-EXACT-0023",
-          "disposition": "regression",
-          "message": "S3a 회귀 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx paddingVertical:space.md 0 < 8"
-        },
-        {
-          "id": "S4-EXACT-0024",
-          "disposition": "regression",
-          "message": "S3a 회귀 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx paddingHorizontal:space.md 0 < 9"
-        },
-        {
-          "id": "S4-EXACT-0025",
-          "disposition": "regression",
-          "message": "S3a 회귀 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx paddingTop:space.md 0 < 5"
-        },
-        {
-          "id": "S4-EXACT-0026",
-          "disposition": "regression",
-          "message": "S3a 회귀 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx paddingBottom:space.md 0 < 6"
-        },
-        {
-          "id": "S4-EXACT-0027",
-          "disposition": "regression",
-          "message": "S3a 회귀 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx borderRadius:radius.full 0 < 2"
-        },
-        {
-          "id": "S4-EXACT-0028",
-          "disposition": "regression",
-          "message": "S3a 회귀 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx gap:space.md 0 < 1"
-        },
-        {
-          "id": "S4-EXACT-0029",
-          "disposition": "regression",
-          "message": "S3a 회귀 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx marginTop:space.md 0 < 2"
-        },
-        {
-          "id": "S4-EXACT-0030",
-          "disposition": "regression",
-          "message": "S3a 회귀 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx fontSize:TYPE.caption.fontSize 0 < 1"
-        },
-        {
-          "id": "S4-EXACT-0031",
-          "disposition": "regression",
-          "message": "S3a 회귀 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx gap:space.xs 0 < 2"
-        },
-        {
-          "id": "S4-EXACT-0032",
-          "disposition": "regression",
-          "message": "S3a 회귀 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx marginTop:space.sm 0 < 5"
-        },
-        {
-          "id": "S4-EXACT-0033",
-          "disposition": "regression",
-          "message": "S3a 회귀 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx paddingTop:space.sm 0 < 4"
-        },
-        {
-          "id": "S4-EXACT-0034",
-          "disposition": "regression",
-          "message": "S3a 회귀 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx paddingVertical:space.sm 0 < 6"
-        },
-        {
-          "id": "S4-EXACT-0035",
-          "disposition": "regression",
-          "message": "S3a 회귀 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx marginTop:space.xs 0 < 15"
-        },
-        {
-          "id": "S4-EXACT-0036",
-          "disposition": "regression",
-          "message": "S3a 회귀 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx lineHeight:TYPE.caption.lineHeight 0 < 1"
-        },
-        {
-          "id": "S4-EXACT-0037",
-          "disposition": "regression",
-          "message": "S3a 회귀 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx margin:space.md 0 < 1"
-        },
-        {
-          "id": "S4-EXACT-0038",
-          "disposition": "regression",
-          "message": "S3a 회귀 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx padding:space.md 0 < 1"
-        },
-        {
-          "id": "S4-EXACT-0039",
-          "disposition": "regression",
-          "message": "S3a 회귀 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx gap:space.sm 0 < 1"
-        },
-        {
-          "id": "S4-EXACT-0040",
-          "disposition": "regression",
-          "message": "S3a 회귀 apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx paddingTop:space.sm 0 < 1"
-        },
-        {
-          "id": "S4-EXACT-0041",
-          "disposition": "regression",
-          "message": "S3a 회귀 apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx paddingTop:space.sm 0 < 1"
-        },
-        {
-          "id": "S4-EXACT-0042",
-          "disposition": "regression",
-          "message": "S3a 회귀 apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx marginTop:space.xs 7 < 8"
-        },
-        {
-          "id": "S4-EXACT-0043",
-          "disposition": "regression",
-          "message": "S3a 회귀 apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx gap:space.md 0 < 1"
-        },
-        {
-          "id": "S4-EXACT-0044",
-          "disposition": "regression",
-          "message": "S3a 회귀 apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx fontSize:TYPE.caption.fontSize 0 < 3"
-        },
-        {
-          "id": "S4-EXACT-0045",
-          "disposition": "regression",
-          "message": "S3a 회귀 apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx paddingVertical:space.md 0 < 5"
-        },
-        {
-          "id": "S4-EXACT-0046",
-          "disposition": "regression",
-          "message": "S3a 회귀 apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx paddingHorizontal:space.md 0 < 7"
-        },
-        {
-          "id": "S4-EXACT-0047",
-          "disposition": "regression",
-          "message": "S3a 회귀 apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx marginRight:space.sm 0 < 3"
-        },
-        {
-          "id": "S4-EXACT-0048",
-          "disposition": "regression",
-          "message": "S3a 회귀 apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx gap:space.sm 0 < 2"
-        },
-        {
-          "id": "S4-EXACT-0049",
-          "disposition": "regression",
-          "message": "S3a 회귀 apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx paddingTop:space.sm 0 < 1"
-        },
-        {
-          "id": "S4-EXACT-0050",
-          "disposition": "regression",
-          "message": "S3a 회귀 apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx marginBottom:space.md 0 < 4"
-        },
-        {
-          "id": "S4-EXACT-0051",
-          "disposition": "regression",
-          "message": "S3a 회귀 apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx marginTop:space.xs 0 < 3"
-        },
-        {
-          "id": "S4-EXACT-0052",
-          "disposition": "regression",
-          "message": "S3a 회귀 apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx borderRadius:radius.md 0 < 1"
-        },
-        {
-          "id": "S4-EXACT-0053",
-          "disposition": "regression",
-          "message": "S3a 회귀 apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx marginTop:space.lg 0 < 2"
-        },
-        {
-          "id": "S4-EXACT-0054",
-          "disposition": "regression",
-          "message": "S3a 회귀 apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx lineHeight:TYPE.caption.lineHeight 0 < 1"
-        }
-      ]
+      "failures": []
     },
     {
       "id": "TOUCH-EXACT",
@@ -8970,522 +8644,80 @@
       "owner": "DESIGN-SYSTEM",
       "stage": "P2/P3",
       "status": "open"
-    },
-    {
-      "id": "P0-S4-EXACT-0001",
-      "sourceFindingId": "S4-EXACT-0001",
-      "owner": "DESIGN-SYSTEM",
-      "stage": "P2/P3",
-      "status": "open"
-    },
-    {
-      "id": "P0-S4-EXACT-0002",
-      "sourceFindingId": "S4-EXACT-0002",
-      "owner": "DESIGN-SYSTEM",
-      "stage": "P2/P3",
-      "status": "open"
-    },
-    {
-      "id": "P0-S4-EXACT-0003",
-      "sourceFindingId": "S4-EXACT-0003",
-      "owner": "DESIGN-SYSTEM",
-      "stage": "P2/P3",
-      "status": "open"
-    },
-    {
-      "id": "P0-S4-EXACT-0004",
-      "sourceFindingId": "S4-EXACT-0004",
-      "owner": "DESIGN-SYSTEM",
-      "stage": "P2/P3",
-      "status": "open"
-    },
-    {
-      "id": "P0-S4-EXACT-0005",
-      "sourceFindingId": "S4-EXACT-0005",
-      "owner": "DESIGN-SYSTEM",
-      "stage": "P2/P3",
-      "status": "open"
-    },
-    {
-      "id": "P0-S4-EXACT-0006",
-      "sourceFindingId": "S4-EXACT-0006",
-      "owner": "DESIGN-SYSTEM",
-      "stage": "P2/P3",
-      "status": "open"
-    },
-    {
-      "id": "P0-S4-EXACT-0007",
-      "sourceFindingId": "S4-EXACT-0007",
-      "owner": "DESIGN-SYSTEM",
-      "stage": "P2/P3",
-      "status": "open"
-    },
-    {
-      "id": "P0-S4-EXACT-0008",
-      "sourceFindingId": "S4-EXACT-0008",
-      "owner": "DESIGN-SYSTEM",
-      "stage": "P2/P3",
-      "status": "open"
-    },
-    {
-      "id": "P0-S4-EXACT-0009",
-      "sourceFindingId": "S4-EXACT-0009",
-      "owner": "DESIGN-SYSTEM",
-      "stage": "P2/P3",
-      "status": "open"
-    },
-    {
-      "id": "P0-S4-EXACT-0010",
-      "sourceFindingId": "S4-EXACT-0010",
-      "owner": "DESIGN-SYSTEM",
-      "stage": "P2/P3",
-      "status": "open"
-    },
-    {
-      "id": "P0-S4-EXACT-0011",
-      "sourceFindingId": "S4-EXACT-0011",
-      "owner": "DESIGN-SYSTEM",
-      "stage": "P2/P3",
-      "status": "open"
-    },
-    {
-      "id": "P0-S4-EXACT-0012",
-      "sourceFindingId": "S4-EXACT-0012",
-      "owner": "DESIGN-SYSTEM",
-      "stage": "P2/P3",
-      "status": "open"
-    },
-    {
-      "id": "P0-S4-EXACT-0013",
-      "sourceFindingId": "S4-EXACT-0013",
-      "owner": "DESIGN-SYSTEM",
-      "stage": "P2/P3",
-      "status": "open"
-    },
-    {
-      "id": "P0-S4-EXACT-0014",
-      "sourceFindingId": "S4-EXACT-0014",
-      "owner": "DESIGN-SYSTEM",
-      "stage": "P2/P3",
-      "status": "open"
-    },
-    {
-      "id": "P0-S4-EXACT-0015",
-      "sourceFindingId": "S4-EXACT-0015",
-      "owner": "DESIGN-SYSTEM",
-      "stage": "P2/P3",
-      "status": "open"
-    },
-    {
-      "id": "P0-S4-EXACT-0016",
-      "sourceFindingId": "S4-EXACT-0016",
-      "owner": "DESIGN-SYSTEM",
-      "stage": "P2/P3",
-      "status": "open"
-    },
-    {
-      "id": "P0-S4-EXACT-0017",
-      "sourceFindingId": "S4-EXACT-0017",
-      "owner": "DESIGN-SYSTEM",
-      "stage": "P2/P3",
-      "status": "open"
-    },
-    {
-      "id": "P0-S4-EXACT-0018",
-      "sourceFindingId": "S4-EXACT-0018",
-      "owner": "DESIGN-SYSTEM",
-      "stage": "P2/P3",
-      "status": "open"
-    },
-    {
-      "id": "P0-S4-EXACT-0019",
-      "sourceFindingId": "S4-EXACT-0019",
-      "owner": "DESIGN-SYSTEM",
-      "stage": "P2/P3",
-      "status": "open"
-    },
-    {
-      "id": "P0-S4-EXACT-0020",
-      "sourceFindingId": "S4-EXACT-0020",
-      "owner": "DESIGN-SYSTEM",
-      "stage": "P2/P3",
-      "status": "open"
-    },
-    {
-      "id": "P0-S4-EXACT-0021",
-      "sourceFindingId": "S4-EXACT-0021",
-      "owner": "DESIGN-SYSTEM",
-      "stage": "P2/P3",
-      "status": "open"
-    },
-    {
-      "id": "P0-S4-EXACT-0022",
-      "sourceFindingId": "S4-EXACT-0022",
-      "owner": "DESIGN-SYSTEM",
-      "stage": "P2/P3",
-      "status": "open"
-    },
-    {
-      "id": "P0-S4-EXACT-0023",
-      "sourceFindingId": "S4-EXACT-0023",
-      "owner": "DESIGN-SYSTEM",
-      "stage": "P2/P3",
-      "status": "open"
-    },
-    {
-      "id": "P0-S4-EXACT-0024",
-      "sourceFindingId": "S4-EXACT-0024",
-      "owner": "DESIGN-SYSTEM",
-      "stage": "P2/P3",
-      "status": "open"
-    },
-    {
-      "id": "P0-S4-EXACT-0025",
-      "sourceFindingId": "S4-EXACT-0025",
-      "owner": "DESIGN-SYSTEM",
-      "stage": "P2/P3",
-      "status": "open"
-    },
-    {
-      "id": "P0-S4-EXACT-0026",
-      "sourceFindingId": "S4-EXACT-0026",
-      "owner": "DESIGN-SYSTEM",
-      "stage": "P2/P3",
-      "status": "open"
-    },
-    {
-      "id": "P0-S4-EXACT-0027",
-      "sourceFindingId": "S4-EXACT-0027",
-      "owner": "DESIGN-SYSTEM",
-      "stage": "P2/P3",
-      "status": "open"
-    },
-    {
-      "id": "P0-S4-EXACT-0028",
-      "sourceFindingId": "S4-EXACT-0028",
-      "owner": "DESIGN-SYSTEM",
-      "stage": "P2/P3",
-      "status": "open"
-    },
-    {
-      "id": "P0-S4-EXACT-0029",
-      "sourceFindingId": "S4-EXACT-0029",
-      "owner": "DESIGN-SYSTEM",
-      "stage": "P2/P3",
-      "status": "open"
-    },
-    {
-      "id": "P0-S4-EXACT-0030",
-      "sourceFindingId": "S4-EXACT-0030",
-      "owner": "DESIGN-SYSTEM",
-      "stage": "P2/P3",
-      "status": "open"
-    },
-    {
-      "id": "P0-S4-EXACT-0031",
-      "sourceFindingId": "S4-EXACT-0031",
-      "owner": "DESIGN-SYSTEM",
-      "stage": "P2/P3",
-      "status": "open"
-    },
-    {
-      "id": "P0-S4-EXACT-0032",
-      "sourceFindingId": "S4-EXACT-0032",
-      "owner": "DESIGN-SYSTEM",
-      "stage": "P2/P3",
-      "status": "open"
-    },
-    {
-      "id": "P0-S4-EXACT-0033",
-      "sourceFindingId": "S4-EXACT-0033",
-      "owner": "DESIGN-SYSTEM",
-      "stage": "P2/P3",
-      "status": "open"
-    },
-    {
-      "id": "P0-S4-EXACT-0034",
-      "sourceFindingId": "S4-EXACT-0034",
-      "owner": "DESIGN-SYSTEM",
-      "stage": "P2/P3",
-      "status": "open"
-    },
-    {
-      "id": "P0-S4-EXACT-0035",
-      "sourceFindingId": "S4-EXACT-0035",
-      "owner": "DESIGN-SYSTEM",
-      "stage": "P2/P3",
-      "status": "open"
-    },
-    {
-      "id": "P0-S4-EXACT-0036",
-      "sourceFindingId": "S4-EXACT-0036",
-      "owner": "DESIGN-SYSTEM",
-      "stage": "P2/P3",
-      "status": "open"
-    },
-    {
-      "id": "P0-S4-EXACT-0037",
-      "sourceFindingId": "S4-EXACT-0037",
-      "owner": "DESIGN-SYSTEM",
-      "stage": "P2/P3",
-      "status": "open"
-    },
-    {
-      "id": "P0-S4-EXACT-0038",
-      "sourceFindingId": "S4-EXACT-0038",
-      "owner": "DESIGN-SYSTEM",
-      "stage": "P2/P3",
-      "status": "open"
-    },
-    {
-      "id": "P0-S4-EXACT-0039",
-      "sourceFindingId": "S4-EXACT-0039",
-      "owner": "DESIGN-SYSTEM",
-      "stage": "P2/P3",
-      "status": "open"
-    },
-    {
-      "id": "P0-S4-EXACT-0040",
-      "sourceFindingId": "S4-EXACT-0040",
-      "owner": "DESIGN-SYSTEM",
-      "stage": "P2/P3",
-      "status": "open"
-    },
-    {
-      "id": "P0-S4-EXACT-0041",
-      "sourceFindingId": "S4-EXACT-0041",
-      "owner": "DESIGN-SYSTEM",
-      "stage": "P2/P3",
-      "status": "open"
-    },
-    {
-      "id": "P0-S4-EXACT-0042",
-      "sourceFindingId": "S4-EXACT-0042",
-      "owner": "DESIGN-SYSTEM",
-      "stage": "P2/P3",
-      "status": "open"
-    },
-    {
-      "id": "P0-S4-EXACT-0043",
-      "sourceFindingId": "S4-EXACT-0043",
-      "owner": "DESIGN-SYSTEM",
-      "stage": "P2/P3",
-      "status": "open"
-    },
-    {
-      "id": "P0-S4-EXACT-0044",
-      "sourceFindingId": "S4-EXACT-0044",
-      "owner": "DESIGN-SYSTEM",
-      "stage": "P2/P3",
-      "status": "open"
-    },
-    {
-      "id": "P0-S4-EXACT-0045",
-      "sourceFindingId": "S4-EXACT-0045",
-      "owner": "DESIGN-SYSTEM",
-      "stage": "P2/P3",
-      "status": "open"
-    },
-    {
-      "id": "P0-S4-EXACT-0046",
-      "sourceFindingId": "S4-EXACT-0046",
-      "owner": "DESIGN-SYSTEM",
-      "stage": "P2/P3",
-      "status": "open"
-    },
-    {
-      "id": "P0-S4-EXACT-0047",
-      "sourceFindingId": "S4-EXACT-0047",
-      "owner": "DESIGN-SYSTEM",
-      "stage": "P2/P3",
-      "status": "open"
-    },
-    {
-      "id": "P0-S4-EXACT-0048",
-      "sourceFindingId": "S4-EXACT-0048",
-      "owner": "DESIGN-SYSTEM",
-      "stage": "P2/P3",
-      "status": "open"
-    },
-    {
-      "id": "P0-S4-EXACT-0049",
-      "sourceFindingId": "S4-EXACT-0049",
-      "owner": "DESIGN-SYSTEM",
-      "stage": "P2/P3",
-      "status": "open"
-    },
-    {
-      "id": "P0-S4-EXACT-0050",
-      "sourceFindingId": "S4-EXACT-0050",
-      "owner": "DESIGN-SYSTEM",
-      "stage": "P2/P3",
-      "status": "open"
-    },
-    {
-      "id": "P0-S4-EXACT-0051",
-      "sourceFindingId": "S4-EXACT-0051",
-      "owner": "DESIGN-SYSTEM",
-      "stage": "P2/P3",
-      "status": "open"
-    },
-    {
-      "id": "P0-S4-EXACT-0052",
-      "sourceFindingId": "S4-EXACT-0052",
-      "owner": "DESIGN-SYSTEM",
-      "stage": "P2/P3",
-      "status": "open"
-    },
-    {
-      "id": "P0-S4-EXACT-0053",
-      "sourceFindingId": "S4-EXACT-0053",
-      "owner": "DESIGN-SYSTEM",
-      "stage": "P2/P3",
-      "status": "open"
-    },
-    {
-      "id": "P0-S4-EXACT-0054",
-      "sourceFindingId": "S4-EXACT-0054",
-      "owner": "DESIGN-SYSTEM",
-      "stage": "P2/P3",
-      "status": "open"
     }
   ],
   "classificationSummary": {
     "preserve": 1,
     "supersede": 0,
     "intentionalDifference": 0,
-    "regression": 708
+    "regression": 654
   },
   "classificationMigration": {
     "authority": "OPUS_DIRECT_ADVISORY",
-    "decision": "P2-OPUS-R1-REBASELINE",
-    "token": "P2-OPUS-R1-REBASELINE@663adc60ae249998e5e87c8bd56015a2421f53cc",
-    "decisionCommit": "663adc60ae249998e5e87c8bd56015a2421f53cc",
-    "previousRegression": 768,
-    "nextRegression": 708,
-    "previousBaselineBlob": "366160ec59c1887f9a047e76bca26d0c2ec1c547",
+    "decision": "P2-S4-SUCCESSOR",
+    "token": "P2-S4-SUCCESSOR@071e228ee5ba998bee99528beb0611551e2df38a",
+    "decisionCommit": "071e228ee5ba998bee99528beb0611551e2df38a",
+    "previousBaselineBlob": "08cd5091636b891f16f23c608518a283cd5d2f08",
+    "previousRegression": 708,
+    "nextRegression": 654,
     "failureLineDelta": [
-      {
-        "gateId": "S3A-EXACT",
-        "removed": [
-          "apps/mobile/src/components/kit/index.tsx 기하 선언 수 117→120",
-          "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:83:letterSpacing 승인되지 않은 변경 -0.6→TYPE.display.letterSpacing",
-          "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:117:paddingBottom 승인되지 않은 변경 104→LAYOUT.scroll.endWithFab",
-          "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:123:gap 승인되지 않은 변경 6→space.sm",
-          "apps/mobile/src/features/my/screens/MyHomeScreen.tsx:108:fontSize 승인되지 않은 변경 22→TYPE.display.fontSize",
-          "apps/mobile/src/features/my/screens/MyHomeScreen.tsx:108:letterSpacing 승인되지 않은 변경 -0.6→TYPE.display.letterSpacing",
-          "apps/mobile/src/features/my/screens/MyTaxScreen.tsx 기하 선언 수 44→71",
-          "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx 기하 선언 수 125→126",
-          "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx 기하 선언 수 67→68",
-          "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx 기하 선언 수 153→159",
-          "apps/mobile/src/theme/tokens.ts 기하 선언 수 14→20"
-        ],
-        "added": [
-          "apps/mobile/src/components/kit/index.tsx 기하 선언 수 117→144",
-          "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx 기하 선언 수 35→17",
-          "apps/mobile/src/features/my/screens/MyHomeScreen.tsx 기하 선언 수 33→24",
-          "apps/mobile/src/features/my/screens/MyTaxScreen.tsx 기하 선언 수 44→73",
-          "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx 기하 선언 수 125→114",
-          "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx 기하 선언 수 67→56",
-          "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx 기하 선언 수 153→147",
-          "apps/mobile/src/theme/tokens.ts 기하 선언 수 14→27",
-          "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:82:paddingTop 승인된 치환이 재현되지 않았다",
-          "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:102:borderRadius 승인된 치환이 재현되지 않았다",
-          "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:114:paddingBottom 승인된 치환이 재현되지 않았다",
-          "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:117:gap 승인된 치환이 재현되지 않았다",
-          "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:127:borderRadius 승인된 치환이 재현되지 않았다",
-          "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:128:paddingVertical 승인된 치환이 재현되지 않았다",
-          "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:139:marginTop 승인된 치환이 재현되지 않았다"
-        ]
-      },
       {
         "gateId": "S4-EXACT",
         "removed": [
-          "S4 선언별 AST 변경 불일치 — apps/mobile/src/features/international-tax/RecipeTaxStatusCard.tsx prop:gap#1"
-        ],
-        "added": [
+          "S4 허용 AST diff 불일치 — 실제 [apps/mobile/app/(tabs)/_layout.tsx, apps/mobile/src/components/history/HistoryLayout.tsx, apps/mobile/src/components/kit/AppHeader.tsx, apps/mobile/src/components/kit/Button.tsx, apps/mobile/src/components/kit/Sheet.tsx, apps/mobile/src/components/kit/Slider.tsx, apps/mobile/src/components/kit/SortSheet.tsx, apps/mobile/src/components/kit/charts.tsx, apps/mobile/src/components/kit/index.tsx, apps/mobile/src/features/changes/components/RecentChangeRow.tsx, apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx, apps/mobile/src/features/ingredients/components/BasePriceCard.tsx, apps/mobile/src/features/ingredients/components/CategoryPickerSheet.tsx, apps/mobile/src/features/ingredients/components/IngCard.tsx, apps/mobile/src/features/ingredients/components/LedgerRow.tsx, apps/mobile/src/features/ingredients/components/LossCard.tsx, apps/mobile/src/features/ingredients/components/UnitPickerSheet.tsx, apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx, apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx, apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx, apps/mobile/src/features/ingredients/screens/IngredientFormScreen.tsx, apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx, apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx, apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx, apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx, apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx, apps/mobile/src/features/international-tax/RecipeTaxStatusCard.tsx, apps/mobile/src/features/my/components/ChannelWeightSheet.tsx, apps/mobile/src/features/my/components/RevenueGapCard.tsx, apps/mobile/src/features/my/screens/FixedCostEditScreen.tsx, apps/mobile/src/features/my/screens/FixedCostScreen.tsx, apps/mobile/src/features/my/screens/MyAccountScreen.tsx, apps/mobile/src/features/my/screens/MyCategoryHubScreen.tsx, apps/mobile/src/features/my/screens/MyChannelsScreen.tsx, apps/mobile/src/features/my/screens/MyCountryScreen.tsx, apps/mobile/src/features/my/screens/MyHomeScreen.tsx, apps/mobile/src/features/my/screens/MyHoursScreen.tsx, apps/mobile/src/features/my/screens/MyLanguageScreen.tsx, apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx, apps/mobile/src/features/my/screens/MyTaxScreen.tsx, apps/mobile/src/features/my/screens/MyUnitsScreen.tsx, apps/mobile/src/features/my/screens/MyVendorsScreen.tsx, apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx, apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx, apps/mobile/src/features/recipes/components/PriceSimSheet.tsx, apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx, apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx, apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx, apps/mobile/src/features/recipes/screens/MaterialSearchScreen.tsx, apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx, apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx, apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx, apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx, apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx, apps/mobile/src/features/sales/components/BusinessDayBar.tsx, apps/mobile/src/features/sales/components/LateCloseSheet.tsx, apps/mobile/src/features/sales/components/MenuProfitSheet.tsx, apps/mobile/src/features/sales/components/ProfitBlocks.tsx, apps/mobile/src/features/sales/components/SaleStepper.tsx, apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx, apps/mobile/src/features/sales/screens/SalesChannelScreen.tsx, apps/mobile/src/features/sales/screens/SalesDayDetailScreen.tsx, apps/mobile/src/features/sales/screens/SalesDayFullScreen.tsx, apps/mobile/src/features/sales/screens/SalesExpenseScreen.tsx, apps/mobile/src/features/sales/screens/SalesExtraScreen.tsx, apps/mobile/src/features/sales/screens/SalesFixedScreen.tsx, apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx, apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx, apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx, apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx, apps/mobile/src/features/sales/screens/SalesRevenueScreen.tsx, apps/mobile/src/features/sales/screens/SalesStockCheckScreen.tsx, apps/mobile/src/features/sales/screens/SalesTaxScreen.tsx, apps/mobile/src/features/sales/screens/SalesWasteScreen.tsx, apps/mobile/src/theme/tokens.ts] · 계약 [apps/mobile/app/(tabs)/_layout.tsx, apps/mobile/src/components/history/HistoryLayout.tsx, apps/mobile/src/components/kit/AppHeader.tsx, apps/mobile/src/components/kit/Button.tsx, apps/mobile/src/components/kit/Sheet.tsx, apps/mobile/src/components/kit/Slider.tsx, apps/mobile/src/components/kit/SortSheet.tsx, apps/mobile/src/components/kit/charts.tsx, apps/mobile/src/components/kit/index.tsx, apps/mobile/src/features/changes/components/RecentChangeRow.tsx, apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx, apps/mobile/src/features/ingredients/components/BasePriceCard.tsx, apps/mobile/src/features/ingredients/components/CategoryPickerSheet.tsx, apps/mobile/src/features/ingredients/components/IngCard.tsx, apps/mobile/src/features/ingredients/components/LedgerRow.tsx, apps/mobile/src/features/ingredients/components/LossCard.tsx, apps/mobile/src/features/ingredients/components/UnitPickerSheet.tsx, apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx, apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx, apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx, apps/mobile/src/features/ingredients/screens/IngredientFormScreen.tsx, apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx, apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx, apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx, apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx, apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx, apps/mobile/src/features/my/components/ChannelWeightSheet.tsx, apps/mobile/src/features/my/components/RevenueGapCard.tsx, apps/mobile/src/features/my/screens/FixedCostEditScreen.tsx, apps/mobile/src/features/my/screens/FixedCostScreen.tsx, apps/mobile/src/features/my/screens/MyAccountScreen.tsx, apps/mobile/src/features/my/screens/MyCategoryHubScreen.tsx, apps/mobile/src/features/my/screens/MyChannelsScreen.tsx, apps/mobile/src/features/my/screens/MyHomeScreen.tsx, apps/mobile/src/features/my/screens/MyHoursScreen.tsx, apps/mobile/src/features/my/screens/MyLanguageScreen.tsx, apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx, apps/mobile/src/features/my/screens/MyTaxScreen.tsx, apps/mobile/src/features/my/screens/MyUnitsScreen.tsx, apps/mobile/src/features/my/screens/MyVendorsScreen.tsx, apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx, apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx, apps/mobile/src/features/recipes/components/PriceSimSheet.tsx, apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx, apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx, apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx, apps/mobile/src/features/recipes/screens/MaterialSearchScreen.tsx, apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx, apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx, apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx, apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx, apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx, apps/mobile/src/features/sales/components/BusinessDayBar.tsx, apps/mobile/src/features/sales/components/LateCloseSheet.tsx, apps/mobile/src/features/sales/components/MenuProfitSheet.tsx, apps/mobile/src/features/sales/components/ProfitBlocks.tsx, apps/mobile/src/features/sales/components/SaleStepper.tsx, apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx, apps/mobile/src/features/sales/screens/SalesChannelScreen.tsx, apps/mobile/src/features/sales/screens/SalesDayDetailScreen.tsx, apps/mobile/src/features/sales/screens/SalesDayFullScreen.tsx, apps/mobile/src/features/sales/screens/SalesExpenseScreen.tsx, apps/mobile/src/features/sales/screens/SalesExtraScreen.tsx, apps/mobile/src/features/sales/screens/SalesFixedScreen.tsx, apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx, apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx, apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx, apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx, apps/mobile/src/features/sales/screens/SalesRevenueScreen.tsx, apps/mobile/src/features/sales/screens/SalesStockCheckScreen.tsx, apps/mobile/src/features/sales/screens/SalesTaxScreen.tsx, apps/mobile/src/features/sales/screens/SalesWasteScreen.tsx, apps/mobile/src/theme/tokens.ts]",
           "S4 선언별 AST 변경 불일치 — apps/mobile/src/components/kit/index.tsx prop:flexDirection#14",
+          "scrollStart 15 ≠ 17",
+          "scrollEnd 41 ≠ 44",
           "S3a 회귀 apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx paddingTop:space.sm 0 < 1",
           "S3a 회귀 apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx borderRadius:radius.full 0 < 1",
+          "S3a 회귀 apps/mobile/src/features/my/screens/MyHomeScreen.tsx marginTop:space.xs 0 < 3",
+          "S3a 회귀 apps/mobile/src/features/my/screens/MyHomeScreen.tsx gap:space.md 0 < 2",
+          "S3a 회귀 apps/mobile/src/features/my/screens/MyHomeScreen.tsx borderRadius:radius.lg 0 < 1",
+          "S3a 회귀 apps/mobile/src/features/my/screens/MyHomeScreen.tsx paddingVertical:space.md 0 < 1",
+          "S3a 회귀 apps/mobile/src/features/my/screens/MyHomeScreen.tsx paddingHorizontal:space.md 0 < 1",
+          "S3a 회귀 apps/mobile/src/features/my/screens/MyHomeScreen.tsx width:controlVisualHeight.md 0 < 1",
+          "S3a 회귀 apps/mobile/src/features/my/screens/MyHomeScreen.tsx height:controlVisualHeight.md 0 < 1",
+          "S3a 회귀 apps/mobile/src/features/my/screens/MyHomeScreen.tsx borderRadius:radius.md 0 < 1",
+          "S3a 회귀 apps/mobile/src/features/my/screens/MyLanguageScreen.tsx paddingHorizontal:space.md 0 < 1",
+          "S3a 회귀 apps/mobile/src/features/my/screens/MyLanguageScreen.tsx marginTop:space.xs 0 < 3",
+          "S3a 회귀 apps/mobile/src/features/my/screens/MyLanguageScreen.tsx fontSize:TYPE.caption.fontSize 0 < 1",
+          "S3a 회귀 apps/mobile/src/features/my/screens/MyLanguageScreen.tsx marginBottom:space.sm 0 < 4",
+          "S3a 회귀 apps/mobile/src/features/my/screens/MyLanguageScreen.tsx padding:space.md 0 < 4",
+          "S3a 회귀 apps/mobile/src/features/my/screens/MyLanguageScreen.tsx lineHeight:TYPE.caption.lineHeight 0 < 7",
+          "S3a 회귀 apps/mobile/src/features/my/screens/MyLanguageScreen.tsx gap:space.sm 0 < 1",
           "S3a 회귀 apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx paddingTop:space.sm 0 < 1",
+          "S3a 회귀 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx paddingVertical:space.md 0 < 8",
+          "S3a 회귀 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx paddingHorizontal:space.md 0 < 9",
+          "S3a 회귀 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx paddingTop:space.md 0 < 5",
+          "S3a 회귀 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx paddingBottom:space.md 0 < 6",
+          "S3a 회귀 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx borderRadius:radius.full 0 < 2",
+          "S3a 회귀 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx gap:space.md 0 < 1",
+          "S3a 회귀 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx marginTop:space.md 0 < 2",
+          "S3a 회귀 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx fontSize:TYPE.caption.fontSize 0 < 1",
+          "S3a 회귀 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx gap:space.xs 0 < 2",
+          "S3a 회귀 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx marginTop:space.sm 0 < 5",
+          "S3a 회귀 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx paddingTop:space.sm 0 < 4",
+          "S3a 회귀 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx paddingVertical:space.sm 0 < 6",
+          "S3a 회귀 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx marginTop:space.xs 0 < 15",
+          "S3a 회귀 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx lineHeight:TYPE.caption.lineHeight 0 < 1",
+          "S3a 회귀 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx margin:space.md 0 < 1",
+          "S3a 회귀 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx padding:space.md 0 < 1",
+          "S3a 회귀 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx gap:space.sm 0 < 1",
           "S3a 회귀 apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx paddingTop:space.sm 0 < 1",
           "S3a 회귀 apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx paddingTop:space.sm 0 < 1",
-          "S3a 회귀 apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx marginTop:space.xs 7 < 8"
-        ]
-      },
-      {
-        "gateId": "TOUCH-EXACT",
-        "removed": [
-          "새 형제 중첩 위험 — apps/mobile/src/features/my/screens/MyTaxScreen.tsx:51|apps/mobile/src/features/my/screens/MyTaxScreen.tsx:54 · vertical gap 0의 절반 0보다 안쪽 hitSlop 1/0가 크다",
-          "새 형제판정불가 — apps/mobile/src/features/my/screens/MyCountryScreen.tsx:39 · 형제 apps/mobile/src/features/my/screens/MyCountryScreen.tsx:39|apps/mobile/src/features/my/screens/MyCountryScreen.tsx:39의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다",
-          "새 형제판정불가 — apps/mobile/src/features/my/screens/MyCountryScreen.tsx:42 · 형제 apps/mobile/src/features/my/screens/MyCountryScreen.tsx:42|apps/mobile/src/features/my/screens/MyCountryScreen.tsx:42의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다",
-          "새 형제판정불가 — apps/mobile/src/features/my/screens/MyCountryScreen.tsx:43 · 형제 apps/mobile/src/features/my/screens/MyCountryScreen.tsx:43|apps/mobile/src/features/my/screens/MyCountryScreen.tsx:43의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다",
-          "새 형제판정불가 — apps/mobile/src/features/my/screens/MyTaxScreen.tsx:51 · JSX 식을 정적으로 펼치지 못했다 (BinaryExpression) · JSX 식을 정적으로 펼치지 못했다 (PropertyAccessExpression) · JSX 식을 정적으로 펼치지 못했다 (TemplateExpression) · 형제 apps/mobile/src/features/my/screens/MyTaxScreen.tsx:51|apps/mobile/src/features/my/screens/MyTaxScreen.tsx:51의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다",
-          "새 형제판정불가 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:223 · 형제 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:229|apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:244의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다",
-          "형제판정불가가 해소됐다 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:214 를 siblingUnjudged에서 빼라",
-          "새 판정불가 — apps/mobile/src/features/my/screens/MyCountryScreen.tsx:53 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)",
-          "새 판정불가 — apps/mobile/src/features/my/screens/MyHomeScreen.tsx:148 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)",
-          "새 판정불가 — apps/mobile/src/features/my/screens/MyLanguageScreen.tsx:146 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)",
-          "새 판정불가 — apps/mobile/src/features/my/screens/MyTaxScreen.tsx:248 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)",
-          "새 판정불가 — apps/mobile/src/features/my/screens/MyTaxScreen.tsx:59 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)",
-          "새 판정불가 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:167 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)",
-          "새 판정불가 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:229 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)",
-          "새 판정불가 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:261 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)",
-          "새 판정불가 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:313 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)",
-          "새 판정불가 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:327 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)",
-          "새 판정불가 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:432 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)",
-          "새 판정불가 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:49 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)",
-          "새 판정불가 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:493 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)",
-          "새 판정불가 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:567 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)",
-          "새 판정불가 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:593 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)",
-          "새 판정불가 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:629 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)",
-          "새 판정불가 — apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:253 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)",
-          "새 판정불가 — apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:366 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)",
-          "새 판정불가 — apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:386 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)",
-          "새 판정불가 — apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:421 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)",
-          "새 판정불가 — apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:457 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)",
-          "판정불가가 해소됐다 — apps/mobile/src/features/my/screens/MyHomeScreen.tsx:128 를 목록에서 빼라",
-          "판정불가가 해소됐다 — apps/mobile/src/features/my/screens/MyLanguageScreen.tsx:259 를 목록에서 빼라",
-          "판정불가가 해소됐다 — apps/mobile/src/features/my/screens/MyTaxScreen.tsx:214 를 목록에서 빼라",
-          "판정불가가 해소됐다 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:158 를 목록에서 빼라",
-          "판정불가가 해소됐다 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:220 를 목록에서 빼라",
-          "판정불가가 해소됐다 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:252 를 목록에서 빼라",
-          "판정불가가 해소됐다 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:304 를 목록에서 빼라",
-          "판정불가가 해소됐다 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:318 를 목록에서 빼라",
-          "판정불가가 해소됐다 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:423 를 목록에서 빼라",
-          "판정불가가 해소됐다 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:47 를 목록에서 빼라",
-          "판정불가가 해소됐다 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:480 를 목록에서 빼라",
-          "판정불가가 해소됐다 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:553 를 목록에서 빼라",
-          "판정불가가 해소됐다 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:574 를 목록에서 빼라",
-          "판정불가가 해소됐다 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:610 를 목록에서 빼라",
-          "판정불가가 해소됐다 — apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:230 를 목록에서 빼라",
-          "판정불가가 해소됐다 — apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:343 를 목록에서 빼라",
-          "판정불가가 해소됐다 — apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:363 를 목록에서 빼라",
-          "판정불가가 해소됐다 — apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:398 를 목록에서 빼라",
-          "판정불가가 해소됐다 — apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:434 를 목록에서 빼라",
-          "새 부모판정불가 — apps/mobile/src/features/my/screens/MyTaxScreen.tsx:235 · 44를 채우는 hitSlop이 직접 부모 경계에서 잘리는지 정적으로 확정할 수 없다",
-          "부모판정불가가 해소됐다 — apps/mobile/src/features/my/screens/MyTaxScreen.tsx:201 를 parentUnjudged에서 빼라",
-          "공용 컴포넌트 Button size=\"md\" 소비처가 13 → 20곳으로 바뀌었다",
-          "새 Button size=\"md\" 소비처 — apps/mobile/src/features/international-tax/RecipeTaxStatusCard.tsx:55 (판정이 부모판정불가 인 variant 는 늘리지 않는다)",
-          "새 Button size=\"md\" 소비처 — apps/mobile/src/features/international-tax/RecipeTaxStatusCard.tsx:56 (판정이 부모판정불가 인 variant 는 늘리지 않는다)",
-          "새 Button size=\"md\" 소비처 — apps/mobile/src/features/international-tax/RecipeTaxStatusCard.tsx:57 (판정이 부모판정불가 인 variant 는 늘리지 않는다)",
-          "새 Button size=\"md\" 소비처 — apps/mobile/src/features/my/screens/MyCountryScreen.tsx:45 (판정이 부모판정불가 인 variant 는 늘리지 않는다)",
-          "새 Button size=\"md\" 소비처 — apps/mobile/src/features/my/screens/MyLanguageScreen.tsx:130 (판정이 부모판정불가 인 variant 는 늘리지 않는다)",
-          "새 Button size=\"md\" 소비처 — apps/mobile/src/features/my/screens/MyLanguageScreen.tsx:136 (판정이 부모판정불가 인 variant 는 늘리지 않는다)",
-          "새 Button size=\"md\" 소비처 — apps/mobile/src/features/my/screens/MyTaxScreen.tsx:192 (판정이 부모판정불가 인 variant 는 늘리지 않는다)",
-          "새 Button size=\"md\" 소비처 — apps/mobile/src/features/my/screens/MyTaxScreen.tsx:198 (판정이 부모판정불가 인 variant 는 늘리지 않는다)",
-          "새 Button size=\"md\" 소비처 — apps/mobile/src/features/my/screens/MyTaxScreen.tsx:51 (판정이 부모판정불가 인 variant 는 늘리지 않는다)",
-          "새 Button size=\"md\" 소비처 — apps/mobile/src/features/my/screens/MyTaxScreen.tsx:51 (판정이 부모판정불가 인 variant 는 늘리지 않는다)",
-          "새 Button size=\"md\" 소비처 — apps/mobile/src/features/my/screens/MyTaxScreen.tsx:53 (판정이 부모판정불가 인 variant 는 늘리지 않는다)",
-          "새 Button size=\"md\" 소비처 — apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:284 (판정이 부모판정불가 인 variant 는 늘리지 않는다)",
-          "새 Button size=\"md\" 소비처 — apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:289 (판정이 부모판정불가 인 variant 는 늘리지 않는다)",
-          "Button size=\"md\" 소비처가 사라졌다 — apps/mobile/src/features/my/screens/MyLanguageScreen.tsx:245 를 목록에서 빼라",
-          "Button size=\"md\" 소비처가 사라졌다 — apps/mobile/src/features/my/screens/MyLanguageScreen.tsx:251 를 목록에서 빼라",
-          "Button size=\"md\" 소비처가 사라졌다 — apps/mobile/src/features/my/screens/MyTaxScreen.tsx:158 를 목록에서 빼라",
-          "Button size=\"md\" 소비처가 사라졌다 — apps/mobile/src/features/my/screens/MyTaxScreen.tsx:164 를 목록에서 빼라",
-          "Button size=\"md\" 소비처가 사라졌다 — apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:261 를 목록에서 빼라",
-          "Button size=\"md\" 소비처가 사라졌다 — apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:266 를 목록에서 빼라",
-          "제품 감사 입력이 바뀌었다 — 목록 69469ed306bb · 지금 e24506415de6. 제품 .tsx 나 감사기가 바뀌었다. 다시 재고 목록과 제품입력해시를 함께 갱신하라"
+          "S3a 회귀 apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx marginTop:space.xs 7 < 8",
+          "S3a 회귀 apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx gap:space.md 0 < 1",
+          "S3a 회귀 apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx fontSize:TYPE.caption.fontSize 0 < 3",
+          "S3a 회귀 apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx paddingVertical:space.md 0 < 5",
+          "S3a 회귀 apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx paddingHorizontal:space.md 0 < 7",
+          "S3a 회귀 apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx marginRight:space.sm 0 < 3",
+          "S3a 회귀 apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx gap:space.sm 0 < 2",
+          "S3a 회귀 apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx paddingTop:space.sm 0 < 1",
+          "S3a 회귀 apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx marginBottom:space.md 0 < 4",
+          "S3a 회귀 apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx marginTop:space.xs 0 < 3",
+          "S3a 회귀 apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx borderRadius:radius.md 0 < 1",
+          "S3a 회귀 apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx marginTop:space.lg 0 < 2",
+          "S3a 회귀 apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx lineHeight:TYPE.caption.lineHeight 0 < 1"
         ],
         "added": []
       }
@@ -9493,9 +8725,9 @@
   },
   "provenance": {
     "writtenBy": "--write",
-    "headAtWrite": "2a73bb088c1fbc38b1ca48e0c50de88f2d18231c",
+    "headAtWrite": "071e228ee5ba998bee99528beb0611551e2df38a",
     "tokens": [
-      "P2-OPUS-R1-REBASELINE@663adc60ae249998e5e87c8bd56015a2421f53cc"
+      "P2-S4-SUCCESSOR@071e228ee5ba998bee99528beb0611551e2df38a"
     ]
   }
 }
