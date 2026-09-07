@@ -138,9 +138,16 @@ Button, Icon, Input, Select, Checkbox, Switch, Chip, Card, Header, Sheet, Tab이
 | `reason` | 불일치·제외의 근거와 후속 책임 |
 | `temporaryDivergence` | 정상 parity와 직교하는 임시 예외 객체 `{axes, owner, approvedBy, expiresAt, targets}` |
 | `migrationPending` | P3→P5 단계적 수렴 객체 `{owner, expiresAt, targets}`. `parity=divergent`에서만 허용 |
+| `routeBinding` | README가 독립 route가 아닌 시트·인라인 상태를 가리킬 때, AST로 검증할 host route와 source component의 의미 연결 |
+| `prototypeScreenKeys`·`prototypeTargetsBinding` | 제품 화면 ID와 prototype의 과거 추적 ID가 같지 않은 경우를 위한 명시적 의미 연결. 실제 target 존재와 전수 소유는 생성기가 검증 |
+| `routeExclusions` | 독립 화면이 아닌 expo-router redirect만 허용하는 닫힌 예외. AST에 `Redirect`가 없으면 실패 |
 
 컬럼 소유를 분리한다. `screenId`·`domain`·`expoRoute`·`sourceComponent`·`prototypeTargets`는
-README의 정식 ID, Expo route/AST, prototype registry에서 생성한다. `catalogMode`·`fixtureKind`·
+README의 정식 ID, Expo route/AST, prototype registry에서 생성한다. 다만 서로 다른 권위의 ID 사이에는
+코드만으로 의미를 추론할 수 없으므로 사람 선언은 `routeBinding`·`prototypeScreenKeys`·
+`prototypeTargetsBinding`으로 **연결만** 소유한다. 생성기는 그 연결을 실제 route·export·target과 대조해
+생성 컬럼으로 확장하고 orphan·중복 공유를 검사한다. 1:N·N:1 공유에는 `prototypeSharingReason`이 필수다.
+`catalogMode`·`fixtureKind`·
 `fixtureRef`·`states`·`parity`·`reason`·`temporaryDivergence`·`migrationPending`만 ID별 선언 파일에서 사람이 쓴다.
 검사기는 두 입력을 합쳐 최종 레지스트리를 재생성하고 committed bytes와 일치하는지 확인한다.
 생성 컬럼의 수기 편집은 실패한다. README의 구현 상태 블록은 최종 레지스트리에서 생성해 상태의
@@ -161,7 +168,8 @@ README에는 `<!-- THREE-SURFACE-STATUS:START -->`와 `<!-- THREE-SURFACE-STATUS
 고정한다. 두 차례 재생성의 idempotency, 생성 영역 수기 수정, 표식 누락·중복을 음성 시험한다.
 
 검사기는 레지스트리와 Expo 라우트, 화면 ID 인벤토리, 프로토타입 target을 양방향 대조한다. 미등록
-라우트나 target, 중복 ID, 존재하지 않는 파일, 근거 없는 제외는 실패한다. 다만 `specOnly`·
+라우트나 target, 중복 ID, 존재하지 않는 파일, 근거 없는 제외는 실패한다. 앱 루트의 화면 없는
+`Redirect`만 `routeExclusions`의 AST 검증된 예외로 허용한다. 다만 `specOnly`·
 `expoOnly`·`unsupported`처럼 근거가 있는 선언 예외는 차집합에서 제외하지 않고 별도 목록으로
 정확히 대조한다. 카탈로그의 탭 목록은 최종 레지스트리에서 생성하고 별도 배열을 두지 않는다.
 

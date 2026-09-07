@@ -22,6 +22,10 @@ docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-P0-001/*.md text eol=lf
 # 3표면 레지스트리는 재생성 bytes 자체가 계약이다.
 apps/mobile/src/dev/surfaceRegistry.declarations.json text eol=lf
 apps/mobile/src/dev/surfaceRegistry.generated.json text eol=lf
+apps/mobile/src/dev/surfaceRegistry.ts text eol=lf
+apps/mobile/src/features/README.md text eol=lf
+docs/프로토타입-Expo-3표면-동기화-기획안.md text eol=lf
+docs/프로토타입-Expo-3표면-동기화-세부실행서.md text eol=lf
 docs/prototypes/three-surface-baseline.json text eol=lf
 docs/prototypes/three-surface-approved-visual-changes.json text eol=lf
 docs/prototypes/three-surface-native-evidence.json text eol=lf

@@ -1,0 +1,2274 @@
+{
+  "schemaVersion": 1,
+  "stage": "P1",
+  "sources": {
+    "readme": {
+      "path": "apps/mobile/src/features/README.md",
+      "textSha256": "4fd1058768a64bd155a0d743198081e80d1883d175bf15979f68639ac13a0d8f"
+    },
+    "routes": {
+      "root": "apps/mobile/app",
+      "count": 53,
+      "files": [
+        {
+          "route": "index",
+          "file": "apps/mobile/app/index.tsx"
+        },
+        {
+          "route": "ingredients/[id]",
+          "file": "apps/mobile/app/(tabs)/ingredients/[id].tsx"
+        },
+        {
+          "route": "ingredients/add",
+          "file": "apps/mobile/app/(tabs)/ingredients/add.tsx"
+        },
+        {
+          "route": "ingredients/add-stock/[id]",
+          "file": "apps/mobile/app/(tabs)/ingredients/add-stock/[id].tsx"
+        },
+        {
+          "route": "ingredients/changes/[id]",
+          "file": "apps/mobile/app/(tabs)/ingredients/changes/[id].tsx"
+        },
+        {
+          "route": "ingredients/discards/[id]",
+          "file": "apps/mobile/app/(tabs)/ingredients/discards/[id].tsx"
+        },
+        {
+          "route": "ingredients/edit/[id]",
+          "file": "apps/mobile/app/(tabs)/ingredients/edit/[id].tsx"
+        },
+        {
+          "route": "ingredients/history/[id]",
+          "file": "apps/mobile/app/(tabs)/ingredients/history/[id].tsx"
+        },
+        {
+          "route": "ingredients/index",
+          "file": "apps/mobile/app/(tabs)/ingredients/index.tsx"
+        },
+        {
+          "route": "ingredients/option",
+          "file": "apps/mobile/app/(tabs)/ingredients/option.tsx"
+        },
+        {
+          "route": "ingredients/purchases/[id]",
+          "file": "apps/mobile/app/(tabs)/ingredients/purchases/[id].tsx"
+        },
+        {
+          "route": "my/account",
+          "file": "apps/mobile/app/(tabs)/my/account.tsx"
+        },
+        {
+          "route": "my/categories",
+          "file": "apps/mobile/app/(tabs)/my/categories.tsx"
+        },
+        {
+          "route": "my/category",
+          "file": "apps/mobile/app/(tabs)/my/category.tsx"
+        },
+        {
+          "route": "my/channels",
+          "file": "apps/mobile/app/(tabs)/my/channels.tsx"
+        },
+        {
+          "route": "my/country",
+          "file": "apps/mobile/app/(tabs)/my/country.tsx"
+        },
+        {
+          "route": "my/hours",
+          "file": "apps/mobile/app/(tabs)/my/hours.tsx"
+        },
+        {
+          "route": "my/index",
+          "file": "apps/mobile/app/(tabs)/my/index.tsx"
+        },
+        {
+          "route": "my/language",
+          "file": "apps/mobile/app/(tabs)/my/language.tsx"
+        },
+        {
+          "route": "my/notifications",
+          "file": "apps/mobile/app/(tabs)/my/notifications.tsx"
+        },
+        {
+          "route": "my/tax",
+          "file": "apps/mobile/app/(tabs)/my/tax.tsx"
+        },
+        {
+          "route": "my/units",
+          "file": "apps/mobile/app/(tabs)/my/units.tsx"
+        },
+        {
+          "route": "my/vendors",
+          "file": "apps/mobile/app/(tabs)/my/vendors.tsx"
+        },
+        {
+          "route": "orders/complete",
+          "file": "apps/mobile/app/(tabs)/orders/complete.tsx"
+        },
+        {
+          "route": "orders/index",
+          "file": "apps/mobile/app/(tabs)/orders/index.tsx"
+        },
+        {
+          "route": "recipes/[id]",
+          "file": "apps/mobile/app/(tabs)/recipes/[id].tsx"
+        },
+        {
+          "route": "recipes/add",
+          "file": "apps/mobile/app/(tabs)/recipes/add.tsx"
+        },
+        {
+          "route": "recipes/avg-sales",
+          "file": "apps/mobile/app/(tabs)/recipes/avg-sales.tsx"
+        },
+        {
+          "route": "recipes/category",
+          "file": "apps/mobile/app/(tabs)/recipes/category.tsx"
+        },
+        {
+          "route": "recipes/changes/[id]",
+          "file": "apps/mobile/app/(tabs)/recipes/changes/[id].tsx"
+        },
+        {
+          "route": "recipes/fixed-cost",
+          "file": "apps/mobile/app/(tabs)/recipes/fixed-cost.tsx"
+        },
+        {
+          "route": "recipes/fixed-cost-edit",
+          "file": "apps/mobile/app/(tabs)/recipes/fixed-cost-edit.tsx"
+        },
+        {
+          "route": "recipes/index",
+          "file": "apps/mobile/app/(tabs)/recipes/index.tsx"
+        },
+        {
+          "route": "recipes/ingredient-search",
+          "file": "apps/mobile/app/(tabs)/recipes/ingredient-search.tsx"
+        },
+        {
+          "route": "recipes/material-category",
+          "file": "apps/mobile/app/(tabs)/recipes/material-category.tsx"
+        },
+        {
+          "route": "recipes/material-search",
+          "file": "apps/mobile/app/(tabs)/recipes/material-search.tsx"
+        },
+        {
+          "route": "recipes/materials",
+          "file": "apps/mobile/app/(tabs)/recipes/materials.tsx"
+        },
+        {
+          "route": "recipes/profit-history",
+          "file": "apps/mobile/app/(tabs)/recipes/profit-history.tsx"
+        },
+        {
+          "route": "sales/analytics",
+          "file": "apps/mobile/app/(tabs)/sales/analytics.tsx"
+        },
+        {
+          "route": "sales/channel",
+          "file": "apps/mobile/app/(tabs)/sales/channel.tsx"
+        },
+        {
+          "route": "sales/day",
+          "file": "apps/mobile/app/(tabs)/sales/day.tsx"
+        },
+        {
+          "route": "sales/day-detail",
+          "file": "apps/mobile/app/(tabs)/sales/day-detail.tsx"
+        },
+        {
+          "route": "sales/expense",
+          "file": "apps/mobile/app/(tabs)/sales/expense.tsx"
+        },
+        {
+          "route": "sales/extra",
+          "file": "apps/mobile/app/(tabs)/sales/extra.tsx"
+        },
+        {
+          "route": "sales/fixed",
+          "file": "apps/mobile/app/(tabs)/sales/fixed.tsx"
+        },
+        {
+          "route": "sales/index",
+          "file": "apps/mobile/app/(tabs)/sales/index.tsx"
+        },
+        {
+          "route": "sales/material",
+          "file": "apps/mobile/app/(tabs)/sales/material.tsx"
+        },
+        {
+          "route": "sales/menu",
+          "file": "apps/mobile/app/(tabs)/sales/menu.tsx"
+        },
+        {
+          "route": "sales/past",
+          "file": "apps/mobile/app/(tabs)/sales/past.tsx"
+        },
+        {
+          "route": "sales/revenue",
+          "file": "apps/mobile/app/(tabs)/sales/revenue.tsx"
+        },
+        {
+          "route": "sales/stock-check",
+          "file": "apps/mobile/app/(tabs)/sales/stock-check.tsx"
+        },
+        {
+          "route": "sales/tax",
+          "file": "apps/mobile/app/(tabs)/sales/tax.tsx"
+        },
+        {
+          "route": "sales/waste",
+          "file": "apps/mobile/app/(tabs)/sales/waste.tsx"
+        }
+      ]
+    },
+    "prototype": {
+      "path": "docs/prototypes/0_full-page-flow-prototype-ui-applied.html",
+      "textSha256": "9b004a8755152bc012337caf3b8e5d1dc5695bdad47a1aed1c3338d7208f39b1",
+      "screenCount": 62,
+      "popupTargetCount": 123
+    },
+    "declarations": {
+      "path": "apps/mobile/src/dev/surfaceRegistry.declarations.json",
+      "textSha256": "3e52a07d10c82c3b6e737fcfa1eb087b3c8a79abe566d8f0fe448ad6718cc435"
+    }
+  },
+  "inventory": {
+    "screenIds": 64,
+    "routes": 53,
+    "prototypeTargets": 185
+  },
+  "routeExclusions": [
+    {
+      "route": "index",
+      "kind": "redirect",
+      "reason": "루트 진입을 첫 제품 탭으로 보내는 expo-router redirect이며 독립 화면이 아니다."
+    }
+  ],
+  "sharedPrototypeTargets": [
+    {
+      "target": "popup:fixed_channel@fixed_actual",
+      "screenIds": [
+        "MY-05b",
+        "RCP-15"
+      ]
+    },
+    {
+      "target": "popup:fixed_channel@my_fixed_edit",
+      "screenIds": [
+        "MY-05b",
+        "RCP-15"
+      ]
+    },
+    {
+      "target": "popup:order_cancel@order_main",
+      "screenIds": [
+        "ORD-01",
+        "ORD-07"
+      ]
+    },
+    {
+      "target": "popup:order_order@order_detail",
+      "screenIds": [
+        "ORD-02",
+        "ORD-05"
+      ]
+    },
+    {
+      "target": "popup:order_order@order_main",
+      "screenIds": [
+        "ORD-01",
+        "ORD-05",
+        "ORD-06"
+      ]
+    },
+    {
+      "target": "popup:order_revert@order_main",
+      "screenIds": [
+        "ORD-01",
+        "ORD-07"
+      ]
+    },
+    {
+      "target": "popup:sales_break@sales_main",
+      "screenIds": [
+        "SALES-01",
+        "SALES-01b"
+      ]
+    },
+    {
+      "target": "popup:sales_close@sales_main",
+      "screenIds": [
+        "SALES-01",
+        "SALES-01b"
+      ]
+    },
+    {
+      "target": "popup:sales_etc@sales_main",
+      "screenIds": [
+        "SALES-01",
+        "SALES-06"
+      ]
+    },
+    {
+      "target": "popup:sales_expense@sales_main",
+      "screenIds": [
+        "SALES-01",
+        "SALES-07"
+      ]
+    },
+    {
+      "target": "popup:sales_qty@sales_main",
+      "screenIds": [
+        "SALES-01",
+        "SALES-05b"
+      ]
+    },
+    {
+      "target": "popup:sales_state@sales_main",
+      "screenIds": [
+        "SALES-01",
+        "SALES-01b"
+      ]
+    },
+    {
+      "target": "popup:stock_inbound@stock_change",
+      "screenIds": [
+        "ING-03b",
+        "ING-05"
+      ]
+    },
+    {
+      "target": "popup:stock_order@stock",
+      "screenIds": [
+        "ING-07",
+        "ING-08"
+      ]
+    },
+    {
+      "target": "popup:stock_period@stock",
+      "screenIds": [
+        "ING-07",
+        "ING-08"
+      ]
+    },
+    {
+      "target": "popup:stock_type@stock",
+      "screenIds": [
+        "ING-07",
+        "ING-08"
+      ]
+    }
+  ],
+  "catalogProjection": [
+    {
+      "screenId": "ING-01",
+      "domain": "ingredients",
+      "name": "식재료 리스트 (카테고리 스트립·정렬·소진임박 알림·FAB)",
+      "expoRoute": "ingredients/index",
+      "sourceComponent": "apps/mobile/src/features/ingredients/index.ts#IngredientListScreen",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "ING-02",
+      "domain": "ingredients",
+      "name": "식재료 추가 (등록 폼·단위 시트·단가 미리보기)",
+      "expoRoute": "ingredients/add",
+      "sourceComponent": "apps/mobile/src/features/ingredients/index.ts#IngredientAddScreen",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "ING-03",
+      "domain": "ingredients",
+      "name": "식재료 상세 (잔여·기준단가·로스율·재고 변동·구매이력·구매옵션)",
+      "expoRoute": "ingredients/[id]",
+      "sourceComponent": "apps/mobile/src/features/ingredients/index.ts#IngredientDetailScreen",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "ING-03b",
+      "domain": "ingredients",
+      "name": "재고 추가 (빠른 입고 · 구매 옵션 자동 채움 · 서버 미리보기) → E7+E1",
+      "expoRoute": "ingredients/add-stock/[id]",
+      "sourceComponent": "apps/mobile/src/features/ingredients/index.ts#QuickInboundScreen",
+      "catalogMode": "fixture",
+      "fixtureKind": "stub",
+      "fixtureRef": {
+        "stubName": "ingredientQuickInbound"
+      },
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "ING-04",
+      "domain": "ingredients",
+      "name": "식재료 수정 (용량·안전재고·최소발주·구매옵션)",
+      "expoRoute": "ingredients/edit/[id]",
+      "sourceComponent": "apps/mobile/src/features/ingredients/index.ts#IngredientEditScreen",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "ING-05",
+      "domain": "ingredients",
+      "name": "재고 수정 (수량 조정·완전 소진·폐기) → E2/E5",
+      "expoRoute": "ingredients/[id]",
+      "sourceComponent": "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx#StockEditSheet",
+      "catalogMode": "fixture",
+      "fixtureKind": "stub",
+      "fixtureRef": {
+        "stubName": "ingredientStockEdit"
+      },
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "ING-06",
+      "domain": "ingredients",
+      "name": "구매 링크·옵션 수정",
+      "expoRoute": "ingredients/option",
+      "sourceComponent": "apps/mobile/src/features/ingredients/index.ts#PurchaseOptionScreen",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "ING-07",
+      "domain": "ingredients",
+      "name": "재고 내역 (변동 원장·기간 필터)",
+      "expoRoute": "ingredients/history/[id]",
+      "sourceComponent": "apps/mobile/src/features/ingredients/index.ts#StockHistoryScreen",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "ING-08",
+      "domain": "ingredients",
+      "name": "조회 설정 (기간·유형·정렬 필터)",
+      "expoRoute": "ingredients/history/[id]",
+      "sourceComponent": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx#HistoryFilterSheet",
+      "catalogMode": "fixture",
+      "fixtureKind": "stub",
+      "fixtureRef": {
+        "stubName": "stockHistoryFilters"
+      },
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "ING-09",
+      "domain": "ingredients",
+      "name": "구매 이력 전체 (건별 단가·단가 범위·기준단가 대조)",
+      "expoRoute": "ingredients/purchases/[id]",
+      "sourceComponent": "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "ING-10",
+      "domain": "ingredients",
+      "name": "폐기 내역 (탭: 전체·조리 전 폐기·조리 후 폐기)",
+      "expoRoute": "ingredients/discards/[id]",
+      "sourceComponent": "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "ING-11",
+      "domain": "ingredients",
+      "name": "식재료 수정 내역 (전후값·자동 전파·매출 반영 상태)",
+      "expoRoute": "ingredients/changes/[id]",
+      "sourceComponent": "apps/mobile/app/(tabs)/ingredients/changes/[id].tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "MY-01",
+      "domain": "my",
+      "name": "마이페이지 홈 (사업장 + 설정 메뉴)",
+      "expoRoute": "my/index",
+      "sourceComponent": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "MY-02",
+      "domain": "my",
+      "name": "세금 (부가세 · 추가 항목 → 전 레시피 손익 반영)",
+      "expoRoute": "my/tax",
+      "sourceComponent": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "MY-03",
+      "domain": "my",
+      "name": "카테고리 관리 허브",
+      "expoRoute": "my/categories",
+      "sourceComponent": "apps/mobile/src/features/my/screens/MyCategoryHubScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "MY-03a",
+      "domain": "my",
+      "name": "카테고리 편집",
+      "expoRoute": "my/category",
+      "sourceComponent": "apps/mobile/src/features/my/screens/MyCategoryScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "MY-04",
+      "domain": "my",
+      "name": "단위 설정 (미터법 표시·1컵 용량·단가 표기 자릿수)",
+      "expoRoute": "my/units",
+      "sourceComponent": "apps/mobile/src/features/my/screens/MyUnitsScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "MY-05",
+      "domain": "my",
+      "name": "고정 지출 자세히 (자세히 보기 진입)",
+      "expoRoute": "recipes/fixed-cost",
+      "sourceComponent": "apps/mobile/src/features/my/screens/FixedCostScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "MY-05b",
+      "domain": "my",
+      "name": "고정 지출 수정 (항목/카드 추가·삭제) → E4",
+      "expoRoute": "recipes/fixed-cost-edit",
+      "sourceComponent": "apps/mobile/src/features/my/screens/FixedCostEditScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "MY-06",
+      "domain": "my",
+      "name": "알림 설정",
+      "expoRoute": "my/notifications",
+      "sourceComponent": "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "MY-07",
+      "domain": "my",
+      "name": "판매 채널 이름·사용 여부",
+      "expoRoute": "my/channels",
+      "sourceComponent": "apps/mobile/src/features/my/screens/MyChannelsScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "MY-08",
+      "domain": "my",
+      "name": "사용자별 앱 언어 (한국어/영어 · 매장 국가·통화와 분리)",
+      "expoRoute": "my/language",
+      "sourceComponent": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "MY-09",
+      "domain": "my",
+      "name": "영업시간 (요일별 시간·브레이크 · 매장 시간대 · 영업일 경계)",
+      "expoRoute": "my/hours",
+      "sourceComponent": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "MY-10",
+      "domain": "my",
+      "name": "계정 관리 (탈퇴 시 접근 종료 · 매장/거래 원장 보존 안내)",
+      "expoRoute": "my/account",
+      "sourceComponent": "apps/mobile/src/features/my/screens/MyAccountScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "MY-11",
+      "domain": "my",
+      "name": "구매처·브랜드",
+      "expoRoute": "my/vendors",
+      "sourceComponent": "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "MY-12",
+      "domain": "my",
+      "name": "국가·통화 확인 및 설정 (시장 프로필 판본 저장)",
+      "expoRoute": "my/country",
+      "sourceComponent": "apps/mobile/src/features/my/screens/MyCountryScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "ORD-01",
+      "domain": "orders",
+      "name": "발주 현황 (발주 후보/입고 예정/입고 완료)",
+      "expoRoute": "orders/index",
+      "sourceComponent": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "ORD-02",
+      "domain": "orders",
+      "name": "발주 완료 등록 (도착 예정일 달력) → E7",
+      "expoRoute": "orders/complete",
+      "sourceComponent": "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "ORD-03",
+      "domain": "orders",
+      "name": "입고 확정 (실제 수량·부분 입고·멱등키) → E1",
+      "expoRoute": "orders/index",
+      "sourceComponent": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx#OrdersHomeScreen",
+      "catalogMode": "fixture",
+      "fixtureKind": "stub",
+      "fixtureRef": {
+        "stubName": "orderReceive"
+      },
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "ORD-05",
+      "domain": "orders",
+      "name": "주문하기 — 구매 링크·옵션 시트",
+      "expoRoute": "orders/index",
+      "sourceComponent": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx#OrdersHomeScreen",
+      "catalogMode": "fixture",
+      "fixtureKind": "stub",
+      "fixtureRef": {
+        "stubName": "orderPurchaseOptions"
+      },
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "ORD-06",
+      "domain": "orders",
+      "name": "발주 완료 — 구매처 선택 시트",
+      "expoRoute": "orders/index",
+      "sourceComponent": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx#OrdersHomeScreen",
+      "catalogMode": "fixture",
+      "fixtureKind": "stub",
+      "fixtureRef": {
+        "stubName": "orderVendorPick"
+      },
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "ORD-07",
+      "domain": "orders",
+      "name": "발주 취소 → E12 / 입고 취소 → E11",
+      "expoRoute": "orders/index",
+      "sourceComponent": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx#OrdersHomeScreen",
+      "catalogMode": "fixture",
+      "fixtureKind": "stub",
+      "fixtureRef": {
+        "stubName": "orderCancellation"
+      },
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "RCP-01",
+      "domain": "recipes",
+      "name": "레시피 리스트 (정렬·판매상태/목표 필터)",
+      "expoRoute": "recipes/index",
+      "sourceComponent": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "RCP-02",
+      "domain": "recipes",
+      "name": "레시피 상세 (도넛·손익·재료·고정지출·세금 항목별)",
+      "expoRoute": "recipes/[id]",
+      "sourceComponent": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "RCP-02b",
+      "domain": "recipes",
+      "name": "레시피 수정 내역 (전후값·자동 전파·매출 반영 상태)",
+      "expoRoute": "recipes/changes/[id]",
+      "sourceComponent": "apps/mobile/app/(tabs)/recipes/changes/[id].tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "RCP-03",
+      "domain": "recipes",
+      "name": "레시피 추가/수정 (재료·부자재·추가 지출·목표율) → E3",
+      "expoRoute": "recipes/add",
+      "sourceComponent": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "RCP-05",
+      "domain": "recipes",
+      "name": "판매가 시뮬레이션 (상세 내 시트·슬라이더 라이브 재계산)",
+      "expoRoute": "recipes/[id]",
+      "sourceComponent": "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx#PriceSimSheet",
+      "catalogMode": "fixture",
+      "fixtureKind": "stub",
+      "fixtureRef": {
+        "stubName": "recipePriceSimulation"
+      },
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "RCP-07",
+      "domain": "recipes",
+      "name": "평균 판매량 입력 (기간·환산·배분비율)",
+      "expoRoute": "recipes/avg-sales",
+      "sourceComponent": "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "RCP-10",
+      "domain": "recipes",
+      "name": "식재료 검색·담기 + 사용량 입력 시트",
+      "expoRoute": "recipes/ingredient-search",
+      "sourceComponent": "apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "RCP-11",
+      "domain": "recipes",
+      "name": "부자재 검색·담기",
+      "expoRoute": "recipes/material-search",
+      "sourceComponent": "apps/mobile/src/features/recipes/screens/MaterialSearchScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "RCP-12",
+      "domain": "recipes",
+      "name": "레시피 카테고리 설정 (추가·수정·삭제)",
+      "expoRoute": "recipes/category",
+      "sourceComponent": "apps/mobile/src/features/recipes/screens/CategoryScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "RCP-12b",
+      "domain": "recipes",
+      "name": "부자재 카테고리",
+      "expoRoute": "recipes/material-category",
+      "sourceComponent": "apps/mobile/src/features/recipes/screens/MaterialCategoryScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "RCP-13",
+      "domain": "recipes",
+      "name": "부자재 관리 (+ RCP-14 부자재 수정 시트)",
+      "expoRoute": "recipes/materials",
+      "sourceComponent": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "RCP-15",
+      "domain": "recipes",
+      "name": "적용 채널·비중 (고정지출 수정 내 시트·슬라이더·합계 검증)",
+      "expoRoute": "recipes/fixed-cost-edit",
+      "sourceComponent": "apps/mobile/src/features/my/components/ChannelWeightSheet.tsx#ChannelWeightSheet",
+      "catalogMode": "fixture",
+      "fixtureKind": "stub",
+      "fixtureRef": {
+        "stubName": "fixedCostChannelWeight"
+      },
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "RCP-16",
+      "domain": "recipes",
+      "name": "손익 변동 (금액 목록 → 원인·결과 시트, 커서 20건)",
+      "expoRoute": "recipes/profit-history",
+      "sourceComponent": "apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "SALES-01",
+      "domain": "sales",
+      "name": "매출관리 홈 (일일 판매 입력 + 영업 상태 바)",
+      "expoRoute": "sales/index",
+      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "SALES-01b",
+      "domain": "sales",
+      "name": "영업중·브레이크타임·영업종료 (전이 한 문 · 자동 브레이크는 서버 크론)",
+      "expoRoute": "sales/index",
+      "sourceComponent": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx#BusinessDayBar",
+      "catalogMode": "fixture",
+      "fixtureKind": "stub",
+      "fixtureRef": {
+        "stubName": "businessDayState"
+      },
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "SALES-02",
+      "domain": "sales",
+      "name": "매출 분석 (기간 선택·캘린더·손익)",
+      "expoRoute": "sales/analytics",
+      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "SALES-03",
+      "domain": "sales",
+      "name": "일 손익 상세",
+      "expoRoute": "sales/day",
+      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesDayDetailScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "SALES-04",
+      "domain": "sales",
+      "name": "채널별 손익",
+      "expoRoute": "sales/channel",
+      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesChannelScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "SALES-05b",
+      "domain": "sales",
+      "name": "판매 수량 입력 (매장/배달/포장 + 조리 폐기) → E10/E8",
+      "expoRoute": "sales/index",
+      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx#SalesHomeScreen",
+      "catalogMode": "fixture",
+      "fixtureKind": "stub",
+      "fixtureRef": {
+        "stubName": "salesQuantityEntry"
+      },
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "SALES-06",
+      "domain": "sales",
+      "name": "기타 매출 추가 (항목·단가·수량·판매 채널 선택)",
+      "expoRoute": "sales/index",
+      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx#SalesHomeScreen",
+      "catalogMode": "fixture",
+      "fixtureKind": "stub",
+      "fixtureRef": {
+        "stubName": "otherRevenueEntry"
+      },
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "SALES-07",
+      "domain": "sales",
+      "name": "당일 지출 추가 (항목·금액·메모)",
+      "expoRoute": "sales/index",
+      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx#SalesHomeScreen",
+      "catalogMode": "fixture",
+      "fixtureKind": "stub",
+      "fixtureRef": {
+        "stubName": "dailyExpenseEntry"
+      },
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "SALES-09",
+      "domain": "sales",
+      "name": "메뉴 손익 상세 (하루=그날 스냅샷 · 기간=날짜별 합)",
+      "expoRoute": "sales/menu",
+      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "SALES-10",
+      "domain": "sales",
+      "name": "손익 전체 자세히",
+      "expoRoute": "sales/day-detail",
+      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesDayFullScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "SALES-11",
+      "domain": "sales",
+      "name": "고정 지출 상세",
+      "expoRoute": "sales/fixed",
+      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesFixedScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "SALES-12",
+      "domain": "sales",
+      "name": "매출 상세",
+      "expoRoute": "sales/revenue",
+      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesRevenueScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "SALES-13",
+      "domain": "sales",
+      "name": "재료 원가 상세 (+ SALES-14 재료별 사용 메뉴 시트)",
+      "expoRoute": "sales/material",
+      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "SALES-15",
+      "domain": "sales",
+      "name": "부자재 상세 (+ SALES-16 부자재별 사용 메뉴 시트)",
+      "expoRoute": "sales/extra",
+      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesExtraScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "SALES-17",
+      "domain": "sales",
+      "name": "폐기 손실 자세히 (조리 폐기 · 식재료 폐기)",
+      "expoRoute": "sales/waste",
+      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesWasteScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "SALES-18",
+      "domain": "sales",
+      "name": "세금 자세히 (항목별 · 메뉴분/기타분)",
+      "expoRoute": "sales/tax",
+      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesTaxScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "SALES-19",
+      "domain": "sales",
+      "name": "부족 메뉴·식재료 재고 확인",
+      "expoRoute": "sales/stock-check",
+      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesStockCheckScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "SALES-20",
+      "domain": "sales",
+      "name": "추가 지출",
+      "expoRoute": "sales/expense",
+      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesExpenseScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "SALES-21",
+      "domain": "sales",
+      "name": "과거 판매 내역 수정·추가 (§6.4 · 다시 열지 않고 정정)",
+      "expoRoute": "sales/past",
+      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    }
+  ],
+  "surfaces": [
+    {
+      "screenId": "ING-01",
+      "domain": "ingredients",
+      "name": "식재료 리스트 (카테고리 스트립·정렬·소진임박 알림·FAB)",
+      "expoRoute": "ingredients/index",
+      "sourceComponent": "apps/mobile/src/features/ingredients/index.ts#IngredientListScreen",
+      "prototypeTargets": [
+        "popup:sort@ingredient_main",
+        "screen:ingredient_main"
+      ],
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "ING-02",
+      "domain": "ingredients",
+      "name": "식재료 추가 (등록 폼·단위 시트·단가 미리보기)",
+      "expoRoute": "ingredients/add",
+      "sourceComponent": "apps/mobile/src/features/ingredients/index.ts#IngredientAddScreen",
+      "prototypeTargets": [
+        "popup:add_category@ingredient_add",
+        "popup:add_unit@ingredient_add",
+        "screen:ingredient_add"
+      ],
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "ING-03",
+      "domain": "ingredients",
+      "name": "식재료 상세 (잔여·기준단가·로스율·재고 변동·구매이력·구매옵션)",
+      "expoRoute": "ingredients/[id]",
+      "sourceComponent": "apps/mobile/src/features/ingredients/index.ts#IngredientDetailScreen",
+      "prototypeTargets": [
+        "popup:ingredient_option_empty@ingredient_detail",
+        "popup:ingredient_option_filled@ingredient_detail",
+        "screen:ingredient_delete",
+        "screen:ingredient_detail",
+        "screen:ingredient_edit_menu",
+        "screen:memo_edit"
+      ],
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "ING-03b",
+      "domain": "ingredients",
+      "name": "재고 추가 (빠른 입고 · 구매 옵션 자동 채움 · 서버 미리보기) → E7+E1",
+      "expoRoute": "ingredients/add-stock/[id]",
+      "sourceComponent": "apps/mobile/src/features/ingredients/index.ts#QuickInboundScreen",
+      "prototypeTargets": [
+        "popup:stock_inbound@stock_change"
+      ],
+      "catalogMode": "fixture",
+      "fixtureKind": "stub",
+      "fixtureRef": {
+        "stubName": "ingredientQuickInbound"
+      },
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "ING-04",
+      "domain": "ingredients",
+      "name": "식재료 수정 (용량·안전재고·최소발주·구매옵션)",
+      "expoRoute": "ingredients/edit/[id]",
+      "sourceComponent": "apps/mobile/src/features/ingredients/index.ts#IngredientEditScreen",
+      "prototypeTargets": [
+        "popup:edit_category@ingredient_edit",
+        "popup:edit_unit@ingredient_edit",
+        "screen:ingredient_edit"
+      ],
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "ING-05",
+      "domain": "ingredients",
+      "name": "재고 수정 (수량 조정·완전 소진·폐기) → E2/E5",
+      "expoRoute": "ingredients/[id]",
+      "sourceComponent": "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx#StockEditSheet",
+      "prototypeTargets": [
+        "popup:stock_confirm@stock_change",
+        "popup:stock_deduct@stock_change",
+        "popup:stock_discard@stock_change",
+        "popup:stock_error@stock_change",
+        "popup:stock_inbound@stock_change",
+        "popup:stock_option@stock_change",
+        "screen:stock_change"
+      ],
+      "catalogMode": "fixture",
+      "fixtureKind": "stub",
+      "fixtureRef": {
+        "stubName": "ingredientStockEdit"
+      },
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "ING-06",
+      "domain": "ingredients",
+      "name": "구매 링크·옵션 수정",
+      "expoRoute": "ingredients/option",
+      "sourceComponent": "apps/mobile/src/features/ingredients/index.ts#PurchaseOptionScreen",
+      "prototypeTargets": [
+        "popup:option_add@options",
+        "popup:option_card_menu@options",
+        "popup:option_delete@options",
+        "popup:option_edit@options",
+        "popup:option_list@options",
+        "popup:option_more@options",
+        "popup:option_unit@options",
+        "popup:option_vendor_new@options",
+        "popup:option_vendor@options",
+        "screen:options"
+      ],
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "ING-07",
+      "domain": "ingredients",
+      "name": "재고 내역 (변동 원장·기간 필터)",
+      "expoRoute": "ingredients/history/[id]",
+      "sourceComponent": "apps/mobile/src/features/ingredients/index.ts#StockHistoryScreen",
+      "prototypeTargets": [
+        "popup:stock_event_more@stock",
+        "popup:stock_event_revert@stock",
+        "popup:stock_order@stock",
+        "popup:stock_period@stock",
+        "popup:stock_type@stock",
+        "screen:stock"
+      ],
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "ING-08",
+      "domain": "ingredients",
+      "name": "조회 설정 (기간·유형·정렬 필터)",
+      "expoRoute": "ingredients/history/[id]",
+      "sourceComponent": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx#HistoryFilterSheet",
+      "prototypeTargets": [
+        "popup:stock_order@stock",
+        "popup:stock_period@stock",
+        "popup:stock_type@stock"
+      ],
+      "catalogMode": "fixture",
+      "fixtureKind": "stub",
+      "fixtureRef": {
+        "stubName": "stockHistoryFilters"
+      },
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "ING-09",
+      "domain": "ingredients",
+      "name": "구매 이력 전체 (건별 단가·단가 범위·기준단가 대조)",
+      "expoRoute": "ingredients/purchases/[id]",
+      "sourceComponent": "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx#default",
+      "prototypeTargets": [
+        "popup:purchase_period@purchase",
+        "screen:purchase"
+      ],
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "ING-10",
+      "domain": "ingredients",
+      "name": "폐기 내역 (탭: 전체·조리 전 폐기·조리 후 폐기)",
+      "expoRoute": "ingredients/discards/[id]",
+      "sourceComponent": "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx#default",
+      "prototypeTargets": [
+        "popup:discard_period@discard",
+        "popup:discard_type@discard",
+        "screen:discard"
+      ],
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "ING-11",
+      "domain": "ingredients",
+      "name": "식재료 수정 내역 (전후값·자동 전파·매출 반영 상태)",
+      "expoRoute": "ingredients/changes/[id]",
+      "sourceComponent": "apps/mobile/app/(tabs)/ingredients/changes/[id].tsx#default",
+      "prototypeTargets": [
+        "popup:ingredient_change_detail@ingredient_changes",
+        "screen:ingredient_changes"
+      ],
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "MY-01",
+      "domain": "my",
+      "name": "마이페이지 홈 (사업장 + 설정 메뉴)",
+      "expoRoute": "my/index",
+      "sourceComponent": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx#default",
+      "prototypeTargets": [
+        "screen:my_main"
+      ],
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "MY-02",
+      "domain": "my",
+      "name": "세금 (부가세 · 추가 항목 → 전 레시피 손익 반영)",
+      "expoRoute": "my/tax",
+      "sourceComponent": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx#default",
+      "prototypeTargets": [
+        "popup:tax_country@my_tax",
+        "popup:tax_item_add@my_tax",
+        "popup:tax_saved@my_tax",
+        "screen:my_tax"
+      ],
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "MY-03",
+      "domain": "my",
+      "name": "카테고리 관리 허브",
+      "expoRoute": "my/categories",
+      "sourceComponent": "apps/mobile/src/features/my/screens/MyCategoryHubScreen.tsx#default",
+      "prototypeTargets": [
+        "screen:my_settings"
+      ],
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "MY-03a",
+      "domain": "my",
+      "name": "카테고리 편집",
+      "expoRoute": "my/category",
+      "sourceComponent": "apps/mobile/src/features/my/screens/MyCategoryScreen.tsx#default",
+      "prototypeTargets": [
+        "popup:category_add@my_ingredient_categories",
+        "popup:category_delete@my_ingredient_categories",
+        "popup:category_edit@my_ingredient_categories",
+        "screen:my_ingredient_categories"
+      ],
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "MY-04",
+      "domain": "my",
+      "name": "단위 설정 (미터법 표시·1컵 용량·단가 표기 자릿수)",
+      "expoRoute": "my/units",
+      "sourceComponent": "apps/mobile/src/features/my/screens/MyUnitsScreen.tsx#default",
+      "prototypeTargets": [
+        "screen:my_units"
+      ],
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "MY-05",
+      "domain": "my",
+      "name": "고정 지출 자세히 (자세히 보기 진입)",
+      "expoRoute": "recipes/fixed-cost",
+      "sourceComponent": "apps/mobile/src/features/my/screens/FixedCostScreen.tsx#default",
+      "prototypeTargets": [
+        "popup:fixed_period@fixed_average",
+        "popup:fixed_period@my_fixed",
+        "screen:fixed_average",
+        "screen:my_fixed"
+      ],
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "MY-05b",
+      "domain": "my",
+      "name": "고정 지출 수정 (항목/카드 추가·삭제) → E4",
+      "expoRoute": "recipes/fixed-cost-edit",
+      "sourceComponent": "apps/mobile/src/features/my/screens/FixedCostEditScreen.tsx#default",
+      "prototypeTargets": [
+        "popup:fixed_channel@fixed_actual",
+        "popup:fixed_channel@my_fixed_edit",
+        "popup:fixed_item_add@fixed_actual",
+        "popup:fixed_item_add@my_fixed_edit",
+        "popup:fixed_period@fixed_actual",
+        "popup:fixed_period@my_fixed_edit",
+        "screen:fixed_actual",
+        "screen:my_fixed_edit"
+      ],
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "MY-06",
+      "domain": "my",
+      "name": "알림 설정",
+      "expoRoute": "my/notifications",
+      "sourceComponent": "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx#default",
+      "prototypeTargets": [
+        "screen:my_notifications"
+      ],
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "MY-07",
+      "domain": "my",
+      "name": "판매 채널 이름·사용 여부",
+      "expoRoute": "my/channels",
+      "sourceComponent": "apps/mobile/src/features/my/screens/MyChannelsScreen.tsx#default",
+      "prototypeTargets": [
+        "popup:channel_disable@my_channels",
+        "popup:channel_edit@my_channels",
+        "screen:my_channels"
+      ],
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "MY-08",
+      "domain": "my",
+      "name": "사용자별 앱 언어 (한국어/영어 · 매장 국가·통화와 분리)",
+      "expoRoute": "my/language",
+      "sourceComponent": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx#default",
+      "prototypeTargets": [
+        "popup:language_preview@my_language",
+        "screen:my_language"
+      ],
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "MY-09",
+      "domain": "my",
+      "name": "영업시간 (요일별 시간·브레이크 · 매장 시간대 · 영업일 경계)",
+      "expoRoute": "my/hours",
+      "sourceComponent": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx#default",
+      "prototypeTargets": [
+        "popup:hours_break_end@my_hours",
+        "popup:hours_break_start@my_hours",
+        "popup:hours_end@my_hours",
+        "popup:hours_start@my_hours",
+        "popup:hours_timezone@my_hours",
+        "screen:my_hours"
+      ],
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "MY-10",
+      "domain": "my",
+      "name": "계정 관리 (탈퇴 시 접근 종료 · 매장/거래 원장 보존 안내)",
+      "expoRoute": "my/account",
+      "sourceComponent": "apps/mobile/src/features/my/screens/MyAccountScreen.tsx#default",
+      "prototypeTargets": [
+        "popup:account_delete@my_account",
+        "screen:my_account"
+      ],
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "MY-11",
+      "domain": "my",
+      "name": "구매처·브랜드",
+      "expoRoute": "my/vendors",
+      "sourceComponent": "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx#default",
+      "prototypeTargets": [
+        "popup:vendor_add@my_vendors",
+        "popup:vendor_delete@my_vendors",
+        "popup:vendor_edit@my_vendors",
+        "screen:my_vendors"
+      ],
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "MY-12",
+      "domain": "my",
+      "name": "국가·통화 확인 및 설정 (시장 프로필 판본 저장)",
+      "expoRoute": "my/country",
+      "sourceComponent": "apps/mobile/src/features/my/screens/MyCountryScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "expoOnly",
+      "reason": "현재 prototype HTML에는 my_country screen key가 없고 가이드에만 SPEC_ONLY로 남아 있다."
+    },
+    {
+      "screenId": "ORD-01",
+      "domain": "orders",
+      "name": "발주 현황 (발주 후보/입고 예정/입고 완료)",
+      "expoRoute": "orders/index",
+      "sourceComponent": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx#default",
+      "prototypeTargets": [
+        "popup:order_cancel@order_main",
+        "popup:order_candidates@order_main",
+        "popup:order_order@order_main",
+        "popup:order_price_spike@order_main",
+        "popup:order_receive@order_main",
+        "popup:order_received@order_main",
+        "popup:order_revert@order_main",
+        "popup:order_waiting@order_main",
+        "screen:order_main"
+      ],
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "ORD-02",
+      "domain": "orders",
+      "name": "발주 완료 등록 (도착 예정일 달력) → E7",
+      "expoRoute": "orders/complete",
+      "sourceComponent": "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx#default",
+      "prototypeTargets": [
+        "popup:order_ingredient@order_direct",
+        "popup:order_order@order_detail",
+        "popup:order_vendor@order_direct",
+        "screen:order_detail",
+        "screen:order_direct"
+      ],
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "ORD-03",
+      "domain": "orders",
+      "name": "입고 확정 (실제 수량·부분 입고·멱등키) → E1",
+      "expoRoute": "orders/index",
+      "sourceComponent": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx#OrdersHomeScreen",
+      "prototypeTargets": [
+        "popup:order_receive@order_receive",
+        "screen:order_receive"
+      ],
+      "catalogMode": "fixture",
+      "fixtureKind": "stub",
+      "fixtureRef": {
+        "stubName": "orderReceive"
+      },
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "ORD-05",
+      "domain": "orders",
+      "name": "주문하기 — 구매 링크·옵션 시트",
+      "expoRoute": "orders/index",
+      "sourceComponent": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx#OrdersHomeScreen",
+      "prototypeTargets": [
+        "popup:order_order@order_detail",
+        "popup:order_order@order_main"
+      ],
+      "catalogMode": "fixture",
+      "fixtureKind": "stub",
+      "fixtureRef": {
+        "stubName": "orderPurchaseOptions"
+      },
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "ORD-06",
+      "domain": "orders",
+      "name": "발주 완료 — 구매처 선택 시트",
+      "expoRoute": "orders/index",
+      "sourceComponent": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx#OrdersHomeScreen",
+      "prototypeTargets": [
+        "popup:order_order@order_main"
+      ],
+      "catalogMode": "fixture",
+      "fixtureKind": "stub",
+      "fixtureRef": {
+        "stubName": "orderVendorPick"
+      },
+      "states": [
+        "ready"
+      ],
+      "parity": "divergent",
+      "reason": "Expo는 구매처 선택을 별도 단계로 노출하지만 prototype은 order_order 흐름 안에 접어 두었다."
+    },
+    {
+      "screenId": "ORD-07",
+      "domain": "orders",
+      "name": "발주 취소 → E12 / 입고 취소 → E11",
+      "expoRoute": "orders/index",
+      "sourceComponent": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx#OrdersHomeScreen",
+      "prototypeTargets": [
+        "popup:order_cancel@order_main",
+        "popup:order_revert@order_main"
+      ],
+      "catalogMode": "fixture",
+      "fixtureKind": "stub",
+      "fixtureRef": {
+        "stubName": "orderCancellation"
+      },
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "RCP-01",
+      "domain": "recipes",
+      "name": "레시피 리스트 (정렬·판매상태/목표 필터)",
+      "expoRoute": "recipes/index",
+      "sourceComponent": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx#default",
+      "prototypeTargets": [
+        "popup:recipe_sort@recipe_main",
+        "popup:recipe_status@recipe_main",
+        "popup:recipe_target@recipe_main",
+        "screen:recipe_main"
+      ],
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "RCP-02",
+      "domain": "recipes",
+      "name": "레시피 상세 (도넛·손익·재료·고정지출·세금 항목별)",
+      "expoRoute": "recipes/[id]",
+      "sourceComponent": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx#default",
+      "prototypeTargets": [
+        "popup:recipe_memo@recipe_detail",
+        "popup:recipe_stop@recipe_detail",
+        "screen:recipe_detail"
+      ],
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "RCP-02b",
+      "domain": "recipes",
+      "name": "레시피 수정 내역 (전후값·자동 전파·매출 반영 상태)",
+      "expoRoute": "recipes/changes/[id]",
+      "sourceComponent": "apps/mobile/app/(tabs)/recipes/changes/[id].tsx#default",
+      "prototypeTargets": [
+        "popup:recipe_change_detail@recipe_changes",
+        "screen:recipe_changes"
+      ],
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "RCP-03",
+      "domain": "recipes",
+      "name": "레시피 추가/수정 (재료·부자재·추가 지출·목표율) → E3",
+      "expoRoute": "recipes/add",
+      "sourceComponent": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx#default",
+      "prototypeTargets": [
+        "popup:recipe_category_pick@recipe_add",
+        "popup:recipe_category_pick@recipe_edit",
+        "popup:recipe_ingredient_usage@recipe_edit",
+        "screen:recipe_add",
+        "screen:recipe_edit"
+      ],
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "RCP-05",
+      "domain": "recipes",
+      "name": "판매가 시뮬레이션 (상세 내 시트·슬라이더 라이브 재계산)",
+      "expoRoute": "recipes/[id]",
+      "sourceComponent": "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx#PriceSimSheet",
+      "prototypeTargets": [
+        "screen:recipe_price_sim"
+      ],
+      "catalogMode": "fixture",
+      "fixtureKind": "stub",
+      "fixtureRef": {
+        "stubName": "recipePriceSimulation"
+      },
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "RCP-07",
+      "domain": "recipes",
+      "name": "평균 판매량 입력 (기간·환산·배분비율)",
+      "expoRoute": "recipes/avg-sales",
+      "sourceComponent": "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "expoOnly",
+      "reason": "현재 prototype registry에는 평균 판매량 입력에 대응하는 screen/popup target이 없다."
+    },
+    {
+      "screenId": "RCP-10",
+      "domain": "recipes",
+      "name": "식재료 검색·담기 + 사용량 입력 시트",
+      "expoRoute": "recipes/ingredient-search",
+      "sourceComponent": "apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx#default",
+      "prototypeTargets": [
+        "popup:recipe_ingredient_usage@recipe_ingredient_search",
+        "screen:recipe_ingredient_search"
+      ],
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "RCP-11",
+      "domain": "recipes",
+      "name": "부자재 검색·담기",
+      "expoRoute": "recipes/material-search",
+      "sourceComponent": "apps/mobile/src/features/recipes/screens/MaterialSearchScreen.tsx#default",
+      "prototypeTargets": [
+        "popup:recipe_material_usage@recipe_material_search",
+        "screen:recipe_material_search"
+      ],
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "RCP-12",
+      "domain": "recipes",
+      "name": "레시피 카테고리 설정 (추가·수정·삭제)",
+      "expoRoute": "recipes/category",
+      "sourceComponent": "apps/mobile/src/features/recipes/screens/CategoryScreen.tsx#default",
+      "prototypeTargets": [
+        "popup:category_add@my_recipe_categories",
+        "popup:category_add@recipe_category",
+        "popup:category_delete@my_recipe_categories",
+        "popup:category_delete@recipe_category",
+        "popup:category_edit@my_recipe_categories",
+        "popup:category_edit@recipe_category",
+        "screen:my_recipe_categories",
+        "screen:recipe_category"
+      ],
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "RCP-12b",
+      "domain": "recipes",
+      "name": "부자재 카테고리",
+      "expoRoute": "recipes/material-category",
+      "sourceComponent": "apps/mobile/src/features/recipes/screens/MaterialCategoryScreen.tsx#default",
+      "prototypeTargets": [
+        "popup:category_add@my_material_categories",
+        "popup:category_add@recipe_material_category",
+        "popup:category_delete@my_material_categories",
+        "popup:category_delete@recipe_material_category",
+        "popup:category_edit@my_material_categories",
+        "popup:category_edit@recipe_material_category",
+        "screen:my_material_categories",
+        "screen:recipe_material_category"
+      ],
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "RCP-13",
+      "domain": "recipes",
+      "name": "부자재 관리 (+ RCP-14 부자재 수정 시트)",
+      "expoRoute": "recipes/materials",
+      "sourceComponent": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx#default",
+      "prototypeTargets": [
+        "popup:material_add@my_materials",
+        "popup:material_add@recipe_materials",
+        "popup:material_category_pick@my_materials",
+        "popup:material_category_pick@recipe_materials",
+        "popup:material_delete@my_materials",
+        "popup:material_delete@recipe_materials",
+        "popup:material_edit@my_materials",
+        "popup:material_edit@recipe_materials",
+        "screen:my_materials",
+        "screen:recipe_materials"
+      ],
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "RCP-15",
+      "domain": "recipes",
+      "name": "적용 채널·비중 (고정지출 수정 내 시트·슬라이더·합계 검증)",
+      "expoRoute": "recipes/fixed-cost-edit",
+      "sourceComponent": "apps/mobile/src/features/my/components/ChannelWeightSheet.tsx#ChannelWeightSheet",
+      "prototypeTargets": [
+        "popup:fixed_channel@fixed_actual",
+        "popup:fixed_channel@my_fixed_edit"
+      ],
+      "catalogMode": "fixture",
+      "fixtureKind": "stub",
+      "fixtureRef": {
+        "stubName": "fixedCostChannelWeight"
+      },
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "RCP-16",
+      "domain": "recipes",
+      "name": "손익 변동 (금액 목록 → 원인·결과 시트, 커서 20건)",
+      "expoRoute": "recipes/profit-history",
+      "sourceComponent": "apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx#default",
+      "prototypeTargets": [
+        "popup:profit_detail@profit",
+        "screen:profit"
+      ],
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "SALES-01",
+      "domain": "sales",
+      "name": "매출관리 홈 (일일 판매 입력 + 영업 상태 바)",
+      "expoRoute": "sales/index",
+      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx#default",
+      "prototypeTargets": [
+        "popup:sales_break@sales_main",
+        "popup:sales_close@sales_main",
+        "popup:sales_etc@sales_main",
+        "popup:sales_expense@sales_main",
+        "popup:sales_qty@sales_main",
+        "popup:sales_shortage@sales_main",
+        "popup:sales_sort@sales_main",
+        "popup:sales_state@sales_main",
+        "screen:sales_main"
+      ],
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "SALES-01b",
+      "domain": "sales",
+      "name": "영업중·브레이크타임·영업종료 (전이 한 문 · 자동 브레이크는 서버 크론)",
+      "expoRoute": "sales/index",
+      "sourceComponent": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx#BusinessDayBar",
+      "prototypeTargets": [
+        "popup:sales_break@sales_main",
+        "popup:sales_close@sales_main",
+        "popup:sales_state@sales_main"
+      ],
+      "catalogMode": "fixture",
+      "fixtureKind": "stub",
+      "fixtureRef": {
+        "stubName": "businessDayState"
+      },
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "SALES-02",
+      "domain": "sales",
+      "name": "매출 분석 (기간 선택·캘린더·손익)",
+      "expoRoute": "sales/analytics",
+      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx#default",
+      "prototypeTargets": [
+        "popup:sales_direct_period@analytics",
+        "popup:sales_period@analytics",
+        "screen:analytics"
+      ],
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "SALES-03",
+      "domain": "sales",
+      "name": "일 손익 상세",
+      "expoRoute": "sales/day",
+      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesDayDetailScreen.tsx#default",
+      "prototypeTargets": [
+        "popup:sales_menu_profit@day",
+        "screen:day"
+      ],
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "SALES-04",
+      "domain": "sales",
+      "name": "채널별 손익",
+      "expoRoute": "sales/channel",
+      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesChannelScreen.tsx#default",
+      "prototypeTargets": [
+        "screen:channel"
+      ],
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "SALES-05b",
+      "domain": "sales",
+      "name": "판매 수량 입력 (매장/배달/포장 + 조리 폐기) → E10/E8",
+      "expoRoute": "sales/index",
+      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx#SalesHomeScreen",
+      "prototypeTargets": [
+        "popup:sales_qty@sales_main"
+      ],
+      "catalogMode": "fixture",
+      "fixtureKind": "stub",
+      "fixtureRef": {
+        "stubName": "salesQuantityEntry"
+      },
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "SALES-06",
+      "domain": "sales",
+      "name": "기타 매출 추가 (항목·단가·수량·판매 채널 선택)",
+      "expoRoute": "sales/index",
+      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx#SalesHomeScreen",
+      "prototypeTargets": [
+        "popup:sales_etc@sales_main"
+      ],
+      "catalogMode": "fixture",
+      "fixtureKind": "stub",
+      "fixtureRef": {
+        "stubName": "otherRevenueEntry"
+      },
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "SALES-07",
+      "domain": "sales",
+      "name": "당일 지출 추가 (항목·금액·메모)",
+      "expoRoute": "sales/index",
+      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx#SalesHomeScreen",
+      "prototypeTargets": [
+        "popup:sales_expense@sales_main"
+      ],
+      "catalogMode": "fixture",
+      "fixtureKind": "stub",
+      "fixtureRef": {
+        "stubName": "dailyExpenseEntry"
+      },
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "SALES-09",
+      "domain": "sales",
+      "name": "메뉴 손익 상세 (하루=그날 스냅샷 · 기간=날짜별 합)",
+      "expoRoute": "sales/menu",
+      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx#default",
+      "prototypeTargets": [
+        "screen:menu"
+      ],
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "SALES-10",
+      "domain": "sales",
+      "name": "손익 전체 자세히",
+      "expoRoute": "sales/day-detail",
+      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesDayFullScreen.tsx#default",
+      "prototypeTargets": [
+        "screen:day_full"
+      ],
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "SALES-11",
+      "domain": "sales",
+      "name": "고정 지출 상세",
+      "expoRoute": "sales/fixed",
+      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesFixedScreen.tsx#default",
+      "prototypeTargets": [
+        "popup:sales_fixed_expand@sales_fixed",
+        "screen:sales_fixed"
+      ],
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "SALES-12",
+      "domain": "sales",
+      "name": "매출 상세",
+      "expoRoute": "sales/revenue",
+      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesRevenueScreen.tsx#default",
+      "prototypeTargets": [
+        "popup:sales_revenue_all@revenue",
+        "screen:revenue"
+      ],
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "SALES-13",
+      "domain": "sales",
+      "name": "재료 원가 상세 (+ SALES-14 재료별 사용 메뉴 시트)",
+      "expoRoute": "sales/material",
+      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx#default",
+      "prototypeTargets": [
+        "popup:sales_material_detail@material",
+        "screen:material"
+      ],
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "SALES-15",
+      "domain": "sales",
+      "name": "부자재 상세 (+ SALES-16 부자재별 사용 메뉴 시트)",
+      "expoRoute": "sales/extra",
+      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesExtraScreen.tsx#default",
+      "prototypeTargets": [
+        "popup:sales_extra_detail@extra",
+        "screen:extra"
+      ],
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "SALES-17",
+      "domain": "sales",
+      "name": "폐기 손실 자세히 (조리 폐기 · 식재료 폐기)",
+      "expoRoute": "sales/waste",
+      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesWasteScreen.tsx#default",
+      "prototypeTargets": [
+        "screen:waste"
+      ],
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "SALES-18",
+      "domain": "sales",
+      "name": "세금 자세히 (항목별 · 메뉴분/기타분)",
+      "expoRoute": "sales/tax",
+      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesTaxScreen.tsx#default",
+      "prototypeTargets": [
+        "screen:tax"
+      ],
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "SALES-19",
+      "domain": "sales",
+      "name": "부족 메뉴·식재료 재고 확인",
+      "expoRoute": "sales/stock-check",
+      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesStockCheckScreen.tsx#default",
+      "prototypeTargets": [
+        "popup:stock_check_all@stock_check",
+        "screen:stock_check"
+      ],
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "SALES-20",
+      "domain": "sales",
+      "name": "추가 지출",
+      "expoRoute": "sales/expense",
+      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesExpenseScreen.tsx#default",
+      "prototypeTargets": [
+        "popup:expense_add@expense",
+        "popup:expense_delete@expense",
+        "screen:expense"
+      ],
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "SALES-21",
+      "domain": "sales",
+      "name": "과거 판매 내역 수정·추가 (§6.4 · 다시 열지 않고 정정)",
+      "expoRoute": "sales/past",
+      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx#default",
+      "prototypeTargets": [
+        "popup:past_etc@sales_past",
+        "popup:past_expense@sales_past",
+        "popup:past_sale_qty@sales_past",
+        "popup:past_save@sales_past",
+        "screen:sales_past"
+      ],
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    }
+  ]
+}

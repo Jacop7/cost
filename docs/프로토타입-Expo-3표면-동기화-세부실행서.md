@@ -145,6 +145,10 @@
    기본 checkout과 worktree에서 검사한 입력 hash가 같아야 한다.
 2. 프로토타입의 screen·popup registry를 파서로 읽는다. HTML 정규식 한 번으로 완료 판정하지 않는다.
 3. 생성 컬럼과 사람 선언 컬럼을 분리하고, 둘을 합친 레지스트리를 재생성해 committed bytes와 대조한다.
+   README의 시트·인라인 설명과 prototype의 과거 추적 ID는 AST만으로 제품 의미를 복원할 수 없으므로,
+   선언 파일이 `routeBinding`·`prototypeScreenKeys`·`prototypeTargetsBinding` 연결을 소유한다. 생성기는
+   실제 route·export·target 존재, target 전수 소유, 1:N·N:1의 `prototypeSharingReason`을 검증하며
+   생성된 `expoRoute`·`sourceComponent`·`prototypeTargets` 값 자체는 사람이 쓰지 않는다.
 4. 레지스트리에서 **예정 카탈로그 탭 projection**과 검수 대상 목록을 생성한다. 실제 카탈로그 entry는
    P4에서 대조한다.
 5. README 구현 상태 표식 블록을 생성 레지스트리에서 다시 만들고 수기 상태 권위를 제거한다.

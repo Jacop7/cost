@@ -105,6 +105,77 @@
 
 > 위 ✅ 는 **실데이터 연결 + 전파 + 재조회**까지 구현된 현재 인벤토리다(2026-08-29).
 
+<!-- THREE-SURFACE-STATUS:START -->
+
+| screenId | parity | catalog | Expo route | prototype target 수 |
+|---|---|---|---|---:|
+| `ING-01` | `aligned` | `route` | `ingredients/index` | 2 |
+| `ING-02` | `aligned` | `route` | `ingredients/add` | 3 |
+| `ING-03` | `aligned` | `route` | `ingredients/[id]` | 6 |
+| `ING-03b` | `aligned` | `fixture` | `ingredients/add-stock/[id]` | 1 |
+| `ING-04` | `aligned` | `route` | `ingredients/edit/[id]` | 3 |
+| `ING-05` | `aligned` | `fixture` | `ingredients/[id]` | 7 |
+| `ING-06` | `aligned` | `route` | `ingredients/option` | 10 |
+| `ING-07` | `aligned` | `route` | `ingredients/history/[id]` | 6 |
+| `ING-08` | `aligned` | `fixture` | `ingredients/history/[id]` | 3 |
+| `ING-09` | `aligned` | `route` | `ingredients/purchases/[id]` | 2 |
+| `ING-10` | `aligned` | `route` | `ingredients/discards/[id]` | 3 |
+| `ING-11` | `aligned` | `route` | `ingredients/changes/[id]` | 2 |
+| `MY-01` | `aligned` | `route` | `my/index` | 1 |
+| `MY-02` | `aligned` | `route` | `my/tax` | 4 |
+| `MY-03` | `aligned` | `route` | `my/categories` | 1 |
+| `MY-03a` | `aligned` | `route` | `my/category` | 4 |
+| `MY-04` | `aligned` | `route` | `my/units` | 1 |
+| `MY-05` | `aligned` | `route` | `recipes/fixed-cost` | 4 |
+| `MY-05b` | `aligned` | `route` | `recipes/fixed-cost-edit` | 8 |
+| `MY-06` | `aligned` | `route` | `my/notifications` | 1 |
+| `MY-07` | `aligned` | `route` | `my/channels` | 3 |
+| `MY-08` | `aligned` | `route` | `my/language` | 2 |
+| `MY-09` | `aligned` | `route` | `my/hours` | 6 |
+| `MY-10` | `aligned` | `route` | `my/account` | 2 |
+| `MY-11` | `aligned` | `route` | `my/vendors` | 4 |
+| `MY-12` | `expoOnly` | `route` | `my/country` | 0 |
+| `ORD-01` | `aligned` | `route` | `orders/index` | 9 |
+| `ORD-02` | `aligned` | `route` | `orders/complete` | 5 |
+| `ORD-03` | `aligned` | `fixture` | `orders/index` | 2 |
+| `ORD-05` | `aligned` | `fixture` | `orders/index` | 2 |
+| `ORD-06` | `divergent` | `fixture` | `orders/index` | 1 |
+| `ORD-07` | `aligned` | `fixture` | `orders/index` | 2 |
+| `RCP-01` | `aligned` | `route` | `recipes/index` | 4 |
+| `RCP-02` | `aligned` | `route` | `recipes/[id]` | 3 |
+| `RCP-02b` | `aligned` | `route` | `recipes/changes/[id]` | 2 |
+| `RCP-03` | `aligned` | `route` | `recipes/add` | 5 |
+| `RCP-05` | `aligned` | `fixture` | `recipes/[id]` | 1 |
+| `RCP-07` | `expoOnly` | `route` | `recipes/avg-sales` | 0 |
+| `RCP-10` | `aligned` | `route` | `recipes/ingredient-search` | 2 |
+| `RCP-11` | `aligned` | `route` | `recipes/material-search` | 2 |
+| `RCP-12` | `aligned` | `route` | `recipes/category` | 8 |
+| `RCP-12b` | `aligned` | `route` | `recipes/material-category` | 8 |
+| `RCP-13` | `aligned` | `route` | `recipes/materials` | 10 |
+| `RCP-15` | `aligned` | `fixture` | `recipes/fixed-cost-edit` | 2 |
+| `RCP-16` | `aligned` | `route` | `recipes/profit-history` | 2 |
+| `SALES-01` | `aligned` | `route` | `sales/index` | 9 |
+| `SALES-01b` | `aligned` | `fixture` | `sales/index` | 3 |
+| `SALES-02` | `aligned` | `route` | `sales/analytics` | 3 |
+| `SALES-03` | `aligned` | `route` | `sales/day` | 2 |
+| `SALES-04` | `aligned` | `route` | `sales/channel` | 1 |
+| `SALES-05b` | `aligned` | `fixture` | `sales/index` | 1 |
+| `SALES-06` | `aligned` | `fixture` | `sales/index` | 1 |
+| `SALES-07` | `aligned` | `fixture` | `sales/index` | 1 |
+| `SALES-09` | `aligned` | `route` | `sales/menu` | 1 |
+| `SALES-10` | `aligned` | `route` | `sales/day-detail` | 1 |
+| `SALES-11` | `aligned` | `route` | `sales/fixed` | 2 |
+| `SALES-12` | `aligned` | `route` | `sales/revenue` | 2 |
+| `SALES-13` | `aligned` | `route` | `sales/material` | 2 |
+| `SALES-15` | `aligned` | `route` | `sales/extra` | 2 |
+| `SALES-17` | `aligned` | `route` | `sales/waste` | 1 |
+| `SALES-18` | `aligned` | `route` | `sales/tax` | 1 |
+| `SALES-19` | `aligned` | `route` | `sales/stock-check` | 2 |
+| `SALES-20` | `aligned` | `route` | `sales/expense` | 3 |
+| `SALES-21` | `aligned` | `route` | `sales/past` | 5 |
+
+<!-- THREE-SURFACE-STATUS:END -->
+
 ### 국제 출시 앱 개정 (`INTL-1F`, 활성 계약)
 
 [국가·통화·세금 국제 출시 기획안](../../../../docs/국가-통화-세금-국제출시-기획안.md)이 다음 화면
