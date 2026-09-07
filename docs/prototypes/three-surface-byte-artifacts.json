@@ -18,12 +18,12 @@
     {
       "path": "docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-001/advisory-ledger.json",
       "status": "present",
-      "contentSha256": null
+      "contentSha256": "1e6adcce7f8554ae8ceaa5ffc67628028f67da2c3628b8f185fcf11acbf49a04"
     },
     {
       "path": "docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-001/advisory-ledger.md",
       "status": "present",
-      "contentSha256": null
+      "contentSha256": "3de5c4cd95522468ab6bf51e331bc0eed8996f9094466d4a972e091651578bf9"
     },
     {
       "path": "docs/prototypes/three-surface-approved-visual-changes.json",
@@ -38,7 +38,7 @@
     {
       "path": "docs/prototypes/three-surface-baseline.json",
       "status": "present",
-      "contentSha256": null
+      "contentSha256": "dfc8042896459d44344913125df70e167f33b1a78f4d90a080e4df7bc2433352"
     },
     {
       "path": "docs/prototypes/three-surface-byte-artifacts.json",
