@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "kind": "AC24_P4_ADMISSION_PLAN_TEST_ONLY",
+  "gate_id": "P4",
+  "profile_id": "STORE_DRIVER",
+  "run_id": "AC24-P4-ADMISSION-001",
+  "bundle_commit": "23a343cfe7b9c02f28d76090cdf32777d9471134",
+  "scenario_ids": ["AC-09", "AC-11", "AC-12", "AC-23"],
+  "evidence": [
+    {
+      "path": ".codex/mission-relay/model-plan.json",
+      "sha256": "60d7cb6a85cc43a76532f9047bcc5c4ed5113ebc3fd1708b0c954da91f85d96e"
+    },
+    {
+      "path": ".codex/mission-relay/candidates/team-service-p4-admission-009.json",
+      "sha256": "387404339d730529fdc492453565575bdaa9fc528979175054578becda47e5b9"
+    },
+    {
+      "path": ".codex/mission-relay/candidates/team-service-p4-admission-009.json.sha256",
+      "sha256": "aa0340a5585268ac5c3afdedefd9dc860dde7aeeb63ea5d8283474344a80dbdd"
+    },
+    {
+      "path": "docs/team/service-flow-p4-contract.json",
+      "sha256": "612a4de268a7dcac7a60779f911ab57d9008118d58c657cd85e0f706accce2ae"
+    },
+    {
+      "path": "scripts/team-service-p4-contract.test.mjs",
+      "sha256": "5b9024803db6d131f716dd47062cb0a76321eb38667e2b2c71f94ba91b06b086"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-CURRENT.json",
+      "sha256": "51e0f278b680299946761345460f1fb160221881a2f292e13594d395709208c8"
+    },
+    {
+      "path": "docs/team/service-flow-acceptance.json",
+      "sha256": "b0ce45bb281937e12f290398d3846c4d40bf2ac8f57d8c114221cb5a8ca81825"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-P4-PLAN-OWNER-DECISION-002.json",
+      "sha256": "4ef32a00be07a8c7135e50c869979f901e648613762ac39578f1dadec4632947"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-P4-PLAN-OPUS-RECHECK-002.md",
+      "sha256": "6670c5a9d1b2957f124a9909cf5337c066e316eefd176dabe650f37bdecd8f53"
+    }
+  ],
+  "harness": [
+    {
+      "path": "scripts/team-service-p4-admission.mjs",
+      "sha256": "5e550f223063186195239bf2da2aab2c3c380d83f405dacf1b4cafe331647512"
+    },
+    {
+      "path": "scripts/team-service-p4-no-dispatch.test.mjs",
+      "sha256": "eb00de025144d1b116bf2e28e58486932551d5e15cf90f2afbf74213a52a2764"
+    }
+  ],
+  "forbidden_implementation_paths": [
+    "scripts/team-service-store.mjs",
+    "scripts/team-service-store.test.mjs",
+    "scripts/team-service-driver.mjs",
+    "scripts/team-service-driver.test.mjs",
+    "scripts/team-service-runtime-acl.ps1",
+    "scripts/team-service-runtime-acl.test.mjs",
+    "scripts/team-service-p4-local-tests.mjs"
+  ],
+  "scope": "P4 PLAN_TEST entry prerequisites only. This bundle proves exact planning authority and the absence of P4 implementation; it does not validate future store, driver, outbox, replay, ACL or transport behavior.",
+  "entry_validates_future_implementation": false,
+  "completion_rerun_required": true,
+  "p4_implementation_authorized": false,
+  "real_send_authorized": false,
+  "service_ready": false
+}

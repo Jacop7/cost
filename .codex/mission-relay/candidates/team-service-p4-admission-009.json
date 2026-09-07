@@ -1,0 +1,263 @@
+{
+  "computedBudget": {
+    "economicUnit": "weighted_token_units",
+    "profiles": {
+      "opus-review": {
+        "availability": {
+          "accountScope": "owner-default-anthropic",
+          "source": "User-selected Opus fallback after reporting Fable token capacity unavailable",
+          "status": "verified",
+          "verifiedAt": "2026-09-07"
+        },
+        "calibration": {
+          "observedAt": "2026-09-07",
+          "source": "Existing Opus review evidence and conservative predecessor weight",
+          "status": "manual-conservative"
+        },
+        "model": "claude-opus-5",
+        "provider": "anthropic",
+        "reasoningEffort": "high",
+        "successorCalibration": {
+          "observedAt": "2026-09-07",
+          "source": "Exact SHA-bound P4 admission review packet",
+          "status": "manual-conservative"
+        },
+        "successorExpectedCachedInputTokens": 0,
+        "successorExpectedInputTokens": 0,
+        "weights": {
+          "cachedInput": 0.3,
+          "input": 3,
+          "output": 15
+        }
+      },
+      "sol-high": {
+        "availability": {
+          "accountScope": "owner-primary",
+          "source": "Codex desktop bundled model catalog evidence retained from the sealed predecessor plan",
+          "status": "verified",
+          "verifiedAt": "2026-09-07"
+        },
+        "calibration": {
+          "observedAt": "2026-09-07",
+          "source": "Project Orchestrator predecessor calibration",
+          "status": "manual-conservative"
+        },
+        "model": "gpt-5.6-sol",
+        "provider": "openai",
+        "reasoningEffort": "high",
+        "successorCalibration": {
+          "observedAt": "2026-09-07",
+          "source": "Reduced P4 admission evidence packet",
+          "status": "manual-conservative"
+        },
+        "successorExpectedCachedInputTokens": 8000,
+        "successorExpectedInputTokens": 15000,
+        "weights": {
+          "cachedInput": 0.18,
+          "input": 1.8,
+          "output": 9
+        }
+      }
+    },
+    "remainingContextCallsByProfile": {
+      "sol-high": 1
+    },
+    "remainingPlannedUnits": 107640.0,
+    "status": "MODEL_BUDGET_VALID",
+    "transitionUpperWeightedUnits": 33840.0
+  },
+  "createdAt": "2026-09-07T07:31:02.729018+00:00",
+  "economicPolicy": {
+    "maxPlanAgeHours": 24,
+    "rolloverThreshold": 1.7,
+    "unit": "weighted_token_units"
+  },
+  "localScopeCandidate": {
+    "active_path": ".codex/mission-relay/model-plan.json",
+    "active_path_modified": false,
+    "approval_precedence": "This candidate authorizes only P4 PLAN_TEST admission prework. P4 implementation remains blocked until an exact admission bundle passes Opus review and a separate human implementation Decision is recorded.",
+    "authority": {
+      "decision_id": "DEC-TEAM-SERVICE-P4-PLAN-PREWORK-002",
+      "p4_implementation_authorized": false,
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-P4-PLAN-OWNER-DECISION-002.json",
+      "real_send_authorized": false,
+      "sha256": "4ef32a00be07a8c7135e50c869979f901e648613762ac39578f1dadec4632947"
+    },
+    "economic_rollover_authorized": false,
+    "excluded": [
+      "P4 store, driver, outbox, replay or ACL implementation",
+      "Real dispatch or live 11-chat roundtrip",
+      "Team Router runtime, policy, activation or endpoint mutation",
+      "App product behavior, database, migration or Supabase changes",
+      "Production or staging changes",
+      "Color-lineage failure waiver, service_ready or full verify PASS claims"
+    ],
+    "formal_review_availability": "Fable capacity was reported unavailable; direct Opus Cowork is the selected independent fallback and is not a formal CLI/provider receipt.",
+    "input_refs": [
+      {
+        "path": "docs/team/service-flow-p4-contract.json",
+        "sha256": "612a4de268a7dcac7a60779f911ab57d9008118d58c657cd85e0f706accce2ae"
+      },
+      {
+        "path": "scripts/team-service-p4-contract.test.mjs",
+        "sha256": "5b9024803db6d131f716dd47062cb0a76321eb38667e2b2c71f94ba91b06b086"
+      },
+      {
+        "path": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-CURRENT.json",
+        "sha256": "51e0f278b680299946761345460f1fb160221881a2f292e13594d395709208c8"
+      },
+      {
+        "path": "docs/team/service-flow-acceptance.json",
+        "sha256": "b0ce45bb281937e12f290398d3846c4d40bf2ac8f57d8c114221cb5a8ca81825"
+      },
+      {
+        "path": "docs/ai-review/evidence/TEAM-SERVICE-P4-PLAN-OPUS-RECHECK-002.md",
+        "sha256": "6670c5a9d1b2957f124a9909cf5337c066e316eefd176dabe650f37bdecd8f53"
+      },
+      {
+        "path": "docs/ai-review/evidence/TEAM-SERVICE-P3-COMPLETION-DECISION-006.json",
+        "sha256": "58925ab2500aea4b6220bd1b8aa70a0b35abedd803c95ed647786d2992880080"
+      },
+      {
+        "path": "docs/ai-review/evidence/TEAM-SERVICE-P3-COMPLETION-OPUS-ADDENDUM-006.md",
+        "sha256": "37b49b4e7f982e28a2b2ade2dcca7957b10c54a35dd5007dbb150d02522b12b2"
+      },
+      {
+        "path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P3-COMPLETION-004.json",
+        "sha256": "38b5c88a8ea31e87d4e3b22fe97a7f74ba5c4df58c69b2f8bdae5a4923fa7c8c"
+      }
+    ],
+    "predecessor_candidate": {
+      "path": ".codex/mission-relay/candidates/team-service-local-core-008.json",
+      "sha256": "21f00449eae1444a58bce6a339f20a05956fce8017668b9b9c6f03f19185c485"
+    },
+    "predecessor_sha256": "60d7cb6a85cc43a76532f9047bcc5c4ed5113ebc3fd1708b0c954da91f85d96e",
+    "remaining_calls_basis": "Estimated call counts are planning bounds, not spend authorization.",
+    "scope": [
+      "PLAN_TEST",
+      "P4_AC24_STORE_DRIVER_ADMISSION_PREWORK"
+    ],
+    "status": "CANDIDATE_NOT_ACTIVE_ADMISSION_PREWORK_ONLY",
+    "target_modules": [
+      "docs/team/service-flow-p4-contract.json",
+      "docs/team/service-flow-acceptance.json",
+      "scripts/team-service-p4-contract.test.mjs",
+      "docs/team/service-flow-p4-admission-bundle.json",
+      "scripts/team-service-p4-admission.mjs",
+      "scripts/team-service-p4-no-dispatch.test.mjs"
+    ]
+  },
+  "profiles": [
+    {
+      "availability": {
+        "accountScope": "owner-primary",
+        "source": "Codex desktop bundled model catalog evidence retained from the sealed predecessor plan",
+        "status": "verified",
+        "verifiedAt": "2026-09-07"
+      },
+      "calibration": {
+        "observedAt": "2026-09-07",
+        "source": "Project Orchestrator predecessor calibration",
+        "status": "manual-conservative"
+      },
+      "id": "sol-high",
+      "model": "gpt-5.6-sol",
+      "provider": "openai",
+      "reasoningEffort": "high",
+      "successorCalibration": {
+        "observedAt": "2026-09-07",
+        "source": "Reduced P4 admission evidence packet",
+        "status": "manual-conservative"
+      },
+      "successorExpectedCachedInputTokens": 8000,
+      "successorExpectedInputTokens": 15000,
+      "weights": {
+        "cachedInput": 0.18,
+        "input": 1.8,
+        "output": 9
+      }
+    },
+    {
+      "availability": {
+        "accountScope": "owner-default-anthropic",
+        "source": "User-selected Opus fallback after reporting Fable token capacity unavailable",
+        "status": "verified",
+        "verifiedAt": "2026-09-07"
+      },
+      "calibration": {
+        "observedAt": "2026-09-07",
+        "source": "Existing Opus review evidence and conservative predecessor weight",
+        "status": "manual-conservative"
+      },
+      "id": "opus-review",
+      "model": "claude-opus-5",
+      "provider": "anthropic",
+      "reasoningEffort": "high",
+      "successorCalibration": {
+        "observedAt": "2026-09-07",
+        "source": "Exact SHA-bound P4 admission review packet",
+        "status": "manual-conservative"
+      },
+      "successorExpectedCachedInputTokens": 0,
+      "successorExpectedInputTokens": 0,
+      "weights": {
+        "cachedInput": 0.3,
+        "input": 3,
+        "output": 15
+      }
+    }
+  ],
+  "project": {
+    "goal": "P4 store-driver phase의 PLAN_TEST 및 AC-24 입장검사만 수행하고 실제 구현·전송은 차단한다.",
+    "projectId": "TEAM-SERVICE-P4-ADMISSION-009",
+    "root": "C:\\Users\\jacop\\프로젝트\\식자재관리앱"
+  },
+  "reviewRequirements": [
+    {
+      "condition": "Fable capacity unavailable fallback; review must bind the exact candidate and admission bundle SHA",
+      "minimumRounds": 1,
+      "profileId": "opus-review",
+      "required": true
+    }
+  ],
+  "schemaVersion": 1,
+  "sealedAt": "2026-09-07T07:33:04.590477+00:00",
+  "stages": [
+    {
+      "assignments": [
+        {
+          "expectedCachedInputTokensPerCall": 8000,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 16000,
+          "expectedOutputTokensPerCall": 2200,
+          "profileId": "sol-high",
+          "responsibility": "P4 계약·결정·모델 후보를 대조하고 AC-24 STORE_DRIVER 입장 하네스와 무발송 증거만 만든다. P4 store/driver/ACL 구현은 금지한다.",
+          "threadScope": "active-thread"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 0,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 12000,
+          "expectedOutputTokensPerCall": 2400,
+          "profileId": "opus-review",
+          "responsibility": "정확한 후보·입장 번들 SHA에 대해 P4 입장 전제, 무발송 경계, 미래 구현 비검증을 독립 검수한다.",
+          "threadScope": "external-review"
+        }
+      ],
+      "id": "17",
+      "name": "P4 store-driver admission prework",
+      "status": "active"
+    }
+  ],
+  "status": "SEALED",
+  "transitionComponents": [
+    {
+      "cachedInputTokensPerCall": 8000,
+      "callsUpperBound": 1,
+      "inputTokensPerCall": 15000,
+      "name": "P4 admission successor restoration and exact evidence verification",
+      "outputTokensPerCall": 2200,
+      "profileId": "sol-high"
+    }
+  ]
+}
