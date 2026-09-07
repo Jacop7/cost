@@ -1,8 +1,8 @@
 {
   "schemaVersion": 3,
   "stage": "P2",
-  "baselineCommit": "071e228ee5ba998bee99528beb0611551e2df38a",
-  "baselineTree": "b81cb0bd3b9988b57642ebac3ffc7fb6a5a6cbec",
+  "baselineCommit": "2f2faf17704705652b64b7dbf1041cc964ffed92",
+  "baselineTree": "37443ed288c07135ed0c2628ab258fecc2497f1f",
   "anchors": {
     "productBaseline": {
       "commit": "3448884d7219227dce369af45cb2be290ed12f3a",
@@ -67,7 +67,7 @@
     },
     {
       "path": "scripts/design-token-s4-check.mjs",
-      "textSha256": "fa6ecb9afa423825a805291230c11e2dedc44c646bfb7f88b9649b10bf8320c0"
+      "textSha256": "10175c16832fed6c1a993577d89093bff04020f2805dc3f2f0e4f1c23bd9822b"
     },
     {
       "path": "scripts/three-surface-advisory-ledger-check.mjs",
@@ -79,7 +79,7 @@
     },
     {
       "path": "scripts/three-surface-p0-check.mjs",
-      "textSha256": "73d494b513f299ddac8139bd28ffe72c8692a8000c0d333565603681f82501d1"
+      "textSha256": "87f6c9e3cfc2ceed1e84134142c3e322a22a5097f50c0a3b9a2176c5af5b74c2"
     },
     {
       "path": "scripts/touch-target-audit.mjs",
@@ -4028,15 +4028,15 @@
     },
     {
       "id": "S4-EXACT",
-      "command": "node scripts/design-token-s4-check.mjs",
+      "command": "node scripts/design-token-s4-check.mjs --structural-only",
       "exitCode": 0,
-      "outputSha256": "f2870bd39b91a4e30b361f00e8d338d56bbde41020486872320ebbc21744caee",
+      "outputSha256": "94605279d766087229525543925b9eba59a868a3213ab9fc7e65f7a37a7cca75",
       "lineCount": 3,
       "failureLines": [],
       "outputNormalization": "lf-trim-final-and-remove-touch-volatile-provenance-v1",
       "disposition": "regression",
       "rationale": "값·개수·미판정 표면 변화는 주소 이동으로 입증되지 않았으므로 보수적으로 regression backlog에 남긴다.",
-      "successorContract": "P0 backlog + P2/P3 component and visual-diff gates",
+      "successorContract": "P0 backlog + P2/P3 component and visual-diff gates; review receipt is the full verify path, not the numeric backlog measurement",
       "failures": []
     },
     {
@@ -8646,6 +8646,16 @@
       "status": "open"
     }
   ],
+  "successorBacklog": {
+    "contract": "scripts/design-token-s4-successor.json",
+    "textSha256": "ce48f5c0851d85c0a428bf5bfaccde95595417803cd9304383f16709f711439a",
+    "rawFailures": 54,
+    "componentTransfer": 6,
+    "p3Backlog": 48,
+    "p0Regression": 654,
+    "combinedUniqueOpen": 702,
+    "rationale": "P0 재기준선 이후 S4 gate가 PASS하므로 successor의 P3 backlog는 P0 regression과 중복되지 않는 별도 open 집합이다."
+  },
   "classificationSummary": {
     "preserve": 1,
     "supersede": 0,
@@ -8725,7 +8735,7 @@
   },
   "provenance": {
     "writtenBy": "--write",
-    "headAtWrite": "071e228ee5ba998bee99528beb0611551e2df38a",
+    "headAtWrite": "2f2faf17704705652b64b7dbf1041cc964ffed92",
     "tokens": [
       "P2-S4-SUCCESSOR@071e228ee5ba998bee99528beb0611551e2df38a"
     ]
