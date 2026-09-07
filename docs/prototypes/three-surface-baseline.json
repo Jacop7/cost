@@ -1,8 +1,8 @@
 {
   "schemaVersion": 3,
   "stage": "P2",
-  "baselineCommit": "663adc60ae249998e5e87c8bd56015a2421f53cc",
-  "baselineTree": "9c5efba42736bf4893dd7ca1c00a462512f11be3",
+  "baselineCommit": "2a73bb088c1fbc38b1ca48e0c50de88f2d18231c",
+  "baselineTree": "e5157e031c6fe27ff799c7127d535055bdbc377f",
   "anchors": {
     "productBaseline": {
       "commit": "3448884d7219227dce369af45cb2be290ed12f3a",
@@ -79,7 +79,7 @@
     },
     {
       "path": "scripts/three-surface-p0-check.mjs",
-      "textSha256": "e9f03f562ea3eea448251242eeff7cc5109636eec54ab6b3c02aa6c00461efa8"
+      "textSha256": "73d494b513f299ddac8139bd28ffe72c8692a8000c0d333565603681f82501d1"
     },
     {
       "path": "scripts/touch-target-audit.mjs",
@@ -9362,11 +9362,138 @@
     "token": "P2-OPUS-R1-REBASELINE@663adc60ae249998e5e87c8bd56015a2421f53cc",
     "decisionCommit": "663adc60ae249998e5e87c8bd56015a2421f53cc",
     "previousRegression": 768,
-    "nextRegression": 708
+    "nextRegression": 708,
+    "previousBaselineBlob": "366160ec59c1887f9a047e76bca26d0c2ec1c547",
+    "failureLineDelta": [
+      {
+        "gateId": "S3A-EXACT",
+        "removed": [
+          "apps/mobile/src/components/kit/index.tsx 기하 선언 수 117→120",
+          "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:83:letterSpacing 승인되지 않은 변경 -0.6→TYPE.display.letterSpacing",
+          "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:117:paddingBottom 승인되지 않은 변경 104→LAYOUT.scroll.endWithFab",
+          "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:123:gap 승인되지 않은 변경 6→space.sm",
+          "apps/mobile/src/features/my/screens/MyHomeScreen.tsx:108:fontSize 승인되지 않은 변경 22→TYPE.display.fontSize",
+          "apps/mobile/src/features/my/screens/MyHomeScreen.tsx:108:letterSpacing 승인되지 않은 변경 -0.6→TYPE.display.letterSpacing",
+          "apps/mobile/src/features/my/screens/MyTaxScreen.tsx 기하 선언 수 44→71",
+          "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx 기하 선언 수 125→126",
+          "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx 기하 선언 수 67→68",
+          "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx 기하 선언 수 153→159",
+          "apps/mobile/src/theme/tokens.ts 기하 선언 수 14→20"
+        ],
+        "added": [
+          "apps/mobile/src/components/kit/index.tsx 기하 선언 수 117→144",
+          "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx 기하 선언 수 35→17",
+          "apps/mobile/src/features/my/screens/MyHomeScreen.tsx 기하 선언 수 33→24",
+          "apps/mobile/src/features/my/screens/MyTaxScreen.tsx 기하 선언 수 44→73",
+          "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx 기하 선언 수 125→114",
+          "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx 기하 선언 수 67→56",
+          "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx 기하 선언 수 153→147",
+          "apps/mobile/src/theme/tokens.ts 기하 선언 수 14→27",
+          "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:82:paddingTop 승인된 치환이 재현되지 않았다",
+          "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:102:borderRadius 승인된 치환이 재현되지 않았다",
+          "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:114:paddingBottom 승인된 치환이 재현되지 않았다",
+          "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:117:gap 승인된 치환이 재현되지 않았다",
+          "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:127:borderRadius 승인된 치환이 재현되지 않았다",
+          "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:128:paddingVertical 승인된 치환이 재현되지 않았다",
+          "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:139:marginTop 승인된 치환이 재현되지 않았다"
+        ]
+      },
+      {
+        "gateId": "S4-EXACT",
+        "removed": [
+          "S4 선언별 AST 변경 불일치 — apps/mobile/src/features/international-tax/RecipeTaxStatusCard.tsx prop:gap#1"
+        ],
+        "added": [
+          "S4 선언별 AST 변경 불일치 — apps/mobile/src/components/kit/index.tsx prop:flexDirection#14",
+          "S3a 회귀 apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx paddingTop:space.sm 0 < 1",
+          "S3a 회귀 apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx borderRadius:radius.full 0 < 1",
+          "S3a 회귀 apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx paddingTop:space.sm 0 < 1",
+          "S3a 회귀 apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx paddingTop:space.sm 0 < 1",
+          "S3a 회귀 apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx paddingTop:space.sm 0 < 1",
+          "S3a 회귀 apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx marginTop:space.xs 7 < 8"
+        ]
+      },
+      {
+        "gateId": "TOUCH-EXACT",
+        "removed": [
+          "새 형제 중첩 위험 — apps/mobile/src/features/my/screens/MyTaxScreen.tsx:51|apps/mobile/src/features/my/screens/MyTaxScreen.tsx:54 · vertical gap 0의 절반 0보다 안쪽 hitSlop 1/0가 크다",
+          "새 형제판정불가 — apps/mobile/src/features/my/screens/MyCountryScreen.tsx:39 · 형제 apps/mobile/src/features/my/screens/MyCountryScreen.tsx:39|apps/mobile/src/features/my/screens/MyCountryScreen.tsx:39의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다",
+          "새 형제판정불가 — apps/mobile/src/features/my/screens/MyCountryScreen.tsx:42 · 형제 apps/mobile/src/features/my/screens/MyCountryScreen.tsx:42|apps/mobile/src/features/my/screens/MyCountryScreen.tsx:42의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다",
+          "새 형제판정불가 — apps/mobile/src/features/my/screens/MyCountryScreen.tsx:43 · 형제 apps/mobile/src/features/my/screens/MyCountryScreen.tsx:43|apps/mobile/src/features/my/screens/MyCountryScreen.tsx:43의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다",
+          "새 형제판정불가 — apps/mobile/src/features/my/screens/MyTaxScreen.tsx:51 · JSX 식을 정적으로 펼치지 못했다 (BinaryExpression) · JSX 식을 정적으로 펼치지 못했다 (PropertyAccessExpression) · JSX 식을 정적으로 펼치지 못했다 (TemplateExpression) · 형제 apps/mobile/src/features/my/screens/MyTaxScreen.tsx:51|apps/mobile/src/features/my/screens/MyTaxScreen.tsx:51의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다",
+          "새 형제판정불가 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:223 · 형제 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:229|apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:244의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다",
+          "형제판정불가가 해소됐다 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:214 를 siblingUnjudged에서 빼라",
+          "새 판정불가 — apps/mobile/src/features/my/screens/MyCountryScreen.tsx:53 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)",
+          "새 판정불가 — apps/mobile/src/features/my/screens/MyHomeScreen.tsx:148 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)",
+          "새 판정불가 — apps/mobile/src/features/my/screens/MyLanguageScreen.tsx:146 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)",
+          "새 판정불가 — apps/mobile/src/features/my/screens/MyTaxScreen.tsx:248 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)",
+          "새 판정불가 — apps/mobile/src/features/my/screens/MyTaxScreen.tsx:59 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)",
+          "새 판정불가 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:167 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)",
+          "새 판정불가 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:229 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)",
+          "새 판정불가 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:261 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)",
+          "새 판정불가 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:313 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)",
+          "새 판정불가 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:327 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)",
+          "새 판정불가 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:432 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)",
+          "새 판정불가 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:49 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)",
+          "새 판정불가 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:493 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)",
+          "새 판정불가 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:567 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)",
+          "새 판정불가 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:593 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)",
+          "새 판정불가 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:629 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)",
+          "새 판정불가 — apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:253 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)",
+          "새 판정불가 — apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:366 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)",
+          "새 판정불가 — apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:386 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)",
+          "새 판정불가 — apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:421 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)",
+          "새 판정불가 — apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:457 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)",
+          "판정불가가 해소됐다 — apps/mobile/src/features/my/screens/MyHomeScreen.tsx:128 를 목록에서 빼라",
+          "판정불가가 해소됐다 — apps/mobile/src/features/my/screens/MyLanguageScreen.tsx:259 를 목록에서 빼라",
+          "판정불가가 해소됐다 — apps/mobile/src/features/my/screens/MyTaxScreen.tsx:214 를 목록에서 빼라",
+          "판정불가가 해소됐다 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:158 를 목록에서 빼라",
+          "판정불가가 해소됐다 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:220 를 목록에서 빼라",
+          "판정불가가 해소됐다 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:252 를 목록에서 빼라",
+          "판정불가가 해소됐다 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:304 를 목록에서 빼라",
+          "판정불가가 해소됐다 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:318 를 목록에서 빼라",
+          "판정불가가 해소됐다 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:423 를 목록에서 빼라",
+          "판정불가가 해소됐다 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:47 를 목록에서 빼라",
+          "판정불가가 해소됐다 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:480 를 목록에서 빼라",
+          "판정불가가 해소됐다 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:553 를 목록에서 빼라",
+          "판정불가가 해소됐다 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:574 를 목록에서 빼라",
+          "판정불가가 해소됐다 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:610 를 목록에서 빼라",
+          "판정불가가 해소됐다 — apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:230 를 목록에서 빼라",
+          "판정불가가 해소됐다 — apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:343 를 목록에서 빼라",
+          "판정불가가 해소됐다 — apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:363 를 목록에서 빼라",
+          "판정불가가 해소됐다 — apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:398 를 목록에서 빼라",
+          "판정불가가 해소됐다 — apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:434 를 목록에서 빼라",
+          "새 부모판정불가 — apps/mobile/src/features/my/screens/MyTaxScreen.tsx:235 · 44를 채우는 hitSlop이 직접 부모 경계에서 잘리는지 정적으로 확정할 수 없다",
+          "부모판정불가가 해소됐다 — apps/mobile/src/features/my/screens/MyTaxScreen.tsx:201 를 parentUnjudged에서 빼라",
+          "공용 컴포넌트 Button size=\"md\" 소비처가 13 → 20곳으로 바뀌었다",
+          "새 Button size=\"md\" 소비처 — apps/mobile/src/features/international-tax/RecipeTaxStatusCard.tsx:55 (판정이 부모판정불가 인 variant 는 늘리지 않는다)",
+          "새 Button size=\"md\" 소비처 — apps/mobile/src/features/international-tax/RecipeTaxStatusCard.tsx:56 (판정이 부모판정불가 인 variant 는 늘리지 않는다)",
+          "새 Button size=\"md\" 소비처 — apps/mobile/src/features/international-tax/RecipeTaxStatusCard.tsx:57 (판정이 부모판정불가 인 variant 는 늘리지 않는다)",
+          "새 Button size=\"md\" 소비처 — apps/mobile/src/features/my/screens/MyCountryScreen.tsx:45 (판정이 부모판정불가 인 variant 는 늘리지 않는다)",
+          "새 Button size=\"md\" 소비처 — apps/mobile/src/features/my/screens/MyLanguageScreen.tsx:130 (판정이 부모판정불가 인 variant 는 늘리지 않는다)",
+          "새 Button size=\"md\" 소비처 — apps/mobile/src/features/my/screens/MyLanguageScreen.tsx:136 (판정이 부모판정불가 인 variant 는 늘리지 않는다)",
+          "새 Button size=\"md\" 소비처 — apps/mobile/src/features/my/screens/MyTaxScreen.tsx:192 (판정이 부모판정불가 인 variant 는 늘리지 않는다)",
+          "새 Button size=\"md\" 소비처 — apps/mobile/src/features/my/screens/MyTaxScreen.tsx:198 (판정이 부모판정불가 인 variant 는 늘리지 않는다)",
+          "새 Button size=\"md\" 소비처 — apps/mobile/src/features/my/screens/MyTaxScreen.tsx:51 (판정이 부모판정불가 인 variant 는 늘리지 않는다)",
+          "새 Button size=\"md\" 소비처 — apps/mobile/src/features/my/screens/MyTaxScreen.tsx:51 (판정이 부모판정불가 인 variant 는 늘리지 않는다)",
+          "새 Button size=\"md\" 소비처 — apps/mobile/src/features/my/screens/MyTaxScreen.tsx:53 (판정이 부모판정불가 인 variant 는 늘리지 않는다)",
+          "새 Button size=\"md\" 소비처 — apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:284 (판정이 부모판정불가 인 variant 는 늘리지 않는다)",
+          "새 Button size=\"md\" 소비처 — apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:289 (판정이 부모판정불가 인 variant 는 늘리지 않는다)",
+          "Button size=\"md\" 소비처가 사라졌다 — apps/mobile/src/features/my/screens/MyLanguageScreen.tsx:245 를 목록에서 빼라",
+          "Button size=\"md\" 소비처가 사라졌다 — apps/mobile/src/features/my/screens/MyLanguageScreen.tsx:251 를 목록에서 빼라",
+          "Button size=\"md\" 소비처가 사라졌다 — apps/mobile/src/features/my/screens/MyTaxScreen.tsx:158 를 목록에서 빼라",
+          "Button size=\"md\" 소비처가 사라졌다 — apps/mobile/src/features/my/screens/MyTaxScreen.tsx:164 를 목록에서 빼라",
+          "Button size=\"md\" 소비처가 사라졌다 — apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:261 를 목록에서 빼라",
+          "Button size=\"md\" 소비처가 사라졌다 — apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:266 를 목록에서 빼라",
+          "제품 감사 입력이 바뀌었다 — 목록 69469ed306bb · 지금 e24506415de6. 제품 .tsx 나 감사기가 바뀌었다. 다시 재고 목록과 제품입력해시를 함께 갱신하라"
+        ],
+        "added": []
+      }
+    ]
   },
   "provenance": {
     "writtenBy": "--write",
-    "headAtWrite": "663adc60ae249998e5e87c8bd56015a2421f53cc",
+    "headAtWrite": "2a73bb088c1fbc38b1ca48e0c50de88f2d18231c",
     "tokens": [
       "P2-OPUS-R1-REBASELINE@663adc60ae249998e5e87c8bd56015a2421f53cc"
     ]
