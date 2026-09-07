@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "kind": "TEAM_SERVICE_P3_COMPLETION_EVIDENCE",
+  "evidence_id": "TEAM-SERVICE-AC24-P3-COMPLETION-003",
+  "observed_at": "2026-09-07T14:24:45+09:00",
+  "execution_context": {
+    "repository": "C:/Users/jacop/프로젝트/식자재관리앱",
+    "detached_worktree": "C:/Users/jacop/AppData/Local/Temp/codex-p3-completion3-20260907",
+    "bundle_commit": "cae8ffe65b5f30a6aa39206efabe351ec7efd7e5",
+    "implementation_target_commit": "7032c6998f4616665be7ab2d841b36010ea48b66",
+    "working_tree_scope": "CLEAN_EXCEPT_NODE_MODULES_JUNCTION"
+  },
+  "bundle": {
+    "path": "docs/team/service-flow-p3-completion-bundle-003.json",
+    "sha256": "b705f03db7204ec3ed5426dc9a10ce9881070b90065a2081727049595c17e536"
+  },
+  "execution": {
+    "command": "$env:P3_COMPLETION_BUNDLE_PATH='docs/team/service-flow-p3-completion-bundle-003.json'; node scripts/team-service-local-tests.mjs --verify-bundle docs/team/service-flow-p3-completion-bundle-003.json",
+    "exit_code": 0,
+    "tests": 34,
+    "passed": 34,
+    "failed": 0,
+    "skipped": 0,
+    "scenario_ids": ["AC-01", "AC-03", "AC-06", "AC-07", "AC-22"],
+    "target_module_count": 14,
+    "transitive_closure_module_count": 18,
+    "dispatch_attempts": 0,
+    "actual_provider_calls": 0
+  },
+  "transcript": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P3-COMPLETION-003.tap",
+    "sha256": "a69fb6bec48d493d39438eed9fa6c002cded301b68707004f149833a7dbd06c5",
+    "representation": "NORMALIZED_TAP_WITHOUT_NONDETERMINISTIC_DURATION_FIELDS"
+  },
+  "verify_no_db_non_regression": {
+    "command": "corepack pnpm verify --no-db --no-bundle",
+    "exit_code": 1,
+    "stage_1_typecheck": "PASS",
+    "stage_2": "FAIL_ENVIRONMENTAL_WORKTREE_DEPENDENCY_LINK",
+    "stage_2_detail": "187 passed, 2 skipped; two suites could not resolve @margincook/types through the temporary node_modules junction",
+    "stage_2_followup": "PASS_IN_PRIMARY_WORKTREE_13_FILES_194_PASSED_12_SKIPPED",
+    "stage_2_followup_command": "corepack pnpm --filter @margincook/core test",
+    "stage_3_p3_local_suite": "PASS_33_OF_33",
+    "stage_3_terminal_failure": "MISSING_REGISTRY",
+    "stage_3_detail": "The untracked project-local .codex/team-router registry is intentionally absent from the committed detached worktree.",
+    "overall_claim": "NOT_A_FULL_VERIFY_PASS"
+  },
+  "boundaries": {
+    "service_ready": false,
+    "real_send_authorized": false,
+    "host_dependency_resolved": false,
+    "product_db_supabase_mutation": false,
+    "phase_claim": "P3_IMPLEMENTED_AND_LOCALLY_EXECUTED_PENDING_INDEPENDENT_REVIEW"
+  }
+}
