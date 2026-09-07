@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "kind": "P2B_IMPLEMENTATION_DELTA_RECHECK_CANDIDATE",
+  "repository": {
+    "head": "37767fd2d6911007d7dd227580e2bcb0c016a727",
+    "tree": "be41b4d30ba9ace984547cf850ed4bcb5331a4b1",
+    "implementation_commit": "0aedd450669004c5fec48da2475737d01639d3cc",
+    "fix_commit": "679308e5d0e76f4e62cb3e06eb55e71cbee398a2",
+    "raw_evidence_commit": "37767fd2d6911007d7dd227580e2bcb0c016a727"
+  },
+  "previous_review": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-P2B-IMPLEMENTATION-OPUS-001.md",
+    "sha256": "ec4a0bad8395082a5d8a900e59f07cf4777a7e295bdcfe0117aa82fd5a78a7d7",
+    "verdict": "CHANGES_REQUIRED",
+    "blocking_findings": ["BL-1", "BL-2"]
+  },
+  "delta_inputs": [
+    {"path": "scripts/team-service-router-adapter.test.mjs", "sha256": "dea61fd494186319f40c24c3c53573e45e06541a71956419b6652ffa78fd2bbf"},
+    {"path": "docs/team/service-flow-p2b-completion-bundle-002.json", "sha256": "9c3a666d6062263e1bf76ca09b208c1c4c70e63f37e04cd213583d4e5e07d3da"},
+    {"path": "docs/ai-review/evidence/TEAM-SERVICE-P2B-IMPLEMENTATION-002.json", "sha256": "f91bff532c2bb69c7de59e9848f291d589d77e9110be264ff41f10a7ead06a8e"},
+    {"path": "docs/ai-review/evidence/TEAM-SERVICE-P2B-IMPLEMENTATION-002-AC10.tap", "sha256": "29ac898ac846c7e519d2fc2be453c71211dd564e926825e2df9b7df691567501"},
+    {"path": "docs/ai-review/evidence/TEAM-SERVICE-P2B-IMPLEMENTATION-002-COMBINED.tap", "sha256": "eb7294e7528be5fc235d736507a15d7df1890b0f9986e2f667d89634b07b3310"}
+  ],
+  "unchanged_implementation_inputs": [
+    {"path": "scripts/team-service-canonical.mjs", "sha256": "e253b2b3a64a4a929bdd46e4425bdd7864edb5130af29e27926dd48a87148f9d"},
+    {"path": "scripts/team-service-workflow.mjs", "sha256": "5dbec261f792bbb32130f24ac1ff0daac89cf39aecb7cc7deff92c7e9936a2d1"},
+    {"path": "scripts/team-service-intent-store.mjs", "sha256": "b8c60edddf656a6e28163ee8f3f4a5fcde62659f46cfa7e869c58f5fe7f118e5"},
+    {"path": "scripts/team-service-workflow.test.mjs", "sha256": "7c12d51bacfbde67f97f4921be9809fc98ef6b40a034cc20c02cf7cc8d8139fc"},
+    {"path": "scripts/team-service-state-contract.test.mjs", "sha256": "1c136f5655ba236c4c1c22ae84622eae92fcc2d2a576a9ffadbf32256af06f17"}
+  ],
+  "review_questions": [
+    "BL-1이 endpoint successor 외부 사건과 identity 오염 음성 시험으로 닫혔는가?",
+    "BL-2가 커밋된 raw TAP 두 개와 exit code 및 SHA 결속으로 닫혔는가?",
+    "raw TAP가 AC-10 7/7 및 전체 32/32를 직접 관측하는가?",
+    "새 blocking finding 없이 P2b 로컬 완료 후보로 AC-24 P2B 실행을 진행해도 되는가?"
+  ],
+  "nonclaims": [
+    "No real send or endpoint mutation",
+    "No Team Router CLI get-or-prepare claim",
+    "No durable filesystem binding",
+    "No host-authenticated receipt",
+    "No service_ready claim",
+    "No full pnpm verify PASS claim"
+  ],
+  "requested_verdict": "PASS_OR_CHANGES_REQUIRED_WITH_OPEN_BLOCKING_AND_OPEN_NONBLOCKING"
+}
