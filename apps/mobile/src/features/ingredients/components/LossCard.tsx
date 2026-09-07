@@ -14,7 +14,7 @@
 import { Pressable, Text, View } from 'react-native';
 import { Badge, Card, Icon } from '@/components/kit';
 import { formatQuantity } from '@margincook/core';
-import { T, tnum, won } from '@/theme/tokens';
+import { COLOR, T, tnum, won, TYPE, space } from '@/theme/tokens';
 import type { IngredientLoss, LedgerEntry } from '../hooks';
 import { dispUnit } from '../ledger';
 
@@ -45,8 +45,8 @@ export function LossCard({ loss, baseUnit, discards, unitPrice, onPress }: {
     return (
       <Card pad={14}>
         <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 8 }}>
-          <Icon name="info" size={16} color={T.ter} />
-          <Text style={{ flex: 1, fontSize: 14, color: T.ter, lineHeight: 20 }}>
+          <Icon name="info" size={16} color={COLOR.text.tertiary} />
+          <Text style={{ flex: 1, fontSize: 14, color: COLOR.text.tertiary, lineHeight: TYPE.caption.lineHeight }}>
             아직 폐기 기록이 없어요. 버린 걸 기록하면 로스율이 여기 표시돼요.
           </Text>
         </View>
@@ -63,17 +63,17 @@ export function LossCard({ loss, baseUnit, discards, unitPrice, onPress }: {
         헤더 — '현재 재고' 와 **같은 배경**을 쓴다. 카드마다 배경이 다르면 한 화면에
         나란히 놓였을 때 목록이 들썩인다. 높은 로스율은 숫자 색과 배지로만 알린다.
       */}
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 13, paddingHorizontal: 15, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingVertical: space.md, paddingHorizontal: space.md, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
         <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.sub }}>로스율</Text>
         {high ? <Badge tone="amber" sm>확인 필요</Badge> : null}
-        <Text style={[{ fontSize: 16, fontWeight: '800', color: high ? T.amberText : T.ink }, NUM]}>
+        <Text style={[{ fontSize: 16, fontWeight: '800', color: high ? COLOR.status.caution : T.ink }, NUM]}>
           {pct(loss.rate)}
         </Text>
       </View>
 
       {recent.length === 0 ? (
         <View style={{ paddingVertical: 24, alignItems: 'center' }}>
-          <Text style={{ fontSize: 14, color: T.ter }}>불러오는 중이에요</Text>
+          <Text style={{ fontSize: 14, color: COLOR.text.tertiary }}>불러오는 중이에요</Text>
         </View>
       ) : (
         recent.map((e, i) => {
@@ -94,23 +94,23 @@ export function LossCard({ loss, baseUnit, discards, unitPrice, onPress }: {
                * 위아래로 나누면 잘릴 일도 없고 두 카드가 같은 리듬으로 읽힌다.
                */
               style={{
-                paddingVertical: 12, paddingHorizontal: 15,
+                paddingVertical: 12, paddingHorizontal: space.md,
                 borderBottomWidth: i < recent.length - 1 ? 1 : 0, borderBottomColor: T.line2,
               }}
             >
               {/* 1줄 — 언제 · 얼마나 */}
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                <Text style={[{ flex: 1, fontSize: 14, color: T.ter, fontWeight: '600' }, tnum]}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm }}>
+                <Text style={[{ flex: 1, fontSize: 14, color: COLOR.text.tertiary, fontWeight: '600' }, tnum]}>
                   {e.date.slice(5).replace('-', '/')}
                 </Text>
-                <Text style={[{ fontSize: 15, fontWeight: '800', color: T.red }, NUM]}>
+                <Text style={[{ fontSize: TYPE.caption.fontSize, fontWeight: '800', color: COLOR.status.negative }, NUM]}>
                   −{formatQuantity(amount, u)}
                 </Text>
               </View>
 
               {/* 2줄 — 무엇을 버렸나 · 그게 얼마어치인가 */}
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 3 }}>
-                <Text style={{ flex: 1, minWidth: 0, fontSize: 15, fontWeight: '700', color: T.ink2 }} numberOfLines={1}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, marginTop: space.xs }}>
+                <Text style={{ flex: 1, minWidth: 0, fontSize: TYPE.caption.fontSize, fontWeight: '700', color: T.ink2 }} numberOfLines={1}>
                   {e.waste ? '조리 후 폐기' : '조리 전 폐기'}
                 </Text>
                 {unitPrice !== null ? (
@@ -121,7 +121,7 @@ export function LossCard({ loss, baseUnit, discards, unitPrice, onPress }: {
               </View>
 
               {e.note ? (
-                <Text style={{ fontSize: 13, color: T.ter, marginTop: 2 }} numberOfLines={1}>{e.note}</Text>
+                <Text style={{ fontSize: 13, color: COLOR.text.tertiary, marginTop: space.xs }} numberOfLines={1}>{e.note}</Text>
               ) : null}
             </Pressable>
           );
@@ -132,10 +132,10 @@ export function LossCard({ loss, baseUnit, discards, unitPrice, onPress }: {
         <Pressable
           onPress={onPress}
           accessibilityRole="button" accessibilityLabel="폐기 내역 전체 보기"
-          style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 2, paddingVertical: 13, borderTopWidth: 1, borderTopColor: T.line2, backgroundColor: T.surface2 }}
+          style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.sm, paddingVertical: space.md, borderTopWidth: 1, borderTopColor: T.line2, backgroundColor: T.surface2 }}
         >
           <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub }}>자세히 보기</Text>
-          <Icon name="chevron" size={16} color={T.ter} />
+          <Icon name="chevron" size={16} color={COLOR.text.tertiary} />
         </Pressable>
       ) : null}
     </Card>

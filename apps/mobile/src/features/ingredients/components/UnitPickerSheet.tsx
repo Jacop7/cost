@@ -2,7 +2,7 @@
 import React from 'react';
 import { View, Text, Pressable } from 'react-native';
 import { Sheet, Icon } from '../../../components/kit';
-import { T, FONT } from '../../../theme/tokens';
+import { LAYOUT, COLOR, T, FONT, TYPE, space } from '../../../theme/tokens';
 
 const UNIT_GROUPS: [string, string[]][] = [
   ['무게', ['kg', 'g']],
@@ -29,15 +29,15 @@ export function UnitPickerSheet({
   const groups = base ? UNIT_GROUPS.filter(([label]) => label === GROUP_OF[base]) : UNIT_GROUPS;
   return (
     <Sheet visible={visible} onClose={onClose}>
-      <View style={{ paddingHorizontal: 20, paddingTop: 4, paddingBottom: 30 }}>
-        <Text style={{ fontSize: 20, fontWeight: '800', letterSpacing: -0.4, marginBottom: 16, color: T.ink }}>
+      <View style={{ paddingHorizontal: 20, paddingTop: 4, paddingBottom: LAYOUT.scroll.end }}>
+        <Text style={{ fontSize: 20, fontWeight: '800', letterSpacing: TYPE.title.letterSpacing, marginBottom: 16, color: T.ink }}>
           단위 선택
         </Text>
         <View style={{ gap: 16 }}>
           {groups.map(([label, opts]) => (
             <View key={label}>
               <Text style={{ fontSize: 16, fontWeight: '700', color: T.sub, marginBottom: 8 }}>{label}</Text>
-              <View style={{ flexDirection: 'row', gap: 10 }}>
+              <View style={{ flexDirection: 'row', gap: space.sm }}>
                 {opts.map((u) => {
                   const on = unit === u;
                   return (
@@ -52,17 +52,17 @@ export function UnitPickerSheet({
                         flexDirection: 'row',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        gap: 5,
+                        gap: space.xs,
                         paddingVertical: 16,
                         paddingHorizontal: 4,
                         borderRadius: 12,
-                        backgroundColor: on ? T.blueTint : T.surface,
+                        backgroundColor: on ? COLOR.action.primaryTint : T.surface,
                         borderWidth: 1,
-                        borderColor: on ? T.blue : T.line,
+                        borderColor: on ? COLOR.action.primary : T.line,
                       }}
                     >
-                      {on ? <Icon name="check" size={16} color={T.blue} sw={2.4} /> : null}
-                      <Text style={{ fontSize: 16, fontWeight: '700', color: on ? T.blue : T.ink2 }}>{u}</Text>
+                      {on ? <Icon name="check" size={16} color={COLOR.action.primary} sw={2.4} /> : null}
+                      <Text style={{ fontSize: 16, fontWeight: '700', color: on ? COLOR.state.selectedText : T.ink2 }}>{u}</Text>
                     </Pressable>
                   );
                 })}

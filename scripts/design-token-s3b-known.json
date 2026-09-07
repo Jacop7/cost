@@ -1,0 +1,2099 @@
+{
+  "stage": "S3b",
+  "baselineCommit": "e3834bdd41817650768a107e733a10dfb210b071",
+  "sourceMappingBaseline": "f5cacba848e59f1e9b7e671d0c43d83f0efaa762",
+  "assignments": 179,
+  "inheritedFromS4": [
+    {
+      "baselineKey": "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:118:gap",
+      "currentKey": "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:118:85:gap",
+      "expression": "COMPONENT.adjacentActions.gap",
+      "target": 12,
+      "reason": "S4 component contract already applied the same 11→12 convergence before S3b"
+    }
+  ],
+  "files": 56,
+  "byRule": {
+    "R-SP-CONVERGE-11-H": 7,
+    "R-SP-CONVERGE-22": 6,
+    "R-SP-CONVERGE-GROW-H": 109,
+    "R-SP-GAP-LABEL-CHEVRON": 8,
+    "R-SP-GAP-SEGMENT": 1,
+    "R-TY-SIZE-15-CONTROL": 12,
+    "R-TY-SIZE-15-PROSE": 4,
+    "R-TY-SIZE-CONVERGE": 32
+  },
+  "changedFiles": [
+    {
+      "file": "apps/mobile/src/components/history/HistoryLayout.tsx",
+      "declarations": 3,
+      "symbols": [
+        "TYPE",
+        "space"
+      ]
+    },
+    {
+      "file": "apps/mobile/src/components/kit/AppHeader.tsx",
+      "declarations": 1,
+      "symbols": [
+        "space"
+      ]
+    },
+    {
+      "file": "apps/mobile/src/components/kit/Button.tsx",
+      "declarations": 1,
+      "symbols": [
+        "space"
+      ]
+    },
+    {
+      "file": "apps/mobile/src/components/kit/index.tsx",
+      "declarations": 4,
+      "symbols": [
+        "space"
+      ]
+    },
+    {
+      "file": "apps/mobile/src/components/kit/QueryState.tsx",
+      "declarations": 1,
+      "symbols": [
+        "TYPE"
+      ]
+    },
+    {
+      "file": "apps/mobile/src/components/kit/Sheet.tsx",
+      "declarations": 1,
+      "symbols": [
+        "TYPE"
+      ]
+    },
+    {
+      "file": "apps/mobile/src/features/changes/components/RecentChangeRow.tsx",
+      "declarations": 2,
+      "symbols": [
+        "TYPE",
+        "space"
+      ]
+    },
+    {
+      "file": "apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx",
+      "declarations": 2,
+      "symbols": [
+        "TYPE",
+        "space"
+      ]
+    },
+    {
+      "file": "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx",
+      "declarations": 6,
+      "symbols": [
+        "TYPE",
+        "space"
+      ]
+    },
+    {
+      "file": "apps/mobile/src/features/ingredients/components/IngCard.tsx",
+      "declarations": 3,
+      "symbols": [
+        "space"
+      ]
+    },
+    {
+      "file": "apps/mobile/src/features/ingredients/components/LedgerRow.tsx",
+      "declarations": 2,
+      "symbols": [
+        "TYPE",
+        "space"
+      ]
+    },
+    {
+      "file": "apps/mobile/src/features/ingredients/components/LossCard.tsx",
+      "declarations": 2,
+      "symbols": [
+        "space"
+      ]
+    },
+    {
+      "file": "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx",
+      "declarations": 4,
+      "symbols": [
+        "TYPE",
+        "space"
+      ]
+    },
+    {
+      "file": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx",
+      "declarations": 6,
+      "symbols": [
+        "space"
+      ]
+    },
+    {
+      "file": "apps/mobile/src/features/ingredients/screens/IngredientFormScreen.tsx",
+      "declarations": 1,
+      "symbols": [
+        "space"
+      ]
+    },
+    {
+      "file": "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx",
+      "declarations": 1,
+      "symbols": [
+        "space"
+      ]
+    },
+    {
+      "file": "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx",
+      "declarations": 4,
+      "symbols": [
+        "TYPE",
+        "space"
+      ]
+    },
+    {
+      "file": "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx",
+      "declarations": 4,
+      "symbols": [
+        "TYPE",
+        "space"
+      ]
+    },
+    {
+      "file": "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx",
+      "declarations": 3,
+      "symbols": [
+        "space"
+      ]
+    },
+    {
+      "file": "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx",
+      "declarations": 3,
+      "symbols": [
+        "space"
+      ]
+    },
+    {
+      "file": "apps/mobile/src/features/my/components/ChannelWeightSheet.tsx",
+      "declarations": 1,
+      "symbols": [
+        "space"
+      ]
+    },
+    {
+      "file": "apps/mobile/src/features/my/components/RevenueGapCard.tsx",
+      "declarations": 1,
+      "symbols": [
+        "space"
+      ]
+    },
+    {
+      "file": "apps/mobile/src/features/my/screens/FixedCostEditScreen.tsx",
+      "declarations": 2,
+      "symbols": [
+        "space"
+      ]
+    },
+    {
+      "file": "apps/mobile/src/features/my/screens/FixedCostScreen.tsx",
+      "declarations": 4,
+      "symbols": [
+        "TYPE",
+        "space"
+      ]
+    },
+    {
+      "file": "apps/mobile/src/features/my/screens/MyAccountScreen.tsx",
+      "declarations": 3,
+      "symbols": [
+        "TYPE",
+        "space"
+      ]
+    },
+    {
+      "file": "apps/mobile/src/features/my/screens/MyChannelsScreen.tsx",
+      "declarations": 2,
+      "symbols": [
+        "space"
+      ]
+    },
+    {
+      "file": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx",
+      "declarations": 11,
+      "symbols": [
+        "TYPE",
+        "space"
+      ]
+    },
+    {
+      "file": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx",
+      "declarations": 3,
+      "symbols": [
+        "space"
+      ]
+    },
+    {
+      "file": "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx",
+      "declarations": 2,
+      "symbols": [
+        "space"
+      ]
+    },
+    {
+      "file": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx",
+      "declarations": 1,
+      "symbols": [
+        "space"
+      ]
+    },
+    {
+      "file": "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx",
+      "declarations": 1,
+      "symbols": [
+        "space"
+      ]
+    },
+    {
+      "file": "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx",
+      "declarations": 3,
+      "symbols": [
+        "space"
+      ]
+    },
+    {
+      "file": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx",
+      "declarations": 7,
+      "symbols": [
+        "space"
+      ]
+    },
+    {
+      "file": "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx",
+      "declarations": 1,
+      "symbols": [
+        "space"
+      ]
+    },
+    {
+      "file": "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx",
+      "declarations": 2,
+      "symbols": [
+        "space"
+      ]
+    },
+    {
+      "file": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx",
+      "declarations": 3,
+      "symbols": [
+        "space"
+      ]
+    },
+    {
+      "file": "apps/mobile/src/features/recipes/screens/MaterialSearchScreen.tsx",
+      "declarations": 2,
+      "symbols": [
+        "space"
+      ]
+    },
+    {
+      "file": "apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx",
+      "declarations": 3,
+      "symbols": [
+        "TYPE",
+        "space"
+      ]
+    },
+    {
+      "file": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
+      "declarations": 9,
+      "symbols": [
+        "space"
+      ]
+    },
+    {
+      "file": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
+      "declarations": 11,
+      "symbols": [
+        "space"
+      ]
+    },
+    {
+      "file": "apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx",
+      "declarations": 2,
+      "symbols": [
+        "space"
+      ]
+    },
+    {
+      "file": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx",
+      "declarations": 4,
+      "symbols": [
+        "space"
+      ]
+    },
+    {
+      "file": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx",
+      "declarations": 4,
+      "symbols": [
+        "TYPE",
+        "space"
+      ]
+    },
+    {
+      "file": "apps/mobile/src/features/sales/components/LateCloseSheet.tsx",
+      "declarations": 2,
+      "symbols": [
+        "TYPE",
+        "space"
+      ]
+    },
+    {
+      "file": "apps/mobile/src/features/sales/components/MenuProfitSheet.tsx",
+      "declarations": 2,
+      "symbols": [
+        "space"
+      ]
+    },
+    {
+      "file": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx",
+      "declarations": 13,
+      "symbols": [
+        "TYPE",
+        "space"
+      ]
+    },
+    {
+      "file": "apps/mobile/src/features/sales/components/SaleStepper.tsx",
+      "declarations": 1,
+      "symbols": [
+        "space"
+      ]
+    },
+    {
+      "file": "apps/mobile/src/features/sales/components/ShortageWarningSheet.tsx",
+      "declarations": 1,
+      "symbols": [
+        "TYPE"
+      ]
+    },
+    {
+      "file": "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx",
+      "declarations": 4,
+      "symbols": [
+        "TYPE",
+        "space"
+      ]
+    },
+    {
+      "file": "apps/mobile/src/features/sales/screens/SalesDayDetailScreen.tsx",
+      "declarations": 1,
+      "symbols": [
+        "space"
+      ]
+    },
+    {
+      "file": "apps/mobile/src/features/sales/screens/SalesFixedScreen.tsx",
+      "declarations": 1,
+      "symbols": [
+        "space"
+      ]
+    },
+    {
+      "file": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
+      "declarations": 9,
+      "symbols": [
+        "TYPE",
+        "space"
+      ]
+    },
+    {
+      "file": "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx",
+      "declarations": 1,
+      "symbols": [
+        "space"
+      ]
+    },
+    {
+      "file": "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx",
+      "declarations": 2,
+      "symbols": [
+        "TYPE",
+        "space"
+      ]
+    },
+    {
+      "file": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx",
+      "declarations": 3,
+      "symbols": [
+        "space"
+      ]
+    },
+    {
+      "file": "apps/mobile/src/features/sales/screens/SalesStockCheckScreen.tsx",
+      "declarations": 3,
+      "symbols": [
+        "TYPE"
+      ]
+    }
+  ],
+  "assignmentPlan": [
+    {
+      "key": "apps/mobile/src/components/history/HistoryLayout.tsx:24:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/components/history/HistoryLayout.tsx:24:gap"
+    },
+    {
+      "key": "apps/mobile/src/components/history/HistoryLayout.tsx:72:fontSize",
+      "rule": "R-TY-SIZE-CONVERGE",
+      "axis": "B",
+      "current": 12,
+      "target": 13,
+      "expression": "TYPE.captionSm.fontSize",
+      "baselineKey": "apps/mobile/src/components/history/HistoryLayout.tsx:72:fontSize"
+    },
+    {
+      "key": "apps/mobile/src/components/history/HistoryLayout.tsx:81:fontSize",
+      "rule": "R-TY-SIZE-CONVERGE",
+      "axis": "B",
+      "current": 12,
+      "target": 13,
+      "expression": "TYPE.captionSm.fontSize",
+      "baselineKey": "apps/mobile/src/components/history/HistoryLayout.tsx:81:fontSize"
+    },
+    {
+      "key": "apps/mobile/src/components/kit/AppHeader.tsx:37:paddingRight",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/components/kit/AppHeader.tsx:37:paddingRight"
+    },
+    {
+      "key": "apps/mobile/src/components/kit/Button.tsx:57:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/components/kit/Button.tsx:56:gap"
+    },
+    {
+      "key": "apps/mobile/src/components/kit/QueryState.tsx:74:fontSize",
+      "rule": "R-TY-SIZE-CONVERGE",
+      "axis": "B",
+      "current": 12,
+      "target": 13,
+      "expression": "TYPE.captionSm.fontSize",
+      "baselineKey": "apps/mobile/src/components/kit/QueryState.tsx:74:fontSize"
+    },
+    {
+      "key": "apps/mobile/src/components/kit/Sheet.tsx:84:fontSize",
+      "rule": "R-TY-SIZE-15-PROSE",
+      "axis": "B",
+      "current": 15,
+      "target": 16,
+      "expression": "TYPE.body.fontSize",
+      "baselineKey": "apps/mobile/src/components/kit/Sheet.tsx:77:fontSize"
+    },
+    {
+      "key": "apps/mobile/src/components/kit/index.tsx:151:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/components/kit/index.tsx:151:gap"
+    },
+    {
+      "key": "apps/mobile/src/components/kit/index.tsx:298:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/components/kit/index.tsx:298:gap"
+    },
+    {
+      "key": "apps/mobile/src/components/kit/index.tsx:332:gap",
+      "rule": "R-SP-GAP-SEGMENT",
+      "axis": "H",
+      "current": 2,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/components/kit/index.tsx:332:gap"
+    },
+    {
+      "key": "apps/mobile/src/components/kit/index.tsx:332:paddingLeft",
+      "rule": "R-SP-CONVERGE-11-H",
+      "axis": "H",
+      "current": 11,
+      "target": 12,
+      "expression": "space.md",
+      "baselineKey": "apps/mobile/src/components/kit/index.tsx:332:paddingLeft"
+    },
+    {
+      "key": "apps/mobile/src/features/changes/components/RecentChangeRow.tsx:65:paddingHorizontal",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 7,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/changes/components/RecentChangeRow.tsx:65:paddingHorizontal"
+    },
+    {
+      "key": "apps/mobile/src/features/changes/components/RecentChangeRow.tsx:66:fontSize",
+      "rule": "R-TY-SIZE-CONVERGE",
+      "axis": "B",
+      "current": 12,
+      "target": 13,
+      "expression": "TYPE.captionSm.fontSize",
+      "baselineKey": "apps/mobile/src/features/changes/components/RecentChangeRow.tsx:66:fontSize"
+    },
+    {
+      "key": "apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx:54:paddingHorizontal",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 7,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx:54:paddingHorizontal"
+    },
+    {
+      "key": "apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx:55:fontSize",
+      "rule": "R-TY-SIZE-CONVERGE",
+      "axis": "B",
+      "current": 12,
+      "target": 13,
+      "expression": "TYPE.captionSm.fontSize",
+      "baselineKey": "apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx:55:fontSize"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx:83:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 7,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx:83:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx:127:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx:127:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx:136:paddingHorizontal",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx:136:paddingHorizontal"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx:137:fontSize",
+      "rule": "R-TY-SIZE-CONVERGE",
+      "axis": "B",
+      "current": 12,
+      "target": 13,
+      "expression": "TYPE.captionSm.fontSize",
+      "baselineKey": "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx:137:fontSize"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx:178:gap",
+      "rule": "R-SP-GAP-LABEL-CHEVRON",
+      "axis": "H",
+      "current": 2,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx:178:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx:180:fontSize",
+      "rule": "R-TY-SIZE-15-CONTROL",
+      "axis": "B",
+      "current": 15,
+      "target": 16,
+      "expression": "TYPE.body.fontSize",
+      "baselineKey": "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx:180:fontSize"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/components/IngCard.tsx:44:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/ingredients/components/IngCard.tsx:44:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/components/IngCard.tsx:53:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 7,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/ingredients/components/IngCard.tsx:53:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/components/IngCard.tsx:72:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/ingredients/components/IngCard.tsx:72:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/components/LedgerRow.tsx:46:gap",
+      "rule": "R-SP-CONVERGE-11-H",
+      "axis": "H",
+      "current": 11,
+      "target": 12,
+      "expression": "space.md",
+      "baselineKey": "apps/mobile/src/features/ingredients/components/LedgerRow.tsx:46:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/components/LedgerRow.tsx:63:fontSize",
+      "rule": "R-TY-SIZE-CONVERGE",
+      "axis": "B",
+      "current": 12,
+      "target": 13,
+      "expression": "TYPE.captionSm.fontSize",
+      "baselineKey": "apps/mobile/src/features/ingredients/components/LedgerRow.tsx:63:fontSize"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/components/LossCard.tsx:66:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/ingredients/components/LossCard.tsx:66:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/components/LossCard.tsx:135:gap",
+      "rule": "R-SP-GAP-LABEL-CHEVRON",
+      "axis": "H",
+      "current": 2,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/ingredients/components/LossCard.tsx:135:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:171:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:171:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:172:fontSize",
+      "rule": "R-TY-SIZE-CONVERGE",
+      "axis": "B",
+      "current": 12,
+      "target": 13,
+      "expression": "TYPE.captionSm.fontSize",
+      "baselineKey": "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:172:fontSize"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:188:fontSize",
+      "rule": "R-TY-SIZE-CONVERGE",
+      "axis": "B",
+      "current": 12,
+      "target": 13,
+      "expression": "TYPE.captionSm.fontSize",
+      "baselineKey": "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:188:fontSize"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:224:fontSize",
+      "rule": "R-TY-SIZE-CONVERGE",
+      "axis": "B",
+      "current": 19,
+      "target": 20,
+      "expression": "TYPE.title.fontSize",
+      "baselineKey": "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:224:fontSize"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:121:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 3,
+      "target": 4,
+      "expression": "space.xs",
+      "baselineKey": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:121:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:142:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:142:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:169:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:169:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:193:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:193:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:254:gap",
+      "rule": "R-SP-GAP-LABEL-CHEVRON",
+      "axis": "H",
+      "current": 2,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:254:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:293:gap",
+      "rule": "R-SP-CONVERGE-11-H",
+      "axis": "H",
+      "current": 11,
+      "target": 12,
+      "expression": "space.md",
+      "baselineKey": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:293:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/IngredientFormScreen.tsx:228:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/ingredients/screens/IngredientFormScreen.tsx:228:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:123:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:123:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx:129:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx:129:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx:130:fontSize",
+      "rule": "R-TY-SIZE-CONVERGE",
+      "axis": "B",
+      "current": 12,
+      "target": 13,
+      "expression": "TYPE.captionSm.fontSize",
+      "baselineKey": "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx:130:fontSize"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx:139:fontSize",
+      "rule": "R-TY-SIZE-CONVERGE",
+      "axis": "B",
+      "current": 12,
+      "target": 13,
+      "expression": "TYPE.captionSm.fontSize",
+      "baselineKey": "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx:139:fontSize"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx:164:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx:164:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:231:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:231:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:269:gap",
+      "rule": "R-SP-CONVERGE-11-H",
+      "axis": "H",
+      "current": 11,
+      "target": 12,
+      "expression": "space.md",
+      "baselineKey": "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:269:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:283:fontSize",
+      "rule": "R-TY-SIZE-CONVERGE",
+      "axis": "B",
+      "current": 12,
+      "target": 13,
+      "expression": "TYPE.captionSm.fontSize",
+      "baselineKey": "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:283:fontSize"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:298:fontSize",
+      "rule": "R-TY-SIZE-CONVERGE",
+      "axis": "B",
+      "current": 12,
+      "target": 13,
+      "expression": "TYPE.captionSm.fontSize",
+      "baselineKey": "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:298:fontSize"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:221:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:221:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:342:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:342:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:364:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 7,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:364:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx:146:gap",
+      "rule": "R-SP-CONVERGE-22",
+      "axis": "H",
+      "current": 22,
+      "target": 24,
+      "expression": "space.xxl",
+      "baselineKey": "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx:146:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx:255:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx:255:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx:281:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 7,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx:281:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/my/components/ChannelWeightSheet.tsx:100:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/my/components/ChannelWeightSheet.tsx:100:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/my/components/RevenueGapCard.tsx:50:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/my/components/RevenueGapCard.tsx:50:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/my/screens/FixedCostEditScreen.tsx:197:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/my/screens/FixedCostEditScreen.tsx:197:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/my/screens/FixedCostEditScreen.tsx:261:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/my/screens/FixedCostEditScreen.tsx:261:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/my/screens/FixedCostScreen.tsx:77:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/my/screens/FixedCostScreen.tsx:77:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/my/screens/FixedCostScreen.tsx:102:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/my/screens/FixedCostScreen.tsx:102:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/my/screens/FixedCostScreen.tsx:133:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/my/screens/FixedCostScreen.tsx:133:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/my/screens/FixedCostScreen.tsx:169:fontSize",
+      "rule": "R-TY-SIZE-15-CONTROL",
+      "axis": "B",
+      "current": 15,
+      "target": 16,
+      "expression": "TYPE.body.fontSize",
+      "baselineKey": "apps/mobile/src/features/my/screens/FixedCostScreen.tsx:169:fontSize"
+    },
+    {
+      "key": "apps/mobile/src/features/my/screens/MyAccountScreen.tsx:53:gap",
+      "rule": "R-SP-CONVERGE-11-H",
+      "axis": "H",
+      "current": 11,
+      "target": 12,
+      "expression": "space.md",
+      "baselineKey": "apps/mobile/src/features/my/screens/MyAccountScreen.tsx:53:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/my/screens/MyAccountScreen.tsx:64:fontSize",
+      "rule": "R-TY-SIZE-15-PROSE",
+      "axis": "B",
+      "current": 15,
+      "target": 16,
+      "expression": "TYPE.body.fontSize",
+      "baselineKey": "apps/mobile/src/features/my/screens/MyAccountScreen.tsx:64:fontSize"
+    },
+    {
+      "key": "apps/mobile/src/features/my/screens/MyAccountScreen.tsx:74:fontSize",
+      "rule": "R-TY-SIZE-15-PROSE",
+      "axis": "B",
+      "current": 15,
+      "target": 16,
+      "expression": "TYPE.body.fontSize",
+      "baselineKey": "apps/mobile/src/features/my/screens/MyAccountScreen.tsx:74:fontSize"
+    },
+    {
+      "key": "apps/mobile/src/features/my/screens/MyChannelsScreen.tsx:86:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/my/screens/MyChannelsScreen.tsx:86:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/my/screens/MyChannelsScreen.tsx:105:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/my/screens/MyChannelsScreen.tsx:105:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:290:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 3,
+      "target": 4,
+      "expression": "space.xs",
+      "baselineKey": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:290:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:352:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 3,
+      "target": 4,
+      "expression": "space.xs",
+      "baselineKey": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:352:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:366:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:366:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:383:fontSize",
+      "rule": "R-TY-SIZE-15-CONTROL",
+      "axis": "B",
+      "current": 15,
+      "target": 16,
+      "expression": "TYPE.body.fontSize",
+      "baselineKey": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:383:fontSize"
+    },
+    {
+      "key": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:403:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:403:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:465:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:465:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:470:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:470:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:502:fontSize",
+      "rule": "R-TY-SIZE-15-CONTROL",
+      "axis": "B",
+      "current": 15,
+      "target": 16,
+      "expression": "TYPE.body.fontSize",
+      "baselineKey": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:502:fontSize"
+    },
+    {
+      "key": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:515:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 7,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:515:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:543:fontSize",
+      "rule": "R-TY-SIZE-15-CONTROL",
+      "axis": "B",
+      "current": 15,
+      "target": 16,
+      "expression": "TYPE.body.fontSize",
+      "baselineKey": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:543:fontSize"
+    },
+    {
+      "key": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:559:fontSize",
+      "rule": "R-TY-SIZE-15-CONTROL",
+      "axis": "B",
+      "current": 15,
+      "target": 16,
+      "expression": "TYPE.body.fontSize",
+      "baselineKey": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:559:fontSize"
+    },
+    {
+      "key": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx:274:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx:274:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx:285:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 7,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx:285:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx:311:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 7,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx:311:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx:112:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx:112:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx:124:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 7,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx:124:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx:239:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx:239:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:123:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:123:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx:195:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 7,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx:195:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx:213:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx:213:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx:259:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx:259:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:246:gap",
+      "rule": "R-SP-CONVERGE-22",
+      "axis": "H",
+      "current": 22,
+      "target": 24,
+      "expression": "space.xxl",
+      "baselineKey": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:246:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:287:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 7,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:287:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:332:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:332:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:366:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:366:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:378:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:378:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:403:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:403:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:499:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:499:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx:145:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx:145:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx:96:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 7,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx:96:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx:112:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 7,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx:112:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:134:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:134:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:189:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:189:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:204:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:204:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/MaterialSearchScreen.tsx:65:gap",
+      "rule": "R-SP-CONVERGE-11-H",
+      "axis": "H",
+      "current": 11,
+      "target": 12,
+      "expression": "space.md",
+      "baselineKey": "apps/mobile/src/features/recipes/screens/MaterialSearchScreen.tsx:65:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/MaterialSearchScreen.tsx:67:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/recipes/screens/MaterialSearchScreen.tsx:67:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx:107:marginHorizontal",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 7,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx:107:marginHorizontal"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx:159:marginHorizontal",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx:159:marginHorizontal"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx:183:fontSize",
+      "rule": "R-TY-SIZE-CONVERGE",
+      "axis": "B",
+      "current": 19,
+      "target": 20,
+      "expression": "TYPE.title.fontSize",
+      "baselineKey": "apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx:183:fontSize"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:29:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:29:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:257:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:257:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:270:gap",
+      "rule": "R-SP-CONVERGE-22",
+      "axis": "H",
+      "current": 22,
+      "target": 24,
+      "expression": "space.xxl",
+      "baselineKey": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:270:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:315:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:315:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:328:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:328:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:354:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:354:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:372:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:372:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:386:gap",
+      "rule": "R-SP-CONVERGE-22",
+      "axis": "H",
+      "current": 22,
+      "target": 24,
+      "expression": "space.xxl",
+      "baselineKey": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:386:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:424:marginLeft",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 7,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:424:marginLeft"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:31:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:31:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:43:gap",
+      "rule": "R-SP-CONVERGE-22",
+      "axis": "H",
+      "current": 22,
+      "target": 24,
+      "expression": "space.xxl",
+      "baselineKey": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:43:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:161:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 3,
+      "target": 4,
+      "expression": "space.xs",
+      "baselineKey": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:161:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:215:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 7,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:215:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:223:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:223:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:274:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 7,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:274:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:426:gap",
+      "rule": "R-SP-GAP-LABEL-CHEVRON",
+      "axis": "H",
+      "current": 2,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:426:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:475:gap",
+      "rule": "R-SP-CONVERGE-22",
+      "axis": "H",
+      "current": 22,
+      "target": 24,
+      "expression": "space.xxl",
+      "baselineKey": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:475:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:526:marginLeft",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 7,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:526:marginLeft"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:556:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:556:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:613:gap",
+      "rule": "R-SP-GAP-LABEL-CHEVRON",
+      "axis": "H",
+      "current": 2,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:613:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx:96:gap",
+      "rule": "R-SP-CONVERGE-11-H",
+      "axis": "H",
+      "current": 11,
+      "target": 12,
+      "expression": "space.md",
+      "baselineKey": "apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx:96:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx:98:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx:98:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:64:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 7,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:64:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:80:marginLeft",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:80:marginLeft"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:80:paddingHorizontal",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 7,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:80:paddingHorizontal"
+    },
+    {
+      "key": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:186:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 7,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:186:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:54:paddingHorizontal",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 7,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:54:paddingHorizontal"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:56:fontSize",
+      "rule": "R-TY-SIZE-CONVERGE",
+      "axis": "B",
+      "current": 11,
+      "target": 13,
+      "expression": "TYPE.captionSm.fontSize",
+      "baselineKey": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:56:fontSize"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:176:fontSize",
+      "rule": "R-TY-SIZE-CONVERGE",
+      "axis": "B",
+      "current": 12,
+      "target": 13,
+      "expression": "TYPE.captionSm.fontSize",
+      "baselineKey": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:176:fontSize"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:178:fontSize",
+      "rule": "R-TY-SIZE-CONVERGE",
+      "axis": "B",
+      "current": 12,
+      "target": 13,
+      "expression": "TYPE.captionSm.fontSize",
+      "baselineKey": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:178:fontSize"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/components/LateCloseSheet.tsx:74:fontSize",
+      "rule": "R-TY-SIZE-15-CONTROL",
+      "axis": "B",
+      "current": 15,
+      "target": 16,
+      "expression": "TYPE.body.fontSize",
+      "baselineKey": "apps/mobile/src/features/sales/components/LateCloseSheet.tsx:74:fontSize"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/components/LateCloseSheet.tsx:81:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 7,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/sales/components/LateCloseSheet.tsx:81:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/components/MenuProfitSheet.tsx:40:gap",
+      "rule": "R-SP-GAP-LABEL-CHEVRON",
+      "axis": "H",
+      "current": 1,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/sales/components/MenuProfitSheet.tsx:40:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/components/MenuProfitSheet.tsx:120:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/sales/components/MenuProfitSheet.tsx:120:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:39:gap",
+      "rule": "R-SP-GAP-LABEL-CHEVRON",
+      "axis": "H",
+      "current": 1,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:39:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:84:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:84:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:89:paddingHorizontal",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:89:paddingHorizontal"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:90:fontSize",
+      "rule": "R-TY-SIZE-CONVERGE",
+      "axis": "B",
+      "current": 10,
+      "target": 13,
+      "expression": "TYPE.captionSm.fontSize",
+      "baselineKey": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:90:fontSize"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:98:fontSize",
+      "rule": "R-TY-SIZE-CONVERGE",
+      "axis": "B",
+      "current": 12,
+      "target": 13,
+      "expression": "TYPE.captionSm.fontSize",
+      "baselineKey": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:98:fontSize"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:131:fontSize",
+      "rule": "R-TY-SIZE-CONVERGE",
+      "axis": "B",
+      "current": 12,
+      "target": 13,
+      "expression": "TYPE.captionSm.fontSize",
+      "baselineKey": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:131:fontSize"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:174:fontSize",
+      "rule": "R-TY-SIZE-CONVERGE",
+      "axis": "B",
+      "current": 12,
+      "target": 13,
+      "expression": "TYPE.captionSm.fontSize",
+      "baselineKey": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:174:fontSize"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:178:fontSize",
+      "rule": "R-TY-SIZE-CONVERGE",
+      "axis": "B",
+      "current": 12,
+      "target": 13,
+      "expression": "TYPE.captionSm.fontSize",
+      "baselineKey": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:178:fontSize"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:241:fontSize",
+      "rule": "R-TY-SIZE-15-CONTROL",
+      "axis": "B",
+      "current": 15,
+      "target": 16,
+      "expression": "TYPE.body.fontSize",
+      "baselineKey": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:241:fontSize"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:328:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:328:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:365:fontSize",
+      "rule": "R-TY-SIZE-CONVERGE",
+      "axis": "B",
+      "current": 12,
+      "target": 13,
+      "expression": "TYPE.captionSm.fontSize",
+      "baselineKey": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:365:fontSize"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:372:fontSize",
+      "rule": "R-TY-SIZE-CONVERGE",
+      "axis": "B",
+      "current": 12,
+      "target": 13,
+      "expression": "TYPE.captionSm.fontSize",
+      "baselineKey": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:372:fontSize"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:393:fontSize",
+      "rule": "R-TY-SIZE-15-CONTROL",
+      "axis": "B",
+      "current": 15,
+      "target": 16,
+      "expression": "TYPE.body.fontSize",
+      "baselineKey": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:393:fontSize"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/components/SaleStepper.tsx:36:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 7,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/sales/components/SaleStepper.tsx:36:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/components/ShortageWarningSheet.tsx:44:fontSize",
+      "rule": "R-TY-SIZE-15-PROSE",
+      "axis": "B",
+      "current": 15,
+      "target": 16,
+      "expression": "TYPE.body.fontSize",
+      "baselineKey": "apps/mobile/src/features/sales/components/ShortageWarningSheet.tsx:44:fontSize"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx:170:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx:170:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx:213:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx:213:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx:271:fontSize",
+      "rule": "R-TY-SIZE-15-CONTROL",
+      "axis": "B",
+      "current": 15,
+      "target": 16,
+      "expression": "TYPE.body.fontSize",
+      "baselineKey": "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx:271:fontSize"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx:272:fontSize",
+      "rule": "R-TY-SIZE-CONVERGE",
+      "axis": "B",
+      "current": 12,
+      "target": 13,
+      "expression": "TYPE.captionSm.fontSize",
+      "baselineKey": "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx:272:fontSize"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesDayDetailScreen.tsx:89:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/sales/screens/SalesDayDetailScreen.tsx:89:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesFixedScreen.tsx:83:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/sales/screens/SalesFixedScreen.tsx:83:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:393:fontSize",
+      "rule": "R-TY-SIZE-CONVERGE",
+      "axis": "B",
+      "current": 11,
+      "target": 13,
+      "expression": "TYPE.captionSm.fontSize",
+      "baselineKey": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:393:fontSize"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:493:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:493:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:497:fontSize",
+      "rule": "R-TY-SIZE-CONVERGE",
+      "axis": "B",
+      "current": 12,
+      "target": 13,
+      "expression": "TYPE.captionSm.fontSize",
+      "baselineKey": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:497:fontSize"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:538:fontSize",
+      "rule": "R-TY-SIZE-CONVERGE",
+      "axis": "B",
+      "current": 12,
+      "target": 13,
+      "expression": "TYPE.captionSm.fontSize",
+      "baselineKey": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:538:fontSize"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:550:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 3,
+      "target": 4,
+      "expression": "space.xs",
+      "baselineKey": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:550:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:644:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 7,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:644:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:661:fontSize",
+      "rule": "R-TY-SIZE-15-CONTROL",
+      "axis": "B",
+      "current": 15,
+      "target": 16,
+      "expression": "TYPE.body.fontSize",
+      "baselineKey": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:661:fontSize"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:667:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:667:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:702:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:702:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx:123:gap",
+      "rule": "R-SP-GAP-LABEL-CHEVRON",
+      "axis": "H",
+      "current": 1,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx:123:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx:32:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx:32:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx:187:fontSize",
+      "rule": "R-TY-SIZE-CONVERGE",
+      "axis": "B",
+      "current": 12,
+      "target": 13,
+      "expression": "TYPE.captionSm.fontSize",
+      "baselineKey": "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx:187:fontSize"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:249:marginRight",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:249:marginRight"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:251:marginRight",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 6,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:251:marginRight"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:359:gap",
+      "rule": "R-SP-CONVERGE-GROW-H",
+      "axis": "H",
+      "current": 7,
+      "target": 8,
+      "expression": "space.sm",
+      "baselineKey": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:359:gap"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesStockCheckScreen.tsx:115:fontSize",
+      "rule": "R-TY-SIZE-CONVERGE",
+      "axis": "B",
+      "current": 12,
+      "target": 13,
+      "expression": "TYPE.captionSm.fontSize",
+      "baselineKey": "apps/mobile/src/features/sales/screens/SalesStockCheckScreen.tsx:115:fontSize"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesStockCheckScreen.tsx:121:fontSize",
+      "rule": "R-TY-SIZE-CONVERGE",
+      "axis": "B",
+      "current": 12,
+      "target": 13,
+      "expression": "TYPE.captionSm.fontSize",
+      "baselineKey": "apps/mobile/src/features/sales/screens/SalesStockCheckScreen.tsx:121:fontSize"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/screens/SalesStockCheckScreen.tsx:154:fontSize",
+      "rule": "R-TY-SIZE-15-CONTROL",
+      "axis": "B",
+      "current": 15,
+      "target": 16,
+      "expression": "TYPE.body.fontSize",
+      "baselineKey": "apps/mobile/src/features/sales/screens/SalesStockCheckScreen.tsx:154:fontSize"
+    }
+  ],
+  "touchAdjustments": [],
+  "tokenContract": {
+    "space": {
+      "xs": 4,
+      "sm": 8,
+      "md": 12,
+      "lg": 16,
+      "xl": 20,
+      "xxl": 24
+    },
+    "radius": {
+      "sm": 8,
+      "md": 12,
+      "lg": 16,
+      "xl": 20,
+      "full": 999
+    },
+    "TYPE": {
+      "display": {
+        "fontSize": 22,
+        "lineHeight": 28
+      },
+      "title": {
+        "fontSize": 20,
+        "lineHeight": 26
+      },
+      "header": {
+        "fontSize": 18,
+        "lineHeight": 24
+      },
+      "body": {
+        "fontSize": 16,
+        "lineHeight": 22
+      },
+      "caption": {
+        "fontSize": 14,
+        "lineHeight": 20
+      },
+      "captionSm": {
+        "fontSize": 13,
+        "lineHeight": 18
+      }
+    },
+    "controlVisualHeight": {
+      "sm": 32,
+      "md": 38
+    }
+  }
+}

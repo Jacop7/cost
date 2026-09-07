@@ -1,0 +1,242 @@
+{
+ "manifest": {
+  "generatedAt": "2026-09-07T10:09:44.028Z",
+  "schemaVersion": 1,
+  "script": {
+   "name": "full-page-flow-prototype-token-map-check.mjs",
+   "sha256": "246fe6d5489c6ebc697f4e247b61e18c031e6e2e210f912acd6544610d62d88f"
+  },
+  "designAudit": {
+   "path": "full-page-flow-prototype-design-audit.json",
+   "sha256": "b915139e884cf9c1c114232b92678038dca54f89a7466741594ad8f3d7f14df8",
+   "targetSha256": "9b004a8755152bc012337caf3b8e5d1dc5695bdad47a1aed1c3338d7208f39b1",
+   "designSyncId": "DS-20260907-005"
+  },
+  "tokenMap": {
+   "path": "full-page-flow-prototype-token-map.json",
+   "sha256": "19570ea8058bc622d402070e9dadf3b2115f8903c3d81f4fb8b09e7d38aaed2e",
+   "status": "PROVISIONAL"
+  },
+  "rules": {
+   "자리": "primitive · converge · componentOwned · defects 넷 중 하나에 있어야 한다",
+   "목적지": "converge 가 가리키는 곳도 primitive 안에 있어야 한다",
+   "양방향": "매핑표가 측정에 없는 값을 들고 있으면 표가 낡은 것이다",
+   "단위": "판정은 값의 종류로 한다. 관측 수는 참고다(기획서 §1.0)"
+  }
+ },
+ "summary": {
+  "status": "PROVISIONAL",
+  "unmappedCount": 0,
+  "unmappedByAxis": {
+   "space": 0,
+   "radius": 0,
+   "typeSize": 0,
+   "typeWeight": 0,
+   "color": 0,
+   "shadow": 0,
+   "icon": 0,
+   "control": 0,
+   "lineHeight": 0,
+   "letterSpacing": 0
+  },
+  "nudgeValuesUsed": [],
+  "uaExcluded": {
+   "spaceObservations": 1804,
+   "spaceValues": [
+    "1",
+    "2",
+    "6",
+    "14"
+   ],
+   "colorObservations": 0
+  },
+  "lineHeightKinds": 18,
+  "letterSpacingKinds": 2,
+  "provisionallyMapped": [
+   {
+    "axis": "color",
+    "decisions": [
+     "D-1′"
+    ],
+    "valueKinds": 29
+   },
+   {
+    "axis": "lineHeight",
+    "decisions": [
+     "D-11"
+    ],
+    "valueKinds": 18
+   },
+   {
+    "axis": "shadow",
+    "decisions": [
+     "D-11"
+    ],
+    "valueKinds": 6
+   },
+   {
+    "axis": "icon",
+    "decisions": [
+     "D-11"
+    ],
+    "valueKinds": null
+   },
+   {
+    "axis": "control",
+    "decisions": [
+     "D-11"
+    ],
+    "valueKinds": null
+   }
+  ],
+  "tokensExtensionRequired": [
+   "controlHeight",
+   "iconSize",
+   "letterSpacing",
+   "lineHeight",
+   "shadow"
+  ],
+  "confirmedAxes": [
+   "space",
+   "radius",
+   "typeSize"
+  ],
+  "mapFailures": 0,
+  "staleMapEntries": 0
+ },
+ "unmapped": {
+  "space": [],
+  "radius": [],
+  "typeSize": [],
+  "typeWeight": [],
+  "color": [],
+  "shadow": [],
+  "icon": [],
+  "control": [],
+  "lineHeight": [],
+  "letterSpacing": []
+ },
+ "failures": [],
+ "stale": [],
+ "openDecisions": {
+  "note": "기획서 §8.2. 사람이 정해야 하는 것만 남긴다. 여기 나열된 축의 값은 잠정이며 검사기가 provisionallyMapped 로 따로 센다.",
+  "D-1′": {
+   "제목": "정본 색 자체를 바꿀 것인가(실행서·프로토타입 vs tokens.ts 3건)",
+   "축": [
+    "color"
+   ],
+   "선행": "대비 측정 + 디자인·제품 소유자 결정"
+  },
+  "D-2": {
+   "제목": "글자 확대와 긴 번역의 보상 수단 — 탭 라벨·sales-menu-sub·header.title",
+   "축": [],
+   "선행": "소유자 결정"
+  },
+  "D-11": {
+   "제목": "tokens.ts 확장 승인 — lineHeight·letterSpacing·iconSize·controlHeight·rowHeight·shadow",
+   "축": [
+    "lineHeight",
+    "shadow",
+    "icon",
+    "control"
+   ],
+   "선행": "정본 소유자 승인"
+  }
+ },
+ "retiredDecisions": {
+  "note": "초판에서 열었다가 결론이 난 것. 다시 열지 않기 위해 남긴다.",
+  "D-3": "뱃지 12px 신설 → 폐기. 가이드가 captionSm 13/600 으로 이미 계약했다",
+  "D-4": "nudge 스케일 분리 → 폐기. 다만 '전부 space 로 보낸다' 는 결론은 아니다. 1·2px 은 컴포넌트 소유 광학 보정으로 남고 3·6px 만 space 로 간다",
+  "D-5": "19px Sheet 제목의 title 승격 → 승격으로 결론",
+  "D-6": "모션·z-index 범위 → P1c 로 분리하는 것으로 결론",
+  "D-7": "상속 bolder 188건 → 닫음. 전역 b/strong 규칙 대신 selector 역할별 매핑. 값이 있는 자리는 type.body(700), 문장 강조는 부모와 같은 굵기를 명시",
+  "D-8": "행간 → 부분적으로 닫음. 뱃지 1.0 은 컴포넌트 소유, 날짜·필터는 기본 1.4, 1.35 는 1.4 로 합침. 값의 tokens.ts 등재는 D-11",
+  "D-9": "그림자 → 부분적으로 닫음. 0 10px 28px 1회는 sheet 와 중복이라 흡수, sliderThumb 은 0회 관측이라 미구현. bottomBar 신규 역할 추가는 D-11",
+  "D-10": "단계 순서 → 닫음. P1b → 일반 P2. 예외는 기존 권위와 무관한 단독 정정뿐",
+  "D-1(집행 부분)": "프로토타입 색을 tokens.ts 값으로 수렴시키는 집행은 솔라가 한다. 정본은 이미 코드다(가이드 §1.2)"
+ },
+ "lineHeight": [
+  {
+   "value": "normal",
+   "observations": 5878
+  },
+  {
+   "value": "21.6px",
+   "observations": 523
+  },
+  {
+   "value": "18.2px",
+   "observations": 170
+  },
+  {
+   "value": "19.6px",
+   "observations": 169
+  },
+  {
+   "value": "12px",
+   "observations": 58
+  },
+  {
+   "value": "22px",
+   "observations": 39
+  },
+  {
+   "value": "20px",
+   "observations": 32
+  },
+  {
+   "value": "21px",
+   "observations": 31
+  },
+  {
+   "value": "26.6px",
+   "observations": 21
+  },
+  {
+   "value": "16.2px",
+   "observations": 6
+  },
+  {
+   "value": "21.7px",
+   "observations": 4
+  },
+  {
+   "value": "18.9px",
+   "observations": 3
+  },
+  {
+   "value": "21.75px",
+   "observations": 2
+  },
+  {
+   "value": "18px",
+   "observations": 2
+  },
+  {
+   "value": "17.55px",
+   "observations": 2
+  },
+  {
+   "value": "24.3px",
+   "observations": 2
+  },
+  {
+   "value": "20.3px",
+   "observations": 1
+  },
+  {
+   "value": "23px",
+   "observations": 1
+  }
+ ],
+ "letterSpacing": [
+  {
+   "value": "normal",
+   "observations": 6869
+  },
+  {
+   "value": "-0.3px",
+   "observations": 75
+  }
+ ]
+}

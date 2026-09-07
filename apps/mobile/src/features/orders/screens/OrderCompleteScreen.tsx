@@ -13,7 +13,7 @@ import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Badge, Button, Card, Field, Icon, Input, QueryState, SearchBar, Select, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { formatQuantity, formatUnitPrice, previewBaseUnitPrice, rawUnitPrice, roundOrNull } from '@margincook/core';
-import { T, won } from '@/theme/tokens';
+import { LAYOUT, COLOR, T, won, TYPE, radius, space } from '@/theme/tokens';
 import { clampDecimals, dash } from '@/lib/num';
 import { useIngredientDetail, useIngredientList } from '@/features/ingredients/hooks';
 import { VendorPickerSheet } from '@/features/ingredients/components/VendorPickerSheet';
@@ -134,15 +134,15 @@ function OrderCompleteScreenBody({ localDate }: { localDate: string }) {
                         key={o.id}
                         onPress={() => applyOption(o.id)}
                         accessibilityRole="button" accessibilityLabel={o.name} accessibilityState={{ selected: on }}
-                        style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 12, paddingHorizontal: 14, borderRadius: 12, borderWidth: 1, borderColor: on ? T.blue : T.line, backgroundColor: on ? T.blueTint : T.surface }}
+                        style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingVertical: 12, paddingHorizontal: space.md, borderRadius: 12, borderWidth: 1, borderColor: on ? COLOR.action.primary : T.line, backgroundColor: on ? COLOR.action.primaryTint : T.surface }}
                       >
                         <View style={{ flex: 1, minWidth: 0 }}>
                           <Text numberOfLines={1} style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>{o.name}, {won(o.amount)}원</Text>
-                          <Text style={[{ fontSize: 14, color: T.sub2, marginTop: 3 }, NUM]}>
+                          <Text style={[{ fontSize: 14, color: T.sub2, marginTop: space.xs }, NUM]}>
                             {o.vendorName ?? '거래처 미지정'} · {formatQuantity(o.volume, unit)} · {formatUnitPrice(o.amount / (o.volume || 1), unit)}
                           </Text>
                         </View>
-                        {on ? <Icon name="check" size={18} color={T.blue} sw={2.4} /> : null}
+                        {on ? <Icon name="check" size={18} color={COLOR.action.primary} sw={2.4} /> : null}
                       </Pressable>
                     );
                   })}
@@ -154,7 +154,7 @@ function OrderCompleteScreenBody({ localDate }: { localDate: string }) {
               <Select value={vendorName ?? ''} placeholder="지정 안 함" onPress={() => setVendorOpen(true)} />
             </Field>
 
-            <View style={{ flexDirection: 'row', gap: 10 }}>
+            <View style={{ flexDirection: 'row', gap: space.sm }}>
               <View style={{ flex: 1 }}>
                 <Field label="개당 용량" req>
                   <Input value={volume} onChangeText={(t) => setVolume(clampDecimals(t, 2))} placeholder="0" suffix={unit} mono keyboardType="decimal-pad" accessibilityLabel="개당 용량" />
@@ -174,25 +174,25 @@ function OrderCompleteScreenBody({ localDate }: { localDate: string }) {
 
             {/* 금액·단가 미리보기 */}
             <Card pad={0} style={{ overflow: 'hidden', marginBottom: 16 }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 13, paddingHorizontal: 15, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: space.md, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
                 <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.ink }}>총 발주 금액</Text>
                 <Text style={[{ fontSize: 18, fontWeight: '800', color: T.ink }, NUM]}>{won(total)}원</Text>
               </View>
-              <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 11, paddingHorizontal: 15, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: space.md, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
                 <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.sub }}>구매가 단가</Text>
                 <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink2 }, NUM]}>{dash(raw)}원/{unit}</Text>
               </View>
-              <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 11, paddingHorizontal: 15 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: space.md }}>
                 <View style={{ flex: 1 }}>
                   <Text style={{ fontSize: 16, fontWeight: '600', color: T.sub }}>실사용 단가</Text>
                 </View>
-                <Text style={[{ fontSize: 16, fontWeight: '700', color: T.blue }, NUM]}>{dash(real)}원/{unit}</Text>
+                <Text style={[{ fontSize: 16, fontWeight: '700', color: COLOR.text.accent }, NUM]}>{dash(real)}원/{unit}</Text>
               </View>
             </Card>
 
             {/* 도착 예정일 */}
             <Text style={{ fontSize: 16, fontWeight: '700', color: T.sub, marginBottom: 8 }}>도착 예정일</Text>
-            <View style={{ flexDirection: 'row', gap: 7, marginBottom: 10 }}>
+            <View style={{ flexDirection: 'row', gap: space.sm, marginBottom: space.sm }}>
               {([0, 1, 2, 3, 7] as const).map((n) => {
                 const on = dayOffset === n;
                 const label = n === 0 ? '오늘' : n === 1 ? '내일' : n === 2 ? '모레' : `${n}일 후`;
@@ -201,30 +201,30 @@ function OrderCompleteScreenBody({ localDate }: { localDate: string }) {
                     key={n}
                     onPress={() => setDayOffset(n)}
                     accessibilityRole="button" accessibilityLabel={label} accessibilityState={{ selected: on }}
-                    style={{ flex: 1, alignItems: 'center', paddingVertical: 11, borderRadius: 10, borderWidth: 1, borderColor: on ? T.blue : T.line, backgroundColor: on ? T.blueTint : T.surface }}
+                    style={{ flex: 1, alignItems: 'center', paddingVertical: space.md, borderRadius: radius.md, borderWidth: 1, borderColor: on ? COLOR.action.primary : T.line, backgroundColor: on ? COLOR.action.primaryTint : T.surface }}
                   >
-                    <Text style={{ fontSize: 14, fontWeight: '700', color: on ? T.blue : T.sub }}>{label}</Text>
+                    <Text style={{ fontSize: 14, fontWeight: '700', color: on ? COLOR.state.selectedText : T.sub }}>{label}</Text>
                   </Pressable>
                 );
               })}
             </View>
             <Text style={[{ fontSize: 14, color: T.sub2, fontWeight: '600', marginBottom: 16 }, NUM]}>{dayLabelOf(arrival)} 도착 예정</Text>
 
-            <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, paddingVertical: 12, paddingHorizontal: 14, borderRadius: 12, backgroundColor: T.blueTint }}>
-              <Icon name="info" size={15} color={T.blue} />
-              <Text style={{ flex: 1, fontSize: 14, color: T.sub2, lineHeight: 20 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, paddingVertical: 12, paddingHorizontal: space.md, borderRadius: 12, backgroundColor: COLOR.action.primaryTint }}>
+              <Icon name="info" size={15} color={COLOR.action.primary} />
+              <Text style={{ flex: 1, fontSize: 14, color: T.sub2, lineHeight: TYPE.caption.lineHeight }}>
                 발주는 기록만 돼요. 재고와 기준단가는 발주 현황에서 <Text style={{ fontWeight: '700' }}>입고 완료</Text>를 눌렀을 때 바뀌어요.
               </Text>
             </View>
           </>
         ) : (
           <View style={{ paddingVertical: 40, alignItems: 'center' }}>
-            <Text style={{ fontSize: 16, color: T.ter }}>먼저 식재료를 선택해 주세요</Text>
+            <Text style={{ fontSize: 16, color: COLOR.text.tertiary }}>먼저 식재료를 선택해 주세요</Text>
           </View>
         )}
       </ScrollView>
 
-      <View style={{ paddingHorizontal: 20, paddingTop: 12, paddingBottom: 30, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
+      <View style={{ paddingHorizontal: 20, paddingTop: 12, paddingBottom: LAYOUT.scroll.end, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
         <Button kind="primary" size="lg" full disabled={!canSave} loading={placeOrders.isPending} onPress={submit}>발주 등록</Button>
       </View>
 
@@ -253,18 +253,18 @@ function OrderCompleteScreenBody({ localDate }: { localDate: string }) {
                     setPickerOpen(false);
                   }}
                   accessibilityRole="button" accessibilityLabel={x.name} accessibilityState={{ selected: on }}
-                  style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 13, paddingHorizontal: 14, borderRadius: 12, borderWidth: 1, borderColor: on ? T.blue : T.line, backgroundColor: on ? T.blueTint : T.surface }}
+                  style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingVertical: space.md, paddingHorizontal: space.md, borderRadius: 12, borderWidth: 1, borderColor: on ? COLOR.action.primary : T.line, backgroundColor: on ? COLOR.action.primaryTint : T.surface }}
                 >
                   <View style={{ flex: 1, minWidth: 0 }}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm }}>
                       <Text numberOfLines={1} style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>{x.name}</Text>
                       {x.categoryName ? <Badge tone="neutral" sm>{x.categoryName}</Badge> : null}
                     </View>
-                    <Text style={[{ fontSize: 14, color: T.sub2, marginTop: 3 }, NUM]}>
+                    <Text style={[{ fontSize: 14, color: T.sub2, marginTop: space.xs }, NUM]}>
                       재고 {formatQuantity(x.stockTotal, u)} · 개당 {formatQuantity(x.perVolume, u)}
                     </Text>
                   </View>
-                  {on ? <Icon name="check" size={18} color={T.blue} sw={2.4} /> : null}
+                  {on ? <Icon name="check" size={18} color={COLOR.action.primary} sw={2.4} /> : null}
                 </Pressable>
               );
             })}

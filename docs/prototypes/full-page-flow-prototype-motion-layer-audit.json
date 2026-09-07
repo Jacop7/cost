@@ -1,0 +1,484 @@
+{
+  "schemaVersion": 1,
+  "status": "PROPOSAL_COMPLETE",
+  "manifest": {
+    "sourceCommit": "98b22691d55215734e4b8ce5c4bde877b6a5c7fa",
+    "script": "design-token-motion-layer-audit.mjs",
+    "scriptSha256": "dbf0436428374108e5b36a076dbda042445373811f30a978559245cf068061da",
+    "selection": {
+      "roots": [
+        "apps/mobile/src",
+        "apps/mobile/app"
+      ],
+      "extensions": [
+        ".ts",
+        ".tsx"
+      ],
+      "excludeDirs": [
+        "node_modules",
+        "__tests__",
+        ".expo",
+        "dist",
+        "build"
+      ],
+      "excludeFileSuffixes": [
+        ".test.ts",
+        ".test.tsx",
+        ".d.ts"
+      ]
+    },
+    "filesMeasured": 178,
+    "scopeSha256": "a68c95ee54bb6da64c0ef4de3bdeac11662483e1692a2b5db34dc39797e7f216",
+    "prototype": {
+      "file": "docs/prototypes/0_full-page-flow-prototype-ui-applied.html",
+      "syntax": [
+        "z-index",
+        "transition",
+        "animation",
+        "@keyframes"
+      ],
+      "sha256": "98244ae00b040373c20c40eb4168ae8532104261e71fec85b2546a6e3040b947"
+    }
+  },
+  "summary": {
+    "declarations": 6,
+    "motion": 5,
+    "layer": 1,
+    "animationType": {
+      "fade": 4,
+      "slide": 1,
+      "other": 0
+    },
+    "customMotionApiCalls": 0,
+    "zIndexValues": [
+      30
+    ],
+    "unmapped": 0
+  },
+  "prototype": {
+    "summary": {
+      "declarations": 14,
+      "layer": 14,
+      "motion": 0,
+      "zIndexValues": [
+        1,
+        2,
+        5,
+        10,
+        11,
+        12,
+        20,
+        24
+      ],
+      "unmapped": 0
+    },
+    "correspondence": [
+      {
+        "prototypeValues": [
+          20,
+          24
+        ],
+        "prototypeRole": "overlay/popover",
+        "appHandling": "RN Modal/portal",
+        "numericToken": false
+      },
+      {
+        "prototypeValues": [
+          10,
+          11,
+          12
+        ],
+        "prototypeRole": "sticky/header/bottom action",
+        "appHandling": "layout/anchoring order",
+        "numericToken": false
+      },
+      {
+        "prototypeValues": [
+          1,
+          2,
+          5
+        ],
+        "prototypeRole": "local stacking",
+        "appHandling": "component-local order",
+        "numericToken": false
+      },
+      {
+        "prototypeValues": [],
+        "prototypeRole": "FAB",
+        "appHandling": "COMPONENT.fab.zIndex",
+        "appValue": 30,
+        "numericToken": false
+      }
+    ],
+    "assignments": [
+      {
+        "group": "layer",
+        "prop": "z-index",
+        "value": 2,
+        "selector": ".option-card-actions",
+        "file": "docs/prototypes/0_full-page-flow-prototype-ui-applied.html",
+        "line": 16,
+        "column": 996,
+        "handling": "localStacking",
+        "mapsTo": "component-local stacking; global zIndex token 불필요"
+      },
+      {
+        "group": "layer",
+        "prop": "z-index",
+        "value": 11,
+        "selector": ".bottom-action",
+        "file": "docs/prototypes/0_full-page-flow-prototype-ui-applied.html",
+        "line": 16,
+        "column": 1689,
+        "handling": "structuralOrder",
+        "mapsTo": "layout/anchoring order; global zIndex token 불필요"
+      },
+      {
+        "group": "layer",
+        "prop": "z-index",
+        "value": 1,
+        "selector": ".donut-center",
+        "file": "docs/prototypes/0_full-page-flow-prototype-ui-applied.html",
+        "line": 19,
+        "column": 364,
+        "handling": "localStacking",
+        "mapsTo": "component-local stacking; global zIndex token 불필요"
+      },
+      {
+        "group": "layer",
+        "prop": "z-index",
+        "value": 20,
+        "selector": ".overlay",
+        "file": "docs/prototypes/0_full-page-flow-prototype-ui-applied.html",
+        "line": 22,
+        "column": 32,
+        "handling": "nativeModalOrPortal",
+        "mapsTo": "RN Modal/portal; numeric zIndex 불필요"
+      },
+      {
+        "group": "layer",
+        "prop": "z-index",
+        "value": 1,
+        "selector": ".menu-donut-copy",
+        "file": "docs/prototypes/0_full-page-flow-prototype-ui-applied.html",
+        "line": 28,
+        "column": 1892,
+        "handling": "localStacking",
+        "mapsTo": "component-local stacking; global zIndex token 불필요"
+      },
+      {
+        "group": "layer",
+        "prop": "z-index",
+        "value": 12,
+        "selector": ".app-tabs",
+        "file": "docs/prototypes/0_full-page-flow-prototype-ui-applied.html",
+        "line": 32,
+        "column": 33,
+        "handling": "structuralOrder",
+        "mapsTo": "layout/anchoring order; global zIndex token 불필요"
+      },
+      {
+        "group": "layer",
+        "prop": "z-index",
+        "value": 10,
+        "selector": ".expo-fab",
+        "file": "docs/prototypes/0_full-page-flow-prototype-ui-applied.html",
+        "line": 37,
+        "column": 1505,
+        "handling": "structuralOrder",
+        "mapsTo": "layout/anchoring order; global zIndex token 불필요"
+      },
+      {
+        "group": "layer",
+        "prop": "z-index",
+        "value": 1,
+        "selector": ".donut-static span",
+        "file": "docs/prototypes/0_full-page-flow-prototype-ui-applied.html",
+        "line": 38,
+        "column": 1886,
+        "handling": "localStacking",
+        "mapsTo": "component-local stacking; global zIndex token 불필요"
+      },
+      {
+        "group": "layer",
+        "prop": "z-index",
+        "value": 2,
+        "selector": ".prototype-sheet",
+        "file": "docs/prototypes/0_full-page-flow-prototype-ui-applied.html",
+        "line": 41,
+        "column": 486,
+        "handling": "localStacking",
+        "mapsTo": "component-local stacking; global zIndex token 불필요"
+      },
+      {
+        "group": "layer",
+        "prop": "z-index",
+        "value": 2,
+        "selector": ".delete-preview",
+        "file": "docs/prototypes/0_full-page-flow-prototype-ui-applied.html",
+        "line": 41,
+        "column": 3694,
+        "handling": "localStacking",
+        "mapsTo": "component-local stacking; global zIndex token 불필요"
+      },
+      {
+        "group": "layer",
+        "prop": "z-index",
+        "value": 24,
+        "selector": ".option-popover-layer",
+        "file": "docs/prototypes/0_full-page-flow-prototype-ui-applied.html",
+        "line": 44,
+        "column": 655,
+        "handling": "nativeModalOrPortal",
+        "mapsTo": "RN Modal/portal; numeric zIndex 불필요"
+      },
+      {
+        "group": "layer",
+        "prop": "z-index",
+        "value": 2,
+        "selector": ".sheet:has(.stock-option-actions) .stock-option-actions",
+        "file": "docs/prototypes/0_full-page-flow-prototype-ui-applied.html",
+        "line": 49,
+        "column": 128,
+        "handling": "localStacking",
+        "mapsTo": "component-local stacking; global zIndex token 불필요"
+      },
+      {
+        "group": "layer",
+        "prop": "z-index",
+        "value": 5,
+        "selector": ".term-toolbar",
+        "file": "docs/prototypes/0_full-page-flow-prototype-ui-applied.html",
+        "line": 60,
+        "column": 1058,
+        "handling": "localStacking",
+        "mapsTo": "component-local stacking; global zIndex token 불필요"
+      },
+      {
+        "group": "layer",
+        "prop": "z-index",
+        "value": 12,
+        "selector": ".edit-menu-stage,.sheet-preview-stage",
+        "file": "docs/prototypes/0_full-page-flow-prototype-ui-applied.html",
+        "line": 69,
+        "column": 61,
+        "handling": "structuralOrder",
+        "mapsTo": "layout/anchoring order; global zIndex token 불필요"
+      }
+    ]
+  },
+  "interpretation": {
+    "durationEasing": "현재 앱에는 직접 선언된 duration/easing 또는 Animated/Reanimated 호출이 없다. React Native Modal preset의 내부 시간값을 소스에서 추정하지 않는다.",
+    "tokens": "현재 6건은 세 컴포넌트 역할로 완전 배정된다. 숫자 primitive를 새로 만들 근거는 없으며 중앙 토큰 신설은 실제 두 번째 사용처가 생길 때 재검토한다.",
+    "systemMotion": {
+      "scope": "토큰화할 직접 duration/easing 선언이 아니라 플랫폼·React Native·라우터가 소유하는 기본 동작이므로 배정 우주 밖에 별도 보존한다.",
+      "activityIndicator": {
+        "jsxUsages": 5,
+        "identifierOccurrencesIncludingImports": 10
+      },
+      "navigatorPreset": {
+        "containers": 7,
+        "stack": 6,
+        "tabs": 1,
+        "explicitAnimationOptions": 0
+      },
+      "pressedOpacity": {
+        "declarations": 1,
+        "transitionDurationDeclared": false
+      },
+      "observations": [
+        {
+          "kind": "navigatorPreset",
+          "component": "Tabs",
+          "file": "apps/mobile/app/(tabs)/_layout.tsx",
+          "line": 43,
+          "column": 5,
+          "layer": "product"
+        },
+        {
+          "kind": "navigatorPreset",
+          "component": "Stack",
+          "file": "apps/mobile/app/(tabs)/ingredients/_layout.tsx",
+          "line": 6,
+          "column": 40,
+          "layer": "product"
+        },
+        {
+          "kind": "navigatorPreset",
+          "component": "Stack",
+          "file": "apps/mobile/app/(tabs)/my/_layout.tsx",
+          "line": 6,
+          "column": 40,
+          "layer": "product"
+        },
+        {
+          "kind": "navigatorPreset",
+          "component": "Stack",
+          "file": "apps/mobile/app/(tabs)/orders/_layout.tsx",
+          "line": 6,
+          "column": 40,
+          "layer": "product"
+        },
+        {
+          "kind": "navigatorPreset",
+          "component": "Stack",
+          "file": "apps/mobile/app/(tabs)/recipes/_layout.tsx",
+          "line": 6,
+          "column": 40,
+          "layer": "product"
+        },
+        {
+          "kind": "navigatorPreset",
+          "component": "Stack",
+          "file": "apps/mobile/app/(tabs)/sales/_layout.tsx",
+          "line": 6,
+          "column": 40,
+          "layer": "product"
+        },
+        {
+          "kind": "navigatorPreset",
+          "component": "Stack",
+          "file": "apps/mobile/app/_layout.tsx",
+          "line": 30,
+          "column": 11,
+          "layer": "product"
+        },
+        {
+          "kind": "pressedOpacity",
+          "component": "Pressable",
+          "file": "apps/mobile/src/components/kit/Button.tsx",
+          "line": 65,
+          "column": 11,
+          "layer": "sharedComponent"
+        },
+        {
+          "kind": "activityIndicator",
+          "component": "ActivityIndicator",
+          "file": "apps/mobile/src/components/kit/Button.tsx",
+          "line": 77,
+          "column": 13,
+          "layer": "sharedComponent"
+        },
+        {
+          "kind": "activityIndicator",
+          "component": "ActivityIndicator",
+          "file": "apps/mobile/src/components/kit/QueryState.tsx",
+          "line": 47,
+          "column": 9,
+          "layer": "sharedComponent"
+        },
+        {
+          "kind": "activityIndicator",
+          "component": "ActivityIndicator",
+          "file": "apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx",
+          "line": 234,
+          "column": 19,
+          "layer": "product"
+        },
+        {
+          "kind": "activityIndicator",
+          "component": "ActivityIndicator",
+          "file": "apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx",
+          "line": 173,
+          "column": 15,
+          "layer": "product"
+        },
+        {
+          "kind": "activityIndicator",
+          "component": "ActivityIndicator",
+          "file": "apps/mobile/src/lib/SessionProvider.tsx",
+          "line": 60,
+          "column": 11,
+          "layer": "product"
+        }
+      ]
+    },
+    "binding": "manifest.scopeSha256와 manifest.prototype.sha256가 측정 입력을, manifest.scriptSha256가 검사기를 결속한다. sourceCommit은 실행 시점 provenance이며 정확성 판정은 이 세 해시와 DS 봉인 파일 해시가 담당한다."
+  },
+  "assignments": [
+    {
+      "group": "layer",
+      "prop": "zIndex",
+      "kind": "literal",
+      "value": 30,
+      "file": "apps/mobile/src/components/kit/index.tsx",
+      "line": 151,
+      "column": 96,
+      "layer": "sharedComponent",
+      "bucket": "componentOwned",
+      "role": "COMPONENT.fab.zIndex",
+      "target": 30
+    },
+    {
+      "group": "motion",
+      "prop": "animationType",
+      "kind": "literal",
+      "value": "slide",
+      "component": "Modal",
+      "file": "apps/mobile/src/components/kit/Sheet.tsx",
+      "line": 23,
+      "column": 42,
+      "layer": "sharedComponent",
+      "bucket": "componentOwned",
+      "role": "COMPONENT.sheet.animationType",
+      "target": "slide"
+    },
+    {
+      "group": "motion",
+      "prop": "animationType",
+      "kind": "literal",
+      "value": "fade",
+      "component": "Modal",
+      "file": "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx",
+      "line": 218,
+      "column": 44,
+      "layer": "product",
+      "bucket": "componentOwned",
+      "role": "COMPONENT.inlineSheet.animationType",
+      "target": "fade"
+    },
+    {
+      "group": "motion",
+      "prop": "animationType",
+      "kind": "literal",
+      "value": "fade",
+      "component": "Modal",
+      "file": "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx",
+      "line": 256,
+      "column": 53,
+      "layer": "product",
+      "bucket": "componentOwned",
+      "role": "COMPONENT.inlineSheet.animationType",
+      "target": "fade"
+    },
+    {
+      "group": "motion",
+      "prop": "animationType",
+      "kind": "literal",
+      "value": "fade",
+      "component": "Modal",
+      "file": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx",
+      "line": 332,
+      "column": 45,
+      "layer": "product",
+      "bucket": "componentOwned",
+      "role": "COMPONENT.inlineSheet.animationType",
+      "target": "fade"
+    },
+    {
+      "group": "motion",
+      "prop": "animationType",
+      "kind": "literal",
+      "value": "fade",
+      "component": "Modal",
+      "file": "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx",
+      "line": 323,
+      "column": 45,
+      "layer": "product",
+      "bucket": "componentOwned",
+      "role": "COMPONENT.inlineSheet.animationType",
+      "target": "fade"
+    }
+  ],
+  "failures": []
+}

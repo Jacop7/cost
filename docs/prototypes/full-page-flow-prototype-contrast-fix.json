@@ -1,0 +1,685 @@
+{
+ "manifest": {
+  "generatedAt": "2026-09-07T10:09:42.524Z",
+  "schemaVersion": 1,
+  "script": {
+   "name": "full-page-flow-prototype-contrast-fix.mjs",
+   "sha256": "a2fe38f16cb9cac8eb87334f51f1263b1794d1a984a978a44a99b53f02945892"
+  },
+  "designAudit": {
+   "path": "full-page-flow-prototype-design-audit.json",
+   "sha256": "b915139e884cf9c1c114232b92678038dca54f89a7466741594ad8f3d7f14df8",
+   "targetSha256": "9b004a8755152bc012337caf3b8e5d1dc5695bdad47a1aed1c3338d7208f39b1",
+   "designSyncId": "DS-20260907-005"
+  },
+  "rules": {
+   "기준": "WCAG 2.x AA — 일반 4.5:1, 큰 글자(24px 이상 또는 18.66px&700 이상) 3:1",
+   "수정안": "색상·채도를 유지한 채 명도만 움직여 기준을 처음 넘는 지점을 낸다. 색을 바꾸는 것이 아니라 같은 색의 진하기를 조절한다",
+   "방향": "배경이 밝으면 전경을 어둡게, 어두우면 밝게"
+  }
+ },
+ "summary": {
+  "pairs": 30,
+  "failingPairs": 0,
+  "totalObservations": 6944,
+  "failingObservations": 0
+ },
+ "rows": [
+  {
+   "fg": "#191F28",
+   "bg": "#FFFFFF",
+   "size": "normal",
+   "observations": 2534,
+   "ratio": 16.56,
+   "target": 4.5,
+   "passAA": true,
+   "moved": "foreground",
+   "fix": null,
+   "fixBackground": null,
+   "fixAAA": null,
+   "where": [
+    "expo-card-top.strong 16px/800 \"고춧가루\"",
+    "expo-list-card.b 16px/800 \"재고 812g\"",
+    "expo-card-top.strong 16px/800 \"설탕\""
+   ]
+  },
+  {
+   "fg": "#66717E",
+   "bg": "#FFFFFF",
+   "size": "normal",
+   "observations": 1325,
+   "ratio": 4.97,
+   "target": 4.5,
+   "passAA": true,
+   "moved": "foreground",
+   "fix": null,
+   "fixBackground": null,
+   "fixAAA": {
+    "hex": "#515A64",
+    "ratio": 7,
+    "lightnessFrom": 44.7,
+    "lightnessTo": 35.6
+   },
+   "where": [
+    "expo-list-card.em 13px/700 \"안전재고 1kg\"",
+    "expo-card-foot.span 13px/600 \"최근 입고 08/27\"",
+    "expo-list-card.em 13px/700 \"안전재고 3kg\""
+   ]
+  },
+  {
+   "fg": "#4E5968",
+   "bg": "#FFFFFF",
+   "size": "normal",
+   "observations": 850,
+   "ratio": 7.11,
+   "target": 4.5,
+   "passAA": true,
+   "moved": "foreground",
+   "fix": null,
+   "fixBackground": null,
+   "fixAAA": null,
+   "where": [
+    "expo-card-foot.b 13px/700 \"28.00원/g\"",
+    "expo-card-foot.b 13px/700 \"1.80원/g\"",
+    "expo-card-foot.b 13px/700 \"300.00원/개\""
+   ]
+  },
+  {
+   "fg": "#4E5968",
+   "bg": "#F9FAFB",
+   "size": "normal",
+   "observations": 298,
+   "ratio": 6.81,
+   "target": 4.5,
+   "passAA": true,
+   "moved": "foreground",
+   "fix": null,
+   "fixBackground": null,
+   "fixAAA": {
+    "hex": "#4C5766",
+    "ratio": 7,
+    "lightnessFrom": 35.7,
+    "lightnessTo": 35
+   },
+   "where": [
+    "card.expo-more 14px/700 \"전체보기\"",
+    "expo-list-card.expo-target 13px/700 \"목표 60%\"",
+    "expo-list-card.expo-target 13px/700 \"목표 35%\""
+   ]
+  },
+  {
+   "fg": "#191F28",
+   "bg": "#F9FAFB",
+   "size": "normal",
+   "observations": 291,
+   "ratio": 15.85,
+   "target": 4.5,
+   "passAA": true,
+   "moved": "foreground",
+   "fix": null,
+   "fixBackground": null,
+   "fixAAA": null,
+   "where": [
+    "card.strong 16px/700 \"구매 링크\"",
+    "card.strong 16px/700 \"기준 단가\"",
+    "card.strong 16px/700 \"재고 내역\""
+   ]
+  },
+  {
+   "fg": "#4E5968",
+   "bg": "#F2F4F6",
+   "size": "normal",
+   "observations": 213,
+   "ratio": 6.45,
+   "target": 4.5,
+   "passAA": true,
+   "moved": "foreground",
+   "fix": null,
+   "fixBackground": null,
+   "fixAAA": {
+    "hex": "#495462",
+    "ratio": 7,
+    "lightnessFrom": 35.7,
+    "lightnessTo": 33.6
+   },
+   "where": [
+    "edit-form-row.edit-form-label 14px/800 \"식재료명\"",
+    "edit-form-row.edit-form-label 14px/800 \"카테고리\"",
+    "edit-form-row.edit-form-label 14px/800 \"개당 용량\""
+   ]
+  },
+  {
+   "fg": "#FFFFFF",
+   "bg": "#1470F5",
+   "size": "normal",
+   "observations": 176,
+   "ratio": 4.5,
+   "target": 4.5,
+   "passAA": true,
+   "moved": "background",
+   "fix": null,
+   "fixBackground": null,
+   "fixAAA": null,
+   "where": [
+    "(no-card).expo-fab 16px/700 \"식재료 추가\"",
+    "sheet-actions.save 16px/800 \"완료\"",
+    "(no-card).expo-fab 16px/700 \"레시피 추가\""
+   ]
+  },
+  {
+   "fg": "#66717E",
+   "bg": "#F9FAFB",
+   "size": "normal",
+   "observations": 161,
+   "ratio": 4.75,
+   "target": 4.5,
+   "passAA": true,
+   "moved": "foreground",
+   "fix": null,
+   "fixBackground": null,
+   "fixAAA": {
+    "hex": "#4F5761",
+    "ratio": 7,
+    "lightnessFrom": 44.7,
+    "lightnessTo": 34.5
+   },
+   "where": [
+    "expo-card-top.expo-category 12px/700 \"향신료·허브\"",
+    "expo-card-top.expo-category 12px/700 \"곡물·견과·분말\"",
+    "expo-card-top.expo-category 12px/700 \"축산·계란\""
+   ]
+  },
+  {
+   "fg": "#DA1222",
+   "bg": "#FFFFFF",
+   "size": "normal",
+   "observations": 138,
+   "ratio": 5.13,
+   "target": 4.5,
+   "passAA": true,
+   "moved": "foreground",
+   "fix": null,
+   "fixBackground": null,
+   "fixAAA": {
+    "hex": "#B30F1C",
+    "ratio": 7,
+    "lightnessFrom": 46.3,
+    "lightnessTo": 38
+   },
+   "where": [
+    "card.red 14px/400 \"최고\"",
+    "expo-row-value.red 16px/700 \"−80g\"",
+    "expo-row-value.red 16px/700 \"−108g\""
+   ]
+  },
+  {
+   "fg": "#66717E",
+   "bg": "#F2F4F6",
+   "size": "normal",
+   "observations": 135,
+   "ratio": 4.5,
+   "target": 4.5,
+   "passAA": true,
+   "moved": "foreground",
+   "fix": null,
+   "fixBackground": null,
+   "fixAAA": {
+    "hex": "#4C545D",
+    "ratio": 7,
+    "lightnessFrom": 44.7,
+    "lightnessTo": 33.1
+   },
+   "where": [
+    "(no-card).tab 16px/600 \"축산·계란\"",
+    "(no-card).tab 16px/600 \"수산·해조류\"",
+    "(no-card).tab 16px/600 \"농산(신선)\""
+   ]
+  },
+  {
+   "fg": "#1465DB",
+   "bg": "#F2F4F6",
+   "size": "normal",
+   "observations": 129,
+   "ratio": 4.87,
+   "target": 4.5,
+   "passAA": true,
+   "moved": "foreground",
+   "fix": null,
+   "fixBackground": null,
+   "fixAAA": {
+    "hex": "#104FAB",
+    "ratio": 7,
+    "lightnessFrom": 46.9,
+    "lightnessTo": 36.6
+   },
+   "where": [
+    "edit-form-label.em 14px/800 \"*\"",
+    "stock-add-label.em 14px/800 \"*\"",
+    "(no-card).em 14px/800 \"*\""
+   ]
+  },
+  {
+   "fg": "#191F28",
+   "bg": "#FFFFFF",
+   "size": "large",
+   "observations": 122,
+   "ratio": 16.56,
+   "target": 3,
+   "passAA": true,
+   "moved": "foreground",
+   "fix": null,
+   "fixBackground": null,
+   "fixAAA": null,
+   "where": [
+    "card.detail-name 20px/700 \"고춧가루\"",
+    "stock-detail-total.b 22px/800 \"812g\"",
+    "sheet-preview-card.sheet-preview-title 19px/800 \"메모 수정\""
+   ]
+  },
+  {
+   "fg": "#333D4B",
+   "bg": "#FFFFFF",
+   "size": "normal",
+   "observations": 107,
+   "ratio": 11,
+   "target": 4.5,
+   "passAA": true,
+   "moved": "foreground",
+   "fix": null,
+   "fixBackground": null,
+   "fixAAA": null,
+   "where": [
+    "(no-card).expo-sort 14px/700 \"재고 적은순⌄\"",
+    "(no-card).filter-text 14px/800 \"최근 3개월\"",
+    "(no-card).filter-text 14px/800 \"전체\""
+   ]
+  },
+  {
+   "fg": "#1465DB",
+   "bg": "#EBF3FE",
+   "size": "normal",
+   "observations": 87,
+   "ratio": 4.8,
+   "target": 4.5,
+   "passAA": true,
+   "moved": "foreground",
+   "fix": null,
+   "fixBackground": null,
+   "fixAAA": {
+    "hex": "#0F4EA9",
+    "ratio": 7,
+    "lightnessFrom": 46.9,
+    "lightnessTo": 36.2
+   },
+   "where": [
+    "stock-total-result.strong 16px/800 \"0원/g\"",
+    "edit-form.ingredient-note-icon 12px/800 \"i\"",
+    "edit-form.span 14px/700 \"구매 링크는 저장한 뒤 상세 \""
+   ]
+  },
+  {
+   "fg": "#1470F5",
+   "bg": "#FFFFFF",
+   "size": "normal",
+   "observations": 70,
+   "ratio": 4.5,
+   "target": 4.5,
+   "passAA": true,
+   "moved": "foreground",
+   "fix": null,
+   "fixBackground": null,
+   "fixAAA": {
+    "hex": "#0853BF",
+    "ratio": 7,
+    "lightnessFrom": 52,
+    "lightnessTo": 39.1
+   },
+   "where": [
+    "edit-menu-stage.edit-menu-close 16px/800 \"닫기\"",
+    "recipe-add-recommend.small 13px/800 \"적용하기\"",
+    "sales-quick.b 14px/900 \"40,000\""
+   ]
+  },
+  {
+   "fg": "#1465DB",
+   "bg": "#FFFFFF",
+   "size": "normal",
+   "observations": 69,
+   "ratio": 5.37,
+   "target": 4.5,
+   "passAA": true,
+   "moved": "foreground",
+   "fix": null,
+   "fixBackground": null,
+   "fixAAA": {
+    "hex": "#1155B8",
+    "ratio": 7,
+    "lightnessFrom": 46.9,
+    "lightnessTo": 39.3
+   },
+   "where": [
+    "card.blue 14px/400 \"최저\"",
+    "card.blue 16px/700 \"+4kg\"",
+    "card.blue 16px/700 \"+1kg\""
+   ]
+  },
+  {
+   "fg": "#DA1222",
+   "bg": "#FEECEC",
+   "size": "normal",
+   "observations": 67,
+   "ratio": 4.5,
+   "target": 4.5,
+   "passAA": true,
+   "moved": "foreground",
+   "fix": null,
+   "fixBackground": null,
+   "fixAAA": {
+    "hex": "#A30D19",
+    "ratio": 7,
+    "lightnessFrom": 46.3,
+    "lightnessTo": 34.6
+   },
+   "where": [
+    "expo-card-top.expo-status 12px/700 \"소진 임박\"",
+    "stock-detail-head.expo-status 12px/700 \"소진 임박\"",
+    "card.badge 12px/800 \"최고\""
+   ]
+  },
+  {
+   "fg": "#4E5968",
+   "bg": "#F4F8FF",
+   "size": "normal",
+   "observations": 30,
+   "ratio": 6.68,
+   "target": 4.5,
+   "passAA": true,
+   "moved": "foreground",
+   "fix": null,
+   "fixBackground": null,
+   "fixAAA": {
+    "hex": "#4B5664",
+    "ratio": 7,
+    "lightnessFrom": 35.7,
+    "lightnessTo": 34.5
+   },
+   "where": [
+    "card.callout 14px/600 \"가게의 월 고정비를 매출 비율\"",
+    "card.span 14px/600 \"1인분\"",
+    "card.callout 14px/600 \"발주는 기록만 돼요. 재고와 \""
+   ]
+  },
+  {
+   "fg": "#191F28",
+   "bg": "#F2F4F6",
+   "size": "normal",
+   "observations": 24,
+   "ratio": 15.02,
+   "target": 4.5,
+   "passAA": true,
+   "moved": "foreground",
+   "fix": null,
+   "fixBackground": null,
+   "fixAAA": null,
+   "where": [
+    "(no-card).tab 16px/700 \"전체\"",
+    "sheet-preview-tabs.sheet-preview-tab 16px/800 \"입고\"",
+    "(no-card).tab 16px/700 \"발주 후보 1\""
+   ]
+  },
+  {
+   "fg": "#0B7F58",
+   "bg": "#FFFFFF",
+   "size": "normal",
+   "observations": 22,
+   "ratio": 5.01,
+   "target": 4.5,
+   "passAA": true,
+   "moved": "foreground",
+   "fix": null,
+   "fixBackground": null,
+   "fixAAA": {
+    "hex": "#096647",
+    "ratio": 7,
+    "lightnessFrom": 27.1,
+    "lightnessTo": 21.7
+   },
+   "where": [
+    "analysis-summary-row.span 15px/800 \"순이익\"",
+    "analysis-summary-value.b 16px/900 \"273,599원\"",
+    "sales-value-stack.sales-amount 16px/800 \"273,599원\""
+   ]
+  },
+  {
+   "fg": "#A16000",
+   "bg": "#FFFFFF",
+   "size": "normal",
+   "observations": 21,
+   "ratio": 5.01,
+   "target": 4.5,
+   "passAA": true,
+   "moved": "foreground",
+   "fix": null,
+   "fixBackground": null,
+   "fixAAA": {
+    "hex": "#814D00",
+    "ratio": 7,
+    "lightnessFrom": 31.6,
+    "lightnessTo": 25.3
+   },
+   "where": [
+    "sales-live-copy.em 13px/600 \"지금 재료비 3,254원은 다\"",
+    "sales-live-copy.em 13px/600 \"지금 재료비 1,849원은 다\"",
+    "analysis-summary-value.b 16px/900 \"601,401원\""
+   ]
+  },
+  {
+   "fg": "#0B7F58",
+   "bg": "#E7F7F0",
+   "size": "normal",
+   "observations": 17,
+   "ratio": 4.52,
+   "target": 4.5,
+   "passAA": true,
+   "moved": "foreground",
+   "fix": null,
+   "fixBackground": null,
+   "fixAAA": {
+    "hex": "#085F42",
+    "ratio": 7,
+    "lightnessFrom": 27.1,
+    "lightnessTo": 20.1
+   },
+   "where": [
+    "expo-card-top.expo-status 12px/700 \"여유\"",
+    "card.expo-status 12px/700 \"현재 매출 반영\"",
+    "(no-card).expo-status 12px/700 \"현재 매출 반영\""
+   ]
+  },
+  {
+   "fg": "#333D4B",
+   "bg": "#F2F4F6",
+   "size": "normal",
+   "observations": 16,
+   "ratio": 9.97,
+   "target": 4.5,
+   "passAA": true,
+   "moved": "foreground",
+   "fix": null,
+   "fixBackground": null,
+   "fixAAA": null,
+   "where": [
+    "sales-controls.span 14px/700 \"메뉴 관리\"",
+    "edit-form-label.edit-inline-add 13px/800 \"＋ 새 구매처\"",
+    "edit-form-label.edit-inline-add 13px/800 \"취소\""
+   ]
+  },
+  {
+   "fg": "#A16000",
+   "bg": "#FFF4E5",
+   "size": "normal",
+   "observations": 12,
+   "ratio": 4.61,
+   "target": 4.5,
+   "passAA": true,
+   "moved": "foreground",
+   "fix": null,
+   "fixBackground": null,
+   "fixAAA": {
+    "hex": "#7A4800",
+    "ratio": 7,
+    "lightnessFrom": 31.6,
+    "lightnessTo": 23.8
+   },
+   "where": [
+    "detail-chips.detail-chip 13px/700 \"안전재고 1kg\"",
+    "order-head.expo-status 12px/700 \"안전재고 미달\""
+   ]
+  },
+  {
+   "fg": "#FFFFFF",
+   "bg": "#1470F5",
+   "size": "large",
+   "observations": 9,
+   "ratio": 4.5,
+   "target": 3,
+   "passAA": true,
+   "moved": "background",
+   "fix": null,
+   "fixBackground": null,
+   "fixAAA": null,
+   "where": [
+    "sales-hero.strong 22px/800 \"273,599원\""
+   ]
+  },
+  {
+   "fg": "#4E5968",
+   "bg": "#EBF3FE",
+   "size": "normal",
+   "observations": 8,
+   "ratio": 6.36,
+   "target": 4.5,
+   "passAA": true,
+   "moved": "foreground",
+   "fix": null,
+   "fixBackground": null,
+   "fixAAA": {
+    "hex": "#495361",
+    "ratio": 7,
+    "lightnessFrom": 35.7,
+    "lightnessTo": 33.2
+   },
+   "where": [
+    "tax-preview-row.span 12px/800 \"부가세\"",
+    "tax-preview-row.span 12px/800 \"부가세 제외\""
+   ]
+  },
+  {
+   "fg": "#DA1222",
+   "bg": "#EBF3FE",
+   "size": "normal",
+   "observations": 4,
+   "ratio": 4.59,
+   "target": 4.5,
+   "passAA": true,
+   "moved": "foreground",
+   "fix": null,
+   "fixBackground": null,
+   "fixAAA": {
+    "hex": "#A50E1A",
+    "ratio": 7,
+    "lightnessFrom": 46.3,
+    "lightnessTo": 35.1
+   },
+   "where": [
+    "tax-preview-row.b 13px/900 \"₩1,091\""
+   ]
+  },
+  {
+   "fg": "#191F28",
+   "bg": "#EBF3FE",
+   "size": "normal",
+   "observations": 4,
+   "ratio": 14.81,
+   "target": 4.5,
+   "passAA": true,
+   "moved": "foreground",
+   "fix": null,
+   "fixBackground": null,
+   "fixAAA": null,
+   "where": [
+    "tax-preview-row.b 13px/900 \"₩10,909\""
+   ]
+  },
+  {
+   "fg": "#1470F5",
+   "bg": "#FFFFFF",
+   "size": "large",
+   "observations": 3,
+   "ratio": 4.5,
+   "target": 3,
+   "passAA": true,
+   "moved": "foreground",
+   "fix": null,
+   "fixBackground": null,
+   "fixAAA": null,
+   "where": [
+    "card.b 22px/700 \"28.00원/g\""
+   ]
+  },
+  {
+   "fg": "#DA1222",
+   "bg": "#F9FAFB",
+   "size": "normal",
+   "observations": 2,
+   "ratio": 4.91,
+   "target": 4.5,
+   "passAA": true,
+   "moved": "foreground",
+   "fix": null,
+   "fixBackground": null,
+   "fixAAA": {
+    "hex": "#AE0E1B",
+    "ratio": 7,
+    "lightnessFrom": 46.3,
+    "lightnessTo": 36.8
+   },
+   "where": [
+    "sales-shortage-row.b 14px/700 \"부족 재료 2개\"",
+    "sales-shortage-row.b 14px/700 \"부족 재료 1개\""
+   ]
+  }
+ ],
+ "d1Comparison": [
+  {
+   "role": "green",
+   "doc": "#0E9F6E",
+   "code": "#15B374",
+   "note": "흰 배경 기준",
+   "docRatio": 3.39,
+   "codeRatio": 2.72,
+   "better": "doc",
+   "docPassesAA": false,
+   "codePassesAA": false,
+   "minimumPassing": "#0C875E"
+  },
+  {
+   "role": "amberText",
+   "doc": "#B76E00",
+   "code": "#E07A00",
+   "note": "흰 배경 기준",
+   "docRatio": 4,
+   "codeRatio": 3.02,
+   "better": "doc",
+   "docPassesAA": false,
+   "codePassesAA": false,
+   "minimumPassing": "#AB6700"
+  },
+  {
+   "role": "blueTint",
+   "doc": "#EAF3FF",
+   "code": "#EBF3FE",
+   "note": "배경색이라 전경과 짝지어야 비교된다"
+  }
+ ]
+}

@@ -9,7 +9,7 @@ import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Button, Card, Icon, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { T, won } from '@/theme/tokens';
+import { LAYOUT, COLOR, T, won, TYPE, radius, space } from '@/theme/tokens';
 import { clampDecimals } from '@/lib/num';
 import { useSalesRange } from '@/features/sales/hooks';
 import { addDays } from '@/lib/date';
@@ -49,8 +49,8 @@ function AvgSalesScreenBody({ localDate }: { localDate: string }) {
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <AppHeader title="평균 판매량" onBack={() => safeBack('/recipes/add')} />
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 6, paddingBottom: 24 }}>
-        <Text style={{ fontSize: 14, color: T.sub2, fontWeight: '600', lineHeight: 21, marginBottom: 18 }}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, paddingTop: space.sm, paddingBottom: 24 }}>
+        <Text style={{ fontSize: 14, color: T.sub2, fontWeight: '600', lineHeight: TYPE.caption.lineHeight, marginBottom: space.lg }}>
           한 달에 평균 몇 개나 팔리는지 적어 주세요. 손익 미리보기의 ‘월평균 기준’ 계산에 쓰여요.
         </Text>
 
@@ -62,8 +62,8 @@ function AvgSalesScreenBody({ localDate }: { localDate: string }) {
           onRetry={() => void range.refetch()}
           emptyTitle=""
         >
-          <Card pad={16} style={{ marginBottom: 18 }}>
-            <Text style={{ fontSize: 14, fontWeight: '700', color: T.ter, marginBottom: 8 }}>최근 30일 실제 판매</Text>
+          <Card pad={16} style={{ marginBottom: space.lg }}>
+            <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.text.tertiary, marginBottom: 8 }}>최근 30일 실제 판매</Text>
             {sold ? (
               <>
                 <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 8 }}>
@@ -73,14 +73,14 @@ function AvgSalesScreenBody({ localDate }: { localDate: string }) {
                 <Pressable
                   onPress={() => setValue(String(sold.qty))}
                   accessibilityRole="button" accessibilityLabel="실제 판매량으로 채우기"
-                  style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5, marginTop: 12, paddingVertical: 11, borderRadius: 10, borderWidth: 1, borderColor: T.blue, backgroundColor: T.blueTint }}
+                  style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.xs, marginTop: 12, paddingVertical: space.md, borderRadius: radius.md, borderWidth: 1, borderColor: COLOR.action.primary, backgroundColor: COLOR.action.primaryTint }}
                 >
-                  <Icon name="check" size={16} color={T.blue} sw={2.2} />
-                  <Text style={{ fontSize: 14, fontWeight: '700', color: T.blue }}>이 값으로 채우기</Text>
+                  <Icon name="check" size={16} color={COLOR.action.primary} sw={2.2} />
+                  <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.text.link }}>이 값으로 채우기</Text>
                 </Pressable>
               </>
             ) : (
-              <Text style={{ fontSize: 16, color: T.ter }}>
+              <Text style={{ fontSize: 16, color: COLOR.text.tertiary }}>
                 {recipeId ? '최근 30일 판매 기록이 없어요' : '메뉴를 저장한 뒤에 실제 판매량을 볼 수 있어요'}
               </Text>
             )}
@@ -88,12 +88,12 @@ function AvgSalesScreenBody({ localDate }: { localDate: string }) {
         </QueryState>
 
         {/* 입력 */}
-        <Text style={{ fontSize: 14, fontWeight: '700', color: T.ter, marginBottom: 8 }}>월 평균 판매량</Text>
-        <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 8, backgroundColor: T.surface, borderWidth: 1, borderColor: T.blue, borderRadius: 14, paddingVertical: 18, paddingHorizontal: 18 }}>
-          <Text style={[{ flex: 1, fontSize: 22, fontWeight: '800', color: T.ink, letterSpacing: -0.6 }, NUM]}>{value || '0'}</Text>
+        <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.text.tertiary, marginBottom: 8 }}>월 평균 판매량</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 8, backgroundColor: T.surface, borderWidth: 1, borderColor: COLOR.action.primary, borderRadius: radius.lg, paddingVertical: space.lg, paddingHorizontal: space.lg }}>
+          <Text style={[{ flex: 1, fontSize: 22, fontWeight: '800', color: T.ink, letterSpacing: TYPE.display.letterSpacing }, NUM]}>{value || '0'}</Text>
           <Text style={{ fontSize: 18, fontWeight: '700', color: T.sub2 }}>개/월</Text>
         </View>
-        <View style={{ flexDirection: 'row', gap: 7, marginTop: 11 }}>
+        <View style={{ flexDirection: 'row', gap: space.sm, marginTop: space.md }}>
           {['100', '200', '300', '500'].map((v) => {
             const on = v === value;
             return (
@@ -102,27 +102,27 @@ function AvgSalesScreenBody({ localDate }: { localDate: string }) {
                 onPress={() => setValue(v)}
                 accessibilityRole="button" accessibilityLabel={`${v}개`}
                 accessibilityState={{ selected: on }}
-                style={{ flex: 1, alignItems: 'center', paddingVertical: 10, borderRadius: 10, borderWidth: 1, borderColor: on ? T.blue : T.line, backgroundColor: on ? T.blueTint : T.surface }}
+                style={{ flex: 1, alignItems: 'center', paddingVertical: space.sm, borderRadius: radius.md, borderWidth: 1, borderColor: on ? COLOR.action.primary : T.line, backgroundColor: on ? COLOR.action.primaryTint : T.surface }}
               >
-                <Text style={[{ fontSize: 14, fontWeight: '700', color: on ? T.blue : T.sub }, NUM]}>{v}</Text>
+                <Text style={[{ fontSize: 14, fontWeight: '700', color: on ? COLOR.state.selectedText : T.sub }, NUM]}>{v}</Text>
               </Pressable>
             );
           })}
         </View>
-        <View style={{ flexDirection: 'row', gap: 7, marginTop: 7 }}>
+        <View style={{ flexDirection: 'row', gap: space.sm, marginTop: space.sm }}>
           {['-50', '-10', '+10', '+50'].map((d) => (
             <Pressable
               key={d}
               onPress={() => setValue(String(Math.max(0, monthly + Number(d))))}
               accessibilityRole="button" accessibilityLabel={`${d}개`}
-              style={{ flex: 1, alignItems: 'center', paddingVertical: 10, borderRadius: 10, borderWidth: 1, borderColor: T.line, backgroundColor: T.surface }}
+              style={{ flex: 1, alignItems: 'center', paddingVertical: space.sm, borderRadius: radius.md, borderWidth: 1, borderColor: T.line, backgroundColor: T.surface }}
             >
               <Text style={[{ fontSize: 14, fontWeight: '700', color: T.sub }, NUM]}>{d}</Text>
             </Pressable>
           ))}
         </View>
 
-        <View style={{ marginTop: 20, backgroundColor: T.surface2, borderRadius: 12, paddingVertical: 14, paddingHorizontal: 16 }}>
+        <View style={{ marginTop: 20, backgroundColor: T.surface2, borderRadius: 12, paddingVertical: space.md, paddingHorizontal: 16 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 4 }}>
             <Text style={{ flex: 1, fontSize: 14, color: T.sub2, fontWeight: '600' }}>하루 환산</Text>
             <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>약 {perDay}개/일</Text>
@@ -130,7 +130,7 @@ function AvgSalesScreenBody({ localDate }: { localDate: string }) {
         </View>
       </ScrollView>
 
-      <View style={{ paddingHorizontal: 20, paddingTop: 11, paddingBottom: 28, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
+      <View style={{ paddingHorizontal: 20, paddingTop: space.md, paddingBottom: LAYOUT.scroll.end, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
         <Button
           kind="primary" size="lg" full
           onPress={() => { patch({ avgMonthlySales: clampDecimals(value, 0) }); safeBack('/recipes/add'); }}

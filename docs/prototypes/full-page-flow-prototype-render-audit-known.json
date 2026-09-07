@@ -1,0 +1,47 @@
+{
+  "_설명": [
+    "렌더 감사에서 0 이어야 하는 지표를 위반하지만, 아직 고치지 않기로 한 항목의 명시적 목록이다.",
+    "design-sync-check.ps1 이 감사 결과의 violations 와 이 목록을 양방향으로 대조한다.",
+    "  - 목록에 없는 위반이 나오면 FAIL (새 회귀를 막는다)",
+    "  - 목록에 있는데 더 이상 재현되지 않으면 FAIL (낡은 예외를 강제로 지우게 한다)",
+    "따라서 이 파일은 '무시 목록'이 아니라 '고쳐야 할 것의 정확한 잔여 목록'이다.",
+    "새 항목을 넣을 때는 원인과 담당 문서를 반드시 함께 적는다.",
+    "각 항목은 **크기 상한(maxPx)** 을 함께 갖는다. 존재 여부만 대조하면 5px 넘침이 50px 이 돼도 같은 1건이라 통과한다. 게이트는 실측 크기가 maxPx 를 넘으면 악화로 보아 FAIL 한다."
+  ],
+  "_형식": "id · pass · metric · targets · maxPx · 원인 · 근거 · 상태 · 추적",
+  "knownDefects": [
+    {
+      "id": "KD-001",
+      "pass": "mobile320t2",
+      "metric": "phoneOverflow",
+      "targets": [
+        "screen:my_vendors",
+        "popup:vendor_add@my_vendors",
+        "popup:vendor_edit@my_vendors",
+        "popup:vendor_delete@my_vendors"
+      ],
+      "원인": "글자 200% 확대 시 .header-icon(고정 40x40 grid) 안의 ＋ 글리프가 53px 로 커지는데 축소·클립되지 않아 .header 가 325px 이 된다. 320px viewport 를 5px 넘긴다.",
+      "근거": "PRT-189 실측. .header scrollWidth 325 / clientWidth 320, .header-icon scrollWidth 53 / clientWidth 40, overflow visible.",
+      "상태": "OPEN — 제품 판단 대기",
+      "판단이_필요한_이유": "큰 글꼴에서 아이콘 글리프를 함께 키울지(박스를 늘림), 아이콘은 고정할지(글리프만 고정), 클립할지는 디자인 결정이다. 솔라가 임의로 정하지 않는다.",
+      "추적": "현재 확정안 2.14 현재 한계 · UI 가이드 부록 C",
+      "maxPx": 5,
+      "maxPx_설명": "mobile320t2 의 phoneOverflowPx 상한. 실측 5px(325 - 320). 이보다 커지면 악화다."
+    },
+    {
+      "id": "KD-002",
+      "pass": "mobile320z2",
+      "metric": "viewportEscapees",
+      "targets": [
+        "popup:option_more@options"
+      ],
+      "원인": "CSS 전체 200% 확대에서 .option-popover-layer 의 used width 가 160px 로 잡히고, 그 안의 .option-popover 가 left:-38px 로 배치돼 화면 밖(left -76px)까지 나간다. 독립 생성 레이어라 공용 Layer 의 폭·경계 계약을 받지 않는다.",
+      "근거": "PRT-189 실측. viewport 320, .option-popover rect left -76 right 292, layer computed width 160px 인데 left:0/right:0.",
+      "상태": "OPEN — 부록 C layer:popover-wrapper 로 이미 추적 중인 문제의 새 증거",
+      "판단이_필요한_이유": "공용 Layer 래퍼로 옮기는 작업 자체가 별도 회차다. 이 감사 회차에서 구조를 바꾸지 않는다.",
+      "추적": "UI 가이드 부록 C layer:popover-wrapper",
+      "maxPx": 76,
+      "maxPx_설명": "mobile320z2 의 요소 좌·우 이탈 px 상한. 실측 좌측 76px. 이보다 커지면 악화다."
+    }
+  ]
+}

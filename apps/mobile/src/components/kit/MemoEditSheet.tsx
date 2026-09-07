@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react';
 import { Text, TextInput, View } from 'react-native';
 import { Button } from './Button';
 import { Sheet } from './Sheet';
-import { T } from '@/theme/tokens';
+import { COLOR, T, TYPE, space } from '@/theme/tokens';
 
 export function MemoEditSheet({ visible, value, maxLength = 100, saving = false, onClose, onSave }: {
   visible: boolean;
@@ -37,14 +37,14 @@ export function MemoEditSheet({ visible, value, maxLength = 100, saving = false,
         multiline
         autoFocus
         placeholder="메모를 입력하세요"
-        placeholderTextColor={T.ter}
-        style={{ backgroundColor: T.surface2, borderRadius: 12, padding: 14, fontSize: 16, lineHeight: 22, color: T.ink, minHeight: 100, textAlignVertical: 'top' }}
+        placeholderTextColor={COLOR.text.tertiary}
+        style={{ backgroundColor: T.surface2, borderRadius: 12, padding: space.md, fontSize: 16, lineHeight: TYPE.body.lineHeight, color: T.ink, minHeight: 100, textAlignVertical: 'top' }}
       />
-      <Text style={{ textAlign: 'right', fontSize: 13, color: T.ter, marginTop: 8 }}>
+      <Text style={{ textAlign: 'right', fontSize: 13, color: COLOR.text.tertiary, marginTop: 8 }}>
         {draft.length} / {maxLength}
       </Text>
 
-      <View style={{ flexDirection: 'row', gap: 9, marginTop: 16 }}>
+      <View style={{ flexDirection: 'row', gap: space.sm, marginTop: 16 }}>
         <Button kind="gray" size="lg" disabled={saving} onPress={onClose} style={{ flex: 1 }}>
           취소
         </Button>

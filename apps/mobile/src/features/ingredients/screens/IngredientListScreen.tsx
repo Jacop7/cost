@@ -4,7 +4,7 @@ import { View, Text, ScrollView, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ScreenShell, ScrollTabs, Icon, FAB, SearchBar, SortChip, SortSheet, QueryState, type SortOption } from '../../../components/kit';
-import { T } from '../../../theme/tokens';
+import { LAYOUT, COLOR, T, TYPE, radius, space } from '../../../theme/tokens';
 import { useIngredientList, type IngredientRow } from '../hooks';
 import { useSettingsLists } from '@/features/master-data/hooks';
 import { IngCard, stockStateOf } from '../components/IngCard';
@@ -79,25 +79,27 @@ export function IngredientListScreen() {
     <ScreenShell
       header={
         <View style={{ paddingTop: insets.top, backgroundColor: T.bg }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 20, paddingRight: 12, paddingTop: 6, paddingBottom: 12 }}>
-            <Text style={{ flex: 1, fontSize: 22, fontWeight: '800', color: T.ink, letterSpacing: -0.6 }}>식재료</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 20, paddingRight: 12, paddingTop: space.sm, paddingBottom: 12 }}>
+            <Text style={{ flex: 1, fontSize: 22, fontWeight: '800', color: T.ink, letterSpacing: TYPE.display.letterSpacing }}>식재료</Text>
             <Pressable
               onPress={() => setSearching((v) => !v)}
+              hitSlop={{ top: 2, bottom: 2, left: 4, right: 0 }}
               accessibilityRole="button"
               accessibilityLabel="검색"
               accessibilityState={{ selected: searching }}
               style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}
             >
-              <Icon name="search" size={23} color={searching ? T.blue : T.ink2} />
+              <Icon name="search" size={23} color={searching ? COLOR.action.primary : T.ink2} />
             </Pressable>
             <Pressable
               onPress={() => router.push('/my/notifications')}
+              hitSlop={{ top: 2, bottom: 2, left: 0, right: 4 }}
               accessibilityRole="button"
               accessibilityLabel="알림"
               style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}
             >
               <Icon name="bell" size={24} color={T.ink2} />
-              <View style={{ position: 'absolute', top: 9, right: 10, width: 7, height: 7, borderRadius: 4, backgroundColor: T.red, borderWidth: 1.5, borderColor: T.surface }} />
+              <View style={{ position: 'absolute', top: 9, right: 10, width: 7, height: 7, borderRadius: radius.full, backgroundColor: COLOR.status.negative, borderWidth: 1.5, borderColor: T.surface }} />
             </Pressable>
           </View>
           {searching ? (
@@ -109,32 +111,32 @@ export function IngredientListScreen() {
       <View style={{ borderBottomWidth: 1, borderBottomColor: T.line3 }}>
         <ScrollTabs tabs={tabs} active={cat} onChange={setCat} />
       </View>
-      <View style={{ paddingHorizontal: 20, paddingTop: 12, paddingBottom: 10 }}>
+      <View style={{ paddingHorizontal: 20, paddingTop: 12, paddingBottom: space.sm }}>
         <SortChip label={sortLabel} onPress={() => setSortOpen(true)} />
       </View>
-      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 104, gap: 10 }} showsVerticalScrollIndicator={false}>
+      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: LAYOUT.scroll.endWithFab, gap: space.sm }} showsVerticalScrollIndicator={false}>
         {outList.length > 0 ? (
           <View
             style={{
               flexDirection: 'row',
               alignItems: 'center',
-              gap: 6,
-              backgroundColor: T.redTint,
+              gap: space.sm,
+              backgroundColor: COLOR.status.negativeTint,
               borderWidth: 1,
-              borderColor: T.red,
-              borderRadius: 10,
-              paddingVertical: 10,
+              borderColor: COLOR.status.negative,
+              borderRadius: radius.md,
+              paddingVertical: space.sm,
               paddingHorizontal: 12,
             }}
           >
-            <Icon name="warn" size={16} color={T.red} />
+            <Icon name="warn" size={16} color={COLOR.status.negative} />
             <View style={{ flex: 1, minWidth: 0 }}>
-              <Text style={{ fontSize: 16, fontWeight: '700', color: T.red }} numberOfLines={1}>
+              <Text style={{ fontSize: 16, fontWeight: '700', color: COLOR.status.negative }} numberOfLines={1}>
                 소진 {outList.length} — {outList.map((g) => g.name).join(', ')}
               </Text>
               {/* 소진 임박은 같은 줄에서 색을 달리해 이미 소진된 재료와 구분한다. */}
               {lowCount > 0 ? (
-                <Text style={{ fontSize: 14, fontWeight: '600', color: T.amberText, marginTop: 2 }}>
+                <Text style={{ fontSize: 14, fontWeight: '600', color: COLOR.status.caution, marginTop: space.xs }}>
                   소진 임박 {lowCount}종은 슬슬 시켜 두세요
                 </Text>
               ) : null}

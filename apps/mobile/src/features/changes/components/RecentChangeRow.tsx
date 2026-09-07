@@ -8,12 +8,12 @@
  */
 import { Pressable, Text, View } from 'react-native';
 import { Icon } from '@/components/kit';
-import { T } from '@/theme/tokens';
+import { COLOR, T, radius, space, TYPE } from '@/theme/tokens';
 import { changeTime, stateLabel, type LastChange } from '../hooks';
 
 const TONE = {
-  green: { fg: T.green, bg: T.greenTint },
-  amber: { fg: T.amberText, bg: T.amberTint },
+  green: { fg: COLOR.status.positive, bg: COLOR.status.positiveTint },
+  amber: { fg: COLOR.status.caution, bg: COLOR.status.cautionTint },
   neutral: { fg: T.sub2, bg: T.line2 },
 } as const;
 
@@ -37,8 +37,8 @@ export function RecentChangeRow({ change, onPress }: { change: LastChange; onPre
         flexDirection: 'row',
         alignItems: 'center',
         gap: 8,
-        marginTop: 13,
-        paddingTop: 13,
+        marginTop: space.md,
+        paddingTop: space.md,
         borderTopWidth: 1,
         borderTopColor: T.line2,
       }}
@@ -46,11 +46,11 @@ export function RecentChangeRow({ change, onPress }: { change: LastChange; onPre
       {/* 되돌아오는 화살표 — "값이 갱신됐다"를 한 글자로 말한다 */}
       <View
         style={{
-          width: 22, height: 22, borderRadius: 11,
-          alignItems: 'center', justifyContent: 'center', backgroundColor: T.blueTint,
+          width: 22, height: 22, borderRadius: radius.md,
+          alignItems: 'center', justifyContent: 'center', backgroundColor: COLOR.action.primaryTint,
         }}
       >
-        <Icon name="history" size={14} color={T.blue} sw={2.2} />
+        <Icon name="history" size={14} color={COLOR.action.primary} sw={2.2} />
       </View>
 
       <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub }} numberOfLines={1}>
@@ -60,17 +60,17 @@ export function RecentChangeRow({ change, onPress }: { change: LastChange; onPre
       {/* ⚠ 한 줄을 지켜야 한다. 배지가 길어지면 이름 쪽이 아니라 여기가 줄어든다. */}
       <View style={{ flex: 1, minWidth: 0, alignItems: 'flex-start' }}>
         {!change.hasHistory ? (
-          <Text style={{ fontSize: 13, color: T.ter }} numberOfLines={1}>아직 수정 없음</Text>
+          <Text style={{ fontSize: 13, color: COLOR.text.tertiary }} numberOfLines={1}>아직 수정 없음</Text>
         ) : s && c ? (
-          <View style={{ paddingHorizontal: 7, paddingVertical: 3, borderRadius: 6, backgroundColor: c.bg }}>
-            <Text style={{ fontSize: 12, fontWeight: '700', color: c.fg }} numberOfLines={1}>
+          <View style={{ paddingHorizontal: space.sm, paddingVertical: space.xs, borderRadius: radius.sm, backgroundColor: c.bg }}>
+            <Text style={{ fontSize: TYPE.captionSm.fontSize, fontWeight: '700', color: c.fg }} numberOfLines={1}>
               {s.text}
             </Text>
           </View>
         ) : null}
       </View>
 
-      <Icon name="chevron" size={16} color={T.ter} />
+      <Icon name="chevron" size={16} color={COLOR.text.tertiary} />
     </Pressable>
   );
 }

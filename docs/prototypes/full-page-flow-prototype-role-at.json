@@ -1,0 +1,20 @@
+{
+  "manifest": {
+    "script": "docs/prototypes/full-page-flow-prototype-role-measure.mjs",
+    "scriptSha256": "68fc962d2772e415864c3400ffcb3b94cd6a2244d42a3b8a35337b84aaeb97d9",
+    "auditSha256": "fd04e87a1920503304cd7731aa65fbed3a4d3f430e17eca7ff46a51408b8b494",
+    "selector": "typography:fontSize:15",
+    "node": "v24.15.0",
+    "generatedAt": "2026-09-06T07:49:29.300Z",
+    "판정": "역할 맥락은 눈이 아니라 원소·조상 사슬·형제 속성으로 읽는다."
+  },
+  "counts": {
+    "total": 0,
+    "input": 0,
+    "pressable": 0,
+    "plain": 0,
+    "pressSingleText": 0,
+    "pressMultiText": 0
+  },
+  "rows": []
+}

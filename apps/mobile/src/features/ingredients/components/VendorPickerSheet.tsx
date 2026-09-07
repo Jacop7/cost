@@ -5,7 +5,7 @@
 import { useState } from 'react';
 import { Alert, ScrollView, Text, View, Pressable } from 'react-native';
 import { Button, Icon, Input, Sheet, QueryState } from '../../../components/kit';
-import { T } from '../../../theme/tokens';
+import { COLOR, T, space } from '../../../theme/tokens';
 import { useSaveVendor, useSettingsLists } from '@/features/master-data/hooks';
 
 export function VendorPickerSheet({
@@ -57,13 +57,13 @@ export function VendorPickerSheet({
               accessibilityRole="button" accessibilityLabel="거래처 없음"
               accessibilityState={{ selected: !value }}
               style={{
-                flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 14, paddingHorizontal: 16,
-                borderRadius: 12, backgroundColor: !value ? T.blueTint : T.surface,
-                borderWidth: 1, borderColor: !value ? T.blue : T.line,
+                flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: space.md, paddingHorizontal: 16,
+                borderRadius: 12, backgroundColor: !value ? COLOR.action.primaryTint : T.surface,
+                borderWidth: 1, borderColor: !value ? COLOR.action.primary : T.line,
               }}
             >
-              <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: !value ? T.blue : T.ter }}>지정 안 함</Text>
-              {!value ? <Icon name="check" size={17} color={T.blue} sw={2.4} /> : null}
+              <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: !value ? COLOR.state.selectedText : COLOR.text.tertiary }}>지정 안 함</Text>
+              {!value ? <Icon name="check" size={17} color={COLOR.action.primary} sw={2.4} /> : null}
             </Pressable>
           ) : null}
 
@@ -76,25 +76,25 @@ export function VendorPickerSheet({
                 accessibilityRole="button" accessibilityLabel={v.name}
                 accessibilityState={{ selected: on }}
                 style={{
-                  flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 14, paddingHorizontal: 16,
-                  borderRadius: 12, backgroundColor: on ? T.blueTint : T.surface,
-                  borderWidth: 1, borderColor: on ? T.blue : T.line,
+                  flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: space.md, paddingHorizontal: 16,
+                  borderRadius: 12, backgroundColor: on ? COLOR.action.primaryTint : T.surface,
+                  borderWidth: 1, borderColor: on ? COLOR.action.primary : T.line,
                 }}
               >
                 <View style={{ flex: 1, minWidth: 0 }}>
-                  <Text style={{ fontSize: 16, fontWeight: '700', color: on ? T.blue : T.ink2 }}>{v.name}</Text>
-                  {v.usedCount > 0 ? <Text style={{ fontSize: 14, color: T.ter, marginTop: 2 }}>발주 {v.usedCount}건</Text> : null}
+                  <Text style={{ fontSize: 16, fontWeight: '700', color: on ? COLOR.state.selectedText : T.ink2 }}>{v.name}</Text>
+                  {v.usedCount > 0 ? <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.xs }}>발주 {v.usedCount}건</Text> : null}
                 </View>
-                {on ? <Icon name="check" size={17} color={T.blue} sw={2.4} /> : null}
+                {on ? <Icon name="check" size={17} color={COLOR.action.primary} sw={2.4} /> : null}
               </Pressable>
             );
           })}
         </ScrollView>
 
         {adding ? (
-          <View style={{ gap: 10, paddingTop: 8, borderTopWidth: 1, borderTopColor: T.line2 }}>
+          <View style={{ gap: space.sm, paddingTop: 8, borderTopWidth: 1, borderTopColor: T.line2 }}>
             <Input value={name} onChangeText={setName} placeholder="거래처 이름" accessibilityLabel="새 거래처 이름" returnKeyType="done" onSubmitEditing={add} />
-            <View style={{ flexDirection: 'row', gap: 9 }}>
+            <View style={{ flexDirection: 'row', gap: space.sm }}>
               <View style={{ flex: 1 }}><Button kind="ghost" size="lg" full onPress={() => { setAdding(false); setName(''); }}>취소</Button></View>
               <View style={{ flex: 2 }}><Button kind="primary" size="lg" full loading={saveVendor.isPending} disabled={name.trim() === ''} onPress={add}>추가</Button></View>
             </View>
@@ -103,10 +103,10 @@ export function VendorPickerSheet({
           <Pressable
             onPress={() => setAdding(true)}
             accessibilityRole="button" accessibilityLabel="거래처 추가"
-            style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5, paddingVertical: 13, borderRadius: 12, borderWidth: 1, borderColor: T.blue, backgroundColor: T.blueTint }}
+            style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.xs, paddingVertical: space.md, borderRadius: 12, borderWidth: 1, borderColor: COLOR.action.primary, backgroundColor: COLOR.action.primaryTint }}
           >
-            <Icon name="plus" size={18} color={T.blue} sw={2.2} />
-            <Text style={{ fontSize: 16, fontWeight: '700', color: T.blue }}>거래처 추가</Text>
+            <Icon name="plus" size={18} color={COLOR.action.primary} sw={2.2} />
+            <Text style={{ fontSize: 16, fontWeight: '700', color: COLOR.text.link }}>거래처 추가</Text>
           </Pressable>
         )}
       </QueryState>

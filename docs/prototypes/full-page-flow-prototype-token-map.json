@@ -1,0 +1,410 @@
+{
+  "$schema": "token-map/1",
+  "status": "PROVISIONAL",
+  "note": "docs/디자인-토큰-3계층-값-매핑-기획서.md 의 결정을 기계가 읽을 수 있게 옮긴 것이다. 문서가 정본이고 이 파일은 그 사본이다. 검수(솔·페이블) 확정 전까지 status 는 PROVISIONAL 이며, 게이트는 이 파일이 PROVISIONAL 인 동안 미매핑을 FAIL 로 올리지 않고 보고만 한다. 2026-09-04 갱신: 검수(솔·페이블) 지적 반영. nudge 스케일은 폐기했다 — 1·6px 관측의 대부분이 브라우저 기본 버튼 padding 이었고, 남은 author 선언은 값·역할 모두 space 로 흡수된다.",
+  "sourcePlan": "docs/디자인-토큰-3계층-값-매핑-기획서.md",
+  "primitive": {
+    "_정본": "apps/mobile/src/theme/tokens.ts. 이 칸에는 코드에 실재하는 값만 넣는다. 없는 값을 여기 적으면 두 번째 정본이 생긴다.",
+    "typeSize": [
+      22,
+      20,
+      18,
+      16,
+      14,
+      13
+    ],
+    "typeWeight": [
+      400,
+      600,
+      700,
+      800
+    ],
+    "space": [
+      4,
+      8,
+      12,
+      16,
+      20,
+      24
+    ],
+    "radius": {
+      "sm": 8,
+      "md": 12,
+      "lg": 16,
+      "xl": 20,
+      "full": 999
+    },
+    "color": {
+      "ink.900": "rgb(25, 31, 40)",
+      "ink.700": "rgb(51, 61, 75)",
+      "ink.500": "rgb(78, 89, 104)",
+      "ink.300": "rgb(139, 149, 161)",
+      "text.tertiary": "rgb(102, 113, 126)",
+      "white": "rgb(255, 255, 255)",
+      "gray.50": "rgb(249, 250, 251)",
+      "gray.100": "rgb(242, 244, 246)",
+      "gray.200": "rgb(229, 232, 235)",
+      "gray.300": "rgb(213, 219, 225)",
+      "brand.primary": "rgb(49, 130, 246)",
+      "action.primary": "rgb(20, 112, 245)",
+      "action.onTint": "rgb(20, 101, 219)",
+      "action.tint": "rgb(235, 243, 254)",
+      "blue.line": "rgb(184, 212, 255)",
+      "disabledPrimary": "rgb(106, 120, 135)",
+      "red.500": "rgb(218, 18, 34)",
+      "red.tint": "rgb(254, 236, 236)",
+      "red.line": "rgb(255, 198, 198)",
+      "green.500": "rgb(11, 127, 88)",
+      "green.tint": "rgb(231, 247, 240)",
+      "amber.text": "rgb(161, 96, 0)",
+      "amber.tint": "rgb(255, 244, 229)",
+      "scrim": "rgba(0, 0, 0, 0.42)",
+      "chart.1": "rgb(122, 134, 148)",
+      "chart.2": "rgb(197, 204, 211)"
+    },
+    "shadow": {
+      "card": "rgba(0, 0, 0, 0.04) 0px 1px 3px 0px"
+    }
+  },
+  "converge": {
+    "note": "측정된 값 → 어느 primitive 로 보낼지. 여기 없는 값은 미매핑이다.",
+    "space": {
+      "5": 4,
+      "7": 8,
+      "9": 8,
+      "10": 8,
+      "11": 12,
+      "13": 12,
+      "14": 12,
+      "15": 12,
+      "17": 16,
+      "18": 16,
+      "19": 20,
+      "22": 24,
+      "3": 4,
+      "6": 8
+    },
+    "radius": {
+      "5": 8,
+      "6": 8,
+      "7": 8,
+      "9": 12,
+      "10": 12,
+      "11": 12,
+      "13": 12,
+      "14": 16,
+      "17": 20,
+      "18": 20,
+      "22": 20,
+      "28": 999
+    },
+    "typeSize": {
+      "10": 13,
+      "11": 13,
+      "12": 13,
+      "15": "역할별 — caption 14 또는 body 16",
+      "19": 20
+    },
+    "color": {
+      "rgb(244, 248, 255)": "action.tint",
+      "rgb(159, 196, 255)": "blue.line",
+      "rgb(201, 221, 255)": "blue.line",
+      "rgb(209, 214, 219)": "gray.200",
+      "rgb(217, 222, 228)": "gray.200"
+    },
+    "shadow": {
+      "rgba(25, 31, 40, 0.22) 0px 18px 50px 0px": "sheet",
+      "rgba(25, 31, 40, 0.18) 0px 10px 28px 0px": "sheet"
+    },
+    "iconSize": {
+      "12": 16,
+      "13": 16,
+      "14": 16,
+      "17": 16,
+      "18": 20,
+      "19": 20,
+      "21": 20,
+      "23": 24,
+      "25": 24,
+      "29": 24
+    },
+    "controlHeight": {
+      "30": 32,
+      "34": 32,
+      "36": 38,
+      "40": 38,
+      "41": 38,
+      "42": 44,
+      "43": 44,
+      "45": 44,
+      "46": 48,
+      "47": 48,
+      "50": 48,
+      "51": 48,
+      "52": 48,
+      "28": 32,
+      "64": 48
+    },
+    "rowHeight": {
+      "55": 60,
+      "56": 60,
+      "62": 60,
+      "63": 60,
+      "73": 76
+    },
+    "lineHeight": {
+      "21.6px": "default",
+      "18.2px": "default",
+      "19.6px": "default",
+      "22px": "default",
+      "26.6px": "default",
+      "16.2px": "default",
+      "21px": "relaxed",
+      "20px": "default",
+      "12px": "tight",
+      "21.7px": "default",
+      "18.9px": "default",
+      "21.75px": "default",
+      "18px": "default",
+      "17.55px": "default",
+      "24.3px": "default",
+      "20.3px": "default",
+      "23px": "default"
+    },
+    "_spaceNote": {
+      "3→4": "값↔보조 설명 사이 margin-top 이 971회 중 대부분. 단일 역할이고 **세로**라 폭에 영향이 없다. 의도된 시각 변화이며 selector 별 전후 비교를 P2 승인 근거로 둔다",
+      "6→8": "gap(row) 이 대부분이고 flex 가로 gap 이므로 **폭이 는다**. 의도된 시각 변화이며 P2 후 글로벌 재측정에서 atRisk 증가 0 을 확인해야 확정된다",
+      "일괄 수렴 안 함": "1·2px 은 값이 아니라 관계로 판정했다. 둘 다 컴포넌트 소유 광학 보정이지 레이아웃 여백이 아니다"
+    }
+  },
+  "componentOwned": {
+    "note": "컴포넌트 층이 소유하는 단일 역할 고유값. 스케일에 넣지 않는다.",
+    "space": [
+      {
+        "value": 104,
+        "owner": "phone > content",
+        "reason": "하단 탭바 회피 공간"
+      },
+      {
+        "value": 44,
+        "owner": "callout 좌측 padding",
+        "reason": "Notice 아이콘 들여쓰기"
+      },
+      {
+        "value": 40,
+        "owner": "order-empty-form > order-empty-message",
+        "reason": "빈 상태 여백"
+      },
+      {
+        "value": 2,
+        "owner": "Field 라벨 좌우 정렬 — edit-form-row>edit-form-label(246) · stock-add-field>stock-add-label(58) · stock-result-field>stock-add-label(52) · content>tax-section-label(48) · content>sales-section(40)",
+        "side": "좌우(mr/ml)",
+        "observations": 444,
+        "reason": "입력 상자 자신의 안쪽 여백만큼 라벨을 좌우로 밀어 **글자 시작선을 맞추는 광학 정렬**이다. 4px 로 늘리면 라벨과 입력의 시작선이 어긋난다. 레이아웃 여백이 아니므로 space 로 보내지 않는다"
+      },
+      {
+        "value": 2,
+        "owner": "stock-option-choice 좌우 padding",
+        "side": "좌우(pr/pl)",
+        "observations": 336,
+        "reason": "칩 안쪽 좌우 인셋. 늘리면 본문 폭이 준다 — 기획서 §3 의 '가로 padding 은 줄이는 방향만 안전' 에 걸린다"
+      },
+      {
+        "value": 2,
+        "owner": "category-row>category-arrows gap",
+        "side": "row",
+        "observations": 96,
+        "reason": "위·아래 화살표 두 개 사이. 실행서 §3.6 이 28×20 규격을 명시적으로 허용한 자리다"
+      },
+      {
+        "value": 1,
+        "owner": "content>category-note(20) · div>sheet-section 좌우(8) · edit-form>expo-manage-link(3)",
+        "observations": 31,
+        "reason": "31관측 4관계뿐인 일회성 미세 여백. 스케일로 승격할 근거가 없다"
+      }
+    ],
+    "radius": [
+      {
+        "value": 3,
+        "owner": "sheet handle",
+        "reason": "핸들 고유 형태"
+      },
+      {
+        "value": 4,
+        "owner": "sheet-preview-handle",
+        "reason": "핸들 고유 형태"
+      },
+      {
+        "value": "50%",
+        "owner": ".choice-check · .donut-static · .ingredient-note-icon",
+        "reason": "원형. 스케일 값이 아니라 형태다"
+      }
+    ],
+    "controlHeight": [
+      {
+        "value": 54,
+        "owner": ".expo-fab",
+        "reason": "FAB 는 독립 규격. 실행서에 별도 계약이 없어 현재 값을 고유값으로 잠근다"
+      }
+    ],
+    "cardHeight": [
+      {
+        "value": 104,
+        "owner": ".sales-hero",
+        "reason": "대표 지표 카드"
+      },
+      {
+        "value": 106,
+        "owner": ".memo-preview",
+        "reason": "메모 미리보기"
+      },
+      {
+        "value": 108,
+        "owner": ".expo-list-card",
+        "reason": "목록 카드 min-height"
+      }
+    ]
+  },
+  "defects": {
+    "note": "토큰 결정이 아니라 정정 대상. P2 에서 고친다. 매핑 판정에서 제외하되 개수를 보고한다.",
+    "uaButtonReset": {
+      "selectors": [
+        ".sales-menu-row",
+        ".edit-form-row"
+      ],
+      "values": [
+        "rgb(0, 0, 0)",
+        "rgb(239, 239, 239)"
+      ],
+      "reason": "<button> 인데 border:0·background·color:inherit 를 빼먹어 브라우저 기본 버튼 스타일이 남았다",
+      "declarations": 2,
+      "status": "RESOLVED — PRT-194 에서 고쳤다. 회귀 감시용으로 남긴다"
+    },
+    "uaCheckbox": {
+      "values": [
+        "13.3333px"
+      ],
+      "reason": "<input type=checkbox> 의 UA 기본 font-size. 텍스트가 아니다"
+    },
+    "inheritedBolder": {
+      "rule": "<b>·<strong> 에 font-weight 를 선언하지 않아 브라우저 기본 `bolder` 가 적용되고, 부모가 600·700·800 이면 computed 900 이 된다. 실행서 §3.2 가 금지한 굵기다.",
+      "computedWeight": "900",
+      "observations": 188,
+      "diagnosis": "188건 전부 선언값이 없다. 부모 굵기별로 expo-recipe-row(600) 84 · sales-section(800) 20 · tax-summary-row(700) 12 등",
+      "visualEffect": "Pretendard 는 400·600·700·800 face 만 있으므로 900 은 800 face 로 해석된다. 눈에 보이는 차이는 없지만 부모보다 두 단계 굵은 face 가 선택된다(부모 600 → 800 face).",
+      "whyRenderAuditMissedIt": "render-audit 의 금지 굵기 검사는 [L6] 에서 computed 900 을 `b/strong 의 브라우저 bolder 파생` 이라며 선언값 검사로만 좁혔다. 그 판단 자체는 맞다 — 그것은 '누가 900 을 선언했나' 를 묻는 검사다. 다만 그 결과 '무엇이 900 으로 렌더되나' 를 아무도 안 보고 있었다. 두 검사는 서로 다른 질문이고 둘 다 필요하다.",
+      "fix": "굵기를 태그가 아니라 역할로 선언한다. P2 에서 함께 고친다"
+    },
+    "unspecifiedLineHeight": {
+      "rule": "line-height 를 선언하지 않아 브라우저 기본 `normal` 이 적용된다. `normal` 은 글꼴 메트릭에 따라 달라지고 **웹과 React Native 의 결과가 같지 않다.**",
+      "value": "normal",
+      "observations": 5908,
+      "share": "타이포 관측의 84.7%",
+      "diagnosis": "같은 역할이 두 값을 갖는다 — 16px/700 은 normal 1,648회와 21.6px 491회, 13px/600 은 normal 561회와 18.2px 170회, 14px/600 은 normal 362회와 19.6px 127회·20px 30회",
+      "fix": "역할마다 명시 행간을 선언한다. 값은 primitive.lineHeight 세 단계"
+    }
+  },
+  "open": {
+    "note": "기획서 §8.2. 사람이 정해야 하는 것만 남긴다. 여기 나열된 축의 값은 잠정이며 검사기가 provisionallyMapped 로 따로 센다.",
+    "D-1′": {
+      "제목": "정본 색 자체를 바꿀 것인가(실행서·프로토타입 vs tokens.ts 3건)",
+      "축": [
+        "color"
+      ],
+      "선행": "대비 측정 + 디자인·제품 소유자 결정"
+    },
+    "D-2": {
+      "제목": "글자 확대와 긴 번역의 보상 수단 — 탭 라벨·sales-menu-sub·header.title",
+      "축": [],
+      "선행": "소유자 결정"
+    },
+    "D-11": {
+      "제목": "tokens.ts 확장 승인 — lineHeight·letterSpacing·iconSize·controlHeight·rowHeight·shadow",
+      "축": [
+        "lineHeight",
+        "shadow",
+        "icon",
+        "control"
+      ],
+      "선행": "정본 소유자 승인"
+    }
+  },
+  "excluded": {
+    "note": "컨트롤·행 규격이 아니어서 매핑 대상이 아닌 것. 제외 이유를 값마다 적는다.",
+    "nonIntegerHeight": {
+      "rule": "정수가 아닌 높이는 min-height 에 내용이 더해진 결과지 정해 둔 값이 아니다",
+      "values": [
+        66.78,
+        95.19,
+        96.19
+      ]
+    },
+    "inputInsideShell": {
+      "rule": "<input> 자신의 높이는 컨트롤 높이가 아니다. 실제 컨트롤은 입력을 감싼 shell(.prototype-input-shell·.edit-form-box)이다. 측정기 한계(기획서 §9-1)",
+      "values": [
+        15,
+        17,
+        18,
+        20,
+        21
+      ]
+    },
+    "contentDrivenCardHeight": {
+      "rule": "내용에 따라 늘어난 카드 높이. min-height 는 componentOwned 에 있다",
+      "values": [
+        148
+      ]
+    }
+  },
+  "retired": {
+    "note": "초판에서 열었다가 결론이 난 것. 다시 열지 않기 위해 남긴다.",
+    "D-3": "뱃지 12px 신설 → 폐기. 가이드가 captionSm 13/600 으로 이미 계약했다",
+    "D-4": "nudge 스케일 분리 → 폐기. 다만 '전부 space 로 보낸다' 는 결론은 아니다. 1·2px 은 컴포넌트 소유 광학 보정으로 남고 3·6px 만 space 로 간다",
+    "D-5": "19px Sheet 제목의 title 승격 → 승격으로 결론",
+    "D-6": "모션·z-index 범위 → P1c 로 분리하는 것으로 결론",
+    "D-7": "상속 bolder 188건 → 닫음. 전역 b/strong 규칙 대신 selector 역할별 매핑. 값이 있는 자리는 type.body(700), 문장 강조는 부모와 같은 굵기를 명시",
+    "D-8": "행간 → 부분적으로 닫음. 뱃지 1.0 은 컴포넌트 소유, 날짜·필터는 기본 1.4, 1.35 는 1.4 로 합침. 값의 tokens.ts 등재는 D-11",
+    "D-9": "그림자 → 부분적으로 닫음. 0 10px 28px 1회는 sheet 와 중복이라 흡수, sliderThumb 은 0회 관측이라 미구현. bottomBar 신규 역할 추가는 D-11",
+    "D-10": "단계 순서 → 닫음. P1b → 일반 P2. 예외는 기존 권위와 무관한 단독 정정뿐",
+    "D-1(집행 부분)": "프로토타입 색을 tokens.ts 값으로 수렴시키는 집행은 솔라가 한다. 정본은 이미 코드다(가이드 §1.2)"
+  },
+  "proposedTokensExtension": {
+    "_note": "tokens.ts 에 **없는** 값이다. 필요하다고 판단했지만 정본 확장은 권위 변경이므로 승인 전까지 primitive 가 아니다. 검사기는 이 칸에 든 목적지를 따로 센다.",
+    "lineHeight": {
+      "tight": 1.0,
+      "default": 1.4,
+      "relaxed": 1.5,
+      "근거": "실측 선언이 1.35~1.4 에 몰려 있고 1.35 는 16px/700 한 역할뿐이라 1.4 로 합쳤다. 뱃지 1.0 은 컴포넌트 소유로 내렸다",
+      "여는 결정": "D-11"
+    },
+    "letterSpacing": {
+      "none": 0,
+      "titleTight": -0.3,
+      "근거": "실측 2종"
+    },
+    "iconSize": [
+      16,
+      20,
+      24
+    ],
+    "controlHeight": [
+      32,
+      38,
+      44,
+      48
+    ],
+    "rowHeight": [
+      60,
+      76,
+      92
+    ],
+    "_rowHeightNote": "실행서 §3.4 가 문서로 계약한 값이지만 tokens.ts 에는 없다",
+    "shadow": {
+      "sheet": "rgba(25, 31, 40, 0.24) 0px 18px 50px 0px",
+      "fab": "rgba(49, 130, 246, 0.34) 0px 7px 20px 0px",
+      "bottomBar": "rgba(25, 31, 40, 0.12) 0px -8px 30px 0px",
+      "_note": "가이드 §1.5 가 sheet·fab 을 계약했으나 tokens.ts 에는 cardShadow 만 있다. bottomBar 는 가이드에도 없다 → D-9"
+    }
+  },
+  "sourcePlanNote": "이 파일은 기획서의 사본이다. 둘이 어긋나면 기획서가 옳다. 검사기가 어긋남을 잡지 못하므로 사람이 함께 고쳐야 한다."
+}

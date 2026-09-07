@@ -8,7 +8,7 @@ import { useMemo, useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { AppHeader, Badge, Button, Card, FAB, Field, Icon, Input, QueryState, SearchBar, Select, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { T, won } from '@/theme/tokens';
+import { LAYOUT, COLOR, COMPONENT, T, won, TYPE, controlVisualHeight, radius, space } from '@/theme/tokens';
 import { clampDecimals } from '@/lib/num';
 import {
   useDeactivateMaterial,
@@ -116,8 +116,8 @@ export default function MaterialManageScreen() {
       <AppHeader title="부자재 관리" onBack={() => safeBack('/my/categories')} />
       <SearchBar value={query} onChange={setQuery} placeholder="부자재 이름으로 검색" />
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 96 }}>
-        <Text style={{ fontSize: 14, fontWeight: '600', color: T.sub2, marginBottom: 11 }}>등록된 부자재 {items.length}</Text>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: LAYOUT.scroll.endWithFab }}>
+        <Text style={{ fontSize: 14, fontWeight: '600', color: T.sub2, marginBottom: space.md }}>등록된 부자재 {items.length}</Text>
 
         <QueryState
           isLoading={lists.isLoading}
@@ -129,22 +129,22 @@ export default function MaterialManageScreen() {
         >
           <Card pad={0} style={{ overflow: 'hidden' }}>
             {items.map((m, i) => (
-              <View key={m.id} style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 12, paddingLeft: 14, paddingRight: 10, borderBottomWidth: i < items.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
-                <Pressable onPress={() => openEdit(m)} accessibilityRole="button" accessibilityLabel={`${m.name} 수정`} style={{ flex: 1, minWidth: 0 }}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+              <View key={m.id} style={{ flexDirection: 'row', alignItems: 'center', gap: COMPONENT.adjacentActions.gap, paddingVertical: 12, paddingLeft: space.md, paddingRight: space.sm, borderBottomWidth: i < items.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
+                <Pressable onPress={() => openEdit(m)} hitSlop={{ top: 2, bottom: 2 }} accessibilityRole="button" accessibilityLabel={`${m.name} 수정`} style={{ flex: 1, minWidth: 0 }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm }}>
                     <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }} numberOfLines={1}>{m.name}</Text>
                     {m.categoryName ? <Badge tone="neutral" sm>{m.categoryName}</Badge> : null}
                   </View>
                   <Text style={[{ fontSize: 14, color: T.sub2, marginTop: 4, fontWeight: '600' }, NUM]}>
                     기준 단가 <Text style={{ color: T.ink, fontWeight: '700' }}>{won(m.unitCost)}원/{m.unitLabel}</Text>
-                    {m.usedCount > 0 ? <Text style={{ color: T.ter }}>  ·  메뉴 {m.usedCount}개</Text> : null}
+                    {m.usedCount > 0 ? <Text style={{ color: COLOR.text.tertiary }}>  ·  메뉴 {m.usedCount}개</Text> : null}
                   </Text>
                 </Pressable>
-                <Pressable onPress={() => openEdit(m)} hitSlop={4} accessibilityRole="button" accessibilityLabel={`${m.name} 수정`} style={{ width: 34, height: 34, alignItems: 'center', justifyContent: 'center' }}>
-                  <Icon name="edit" size={18} color={T.ter} sw={2} />
+                <Pressable onPress={() => openEdit(m)} hitSlop={COMPONENT.adjacentActions.hitSlop} accessibilityRole="button" accessibilityLabel={`${m.name} 수정`} style={{ width: controlVisualHeight.sm, height: controlVisualHeight.sm, alignItems: 'center', justifyContent: 'center' }}>
+                  <Icon name="edit" size={18} color={COLOR.text.tertiary} sw={2} />
                 </Pressable>
-                <Pressable onPress={() => confirmDelete(m)} hitSlop={4} accessibilityRole="button" accessibilityLabel={`${m.name} 삭제`} style={{ width: 34, height: 34, alignItems: 'center', justifyContent: 'center' }}>
-                  <Icon name="close" size={19} color={T.ter} />
+                <Pressable onPress={() => confirmDelete(m)} hitSlop={COMPONENT.adjacentActions.hitSlop} accessibilityRole="button" accessibilityLabel={`${m.name} 삭제`} style={{ width: controlVisualHeight.sm, height: controlVisualHeight.sm, alignItems: 'center', justifyContent: 'center' }}>
+                  <Icon name="close" size={19} color={COLOR.text.tertiary} />
                 </Pressable>
               </View>
             ))}
@@ -168,7 +168,7 @@ export default function MaterialManageScreen() {
         <Field label="카테고리">
           <Select value={catName} placeholder="지정 안 함" onPress={() => setCatOpen(true)} />
         </Field>
-        <View style={{ flexDirection: 'row', gap: 10 }}>
+        <View style={{ flexDirection: 'row', gap: space.sm }}>
           <View style={{ flex: 1 }}>
             <Field label="구매 수량" req hint="박스로 사면 박스당 개수">
               <Input value={perBox} onChangeText={(t) => setPerBox(clampDecimals(t, 0))} placeholder="1" suffix={unitLabel} mono keyboardType="number-pad" accessibilityLabel="구매 수량" />
@@ -185,31 +185,31 @@ export default function MaterialManageScreen() {
         </Field>
 
         {/* 단가 미리보기 */}
-        <View style={{ backgroundColor: T.blueTint, borderWidth: 1, borderColor: T.blue, borderRadius: 12, paddingVertical: 14, paddingHorizontal: 16 }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 11 }}>
-            <Icon name="info" size={17} color={T.blue} />
-            <Text style={{ fontSize: 16, fontWeight: '700', color: T.blue }}>단가 미리보기</Text>
+        <View style={{ backgroundColor: COLOR.action.primaryTint, borderWidth: 1, borderColor: COLOR.action.primary, borderRadius: 12, paddingVertical: space.md, paddingHorizontal: 16 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, marginBottom: space.md }}>
+            <Icon name="info" size={17} color={COLOR.action.primary} />
+            <Text style={{ fontSize: 16, fontWeight: '700', color: COLOR.text.accent }}>단가 미리보기</Text>
           </View>
           <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 4 }}>
-            <Text style={{ flex: 1, fontSize: 14, fontWeight: '700', color: T.blue }}>
+            <Text style={{ flex: 1, fontSize: 14, fontWeight: '700', color: COLOR.text.accent }}>
               개당 단가 <Text style={{ fontWeight: '600', color: T.sub2 }}>({won(num(boxPrice))} ÷ {count})</Text>
             </Text>
-            <Text style={[{ fontSize: 20, fontWeight: '800', color: T.blue }, NUM]}>
+            <Text style={[{ fontSize: 20, fontWeight: '800', color: COLOR.text.accent }, NUM]}>
               {won(unitPrice)}<Text style={{ fontSize: 14 }}>원/{unitLabel || '개'}</Text>
             </Text>
           </View>
         </View>
 
         {editing && editing.usedCount > 0 ? (
-          <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, marginTop: 12, paddingVertical: 12, paddingHorizontal: 14, borderRadius: 10, backgroundColor: T.amberTint }}>
-            <Icon name="info" size={15} color={T.amberText} />
-            <Text style={{ flex: 1, fontSize: 14, color: T.amberText, lineHeight: 20 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, marginTop: 12, paddingVertical: 12, paddingHorizontal: space.md, borderRadius: radius.md, backgroundColor: COLOR.status.cautionTint }}>
+            <Icon name="info" size={15} color={COLOR.status.caution} />
+            <Text style={{ flex: 1, fontSize: 14, color: COLOR.status.caution, lineHeight: TYPE.caption.lineHeight }}>
               단가를 바꾸면 이 부자재를 쓰는 메뉴 {editing.usedCount}개의 원가도 함께 바뀌어요.
             </Text>
           </View>
         ) : null}
 
-        <View style={{ flexDirection: 'row', gap: 9, marginTop: 18 }}>
+        <View style={{ flexDirection: 'row', gap: space.sm, marginTop: space.lg }}>
           <View style={{ flex: 1 }}><Button kind="ghost" size="lg" full onPress={() => { setOpen(false); setEditing(null); }}>취소</Button></View>
           <View style={{ flex: 2 }}>
             <Button kind="primary" size="lg" full disabled={!canSave} loading={saveMaterial.isPending} onPress={submit}>
@@ -225,10 +225,10 @@ export default function MaterialManageScreen() {
           <Pressable
             onPress={() => { setCatId(null); setCatName(''); setCatOpen(false); }}
             accessibilityRole="button" accessibilityLabel="지정 안 함"
-            style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 14, paddingHorizontal: 16, borderRadius: 12, borderWidth: 1, borderColor: catId === null ? T.blue : T.line, backgroundColor: catId === null ? T.blueTint : T.surface }}
+            style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: 16, borderRadius: 12, borderWidth: 1, borderColor: catId === null ? COLOR.action.primary : T.line, backgroundColor: catId === null ? COLOR.action.primaryTint : T.surface }}
           >
-            <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: catId === null ? T.blue : T.ter }}>지정 안 함</Text>
-            {catId === null ? <Icon name="check" size={17} color={T.blue} sw={2.4} /> : null}
+            <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: catId === null ? COLOR.state.selectedText : COLOR.text.tertiary }}>지정 안 함</Text>
+            {catId === null ? <Icon name="check" size={17} color={COLOR.action.primary} sw={2.4} /> : null}
           </Pressable>
           {(lists.data?.materialCategories ?? []).map((c) => {
             const on = catId === c.id;
@@ -237,10 +237,10 @@ export default function MaterialManageScreen() {
                 key={c.id}
                 onPress={() => { setCatId(c.id); setCatName(c.name); setCatOpen(false); }}
                 accessibilityRole="button" accessibilityLabel={c.name} accessibilityState={{ selected: on }}
-                style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 14, paddingHorizontal: 16, borderRadius: 12, borderWidth: 1, borderColor: on ? T.blue : T.line, backgroundColor: on ? T.blueTint : T.surface }}
+                style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: 16, borderRadius: 12, borderWidth: 1, borderColor: on ? COLOR.action.primary : T.line, backgroundColor: on ? COLOR.action.primaryTint : T.surface }}
               >
-                <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: on ? T.blue : T.ink2 }}>{c.name}</Text>
-                {on ? <Icon name="check" size={17} color={T.blue} sw={2.4} /> : null}
+                <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: on ? COLOR.state.selectedText : T.ink2 }}>{c.name}</Text>
+                {on ? <Icon name="check" size={17} color={COLOR.action.primary} sw={2.4} /> : null}
               </Pressable>
             );
           })}

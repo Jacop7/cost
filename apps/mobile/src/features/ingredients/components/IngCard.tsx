@@ -2,7 +2,7 @@
 import React from 'react';
 import { View, Text, Pressable } from 'react-native';
 import { Card, Badge } from '../../../components/kit';
-import { T, tnum } from '../../../theme/tokens';
+import { COLOR, T, tnum, space } from '../../../theme/tokens';
 import {
   belowSafety,
   formatQuantity,
@@ -40,8 +40,8 @@ export function IngCard({ g, onPress }: { g: IngredientRow; onPress?: () => void
   return (
     <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={`${g.name} 상세`}>
       <Card pad={0} style={{ overflow: 'hidden' }}>
-        <View style={{ flex: 1, paddingVertical: 13, paddingHorizontal: 15 }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+        <View style={{ flex: 1, paddingVertical: space.md, paddingHorizontal: space.md }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm }}>
             <Badge tone={st.tone} solid sm>{st.label}</Badge>
             <Text style={{ fontSize: 16, fontWeight: '800', letterSpacing: -0.3, color: T.ink }} numberOfLines={1}>
               {g.name}
@@ -50,28 +50,28 @@ export function IngCard({ g, onPress }: { g: IngredientRow; onPress?: () => void
             {g.categoryName ? <Badge tone="neutral" sm>{g.categoryName}</Badge> : null}
           </View>
 
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7, marginTop: 9 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, marginTop: space.sm }}>
             {/*
               ⚠ 음수 재고는 **빨강 그대로**다(0102). `0g` 으로 보정하지 않는다 —
                 감추면 입고를 빠뜨렸다는 단서가 화면에서 사라진다.
             */}
             <Text
-              style={[{ fontSize: 16, fontWeight: '800', color: isNegativeStock(g.stockTotal) ? T.red : T.ink }, tnum]}
+              style={[{ fontSize: 16, fontWeight: '800', color: isNegativeStock(g.stockTotal) ? COLOR.status.negative : T.ink }, tnum]}
               numberOfLines={1}
             >
               총 {formatQuantity(g.stockTotal, unit)}
             </Text>
             {/* 왜 노란지 그 자리에서 설명한다 — 안전선을 같이 보여준다. */}
             {stockStateOf(g) === 'low' ? (
-              <Text style={{ fontSize: 13, fontWeight: '700', color: T.amberText }}>
+              <Text style={{ fontSize: 13, fontWeight: '700', color: COLOR.status.caution }}>
                 안전 {formatQuantity(g.safetyStock, unit)} 미달
               </Text>
             ) : null}
           </View>
 
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 6 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, marginTop: space.sm }}>
             {/* 기준단가가 null 이면 '산출 불가'다. 0원으로 그리면 공짜 재료로 읽힌다. */}
-            <Text style={[{ fontSize: 14, fontWeight: '700', color: g.basePrice === null ? T.ter : T.sub }, tnum]}>
+            <Text style={[{ fontSize: 14, fontWeight: '700', color: g.basePrice === null ? COLOR.text.tertiary : T.sub }, tnum]}>
               {g.basePrice === null ? '단가 산출 전' : formatUnitPrice(g.basePrice, unit)}
             </Text>
             <View style={{ flex: 1 }} />

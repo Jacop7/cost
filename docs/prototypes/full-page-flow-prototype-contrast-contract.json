@@ -1,0 +1,83 @@
+{
+  "_note": "앱 정본 `tokens.ts` 의 **전경 역할 × 표면** 계약을 프로토타입에 투영한 대조본이다. `COLOR.status.*` 를 포함해 역할 이름과 값이 갈리면 앱·프로토타입 게이트가 FAIL 한다.",
+  "_기준": "절대 기준으로 본다 — 저장된 baseline 과 비교하지 않는다. 표면 색이 한 톤 바뀌는 커밋에서 **그 커밋이 바로 FAIL** 해야 하기 때문이다. baseline 비교면 새 값이 새 baseline 이 되어 조용히 통과한다 (페이블).",
+  "_경계": "4.50~4.55 는 통과시키되 `boundary: true` 로 표시만 한다. 값을 올려 여유를 만드는 것은 별도 소유자 결정이다.",
+  "surfaces": {
+    "surface": "#FFFFFF",
+    "surface2": "#F9FAFB",
+    "bg": "#F2F4F6"
+  },
+  "text": {
+    "text.primary": "#191F28",
+    "text.secondary": "#4E5968",
+    "text.tertiary": "#66717E",
+    "text.link": "#1465DB",
+    "text.accent": "#1465DB",
+    "state.selectedText": "#1465DB",
+    "text.required": "#1465DB",
+    "text.linkPressed": "#0E5FD6"
+  },
+  "textExempt": {
+    "text.disabled": {
+      "value": "#8B95A1",
+      "사유": "WCAG 1.4.3 은 **비활성 컴포넌트의 글자를 면제**한다. 면제이지 통과가 아니므로 값은 재고 대상에서 뺀다."
+    }
+  },
+  "onColor": [
+    {
+      "fg": "#FFFFFF",
+      "bg": "#1470F5",
+      "역할": "action.primary 위 흰 글자",
+      "kind": "text"
+    }
+  ],
+  "nonText": [
+    {
+      "fg": "#1470F5",
+      "bg": "#FFFFFF",
+      "역할": "action.primary 상자 테두리·아이콘",
+      "kind": "nonText"
+    },
+    {
+      "fg": "#1470F5",
+      "bg": "#F9FAFB",
+      "역할": "action.primary 상자 테두리·아이콘",
+      "kind": "nonText"
+    },
+    {
+      "fg": "#1470F5",
+      "bg": "#F2F4F6",
+      "역할": "action.primary 상자 테두리·아이콘",
+      "kind": "nonText"
+    }
+  ],
+  "미계약": "구분선(T.line #E5E8EB)처럼 정보 전달을 하지 않는 장식선은 별도 비텍스트 계약 대상이 아니다. 비활성 버튼은 variant 고유색을 유지하고 opacity 0.4를 적용하며 WCAG 1.4.3 대비 대상에서 제외한다.",
+  "_열린": "절대 기준에 못 미치는데 **소유자 결정을 기다리는** 조합을 두는 자리다. 크기까지 적고, 값이 이보다 나빠지면 FAIL 이다. 목록에 없는 새 미달은 그냥 FAIL 이다. **`PRT-210` 현재 비어 있다** — `text.link` 정정으로 셋이 다 해소됐다.",
+  "_컴포넌트표면": "`blueTint` 는 페이지 표면 셋과 다르다 — 안내 배너(`kit/index.tsx:69` `Notice`)가 자기 안에서만 쓰는 배경이고, 그 위에 오는 전경도 파랑 하나뿐이다. 그래서 전경 역할 전부와 곱하지 않고 실제로 쓰이는 짝만 적는다. 쓰이지 않는 조합을 검사하는 척하지 않는다.",
+  "componentSurfaces": [
+    {
+      "역할": "Notice 본문 글자 on blueTint",
+      "fg": "#1465DB",
+      "bg": "#EBF3FE",
+      "kind": "text",
+      "출처": "apps/mobile/src/components/kit/index.tsx:74 — 배너 안의 본문. 지금 코드는 `T.blue`(#3182F6)라 **3.32** 로 미달이고, 정정값 `#1465DB` 로 바꾸면 4.80 이다."
+    },
+    {
+      "역할": "Notice 테두리·아이콘 on blueTint",
+      "fg": "#1465DB",
+      "bg": "#EBF3FE",
+      "kind": "nonText",
+      "출처": "같은 컴포넌트의 `borderColor` 와 `Icon`. 비텍스트라 기준은 3:1 이다."
+    }
+  ],
+  "_정정": "`PRT-210` — `text.link` 와 `text.required` 를 `#1465DB` 로 정정했다. 결정 2-4 는 `action.primary`(배경)와 `text.link`(전경)에 같은 `#1470F5` 를 줬는데 **의무가 다르다** — 배경은 그 위 흰 글자만 지키면 되지만 전경 글자는 놓이는 모든 표면에서 4.5 여야 한다. `#1465DB` 는 새 색이 아니라 결정문이 이미 `action.onTint`·`action.primaryPressed` 로 든 값이고, 네 표면 전부 통과한다(5.37 · 5.13 · 4.87 · 4.80). 역할 이름 셋은 그대로 둔다 — 이름이 계약이고 값이 우연히 같은 것이다. 페이블 판정이고 솔라가 독립 검산했다.",
+  "status": {
+    "status.positive": "#0B7F58",
+    "status.positiveTint": "#E7F7F0",
+    "status.negative": "#DA1222",
+    "status.negativeTint": "#FEECEC",
+    "status.caution": "#A16000",
+    "status.cautionTint": "#FFF4E5"
+  },
+  "_상태색": "S2에서 앱·프로토타입을 같은 역할로 수렴했다. 전경은 surface·surface2·bg와 자기 tint에서 AA 4.5 이상이어야 한다."
+}

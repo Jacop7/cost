@@ -1,0 +1,2260 @@
+{
+ "manifest": {
+  "generatedAt": "2026-09-07T10:10:07.088Z",
+  "schemaVersion": 1,
+  "script": {
+   "name": "full-page-flow-prototype-app-map-check.mjs",
+   "sha256": "fa87cadc0ef7fde378f0306ebef0a00fb6b80ed5ec22f26d1658a0b1e182ea29"
+  },
+  "source": {
+   "audit": {
+    "path": "token-adoption-audit.json",
+    "sha256": "29661e83268fdfadb5b1d09df7ef54e71b66526904e57000385c6fd53b59d6e0",
+    "declarations": 2311
+   },
+   "appMap": {
+    "path": "full-page-flow-prototype-app-token-map.json",
+    "sha256": "ebf75ac3d2756cba554a171a10e3a376b2c3d6dbf1bc726ef0950bd71ceba17c"
+   },
+   "prototypeMap": {
+    "path": "full-page-flow-prototype-token-map.json",
+    "sha256": "a59ad21738f28a2d44d9ec083c45007ac45d9dd0f3a063b2553ed8ce5724cdb5"
+   }
+  },
+  "rules": {
+   "통": "primitive · componentOwned · defect · pendingApproval · approvedException",
+   "완료 조건": "선언 = 다섯 통의 합 · 미분류 0 · approvedException 0 · componentOwned 이름 필수 · axis!=none defect 목적지 기계 판독 및 delta 계산 일치 · pendingApproval 질문·증거 필수 · 걸리지 않는 규칙 0",
+   "첫 일치": "규칙은 순서대로 평가하고 처음 일치한 것이 이긴다. 순서가 곧 우선순위다"
+  }
+ },
+ "summary": {
+  "status": "PROPOSAL_COMPLETE",
+  "declarations": 2311,
+  "byBin": {
+   "primitive": 2061,
+   "componentOwned": 250,
+   "defect": 0,
+   "pendingApproval": 0,
+   "approvedException": 0
+  },
+  "semantic통삭제사유": "**`semantic` 통을 없앴다** (솔 검수 W1 R1 F02). 감사기는 숫자 리터럴만 선언으로 모으므로 `fontSize: 16` → `TYPE.body` 치환은 semantic 으로 이동하는 것이 아니라 입력에서 사라진다. 영원히 0 인 통을 두고 \"P4 에서 채워진다\" 고 적는 것은 분류가 아니다. W1 의 범위를 **하드코딩 리터럴의 배정**으로 좁히고, 의미 토큰 채택률은 같은 감사기가 모으는 `tokenAccess` 로 따로 본다.",
+  "unmatchedCount": 0,
+  "unmatched": [],
+  "multiMatchCount": 69,
+  "multiMatchPairs": {
+   "R-SZ-FLEX-RESET > R-SZ-MINWIDTH": 65,
+   "R-SZ-APPHEADER-RIGHT-TOUCH > R-SZ-MINWIDTH": 1,
+   "R-SZ-RECIPE-EDITOR-TOUCH > R-SZ-MINWIDTH": 1,
+   "R-SP-QUANTITY-TOUCH-ENVELOPE > R-SP-PRIM": 1,
+   "R-SZ-SALES-QUANTITY-ACTION > R-SZ-MINWIDTH": 1
+  },
+  "multiMatchSamples": [
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/components/history/HistoryLayout.tsx:80",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:44 @ apps/mobile/src/components/kit/AppHeader.tsx:37",
+    "rules": [
+     "R-SZ-APPHEADER-RIGHT-TOUCH",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/components/kit/SearchBar.tsx:37",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/components/kit/SortSheet.tsx:63",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/components/kit/index.tsx:229",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/components/kit/index.tsx:245",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/changes/components/RecentChangeRow.tsx:61",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx:210",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx:252",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx:274",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/ingredients/components/BasePriceCard.tsx:146",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/ingredients/components/BasePriceCard.tsx:156",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/ingredients/components/CategoryPickerSheet.tsx:57",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/ingredients/components/LossCard.tsx:113",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/ingredients/components/VendorPickerSheet.tsx:84",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx:170",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:295",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:133",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx:128",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:278",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:232",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:406",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx:53",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/my/screens/MyCategoryHubScreen.tsx:46",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/my/screens/MyChannelsScreen.tsx:86",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/my/screens/MyHomeScreen.tsx:132",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/my/screens/MyLanguageScreen.tsx:268",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx:111",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:122",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx:139",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx:258",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:430",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:146",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:133",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/recipes/screens/MaterialSearchScreen.tsx:66",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx:73",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:289",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:44 @ apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:297",
+    "rules": [
+     "R-SZ-RECIPE-EDITOR-TOUCH",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:350",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "spacing/padding:8 @ apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:354",
+    "rules": [
+     "R-SP-QUANTITY-TOUCH-ENVELOPE",
+     "R-SP-PRIM"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:324",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:581",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx:97",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/sales/components/BusinessDayBar.tsx:178",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/sales/components/ProfitBlocks.tsx:84",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/sales/components/ProfitBlocks.tsx:172",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/sales/components/ProfitBlocks.tsx:361",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx:270",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx:304",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/sales/screens/SalesExpenseScreen.tsx:98",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/sales/screens/SalesExtraScreen.tsx:71",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/sales/screens/SalesExtraScreen.tsx:96",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/sales/screens/SalesFixedScreen.tsx:112",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:389",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:492",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:44 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:532",
+    "rules": [
+     "R-SZ-SALES-QUANTITY-ACTION",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:581",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:614",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:682",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx:81",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx:136",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx:185",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx:204",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx:278",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx:342",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:308",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:337",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:393",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   },
+   {
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/sales/screens/SalesRevenueScreen.tsx:118",
+    "rules": [
+     "R-SZ-FLEX-RESET",
+     "R-SZ-MINWIDTH"
+    ]
+   }
+  ],
+  "binMovementLedger": {
+   "removedFromInput": 34,
+   "inputUniverse": {
+    "previous": 2345,
+    "current": 2311,
+    "stage": "S3d+S4a",
+    "rules": [
+     "R-TY-SIZE-OFFSCALE",
+     "R-TY-LETTERSPACING-UNDECIDED",
+     "R-CL-NEAR-PALETTE",
+     "R-CL-CHART"
+    ],
+    "reason": "S3d의 pendingApproval 32건과 차트 역할 완결을 위해 함께 치환한 primitive 색 3건이 의미·컴포넌트 토큰 참조로 바뀌어 리터럴 감사 입력 우주에서 사라졌고, S4a가 세그먼트 터치 외피 paddingVertical 1 선언 1건을 추가했다. 순감은 35-1=34이며 통 사이 이동이 아니다. PRT-289 BusinessDayBar 변경은 선언 13건 추가·13건 제거의 줄 이동으로 순증감 0이다."
+   },
+   "moves": {
+    "(미분류) → componentOwned": {
+     "count": 6,
+     "rules": {
+      "- → R-SP-SEGMENT-TOUCH-ENVELOPE": 1,
+      "- → R-SZ-SALES-ACTION-ROW": 1,
+      "- → R-SP-EDGE-INSET": 1,
+      "- → R-SZ-SALES-MANAGE-ACTION": 1,
+      "- → R-SZ-SALES-QUANTITY-ACTION": 1,
+      "- → R-SZ-SALES-SALE-ACTION": 1
+     }
+    }
+   },
+   "reconciliation": {
+    "primitive": {
+     "이전": 2061,
+     "나감": 0,
+     "들어옴": 0,
+     "계산": 2061,
+     "실제": 2061
+    },
+    "componentOwned": {
+     "이전": 244,
+     "나감": 0,
+     "들어옴": 6,
+     "계산": 250,
+     "실제": 250
+    },
+    "defect": {
+     "이전": 0,
+     "나감": 0,
+     "들어옴": 0,
+     "계산": 0,
+     "실제": 0
+    },
+    "pendingApproval": {
+     "이전": 0,
+     "나감": 0,
+     "들어옴": 0,
+     "계산": 0,
+     "실제": 0
+    },
+    "approvedException": {
+     "이전": 0,
+     "나감": 0,
+     "들어옴": 0,
+     "계산": 0,
+     "실제": 0
+    }
+   },
+   "previousMap": "0b206c2ac51fa36ed146ee5583a2071b85158f12:docs/prototypes/full-page-flow-prototype-app-token-map.json",
+   "previousMapSha256": "13e6900221715b7f6c6de6470c2e31771ef58e00c9cee32d44c6a720e1f9a7e6"
+  },
+  "openQuestions": [],
+  "perRule": [
+   {
+    "id": "R-SP-QUANTITY-TOUCH-ENVELOPE",
+    "bin": "componentOwned",
+    "declarations": 2,
+    "name": "COMPONENT.quantityStepper.touchEnvelope",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "padding:8",
+      1
+     ],
+     [
+      "margin:-8",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SP-PRIM",
+    "bin": "primitive",
+    "declarations": 581,
+    "name": null,
+    "target": "space.*",
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "paddingHorizontal:16",
+      62
+     ],
+     [
+      "gap:8",
+      61
+     ],
+     [
+      "paddingVertical:12",
+      57
+     ],
+     [
+      "paddingHorizontal:20",
+      30
+     ],
+     [
+      "paddingTop:4",
+      27
+     ],
+     [
+      "paddingTop:12",
+      24
+     ],
+     [
+      "marginBottom:12",
+      21
+     ],
+     [
+      "marginBottom:8",
+      20
+     ],
+     [
+      "paddingHorizontal:12",
+      17
+     ],
+     [
+      "marginTop:4",
+      17
+     ],
+     [
+      "marginTop:8",
+      16
+     ],
+     [
+      "marginTop:12",
+      16
+     ]
+    ]
+   },
+   {
+    "id": "R-SP-TABBAR-INSET",
+    "bin": "componentOwned",
+    "declarations": 1,
+    "name": "COMPONENT.tabBar.topInset",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "paddingTop:2",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SP-ROW-OVERFLOW-TOUCH-BOX",
+    "bin": "componentOwned",
+    "declarations": 1,
+    "name": "COMPONENT.rowOverflowAction.touchBox",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "marginHorizontal:-8.5",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SP-TIGHT-CAPTION",
+    "bin": "componentOwned",
+    "declarations": 5,
+    "name": "tightCaption — 보조 줄을 바로 위 주값에 붙이는 1px",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "marginTop:1",
+      5
+     ]
+    ]
+   },
+   {
+    "id": "R-SP-OPTICAL-ICON",
+    "bin": "componentOwned",
+    "declarations": 2,
+    "name": "optical.iconBaseline",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "marginTop:1",
+      1
+     ],
+     [
+      "paddingTop:1",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SP-GAP-CONTROL-CLUSTER",
+    "bin": "componentOwned",
+    "declarations": 1,
+    "name": "gap.controlCluster",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "gap:2",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SP-FORM-AUXILIARY-OVERLAP",
+    "bin": "componentOwned",
+    "declarations": 4,
+    "name": "COMPONENT.formAuxiliary.overlapOffset",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "marginTop:-8",
+      4
+     ]
+    ]
+   },
+   {
+    "id": "R-SP-PROFIT-SECTION-LABEL-OVERLAP",
+    "bin": "componentOwned",
+    "declarations": 1,
+    "name": "COMPONENT.profitSectionLabel.overlapOffset",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "marginBottom:-3",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SP-SEGMENT-TOUCH-ENVELOPE",
+    "bin": "componentOwned",
+    "declarations": 1,
+    "name": "COMPONENT.segmentedControl.touchEnvelope",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "paddingVertical:1",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SP-EDGE-INSET",
+    "bin": "componentOwned",
+    "declarations": 11,
+    "name": "inset.edgeAlign",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "paddingHorizontal:2",
+      9
+     ],
+     [
+      "marginHorizontal:2",
+      2
+     ]
+    ]
+   },
+   {
+    "id": "R-SP-DIVIDER-INSET",
+    "bin": "componentOwned",
+    "declarations": 1,
+    "name": "divider.marginVertical",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "marginVertical:2",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SP-GRID-GUTTER",
+    "bin": "componentOwned",
+    "declarations": 1,
+    "name": "calendar.cellGutter",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "padding:2",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SP-UNIT-NUDGE",
+    "bin": "componentOwned",
+    "declarations": 1,
+    "name": "optical.unitNudge",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "marginLeft:1",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SP-RESET",
+    "bin": "componentOwned",
+    "declarations": 5,
+    "name": "reset.none",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "padding:0",
+      3
+     ],
+     [
+      "marginTop:0",
+      1
+     ],
+     [
+      "paddingRight:0",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SP-EMPTY-STANDARD-V",
+    "bin": "componentOwned",
+    "declarations": 2,
+    "name": "COMPONENT.emptyState.standard.paddingVertical",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "paddingVertical:48",
+      2
+     ]
+    ]
+   },
+   {
+    "id": "R-SP-EMPTY-STANDARD-H",
+    "bin": "componentOwned",
+    "declarations": 2,
+    "name": "COMPONENT.emptyState.standard.paddingHorizontal",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "paddingHorizontal:32",
+      2
+     ]
+    ]
+   },
+   {
+    "id": "R-SP-EMPTY-COMPACT",
+    "bin": "componentOwned",
+    "declarations": 2,
+    "name": "COMPONENT.emptyState.compact.paddingVertical",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "paddingVertical:40",
+      2
+     ]
+    ]
+   },
+   {
+    "id": "R-SP-EMPTY-SHEET",
+    "bin": "componentOwned",
+    "declarations": 2,
+    "name": "COMPONENT.emptyState.sheet.paddingVertical",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "paddingVertical:28",
+      2
+     ]
+    ]
+   },
+   {
+    "id": "R-SP-EMPTY-DAY-DETAIL",
+    "bin": "componentOwned",
+    "declarations": 1,
+    "name": "COMPONENT.emptyState.dayDetail.paddingVertical",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "paddingVertical:72",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SP-SESSION-GATE-H",
+    "bin": "componentOwned",
+    "declarations": 1,
+    "name": "COMPONENT.sessionGate.paddingHorizontal",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "paddingHorizontal:32",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-TY-SIZE-PRIM",
+    "bin": "primitive",
+    "declarations": 705,
+    "name": null,
+    "target": "typeSize.*",
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "fontSize:16",
+      327
+     ],
+     [
+      "fontSize:14",
+      287
+     ],
+     [
+      "fontSize:13",
+      50
+     ],
+     [
+      "fontSize:18",
+      21
+     ],
+     [
+      "fontSize:20",
+      10
+     ],
+     [
+      "fontSize:22",
+      10
+     ]
+    ]
+   },
+   {
+    "id": "R-TY-WEIGHT-PRIM",
+    "bin": "primitive",
+    "declarations": 662,
+    "name": null,
+    "target": "typeWeight.*",
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "fontWeight:700",
+      296
+     ],
+     [
+      "fontWeight:800",
+      216
+     ],
+     [
+      "fontWeight:600",
+      150
+     ]
+    ]
+   },
+   {
+    "id": "R-TY-LETTERSPACING-TITLE-TIGHT",
+    "bin": "primitive",
+    "declarations": 10,
+    "name": null,
+    "target": "letterSpacing.titleTight (-0.3)",
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "letterSpacing:-0.3",
+      10
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-FLEX-RESET",
+    "bin": "componentOwned",
+    "declarations": 65,
+    "name": "flex.minWidthReset",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "minWidth:0",
+      65
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-HANDLE",
+    "bin": "componentOwned",
+    "declarations": 10,
+    "name": "sheet.handle",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "height:5",
+      5
+     ],
+     [
+      "width:40",
+      4
+     ],
+     [
+      "width:38",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-HAIRLINE",
+    "bin": "componentOwned",
+    "declarations": 10,
+    "name": "hairline.thickness",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "height:2.5",
+      7
+     ],
+     [
+      "height:1",
+      2
+     ],
+     [
+      "height:6",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-ROW-CONDITION",
+    "bin": "componentOwned",
+    "declarations": 3,
+    "name": "COMPONENT.conditionRow.minHeight",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "minHeight:38",
+      2
+     ],
+     [
+      "minHeight:44",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-ROW-APPHEADER",
+    "bin": "componentOwned",
+    "declarations": 1,
+    "name": "COMPONENT.appHeader.minHeight",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "minHeight:52",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-ROW-MEMO-INPUT",
+    "bin": "componentOwned",
+    "declarations": 1,
+    "name": "COMPONENT.memoEditSheet.input.minHeight",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "minHeight:100",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-ROW-PROFIT-METRIC",
+    "bin": "componentOwned",
+    "declarations": 3,
+    "name": "COMPONENT.profitBlocks.metricRow.minHeight",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "minHeight:55",
+      1
+     ],
+     [
+      "minHeight:47",
+      1
+     ],
+     [
+      "minHeight:52",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-ROW-PROFIT-ACTION",
+    "bin": "componentOwned",
+    "declarations": 2,
+    "name": "COMPONENT.profitBlocks.actionRow.minHeight",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "minHeight:50",
+      2
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-ROW-SALES-OPTION",
+    "bin": "componentOwned",
+    "declarations": 1,
+    "name": "COMPONENT.salesAnalytics.option.minHeight",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "minHeight:50",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-ROW-SALES-BANNER",
+    "bin": "componentOwned",
+    "declarations": 1,
+    "name": "COMPONENT.salesHome.shortageBanner.minHeight",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "minHeight:52",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-ROW-SALES-METRIC",
+    "bin": "componentOwned",
+    "declarations": 2,
+    "name": "COMPONENT.sales.metricRow.minHeight",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "minHeight:47",
+      2
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-ROW-STOCK-ACTION",
+    "bin": "componentOwned",
+    "declarations": 2,
+    "name": "COMPONENT.salesStockCheck.action.minHeight",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "minHeight:46",
+      1
+     ],
+     [
+      "minHeight:50",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-APPHEADER-ACTION",
+    "bin": "componentOwned",
+    "declarations": 24,
+    "name": "COMPONENT.appHeader.iconButton.visualSize",
+    "target": 40,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "width:40",
+      12
+     ],
+     [
+      "height:40",
+      12
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-CONTROL-SLIDER",
+    "bin": "componentOwned",
+    "declarations": 2,
+    "name": "COMPONENT.slider.thumb.visualSize",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "width:26",
+      1
+     ],
+     [
+      "height:26",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-CONTROL-CHANGE-ICON",
+    "bin": "componentOwned",
+    "declarations": 2,
+    "name": "COMPONENT.recentChangeRow.icon.visualSize",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "width:22",
+      1
+     ],
+     [
+      "height:22",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-CONTROL-ROW-OVERFLOW",
+    "bin": "componentOwned",
+    "declarations": 3,
+    "name": "COMPONENT.rowOverflowAction.touchBox",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "width:44",
+      2
+     ],
+     [
+      "height:44",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-CONTROL-ACCOUNT-ICON",
+    "bin": "componentOwned",
+    "declarations": 2,
+    "name": "COMPONENT.accountIdentity.icon.visualSize",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "width:42",
+      1
+     ],
+     [
+      "height:42",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-CONTROL-STORE-ICON",
+    "bin": "componentOwned",
+    "declarations": 2,
+    "name": "COMPONENT.storeIdentity.icon.visualSize",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "width:46",
+      1
+     ],
+     [
+      "height:46",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-CONTROL-RADIO",
+    "bin": "componentOwned",
+    "declarations": 4,
+    "name": "COMPONENT.selectionRadio.visualSize",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "width:24",
+      2
+     ],
+     [
+      "height:24",
+      2
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-CONTROL-SWITCH-TRACK",
+    "bin": "componentOwned",
+    "declarations": 2,
+    "name": "COMPONENT.switch.track.visualSize",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "width:50",
+      1
+     ],
+     [
+      "height:30",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-CONTROL-SWITCH-THUMB",
+    "bin": "componentOwned",
+    "declarations": 2,
+    "name": "COMPONENT.switch.thumb.visualSize",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "width:24",
+      1
+     ],
+     [
+      "height:24",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-CONTROL-TAX-REMOVE",
+    "bin": "componentOwned",
+    "declarations": 2,
+    "name": "COMPONENT.taxRow.removeAction.visualBox",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "width:32",
+      1
+     ],
+     [
+      "height:40",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-CONTROL-QUANTITY",
+    "bin": "componentOwned",
+    "declarations": 4,
+    "name": "COMPONENT.quantityStepper.action.visualSize",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "width:30",
+      2
+     ],
+     [
+      "height:30",
+      2
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-CONTROL-LEGEND",
+    "bin": "componentOwned",
+    "declarations": 6,
+    "name": "COMPONENT.legend.swatch.visualSize",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "width:7",
+      1
+     ],
+     [
+      "height:7",
+      1
+     ],
+     [
+      "width:9",
+      1
+     ],
+     [
+      "height:9",
+      1
+     ],
+     [
+      "width:10",
+      1
+     ],
+     [
+      "height:10",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-FIXED-COL",
+    "bin": "componentOwned",
+    "declarations": 20,
+    "name": "column.fixedWidth",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "width:44",
+      7
+     ],
+     [
+      "width:46",
+      4
+     ],
+     [
+      "height:18",
+      2
+     ],
+     [
+      "width:32",
+      2
+     ],
+     [
+      "height:28",
+      1
+     ],
+     [
+      "width:84",
+      1
+     ],
+     [
+      "width:34",
+      1
+     ],
+     [
+      "width:72",
+      1
+     ],
+     [
+      "width:74",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-APPHEADER-RIGHT-TOUCH",
+    "bin": "componentOwned",
+    "declarations": 2,
+    "name": "COMPONENT.appHeader.rightSlot.minTouchTarget",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "minWidth:44",
+      1
+     ],
+     [
+      "minHeight:44",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-BUTTON-SM-MINHEIGHT",
+    "bin": "componentOwned",
+    "declarations": 1,
+    "name": "COMPONENT.button.sm.visualHeight",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "minHeight:44",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-ORDER-DETAIL-TOUCH",
+    "bin": "componentOwned",
+    "declarations": 1,
+    "name": "COMPONENT.orderIngredientLink.minTouchTarget",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "minHeight:44",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-CATEGORY-REORDER-TOUCH",
+    "bin": "componentOwned",
+    "declarations": 2,
+    "name": "COMPONENT.categoryReorderAction.minTouchTarget",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "width:44",
+      1
+     ],
+     [
+      "height:44",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-RECIPE-EDITOR-TOUCH",
+    "bin": "componentOwned",
+    "declarations": 8,
+    "name": "COMPONENT.recipeEditor.interactiveCell.minTouchTarget",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "width:44",
+      3
+     ],
+     [
+      "height:44",
+      3
+     ],
+     [
+      "minWidth:44",
+      1
+     ],
+     [
+      "minHeight:44",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-SALES-ACTION-ROW",
+    "bin": "componentOwned",
+    "declarations": 1,
+    "name": "COMPONENT.salesHome.actionRow.minTouchTarget",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "minHeight:44",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-SALES-MANAGE-ACTION",
+    "bin": "componentOwned",
+    "declarations": 1,
+    "name": "COMPONENT.salesHome.manageAction.minTouchTarget",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "minHeight:44",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-SALES-QUANTITY-ACTION",
+    "bin": "componentOwned",
+    "declarations": 2,
+    "name": "COMPONENT.salesHome.quantityAction.minTouchTarget",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "minWidth:44",
+      1
+     ],
+     [
+      "minHeight:44",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-SALES-SALE-ACTION",
+    "bin": "componentOwned",
+    "declarations": 1,
+    "name": "COMPONENT.salesHome.saleAction.minTouchTarget",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "minHeight:44",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-SZ-MINWIDTH",
+    "bin": "componentOwned",
+    "declarations": 6,
+    "name": "column.minWidth",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "minWidth:56",
+      1
+     ],
+     [
+      "minWidth:96",
+      1
+     ],
+     [
+      "minWidth:34",
+      1
+     ],
+     [
+      "minWidth:22",
+      1
+     ],
+     [
+      "minWidth:26",
+      1
+     ],
+     [
+      "minWidth:110",
+      1
+     ]
+    ]
+   },
+   {
+    "id": "R-RD-PRIM",
+    "bin": "primitive",
+    "declarations": 92,
+    "name": null,
+    "target": "radius.*",
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "borderRadius:12",
+      70
+     ],
+     [
+      "borderRadius:999",
+      6
+     ],
+     [
+      "borderRadius:16",
+      5
+     ],
+     [
+      "borderTopLeftRadius:20",
+      4
+     ],
+     [
+      "borderTopRightRadius:20",
+      4
+     ],
+     [
+      "borderRadius:8",
+      3
+     ]
+    ]
+   },
+   {
+    "id": "R-RD-LEGEND-DOT",
+    "bin": "componentOwned",
+    "declarations": 2,
+    "name": "COMPONENT.legend.swatch.radius",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "borderRadius:3",
+      2
+     ]
+    ]
+   },
+   {
+    "id": "R-CL-PRIM",
+    "bin": "primitive",
+    "declarations": 11,
+    "name": null,
+    "target": "palette.*",
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "hex:#FFF",
+      10
+     ],
+     [
+      "hex:#FFFFFF",
+      1
+     ]
+    ]
+   }
+  ],
+  "failures": []
+ }
+}

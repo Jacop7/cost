@@ -14,7 +14,7 @@ import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Card, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { formatQuantity } from '@margincook/core';
-import { T, won } from '@/theme/tokens';
+import { COLOR, LAYOUT, T, won, space } from '@/theme/tokens';
 import { DetailRow, DetailSection, DetailSummary } from '../components/ProfitBlocks';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
 import { useSalesRange, useWasteBreakdown } from '../hooks';
@@ -50,7 +50,7 @@ function SalesWasteScreenBody({ serverToday }: { serverToday: string }) {
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <AppHeader title="폐기 손실 자세히" onBack={() => safeBack(`/sales/day?date=${to}`)} />
 
-      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 2, paddingBottom: 28 }} showsVerticalScrollIndicator={false}>
+      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingTop: LAYOUT.scroll.start, paddingBottom: LAYOUT.scroll.end }} showsVerticalScrollIndicator={false}>
         <QueryState
           isLoading={q.isLoading}
           error={q.error}
@@ -63,13 +63,13 @@ function SalesWasteScreenBody({ serverToday }: { serverToday: string }) {
               <DetailSummary
                 rows={[
                   ['영업일', rangeLabel(from, to)],
-                  ['폐기 손실 합계', `${d.total > 0 ? '−' : ''}${won(Math.round(d.total))}원`, undefined, d.total > 0 ? T.red : undefined],
-                  ['매출 대비', `${pct > 0 ? '−' : ''}${pct}%`, undefined, pct > 0 ? T.red : undefined],
+                  ['폐기 손실 합계', `${d.total > 0 ? '−' : ''}${won(Math.round(d.total))}원`, undefined, d.total > 0 ? COLOR.status.negative : undefined],
+                  ['매출 대비', `${pct > 0 ? '−' : ''}${pct}%`, undefined, pct > 0 ? COLOR.status.negative : undefined],
                 ]}
               />
 
               <DetailSection title="조리 폐기" />
-              <View style={{ paddingHorizontal: 14, paddingBottom: 4 }}>
+              <View style={{ paddingHorizontal: space.md, paddingBottom: 4 }}>
                 {d.menu.length === 0 ? (
                   <DetailRow name="기록 없음" amount="0원" muted last />
                 ) : (
@@ -86,7 +86,7 @@ function SalesWasteScreenBody({ serverToday }: { serverToday: string }) {
               </View>
 
               <DetailSection title="식재료 폐기" divider />
-              <View style={{ paddingHorizontal: 14, paddingBottom: 4 }}>
+              <View style={{ paddingHorizontal: space.md, paddingBottom: 4 }}>
                 {d.ingredient.length === 0 ? (
                   <DetailRow name="기록 없음" amount="0원" muted last />
                 ) : (
