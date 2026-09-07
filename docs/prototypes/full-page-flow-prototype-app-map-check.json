@@ -1,6 +1,6 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-07T05:13:16.461Z",
+  "generatedAt": "2026-09-07T08:17:48.019Z",
   "schemaVersion": 1,
   "script": {
    "name": "full-page-flow-prototype-app-map-check.mjs",
@@ -9,7 +9,7 @@
   "source": {
    "audit": {
     "path": "token-adoption-audit.json",
-    "sha256": "cfffdc85c7eff8d255b2be809655ad17d69cd58c26f86990c396cd21756d9ac3",
+    "sha256": "29661e83268fdfadb5b1d09df7ef54e71b66526904e57000385c6fd53b59d6e0",
     "declarations": 2311
    },
    "appMap": {
@@ -351,7 +351,7 @@
     ]
    },
    {
-    "decl": "size/minWidth:0 @ apps/mobile/src/features/sales/components/BusinessDayBar.tsx:173",
+    "decl": "size/minWidth:0 @ apps/mobile/src/features/sales/components/BusinessDayBar.tsx:178",
     "rules": [
      "R-SZ-FLEX-RESET",
      "R-SZ-MINWIDTH"
