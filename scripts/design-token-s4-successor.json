@@ -3,7 +3,7 @@
   "stage": "P2",
   "authority": "OPUS_DIRECT_ADVISORY",
   "rawGateId": "S4-EXACT",
-  "reviewReceipt": "docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-P2-001/opus-direct-advisory-r4.md",
+  "reviewReceipt": "docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-P2-001/opus-direct-advisory-r6.md",
   "previousP0BaselineBlob": "366160ec59c1887f9a047e76bca26d0c2ec1c547",
   "sourceP0BaselineBlob": "08cd5091636b891f16f23c608518a283cd5d2f08",
   "p0DecisionCommit": "663adc60ae249998e5e87c8bd56015a2421f53cc",
