@@ -185,7 +185,7 @@ try {
       await responsivePage.close();
     }
   }
-  if (compare) result.failures.push(...compareResponsiveChecks(result.responsiveChecks, manifest.responsiveChecks));
+  if (compare && !evidenceOnly) result.failures.push(...compareResponsiveChecks(result.responsiveChecks, manifest.responsiveChecks));
 } finally {
   await browser.close();
 }
@@ -202,5 +202,7 @@ if (result.failures.length) {
   for (const failure of result.failures) console.error(`- ${failure}`);
   process.exitCode = 1;
 } else {
-  console.log('three-surface visual capture: PASS (5 baseline hashes + responsive 20/20)');
+  console.log(evidenceOnly
+    ? 'three-surface visual capture: PASS (5 baseline hashes; responsive 검사 생략)'
+    : 'three-surface visual capture: PASS (5 baseline hashes + responsive 20/20)');
 }

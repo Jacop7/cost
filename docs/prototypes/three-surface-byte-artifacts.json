@@ -158,7 +158,7 @@
     {
       "path": "scripts/three-surface-visual-capture.mjs",
       "status": "present",
-      "contentSha256": "0da433406542dad75ff3539bd10020ebfe4b3b18bf4ce0d300f5e4f7583aa372"
+      "contentSha256": "ff93ecf35690126a195d1713a20440d4f30960e9d9e4a79ac60b61b389aa7d2d"
     },
     {
       "path": "scripts/three-surface-visual-diff-check.mjs",
