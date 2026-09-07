@@ -16,7 +16,7 @@ assert.match(runId, /^AC24-P4-[A-Z0-9-]+$/);
 
 test('AC-24 P4 entry validates exact PLAN_TEST evidence and no implementation or send authority', () => {
   assert.equal(validateP4AdmissionBundle(bundle), true);
-  const baseline = spawnSync('git', ['merge-base', '--is-ancestor', bundle.bundle_commit, 'HEAD'], { encoding: 'utf8' });
+  const baseline = spawnSync('git', ['merge-base', '--is-ancestor', bundle.authority_commit, 'HEAD'], { encoding: 'utf8' });
   assert.equal(baseline.status, 0, 'BUNDLE_AUTHORITY_BASELINE_NOT_ANCESTOR');
   const observation = runP4Admission(bundle);
   assert.equal(verifyP4AdmissionObservation(observation, bundle), true);

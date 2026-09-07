@@ -83,6 +83,12 @@
       "real_send_authorized": false,
       "sha256": "4ef32a00be07a8c7135e50c869979f901e648613762ac39578f1dadec4632947"
     },
+    "authority_correction": {
+      "decision_id": "DEC-TEAM-SERVICE-P4-PLAN-PREWORK-CORRECTION-003",
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-P4-PLAN-OWNER-DECISION-CORRECTION-003.json",
+      "scope_expanded": false,
+      "sha256": "a7eb7d1ba06af0e634095877df56aa871a02c9f13561f4b0a1d4d7a97627da5c"
+    },
     "economic_rollover_authorized": false,
     "excluded": [
       "P4 store, driver, outbox, replay or ACL implementation",
@@ -127,6 +133,7 @@
         "sha256": "38b5c88a8ea31e87d4e3b22fe97a7f74ba5c4df58c69b2f8bdae5a4923fa7c8c"
       }
     ],
+    "legacy_fields": "Stages 1-16 and predecessor top-level policy sections remain authoritative historical data in candidate 008 and the sealed canonical plan; candidate 009 is intentionally a scoped admission overlay and does not replace them.",
     "predecessor_candidate": {
       "path": ".codex/mission-relay/candidates/team-service-local-core-008.json",
       "sha256": "21f00449eae1444a58bce6a339f20a05956fce8017668b9b9c6f03f19185c485"
@@ -138,6 +145,7 @@
       "P4_AC24_STORE_DRIVER_ADMISSION_PREWORK"
     ],
     "status": "CANDIDATE_NOT_ACTIVE_ADMISSION_PREWORK_ONLY",
+    "supersedes_reason": "P4 admission prework needs a separately sealed, minimal candidate while preserving candidate 008 and the canonical model plan unchanged.",
     "target_modules": [
       "docs/team/service-flow-p4-contract.json",
       "docs/team/service-flow-acceptance.json",
@@ -221,7 +229,7 @@
     }
   ],
   "schemaVersion": 1,
-  "sealedAt": "2026-09-07T07:33:04.590477+00:00",
+  "sealedAt": "2026-09-07T08:21:17.068319+00:00",
   "stages": [
     {
       "assignments": [
