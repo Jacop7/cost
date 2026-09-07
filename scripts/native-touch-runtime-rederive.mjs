@@ -73,7 +73,7 @@ export function rederive(argument) {
     known.baselines?.[`${artifact.platform}@${evidenceScale}`]));
   artifact.evaluation.ratchet = { key: `${artifact.platform}@${evidenceScale}`, snapshot };
   artifact.manifest.derivation = {
-    semantics: 'platform-touch-clipping-v2',
+    semantics: 'direct-parent-touch-clipping-v3',
     auditSha256: sha256(normalized(auditPath)),
     contractSha256: sha256(normalized(contractPath)),
     source: 'preserved-raw-native-frames',

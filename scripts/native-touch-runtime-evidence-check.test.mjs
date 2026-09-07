@@ -57,13 +57,13 @@ test('Android 실제 탭은 안쪽 발화·직접 부모 밖 차단·overflow vi
   assert.match(validateTapProbeData(broken, expectedTap).join('\n'), /outside-overflow-visible-grandparent/);
 });
 
-test('iOS 실제 탭은 overflow-visible 직접 부모 밖에서도 발화해야 한다', () => {
+test('iOS 실제 탭도 overflow-visible 직접 부모 밖에서 차단돼야 한다', () => {
   // clean checkout에서도 재현되는 커밋 증거만 fixture로 쓴다. 작업 중간의 .tmp 산출물은
   // 제품 저장소 계약이 아니며 verify를 우연히 현재 작업 폴더에 의존하게 만든다.
   const ios = json('docs/prototypes/native-touch-ios-tap-probe.json');
   assert.deepEqual(validateTapProbeData(ios, { name: 'ios-tap', platform: 'ios' }), []);
   const broken = structuredClone(ios);
-  broken.empiricalTapProbe.find((item) => item.id === 'outside-direct-parent').onPressCount = 0;
+  broken.empiricalTapProbe.find((item) => item.id === 'outside-direct-parent').onPressCount = 1;
   assert.match(validateTapProbeData(broken, { name: 'ios-tap', platform: 'ios' }).join('\n'), /outside-direct-parent/);
 });
 
