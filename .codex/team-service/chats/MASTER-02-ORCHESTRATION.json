@@ -6,5 +6,87 @@
   "role_class": "MASTER",
   "profile_id": "DEFAULT_11_ROLE",
   "requirement_revision": "2026-09-06-profile-owned-human-master-deputy-teams",
+  "required_outgoing_edges": [
+    {
+      "requirement_id": "MASTER_TO_DEPUTY",
+      "source": "MASTER-02-ORCHESTRATION",
+      "target": "MASTER-03-DEPUTY-CONTEXT",
+      "kinds": [
+        "TASK_DISPATCH"
+      ]
+    },
+    {
+      "requirement_id": "MASTER_HUMAN_RESULT",
+      "source": "MASTER-02-ORCHESTRATION",
+      "target": "MASTER-01-HUMAN-DECISIONS",
+      "kinds": [
+        "AGGREGATE_RESULT"
+      ]
+    },
+    {
+      "requirement_id": "CEO_DIRECT_ASSIGNMENT",
+      "source": "MASTER-02-ORCHESTRATION",
+      "target": "DEPARTMENT-01-PRODUCT-MOBILE",
+      "kinds": [
+        "TASK_DISPATCH"
+      ]
+    },
+    {
+      "requirement_id": "CEO_DIRECT_ASSIGNMENT",
+      "source": "MASTER-02-ORCHESTRATION",
+      "target": "DEPARTMENT-02-DATA-BACKEND",
+      "kinds": [
+        "TASK_DISPATCH"
+      ]
+    },
+    {
+      "requirement_id": "CEO_DIRECT_ASSIGNMENT",
+      "source": "MASTER-02-ORCHESTRATION",
+      "target": "DEPARTMENT-03-SERVER-OPERATIONS",
+      "kinds": [
+        "TASK_DISPATCH"
+      ]
+    },
+    {
+      "requirement_id": "CEO_DIRECT_ASSIGNMENT",
+      "source": "MASTER-02-ORCHESTRATION",
+      "target": "DEPARTMENT-04-QUALITY-REVIEW",
+      "kinds": [
+        "TASK_DISPATCH"
+      ]
+    },
+    {
+      "requirement_id": "CEO_DIRECT_ASSIGNMENT",
+      "source": "MASTER-02-ORCHESTRATION",
+      "target": "DEPARTMENT-05-KNOWLEDGE-ORCHESTRATION",
+      "kinds": [
+        "TASK_DISPATCH"
+      ]
+    },
+    {
+      "requirement_id": "DIRECT_HUMAN_ESCALATION",
+      "source": "MASTER-02-ORCHESTRATION",
+      "target": "MASTER-01-HUMAN-DECISIONS",
+      "kinds": [
+        "DECISION_POINTER"
+      ]
+    },
+    {
+      "requirement_id": "STAGING_REQUEST",
+      "source": "MASTER-02-ORCHESTRATION",
+      "target": "MASTER-04-DEVELOPMENT-STAGING",
+      "kinds": [
+        "STAGING_GATE_REQUEST"
+      ]
+    },
+    {
+      "requirement_id": "PRODUCTION_REQUEST",
+      "source": "MASTER-02-ORCHESTRATION",
+      "target": "MASTER-05-PRODUCTION-RECOVERY",
+      "kinds": [
+        "PRODUCTION_GATE_REQUEST"
+      ]
+    }
+  ],
   "endpoint_binding": "RUNTIME_ONLY_NOT_PRESENT"
 }

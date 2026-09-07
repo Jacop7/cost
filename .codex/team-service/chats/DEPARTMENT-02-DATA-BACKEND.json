@@ -6,5 +6,75 @@
   "role_class": "TEAM",
   "profile_id": "DEFAULT_11_ROLE",
   "requirement_revision": "2026-09-06-profile-owned-human-master-deputy-teams",
+  "required_outgoing_edges": [
+    {
+      "requirement_id": "TEAM_DEPUTY_RESULT",
+      "source": "DEPARTMENT-02-DATA-BACKEND",
+      "target": "MASTER-03-DEPUTY-CONTEXT",
+      "kinds": [
+        "TASK_RESULT"
+      ]
+    },
+    {
+      "requirement_id": "TEAM_CEO_DIRECT_RESULT",
+      "source": "DEPARTMENT-02-DATA-BACKEND",
+      "target": "MASTER-02-ORCHESTRATION",
+      "kinds": [
+        "TASK_RESULT"
+      ]
+    },
+    {
+      "requirement_id": "TEAM_ROOM_STATUS",
+      "source": "DEPARTMENT-02-DATA-BACKEND",
+      "target": "DEPARTMENT-00-ALL-TEAMS-ROOM",
+      "kinds": [
+        "VERIFIED_STATUS"
+      ]
+    },
+    {
+      "requirement_id": "PEER_COLLABORATION",
+      "source": "DEPARTMENT-02-DATA-BACKEND",
+      "target": "DEPARTMENT-01-PRODUCT-MOBILE",
+      "kinds": [
+        "COLLAB_REQUEST",
+        "COLLAB_RESULT"
+      ]
+    },
+    {
+      "requirement_id": "PEER_COLLABORATION",
+      "source": "DEPARTMENT-02-DATA-BACKEND",
+      "target": "DEPARTMENT-03-SERVER-OPERATIONS",
+      "kinds": [
+        "COLLAB_REQUEST",
+        "COLLAB_RESULT"
+      ]
+    },
+    {
+      "requirement_id": "PEER_COLLABORATION",
+      "source": "DEPARTMENT-02-DATA-BACKEND",
+      "target": "DEPARTMENT-04-QUALITY-REVIEW",
+      "kinds": [
+        "COLLAB_REQUEST",
+        "COLLAB_RESULT"
+      ]
+    },
+    {
+      "requirement_id": "PEER_COLLABORATION",
+      "source": "DEPARTMENT-02-DATA-BACKEND",
+      "target": "DEPARTMENT-05-KNOWLEDGE-ORCHESTRATION",
+      "kinds": [
+        "COLLAB_REQUEST",
+        "COLLAB_RESULT"
+      ]
+    },
+    {
+      "requirement_id": "DIRECT_HUMAN_ESCALATION",
+      "source": "DEPARTMENT-02-DATA-BACKEND",
+      "target": "MASTER-01-HUMAN-DECISIONS",
+      "kinds": [
+        "DECISION_POINTER"
+      ]
+    }
+  ],
   "endpoint_binding": "RUNTIME_ONLY_NOT_PRESENT"
 }

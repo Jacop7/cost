@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "generator_version": "0.1.0",
-  "input_sha256": "8c9cf417cba7f627aaaa6b38cab91c78f0546cef781e95ae11ff378cc9a597de",
+  "generator_version": "0.2.0",
+  "input_sha256": "237436736664b611ba0f98af2d85961e79bebf277575629bab4952be1480c710",
   "files": [
     {
       "path": ".codex/team-service/project-profile.json",
@@ -34,68 +34,92 @@
       "classification": "CREATE"
     },
     {
+      "path": ".codex/team-service/compatibility.json",
+      "sha256": "ba63af658ca9639dc202fe7d8b297561098e09707f931c389cf24c03b779e713",
+      "mode": "TRACKED_PROJECT",
+      "classification": "CREATE"
+    },
+    {
+      "path": ".codex/team-service/acceptance.json",
+      "sha256": "22a864f372f92fe99d68723959e00fa74000c4f978af4c9d14c8df6bd04a340e",
+      "mode": "TRACKED_PROJECT",
+      "classification": "CREATE"
+    },
+    {
+      "path": ".codex/team-service/CURRENT.json",
+      "sha256": "0e00849802542f68e61dc76fe4ba29b9da33586c03321041f67a14543dd82e4a",
+      "mode": "TRACKED_PROJECT",
+      "classification": "CREATE"
+    },
+    {
+      "path": ".codex/team-service/known-open.json",
+      "sha256": "40f90461073a4f4327b322438694daa0b1b3bd86dc9bcf287958b4db59213179",
+      "mode": "TRACKED_PROJECT",
+      "classification": "CREATE"
+    },
+    {
       "path": ".codex/team-service/chats/MASTER-01-HUMAN-DECISIONS.json",
-      "sha256": "067915c51a91596134e42ee982fe52ea64725d04f6f7bd5e1a0b9df76a58bb57",
+      "sha256": "f29771cb7251303dafb0f4f6aa71d458a34291059d83b492c3850f9b58414d72",
       "mode": "TRACKED_PROJECT",
       "classification": "CREATE"
     },
     {
       "path": ".codex/team-service/chats/MASTER-02-ORCHESTRATION.json",
-      "sha256": "ecf70893e182efc2b994f7b2f2bfcb8abe07047d1dc23f65083039b19dbcf1f7",
+      "sha256": "63aa59cec28b3912649bfcab344ddb462ec2b14d4cd31487b51948d70ee6d8f4",
       "mode": "TRACKED_PROJECT",
       "classification": "CREATE"
     },
     {
       "path": ".codex/team-service/chats/MASTER-03-DEPUTY-CONTEXT.json",
-      "sha256": "8e89cce5fe39e2b5844c229a9a24d69a81d32736ff263f01a99ab72fc6d8ca14",
+      "sha256": "4326bc08f9143eb3331b84ff271e42735f4b5edcde6411095c0523482a93248b",
       "mode": "TRACKED_PROJECT",
       "classification": "CREATE"
     },
     {
       "path": ".codex/team-service/chats/MASTER-04-DEVELOPMENT-STAGING.json",
-      "sha256": "def57a13f9ea86ac91dc4bc4773710f7044fdeef970769f2216251ab876721cf",
+      "sha256": "72c3be054014d80a99de9c6b1043fd238b16f7ccf55e37d9daa4a5b99099dbdc",
       "mode": "TRACKED_PROJECT",
       "classification": "CREATE"
     },
     {
       "path": ".codex/team-service/chats/MASTER-05-PRODUCTION-RECOVERY.json",
-      "sha256": "af05495f2d251bb0e936f62220ef0d990e95f673a8311ecdb43901f2e28a255e",
+      "sha256": "8e72c231ee82638d82b18cd64df7c01242a1c136f775f78eba94a9ec0ae53db3",
       "mode": "TRACKED_PROJECT",
       "classification": "CREATE"
     },
     {
       "path": ".codex/team-service/chats/DEPARTMENT-00-ALL-TEAMS-ROOM.json",
-      "sha256": "47a0761b6095b3ef389117d46afef9e4ae3dce84871208634b519c59c2a7178e",
+      "sha256": "058979617f6307e2a35e08ffc8c6ef46339d780df400734c8a11790386e4384e",
       "mode": "TRACKED_PROJECT",
       "classification": "CREATE"
     },
     {
       "path": ".codex/team-service/chats/DEPARTMENT-01-PRODUCT-MOBILE.json",
-      "sha256": "1d7493d465a0dab8af2524c0c44b8b7c14662c67b1f70698a16d702f3c25b7b2",
+      "sha256": "13f2b60654bb511cf78f5114dee4d80d0d30875fc1513ee1ddbaa108cc62171f",
       "mode": "TRACKED_PROJECT",
       "classification": "CREATE"
     },
     {
       "path": ".codex/team-service/chats/DEPARTMENT-02-DATA-BACKEND.json",
-      "sha256": "337bcc6a3c9f154db7702a3dbb9dfb2f8175c948a0b95d72dc43a608216199bd",
+      "sha256": "5f8bf04f6ecd767ecd761f56c8fdc26a2248d2bd01410853e4776c49c619fc32",
       "mode": "TRACKED_PROJECT",
       "classification": "CREATE"
     },
     {
       "path": ".codex/team-service/chats/DEPARTMENT-03-SERVER-OPERATIONS.json",
-      "sha256": "795613e586c1b06ebb191a8c02cf002491b150a63a556c94eb415d4b5a50c56c",
+      "sha256": "fb61b3defe68005b6cd56c648e9b487c531dc98eb23f4bc13669b215c15fb373",
       "mode": "TRACKED_PROJECT",
       "classification": "CREATE"
     },
     {
       "path": ".codex/team-service/chats/DEPARTMENT-04-QUALITY-REVIEW.json",
-      "sha256": "c0cf8b1003c71c0d80e9d6e575d040f251b21698bee6288c468939015b1645ee",
+      "sha256": "bb6183a3dbba9e3cc9656c450454dde3400ed8f8415b3cfbba42844c0607007f",
       "mode": "TRACKED_PROJECT",
       "classification": "CREATE"
     },
     {
       "path": ".codex/team-service/chats/DEPARTMENT-05-KNOWLEDGE-ORCHESTRATION.json",
-      "sha256": "8c1a84abfef0cd7657036c3d78959ca37af494f7a23ce3ff69a518a3da355a69",
+      "sha256": "c9102ab440f93d8238fd052ba368bc3246f3f4f2f144073c70c79a8dee5243c1",
       "mode": "TRACKED_PROJECT",
       "classification": "CREATE"
     }

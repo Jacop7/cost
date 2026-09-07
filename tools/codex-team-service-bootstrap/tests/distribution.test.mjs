@@ -22,7 +22,7 @@ function powershell(script, args) {
   throw new Error('POWERSHELL_UNAVAILABLE');
 }
 
-test('AT-06 clean-profile install and update preserve a usable personal marketplace', (t) => {
+test('INSTALL-01 clean-profile install and update preserve a usable personal marketplace', (t) => {
   const base = mkdtempSync(join(tmpdir(), 'team-service-install-'));
   const user = join(base, '사용자');
   mkdirSync(user, { recursive: true });
@@ -41,7 +41,7 @@ test('AT-06 clean-profile install and update preserve a usable personal marketpl
   assert.equal(updated.plugins.filter((item) => item.name === 'codex-team-service-bootstrap').length, 1);
 });
 
-test('AT-07 portable export contains a marketplace, plugin, installer, and inventory', (t) => {
+test('EXPORT-01 portable export contains a marketplace, plugin, installer, and inventory', (t) => {
   const base = mkdtempSync(join(tmpdir(), 'team-service-export-'));
   const output = join(base, 'release');
   t.after(() => rmSync(base, { recursive: true, force: true }));
@@ -75,7 +75,7 @@ test('AT-14 bootstrap commands do not mutate the four dependency plugin manifest
   assert.deepEqual(manifests.map(hash), before);
 });
 
-test('AT-15 an exported package installs into a second clean profile without the source repository', (t) => {
+test('EXPORT-02 an exported package installs into a second clean profile without the source repository', (t) => {
   const base = mkdtempSync(join(tmpdir(), 'team-service-rebuild-'));
   const output = join(base, 'release');
   const user = join(base, 'second-user');

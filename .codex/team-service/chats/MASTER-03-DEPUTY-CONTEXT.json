@@ -6,5 +6,79 @@
   "role_class": "DEPUTY",
   "profile_id": "DEFAULT_11_ROLE",
   "requirement_revision": "2026-09-06-profile-owned-human-master-deputy-teams",
+  "required_outgoing_edges": [
+    {
+      "requirement_id": "DEPUTY_ROOM_STATUS",
+      "source": "MASTER-03-DEPUTY-CONTEXT",
+      "target": "DEPARTMENT-00-ALL-TEAMS-ROOM",
+      "kinds": [
+        "VERIFIED_STATUS"
+      ]
+    },
+    {
+      "requirement_id": "DEPUTY_MASTER_RESULT",
+      "source": "MASTER-03-DEPUTY-CONTEXT",
+      "target": "MASTER-02-ORCHESTRATION",
+      "kinds": [
+        "AGGREGATE_RESULT"
+      ]
+    },
+    {
+      "requirement_id": "DEPUTY_TEAM_ASSIGNMENT",
+      "source": "MASTER-03-DEPUTY-CONTEXT",
+      "target": "DEPARTMENT-01-PRODUCT-MOBILE",
+      "kinds": [
+        "TASK_DISPATCH"
+      ]
+    },
+    {
+      "requirement_id": "DEPUTY_TEAM_ASSIGNMENT",
+      "source": "MASTER-03-DEPUTY-CONTEXT",
+      "target": "DEPARTMENT-02-DATA-BACKEND",
+      "kinds": [
+        "TASK_DISPATCH"
+      ]
+    },
+    {
+      "requirement_id": "DEPUTY_TEAM_ASSIGNMENT",
+      "source": "MASTER-03-DEPUTY-CONTEXT",
+      "target": "DEPARTMENT-03-SERVER-OPERATIONS",
+      "kinds": [
+        "TASK_DISPATCH"
+      ]
+    },
+    {
+      "requirement_id": "DEPUTY_TEAM_ASSIGNMENT",
+      "source": "MASTER-03-DEPUTY-CONTEXT",
+      "target": "DEPARTMENT-04-QUALITY-REVIEW",
+      "kinds": [
+        "TASK_DISPATCH"
+      ]
+    },
+    {
+      "requirement_id": "DEPUTY_TEAM_ASSIGNMENT",
+      "source": "MASTER-03-DEPUTY-CONTEXT",
+      "target": "DEPARTMENT-05-KNOWLEDGE-ORCHESTRATION",
+      "kinds": [
+        "TASK_DISPATCH"
+      ]
+    },
+    {
+      "requirement_id": "DIRECT_HUMAN_ESCALATION",
+      "source": "MASTER-03-DEPUTY-CONTEXT",
+      "target": "MASTER-01-HUMAN-DECISIONS",
+      "kinds": [
+        "DECISION_POINTER"
+      ]
+    },
+    {
+      "requirement_id": "QUALITY_REQUEST",
+      "source": "MASTER-03-DEPUTY-CONTEXT",
+      "target": "DEPARTMENT-04-QUALITY-REVIEW",
+      "kinds": [
+        "REVIEW_REQUEST"
+      ]
+    }
+  ],
   "endpoint_binding": "RUNTIME_ONLY_NOT_PRESENT"
 }

@@ -21,6 +21,7 @@ v0.5는 실제 R1 문서 그래프 verify 게이트 파일럿에서 확인한 �
 - [capability policy schema](./schemas/capability-policy.schema.json)
 - [설치 영수증 schema](./schemas/install-receipt.schema.json)
 - [생성 파일 inventory schema](./schemas/generated-files.schema.json)
+- [host evidence admission schema](./schemas/host-evidence-admission.schema.json)
 - [기본 11역할 profile](./profiles/default-11-role-profile.json)
 - [재제작 golden vector](./golden/portable-v1-vectors.json)
 - [검수된 설계 기준선](../ai-review/evidence/TEAM-SERVICE-PORTABLE-PACKAGE-DESIGN-BASELINE-001.json)
@@ -29,8 +30,9 @@ v0.5는 실제 R1 문서 그래프 verify 게이트 파일럿에서 확인한 �
 - [구현 상태](../../tools/codex-team-service-bootstrap/docs/IMPLEMENTATION-STATUS.md)
 - [AT-01~17 판정표](../../tools/codex-team-service-bootstrap/contracts/acceptance-matrix.json)
 
-현재 휴대형 패키지는 **설계 승인** 상태다. 플러그인 구현·설치·다른 PC 검증·실제 채팅 발송은
-별도 구현 입장과 활성화 결정을 통과해야 하며 아직 완료로 주장하지 않는다.
+현재 휴대형 패키지는 **로컬 구현 후보·Opus 재검수 대기** 상태다. 공통 플러그인 구현, 현재 PC 설치,
+격리된 clean profile 설치와 무발송 시험은 통과했다. 물리적으로 다른 PC·다른 Windows principal ACL,
+host 인증 채팅 왕복과 실제 발송은 미검증이며 서비스 준비 완료로 주장하지 않는다.
 
 여러 장기 채팅을 쓸 때는 프로젝트마다 봉인 모델 계획 하나를 두고, 각 채팅은 자기 Mission Relay
 상태·1.7 경제성·HANDOFF 계보만 별도로 보존한다. 채팅마다 계획 사본을 만들거나 한 채팅의 rollover를

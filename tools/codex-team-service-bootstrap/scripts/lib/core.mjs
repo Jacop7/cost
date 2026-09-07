@@ -108,9 +108,9 @@ export function classifyFile(path, expectedText) {
 }
 
 export function runtimeRoot(projectRoot) {
-  const base = process.env.LOCALAPPDATA || process.env.XDG_STATE_HOME;
-  if (!base) fail('USER_RUNTIME_BASE_UNAVAILABLE');
-  return join(base, 'Codex', 'team-service-bootstrap', sha256Text(resolve(projectRoot).toLowerCase()).slice(0, 24));
+  const base = process.platform === 'win32' ? process.env.LOCALAPPDATA : process.env.XDG_STATE_HOME;
+  if (!base || !isAbsolute(base)) fail('USER_RUNTIME_BASE_UNAVAILABLE');
+  return join(resolve(base), 'Codex-Team-Service', sha256Text(resolve(projectRoot).toLowerCase()).slice(0, 24));
 }
 
 export function listFiles(root, prefix = '') {
@@ -156,9 +156,33 @@ export function createSchemaRegistry(schemas) {
   for (const schema of schemas) {
     if (!schema?.$id) fail('SCHEMA_ID_REQUIRED');
     if (registry.has(schema.$id)) fail('DUPLICATE_SCHEMA_ID', schema.$id);
+    assertSupportedSchema(schema);
     registry.set(schema.$id, schema);
   }
   return registry;
+}
+
+const schemaKeywords = new Set([
+  '$schema', '$id', '$ref', '$defs', 'title', 'description', 'type', 'const', 'enum', 'anyOf', 'oneOf', 'not',
+  'properties', 'required', 'additionalProperties', 'items', 'minLength', 'maxLength', 'pattern', 'minimum',
+  'maximum', 'minItems', 'maxItems', 'uniqueItems', 'minProperties', 'maxProperties',
+]);
+
+function assertSupportedSchema(schema, path = '$') {
+  if (!schema || typeof schema !== 'object' || Array.isArray(schema)) fail('UNSUPPORTED_SCHEMA_NODE', path);
+  for (const key of Object.keys(schema)) {
+    if (!schemaKeywords.has(key)) fail('UNSUPPORTED_SCHEMA_KEYWORD', `${path}/${key}`);
+  }
+  if (Array.isArray(schema.items)) fail('UNSUPPORTED_SCHEMA_KEYWORD', `${path}/items[]`);
+  for (const [key, child] of Object.entries(schema.properties || {})) assertSupportedSchema(child, `${path}/properties/${key}`);
+  for (const [key, child] of Object.entries(schema.$defs || {})) assertSupportedSchema(child, `${path}/$defs/${key}`);
+  for (const [index, child] of (schema.anyOf || []).entries()) assertSupportedSchema(child, `${path}/anyOf/${index}`);
+  for (const [index, child] of (schema.oneOf || []).entries()) assertSupportedSchema(child, `${path}/oneOf/${index}`);
+  if (schema.not) assertSupportedSchema(schema.not, `${path}/not`);
+  if (schema.items && !Array.isArray(schema.items)) assertSupportedSchema(schema.items, `${path}/items`);
+  if (schema.additionalProperties && typeof schema.additionalProperties === 'object') {
+    assertSupportedSchema(schema.additionalProperties, `${path}/additionalProperties`);
+  }
 }
 
 function resolveRef(ref, current, registry) {
@@ -183,6 +207,21 @@ export function validateSchema(instance, schema, registry, current = schema, pat
     if (matches.length === 0) fail('SCHEMA_ANY_OF_FAILED', path);
     return true;
   }
+  if (schema.oneOf) {
+    const matches = schema.oneOf.filter((candidate) => {
+      try { validateSchema(instance, candidate, registry, current, path); return true; } catch { return false; }
+    });
+    if (matches.length !== 1) fail('SCHEMA_ONE_OF_FAILED', path);
+    return true;
+  }
+  if (schema.not) {
+    try {
+      validateSchema(instance, schema.not, registry, current, path);
+    } catch {
+      return true;
+    }
+    fail('SCHEMA_NOT_FAILED', path);
+  }
   if (Object.hasOwn(schema, 'const') && !same(instance, schema.const)) fail('SCHEMA_CONST_FAILED', path);
   if (schema.enum && !schema.enum.some((item) => same(item, instance))) fail('SCHEMA_ENUM_FAILED', path);
   if (schema.type) {
@@ -194,15 +233,24 @@ export function validateSchema(instance, schema, registry, current = schema, pat
     if (!valid) fail('SCHEMA_TYPE_FAILED', `${path}:${schema.type}`);
   }
   if (typeof instance === 'string') {
-    if (schema.minLength && instance.length < schema.minLength) fail('SCHEMA_MIN_LENGTH_FAILED', path);
+    if (schema.minLength !== undefined && instance.length < schema.minLength) fail('SCHEMA_MIN_LENGTH_FAILED', path);
+    if (schema.maxLength !== undefined && instance.length > schema.maxLength) fail('SCHEMA_MAX_LENGTH_FAILED', path);
     if (schema.pattern && !(new RegExp(schema.pattern, 'u')).test(instance)) fail('SCHEMA_PATTERN_FAILED', path);
   }
+  if (typeof instance === 'number') {
+    if (schema.minimum !== undefined && instance < schema.minimum) fail('SCHEMA_MINIMUM_FAILED', path);
+    if (schema.maximum !== undefined && instance > schema.maximum) fail('SCHEMA_MAXIMUM_FAILED', path);
+  }
   if (Array.isArray(instance)) {
-    if (schema.minItems && instance.length < schema.minItems) fail('SCHEMA_MIN_ITEMS_FAILED', path);
+    if (schema.minItems !== undefined && instance.length < schema.minItems) fail('SCHEMA_MIN_ITEMS_FAILED', path);
+    if (schema.maxItems !== undefined && instance.length > schema.maxItems) fail('SCHEMA_MAX_ITEMS_FAILED', path);
     if (schema.uniqueItems && new Set(instance.map((item) => canonicalJson(item))).size !== instance.length) fail('SCHEMA_UNIQUE_FAILED', path);
     if (schema.items) instance.forEach((item, index) => validateSchema(item, schema.items, registry, current, `${path}/${index}`));
   }
   if (instance !== null && typeof instance === 'object' && !Array.isArray(instance)) {
+    const instanceKeys = Object.keys(instance);
+    if (schema.minProperties !== undefined && instanceKeys.length < schema.minProperties) fail('SCHEMA_MIN_PROPERTIES_FAILED', path);
+    if (schema.maxProperties !== undefined && instanceKeys.length > schema.maxProperties) fail('SCHEMA_MAX_PROPERTIES_FAILED', path);
     for (const required of schema.required || []) if (!Object.hasOwn(instance, required)) fail('SCHEMA_REQUIRED_FAILED', `${path}/${required}`);
     const properties = schema.properties || {};
     if (schema.additionalProperties === false) {
@@ -210,6 +258,11 @@ export function validateSchema(instance, schema, registry, current = schema, pat
     }
     for (const [key, child] of Object.entries(properties)) {
       if (Object.hasOwn(instance, key)) validateSchema(instance[key], child, registry, current, `${path}/${key}`);
+    }
+    if (schema.additionalProperties && typeof schema.additionalProperties === 'object') {
+      for (const key of instanceKeys) {
+        if (!Object.hasOwn(properties, key)) validateSchema(instance[key], schema.additionalProperties, registry, current, `${path}/${key}`);
+      }
     }
   }
   return true;

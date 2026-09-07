@@ -1,6 +1,6 @@
-# 휴대형 AI 팀 서비스 아키텍처 v0.1
+# 휴대형 AI 팀 서비스 아키텍처 v0.2.0
 
-상태: `DRAFT_FOR_FABLE_REVIEW`
+상태: `IMPLEMENTATION_CANDIDATE_OPUS_RECHECK_PENDING`
 
 이 문서는 다른 PC와 다른 프로젝트에서 설치 직후 안전한 초기 상태까지 재현되는 AI 팀 서비스의
 공통 설계다. 실제 채팅 발송이나 운영 권한을 부여하는 문서가 아니다. 구현·설치·활성화는 각각
@@ -73,7 +73,8 @@ SHA 입력은 byte-identical 출력을 만들어야 한다.
 ### 3.3 사용자 전용 runtime
 
 Git 밖의 사용자 ACL 보호 계층이다. Windows는 KnownFolder LocalAppData 아래
-`Codex-Team-Service/<project-id>/`를 사용한다. macOS/Linux는 별도 OS adapter 검증 전까지
+`Codex-Team-Service/<project-id>/`를 사용한다. `LOCALAPPDATA`가 없거나 절대경로가 아니면 중단한다.
+macOS/Linux는 별도 OS adapter 검증 전까지
 `UNVERIFIED_PLATFORM`이다.
 
 - 실제 thread/endpoint binding과 HMAC reference
@@ -113,7 +114,7 @@ runtime 값은 프로젝트 생성 파일로 역류하지 않는다. runtime이 
 8. 샘플 프로젝트·자동시험·운영 매뉴얼
 9. 근거와 함께 봉인되는 capability tier
 10. 기존 4개 플러그인 version/schema compatibility matrix
-11. plugin·project files·runtime·doctor 결과를 묶는 `install-receipt.json`
+11. exact plugin version/cachebuster·manifest SHA·project files·runtime·doctor 결과를 묶는 `install-receipt.json`
 12. AC-24형 전이적 import closure 무발송 harness
 13. candidate/review/Decision/epoch를 묶는 activation envelope
 14. Bash marker·exit 보존·Node/Python·Unicode·CRLF 실행환경 probe
@@ -125,7 +126,9 @@ doctor가 tool schema와 관측 결과에서 tier를 계산하고 runtime에 has
 사용자 문자열만으로 상향할 수 없다.
 
 doctor의 고정 입력은 `send_message_to_thread`, `read_thread`, `wait_threads`, `create_thread`의 tool
-schema, caller/receipt/send-fence/trusted-time 필드 matrix, exact `HOST-SCOPE-<N>` 결과 SHA다. doctor는
+schema, caller/receipt/send-fence/trusted-time 필드 matrix, exact `HOST-SCOPE-<N>` 결과 SHA다. host 증거는
+프로젝트의 `host-evidence-admission.json`에 상대경로·SHA·결정 SHA가 먼저 결속돼야 하며 음성/불명 outcome은
+항상 `LOCAL_CORE_ONLY`로 남는다. doctor는
 이 과정에서 실제 send/create를 호출하지 않는다. 같은 입력은 같은 tier hash를 내야 한다.
 
 | tier | 허용 | 금지 및 표시 |
@@ -174,7 +177,9 @@ runtime의 단일 `current_epoch`를 expected 값과 CAS로 소비한다. Decisi
 선언한다. 한 항목이라도 지원 범위 밖이면 `INCOMPATIBLE_DEPENDENCY`로 멈춘다.
 
 각 dependency는 `consumes`에 실제 artifact, schema selector, 검증 명령/sidecar 방식을 기계 판독형으로
-선언한다. cachebuster를 포함한 현재 판본은 호환 시험 전까지 exact version만 허용한다.
+선언한다. cachebuster를 포함한 현재 판본은 호환 시험 전까지 exact version만 허용한다. 의존 플러그인은
+사용자별 Codex cache/personal plugin 위치에서 탐색하거나 `CODEX_TEAM_SERVICE_DEPENDENCY_ROOTS`의 절대경로
+매핑으로 명시한다. 프로젝트나 사용자 이름이 들어간 고정 PC 경로는 배포본에 두지 않는다.
 
 Shell probe는 실행 전에 실제 자식 프로세스로 marker와 exit code를 확인한다. PowerShell을 Bash로
 해석하지 않는다. v1 Windows 기준 Node `>=24.15.0 <25`, Python `>=3.13 <3.14`, TypeScript `5.9.x`,
@@ -182,6 +187,8 @@ Shell probe는 실행 전에 실제 자식 프로세스로 marker와 exit code�
 
 라우팅 coverage의 요구 집합은 전역 검사기에 하드코딩하지 않고 project profile의
 `edge_requirements`가 소유한다. 감사기는 profile↔생성 manifest↔Team Router policy를 삼자 대조한다.
+기본 profile은 message-kind가 결속된 route requirement 67건이며, source-target만 합친 고유 논리 route는
+64건이다. 두 수를 모두 기록해 같은 대상을 다르게 세는 오류를 막는다.
 기본 profile에서 Quality 팀도 peer consultation에는 참여하지만 그 결과는 독립검수나 업무 배정 권한을
 충족하지 않는다. 운영 게이트의 반환 kind가 `VERIFIED_STATUS`인 것은 일반 `TASK_RESULT`와 구분하기
 위한 의도된 비대칭이다.

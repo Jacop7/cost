@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "contract_id": "CODEX_TEAM_SERVICE_BOOTSTRAP_PORTABLE_V1",
-  "status": "DRAFT_FOR_FABLE_REVIEW",
+  "status": "IMPLEMENTATION_CANDIDATE_OPUS_RECHECK_PENDING",
   "package_name": "codex-team-service-bootstrap",
   "ownership": "COMPOSE_AND_VERIFY_ONLY",
   "canonical_json": {
@@ -9,7 +9,7 @@
     "key_order": "UTF16_CODE_UNIT_LEXICOGRAPHIC_ECMASCRIPT_LT_GT",
     "encoding": "COMPACT_UTF8",
     "astral_note": "ECMAScript string ordering compares UTF-16 code units, not Unicode code points or locale collation.",
-    "reference": "scripts/team-service-workflow.mjs#canonicalJson"
+    "reference": "scripts/lib/core.mjs#canonicalJson"
   },
   "default_mode": "SIMULATION_ONLY",
   "verified_platforms": ["WINDOWS"],
@@ -87,7 +87,7 @@
       {"name": "mcp__codex_app__create_thread", "fields": ["prompt", "target"], "live_call_during_doctor": false}
     ],
     "evidence_matrix": ["caller_provenance", "receipt_provenance", "send_effect_fence", "trusted_utc_provenance"],
-    "host_scope_result": {"format": "HOST-SCOPE-<N>", "required_sha256": true, "negative_result_cannot_be_promoted_by_configuration": true},
+    "host_scope_result": {"format": "HOST-SCOPE-<N>", "required_sha256": true, "negative_result_cannot_be_promoted_by_configuration": true, "admission_path": ".codex/team-service/host-evidence-admission.json", "admission_schema": "schemas/host-evidence-admission.schema.json"},
     "same_inputs_same_tier_hash": true
   },
   "capability_tiers": {
@@ -152,7 +152,8 @@
     "requirements_source": ".codex/team-service/project-profile.json#edge_requirements",
     "comparison": "PROFILE_MANIFEST_ROUTER_POLICY_THREE_WAY",
     "hardcoded_global_requirement_revision": "FORBIDDEN",
-    "missing_or_extra_edge": "EXPLICIT_FINDING_NOT_PASS"
+    "missing_or_extra_edge": "EXPLICIT_FINDING_NOT_PASS",
+    "count_semantics": {"route_kind_requirements": 67, "unique_source_target_routes": 64}
   },
   "runtime_versions": {
     "node": {"observed": "24.15.0", "supported": ">=24.15.0 <25"},
@@ -194,7 +195,7 @@
     "AT-17_DOCTOR_TIER_DETERMINISM_AND_CONFIG_PROMOTION_REJECTED"
   ],
   "current_claims": {
-    "plugin_implemented": false,
+    "plugin_implemented": true,
     "installed_on_second_pc": false,
     "cross_project_validated": false,
     "real_send_authorized": false,

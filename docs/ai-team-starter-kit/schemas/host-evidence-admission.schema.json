@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:codex-team-service:host-evidence-admission:v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "scope_id", "evidence_path", "evidence_sha256", "maximum_tier", "decision_sha256"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "scope_id": {"type": "string", "pattern": "^HOST-SCOPE-[0-9]{3,}$"},
+    "evidence_path": {"type": "string", "pattern": "^(?![A-Za-z]:|/|.*\\\\|.*(?:^|/)\\.\\.(?:/|$)).+"},
+    "evidence_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "maximum_tier": {"enum": ["COOPERATIVE_OBSERVED", "AUTHENTICATED"]},
+    "decision_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  }
+}

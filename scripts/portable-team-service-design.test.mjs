@@ -30,7 +30,7 @@ test('PORTABLE-01 golden vectors execute the UTF-16 canonical reference', () => 
   }
 });
 
-test('PORTABLE-02 profile selectors resolve and expand to 67 required logical edges', () => {
+test('PORTABLE-02 profile selectors resolve to 67 route-kind requirements and 64 unique routes', () => {
   const roleIds = new Set(profile.roles.map((role) => role.logical_chat_id));
   assert.equal(roleIds.size, 11);
   for (const [name, ids] of Object.entries(profile.selectors)) {
@@ -38,14 +38,18 @@ test('PORTABLE-02 profile selectors resolve and expand to 67 required logical ed
     for (const id of ids) assert(roleIds.has(id), `${name}:${id}`);
   }
   let expanded = 0;
+  const uniqueRoutes = new Set();
   for (const requirement of profile.edge_requirements) {
     const sources = profile.selectors[requirement.source_selector];
     const targets = profile.selectors[requirement.target_selector];
     assert(sources && targets, requirement.requirement_id);
-    expanded += sources.flatMap((source) => targets.map((target) => [source, target]))
-      .filter(([source, target]) => !requirement.exclude_self || source !== target).length;
+    const routes = sources.flatMap((source) => targets.map((target) => [source, target]))
+      .filter(([source, target]) => !requirement.exclude_self || source !== target);
+    expanded += routes.length;
+    for (const [source, target] of routes) uniqueRoutes.add(`${source}->${target}`);
   }
   assert.equal(expanded, 67);
+  assert.equal(uniqueRoutes.size, 64);
   assert(profileSchema.required.includes('expansion_semantics'));
   assert(profileSchema.additionalProperties === false);
 });

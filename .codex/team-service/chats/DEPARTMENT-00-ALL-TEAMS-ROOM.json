@@ -6,5 +6,23 @@
   "role_class": "ROOM",
   "profile_id": "DEFAULT_11_ROLE",
   "requirement_revision": "2026-09-06-profile-owned-human-master-deputy-teams",
+  "required_outgoing_edges": [
+    {
+      "requirement_id": "ROOM_DEPUTY_RESULT",
+      "source": "DEPARTMENT-00-ALL-TEAMS-ROOM",
+      "target": "MASTER-03-DEPUTY-CONTEXT",
+      "kinds": [
+        "AGGREGATE_RESULT"
+      ]
+    },
+    {
+      "requirement_id": "DIRECT_HUMAN_ESCALATION",
+      "source": "DEPARTMENT-00-ALL-TEAMS-ROOM",
+      "target": "MASTER-01-HUMAN-DECISIONS",
+      "kinds": [
+        "DECISION_POINTER"
+      ]
+    }
+  ],
   "endpoint_binding": "RUNTIME_ONLY_NOT_PRESENT"
 }

@@ -6,5 +6,23 @@
   "role_class": "GATE",
   "profile_id": "DEFAULT_11_ROLE",
   "requirement_revision": "2026-09-06-profile-owned-human-master-deputy-teams",
+  "required_outgoing_edges": [
+    {
+      "requirement_id": "DIRECT_HUMAN_ESCALATION",
+      "source": "MASTER-05-PRODUCTION-RECOVERY",
+      "target": "MASTER-01-HUMAN-DECISIONS",
+      "kinds": [
+        "DECISION_POINTER"
+      ]
+    },
+    {
+      "requirement_id": "PRODUCTION_RESULT",
+      "source": "MASTER-05-PRODUCTION-RECOVERY",
+      "target": "MASTER-02-ORCHESTRATION",
+      "kinds": [
+        "VERIFIED_STATUS"
+      ]
+    }
+  ],
   "endpoint_binding": "RUNTIME_ONLY_NOT_PRESENT"
 }
