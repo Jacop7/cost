@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "kind": "AC24_ADMISSION_P2B_OBSERVATION_NOT_GATE_APPROVAL",
+  "run_id": "AC24-ADMISSION-P2B-001",
+  "gate_id": "LC-ADMISSION",
+  "profile_id": "ADMISSION",
+  "target_commit": "e01453c91ea02c2d3579f1e4864b92be9ab8de44",
+  "executed_at": "2026-09-07T03:35:11.5832633Z",
+  "command": "AC24_BUNDLE_PATH=docs/team/service-flow-p2b-admission-bundle.json AC24_RUN_ID=AC24-ADMISSION-P2B-001 node --experimental-vm-modules --test --test-reporter=tap scripts/team-service-no-dispatch.test.mjs",
+  "execution": {
+    "exit_code": 0,
+    "tests": 3,
+    "passed": 3,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "todo": 0
+  },
+  "inputs": [
+    {
+      "path": ".codex/mission-relay/candidates/team-service-local-core-006.json",
+      "sha256": "c69e94c921835be972e19d78bdb98580062c85fed205c727dc577f8915abd0cb"
+    },
+    {
+      "path": ".codex/mission-relay/candidates/team-service-local-core-006.json.sha256",
+      "sha256": "0ddd1aeb5fffbcb7e0a46162ab3ce86253e119eb5e0dc8075a73231eefe9d4a0"
+    },
+    {
+      "path": "docs/team/service-flow-p2b-admission-bundle.json",
+      "sha256": "86668b3c62adb1e9d7bf427813920a11894e3b91c6771482953cef05ba01f7bf"
+    },
+    {
+      "path": "docs/team/service-flow-acceptance.json",
+      "sha256": "9642a0932d4fd6d6fdab10f5e02927036b9139d4cbca37aa6cf1b9a17f5ddffb"
+    },
+    {
+      "path": "docs/team/service-flow-p2b-contract.json",
+      "sha256": "ec2076e29497970d47c0cef0e07da53a9f9cbfc0d3baabdb8f1a6462f13f1ae3"
+    }
+  ],
+  "observation": {
+    "target_modules": ["scripts/team-service-workflow.mjs"],
+    "scenario_ids": ["ADMISSION_ROUNDTRIP_STOP"],
+    "import_closure": [
+      "scripts/docs-graph-check.mjs",
+      "scripts/team-routing-contract-audit.mjs",
+      "scripts/team-service-admission-scenario.mjs",
+      "scripts/team-service-workflow.mjs"
+    ],
+    "normal_dispatch_attempts": 0,
+    "negative_fake_attempts": 4,
+    "negative_rejections": ["fake-send", "fetch", "websocket", "fs:readFileSync"],
+    "actual_provider_calls": 0,
+    "normal": {
+      "roundtrip_status": "COMPLETED",
+      "revision": 18,
+      "stop_status": "STOPPED",
+      "legs": 6
+    },
+    "host_cases": [
+      {"case_id": "AC-13", "status": "BLOCKED_HOST"},
+      {"case_id": "AC-14", "status": "BLOCKED_HOST"},
+      {"case_id": "AC-15", "status": "BLOCKED_HOST"},
+      {"case_id": "AC-16", "status": "BLOCKED_HOST"},
+      {"case_id": "AC-17", "status": "BLOCKED_HOST"}
+    ],
+    "assertions": {
+      "AC-24-A1": "PASS_EXACT_IMPORT_CLOSURE",
+      "AC-24-A2": "PASS_FORBIDDEN_CAPABILITIES_REJECTED_AND_ZERO_PROVIDER_CALLS",
+      "AC-24-A3": "PASS_COOPERATIVE_ROUNDTRIP_STOP_ZERO_DISPATCH",
+      "AC-24-A4": "PASS_HOST_CASES_BLOCKED_AND_SERVICE_NOT_READY"
+    },
+    "service_ready": false,
+    "admission_authorized": false
+  },
+  "limitations": [
+    "Trusted cooperative fixture only; not OS isolation, host authentication, or malicious-code containment.",
+    "This uses the ADMISSION entry profile, not the P2B completion profile.",
+    "This record does not implement Router get-or-prepare, activate the candidate, or enable provider send."
+  ],
+  "result": "PASS_OBSERVATION_NOT_ADMISSION"
+}
