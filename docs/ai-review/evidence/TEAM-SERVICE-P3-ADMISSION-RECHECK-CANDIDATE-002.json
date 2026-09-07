@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "kind": "TEAM_SERVICE_P3_ADMISSION_RECHECK_CANDIDATE",
+  "candidate_id": "TEAM-SERVICE-P3-ADMISSION-002",
+  "predecessor_review": "docs/ai-review/evidence/TEAM-SERVICE-P3-ADMISSION-OPUS-001.md",
+  "target_commit": "4e4347db078ca34c2f08f6325f0cf3f76e513852",
+  "target_tree": "f310261b7c8cf0091dc58a8e3d740b12b352d6fd",
+  "snapshot": "COMMITTED_TARGET",
+  "review_engine": "CLAUDE_OPUS_DIRECT_COWORK_FALLBACK",
+  "formal_cli_receipt_expected": false,
+  "inputs": [
+    {"path": ".codex/mission-relay/candidates/team-service-local-core-008.json", "sha256": "21f00449eae1444a58bce6a339f20a05956fce8017668b9b9c6f03f19185c485"},
+    {"path": ".codex/mission-relay/candidates/team-service-local-core-008.json.sha256", "sha256": "3c2b2c85b9a2bd00ed09e25a5205ab583475386d9c5c2561f2ffedae414e8b34"},
+    {"path": "docs/team/service-flow-p3-contract.json", "sha256": "58897ee630c71333cf1c89705d823e48ec92a671f3ed01f03c1c3bfaa57f6248"},
+    {"path": "docs/team/service-flow-acceptance.json", "sha256": "659662dede5f42a57b5ad4ab6f0f91c58930e479f65f84c6178f83c8f7fa97cf"},
+    {"path": "docs/team/service-flow-p3-admission-bundle.json", "sha256": "93e34f20a7d4e575fac4d8cc4359b2aff7eed2cb218cc76d6c487899d2f7d620"},
+    {"path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P3-ADMISSION-001.json", "sha256": "7645076ec674beefae7a348a7e0151dc3b3d43f5b456f4aba30d3f8d72f71d0c"},
+    {"path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P3-ADMISSION-001.tap", "sha256": "1548abb109e2b711cc95e05b3ade07be813ade8a5cb1b8ad74a58260f18470ce"},
+    {"path": "scripts/team-service-p3-contract.test.mjs", "sha256": "506ef0c07243db70c14c33456412f9691b839fb2b4e83d324ea19284e6d05d2b"},
+    {"path": "scripts/team-service-p3-admission.mjs", "sha256": "5b1106299eeb9ad3afdf873ceb76dc300e2854724fb2457fc05dc9a1136a5fe7"},
+    {"path": "scripts/team-service-p3-no-dispatch.test.mjs", "sha256": "724f1d46d78a861cfcaacea2635506cfac0404bd9669201059bdfaf3b6a4e20c"},
+    {"path": "scripts/team-service-p3-admission-scenario.mjs", "sha256": "c0f26c4610c21da3a0feebea320a98c9a7b190678a76129d5121e56fa5d6dd21"},
+    {"path": "scripts/team-service-intent-store.mjs", "sha256": "bc83ae76f76654b584a5d8fd6343966161f69e6cd7a20606f5af60b30ab7647a"},
+    {"path": "scripts/team-service-router-adapter.test.mjs", "sha256": "844bdd020acedef6a770843b76c9a9982b7f86708531397c179dbd7526b43bb5"},
+    {"path": "scripts/team-service-p2b-scenario.mjs", "sha256": "5b8ec830459b412fc3016aababb6b3893b4e8eaf768a678bdb66aeaa7fbda703"},
+    {"path": ".gitattributes", "sha256": "563fab10d679c01e522bef0062a867d1b7de82c9d9f84084b66b2f59f6bc1dba"},
+    {"path": "docs/ai-review/evidence/TEAM-SERVICE-VERIFY-P3-ADMISSION-20260907-001.json", "sha256": "de5d67832d2cf25bb16f4619ab3d6fc6ed83af6748404aa1a8025e5eee111e26"},
+    {"path": "docs/ai-review/evidence/TEAM-SERVICE-P3-ADMISSION-OPUS-001.md", "sha256": "1adaa25efe64d0247206ec316a3dfb5928e397ab7b35b7f241c76423934b28df"},
+    {"path": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-CURRENT.json", "sha256": "cf8bb89efa4c6bf8e58271eea231f1405eb2d667916c3de71bc2cc1d0b886638"},
+    {"path": "docs/팀서비스-자동흐름-구현계획.md", "sha256": "e906c698b4850beb3ee444dc251e4947ec36ddc879e044c62b16febb9ab7118f"}
+  ],
+  "blocking_dispositions": {
+    "B-1": "CLOSED: actual workflow exports are named and cross-checked against the imported module.",
+    "B-2": "CLOSED: P3 profile, exact entry bundle, phase requirement, no-send run and completion-rerun rule are fixed before implementation.",
+    "B-3": "CLOSED: contract and entry scenario require exactly 10 non-human roles and keep reports non-authorizing.",
+    "B-4": "CLOSED: CURRENT and candidate 008 pin the actual plan SHA e906c698...",
+    "B-5": "CLOSED: candidate sidecars have an LF repository rule and candidate 008 pins committed bytes explicitly.",
+    "B-6": "CLOSED: effectKeyOf now implements task_id/subtask_id/work_spec_revision/effect_kind; P3 scope includes store plus AC-10 regression."
+  },
+  "machine_checks": {
+    "project_orchestrator_validate": "MODEL_PLAN_VALID",
+    "project_orchestrator_verify": "MODEL_PLAN_VERIFIED",
+    "model_candidate_sha256": "21f00449eae1444a58bce6a339f20a05956fce8017668b9b9c6f03f19185c485",
+    "p3_contract_workflow_ac10": {"passed": 26, "failed": 0, "skipped": 0},
+    "ac24_p3_entry": {"passed": 3, "failed": 0, "normal_dispatch_attempts": 0, "actual_provider_calls": 0, "negative_fake_attempts": 4},
+    "full_verify": "FAILED_KNOWN_ENVIRONMENT_AND_UNRELATED_LINEAGE_GATES; NOT_A_PASS"
+  },
+  "review_questions": [
+    "Are B-1 through B-6 closed in committed bytes without invalidating historical AC-24 evidence?",
+    "Is candidate 008 internally reproducible, correctly LF-pinned and limited to P3 local implementation?",
+    "Does AC24-P3-ADMISSION-001 prove only entry prerequisites and no-send, without pretending to validate future P3 implementation?",
+    "May a gate-owner decision now authorize only the candidate 008 P3 target modules, followed by mandatory exact completion rerun and review?",
+    "Do any remaining findings block P3 implementation start rather than P3 completion?"
+  ],
+  "requested_verdicts": ["PASS", "CHANGES_REQUIRED"],
+  "required_output": {
+    "blocking_findings": "array",
+    "nonblocking_findings": "array",
+    "implementation_may_begin": "boolean",
+    "service_ready": false,
+    "real_send_authorized": false
+  }
+}
