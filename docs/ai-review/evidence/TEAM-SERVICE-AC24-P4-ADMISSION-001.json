@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "kind": "AC24_P4_ADMISSION_OBSERVATION_NOT_GATE_APPROVAL",
+  "run_id": "AC24-P4-ADMISSION-001",
+  "gate_id": "P4",
+  "profile_id": "STORE_DRIVER",
+  "recorded_at": "2026-09-07T07:40:00Z",
+  "head_sha": "6ba7586745e4428d51d46d64e73051cb658bb548",
+  "bundle_ref": "docs/team/service-flow-p4-admission-bundle.json",
+  "bundle_sha256": "538392266606ebe4d82cc3a39a3e3df4f77a13784d0ab77d4348d2296f9b13a5",
+  "candidate_ref": ".codex/mission-relay/candidates/team-service-p4-admission-009.json",
+  "candidate_sha256": "387404339d730529fdc492453565575bdaa9fc528979175054578becda47e5b9",
+  "canonical_plan_sha256": "60d7cb6a85cc43a76532f9047bcc5c4ed5113ebc3fd1708b0c954da91f85d96e",
+  "test_ref": "scripts/team-service-p4-no-dispatch.test.mjs",
+  "test_sha256": "eb00de025144d1b116bf2e28e58486932551d5e15cf90f2afbf74213a52a2764",
+  "runner_ref": "scripts/team-service-p4-admission.mjs",
+  "runner_sha256": "5e550f223063186195239bf2da2aab2c3c380d83f405dacf1b4cafe331647512",
+  "tap_ref": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P4-ADMISSION-001.tap",
+  "tap_sha256": "21ac362635287ae0543bafedfbf86a4b7c4b17f3d059e4272fb58d5b0915d9d6",
+  "scenario_ids": ["AC-09", "AC-11", "AC-12", "AC-23"],
+  "assertion_observations": [
+    {
+      "assertion_id": "AC-24-P4-A1",
+      "verification_result": "PASS",
+      "observation": "Exact sealed candidate, canonical predecessor, plan contract, current state, acceptance catalog, owner decision and Opus recheck hashes matched."
+    },
+    {
+      "assertion_id": "AC-24-P4-A2",
+      "verification_result": "PASS_NO_SEND",
+      "observation": "normal_dispatch_attempts=0 and actual_provider_calls=0; no Team Router or provider transport was invoked."
+    },
+    {
+      "assertion_id": "AC-24-P4-A3",
+      "verification_result": "PASS_ENTRY_PREREQUISITES_ONLY",
+      "observation": "All seven future P4 implementation paths were absent. This run does not validate store, driver, outbox, replay or ACL behavior."
+    },
+    {
+      "assertion_id": "AC-24-P4-A4",
+      "verification_result": "PASS_FAIL_CLOSED",
+      "observation": "Drifted, omitted, duplicated and prematurely present implementation inputs were rejected."
+    }
+  ],
+  "result": "PASS_ENTRY_PREREQUISITES_ONLY_PENDING_OPUS_REVIEW",
+  "normal_dispatch_attempts": 0,
+  "actual_provider_calls": 0,
+  "missing_future_implementation_count": 7,
+  "entry_validates_future_implementation": false,
+  "completion_rerun_required": true,
+  "admission_authorized": false,
+  "p4_implementation_authorized": false,
+  "real_send_authorized": false,
+  "service_ready": false
+}

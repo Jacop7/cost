@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "evidence_id": "TEAM-SERVICE-P4-PLAN-TEST-001",
+  "kind": "P4_PLAN_TEST_EXECUTION_EVIDENCE",
+  "recorded_at": "2026-09-07T07:40:00Z",
+  "head_sha": "6ba7586745e4428d51d46d64e73051cb658bb548",
+  "command": "node --test --test-reporter=tap scripts/team-service-p4-contract.test.mjs",
+  "result": "PASS_6_OF_6_PLAN_TEST_ONLY",
+  "plan_contract": {
+    "path": "docs/team/service-flow-p4-contract.json",
+    "sha256": "612a4de268a7dcac7a60779f911ab57d9008118d58c657cd85e0f706accce2ae"
+  },
+  "test": {
+    "path": "scripts/team-service-p4-contract.test.mjs",
+    "sha256": "5b9024803db6d131f716dd47062cb0a76321eb38667e2b2c71f94ba91b06b086"
+  },
+  "raw_tap": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-P4-PLAN-TEST-001.tap",
+    "sha256": "d97a894ae0e3419fb1ae22796bd63c45bf1a23d453b553a6955455fc3fb55847"
+  },
+  "assertions": [
+    "P4 entry binds completed P3 and preserves the failed color-lineage gate",
+    "store, outbox, driver and ACL contracts fail closed",
+    "completion requires AC-24 STORE_DRIVER rerun",
+    "planning does not grant implementation or service authority"
+  ],
+  "p4_implementation_authorized": false,
+  "real_send_authorized": false,
+  "service_ready": false
+}

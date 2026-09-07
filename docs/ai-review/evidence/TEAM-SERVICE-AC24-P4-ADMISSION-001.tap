@@ -1,0 +1,29 @@
+TAP version 13
+# AC24_P4_OBSERVATION {"kind":"AC24_P4_ADMISSION_OBSERVATION_NOT_GATE_APPROVAL","profile_id":"STORE_DRIVER","bundle_commit":"23a343cfe7b9c02f28d76090cdf32777d9471134","evidence_sha256":[{"path":".codex/mission-relay/model-plan.json","sha256":"60d7cb6a85cc43a76532f9047bcc5c4ed5113ebc3fd1708b0c954da91f85d96e"},{"path":".codex/mission-relay/candidates/team-service-p4-admission-009.json","sha256":"387404339d730529fdc492453565575bdaa9fc528979175054578becda47e5b9"},{"path":".codex/mission-relay/candidates/team-service-p4-admission-009.json.sha256","sha256":"aa0340a5585268ac5c3afdedefd9dc860dde7aeeb63ea5d8283474344a80dbdd"},{"path":"docs/team/service-flow-p4-contract.json","sha256":"612a4de268a7dcac7a60779f911ab57d9008118d58c657cd85e0f706accce2ae"},{"path":"scripts/team-service-p4-contract.test.mjs","sha256":"5b9024803db6d131f716dd47062cb0a76321eb38667e2b2c71f94ba91b06b086"},{"path":"docs/ai-review/evidence/TEAM-SERVICE-FLOW-CURRENT.json","sha256":"51e0f278b680299946761345460f1fb160221881a2f292e13594d395709208c8"},{"path":"docs/team/service-flow-acceptance.json","sha256":"b0ce45bb281937e12f290398d3846c4d40bf2ac8f57d8c114221cb5a8ca81825"},{"path":"docs/ai-review/evidence/TEAM-SERVICE-P4-PLAN-OWNER-DECISION-002.json","sha256":"4ef32a00be07a8c7135e50c869979f901e648613762ac39578f1dadec4632947"},{"path":"docs/ai-review/evidence/TEAM-SERVICE-P4-PLAN-OPUS-RECHECK-002.md","sha256":"6670c5a9d1b2957f124a9909cf5337c066e316eefd176dabe650f37bdecd8f53"}],"candidate_sha256":"387404339d730529fdc492453565575bdaa9fc528979175054578becda47e5b9","canonical_plan_sha256":"60d7cb6a85cc43a76532f9047bcc5c4ed5113ebc3fd1708b0c954da91f85d96e","plan_contract_status":"PLAN_TEST_CANDIDATE_PENDING_INDEPENDENT_REVIEW","p4_gate_status":"NOT_EXECUTED","missing_future_implementation_count":7,"existing_future_implementation":[],"normal_dispatch_attempts":0,"actual_provider_calls":0,"service_ready":false,"admission_authorized":false,"p4_implementation_authorized":false,"entry_validates_future_implementation":false,"completion_rerun_required":true,"run_id":"AC24-P4-ADMISSION-001","snapshot":"COMMITTED_AUTHORITY_WITH_HASHED_PLAN_TEST_BUNDLE","bundle_sha256":"538392266606ebe4d82cc3a39a3e3df4f77a13784d0ab77d4348d2296f9b13a5","test_sha256":"eb00de025144d1b116bf2e28e58486932551d5e15cf90f2afbf74213a52a2764","runner_sha256":"5e550f223063186195239bf2da2aab2c3c380d83f405dacf1b4cafe331647512"}
+# Subtest: AC-24 P4 entry validates exact PLAN_TEST evidence and no implementation or send authority
+ok 1 - AC-24 P4 entry validates exact PLAN_TEST evidence and no implementation or send authority
+  ---
+  duration_ms: 65.6882
+  type: 'test'
+  ...
+# Subtest: AC-24 P4 rejects omitted, drifted, duplicated and implementation-present inputs
+ok 2 - AC-24 P4 rejects omitted, drifted, duplicated and implementation-present inputs
+  ---
+  duration_ms: 3.0589
+  type: 'test'
+  ...
+# Subtest: P4 plan contract tests pass independently without turning admission into implementation approval
+ok 3 - P4 plan contract tests pass independently without turning admission into implementation approval
+  ---
+  duration_ms: 132.4864
+  type: 'test'
+  ...
+1..3
+# tests 3
+# suites 0
+# pass 3
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 289.1127
