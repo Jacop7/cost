@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "kind": "TEAM_SERVICE_P4_IMPLEMENTATION_REVIEW_CANDIDATE",
+  "status": "READY_FOR_INDEPENDENT_OPUS_REVIEW_WITH_KNOWN_ACL_BLOCKER",
+  "review_id": "TEAM-SERVICE-P4-IMPLEMENTATION-OPUS-002",
+  "supersedes": "docs/ai-review/evidence/TEAM-SERVICE-P4-IMPLEMENTATION-REVIEW-CANDIDATE-001.json",
+  "target_commit": "474f9722e74e523d1eb709c93d8fab7912f0f769",
+  "target_tree": "bf6f4de35f3b6ac11b921cdbd3b37d92274cfcb6",
+  "decision": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-P4-IMPLEMENTATION-DECISION-004.json",
+    "sha256": "956d7980b9736bc1f817bcc224c5ae58158f5bd20c79fc1d632c6c23ebf6e655"
+  },
+  "implementation_bundle": {
+    "path": "docs/team/service-flow-p4-implementation-bundle-002.json",
+    "sha256": "a18dd4c10d684d97feac76325cfb319357a5cdefed4f5cefc200f32a6b9f62d0"
+  },
+  "execution_evidence": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P4-IMPLEMENTATION-002.json",
+    "sha256": "997889da4d8ba455977bdf96fd4c4255bc39935d4e800dc78c17b74a4cba0d2d",
+    "tap_path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P4-IMPLEMENTATION-002.tap",
+    "tap_sha256": "ff54bca2f2f71f392df83f1ad3324241c2ece8858c85af7b86ff5e250be384de"
+  },
+  "review_targets": [
+    "scripts/team-service-store.mjs",
+    "scripts/team-service-store.test.mjs",
+    "scripts/team-service-driver.mjs",
+    "scripts/team-service-driver.test.mjs",
+    "scripts/team-service-runtime-acl.ps1",
+    "scripts/team-service-runtime-acl.test.mjs",
+    "scripts/team-service-p4-local-tests.mjs"
+  ],
+  "required_review_questions": [
+    "Does the append-only store preserve hash-chain, duplicate-event rejection, revision/DAG CAS, single-writer and crash/replay fail-closed semantics?",
+    "Are prepared-result retries idempotent and are invalid delivery transitions, including completion before ACK, rejected?",
+    "Does the foreground driver prevent blind retry, keep UNKNOWN_DELIVERY reconciliation-only, distinguish ACK from completion and re-check STOP/generation before the fake effect?",
+    "Can any real provider, Team Router runtime, endpoint, app, DB or network capability be reached from the implementation?",
+    "Does the Windows ACL checker prove owner/DACL facts while correctly failing when no actual other non-admin token is available?",
+    "Are any implementation defects present independently of the known ACL_NEGATIVE_UNVERIFIED environmental blocker?"
+  ],
+  "known_blocker": {
+    "code": "ACL_NEGATIVE_UNVERIFIED",
+    "meaning": "No actual other non-admin Windows token was supplied for the same protected fixture.",
+    "treatment": "BLOCKING_FAILURE_NOT_SKIP",
+    "account_creation_or_password_collection_allowed": false
+  },
+  "allowed_verdicts": [
+    "IMPLEMENTATION_ACCEPTABLE_ACL_GATE_BLOCKED",
+    "CHANGES_REQUIRED"
+  ],
+  "completion_claimed": false,
+  "service_ready": false,
+  "real_send_authorized": false,
+  "formal_cli_receipt": false
+}

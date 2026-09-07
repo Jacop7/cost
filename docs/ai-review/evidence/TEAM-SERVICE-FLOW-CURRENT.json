@@ -137,13 +137,13 @@
   },
   "acceptance": {
     "path": "docs/team/service-flow-acceptance.json",
-    "sha256": "aab96ca159c0035a3b7041440b7a0c49690462255e022b3f7aa4a530a57b873e"
+    "sha256": "dc2f651850af8c7ea380ed65c1f4924cef67802efc01ca7dba53c0bc5593c30b"
   },
   "state_contract": {
     "path": "docs/team/service-flow-state-contract.json",
     "sha256": "6fd8dc1c41373fa55852a271cbbfbf95ec6ec48cb8e93c5e32c289df40fdddb2"
   },
-  "document_status_note": "CURRENT owns latest state. P4 local store, foreground fake-only driver and runtime ACL checker are committed at 0e71cdd. AC-09, AC-11 and AC-12 pass locally; AC-23 fails closed as ACL_NEGATIVE_UNVERIFIED because no actual other non-admin Windows token was supplied. Direct Opus implementation review and AC-24 STORE_DRIVER completion remain pending, so P4 gate stays NOT_EXECUTED and no completion is claimed. The unwaived color-contrast decision-lineage failure still blocks stage 3, full verify and service readiness. No host authentication, real send, Router, app, DB or Supabase mutation is authorized. Historical evidence remains immutable.",
+  "document_status_note": "CURRENT owns latest state. P4 local store, foreground fake-only driver and runtime ACL checker are committed at 474f972 after append-only candidate 002 added duplicate-event rejection, prepared-result idempotency and delivery-transition guards. AC-09, AC-11 and AC-12 pass locally; AC-23 fails closed as ACL_NEGATIVE_UNVERIFIED because no actual other non-admin Windows token was supplied. Direct Opus implementation review candidate 002 and AC-24 STORE_DRIVER completion remain pending, so P4 gate stays NOT_EXECUTED and no completion is claimed. The unwaived color-contrast decision-lineage failure still blocks stage 3, full verify and service readiness. No host authentication, real send, Router, app, DB or Supabase mutation is authorized. Historical evidence remains immutable.",
   "feasibility_evidence": {
     "path": "docs/ai-review/evidence/TEAM-SERVICE-HOST-SCOPE-001.json",
     "sha256": "2287c16899944032ff12c2310aae7f1a5ef423f3535b7710c8430f70ff5c5945"

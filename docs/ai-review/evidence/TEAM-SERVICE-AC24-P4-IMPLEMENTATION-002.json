@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "kind": "TEAM_SERVICE_P4_IMPLEMENTATION_EXECUTION_EVIDENCE",
+  "run_id": "AC24-P4-IMPLEMENTATION-002",
+  "predecessor_run_id": "AC24-P4-IMPLEMENTATION-001",
+  "gate_id": "P4",
+  "profile_id": "STORE_DRIVER",
+  "target_commit": "474f9722e74e523d1eb709c93d8fab7912f0f769",
+  "bundle_ref": "docs/team/service-flow-p4-implementation-bundle-002.json",
+  "command": "node scripts/team-service-p4-local-tests.mjs",
+  "exit_code": 1,
+  "tests": { "total": 21, "passed": 20, "failed": 1, "skipped": 0 },
+  "case_results": {
+    "AC-09": "PASS",
+    "AC-11": "PASS",
+    "AC-12": "PASS",
+    "AC-23": "ACL_NEGATIVE_UNVERIFIED"
+  },
+  "normal_dispatch_attempts": 0,
+  "negative_fake_attempts": 1,
+  "negative_fake_attempt_basis": "The committed driver suite rejects a TEAM_ROUTER transport at construction before any effect.",
+  "actual_provider_calls": 0,
+  "runtime_acl": {
+    "owner_read_result": "PASS",
+    "dacl_structure_result": "PASS",
+    "other_principal_denial_result": "ACL_NEGATIVE_UNVERIFIED",
+    "account_created": false,
+    "password_collected": false,
+    "disposition": "FAIL_CLOSED"
+  },
+  "tap_ref": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P4-IMPLEMENTATION-002.tap",
+  "result": "BLOCKED_ACL_NEGATIVE_UNVERIFIED",
+  "completion_claimed": false,
+  "service_ready": false,
+  "real_send_authorized": false,
+  "scope_limit": "P4 local implementation evidence only. The absent other non-admin OS token is a blocking failure, not a skip. No actual provider, Team Router runtime, endpoint, app, DB, Supabase, staging or production effect occurred."
+}
