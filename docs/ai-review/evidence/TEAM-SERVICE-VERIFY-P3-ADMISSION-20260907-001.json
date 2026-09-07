@@ -1,0 +1,82 @@
+{
+  "kind": "TEAM_SERVICE_P3_ADMISSION_VERIFY_OBSERVATION_NOT_PASS",
+  "recorded_at": "2026-09-07T13:20:05.4034309+09:00",
+  "head": "5a76af8adb640274dff1330c77e770fb0d5b7d02",
+  "branch": "codex/ai-team-knowledge-orchestration-plans",
+  "working_tree": "DIRTY_PREEXISTING_PRESERVED",
+  "full_verify": {
+    "command": "corepack pnpm verify",
+    "exit_code": 1,
+    "passed_stages": [
+      "1_TYPECHECK",
+      "6_WEB_BUNDLE"
+    ],
+    "failed_stages": [
+      {
+        "stage": "2_TESTS",
+        "reason": "Docker unavailable; DB suite did not execute (0/50)."
+      },
+      {
+        "stage": "3_CLI_ACL_CONTRAST_DOC_GRAPH",
+        "reason": "Color contrast gate rejected decision commits f351058f30aa, 9ffba3176f11, and 0d9f437782d6 because they are not ancestors of this HEAD."
+      },
+      {
+        "stage": "4_FRESH_DB",
+        "reason": "Docker unavailable."
+      },
+      {
+        "stage": "5_UPGRADE_PATH",
+        "reason": "Docker unavailable."
+      }
+    ],
+    "full_verify_passed": false
+  },
+  "no_db_verify": {
+    "command": "corepack pnpm verify --no-db",
+    "exit_code": 1,
+    "passed_stages": [
+      "1_TYPECHECK",
+      "2_CORE_AND_MOBILE_TESTS",
+      "6_WEB_BUNDLE"
+    ],
+    "failed_stages": [
+      {
+        "stage": "3_CLI_ACL_CONTRAST_DOC_GRAPH",
+        "reason": "Color contrast gate failed on the same non-ancestor decision lineage."
+      }
+    ],
+    "skipped_stages": [
+      "4_FRESH_DB",
+      "5_UPGRADE_PATH"
+    ],
+    "test_counts": {
+      "core_test_files_passed": 13,
+      "core_tests_passed": 194,
+      "core_tests_skipped": 12,
+      "mobile_test_files_passed": 28,
+      "mobile_tests_passed": 233,
+      "verify_shell_tests_passed": 6,
+      "verify_shell_tests_failed": 0
+    },
+    "no_db_verify_passed": false
+  },
+  "p3_focused_contract": {
+    "command": "node --test scripts/team-service-p3-contract.test.mjs",
+    "passed": 8,
+    "failed": 0,
+    "status": "PASS"
+  },
+  "disposition": {
+    "docker_failures": "OPEN_ENVIRONMENT_BLOCKER_NOT_WAIVED",
+    "color_contrast_lineage_failure": "OPEN_GOVERNANCE_BLOCKER_NOT_WAIVED",
+    "p3_scope_overlap": "The color gate executes through scripts/verify.mjs, which is a declared P3 target. Independent review must decide whether limited P3 admission can proceed while this pre-existing governance failure remains open.",
+    "implementation_admission": false,
+    "send_enabled": false,
+    "service_ready": false
+  },
+  "nonclaims": [
+    "This record is not an independent review receipt.",
+    "Focused P3 contract tests do not replace pnpm verify.",
+    "No DB, Supabase, Router runtime, endpoint, provider message, app product, staging, or production mutation was performed."
+  ]
+}
