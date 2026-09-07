@@ -1,6 +1,6 @@
 # 프로토타입·Expo 3표면 동기화 세부 실행서
 
-> 상태: **P1 구현 완료 · P2 exact SHA Opus 직접 자문 R2 PASS · P3 전 S4 승계 계약 보완 중**
+> 상태: **P1 구현 완료 · P2 제품 구현 완료 · Opus R3 S4 승계 계약 보완 및 R4 재검수 중**
 > 작성일: 2026-09-07
 > 상위 권위: [`프로토타입-Expo-3표면-동기화-기획안.md`](./프로토타입-Expo-3표면-동기화-기획안.md)
 > 이 문서는 토큰 값이나 제품 계약을 새로 정하지 않고, 승인된 기획을 실행하는 순서와 게이트만 소유한다.
@@ -287,6 +287,28 @@ P1 레지스트리 실측 뒤 복잡도와 상태 재현 가능성으로 확정�
   evidence commit 전에 실행하고, CI에서는 결속된 산출물 검증만 수행한다.
 - Opus R2는 R1 Major 5건과 Minor 8건의 완료를 확인했다. 원문은
   `docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-P2-001/opus-direct-advisory-r2.md`에 보존한다.
+
+### P2 S4 successor 승계 계약
+
+- 기존 S4 exact 검사에서 드러난 raw 실패 54건을 숨겨 통과시키지 않는다.
+  `scripts/design-token-s4-successor.json`이 exact 순서의 `sealedRawFailures`를 직접 봉인하고,
+  P2가 새로 만든 차집합 6건만 `component-transfer`로, 상속된 48건은 P3 backlog로 분류한다.
+- P3 backlog의 소유 분포는 COMMON 4 · MY 15 · RECIPES 17 · SALES 12다. `MyHomeScreen` 8건은
+  P2 이전 P0 baseline에도 존재하므로 공용 헤더 이전으로 해소된 것이 아니며 P3-MY에 남긴다.
+- 공용 소유권은 `kit/index.tsx` 전체 문자열이 아니라 `HubHeader`부터 다음 export 전까지의 구현 범위에서
+  확인한다. `component-transfer`는 P2 old→new 차집합의 `added`에 있는 실패선만 허용한다.
+- P0 재기준선에서 regression은 708→654로 감소했다. S4 gate가 새 successor로 PASS한 뒤에도 P3 open
+  48건이 사라지지 않도록 P0 baseline은 successor 경로·텍스트 해시·raw/transfer/backlog 수와
+  `654 + 48 = 702` 합산 open 수를 함께 결속한다.
+- 현 판본은 P0 baseline 두 Git blob에서 만든 최초 schema v2다. P3가 실패를 개선하거나 새 실패를
+  만들면 기존 파일을 조용히 덮지 않고, 새 판본의 `predecessorSuccessorBlob`에 직전 successor Git blob
+  OID를 넣고 `changeDelta.fromRaw`·removed·added·새 sealed raw·분류·계수를 갱신한다. exact SHA
+  독립검수 PASS 영수증이 생기기 전에는 통합 게이트가 실패한다.
+- 검수 영수증은 전용 `대상: <40자 SHA>`와 `판정: PASS` 행으로 결속한다. R3의 오분류 지적 원문은
+  `docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-P2-001/opus-direct-advisory-r3.md`에 보존한다.
+- P2 이후 헤더의 40×40+hitSlop이 44×44 Pressable로 바뀌었으므로 P3 진입 exact SHA에서 Android/iOS
+  touch 1x·2x 4종, tap probe 2종, Android receipt 1종, iOS text-scale 1x·2x 2종을 실제 기기로
+  재측정한다. 커밋 문자열만 바꾸는 방식으로 증거를 갱신하지 않는다.
 
 ## 7. P3 — 기본 Expo 도메인별 적용
 

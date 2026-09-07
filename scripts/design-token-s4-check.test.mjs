@@ -179,21 +179,66 @@ test('raw 실패 분류 한 건을 빼면 전수 분류 대조가 실패한다',
   assert.match(evaluateCurrent(current(), contract, broken).join('\n'), /raw 실패 전수 분류/);
 });
 
+test('successor 자체 sealed raw 목록을 바꾸면 source와의 exact 대조가 실패한다', () => {
+  const broken = structuredClone(successor);
+  broken.sealedRawFailures.pop();
+  assert.match(evaluateCurrent(current(), contract, broken).join('\n'), /sealed raw 실패/);
+});
+
+test('상속된 MyHome 실패를 component transfer로 바꾸면 실패한다', () => {
+  const broken = structuredClone(successor);
+  const item = broken.classifications.find((entry) => entry.message.includes('MyHomeScreen.tsx'));
+  item.kind = 'component-transfer';
+  item.transferId = 'P2-HUB-HEADER';
+  delete item.ownerStage;
+  assert.match(evaluateCurrent(current(), contract, broken).join('\n'), /상속 실패를 component transfer/);
+});
+
+test('changeDelta를 raw 차집합과 다르게 쓰면 실패한다', () => {
+  const broken = structuredClone(successor);
+  broken.changeDelta.added.pop();
+  assert.match(evaluateCurrent(current(), contract, broken).join('\n'), /changeDelta/);
+});
+
 test('공용 컴포넌트 소유 계약 needle을 제품에서 빼면 실패한다', () => {
   const sources = changed('apps/mobile/src/components/kit/index.tsx', 'export function HubHeader(', 'export function LegacyHubHeader(');
   assert.match(evaluateCurrent(sources).join('\n'), /P2-HUB-HEADER owner 계약 누락/);
 });
 
+test('owner 파일 다른 위치에 같은 토큰이 있어도 HubHeader 구현 범위에서 빠지면 실패한다', () => {
+  const sources = current();
+  const file = 'apps/mobile/src/components/kit/index.tsx';
+  const text = sources.get(file);
+  const start = text.indexOf('export function HubHeader(');
+  const end = text.indexOf('export function Select(', start);
+  const scope = text.slice(start, end);
+  assert.ok(scope.includes('borderRadius: radius.full'));
+  sources.set(file, text.slice(0, start) + scope.replace('borderRadius: radius.full', 'borderRadius: radius.lg') + text.slice(end));
+  assert.match(evaluateCurrent(sources).join('\n'), /P2-HUB-HEADER owner 계약 누락: borderRadius/);
+});
+
 test('component transfer 분류 건수를 손으로 바꾸면 실패한다', () => {
   const broken = structuredClone(successor);
   broken.componentOwnershipTransfers[0].failureCount += 1;
-  assert.match(evaluateCurrent(current(), contract, broken).join('\n'), /P2-HUB-HEADER 분류 14 ≠ 15/);
+  assert.match(evaluateCurrent(current(), contract, broken).join('\n'), /P2-HUB-HEADER 분류 6 ≠ 7/);
 });
 
 test('분류 통계만 손으로 바꾸면 exact 총계 대조가 실패한다', () => {
   const broken = structuredClone(successor);
   broken.counts.p3Backlog += 1;
-  assert.match(evaluateCurrent(current(), contract, broken).join('\n'), /P3 backlog 총계 40 ≠ 41/);
+  assert.match(evaluateCurrent(current(), contract, broken).join('\n'), /P3 backlog 총계 48 ≠ 49/);
+});
+
+test('P3 owner 분포를 바꾸면 exact 소유 대조가 실패한다', () => {
+  const broken = structuredClone(successor);
+  broken.counts.p3Owners['P3-MY'] += 1;
+  assert.match(evaluateCurrent(current(), contract, broken).join('\n'), /P3 owner 분포/);
+});
+
+test('후속 successor predecessor blob은 Git blob OID 형식이어야 한다', () => {
+  const broken = structuredClone(successor);
+  broken.lineage.predecessorSuccessorBlob = 'not-a-blob';
+  assert.match(evaluateCurrent(current(), contract, broken).join('\n'), /predecessor blob 형식/);
 });
 
 test('P0 baseline blob 계보를 끊으면 실패한다', () => {

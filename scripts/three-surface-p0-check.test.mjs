@@ -17,8 +17,14 @@ const expectFail = (result, message) => { assert.notEqual(result.status, 0); ass
 
 try {
   assert.equal(git(['worktree', 'add', '--detach', temp, 'HEAD']).status, 0);
+  const fixtureReviewTarget = git(['rev-parse', 'HEAD'], temp).stdout.trim();
   cpSync(resolve(sourceRoot, 'scripts/three-surface-p0-check.mjs'), resolve(temp, 'scripts/three-surface-p0-check.mjs'));
-  git(['add', '--', 'scripts/three-surface-p0-check.mjs'], temp);
+  cpSync(resolve(sourceRoot, 'scripts/design-token-s4-check.mjs'), resolve(temp, 'scripts/design-token-s4-check.mjs'));
+  cpSync(resolve(sourceRoot, 'scripts/design-token-s4-successor.json'), resolve(temp, 'scripts/design-token-s4-successor.json'));
+  const fixtureSuccessor = JSON.parse(readFileSync(resolve(temp, 'scripts/design-token-s4-successor.json'), 'utf8'));
+  const fixtureReceipt = resolve(temp, fixtureSuccessor.reviewReceipt);
+  writeFileSync(fixtureReceipt, `대상: ${fixtureReviewTarget}\n판정: PASS\n`);
+  git(['add', '--', 'scripts/three-surface-p0-check.mjs', 'scripts/design-token-s4-check.mjs', 'scripts/design-token-s4-successor.json', fixtureSuccessor.reviewReceipt], temp);
   git(['-c', 'user.name=Three Surface Test', '-c', 'user.email=test@example.invalid', 'commit', '-m', 'test checker'], temp);
   const codeCommit = git(['rev-parse', 'HEAD'], temp).stdout.trim();
   expectFail(run(['--write', '--force', `--expect-commit=${'0'.repeat(40)}`]), /--expect-commit/);
@@ -37,6 +43,14 @@ try {
   expectFail(mutate((data) => { data.classificationSummary.regression -= 1; }), /classificationSummary/);
   expectFail(mutate((data) => { data.floors.screenIds += 1; }), /inventory floor/);
   writeFileSync(baselinePath, original);
+
+  const successorPath = resolve(temp, 'scripts/design-token-s4-successor.json');
+  const successorOriginal = readFileSync(successorPath, 'utf8');
+  const successorData = JSON.parse(successorOriginal);
+  successorData.counts.p3Backlog += 1;
+  writeFileSync(successorPath, canonical(successorData));
+  expectFail(run([]), /successor backlog/);
+  writeFileSync(successorPath, successorOriginal);
 
   const productPath = resolve(temp, 'apps/mobile/src/theme/tokens.ts');
   const productOriginal = readFileSync(productPath, 'utf8');
@@ -96,8 +110,8 @@ try {
   const bootstrapCommit = git(['rev-parse', 'HEAD'], bootstrapRoot).stdout.trim();
   expectFail(run(['--write', `--expect-commit=${bootstrapCommit}`], bootstrapRoot), /--bootstrap/);
   rmSync(bootstrapRoot, { recursive: true, force: true });
-  assert.equal(passed, 18);
-  console.log(`three-surface P0 실행 음성 계약 ${passed}/18 PASS`);
+  assert.equal(passed, 19);
+  console.log(`three-surface P0 실행 음성 계약 ${passed}/19 PASS`);
 } finally {
   git(['worktree', 'remove', '--force', temp]);
   rmSync(temp, { recursive: true, force: true });
