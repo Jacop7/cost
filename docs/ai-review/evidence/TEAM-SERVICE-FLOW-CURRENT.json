@@ -4,7 +4,7 @@
     "path": "docs/팀서비스-자동흐름-구현계획.md",
     "sha256": "e906c698b4850beb3ee444dc251e4947ec36ddc879e044c62b16febb9ab7118f"
   },
-  "current_verdict": "P4_ADMISSION_PREWORK_AUTHORIZED_OWNER_DECISION_002_IMPLEMENTATION_BLOCKED",
+  "current_verdict": "P4_ADMISSION_PREWORK_PASSED_DIRECT_OPUS_RECHECK_002_IMPLEMENTATION_DECISION_REQUIRED",
   "allowed_actions": [
     "READ",
     "PLAN_REPAIR",
@@ -15,10 +15,11 @@
     "P3_ADMISSION_RECORD_READ",
     "P3_COMPLETION_RECORD_READ",
     "COLOR_LINEAGE_DISPOSITION_READ",
-    "P4_PLAN_TEST_ADMISSION_PREWORK"
+    "P4_ADMISSION_PREWORK_RECORD_READ",
+    "P4_IMPLEMENTATION_DECISION_RECORD_ONLY"
   ],
   "implementation_authorized": false,
-  "implementation_scope": "Global implementation remains false. BF-C1/BF-C2, P2 state-contract/AC-18, P2b local contract and the fourteen-file P3 local scope are complete under their scoped decisions. P4+, actual send, Router runtime/endpoints, app product, DB and Supabase remain forbidden.",
+  "implementation_scope": "Global implementation remains false. BF-C1/BF-C2, P2 state-contract/AC-18, P2b local contract and the fourteen-file P3 local scope are complete under their scoped decisions. P4 admission prework passed direct Opus recheck 002, but P4 implementation still requires a new unambiguous human decision. Actual send, Router runtime/endpoints, app product, DB and Supabase remain forbidden.",
   "implementation_authorizations": [
     {
       "decision_id": "DEC-TEAM-SERVICE-LOCAL-ADMISSION-P2-005",
@@ -56,8 +57,18 @@
       "decision_sha256": "4ef32a00be07a8c7135e50c869979f901e648613762ac39578f1dadec4632947",
       "independent_plan_review_path": "docs/ai-review/evidence/TEAM-SERVICE-P4-PLAN-OPUS-RECHECK-002.md",
       "independent_plan_review_sha256": "6670c5a9d1b2957f124a9909cf5337c066e316eefd176dabe650f37bdecd8f53",
+      "decision_correction_path": "docs/ai-review/evidence/TEAM-SERVICE-P4-PLAN-OWNER-DECISION-CORRECTION-003.json",
+      "decision_correction_sha256": "a7eb7d1ba06af0e634095877df56aa871a02c9f13561f4b0a1d4d7a97627da5c",
+      "admission_candidate_path": ".codex/mission-relay/candidates/team-service-p4-admission-009.json",
+      "admission_candidate_sha256": "bc05761238ceaea9e13420792123b9215d32598a6dafd063bb6363fc86e88088",
+      "admission_review_path": "docs/ai-review/evidence/TEAM-SERVICE-P4-ADMISSION-OPUS-RECHECK-002.md",
+      "admission_review_sha256": "af588d9a4e511b740da33eb7969eb67b13af12ed251b36bb4a28d22b9e49c7de",
+      "admission_run_path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P4-ADMISSION-003.json",
+      "admission_run_sha256": "0f4dc5498ebb8fcddbf01e31e26d92c82a8ba77f1d51eafc2641931244f4f8c8",
       "implementation_authorized": false,
       "admission_prework_authorized": true,
+      "admission_prework_review_passed": true,
+      "implementation_decision_required": true,
       "service_ready": false,
       "real_send_authorized": false
     }
@@ -68,7 +79,7 @@
     "P2": "PASS_LOCAL_ONLY_DIRECT_FABLE_RECHECK_006",
     "P2b": "PASS_LOCAL_ONLY_DIRECT_OPUS_REVIEW_003",
     "P3": "PASS_LOCAL_ONLY_DIRECT_OPUS_RECHECK_005_HUMAN_DECISION_006",
-    "P4": "ADMISSION_PREWORK_AUTHORIZED_IMPLEMENTATION_NOT_AUTHORIZED",
+    "P4": "PASS_ADMISSION_PREWORK_DIRECT_OPUS_RECHECK_002_IMPLEMENTATION_NOT_AUTHORIZED",
     "FORMAL_INDEPENDENT_REVIEW": "NO_FORMAL_RECEIPT_DIRECT_OPUS_RECHECK_AND_EXACT_HUMAN_COMPLETION_DECISION_ACCEPTED_FOR_P3_LOCAL_SCOPE_ONLY",
     "LIVE_PROBE": "NOT_EXECUTED",
     "FULL_VERIFY": "LATEST_NO_DB_FAILED_STAGE3_COLOR_CONTRAST_DECISION_LINEAGE_NO_WAIVER",
@@ -120,13 +131,13 @@
   },
   "acceptance": {
     "path": "docs/team/service-flow-acceptance.json",
-    "sha256": "b0ce45bb281937e12f290398d3846c4d40bf2ac8f57d8c114221cb5a8ca81825"
+    "sha256": "8779a0132f2a221b182e49bccd2784685977f2bd6c6713b33d86cd065ebdaa96"
   },
   "state_contract": {
     "path": "docs/team/service-flow-state-contract.json",
     "sha256": "6fd8dc1c41373fa55852a271cbbfbf95ec6ec48cb8e93c5e32c289df40fdddb2"
   },
-  "document_status_note": "CURRENT owns latest state. P3 local completion passed direct Opus recheck 005 and human decision 006. P4 remains closed on the unwaived color-contrast decision-lineage failure. No service readiness, host authentication, real send, stage-3 completion or full verify pass is claimed. Historical evidence remains immutable.",
+  "document_status_note": "CURRENT owns latest state. P3 local completion passed direct Opus recheck 005 and human decision 006. P4 admission prework passed direct Opus recheck 002 and append-only run 003 closed the raw TAP run-id mismatch. P4 implementation remains unauthorized and the unwaived color-contrast decision-lineage failure still blocks stage 3, full verify and service readiness. No host authentication or real send is claimed. Historical evidence remains immutable.",
   "feasibility_evidence": {
     "path": "docs/ai-review/evidence/TEAM-SERVICE-HOST-SCOPE-001.json",
     "sha256": "2287c16899944032ff12c2310aae7f1a5ef423f3535b7710c8430f70ff5c5945"
@@ -642,7 +653,7 @@
       "requires": "Actual human01→CEO02→deputy03→team→human01 result round trip and mandatory gates"
     }
   },
-  "next_safe_action": "BF-C1/BF-C2 bounded local scope is complete. Before any broader local core, cooperative tier, host integration, real send, Router activation, app, DB, Supabase, staging or production work, open and satisfy that track's separate admission/decision/review gates. Service readiness and P3 remain false.",
+  "next_safe_action": "P4 admission prework is complete. The only next action that can open P4 implementation is a new unambiguous human decision limited to store, driver and runtime ACL local implementation. Real send, Router activation/endpoints, app, DB, Supabase, staging and production remain outside that decision. Service readiness and full verify remain false.",
   "bounded_bugfix": {
     "target_commit": "fe96c3c196d4c3211024c1ecbe18e9d358a230b8",
     "source": {
@@ -1184,7 +1195,7 @@
       "actual_provider_calls": 0,
       "service_ready": false
     },
-    "next_gate": "P3_COMPLETE_P4_BLOCKED_COLOR_CONTRAST_DECISION_LINEAGE_AND_SEPARATE_ADMISSION",
+    "next_gate": "P4_ADMISSION_PREWORK_PASS_AWAITING_UNAMBIGUOUS_HUMAN_IMPLEMENTATION_DECISION",
     "forbidden": [
       "P4 through P5 implementation without separate admission",
       "real provider send",
