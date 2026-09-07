@@ -23,7 +23,7 @@ try {
   const codeCommit = git(['rev-parse', 'HEAD'], temp).stdout.trim();
   expectFail(run(['--write', '--force', `--expect-commit=${'0'.repeat(40)}`]), /--expect-commit/);
   expectFail(run(['--write', `--expect-commit=${codeCommit}`]), /--force/);
-  const initialWrite = run(['--write', '--force', `--allow-reclassification=P2-STAGE-TRANSITION@${codeCommit}`, `--expect-commit=${codeCommit}`]);
+  const initialWrite = run(['--write', '--force', `--expect-commit=${codeCommit}`]);
   assert.equal(initialWrite.status, 0, `${initialWrite.stdout}${initialWrite.stderr}`);
   git(['add', '--', 'docs/prototypes/three-surface-baseline.json'], temp);
   git(['-c', 'user.name=Three Surface Test', '-c', 'user.email=test@example.invalid', 'commit', '-m', 'test baseline'], temp);
@@ -75,7 +75,7 @@ try {
   git(['-c', 'user.name=Three Surface Test', '-c', 'user.email=test@example.invalid', 'commit', '-m', 'classification baseline receipt'], temp);
   const migratedText = readFileSync(baselinePath, 'utf8');
   const badDelta = JSON.parse(migratedText);
-  badDelta.classificationMigration.failureLineDelta[0].added.push('수기 차집합 오염');
+  badDelta.classificationMigration.failureLineDelta = [{ gateId: 'S3A', removed: [], added: ['수기 차집합 오염'] }];
   writeFileSync(baselinePath, canonical(badDelta));
   expectFail(run([]), /실패선 차집합/);
   writeFileSync(baselinePath, migratedText);
