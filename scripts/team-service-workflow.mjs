@@ -1,51 +1,9 @@
-import { createHash } from 'node:crypto';
 import { roles, teams } from './team-routing-contract-audit.mjs';
+import { canonicalHash as hash } from './team-service-canonical.mjs';
 
 // A deterministic foreground workflow reducer, not a transport or approval engine.
 // The adapter must validate the sealed router contract and real receipts. No IDs
 // for provider threads, raw conversations, or credentials belong in this state.
-function canonicalJson(value, stack = new Set()) {
-  if (value === null || typeof value === 'boolean') return JSON.stringify(value);
-  if (typeof value === 'string') return JSON.stringify(value.normalize('NFC'));
-  if (typeof value === 'number') {
-    requireValue(Number.isFinite(value), 'UNSUPPORTED_CANONICAL_VALUE');
-    return JSON.stringify(Object.is(value, -0) ? 0 : value);
-  }
-  requireValue(typeof value === 'object', 'UNSUPPORTED_CANONICAL_VALUE');
-  requireValue(!stack.has(value), 'CYCLIC_CANONICAL_VALUE');
-  requireValue(Object.getOwnPropertySymbols(value).length === 0, 'UNSUPPORTED_CANONICAL_VALUE');
-  stack.add(value);
-  try {
-    if (Array.isArray(value)) {
-      const names = Object.getOwnPropertyNames(value);
-      requireValue(names.length === value.length + 1 && names.includes('length'), 'UNSUPPORTED_CANONICAL_VALUE');
-      const items = [];
-      for (let index = 0; index < value.length; index += 1) {
-        requireValue(Object.hasOwn(value, index), 'UNSUPPORTED_CANONICAL_VALUE');
-        items.push(canonicalJson(value[index], stack));
-      }
-      return `[${items.join(',')}]`;
-    }
-    const prototype = Object.getPrototypeOf(value);
-    requireValue(prototype === Object.prototype || prototype === null, 'UNSUPPORTED_CANONICAL_VALUE');
-    const entries = [];
-    const normalizedKeys = new Set();
-    for (const key of Object.getOwnPropertyNames(value)) {
-      const descriptor = Object.getOwnPropertyDescriptor(value, key);
-      requireValue(descriptor?.enumerable === true && Object.hasOwn(descriptor, 'value'), 'UNSUPPORTED_CANONICAL_VALUE');
-      const normalizedKey = key.normalize('NFC');
-      requireValue(!normalizedKeys.has(normalizedKey), 'CANONICAL_KEY_COLLISION');
-      normalizedKeys.add(normalizedKey);
-      entries.push([normalizedKey, canonicalJson(descriptor.value, stack)]);
-    }
-    entries.sort(([left], [right]) => left < right ? -1 : left > right ? 1 : 0);
-    return `{${entries.map(([key, encoded]) => `${JSON.stringify(key)}:${encoded}`).join(',')}}`;
-  } finally {
-    stack.delete(value);
-  }
-}
-
-const hash = (value) => createHash('sha256').update(canonicalJson(value), 'utf8').digest('hex');
 const idPattern = /^[A-Z][A-Z0-9_-]{0,100}$/;
 const evidencePattern = /^(TASK|ARTIFACT|RECEIPT):[A-Za-z0-9_.:/#-]{1,240}$/;
 function requireValue(condition, code) {
